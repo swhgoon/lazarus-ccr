@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="indylaz"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="22">
+      <Unit0>
+        <Filename Value="test_ebay.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_ebay"/>
+        <CursorPos X="34" Y="63"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="43"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="ebay.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ebay"/>
+        <CursorPos X="18" Y="103"/>
+        <TopLine Value="156"/>
+        <UsageCount Value="43"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\service_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="service_intf"/>
+        <CursorPos X="1" Y="151"/>
+        <TopLine Value="140"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="43"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\soap_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="soap_formatter"/>
+        <CursorPos X="25" Y="244"/>
+        <TopLine Value="236"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="43"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_service_intf"/>
+        <CursorPos X="20" Y="30"/>
+        <TopLine Value="11"/>
+        <UsageCount Value="43"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="base_soap_formatter"/>
+        <CursorPos X="1" Y="619"/>
+        <TopLine Value="608"/>
+        <UsageCount Value="43"/>
+        <Bookmarks Count="1">
+          <Item0 X="11" Y="610" ID="1"/>
+        </Bookmarks>
+      </Unit5>
+      <Unit6>
+        <Filename Value="ebay_proxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ebay_proxy"/>
+        <CursorPos X="1" Y="34"/>
+        <TopLine Value="23"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="43"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\ics_http_protocol.pas"/>
+        <UnitName Value="ics_http_protocol"/>
+        <CursorPos X="33" Y="161"/>
+        <TopLine Value="143"/>
+        <UsageCount Value="19"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Protocols\IdSSLOpenSSL.pas"/>
+        <UnitName Value="IdSSLOpenSSL"/>
+        <CursorPos X="14" Y="267"/>
+        <TopLine Value="250"/>
+        <UsageCount Value="17"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\indy_http_protocol.pas"/>
+        <UnitName Value="indy_http_protocol"/>
+        <CursorPos X="1" Y="38"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="20"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Protocols\IdHTTP.pas"/>
+        <UnitName Value="IdHTTP"/>
+        <CursorPos X="9" Y="342"/>
+        <TopLine Value="328"/>
+        <UsageCount Value="12"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Protocols\IdSSL.pas"/>
+        <UnitName Value="IdSSL"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="14"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Core\IdTCPClient.pas"/>
+        <UnitName Value="IdTCPClient"/>
+        <CursorPos X="3" Y="144"/>
+        <TopLine Value="165"/>
+        <UsageCount Value="12"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="synapse_http_protocol"/>
+        <CursorPos X="1" Y="155"/>
+        <TopLine Value="132"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\lazarusClean\others_package\synapse\httpsend.pas"/>
+        <UnitName Value="httpsend"/>
+        <CursorPos X="30" Y="143"/>
+        <TopLine Value="132"/>
+        <UsageCount Value="12"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="D:\lazarusClean\others_package\synapse\blcksock.pas"/>
+        <UnitName Value="blcksock"/>
+        <CursorPos X="1" Y="3571"/>
+        <TopLine Value="3560"/>
+        <UsageCount Value="12"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="D:\lazarusClean\others_package\synapse\ssl_openssl.pas"/>
+        <UnitName Value="ssl_openssl"/>
+        <CursorPos X="1" Y="506"/>
+        <TopLine Value="495"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="D:\lazarusClean\others_package\synapse\ssl_openssl_lib.pas"/>
+        <UnitName Value="ssl_openssl_lib"/>
+        <CursorPos X="1" Y="1233"/>
+        <TopLine Value="1222"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="14" Y="604"/>
+        <TopLine Value="593"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\streams.inc"/>
+        <CursorPos X="7" Y="180"/>
+        <TopLine Value="158"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <UnitName Value="httpsend"/>
+        <CursorPos X="1" Y="566"/>
+        <TopLine Value="555"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="D:\Lazarus\others_package\synapse\blcksock.pas"/>
+        <UnitName Value="blcksock"/>
+        <CursorPos X="1" Y="1901"/>
+        <TopLine Value="1890"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit21>
+    </Units>
+    <JumpHistory Count="26" HistoryIndex="25">
+      <Position1>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="531" Column="1" TopLine="520"/>
+      </Position1>
+      <Position2>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="534" Column="1" TopLine="523"/>
+      </Position2>
+      <Position3>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="537" Column="1" TopLine="526"/>
+      </Position3>
+      <Position4>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="538" Column="11" TopLine="527"/>
+      </Position4>
+      <Position5>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="541" Column="32" TopLine="530"/>
+      </Position5>
+      <Position6>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="543" Column="1" TopLine="532"/>
+      </Position6>
+      <Position7>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="544" Column="1" TopLine="533"/>
+      </Position7>
+      <Position8>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="558" Column="1" TopLine="547"/>
+      </Position8>
+      <Position9>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="559" Column="1" TopLine="548"/>
+      </Position9>
+      <Position10>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="561" Column="1" TopLine="550"/>
+      </Position10>
+      <Position11>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="562" Column="1" TopLine="551"/>
+      </Position11>
+      <Position12>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="563" Column="1" TopLine="552"/>
+      </Position12>
+      <Position13>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="565" Column="1" TopLine="554"/>
+      </Position13>
+      <Position14>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="566" Column="1" TopLine="555"/>
+      </Position14>
+      <Position15>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="572" Column="1" TopLine="561"/>
+      </Position15>
+      <Position16>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="574" Column="1" TopLine="563"/>
+      </Position16>
+      <Position17>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="580" Column="1" TopLine="569"/>
+      </Position17>
+      <Position18>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="582" Column="1" TopLine="571"/>
+      </Position18>
+      <Position19>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="561" Column="1" TopLine="550"/>
+      </Position19>
+      <Position20>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="562" Column="1" TopLine="551"/>
+      </Position20>
+      <Position21>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="563" Column="1" TopLine="552"/>
+      </Position21>
+      <Position22>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="565" Column="1" TopLine="554"/>
+      </Position22>
+      <Position23>
+        <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
+        <Caret Line="566" Column="1" TopLine="555"/>
+      </Position23>
+      <Position24>
+        <Filename Value="test_ebay.lpr"/>
+        <Caret Line="75" Column="64" TopLine="58"/>
+      </Position24>
+      <Position25>
+        <Filename Value="test_ebay.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position25>
+      <Position26>
+        <Filename Value="test_ebay.lpr"/>
+        <Caret Line="63" Column="34" TopLine="52"/>
+      </Position26>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\..\;D:\Lazarus\others_package\ics\latest_distr\Delphi\Vc32\;D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Protocols\;D:\lazarus\others_package\synapse\"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="12">
+      <Item1>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\tests\soap\test_soap.pas"/>
+        <Line Value="15"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\tests\soap\test_soap.pas"/>
+        <Line Value="16"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\tests\soap\test_soap.pas"/>
+        <Line Value="18"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\tests\soap\googleintfimpunit.pas"/>
+        <Line Value="63"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\v0.2\indy_http_protocol.pas"/>
+        <Line Value="69"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\v0.2\service_intf.pas"/>
+        <Line Value="567"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\google_api\home\inoussa\Projets\Laz\v0.2\imp_utils.pas"/>
+        <Line Value="83"/>
+      </Item7>
+      <Item8>
+        <Source Value="test_ebay.lpr"/>
+        <Line Value="67"/>
+      </Item8>
+      <Item9>
+        <Source Value="..\..\synapse_http_protocol.pas"/>
+        <Line Value="160"/>
+      </Item9>
+      <Item10>
+        <Source Value="D:\lazarusClean\others_package\synapse\ssl_openssl.pas"/>
+        <Line Value="813"/>
+      </Item10>
+      <Item11>
+        <Source Value="..\..\synapse_http_protocol.pas"/>
+        <Line Value="156"/>
+      </Item11>
+      <Item12>
+        <Source Value="..\..\synapse_http_protocol.pas"/>
+        <Line Value="150"/>
+      </Item12>
+    </BreakPoints>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="ASource.Memory^"/>
+      </Item1>
+    </Watches>
+  </Debugging>
+</CONFIG>

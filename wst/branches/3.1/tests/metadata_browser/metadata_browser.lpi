@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="indylaz"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="16">
+      <Unit0>
+        <Filename Value="metadata_browser.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_browser"/>
+        <CursorPos X="25" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="68"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="umain.pas"/>
+        <ComponentName Value="fMain"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="umain.lrs"/>
+        <UnitName Value="umain"/>
+        <CursorPos X="15" Y="49"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="68"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\metadata_service_proxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_service_proxy"/>
+        <CursorPos X="61" Y="35"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="68"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <UnitName Value="base_service_intf"/>
+        <CursorPos X="1" Y="1196"/>
+        <TopLine Value="1185"/>
+        <UsageCount Value="5"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\indy_http_protocol.pas"/>
+        <UnitName Value="indy_http_protocol"/>
+        <CursorPos X="27" Y="155"/>
+        <TopLine Value="144"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\service_intf.pas"/>
+        <UnitName Value="service_intf"/>
+        <CursorPos X="34" Y="86"/>
+        <TopLine Value="117"/>
+        <UsageCount Value="5"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\soap_formatter.pas"/>
+        <UnitName Value="soap_formatter"/>
+        <CursorPos X="1" Y="216"/>
+        <TopLine Value="189"/>
+        <UsageCount Value="5"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
+        <UnitName Value="base_soap_formatter"/>
+        <CursorPos X="30" Y="134"/>
+        <TopLine Value="134"/>
+        <UsageCount Value="5"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\binary_formatter.pas"/>
+        <UnitName Value="binary_formatter"/>
+        <CursorPos X="38" Y="35"/>
+        <TopLine Value="32"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\ics_http_protocol.pas"/>
+        <UnitName Value="ics_http_protocol"/>
+        <CursorPos X="3" Y="24"/>
+        <TopLine Value="13"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\metadata_service.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_service"/>
+        <CursorPos X="35" Y="106"/>
+        <TopLine Value="99"/>
+        <UsageCount Value="63"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="118"/>
+        <TopLine Value="107"/>
+        <UsageCount Value="5"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
+        <UnitName Value="base_binary_formatter"/>
+        <CursorPos X="49" Y="650"/>
+        <TopLine Value="639"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <UnitName Value="synapse_http_protocol"/>
+        <CursorPos X="34" Y="102"/>
+        <TopLine Value="92"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\lazarusClean\others_package\ics\latest_distr\Delphi\Vc32\WSockBuf.pas"/>
+        <UnitName Value="WSockBuf"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\ics_tcp_protocol.pas"/>
+        <UnitName Value="ics_tcp_protocol"/>
+        <CursorPos X="35" Y="83"/>
+        <TopLine Value="31"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit15>
+    </Units>
+    <JumpHistory Count="22" HistoryIndex="21">
+      <Position1>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="23" TopLine="40"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="155" Column="3" TopLine="147"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="153" Column="71" TopLine="147"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="167" Column="35" TopLine="149"/>
+      </Position4>
+      <Position5>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="22" TopLine="40"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="58" Column="16" TopLine="49"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="39" Column="23" TopLine="33"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\synapse_http_protocol.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="41" TopLine="40"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\indy_http_protocol.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="53" TopLine="40"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\ics_http_protocol.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="53" TopLine="40"/>
+      </Position13>
+      <Position14>
+        <Filename Value="umain.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\ics_http_protocol.pas"/>
+        <Caret Line="108" Column="36" TopLine="97"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\ics_http_protocol.pas"/>
+        <Caret Line="24" Column="3" TopLine="13"/>
+      </Position16>
+      <Position17>
+        <Filename Value="umain.pas"/>
+        <Caret Line="22" Column="15" TopLine="22"/>
+      </Position17>
+      <Position18>
+        <Filename Value="umain.pas"/>
+        <Caret Line="46" Column="67" TopLine="36"/>
+      </Position18>
+      <Position19>
+        <Filename Value="umain.pas"/>
+        <Caret Line="47" Column="17" TopLine="36"/>
+      </Position19>
+      <Position20>
+        <Filename Value="umain.pas"/>
+        <Caret Line="47" Column="16" TopLine="36"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\ics_tcp_protocol.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position21>
+      <Position22>
+        <Filename Value="umain.pas"/>
+        <Caret Line="162" Column="5" TopLine="143"/>
+      </Position22>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="metadata_browser.exe"/>
+    </Target>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\..\;D:\lazarusClean\others_package\synapse\;D:\lazarusClean\others_package\ics\latest_distr\Delphi\Vc32\"/>
+      <UnitOutputDirectory Value="obj"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-Xi"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="8">
+      <Item1>
+        <Source Value="..\..\server_service_soap.pas"/>
+        <Line Value="112"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\..\metadata_repository.pas"/>
+        <Line Value="309"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="459"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="468"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="431"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="298"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="181"/>
+      </Item7>
+      <Item8>
+        <Source Value="..\..\metadata_service_proxy.pas"/>
+        <Line Value="43"/>
+      </Item8>
+    </BreakPoints>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
