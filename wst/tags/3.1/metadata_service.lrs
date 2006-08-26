@@ -1,0 +1,7 @@
+LazarusResources.Add('METADATA_SERVICE','wst_meta',[
+  #0#0#0#20'WST_METADATA_0.2.2.0'#0#0#0#16'metadata_service'#1#0#0#0#19'IWSTMet'
+  +'adataService'#2#0#0#0#17'GetRepositoryList'#1#0#0#0#6'result'#0#0#0#23'TArr'
+  +'ayOfStringRemotable'#0#0#0#0#0#0#0#3#0#0#0#17'GetRepositoryInfo'#2#0#0#0#5
+  +'AName'#0#0#0#6'string'#0#0#0#0#0#0#0#1#0#0#0#6'result'#0#0#0#17'TWSTMtdRepo'
+  +'sitory'#0#0#0#0#0#0#0#3
+]);
