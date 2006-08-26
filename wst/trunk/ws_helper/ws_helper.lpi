@@ -1,0 +1,309 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-b -i E:\Inoussa\Sources\lazarus\wst\v0.2.2\metadata_service.pas"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="30">
+      <Unit0>
+        <Filename Value="ws_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_helper"/>
+        <CursorPos X="28" Y="158"/>
+        <TopLine Value="136"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="188"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="ws_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_parser"/>
+        <CursorPos X="3" Y="439"/>
+        <TopLine Value="427"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="188"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="generator"/>
+        <CursorPos X="1" Y="1153"/>
+        <TopLine Value="1147"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="188"/>
+        <Bookmarks Count="3">
+          <Item0 X="43" Y="689" ID="0"/>
+          <Item1 X="69" Y="826" ID="1"/>
+          <Item2 X="17" Y="191" ID="2"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="parserdefs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="parserdefs"/>
+        <CursorPos X="58" Y="123"/>
+        <TopLine Value="154"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="188"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="parserutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="parserutils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="188"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="ws_helper.lpi"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="3"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="usr\share\fpcsrc\rtl\unix\classes.pp"/>
+        <UnitName Value="Classes"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="3"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="usr\share\fpcsrc\rtl\objpas\strutils.pp"/>
+        <UnitName Value="strutils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="3"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="usr\share\fpcsrc\rtl\unix\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="3"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\lazarus\IdDsnCoreResourceStrings.pas"/>
+        <UnitName Value="IdDsnCoreResourceStrings"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="4"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\lazarus\IdDsnPropEdBinding.pas"/>
+        <UnitName Value="IdDsnPropEdBinding"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="4"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\Lazarus\ide\lazarus.pp"/>
+        <UnitName Value="Lazarus"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="4"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="source_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="source_utils"/>
+        <CursorPos X="1" Y="143"/>
+        <TopLine Value="132"/>
+        <UsageCount Value="167"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
+        <UnitName Value="getopts"/>
+        <CursorPos X="16" Y="45"/>
+        <TopLine Value="33"/>
+        <UsageCount Value="9"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\strutils.pp"/>
+        <UnitName Value="strutils"/>
+        <CursorPos X="23" Y="246"/>
+        <TopLine Value="246"/>
+        <UsageCount Value="8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\sysutils\sysstrh.inc"/>
+        <CursorPos X="10" Y="74"/>
+        <TopLine Value="70"/>
+        <UsageCount Value="8"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\sysutils\sysstr.inc"/>
+        <CursorPos X="3" Y="185"/>
+        <TopLine Value="180"/>
+        <UsageCount Value="8"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="command_line_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="command_line_parser"/>
+        <CursorPos X="1" Y="53"/>
+        <TopLine Value="42"/>
+        <UsageCount Value="147"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="metadata_generator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="metadata_generator"/>
+        <CursorPos X="15" Y="30"/>
+        <TopLine Value="30"/>
+        <UsageCount Value="98"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\binary_streamer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="binary_streamer"/>
+        <CursorPos X="6" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="98"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\sysutils\finah.inc"/>
+        <CursorPos X="11" Y="27"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\sysutils\fina.inc"/>
+        <CursorPos X="3" Y="26"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="7"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="17" Y="662"/>
+        <TopLine Value="652"/>
+        <UsageCount Value="4"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\sysutils\filutilh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="7"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="D:\Lazarus\lcl\lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <CursorPos X="15" Y="590"/>
+        <TopLine Value="586"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\win\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="12" Y="33"/>
+        <TopLine Value="11"/>
+        <UsageCount Value="7"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\sysutils\sysutilh.inc"/>
+        <CursorPos X="11" Y="221"/>
+        <TopLine Value="194"/>
+        <UsageCount Value="7"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\win32\classes.pp"/>
+        <UnitName Value="Classes"/>
+        <CursorPos X="1" Y="47"/>
+        <TopLine Value="25"/>
+        <UsageCount Value="7"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="30" Y="1183"/>
+        <TopLine Value="1171"/>
+        <UsageCount Value="9"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\parser.inc"/>
+        <CursorPos X="3" Y="303"/>
+        <TopLine Value="299"/>
+        <UsageCount Value="9"/>
+      </Unit29>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CustomOptions Value="-Xi"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="4">
+      <Item1>
+        <Source Value="generator.pas"/>
+        <Line Value="225"/>
+      </Item1>
+      <Item2>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
+        <Line Value="230"/>
+      </Item2>
+      <Item3>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
+        <Line Value="193"/>
+      </Item3>
+      <Item4>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
+        <Line Value="198"/>
+      </Item4>
+    </BreakPoints>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
