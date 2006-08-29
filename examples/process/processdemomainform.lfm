@@ -1,0 +1,254 @@
+object MultipleProcessDemoForm: TMultipleProcessDemoForm
+  Left = 334
+  Height = 502
+  Top = 179
+  Width = 630
+  HorzScrollBar.Page = 629
+  VertScrollBar.Page = 501
+  ActiveControl = CloseButton
+  Caption = 'Demo of using multple processes'
+  OnClose = MultipleProcessDemoFormClose
+  object CloseButton: TButton
+    Left = 288
+    Height = 25
+    Top = 464
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Close'
+    OnClick = CloseButtonClick
+    TabOrder = 0
+  end
+  object ProcessPanel: TPanel
+    Left = 8
+    Height = 438
+    Top = 8
+    Width = 614
+    Align = alClient
+    BorderSpacing.Bottom = 48
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    FullRepaint = False
+    TabOrder = 1
+    object Process1GroupBox1: TGroupBox
+      Height = 438
+      Width = 315
+      Align = alLeft
+      Caption = 'Process 1'
+      TabOrder = 0
+      object Process1InputLabel: TLabel
+        AnchorSideTop.Control = CommandLine1LabeledEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 17
+        Top = 48
+        Width = 65
+        BorderSpacing.Top = 8
+        Caption = 'Input'
+        Color = clNone
+        ParentColor = False
+      end
+      object Process1OutputLabel1: TLabel
+        AnchorSideTop.Control = Process1InputMemo
+        AnchorSideTop.Side = asrBottom
+        Left = 8
+        Height = 17
+        Top = 184
+        Width = 65
+        BorderSpacing.Top = 8
+        Caption = 'Output'
+        Color = clNone
+        ParentColor = False
+      end
+      object CommandLine1LabeledEdit: TLabeledEdit
+        Left = 8
+        Height = 24
+        Top = 16
+        Width = 289
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Left = 5
+        BorderSpacing.Right = 5
+        EditLabel.Left = 8
+        EditLabel.Height = 17
+        EditLabel.Top = -4
+        EditLabel.Width = 80
+        EditLabel.Caption = 'CommandLine'
+        EditLabel.Color = clNone
+        EditLabel.ParentColor = False
+        ParentColor = False
+        TabOrder = 0
+        Text = '"C:\Program Files\PuTTY\plink.exe" yourputtysessionname'
+      end
+      object Process1SendInputButton: TButton
+        AnchorSideTop.Control = Process1InputMemo
+        AnchorSideTop.Side = asrBottom
+        Left = 222
+        Height = 25
+        Top = 176
+        Width = 75
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Send Input'
+        OnClick = ProcessSendInputButtonClick
+        TabOrder = 2
+      end
+      object Process1StartButton: TButton
+        AnchorSideTop.Control = CommandLine1LabeledEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 222
+        Height = 25
+        Top = 40
+        Width = 75
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Start'
+        OnClick = ProcessStartButtonClick
+        TabOrder = 3
+      end
+      object Process1InputMemo: TMemo
+        AnchorSideTop.Control = Process1InputLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 103
+        Top = 73
+        Width = 291
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 8
+        TabOrder = 1
+      end
+      object Process1OutputMemo: TMemo
+        AnchorSideTop.Control = Process1OutputLabel1
+        AnchorSideTop.Side = asrBottom
+        Left = 8
+        Height = 199
+        Top = 209
+        Width = 289
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 8
+        ScrollBars = ssBoth
+        TabOrder = 4
+        WordWrap = False
+      end
+    end
+    object ProcessSplitter: TSplitter
+      Left = 315
+      Height = 438
+      Width = 5
+    end
+    object Process2GroupBox: TGroupBox
+      Left = 320
+      Height = 438
+      Width = 294
+      Align = alClient
+      Caption = 'Process 2'
+      TabOrder = 1
+      object Process2InputLabel: TLabel
+        AnchorSideTop.Control = CommandLine1LabeledEdit
+        Left = 6
+        Height = 17
+        Top = 48
+        Width = 65
+        BorderSpacing.Top = 8
+        Caption = 'Input'
+        Color = clNone
+        ParentColor = False
+      end
+      object Process2OutputLabel: TLabel
+        AnchorSideTop.Control = Process1InputMemo
+        Left = 8
+        Height = 17
+        Top = 184
+        Width = 65
+        BorderSpacing.Top = 8
+        Caption = 'Output'
+        Color = clNone
+        ParentColor = False
+      end
+      object CommandLine2LabeledEdit: TLabeledEdit
+        Left = 8
+        Height = 24
+        Top = 16
+        Width = 268
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Left = 5
+        BorderSpacing.Right = 5
+        EditLabel.Left = 8
+        EditLabel.Height = 17
+        EditLabel.Top = -4
+        EditLabel.Width = 80
+        EditLabel.Caption = 'CommandLine'
+        EditLabel.Color = clNone
+        EditLabel.ParentColor = False
+        ParentColor = False
+        TabOrder = 0
+        Text = '"C:\Program Files\PuTTY\plink.exe" yourputtysessionname'
+      end
+      object Process2SendInputButton: TButton
+        AnchorSideTop.Control = Process1InputMemo
+        Left = 201
+        Height = 25
+        Top = 176
+        Width = 75
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Send Input'
+        OnClick = ProcessSendInputButtonClick
+        TabOrder = 2
+      end
+      object Process2StartButton: TButton
+        AnchorSideTop.Control = CommandLine1LabeledEdit
+        Left = 201
+        Height = 25
+        Top = 40
+        Width = 75
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        Caption = 'Start'
+        OnClick = ProcessStartButtonClick
+        TabOrder = 3
+      end
+      object Process2InputMemo: TMemo
+        AnchorSideTop.Control = Process1InputLabel
+        Left = 6
+        Height = 103
+        Top = 73
+        Width = 270
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 8
+        TabOrder = 1
+      end
+      object Process2OutputMemo: TMemo
+        AnchorSideTop.Control = Process1OutputLabel1
+        Left = 8
+        Height = 199
+        Top = 209
+        Width = 268
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 8
+        ScrollBars = ssBoth
+        TabOrder = 4
+        WordWrap = False
+      end
+    end
+  end
+  object Process1: TProcess
+    Options = [poUsePipes, poStderrToOutPut, poNoConsole]
+    Priority = ppNormal
+    left = 456
+    top = 8
+  end
+  object ReadOutputIdleTimer: TIdleTimer
+    Interval = 100
+    OnTimer = ReadOutputIdleTimerTimer
+    left = 456
+    top = 152
+  end
+  object Process2: TProcess
+    Options = [poUsePipes, poStderrToOutPut, poNoConsole]
+    Priority = ppNormal
+    left = 456
+    top = 72
+  end
+end

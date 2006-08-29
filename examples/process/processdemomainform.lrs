@@ -1,0 +1,85 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TMultipleProcessDemoForm','FORMDATA',[
+  'TPF0'#24'TMultipleProcessDemoForm'#23'MultipleProcessDemoForm'#4'Left'#3'N'#1
+  +#6'Height'#3#246#1#3'Top'#3#179#0#5'Width'#3'v'#2#18'HorzScrollBar.Page'#3'u'
+  +#2#18'VertScrollBar.Page'#3#245#1#13'ActiveControl'#7#11'CloseButton'#7'Capt'
+  +'ion'#6#31'Demo of using multple processes'#7'OnClose'#7#28'MultipleProcessD'
+  +'emoFormClose'#0#7'TButton'#11'CloseButton'#4'Left'#3' '#1#6'Height'#2#25#3
+  +'Top'#3#208#1#5'Width'#2'K'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderS'
+  +'pacing.InnerBorder'#2#4#7'Caption'#6#5'Close'#7'OnClick'#7#16'CloseButtonCl'
+  +'ick'#8'TabOrder'#2#0#0#0#6'TPanel'#12'ProcessPanel'#4'Left'#2#8#6'Height'#3
+  +#182#1#3'Top'#2#8#5'Width'#3'f'#2#5'Align'#7#8'alClient'#20'BorderSpacing.Bo'
+  +'ttom'#2'0'#20'BorderSpacing.Around'#2#8#10'BevelOuter'#7#6'bvNone'#11'FullR'
+  +'epaint'#8#8'TabOrder'#2#1#0#9'TGroupBox'#17'Process1GroupBox1'#6'Height'#3
+  +#182#1#5'Width'#3';'#1#5'Align'#7#6'alLeft'#7'Caption'#6#9'Process 1'#8'TabO'
+  +'rder'#2#0#0#6'TLabel'#18'Process1InputLabel'#21'AnchorSideTop.Control'#7#23
+  +'CommandLine1LabeledEdit'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6
+  +'Height'#2#17#3'Top'#2'0'#5'Width'#2'A'#17'BorderSpacing.Top'#2#8#7'Caption'
+  +#6#5'Input'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#20'Process1'
+  +'OutputLabel1'#21'AnchorSideTop.Control'#7#17'Process1InputMemo'#18'AnchorSi'
+  +'deTop.Side'#7#9'asrBottom'#4'Left'#2#8#6'Height'#2#17#3'Top'#3#184#0#5'Widt'
+  +'h'#2'A'#17'BorderSpacing.Top'#2#8#7'Caption'#6#6'Output'#5'Color'#7#6'clNon'
+  +'e'#11'ParentColor'#8#0#0#12'TLabeledEdit'#23'CommandLine1LabeledEdit'#4'Lef'
+  +'t'#2#8#6'Height'#2#24#3'Top'#2#16#5'Width'#3'!'#1#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#7'akRight'#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#5#19'BorderSpac'
+  +'ing.Right'#2#5#14'EditLabel.Left'#2#8#16'EditLabel.Height'#2#17#13'EditLabe'
+  +'l.Top'#2#252#15'EditLabel.Width'#2'P'#17'EditLabel.Caption'#6#11'CommandLin'
+  +'e'#15'EditLabel.Color'#7#6'clNone'#21'EditLabel.ParentColor'#8#11'ParentCol'
+  +'or'#8#8'TabOrder'#2#0#4'Text'#6'7"C:\Program Files\PuTTY\plink.exe" yourput'
+  +'tysessionname'#0#0#7'TButton'#23'Process1SendInputButton'#21'AnchorSideTop.'
+  +'Control'#7#17'Process1InputMemo'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Le'
+  +'ft'#3#222#0#6'Height'#2#25#3'Top'#3#176#0#5'Width'#2'K'#7'Anchors'#11#5'akT'
+  +'op'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#10'Send Inp'
+  +'ut'#7'OnClick'#7#27'ProcessSendInputButtonClick'#8'TabOrder'#2#2#0#0#7'TBut'
+  +'ton'#19'Process1StartButton'#21'AnchorSideTop.Control'#7#23'CommandLine1Lab'
+  +'eledEdit'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3#222#0#6'Height'#2
+  +#25#3'Top'#2'('#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'BorderS'
+  +'pacing.InnerBorder'#2#4#7'Caption'#6#5'Start'#7'OnClick'#7#23'ProcessStartB'
+  +'uttonClick'#8'TabOrder'#2#3#0#0#5'TMemo'#17'Process1InputMemo'#21'AnchorSid'
+  +'eTop.Control'#7#18'Process1InputLabel'#18'AnchorSideTop.Side'#7#9'asrBottom'
+  +#4'Left'#2#6#6'Height'#2'g'#3'Top'#2'I'#5'Width'#3'#'#1#7'Anchors'#11#5'akTo'
+  +'p'#6'akLeft'#7'akRight'#0#17'BorderSpacing.Top'#2#8#8'TabOrder'#2#1#0#0#5'T'
+  +'Memo'#18'Process1OutputMemo'#21'AnchorSideTop.Control'#7#20'Process1OutputL'
+  +'abel1'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#8#6'Height'#3#199#0#3
+  +'Top'#3#209#0#5'Width'#3'!'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8
+  +'akBottom'#0#17'BorderSpacing.Top'#2#8#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'
+  +#2#4#8'WordWrap'#8#0#0#0#9'TSplitter'#15'ProcessSplitter'#4'Left'#3';'#1#6'H'
+  +'eight'#3#182#1#5'Width'#2#5#0#0#9'TGroupBox'#16'Process2GroupBox'#4'Left'#3
+  +'@'#1#6'Height'#3#182#1#5'Width'#3'&'#1#5'Align'#7#8'alClient'#7'Caption'#6#9
+  +'Process 2'#8'TabOrder'#2#1#0#6'TLabel'#18'Process2InputLabel'#21'AnchorSide'
+  +'Top.Control'#7#23'CommandLine1LabeledEdit'#4'Left'#2#6#6'Height'#2#17#3'Top'
+  +#2'0'#5'Width'#2'A'#17'BorderSpacing.Top'#2#8#7'Caption'#6#5'Input'#5'Color'
+  +#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#19'Process2OutputLabel'#21'Anch'
+  +'orSideTop.Control'#7#17'Process1InputMemo'#4'Left'#2#8#6'Height'#2#17#3'Top'
+  +#3#184#0#5'Width'#2'A'#17'BorderSpacing.Top'#2#8#7'Caption'#6#6'Output'#5'Co'
+  +'lor'#7#6'clNone'#11'ParentColor'#8#0#0#12'TLabeledEdit'#23'CommandLine2Labe'
+  +'ledEdit'#4'Left'#2#8#6'Height'#2#24#3'Top'#2#16#5'Width'#3#12#1#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#5
+  +#19'BorderSpacing.Right'#2#5#14'EditLabel.Left'#2#8#16'EditLabel.Height'#2#17
+  +#13'EditLabel.Top'#2#252#15'EditLabel.Width'#2'P'#17'EditLabel.Caption'#6#11
+  +'CommandLine'#15'EditLabel.Color'#7#6'clNone'#21'EditLabel.ParentColor'#8#11
+  +'ParentColor'#8#8'TabOrder'#2#0#4'Text'#6'7"C:\Program Files\PuTTY\plink.exe'
+  +'" yourputtysessionname'#0#0#7'TButton'#23'Process2SendInputButton'#21'Ancho'
+  +'rSideTop.Control'#7#17'Process1InputMemo'#4'Left'#3#201#0#6'Height'#2#25#3
+  +'Top'#3#176#0#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'BorderSpa'
+  +'cing.InnerBorder'#2#4#7'Caption'#6#10'Send Input'#7'OnClick'#7#27'ProcessSe'
+  +'ndInputButtonClick'#8'TabOrder'#2#2#0#0#7'TButton'#19'Process2StartButton'
+  ,#21'AnchorSideTop.Control'#7#23'CommandLine1LabeledEdit'#4'Left'#3#201#0#6'H'
+  +'eight'#2#25#3'Top'#2'('#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#25
+  +'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#5'Start'#7'OnClick'#7#23'Proces'
+  +'sStartButtonClick'#8'TabOrder'#2#3#0#0#5'TMemo'#17'Process2InputMemo'#21'An'
+  +'chorSideTop.Control'#7#18'Process1InputLabel'#4'Left'#2#6#6'Height'#2'g'#3
+  +'Top'#2'I'#5'Width'#3#14#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#17
+  +'BorderSpacing.Top'#2#8#8'TabOrder'#2#1#0#0#5'TMemo'#18'Process2OutputMemo'
+  +#21'AnchorSideTop.Control'#7#20'Process1OutputLabel1'#4'Left'#2#8#6'Height'#3
+  +#199#0#3'Top'#3#209#0#5'Width'#3#12#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akR'
+  +'ight'#8'akBottom'#0#17'BorderSpacing.Top'#2#8#10'ScrollBars'#7#6'ssBoth'#8
+  +'TabOrder'#2#4#8'WordWrap'#8#0#0#0#0#8'TProcess'#8'Process1'#7'Options'#11#10
+  +'poUsePipes'#16'poStderrToOutPut'#11'poNoConsole'#0#8'Priority'#7#8'ppNormal'
+  +#4'left'#3#200#1#3'top'#2#8#0#0#10'TIdleTimer'#19'ReadOutputIdleTimer'#8'Int'
+  +'erval'#2'd'#7'OnTimer'#7#24'ReadOutputIdleTimerTimer'#4'left'#3#200#1#3'top'
+  +#3#152#0#0#0#8'TProcess'#8'Process2'#7'Options'#11#10'poUsePipes'#16'poStder'
+  +'rToOutPut'#11'poNoConsole'#0#8'Priority'#7#8'ppNormal'#4'left'#3#200#1#3'to'
+  +'p'#2'H'#0#0#0
+]);
