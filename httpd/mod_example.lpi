@@ -1,0 +1,559 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="74">
+      <Unit0>
+        <Filename Value="mod_example.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_example"/>
+        <CursorPos X="12" Y="1291"/>
+        <TopLine Value="1277"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="63"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="apr\apr.pas"/>
+        <UnitName Value="apr"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="26"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\include\http_config.h"/>
+        <CursorPos X="8" Y="3"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="httpd.pas"/>
+        <UnitName Value="httpd"/>
+        <CursorPos X="23" Y="14"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="26"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="http_config.inc"/>
+        <CursorPos X="10" Y="471"/>
+        <TopLine Value="458"/>
+        <UsageCount Value="26"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="httpd.inc"/>
+        <CursorPos X="20" Y="327"/>
+        <TopLine Value="322"/>
+        <UsageCount Value="20"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\modules\experimental\mod_example.c"/>
+        <CursorPos X="10" Y="1298"/>
+        <TopLine Value="1287"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="apr\apr_strings.inc"/>
+        <CursorPos X="4" Y="120"/>
+        <TopLine Value="119"/>
+        <UsageCount Value="17"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="apr\apr_file_info.inc"/>
+        <CursorPos X="26" Y="196"/>
+        <TopLine Value="183"/>
+        <UsageCount Value="26"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="apr\apr_file_io.inc"/>
+        <CursorPos X="1" Y="635"/>
+        <TopLine Value="620"/>
+        <UsageCount Value="26"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="apr\apr_pools.inc"/>
+        <CursorPos X="1" Y="541"/>
+        <TopLine Value="538"/>
+        <UsageCount Value="26"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_file_info.h"/>
+        <CursorPos X="43" Y="102"/>
+        <TopLine Value="96"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="httpd_2_0\apr\apr_network_io.inc"/>
+        <CursorPos X="22" Y="859"/>
+        <TopLine Value="858"/>
+        <UsageCount Value="14"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr-util\include\apr_buckets.h"/>
+        <CursorPos X="62" Y="26"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="util_filter.inc"/>
+        <CursorPos X="11" Y="85"/>
+        <TopLine Value="82"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_pools.h"/>
+        <CursorPos X="9" Y="500"/>
+        <TopLine Value="497"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_strings.h"/>
+        <CursorPos X="4" Y="114"/>
+        <TopLine Value="112"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\arch\win32\apr_dbg_win32_handles.h"/>
+        <CursorPos X="28" Y="50"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_tables.h"/>
+        <CursorPos X="26" Y="334"/>
+        <TopLine Value="327"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="httpd_2_0\apr\apr_general.inc"/>
+        <CursorPos X="33" Y="198"/>
+        <TopLine Value="189"/>
+        <UsageCount Value="14"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_file_io.h"/>
+        <CursorPos X="31" Y="27"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\include\http_log.h"/>
+        <CursorPos X="20" Y="81"/>
+        <TopLine Value="78"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="http_log.inc"/>
+        <CursorPos X="23" Y="146"/>
+        <TopLine Value="133"/>
+        <UsageCount Value="26"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\include\httpd.h"/>
+        <CursorPos X="9" Y="400"/>
+        <TopLine Value="398"/>
+        <UsageCount Value="13"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\srclib\apr\include\apr_poll.h"/>
+        <CursorPos X="13" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="apr\apr_errno.inc"/>
+        <CursorPos X="6" Y="1167"/>
+        <TopLine Value="1164"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\headers\2.0.58\httpd-2.0.58\include\util_xml.h"/>
+        <CursorPos X="11" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="apriconv\apr_iconv.inc"/>
+        <CursorPos X="21" Y="104"/>
+        <TopLine Value="86"/>
+        <UsageCount Value="26"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="apriconv\api_version.inc"/>
+        <CursorPos X="1" Y="63"/>
+        <TopLine Value="53"/>
+        <UsageCount Value="26"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="apriconv\apriconv.pas"/>
+        <UnitName Value="apriconv"/>
+        <CursorPos X="14" Y="54"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="30"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="ap_mpm.inc"/>
+        <CursorPos X="18" Y="73"/>
+        <TopLine Value="70"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="ap_mmn.inc"/>
+        <CursorPos X="19" Y="77"/>
+        <TopLine Value="73"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\Arquivos de programas\Borland\Delphi7\Source\Internet\HTTPD2.pas"/>
+        <UnitName Value="HTTPD2"/>
+        <CursorPos X="7" Y="510"/>
+        <TopLine Value="508"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="aprutil\aprutil.pas"/>
+        <UnitName Value="aprutil"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="20"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\lazarus16\fpcsrc\rtl\win32\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="12" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="httpd_2_0\httpd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="httpd"/>
+        <CursorPos X="24" Y="78"/>
+        <TopLine Value="69"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="apr"/>
+        <CursorPos X="3" Y="142"/>
+        <TopLine Value="124"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="httpd_2_0\aprutil\aprutil.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="aprutil"/>
+        <CursorPos X="56" Y="33"/>
+        <TopLine Value="29"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="httpd_2_0\http_config.inc"/>
+        <CursorPos X="9" Y="325"/>
+        <TopLine Value="310"/>
+        <UsageCount Value="10"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="httpd_2_0\http_protocol.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="12"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="httpd_2_0\apriconv\apriconv.pas"/>
+        <UnitName Value="apriconv"/>
+        <CursorPos X="1" Y="19"/>
+        <TopLine Value="24"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="httpd_2_0\pcreposix.inc"/>
+        <CursorPos X="64" Y="56"/>
+        <TopLine Value="51"/>
+        <UsageCount Value="10"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="httpd_2_0\util_filter.inc"/>
+        <CursorPos X="23" Y="27"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="9"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="httpd_2_0\util_script.inc"/>
+        <CursorPos X="22" Y="11"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="httpd_2_0\util_cfgtree.inc"/>
+        <CursorPos X="24" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="httpd_2_0\ap_release.inc"/>
+        <CursorPos X="32" Y="31"/>
+        <TopLine Value="27"/>
+        <UsageCount Value="9"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="httpd_2_0\util_time.inc"/>
+        <CursorPos X="18" Y="21"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="httpd_2_0\ap_config.inc"/>
+        <CursorPos X="31" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="12"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="httpd_2_0\ap_provider.inc"/>
+        <CursorPos X="67" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="httpd_2_0\httpd.inc"/>
+        <CursorPos X="60" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="httpd_2_0\http_core.inc"/>
+        <CursorPos X="28" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="httpd_2_0\apr\apr_hash.inc"/>
+        <CursorPos X="31" Y="174"/>
+        <TopLine Value="167"/>
+        <UsageCount Value="9"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="httpd_2_0\http_log.inc"/>
+        <CursorPos X="25" Y="227"/>
+        <TopLine Value="223"/>
+        <UsageCount Value="12"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="httpd_2_0\http_main.inc"/>
+        <CursorPos X="61" Y="23"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="9"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="httpd_2_0\http_request.inc"/>
+        <CursorPos X="66" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="httpd_2_0\http_vhost.inc"/>
+        <CursorPos X="18" Y="7"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="httpd_2_0\util_md5.inc"/>
+        <CursorPos X="13" Y="50"/>
+        <TopLine Value="28"/>
+        <UsageCount Value="11"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="httpd_2_0\http_connection.inc"/>
+        <CursorPos X="17" Y="106"/>
+        <TopLine Value="89"/>
+        <UsageCount Value="9"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="httpd_2_0\aprutil\apr_xml.inc"/>
+        <CursorPos X="64" Y="60"/>
+        <TopLine Value="58"/>
+        <UsageCount Value="11"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="httpd_2_0\aprutil\apr_md5.inc"/>
+        <CursorPos X="17" Y="48"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="10"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="httpd_2_0\aprutil\apr_xlate.inc"/>
+        <CursorPos X="15" Y="17"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="httpd_2_0\apr\apr_file_io.inc"/>
+        <CursorPos X="48" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="httpd_2_0\apr\apr_thread_proc.inc"/>
+        <CursorPos X="32" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="httpd_2_0\ap_mmn.inc"/>
+        <CursorPos X="6" Y="74"/>
+        <TopLine Value="73"/>
+        <UsageCount Value="9"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="httpd_2_0\apr\apr_file_info.inc"/>
+        <CursorPos X="49" Y="276"/>
+        <TopLine Value="270"/>
+        <UsageCount Value="9"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="httpd_2_0\apr\apr_portable.inc"/>
+        <CursorPos X="13" Y="203"/>
+        <TopLine Value="200"/>
+        <UsageCount Value="15"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="..\..\lazarus16\fpcsrc\rtl\win32\windows.pp"/>
+        <UnitName Value="windows"/>
+        <CursorPos X="42" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="15"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="..\..\lazarus16\fpcsrc\rtl\objpas\sysutils\sysutilh.inc"/>
+        <CursorPos X="18" Y="29"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="9"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="..\..\lazarus16\fpcsrc\rtl\win32\sockets.pp"/>
+        <UnitName Value="Sockets"/>
+        <CursorPos X="17" Y="22"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="9"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="..\..\lazarus16\fpcsrc\rtl\win32\winsock.pp"/>
+        <UnitName Value="winsock"/>
+        <CursorPos X="11" Y="74"/>
+        <TopLine Value="61"/>
+        <UsageCount Value="15"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="httpd_2_0\apr\apr_user.inc"/>
+        <CursorPos X="13" Y="52"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="httpd_2_0\apr\apr_dso.inc"/>
+        <CursorPos X="11" Y="70"/>
+        <TopLine Value="53"/>
+        <UsageCount Value="13"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="httpd_2_0\apr\apr_signal.inc"/>
+        <CursorPos X="31" Y="77"/>
+        <TopLine Value="64"/>
+        <UsageCount Value="13"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="httpd_2_0\apr\apr_pools.inc"/>
+        <CursorPos X="57" Y="140"/>
+        <TopLine Value="136"/>
+        <UsageCount Value="9"/>
+      </Unit73>
+    </Units>
+    <JumpHistory Count="5" HistoryIndex="4">
+      <Position1>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <Caret Line="108" Column="6" TopLine="96"/>
+      </Position2>
+      <Position3>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <Caret Line="132" Column="17" TopLine="117"/>
+      </Position3>
+      <Position4>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <Caret Line="133" Column="15" TopLine="117"/>
+      </Position4>
+      <Position5>
+        <Filename Value="httpd_2_0\apr\apr.pas"/>
+        <Caret Line="132" Column="16" TopLine="118"/>
+      </Position5>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="mod_example.so"/>
+    </Target>
+    <SearchPaths>
+      <OtherUnitFiles Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\apriconv\;httpd_2_0\aprutil\"/>
+      <SrcPath Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\apriconv\;httpd_2_0\aprutil\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <ExecutableType Value="Library"/>
+      </Options>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-WR
+"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

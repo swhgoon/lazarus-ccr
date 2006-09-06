@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="13">
+      <Unit0>
+        <Filename Value="mod_hello.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mod_hello"/>
+        <CursorPos X="12" Y="50"/>
+        <TopLine Value="22"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="minimain.pas"/>
+        <UnitName Value="minimain"/>
+        <CursorPos X="16" Y="21"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="httpd_2_0/httpd.inc"/>
+        <CursorPos X="11" Y="4"/>
+        <TopLine Value="3"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="httpd_2_0/apr/apr_buckets.inc"/>
+        <CursorPos X="14" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="httpd_2_0/http_log.inc"/>
+        <CursorPos X="7" Y="158"/>
+        <TopLine Value="148"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="httpd_2_0/aprutil/apr_md5.inc"/>
+        <CursorPos X="28" Y="128"/>
+        <TopLine Value="123"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="httpd_2_0/http_config.inc"/>
+        <CursorPos X="14" Y="311"/>
+        <TopLine Value="310"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="httpd_2_0/ap_mmn.inc"/>
+        <CursorPos X="13" Y="76"/>
+        <TopLine Value="75"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="httpd_2_0/httpd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="httpd"/>
+        <CursorPos X="11" Y="163"/>
+        <TopLine Value="136"/>
+        <UsageCount Value="22"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="httpd_2_0/apr/apr_network_io.inc"/>
+        <CursorPos X="27" Y="109"/>
+        <TopLine Value="94"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="httpd_2_0/apr/apr.pas"/>
+        <UnitName Value="apr"/>
+        <CursorPos X="24" Y="135"/>
+        <TopLine Value="126"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../httpd-2.0.58/srclib/apr/include/apr_network_io.h"/>
+        <CursorPos X="16" Y="212"/>
+        <TopLine Value="18"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../httpd-2.0.58/modules/arch/netware/mod_nw_ssl.c"/>
+        <CursorPos X="39" Y="79"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit12>
+    </Units>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="mod_hello.lpr"/>
+        <Caret Line="50" Column="11" TopLine="34"/>
+      </Position1>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <Target>
+      <Filename Value="mod_hello.so"/>
+    </Target>
+    <SearchPaths>
+      <OtherUnitFiles Value="httpd_2_0/;httpd_2_0/apr/;httpd_2_0/apriconv/;httpd_2_0/aprutil/"/>
+      <SrcPath Value="httpd_2_0/;httpd_2_0/apr/;httpd_2_0/apriconv/;httpd_2_0/aprutil/"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <ExecutableType Value="Library"/>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
