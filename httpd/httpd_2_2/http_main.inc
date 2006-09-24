@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-}
+ }
 
 //#include "apr_optional.h"
 
@@ -21,7 +21,7 @@
  * can safely ignore and pass on from its rewrite_args() handler.
  }
 const
-  AP_SERVER_BASEARGS = 'C:c:D:d:E:e:f:vVlLtSh?X';
+  AP_SERVER_BASEARGS = 'C:c:D:d:E:e:f:vVlLtSMh?X';
 
 {
  * @package Command line options
@@ -43,5 +43,12 @@ const
  *  effect the server based on command line options }
 //AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
 
+{
+ * An optional function to send signal to server on presence of '-k'
+ * command line argument.
+ * Called if MPM defines AP_MPM_WANT_SIGNAL_SERVER
+ * @param status The exit status after sending signal
+ * @param pool Memory pool to allocate from
+ }
 //APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *, apr_pool_t *));
 

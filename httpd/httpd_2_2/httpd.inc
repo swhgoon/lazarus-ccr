@@ -953,9 +953,14 @@ type
 {
  * @brief A structure to contain connection state information 
  }
+  APR_RING_ENTRY_conn_state_t = record
+    next: Pconn_state_t;
+    prev: Pconn_state_t;
+  end;
+ 
   conn_state_t = record
     { APR_RING of expiration timeouts }
-    timeout_list: conn_state_t; // APR_RING_ENTRY(conn_state_t);
+    timeout_list: APR_RING_ENTRY_conn_state_t;
     { the expiration time of the next keepalive timeout }
     expiration_time: apr_time_t;
     { Current state of the connection }

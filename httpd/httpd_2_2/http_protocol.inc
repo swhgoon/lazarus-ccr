@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -294,25 +294,15 @@ function ap_make_method_list(p: Papr_pool_t; nelts: Integer): Pap_method_list_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_make_method_list' + LibSuff8;
 
+{
+ * Copy a method list
+ *
+ * @param   dest List to copy to
+ * @param   src  List to copy from
+ }
 procedure ap_copy_method_list(dest, src: Pap_method_list_t);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_copy_method_list' + LibSuff8;
-
-type
-  comp_t = procedure (urec: Pointer; const mname: PChar; mnum: Integer);
-  
-procedure ap_method_list_do(
- comp: comp_t; rec: Pointer; ml: Pap_method_list_t; others: array of const);
- cdecl; external LibHTTPD name 'ap_method_list_do';
-
-type
-  ap_method_list_vdo_t = function (urec: Pointer; const mname: PChar;
-   mnum: Integer): Integer; cdecl;
-
-procedure ap_method_list_vdo(comp: ap_method_list_vdo_t;
- rec: Pointer; const ml: Pap_method_list_t; cp: va_list);
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name LibNamePrefix + 'ap_method_list_vdo' + LibSuff16;
 
 {
  * Search for an HTTP method name in an ap_method_list_t structure, and
@@ -720,19 +710,18 @@ procedure ap_hook_log_transaction(pf: ap_HOOK_log_transaction_t;
  external LibHTTPD name LibNamePrefix + 'ap_hook_log_transaction' + LibSuff16;
 
 {
- * This hook allows modules to retrieve the http method from a request.  This
- * allows Apache modules to easily extend the methods that Apache understands
+ * This hook allows modules to retrieve the http scheme for a request.  This
+ * allows Apache modules to easily extend the scheme that Apache understands
  * @param r The current request
  * @return The http method from the request
- * @deffunc const char *ap_run_http_method(const request_rec *r)
  }
 type
   ap_HOOK_http_method_t = function(const r: Prequest_rec): PChar; cdecl;
 
-procedure ap_hook_http_method(pf: ap_HOOK_http_method_t;
+procedure ap_hook_http_scheme(pf: ap_HOOK_http_method_t;
  const aszPre: PPChar; const aszSucc: PPChar; nOrder: Integer);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name LibNamePrefix + 'ap_hook_http_method' + LibSuff16;
+ external LibHTTPD name LibNamePrefix + 'ap_hook_http_scheme' + LibSuff16;
 
 {
  * Return the default port from the current request
@@ -816,13 +805,19 @@ function ap_old_write_filter(f: Pap_filter_t; b: Papr_bucket_brigade): apr_statu
  cdecl; external LibHTTPD name 'ap_old_write_filter';
 
 {
- * Setting up the protocol fields for subsidiary requests...
- * Also, a wrapup function to keep the internal accounting straight.
+ * Sett up the protocol fields for subsidiary requests
+ * @param rnew New Sub Request
+ * @param r current request
  }
 procedure ap_set_sub_req_protocol(rnew: Prequest_rec; const r: Prequest_rec);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_set_sub_req_protocol' + LibSuff8;
 
+{
+ * A wrapup function to keep the internal accounting straight.
+ * Indicates that there is no more content coming.
+ * @param sub_r Subrequest that is now compete
+ }
 procedure ap_finalize_sub_req_protocol(sub_r: Prequest_rec);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_finalize_sub_req_protocol' + LibSuff4;

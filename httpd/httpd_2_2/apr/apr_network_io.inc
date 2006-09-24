@@ -104,10 +104,10 @@ const
  * We need to make sure we always have an in_addr type, so APR will just
  * define it ourselves, if the platform doesn't provide it.
  }
-type
+{type
   in_addr = record
-    s_addr: apr_uint32_t; {< storage to hold the IP# }
-  end;
+    s_addr: apr_uint32_t; < storage to hold the IP#
+  end;}
 {$endif}
 
 const

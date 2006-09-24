@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -331,6 +331,18 @@ type
     level: Integer; status: apr_status_t; const s: Pserver_rec;
     const r: Prequest_rec; p: Papr_pool_t; const errstr: PChar); cdecl;
 
+{
+ * hook method to log error messages
+ * @ingroup hooks
+ * @param file The file in which this function is called
+ * @param line The line number on which this function is called
+ * @param level The level of this error message
+ * @param status The status code from the previous command
+ * @param s The server which we are logging for
+ * @param r The request which we are logging for
+ * @param pool Memory pool to allocate from
+ * @param errstr message to log
+ }
 procedure ap_hook_error_log(pf: ap_HOOK_error_log_t; const aszPre: PPChar;
  const aszSucc: PPChar; nOrder: Integer);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}

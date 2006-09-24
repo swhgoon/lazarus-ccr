@@ -92,6 +92,8 @@ type
   apr_int64_t = Int64;
   apr_uint64_t = Int64;
   apr_socklen_t = Integer;
+  
+  apr_uint32_tso_handle_t = cuint;
 
 type
   {$IFDEF WINDOWS}
@@ -102,8 +104,11 @@ type
   {$ENDIF}
 
   apr_int32_t = Integer;
+  Papr_int32_t = ^Integer;
   apr_size_t = size_t;
   Papr_size_t = ^apr_size_t;
+  apr_int16_t = SmallInt;
+  Papr_int16_t = ^SmallInt;
 
   va_list = Pointer;
 
@@ -182,6 +187,7 @@ type
 
 {$include apr_thread_proc.inc}
 {$include apr_version.inc}
+{$include apr_poll.inc}
 
 implementation
 

@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -45,9 +45,40 @@ procedure ap_fini_vhost_config(p: Papr_pool_t; main_server: Pserver_rec);
  }
 //const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
 
-{ handle NameVirtualHost directive }
+{
+ * handle NameVirtualHost directive
+ * @param cmd Command Parameters structure
+ * @param dummy NOT USED
+ * @param arg a host of the form "<address>[:port]"
+ }
 //const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
 //				      const char *arg);
+
+{
+ * Callback function for every Name Based Virtual Host.
+ * @param baton Opaque user object
+ * @param conn The current Connection
+ * @param s The current Server
+ * @see ap_vhost_iterate_given_conn
+ * @return 0 on success, any non-zero return will stop the iteration.
+ }
+type
+  ap_vhost_iterate_conn_cb = function (baton: Pointer; conn: Pconn_rec; s: Pserver_rec): Integer;
+
+{
+ * For every virtual host on this connection, call func_cb.
+ * @param conn The current connection
+ * @param func_cb Function called for every Name Based Virtual Host for this
+ *                connection.
+ * @param baton Opaque object passed to func_cb.
+ * @return The return value from func_cb.
+ * @note If func_cb returns non-zero, the function will return at this point,
+ *       and not continue iterating the virtual hosts.
+ }
+function ap_vhost_iterate_given_conn(conn: Pconn_rec;
+ func_cb: ap_vhost_iterate_conn_cb; baton: Pointer): Integer;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibHTTPD name LibNamePrefix + 'ap_vhost_iterate_given_conn' + LibSuff12;
 
 {
  * given an ip address only, give our best guess as to what vhost it is 

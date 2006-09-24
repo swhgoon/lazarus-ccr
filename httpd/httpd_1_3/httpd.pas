@@ -3,7 +3,7 @@
 
  Copyright (C) 2006 Felipe Monteiro de Carvalho
 
- This unit is a pascal binding for the Apache 2.0.58 headers.
+ This unit is a pascal binding for the Apache 1.3.37 headers.
  The headers were released under the following copyright:
 }
 { Licensed to the Apache Software Foundation (ASF) under one or more
@@ -47,7 +47,7 @@ uses
 {$ELSE}
   UnixType,
 {$ENDIF}
-  apr, aprutil, ctypes;
+  ctypes;
 
 const
 {$ifndef fpc}
@@ -59,6 +59,8 @@ const
 {$ELSE}
   LibHTTPD = '';
 {$ENDIF}
+
+{$define Apache1_3}
 
 { Declarations moved here to be on top of all declarations }
 
@@ -75,8 +77,8 @@ type
  include more files.
 }
 
-{$include ap_provider.inc}
-{$include util_cfgtree.inc}
+{.$include ap_provider.inc}
+{.$include util_cfgtree.inc}
 
 {$include httpd.inc}
 {$include http_config.inc}
@@ -85,13 +87,12 @@ type
 {$include http_main.inc}
 {$include http_protocol.inc}
 {$include http_request.inc}
-{$include http_connection.inc}
 {$include http_vhost.inc}
 
-{$include util_script.inc}
-{$include util_time.inc}
-{$include util_md5.inc}
-{$include ap_mpm.inc}
+{.$include util_script.inc}
+{.$include util_time.inc}
+{.$include util_md5.inc}
+{.$include ap_mpm.inc}
 
 implementation
 
@@ -119,15 +120,16 @@ begin
   Result := number mod 1000;
 end;
 
-function ap_escape_uri(p: Papr_pool_t; const path: PChar): PChar;
+{function ap_escape_uri(p: Papr_pool_t; const path: PChar): PChar;
 begin
   Result := ap_os_escape_path(p, path, 1);
-end;
+end;}
 
 { from http_config.inc }
 
 { Use this in all standard modules }
-procedure STANDARD20_MODULE_STUFF(var mod_: module);
+
+procedure STANDARD_MODULE_STUFF(var mod_: module);
 begin
   mod_.version := MODULE_MAGIC_NUMBER_MAJOR;
   mod_.minor_version := MODULE_MAGIC_NUMBER_MINOR;
@@ -136,20 +138,31 @@ begin
   mod_.dynamic_load_handle := nil;
   mod_.next := nil;
   mod_.magic := MODULE_MAGIC_COOKIE;
-  mod_.rewrite_args := nil;
 end;
 
-{ Use this only in MPMs }
-procedure MPM20_MODULE_STUFF(var mod_: module);
-begin
-  mod_.version := MODULE_MAGIC_NUMBER_MAJOR;
-  mod_.minor_version := MODULE_MAGIC_NUMBER_MINOR;
-  mod_.module_index := -1;
+//procedure STANDARD20_MODULE_STUFF(var mod_: module);
+//begin
+//  mod_.version := MODULE_MAGIC_NUMBER_MAJOR;
+//  mod_.minor_version := MODULE_MAGIC_NUMBER_MINOR;
+//  mod_.module_index := -1;
 //  mod_.name: PChar;
-  mod_.dynamic_load_handle := nil;
-  mod_.next := nil;
-  mod_.magic := MODULE_MAGIC_COOKIE;
-end;
+//  mod_.dynamic_load_handle := nil;
+//  mod_.next := nil;
+//  mod_.magic := MODULE_MAGIC_COOKIE;
+//  mod_.rewrite_args := nil;
+//end;
+
+{ Use this only in MPMs }
+//procedure MPM20_MODULE_STUFF(var mod_: module);
+//begin
+//  mod_.version := MODULE_MAGIC_NUMBER_MAJOR;
+//  mod_.minor_version := MODULE_MAGIC_NUMBER_MINOR;
+//  mod_.module_index := -1;
+//  mod_.name: PChar;
+//  mod_.dynamic_load_handle := nil;
+//  mod_.next := nil;
+//  mod_.magic := MODULE_MAGIC_COOKIE;
+//end;
 
 function ap_get_module_config(v: Pap_conf_vector_t; m: Pmodule): Pap_conf_vector_t;
 begin

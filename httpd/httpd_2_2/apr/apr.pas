@@ -107,7 +107,44 @@ type
 
   va_list = Pointer;
 
-// TEMPORARY
+  // Network structures
+  
+  sockaddr = record
+    sa_family: cushort;    // address family, AF_xxx
+    sa_data: array [1..14] of Char;  // (NBO) 14 bytes of protocol address
+  end;
+  
+  in_addr = record
+    s_addr: culong;        // load with inet_aton()
+  end;
+
+  sockaddr_in = record
+    sin_family: cshort;    // e.g. AF_INET
+    sin_port: cushort;     // e.g. htons(3490)
+    sin_addr: in_addr;     // see struct in_addr, below
+    sin_zero: array [1..8] of Char;  // zero this if you want to
+  end;
+  
+  in6_addr = record
+   Case Integer of
+    1: (u6_addr8: array [1..16] of Byte);
+    2: (u6_addr16: array [1..8] of Word);
+    3: (u6_addr32: array [1..4] of Cardinal);
+  end;
+//#define s6_addr      in6_u.u6_addr8
+//#define s6_addr16    in6_u.u6_addr16
+//#define s6_addr32    in6_u.u6_addr32
+
+  sockaddr_in6 = record
+   sin6_family: cushort;
+    sin6_port: Word;
+    sin6_flowinfo: Cardinal;
+    sin6_addr: in6_addr;
+    sin6_scope_id: Cardinal;
+  end;
+
+  // TEMPORARY
+  
   Papr_xml_ns_scope = Pointer;
 
   Pap_method_list_t = Pointer;
