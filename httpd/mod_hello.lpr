@@ -15,7 +15,7 @@ library mod_hello;
   {$DEFINE WINDOWS}
 {$ENDIF}
 
-{$define Apache2_2}
+{$define Apache2_0}
 
 uses SysUtils, httpd {$ifndef Apache1_3}, apr{$endif};
 

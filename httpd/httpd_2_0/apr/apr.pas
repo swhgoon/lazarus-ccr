@@ -110,8 +110,6 @@ type
   apr_int16_t = SmallInt;
   Papr_int16_t = ^SmallInt;
 
-  va_list = Pointer;
-
   // Network structures
   
   sockaddr = record
@@ -119,6 +117,10 @@ type
     sa_data: array [1..14] of Char;  // (NBO) 14 bytes of protocol address
   end;
   
+{$ifndef windows}
+
+  va_list = Pointer;
+
   in_addr = record
     s_addr: culong;        // load with inet_aton()
   end;
@@ -130,6 +132,8 @@ type
     sin_zero: array [1..8] of Char;  // zero this if you want to
   end;
   
+{$endif}
+
   in6_addr = record
    Case Integer of
     1: (u6_addr8: array [1..16] of Byte);
