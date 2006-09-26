@@ -263,13 +263,15 @@ const
   APR_ESYMNOTFOUND =  (APR_OS_START_ERROR + 26);
 { @see APR_STATUS_IS_EPROC_UNKNOWN }
   APR_EPROC_UNKNOWN = (APR_OS_START_ERROR + 27);
+{ @see APR_STATUS_IS_ENOTENOUGHENTROPY }
+  APR_ENOTENOUGHENTROPY = (APR_OS_START_ERROR + 28);
 
 {
  * @defgroup APR_STATUS_IS Status Value Tests
  * @warning For any particular error condition, more than one of these tests
  *      may match. This is because platform-specific error codes may not
  *      always match the semantics of the POSIX codes these tests (and the
- *      correcponding APR error codes) are named after. A notable example
+ *      corresponding APR error codes) are named after. A notable example
  *      are the APR_STATUS_IS_ENOENT and APR_STATUS_IS_ENOTDIR tests on
  *      Win32 platforms. The programmer should always be aware of this and
  *      adjust the order of the tests accordingly.
@@ -348,6 +350,9 @@ const
 //#endif
 { The given process was not recognized by APR. }
 //#define APR_STATUS_IS_EPROC_UNKNOWN(s)  ((s) == APR_EPROC_UNKNOWN)
+
+{ APR could not gather enough entropy to continue. }
+//#define APR_STATUS_IS_ENOTENOUGHENTROPY(s) ((s) == APR_ENOTENOUGHENTROPY)
 
 {
  * @addtogroup APR_Error
@@ -689,7 +694,8 @@ const
 #define APR_ECONNRESET     (APR_OS_START_CANONERR + 19)
 #endif
 }
-{ @see APR_STATUS_IS_ETIMEDOUT }
+{* @see APR_STATUS_IS_ETIMEDOUT
+ * @deprecated}
 {#ifdef ETIMEDOUT
 #define APR_ETIMEDOUT ETIMEDOUT
 #else
@@ -764,8 +770,6 @@ const
  }
 {#define APR_OS2_STATUS(e) (APR_FROM_OS_ERROR(e))
 
-#define APR_STATUS_IS_SUCCESS(s)           ((s) == APR_SUCCESS \
-                || (s) == APR_OS_START_SYSERR + NO_ERROR)
 }
 { These can't sit in a private header, so in spite of the extra size,
  * they need to be made available here.
@@ -862,8 +866,12 @@ const
                 || (s) == APR_OS_START_SYSERR + SOCECONNABORTED)
 #define APR_STATUS_IS_ECONNRESET(s)     ((s) == APR_ECONNRESET \
                 || (s) == APR_OS_START_SYSERR + SOCECONNRESET)
-#define APR_STATUS_IS_ETIMEDOUT(s)      ((s) == APR_ETIMEDOUT \
-                || (s) == APR_OS_START_SYSERR + SOCETIMEDOUT)    
+/* XXX deprecated */
+#define APR_STATUS_IS_ETIMEDOUT(s)         ((s) == APR_ETIMEDOUT \
+                || (s) == APR_OS_START_SYSERR + SOCETIMEDOUT)
+#undef APR_STATUS_IS_TIMEUP
+#define APR_STATUS_IS_TIMEUP(s)         ((s) == APR_TIMEUP \
+                || (s) == APR_OS_START_SYSERR + SOCETIMEDOUT)
 #define APR_STATUS_IS_EHOSTUNREACH(s)   ((s) == APR_EHOSTUNREACH \
                 || (s) == APR_OS_START_SYSERR + SOCEHOSTUNREACH)
 #define APR_STATUS_IS_ENETUNREACH(s)    ((s) == APR_ENETUNREACH \
@@ -921,8 +929,6 @@ const
 {#define apr_get_netos_error()   (APR_FROM_OS_ERROR(WSAGetLastError()))
 #define apr_set_netos_error(e)   (WSASetLastError(APR_TO_OS_ERROR(e)))
 
-#define APR_STATUS_IS_SUCCESS(s)           ((s) == APR_SUCCESS \
-                || (s) == APR_OS_START_SYSERR + ERROR_SUCCESS)
 }
 { APR CANONICAL ERROR TESTS }
 {#define APR_STATUS_IS_EACCES(s)         ((s) == APR_EACCES \
@@ -997,7 +1003,12 @@ const
 #define APR_STATUS_IS_ECONNRESET(s)     ((s) == APR_ECONNRESET \
                 || (s) == APR_OS_START_SYSERR + ERROR_NETNAME_DELETED \
                 || (s) == APR_OS_START_SYSERR + WSAECONNRESET)
-#define APR_STATUS_IS_ETIMEDOUT(s)      ((s) == APR_ETIMEDOUT \
+/* XXX deprecated */
+#define APR_STATUS_IS_ETIMEDOUT(s)         ((s) == APR_ETIMEDOUT \
+                || (s) == APR_OS_START_SYSERR + WSAETIMEDOUT \
+                || (s) == APR_OS_START_SYSERR + WAIT_TIMEOUT)
+#undef APR_STATUS_IS_TIMEUP
+#define APR_STATUS_IS_TIMEUP(s)         ((s) == APR_TIMEUP \
                 || (s) == APR_OS_START_SYSERR + WSAETIMEDOUT \
                 || (s) == APR_OS_START_SYSERR + WAIT_TIMEOUT)
 #define APR_STATUS_IS_EHOSTUNREACH(s)   ((s) == APR_EHOSTUNREACH \
@@ -1019,7 +1030,7 @@ const
 #define APR_STATUS_IS_ENOTEMPTY(s)      ((s) == APR_ENOTEMPTY \
                 || (s) == APR_OS_START_SYSERR + ERROR_DIR_NOT_EMPTY)
 }
-//#elif defined(NETWARE) && !defined(DOXYGEN) { !defined(OS2) && !defined(WIN32) }
+//#elif defined(NETWARE) && defined(USE_WINSOCK) && !defined(DOXYGEN) { !defined(OS2) && !defined(WIN32) }
 {
 #define APR_FROM_OS_ERROR(e) (e == 0 ? APR_SUCCESS : e + APR_OS_START_SYSERR)
 #define APR_TO_OS_ERROR(e)   (e == 0 ? APR_SUCCESS : e - APR_OS_START_SYSERR)
@@ -1031,7 +1042,6 @@ const
 {#define apr_get_netos_error()   (APR_FROM_OS_ERROR(WSAGetLastError()))
 #define apr_set_netos_error(e)  (WSASetLastError(APR_TO_OS_ERROR(e)))
 
-#define APR_STATUS_IS_SUCCESS(s)           ((s) == APR_SUCCESS)
 }
 { APR CANONICAL ERROR TESTS }
 {#define APR_STATUS_IS_EACCES(s)         ((s) == APR_EACCES)
@@ -1062,7 +1072,12 @@ const
                 || (s) == APR_OS_START_SYSERR + WSAECONNABORTED)
 #define APR_STATUS_IS_ECONNRESET(s)     ((s) == APR_ECONNRESET \
                 || (s) == APR_OS_START_SYSERR + WSAECONNRESET)
-#define APR_STATUS_IS_ETIMEDOUT(s)      ((s) == APR_ETIMEDOUT \
+/* XXX deprecated */
+#define APR_STATUS_IS_ETIMEDOUT(s)       ((s) == APR_ETIMEDOUT \
+                || (s) == APR_OS_START_SYSERR + WSAETIMEDOUT \
+                || (s) == APR_OS_START_SYSERR + WAIT_TIMEOUT)
+#undef APR_STATUS_IS_TIMEUP
+#define APR_STATUS_IS_TIMEUP(s)         ((s) == APR_TIMEUP \
                 || (s) == APR_OS_START_SYSERR + WSAETIMEDOUT \
                 || (s) == APR_OS_START_SYSERR + WAIT_TIMEOUT)
 #define APR_STATUS_IS_EHOSTUNREACH(s)   ((s) == APR_EHOSTUNREACH \
@@ -1094,8 +1109,6 @@ const
 {
  * @addtogroup APR_STATUS_IS
  }
-{ no error }
-//#define APR_STATUS_IS_SUCCESS(s)        ((s) == APR_SUCCESS)
 
 { permission denied }
 //#define APR_STATUS_IS_EACCES(s)         ((s) == APR_EACCES)
@@ -1171,7 +1184,8 @@ const
 }
 { Connection Reset by peer }
 //#define APR_STATUS_IS_ECONNRESET(s)      ((s) == APR_ECONNRESET)
-{ Operation timed out }
+{* Operation timed out
+ * @deprecated}
 //#define APR_STATUS_IS_ETIMEDOUT(s)       ((s) == APR_ETIMEDOUT)
 { no route to host }
 //#define APR_STATUS_IS_EHOSTUNREACH(s)    ((s) == APR_EHOSTUNREACH)

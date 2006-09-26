@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -42,10 +42,10 @@
  * 20011127 (2.0.29-dev) bump for postconfig hook change, and removal of socket
  *                       from connection record
  * 20011212 (2.0.30-dev) bump for new used_path_info member of request_rec
- * 20011218 (2.0.30-dev) bump for new sbh member of conn_rec, different 
+ * 20011218 (2.0.30-dev) bump for new sbh member of conn_rec, different
  *                       declarations for scoreboard, new parameter to
  *                       create_connection hook
- * 20020102 (2.0.30-dev) bump for changed type of limit_req_body in 
+ * 20020102 (2.0.30-dev) bump for changed type of limit_req_body in
  *                       core_dir_config
  * 20020109 (2.0.31-dev) bump for changed shm and scoreboard declarations
  * 20020111 (2.0.31-dev) bump for ETag fields added at end of cor_dir_config
@@ -70,27 +70,47 @@
  * 20020625 (2.0.40-dev) Changed conn_rec->keepalive to an enumeration
  * 20020628 (2.0.40-dev) Added filter_init to filter registration functions
  * 20020903 (2.0.41-dev) APR's error constants changed
+ * 20020903.1 (2.1.0-dev) allow_encoded_slashes added to core_dir_config
  * 20020903.2 (2.0.46-dev) add ap_escape_logitem
- * 20020903.3 (2.0.46-dev) allow_encoded_slashes added to core_dir_config
- * 20020903.4 (2.0.47-dev) add ap_is_recursion_limit_exceeded()
- * 20020903.5 (2.0.49-dev) add ap_escape_errorlog_item()
- * 20020903.6 (2.0.49-dev) add insert_error_filter hook
- * 20020903.7 (2.0.49-dev) added XHTML Doctypes
- * 20020903.8 (2.0.50-dev) export ap_set_sub_req_protocol and
- *                         ap_finalize_sub_req_protocol on Win32 and NetWare
- * 20020903.9 (2.0.51-dev) create pcommands and initialize arrays before
- *                         calling ap_setup_prelinked_modules
- * 20020903.10 (2.0.55-dev) add ap_log_cerror()
- * 20020903.11 (2.0.55-dev) added trace_enable to core_server_config
- * 20020903.12 (2.0.56-dev) added ap_get_server_revision / ap_version_t
+ * 20030213.1 (2.1.0-dev) changed log_writer optional fn's to return previous
+ *                        handler
+ * 20030821 (2.1.0-dev) bumped mod_include's entire API
+ * 20030821.1 (2.1.0-dev) added XHTML doctypes
+ * 20030821.2 (2.1.0-dev) added ap_escape_errorlog_item
+ * 20030821.3 (2.1.0-dev) added ap_get_server_revision / ap_version_t
+ * 20040425 (2.1.0-dev) removed ap_add_named_module API
+ *                      changed ap_add_module, ap_add_loaded_module,
+ *                      ap_setup_prelinked_modules, ap_process_resource_config
+ * 20040425.1 (2.1.0-dev) Added ap_module_symbol_t and ap_prelinked_module_symbols
+ * 20050101.0 (2.1.2-dev) Axed misnamed http_method for http_scheme (which it was!)
+ * 20050127.0 (2.1.3-dev) renamed regex_t->ap_regex_t, regmatch_t->ap_regmatch_t,
+ *                        REG_*->AP_REG_*, removed reg* in place of ap_reg*;
+ *                        added ap_regex.h
+ * 20050217.0 (2.1.3-dev) Axed find_child_by_pid, mpm_*_completion_context (winnt mpm)
+ *                        symbols from the public sector, and decorated real_exit_code
+ *                        with ap_ in the win32 os.h.
+ * 20050305.0 (2.1.4-dev) added pid and generation fields to worker_score
+ * 20050305.1 (2.1.5-dev) added ap_vhost_iterate_given_conn.
+ * 20050305.2 (2.1.5-dev) added AP_INIT_TAKE_ARGV.
+ * 20050305.3 (2.1.5-dev) added Protocol Framework.
+ * 20050701.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP21"!
+ * 20050701.1 (2.1.7-dev) trace_enable member added to core server_config
+ * 20050708.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP22"!
+ * 20050708.1 (2.1.7-dev) add proxy request_status hook (minor)
+ * 20051006.0 (2.1.8-dev) NET_TIME filter eliminated
+ * 20051115.0 (2.1.10-dev/2.2.0) add use_canonical_phys_port to core_dir_config
+ * 20051115.1 (2.2.1)  flush_packets and flush_wait members added to
+ *                         proxy_server (minor)
+ * 20051115.2 (2.2.2)  added inreslist member to proxy_conn_rec (minor)
+ * 20051115.3 (2.2.3)  Added server_scheme member to server_rec (minor)
  }
 const
 
-  MODULE_MAGIC_COOKIE = $41503230; { "AP20" }
+  MODULE_MAGIC_COOKIE = $41503232; { "AP22" }
 
-  MODULE_MAGIC_NUMBER_MAJOR = 20020903; { For 2.0.58 Also works for 2.0.54}
+  MODULE_MAGIC_NUMBER_MAJOR = 20051115; { For 2.2.3 }
 
-  MODULE_MAGIC_NUMBER_MINOR = 12;                    // 0...n
+  MODULE_MAGIC_NUMBER_MINOR = 3;                    // 0...n
 
 {
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

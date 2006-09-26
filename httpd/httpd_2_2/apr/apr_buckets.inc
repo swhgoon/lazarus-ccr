@@ -374,50 +374,6 @@ type
 //#define APR_BRIGADE_LAST(b)	APR_RING_LAST(&(b)->list)
 
 {
- * Iterate through a bucket brigade
- * @param e The current bucket
- * @param b The brigade to iterate over
- * @remark This is the same as either:
- * <pre>
- *	e = APR_BRIGADE_FIRST(b);
- * 	while (e != APR_BRIGADE_SENTINEL(b)) (
- *	    ...
- * 	    e = APR_BUCKET_NEXT(e);
- *      )
- *  OR
- * 	for (e = APR_BRIGADE_FIRST(b);
- *           e != APR_BRIGADE_SENTINEL(b);
- *           e = APR_BUCKET_NEXT(e)) (
- *	    ...
- *      )
- * </pre>
- * @warning Be aware that you cannot change the value of e within
- * the foreach loop, nor can you destroy the bucket it points to.
- * Modifying the prev and next pointers of the bucket is dangerous
- * but can be done if you're careful.  If you change e's value or
- * destroy the bucket it points to, then APR_BRIGADE_FOREACH
- * will have no way to find out what bucket to use for its next
- * iteration.  The reason for this can be seen by looking closely
- * at the equivalent loops given in the tip above.  So, for example,
- * if you are writing a loop that empties out a brigade one bucket
- * at a time, APR_BRIGADE_FOREACH just won't work for you.  Do it
- * by hand, like so:
- * <pre>
- *      while (!APR_BRIGADE_EMPTY(b)) (
- *          e = APR_BRIGADE_FIRST(b);
- *          ...
- *          apr_bucket_delete(e);
- *      )
- * </pre>
- * @deprecated This macro causes more headaches than it's worth.  Use
- * one of the alternatives documented here instead; the clarity gained
- * in what's really going on is well worth the extra line or two of code.
- * This macro will be removed at some point in the future.
- }
-//#define APR_BRIGADE_FOREACH(e, b)					\
-//	APR_RING_FOREACH((e), &(b)->list, apr_bucket, link)
-
-{
  * Insert a list of buckets at the front of a brigade
  * @param b The brigade to add to
  * @param e The first bucket in a list of buckets to insert
@@ -767,21 +723,14 @@ type
  * @param b The brigade to partition
  * @param point The offset at which to partition the brigade
  * @param after_point Returns a pointer to the first bucket after the partition
+ * @return APR_SUCCESS on success, APR_INCOMPLETE if the contents of the
+ * brigade were shorter than @a point, or an error code.
+ * @remark if APR_INCOMPLETE is returned, @a after_point will be set to
+ * the brigade sentinel.
  }
 //APU_DECLARE(apr_status_t) apr_brigade_partition(apr_bucket_brigade *b,
 //                                                apr_off_t point,
 //                                                apr_bucket **after_point);
-
-//#if APR_NOT_DONE_YET
-{
- * consume nbytes from beginning of b -- call apr_bucket_destroy as
- * appropriate, and/or modify start on last element 
- * @param b The brigade to consume data from
- * @param nbytes The number of bytes to consume
- }
-//APU_DECLARE(void) apr_brigade_consume(apr_bucket_brigade *b,
-//                                      apr_off_t nbytes);
-//#endif
 
 {
  * Return the total length of the brigade.
@@ -950,6 +899,25 @@ type
                                               void *ctx,
                                               const char *fmt, va_list va);
 }
+
+{
+ * Utility function to insert a file (or a segment of a file) onto the
+ * end of the brigade.  The file is split into multiple buckets if it
+ * is larger than the maximum size which can be represented by a
+ * single bucket.
+ * @param bb the brigade to insert into
+ * @param f the file to insert
+ * @param start the offset of the start of the segment
+ * @param len the length of the segment of the file to insert
+ * @param p pool from which file buckets are allocated
+ * @return the last bucket inserted
+ }
+{APU_DECLARE(apr_bucket *) apr_brigade_insert_file(apr_bucket_brigade *bb,
+                                                  apr_file_t *f,
+                                                  apr_off_t start,
+                                                  apr_off_t len,
+                                                  apr_pool_t *p);}
+
 {  *****  Bucket freelist functions *****  }
 {
  * Create a bucket allocator.

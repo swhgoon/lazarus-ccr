@@ -70,25 +70,41 @@ type
  }
 
 const
-  APR_USETID =     $8000; {< Set user id }
-  APR_UREAD =      $0400; {< Read by user }
-  APR_UWRITE =     $0200; {< Write by user }
-  APR_UEXECUTE =   $0100; {< Execute by user }
+  APR_FPROT_USETID     = $8000; {< Set user id }
+  APR_FPROT_UREAD      = $0400; {< Read by user }
+  APR_FPROT_UWRITE     = $0200; {< Write by user }
+  APR_FPROT_UEXECUTE   = $0100; {< Execute by user }
 
-  APR_GSETID =     $4000; {< Set group id }
-  APR_GREAD =      $0040; {< Read by group }
-  APR_GWRITE =     $0020; {< Write by group }
-  APR_GEXECUTE =   $0010; {< Execute by group }
+  APR_FPROT_GSETID     = $4000; {< Set group id }
+  APR_FPROT_GREAD      = $0040; {< Read by group }
+  APR_FPROT_GWRITE     = $0020; {< Write by group }
+  APR_FPROT_GEXECUTE   = $0010; {< Execute by group }
 
-  APR_WSTICKY =    $2000; {< Sticky bit }
-  APR_WREAD =      $0004; {< Read by others }
-  APR_WWRITE =     $0002; {< Write by others }
-  APR_WEXECUTE =   $0001; {< Execute by others }
+  APR_FPROT_WSTICKY    = $2000; {< Sticky bit }
+  APR_FPROT_WREAD      = $0004; {< Read by others }
+  APR_FPROT_WWRITE     = $0002; {< Write by others }
+  APR_FPROT_WEXECUTE   = $0001; {< Execute by others }
 
-  APR_OS_DEFAULT = $0FFF; {< use OS's default permissions }
+  APR_FPROT_OS_DEFAULT = $0FFF; {< use OS's default permissions }
 
 { additional permission flags for apr_file_copy  and apr_file_append }
-  APR_FILE_SOURCE_PERMS = $1000; {< Copy source file's permissions }
+  APR_FPROT_FILE_SOURCE_PERMS = $1000; {< Copy source file's permissions }
+
+{ backcompat }
+  APR_USETID    = APR_FPROT_USETID;     {< @deprecated @see APR_FPROT_USETID     }
+  APR_UREAD     = APR_FPROT_UREAD;      {< @deprecated @see APR_FPROT_UREAD      }
+  APR_UWRITE    = APR_FPROT_UWRITE;     {< @deprecated @see APR_FPROT_UWRITE     }
+  APR_UEXECUTE  = APR_FPROT_UEXECUTE;   {< @deprecated @see APR_FPROT_UEXECUTE   }
+  APR_GSETID    = APR_FPROT_GSETID;     {< @deprecated @see APR_FPROT_GSETID     }
+  APR_GREAD     = APR_FPROT_GREAD;      {< @deprecated @see APR_FPROT_GREAD      }
+  APR_GWRITE    = APR_FPROT_GWRITE;     {< @deprecated @see APR_FPROT_GWRITE     }
+  APR_GEXECUTE  = APR_FPROT_GEXECUTE;   {< @deprecated @see APR_FPROT_GEXECUTE   }
+  APR_WSTICKY   = APR_FPROT_WSTICKY;    {< @deprecated @see APR_FPROT_WSTICKY    }
+  APR_WREAD     = APR_FPROT_WREAD;      {< @deprecated @see APR_FPROT_WREAD      }
+  APR_WWRITE    = APR_FPROT_WWRITE;     {< @deprecated @see APR_FPROT_WWRITE     }
+  APR_WEXECUTE  = APR_FPROT_WEXECUTE;   {< @deprecated @see APR_FPROT_WEXECUTE   }
+  APR_OS_DEFAULT= APR_FPROT_OS_DEFAULT; {< @deprecated @see APR_FPROT_OS_DEFAULT }
+  APR_FILE_SOURCE_PERMS = APR_FPROT_FILE_SOURCE_PERMS; {< @deprecated @see APR_FPROT_FILE_SOURCE_PERMS }
 
 {
  * Structure for referencing directories.
@@ -208,33 +224,16 @@ type
  * @param fname The name of the file to stat.
  * @param wanted The desired apr_finfo_t fields, as a bit flag of APR_FINFO_
                  values 
- * @param cont the pool to use to allocate the new file. 
+ * @param pool the pool to use to allocate the new file.
  *
  * @note If @c APR_INCOMPLETE is returned all the fields in @a finfo may
  *       not be filled in, and you need to check the @c finfo->valid bitmask
  *       to verify that what you're looking for is there.
  }
 function apr_stat(finfo: Papr_finfo_t; const fname: PChar;
- wanted: apr_int32_t; cont: Papr_pool_t): apr_status_t;
+ wanted: apr_int32_t; pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_stat' + LibSuff16;
-
-{
- * get the specified file's stats.  The file is specified by filename, 
- * instead of using a pre-opened file.  If the file is a symlink, this function
- * will get the stats for the symlink not the file the symlink refers to.
- * @param finfo Where to store the information about the file, which is
- * never touched if the call fails.
- * @param fname The name of the file to stat.
- * @param wanted The desired apr_finfo_t fields, as a bit flag of APR_FINFO_ values 
- * @param cont the pool to use to allocate the new file. 
- * @deprecated This function is deprecated, it's equivalent to calling apr_stat with 
- * the wanted flag value APR_FINFO_LINK
- }
-function apr_lstat(finfo: Papr_finfo_t; const fname: PChar;
- wanted: apr_int32_t; cont: Papr_pool_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_lstat' + LibSuff16;
 
 {
  * @defgroup apr_dir Directory Manipulation Functions
@@ -244,10 +243,10 @@ function apr_lstat(finfo: Papr_finfo_t; const fname: PChar;
  * Open the specified directory.
  * @param new_dir The opened directory descriptor.
  * @param dirname The full path to the directory (use / on all systems)
- * @param cont The pool to use.
+ * @param pool The pool to use.
  }
 function apr_dir_open(new_dir: PPapr_dir_t; const dirname: PChar;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_dir_open' + LibSuff12;
 

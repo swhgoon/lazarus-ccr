@@ -240,6 +240,20 @@ function apr_threadattr_stacksize_set(new_attr: PPapr_threadattr_t; stacksize: a
  external LibAPR name LibNamePrefix + 'apr_threadattr_stacksize_set' + LibSuff8;
 
 {
+ * Set the stack guard area size of newly created threads.
+ * @param attr The threadattr to affect
+ * @param guardsize The stack guard area size in bytes
+ * @note Thread library implementations commonly use a "guard area"
+ * after each thread's stack which is not readable or writable such that
+ * stack overflows cause a segfault; this consumes e.g. 4K of memory
+ * and increases memory management overhead.  Setting the guard area
+ * size to zero hence trades off reliable behaviour on stack overflow
+ * for performance. }
+function apr_threadattr_guardsize_set(attr: Papr_threadattr_t; guardsize: apr_size_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_threadattr_guardsize_set' + LibSuff8;
+
+{
  * Create a new thread of execution
  * @param new_thread The newly created thread handle.
  * @param attr The threadattr to use to determine how to create the thread
@@ -566,6 +580,29 @@ function apr_procattr_addrspace_set(attr: Papr_procattr_t; addrspace: apr_int32_
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_procattr_addrspace_set' + LibSuff8;
 
+{
+ * Set the username used for running process
+ * @param attr The procattr we care about.
+ * @param username The username used
+ * @param password User password if needed. Password is needed on WIN32
+ *                 or any other platform having
+ *                 APR_PROCATTR_USER_SET_REQUIRES_PASSWORD set.
+ }
+function apr_procattr_user_set(attr: Papr_procattr_t;
+ const username, password: PChar): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_procattr_user_set' + LibSuff12;
+
+{
+ * Set the group used for running process
+ * @param attr The procattr we care about.
+ * @param groupname The group name  used
+ }
+function apr_procattr_group_set(attr: Papr_procattr_t;
+ const groupname: PChar): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_procattr_group_set' + LibSuff8;
+
 {$ifdef APR_HAS_FORK}
 {
  * This is currently the only non-portable call in APR.  This executes 
@@ -591,12 +628,12 @@ function apr_proc_fork(proc: Papr_proc_t; cont: Papr_pool_t): apr_status_t;
  *            APR_SHELLCMD_ENV types of commands.
  * @param attr the procattr we should use to determine how to create the new
  *         process
- * @param cont The pool to use. 
+ * @param pool The pool to use.
  }
 function apr_proc_create(new_proc: Papr_proc_t;
  const progname: PChar; args, arnv: PPChar;
  attr: Papr_procattr_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_proc_create' + LibSuff24;
 
@@ -762,23 +799,6 @@ procedure apr_proc_other_child_refresh(ocr: Papr_other_child_rec_t; reason: Inte
 procedure apr_proc_other_child_refresh_all(reason: Integer);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_proc_other_child_refresh_all' + LibSuff4;
-
-{ @deprecated @see apr_proc_other_child_refresh_all
- * @remark Call apr_proc_other_child_refresh_all(APR_OC_REASON_RESTART)
- * or apr_proc_other_child_refresh_all(APR_OC_REASON_RUNNING) instead.
- * @bug The differing implementations of this function on Win32 (_RUNNING checks) 
- * and Unix (used only for _RESTART) are the reason it will be dropped with APR 1.0.
- }
-procedure apr_proc_other_child_check;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_proc_other_child_check' + LibSuff0;
-
-{ @deprecated @see apr_proc_other_child_alert
- * @bug This function's name had nothing to do with it's purpose
- }
-function apr_proc_other_child_read(proc: Papr_proc_t; status: Integer): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_proc_other_child_read' + LibSuff8;
 
 {
  * Terminate a process.

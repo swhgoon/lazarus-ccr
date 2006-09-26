@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -41,18 +41,31 @@
  }
 
 const
+{ No directives }
   OPT_NONE = 0;
+{ Indexes directive }
   OPT_INDEXES = 1;
+{  Includes directive }
   OPT_INCLUDES = 2;
+{  FollowSymLinks directive }
   OPT_SYM_LINKS = 4;
+{  ExecCGI directive }
   OPT_EXECCGI = 8;
+{  directive unset }
   OPT_UNSET = 16;
+{  IncludesNOEXEC directive }
   OPT_INCNOEXEC = 32;
+{ SymLinksIfOwnerMatch directive }
   OPT_SYM_OWNER = 64;
+{ MultiViews directive }
   OPT_MULTI = 128;
+{  All directives }
   OPT_ALL = (OPT_INDEXES or OPT_INCLUDES or OPT_SYM_LINKS or OPT_EXECCGI);
 
-{ options for get_remote_host() }
+{
+ * @defgroup get_remote_host Remote Host Resolution
+ * @ingroup APACHE_CORE_HTTPD
+ }
 { REMOTE_HOST returns the hostname, or NULL if the hostname
  * lookup fails.  It will force a DNS lookup according to the
  * HostnameLookups setting.
@@ -77,8 +90,11 @@ const
  }
   REMOTE_DOUBLE_REV = (3);
 
+{ all of the requirements must be met }
   SATISFY_ALL = 0;
+{  any of the requirements must be met }
   SATISFY_ANY = 1;
+{ There are no applicable satisfy lines }
   SATISFY_NOSPEC = 2;
 
 { Make sure we don't write less than 8000 bytes at any one time.
@@ -464,6 +480,10 @@ const
   ENABLE_SENDFILE_ON    = (1);
   ENABLE_SENDFILE_UNSET = (2);
 
+  USE_CANONICAL_PHYS_PORT_OFF   = (0);
+  USE_CANONICAL_PHYS_PORT_ON    = (1);
+  USE_CANONICAL_PHYS_PORT_UNSET = (2);
+
 type
   server_signature_e = (
     srv_sig_unset,
@@ -490,6 +510,7 @@ type
     opts_add: allow_options_t;
     opts_remove: allow_options_t;
     override_: overrides_t;
+    override_opts: allow_options_t;
     
     { MIME typing --- the core doesn't do anything at all with this,
      * but it does know what to slap on a request for a document which
@@ -516,8 +537,6 @@ type
 
     { Hostname resolution etc }
 {    unsigned int hostname_lookups : 4; }
-
-{    signed int do_rfc1413 : 2;   }{ See if client is advertising a username? }
 
 {    signed int content_md5 : 2;  }{ calculate Content-MD5? }
 
@@ -556,7 +575,7 @@ type
     
     { Access control }
     sec_file: Papr_array_header_t;
-    r: Pregex_t;
+    r: Pap_regex_t;
 
     mime_type: PChar;       { forced with ForceType  }
     handler: PChar;         { forced with SetHandler }
@@ -581,6 +600,7 @@ type
 {    unsigned int enable_sendfile : 2;  }{ files in this dir can be mmap'ed }
 {    unsigned int allow_encoded_slashes : 1; }{ URLs may contain %2f w/o being
                                              * pitched indiscriminately }
+{    unsigned use_canonical_phys_port : 2;}
   end;
 
 { Per-server core configuration }
@@ -616,6 +636,9 @@ type
     redirect_limit: Integer; { maximum number of internal redirects }
     subreq_limit: Integer;   { maximum nesting level of subrequests }
 
+    protocol: PChar;
+    accf_map: Papr_table_t;
+
     { TRACE control }
     trace_enable: Integer;
   end;
@@ -632,7 +655,16 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);}
 
-//#endif COREPRIVATE
+{ Core filters; not exported. }
+{int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                         ap_input_mode_t mode, apr_read_type_e block,
+                         apr_off_t readbytes);
+apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
+
+#endif} { CORE_PRIVATE }
+
+//AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
+//AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
 
 
 { ----------------------------------------------------------------------
@@ -665,7 +697,6 @@ type
 {extern AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;}
 
 {
@@ -699,4 +730,12 @@ procedure ap_hook_get_mgmt_items(pf: ap_HOOK_get_mgmt_items_t;
 
 {APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
                         (conn_rec *c, apr_off_t bytes));}
+
+{ ----------------------------------------------------------------------
+ *
+ * ident lookups with mod_ident
+ }
+
+{APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
+                        (request_rec *r));}
 

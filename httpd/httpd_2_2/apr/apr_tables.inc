@@ -105,7 +105,7 @@ function apr_array_make(p: Papr_pool_t;
  external LibAPR name LibNamePrefix + 'apr_array_make' + LibSuff12;
 
 {
- * Add a new element to an array
+ * Add a new element to an array (as a first-in, last-out stack)
  * @param arr The array to add an element to.
  * @return Location for the new element in the array.
  * @remark If there are no free spots in the array, then this function will
@@ -116,7 +116,7 @@ function apr_array_push(arr: Papr_array_header_t): Pointer;
  external LibAPR name LibNamePrefix + 'apr_array_push' + LibSuff4;
 
 {
- * Remove an element from an array
+ * Remove an element from an array (as a first-in, last-out stack)
  * @param arr The array to remove an element from.
  * @return Location of the element in the array.
  * @remark If there are no elements in the array, NULL is returned.
@@ -225,7 +225,7 @@ procedure apr_table_clear(t: Papr_table_t);
  * The data is still in the table
  * @param t The table to search for the key
  * @param key The key to search for
- * @return The value associated with the key
+ * @return The value associated with the key, or NULL if the key does not exist.
  }
 function apr_table_get(t: Papr_table_t; key: PChar): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
@@ -434,7 +434,7 @@ procedure apr_table_overlap(a: Papr_table_t;
  external LibAPR name LibNamePrefix + 'apr_table_overlap' + LibSuff12;
 
 {
- * Eliminate redunandant entries in a table by either overwriting
+ * Eliminate redundant entries in a table by either overwriting
  * or merging duplicates
  *
  * @param t Table.

@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -31,13 +31,16 @@ const
   APR_HOOK_REALLY_LAST	= 30;
 
 
-//#include "apr_hooks.h"
-{.$include util_cfgtree.inc}
-
 {
  * @file http_config.h
  * @brief Apache Configuration
+ *
+ * @defgroup APACHE_CORE_CONFIG Configuration
+ * @ingroup  APACHE_CORE
  }
+
+//#include "apr_hooks.h"
+{.$include util_cfgtree.inc}
 
 {
  * @defgroup ConfigDirectives Allowed locations for configuration directives.
@@ -103,7 +106,8 @@ type
     TAKE3,			{< three arguments only }
     TAKE23,			{< two or three arguments }
     TAKE123,			{< one, two or three arguments }
-    TAKE13			{< one or three arguments }
+    TAKE13,			{< one or three arguments }
+    TAKE_ARGV			{< an argc and argv are passed }
   );
 
 {
@@ -125,7 +129,9 @@ type
   { function to call for a no-args }
   no_args_t = function (parms: Pcmd_parms; mconfig: Pointer): PChar;
   { function to call for a raw-args }
-  raw_args_t = function (parms: Pcmd_parms; mconfig: Pointer; const args: PChar): Pchar;
+  raw_args_t = function (parms: Pcmd_parms; mconfig: Pointer; const args: PChar): PChar;
+  { function to call for a argv/argc }
+  take_argv_t = function (parms: Pcmd_parms; mconfig: Pointer; argc: cint; argv: array of PChar): PChar;
   { function to call for a take1 }
   take1_t = function (parms: Pcmd_parms; mconfig: Pointer; const w: PChar): PChar;
   { function to call for a take2 }
@@ -140,6 +146,8 @@ type
 //  AP_NO_ARGS =	func.no_args;
   { This configuration directive will handle it's own parsing of arguments}
 //  AP_RAW_ARGS =	func.raw_args;
+  { This configuration directive will handle it's own parsing of arguments}
+//# define AP_TAKE_ARGV	func.take_argv
   { This configuration directive takes 1 argument}
 //  AP_TAKE1 =	func.take1;
   { This configuration directive takes 2 arguments }
@@ -155,6 +163,9 @@ type
 { method of declaring a directive with raw argument parsing }
 //# define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     // directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
+{ method of declaring a directive with raw argument parsing }
+//# define AP_INIT_TAKE_ARGV(directive, func, mconfig, where, help) \
+//    { directive, { .take_argv=func }, mconfig, where, TAKE_ARGV, help }
 { method of declaring a directive which takes 1 argument }
 //# define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     // directive, { .take1=func }, mconfig, where, TAKE1, help }
@@ -192,6 +203,7 @@ type
 
 //# define AP_NO_ARGS  func
 //# define AP_RAW_ARGS func
+//# define AP_TAKE_ARGV func
 //# define AP_TAKE1    func
 //# define AP_TAKE2    func
 //# define AP_TAKE3    func
@@ -201,6 +213,8 @@ type
     { directive, func, mconfig, where, RAW_ARGS, help }
 //# define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, RAW_ARGS, help }
+//# define AP_INIT_TAKE_ARGV(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE_ARGV, help }
 //# define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, TAKE1, help }
 //# define AP_INIT_ITERATE(directive, func, mconfig, where, help) \
@@ -312,6 +326,9 @@ type
     context: Pap_conf_vector_t;
     { directive with syntax error }
     err_directive: Pap_directive_t;
+
+    { Which allow-override-opts bits are set }
+    override_opts: cint;
   end;
 
   cmd_parms = cmd_parms_struct;
@@ -572,7 +589,7 @@ function ap_server_root_relative(p: Papr_pool_t; const fname: PChar): PChar;
  * @param m The module structure of the module to add
  * @param p The pool of the same lifetime as the module
  }
-procedure ap_add_module(m: Pmodule; p: Papr_pool_t);
+function ap_add_module(m: Pmodule; p: Papr_pool_t): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_add_module' + LibSuff8;
 
@@ -604,17 +621,6 @@ procedure ap_add_loaded_module(mod_: Pmodule; p: Papr_pool_t);
 procedure ap_remove_loaded_module(m: Pmodule);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_remove_loaded_module' + LibSuff4;
-
-{
- * Add a module to the list of loaded module based on the name of the
- * module
- * @param name The name of the module
- * @param p The pool valid for the lifetime of the module
- * @return 1 on success, 0 on failure
- }
-function ap_add_named_module(const name: PChar; p: Papr_pool_t): Integer;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name LibNamePrefix + 'ap_add_named_module' + LibSuff8;
 
 {
  * Find the name of the specified module
@@ -750,7 +756,7 @@ function ap_walk_config(conftree: Pap_directive_t;
  external LibHTTPD name LibNamePrefix + 'ap_walk_config' + LibSuff12;
 
 {
- * @defgroup ap_check_cmd_context ap_check_cmd_context
+ * @defgroup ap_check_cmd_context Check command context
  }
 {
  * Check the context a command is used in.
@@ -777,6 +783,15 @@ const
 //#ifdef CORE_PRIVATE
 
 {
+ * @brief This structure is used to assign symbol names to module pointers
+ }
+type
+  ap_module_symbol_t = record
+    name: PChar;
+    modp: Pmodule;
+  end;
+
+{
  * The topmost module in the list
  * @defvar module *ap_top_module
  }
@@ -787,6 +802,11 @@ const
  * @defvar module *ap_prelinked_modules[]
  }
 //AP_DECLARE_DATA extern module *ap_prelinked_modules[];
+{
+ * Array of all statically linked modulenames (symbols)
+ * @defvar ap_module_symbol_t ap_prelinked_modulenames[]
+ }
+//AP_DECLARE_DATA extern ap_module_symbol_t ap_prelinked_module_symbols[];
 {
  * Array of all preloaded modules
  * @defvar module *ap_preloaded_modules[]
@@ -814,7 +834,7 @@ procedure ap_single_module_configure(p: Papr_pool_t;
  * Add all of the prelinked modules into the loaded module list
  * @param process The process that is currently running the server
  }
-procedure ap_setup_prelinked_modules(process: Pprocess_rec);
+function ap_setup_prelinked_modules(process: Pprocess_rec): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_setup_prelinked_modules' + LibSuff4;
 
@@ -935,10 +955,10 @@ function ap_create_conn_config(p: Papr_pool_t): Pap_conf_vector_t;
  * int The status of the current request
  }
 function ap_parse_htaccess(result: PPap_conf_vector_t;
- r: Prequest_rec; override_: Integer;
+ r: Prequest_rec; override_: Integer; override_opts: cint;
  const path, access_name: PChar): Integer;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name LibNamePrefix + 'ap_parse_htaccess' + LibSuff20;
+ external LibHTTPD name LibNamePrefix + 'ap_parse_htaccess' + LibSuff24;
 
 {
  * Setup a virtual host
@@ -950,7 +970,7 @@ function ap_parse_htaccess(result: PPap_conf_vector_t;
  }
 function ap_init_virtual_host(p: Papr_pool_t;
  const hostname: PChar; main_server: Pserver_rec;
- m: PPserver_rec): PChar;
+ ps: PPserver_rec): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_init_virtual_host' + LibSuff16;
 
@@ -962,9 +982,9 @@ function ap_init_virtual_host(p: Papr_pool_t;
  * @param p Pool for general allocation
  * @param ptem Pool for temporary allocation
  }
-procedure ap_process_resource_config(s: Pserver_rec;
+function ap_process_resource_config(s: Pserver_rec;
  const fname: PChar; conftree: PPap_directive_t;
- p, ptemp: Papr_pool_t);
+ p, ptemp: Papr_pool_t): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_process_resource_config' + LibSuff20;
 
@@ -975,8 +995,8 @@ procedure ap_process_resource_config(s: Pserver_rec;
  * @param p The pool for general allocation
  * @param ptemp The pool for temporary allocations
  }
-procedure ap_process_config_tree(s: Pserver_rec;
- conftree: Pap_directive_t; p, ptemp: Papr_pool_t);
+function ap_process_config_tree(s: Pserver_rec;
+ conftree: Pap_directive_t; p, ptemp: Papr_pool_t): cint;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_process_config_tree' + LibSuff16;
 
@@ -1065,6 +1085,20 @@ procedure ap_hook_pre_config(pf: ap_HOOK_pre_config_t; const aszPre: PPChar;
  const aszSucc: PPChar; nOrder: Integer);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_hook_pre_config' + LibSuff16;
+
+{
+ * Run the test_config function for each module; this hook is run
+ * only if the server was invoked to test the configuration syntax.
+ * @param pconf The config pool
+ * @param s The list of server_recs
+ }
+type
+  ap_HOOK_test_config_t = procedure (pconf: Papr_pool_t; s: Pserver_rec); cdecl;
+
+procedure ap_hook_test_config(pf: ap_HOOK_test_config_t; const aszPre: PPChar;
+ const aszSucc: PPChar; nOrder: Integer);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibHTTPD name LibNamePrefix + 'ap_hook_test_config' + LibSuff16;
 
 {
  * Run the post_config function for each module

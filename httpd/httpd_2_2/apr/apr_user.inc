@@ -67,10 +67,6 @@ function apr_uid_current(userid: Papr_uid_t; groupid: Papr_gid_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_uid_current' + LibSuff12;
 
-{ @deprecated @see apr_uid_current }
-{APR_DECLARE(apr_status_t) apr_current_userid(apr_uid_t *userid,
-                                             apr_gid_t *groupid,
-                                             apr_pool_t *p);}
 {
  * Get the user name for a specified userid
  * @param username Pointer to new string containing user name (on output)
@@ -83,9 +79,6 @@ function apr_uid_name_get(username: PPChar; userid: apr_uid_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_uid_name_get' + LibSuff12;
 
-{ @deprecated @see apr_uid_name_get }
-{APR_DECLARE(apr_status_t) apr_get_username(char **username, apr_uid_t userid,
-                                           apr_pool_t *p);}
 {
  * Get the userid (and groupid) for the specified username
  * @param userid   Returns the user id
@@ -99,10 +92,6 @@ function apr_uid_get(userid: Papr_uid_t; groupid: Papr_gid_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_uid_get' + LibSuff16;
 
-{ @deprecated @see apr_uid_get }
-{APR_DECLARE(apr_status_t) apr_get_userid(apr_uid_t *userid, apr_gid_t *groupid,
-                                         const char *username, apr_pool_t *p);}
-
 {
  * Get the home directory for the named user
  * @param dirname Pointer to new string containing directory name (on output)
@@ -115,11 +104,6 @@ function apr_uid_homepath_get(dirname: PPChar; const username: PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_uid_homepath_get' + LibSuff12;
 
-{ @deprecated @see apr_uid_homepath_get }
-{APR_DECLARE(apr_status_t) apr_get_home_directory(char **dirname,
-                                                 const char *username,
-                                                 apr_pool_t *p);}
-
 {
  * Compare two user identifiers for equality.
  * @param left One uid to test
@@ -131,12 +115,8 @@ function apr_uid_homepath_get(dirname: PPChar; const username: PChar;
 {$ifdef WIN32}
 //APR_DECLARE(apr_status_t) apr_uid_compare(apr_uid_t left, apr_uid_t right);
 
-{ @deprecated @see apr_uid_compare }
-//APR_DECLARE(apr_status_t) apr_compare_users(apr_uid_t left, apr_uid_t right);
 {$else}
 //#define apr_uid_compare(left,right) (((left) == (right)) ? APR_SUCCESS : APR_EMISMATCH)
-{ @deprecated @see apr_uid_compare }
-//#define apr_compare_users(left,right) (((left) == (right)) ? APR_SUCCESS : APR_EMISMATCH)
 {$endif}
 
 {
@@ -151,14 +131,6 @@ function apr_gid_name_get(groupname: PPChar; groupid: apr_gid_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_gid_name_get' + LibSuff12;
 
-{ @deprecated @see apr_gid_name_get }
-{APR_DECLARE(apr_status_t) apr_group_name_get(char **groupname,
-                                             apr_gid_t groupid, apr_pool_t *p);}
-
-{ @deprecated @see apr_gid_name_get }
-{APR_DECLARE(apr_status_t) apr_get_groupname(char **groupname,
-                                            apr_gid_t groupid, apr_pool_t *p);}
-
 {
  * Get the groupid for a specified group name
  * @param groupid Pointer to the group id (on output)
@@ -171,10 +143,6 @@ function apr_gid_get(groupid: Papr_gid_t; const groupname: PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_gid_get' + LibSuff12;
 
-{ @deprecated @see apr_gid_get }
-{APR_DECLARE(apr_status_t) apr_get_groupid(apr_gid_t *groupid,
-                                          const char *groupname, apr_pool_t *p);}
-
 {
  * Compare two group identifiers for equality.
  * @param left One gid to test
@@ -185,12 +153,8 @@ function apr_gid_get(groupid: Papr_gid_t; const groupname: PChar;
  }
 {$ifdef WIN32}
 //APR_DECLARE(apr_status_t) apr_gid_compare(apr_gid_t left, apr_gid_t right);
-{ @deprecated @see apr_gid_compare }
-//APR_DECLARE(apr_status_t) apr_compare_groups(apr_gid_t left, apr_gid_t right);
 {$else}
 //#define apr_gid_compare(left,right) (((left) == (right)) ? APR_SUCCESS : APR_EMISMATCH)
-{ @deprecated @see apr_gid_compare }
-//#define apr_compare_groups(left,right) (((left) == (right)) ? APR_SUCCESS : APR_EMISMATCH)
 {$endif}
 
 {$endif}  { ! APR_HAS_USER }

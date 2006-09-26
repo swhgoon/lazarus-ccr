@@ -1,8 +1,9 @@
-{ Copyright 2001-2005 The Apache Software Foundation or its licensors, as applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -17,8 +18,7 @@
 
 const
   AP_SERVER_COPYRIGHT =
-    'Copyright 2001-2006 The Apache Software Foundation' +
-    ' or its licensors, as applicable.';
+    'Copyright 2006 The Apache Software Foundation.';
 
 {
  * The below defines the base string of the Server: header. Additional
@@ -33,12 +33,19 @@ const
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  }
   AP_SERVER_BASEVENDOR = 'Apache Software Foundation';
+  AP_SERVER_BASEPROJECT = 'Apache HTTP Server';
   AP_SERVER_BASEPRODUCT = 'Apache';
 
   AP_SERVER_MAJORVERSION_NUMBER = 2;
-  AP_SERVER_MINORVERSION_NUMBER = 0;
-  AP_SERVER_PATCHLEVEL_NUMBER   = 58;
+  AP_SERVER_MINORVERSION_NUMBER = 2;
+  AP_SERVER_PATCHLEVEL_NUMBER   = 3;
+  AP_SERVER_DEVBUILD_BOOLEAN    = 0;
+  
+{$ifdef AP_SERVER_DEVBUILD_BOOLEAN}
+  AP_SERVER_ADD_STRING          = '-dev';
+{$else}
   AP_SERVER_ADD_STRING          = '';
+{$endif}
 
 { keep old macros as well }
 {#define AP_SERVER_MAJORVERSION APR_STRINGIFY(AP_SERVER_MAJORVERSION_NUMBER)
@@ -48,6 +55,12 @@ const
 
 #define AP_SERVER_MINORREVISION AP_SERVER_MAJORVERSION "." AP_SERVER_MINORVERSION
 #define AP_SERVER_BASEREVISION  AP_SERVER_MINORREVISION "." AP_SERVER_PATCHLEVEL
-#define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
-#define AP_SERVER_VERSION  AP_SERVER_BASEVERSION}
+#define AP_SERVER_BASEVERSION   AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
+#define AP_SERVER_VERSION       AP_SERVER_BASEVERSION
+
+/* macro for Win32 .rc files using numeric csv representation */
+#define AP_SERVER_PATCHLEVEL_CSV AP_SERVER_MAJORVERSION_NUMBER ##, \
+                               ##AP_SERVER_MINORVERSION_NUMBER ##, \
+                               ##AP_SERVER_PATCHLEVEL_NUMBER
+}
 

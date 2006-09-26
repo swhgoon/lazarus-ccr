@@ -33,7 +33,7 @@
 
 {#include "apr.h"
 #include "apr_errno.h"
-#include "apr_general.h"{ { for APR_STRINGIFY }
+#include "apr_general.h" for APR_STRINGIFY }
 //#include "apr_want.h"
 
 {
@@ -88,7 +88,7 @@ type
  * <pre>
  * | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
  * ---------------------------------
- * |   |   |   |   |   |   |   | x |  General debug code enabled (usefull in
+ * |   |   |   |   |   |   |   | x |  General debug code enabled (useful in
  *                                    combination with --with-efence).
  *
  * |   |   |   |   |   |   | x |   |  Verbose output on stderr (report
@@ -117,15 +117,17 @@ type
  * If level 0 was specified, debugging is switched off
  * </pre>
  }
-{#if defined(APR_POOL_DEBUG)
-#if (APR_POOL_DEBUG != 0) && (APR_POOL_DEBUG - 0 == 0)
+{$ifdef APR_POOL_DEBUG}
+{/* If APR_POOL_DEBUG is blank, we get 1; if it is a number, we get -1. */
+#if (APR_POOL_DEBUG - APR_POOL_DEBUG -1 == 1)
 #undef APR_POOL_DEBUG
 #define APR_POOL_DEBUG 1
-#endif
-#else
-#define APR_POOL_DEBUG 0
-#endif
-}
+#endif}
+{$else}
+const
+  APR_POOL_DEBUG = 0;
+{$endif}
+
 { the place in the code where the particular function was called }
 //#define APR_POOL__FILE_LINE__ __FILE__ ":" APR_STRINGIFY(__LINE__)
 
@@ -236,17 +238,6 @@ function apr_pool_create(newpool: PPapr_pool_t;
 function apr_pool_create(newpool: PPapr_pool_t; parent: Papr_pool_t): apr_status_t;
 {.$endif}
 {$endif}
-
-{ @deprecated @see apr_pool_create_ex }
-{#if APR_POOL_DEBUG
-#define apr_pool_sub_make(newpool, parent, abort_fn) \
-    (void)apr_pool_create_ex_debug(newpool, parent, abort_fn, \
-                                   NULL, \
-                                   APR_POOL__FILE_LINE__)
-#else}
-function apr_pool_sub_make(newpool: PPapr_pool_t; parent: Papr_pool_t;
- abort_fn: apr_abortfunc_t): apr_status_t;
-//#endif
 
 {
  * Find the pools allocator
@@ -404,10 +395,6 @@ procedure apr_pool_abort_set(abortfunc: apr_abortfunc_t; pool: Papr_pool_t);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_pool_abort_set' + LibSuff8;
 
-{ @deprecated @see apr_pool_abort_set }
-{APR_DECLARE(void) apr_pool_set_abort(apr_abortfunc_t abortfunc,
-                                     apr_pool_t *pool);
-}
 {
  * Get the abort function associated with the specified pool.
  * @param pool The pool for retrieving the abort function.
@@ -416,9 +403,6 @@ procedure apr_pool_abort_set(abortfunc: apr_abortfunc_t; pool: Papr_pool_t);
 function apr_pool_abort_get(pool: Papr_pool_t): apr_abortfunc_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_pool_abort_get' + LibSuff4;
-
-{ @deprecated @see apr_pool_abort_get }
-//APR_DECLARE(apr_abortfunc_t) apr_pool_get_abort(apr_pool_t *pool);
 
 {
  * Get the parent pool of the specified pool.
@@ -429,15 +413,16 @@ function apr_pool_parent_get(pool: Papr_pool_t): Papr_pool_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_pool_parent_get' + LibSuff4;
 
-{ @deprecated @see apr_pool_parent_get }
-//APR_DECLARE(apr_pool_t *) apr_pool_get_parent(apr_pool_t *pool);
-
 {
- * Determine if pool a is an ancestor of pool b
+ * Determine if pool a is an ancestor of pool b.
  * @param a The pool to search
  * @param b The pool to search for
  * @return True if a is an ancestor of b, NULL is considered an ancestor
  *         of all pools.
+ * @remark if compiled with APR_POOL_DEBUG, this function will also
+ * return true if A is a pool which has been guaranteed by the caller
+ * (using apr_pool_join) to have a lifetime at least as long as some
+ * ancestor of pool B.
  }
 function apr_pool_is_ancestor(a, b: Papr_pool_t): Integer;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
@@ -519,10 +504,16 @@ function apr_pool_userdata_get(data: PPointer; const key: PChar;
  external LibAPR name LibNamePrefix + 'apr_pool_userdata_get' + LibSuff12;
 
 {
- * Cleanup
+ * @defgroup PoolCleanup  Pool Cleanup Functions
  *
  * Cleanups are performed in the reverse order they were registered.  That is:
- * Last In, First Out.
+ * Last In, First Out.  A cleanup function can safely allocate memory from
+ * the pool that is being cleaned up. It can also safely register additional
+ * cleanups which will be run LIFO, directly after the current cleanup
+ * terminates.  Cleanups have to take caution in calling functions that
+ * create subpools. Subpools, created during cleanup will NOT automatically
+ * be cleaned up.  In other words, cleanups are to clean up after themselves.
+ *
  }
 
 {
@@ -531,8 +522,8 @@ function apr_pool_userdata_get(data: PPointer; const key: PChar;
  * @param data The data to pass to the cleanup function.
  * @param plain_cleanup The function to call when the pool is cleared
  *                      or destroyed
- * @param child_cleanup The function to call when a child process is being
- *                      shutdown - this function is called in the child, obviously!
+ * @param child_cleanup The function to call when a child process is about
+ *                      to exec - this function is called in the child, obviously!
  }
 type
   plain_cleanup_t = function(param: Pointer): apr_status_t; cdecl;
@@ -578,9 +569,13 @@ procedure apr_pool_cleanup_register(p: Papr_pool_t;
     apr_status_t child_cleanup)(void );
 }
 {
- * Run the specified cleanup function immediately and unregister it. Use
- * @a data instead of the data that was registered with the cleanup.
- * @param p The pool remove the cleanup from
+ * Run the specified cleanup function immediately and unregister it.
+ *
+ * The cleanup most recently registered with @a p having the same values of
+ * @a data and @a cleanup will be removed and @a cleanup will be called
+ * with @a data as the argument.
+ *
+ * @param p The pool to remove the cleanup from
  * @param data The data to remove from cleanup
  * @param cleanup The function to remove from cleanup
  }
@@ -594,17 +589,19 @@ procedure apr_pool_cleanup_register(p: Papr_pool_t;
     apr_status_t cleanup)(void );}
 
 {
- * An empty cleanup function
- * @param data The data to cleanup
+ * An empty cleanup function.
+ *
+ * Passed to apr_pool_cleanup_register() when no cleanup is required.
+ *
+ * @param data The data to cleanup, will not be used by this function.
  }
 //APR_DECLARE_NONSTD(apr_status_t) apr_pool_cleanup_null(void *data);
 
-{ Preparing for exec() --- close files, etc., but *don't* flush I/O
- * buffers, *don't* wait for subprocesses, and *don't* free any memory.
- }
 {
- * Run all of the child_cleanups, so that any unnecessary files are
- * closed because we are about to exec a new program
+ * Run all registered child cleanups, in preparation for an exec()
+ * call in a forked child -- close files, etc., but *don't* flush I/O
+ * buffers, *don't* wait for subprocesses, and *don't* free any
+ * memory.
  }
 procedure  apr_pool_cleanup_for_exec;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
@@ -639,16 +636,14 @@ procedure  apr_pool_cleanup_for_exec;
  * structures.
  *
  * However, sometimes this ancestor requirement is inconvenient --
- * sometimes we're forced to create a sub pool (such as through
- * apr_sub_req_lookup_uri), and the sub pool is guaranteed to have
- * the same lifetime as the parent pool.  This is a guarantee implemented
- * by the *caller*, not by the pool code.  That is, the caller guarantees
- * they won't destroy the sub pool individually prior to destroying the
- * parent pool.
+ * sometimes it's necessary to create a sub pool where the sub pool is
+ * guaranteed to have the same lifetime as the parent pool.  This is a
+ * guarantee implemented by the *caller*, not by the pool code.  That
+ * is, the caller guarantees they won't destroy the sub pool
+ * individually prior to destroying the parent pool.
  *
  * In this case the caller must call apr_pool_join() to indicate this
- * guarantee to the APR_POOL_DEBUG code.  There are a few examples spread
- * through the standard modules.
+ * guarantee to the APR_POOL_DEBUG code.
  *
  * These functions are only implemented when #APR_POOL_DEBUG is set.
  *

@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,13 +14,19 @@
  * limitations under the License.
  }
 
+{
+ * @package Apache connection library
+ }
+
 {#include "apr_hooks.h"
 #include "apr_network_io.h"
 #include "apr_buckets.h"}
 
 {
- * @package Apache connection library
+ * @file  http_connection.h
+ * @brief Apache connection library
  }
+
 //#ifdef CORE_PRIVATE
 {
  * This is the protocol module driver.  This calls all of the
@@ -35,6 +41,10 @@ procedure ap_process_connection(c: Pconn_rec; csd: Pointer);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_process_connection' + LibSuff8;
 
+{
+ * Flushes all remain data in the client send buffer
+ * @param c The connection to flush
+ }
 procedure ap_flush_conn(c: Pconn_rec);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_flush_conn' + LibSuff4;

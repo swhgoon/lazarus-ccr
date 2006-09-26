@@ -43,27 +43,47 @@
    are reserved for platform-specific values. }
 
 const
-  APR_READ =      $00001;     {< Open the file for reading }
-  APR_WRITE =     $00002;     {< Open the file for writing }
-  APR_CREATE =    $00004;     {< Create the file if not there }
-  APR_APPEND =    $00008;     {< Append to the end of the file }
-  APR_TRUNCATE =  $00010;     {< Open the file and truncate to 0 length }
-  APR_BINARY =    $00020;     {< Open the file in binary mode }
-  APR_EXCL =      $00040;     {< Open should fail if APR_CREATE and file
-                                        exists. }
-  APR_BUFFERED =  $00080;     {< Open the file for buffered I/O }
-  APR_DELONCLOSE =$00100;     {< Delete the file after close }
-  APR_XTHREAD =   $00200;     {< Platform dependent tag to open the file
-                                        for use across multiple threads }
-  APR_SHARELOCK = $00400;     {< Platform dependent support for higher
-                                        level locked read/write access to support
-                                        writes across process/machines }
-  APR_FILE_NOCLEANUP =$00800; {< Do not register a cleanup when the file
-                                        is opened }
-  APR_SENDFILE_ENABLED =$01000; {< Advisory flag that this file should
-                                          support apr_sendfile operation }
-  APR_LARGEFILE =  $04000;    {< Platform dependent flag to enable large file
-                                        support; WARNING see below. }
+  APR_FOPEN_READ      = $00001;  {< Open the file for reading }
+  APR_FOPEN_WRITE     = $00002;  {< Open the file for writing }
+  APR_FOPEN_CREATE    = $00004;  {< Create the file if not there }
+  APR_FOPEN_APPEND    = $00008;  {< Append to the end of the file }
+  APR_FOPEN_TRUNCATE  = $00010;  {< Open the file and truncate
+                                         to 0 length }
+  APR_FOPEN_BINARY    = $00020;  {< Open the file in binary mode }
+  APR_FOPEN_EXCL      = $00040;  {< Open should fail if APR_CREATE
+                                         and file exists. }
+  APR_FOPEN_BUFFERED  = $00080;  {< Open the file for buffered I/O }
+  APR_FOPEN_DELONCLOSE= $00100;  {< Delete the file after close }
+  APR_FOPEN_XTHREAD   = $00200;  {< Platform dependent tag to open
+                                         the file for use across multiple
+                                         threads }
+  APR_FOPEN_SHARELOCK = $00400;  {< Platform dependent support for
+                                         higher level locked read/write
+                                         access to support writes across
+                                         process/machines }
+  APR_FOPEN_NOCLEANUP = $00800;  {< Do not register a cleanup
+                                         when the file is opened }
+  APR_FOPEN_SENDFILE_ENABLED = $01000; {< Advisory flag that this
+                                             file should support
+                                             apr_socket_sendfile operation }
+  APR_FOPEN_LARGEFILE = $04000;  {< Platform dependent flag to enable
+                                         large file support; WARNING see
+                                         below. }
+{ backcompat }
+  APR_READ            = APR_FOPEN_READ;       {< @deprecated @see APR_FOPEN_READ }
+  APR_WRITE           = APR_FOPEN_WRITE;      {< @deprecated @see APR_FOPEN_WRITE }
+  APR_CREATE          = APR_FOPEN_CREATE;     {< @deprecated @see APR_FOPEN_CREATE }
+  APR_APPEND          = APR_FOPEN_APPEND;     {< @deprecated @see APR_FOPEN_APPEND }
+  APR_TRUNCATE        = APR_FOPEN_TRUNCATE;   {< @deprecated @see APR_FOPEN_TRUNCATE }
+  APR_BINARY          = APR_FOPEN_BINARY;     {< @deprecated @see APR_FOPEN_BINARY }
+  APR_EXCL            = APR_FOPEN_EXCL;       {< @deprecated @see APR_FOPEN_EXCL }
+  APR_BUFFERED        = APR_FOPEN_BUFFERED;   {< @deprecated @see APR_FOPEN_BUFFERED }
+  APR_DELONCLOSE      = APR_FOPEN_DELONCLOSE; {< @deprecated @see APR_FOPEN_DELONCLOSE }
+  APR_XTHREAD         = APR_FOPEN_XTHREAD;    {< @deprecated @see APR_FOPEN_XTHREAD }
+  APR_SHARELOCK       = APR_FOPEN_SHARELOCK;  {< @deprecated @see APR_FOPEN_SHARELOCK }
+  APR_FILE_NOCLEANUP  = APR_FOPEN_NOCLEANUP;  {< @deprecated @see APR_FOPEN_NOCLEANUP }
+  APR_SENDFILE_ENABLED= APR_FOPEN_SENDFILE_ENABLED; {< @deprecated @see APR_FOPEN_SENDFILE_ENABLED }
+  APR_LARGEFILE       = APR_FOPEN_LARGEFILE;  {< @deprecated @see APR_FOPEN_LARGEFILE }
 
 { @warning The APR_LARGEFILE flag only has effect on some platforms
  * where sizeof(apr_off_t) == 4.  Where implemented, it allows opening
@@ -89,11 +109,25 @@ const
   APR_FILE_ATTR_EXECUTABLE =$02;          {< File is executable }
   APR_FILE_ATTR_HIDDEN =    $04;          {< File is hidden }
 
+{
+ * @defgroup apr_file_writev(_full) max iovec size
+ }
+{$ifdef DOXYGEN}
+  APR_MAX_IOVEC_SIZE = 1024;                {< System dependent maximum
+                                                    size of an iovec array }
+{#elif defined(IOV_MAX)
+#define APR_MAX_IOVEC_SIZE IOV_MAX
+#elif defined(MAX_IOVEC)
+#define APR_MAX_IOVEC_SIZE MAX_IOVEC}
+{$else}
+  APR_MAX_IOVEC_SIZE = 1024;
+{$endif}
+
 { File attributes }
 type
   apr_fileattrs_t = apr_uint32_t;
 
-{ should be same as whence type in lseek, POSIX defines this as int }
+{ Type to pass as whence argument to apr_file_seek. }
   apr_seek_where_t = Integer;
 
 {
@@ -145,12 +179,12 @@ const
  *                               level locked read/write access to support
  *                               writes across process/machines
  *         APR_FILE_NOCLEANUP    Do not register a cleanup with the pool 
- *                               passed in on the <EM>cont</EM> argument (see below).
+ *                               passed in on the <EM>pool</EM> argument (see below).
  *                               The apr_os_file_t handle in apr_file_t will not
  *                               be closed when the pool is destroyed.
  *         APR_SENDFILE_ENABLED  Open with appropriate platform semantics
  *                               for sendfile operations.  Advisory only,
- *                               apr_sendfile does not check this flag.
+ *                               apr_socket_sendfile does not check this flag.
  * </PRE>
  * @param perm Access permissions for file.
  * @param pool The pool to use.
@@ -175,10 +209,10 @@ function apr_file_close(file_: Papr_file_t): apr_status_t;
 {
  * delete the specified file.
  * @param path The full path to the file (using / on all systems)
- * @param cont The pool to use.
+ * @param pool The pool to use.
  * @remark If the file is open, it won't be removed until all instances are closed.
  }
-function apr_file_remove(const path: PChar; cont: Papr_pool_t): apr_status_t;
+function apr_file_remove(const path: PChar; pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_remove' + LibSuff8;
 
@@ -239,7 +273,7 @@ function apr_file_eof(fptr: Papr_file_t): apr_status_t;
 {
  * open standard error as an apr file pointer.
  * @param thefile The apr file to use as stderr.
- * @param cont The pool to allocate the file out of.
+ * @param pool The pool to allocate the file out of.
  * 
  * @remark The only reason that the apr_file_open_std* functions exist
  * is that you may not always have a stderr/out/in on Windows.  This
@@ -252,47 +286,31 @@ function apr_file_eof(fptr: Papr_file_t): apr_status_t;
  * platforms.
  }
 function apr_file_open_stderr(thefile: PPapr_file_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_open_stderr' + LibSuff8;
 
 {
  * open standard output as an apr file pointer.
  * @param thefile The apr file to use as stdout.
- * @param cont The pool to allocate the file out of.
- * 
- * @remark The only reason that the apr_file_open_std* functions exist
- * is that you may not always have a stderr/out/in on Windows.  This
- * is generally a problem with newer versions of Windows and services.
- * 
- * The other problem is that the C library functions generally work
- * differently on Windows and Unix.  So, by using apr_file_open_std*
- * functions, you can get a handle to an APR struct that works with
- * the APR functions which are supposed to work identically on all
- * platforms.
+ * @param pool The pool to allocate the file out of.
+ *
+ * @remark See remarks for apr_file_open_stdout.
  }
 function apr_file_open_stdout(thefile: PPapr_file_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_open_stdout' + LibSuff8;
 
 {
  * open standard input as an apr file pointer.
  * @param thefile The apr file to use as stdin.
- * @param cont The pool to allocate the file out of.
- * 
- * @remark The only reason that the apr_file_open_std* functions exist
- * is that you may not always have a stderr/out/in on Windows.  This
- * is generally a problem with newer versions of Windows and services.
- * 
- * The other problem is that the C library functions generally work
- * differently on Windows and Unix.  So, by using apr_file_open_std*
- * functions, you can get a handle to an APR struct that works with
- * the APR functions which are supposed to work identically on all
- * platforms.
+ * @param pool The pool to allocate the file out of.
+ *
+ * @remark See remarks for apr_file_open_stdout.
  }
 function apr_file_open_stdin(thefile: PPapr_file_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_open_stdin' + LibSuff8;
 
@@ -300,18 +318,18 @@ function apr_file_open_stdin(thefile: PPapr_file_t;
  * Read data from the specified file.
  * @param thefile The file descriptor to read from.
  * @param buf The buffer to store the data to.
- * @param nbytes On entry, the number of bytes to read; on exit, the number of bytes read.
- * @remark apr_file_read will read up to the specified number of bytes, but 
- *         never more.  If there isn't enough data to fill that number of 
- *         bytes, all of the available data is read.  The third argument is 
- *         modified to reflect the number of bytes read.  If a char was put 
- *         back into the stream via ungetc, it will be the first character 
- *         returned. 
+ * @param nbytes On entry, the number of bytes to read; on exit, the number
+ * of bytes read.
  *
- *         It is not possible for both bytes to be read and an APR_EOF or other 
- *         error to be returned.
+ * @remark apr_file_read will read up to the specified number of
+ * bytes, but never more.  If there isn't enough data to fill that
+ * number of bytes, all of the available data is read.  The third
+ * argument is modified to reflect the number of bytes read.  If a
+ * char was put back into the stream via ungetc, it will be the first
+ * character returned.
  *
- *         APR_EINTR is never returned.
+ * @remark It is not possible for both bytes to be read and an APR_EOF
+ * or other error to be returned.  APR_EINTR is never returned.
  }
 function apr_file_read(thefile: Papr_file_t; buf: Pointer;
  nbytes: Papr_size_t): apr_status_t;
@@ -322,16 +340,16 @@ function apr_file_read(thefile: Papr_file_t; buf: Pointer;
  * Write data to the specified file.
  * @param thefile The file descriptor to write to.
  * @param buf The buffer which contains the data.
- * @param nbytes On entry, the number of bytes to write; on exit, the number 
+ * @param nbytes On entry, the number of bytes to write; on exit, the number
  *               of bytes written.
- * @remark apr_file_write will write up to the specified number of bytes, but never 
- *      more.  If the OS cannot write that many bytes, it will write as many 
- *      as it can.  The third argument is modified to reflect the * number 
- *      of bytes written. 
  *
- *      It is possible for both bytes to be written and an error to be returned.
+ * @remark apr_file_write will write up to the specified number of
+ * bytes, but never more.  If the OS cannot write that many bytes, it
+ * will write as many as it can.  The third argument is modified to
+ * reflect the * number of bytes written.
  *
- *      APR_EINTR is never returned.
+ * @remark It is possible for both bytes to be written and an error to
+ * be returned.  APR_EINTR is never returned.
  }
 function apr_file_write(thefile: Papr_file_t; buf: Pointer;
  nbytes: Papr_size_t): apr_status_t;
@@ -342,16 +360,16 @@ function apr_file_write(thefile: Papr_file_t; buf: Pointer;
  * Write data from iovec array to the specified file.
  * @param thefile The file descriptor to write to.
  * @param vec The array from which to get the data to write to the file.
- * @param nvec The number of elements in the struct iovec array. This must 
- *             be smaller than APR_MAX_IOVEC_SIZE.  If it isn't, the function 
+ * @param nvec The number of elements in the struct iovec array. This must
+ *             be smaller than APR_MAX_IOVEC_SIZE.  If it isn't, the function
  *             will fail with APR_EINVAL.
  * @param nbytes The number of bytes written.
- * @remark It is possible for both bytes to be written and an error to be returned.
- *      APR_EINTR is never returned.
  *
- *      apr_file_writev is available even if the underlying operating system 
+ * @remark It is possible for both bytes to be written and an error to
+ * be returned.  APR_EINTR is never returned.
  *
- *      doesn't provide writev().
+ * @remark apr_file_writev is available even if the underlying
+ * operating system doesn't provide writev().
  }
 function apr_file_writev(thefile: Papr_file_t; const vec: Piovec;
  nvec: apr_size_t; nbytes: Papr_size_t): apr_status_t;
@@ -365,17 +383,18 @@ function apr_file_writev(thefile: Papr_file_t; const vec: Piovec;
  * @param buf The buffer to store the data to.
  * @param nbytes The number of bytes to read.
  * @param bytes_read If non-NULL, this will contain the number of bytes read.
- * @remark apr_file_read will read up to the specified number of bytes, but never 
- *      more.  If there isn't enough data to fill that number of bytes, 
- *      then the process/thread will block until it is available or EOF 
- *      is reached.  If a char was put back into the stream via ungetc, 
- *      it will be the first character returned. 
  *
- *      It is possible for both bytes to be read and an error to be 
- *      returned.  And if *bytes_read is less than nbytes, an
- *      accompanying error is _always_ returned.
+ * @remark apr_file_read will read up to the specified number of
+ * bytes, but never more.  If there isn't enough data to fill that
+ * number of bytes, then the process/thread will block until it is
+ * available or EOF is reached.  If a char was put back into the
+ * stream via ungetc, it will be the first character returned.
  *
- *      APR_EINTR is never returned.
+ * @remark It is possible for both bytes to be read and an error to be
+ * returned.  And if *bytes_read is less than nbytes, an accompanying
+ * error is _always_ returned.
+ *
+ * @remark APR_EINTR is never returned.
  }
 function apr_file_read_full(thefile: Papr_file_t; buf: Pointer;
  nbytes: apr_size_t; bytes_read: Papr_size_t): apr_status_t;
@@ -388,17 +407,19 @@ function apr_file_read_full(thefile: Papr_file_t; buf: Pointer;
  * @param thefile The file descriptor to write to.
  * @param buf The buffer which contains the data.
  * @param nbytes The number of bytes to write.
- * @param bytes_written If non-NULL, this will contain the number of bytes written.
- * @remark apr_file_write will write up to the specified number of bytes, but never 
- *      more.  If the OS cannot write that many bytes, the process/thread 
- *      will block until they can be written. Exceptional error such as 
- *      "out of space" or "pipe closed" will terminate with an error.
+ * @param bytes_written If non-NULL, set to the number of bytes written.
  *
- *      It is possible for both bytes to be written and an error to be 
- *      returned.  And if *bytes_written is less than nbytes, an
- *      accompanying error is _always_ returned.
+ * @remark apr_file_write will write up to the specified number of
+ * bytes, but never more.  If the OS cannot write that many bytes, the
+ * process/thread will block until they can be written. Exceptional
+ * error such as "out of space" or "pipe closed" will terminate with
+ * an error.
  *
- *      APR_EINTR is never returned.
+ * @remark It is possible for both bytes to be written and an error to
+ * be returned.  And if *bytes_written is less than nbytes, an
+ * accompanying error is _always_ returned.
+ *
+ * @remark APR_EINTR is never returned.
  }
 function apr_file_write_full(thefile: Papr_file_t; buf: Pointer;
  nbytes: apr_size_t; bytes_written: Papr_size_t): apr_status_t;
@@ -406,7 +427,25 @@ function apr_file_write_full(thefile: Papr_file_t; buf: Pointer;
  external LibAPR name LibNamePrefix + 'apr_file_write_full' + LibSuff16;
 
 {
- * put a character into the specified file.
+ * Write data from iovec array to the specified file, ensuring that all of the
+ * data is written before returning.
+ * @param thefile The file descriptor to write to.
+ * @param vec The array from which to get the data to write to the file.
+ * @param nvec The number of elements in the struct iovec array. This must
+ *             be smaller than APR_MAX_IOVEC_SIZE.  If it isn't, the function
+ *             will fail with APR_EINVAL.
+ * @param nbytes The number of bytes written.
+ *
+ * @remark apr_file_writev_full is available even if the underlying
+ * operating system doesn't provide writev().
+ }
+function apr_file_writev_full(thefile: Papr_file_t; const vec: Piovec;
+ nvec: apr_size_t; nbytes: Papr_size_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_file_writev_full' + LibSuff16;
+
+{
+ * Write a character into the specified file.
  * @param ch The character to write.
  * @param thefile The file descriptor to write to
  }
@@ -524,10 +563,10 @@ function apr_file_seek(thefile: Papr_file_t;
  * Create an anonymous pipe.
  * @param in The file descriptor to use as input to the pipe.
  * @param out The file descriptor to use as output from the pipe.
- * @param cont The pool to operate on.
+ * @param pool The pool to operate on.
  }
 function apr_file_pipe_create(in_: PPapr_file_t; out_: PPapr_file_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_pipe_create' + LibSuff12;
 
@@ -535,10 +574,10 @@ function apr_file_pipe_create(in_: PPapr_file_t; out_: PPapr_file_t;
  * Create a named pipe.
  * @param filename The filename of the named pipe
  * @param perm The permissions for the newly created pipe.
- * @param cont The pool to operate on.
+ * @param pool The pool to operate on.
  }
 function apr_file_namedpipe_create(const filename: PChar;
- perm: apr_fileperms_t; cont: Papr_pool_t): apr_status_t;
+ perm: apr_fileperms_t; pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_namedpipe_create' + LibSuff12;
 
@@ -658,7 +697,7 @@ function apr_file_perms_set(const fname: PChar;
  *            APR_FILE_ATTR_HIDDEN     - make the file hidden
  * </PRE>
  * @param attr_mask Mask of valid bits in attributes.
- * @param cont the pool to use.
+ * @param pool the pool to use.
  * @remark This function should be used in preference to explict manipulation
  *      of the file permissions, because the operations to provide these
  *      attributes are platform specific and may involve more than simply
@@ -668,7 +707,7 @@ function apr_file_perms_set(const fname: PChar;
  }
 function apr_file_attrs_set(const fname: PChar;
  attributes, attr_mask: apr_fileattrs_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_file_attrs_set' + LibSuff16;
 
@@ -689,10 +728,10 @@ function apr_file_mtime_set(const fname: PChar;
  * Create a new directory on the file system.
  * @param path the path for the directory to be created.  (use / on all systems)
  * @param perm Permissions for the new direcoty.
- * @param cont the pool to use.
+ * @param pool the pool to use.
  }
 function apr_dir_make(const path: PChar; perm: apr_fileperms_t;
- cont: Papr_pool_t): apr_status_t;
+ pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_dir_make' + LibSuff12;
 
@@ -711,9 +750,9 @@ function apr_dir_make_recursive(const path: PChar;
 {
  * Remove directory from the file system.
  * @param path the path for the directory to be removed.  (use / on all systems)
- * @param cont the pool to use.
+ * @param pool the pool to use.
  }
-function apr_dir_remove(const path: PChar; cont: Papr_pool_t): apr_status_t;
+function apr_dir_remove(const path: PChar; pool: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_dir_remove' + LibSuff8;
 
@@ -757,17 +796,13 @@ function apr_file_flags_get(f: Papr_file_t): apr_int32_t;
  }
 {APR_DECLARE_INHERIT_SET(file);
 }
-{ @deprecated @see apr_file_inherit_set }
-{APR_DECLARE(void) apr_file_set_inherit(apr_file_t *file);
-}
+
 {
  * Unset a file from being inherited by child processes.
  }
 {APR_DECLARE_INHERIT_UNSET(file);
 }
-{ @deprecated @see apr_file_inherit_unset }
-{APR_DECLARE(void) apr_file_unset_inherit(apr_file_t *file);
-}
+
 {
  * Open a temporary file
  * @param fp The apr file to use as a temporary file.

@@ -92,6 +92,9 @@ type
   apr_int64_t = Int64;
   apr_uint64_t = Int64;
   apr_socklen_t = Integer;
+  apr_byte_t = Byte;
+
+  apr_uint32_tso_handle_t = cuint;
 
 type
   {$IFDEF WINDOWS}
@@ -102,10 +105,11 @@ type
   {$ENDIF}
 
   apr_int32_t = Integer;
+  Papr_int32_t = ^Integer;
   apr_size_t = size_t;
   Papr_size_t = ^apr_size_t;
-
-  va_list = Pointer;
+  apr_int16_t = SmallInt;
+  Papr_int16_t = ^SmallInt;
 
   // Network structures
   
@@ -118,6 +122,10 @@ type
     s_addr: culong;        // load with inet_aton()
   end;
 
+{$ifndef windows}
+
+  va_list = Pointer;
+
   sockaddr_in = record
     sin_family: cshort;    // e.g. AF_INET
     sin_port: cushort;     // e.g. htons(3490)
@@ -125,6 +133,8 @@ type
     sin_zero: array [1..8] of Char;  // zero this if you want to
   end;
   
+{$endif}
+
   in6_addr = record
    Case Integer of
     1: (u6_addr8: array [1..16] of Byte);
@@ -182,6 +192,7 @@ type
 
 {$include apr_thread_proc.inc}
 {$include apr_version.inc}
+{$include apr_poll.inc}
 
 implementation
 

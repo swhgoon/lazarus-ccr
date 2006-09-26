@@ -178,22 +178,25 @@ function apr_psprintf(p: Papr_pool_t; const fmt: PChar; others: array of const):
  cdecl; external LibAPR name 'apr_psprintf';
 
 {
- * copy n characters from src to dst
+ * Copy up to dst_size characters from src to dst; does not copy
+ * past a NUL terminator in src, but always terminates dst with a NUL
+ * regardless.
  * @param dst The destination string
  * @param src The source string
  * @param dst_size The space available in dst; dst always receives
- *                 null-termination, so if src is longer than
+ *                 NUL termination, so if src is longer than
  *                 dst_size, the actual number of characters copied is
  *                 dst_size - 1.
+ * @return Pointer to the NUL terminator of the destination string, dst
  * @remark
  * <PRE>
- * We re-implement this function to implement these specific changes:
- *       1) strncpy() doesn't always null terminate and we want it to.
- *       2) strncpy() null fills, which is bogus, esp. when copy 8byte strings
- *          into 8k blocks.
- *       3) Instead of returning the pointer to the beginning of the
- *          destination string, we return a pointer to the terminating null
- *          to allow us to check for truncation.
+ * Note the differences between this function and strncpy():
+ *  1) strncpy() doesn't always NUL terminate; apr_cpystrn() does.
+ *  2) strncpy() pads the destination string with NULs, which is often
+ *     unnecessary; apr_cpystrn() does not.
+ *  3) strncpy() returns a pointer to the beginning of the dst string;
+ *     apr_cpystrn() returns a pointer to the NUL terminator of dst,
+ *     to allow a check for truncation.
  * </PRE>
  }
 function apr_cpystrn(dst: PChar; const src: PChar;
@@ -258,7 +261,6 @@ function apr_strtok(str: PChar;
  * the buffer had been infinite (in this case, *buffer can be NULL)
  *
  * In no event does apr_snprintf return a negative number.
- * @{
  }
 
 {
@@ -315,6 +317,25 @@ function apr_ltoa(p: Papr_pool_t; n: Integer): PChar;
 function apr_off_t_toa(p: Papr_pool_t; n: apr_off_t): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_off_t_toa' + LibSuff12;
+
+{
+ * Convert a numeric string into an apr_off_t numeric value.
+ * @param offset The value of the parsed string.
+ * @param buf The string to parse. It may contain optional whitespace,
+ *   followed by an optional '+' (positive, default) or '-' (negative)
+ *   character, followed by an optional '0x' prefix if base is 0 or 16,
+ *   followed by numeric digits appropriate for base.
+ * @param end A pointer to the end of the valid character in buf. If
+ *   not NULL, it is set to the first invalid character in buf.
+ * @param base A numeric base in the range between 2 and 36 inclusive,
+ *   or 0.  If base is zero, buf will be treated as base ten unless its
+ *   digits are prefixed with '0x', in which case it will be treated as
+ *   base 16.
+ }
+function apr_strtoff(offset: Papr_off_t;
+ const buf: PChar; end_: PPChar; base: cint): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_strtoff' + LibSuff16;
 
 {
  * parse a numeric string into a 64-bit numeric value

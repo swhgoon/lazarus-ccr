@@ -192,9 +192,7 @@ typedef void*                 apr_os_shm_t;         {< native SHM }
     remote: Psockaddr; {< NULL if not connected }
     family: Integer;             {< always required (APR_INET, APR_INET6, etc.) }
     type_: Integer;               {< always required (SOCK_STREAM, SOCK_DGRAM, etc.) }
-{$ifdef APR_ENABLE_FOR_1_0}   {< enable with APR 1.0 }
     protocol: Integer;           {< 0 or actual protocol (APR_PROTO_SCTP, APR_PROTO_TCP, etc.) }
-{$endif}
   end;
 
   Papr_os_sock_info_t = ^apr_os_sock_info_t;

@@ -25,7 +25,7 @@
 
 {#include "os.h"}
 
-{$include pcreposix.inc}
+{$include ap_regex.inc}
 
 // Note: util_uri.h is also included, see below
 
@@ -1061,7 +1061,7 @@ type
     limit_req_fields: Integer;
 
     { The server request scheme for redirect responses }
-    server_scheme: P_Char;
+    server_scheme: PChar;
   end;
 
 type
@@ -1675,7 +1675,7 @@ function ap_escape_quotes(p: Papr_pool_t; const instring: PChar): PChar;
  * @param string The string to append the PID to
  * @param delim The string to use to deliminate the string from the PID
  * @return A copy of the string with the PID appended 
- */
+ }
 function ap_append_pid(p: Papr_pool_t; const string_, delim: PChar): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_append_pid' + LibSuff12;

@@ -1,9 +1,9 @@
-{ Copyright 1999-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,19 +14,12 @@
  * limitations under the License.
  }
 
-{#include "apr_hooks.h"
-#include "util_filter.h"}
-
-const
-  AP_SUBREQ_NO_ARGS = 0;
-  AP_SUBREQ_MERGE_ARGS = 1;
-
 {
  * @file http_request.h
  * @brief Apache Request library
  }
 
-{ http_request.c is the code which handles the main line of request
+{ request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
  * directory configuration, building it if necessary, and calling all
  * the module dispatch functions in the right order).
@@ -45,6 +38,13 @@ const
  * reclaimed by calling destroy_sub_req --- be sure to copy anything you care
  * about which was allocated in its apr_pool_t elsewhere before doing this.
  }
+
+{#include "apr_hooks.h"
+#include "util_filter.h"}
+
+const
+  AP_SUBREQ_NO_ARGS = 0;
+  AP_SUBREQ_MERGE_ARGS = 1;
 
 {
  * An internal handler used by the ap_process_request, all subrequest mechanisms

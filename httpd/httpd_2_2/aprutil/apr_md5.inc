@@ -60,7 +60,6 @@
 const
 { The MD5 digest size }
   APR_MD5_DIGESTSIZE = 16;
-  MD5_DIGESTSIZE = APR_MD5_DIGESTSIZE;   {< @deprecated }
 
 { @see apr_md5_ctx_t }
 type
@@ -148,7 +147,12 @@ function apr_md5_encode(const password, salt: PChar;
  external LibAPRUtil name LibNamePrefix + 'apr_md5_encode' + LibSuff16;
 
 {
- * Validate any password encypted with any algorithm that APR understands
+ * Validate hashes created by APR-supported algorithms: md5 and sha1.
+ * hashes created by crypt are supported only on platforms that provide
+ * crypt(3), so don't rely on that function unless you know that your
+ * application will be run only on platforms that support it.  On platforms
+ * that don't support crypt(3), this falls back to a clear text string
+ * comparison.
  * @param passwd The password to validate
  * @param hash The password to validate against
  }

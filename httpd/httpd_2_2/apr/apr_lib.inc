@@ -78,11 +78,6 @@ function apr_filepath_name_get(const pathname: PChar): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_filepath_name_get' + LibSuff4;
 
-{ @deprecated @see apr_filepath_name_get }
-function apr_filename_of_pathname(const pathname: PChar): PChar;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_filename_of_pathname' + LibSuff4;
-
 {
  * apr_killpg
  * Small utility macros to make things easier to read.  Not usually a
@@ -115,6 +110,8 @@ function apr_filename_of_pathname(const pathname: PChar): PChar;
  * %%pI	takes an apr_sockaddr_t * and prints it as a.b.c.d:port or
  *      [ipv6-address]:port
  * %%pT takes an apr_os_thread_t * and prints it in decimal
+ *      ('0' is printed if !APR_HAS_THREADS)
+ * %%pt takes an apr_os_thread_t * and prints it in hexadecimal
  *      ('0' is printed if !APR_HAS_THREADS)
  * %%pp takes a void * and outputs it in hex
  *
@@ -173,6 +170,11 @@ function apr_vformatter(flush_func: flush_func_t;
  * @param prompt The prompt to display
  * @param pwbuf Buffer to store the password
  * @param bufsize The length of the password buffer.
+ * @remark If the password entered must be truncated to fit in
+ * the provided buffer, APR_ENAMETOOLONG will be returned.
+ * Note that the bufsize paramater is passed by reference for no
+ * reason; its value will never be modified by the apr_password_get()
+ * function.
  }
 function apr_password_get(const prompt: PChar;
  pwbuf: PChar; bufsize: Papr_size_t): apr_status_t;

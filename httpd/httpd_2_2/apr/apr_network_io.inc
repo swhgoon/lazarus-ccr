@@ -38,9 +38,6 @@ const
 { Maximum seconds to linger }
   APR_MAX_SECS_TO_LINGER = 30;
 
-{ @deprecated @see APR_MAX_SECS_TO_LINGER }
-  MAX_SECS_TO_LINGER = APR_MAX_SECS_TO_LINGER;
-
 { Maximum hostname length }
   APRMAXHOSTLEN = 256;
 
@@ -55,7 +52,6 @@ const
   APR_SO_DEBUG        = 4;    {< Debug }
   APR_SO_NONBLOCK     = 8;    {< Non-blocking IO }
   APR_SO_REUSEADDR    = 16;   {< Reuse addresses }
-  APR_SO_TIMEOUT      = 32;   {< Timeout }
   APR_SO_SNDBUF       = 64;   {< Send buffer }
   APR_SO_RCVBUF       = 128;  {< Receive buffer }
   APR_SO_DISCONNECTED = 256;  {< Disconnected }
@@ -69,7 +65,7 @@ const
                                    * APR_TCP_NODELAY should be turned on
                                    * again when NOPUSH is turned off
                                    }
-  APR_INCOMPLETE_READ = 4096;  {< Set on non-blocking sockets
+  APR_INCOMPLETE_READ = 4096; {< Set on non-blocking sockets
 				   * (timeout != 0) on which the
 				   * previous read() did not fill a buffer
 				   * completely.  the next apr_socket_recv() 
@@ -80,11 +76,15 @@ const
 				   * read, in cases where the app expects
 				   * that an immediate read would fail.)
                                    }
-  APR_INCOMPLETE_WRITE = 8192; {< like APR_INCOMPLETE_READ, but for write
+  APR_INCOMPLETE_WRITE = 8192;{< like APR_INCOMPLETE_READ, but for write
                                    * @see APR_INCOMPLETE_READ
                                    }
   APR_IPV6_V6ONLY    = 16384; {< Don't accept IPv4 connections on an
                                    * IPv6 listening socket.
+                                   }
+  APR_TCP_DEFER_ACCEPT = 32768;{< Delay accepting of new connections
+                                   * until data is available.
+                                   * @see apr_socket_accept_filter
                                    }
 
 { Define what type of socket shutdown should occur. }
@@ -110,6 +110,16 @@ const
   end;}
 {$endif}
 
+{ @def APR_INADDR_NONE
+ * Not all platforms have a real INADDR_NONE.  This macro replaces
+ * INADDR_NONE on all platforms.
+ }
+{$ifdef INADDR_NONE}
+  APR_INADDR_NONE = INADDR_NONE;
+{$else}
+  APR_INADDR_NONE = $ffffffff;
+{$endif}
+
 const
 {
  * @def APR_INET
@@ -126,6 +136,11 @@ const
 #define APR_UNSPEC   0
 #endif
 #if APR_HAVE_IPV6
+
+/** @def APR_INET6
+* IPv6 Address Family. Not all platforms may have this defined.
+*/
+
 #define APR_INET6    AF_INET6
 #endif}
 
@@ -199,6 +214,11 @@ type
     { IPv6 sockaddr structure }
     1: (sin6: sockaddr_in6);
 {$endif}
+{$ifdef APR_HAVE_SA_STORAGE}
+    { Placeholder to ensure that the size of this union is not
+    * dependent on whether APR_HAVE_IPV6 is defined. }
+    2: (sas: sockaddr_storage);
+{$endif}
   end;
 
 {
@@ -215,8 +235,6 @@ type
     port: apr_port_t;
     { The family }
     family: apr_int32_t;
-    { Union of either IPv4 or IPv6 sockaddr. }
-    sa: sa_t;
     { How big is the sockaddr we're using? }
     salen: apr_socklen_t;
     { How big is the ip address structure we're using? }
@@ -230,6 +248,8 @@ type
     { If multiple addresses were found by apr_sockaddr_info_get(), this
      *  points to a representation of the next address. }
     next: Papr_sockaddr_t;
+    { Union of either IPv4 or IPv6 sockaddr. }
+    sa: sa_t;
   end;
 
 {$ifdef APR_HAS_SENDFILE}
@@ -257,32 +277,15 @@ type
 
 {
  * Create a socket.
- * @remark With APR 1.0, this function follows the prototype 
- * of apr_socket_create_ex.
  * @param new_sock The new socket that has been set up.
  * @param family The address family of the socket (e.g., APR_INET).
  * @param type The type of the socket (e.g., SOCK_STREAM).
  * @param cont The pool to use
  }
 function apr_socket_create(new_sock: PPapr_socket_t;
- family, type_: Integer; cont: Papr_pool_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_socket_create' + LibSuff16;
-
-{
- * Create a socket.
- * @remark With APR 1.0, this function is deprecated and apr_socket_create 
- * follows this prototype.
- * @param new_sock The new socket that has been set up.
- * @param family The address family of the socket (e.g., APR_INET).
- * @param type The type of the socket (e.g., SOCK_STREAM).
- * @param protocol The protocol of the socket (e.g., APR_PROTO_TCP).
- * @param cont The pool to use
- }
-function apr_socket_create_ex(new_sock: PPapr_socket_t;
  family, type_, protocol: Integer; cont: Papr_pool_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_socket_create_ex' + LibSuff20;
+ external LibAPR name LibNamePrefix + 'apr_socket_create' + LibSuff20;
 
 {
  * Shutdown either reading, writing, or both sides of a socket.
@@ -301,12 +304,6 @@ function apr_socket_shutdown(thesocket: Papr_socket_t;
  how: apr_shutdown_how_e): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_shutdown' + LibSuff8;
-
-{ @deprecated @see apr_socket_shutdown }
-function apr_shutdown(thesocket: Papr_socket_t;
- how: apr_shutdown_how_e): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_shutdown' + LibSuff8;
 
 {
  * Close a socket.
@@ -328,12 +325,6 @@ function apr_socket_bind(sock: Papr_socket_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_bind' + LibSuff8;
 
-{ @deprecated @see apr_socket_bind }
-function apr_bind(sock: Papr_socket_t;
- sa: Papr_sockaddr_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_bind' + LibSuff8;
-
 {
  * Listen to a bound socket for connections.
  * @param sock The socket to listen on 
@@ -345,12 +336,6 @@ function apr_socket_listen(sock: Papr_socket_t;
  backlog: apr_int32_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_listen' + LibSuff8;
-
-{ @deprecated @see apr_socket_listen }
-function apr_listen(sock: Papr_socket_t;
- backlog: apr_int32_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_listen' + LibSuff8;
 
 {
  * Accept a new connection request
@@ -365,11 +350,6 @@ function apr_socket_accept(new_sock: PPapr_socket_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_accept' + LibSuff12;
 
-{ @deprecated @see apr_socket_accept }
-{APR_DECLARE(apr_status_t) apr_accept(apr_socket_t **new_sock,
-                                     apr_socket_t *sock,
-                                     apr_pool_t *connection_pool);}
-
 {
  * Issue a connection request to a socket either on the same machine 
  * or a different one.
@@ -381,9 +361,6 @@ function apr_socket_accept(new_sock: PPapr_socket_t;
 function apr_socket_connect(sock: Papr_socket_t; sa: Papr_sockaddr_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_connect' + LibSuff8;
-
-{ @deprecated @see apr_socket_connect }
-//APR_DECLARE(apr_status_t) apr_connect(apr_socket_t *sock, apr_sockaddr_t *sa);
 
 {
  * Create apr_sockaddr_t from hostname, address family, and port.
@@ -518,10 +495,6 @@ function apr_socket_send(sock: Papr_socket_t; const buf: PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_send' + LibSuff12;
 
-{ @deprecated @see apr_socket_send }
-{APR_DECLARE(apr_status_t) apr_send(apr_socket_t *sock, const char *buf,
-                                   apr_size_t *len);}
-
 {
  * Send multiple packets of data over a network.
  * @param sock The socket to send the data over.
@@ -544,11 +517,6 @@ function apr_socket_sendv(sock: Papr_socket_t; const vec: Piovec;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_sendv' + LibSuff16;
 
-{ @deprecated @see apr_socket_sendv }
-{APR_DECLARE(apr_status_t) apr_sendv(apr_socket_t *sock,
-                                    const struct iovec *vec,
-                                    apr_int32_t nvec, apr_size_t *len);}
-
 {
  * @param sock The socket to send from
  * @param where The apr_sockaddr_t describing where to send the data
@@ -561,11 +529,6 @@ function apr_socket_sendto(sock: Papr_socket_t; where: Papr_sockaddr_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_sendto' + LibSuff20;
 
-{ @deprecated @see apr_socket_sendto }
-{APR_DECLARE(apr_status_t) apr_sendto(apr_socket_t *sock, apr_sockaddr_t *where,
-                                     apr_int32_t flags, const char *buf, 
-                                     apr_size_t *len);}
-
 {
  * @param from The apr_sockaddr_t to fill in the recipient info
  * @param sock The socket to use
@@ -577,11 +540,6 @@ function apr_socket_recvfrom(from: Papr_sockaddr_t; sock: Papr_socket_t;
  flags: apr_int32_t; buf: PChar; len: Papr_size_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_recvfrom' + LibSuff20;
-
-{ @deprecated @see apr_socket_recvfrom }
-{APR_DECLARE(apr_status_t) apr_recvfrom(apr_sockaddr_t *from, apr_socket_t *sock,
-                                       apr_int32_t flags, char *buf, 
-                                       apr_size_t *len);}
 
 {$if defined(APR_HAS_SENDFILE) or defined(DOXYGEN)}
 
@@ -605,11 +563,6 @@ function apr_socket_sendfile(sock: Papr_socket_t; file_: Papr_file_t;
  flags: apr_int32_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_sendfile' + LibSuff24;
-
-{ @deprecated @see apr_socket_sendfile }
-{APR_DECLARE(apr_status_t) apr_sendfile(apr_socket_t *sock, apr_file_t *file,
-                                       apr_hdtr_t *hdtr, apr_off_t *offset,
-                                       apr_size_t *len, apr_int32_t flags);}
 
 {$endif} { APR_HAS_SENDFILE }
 
@@ -635,10 +588,6 @@ function apr_socket_recv(sock: Papr_socket_t; buf: PChar; len: Papr_size_t): apr
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_recv' + LibSuff12;
 
-{ @deprecated @see apr_socket_recv }
-{APR_DECLARE(apr_status_t) apr_recv(apr_socket_t *sock,
-                                   char *buf, apr_size_t *len);}
-
 {
  * Setup socket options for the specified socket
  * @param sock The socket to set up.
@@ -648,6 +597,11 @@ function apr_socket_recv(sock: Papr_socket_t; buf: PChar; len: Papr_size_t): apr
  *            APR_SO_KEEPALIVE  --  keep connections active
  *            APR_SO_LINGER     --  lingers on close if data is present
  *            APR_SO_NONBLOCK   --  Turns blocking on/off for socket
+ *                                  When this option is enabled, use
+ *                                  the APR_STATUS_IS_EAGAIN() macro to
+ *                                  see if a send or receive function
+ *                                  could not transfer data without
+ *                                  blocking.
  *            APR_SO_REUSEADDR  --  The rules used in validating addresses
  *                                  supplied to bind should allow reuse
  *                                  of local addresses.
@@ -659,10 +613,6 @@ function apr_socket_recv(sock: Papr_socket_t; buf: PChar; len: Papr_size_t): apr
 function apr_socket_opt_set(sock: Papr_socket_t; opt, on_: apr_int32_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_opt_set' + LibSuff12;
-
-{ @deprecated @see apr_socket_opt_set }
-{APR_DECLARE(apr_status_t) apr_setsocketopt(apr_socket_t *sock,
-                                           apr_int32_t opt, apr_int32_t on);}
 
 {
  * Setup socket timeout for the specified socket
@@ -702,10 +652,6 @@ function apr_socket_opt_get(sock: Papr_socket_t; opt, on_: apr_int32_t): apr_sta
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_socket_opt_get' + LibSuff12;
 
-{ @deprecated @see apr_socket_opt_set }
-{APR_DECLARE(apr_status_t) apr_getsocketopt(apr_socket_t *sock,
-                                           apr_int32_t opt, apr_int32_t *on);}
-
 {
  * Query socket timeout for the specified socket
  * @param sock The socket to query
@@ -737,37 +683,6 @@ function apr_socket_addr_get(sa: PPapr_sockaddr_t;
  external LibAPR name LibNamePrefix + 'apr_socket_addr_get' + LibSuff12;
 
 {
- * Set the port in an APR socket address.
- * @param sockaddr The socket address to set.
- * @param port The port to be stored in the socket address.
- * @deprecated @see apr_sockaddr_info_get
- }
-function apr_sockaddr_port_set(sockaddr: Papr_sockaddr_t; port: apr_port_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_sockaddr_port_set' + LibSuff8;
-
-{
- * Return the port in an APR socket address.
- * @param port The port from the socket address.
- * @param sockaddr The socket address to reference.
- * @deprecated Access port field directly.
- }
-function apr_sockaddr_port_get(port: Papr_port_t; sockaddr: Papr_sockaddr_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_sockaddr_port_get' + LibSuff8;
-
-{
- * Set the IP address in an APR socket address.
- * @param sockaddr The socket address to use 
- * @param addr The IP address to attach to the socket.
- *             Use APR_ANYADDR to use any IP addr on the machine.
- * @deprecated @see apr_sockaddr_info_get
- }
-function apr_sockaddr_ip_set(sockaddr: Papr_sockaddr_t; const addr: PChar): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_sockaddr_ip_set' + LibSuff8;
-
-{
  * Return the IP address (in numeric address string format) in
  * an APR socket address.  APR will allocate storage for the IP address 
  * string from the pool of the apr_sockaddr_t.
@@ -792,23 +707,14 @@ function apr_sockaddr_equal(const addr1, addr2: Papr_sockaddr_t): Integer;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_sockaddr_equal' + LibSuff8;
 
-{$if defined(APR_FILES_AS_SOCKETS) or defined(DOXYGEN)}
-
 {
- * Convert a File type to a socket so that it can be used in a poll operation.
- * @param newsock the newly created socket which represents a file.
- * @param file the file to mask as a socket.
- * @warning This is not available on all platforms.  Platforms that have the
- *      ability to poll files for data to be read/written/exceptions will
- *      have the APR_FILES_AS_SOCKETS macro defined as true.
- * @deprecated This function has been deprecated, because of the new poll
- *             implementation.
+ * Return the type of the socket.
+ * @param sock The socket to query.
+ * @param type The returned type (e.g., SOCK_STREAM).
  }
-function apr_socket_from_file(newsock: Papr_socket_t; file_: Papr_file_t): apr_status_t;
+function apr_socket_type_get(sock: Papr_socket_t; type_: PInteger): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_socket_connect' + LibSuff8;
-
-{$endif} { APR_FILES_AS_SOCKETS }
+ external LibAPR name LibNamePrefix + 'apr_socket_type_get' + LibSuff8;
 
 {
  * Given an apr_sockaddr_t and a service name, set the port for the service
@@ -867,18 +773,79 @@ function apr_socket_protocol_get(sock: Papr_socket_t; protocol: PInteger): apr_s
  external LibAPR name LibNamePrefix + 'apr_socket_protocol_get' + LibSuff8;
 
 {
+ * Get the pool used by the socket.
+ }
+//APR_POOL_DECLARE_ACCESSOR(socket);
+
+{
  * Set a socket to be inherited by child processes.
  }
 //APR_DECLARE_INHERIT_SET(socket);
-
-{ @deprecated @see apr_socket_inherit_set }
-{APR_DECLARE(void) apr_socket_set_inherit(apr_socket_t *skt);}
 
 {
  * Unset a socket from being inherited by child processes.
  }
 //APR_DECLARE_INHERIT_UNSET(socket);
 
-{ @deprecated @see apr_socket_inherit_unset }
-{APR_DECLARE(void) apr_socket_unset_inherit(apr_socket_t *skt);}
+{
+ * @defgroup apr_mcast IP Multicast
+ }
+
+{
+ * Join a Multicast Group
+ * @param sock The socket to join a multicast group
+ * @param join The address of the multicast group to join
+ * @param iface Address of the interface to use.  If NULL is passed, the
+ *              default multicast interface will be used. (OS Dependent)
+ * @param source Source Address to accept transmissions from (non-NULL
+ *               implies Source-Specific Multicast)
+ }
+function apr_mcast_join(sock: Papr_socket_t;
+ join, iface, source: Papr_sockaddr_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_mcast_join' + LibSuff16;
+
+{
+ * Leave a Multicast Group.  All arguments must be the same as
+ * apr_mcast_join.
+ * @param sock The socket to leave a multicast group
+ * @param addr The address of the multicast group to leave
+ * @param iface Address of the interface to use.  If NULL is passed, the
+ *              default multicast interface will be used. (OS Dependent)
+ * @param source Source Address to accept transmissions from (non-NULL
+ *               implies Source-Specific Multicast)
+ }
+function apr_mcast_leave(sock: Papr_socket_t;
+ addr, iface, source: Papr_sockaddr_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_mcast_leave' + LibSuff16;
+
+{
+ * Set the Multicast Time to Live (ttl) for a multicast transmission.
+ * @param sock The socket to set the multicast ttl
+ * @param ttl Time to live to Assign. 0-255, default=1
+ * @remark If the TTL is 0, packets will only be seen by sockets on
+ * the local machine, and only when multicast loopback is enabled.
+ }
+function apr_mcast_hops(sock: Papr_socket_t; ttl: apr_byte_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_mcast_hops' + LibSuff8;
+
+{
+ * Toggle IP Multicast Loopback
+ * @param sock The socket to set multicast loopback
+ * @param opt 0=disable, 1=enable
+ }
+function apr_mcast_loopback(sock: Papr_socket_t; opt: apr_byte_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_mcast_loopback' + LibSuff8;
+
+{
+ * Set the Interface to be used for outgoing Multicast Transmissions.
+ * @param sock The socket to set the multicast interface on
+ * @param iface Address of the interface to use for Multicast
+ }
+function apr_mcast_interface(sock: Papr_socket_t; iface: Papr_sockaddr_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_mcast_interface' + LibSuff8;
 

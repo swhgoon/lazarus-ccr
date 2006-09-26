@@ -137,12 +137,6 @@ function apr_time_exp_tz(result: Papr_time_exp_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_time_exp_tz' + LibSuff16;
 
-{ @deprecated @see apr_time_exp_tz }
-function apr_explode_time(result: Papr_time_exp_t;
- input: apr_time_t; offs: apr_int32_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_explode_time' + LibSuff16;
-
 {
  * convert a time to its human readable components in GMT timezone
  * @param result the exploded time
@@ -162,12 +156,6 @@ function apr_time_exp_lt(result: Papr_time_exp_t;
  input: apr_time_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_time_exp_lt' + LibSuff12;
-
-{ @deprecated @see apr_time_exp_lt }
-function apr_explode_localtime(result: Papr_time_exp_t;
- input: apr_time_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_explode_localtime' + LibSuff12;
 
 {
  * Convert time value from human readable format to a numeric apr_time_t 
@@ -190,12 +178,6 @@ function apr_time_exp_gmt_get(result: Papr_time_t;
  input: Papr_time_exp_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_time_exp_gmt_get' + LibSuff8;
-
-{ @deprecated @see apr_time_exp_gmt_get }
-function apr_implode_gmt(result: Papr_time_t;
- input: Papr_time_exp_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_implode_gmt' + LibSuff8;
 
 {
  * Sleep for the specified number of micro-seconds.

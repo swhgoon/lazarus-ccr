@@ -75,16 +75,29 @@ function apr_signal_description_get(signo: Integer): PChar;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_signal_description_get' + LibSuff4;
 
-{ @deprecated @see apr_signal_description_get }
-function apr_signal_get_description(signo: Integer): PChar;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_signal_get_description' + LibSuff4;
-
 {
  * APR-private function for initializing the signal package
  * @internal
  * @param pglobal The internal, global pool
  }
 //void apr_signal_init(apr_pool_t *pglobal);
+
+{
+ * Block the delivery of a particular signal
+ * @param signum The signal number
+ * @return status
+ }
+function apr_signal_block(signum: Integer): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_signal_block' + LibSuff4;
+
+{
+ * Enable the delivery of a particular signal
+ * @param signum The signal number
+ * @return status
+ }
+function apr_signal_unblock(signum: Integer): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_signal_unblock' + LibSuff4;
 
 {$endif}

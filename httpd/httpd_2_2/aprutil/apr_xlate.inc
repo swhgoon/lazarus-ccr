@@ -88,24 +88,27 @@ function apr_xlate_sb_get(convset: Papr_xlate_t; onoff: PInteger): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPRUtil name LibNamePrefix + 'apr_xlate_sb_get' + LibSuff8;
 
-{ @deprecated @see apr_xlate_sb_get }
-function apr_xlate_get_sb(convset: Papr_xlate_t; onoff: PInteger): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPRUtil name LibNamePrefix + 'apr_xlate_get_sb' + LibSuff8;
-
 {
  * Convert a buffer of text from one codepage to another.
- * @param convset The handle allocated by apr_xlate_open, specifying 
+ * @param convset The handle allocated by apr_xlate_open, specifying
  *                the parameters of conversion
  * @param inbuf The address of the source buffer
  * @param inbytes_left Input: the amount of input data to be translated
- *                     Output: the amount of input data not yet translated    
+ *                     Output: the amount of input data not yet translated
  * @param outbuf The address of the destination buffer
  * @param outbytes_left Input: the size of the output buffer
  *                      Output: the amount of the output buffer not yet used
  * @remark
- *  Return APR_ENOTIMPL if charset transcoding is not available
- *  in this instance of apr-util (i.e., APR_HAS_XLATE is undefined).
+ * Returns APR_ENOTIMPL if charset transcoding is not available
+ * in this instance of apr-util (i.e., APR_HAS_XLATE is undefined).
+ * Returns APR_INCOMPLETE if the input buffer ends in an incomplete
+ * multi-byte character.
+ *
+ * To correctly terminate the output buffer for some multi-byte
+ * character set encodings, a final call must be made to this function
+ * after the complete input string has been converted, passing
+ * the inbuf and inbytes_left parameters as NULL.  (Note that this
+ * mode only works from version 1.1.0 onwards)
  }
 function apr_xlate_conv_buffer(convset: Papr_xlate_t; const inbuf: PChar;
  inbytes_left: Papr_size_t; outbuf: PChar; outbytes_left: Papr_size_t): apr_status_t;

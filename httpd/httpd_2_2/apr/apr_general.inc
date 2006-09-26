@@ -94,12 +94,6 @@ type
 #define APR_OFFSETOF(s_type,field) APR_OFFSET(s_type*,field)
 #endif}
 
-{ @deprecated @see APR_OFFSET }
-//#define APR_XtOffset APR_OFFSET
-
-{ @deprecated @see APR_OFFSETOF }
-//#define APR_XtOffsetOf APR_OFFSETOF
-
 {$ifndef DOXYGEN}
 
 { A couple of prototypes for functions in case some platform doesn't
@@ -135,12 +129,15 @@ int strncasecmp(const char *a, const char *b, size_t n);
  * String and memory functions
  }
 
+{ APR_STRINGIFY is defined here, and also in apr_release.h, so wrap it }
+{$ifndef APR_STRINGIFY}
 { Properly quote a value as a string in the C preprocessor }
 //#define APR_STRINGIFY(n) APR_STRINGIFY_HELPER(n)
 { Helper macro for APR_STRINGIFY }
-{#define APR_STRINGIFY_HELPER(n) #n
+{#define APR_STRINGIFY_HELPER(n) #n}
+{$endif}
 
-#if (!APR_HAVE_MEMMOVE)
+{#if (!APR_HAVE_MEMMOVE)
 #define memmove(a,b,c) bcopy(b,a,c)
 #endif
 
@@ -214,15 +211,9 @@ procedure apr_terminate2;
  * @param buf Buffer to fill with random bytes
  * @param length Length of buffer in bytes (becomes apr_size_t in APR 1.0)
  }
-{$ifdef APR_ENABLE_FOR_1_0}
-function apr_generate_random_bytes(buf: PChar; length: apr_size_t): apr_status_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_generate_random_bytes' + LibSuff8;
-{$else}
 function apr_generate_random_bytes(buf: PChar; length: Integer): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_generate_random_bytes' + LibSuff8;
-{$endif}
 
 {$endif}
 

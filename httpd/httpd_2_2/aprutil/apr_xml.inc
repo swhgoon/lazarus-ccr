@@ -26,7 +26,11 @@
 #include "apr_tables.h"
 #include "apr_file_io.h"
 
-#include "apu.h"}
+#include "apu.h"
+#if APR_CHARSET_EBCDIC
+#include "apr_xlate.h"
+#endif
+}
 
 {
  * @package Apache XML library
@@ -346,4 +350,18 @@ function apr_xml_insert_uri(uri_array: Papr_array_header_t;
 
 { Get the URI item for this XML element }
 //#define APR_XML_GET_URI_ITEM(ary, i) (((const char * const *)(ary)->elts)[i])
+
+{$ifdef APR_CHARSET_EBCDIC}
+{
+ * Convert parsed tree in EBCDIC
+ * @param p The pool to allocate out of
+ * @param pdoc The apr_xml_doc to convert.
+ * @param xlate The translation handle to use.
+ * @return Any errors found during conversion.
+ }
+function apr_xml_parser_convert_doc(p: Papr_pool_t;
+ pdoc: Papr_xml_doc; convset: Papr_xlate_t): apr_status_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPRUtil name LibNamePrefix + 'apr_xml_parser_convert_doc' + LibSuff12;
+{$endif}
 

@@ -54,6 +54,20 @@ type
   Papr_hash_index_t = ^apr_hash_index_t;
 
 {
+ * Callback functions for calculating hash values.
+ * @param key The key.
+ * @param klen The length of the key, or APR_HASH_KEY_STRING to use the string
+ *             length. If APR_HASH_KEY_STRING then returns the actual key length.
+ }
+  apr_hashfunc_t = function (const key: PChar; klen: Papr_size_t): cuint;
+
+{
+ * The default hash function.
+ }
+function apr_hashfunc_default(const key: PChar; klen: Papr_size_t): cuint;
+ cdecl; external LibAPR name LibNamePrefix + 'apr_hashfunc_default' + LibSuff8;
+
+{
  * Create a hash table.
  * @param pool The pool to allocate the hash table out of
  * @return The hash table just created
@@ -61,6 +75,16 @@ type
 function apr_hash_make(pool: Papr_pool_t): Papr_hash_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPR name LibNamePrefix + 'apr_hash_make' + LibSuff4;
+
+{
+ * Create a hash table with a custom hash function
+ * @param pool The pool to allocate the hash table out of
+ * @param hash_func A custom hash function.
+ * @return The hash table just created
+  }
+function apr_hash_make_custom(pool: Papr_pool_t; hash_func: apr_hashfunc_t): Papr_hash_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibAPR name LibNamePrefix + 'apr_hash_make_custom' + LibSuff8;
 
 {
  * Make a copy of a hash table
@@ -165,7 +189,8 @@ function apr_hash_count(ht: Papr_hash_t): cuint;
 
 {
  * Merge two hash tables into one new hash table. The values of the overlay
- * hash override the values of the base if both have the same key.
+ * hash override the values of the base if both have the same key.  Both
+ * hash tables must use the same hash function.
  * @param p The pool to use for the new hash table
  * @param overlay The table to add to the initial table
  * @param base The table that represents the initial values of the new table
@@ -179,7 +204,8 @@ function apr_hash_overlay(p: Papr_pool_t;
 {
  * Merge two hash tables into one new hash table. If the same key
  * is present in both tables, call the supplied merge function to
- * produce a merged value for the key in the new table.
+ * produce a merged value for the key in the new table.  Both
+ * hash tables must use the same hash function.
  * @param p The pool to use for the new hash table
  * @param h1 The first of the tables to merge
  * @param h2 The second of the tables to merge

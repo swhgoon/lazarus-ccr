@@ -120,11 +120,6 @@ function apr_uri_port_of_scheme(const scheme_str: PChar): apr_port_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibAPRUtil name LibNamePrefix + 'apr_uri_port_of_scheme' + LibSuff4;
 
-{ @deprecated @see apr_uri_port_of_scheme }
-function apr_uri_default_port_for_scheme(const scheme_str: PChar): apr_port_t;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPRUtil name LibNamePrefix + 'apr_uri_default_port_for_scheme' + LibSuff4;
-
 {
  * Unparse a apr_uri_t structure to an URI string.  Optionally 
  * suppress the password for security reasons.

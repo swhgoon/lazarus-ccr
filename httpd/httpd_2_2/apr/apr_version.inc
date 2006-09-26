@@ -40,28 +40,47 @@
  * authoritative version numbers for APR. 
  }
 
-{ major version
+const
+{  major version
  * Major API changes that could cause compatibility problems for older
  * programs such as structure size changes.  No binary compatibility is
  * possible across a change in the major version.
  }
-const
-  APR_MAJOR_VERSION = 0;
+  APR_MAJOR_VERSION      = 1;
 
-{
+{  minor version
  * Minor API changes that do not cause binary compatibility problems.
- * Should be reset to 0 when upgrading APR_MAJOR_VERSION
+ * Reset to 0 when upgrading APR_MAJOR_VERSION
  }
-  APR_MINOR_VERSION = 9;
+  APR_MINOR_VERSION      = 2;
 
-{ patch level }
-  APR_PATCH_VERSION = 12;
+{  patch level
+ * The Patch Level never includes API changes, simply bug fixes.
+ * Reset to 0 when upgrading APR_MINOR_VERSION
+ }
+  APR_PATCH_VERSION      = 7;
+
+{$if defined(APR_IS_DEV_VERSION) or defined(DOXYGEN)}
+{ Internal: string form of the "is dev" flag }
+  APR_IS_DEV_STRING = '-dev';
+{$else}
+  APR_IS_DEV_STRING = '';
+{$endif}
+
+{ APR_STRINGIFY is defined here, and also in apr_general.h, so wrap it }
+{#ifndef APR_STRINGIFY
+/** Properly quote a value as a string in the C preprocessor */
+#define APR_STRINGIFY(n) APR_STRINGIFY_HELPER(n)
+/** Helper macro for APR_STRINGIFY */
+#define APR_STRINGIFY_HELPER(n) #n
+#endif}
 
 {
- *  This symbol is defined for internal, "development" copies of APR. This
- *  symbol will be #undef'd for releases. 
+ * The symbol APR_IS_DEV_VERSION is only defined for internal,
+ * "development" copies of APR.  It is undefined for released versions
+ * of APR.
  }
-{.$undef APR_IS_DEV_VERSION}
+{$undef APR_IS_DEV_VERSION}
 
 
 { The formatted string of APR's version }
@@ -71,6 +90,22 @@ const
      APR_STRINGIFY(APR_PATCH_VERSION) \
      APR_IS_DEV_STRING}
 
+{ An alternative formatted string of APR's version }
+{ macro for Win32 .rc files using numeric csv representation }
+{#define APR_VERSION_STRING_CSV APR_MAJOR_VERSION ##, \
+                             ##APR_MINOR_VERSION ##, \
+                             ##APR_PATCH_VERSION}
+
+
+//#ifndef APR_VERSION_ONLY
+
+{ The C language API to access the version at run time,
+ * as opposed to compile time.  APR_VERSION_ONLY may be defined
+ * externally when preprocessing apr_version.h to obtain strictly
+ * the C Preprocessor macro declarations.
+ }
+
+//#include "apr.h"
 
 {
  * The numeric version information is broken out into fields within this 
@@ -102,11 +137,5 @@ function apr_version_string: PChar;
  external LibAPR name LibNamePrefix + 'apr_version_string' + LibSuff0;
 
 
-{ Internal: string form of the "is dev" flag }
-{#ifdef APR_IS_DEV_VERSION
-#define APR_IS_DEV_STRING "-dev"
-#else}
-const
-  APR_IS_DEV_STRING = '';
 //#endif
 

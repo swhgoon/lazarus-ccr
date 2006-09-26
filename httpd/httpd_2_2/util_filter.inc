@@ -1,9 +1,9 @@
-{ Copyright 2000-2005 The Apache Software Foundation or its licensors, as
- * applicable.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+{ Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,6 +14,11 @@
  * limitations under the License.
  }
 
+{
+ * @file util_filter.h
+ * @brief Apache filter library
+ }
+
 {#include "apr.h"
 #include "apr_buckets.h"
 
@@ -22,11 +27,6 @@
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif}
-
-{
- * @file util_filter.h
- * @brief Apache filter library
- }
 
 const
 { Returned by the bottom-most filter if no data was written.
@@ -67,7 +67,8 @@ type
   );
 
 {
- * @defgroup filter FILTER CHAIN
+ * @defgroup APACHE_CORE_FILTER Filter Chain
+ * @ingroup  APACHE_CORE
  *
  * Filters operate using a "chaining" mechanism. The filters are chained
  * together into a sequence. When output is generated, it is passed through
@@ -192,25 +193,38 @@ type
  }
 
   Pap_filter_rec_t = ^ap_filter_rec_t;
+  
+  ap_filter_provider_t = record end;
+  
+  Pap_filter_provider_t = ^ap_filter_provider_t;
 
 {
- * This structure is used for recording information about the
+ * @brief This structure is used for recording information about the
  * registered filters. It associates a name with the filter's callback
  * and filter type.
  *
  * At the moment, these are simply linked in a chain, so a ->next pointer
  * is available.
+ *
+ * It is used for any filter that can be inserted in the filter chain.
+ * This may be either a httpd-2.0 filter or a mod_filter harness.
+ * In the latter case it contains dispatch, provider and protocol information.
+ * In the former case, the new fields (from dispatch) are ignored.
  }
   ap_filter_rec_t = record
     { The registered name for this filter }
     name: PChar;
+    
     { The function to call when this filter is invoked. }
     filter_func: ap_filter_func;
+    
     { The function to call before the handlers are invoked. Notice
      * that this function is called only for filters participating in
      * the http protocol. Filters for other protocols are to be
-     * initiliazed by the protocols themselves. }
+     * initiliazed by the protocols themselves.
+     }
     filter_init_func: ap_init_filter_func;
+    
     { The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
      * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
@@ -220,6 +234,15 @@ type
 
     { The next filter_rec in the list }
     next: Pap_filter_rec_t;
+
+    { Providers for this filter }
+    providers: Pap_filter_provider_t;
+
+    { Trace level for this filter }
+    debug: cint;
+
+    { Protocol flags for this filter }
+    proto_flags: cuint;
   end;
 
 {
@@ -304,10 +327,12 @@ function ap_register_input_filter(const name: PChar;
  external LibHTTPD name LibNamePrefix + 'ap_register_input_filter' + LibSuff16;
 
 {
- * This function is used to register an output filter with the system. 
- * After this registration is performed, then a filter may be added 
- * into the filter chain by using ap_add_output_filter() and simply 
- * specifying the name.
+ * This function is used to register an output filter with the system.
+ * After this registration is performed, then a filter may be added
+ * into the filter chain by using ap_add_output_filter() and simply
+ * specifying the name.  It may also be used as a provider under mod_filter.
+ * This is (equivalent to) ap_register_output_filter_protocol with
+ * proto_flags=0, and is retained for back-compatibility with 2.0 modules.
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
@@ -322,6 +347,32 @@ function ap_register_output_filter(const name: PChar;
  ftype: ap_filter_type): Pap_filter_rec_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
  external LibHTTPD name LibNamePrefix + 'ap_register_output_filter' + LibSuff16;
+
+{ For httpd-2.2 I suggest replacing the above with
+#define ap_register_output_filter(name,ffunc,init,ftype) \
+             ap_register_output_filter_protocol(name,ffunc,init,ftype,0)
+}
+
+{
+ * This function is used to register an output filter with the system.
+ * After this registration is performed, then a filter may be added
+ * into the filter chain by using ap_add_output_filter() and simply
+ * specifying the name.  It may also be used as a provider under mod_filter.
+ *
+ * @param name The name to attach to the filter function
+ * @param filter_func The filter function to name
+ * @param filter_init The function to call before the filter handlers
+ *                    are invoked
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ *              ::AP_FTYPE_CONNECTION
+ * @param proto_flags Protocol flags: logical OR of AP_FILTER_PROTO_* bits
+ * @see ap_add_output_filter()
+ }
+function ap_register_output_filter_protocol(const name: PChar;
+ filter_func: ap_out_filter_func; filter_init: ap_init_filter_func;
+ ftype: ap_filter_type; proto_flags: cuint): Pap_filter_rec_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibHTTPD name LibNamePrefix + 'ap_register_output_filter_protocol' + LibSuff20;
 
 {
  * Adds a named filter into the filter chain on the specified request record.
@@ -520,4 +571,33 @@ function ap_fprintf(f: Pap_filter_t; bb: Papr_bucket_brigade;
  cdecl; external LibHTTPD name 'ap_fputstrs';
 
 {        __attribute__((format(printf,3,4)));}
+
+{
+ * set protocol requirements for an output content filter
+ * (only works with AP_FTYPE_RESOURCE and AP_FTYPE_CONTENT_SET)
+ * @param f the filter in question
+ * @param proto_flags Logical OR of AP_FILTER_PROTO_* bits
+ }
+procedure ap_filter_protocol(f: Pap_filter_t; proto_flags: cuint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+ external LibHTTPD name LibNamePrefix + 'ap_filter_protocol' + LibSuff8;
+
+const
+{ Filter changes contents (so invalidating checksums/etc) }
+  AP_FILTER_PROTO_CHANGE = $1;
+
+{ Filter changes length of contents (so invalidating content-length/etc) }
+  AP_FILTER_PROTO_CHANGE_LENGTH = $2;
+
+{ Filter requires complete input and can't work on byteranges }
+  AP_FILTER_PROTO_NO_BYTERANGE = $4;
+
+{ Filter should not run in a proxy }
+  AP_FILTER_PROTO_NO_PROXY = $8;
+
+{ Filter makes output non-cacheable }
+  AP_FILTER_PROTO_NO_CACHE = $10;
+
+{ Filter is incompatible with "Cache-Control: no-transform" }
+  AP_FILTER_PROTO_TRANSFORM = $20;
 
