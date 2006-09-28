@@ -9,7 +9,7 @@ uses Classes, Windows, sysutils;
 var
   Lib, Lib2: HINST;
 begin
-  Lib := LoadLibrary('C:\Programas\Apache\httpd\mod_example.so');
+  Lib := LoadLibrary('C:\Programas\Apache\lazarus-ccr\httpd\mod_hello.so');
 //  Lib2 := LoadLibrary('C:\Programas\Apache\pmodules\newlib2.dll');
   WriteLn(Lib);
   WriteLn(Lib2);

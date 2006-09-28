@@ -51,7 +51,7 @@ uses
   
 const
 {$IFDEF WINDOWS}
-  LibAPR = 'libapr.dll';
+  LibAPR = 'libapr-1.dll';
 {$ELSE}
   LibAPR = '';
 {$ENDIF}

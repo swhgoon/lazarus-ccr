@@ -65,7 +65,7 @@ type
  * The default hash function.
  }
 function apr_hashfunc_default(const key: PChar; klen: Papr_size_t): cuint;
- cdecl; external LibAPR name LibNamePrefix + 'apr_hashfunc_default' + LibSuff8;
+ cdecl; external LibAPR name 'apr_hashfunc_default';
 
 {
  * Create a hash table.
