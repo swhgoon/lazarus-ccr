@@ -41,6 +41,8 @@ interface
   {$PACKRECORDS C}
 {$endif}
 
+{$define Apache2_0}
+
 uses
 {$ifdef WINDOWS}
   Windows, winsock,

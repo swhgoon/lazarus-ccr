@@ -39,6 +39,8 @@ unit httpd;
   {$PACKRECORDS C}
 {$endif}
 
+{$define Apache2_0}
+
 interface
 
 uses

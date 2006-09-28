@@ -108,7 +108,7 @@ function apr_poll_setup(new_poll: PPapr_pollfd_t; num: apr_int32_t;
 function apr_poll(aprset: Papr_pollfd_t; numsock: apr_int32_t;
  nsds: Papr_int32_t; timeout: apr_interval_time_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_poll' + LibSuff16;
+ external LibAPR name LibNamePrefix + 'apr_poll' + LibSuff20;
 
 {
  * Add a socket to the poll structure.
@@ -255,5 +255,5 @@ function apr_pollset_remove(pollset: Papr_pollset_t;
 function apr_pollset_poll(pollset: Papr_pollset_t; timeout: apr_interval_time_t;
  num: Papr_int32_t; const descriptors: PPapr_pollfd_t): apr_status_t;
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibAPR name LibNamePrefix + 'apr_pollset_poll' + LibSuff16;
+ external LibAPR name LibNamePrefix + 'apr_pollset_poll' + LibSuff20;
 
