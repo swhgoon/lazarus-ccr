@@ -123,11 +123,13 @@ API_EXPORT(const array_header *) ap_requires (request_rec *);    }
 {
  * CGI Script stuff for Win32...
  }
-typedef enum { eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32, 
-               eFileTypeSCRIPT, eCommandShell16, eCommandShell32 } file_type_e;
-typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY, 
-               INTERPRETER_SOURCE_SHEBANG } interpreter_source_e;
-API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char **);
+type
+  file_type_e = ( eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32,
+   eFileTypeSCRIPT, eCommandShell16, eCommandShell32 );
+  interpreter_source_e = ( INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY,
+   INTERPRETER_SOURCE_SHEBANG );
+
+//API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char **);
 {$endif}
 
 {.$ifdef CORE_PRIVATE}
@@ -285,7 +287,7 @@ type
 
 {$ifdef WIN32}
     { Where to find interpreter to run scripts }
-    interpreter_source_e script_interpreter_source;
+    script_interpreter_source: interpreter_source_e;
 {$endif}
     
 {$ifdef CHARSET_EBCDIC}

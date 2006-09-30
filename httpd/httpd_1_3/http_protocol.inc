@@ -37,7 +37,8 @@
 
 { Send the Status-Line and header fields for HTTP response }
 
-//API_EXPORT(void) ap_send_http_header(request_rec *l);
+procedure ap_send_http_header(l: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Send the response to special method requests }
 
@@ -96,19 +97,28 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
  * definitions of the macros would get a whole lot hairier.
  }
 
-//API_EXPORT(int) ap_rputc(int c, request_rec *r);
+function ap_rputc(c: cint; r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 function ap_rputs(const str: PChar; r: Prequest_rec): cint;
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name 'ap_rputs';
-// external LibHTTPD name LibNamePrefix + 'ap_rputs' + LibSuff8;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-{API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
-API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...);
-API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
-API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
-				__attribute__((format(printf,2,3)));
-API_EXPORT(int) ap_rflush(request_rec *r);}
+function ap_rwrite(const buf: Pointer; nbyte: cint; r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_rvputs(r: Prequest_rec; others: array of const): cint;
+ cdecl; external LibHTTPD;
+
+function ap_vrprintf(r: Prequest_rec; const fmt: PChar; vlist: va_list): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_rprintf(r: Prequest_rec; const fmt: PChar; others: array of const): cint;
+ cdecl; external LibHTTPD;
+
+{				__attribute__((format(printf,2,3)));}
+
+function ap_rflush(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {
  * Index used in custom_responses array for a specific error code

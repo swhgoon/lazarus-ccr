@@ -67,20 +67,23 @@
 procedure ap_log_error(
  const file_: PChar; line, level: Integer;
  const s: Pserver_rec; const fmt: PChar; others: array of const);
- cdecl; external LibHTTPD name 'ap_log_error';
+ cdecl; external LibHTTPD;
 
 //			    __attribute__((format(printf,5,6)));
 
-procedure ap_log_perror(
+procedure ap_log_rerror(
  const file_: PChar; line, level: Integer;
  const s: Prequest_rec; const fmt: PChar; others: array of const);
- cdecl; external LibHTTPD name 'ap_log_perror';
+ cdecl; external LibHTTPD;
 
 //			    __attribute__((format(printf,5,6)));
 
-//API_EXPORT(void) ap_error_log2stderr (server_rec *);
+procedure ap_error_log2stderr(s: Pserver_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-//API_EXPORT(void) ap_log_pid (pool *p, char *fname);
+procedure ap_log_pid(p: PPool; fname: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 { These are for legacy code, new code should use ap_log_error,
  * or ap_log_rerror.
  }

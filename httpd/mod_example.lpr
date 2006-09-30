@@ -437,7 +437,7 @@ begin
      * on the size (and readability) of the error_log is considerable.
      }
     if ((EXAMPLE_LOG_EACH = 0) and (s <> nil)) then
-      ap_log_error(MODULE_NAME, 438, APLOG_DEBUG, 0, s, 'mod_example: %s', [note]);
+      ap_log_error(MODULE_NAME, 438, APLOG_DEBUG, 0, s, 'mod_example: ', [note]);
 end;
 
 {--------------------------------------------------------------------------}
@@ -504,6 +504,8 @@ var
   dcfg: Px_cfg;
   tempstr: PChar;
 begin
+    tempstr := 'Undefined';
+
     if not SameText(r^.handler, 'example-handler') then
     begin
       Result := DECLINED;
@@ -550,8 +552,7 @@ begin
     ap_rputs('  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output' + LineEnding, r);
     ap_rputs('  </H1>' + LineEnding, r);
     ap_rputs('  <P>' + LineEnding, r);
-    ap_rprintf(r, '  Apache HTTP Server version: "%s"' + LineEnding,
-	    [ap_get_server_version()]);
+    ap_rprintf(r, '  Apache HTTP Server version: "%s"' + LineEnding, [ap_get_server_version()]);
     ap_rputs('  <BR>' + LineEnding, r);
     ap_rprintf(r, '  Server built: "%s"' + LineEnding, [ap_get_server_built()]);
     ap_rputs('  </P>' + LineEnding, r);;
@@ -1341,12 +1342,12 @@ begin
   begin
     name := MODULE_NAME;
     magic := MODULE_MAGIC_COOKIE;
-    create_dir_config := @x_create_dir_config;    { per-directory config creator }
-    merge_dir_config := @x_merge_dir_config;     { dir config merger }
-    create_server_config := @x_create_server_config; { server config creator }
+    create_dir_config := @x_create_dir_config;      { per-directory config creator }
+    merge_dir_config := @x_merge_dir_config;        { dir config merger }
+    create_server_config := @x_create_server_config;{ server config creator }
     merge_server_config := @x_merge_server_config;  { server config merger }
-    cmds := @x_cmds;                 { command table }
-    register_hooks := @x_register_hooks; { set up other request processing hooks }
+    cmds := @x_cmds;                                { command table }
+    register_hooks := @x_register_hooks;            { set up other request processing hooks }
   end;
 end.
 

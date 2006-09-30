@@ -9,6 +9,25 @@
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="False"/>
+      <AutoIncrementBuild Value="False"/>
+      <CurrentVersionNr Value="0"/>
+      <CurrentMajorRevNr Value="0"/>
+      <CurrentMinorRevNr Value="0"/>
+      <CurrentBuildNr Value="0"/>
+      <ProjectVersion Value="1,0,0,0"/>
+      <Language Value="0409"/>
+      <CharSet Value="04E4"/>
+      <Comments Value=""/>
+      <CompanyName Value=""/>
+      <FileDescription Value=""/>
+      <InternalName Value=""/>
+      <LegalCopyright Value=""/>
+      <LegalTrademarks Value=""/>
+      <OriginalFilename Value=""/>
+      <ProductName Value=""/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
@@ -22,15 +41,15 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="74">
+    <Units Count="84">
       <Unit0>
         <Filename Value="mod_example.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_example"/>
-        <CursorPos X="12" Y="1291"/>
-        <TopLine Value="1277"/>
+        <CursorPos X="1" Y="1327"/>
+        <TopLine Value="1323"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="66"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -263,7 +282,7 @@
         <CursorPos X="24" Y="78"/>
         <TopLine Value="69"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
@@ -273,7 +292,7 @@
         <CursorPos X="3" Y="142"/>
         <TopLine Value="124"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -283,7 +302,7 @@
         <CursorPos X="56" Y="33"/>
         <TopLine Value="29"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit37>
       <Unit38>
@@ -294,8 +313,8 @@
       </Unit38>
       <Unit39>
         <Filename Value="httpd_2_0\http_protocol.inc"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="18" Y="442"/>
+        <TopLine Value="437"/>
         <UsageCount Value="12"/>
       </Unit39>
       <Unit40>
@@ -304,7 +323,7 @@
         <CursorPos X="1" Y="19"/>
         <TopLine Value="24"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -315,9 +334,9 @@
       </Unit41>
       <Unit42>
         <Filename Value="httpd_2_0\util_filter.inc"/>
-        <CursorPos X="23" Y="27"/>
-        <TopLine Value="21"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="15" Y="498"/>
+        <TopLine Value="493"/>
+        <UsageCount Value="10"/>
       </Unit42>
       <Unit43>
         <Filename Value="httpd_2_0\util_script.inc"/>
@@ -375,9 +394,9 @@
       </Unit51>
       <Unit52>
         <Filename Value="httpd_2_0\http_log.inc"/>
-        <CursorPos X="25" Y="227"/>
-        <TopLine Value="223"/>
-        <UsageCount Value="12"/>
+        <CursorPos X="11" Y="141"/>
+        <TopLine Value="136"/>
+        <UsageCount Value="13"/>
       </Unit52>
       <Unit53>
         <Filename Value="httpd_2_0\http_main.inc"/>
@@ -508,28 +527,105 @@
         <TopLine Value="136"/>
         <UsageCount Value="9"/>
       </Unit73>
+      <Unit74>
+        <Filename Value="httpd_2_2\apr\apr.pas"/>
+        <UnitName Value="apr"/>
+        <CursorPos X="4" Y="106"/>
+        <TopLine Value="103"/>
+        <UsageCount Value="10"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="httpd_2_2\http_log.inc"/>
+        <CursorPos X="15" Y="146"/>
+        <TopLine Value="137"/>
+        <UsageCount Value="10"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="..\..\..\lazarus16\fpcsrc\rtl\objpas\sysutils\syspchh.inc"/>
+        <CursorPos X="13" Y="29"/>
+        <TopLine Value="20"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="httpd_1_3\ap.inc"/>
+        <CursorPos X="15" Y="110"/>
+        <TopLine Value="106"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="httpd_1_3\ap_alloc.inc"/>
+        <CursorPos X="23" Y="108"/>
+        <TopLine Value="103"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="httpd_1_3\ap_config.inc"/>
+        <CursorPos X="28" Y="51"/>
+        <TopLine Value="44"/>
+        <UsageCount Value="10"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="httpd_1_3\buff.inc"/>
+        <CursorPos X="31" Y="128"/>
+        <TopLine Value="121"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="httpd_1_3\http_log.inc"/>
+        <CursorPos X="36" Y="84"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="10"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="httpd_1_3\httpd.inc"/>
+        <CursorPos X="36" Y="1125"/>
+        <TopLine Value="1117"/>
+        <UsageCount Value="10"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="httpd_1_3\http_protocol.inc"/>
+        <CursorPos X="44" Y="106"/>
+        <TopLine Value="103"/>
+        <UsageCount Value="10"/>
+      </Unit83>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
+    <JumpHistory Count="9" HistoryIndex="8">
       <Position1>
-        <Filename Value="httpd_2_0\apr\apr.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="1298" Column="2" TopLine="1289"/>
       </Position1>
       <Position2>
-        <Filename Value="httpd_2_0\apr\apr.pas"/>
-        <Caret Line="108" Column="6" TopLine="96"/>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="1235" Column="1" TopLine="1217"/>
       </Position2>
       <Position3>
-        <Filename Value="httpd_2_0\apr\apr.pas"/>
-        <Caret Line="132" Column="17" TopLine="117"/>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="172" Column="1" TopLine="166"/>
       </Position3>
       <Position4>
-        <Filename Value="httpd_2_0\apr\apr.pas"/>
-        <Caret Line="133" Column="15" TopLine="117"/>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="590" Column="11" TopLine="568"/>
       </Position4>
       <Position5>
-        <Filename Value="httpd_2_0\apr\apr.pas"/>
-        <Caret Line="132" Column="16" TopLine="118"/>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="504" Column="3" TopLine="499"/>
       </Position5>
+      <Position6>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="505" Column="10" TopLine="490"/>
+      </Position6>
+      <Position7>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="583" Column="1" TopLine="565"/>
+      </Position7>
+      <Position8>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="249" Column="1" TopLine="248"/>
+      </Position8>
+      <Position9>
+        <Filename Value="mod_example.lpr"/>
+        <Caret Line="485" Column="1" TopLine="461"/>
+      </Position9>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -539,8 +635,8 @@
       <Filename Value="mod_example.so"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\apriconv\;httpd_2_0\aprutil\"/>
-      <SrcPath Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\apriconv\;httpd_2_0\aprutil\"/>
+      <OtherUnitFiles Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\aprutil\"/>
+      <SrcPath Value="httpd_2_0\;httpd_2_0\apr\;httpd_2_0\aprutil\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

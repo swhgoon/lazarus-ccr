@@ -27,7 +27,6 @@ library testmodule;
 {$ENDIF}
 
 uses
-
  minimain in 'minimain.pas';
 
 var

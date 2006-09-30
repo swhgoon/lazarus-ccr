@@ -39,6 +39,8 @@ unit httpd;
   {$PACKRECORDS C}
 {$endif}
 
+{$define Apache1_3}
+
 interface
 
 uses
@@ -55,14 +57,21 @@ const
 {$endif}
 
 {$IFDEF WINDOWS}
-  LibHTTPD = 'libhttpd.dll';
+  LibHTTPD = 'ApacheCore.dll';
 {$ELSE}
   LibHTTPD = '';
 {$ENDIF}
 
-{$define Apache1_3}
-
 { Declarations moved here to be on top of all declarations }
+
+{ Various types}
+type
+  uid_t = Integer;
+  gid_t = Integer;
+  time_t = LongInt;
+  size_t = Integer;
+  pid_t = Integer;
+  Ppid_t = ^pid_t;
 
 { configuration vector structure }
 type
@@ -139,18 +148,6 @@ begin
   mod_.next := nil;
   mod_.magic := MODULE_MAGIC_COOKIE;
 end;
-
-//procedure STANDARD20_MODULE_STUFF(var mod_: module);
-//begin
-//  mod_.version := MODULE_MAGIC_NUMBER_MAJOR;
-//  mod_.minor_version := MODULE_MAGIC_NUMBER_MINOR;
-//  mod_.module_index := -1;
-//  mod_.name: PChar;
-//  mod_.dynamic_load_handle := nil;
-//  mod_.next := nil;
-//  mod_.magic := MODULE_MAGIC_COOKIE;
-//  mod_.rewrite_args := nil;
-//end;
 
 { Use this only in MPMs }
 //procedure MPM20_MODULE_STUFF(var mod_: module);

@@ -147,8 +147,7 @@ procedure ap_log_error(
  const file_: PChar; line, level: Integer;
  status: apr_status_t; const s: Pserver_rec;
  const fmt: PChar; others: array of const);
- {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name 'ap_log_perror';
+ cdecl; external LibHTTPD name 'ap_log_error';
 
 //			    __attribute__((format(printf,6,7)));
 
@@ -177,7 +176,7 @@ procedure ap_log_perror(
  status: apr_status_t; p: Papr_pool_t;
  const fmt: PChar; others: array of const);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
- external LibHTTPD name 'ap_log_error';
+ external LibHTTPD name 'ap_log_perror';
 
 {		    __attribute__((format(printf,6,7)));}
 

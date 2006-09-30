@@ -170,8 +170,13 @@ type
 
   hook_t = function (param1: Prequest_rec): cint; cdecl;
 
+{$ifdef ULTRIX_BRAIN_DEATH}
+  child_init_t = procedure ();
+  child_exit_t = procedure ();
+{$else}
   child_init_t = procedure (param1: Pserver_rec; param2: Ppool); cdecl;
   child_exit_t = procedure (param1: Pserver_rec; param2: Ppool); cdecl;
+{$endif}
 
   module_struct = record
     version: cint;		{ API version, *not* module version;
@@ -246,13 +251,10 @@ type
      * parameters passed here are the same as those passed to the global
      * init method above.
      }
-{$ifdef ULTRIX_BRAIN_DEATH}
-    void ( *child_init) ();
-    void ( *child_exit) ();
-{$else}
-  child_init: child_init_t;
-  child_exit: child_exit_t;
-{$endif}
+
+    child_init: child_init_t;
+    child_exit: child_exit_t;
+
     post_read_request: hook_t;
   end;
   
