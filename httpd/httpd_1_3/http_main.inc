@@ -64,8 +64,10 @@
  * reset_timeout() resets the timeout in progress.
  }
 
-{API_EXPORT(void) ap_start_shutdown(void);
-API_EXPORT(void) ap_start_restart(int);
+procedure ap_start_shutdown();
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{API_EXPORT(void) ap_start_restart(int);
 API_EXPORT(void) ap_hard_timeout(char *, request_rec *);
 API_EXPORT(void) ap_keepalive_timeout(char *, request_rec *);
 API_EXPORT(void) ap_soft_timeout(char *, request_rec *);
@@ -120,7 +122,7 @@ const
 
 {
  * unregister an other_child.  Note that the data pointer is used here, and
- * is assumed to be unique per other_child.  This is because the pid and
+ * is assumed to be unique' per other_child.  This is because the pid and
  * write_fd are possibly killed off separately.
  }
 //API_EXPORT(void) ap_unregister_other_child(void *data);

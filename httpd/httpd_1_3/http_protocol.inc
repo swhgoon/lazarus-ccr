@@ -21,19 +21,21 @@
 
 { Read a request and fill in the fields. }
 
-//API_EXPORT(request_rec *) ap_read_request(conn_rec *c);
+function ap_read_request(c: Pconn_rec): Prequest_rec;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Send a single HTTP header field }
 
-//API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldname,
-//                      const char *fieldval);
+function ap_send_header_field(r: Prequest_rec; const fieldname, fieldval: PChar): cint;
+ cdecl; external LibHTTPD;
 
 { Send the minimal part of an HTTP response header... but modules should be
  * very careful about using this, and should prefer ap_send_http_header().
  * Much of the HTTP/1.1 implementation correctness depends on code in
  * ap_send_http_header().
  }
-//API_EXPORT(void) ap_basic_http_header(request_rec *r);
+procedure ap_basic_http_header(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Send the Status-Line and header fields for HTTP response }
 
@@ -42,12 +44,16 @@ procedure ap_send_http_header(l: Prequest_rec);
 
 { Send the response to special method requests }
 
-//API_EXPORT(int) ap_send_http_trace(request_rec *r);
-//API_EXPORT(int) ap_send_http_options(request_rec *r);
+function ap_send_http_trace(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_send_http_options(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Finish up stuff after a request }
 
-//API_EXPORT(void) ap_finalize_request_protocol(request_rec *r);
+procedure ap_finalize_request_protocol(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Send error back to client... last arg indicates error status in case
  * we get an error in the process of trying to deal with an ErrorDocument
@@ -56,7 +62,8 @@ procedure ap_send_http_header(l: Prequest_rec);
  * problem with the ErrorDocument.
  }
 
-//API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error);
+procedure ap_send_error_response(r: Prequest_rec; recursive_error: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
@@ -125,7 +132,8 @@ function ap_rflush(r: Prequest_rec): cint;
  * (only use outside protocol.c is in getting them configured).
  }
 
-//API_EXPORT(int) ap_index_of_response(int status);
+function ap_index_of_response(status: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Reading a block of data from the client connection (e.g., POST arg) }
 
@@ -161,18 +169,28 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);}
  *
  }
 
-//API_EXPORT(void) ap_note_auth_failure(request_rec *r);
-//API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r);
-//API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r);
-//API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
+procedure ap_note_auth_failure(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_note_basic_auth_failure(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_note_digest_auth_failure(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_basic_auth_pw(r: Prequest_rec; const pw: PPChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {
  * Setting up the protocol fields for subsidiary requests...
  * Also, a wrapup function to keep the internal accounting straight.
  }
 
-//API_EXPORT(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-//API_EXPORT(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
+procedure ap_set_sub_req_protocol(rnew, r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_finalize_sub_req_protocol(sub_r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { This is also useful for putting sub_reqs and internal_redirects together }
 
@@ -181,10 +199,12 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);}
 { Get the method number associated with the given string, assumed to
  * contain an HTTP method.  Returns M_INVALID if not recognized.
  }
-//API_EXPORT(int) ap_method_number_of(const char *method);
+function ap_method_number_of(const method: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-//API_EXPORT(int) ap_getline(char *s, int n, BUFF *in, int fold);
+function ap_getline(s: PChar; n: cint; in_: PBUFF; fold: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-//API_EXPORT(long) ap_get_chunk_size(char *b);
-
+function ap_get_chunk_size(b: PChar): clong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 

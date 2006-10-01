@@ -54,7 +54,8 @@
 
 //#define APLOG_MARK	__FILE__,__LINE__
 
-//API_EXPORT(void) ap_open_logs (server_rec *, pool *p);
+procedure ap_open_logs(s: Pserver_rec; p: PPool);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { The two primary logging functions, ap_log_error and ap_log_rerror,
  * use a printf style format string to build the log message.  It is
@@ -107,8 +108,12 @@ type
 //#endif
   end;
 
-{API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program);
-API_EXPORT(void) ap_close_piped_log (piped_log *);}
+procedure ap_open_piped_log(p: PPool; const program_: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_close_piped_log(p: Ppiped_log): Ppiped_log;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 {#if !defined(NO_RELIABLE_PIPED_LOGS) || defined(TPF)
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
