@@ -1049,13 +1049,24 @@ type
 
 { Misc system hackery }
 
-{API_EXPORT(uid_t) ap_uname2id(const char *name);
-API_EXPORT(gid_t) ap_gname2id(const char *name);
-API_EXPORT(int) ap_is_directory(const char *name);
-API_EXPORT(int) ap_is_rdirectory(const char *name);
-API_EXPORT(int) ap_can_exec(const struct stat *);
-API_EXPORT(void) ap_chdir_file(const char *file);
-}
+function ap_uname2id(const name: PChar): uid_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_gname2id(const name: PChar): gid_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_is_directory(const name: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_is_rdirectory(const name: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_can_exec(const stat: Pointer): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_chdir_file(const file_: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 //#ifndef HAVE_CANONICAL_FILENAME
 {
  *  We can't define these in os.h because of dependence on pool pointer.
@@ -1166,7 +1177,7 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 
 //  strtoul = strtoul_is_not_a_portable_function_use_strtol_instead
 
-//#ifdef AP_ENABLE_EXCEPTION_HOOK
+{$ifdef AP_ENABLE_EXCEPTION_HOOK}
 { The exception hook allows a module to run from the server's signal
  * handler, and perform tasks such as logging the current request or
  * getting a backtrace or performing other diagnostic functions.  All
@@ -1190,6 +1201,8 @@ type
  * If EnableExceptionHook directive is not set to "on", this function will
  * report failure and no such hooks will be called.
  }
-//API_EXPORT(extern int) ap_add_fatal_exception_hook(void (*fn)(ap_exception_info_t *));
-//#endif { AP_ENABLE_EXCEPTION_HOOK }
+function ap_add_fatal_exception_hook(fn: procedure (param: Pap_exception_info_t) ): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{$endif} { AP_ENABLE_EXCEPTION_HOOK }
 

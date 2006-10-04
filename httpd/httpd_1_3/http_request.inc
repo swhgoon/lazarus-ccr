@@ -34,15 +34,24 @@
  * about which was allocated in its pool elsewhere before doing this.
  }
 
-{API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
-                                             const request_rec *r);
-API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
-                                              const request_rec *r);
-API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
-                                                const char *new_file,
-                                                const request_rec *r);
-API_EXPORT(int) ap_run_sub_req(request_rec *r);
-API_EXPORT(void) ap_destroy_sub_req(request_rec *r);}
+function ap_sub_req_lookup_uri(const new_file: PChar;
+ const r: Prequest_rec): Prequest_rec;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_sub_req_lookup_file(const new_file: PChar;
+ const r: Prequest_rec): Prequest_rec;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_sub_req_method_uri(const method, new_file: PChar;
+ const r: Prequest_rec): Prequest_rec;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_run_sub_req(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_destroy_sub_req(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {
  * Then there's the case that you want some other request to be served
@@ -50,11 +59,20 @@ API_EXPORT(void) ap_destroy_sub_req(request_rec *r);}
  * If so, call this from a handler, and then immediately return OK.
  }
 
-{API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *);
-API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *);
-API_EXPORT(int) ap_some_auth_required(request_rec *r);
-API_EXPORT(int) ap_is_initial_req(request_rec *r);
-API_EXPORT(time_t) ap_update_mtime(request_rec *r, time_t dependency_mtime);}
+procedure ap_internal_redirect(const new_uri: PChar; param2: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_internal_redirect_handler(const new_uri: PChar; param2: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_some_auth_required(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_is_initial_req(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_update_mtime(r: Prequest_rec; dependency_mtime: time_t): time_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {$ifdef CORE_PRIVATE}
 { Function called by main.c to handle first-level request }

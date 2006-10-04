@@ -20,15 +20,20 @@
  * Tsirigotis <panos@alumni.cs.colorado.edu> for xinetd.
  }
 
-{API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
-int ap_slack(int, int);
-int ap_execle(const char *, const char *, ...);
-int ap_execve(const char *, char * const argv[], char * const envp[]);
-API_EXPORT(int) ap_getpass(const char *prompt, char *pwbuf, size_t bufsiz);}
+function ap_cpystrn(param1: PChar; const param2: PChar; param3: size_t): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-{$ifndef ap_strtol}
-//API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base);
-{$endif}
+{int ap_slack(int, int);
+int ap_execle(const char *, const char *, ...);
+int ap_execve(const char *, char * const argv[], char * const envp[]); }
+
+//function ap_getpass(const prompt: PChar; pwbuf: PChar; bufsiz: size_t): cint;
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+//{$ifndef ap_strtol}
+//function ap_strtol(const nptr: PChar; endptr: PPChar; base: cint): clong;
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+//{$endif}
 
 { small utility macros to make things easier to read }
 
@@ -96,9 +101,14 @@ type
     curpos: PChar;
     endpos: PChar;
   end;
+  
+  Pap_vformatter_buff = ^ap_vformatter_buff;
+  
+  flush_func_t = function (param: Pap_vformatter_buff): cint;
 
-//API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
-//    ap_vformatter_buff *, const char *fmt, va_list ap);
+function ap_vformatter(flush_func: flush_func_t;
+ param2: Pap_vformatter_buff; const fmt: PChar; ap: va_list): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { These are snprintf implementations based on ap_vformatter().
  *
@@ -117,10 +127,14 @@ type
  *
  * In no event does ap_snprintf return a negative number.
  }
-//API_EXPORT_NONSTD(int) ap_snprintf(char *buf, size_t len, const char *format,...)
+function ap_snprintf(buf: PChar; len: size_t; const format: PChar;
+ others: array of const): cint; cdecl; external LibHTTPD;
+
 //			    __attribute__((format(printf,3,4)));
-//API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
-//			     va_list ap);
+
+function ap_vsnprintf(buf: PChar; len: size_t; const format: PChar; ap: va_list): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 { Simple BASE64 encode/decode functions.
  * 
  * As we might encode binary strings, hence we require the length of
@@ -133,17 +147,29 @@ type
  * strings are neither. But propably should.
  *
  }
-{API_EXPORT(int) ap_base64encode_len(int len);
-API_EXPORT(int) ap_base64encode(char * coded_dst, const char *plain_src,int len_plain_src);
-API_EXPORT(int) ap_base64encode_binary(char * coded_dst, const unsigned char *plain_src,int len_plain_src);
+function ap_base64encode_len(len: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(int) ap_base64decode_len(const char * coded_src);
-API_EXPORT(int) ap_base64decode(char * plain_dst, const char *coded_src);
-API_EXPORT(int) ap_base64decode_binary(unsigned char * plain_dst, const char *coded_src);}
+function ap_base64encode(coded_dst: PChar; const plain_src: PChar; len_plain_src: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_base64encode_binary(coded_dst: PChar; const plain_src: PChar; len_plain_src: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_base64decode_len(const coded_src: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_base64decode(plain_dst: PChar; const coded_src: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_base64decode_binary(plain_dst: PChar; const coded_src: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Password validation, as used in AuthType Basic which is able to cope
  * (based on the prefix) with the SHA1, Apache's internal MD5 and (depending
  * on your platform either plain or crypt(3) passwords.
  }
-//API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
+function ap_validate_password(const passwd, hash: PChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 

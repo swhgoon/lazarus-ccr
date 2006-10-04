@@ -66,12 +66,8 @@ const
 
 { Various types}
 type
-  uid_t = Integer;
-  gid_t = Integer;
   time_t = LongInt;
   size_t = Integer;
-  pid_t = Integer;
-  Ppid_t = ^pid_t;
 
 { configuration vector structure }
 type

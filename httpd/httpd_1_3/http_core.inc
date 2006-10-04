@@ -129,7 +129,8 @@ type
   interpreter_source_e = ( INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY,
    INTERPRETER_SOURCE_SHEBANG );
 
-//API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char **);
+function ap_get_win32_interpreter(const param1: Prequest_rec; param2: PPChar): file_type_e;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 {$endif}
 
 {.$ifdef CORE_PRIVATE}
@@ -183,6 +184,23 @@ const
   ADD_DEFAULT_CHARSET_ON    = (1);
   ADD_DEFAULT_CHARSET_UNSET = (2);
 
+{$ifdef CHARSET_EBCDIC}
+
+  { Configurable EBCDIC Conversion stuff }
+  { Direction specific conversion: }
+  dir_Out = 0;               { 0utput (returned contents in a GET or POST) }
+  dir_In  = 1;               { 1nput  (uploaded contents in a PUT / POST) }
+
+  { Conversion Enabled/Disabled: }
+  conv_Unset = '?';          { Conversion unconfigured }
+  conv_Off   = '0';          { BINARY or ASCII file (no conversion) }
+  conv_On    = '1';          { TEXT file (EBCDIC->ASCII for dir_Out; ASCII->EBCDIC for dir_In) }
+
+  LEGACY_KLUDGE = 1; { After a couple of versions this legacy kludge should be set to 0 }
+  ASCIITEXT_MAGIC_TYPE_PREFIX = 'text/x-ascii-';     { Text files whose content-type starts with this are passed thru unconverted }
+
+{$endif}
+
 type
   ap_flag_e = (
     AP_FLAG_UNSET = 0,
@@ -210,7 +228,7 @@ type
     opts: allow_options_t;
     opts_add: allow_options_t;
     opts_remove: allow_options_t;
-    override: overrides_t;
+    override_: overrides_t;
     
     { MIME typing --- the core doesn't do anything at all with this,
      * but it does know what to slap on a request for a document which
@@ -267,13 +285,13 @@ type
 
     { System Resource Control }
 {$ifdef RLIMIT_CPU}
-    struct rlimit *limit_cpu;
+    limit_cpu: Prlimit;
 {$endif}
-{$if defined (RLIMIT_DATA) or defined (RLIMIT_VMEM) or defined(RLIMIT_AS)}
-    struct rlimit *limit_mem;
+{$if defined(RLIMIT_DATA) or defined(RLIMIT_VMEM) or defined(RLIMIT_AS)}
+    limit_mem: Prlimit;
 {$endif}
 {$ifdef RLIMIT_NPROC}
-    struct rlimit *limit_nproc;
+    limit_nproc: Prlimit;
 {$endif}
     limit_req_body: culong;  { limit on bytes in request msg body }
 
@@ -291,15 +309,8 @@ type
 {$endif}
     
 {$ifdef CHARSET_EBCDIC}
-    { Configurable EBCDIC Conversion stuff }
-    { Direction specific conversion: }
-#define dir_Out 0               { 0utput (returned contents in a GET or POST) }
-#define dir_In  1               { 1nput  (uploaded contents in a PUT / POST) }
 
-    { Conversion Enabled/Disabled: }
-#define conv_Unset '?'          { Conversion unconfigured }
-#define conv_Off   '0'          { BINARY or ASCII file (no conversion) }
-#define conv_On    '1'          { TEXT file (EBCDIC->ASCII for dir_Out; ASCII->EBCDIC for dir_In) }
+    { Moved up }
 
     { The configuration args {On|Off}[={In|Out|InOut}] are currently stored
      * as character strings ("0" = conv_Off, "1" = conv_On)
@@ -309,15 +320,13 @@ type
     ebcdicconversion_by_type_in: Ptable;
     ebcdicconversion_by_type_out: Ptable;
 
-#define LEGACY_KLUDGE 1 { After a couple of versions this legacy kludge should be set to 0 }
-#ifndef ASCIITEXT_MAGIC_TYPE_PREFIX
-#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-"     { Text files whose content-type starts with this are passed thru unconverted }
-#endif
-    int x_ascii_magic_kludge;   { whether to handle the text/x-ascii- kludge }
+    { Moved up }
+    
+    x_ascii_magic_kludge: cint;   { whether to handle the text/x-ascii- kludge }
 
-#if ADD_EBCDICCONVERT_DEBUG_HEADER
-    int ebcdicconversion_debug_header; { whether to add an X-EBCDIC-Debug-{In,Out} header to the response }
-#endif
+{$ifdef ADD_EBCDICCONVERT_DEBUG_HEADER}
+    ebcdicconversion_debug_header: cint; { whether to add an X-EBCDIC-Debug-{In,Out} header to the response }
+{$endif}
 {$endif} { CHARSET_EBCDIC }
 
     {

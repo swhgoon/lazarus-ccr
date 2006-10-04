@@ -67,21 +67,46 @@
 procedure ap_start_shutdown();
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-{API_EXPORT(void) ap_start_restart(int);
-API_EXPORT(void) ap_hard_timeout(char *, request_rec *);
-API_EXPORT(void) ap_keepalive_timeout(char *, request_rec *);
-API_EXPORT(void) ap_soft_timeout(char *, request_rec *);
-API_EXPORT(void) ap_kill_timeout(request_rec *);
-API_EXPORT(void) ap_reset_timeout(request_rec *);
+procedure ap_start_restart(param: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(void) ap_child_terminate(request_rec *r);
-API_EXPORT(void) ap_sync_scoreboard_image(void);
-API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r);
-void ap_time_process_request(int child_num, int status);
-API_EXPORT(unsigned int) ap_set_callback_and_alarm(void ( *fn) (int), int x);
-API_EXPORT(int) ap_check_alarm(void);
+procedure ap_hard_timeout(p: PChar; r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-void setup_signal_names(char *prefix);}
+procedure ap_keepalive_timeout(p: PChar; r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_soft_timeout(p: PChar; r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_kill_timeout(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_reset_timeout(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+//procedure ap_child_terminate(r: Prequest_rec);
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_sync_scoreboard_image();
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_update_child_status(child_num, status: cint; r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{ void ap_time_process_request(int child_num, int status); }
+
+type
+  fn_t = procedure (param: cint);
+
+function ap_set_callback_and_alarm(fn: fn_t; x: cint): cuint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_check_alarm(): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{ void setup_signal_names(char *prefix);}
 
 { functions for determination and setting of accept() mutexing }
 {char *ap_default_mutex_method(void);
@@ -102,9 +127,12 @@ char *ap_init_mutex_method(char *t);}
  * This is useful for log pipe children, to know when they've blocked.  To
  * disable this feature, use -1 for write_fd.
  }
-//API_EXPORT(void) ap_register_other_child(int pid,
-//       void ( *maintenance) (int reason, void *data, ap_wait_t status), void *data,
-//				      int write_fd);
+type
+  maintenance_t = procedure (reason: cint; data: Pointer; status: ap_wait_t);
+  
+procedure ap_register_other_child(pid: cint;
+ maintenance: maintenance_t; data: Pointer; write_fd: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 const
   OC_REASON_DEATH      = 0;	{ child has died, caller must call
@@ -125,7 +153,8 @@ const
  * is assumed to be unique' per other_child.  This is because the pid and
  * write_fd are possibly killed off separately.
  }
-//API_EXPORT(void) ap_unregister_other_child(void *data);
+procedure ap_unregister_other_child(data: Pointer);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {$endif}
 

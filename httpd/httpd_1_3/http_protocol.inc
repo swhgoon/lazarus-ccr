@@ -72,13 +72,26 @@ procedure ap_send_error_response(r: Prequest_rec; recursive_error: cint);
  * permit_cache argument is set to one).
  }
 
-{API_EXPORT(int) ap_set_content_length(request_rec *r, long length);
-API_EXPORT(int) ap_set_keepalive(request_rec *r);
-API_EXPORT(time_t) ap_rationalize_mtime(request_rec *r, time_t mtime);
-API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak);
-API_EXPORT(void) ap_set_etag(request_rec *r);
-API_EXPORT(void) ap_set_last_modified(request_rec *r);
-API_EXPORT(int) ap_meets_conditions(request_rec *r);}
+function ap_set_content_length(r: Prequest_rec; length: clong): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_set_keepalive(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_rationalize_mtime(r: Prequest_rec; mtime: time_t): time_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_make_etag(r: Prequest_rec; force_weak: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_set_etag(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_set_last_modified(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_meets_conditions(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make
@@ -91,14 +104,20 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r);}
  * (Ditto the send_header stuff).
  }
 
-{API_EXPORT(long) ap_send_fd(FILE *f, request_rec *r);
-API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length);
+//function ap_send_fd(f: PFILE; r: Prequest_rec): clong;
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
-API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
+//function ap_send_fd_length(f: PFILE; r: Prequest_rec; length: clong): clong;
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
-                             size_t length);}
+function ap_send_fb(f: PBUFF; r: Prequest_rec): clong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_send_fb_length(f: PBUFF; r: Prequest_rec): clong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_send_mmap(mm: Pointer; r: Prequest_rec; offset, length: size_t): size_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
@@ -137,15 +156,25 @@ function ap_index_of_response(status: cint): cint;
 
 { Reading a block of data from the client connection (e.g., POST arg) }
 
-{API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy);
-API_EXPORT(int) ap_should_client_block(request_rec *r);
-API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
-API_EXPORT(int) ap_discard_request_body(request_rec *r);}
+function ap_setup_client_block(r: Prequest_rec; read_policy: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_should_client_block(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_client_block(r: Prequest_rec; buffer: PChar; bufsiz: cint): clong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_discard_request_body(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Sending a byterange }
 
-{API_EXPORT(int) ap_set_byterange(request_rec *r);
-API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);}
+function ap_set_byterange(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_each_byterange(r: Prequest_rec; offset, length: Pclong): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Support for the Basic authentication protocol.  Note that there's
  * nothing that prevents these from being in mod_auth.c, except that other

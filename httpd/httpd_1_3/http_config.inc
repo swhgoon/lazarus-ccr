@@ -45,11 +45,11 @@ type
     TAKE13			{ one or three arguments }
   );
 
-  func_t = function (): PChar;
+  cs_func_t = function (): PChar;
   
   command_struct = record
     name: PChar;		{ Name of this command }
-    func: func_t;       	{ Function invoked }
+    func: cs_func_t;       	{ Function invoked }
     cmd_data: Pointer;		{ Extra data, for functions which
 				 * implement multiple commands...
                                  }
@@ -302,14 +302,26 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);}
 
 { Finally, the hook for dynamically loading modules in... }
 
-{API_EXPORT(void) ap_add_module(module *m);
-API_EXPORT(void) ap_remove_module(module *m);
-API_EXPORT(void) ap_add_loaded_module(module *mod);
-API_EXPORT(void) ap_remove_loaded_module(module *mod);
-API_EXPORT(int) ap_add_named_module(const char *name);
-API_EXPORT(void) ap_clear_module_list(void);
-API_EXPORT(const char *) ap_find_module_name(module *m);
-API_EXPORT(module *) ap_find_linked_module(const char *name);}
+procedure ap_add_module(m: Pmodule);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_remove_module(m: Pmodule);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_add_loaded_module(m: Pmodule);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_add_named_module(const name: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_clear_module_list();
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_find_module_name(m: Pmodule): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_find_linked_module(const name: PChar): Pmodule;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { for implementing subconfigs and customized config files }
 {API_EXPORT(const char *) ap_srm_command_loop(cmd_parms *parms, void *config);

@@ -107,6 +107,8 @@ type
 //    FILE *write_f;
 //#endif
   end;
+  
+  Ppiped_log = ^piped_log;
 
 procedure ap_open_piped_log(p: PPool; const program_: PChar);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;

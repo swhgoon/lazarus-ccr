@@ -28,10 +28,10 @@
 //#include "ap_config_auto.h"
 //#endif
 
-{.$if defined(WIN32) or defined(NETWARE)}
-{ not available under WIN32, so provide important entries manually }
-{.$undefine HAVE_UNISTD_H}
-//#endif
+{$if defined(WIN32) or defined(NETWARE)}
+  { not available under WIN32, so provide important entries manually }
+  {$undefine HAVE_UNISTD_H}
+{$endif}
 
 { Have to include sys/stat.h before ../win32/os.h so we can override
 stat() properly }
@@ -68,11 +68,11 @@ stat() properly }
 
 { Define one of these according to your system. }
 {$if defined(MINT)}
-typedef int rlim_t;
+type rlim_t = cint;
 #define JMP_BUF sigjmp_buf
-#define NO_LONG_DOUBLE
-#define HAVE_FLOCK_SERIALIZED_ACCEPT
-#define _BSD_SOURCE
+{$define NO_LONG_DOUBLE}
+{$define HAVE_FLOCK_SERIALIZED_ACCEPT}
+{$define _BSD_SOURCE}
 #define EAGAIN EWOULDBLOCK
 int initgroups (char *, int);     
 char *crypt (const char *pw, const char *salt);
@@ -80,11 +80,11 @@ int gethostname (char *name, int namelen);
 
 {$else}{$if defined(MPE)}
 #include <sys/times.h>
-#define NO_SETSID
-#define NO_KILLPG
-#define NO_WRITEV
+{$define NO_SETSID}
+{$define NO_KILLPG}
+{$define NO_WRITEV}
 #define HAVE_SHMGET 1
-#define USE_SHMGET_SCOREBOARD}
+{$define USE_SHMGET_SCOREBOARD}
 {
    UID/GID isn't a native concept for MPE, and it's definitely not a 100%
    Unix implementation.  There isn't a traditional superuser concept either,
@@ -96,37 +96,38 @@ int gethostname (char *name, int namelen);
 const
   SHM_R = 0440;  { Read permission }
   SHM_W = 0220;  { Write permission }
-{$define NEED_INITGROUPS}
-{$define NEED_STRCASECMP}
-{$define NEED_STRDUP}
-{$define NEED_STRNCASECMP}
+  {$define NEED_INITGROUPS}
+  {$define NEED_STRCASECMP}
+  {$define NEED_STRDUP}
+  {$define NEED_STRNCASECMP}
 //extern void GETPRIVMODE();
 //extern void GETUSERMODE();
 //extern char *inet_ntoa();
-//{$define NO_SLACK
+  {$define NO_SLACK}
   S_IEXEC  = S_IXUSR;
   S_IREAD  = S_IRUSR;
   S_IWRITE = S_IWUSR;
   PF_INET  = AF_INET;
-//#define HAVE_FCNTL_SERIALIZED_ACCEPT
+  {$define HAVE_FCNTL_SERIALIZED_ACCEPT}
 
 {$else}{$if defined(SUNOS4)}
-#define HAVE_GMTOFF 1
-#undef NO_KILLPG
+const
+  HAVE_GMTOFF = 1;
+{$undefine NO_KILLPG}
 #undef NO_SETSID
-char *crypt(const char *pw, const char *salt);
-char *mktemp(char *);
-#define HAVE_MMAP 1
-#define USE_MMAP_SCOREBOARD
-#define USE_MMAP_FILES
+//char *crypt(const char *pw, const char *salt);
+//char *mktemp(char *);
+  HAVE_MMAP = 1;
+{$define USE_MMAP_SCOREBOARD}
+{$define USE_MMAP_FILES}
 #include <sys/time.h>
-#define NEED_STRERROR
-typedef int rlim_t;
+{$define NEED_STRERROR}
+type rlim_t = cint;
 #define memmove(a,b,c) bcopy(b,a,c)
-#define NO_LINGCLOSE
-#define HAVE_FLOCK_SERIALIZED_ACCEPT
-#define NEED_DIFFTIME
-#define HAVE_SYSLOG 1
+{$define NO_LINGCLOSE}
+{$define HAVE_FLOCK_SERIALIZED_ACCEPT}
+{$define NEED_DIFFTIME}
+  HAVE_SYSLOG = 1;
 
 {$else}{$if defined(SOLARIS2)}
 #undef HAVE_GMTOFF
@@ -392,25 +393,25 @@ typedef int pid_t;
 #endif
 
 {$else}{$if defined(DARWIN)} { Darwin (Mac OS) }
-#undef PLATFORM
-#define PLATFORM "Darwin"
-#define HAVE_DYLD
-#define HAVE_GMTOFF
-#define HAVE_MMAP
-#define USE_MMAP_FILES
-#define USE_MMAP_SCOREBOARD
-#ifdef MAC_OS_X_SERVER
-#define MAP_TMPFILE
-#endif { MAC_OS_X_SERVER }
-#define HAVE_RESOURCE
-#define HAVE_SNPRINTF
-#define JMP_BUF jmp_buf
-#define USE_LONGJMP
-#define HAVE_FLOCK_SERIALIZED_ACCEPT
-#define HAVE_FCNTL_SERIALIZED_ACCEPT
-#define USE_FLOCK_SERIALIZED_ACCEPT
-#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-#define AP_ENABLE_EXCEPTION_HOOK
+const
+  PLATFORM = 'Darwin';
+{$define HAVE_DYLD}
+{$define HAVE_GMTOFF}
+{$define HAVE_MMAP}
+{$define USE_MMAP_FILES}
+{$define USE_MMAP_SCOREBOARD}
+{$ifdef MAC_OS_X_SERVER}
+  {$define MAP_TMPFILE}
+{$endif} { MAC_OS_X_SERVER }
+{$define HAVE_RESOURCE}
+{$define HAVE_SNPRINTF}
+{$define JMP_BUF jmp_buf}
+{$define USE_LONGJMP}
+{$define HAVE_FLOCK_SERIALIZED_ACCEPT}
+{$define HAVE_FCNTL_SERIALIZED_ACCEPT}
+{$define USE_FLOCK_SERIALIZED_ACCEPT}
+{$define SINGLE_LISTEN_UNSERIALIZED_ACCEPT}
+{$define AP_ENABLE_EXCEPTION_HOOK}
 
 {$else}{$if defined(LINUX)}
 
@@ -506,12 +507,10 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
-#define HAVE_SYSLOG 1
+const
+  HAVE_SYSLOG = 1;
 
-#ifdef PLATFORM
-#undef PLATFORM
-#endif
-#define PLATFORM "AtheOS"
+  PLATFORM = 'AtheOS';
 
 {$else}{$if defined(SCO5)}
 
@@ -899,6 +898,8 @@ typedef int rlim_t;
 {$else}{$if defined(WIN32)}
 
 { All windows stuff is now in os/win32/os.h }
+
+{$include win32_os.inc}
 
 {$else}{$if defined(TPF)} { IBM Transaction Processing Facility operating system }
 
@@ -1393,9 +1394,7 @@ extern int ap_execve(const char *filename, char * const argv[],
  * NET_SIZE_T should be defined to be an int, unless the system being compiled
  * for was created in the window of POSIX madness.
  }
-//#ifndef NET_SIZE_T
-//#define NET_SIZE_T int
-//#endif
+type NET_SIZE_T = cint;
 
 { Linux defines __WCOREDUMP, but doesn't define WCOREDUMP unless __USE_BSD
  * is in use... we'd prefer to just use WCOREDUMP everywhere.
@@ -1488,9 +1487,10 @@ extern char *strerror (int err);
 #endif
 #ifdef NEED_DIFFTIME
 extern double difftime(time_t time1, time_t time0);
-#endif
-
-#ifndef ap_wait_t
-#define ap_wait_t int
 #endif}
+
+{$ifndef ap_wait_t}
+type
+  ap_wait_t = cint;
+{$endif}
 

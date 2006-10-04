@@ -20,6 +20,7 @@
 
 //#include <stdarg.h>
 
+const
 { Reading is buffered }
   B_RD    = (1);
 { Writing is buffered }
@@ -52,6 +53,8 @@ type
   Pbuff_struct = ^buff_struct;
 
   PBUFF = Pbuff_struct;
+
+  PPBUFF = ^PBUFF;
 
   error_t = procedure (fb: PBUFF; op: cint; data: Pointer);
   
@@ -107,25 +110,43 @@ const
   BO_BYTECT = (1);
 
 { Stream creation and modification }
-{API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags);
-API_EXPORT(void) ap_bpushfd(BUFF *fb, int fd_in, int fd_out);
-#ifdef WIN32
-API_EXPORT(void) ap_bpushh(BUFF *fb, HANDLE hFH);
-#endif
-API_EXPORT(int) ap_bsetopt(BUFF *fb, int optname, const void *optval);
-API_EXPORT(int) ap_bgetopt(BUFF *fb, int optname, void *optval);
-API_EXPORT(int) ap_bsetflag(BUFF *fb, int flag, int value);
-API_EXPORT(int) ap_bclose(BUFF *fb);}
+
+function ap_bcreate(p: PPool; flags: cint): PBUFF;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_bpushfd(fb: PBUFF; fd_in, fd_out: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{$ifdef WIN32}
+
+procedure ap_bpushh(fb: PBUFF; hFH: HANDLE);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{$endif}
+
+function ap_bsetopt(fb: PBUFF; optname: cint; const optval: Pointer): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_bgetopt(fb: PBUFF; optname: cint; optval: Pointer): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_bsetflag(fb: PBUFF; flag, value: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_bclose(fb: PBUFF): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 //#define ap_bgetflag(fb, flag)	((fb)->flags & (flag))
 
 { Error handling }
-//API_EXPORT(void) ap_bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
-//			  void *data);
+
+procedure ap_bonerror(fb: PBUFF; error: error_t; data: Pointer);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { I/O }
-{API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte);
-API_EXPORT(int) ap_bgets(char *s, int n, BUFF *fb);
+function ap_bread(fb: PBUFF; buf: Pointer; nbyte: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+{API_EXPORT(int) ap_bgets(char *s, int n, BUFF *fb);
 API_EXPORT(int) ap_blookc(char *buff, BUFF *fb);
 API_EXPORT(int) ap_bskiplf(BUFF *fb);
 API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte);
@@ -183,17 +204,25 @@ type
     dummy: cint;
 {$endif}
   end;
-//API_EXPORT(int) ap_bspawn_child(pool *, int (*)(void *, child_info *), void *,
-//					enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
-//					BUFF **pipe_err);
+  
+  Pchild_info = ^child_info;
+  
+  func_t = function (param1: Pointer; param2: Pchild_info): cint;
+
+function ap_bspawn_child(p: PPool;
+ func: func_t; data: Pointer; kill_how: kill_conditions; pipe_in, pipe_out, pipe_err: PPBUFF): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { enable non-blocking operations }
-//API_EXPORT(int) ap_bnonblock(BUFF *fb, int direction);
+function ap_bnonblock(fb: PBUFF; direction: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 { and get an fd to select() on }
-//API_EXPORT(int) ap_bfileno(BUFF *fb, int direction);
+function ap_bfileno(fb: PBUFF; direction: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { bflush() if a read now would block, but don't actually read anything }
-//API_EXPORT(void) ap_bhalfduplex(BUFF *fb);
+procedure ap_bhalfduplex(fb: PBUFF);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 {$if defined(WIN32) or defined(NETWARE) or defined(CYGWIN_WINSOCK)}
 

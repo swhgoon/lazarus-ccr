@@ -46,10 +46,17 @@ type
   ap_pool = pool;
   Pap_pool = ^ap_pool;
 
-//API_EXPORT(pool *) ap_init_alloc(void);		{ Set up everything }
-//void ap_cleanup_alloc(void);
-//API_EXPORT(pool *) ap_make_sub_pool(pool *);	{ All pools are subpools of permanent_pool }
-//API_EXPORT(void) ap_destroy_pool(pool *);
+function ap_init_alloc: PPool;                    { Set up everything }
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+//procedure ap_cleanup_alloc;
+// {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_make_sub_pool(param: PPool): PPool;   { All pools are subpools of permanent_pool }
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_destroy_pool(param: PPool);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { pools have nested lifetimes -- sub_pools are destroyed when the
  * parent pool is cleared.  We allow certain liberties with operations
@@ -98,21 +105,32 @@ type
 
 { Clearing out EVERYTHING in an pool... destroys any sub-pools }
 
-procedure ap_clear_pool(param1: Ppool); cdecl; external LibHTTPD;
+procedure ap_clear_pool(param1: Ppool);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Preparing for exec() --- close files, etc., but *don't* flush I/O
  * buffers, *don't* wait for subprocesses, and *don't* free any memory.
  }
 
-//API_EXPORT(void) ap_cleanup_for_exec(void);
+procedure ap_cleanup_for_exec;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { routines to allocate memory from an pool... }
 
-//API_EXPORT(void *) ap_palloc(struct pool *, int nbytes);
-//API_EXPORT(void *) ap_pcalloc(struct pool *, int nbytes);
-//API_EXPORT(char *) ap_pstrdup(struct pool *, const char *s);
+function ap_palloc(p: PPool; nbytes: cint): Pointer;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_pcalloc(p: PPool; nbytes: cint): Pointer;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_pstrdup(p: PPool; const s: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 { make a nul terminated copy of the n characters starting with s }
-//API_EXPORT(char *) ap_pstrndup(struct pool *, const char *s, int n);
+
+function ap_pstrndup(p: PPool; const s: PChar; n: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 //API_EXPORT_NONSTD(char *) ap_pstrcat(struct pool *,...);	{ all '...' must be char* }
 //API_EXPORT_NONSTD(char *) ap_psprintf(struct pool *, const char *fmt, ...)
 //    __attribute__((format(printf,2,3)));
@@ -145,8 +163,8 @@ type
  * or if there are no elements in the array.
  * If sep is non-NUL, it will be inserted between elements as a separator.
  }
-//API_EXPORT(char *) ap_array_pstrcat(pool *p, const array_header *arr,
-  //                                  const char sep);
+function ap_array_pstrcat(p: PPool; const arr: Parray_header; const sep: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { copy_array copies the *entire* array.  copy_array_hdr just copies
  * the header, and arranges for the elements to be copied if (and only
@@ -221,7 +239,9 @@ API_EXPORT(table * ) ap_overlay_tables(pool *p, const table *overlay, const tabl
 const
   AP_OVERLAP_TABLES_SET	= (0);
   AP_OVERLAP_TABLES_MERGE = (1);
-//API_EXPORT(void) ap_overlap_tables(table *a, const table *b, unsigned flags);
+
+procedure ap_overlap_tables(a: Ptable; const b: Ptable; flags: cuint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { XXX: these know about the definition of struct table in alloc.c.  That
  * definition is not here because it is supposed to be private, and by not
@@ -282,8 +302,11 @@ const
  * up with timeout handling in general...
  }
 
-//API_EXPORT(void) ap_block_alarms(void);
-//API_EXPORT(void) ap_unblock_alarms(void);
+procedure ap_block_alarms;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_unblock_alarms;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Common cases which want utility support..
  * the note_cleanups_for_foo routines are for 
@@ -347,7 +370,6 @@ type
     kill_only_once		{ send SIGTERM and then wait }
   );
 
-//typedef struct child_info child_info;
 //API_EXPORT(void) ap_note_subprocess(pool *a, pid_t pid,
 //				    enum kill_conditions how);
 ///API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
@@ -365,6 +387,9 @@ const
 
 { Finally, some accounting }
 
-//API_EXPORT(long) ap_bytes_in_pool(pool *p);
-//API_EXPORT(long) ap_bytes_in_free_blocks(void);
+function ap_bytes_in_pool(p: PPool): culong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_bytes_in_free_blocks: culong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 

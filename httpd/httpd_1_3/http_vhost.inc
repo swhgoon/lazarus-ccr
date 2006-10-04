@@ -15,28 +15,35 @@
  }
 
 { called before any config is read }
-//API_EXPORT(void) ap_init_vhost_config(pool *p);
+procedure ap_init_vhost_config(p: PPool);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { called after the config has been read }
-//API_EXPORT(void) ap_fini_vhost_config(pool *p, server_rec *main_server);
+procedure ap_fini_vhost_config(p: PPool; main_server: Pserver_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { handle addresses in <VirtualHost> statement }
-//API_EXPORT(const char *) ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
+function ap_parse_vhost_addrs(p: PPool; const hostname: PChar; s: Pserver_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { handle NameVirtualHost directive }
-//API_EXPORT_NONSTD(const char *) ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
+//function ap_set_name_virtual_host(cmd: Pcmd_parms; dummy: Pointer; arg: PChar): PChar;
+// cdecl; external LibHTTPD;
 
 { given an ip address only, give our best guess as to what vhost it is }
-//API_EXPORT(void) ap_update_vhost_given_ip(conn_rec *conn);
+procedure ap_update_vhost_given_ip(conn: Pconn_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { The above is never enough, and this is always called after the headers
  * have been read.  It may change r->server.
  }
-//API_EXPORT(void) ap_update_vhost_from_headers(request_rec *r);
+procedure ap_update_vhost_from_headers(r: Prequest_rec);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { return 1 if the host:port matches any of the aliases of r->server
  * return 0 otherwise
  }
-//API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
-//    unsigned port);
+function ap_matches_request_vhost(r: Prequest_rec; const host: PChar;
+ port: cuint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
