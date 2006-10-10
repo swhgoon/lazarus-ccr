@@ -198,18 +198,40 @@ type
 
   table_entry_t = table_entry;
 
-{API_EXPORT(table *) ap_make_table(pool *p, int nelts);
-API_EXPORT(table *) ap_copy_table(pool *p, const table *);
-API_EXPORT(void) ap_clear_table(table *);
-API_EXPORT(const char *) ap_table_get(const table *, const char *);
-API_EXPORT(void) ap_table_set(table *, const char *name, const char *val);
-API_EXPORT(void) ap_table_setn(table *, const char *name, const char *val);
-API_EXPORT(void) ap_table_merge(table *, const char *name, const char *more_val);
-API_EXPORT(void) ap_table_mergen(table *, const char *name, const char *more_val);
-API_EXPORT(void) ap_table_unset(table *, const char *key);
-API_EXPORT(void) ap_table_add(table *, const char *name, const char *val);
-API_EXPORT(void) ap_table_addn(table *, const char *name, const char *val);
-API_EXPORT_NONSTD(void) ap_table_do(int ( *comp) (void *, const char *, const char *),
+function ap_make_table(p: Ppool; nelts: cuint): Ptable;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_copy_table(p: Ppool; p1: Ptable): Ptable;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_clear_table(p1: Ptable);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_table_get(const p1: Ptable; const p2: PChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_set(p1: Ptable; const name, val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_setn(p1: Ptable; const name, val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_merge(p1: Ptable; const name, more_val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_mergen(p1: Ptable; const name, more_val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_unset(p1: Ptable; const key: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_add(p1: Ptable; const name, more_val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_table_addn(p1: Ptable; const name, more_val: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{API_EXPORT_NONSTD(void) ap_table_do(int ( *comp) (void *, const char *, const char *),
                                     void *rec, const table *t,...);
 
 API_EXPORT(table * ) ap_overlay_tables(pool *p, const table *overlay, const table *base);
@@ -313,43 +335,76 @@ procedure ap_unblock_alarms;
  }
 
 {API_EXPORT(FILE *) ap_pfopen(struct pool *, const char *name, const char *fmode);
-API_EXPORT(FILE *) ap_pfdopen(struct pool *, int fd, const char *fmode);
-API_EXPORT(int) ap_popenf(struct pool *, const char *name, int flg, int mode);
-API_EXPORT(int) ap_popenf_ex(struct pool *, const char *name, int flg,
-                             int mode, int domagic);
+API_EXPORT(FILE *) ap_pfdopen(struct pool *, int fd, const char *fmode);}
 
-API_EXPORT(void) ap_note_cleanups_for_file(pool *, FILE *);
-API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *, FILE *, int);
-API_EXPORT(void) ap_note_cleanups_for_fd(pool *, int);
-API_EXPORT(void) ap_note_cleanups_for_fd_ex(pool *, int, int);}
+function ap_popenf(p1: Ppool; const name: PChar; flg, mode: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_popenf_ex(p1: Ppool; const name: PChar; flg, mode, domagic: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{API_EXPORT(void) ap_note_cleanups_for_file(pool *, FILE *);
+API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *, FILE *, int);}
+
+procedure ap_note_cleanups_for_fd(p1: Ppool; p2: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_note_cleanups_for_fd_ex(p1: Ppool; p2, p3: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 {$ifdef WIN32}
 //API_EXPORT(void) ap_note_cleanups_for_h(pool *, HANDLE);
 {$endif}
-{API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd);
 
-API_EXPORT(void) ap_note_cleanups_for_socket(pool *, int);
-API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *, int, int);
-API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock);
-API_EXPORT(int) ap_psocket(pool *p, int, int, int);
-API_EXPORT(int) ap_psocket_ex(pool *p, int, int, int, int);
-API_EXPORT(int) ap_pclosesocket(pool *a, int sock);
+procedure ap_kill_cleanups_for_fd(p: Ppool; fd: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(regex_t *) ap_pregcomp(pool *p, const char *pattern, int cflags);
-API_EXPORT(void) ap_pregfree(pool *p, regex_t * reg);}
+
+procedure ap_note_cleanups_for_socket(p1: Ppool; p2: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_note_cleanups_for_socket_ex(p1: Ppool; p2, p3: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_kill_cleanups_for_socket(p: Ppool; sock: cint);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_psocket(p: Ppool; p2, p3, p4: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_psocket_ex(p: Ppool; p2, p3, p4, p5: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_pclosesocket(a: Ppool; sock: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_pregcomp(p: Ppool; const pattern: PChar; cflags: cint): Pregex_t;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_pregfree(p: Ppool; reg: Pregex_t);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { routines to note closes... file descriptors are constrained enough
  * on some systems that we want to support this.
  }
 
-{API_EXPORT(int) ap_pfclose(struct pool *, FILE *);
-API_EXPORT(int) ap_pclosef(struct pool *, int fd);
-#ifdef WIN32
-API_EXPORT(int) ap_pcloseh(struct pool *, HANDLE hDevice);
-#endif}
+//API_EXPORT(int) ap_pfclose(struct pool *, FILE *);
+
+function ap_pclosef(p1: Ppool; fd: cint): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{$ifdef WIN32}
+//API_EXPORT(int) ap_pcloseh(struct pool *, HANDLE hDevice);
+{$endif}
 
 { routines to deal with directories }
-//API_EXPORT(DIR *) ap_popendir(pool *p, const char *name);
-//API_EXPORT(void) ap_pclosedir(pool *p, DIR * d);
+
+function ap_popendir(p: Ppool; const name: PChar): PDIR;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_pclosedir(p: Ppool; d: PDIR);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { ... even child processes (which we may want to wait for,
  * or to kill outright, on unexpected termination).
@@ -370,13 +425,14 @@ type
     kill_only_once		{ send SIGTERM and then wait }
   );
 
-//API_EXPORT(void) ap_note_subprocess(pool *a, pid_t pid,
-//				    enum kill_conditions how);
-///API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
-//				   void *, enum kill_conditions,
-//				   FILE **pipe_in, FILE **pipe_out,
-//				   FILE **pipe_err);
-//int ap_close_fd_on_exec(int fd);
+procedure ap_note_subprocess(a: Ppool; pid: pid_t; how: kill_conditions);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
+				   void *, enum kill_conditions,
+				   FILE **pipe_in, FILE **pipe_out,
+				   FILE **pipe_err);
+int ap_close_fd_on_exec(int fd);}
 
 { magic numbers --- min free bytes to consider a free pool block useable,
  * and the min amount to allocate if we have to go to malloc() }

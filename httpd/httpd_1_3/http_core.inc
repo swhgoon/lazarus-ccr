@@ -73,32 +73,56 @@ const
 { default maximum subrequest nesting level }
   AP_DEFAULT_MAX_SUBREQ_DEPTH = 20;
 
-//API_EXPORT(int) ap_allow_options (request_rec *);
-//API_EXPORT(int) ap_allow_overrides (request_rec *);
-//API_EXPORT(const char *) ap_default_type (request_rec *);
-//API_EXPORT(const char *) ap_document_root (request_rec *); { Don't use this!  If your request went
-//				      * through a Userdir, or something like
-//				      * that, it'll screw you.  But it's
-//				      * back-compatible...
-//                                      }
-//API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
-//API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
+function ap_allow_options(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_allow_overrides(r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_default_type(r: Prequest_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_document_root(r: Prequest_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+                                      { Don't use this!  If your request went
+				      * through a Userdir, or something like
+				      * that, it'll screw you.  But it's
+				      * back-compatible...
+                                      }
+                                      
+function ap_get_remote_host(conn: Pconn_rec; dir_config: Pointer; type_: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_remote_logname(r: Prequest_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  }
-{API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, request_rec *r);
-API_EXPORT(const char *) ap_get_server_name(request_rec *r);
-API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
-API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
-API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
-API_EXPORT(int) ap_exists_config_define(char *name);
-}
+function ap_construct_url(p: Ppool; const uri: PChar; r: Prequest_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_server_name(r: Prequest_rec): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_server_port(const r: Prequest_rec): cuint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_limit_req_body(const r: Prequest_rec): culong;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_custom_response(r: Prequest_rec; status: cint; string_: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_exists_config_define(name: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 { Check if the current request is beyond the configured max. number of redirects or subrequests
  * @param r The current request
  * @return true (is exceeded) or false
  }
-//API_EXPORT(int) ap_is_recursion_limit_exceeded(const request_rec *r);
+function ap_is_recursion_limit_exceeded(const r: Prequest_rec): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
 { Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at

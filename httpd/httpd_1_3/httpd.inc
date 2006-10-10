@@ -542,9 +542,9 @@ const
  * NB: this is not the whole truth - sometimes \015 and \012 are contained
  * in literal (EBCDIC!) strings, so these are not converted but passed.
  }
-#define CR '\r'
-#define LF '\n'
-#define CRLF "\r\n"
+  CR = '\r';
+  LF = '\n';
+  CRLF = '\r\n';
 #define OS_ASC(c) (os_toascii[c])
 {$endif} { CHARSET_EBCDIC }
 
@@ -912,6 +912,10 @@ type
     { more stuff here, like which protocol is bound to the port }
   end;
 
+  tm = record end;
+  
+  Ptm = ^tm;
+  
 { Prototypes for utilities... util.c.
  }
 
@@ -919,44 +923,93 @@ type
 
 { Time }
 {extern API_VAR_EXPORT const char ap_month_snames[12][4];
-extern API_VAR_EXPORT const char ap_day_snames[7][4];
+extern API_VAR_EXPORT const char ap_day_snames[7][4];}
 
-API_EXPORT(struct tm *) ap_get_gmtoff(int *tz);
-API_EXPORT(char *) ap_get_time(void);
-API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype);
-API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt);
-API_EXPORT(char *) ap_gm_timestr_822(pool *p, time_t t);
-}
+function ap_get_gmtoff(tz: Pcint): Ptm;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_time: PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_field_noparam(p: Ppool; const intype: PChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_ht_time(p: Ppool; t: time_t; const fmt: PChar; gmt: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_gm_timestr_822(p: Ppool; t: time_t): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
 { String handling. The *_nc variants allow you to use non-const char **s as
    arguments (unfortunately C won't automatically convert a char ** to a const
    char **) }
 
-{API_EXPORT(char * ) ap_getword(pool *p, const char **line, char stop);
-API_EXPORT(char * ) ap_getword_nc(pool *p, char **line, char stop);
-API_EXPORT(char * ) ap_getword_white(pool *p, const char **line);
-API_EXPORT(char * ) ap_getword_white_nc(pool *p, char **line);
-API_EXPORT(char * ) ap_getword_nulls(pool *p, const char **line, char stop);
-API_EXPORT(char * ) ap_getword_nulls_nc(pool *p, char **line, char stop);
-API_EXPORT(char * ) ap_getword_conf(pool *p, const char **line);
-API_EXPORT(char * ) ap_getword_conf_nc(pool *p, char **line);
+function ap_getword(p: Ppool; const line: PPChar; stop: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
-API_EXPORT(char *) ap_get_list_item(pool *p, const char **field);
-API_EXPORT(int) ap_find_list_item(pool *p, const char *line, const char *tok);
+function ap_getword_nc(p: Ppool; line: PPChar; stop: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
-API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
-API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);
+function ap_getword_white(p: Ppool; const line: PPChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-API_EXPORT(int) ap_is_url(const char *u);
-API_EXPORT(int) ap_unescape_url(char *url);
-API_EXPORT(void) ap_no2slash(char *name);
-API_EXPORT(void) ap_getparents(char *name);
-API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *s);
-API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial);
-#define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
-API_EXPORT(char *) ap_escape_html(pool *p, const char *s);
-API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
+function ap_getword_white_nc(p: Ppool; line: PPChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_getword_nulls(p: Ppool; const line: PPChar; stop: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_getword_nulls_nc(p: Ppool; line: PPChar; stop: Char): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_getword_conf(p: Ppool; const line: PPChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_getword_conf_nc(p: Ppool; line: PPChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_size_list_item(const field: PPChar; len: Pcint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_get_list_item(p: Ppool; const field: PPChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_find_list_item(p: Ppool; const line, tok: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_get_token(p: Ppool; const accept_line: PPChar; accept_white: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_find_token(p: Ppool; const line, tok: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_find_last_token(p: Ppool; const line, tok: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+
+function ap_unescape_url(url: PChar): cint;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_no2slash(name: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+procedure ap_getparents(name: PChar);
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_escape_path_segment(p: Ppool; const s: PChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+function ap_os_escape_path(p: Ppool; const path: PChar; partial: cint): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+//#define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
+
+function ap_escape_html(p: Ppool; const s: PChar): PChar;
+ {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
+
+{API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r);
 API_EXPORT(char *) ap_escape_logitem(pool *p, const char *str);
 API_EXPORT(size_t) ap_escape_errorlog_item(char *dest, const char *source,
@@ -978,18 +1031,18 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
 API_EXPORT(char *) ap_pbase64decode(pool *p, const char *bufcoded);
 API_EXPORT(char *) ap_pbase64encode(pool *p, char *string); 
 API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded);
-API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
+API_EXPORT(char *) ap_uuencode(pool *p, char *string); }
 
-#if defined(OS2) || defined(WIN32)
-API_EXPORT(char *) ap_double_quotes(pool *p, const char *str);
-API_EXPORT(char *) ap_caret_escape_args(pool *p, const char *str);
-#endif
+{$if defined(OS2) or defined(WIN32)}
+//API_EXPORT(char *) ap_double_quotes(pool *p, const char *str);
+//API_EXPORT(char *) ap_caret_escape_args(pool *p, const char *str);
+{$endif}
 
-#ifdef OS2
+{$ifdef OS2}
 void os2pathname(char *path);
-#endif
+{$endif}
 
-API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
+{API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
@@ -1043,9 +1096,9 @@ type
 { Detach from open configfile_t, calling the close handler }
 //API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
 
-//#ifdef NEED_STRERROR
+{$ifdef NEED_STRERROR}
 //char *strerror(int err);
-//#endif
+{$endif}
 
 { Misc system hackery }
 
@@ -1067,34 +1120,36 @@ function ap_can_exec(const stat: Pointer): cint;
 procedure ap_chdir_file(const file_: PChar);
  {$IFDEF WINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF} external LibHTTPD;
 
-//#ifndef HAVE_CANONICAL_FILENAME
+{$ifndef HAVE_CANONICAL_FILENAME}
 {
  *  We can't define these in os.h because of dependence on pool pointer.
  }
 {#define ap_os_canonical_filename(p,f)  (f)
 #define ap_os_case_canonical_filename(p,f)  (f)
-#define ap_os_systemcase_filename(p,f)  (f)
-#else
-API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
-#ifdef WIN32
-API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
-#elif defined(OS2)
-API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
-#elif defined(NETWARE)
-API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
-#define ap_os_systemcase_filename(p,f) ap_os_case_canonical_filename(p,f)
-#else
-#define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
-#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
-#endif
-#endi}
+#define ap_os_systemcase_filename(p,f)  (f)}
+{$else}
+//API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
+{$ifdef WIN32}
+//API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+//API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+{$else}{$ifdef OS2}
+//API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+//API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+{$else}{$ifdef NETWARE}
+//API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+//#define ap_os_systemcase_filename(p,f) ap_os_case_canonical_filename(p,f)
+{$else}
+//#define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
+//#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
+{$endif}
+{$endif}
+{$endif}
+{$endif}
 
-//#ifdef CHARSET_EBCDIC
+{$ifdef CHARSET_EBCDIC}
 //API_EXPORT(int)    ap_checkconv(struct request_rec *r);    { for downloads }
 //API_EXPORT(int)    ap_checkconv_in(struct request_rec *r); { for uploads }
-//#endif {#ifdef CHARSET_EBCDIC}
+{$endif} {#ifdef CHARSET_EBCDIC}
 
 {API_EXPORT(char *) ap_get_local_host(pool *);
 API_EXPORT(unsigned long) ap_get_virthost_addr(char *hostname, unsigned short *port);
@@ -1116,9 +1171,9 @@ extern API_VAR_EXPORT time_t ap_restart_time;}
  }
 
 const
-  LOW_SLACK_LINE = 15;
+  LOW_SLACK_LINE  = 15;
 
-{ #define HIGH_SLACK_LINE      255 }
+  HIGH_SLACK_LINE = 255;
 
 {
  * The ap_slack() function takes a fd, and tries to move it above the indicated
@@ -1130,8 +1185,9 @@ const
 #define ap_slack(fd,line)   (fd)
 #else
 int ap_slack(int fd, int line);
-#define AP_SLACK_LOW	1
-#define AP_SLACK_HIGH	2
+const
+  AP_SLACK_LOW	= 1;
+  AP_SLACK_HIGH	= 2;
 #endif
 
 API_EXPORT(char *) ap_escape_quotes(pool *p, const char *instr);}
@@ -1146,8 +1202,7 @@ API_EXPORT(char *) ap_escape_quotes(pool *p, const char *instr);}
 { The optimized timeout code only works if we're not MULTITHREAD and we're
  * also not using a scoreboard file
  }
-{#if !defined (MULTITHREAD) && \
-    (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
+{#if !defined (MULTITHREAD) && (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
 #define OPTIMIZE_TIMEOUTS
 #endif}
 
