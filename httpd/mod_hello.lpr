@@ -15,7 +15,7 @@ library mod_hello;
   {$DEFINE WINDOWS}
 {$ENDIF}
 
-{$define Apache1_3} // Change when recompiling to a different Apache version
+{$define Apache2_0} // Change when recompiling to a different Apache version
 
 uses SysUtils, httpd {$ifndef Apache1_3}, apr{$endif};
 
