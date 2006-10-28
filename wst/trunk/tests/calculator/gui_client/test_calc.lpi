@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -26,7 +26,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="35">
+    <Units Count="37">
       <Unit0>
         <Filename Value="test_calc.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -41,8 +41,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="main_unit.lrs"/>
         <UnitName Value="main_unit"/>
-        <CursorPos X="28" Y="58"/>
-        <TopLine Value="1"/>
+        <CursorPos X="10" Y="43"/>
+        <TopLine Value="28"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="80"/>
         <Loaded Value="True"/>
@@ -53,7 +53,7 @@
         <UnitName Value="calculator"/>
         <CursorPos X="30" Y="16"/>
         <TopLine Value="8"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -63,7 +63,7 @@
         <UnitName Value="calculator_proxy"/>
         <CursorPos X="28" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -155,7 +155,7 @@
         <UnitName Value="base_binary_formatter"/>
         <CursorPos X="18" Y="151"/>
         <TopLine Value="135"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit16>
@@ -164,7 +164,7 @@
         <UnitName Value="soap_formatter"/>
         <CursorPos X="42" Y="171"/>
         <TopLine Value="157"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit17>
@@ -173,7 +173,7 @@
         <UnitName Value="service_intf"/>
         <CursorPos X="58" Y="47"/>
         <TopLine Value="31"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit18>
@@ -189,7 +189,7 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="454"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -198,7 +198,7 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="3" Y="235"/>
         <TopLine Value="229"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit21>
@@ -226,7 +226,7 @@
         <UnitName Value="imp_utils"/>
         <CursorPos X="36" Y="104"/>
         <TopLine Value="88"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -289,20 +289,33 @@
         <UnitName Value="binary_formatter"/>
         <CursorPos X="44" Y="132"/>
         <TopLine Value="120"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit34>
+      <Unit35>
+        <Filename Value="..\..\..\ics_tcp_protocol.pas"/>
+        <UnitName Value="ics_tcp_protocol"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="106"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="..\srv\calculator.lrs"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit36>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
         <Filename Value="main_unit.pas"/>
-        <Caret Line="64" Column="31" TopLine="51"/>
+        <Caret Line="43" Column="10" TopLine="28"/>
       </Position1>
-      <Position2>
-        <Filename Value="main_unit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

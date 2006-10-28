@@ -352,32 +352,32 @@
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\stringl.inc"/>
         <CursorPos X="19" Y="636"/>
         <TopLine Value="634"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit42>
       <Unit43>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\sysutils\sysstrh.inc"/>
         <CursorPos X="10" Y="80"/>
         <TopLine Value="69"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit43>
       <Unit44>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\sysutils\sysstr.inc"/>
         <CursorPos X="37" Y="453"/>
         <TopLine Value="451"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit44>
       <Unit45>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\classes\lists.inc"/>
         <CursorPos X="3" Y="370"/>
         <TopLine Value="368"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit45>
       <Unit46>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\objpas.pp"/>
         <UnitName Value="objpas"/>
         <CursorPos X="8" Y="26"/>
         <TopLine Value="14"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit46>
       <Unit47>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\typinfo.pp"/>
@@ -390,13 +390,13 @@
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\wstringh.inc"/>
         <CursorPos X="5" Y="67"/>
         <TopLine Value="42"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit48>
       <Unit49>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\wstrings.inc"/>
         <CursorPos X="3" Y="825"/>
         <TopLine Value="820"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit49>
       <Unit50>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\win32\classes.pp"/>
@@ -503,7 +503,7 @@
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\heaph.inc"/>
         <CursorPos X="10" Y="96"/>
         <TopLine Value="83"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit64>
       <Unit65>
         <Filename Value="..\..\imp_utils.pas"/>
@@ -562,92 +562,7 @@
         <UsageCount Value="13"/>
       </Unit72>
     </Units>
-    <JumpHistory Count="21" HistoryIndex="20">
-      <Position1>
-        <Filename Value="wst_http_server.pas"/>
-        <Caret Line="29" Column="30" TopLine="19"/>
-      </Position1>
-      <Position2>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="260" Column="21" TopLine="242"/>
-      </Position2>
-      <Position3>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="189" Column="1" TopLine="168"/>
-      </Position4>
-      <Position5>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position5>
-      <Position6>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="93" Column="1" TopLine="72"/>
-      </Position6>
-      <Position7>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position7>
-      <Position8>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="72" Column="18" TopLine="59"/>
-      </Position8>
-      <Position9>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="123" Column="39" TopLine="108"/>
-      </Position9>
-      <Position10>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="68" Column="1" TopLine="47"/>
-      </Position10>
-      <Position11>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position11>
-      <Position12>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="34" Column="31" TopLine="23"/>
-      </Position12>
-      <Position13>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="163" Column="1" TopLine="143"/>
-      </Position13>
-      <Position14>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position14>
-      <Position15>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="164" Column="48" TopLine="163"/>
-      </Position15>
-      <Position16>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position16>
-      <Position17>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="36" Column="33" TopLine="25"/>
-      </Position17>
-      <Position18>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="164" Column="48" TopLine="153"/>
-      </Position18>
-      <Position19>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="269" Column="3" TopLine="263"/>
-      </Position19>
-      <Position20>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="248" Column="5" TopLine="239"/>
-      </Position20>
-      <Position21>
-        <Filename Value="app_object.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position21>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

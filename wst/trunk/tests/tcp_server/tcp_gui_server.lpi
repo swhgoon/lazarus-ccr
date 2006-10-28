@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -53,8 +53,8 @@
         <Filename Value="server_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_unit"/>
-        <CursorPos X="4" Y="245"/>
-        <TopLine Value="144"/>
+        <CursorPos X="25" Y="189"/>
+        <TopLine Value="174"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="127"/>
         <Loaded Value="True"/>
@@ -233,8 +233,8 @@
       <Unit28>
         <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
-        <CursorPos X="9" Y="429"/>
-        <TopLine Value="417"/>
+        <CursorPos X="1" Y="202"/>
+        <TopLine Value="195"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="44"/>
         <Loaded Value="True"/>
@@ -316,7 +316,20 @@
         <UsageCount Value="20"/>
       </Unit37>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="server_unit.pas"/>
+        <Caret Line="189" Column="25" TopLine="174"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="187" Column="31" TopLine="173"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="43" Column="3" TopLine="51"/>
+      </Position3>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

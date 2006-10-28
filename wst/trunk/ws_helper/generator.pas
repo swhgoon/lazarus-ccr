@@ -722,7 +722,7 @@ Var
           WriteLn('%s : %s;',[prm.Name,prm.DataType.Name]);
         End;
       End;
-      If ( AMthd.MethodType = mtFunction ) Or ( prmCnt > 0 ) Then Begin
+      If ( AMthd.MethodType = mtFunction ) Then Begin
         WriteLn('%s : %s;',[RETURN_VAL_NAME,AMthd.Parameter[prmCnt].DataType.Name]);
         //WriteLn('%s : %s;',[sLOC_TYPE_INFO,'PTypeInfo']);
       End;
