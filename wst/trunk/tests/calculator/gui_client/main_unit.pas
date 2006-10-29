@@ -42,6 +42,7 @@ implementation
 uses TypInfo, base_service_intf, soap_formatter, binary_formatter,
      ics_tcp_protocol, ics_http_protocol,
      //synapse_http_protocol,
+     library_protocol,
      service_intf;
 
 { Tfmain }
@@ -127,6 +128,7 @@ begin
   FObj := Nil;
   //ICS_RegisterTCP_Transport();
   ICS_RegisterHTTP_Transport();
+  LIB_Register_Transport();
   //SYNAPSE_RegisterHTTP_Transport();
 end;
 

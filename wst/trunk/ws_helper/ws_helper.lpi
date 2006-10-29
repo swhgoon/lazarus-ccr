@@ -257,15 +257,27 @@
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="ws_helper.exe"/>
+    </Target>
     <SearchPaths>
       <OtherUnitFiles Value="..\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <Generate Value="Faster"/>
+      <Optimizations>
+        <OptimizationLevel Value="2"/>
+      </Optimizations>
     </CodeGeneration>
     <Other>
-      <CustomOptions Value="-Xi"/>
+      <CustomOptions Value="-Xi
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

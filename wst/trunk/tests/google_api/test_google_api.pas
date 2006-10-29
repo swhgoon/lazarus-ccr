@@ -12,7 +12,9 @@ uses
   googlewebapi, googlewebapi_proxy;
 
 Const
-  sADRESS = 'http:Address=http://api.google.com/search/beta2';
+  //sADRESS = 'http:Address=http://api.google.com/search/beta2;Proxy';
+  sADDRESS  = 'http:Address=http://api.google.com/search/beta2'+
+              ';ProxyServer=10.0.0.5;ProxyPort=8080';
   sTARGET = 'urn:GoogleSearch';
   sKEY    = '0w9pU3tQFHJyjRUP/bKgv2qwCoXf5pop';
   sSERVICE_PROTOCOL = 'SOAP';
@@ -30,7 +32,7 @@ begin
   WriteLn();
   WriteLn('Enter phrase to spell :');
   ReadLn(strBuffer);
-  tmpObj := TGoogleSearch_Proxy.Create(sTARGET,sSERVICE_PROTOCOL,sADRESS);
+  tmpObj := TGoogleSearch_Proxy.Create(sTARGET,sSERVICE_PROTOCOL,sADDRESS);
   Try
     strBuffer := tmpObj.doSpellingSuggestion(sKEY,strBuffer);
     WriteLn('google spell >>> ',strBuffer);

@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -32,15 +32,15 @@
         <PackageName Value="indylaz"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="41">
+    <Units Count="44">
       <Unit0>
         <Filename Value="test_google_api.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_google_api"/>
-        <CursorPos X="22" Y="15"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="148"/>
+        <CursorPos X="19" Y="30"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="151"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -49,9 +49,7 @@
         <UnitName Value="googlewebapi"/>
         <CursorPos X="47" Y="85"/>
         <TopLine Value="73"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="148"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="151"/>
       </Unit1>
       <Unit2>
         <Filename Value="googlewebapiimpunit.pas"/>
@@ -155,7 +153,7 @@
         <UnitName Value="indy_http_protocol"/>
         <CursorPos X="45" Y="166"/>
         <TopLine Value="156"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="66"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\ics_http_protocol.pas"/>
@@ -163,9 +161,7 @@
         <UnitName Value="ics_http_protocol"/>
         <CursorPos X="3" Y="17"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="125"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="128"/>
       </Unit17>
       <Unit18>
         <Filename Value="D:\Lazarus\others_package\ics\latest_distr\Delphi\Vc32\HttpProt.pas"/>
@@ -232,16 +228,20 @@
       <Unit27>
         <Filename Value="..\..\soap_formatter.pas"/>
         <UnitName Value="soap_formatter"/>
-        <CursorPos X="3" Y="248"/>
-        <TopLine Value="227"/>
+        <CursorPos X="36" Y="29"/>
+        <TopLine Value="12"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="47"/>
+        <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="31" Y="1268"/>
-        <TopLine Value="1253"/>
+        <CursorPos X="3" Y="694"/>
+        <TopLine Value="666"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="47"/>
+        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\base_service_intf.pas"/>
@@ -274,9 +274,11 @@
         <Filename Value="googlewebapi_proxy.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="googlewebapi_proxy"/>
-        <CursorPos X="10" Y="104"/>
-        <TopLine Value="90"/>
-        <UsageCount Value="66"/>
+        <CursorPos X="19" Y="104"/>
+        <TopLine Value="93"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="69"/>
+        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\v0.2\base_service_intf.pas"/>
@@ -295,9 +297,11 @@
       <Unit36>
         <Filename Value="..\..\synapse_http_protocol.pas"/>
         <UnitName Value="synapse_http_protocol"/>
-        <CursorPos X="3" Y="154"/>
-        <TopLine Value="145"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="3" Y="178"/>
+        <TopLine Value="153"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit36>
       <Unit37>
         <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
@@ -327,14 +331,48 @@
         <TopLine Value="145"/>
         <UsageCount Value="10"/>
       </Unit40>
+      <Unit41>
+        <Filename Value="..\..\imp_utils.pas"/>
+        <UnitName Value="imp_utils"/>
+        <CursorPos X="1" Y="86"/>
+        <TopLine Value="72"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="..\..\..\..\..\lazarusClean\lcl\include\lclintf.inc"/>
+        <CursorPos X="49" Y="342"/>
+        <TopLine Value="336"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\..\..\..\..\lazarusClean\others_package\synapse\httpsend.pas"/>
+        <UnitName Value="httpsend"/>
+        <CursorPos X="14" Y="143"/>
+        <TopLine Value="120"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit43>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="test_google_api.pas"/>
+        <Caret Line="30" Column="19" TopLine="21"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="test_google_api.exe"/>
+    </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="D:\LazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\..\;D:\LazarusClean\others_package\synapse\"/>
+      <OtherUnitFiles Value="C:\LazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\..\;C:\LazarusClean\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="..\..\"/>
     </SearchPaths>
@@ -347,7 +385,8 @@
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Other>
-      <CustomOptions Value="-Xi"/>
+      <CustomOptions Value="-Xi
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

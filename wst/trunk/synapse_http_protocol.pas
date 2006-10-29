@@ -166,7 +166,10 @@ begin
   TMemoryStream(AResponse).SaveToFile('log.log');
   SetLength(s,AResponse.Size);
   Move(TMemoryStream(AResponse).Memory^,s[1],Length(s));
-  ShowMessage(s);
+  if IsConsole then
+    WriteLn(s)
+  else
+    ShowMessage(s);
 {$ENDIF}
 end;
 

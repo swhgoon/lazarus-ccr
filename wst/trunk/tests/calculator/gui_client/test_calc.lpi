@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -26,7 +26,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="37">
+    <Units Count="39">
       <Unit0>
         <Filename Value="test_calc.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -41,11 +41,9 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="main_unit.lrs"/>
         <UnitName Value="main_unit"/>
-        <CursorPos X="10" Y="43"/>
-        <TopLine Value="28"/>
-        <EditorIndex Value="0"/>
+        <CursorPos X="18" Y="131"/>
+        <TopLine Value="109"/>
         <UsageCount Value="80"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\calculator.pas"/>
@@ -53,9 +51,7 @@
         <UnitName Value="calculator"/>
         <CursorPos X="30" Y="16"/>
         <TopLine Value="8"/>
-        <EditorIndex Value="10"/>
         <UsageCount Value="80"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="calculator_proxy.pas"/>
@@ -63,9 +59,7 @@
         <UnitName Value="calculator_proxy"/>
         <CursorPos X="28" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="11"/>
         <UsageCount Value="80"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\..\..\service_intf.pas"/>
@@ -155,27 +149,21 @@
         <UnitName Value="base_binary_formatter"/>
         <CursorPos X="18" Y="151"/>
         <TopLine Value="135"/>
-        <EditorIndex Value="9"/>
         <UsageCount Value="32"/>
-        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\soap_formatter.pas"/>
         <UnitName Value="soap_formatter"/>
         <CursorPos X="42" Y="171"/>
         <TopLine Value="157"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="32"/>
-        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
         <CursorPos X="58" Y="47"/>
         <TopLine Value="31"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="32"/>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\ics_http_protocol.pas"/>
@@ -189,18 +177,14 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="454"/>
-        <EditorIndex Value="8"/>
         <UsageCount Value="31"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="3" Y="235"/>
         <TopLine Value="229"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="31"/>
-        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="D:\lazarusClean\fpcsrc\fcl\xml\dom.pp"/>
@@ -226,9 +210,7 @@
         <UnitName Value="imp_utils"/>
         <CursorPos X="36" Y="104"/>
         <TopLine Value="88"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\win32\classes.pp"/>
@@ -289,40 +271,45 @@
         <UnitName Value="binary_formatter"/>
         <CursorPos X="44" Y="132"/>
         <TopLine Value="120"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit34>
       <Unit35>
         <Filename Value="..\..\..\ics_tcp_protocol.pas"/>
         <UnitName Value="ics_tcp_protocol"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="106"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="3" Y="22"/>
+        <TopLine Value="8"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit35>
       <Unit36>
         <Filename Value="..\srv\calculator.lrs"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="..\..\..\library_protocol.pas"/>
+        <UnitName Value="library_protocol"/>
+        <CursorPos X="39" Y="213"/>
+        <TopLine Value="199"/>
+        <UsageCount Value="10"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="..\..\metadata_browser\library_protocol.pas"/>
+        <UnitName Value="library_protocol"/>
+        <CursorPos X="18" Y="24"/>
+        <TopLine Value="10"/>
+        <EditorIndex Value="0"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-      </Unit36>
+      </Unit38>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="main_unit.pas"/>
-        <Caret Line="43" Column="10" TopLine="28"/>
-      </Position1>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="D:\Lazarus\others_package\ics\latest_distr\Delphi\Vc32\;..\;..\..\..\;D:\Lazarus\others_package\synapse\"/>
+      <OtherUnitFiles Value="C:\lazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\;..\..\..\;C:\lazarusClean\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
@@ -342,7 +329,8 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-Xi"/>
+      <CustomOptions Value="-Xi
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

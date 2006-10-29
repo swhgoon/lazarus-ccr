@@ -37,7 +37,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_http_server"/>
         <CursorPos X="30" Y="29"/>
-        <TopLine Value="19"/>
+        <TopLine Value="12"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
@@ -567,6 +567,9 @@
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="wst_http_server.exe"/>
+    </Target>
     <SearchPaths>
       <OtherUnitFiles Value="..\..\;..\calculator\;..\calculator\srv\"/>
       <UnitOutputDirectory Value="obj"/>

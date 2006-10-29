@@ -7,39 +7,41 @@ object fmain: Tfmain
   VertScrollBar.Page = 299
   ActiveControl = edtA
   Caption = '"calculator" service test'
+  ClientHeight = 300
+  ClientWidth = 528
   OnCreate = FormCreate
   object Label1: TLabel
     Left = 16
-    Height = 14
+    Height = 18
     Top = 48
-    Width = 49
+    Width = 64
     Caption = 'Param "A"'
     Color = clNone
     ParentColor = False
   end
   object Label2: TLabel
     Left = 17
-    Height = 14
+    Height = 18
     Top = 80
-    Width = 48
+    Width = 64
     Caption = 'Param "B"'
     Color = clNone
     ParentColor = False
   end
   object Label3: TLabel
     Left = 240
-    Height = 14
+    Height = 18
     Top = 52
-    Width = 35
+    Width = 45
     Caption = 'Format'
     Color = clNone
     ParentColor = False
   end
   object Label4: TLabel
     Left = 16
-    Height = 14
+    Height = 18
     Top = 8
-    Width = 40
+    Width = 49
     Caption = 'Address'
     Color = clNone
     ParentColor = False

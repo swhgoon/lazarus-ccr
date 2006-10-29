@@ -45,6 +45,7 @@ uses base_service_intf, service_intf,
      soap_formatter, binary_formatter,
      synapse_http_protocol, //indy_http_protocol, ics_http_protocol,
      //ics_tcp_protocol,
+     library_protocol,
      metadata_service_proxy;
      
 { TfMain }
@@ -93,8 +94,11 @@ begin
   Result := TWSTMetadataService_Proxy.Create(
               'WSTMetadataService',
               s,
-              Format('http:Address=%s',[edtAddress.Text])// 'http:Address=http://127.0.0.1:8000/services/IWSTMetadataService'
-            ) as IWSTMetadataService;//'TCP:Address=127.0.0.1;Port=1234;target=Calculator'
+              Format('http:Address=%s',[edtAddress.Text])
+            ) as IWSTMetadataService;
+//lib:FileName=C:\Programmes\lazarus\wst\tests\library\obj\lib_server.dll;target=IWSTMetadataService
+//'http:Address=http://127.0.0.1:8000/services/IWSTMetadataService'
+//'TCP:Address=127.0.0.1;Port=1234;target=Calculator'
 end;
 
 procedure TfMain.LoadRepository(ARep: TWSTMtdRepository);
@@ -158,6 +162,7 @@ initialization
 
   RegisterStdTypes();
   SYNAPSE_RegisterHTTP_Transport();
+  LIB_Register_Transport();
   //ICS_RegisterHTTP_Transport();
   //INDY_RegisterHTTP_Transport();
 end.
