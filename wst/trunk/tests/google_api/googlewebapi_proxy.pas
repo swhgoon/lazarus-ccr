@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "googlewebapi".
   This unit name  : "googlewebapi_proxy".
-  Date            : "30/07/2006 21:44".
+  Date            : "29/10/2006 15:02".
 }
 Unit googlewebapi_proxy;
 {$mode objfpc}{$H+}

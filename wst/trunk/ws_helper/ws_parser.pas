@@ -455,7 +455,7 @@ begin
   Assert(Assigned(AStream));
   FStream := AStream;
   FTokenizer := TParser.Create(FStream);
-  FSymbolTable := TSymbolTable.Create('');
+  FSymbolTable := TSymbolTable.Create('tmp_name');
   FCurrentSymbol := Nil;
 end;
 

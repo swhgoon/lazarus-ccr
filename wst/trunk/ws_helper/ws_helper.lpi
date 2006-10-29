@@ -48,8 +48,8 @@
         <Filename Value="ws_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ws_parser"/>
-        <CursorPos X="1" Y="385"/>
-        <TopLine Value="374"/>
+        <CursorPos X="20" Y="456"/>
+        <TopLine Value="453"/>
         <UsageCount Value="195"/>
       </Unit1>
       <Unit2>
@@ -69,8 +69,8 @@
         <Filename Value="parserdefs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="parserdefs"/>
-        <CursorPos X="1" Y="208"/>
-        <TopLine Value="189"/>
+        <CursorPos X="14" Y="119"/>
+        <TopLine Value="29"/>
         <UsageCount Value="195"/>
       </Unit3>
       <Unit4>
