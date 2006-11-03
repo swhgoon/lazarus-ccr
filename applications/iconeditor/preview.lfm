@@ -1,0 +1,15 @@
+object PreviewForm: TPreviewForm
+  BorderStyle = bsSizeToolWin
+  Caption = 'Preview'
+  ClientHeight = 200
+  ClientWidth = 200
+  FormStyle = fsStayOnTop
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 195
+  VertScrollBar.Page = 207
+  Left = 849
+  Height = 200
+  Top = 79
+  Width = 200
+end

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="400pt"
+   id="svg548"
+   inkscape:version="0.44"
+   sodipodi:docbase="D:\Projects\iconeditor\Images"
+   sodipodi:docname="eraser.svg"
+   sodipodi:version="0.32"
+   width="400pt"
+   inkscape:export-filename="D:\Projects\iconeditor\Images\eraser.png"
+   inkscape:export-xdpi="5.7600002"
+   inkscape:export-ydpi="5.7600002">
+  <metadata
+     id="metadata2811">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Clipart by Nicu Buculei - book_01</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>hash</rdf:li>
+            <rdf:li />
+            <rdf:li>education</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs550">
+    <linearGradient
+       id="linearGradient562">
+      <stop
+         id="stop563"
+         offset="0.000000"
+         style="stop-color:#de9500;stop-opacity:1;" />
+      <stop
+         id="stop564"
+         offset="1.000000"
+         style="stop-color:#ffff0f;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient558">
+      <stop
+         id="stop559"
+         offset="0"
+         style="stop-color:#000;stop-opacity:1;" />
+      <stop
+         id="stop560"
+         offset="1"
+         style="stop-color:#fff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient561"
+       spreadMethod="reflect"
+       x1="325.0145"
+       x2="306.55333"
+       xlink:href="#linearGradient562"
+       y1="80.045631"
+       y2="68.01138"
+       gradientTransform="matrix(-2.656995,-0.181483,0.159349,-2.332968,1181.78,450.9613)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     inkscape:cx="275.5678"
+     inkscape:cy="260.7354"
+     inkscape:window-height="815"
+     inkscape:window-width="1152"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:zoom="0.35355339"
+     inkscape:current-layer="g851" />
+  <g
+     id="g851">
+    <path
+       d="M 981.28788,-498.78115 L 368.22024,255.26367 C 368.22024,255.26367 310.8966,317.67483 254.03481,276.20597 C 236.72815,270.60201 240.82936,275.30375 207.42351,246.49165 C 199.07331,239.28852 198.2789,186.17301 198.2789,186.17301 C 198.2789,186.17301 803.89823,-588.27863 804.04856,-590.47955 C 804.19872,-592.67794 809.54529,-541.46321 856.15403,-511.74805 C 898.36358,-482.33588 979.23728,-501.13239 981.28788,-498.78115 z "
+       id="path553"
+       sodipodi:nodetypes="cccccccc"
+       style="fill:#c96400;fill-rule:evenodd;stroke:black;stroke-width:24.95516396;stroke-linejoin:round;stroke-dasharray:none" />
+    <path
+       d="M 364.48046,261.96889 L 289.62006,354.342 C 289.62006,354.342 235.38105,410.73758 183.22189,396.28792 C 146.51186,385.13241 136.90487,372.28904 126.90407,353.49369 C 109.20523,321.3321 136.69077,265.9198 138.89168,266.07014 C 133.15429,264.89741 232.60414,141.54405 232.60414,141.54405 C 232.60414,141.54405 218.05758,151.89598 254.11523,174.25717 C 292.16728,232.12842 347.17985,285.414 364.48046,261.96889 z "
+       id="path556"
+       sodipodi:nodetypes="cccccccc"
+       style="fill:#fc9fe3;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:24.95516396;stroke-linejoin:round;stroke-dasharray:none" />
+    <path
+       d="M 426.27996,179.93777 C 416.04272,192.52623 328.56526,306.1871 328.56526,306.1871 C 328.56526,306.1871 316.45319,268.63109 302.6712,250.69478 C 288.2124,231.87765 284.00958,230.89484 258.67364,213.50678 C 232.39028,195.46851 184.82358,202.19686 184.82358,202.19686 L 276.46042,84.537337 C 276.46042,84.537337 310.96588,83.787835 336.07007,90.641331 C 361.49241,97.581684 383.60949,108.81566 395.07443,120.67314 C 407.21053,133.22475 421.7211,157.15724 426.27996,179.93777 z "
+       id="path557"
+       sodipodi:nodetypes="cczzcczzc"
+       style="fill:url(#linearGradient561);fill-rule:evenodd;stroke:black;stroke-width:24.95516396;stroke-linejoin:round;stroke-dasharray:none" />
+    <path
+       d="M 158.89402,368.87703 C 158.89402,368.87703 177.05394,386.53315 213.22223,382.67371 C 256.22846,372.54449 272.11995,352.04799 293.3418,326.53778 C 260.61997,350.27717 226.35627,362.26069 158.89402,368.87703 z "
+       id="path567"
+       sodipodi:nodetypes="cccc"
+       style="fill-opacity:0.24999994;fill-rule:evenodd;stroke-width:1pt" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:24.95516396;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 378.09196,245.22394 C 375.82789,211.56405 364.91892,191.2194 350.62319,177.89027 C 326.05533,154.98356 278.16852,137.14338 235.49179,142.59652"
+       id="path2832"
+       sodipodi:nodetypes="csc" />
+    <path
+       d="M 801.49222,-555.88476 C 747.32912,-493.22439 200.62022,191.4277 178.0223,242.47368 C 164.52871,360.62562 637.59306,-345.69359 801.49222,-555.88476 z "
+       id="path564"
+       sodipodi:nodetypes="ccc"
+       style="fill:white;fill-opacity:0.503704;fill-rule:evenodd;stroke-width:1pt" />
+  </g>
+</svg>

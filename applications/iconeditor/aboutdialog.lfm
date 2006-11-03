@@ -1,0 +1,56 @@
+object AboutDialogForm: TAboutDialogForm
+  ActiveControl = ButtonClose
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'About Lazarus Icon Editor'
+  ClientHeight = 423
+  ClientWidth = 425
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  Position = poMainFormCenter
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 265
+  Left = 301
+  Height = 423
+  Top = 155
+  Width = 425
+  object LabelVersion: TLabel
+    Anchors = [akLeft, akBottom]
+    Caption = 'Version: 0.1'
+    Color = clNone
+    ParentColor = False
+    Left = 12
+    Height = 14
+    Top = 372
+    Width = 59
+  end
+  object LabelAuthor: TLabel
+    Anchors = [akLeft, akBottom]
+    Caption = 'Author: Tom Gregorovic'
+    Color = clNone
+    ParentColor = False
+    Left = 12
+    Height = 14
+    Top = 397
+    Width = 116
+  end
+  object Image: TImage
+    AutoSize = True
+    Left = 12
+    Height = 347
+    Top = 12
+    Width = 400
+  end
+  object ButtonClose: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Close'
+    ModalResult = 1
+    TabOrder = 0
+    Left = 342
+    Height = 25
+    Top = 390
+    Width = 75
+  end
+end

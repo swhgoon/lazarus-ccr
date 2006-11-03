@@ -1,0 +1,169 @@
+object ResizeDialogForm: TResizeDialogForm
+  ActiveControl = EditHeight
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Resize picture'
+  ClientHeight = 300
+  ClientWidth = 246
+  PixelsPerInch = 96
+  Position = poMainFormCenter
+  HorzScrollBar.Page = 245
+  VertScrollBar.Page = 299
+  Left = 301
+  Height = 300
+  Top = 155
+  Width = 246
+  object GroupBoxProperties: TGroupBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Properties'
+    ClientHeight = 228
+    ClientWidth = 231
+    TabOrder = 0
+    Left = 6
+    Height = 246
+    Top = 6
+    Width = 235
+    object LabelHeight: TLabel
+      Caption = 'New height:'
+      Color = clNone
+      ParentColor = False
+      Left = 16
+      Height = 14
+      Top = 50
+      Width = 59
+    end
+    object LabelWidth: TLabel
+      Caption = 'New width:'
+      Color = clNone
+      ParentColor = False
+      Left = 16
+      Height = 14
+      Top = 14
+      Width = 55
+    end
+    object EditHeight: TEdit
+      OnChange = EditHeightChange
+      OnKeyDown = nil
+      TabOrder = 0
+      Text = '512'
+      Left = 106
+      Height = 23
+      Top = 44
+      Width = 80
+    end
+    object EditWidth: TEdit
+      OnChange = EditWidthChange
+      OnKeyDown = nil
+      TabOrder = 1
+      Text = '512'
+      Left = 106
+      Height = 23
+      Top = 8
+      Width = 80
+    end
+    object UpDownHeight: TUpDown
+      Associate = EditHeight
+      Min = 1
+      Max = 4096
+      Position = 512
+      Thousands = False
+      Left = 186
+      Height = 23
+      Top = 44
+      Width = 17
+    end
+    object UpDownWidth: TUpDown
+      Associate = EditWidth
+      Min = 1
+      Max = 4096
+      Position = 512
+      Thousands = False
+      Left = 186
+      Height = 23
+      Top = 8
+      Width = 17
+    end
+    object CheckBoxAspectRatio: TCheckBox
+      Caption = 'Preserve aspect ratio'
+      Checked = True
+      OnClick = CheckBoxAspectRatioClick
+      State = cbChecked
+      TabOrder = 2
+      Left = 16
+      Height = 13
+      Top = 85
+      Width = 120
+    end
+    object GroupBoxStretchMethod: TGroupBox
+      Caption = 'Stretch method'
+      ClientHeight = 84
+      ClientWidth = 206
+      TabOrder = 3
+      Left = 10
+      Height = 102
+      Top = 116
+      Width = 210
+      object RadioButtonTruncate: TRadioButton
+        Caption = 'Truncate'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        Left = 16
+        Height = 13
+        Top = 13
+        Width = 63
+      end
+      object RadioButtonSmooth: TRadioButton
+        Caption = 'Smooth:'
+        Enabled = False
+        TabOrder = 1
+        Left = 16
+        Height = 13
+        Top = 44
+        Width = 59
+      end
+      object ComboBoxSmooth: TComboBox
+        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        Enabled = False
+        ItemIndex = 1
+        Items.Strings = (
+          'Area pixel'
+          'Bilinear'
+          'Bicubic'
+        )
+        MaxLength = 0
+        Style = csDropDownList
+        TabOrder = 2
+        Text = 'Bilinear'
+        Left = 100
+        Height = 21
+        Top = 38
+        Width = 96
+      end
+    end
+  end
+  object ButtonCancel: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 165
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+  object ButtonOK: TButton
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 2
+    Left = 84
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+end

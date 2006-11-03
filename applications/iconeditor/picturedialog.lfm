@@ -1,0 +1,15 @@
+object PictureDialogForm: TPictureDialogForm
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'PictureDialogForm'
+  ClientHeight = 300
+  ClientWidth = 400
+  PixelsPerInch = 91
+  Position = poMainFormCenter
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Left = 301
+  Height = 300
+  Top = 155
+  Width = 400
+end

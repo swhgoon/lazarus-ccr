@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="400pt"
+   id="svg548"
+   inkscape:version="0.44"
+   sodipodi:docbase="D:\Projects\iconeditor\Images"
+   sodipodi:docname="polygon.svg"
+   sodipodi:version="0.32"
+   width="400pt"
+   inkscape:export-filename="D:\Projects\iconeditor\Images\polygon.png"
+   inkscape:export-xdpi="5.7600002"
+   inkscape:export-ydpi="5.7600002">
+  <metadata
+     id="metadata3">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Clipart by Nicu Buculei - book_01</dc:title>
+        <dc:description />
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>hash</rdf:li>
+            <rdf:li />
+            <rdf:li>education</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://www.openclipart.org">
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Nicu Buculei</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date />
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs550">
+    <linearGradient
+       id="linearGradient7237">
+      <stop
+         id="stop7239"
+         offset="0"
+         style="stop-color:#9b99f2;stop-opacity:1;" />
+      <stop
+         id="stop7241"
+         offset="1"
+         style="stop-color:#0016dd;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2783">
+      <stop
+         style="stop-color:#f2aa99;stop-opacity:1;"
+         offset="0"
+         id="stop2785" />
+      <stop
+         style="stop-color:#dd3600;stop-opacity:1;"
+         offset="1"
+         id="stop2787" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient562">
+      <stop
+         id="stop563"
+         offset="0.000000"
+         style="stop-color:#de9500;stop-opacity:1;" />
+      <stop
+         id="stop564"
+         offset="1.000000"
+         style="stop-color:#ffff0f;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient558">
+      <stop
+         id="stop559"
+         offset="0"
+         style="stop-color:#000;stop-opacity:1;" />
+      <stop
+         id="stop560"
+         offset="1"
+         style="stop-color:#fff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient561"
+       xlink:href="#linearGradient562" />
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient579"
+       spreadMethod="reflect"
+       x1="165.81006"
+       x2="115.14412"
+       xlink:href="#linearGradient562"
+       y1="346.05156"
+       y2="321.42509"
+       gradientTransform="scale(1.014164,0.986034)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7237"
+       id="radialGradient2823"
+       cx="-71.672279"
+       cy="-18.191139"
+       fx="-71.672279"
+       fy="-18.191139"
+       r="316.16092"
+       gradientTransform="matrix(0.766107,0.846,-1.003664,0.908882,40.15256,2.694648)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     inkscape:cx="200"
+     inkscape:cy="260.79332"
+     inkscape:window-height="815"
+     inkscape:window-width="1152"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:zoom="1.09248"
+     inkscape:current-layer="svg548" />
+  <path
+     sodipodi:type="star"
+     style="fill:url(#radialGradient2823);fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:28.64262581;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path1922"
+     sodipodi:sides="5"
+     sodipodi:cx="144.62508"
+     sodipodi:cy="110.06151"
+     sodipodi:r1="326.91779"
+     sodipodi:r2="264.00925"
+     sodipodi:arg1="0.94222925"
+     sodipodi:arg2="1.534099"
+     inkscape:flatsided="false"
+     inkscape:rounded="0"
+     inkscape:randomized="0"
+     d="M 336.84826,374.49578 L 154.31134,373.89301 L -47.466635,374.5913 L -103.30037,200.8021 L -166.31731,9.115637 L -18.287535,-97.689216 L 144.54382,-216.85627 L 291.86499,-109.0761 L 455.51725,8.9610825 L 398.53696,182.37774 L 336.84826,374.49578 z "
+     transform="matrix(0.639214,0,0,0.639214,158.1794,197.4848)" />
+</svg>
