@@ -1,0 +1,19 @@
+LazarusResources.Add('TFormExample','FORMDATA',[
+  'TPF0'#12'TFormExample'#11'FormExample'#13'ActiveControl'#7#13'ButtonRedLine'
+  +#7'Caption'#6#22'LazRGBGraphics Example'#12'ClientHeight'#3#187#1#11'ClientW'
+  +'idth'#3'?'#2#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#7
+  +'OnPaint'#7#9'FormPaint'#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'#3'>'#2
+  +#18'VertScrollBar.Page'#3#186#1#4'Left'#3'-'#1#6'Height'#3#187#1#3'Top'#3#155
+  +#0#5'Width'#3'?'#2#0#7'TButton'#13'ButtonRedLine'#25'BorderSpacing.InnerBord'
+  +'er'#2#4#7'Caption'#6#13'Draw red line'#7'OnClick'#7#18'ButtonRedLineClick'#8
+  +'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#25#3'Top'#2#8#5'Width'#2'~'#0#0#7'TBu'
+  +'tton'#14'ButtonRotate90'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#20
+  +'Rotate 90'#176' clockwise'#7'OnClick'#7#19'ButtonRotate90Click'#8'TabOrder'
+  +#2#1#4'Left'#2#6#6'Height'#2#25#3'Top'#2''''#5'Width'#2'~'#0#0#7'TButton'#12
+  +'ButtonInvert'#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'Invert colo'
+  +'rs'#7'OnClick'#7#17'ButtonInvertClick'#8'TabOrder'#2#2#4'Left'#2#6#6'Height'
+  +#2#25#3'Top'#2'H'#5'Width'#2'~'#0#0#7'TButton'#13'ButtonReplace'#25'BorderSp'
+  +'acing.InnerBorder'#2#4#7'Caption'#6#23'Replace white with blue'#7'OnClick'#7
+  +#18'ButtonReplaceClick'#8'TabOrder'#2#3#4'Left'#2#6#6'Height'#2#25#3'Top'#2
+  +'j'#5'Width'#2'~'#0#0#0
+]);

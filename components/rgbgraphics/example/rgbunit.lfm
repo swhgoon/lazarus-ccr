@@ -1,0 +1,56 @@
+object FormExample: TFormExample
+  ActiveControl = ButtonRedLine
+  Caption = 'LazRGBGraphics Example'
+  ClientHeight = 443
+  ClientWidth = 575
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnPaint = FormPaint
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 574
+  VertScrollBar.Page = 442
+  Left = 301
+  Height = 443
+  Top = 155
+  Width = 575
+  object ButtonRedLine: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Draw red line'
+    OnClick = ButtonRedLineClick
+    TabOrder = 0
+    Left = 6
+    Height = 25
+    Top = 8
+    Width = 126
+  end
+  object ButtonRotate90: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Rotate 90° clockwise'
+    OnClick = ButtonRotate90Click
+    TabOrder = 1
+    Left = 6
+    Height = 25
+    Top = 39
+    Width = 126
+  end
+  object ButtonInvert: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Invert colors'
+    OnClick = ButtonInvertClick
+    TabOrder = 2
+    Left = 6
+    Height = 25
+    Top = 72
+    Width = 126
+  end
+  object ButtonReplace: TButton
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Replace white with blue'
+    OnClick = ButtonReplaceClick
+    TabOrder = 3
+    Left = 6
+    Height = 25
+    Top = 106
+    Width = 126
+  end
+end
