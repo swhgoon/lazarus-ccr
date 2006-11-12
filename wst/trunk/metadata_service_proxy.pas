@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "metadata_service".
   This unit name  : "metadata_service_proxy".
-  Date            : "31/07/2006 23:11".
+  Date            : "12/11/2006 11:12".
 }
 Unit metadata_service_proxy;
 {$mode objfpc}{$H+}
@@ -23,7 +23,7 @@ Type
   End;
 
 Implementation
-uses LResources, metadata_repository;
+uses wst_resources_imp, metadata_repository;
 
 { TWSTMetadataService_Proxy implementation }
 
@@ -82,7 +82,7 @@ End;
 
 
 initialization
-  {$i metadata_service.lrs}
+  {$i metadata_service.wst}
 
   {$IF DECLARED(Register_metadata_service_ServiceMetadata)}
   Register_metadata_service_ServiceMetadata();

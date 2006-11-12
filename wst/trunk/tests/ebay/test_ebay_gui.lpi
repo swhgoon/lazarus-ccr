@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -52,7 +52,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="synapse_http_protocol"/>
         <CursorPos X="1" Y="1"/>
-        <TopLine Value="157"/>
+        <TopLine Value="153"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="63"/>
         <Loaded Value="True"/>
@@ -109,8 +109,8 @@
         <Filename Value="ebay.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ebay"/>
-        <CursorPos X="13" Y="536"/>
-        <TopLine Value="525"/>
+        <CursorPos X="42" Y="535"/>
+        <TopLine Value="534"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="47"/>
         <Loaded Value="True"/>
@@ -137,7 +137,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ebay_proxy"/>
         <CursorPos X="26" Y="96"/>
-        <TopLine Value="77"/>
+        <TopLine Value="70"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="47"/>
         <Loaded Value="True"/>
@@ -206,28 +206,7 @@
         <UsageCount Value="10"/>
       </Unit22>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
-      <Position1>
-        <Filename Value="umain.pas"/>
-        <Caret Line="31" Column="25" TopLine="26"/>
-      </Position1>
-      <Position2>
-        <Filename Value="umain.pas"/>
-        <Caret Line="149" Column="36" TopLine="138"/>
-      </Position2>
-      <Position3>
-        <Filename Value="umain.pas"/>
-        <Caret Line="46" Column="24" TopLine="33"/>
-      </Position3>
-      <Position4>
-        <Filename Value="ebay_proxy.pas"/>
-        <Caret Line="96" Column="26" TopLine="77"/>
-      </Position4>
-      <Position5>
-        <Filename Value="ebay.pas"/>
-        <Caret Line="524" Column="5" TopLine="515"/>
-      </Position5>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -248,7 +227,6 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value=""/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

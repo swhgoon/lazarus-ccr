@@ -27,42 +27,39 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
-      </Item1>
-      <Item2>
         <PackageName Value="FCL"/>
-      </Item2>
+      </Item1>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="35">
       <Unit0>
         <Filename Value="ws_helper.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ws_helper"/>
-        <CursorPos X="1" Y="95"/>
-        <TopLine Value="84"/>
-        <UsageCount Value="195"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="200"/>
       </Unit0>
       <Unit1>
         <Filename Value="ws_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ws_parser"/>
-        <CursorPos X="20" Y="456"/>
-        <TopLine Value="453"/>
-        <UsageCount Value="195"/>
+        <CursorPos X="21" Y="192"/>
+        <TopLine Value="234"/>
+        <UsageCount Value="200"/>
       </Unit1>
       <Unit2>
         <Filename Value="generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="generator"/>
-        <CursorPos X="1" Y="870"/>
-        <TopLine Value="859"/>
-        <UsageCount Value="195"/>
+        <CursorPos X="39" Y="16"/>
+        <TopLine Value="148"/>
+        <UsageCount Value="200"/>
         <Bookmarks Count="3">
-          <Item0 X="43" Y="689" ID="0"/>
-          <Item1 X="69" Y="826" ID="1"/>
-          <Item2 X="17" Y="191" ID="2"/>
+          <Item0 X="43" Y="692" ID="0"/>
+          <Item1 X="69" Y="829" ID="1"/>
+          <Item2 X="17" Y="194" ID="2"/>
         </Bookmarks>
       </Unit2>
       <Unit3>
@@ -71,7 +68,7 @@
         <UnitName Value="parserdefs"/>
         <CursorPos X="14" Y="119"/>
         <TopLine Value="29"/>
-        <UsageCount Value="195"/>
+        <UsageCount Value="200"/>
       </Unit3>
       <Unit4>
         <Filename Value="parserutils.pas"/>
@@ -79,7 +76,7 @@
         <UnitName Value="parserutils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="23"/>
-        <UsageCount Value="195"/>
+        <UsageCount Value="200"/>
       </Unit4>
       <Unit5>
         <Filename Value="ws_helper.lpi"/>
@@ -136,7 +133,7 @@
         <UnitName Value="source_utils"/>
         <CursorPos X="1" Y="231"/>
         <TopLine Value="220"/>
-        <UsageCount Value="174"/>
+        <UsageCount Value="179"/>
       </Unit12>
       <Unit13>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
@@ -170,15 +167,15 @@
         <UnitName Value="command_line_parser"/>
         <CursorPos X="1" Y="53"/>
         <TopLine Value="42"/>
-        <UsageCount Value="154"/>
+        <UsageCount Value="159"/>
       </Unit17>
       <Unit18>
         <Filename Value="metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
-        <CursorPos X="15" Y="30"/>
-        <TopLine Value="30"/>
-        <UsageCount Value="105"/>
+        <CursorPos X="1" Y="19"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="110"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\binary_streamer.pas"/>
@@ -186,7 +183,7 @@
         <UnitName Value="binary_streamer"/>
         <CursorPos X="6" Y="13"/>
         <TopLine Value="1"/>
-        <UsageCount Value="105"/>
+        <UsageCount Value="110"/>
       </Unit19>
       <Unit20>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\sysutils\finah.inc"/>
@@ -251,6 +248,40 @@
         <TopLine Value="299"/>
         <UsageCount Value="8"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="wst_resources_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_resources_utils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="25"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\win32\classes.pp"/>
+        <UnitName Value="Classes"/>
+        <CursorPos X="8" Y="27"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\win32\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="15" Y="33"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <CursorPos X="15" Y="19"/>
+        <TopLine Value="7"/>
+        <UsageCount Value="10"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\objpas\sysutils\osutilsh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit34>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>

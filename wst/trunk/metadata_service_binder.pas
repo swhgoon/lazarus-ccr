@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "metadata_service".
   This unit name  : "metadata_service_binder".
-  Date            : "31/07/2006 23:18".
+  Date            : "12/11/2006 11:12".
 }
 unit metadata_service_binder;
 {$mode objfpc}{$H+}
@@ -29,7 +29,7 @@ type
   procedure Server_service_RegisterWSTMetadataServiceService();
 
 Implementation
-uses TypInfo, LResources,metadata_repository;
+uses TypInfo, wst_resources_imp,metadata_repository;
 
 { TWSTMetadataService_ServiceBinder implementation }
 procedure TWSTMetadataService_ServiceBinder.GetRepositoryListHandler(AFormatter:IFormatterResponse);
@@ -124,6 +124,6 @@ initialization
   Register_metadata_service_NameSpace();
   {$ENDIF}
 
-  {$i metadata_service.lrs}
+  {$i metadata_service.wst}
 
 End.

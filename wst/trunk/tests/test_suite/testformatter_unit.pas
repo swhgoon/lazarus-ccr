@@ -876,7 +876,7 @@ begin
   try
     AssertEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    AssertEquals('Length 1', 0,a.Length);
     
     a.SetLength(AR_LEN);
     AssertEquals(AR_LEN,a.Length);
@@ -902,7 +902,7 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    AssertEquals('Length 2', AR_LEN,a.Length);
     
     for i := 0 to Pred(AR_LEN) do
       AssertEquals(VAL_AR[i],a[i]);

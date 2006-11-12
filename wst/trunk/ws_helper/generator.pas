@@ -28,7 +28,10 @@ uses
   Classes, SysUtils,
   parserdefs, source_utils;
   
-Type
+const
+  sWST_EXTENSION = 'wst';
+  
+type
 
   { TBaseGenerator }
 
@@ -185,7 +188,7 @@ begin
   SetCurrentStream(FImpStream);
   WriteLn('');
   WriteLn('Implementation');
-  WriteLn('uses LResources, metadata_repository;');
+  WriteLn('uses wst_resources_imp, metadata_repository;');
 end;
 
 procedure TProxyGenerator.GenerateUnitImplementationFooter();
@@ -195,7 +198,7 @@ begin
   SetCurrentStream(FImpStream);
   NewLine();
   WriteLn('initialization');
-  WriteLn('  {$i %s.lrs}',[SymbolTable.Name]);
+  WriteLn('  {$i %s.%s}',[SymbolTable.Name,sWST_EXTENSION]);
   NewLine();
   s := Format('Register_%s_ServiceMetadata',[SymbolTable.Name]);
   WriteLn('  {$IF DECLARED(%s)}',[s]);
@@ -590,7 +593,7 @@ begin
   SetCurrentStream(FImpStream);
   WriteLn('');
   WriteLn('Implementation');
-  WriteLn('uses TypInfo, LResources,metadata_repository;');
+  WriteLn('uses TypInfo, wst_resources_imp,metadata_repository;');
 end;
 
 procedure TBinderGenerator.GenerateUnitImplementationFooter();
@@ -605,7 +608,7 @@ begin
   WriteLn('  %s();',[s]);
   WriteLn('  {$ENDIF}');
   NewLine();
-  WriteLn('  {$i %s.lrs}',[SymbolTable.Name]);
+  WriteLn('  {$i %s.%s}',[SymbolTable.Name,sWST_EXTENSION]);
   NewLine();
   WriteLn('End.');
 end;

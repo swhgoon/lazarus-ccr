@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "googlewebapi".
   This unit name  : "googlewebapi_proxy".
-  Date            : "29/10/2006 15:02".
+  Date            : "12/11/2006 00:24".
 }
 Unit googlewebapi_proxy;
 {$mode objfpc}{$H+}
@@ -35,7 +35,7 @@ Type
   End;
 
 Implementation
-uses LResources, metadata_repository;
+uses wst_resources_imp, metadata_repository;
 
 { TGoogleSearch_Proxy implementation }
 
@@ -115,7 +115,7 @@ End;
 
 
 initialization
-  {$i googlewebapi.lrs}
+  {$i googlewebapi.wst}
 
   {$IF DECLARED(Register_googlewebapi_ServiceMetadata)}
   Register_googlewebapi_ServiceMetadata();

@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "calculator".
   This unit name  : "calculator_binder".
-  Date            : "30/07/2006 01:52".
+  Date            : "12/11/2006 11:22".
 }
 unit calculator_binder;
 {$mode objfpc}{$H+}
@@ -31,7 +31,7 @@ type
   procedure Server_service_RegisterCalculatorService();
 
 Implementation
-uses TypInfo, LResources,metadata_repository;
+uses TypInfo, wst_resources_imp,metadata_repository;
 
 { TCalculator_ServiceBinder implementation }
 procedure TCalculator_ServiceBinder.AddIntHandler(AFormatter:IFormatterResponse);
@@ -202,6 +202,6 @@ initialization
   Register_calculator_NameSpace();
   {$ENDIF}
 
-  {$i calculator.lrs}
+  {$i calculator.wst}
 
 End.

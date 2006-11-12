@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "calculator".
   This unit name  : "calculator_proxy".
-  Date            : "30/07/2006 01:54".
+  Date            : "12/11/2006 11:22".
 }
 Unit calculator_proxy;
 {$mode objfpc}{$H+}
@@ -36,7 +36,7 @@ Type
   End;
 
 Implementation
-uses LResources, metadata_repository;
+uses wst_resources_imp, metadata_repository;
 
 { TCalculator_Proxy implementation }
 
@@ -156,7 +156,7 @@ End;
 
 
 initialization
-  {$i calculator.lrs}
+  {$i calculator.wst}
 
   {$IF DECLARED(Register_calculator_ServiceMetadata)}
   Register_calculator_ServiceMetadata();

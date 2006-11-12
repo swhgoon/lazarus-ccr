@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="6"/>
+      <ActiveEditorIndexAtStart Value="9"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -18,7 +18,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="-a >E:\Inoussa\Sources\lazarus\wst\v0.3\tests\test_suite\obj\res.xml"/>
+        <CommandLineParams Value="-a"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -27,23 +27,23 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="46">
+    <Units Count="47">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_test_suite"/>
         <CursorPos X="69" Y="11"/>
         <TopLine Value="9"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
       </Unit0>
       <Unit1>
         <Filename Value="testformatter_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="testformatter_unit"/>
-        <CursorPos X="55" Y="66"/>
-        <TopLine Value="150"/>
+        <CursorPos X="27" Y="905"/>
+        <TopLine Value="886"/>
         <EditorIndex Value="9"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -51,9 +51,9 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_soap"/>
         <CursorPos X="20" Y="205"/>
-        <TopLine Value="171"/>
+        <TopLine Value="162"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -63,7 +63,7 @@
         <CursorPos X="8" Y="97"/>
         <TopLine Value="86"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -73,7 +73,7 @@
         <CursorPos X="39" Y="180"/>
         <TopLine Value="171"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -83,7 +83,7 @@
         <CursorPos X="3" Y="106"/>
         <TopLine Value="121"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -93,7 +93,7 @@
         <CursorPos X="1" Y="1082"/>
         <TopLine Value="1061"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -103,7 +103,7 @@
         <CursorPos X="15" Y="44"/>
         <TopLine Value="33"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -112,7 +112,7 @@
         <UnitName Value="binary_streamer"/>
         <CursorPos X="32" Y="38"/>
         <TopLine Value="22"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\server_binary_formatter.pas"/>
@@ -120,7 +120,7 @@
         <UnitName Value="server_binary_formatter"/>
         <CursorPos X="5" Y="136"/>
         <TopLine Value="92"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
       </Unit9>
       <Unit10>
         <Filename Value="D:\lazarusClean\fpcsrc\fcl\fpcunit\fpcunit.pp"/>
@@ -181,7 +181,7 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="3" Y="79"/>
         <TopLine Value="70"/>
-        <UsageCount Value="123"/>
+        <UsageCount Value="124"/>
       </Unit18>
       <Unit19>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\typinfo.pp"/>
@@ -197,7 +197,7 @@
         <CursorPos X="83" Y="119"/>
         <TopLine Value="1"/>
         <EditorIndex Value="8"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="117"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -206,7 +206,7 @@
         <UnitName Value="metadata_generator"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="31"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="117"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\ws_helper\parserdefs.pas"/>
@@ -214,7 +214,7 @@
         <UnitName Value="parserdefs"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="117"/>
       </Unit22>
       <Unit23>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\fpcunit\fpcunit.pp"/>
@@ -254,7 +254,7 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="38" Y="148"/>
         <TopLine Value="142"/>
-        <UsageCount Value="108"/>
+        <UsageCount Value="109"/>
       </Unit28>
       <Unit29>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\xml\dom.pp"/>
@@ -315,7 +315,7 @@
         <CursorPos X="35" Y="379"/>
         <TopLine Value="376"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="43"/>
         <Loaded Value="True"/>
       </Unit37>
       <Unit38>
@@ -374,8 +374,28 @@
         <TopLine Value="193"/>
         <UsageCount Value="9"/>
       </Unit45>
+      <Unit46>
+        <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\fpcunit\fpcunit.pp"/>
+        <UnitName Value="fpcunit"/>
+        <CursorPos X="21" Y="94"/>
+        <TopLine Value="80"/>
+        <UsageCount Value="10"/>
+      </Unit46>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="testformatter_unit.pas"/>
+        <Caret Line="875" Column="3" TopLine="866"/>
+      </Position1>
+      <Position2>
+        <Filename Value="testformatter_unit.pas"/>
+        <Caret Line="2126" Column="1" TopLine="143"/>
+      </Position2>
+      <Position3>
+        <Filename Value="testformatter_unit.pas"/>
+        <Caret Line="877" Column="26" TopLine="863"/>
+      </Position3>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -403,7 +423,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="21">
+    <BreakPoints Count="19">
       <Item1>
         <Source Value="..\google_api\home\inoussa\Projets\Laz\tests\soap\test_soap.pas"/>
         <Line Value="15"/>
@@ -478,16 +498,8 @@
       </Item18>
       <Item19>
         <Source Value="testformatter_unit.pas"/>
-        <Line Value="821"/>
-      </Item19>
-      <Item20>
-        <Source Value="testformatter_unit.pas"/>
-        <Line Value="809"/>
-      </Item20>
-      <Item21>
-        <Source Value="testformatter_unit.pas"/>
         <Line Value="909"/>
-      </Item21>
+      </Item19>
     </BreakPoints>
     <Watches Count="2">
       <Item1>

@@ -102,7 +102,7 @@ type
   procedure ClearRepositoryData(var ARepository : PServiceRepository);
   
 implementation
-uses LResources, binary_streamer;
+uses wst_resources_imp, binary_streamer;
 
 procedure ClearProperties(var AProps : PPropertyData);
 var
@@ -462,15 +462,19 @@ end;
 { TModuleMetadataMngr }
 
 procedure TModuleMetadataMngr.LoadRegisteredNames();
+
 var
-  i, c : Integer;
-  itm : TLResource;
+  i : Integer;
+  L  : TStrings;
+
 begin
-  c := LazarusResources.Count;
-  for i := 0 to Pred(c) do begin
-    itm := LazarusResources.Items[i];
-    if AnsiSameText(sWST_META,itm.ValueType) then
-      RegisterRepository(itm.Name);
+  L:=TStringList.Create;
+  Try
+    GetWSTResourceManager.GetResourceList(L);
+    For I:=0 to L.Count-1 do
+      RegisterRepository(L[i]);
+  finally
+    L.Free;
   end;
 end;
 
@@ -498,17 +502,16 @@ var
   tmpStrm : TMemoryStream;
   strBuffer : string;
   i : Integer;
-  rs : TLResource;
   tmpRes : PServiceRepository;
+
 begin
-  rs := LazarusResources.Find(ARepName);
-  if not Assigned(rs) then
+  If not GetWSTResourceManager.HasResource(ARepName) then
     raise EMetadataException.CreateFmt('Repository not registered : "%s"',[ARepName]);
   Result := FindInnerListIndex(ARepName);
   if ( Result < 0 ) then begin
     tmpStrm := TMemoryStream.Create();
     try
-      strBuffer := LazarusResources.Find(ARepName).Value;
+      strBuffer :=  GetWSTResourceManager.ResourceAsString(ARepName);
       i := Length(strBuffer);
       tmpStrm.Write(strBuffer[1],i);
       tmpStrm.Position := 0;

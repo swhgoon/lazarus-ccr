@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "ebay".
   This unit name  : "ebay_proxy".
-  Date            : "30/07/2006 21:52".
+  Date            : "12/11/2006 11:44".
 }
 Unit ebay_proxy;
 {$mode objfpc}{$H+}
@@ -27,7 +27,7 @@ Type
   End;
 
 Implementation
-uses LResources, metadata_repository;
+uses wst_resources_imp, metadata_repository;
 
 { TeBayAPIInterfaceService_Proxy implementation }
 
@@ -90,7 +90,7 @@ End;
 
 
 initialization
-  {$i ebay.lrs}
+  {$i ebay.wst}
 
   {$IF DECLARED(Register_ebay_ServiceMetadata)}
   Register_ebay_ServiceMetadata();

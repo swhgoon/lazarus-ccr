@@ -197,6 +197,7 @@ begin
   Tokenizer.CheckToken(toSymbol);
   If Tokenizer.TokenSymbolIs(GetPascalTokenStr(ptUses)) Then
     ParseUses();
+  ReadUntil(GetPascalTokenStr(ptType),True);
   Tokenizer.CheckToken(toSymbol);
   If Tokenizer.TokenSymbolIs(GetPascalTokenStr(ptType)) Then Begin
     NextToken();

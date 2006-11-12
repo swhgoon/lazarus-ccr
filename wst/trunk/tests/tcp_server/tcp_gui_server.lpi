@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -53,8 +53,8 @@
         <Filename Value="server_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_unit"/>
-        <CursorPos X="25" Y="189"/>
-        <TopLine Value="174"/>
+        <CursorPos X="3" Y="9"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="127"/>
         <Loaded Value="True"/>
@@ -316,26 +316,22 @@
         <UsageCount Value="20"/>
       </Unit37>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
         <Filename Value="server_unit.pas"/>
         <Caret Line="189" Column="25" TopLine="174"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="187" Column="31" TopLine="173"/>
+        <Filename Value="server_unit.pas"/>
+        <Caret Line="9" Column="3" TopLine="1"/>
       </Position2>
-      <Position3>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="43" Column="3" TopLine="51"/>
-      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="D:\Lazarus\others_package\ics\latest_distr\Delphi\Vc32\;..\calculator\;..\calculator\srv\;..\..\"/>
+      <OtherUnitFiles Value="c:\LazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\calculator\;..\calculator\srv\;..\..\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
@@ -358,7 +354,8 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-Xi"/>
+      <CustomOptions Value="-Xi
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

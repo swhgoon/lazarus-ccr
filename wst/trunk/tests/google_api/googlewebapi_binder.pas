@@ -2,15 +2,15 @@
 This unit has been produced by ws_helper.
   Input unit name : "googlewebapi".
   This unit name  : "googlewebapi_binder".
-  Date            : "08/06/2006 23:28".
+  Date            : "12/11/2006 00:24".
 }
-Unit googlewebapi_binder;
+unit googlewebapi_binder;
 {$mode objfpc}{$H+}
-Interface
+interface
 
-Uses SysUtils, Classes, base_service_intf, server_service_intf, googlewebapi;
+uses SysUtils, Classes, base_service_intf, server_service_intf, googlewebapi;
 
-Type
+type
 
 
   TGoogleSearch_ServiceBinder=class(TBaseServiceBinder)
@@ -29,11 +29,12 @@ Type
   procedure Server_service_RegisterGoogleSearchService();
 
 Implementation
-uses TypInfo;
+uses TypInfo, wst_resources_imp,metadata_repository;
 
 { TGoogleSearch_ServiceBinder implementation }
 procedure TGoogleSearch_ServiceBinder.doSpellingSuggestionHandler(AFormatter:IFormatterResponse);
 Var
+  cllCntrl : ICallControl;
   tmpObj : IGoogleSearch;
   callCtx : ICallContext;
   strPrmName : string;
@@ -41,14 +42,15 @@ Var
   key : string;
   phrase : string;
   returnVal : string;
-  locTypeInfo : PTypeInfo;
 Begin
-  callCtx := CreateCallContext();
+  callCtx := GetCallContext();
   
   strPrmName := 'key';  AFormatter.Get(TypeInfo(string),strPrmName,key);
   strPrmName := 'phrase';  AFormatter.Get(TypeInfo(string),strPrmName,phrase);
   
   tmpObj := Self.GetFactory().CreateInstance() as IGoogleSearch;
+  if Supports(tmpObj,ICallControl,cllCntrl) then
+    cllCntrl.SetCallContext(GetCallContext());
   
   returnVal := tmpObj.doSpellingSuggestion(key,phrase);
   
@@ -64,6 +66,7 @@ End;
 
 procedure TGoogleSearch_ServiceBinder.doGoogleSearchHandler(AFormatter:IFormatterResponse);
 Var
+  cllCntrl : ICallControl;
   tmpObj : IGoogleSearch;
   callCtx : ICallContext;
   strPrmName : string;
@@ -79,12 +82,9 @@ Var
   ie : string;
   oe : string;
   returnVal : TGoogleSearchResult;
-  locTypeInfo : PTypeInfo;
 Begin
-  callCtx := CreateCallContext();
-  locTypeInfo := TypeInfo(TGoogleSearchResult);
-  If ( locTypeInfo^.Kind in [tkClass,tkInterface] ) Then
-    Pointer(returnVal) := Nil;
+  callCtx := GetCallContext();
+  Pointer(returnVal) := Nil;
   
   strPrmName := 'key';  AFormatter.Get(TypeInfo(string),strPrmName,key);
   strPrmName := 'q';  AFormatter.Get(TypeInfo(string),strPrmName,q);
@@ -98,11 +98,12 @@ Begin
   strPrmName := 'oe';  AFormatter.Get(TypeInfo(string),strPrmName,oe);
   
   tmpObj := Self.GetFactory().CreateInstance() as IGoogleSearch;
+  if Supports(tmpObj,ICallControl,cllCntrl) then
+    cllCntrl.SetCallContext(GetCallContext());
   
   returnVal := tmpObj.doGoogleSearch(key,q,start,maxResults,filter,restrict,safeSearch,lr,ie,oe);
-  locTypeInfo := TypeInfo(TGoogleSearchResult);
-  If ( locTypeInfo^.Kind = tkClass ) And Assigned(Pointer(returnVal)) Then
-    callCtx.AddObject(TObject(returnVal));
+  If Assigned(Pointer(returnVal)) Then
+    callCtx.AddObjectToFree(TObject(returnVal));
   
   procName := AFormatter.GetCallProcedureName();
   trgName := AFormatter.GetCallTarget();
@@ -117,7 +118,7 @@ End;
 
 constructor TGoogleSearch_ServiceBinder.Create();
 Begin
-  Inherited Create(GetServiceImplementationRegistry().FindFactory('GoogleSearch'));
+  Inherited Create(GetServiceImplementationRegistry().FindFactory('IGoogleSearch'));
   RegisterVerbHandler('doSpellingSuggestion',@doSpellingSuggestionHandler);
   RegisterVerbHandler('doGoogleSearch',@doGoogleSearchHandler);
 End;
@@ -132,7 +133,15 @@ End;
 
 procedure Server_service_RegisterGoogleSearchService();
 Begin
-  GetServerServiceRegistry().Register('GoogleSearch',TGoogleSearch_ServiceBinderFactory.Create() as IItemFactory);
+  GetServerServiceRegistry().Register('IGoogleSearch',TGoogleSearch_ServiceBinderFactory.Create() as IItemFactory);
 End;
+
+initialization
+
+  {$IF DECLARED(Register_googlewebapi_NameSpace)}
+  Register_googlewebapi_NameSpace();
+  {$ENDIF}
+
+  {$i googlewebapi.wst}
 
 End.

@@ -9,7 +9,7 @@ uses
   //indy_http_protocol,
   ics_http_protocol,
   synapse_http_protocol,
-  googlewebapi, googlewebapi_proxy;
+  googlewebapi, googlewebapi_proxy, wst_resources_imp;
 
 Const
   //sADRESS = 'http:Address=http://api.google.com/search/beta2;Proxy';

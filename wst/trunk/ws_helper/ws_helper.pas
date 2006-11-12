@@ -23,7 +23,7 @@ program ws_helper;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, LResources,
+  Classes, SysUtils, wst_resources_utils,
   parserdefs, ws_parser, generator, parserutils, source_utils,
   command_line_parser, metadata_generator, binary_streamer;
 
@@ -109,8 +109,9 @@ Var
           mtdaFS.SaveToFile(ChangeFileExt(inFileName,'.' + sWST_META));
           rsrcStrm := TMemoryStream.Create();
           mtdaFS.Position := 0;
-          BinaryToLazarusResourceCode(mtdaFS,rsrcStrm,UpperCase(p.SymbolTable.Name),sWST_META);
-          rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(inFileName),'.lrs'));
+          //BinaryToLazarusResourceCode(mtdaFS,rsrcStrm,UpperCase(p.SymbolTable.Name),sWST_META);
+          BinToWstRessource(UpperCase(p.SymbolTable.Name),mtdaFS,rsrcStrm);
+          rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(inFileName),'.' + sWST_EXTENSION));
         end;
         
         Result := True;

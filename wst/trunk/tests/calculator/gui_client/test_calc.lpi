@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -26,7 +26,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="39">
+    <Units Count="40">
       <Unit0>
         <Filename Value="test_calc.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -41,9 +41,11 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="main_unit.lrs"/>
         <UnitName Value="main_unit"/>
-        <CursorPos X="18" Y="131"/>
-        <TopLine Value="109"/>
+        <CursorPos X="28" Y="9"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
         <UsageCount Value="80"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\calculator.pas"/>
@@ -57,9 +59,11 @@
         <Filename Value="calculator_proxy.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_proxy"/>
-        <CursorPos X="28" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="20" Y="39"/>
+        <TopLine Value="37"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="80"/>
+        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\..\..\service_intf.pas"/>
@@ -298,12 +302,30 @@
         <UnitName Value="library_protocol"/>
         <CursorPos X="18" Y="24"/>
         <TopLine Value="10"/>
-        <EditorIndex Value="0"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit38>
+      <Unit39>
+        <Filename Value="..\..\..\wst_resources_imp.pas"/>
+        <UnitName Value="wst_resources_imp"/>
+        <CursorPos X="5" Y="132"/>
+        <TopLine Value="115"/>
+        <UsageCount Value="10"/>
+      </Unit39>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="main_unit.pas"/>
+        <Caret Line="9" Column="28" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="calculator_proxy.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="calculator_proxy.pas"/>
+        <Caret Line="39" Column="20" TopLine="37"/>
+      </Position3>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
