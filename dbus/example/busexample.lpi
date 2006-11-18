@@ -21,88 +21,82 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="busexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="busexample"/>
-        <CursorPos X="1" Y="32"/>
-        <TopLine Value="1"/>
+        <CursorPos X="17" Y="271"/>
+        <TopLine Value="258"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="../dbus-connection.inc"/>
-        <CursorPos X="71" Y="103"/>
-        <TopLine Value="82"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="10" Y="104"/>
+        <TopLine Value="88"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../dbus-bus.inc"/>
         <CursorPos X="1" Y="41"/>
-        <TopLine Value="19"/>
-        <EditorIndex Value="6"/>
+        <TopLine Value="1"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="../dbus-errors.inc"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="3" Y="34"/>
+        <TopLine Value="18"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../dbus-memory.inc"/>
         <CursorPos X="50" Y="40"/>
-        <TopLine Value="6"/>
-        <EditorIndex Value="8"/>
+        <TopLine Value="1"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="../dbus-message.inc"/>
-        <CursorPos X="1" Y="166"/>
-        <TopLine Value="131"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="3" Y="35"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="../dbus.pas"/>
         <UnitName Value="dbus"/>
-        <CursorPos X="7" Y="20"/>
-        <TopLine Value="10"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="15" Y="37"/>
+        <TopLine Value="24"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="../dbus-pending-call.inc"/>
         <CursorPos X="87" Y="29"/>
         <TopLine Value="8"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="11"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="../dbus-protocol.inc"/>
-        <CursorPos X="12" Y="241"/>
-        <TopLine Value="216"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="3" Y="67"/>
+        <TopLine Value="50"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="../dbus-server.inc"/>
-        <CursorPos X="83" Y="37"/>
-        <TopLine Value="18"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="1" Y="60"/>
+        <TopLine Value="28"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -113,9 +107,11 @@
       </Unit10>
       <Unit11>
         <Filename Value="../dbus-threads.inc"/>
-        <CursorPos X="15" Y="74"/>
-        <TopLine Value="60"/>
+        <CursorPos X="17" Y="92"/>
+        <TopLine Value="62"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="../../lazarus/debugger/cmdlinedebugger.pp"/>
@@ -131,32 +127,121 @@
         <UsageCount Value="10"/>
         <SyntaxHighlighter Value="C++"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="../c_sources/dbus-message.h"/>
+        <CursorPos X="75" Y="176"/>
+        <TopLine Value="155"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit14>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="26" HistoryIndex="25">
       <Position1>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="45" Column="16" TopLine="17"/>
+        <Caret Line="206" Column="1" TopLine="201"/>
       </Position1>
       <Position2>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="51" Column="1" TopLine="20"/>
+        <Caret Line="276" Column="11" TopLine="264"/>
       </Position2>
       <Position3>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="35" Column="16" TopLine="20"/>
+        <Caret Line="41" Column="21" TopLine="23"/>
       </Position3>
       <Position4>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="16" Column="1" TopLine="10"/>
+        <Caret Line="302" Column="1" TopLine="285"/>
       </Position4>
       <Position5>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="78" Column="1" TopLine="46"/>
+        <Caret Line="96" Column="17" TopLine="80"/>
       </Position5>
       <Position6>
         <Filename Value="busexample.lpr"/>
-        <Caret Line="76" Column="3" TopLine="46"/>
+        <Caret Line="344" Column="20" TopLine="327"/>
       </Position6>
+      <Position7>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="16" Column="59" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="78" Column="10" TopLine="63"/>
+      </Position9>
+      <Position10>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="79" Column="10" TopLine="63"/>
+      </Position10>
+      <Position11>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="77" Column="18" TopLine="71"/>
+      </Position11>
+      <Position12>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="85" Column="10" TopLine="71"/>
+      </Position12>
+      <Position13>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="97" Column="35" TopLine="80"/>
+      </Position13>
+      <Position14>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="351" Column="44" TopLine="327"/>
+      </Position14>
+      <Position15>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="204" Column="16" TopLine="188"/>
+      </Position15>
+      <Position16>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="351" Column="42" TopLine="327"/>
+      </Position16>
+      <Position17>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="203" Column="25" TopLine="184"/>
+      </Position17>
+      <Position18>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="352" Column="44" TopLine="327"/>
+      </Position18>
+      <Position19>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="270" Column="14" TopLine="254"/>
+      </Position19>
+      <Position20>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="278" Column="15" TopLine="254"/>
+      </Position20>
+      <Position21>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="259" Column="17" TopLine="247"/>
+      </Position21>
+      <Position22>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="284" Column="18" TopLine="268"/>
+      </Position22>
+      <Position23>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="261" Column="3" TopLine="245"/>
+      </Position23>
+      <Position24>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="274" Column="20" TopLine="259"/>
+      </Position24>
+      <Position25>
+        <Filename Value="busexample.lpr"/>
+        <Caret Line="271" Column="17" TopLine="258"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../dbus-message.inc"/>
+        <Caret Line="146" Column="50" TopLine="130"/>
+      </Position26>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
