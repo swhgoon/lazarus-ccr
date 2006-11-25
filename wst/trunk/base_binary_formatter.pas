@@ -556,7 +556,7 @@ Begin
     Result := CreateObjBuffer(TDataType(i),s);
   Case TDataType(i) Of
     dtInt8S   : Result^.Int8S := AStoreRdr.ReadInt8S();
-    dtInt8U   : Result^.Int8S := AStoreRdr.ReadInt8U();
+    dtInt8U   : Result^.Int8U := AStoreRdr.ReadInt8U();
     dtInt16U  : Result^.Int16U := AStoreRdr.ReadInt16U();
     dtInt16S  : Result^.Int16S := AStoreRdr.ReadInt16S();
     dtInt32U  : Result^.Int32U := AStoreRdr.ReadInt32U();
