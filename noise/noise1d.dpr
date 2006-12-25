@@ -53,12 +53,11 @@ begin
     for j := 1 to 19 do
     begin
       case SelectInterpolation.ItemIndex of
-       0: interpolation := Linear_Interpolate(NormalizeNoise(IntNoise(i)), NormalizeNoise(IntNoise(i + 1)), j / 20);
-       1: interpolation := Cosine_Interpolate(NormalizeNoise(IntNoise(i)), NormalizeNoise(IntNoise(i + 1)), j / 20);
+       0: interpolation := NormalizeNoise(Linear_Interpolate(IntNoise(i), IntNoise(i + 1), j / 20));
+       1: interpolation := NormalizeNoise(Cosine_Interpolate(IntNoise(i), IntNoise(i + 1), j / 20));
       else
-        interpolation := Cubic_Interpolate(NormalizeNoise(IntNoise(i - 1)),
-         NormalizeNoise(IntNoise(i)), NormalizeNoise(IntNoise(i + 1)),
-         NormalizeNoise(IntNoise(i + 2)), j / 20);
+        interpolation := NormalizeNoise(Cubic_Interpolate(IntNoise(i - 1),
+         IntNoise(i), IntNoise(i + 1), IntNoise(i + 2), j / 20));
       end;
 
       Canvas.Pixels[i * 20 + 25 + j, interpolation] := clBlack;

@@ -22,8 +22,8 @@ type
     SelectInterpolation: TComboBox;
     procedure DoPaint(Sender: TObject);
     procedure DoRefresh(Sender: TObject);
-    procedure DoPaintGraph(Graph: array of Double; StartX, StartY, WL, A, NPoints: Integer);
-    procedure DoCalculateNoise(Graph: array of Double; WL, NPoints: Integer);
+    procedure DoPaintGraph(var Graph: array of Double; StartX, StartY, WL, A, NPoints: Integer);
+    procedure DoCalculateNoise(var Graph: array of Double; WL, NPoints: Integer);
     function NormalizeNoise(x: Double; Amplitude: Integer): Integer;
   public
     { public declarations }
@@ -37,16 +37,30 @@ var
 { TMainWindow }
 
 procedure TMainWindow.DoPaint(Sender: TObject);
+var
+  i: Integer;
 begin
   SetLength(G1, 20 * 12);
   DoCalculateNoise(G1, 20, 12);
   DoPaintGraph(G1, 25,   25,  20, 250, 12);
+  Canvas.TextOut(60, 15, '1st Harmonic');
 
-{  SetLength(G3, 40 * 6);
-  DoPaintGraph(G2, 325,  25,  40, 125,  6);
+  SetLength(G2, 10 * 24);
+  DoCalculateNoise(G2, 10, 24);
+  DoPaintGraph(G2, 325,  25,  10, 125,  24);
+  Canvas.TextOut(460, 15, '2nd Harmonic');
 
-  SetLength(G3, 80 * 3);
-  DoPaintGraph(G3, 25,  325,  80,  62,  3);}
+  SetLength(G3, 5 * 48);
+  DoCalculateNoise(G3, 5, 48);
+  DoPaintGraph(G3, 25,  325,  5,  62,  48);
+  Canvas.TextOut(60, 315, '3rd Harmonic');
+
+  { The 4th graphic is a the sum of the first 3, using the amplitudes to
+   ponderate the values }
+  SetLength(G4, 20 * 12);
+  for i := 0 to 20 * 12 - 1 do G4[i] := ( G1[i] * 250 + G2[i] * 125 + G3[i] * 62 ) / (250 + 125 + 62);
+  DoPaintGraph(G4, 325,  325,  20, 250, 12);
+  Canvas.TextOut(460, 315, 'Perlin Noise');
 end;
 
 procedure TMainWindow.DoRefresh(Sender: TObject);
@@ -65,7 +79,7 @@ end;
 *                  NPoints - Number of Noise points to be created
 *
 *******************************************************************}
-procedure TMainWindow.DoCalculateNoise(Graph: array of Double; WL, NPoints: Integer);
+procedure TMainWindow.DoCalculateNoise(var Graph: array of Double; WL, NPoints: Integer);
 var
   i, j: Integer;
   interpolation: Double;
@@ -104,7 +118,7 @@ end;
 *                  NPoints - Number of points to be drawn
 *
 *******************************************************************}
-procedure TMainWindow.DoPaintGraph(Graph: array of Double; StartX, StartY, WL, A, NPoints: Integer);
+procedure TMainWindow.DoPaintGraph(var Graph: array of Double; StartX, StartY, WL, A, NPoints: Integer);
 var
   i, j: Integer;
 begin
@@ -116,8 +130,8 @@ begin
   { Draws NPoints points and the interpolation between them }
   for i := 0 to NPoints - 1 do
   begin
-    Canvas.Ellipse(i * WL + StartX + 1, NormalizeNoise(Graph[i], A) + StartY + 1,
-     i * WL + StartX - 1, NormalizeNoise(Graph[i], A) + StartY - 1);
+    Canvas.Ellipse(i * WL + StartX + 1, NormalizeNoise(Graph[i * WL], A) + StartY + 1,
+     i * WL + StartX - 1, NormalizeNoise(Graph[i * WL], A) + StartY - 1);
 
     if (i = NPoints - 1) then Continue;
 
@@ -149,7 +163,7 @@ begin
   SelectInterpolation.Items.Add('Linear Interpolation');
   SelectInterpolation.Items.Add('Cosine Interpolation');
   SelectInterpolation.Items.Add('Cubic Interpolation');
-  SelectInterpolation.Left := 100;
+  SelectInterpolation.Left := 200;
   SelectInterpolation.Width := 200;
   SelectInterpolation.ItemIndex := 0;
 
