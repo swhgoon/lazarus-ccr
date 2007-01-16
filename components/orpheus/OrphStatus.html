@@ -33,7 +33,11 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
-<LI>20070107 release
+<LI>20070114 note:
+  <UL>
+  <LI>Controls have now been tested with GTK2 widgetset (see table below).
+  </UL>
+<LI>20070107 release:
   <UL>
   <LI>TOvcVirtualListBox control added.
   <LI>Installation no longer registers TOvcSimpleField and TOvcTCSimpleField 
@@ -123,8 +127,8 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TR VALIGN=TOP>
 <TD>OS X</TD>
 <TD>10.3.9 (Panther) on PowerPC</TD>
-<TD>gtk: 1.2.0.9.1<BR>qt: 4.1.4</TD>
-<TD>gtk, carbon, qt</TD>
+<TD>gtk: 1.2.0.9.1<BR>gtk2: 2.6.10<BR>qt: 4.1.4</TD>
+<TD>gtk, gtk2, carbon, qt</TD>
 <TD>20070105 snapshot of 0.9.21 with FPC 2.0.4</TD>
 </TR>
 
@@ -259,6 +263,7 @@ widgetsets.
 <TH>Issues / To-do</TH>
 <TH>win32</TH>
 <TH>gtk</TH>
+<TH>gtk2</TH>
 <TH>carbon</TH>
 <TH>qt</TH>
 </TR>
@@ -270,6 +275,7 @@ widgetsets.
 <TD>gtk and carbon don't support</TD>
 <TD>Working</TD>
 <TD>Not working</TD>
+<TD>Crashes</TD>
 <TD>Not working</TD>
 <TD>Working</TD>
 </TR>
@@ -279,6 +285,7 @@ widgetsets.
 <TD>TGraphicControl</TD>
 <TD>Fancy shading, color and highlighting</TD>
 <TD>Property editor still needs work</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Not working</TD>
@@ -292,6 +299,7 @@ widgetsets.
 <TD>No TLabel yet on carbon</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>Not working</TD>
 <TD>Partial</TD>
 </TR>
@@ -301,6 +309,7 @@ widgetsets.
 <TD>TCustomControl</TD>
 <TD>Can associate with a TEdit; 8 different styles</TD>
 <TD>&nbsp;</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
@@ -314,6 +323,7 @@ widgetsets.
 <TD>Scrolling problems</TD>
 <TD>Partial</TD>
 <TD>Partial</TD>
+<TD>Partial</TD>
 <TD>?</TD>
 <TD>Not working</TD>
 </TR>
@@ -325,6 +335,7 @@ widgetsets.
 <TD>gtk doesn't support</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
+<TD>Crashes</TD>
 <TD>?</TD>
 <TD>Crashes</TD>
 </TR>
@@ -334,6 +345,7 @@ widgetsets.
 <TD>TCustomEdit</TD>
 <TD>Edit control with validation</TD>
 <TD>See "To Do" list</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
@@ -347,6 +359,7 @@ widgetsets.
 <TD>See "To Do" list</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -356,6 +369,7 @@ widgetsets.
 <TD>TComponent</TD>
 <TD>Table column headings</TD>
 <TD>&nbsp;</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>?</TD>
@@ -369,6 +383,7 @@ widgetsets.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -378,6 +393,7 @@ widgetsets.
 <TD>TComponent<BR>(edits with TEdit)</TD>
 <TD>Table cell for editing strings</TD>
 <TD>&nbsp;</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>?</TD>
@@ -391,6 +407,7 @@ widgetsets.
 <TD>gtk doesn't support</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
+<TD>Crashes</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -400,6 +417,7 @@ widgetsets.
 <TD>TComponent<BR>(edits with TMemo)</TD>
 <TD>Table cell for editing memo text</TD>
 <TD>&nbsp;</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>?</TD>
@@ -413,6 +431,7 @@ widgetsets.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -422,6 +441,7 @@ widgetsets.
 <TD>TComponent<BR>(edits with TComboBox)</TD>
 <TD>Table cell for combo box</TD>
 <TD>Dropdown problem w/o XP manifest</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>?</TD>
@@ -435,6 +455,7 @@ widgetsets.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -444,6 +465,7 @@ widgetsets.
 <TD>TComponent</TD>
 <TD>Table cell for cycling thru glyphs</TD>
 <TD>&nbsp;</TD>
+<TD>Working?</TD>
 <TD>Working?</TD>
 <TD>Working?</TD>
 <TD>?</TD>
@@ -457,6 +479,7 @@ widgetsets.
 <TD>&nbsp;</TD>
 <TD>Working?</TD>
 <TD>Working?</TD>
+<TD>Working?</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -468,6 +491,7 @@ widgetsets.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
+<TD>Working</TD>
 <TD>?</TD>
 <TD>?</TD>
 </TR>
@@ -477,6 +501,7 @@ widgetsets.
 <TD>TComponent</TD>
 <TD>Key-to-command translator</TD>
 <TD>Property editor uses TTabSet</TD>
+<TD>?</TD>
 <TD>?</TD>
 <TD>?</TD>
 <TD>?</TD>
@@ -562,7 +587,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: Jan. 07, 2007
+Last updated: Jan. 14, 2007
 <P>
 
 </BODY>
