@@ -33,6 +33,19 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20070128 release:
+  <UL>
+  <LI>An example program that demos the TO32FlexEdit control has been added
+      even though validation doesn't work with LCL (see "To Do" list below).
+      If you have Delphi you can compile the example to see how validation
+      is supposed to work.
+  <LI>Recent changes in FPC 2.1.1 appear to have broken both the Columns
+      and Rows design-time property editors for the TOvcTable control. The 
+      property editors still work with FPC 2.0.4. Stay tuned...
+  <LI>Custom cursors are now visible when resizing table columns at runtime on
+      Windows. However, cursor also disappears sometimes. Stay tuned on 
+      this one too...<P>
+  </UL>
 <LI>20070127 note:
   <UL>
   <LI>Recent improvements in the Lazarus Qt widgetset make a couple of Orpheus controls
@@ -554,7 +567,8 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   callback function from method. Without this, control's validation is not
   performed. (See LclEditWindowProc in ovctccbx.pas for example
   of a workaround approach that currently doesn't work.) 
-  <LI>Can't tab out of control on Windows.
+  <LI>Can't tab out of control on Windows with win32 widgetset (tabbing works
+  with qt widgetset on Windows though).
   </UL>
 <LI>TOvcTable
   <UL>
@@ -598,7 +612,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: Jan. 27, 2007
+Last updated: Jan. 28, 2007
 <P>
 
 </BODY>
