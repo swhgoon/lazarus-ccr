@@ -96,6 +96,7 @@ type
     FRows : TOvcTableRows;
     FRowNum : TRowNum;
     CurDefHt  : boolean;
+    FormShowCalled : Boolean;
 
   protected
     procedure RefreshRowData;
@@ -165,6 +166,12 @@ procedure TOvcfrmRowEditor.ApplyButtonClick(Sender: TObject);
     NewHeight : Integer;
     RS : TRowStyle;
   begin
+     {20070204 workaround for recent change to Lazarus where 
+       ctlRowNumberChange gets called by ShowModal for some reason 
+       (thus calling this method) before FormShow event handler 
+       which initializes things.} 
+    if not FormShowCalled then
+      Exit;
     NewRowLimit := StrToIntDef(ctlRowLimit.Text, FRows.Limit);
     if (NewRowLimit < 1) or (NewRowLimit > MaxInt) then  {Out of range?}
       NewRowLimit := FRows.Limit;  {Restore previous row limit}
@@ -221,6 +228,7 @@ procedure TOvcfrmRowEditor.FormShow(Sender: TObject);
     ctlDefaultHeight.Text := IntToStr(FRows.DefaultHeight);
     ctlRowLimit.Text := IntToStr(FRows.Limit);
     RefreshRowData;
+    FormShowCalled := True;
   end;
 {--------}
 procedure TOvcfrmRowEditor.RefreshRowData;

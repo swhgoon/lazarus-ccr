@@ -1159,7 +1159,14 @@ var
   Clip : TRect;
   Last : Integer;
 
+{20070204 workaround for recent change to FPC that 
+  no longer permits nested procedure to have same 
+  name as other method in class.}
+{$IFNDEF FPC}
   procedure DrawItem(N : LongInt; Row : Integer);
+{$ELSE}
+  procedure DrawItem2(N : LongInt; Row : Integer);
+{$ENDIF}  
     {-Draw item N at Row}
   var
     S       : PAnsiChar;
@@ -1257,7 +1264,11 @@ begin
 
   {display each row}
   for I := 1 to Last do
+{$IFNDEF FPC}
     DrawItem(FTopIndex+Pred(I), I+Ord(FShowHeader));
+{$ELSE}
+    DrawItem2(FTopIndex+Pred(I), I+Ord(FShowHeader));
+{$ENDIF}    
 
   {paint any blank area below last item}
   CR.Top := FRowHeight * (Last+Ord(FShowHeader));

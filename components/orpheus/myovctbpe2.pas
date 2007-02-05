@@ -164,6 +164,12 @@ procedure TOvcfrmColEditor.ApplyButtonClick(Sender: TObject);
   var
     NewColWidth : Integer;
   begin
+     {20070204 workaround for recent change to Lazarus where 
+       ctlColNumberChange gets called by ShowModal for some reason 
+       (thus calling this method) before FormShow event handler 
+       which creates and initializes Cells.} 
+    if not Assigned(Cells) then
+      Exit;
     FCols[ColNum].Hidden := ctlHidden.Checked;
     NewColWidth := StrToIntDef(ctlWidth.Text, FCols[ColNum].Width);
     if (NewColWidth < 5) or (NewColWidth > 32767) then  {Out of range?}
