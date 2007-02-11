@@ -33,6 +33,11 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20070211 note:
+  <UL>
+  <LI>Recent improvements in Lazarus fix display of custom cursor when 
+      sizing and moving columns and rows at runtime in TOvcTable.<P> 
+  </UL>
 <LI>20070204 release (0.1.2):
   <UL>
   <LI>Workarounds found for recent Lazarus changes that broke TOvcTable Columns
@@ -151,15 +156,15 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>XP SP2</TD>
 <TD>&nbsp;</TD>
 <TD>win32</TD>
-<TD>20070202 snapshot of 0.9.21 with FPC 2.1.1</TD>
+<TD>20070209 snapshot of 0.9.21 with FPC 2.1.1</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>OS X</TD>
-<TD>10.3.9 (Panther) on PowerPC</TD>
+<TD>10.4.8 (Tiger) on PowerPC</TD>
 <TD>gtk: 1.2.0.9.1<BR>gtk2: 2.6.10<BR>qt: 4.2.2</TD>
 <TD>gtk, gtk2, carbon, qt</TD>
-<TD>20070126 snapshot of 0.9.21 with FPC 2.0.4</TD>
+<TD>20070209 snapshot of 0.9.21 with FPC 2.0.4</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -578,8 +583,9 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   </UL>
 <LI>TOvcTable
   <UL>
-  <LI>Custom cursors not visible when sizing and moving columns and rows. 
-  Determine whether this is an LCL limitation.
+  <LI><strike>Custom cursors not visible when sizing and moving columns and rows. 
+  Determine whether this is an LCL limitation.</strike> <==Recently fixed in
+  Lazarus for Windows.
   <LI>Sizing and moving columns and rows doesn't work at all with GTK. 
   Determine whether this is a GTK limitation.
   <LI>Table scroll bar "thumb" extends entire length of scrollbar with GTK 
@@ -618,7 +624,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: Feb. 4, 2007
+Last updated: Feb. 11, 2007
 <P>
 
 </BODY>
