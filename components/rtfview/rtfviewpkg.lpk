@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="rtfviewpkg"/>
+    <Author Value="Jesus Reyes Aguilar"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CustomOptions Value="-dUsePre211RTFPars"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="TRichView a component to view text in RTF format.
+"/>
+    <License Value="Lazarus LCL license (Modified LGPL, see rtfview.pas)
+"/>
+    <Version Minor="5" Release="1"/>
+    <Files Count="1">
+      <Item1>
+        <Filename Value="rtfview.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RTFView"/>
+      </Item1>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="lazrichview"/>
+        <MinVersion Minor="5" Release="2" Build="2" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
