@@ -25,6 +25,8 @@ const
   lcSetCursor = 10;//it generates a lot of messages. so it will be debugged alone
   lcPaintBitmap = 11;
   lcScroll = 12;
+  lcPaintDetails = 13;
+  lcCheck = 14;
 
 var
   Logger: TLCLLogger;

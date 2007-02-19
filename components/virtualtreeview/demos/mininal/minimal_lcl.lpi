@@ -63,19 +63,9 @@
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="E:\subversion\luipack\trunk\virtualtreeview\"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
-    <Linking>
-      <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
-      </Options>
-    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

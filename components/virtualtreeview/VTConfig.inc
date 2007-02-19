@@ -29,6 +29,7 @@
 {.$define EnableNativeTVM}
 {.$define EnablePrint}
 {$define NeedWindows}
+{$define EnableNCFunctions}
 {.$define EnableAdvancedGraphics}
 {.$define EnableHeader}
 {.$define EnableTimer}

@@ -36,6 +36,7 @@ end;
 //  TBaseVirtualTree.CollectSelectedNodesRTL, TBaseVirtualTree.DetermineHitPositionRTL
 // TBaseVirtualTree.UpdateEditBounds, TBaseVirtualTree.GetDisplayRect, PaintTree,
 // TStringEditLink.PrepareEdit, TCustomVirtualStringTree.ComputeNodeHeight etc
+
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 begin
   case Alignment of
@@ -75,6 +76,16 @@ begin
     (lpPoints+i)^.x:=(FromRect.Left - ToRect.Left) + (lpPoints+i)^.x;
     (lpPoints+i)^.y:=(FromRect.Top - ToRect.Top) + (lpPoints+i)^.y;
   end;
+end;
+
+
+function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
+begin
+  Logger.EnterMethod(lcPaint,'InvalidateRect');
+  Logger.Send(lcPaint,'Rect',ARect^);
+  Logger.SendCallStack(lcPaint,'CallStack');
+  Result:=Windows.InvalidateRect(aHandle,ARect,bErase);
+  Logger.ExitMethod(lcPaint,'InvalidateRect');
 end;
 
 {$ifndef NeedWindows}

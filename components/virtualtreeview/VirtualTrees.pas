@@ -81,6 +81,8 @@ unit VirtualTrees;
 //   Subversion (server), TortoiseSVN (client tools), Fisheye (Web interface)
 // Accessability implementation:
 //   Marco Zehe (with help from Sebastian Modersohn)
+// LCL Port (version 4.5.1):
+//   Luiz Américo Pereira Câmara
 //----------------------------------------------------------------------------------------------------------------------
 
 interface
@@ -3359,6 +3361,7 @@ const
   Copyright: string = 'Virtual Treeview © 1999, 2003 Mike Lischke';
 
 var
+
   StandardOLEFormat: TFormatEtc = (
     // Format must later be set.
     cfFormat: 0;
@@ -4721,7 +4724,7 @@ const
   Grays: array[0..3] of TColor = (clWhite, clSilver, clGray, clBlack);
   SysGrays: array[0..3] of TColor = (clWindow, clBtnFace, clBtnShadow, clBtnText);
 //todo_lcl_block
-{
+
 procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemapping: Boolean = True);
 
 // Loads a bunch of images given by ImageName into IL. If ColorRemapping = True then a mapping of gray values to
@@ -4729,23 +4732,31 @@ procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemappi
 
 var
   Images,
-  OneImage: TBitmap;
+  OneImage,
+  AnotherImage: TBitmap;
   I: Integer;
   MaskColor: TColor;
   Source,
   Dest: TRect;
-
+  //Small (???) hack while a solution does not come
+  Stream: TMemoryStream;
 begin
   Watcher.Enter;
   try
     // Since we want the image list appearing in the correct system colors, we have to remap its colors.
     Images := TBitmap.Create;
-    OneImage := TBitmap.Create;
+    //OneImage := TBitmap.Create;
+    //todo: remove this ugly hack ASAP
+    Stream:=TMemoryStream.Create;
+    //todo: see what CreateMappedRes do and replace it
+    {
     if ColorRemapping then
       Images.Handle := CreateMappedRes(FindClassHInstance(TBaseVirtualTree), PChar(ImageName), Grays, SysGrays)
     else
       Images.Handle := LoadBitmap(FindClassHInstance(TBaseVirtualTree), PChar(ImageName));
-
+    }
+    Images.LoadFromLazarusResource(ImageName);
+    Logger.SendBitmap(lcCheck,ImageName,Images);
     try
       Assert(Images.Height > 0, 'Internal image "' + ImageName + '" is missing or corrupt.');
 
@@ -4753,20 +4764,34 @@ begin
       IL.Clear;
       IL.Height := Images.Height;
       IL.Width := Images.Height;
-      OneImage.Width := IL.Width;
-      OneImage.Height := IL.Height;
-      MaskColor := Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
+      //OneImage.Width := IL.Width;
+      //OneImage.Height := IL.Height;
+
+      MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
       Dest := Rect(0, 0, IL.Width, IL.Height);
       for I := 0 to (Images.Width div Images.Height) - 1 do
       begin
         Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
+        OneImage:= TBitmap.Create;
+        OneImage.Width:=IL.Height;
+        OneImage.Height:=IL.Width;
         OneImage.Canvas.CopyRect(Dest, Images.Canvas, Source);
-        IL.AddMasked(OneImage, MaskColor);
+        //somehow SaveToStream - LoadFromStream restores the tranparency lost in CopyRect
+        OneImage.SaveToStream(Stream);
+        OneImage.Free;
+        AnotherImage:=TBitmap.Create;
+        Stream.Position:=0;
+        AnotherImage.LoadFromStream(Stream);
+        Stream.Size:=0;
+        Logger.SendBitmap(lcCheck,'AnotherImage - '+IntToStr(i),AnotherImage);
+        IL.AddDirect(AnotherImage, nil);
       end;
     finally
       Images.Free;
-      OneImage.Free;
+      //OneImage.Free;
+      Stream.Free;
     end;
+    Logger.Send(lcCheck,'IL.Count',IL.Count);
   finally
     Watcher.Leave;
   end;
@@ -4806,7 +4831,8 @@ var
         FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
       else
         DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
-      IL.AddMasked(BM, MaskColor);
+      //IL.AddMasked(BM, MaskColor);
+      IL.AddCopy(BM,nil);
     end;
   end;
 
@@ -4842,8 +4868,10 @@ var
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-    DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
-    IL.AddMasked(BM, MaskColor);
+    //todo: remap to LCLIntf
+    Windows.DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
+    IL.AddCopy(BM,nil);
+    //IL.AddMasked(BM, MaskColor);
   end;
 
   //--------------- end local functions ---------------------------------------
@@ -4855,10 +4883,11 @@ begin
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
   IL := TImageList.CreateSize(Width, Height);
-  with IL do
-    Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
+  //with IL do
+  //  Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
   IL.Masked := True;
-  IL.BkColor := clWhite;
+  //todo: see why compiler complain here
+  //IL.BkColor := clWhite;
 
   // Create a temporary bitmap, which holds the intermediate images.
   BM := TBitmap.Create;
@@ -4869,7 +4898,8 @@ begin
     BM.Canvas.Brush.Color := MaskColor;
     BM.Canvas.Brush.Style := bsSolid;
     BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-    IL.AddMasked(BM, MaskColor);
+    //IL.AddMasked(BM, MaskColor);
+    IL.AddCopy(BM,nil);
 
     // Add the 20 system checkbox and radiobutton images.
     for I := 0 to 19 do
@@ -4878,10 +4908,12 @@ begin
     AddNodeImages(IL);
 
   finally
-    BM.Free;
+    //todo: change to except??
+    //lcl free the bitmap in IL
+    //BM.Free;
   end;
 end;
-}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function HasMMX: Boolean;
@@ -4980,7 +5012,7 @@ begin
 
   {$ifdef EnableOLE}
   // Initialize OLE subsystem for drag'n drop and clipboard operations.
-  //todo: replace by Suceeded (see in windows) 
+  //todo: replace by Suceeded (see in windows unit)
   NeedToUnitialize := OleInitialize(nil) in [S_FALSE,S_OK];
   {$endif}
   // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
@@ -4989,49 +5021,49 @@ begin
   // Load all internal image lists and convert their colors to current desktop color scheme.
   // In order to use high color images we have to create the image list handle ourselves.
   //todo_lcl_block
-  {
+
   if IsWinNT then
     Flags := ILC_COLOR32 or ILC_MASK
   else
     Flags := ILC_COLOR16 or ILC_MASK;
-  LightCheckImages := TImageList.Create(nil);
-  with LightCheckImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  LightCheckImages := TImageList.CreateSize(16,16);
+  //with LightCheckImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(LightCheckImages, 'VT_CHECK_LIGHT');
 
   DarkCheckImages := TImageList.CreateSize(16, 16);
-  with DarkCheckImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  //with DarkCheckImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(DarkCheckImages, 'VT_CHECK_DARK');
 
   LightTickImages := TImageList.CreateSize(16, 16);
-  with LightTickImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  //with LightTickImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(LightTickImages, 'VT_TICK_LIGHT');
 
   DarkTickImages := TImageList.CreateSize(16, 16);
-  with DarkTickImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  //with DarkTickImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(DarkTickImages, 'VT_TICK_DARK');
 
   FlatImages := TImageList.CreateSize(16, 16);
-  with FlatImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  //with FlatImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(FlatImages, 'VT_FLAT');
 
   XPImages := TImageList.CreateSize(16, 16);
-  with XPImages do
-    Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
+  //with XPImages do
+  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
   ConvertImageList(XPImages, 'VT_XP', False);
 
   UtilityImages := TImageList.CreateSize(UtilityImageSize, UtilityImageSize);
-  with UtilityImages do
-    Handle := ImageList_Create(UtilityImageSize, UtilityImageSize, Flags, 0, AllocBy);
+  //with UtilityImages do
+  //  Handle := ImageList_Create(UtilityImageSize, UtilityImageSize, Flags, 0, AllocBy);
   ConvertImageList(UtilityImages, 'VT_UTILITIES');
 
   CreateSystemImageSet(SystemCheckImages, Flags, False);
   CreateSystemImageSet(SystemFlatCheckImages, Flags, True);
-  }
+
   // Specify an useful timer resolution for timeGetTime.
   timeBeginPeriod(MinimumTimerInterval);
 
@@ -12435,7 +12467,7 @@ var
   Offset: TPoint;
 
 begin
-  Logger.EnterMethod(lcPaint,'ClearNodeBackground');
+  Logger.EnterMethod(lcPaintDetails,'ClearNodeBackground');
   with PaintInfo do
   begin
     EraseAction := eaDefault;
@@ -12474,7 +12506,7 @@ begin
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
             (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) then
           begin
-            Logger.Send(lcPaint,'Setting the color of a selected node');
+            Logger.Send(lcPaintDetails,'Setting the color of a selected node');
             if toShowHorzGridLines in FOptions.PaintOptions then
               Dec(R.Bottom);
             if Focused or (toPopupMode in FOptions.FPaintOptions) then
@@ -12494,7 +12526,7 @@ begin
           else
           begin
             Brush.Color := Self.Color;
-            Logger.Send(lcPaint,'Setting the color of a NOT selected node - Brush.Color',Brush.Color);
+            Logger.Send(lcPaintDetails,'Setting the color of a NOT selected node - Brush.Color',Brush.Color);
             FillRect(R);
           end;
         end;
@@ -12502,7 +12534,7 @@ begin
       DoAfterItemErase(Canvas, Node, R);
     end;
   end;
-  Logger.ExitMethod(lcPaint,'ClearNodeBackground');
+  Logger.ExitMethod(lcPaintDetails,'ClearNodeBackground');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15005,7 +15037,7 @@ begin
   if toAutoBidiColumnOrdering in FOptions.FAutoOptions then
     FHeader.FColumns.ReorderColumns(UseRightToLeftAlignment);
   FHeader.Invalidate(nil);
-  Logger.Send(lcPaint,'FEffectiveOffsetX after CMBidiModeChanged',FEffectiveOffsetX);
+  Logger.Send(lcPaintDetails,'FEffectiveOffsetX after CMBidiModeChanged',FEffectiveOffsetX);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15790,10 +15822,14 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.WMEraseBkgnd(var Message: TLMEraseBkgnd);
-
+var
+  R: TRect;
 begin
-  Logger.Send(lcMessages,'WMEraseBkgnd - (Does nothing Set to 1)');
+  Logger.EnterMethod(lcPaint,'WMEraseBkgnd');
+  Windows.GetUpdateRect(Handle,R,True);
+  Logger.Send(lcPaint,'UpdateRect',R);
   Message.Result := 1;
+  Logger.ExitMethod(lcPaint,'WMEraseBkgnd');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16831,14 +16867,19 @@ procedure TBaseVirtualTree.WMPaint(var Message: TLMPaint);
 
 begin
   Logger.EnterMethod(lcMessages,'WMPaint');
-  //todo_lcl_check see if windows.GetUpdateRect is equal to PaintStruct
+  //todo:
+  //Windows.GetUpdateRect is always empty because BeginPaint was called
+  //see if PaintStruct has the same rect
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(False);
   if csPaintCopy in ControlState then
     FUpdateRect := ClientRect
   else
     FUpdateRect:=Message.PaintStruct^.rcPaint;
+    //Windows.GetUpdateRect(Handle,FUpdateRect,True);
+
   Logger.Send(lcPaint,'FUpdateRect', FUpdateRect);
+  
   inherited WMPaint(Message);
 
   if tsVCLDragging in FStates then
@@ -22248,7 +22289,7 @@ begin
 
       // The clipping rectangle is given in client coordinates of the window. We have to convert it into
       // a sliding window of the tree image.
-      Logger.Send(lcPaint,'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
+      Logger.Send(lcPaintDetails,'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
       //Logger.Send(lcPaint,'Window Before Offset',Window);
       Windows.OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       //Logger.Send(lcPaint,'Window After Offset',Window);
@@ -22256,6 +22297,7 @@ begin
     end
     else
     begin
+      Logger.Send(lcPaint,'FUpdateRect IS Empty');
       // First part, fixed columns
       Window := ClientRect;
       Window.Right := Temp;
@@ -22268,7 +22310,10 @@ begin
       Window := GetClientRect;
 
       if Temp > Window.Right then
+      begin
+        Logger.ExitMethod(lcPaint,'Paint');
         Exit;
+      end;
 
       Window.Left := Temp;
       Target := Window.TopLeft;
@@ -22292,6 +22337,7 @@ var
   {$endif ThemeSupport}
 
 begin
+  Logger.EnterMethod(lcCheck,'PaintCheckImage');
   with PaintInfo, ImageInfo[iiCheck] do
   begin
     {$ifdef ThemeSupport}
@@ -22337,10 +22383,12 @@ begin
         else
           ForegroundColor := GetRGBColor(BlendColor);
 
-          ImageList_DrawEx(Handle, Index, Canvas.Handle, XPos, YPos, 0, 0, GetRGBColor(BkColor), ForegroundColor,
-            ILD_TRANSPARENT);
+          Draw(Canvas,XPos,YPos,Index);
+          //ImageList_DrawEx(Handle, Index, Canvas.Handle, XPos, YPos, 0, 0, GetRGBColor(BkColor), ForegroundColor,
+          //  ILD_TRANSPARENT);
       end;
   end;
+  Logger.ExitMethod(lcCheck,'PaintCheckImage');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22434,7 +22482,7 @@ var
   XPos: Integer;
 
 begin
-  Logger.EnterMethod(lcPaint,'PaintNodeButton');
+  Logger.EnterMethod(lcPaintDetails,'PaintNodeButton');
   if vsExpanded in Node.States then
     Bitmap := FMinusBM
   else
@@ -22448,7 +22496,7 @@ begin
   Logger.SendBitmap(lcPaintBitmap,'NodeButton',Bitmap);
   // Need to draw this masked.
   Canvas.Draw(XPos, R.Top + ButtonY, Bitmap);
-  Logger.ExitMethod(lcPaint,'PaintNodeButton');
+  Logger.ExitMethod(lcPaintDetails,'PaintNodeButton');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22463,7 +22511,7 @@ var
   NewStyles: TLineImage;
 
 begin
-  Logger.EnterMethod(lcPaint,'PaintTreeLines');
+  Logger.EnterMethod(lcPaintDetails,'PaintTreeLines');
   NewStyles := nil;
 
   with PaintInfo do
@@ -22487,7 +22535,7 @@ begin
           SetLength(NewStyles, Length(LineImage));
           for I := IndentSize - 1 downto 0 do
           begin
-            Logger.Send(lcPaint,'FLineMode = lmBands');
+            Logger.Send(lcPaintDetails,'FLineMode = lmBands');
             if (vsExpanded in Node.States) and not (vsAllChildrenHidden in Node.States) then
               NewStyles[I] := ltLeft
             else
@@ -22523,10 +22571,10 @@ begin
           end;
         end;
     else // lmNormal
-      Logger.Send(lcPaint,'FLineMode = lmNormal');
-      Logger.Send(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+      Logger.Send(lcPaintDetails,'FLineMode = lmNormal');
+      Logger.Send(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
       PaintInfo.Canvas.Font.Color := FColors.TreeLineColor;
-      Logger.Send(lcPaint,'Brush.Color',PaintInfo.Canvas.Font.Color);
+      Logger.Send(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Font.Color);
       for I := 0 to IndentSize - 1 do
       begin
         DrawLineImage(PaintInfo, XPos, CellRect.Top, NodeHeight[Node], VAlignment, LineImage[I],
@@ -22535,7 +22583,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod(lcPaint,'PaintTreeLines');
+  Logger.ExitMethod(lcPaintDetails,'PaintTreeLines');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -27354,12 +27402,12 @@ begin
       PaintInfo.Canvas := NodeBitmap.Canvas;
       NodeBitmap.Canvas.Lock;
       try
-        Logger.Send(lcPaint,'FNewSelRect',FNewSelRect);
+        Logger.Send(lcPaintDetails,'FNewSelRect',FNewSelRect);
         // Prepare the current selection rectangle once. The corner points are absolute tree coordinates.
         SelectionRect := OrderRect(FNewSelRect);
-        Logger.Send(lcPaint,'SelectionRect',SelectionRect);
+        Logger.Send(lcPaintDetails,'SelectionRect',SelectionRect);
         DrawSelectionRect := IsMouseSelecting and not IsRectEmpty(SelectionRect);
-        Logger.Watch(lcPaint,'DrawSelectionRect',DrawSelectionRect);
+        Logger.Watch(lcPaintDetails,'DrawSelectionRect',DrawSelectionRect);
         // R represents an entire node (all columns), but is a bit unprecise when it comes to
         // trees without any column defined, because FRangeX only represents the maximum width of all
         // nodes in the client area (not all defined nodes). There might be, however, wider nodes somewhere. Without full
@@ -27367,7 +27415,7 @@ begin
         // that the tree is fully displayed on screen.
         R := Rect(0, 0, Max(FRangeX, ClientWidth), 0);
         NodeBitmap.Width := Window.Right - Window.Left;
-        Logger.Send(lcPaint,'NodeBitmap.Width',NodeBitmap.Width);
+        Logger.Send(lcPaintDetails,'NodeBitmap.Width',NodeBitmap.Width);
         // Make sure the buffer bitmap and target bitmap use the same transformation mode.
         SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
 
@@ -27377,6 +27425,7 @@ begin
         ShowImages := Assigned(FImages);
         ShowStateImages := Assigned(FStateImages);
         ShowCheckImages := Assigned(FCheckImages) and (toCheckSupport in FOptions.FMiscOptions);
+        Logger.Send(lcCheck,'ShowCheckImages',ShowCheckImages);
         UseColumns := FHeader.UseColumns;
 
         // Adjust paint options to tree settings. Hide selection if told so or the tree is unfocused.
@@ -27419,9 +27468,9 @@ begin
           // ----- main node paint loop
           while Assigned(PaintInfo.Node) do
           begin
-            Logger.EnterMethod(lcPaint,'PaintNode');
-            Logger.Watch(lcPaint,'BaseOffset',BaseOffset);
-            Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+            Logger.EnterMethod(lcPaintDetails,'PaintNode');
+            Logger.Watch(lcPaintDetails,'BaseOffset',BaseOffset);
+            Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
             // Initialize node if not already done.
             if not (vsInitialized in PaintInfo.Node.States) then
               InitNode(PaintInfo.Node);
@@ -27464,11 +27513,11 @@ begin
               begin
                 // Init paint options for the background painting.
                 PaintInfo.PaintOptions := PaintOptions;
-                Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // The node background can contain a single color, a bitmap or can be drawn by the application.
                 ClearNodeBackground(PaintInfo, UseBackground, True, Rect(Window.Left, TargetRect.Top, Window.Right,
                   TargetRect.Bottom));
-                Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // Prepare column, position and node clipping rectangle.
                 PaintInfo.CellRect := R;
                 if UseColumns then
@@ -27480,7 +27529,7 @@ begin
                   while ((PaintInfo.Column > InvalidColumn) or not UseColumns)
                     and (PaintInfo.CellRect.Left < Window.Right) do
                   begin
-                    Logger.Send(lcPaint,'Handling a column');
+                    Logger.Send(lcPaintDetails,'Handling a column');
                     if UseColumns then
                     begin
                       PaintInfo.Column := FPositionToIndex[PaintInfo.Position];
@@ -27613,7 +27662,7 @@ begin
 
                           // Prepare background and focus rect for the current cell.
                           PrepareCell(PaintInfo, Window.Left, NodeBitmap.Width);
-                          Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                           // Some parts are only drawn for the main column.
                           if IsMainColumn then
                           begin
@@ -27629,18 +27678,18 @@ begin
                             if ImageInfo[iiCheck].Index > -1 then
                               PaintCheckImage(PaintInfo);
                           end;
-                          Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                           if ImageInfo[iiState].Index > -1 then
                             PaintImage(PaintInfo, iiState, False);
                           if ImageInfo[iiNormal].Index > -1 then
                             PaintImage(PaintInfo, iiNormal, True);
-                          Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                           // Now let descendants or applications draw whatever they want,
                           // but don't draw the node if it is currently being edited.
                           if not ((tsEditing in FStates) and (Node = FFocusedNode) and
                             ((Column = FEditColumn) or not UseColumns)) then
                             DoPaintNode(PaintInfo);
-                          Logger.Watch(lcPaint,'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          Logger.Watch(lcPaintDetails,'Brush.Color',PaintInfo.Canvas.Brush.Color);
                           DoAfterCellPaint(Canvas, Node, Column, CellRect);
                         end;
                       end;
@@ -27755,29 +27804,29 @@ begin
             end;
 
             PaintInfo.Node := Temp;
-            Logger.ExitMethod(lcPaint,'PaintNode');
+            Logger.ExitMethod(lcPaintDetails,'PaintNode');
           end;
         end;
 
         // Erase rest of window not covered by a node.
         if TargetRect.Top < MaximumBottom then
         begin
-          Logger.Watch(lcPaint,'UseBackground',UseBackground);
-          Logger.Watch(lcPaint,'UseColumns',UseColumns);
+          Logger.Watch(lcPaintDetails,'UseBackground',UseBackground);
+          Logger.Watch(lcPaintDetails,'UseColumns',UseColumns);
           // Keep the horizontal target position to determine the selection rectangle offset later (if necessary).
           BaseOffset := Target.X;
           Target := TargetRect.TopLeft;
           R := Rect(TargetRect.Left, 0, TargetRect.Left, MaximumBottom - Target.Y);
           TargetRect := Rect(0, 0, MaximumRight - Target.X, MaximumBottom - Target.Y);
-          Logger.Send(lcPaint,'NodeBitmap.Handle',NodeBitmap.Handle);
+          Logger.Send(lcPaintDetails,'NodeBitmap.Handle',NodeBitmap.Handle);
           // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
           NodeBitmap.Height := 0;
           NodeBitmap.PixelFormat := pf32Bit;
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left + 1;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top + 1;
-          Logger.Send(lcPaint,'NodeBitmap.Handle',NodeBitmap.Handle);
-          Logger.Send(lcPaint,'TargetRect',TargetRect);
-          Logger.Send(lcPaint,'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
+          Logger.Send(lcPaintDetails,'NodeBitmap.Handle',NodeBitmap.Handle);
+          Logger.Send(lcPaintDetails,'TargetRect',TargetRect);
+          Logger.Send(lcPaintDetails,'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
           // Call back application/descendants whether they want to erase this area.
           SetWindowOrgEx(NodeBitmap.Canvas.Handle, Target.X, 0, nil);
           if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
@@ -27862,8 +27911,8 @@ begin
               end
               else
               begin
-                Logger.Send(lcPaint,'ErasingBackGround');
-                Logger.Send(lcPaint,'TargetRect',TargetRect);
+                Logger.Send(lcPaintDetails,'ErasingBackGround');
+                Logger.Send(lcPaintDetails,'TargetRect',TargetRect);
                 // No columns nor bitmap background. Simply erase it with the tree color.
                 SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
                 NodeBitmap.Canvas.Brush.Color := Color;
@@ -27872,7 +27921,7 @@ begin
             end;
           end;
           SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
-          Logger.Watch(lcPaint,'DrawSelectionRect',DrawSelectionRect);
+          Logger.Watch(lcPaintDetails,'DrawSelectionRect',DrawSelectionRect);
           if DrawSelectionRect then
           begin
             R := OrderRect(FNewSelRect);
@@ -27882,9 +27931,9 @@ begin
             SetBrushOrgEx(NodeBitmap.Canvas.Handle, 0, Target.X and 1, nil);
             PaintSelectionRectangle(NodeBitmap.Canvas, 0, R, TargetRect);
           end;
-          Logger.Send(lcPaint,'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);
-          Logger.Send(lcPaint,'NodeBitmap.Canvas.ClipRect',NodeBitmap.Canvas.ClipRect);
-          Logger.Send(lcPaint,'Target',Target);
+          Logger.Send(lcPaintDetails,'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);
+          Logger.Send(lcPaintDetails,'NodeBitmap.Canvas.ClipRect',NodeBitmap.Canvas.ClipRect);
+          Logger.Send(lcPaintDetails,'Target',Target);
           Logger.SendBitmap(lcPaintBitmap,'BackGroundBitmap',NodeBitmap);
           with Target, NodeBitmap do
             BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
@@ -29182,7 +29231,7 @@ begin
     // Reset the current horizontal offset to account for window resize etc.
     SetOffsetX(FOffsetX);
   end;
-  Logger.Send(lcPaint,'FEffectiveOffsetX after UpdateHScrollbar',FEffectiveOffsetX);
+  Logger.Send(lcPaintDetails,'FEffectiveOffsetX after UpdateHScrollbar',FEffectiveOffsetX);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29933,7 +29982,7 @@ var
   Size: TSize;
 
 begin
-  Logger.EnterMethod(lcPaint,'PaintNormalText') ;
+  Logger.EnterMethod(lcPaintDetails,'PaintNormalText') ;
   InitializeTextProperties(PaintInfo);
   with PaintInfo do
   begin
@@ -29999,10 +30048,10 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT)
     else
       SetBkMode(Canvas.Handle, OPAQUE);
-    Logger.Send(lcPaint,'Canvas.Brush.Color',Canvas.Brush.Color);
+    Logger.Send(lcPaintDetails,'Canvas.Brush.Color',Canvas.Brush.Color);
     DoTextDrawing(PaintInfo, Text, R, DrawFormat);
   end;
-  Logger.ExitMethod(lcPaint,'PaintNormalText');
+  Logger.ExitMethod(lcPaintDetails,'PaintNormalText');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30017,7 +30066,7 @@ var
   DrawFormat: Cardinal;
 
 begin
-  Logger.EnterMethod(lcPaint,'PaintStaticText');
+  Logger.EnterMethod(lcPaintDetails,'PaintStaticText');
   with PaintInfo do
   begin
     Canvas.Font := Font;
@@ -30064,7 +30113,7 @@ begin
     else
       DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat, False);
   end;
-  Logger.ExitMethod(lcPaint,'PaintStaticText');
+  Logger.ExitMethod(lcPaintDetails,'PaintStaticText');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30360,7 +30409,7 @@ var
   TextOutFlags: Integer;
 
 begin
-  Logger.EnterMethod(lcPaint,'TCustomVirtualStringTree.DoPaintNode');
+  Logger.EnterMethod(lcPaintDetails,'TCustomVirtualStringTree.DoPaintNode');
   // Set a new OnChange event for the canvas' font so we know if the application changes it in the callbacks.
   // This long winded procedure is necessary because font changes (as well as brush and pen changes) are
   // unfortunately not announced via the Canvas.OnChange event.
@@ -30384,7 +30433,7 @@ begin
       PaintStaticText(PaintInfo, TextOutFlags, S);
   end;
   RestoreFontChangeEvent(PaintInfo.Canvas);
-  Logger.ExitMethod(lcPaint,'TCustomVirtualStringTree.DoPaintNode');
+  Logger.ExitMethod(lcPaintDetails,'TCustomVirtualStringTree.DoPaintNode');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

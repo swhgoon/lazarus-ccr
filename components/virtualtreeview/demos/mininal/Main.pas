@@ -59,7 +59,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
   {$ifdef DEBUG}
-  Logger.ActiveClasses:=[lcScroll];
+  Logger.ActiveClasses:=[];//[lcScroll,lcPaint];
   Logger.Channels.Add(TIPCChannel.Create);
   Logger.Clear;
   Logger.MaxStackCount:=10;
