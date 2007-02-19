@@ -57,7 +57,7 @@ unit MVCTypes;
 interface
 
 uses Windows, LCLIntf,Messages,SysUtils,Graphics,VirtualTrees,Classes,StdCtrls,
-     Controls,Forms,ImgList,LCLType, delphicompat;
+     Controls,Forms,ImgList,LCLType, delphicompat, vtlogger;
 
 type { TMVCNode is the encapsulation of a single Node in the structure.
        This implementation is a bit bloated because in my project
@@ -832,6 +832,7 @@ end;
 
 function TMVCEditLink.BeginEdit: Boolean;
 begin
+  Logger.Send(lcEditLink,'FEdit.Handle',FEdit.Handle);
   Result := True;
   FEdit.Show;
   FEdit.SetFocus;
@@ -923,17 +924,20 @@ end;
 procedure TMVCEdit.WMChar(var Message: TWMChar);
 // handle character keys
 begin
+  Logger.EnterMethod(lcEditLink,'WMChar');
   // avoid beep
   if Message.CharCode <> VK_ESCAPE then
   begin
     inherited;
     if Message.CharCode > $20 then AutoAdjustSize;
   end;
+  Logger.ExitMethod(lcEditLink,'WMChar');
 end;
 
 procedure TMVCEdit.WMKeyDown(var Message: TWMKeyDown);
 // handles some control keys (either redirection to tree, edit window size or clipboard handling)
 begin
+  Logger.EnterMethod(lcEditLink,'TMVCEdit.WMKeyDown');
   case Message.CharCode of
     // pretend these keycodes were send to the tree
     VK_ESCAPE,
@@ -967,14 +971,17 @@ begin
         AutoAdjustSize;
     end;
   end;
+  Logger.ExitMethod(lcEditLink,'TMVCEdit.WMKeyDown');
 end;
 
 procedure TMVCEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
+  Logger.EnterMethod(lcEditLink,'TMVCEdit.WMKillFocus');
   inherited;
   // FLink.FTree is set to nil if the link doesn't need to notify the tree (e.g. hiding the edit causes
   // a kill focus message)
   if Assigned(FLink.FTree) then FLink.FTree.DoCancelEdit;
+  Logger.ExitMethod(lcEditLink,'TMVCEdit.WMKillFocus');
 end;
 
 procedure TMVCEdit.AutoAdjustSize;

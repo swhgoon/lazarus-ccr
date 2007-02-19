@@ -4,17 +4,19 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <Flags>
+        <AlwaysBuild Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="7"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -35,148 +37,31 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="4">
       <Unit0>
         <Filename Value="mvcdemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mvcdemo"/>
-        <CursorPos X="63" Y="18"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="fmain.pas"/>
-        <ComponentName Value="Form1"/>
-        <ResourceFilename Value="fmain.lrs"/>
-        <UnitName Value="fmain"/>
-        <CursorPos X="9" Y="5"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="20"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="MVCDemoMain.pas"/>
         <ComponentName Value="fmMVCDemo"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="MVCDemoMain.lrs"/>
         <UnitName Value="MVCDemoMain"/>
-        <CursorPos X="9" Y="16"/>
-        <TopLine Value="57"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
+      </Unit1>
+      <Unit2>
         <Filename Value="MVCPanel.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="MVCPanel"/>
-        <CursorPos X="18" Y="79"/>
-        <TopLine Value="69"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="MVCTypes.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="MVCTypes"/>
-        <CursorPos X="26" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\VirtualTrees.pas"/>
-        <UnitName Value="VirtualTrees"/>
-        <CursorPos X="5" Y="17913"/>
-        <TopLine Value="17896"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\luipack\trunk\miscutils\delphicompat.pas"/>
-        <UnitName Value="delphicompat"/>
-        <CursorPos X="31" Y="39"/>
-        <TopLine Value="28"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\lazarus\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="50" Y="1542"/>
-        <TopLine Value="1525"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\lazarus\lcl\lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <CursorPos X="3" Y="2043"/>
-        <TopLine Value="2026"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\VTConfig.inc"/>
-        <CursorPos X="3" Y="32"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32callback.inc"/>
-        <CursorPos X="34" Y="940"/>
-        <TopLine Value="922"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\port.log"/>
-        <CursorPos X="51" Y="172"/>
-        <TopLine Value="153"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\luipack\trunk\multilog\multiloglcl.pas"/>
-        <UnitName Value="multiloglcl"/>
-        <CursorPos X="4" Y="91"/>
-        <TopLine Value="67"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit12>
+      </Unit3>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
-      <Position1>
-        <Filename Value="..\..\..\luipack\trunk\multilog\multiloglcl.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\..\luipack\trunk\multilog\multiloglcl.pas"/>
-        <Caret Line="47" Column="15" TopLine="30"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\VirtualTrees.pas"/>
-        <Caret Line="17911" Column="39" TopLine="17880"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\VTConfig.inc"/>
-        <Caret Line="32" Column="3" TopLine="1"/>
-      </Position4>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -184,25 +69,8 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
-    <Linking>
-      <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
-      </Options>
-    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

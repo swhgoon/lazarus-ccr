@@ -17909,8 +17909,9 @@ begin
   PrepareBitmaps(True, True);
 
   // Register tree as OLE drop target.
-  if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
-    RegisterDragDrop(Handle, DragManager as IDropTarget);
+  // Somehow calling this code causes a SIGSEG
+  //if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
+  //  RegisterDragDrop(Handle, DragManager as IDropTarget);
 
   UpdateScrollBars(True);
   UpdateHeaderRect;

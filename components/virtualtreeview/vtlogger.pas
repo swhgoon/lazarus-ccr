@@ -27,6 +27,7 @@ const
   lcScroll = 12;
   lcPaintDetails = 13;
   lcCheck = 14;
+  lcEditLink = 15;
 
 var
   Logger: TLCLLogger;

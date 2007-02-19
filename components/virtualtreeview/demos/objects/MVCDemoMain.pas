@@ -17,7 +17,7 @@ interface
 
 uses LCLIntf,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,
      MVCTypes,MVCPanel,StdCtrls,ExtCtrls,ImgList,VirtualTrees,ComCtrls,
-  Buttons, LResources;
+  Buttons, LResources, vtlogger,ipcchannel;
 
 type TfmMVCDemo=class(TForm)
        pnlControls:TPanel;
@@ -87,6 +87,9 @@ end;
 
 procedure TfmMVCDemo.FormCreate(Sender: TObject);
 begin
+  Logger.Channels.Add(TIPCChannel.Create);
+  Logger.ActiveClasses:=[lcEditLink];
+  Logger.Clear;
   P:=TMVCPanel.Create(Self);
   with P do
     begin
