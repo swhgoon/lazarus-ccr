@@ -62,21 +62,30 @@ begin
    Failed:=Status and HRESULT($80000000)<>0;
 end;
 
-function MapWindowPoints(hWndFrom, hWndTo: HWND; lpPoints: PPoint; cPoints: UINT): Integer;
+function MapWindowPoints(hWndFrom, hWndTo: HWND; var lpPoints; cPoints: UINT): Integer;
 var
-  I:integer;
+  I:Integer;
+  XOffset, YOffset: SmallInt;
   FromRect,ToRect: TRect;
 begin
-  Logger.AddCheckPoint(lcDummyFunctions,'MapWiindowsPoints');
-  //todo: implement result
   GetWindowRect(hWndFrom,FromRect);
   GetWindowRect(hWndTo,ToRect);
+  XOffset:=(FromRect.Left - ToRect.Left);
+  YOffset:=(FromRect.Top - ToRect.Top);
   for i:=0 to cPoints - 1 do
   begin
-    (lpPoints+i)^.x:=(FromRect.Left - ToRect.Left) + (lpPoints+i)^.x;
-    (lpPoints+i)^.y:=(FromRect.Top - ToRect.Top) + (lpPoints+i)^.y;
+    {
+    Mode Delphi does not support treating a pointer as a array
+    if ObjFpc is used than this syntax is preferred
+    PPoint(@lpPoints)[i].x:= XOffset + PPoint(@lpPoints)[i].x;
+    PPoint(@lpPoints)[i].y:= YOffset + PPoint(@lpPoints)[i].y;
+    }
+    PPoint(@lpPoints+i)^.x:= XOffset + PPoint(@lpPoints+i)^.x;
+    PPoint(@lpPoints+i)^.y:= YOffset + PPoint(@lpPoints+i)^.y;
   end;
+  Result:=MakeLong(XOffset,YOffset);
 end;
+
 
 
 function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;

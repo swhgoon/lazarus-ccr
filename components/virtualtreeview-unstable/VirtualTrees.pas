@@ -7466,7 +7466,7 @@ begin
   if Visible then
   begin
     // Create the minimum rectangle to be recaptured.
-    MapWindowPoints(Tree.Handle, 0, @R.TopLeft, 2);
+    MapWindowPoints(Tree.Handle, 0, R, 2);
     DragRect := GetDragImageRect;
     IntersectRect(R, R, DragRect);
 
@@ -7477,7 +7477,7 @@ begin
     PaintTarget.Y := R.Top - DragRect.Top;
 
     // The source rectangle is determined by the offsets in the tree.
-    MapWindowPoints(0, Tree.Handle, @R.TopLeft, 2);
+    MapWindowPoints(0, Tree.Handle, R, 2);
     OffsetRect(R, -Tree.FOffsetX, -Tree.FOffsetY);
 
     // Finally let the tree paint the relevant part and upate the drag image on screen.
@@ -11193,7 +11193,7 @@ begin
   GetWindowRect(Treeview.Handle, RW);
 
   // Convert to client coordinates.
-  MapWindowPoints(0, Treeview.Handle, @RW.TopLeft, 2);
+  MapWindowPoints(0, Treeview.Handle, RW, 2);
 
   // Consider the header within this rectangle.
   OffsetRect(R, RW.Left, RW.Top);
@@ -11239,7 +11239,7 @@ begin
       OffsetRect(R, RW.Left, RW.Top);
 
       // Expressed in client coordinates (because RedrawWindow wants them so, they will actually become negative).
-      MapWindowPoints(0, Handle, @R.TopLeft, 2);
+      MapWindowPoints(0, Handle, R, 2);
       RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
         RDW_NOERASE or RDW_NOCHILDREN);
     end;
@@ -19681,7 +19681,7 @@ begin
   GetCursorPos(P);
   R := ClientRect;
   ClipRect := R;
-  MapWindowPoints(Handle, 0, @R.TopLeft, 2);
+  MapWindowPoints(Handle, 0, R, 2);
   InRect := PtInRect(R, P);
   ClientP := ScreenToClient(P);
   Panning := [tsWheelPanning, tsWheelScrolling] * FStates <> [];
@@ -23604,7 +23604,7 @@ begin
 
     // Calculate the screen area not covered by the drag image and which needs an update.
     DragRect := Tree.FDragImage.GetDragImageRect;
-    MapWindowPoints(0, Handle, @DragRect.TopLeft, 2);
+    MapWindowPoints(0, Handle, DragRect, 2);
     DragRegion := CreateRectRgnIndirect(DragRect);
 
     // Start with non-client area if requested.
@@ -23615,7 +23615,7 @@ begin
       // Determine the outer rectangle of the entire tree window.
       GetWindowRect(Handle, NCRect);
       // Express the tree window rectangle in client coordinates (because RedrawWindow wants them so).
-      MapWindowPoints(0, Handle, @NCRect.TopLeft, 2);
+      MapWindowPoints(0, Handle, NCRect, 2);
       NCRegion := CreateRectRgnIndirect(NCRect);
       // Determine client rect in screen coordinates and create another region for it.
       UpdateRegion := CreateRectRgnIndirect(ClientRect);
