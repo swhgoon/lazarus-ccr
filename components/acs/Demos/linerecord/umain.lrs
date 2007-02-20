@@ -1,0 +1,25 @@
+{ Dies ist eine automatisch erzeugte Lazarus-Ressourcendatei }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#13'ActiveControl'#7#7'bRecord'#11'BorderStyle'#7#12
+  +'bsToolWindow'#7'Caption'#6#12'Audio Record'#12'ClientHeight'#2'+'#11'Client'
+  +'Width'#3'4'#1#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'Z'#18'HorzSc'
+  +'rollBar.Page'#3'3'#1#18'VertScrollBar.Page'#2'*'#4'Left'#3'['#1#6'Height'#2
+  +'+'#3'Top'#3#208#0#5'Width'#3'4'#1#0#6'TLabel'#6'Label1'#7'Caption'#6#6'Sour'
+  +'ce'#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2'<'#6'Height'#2#13#5'Wi'
+  +'dth'#2')'#0#0#7'TBitBtn'#7'bRecord'#25'BorderSpacing.InnerBorder'#2#2#7'Cap'
+  +'tion'#6#6'Record'#9'NumGlyphs'#2#0#7'OnClick'#7#12'bRecordClick'#8'TabOrder'
+  +#2#0#4'Left'#3#184#0#6'Height'#2#26#3'Top'#2#12#5'Width'#2'<'#0#0#9'TComboBo'
+  +'x'#14'cbRecordSource'#9'MaxLength'#2#0#8'OnChange'#7#20'cbRecordSourceChang'
+  +'e'#8'TabOrder'#2#1#4'Left'#2'<'#6'Height'#2#21#3'Top'#2#16#5'Width'#2't'#0#0
+  +#7'TBitBtn'#5'bStop'#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6#4'Stop'#9
+  +'NumGlyphs'#2#0#7'OnClick'#7#10'bStopClick'#8'TabOrder'#2#2#4'Left'#3#248#0#6
+  +'Height'#2#26#3'Top'#2#12#5'Width'#2'8'#0#0#7'TBitBtn'#5'bOpen'#25'BorderSpa'
+  +'cing.InnerBorder'#2#2#7'Caption'#6#4'Open'#9'NumGlyphs'#2#0#7'OnClick'#7#10
+  +'bOpenClick'#8'TabOrder'#2#3#4'Left'#2#4#6'Height'#2#26#3'Top'#2#12#5'Width'
+  +#2'3'#0#0#11'TACSFileOut'#8'FileOut1'#5'Input'#7#8'AudioIn1'#4'left'#2#4#3't'
+  +'op'#3#12#1#0#0#11'TACSAudioIn'#8'AudioIn1'#6'Driver'#6#10'Wavemapper'#15'In'
+  +'BitsPerSample'#2#8#10'InChannels'#2#1#12'InSampleRate'#3'@'#31#4'left'#2#4#3
+  +'top'#3#236#0#0#0#9'TACSMixer'#6'Mixer1'#9'MixerName'#6#20'Realtek ALC655 re'
+  +'v 0'#4'left'#2#4#3'top'#3#204#0#0#0#0
+]);

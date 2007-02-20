@@ -1,0 +1,781 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="Lazarus Player Example"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <LazDoc Paths=""/>
+    <Units Count="100">
+      <Unit0>
+        <CursorPos X="28" Y="18"/>
+        <Filename Value="player.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="player"/>
+        <UsageCount Value="62"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="13" Y="145"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="umain.pas"/>
+        <ComponentName Value="fMain"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ResourceFilename Value="umain.lrs"/>
+        <TopLine Value="134"/>
+        <UnitName Value="uMain"/>
+        <UsageCount Value="62"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="1" Y="50"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_Audio.pas"/>
+        <TopLine Value="33"/>
+        <UnitName Value="ACS_Audio"/>
+        <UsageCount Value="22"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="19" Y="244"/>
+        <Filename Value="D:\LKomponenten\acs\Src\drivers\windows\acs_audio.inc"/>
+        <TopLine Value="228"/>
+        <UsageCount Value="20"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="1" Y="1823"/>
+        <Filename Value="D:\lazarus\lcl\include\control.inc"/>
+        <TopLine Value="1808"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="1" Y="58"/>
+        <Filename Value="D:\lazarus\lcl\include\buttoncontrol.inc"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <CursorPos X="1" Y="242"/>
+        <Filename Value="D:\lazarus\lcl\include\buttons.inc"/>
+        <TopLine Value="227"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <CursorPos X="10" Y="115"/>
+        <Filename Value="D:\LKomponenten\acs\Src\drivers\ACS_StdAudio.pas"/>
+        <TopLine Value="83"/>
+        <UnitName Value="acs_stdaudio"/>
+        <UsageCount Value="20"/>
+      </Unit7>
+      <Unit8>
+        <CursorPos X="2" Y="133"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\acs_file.pas"/>
+        <TopLine Value="114"/>
+        <UnitName Value="acs_file"/>
+        <UsageCount Value="22"/>
+      </Unit8>
+      <Unit9>
+        <CursorPos X="8" Y="8"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\acs_allformats.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="acs_allformats"/>
+        <UsageCount Value="17"/>
+      </Unit9>
+      <Unit10>
+        <CursorPos X="13" Y="1"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\acs_dsaudio.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="acs_dsaudio"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <CursorPos X="1" Y="326"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\acs_dsfiles.pas"/>
+        <TopLine Value="305"/>
+        <UnitName Value="acs_dsfiles"/>
+        <UsageCount Value="14"/>
+      </Unit11>
+      <Unit12>
+        <CursorPos X="1" Y="462"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\acs_vorbis.pas"/>
+        <TopLine Value="446"/>
+        <UnitName Value="acs_vorbis"/>
+        <UsageCount Value="17"/>
+      </Unit12>
+      <Unit13>
+        <CursorPos X="15" Y="809"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_Classes.pas"/>
+        <TopLine Value="777"/>
+        <UnitName Value="acs_classes"/>
+        <UsageCount Value="22"/>
+      </Unit13>
+      <Unit14>
+        <CursorPos X="54" Y="48"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_Strings.pas"/>
+        <TopLine Value="22"/>
+        <UnitName Value="ACS_Strings"/>
+        <UsageCount Value="16"/>
+      </Unit14>
+      <Unit15>
+        <CursorPos X="26" Y="464"/>
+        <Filename Value="D:\LKomponenten\acs\Src\drivers\acs_dxaudio.pas"/>
+        <TopLine Value="440"/>
+        <UnitName Value="acs_dxaudio"/>
+        <UsageCount Value="17"/>
+      </Unit15>
+      <Unit16>
+        <CursorPos X="16" Y="108"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\ACS_Wave.pas"/>
+        <TopLine Value="76"/>
+        <UnitName Value="acs_wave"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <CursorPos X="26" Y="2101"/>
+        <Filename Value="D:\lazarus\lcl\LResources.pp"/>
+        <TopLine Value="2082"/>
+        <UnitName Value="LResources"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <CursorPos X="1" Y="351"/>
+        <Filename Value="D:\LKomponenten\acs\Demos\Lazarus\Mediaplayer\uplayer.pas"/>
+        <HasResources Value="True"/>
+        <TopLine Value="329"/>
+        <UnitName Value="uPlayer"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <CursorPos X="13" Y="121"/>
+        <Filename Value="D:\LKomponenten\acs\Demos\Win32\CDPlayer\Main.pas"/>
+        <TopLine Value="98"/>
+        <UnitName Value="Main"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <CursorPos X="1" Y="129"/>
+        <Filename Value="D:\LKomponenten\acs\Demos\Win32\OggPlayer\Main.pas"/>
+        <TopLine Value="105"/>
+        <UnitName Value="Main"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <CursorPos X="13" Y="28"/>
+        <Filename Value="D:\LKomponenten\acs\Demos\Win32\AudioPlayer\Main.pas"/>
+        <TopLine Value="28"/>
+        <UnitName Value="Main"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <CursorPos X="5" Y="2678"/>
+        <Filename Value="D:\fpc\packages\extra\winunits\activex.pp"/>
+        <TopLine Value="2661"/>
+        <UnitName Value="activex"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <CursorPos X="8" Y="32"/>
+        <Filename Value="uplaylist.pas"/>
+        <ComponentName Value="fPlaylist"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="uplaylist.lrs"/>
+        <TopLine Value="17"/>
+        <UnitName Value="uPlaylist"/>
+        <UsageCount Value="42"/>
+      </Unit23>
+      <Unit24>
+        <CursorPos X="1" Y="304"/>
+        <Filename Value="D:\lazarus\lcl\interfaces\win32\win32object.inc"/>
+        <TopLine Value="287"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <CursorPos X="1" Y="191"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_CDROM.pas"/>
+        <TopLine Value="171"/>
+        <UnitName Value="ACS_CDROM"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+        <CursorPos X="34" Y="9"/>
+        <Filename Value="uvis.pas"/>
+        <ComponentName Value="fVizu"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="uvis.lrs"/>
+        <TopLine Value="58"/>
+        <UnitName Value="uvis"/>
+        <UsageCount Value="39"/>
+      </Unit26>
+      <Unit27>
+        <CursorPos X="52" Y="186"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_Indicator.pas"/>
+        <TopLine Value="157"/>
+        <UnitName Value="ACS_Indicator"/>
+        <UsageCount Value="11"/>
+      </Unit27>
+      <Unit28>
+        <CursorPos X="5" Y="268"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\ACS_Procs.pas"/>
+        <TopLine Value="235"/>
+        <UnitName Value="ACS_Procs"/>
+        <UsageCount Value="11"/>
+      </Unit28>
+      <Unit29>
+        <CursorPos X="15" Y="927"/>
+        <Filename Value="D:\lazarus\lcl\Graphics.pp"/>
+        <TopLine Value="911"/>
+        <UnitName Value="Graphics"/>
+        <UsageCount Value="11"/>
+      </Unit29>
+      <Unit30>
+        <CursorPos X="12" Y="2"/>
+        <Filename Value="D:\lazarus\lcl\graphtype.pp"/>
+        <TopLine Value="1"/>
+        <UnitName Value="GraphType"/>
+        <UsageCount Value="11"/>
+      </Unit30>
+      <Unit31>
+        <CursorPos X="15" Y="32"/>
+        <Filename Value="D:\fpc\fcl\image\fpimage.pp"/>
+        <TopLine Value="14"/>
+        <UnitName Value="FPimage"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="D:\lazarus\ide\lazarus.pp"/>
+        <TopLine Value="1"/>
+        <UnitName Value="Lazarus"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <CursorPos X="1" Y="50"/>
+        <Filename Value="D:\lazarus\lcl\include\filedialog.inc"/>
+        <TopLine Value="33"/>
+        <UsageCount Value="10"/>
+      </Unit33>
+      <Unit34>
+        <CursorPos X="37" Y="284"/>
+        <Filename Value="windows\C\src\LKomponenten\acs\Src\fileformats\ACS_Vorbis.pas"/>
+        <TopLine Value="255"/>
+        <UnitName Value="ACS_Vorbis"/>
+        <UsageCount Value="10"/>
+      </Unit34>
+      <Unit35>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="windows\C\src\LKomponenten\acs\Src\fileformats\ACS_Allformats.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="acs_allformats"/>
+        <UsageCount Value="10"/>
+      </Unit35>
+      <Unit36>
+        <CursorPos X="14" Y="231"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_File.pas"/>
+        <TopLine Value="195"/>
+        <UnitName Value="ACS_File"/>
+        <UsageCount Value="11"/>
+      </Unit36>
+      <Unit37>
+        <CursorPos X="19" Y="231"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Classes.pas"/>
+        <TopLine Value="213"/>
+        <UnitName Value="ACS_Classes"/>
+        <UsageCount Value="11"/>
+      </Unit37>
+      <Unit38>
+        <CursorPos X="19" Y="308"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Audio.pas"/>
+        <TopLine Value="290"/>
+        <UnitName Value="ACS_Audio"/>
+        <UsageCount Value="11"/>
+      </Unit38>
+      <Unit39>
+        <CursorPos X="42" Y="80"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_AudioMix.pas"/>
+        <TopLine Value="62"/>
+        <UnitName Value="ACS_AudioMix"/>
+        <UsageCount Value="10"/>
+      </Unit39>
+      <Unit40>
+        <CursorPos X="19" Y="127"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_CDROM.pas"/>
+        <TopLine Value="109"/>
+        <UnitName Value="ACS_CDROM"/>
+        <UsageCount Value="10"/>
+      </Unit40>
+      <Unit41>
+        <CursorPos X="18" Y="356"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\linux\ACS_CDROM.inc"/>
+        <TopLine Value="320"/>
+        <UsageCount Value="10"/>
+      </Unit41>
+      <Unit42>
+        <CursorPos X="12" Y="823"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Converters.pas"/>
+        <TopLine Value="803"/>
+        <UnitName Value="ACS_Converters"/>
+        <UsageCount Value="10"/>
+      </Unit42>
+      <Unit43>
+        <CursorPos X="41" Y="75"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Types.pas"/>
+        <TopLine Value="34"/>
+        <UnitName Value="ACS_Types"/>
+        <UsageCount Value="10"/>
+      </Unit43>
+      <Unit44>
+        <CursorPos X="38" Y="276"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Procs.pas"/>
+        <TopLine Value="258"/>
+        <UnitName Value="ACS_Procs"/>
+        <UsageCount Value="10"/>
+      </Unit44>
+      <Unit45>
+        <CursorPos X="23" Y="673"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Filters.pas"/>
+        <TopLine Value="654"/>
+        <UnitName Value="ACS_Filters"/>
+        <UsageCount Value="10"/>
+      </Unit45>
+      <Unit46>
+        <CursorPos X="21" Y="115"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Indicator.pas"/>
+        <TopLine Value="93"/>
+        <UnitName Value="ACS_Indicator"/>
+        <UsageCount Value="10"/>
+      </Unit46>
+      <Unit47>
+        <CursorPos X="12" Y="496"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Misc.pas"/>
+        <TopLine Value="478"/>
+        <UnitName Value="ACS_Misc"/>
+        <UsageCount Value="10"/>
+      </Unit47>
+      <Unit48>
+        <CursorPos X="28" Y="235"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_MultiMix.pas"/>
+        <TopLine Value="217"/>
+        <UnitName Value="ACS_MultiMix"/>
+        <UsageCount Value="10"/>
+      </Unit48>
+      <Unit49>
+        <CursorPos X="42" Y="164"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\drivers\ACS_StdAudio.pas"/>
+        <TopLine Value="146"/>
+        <UnitName Value="ACS_StdAudio"/>
+        <UsageCount Value="10"/>
+      </Unit49>
+      <Unit50>
+        <CursorPos X="12" Y="69"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\drivers\linux\ACS_Audio.inc"/>
+        <TopLine Value="50"/>
+        <UsageCount Value="10"/>
+      </Unit50>
+      <Unit51>
+        <CursorPos X="27" Y="166"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_VolumeQuery.pas"/>
+        <TopLine Value="147"/>
+        <UnitName Value="ACS_VolumeQuery"/>
+        <UsageCount Value="10"/>
+      </Unit51>
+      <Unit52>
+        <CursorPos X="67" Y="35"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\Linux\acs_reg.pas"/>
+        <TopLine Value="11"/>
+        <UnitName Value="acs_reg"/>
+        <UsageCount Value="10"/>
+      </Unit52>
+      <Unit53>
+        <CursorPos X="16" Y="241"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Mixer.pas"/>
+        <TopLine Value="212"/>
+        <UnitName Value="ACS_Mixer"/>
+        <UsageCount Value="10"/>
+      </Unit53>
+      <Unit54>
+        <CursorPos X="19" Y="119"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\linux\ACS_Mixer.inc"/>
+        <TopLine Value="101"/>
+        <UsageCount Value="10"/>
+      </Unit54>
+      <Unit55>
+        <CursorPos X="14" Y="202"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\classes\ACS_Streams.pas"/>
+        <TopLine Value="172"/>
+        <UnitName Value="ACS_Streams"/>
+        <UsageCount Value="10"/>
+      </Unit55>
+      <Unit56>
+        <CursorPos X="14" Y="63"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\fileformats\ACS_Vorbis.pas"/>
+        <TopLine Value="55"/>
+        <UnitName Value="ACS_Vorbis"/>
+        <UsageCount Value="10"/>
+      </Unit56>
+      <Unit57>
+        <CursorPos X="1" Y="60"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\fileformats\acs_flac.pas"/>
+        <TopLine Value="32"/>
+        <UnitName Value="ACS_FLAC"/>
+        <UsageCount Value="10"/>
+      </Unit57>
+      <Unit58>
+        <CursorPos X="29" Y="89"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\fileformats\acs_lame.pas"/>
+        <TopLine Value="64"/>
+        <UnitName Value="ACS_LAME"/>
+        <UsageCount Value="10"/>
+      </Unit58>
+      <Unit59>
+        <CursorPos X="16" Y="62"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\fileformats\acs_mad.pas"/>
+        <TopLine Value="46"/>
+        <UnitName Value="ACS_MAD"/>
+        <UsageCount Value="10"/>
+      </Unit59>
+      <Unit60>
+        <CursorPos X="16" Y="1361"/>
+        <Filename Value="windows\D\LKomponenten\acs\Src\fileformats\ACS_Wave.pas"/>
+        <TopLine Value="1359"/>
+        <UnitName Value="ACS_Wave"/>
+        <UsageCount Value="10"/>
+      </Unit60>
+      <Unit61>
+        <CursorPos X="30" Y="559"/>
+        <Filename Value="umain.lfm"/>
+        <SyntaxHighlighter Value="LFM"/>
+        <TopLine Value="527"/>
+        <UsageCount Value="10"/>
+      </Unit61>
+      <Unit62>
+        <CursorPos X="17" Y="193"/>
+        <Filename Value="D:\fpc\rtl\objpas\classes\classesh.inc"/>
+        <TopLine Value="175"/>
+        <UsageCount Value="10"/>
+      </Unit62>
+      <Unit63>
+        <CursorPos X="1" Y="370"/>
+        <Filename Value="D:\fpc\rtl\objpas\classes\lists.inc"/>
+        <TopLine Value="368"/>
+        <UsageCount Value="10"/>
+      </Unit63>
+      <Unit64>
+        <CursorPos X="1" Y="65"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\ACS_FLAC.pas"/>
+        <TopLine Value="65"/>
+        <UnitName Value="ACS_FLAC"/>
+        <UsageCount Value="10"/>
+      </Unit64>
+      <Unit65>
+        <CursorPos X="1" Y="49"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\ACS_MAC.pas"/>
+        <TopLine Value="49"/>
+        <UnitName Value="ACS_MAC"/>
+        <UsageCount Value="10"/>
+      </Unit65>
+      <Unit66>
+        <CursorPos X="30" Y="209"/>
+        <Filename Value="D:\lazarus\lcl\interfaces\win32\Win32WSControls.pp"/>
+        <TopLine Value="191"/>
+        <UnitName Value="Win32WSControls"/>
+        <UsageCount Value="10"/>
+      </Unit66>
+      <Unit67>
+        <CursorPos X="14" Y="61"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\ACS_LAME.pas"/>
+        <TopLine Value="49"/>
+        <UnitName Value="ACS_LAME"/>
+        <UsageCount Value="10"/>
+      </Unit67>
+      <Unit68>
+        <CursorPos X="14" Y="239"/>
+        <Filename Value="D:\LKomponenten\acs\Src\fileformats\ACS_MAD.pas"/>
+        <TopLine Value="207"/>
+        <UnitName Value="ACS_MAD"/>
+        <UsageCount Value="10"/>
+      </Unit68>
+      <Unit69>
+        <CursorPos X="11" Y="370"/>
+        <Filename Value="D:\fpc\rtl\inc\systemh.inc"/>
+        <TopLine Value="354"/>
+        <UsageCount Value="10"/>
+      </Unit69>
+      <Unit70>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="D:\LKomponenten\lazreport\source\lr_desgn.pas"/>
+        <ComponentName Value="frDesignerForm"/>
+        <HasResources Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="LR_Desgn"/>
+        <UsageCount Value="10"/>
+      </Unit70>
+      <Unit71>
+        <CursorPos X="1" Y="2098"/>
+        <Filename Value="windows\D\lazarus\lcl\lresources.pp"/>
+        <TopLine Value="2077"/>
+        <UnitName Value="LResources"/>
+        <UsageCount Value="10"/>
+      </Unit71>
+      <Unit72>
+        <CursorPos X="11" Y="370"/>
+        <Filename Value="windows\D\fpc\rtl\inc\systemh.inc"/>
+        <TopLine Value="352"/>
+        <UsageCount Value="10"/>
+      </Unit72>
+      <Unit73>
+        <CursorPos X="1" Y="126"/>
+        <Filename Value="D:\acs tmp\Src\Common\ACS_Wave.pas"/>
+        <TopLine Value="123"/>
+        <UnitName Value="ACS_Wave"/>
+        <UsageCount Value="10"/>
+      </Unit73>
+      <Unit74>
+        <CursorPos X="72" Y="1"/>
+        <Filename Value="windows\D\fpc\rtl\i386\i386.inc"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit74>
+      <Unit75>
+        <CursorPos X="20" Y="899"/>
+        <Filename Value="windows\D\acs tmp\Src\Common\ACS_Wave.pas"/>
+        <TopLine Value="869"/>
+        <UnitName Value="ACS_Wave"/>
+        <UsageCount Value="10"/>
+      </Unit75>
+      <Unit76>
+        <CursorPos X="16" Y="266"/>
+        <Filename Value="D:\LKomponenten\acs\Src\classes\windows\acs_cdrom.inc"/>
+        <TopLine Value="244"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <CursorPos X="10" Y="1476"/>
+        <Filename Value="D:\lazarus\lcl\include\canvas.inc"/>
+        <TopLine Value="1469"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <CursorPos X="13" Y="225"/>
+        <Filename Value="D:\fpc\fcl\image\fpcanvas.pp"/>
+        <TopLine Value="193"/>
+        <UnitName Value="FPCanvas"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <CursorPos X="1" Y="267"/>
+        <Filename Value="D:\fpc\fcl\image\FPCanvas.inc"/>
+        <TopLine Value="265"/>
+        <UsageCount Value="10"/>
+      </Unit79>
+      <Unit80>
+        <CursorPos X="27" Y="20"/>
+        <Filename Value="D:\SRC\lazarus\ide\lazarus.pp"/>
+        <TopLine Value="1"/>
+        <UnitName Value="Lazarus"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+      <Unit81>
+        <CursorPos X="8" Y="13"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\acs_allformats.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="acs_allformats"/>
+        <UsageCount Value="10"/>
+      </Unit81>
+      <Unit82>
+        <CursorPos X="3" Y="1485"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\acs_wave.pas"/>
+        <TopLine Value="1462"/>
+        <UnitName Value="acs_wave"/>
+        <UsageCount Value="10"/>
+      </Unit82>
+      <Unit83>
+        <CursorPos X="12" Y="446"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\acs_vorbis.pas"/>
+        <TopLine Value="416"/>
+        <UnitName Value="acs_vorbis"/>
+        <UsageCount Value="10"/>
+      </Unit83>
+      <Unit84>
+        <CursorPos X="16" Y="1"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\Codec.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="codec"/>
+        <UsageCount Value="10"/>
+      </Unit84>
+      <Unit85>
+        <CursorPos X="21" Y="224"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\vorbisfile.pas"/>
+        <TopLine Value="191"/>
+        <UnitName Value="vorbisfile"/>
+        <UsageCount Value="10"/>
+      </Unit85>
+      <Unit86>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\ogg.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="ogg"/>
+        <UsageCount Value="10"/>
+      </Unit86>
+      <Unit87>
+        <CursorPos X="12" Y="34"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\vorbis_codec.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="codec"/>
+        <UsageCount Value="10"/>
+      </Unit87>
+      <Unit88>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\vorbiscodec.pas"/>
+        <TopLine Value="427"/>
+        <UnitName Value="vorbiscodec"/>
+        <UsageCount Value="10"/>
+      </Unit88>
+      <Unit89>
+        <CursorPos X="1" Y="1"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\fileformats\general\VorbisEnc.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="vorbisenc"/>
+        <UsageCount Value="10"/>
+      </Unit89>
+      <Unit90>
+        <CursorPos X="1" Y="23"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\classes\acs_strings.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="acs_strings"/>
+        <UsageCount Value="10"/>
+      </Unit90>
+      <Unit91>
+        <CursorPos X="10" Y="70"/>
+        <Filename Value="D:\SRC\fpc\rtl\win32\wininc\ascdef.inc"/>
+        <TopLine Value="47"/>
+        <UsageCount Value="10"/>
+      </Unit91>
+      <Unit92>
+        <CursorPos X="1" Y="175"/>
+        <Filename Value="D:\SRC\LKomponenten\acs\Src\classes\acs_classes.pas"/>
+        <TopLine Value="164"/>
+        <UnitName Value="acs_classes"/>
+        <UsageCount Value="10"/>
+      </Unit92>
+      <Unit93>
+        <CursorPos X="22" Y="51"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\drivers\linux\acs_audio.inc"/>
+        <TopLine Value="28"/>
+        <UsageCount Value="10"/>
+      </Unit93>
+      <Unit94>
+        <CursorPos X="1" Y="356"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\drivers\acs_alsaaudio.pas"/>
+        <TopLine Value="347"/>
+        <UnitName Value="acs_alsaaudio"/>
+        <UsageCount Value="11"/>
+      </Unit94>
+      <Unit95>
+        <CursorPos X="1" Y="702"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\classes\acs_classes.pas"/>
+        <TopLine Value="681"/>
+        <UnitName Value="acs_classes"/>
+        <UsageCount Value="11"/>
+      </Unit95>
+      <Unit96>
+        <CursorPos X="1" Y="75"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\drivers\acs_stdaudio.pas"/>
+        <TopLine Value="55"/>
+        <UnitName Value="acs_stdaudio"/>
+        <UsageCount Value="11"/>
+      </Unit96>
+      <Unit97>
+        <CursorPos X="1" Y="491"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\classes\acs_audio.pas"/>
+        <TopLine Value="473"/>
+        <UnitName Value="acs_audio"/>
+        <UsageCount Value="10"/>
+      </Unit97>
+      <Unit98>
+        <CursorPos X="1" Y="205"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\drivers\acs_aolive.pas"/>
+        <TopLine Value="177"/>
+        <UnitName Value="acs_aolive"/>
+        <UsageCount Value="10"/>
+      </Unit98>
+      <Unit99>
+        <CursorPos X="22" Y="47"/>
+        <Filename Value="\windows\D\LKomponenten\acs\Src\drivers\linux\libao.pas"/>
+        <TopLine Value="37"/>
+        <UnitName Value="libao"/>
+        <UsageCount Value="10"/>
+      </Unit99>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LAZ_ACS"/>
+      </Item2>
+    </RequiredPackages>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="umain.pas"/>
+        <Caret Line="151" Column="3" TopLine="150"/>
+      </Position1>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <DelphiCompat Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="D:\LKomponenten\acs\Src\fileformats\ACS_FLAC.pas"/>
+        <Line Value="576"/>
+      </Item1>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="newcolor"/>
+      </Item1>
+      <Item2>
+        <Expression Value="DrvName"/>
+      </Item2>
+    </Watches>
+  </Debugging>
+</CONFIG>

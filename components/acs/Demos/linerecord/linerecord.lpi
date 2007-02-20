@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <LazDoc Paths=""/>
+    <Units Count="17">
+      <Unit0>
+        <Filename Value="linerecord.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="linerecord"/>
+        <UsageCount Value="21"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="24" Y="71"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="umain.pas"/>
+        <ComponentName Value="Form1"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ResourceFilename Value="umain.lrs"/>
+        <TopLine Value="24"/>
+        <UnitName Value="umain"/>
+        <UsageCount Value="21"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="15" Y="129"/>
+        <Filename Value="D:/LKomponenten/acs/Src/classes/acs_file.pas"/>
+        <TopLine Value="129"/>
+        <UnitName Value="acs_file"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="3" Y="153"/>
+        <Filename Value="D:/LKomponenten/acs/Src/classes/acs_classes.pas"/>
+        <TopLine Value="134"/>
+        <UnitName Value="acs_classes"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="15" Y="169"/>
+        <Filename Value="D:/LKomponenten/acs/Src/classes/acs_mixer.pas"/>
+        <TopLine Value="153"/>
+        <UnitName Value="acs_mixer"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="3" Y="389"/>
+        <Filename Value="D:/LKomponenten/acs/Src/classes/windows/acs_mixer.inc"/>
+        <TopLine Value="372"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <CursorPos X="1" Y="2235"/>
+        <Filename Value="D:/lazarus/lcl/include/control.inc"/>
+        <TopLine Value="2219"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <CursorPos X="1" Y="645"/>
+        <Filename Value="D:/lazarus/lcl/EditBtn.pas"/>
+        <TopLine Value="629"/>
+        <UnitName Value="EditBtn"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <CursorPos X="1" Y="1379"/>
+        <Filename Value="D:/LKomponenten/acs/Src/fileformats/acs_wave.pas"/>
+        <TopLine Value="1363"/>
+        <UnitName Value="acs_wave"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <CursorPos X="27" Y="1335"/>
+        <Filename Value="D:/acs tmp/Src/Common/ACS_Wave.pas"/>
+        <TopLine Value="1326"/>
+        <UnitName Value="ACS_Wave"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <CursorPos X="1" Y="681"/>
+        <Filename Value="D:/LKomponenten/acs/Src/classes/acs_audio.pas"/>
+        <TopLine Value="665"/>
+        <UnitName Value="acs_audio"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <CursorPos X="28" Y="377"/>
+        <Filename Value="D:/LKomponenten/acs/Src/drivers/windows/ACS_Audio.inc"/>
+        <TopLine Value="361"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <CursorPos X="14" Y="125"/>
+        <Filename Value="D:/LKomponenten/acs/Src/drivers/ACS_StdAudio.pas"/>
+        <TopLine Value="109"/>
+        <UnitName Value="acs_stdaudio"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <CursorPos X="1" Y="391"/>
+        <Filename Value="D:/LKomponenten/acs/Src/drivers/ACS_DXAudio.pas"/>
+        <TopLine Value="375"/>
+        <UnitName Value="acs_dxaudio"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <CursorPos X="1" Y="2456"/>
+        <Filename Value="D:/fpc/packages/extra/winunits/mmsystem.pp"/>
+        <TopLine Value="2440"/>
+        <UnitName Value="mmsystem"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <CursorPos X="18" Y="205"/>
+        <EditorIndex Value="2"/>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/acs_mixer.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="197"/>
+        <UnitName Value="acs_mixer"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <CursorPos X="18" Y="99"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Loaded Value="True"/>
+        <TopLine Value="152"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <Display Use="True" Value=":1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="laz_acs"/>
+      </Item2>
+    </RequiredPackages>
+    <JumpHistory Count="12" HistoryIndex="11">
+      <Position1>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="163" Column="1" TopLine="136"/>
+      </Position1>
+      <Position2>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="164" Column="1" TopLine="137"/>
+      </Position2>
+      <Position3>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="163" Column="1" TopLine="136"/>
+      </Position3>
+      <Position4>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="164" Column="1" TopLine="137"/>
+      </Position4>
+      <Position5>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="163" Column="1" TopLine="136"/>
+      </Position5>
+      <Position6>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="164" Column="1" TopLine="137"/>
+      </Position6>
+      <Position7>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="163" Column="1" TopLine="136"/>
+      </Position7>
+      <Position8>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="164" Column="1" TopLine="137"/>
+      </Position8>
+      <Position9>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="163" Column="1" TopLine="136"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/linux/acs_mixer.inc"/>
+        <Caret Line="166" Column="1" TopLine="139"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/acs_mixer.pas"/>
+        <Caret Line="250" Column="3" TopLine="200"/>
+      </Position11>
+      <Position12>
+        <Filename Value="/windows/C/src/LKomponenten/acs/Src/classes/acs_mixer.pas"/>
+        <Caret Line="249" Column="40" TopLine="201"/>
+      </Position12>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <SearchPaths>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="3">
+      <Item1>
+        <Source Value="D:/LKomponenten/acs/Demos/Ripper/umain.pas"/>
+        <Line Value="68"/>
+      </Item1>
+      <Item2>
+        <Source Value="D:/LKomponenten/acs/Src/fileformats/acs_wave.pas"/>
+        <Line Value="1379"/>
+      </Item2>
+      <Item3>
+        <Source Value="D:/LKomponenten/acs/Src/drivers/windows/ACS_Audio.inc"/>
+        <Line Value="341"/>
+      </Item3>
+    </BreakPoints>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="newfilename"/>
+      </Item1>
+    </Watches>
+  </Debugging>
+</CONFIG>
