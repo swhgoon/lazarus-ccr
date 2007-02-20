@@ -953,6 +953,7 @@ type
     FFont: TFont;
     FParentFont: Boolean;
     FOptions: TVTHeaderOptions;
+    FTrackPos: Integer;                // Left/right border of this column to quickly calculate its width on resize.
     FStates: THeaderStates;            // used to keep track of internal states the header can enter
     FLeftTrackPos: Integer;            // left border of this column to quickly calculate its width on resize
     FStyle: TVTHeaderStyle;            // button style
@@ -1008,7 +1009,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure AutoFitColumns(Animated: Boolean = True);
     function InHeader(P: TPoint): Boolean; virtual;
-    procedure Invalidate(Column: TVirtualTreeColumn; ExpandToRight: Boolean = False);
+    procedure Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
     procedure LoadFromStream(const Stream: TStream); virtual;
     procedure RestoreColumns;
     procedure SaveToStream(const Stream: TStream); virtual;
@@ -1576,6 +1577,7 @@ type
                                                  // drop target
     FOffsetX,
     FOffsetY: Integer;                           // determines left and top scroll offset
+    FEffectiveOffsetX: Integer;                  // Actual position of the horizontal scroll bar (varies depending on bidi mode).
     FRangeX,
     FRangeY: Cardinal;                           // current virtual width and height of the tree
 
@@ -3710,29 +3712,36 @@ const
   Grays: array[0..3] of TColor = (clWhite, clSilver, clGray, clBlack);
   SysGrays: array[0..3] of TColor = (clWindow, clBtnFace, clBtnShadow, clBtnText);
 
-procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemapping: Boolean = True); 
+procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemapping: Boolean = True);
 
 // Loads a bunch of images given by ImageName into IL. If ColorRemapping = True then a mapping of gray values to
 // system colors is performed.
 
 var
   Images,
-  OneImage: TBitmap;
+  OneImage,
+  AnotherImage: TBitmap;
   I: Integer;
   MaskColor: TColor;
   Source,
   Dest: TRect;
-
+  //Small (???) hack while a solution does not come
+  Stream: TMemoryStream;
 begin
   Watcher.Enter;
   try
     // Since we want the image list appearing in the correct system colors, we have to remap its colors.
     Images := TBitmap.Create;
-    OneImage := TBitmap.Create;
-//todo    if ColorRemapping then
-//      Images.Handle := CreateMappedRes(FindClassHInstance(TBaseVirtualTree), PChar(ImageName), Grays, SysGrays)
-//    else
-//      Images.Handle := LoadBitmap(FindClassHInstance(TBaseVirtualTree), PChar(ImageName));
+    //OneImage := TBitmap.Create;
+    //todo: remove this ugly hack ASAP
+    Stream:=TMemoryStream.Create;
+    //todo: see what CreateMappedRes do and replace it
+    {
+    if ColorRemapping then
+      Images.Handle := CreateMappedRes(FindClassHInstance(TBaseVirtualTree), PChar(ImageName), Grays, SysGrays)
+    else
+      Images.Handle := LoadBitmap(FindClassHInstance(TBaseVirtualTree), PChar(ImageName));
+    }
     Images.LoadFromLazarusResource(ImageName);
     try
       Assert(Images.Height > 0, 'Internal image "' + ImageName + '" is missing or corrupt.');
@@ -3741,20 +3750,31 @@ begin
       IL.Clear;
       IL.Height := Images.Height;
       IL.Width := Images.Height;
-      OneImage.Width := IL.Width;
-      OneImage.Height := IL.Height;
-      MaskColor := clFuchsia;
-//later: bug in gtk    MaskColor := Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
+      //OneImage.Width := IL.Width;
+      //OneImage.Height := IL.Height;
+
+      MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
       Dest := Rect(0, 0, IL.Width, IL.Height);
-       for I := 0 to (Images.Width div Images.Height) - 1 do
+      for I := 0 to (Images.Width div Images.Height) - 1 do
       begin
         Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
+        OneImage:= TBitmap.Create;
+        OneImage.Width:=IL.Height;
+        OneImage.Height:=IL.Width;
         OneImage.Canvas.CopyRect(Dest, Images.Canvas, Source);
-        IL.AddMasked(OneImage, MaskColor);
+        //somehow SaveToStream - LoadFromStream restores the tranparency lost in CopyRect
+        OneImage.SaveToStream(Stream);
+        OneImage.Free;
+        AnotherImage:=TBitmap.Create;
+        Stream.Position:=0;
+        AnotherImage.LoadFromStream(Stream);
+        Stream.Size:=0;
+        IL.AddDirect(AnotherImage, nil);
       end;
     finally
       Images.Free;
-      OneImage.Free;
+      //OneImage.Free;
+      Stream.Free;
     end;
   finally
     Watcher.Leave;
@@ -3771,7 +3791,7 @@ procedure CreateSystemImageSet(var IL: TImageList; Flags: Cardinal; Flat: Boolea
 
 // Creates a system check image set.
 // Note: the DarkCheckImages and FlatImages image lists must already be filled, as some images from them are copied here.
-(*
+
 const
   MaskColor: TColor = clRed;
 
@@ -3799,7 +3819,8 @@ var
         FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
       else
         DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
-      IL.AddMasked(BM, MaskColor);
+      //IL.AddMasked(BM, MaskColor);
+      IL.AddCopy(BM,nil);
     end;
   end;
 
@@ -3835,32 +3856,26 @@ var
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-//todo    DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
-
-    IL.AddMasked(BM, MaskColor);
+    //todo: remap to LCLIntf
+//    DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
+    IL.AddCopy(BM,nil);
+    //IL.AddMasked(BM, MaskColor);
   end;
 
   //--------------- end local functions ---------------------------------------
 
 var
-  I, Width, Height: Integer;*)
+  I, Width, Height: Integer;
 
 begin
-  // don't use system image set, since not very system has this.
-  if Flat then
-    IL := FlatImages
-  else
-    IL := DarkCheckImages;
-
-(*  Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
+  Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
   IL := TImageList.CreateSize(Width, Height);
-
-//  with IL do
-//    Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
-
+  //with IL do
+  //  Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
   IL.Masked := True;
-//todo  IL.BkColor := clWhite; // imglist BKColor, compliers says not member
+  //todo: see why compiler complain here
+  //IL.BkColor := clWhite;
 
   // Create a temporary bitmap, which holds the intermediate images.
   BM := TBitmap.Create;
@@ -3871,8 +3886,9 @@ begin
     BM.Canvas.Brush.Color := MaskColor;
     BM.Canvas.Brush.Style := bsSolid;
     BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-    IL.AddMasked(BM, MaskColor);
-    
+    //IL.AddMasked(BM, MaskColor);
+    IL.AddCopy(BM,nil);
+
     // Add the 20 system checkbox and radiobutton images.
     for I := 0 to 19 do
       AddSystemImage(IL, I);
@@ -3880,8 +3896,10 @@ begin
     AddNodeImages(IL);
 
   finally
-    BM.Free;
-  end;*)
+    //todo: change to except??
+    //lcl free the bitmap in IL
+    //BM.Free;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -3974,16 +3992,10 @@ begin
 //  IsWin2K := (Win32MajorVersion = 5) and (Win32MinorVersion = 0);
 //  IsWinXP := (Win32MajorVersion = 5) and (Win32MinorVersion = 1);
 
-  // Initialize OLE subsystem for drag'n drop and clipboard operations.
-//x  NeedToUnitialize := Succeeded(OleInitialize(nil));
-
-  // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
-// todo  CF_VTREFERENCE := RegisterClipboardFormat(CFSTR_VTREFERENCE);
-
   // Load all internal image lists and convert their colors to current desktop color scheme.
   // In order to use high color images we have to create the image list handle ourselves.
 
-{  LightCheckImages := TImageList.CreateSize(16, 16);
+  LightCheckImages := TImageList.CreateSize(16, 16);
   ConvertImageList(LightCheckImages, 'VT_CHECK_LIGHT');
 
   DarkCheckImages := TImageList.CreateSize(16, 16);
@@ -4006,7 +4018,7 @@ begin
 
   CreateSystemImageSet(SystemCheckImages, Flags, False);
   CreateSystemImageSet(SystemFlatCheckImages, Flags, True);
-  }
+
 
 //mm  // Specify an useful timer resolution for timeGetTime.
 //mm  timeBeginPeriod(MinimumTimerInterval);
@@ -4040,7 +4052,7 @@ var
 begin
 //mm  timeEndPeriod(MinimumTimerInterval);
 
-{  LightCheckImages.Free;
+  LightCheckImages.Free;
   DarkCheckImages.Free;
   LightTickImages.Free;
   DarkTickImages.Free;
@@ -4048,10 +4060,7 @@ begin
   XPImages.Free;
   UtilityImages.Free;
   SystemCheckImages.Free;
-  SystemFlatCheckImages.Free;}
-
-//x  if NeedToUnitialize then
-//x    OleUninitialize;
+  SystemFlatCheckImages.Free;
 
   // If VT is used in a package and its special hint window was used then the last instance of this
   // window is not freed correctly (bug in the VCL). We explicitely tell the application to free it
@@ -5935,6 +5944,8 @@ function TVirtualTreeColumn.GetLeft: Integer;
 
 begin
   Result := FLeft + Owner.Header.Treeview.FOffsetX;
+  if [coVisible, coFixed] * FOptions <> [coVisible, coFixed] then
+    Dec(Result, Owner.Header.Treeview.FEffectiveOffsetX);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7262,10 +7273,14 @@ var
 
 begin
   Result := InvalidColumn;
-  if Relative then
-    ColumnLeft := FHeader.Treeview.FOffsetX
+  if Relative and (P.X > Header.Columns.GetVisibleFixedWidth) then
+    ColumnLeft := -FHeader.Treeview.FEffectiveOffsetX
   else
     ColumnLeft := 0;
+
+//  if FHeader.Treeview.UseRightToLeftAlignment then
+//    Inc(ColumnLeft, FHeader.Treeview.ComputeRTLOffset(True));
+
   for I := 0 to Count - 1 do
     with Items[FPositionToIndex[I]] do
       if coVisible in FOptions then
@@ -7621,24 +7636,30 @@ var
 
 begin
   Result := InvalidColumn;
+
   // The position must be within the header area, but we extend the vertical bounds to the entire treeview area.
-  if (P.X >= 0) and (P.Y >= 0) and (P.Y <= Integer(FHeader.TreeView.Height)) then
-  begin
-    if Relative then
-      Sum := FHeader.Treeview.FOffsetX
-    else
-      Sum := 0;
-    for I := 0 to Count - 1 do
-      if coVisible in Items[FPositionToIndex[I]].FOptions then
-      begin
-        Inc(Sum, Items[FPositionToIndex[I]].Width);
-        if P.X < Sum then
+  if (P.X >= 0) and (P.Y >= 0) and (P.Y <= FHeader.TreeView.Height) then
+    with FHeader, Treeview do
+    begin
+      if Relative and (P.X > GetVisibleFixedWidth) then
+        Sum := -FEffectiveOffsetX
+      else
+        Sum := 0;
+
+//      if UseRightToLeftAlignment then
+//        Inc(Sum, ComputeRTLOffset(True));
+
+      for I := 0 to Count - 1 do
+        if coVisible in Items[FPositionToIndex[I]].FOptions then
         begin
-          Result := FPositionToIndex[I];
-          Break;
+          Inc(Sum, Items[FPositionToIndex[I]].Width);
+          if P.X < Sum then
+          begin
+            Result := FPositionToIndex[I];
+            Break;
+          end;
         end;
-      end;
-  end;
+    end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -8538,8 +8559,9 @@ function TVTHeader.DetermineSplitterIndex(P: TPoint): Boolean;
 
 // Tries to find the index of that column whose right border corresponds to P.
 // Result is True if column border was hit (with -3..+5 pixels tolerance).
-// For continuous resizing the current track index and the column's left border are set.
-// Note: The hit test is checking from right to left to make enlarging of zero-sized columns possible.
+// For continuous resizing the current track index and the column's left/right border are set.
+// Note: The hit test is checking from right to left (or left to right in RTL mode) to make enlarging of zero-sized
+//       columns possible.
 
 var
   I,
@@ -8551,24 +8573,56 @@ begin
 
   if FColumns.Count > 0 then
   begin
-    SplitPoint := Treeview.FOffsetX + Integer(Treeview.FRangeX);
+{    if Treeview.UseRightToLeftAlignment then
+    begin
+      SplitPoint := -Treeview.FEffectiveOffsetX;
+      if Integer(Treeview.FRangeX) < Treeview.ClientWidth then
+        Inc(SplitPoint, Treeview.ClientWidth - Integer(Treeview.FRangeX));
 
-    for I := FColumns.Count - 1 downto 0 do
-      with FColumns, Items[FPositionToIndex[I]] do
-        if coVisible in FOptions then
-        begin
-          if (P.X < SplitPoint + 5) and (P.X > SplitPoint - 3) then
+      for I := 0 to FColumns.Count - 1 do
+        with FColumns, Items[FPositionToIndex[I]] do
+          if coVisible in FOptions then
           begin
-            if coResizable in FOptions then
+            if (P.X < SplitPoint + 3) and (P.X > SplitPoint - 5) then
             begin
-              Result := True;
-              FTrackIndex := FPositionToIndex[I];
-              FLeftTrackPos := SplitPoint - FWidth;
+              if coResizable in FOptions then
+              begin
+                Result := True;
+                FTrackIndex := FPositionToIndex[I];
+
+                // Keep the right border of this column. This and the current mouse position
+                // directly determine the current column width.
+                FTrackPos := SplitPoint + FWidth;
+              end;
+              Break;
             end;
-            Break;
+            Inc(SplitPoint, FWidth);
           end;
-          Dec(SplitPoint, FWidth);
-        end;
+    end
+    else}
+    begin
+      SplitPoint := -Treeview.FEffectiveOffsetX + Integer(Treeview.FRangeX);
+
+      for I := FColumns.Count - 1 downto 0 do
+        with FColumns, Items[FPositionToIndex[I]] do
+          if coVisible in FOptions then
+          begin
+            if (P.X < SplitPoint + 5) and (P.X > SplitPoint - 3) then
+            begin
+              if coResizable in FOptions then
+              begin
+                Result := True;
+                FTrackIndex := FPositionToIndex[I];
+
+                // Keep the left border of this column. This and the current mouse position
+                // directly determine the current column width.
+                FTrackPos := SplitPoint - FWidth;
+              end;
+              Break;
+            end;
+            Dec(SplitPoint, FWidth);
+          end;
+    end;
   end;
 end;
 
@@ -9290,38 +9344,48 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTHeader.Invalidate(Column: TVirtualTreeColumn; ExpandToRight: Boolean = False);
+procedure TVTHeader.Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
 
 // Because the header is in the non-client area of the tree it needs some special handling in order to initiate its
 // repainting.
-// If ExpandToRight is True then not only the given column but everything to its right will be invalidated (useful for
-// resizing). This makes only sense when a column is given.
+// If ExpandToBorder is True then not only the given column but everything to its right (or left, in RTL mode) will be
+// invalidated (useful for resizing). This makes only sense when a column is given.
 
 var
   R, RW: TRect;
 
 begin
   if (hoVisible in FOptions) and Treeview.HandleAllocated then
-  begin
-    if Column = nil then
-      R := Treeview.FHeaderRect
-    else
+    with Treeview do
     begin
-      R := Column.GetRect;
-      OffsetRect(R, Treeview.FOffsetX, 0);
-      if ExpandToRight then
-        R.Right := Treeview.FHeaderRect.Right;
-    end;
+      if Column = nil then
+        R := FHeaderRect
+      else
+      begin
+        R := Column.GetRect;
+        if not (coFixed in Column.Options) then
+          OffsetRect(R, -FEffectiveOffsetX, 0);
+//        if UseRightToLeftAlignment then
+//          OffsetRect(R, ComputeRTLOffset, 0);
+        if ExpandToBorder then
+{          if UseRightToLeftAlignment then
+            R.Left := FHeaderRect.Left
+          else}
+            R.Right := FHeaderRect.Right;
+      end;
 
-    // Current position of the owner in screen coordinates.
-    GetWindowRect(Treeview.Handle, RW);
-    // Consider the header within this rectangle.
-    OffsetRect(R, RW.Left, RW.Top);
-    // Expressed in client coordinates (because RedrawWindow wants them so, they will actually become negative).
-    MapWindowPoints(0, Treeview.Handle, R, 2);
-//todo    RedrawWindow(Treeview.Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
-//todo      RDW_NOERASE or RDW_NOCHILDREN);
-  end;
+      // Current position of the owner in screen coordinates.
+      GetWindowRect(Handle, RW);
+
+      // Consider the header within this rectangle.
+      OffsetRect(R, RW.Left, RW.Top);
+
+      // Expressed in client coordinates (because RedrawWindow wants them so, they will actually become negative).
+      MapWindowPoints(0, Handle, R, 2);
+//      RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
+//        RDW_NOERASE or RDW_NOCHILDREN);
+      Invalidate;
+    end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -10515,7 +10579,7 @@ end;
 procedure TBaseVirtualTree.ClearNodeBackground(const PaintInfo: TVTPaintInfo; UseBackground, xFloating: Boolean;
   R: TRect);
 
-// Erases a nodes background depending on what the application decides to do.
+// Erases a node's background depending on what the application decides to do.
 // UseBackground determines whether or not to use the background picture, while Floating indicates
 // that R is given in coordinates of the small node bitmap or the superordinated target bitmap used in PaintTree.
 
@@ -10529,38 +10593,40 @@ begin
   begin
     EraseAction := eaDefault;
     BackColor := Color;
-    DoBeforeItemErase(Canvas, Node, R, Backcolor, EraseAction);
     if xFloating then
     begin
-      Offset := Point(FOffsetX, R.Top);
+      Offset := Point(-FEffectiveOffsetX, R.Top);
       OffsetRect(R, 0, -Offset.Y);
     end
     else
       Offset := Point(0, 0);
 
+    DoBeforeItemErase(Canvas, Node, R, Backcolor, EraseAction);
+
     with Canvas do
     begin
       case EraseAction of
         eaNone:
-          DoAfterItemErase(Canvas, Node, R);
+          ;
         eaColor:
           begin
             // User has given a new background color.
             Brush.Color := BackColor;
             FillRect(R);
-            DoAfterItemErase(Canvas, Node, R);
           end;
       else // eaDefault
         if UseBackground then
-          TileBackground(FBackground.Bitmap, Canvas, Offset, R)
+        begin
+          TileBackground(FBackground.Bitmap, Canvas, Offset, R);
+        end
         else
         begin
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
-            (vsSelected in Node^.States) then
+            (vsSelected in Node^.States) and not (toUseBlendedSelection in FOptions.PaintOptions) then
           begin
             if toShowHorzGridLines in FOptions.PaintOptions then
               Dec(R.Bottom);
-            if Focused or (toPopupMode in FOptions.FPaintOptions)then
+            if Focused or (toPopupMode in FOptions.FPaintOptions) then
             begin
               Brush.Color := FColors.FocusedSelectionColor;
               Pen.Color := FColors.FocusedSelectionBorderColor;
@@ -10570,6 +10636,7 @@ begin
               Brush.Color := FColors.UnfocusedSelectionColor;
               Pen.Color := FColors.UnfocusedSelectionBorderColor;
             end;
+
             with R do
               RoundRect(Left, Top, Right, Bottom, FSelectionCurveRadius, FSelectionCurveRadius);
           end
@@ -10579,8 +10646,8 @@ begin
             FillRect(R);
           end;
         end;
-        DoAfterItemErase(Canvas, Node, R);
       end;
+      DoAfterItemErase(Canvas, Node, R);
     end;
   end;
 end;
@@ -11091,7 +11158,7 @@ begin
     begin
       // The mouse coordinates don't include any horizontal scrolling hence take this also
       // out from the returned column position.
-      NodeLeft := FHeader.FColumns[MainColumn].Left - FOffsetX;
+      NodeLeft := FHeader.FColumns[MainColumn].Left - FEffectiveOffsetX;
       NodeRight := NodeLeft + FHeader.FColumns[MainColumn].Width;
     end
     else
@@ -14531,7 +14598,7 @@ DC := Canvas.Handle;
     if hoVisible in FHeader.FOptions then
     begin
       R := FHeaderRect;
-      FHeader.FColumns.PaintHeader(DC, R, FOffsetX);
+      FHeader.FColumns.PaintHeader(DC, R, -FEffectiveOffsetX);
     end;
     OriginalWMNCPaint(DC);
     ReleaseDC(Handle, DC);
@@ -14581,7 +14648,7 @@ procedure TBaseVirtualTree.WMPrint(var Message: TWMPrint);
 begin
   // Draw only if the window is visible or visibility is not required.
   if ((Message.Flags and PRF_CHECKVISIBLE) = 0) or IsWindowVisible(Handle) then
-    Header.Columns.PaintHeader(Message.DC, FHeaderRect, FOffsetX);
+    Header.Columns.PaintHeader(Message.DC, FHeaderRect, FEffectiveOffsetX);
 
   inherited;
 end;
@@ -14605,7 +14672,7 @@ begin
 
     // The Window rectangle is given in client coordinates. We have to convert it into
     // a sliding window of the tree image.
-    OffsetRect(Window, -FOffsetX, -FOffsetY);
+    OffsetRect(Window, -FEffectiveOffsetX, -FOffsetY);
 
     Canvas := TCanvas.Create;
     try
@@ -15189,7 +15256,7 @@ var
 begin
   if tsDrawSelecting in FStates then
     FLastSelRect := FNewSelRect;
-  FNewSelRect.BottomRight := Point(X - FOffsetX, Y - FOffsetY);
+  FNewSelRect.BottomRight := Point(X - FEffectiveOffsetX, Y - FOffsetY);
   if FNewSelRect.Right < 0 then
     FNewSelRect.Right := 0;
   if FNewSelRect.Bottom < 0 then
@@ -15883,9 +15950,9 @@ begin
     end
     else
     begin
-      if (X < Integer(FDefaultNodeHeight)) and (FOffsetX <> 0) then
+      if (X < Integer(FDefaultNodeHeight)) and (FEffectiveOffsetX <> 0) then
         Include(Result, sdLeft);
-      if (ClientWidth - FOffsetX < Integer(FRangeX)) and (X > ClientWidth - Integer(FDefaultNodeHeight)) then
+      if (ClientWidth - FEffectiveOffsetX < Integer(FRangeX)) and (X > ClientWidth - Integer(FDefaultNodeHeight)) then
         Include(Result, sdRight);
 
       if (Y < Integer(FDefaultNodeHeight)) and (FOffsetY <> 0) then
@@ -16960,7 +17027,7 @@ begin
           DeltaX := FScrollBarOptions.FIncrementX
         else
           DeltaX := FScrollBarOptions.FIncrementX * Abs(R.Left - P.X);
-      if FOffsetX = 0 then
+      if FEffectiveOffsetX = 0 then
         Exclude(FScrollDirections, sdleft);
     end;
 
@@ -16974,7 +17041,7 @@ begin
         else
           DeltaX := -FScrollBarOptions.FIncrementX * Abs(P.X - R.Right);
 
-      if (ClientWidth - FOffsetX) = Integer(FRangeX) then
+      if (ClientWidth - FEffectiveOffsetX) = Integer(FRangeX) then
         Exclude(FScrollDirections, sdRight);
     end;
 
@@ -18056,7 +18123,7 @@ begin
       SetCapture(Handle); 
       DoStateChange([tsDrawSelPending]);
       FDrawSelShiftState := ShiftState;
-      FNewSelRect := Rect(Message.XPos - FOffsetX, Message.YPos - FOffsetY, Message.XPos - FOffsetX,
+      FNewSelRect := Rect(Message.XPos - FEffectiveOffsetX, Message.YPos - FOffsetY, Message.XPos - FEffectiveOffsetX,
         Message.YPos - FOffsetY);
       FLastSelRect := Rect(0, 0, 0, 0);
       if not IsCellHit then
@@ -18904,7 +18971,7 @@ begin
           else
           begin
             UnionRect(R, OrderRect(FNewSelRect), OrderRect(FLastSelRect));
-            OffsetRect(R, FOffsetX, FOffsetY);
+            OffsetRect(R, FEffectiveOffsetX, FOffsetY);
             InvalidateRect(Handle, @R, False);
           end;
           UpdateWindow(Handle);
@@ -19054,7 +19121,7 @@ begin
     end;
     // The clipping rectangle is given in client coordinates of the window. We have to convert it into
     // a sliding window of the tree image.
-      OffsetRect(Window, -FOffsetX, -FOffsetY);
+      OffsetRect(Window, -FEffectiveOffsetX, -FOffsetY);
      PaintTree(Canvas, Window, Target, [poBackground, poColumnColor, poDrawFocusRect, poDrawDropMark, poDrawSelection,
      poGridLines]);
   end;
@@ -21013,7 +21080,7 @@ begin
     Inc(FUpdateCount);
     try
       InterruptValidation;
-      LastLeft := FOffsetX;
+      LastLeft := -FEffectiveOffsetX;
       LastTop := FOffsetY;
 
       // Make a local copy of the visibility state of this node to speed up
@@ -21104,7 +21171,7 @@ begin
         StructureChange(LastParent, crChildDeleted);
     end;
 
-    LastLeft := FOffsetX;
+    LastLeft := -FEffectiveOffsetX;
     LastTop := FOffsetY;
 
     if vsSelected in Node^.States then
@@ -21568,7 +21635,7 @@ begin
     OffsetRect(Result, 0, FOffsetY);
   end
   else
-    OffsetRect(Result, FOffsetX, FOffsetY);
+    OffsetRect(Result, -FEffectiveOffsetX, FOffsetY);
 
   // Limit left and right bounds further if only the text area is required.
   if TextOnly then
@@ -21908,7 +21975,8 @@ begin
   // Convert position into absolute coordinate if necessary.
   if Relative then
   begin
-    Inc(X, -FOffsetX);
+    if X > Header.Columns.GetVisibleFixedWidth then
+      Inc(X, FEffectiveOffsetX);
     Inc(Y, -FOffsetY);
   end;
   if hoVisible in FHeader.FOptions then
@@ -24363,8 +24431,7 @@ begin
         PaintSelectionRectangle(NodeBitmap.Canvas, 0, R, TargetRect);
       end;
       with Target, NodeBitmap do
-        TargetCanvas.Draw(X,Y,NodeBitmap);
-//        BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
+        BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
     end;
   finally
     NodeBitmap.Canvas.Unlock;
@@ -24844,11 +24911,11 @@ function TBaseVirtualTree.ScrollIntoView(Node: PVirtualNode; Center: Boolean; Ho
 // Note: All collapsed parents of the node are expanded.
 
 var
-  MidPoint: Integer;
   R: TRect;
   Run: PVirtualNode;
   UseColumns,
   HScrollBarVisible: Boolean;
+  NewOffset: Integer;
 
 begin
   Result := False;
@@ -24898,12 +24965,28 @@ begin
     if Horizontally then
     begin
       // 2) scroll horizontally
-      if (R.Right > ClientWidth) or (R.Left < 0) then
+      if Header.Columns.GetVisibleFixedWidth > 0 then
       begin
-        MidPoint := -FOffsetX + (R.Left + R.Right) div 2;
-        SetOffsetX((ClientWidth div 2) - MidPoint);
-        Result := True;
-      end;
+        if (Abs(R.Left - Header.Columns.GetVisibleFixedWidth) > 1) then
+        begin
+          NewOffset := FEffectiveOffsetX - (R.Left - Header.Columns.GetVisibleFixedWidth);
+{          if UseRightToLeftAlignment then
+            SetOffsetX(-Integer(FRangeX) + ClientWidth + NewOffset)
+          else}
+            SetOffsetX(-NewOffset);
+          Result := True;
+        end;
+      end
+      else
+        if (R.Right > ClientWidth) or (R.Left < 0) then
+        begin
+          NewOffset := FEffectiveOffsetX + ((R.Left + R.Right) div 2) - (ClientWidth div 2);
+{          if UseRightToLeftAlignment then
+            SetOffsetX(-Integer(FRangeX) + ClientWidth + NewOffset)
+          else}
+            SetOffsetX(-NewOffset);
+          Result := True;
+        end;
     end;
   end;
 end;
@@ -25402,6 +25485,12 @@ begin
   else
     FRangeX := GetMaxRightExtend;
 
+  // Adjust effect scroll offset depending on bidi mode.
+{  if UseRightToLeftAlignment then
+    FEffectiveOffsetX := Integer(FRangeX) - ClientWidth + FOffsetX
+  else}
+    FEffectiveOffsetX := -FOffsetX;
+
   if FScrollBarOptions.ScrollBars in [ssHorizontal, ssBoth] then
   begin
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
@@ -25415,15 +25504,11 @@ begin
 
     if (Integer(FRangeX) > ClientWidth) or FScrollBarOptions.AlwaysVisible then
     begin
-      {$ifdef UseFlatScrollbars}
-        FlatSB_ShowScrollBar(Handle, SB_HORZ, True);
-      {$else}
-        ShowScrollBar(Handle, SB_HORZ, True);
-      {$endif UseFlatScrollbars}
-      
+      ShowScrollBar(Handle,SB_HORZ, True);
+
       ScrollInfo.nMin := 0;
       ScrollInfo.nMax := FRangeX;
-      ScrollInfo.nPos := -FOffsetX;
+      ScrollInfo.nPos := FEffectiveOffsetX;
       ScrollInfo.nPage := Max(0, ClientWidth + 1);
 
       ScrollInfo.fMask := SIF_ALL or ScrollMasks[FScrollBarOptions.AlwaysVisible];
@@ -25439,30 +25524,30 @@ begin
       ScrollInfo.nMax := 0;
       ScrollInfo.nPos := 0;
       ScrollInfo.nPage := 0;
+      ShowScrollBar(Handle,SB_HORZ, False);
       {$ifdef UseFlatScrollbars}
-        FlatSB_ShowScrollBar(Handle, SB_HORZ, False);
         FlatSB_SetScrollInfo(Handle, SB_HORZ, ScrollInfo, False);
       {$else}
-        ShowScrollBar(Handle, SB_HORZ, False);
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, False);
       {$endif UseFlatScrollbars}
     end;
-      
+
     // Since the position is automatically changed if it doesn't meet the range
     // we better read the current position back to stay synchronized.
     {$ifdef UseFlatScrollbars}
-      SetOffsetX(-FlatSB_GetScrollPos(Handle, SB_HORZ));
+      FScrollOffsetX := FlatSB_GetScrollPos(Handle, SB_HORZ);
     {$else}
-      SetOffsetX(-GetScrollPos(Handle, SB_HORZ));
+      //todo: Use get scrollinfo instead of GetScrollPos??
+      FEffectiveOffsetX := GetScrollPos(Handle, SB_HORZ);
     {$endif UseFlatScrollbars}
+{    if UseRightToLeftAlignment then
+      SetOffsetX(-Integer(FRangeX) + ClientWidth + FEffectiveOffsetX)
+    else}
+      SetOffsetX(-FEffectiveOffsetX);
   end
   else
   begin
-    {$ifdef UseFlatScrollbars}
-      FlatSB_ShowScrollBar(Handle, SB_HORZ, False);
-    {$else}
-      ShowScrollBar(Handle, SB_HORZ, False);
-    {$endif UseFlatScrollbars}
+    ShowScrollBar(Handle,SB_HORZ, False);
 
     // Reset the current horizontal offset to account for window resize etc.
     SetOffsetX(FOffsetX);
