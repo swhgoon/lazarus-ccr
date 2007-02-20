@@ -1,0 +1,50 @@
+package ACS;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Audio Components Suite v 2.4'}
+{$IMPLICITBUILD OFF}
+
+contains
+  ACS_Types in '..\classes\ACS_Types.pas',
+  ACS_Audio in '..\classes\ACS_Audio.pas',
+  ACS_AudioMix in '..\classes\ACS_AudioMix.pas',
+  ACS_CDROM in '..\classes\ACS_CDROM.pas',
+  ACS_Classes in '..\classes\ACS_Classes.pas',
+  ACS_Converters in '..\classes\ACS_Converters.pas',
+  ACS_File in '..\classes\ACS_File.pas',
+  ACS_Filters in '..\classes\ACS_Filters.pas',
+  ACS_Indicator in '..\classes\ACS_Indicator.pas',
+  ACS_Misc in '..\classes\ACS_Misc.pas',
+  ACS_Mixer in '..\classes\ACS_Mixer.pas',
+  ACS_MultiMix in '..\classes\ACS_MultiMix.pas',
+  ACS_Procs in '..\classes\ACS_Procs.pas',
+  ACS_Streams in '..\classes\ACS_Streams.pas',
+  ACS_Strings in '..\classes\ACS_Strings.pas',
+  akrip32 in '..\classes\windows\akrip32.pas',
+  acs_reg in 'acs_reg.pas',
+  ACS_AllFormats in '..\fileformats\ACS_Allformats.pas',
+  ACS_StdAudio in '..\drivers\ACS_StdAudio.pas',
+  ACS_DXAudio in '..\drivers\ACS_DXAudio.pas';
+
+end.
