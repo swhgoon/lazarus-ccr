@@ -1117,7 +1117,7 @@ end;
 
 function TRTFView.GetCredits: string;
 begin
-  result := 'TRTFView based on TRichView v0.5.1 (www.TCustomRichView.com)'
+  result := 'TRTFView based on '+ inherited GetCredits;
 end;
 
 constructor TRTFView.Create(AOwner: TComponent);

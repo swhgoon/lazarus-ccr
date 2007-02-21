@@ -20,7 +20,7 @@
 "/>
     <License Value="Lazarus LCL license (Modified LGPL, see rtfview.pas)
 "/>
-    <Version Minor="5" Release="1"/>
+    <Version Minor="5" Release="3"/>
     <Files Count="1">
       <Item1>
         <Filename Value="rtfview.pas"/>
@@ -32,7 +32,7 @@
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="lazrichview"/>
-        <MinVersion Minor="5" Release="2" Build="2" Valid="True"/>
+        <MinVersion Minor="5" Release="3" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
