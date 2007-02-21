@@ -13,6 +13,7 @@ uses
 type
   { TRVScroller }
 
+
   TRVScroller = class(TCustomControl)
   private
     FTracking: Boolean;
@@ -38,15 +39,7 @@ type
     procedure ScrollChildren(dx, dy: Integer);
     procedure UpdateChildren;
     property FullRedraw: Boolean read FFullRedraw write FFullRedraw;
-  public
-    { Public declarations }
-    constructor Create(AOwner: TComponent);override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure ScrollTo(y: Integer);
-    property VScrollPos: Integer read GetVScrollPos write SetVScrollPos;
-    property VScrollMax: Integer read GetVScrollMax;
-  published
-    { Published declarations }
+  protected // to be publised properties
     property Visible;
     property TabStop;
     property TabOrder;
@@ -55,6 +48,13 @@ type
     property Tracking: Boolean read FTracking write FTracking;
     property VScrollVisible: Boolean read FVScrollVisible write SetVScrollVisible;
     property OnVScrolled: TNotifyEvent read FOnVScrolled write FOnVScrolled;
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent);override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure ScrollTo(y: Integer);
+    property VScrollPos: Integer read GetVScrollPos write SetVScrollPos;
+    property VScrollMax: Integer read GetVScrollMax;
   end;
 
 procedure Tag2Y(AControl: TControl);

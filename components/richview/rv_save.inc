@@ -108,7 +108,7 @@ begin
   CloseFontTag := s;
 end;
 {------------------------------------------------------------}
-function TRichView.GetNextFileName(Path: String): String;
+function TCustomRichView.GetNextFileName(Path: String): String;
 var fn: String;
 begin
   while True do begin
@@ -121,7 +121,7 @@ begin
   end;
 end;
 {------------------------------------------------------------}
-function TRichView.SavePicture(DocumentSaveFormat: TRVSaveFormat; Path: String; gr: TGraphic): String;
+function TCustomRichView.SavePicture(DocumentSaveFormat: TRVSaveFormat; Path: String; gr: TGraphic): String;
 var fn: String;
     bmp: TBitmap;
 begin
@@ -147,7 +147,7 @@ begin
 
 end;
 {------------------------------------------------------------}
-function TRichView.SaveHTML(FileName,Title,ImagesPrefix: String; Options: TRVSaveOptions):Boolean;
+function TCustomRichView.SaveHTML(FileName,Title,ImagesPrefix: String; Options: TRVSaveOptions):Boolean;
 var f: TextFile;
     i,j: Integer;
     li: TLineInfo;
@@ -303,7 +303,7 @@ begin
   end;
 end;
 {------------------------------------------------------------------}
-function TRichView.SaveText(FileName: String; LineWidth: Integer):Boolean;
+function TCustomRichView.SaveText(FileName: String; LineWidth: Integer):Boolean;
 var f: TextFile;
     i,j: Integer;
     li: TLineInfo;

@@ -16,7 +16,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Minor="5" Release="2" Build="3"/>
+    <Version Minor="5" Release="3"/>
     <Files Count="7">
       <Item1>
         <Filename Value="rvfreereg.pas"/>

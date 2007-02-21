@@ -29,7 +29,7 @@ const
   rvsBullet     = -6;
 type
 
-  TRichView = class;
+  TCustomRichView = class;
   TRVSaveFormat = (rvsfText,
                    rvsfHTML,
                    rvsfRTF, //<---not yet implemented
@@ -65,10 +65,10 @@ type
   {------------------------------------------------------------------}
   TJumpEvent = procedure (Sender: TObject; id: Integer) of object;
   TRVMouseMoveEvent = procedure (Sender: TObject; id: Integer) of object;
-  TRVSaveComponentToFileEvent = procedure (Sender: TRichView; Path: String; SaveMe: TPersistent; SaveFormat: TRVSaveFormat; var OutStr:String) of object;
-  TRVURLNeededEvent = procedure (Sender: TRichView; id: Integer; var url:String) of object;
-  TRVDblClickEvent = procedure  (Sender: TRichView; ClickedWord: String; Style: Integer) of object;
-  TRVRightClickEvent = procedure  (Sender: TRichView; ClickedWord: String; Style, X, Y: Integer) of object;
+  TRVSaveComponentToFileEvent = procedure (Sender: TCustomRichView; Path: String; SaveMe: TPersistent; SaveFormat: TRVSaveFormat; var OutStr:String) of object;
+  TRVURLNeededEvent = procedure (Sender: TCustomRichView; id: Integer; var url:String) of object;
+  TRVDblClickEvent = procedure  (Sender: TCustomRichView; ClickedWord: String; Style: Integer) of object;
+  TRVRightClickEvent = procedure  (Sender: TCustomRichView; ClickedWord: String; Style, X, Y: Integer) of object;
   {------------------------------------------------------------------}
   TBackgroundStyle = (bsNoBitmap, bsStretched, bsTiled, bsTiledAndScrolled);
   {------------------------------------------------------------------}
@@ -84,8 +84,12 @@ type
    public
     val: Integer;
   end;
+
   {------------------------------------------------------------------}
-  TRichView = class(TRVScroller)
+
+  { TCustomRichView }
+
+  TCustomRichView = class(TRVScroller)
   private
     { Private declarations }
     ScrollDelta: Integer;
@@ -158,10 +162,39 @@ type
     procedure SetBackgroundStyle(Value: TBackgroundStyle);
     procedure SetVSmallStep(Value: Integer);
     function GetNextFileName(Path: String): String; virtual;
-    procedure ShareLinesFrom(Source: TRichView);
+    procedure ShareLinesFrom(Source: TCustomRichView);
     function FindClickedWord(var clickedword: String; var StyleNo: Integer): Boolean;
     procedure OnScrollTimer(Sender: TObject);
     procedure Loaded; override;    
+    
+  protected // to be published properties
+    function GetCredits: string; virtual;
+    { Published declarations }
+    //property PopupMenu;
+    //property OnClick;
+    //property OnKeyDown;
+    //property OnKeyUp;
+    //property OnKeyPress;
+    property FirstJumpNo: Integer read FFirstJumpNo write FFirstJumpNo;
+    property OnJump: TJumpEvent read FOnJump write FOnJump;
+    property OnRVMouseMove: TRVMouseMoveEvent read FOnRVMouseMove write FOnRVMouseMove;
+    property OnSaveComponentToFile: TRVSaveComponentToFileEvent read FOnSaveComponentToFile write FOnSaveComponentToFile;
+    property OnURLNeeded: TRVURLNeededEvent read FOnURLNeeded write FOnURLNeeded;
+    property OnRVDblClick: TRVDblClickEvent read FOnRVDblClick write FOnRVDblClick;
+    property OnRVRightClick: TRVRightClickEvent read FOnRVRightClick write FOnRVRightClick;
+    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+    property OnResized: TNotifyEvent read FOnResized write FOnResized;
+    property Style: TRVStyle read FStyle write FStyle;
+    property MaxTextWidth:Integer read FMaxTextWidth write FMaxTextWidth;
+    property MinTextWidth:Integer read FMinTextWidth write FMinTextWidth;
+    property LeftMargin: Integer read FLeftMargin write FLeftMargin;
+    property RightMargin: Integer read FRightMargin write FRightMargin;
+    property BackgroundBitmap: TBitmap read FBackBitmap write SetBackBitmap;
+    property BackgroundStyle: TBackgroundStyle read FBackgroundStyle write SetBackgroundStyle;
+    property Delimiters: String read FDelimiters write FDelimiters;
+    property AllowSelection: Boolean read FAllowSelection write FAllowSelection;
+    property SingleClick: Boolean read FSingleClick write FSingleClick;
+
   public
     { Public declarations }
     lines:TStringList;
@@ -190,7 +223,7 @@ type
     procedure Format;
     procedure FormatTail;
 
-    procedure AppendFrom(Source: TRichView);
+    procedure AppendFrom(Source: TCustomRichView);
     function GetLastCP: Integer;
     property VSmallStep: Integer read SmallStep write SetVSmallStep;
     function SaveHTML(FileName, Title, ImagesPrefix: String; Options: TRVSaveOptions):Boolean;
@@ -211,32 +244,45 @@ type
     property LineCount: Integer read GetLineCount;
     property FirstLineVisible: Integer read GetFirstLineVisible;
     property LastLineVisible: Integer read GetLastLineVisible;
+  end;
+  
+  TRichView=class(TCustomRichView)
   published
-    { Published declarations }
+    // published from TRVScroller
+    property Visible;
+    property TabStop;
+    property TabOrder;
+    property Align;
+    property HelpContext;
+    property Tracking;
+    property VScrollVisible;
+    property OnVScrolled;
+    
+    // published from TCustomRichView
     property PopupMenu;
     property OnClick;
     property OnKeyDown;
     property OnKeyUp;
-    property OnKeyPress;            
-    property FirstJumpNo: Integer read FFirstJumpNo write FFirstJumpNo;
-    property OnJump: TJumpEvent read FOnJump write FOnJump;
-    property OnRVMouseMove: TRVMouseMoveEvent read FOnRVMouseMove write FOnRVMouseMove;
-    property OnSaveComponentToFile: TRVSaveComponentToFileEvent read FOnSaveComponentToFile write FOnSaveComponentToFile;
-    property OnURLNeeded: TRVURLNeededEvent read FOnURLNeeded write FOnURLNeeded;
-    property OnRVDblClick: TRVDblClickEvent read FOnRVDblClick write FOnRVDblClick;
-    property OnRVRightClick: TRVRightClickEvent read FOnRVRightClick write FOnRVRightClick;
-    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
-    property OnResized: TNotifyEvent read FOnResized write FOnResized;
-    property Style: TRVStyle read FStyle write FStyle;
-    property MaxTextWidth:Integer read FMaxTextWidth write FMaxTextWidth;
-    property MinTextWidth:Integer read FMinTextWidth write FMinTextWidth;
-    property LeftMargin: Integer read FLeftMargin write FLeftMargin;
-    property RightMargin: Integer read FRightMargin write FRightMargin;
-    property BackgroundBitmap: TBitmap read FBackBitmap write SetBackBitmap;
-    property BackgroundStyle: TBackgroundStyle read FBackgroundStyle write SetBackgroundStyle;
-    property Delimiters: String read FDelimiters write FDelimiters;
-    property AllowSelection: Boolean read FAllowSelection write FAllowSelection;
-    property SingleClick: Boolean read FSingleClick write FSingleClick;
+    property OnKeyPress;
+    property FirstJumpNo;
+    property OnJump;
+    property OnRVMouseMove;
+    property OnSaveComponentToFile;
+    property OnURLNeeded;
+    property OnRVDblClick;
+    property OnRVRightClick;
+    property OnSelect;
+    property OnResized;
+    property Style;
+    property MaxTextWidth;
+    property MinTextWidth;
+    property LeftMargin;
+    property RightMargin;
+    property BackgroundBitmap;
+    property BackgroundStyle;
+    property Delimiters;
+    property AllowSelection;
+    property SingleClick;
   end;
 
 procedure InfoAboutSaD(var sad:TScreenAndDevice; Canvas: TCanvas);
@@ -275,7 +321,7 @@ begin
 end;
 {$ENDIF}
 {==================================================================}
-constructor TRichView.Create(AOwner: TComponent);
+constructor TCustomRichView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FClientTextWidth := False;
@@ -316,7 +362,7 @@ begin
   //Format_(False,0, Canvas, False);
 end;
 {-------------------------------------}
-destructor TRichView.Destroy;
+destructor TCustomRichView.Destroy;
 begin
   FBackBitmap.Free;
   Clear;
@@ -327,23 +373,23 @@ begin
   inherited Destroy;
 end;
 {-------------------------------------}
-procedure TRichView.WMSize(var Message: TWMSize);
+procedure TCustomRichView.WMSize(var Message: TWMSize);
 begin
   Format_(True, 0, Canvas, False);
   if Assigned(FOnResized) then FOnResized(Self);
 end;
 {-------------------------------------}
-procedure TRichView.Format;
+procedure TCustomRichView.Format;
 begin
   Format_(False, 0, Canvas, False);
 end;
 {-------------------------------------}
-procedure TRichView.FormatTail;
+procedure TCustomRichView.FormatTail;
 begin
   Format_(False, 0, Canvas, True);
 end;
 {-------------------------------------}
-procedure TRichView.ClearTemporal;
+procedure TCustomRichView.ClearTemporal;
 var i: Integer;
 begin
   if ScrollTimer<>nil then begin
@@ -374,7 +420,7 @@ begin
   nJmps :=0;
 end;
 {-------------------------------------}
-procedure TRichView.Deselect;
+procedure TCustomRichView.Deselect;
 begin
   Selection := False;
   FSelStartNo := -1;
@@ -384,7 +430,7 @@ begin
   if Assigned(FOnSelect) then OnSelect(Self);  
 end;
 {-------------------------------------}
-procedure TRichView.SelectAll;
+procedure TCustomRichView.SelectAll;
 begin
   FSelStartNo := 0;
   FSelEndNo := DrawLines.Count-1;
@@ -395,7 +441,7 @@ begin
   if Assigned(FOnSelect) then OnSelect(Self);
 end;
 {-------------------------------------}
-procedure TRichView.Clear;
+procedure TCustomRichView.Clear;
 var i: Integer;
 begin
   Deselect;
@@ -422,7 +468,7 @@ begin
   ClearTemporal;
 end;
 {-------------------------------------}
-procedure TRichView.AddFromNewLine(s: String; StyleNo:Integer);
+procedure TCustomRichView.AddFromNewLine(s: String; StyleNo:Integer);
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -432,7 +478,7 @@ begin
   lines.AddObject(s, info);
 end;
 {-------------------------------------}
-procedure TRichView.Add(s: String; StyleNo:Integer);
+procedure TCustomRichView.Add(s: String; StyleNo:Integer);
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -442,7 +488,7 @@ begin
   lines.AddObject(s, info);
 end;
 {-------------------------------------}
-procedure TRichView.AddText(s: String;StyleNo:Integer);
+procedure TCustomRichView.AddText(s: String;StyleNo:Integer);
 var p: Integer;
 begin
    {$IFDEF FPC}
@@ -468,7 +514,7 @@ begin
    end;
 end;
 {-------------------------------------}
-procedure TRichView.AddTextFromNewLine(s: String;StyleNo:Integer);
+procedure TCustomRichView.AddTextFromNewLine(s: String;StyleNo:Integer);
 var p: Integer;
 begin
    {$IFDEF FPC}
@@ -492,7 +538,7 @@ begin
    end;
 end;
 {-------------------------------------}
-procedure TRichView.AddCenterLine(s: String;StyleNo:Integer);
+procedure TCustomRichView.AddCenterLine(s: String;StyleNo:Integer);
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -502,7 +548,7 @@ begin
   lines.AddObject(s, info);
 end;
 {-------------------------------------}
-procedure TRichView.AddBreak;
+procedure TCustomRichView.AddBreak;
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -510,7 +556,7 @@ begin
   lines.AddObject('', info);
 end;
 {-------------------------------------}
-function TRichView.AddNamedCheckPoint(CpName: String): Integer;
+function TCustomRichView.AddNamedCheckPoint(CpName: String): Integer;
 var info: TLineInfo;
     cpinfo: TCPInfo;
 begin
@@ -523,17 +569,17 @@ begin
   AddNamedCheckPoint := checkpoints.Count-1;
 end;
 {-------------------------------------}
-function TRichView.AddCheckPoint: Integer;
+function TCustomRichView.AddCheckPoint: Integer;
 begin
   AddCheckPoint := AddNamedCheckPoint('');
 end;
 {-------------------------------------}
-function TRichView.GetCheckPointY(no: Integer): Integer;
+function TCustomRichView.GetCheckPointY(no: Integer): Integer;
 begin
   GetCheckPointY := TCPInfo(checkpoints.Objects[no]).Y;
 end;
 {-------------------------------------}
-function TRichView.GetJumpPointY(no: Integer): Integer;
+function TCustomRichView.GetJumpPointY(no: Integer): Integer;
 var i: Integer;
 begin
   GetJumpPointY := 0;
@@ -544,7 +590,7 @@ begin
    end;
 end;
 {-------------------------------------}
-procedure TRichView.AddPicture(gr: TGraphic); { gr not copied, do not free it!}
+procedure TCustomRichView.AddPicture(gr: TGraphic); { gr not copied, do not free it!}
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -555,7 +601,7 @@ begin
   lines.AddObject('', info);
 end;
 {-------------------------------------}
-procedure TRichView.AddHotSpot(imgNo: Integer; lst: TImageList; fromnewline: Boolean);
+procedure TCustomRichView.AddHotSpot(imgNo: Integer; lst: TImageList; fromnewline: Boolean);
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -566,7 +612,7 @@ begin
   lines.AddObject('', info);
 end;
 {-------------------------------------}
-procedure TRichView.AddBullet(imgNo: Integer; lst: TImageList; fromnewline: Boolean);
+procedure TCustomRichView.AddBullet(imgNo: Integer; lst: TImageList; fromnewline: Boolean);
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -577,7 +623,7 @@ begin
   lines.AddObject('', info);
 end;
 {-------------------------------------}
-procedure TRichView.AddControl(ctrl: TControl; center: Boolean); { do not free ctrl! }
+procedure TCustomRichView.AddControl(ctrl: TControl; center: Boolean); { do not free ctrl! }
 var info: TLineInfo;
 begin
   info := TLineInfo.Create;
@@ -589,7 +635,7 @@ begin
   InsertControl(ctrl);
 end;
 {-------------------------------------}
-function TRichView.GetMaxPictureWidth: Integer;
+function TCustomRichView.GetMaxPictureWidth: Integer;
 var i,m: Integer;
 begin
   m := 0;
@@ -612,7 +658,7 @@ begin
     max := b;
 end;
 {-------------------------------------}
-procedure TRichView.Format_(OnlyResized:Boolean; depth: Integer; Canvas: TCanvas;
+procedure TCustomRichView.Format_(OnlyResized:Boolean; depth: Integer; Canvas: TCanvas;
           OnlyTail: Boolean);
 var i: Integer;
     x,b,d,a: Integer;
@@ -694,7 +740,7 @@ begin
    LastLineFormatted := Lines.Count-1;
 end;
 {-------------------------------------}
-procedure TRichView.AdjustChildrenCoords;
+procedure TCustomRichView.AdjustChildrenCoords;
 var i: Integer;
     dli: TDrawLineInfo;
     li : TLineInfo;
@@ -711,7 +757,7 @@ begin
   end;
 end;
 {-------------------------------------}
-procedure TRichView.FormatLine(no: Integer; var x,baseline,prevdesc,prevabove:Integer; Canvas: TCanvas;
+procedure TCustomRichView.FormatLine(no: Integer; var x,baseline,prevdesc,prevabove:Integer; Canvas: TCanvas;
                          var sad: TScreenAndDevice);
 var sourceStrPtr, strForAdd, strSpacePos: PChar;
     sourceStrPtrLen: Integer;
@@ -958,7 +1004,7 @@ begin
   end;
 end;
 {-------------------------------------}
-procedure TRichView.AdjustJumpsCoords;
+procedure TCustomRichView.AdjustJumpsCoords;
 var i: Integer;
 begin
   for i:=0 to jumps.Count-1 do begin
@@ -973,12 +1019,12 @@ const gdlnFirstVisible =1;
 const gdlnLastCompleteVisible =2;
 const gdlnLastVisible =3;
 {-------------------------------------}
-function TRichView.GetFirstVisible(TopLine: Integer): Integer;
+function TCustomRichView.GetFirstVisible(TopLine: Integer): Integer;
 begin
    Result := GetDrawLineNo(TopLine,gdlnFirstVisible);
 end;
 {-------------------------------------}
-function TRichView.GetFirstLineVisible: Integer;
+function TCustomRichView.GetFirstLineVisible: Integer;
 var v: Integer;
 begin
    v := GetDrawLineNo(VPos*SmallStep, gdlnFirstVisible);
@@ -989,7 +1035,7 @@ begin
      Result := TDrawLineInfo(DrawLines.Objects[v]).LineNo;
 end;
 {-------------------------------------}
-function TRichView.GetLastLineVisible: Integer;
+function TCustomRichView.GetLastLineVisible: Integer;
 var v: Integer;
 begin
    v := GetDrawLineNo(VPos*SmallStep+ClientHeight, gdlnLastVisible);
@@ -1000,7 +1046,7 @@ begin
      Result := TDrawLineInfo(DrawLines.Objects[v]).LineNo;
 end;
 {-------------------------------------}
-function TRichView.GetDrawLineNo(BoundLine: Integer; Option: Integer): Integer;
+function TCustomRichView.GetDrawLineNo(BoundLine: Integer; Option: Integer): Integer;
 var
     a,b,mid: Integer;
 begin
@@ -1060,7 +1106,7 @@ begin
   GetDrawLineNo := mid;
 end;
 {
-function TRichView.GetFirstVisible(TopLine: Integer): Integer;
+function TCustomRichView.GetFirstVisible(TopLine: Integer): Integer;
 var
     a,b,mid: Integer;
 begin
@@ -1115,7 +1161,7 @@ end;
 {$ENDIF}
 
 {-------------------------------------}
-procedure TRichView.Paint;
+procedure TCustomRichView.Paint;
 var i,no, yshift, xshift: Integer;
     cl, textcolor: TColor;
     dli:TDrawLineInfo;
@@ -1146,7 +1192,7 @@ begin
     Canvas.Font.Style := [];
     Canvas.FillRect(Canvas.ClipRect);
     if (csDesigning in ComponentState) then
-      Canvas.TextOut(ClientRect.Left+1, ClientRect.Top+1, 'RichView v0.5.1 (www.trichview.com)')
+      Canvas.TextOut(ClientRect.Left+1, ClientRect.Top+1, GetCredits)
     else
       Canvas.TextOut(ClientRect.Left+1, ClientRect.Top+1, 'Error: style is not assigned');
     Canvas.Brush.Color := clWindowText;
@@ -1288,7 +1334,7 @@ begin
  buffer.Free;
 end;
 {------------------------------------------------------------------}
-procedure TRichView.InvalidateJumpRect(no: Integer);
+procedure TCustomRichView.InvalidateJumpRect(no: Integer);
 var rec: TRect;
     i, id : Integer;
 begin
@@ -1309,7 +1355,7 @@ begin
    Update;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.CMMouseLeave(var Message: TMessage);
+procedure TCustomRichView.CMMouseLeave(var Message: TMessage);
 begin
    if DrawHover and (LastJumpMovedAbove<>-1) then begin
      DrawHover := False;
@@ -1322,7 +1368,7 @@ begin
    end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TCustomRichView.MouseMove(Shift: TShiftState; X, Y: Integer);
 var i, no, offs,ys: Integer;
 begin
     ScrollDelta := 0;
@@ -1349,7 +1395,6 @@ begin
          (Y<=TJumpInfo(jumps.objects[i]).t+TJumpInfo(jumps.objects[i]).h-VPos*SmallStep) then
        begin
          Cursor :=  FStyle.JumpCursor;
-         Writeln('Cursor=',Cursor);
          if Assigned(FOnRVMouseMove) and
             (LastJumpMovedAbove<>TJumpInfo(jumps.objects[i]).id) then begin
             OnRVMouseMove(Self,TJumpInfo(jumps.objects[i]).id+FirstJumpNo);
@@ -1379,7 +1424,7 @@ begin
    if Selection then Invalidate;
 end;
 {-------------------------------------}
-procedure TRichView.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TCustomRichView.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var i, StyleNo, no, offs, ys: Integer;
     clickedword: String;
     p: TPoint;
@@ -1428,7 +1473,7 @@ begin
     inherited MouseUp(Button, Shift, X, Y);
 end;
 {-------------------------------------}
-procedure TRichView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TCustomRichView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var i,no, StyleNo: Integer;
     clickedword: String;
 begin
@@ -1466,7 +1511,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
 end;
 {-------------------------------------}
-procedure TRichView.AppendFrom(Source: TRichView);
+procedure TCustomRichView.AppendFrom(Source: TCustomRichView);
 var i: Integer;
     gr: TGraphic;
     grclass: TGraphicClass;
@@ -1510,12 +1555,12 @@ begin
   end;
 end;
 {-------------------------------------}
-function TRichView.GetLastCP: Integer;
+function TCustomRichView.GetLastCP: Integer;
 begin
   GetLastCP := CheckPoints.Count-1;
 end;
 {-------------------------------------}
-procedure TRichView.SetBackBitmap(Value: TBitmap);
+procedure TCustomRichView.SetBackBitmap(Value: TBitmap);
 begin
   FBackBitmap.Assign(Value);
   if (Value=nil) or (Value.Empty) then
@@ -1529,7 +1574,7 @@ begin
      end;
 end;
 {-------------------------------------}
-procedure TRichView.SetBackgroundStyle(Value: TBackgroundStyle);
+procedure TCustomRichView.SetBackgroundStyle(Value: TBackgroundStyle);
 begin
   FBackgroundStyle := Value;
   if FBackBitmap.Empty then
@@ -1543,7 +1588,7 @@ begin
      end;
 end;
 {-------------------------------------}
-procedure TRichView.DrawBack(DC: HDC; Rect: TRect; Width,Height:Integer);
+procedure TCustomRichView.DrawBack(DC: HDC; Rect: TRect; Width,Height:Integer);
 var i, j: Integer;
     hbr: HBRUSH;
 begin
@@ -1578,7 +1623,7 @@ begin
    end
 end;
 {-------------------------------------}
-procedure TRichView.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TCustomRichView.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 var r1: TRect;
 begin
   if (csDesigning in ComponentState) then exit;
@@ -1595,13 +1640,13 @@ begin
   OldHeight := ClientHeight;
 end;
 {-------------------------------------}
-procedure TRichView.SetVSmallStep(Value: Integer);
+procedure TCustomRichView.SetVSmallStep(Value: Integer);
 begin
    if (Value<=0) or (TextHeight div Value > 30000) then exit;
    SmallStep := Value;
 end;
 {-------------------------------------}
-procedure TRichView.ShareLinesFrom(Source: TRichView);
+procedure TCustomRichView.ShareLinesFrom(Source: TCustomRichView);
 begin
    if ShareContents then begin
      Clear;
@@ -1609,7 +1654,7 @@ begin
    end;
 end;
 {-------------------------------------}
-function TRichView.FindItemAtPos(X,Y: Integer): Integer;
+function TCustomRichView.FindItemAtPos(X,Y: Integer): Integer;
 var
     i, a,b,mid, midtop: Integer;
     dli: TDrawLineInfo;
@@ -1657,7 +1702,7 @@ begin
   FindItemAtPos := -1;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.FindItemForSel(X,Y: Integer; var No, Offs: Integer);
+procedure TCustomRichView.FindItemForSel(X,Y: Integer; var No, Offs: Integer);
 var
     styleno,i, a,b,mid, midtop, midbottom, midleft, midright, beginline, endline: Integer;
     dli: TDrawLineInfo;
@@ -1780,7 +1825,7 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-function TRichView.FindClickedWord(var clickedword: String; var StyleNo: Integer): Boolean;
+function TCustomRichView.FindClickedWord(var clickedword: String; var StyleNo: Integer): Boolean;
 var no, lno: Integer;
 {$IFNDEF RICHVIEWDEF4}
     arr: array[0..1000] of integer;
@@ -1835,7 +1880,7 @@ begin
 
 end;
   {------------------------------------------------------------------}
-procedure TRichView.DblClick;
+procedure TCustomRichView.DblClick;
 var
     StyleNo: Integer;
     clickedword: String;
@@ -1846,7 +1891,7 @@ begin
      FOnRVDblClick(Self, clickedword, StyleNo);
 end;
   {------------------------------------------------------------------}
-procedure TRichView.DeleteSection(CpName: String);
+procedure TCustomRichView.DeleteSection(CpName: String);
 var i,j, startno, endno: Integer;
 begin
    if ShareContents then exit;
@@ -1865,7 +1910,7 @@ begin
      end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.DeleteLines(FirstLine, Count: Integer);
+procedure TCustomRichView.DeleteLines(FirstLine, Count: Integer);
 var i: Integer;
 begin
   if ShareContents then exit;
@@ -1892,7 +1937,7 @@ begin
   lines.EndUpdate;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.GetSelBounds(var StartNo, EndNo, StartOffs, EndOffs: Integer);
+procedure TCustomRichView.GetSelBounds(var StartNo, EndNo, StartOffs, EndOffs: Integer);
 begin
    if FSelStartNo <= FSelEndNo then begin
      StartNo := FSelStartNo;
@@ -1914,7 +1959,7 @@ begin
    end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.StoreSelBounds(var StartNo, EndNo, StartOffs, EndOffs: Integer);
+procedure TCustomRichView.StoreSelBounds(var StartNo, EndNo, StartOffs, EndOffs: Integer);
 var dli: TDrawLineInfo;
 begin
   GetSelBounds(StartNo, EndNo, StartOffs, EndOffs);
@@ -1930,7 +1975,7 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.RestoreSelBounds(StartNo, EndNo, StartOffs, EndOffs: Integer);
+procedure TCustomRichView.RestoreSelBounds(StartNo, EndNo, StartOffs, EndOffs: Integer);
 var i: Integer;
     dli, dli2, dli3: TDrawLineInfo;
 begin
@@ -1990,12 +2035,12 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-function TRichView.GetLineCount: Integer;
+function TCustomRichView.GetLineCount: Integer;
 begin
   GetLineCount := lines.Count;
 end;
   {------------------------------------------------------------------}
-function TRichView.SelectionExists: Boolean;
+function TCustomRichView.SelectionExists: Boolean;
 var StartNo, EndNo, StartOffs, EndOffs: Integer;
 begin
   GetSelBounds(StartNo, EndNo, StartOffs, EndOffs);
@@ -2005,7 +2050,7 @@ begin
     Result := True;
 end;
   {------------------------------------------------------------------}
-function TRichView.GetSelText: String;
+function TCustomRichView.GetSelText: String;
 var StartNo, EndNo, StartOffs, EndOffs, i: Integer;
     s : String;
     li : TLineInfo;
@@ -2045,7 +2090,7 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.CopyText;
+procedure TCustomRichView.CopyText;
 begin
   if SelectionExists then begin
     ClipBoard.Clear;
@@ -2053,7 +2098,7 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomRichView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if SelectionExists and (ssCtrl in Shift) then begin
     if (Key = ord('C')) or (Key = VK_INSERT) then CopyText;
@@ -2062,7 +2107,7 @@ begin
     inherited KeyDown(Key,Shift)
 end;
   {------------------------------------------------------------------}
-procedure TRichView.OnScrollTimer(Sender: TObject);
+procedure TCustomRichView.OnScrollTimer(Sender: TObject);
 begin
   if ScrollDelta<>0 then begin
     VScrollPos := VScrollPos+ScrollDelta;
@@ -2070,7 +2115,7 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TCustomRichView.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) and (AComponent=FStyle) then begin
@@ -2078,17 +2123,23 @@ begin
   end;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.Click;
+procedure TCustomRichView.Click;
 begin
   SetFocus;
   inherited;
 end;
   {------------------------------------------------------------------}
-procedure TRichView.Loaded;
+procedure TCustomRichView.Loaded;
 begin
   inherited Loaded;
   Format;
 end;
+
+function TCustomRichView.GetCredits: string;
+begin
+  result := 'Lazarus TRichView based on RichView v0.5.1 (www.TCustomRichView.com)'
+end;
+
   {------------------------------------------------------------------}
 {$I RV_Save.inc}
   {------------------------------------------------------------------}
