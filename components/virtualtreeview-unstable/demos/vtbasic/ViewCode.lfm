@@ -1,0 +1,25 @@
+object frmViewCode: TfrmViewCode
+  Left = 230
+  Height = 354
+  Top = 137
+  Width = 553
+  HorzScrollBar.Page = 552
+  VertScrollBar.Page = 353
+  ActiveControl = memo
+  Caption = 'Quick Code Viewer'
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  OnActivate = FormActivate
+  Position = poDefaultPosOnly
+  object memo: TMemo
+    Height = 354
+    Width = 553
+    Align = alClient
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Lines.Strings = (
+      'memo'
+    )
+    TabOrder = 0
+  end
+end
