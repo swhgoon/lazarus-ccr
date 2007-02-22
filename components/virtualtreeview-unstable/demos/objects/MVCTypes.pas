@@ -57,7 +57,7 @@ unit MVCTypes;
 interface
 
 uses Windows, LCLIntf,Messages,SysUtils,Graphics,VirtualTrees,Classes,StdCtrls,
-     Controls,Forms,ImgList,LCLType, delphicompat, vtlogger;
+     Controls,Forms,ImgList,LCLType, delphicompat, vtlogger, LMessages;
 
 type { TMVCNode is the encapsulation of a single Node in the structure.
        This implementation is a bit bloated because in my project
@@ -253,9 +253,12 @@ type { TMVCNode is the encapsulation of a single Node in the structure.
          property OnChange;
        end;
 
+   { TMVCEdit }
+
    TMVCEdit=class(TCustomEdit)
               private
                 FLink:TMVCEditLink;
+                procedure WMMove(var Message: TLMMove); message LM_MOVE;
                 procedure WMChar(var Message: TWMChar); message WM_CHAR;
                 procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
                 procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
@@ -919,6 +922,15 @@ begin
   ShowHint:=False;
   ParentShowHint:=False;
   FLink:=Link;
+end;
+
+procedure TMVCEdit.WMMove(var Message: TLMMove);
+begin
+  Logger.EnterMethod(lcEditLink,'TMVCEdit.WMMove');
+  Logger.Send(lcEditLink,'XPos: %d YPos: %d',[Message.XPos, Message.YPos]);
+  Logger.SendCallStack(lcEditLink,'Stack');
+  inherited WMMove(Message);
+  Logger.ExitMethod(lcEditLink,'TMVCEdit.WMMove');
 end;
 
 procedure TMVCEdit.WMChar(var Message: TWMChar);

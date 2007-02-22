@@ -1714,7 +1714,7 @@ type
 TBaseVirtualTree = class(TCustomControl)
   private
     FBidiMode: TBidiMode;
-    FBorderStyle: TBorderStyle;
+    //FBorderStyle: TBorderStyle;
     FHeader: TVTHeader;
     FRoot: PVirtualNode;
     FDefaultNodeHeight,
@@ -2028,7 +2028,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure SetAnimationDuration(const Value: Cardinal);
     procedure SetBackground(const Value: TPicture);
     procedure SetBackgroundOffset(const Index, Value: Integer);
-    procedure SetBorderStyle(Value: TBorderStyle);
+    //procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBottomSpace(const Value: Cardinal);
     procedure SetButtonFillMode(const Value: TVTButtonFillMode);
     procedure SetButtonStyle(const Value: TVTButtonStyle);
@@ -2173,6 +2173,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure DoAfterItemPaint(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect); virtual;
     procedure DoAfterPaint(Canvas: TCanvas); virtual;
     procedure DoAutoScroll(X, Y: Integer); virtual;
+    procedure DoAutoSize; override;
     function DoBeforeDrag(Node: PVirtualNode; Column: TColumnIndex): Boolean; virtual;
     procedure DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellRect: TRect); virtual;
     procedure DoBeforeItemErase(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect; var Color: TColor;
@@ -2359,7 +2360,7 @@ TBaseVirtualTree = class(TCustomControl)
     property BackgroundOffsetX: Integer index 0 read FBackgroundOffsetX write SetBackgroundOffset default 0;
     property BackgroundOffsetY: Integer index 1 read FBackgroundOffsetY write SetBackgroundOffset default 0;
     property BidiMode: TBidiMode read FBidiMode write FBidiMode default bdLeftToRight;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property BottomSpace: Cardinal read FBottomSpace write SetBottomSpace default 0;
     property ButtonFillMode: TVTButtonFillMode read FButtonFillMode write SetButtonFillMode default fmTreeColor;
     property ButtonStyle: TVTButtonStyle read FButtonStyle write SetButtonStyle default bsRectangle;
@@ -11645,7 +11646,7 @@ begin
   FPlusBM := TBitmap.Create;
   FMinusBM := TBitmap.Create;
 
-  FBorderStyle := bsSingle;
+  //FBorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
   FButtonFillMode := fmTreeColor;
 
@@ -13923,7 +13924,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
+{
 procedure TBaseVirtualTree.SetBorderStyle(Value: TBorderStyle);
 
 begin
@@ -13934,7 +13935,7 @@ begin
     RecreateWnd(Self);
   end;
 end;
-
+}
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.SetBottomSpace(const Value: Cardinal);
@@ -15015,8 +15016,9 @@ end;
 procedure TBaseVirtualTree.CMCtl3DChanged(var Message: TLMessage);
 
 begin
+  //todo: check what this message is supposed todo. Probably will be removed
   inherited;
-  if FBorderStyle = bsSingle then
+  if BorderStyle = bsSingle then
     RecreateWnd(Self);
 end;
 
@@ -16592,8 +16594,8 @@ var
 begin
   Logger.EnterMethod(lcMessages,'WMLButtonDblClk');
   DoStateChange([tsLeftDblClick]);
-  //LCL does not has a inherited WMLButtonDblClick
-  //inherited WMLButtonDblClick(Message);
+
+  inherited WMLButtonDblClk(Message);
 
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
@@ -17214,7 +17216,7 @@ procedure TBaseVirtualTree.WMVScroll(var Message: TLMVScroll);
 
 begin
   Logger.EnterMethod(lcScroll,'WMVScroll');
-  Logger.SendCallStack(lcScroll,'CallStack');
+  //Logger.SendCallStack(lcScroll,'CallStack');
   case Message.ScrollCode of
     SB_BOTTOM:
       SetOffsetY(-Integer(FRoot.TotalHeight));
@@ -17854,7 +17856,9 @@ begin
       WindowClass.style := WindowClass.style or CS_HREDRAW or CS_VREDRAW
     else
       WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
-    if FBorderStyle = bsSingle then
+    //lcl: Ctl3D is not used in LCL. Has the same meaning of BorderStyle = bsSingle
+    {
+    if BorderStyle = bsSingle then
     begin
       if Ctl3D then
       begin
@@ -17866,6 +17870,7 @@ begin
     end
     else
       Style := Style and not WS_BORDER;
+    }
     //todo_lcl_low
     //AddBiDiModeExStyle(ExStyle);
   end;
@@ -18410,6 +18415,13 @@ begin
     end;
   end;
 end;
+
+
+procedure TBaseVirtualTree.DoAutoSize;
+begin
+  //The default DoAutoSize makes the editors be placed wrongly when scrolling
+end;
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -19496,7 +19508,7 @@ var
 begin
   Logger.EnterMethod(lcScroll,'DoSetOffsetXY');
   Logger.Send(lcScroll,'Value',Value);
-  Logger.SendCallStack(lcScroll,'CallStack');
+  //Logger.SendCallStack(lcScroll,'CallStack');
   // Range check, order is important here.
   if Value.X < (ClientWidth - Integer(FRangeX)) then
     Value.X := ClientWidth - Integer(FRangeX);
@@ -19557,12 +19569,12 @@ begin
             R := ClientRect;
             R.Left := Header.Columns.GetVisibleFixedWidth;
 
-            ScrollWindow(Handle, DeltaX, 0, @R, @R);
+            Windows.ScrollWindow(Handle, DeltaX, 0, @R, @R);
             if DeltaY <> 0 then
-              ScrollWindow(Handle, 0, DeltaY, ClipRect, ClipRect);
+              Windows.ScrollWindow(Handle, 0, DeltaY, ClipRect, ClipRect);
           end
           else
-            ScrollWindow(Handle, DeltaX, DeltaY, ClipRect, ClipRect);
+            Windows.ScrollWindow(Handle, DeltaX, DeltaY, ClipRect, ClipRect);
         end;
       end;
 

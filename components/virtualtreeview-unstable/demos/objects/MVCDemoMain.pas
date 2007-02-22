@@ -88,7 +88,7 @@ end;
 procedure TfmMVCDemo.FormCreate(Sender: TObject);
 begin
   Logger.Channels.Add(TIPCChannel.Create);
-  Logger.ActiveClasses:=[lcEditLink];
+  Logger.ActiveClasses:=[];//[lcEditLink,lcScroll];
   Logger.Clear;
   P:=TMVCPanel.Create(Self);
   with P do
