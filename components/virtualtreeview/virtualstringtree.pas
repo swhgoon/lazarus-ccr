@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, Types,SysUtils,StdCtrls,LMessages,Forms,LCLType,LCLProc,LCLIntf,
-  Graphics,VirtualTrees,Controls;
+  Graphics,virtualtrees,Controls;
 
 
 type
@@ -1039,7 +1039,7 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT)
     else
       SetBkMode(Canvas.Handle, OPAQUE);
-    DrawTextW(Canvas, PWideChar(xText), R, DrawFormat, False);
+    DrawTextW(Canvas, PWideChar(xText), R, DrawFormat, False);   //theo
   end;
 end;
 
@@ -1087,7 +1087,7 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT)
     else
       SetBkMode(Canvas.Handle, OPAQUE);
-    DrawTextW(Canvas, PWideChar(xText),R, DrawFormat, False);
+    DrawTextW(Canvas, PWideChar(xText),R, DrawFormat, False); //theo
   end;
 end;
 
@@ -1606,7 +1606,7 @@ begin
 //b      DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING
 //b    else
       DrawFormat := DrawFormat or DT_LEFT;
-    DrawTextW(xCanvas, PWideChar(S), PaintInfo.CellRect, DrawFormat, False);
+    DrawTextW(xCanvas, PWideChar(S), PaintInfo.CellRect, DrawFormat, False);  //theo
     Result := PaintInfo.CellRect.Bottom - PaintInfo.CellRect.Top;
   end;
 end;
@@ -1730,7 +1730,7 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; xCap
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½stemeier.
 
 type
   UCS2 = Word;
@@ -2209,7 +2209,7 @@ end;
 function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): string;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½stemeier.
 
 var
   Fonts: TStringList;

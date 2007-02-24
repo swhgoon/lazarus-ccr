@@ -3163,9 +3163,15 @@ end;
 
 procedure DrawTextW(Canvas: TCanvas; lpString: PWideChar; var lpRect: TRect; uFormat: Cardinal;
   AdjustRight: Boolean);
+var Style:TTextStyle;
 begin
   {$ifndef WINCE}
+   {$ifdef LINUX}
+  Style.Layout:=tlCenter;
+  Canvas.TextRect(lpRect,lpRect.Left,lpRect.Top,lpString,Style); // theo 24.2.2007 Gibt sonst Striche auf GTK1
+   {$else}
   DrawTextW(Canvas.Handle, lpString, Length(lpString), lpRect, uFormat, AdjustRight);
+   {$endif}
   {$else}
   Canvas.TextOut(lpRect.Left,lpRect.Top,lpString);
   {$endif}
@@ -3868,8 +3874,14 @@ var
   I, Width, Height: Integer;
 
 begin
+
+  {$IFDEF LINUX}     //theo 24.2.2007
+  Width:=14;
+  Height:=14;        {$message warn'nur um die exception zu verhindern. Werte nicht getestet'}
+  {$ELSE}
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
+  {$ENDIF}
   IL := TImageList.CreateSize(Width, Height);
   //with IL do
   //  Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
@@ -14623,6 +14635,8 @@ begin
 //todo:win    GetUpdateRect(Handle, FUpdateRect, True);
     FUpdateRect := ClientRect;
 
+  OffsetRect(fUpdateRect,OffsetX,0); //theo 24.2.2007
+  fUpdateRect.Right:=fUpdateRect.Right-fOffsetX*2; //theo 24.2.2007
 
   inherited WMPaint(Message);
 
@@ -19121,7 +19135,8 @@ begin
     end;
     // The clipping rectangle is given in client coordinates of the window. We have to convert it into
     // a sliding window of the tree image.
-      OffsetRect(Window, -FEffectiveOffsetX, -FOffsetY);
+    //  OffsetRect(Window, -FEffectiveOffsetX, -FOffsetY); //theo 24.2.2007
+     OffsetRect(Window, 0, -FOffsetY); //theo 24.2.2007
      PaintTree(Canvas, Window, Target, [poBackground, poColumnColor, poDrawFocusRect, poDrawDropMark, poDrawSelection,
      poGridLines]);
   end;
@@ -24317,6 +24332,8 @@ begin
       end;
     end;
 
+
+
     // Erase rest of window not covered by a node.
     if TargetRect.Top < MaximumBottom then
     begin
@@ -24325,6 +24342,7 @@ begin
       Target := TargetRect.TopLeft;
       R := Rect(TargetRect.Left, 0, TargetRect.Left, MaximumBottom - Target.Y);
       TargetRect := Rect(0, 0, MaximumRight - Target.X, MaximumBottom - Target.Y);
+      OffsetRect(TargetRect,-OffsetX,0);    //theo 24.2.2007
       // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
       NodeBitmap.Height := 0;
 //      NodeBitmap.PixelFormat := pf32Bit;

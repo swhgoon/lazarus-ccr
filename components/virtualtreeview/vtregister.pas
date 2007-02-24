@@ -5,7 +5,7 @@ unit VTRegister;
 interface
 
 uses
-  Classes,SysUtils,VirtualTrees,VirtualStringTree,VirtualDrawTree,VTHeaderPopup;
+  Classes,SysUtils,virtualtrees,virtualstringtree,virtualdrawtree,vtheaderpopup;
 
 procedure Register;
 

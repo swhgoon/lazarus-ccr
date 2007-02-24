@@ -70,7 +70,7 @@ uses
   {$else}
     Menus,
   {$endif TNT}
-  VirtualTrees;
+  virtualtrees;
 
 type
   TVTHeaderPopupOption = (
