@@ -28,6 +28,7 @@ const
   lcPaintDetails = 13;
   lcCheck = 14;
   lcEditLink = 15;
+  lcEraseBkgnd = 16;
 
 var
   Logger: TLCLLogger;

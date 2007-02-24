@@ -90,11 +90,11 @@ end;
 
 function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
-  Logger.EnterMethod(lcPaint,'InvalidateRect');
-  Logger.Send(lcPaint,'Rect',ARect^);
-  Logger.SendCallStack(lcPaint,'CallStack');
+  //Logger.EnterMethod(lcPaint,'InvalidateRect');
+  //Logger.Send(lcPaint,'Rect',ARect^);
+  //Logger.SendCallStack(lcPaint,'CallStack');
   Result:=Windows.InvalidateRect(aHandle,ARect,bErase);
-  Logger.ExitMethod(lcPaint,'InvalidateRect');
+  //Logger.ExitMethod(lcPaint,'InvalidateRect');
 end;
 
 {$ifndef NeedWindows}

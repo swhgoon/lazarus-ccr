@@ -2276,6 +2276,7 @@ TBaseVirtualTree = class(TCustomControl)
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode): Integer; virtual;
     class function GetCheckImageListFor(Kind: TCheckImageKind): TCustomImageList; virtual;
+    function GetClientRect: TRect; override;
     function GetColumnClass: TVirtualTreeColumnClass; virtual;
     function GetHeaderClass: TVTHeaderClass; virtual;
     function GetHintWindowClass: THintWindowClass; virtual;
@@ -15827,11 +15828,11 @@ procedure TBaseVirtualTree.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 var
   R: TRect;
 begin
-  Logger.EnterMethod(lcPaint,'WMEraseBkgnd');
-  Windows.GetUpdateRect(Handle,R,True);
-  Logger.Send(lcPaint,'UpdateRect',R);
+  Logger.EnterMethod(lcEraseBkgnd,'WMEraseBkgnd');
+  //Windows.GetUpdateRect(Handle,R,True);
+  //Logger.Send(lcPaint,'UpdateRect',R);
   Message.Result := 1;
-  Logger.ExitMethod(lcPaint,'WMEraseBkgnd');
+  Logger.ExitMethod(lcEraseBkgnd,'WMEraseBkgnd');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16618,6 +16619,8 @@ begin
 
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
+  if HitInfo.HitNode <> nil then
+    Logger.Send(lcPaintHeader,'HitNode',HitInfo.HitNode^.Index);
   HandleMouseDown(Message, HitInfo);
   Logger.ExitMethod(lcMessages,'WMLButtonDown');
 end;
@@ -16878,7 +16881,6 @@ begin
     FUpdateRect := ClientRect
   else
     FUpdateRect:=Message.PaintStruct^.rcPaint;
-    //Windows.GetUpdateRect(Handle,FUpdateRect,True);
 
   Logger.Send(lcPaint,'FUpdateRect', FUpdateRect);
   
@@ -20557,6 +20559,14 @@ begin
   end;
 end;
 
+function TBaseVirtualTree.GetClientRect: TRect;
+begin
+  Result:=Inherited;
+  //lclheader
+  if HandleAllocated and (hoVisible in FHeader.FOptions) then
+    Dec(Result.Bottom,FHeader.Height);
+end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetColumnClass: TVirtualTreeColumnClass;
@@ -22299,7 +22309,19 @@ begin
     begin
       Window := FUpdateRect;
       Target := Window.TopLeft;
-
+      //lclheader
+      if hoVisible in FHeader.FOptions then
+      begin
+        Inc(Target.Y,FHeader.Height);
+        Dec(Window.Bottom,FHeader.Height);
+        if  RectVisible(Canvas.Handle,FHeaderRect) then
+        begin
+          Logger.Send(lcPaintHeader,'RectVisible = True');
+          FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
+        end;
+        with FHeaderRect do
+          ExcludeClipRect(Canvas.Handle,Left,Top,Right,Bottom);
+      end;
       // The clipping rectangle is given in client coordinates of the window. We have to convert it into
       // a sliding window of the tree image.
       Logger.Send(lcPaintDetails,'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
@@ -22310,7 +22332,7 @@ begin
     end
     else
     begin
-      Logger.Send(lcPaint,'FUpdateRect IS Empty');
+      Logger.Send(lcPaint,'VisibleFixedWidth > 0');
       // First part, fixed columns
       Window := ClientRect;
       Window.Right := Temp;
@@ -23475,11 +23497,14 @@ var
   Size: TSize;
 
 begin
+  Logger.EnterMethod(lcPaintHeader,'UpdateHeaderRect');
   FHeaderRect := Rect(0, 0, Width, Height);
 
   // Consider borders...
   Size := GetBorderDimensions;
-  InflateRect(FHeaderRect, Size.cx, Size.cy);
+  //lclheader
+  //Adjust rect size
+  Inc(FHeaderRect.Right,Size.cx*2);
 
   // ... and bevels.
   OffsetX := BorderWidth;
@@ -23510,6 +23535,8 @@ begin
   end
   else
     FHeaderRect.Bottom := FHeaderRect.Top;
+  Logger.Send(lcPaintHeader,'FHeaderRect',FHeaderRect);
+  Logger.ExitMethod(lcPaintHeader,'UpdateHeaderRect');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -25006,6 +25033,7 @@ var
   CurrentAlignment: TAlignment;
 
 begin
+  //Logger.EnterMethod(lcPaintHeader,'GetDisplayRect');
   Assert(Assigned(Node), 'Node must not be nil.');
   Assert(Node <> FRoot, 'Node must not be the hidden root node.');
 
@@ -25151,6 +25179,9 @@ begin
           Result.Right := Result.Left + TextWidth;
         end;
   end;
+
+  //Logger.Send(lcPaintHeader,'DisplayRect for Node '+IntToStr(Node^.Index),Result);
+  //Logger.ExitMethod(lcPaintHeader,'GetDisplayRect');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26145,7 +26176,13 @@ begin
 
   // CurrentPos tracks a running term of the current position to test for.
   // It corresponds always to the top position of the currently considered node.
-  CurrentPos := 0;
+
+  //lclheader: adjust position if Header is visible
+  if hoVisible in FHeader.FOptions then
+    CurrentPos:=FHeader.Height
+  else
+    CurrentPos := 0;
+  
 
   // If the cache is available then use it.
   if tsUseCache in FStates then
@@ -26207,9 +26244,13 @@ begin
   // of the found node this top position is returned.
   if Assigned(Result) then
   begin
+    //lclheader
     NodeTop := CurrentPos;
+    if hoVisible in FHeader.FOptions then
+      Dec(NodeTop,FHeader.Height);
     if Relative then
       Inc(NodeTop, FOffsetY);
+    //Logger.Send(lcPaintHeader,'GetNodeAt Result: ',Result^.Index);
   end;
 end;
 
@@ -26855,6 +26896,12 @@ begin
   if (FUpdateCount = 0) and HandleAllocated then
   begin
     Result := GetDisplayRect(Node, NoColumn, False);
+    //lclheader
+    if hoVisible in FHeader.FOptions then
+    begin
+      inc(Result.Top,FHeader.Height);
+      inc(Result.Bottom,FHeader.Height);
+    end;
     InvalidateRect(Handle, @Result, False);
   end;
 end;
@@ -27392,6 +27439,9 @@ begin
   Logger.EnterMethod(lcPaint,'PaintTree');
   Logger.Send(lcPaint,'Window',Window);
   Logger.Send(lcPaint,'Target',Target);
+  Logger.Send(lcPaintHeader,'ClientRect',ClientRect);
+  Logger.Send(lcPaintHeader,'TreeRect',GetTreeRect);
+  Logger.Send(lcPaintHeader,'OffsetX: %d  OffsetY: %d',[OffsetX,OffsetY]);
   if not (tsPainting in FStates) then
   begin
     DoStateChange([tsPainting]);
@@ -27453,7 +27503,7 @@ begin
         PaintInfo.Node := GetNodeAt(0, Window.Top, False, BaseOffset);
         if PaintInfo.Node = nil then
           BaseOffset := Window.Top;
-        Logger.Watch(lcPaint,'BaseOffset',BaseOffset);
+        Logger.Send(lcPaint,'BaseOffset',BaseOffset);
         // Transform selection rectangle into node bitmap coordinates.
         if DrawSelectionRect then
           OffsetRect(SelectionRect, 0, -BaseOffset);
@@ -27462,10 +27512,13 @@ begin
         // It is usually smaller than an entire node and wanders while the paint loop advances.
         MaximumRight := Target.X + (Window.Right - Window.Left);
         MaximumBottom := Target.Y + (Window.Bottom - Window.Top);
-
+        //lclheader
+        //if hoVisible in FHeader.FOptions then
+        //  Dec(MaximumBottom,FHeader.Height);
+        Logger.Send(lcPaintHeader,'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);
         TargetRect := Rect(Target.X, Target.Y - (Window.Top - BaseOffset), MaximumRight, 0);
         TargetRect.Bottom := TargetRect.Top;
-        Logger.Send(lcPaint,'TargetRect',TargetRect);
+
         // This marker gets the index of the first column which is visible in the given window.
         // This is needed for column based background colors.
         FirstColumn := InvalidColumn;
@@ -27754,6 +27807,8 @@ begin
                     NodeBitmap.Height));
                 end;
                 Logger.SendBitmap(lcPaintBitmap,'NodeBitmap',NodeBitmap);
+                Logger.SendIf(lcPaint,'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
+                  +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
                   BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle, Window.Left, 0, SRCCOPY);
@@ -27761,6 +27816,8 @@ begin
             end;
 
             Inc(TargetRect.Top, PaintInfo.Node.NodeHeight);
+            Logger.SendIf(lcPaintHeader,'Last Node to be painted: '+ IntToStr(PaintInfo.Node^.Index)
+              +' (TargetRect.Top >= MaximumBottom)',TargetRect.Top >= MaximumBottom);
             if TargetRect.Top >= MaximumBottom then
               Break;
 
@@ -29273,7 +29330,9 @@ begin
   if FRoot.TotalHeight < FDefaultNodeHeight then
     FRoot.TotalHeight := FDefaultNodeHeight;
   FRangeY := FRoot.TotalHeight - FRoot.NodeHeight + FBottomSpace;
-
+  //lclheader
+  //if hoVisible in FHeader.FOptions then
+  //  Inc(FRangeY,FHeader.Height);
   if FScrollBarOptions.ScrollBars in [ssVertical, ssBoth] then
   begin
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
@@ -30517,7 +30576,6 @@ begin
     Result := nil
   else
     Result := PChar(Node) + FInternalDataOffset;
-  Logger.SendPointer('InternalData',Result);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

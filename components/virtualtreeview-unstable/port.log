@@ -90,10 +90,12 @@ Port started in 26/01/07
 * Fixed MouseWheel
 * Fixed drawing problem when using ScrollBar or MouseWheel
 * Implemented Support for check images
+* Fixed position of editors while scrolling
+* Started header implementation
 
 #Major Tasks#
 < > General Painting
-  [ ] The NodeBitmap width/Height is not reseted when erasing the background
+  [*] The NodeBitmap width/Height is not reseted when erasing the background > LCL bug
 < > Define the UNICODE support schema. Probably change from widestring to ansistring and let LCL do the rest
   [ ] Use GetTextExtentPoint instead of GetTextExtentPoint32 since the later is a wrapper to the former in LCL
   [ ] For now all rendering will be done with DrawTextW wrapper > Windows.DrawTextW
