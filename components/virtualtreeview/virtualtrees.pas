@@ -25763,7 +25763,7 @@ end;*)
 
 initialization
   {$i VirtualTrees.inc.res}
-  {$i VirtualTrees.lrs} 
+  {$i virtualTrees.lrs}
   // This watcher is used whenever a global structure could be modified by more than one thread.
   Watcher := TCriticalSection.Create;
 finalization
