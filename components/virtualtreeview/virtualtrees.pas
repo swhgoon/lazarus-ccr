@@ -70,7 +70,7 @@ interface
 {.$define UseLocalMemoryManager}
 
 uses
-  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes, opbitmap, lazbridge, Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
+  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
   LResources, GraphType, CustomTimer,
   SyncObjs, // critical sections
   CommCtrl  // image lists, common controls tree structures
@@ -849,7 +849,7 @@ type
     function AdjustHoverColumn(P: TPoint): Boolean;
     procedure AdjustPosition(Column: TVirtualTreeColumn; Position: Cardinal);
     procedure DrawButtonText(DC: HDC; Caption: WideString; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal);
-    procedure DrawXPButton(Canvas: TCanvas; ButtonR: TRect; DrawSplitter, Down, Hover, HoverOnTop: Boolean);
+    procedure DrawXPButton(DC: HDC; ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
     procedure FixPositions;
     function GetColumnAndBounds(P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
     function GetOwner: TPersistent; override;
@@ -3166,7 +3166,7 @@ procedure DrawTextW(Canvas: TCanvas; lpString: PWideChar; var lpRect: TRect; uFo
 var Style:TTextStyle;
 begin
   {$ifndef WINCE}
-   {$ifdef LCLGTK}
+   {$ifdef LINUX}
   Style.Layout:=tlCenter;
   Canvas.TextRect(lpRect,lpRect.Left,lpRect.Top,lpString,Style); // theo 24.2.2007 Gibt sonst Striche auf GTK1
    {$else}
@@ -3733,7 +3733,6 @@ var
   Dest: TRect;
   //Small (???) hack while a solution does not come
   Stream: TMemoryStream;
-  TempOPB, SourceOPB:TCanvasOPBitmap;
 begin
   Watcher.Enter;
   try
@@ -3762,23 +3761,22 @@ begin
 
       MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
       Dest := Rect(0, 0, IL.Width, IL.Height);
-      
-     SourceOPB:=TCanvasOPBitmap.create;      //theo 25.2.07
-     AssignBitmapToOpBitmap(Images,SourceOPB);
-     for I := 0 to (Images.Width div Images.Height) - 1 do
+      for I := 0 to (Images.Width div Images.Height) - 1 do
       begin
         Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
-        TempOPB:=TCanvasOPBitmap.create;
-        TempOPB.Width:=IL.Height;
-        TempOPB.Height:=IL.Width;
-        TempOPB.Canvas.CopyRect(Dest, SourceOPB.Canvas, Source);
-        TempOPB.TransparentColor:=MaskColor;
+        OneImage:= TBitmap.Create;
+        OneImage.Width:=IL.Height;
+        OneImage.Height:=IL.Width;
+        OneImage.Canvas.CopyRect(Dest, Images.Canvas, Source);
+        //somehow SaveToStream - LoadFromStream restores the tranparency lost in CopyRect
+        OneImage.SaveToStream(Stream);
+        OneImage.Free;
         AnotherImage:=TBitmap.Create;
-        AssignOpBitmapToBitmap(TempOPB,AnotherImage);
-        TempOPB.free;
+        Stream.Position:=0;
+        AnotherImage.LoadFromStream(Stream);
+        Stream.Size:=0;
         IL.AddDirect(AnotherImage, nil);
       end;
-      SourceOPB.free;
     finally
       Images.Free;
       //OneImage.Free;
@@ -3878,8 +3876,8 @@ var
 begin
 
   {$IFDEF LINUX}     //theo 24.2.2007
-  Width:=16;
-  Height:=16;        {$message warn'nur um die exception zu verhindern. Werte nicht getestet'}
+  Width:=14;
+  Height:=14;        {$message warn'nur um die exception zu verhindern. Werte nicht getestet'}
   {$ELSE}
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
@@ -7126,84 +7124,137 @@ const
   XPDownMiddleLineColor = $B8C2C1;     // Down state border color.
   XPDownInnerLineColor = $C9D1D0;      // Down state border color.
 
-procedure TVirtualTreeColumns.DrawXPButton(Canvas: TCanvas; ButtonR: TRect; DrawSplitter, Down, Hover, HoverOnTop: Boolean);
-var
-  SavBrColor, SavPnColor, PenColor: TColor;
-  dRed, dGreen, dBlue: integer;
-  Y, dY: integer;
-begin
+procedure TVirtualTreeColumns.DrawXPButton(DC: HDC; ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
 
-  SavBrColor:=Canvas.Brush.Color;
-  SavPnColor:=Canvas.Pen.Color;
-  if Down then
-    Canvas.Brush.Color := XPMainHeaderColorDown
-  else if Hover then
-    Canvas.Brush.Color := XPMainHeaderColorHover
+// Helper procedure to draw an Windows XP like header button.
+
+var
+  PaintBrush: HBRUSH;
+  Pen,
+  OldPen: HPEN;
+  PenColor,
+  FillColor: COLORREF;
+  dRed, dGreen, dBlue: Single;
+  Width,
+  XPos: Integer;
+
+begin
+{  if Down then
+    FillColor := XPMainHeaderColorDown
   else
-    Canvas.Brush.Color := XPMainHeaderColorUp;
-  Canvas.FillRect(ButtonR);
-  Canvas.Brush.Color:=SavBrColor;
+    if Hover then
+      FillColor := XPMainHeaderColorHover
+    else
+      FillColor := XPMainHeaderColorUp;
+  PaintBrush := CreateSolidBrush(FillColor);
+  FillRect(DC, ButtonR, PaintBrush);
+  DeleteObject(PaintBrush);
 
   if DrawSplitter and not (Down or Hover) then
   begin
-    Canvas.Pen.Color:=XPDarkSplitBarColor;
-    Canvas.MoveTo(ButtonR.Right - 2, ButtonR.Top + 3);
-    Canvas.LineTo(ButtonR.Right - 2, ButtonR.Bottom - 5);
-    Canvas.Pen.Color:=XPLightSplitBarColor;
-    Canvas.MoveTo(ButtonR.Right - 1, ButtonR.Top + 3);
-    Canvas.LineTo(ButtonR.Right - 1, ButtonR.Bottom - 5);
+    // One solid pen for the dark line...
+    Pen := CreatePen(PS_SOLID, 1, XPDarkSplitBarColor);
+    OldPen := SelectObject(DC, Pen);
+    MoveToEx(DC, ButtonR.Right - 2, ButtonR.Top + 3, nil);
+    LineTo(DC, ButtonR.Right - 2, ButtonR.Bottom - 5);
+    // ... and one solid pen for the light line.
+    Pen := CreatePen(PS_SOLID, 1, XPLightSplitBarColor);
+    DeleteObject(SelectObject(DC, Pen));
+    MoveToEx(DC, ButtonR.Right - 1, ButtonR.Top + 3, nil);
+    LineTo(DC, ButtonR.Right - 1, ButtonR.Bottom - 5);
+    SelectObject(DC, OldPen);
+    DeleteObject(Pen);
   end;
 
-  if Down then begin
-    Canvas.Pen.Color:=XPDownOuterLineColor;
-    Canvas.MoveTo(ButtonR.Left, ButtonR.Top);
-    Canvas.LineTo(ButtonR.Left, ButtonR.Bottom - 1);
-    Canvas.LineTo(ButtonR.Right - 1, ButtonR.Bottom - 1);
-    Canvas.LineTo(ButtonR.Right - 1, ButtonR.Top - 1);
+  if Down then
+  begin
+    // Down state. Three lines to draw.
+    // First one is the outer line, drawn at left, bottom and right.
+    Pen := CreatePen(PS_SOLID, 1, XPDownOuterLineColor);
+    OldPen := SelectObject(DC, Pen);
+    MoveToEx(DC, ButtonR.Left, ButtonR.Top, nil);
+    LineTo(DC, ButtonR.Left, ButtonR.Bottom - 1);
+    LineTo(DC, ButtonR.Right - 1, ButtonR.Bottom - 1);
+    LineTo(DC, ButtonR.Right - 1, ButtonR.Top - 1);
 
-    Canvas.Pen.Color:=XPDownMiddleLineColor;
-    Canvas.MoveTo(ButtonR.Left + 1, ButtonR.Bottom - 2);
-    Canvas.LineTo(ButtonR.Left + 1, ButtonR.Top);
-    Canvas.LineTo(ButtonR.Right - 1, ButtonR.Top);
+    // Second one is the middle line, which is a bit lighter.
+    Pen := CreatePen(PS_SOLID, 1, XPDownMiddleLineColor);
+    DeleteObject(SelectObject(DC, Pen));
+    MoveToEx(DC, ButtonR.Left + 1, ButtonR.Bottom - 2, nil);
+    LineTo(DC, ButtonR.Left + 1, ButtonR.Top);
+    LineTo(DC, ButtonR.Right - 1, ButtonR.Top);
 
-    Canvas.Pen.Color:=XPDownInnerLineColor;
-    Canvas.MoveTo(ButtonR.Left + 2, ButtonR.Bottom - 2);
-    Canvas.LineTo(ButtonR.Left + 2, ButtonR.Top + 1);
-    Canvas.LineTo(ButtonR.Right - 1, ButtonR.Top + 1);
+    // Third line is the inner line, which is even lighter than the middle line.
+    Pen := CreatePen(PS_SOLID, 1, XPDownInnerLineColor);
+    DeleteObject(SelectObject(DC, Pen));
+    MoveToEx(DC, ButtonR.Left + 2, ButtonR.Bottom - 2, nil);
+    LineTo(DC, ButtonR.Left + 2, ButtonR.Top + 1);
+    LineTo(DC, ButtonR.Right - 1, ButtonR.Top + 1);
+
+    // Housekeeping:
+    SelectObject(DC, OldPen);
+    DeleteObject(Pen);
   end
-  else if Hover then begin
-    //DrawXPHover(Canvas,  ButtonR, HoverOnTop);
-  end
-  else begin
-    if HoverOnTop then begin
-      Y:=ButtonR.Top;
-      dY:=1;
+  else
+    if Hover then
+    begin
+      // Hover state. There are three lines at the bottom border, but they are rendered in a way which
+      // requires expensive construction.
+      Width := ButtonR.Right - ButtonR.Left;
+      if Width <= 32 then
+      begin
+        ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+          ILD_NORMAL);
+        ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, CLR_NONE,
+          CLR_NONE, ILD_NORMAL);
+      end
+      else
+      begin
+        ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+          ILD_NORMAL);
+        // Replicate inner part as many times as need to fill up the button rectangle.
+        XPos := ButtonR.Left + 16;
+        repeat
+          ImageList_DrawEx(UtilityImages.Handle, 7, DC, XPos, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE, ILD_NORMAL);
+          Inc(XPos, 16);
+        until XPos + 16 >= ButtonR.Right;
+        ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+          ILD_NORMAL);
+      end;
     end
-    else begin
-      Y:=ButtonR.Bottom-1;
-      dY:=-1;
-    end;
-    PenColor := XPMainHeaderColorUp;
-    dRed := ((PenColor and $FF) - (XPDarkGradientColor and $FF)) div 3;
-    dGreen := (((PenColor shr 8) and $FF) - ((XPDarkGradientColor shr 8) and $FF)) div 3;
-    dBlue := (((PenColor shr 16) and $FF) - ((XPDarkGradientColor shr 16) and $FF)) div 3;
+    else
+    begin
+      // There is a three line gradient near the bottom border which transforms from the button color to a dark,
+      // clBtnFace like color (here XPDarkGradientColor).
+      PenColor := XPMainHeaderColorUp;
+      dRed := ((PenColor and $FF) - (XPDarkGradientColor and $FF)) / 3;
+      dGreen := (((PenColor shr 8) and $FF) - ((XPDarkGradientColor shr 8) and $FF)) / 3;
+      dBlue := (((PenColor shr 16) and $FF) - ((XPDarkGradientColor shr 16) and $FF)) / 3;
 
-    PenColor := PenColor - Lo(dRed) - Lo(dGreen) shl 8 - Lo(dBlue) shl 16;
-    Canvas.Pen.Color:=PenColor;
-    Canvas.MoveTo(ButtonR.Left, Y + 2*dY);
-    Canvas.LineTo(ButtonR.Right, Y + 2*dY);
+      // First line:
+      PenColor := PenColor - Round(dRed) - Round(dGreen) shl 8 - Round(dBlue) shl 16;
+      Pen := CreatePen(PS_SOLID, 1, PenColor);
+      OldPen := SelectObject(DC, Pen);
+      MoveToEx(DC, ButtonR.Left, ButtonR.Bottom - 3, nil);
+      LineTo(DC, ButtonR.Right, ButtonR.Bottom - 3);
 
-    Canvas.Pen.Color := PenColor - Lo(dRed) - Lo(dGreen) shl 8 - Lo(dBlue) shl 16;
-    Canvas.MoveTo(ButtonR.Left, Y + dY);
-    Canvas.LineTo(ButtonR.Right, Y + dY);
+      // Second line:
+      PenColor := PenColor - Round(dRed) - Round(dGreen) shl 8 - Round(dBlue) shl 16;
+      Pen := CreatePen(PS_SOLID, 1, PenColor);
+      DeleteObject(SelectObject(DC, Pen));
+      MoveToEx(DC, ButtonR.Left, ButtonR.Bottom - 2, nil);
+      LineTo(DC, ButtonR.Right, ButtonR.Bottom - 2);
 
-    Canvas.Pen.Color := XPDarkGradientColor;
-    Canvas.MoveTo(ButtonR.Left, Y);
-    Canvas.LineTo(ButtonR.Right, Y);
-  end;
-  Canvas.Pen.Color:=SavPnColor;
+      // Third line:
+      Pen := CreatePen(PS_SOLID, 1, XPDarkGradientColor);
+      DeleteObject(SelectObject(DC, Pen));
+      MoveToEx(DC, ButtonR.Left, ButtonR.Bottom - 1, nil);
+      LineTo(DC, ButtonR.Right, ButtonR.Bottom - 1);
+
+      // Housekeeping:
+      DeleteObject(SelectObject(DC, OldPen));
+    end; }
 end;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -7996,8 +8047,7 @@ begin
         else
       {$endif ThemeSupport}
         if FHeader.Style = hsXPStyle then
-//          DrawXPButton(Handle, Run, False, False, False)
-          DrawXPButton(PaintInfo.TargetCanvas, Run, False, False, False, False)
+          DrawXPButton(Handle, Run, False, False, False)
         else
         begin
           Brush.Color := FHeader.FBackground;
@@ -8083,8 +8133,7 @@ begin
                 {$endif ThemeSupport}
                 begin
                   if FHeader.Style = hsXPStyle then
-//                  DrawXPButton(Handle, PaintRectangle, RightBorderFlag <> 0, IsDownIndex, IsHoverIndex)
-                    DrawXPButton(PaintInfo.TargetCanvas, PaintRectangle, RightBorderFlag <> 0, IsDownIndex, IsHoverIndex, False)
+                    DrawXPButton(Handle, PaintRectangle, RightBorderFlag <> 0, IsDownIndex, IsHoverIndex)
                   else
                     if IsDownIndex then
                       DrawEdge(Handle, PaintRectangle, PressedButtonStyle, PressedButtonFlags)
