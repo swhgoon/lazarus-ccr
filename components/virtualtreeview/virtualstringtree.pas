@@ -254,6 +254,7 @@ type
     property DefaultPasteMode;
     property DefaultText;
     property DragCursor;
+    property DragMode;
     property DrawSelectionMode;
     property EditDelay;
     property Enabled;

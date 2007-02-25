@@ -65,6 +65,7 @@ type
     property DefaultNodeHeight;
     property DefaultPasteMode;
     property DragCursor;
+    property DragMode;
     property DrawSelectionMode;
     property EditDelay;
     property Enabled;
