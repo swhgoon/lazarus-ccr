@@ -59,7 +59,7 @@ unit VTHeaderPopup;
 // Modified 17 Feb 2002 by Jim Kueneman <jimdk@mindspring.com>.
 //   - Added the event to filter the items as they are added to the menu.
 //----------------------------------------------------------------------------------------------------------------------
-
+{$mode delphi}
 {$I Compilers.inc}
 
 interface
@@ -110,7 +110,7 @@ type
     procedure DoColumnChange(Column: TColumnIndex; Visible: Boolean); virtual;
     procedure OnMenuItemClick(Sender: TObject);
   public
-    procedure Popup(x, y: Integer); override;
+    procedure Popup(x, y: Integer); {override;} //todo
   published
     property Options: TVTHeaderPopupOptions read FOptions write FOptions default [];
 

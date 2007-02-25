@@ -1,7 +1,7 @@
 object frmVTPropEdit: TfrmVTPropEdit
-  Left = 494
+  Left = 714
   Height = 601
-  Top = 92
+  Top = 185
   Width = 458
   HorzScrollBar.Page = 457
   VertScrollBar.Page = 600

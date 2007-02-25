@@ -7,7 +7,7 @@ unit virtualtreeview_package;
 interface
 
 uses
-  VirtualTrees, LazarusPackageIntf; 
+  VirtualTrees, VTHeaderPopup, LazarusPackageIntf; 
 
 implementation
 

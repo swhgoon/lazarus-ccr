@@ -16,7 +16,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="VirtualTrees.lrs"/>
         <Type Value="LRS"/>
@@ -26,6 +26,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="VirtualTrees"/>
       </Item2>
+      <Item3>
+        <Filename Value="VTHeaderPopup.pas"/>
+        <UnitName Value="VTHeaderPopup"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

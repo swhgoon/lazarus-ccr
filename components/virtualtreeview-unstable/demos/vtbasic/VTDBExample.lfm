@@ -1,10 +1,10 @@
 object frmVTDBExample: TfrmVTDBExample
-  Left = 311
-  Height = 481
-  Top = 174
-  Width = 532
-  HorzScrollBar.Page = 531
-  VertScrollBar.Page = 480
+  Left = 493
+  Height = 482
+  Top = 420
+  Width = 553
+  HorzScrollBar.Page = 552
+  VertScrollBar.Page = 481
   ActiveControl = VT
   Caption = 'Database Test'
   Font.Height = -11
@@ -23,8 +23,8 @@ object frmVTDBExample: TfrmVTDBExample
     ParentColor = False
   end
   object Panel1: TPanel
-    Height = 481
-    Width = 532
+    Height = 482
+    Width = 553
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 7
@@ -32,9 +32,9 @@ object frmVTDBExample: TfrmVTDBExample
     TabOrder = 0
     object VT: TVirtualStringTree
       Left = 7
-      Height = 404
+      Height = 405
       Top = 7
-      Width = 518
+      Width = 539
       Align = alClient
       Colors.BorderColor = clWindowText
       Colors.FocusedSelectionColor = 16756912
@@ -87,17 +87,18 @@ object frmVTDBExample: TfrmVTDBExample
           WideText = 'Contact'
         end      
         item
+          Position = 0
           Alignment = taCenter
           Width = 42
           WideText = 'Status'
         end>
-      WideDefaultText = 'NodeN'
+      WideDefaultText = 'Node'
     end
     object Panel2: TPanel
       Left = 7
       Height = 63
-      Top = 411
-      Width = 518
+      Top = 412
+      Width = 539
       Align = alBottom
       BevelOuter = bvLowered
       TabOrder = 1

@@ -5141,7 +5141,7 @@ constructor TVTCriticalSection.Create;
 
 begin
   inherited Create;
-  //InitializeCriticalSection(FSection);
+  InitializeCriticalSection(FSection);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5149,8 +5149,7 @@ end;
 destructor TVTCriticalSection.Destroy;
 
 begin
-  //DeleteCriticalSection(FSection);
-
+  DeleteCriticalSection(FSection);
   inherited Destroy;
 end;
 
@@ -5159,7 +5158,7 @@ end;
 procedure TVTCriticalSection.Enter;
 
 begin
-  //EnterCriticalSection(FSection);
+  EnterCriticalSection(FSection);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5167,7 +5166,7 @@ end;
 procedure TVTCriticalSection.Leave;
 
 begin
-  //LeaveCriticalSection(FSection);
+  LeaveCriticalSection(FSection);
 end;
 
 //----------------- TWorkerThread --------------------------------------------------------------------------------------
@@ -5799,7 +5798,9 @@ begin
   end;
   //todo_lcl_check Delphi treats pceltFetched an PInteger. Implemented like in fpc.activex. What heappens with
   // a C Program call with a NULL in pCeltFetcjed??
-  pceltFetched := CopyCount;
+  //Answer: Yes. Is necessary a check here
+  if @pceltFetched <> nil then
+    pceltFetched := CopyCount;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19570,13 +19571,34 @@ begin
             // vertically entire client area (or clipping area if one exists).
             R := ClientRect;
             R.Left := Header.Columns.GetVisibleFixedWidth;
-
+            //lclheader
+            if hoVisible in FHeader.FOptions then
+            begin
+              Inc(R.Top,FHeader.Height);
+              Inc(R.Bottom,FHeader.Height);
+            end;
             Windows.ScrollWindow(Handle, DeltaX, 0, @R, @R);
             if DeltaY <> 0 then
-              Windows.ScrollWindow(Handle, 0, DeltaY, ClipRect, ClipRect);
+              Windows.ScrollWindow(Handle, 0, DeltaY, @R, @R);
           end
           else
-            Windows.ScrollWindow(Handle, DeltaX, DeltaY, ClipRect, ClipRect);
+          begin
+            //lclheader
+            if ClipRect <> nil then
+            begin
+              Logger.SendWarning([lcWarning],'DoSetOffsetXY called with a non nil ClipRect');
+              R:=ClipRect^;
+            end
+            else
+              R:=ClientRect;
+            if hoVisible in FHeader.FOptions then
+            begin
+              Inc(R.Top,FHeader.Height);
+              Inc(R.Bottom,FHeader.Height);
+            end;
+            Logger.Send([lcScroll],'Rect to Scroll',R);
+            ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
+          end;
         end;
       end;
 
@@ -25179,7 +25201,12 @@ begin
           Result.Right := Result.Left + TextWidth;
         end;
   end;
-
+  //lclheader
+  if hoVisible in FHeader.FOptions then
+  begin
+    inc(Result.Top,FHeader.Height);
+    inc(Result.Bottom,FHeader.Height);
+  end;
   //Logger.Send([lcPaintHeader],'DisplayRect for Node '+IntToStr(Node^.Index),Result);
   //Logger.ExitMethod([lcPaintHeader],'GetDisplayRect');
 end;
@@ -26896,12 +26923,6 @@ begin
   if (FUpdateCount = 0) and HandleAllocated then
   begin
     Result := GetDisplayRect(Node, NoColumn, False);
-    //lclheader
-    if hoVisible in FHeader.FOptions then
-    begin
-      inc(Result.Top,FHeader.Height);
-      inc(Result.Bottom,FHeader.Height);
-    end;
     InvalidateRect(Handle, @Result, False);
   end;
 end;
@@ -27595,7 +27616,6 @@ begin
                   while ((PaintInfo.Column > InvalidColumn) or not UseColumns)
                     and (PaintInfo.CellRect.Left < Window.Right) do
                   begin
-                    Logger.Send([lcPaintDetails],'Handling a column');
                     if UseColumns then
                     begin
                       PaintInfo.Column := FPositionToIndex[PaintInfo.Position];
@@ -27610,7 +27630,8 @@ begin
                       PaintInfo.BidiMode := BidiMode;
                       PaintInfo.Alignment := FAlignment;
                     end;
-
+                    Logger.Send([lcPaintDetails],
+                      'Column Paint - PaintInfo.Position: %d PaintInfo.Column: %d',[PaintInfo.Position,PaintInfo.Column]);
                     PaintInfo.PaintOptions := PaintOptions;
                     with PaintInfo do
                     begin
@@ -28657,6 +28678,8 @@ var
   UseColumns,
   HScrollBarVisible: Boolean;
   NewOffset: Integer;
+  //lclheader
+  AdjustedTop: Integer;
 
 begin
   Result := False;
@@ -28678,12 +28701,18 @@ begin
 
     // The returned rectangle can never be empty after the expand code above.
     // 1) scroll vertically
-    if R.Top < 0 then
+
+    //lclheader
+    AdjustedTop:=R.Top;
+    if hoVisible in FHeader.FOptions then
+      Dec(AdjustedTop,FHeader.Height);
+      
+    if AdjustedTop < 0 then
     begin
       if Center then
-        SetOffsetY(FOffsetY - R.Top + ClientHeight div 2)
+        SetOffsetY(FOffsetY - AdjustedTop + ClientHeight div 2)
       else
-        SetOffsetY(FOffsetY - R.Top);
+        SetOffsetY(FOffsetY - AdjustedTop);
       Result := True;
     end
     else
