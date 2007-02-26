@@ -19,6 +19,7 @@ type
     FAuthor: string;
     FDate: string;
     FRevision: integer;
+    procedure LoadFromNode(ANode: TDomNode);
   public
     procedure Clear;
     property Author: string read FAuthor write FAuthor;
@@ -30,11 +31,12 @@ type
 
   TRepository = class
   private
-    FUrl: string;
+    FRoot: string;
     FUUID: string;
+    procedure LoadFromNode(ANode: TDomNode);
   public
     procedure Clear;
-    property URL: string read FUrl write FUrl;
+    property Root: string read FRoot write FRoot;
     property UUID: string read FUUID write FUUID;
   end;
   
@@ -151,6 +153,9 @@ begin
     UrlNode :=  EntryNode.FindNode('url');
     if assigned(UrlNode) then
       FUrl := UrlNode.TextContent;
+      
+    FRepository.LoadFromNode(EntryNode.FindNode('repository'));
+    FCommit.LoadFromNode(EntryNode.FindNode('commit'));
   end;
 end;
 
@@ -180,13 +185,50 @@ end;
 
 { TRepository }
 
+procedure TRepository.LoadFromNode(ANode: TDomNode);
+var
+  RepositoryNode: TDomElement;
+  ChildNode: TDOMNode;
+begin
+  if ANode=nil then exit;
+
+  if ANode.NodeType = ELEMENT_NODE then begin
+    RepositoryNode := TDomElement(ANode);
+    ChildNode :=  RepositoryNode.FindNode('root');
+    if assigned(ChildNode) then
+      FRoot := ChildNode.TextContent;
+    ChildNode :=  RepositoryNode.FindNode('uuid');
+    if assigned(ChildNode) then
+      FUUID := ChildNode.TextContent;
+  end;
+end;
+
 procedure TRepository.Clear;
 begin
-  FUrl := '';
+  FRoot := '';
   FUUID := '';
 end;
 
 { TCommit }
+
+procedure TCommit.LoadFromNode(ANode: TDomNode);
+var
+  CommitNode: TDomElement;
+  ChildNode: TDOMNode;
+begin
+  if ANode=nil then exit;
+
+  if ANode.NodeType = ELEMENT_NODE then begin
+    CommitNode := TDomElement(ANode);
+    FRevision := StrToIntDef(CommitNode.GetAttribute('revision'),0);
+    ChildNode :=  CommitNode.FindNode('author');
+    if assigned(ChildNode) then
+      FAuthor := ChildNode.TextContent;
+    ChildNode :=  CommitNode.FindNode('date');
+    if assigned(ChildNode) then
+      FDate := ChildNode.TextContent;
+  end;
+end;
 
 procedure TCommit.Clear;
 begin
