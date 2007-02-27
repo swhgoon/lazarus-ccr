@@ -69,7 +69,6 @@ interface
       class(TForm)
          Panel1: TPanel;
          VT: TVirtualStringTree;
-         Bevel1: TBevel;
          cmb: TComboBox;
          TreeImages: TImageList;
          panBase: TPanel;

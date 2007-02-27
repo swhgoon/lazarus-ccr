@@ -4910,9 +4910,7 @@ begin
     AddNodeImages(IL);
 
   finally
-    //todo: change to except??
-    //lcl free the bitmap in IL
-    //BM.Free;
+    BM.Free;
   end;
 end;
 
@@ -20351,7 +20349,7 @@ var
 begin
   with PaintInfo, Canvas do
   begin
-    Brush.Color := Color;
+    Brush.Color := Self.Color;
     R := Rect(Min(Left, Right), Top, Max(Left, Right) + 1, Top + 1);
     LCLIntf.FillRect(Handle, R, FDottedBrush);
   end;
@@ -22359,6 +22357,19 @@ begin
       Window := ClientRect;
       Window.Right := Temp;
       Target := Window.TopLeft;
+      //lclheader
+      if hoVisible in FHeader.FOptions then
+      begin
+        Inc(Target.Y,FHeader.Height);
+        Dec(Window.Bottom,FHeader.Height);
+        if  RectVisible(Canvas.Handle,FHeaderRect) then
+        begin
+          Logger.Send([lcPaintHeader],'RectVisible = True');
+          FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
+        end;
+        with FHeaderRect do
+          ExcludeClipRect(Canvas.Handle,Left,Top,Right,Bottom);
+      end;
 
       OffsetRect(Window,  -RTLOffset, -FOffsetY);
       PaintTree(Canvas, Window, Target, Options);
@@ -22374,6 +22385,14 @@ begin
 
       Window.Left := Temp;
       Target := Window.TopLeft;
+
+      //lclheader
+      if hoVisible in FHeader.FOptions then
+      begin
+        Inc(Target.Y,FHeader.Height);
+        Dec(Window.Bottom,FHeader.Height);
+
+      end;
 
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       PaintTree(Canvas, Window, Target, Options);
@@ -26949,6 +26968,9 @@ begin
         if R.Top < ClientHeight then
         begin
           R.Bottom := ClientHeight;
+          //lclheader
+          if hoVisible in FHeader.FOptions then
+            Inc(R.Bottom,FHeader.Height);
           InvalidateRect(Handle, @R, False);
         end;
       end;
@@ -27556,6 +27578,7 @@ begin
           while Assigned(PaintInfo.Node) do
           begin
             Logger.EnterMethod([lcPaintDetails],'PaintNode');
+            Logger.Send([lcPaintDetails],'NodeIndex',PaintInfo.Node^.Index);
             Logger.Watch([lcPaintDetails],'BaseOffset',BaseOffset);
             Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
             // Initialize node if not already done.
@@ -28678,8 +28701,6 @@ var
   UseColumns,
   HScrollBarVisible: Boolean;
   NewOffset: Integer;
-  //lclheader
-  AdjustedTop: Integer;
 
 begin
   Result := False;
@@ -28701,18 +28722,17 @@ begin
 
     // The returned rectangle can never be empty after the expand code above.
     // 1) scroll vertically
-
     //lclheader
-    AdjustedTop:=R.Top;
     if hoVisible in FHeader.FOptions then
-      Dec(AdjustedTop,FHeader.Height);
-      
-    if AdjustedTop < 0 then
+    begin
+      Dec(R.Top,FHeader.Height);
+    end;
+    if R.Top < 0 then
     begin
       if Center then
-        SetOffsetY(FOffsetY - AdjustedTop + ClientHeight div 2)
+        SetOffsetY(FOffsetY - R.Top + ClientHeight div 2)
       else
-        SetOffsetY(FOffsetY - AdjustedTop);
+        SetOffsetY(FOffsetY - R.Top);
       Result := True;
     end
     else
