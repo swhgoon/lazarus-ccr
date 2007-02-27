@@ -7,14 +7,8 @@ unit svnpkg;
 interface
 
 uses
-  svnclasses, LazarusPackageIntf; 
+  svnclasses; 
 
 implementation
 
-procedure Register; 
-begin
-end; 
-
-initialization
-  RegisterPackage('svnpkg', @Register); 
 end.

@@ -4,14 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -30,238 +29,27 @@
         <PackageName Value="svnpkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="LCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item3>
       <Item4>
         <PackageName Value="FCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="2">
       <Unit0>
         <Filename Value="fpcunitsvnpkg.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpcunitsvnpkg"/>
-        <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
         <Filename Value="testsvnclasses.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSvnClasses"/>
-        <CursorPos X="63" Y="60"/>
-        <TopLine Value="28"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\..\..\..\lazarus\components\fpcunit\guitestrunner.pas"/>
-        <UnitName Value="GuiTestRunner"/>
-        <CursorPos X="1" Y="48"/>
-        <TopLine Value="37"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\inc\fpcunit.pp"/>
-        <UnitName Value="fpcunit"/>
-        <CursorPos X="1" Y="446"/>
-        <TopLine Value="427"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\svnclasses.pas"/>
-        <UnitName Value="svnclasses"/>
-        <CursorPos X="72" Y="201"/>
-        <TopLine Value="190"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="info.xml"/>
-        <CursorPos X="78" Y="9"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="XML"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\xml\dom.pp"/>
-        <UnitName Value="DOM"/>
-        <CursorPos X="3" Y="1168"/>
-        <TopLine Value="1165"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\..\fpcbuild\2.0.4\fpcsrc\packages\extra\gtk2\gtk+\gtk\gtksocket.inc"/>
-        <CursorPos X="74" Y="77"/>
-        <TopLine Value="58"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\gtk2\gtk2extrah.inc"/>
-        <CursorPos X="47" Y="44"/>
-        <TopLine Value="25"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\..\fpcbuild\2.0.4\fpcsrc\packages\extra\gtk2\gtk+\gdk\gdkdrawable.inc"/>
-        <CursorPos X="94" Y="12"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\win32\win32winapi.inc"/>
-        <CursorPos X="33" Y="3164"/>
-        <TopLine Value="3145"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\win\wininc\ascdef.inc"/>
-        <CursorPos X="10" Y="268"/>
-        <TopLine Value="249"/>
-        <UsageCount Value="10"/>
-      </Unit11>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="130" Column="13" TopLine="111"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\xml\dom.pp"/>
-        <Caret Line="217" Column="40" TopLine="198"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="134" Column="30" TopLine="111"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="131" Column="48" TopLine="112"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="130" Column="1" TopLine="112"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="83" Column="46" TopLine="72"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\..\fpcbuild\2.0.4\fpcsrc\packages\extra\gtk2\gtk+\gtk\gtksocket.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\gtk2\gtk2extrah.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\..\..\fpcbuild\2.0.4\fpcsrc\packages\extra\gtk2\gtk+\gdk\gdkdrawable.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\win32\win32winapi.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\win32\win32winapi.inc"/>
-        <Caret Line="3164" Column="33" TopLine="3145"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="89" Column="8" TopLine="72"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\..\..\lazarus\components\fpcunit\guitestrunner.pas"/>
-        <Caret Line="45" Column="36" TopLine="26"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\..\..\lazarus\components\fpcunit\guitestrunner.pas"/>
-        <Caret Line="47" Column="63" TopLine="28"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="55" Column="22" TopLine="36"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="103" Column="5" TopLine="60"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="33" Column="3" TopLine="31"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="17" Column="3" TopLine="15"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="185" Column="17" TopLine="25"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="174" Column="5" TopLine="131"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="182" Column="29" TopLine="156"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="60" Column="21" TopLine="36"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="173" Column="11" TopLine="154"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="188" Column="1" TopLine="145"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="194" Column="5" TopLine="162"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="33" Column="7" TopLine="14"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="38" Column="15" TopLine="33"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="187" Column="23" TopLine="170"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="218" Column="1" TopLine="175"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\svnclasses.pas"/>
-        <Caret Line="216" Column="10" TopLine="192"/>
-      </Position30>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -269,21 +57,13 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="3">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-      <Item3>
-        <Name Value="EAssertionFailedError"/>
-      </Item3>
-    </Exceptions>
-  </Debugging>
 </CONFIG>
