@@ -1,0 +1,160 @@
+object fWikiHelp: TfWikiHelp
+  Left = 324
+  Height = 322
+  Top = 221
+  Width = 428
+  HorzScrollBar.Page = 427
+  VertScrollBar.Page = 321
+  ActiveControl = eWikiPage
+  Caption = 'WikiHelp'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object lWikiPage: TLabel
+    Left = 8
+    Height = 14
+    Top = 8
+    Width = 44
+    Caption = 'WikiPage'
+    Color = clNone
+    ParentColor = False
+  end
+  object lPageOffset: TLabel
+    Left = 8
+    Height = 14
+    Top = 60
+    Width = 58
+    Caption = 'lPageOffset'
+    Color = clNone
+    ParentColor = False
+  end
+  object eFoundPages: TLabel
+    Left = 8
+    Height = 14
+    Top = 104
+    Width = 66
+    Caption = 'eFoundPages'
+    Color = clNone
+    ParentColor = False
+  end
+  object lOutputDir: TLabel
+    Left = 8
+    Height = 14
+    Top = 240
+    Width = 51
+    Caption = 'Output Dir'
+    Color = clNone
+    ParentColor = False
+  end
+  object lLanguage: TLabel
+    Left = 288
+    Height = 14
+    Top = 8
+    Width = 48
+    Caption = 'Language'
+    Color = clNone
+    ParentColor = False
+  end
+  object eWikiPage: TEdit
+    Left = 8
+    Height = 23
+    Top = 28
+    Width = 268
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    Text = 'http://www.ullihome.de/index.php/'
+  end
+  object ePageOffset: TEdit
+    Left = 8
+    Height = 23
+    Top = 76
+    Width = 412
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+  end
+  object lbFoundPages: TListBox
+    Left = 8
+    Height = 95
+    Top = 120
+    Width = 332
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 2
+  end
+  object bSearch: TButton
+    Left = 345
+    Height = 25
+    Top = 120
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Search'
+    OnClick = bSearchClick
+    TabOrder = 3
+  end
+  object bCreate: TButton
+    Left = 345
+    Height = 25
+    Top = 286
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Create'
+    OnClick = bCreateClick
+    TabOrder = 4
+  end
+  object pbProgress: TProgressBar
+    Left = 8
+    Height = 20
+    Top = 287
+    Width = 332
+    Anchors = [akLeft, akRight, akBottom]
+    Max = 100
+  end
+  object eOutputDir: TDirectoryEdit
+    Left = 8
+    Height = 23
+    Top = 259
+    Width = 332
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akLeft, akRight, akBottom]
+    ParentColor = False
+    TabOrder = 5
+  end
+  object cbLanguage: TComboBox
+    Left = 288
+    Height = 21
+    Top = 28
+    Width = 132
+    Anchors = [akTop, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    Items.Strings = (
+      'Special:Allpages'
+      'Spezial:Allpages'
+    )
+    MaxLength = 0
+    OnSelect = cbLanguageSelect
+    TabOrder = 6
+  end
+  object cbAddLinkedPages: TCheckBox
+    Left = 8
+    Height = 13
+    Top = 220
+    Width = 103
+    Caption = 'Add linked Pages'
+    TabOrder = 7
+  end
+  object Properties: TXMLPropStorage
+    StoredValues = <    
+      item
+        Name = 'OUTPUTDIR'
+      end    
+      item
+        Name = 'WIKIPAGE'
+      end    
+      item
+        Name = 'PAGEOFFSET'
+      end>
+    left = 4
+    top = 4
+  end
+end
