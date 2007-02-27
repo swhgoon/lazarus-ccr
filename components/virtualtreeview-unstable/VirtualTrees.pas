@@ -10606,17 +10606,17 @@ begin
       for I := 0 to FColumns.Count - 1 do
         if coParentBiDiMode in FColumns[I].FOptions then
           FColumns[I].ParentBiDiModeChanged;
-    WM_NCMBUTTONDOWN:
+    LM_MBUTTONDOWN:
       begin
-        with TWMNCMButtonDown(Message) do
-          P := Treeview.ScreenToClient(Point(XCursor, YCursor));
+        with TLMMButtonDown(Message) do
+          P := Treeview.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
           FOwner.DoHeaderMouseDown(mbMiddle, GetShiftState, P.X, P.Y + Integer(FHeight));
       end;
-    WM_NCMBUTTONUP:
+    LM_MBUTTONUP:
       begin
-        with TWMNCMButtonUp(Message) do
-          P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+        with TLMMButtonUp(Message) do
+          P := FOwner.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
         begin
           FColumns.HandleClick(P, mbMiddle, True, False);
@@ -10624,19 +10624,19 @@ begin
           FColumns.FDownIndex := NoColumn;
         end;
       end;
-    WM_NCLBUTTONDBLCLK,
-    WM_NCMBUTTONDBLCLK,
-    WM_NCRBUTTONDBLCLK:
+    LM_LBUTTONDBLCLK,
+    LM_MBUTTONDBLCLK,
+    LM_RBUTTONDBLCLK:
       begin
-        with TWMNCLButtonDblClk(Message) do
-          P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+        with TLMLButtonDblClk(Message) do
+          P := FOwner.ScreenToClient(Point(XPos, YPos));
         // If the click was on a splitter then resize column do smallest width.
         if InHeader(P) then
         begin
           case Message.Msg of
-            WM_NCMBUTTONDBLCLK:
+            LM_MBUTTONDBLCLK:
               Button := mbMiddle;
-            WM_NCRBUTTONDBLCLK:
+            LM_RBUTTONDBLCLK:
               Button := mbRight;
           else
             // WM_NCLBUTTONDBLCLK
@@ -10654,7 +10654,7 @@ begin
               Integer(FHeight));
         end;
       end;
-    WM_NCLBUTTONDOWN:
+    LM_LBUTTONDOWN:
       begin
         Application.CancelHint;
 
@@ -10665,10 +10665,10 @@ begin
         Treeview.StopTimer(EditTimer);
         Treeview.DoStateChange([], [tsEditPending]);
 
-        with TWMNCLButtonDown(Message) do
+        with TLMLButtonDown(Message) do
         begin
           // want the drag start point in screen coordinates
-          FDragStart := Point(XCursor, YCursor);
+          FDragStart := Point(XPos, YPos);
           P := Treeview.ScreenToClient(FDragStart);
         end;
 
@@ -10701,20 +10701,20 @@ begin
           end;
         end;
       end;
-    WM_NCRBUTTONDOWN:
+    LM_RBUTTONDOWN:
       begin
-        with TWMNCRButtonDown(Message) do
-          P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+        with TLMRButtonDown(Message) do
+          P := FOwner.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
           FOwner.DoHeaderMouseDown(mbRight, GetShiftState, P.X, P.Y + Integer(FHeight));
       end;
-    WM_NCRBUTTONUP:
+    LM_RBUTTONUP:
       if not (csDesigning in FOwner.ComponentState) then
-        with TWMNCRButtonUp(Message) do
+        with TLMRButtonUp(Message) do
         begin
           Application.CancelHint;
 
-          P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+          P := FOwner.ScreenToClient(Point(XPos, YPos));
           if InHeader(P) then
           begin
             FColumns.HandleClick(P, mbRight, True, False);
@@ -10730,14 +10730,13 @@ begin
               FColumns.FHoverIndex := NoColumn;
               Treeview.DoStateChange([], [tsScrollPending, tsScrolling]);
               FPopupMenu.PopupComponent := Treeview;
-              FPopupMenu.Popup(XCursor, YCursor);
+              FPopupMenu.Popup(XPos, YPos);
               HandleMessage := True;
             end;
           end;
         end;
     // When the tree window has an active mouse capture then we only get "client-area" messages.
-    WM_LBUTTONUP,
-    WM_NCLBUTTONUP:
+    LM_LBUTTONUP:
       begin
         Application.CancelHint;
 
@@ -10747,7 +10746,7 @@ begin
           if hsDragging in FStates then
           begin
             // successfull dragging moves columns
-            with TWMLButtonUp(Message) do
+            with TLMLButtonUp(Message) do
               P := Treeview.ClientToScreen(Point(XPos, YPos));
             GetWindowRect(Treeview.Handle, R);
             with FColumns do
@@ -10783,21 +10782,24 @@ begin
         end;
 
         case Message.Msg of
-          WM_LBUTTONUP:
-            with TWMLButtonUp(Message) do
+          LM_LBUTTONUP:
+            with TLMLButtonUp(Message) do
             begin
               if FColumns.FDownIndex > NoColumn then
                 FColumns.HandleClick(Point(XPos, YPos), mbLeft, False, False);
               if FStates <> [] then
                 FOwner.DoHeaderMouseUp(mbLeft, KeysToShiftState(Keys), XPos, YPos);
             end;
-          WM_NCLBUTTONUP:
-            with TWMNCLButtonUp(Message) do
+          //todo: there's a difference here
+          {
+          LM_NCLBUTTONUP:
+            with TLMLButtonUp(Message) do
             begin
-              P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+              P := FOwner.ScreenToClient(Point(XPos, YPos));
               FColumns.HandleClick(P, mbLeft, False, False);
               FOwner.DoHeaderMouseUp(mbLeft, GetShiftState, P.X, P.Y + Integer(FHeight));
             end;
+          }
         end;
 
         if FColumns.FTrackIndex > NoColumn then
@@ -10813,10 +10815,11 @@ begin
         FStates := FStates - [hsDragging, hsDragPending, hsTracking, hsTrackPending];
       end;
     // hovering, mouse leave detection
-    WM_NCMOUSEMOVE:
-      with TWMNCMouseMove(Message), FColumns do
+    //todo: see the difference to below
+    {LM_NCMOUSEMOVE:
+      with TLMMouseMove(Message), FColumns do
       begin
-        P := Treeview.ScreenToClient(Point(XCursor, YCursor));
+        P := Treeview.ScreenToClient(Point(XPos, YPos));
         Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y + Integer(FHeight));
         if InHeader(P) and ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
         begin
@@ -10830,14 +10833,17 @@ begin
           if hoShowHint in FOptions then
           begin
             // client coordinates!
-            XCursor := P.x;
-            YCursor := P.y + Integer(FHeight);
+            XPos := P.x;
+            YPos := P.y + Integer(FHeight);
             Application.HintMouseMessage(Treeview, Message);
           end;
         end
       end;
-    WM_TIMER:
-      if TWMTimer(Message).TimerID = HeaderTimer then
+    }
+    LM_TIMER:;
+    //todo: add timer
+    {
+      if TLMTimer(Message).TimerID = HeaderTimer then
       begin
         // determine current mouse position to check if it left the window
         GetCursorPos(P);
@@ -10856,9 +10862,10 @@ begin
           end;
         end;
       end;
-    WM_MOUSEMOVE: // mouse capture and general message redirection
-      Result := HandleHeaderMouseMove(TWMMouseMove(Message));
-    WM_SETCURSOR:
+    }
+    LM_MOUSEMOVE: // mouse capture and general message redirection
+      Result := HandleHeaderMouseMove(TLMMouseMove(Message));
+    LM_SETCURSOR:
       if FStates = [] then
       begin
         // Retrieve last cursor position (GetMessagePos does not work here, I don't know why).
@@ -10888,10 +10895,10 @@ begin
         Message.Result := 1;
         Result := True;
       end;
-    WM_KEYDOWN,
-    WM_KILLFOCUS:
-      if (Message.Msg = WM_KILLFOCUS) or
-         (TWMKeyDown(Message).CharCode = VK_ESCAPE) then
+    LM_KEYDOWN,
+    LM_KILLFOCUS:
+      if (Message.Msg = LM_KILLFOCUS) or
+         (TLMKeyDown(Message).CharCode = VK_ESCAPE) then
       begin
         if hsDragging in FStates then
         begin
@@ -19596,6 +19603,8 @@ begin
             end;
             Logger.Send([lcScroll],'Rect to Scroll',R);
             ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
+            //todo: temporary hack to avoid some drawing problems. Will be removed when the header is properly implemented
+            InvalidateRect(Handle, nil, True);
           end;
         end;
       end;

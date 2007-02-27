@@ -31,6 +31,6 @@
 {$define NeedWindows}
 {.$define EnableNCFunctions}
 {.$define EnableAdvancedGraphics}
-{.$define EnableHeader}
+{$define EnableHeader}
 {.$define EnableTimer}
 {.$define EnableAccessible}

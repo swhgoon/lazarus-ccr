@@ -110,7 +110,7 @@ type
     procedure DoColumnChange(Column: TColumnIndex; Visible: Boolean); virtual;
     procedure OnMenuItemClick(Sender: TObject);
   public
-    procedure Popup(x, y: Integer); {override;} //todo
+    procedure Popup(x, y: Integer); override;
   published
     property Options: TVTHeaderPopupOptions read FOptions write FOptions default [];
 
