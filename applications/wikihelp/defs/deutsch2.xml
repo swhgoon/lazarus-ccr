@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CONFIG>
+	<ImageTagName>Bild</ImageTagName><SpecialPageURL>Spezial:Alle_Seiten</SpecialPageURL>
+	<ExportPageURL>index.php?title=Spezial:Exportieren&amp;action=submit&amp;pages=%s&amp;curonly=true</ExportPageURL></CONFIG>
