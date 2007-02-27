@@ -10608,15 +10608,18 @@ begin
           FColumns[I].ParentBiDiModeChanged;
     LM_MBUTTONDOWN:
       begin
+        //lclheader: NCMessages are given in screen coordinates unlike the ordinary
         with TLMMButtonDown(Message) do
-          P := Treeview.ScreenToClient(Point(XPos, YPos));
+          P:= Point(XPos, YPos);
+          //P := Treeview.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
           FOwner.DoHeaderMouseDown(mbMiddle, GetShiftState, P.X, P.Y + Integer(FHeight));
       end;
     LM_MBUTTONUP:
       begin
         with TLMMButtonUp(Message) do
-          P := FOwner.ScreenToClient(Point(XPos, YPos));
+          P:= Point(XPos, YPos);
+          //P := FOwner.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
         begin
           FColumns.HandleClick(P, mbMiddle, True, False);
@@ -10629,7 +10632,8 @@ begin
     LM_RBUTTONDBLCLK:
       begin
         with TLMLButtonDblClk(Message) do
-          P := FOwner.ScreenToClient(Point(XPos, YPos));
+          P:= Point(XPos, YPos);
+          //P := FOwner.ScreenToClient(Point(XPos, YPos));
         // If the click was on a splitter then resize column do smallest width.
         if InHeader(P) then
         begin
@@ -10668,8 +10672,10 @@ begin
         with TLMLButtonDown(Message) do
         begin
           // want the drag start point in screen coordinates
-          FDragStart := Point(XPos, YPos);
-          P := Treeview.ScreenToClient(FDragStart);
+          P:= Point(XPos, YPos);
+          FDragStart:=Treeview.ClientToScreen(P);
+          //FDragStart := Point(XPos, YPos);
+          //P := Treeview.ScreenToClient(FDragStart);
         end;
 
         if InHeader(P) then
@@ -10704,7 +10710,8 @@ begin
     LM_RBUTTONDOWN:
       begin
         with TLMRButtonDown(Message) do
-          P := FOwner.ScreenToClient(Point(XPos, YPos));
+          P:=Point(XPos,YPos);
+          //P := FOwner.ScreenToClient(Point(XPos, YPos));
         if InHeader(P) then
           FOwner.DoHeaderMouseDown(mbRight, GetShiftState, P.X, P.Y + Integer(FHeight));
       end;
@@ -10714,7 +10721,8 @@ begin
         begin
           Application.CancelHint;
 
-          P := FOwner.ScreenToClient(Point(XPos, YPos));
+          P:=Point(XPos,YPos);
+          //P := FOwner.ScreenToClient(Point(XPos, YPos));
           if InHeader(P) then
           begin
             FColumns.HandleClick(P, mbRight, True, False);
@@ -10816,10 +10824,14 @@ begin
       end;
     // hovering, mouse leave detection
     //todo: see the difference to below
-    {LM_NCMOUSEMOVE:
+    LM_MOUSEMOVE:
       with TLMMouseMove(Message), FColumns do
       begin
-        P := Treeview.ScreenToClient(Point(XPos, YPos));
+        //lcl
+        HandleMessage := HandleHeaderMouseMove(TLMMouseMove(Message));
+        
+        P:=Point(XPos,YPos);
+        //P := Treeview.ScreenToClient(Point(XPos, YPos));
         Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y + Integer(FHeight));
         if InHeader(P) and ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
         begin
@@ -10839,7 +10851,7 @@ begin
           end;
         end
       end;
-    }
+
     LM_TIMER:;
     //todo: add timer
     {
@@ -10863,8 +10875,11 @@ begin
         end;
       end;
     }
+    //todo
+    {
     LM_MOUSEMOVE: // mouse capture and general message redirection
       Result := HandleHeaderMouseMove(TLMMouseMove(Message));
+    }
     LM_SETCURSOR:
       if FStates = [] then
       begin
@@ -10884,7 +10899,7 @@ begin
             Result := NewCursor <> Screen.Cursors[crDefault];
             if Result then
             begin
-              Windows.SetCursor(NewCursor);
+              LclIntf.SetCursor(NewCursor);
               Message.Result := 1;
             end
           end;
@@ -11195,6 +11210,9 @@ var
   R, RW: TRect;
 
 begin
+  //lclheader
+  Result := PtInRect(TreeView.FHeaderRect,P);
+  {
   R := Treeview.FHeaderRect;
 
   // Current position of the owner in screen coordinates.
@@ -11206,6 +11224,7 @@ begin
   // Consider the header within this rectangle.
   OffsetRect(R, RW.Left, RW.Top);
   Result := PtInRect(R, P);
+  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -17058,9 +17077,15 @@ var
 begin
   Logger.EnterMethod([lcSetCursor],'WMSetCursor');
   {
+  lcl
+  wParam: Handle to the window that contains the cursor.
+  lParam:
+     The low-order word of lParam specifies the hit-test code.
+     The high-order word of lParam specifies the identifier of the mouse message
+  }
   with Message do
   begin
-    if (CursorWnd = Handle) and not (csDesigning in ComponentState) and
+    if (wParam = Handle) and not (csDesigning in ComponentState) and
       ([tsWheelPanning, tsWheelScrolling] * FStates = []) then
     begin
       if not FHeader.HandleMessage(TLMessage(Message)) then
@@ -17074,17 +17099,18 @@ begin
             NewCursor := Cursor;
 
           DoGetCursor(NewCursor);
-          LCLIntf.SetCursor(Screen.Cursors[NewCursor]);
+          Windows.SetCursor(Screen.Cursors[NewCursor]);
           Message.Result := 1;
-        end
-        else
-          inherited WMSetCursor(Message);
+        end;
+        //lcl does not have WMSetCursor
+        //else
+        //  inherited WMSetCursor(Message);
       end;
-    end
-    else
-      inherited WMSetCursor(Message);
+    end;
+    //else
+    //  inherited WMSetCursor(Message);
   end;
-  }
+
   Logger.ExitMethod([lcSetCursor],'WMSetCursor');
 end;
 
@@ -18628,6 +18654,9 @@ begin
     begin
       // Invalidate client area from the current column all to the right (or left in RTL mode).
       R := ClientRect;
+      //lclheader
+      if hoVisible in FHeader.FOptions then
+        Inc(R.Bottom,FHeader.Height);
       if not (toAutoSpanColumns in FOptions.FAutoOptions) then
         if UseRightToLeftAlignment then
           R.Right := FHeader.Columns[Column].Left + FHeader.Columns[Column].Width + ComputeRTLOffset
