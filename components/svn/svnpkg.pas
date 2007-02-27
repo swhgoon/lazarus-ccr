@@ -7,7 +7,7 @@ unit svnpkg;
 interface
 
 uses
-  svnclasses; 
+  svnclasses, SvnCommand; 
 
 implementation
 

@@ -38,7 +38,7 @@
         <PackageName Value="FCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="fpcunitsvnpkg.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -49,6 +49,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSvnClasses"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="testsvncommand.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSvnCommand"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -59,10 +64,11 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <UseHeaptrc Value="True"/>
+        <UseLineInfoUnit Value="False"/>
       </Debugging>
     </Linking>
     <Other>
+      <CustomOptions Value="-Faheaptrc"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
