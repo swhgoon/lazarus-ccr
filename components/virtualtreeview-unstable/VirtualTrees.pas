@@ -106,7 +106,7 @@ uses
   {$ifdef NeedWindows}
 
   {$endif}
-  Windows, vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
+  Windows, DelphiCompat, vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   CommCtrl,  // image lists, common controls tree structures
   SyncObjs  // Thread support
@@ -2133,7 +2133,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMSetCursor(var Message: TLMessage); message LM_SETCURSOR;
     procedure WMSetFocus(var Msg: TLMSetFocus); message LM_SETFOCUS;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
-    procedure WMTimer(var Message: TLMessage); message LM_TIMER;
+    procedure WMTimer(var Message: TLMTimer); message LM_TIMER;
     {$ifdef ThemeSupport}
       procedure WMThemeChanged(var Message: TLMessage); message WM_THEMECHANGED;
     {$endif ThemeSupport}
@@ -4725,7 +4725,6 @@ end;
 const
   Grays: array[0..3] of TColor = (clWhite, clSilver, clGray, clBlack);
   SysGrays: array[0..3] of TColor = (clWindow, clBtnFace, clBtnShadow, clBtnText);
-//todo_lcl_block
 
 procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemapping: Boolean = True);
 
@@ -5020,7 +5019,6 @@ begin
 
   // Load all internal image lists and convert their colors to current desktop color scheme.
   // In order to use high color images we have to create the image list handle ourselves.
-  //todo_lcl_block
 
   if IsWinNT then
     Flags := ILC_COLOR32 or ILC_MASK
@@ -10852,9 +10850,7 @@ begin
         end
       end;
 
-    LM_TIMER:;
-    //todo: add timer
-    {
+    LM_TIMER:
       if TLMTimer(Message).TimerID = HeaderTimer then
       begin
         // determine current mouse position to check if it left the window
@@ -10874,7 +10870,7 @@ begin
           end;
         end;
       end;
-    }
+
     //todo
     {
     LM_MOUSEMOVE: // mouse capture and general message redirection
@@ -11258,7 +11254,11 @@ begin
           else
             R.Right := FHeaderRect.Right;
       end;
+      //lclheader
+      RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
+        RDW_NOERASE or RDW_NOCHILDREN);
 
+      {
       // Current position of the owner in screen coordinates.
       GetWindowRect(Handle, RW);
 
@@ -11269,6 +11269,7 @@ begin
       MapWindowPoints(0, Handle, R, 2);
       RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
         RDW_NOERASE or RDW_NOCHILDREN);
+      }
     end;
 end;
 
@@ -13572,6 +13573,7 @@ begin
     begin
       // box is always of odd size
       //The TCanvas of VCL does not has width and height. It cause a conflict here
+      //FMinusBM.Height:= 0;
       FMinusBM.Width := 9;
       FMinusBM.Height := 9;
 
@@ -13609,6 +13611,7 @@ begin
     Logger.SendBitmap([lcPaintBitmap],'FMinusBM',FMinusBM);
     with FPlusBM, Canvas do
     begin
+      //FPlusBM.Width := 0;
       FPlusBM.Width := 9;
       FPlusBM.Height := 9;
       Transparent := True;
@@ -14887,11 +14890,8 @@ end;
 procedure TBaseVirtualTree.StopTimer(ID: Integer);
 
 begin
-  //todo_lcl_block
-  {
   if HandleAllocated then
     KillTimer(Handle, ID);
-  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -17177,15 +17177,16 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.WMTimer(var Message: TLMessage);
+procedure TBaseVirtualTree.WMTimer(var Message: TLMTimer);
 
 // centralized timer handling happens here
 
 begin
-  Logger.EnterMethod([lcMessages],'WMTimer');
+  Logger.EnterMethod([lcMessages,lcTimer],'WMTimer');
   {$ifdef EnableTimer}
   with Message do
   begin
+    Logger.Send([lcTimer],'TimerId',TimerId);
     case TimerID of
       ExpandTimer:
         DoDragExpand;
@@ -17218,7 +17219,7 @@ begin
     end;
   end;
   {$endif}
-  Logger.ExitMethod([lcMessages],'WMTimer');
+  Logger.ExitMethod([lcMessages,lcTimer],'WMTimer');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23676,9 +23677,7 @@ const // Region identifiers for GetRandomRgn
   SYSRGN = 4;
 
 //todo_lcl
-function GetRandomRgn(DC: HDC; Rgn: HRGN; iNum: Integer): Integer; //stdcall; external 'GDI32.DLL';
-begin
-end;
+function GetRandomRgn(DC: HDC; Rgn: HRGN; iNum: Integer): Integer; stdcall; external 'GDI32.DLL';
 
 procedure TBaseVirtualTree.UpdateWindowAndDragImage(const Tree: TBaseVirtualTree; TreeRect: TRect; UpdateNCArea,
   ReshowDragImage: Boolean);

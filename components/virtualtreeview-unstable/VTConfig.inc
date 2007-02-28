@@ -32,5 +32,5 @@
 {.$define EnableNCFunctions}
 {.$define EnableAdvancedGraphics}
 {$define EnableHeader}
-{.$define EnableTimer}
+{$define EnableTimer}
 {.$define EnableAccessible}

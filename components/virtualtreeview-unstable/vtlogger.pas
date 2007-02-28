@@ -30,6 +30,7 @@ const
   lcEditLink = 15;
   lcEraseBkgnd = 16;
   lcColumnPosition = 17;
+  lcTimer = 18;
 var
   Logger: TLCLLogger;
 
