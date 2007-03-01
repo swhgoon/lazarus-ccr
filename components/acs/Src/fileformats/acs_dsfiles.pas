@@ -89,7 +89,11 @@ type
 
   TDSIn = class(TACSCustomFileIn)
   private
+    {$ifdef fpc}
+    FxFormat: _WAVEFORMATEX;
+    {$else}
     FxFormat: TWaveFormatEx;
+    {$endif}
     FxAMMultiMediaStream: IAMMultiMediaStream;
     FxGraphBuilder: IGraphBuilder;
     FxMediaSeeking: IMediaSeeking;
