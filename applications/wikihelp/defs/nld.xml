@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CONFIG> <SpecialPageURL>Speciaal:Allpages</SpecialPageURL> 
+<ExportPageURL>?title=Speciaal:Export&amp;action=submit&amp;pages=%s&amp;curonly=true</ExportPageURL>
+<ImageTagName>Afbeelding</ImageTagName> </CONFIG>
