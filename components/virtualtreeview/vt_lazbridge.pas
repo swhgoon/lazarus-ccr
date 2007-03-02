@@ -1,4 +1,4 @@
-unit lazbridge;
+unit vt_lazbridge;
 
 { *************************************************************************** }
 { Copyright (c) 2007 Theo Lustenberger                                        }
@@ -19,7 +19,7 @@ interface
 
 uses Classes, SysUtils, Graphics, GraphType, InterfaceBase, LCLType,
   IntfGraphics, FPimage, LCLIntf, ExtDlgs, FileUtil, ExtCtrls,
-  opbitmap {$IFNDEF VER_VTV} , opbitmapformats  {$ENDIF};
+  vt_opbitmap {$IFNDEF VER_VTV} , opbitmapformats  {$ENDIF};
 
 
 type

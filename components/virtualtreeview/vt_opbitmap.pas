@@ -1,4 +1,4 @@
-unit opbitmap;
+unit vt_opbitmap;
 
 { *************************************************************************** }
 { Copyright (c) 2007 Theo Lustenberger                                        }

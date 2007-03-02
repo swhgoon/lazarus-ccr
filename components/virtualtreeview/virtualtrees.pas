@@ -1,4 +1,4 @@
-﻿unit VirtualTrees;
+unit VirtualTrees;
 
 // Version 4.0.17
 //
