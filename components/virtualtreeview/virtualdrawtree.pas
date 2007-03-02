@@ -3,7 +3,8 @@ unit VirtualDrawTree;
 interface
 
 uses
-  Classes,Sysutils,Graphics,virtualtrees;
+  Classes, Types,SysUtils,Controls,
+  Graphics,virtualtrees;
 
 type
   TVTDrawHintEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode; R: TRect;
@@ -187,6 +188,7 @@ type
     property OnSaveNode;
     property OnScroll;
     property OnStartDock;
+    property OnStartDrag;
     property OnStateChange;
     property OnStructureChange;
     property OnUpdating;
