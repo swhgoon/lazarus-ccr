@@ -58,10 +58,12 @@ var
   http : THttpSend;
   ss : TStringStream;
   s : string;
+  tmp: String;
 begin
   lbFoundPages.Items.Clear;
   ss := TStringStream.Create('');
   http := THttpSend.Create;
+  http.UserAgent := 'Mozilla/4.0 (compatible; WikiHelp)';
   http.HTTPMethod('GET',eWikiPage.Text+SpecialPageURL);
   http.Document.SaveToStream(ss);
   http.Free;
@@ -77,8 +79,13 @@ begin
   while pos('<a href="',s) > 0 do
     begin
       s := copy(s,pos('<a href="',s)+10,length(s));
-      if copy(copy(s,0,pos('"',s)-1),0,length(ePageOffset.Text)) = ePageOffset.Text then
-        lbFoundPages.Items.Add(copy(s,0,pos('"',s)-1));
+      tmp := copy(s,0,pos('"',s)-1);
+      while pos(copy(tmp,0,pos('/',tmp)-1),eWikiPage.Text) > 0 do
+        tmp := copy(tmp,pos('/',tmp)+1,length(tmp));
+      if copy(tmp,0,length(ePageOffset.Text)) = ePageOffset.Text then
+        begin
+          lbFoundPages.Items.Add(tmp);
+        end;
       s := copy(s,pos('"',s)+1,length(s));
     end;
 end;
