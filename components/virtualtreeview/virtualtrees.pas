@@ -1,4 +1,4 @@
-unit VirtualTrees;
+﻿unit VirtualTrees;
 
 // Version 4.0.17
 //
@@ -70,7 +70,7 @@ interface
 {.$define UseLocalMemoryManager}
 
 uses
-  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes, opbitmap, lazbridge, Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
+  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes, vt_opbitmap, vt_lazbridge, Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
   LResources, GraphType, CustomTimer,
   SyncObjs, // critical sections
   CommCtrl  // image lists, common controls tree structures
