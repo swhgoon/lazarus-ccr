@@ -7605,8 +7605,9 @@ begin
   FLayout := blGlyphLeft;
 
   inherited Create(Collection);
+  //lcl: setting FPosition here will override the Design time value
+  //FPosition := Owner.Count - 1;
 
-  FPosition := Owner.Count - 1;
   // Read parent bidi mode and color values as default values.
   ParentBiDiModeChanged;
   ParentColorChanged;
@@ -22430,7 +22431,6 @@ begin
       begin
         Inc(Target.Y,FHeader.Height);
         Dec(Window.Bottom,FHeader.Height);
-
       end;
 
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
