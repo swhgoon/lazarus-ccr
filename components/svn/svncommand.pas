@@ -39,6 +39,8 @@ uses
   FileUtil;
 
 function ExecuteSvnCommand(const Command: string; Output: TStream): integer;
+function ExecuteSvnCommand(const Command: string): integer;
+procedure DumpStream(const AStream: TStream);
 
 var
   SvnExecutable: string;
@@ -94,6 +96,30 @@ begin
     SvnProcess.Free;
   end;
 end;
+
+function ExecuteSvnCommand(const Command: string): integer;
+var
+  Output: TMemoryStream;
+begin
+  Output := TMemoryStream.Create;
+  try
+    Result := ExecuteSvnCommand(Command, Output);
+  finally
+    Output.Free;
+  end;
+end;
+
+procedure DumpStream(const AStream: TStream);
+var
+  lines: TStrings;
+begin
+  lines := TStringList.Create;
+  AStream.Position := 0;
+  lines.LoadFromStream(AStream);
+  writeln(lines.Text);
+  lines.Free;
+end;
+
 
 end.
 

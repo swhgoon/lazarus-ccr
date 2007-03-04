@@ -16,13 +16,17 @@ type
   private
     function GetInfoFileName: string;
     function GetLogFileName: string;
+    function GetPropFileName: string;
   published
     procedure TestHookUp;
     procedure TestLoadInfo;
+    procedure TestInfoCreateUrl;
     procedure TestLoadLog;
     procedure TestLoadSimpleLogPaths;
     procedure TestLoadComplexLogPaths;
     procedure TestLoadLogTwice;
+    procedure TestLogCommonPath;
+    procedure TestPropList;
   end;
 
 implementation
@@ -35,6 +39,11 @@ end;
 function TTestSvnClasses.GetLogFileName: string;
 begin
   Result := ExtractFilePath(ParamStr(0)) + 'log.xml';
+end;
+
+function TTestSvnClasses.GetPropFileName: string;
+begin
+  Result := ExtractFilePath(ParamStr(0)) + 'proplist.txt';
 end;
 
 procedure TTestSvnClasses.TestHookUp;
@@ -70,6 +79,20 @@ begin
     AssertEquals('Wrong commit author', 'jesus', SvnInfo.Entry.Commit.Author);
     AssertEquals('Wrong commit date',
       '2007-02-25T22:55:08.029980Z', SvnInfo.Entry.Commit.Date);
+  finally
+    SvnInfo.Free;
+  end;
+end;
+
+procedure TTestSvnClasses.TestInfoCreateUrl;
+var
+  SvnInfo: TSvnInfo;
+begin
+  SvnInfo := TSvnInfo.Create('.');
+  try
+      AssertEquals('Wrong repository UUID',
+        '8e941d3f-bd1b-0410-a28a-d453659cc2b4',
+        SvnInfo.Entry.Repository.UUID);
   finally
     SvnInfo.Free;
   end;
@@ -161,6 +184,58 @@ begin
     AssertEquals('Wrong number of log entries', 6, SvnLog.LogEntryCount);
   finally
     SvnLog.Free;
+  end;
+end;
+
+procedure TTestSvnClasses.TestLogCommonPath;
+var
+  SvnLog: TSvnLog;
+  procedure AssertCommonPath(i: integer;const ACommonPath: string);
+  var
+    LogEntry: TLogEntry;
+  begin
+    LogEntry := SvnLog.LogEntry[i];
+    AssertEquals('Wrong common path '+IntToStr(i), ACommonPath, LogEntry.CommonPath);
+  end;
+
+begin
+  SvnLog := TSvnLog.Create;
+  try
+    SvnLog.LoadFromFile(GetLogFileName);
+    AssertEquals('Wrong number of log entries', 6, SvnLog.LogEntryCount);
+    AssertCommonPath(4, '/trunk/lcl/interfaces/win32/');
+    AssertCommonPath(5, '/trunk/lcl/interfaces/win32/');
+    AssertCommonPath(3, '/trunk/components/tachart/');
+    AssertCommonPath(0, '/trunk/');
+  finally
+    SvnLog.Free;
+  end;
+end;
+
+procedure TTestSvnClasses.TestPropList;
+var
+  SvnPropInfo: TSvnPropInfo;
+  
+  procedure AssertFileProp(i: integer; const FileName: string);
+  var
+    FileProp: TSvnFileProp;
+  begin
+    FileProp := SvnPropInfo.FileItem[i];
+    AssertEquals('Wrong file name', FileName, FileProp.FileName);
+    AssertEquals('Wrong number of properties', 2, FileProp.Properties.Count);
+    AssertEquals('Wrong property name', 'svn:mime-type', FileProp.Properties.Names[0]);
+    AssertEquals('Wrong property value', 'text/plain', FileProp.Properties.ValueFromIndex[0]);
+  end;
+begin
+  SvnPropInfo := TSvnPropInfo.Create;
+  try
+    SvnPropInfo.LoadFromFile(GetPropFileName);
+    AssertEquals('Wrong number of files', 3, SvnPropInfo.FileCount);
+    AssertFileProp(0, 'testsvnclasses.pas');
+    AssertFileProp(1, 'testsvncommand.pas');
+    AssertFileProp(2, 'fpcunitsvnpkg.lpi');
+  finally
+    SvnPropInfo.Free;
   end;
 end;
 

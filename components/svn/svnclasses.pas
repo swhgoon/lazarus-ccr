@@ -27,16 +27,17 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit svnclasses;
+unit SvnClasses;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, strutils,
   contnrs,
-  DOM, XMLRead;
+  DOM, XMLRead,
+  SvnCommand;
   
 type
 
@@ -51,6 +52,7 @@ type
   public
     procedure LoadFromStream(s: TStream);
     procedure LoadFromFile(FileName: string);
+    procedure LoadFromCommand(command: string);
   end;
 
   { TCommit }
@@ -112,6 +114,7 @@ type
     procedure LoadFromXml(ADoc: TXMLDocument); override;
   public
     constructor Create;
+    constructor Create(const Uri: string);
     destructor Destroy; override;
     procedure Clear;
     property Entry: TEntry read FEntry;
@@ -142,13 +145,16 @@ type
     FLogPaths: TFPObjectList;
     FMessage: string;
     FRevision: integer;
+    function GetCommonPath: string;
     function GetLogPath(index: integer): TLogPath;
     function GetLogPathCount: integer;
     procedure LoadFromNode(ANode: TDOMElement);
+    procedure SortPaths;
   public
     constructor Create;
     destructor Destroy; override;
     property Author: string read FAuthor write FAuthor;
+    property CommonPath: string read GetCommonPath;
     property Date: string read  FDate write FDate;
     property Message: string read FMessage write FMessage;
     property Path[index: integer] :TLogPath read GetLogPath;
@@ -170,6 +176,35 @@ type
     procedure Clear;
     property LogEntry[index: integer] :TLogEntry read GetLogEntry;
     property LogEntryCount: integer read GetLogEntryCount;
+  end;
+  
+  { TSvnFileProp }
+
+  TSvnFileProp = class
+  private
+    FFileName: string;
+    FProperties: TStrings;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property FileName: string read FFileName;
+    property Properties: TStrings read FProperties;
+  end;
+  
+  { TSvnPropInfo }
+
+  TSvnPropInfo = class
+  private
+    FFiles: TFPObjectList;
+    function GetFile(index: integer): TSvnFileProp;
+    function GetFileCount: integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadFromStream(s: TStream);
+    procedure LoadFromFile(FileName: string);
+    property FileItem[index: integer]: TSvnFileProp read GetFile; default;
+    property FileCount: integer read GetFileCount;
   end;
 
 implementation
@@ -214,6 +249,21 @@ begin
   end;
 end;
 
+procedure TSvnBase.LoadFromCommand(command: string);
+var
+  XmlOutput: TMemoryStream;
+begin
+  XmlOutput := TMemoryStream.Create;
+  try
+    ExecuteSvnCommand(command, XmlOutput);
+    //DumpStream(XmlOutput);
+    XmlOutput.Position := 0;
+    LoadFromStream(XmlOutput);
+  finally
+    XmlOutput.Free;
+  end;
+end;
+
 { TSvnInfo }
 
 procedure TSvnInfo.LoadFromXml(ADoc: TXMLDocument);
@@ -226,6 +276,12 @@ constructor TSvnInfo.Create;
 begin
   inherited Create;
   FEntry := TEntry.Create;
+end;
+
+constructor TSvnInfo.Create(const Uri: string);
+begin
+  Create;
+  LoadFromCommand('info --xml '+Uri);
 end;
 
 destructor TSvnInfo.Destroy;
@@ -385,6 +441,23 @@ begin
   Result := TLogPath(FLogPaths[index]);
 end;
 
+function TLogEntry.GetCommonPath: string;
+var
+  i: integer;
+  NextPath: string;
+begin
+  if FLogPaths.Count = 0 then exit('');
+  
+  Result := ExtractFilePath(Path[0].Path);
+  i := 1;
+  while i<FLogPaths.Count do begin
+    NextPath :=  Path[i].Path;
+    while (Copy(NextPath,1,length(Result))<>Result) do
+      Result := ExtractFilePath(ExtractFileDir(Result));
+    inc(i);
+  end;
+end;
+
 function TLogEntry.GetLogPathCount: integer;
 begin
   Result := FLogPaths.Count;
@@ -417,6 +490,20 @@ begin
   end;
 end;
 
+function PathCompare(Item1, Item2: Pointer): Integer;
+var
+  Path1, Path2: TLogPath;
+begin
+  Path1 := TLogPath(Item1);
+  Path2 := TLogPath(Item2);
+  Result := CompareStr(Path1.Path, Path2.Path);
+end;
+
+procedure TLogEntry.SortPaths;
+begin
+  FLogPaths.Sort(@PathCompare);
+end;
+
 constructor TLogEntry.Create;
 begin
   inherited Create;
@@ -446,6 +533,101 @@ begin
       FAction := i;
       break;
     end;
+end;
+
+{ TSvnFileProp }
+
+constructor TSvnFileProp.Create;
+begin
+  FProperties := TStringList.Create;
+end;
+
+destructor TSvnFileProp.Destroy;
+begin
+  FProperties.Free;
+  inherited Destroy;
+end;
+
+{ TSvnPropInfo }
+
+function TSvnPropInfo.GetFile(index: integer): TSvnFileProp;
+begin
+  Result := TSvnFileProp(FFiles[index]);
+end;
+
+function TSvnPropInfo.GetFileCount: integer;
+begin
+  Result := FFiles.Count;
+end;
+
+constructor TSvnPropInfo.Create;
+begin
+  FFiles := TFPObjectList.Create(true);
+end;
+
+destructor TSvnPropInfo.Destroy;
+begin
+  FFiles.Free;
+  inherited Destroy;
+end;
+
+procedure TSvnPropInfo.LoadFromStream(s: TStream);
+var
+  Lines: TStrings;
+  Line: string;
+  FileProp: TSvnFileProp;
+  i: Integer;
+  QuotePos, ColonPos: integer;
+  PropName, PropValue: String;
+const
+  PropertiesOn = 'Properties on ';
+begin
+  Lines := TStringList.Create;
+  try
+    Lines.LoadFromStream(s);
+    i := 0;
+    while (i<Lines.Count) do begin
+      Line := Lines[i];
+      if copy(Line, 1, length(PropertiesOn))=PropertiesOn then begin
+        FileProp := TSvnFileProp.Create;
+        QuotePos := PosEx('''', Line, Length(PropertiesOn)+2);
+        FileProp.FFileName :=
+          Copy(Line, Length(PropertiesOn)+2, QuotePos - Length(PropertiesOn)-2);
+        FFiles.Add(FileProp);
+        inc(i);
+        while (i<Lines.Count) do begin
+
+          Line := Lines[i];
+          if (Length(Line)<2) or (Line[1]<>' ') then begin
+            // new file, so unget line
+            dec(i);
+            break;
+          end;
+          ColonPos := Pos(' : ', Line);
+          PropName := Copy(Line, 3, ColonPos - 3);
+          PropValue := Copy(Line, ColonPos + 3, Length(Line)-ColonPos-2);
+          FileProp.Properties.Values[PropName] := PropValue;
+          inc(i);
+        end;
+      end
+      else
+        inc(i);
+    end;
+  finally
+    Lines.Free;
+  end;
+end;
+
+procedure TSvnPropInfo.LoadFromFile(FileName: string);
+var
+  FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(FileName, fmOpenRead);
+  try
+    LoadFromStream(FileStream);
+  finally
+    FileStream.Free;
+  end;
 end;
 
 end.
