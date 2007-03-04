@@ -26,7 +26,9 @@ type
     procedure TestLoadComplexLogPaths;
     procedure TestLoadLogTwice;
     procedure TestLogCommonPath;
+    procedure TestLogFiles;
     procedure TestPropList;
+    procedure TestPropListLoadForFiles;
   end;
 
 implementation
@@ -212,6 +214,29 @@ begin
   end;
 end;
 
+procedure TTestSvnClasses.TestLogFiles;
+var
+  SvnLog: TSvnLog;
+  Files: TStrings;
+  i: Integer;
+begin
+  SvnLog := TSvnLog.Create;
+  Files := nil;
+  try
+    SvnLog.LoadFromFile(GetLogFileName);
+    AssertEquals('Wrong number of log entries', 6, SvnLog.LogEntryCount);
+    for i := 0 to SvnLog.LogEntryCount - 1 do begin
+      Files := SvnLog.LogEntry[i].GetFileList;
+      AssertEquals('Wrong number of files',
+        SvnLog.LogEntry[i].PathCount, Files.Count);
+      FreeAndNil(Files);
+    end;
+  finally
+    SvnLog.Free;
+    Files.Free
+  end;
+end;
+
 procedure TTestSvnClasses.TestPropList;
 var
   SvnPropInfo: TSvnPropInfo;
@@ -235,6 +260,26 @@ begin
     AssertFileProp(1, 'testsvncommand.pas');
     AssertFileProp(2, 'fpcunitsvnpkg.lpi');
   finally
+    SvnPropInfo.Free;
+  end;
+end;
+
+procedure TTestSvnClasses.TestPropListLoadForFiles;
+var
+  SvnPropInfo: TSvnPropInfo;
+  FileNames: TStrings;
+begin
+  FileNames:= TStringList.Create;
+  FileNames.Add('testsvnclasses.pas');
+  FileNames.Add('fpcunitsvnpkg.lpi');
+  SvnPropInfo := TSvnPropInfo.Create;
+  try
+    SvnPropInfo.LoadForFiles(FileNames);
+    AssertEquals('Wrong number of files', 2, SvnPropInfo.FileCount);
+    AssertEquals('Wrong file name', FileNames[0], SvnPropInfo[0].FileName);
+    AssertEquals('Wrong file name', FileNames[1], SvnPropInfo[1].FileName);
+  finally
+    FileNames.Free;
     SvnPropInfo.Free;
   end;
 end;

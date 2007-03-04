@@ -153,6 +153,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function GetFileList: TStrings;
     property Author: string read FAuthor write FAuthor;
     property CommonPath: string read GetCommonPath;
     property Date: string read  FDate write FDate;
@@ -203,6 +204,7 @@ type
     destructor Destroy; override;
     procedure LoadFromStream(s: TStream);
     procedure LoadFromFile(FileName: string);
+    procedure LoadForFiles(FileNames: TStrings);
     property FileItem[index: integer]: TSvnFileProp read GetFile; default;
     property FileCount: integer read GetFileCount;
   end;
@@ -458,6 +460,15 @@ begin
   end;
 end;
 
+function TLogEntry.GetFileList: TStrings;
+var
+  i: integer;
+begin
+  Result := TStringList.Create;
+  for i:= 0 to PathCount -1 do
+    Result.Add(Path[i].Path);
+end;
+
 function TLogEntry.GetLogPathCount: integer;
 begin
   Result := FLogPaths.Count;
@@ -627,6 +638,25 @@ begin
     LoadFromStream(FileStream);
   finally
     FileStream.Free;
+  end;
+end;
+
+procedure TSvnPropInfo.LoadForFiles(FileNames: TStrings);
+var
+  Output: TMemoryStream;
+  Files: string;
+  i: integer;
+begin
+  Output := TMemoryStream.Create;
+  try
+    Files := '';
+    for i := 0 to FileNames.Count-1 do
+      Files := Files + ' ' + FileNames[i];
+    ExecuteSvnCommand('proplist -v' + Files, Output);
+    Output.Position := 0;
+    LoadFromStream(Output);
+  finally
+    Output.Free;
   end;
 end;
 
