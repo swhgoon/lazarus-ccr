@@ -12535,7 +12535,7 @@ begin
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
             (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) then
           begin
-            Logger.Send([lcPaintDetails],'Setting the color of a selected node');
+            Logger.Send([lcPaintDetails,lcDrag],'Setting the color of a selected node');
             if toShowHorzGridLines in FOptions.PaintOptions then
               Dec(R.Bottom);
             if Focused or (toPopupMode in FOptions.FPaintOptions) then
@@ -13779,7 +13779,8 @@ begin
           end
           else
           begin
-            Brush.Style := bsClear;
+            //todo: remove comment when LCL is fixed
+            //Brush.Style := bsClear;
           end;
         end
         else
@@ -15091,6 +15092,7 @@ var
   Formats: TFormatArray;
 
 begin
+  Logger.EnterMethod([lcDrag],'CMDrag');
   with Message, DragRec^ do
   begin
     S := Source;
@@ -15172,6 +15174,7 @@ begin
       end;
     end;
   end;
+  Logger.ExitMethod([lcDrag],'CMDrag');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -17950,9 +17953,8 @@ begin
   PrepareBitmaps(True, True);
 
   // Register tree as OLE drop target.
-  // Somehow calling this code causes a SIGSEG
-  //if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
-  //  RegisterDragDrop(Handle, DragManager as IDropTarget);
+  if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
+     RegisterDragDrop(Handle, DragManager as IDropTarget);
 
   UpdateScrollBars(True);
   UpdateHeaderRect;
@@ -18762,6 +18764,7 @@ var
   DataObject: IDataObject;
 
 begin
+  Logger.EnterMethod([lcDrag],'DoDragging');
   DataObject := nil;
   // Dragging is dragging, nothing else.
   DoCancelEdit;
@@ -18800,7 +18803,7 @@ begin
     DragEffect := DROPEFFECT_NONE;
     AllowedEffects := GetDragOperations;
     try
-      ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+      VirtualTrees.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
       DragManager.ForceDragLeave;
     finally
       GetCursorPos(P);
@@ -18829,6 +18832,7 @@ begin
   finally
     FDragSelection := nil;
   end;
+  Logger.ExitMethod([lcDrag],'DoDragging');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19428,14 +19432,17 @@ var
   SavePenStyle: TPenStyle;
 
 begin
+  Logger.EnterMethod([lcDrag],'DoPaintDropMark');
   if FLastDropMode in [dmAbove, dmBelow] then
     with Canvas do
     begin
+      Logger.Send([lcDrag],'DropMode in [dmAbove,dmBelow]');
       SavePenStyle := Pen.Style;
       Pen.Style := psClear;
       SaveBrushColor := Brush.Color;
       Brush.Color := FColors.DropMarkColor;
-
+      Logger.SendColor([lcDrag],'Brush.Color',Brush.Color);
+      Logger.Send([lcDrag],'R',R);
       if FLastDropMode = dmAbove then
       begin
         Polygon([Point(R.Left + 2, R.Top),
@@ -19457,6 +19464,7 @@ begin
       Brush.Color := SaveBrushColor;
       Pen.Style := SavePenStyle;
     end;
+  Logger.ExitMethod([lcDrag],'DoPaintDropMark');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19694,12 +19702,14 @@ end;
 procedure TBaseVirtualTree.DoStartDrag(var DragObject: TDragObject);
 
 begin
+  Logger.EnterMethod([lcDrag],'DoStartDrag');
   inherited;
 
   // Check if the application created an own drag object. This is needed to pass the correct source in
   // OnDragOver and OnDragDrop.
   if Assigned(DragObject) then
     DoStateChange([tsUserDragObject]);
+  Logger.ExitMethod([lcDrag],'DoStartDrag');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20000,6 +20010,7 @@ var
   Formats: TFormatArray;
 
 begin
+  Logger.EnterMethod([lcDrag],'DragDrop');
   StopTimer(ExpandTimer);
   StopTimer(ScrollTimer);
   DoStateChange([], [tsScrollPending, tsScrolling]);
@@ -20049,6 +20060,7 @@ begin
       FDropTargetNode := nil;
     end;
   end;
+  Logger.ExitMethod([lcDrag],'DragDrop');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20064,6 +20076,7 @@ var
   HitInfo: THitInfo;
 
 begin
+  Logger.EnterMethod([lcDrag],'DragEnter');
   try
     // Determine acceptance of drag operation and reset scroll start time.
     FDragScrollStart := 0;
@@ -20109,6 +20122,7 @@ begin
   except
     Result := E_UNEXPECTED;
   end;
+  Logger.ExitMethod([lcDrag],'DragEnter');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20122,6 +20136,7 @@ var
   P: TPoint;
 
 begin
+  Logger.EnterMethod([lcDrag],'DragFinished');
   DoStateChange([], [tsVCLDragPending, tsVCLDragging, tsUserDragObject]);
 
   GetCursorPos(P);
@@ -20133,6 +20148,7 @@ begin
       Perform(LM_MBUTTONUP, 0, Longint(PointToSmallPoint(P)))
     else
       Perform(LM_LBUTTONUP, 0, Longint(PointToSmallPoint(P)));
+  Logger.ExitMethod([lcDrag],'DragFinished');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -20185,6 +20201,7 @@ var
   ScrollOptions: TScrollUpdateOptions;
 
 begin
+  //Logger.EnterMethod([lcDrag],'DragOver');
   if not DragManager.DropTargetHelperSupported and (Source is TBaseVirtualTree) then
   begin
     Tree := Source as TBaseVirtualTree;
@@ -20199,7 +20216,7 @@ begin
   try
     DragPos := Pt;
     Pt := ScreenToClient(Pt);
-
+    //Logger.Send([lcDrag],'Pt',Pt);
     // Check if we have to scroll the client area.
     FScrollDirections := DetermineScrollDirections(Pt.X, Pt.Y);
     DeltaX := 0;
@@ -20375,6 +20392,7 @@ begin
   except
     Result := E_UNEXPECTED;
   end;
+  //Logger.ExitMethod([lcDrag],'DragOver');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22385,10 +22403,11 @@ begin
       // The clipping rectangle is given in client coordinates of the window. We have to convert it into
       // a sliding window of the tree image.
       Logger.Send([lcPaintDetails],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
-      //Logger.Send([lcPaint],'Window Before Offset',Window);
+
       Windows.OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
-      //Logger.Send([lcPaint],'Window After Offset',Window);
+      Logger.Active:=Logger.CalledBy('DoDragging');
       PaintTree(Canvas, Window, Target, Options);
+      Logger.Active:=True;
     end
     else
     begin
@@ -27592,9 +27611,7 @@ begin
         // It is usually smaller than an entire node and wanders while the paint loop advances.
         MaximumRight := Target.X + (Window.Right - Window.Left);
         MaximumBottom := Target.Y + (Window.Bottom - Window.Top);
-        //lclheader
-        //if hoVisible in FHeader.FOptions then
-        //  Dec(MaximumBottom,FHeader.Height);
+
         Logger.Send([lcPaintHeader],'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);
         TargetRect := Rect(Target.X, Target.Y - (Window.Top - BaseOffset), MaximumRight, 0);
         TargetRect.Bottom := TargetRect.Top;
@@ -27643,6 +27660,7 @@ begin
               begin
                 if Height <> PaintInfo.Node.NodeHeight then
                 begin
+                  Logger.Send([lcPaintDetails],'Setting the Node Height');
                   // Avoid that the VCL copies the bitmap while changing its height.
                   Height := 0;
                   Height := PaintInfo.Node.NodeHeight;
@@ -27897,10 +27915,13 @@ begin
             end;
 
             Inc(TargetRect.Top, PaintInfo.Node.NodeHeight);
-            Logger.SendIf([lcPaintHeader],'Last Node to be painted: '+ IntToStr(PaintInfo.Node^.Index)
+            Logger.SendIf([lcPaintHeader,lcDrag],'Last Node to be painted: '+ IntToStr(PaintInfo.Node^.Index)
               +' (TargetRect.Top >= MaximumBottom)',TargetRect.Top >= MaximumBottom);
             if TargetRect.Top >= MaximumBottom then
+            begin
+              Logger.ExitMethod([lcPaintDetails],'PaintNode');
               Break;
+            end;
 
             // Keep selection rectangle coordinates in sync.
             if DrawSelectionRect then

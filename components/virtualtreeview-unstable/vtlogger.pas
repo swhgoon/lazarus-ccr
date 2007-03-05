@@ -31,6 +31,7 @@ const
   lcEraseBkgnd = 16;
   lcColumnPosition = 17;
   lcTimer = 18;
+  lcDrag = 19;
 var
   Logger: TLCLLogger;
 

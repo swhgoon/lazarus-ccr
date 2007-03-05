@@ -1,18 +1,18 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TMainForm','FORMDATA',[
-  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#3'['#1#6'Height'#3'?'#2#3'Top'#3'/'#1
-  +#5'Width'#3#22#3#18'HorzScrollBar.Page'#3#21#3#18'VertScrollBar.Page'#3'>'#2
-  +#13'ActiveControl'#7#7'Button1'#7'Caption'#6',Demo for drag''n drop and clip'
-  +'board transfers'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#244#9
-  +'Font.Name'#6#5'Arial'#8'OnCreate'#7#10'FormCreate'#7'Visible'#9#0#6'TLabel'
-  +#6'Label1'#4'Left'#2#10#6'Height'#2#15#3'Top'#2'`'#5'Width'#3#239#0#7'Captio'
-  +'n'#6'1Tree 1 uses OLE when initiating a drag operation.'#5'Color'#7#6'clNon'
-  +'e'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6
-  +#5'Arial'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#3'h'#1#6'Height'
-  +#2'!'#3'Top'#2'P'#5'Width'#3'Q'#1#8'AutoSize'#8#7'Caption'#6#137'Tree 2 uses'
-  +' VCL when initiating a drag operation. It also uses manual drag mode. Only '
-  +'marked lines are allowed to start a drag operation.'#5'Color'#7#6'clNone'#12
+  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#2'u'#6'Height'#3'?'#2#3'Top'#3#135#0#5
+  +'Width'#3#22#3#18'HorzScrollBar.Page'#3#21#3#18'VertScrollBar.Page'#3'>'#2#13
+  +'ActiveControl'#7#7'Button1'#7'Caption'#6',Demo for drag''n drop and clipboa'
+  +'rd transfers'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#244#9'F'
+  +'ont.Name'#6#5'Arial'#8'OnCreate'#7#10'FormCreate'#7'Visible'#9#0#6'TLabel'#6
+  +'Label1'#4'Left'#2#10#6'Height'#2#15#3'Top'#2'`'#5'Width'#3#239#0#7'Caption'
+  +#6'1Tree 1 uses OLE when initiating a drag operation.'#5'Color'#7#6'clNone'
+  +#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6#5
+  +'Arial'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#3'h'#1#6'Height'#2
+  +'!'#3'Top'#2'P'#5'Width'#3'Q'#1#8'AutoSize'#8#7'Caption'#6#137'Tree 2 uses V'
+  +'CL when initiating a drag operation. It also uses manual drag mode. Only ma'
+  +'rked lines are allowed to start a drag operation.'#5'Color'#7#6'clNone'#12
   +'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6#5'Ari'
   +'al'#11'ParentColor'#8#8'WordWrap'#9#0#0#6'TPanel'#6'Panel3'#6'Height'#2'E'#5
   +'Width'#3#22#3#5'Align'#7#5'alTop'#5'Color'#7#7'clWhite'#11'ParentColor'#8#8
