@@ -149,11 +149,11 @@ type
     function GetLogPath(index: integer): TLogPath;
     function GetLogPathCount: integer;
     procedure LoadFromNode(ANode: TDOMElement);
-    procedure SortPaths;
   public
     constructor Create;
     destructor Destroy; override;
-    function GetFileList: TStrings;
+    function GetFileList(const BaseDir: string = ''): TStrings;
+    procedure SortPaths;
     property Author: string read FAuthor write FAuthor;
     property CommonPath: string read GetCommonPath;
     property Date: string read  FDate write FDate;
@@ -460,13 +460,13 @@ begin
   end;
 end;
 
-function TLogEntry.GetFileList: TStrings;
+function TLogEntry.GetFileList(const BaseDir: string = ''): TStrings;
 var
   i: integer;
 begin
   Result := TStringList.Create;
   for i:= 0 to PathCount -1 do
-    Result.Add(Path[i].Path);
+    Result.Add(BaseDir + Path[i].Path);
 end;
 
 function TLogEntry.GetLogPathCount: integer;
@@ -596,6 +596,7 @@ begin
   Lines := TStringList.Create;
   try
     Lines.LoadFromStream(s);
+    writeln(Lines.Text);
     i := 0;
     while (i<Lines.Count) do begin
       Line := Lines[i];
