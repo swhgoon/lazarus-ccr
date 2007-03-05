@@ -34,3 +34,4 @@
 {$define EnableHeader}
 {$define EnableTimer}
 {.$define EnableAccessible}
+{$define UseExternalDragManager}

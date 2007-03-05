@@ -1,18 +1,18 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TMainForm','FORMDATA',[
-  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#2'u'#6'Height'#3'?'#2#3'Top'#3#135#0#5
-  +'Width'#3#22#3#18'HorzScrollBar.Page'#3#21#3#18'VertScrollBar.Page'#3'>'#2#13
-  +'ActiveControl'#7#7'Button1'#7'Caption'#6',Demo for drag''n drop and clipboa'
-  +'rd transfers'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#244#9'F'
-  +'ont.Name'#6#5'Arial'#8'OnCreate'#7#10'FormCreate'#7'Visible'#9#0#6'TLabel'#6
-  +'Label1'#4'Left'#2#10#6'Height'#2#15#3'Top'#2'`'#5'Width'#3#239#0#7'Caption'
-  +#6'1Tree 1 uses OLE when initiating a drag operation.'#5'Color'#7#6'clNone'
-  +#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6#5
-  +'Arial'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#3'h'#1#6'Height'#2
-  +'!'#3'Top'#2'P'#5'Width'#3'Q'#1#8'AutoSize'#8#7'Caption'#6#137'Tree 2 uses V'
-  +'CL when initiating a drag operation. It also uses manual drag mode. Only ma'
-  +'rked lines are allowed to start a drag operation.'#5'Color'#7#6'clNone'#12
+  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#3'n'#1#6'Height'#3'?'#2#3'Top'#3#215#0
+  +#5'Width'#3#22#3#18'HorzScrollBar.Page'#3#21#3#18'VertScrollBar.Page'#3'>'#2
+  +#13'ActiveControl'#7#7'Button1'#7'Caption'#6',Demo for drag''n drop and clip'
+  +'board transfers'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#244#9
+  +'Font.Name'#6#5'Arial'#8'OnCreate'#7#10'FormCreate'#7'Visible'#9#0#6'TLabel'
+  +#6'Label1'#4'Left'#2#10#6'Height'#2#15#3'Top'#2'`'#5'Width'#3#239#0#7'Captio'
+  +'n'#6'1Tree 1 uses OLE when initiating a drag operation.'#5'Color'#7#6'clNon'
+  +'e'#12'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6
+  +#5'Arial'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#3'h'#1#6'Height'
+  +#2'!'#3'Top'#2'P'#5'Width'#3'Q'#1#8'AutoSize'#8#7'Caption'#6#137'Tree 2 uses'
+  +' VCL when initiating a drag operation. It also uses manual drag mode. Only '
+  +'marked lines are allowed to start a drag operation.'#5'Color'#7#6'clNone'#12
   +'Font.CharSet'#7#12'ANSI_CHARSET'#11'Font.Height'#2#245#9'Font.Name'#6#5'Ari'
   +'al'#11'ParentColor'#8#8'WordWrap'#9#0#0#6'TPanel'#6'Panel3'#6'Height'#2'E'#5
   +'Width'#3#22#3#5'Align'#7#5'alTop'#5'Color'#7#7'clWhite'#11'ParentColor'#8#8
@@ -46,9 +46,9 @@ LazarusResources.Add('TMainForm','FORMDATA',[
   +'DragAllowed'#7#16'Tree2DragAllowed'#10'OnDragOver'#7#12'TreeDragOver'#10'On'
   +'DragDrop'#7#12'TreeDragDrop'#9'OnGetText'#7#12'Tree1GetText'#10'OnInitNode'
   +#7#12'TreeInitNode'#9'OnNewText'#7#12'Tree1NewText'#7'Columns'#14#0#0#0#18'T'
-  +'VirtualStringTree'#5'Tree1'#4'Left'#2#10#6'Height'#3#180#0#3'Top'#2't'#5'Wi'
-  +'dth'#3'J'#1#24'ClipboardFormats.Strings'#1#6#3'CSV'#6#11'HTML Format'#6#10
-  +'Plain text'#6#16'Rich Text Format'#6' Rich Text Format Without Objects'#6#12
+  +'VirtualStringTree'#5'Tree1'#4'Left'#2#8#6'Height'#3#180#0#3'Top'#2't'#5'Wid'
+  +'th'#3'J'#1#24'ClipboardFormats.Strings'#1#6#3'CSV'#6#11'HTML Format'#6#10'P'
+  +'lain text'#6#16'Rich Text Format'#6' Rich Text Format Without Objects'#6#12
   +'Unicode text'#0#18'Colors.BorderColor'#7#12'clWindowText'#15'Colors.HotColo'
   +'r'#7#7'clBlack'#17'DefaultNodeHeight'#2#24#8'DragMode'#7#11'dmAutomatic'#9
   +'DragWidth'#3'^'#1#9'EditDelay'#3#244#1#12'Font.CharSet'#7#12'ANSI_CHARSET'

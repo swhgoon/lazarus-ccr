@@ -7,6 +7,7 @@
       <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="units\$(LCLWidgetType)\"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>

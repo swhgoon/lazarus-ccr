@@ -103,8 +103,8 @@ interface
 {$HPPEMIT '#include <oleidl.h>'} // Necessary for BCB 6 SP 2.
 
 uses
-  {$ifdef NeedWindows}
-
+  {$ifdef UseExternalDragManager}
+  virtualdragmanager,
   {$endif}
   Windows, DelphiCompat, vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
@@ -206,7 +206,7 @@ const
   CFSTR_RTF = 'Rich Text Format';
   CFSTR_RTFNOOBJS = 'Rich Text Format Without Objects';
   CFSTR_CSV = 'CSV';
-
+  {$ifndef UseExternalDragManager}
   // Drag image helpers for Windows 2000 and up.
   IID_IDropTargetHelper: TGUID = (D1: $4657278B; D2: $411B; D3: $11D2; D4: ($83, $9A, $00, $C0, $4F, $D9, $18, $D0));
   IID_IDragSourceHelper: TGUID = (D1: $DE5BF786; D2: $477A; D3: $11D2; D4: ($83, $9D, $00, $C0, $4F, $D9, $18, $D0));
@@ -216,7 +216,7 @@ const
   SID_IDropTargetHelper = '{4657278B-411B-11D2-839A-00C04FD918D0}';
   SID_IDragSourceHelper = '{DE5BF786-477A-11D2-839D-00C04FD918D0}';
   SID_IDropTarget = '{00000122-0000-0000-C000-000000000046}';
-
+  {$endif}
   // Help identifiers for exceptions. Application developers are responsible to link them with actual help topics.
   hcTFEditLinkIsNil      = 2000;
   hcTFWrongMoveError     = 2001;
@@ -677,11 +677,11 @@ type
     sdDown
   );
   
-  {$ifdef EnableOLE}
-
+  {$ifndef UseExternalDragManager}
   // OLE drag'n drop support
   TFormatEtcArray = array of TFormatEtc;
   TFormatArray = array of Word;
+
 
   // IDataObject.SetData support
   TInternalStgMedium = packed record
@@ -689,7 +689,7 @@ type
     Medium: TStgMedium;
   end;
   TInternalStgMediumArray = array of TInternalStgMedium;
-
+  {$endif}
   TEnumFormatEtc = class(TInterfacedObject, IEnumFormatEtc)
   private
     FTree: TBaseVirtualTree;
@@ -704,11 +704,12 @@ type
     function Skip(celt: LongWord): HResult; stdcall;
   end;
 
+
+  {$ifndef UseExternalDragManager}
   // ----- OLE drag'n drop handling
 
   { 01.05.2006  Jim - Problem with BDS2006 C++ compiler and ambiguous defines}
   {$EXTERNALSYM IDropTargetHelper}
-
   IDropTargetHelper = interface(IUnknown)
     [SID_IDropTargetHelper]
     function DragEnter(hwndTarget: HWND; pDataObject: IDataObject; var ppt: TPoint; dwEffect: Integer): HRESULT; stdcall;
@@ -731,6 +732,7 @@ type
     function InitializeFromBitmap(var SHDragImage: TSHDragImage; pDataObject: IDataObject): HRESULT; stdcall;
     function InitializeFromWindow(Window: HWND; var ppt: TPoint; pDataObject: IDataObject): HRESULT; stdcall;
   end;
+
 
   IVTDragManager = interface(IUnknown)
     ['{C4B25559-14DA-446B-8901-0C879000EB16}']
@@ -813,8 +815,7 @@ type
     function GiveFeedback(Effect: Integer): HResult; stdcall;
     function QueryContinueDrag(EscapePressed: BOOL; KeyState: Integer): HResult; stdcall;
   end;
-
-  {$endif}//enableOLE
+  {$endif} //UseExternalDragManager
 
   PVTHintData = ^TVTHintData;
   TVTHintData = record
@@ -884,6 +885,8 @@ type
     disPrepared,        // Drag image class is prepared.
     disSystemSupport    // Running on Windows 2000 or higher. System supports drag images natively.
   );
+  
+  {$ifdef EnableOLE}
 
   // Class to manage header and tree drag image during a drag'n drop operation.
   TVTDragImage = class
@@ -927,7 +930,7 @@ type
     property Transparency: TVTTransparency read FTransparency write FTransparency default 128;
     property Visible: Boolean read GetVisible;
   end;
-
+  {$endif}
   // tree columns implementation
   TVirtualTreeColumns = class;
   TVTHeader = class;
@@ -2273,6 +2276,8 @@ TBaseVirtualTree = class(TCustomControl)
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
     procedure FontChanged(AFont: TObject); virtual;
+    //lcl
+    procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode): Integer; virtual;
     class function GetCheckImageListFor(Kind: TCheckImageKind): TCustomImageList; virtual;
@@ -5822,6 +5827,8 @@ begin
     Result := S_FALSE;
 end;
 
+{$ifndef UseExternalDragManager}
+
 //----------------- TVTDataObject --------------------------------------------------------------------------------------
 
 constructor TVTDataObject.Create(AOwner: TBaseVirtualTree; ForClipboard: Boolean);
@@ -5938,7 +5945,6 @@ var
   NewData: PChar;
 
 begin
-  {$ifdef NeedWindows}
   Size := GlobalSize(HGlobal);
   Result := GlobalAlloc(GPTR, Size);
   Data := GlobalLock(hGlobal);
@@ -5952,7 +5958,6 @@ begin
   finally
     GlobalUnLock(hGlobal);
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6131,7 +6136,6 @@ var
   Data: PVTReference;
 
 begin
-  {$ifdef NeedWindows}
   // The tree reference format is always supported and returned from here.
   if FormatEtcIn.cfFormat = CF_VTREFERENCE then
   begin
@@ -6173,7 +6177,6 @@ begin
       Result := E_FAIL;
     end;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6355,7 +6358,6 @@ function TVTDragManager.DragEnter(const DataObject: IDataObject; KeyState: LongW
   var Effect: LongWord): HResult;
 
 begin
-  {$ifdef NeedWindows}
   FDataObject := DataObject;
   FIsDropTarget := True;
 
@@ -6369,7 +6371,6 @@ begin
 
   FDragSource := FOwner.GetTreeFromDataObject(DataObject);
   Result := FOwner.DragEnter(KeyState, Pt, Effect);
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6455,7 +6456,7 @@ begin
     else
       Result := S_OK;
 end;
-
+{$endif} //UseExternalDragManager
 {$endif} //EnableOLE
 //----------------- TVirtualTreeHintWindow -----------------------------------------------------------------------------
 
@@ -7188,7 +7189,6 @@ var
   RClip: TRect; // ScrollDC of the existent background
 
 begin
-  {$ifdef NeedWindows}
   // Determine distances to move the drag image. Take care for restrictions.
   case FRestriction of
     dmrHorizontalOnly:
@@ -7303,7 +7303,6 @@ begin
     FLastPosition.X := P.X;
     FLastPosition.Y := P.Y;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7377,7 +7376,6 @@ var
   DragInfo: TSHDragImage;
 
 begin
-  {$ifdef NeedWindows}
   Width := DragImage.Width;
   Height := DragImage.Height;
 
@@ -7438,7 +7436,6 @@ begin
     // Initially the drag image is hidden and will be shown during the immediately following DragEnter event.
     FStates := FStates + [disInDrag, disHidden, disPrepared];
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18765,6 +18762,7 @@ var
 
 begin
   Logger.EnterMethod([lcDrag],'DoDragging');
+  Logger.SendCallStack([lcDrag],'Stack');
   DataObject := nil;
   // Dragging is dragging, nothing else.
   DoCancelEdit;
@@ -18848,7 +18846,7 @@ begin
     not (vsExpanded in FDropTargetNode.States) then
   begin
     if Assigned(FDragManager) then
-      SourceTree := DragManager.DragSource
+      SourceTree := TBaseVirtualTree(DragManager.DragSource)
     else
       SourceTree := nil;
 
@@ -19703,6 +19701,8 @@ procedure TBaseVirtualTree.DoStartDrag(var DragObject: TDragObject);
 
 begin
   Logger.EnterMethod([lcDrag],'DoStartDrag');
+  Logger.SendCallStack([lcDrag],'Stack');
+  
   inherited;
 
   // Check if the application created an own drag object. This is needed to pass the correct source in
@@ -20117,7 +20117,7 @@ begin
     // and can show it even if the source is not the target tree.
     // This is only necessary if we cannot use the drag image helper interfaces.
     if not DragManager.DropTargetHelperSupported and Assigned(DragManager.DragSource) then
-      DragManager.DragSource.FDragImage.ShowDragImage;
+      TBaseVirtualTree(DragManager.DragSource).FDragImage.ShowDragImage;
     Result :=  NOERROR;
   except
     Result := E_UNEXPECTED;
@@ -20162,7 +20162,7 @@ begin
   StopTimer(ExpandTimer);
 
   if not DragManager.DropTargetHelperSupported and Assigned(DragManager.DragSource) then
-    DragManager.DragSource.FDragImage.HideDragImage;
+    TBaseVirtualTree(DragManager.DragSource).FDragImage.HideDragImage;
 
   if Assigned(FDropTargetNode) then
   begin
@@ -20500,6 +20500,13 @@ procedure TBaseVirtualTree.FontChanged(AFont: TObject);
 begin
   FFontChanged := True;
   FOldFontChange(AFont);
+end;
+
+
+procedure TBaseVirtualTree.FreeDragManager;
+begin
+  //lcl
+  Pointer(FDragManager) := nil;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24194,6 +24201,7 @@ procedure TBaseVirtualTree.BeginDrag(Immediate: Boolean; Threshold: Integer);
 // Reintroduced method to allow to start OLE drag'n drop as well as VCL drag'n drop.
 
 begin
+  Logger.EnterMethod([lcDrag],'BeginDrag');
   if FDragType = dtVCL then
   begin
     DoStateChange([tsVCLDragPending]);
@@ -24212,6 +24220,7 @@ begin
       else
         DoStateChange([tsOLEDragPending]);
     end;
+  Logger.ExitMethod([lcDrag],'BeginDrag');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 117
+  Left = 366
   Height = 575
-  Top = 135
+  Top = 215
   Width = 790
   HorzScrollBar.Page = 789
   VertScrollBar.Page = 574
@@ -126,7 +126,7 @@ object MainForm: TMainForm
     Columns = <>
   end
   object Tree1: TVirtualStringTree
-    Left = 10
+    Left = 8
     Height = 180
     Top = 116
     Width = 330
