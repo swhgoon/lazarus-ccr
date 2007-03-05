@@ -146,6 +146,7 @@ type
     FMessage: string;
     FRevision: integer;
     function GetCommonPath: string;
+    function GetDisplayDate: string;
     function GetLogPath(index: integer): TLogPath;
     function GetLogPathCount: integer;
     procedure LoadFromNode(ANode: TDOMElement);
@@ -157,6 +158,7 @@ type
     property Author: string read FAuthor write FAuthor;
     property CommonPath: string read GetCommonPath;
     property Date: string read  FDate write FDate;
+    property DisplayDate: string read GetDisplayDate;
     property Message: string read FMessage write FMessage;
     property Path[index: integer] :TLogPath read GetLogPath;
     property PathCount: integer read GetLogPathCount;
@@ -460,13 +462,19 @@ begin
   end;
 end;
 
+function TLogEntry.GetDisplayDate: string;
+begin
+  Result := Copy(FDate, 1, 10) + ' ' + Copy(FDate,12,8);
+end;
+
 function TLogEntry.GetFileList(const BaseDir: string = ''): TStrings;
 var
   i: integer;
 begin
   Result := TStringList.Create;
   for i:= 0 to PathCount -1 do
-    Result.Add(BaseDir + Path[i].Path);
+    if Path[i].Action in [caModify, caAdd] then
+      Result.Add(BaseDir + Path[i].Path);
 end;
 
 function TLogEntry.GetLogPathCount: integer;
@@ -596,7 +604,7 @@ begin
   Lines := TStringList.Create;
   try
     Lines.LoadFromStream(s);
-    writeln(Lines.Text);
+    //writeln(Lines.Text);
     i := 0;
     while (i<Lines.Count) do begin
       Line := Lines[i];

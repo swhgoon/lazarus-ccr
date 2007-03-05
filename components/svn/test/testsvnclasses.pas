@@ -114,6 +114,8 @@ begin
     AssertEquals('Wrong log author', 'vincents', LogEntry.Author);
     AssertEquals('Wrong log date',
       '2007-02-20T10:57:42.928052Z', LogEntry.Date);
+    AssertEquals('Wrong log display date',
+      '2007-02-20 10:57:42', LogEntry.DisplayDate);
     AssertEquals('Wrong log message',
       'TAChart: added icon, added to make bigide', LogEntry.Message);
   finally
