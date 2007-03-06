@@ -254,6 +254,7 @@ end;
 
 {$endif}
 
+{$ifndef UseExternalDragManager}
 function RegisterDragDrop(hwnd:HWND; pDropTarget:IDropTarget):WINOLEAPI;stdcall;external 'ole32.dll' name 'RegisterDragDrop';
 
 function RevokeDragDrop(hwnd:HWND):WINOLEAPI;stdcall;external 'ole32.dll' name 'RevokeDragDrop';
@@ -274,4 +275,6 @@ function OleFlushClipboard:WINOLEAPI;stdcall;external 'ole32.dll' name 'OleFlush
 
 function OleIsCurrentClipboard(pDataObj:IDataObject):WINOLEAPI;stdcall;external 'ole32.dll' name 'OleIsCurrentClipboard';
 
+function CreateStreamOnHGlobal(hGlobal:HGLOBAL; fDeleteOnRelease:BOOL;out stm:IStream):WINOLEAPI;stdcall;external 'ole32.dll' name 'CreateStreamOnHGlobal';
 
+{$endif}

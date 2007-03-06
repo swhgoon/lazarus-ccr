@@ -105,6 +105,9 @@ interface
 uses
   {$ifdef UseExternalDragManager}
   virtualdragmanager,
+  {$else}
+  ActiveX,
+  OleUtils,
   {$endif}
   Windows, DelphiCompat, vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
@@ -123,12 +126,7 @@ uses
   {$endif TntSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
-  {$endif}
-  {$ifdef EnableOLE}
-  , ActiveX,
-  OleUtils
-  {$endif}
-  ;
+  {$endif};
 
 const
   {$I lclconstants.inc}
@@ -689,7 +687,7 @@ type
     Medium: TStgMedium;
   end;
   TInternalStgMediumArray = array of TInternalStgMedium;
-  {$endif}
+
   TEnumFormatEtc = class(TInterfacedObject, IEnumFormatEtc)
   private
     FTree: TBaseVirtualTree;
@@ -704,8 +702,6 @@ type
     function Skip(celt: LongWord): HResult; stdcall;
   end;
 
-
-  {$ifndef UseExternalDragManager}
   // ----- OLE drag'n drop handling
 
   { 01.05.2006  Jim - Problem with BDS2006 C++ compiler and ambiguous defines}
@@ -886,8 +882,6 @@ type
     disSystemSupport    // Running on Windows 2000 or higher. System supports drag images natively.
   );
   
-  {$ifdef EnableOLE}
-
   // Class to manage header and tree drag image during a drag'n drop operation.
   TVTDragImage = class
   private
@@ -930,7 +924,7 @@ type
     property Transparency: TVTTransparency read FTransparency write FTransparency default 128;
     property Visible: Boolean read GetVisible;
   end;
-  {$endif}
+
   // tree columns implementation
   TVirtualTreeColumns = class;
   TVTHeader = class;
@@ -5738,6 +5732,7 @@ end;
 
 {$endif UseLocalMemoryManager}
 
+{$ifndef UseExternalDragManager}
 //----------------------------------------------------------------------------------------------------------------------
 
 // OLE drag and drop support classes
@@ -5745,7 +5740,7 @@ end;
 // of DD'ing various kinds of virtual data and works also between applications.
 
 //----------------- TEnumFormatEtc -------------------------------------------------------------------------------------
-{$ifdef EnableOLE}
+
 constructor TEnumFormatEtc.Create(Tree: TBaseVirtualTree; AFormatEtcArray: TFormatEtcArray);
 
 var
@@ -5827,7 +5822,7 @@ begin
     Result := S_FALSE;
 end;
 
-{$ifndef UseExternalDragManager}
+
 
 //----------------- TVTDataObject --------------------------------------------------------------------------------------
 
@@ -6457,7 +6452,7 @@ begin
       Result := S_OK;
 end;
 {$endif} //UseExternalDragManager
-{$endif} //EnableOLE
+
 //----------------- TVirtualTreeHintWindow -----------------------------------------------------------------------------
 
 var
@@ -18801,7 +18796,7 @@ begin
     DragEffect := DROPEFFECT_NONE;
     AllowedEffects := GetDragOperations;
     try
-      VirtualTrees.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+      virtualdragmanager.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
       DragManager.ForceDragLeave;
     finally
       GetCursorPos(P);
@@ -22996,20 +22991,23 @@ function TBaseVirtualTree.RenderOLEData(const FormatEtcIn: TFormatEtc; out Mediu
   end;
 
   //--------------- end local function ----------------------------------------
-
+{$ifndef UseExternalDragManager}
 var
   Data: PCardinal;
   ResPointer: Pointer;
   ResSize: Integer;
   OLEStream: IStream;
   VCLStream: TStream;
-
+{$endif}
 begin
   FillChar(Medium, SizeOf(Medium), 0);
-  {$ifdef NeedWindows}
   // We can render the native clipboard format in two different storage media.
   if (FormatEtcIn.cfFormat = CF_VIRTUALTREE) and (FormatEtcIn.tymed and (TYMED_HGLOBAL or TYMED_ISTREAM) <> 0) then
   begin
+    {$ifdef UseExternalDragManager}
+    //Separated function to help isolate OLE code
+    virtualdragmanager.RenderOLEData(Self,FormatEtcIn,Medium,ForClipboard);
+    {$else}
     VCLStream := nil;
     try
       Medium.PunkForRelease := nil;
@@ -23058,10 +23056,10 @@ begin
       // the OLEStream which exists independently.
       VCLStream.Free;
     end;
+    {$endif}
   end
   else // Ask application descendants to render self defined formats.
     Result := DoRenderOLEData(FormatEtcIn, Medium, ForClipboard);
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28446,7 +28444,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
+{$ifndef UseExternalDragManager}
 type
   // needed to handle OLE global memory objects
   TOLEMemoryStream = class(TCustomMemoryStream)
@@ -28466,6 +28464,8 @@ begin
   {$endif COMPILER_5_UP}
 end;
 
+{$endif}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.ProcessOLEData(Source: TBaseVirtualTree; DataObject: IDataObject; TargetNode: PVirtualNode;
@@ -28483,7 +28483,9 @@ function TBaseVirtualTree.ProcessOLEData(Source: TBaseVirtualTree; DataObject: I
 var
   Medium: TStgMedium;
   Stream: TStream;
+  {$ifndef UseExternalDragManager}
   Data: Pointer;
+  {$endif}
   Node: PVirtualNode;
   Nodes: TNodeArray;
   I: Integer;
@@ -28491,7 +28493,6 @@ var
   ChangeReason: TChangeReason;
 
 begin
-  {$ifdef NeedWindows}
   Nodes := nil;
   // Check the data format available by the data object.
   with StandardOLEFormat do
@@ -28553,6 +28554,9 @@ begin
             TYMED_ISTREAM, // IStream interface
             TYMED_HGLOBAL: // global memory block
               begin
+                {$ifdef UseExternalDragManager}
+                Stream:=GetStreamFromMedium(Medium);
+                {$else}
                 Stream := nil;
                 if Medium.tymed = TYMED_ISTREAM then
                   Stream := TOLEStream.Create(IUnknown(Medium.Pstm) as IStream)
@@ -28568,7 +28572,7 @@ begin
                     TOLEMemoryStream(Stream).SetPointer(Data, I);
                   end;
                 end;
-
+                {$endif}
                 if Assigned(Stream) then
                 try
                   while Stream.Position < Stream.Size do
@@ -28593,8 +28597,12 @@ begin
                   Result := True;
                 finally
                   Stream.Free;
+                  {$ifdef UseExternalDragManager}
+                    UnlockMediumData(Medium);
+                  {$else}
                   if Medium.tymed = TYMED_HGLOBAL then
                     GlobalUnlock(Medium.hGlobal);
+                  {$endif}
                 end;
               end;
           end;
@@ -28605,7 +28613,6 @@ begin
       EndUpdate;
     end;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
