@@ -109,7 +109,12 @@ uses
   ActiveX,
   OleUtils,
   {$endif}
-  Windows, DelphiCompat, vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
+  {$ifdef UseDelphiCompat}
+  DelphiCompat,
+  {$else}
+  Windows,
+  {$endif}
+  vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   CommCtrl,  // image lists, common controls tree structures
   SyncObjs  // Thread support
@@ -4868,8 +4873,8 @@ var
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-    //todo: remap to LCLIntf
-    Windows.DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
+    //lcl has difference to windows
+    DelphiCompat.DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
     IL.AddCopy(BM,nil);
     //IL.AddMasked(BM, MaskColor);
   end;
@@ -5019,10 +5024,13 @@ begin
   // Load all internal image lists and convert their colors to current desktop color scheme.
   // In order to use high color images we have to create the image list handle ourselves.
 
+  //todo: later remove flags when absolute sure is not necessary
+  {
   if IsWinNT then
     Flags := ILC_COLOR32 or ILC_MASK
   else
     Flags := ILC_COLOR16 or ILC_MASK;
+  }
   LightCheckImages := TImageList.CreateSize(16,16);
   //with LightCheckImages do
   //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
@@ -6645,7 +6653,7 @@ begin
           if Assigned(Node) and (LineBreakStyle = hlbForceMultiLine) then
             DrawFormat := DrawFormat or DT_WORDBREAK;
           if IsWinNT then
-            Windows.DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat)
+            DelphiCompat.DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat)
           else
             DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat, False);
         end;
@@ -6942,7 +6950,7 @@ begin
               // in the caption (limited by carriage return), which results in unoptimal overlay of the tooltip.
               // On Windows NT the tooltip exactly overlays the node text.
               if IsWinNT then
-                Windows.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT or DT_WORDBREAK)
+                DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT or DT_WORDBREAK)
               else
                 DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT, True);
               if BidiMode = bdLeftToRight then
@@ -6984,7 +6992,7 @@ begin
             Result := Rect(0, 0, MaxWidth, FTextHeight);
             // Calculate the true size of the text rectangle.
             if IsWinNT then
-              Windows.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT)
+              DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT)
             else
               DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT, True);
             // The height of the text plus 2 pixels vertical margin plus the border determine the hint window height.
@@ -7452,7 +7460,6 @@ var
   ScreenDC: HDC;
 
 begin
-  {$ifdef NeedWindows}
   // Recapturing means we want the tree to paint the new part into our back bitmap instead to the screen.
   if Visible then
   begin
@@ -7489,7 +7496,8 @@ begin
         // get the same effect.
         GetWindowRect(Tree.Handle, ClipRect);
         SetWindowOrgEx(Canvas.Handle, DragRect.Left - ClipRect.Left, DragRect.Top - ClipRect.Top, nil);
-        Tree.Perform(WM_PRINT, Integer(Canvas.Handle), PRF_NONCLIENT);
+        //todo: see what todo here
+        //Tree.Perform(WM_PRINT, Integer(Canvas.Handle), PRF_NONCLIENT);
         SetWindowOrgEx(Canvas.Handle, 0, 0, nil);
       end;
       SelectClipRgn(Canvas.Handle, 0);
@@ -7506,7 +7514,6 @@ begin
       end;
     end;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -8809,13 +8816,13 @@ begin
     OffsetRect(Bounds, 1, 1);
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     if IsWinNT then
-      Windows.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
+      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
     else
       DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
     OffsetRect(Bounds, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
     if IsWinNT then
-      Windows.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
+      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
     else
       DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
   end
@@ -8826,7 +8833,7 @@ begin
     else
       SetTextColor(DC, ColorToRGB(FHeader.FFont.Color));
     if IsWinNT then
-      Windows.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
+      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
     else
       DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
   end;
@@ -8928,23 +8935,24 @@ begin
       Width := ButtonR.Right - ButtonR.Left;
       if Width <= 32 then
       begin
-        ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
-          ILD_NORMAL);
-        ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, CLR_NONE,
-          CLR_NONE, ILD_NORMAL);
+        //todo
+        //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+        //  ILD_NORMAL);
+        //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, CLR_NONE,
+        //  CLR_NONE, ILD_NORMAL);
       end
       else
       begin
-        ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
-          ILD_NORMAL);
+        //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+        //  ILD_NORMAL);
         // Replicate inner part as many times as need to fill up the button rectangle.
         XPos := ButtonR.Left + 16;
         repeat
-          ImageList_DrawEx(UtilityImages.Handle, 7, DC, XPos, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE, ILD_NORMAL);
+          //ImageList_DrawEx(UtilityImages.Handle, 7, DC, XPos, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE, ILD_NORMAL);
           Inc(XPos, 16);
         until XPos + 16 >= ButtonR.Right;
-        ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
-          ILD_NORMAL);
+        //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
+        //  ILD_NORMAL);
       end;
     end
     else
@@ -17095,7 +17103,7 @@ begin
             NewCursor := Cursor;
 
           DoGetCursor(NewCursor);
-          Windows.SetCursor(Screen.Cursors[NewCursor]);
+          SetCursor(Screen.Cursors[NewCursor]);
           Message.Result := 1;
         end;
         //lcl does not have WMSetCursor
@@ -19614,9 +19622,9 @@ begin
               Inc(R.Top,FHeader.Height);
               Inc(R.Bottom,FHeader.Height);
             end;
-            Windows.ScrollWindow(Handle, DeltaX, 0, @R, @R);
+            DelphiCompat.ScrollWindow(Handle, DeltaX, 0, @R, @R);
             if DeltaY <> 0 then
-              Windows.ScrollWindow(Handle, 0, DeltaY, @R, @R);
+              DelphiCompat.ScrollWindow(Handle, 0, DeltaY, @R, @R);
           end
           else
           begin
@@ -20791,7 +20799,9 @@ var
   Data: PVTReference;
 
 begin
-  {$ifdef NeedWindows}
+  {$ifdef UseExternalDragManager}
+  Result:=TBaseVirtualTree(VirtualDragManager.GetTreeFromDataObject(DataObject,StandardOLEFormat));
+  {$else}
   Result := nil;
   if Assigned(DataObject) then
   begin
@@ -22406,7 +22416,7 @@ begin
       // a sliding window of the tree image.
       Logger.Send([lcPaintDetails],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
 
-      Windows.OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
+      OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       Logger.Active:=Logger.CalledBy('DoDragging');
       PaintTree(Canvas, Window, Target, Options);
       Logger.Active:=True;
@@ -23848,8 +23858,9 @@ begin
 
     if not Handled then
     begin
-      if (Message.Msg in [WM_NCLBUTTONDOWN, WM_NCRBUTTONDOWN, WM_NCMBUTTONDOWN]) and not Focused and CanFocus then
-        SetFocus;
+      //lcl: probably not necessary
+      //if (Message.Msg in [WM_NCLBUTTONDOWN, WM_NCRBUTTONDOWN, WM_NCMBUTTONDOWN]) and not Focused and CanFocus then
+      //  SetFocus;
       inherited;
     end;
 
@@ -30304,7 +30315,7 @@ begin
     else
       SetBkMode(Canvas.Handle, OPAQUE);
     if IsWinNT then
-      Windows.DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat)
+      DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat)
     else
       DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat, False);
   end;

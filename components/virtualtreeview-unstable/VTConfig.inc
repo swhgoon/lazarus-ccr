@@ -35,3 +35,4 @@
 {$define EnableTimer}
 {.$define EnableAccessible}
 {$define UseExternalDragManager}
+{$define UseDelphiCompat}

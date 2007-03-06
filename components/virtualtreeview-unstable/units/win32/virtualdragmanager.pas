@@ -177,6 +177,12 @@ type
     function QueryContinueDrag(EscapePressed: BOOL; KeyState: Integer): HResult; stdcall;
   end;
   
+  //Ole helper functions
+
+  function Succeeded(Status : HRESULT) : BOOLEAN;
+
+  function Failed(Status : HRESULT) : BOOLEAN;
+  
   //ActiveX functions that have wrong calling convention in fpc
   
   function RegisterDragDrop(hwnd:HWND; pDropTarget:IDropTarget):WINOLEAPI;stdcall;external 'ole32.dll' name 'RegisterDragDrop';
@@ -211,6 +217,8 @@ type
   function GetStreamFromMedium(Medium:TStgMedium):TStream;
   
   procedure UnlockMediumData(Medium:TStgMedium);
+  
+  function GetTreeFromDataObject(const DataObject: IDataObject; var Format: TFormatEtc): TObject;
 
 implementation
 
@@ -220,6 +228,17 @@ uses
 type
   TVirtualTreeAccess = class (TBaseVirtualTree)
   end;
+
+function Succeeded(Status : HRESULT) : BOOL;
+  begin
+     Succeeded:=Status and HRESULT($80000000)=0;
+  end;
+
+function Failed(Status : HRESULT) : BOOL;
+  begin
+     Failed:=Status and HRESULT($80000000)<>0;
+  end;
+
 
 function RenderOLEData(Tree: TObject; const FormatEtcIn: TFormatEtc; out
   Medium: TStgMedium; ForClipboard: Boolean): HResult;
@@ -351,6 +370,32 @@ procedure UnlockMediumData(Medium: TStgMedium);
 begin
   if Medium.tymed = TYMED_HGLOBAL then
     GlobalUnlock(Medium.hGlobal);
+end;
+
+function GetTreeFromDataObject(const DataObject: IDataObject;
+  var Format: TFormatEtc): TObject;
+  
+var
+  Medium: TStgMedium;
+  Data: PVTReference;
+  
+begin
+  Result := nil;
+  if Assigned(DataObject) then
+  begin
+    Format.cfFormat := CF_VTREFERENCE;
+    if DataObject.GetData(Format, Medium) = S_OK then
+    begin
+      Data := GlobalLock(Medium.hGlobal);
+      if Assigned(Data) then
+      begin
+        if Data.Process = GetCurrentProcessID then
+          Result := Data.Tree;
+        GlobalUnlock(Medium.hGlobal);
+      end;
+      ReleaseStgMedium(@Medium);
+    end;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

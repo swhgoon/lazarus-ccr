@@ -91,7 +91,14 @@ Port started in 26/01/07
 * Fixed drawing problem when using ScrollBar or MouseWheel
 * Implemented Support for check images
 * Fixed position of editors while scrolling
-* Started header implementation
+* Header implementation
+* Started handling of Header messages
+* Made TVTHeaderPopupMenu.Popup virtual
+* Added woekaround to drawing when scrolling
+* Implemented column resize
+* Implemented SetTimer/KillTimer
+* Fixed column position
+* Removed direct dependency from ActiveX, Oleutils
 
 #Major Tasks#
 < > General Painting
@@ -168,7 +175,7 @@ Port started in 26/01/07
   [*] AFAIK yes
 < > See if Application.ProcessMessages in InterruptValidation will work (WM_QUIT handling??)
 <*> See if windows.GetUpdateRect is equal to PaintStruct in WM Paint
-  [*] Yes and no. The values of GetUpdateRect and rcPaint is equal in most times. So is safe to use it
+  [*] Yes and no. The values of GetUpdateRect and rcPaint are equal in most times. So is safe to use it
       But GetUpdateRect will always return an empty Rect when called inside LM_PAINT because there's a
       prior BeginPaint call
 < > In TWMKillfocus the code to nullify the active control is probably not necessary
@@ -188,3 +195,4 @@ Port started in 26/01/07
 < > Document Differences between WMPaint
 < > Document that ScrollWindow does not exists in gtk
 < > Due to lclheader implementation, when a editor is scrolled out of the window it disppears (does not returns when scroled back)
+< > Document differences of DrawFrameControl, ScrollWindow, InvalidateRect
