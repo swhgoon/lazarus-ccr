@@ -87,13 +87,13 @@ begin
 end;
 
 
-
+{
 function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
 
   Result:=InvalidateRect(aHandle,ARect,bErase);
 end;
-
+}
 
 {$ifndef UseExternalDragManager}
 function RegisterDragDrop(hwnd:HWND; pDropTarget:IDropTarget):WINOLEAPI;stdcall;external 'ole32.dll' name 'RegisterDragDrop';

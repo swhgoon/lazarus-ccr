@@ -113,6 +113,7 @@ uses
   DelphiCompat,
   {$else}
   Windows,
+  DelphiCompat,
   {$endif}
   vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
@@ -22796,9 +22797,10 @@ begin
     end;
     Message.Result := 0;
   end
-  else
-    with Message do
-      Result := DefWindowProc(FPanningWindow, Msg, wParam, lParam);
+  else;
+    //todo: see how implement panning
+    //with Message do
+    //  Result := DefWindowProc(FPanningWindow, Msg, wParam, lParam);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23202,7 +23204,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
+{$ifdef EnableWheelPanning}
 var
   PanningWindowClass: TWndClass = (
     style: 0;
@@ -23216,7 +23218,7 @@ var
     lpszMenuName: nil;
     lpszClassName: 'VTPanningWindow'
   );
-
+{$endif}
 procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
 
 // Called when wheel panning should start. A little helper window is created to indicate the reference position,
@@ -30675,7 +30677,7 @@ procedure TCustomVirtualStringTree.DoTextDrawing(var PaintInfo: TVTPaintInfo; Te
 
 begin
   if IsWinNT then
-    Windows.DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat)
+    DelphiCompat.DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat)
   else
     DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat, False);
 end;
@@ -30921,7 +30923,7 @@ begin
   else
     DrawFormat := DrawFormat or DT_LEFT;
   if IsWinNT then
-    Windows.DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat)
+    DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat)
   else
     DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat, False);
   Result := PaintInfo.CellRect.Bottom - PaintInfo.CellRect.Top;
@@ -31000,7 +31002,6 @@ var
   P: Pointer;
 
 begin
-  {$ifdef NeedWindows}
   Result := 0;
   case Format of
     CF_TEXT:
@@ -31035,12 +31036,15 @@ begin
 
   if DataSize > 0 then
   begin
+    {$ifdef UseExternalDragManager}
+    Result:=AllocateGlobal(Data,DataSize);
+    {$else}
     Result := GlobalAlloc(GHND or GMEM_SHARE, DataSize);
     P := GlobalLock(Result);
     Move(Data^, P^, DataSize);
     GlobalUnlock(Result);
+    {$endif}
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

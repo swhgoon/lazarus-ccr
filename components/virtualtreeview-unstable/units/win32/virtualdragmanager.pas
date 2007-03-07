@@ -219,6 +219,8 @@ type
   procedure UnlockMediumData(Medium:TStgMedium);
   
   function GetTreeFromDataObject(const DataObject: IDataObject; var Format: TFormatEtc): TObject;
+  
+  function AllocateGlobal(Data: Pointer; DataSize:Cardinal): HGLOBAL;
 
 implementation
 
@@ -229,12 +231,12 @@ type
   TVirtualTreeAccess = class (TBaseVirtualTree)
   end;
 
-function Succeeded(Status : HRESULT) : BOOL;
+function Succeeded(Status : HRESULT) : BOOLEAN;
   begin
      Succeeded:=Status and HRESULT($80000000)=0;
   end;
 
-function Failed(Status : HRESULT) : BOOL;
+function Failed(Status : HRESULT) : BOOLEAN;
   begin
      Failed:=Status and HRESULT($80000000)<>0;
   end;
@@ -396,6 +398,16 @@ begin
       ReleaseStgMedium(@Medium);
     end;
   end;
+end;
+
+function AllocateGlobal(Data: Pointer; DataSize: Cardinal): HGLOBAL;
+var
+  P:Pointer;
+begin
+  Result := GlobalAlloc(GHND or GMEM_SHARE, DataSize);
+  P := GlobalLock(Result);
+  Move(Data^, P^, DataSize);
+  GlobalUnlock(Result);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
