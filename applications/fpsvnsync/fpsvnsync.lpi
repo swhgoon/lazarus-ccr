@@ -4,15 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -34,154 +32,13 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="1">
       <Unit0>
         <Filename Value="fpsvnsync.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpsvnsync"/>
-        <CursorPos X="30" Y="33"/>
-        <TopLine Value="307"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="133"/>
-        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\inc\custapp.pp"/>
-        <UnitName Value="CustApp"/>
-        <CursorPos X="3" Y="166"/>
-        <TopLine Value="188"/>
-        <UsageCount Value="62"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="..\test\testsvncommand.pas"/>
-        <UnitName Value="TestSvnCommand"/>
-        <CursorPos X="15" Y="9"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\svncommand.pas"/>
-        <UnitName Value="SvnCommand"/>
-        <CursorPos X="58" Y="96"/>
-        <TopLine Value="76"/>
-        <UsageCount Value="67"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\svnclasses.pas"/>
-        <UnitName Value="SvnClasses"/>
-        <CursorPos X="35" Y="476"/>
-        <TopLine Value="541"/>
-        <UsageCount Value="67"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\xml\xmlread.pp"/>
-        <UnitName Value="XMLRead"/>
-        <CursorPos X="16" Y="886"/>
-        <TopLine Value="866"/>
-        <UsageCount Value="61"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\inc\process.pp"/>
-        <UnitName Value="process"/>
-        <CursorPos X="1" Y="186"/>
-        <TopLine Value="153"/>
-        <UsageCount Value="9"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\..\lazarus\lcl\stringhashlist.pas"/>
-        <UnitName Value="StringHashList"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="55"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\..\lazarus\lcl\fpcadds.pas"/>
-        <UnitName Value="FPCAdds"/>
-        <CursorPos X="1" Y="75"/>
-        <TopLine Value="46"/>
-        <UsageCount Value="61"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\win\sysutils.pp"/>
-        <UnitName Value="sysutils"/>
-        <CursorPos X="3" Y="333"/>
-        <TopLine Value="329"/>
-        <UsageCount Value="55"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\..\..\fpc\2.1\fcl\inc\contnrs.pp"/>
-        <UnitName Value="contnrs"/>
-        <CursorPos X="34" Y="61"/>
-        <TopLine Value="42"/>
-        <UsageCount Value="22"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="64" Y="147"/>
-        <TopLine Value="128"/>
-        <UsageCount Value="22"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\objpas\sysutils\filutilh.inc"/>
-        <CursorPos X="10" Y="85"/>
-        <TopLine Value="62"/>
-        <UsageCount Value="15"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\..\fpc\2.1\compiler\aasmtai.pas"/>
-        <UnitName Value="aasmtai"/>
-        <CursorPos X="30" Y="176"/>
-        <TopLine Value="156"/>
-        <UsageCount Value="8"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\..\..\fpc\2.1\compiler\cgbase.pas"/>
-        <UnitName Value="cgbase"/>
-        <CursorPos X="7" Y="177"/>
-        <TopLine Value="157"/>
-        <UsageCount Value="8"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\..\..\..\lazarus\lcl\fileutil.pas"/>
-        <UnitName Value="FileUtil"/>
-        <CursorPos X="10" Y="111"/>
-        <TopLine Value="91"/>
-        <UsageCount Value="13"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\..\..\..\lazarus\lcl\include\fileutil.inc"/>
-        <CursorPos X="3" Y="1194"/>
-        <TopLine Value="1186"/>
-        <UsageCount Value="13"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\win32\initc.pp"/>
-        <UnitName Value="initc"/>
-        <CursorPos X="6" Y="18"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\inc\ctypes.pp"/>
-        <UnitName Value="ctypes"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\win\wininc\messages.inc"/>
-        <CursorPos X="54" Y="1165"/>
-        <TopLine Value="1138"/>
-        <UsageCount Value="10"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\..\..\..\fpc\2.1\rtl\inc\objpash.inc"/>
-        <CursorPos X="8" Y="264"/>
-        <TopLine Value="254"/>
-        <UsageCount Value="9"/>
-      </Unit20>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
