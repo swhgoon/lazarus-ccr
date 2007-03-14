@@ -89,7 +89,6 @@ interface
 
 {$booleval off} // Use fastest possible boolean evaluation.
 
-{$I Compilers.inc}
 {$I VTConfig.inc}
 
 {$ifdef COMPILER_7_UP}
@@ -98,9 +97,6 @@ interface
   {$warn UNSAFE_CAST off}
   {$warn UNSAFE_CODE off}
 {$endif COMPILER_7_UP}
-
-{$HPPEMIT '#include <objidl.h>'}
-{$HPPEMIT '#include <oleidl.h>'} // Necessary for BCB 6 SP 2.
 
 uses
   {$ifdef UseExternalDragManager}
@@ -281,9 +277,7 @@ type
 
   TWMPrintClient = TWMPrint;
 
-  { .$ifndef COMPILER_5_UP}
   TLMContextMenu = TLMMouse;
-  { .$endif COMPILER_5_UP}
 
   // Be careful when adding new states as this might change the size of the type which in turn
   // changes the alignment in the node record as well as the stream chunks.
@@ -940,9 +934,8 @@ type
     vsOwnerDraw
   );
 
-  {$ifndef COMPILER_5_UP}
-    TImageIndex = Integer;
-  {$endif COMPILER_5_UP}
+
+  TImageIndex = Integer;
 
   TVTHeaderColumnLayout = (
     blGlyphLeft,
@@ -2503,7 +2496,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure BeginUpdate;
     procedure CancelCutOrCopy;
     function CancelEditNode: Boolean;
-    function CanFocus: Boolean; {$ifdef COMPILER_5_UP} override;{$endif}
+    function CanFocus: Boolean; override;
     procedure Clear; virtual;
     procedure ClearChecked;
     procedure ClearSelection;
@@ -2995,9 +2988,7 @@ type
     property OnColumnDblClick;
     property OnColumnResize;
     property OnCompareNodes;
-    {$ifdef COMPILER_5_UP}
-      property OnContextPopup;
-    {$endif COMPILER_5_UP}
+    property OnContextPopup;
     property OnCreateDataObject;
     property OnCreateDragManager;
     property OnCreateEditor;
@@ -3207,9 +3198,7 @@ type
     property OnColumnDblClick;
     property OnColumnResize;
     property OnCompareNodes;
-    {$ifdef COMPILER_5_UP}
-      property OnContextPopup;
-    {$endif COMPILER_5_UP}
+    property OnContextPopup;
     property OnCreateDataObject;
     property OnCreateDragManager;
     property OnCreateEditor;
@@ -5210,8 +5199,9 @@ begin
         Terminate;
         WorkEvent.SetEvent;
 
+        //lcl: probably not necessary under fpc. Remove later
         // The following work around is no longer necessary with Delphi 6 and up.
-        {$ifndef COMPILER_6_UP}
+        {$ifndef fpc}
           // There is a problem when the thread is freed in the exit code of a DLL. This can happen when a tree is
           // destroyed on unload of a DLL (e.g. control panel applet). In this case only the main thread will get
           // CPU time, other threads will never awake again. The VCL however waits for a thread when freeing it
@@ -5219,7 +5209,7 @@ begin
           // If a thread is however suspended then the VCL does not wait and all is fine.
           if IsLibrary then
             Suspend;
-        {$endif COMPILER_6_UP}
+        {$endif}
 
         WorkerThread.Free;
       end;
@@ -6585,6 +6575,7 @@ var
   Shadow: Integer;
 
 begin
+  //todo: see the meaning of this code
   {$ifndef COMPILER_7_UP}
     if MMXAvailable then
       Shadow := ShadowSize
@@ -6627,12 +6618,7 @@ begin
           Font.Color := clInfoText;
           Pen.Color := clBlack;
           Brush.Color := clInfoBk;
-          {$ifdef COMPILER_5_UP}
-            Rectangle(R);
-          {$else}
-            with R do
-              Rectangle(Left, Top, Right, Bottom);
-          {$endif COMPILER_5_UP}
+          Rectangle(R);
 
           // Determine text position and don't forget the border.
           InflateRect(R, -1, -1);
@@ -10185,9 +10171,7 @@ begin
     if Assigned(FImages) then
     begin
       FImages.UnRegisterChanges(FImageChangeLink);
-      {$ifdef COMPILER_5_UP}
-        FImages.RemoveFreeNotification(FOwner);
-      {$endif COMPILER_5_UP}
+      FImages.RemoveFreeNotification(FOwner);
     end;
     FImages := Value;
     if Assigned(FImages) then
@@ -14202,9 +14186,8 @@ begin
     if Assigned(FCustomCheckImages) then
     begin
       FCustomCheckImages.UnRegisterChanges(FCustomCheckChangeLink);
-      {$ifdef COMPILER_5_UP}
-        FCustomCheckImages.RemoveFreeNotification(Self);
-      {$endif COMPILER_5_UP}
+      FCustomCheckImages.RemoveFreeNotification(Self);
+
       // Reset the internal check image list reference too, if necessary.
       if FCheckImages = FCustomCheckImages then
         FCheckImages := nil;
@@ -14373,9 +14356,7 @@ begin
     if Assigned(FImages) then
     begin
       FImages.UnRegisterChanges(FImageChangeLink);
-      {$ifdef COMPILER_5_UP}
-        FImages.RemoveFreeNotification(Self);
-      {$endif COMPILER_5_UP}
+      FImages.RemoveFreeNotification(Self);
     end;
     FImages := Value;
     if Assigned(FImages) then
@@ -14679,9 +14660,7 @@ begin
     if Assigned(FStateImages) then
     begin
       FStateImages.UnRegisterChanges(FStateChangeLink);
-      {$ifdef COMPILER_5_UP}
-        FStateImages.RemoveFreeNotification(Self);
-      {$endif COMPILER_5_UP}
+      FStateImages.RemoveFreeNotification(Self);
     end;
     FStateImages := Value;
     if Assigned(FStateImages) then
@@ -24335,11 +24314,7 @@ var
   Form: TCustomForm;
 
 begin
-  {$ifdef COMPILER_5_UP}
-    Result := inherited CanFocus;
-  {$else}
-    Result := True;
-  {$endif}
+  Result := inherited CanFocus;
 
   if Result and not (csDesigning in ComponentState) then
   begin
@@ -24940,13 +24915,11 @@ begin
 
   if not Result then
   begin
-    {$ifdef COMPILER_5_UP}
       Result := Action is TEditSelectAll;
       if Result then
         SelectAll(False)
       else
         begin
-    {$endif COMPILER_5_UP}
         Result := Action is TEditCopy;
         if Result then
           CopyToClipboard
@@ -24961,19 +24934,15 @@ begin
               Result := Action is TEditPaste;
               if Result then
                 PasteFromClipboard
-              {$ifdef COMPILER_5_UP}
                 else
                 begin
                   Result := Action is TEditDelete;
                   if Result then
                     DeleteSelectedNodes
                 end;
-              {$endif COMPILER_5_UP}
             end;
           end;
-    {$ifdef COMPILER_5_UP}
       end;
-    {$endif COMPILER_5_UP}
   end;
 end;
 
@@ -28470,11 +28439,7 @@ type
 function TOLEMemoryStream.Write(const Buffer; Count: Integer): Integer;
 
 begin
-  {$ifdef COMPILER_5_UP}
-    raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
-  {$else}
-    raise EStreamError.Create(SCantWriteResourceStreamError);
-  {$endif COMPILER_5_UP}
+  raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
 end;
 
 {$endif}
@@ -29333,11 +29298,11 @@ begin
   else
   begin
     Result := (Action is TEditCut) or (Action is TEditCopy)
-      {$ifdef COMPILER_5_UP} or (Action is TEditDelete) {$endif COMPILER_5_UP};
+       or (Action is TEditDelete);
 
     if Result then
       TAction(Action).Enabled := (FSelectionCount > 0) and
-        ({$ifdef COMPILER_5_UP} (Action is TEditDelete) or {$endif COMPILER_5_UP} (FClipboardFormats.Count > 0))
+        ((Action is TEditDelete) or (FClipboardFormats.Count > 0))
     else
     begin
       Result := Action is TEditPaste;
@@ -29345,12 +29310,10 @@ begin
         TAction(Action).Enabled := True
       else
       begin
-        {$ifdef COMPILER_5_UP}
           Result := Action is TEditSelectAll;
           if Result then
             TAction(Action).Enabled := (toMultiSelect in FOptions.FSelectionOptions) and (FVisibleCount > 0)
           else
-        {$endif COMPILER_5_UP}
             Result := inherited UpdateAction(Action);
       end;
     end;
