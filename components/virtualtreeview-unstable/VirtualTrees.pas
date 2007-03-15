@@ -3509,7 +3509,7 @@ var
   Initialized: Boolean;                // True if global structures have been initialized.
   NeedToUnitialize: Boolean;           // True if the OLE subsystem could be initialized successfully.
 
-{$I lclfunctions.inc}
+{.$I lclfunctions.inc}
 
 //----------------- TClipboardFormats ----------------------------------------------------------------------------------
 

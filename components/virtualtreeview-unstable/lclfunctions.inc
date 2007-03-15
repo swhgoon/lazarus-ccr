@@ -37,31 +37,6 @@ end;
 // TBaseVirtualTree.UpdateEditBounds, TBaseVirtualTree.GetDisplayRect, PaintTree,
 // TStringEditLink.PrepareEdit, TCustomVirtualStringTree.ComputeNodeHeight etc
 
-procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
-begin
-  case Alignment of
-  taLeftJustify: Alignment := taRightJustify;
-  taRightJustify: Alignment := taLeftJustify;
-  end;
-end;
-
-function INDEXTOOVERLAYMASK(i : longint) : longint;
-{ return type might be wrong }
-begin
-  INDEXTOOVERLAYMASK:=i shl 8;
-end;
-
-
-function MAKEROP4(fore,back : longint) : DWORD;
-begin
-   MAKEROP4:=DWORD((DWORD(back shl 8) and $FF000000) or DWORD(fore));
-end;
-
-function Failed(Status : HRESULT) : BOOL;
-begin
-   Failed:=Status and HRESULT($80000000)<>0;
-end;
-
 function MapWindowPoints(hWndFrom, hWndTo: HWND; var lpPoints; cPoints: UINT): Integer;
 var
   I:Integer;
@@ -86,14 +61,6 @@ begin
   Result:=MakeLong(XOffset,YOffset);
 end;
 
-
-{
-function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
-begin
-
-  Result:=InvalidateRect(aHandle,ARect,bErase);
-end;
-}
 
 {$ifndef UseExternalDragManager}
 function RegisterDragDrop(hwnd:HWND; pDropTarget:IDropTarget):WINOLEAPI;stdcall;external 'ole32.dll' name 'RegisterDragDrop';
