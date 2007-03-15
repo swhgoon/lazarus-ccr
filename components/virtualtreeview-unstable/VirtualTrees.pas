@@ -4875,8 +4875,15 @@ var
   I, Width, Height: Integer;
 
 begin
+  //todo implement under gtk
+  {$ifdef Windows}
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
+  {$else}
+  Width:=16;
+  Height:=16;
+  {$endif}
+  
   IL := TImageList.CreateSize(Width, Height);
   //with IL do
   //  Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
@@ -5524,10 +5531,15 @@ var
 begin
   if FMiscOptions <> Value then
   begin
+
     ToBeSet := Value - FMiscOptions;
     ToBeCleared := FMiscOptions - Value;
     FMiscOptions := Value;
-
+    {$ifndef Windows}
+    Exclude(FMiscOptions,toAcceptOLEDrop);
+    Exclude(ToBeCleared,toAcceptOLEDrop);
+    Exclude(ToBeSet,toAcceptOLEDrop);
+    {$endif}
     with FOwner do
       if not (csLoading in ComponentState) and HandleAllocated then
       begin
@@ -23690,9 +23702,6 @@ const // Region identifiers for GetRandomRgn
   METARGN = 2;
   APIRGN = 3;
   SYSRGN = 4;
-
-//todo_lcl
-function GetRandomRgn(DC: HDC; Rgn: HRGN; iNum: Integer): Integer; stdcall; external 'GDI32.DLL';
 
 procedure TBaseVirtualTree.UpdateWindowAndDragImage(const Tree: TBaseVirtualTree; TreeRect: TRect; UpdateNCArea,
   ReshowDragImage: Boolean);

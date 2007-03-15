@@ -32,6 +32,7 @@ const
   lcColumnPosition = 17;
   lcTimer = 18;
   lcDrag = 19;
+  lcOle = 20;
 var
   Logger: TLCLLogger;
 
