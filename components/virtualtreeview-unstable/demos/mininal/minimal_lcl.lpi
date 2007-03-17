@@ -37,7 +37,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="minimal_lcl.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -58,6 +58,11 @@
         <ResourceFilename Value="Main.lrs"/>
         <UnitName Value="Main"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="..\..\units\gtk\mmsystem.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mmsystem"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
