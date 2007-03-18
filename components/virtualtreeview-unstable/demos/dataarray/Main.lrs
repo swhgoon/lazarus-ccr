@@ -1,0 +1,48 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#188#0#6'Height'#3#181#1#3'Top'#2'h'#5'Wid'
+  +'th'#3'd'#2#18'HorzScrollBar.Page'#3'c'#2#18'VertScrollBar.Page'#3#180#1#13
+  +'ActiveControl'#7#7'Button1'#7'Caption'#6#5'Form1'#11'Font.Height'#2#245#9'F'
+  +'ont.Name'#6#13'MS Sans Serif'#7'OnClose'#7#9'FormClose'#8'OnCreate'#7#10'Fo'
+  +'rmCreate'#0#6'TLabel'#6'Label1'#4'Left'#3#204#0#6'Height'#2#14#3'Top'#3'_'#1
+  +#5'Width'#3#152#0#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6' Array'
+  +' data  of  the clicked node'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'T'
+  +'Label'#6'Label2'#4'Left'#3'j'#1#6'Height'#2#14#3'Top'#3'O'#1#5'Width'#3#227
+  +#0#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6'.Find and show the no'
+  +'de by specific array index'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#6'TL'
+  +'abel'#6'Label3'#4'Left'#3'f'#1#6'Height'#2#14#3'Top'#3'_'#1#5'Width'#3#246#0
+  +#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6'2Type index to get rela'
+  +'ted tree node on the screen:'#5'Color'#7#6'clNone'#11'ParentColor'#8#0#0#7
+  +'TButton'#7'Button1'#4'Left'#2#8#6'Height'#2#25#3'Top'#3'V'#1#5'Width'#2'S'#7
+  +'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Cap'
+  +'tion'#6#9'Add nodes'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#0#0#0#7'TB'
+  +'utton'#9'btnDelete'#4'Left'#2'`'#6'Height'#2#25#3'Top'#3'V'#1#5'Width'#2'a'
+  +#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2#4#7'C'
+  +'aption'#6#15'Delete selected'#7'OnClick'#7#14'btnDeleteClick'#8'TabOrder'#2
+  +#1#0#0#5'TEdit'#5'Edit1'#4'Left'#3#208#0#6'Height'#2#21#3'Top'#3'x'#1#5'Widt'
+  +'h'#3#153#0#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'ReadOnly'#9#8'TabOrder'
+  +#2#2#0#0#7'TButton'#11'btnCleanAll'#4'Left'#2'8'#6'Height'#2#25#3'Top'#3'v'#1
+  +#5'Width'#2'K'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerB'
+  +'order'#2#4#7'Caption'#6#9'Clean all'#7'OnClick'#7#16'btnCleanAllClick'#8'Ta'
+  +'bOrder'#2#3#0#0#5'TEdit'#5'Edit2'#4'Left'#3'p'#1#6'Height'#2#21#3'Top'#3'z'
+  +#1#5'Width'#2'a'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'OnChange'#7#11'Edi'
+  +'t2Change'#8'TabOrder'#2#4#0#0#18'TVirtualStringTree'#6'MyTree'#4'Left'#2#3#6
+  +'Height'#3'A'#1#3'Top'#2#8#5'Width'#3'E'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#8'akBottom'#0#15'AutoScrollDelay'#2#1#18'Header.Font.Height'#2#245
+  +#16'Header.Font.Name'#6#13'MS Sans Serif'#14'Header.Options'#11#14'hoColumnR'
+  +'esize'#16'hoDblClickResize'#6'hoDrag'#16'hoShowSortGlyphs'#9'hoVisible'#0#17
+  +'Header.SortColumn'#2#0#12'Header.Style'#7#9'hsXPStyle'#13'RootNodeCount'#2
+  +#10#8'TabOrder'#2#5#23'TreeOptions.AutoOptions'#11#16'toAutoDropExpand'#12't'
+  +'oAutoScroll'#20'toAutoScrollOnExpand'#22'toAutoTristateTracking'#0#28'TreeO'
+  +'ptions.SelectionOptions'#11#13'toMultiSelect'#0#17'OnBeforeCellPaint'#7#21
+  +'MyTreeBeforeCellPaint'#14'OnCompareNodes'#7#18'MyTreeCompareNodes'#14'OnFoc'
+  +'usChanged'#7#18'MyTreeFocusChanged'#10'OnFreeNode'#7#14'MyTreeFreeNode'#9'O'
+  +'nGetText'#7#13'MyTreeGetText'#11'OnPaintText'#7#15'MyTreePaintText'#13'OnHe'
+  +'aderClick'#7#17'MyTreeHeaderClick'#7'Columns'#14#1#5'Width'#3#150#0#8'WideT'
+  +'ext'#18#4#0#0#0'T'#0'e'#0'x'#0't'#0#0#1#7'Options'#11#11'coDraggable'#9'coE'
+  +'nabled'#16'coParentBidiMode'#13'coParentColor'#11'coResizable'#14'coShowDro'
+  +'pMark'#9'coVisible'#0#8'Position'#2#1#5'Width'#3','#1#8'WideText'#18#8#0#0#0
+  +'P'#0'o'#0'i'#0'n'#0't'#0'e'#0'r'#0's'#0#0#1#8'Position'#2#2#5'Width'#2'd'#8
+  +'WideText'#18#6#0#0#0'R'#0'a'#0'n'#0'd'#0'o'#0'm'#0#0#0#0#0#0
+]);

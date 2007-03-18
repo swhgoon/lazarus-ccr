@@ -23830,7 +23830,11 @@ begin
     if not (csDesigning in ComponentState) and
        ((Message.Msg = LM_LBUTTONDOWN) or (Message.Msg = LM_LBUTTONDBLCLK)) then
     begin
-      if (DragMode = dmAutomatic) and (DragKind = dkDrag) then
+      //lclheader
+      //when FHeader.FStates = [] it comes until here unlike Delphi (uses NC messages)
+      //skip this code when is clicked inside the header
+      if (DragMode = dmAutomatic) and (DragKind = dkDrag) and
+        not FHeader.InHeader(SmallPointToPoint(TLMMouse(Message).Pos)) then
       begin
         if IsControlMouseMsg(TLMMouse(Message)) then
           Handled := True;

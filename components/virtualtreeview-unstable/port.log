@@ -99,6 +99,12 @@ Port started in 26/01/07
 * Implemented SetTimer/KillTimer
 * Fixed column position
 * Removed direct dependency from ActiveX, Oleutils
+* Started to work in the gtk port
+* Changed package to allow compilation
+* Added dummy virtualdragmanager and mmsystem units to allow compilation
+* Moved DelphiCompat and OleUtils to lclextensions package
+* Added images demo
+* Fixed header click when Header.States is empty
 
 #Major Tasks#
 < > General Painting
@@ -106,9 +112,10 @@ Port started in 26/01/07
 < > Define the UNICODE support schema. Probably change from widestring to ansistring and let LCL do the rest
   [ ] Use GetTextExtentPoint instead of GetTextExtentPoint32 since the later is a wrapper to the former in LCL
   [ ] For now all rendering will be done with DrawTextW wrapper > Windows.DrawTextW
-< > Find a way to mantain OLE drag and Drop in windows
-  [ ] Also maintain OLE ClipBoard?? Necessary??
-< > Replace TWMTimer since is only called in win32. Or implement in GTK Intf?
+<*> Find a way to mantain OLE drag and Drop in windows
+  [-] Also maintain OLE ClipBoard?? Necessary?? -> No will be removed
+<-> Replace TWMTimer since is only called in win32. Or implement in GTK Intf?
+  [ ] Will be implemented under gtk
 < > Implement Imagelist handling
   [ ] See a properly way to setup the ImageLists (avoid current hack)
 < > GetCurrentObject used for blending does not exists in LCL. Add it?
@@ -121,7 +128,8 @@ Port started in 26/01/07
 < > Bidi Support
   [ ]Properly Implement TBaseVirtualTree.UseRightToLeftAlignment
 #Secondary Tasks#
-< > (low) OleAcc: MSAA (Accessibility)
+<-> (low) OleAcc: MSAA (Accessibility)
+  [ ] Will be removed
 <*> WMContextMenu: replace by DoContextPopup??. Add to LCL??
   [*] Fix Double MouseRUp
   [*] in line 2042 of callback simplify

@@ -1,0 +1,135 @@
+object Form1: TForm1
+  Left = 188
+  Height = 437
+  Top = 104
+  Width = 612
+  HorzScrollBar.Page = 611
+  VertScrollBar.Page = 436
+  ActiveControl = Button1
+  Caption = 'Form1'
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object Label1: TLabel
+    Left = 204
+    Height = 14
+    Top = 351
+    Width = 152
+    Anchors = [akRight, akBottom]
+    Caption = 'Array data  of  the clicked node'
+    Color = clNone
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 362
+    Height = 14
+    Top = 335
+    Width = 227
+    Anchors = [akRight, akBottom]
+    Caption = 'Find and show the node by specific array index'
+    Color = clNone
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 358
+    Height = 14
+    Top = 351
+    Width = 246
+    Anchors = [akRight, akBottom]
+    Caption = 'Type index to get related tree node on the screen:'
+    Color = clNone
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 342
+    Width = 83
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Add nodes'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object btnDelete: TButton
+    Left = 96
+    Height = 25
+    Top = 342
+    Width = 97
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Delete selected'
+    OnClick = btnDeleteClick
+    TabOrder = 1
+  end
+  object Edit1: TEdit
+    Left = 208
+    Height = 21
+    Top = 376
+    Width = 153
+    Anchors = [akRight, akBottom]
+    ReadOnly = True
+    TabOrder = 2
+  end
+  object btnCleanAll: TButton
+    Left = 56
+    Height = 25
+    Top = 374
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Clean all'
+    OnClick = btnCleanAllClick
+    TabOrder = 3
+  end
+  object Edit2: TEdit
+    Left = 368
+    Height = 21
+    Top = 378
+    Width = 97
+    Anchors = [akRight, akBottom]
+    OnChange = Edit2Change
+    TabOrder = 4
+  end
+  object MyTree: TVirtualStringTree
+    Left = 3
+    Height = 321
+    Top = 8
+    Width = 581
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoScrollDelay = 1
+    Header.Font.Height = -11
+    Header.Font.Name = 'MS Sans Serif'
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    Header.SortColumn = 0
+    Header.Style = hsXPStyle
+    RootNodeCount = 10
+    TabOrder = 5
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
+    TreeOptions.SelectionOptions = [toMultiSelect]
+    OnBeforeCellPaint = MyTreeBeforeCellPaint
+    OnCompareNodes = MyTreeCompareNodes
+    OnFocusChanged = MyTreeFocusChanged
+    OnFreeNode = MyTreeFreeNode
+    OnGetText = MyTreeGetText
+    OnPaintText = MyTreePaintText
+    OnHeaderClick = MyTreeHeaderClick
+    Columns = <    
+      item
+        Width = 150
+        WideText = 'Text'
+      end    
+      item
+        Options = [coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible]
+        Position = 1
+        Width = 300
+        WideText = 'Pointers'
+      end    
+      item
+        Position = 2
+        Width = 100
+        WideText = 'Random'
+      end>
+  end
+end

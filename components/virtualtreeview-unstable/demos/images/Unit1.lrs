@@ -1,0 +1,842 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#198#0#6'Height'#3#202#1#3'Top'#2'n'#5'Wid'
+  +'th'#3#26#2#18'HorzScrollBar.Page'#3#25#2#18'VertScrollBar.Page'#3#201#1#13
+  +'ActiveControl'#7#4'VST1'#7'Caption'#6#11'VT - Images'#11'Font.Height'#2#245
+  +#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10'FormCreate'#0#18'TVirtual'
+  +'StringTree'#4'VST1'#6'Height'#3#202#1#5'Width'#3#26#2#5'Align'#7#8'alClient'
+  +#14'CheckImageKind'#7#4'ckXP'#17'DefaultNodeHeight'#2#20#8'DragMode'#7#11'dm'
+  +'Automatic'#14'DragOperations'#11#6'doCopy'#6'doMove'#6'doLink'#0#17'DrawSel'
+  +'ectionMode'#7#18'smBlendedRectangle'#18'Header.Font.Height'#2#245#16'Header'
+  +'.Font.Name'#6#13'MS Sans Serif'#13'Header.Height'#2#24#13'Header.Images'#7
+  +#10'ImageList1'#14'Header.Options'#11#14'hoColumnResize'#6'hoDrag'#12'hoShow'
+  +'Images'#16'hoShowSortGlyphs'#9'hoVisible'#0#17'Header.SortColumn'#2#0#12'He'
+  +'ader.Style'#7#9'hsXPStyle'#11'StateImages'#7#10'ImageList2'#8'TabOrder'#2#0
+  +#23'TreeOptions.AutoOptions'#11#16'toAutoDropExpand'#20'toAutoScrollOnExpand'
+  +#22'toAutoTristateTracking'#0#23'TreeOptions.MiscOptions'#11#15'toAcceptOLED'
+  +'rop'#14'toCheckSupport'#10'toEditable'#21'toFullRepaintOnResize'#12'toInitO'
+  +'nSave'#18'toToggleOnDblClick'#14'toWheelPanning'#0#17'OnBeforeCellPaint'#7
+  +#19'VST1BeforeCellPaint'#10'OnChecking'#7#12'VST1Checking'#14'OnCompareNodes'
+  +#7#16'VST1CompareNodes'#9'OnGetText'#7#11'VST1GetText'#15'OnGetImageIndex'#7
+  +#17'VST1GetImageIndex'#13'OnHeaderClick'#7#15'VST1HeaderClick'#10'OnInitNode'
+  +#7#12'VST1InitNode'#7'Columns'#14#1#10'ImageIndex'#2#0#5'Width'#3#200#0#8'Wi'
+  +'deText'#18#4#0#0#0'M'#0'a'#0'i'#0'n'#0#8'WideHint'#18#13#0#0#0'G'#0'l'#0'a'
+  +#0'v'#0'n'#0'a'#0' '#0'k'#0'o'#0'l'#0'o'#0'n'#0'a'#0#0#1#10'ImageIndex'#2#1#8
+  +'Position'#2#1#5'Width'#2'F'#8'WideText'#18#3#0#0#0'O'#0'n'#0'e'#0#0#1#10'Im'
+  +'ageIndex'#2#2#8'Position'#2#2#5'Width'#2'F'#8'WideText'#18#3#0#0#0'T'#0'w'#0
+  +'o'#0#0#1#8'Position'#2#3#5'Width'#3#150#0#8'WideText'#18#7#0#0#0'P'#0'e'#0
+  +'r'#0'c'#0'e'#0'n'#0't'#0#0#0#0#0#10'TImageList'#10'ImageList1'#6'Height'#2
+  +#24#5'Width'#2#24#4'left'#3#144#0#3'top'#2#8#6'Bitmap'#10't'#15#0#0'li'#3#0#0
+  +#0#24#0#0#0#24#0#0#0#204#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10
+  +'"24 24 68 1",'#10'". c None",'#10'", c #92BDED",'#10'"- c #87A8DC",'#10'"* '
+  +'c #7681B4",'#10'"a c #E7EFF6",'#10'"b c #E2F0FE",'#10'"c c #DFEAF5",'#10'"d'
+  +' c #D8E4EF",'#10'"e c #D4DBEA",'#10'"f c #CCDAEC",'#10'"g c #CDD1E4",'#10'"'
+  +'h c #CAD2DE",'#10'"i c #94A8D6",'#10'"j c #FEFFFF",'#10'"k c #FFFEFF",'#10
+  +'"l c #FFFFFF",'#10'"m c #FEFEFE",'#10'"n c #F7FAFE",'#10'"o c #A1C8EA",'#10
+  +'"p c #8EB1E3",'#10'"q c #FFFCFF",'#10'"r c #EEF8FF",'#10'"s c #7CC4FC",'#10
+  +'"t c #829ACB",'#10'"u c #FEFEFF",'#10'"v c #FAFAFD",'#10'"w c #4CB0FC",'#10
+  +'"x c #0F9BFB",'#10'"y c #6493D3",'#10'"z c #FBFEFC",'#10'"A c #F8FDFF",'#10
+  +'"B c #E9F4FE",'#10'"C c #FEFEFC",'#10'"D c #FBFCFF",'#10'"E c #F3F9FE",'#10
+  +'"F c #C9D6FE",'#10'"G c #B5B9F3",'#10'"H c #A2A3FC",'#10'"I c #FCFBFB",'#10
+  +'"J c #D7EBFE",'#10'"K c #C2CFFE",'#10'"L c #7478A4",'#10'"M c #FBFBF8",'#10
+  +'"N c #EFA998",'#10'"O c #E2D6E2",'#10'"P c #CAE4FE",'#10'"Q c #FAFAFA",'#10
+  +'"R c #E4CDD1",'#10'"S c #FB3503",'#10'"T c #D6C4CF",'#10'"U c #FA7145",'#10
+  +'"V c #F75A29",'#10'"W c #F5F6F9",'#10'"X c #666B98",'#10'"Y c #858EBA",'#10
+  +'"Z c #F2F3FA",'#10'"0 c #F18266",'#10'"1 c #BBDDFE",'#10'"2 c #ECF3F8",'#10
+  +'"3 c #EAEAEC",'#10'"4 c #E2E3F1",'#10'"5 c #D4ACA9",'#10'"6 c #B7D0FE",'#10
+  +'"7 c #ABD7FE",'#10'"8 c #5C5D8C",'#10'"9 c #D1E3F3",'#10'"@ c #CCC0CC",'#10
+  +'"# c #9ACCFE",'#10'"...,-----------*-a......",'#10'"...,bbccddeefgh*-ia....'
+  +'.",'#10'"...,jklmlmljmnn*op-a....",'#10'"...,qllkjlljnnr*ost-a...",'#10'"..'
+  +'.pujlkmkkvnrr*pwxyt...",'#10'"...pzjkmjmAnrrB******...",'#10'"...-CkkluDErr'
+  +'BBbFGHH*...",'#10'"...-ICjlDnErBBbbJFKGL...",'#10'"...-MllAnErBbbNOJJPKL...'
+  +'",'#10'"...tQlDnErBBbRSSTPPFL...",'#10'"...tvAnErBBbcUSVJPPFL...",'#10'"...'
+  +'tWDErBBbbNSSTPPPFX...",'#10'"...YZErBBbbdSS0PPP1FX...",'#10'"...Y2r3S04J0SS'
+  +'FP111FX...",'#10'"...*2BNSSSNSS5P1111KX...",'#10'"...*aBbNSSSSVP111116X..."'
+  +','#10'"...*cbbJd0SST11111768...",'#10'"...*cbJJP9@N1111177K8...",'#10'"...L'
+  +'4JJJPPF1111177768...",'#10'"...LdJJPPPP1111777768...",'#10'"...L9JPPPP11117'
+  +'777#68...",'#10'"...LfFFFFFFF6KK666668...",'#10'"...LLLLLLLLLLLLLLLLL8...",'
+  +#10'"........................"}'#10'G'#4#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 25 1",'#10'". c None",'#10'", c #A0B4DA",'#10'"- c #58'
+  +'79BD",'#10'"* c #024BAF",'#10'"a c #2956AB",'#10'"b c #083FA2",'#10'"c c #B'
+  +'3BDE2",'#10'"d c #F0F0F8",'#10'"e c #CCDAEC",'#10'"f c #ECF3F8",'#10'"g c #'
+  +'266EC5",'#10'"h c #4CB0FC",'#10'"i c #0F9BFB",'#10'"j c #037EE2",'#10'"k c '
+  +'#0158BD",'#10'"l c #4166B3",'#10'"m c #6493D3",'#10'"n c #94A8D6",'#10'"o c'
+  +' #BECDE5",'#10'"p c #0167CC",'#10'"q c #E2E3F1",'#10'"r c #DFEAF5",'#10'"s '
+  +'c #F2F3FA",'#10'"t c #829ACB",'#10'"u c #D4DBEA",'#10'"....................'
+  +'....",'#10'"........................",'#10'"........................",'#10
+  ,'".....,-*ab-c.......d,e..",'#10'"...f-ghhhijkae.....a**c.",'#10'"...lmhhhii'
+  +'iijbn...o*ppl.",'#10'"..,ghhjk*kpjjj*-..o*ppl.",'#10'"..aihjaq.r-*jjpk-.o*p'
+  +'pl.",'#10'".f*hi*q....obkppk-o*ppl.",'#10'".opiil......sakppka*ppl.",'#10'"'
+  +'.opij-.......sakppk*ppl.",'#10'".ekija........dakpppppl.",'#10'"..*jj*r....'
+  +'ntttmbkppppl.",'#10'"..-pjk-...n*kkkkkpppppl.",'#10'"..o*ppbo..tkpppppppppp'
+  +'l.",'#10'"...lkpkad.eb**********l.",'#10'"...obpp*-...............",'#10'".'
+  +'...m*pp*-..............",'#10'"....dakpp*,.............",'#10'".....ubkpp*n'
+  +'............",'#10'"......u*ppb,............",'#10'".......ubbm............'
+  +'.",'#10'"........um..............",'#10'"........................"}'#10'G'#4
+  +#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 25 1",'#10'". c Non'
+  +'e",'#10'", c #ECF3F8",'#10'"- c #A0B4DA",'#10'"* c #6493D3",'#10'"a c #4166'
+  +'B3",'#10'"b c #5879BD",'#10'"c c #BECDE5",'#10'"d c #2956AB",'#10'"e c #024'
+  +'BAF",'#10'"f c #829ACB",'#10'"g c #F2F3FA",'#10'"h c #0167CC",'#10'"i c #03'
+  +'7EE2",'#10'"j c #0158BD",'#10'"k c #083FA2",'#10'"l c #4CB0FC",'#10'"m c #7'
+  +'CC4FC",'#10'"n c #CCDAEC",'#10'"o c #DFEAF5",'#10'"p c #0F9BFB",'#10'"q c #'
+  +'94A8D6",'#10'"r c #E2E3F1",'#10'"s c #D4DBEA",'#10'"t c #7681B4",'#10'"u c '
+  +'#B3BDE2",'#10'"........................",'#10'"........................",'
+  +#10'"........................",'#10'".............,-*ab-,....",'#10'"..cdef.'
+  +'....gfehhihjk-...",'#10'"..alme....ndhiiiiihhk-..",'#10'"..alle...-eiiiijjj'
+  +'hhhko.",'#10'"..alpe..-eiiijdqcfkhhjb.",'#10'"..appe.-jiiikf....-ehhk.",'#10
+  +'"..appe-eiihkc......dhher",'#10'"..apieeiihks.......ahhec",'#10'"..aiiiiihk'
+  +'s........dhhen",'#10'"..aiiihhkqcccr....oehhk.",'#10'"..aiihhjeeeeekn...tjh'
+  +'jb.",'#10'"..ahhhhhhhhhhjf..okhhe-.",'#10'"..ajjjjjjjjjjku..ajhhd..",'#10'"'
+  +'................fehhku..",'#10'"...............-khhja...",'#10'"...........'
+  +'...-khhhkg...",'#10'".............-khhhkc....",'#10'".............bjhhk-...'
+  +'..",'#10'"..............djk-......",'#10'"..............gk-.......",'#10'".'
+  +'......................."}'#10#0#0#10'TImageList'#10'ImageList2'#6'Height'#2
+  +#24#5'Width'#2#24#4'left'#3#144#0#3'top'#3#160#0#6'Bitmap'#10'h'#182#0#0'li'
+  +#27#0#0#0#24#0#0#0#24#0#0#0#177#3#0#0'/* XPM */'#10'static char *graphic[] ='
+  +' {'#10'"24 24 15 1",'#10'". c None",'#10'", c #FAD7CE",'#10'"- c #FA7145",'
+  +#10'"* c #F18266",'#10'"a c #FB3503",'#10'"b c #FDF6F0",'#10'"c c #F75A29",'
+  +#10'"d c #EFA998",'#10'"e c #DE3207",'#10'"f c #DCC6BE",'#10'"g c #F3F3F3",'
+  +#10'"h c #E4CDD1",'#10'"i c #E1DDC7",'#10'"j c #ECE3D0",'#10'"k c #EAEAEC",'
+  +#10'"........................",'#10'"........................",'#10'".,--,..'
+  +'.................",'#10'".*aaa,..................",'#10'".*aaaa,...........'
+  +'......",'#10'".bcaaaa,..........da,...",'#10'"..bcaaaa,.......b-a-....",'#10
+  +'"....*aaaa,.....,ca*.....",'#10'".....*aeaa,...daa*......",'#10'"......daae'
+  +'a,b*aa*.......",'#10'".......deaeacae*........",'#10'"........feaeea*......'
+  +'...",'#10'".........*eeae,.........",'#10'".......b-eaeeee,........",'#10'"'
+  +'......,ceeedceee,.......",'#10'".....deeeed.gceee,......",'#10'"....*eeeed.'
+  +'...*eee,.....",'#10'"..gceeeed......*eee,....",'#10'".beeeeef........deee,.'
+  +'..",'#10'".heeee,..........deee,..",'#10'".beeei............heee,.",'#10'".'
+  +'.jhk..............,eee.",'#10'"....................,cd.",'#10'"............'
+  +'............"}'#10'G'#4#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"2'
+  +'4 24 25 1",'#10'". c None",'#10'", c #A0B4DA",'#10'"- c #5879BD",'#10'"* c '
+  +'#024BAF",'#10'"a c #2956AB",'#10'"b c #083FA2",'#10'"c c #B3BDE2",'#10'"d c'
+  +' #F0F0F8",'#10'"e c #CCDAEC",'#10'"f c #ECF3F8",'#10'"g c #266EC5",'#10'"h '
+  +'c #4CB0FC",'#10'"i c #0F9BFB",'#10'"j c #037EE2",'#10'"k c #0158BD",'#10'"l'
+  +' c #4166B3",'#10'"m c #6493D3",'#10'"n c #94A8D6",'#10'"o c #BECDE5",'#10'"'
+  +'p c #0167CC",'#10'"q c #E2E3F1",'#10'"r c #DFEAF5",'#10'"s c #F2F3FA",'#10
+  +'"t c #829ACB",'#10'"u c #D4DBEA",'#10'"........................",'#10'"....'
+  +'....................",'#10'"........................",'#10'".....,-*ab-c...'
+  +'....d,e..",'#10'"...f-ghhhijkae.....a**c.",'#10'"...lmhhhiiiijbn...o*ppl.",'
+  +#10'"..,ghhjk*kpjjj*-..o*ppl.",'#10'"..aihjaq.r-*jjpk-.o*ppl.",'#10'".f*hi*q'
+  +'....obkppk-o*ppl.",'#10'".opiil......sakppka*ppl.",'#10'".opij-.......sakpp'
+  +'k*ppl.",'#10'".ekija........dakpppppl.",'#10'"..*jj*r....ntttmbkppppl.",'#10
+  +'"..-pjk-...n*kkkkkpppppl.",'#10'"..o*ppbo..tkppppppppppl.",'#10'"...lkpkad.'
+  +'eb**********l.",'#10'"...obpp*-...............",'#10'"....m*pp*-...........'
+  +'...",'#10'"....dakpp*,.............",'#10'".....ubkpp*n............",'#10'"'
+  +'......u*ppb,............",'#10'".......ubbm.............",'#10'"........um.'
+  +'.............",'#10'"........................"}'#10'G'#4#0#0'/* XPM */'#10
+  +'static char *graphic[] = {'#10'"24 24 25 1",'#10'". c None",'#10'", c #ECF3'
+  +'F8",'#10'"- c #A0B4DA",'#10'"* c #6493D3",'#10'"a c #4166B3",'#10'"b c #587'
+  +'9BD",'#10'"c c #BECDE5",'#10'"d c #2956AB",'#10'"e c #024BAF",'#10'"f c #82'
+  ,'9ACB",'#10'"g c #F2F3FA",'#10'"h c #0167CC",'#10'"i c #037EE2",'#10'"j c #0'
+  +'158BD",'#10'"k c #083FA2",'#10'"l c #4CB0FC",'#10'"m c #7CC4FC",'#10'"n c #'
+  +'CCDAEC",'#10'"o c #DFEAF5",'#10'"p c #0F9BFB",'#10'"q c #94A8D6",'#10'"r c '
+  +'#E2E3F1",'#10'"s c #D4DBEA",'#10'"t c #7681B4",'#10'"u c #B3BDE2",'#10'"...'
+  +'.....................",'#10'"........................",'#10'"..............'
+  +'..........",'#10'".............,-*ab-,....",'#10'"..cdef.....gfehhihjk-..."'
+  +','#10'"..alme....ndhiiiiihhk-..",'#10'"..alle...-eiiiijjjhhhko.",'#10'"..al'
+  +'pe..-eiiijdqcfkhhjb.",'#10'"..appe.-jiiikf....-ehhk.",'#10'"..appe-eiihkc..'
+  +'....dhher",'#10'"..apieeiihks.......ahhec",'#10'"..aiiiiihks........dhhen",'
+  +#10'"..aiiihhkqcccr....oehhk.",'#10'"..aiihhjeeeeekn...tjhjb.",'#10'"..ahhhh'
+  +'hhhhhhjf..okhhe-.",'#10'"..ajjjjjjjjjjku..ajhhd..",'#10'"................fe'
+  +'hhku..",'#10'"...............-khhja...",'#10'"..............-khhhkg...",'#10
+  +'".............-khhhkc....",'#10'".............bjhhk-.....",'#10'"..........'
+  +'....djk-......",'#10'"..............gk-.......",'#10'".....................'
+  +'..."}'#10#204#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 68 '
+  +'1",'#10'". c None",'#10'", c #92BDED",'#10'"- c #87A8DC",'#10'"* c #7681B4"'
+  +','#10'"a c #E7EFF6",'#10'"b c #E2F0FE",'#10'"c c #DFEAF5",'#10'"d c #D8E4EF'
+  +'",'#10'"e c #D4DBEA",'#10'"f c #CCDAEC",'#10'"g c #CDD1E4",'#10'"h c #CAD2D'
+  +'E",'#10'"i c #94A8D6",'#10'"j c #FEFFFF",'#10'"k c #FFFEFF",'#10'"l c #FFFF'
+  +'FF",'#10'"m c #FEFEFE",'#10'"n c #F7FAFE",'#10'"o c #A1C8EA",'#10'"p c #8EB'
+  +'1E3",'#10'"q c #FFFCFF",'#10'"r c #EEF8FF",'#10'"s c #7CC4FC",'#10'"t c #82'
+  +'9ACB",'#10'"u c #FEFEFF",'#10'"v c #FAFAFD",'#10'"w c #4CB0FC",'#10'"x c #0'
+  +'F9BFB",'#10'"y c #6493D3",'#10'"z c #FBFEFC",'#10'"A c #F8FDFF",'#10'"B c #'
+  +'E9F4FE",'#10'"C c #FEFEFC",'#10'"D c #FBFCFF",'#10'"E c #F3F9FE",'#10'"F c '
+  +'#C9D6FE",'#10'"G c #B5B9F3",'#10'"H c #A2A3FC",'#10'"I c #FCFBFB",'#10'"J c'
+  +' #D7EBFE",'#10'"K c #C2CFFE",'#10'"L c #7478A4",'#10'"M c #FBFBF8",'#10'"N '
+  +'c #EFA998",'#10'"O c #E2D6E2",'#10'"P c #CAE4FE",'#10'"Q c #FAFAFA",'#10'"R'
+  +' c #E4CDD1",'#10'"S c #FB3503",'#10'"T c #D6C4CF",'#10'"U c #FA7145",'#10'"'
+  +'V c #F75A29",'#10'"W c #F5F6F9",'#10'"X c #666B98",'#10'"Y c #858EBA",'#10
+  +'"Z c #F2F3FA",'#10'"0 c #F18266",'#10'"1 c #BBDDFE",'#10'"2 c #ECF3F8",'#10
+  +'"3 c #EAEAEC",'#10'"4 c #E2E3F1",'#10'"5 c #D4ACA9",'#10'"6 c #B7D0FE",'#10
+  +'"7 c #ABD7FE",'#10'"8 c #5C5D8C",'#10'"9 c #D1E3F3",'#10'"@ c #CCC0CC",'#10
+  +'"# c #9ACCFE",'#10'"...,-----------*-a......",'#10'"...,bbccddeefgh*-ia....'
+  +'.",'#10'"...,jklmlmljmnn*op-a....",'#10'"...,qllkjlljnnr*ost-a...",'#10'"..'
+  +'.pujlkmkkvnrr*pwxyt...",'#10'"...pzjkmjmAnrrB******...",'#10'"...-CkkluDErr'
+  +'BBbFGHH*...",'#10'"...-ICjlDnErBBbbJFKGL...",'#10'"...-MllAnErBbbNOJJPKL...'
+  +'",'#10'"...tQlDnErBBbRSSTPPFL...",'#10'"...tvAnErBBbcUSVJPPFL...",'#10'"...'
+  +'tWDErBBbbNSSTPPPFX...",'#10'"...YZErBBbbdSS0PPP1FX...",'#10'"...Y2r3S04J0SS'
+  +'FP111FX...",'#10'"...*2BNSSSNSS5P1111KX...",'#10'"...*aBbNSSSSVP111116X..."'
+  +','#10'"...*cbbJd0SST11111768...",'#10'"...*cbJJP9@N1111177K8...",'#10'"...L'
+  +'4JJJPPF1111177768...",'#10'"...LdJJPPPP1111777768...",'#10'"...L9JPPPP11117'
+  +'777#68...",'#10'"...LfFFFFFFF6KK666668...",'#10'"...LLLLLLLLLLLLLLLLL8...",'
+  +#10'"........................"}'#10'd'#5#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 44 1",'#10'". c None",'#10'", c #EAEAEC",'#10'"- c #C6'
+  +'C9DB",'#10'"* c #D3D7DE",'#10'"a c #4D5B6F",'#10'"b c #5B6A82",'#10'"c c #B'
+  +'7BCCA",'#10'"d c #F2F3FA",'#10'"e c #707D92",'#10'"f c #97A0B1",'#10'"g c #'
+  +'CAD2DE",'#10'"h c #E0E0E1",'#10'"i c #828CA1",'#10'"j c #ABB8C6",'#10'"k c '
+  +'#A6AAB9",'#10'"l c #C2C2C3",'#10'"m c #F3F3F3",'#10'"n c #C7C7C7",'#10'"o c'
+  +' #CACACC",'#10'"p c #8E96A4",'#10'"q c #C0C0C0",'#10'"r c #B9B9B9",'#10'"s '
+  +'c #ABABC8",'#10'"t c #E2E3F1",'#10'"u c #C4C4C4",'#10'"v c #E7EFF6",'#10'"w'
+  +' c #7681B4",'#10'"x c #2956AB",'#10'"y c #4166B3",'#10'"z c #5879BD",'#10'"'
+  +'A c #829ACB",'#10'"B c #083FA2",'#10'"C c #858EBA",'#10'"D c #024BAF",'#10
+  +'"E c #0167CC",'#10'"F c #A0B4DA",'#10'"G c #BECDE5",'#10'"H c #0158BD",'#10
+  +'"I c #ECF3F8",'#10'"J c #B3BDE2",'#10'"K c #6493D3",'#10'"L c #D4DBEA",'#10
+  +'"M c #DFEAF5",'#10'"N c #94A8D6",'#10'"........................",'#10'"....'
+  +'.,-..........**.....",'#10'".....*a,.........bc.....",'#10'".....dbe.......'
+  +'.fa*.....",'#10'"......ebg......hbb......",'#10'"......ffb......efi......",'
+  +#10'"......hijf....jfkl......",'#10'".......eme*..,ehb.......",'#10'".......'
+  +'kkne..ifkf.......",'#10'".......,bopj*eqe*.......",'#10'"........pkrbekse..'
+  +'......",'#10'"........,bcfbkb*........",'#10'".........lbtubp.........",'#10
+  +'".........vbefb*.........",'#10'".........wxbbyz.........",'#10'"......ABBB'
+  +'BzwBBBBCd.....",'#10'".....zDEEEDFGDEHEHz.....",'#10'"....GDDzzHDt.BHzzHDF.'
+  +'...",'#10'"....zHz.IDD..DD..zEz....",'#10'"....yDJ.tDD..xD..JDx....",'#10'"'
+  +'....yHAIzDz..wDz.zHx....",'#10'"....KDDBDBL..MBDBDHz....",'#10'"....mBBDBF.'
+  ,'...LBDDBL....",'#10'".....dNNt......dFNd....."}'#10'6'#6#0#0'/* XPM */'#10
+  +'static char *graphic[] = {'#10'"24 24 58 1",'#10'". c None",'#10'", c #92BD'
+  +'ED",'#10'"- c #87A8DC",'#10'"* c #7681B4",'#10'"a c #BECDE5",'#10'"b c #FEF'
+  +'EFC",'#10'"c c #FFFCFF",'#10'"d c #FEFEFE",'#10'"e c #FBFEFC",'#10'"f c #FA'
+  +'FAFA",'#10'"g c #F8F8F8",'#10'"h c #F5F6F9",'#10'"i c #ECF3F8",'#10'"j c #8'
+  +'EB1E3",'#10'"k c #B5C5D8",'#10'"l c #FEFEFF",'#10'"m c #FFFFFF",'#10'"n c #'
+  +'F8FDFF",'#10'"o c #F7FAFE",'#10'"p c #EEF8FF",'#10'"q c #7CC4FC",'#10'"r c '
+  +'#B3BDE2",'#10'"s c #FEFFFF",'#10'"t c #FBFCFF",'#10'"u c #FCFBFB",'#10'"v c'
+  +' #E9F4FE",'#10'"w c #E2F0FE",'#10'"x c #D7EBFE",'#10'"y c #94A8D6",'#10'"z '
+  +'c #FFFEFF",'#10'"A c #F3F9FE",'#10'"B c #9ACCFE",'#10'"C c #FBFBF8",'#10'"D'
+  +' c #F3F3F3",'#10'"E c #EFEFEF",'#10'"F c #829ACB",'#10'"G c #BBDDFE",'#10'"'
+  +'H c #DFEAF5",'#10'"I c #FCFFFE",'#10'"J c #858EBA",'#10'"K c #CAE4FE",'#10
+  +'"L c #B5B9F3",'#10'"M c #A2A3FC",'#10'"N c #FAFAFD",'#10'"O c #E7EFF6",'#10
+  +'"P c #7478A4",'#10'"Q c #D8E4EF",'#10'"R c #ABD7FE",'#10'"S c #D4DBEA",'#10
+  +'"T c #666B98",'#10'"U c #CCDAEC",'#10'"V c #A3D1F3",'#10'"W c #C9D6FE",'#10
+  +'"X c #CDD1E4",'#10'"Y c #CAD2DE",'#10'"Z c #5C5D8C",'#10'"0 c #C6C9DB",'#10
+  +'"1 c #C2CFFE",'#10'"..,---------*a..........",'#10'"..,bcdefgghi*jk........'
+  +'.",'#10'"..,lmmmmlnop*q-r........",'#10'"..jlsmmmtopp****........",'#10'"..'
+  +'jumsdnopvwxyy*........",'#10'"..-uzmnA,----------*a...",'#10'"..-uBBBB,weeC'
+  +'hhDDEE*jk..",'#10'"..FfGGGG,wzmsbmdnAo*qFr.",'#10'"..FhAAvvjHmbmzItApp****.'
+  +'",'#10'"..JiBBBBjHzzszoApvvKLM*.",'#10'"..JiGGGG-HmsmNopvvwwOGP.",'#10'"..*'
+  +'OOOOO-QhBBBBBBBBBOGP.",'#10'"..*OBBBB-QhGGGGGGGGGOGP.",'#10'"..*OGGGRFQOOOO'
+  +'OOOOOOOGP.",'#10'"..POOOOiFSOBBBBBBBBBOGT.",'#10'"..POOOOOFUORRRRRRRVVOGT."'
+  +','#10'"..PWWWWWJXOOOOOOOOwOOGT.",'#10'"..PPPPPPJYOBBBBBBBBBOGZ.",'#10'"....'
+  +'....JaOKKKGGGGRROGZ.",'#10'"........*aOOOOOOOOOOOGZ.",'#10'"........*kOOOOO'
+  +'OOOOOOGZ.",'#10'"........*0111111111111Z.",'#10'"........PPPPPPPPPPPPPPZ.",'
+  +#10'"........................"}'#10'0'#10#0#0'/* XPM */'#10'static char *gra'
+  +'phic[] = {'#10'"24 24 82 2",'#10'".. c None",'#10'"., c #828CA1",'#10'".- c'
+  +' #C6C9DB",'#10'".* c #F1D190",'#10'".a c #DAB341",'#10'".b c #B7BCCA",'#10
+  +'".c c #A6AAB9",'#10'".d c #C3A666",'#10'".e c #E0BD4B",'#10'".f c #F5E6BE",'
+  +#10'".g c #E6CB7E",'#10'".h c #D8AC2E",'#10'".i c #FEFD99",'#10'".j c #D8C39'
+  +'B",'#10'".k c #8E96A4",'#10'".l c #ABB8C6",'#10'".m c #FFFFFF",'#10'".n c #'
+  +'FEFEFC",'#10'".o c #FFFEFF",'#10'".p c #FEFFFF",'#10'".q c #D3D7DE",'#10'".'
+  +'r c #859187",'#10'".s c #CD9A05",'#10'".t c #F9EFDF",'#10'".u c #FEFEF0",'
+  +#10'".v c #FEFDE4",'#10'".w c #97A0B1",'#10'".x c #88898C",'#10'".y c #FFFDD'
+  +'4",'#10'".z c #FFFDC2",'#10'".A c #EEDE9E",'#10'".B c #FFE39A",'#10'".C c #'
+  +'FEFBAD",'#10'".D c #92BDED",'#10'".E c #87A8DC",'#10'".F c #7681B4",'#10'".'
+  +'G c #BECDE5",'#10'".H c #E9F4FE",'#10'".I c #FEFEFE",'#10'".J c #FCFBFB",'
+  +#10'".K c #FAFAFA",'#10'".L c #F5F6F9",'#10'".M c #ECF3F8",'#10'".N c #8EB1E'
+  +'3",'#10'".O c #B5C5D8",'#10'".P c #E2F0FE",'#10'".Q c #F7FAFE",'#10'".R c #'
+  +'EEF8FF",'#10'".S c #7CC4FC",'#10'".T c #B3BDE2",'#10'".U c #FBFCFF",'#10'".'
+  +'V c #FEF38D",'#10'".W c #DFEAF5",'#10'".X c #FFFCFF",'#10'".Y c #F3F9FE",'
+  +#10'".Z c #D1E3F3",'#10'".0 c #B5B9F3",'#10'".1 c #A2A3FC",'#10'".2 c #FEFEF'
+  +'F",'#10'".3 c #D7EBFE",'#10'".4 c #CAE4FE",'#10'".5 c #B7D0FE",'#10'".6 c #'
+  +'7478A4",'#10'".7 c #FEE984",'#10'".8 c #D8E4EF",'#10'".9 c #9ACCFE",'#10'".'
+  +'@ c #E7EFF6",'#10'".# c #BBDDFE",'#10'".; c #829ACB",'#10'".: c #D4DBEA",'
+  +#10'".= c #666B98",'#10'".+ c #FEDD7B",'#10'".% c #858EBA",'#10'".$ c #CCDAE'
+  +'C",'#10'".( c #FDD270",'#10'".) c #CAD2DE",'#10'".[ c #5C5D8C",'#10'".] c #'
+  +'D5A61D",'#10'",. c #F0D460",'#10'",, c #F9EB71",'#10'",- c #ABD7FE",'#10'",'
+  +'* c #C2CFFE",'#10'"...............,.,.,.,.,.,.,.-..................",'#10'"'
+  +'.......*.a.a.a.,.b.b.b.b.b.c.d.a.a.e.f..........",'#10'".....g.h.i.j.k.l.m.'
+  +'m.n.o.p.q.k.r.a.g.s.t........",'#10'".....a.u.v.w.q.q.q.q.q.q.q.q.q.x.e.v.*'
+  +'.s........",'#10'".....a.u.y.j.,.,.,.,.,.,.,.,.,.,.*.y.*.s........",'#10'".'
+  +'....a.v.y.z.A.A.A.B.A.B.A.B.A.A.y.y.*.s........",'#10'".....a.v.z.z.z.z.z.z'
+  +'.z.z.z.z.z.z.z.z.*.s........",'#10'".....a.y.C.C.C.C.D.E.E.E.E.E.E.E.E.E.F.'
+  +'G........",'#10'".....a.y.i.C.i.C.D.H.p.I.J.J.K.K.L.M.F.N.O......",'#10'"..'
+  +'...a.y.i.i.i.i.D.P.p.o.m.p.m.n.Q.R.F.S.E.T....",'#10'".....a.z.i.i.i.i.N.P.'
+  +'o.o.p.m.U.Q.R.R.F.F.F.F....",'#10'".....a.z.V.i.V.i.N.W.m.I.m.X.Y.Y.R.P.Z.0'
+  +'.1.F....",'#10'".....a.C.V.V.V.V.E.W.2.m.U.Q.R.H.H.P.3.4.5.6....",'#10'"...'
+  +'..a.C.V.7.V.7.E.8.L.9.9.9.9.9.9.9.9.@.#.6....",'#10'".....a.C.7.7.7.7.;.8.L'
+  +'.#.#.#.#.#.#.#.#.@.#.6....",'#10'".....a.i.7.7.7.7.;.:.@.@.@.@.@.@.@.@.@.@.'
+  +'#.=....",'#10'".....a.i.+.+.+.+.;.:.@.9.9.9.9.9.9.9.9.@.#.=....",'#10'"....'
+  +'.a.V.+.+.+.+.%.$.@.3.4.4.4.#.#.#.#.@.#.=....",'#10'".....a.V.(.(.(.(.%.).@.'
+  +'@.@.@.@.@.@.@.@.@.#.=....",'#10'".....a.V.(.(.(.(.F.).@.9.9.9.9.9.9.9.9.@.#'
+  ,'.[....",'#10'".....g.],.,,,,,,.F.G.@.#.#.#,-,-,-,-,-.@.#.=....",'#10'".....'
+  +'..g.a.a.a.a.6.-.@.@.@.@.@.@.@.@.@.@.#.[....",'#10'".................6.O,*,*'
+  +',*,*,*,*,*,*,*,*,*.[....",'#10'".................6.6.6.6.6.6.6.6.6.6.6.6.6.'
+  +'[...."}'#10#130#5#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 4'
+  +'6 1",'#10'". c None",'#10'", c #D5A61D",'#10'"- c #E6CB7E",'#10'"* c #EEDE9'
+  +'E",'#10'"a c #F5E6BE",'#10'"b c #F4DBAC",'#10'"c c #FAD7CE",'#10'"d c #F9EF'
+  +'DF",'#10'"e c #D8AC2E",'#10'"f c #F1D190",'#10'"g c #FFFDD4",'#10'"h c #FFF'
+  +'DC2",'#10'"i c #FEFBAD",'#10'"j c #FEFDE4",'#10'"k c #E1C164",'#10'"l c #FB'
+  +'3503",'#10'"m c #FA7145",'#10'"n c #FEFD99",'#10'"o c #FEFEF0",'#10'"p c #F'
+  +'75A29",'#10'"q c #EFA998",'#10'"r c #FDF6F0",'#10'"s c #FDD270",'#10'"t c #'
+  +'F9EB71",'#10'"u c #F0D460",'#10'"v c #E0BD4B",'#10'"w c #FEF38D",'#10'"x c '
+  +'#FEFFFF",'#10'"y c #FFFEFF",'#10'"z c #FBFCFF",'#10'"A c #FFE39A",'#10'"B c'
+  +' #FEE984",'#10'"C c #FEDD7B",'#10'"D c #E0B437",'#10'"E c #FBFBF8",'#10'"F '
+  +'c #F9EFD1",'#10'"G c #FCB25D",'#10'"H c #FEC661",'#10'"I c #CD9A05",'#10'"J'
+  +' c #FE9C39",'#10'"K c #FFAF4B",'#10'"L c #F0C656",'#10'"M c #FEFFF9",'#10'"'
+  +'N c #ED9344",'#10'"O c #E0803A",'#10'"P c #DAB341",'#10'"..................'
+  +'......",'#10'"........................",'#10'"...,,,,,................",'#10
+  +'"..,--*ab,........cd.....",'#10'".efgghijk,,,,,,,,lm.....",'#10'".,jnnnnnoa'
+  +'ajghiiplqr....",'#10'".,innnnnnnnnnnnsll......",'#10'".,innnnnnnnnntumlpvvv'
+  +'vv.",'#10'".,iwwwwwwwwuv*bllbxyzav.",'#10'".,ABBBBBCuDkEjqlpsooov..",'#10'"'
+  +'.,ACCvvvvbFohhplGHjja-..",'#10'".,Asv*ogfpGhiAlliHggvo..",'#10'".IAHDoniJll'
+  +'GnKlmnHhik...",'#10'".IALkgnnnmllGplGnshvd...",'#10'".IsDbiwwwnmllllCwHnv..'
+  +'..",'#10'".IfeMBwwwBwmllpwwHua....",'#10'".IsvgBBBBBtCplNBBLD.....",'#10'".'
+  +'IL*ACCCCCCCsODDI,b.....",'#10'".IIrCCCCCLv,I,kfF.......",'#10'".IvFsLD,Ieka'
+  +'d...........",'#10'".IkvIP-ar...............",'#10'".IIF...................'
+  +'.",'#10'"........................",'#10'"........................"}'#10'('#5
+  +#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 40 1",'#10'". c Non'
+  +'e",'#10'", c #D1E3F3",'#10'"- c #266EC5",'#10'"* c #0167CC",'#10'"a c #A1C8'
+  +'EA",'#10'"b c #6493D3",'#10'"c c #037EE2",'#10'"d c #FFFFFF",'#10'"e c #FEF'
+  +'EFE",'#10'"f c #FFFEFF",'#10'"g c #FEFFFF",'#10'"h c #FCFFFE",'#10'"i c #F7'
+  +'FAFE",'#10'"j c #F3F9FE",'#10'"k c #EEF8FF",'#10'"l c #E9F4FE",'#10'"m c #E'
+  +'2F0FE",'#10'"n c #FEFEFF",'#10'"o c #FAFAFD",'#10'"p c #999ACC",'#10'"q c #'
+  +'039A02",'#10'"r c #FEFEFC",'#10'"s c #FCFBFB",'#10'"t c #D7EBFE",'#10'"u c '
+  +'#B3B3B5",'#10'"v c #AFAFAF",'#10'"w c #A6AAB9",'#10'"x c #CAE4FE",'#10'"y c'
+  +' #F8FDFF",'#10'"z c #FA7145",'#10'"A c #F8F8F8",'#10'"B c #083FA2",'#10'"C '
+  +'c #CD9A05",'#10'"D c #F18266",'#10'"E c #BBDDFE",'#10'"F c #FBFCFF",'#10'"G'
+  +' c #E7EFF6",'#10'"H c #979699",'#10'"I c #ABD7FE",'#10'"J c #B7D0FE",'#10'"'
+  +'........................",'#10'"........................",'#10'"...........'
+  +'.............",'#10'",-********************a.",'#10'"b*********************'
+  +'*.",'#10'"*ccccccccccccccccccccc*.",'#10'"*dddddedfdgddfhijklmmm*.",'#10'"*'
+  +'dddendfgffgfddoiklmmm*.",'#10'"*ddgpppgddccchfiqqqmmm*.",'#10'"*dddpppdfrcc'
+  +'csikqqqmmm*.",'#10'"*ddrpppfhdcccjilqqqttt*.",'#10'"*dddedgfdgddjkkklltttt*'
+  +'.",'#10'"*ddduuuggduuvklmvvwxxx*.",'#10'"*ddgfrhdfyjklmmttxxxxx*.",'#10'"*d'
+  +'fdzzzdeABBBmmtCCCxxx*.",'#10'"*dgdzDzdijBBB,ttCCCEEE*.",'#10'"*dfdzzzFiGBBB'
+  +'ttxCCCEEE*.",'#10'"*ddgddyjkkGG,xtxxxEEEE*.",'#10'"*dgdHHHllmHHHxxxHHHIEI*.'
+  +'",'#10'"*gddjlmmmtxxxxxxEIIIIJ*.",'#10'"*gdijklmmtttxxEEEIIIII*.",'#10'"***'
+  +'********************.",'#10'"........................",'#10'"..............'
+  +'.........."}'#10'E'#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 '
+  +'24 59 1",'#10'". c None",'#10'", c #E2F3D9",'#10'"- c #7FCE7A",'#10'"* c #3'
+  +'9C339",'#10'"a c #19B209",'#10'"b c #A9DE91",'#10'"c c #F0F9EF",'#10'"d c #'
+  +'E1F1E1",'#10'"e c #71CE47",'#10'"f c #69C330",'#10'"g c #4FBB25",'#10'"h c '
+  +'#1BA30E",'#10'"i c #B9E5BB",'#10'"j c #BFE6AF",'#10'"k c #87E058",'#10'"l c'
+  +' #3DA625",'#10'"m c #CCEBD8",'#10'"n c #94B451",'#10'"o c #2E9918",'#10'"p '
+  +'c #49AA49",'#10'"q c #FEFEF0",'#10'"r c #FFFFFF",'#10'"s c #FCFBFB",'#10'"t'
+  +' c #19830F",'#10'"u c #B0D0AF",'#10'"v c #FBFBF8",'#10'"w c #FFFCFF",'#10'"'
+  +'x c #FFFEFF",'#10'"y c #FBFEFC",'#10'"z c #FEFEFC",'#10'"A c #9EC7A1",'#10
+  +'"B c #039A02",'#10'"C c #FDF6F0",'#10'"D c #F3F3F3",'#10'"E c #438C2A",'#10
+  +'"F c #FEFEFE",'#10'"G c #FEFFF9",'#10'"H c #32B416",'#10'"I c #0A7105",'#10
+  +'"J c #F5FAF2",'#10'"K c #FEFFFF",'#10'"L c #FCFFFE",'#10'"M c #F5F6F9",'#10
+  +'"N c #3E8A44",'#10'"O c #72A97D",'#10'"P c #075004",'#10'"Q c #DDEADD",'#10
+  +'"R c #678E66",'#10'"S c #8BBC8D",'#10'"T c #62A768",'#10'"U c #B9B9B9",'#10
+  +'"V c #A8A8A8",'#10'"W c #285E25",'#10'"X c #D1D1D1",'#10'"Y c #277D26",'#10
+  +'"Z c #CEE2D0",'#10'"0 c #C2D5C0",'#10'"1 c #C7C7C7",'#10'"2 c #EFEFEF",'#10
+  +'"........................",'#10'".......,-*aaa**bc.......",'#10'".....dea*-'
+  ,'---fghh-......",'#10'"....iaeijbbkefffghlc....",'#10'"...babibb-eeffffffhlc'
+  +'...",'#10'"..mabbb-kenjjffffffop...",'#10'"..*ebb-kfkqrskfffffftu..",'#10'"'
+  +'.bab-kefnvwxreffffffgtc.",'#10'".*e-effeyzrzbfffffffgtA.",'#10'"cBeeffkCxrr'
+  +'bffffffgggop.",'#10'"iafffeDxrz,bbbjbbbegglE.",'#10'"ihffkCrzxxxrFxGGrrbgHH'
+  +'I.",'#10'"ihffeJrKzrrxrxzrxLbHHhI.",'#10'"ihfffkMzKKjbbbbbbbeHHhI.",'#10'"d'
+  +'BffffeJrrvegggHHHHHHtN.",'#10'".ogffffevrLJegHHHHHaaIO.",'#10'".-offfffeJrz'
+  +'cgHHHHaaaPQ.",'#10'".QtgfggggecKFbHHaaaaIR..",'#10'"..StgggggHfcceaaaaaBPQ.'
+  +'.",'#10'"...TtggHHHHHHaaaaaBPU...",'#10'"...cpIHHHHHaaaaaaIPV....",'#10'"..'
+  +'...SIthHaaaaBtPWX.....",'#10'"......dOYPIIIPPWV.......",'#10'".........Z010'
+  +'02........."}'#10#130#5#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"2'
+  +'4 24 46 1",'#10'". c None",'#10'", c #F0F9EF",'#10'"- c #A9DE91",'#10'"* c '
+  +'#39C339",'#10'"a c #19B209",'#10'"b c #E1F1E1",'#10'"c c #7FCE7A",'#10'"d c'
+  +' #71CE47",'#10'"e c #4FBB25",'#10'"f c #32B416",'#10'"g c #039A02",'#10'"h '
+  +'c #B9E5BB",'#10'"i c #87E058",'#10'"j c #69C330",'#10'"k c #1BA30E",'#10'"l'
+  +' c #B0D0AF",'#10'"m c #94B451",'#10'"n c #9EC7A1",'#10'"o c #BFE6AF",'#10'"'
+  +'p c #19830F",'#10'"q c #E2F3D9",'#10'"r c #FFFEFF",'#10'"s c #FEFEFE",'#10
+  +'"t c #3DA625",'#10'"u c #49AA49",'#10'"v c #FCFBFB",'#10'"w c #FEFFFF",'#10
+  +'"x c #FFFFFF",'#10'"y c #FEFEFC",'#10'"z c #2E9918",'#10'"A c #FEFFF9",'#10
+  +'"B c #0A7105",'#10'"C c #C2D5C0",'#10'"D c #F5FAF2",'#10'"E c #075004",'#10
+  +'"F c #DDEADD",'#10'"G c #285E25",'#10'"H c #F8F8F8",'#10'"I c #72A97D",'#10
+  +'"J c #F3F3F3",'#10'"K c #9F9F9F",'#10'"L c #678E66",'#10'"M c #CEE2D0",'#10
+  +'"N c #859187",'#10'"O c #277D26",'#10'"P c #C7C7C7",'#10'".................'
+  +'.......",'#10'".......,-**aaa*-b.......",'#10'"......ca*ccccdefgdb.....",'
+  +#10'"....,**-h--iijjjjfkl....",'#10'"...,**h--cimjjjjjjegn...",'#10'"...**o-'
+  +'-idd-odjjjjjepq..",'#10'"..cf--icdjcrsqdjjjjjtu..",'#10'".,ac-idjjjivsrqdjj'
+  +'jjjpl.",'#10'".-fcddjjjjj-wxyqjjjjezu.",'#10'".**djjjjjjjj-ArsqjjeeeB.",'#10
+  +'".fjjjio--o---qxrxqjeeeBC",'#10'".gjjj-vyxAyxxxyryxqeffpC",'#10'".gjjj-xrsx'
+  +'xsxrxrxsDjefBC",'#10'".kejjio------oxrxDjfffBC",'#10'".uejjjjjjjjjdDywDjfff'
+  +'aEF",'#10'".czjjjjjjeedDrx,jffaakG.",'#10'".qpjjjjjeed,xyH*ffaaaBI.",'#10'"'
+  +'..uzjjeeee-sxDjfaaaakEJ.",'#10'"..bpteeeefdDD*faaaakEK..",'#10'"...npfeefff'
+  +'ffaaaaagEL...",'#10'"....nBzffffaaaaaagEL....",'#10'".....MpBzaaaaaagBEN...'
+  +'..",'#10'".......nOEBBBEEGLF......",'#10'".........,CPCCF........."}'#10#204
+  +#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 68 1",'#10'". c N'
+  +'one",'#10'", c #92BDED",'#10'"- c #87A8DC",'#10'"* c #7681B4",'#10'"a c #D1'
+  +'E3F3",'#10'"b c #8EB1E3",'#10'"c c #FEFEFC",'#10'"d c #FEFEFE",'#10'"e c #F'
+  +'CFBFB",'#10'"f c #FAFAFA",'#10'"g c #F8F8F8",'#10'"h c #F3F3F3",'#10'"i c #'
+  +'EFEFEF",'#10'"j c #EAEAEC",'#10'"k c #E7EFF6",'#10'"l c #D4DBEA",'#10'"m c '
+  +'#FFFFFF",'#10'"n c #FEFFFF",'#10'"o c #F8FDFF",'#10'"p c #FAFAFD",'#10'"q c'
+  +' #F3F9FE",'#10'"r c #829ACB",'#10'"s c #FFFEFF",'#10'"t c #F7FAFE",'#10'"u '
+  +'c #EEF8FF",'#10'"v c #4CB0FC",'#10'"w c #CDD1E4",'#10'"x c #FEFEFF",'#10'"y'
+  +' c #E9F4FE",'#10'"z c #7478A4",'#10'"A c #B3BDE2",'#10'"B c #94A8D6",'#10'"'
+  +'C c #F5F6F9",'#10'"D c #E2F0FE",'#10'"E c #D7EBFE",'#10'"F c #B5B9F3",'#10
+  +'"G c #A2A3FC",'#10'"H c #FBFCFF",'#10'"I c #FAD7CE",'#10'"J c #F2F3FA",'#10
+  +'"K c #E2D6E2",'#10'"L c #EFA998",'#10'"M c #FB3503",'#10'"N c #F18266",'#10
+  +'"O c #E4CDD1",'#10'"P c #CAE4FE",'#10'"Q c #C2CFFE",'#10'"R c #666B98",'#10
+  +'"S c #F9EFDF",'#10'"T c #F75A29",'#10'"U c #C9D6FE",'#10'"V c #BBDDFE",'#10
+  +'"W c #858EBA",'#10'"X c #E4E5E6",'#10'"Y c #DCC6BE",'#10'"Z c #D4ACA9",'#10
+  +'"0 c #5C5D8C",'#10'"1 c #E0E0E1",'#10'"2 c #B7D0FE",'#10'"3 c #ABD7FE",'#10
+  +'"4 c #DFDFDF",'#10'"5 c #CCC0CC",'#10'"6 c #D9D9DA",'#10'"7 c #D3D7DE",'#10
+  +'"8 c #A3D1F3",'#10'"9 c #CAD2DE",'#10'"@ c #9ACCFE",'#10'"# c #AFB3D5",'#10
+  +'"...,-------------*a.....",'#10'"...bccdefgghhhijk*-l....",'#10'"...bdmnmmm'
+  +'mdmopqq*-rl...",'#10'"...bemsnsnmmootuu*v-rw..",'#10'"...bfmmxmmxotquyy****'
+  +'z..",'#10'"...-gsmsmsotuuyyyAB-rz..",'#10'"...-CmmmdotuuyyDDEFGGz..",'#10'"'
+  +'...-hcsHtIuJyyKDEEEEFz..",'#10'"...rhnddLMNyyOMNEEEPQR..",'#10'"...rixpSMMM'
+  +'NOMMMLPPPQR..",'#10'"...riotqLMMMMMMTlPPPUR..",'#10'"...rjtquuLMMMMTlPPPVUR'
+  +'..",'#10'"...WXquyyYMMMMNPPPPVQR..",'#10'"...WXuyyLMMMMMMNVPVVUR..",'#10'".'
+  +'..WXyyKMMMTLMMMZVVVQ0..",'#10'"...*1yDDLMTlPLMN2VV3Q0..",'#10'"...*4DDEEZlP'
+  +'PV5VV3V3Q0..",'#10'"...*6DEEEEPPPVVVVV33Q0..",'#10'"...*7EEEPPPPVVVV3333Q0.'
+  +'.",'#10'"...z6EEPPPPVVVV33338Q0..",'#10'"...z9EPPPPVVVVV2338@Q0..",'#10'"..'
+  +'.zAFFFFFFFFFFAF#FFb0..",'#10'"...zzzzzzzzzzzzzzzzzz0..",'#10'".............'
+  +'..........."}'#10'&'#7#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24'
+  +' 24 74 1",'#10'". c None",'#10'", c #92BDED",'#10'"- c #87A8DC",'#10'"* c #'
+  +'7681B4",'#10'"a c #D1E3F3",'#10'"b c #8EB1E3",'#10'"c c #FEFFFF",'#10'"d c '
+  +'#FBFEFC",'#10'"e c #FFFCFF",'#10'"f c #FBFBF8",'#10'"g c #FAFAFA",'#10'"h c'
+  ,' #F5F6F9",'#10'"i c #F3F3F3",'#10'"j c #EFEFEF",'#10'"k c #EAEAEC",'#10'"l '
+  +'c #D4DBEA",'#10'"m c #FEFEFE",'#10'"n c #FEFEFF",'#10'"o c #FFFFFF",'#10'"p'
+  +' c #FFFEFF",'#10'"q c #F8FDFF",'#10'"r c #F3F9FE",'#10'"s c #829ACB",'#10'"'
+  +'t c #CCDAEC",'#10'"u c #FAFAFD",'#10'"v c #EEF8FF",'#10'"w c #4CB0FC",'#10
+  +'"x c #CDD1E4",'#10'"y c #FEFEFC",'#10'"z c #F7FAFE",'#10'"A c #E9F4FE",'#10
+  +'"B c #7478A4",'#10'"C c #F8F8F8",'#10'"D c #DDEADD",'#10'"E c #7FCE7A",'#10
+  +'"F c #49AA49",'#10'"G c #D7EBFE",'#10'"H c #039A02",'#10'"I c #B3BDE2",'#10
+  +'"J c #94A8D6",'#10'"K c #A9DE91",'#10'"L c #1BA30E",'#10'"M c #B5B9F3",'#10
+  +'"N c #A2A3FC",'#10'"O c #CCEBD8",'#10'"P c #CAE4FE",'#10'"Q c #C2CFFE",'#10
+  +'"R c #FEFFF9",'#10'"S c #CEE2D0",'#10'"T c #B9E5BB",'#10'"U c #E2F0FE",'#10
+  +'"V c #3DA625",'#10'"W c #666B98",'#10'"X c #C9D6FE",'#10'"Y c #BBDDFE",'#10
+  +'"Z c #858EBA",'#10'"0 c #B7D9ED",'#10'"1 c #E4E5E6",'#10'"2 c #ABD7FE",'#10
+  +'"3 c #8BBC8D",'#10'"4 c #5C5D8C",'#10'"5 c #E0E0E1",'#10'"6 c #62A768",'#10
+  +'"7 c #95D1C7",'#10'"8 c #DFDFDF",'#10'"9 c #D9D9DA",'#10'"@ c #B7E8FD",'#10
+  +'"# c #D3D7DE",'#10'"; c #72A97D",'#10'": c #AAD3E3",'#10'"= c #A3D1F3",'#10
+  +'"+ c #CAD2DE",'#10'"% c #9ACCFE",'#10'"$ c #AFB3D5",'#10'"...,-------------'
+  +'*a.....",'#10'"...bcdefgghhijjkk*-l....",'#10'"...bmncoomccpqqrr*-st...",'
+  +#10'"...bqpoopcpoqurrv*w-sx..",'#10'"...-goyoonzzvvAAA****B..",'#10'"...-Com'
+  +'opmDEFFEGHIJ-sB..",'#10'"...-iopoqKHHHHHLHGMNNB..",'#10'"...-iompOHHHHHHHHG'
+  +'GGMB..",'#10'"...siopqFHEOOFHHHGGPQB..",'#10'"...sjRzSLTAUGVHHHGPPQW..",'#10
+  +'"...sjqrETAAUHHHHHPPPXW..",'#10'"...skurEUUUUPPPPPPPYXW..",'#10'"...ZkvAAAA'
+  +'UUGPGPPP0YQW..",'#10'"...Z1vAUHHHHHHPP0V2YQW..",'#10'"...Z1AAUHHHH3PP0FFYYX'
+  +'4..",'#10'"...*5AUUHHHHLE6HH72YQ4..",'#10'"...*8UUGHHHHHHHH6222Q4..",'#10'"'
+  +'...*9UGGHEFHHHH6@222Q4..",'#10'"...*#GGGHPP7;3:Y2222Q4..",'#10'"...B#GGGPPP'
+  +'Y@@22222=Q4..",'#10'"...B+GPPPPYYY2Y222=%Q4..",'#10'"...BIMMMMMMMMMMIM$MMb4'
+  +'..",'#10'"...BBBBBBBBBBBBBBBBBB4..",'#10'"........................"}'#10'S'
+  +#7#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24 24 77 1",'#10'". c N'
+  +'one",'#10'", c #DCC6BE",'#10'"- c #A6828D",'#10'"* c #E4CDD1",'#10'"a c #FE'
+  +'FEF0",'#10'"b c #F4DBAC",'#10'"c c #F5E6BE",'#10'"d c #FDF6F0",'#10'"e c #C'
+  +'C7F7C",'#10'"f c #9A0102",'#10'"g c #F75A29",'#10'"h c #F18266",'#10'"i c #'
+  +'FFAF4B",'#10'"j c #FCB25D",'#10'"k c #FDD270",'#10'"l c #FFE39A",'#10'"m c '
+  +'#F9EFD1",'#10'"n c #DE3207",'#10'"o c #FEC661",'#10'"p c #ED9344",'#10'"q c'
+  +' #E0803A",'#10'"r c #FE9C39",'#10'"s c #EFA998",'#10'"t c #E6D9C0",'#10'"u '
+  +'c #F9EFDF",'#10'"v c #CBAF85",'#10'"w c #AB715D",'#10'"x c #F3F9FE",'#10'"y'
+  +' c #F5F6F9",'#10'"z c #F0F0F8",'#10'"A c #E7EFF6",'#10'"B c #DFEAF5",'#10'"'
+  +'C c #ECF3F8",'#10'"D c #D8E4EF",'#10'"E c #A38FAB",'#10'"F c #D3D7DE",'#10
+  +'"G c #ABB8C6",'#10'"H c #FAFAFD",'#10'"I c #D1E3F3",'#10'"J c #D4DBEA",'#10
+  +'"K c #9598BF",'#10'"L c #E2E3F1",'#10'"M c #A0B4DA",'#10'"N c #CCDAEC",'#10
+  +'"O c #A3D1F3",'#10'"P c #A1C8EA",'#10'"Q c #F7FAFE",'#10'"R c #C7E4F0",'#10
+  +'"S c #B7D9ED",'#10'"T c #858EBA",'#10'"U c #B7E8FD",'#10'"V c #B7BCCA",'#10
+  +'"W c #CDD1E4",'#10'"X c #B5C5D8",'#10'"Y c #A0A6CD",'#10'"Z c #AAD3E3",'#10
+  +'"0 c #ABD7FE",'#10'"1 c #92BDED",'#10'"2 c #666B98",'#10'"3 c #7681B4",'#10
+  +'"4 c #9ACCFE",'#10'"5 c #E9F4FE",'#10'"6 c #828CA1",'#10'"7 c #94A8D6",'#10
+  +'"8 c #D7EBFE",'#10'"9 c #7478A4",'#10'"@ c #EAEAEC",'#10'"# c #8EB1E3",'#10
+  +'"; c #ABABC8",'#10'": c #C6C9DB",'#10'"= c #87A8DC",'#10'"+ c #BECDE5",'#10
+  +'"% c #999ACC",'#10'"$ c #BBBCD6",'#10'"( c #E2D6E2",'#10'") c #F2F3FA",'#10
+  +'"[ c #829ACB",'#10'"..............,--*......",'#10'".......abcd...efgh.....'
+  +'.",'#10'"......diiijklmefnh......",'#10'"......jiijooooipqh......",'#10'"..'
+  +'..mjiiookooiirrh......",'#10'"...miiioooooiirjsqt.....",'#10'"..uiiioooojii'
+  +'rjdavw,....",'#10'".uiijoooojiiridxyzvw,...",'#10'"uiijoooojirrjdxyAAB--*..'
+  +'",'#10'"bijoooojirrjdyyCABBDE-F.",'#10'".GooooiirrpuHxCABBDIJKKL",'#10'".MG'
+  +'ooiirrpuHxCABBDIINNKL",'#10'".MOPvirrpmQyCAABDIIRNST.",'#10'".MSUPvppVHyCAB'
+  +'WXYKRNSST.",'#10'".MZU0O11OxCABB2223NSSST.",'#10'".MO00OO4SC5BBD2223SSZZT."'
+  +','#10'".MZSOOOPOAABDI2223SSSZT.",'#10'".LM0OO41OABBII2226SZZZT.",'#10'"..J7'
+  +'O4P1PBDDIN222TZZZPT.",'#10'"...A7111P8DIRN993KZM76K.",'#10'"....@7#1PDIRNS3'
+  +'TTTK;:z..",'#10'"......K=1IR+M;%$()......",'#10'".......;[T3;W)..........",'
+  +#10'"........................"}'#10#189#6#0#0'/* XPM */'#10'static char *gra'
+  +'phic[] = {'#10'"24 24 67 1",'#10'". c None",'#10'", c #F2F3FA",'#10'"- c #B'
+  +'7BCCA",'#10'"* c #858EBA",'#10'"a c #7681B4",'#10'"b c #9598BF",'#10'"c c #'
+  +'999ACC",'#10'"d c #BBBCD6",'#10'"e c #D4DBEA",'#10'"f c #94A8D6",'#10'"g c '
+  +'#B7D9ED",'#10'"h c #B7E8FD",'#10'"i c #C6F6FD",'#10'"j c #AAD3E3",'#10'"k c'
+  +' #E2E3F1",'#10'"l c #D3D7DE",'#10'"m c #A0A6CD",'#10'"n c #FEFEFC",'#10'"o '
+  +'c #EEF8FF",'#10'"p c #D3FEFE",'#10'"q c #92BDED",'#10'"r c #DFDFDF",'#10'"s'
+  +' c #EAEAEC",'#10'"t c #CCDAEC",'#10'"u c #FFFFFF",'#10'"v c #CAE4FE",'#10'"'
+  ,'w c #ABD7FE",'#10'"x c #A3D1F3",'#10'"y c #B3BDE2",'#10'"z c #FCFFFE",'#10
+  +'"A c #F3F9FE",'#10'"B c #ABABC8",'#10'"C c #F0F0F8",'#10'"D c #A0B4DA",'#10
+  +'"E c #E1FFFE",'#10'"F c #E4E5E6",'#10'"G c #F8FDFF",'#10'"H c #C7E4F0",'#10
+  +'"I c #FEFEFE",'#10'"J c #BECDE5",'#10'"K c #E7EFF6",'#10'"L c #FDF6F0",'#10
+  +'"M c #829ACB",'#10'"N c #F4DBAC",'#10'"O c #F1D190",'#10'"P c #CFCFCF",'#10
+  +'"Q c #8E96A4",'#10'"R c #828CA1",'#10'"S c #A1C8EA",'#10'"T c #AFB3D5",'#10
+  +'"U c #FCB25D",'#10'"V c #FFAF4B",'#10'"W c #B68E45",'#10'"X c #979699",'#10
+  +'"Y c #D1D1D1",'#10'"Z c #CDD1E4",'#10'"0 c #FEC661",'#10'"1 c #E0803A",'#10
+  +'"2 c #AB715D",'#10'"3 c #A38FAB",'#10'"4 c #CAD2DE",'#10'"5 c #D8E4EF",'#10
+  +'"6 c #A6828D",'#10'"7 c #CBAF85",'#10'"8 c #A8A8A8",'#10'"9 c #9F9F9F",'#10
+  +'"@ c #808080",'#10'"........................",'#10'"...........,-*a*bcd....'
+  +'.",'#10'"..........e*fghihjfbk...",'#10'".........lmenoiiiphq*r..",'#10'"..'
+  +'......smtuuvhwxwiiqa..",'#10'"........dyozAvhhhhhiifB.",'#10'".......CDgEvh'
+  +'whhiiiipwaC",'#10'".......kmiihhhipppppph*F",'#10'".......kmihwhippEEEpppbk'
+  +'",'#10'".......kmihwhipEEooEpibk",'#10'".......smgiwhppEGGGAEHas",'#10'"...'
+  +'.....yDihhppEAGIGEJb.",'#10'"........ecwiiipEEGuIKbr.",'#10'".......LFbMgip'
+  +'ppEEGKBB..",'#10'"......NOPQRMShippiJmT...",'#10'".....NUVWXYZb*bmBmTZ...."'
+  +','#10'"....O0V123..Cl4e5kC.....",'#10'"...N0V126T..............",'#10'"..O0'
+  +'V126B...............",'#10'".N0V126B................",'#10'"N0V126B........'
+  +'.........",'#10'"7V126m..................",'#10'"8226B...................",'
+  +#10'".9@B...................."}'#10'('#5#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 40 1",'#10'". c None",'#10'", c #AC8327",'#10'"- c #AC'
+  +'7C0C",'#10'"* c #DECFAF",'#10'"a c #C3A666",'#10'"b c #F0D460",'#10'"c c #B'
+  +'68E45",'#10'"d c #F9EFDF",'#10'"e c #FFE03F",'#10'"f c #FFFDC2",'#10'"g c #'
+  +'FED110",'#10'"h c #CD9A05",'#10'"i c #E6D9C0",'#10'"j c #E1DDC7",'#10'"k c '
+  +'#FEE984",'#10'"l c #EAB804",'#10'"m c #CBAF85",'#10'"n c #F9EFD1",'#10'"o c'
+  +' #FDF6F0",'#10'"p c #D8C39B",'#10'"q c #F5FAF2",'#10'"r c #FEFBAD",'#10'"s '
+  +'c #FEDD7B",'#10'"t c #E0B437",'#10'"u c #FDE563",'#10'"v c #FFFDD4",'#10'"w'
+  +' c #FEFEFC",'#10'"x c #FEFDE4",'#10'"y c #FEF38D",'#10'"z c #FEFD99",'#10'"'
+  +'A c #F9EB71",'#10'"B c #F3F3F3",'#10'"C c #D5A61D",'#10'"D c #FFE39A",'#10
+  +'"E c #E0BD4B",'#10'"F c #F4DBAC",'#10'"G c #FEFEF0",'#10'"H c #D8AC2E",'#10
+  +'"I c #F1EFC7",'#10'"J c #ECE3D0",'#10'"...........,-*..........",'#10'"....'
+  +'......a*bc..........",'#10'"..........cde-..........",'#10'"..........,fghi'
+  +'.........",'#10'".........jakglm.........",'#10'".........m*eglc.........",'
+  +#10'".........cnggg-.........",'#10'"opiiiq...crggghj...iiipd",'#10'"camaacc'
+  +',,asgget,,,caamm,",'#10'",eurffvvvweggeuxxvryueu,",'#10'"p-lgyzyAeggggeAzzy'
+  +'eggg-m",'#10'".Ba-luAuegggeuyzyAegh-i.",'#10'"...i,hgeegggeAzzAul-m...",'#10
+  +'".....m-lgggeeyzzuCcd....",'#10'"......pcDggeAyzyEc......",'#10'"......aFeg'
+  +'guAzzAe-q.....",'#10'".....B,nggeuzryuehp.....",'#10'".....pmuggeEaGyegl,..'
+  +'...",'#10'".....,nggeH,mcdkgg-d....",'#10'"....*akggha..p,IugCa....",'#10'"'
+  +'....cJgl-p....J,Fye-....",'#10'"....-kl-*......J,pvHi...",'#10'"....a--J...'
+  +'.....oca-....",'#10'".....J............JB...."}'#10#161#11#0#0'/* XPM */'#10
+  +'static char *graphic[] = {'#10'"24 24 105 2",'#10'".. c None",'#10'"., c #F'
+  +'3F3F3",'#10'".- c #DFDFDF",'#10'".* c #CACACC",'#10'".a c #D9D9DA",'#10'".b'
+  +' c #EAEAEC",'#10'".c c #B9B9B9",'#10'".d c #C0C0C0",'#10'".e c #D1D1D1",'#10
+  +'".f c #A8A8A8",'#10'".g c #C4C4C4",'#10'".h c #EFEFEF",'#10'".i c #FCFBFB",'
+  +#10'".j c #E4E5E6",'#10'".k c #C7C7C7",'#10'".l c #BFBFBF",'#10'".m c #B3B3B'
+  +'5",'#10'".n c #CFCFCF",'#10'".o c #9F9F9F",'#10'".p c #DDEADD",'#10'".q c #'
+  +'72A97D",'#10'".r c #277D26",'#10'".s c #0A7105",'#10'".t c #19830F",'#10'".'
+  +'u c #3E8A44",'#10'".v c #A0B4DA",'#10'".w c #97A0B1",'#10'".x c #F2F3FA",'
+  +#10'".y c #8BBC8D",'#10'".z c #32B416",'#10'".A c #4FBB25",'#10'".B c #2E991'
+  +'8",'#10'".C c #AAD3E3",'#10'".D c #A1C8EA",'#10'".E c #979699",'#10'".F c #'
+  +'AFAFAF",'#10'".G c #678E66",'#10'".H c #1BA30E",'#10'".I c #9EC7A1",'#10'".'
+  +'J c #F9EFD1",'#10'".K c #F8FDFF",'#10'".L c #95D1C7",'#10'".M c #B7D9ED",'
+  +#10'".N c #88898C",'#10'".O c #8D8E8F",'#10'".P c #FFFEFF",'#10'".Q c #FFFFF'
+  +'F",'#10'".R c #FEFFFF",'#10'".S c #D3FEFE",'#10'".T c #404040",'#10'".U c #'
+  +'8EB1E3",'#10'".V c #FBFEFC",'#10'".W c #F3F9FE",'#10'".X c #E1FFFE",'#10'".'
+  +'Y c #5B6A82",'#10'".Z c #ABD7FE",'#10'".0 c #B7E8FD",'#10'".1 c #858586",'
+  +#10'".2 c #424243",'#10'".3 c #C6F6FD",'#10'".4 c #D7EBFE",'#10'".5 c #8F8F8'
+  +'F",'#10'".6 c #C2D5C0",'#10'".7 c #C7E4F0",'#10'".8 c #ABB8C6",'#10'".9 c #'
+  +'475059",'#10'".@ c #EEF8FF",'#10'".# c #A6AAB9",'#10'".; c #69C330",'#10'".'
+  +': c #606060",'#10'".= c #303030",'#10'".+ c #707D92",'#10'".% c #828CA1",'
+  +#10'".$ c #829ACB",'#10'".( c #FA7145",'#10'".) c #ABABC8",'#10'".[ c #62A76'
+  +'8",'#10'".] c #71CE47",'#10'",. c #707070",'#10'",, c #40494E",'#10'",- c #'
+  ,'4D5B6F",'#10'",* c #ECE3D0",'#10'",a c #BBBCD6",'#10'",b c #87E058",'#10'",'
+  +'c c #92BDED",'#10'",d c #808080",'#10'",e c #E2F0FE",'#10'",f c #FEFEFC",'
+  +#10'",g c #8E96A4",'#10'",h c #3DA625",'#10'",i c #AFB3D5",'#10'",j c #F5FAF'
+  +'2",'#10'",k c #BBDDFE",'#10'",l c #C2CFFE",'#10'",m c #CEE2D0",'#10'",n c #'
+  +'FCFFFE",'#10'",o c #B3BDE2",'#10'",p c #A38FAB",'#10'",q c #B0D0AF",'#10'",'
+  +'r c #859187",'#10'",s c #DCC6BE",'#10'",t c #F18266",'#10'",u c #B5C5D8",'
+  +#10'",v c #9598BF",'#10'",w c #B7BCCA",'#10'"...............................'
+  +'.................",'#10'".....................,.-.*.*.a.b................",'
+  +#10'".................a.c.d.a.a.e.*.c.f.g............",'#10'".............h.'
+  +'c.a.i.j.k.l.c.m.g.n.d.o.a........",'#10'"...........h.c.p.q.r.s.t.s.u.q.v.w'
+  +'.f.c.o.n......",'#10'".........x.m.y.t.t.z.A.B.t.s.s.r.C.D.E.F.E.n....",'#10
+  +'".........c.G.t.H.z.t.u.I.p.J.K.y.L.M.C.N.f.O.h..",'#10'".......j.G.t.H.z.t'
+  +'.y.P.Q.R.K.S.S.C.T.U.C.N.E.f..",'#10'".......F.s.H.z.z.u.Q.V.W.X.S.S.C.T.Y.'
+  +'Z.0.w.E.1..",'#10'".......u.t.z.A.B.I.K.X.X.X.S.C.2.Y.Z.3.4.L.5.E.e",'#10'"'
+  +'.....b.s.z.A.A.B.6.K.X.X.7.8.T.9.Z.0.0.@.0.1.#.c",'#10'".....j.t.z.A.;.B.6.'
+  +'X.S.S.:.5.=.+.%.$.Z.b.(.O.).c",'#10'".[.u.u.t.A.].].A.r.u.u.y.:,.,,,-,-.Y.Z'
+  +',*.(.E,a.c",'#10'".I.s.A.A.;.;.],b,b.].r.3.C.$,c.0.0.Z.0.R.3,d,a.m",'#10'".'
+  +'..q.t.;.],b,b,b,b.t.L.3.3.0.0.0.Z.Z,e,f.0,g.).k",'#10'".....u,h.],b,b,b.H.I'
+  +'.0.0.0.0.0.Z.Z.0.V.@.#,i,g.b",'#10'"....,j.B.;,b,b,h.q.0.0.0.0.Z.Z.Z,k.K.K.'
+  +'3.O,l.E..",'#10'"......,m.r,b.;.u.0.3.0.Z.Z.Z.0.4.K,n.3.O,o,p.a..",'#10'"..'
+  +'......,q.t.r,r.C.0.3.W,s.(.K,n.@.3,g,i,o.f....",'#10'"...........I,r.o.N.w.'
+  +'M.0.n,t.3.0,u.1,o,o.N......",'#10'".............e.N.E.E.O.O,g.%,g.N.),l,v.f'
+  +'........",'#10'"...............h.o.N.o.#.),w,a,i.w.1.e..........",'#10'"...'
+  +'................h.d.o.o.f.5.c.j..............",'#10'"......................'
+  +'.........................."}'#10'5'#7#0#0'/* XPM */'#10'static char *graphi'
+  +'c[] = {'#10'"24 24 75 1",'#10'". c None",'#10'", c #BBBCD6",'#10'"- c #999A'
+  +'CC",'#10'"* c #E2E3F1",'#10'"a c #A0A6CD",'#10'"b c #B3B3B5",'#10'"c c #EED'
+  +'E9E",'#10'"d c #FEF38D",'#10'"e c #FFE39A",'#10'"f c #D8C39B",'#10'"g c #AF'
+  +'B3D5",'#10'"h c #BFBFBF",'#10'"i c #FEFD99",'#10'"j c #F1D190",'#10'"k c #B'
+  +'6A2B7",'#10'"l c #EFA998",'#10'"m c #F0F0F8",'#10'"n c #D4ACA9",'#10'"o c #'
+  +'FDD270",'#10'"p c #FCFFFE",'#10'"q c #FFFFFF",'#10'"r c #FFFCFF",'#10'"s c '
+  +'#ECE3D0",'#10'"t c #F4DBAC",'#10'"u c #CBAF85",'#10'"v c #A38FAB",'#10'"w c'
+  +' #E7EFF6",'#10'"x c #ABABC8",'#10'"y c #FEFFFF",'#10'"z c #FFFEFF",'#10'"A '
+  +'c #FEFEFE",'#10'"B c #FEFEF0",'#10'"C c #FEFDE4",'#10'"D c #F5E6BE",'#10'"E'
+  +' c #E6CB7E",'#10'"F c #DCC6BE",'#10'"G c #FEFFF9",'#10'"H c #F9EFD1",'#10'"'
+  +'I c #A6AAB9",'#10'"J c #D7EBFE",'#10'"K c #C7E4F0",'#10'"L c #E1FFFE",'#10
+  +'"M c #A0B4DA",'#10'"N c #D4DBEA",'#10'"O c #B3BDE2",'#10'"P c #ABB8C6",'#10
+  +'"Q c #E4E5E6",'#10'"R c #FFFDC2",'#10'"S c #E1DDC7",'#10'"T c #C4C4C4",'#10
+  +'"U c #DECFAF",'#10'"V c #D3FEFE",'#10'"W c #D8E4EF",'#10'"X c #F1EFC7",'#10
+  +'"Y c #C0C0C0",'#10'"Z c #D1E3F3",'#10'"0 c #EEF8FF",'#10'"1 c #F8FDFF",'#10
+  +'"2 c #F3F9FE",'#10'"3 c #DFEAF5",'#10'"4 c #C6F6FD",'#10'"5 c #BECDE5",'#10
+  +'"6 c #B7D9ED",'#10'"7 c #B7E8FD",'#10'"8 c #94A8D6",'#10'"9 c #B5C5D8",'#10
+  +'"@ c #A1C8EA",'#10'"# c #9ACCFE",'#10'"; c #CAE4FE",'#10'": c #ABD7FE",'#10
+  +'"= c #A3D1F3",'#10'"+ c #92BDED",'#10'"% c #8EB1E3",'#10'"$ c #C6C9DB",'#10
+  +'"( c #CDD1E4",'#10'"..........,----*........",'#10'".........abcdef-g......'
+  +'.",'#10'"........ahideeejk-*.....",'#10'".......ahddeeejjjf-g....",'#10'"..'
+  +'....ahdeeeejjjjjlk-*..",'#10'"....mnloooejjjjjllnk--..",'#10'"...m-npqrstjj'
+  +'luvv-kk--..",'#10'"..w-xjyzqAzrqBBCDtEvaa..",'#10'"..---FzzqqGGBCBCCHIaJg..'
+  +'",'#10'"..--aFGqGGBBCCCCHx-KLM..",'#10'"..-NO-PQBGCRSFTUx-JVVM..",'#10'"..-'
+  +'WLJg-hXY--aga-KVVVM..",'#10'"..-ZLLLKa--N0123aO444M..",'#10'"..-KVVVV5-Z0LL'
+  +'LL6-M778..",'#10'"..-KVVV7a9LLLVVVV6-@#8..",'#10'"..-7VV4xMLVVVV4444@-Ma.."'
+  +','#10'"..-647@-;V4447777::M--..",'#10'"..-=7@-6447777::#=##8-..",'#10'"..-@'
+  +'=-M77:::=####+88--..",'#10'"..-+88::=###++8---,*....",'#10'"..---###+%8---$'
+  +'*........",'#10'"..--888--a(w............",'#10'"..---gNm................",'
+  +#10'"........................"}'#10'E'#6#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 59 1",'#10'". c None",'#10'", c #B0D0AF",'#10'"- c #0A'
+  +'7105",'#10'"* c #9EC7A1",'#10'"a c #F3F3F3",'#10'"b c #1BA30E",'#10'"c c #3'
+  +'E8A44",'#10'"d c #E1F1E1",'#10'"e c #49AA49",'#10'"f c #19830F",'#10'"g c #'
+  +'32B416",'#10'"h c #2E9918",'#10'"i c #8BBC8D",'#10'"j c #4FBB25",'#10'"k c '
+  +'#277D26",'#10'"l c #CEE2D0",'#10'"m c #F0F9EF",'#10'"n c #69C330",'#10'"o c'
+  +' #62A768",'#10'"p c #FDF6F0",'#10'"q c #E0B437",'#10'"r c #DAB341",'#10'"s '
+  +'c #71CE47",'#10'"t c #D8AC2E",'#10'"u c #EEDE9E",'#10'"v c #FEFDE4",'#10'"w'
+  +' c #FFFDD4",'#10'"x c #F5E6BE",'#10'"y c #E6CB7E",'#10'"z c #FCFFFE",'#10'"'
+  +'A c #FFFEFF",'#10'"B c #FEFD99",'#10'"C c #FFFDC2",'#10'"D c #F4DBAC",'#10
+  ,'"E c #94B451",'#10'"F c #3DA625",'#10'"G c #87E058",'#10'"H c #FEFBAD",'#10
+  +'"I c #FEF38D",'#10'"J c #FBFEFC",'#10'"K c #CD9A05",'#10'"L c #FFE39A",'#10
+  +'"M c #FEE984",'#10'"N c #FEDD7B",'#10'"O c #FEFEFC",'#10'"P c #FEFFF9",'#10
+  +'"Q c #D5A61D",'#10'"R c #F0C656",'#10'"S c #FDD270",'#10'"T c #F9EFD1",'#10
+  +'"U c #F9EFDF",'#10'"V c #E1C164",'#10'"W c #FEC661",'#10'"X c #F1D190",'#10
+  +'"Y c #E0BD4B",'#10'"Z c #438C2A",'#10'"0 c #C0CC69",'#10'"1 c #F0D460",'#10
+  +'"2 c #F1EFC7",'#10'"........................",'#10'"............,-*........'
+  +'.",'#10'"...........a-b-cd.......",'#10'"...........efbghfi......",'#10'"..'
+  +'........,-bggjjhkl....",'#10'".........m-bggjjnnjfi...",'#10'".........efgg'
+  +'jjnnjff-o..",'#10'"....pqrqq--ccfnssh......",'#10'"....tuvvwxyzA-jnsh......'
+  +'",'#10'"....qwBBBCDqtEFsGh......",'#10'"....qBBBBBHBBBFsGhtqqD..",'#10'"...'
+  +'.qBBBBBBBIqFGGhxxJK..",'#10'"....tLMMMMMNqvFGGhOPxK..",'#10'"....QMNRqqqqvH'
+  +'FGGkvvK...",'#10'"....QNRyvwCCHHFGnEwCK...",'#10'"....QSqTBBBBBEFGhyCKU..."'
+  +','#10'"....KSrwBBBBBhGFEMHV....",'#10'"....KWXHIIIIEFhEIMKT....",'#10'"....'
+  +'KYTMMMMMZ-0MM1K.....",'#10'"....KqTNNNNNERqQKQx.....",'#10'"....KyLNSRqQKty'
+  +'uU.......",'#10'"....K2qKKryDp...........",'#10'"....KKXx................",'
+  +#10'"........................"}'#10#128#10#0#0'/* XPM */'#10'static char *gr'
+  +'aphic[] = {'#10'"24 24 87 2",'#10'".. c None",'#10'"., c #87A8DC",'#10'".- '
+  +'c #D8E4EF",'#10'".* c #92BDED",'#10'".a c #E2F0FE",'#10'".b c #DFEAF5",'#10
+  +'".c c #D4DBEA",'#10'".d c #7681B4",'#10'".e c #8EB1E3",'#10'".f c #DAB341",'
+  +#10'".g c #FFFEFF",'#10'".h c #FFFFFF",'#10'".i c #FCFFFE",'#10'".j c #F3F9F'
+  +'E",'#10'".k c #9ACCFE",'#10'".l c #CCDAEC",'#10'".m c #D5A61D",'#10'".n c #'
+  +'F9EFDF",'#10'".o c #FEFDE4",'#10'".p c #FEFEFE",'#10'".q c #FEFFFF",'#10'".'
+  +'r c #D8AC2E",'#10'".s c #FFFDD4",'#10'".t c #FEFD99",'#10'".u c #FFFCFF",'
+  +#10'".v c #F7FAFE",'#10'".w c #EEF8FF",'#10'".x c #E9F4FE",'#10'".y c #C2CFF'
+  +'E",'#10'".z c #A2A3FC",'#10'".A c #FFFDC2",'#10'".B c #FEFBAD",'#10'".C c #'
+  +'FBFBF8",'#10'".D c #FEFEFF",'#10'".E c #D7EBFE",'#10'".F c #CAE4FE",'#10'".'
+  +'G c #F8F8F8",'#10'".H c #C9D6FE",'#10'".I c #F9EB71",'#10'".J c #CD9A05",'
+  +#10'".K c #FEF38D",'#10'".L c #829ACB",'#10'".M c #ECF3F8",'#10'".N c #C2D5C'
+  +'0",'#10'".O c #FEFEFC",'#10'".P c #FEE984",'#10'".Q c #FEFEF0",'#10'".R c #'
+  +'0A7105",'#10'".S c #9EC7A1",'#10'".T c #FFE39A",'#10'".U c #FEDD7B",'#10'".'
+  +'V c #858EBA",'#10'".W c #E1DDC7",'#10'".X c #D8C39B",'#10'".Y c #E0B437",'
+  +#10'".Z c #3DA625",'#10'".0 c #19830F",'#10'".1 c #62A768",'#10'".2 c #F5E6B'
+  +'E",'#10'".3 c #71CE47",'#10'".4 c #2E9918",'#10'".5 c #438C2A",'#10'".6 c #'
+  +'F1EFC7",'#10'".7 c #FDD270",'#10'".8 c #FEC661",'#10'".9 c #69C330",'#10'".'
+  +'@ c #C0CC69",'#10'".# c #F9EFD1",'#10'".; c #EEDE9E",'#10'".: c #49AA49",'
+  +#10'".= c #4FBB25",'#10'".+ c #32B416",'#10'".% c #B0D0AF",'#10'".$ c #FDF6F'
+  +'0",'#10'".( c #87E058",'#10'".) c #1BA30E",'#10'".[ c #8BBC8D",'#10'".] c #'
+  +'F0C656",'#10'",. c #72A97D",'#10'",, c #E0BD4B",'#10'",- c #E1C164",'#10'",'
+  +'* c #F0D460",'#10'",a c #277D26",'#10'",b c #CEE2D0",'#10'",c c #F1D190",'
+  +#10'",d c #3E8A44",'#10'",e c #F0F9EF",'#10'"...............................'
+  +'.................",'#10'"................................................",'
+  +#10'"...........,.,.,.,.,.,.,.,.-....................",'#10'"...........*.a.'
+  +'a.b.-.-.c.d.e.c..................",'#10'".......f.f.*.g.h.h.h.i.j.d.k.,.l..'
+  +'..............",'#10'".....m.n.o.*.p.q.p.h.j.j.d.d.d.d.r.r.r..........",'#10
+  +'".....m.s.t.*.u.q.h.v.w.x.a.y.z.d.A.B.r..........",'#10'".....m.t.t.e.C.D.j'
+  +'.w.x.a.E.E.F.d.t.t.r..........",'#10'".....m.t.t.,.G.v.w.x.a.E.E.F.H.d.I.J.'
+  +'J.J.J.J.J..",'#10'".....m.K.K.L.M.j.x.a.E.E.N.r.r.r.n.O.o.p.p.O.J..",'#10'"'
+  +'.....m.P.P.L.M.x.a.E.E.N.r.Q.Q.R.S.s.T.Q.Q.Q.J..",'#10'".....J.U.U.V.W.X.Y.'
+  +'f.Y.r.Q.A.A.Z.0.1.T.o.o.r.n..",'#10'".....J.U.U.d.2.Q.o.s.A.A.B.B.A.Z.3.4.5'
+  +'.6.s.r....",'#10'".....J.7.8.X.s.t.t.t.t.t.t.t.t.Z.9.9.4.5.@.#....",'#10'".'
+  +'....J.7.8.;.A.t.5.:.Z.Z.Z.Z.4.=.9.9.=.+.R.%....",'#10'".....J.8.Y.$.t.K.5.('
+  +'.(.(.3.3.9.3.=.=.+.+.).R.[..",'#10'".....J.].r.s.P.K.5.(.(.(.3.9.3.=.=.+.+.'
+  +').).R.1..",'#10'".....J.].;.B.P.P.5.(.3.3.3.9.9.=.+.+.).).R,.....",'#10'"..'
+  +'...J,,.$.U.P.U.5.0.0.0.0.0.0.0.+.).).R.S......",'#10'".....J,-.#.U.U.U.U.U.'
+  +'U.7,*.Y.Y.0.).0,a,b........",'#10'".....J,c.T.U.7,*.].Y.m,,,c.6.#.0.0,d,e..'
+  +'........",'#10'".....J.n.].r.r,-,c.#...........R.1..............",'#10'"...'
+  +'..J,-.;.n...................%................",'#10'"......................'
+  +'.........................."}'#10#208#10#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 92 2",'#10'".. c None",'#10'"., c #87A8DC",'#10'".- c '
+  +'#92BDED",'#10'".* c #FFFFFF",'#10'".a c #FBFEFC",'#10'".b c #FBFBF8",'#10'"'
+  +'.c c #FAFAFA",'#10'".d c #F8F8F8",'#10'".e c #F0F0F8",'#10'".f c #7681B4",'
+  +#10'".g c #B5C5D8",'#10'".h c #F4DBAC",'#10'".i c #DAB341",'#10'".j c #E0B43'
+  +'7",'#10'".k c #FFFEFF",'#10'".l c #FEFFFF",'#10'".m c #F3F9FE",'#10'".n c #'
+  ,'4CB0FC",'#10'".o c #6493D3",'#10'".p c #FFFDD4",'#10'".q c #F7FAFE",'#10'".'
+  +'r c #FAFAFD",'#10'".s c #E9F4FE",'#10'".t c #DFEAF5",'#10'".u c #EEF8FF",'
+  +#10'".v c #E2F0FE",'#10'".w c #D7EBFE",'#10'".x c #C2CFFE",'#10'".y c #B5B9F'
+  +'3",'#10'".z c #FEFD99",'#10'".A c #FEFEFF",'#10'".B c #F3F3F3",'#10'".C c #'
+  +'EAEAEC",'#10'".D c #94A8D6",'#10'".E c #D1E3F3",'#10'".F c #72A97D",'#10'".'
+  +'G c #8BBC8D",'#10'".H c #FEFEFC",'#10'".I c #FCFFFE",'#10'".J c #7CC4FC",'
+  +#10'".K c #C9D6FE",'#10'".L c #277D26",'#10'".M c #19830F",'#10'".N c #FEFEF'
+  +'E",'#10'".O c #F8FDFF",'#10'".P c #97A0B1",'#10'".Q c #87E058",'#10'".R c #'
+  +'FEFEF0",'#10'".S c #F9EFD1",'#10'".T c #FEFDE4",'#10'".U c #E6CB7E",'#10'".'
+  +'V c #0A7105",'#10'".W c #71CE47",'#10'".X c #F1EFC7",'#10'".Y c #FEFBAD",'
+  +#10'".Z c #FDF6F0",'#10'".0 c #C7E4F0",'#10'".1 c #3DA625",'#10'".2 c #EEDE9'
+  +'E",'#10'".3 c #FFFDC2",'#10'".4 c #8EB1E3",'#10'".5 c #CAE4FE",'#10'".6 c #'
+  +'E0BD4B",'#10'".7 c #F5E6BE",'#10'".8 c #BBDDFE",'#10'".9 c #FEE984",'#10'".'
+  +'@ c #FEF38D",'#10'".# c #FFE39A",'#10'".; c #829ACB",'#10'".: c #4FBB25",'
+  +#10'".= c #438C2A",'#10'".+ c #E1C164",'#10'".% c #F1D190",'#10'".$ c #285E2'
+  +'5",'#10'".( c #69C330",'#10'".) c #858EBA",'#10'".[ c #3E8A44",'#10'".] c #'
+  +'2E9918",'#10'",. c #C0CC69",'#10'",, c #F0D460",'#10'",- c #95D1C7",'#10'",'
+  +'* c #FEDD7B",'#10'",a c #F9EFDF",'#10'",b c #7478A4",'#10'",c c #B7D0FE",'
+  +#10'",d c #ABD7FE",'#10'",e c #D5A61D",'#10'",f c #D8AC2E",'#10'",g c #CD9A0'
+  +'5",'#10'",h c #FEFFF9",'#10'",i c #FDD270",'#10'",j c #F0C656",'#10'"......'
+  +'..........................................",'#10'".........................'
+  +'.......................",'#10'".............,.,.,.,.,.,.,.,.,..............'
+  +'....",'#10'".............-.*.a.b.c.d.e.f.-.g................",'#10'".......'
+  +'h.i.j.-.k.k.l.*.m.m.f.n.o.g..............",'#10'".......i.p.p.-.q.q.r.q.m.s'
+  +'.f.f.f.f.i.i..........",'#10'"...,.,.,.,.,.,.,.,.t.u.s.v.w.x.y.f.z.i.......'
+  +'...",'#10'"...,.A.r.d.B.B.C.f.D.E.v.v.F.G.x.f.z.i..........",'#10'"...-.a.H'
+  +'.I.H.q.u.f.J.,.K.G.L.M.i.i.i.i.i.i.i.i.i",'#10'"...-.*.k.N.O.m.s.f.f.f.P.M.'
+  +'Q.Q.L.R.R.S.T.H.H.U.i",'#10'"...-.*.l.r.m.s.v.w.y.f.V.W.Q.Q.Q.M.X.Y.S.R.p.i'
+  +'.Z",'#10'"...-.*.q.m.s.v.w.w.0.L.1.W.Q.Q.Q.1.L.2.3.p.2.i..",'#10'"...4.O.u.'
+  +'s.v.w.w.5.M.M.M.M.Q.Q.M.M.M.M.Y.p.6.7..",'#10'"...,.m.s.v.w.w.5.5.8.f.9.M.W'
+  +'.Q.M.z.z.@.Y.#.6....",'#10'"...;.s.v.v.w.5.5.8.8.f.9.M.W.:.=.z.z.9.Y.+.%...'
+  +'.",'#10'"...;.s.w.w.5.5.8.8.8.f.$.:.(.M.U.@.@.9.9.i......",'#10'"...).w.w.5'
+  +'.5.[.F.F.[.M.].1.M,..@.@.@.9,,.+......",'#10'"...f.w.5.5.8,-.[.V.V.M.V.=,,.'
+  +'9.9,*.9,*.i,a......",'#10'"..,b.E.5.K.K,c,c,c,d,b.9.9,*,*,,.6,e.i.h........'
+  +'",'#10'"..,b,b,b,b,b,b,b,b,b,b.j.j,f.6.%.S..............",'#10'"......,g,h,'
+  +'i,j.6,f,f.+.2.S......................",'#10'".......i.+.j.+.2,a............'
+  +'..................",'#10'".......S.R......................................"'
+  +','#10'"................................................"}'#10#191#4#0#0'/* '
+  +'XPM */'#10'static char *graphic[] = {'#10'"24 24 33 1",'#10'". c None",'#10
+  +'", c #E0B437",'#10'"- c #DAB341",'#10'"* c #FEFEF0",'#10'"a c #D8AC2E",'#10
+  +'"b c #E6CB7E",'#10'"c c #EEDE9E",'#10'"d c #F5E6BE",'#10'"e c #F4DBAC",'#10
+  +'"f c #D5A61D",'#10'"g c #FEFDE4",'#10'"h c #FEFBAD",'#10'"i c #FEFD99",'#10
+  +'"j c #FFFDC2",'#10'"k c #F9EB71",'#10'"l c #FEF38D",'#10'"m c #F9EFDF",'#10
+  +'"n c #FFFDD4",'#10'"o c #F1EFC7",'#10'"p c #E0BD4B",'#10'"q c #F0D460",'#10
+  +'"r c #FFE39A",'#10'"s c #FEE984",'#10'"t c #FEDD7B",'#10'"u c #FEC661",'#10
+  +'"v c #FEFFF9",'#10'"w c #E1C164",'#10'"x c #CD9A05",'#10'"y c #FDD270",'#10
+  +'"z c #F9EFD1",'#10'"A c #F0C656",'#10'"B c #FDF6F0",'#10'"C c #F1D190",'#10
+  +'"........................",'#10'"........................",'#10'"..,,,,-*..'
+  +'..............",'#10'".abbcde,................",'#10'".fghiijcaaaaaaaa.....'
+  +'...",'#10'".ajiiiijjjhiiika........",'#10'".fhiil-,,,,iiika........",'#10'"'
+  +'.alllfmgnnopqq,aaaa.....",'#10'".frstfjiiijccejnjha.....",'#10'".ftt,fiiiii'
+  +'hiiiiiia.....",'#10'".ftu,fiiiiiiiiqpppppppp.",'#10'".ftuafssssssspd***rgv*'
+  +'w.",'#10'".xy,bfttqpaaazgjjntzgdc.",'#10'".xuadfyAwmggnjhjhhyjnpB.",'#10'".'
+  +'xACcxy,giiiiiiiiitdhb..",'#10'".x,zqxypniiiiiiiiiylpm..",'#10'".xwdtxpChlll'
+  +'llllllylw...",'#10'".xcpfx,mssssssssssypz...",'#10'".xxbdxpzssssssstqpf-...'
+  +'.",'#10'".....xCrtttyA,fxabem....",'#10'".....xzqpaxx-bd*........",'#10'"..'
+  +'...xxxpCz.............",'#10'"........................",'#10'".............'
+  +'..........."}'#10#24#6#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"24'
+  +' 24 56 1",'#10'". c None",'#10'", c #F5FAF2",'#10'"- c #B0D0AF",'#10'"* c #'
+  +'62A768",'#10'"a c #72A97D",'#10'"b c #CEE2D0",'#10'"c c #0A7105",'#10'"d c '
+  +'#3E8A44",'#10'"e c #19830F",'#10'"f c #1BA30E",'#10'"g c #2E9918",'#10'"h c'
+  +' #277D26",'#10'"i c #DDEADD",'#10'"j c #E1F1E1",'#10'"k c #69C330",'#10'"l '
+  +'c #4FBB25",'#10'"m c #71CE47",'#10'"n c #F0F9EF",'#10'"o c #3DA625",'#10'"p'
+  +' c #8BBC8D",'#10'"q c #E0B437",'#10'"r c #87E058",'#10'"s c #E1C164",'#10'"'
+  ,'t c #F1D190",'#10'"u c #EEDE9E",'#10'"v c #F5E6BE",'#10'"w c #F3F3F3",'#10
+  +'"x c #FEFDE4",'#10'"y c #FEFBAD",'#10'"z c #FEFD99",'#10'"A c #FFFDD4",'#10
+  +'"B c #E6CB7E",'#10'"C c #FFFDC2",'#10'"D c #49AA49",'#10'"E c #D8AC2E",'#10
+  +'"F c #F9EB71",'#10'"G c #F0D460",'#10'"H c #457B09",'#10'"I c #FEF38D",'#10
+  +'"J c #D5A61D",'#10'"K c #DAB341",'#10'"L c #E0BD4B",'#10'"M c #438C2A",'#10
+  +'"N c #94B451",'#10'"O c #FDF6F0",'#10'"P c #FEE984",'#10'"Q c #FEDD7B",'#10
+  +'"R c #FFE39A",'#10'"S c #F4DBAC",'#10'"T c #F9EFD1",'#10'"U c #CD9A05",'#10
+  +'"V c #FDD270",'#10'"W c #FEC661",'#10'"X c #F0C656",'#10'"Y c #F9EFDF",'#10
+  +'"Z c #F1EFC7",'#10'"........................",'#10'"..........,-*aab.......'
+  +'.",'#10'".........-cdcefghi......",'#10'".............j*gkei.....",'#10'"..'
+  +'.............dlmen....",'#10'"...............bomkp....",'#10'"...qqqqq.....'
+  +'...omre....",'#10'"..qstuvtq....padlrre*aw.",'#10'"..qxyyzABqqqqpemrrrrr*..'
+  +'",'#10'"..qyzzzzACCyzzDgrrrrh...",'#10'"..EzzzzzzzzzzFGHlrrgi...",'#10'"..E'
+  +'IIIIIIIFJKLLLMmeNO...",'#10'"..EPPQPLqqK,AAARueps....",'#10'"..JQQqLBSTxCCC'
+  +'CRRxSU....",'#10'"..JVEuAyyyyyyyyPRAL.....",'#10'"..JVExzzzzzzzzzPRyU....."'
+  +','#10'"..JWsCzzIzIzIzIQPL......",'#10'"..UXtyPIIIIIIIIQQU......",'#10'"..Uq'
+  +'TPPPPPPPPPPGq.......",'#10'"..ULTQQQQQQGLEUJu.......",'#10'"..UtRQVXqJULuY.'
+  +'.........",'#10'"..UZqJUBSx..............",'#10'"..UUvO..................",'
+  +#10'"........................"}'#10'd'#5#0#0'/* XPM */'#10'static char *grap'
+  +'hic[] = {'#10'"24 24 44 1",'#10'". c None",'#10'", c #7681B4",'#10'"- c #4D'
+  +'4C99",'#10'"* c #343499",'#10'"a c #C4C4C4",'#10'"b c #C2C2C3",'#10'"c c #9'
+  +'598BF",'#10'"d c #D9D9DA",'#10'"e c #6666CB",'#10'"f c #3F45A3",'#10'"g c #'
+  +'F3F3F3",'#10'"h c #BBBCD6",'#10'"i c #5757BB",'#10'"j c #F0F0F8",'#10'"k c '
+  +'#C7C7C7",'#10'"l c #BFBFBF",'#10'"m c #C0C0C0",'#10'"n c #CFCFCF",'#10'"o c'
+  +' #CACACC",'#10'"p c #D1D1D1",'#10'"q c #F2F3FA",'#10'"r c #858EBA",'#10'"s '
+  +'c #999ACC",'#10'"t c #7478A4",'#10'"u c #666B98",'#10'"v c #C6C9DB",'#10'"w'
+  +' c #CDD1E4",'#10'"x c #B9B9B9",'#10'"y c #B7BCCA",'#10'"z c #D3D7DE",'#10'"'
+  +'A c #9F9F9F",'#10'"B c #A8A8A8",'#10'"C c #DFDFDF",'#10'"D c #FAFAFA",'#10
+  +'"E c #AFB3D5",'#10'"F c #F7FAFE",'#10'"G c #FCFBFB",'#10'"H c #EFEFEF",'#10
+  +'"I c #97A0B1",'#10'"J c #FBFBF8",'#10'"K c #E4E5E6",'#10'"L c #8E96A4",'#10
+  +'"M c #F8F8F8",'#10'"N c #B3B3B5",'#10'"........................",'#10'".,-*'
+  +'aabbaaaaabaaabc--d..",'#10'".,efgggggggggggggghie-..",'#10'".,efggggggggggg'
+  +'ggghie-..",'#10'".,efjgklmlmmbabanghie-..",'#10'".,efgggggggggggggghie-..",'
+  +#10'".,efggommmbbaaakpghie-..",'#10'".,efgggggggggggggghie-..",'#10'".,efjgo'
+  +'mbbaaakkkpghie-..",'#10'".,efgggggggggggggghie-..",'#10'".,efqggggggggggggg'
+  +'hie-..",'#10'".,efggggqggggggggghie-..",'#10'".,efrcscsssssssssstee-..",'#10
+  +'".,eeeeeeeeeeeeeeeeeee-..",'#10'".,eeeee,,,,eeue,iifee-..",'#10'".,eeee-vwv'
+  +'woxykz***ie-..",'#10'".,eeee-v*f,ABbCD***ie-..",'#10'".,eeee-vfftBaCDD***ie'
+  +'-..",'#10'".,eeee-Eii,aCFGH***ie-..",'#10'".,eeee-IiisCDJHK***ie-..",'#10'"'
+  +'.,eeee-L,svDMHKC***ie-..",'#10'".,-eee-BadMDgKCd***ie-..",'#10'"..ff-f-NNNN'
+  +'NNNNN-----d..",'#10'"........................"}'#10#189#6#0#0'/* XPM */'#10
+  +'static char *graphic[] = {'#10'"24 24 67 1",'#10'". c None",'#10'", c #B7BC'
+  +'CA",'#10'"- c #9598BF",'#10'"* c #F0F0F8",'#10'"a c #D3D7DE",'#10'"b c #FEF'
+  +'EFE",'#10'"c c #FCFBFB",'#10'"d c #FBFEFC",'#10'"e c #EAEAEC",'#10'"f c #BB'
+  +'BCD6",'#10'"g c #E9F4FE",'#10'"h c #EEF8FF",'#10'"i c #CDD1E4",'#10'"j c #C'
+  +'6C9DB",'#10'"k c #E2F0FE",'#10'"l c #AFB3D5",'#10'"m c #D7EBFE",'#10'"n c #'
+  +'CCDAEC",'#10'"o c #B5C5D8",'#10'"p c #CAE4FE",'#10'"q c #D4DBEA",'#10'"r c '
+  +'#E4E5E6",'#10'"s c #B7D0FE",'#10'"t c #BBDDFE",'#10'"u c #94A8D6",'#10'"v c'
+  +' #ABD7FE",'#10'"w c #A3D1F3",'#10'"x c #829ACB",'#10'"y c #D1E3F3",'#10'"z '
+  +'c #D8E4EF",'#10'"A c #ABABC8",'#10'"B c #D9D9DA",'#10'"C c #A8A8A8",'#10'"D'
+  +' c #F3F9FE",'#10'"E c #D1D1D1",'#10'"F c #C4C4C4",'#10'"G c #B9B9B9",'#10'"'
+  +'H c #C0C0C0",'#10'"I c #BFBFBF",'#10'"J c #A6AAB9",'#10'"K c #B3B3B5",'#10
+  +'"L c #AFAFAF",'#10'"M c #C2C2C3",'#10'"N c #CACACC",'#10'"O c #DFDFDF",'#10
+  +'"P c #F3F3F3",'#10'"Q c #EFEFEF",'#10'"R c #CFCFCF",'#10'"S c #C7C7C7",'#10
+  +'"T c #88898C",'#10'"U c #E0E0E1",'#10'"V c #8F8F8F",'#10'"W c #9F9F9F",'#10
+  +'"X c #979699",'#10'"Y c #858586",'#10'"Z c #808080",'#10'"0 c #8BBC8D",'#10
+  +'"1 c #F5F6F9",'#10'"2 c #8D8E8F",'#10'"3 c #606060",'#10'"4 c #515151",'#10
+  +'"5 c #FAFAFA",'#10'"6 c #707070",'#10'"7 c #4C4C4F",'#10'"8 c #424243",'#10
+  +'"9 c #858EBA",'#10'"@ c #828CA1",'#10'"...,---------*..........",'#10'"...*'
+  +'abcddcdde-..........",'#10'"....fghhhhhhg-i.........",'#10'"....ejkkkkkkkl-'
+  +'.........",'#10'".....-mmmmmmmn-.........",'#10'".....opppppppp-q........",'
+  +#10'".....rstttttttl-........",'#10'"......utvtvtvtw-........",'#10'"......x'
+  +'vvvttmyzAB.......",'#10'".....CDknEFFGHIJJKB.....",'#10'".....CrrLKGGMNBrre'
+  +'NKO...",'#10'"...rLIMEFNrPQQQeerrELr..",'#10'"..EBERORMPPQQQeeBSGGGN..",'#10
+  ,'".TUOBERBrHQQeRIGGIEUOEr.",'#10'".VeUOBERUBKGGIRrrESIGCB.",'#10'".WTXBOBENe'
+  +'rreBNGLLXYZXO.",'#10'".CPRXWEBEENICCWVYTWG00U.",'#10'".Lc1QBWWGSW2ZZVWKGIMG'
+  +'FU.",'#10'".Gbc1QeBKVZVCLLKGLW34NU.",'#10'"..GO51QeUECCLLCT63YVKWRP",'#10'"'
+  +'...IHePQeECLV7833YVLSBIB",'#10'"....eGRQQBLKV733TXEEGN..",'#10'"......NGBOL'
+  +'KX9@LBSIE....",'#10'"........FXXE1cjKRB......"}'#10#235#5#0#0'/* XPM */'#10
+  +'static char *graphic[] = {'#10'"24 24 53 1",'#10'". c None",'#10'", c #92BD'
+  +'ED",'#10'"- c #87A8DC",'#10'"* c #7681B4",'#10'"a c #E2F0FE",'#10'"b c #DFE'
+  +'AF5",'#10'"c c #D8E4EF",'#10'"d c #D4DBEA",'#10'"e c #D3D7DE",'#10'"f c #CA'
+  +'D2DE",'#10'"g c #8EB1E3",'#10'"h c #FEFEFC",'#10'"i c #FEFFFF",'#10'"j c #F'
+  +'FFFFF",'#10'"k c #FFFEFF",'#10'"l c #FEFEFE",'#10'"m c #F7FAFE",'#10'"n c #'
+  +'A1C8EA",'#10'"o c #94A8D6",'#10'"p c #FEFEFF",'#10'"q c #EEF8FF",'#10'"r c '
+  +'#7CC4FC",'#10'"s c #FAFAFD",'#10'"t c #4CB0FC",'#10'"u c #0F9BFB",'#10'"v c'
+  +' #6493D3",'#10'"w c #FCFFFE",'#10'"x c #E9F4FE",'#10'"y c #7478A4",'#10'"z '
+  +'c #F8FDFF",'#10'"A c #C9D6FE",'#10'"B c #B5B9F3",'#10'"C c #A2A3FC",'#10'"D'
+  +' c #FBFBF8",'#10'"E c #F3F9FE",'#10'"F c #D7EBFE",'#10'"G c #C2CFFE",'#10'"'
+  +'H c #FBFCFF",'#10'"I c #CAE4FE",'#10'"J c #829ACB",'#10'"K c #FCFBFB",'#10
+  +'"L c #F8F8F8",'#10'"M c #F5F6F9",'#10'"N c #666B98",'#10'"O c #858EBA",'#10
+  +'"P c #ECF3F8",'#10'"Q c #BBDDFE",'#10'"R c #E7EFF6",'#10'"S c #5C5D8C",'#10
+  +'"T c #ABD7FE",'#10'"U c #B7D0FE",'#10'"V c #D1E3F3",'#10'"W c #9ACCFE",'#10
+  +'"...,-----------*-.......",'#10'"...,aabbccddeff*-g......",'#10'"...,hiijkh'
+  +'jjlmm*ngo.....",'#10'"...,pkljikhjmmq*nr-o....",'#10'"...ghphjiljsmqq*gtuvo'
+  +'...",'#10'"...ghjkjjwmmqqx***y**...",'#10'"...-zjiipmmqqxxaABCC*...",'#10'"'
+  +'...-DjikmmEqxxaaFAGBy...",'#10'"...-DjpHmqqxxaaFFFIGy...",'#10'"...JKpzEqqx'
+  +'xaaFFFIIAy...",'#10'"...JLzEqqxxaaFFFIIIAy...",'#10'"...JMmqqxxaaFFFIIIIAN.'
+  +'..",'#10'"...OPEqxxaaFFFIIIIQGN...",'#10'"...OPqxxaaFFFIIIIQQGN...",'#10'".'
+  +'..ORxxaaFFFIIIIQQQGN...",'#10'"...*RxaaFFFIIIIQQQQGS...",'#10'"...*RaaFFFII'
+  +'IIQQQQTUS...",'#10'"...*baFFFIIIIQQQQTTUS...",'#10'"...ybFFFIIIIQQQQTTTUS..'
+  +'.",'#10'"...ycFFIIIIQQQQTTTTUS...",'#10'"...yVFIIIIQQQQTTTTWUS...",'#10'"..'
+  +'.yAAAAAAAAGGGUUUUUS...",'#10'"...yyyyyyyyyyyyyyyyyS...",'#10'".............'
+  +'..........."}'#10'0'#10#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"2'
+  +'4 24 82 2",'#10'".. c None",'#10'"., c #92BDED",'#10'".- c #87A8DC",'#10'".'
+  +'* c #7681B4",'#10'".a c #E2F0FE",'#10'".b c #DFEAF5",'#10'".c c #D8E4EF",'
+  +#10'".d c #D4DBEA",'#10'".e c #CAD2DE",'#10'".f c #8EB1E3",'#10'".g c #FFFFF'
+  +'F",'#10'".h c #FEFFFF",'#10'".i c #FEFEFF",'#10'".j c #FFFEFF",'#10'".k c #'
+  +'FCFFFE",'#10'".l c #F8FDFF",'#10'".m c #F7FAFE",'#10'".n c #A1C8EA",'#10'".'
+  +'o c #94A8D6",'#10'".p c #FEFEFE",'#10'".q c #FEFEFC",'#10'".r c #F3F9FE",'
+  +#10'".s c #7CC4FC",'#10'".t c #4CB0FC",'#10'".u c #0F9BFB",'#10'".v c #6493D'
+  +'3",'#10'".w c #E2E3F1",'#10'".x c #EEF8FF",'#10'".y c #7478A4",'#10'".z c #'
+  +'FBFEFC",'#10'".A c #BBBCD6",'#10'".B c #A0A6CD",'#10'".C c #A0B4DA",'#10'".'
+  +'D c #ABABC8",'#10'".E c #B3BDE2",'#10'".F c #C9D6FE",'#10'".G c #B5B9F3",'
+  +#10'".H c #A2A3FC",'#10'".I c #FCFBFB",'#10'".J c #AFB3D5",'#10'".K c #B5C5D'
+  +'8",'#10'".L c #B7E8FD",'#10'".M c #B7D9ED",'#10'".N c #C2CFFE",'#10'".O c #'
+  +'D3D7DE",'#10'".P c #F5F6F9",'#10'".Q c #FEFFF9",'#10'".R c #ABD7FE",'#10'".'
+  +'S c #CAE4FE",'#10'".T c #B7D0FE",'#10'".U c #829ACB",'#10'".V c #C6F6FD",'
+  +#10'".W c #9598BF",'#10'".X c #F8F8F8",'#10'".Y c #FBFCFF",'#10'".Z c #D3FEF'
+  +'E",'#10'".0 c #E1FFFE",'#10'".1 c #666B98",'#10'".2 c #858EBA",'#10'".3 c #'
+  +'F2F3FA",'#10'".4 c #BBDDFE",'#10'".5 c #ECF3F8",'#10'".6 c #E7EFF6",'#10'".'
+  +'7 c #E9F4FE",'#10'".8 c #FCB25D",'#10'".9 c #CBAF85",'#10'".@ c #8F8F8F",'
+  +#10'".# c #999ACC",'#10'".; c #BECDE5",'#10'".: c #5C5D8C",'#10'".= c #B7BCC'
+  +'A",'#10'".+ c #E0803A",'#10'".% c #AB715D",'#10'".$ c #A6AAB9",'#10'".( c #'
+  +'D1E3F3",'#10'".) c #A38FAB",'#10'".[ c #D7EBFE",'#10'".] c #FEC661",'#10'",'
+  +'. c #B68E45",'#10'",, c #9ACCFE",'#10'",- c #B3B3B5",'#10'",* c #8B7D89",'
+  +#10'".......,.-.-.-.-.-.-.-.-.-.-.-.*.-..............",'#10'".......,.a.a.b.'
+  +'b.c.c.d.d.d.e.e.*.-.f............",'#10'".......,.g.g.h.i.j.g.h.g.k.l.m.*.n'
+  +'.f.o..........",'#10'".......,.p.g.h.g.g.g.j.q.m.r.r.*.n.s.-.o........",'#10
+  +'".......f.q.g.j.g.h.g.h.j.i.m.r.*.f.t.u.v.o......",'#10'".......f.q.g.q.g.g'
+  +'.g.g.d.c.w.x.*.*.*.y.*.*......",'#10'".......-.z.h.k.j.g.A.B.C.D.C.B.E.F.G.'
+  +'H.H.*......",'#10'".......-.I.g.g.j.J.K.c.b.L.L.M.o.B.F.N.G.y......",'#10'"'
+  +'.......-.I.j.j.O.E.P.Q.L.L.R.L.L.o.K.S.T.y......",'#10'".......U.z.i.g.J.M.'
+  +'a.L.R.V.V.V.V.M.W.S.F.y......",'#10'".......U.X.Y.k.B.V.L.L.Z.Z.Z.0.Z.V.W.S'
+  +'.F.y......",'#10'".......U.P.r.l.B.V.R.L.Z.Z.0.0.0.Z.W.S.F.1......",'#10'".'
+  +'......2.3.x.r.D.L.L.V.Z.0.l.k.x.V.W.4.F.1......",'#10'".......2.5.x.x.J.n.V'
+  +'.L.Z.0.r.k.g.e.B.4.F.1......",'#10'".......*.6.7.5.O.W.R.V.Z.0.0.l.6.W.M.4.'
+  +'N.1......",'#10'".......*.5.7.8.9.@.W.C.L.Z.V.K.#.;.4.4.T.:......",'#10'"..'
+  ,'.....*.=.8.+.%.$.(.E.W.B.D.E.4.4.4.R.N.:......",'#10'".......@.8.+.%.).E.[.'
+  +'[.S.S.S.S.4.4.4.R.T.:......",'#10'".......8.+.%.).J.[.[.S.S.S.S.4.4.4.4.R.T'
+  +'.:......",'#10'".....].+.%.).J.[.[.S.S.S.S.4.4.4.4.R.R.T.:......",'#10'"...'
+  +'.,..%.).D.[.[.S.S.S.S.4.4.4.4.R.R,,.T.:......",'#10'"....,-,*.#.=.S.S.S.F.S'
+  +'.F.4.4.4.T.T.T.T.T.:......",'#10'".......y.y.y.y.y.y.y.y.y.y.y.y.y.y.y.y.y.'
+  +':......",'#10'"................................................"}'#10#0#0#0
+]);
