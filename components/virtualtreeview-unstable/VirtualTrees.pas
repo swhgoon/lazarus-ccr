@@ -5178,9 +5178,11 @@ begin
   begin
     // Create an event used to trigger our worker thread when something is to do.
     WorkEvent := TEvent.Create(nil, False, False, '');
+    //todo: see how to check if a event was succesfully created under linux since handle is allways 0
+    {$ifdef Windows}
     if WorkEvent.Handle = 0 then
       Raise Exception.Create('VirtualTreeView - Error creating TEvent instance');
-
+    {$endif}
     // Create worker thread, initialize it and send it to its wait loop.
     WorkerThread := TWorkerThread.Create(False);
   end;
@@ -13661,6 +13663,8 @@ begin
 
   if NeedLines then
   begin
+    //Workaround till LCL gets fixed
+    {$ifdef Windows}
     if FDottedBrush <> 0 then
       DeleteObject(FDottedBrush);
 
@@ -13676,6 +13680,9 @@ begin
     PatternBitmap := CreateBitmap(8, 8, 1, 1, Bits);
     FDottedBrush := CreatePatternBrush(PatternBitmap);
     DeleteObject(PatternBitmap);
+    {$else}
+    FDottedBrush := CreatePatternBrush(0);
+    {$endif}
   end;
 end;
 
@@ -27981,6 +27988,7 @@ begin
             Logger.ExitMethod([lcPaintDetails],'PaintNode');
           end;
         end;
+        
 
         // Erase rest of window not covered by a node.
         if TargetRect.Top < MaximumBottom then
@@ -27995,7 +28003,11 @@ begin
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
           // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
           NodeBitmap.Height := 0;
+          {$ifdef Windows}
           NodeBitmap.PixelFormat := pf32Bit;
+          {$else}
+          NodeBitmap.PixelFormat := pfDevice;
+          {$endif}
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left + 1;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top + 1;
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
