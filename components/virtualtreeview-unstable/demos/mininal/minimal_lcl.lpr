@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, Main, miscutils_package, virtualtreeview_package,
+  { add your units here }, Main, virtualtreeview_package,
   mmsystem;
 
 begin

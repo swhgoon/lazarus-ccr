@@ -1,7 +1,7 @@
 unit Main;
 
 {$MODE Delphi}
-{$define DEBUG}
+{.$define DEBUG}
 
 // Demonstration project for TVirtualStringTree to generally show how to get started.
 // Written by Mike Lischke.

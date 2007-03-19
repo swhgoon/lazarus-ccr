@@ -11730,8 +11730,9 @@ begin
   {$ifdef UseLocalMemoryManager}
     FNodeMemoryManager := TVTNodeMemoryManager.Create;
   {$endif UseLocalMemoryManager}
-
+  {$ifdef EnableThreadSupport}
   AddThreadReference;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11740,7 +11741,9 @@ destructor TBaseVirtualTree.Destroy;
 
 begin
   Exclude(FOptions.FMiscOptions, toReadOnly);
+  {$ifdef EnableThreadSupport}
   ReleaseThreadReference(Self);
+  {$endif}
   StopWheelPanning;
   CancelEditNode;
 
@@ -13350,7 +13353,7 @@ var
 
 begin
   DoStateChange([tsStopValidation], [tsUseCache]);
-
+  {$ifdef EnableThreadSupport}
   // Check the worker thread existance. It might already be gone (usually on destruction of the last tree).
   if Assigned(WorkerThread) then
   begin
@@ -13377,6 +13380,7 @@ begin
     else // Remove any pending validation.
       WorkerThread.RemoveTree(Self);
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23800,12 +23804,14 @@ begin
   InterruptValidation;
 
   FStartIndex := 0;
+  {$ifdef EnableThreadSupport}
   if tsValidationNeeded in FStates then
   begin
     // Tell the thread this tree needs actually something to do.
     WorkerThread.AddTree(Self);
     WorkEvent.SetEvent;
   end;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

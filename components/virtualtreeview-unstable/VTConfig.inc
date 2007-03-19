@@ -36,3 +36,8 @@
 {.$define EnableAccessible}
 {$define UseExternalDragManager}
 {$define UseDelphiCompat}
+
+//under linux the performance is poor with threading enabled
+{$ifdef Windows}
+  {$define EnableThreadSupport}
+{$endif}

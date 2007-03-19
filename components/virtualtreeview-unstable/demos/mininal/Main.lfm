@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 353
+  Left = 437
   Height = 481
-  Top = 172
+  Top = 278
   Width = 425
   HorzScrollBar.Page = 424
   VertScrollBar.Page = 480
@@ -14,7 +14,7 @@ object MainForm: TMainForm
     Left = 12
     Height = 14
     Top = 12
-    Width = 117
+    Width = 152
     Caption = 'Last operation duration:'
     Color = clNone
     ParentColor = False
