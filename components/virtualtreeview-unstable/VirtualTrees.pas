@@ -3357,7 +3357,11 @@ const
   Copyright: string = 'Virtual Treeview © 1999, 2003 Mike Lischke';
 
 var
-
+  //Workaround to LCL bug 8553
+  {$ifndef Windows}
+  pf32bit: TPixelFormat = pfDevice;
+  {$endif}
+  
   StandardOLEFormat: TFormatEtc = (
     // Format must later be set.
     cfFormat: 0;
@@ -7529,7 +7533,6 @@ var
   ScreenDC: HDC;
 
 begin
-  {$ifdef NeedWindows}
   if FStates * [disInDrag, disHidden, disPrepared, disSystemSupport] = [disInDrag, disHidden, disPrepared] then
   begin
     Exclude(FStates, disHidden);
@@ -7545,7 +7548,6 @@ begin
       ReleaseDC(0, ScreenDC);
     end;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -10547,7 +10549,10 @@ begin
               FColumns.FHoverIndex := NoColumn;
               if I > NoColumn then
                 Invalidate(FColumns[I]);
+              //todo: implement drag image under gtk
+              {$ifdef Windows}
               PrepareDrag(P, FDragStart);
+              {$endif}
               FStates := FStates - [hsDragPending] + [hsDragging];
               HandleHeaderMouseMove := True;
               Result := 0;
@@ -28009,11 +28014,7 @@ begin
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
           // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
           NodeBitmap.Height := 0;
-          {$ifdef Windows}
           NodeBitmap.PixelFormat := pf32Bit;
-          {$else}
-          NodeBitmap.PixelFormat := pfDevice;
-          {$endif}
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left + 1;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top + 1;
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
