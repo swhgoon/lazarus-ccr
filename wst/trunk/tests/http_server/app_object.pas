@@ -293,8 +293,8 @@ initialization
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
   
-  RegisterCalculatorImplementationFactory();
   Server_service_RegisterCalculatorService();
+  RegisterCalculatorImplementationFactory();
   
   Server_service_RegisterWSTMetadataServiceService();
   RegisterWSTMetadataServiceImplementationFactory();

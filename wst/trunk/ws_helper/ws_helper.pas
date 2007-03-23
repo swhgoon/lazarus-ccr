@@ -25,24 +25,32 @@ program ws_helper;
 uses
   Classes, SysUtils, wst_resources_utils,
   parserdefs, ws_parser, generator, parserutils, source_utils,
-  command_line_parser, metadata_generator, binary_streamer;
+  command_line_parser, metadata_generator, binary_streamer,
+  DOM, xmlread, wsdl2pas_imp;
 
 resourcestring
-  sUSAGE = 'ws_helper [-p] [-b] [-i] [-oPATH] inputFilename' + sNEW_LINE +
+  sUSAGE = 'ws_helper [-u] [-p] [-b] [-i] [-oPATH] inputFilename' + sNEW_LINE +
+           '  -u  Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
            '  -p  Generate service proxy' + sNEW_LINE +
            '  -b  Generate service binder' + sNEW_LINE +
            '  -i  Generate service minimal implementation' + sNEW_LINE +
-           '  -o  PATH  Output directory' + sNEW_LINE;
+           '  -o  PATH  Relative output directory' + sNEW_LINE +
+           '  -a  PATH  Absolute output directory' + sNEW_LINE;
   sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.3 Copyright (c) 2006 by Inoussa OUEDRAOGO';
 
 const
   sWST_META = 'wst_meta';
+  
+type
+  TSourceFileType = ( sftPascal, sftWSDL );
   
 Var
   inFileName,outPath,errStr : string;
   srcMngr : ISourceManager;
   AppOptions : TComandLineOptions;
   NextParam : Integer;
+  sourceType : TSourceFileType;
+  symtable : TSymbolTable;
 
   function ProcessCmdLine():boolean;
   begin
@@ -50,22 +58,83 @@ Var
     If ( NextParam <= Paramcount ) Then
       inFileName := ParamStr(NextParam);
     Result := FileExists(ExpandFileName(inFileName));
+    if AnsiSameText(ExtractFileExt(inFileName),'.PAS') or
+       AnsiSameText(ExtractFileExt(inFileName),'.PP')
+    then begin
+      sourceType := sftPascal;
+    end else if AnsiSameText(ExtractFileExt(inFileName),'.WSDL') then begin
+      sourceType := sftWSDL;
+    end;
     If Result Then Begin
       If ( AppOptions = [] ) Then
         Include(AppOptions,cloProxy);
     End Else
       errStr := Format('File not Found : "%s"',[inFileName]);
-    outPath := ExtractFilePath(inFileName);
-    If ( cloOutPutDir in AppOptions ) Then Begin
-      outPath := outPath + Trim(GetOptionArg(cloOutPutDir));
-      outPath := IncludeTrailingPathDelimiter(outPath);
-    End;
+    if ( cloOutPutDirAbsolute in AppOptions ) then begin
+      outPath := Trim(GetOptionArg(cloOutPutDirAbsolute));
+    end else begin
+      outPath := ExtractFilePath(inFileName);
+      if ( cloOutPutDirRelative in AppOptions ) then begin
+        outPath := outPath + Trim(GetOptionArg(cloOutPutDirRelative));
+      end;
+    end;
+    outPath := IncludeTrailingPathDelimiter(outPath);
   end;
 
+  function GenerateSymbolTable() : Boolean ;
+
+    procedure ParsePascalFile();
+    var
+      s : TFileStream;
+      p : TPascalParser;
+    begin
+      s := nil;
+      p := nil;
+      try
+        s := TFileStream.Create(inFileName,fmOpenRead);
+        p := TPascalParser.Create(s,symtable);
+        if not p.Parse() then
+          p.Error('"%s" at line %d',[p.ErrorMessage,p.SourceLine]);
+      finally
+        FreeAndNil(p);
+        FreeAndNil(s);
+      end;
+    end;
+    
+    procedure ParseWsdlFile();
+    var
+      locDoc : TXMLDocument;
+      prsr : TWsdlParser;
+    begin
+      prsr := nil;
+      ReadXMLFile(locDoc,inFileName);
+      try
+        prsr := TWsdlParser.Create(locDoc,symtable);
+        prsr.Parse();
+      finally
+        FreeAndNil(prsr);
+        FreeAndNil(locDoc);
+      end;
+    end;
+    
+  begin
+    try
+      WriteLn('Parsing the file : ', inFileName);
+      case sourceType of
+        sftPascal : ParsePascalFile();
+        sftWSDL   : ParseWsdlFile();
+      end;
+      Result := True;
+    except
+      on e : Exception do begin
+        Result := False;
+        errStr := e.Message;
+      end;
+    end;
+  end;
+  
   function ProcessFile():Boolean;
   Var
-    p : TPascalParser;
-    s : TFileStream;
     mtdaFS: TMemoryStream;
     g : TBaseGenerator;
     mg : TMetadataGenerator;
@@ -76,86 +145,98 @@ Var
     mtdaFS := nil;
     mg := nil;
     g := Nil;
-    s := Nil;
-    p := Nil;
-    Try
-      Try
-        s := TFileStream.Create(inFileName,fmOpenRead);
-        p := TPascalParser.Create(s);
-        If Not p.Parse() Then
-          p.Error(p.ErrorMessage);
+    try
+      try
+        if ( cloInterface in AppOptions ) then begin
+          WriteLn('Interface file generation...');
+          g := TInftGenerator.Create(symtable,srcMngr);
+          g.Execute();
+          FreeAndNil(g);
+        end;
+
         If ( cloProxy in AppOptions ) Then Begin
-          g := TProxyGenerator.Create(p.SymbolTable,srcMngr);
+          WriteLn('Proxy file generation...');
+          g := TProxyGenerator.Create(symtable,srcMngr);
           g.Execute();
           FreeAndNil(g);
         End;
-        
+
         If ( cloBinder in AppOptions ) Then Begin
-          g := TBinderGenerator.Create(p.SymbolTable,srcMngr);
+          WriteLn('Binder file generation...');
+          g := TBinderGenerator.Create(symtable,srcMngr);
           g.Execute();
           FreeAndNil(g);
         End;
 
         If ( cloImp in AppOptions ) Then Begin
-          g := TImplementationGenerator.Create(p.SymbolTable,srcMngr);
+          WriteLn('Implementation file generation...');
+          g := TImplementationGenerator.Create(symtable,srcMngr);
           g.Execute();
           FreeAndNil(g);
         End;
 
         if ( [cloBinder,cloProxy]*AppOptions  <> [] ) then begin
+          WriteLn('Metadata file generation...');
           mtdaFS := TMemoryStream.Create();
-          mg := TMetadataGenerator.Create(p.SymbolTable,CreateBinaryWriter(mtdaFS));
+          mg := TMetadataGenerator.Create(symtable,CreateBinaryWriter(mtdaFS));
           mg.Execute();
           mtdaFS.SaveToFile(ChangeFileExt(inFileName,'.' + sWST_META));
           rsrcStrm := TMemoryStream.Create();
           mtdaFS.Position := 0;
-          //BinaryToLazarusResourceCode(mtdaFS,rsrcStrm,UpperCase(p.SymbolTable.Name),sWST_META);
-          BinToWstRessource(UpperCase(p.SymbolTable.Name),mtdaFS,rsrcStrm);
+          BinToWstRessource(UpperCase(symtable.Name),mtdaFS,rsrcStrm);
           rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(inFileName),'.' + sWST_EXTENSION));
         end;
         
         Result := True;
-      Except
-        On E : Exception Do Begin
+      except
+        on E : Exception do begin
           Result := False;
-          errStr := Format('"%s" at line %d',[E.Message,p.SourceLine]) ;
-        End;
-      End;
-    Finally
+          errStr := E.Message;
+        end;
+      end;
+    finally
       rsrcStrm.Free();
       mg.Free();;
       mtdaFS.Free();;
       g.Free();
-      p.Free();
-      s.Free();
-    End;
+    end;
   end;
 
 
 begin
-  Try
-    Writeln(sCOPYRIGHT);
-    If ( ParamCount = 0 ) Then Begin
-      WriteLn(sUSAGE);
-      Exit;
-    End;
+  symtable := nil;
+  try
+    try
+      Writeln(sCOPYRIGHT);
+      If ( ParamCount = 0 ) Then Begin
+        WriteLn(sUSAGE);
+        Exit;
+      End;
 
+      if not ProcessCmdLine() then begin
+        WriteLn(errStr);
+        Exit;
+      end;
+      symtable := TSymbolTable.Create(ChangeFileExt(ExtractFileName(inFileName),''));
+      srcMngr := CreateSourceManager();
 
-    srcMngr := CreateSourceManager();
-    If Not ProcessCmdLine() Then Begin
-      WriteLn(errStr);
-      Exit;
-    End;
+      if not GenerateSymbolTable() then begin
+        WriteLn(errStr);
+        Exit;
+      end;
+      
+      If Not ProcessFile() Then Begin
+        WriteLn(errStr);
+        Exit;
+      End;
 
-    If Not ProcessFile() Then Begin
-      WriteLn(errStr);
-      Exit;
-    End;
-
-    srcMngr.SaveToFile(outPath);
-    WriteLn(Format('File "%s" parsed succesfully.',[inFileName]));
-  except
-    on e:exception Do
-      Writeln('Exception : ' + e.Message)
+      srcMngr.SaveToFile(outPath);
+      WriteLn(Format('File "%s" parsed succesfully.',[inFileName]));
+    except
+      on e:exception Do
+        Writeln('Exception : ' + e.Message)
+    end;
+  finally
+    FreeAndNil(symtable);
   end;
 end.

@@ -39,7 +39,8 @@ var
 implementation
 uses server_unit,
      server_service_soap, server_binary_formatter,
-     calculator, calculator_imp, calculator_binder;
+     calculator, calculator_imp, calculator_binder,
+     metadata_service, metadata_service_imp, metadata_service_binder;
 
 Var
   scktServer : TTcpSrvApp;
@@ -84,6 +85,9 @@ begin
   RegisterCalculatorImplementationFactory();
   Server_service_RegisterSoapFormat();
   Server_service_RegisterBinaryFormat();
+  
+  RegisterWSTMetadataServiceImplementationFactory();
+  Server_service_RegisterWSTMetadataServiceService
 end;
 
 procedure TfMain.LogMessage(const AMsg: string);
@@ -95,4 +99,3 @@ initialization
   {$I umain.lrs}
 
 end.
-

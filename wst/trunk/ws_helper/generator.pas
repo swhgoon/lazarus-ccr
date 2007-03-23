@@ -139,9 +139,39 @@ type
     procedure Execute();override;
   End;
 
+  { TInftGenerator }
 
+  TInftGenerator = class(TBaseGenerator)
+  private
+    FDecStream : ISourceStream;
+    FImpStream : ISourceStream;
+    FImpTempStream : ISourceStream;
+  private
+    function GenerateIntfName(AIntf : TInterfaceDefinition):string;
+
+    procedure GenerateUnitHeader();
+    procedure GenerateUnitImplementationHeader();
+    procedure GenerateUnitImplementationFooter();
+
+    procedure GenerateIntf(AIntf : TInterfaceDefinition);
+    procedure GenerateTypeAlias(ASymbol : TTypeAliasDefinition);
+    procedure GenerateClass(ASymbol : TClassTypeDefinition);
+    procedure GenerateEnum(ASymbol : TEnumTypeDefinition);
+    procedure GenerateArray(ASymbol : TArrayDefinition);
+
+    function GetDestUnitName():string;
+  public
+    constructor Create(
+      ASymTable : TSymbolTable;
+      ASrcMngr  : ISourceManager
+    );
+    procedure Execute();override;
+  end;
+  
+  
+  
 implementation
-uses parserutils;
+uses parserutils, Contnrs;
 
 Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sBINDER_BASE_CLASS = 'TBaseServiceBinder';
@@ -149,6 +179,7 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sSERIALIZER_CLASS  = 'IFormatterClient';
       RETURN_PARAM_NAME = 'return';
       RETURN_VAL_NAME = 'returnVal';
+      sNAME_SPACE = 'sNAME_SPACE';
 
       sPRM_NAME = 'strPrmName';
       sLOC_SERIALIZER = 'locSerializer';
@@ -377,7 +408,7 @@ Var
       Indent();WriteLn('%s := GetSerializer();',[sLOC_SERIALIZER]);
       Indent();WriteLn('Try');IncIndent();
 
-      Indent();WriteLn('%s.BeginCall(''%s'', GetTarget(),(Self as ICallContext));',[sLOC_SERIALIZER,AMthd.Name]);
+      Indent();WriteLn('%s.BeginCall(''%s'', GetTarget(),(Self as ICallContext));',[sLOC_SERIALIZER,AMthd.ExternalName]);
       IncIndent();
         prmCnt := AMthd.ParameterCount;
         If ( AMthd.MethodType = mtFunction ) Then
@@ -385,7 +416,7 @@ Var
         For k := 0 To Pred(prmCnt) Do Begin
           prm := AMthd.Parameter[k];
           If ( prm.Modifier <> pmOut ) Then Begin
-            Indent();WriteLn('%s.Put(''%s'', TypeInfo(%s), %s);',[sLOC_SERIALIZER,prm.Name,prm.DataType.Name,prm.Name]);
+            Indent();WriteLn('%s.Put(%s, TypeInfo(%s), %s);',[sLOC_SERIALIZER,QuotedStr(prm.ExternalName),prm.DataType.Name,prm.Name]);
           End;
         End;
       DecIndent();
@@ -402,8 +433,10 @@ Var
           prm := AMthd.Parameter[k];
           //Indent();WriteLn('%s := TypeInfo(%s);',[sRES_TYPE_INFO,prm.DataType.Name]);
           if prm.DataType.NeedFinalization() then begin
-            if prm.DataType.InheritsFrom(TClassTypeDefinition) then begin
-              Indent();WriteLn('Pointer(Result) := Nil;');
+            if prm.DataType.InheritsFrom(TClassTypeDefinition) or
+               prm.DataType.InheritsFrom(TArrayDefinition)
+            then begin
+              Indent();WriteLn('TObject(Result) := Nil;');
             end else begin
               Indent();WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkInterface] ) Then',[prm.DataType.Name]);
               IncIndent();
@@ -411,20 +444,24 @@ Var
               DecIndent();
             end;
           end;
-          Indent();WriteLn('%s := %s;',[sPRM_NAME,QuotedStr(RETURN_PARAM_NAME)]);
-          Indent();WriteLn('%s.Get(TypeInfo(%s), %s, %s);',[sLOC_SERIALIZER,prm.DataType.Name,sPRM_NAME,prm.Name]);
+          Indent();WriteLn('%s := %s;',[sPRM_NAME,QuotedStr(prm.ExternalName)]);//Indent();WriteLn('%s := %s;',[sPRM_NAME,QuotedStr(RETURN_PARAM_NAME)]);
+          Indent();WriteLn('%s.Get(TypeInfo(%s), %s, %s);',[sLOC_SERIALIZER,prm.DataType.Name,sPRM_NAME,'Result']);
         End;
         //--------------------------------
         for k := 0 to Pred(prmCnt) do begin
           prm := AMthd.Parameter[k];
           if ( prm.Modifier = pmOut ) then begin
-            if prm.DataType.InheritsFrom(TClassTypeDefinition) then begin
-              Indent();WriteLn('Pointer(%s) := Nil;',[prm.Name]);
-            end else begin
-              Indent();WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkInterface] ) Then',[prm.DataType.Name]);
-              IncIndent();
-                Indent();WriteLn('Pointer(%s) := Nil;',[prm.Name]);
-              DecIndent();
+            if prm.DataType.NeedFinalization() then begin
+              if prm.DataType.InheritsFrom(TClassTypeDefinition) or
+                 prm.DataType.InheritsFrom(TArrayDefinition)
+              then begin
+                Indent();WriteLn('TObject(%s) := Nil;',[prm.Name]);
+              end else begin
+                Indent();WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkInterface] ) Then',[prm.DataType.Name]);
+                IncIndent();
+                  Indent();WriteLn('Pointer(%s) := Nil;',[prm.Name]);
+                DecIndent();
+              end;
             end;
           end;
         end;
@@ -433,7 +470,7 @@ Var
         For k := 0 To Pred(prmCnt) Do Begin
           prm := AMthd.Parameter[k];
           If ( prm.Modifier In [pmVar, pmOut] ) Then Begin
-            Indent();WriteLn('%s := %s;',[sPRM_NAME,QuotedStr(prm.Name)]);
+            Indent();WriteLn('%s := %s;',[sPRM_NAME,QuotedStr(prm.ExternalName)]);
             Indent();WriteLn('%s.Get(TypeInfo(%s), %s, %s);',[sLOC_SERIALIZER,prm.DataType.Name,sPRM_NAME,prm.Name]);
           End;
         End;
@@ -766,7 +803,7 @@ Var
       NewLine();
       For k := 0 To Pred(prmCnt) Do Begin
         prm := AMthd.Parameter[k];
-        Write('%s := %s;',[sPRM_NAME,QuotedStr(prm.Name)]);
+        Write('%s := %s;',[sPRM_NAME,QuotedStr(prm.ExternalName)]);
           WriteLn('AFormatter.Get(TypeInfo(%s),%s,%s);',[prm.DataType.Name,sPRM_NAME,prm.Name]);
         If prm.DataType.NeedFinalization() Then Begin
           if prm.DataType.InheritsFrom(TClassTypeDefinition) then begin
@@ -824,20 +861,20 @@ Var
       WriteLn('AFormatter.Clear();');
 
       WriteLn('AFormatter.BeginCallResponse(procName,trgName);');
-      //BeginAutoIndent();
         IncIndent();
-        If ( AMthd.MethodType = mtFunction ) Then
-          WriteLn('AFormatter.Put(%s,TypeInfo(%s),%s);',[QuotedStr(RETURN_PARAM_NAME),AMthd.Parameter[prmCnt].DataType.Name,RETURN_VAL_NAME]);
+        if ( AMthd.MethodType = mtFunction ) then begin
+          //WriteLn('AFormatter.Put(%s,TypeInfo(%s),%s);',[QuotedStr(RETURN_PARAM_NAME),AMthd.Parameter[prmCnt].DataType.Name,RETURN_VAL_NAME]);
+          WriteLn('AFormatter.Put(%s,TypeInfo(%s),%s);',[QuotedStr(prm.ExternalName),AMthd.Parameter[prmCnt].DataType.Name,RETURN_VAL_NAME]);
+        end;
         For k := 0 To Pred(prmCnt) Do Begin
           prm := AMthd.Parameter[k];
           If ( prm.Modifier In [pmOut,pmVar] ) Then
-            WriteLn('AFormatter.Put(%s,TypeInfo(%s),%s);',[QuotedStr(prm.Name),prm.DataType.Name,prm.Name]);
+            WriteLn('AFormatter.Put(%s,TypeInfo(%s),%s);',[QuotedStr(prm.ExternalName),prm.DataType.Name,prm.Name]);
         End;
         DecIndent();
       WriteLn('AFormatter.EndCallResponse();');
       NewLine();
       WriteLn('callCtx := Nil;');
-      //EndAutoIndent();
 
     DecIndent();EndAutoIndent();
     WriteLn('End;');
@@ -1204,6 +1241,639 @@ begin
   FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream]);
   FDecStream := Nil;
   FImpStream := Nil;
+end;
+
+{ TInftGenerator }
+
+function TInftGenerator.GenerateIntfName(AIntf: TInterfaceDefinition): string;
+begin
+  Result := ExtractserviceName(AIntf);
+end;
+
+procedure TInftGenerator.GenerateUnitHeader();
+begin
+  SetCurrentStream(FDecStream);
+  WriteLn('{');
+  WriteLn('This unit has been produced by ws_helper.');
+  WriteLn('  Input unit name : "%s".',[SymbolTable.Name]);
+  WriteLn('  This unit name  : "%s".',[GetDestUnitName()]);
+  WriteLn('  Date            : "%s".',[DateTimeToStr(Now())]);
+  WriteLn('}');
+
+  WriteLn('unit %s;',[GetDestUnitName()]);
+  WriteLn('{$mode objfpc}{$H+}');
+  WriteLn('interface');
+  WriteLn('');
+  WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;');
+  WriteLn('');
+  WriteLn('const');
+
+  IncIndent();
+  Indent();WriteLn('sNAME_SPACE = %s;',[QuotedStr(FSymbolTable.ExternalName)]);
+  DecIndent();
+  
+  WriteLn('');
+  WriteLn('type');
+  WriteLn('');
+end;
+
+procedure TInftGenerator.GenerateUnitImplementationHeader();
+begin
+  SetCurrentStream(FImpStream);
+  WriteLn('');
+  WriteLn('Implementation');
+  FImpTempStream.WriteLn('initialization');
+end;
+
+procedure TInftGenerator.GenerateUnitImplementationFooter();
+begin
+  SetCurrentStream(FImpStream);
+  NewLine();
+  NewLine();
+  FImpTempStream.NewLine();
+  FImpTempStream.WriteLn('End.');
+end;
+
+procedure TInftGenerator.GenerateIntf(AIntf: TInterfaceDefinition);
+
+  procedure WriteDec();
+  begin
+    Indent();
+    WriteLn('%s = interface',[GenerateIntfName(AIntf)]);
+  end;
+
+  procedure WriteMethod(AMthd : TMethodDefinition);
+  Var
+    prmCnt,k : Integer;
+    prm : TParameterDefinition;
+  Begin
+    Indent();
+    prmCnt := AMthd.ParameterCount;
+    If ( AMthd.MethodType = mtProcedure ) Then
+      Write('procedure ')
+    Else Begin
+      Write('function ');
+      Dec(prmCnt);
+    End;
+    Write('%s(',[AMthd.Name]);
+
+    If ( prmCnt > 0 ) Then Begin
+      IncIndent();
+      For k := 0 To Pred(prmCnt) Do Begin
+        prm := AMthd.Parameter[k];
+        If (k > 0 ) Then
+          Write('; ');
+        NewLine();
+        Indent();
+        Write('%s %s : %s',[ParameterModifierMAP[prm.Modifier],prm.Name,prm.DataType.Name]);
+      End;
+      DecIndent();
+      NewLine();
+      Indent();
+    End;
+
+    Write(')');
+    If ( AMthd.MethodType = mtFunction ) Then Begin
+      Write(':%s',[AMthd.Parameter[prmCnt].DataType.Name]);
+    End;
+    WriteLn(';');
+  End;
+
+  procedure WriteMethods();
+  Var
+    k : Integer;
+  begin
+    If ( AIntf.MethodCount = 0 ) Then
+      Exit;
+      IncIndent();
+        For k := 0 To Pred(AIntf.MethodCount) Do
+          WriteMethod(AIntf.Method[k]);
+      DecIndent();
+  end;
+
+begin
+  SetCurrentStream(FDecStream);
+  NewLine();
+  IncIndent();
+    WriteDec();
+    WriteMethods();
+    Indent(); WriteLn('end;');
+  DecIndent();
+end;
+
+procedure TInftGenerator.GenerateTypeAlias(ASymbol: TTypeAliasDefinition);
+begin
+  try
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+      Indent();
+      WriteLn('%s = type %s;',[ASymbol.Name,ASymbol.BaseType.Name]);
+    DecIndent();
+  except
+    on e : Exception do
+      System.WriteLn('TInftGenerator.GenerateTypeAlias()=', ASymbol.Name, ' ;; ', e.Message);
+  end;
+end;
+
+procedure TInftGenerator.GenerateClass(ASymbol: TClassTypeDefinition);
+var
+  locClassPropNbr, locStoredPropsNbr : Integer;
+  loc_BaseComplexSimpleContentRemotable : TClassTypeDefinition;
+  
+  procedure Prepare();
+  var
+    k : Integer;
+    p : TPropertyDefinition;
+  begin
+    locClassPropNbr   := 0;
+    locStoredPropsNbr := 0;
+    for k := 0 to Pred(ASymbol.PropertyCount) do begin
+      p := ASymbol.Properties[k];
+      if ( p.StorageOption = soOptional ) then
+        Inc(locStoredPropsNbr);
+      if p.DataType.InheritsFrom(TClassTypeDefinition) then
+        Inc(locClassPropNbr);
+    end;
+  end;
+  
+  procedure WriteDec();
+  var
+    s : string;
+  begin
+    if Assigned(ASymbol.Parent) then begin
+      {if ASymbol.Parent.InheritsFrom(TNativeSimpleTypeDefinition) and
+         Assigned(TNativeSimpleTypeDefinition(ASymbol.Parent).BoxedType)
+      then begin
+        s := Format('%s',[TNativeSimpleTypeDefinition(ASymbol.Parent).BoxedType.Name]);
+      end else begin
+        s := Format('%s',[ASymbol.Parent.Name]);
+      end;}
+      s := Format('%s',[ASymbol.Parent.Name]);
+    end else begin
+      s := 'XX';//'TBaseComplexRemotable';
+    end;
+    Indent();
+    WriteLn('%s = class(%s)',[ASymbol.Name,s]);
+  end;
+
+  procedure WritePropertyField(AProp : TPropertyDefinition);
+  begin
+    Indent();
+    WriteLn('F%s : %s;',[AProp.Name,AProp.DataType.Name]);
+  End;
+
+  procedure WriteProperty(AProp : TPropertyDefinition);
+  var
+    propName, locStore : string;
+  begin
+    propName := AProp.Name;
+    case AProp.StorageOption of
+      soAlways     : locStore := '';
+      soNever      : locStore := ' stored False';
+      soOptional   : locStore := Format(' stored Has%s',[AProp.Name]);
+    end;
+    Indent();
+    WriteLn('property %s : %s read F%s write F%s%s;',[propName,AProp.DataType.Name,propName,propName,locStore]);
+    if not AnsiSameText(AProp.Name,AProp.ExternalName) then begin
+      FImpTempStream.Indent();
+      FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(AProp.Name),QuotedStr(AProp.ExternalName)]);
+    end;
+    if AProp.IsAttribute and ( not ASymbol.IsDescendantOf(loc_BaseComplexSimpleContentRemotable) ) then begin
+      FImpTempStream.Indent();
+      FImpTempStream.WriteLn('%s.RegisterAttributeProperty(%s);',[ASymbol.Name,QuotedStr(AProp.Name)]);
+    end;
+  end;
+
+  procedure WriteProperties();
+  Var
+    k : Integer;
+    p : TPropertyDefinition;
+  begin
+    If ( ASymbol.PropertyCount > 0 ) Then begin
+      Indent();
+      WriteLn('private');
+      IncIndent();
+        for k := 0 to Pred(ASymbol.PropertyCount) do begin
+          p := ASymbol.Properties[k];
+          WritePropertyField(p);
+        end;
+      DecIndent();
+      //
+      if ( locStoredPropsNbr > 0 ) then begin
+        Indent();
+        WriteLn('private');
+        IncIndent();
+          for k := 0 to Pred(ASymbol.PropertyCount) do begin
+            p := ASymbol.Properties[k];
+            if ( p.StorageOption = soOptional ) then begin
+              Indent();
+              WriteLn('function Has%s() : Boolean;',[p.Name]);
+            end;
+          end;
+        DecIndent();
+      end;
+      //
+      if ( locClassPropNbr > 0 ) then begin
+        Indent();
+        WriteLn('public');
+        IncIndent();
+          Indent();
+          WriteLn('destructor Destroy();override;');
+        DecIndent();
+      end;
+      //
+      Indent();
+      WriteLn('published');
+      IncIndent();
+        For k := 0 To Pred(ASymbol.PropertyCount) Do
+          WriteProperty(ASymbol.Properties[k]);
+      DecIndent();
+    end;
+  end;
+
+  procedure WriteImp();
+  var
+    k : Integer;
+    p : TPropertyDefinition;
+  begin
+    if ( locClassPropNbr > 0 ) or ( locStoredPropsNbr > 0 ) then begin
+      NewLine();
+      WriteLn('{ %s }',[ASymbol.Name]);
+      
+      if ( locClassPropNbr > 0 ) then begin
+        NewLine();
+        WriteLn('destructor %s.Destroy();',[ASymbol.Name]);
+        WriteLn('begin');
+        IncIndent();
+          for k := 0 to Pred(ASymbol.PropertyCount) do begin
+            p := ASymbol.Properties[k];
+            if p.DataType.InheritsFrom(TClassTypeDefinition) then begin
+              Indent();
+              WriteLn('if Assigned(F%s) then',[p.Name]);
+                IncIndent();
+                  Indent();
+                  WriteLn('FreeAndNil(F%s);',[p.Name]) ;
+                DecIndent();
+            end;
+          end;
+          Indent();
+          WriteLn('inherited Destroy();');
+        DecIndent();
+        WriteLn('end;');
+      end;
+
+      if ( locStoredPropsNbr > 0 ) then begin
+        for k := 0 to Pred(ASymbol.PropertyCount) do begin
+          p := ASymbol.Properties[k];
+          if ( p.StorageOption = soOptional ) then begin
+            NewLine();
+            WriteLn('function %s.Has%s() : Boolean;',[ASymbol.Name,p.Name]);
+            WriteLn('begin');
+            IncIndent();
+              Indent();
+              WriteLn('Result := True;');
+            DecIndent();
+            WriteLn('end;');
+          end;
+        end;
+      end;
+
+    end;
+  end;
+
+begin
+  Prepare();
+  try
+    loc_BaseComplexSimpleContentRemotable := FSymbolTable.ByName('TBaseComplexSimpleContentRemotable') as TClassTypeDefinition;
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+      WriteDec();
+      WriteProperties();
+      Indent(); WriteLn('end;');
+    DecIndent();
+
+    FImpTempStream.Indent();
+    FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(ASymbol.ExternalName)]);
+
+    SetCurrentStream(FImpStream);
+      WriteImp();
+  except
+    on e : Exception do
+      System.WriteLn('TInftGenerator.GenerateClass()=', ASymbol.Name, ' ;; ', e.Message);
+  end;
+end;
+
+procedure TInftGenerator.GenerateEnum(ASymbol: TEnumTypeDefinition);
+var
+  itm : TEnumItemDefinition;
+  i : Integer;
+begin
+  try
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+      Indent();WriteLn('%s = ( ',[ASymbol.Name]);
+
+      FImpTempStream.Indent();
+      FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(ASymbol.ExternalName)]);
+
+      IncIndent();
+        for i := 0 to Pred(ASymbol.ItemCount) do begin
+          itm := ASymbol.Item[i];
+          Indent();
+          if ( i > 0 ) then
+            WriteLn(',%s',[itm.Name])
+          else
+            WriteLn('%s',[itm.Name]);
+          if not AnsiSameText(itm.Name,itm.ExternalName) then begin
+            FImpTempStream.Indent();
+            FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(itm.Name),QuotedStr(itm.ExternalName)]);
+          end;
+        end;
+      DecIndent();
+      Indent(); WriteLn(');');
+    DecIndent();
+  except
+    on e : Exception do
+      System.WriteLn('TInftGenerator.GenerateClass()=', ASymbol.Name, ' ;; ', e.Message);
+  end;
+end;
+
+procedure TInftGenerator.GenerateArray(ASymbol: TArrayDefinition);
+
+  procedure WriteObjectArray();
+  begin
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+    BeginAutoIndent();
+    try
+      WriteLn('%s = class(TBaseObjectArrayRemotable)',[ASymbol.Name]);
+      WriteLn('private');
+        Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ItemType.Name]);
+      WriteLn('public');
+        Indent();WriteLn('class function GetItemClass():TBaseRemotableClass;override;');
+        Indent();WriteLn('property Item[AIndex:Integer] : %s Read GetItem;Default;',[ASymbol.ItemType.Name]);
+      WriteLn('end;');
+    finally
+      EndAutoIndent();
+      DecIndent();
+    end;
+    
+    SetCurrentStream(FImpStream);
+    NewLine();
+    WriteLn('{ %s }',[ASymbol.Name]);
+
+    NewLine();
+    WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ItemType.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('Result := Inherited GetItem(AIndex) As %s;',[ASymbol.ItemType.Name]);
+    DecIndent();
+    WriteLn('end;');
+
+    NewLine();
+    WriteLn('class function %s.GetItemClass(): TBaseRemotableClass;',[ASymbol.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('Result:= %s;',[ASymbol.ItemType.Name]);
+    DecIndent();
+    WriteLn('end;');
+  end;
+
+  procedure WriteSimpleTypeArray();
+  begin
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+    BeginAutoIndent();
+    try
+      WriteLn('%s = class(TBaseSimpleTypeArrayRemotable)',[ASymbol.Name]);
+      WriteLn('private');
+        Indent();WriteLn('FData : array of %s;',[ASymbol.ItemType.Name]);
+      WriteLn('private');
+        Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ItemType.Name]);
+        Indent();WriteLn('procedure SetItem(AIndex: Integer; const AValue: %s);',[ASymbol.ItemType.Name]);
+      WriteLn('protected');
+        Indent();WriteLn('function GetLength():Integer;override;');
+        Indent();WriteLn('procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;');
+        Indent();WriteLn('procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;');
+      WriteLn('public');
+        Indent();WriteLn('class function GetItemTypeInfo():PTypeInfo;override;');
+        Indent();WriteLn('procedure SetLength(const ANewSize : Integer);override;');
+        Indent();WriteLn('property Item[AIndex:Integer] : %s read GetItem write SetItem; default;',[ASymbol.ItemType.Name]);
+      WriteLn('end;');
+    finally
+      EndAutoIndent();
+      DecIndent();
+    end;
+
+    SetCurrentStream(FImpStream);
+    NewLine();
+    WriteLn('{ %s }',[ASymbol.Name]);
+
+    NewLine();
+    WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ItemType.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('CheckIndex(AIndex);');
+      Indent();WriteLn('Result := FData[AIndex];');
+    DecIndent();
+    WriteLn('end;');
+
+    NewLine();
+    WriteLn('procedure %s.SetItem(AIndex: Integer;const AValue: %S);',[ASymbol.Name,ASymbol.ItemType.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('CheckIndex(AIndex);');
+      Indent();WriteLn('FData[AIndex] := AValue;');
+    DecIndent();
+    WriteLn('end;');
+
+    NewLine();
+    WriteLn('function %s.GetLength(): Integer;',[ASymbol.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('Result := System.Length(FData);');
+    DecIndent();
+    WriteLn('end;');
+    
+    NewLine();
+    WriteLn('procedure %s.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);',[ASymbol.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('AStore.Put(%s,TypeInfo(%s),FData[AIndex]);',[QuotedStr(ASymbol.ItemName),ASymbol.ItemType.Name]);
+    DecIndent();
+    WriteLn('end;');
+
+    NewLine();
+    IncIndent();
+    WriteLn('procedure %s.LoadItem(AStore: IFormatterBase;const AIndex: Integer);',[ASymbol.Name]);
+    WriteLn('var');
+    Indent();WriteLn('sName : string;');
+    WriteLn('begin');
+      Indent();WriteLn('sName := %s;',[QuotedStr(ASymbol.ItemName)]);
+      Indent();WriteLn('AStore.Get(TypeInfo(%s),sName,FData[AIndex]);',[ASymbol.ItemType.Name]);
+    DecIndent();
+    WriteLn('end;');
+    
+    NewLine();
+    WriteLn('class function %s.GetItemTypeInfo(): PTypeInfo;',[ASymbol.Name]);
+    WriteLn('begin');
+    IncIndent();
+      Indent();WriteLn('Result := TypeInfo(%s);',[ASymbol.ItemType.Name]);
+    DecIndent();
+    WriteLn('end;');
+
+    NewLine();
+    IncIndent();
+    WriteLn('procedure %s.SetLength(const ANewSize: Integer);',[ASymbol.Name]);
+    WriteLn('var');
+    Indent();WriteLn('i : Integer;');
+    WriteLn('begin');
+      Indent();WriteLn('if ( ANewSize < 0 ) then');
+        Indent();Indent();WriteLn('i := 0');
+      Indent();WriteLn('else');
+        Indent();Indent();WriteLn('i := ANewSize;');
+      Indent();WriteLn('System.SetLength(FData,i);');
+    DecIndent();
+    WriteLn('end;');
+  end;
+
+var
+  classItemArray : Boolean;
+begin
+  classItemArray := ( ASymbol.ItemType is TClassTypeDefinition ) or
+                    ( ASymbol.ItemType is TArrayDefinition ) ;
+
+  if classItemArray then begin
+    WriteObjectArray();
+  end else begin
+    WriteSimpleTypeArray();
+  end;
+  
+  FImpTempStream.Indent();
+  FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(ASymbol.ExternalName)]);
+end;
+
+function TInftGenerator.GetDestUnitName(): string;
+begin
+  Result := Format('%s_intf',[SymbolTable.Name]);
+end;
+
+constructor TInftGenerator.Create(
+  ASymTable : TSymbolTable;
+  ASrcMngr  : ISourceManager
+);
+begin
+  inherited Create(ASymTable,ASrcMngr);
+  FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
+  FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
+  FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
+  FImpTempStream.IncIndent();
+end;
+
+procedure TInftGenerator.Execute();
+var
+  i,c, j, k : Integer;
+  clssTyp : TClassTypeDefinition;
+  gnrClssLst : TObjectList;
+  objLst : TObjectList;
+begin
+  objLst := nil;
+  gnrClssLst := TObjectList.Create(False);
+  try
+    GenerateUnitHeader();
+    GenerateUnitImplementationHeader();
+    c := Pred(SymbolTable.Count);
+
+    SetCurrentStream(FDecStream);
+    IncIndent();
+    for i := 0 to c do begin
+      if SymbolTable.Item[i] is TForwardTypeDefinition then begin
+        WriteLn('// %s = unable to resolve this symbol.',[SymbolTable.Item[i].Name]);
+      end;
+    end;
+    DecIndent();
+    
+    IncIndent();
+    for i := 0 to c do begin
+      if ( SymbolTable.Item[i] is TClassTypeDefinition ) or
+         ( SymbolTable.Item[i] is TArrayDefinition )
+      then begin
+        Indent();
+        WriteLn('%s = class;',[SymbolTable.Item[i].Name]);
+      end;
+    end;
+    DecIndent();
+
+    for i := 0 to c do begin
+      if SymbolTable.Item[i] is TEnumTypeDefinition then begin
+        GenerateEnum(SymbolTable.Item[i] as TEnumTypeDefinition);
+      end;
+    end;
+
+    for i := 0 to c do begin
+      if SymbolTable.Item[i] is TTypeAliasDefinition then begin
+        GenerateTypeAlias(SymbolTable.Item[i] as TTypeAliasDefinition);
+      end;
+    end;
+
+    objLst := TObjectList.Create();
+    objLst.OwnsObjects := False;
+    for i := 0 to c do begin
+      if SymbolTable.Item[i].InheritsFrom(TClassTypeDefinition) then begin
+        clssTyp := SymbolTable.Item[i] as TClassTypeDefinition;
+        if ( gnrClssLst.IndexOf(clssTyp) = -1 ) then begin
+          while ( objLst.Count > 0 ) do begin
+            objLst.Clear();
+          end;
+          while Assigned(clssTyp) do begin
+            objLst.Add(clssTyp);
+            if Assigned(clssTyp.Parent) and clssTyp.Parent.InheritsFrom(TClassTypeDefinition) then begin
+              clssTyp := clssTyp.Parent as TClassTypeDefinition;
+            end else begin
+              clssTyp := nil;
+            end;
+          end;
+
+          k := Pred(objLst.Count);
+          for j := 0 to k do begin
+            clssTyp := objLst[k-j] as TClassTypeDefinition;
+            if ( gnrClssLst.IndexOf(clssTyp) = -1 ) then begin
+              if ( FSymbolTable.IndexOf(clssTyp) <> -1 ) then begin
+                GenerateClass(clssTyp);
+                gnrClssLst.Add(clssTyp);
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+
+    for i := 0 to c do begin
+      if SymbolTable.Item[i] is TArrayDefinition then begin
+        GenerateArray(SymbolTable.Item[i] as TArrayDefinition);
+      end;
+    end;
+
+    for i := 0 to c do begin
+      if SymbolTable.Item[i] is TInterfaceDefinition then begin
+        GenerateIntf(SymbolTable.Item[i] as TInterfaceDefinition);
+      end;
+    end;
+
+    GenerateUnitImplementationFooter();
+    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FImpTempStream]);
+    FDecStream := nil;
+    FImpStream := nil;
+    FImpTempStream := nil;
+  finally
+    FreeAndNil(objLst);
+    FreeAndNil(gnrClssLst);
+  end;
 end;
 
 end.

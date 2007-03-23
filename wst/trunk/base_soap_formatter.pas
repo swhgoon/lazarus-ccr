@@ -26,8 +26,8 @@ Const
 
   sXML_NS = 'xmlns';
   sXSI_NS = 'http://www.w3.org/1999/XMLSchema-instance';
-  sXSI_TYPE = 'xsi:type';
-  sXSI_NIL = 'xsi:nil';
+  sTYPE = 'type';
+  sNIL = 'nil';
 
   sSOAP_ENC = 'http://schemas.xmlsoap.org/soap/encoding/';
   sSOAP_ENC_ABR = 'SOAP-ENC';
@@ -198,6 +198,10 @@ Type
     ):boolean;
     function FindAttributeByValueInScope(Const AAttValue : String):String;
     function FindAttributeByNameInScope(Const AAttName : String):String;
+    function GetNameSpaceShortName(
+      const ANameSpace        : string;
+      const ACreateIfNotFound : Boolean
+    ):shortstring;
   protected
     function GetCurrentScope():String;
     function GetCurrentScopeObject():TDOMElement;
@@ -254,10 +258,18 @@ Type
       Const ATypeInfo : PTypeInfo;
       Const AData
     );
+    procedure PutScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      const AData
+    );
     procedure Get(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData
+    );
+    procedure GetScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      var   AData
     );
 
     procedure SaveToStream(AStream : TStream);
@@ -529,6 +541,22 @@ begin
   Result := '';
 end;
 
+function TSOAPBaseFormatter.GetNameSpaceShortName(
+  const ANameSpace        : string;
+  const ACreateIfNotFound : Boolean
+): shortstring;
+begin
+  Result := FindAttributeByValueInScope(ANameSpace);
+  if IsStrEmpty(Result) then begin
+    if ACreateIfNotFound then begin
+      Result := 'ns' + IntToStr(NextNameSpaceCounter());
+      AddScopeAttribute('xmlns:'+Result, ANameSpace);
+    end;
+  end else begin
+    Result := Copy(Result,Length('xmlns:')+1,MaxInt);
+  end;
+end;
+
 procedure TSOAPBaseFormatter.CheckScope();
 begin
   If Not HasScope() Then
@@ -570,26 +598,29 @@ begin
     Result := FDoc.CreateElement(strNodeName);
     Result.AppendChild(FDoc.CreateTextNode(AData));
     GetCurrentScopeObject().AppendChild(Result);
+    If ( EncodingStyle = Encoded ) Then Begin
+      regItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
+      strName := regItem.DeclaredName;
+      namespaceLongName := regItem.NameSpace;
+      If Not IsStrEmpty(namespaceLongName) Then Begin
+        namespaceShortName := FindAttributeByValueInScope(namespaceLongName);
+        If IsStrEmpty(namespaceShortName) Then Begin
+          namespaceShortName := Format('ns%d',[NextNameSpaceCounter()]);
+          AddScopeAttribute(sXML_NS + ':'+namespaceShortName,namespaceLongName);
+        End Else Begin
+          namespaceShortName := ExtractNameSpaceShortName(namespaceShortName);//Copy(namespaceShortName,AnsiPos(':',namespaceShortName) + 1,MaxInt);
+        End;
+        strName := Format('%s:%s',[namespaceShortName,strName])
+      End;
+      namespaceShortName := GetNameSpaceShortName(sXSI_NS,True);
+      if not IsStrEmpty(namespaceShortName) then
+        namespaceShortName := namespaceShortName + ':';
+      (Result As TDOMElement).SetAttribute(namespaceShortName + sTYPE,strName);
+    End;
   end else begin
     Result := GetCurrentScopeObject();
     (Result as TDOMElement).SetAttribute(strNodeName,AData);
   end;
-  If ( EncodingStyle = Encoded ) Then Begin
-    regItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
-    strName := regItem.DeclaredName;
-    namespaceLongName := regItem.NameSpace;
-    If Not IsStrEmpty(namespaceLongName) Then Begin
-      namespaceShortName := FindAttributeByValueInScope(namespaceLongName);
-      If IsStrEmpty(namespaceShortName) Then Begin
-        namespaceShortName := Format('ns%d',[NextNameSpaceCounter()]);
-        AddScopeAttribute(sXML_NS + ':'+namespaceShortName,namespaceLongName);
-      End Else Begin
-        namespaceShortName := ExtractNameSpaceShortName(namespaceShortName);//Copy(namespaceShortName,AnsiPos(':',namespaceShortName) + 1,MaxInt);
-      End;
-      strName := Format('%s:%s',[namespaceShortName,strName])
-    End;
-    (Result As TDOMElement).SetAttribute(sXSI_TYPE,strName);
-  End;
 end;
 
 function TSOAPBaseFormatter.PutEnum(
@@ -598,7 +629,11 @@ function TSOAPBaseFormatter.PutEnum(
   const AData: TEnumIntType
 ): TDOMNode;
 begin
-  Result := InternalPutData(AName,ATypeInfo,GetEnumName(ATypeInfo,AData));
+  Result := InternalPutData(
+              AName,
+              ATypeInfo,
+              GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,AData))
+            );
 end;
 
 function TSOAPBaseFormatter.PutBool(
@@ -688,7 +723,7 @@ begin
     else
       Result := locElt.NodeValue;
   end else begin
-    Error('Param not found : "%s"',[AName]);
+    Error('Param or Attribute not found : "%s"',[AName]);
   end;
   //WriteLn(StringOfChar(' ',FStack.Count), AName,' = ',Result);
 end;
@@ -824,7 +859,7 @@ procedure TSOAPBaseFormatter.BeginObject(
 );
 Var
   typData : TTypeRegistryItem;
-  nmspc,nmspcSH : string;
+  nmspc,nmspcSH, xsiNmspcSH : string;
   mustAddAtt : Boolean;
   strNodeName : string;
 begin
@@ -858,8 +893,12 @@ begin
   BeginScope(strNodeName,'');
   If mustAddAtt Then
     AddScopeAttribute('xmlns:'+nmspcSH, nmspc);
-  if ( EncodingStyle = Encoded ) then
-    AddScopeAttribute(sXSI_TYPE,Format('%s:%s',[nmspcSH,typData.DeclaredName]));
+  if ( EncodingStyle = Encoded ) then begin
+    xsiNmspcSH := GetNameSpaceShortName(sXSI_NS,True);
+    if not IsStrEmpty(xsiNmspcSH) then
+      xsiNmspcSH := xsiNmspcSH + ':';
+    AddScopeAttribute(xsiNmspcSH + sTYPE,Format('%s:%s',[nmspcSH,typData.DeclaredName]));
+  end;
   StackTop().SetNameSpace(nmspc);
 end;
 
@@ -916,27 +955,39 @@ begin
 end;
 
 procedure TSOAPBaseFormatter.NilCurrentScope();
+var
+  nmspcSH : shortstring;
 begin
   CheckScope();
-  GetCurrentScopeObject().SetAttribute(sXSI_NIL,'true');
+  nmspcSH := FindAttributeByValueInScope(sXSI_NS);
+  if IsStrEmpty(nmspcSH) then begin
+    nmspcSH := 'ns' + IntToStr(NextNameSpaceCounter());
+    AddScopeAttribute('xmlns:'+nmspcSH, sXSI_NS);
+  end else begin
+    nmspcSH := Copy(nmspcSH,Length('xmlns:')+1,MaxInt);
+  end;
+  GetCurrentScopeObject().SetAttribute(nmspcSH + ':' + sNIL,'true');
 end;
 
 function TSOAPBaseFormatter.IsCurrentScopeNil(): Boolean;
 Var
-  s,nsShortName,nilName : string;
+  s,nsShortName,nilName : shortstring;
 begin
   CheckScope();
   nsShortName := FindAttributeByValueInScope(sXSI_NS);
   Result := False;
-  if not IsStrEmpty(nsShortName) then begin
+  if IsStrEmpty(nsShortName) then begin
+    nilName := 'nil';
+  end else begin
     nsShortName := Copy(nsShortName,1 + Pos(':',nsShortName),MaxInt);
     if not IsStrEmpty(nsShortName) Then
       nsShortName := nsShortName + ':';
     nilName := nsShortName + 'nil';
-    s := Trim(GetCurrentScopeObject().GetAttribute(nilName));
-    if ( Length(s) > 0 ) and ( AnsiSameText(s,'true') or AnsiSameText(s,'"true"') ) then
-      Result := True;
-  end
+  end;
+  s := Trim(GetCurrentScopeObject().GetAttribute(nilName));
+  if ( Length(s) > 0 ) and ( AnsiSameText(s,'true') or AnsiSameText(s,'"true"') ) then begin
+    Result := True;
+  end;
 end;
 
 procedure TSOAPBaseFormatter.BeginScope(
@@ -1182,6 +1233,113 @@ begin
   End;
 end;
 
+procedure TSOAPBaseFormatter.PutScopeInnerValue(
+  const ATypeInfo : PTypeInfo;
+  const AData
+);
+Var
+  int64SData : Int64;
+  int64UData : QWord;
+  strData : string;
+  objData : TObject;
+  boolData : Boolean;
+  enumData : TEnumIntType;
+  floatDt : Extended;
+  dataBuffer : string;
+  frmt : string;
+  prcsn,i : Integer;
+begin
+  CheckScope();
+  Case ATypeInfo^.Kind Of
+    tkInt64 :
+      begin
+        int64SData := Int64(AData);
+        dataBuffer := IntToStr(int64SData);
+      end;
+    tkQWord :
+      begin
+        int64UData := QWord(AData);
+        dataBuffer := IntToStr(int64UData);
+      end;
+    tkLString, tkAString :
+      begin
+        strData := string(AData);
+        dataBuffer := strData;
+      end;
+    tkClass :
+      begin
+        raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
+      end;
+    tkBool :
+      begin
+        boolData := Boolean(AData);
+        dataBuffer := BoolToStr(boolData);
+      end;
+    tkInteger :
+      begin
+        case GetTypeData(ATypeInfo)^.OrdType of
+          otSByte : enumData := ShortInt(AData);
+          otUByte : enumData := Byte(AData);
+          otSWord : enumData := SmallInt(AData);
+          otUWord : enumData := Word(AData);
+          otSLong,
+          otULong : enumData := LongInt(AData);
+        end;
+        dataBuffer := IntToStr(enumData);
+      end;
+    tkEnumeration :
+      begin
+        enumData := 0;
+        case GetTypeData(ATypeInfo)^.OrdType of
+          otSByte : enumData := ShortInt(AData);
+          otUByte : enumData := Byte(AData);
+          otSWord : enumData := SmallInt(AData);
+          otUWord : enumData := Word(AData);
+          otSLong,
+          otULong : enumData := LongInt(AData);
+        end;
+        dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
+      end;
+    tkFloat :
+      begin
+        floatDt := 0;
+        case GetTypeData(ATypeInfo)^.FloatType of
+          ftSingle :
+            begin
+              floatDt := Single(AData);
+              prcsn := 7;
+            end;
+          ftDouble :
+            begin
+              floatDt := Double(AData);
+              prcsn := 15;
+            end;
+          ftExtended :
+            begin
+              floatDt := Extended(AData);
+              prcsn := 15;
+            end;
+          ftCurr :
+            begin
+              floatDt := Currency(AData);
+              prcsn := 7;
+            end;
+          ftComp :
+            begin
+              floatDt := Comp(AData);
+              prcsn := 7;
+            end;
+        end;
+        frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
+        dataBuffer := FormatFloat(frmt,floatDt);
+        i := Pos(',',dataBuffer);
+        if ( i > 0 ) then
+          dataBuffer[i] := '.';
+      end;
+  end;
+  StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
+end;
+
 procedure TSOAPBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
@@ -1249,6 +1407,68 @@ begin
         End;
       End;
   End;
+end;
+
+procedure TSOAPBaseFormatter.GetScopeInnerValue(
+  const ATypeInfo : PTypeInfo;
+  var   AData
+);
+Var
+  enumData : TEnumIntType;
+  floatDt : Extended;
+  dataBuffer : string;
+  nd : TDOMNode;
+begin
+  CheckScope();
+  nd := StackTop().ScopeObject;
+  if nd.HasChildNodes() then
+    dataBuffer := nd.FirstChild.NodeValue
+  else
+    dataBuffer := StackTop().ScopeObject.NodeValue;
+  Case ATypeInfo^.Kind Of
+    tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
+    tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
+    tkLString,
+    tkAString    : string(AData) := dataBuffer;
+    tkClass :
+      begin
+        raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
+      end;
+    tkBool :
+      begin
+        dataBuffer := LowerCase(Trim(dataBuffer));
+        if IsStrEmpty(dataBuffer) then
+          Boolean(AData) := False
+        else
+          Boolean(AData) := StrToBool(dataBuffer);
+      end;
+    tkInteger, tkEnumeration :
+      begin
+        if ( ATypeInfo^.Kind = tkInteger ) then
+          enumData := StrToIntDef(Trim(dataBuffer),0)
+        else
+          enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
+        case GetTypeData(ATypeInfo)^.OrdType of
+          otSByte : ShortInt(AData) := enumData;
+          otUByte : Byte(AData)     := enumData;
+          otSWord : SmallInt(AData) := enumData;
+          otUWord : Word(AData)     := enumData;
+          otSLong,
+          otULong : LongInt(AData)  := enumData;
+        end;
+      end;
+    tkFloat :
+      begin
+        floatDt := StrToFloatDef(Trim(dataBuffer),0);
+        case GetTypeData(ATypeInfo)^.FloatType of
+          ftSingle    : Single(AData)        := floatDt;
+          ftDouble    : Double(AData)        := floatDt;
+          ftExtended  : Extended(AData)      := floatDt;
+          ftCurr      : Currency(AData)      := floatDt;
+          ftComp      : Comp(AData)          := floatDt;
+        end;
+      end;
+  end;
 end;
 
 procedure TSOAPBaseFormatter.SaveToStream(AStream: TStream);

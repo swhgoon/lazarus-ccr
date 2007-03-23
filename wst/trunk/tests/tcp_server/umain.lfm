@@ -7,15 +7,12 @@ object fMain: TfMain
   VertScrollBar.Page = 299
   ActiveControl = Button1
   Caption = 'Simple TCP App Server'
-  ClientHeight = 300
-  ClientWidth = 400
   OnCreate = FormCreate
-  PixelsPerInch = 96
   object Label1: TLabel
     Left = 16
-    Height = 14
+    Height = 18
     Top = 72
-    Width = 18
+    Width = 24
     Caption = 'Log'
     Color = clNone
     ParentColor = False
@@ -26,7 +23,6 @@ object fMain: TfMain
     Top = 8
     Width = 104
     Action = actStart
-    BorderSpacing.InnerBorder = 2
     TabOrder = 0
   end
   object mmoLog: TMemo
@@ -45,7 +41,6 @@ object fMain: TfMain
     Top = 40
     Width = 104
     Action = actStop
-    BorderSpacing.InnerBorder = 2
     TabOrder = 2
   end
   object edtPort: TEdit
@@ -61,16 +56,19 @@ object fMain: TfMain
     top = 32
     object actStart: TAction
       Caption = 'Start( Port=)'
+      DisableIfNoHandler = True
       OnExecute = actStartExecute
       OnUpdate = actStartUpdate
     end
     object actStop: TAction
       Caption = 'Stop'
+      DisableIfNoHandler = True
       OnExecute = actStopExecute
       OnUpdate = actStopUpdate
     end
     object actClearLog: TAction
       Caption = 'Clear Log'
+      DisableIfNoHandler = True
       OnExecute = actClearLogExecute
     end
   end

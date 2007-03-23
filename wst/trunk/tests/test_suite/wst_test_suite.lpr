@@ -8,7 +8,8 @@ uses
   server_service_soap, soap_formatter, base_binary_formatter,
   base_service_intf, base_soap_formatter, binary_formatter, binary_streamer,
   server_binary_formatter, metadata_repository,
-  metadata_generator, parserdefs, server_service_intf, metadata_wsdl;
+  metadata_generator, parserdefs, server_service_intf, metadata_wsdl,
+  test_parserdef;
 
 Const
   ShortOpts = 'alh';

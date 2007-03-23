@@ -60,7 +60,7 @@ Type
     procedure ParseEnumType(Const AName : String);
     procedure ParseClassType(Const AName : String);
   public
-    constructor Create(AStream : TStream);
+    constructor Create(AStream : TStream; ASymbolTable : TSymbolTable);
     destructor Destroy();override;
     procedure Error(Const AMsg : String);overload;
     procedure Error(Const AMsg : String; Const AArgs : Array of const);overload;
@@ -417,7 +417,7 @@ begin
     tmpStr := Tokenizer.TokenString;
     If ( FSymbolTable.IndexOf(tmpStr) > -1 ) Then
       Error('Duplicated symbol : "%s"',[tmpStr]);
-    sblItem := TEnumItemDefinition.Create(tmpStr,tmpInt);
+    sblItem := TEnumItemDefinition.Create(tmpStr,sbl,tmpInt);
     FSymbolTable.Add(sblItem);
     sbl.AddItem(sblItem);
     NextToken();
@@ -451,19 +451,19 @@ begin
   NextToken();
 end;
 
-constructor TPascalParser.Create(AStream : TStream);
+constructor TPascalParser.Create(AStream : TStream; ASymbolTable : TSymbolTable);
 begin
   Assert(Assigned(AStream));
+  Assert(Assigned(ASymbolTable));
   FStream := AStream;
   FTokenizer := TParser.Create(FStream);
-  FSymbolTable := TSymbolTable.Create('tmp_name');
+  FSymbolTable := ASymbolTable;
   FCurrentSymbol := Nil;
 end;
 
 destructor TPascalParser.Destroy();
 begin
   FTokenizer.Free();
-  FreeAndNil(FSymbolTable);
   inherited Destroy();
 end;
 

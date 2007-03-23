@@ -16,7 +16,7 @@ Const
   sADDRESS  = 'http:Address=http://api.google.com/search/beta2'+
               ';ProxyServer=10.0.0.5;ProxyPort=8080';
   sTARGET = 'urn:GoogleSearch';
-  sKEY    = '0w9pU3tQFHJyjRUP/bKgv2qwCoXf5pop';
+  sKEY    = '<your key here>';
   sSERVICE_PROTOCOL = 'SOAP';
 Var
   tmpObj : IGoogleSearch;

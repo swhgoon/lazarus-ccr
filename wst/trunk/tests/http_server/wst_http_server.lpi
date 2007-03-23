@@ -12,7 +12,6 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="5"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -37,20 +36,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_http_server"/>
         <CursorPos X="30" Y="29"/>
-        <TopLine Value="12"/>
-        <EditorIndex Value="4"/>
+        <TopLine Value="13"/>
         <UsageCount Value="202"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="app_object.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="app_object"/>
-        <CursorPos X="1" Y="258"/>
-        <TopLine Value="237"/>
-        <EditorIndex Value="5"/>
+        <CursorPos X="46" Y="296"/>
+        <TopLine Value="63"/>
         <UsageCount Value="202"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Core\IdSocketHandle.pas"/>
@@ -158,13 +153,11 @@
         <UnitName Value="server_service_intf"/>
         <CursorPos X="56" Y="332"/>
         <TopLine Value="319"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
           <Item0 X="28" Y="60" ID="0"/>
           <Item1 X="21" Y="169" ID="2"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\base_service_intf.pas"/>
@@ -172,12 +165,10 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="75" Y="817"/>
         <TopLine Value="811"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="201"/>
         <Bookmarks Count="1">
           <Item0 X="52" Y="707" ID="1"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\server_service_imputils.pas"/>
@@ -244,12 +235,10 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="39" Y="549"/>
         <TopLine Value="537"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="201"/>
         <Bookmarks Count="1">
           <Item0 X="23" Y="440" ID="3"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\metadata_repository.pas"/>
@@ -285,9 +274,7 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="1" Y="249"/>
         <TopLine Value="235"/>
-        <EditorIndex Value="0"/>
         <UsageCount Value="59"/>
-        <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\inc\objpash.inc"/>
@@ -478,17 +465,15 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_imp"/>
         <CursorPos X="65" Y="3"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
+        <TopLine Value="129"/>
         <UsageCount Value="123"/>
-        <Loaded Value="True"/>
       </Unit61>
       <Unit62>
         <Filename Value="..\calculator\srv\calculator_binder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_binder"/>
-        <CursorPos X="69" Y="51"/>
-        <TopLine Value="39"/>
+        <CursorPos X="13" Y="31"/>
+        <TopLine Value="17"/>
         <UsageCount Value="123"/>
       </Unit62>
       <Unit63>
@@ -543,9 +528,7 @@
         <UnitName Value="logger_extension"/>
         <CursorPos X="32" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="36"/>
-        <Loaded Value="True"/>
       </Unit70>
       <Unit71>
         <Filename Value="..\..\soap_formatter.pas"/>

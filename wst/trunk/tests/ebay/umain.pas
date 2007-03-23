@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls;
+  Buttons, StdCtrls, ComCtrls, eBaySvc_intf;
 
 type
 
@@ -40,7 +40,8 @@ var
 
 implementation
 uses  TypInfo, StrUtils,
-      httpsend, ssl_openssl,
+      httpsend,
+      ssl_openssl,
       service_intf, soap_formatter, base_service_intf, base_soap_formatter,
       ebay, ebay_proxy,
       synapse_http_protocol;

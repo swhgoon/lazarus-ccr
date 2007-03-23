@@ -28,7 +28,10 @@ uses
 
 Type
 
-  TComandLineOption = ( cloProxy, cloImp, cloBinder, cloOutPutDir );
+  TComandLineOption = (
+    cloInterface, cloProxy, cloImp, cloBinder,
+    cloOutPutDirRelative, cloOutPutDirAbsolute
+  );
   TComandLineOptions = set of TComandLineOption;
 
   function ParseCmdLineOptions(out AAppOptions : TComandLineOptions):Integer;
@@ -53,15 +56,21 @@ begin
   AAppOptions := [];
   c := #0;
   Repeat
-    c := GetOpt('pibo:');
+    c := GetOpt('upibo:a:');
     case c of
+      'u' : Include(AAppOptions,cloInterface);
       'p' : Include(AAppOptions,cloProxy);
       'i' : Include(AAppOptions,cloImp);
       'b' : Include(AAppOptions,cloBinder);
       'o' :
         Begin
-          Include(AAppOptions,cloOutPutDir);
-          OptionsArgsMAP[cloOutPutDir] := OptArg;
+          Include(AAppOptions,cloOutPutDirRelative);
+          OptionsArgsMAP[cloOutPutDirRelative] := OptArg;
+        End;
+      'a' :
+        Begin
+          Include(AAppOptions,cloOutPutDirAbsolute);
+          OptionsArgsMAP[cloOutPutDirAbsolute] := OptArg;
         End;
     end;
   Until ( c = EndOfOptions );

@@ -32,31 +32,146 @@ Type
   ESymbolException = class(Exception)
   End;
 
+  TSymbolTable = class;
+  TTypeDefinition = class;
+  TForwardTypeDefinition = class;
+
   { TAbstractSymbolDefinition }
 
   TAbstractSymbolDefinition = class
   private
     FName: String;
+    FExternalAlias : string;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );virtual;
   Public
     constructor Create(Const AName : String);
+    procedure RegisterExternalAlias(const AExternalName : String);
+    function SameName(const AName : string) : Boolean;virtual;
     Property Name : String Read FName;
+    Property ExternalName : String Read FExternalAlias;
   End;
 
+  TAbstractSymbolDefinitionClass = class of TAbstractSymbolDefinition;
+
+  TPascalTokenDefinition = class(TAbstractSymbolDefinition)
+  end;
+  
+  TSymbolTableChange = ( stcAdding, stcDeleting );
+  ISymbolTableChangeListner = interface
+    ['{0147E0EE-FF1A-4CFA-BD71-3F8E90494EC9}']
+    procedure NotifyChange(
+            ASender : TSymbolTable;
+            AItem   : TAbstractSymbolDefinition;
+      const AEvent  : TSymbolTableChange
+    );
+  end;
+
+  { TAbstractConstantDefinition }
+
+  TAbstractConstantDefinition = class(TAbstractSymbolDefinition) end;
+
+  TSimpleConstantType = ( sctString, sctInteger );
+  TSimpleConstantBuffer = record
+    case DataType : TSimpleConstantType of
+      sctInteger    : ( IntValue : Integer; );
+      sctString     : ( StrValue : string[255]; );
+  end;
+
+  { TSimpleConstantDefinition }
+
+  TSimpleConstantDefinition = class(TAbstractConstantDefinition)
+  private
+    FValue: TSimpleConstantBuffer;
+  public
+    constructor Create(const AName : string; const AValue : string);overload;
+    constructor Create(const AName : string; const AValue : Integer);overload;
+    property Value : TSimpleConstantBuffer read FValue;
+  end;
+  
   { TTypeDefinition }
 
   TTypeDefinition = class(TAbstractSymbolDefinition)
   public
     function NeedFinalization():Boolean;virtual;
   end;
+  
+  TAnyTypeDefinition = class(TTypeDefinition)
+  end;
 
+  { TTypeAliasDefinition }
+
+  TTypeAliasDefinition = class(TTypeDefinition)
+  private
+    FBaseType: TTypeDefinition;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
+  public
+    constructor Create(const AName : string; ABaseType : TTypeDefinition);
+    property BaseType : TTypeDefinition read FBaseType;
+  end;
+  
+  { TSimpleTypeDefinition }
+
+  TSimpleTypeDefinition = class(TTypeDefinition)
+  public
+    function NeedFinalization():Boolean;override;
+  end;
+  
+  { TForwardTypeDefinition }
+
+  TForwardTypeDefinition = class(TTypeDefinition)
+  end;
+
+  { TArrayDefinition }
+
+  TArrayDefinition = class(TTypeDefinition)
+  private
+    FItemName: string;
+    FItemType: TTypeDefinition;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
+  public
+    constructor Create(
+      const AName     : string;
+            AItemType : TTypeDefinition;
+            ItemName  : string
+      );
+    function NeedFinalization():Boolean;override;
+    property ItemName : string read FItemName;
+    property ItemType : TTypeDefinition read FItemType;
+  end;
+  
+  TEnumTypeDefinition = class;
+  
   { TEnumItemDefinition }
 
   TEnumItemDefinition = class(TAbstractSymbolDefinition)
   private
+    FEnumType: TEnumTypeDefinition;
     FOrder: Integer;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   Public
-    constructor Create(Const AName : String; Const AOrder : Integer);
+    constructor Create(
+      Const AName     : String;
+            AEnumType : TEnumTypeDefinition;
+      Const AOrder    : Integer
+    );
     Property Order : Integer Read FOrder;
+    property EnumType : TEnumTypeDefinition read FEnumType;
   End;
 
   { TEnumTypeDefinition }
@@ -77,13 +192,73 @@ Type
     Property Item[Index:Integer]:TEnumItemDefinition Read GetItem;
   End;
 
+  TStorageOption = ( soAlways, soOptional, soNever );
+
+  { TPropertyDefinition }
+
+  TPropertyDefinition = class(TAbstractSymbolDefinition)
+  private
+    FDataType: TTypeDefinition;
+    FIsAttribute: Boolean;
+    FStorageOption: TStorageOption;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
+  public
+    constructor Create(
+      Const AName     : String;
+            ADataType : TTypeDefinition
+    );
+    property DataType : TTypeDefinition Read FDataType;
+    property IsAttribute : Boolean read FIsAttribute write FIsAttribute;
+    property StorageOption : TStorageOption read FStorageOption write FStorageOption;
+  End;
+  
   { TClassTypeDefinition }
 
   TClassTypeDefinition = class(TTypeDefinition)
+  private
+    FParent: TTypeDefinition;
+    FPropertyList : TObjectList;
+  private
+    function GetProperty(const Index : Integer): TPropertyDefinition;
+    function GetPropertyCount: Integer;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   public
+    constructor Create(Const AName : String);
+    destructor Destroy();override;
     function NeedFinalization():Boolean;override;
+    function IsDescendantOf(ABaseType : TTypeDefinition) : Boolean;
+    procedure SetParent(const AValue: TTypeDefinition);
+    function AddProperty(
+      Const AName     : String;
+            ADataType : TTypeDefinition
+    ) : TPropertyDefinition;
+    function IndexOfProperty(const AName : string):Integer;
+    property Parent : TTypeDefinition read FParent;
+    property PropertyCount : Integer read GetPropertyCount;
+    property Properties[const Index : Integer] : TPropertyDefinition read GetProperty;
   end;
 
+  TNativeClassTypeDefinition = class(TClassTypeDefinition)
+  end;
+  
+  { TNativeSimpleTypeDefinition }
+
+  TNativeSimpleTypeDefinition = class(TSimpleTypeDefinition)
+  private
+    FBoxedType: TNativeClassTypeDefinition;
+  public
+    procedure SetBoxedType(ABoxedType : TNativeClassTypeDefinition);
+    property BoxedType : TNativeClassTypeDefinition read FBoxedType;
+  end;
+  
   TParameterModifier = ( pmNone, pmConst, pmVar, pmOut );
 
   { TParameterDefinition }
@@ -92,6 +267,12 @@ Type
   private
     FDataType: TTypeDefinition;
     FModifier: TParameterModifier;
+  protected
+    procedure SetModifier(const AModifier : TParameterModifier);
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   Public
     constructor Create(
       Const AName     : String;
@@ -114,8 +295,15 @@ Type
   private
     FMethodType: TMethodType;
     FParameterList : TObjectList;
+  private
     function GetParameter(Index: Integer): TParameterDefinition;
     function GetParameterCount: Integer;
+  protected
+    procedure SetMethodType( AMethodType : TMethodType );
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   Public
     constructor Create(Const AName : String; Const AMethodType : TMethodType);
     destructor Destroy();override;
@@ -137,8 +325,14 @@ Type
   Private
     FInterfaceGUID: string;
     FMethodList : TObjectList;
+  private
     function GetMethod(Index: Integer): TMethodDefinition;
     function GetMethodCount: Integer;
+  protected
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   Public
     constructor Create(Const AName : String);
     destructor Destroy();override;
@@ -148,6 +342,7 @@ Type
       Const AName : String;
       Const AMethodType : TMethodType
     ):TMethodDefinition;
+    function AddMethod(AMthd : TMethodDefinition):TMethodDefinition;
     Property MethodCount : Integer Read GetMethodCount;
     Property Method[Index:Integer] : TMethodDefinition Read GetMethod;
     property InterfaceGUID : string read FInterfaceGUID write FInterfaceGUID;
@@ -158,26 +353,86 @@ Type
   TSymbolTable = class(TAbstractSymbolDefinition)
   Private
     FList : TObjectList;
+    FLinkedTables : TObjectList;
+    FListners : IInterfaceList;
+  private
     procedure CheckIndex(Const AIndex : Integer);
     function GetCount: Integer;
     function GetItem(Index: Integer): TAbstractSymbolDefinition;
+    function GetLinkedTableCount: Integer;
+    function GetLinkedTables(Index : Integer): TSymbolTable;
     procedure SetName(const AValue: String);
+    procedure ReorderClass(ASym : TClassTypeDefinition);
+  protected
+    procedure NotifyChange(
+            ASender : TSymbolTable;
+            AItem   : TAbstractSymbolDefinition;
+      const AEvent  : TSymbolTableChange
+    );
+    procedure FixForwardTypeDefinitions(
+      AFrw  : TForwardTypeDefinition;
+      Atype : TTypeDefinition
+    );override;
   Public
     constructor Create(Const AName : String);
     destructor Destroy();override;
     procedure Clear();
     function Add(ASym : TAbstractSymbolDefinition):Integer;
+    procedure Delete(ASym : TAbstractSymbolDefinition);
     function IndexOf(Const AName : String):Integer;overload;
+    function IndexOf(
+      const AName     : string;
+      const AMinClass : TAbstractSymbolDefinitionClass
+    ):Integer;overload;
     function IndexOf(ASym : TAbstractSymbolDefinition):Integer;overload;
-    function Find(Const AName : String):TAbstractSymbolDefinition;
+    function Find(Const AName : String):TAbstractSymbolDefinition;overload;
+    function Find(
+      const AName     : string;
+      const AMinClass : TAbstractSymbolDefinitionClass
+    ):TAbstractSymbolDefinition;overload;
     function ByName(Const AName : String):TAbstractSymbolDefinition;
+    procedure RegisterListner(AListner : ISymbolTableChangeListner);
+    procedure UnregisterListner(AListner : ISymbolTableChangeListner);
     Property Name : String Read FName Write SetName;
     Property Count : Integer Read GetCount;
-    Property Item[Index:Integer] : TAbstractSymbolDefinition Read GetItem;
+    Property Item[Index:Integer] : TAbstractSymbolDefinition Read GetItem;default;
+    property LinkedTables[Index : Integer] : TSymbolTable read GetLinkedTables;
+    property LinkedTableCount : Integer read GetLinkedTableCount;
   End;
 
+
+  //function CreateSystemSymbolTable() : TSymbolTable;
+  procedure AddSystemSymbol(ADest : TSymbolTable);
+  procedure AddSoapencSymbol(ADest : TSymbolTable);
+  function CreateWstInterfaceSymbolTable() : TSymbolTable;
+  function IsReservedKeyWord(const AValue : string):Boolean ;
+  
 implementation
 uses StrUtils, parserutils;
+
+const LANGAGE_TOKEN : array[0..107] of string = (
+  'ABSTRACT', 'AND', 'ARRAY', 'AS', 'ASM',
+  'BEGIN', 'BOOLEAN', 'BYTE',
+  'CASE', 'CDECL', 'CHAR', 'CLASS', 'COMP', 'CONST', 'CONSTRUCTOR', 'CONTAINS', 'CURRENCY',
+  'DEFAULT', 'DESTRUCTOR', 'DIV', 'DO', 'DOUBLE', 'DOWNTO', 'DYNAMIC',
+  'END', 'EXPORT', 'EXPORTS', 'EXTERNAL',
+  'FAR', 'FILE', 'FINALLY', 'FOR', 'FORWARD', 'FUNCTION', 'GOTO',
+  'ELSE', 'EXCEPT', 'EXTENDED',
+  'IF', 'IMPLEMENTATION', 'IMPLEMENTS', 'IN', 'INHERITED', 'INT64', 'INITIALIZATION',
+    'INTEGER', 'INTERFACE', 'IS',
+  'LABEL', 'LIBRARY', 'LOCAL', 'LONGINT', 'LONGWORD',
+  'MOD', 'NEAR', 'NIL', 'NODEFAULT', 'NOT',
+  'OBJECT', 'OF', 'OLEVARIANT', 'OR', 'OUT', 'OVERLOAD', 'OVERRIDE',
+  'PACKAGE', 'PACKED', 'PASCAL', 'PCHAR', 'PRIVATE', 'PROCEDURE', 'PROGRAM', 'PUBLISHED',
+  'RAISE', 'READ', 'REAL', 'RECORD', 'REGISTER', 'REINTRODUCE', 'REPEAT', 'REQUIRES', 'RESULT',
+  'SAFECALL', 'SET', 'SHL', 'SHORTINT', 'SHR', 'SINGLE', 'SMALLINT', 'STDCALL', 'STORED',
+  'THEN', 'TO', 'TRY', 'TYPE', 'UNIT', 'UNTIL', 'USES',
+  'VAR', 'VARARGS', 'VARIANT', 'VIRTUAL', 'WHILE', 'WIDECHAR', 'WITH', 'WORD', 'WRITE', 'XOR'
+);
+function IsReservedKeyWord(const AValue : string):Boolean ;
+begin
+  Result := AnsiMatchText(AValue,LANGAGE_TOKEN);
+end;
 
 { TAbstractSymbolDefinition }
 
@@ -185,9 +440,42 @@ constructor TAbstractSymbolDefinition.Create(const AName: String);
 begin
   Assert(Not IsStrEmpty(AName));
   FName := AName;
+  FExternalAlias := FName;
+end;
+
+procedure TAbstractSymbolDefinition.RegisterExternalAlias(const AExternalName : String);
+begin
+  FExternalAlias := AExternalName;
+end;
+
+function TAbstractSymbolDefinition.SameName(const AName: string): Boolean;
+begin
+  Result := AnsiSameText(AName,Self.Name) or AnsiSameText(AName,Self.ExternalName);
+end;
+
+procedure TAbstractSymbolDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+begin
+
 end;
 
 { TParameterDefinition }
+
+procedure TParameterDefinition.SetModifier(const AModifier: TParameterModifier);
+begin
+  FModifier := AModifier;
+end;
+
+procedure TParameterDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+begin
+  if ( FDataType = AFrw ) then
+    FDataType := Atype;
+end;
 
 constructor TParameterDefinition.Create(
   const AName: String;
@@ -211,6 +499,22 @@ end;
 function TMethodDefinition.GetParameterCount: Integer;
 begin
   Result := FParameterList.Count;
+end;
+
+procedure TMethodDefinition.SetMethodType(AMethodType: TMethodType);
+begin
+  FMethodType := AMethodType;
+end;
+
+procedure TMethodDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+var
+  i : Integer;
+begin
+  for i := 0 to Pred(ParameterCount) do
+    Parameter[i].FixForwardTypeDefinitions(AFrw, Atype);
 end;
 
 constructor TMethodDefinition.Create(
@@ -276,6 +580,17 @@ begin
   Result := FMethodList.Count;
 end;
 
+procedure TInterfaceDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+var
+  i : Integer;
+begin
+  for i := 0 to Pred(MethodCount) do
+    Method[i].FixForwardTypeDefinitions(AFrw, Atype);
+end;
+
 constructor TInterfaceDefinition.Create(const AName: String);
 begin
   Inherited Create(AName);
@@ -312,12 +627,21 @@ function TInterfaceDefinition.AddMethod(
   Const AMethodType : TMethodType
 ):TMethodDefinition;
 begin
-  If ( GetMethodIndex(Name) = -1 ) Then Begin
-    Result := TMethodDefinition.Create(AName,AMethodType);
+  if ( GetMethodIndex(Name) = -1 ) then begin
+    Result := AddMethod(TMethodDefinition.Create(AName,AMethodType));
+  end else begin
+    raise ESymbolException.CreateFmt('Duplicated methode : %s.%s',[Name,AName]);
+  end;
+end;
+
+function TInterfaceDefinition.AddMethod(AMthd: TMethodDefinition): TMethodDefinition;
+begin
+  if ( GetMethodIndex(AMthd.Name) = -1 ) then begin
+    Result := AMthd;
     FMethodList.Add(Result);
-  End Else Begin
-    Raise ESymbolException.CreateFmt('Duplicated methode : %s.%s',[Name,AName]);
-  End;
+  end else begin
+    raise ESymbolException.CreateFmt('Duplicated methode : %s.%s',[Name,AMthd.Name]);
+  end;
 end;
 
 { TSymbolTable }
@@ -339,44 +663,163 @@ begin
   Result := FList[Index] As TAbstractSymbolDefinition;
 end;
 
+function TSymbolTable.GetLinkedTableCount: Integer;
+begin
+  Result := FLinkedTables.Count;
+end;
+
+function TSymbolTable.GetLinkedTables(Index : Integer): TSymbolTable;
+begin
+  Result := FLinkedTables[Index] as TSymbolTable;
+end;
+
 procedure TSymbolTable.SetName(const AValue: String);
 begin
-  if ( FName = AValue ) then exit;
+  if ( FName = AValue ) then
+    Exit;
   FName := AValue;
+end;
+
+procedure TSymbolTable.ReorderClass(ASym: TClassTypeDefinition);
+var
+  i ,j : Integer;
+  locSymb : TClassTypeDefinition;
+begin
+  locSymb := ASym;
+  while True do begin
+    if not Assigned(locSymb.Parent) then
+      Exit;
+    i := FList.IndexOf(locSymb);
+    if ( i < 0 ) then
+      Exit;
+    j := FList.IndexOf(locSymb.Parent);
+    if ( j < 0 ) then
+      Exit;
+    //if ( i > j ) then
+      //Exit;
+    if ( i < j ) then
+      FList.Exchange(i,j);
+    if not locSymb.Parent.InheritsFrom(TClassTypeDefinition) then
+      Exit;
+    locSymb := locSymb.Parent as TClassTypeDefinition;
+  end;
+end;
+
+procedure TSymbolTable.NotifyChange(
+        ASender : TSymbolTable;
+        AItem   : TAbstractSymbolDefinition;
+  const AEvent  : TSymbolTableChange
+);
+var
+  i : Integer;
+begin
+  for i := 0 to Pred(FListners.Count) do
+    (FListners[i] as ISymbolTableChangeListner).NotifyChange(ASender,AItem,AEvent);
+end;
+
+procedure TSymbolTable.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+var
+  i : Integer;
+begin
+  for i := 0 to Pred(Count) do
+    Item[i].FixForwardTypeDefinitions(AFrw, Atype);
 end;
 
 constructor TSymbolTable.Create(Const AName : String);
 begin
   Inherited Create(AName);
   FList := TObjectList.Create(True);
+  FLinkedTables := TObjectList.Create(False);
+  FListners := TInterfaceList.Create();
 end;
 
 destructor TSymbolTable.Destroy();
 begin
-  FList.Free();
+  if Assigned(FList) then
+    Clear();
+  FreeAndNil(FList);
+  FreeAndNil(FLinkedTables);
+  FListners := nil;
   inherited Destroy();
 end;
 
 procedure TSymbolTable.Clear();
+var
+  i : Integer;
 begin
-  FList.Clear();
+  FLinkedTables.Clear();
+  for i := 0 to Pred(FList.Count) do
+    Delete(FList[0] as TAbstractSymbolDefinition);
 end;
 
 function TSymbolTable.Add(ASym: TAbstractSymbolDefinition): Integer;
+var
+  i : Integer;
+  locNeedFix : Boolean;
+  frwdTyp : TForwardTypeDefinition;
 begin
   Result := IndexOf(ASym);
   If ( Result = -1 ) Then Begin
-    If ( IndexOf(ASym.Name) <> -1 ) Then
-      Raise ESymbolException.CreateFmt('Duplicated symbol name : %s',[ASym.Name]);
+    locNeedFix := False;
+    i := IndexOf(ASym.Name);
+    if ( i <> -1 ) then begin
+      if Item[i].InheritsFrom(TForwardTypeDefinition) and
+        ( not ASym.InheritsFrom(TForwardTypeDefinition) )
+      then
+        locNeedFix := True
+      else
+        raise ESymbolException.CreateFmt('Duplicated symbol name : %s',[ASym.Name]);
+    end;
+    NotifyChange(Self,ASym,stcAdding);
     Result := FList.Add(ASym);
+    if ASym.InheritsFrom(TSymbolTable) then
+      FLinkedTables.Add(ASym);
+    if locNeedFix then begin
+      frwdTyp := Item[i] as TForwardTypeDefinition;
+      FixForwardTypeDefinitions( frwdTyp, (ASym as TTypeDefinition ) );
+      FList.Exchange(i,Result);
+      Delete(frwdTyp);
+    end;
+    Result := IndexOf(ASym);
   End;
+end;
+
+procedure TSymbolTable.Delete(ASym: TAbstractSymbolDefinition);
+var
+  i : Integer;
+begin
+  if Assigned(ASym) then begin
+    i := FList.IndexOf(ASym);
+    if ( i >= 0 ) then begin
+      NotifyChange(Self,ASym,stcDeleting);
+      FList.Delete(i);
+    end;
+  end;
 end;
 
 function TSymbolTable.IndexOf(const AName: String): Integer;
 begin
-  For Result := 0 To Pred(Count) Do
-    If AnsiSameText(AName,Item[Result].Name) Then
+  for Result := 0 to Pred(Count) do
+    if Item[Result].SameName(AName) then
       Exit;
+  Result := -1;
+end;
+
+function TSymbolTable.IndexOf(
+  const AName     : string;
+  const AMinClass : TAbstractSymbolDefinitionClass
+): Integer;
+var
+  syb : TAbstractSymbolDefinition;
+begin
+  for Result := 0 to Pred(Count) do begin
+    syb := Item[Result];
+    if syb.SameName(AName) and syb.InheritsFrom(AMinClass) then
+      Exit;
+  end;
   Result := -1;
 end;
 
@@ -390,10 +833,36 @@ Var
   i : Integer;
 begin
   i := IndexOf(AName);
-  If ( i > -1 ) Then
+  if ( i > -1 ) then begin
     Result := Item[i]
-  Else
+  end else begin
+    for i := 0 to Pred(LinkedTableCount) do begin
+      Result := LinkedTables[i].Find(AName);
+      if Assigned(Result) then
+        Exit;
+    end;
     Result := Nil;
+  end;
+end;
+
+function TSymbolTable.Find(
+  const AName     : string;
+  const AMinClass : TAbstractSymbolDefinitionClass
+): TAbstractSymbolDefinition;
+var
+  i : Integer;
+begin
+  i := IndexOf(AName,AMinClass);
+  if ( i > -1 ) then begin
+    Result := Item[i]
+  end else begin
+    for i := 0 to Pred(LinkedTableCount) do begin
+      Result := LinkedTables[i].Find(AName,AMinClass);
+      if Assigned(Result) then
+        Exit;
+    end;
+    Result := Nil;
+  end;
 end;
 
 function TSymbolTable.ByName(const AName: String): TAbstractSymbolDefinition;
@@ -403,12 +872,39 @@ begin
     Raise ESymbolException.CreateFmt('No such Symbol : %s',[AName]);
 end;
 
+procedure TSymbolTable.RegisterListner(AListner: ISymbolTableChangeListner);
+begin
+  if Assigned(AListner) and ( FListners.IndexOf(AListner) < 0 ) then
+    FListners.Add(AListner);
+end;
+
+procedure TSymbolTable.UnregisterListner(AListner: ISymbolTableChangeListner);
+begin
+  if Assigned(AListner) and ( FListners.IndexOf(AListner) >= 0 ) then
+    FListners.Remove(AListner);
+end;
+
 { TEnumItemDefinition }
 
-constructor TEnumItemDefinition.Create(const AName: String; Const AOrder: Integer);
+procedure TEnumItemDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
 begin
-  Inherited Create(AName);
+  if ( TObject(AFrw) = TObject(FEnumType) ) then
+    FEnumType := Atype as TEnumTypeDefinition;
+end;
+
+constructor TEnumItemDefinition.Create(
+  const AName     : string;
+        AEnumType : TEnumTypeDefinition;
+  const AOrder    : Integer
+);
+begin
+  Assert(Assigned(AEnumType));
+  inherited Create(AName);
   FOrder := AOrder;
+  FEnumType := AEnumType;
 end;
 
 { TEnumTypeDefinition }
@@ -461,21 +957,336 @@ begin
 end;
 
 { TTypeDefinition }
-const SIMPLE_TYPES : Array[0..12] Of string = (
-        'string', 'integer', 'smallint', 'shortint', 'char', 'boolean',
-        'byte', 'word', 'longint', 'int64',
-        'single', 'double', 'extended'
+const SIMPLE_TYPES : Array[0..14] Of array[0..2] of string = (
+        ('string', 'TComplexStringContentRemotable', 'string'),
+        ('integer', 'TComplexInt32SContentRemotable', 'int'),
+        ('LongWord', 'TComplexInt32UContentRemotable', 'unsignedInt' ),
+        ('SmallInt', 'TComplexInt16SContentRemotable', 'short'),
+        ('ShortInt', 'TComplexInt8SContentRemotable', 'byte'),
+        ('char', '', ''),
+        ('boolean', 'TComplexBooleanContentRemotable', 'boolean'),
+        ('Byte', 'TComplexInt8UContentRemotable', 'unsignedByte'),
+        ('Word', 'TComplexInt16UContentRemotable', 'unsignedShort'),
+        ('Longint', 'TComplexInt32SContentRemotable', 'int'),
+        ('Int64', 'TComplexInt64SContentRemotable', 'long'),
+        ('Qword', 'TComplexInt64UContentRemotable', 'unsignedLong'),
+        ('Single', 'TComplexFloatSingleContentRemotable', 'single'),
+        ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
+        ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
       );
+
 function TTypeDefinition.NeedFinalization(): Boolean;
+var
+  i : Integer;
 begin
-  Result := ( AnsiIndexText(Name,SIMPLE_TYPES) = -1 );
+  for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
+    if AnsiSameText(SIMPLE_TYPES[i][0],Name) then begin
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
 end;
 
 { TClassTypeDefinition }
 
+procedure TClassTypeDefinition.SetParent(const AValue: TTypeDefinition);
+begin
+  if ( AValue = Self ) then begin
+    raise ESymbolException.Create('A class can not be its parent.');
+  end;
+  if ( FParent = AValue ) then begin
+    Exit;
+  end;
+  FParent := AValue;
+end;
+
+function TClassTypeDefinition.AddProperty(
+  const AName     : String;
+        ADataType : TTypeDefinition
+): TPropertyDefinition;
+var
+  i : Integer;
+begin
+  if not Assigned(ADataType) then
+    raise ESymbolException.CreateFmt('Property data type not provided : "%s".',[AName]);
+  i := IndexOfProperty(AName);
+  if ( i = -1 ) then
+    i := FPropertyList.Add(TPropertyDefinition.Create(AName,ADataType));
+  Result := FPropertyList[i] as TPropertyDefinition;
+end;
+
+function TClassTypeDefinition.IndexOfProperty(const AName: string): Integer;
+begin
+  for Result := 0 to Pred(PropertyCount) do begin
+    if AnsiSameText(AName,Properties[Result].Name) then
+      Exit;
+  end;
+  Result := -1;
+end;
+
+function TClassTypeDefinition.GetProperty(const Index : Integer): TPropertyDefinition;
+begin
+  Result := FPropertyList[Index] as TPropertyDefinition;
+end;
+
+function TClassTypeDefinition.GetPropertyCount: Integer;
+begin
+  Result := FPropertyList.Count;
+end;
+
+procedure TClassTypeDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+var
+  i : Integer;
+begin
+  if ( FParent = AFrw ) then
+    FParent := Atype;
+  for i := 0 to Pred(PropertyCount) do begin
+    Properties[i].FixForwardTypeDefinitions(AFrw,Atype);
+  end;
+end;
+
+constructor TClassTypeDefinition.Create(const AName: String);
+begin
+  inherited Create(AName);
+  FPropertyList := TObjectList.Create(True);
+end;
+
+destructor TClassTypeDefinition.Destroy();
+begin
+  FreeAndNil(FPropertyList);
+  inherited Destroy();
+end;
+
 function TClassTypeDefinition.NeedFinalization(): Boolean;
 begin
   Result := True;
+end;
+
+function TClassTypeDefinition.IsDescendantOf(ABaseType: TTypeDefinition): Boolean;
+var
+  tmpDef : TTypeDefinition;
+begin
+  tmpDef := Self;
+  while Assigned(tmpDef) do begin
+    if ( tmpDef = ABaseType ) then begin
+      Result := True;
+      Exit;
+    end;
+    if tmpDef is TClassTypeDefinition then begin
+      tmpDef := (tmpDef as TClassTypeDefinition).Parent;
+    end else begin
+      tmpDef := nil;
+    end;
+  end;
+  Result := False;
+end;
+
+
+{ TPropertyDefinition }
+
+procedure TPropertyDefinition.FixForwardTypeDefinitions(
+  AFrw  : TForwardTypeDefinition;
+  Atype : TTypeDefinition
+);
+begin
+  if ( FDataType = AFrw ) then
+    FDataType := Atype;
+end;
+
+constructor TPropertyDefinition.Create(
+  const AName     : String;
+        ADataType : TTypeDefinition
+);
+begin
+  inherited Create(AName);
+  FDataType := ADataType;
+end;
+
+{ TSimpleTypeDefinition }
+
+function TSimpleTypeDefinition.NeedFinalization(): Boolean;
+begin
+  Result := False;
+end;
+
+procedure AddSystemSymbol(ADest: TSymbolTable);
+var
+  i : Integer;
+  splTyp : TNativeSimpleTypeDefinition;
+  syb : TNativeClassTypeDefinition;
+  s : string;
+begin
+  for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
+    splTyp := TNativeSimpleTypeDefinition.Create(SIMPLE_TYPES[i][0]);
+    ADest.Add(splTyp);
+    s := SIMPLE_TYPES[i][1];
+    if not IsStrEmpty(s) then begin
+      syb := ADest.Find(SIMPLE_TYPES[i][1]) as TNativeClassTypeDefinition;
+      if not Assigned(syb) then begin
+        syb := TNativeClassTypeDefinition.Create(SIMPLE_TYPES[i][1]);
+      end;
+      ADest.Add(syb);
+      //syb.RegisterExternalAlias(SIMPLE_TYPES[i][2]);
+      splTyp.SetBoxedType(syb);
+    end;
+  end;
+  for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
+    splTyp := ADest.ByName(SIMPLE_TYPES[i][0]) as TNativeSimpleTypeDefinition;
+    if not IsStrEmpty(SIMPLE_TYPES[i][2]) then begin
+      splTyp.RegisterExternalAlias(SIMPLE_TYPES[i][2]);
+    end;
+  end;
+end;
+
+procedure AddSoapencSymbol(ADest: TSymbolTable);
+var
+  locSymTable : TSymbolTable;
+begin
+  locSymTable := TSymbolTable.Create('soapenc');
+  ADest.Add(locSymTable);
+  locSymTable.RegisterExternalAlias('http://schemas.xmlsoap.org/soap/encoding/');
+  locSymTable.Add(TAnyTypeDefinition.Create('any'));
+end;
+
+function CreateWstInterfaceSymbolTable() : TSymbolTable;
+  function AddClassDef(
+          ATable      : TSymbolTable;
+    const AClassName,
+          AParentName : string
+  ):TClassTypeDefinition;
+  begin
+    Result := TClassTypeDefinition.Create(AClassName);
+    if not IsStrEmpty(AParentName) then
+      Result.SetParent(ATable.ByName(AParentName) as TClassTypeDefinition);
+    ATable.Add(Result);
+  end;
+
+var
+  loc_TBaseComplexSimpleContentRemotable : TClassTypeDefinition;
+  locTyp : TTypeDefinition;
+begin
+  Result := TSymbolTable.Create('base_service_intf');
+  try
+    AddSystemSymbol(Result);
+    AddClassDef(Result,'TBaseRemotable','');
+      AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable');
+        AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable').RegisterExternalAlias('dateTime');
+        AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable').RegisterExternalAlias('duration');
+
+      AddClassDef(Result,'TAbstractComplexRemotable','TBaseRemotable');
+        loc_TBaseComplexSimpleContentRemotable := AddClassDef(Result,'TBaseComplexSimpleContentRemotable','TAbstractComplexRemotable');
+          (Result.ByName('TComplexInt16SContentRemotable') as TClassTypeDefinition).SetParent(loc_TBaseComplexSimpleContentRemotable);
+          (Result.ByName('TComplexFloatDoubleContentRemotable') as TClassTypeDefinition).SetParent(loc_TBaseComplexSimpleContentRemotable);
+
+        AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable');
+          AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable');
+        AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable');
+          AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable');
+          AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable');
+            AddClassDef(Result,'TArrayOfStringRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfBooleanRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt8URemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt8SRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt16SRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt16URemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt32URemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt32SRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt64SRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfInt64URemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfFloatSingleRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfFloatDoubleRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfFloatExtendedRemotable','TBaseSimpleTypeArrayRemotable');
+            AddClassDef(Result,'TArrayOfFloatCurrencyRemotable','TBaseSimpleTypeArrayRemotable');
+
+    locTyp := TTypeAliasDefinition.Create('token',Result.ByName('string') as TTypeDefinition);
+    Result.Add(locTyp);
+    locTyp := TTypeAliasDefinition.Create('anyURI',Result.ByName('string') as TTypeDefinition);
+    Result.Add(locTyp);
+    locTyp := TTypeAliasDefinition.Create('float',Result.ByName('Single') as TTypeDefinition);
+    Result.Add(locTyp);
+
+    locTyp := TTypeAliasDefinition.Create('base64Binary',Result.ByName('string') as TTypeDefinition);
+    Result.Add(locTyp);
+
+  except //base64Binary
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
+{ TTypeAliasDefinition }
+
+procedure TTypeAliasDefinition.FixForwardTypeDefinitions(
+  AFrw: TForwardTypeDefinition;
+  Atype: TTypeDefinition
+);
+begin
+  if ( FBaseType = AFrw ) then
+    FBaseType := Atype;
+end;
+
+constructor TTypeAliasDefinition.Create(
+  const AName     : string;
+        ABaseType : TTypeDefinition
+);
+begin
+  Assert(Assigned(ABaseType));
+  inherited Create(AName);
+  FBaseType := ABaseType;
+end;
+
+{ TSimpleConstantDefinition }
+
+constructor TSimpleConstantDefinition.Create(const AName: string;const AValue: string);
+begin
+  inherited Create(AName);
+  FValue.DataType := sctString;
+  FValue.StrValue := AValue;
+end;
+
+constructor TSimpleConstantDefinition.Create(const AName: string;const AValue: Integer);
+begin
+  inherited Create(AName);
+  FValue.DataType := sctInteger;
+  FValue.IntValue := AValue;
+end;
+
+{ TArrayDefinition }
+
+procedure TArrayDefinition.FixForwardTypeDefinitions(
+  AFrw: TForwardTypeDefinition;
+  Atype: TTypeDefinition
+);
+begin
+  if ( FItemType = AFrw ) then
+    FItemType := Atype;
+end;
+
+constructor TArrayDefinition.Create(
+  const AName      : string;
+        AItemType  : TTypeDefinition;
+        ItemName   : string
+);
+begin
+  Assert(Assigned(AItemType));
+  inherited Create(AName);
+  FItemType := AItemType;
+end;
+
+function TArrayDefinition.NeedFinalization(): Boolean;
+begin
+  Result := True;
+end;
+
+{ TNativeSimpleTypeDefinition }
+
+procedure TNativeSimpleTypeDefinition.SetBoxedType(ABoxedType: TNativeClassTypeDefinition);
+begin
+  FBoxedType := ABoxedType;
 end;
 
 end.

@@ -22,6 +22,7 @@ uses
 
 const
   sROOT   = 'ROOT';
+  sSCOPE_INNER_NAME = 'INNER_VAL';
 {$IFDEF wst_binary_header}
   sHEADER = 'HEADER';
 {$ENDIF}
@@ -86,6 +87,7 @@ type
     Head        : PObjectBufferItem;
     Last        : PObjectBufferItem;
     Attributes  : PObjectBuffer;
+    InnerData   : PDataBuffer;
   End;
 
   PDataBufferList = ^TDataBufferList;
@@ -111,6 +113,8 @@ type
       Const AName     : String;
       const ADataType : TDataType
     ):PDataBuffer;virtual;abstract;
+    function CreateInnerBuffer(const ADataType : TDataType):PDataBuffer;virtual;abstract;
+    function GetInnerBuffer():PDataBuffer;virtual;abstract;
     procedure NilCurrentScope();virtual;abstract;
     function IsCurrentScopeNil():Boolean;virtual;abstract;
     property ScopeObject : PDataBuffer Read FScopeObject;
@@ -129,6 +133,8 @@ type
       Const AName     : String;
       const ADataType : TDataType
     ):PDataBuffer;override;
+    function CreateInnerBuffer(const ADataType : TDataType):PDataBuffer;override;
+    function GetInnerBuffer():PDataBuffer;override;
     procedure NilCurrentScope();override;
     function IsCurrentScopeNil():Boolean;override;
   End;
@@ -147,6 +153,8 @@ type
       Const AName     : String;
       const ADataType : TDataType
     ):PDataBuffer;override;
+    function CreateInnerBuffer(const ADataType : TDataType):PDataBuffer;override;
+    function GetInnerBuffer():PDataBuffer;
     procedure NilCurrentScope();override;
     function IsCurrentScopeNil():Boolean;override;
   End;
@@ -162,6 +170,7 @@ type
     FHeaderEnterCount : Integer;
     {$ENDIF}
   private
+    function GetCurrentScope: String;
     function GetCurrentScopeObject():PDataBuffer;
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
@@ -250,7 +259,6 @@ type
     constructor Create();override;
     destructor Destroy();override;
 
-    function GetCurrentScope():string;
     procedure Clear();
 
     procedure BeginObject(
@@ -284,10 +292,18 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData
     );
+    procedure PutScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      const AData
+    );
     procedure Get(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData
+    );
+    procedure GetScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      var   AData
     );
 
     procedure SaveToStream(AStream : TStream);
@@ -517,16 +533,22 @@ Begin
     dtEnum    : ADest.WriteEnum(ARoot^.EnumData);
     dtObject :
       Begin
-        i := ARoot^.ObjectData^.Count;
-        ADest.WriteInt32S(i);
+        ADest.WriteBool(ARoot^.ObjectData^.NilObject) ;
+        if not ARoot^.ObjectData^.NilObject then begin
+          i := ARoot^.ObjectData^.Count;
+          ADest.WriteInt32S(i);
 
-        If ( i > 0 ) Then Begin
-          p := ARoot^.ObjectData^.Head;
-          For i := 1 To i Do Begin
-            SaveObjectToStream(p^.Data,ADest);
-            p := p^.Next;
+          If ( i > 0 ) Then Begin
+            p := ARoot^.ObjectData^.Head;
+            For i := 1 To i Do Begin
+              SaveObjectToStream(p^.Data,ADest);
+              p := p^.Next;
+            End;
           End;
-        End;
+          ADest.WriteBool(Assigned(ARoot^.ObjectData^.InnerData));
+          if Assigned(ARoot^.ObjectData^.InnerData) then
+            SaveObjectToStream(ARoot^.ObjectData^.InnerData,ADest);
+        end;
       End;
     dtArray :
       Begin
@@ -574,11 +596,16 @@ Begin
     dtEnum    : Result^.EnumData := AStoreRdr.ReadEnum();
     dtObject  :
       Begin
-        i := AStoreRdr.ReadInt32S();
-        For i := 1 To i Do Begin
-          AddObj(Result,LoadObjectFromStream(AStoreRdr));
-        End;
-      End;
+        Result^.ObjectData^.NilObject := AStoreRdr.ReadBool();
+        if not Result^.ObjectData^.NilObject then begin
+          i := AStoreRdr.ReadInt32S();
+          For i := 1 To i Do Begin
+            AddObj(Result,LoadObjectFromStream(AStoreRdr));
+          End;
+          if AStoreRdr.ReadBool() then
+            Result^.ObjectData^.InnerData := LoadObjectFromStream(AStoreRdr);
+        end;
+      end;
     dtArray  :
       Begin
         i := AStoreRdr.ReadInt32S();
@@ -605,6 +632,10 @@ begin
       Freemem(q^.Data);
       q^.Data := Nil;
       Freemem(q);
+    end;
+    if Assigned(ABuffer^.InnerData) then begin
+      ClearObj(ABuffer^.InnerData);
+      ABuffer^.InnerData := nil;
     end;
     //ABuffer^.Head := nil;
     //ABuffer^.Last := nil;
@@ -698,6 +729,17 @@ begin
   Result := CreateObjBuffer(ADataType,AName,ScopeObject);
 end;
 
+function TObjectStackItem.CreateInnerBuffer(const ADataType: TDataType): PDataBuffer;
+begin
+  Result := CreateObjBuffer(ADataType,sSCOPE_INNER_NAME,nil);
+  ScopeObject^.ObjectData^.InnerData := Result;
+end;
+
+function TObjectStackItem.GetInnerBuffer(): PDataBuffer;
+begin
+  Result := ScopeObject^.ObjectData^.InnerData;
+end;
+
 procedure TObjectStackItem.NilCurrentScope();
 begin
   Assert(ScopeObject^.ObjectData^.Count = 0);
@@ -706,7 +748,7 @@ end;
 
 function TObjectStackItem.IsCurrentScopeNil(): Boolean;
 begin
-  Result:= ScopeObject^.ObjectData^.NilObject;
+  Result := ScopeObject^.ObjectData^.NilObject;
 end;
 
 //----------------------------------------------------------------
@@ -1040,7 +1082,6 @@ end;
 
 procedure TBaseBinaryFormatter.Put(const AName: String; const ATypeInfo: PTypeInfo;const AData);
 Var
-  intData : Integer;
   int64Data : Int64;
   strData : string;
   objData : TObject;
@@ -1098,6 +1139,129 @@ begin
         PutFloat(AName,ATypeInfo,floatDt);
       End;
   End;
+end;
+
+procedure TBaseBinaryFormatter.PutScopeInnerValue(
+  const ATypeInfo : PTypeInfo;
+  const AData
+);
+var
+  int64SData : Int64;
+  int64UData : QWord;
+  strData : string;
+  boolData : Boolean;
+  enumData : TEnumData;
+  floatDt : TFloat_Extended_10;
+begin
+  CheckScope();
+  case ATypeInfo^.Kind of
+    tkLString, tkAString :
+      begin
+        strData := string(AData);
+        StackTop().CreateInnerBuffer(dtString)^.StrData^.Data := strData;
+      end;
+    tkInt64 :
+      begin
+        int64SData := Int64(AData);
+        StackTop().CreateInnerBuffer(dtInt64S)^.Int64S := int64SData;
+      end;
+    tkQWord :
+      begin
+        int64UData := QWord(AData);
+        StackTop().CreateInnerBuffer(dtInt64U)^.Int64U := int64UData;
+      end;
+    tkClass :
+      begin
+        raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+      end;
+    tkBool :
+      begin
+        boolData := Boolean(AData);
+        StackTop().CreateInnerBuffer(dtBool)^.BoolData := boolData;
+      end;
+    tkInteger :
+      begin
+        enumData := 0;
+        case GetTypeData(ATypeInfo)^.OrdType of
+          otSByte :
+            begin
+              enumData := ShortInt(AData);
+              StackTop().CreateInnerBuffer(dtInt8S)^.Int8S := enumData;
+            end;
+          otUByte :
+            begin
+              enumData := Byte(AData);
+              StackTop().CreateInnerBuffer(dtInt8U)^.Int8U := enumData;
+            end;
+          otSWord :
+            begin
+              enumData := SmallInt(AData);
+              StackTop().CreateInnerBuffer(dtInt16S)^.Int16S := enumData;
+            end;
+          otUWord :
+            begin
+              enumData := Word(AData);
+              StackTop().CreateInnerBuffer(dtInt16U)^.Int16U := enumData;
+            end;
+          otSLong :
+            begin
+              enumData := LongInt(AData);
+              StackTop().CreateInnerBuffer(dtInt32S)^.Int32S := enumData;
+            end;
+          otULong :
+            begin
+              enumData := LongWord(AData);
+              StackTop().CreateInnerBuffer(dtInt32U)^.Int32U := enumData;
+            end;
+        end;
+      end;
+    tkEnumeration :
+      begin
+        enumData := 0;
+        case GetTypeData(ATypeInfo)^.OrdType of
+          otSByte : enumData := ShortInt(AData);
+          otUByte : enumData := Byte(AData);
+          otSWord : enumData := SmallInt(AData);
+          otUWord : enumData := Word(AData);
+          otSLong : enumData := LongInt(AData);
+          otULong : enumData := LongWord(AData);
+        end;
+        StackTop().CreateInnerBuffer(dtEnum)^.EnumData := enumData;
+      end;
+    tkFloat :
+      begin
+        floatDt := 0;
+        case GetTypeData(ATypeInfo)^.FloatType of
+          ftSingle   :
+            begin
+              floatDt := Single(AData);
+              StackTop().CreateInnerBuffer(dtSingle)^.SingleData := floatDt;
+            end;
+          ftDouble   :
+            begin
+              floatDt := Double(AData);
+              StackTop().CreateInnerBuffer(dtDouble)^.DoubleData := floatDt;
+            end;
+          ftExtended :
+            begin
+              floatDt := Extended(AData);
+              StackTop().CreateInnerBuffer(dtExtended)^.ExtendedData := floatDt;
+            end;
+          ftCurr     :
+            begin
+              floatDt := Currency(AData);
+              StackTop().CreateInnerBuffer(dtExtended)^.ExtendedData := floatDt;
+            end;
+          ftComp     :
+            begin
+              floatDt := Comp(AData);
+              StackTop().CreateInnerBuffer(dtCurrency)^.CurrencyData := floatDt;
+            end;
+          else
+            StackTop().CreateInnerBuffer(dtExtended)^.ExtendedData := floatDt;
+        end;
+      end;
+  end;
 end;
 
 procedure TBaseBinaryFormatter.Get(
@@ -1167,6 +1331,58 @@ begin
         End;
       End;
   End;
+end;
+
+procedure TBaseBinaryFormatter.GetScopeInnerValue(
+  const ATypeInfo : PTypeInfo;
+  var   AData
+);
+Var
+  dataBuffer : PDataBuffer;
+begin
+  CheckScope();
+  dataBuffer := StackTop().GetInnerBuffer();
+  Case ATypeInfo^.Kind Of
+    tkInt64        : Int64(AData) := dataBuffer^.Int64S;
+    tkQWord        : QWord(AData) := dataBuffer^.Int64U;
+    tkLString,
+    tkAString      : string(AData) := dataBuffer^.StrData^.Data;
+    tkClass        : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+    tkBool         : Boolean(AData) := dataBuffer^.BoolData;
+    tkInteger      :
+      begin
+        case GetTypeData(ATypeInfo)^.OrdType Of
+          otSByte : ShortInt(AData)    := dataBuffer^.Int8S;
+          otUByte : Byte(AData)        := dataBuffer^.Int8U;
+          otSWord : SmallInt(AData)    := dataBuffer^.Int16S;
+          otUWord : Word(AData)        := dataBuffer^.Int16U;
+          otSLong : LongInt(AData)     := dataBuffer^.Int32S;
+          otULong : LongWord(AData)    := dataBuffer^.Int32U;
+        end;
+      end;
+    tkEnumeration      :
+      begin
+        case GetTypeData(ATypeInfo)^.OrdType Of
+          otSByte : ShortInt(AData)    := dataBuffer^.EnumData;
+          otUByte : Byte(AData)        := dataBuffer^.EnumData;
+          otSWord : SmallInt(AData)    := dataBuffer^.EnumData;
+          otUWord : Word(AData)        := dataBuffer^.EnumData;
+          otSLong : LongInt(AData)     := dataBuffer^.EnumData;
+          otULong : LongWord(AData)    := dataBuffer^.EnumData;
+        end;
+      end;
+    tkFloat :
+      begin
+        case GetTypeData(ATypeInfo)^.FloatType of
+          ftSingle   : Single(AData)      := dataBuffer^.SingleData;
+          ftDouble   : Double(AData)      := dataBuffer^.DoubleData;
+          ftExtended : Extended(AData)    := dataBuffer^.ExtendedData;
+          ftCurr     : Currency(AData)    := dataBuffer^.CurrencyData;
+          else
+            Comp(AData) := dataBuffer^.ExtendedData;
+        end;
+      end;
+  end;
 end;
 
 procedure TBaseBinaryFormatter.SaveToStream(AStream: TStream);
@@ -1259,6 +1475,16 @@ begin
     Raise EBinaryFormatterException.CreateFmt('Invalid array index : %d',[FIndex]);
   ScopeObject^.ArrayData^.Items^[FIndex] := Result;
   Inc(FIndex);
+end;
+
+function TArrayStackItem.CreateInnerBuffer(const ADataType: TDataType): PDataBuffer;
+begin
+  raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
+end;
+
+function TArrayStackItem.GetInnerBuffer(): PDataBuffer;
+begin
+  raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
 end;
 
 procedure TArrayStackItem.NilCurrentScope();

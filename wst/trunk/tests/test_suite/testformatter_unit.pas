@@ -87,6 +87,168 @@ type
       property Val_64S : Int64 Read FVal_64S Write FVal_64S;
   End;
 
+  T_ComplexInt64SContent = class(TComplexInt64SContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexInt64UContent = class(TComplexInt64UContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+  
+  { T_ComplexInt32SContent }
+
+  T_ComplexInt32SContent = class(TComplexInt32SContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexInt32UContent = class(TComplexInt32UContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+  
+  T_ComplexInt16SContent = class(TComplexInt16SContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+  
+  T_ComplexInt16UContent = class(TComplexInt16UContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexInt8SContent = class(TComplexInt8SContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexInt8UContent = class(TComplexInt8UContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+  
+  T_ComplexFloatExtendedContent = class(TComplexFloatExtendedContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexFloatDoubleContent = class(TComplexFloatDoubleContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+
+  T_ComplexStringContent = class(TComplexStringContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+  
+  { TClass_CplxSimpleContent }
+
+  TClass_CplxSimpleContent = class(TBaseComplexRemotable)
+  private
+    FElt_Exemple: string;
+    FVal_CplxDouble: T_ComplexFloatDoubleContent;
+    FVal_CplxInt16S: T_ComplexInt16SContent;
+    FVal_CplxInt16U: T_ComplexInt16UContent;
+    FVal_CplxInt32S: T_ComplexInt32SContent;
+    FVal_CplxInt32U: T_ComplexInt32UContent;
+    FVal_CplxExtended : T_ComplexFloatExtendedContent;
+    FVal_CplxInt64S: T_ComplexInt64SContent;
+    FVal_CplxInt64U: T_ComplexInt64UContent;
+    FVal_CplxInt8S: T_ComplexInt8SContent;
+    FVal_CplxInt8U: T_ComplexInt8UContent;
+    FVal_CplxString: T_ComplexStringContent;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Val_CplxInt64S : T_ComplexInt64SContent read FVal_CplxInt64S write FVal_CplxInt64S;
+    property Val_CplxInt64U : T_ComplexInt64UContent read FVal_CplxInt64U write FVal_CplxInt64U;
+    
+    property Val_CplxInt32S : T_ComplexInt32SContent read FVal_CplxInt32S write FVal_CplxInt32S;
+    property Val_CplxInt32U : T_ComplexInt32UContent read FVal_CplxInt32U write FVal_CplxInt32U;
+
+    property Val_CplxInt16U : T_ComplexInt16UContent read FVal_CplxInt16U write FVal_CplxInt16U;
+    property Val_CplxInt16S : T_ComplexInt16SContent read FVal_CplxInt16S write FVal_CplxInt16S;
+    
+    property Val_CplxInt8U : T_ComplexInt8UContent read FVal_CplxInt8U write FVal_CplxInt8U;
+    property Val_CplxInt8S : T_ComplexInt8SContent read FVal_CplxInt8S write FVal_CplxInt8S;
+
+    property Val_CplxExtended : T_ComplexFloatExtendedContent read FVal_CplxExtended write FVal_CplxExtended;
+    property Val_CplxDouble : T_ComplexFloatDoubleContent read FVal_CplxDouble write FVal_CplxDouble;
+    property Val_CplxString : T_ComplexStringContent read FVal_CplxString write FVal_CplxString;
+
+    property Elt_Exemple : string read FElt_Exemple write FElt_Exemple;
+  end;
+  
   { TClass_Enum }
 
   TClass_Enum = class(TBaseComplexRemotable)
@@ -115,28 +277,45 @@ type
     property Val_Currency : Currency Read FVal_Currency Write FVal_Currency;
   End;
 
-  { TTestFormatter }
+  { TTestFormatterSimpleType }
 
-  TTestFormatter= class(TTestCase)
+  TTestFormatterSimpleType= class(TTestCase)
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;virtual;abstract;
   published
     procedure Test_Int_8;
+    procedure Test_Int_8_ScopeData;
     procedure Test_Int_16;
     procedure Test_Int_32;
     procedure Test_Int_64;
-    procedure Test_Int_WithClass;
-    
+
     procedure Test_Single_4;
     procedure Test_Double_8;
     procedure Test_Currency_8;
     procedure Test_Extended_10;
-    procedure Test_Float_WithClass;
 
     procedure Test_String;
     procedure Test_Bool;
     procedure Test_Enum;
+  end;
+  
+  { TTestFormatter }
+
+  TTestFormatter= class(TTestFormatterSimpleType)
+  published
+    procedure Test_Int_WithClass;
+    
+    procedure Test_Float_WithClass;
+
     procedure Test_Enum_Bool_String_WithClass;
+    
+    procedure Test_CplxInt64SimpleContent_WithClass;
+    procedure Test_CplxInt32SimpleContent_WithClass;
+    procedure Test_CplxInt16SimpleContent_WithClass;
+    procedure Test_CplxInt8SimpleContent_WithClass;
+    
+    procedure Test_CplxFloatExtendedSimpleContent_WithClass;
+    procedure Test_CplxStringSimpleContent_WithClass;
     
     procedure Test_Object();
     procedure Test_Object_Nil();
@@ -160,6 +339,8 @@ type
     procedure Test_FloatDoubleArray();
     procedure Test_FloatExtendedArray();
     procedure Test_FloatCurrencyArray();
+    
+    procedure  Test_ComplexInt32S();
   end;
 
   { TTestBinaryFormatter }
@@ -171,7 +352,7 @@ type
 
   { TTestBinaryFormatterAttributes }
 
-  TTestBinaryFormatterAttributes= class(TTestBinaryFormatter)
+  TTestBinaryFormatterAttributes= class(TTestFormatterSimpleType)
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
   end;
@@ -185,7 +366,7 @@ type
 
   { TTestSOAPFormatterAttributes }
 
-  TTestSOAPFormatterAttributes = class(TTestSOAPFormatter)
+  TTestSOAPFormatterAttributes = class(TTestFormatterSimpleType)
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
   end;
@@ -222,10 +403,26 @@ type
     procedure Test_Assign();
   end;
 
+  { TTest_TDateRemotable }
+
+  TTest_TDateRemotable = class(TTestCase)
+  published
+    procedure FormatDate();
+    procedure ParseDate();
+  end;
+
+  { TTest_TDurationRemotable }
+
+  TTest_TDurationRemotable = class(TTestCase)
+  published
+    procedure FormatDate();
+    procedure ParseDate();
+  end;
+  
 implementation
 uses base_binary_formatter, base_soap_formatter;
 
-procedure TTestFormatter.Test_Int_8;
+procedure TTestFormatterSimpleType.Test_Int_8;
 const VAL_1 = 12; VAL_2 = -10;
 Var
   f : IFormatterBase;
@@ -267,7 +464,59 @@ begin
   End;
 end;
 
-procedure TTestFormatter.Test_Int_16;
+procedure TTestFormatterSimpleType.Test_Int_8_ScopeData;
+const VAL_1 = 12; VAL_2 = -10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_U : Byte; intVal_S : ShortInt;
+begin
+  s := Nil;
+  Try
+    intVal_U := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(Byte),intVal_U);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_U := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      f.GetScopeInnerValue(TypeInfo(Byte),intVal_U);
+    f.EndScopeRead();
+    AssertEquals(VAL_1,intVal_U);
+    ///
+    intVal_S := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(ShortInt),intVal_S);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_S := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      f.GetScopeInnerValue(TypeInfo(ShortInt),intVal_S);
+    f.EndScopeRead();
+    AssertEquals(VAL_2,intVal_S);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Int_16;
 const VAL_1 = 1210; VAL_2 : SmallInt = -1012;
 Var
   f : IFormatterBase;
@@ -309,7 +558,7 @@ begin
   End;
 end;
 
-procedure TTestFormatter.Test_Int_32;
+procedure TTestFormatterSimpleType.Test_Int_32;
 const VAL_1 = 121076; VAL_2 : LongInt = -101276;
 Var
   f : IFormatterBase;
@@ -351,7 +600,7 @@ begin
   End;
 end;
 
-procedure TTestFormatter.Test_Int_64;
+procedure TTestFormatterSimpleType.Test_Int_64;
 const VAL_1 = 121076; VAL_2 : Int64 = -101276;
 Var
   f : IFormatterBase;
@@ -388,6 +637,276 @@ begin
 
     AssertEquals(VAL_1,intVal_U);
     AssertEquals(VAL_2,intVal_S);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Single_4;
+const VAL_1 = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Single;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.Put('tmpVal',TypeInfo(Single),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+      x := 'tmpVal';
+      f.Get(TypeInfo(Single),x,tmpVal);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Double_8;
+const VAL_1 = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Double;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.Put('tmpVal',TypeInfo(Double),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+      x := 'tmpVal';
+      f.Get(TypeInfo(Double),x,tmpVal);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Currency_8;
+const VAL_1 = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Currency;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.Put('tmpVal',TypeInfo(Currency),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+      x := 'tmpVal';
+      f.Get(TypeInfo(Currency),x,tmpVal);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Extended_10;
+const VAL_1 = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Extended;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.Put('tmpVal',TypeInfo(Extended),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+      x := 'tmpVal';
+      f.Get(TypeInfo(Extended),x,tmpVal);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_String;
+const VAL_1 = 'AzErTy'; VAL_2 = 'QwErTy';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_1 : string; intVal_3 : string;
+begin
+  s := Nil;
+  Try
+    intVal_1 := VAL_1;
+    intVal_3 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('intVal_1',TypeInfo(string),intVal_1);
+      f.Put('intVal_3',TypeInfo(string),intVal_3);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_1 := '';
+    intVal_3 := 'yyyyyyyy';
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'intVal_1';
+      f.Get(TypeInfo(string),x,intVal_1);
+      x := 'intVal_3';
+      f.Get(TypeInfo(string),x,intVal_3);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,intVal_1);
+    AssertEquals(VAL_2,intVal_3);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Bool;
+const VAL_1 = True; VAL_2 = False;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_1 : Boolean; intVal_3 : Boolean;
+begin
+  s := Nil;
+  Try
+    intVal_1 := VAL_1;
+    intVal_3 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('intVal_1',TypeInfo(Boolean),intVal_1);
+      f.Put('intVal_3',TypeInfo(Boolean),intVal_3);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_1 := False;
+    intVal_3 := True;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'intVal_1';
+      f.Get(TypeInfo(Boolean),x,intVal_1);
+      x := 'intVal_3';
+      f.Get(TypeInfo(Boolean),x,intVal_3);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,intVal_1);
+    AssertEquals(VAL_2,intVal_3);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Enum;
+const VAL_1 = teTwo; VAL_2 = teFour;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_1 : TTestEnum; intVal_3 : TTestEnum;
+begin
+  s := Nil;
+  Try
+    intVal_1 := VAL_1;
+    intVal_3 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Enum));
+      f.Put('intVal_1',TypeInfo(TTestEnum),intVal_1);
+      f.Put('intVal_3',TypeInfo(TTestEnum),intVal_3);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_1 := teOne;
+    intVal_3 := teOne;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'intVal_1';
+      f.Get(TypeInfo(TTestEnum),x,intVal_1);
+      x := 'intVal_3';
+      f.Get(TypeInfo(TTestEnum),x,intVal_3);
+    f.EndScopeRead();
+
+    AssertEquals(Ord(VAL_1),Ord(intVal_1));
+    AssertEquals(Ord(VAL_2),Ord(intVal_3));
   Finally
     s.Free();
   End;
@@ -446,150 +965,6 @@ begin
   End;
 end;
 
-procedure TTestFormatter.Test_Single_4;
-const VAL_1 = 12.10;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  tmpVal : Single;
-begin
-  s := Nil;
-  Try
-    tmpVal := VAL_1;
-    f := CreateFormatter(TypeInfo(TClass_Float));
-
-    f.BeginObject('Root',TypeInfo(TClass_Float));
-      f.Put('tmpVal',TypeInfo(Single),tmpVal);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    tmpVal := 0;
-    
-    f := CreateFormatter(TypeInfo(TClass_Float));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
-      x := 'tmpVal';
-      f.Get(TypeInfo(Single),x,tmpVal);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,tmpVal);
-  Finally
-    s.Free();
-  End;
-end;
-
-procedure TTestFormatter.Test_Double_8;
-const VAL_1 = 12.10;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  tmpVal : Double;
-begin
-  s := Nil;
-  Try
-    tmpVal := VAL_1;
-    f := CreateFormatter(TypeInfo(TClass_Float));
-
-    f.BeginObject('Root',TypeInfo(TClass_Float));
-      f.Put('tmpVal',TypeInfo(Double),tmpVal);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    tmpVal := 0;
-
-    f := CreateFormatter(TypeInfo(TClass_Float));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
-      x := 'tmpVal';
-      f.Get(TypeInfo(Double),x,tmpVal);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,tmpVal);
-  Finally
-    s.Free();
-  End;
-end;
-
-procedure TTestFormatter.Test_Currency_8;
-const VAL_1 = 12.10;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  tmpVal : Currency;
-begin
-  s := Nil;
-  Try
-    tmpVal := VAL_1;
-    f := CreateFormatter(TypeInfo(TClass_Float));
-
-    f.BeginObject('Root',TypeInfo(TClass_Float));
-      f.Put('tmpVal',TypeInfo(Currency),tmpVal);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    tmpVal := 0;
-
-    f := CreateFormatter(TypeInfo(TClass_Float));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
-      x := 'tmpVal';
-      f.Get(TypeInfo(Currency),x,tmpVal);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,tmpVal);
-  Finally
-    s.Free();
-  End;
-end;
-
-procedure TTestFormatter.Test_Extended_10;
-const VAL_1 = 12.10;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  tmpVal : Extended;
-begin
-  s := Nil;
-  Try
-    tmpVal := VAL_1;
-    f := CreateFormatter(TypeInfo(TClass_Float));
-
-    f.BeginObject('Root',TypeInfo(TClass_Float));
-      f.Put('tmpVal',TypeInfo(Extended),tmpVal);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    tmpVal := 0;
-
-    f := CreateFormatter(TypeInfo(TClass_Float));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
-      x := 'tmpVal';
-      f.Get(TypeInfo(Extended),x,tmpVal);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,tmpVal);
-  Finally
-    s.Free();
-  End;
-end;
-
 procedure TTestFormatter.Test_Float_WithClass;
 Var
   f : IFormatterBase;
@@ -635,132 +1010,6 @@ begin
   End;
 end;
 
-procedure TTestFormatter.Test_String;
-const VAL_1 = 'AzErTy'; VAL_2 = 'QwErTy';
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  intVal_1 : string; intVal_3 : string;
-begin
-  s := Nil;
-  Try
-    intVal_1 := VAL_1;
-    intVal_3 := VAL_2;
-    f := CreateFormatter(TypeInfo(TClass_Int));
-
-    f.BeginObject('Root',TypeInfo(TClass_Int));
-      f.Put('intVal_1',TypeInfo(string),intVal_1);
-      f.Put('intVal_3',TypeInfo(string),intVal_3);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    intVal_1 := '';
-    intVal_3 := 'yyyyyyyy';
-
-    f := CreateFormatter(TypeInfo(TClass_Int));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
-      x := 'intVal_1';
-      f.Get(TypeInfo(string),x,intVal_1);
-      x := 'intVal_3';
-      f.Get(TypeInfo(string),x,intVal_3);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,intVal_1);
-    AssertEquals(VAL_2,intVal_3);
-  Finally
-    s.Free();
-  End;
-end;
-
-procedure TTestFormatter.Test_Bool;
-const VAL_1 = True; VAL_2 = False;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  intVal_1 : Boolean; intVal_3 : Boolean;
-begin
-  s := Nil;
-  Try
-    intVal_1 := VAL_1;
-    intVal_3 := VAL_2;
-    f := CreateFormatter(TypeInfo(TClass_Int));
-
-    f.BeginObject('Root',TypeInfo(TClass_Int));
-      f.Put('intVal_1',TypeInfo(Boolean),intVal_1);
-      f.Put('intVal_3',TypeInfo(Boolean),intVal_3);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    intVal_1 := False;
-    intVal_3 := True;
-
-    f := CreateFormatter(TypeInfo(TClass_Int));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
-      x := 'intVal_1';
-      f.Get(TypeInfo(Boolean),x,intVal_1);
-      x := 'intVal_3';
-      f.Get(TypeInfo(Boolean),x,intVal_3);
-    f.EndScopeRead();
-
-    AssertEquals(VAL_1,intVal_1);
-    AssertEquals(VAL_2,intVal_3);
-  Finally
-    s.Free();
-  End;
-end;
-
-procedure TTestFormatter.Test_Enum;
-const VAL_1 = teTwo; VAL_2 = teFour;
-Var
-  f : IFormatterBase;
-  s : TMemoryStream;
-  x : string;
-  intVal_1 : TTestEnum; intVal_3 : TTestEnum;
-begin
-  s := Nil;
-  Try
-    intVal_1 := VAL_1;
-    intVal_3 := VAL_2;
-    f := CreateFormatter(TypeInfo(TClass_Int));
-
-    f.BeginObject('Root',TypeInfo(TClass_Enum));
-      f.Put('intVal_1',TypeInfo(TTestEnum),intVal_1);
-      f.Put('intVal_3',TypeInfo(TTestEnum),intVal_3);
-    f.EndScope();
-
-    s := TMemoryStream.Create();
-    f.SaveToStream(s);
-    intVal_1 := teOne;
-    intVal_3 := teOne;
-
-    f := CreateFormatter(TypeInfo(TClass_Int));
-    s.Position := 0;
-    f.LoadFromStream(s);
-    x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
-      x := 'intVal_1';
-      f.Get(TypeInfo(TTestEnum),x,intVal_1);
-      x := 'intVal_3';
-      f.Get(TypeInfo(TTestEnum),x,intVal_3);
-    f.EndScopeRead();
-
-    AssertEquals(Ord(VAL_1),Ord(intVal_1));
-    AssertEquals(Ord(VAL_2),Ord(intVal_3));
-  Finally
-    s.Free();
-  End;
-end;
-
 procedure TTestFormatter.Test_Enum_Bool_String_WithClass;
 Var
   f : IFormatterBase;
@@ -801,6 +1050,433 @@ begin
     a.Free();
     s.Free();
   End;
+end;
+
+procedure TTestFormatter.Test_CplxInt64SimpleContent_WithClass;
+const VAL_S = -12; VAL_U = 10; VAL_X = 121;
+      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexInt64SContentRemotable;
+  nu : TComplexInt64UContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexInt64SContentRemotable.Create();
+  nu := TComplexInt64UContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxInt64S.Value := VAL_S;
+    a.Val_CplxInt64S.StrSimpleAtt_Exemple := VAL_STR_S;
+    a.Val_CplxInt64S.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt64S.BoolSimpleAtt_Exemple := True;
+    a.Elt_Exemple := VAL_STR_X;
+    ns.Value := VAL_S;
+
+    a.Val_CplxInt64U.Value := VAL_U;
+    a.Val_CplxInt64U.StrSimpleAtt_Exemple := VAL_STR_U;
+    a.Val_CplxInt64U.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt64U.BoolSimpleAtt_Exemple := False;
+    nu.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexInt64SContentRemotable),ns);
+      f.Put('nu',TypeInfo(TComplexInt64UContentRemotable),nu);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexInt64SContentRemotable),x,ns);
+      x := 'nu';
+      f.Get(TypeInfo(TComplexInt64UContentRemotable),x,nu);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_S,a.Val_CplxInt64S.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt64S.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_S,a.Val_CplxInt64S.StrSimpleAtt_Exemple);
+    AssertEquals(True,a.Val_CplxInt64S.BoolSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+
+    AssertEquals(VAL_U,a.Val_CplxInt64U.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt64U.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_U,a.Val_CplxInt64U.StrSimpleAtt_Exemple);
+    AssertEquals(False,a.Val_CplxInt64U.BoolSimpleAtt_Exemple);
+  finally
+    FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxInt32SimpleContent_WithClass;
+const VAL_S = -12; VAL_U = 10; VAL_X = 1210;
+      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexInt32SContentRemotable;
+  nu : TComplexInt32UContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexInt32SContentRemotable.Create();
+  nu := TComplexInt32UContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxInt32S.Value := VAL_S;
+    a.Val_CplxInt32S.StrSimpleAtt_Exemple := VAL_STR_S;
+    a.Val_CplxInt32S.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt32S.BoolSimpleAtt_Exemple := True;
+    a.Elt_Exemple := VAL_STR_X;
+    ns.Value := VAL_S;
+
+    a.Val_CplxInt32U.Value := VAL_U;
+    a.Val_CplxInt32U.StrSimpleAtt_Exemple := VAL_STR_U;
+    a.Val_CplxInt32U.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt32U.BoolSimpleAtt_Exemple := False;
+    nu.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexInt32SContentRemotable),ns);
+      f.Put('nu',TypeInfo(TComplexInt32UContentRemotable),nu);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexInt32SContentRemotable),x,ns);
+      x := 'nu';
+      f.Get(TypeInfo(TComplexInt32UContentRemotable),x,nu);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_S,a.Val_CplxInt32S.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt32S.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_S,a.Val_CplxInt32S.StrSimpleAtt_Exemple);
+    AssertEquals(True,a.Val_CplxInt32S.BoolSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+    
+    AssertEquals(VAL_U,a.Val_CplxInt32U.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt32U.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_U,a.Val_CplxInt32U.StrSimpleAtt_Exemple);
+    AssertEquals(False,a.Val_CplxInt32U.BoolSimpleAtt_Exemple);
+  finally
+    FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxInt16SimpleContent_WithClass;
+const VAL_S = -12; VAL_U = 10; VAL_X = 1210;
+      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexInt16SContentRemotable;
+  nu : TComplexInt16UContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexInt16SContentRemotable.Create();
+  nu := TComplexInt16UContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxInt16S.Value := VAL_S;
+    a.Val_CplxInt16S.StrSimpleAtt_Exemple := VAL_STR_S;
+    a.Val_CplxInt16S.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt16S.BoolSimpleAtt_Exemple := True;
+    a.Elt_Exemple := VAL_STR_X;
+    ns.Value := VAL_S;
+
+    a.Val_CplxInt16U.Value := VAL_U;
+    a.Val_CplxInt16U.StrSimpleAtt_Exemple := VAL_STR_U;
+    a.Val_CplxInt16U.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt16U.BoolSimpleAtt_Exemple := False;
+    nu.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexInt16SContentRemotable),ns);
+      f.Put('nu',TypeInfo(TComplexInt16UContentRemotable),nu);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexInt16SContentRemotable),x,ns);
+      x := 'nu';
+      f.Get(TypeInfo(TComplexInt16UContentRemotable),x,nu);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_S,a.Val_CplxInt16S.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt16S.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_S,a.Val_CplxInt16S.StrSimpleAtt_Exemple);
+    AssertEquals(True,a.Val_CplxInt16S.BoolSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+
+    AssertEquals(VAL_U,a.Val_CplxInt16U.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt16U.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_U,a.Val_CplxInt16U.StrSimpleAtt_Exemple);
+    AssertEquals(False,a.Val_CplxInt16U.BoolSimpleAtt_Exemple);
+  finally
+    FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxInt8SimpleContent_WithClass;
+const VAL_S = -12; VAL_U = 10; VAL_X = 121;
+      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexInt8SContentRemotable;
+  nu : TComplexInt8UContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexInt8SContentRemotable.Create();
+  nu := TComplexInt8UContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxInt8S.Value := VAL_S;
+    a.Val_CplxInt8S.StrSimpleAtt_Exemple := VAL_STR_S;
+    a.Val_CplxInt8S.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt8S.BoolSimpleAtt_Exemple := True;
+    a.Elt_Exemple := VAL_STR_X;
+    ns.Value := VAL_S;
+
+    a.Val_CplxInt8U.Value := VAL_U;
+    a.Val_CplxInt8U.StrSimpleAtt_Exemple := VAL_STR_U;
+    a.Val_CplxInt8U.IntSimpleAtt_Exemple := VAL_X;
+    a.Val_CplxInt8U.BoolSimpleAtt_Exemple := False;
+    nu.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexInt8SContentRemotable),ns);
+      f.Put('nu',TypeInfo(TComplexInt8UContentRemotable),nu);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexInt8SContentRemotable),x,ns);
+      x := 'nu';
+      f.Get(TypeInfo(TComplexInt8UContentRemotable),x,nu);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_S,a.Val_CplxInt8S.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt8S.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_S,a.Val_CplxInt8S.StrSimpleAtt_Exemple);
+    AssertEquals(True,a.Val_CplxInt8S.BoolSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+
+    AssertEquals(VAL_U,a.Val_CplxInt8U.Value);
+    AssertEquals(VAL_X,a.Val_CplxInt8U.IntSimpleAtt_Exemple);
+    AssertEquals(VAL_STR_U,a.Val_CplxInt8U.StrSimpleAtt_Exemple);
+    AssertEquals(False,a.Val_CplxInt8U.BoolSimpleAtt_Exemple);
+  finally
+    FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxFloatExtendedSimpleContent_WithClass;
+const VAL_S = -12.10; VAL_U = 10.76; VAL_X = 1210.76;
+      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexFloatExtendedContentRemotable;
+  nu : TComplexFloatDoubleContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexFloatExtendedContentRemotable.Create();
+  nu := TComplexFloatDoubleContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxExtended := T_ComplexFloatExtendedContent.Create();
+    a.Val_CplxExtended.Value := VAL_S;
+    a.Val_CplxDouble := T_ComplexFloatDoubleContent.Create();
+    a.Val_CplxDouble.Value := VAL_U;
+    
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+
+    ns.Value := VAL_S;
+    nu.Value := VAL_U;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexFloatExtendedContentRemotable),ns);
+      f.Put('nu',TypeInfo(TComplexFloatDoubleContentRemotable),nu);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+    a.Val_CplxExtended := T_ComplexFloatExtendedContent.Create();
+    a.Val_CplxDouble := T_ComplexFloatDoubleContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexFloatExtendedContentRemotable),x,ns);
+      x := 'nu';
+      f.Get(TypeInfo(TComplexFloatDoubleContentRemotable),x,nu);
+    f.EndScopeRead();
+
+    AssertEquals('VAL_S <> a.Val_CplxExtended.Value',VAL_S,a.Val_CplxExtended.Value);
+    AssertEquals('VAL_S <> a.Val_CplxDouble.Value',VAL_U,a.Val_CplxDouble.Value);
+    AssertEquals('VAL_S <> ns.Value',VAL_S,ns.Value);
+    AssertEquals('VAL_U <> nu.Value',VAL_U,nu.Value);
+    AssertNull('a.Val_CplxInt32S <> nil',a.Val_CplxInt32S);
+    AssertNull('a.Val_CplxInt32U <> nil',a.Val_CplxInt32U);
+  finally
+    FreeAndNil(nu);
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_CplxStringSimpleContent_WithClass;
+const VAL_S = 'web services toolkit';
+      VAL_STR_S = 'Test Attribute S';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexStringContentRemotable;
+  x : string;
+begin
+  s := nil;
+  ns := TComplexStringContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxString := T_ComplexStringContent.Create();
+    a.Val_CplxString.Value := VAL_S;
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+
+    ns.Value := VAL_STR_S;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexStringContentRemotable),ns);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+    a.Val_CplxString := T_ComplexStringContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexStringContentRemotable),x,ns);
+    f.EndScopeRead();
+
+    AssertEquals('VAL_S <> a.Val_CplxString.Value',VAL_S,a.Val_CplxString.Value);
+    AssertEquals('VAL_STR_S <> ns.Value',VAL_STR_S,ns.Value);
+  finally
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
 end;
 
 procedure TTestFormatter.Test_Object();
@@ -859,8 +1535,40 @@ begin
 end;
 
 procedure TTestFormatter.Test_Object_Nil();
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_B;
+  x : string;
 begin
-  Fail('Write me!');
+  s := nil;
+  a := nil;
+  try
+    f := CreateFormatter(TypeInfo(TClass_B));
+
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('o1',TypeInfo(TClass_B),a);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    FreeAndNil(a);
+
+    a := nil;
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+      x := 'o1';
+      f.Get(TypeInfo(TClass_B),x,a);
+    f.EndScopeRead();
+
+    AssertNull(a);
+  finally
+    a.Free();
+    s.Free();
+  end;
 end;
 
 procedure TTestFormatter.Test_StringArray();
@@ -1599,6 +2307,54 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_ComplexInt32S();
+const VAL_1 = 121076; VAL_2 : LongInt = -101276;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a, b : TComplexInt32SContentRemotable;
+begin
+  s := nil;
+  a := nil;
+  b := nil;
+  try
+    a := TComplexInt32SContentRemotable.Create();
+    b := TComplexInt32SContentRemotable.Create();
+    a.Value := VAL_1;
+    b.Value := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TComplexInt32SContentRemotable),a);
+      f.Put('b',TypeInfo(TComplexInt32SContentRemotable),b);
+    f.EndScope();
+    FreeAndNil(a);FreeAndNil(b);
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+
+    a := TComplexInt32SContentRemotable.Create();
+    b := TComplexInt32SContentRemotable.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+      x := 'a';
+      f.Get(TypeInfo(TComplexInt32SContentRemotable),x,a);
+      x := 'b';
+      f.Get(TypeInfo(TComplexInt32SContentRemotable),x,b);
+    f.EndScopeRead();
+
+    AssertEquals(VAL_1,a.Value);
+    AssertEquals(VAL_2,b.Value);
+  finally
+    s.Free();
+    FreeAndNil(a);
+    FreeAndNil(b);
+  end;
+end;
+
 
 { TTestBinaryFormatter }
 
@@ -2110,7 +2866,8 @@ end;
 
 function TTestSOAPFormatterAttributes.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
 begin
-  Result := inherited CreateFormatter(ARootType);
+  Result := TSOAPBaseFormatter.Create() as IFormatterBase;
+  Result.BeginObject('Env',ARootType);
   Result.SetSerializationStyle(ssAttibuteSerialization);
 end;
 
@@ -2118,18 +2875,118 @@ end;
 
 function TTestBinaryFormatterAttributes.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
 begin
-  Result := inherited CreateFormatter(ARootType);
+  Result := TSOAPBaseFormatter.Create() as IFormatterBase;
+  Result.BeginObject('Env',ARootType);
   Result.SetSerializationStyle(ssAttibuteSerialization);
+end;
+
+{ TClass_CplxSimpleContent }
+
+constructor TClass_CplxSimpleContent.Create();
+begin
+  FVal_CplxInt64S := T_ComplexInt64SContent.Create();
+    FVal_CplxInt64U := T_ComplexInt64UContent.Create();
+  FVal_CplxInt32S := T_ComplexInt32SContent.Create();
+    FVal_CplxInt32U := T_ComplexInt32UContent.Create();
+  FVal_CplxInt16S := T_ComplexInt16SContent.Create();
+    FVal_CplxInt16U := T_ComplexInt16UContent.Create();
+  FVal_CplxInt8S := T_ComplexInt8SContent.Create();
+    FVal_CplxInt8U := T_ComplexInt8UContent.Create();
+end;
+
+destructor TClass_CplxSimpleContent.Destroy();
+begin
+  FreeAndNil(FVal_CplxInt64S);
+    FreeAndNil(FVal_CplxInt64U);
+  FreeAndNil(FVal_CplxInt32U);
+    FreeAndNil(FVal_CplxInt32S);
+  FreeAndNil(FVal_CplxInt16U);
+    FreeAndNil(FVal_CplxInt16S);
+  FreeAndNil(FVal_CplxInt8U);
+    FreeAndNil(FVal_CplxInt8S);
+  inherited Destroy();
+end;
+
+{ TTest_TDateRemotable }
+
+procedure TTest_TDateRemotable.FormatDate();
+const sDATE = '1976-10-12T23:34:56';
+var
+  d : TDateTime;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
+  AssertTrue(AnsiPos(TDateRemotable.FormatDate(d),sDATE) = 1);
+end;
+
+procedure TTest_TDateRemotable.ParseDate();
+const sDATE = '1976-10-12T23:34:56';
+var
+  s : string;
+  objd : TDateRemotable;
+  d : TDateTime;
+  y,m,dy : Word;
+  hh,mn,ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '1976-10-12T23:34:56';
+  d := TDateRemotable.ParseDate(s);
+  DecodeDate(d,y,m,dy);
+    AssertEquals('Year',y,1976);
+    AssertEquals('Month',m,10);
+    AssertEquals('Day',dy,12);
+
+  DecodeTime(d,hh,mn,ss,ssss);
+    AssertEquals('Hour',hh,23);
+    AssertEquals('Minute',mn,34);
+    AssertEquals('Second',ss,56);
+
+  objd := TDateRemotable.Create();
+  try
+    objd.AsDate := d;
+    AssertEquals('Year',objd.Year,1976);
+    AssertEquals('Month',objd.Month,10);
+    AssertEquals('Day',objd.Day,12);
+    AssertEquals('Hour',objd.Hour,23);
+    AssertEquals('Minute',objd.Minute,34);
+    AssertEquals('Second',objd.Second,56);
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+{ TTest_TDurationRemotable }
+
+procedure TTest_TDurationRemotable.FormatDate();
+begin
+  Fail('Write me!');
+end;
+
+procedure TTest_TDurationRemotable.ParseDate();
+begin
+  Fail('Write me!');
 end;
 
 initialization
   RegisterStdTypes();
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Int),'TClass_Int');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Int),'TClass_Int').RegisterExternalPropertyName('Val_8U','U8');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Enum),'TClass_Enum');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A),'TClass_A');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_B),'TClass_B');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Float),'TClass_Float');
+
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt32SContent),'T_ComplexInt32SContent');
+    GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt32UContent),'T_ComplexInt32UContent');
+
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16SContent),'T_ComplexInt16SContent');
+    GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16UContent),'T_ComplexInt16UContent');
+    
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
+  
+  TClass_CplxSimpleContent.RegisterAttributeProperty('Elt_Exemple');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');
 
 
   RegisterTest(TTestArray);
@@ -2138,5 +2995,6 @@ initialization
   RegisterTest(TTest_TBaseComplexRemotable);
   RegisterTest(TTestSOAPFormatterAttributes);
   RegisterTest(TTestBinaryFormatterAttributes);
+  RegisterTest(TTest_TDateRemotable);
+  RegisterTest(TTest_TDurationRemotable);
 end.
-

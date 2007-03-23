@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, umain, metadata_service_proxy, indylaz,
+  { add your units here }, umain, metadata_service_proxy,
   metadata_service;
 
 begin

@@ -7,14 +7,10 @@ object fMain: TfMain
   VertScrollBar.Page = 310
   ActiveControl = edtAddress
   Caption = 'WST Metadata Browser'
-  ClientHeight = 311
-  ClientWidth = 574
   object pnlHead: TPanel
     Height = 82
     Width = 574
     Align = alTop
-    ClientHeight = 82
-    ClientWidth = 574
     TabOrder = 0
     object Label1: TLabel
       Left = 14
@@ -89,21 +85,19 @@ object fMain: TfMain
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 229
-    ClientWidth = 574
     TabOrder = 1
     object Label2: TLabel
       Left = 14
-      Height = 14
+      Height = 18
       Top = 14
-      Width = 53
+      Width = 67
       Caption = 'Repository'
       Color = clNone
       ParentColor = False
     end
     object edtRepositoryList: TComboBox
       Left = 112
-      Height = 21
+      Height = 24
       Top = 7
       Width = 344
       Anchors = [akTop, akLeft, akRight]
@@ -145,10 +139,12 @@ object fMain: TfMain
     top = 464
     object actGetRepositoryList: TAction
       Caption = 'Get Rep. List'
+      DisableIfNoHandler = True
       OnExecute = actGetRepositoryListExecute
     end
     object actGetRepository: TAction
       Caption = 'Get Repository'
+      DisableIfNoHandler = True
       OnExecute = actGetRepositoryExecute
       OnUpdate = actGetRepositoryUpdate
     end

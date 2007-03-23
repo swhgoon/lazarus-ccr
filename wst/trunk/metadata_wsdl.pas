@@ -670,7 +670,11 @@ begin
       c := GetEnumNameCount(typItm.DataType);
       for i := 0 to pred(c) do begin
         s := Format('%s:%s',[sXSD,sENUMERATION]);
-        CreateElement(s,restrictNode,AWsdlDocument).SetAttribute(sVALUE,GetEnumName(typItm.DataType,i));
+        //CreateElement(s,restrictNode,AWsdlDocument).SetAttribute(sVALUE,GetEnumName(typItm.DataType,i));
+        CreateElement(s,restrictNode,AWsdlDocument).SetAttribute(
+          sVALUE,
+          typItm.GetExternalPropertyName(GetEnumName(typItm.DataType,i))
+        );
       end;
   end;
 end;

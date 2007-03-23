@@ -25,6 +25,8 @@ const
   stArray  = stBase + 2;
 
 Type
+  anyURI = type string;
+  
   TScopeType = Integer;
   THeaderDirection = ( hdOut, hdIn );
   THeaderDirections = set of THeaderDirection;
@@ -140,12 +142,20 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData
     );
+    procedure PutScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      const AData
+    );
     procedure Get(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData
     );
-
+    procedure GetScopeInnerValue(
+      const ATypeInfo : PTypeInfo;
+      var   AData
+    );
+    
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
 
@@ -199,8 +209,74 @@ type
   TAbstractSimpleRemotable = class(TBaseRemotable)
   end;
 
+  { TBaseDateRemotable }
+
+  TBaseDateRemotable = class(TAbstractSimpleRemotable)
+  private
+    FDate : TDateTime;
+    FYear   : Integer;
+    FMonth  : Integer;
+    FDay    : Integer;
+  protected
+    procedure SetDate(const AValue: TDateTime);virtual;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class function FormatDate(const ADate : TDateTime):string;virtual;abstract;
+    class function ParseDate(const ABuffer : string):TDateTime;virtual;abstract;
+
+    procedure Assign(Source: TPersistent); override;
+
+    property AsDate : TDateTime read FDate write SetDate;
+    property Year : Integer read FYear;
+    property Month : Integer read FMonth;
+    property Day : Integer read FDay;
+  end;
+
+  { TDateRemotable }
+
+  TDateRemotable = class(TBaseDateRemotable)
+  private
+    FHour: Integer;
+    FMinute: Integer;
+    FSecond: Integer;
+  protected
+    procedure SetDate(const AValue: TDateTime);override;
+  public
+    class function FormatDate(const ADate : TDateTime):string;override;
+    class function ParseDate(const ABuffer : string):TDateTime;override;
+    property Hour : Integer read FHour;
+    property Minute : Integer read FMinute;
+    property Second : Integer read FSecond;
+  end;
+  
+  TDurationRemotable = class(TBaseDateRemotable)
+  protected
+    //class function FormatDate(const ADate : TDateTime):string;override;
+    //class function ParseDate(const ABuffer : string):TDateTime;override;
+  end;
+  
   TAbstractComplexRemotableClass = class of TAbstractComplexRemotable;
+
+  { TAbstractComplexRemotable }
+
   TAbstractComplexRemotable = class(TBaseRemotable)
+  public
+    class procedure RegisterAttributeProperty(const AProperty : shortstring);virtual;
+    class procedure RegisterAttributeProperties(const APropertList : array of shortstring);virtual;
+    class function IsAttributeProperty(const AProperty : shortstring):Boolean;
+
+    procedure Assign(Source: TPersistent); override;
   end;
 
   TBaseComplexRemotableClass = class of TBaseComplexRemotable;
@@ -221,13 +297,183 @@ type
       var   AName     : string;
       const ATypeInfo : PTypeInfo
     );override;
-    class procedure RegisterAttributeProperty(const AProperty : shortstring);virtual;
-    class procedure RegisterAttributeProperties(const APropertList : array of shortstring);virtual;
-    class function IsAttributeProperty(const AProperty : shortstring):Boolean;
-    procedure Assign(Source: TPersistent); override;
   end;
 
+  { TBaseComplexSimpleContentRemotable }
 
+  TBaseComplexSimpleContentRemotable = class(TAbstractComplexRemotable)
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);virtual;abstract;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);virtual;abstract;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+  end;
+
+  { TComplexInt8UContentRemotable }
+
+  TComplexInt8UContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Byte;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Byte read FValue write FValue;
+  end;
+
+  { TComplexInt8SContentRemotable }
+  
+  TComplexInt8SContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: ShortInt;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : ShortInt read FValue write FValue;
+  end;
+
+  { TComplexInt16SContentRemotable }
+
+  TComplexInt16SContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: SmallInt;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : SmallInt read FValue write FValue;
+  end;
+
+  TComplexInt16UContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Word;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Word read FValue write FValue;
+  end;
+  
+  { TComplexInt32SContentRemotable }
+
+  TComplexInt32SContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: LongInt;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : LongInt read FValue write FValue;
+  end;
+
+  { TComplexInt32UContentRemotable }
+
+  TComplexInt32UContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: LongWord;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : LongWord read FValue write FValue;
+  end;
+  
+  { TComplexInt64SContentRemotable }
+
+  TComplexInt64SContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Int64;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Int64 read FValue write FValue;
+  end;
+
+  { TComplexInt64UContentRemotable }
+
+  TComplexInt64UContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: QWord;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : QWord read FValue write FValue;
+  end;
+
+  { TComplexFloatExtendedContentRemotable }
+
+  TComplexFloatExtendedContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Extended;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Extended read FValue write FValue;
+  end;
+
+  { TComplexFloatDoubleContentRemotable }
+
+  TComplexFloatDoubleContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Double;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Double read FValue write FValue;
+  end;
+
+  { TComplexFloatSingleContentRemotable }
+
+  TComplexFloatSingleContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Single;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Single read FValue write FValue;
+  end;
+
+  { TComplexStringContentRemotable }
+
+  TComplexStringContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: string;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : string read FValue write FValue;
+  end;
+
+  { TComplexBooleanContentRemotable }
+
+  TComplexBooleanContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Boolean;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Boolean read FValue write FValue;
+  end;
+  
   THeaderBlockClass = class of THeaderBlock;
 
   { THeaderBlock }
@@ -743,7 +989,9 @@ type
     FNameSpace: string;
     FDeclaredName : string;
     FOptions: TTypeRegistryItemOptions;
-    FSynonymTable : TStringList;
+    FSynonymTable : TStrings;
+    FExternalNames : TStrings;
+    FInternalNames : TStrings;
   public
     constructor Create(
             ANameSpace    : string;
@@ -751,8 +999,12 @@ type
       Const ADeclaredName : string = ''
     );
     destructor Destroy();override;
-    procedure AddPascalSynonym(const ASynonym : string);//inline;
+    function AddPascalSynonym(const ASynonym : string):TTypeRegistryItem;//inline;
     function IsSynonym(const APascalTypeName : string):Boolean;//inline;
+    
+    procedure RegisterExternalPropertyName(const APropName, AExtPropName : string);
+    function GetExternalPropertyName(const APropName : string) : string;
+    function GetInternalPropertyName(const AExtPropName : string) : string;
 
     property DataType : PTypeInfo read FDataType;
     property NameSpace : string read FNameSpace;
@@ -847,6 +1099,8 @@ begin
 
   r.Register(sXSD_NS,TypeInfo(string),'string').AddPascalSynonym('string');
   r.Register(sXSD_NS,TypeInfo(AnsiString),'ansistring').AddPascalSynonym('ansistring');
+  r.Register(sXSD_NS,TypeInfo(anyURI),'anyURI').AddPascalSynonym('anyURI');
+
   r.Register(sXSD_NS,TypeInfo(boolean),'boolean').AddPascalSynonym('boolean');
 
   r.Register(sXSD_NS,TypeInfo(Byte),'unsignedByte').AddPascalSynonym('Byte');
@@ -854,13 +1108,16 @@ begin
   r.Register(sXSD_NS,TypeInfo(Word),'unsignedShort').AddPascalSynonym('Word');
     r.Register(sXSD_NS,TypeInfo(SmallInt),'short').AddPascalSynonym('SmallInt');
   r.Register(sXSD_NS,TypeInfo(Int64),'long').AddPascalSynonym('Int64');
-    r.Register(sXSD_NS,TypeInfo(QWord),'int').AddPascalSynonym('QWord');
+    r.Register(sXSD_NS,TypeInfo(QWord),'unsignedLong').AddPascalSynonym('QWord');
 
   r.Register(sXSD_NS,TypeInfo(Single),'float').AddPascalSynonym('Single');
   r.Register(sXSD_NS,TypeInfo(Currency),'float').AddPascalSynonym('Currency');
   r.Register(sXSD_NS,TypeInfo(Comp),'float').AddPascalSynonym('Comp');
   r.Register(sXSD_NS,TypeInfo(Double),'double').AddPascalSynonym('Double');
-  r.Register(sXSD_NS,TypeInfo(Extended),'double').AddPascalSynonym('Extended');
+  r.Register(sXSD_NS,TypeInfo(Extended),'decimal').AddPascalSynonym('Extended');
+
+  r.Register(sXSD_NS,TypeInfo(TDateRemotable),'dateTime').AddPascalSynonym('TDateRemotable');
+  r.Register(sXSD_NS,TypeInfo(TDurationRemotable),'duration').AddPascalSynonym('TDurationRemotable');
 
   ri := r.Register(sWST_BASE_NS,TypeInfo(TBaseArrayRemotable),'TBaseArrayRemotable');
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
@@ -889,6 +1146,25 @@ begin
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatDoubleRemotable),'TArrayOfFloatDoubleRemotable').AddPascalSynonym('TArrayOfFloatDoubleRemotable');
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatExtendedRemotable),'TArrayOfFloatExtendedRemotable').AddPascalSynonym('TArrayOfFloatExtendedRemotable');
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatCurrencyRemotable),'TArrayOfFloatCurrencyRemotable').AddPascalSynonym('TArrayOfFloatCurrencyRemotable');
+  
+  r.Register(sXSD_NS,TypeInfo(TComplexInt64SContentRemotable),'long').AddPascalSynonym('TComplexInt64SContentRemotable');
+    r.Register(sXSD_NS,TypeInfo(TComplexInt64UContentRemotable),'unsignedLong').AddPascalSynonym('TComplexInt64UContentRemotable');
+  
+  r.Register(sXSD_NS,TypeInfo(TComplexInt32SContentRemotable),'int').AddPascalSynonym('TComplexInt32SContentRemotable');
+    r.Register(sXSD_NS,TypeInfo(TComplexInt32UContentRemotable),'unsignedInt').AddPascalSynonym('TComplexInt32UContentRemotable');
+    
+  r.Register(sXSD_NS,TypeInfo(TComplexInt16SContentRemotable),'short').AddPascalSynonym('TComplexInt16SContentRemotable');
+    r.Register(sXSD_NS,TypeInfo(TComplexInt16UContentRemotable),'unsignedShort').AddPascalSynonym('TComplexInt16UContentRemotable');
+
+  r.Register(sXSD_NS,TypeInfo(TComplexInt8SContentRemotable),'byte').AddPascalSynonym('TComplexInt8SContentRemotable');
+    r.Register(sXSD_NS,TypeInfo(TComplexInt8UContentRemotable),'unsignedByte').AddPascalSynonym('TComplexInt8UContentRemotable');
+
+  r.Register(sXSD_NS,TypeInfo(TComplexFloatExtendedContentRemotable),'decimal').AddPascalSynonym('TComplexFloatExtendedContentRemotable');
+  r.Register(sXSD_NS,TypeInfo(TComplexFloatDoubleContentRemotable),'double').AddPascalSynonym('TComplexFloatDoubleContentRemotable');
+  r.Register(sXSD_NS,TypeInfo(TComplexFloatSingleContentRemotable),'Single').AddPascalSynonym('TComplexFloatSingleContentRemotable');
+  
+  r.Register(sXSD_NS,TypeInfo(TComplexStringContentRemotable),'string').AddPascalSynonym('TComplexStringContentRemotable');
+  r.Register(sXSD_NS,TypeInfo(TComplexBooleanContentRemotable),'boolean').AddPascalSynonym('TComplexBooleanContentRemotable');
 end;
 
 function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
@@ -941,15 +1217,15 @@ Type
   private
     FAttributeFieldList : TStringList;
   private
-    FElementClass: TBaseComplexRemotableClass;
+    FElementClass: TAbstractComplexRemotableClass;
     procedure AddAttributeField(const AAttributeField : string);
     function GetAttributeCount: Integer;
     function GetAttributeField(AIndex : Integer): string;
   public
-    constructor Create(const AElementClass : TBaseComplexRemotableClass);
+    constructor Create(const AElementClass : TAbstractComplexRemotableClass);
     destructor Destroy();override;
     function IsAttributeField(const AField : string):Boolean;
-    property ElementClass : TBaseComplexRemotableClass read FElementClass;
+    property ElementClass : TAbstractComplexRemotableClass read FElementClass;
     property AttributeFieldCount : Integer read GetAttributeCount;
     property AttributeField[AIndex : Integer] : string read GetAttributeField;
   end;
@@ -962,12 +1238,12 @@ Type
   private
     function GetCount: Integer;
     function GetItem(AIndex : Integer): TSerializeOptions;
-    function IndexOf(const AElementClass : TBaseComplexRemotableClass):Integer;
+    function IndexOf(const AElementClass : TAbstractComplexRemotableClass):Integer;
   public
     constructor Create();
     destructor Destroy();override;
-    function RegisterClass(const AElementClass : TBaseComplexRemotableClass):TSerializeOptions;
-    function Find(const AElementClass : TBaseComplexRemotableClass):TSerializeOptions;
+    function RegisterClass(const AElementClass : TAbstractComplexRemotableClass):TSerializeOptions;
+    function Find(const AElementClass : TAbstractComplexRemotableClass):TSerializeOptions;
     property Count : Integer read GetCount;
     property Item[AIndex : Integer] : TSerializeOptions read GetItem;
   end;
@@ -995,7 +1271,7 @@ begin
 end;
 
 function TSerializeOptionsRegistry.IndexOf(
-  const AElementClass: TBaseComplexRemotableClass
+  const AElementClass: TAbstractComplexRemotableClass
 ): Integer;
 begin
   for Result := 0 to Pred(Count) do begin
@@ -1017,7 +1293,7 @@ begin
 end;
 
 function TSerializeOptionsRegistry.RegisterClass(
-  const AElementClass: TBaseComplexRemotableClass
+  const AElementClass: TAbstractComplexRemotableClass
 ): TSerializeOptions;
 var
   i, j, k, c : Integer;
@@ -1038,9 +1314,7 @@ begin
   Result := FList[i] as TSerializeOptions;
 end;
 
-function TSerializeOptionsRegistry.Find(
-  const AElementClass: TBaseComplexRemotableClass
-): TSerializeOptions;
+function TSerializeOptionsRegistry.Find(const AElementClass: TAbstractComplexRemotableClass): TSerializeOptions;
 var
   i : Integer;
 begin
@@ -1069,7 +1343,7 @@ begin
   Result := FAttributeFieldList[AIndex];
 end;
 
-constructor TSerializeOptions.Create(const AElementClass: TBaseComplexRemotableClass);
+constructor TSerializeOptions.Create(const AElementClass: TAbstractComplexRemotableClass);
 begin
   FElementClass := AElementClass;
   FAttributeFieldList := TStringList.Create();
@@ -1105,6 +1379,8 @@ Var
   floatDt : TFloatBuffer;
   p : PPropInfo;
   oldSS,ss : TSerializationStyle;
+  typRegItem : TTypeRegistryItem;
+  prpName : string;
 begin
   oldSS := AStore.GetSerializationStyle();
   AStore.BeginObject(AName,ATypeInfo);
@@ -1118,6 +1394,7 @@ begin
       propListLen := GetPropList(ATypeInfo,propList);
       try
         ss := AStore.GetSerializationStyle();
+        typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
           pt := p^.PropType;
@@ -1131,26 +1408,27 @@ begin
             end;
             if ( ss <> AStore.GetSerializationStyle() ) then
               AStore.SetSerializationStyle(ss);
+            prpName := typRegItem.GetExternalPropertyName(p^.Name);
             case pt^.Kind of
               tkInt64,tkQWord :
                 begin
                   int64Data := GetOrdProp(AObject,p^.Name);
-                  AStore.Put(p^.Name,pt,int64Data);
+                  AStore.Put(prpName,pt,int64Data);
                 end;
               tkLString, tkAString :
                 begin
                   strData := GetStrProp(AObject,p^.Name);
-                  AStore.Put(p^.Name,pt,strData);
+                  AStore.Put(prpName,pt,strData);
                 end;
               tkClass :
                 begin
                   objData := GetObjectProp(AObject,p^.Name);
-                  AStore.Put(p^.Name,pt,objData);
+                  AStore.Put(prpName,pt,objData);
                 end;
               tkBool :
                 begin
                   boolData := Boolean(GetOrdProp(AObject,p^.Name));
-                  AStore.Put(p^.Name,pt,boolData);
+                  AStore.Put(prpName,pt,boolData);
                 end;
               tkEnumeration,tkInteger :
                 begin
@@ -1159,32 +1437,32 @@ begin
                     otSByte :
                       begin
                         enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.ShortIntData);
+                        AStore.Put(prpName,pt,enumData.ShortIntData);
                       end;
                     otUByte :
                       begin
                         enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.ByteData);
+                        AStore.Put(prpName,pt,enumData.ByteData);
                       end;
                     otSWord :
                       begin
                         enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.SmallIntData);
+                        AStore.Put(prpName,pt,enumData.SmallIntData);
                       end;
                     otUWord :
                       begin
                         enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.WordData);
+                        AStore.Put(prpName,pt,enumData.WordData);
                       end;
                     otSLong :
                       begin
                         enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.SLongIntData);
+                        AStore.Put(prpName,pt,enumData.SLongIntData);
                       end;
                     otULong :
                       begin
                         enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,enumData.ULongIntData);
+                        AStore.Put(prpName,pt,enumData.ULongIntData);
                       end;
                   end;
                 end;
@@ -1195,27 +1473,27 @@ begin
                     ftSingle :
                       begin
                         floatDt.SingleData := Single(GetFloatProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,floatDt.SingleData);
+                        AStore.Put(prpName,pt,floatDt.SingleData);
                       end;
                     ftDouble :
                       begin
                         floatDt.DoubleData := Double(GetFloatProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,floatDt.DoubleData);
+                        AStore.Put(prpName,pt,floatDt.DoubleData);
                       end;
                     ftExtended :
                       begin
                         floatDt.ExtendedData := Extended(GetFloatProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,floatDt.ExtendedData);
+                        AStore.Put(prpName,pt,floatDt.ExtendedData);
                       end;
                     ftCurr :
                       begin
                         floatDt.CurrencyData := Currency(GetFloatProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,floatDt.CurrencyData);
+                        AStore.Put(prpName,pt,floatDt.CurrencyData);
                       end;
                     ftComp :
                       begin
                         floatDt.CompData := Comp(GetFloatProp(AObject,p^.Name));
-                        AStore.Put(p^.Name,pt,floatDt.CompData);
+                        AStore.Put(prpName,pt,floatDt.CompData);
                       end;
                   end;
                 end;
@@ -1235,7 +1513,7 @@ end;
 Type
   TFloatExtendedType = Extended;
 class procedure TBaseComplexRemotable.Load(
-  Var   AObject   : TObject;
+  Var   AObject    : TObject;
         AStore     : IFormatterBase;
   var   AName      : String;
   const ATypeInfo  : PTypeInfo
@@ -1257,6 +1535,7 @@ Var
   persistType : TPropStoreType;
   objTypeData : PTypeData;
   oldSS,ss : TSerializationStyle;
+  typRegItem : TTypeRegistryItem;
 begin
   oldSS := AStore.GetSerializationStyle();
   AStore.BeginScopeRead(AName,ATypeInfo);
@@ -1270,12 +1549,13 @@ begin
     If ( propCount > 0 ) Then Begin
       propListLen := GetPropList(ATypeInfo,propList);
       Try
+        typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
         For i := 0 To Pred(propCount) Do Begin
           p := propList^[i];
           persistType := IsStoredPropClass(objTypeData^.ClassType,p);
           If ( persistType in [pstOptional,pstAlways] ) Then Begin
             pt := p^.PropType;
-            propName := p^.Name;
+            propName := typRegItem.GetExternalPropertyName(p^.Name);
             if IsAttributeProperty(p^.Name) then begin
               ss := ssAttibuteSerialization;
             end else begin
@@ -1288,26 +1568,26 @@ begin
                 tkInt64,tkQWord :
                   Begin
                     AStore.Get(pt,propName,int64Data);
-                    SetOrdProp(AObject,propName,int64Data);
+                    SetOrdProp(AObject,p^.Name,int64Data);
                   End;
                 tkLString, tkAString :
                   Begin
                     AStore.Get(pt,propName,strData);
-                    SetStrProp(AObject,propName,strData);
+                    SetStrProp(AObject,p^.Name,strData);
                   End;
                 tkBool :
                   Begin
                     AStore.Get(pt,propName,boolData);
-                    SetOrdProp(AObject,propName,Ord(boolData));
+                    SetOrdProp(AObject,p^.Name,Ord(boolData));
                   End;
                 tkClass :
                   Begin
-                    objData := GetObjectProp(AObject,propName);
+                    objData := GetObjectProp(AObject,p^.Name);
                     objDataCreateHere := not Assigned(objData);
                     try
                       AStore.Get(pt,propName,objData);
                       if objDataCreateHere then
-                        SetObjectProp(AObject,propName,objData);
+                        SetObjectProp(AObject,p^.Name,objData);
                     finally
                       if objDataCreateHere then
                         FreeAndNil(objData);
@@ -1348,7 +1628,7 @@ begin
                           int64Data := enumData.ULongIntData;
                         End;
                     End;
-                    SetOrdProp(AObject,propName,int64Data);
+                    SetOrdProp(AObject,p^.Name,int64Data);
                   End;
                 tkFloat :
                   Begin
@@ -1380,7 +1660,7 @@ begin
                           floatDt := floatBuffer.CompData;
                         End;
                     End;
-                    SetFloatProp(AObject,propName,floatDt);
+                    SetFloatProp(AObject,p^.Name,floatDt);
                   End;
               End;
             except
@@ -1398,83 +1678,6 @@ begin
   finally
     AStore.EndScopeRead();
     AStore.SetSerializationStyle(oldSS);
-  end;
-end;
-
-class procedure TBaseComplexRemotable.RegisterAttributeProperty(const AProperty: shortstring);
-var
-  ri : TSerializeOptions;
-begin
-  ri := GetSerializeOptionsRegistry().Find(Self);
-  if not Assigned(ri) then
-    ri := GetSerializeOptionsRegistry().RegisterClass(Self);
-  ri.AddAttributeField(AProperty);
-end;
-
-class procedure TBaseComplexRemotable.RegisterAttributeProperties(
-  const APropertList : array of shortstring
-);
-var
-  i : Integer;
-begin
-  for i := Low(APropertList) to High(APropertList) do
-    RegisterAttributeProperty(APropertList[i]);
-end;
-
-class function TBaseComplexRemotable.IsAttributeProperty(const AProperty: shortstring): Boolean;
-var
-  ri : TSerializeOptions;
-  pc : TClass;
-begin
-  Result := False;
-  if ( Self = TBaseComplexRemotable ) then
-    Exit;
-  pc := Self;
-  while Assigned(pc) and pc.InheritsFrom(TBaseComplexRemotable) do begin
-    ri := GetSerializeOptionsRegistry().Find(TBaseComplexRemotableClass(pc));
-    if Assigned(ri) then begin
-      Result := ri.IsAttributeField(AProperty);
-      Exit;
-    end;
-    pc := pc.ClassParent;
-  end;
-end;
-
-procedure TBaseComplexRemotable.Assign(Source: TPersistent);
-var
-  propList : PPropList;
-  i, propCount, propListLen : Integer;
-  p, sp : PPropInfo;
-  selfTypeInfo : PTypeInfo;
-begin
-  if not Assigned(Source) then
-    Exit;
-  selfTypeInfo := Self.ClassInfo;
-  propCount := GetTypeData(selfTypeInfo)^.PropCount;
-  if ( propCount > 0 ) then begin
-    propListLen := GetPropList(selfTypeInfo,propList);
-    try
-      for i := 0 to Pred(propCount) do begin
-        p := propList^[i];
-        sp := GetPropInfo(Source,p^.Name);
-        if Assigned(sp) and Assigned(sp^.GetProc) and
-           Assigned(p^.SetProc)
-        then begin
-          case p^.PropType^.Kind of
-            tkInt64,tkQWord, tkBool, tkEnumeration,tkInteger :
-              SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
-            tkLString, tkAString :
-              SetStrProp(Self,p,GetStrProp(Source,p^.Name));
-            tkClass :
-              SetObjectProp(Self,p,GetObjectProp(Source,p^.Name));
-            tkFloat :
-              SetFloatProp(Self,p,GetFloatProp(Source,p^.Name));
-          end;
-        end;
-      end;
-    finally
-      Freemem(propList,propListLen*SizeOf(Pointer));
-    end;
   end;
 end;
 
@@ -1823,12 +2026,15 @@ end;
 
 destructor TTypeRegistryItem.Destroy();
 begin
+  FreeAndNil(FInternalNames);
+  FreeAndNil(FExternalNames);
   FreeAndNil(FSynonymTable);
   inherited Destroy();
 end;
 
-procedure TTypeRegistryItem.AddPascalSynonym(const ASynonym: string); //inline;
+function TTypeRegistryItem.AddPascalSynonym(const ASynonym: string):TTypeRegistryItem; //inline;
 begin
+  Result := Self;
   if AnsiSameText(ASynonym,DataType^.Name) then
     Exit;
   if not Assigned(FSynonymTable) then begin
@@ -1844,6 +2050,33 @@ begin
   Result := AnsiSameText(APascalTypeName,DataType^.Name);
   if ( not Result ) and Assigned(FSynonymTable) then
     Result := ( FSynonymTable.IndexOf(APascalTypeName) >= 0 ) ;
+end;
+
+procedure TTypeRegistryItem.RegisterExternalPropertyName(const APropName,AExtPropName: string);
+begin
+  if not Assigned(FExternalNames) then begin
+    FExternalNames := TStringList.Create();
+    FInternalNames := TStringList.Create();
+  end;
+  FExternalNames.Values[APropName] := AExtPropName;
+  FInternalNames.Values[AExtPropName] := APropName;
+end;
+
+function TTypeRegistryItem.GetExternalPropertyName(const APropName: string): string;
+begin
+  if Assigned(FExternalNames) and ( FExternalNames.IndexOfName(APropName) <> -1 ) then begin
+    Result := FExternalNames.Values[APropName];
+  end else begin
+    Result := APropName;
+  end;
+end;
+
+function TTypeRegistryItem.GetInternalPropertyName(const AExtPropName: string): string;
+begin
+  if Assigned(FInternalNames) and ( FInternalNames.IndexOfName(AExtPropName) <> -1 ) then
+    Result := FInternalNames.Values[AExtPropName]
+  else
+    Result := AExtPropName;
 end;
 
 { TTypeRegistry }
@@ -2847,6 +3080,854 @@ begin
   inherited Destroy();
 end;
 
+
+{ TAbstractComplexRemotable }
+
+class procedure TAbstractComplexRemotable.RegisterAttributeProperty(const AProperty: shortstring);
+var
+  ri : TSerializeOptions;
+begin
+  ri := GetSerializeOptionsRegistry().Find(Self);
+  if not Assigned(ri) then
+    ri := GetSerializeOptionsRegistry().RegisterClass(Self);
+  ri.AddAttributeField(AProperty);
+end;
+
+class procedure TAbstractComplexRemotable.RegisterAttributeProperties(const APropertList: array of shortstring);
+var
+  i : Integer;
+begin
+  for i := Low(APropertList) to High(APropertList) do
+    RegisterAttributeProperty(APropertList[i]);
+end;
+
+class function TAbstractComplexRemotable.IsAttributeProperty(const AProperty: shortstring): Boolean;
+var
+  ri : TSerializeOptions;
+  pc : TClass;
+begin
+  Result := False;
+  if ( Self = TBaseComplexRemotable ) then
+    Exit;
+  pc := Self;
+  while Assigned(pc) and pc.InheritsFrom(TBaseComplexRemotable) do begin
+    ri := GetSerializeOptionsRegistry().Find(TBaseComplexRemotableClass(pc));
+    if Assigned(ri) then begin
+      Result := ri.IsAttributeField(AProperty);
+      Exit;
+    end;
+    pc := pc.ClassParent;
+  end;
+end;
+
+procedure TAbstractComplexRemotable.Assign(Source: TPersistent);
+var
+  propList : PPropList;
+  i, propCount, propListLen : Integer;
+  p, sp : PPropInfo;
+  selfTypeInfo : PTypeInfo;
+begin
+  if not Assigned(Source) then
+    Exit;
+  selfTypeInfo := Self.ClassInfo;
+  propCount := GetTypeData(selfTypeInfo)^.PropCount;
+  if ( propCount > 0 ) then begin
+    propListLen := GetPropList(selfTypeInfo,propList);
+    try
+      for i := 0 to Pred(propCount) do begin
+        p := propList^[i];
+        sp := GetPropInfo(Source,p^.Name);
+        if Assigned(sp) and Assigned(sp^.GetProc) and
+           Assigned(p^.SetProc)
+        then begin
+          case p^.PropType^.Kind of
+            tkInt64,tkQWord, tkBool, tkEnumeration,tkInteger :
+              SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
+            tkLString, tkAString :
+              SetStrProp(Self,p,GetStrProp(Source,p^.Name));
+            tkClass :
+              SetObjectProp(Self,p,GetObjectProp(Source,p^.Name));
+            tkFloat :
+              SetFloatProp(Self,p,GetFloatProp(Source,p^.Name));
+          end;
+        end;
+      end;
+    finally
+      Freemem(propList,propListLen*SizeOf(Pointer));
+    end;
+  end;
+end;
+
+{ TBaseComplexSimpleContentRemotable }
+
+class procedure TBaseComplexSimpleContentRemotable.Save(
+        AObject: TBaseRemotable;
+        AStore: IFormatterBase;
+  const AName: string;
+  const ATypeInfo: PTypeInfo
+);
+Var
+  propList : PPropList;
+  i, propCount, propListLen : Integer;
+  pt : PTypeInfo;
+  int64Data : Int64;
+  strData : String;
+  objData : TObject;
+  boolData : Boolean;
+  enumData : TEnumBuffer;
+  floatDt : TFloatBuffer;
+  p : PPropInfo;
+  oldSS : TSerializationStyle;
+  tr : TTypeRegistry;
+  propName : string;
+begin
+  oldSS := AStore.GetSerializationStyle();
+  AStore.BeginObject(AName,ATypeInfo);
+  try
+    if not Assigned(AObject) then begin
+      AStore.NilCurrentScope();
+      Exit;
+    end;
+    SaveValue(AObject,AStore);
+    propCount := GetTypeData(ATypeInfo)^.PropCount;
+    if ( propCount > 0 ) then begin
+      propListLen := GetPropList(ATypeInfo,propList);
+      try
+        tr := GetTypeRegistry();
+        AStore.SetSerializationStyle(ssAttibuteSerialization);
+        for i := 0 to Pred(propCount) do begin
+          p := propList^[i];
+          pt := p^.PropType;
+          propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
+          if IsStoredProp(AObject,p) then begin
+            case pt^.Kind of
+              tkInt64,tkQWord :
+                begin
+                  int64Data := GetOrdProp(AObject,p^.Name);
+                  AStore.Put(propName,pt,int64Data);
+                end;
+              tkLString, tkAString :
+                begin
+                  strData := GetStrProp(AObject,p^.Name);
+                  AStore.Put(propName,pt,strData);
+                end;
+              tkClass :
+                begin
+                  objData := GetObjectProp(AObject,p^.Name);
+                  AStore.Put(propName,pt,objData);
+                end;
+              tkBool :
+                begin
+                  boolData := Boolean(GetOrdProp(AObject,p^.Name));
+                  AStore.Put(propName,pt,boolData);
+                end;
+              tkEnumeration,tkInteger :
+                begin
+                  FillChar(enumData,SizeOf(enumData),#0);
+                  case GetTypeData(p^.PropType)^.OrdType of
+                    otSByte :
+                      begin
+                        enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.ShortIntData);
+                      end;
+                    otUByte :
+                      begin
+                        enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.ByteData);
+                      end;
+                    otSWord :
+                      begin
+                        enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.SmallIntData);
+                      end;
+                    otUWord :
+                      begin
+                        enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.WordData);
+                      end;
+                    otSLong :
+                      begin
+                        enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.SLongIntData);
+                      end;
+                    otULong :
+                      begin
+                        enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,enumData.ULongIntData);
+                      end;
+                  end;
+                end;
+              tkFloat :
+                begin
+                  FillChar(floatDt,SizeOf(floatDt),#0);
+                  case GetTypeData(p^.PropType)^.FloatType of
+                    ftSingle :
+                      begin
+                        floatDt.SingleData := Single(GetFloatProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,floatDt.SingleData);
+                      end;
+                    ftDouble :
+                      begin
+                        floatDt.DoubleData := Double(GetFloatProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,floatDt.DoubleData);
+                      end;
+                    ftExtended :
+                      begin
+                        floatDt.ExtendedData := Extended(GetFloatProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,floatDt.ExtendedData);
+                      end;
+                    ftCurr :
+                      begin
+                        floatDt.CurrencyData := Currency(GetFloatProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,floatDt.CurrencyData);
+                      end;
+                    ftComp :
+                      begin
+                        floatDt.CompData := Comp(GetFloatProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,floatDt.CompData);
+                      end;
+                  end;
+                end;
+            end;
+          end;
+        end;
+      finally
+        Freemem(propList,propListLen*SizeOf(Pointer));
+      end;
+    end;
+  finally
+    AStore.EndScope();
+    AStore.SetSerializationStyle(oldSS);
+  end;
+end;
+
+class procedure TBaseComplexSimpleContentRemotable.Load(
+  var AObject: TObject;
+      AStore: IFormatterBase;
+  var AName: string;
+  const ATypeInfo: PTypeInfo
+);
+Var
+  propList : PPropList;
+  i, propCount, propListLen : Integer;
+  pt : PTypeInfo;
+  propName : String;
+  int64Data : Int64;
+  strData : String;
+  objData : TObject;
+    objDataCreateHere : Boolean;
+  boolData : Boolean;
+  p : PPropInfo;
+  enumData : TEnumBuffer;
+  floatDt : TFloatExtendedType;
+  floatBuffer : TFloatBuffer;
+  persistType : TPropStoreType;
+  objTypeData : PTypeData;
+  oldSS : TSerializationStyle;
+  tr : TTypeRegistry;
+begin
+  oldSS := AStore.GetSerializationStyle();
+  AStore.BeginScopeRead(AName,ATypeInfo);
+  try
+    if AStore.IsCurrentScopeNil() then
+      Exit; // ???? FreeAndNil(AObject);
+    If Not Assigned(AObject) Then
+      AObject := Create();
+    LoadValue(AObject,AStore);
+    objTypeData := GetTypeData(ATypeInfo);
+    propCount := objTypeData^.PropCount;
+    If ( propCount > 0 ) Then Begin
+      propListLen := GetPropList(ATypeInfo,propList);
+      Try
+        tr := GetTypeRegistry();
+        AStore.SetSerializationStyle(ssAttibuteSerialization);
+        For i := 0 To Pred(propCount) Do Begin
+          p := propList^[i];
+          persistType := IsStoredPropClass(objTypeData^.ClassType,p);
+          If ( persistType in [pstOptional,pstAlways] ) Then Begin
+            pt := p^.PropType;
+            propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
+            try
+              Case pt^.Kind Of
+                tkInt64,tkQWord :
+                  Begin
+                    AStore.Get(pt,propName,int64Data);
+                    SetOrdProp(AObject,p^.Name,int64Data);
+                  End;
+                tkLString, tkAString :
+                  Begin
+                    AStore.Get(pt,propName,strData);
+                    SetStrProp(AObject,p^.Name,strData);
+                  End;
+                tkBool :
+                  Begin
+                    AStore.Get(pt,propName,boolData);
+                    SetOrdProp(AObject,p^.Name,Ord(boolData));
+                  End;
+                tkClass :
+                  Begin
+                    objData := GetObjectProp(AObject,p^.Name);
+                    objDataCreateHere := not Assigned(objData);
+                    try
+                      AStore.Get(pt,propName,objData);
+                      if objDataCreateHere then
+                        SetObjectProp(AObject,p^.Name,objData);
+                    finally
+                      if objDataCreateHere then
+                        FreeAndNil(objData);
+                    end;
+                  End;
+                tkEnumeration,tkInteger :
+                  Begin
+                    FillChar(enumData,SizeOf(enumData),#0);
+                    Case GetTypeData(p^.PropType)^.OrdType Of
+                      otSByte :
+                        Begin
+                          AStore.Get(pt,propName,enumData.ShortIntData);
+                          int64Data := enumData.ShortIntData;
+                        End;
+                      otUByte :
+                        Begin
+                          AStore.Get(pt,propName,enumData.ByteData);
+                          int64Data := enumData.ByteData;
+                        End;
+                      otSWord :
+                        Begin
+                          AStore.Get(pt,propName,enumData.SmallIntData);
+                          int64Data := enumData.SmallIntData;
+                        End;
+                      otUWord :
+                        Begin
+                          AStore.Get(pt,propName,enumData.WordData);
+                          int64Data := enumData.WordData;
+                        End;
+                      otSLong:
+                        Begin
+                          AStore.Get(pt,propName,enumData.SLongIntData);
+                          int64Data := enumData.SLongIntData;
+                        End;
+                      otULong :
+                        Begin
+                          AStore.Get(pt,propName,enumData.ULongIntData);
+                          int64Data := enumData.ULongIntData;
+                        End;
+                    End;
+                    SetOrdProp(AObject,p^.Name,int64Data);
+                  End;
+                tkFloat :
+                  Begin
+                    FillChar(floatDt,SizeOf(floatBuffer),#0);
+                    Case GetTypeData(p^.PropType)^.FloatType Of
+                      ftSingle :
+                        Begin
+                          AStore.Get(pt,propName,floatBuffer.SingleData);
+                          floatDt := floatBuffer.SingleData;
+                        End;
+                      ftDouble :
+                        Begin
+                          AStore.Get(pt,propName,floatBuffer.DoubleData);
+                          floatDt := floatBuffer.DoubleData;
+                        End;
+                      ftExtended :
+                        Begin
+                          AStore.Get(pt,propName,floatBuffer.ExtendedData);
+                          floatDt := floatBuffer.ExtendedData;
+                        End;
+                      ftCurr :
+                        Begin
+                          AStore.Get(pt,propName,floatBuffer.CurrencyData);
+                          floatDt := floatBuffer.CurrencyData;
+                        End;
+                      ftComp :
+                        Begin
+                          AStore.Get(pt,propName,floatBuffer.CompData);
+                          floatDt := floatBuffer.CompData;
+                        End;
+                    End;
+                    SetFloatProp(AObject,p^.Name,floatDt);
+                  End;
+              End;
+            except
+              on E : EServiceException do begin
+                if ( persistType = pstAlways ) then
+                  raise;
+              end;
+            end;
+          End;
+        End;
+      Finally
+        Freemem(propList,propListLen*SizeOf(Pointer));
+      End;
+    End;
+  finally
+    AStore.EndScopeRead();
+    AStore.SetSerializationStyle(oldSS);
+  end;
+end;
+
+{ TComplexInt32SContentRemotable }
+
+class procedure TComplexInt32SContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(LongInt),(AObject as TComplexInt32SContentRemotable).Value);
+end;
+
+procedure TComplexInt32SContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : LongInt;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(LongInt),i);
+  (AObject as TComplexInt32SContentRemotable).Value := i;
+end;
+
+{ TComplexInt32UContentRemotable }
+
+procedure TComplexInt32UContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(LongWord),(AObject as TComplexInt32UContentRemotable).Value);
+end;
+
+procedure TComplexInt32UContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : LongWord;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(LongWord),i);
+  (AObject as TComplexInt32UContentRemotable).Value := i;
+end;
+
+{ TComplexInt16SContentRemotable }
+
+procedure TComplexInt16SContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(SmallInt),(AObject as TComplexInt16SContentRemotable).Value);
+end;
+
+procedure TComplexInt16SContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : SmallInt;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(SmallInt),i);
+  (AObject as TComplexInt16SContentRemotable).Value := i;
+end;
+
+{ TComplexInt16UContentRemotable }
+
+procedure TComplexInt16UContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Word),(AObject as TComplexInt16UContentRemotable).Value);
+end;
+
+procedure TComplexInt16UContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Word;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Word),i);
+  (AObject as TComplexInt16UContentRemotable).Value := i;
+end;
+
+{ TComplexFloatExtendedContentRemotable }
+
+procedure TComplexFloatExtendedContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Extended),(AObject as TComplexFloatExtendedContentRemotable).Value);
+end;
+
+procedure TComplexFloatExtendedContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Extended;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Extended),i);
+  (AObject as TComplexFloatExtendedContentRemotable).Value := i;
+end;
+
+{ TComplexFloatDoubleContentRemotable }
+
+procedure TComplexFloatDoubleContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Double),(AObject as TComplexFloatDoubleContentRemotable).Value);
+end;
+
+procedure TComplexFloatDoubleContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Double;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Double),i);
+  (AObject as TComplexFloatDoubleContentRemotable).Value := i;
+end;
+
+{ TComplexStringContentRemotable }
+
+class procedure TComplexStringContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(string),(AObject as TComplexStringContentRemotable).Value);
+end;
+
+class procedure TComplexStringContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : string;
+begin
+  i := '';
+  AStore.GetScopeInnerValue(TypeInfo(string),i);
+  (AObject as TComplexStringContentRemotable).Value := i;
+end;
+
+{ TDateRemotable }
+
+procedure TDateRemotable.SetDate(const AValue: TDateTime);
+var
+  hh, mn, ss, ssss : Word;
+begin
+  inherited SetDate(AValue);
+  DecodeTime(AsDate,hh,mn,ss,ssss);
+  FHour := hh;
+  FMinute := mn;
+  FSecond := ss;
+end;
+
+class function TDateRemotable.FormatDate(const ADate: TDateTime): string;
+var
+  s, buffer : string;
+  d, m, y : Word;
+  hh, mn, ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+
+  DecodeDate(ADate,y,m,d);
+    s := IntToStr(y);
+    buffer := IntToStr(m);
+    if ( m < 10 ) then
+      buffer := '0' + buffer;
+    s := Format('%s-%s',[s,buffer]);
+
+    buffer := IntToStr(d);
+    if ( d < 10 ) then
+      buffer := '0' + buffer;
+    s := Format('%s-%s',[s,buffer]);
+
+  DecodeTime(ADate,hh,mn,ss,ssss);
+    buffer := IntToStr(hh);
+    if ( hh < 10 ) then
+      buffer := '0' + buffer;
+    s := Format('%sT%s',[s,buffer]);
+
+    buffer := IntToStr(mn);
+    if ( mn < 10 ) then
+      buffer := '0' + buffer;
+    s := Format('%s:%s',[s,buffer]);
+
+    buffer := IntToStr(ss);
+    if ( ss < 10 ) then
+      buffer := '0' + buffer;
+    s := Format('%s:%s',[s,buffer]);
+    
+  Result := s;
+end;
+
+class function TDateRemotable.ParseDate(const ABuffer: string): TDateTime;
+var
+  buffer : string;
+  bufferPos, bufferLen : Integer;
+
+  function ReadInt() : Integer;
+  var
+    neg : Boolean;
+    s : shortstring;
+  begin
+    neg := False;
+    Result := 0;
+
+    while ( bufferPos <= bufferLen ) and ( buffer[bufferPos] < #33 ) do begin
+      Inc(bufferPos);
+    end;
+    
+    if ( bufferPos <= bufferLen ) then begin
+      if ( ABuffer[bufferPos] = '-' ) then begin
+        neg := True;
+        Inc(bufferPos);
+      end;
+    end;
+    s := '';
+    while ( bufferPos <= bufferLen ) and ( buffer[bufferPos] in ['0'..'9'] ) do begin
+      s := s + buffer[bufferPos];
+      Inc(bufferPos);
+    end;
+    if ( Length(s) = 0 ) then
+      raise EServiceException.Create('Invalid INTEGER BUFFER');
+    Result := StrToInt(s);
+    if neg then begin
+      Result := -Result;
+    end;
+  end;
+  
+var
+  s: string;
+  d, m, y : Word;
+  hh, mn, ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+
+  buffer := Trim(ABuffer);
+  bufferPos := 0;
+  bufferLen := Length(buffer);
+
+  y := ReadInt();
+  Inc(bufferPos);
+  
+  m := ReadInt();
+  Inc(bufferPos);
+  
+  d := ReadInt();
+  Inc(bufferPos);
+  
+  hh := ReadInt();
+  Inc(bufferPos);
+
+  mn := ReadInt();
+  Inc(bufferPos);
+
+  ss := ReadInt();
+
+  Result := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
+end;
+
+{ TBaseDateRemotable }
+
+procedure TBaseDateRemotable.SetDate(const AValue: TDateTime);
+var
+  y, m, d : Word;
+begin
+  DecodeDate(AValue,y,m,d);
+  FDate := AValue;
+  FYear := y;
+  FMonth := m;
+  FDay := d;
+end;
+
+procedure TBaseDateRemotable.Save(
+        AObject   : TBaseRemotable;
+        AStore    : IFormatterBase;
+  const AName     : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  buffer := FormatDate(TDateRemotable(AObject).AsDate);
+  AStore.BeginObject(AName,ATypeInfo);
+  try
+    AStore.PutScopeInnerValue(TypeInfo(string),buffer);
+  finally
+    AStore.EndScope();
+  end;
+end;
+
+procedure TBaseDateRemotable.Load(
+  var AObject     : TObject;
+      AStore      : IFormatterBase;
+  var AName       : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  strBuffer : string;
+begin
+  AStore.BeginScopeRead(AName,ATypeInfo, stObject);
+  try
+    strBuffer := '';
+    AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
+    (AObject as TDateRemotable).AsDate := ParseDate(strBuffer);
+  finally
+    AStore.EndScopeRead();
+  end;
+end;
+
+procedure TBaseDateRemotable.Assign(Source: TPersistent);
+begin
+  if Source.InheritsFrom(TDateRemotable) then begin
+    FDate := TDateRemotable(Source).AsDate;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ TComplexInt8SContentRemotable }
+
+procedure TComplexInt8SContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(ShortInt),(AObject as TComplexInt8SContentRemotable).Value);
+end;
+
+procedure TComplexInt8SContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : ShortInt;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(ShortInt),i);
+  (AObject as TComplexInt8SContentRemotable).Value := i;
+end;
+
+{ TComplexInt8UContentRemotable }
+
+procedure TComplexInt8UContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Byte),(AObject as TComplexInt8UContentRemotable).Value);
+end;
+
+procedure TComplexInt8UContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Byte;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Byte),i);
+  (AObject as TComplexInt8UContentRemotable).Value := i;
+end;
+
+{ TComplexFloatSingleContentRemotable }
+
+procedure TComplexFloatSingleContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Single),(AObject as TComplexFloatSingleContentRemotable).Value);
+end;
+
+procedure TComplexFloatSingleContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Single;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Single),i);
+  (AObject as TComplexFloatSingleContentRemotable).Value := i;
+end;
+
+{ TComplexInt64SContentRemotable }
+
+procedure TComplexInt64SContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Int64),(AObject as TComplexInt64SContentRemotable).Value);
+end;
+
+procedure TComplexInt64SContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Int64;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Int64),i);
+  (AObject as TComplexInt64SContentRemotable).Value := i;
+end;
+
+{ TComplexInt64UContentRemotable }
+
+procedure TComplexInt64UContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(QWord),(AObject as TComplexInt64UContentRemotable).Value);
+end;
+
+procedure TComplexInt64UContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : QWord;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(QWord),i);
+  (AObject as TComplexInt64UContentRemotable).Value := i;
+end;
+
+{ TComplexBooleanContentRemotable }
+
+procedure TComplexBooleanContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Boolean),(AObject as TComplexBooleanContentRemotable).Value);
+end;
+
+procedure TComplexBooleanContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Boolean;
+begin
+  i := False;
+  AStore.GetScopeInnerValue(TypeInfo(Boolean),i);
+  (AObject as TComplexBooleanContentRemotable).Value := i;
+end;
 
 initialization
   TypeRegistryInstance := TTypeRegistry.Create();
