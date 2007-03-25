@@ -24,8 +24,11 @@ const
   stObject = stBase + 1;
   stArray  = stBase + 2;
 
-Type
+type
+  { standart data types defines }
   anyURI = type string;
+  token = type string;
+  float = Single;
   
   TScopeType = Integer;
   THeaderDirection = ( hdOut, hdIn );
@@ -118,6 +121,7 @@ type
     );
     procedure BeginArray(
       Const AName         : string;
+      Const ATypeInfo     : PTypeInfo;
       Const AItemTypeInfo : PTypeInfo;
       Const ABounds       : Array Of Integer
     );
@@ -261,6 +265,12 @@ type
   end;
   
   TDurationRemotable = class(TBaseDateRemotable)
+  protected
+    //class function FormatDate(const ADate : TDateTime):string;override;
+    //class function ParseDate(const ABuffer : string):TDateTime;override;
+  end;
+
+  TTimeRemotable = class(TBaseDateRemotable)
   protected
     //class function FormatDate(const ADate : TDateTime):string;override;
     //class function ParseDate(const ABuffer : string):TDateTime;override;
@@ -498,6 +508,7 @@ type
 
   TBaseArrayRemotable = class(TAbstractComplexRemotable)
   protected
+    class function GetItemName():string;virtual;
     procedure CheckIndex(const AIndex : Integer);
     function GetLength():Integer;virtual;abstract;
   public
@@ -1118,6 +1129,7 @@ begin
 
   r.Register(sXSD_NS,TypeInfo(TDateRemotable),'dateTime').AddPascalSynonym('TDateRemotable');
   r.Register(sXSD_NS,TypeInfo(TDurationRemotable),'duration').AddPascalSynonym('TDurationRemotable');
+  r.Register(sXSD_NS,TypeInfo(TTimeRemotable),'time').AddPascalSynonym('TTimeRemotable');
 
   ri := r.Register(sWST_BASE_NS,TypeInfo(TBaseArrayRemotable),'TBaseArrayRemotable');
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
@@ -1706,6 +1718,7 @@ Var
   i,j : Integer;
   nativObj : TBaseObjectArrayRemotable;
   itm : TObject;
+  itmName : string;
 begin
   If Assigned(AObject) Then Begin
     Assert(AObject.InheritsFrom(TBaseObjectArrayRemotable));
@@ -1714,11 +1727,12 @@ begin
   End Else
     j := 0;
   itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
-  AStore.BeginArray(AName,itmTypInfo,[0,Pred(j)]);
+  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)]);
   Try
+    itmName := GetItemName();
     For i := 0 To Pred(j) Do Begin
       itm := nativObj.Item[i];
-      AStore.Put(sARRAY_ITEM,itmTypInfo,itm);
+      AStore.Put(itmName,itmTypInfo,itm);
     End;
   Finally
     AStore.EndScope();
@@ -2218,6 +2232,7 @@ class procedure TBaseSimpleTypeArrayRemotable.Save(
 var
   i,j : Integer;
   nativObj : TBaseSimpleTypeArrayRemotable;
+  itmName : string;
 begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TBaseSimpleTypeArrayRemotable));
@@ -2226,10 +2241,11 @@ begin
   end else begin
     j := 0;
   end;
-  AStore.BeginArray(AName,GetItemTypeInfo(),[0,Pred(j)]);
+  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(j)]);
   try
+    itmName := GetItemName();
     for i := 0 to Pred(j) do begin
-      nativObj.SaveItem(AStore,sARRAY_ITEM,i);
+      nativObj.SaveItem(AStore,itmName,i);
     end;
   finally
     AStore.EndScope();
@@ -2288,7 +2304,7 @@ procedure TArrayOfStringRemotable.SaveItem(
   const AIndex : Integer
 );
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(ansistring),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(ansistring),FData[AIndex]);
 end;
 
 procedure TArrayOfStringRemotable.LoadItem(
@@ -2298,7 +2314,7 @@ procedure TArrayOfStringRemotable.LoadItem(
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(ansistring),sName,FData[AIndex]);
 end;
 
@@ -2319,6 +2335,17 @@ begin
 end;
 
 { TBaseArrayRemotable }
+
+class function TBaseArrayRemotable.GetItemName(): string;
+var
+  tri : TTypeRegistryItem;
+begin
+  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
+  if Assigned(tri) then
+    Result := Trim(tri.GetExternalPropertyName(sARRAY_ITEM));
+  if ( System.Length(Result) = 0 ) then
+    Result := sARRAY_ITEM;
+end;
 
 procedure TBaseArrayRemotable.CheckIndex(const AIndex : Integer);
 begin
@@ -2354,14 +2381,14 @@ end;
 procedure TArrayOfBooleanRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Boolean),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Boolean),FData[AIndex]);
 end;
 
 procedure TArrayOfBooleanRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Boolean),sName,FData[AIndex]);
 end;
 
@@ -2403,14 +2430,14 @@ end;
 procedure TArrayOfInt8URemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Byte),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Byte),FData[AIndex]);
 end;
 
 procedure TArrayOfInt8URemotable.LoadItem(AStore: IFormatterBase; const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Byte),sName,FData[AIndex]);
 end;
 
@@ -2452,14 +2479,14 @@ end;
 procedure TArrayOfInt8SRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(ShortInt),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(ShortInt),FData[AIndex]);
 end;
 
 procedure TArrayOfInt8SRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(ShortInt),sName,FData[AIndex]);
 end;
 
@@ -2501,14 +2528,14 @@ end;
 procedure TArrayOfInt16SRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(SmallInt),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(SmallInt),FData[AIndex]);
 end;
 
 procedure TArrayOfInt16SRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(SmallInt),sName,FData[AIndex]);
 end;
 
@@ -2550,14 +2577,14 @@ end;
 procedure TArrayOfInt16URemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Word),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Word),FData[AIndex]);
 end;
 
 procedure TArrayOfInt16URemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Word),sName,FData[AIndex]);
 end;
 
@@ -2599,14 +2626,14 @@ end;
 procedure TArrayOfInt32URemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(LongWord),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(LongWord),FData[AIndex]);
 end;
 
 procedure TArrayOfInt32URemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(LongWord),sName,FData[AIndex]);
 end;
 
@@ -2648,14 +2675,14 @@ end;
 procedure TArrayOfInt32SRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(LongInt),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(LongInt),FData[AIndex]);
 end;
 
 procedure TArrayOfInt32SRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(LongInt),sName,FData[AIndex]);
 end;
 
@@ -2697,14 +2724,14 @@ end;
 procedure TArrayOfInt64SRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Int64),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Int64),FData[AIndex]);
 end;
 
 procedure TArrayOfInt64SRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Int64),sName,FData[AIndex]);
 end;
 
@@ -2746,14 +2773,14 @@ end;
 procedure TArrayOfInt64URemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(QWord),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(QWord),FData[AIndex]);
 end;
 
 procedure TArrayOfInt64URemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(QWord),sName,FData[AIndex]);
 end;
 
@@ -2795,14 +2822,14 @@ end;
 procedure TArrayOfFloatSingleRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Single),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Single),FData[AIndex]);
 end;
 
 procedure TArrayOfFloatSingleRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Single),sName,FData[AIndex]);
 end;
 
@@ -2844,14 +2871,14 @@ end;
 procedure TArrayOfFloatDoubleRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Double),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Double),FData[AIndex]);
 end;
 
 procedure TArrayOfFloatDoubleRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Double),sName,FData[AIndex]);
 end;
 
@@ -2893,14 +2920,14 @@ end;
 procedure TArrayOfFloatExtendedRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Extended),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Extended),FData[AIndex]);
 end;
 
 procedure TArrayOfFloatExtendedRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Extended),sName,FData[AIndex]);
 end;
 
@@ -2942,14 +2969,14 @@ end;
 procedure TArrayOfFloatCurrencyRemotable.SaveItem(AStore: IFormatterBase;
   const AName: String; const AIndex: Integer);
 begin
-  AStore.Put(sARRAY_ITEM,TypeInfo(Currency),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(Currency),FData[AIndex]);
 end;
 
 procedure TArrayOfFloatCurrencyRemotable.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
 var
   sName : string;
 begin
-  sName := sARRAY_ITEM;
+  sName := GetItemName();
   AStore.Get(TypeInfo(Currency),sName,FData[AIndex]);
 end;
 

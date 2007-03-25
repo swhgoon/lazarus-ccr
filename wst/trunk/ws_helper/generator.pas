@@ -159,6 +159,7 @@ type
     procedure GenerateEnum(ASymbol : TEnumTypeDefinition);
     procedure GenerateArray(ASymbol : TArrayDefinition);
 
+    procedure GenerateCustomMetadatas();
     function GetDestUnitName():string;
   public
     constructor Create(
@@ -177,14 +178,13 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sBINDER_BASE_CLASS = 'TBaseServiceBinder';
       sIMP_BASE_CLASS = 'TBaseServiceImplementation';
       sSERIALIZER_CLASS  = 'IFormatterClient';
-      RETURN_PARAM_NAME = 'return';
+      //RETURN_PARAM_NAME = 'return';
       RETURN_VAL_NAME = 'returnVal';
       sNAME_SPACE = 'sNAME_SPACE';
+      sUNIT_NAME = 'sUNIT_NAME';
 
       sPRM_NAME = 'strPrmName';
       sLOC_SERIALIZER = 'locSerializer';
-      //sRES_TYPE_INFO  = 'resTypeInfo';
-      //sLOC_TYPE_INFO  = 'locTypeInfo';
 
 { TProxyGenerator }
 
@@ -776,7 +776,7 @@ Var
         prm := AMthd.Parameter[prmCnt];
         If prm.DataType.NeedFinalization() Then Begin
           if prm.DataType.InheritsFrom(TClassTypeDefinition) then begin
-            WriteLn('Pointer(%s) := Nil;',[RETURN_VAL_NAME]);
+            WriteLn('TObject(%s) := Nil;',[RETURN_VAL_NAME]);
           end else begin
             WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkInterface] ) Then',[prm.DataType.Name]);
             IncIndent();
@@ -790,7 +790,7 @@ Var
         prm := AMthd.Parameter[k];
         If prm.DataType.NeedFinalization() Then Begin
           if prm.DataType.InheritsFrom(TClassTypeDefinition) then begin
-            WriteLn('Pointer(%s) := Nil;',[prm.Name]);
+            WriteLn('TObject(%s) := Nil;',[prm.Name]);
           end else begin
             WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkObject,tkInterface] ) Then',[prm.DataType.Name]);
             IncIndent();
@@ -846,7 +846,7 @@ Var
         prm := AMthd.Parameter[prmCnt];
         If prm.DataType.NeedFinalization() Then Begin
           if prm.DataType.InheritsFrom(TClassTypeDefinition) then
-            WriteLn('If Assigned(Pointer(%s)) Then',[RETURN_VAL_NAME])
+            WriteLn('If Assigned(TObject(%s)) Then',[RETURN_VAL_NAME])
           else
             WriteLn('If ( PTypeInfo(TypeInfo(%s))^.Kind = tkClass ) And Assigned(Pointer(%s)) Then',[prm.DataType.Name,RETURN_VAL_NAME]);
           IncIndent();
@@ -1270,6 +1270,7 @@ begin
 
   IncIndent();
   Indent();WriteLn('sNAME_SPACE = %s;',[QuotedStr(FSymbolTable.ExternalName)]);
+  Indent();WriteLn('sUNIT_NAME = %s;',[QuotedStr(FSymbolTable.Name)]);
   DecIndent();
   
   WriteLn('');
@@ -1282,6 +1283,7 @@ begin
   SetCurrentStream(FImpStream);
   WriteLn('');
   WriteLn('Implementation');
+  WriteLn('uses metadata_repository;');
   FImpTempStream.WriteLn('initialization');
 end;
 
@@ -1756,11 +1758,83 @@ begin
   
   FImpTempStream.Indent();
   FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(ASymbol.ExternalName)]);
+  if ( ASymbol.ItemName <> ASymbol.ItemExternalName ) then begin
+    FImpTempStream.WriteLn(
+      'GetTypeRegistry().ItemByTypeInfo[%s].RegisterExternalPropertyName(''item'',%s);',
+      [ASymbol.Name,QuotedStr(ASymbol.ItemExternalName)]
+    );
+  end;
+end;
+
+procedure TInftGenerator.GenerateCustomMetadatas();
+
+  procedure WriteOperationDatas(AInftDef : TInterfaceDefinition; AOp : TMethodDefinition);
+  var
+    k : Integer;
+    pl : TStrings;
+  begin
+    pl := AOp.Properties;
+    for k := 0 to Pred(pl.Count) do begin
+      if not IsStrEmpty(pl.ValueFromIndex[k]) then begin
+        Indent();WriteLn('mm.SetOperationCustomData(');
+          IncIndent();
+            Indent(); WriteLn('%s,',[sUNIT_NAME]);
+            Indent(); WriteLn('%s,',[QuotedStr(AInftDef.Name)]);
+            Indent(); WriteLn('%s,',[QuotedStr(AOp.Name)]);
+            Indent(); WriteLn('%s,',[QuotedStr(pl.Names[k])]);
+            Indent(); WriteLn('%s' ,[QuotedStr(pl.ValueFromIndex[k])]);
+          DecIndent();
+        Indent();WriteLn(');');
+      end;
+    end;
+  end;
+  
+  procedure WriteServiceDatas(AIntf : TInterfaceDefinition);
+  var
+    k : Integer;
+  begin
+    if not IsStrEmpty(AIntf.Address) then begin
+      Indent();WriteLn('mm.SetServiceCustomData(');
+        IncIndent();
+          Indent(); WriteLn('%s,',[sUNIT_NAME]);
+          Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
+          Indent(); WriteLn('%s,',[QuotedStr('Address')]);
+          Indent(); WriteLn('%s' ,[QuotedStr(AIntf.Address)]);
+        DecIndent();
+      Indent();WriteLn(');');
+    end;
+
+    for k := 0 to Pred(AIntf.MethodCount) do begin
+      WriteOperationDatas(AIntf,AIntf.Method[k]);
+    end;
+  end;
+  
+var
+  i : Integer;
+begin
+  SetCurrentStream(FImpStream);
+  IncIndent();
+  
+  NewLine();NewLine();
+  WriteLn('procedure Register_%s_ServiceMetadata();',[SymbolTable.Name]);
+  WriteLn('var');
+  Indent(); WriteLn('mm : IModuleMetadataMngr;');
+  WriteLn('begin');
+  Indent();WriteLn('mm := GetModuleMetadataMngr();');
+  Indent();WriteLn('mm.SetRepositoryNameSpace(%s, %s);',[sUNIT_NAME,sNAME_SPACE]);
+  for i := 0 to Pred(SymbolTable.Count) do begin
+    if SymbolTable.Item[i] is TInterfaceDefinition then begin
+      WriteServiceDatas(SymbolTable.Item[i] as TInterfaceDefinition);
+    end;
+  end;
+  
+  WriteLn('end;');
+  DecIndent();
 end;
 
 function TInftGenerator.GetDestUnitName(): string;
 begin
-  Result := Format('%s_intf',[SymbolTable.Name]);
+  Result := SymbolTable.Name;
 end;
 
 constructor TInftGenerator.Create(
@@ -1865,6 +1939,12 @@ begin
       end;
     end;
 
+    NewLine();
+    IncIndent();
+    Indent(); WriteLn('procedure Register_%s_ServiceMetadata();',[SymbolTable.Name]);
+    DecIndent();
+    GenerateCustomMetadatas();
+    
     GenerateUnitImplementationFooter();
     FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FImpTempStream]);
     FDecStream := nil;

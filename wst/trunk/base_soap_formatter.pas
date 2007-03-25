@@ -235,6 +235,7 @@ Type
     );
     procedure BeginArray(
       Const AName         : string;
+      Const ATypeInfo     : PTypeInfo;
       Const AItemTypeInfo : PTypeInfo;
       Const ABounds       : Array Of Integer
     );
@@ -903,15 +904,17 @@ begin
 end;
 
 procedure TSOAPBaseFormatter.BeginArray(
-  const AName          : string;
-  const AItemTypeInfo  : PTypeInfo;
-  const ABounds        : array of Integer
+      Const AName         : string;
+      Const ATypeInfo     : PTypeInfo;
+      Const AItemTypeInfo : PTypeInfo;
+      Const ABounds       : Array Of Integer
 );
 Var
   typData : TTypeRegistryItem;
   nmspc,nmspcSH : string;
   i,j, k : Integer;
   strNodeName : string;
+  xsiNmspcSH : string;
 begin
   If ( Length(ABounds) < 2 ) Then
     Error('Invalid array bounds.');
@@ -921,18 +924,20 @@ begin
   If ( k < 0 ) Then
     Error('Invalid array bounds.');
   k := j - i + 1;
-  typData := GetTypeRegistry().Find(AItemTypeInfo,False);
+  typData := GetTypeRegistry().Find(ATypeInfo,False);
   If Not Assigned(typData) Then
-    Error('Array item''type not registered.');
+    Error('Array type not registered.');
   nmspc := typData.NameSpace;
   If IsStrEmpty(nmspc) Then
     nmspcSH := 'tns'
   Else Begin
     nmspcSH := FindAttributeByValueInScope(nmspc);
-    If IsStrEmpty(nmspcSH) Then Begin
+    if IsStrEmpty(nmspcSH) then begin
       nmspcSH := 'ns' + IntToStr(NextNameSpaceCounter());
       AddScopeAttribute('xmlns:'+nmspcSH, nmspc);
-    End;
+    end else begin
+      nmspcSH := Copy(nmspcSH,Length('xmlns:')+1,MaxInt);
+    end;
   End;
 
   if ( Style = Document ) then begin
@@ -946,10 +951,14 @@ begin
   if ( EncodingStyle = Encoded ) then begin
     //AddScopeAttribute(sXSI_TYPE,nmspc);
     //SOAP-ENC:arrayType="xsd:int[2]"
-    AddScopeAttribute(
+    {AddScopeAttribute(
       Format('%s:%s',[sSOAP_ENC_ABR,sARRAY_TYPE]) ,
       Format('%s:%s[%d]',[nmspcSH,typData.DeclaredName,k])
-    );
+    );}
+    xsiNmspcSH := GetNameSpaceShortName(sXSI_NS,True);
+    if not IsStrEmpty(xsiNmspcSH) then
+      xsiNmspcSH := xsiNmspcSH + ':';
+    AddScopeAttribute(xsiNmspcSH + sTYPE,Format('%s:%s',[nmspcSH,typData.DeclaredName]));
   end;
   StackTop().SetNameSpace(nmspc);
 end;

@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="4"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -26,14 +26,14 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="36">
       <Unit0>
         <Filename Value="test_ebay_gui.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_ebay_gui"/>
         <CursorPos X="1" Y="17"/>
         <TopLine Value="1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="121"/>
       </Unit0>
       <Unit1>
         <Filename Value="umain.pas"/>
@@ -41,10 +41,10 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="umain.lrs"/>
         <UnitName Value="umain"/>
-        <CursorPos X="44" Y="9"/>
+        <CursorPos X="1" Y="10"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="121"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -53,47 +53,47 @@
         <UnitName Value="synapse_http_protocol"/>
         <CursorPos X="42" Y="22"/>
         <TopLine Value="8"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="101"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="121"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="50"/>
+        <CursorPos X="3" Y="2307"/>
+        <TopLine Value="2302"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="23" Y="333"/>
-        <TopLine Value="320"/>
-        <UsageCount Value="27"/>
+        <CursorPos X="15" Y="158"/>
+        <TopLine Value="136"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\soap_formatter.pas"/>
         <UnitName Value="soap_formatter"/>
         <CursorPos X="60" Y="159"/>
         <TopLine Value="149"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="18"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\imp_utils.pas"/>
         <UnitName Value="imp_utils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="11"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="28" Y="377"/>
         <TopLine Value="371"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="43"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="54"/>
         <Bookmarks Count="2">
           <Item0 X="14" Y="670" ID="1"/>
           <Item1 X="1" Y="437" ID="2"/>
@@ -105,32 +105,36 @@
         <UnitName Value="httpsend"/>
         <CursorPos X="40" Y="123"/>
         <TopLine Value="122"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit8>
       <Unit9>
         <Filename Value="ebay.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ebay"/>
-        <CursorPos X="42" Y="535"/>
-        <TopLine Value="139"/>
-        <UsageCount Value="85"/>
+        <CursorPos X="3" Y="237"/>
+        <TopLine Value="223"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="105"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\metadata_service.pas"/>
         <UnitName Value="metadata_service"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="43"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="2"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\metadata_repository.pas"/>
         <UnitName Value="metadata_repository"/>
-        <CursorPos X="46" Y="84"/>
-        <TopLine Value="84"/>
-        <UsageCount Value="13"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="17"/>
         <Bookmarks Count="1">
           <Item0 X="1" Y="91" ID="3"/>
         </Bookmarks>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="ebay_proxy.pas"/>
@@ -138,250 +142,264 @@
         <UnitName Value="ebay_proxy"/>
         <CursorPos X="19" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="85"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\heaph.inc"/>
         <CursorPos X="10" Y="94"/>
         <TopLine Value="82"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="2"/>
       </Unit13>
       <Unit14>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\inc\heap.inc"/>
         <CursorPos X="3" Y="342"/>
         <TopLine Value="346"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="2"/>
       </Unit14>
       <Unit15>
         <Filename Value="D:\lazarusClean\fpcsrc\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="94"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit15>
       <Unit16>
         <Filename Value="ebay.lrs"/>
         <CursorPos X="20" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit16>
       <Unit17>
         <Filename Value="D:\lazarusClean\lcl\lresources.pp"/>
         <UnitName Value="LResources"/>
         <CursorPos X="3" Y="930"/>
         <TopLine Value="907"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit17>
       <Unit18>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\inc\objpash.inc"/>
         <CursorPos X="20" Y="169"/>
         <TopLine Value="157"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit18>
       <Unit19>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\inc\objpas.inc"/>
         <CursorPos X="28" Y="446"/>
         <TopLine Value="428"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit19>
       <Unit20>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\inc\contnrs.pp"/>
         <UnitName Value="contnrs"/>
         <CursorPos X="23" Y="520"/>
         <TopLine Value="517"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit20>
       <Unit21>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\classes\classesh.inc"/>
         <CursorPos X="15" Y="204"/>
         <TopLine Value="192"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit21>
       <Unit22>
         <Filename Value="D:\Lazarus\fpcsrc\rtl\objpas\classes\lists.inc"/>
         <CursorPos X="3" Y="417"/>
         <TopLine Value="412"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\wsdl_to_pascal\tmp_intf.pas"/>
         <UnitName Value="tmp_intf"/>
         <CursorPos X="34" Y="10344"/>
         <TopLine Value="10333"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="18"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
         <UnitName Value="DOM"/>
         <CursorPos X="14" Y="222"/>
         <TopLine Value="210"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\win32\classes.pp"/>
         <UnitName Value="Classes"/>
         <CursorPos X="12" Y="32"/>
         <TopLine Value="15"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\objpas\classes\classesh.inc"/>
         <CursorPos X="15" Y="1153"/>
         <TopLine Value="1136"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\objpas\classes\parser.inc"/>
         <CursorPos X="34" Y="59"/>
         <TopLine Value="51"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\inc\objpash.inc"/>
         <CursorPos X="8" Y="116"/>
         <TopLine Value="102"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="6"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\binary_streamer.pas"/>
         <UnitName Value="binary_streamer"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="55"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="18"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <UnitName Value="eBayWSDL"/>
+        <CursorPos X="56" Y="16040"/>
+        <TopLine Value="16029"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="16"/>
+        <Loaded Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\..\..\lazarusClean\others_package\synapse\sswin32.pas"/>
+        <UnitName Value="sswin32"/>
+        <CursorPos X="5" Y="1196"/>
+        <TopLine Value="37"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\files\DataTypes_proxy.pas"/>
+        <UnitName Value="DataTypes_proxy"/>
+        <CursorPos X="40" Y="55"/>
+        <TopLine Value="51"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\files\eBayWSDL_proxy.pas"/>
+        <UnitName Value="eBayWSDL_proxy"/>
+        <CursorPos X="41" Y="11"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\files\eBayWSDL_imp.pas"/>
+        <UnitName Value="eBayWSDL_imp"/>
+        <CursorPos X="39" Y="1074"/>
+        <TopLine Value="1327"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="..\files\eBayWSDL_binder.pas"/>
+        <UnitName Value="eBayWSDL_binder"/>
+        <CursorPos X="68" Y="11"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit35>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="21" HistoryIndex="20">
       <Position1>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1617" Column="1" TopLine="1595"/>
+        <Filename Value="..\files\eBayWSDL_proxy.pas"/>
+        <Caret Line="506" Column="85" TopLine="500"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="ebay.pas"/>
+        <Caret Line="520" Column="27" TopLine="515"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1056" Column="41" TopLine="1042"/>
+        <Filename Value="ebay.pas"/>
+        <Caret Line="1" Column="1" TopLine="249"/>
       </Position3>
       <Position4>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1609" Column="64" TopLine="1595"/>
+        <Filename Value="ebay.pas"/>
+        <Caret Line="519" Column="17" TopLine="511"/>
       </Position4>
       <Position5>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="3060" Column="42" TopLine="3036"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position5>
       <Position6>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="31804" Column="8" TopLine="32688"/>
       </Position6>
       <Position7>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1626" Column="48" TopLine="1605"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="23" Column="71" TopLine="1"/>
       </Position7>
       <Position8>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="3068" Column="41" TopLine="3046"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="10951" Column="10" TopLine="10937"/>
       </Position8>
       <Position9>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="10958" Column="93" TopLine="10944"/>
       </Position9>
       <Position10>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1646" Column="1" TopLine="1629"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="16072" Column="5" TopLine="16058"/>
       </Position10>
       <Position11>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="24735" Column="32" TopLine="24721"/>
       </Position11>
       <Position12>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1629" Column="57" TopLine="1615"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="24765" Column="39" TopLine="24751"/>
       </Position12>
       <Position13>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="300" Column="1" TopLine="285"/>
+        <Filename Value="..\files\eBayWSDL_imp.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position13>
       <Position14>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1605" Column="1" TopLine="1602"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="31806" Column="19" TopLine="31802"/>
       </Position14>
       <Position15>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="3012" Column="42" TopLine="2998"/>
+        <Filename Value="..\files\eBayWSDL_binder.pas"/>
+        <Caret Line="11" Column="69" TopLine="1"/>
       </Position15>
       <Position16>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1166" Column="41" TopLine="1152"/>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="84" Column="29" TopLine="83"/>
       </Position16>
       <Position17>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1237" Column="38" TopLine="1237"/>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="158" Column="36" TopLine="144"/>
       </Position17>
       <Position18>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1166" Column="71" TopLine="1166"/>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="225" Column="15" TopLine="204"/>
       </Position18>
       <Position19>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1237" Column="113" TopLine="1237"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="55" Column="36" TopLine="49"/>
       </Position19>
       <Position20>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1241" Column="12" TopLine="1227"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
+        <Caret Line="32124" Column="58" TopLine="32116"/>
       </Position20>
       <Position21>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1165" Column="80" TopLine="1147"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1161" Column="74" TopLine="1151"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1165" Column="14" TopLine="1147"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1225" Column="34" TopLine="1211"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1148" Column="59" TopLine="1125"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\..\binary_streamer.pas"/>
+        <Filename Value="..\files\eBayWSDL.pas"/>
         <Caret Line="1" Column="1" TopLine="1"/>
-      </Position26>
-      <Position27>
-        <Filename Value="umain.pas"/>
-        <Caret Line="43" Column="9" TopLine="29"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\..\synapse_http_protocol.pas"/>
-        <Caret Line="1" Column="1" TopLine="139"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1285" Column="27" TopLine="1294"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="3663" Column="24" TopLine="3652"/>
-      </Position30>
+      </Position21>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="C:\lazarusClean\others_package\synapse\;C:\Programmes\lazarus\wst\wsdl_to_pascal\;..\..\"/>
+      <OtherUnitFiles Value="C:\lazarusClean\others_package\synapse\;C:\Programmes\lazarus\wst\tests\files\;..\..\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>

@@ -133,6 +133,7 @@ Type
 
   TArrayDefinition = class(TTypeDefinition)
   private
+    FItemExternalName: string;
     FItemName: string;
     FItemType: TTypeDefinition;
   protected
@@ -142,13 +143,15 @@ Type
     );override;
   public
     constructor Create(
-      const AName     : string;
-            AItemType : TTypeDefinition;
-            ItemName  : string
+      const AName              : string;
+            AItemType          : TTypeDefinition;
+      const AItemName,
+            AItemExternalName  : string
       );
     function NeedFinalization():Boolean;override;
     property ItemName : string read FItemName;
     property ItemType : TTypeDefinition read FItemType;
+    property ItemExternalName : string read FItemExternalName;
   end;
   
   TEnumTypeDefinition = class;
@@ -296,6 +299,7 @@ Type
     FMethodType: TMethodType;
     FParameterList : TObjectList;
   private
+    FProperties: TStrings;
     function GetParameter(Index: Integer): TParameterDefinition;
     function GetParameterCount: Integer;
   protected
@@ -317,6 +321,7 @@ Type
     property MethodType : TMethodType Read FMethodType;
     property ParameterCount : Integer Read GetParameterCount;
     property Parameter[Index:Integer] : TParameterDefinition Read GetParameter;
+    property Properties : TStrings read FProperties;
   End;
 
   { TInterfaceDefinition }
@@ -326,6 +331,7 @@ Type
     FInterfaceGUID: string;
     FMethodList : TObjectList;
   private
+    FAddress: string;
     function GetMethod(Index: Integer): TMethodDefinition;
     function GetMethodCount: Integer;
   protected
@@ -346,6 +352,7 @@ Type
     Property MethodCount : Integer Read GetMethodCount;
     Property Method[Index:Integer] : TMethodDefinition Read GetMethod;
     property InterfaceGUID : string read FInterfaceGUID write FInterfaceGUID;
+    property Address : string read FAddress write FAddress;
   End;
   
   { TSymbolTable }
@@ -525,10 +532,12 @@ begin
   Inherited Create(AName);
   FMethodType := AMethodType;
   FParameterList := TObjectList.create(True);
+  FProperties := TStringList.Create();
 end;
 
 destructor TMethodDefinition.Destroy();
 begin
+  FreeAndNil(FProperties);
   FreeAndNil(FParameterList);
   inherited Destroy();
 end;
@@ -1176,6 +1185,7 @@ begin
       AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable');
         AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable').RegisterExternalAlias('dateTime');
         AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable').RegisterExternalAlias('duration');
+        AddClassDef(Result,'TTimeRemotable','TAbstractSimpleRemotable').RegisterExternalAlias('time');
 
       AddClassDef(Result,'TAbstractComplexRemotable','TBaseRemotable');
         loc_TBaseComplexSimpleContentRemotable := AddClassDef(Result,'TBaseComplexSimpleContentRemotable','TAbstractComplexRemotable');
@@ -1267,14 +1277,19 @@ begin
 end;
 
 constructor TArrayDefinition.Create(
-  const AName      : string;
-        AItemType  : TTypeDefinition;
-        ItemName   : string
+  const AName              : string;
+        AItemType          : TTypeDefinition;
+  const AItemName,
+        AItemExternalName  : string
 );
 begin
   Assert(Assigned(AItemType));
   inherited Create(AName);
   FItemType := AItemType;
+  FItemName := AItemName;
+  FItemExternalName := AItemExternalName;
+  if IsStrEmpty(FItemExternalName) then
+    FItemExternalName := FItemName;
 end;
 
 function TArrayDefinition.NeedFinalization(): Boolean;

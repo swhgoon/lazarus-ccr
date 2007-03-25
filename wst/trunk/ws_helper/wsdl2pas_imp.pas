@@ -91,6 +91,7 @@ type
     FWsdlShortNames : TStringList;
     FSoapShortNames : TStringList;
     FXSShortNames : TStringList;
+    FChildCursor : IObjectCursor;
     FServiceCursor : IObjectCursor;
     FBindingCursor : IObjectCursor;
     FPortTypeCursor : IObjectCursor;
@@ -112,14 +113,14 @@ type
     procedure Prepare();
     procedure ParseService(ANode : TDOMNode);
     procedure ParsePort(ANode : TDOMNode);
-    procedure ParsePortType(
+    function ParsePortType(
       ANode, ABindingNode : TDOMNode
-    );
-    procedure ParseOperation(
+    ) : TInterfaceDefinition;
+    function ParseOperation(
             AOwner : TInterfaceDefinition;
             ANode  : TDOMNode;
       const ASoapBindingStyle : string
-    );
+    ) : TMethodDefinition;
     function ParseType(const AName, ATypeOrElement : string) : TTypeDefinition;
   public
     constructor Create(ADoc : TXMLDocument; ASymbols : TSymbolTable);
@@ -133,8 +134,9 @@ implementation
 uses dom_cursors, parserutils, StrUtils, Contnrs;
 
 const
+  s_address                    : WideString = 'address';
   s_all                        : WideString = 'all';
-  s_any                        : WideString = 'any';
+  //s_any                        : WideString = 'any';
   s_array                      : WideString = 'array';
   s_arrayType                  : WideString = 'arrayType';
   s_attribute                  : WideString = 'attribute';
@@ -148,6 +150,7 @@ const
   s_extension                  : WideString = 'extension';
   s_input                      : WideString = 'input';
   s_item                       : WideString = 'item';
+  s_location                   : WideString = 'location';
   s_message                    : WideString = 'message';
   s_maxOccurs                  : WideString = 'maxOccurs';
   s_minOccurs                  : WideString = 'minOccurs';
@@ -161,7 +164,7 @@ const
   s_prohibited                 : WideString = 'prohibited';
   s_required                   : WideString = 'required';
   s_restriction                : WideString = 'restriction';
-  s_return                     : WideString = 'return';
+  //s_return                     : WideString = 'return';
   s_rpc                        : WideString = 'rpc';
   s_schema                     : WideString = 'schema';
   s_xs                         : WideString = 'http://www.w3.org/2001/XMLSchema';
@@ -170,7 +173,9 @@ const
   s_simpleContent              : WideString = 'simpleContent';
   s_simpleType                 : WideString = 'simpleType';
   s_soap                       : WideString = 'http://schemas.xmlsoap.org/wsdl/soap/';
+  s_soapAction                 : WideString = 'soapAction';
   s_style                      : WideString = 'style';
+  s_targetNamespace            : WideString = 'targetNamespace';
   s_type                       : WideString = 'type';
   s_types                      : WideString = 'types';
   s_unbounded                  : WideString = 'unbounded';
@@ -187,7 +192,7 @@ type TCursorExposedType = ( cetRttiNode, cetDomNode );
 function CreateAttributesCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
 begin
   Result := nil;
-  if ( ANode <> nil ) and ( ANode.Attributes <> nil ) then begin
+  if ( ANode <> nil ) and ( ANode.Attributes <> nil ) and ( ANode.Attributes.Length > 0 ) then begin
     Result := TDOMNamedNodeMapCursor.Create(ANode.Attributes,faNone) ;
     if ( AExposedType = cetRttiNode ) then
       Result := TDOMNodeRttiExposerCursor.Create(Result);
@@ -272,23 +277,8 @@ begin
 end;
 
 function TWsdlParser.CreateWsdlNameFilter(const AName: WideString): IObjectFilter;
-var
-  k : Integer;
-  locStr : string;
-  locWStr : WideString;
 begin
-  locStr := '';
-  for k := 0 to Pred(FWsdlShortNames.Count) do begin
-    if IsStrEmpty(FWsdlShortNames[k]) then
-      locWStr := ''
-    else
-      locWStr := FWsdlShortNames[k] + ':';
-    locWStr := locWStr + AName;
-    locStr := locStr + ' or ' + s_NODE_NAME + '=' + QuotedStr(locWStr) ;
-  end;
-  if ( Length(locStr) > 0 ) then
-    Delete(locStr,1,Length(' or '));
-  Result := ParseFilter(locStr,TDOMNodeRttiExposer);
+  Result := ParseFilter(CreateQualifiedNameFilterStr(AName,FWsdlShortNames),TDOMNodeRttiExposer);
 end;
 
 function TWsdlParser.FindNamedNode(
@@ -298,20 +288,17 @@ function TWsdlParser.FindNamedNode(
 var
   attCrs, crs : IObjectCursor;
   curObj : TDOMNodeRttiExposer;
-  fltrCreator : TRttiFilterCreator;
-  s : string;
+  fltr : IObjectFilter;
 begin
   Result := nil;
-  fltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-  try
-    s := s_NODE_NAME;
-    fltrCreator.AddCondition(s,sfoEqualCaseInsensitive,s_name,fcNone);
+  if Assigned(AList) then begin
+    fltr := ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer);
     AList.Reset();
     while AList.MoveNext() do begin
       curObj := AList.GetCurrent() as TDOMNodeRttiExposer;
       attCrs := CreateAttributesCursor(curObj.InnerObject,cetRttiNode);
       if Assigned(attCrs) then begin
-        crs := CreateCursorOn(attCrs,TRttiObjectFilter.Create(fltrCreator.Root,clrNone));
+        crs := CreateCursorOn(attCrs,fltr);
         crs.Reset();
         if crs.MoveNext() and WideSameText(AName,TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue) then begin
           Result := curObj.InnerObject;
@@ -319,9 +306,6 @@ begin
         end;
       end;
     end;
-  finally
-    fltrCreator.Clear(clrFreeObjects);
-    FreeAndNil(fltrCreator);
   end;
 end;
 
@@ -386,95 +370,79 @@ end;
 procedure TWsdlParser.Prepare();
 var
   locAttCursor : IObjectCursor;
-  locChildCursor : IObjectCursor;
-  locFltrCreator : TRttiFilterCreator;
   locObj : TDOMNodeRttiExposer;
-  locSrvcCrs : IObjectCursor;
 begin
   FPortTypeCursor := nil;
   FWsdlShortNames.Clear();
   locAttCursor := CreateAttributesCursor(FDoc.DocumentElement,cetRttiNode);
 
-  locChildCursor := TDOMNodeListCursor.Create(FDoc.DocumentElement.GetChildNodes,faFreeOnDestroy) ;
-  locChildCursor := TDOMNodeRttiExposerCursor.Create(locChildCursor);
+  FChildCursor := TDOMNodeListCursor.Create(FDoc.DocumentElement.GetChildNodes,faFreeOnDestroy) ;
+  FChildCursor := TDOMNodeRttiExposerCursor.Create(FChildCursor);
 
-  locFltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-  try
-    ExtractNameSpaceShortNames(locAttCursor,FWsdlShortNames,s_wsdl,nfaRaiseException,True);
-    ExtractNameSpaceShortNames(locAttCursor,FSoapShortNames,s_soap,nfaRaiseException,False);
-    ExtractNameSpaceShortNames(locAttCursor,FXSShortNames,s_xs,nfaRaiseException,True);
+  ExtractNameSpaceShortNames(locAttCursor,FWsdlShortNames,s_wsdl,nfaRaiseException,True);
+  ExtractNameSpaceShortNames(locAttCursor,FSoapShortNames,s_soap,nfaRaiseException,False);
+  ExtractNameSpaceShortNames(locAttCursor,FXSShortNames,s_xs,nfaRaiseException,True);
 
-    locFltrCreator.Clear(clrFreeObjects);
-    CreateWsdlNameFilter(locFltrCreator,s_service);
-    FServiceCursor := CreateCursorOn(locChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-    FServiceCursor.Reset();
-    
-    locFltrCreator.Clear(clrNone);
-    CreateWsdlNameFilter(locFltrCreator,s_binding);
-    FBindingCursor := CreateCursorOn(locChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-    FBindingCursor.Reset();
+  FServiceCursor := CreateCursorOn(
+                      FChildCursor.Clone() as IObjectCursor,
+                      ParseFilter(CreateQualifiedNameFilterStr(s_service,FWsdlShortNames),TDOMNodeRttiExposer)
+                    );
+  FServiceCursor.Reset();
+  
+  FBindingCursor := CreateCursorOn(
+                      FChildCursor.Clone() as IObjectCursor,
+                      ParseFilter(CreateQualifiedNameFilterStr(s_binding,FWsdlShortNames),TDOMNodeRttiExposer)
+                    );
+  FBindingCursor.Reset();
 
-    locFltrCreator.Clear(clrNone);
-    CreateWsdlNameFilter(locFltrCreator,s_portType);
-    FPortTypeCursor := CreateCursorOn(locChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-    FPortTypeCursor.Reset();
+  FPortTypeCursor := CreateCursorOn(
+                       FChildCursor.Clone() as IObjectCursor,
+                       ParseFilter(CreateQualifiedNameFilterStr(s_portType,FWsdlShortNames),TDOMNodeRttiExposer)
+                     );
+  FPortTypeCursor.Reset();
 
-    FSchemaCursor := nil;
-    locFltrCreator.Clear(clrNone);
-    CreateWsdlNameFilter(locFltrCreator,s_types);
-    FTypesCursor := CreateCursorOn(locChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-    FTypesCursor.Reset();
-    if FTypesCursor.MoveNext() then begin
-      locObj := FTypesCursor.GetCurrent() as TDOMNodeRttiExposer;
-      if locObj.InnerObject.HasChildNodes() then begin
-        FSchemaCursor := CreateChildrenCursor(locObj.InnerObject,cetRttiNode);
-        FSchemaCursor.Reset();
-        locFltrCreator.Clear(clrNone);
-        CreateXsNameFilter(locFltrCreator,s_schema);
-        FSchemaCursor := CreateCursorOn(
-                           FSchemaCursor,//.Clone() as IObjectCursor,
-                           TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects)
-                         );
-        FSchemaCursor.Reset();
-      end;
+  FSchemaCursor := nil;
+  FTypesCursor := CreateCursorOn(
+                    FChildCursor.Clone() as IObjectCursor,
+                    ParseFilter(CreateQualifiedNameFilterStr(s_types,FWsdlShortNames),TDOMNodeRttiExposer)
+                  );
+  FTypesCursor.Reset();
+  if FTypesCursor.MoveNext() then begin
+    locObj := FTypesCursor.GetCurrent() as TDOMNodeRttiExposer;
+    if locObj.InnerObject.HasChildNodes() then begin
+      FSchemaCursor := CreateChildrenCursor(locObj.InnerObject,cetRttiNode);
+      FSchemaCursor.Reset();
+      FSchemaCursor := CreateCursorOn(
+                         FSchemaCursor,//.Clone() as IObjectCursor,
+                         ParseFilter(CreateQualifiedNameFilterStr(s_schema,FXSShortNames),TDOMNodeRttiExposer)
+                       );
+      FSchemaCursor.Reset();
     end;
-
-    locFltrCreator.Clear(clrNone);
-    CreateWsdlNameFilter(locFltrCreator,s_message);
-    FMessageCursor := CreateCursorOn(locChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-    FMessageCursor.Reset();
-
-    locSrvcCrs := FServiceCursor.Clone() as IObjectCursor;
-    while locSrvcCrs.MoveNext() do begin
-      locObj := locSrvcCrs.GetCurrent() as TDOMNodeRttiExposer;
-      ParseService(locObj.InnerObject);
-    end;
-  finally
-    locFltrCreator.Free();
   end;
+
+  FMessageCursor := CreateCursorOn(
+                      FChildCursor.Clone() as IObjectCursor,
+                      ParseFilter(CreateQualifiedNameFilterStr(s_message,FWsdlShortNames),TDOMNodeRttiExposer)
+                    );
+  FMessageCursor.Reset();
 end;
 
 procedure TWsdlParser.ParseService(ANode: TDOMNode);
 var
-  locFltrCreator : TRttiFilterCreator;
   locCursor, locPortCursor : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
 begin
-  locFltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-  try
-    CreateWsdlNameFilter(locFltrCreator,s_port);
-    locCursor := CreateChildrenCursor(ANode,cetRttiNode);
-    if Assigned(locCursor) then begin
-      locPortCursor := CreateCursorOn(locCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrFreeObjects));
-      locFltrCreator.Clear(clrNone);
-      locPortCursor.Reset();
-      while locPortCursor.MoveNext() do begin
-        locObj := locPortCursor.GetCurrent() as TDOMNodeRttiExposer;
-        ParsePort(locObj.InnerObject);
-      end;
+  locCursor := CreateChildrenCursor(ANode,cetRttiNode);
+  if Assigned(locCursor) then begin
+    locPortCursor := CreateCursorOn(
+                       locCursor,
+                       ParseFilter(CreateQualifiedNameFilterStr(s_port,FWsdlShortNames),TDOMNodeRttiExposer)
+                     );
+    locPortCursor.Reset();
+    while locPortCursor.MoveNext() do begin
+      locObj := locPortCursor.GetCurrent() as TDOMNodeRttiExposer;
+      ParsePort(locObj.InnerObject);
     end;
-  finally
-    locFltrCreator.Free();
   end;
 end;
 
@@ -488,26 +456,16 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
   function ExtractBindingQName(out AName : WideString):Boolean ;
   var
     attCrs, crs : IObjectCursor;
-    fltrCreator : TRttiFilterCreator;
-    s : string;
   begin
     Result := False;
     attCrs := CreateAttributesCursor(ANode,cetRttiNode);
     if Assigned(attCrs) then begin
-      fltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-      try
-        s := s_NODE_NAME;
-        fltrCreator.AddCondition(s,sfoEqualCaseInsensitive,s_binding,fcNone);
-        crs := CreateCursorOn(attCrs,TRttiObjectFilter.Create(fltrCreator.Root,clrNone));
-        crs.Reset();
-        if crs.MoveNext() then begin
-          AName := TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue;
-          Result := True;
-          exit;
-        end;
-      finally
-        fltrCreator.Clear(clrFreeObjects);
-        FreeAndNil(fltrCreator);
+      crs := CreateCursorOn(attCrs,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_binding)]),TDOMNodeRttiExposer));
+      crs.Reset();
+      if crs.MoveNext() then begin
+        AName := TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue;
+        Result := True;
+        exit;
       end;
     end;
   end;
@@ -515,26 +473,16 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
   function ExtractTypeQName(ABndgNode : TDOMNode; out AName : WideString):Boolean ;
   var
     attCrs, crs : IObjectCursor;
-    fltrCreator : TRttiFilterCreator;
-    s : string;
   begin
     Result := False;
     attCrs := CreateAttributesCursor(ABndgNode,cetRttiNode);
     if Assigned(attCrs) then begin
-      fltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-      try
-        s := s_NODE_NAME;
-        fltrCreator.AddCondition(s,sfoEqualCaseInsensitive,s_type,fcNone);
-        crs := CreateCursorOn(attCrs,TRttiObjectFilter.Create(fltrCreator.Root,clrNone));
-        crs.Reset();
-        if crs.MoveNext() then begin
-          AName := TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue;
-          Result := True;
-          exit;
-        end;
-      finally
-        fltrCreator.Clear(clrFreeObjects);
-        FreeAndNil(fltrCreator);
+      crs := CreateCursorOn(attCrs,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
+      crs.Reset();
+      if crs.MoveNext() then begin
+        AName := TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue;
+        Result := True;
+        exit;
       end;
     end;
   end;
@@ -544,10 +492,36 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
     Result := FindNamedNode(FPortTypeCursor,AName);
   end;
 
+  function ExtractAddress() : string;
+  var
+    tmpCrs : IObjectCursor;
+    nd : TDOMNode;
+  begin
+    Result := '';
+    if ANode.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(ANode,cetRttiNode),
+                  ParseFilter(CreateQualifiedNameFilterStr(s_address,FSoapShortNames),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        tmpCrs := CreateCursorOn(
+                    CreateAttributesCursor(nd,cetRttiNode),
+                    ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_location)]),TDOMNodeRttiExposer)
+                  );
+        if Assigned(tmpCrs) and tmpCrs.MoveNext() then begin
+          Result := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+        end;
+      end;
+    end;
+  end;
+  
 var
   bindingName, typeName : WideString;
   i : Integer;
   bindingNode, typeNode : TDOMNode;
+  intfDef : TInterfaceDefinition;
 begin
   if ExtractBindingQName(bindingName) then begin
     i := Pos(':',bindingName);
@@ -559,14 +533,15 @@ begin
         typeName := Copy(typeName,( i + 1 ), MaxInt);
         typeNode := FindTypeNode(typeName);
         if Assigned(typeNode) then begin
-          ParsePortType(typeNode,bindingNode);
+          intfDef := ParsePortType(typeNode,bindingNode);
+          intfDef.Address := ExtractAddress();
         end;
       end;
     end;
   end;
 end;
 
-procedure TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode);
+function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceDefinition;
 
   function ExtractSoapBindingStyle(out AName : WideString):Boolean ;
   var
@@ -596,56 +571,83 @@ procedure TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode);
     end;
   end;
   
+  function ExtractBindingOperationCursor() : IObjectCursor ;
+  begin
+    Result := nil;
+    if ABindingNode.HasChildNodes() then begin
+      Result := CreateCursorOn(
+                  CreateChildrenCursor(ABindingNode,cetRttiNode),
+                  ParseFilter(CreateQualifiedNameFilterStr(s_operation,FWsdlShortNames),TDOMNodeRttiExposer)
+                );
+    end;
+  end;
+  
+  procedure ParseOperationAtt_SoapAction(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
+  var
+    nd : TDOMNode;
+    tmpCrs : IObjectCursor;
+  begin
+    nd := FindNamedNode(ABndngOpCurs,AOp.ExternalName);
+    if Assigned(nd) and nd.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(nd,cetRttiNode),
+                  ParseFilter(CreateQualifiedNameFilterStr(s_operation,FSoapShortNames),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
+          tmpCrs := CreateCursorOn(
+                      CreateAttributesCursor(nd,cetRttiNode),
+                      ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_soapAction)]),TDOMNodeRttiExposer)
+                    );
+          tmpCrs.Reset();
+          if tmpCrs.MoveNext() then begin
+            nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+            AOp.Properties.Values[s_soapAction] := nd.NodeValue;
+          end;
+        end;
+      end;
+    end;
+  end;
+  
 var
   locIntf : TInterfaceDefinition;
   locAttCursor : IObjectCursor;
-  locFltrCreator : TRttiFilterCreator;
-  locCursor, locOpCursor : IObjectCursor;
+  locCursor, locOpCursor, locBindingOperationCursor : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
-  i : Integer;
-  locStrBuffer, locSoapBindingStyle : string;
+  locSoapBindingStyle : string;
   locWStrBuffer : WideString;
+  locMthd : TMethodDefinition;
 begin
   locAttCursor := CreateAttributesCursor(ANode,cetRttiNode);
-  locFltrCreator := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
+  locCursor := CreateCursorOn(locAttCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
+  locCursor.Reset();
+  if not locCursor.MoveNext() then
+    raise EWslParserException.CreateFmt('PortType Attribute not found : "%s"',[s_name]);
+  locObj := locCursor.GetCurrent() as TDOMNodeRttiExposer;
+  locIntf := TInterfaceDefinition.Create(locObj.NodeValue);
   try
-    locStrBuffer := s_NODE_NAME;
-    locFltrCreator.AddCondition(locStrBuffer,sfoEqualCaseInsensitive,s_name,fcNone);
-    locCursor := CreateCursorOn(locAttCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrNone));
-    locCursor.Reset();
-    if not locCursor.MoveNext() then
-      raise EWslParserException.CreateFmt('PortType Attribute not found : "%s"',[s_name]);
-    locObj := locCursor.GetCurrent() as TDOMNodeRttiExposer;
-    locIntf := TInterfaceDefinition.Create(locObj.NodeValue);
-    try
-      FSymbols.Add(locIntf);
-    except
-      FreeAndNil(locIntf);
-      raise;
-    end;
-    locCursor := CreateChildrenCursor(ANode,cetRttiNode);
-    if Assigned(locCursor) then begin
-      locFltrCreator.Clear(clrFreeObjects);
-      for i := 0 to Pred(FWsdlShortNames.Count) do begin
-        if IsStrEmpty(FWsdlShortNames[i]) then
-          locWStrBuffer := ''
-        else
-          locWStrBuffer := FWsdlShortNames[i] + ':';
-        locWStrBuffer := locWStrBuffer + s_operation;
-        locStrBuffer := s_NODE_NAME;
-        locFltrCreator.AddCondition(locStrBuffer,sfoEqualCaseInsensitive,locWStrBuffer,fcOr);
-      end;
-      locOpCursor := CreateCursorOn(locCursor,TRttiObjectFilter.Create(locFltrCreator.Root,clrNone));
-      locOpCursor.Reset();
-      ExtractSoapBindingStyle(locWStrBuffer);
-      locSoapBindingStyle := locWStrBuffer;
-      while locOpCursor.MoveNext() do begin
-        locObj := locOpCursor.GetCurrent() as TDOMNodeRttiExposer;
-        ParseOperation(locIntf,locObj.InnerObject,locSoapBindingStyle);
+    FSymbols.Add(locIntf);
+  except
+    FreeAndNil(locIntf);
+    raise;
+  end;
+  Result := locIntf;
+  locCursor := CreateChildrenCursor(ANode,cetRttiNode);
+  if Assigned(locCursor) then begin
+    locOpCursor := CreateCursorOn(locCursor,ParseFilter(CreateQualifiedNameFilterStr(s_operation,FWsdlShortNames),TDOMNodeRttiExposer));
+    locOpCursor.Reset();
+    ExtractSoapBindingStyle(locWStrBuffer);
+    locSoapBindingStyle := locWStrBuffer;
+    locBindingOperationCursor := ExtractBindingOperationCursor();
+    while locOpCursor.MoveNext() do begin
+      locObj := locOpCursor.GetCurrent() as TDOMNodeRttiExposer;
+      locMthd := ParseOperation(locIntf,locObj.InnerObject,locSoapBindingStyle);
+      if Assigned(locMthd) then begin
+        ParseOperationAtt_SoapAction(locBindingOperationCursor,locMthd);
       end;
     end;
-  finally
-    locFltrCreator.Free();
   end;
 end;
 
@@ -679,11 +681,11 @@ begin
   inherited;
 end;
 
-procedure TWsdlParser.ParseOperation(
+function TWsdlParser.ParseOperation(
         AOwner : TInterfaceDefinition;
         ANode  : TDOMNode;
   const ASoapBindingStyle : string
-);
+) : TMethodDefinition;
 
   function ExtractOperationName(out AName : string):Boolean;
   var
@@ -875,7 +877,7 @@ procedure TWsdlParser.ParseOperation(
               end;
             end;
             if ( SameText(ASoapBindingStyle,s_rpc) and
-                 ( prmDef <> nil ) and SameText(prmDef.Name,s_return) and
+                 ( prmDef <> nil ) and ( prmDef.Modifier = pmOut ) and//and SameText(prmDef.Name,s_return) and
                  ( prmDef = tmpMthd.Parameter[Pred(tmpMthd.ParameterCount)] )
                ) or
                ( SameText(ASoapBindingStyle,s_document) and
@@ -909,6 +911,8 @@ var
   locMthd : TMethodDefinition;
   mthdName : string;
 begin
+  Result := nil;
+  locMthd := nil;
   if not ExtractOperationName(mthdName) then
     raise EWslParserException.CreateFmt('Operation Attribute not found : "%s"',[s_name]);
   if SameText(s_document,ASoapBindingStyle) then begin
@@ -920,6 +924,7 @@ begin
     if ( locMthd <> nil ) then
       AOwner.AddMethod(locMthd);
   end;
+  Result := locMthd;
 end;
 
 function TWsdlParser.ParseType(const AName, ATypeOrElement: string): TTypeDefinition;
@@ -1083,10 +1088,44 @@ procedure TWsdlParser.Parse();
       end;
     end;
   end;
+
+  procedure ExtractNameSpace();
+  var
+    tmpCrs : IObjectCursor;
+    nd : TDOMNode;
+    s : string;
+  begin
+    nd := FDoc.DocumentElement;
+    if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
+      tmpCrs := CreateCursorOn(
+                  CreateAttributesCursor(nd,cetRttiNode),
+                  ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_targetNamespace)]),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        s := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+        if not IsStrEmpty(s) then begin
+          FSymbols.RegisterExternalAlias(s);
+        end;
+      end;
+    end;
+  end;
   
+var
+  locSrvcCrs : IObjectCursor;
+  locObj : TDOMNodeRttiExposer;
 begin
   Prepare();
+
+  locSrvcCrs := FServiceCursor.Clone() as IObjectCursor;
+  locSrvcCrs.Reset();
+  while locSrvcCrs.MoveNext() do begin
+    locObj := locSrvcCrs.GetCurrent() as TDOMNodeRttiExposer;
+    ParseService(locObj.InnerObject);
+  end;
+
   ParseForwardDeclarations();
+  ExtractNameSpace();
 end;
 
 { TAbstractTypeParser }
@@ -1375,7 +1414,8 @@ var
         TArrayDefinition.Create(
           Format('%s_%sArray',[AClassName,locPropTyp.Name]),
           locPropTyp.DataType,
-          locPropTyp.Name
+          locPropTyp.Name,
+          locPropTyp.ExternalName
         )
       );
     end;
@@ -1440,7 +1480,7 @@ var
     end;
     if not locSym.InheritsFrom(TTypeDefinition) then
       raise EWslParserException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
-    Result := TArrayDefinition.Create(AInternalName,locSym as TTypeDefinition,s_item);
+    Result := TArrayDefinition.Create(AInternalName,locSym as TTypeDefinition,s_item,s_item);
     if AHasInternalName then
       Result.RegisterExternalAlias(ATypeName);
   end;
@@ -1493,7 +1533,7 @@ begin
               Result := nil;
               propTyp := arrayItems[0] as TPropertyDefinition;
               //arrayDef := TArrayDefinition.Create(internalName,(arrayItemType as TTypeDefinition),arrayItemName);
-              arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name);
+              arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name,propTyp.ExternalName);
               FreeAndNil(classDef);
               Result := arrayDef;
               if hasInternalName then
@@ -1748,74 +1788,60 @@ end;
 procedure TSimpleTypeParser.ExtractContentType();
 var
   locCrs, locAttCrs : IObjectCursor;
-  fltrCtr : TRttiFilterCreator;
   tmpNode : TDOMNode;
 begin
-  fltrCtr := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-  try
-    CreateQualifiedNameFilter(fltrCtr,s_restriction,FOwner.FXSShortNames);
-    locCrs := CreateCursorOn(
-                FChildCursor.Clone() as IObjectCursor,TRttiObjectFilter.Create(fltrCtr.Root,clrFreeObjects)
-              );
-    locCrs.Reset();
-    if locCrs.MoveNext() then begin
-      FRestrictionNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-      tmpNode := nil;
-      locAttCrs := CreateAttributesCursor(FRestrictionNode,cetRttiNode);
-      if Assigned(locAttCrs) then begin
-        locAttCrs := CreateCursorOn(locAttCrs,ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_base)]),TDOMNodeRttiExposer));
-        locAttCrs.Reset();
-        if locAttCrs.MoveNext() then begin
-          tmpNode := (locAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        end;
+  locCrs := CreateCursorOn(
+              FChildCursor.Clone() as IObjectCursor,
+              ParseFilter(CreateQualifiedNameFilterStr(s_restriction,FOwner.FXSShortNames),TDOMNodeRttiExposer)
+            );
+  locCrs.Reset();
+  if locCrs.MoveNext() then begin
+    FRestrictionNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+    tmpNode := nil;
+    locAttCrs := CreateAttributesCursor(FRestrictionNode,cetRttiNode);
+    if Assigned(locAttCrs) then begin
+      locAttCrs := CreateCursorOn(locAttCrs,ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_base)]),TDOMNodeRttiExposer));
+      locAttCrs.Reset();
+      if locAttCrs.MoveNext() then begin
+        tmpNode := (locAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
       end;
-      FBaseName := '';
-      if Assigned(tmpNode) then begin
-        FBaseName := ExtractNameFromQName(tmpNode.NodeValue);
-      end;
-      fltrCtr.Clear(clrNone);
-      CreateQualifiedNameFilter(fltrCtr,s_enumeration,FOwner.FXSShortNames);
-      locCrs := CreateChildrenCursor(FRestrictionNode,cetRttiNode) as IObjectCursor;
-      if Assigned(locCrs) then begin
-        locCrs.Reset();
-        if locCrs.MoveNext() then begin
-          FIsEnum := True;
-        end else begin
-          if IsStrEmpty(FBaseName) then
-            raise EWslParserException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
-          FIsEnum := False
-        end;
+    end;
+    FBaseName := '';
+    if Assigned(tmpNode) then begin
+      FBaseName := ExtractNameFromQName(tmpNode.NodeValue);
+    end;
+    locCrs := CreateChildrenCursor(FRestrictionNode,cetRttiNode) as IObjectCursor;
+    if Assigned(locCrs) then begin
+      locCrs := CreateCursorOn(
+                  locCrs,
+                  ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,FOwner.FXSShortNames),TDOMNodeRttiExposer)
+                );
+      locCrs.Reset();
+      if locCrs.MoveNext() then begin
+        FIsEnum := True;
       end else begin
         if IsStrEmpty(FBaseName) then
           raise EWslParserException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
         FIsEnum := False
       end;
     end else begin
-      raise EWslParserException.CreateFmt('The parser only support "Restriction" mode simple type derivation, parsing : "%s".',[FTypeName]);
+      if IsStrEmpty(FBaseName) then
+        raise EWslParserException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
+      FIsEnum := False
     end;
-  finally
-    fltrCtr.Clear(clrNone);
-    FreeAndNil(fltrCtr);
+  end else begin
+    raise EWslParserException.CreateFmt('The parser only support "Restriction" mode simple type derivation, parsing : "%s".',[FTypeName]);
   end;
 end;
 
 function TSimpleTypeParser.ParseEnumContent(): TTypeDefinition;
 
   function ExtractEnumCursor():IObjectCursor ;
-  var
-    fltrCtr : TRttiFilterCreator;
   begin
-    fltrCtr := TRttiFilterCreator.Create(TDOMNodeRttiExposer);
-    try
-      CreateQualifiedNameFilter(fltrCtr,s_enumeration,FOwner.FXSShortNames);
-      Result := CreateCursorOn(
-                  CreateChildrenCursor(FRestrictionNode,cetRttiNode),
-                  TRttiObjectFilter.Create(fltrCtr.Root,clrFreeObjects)
-                );
-    finally
-      fltrCtr.Clear(clrNone);
-      FreeAndNil(fltrCtr);
-    end;
+    Result := CreateCursorOn(
+                CreateChildrenCursor(FRestrictionNode,cetRttiNode),
+                ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,FOwner.FXSShortNames),TDOMNodeRttiExposer)
+              );
   end;
   
 var

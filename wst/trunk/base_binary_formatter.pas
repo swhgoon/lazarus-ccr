@@ -267,6 +267,7 @@ type
     );
     procedure BeginArray(
       Const AName         : string;
+      Const ATypeInfo     : PTypeInfo;
       Const AItemTypeInfo : PTypeInfo;
       Const ABounds       : Array Of Integer
     );
@@ -999,7 +1000,12 @@ begin
   PushStack(FRootData,stObject);
 end;
 
-procedure TBaseBinaryFormatter.BeginArray(const AName: string;const AItemTypeInfo: PTypeInfo; const ABounds: array of Integer);
+procedure TBaseBinaryFormatter.BeginArray(
+      Const AName         : string;
+      Const ATypeInfo     : PTypeInfo;
+      Const AItemTypeInfo : PTypeInfo;
+      Const ABounds       : Array Of Integer
+);
 Var
   i, j, k : Integer;
 begin

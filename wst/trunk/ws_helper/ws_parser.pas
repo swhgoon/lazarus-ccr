@@ -257,13 +257,10 @@ Var
   sbl : TInterfaceDefinition;
 
   procedure ReadIntfHeader();
-  Var
-    tmpStr : String;
   begin
     NextToken();
     Repeat
       Tokenizer.CheckToken(toSymbol);
-      tmpStr := Tokenizer.TokenString;
       NextToken();
       If AnsiSameText(Tokenizer.TokenString,GetPascalTokenStr(ptRigthParenthesis)) Then Begin
         NextToken();
@@ -437,7 +434,6 @@ end;
 procedure TPascalParser.ParseClassType(const AName: String);
 Var
   sbl : TClassTypeDefinition;
-  tmpStr : String;
 begin
   sbl := TClassTypeDefinition.Create(AName);
   FSymbolTable.Add(sbl);

@@ -418,6 +418,14 @@ type
     procedure FormatDate();
     procedure ParseDate();
   end;
+
+  { TTest_TTimeRemotable }
+
+  TTest_TTimeRemotable = class(TTestCase)
+  published
+    procedure FormatDate();
+    procedure ParseDate();
+  end;
   
 implementation
 uses base_binary_formatter, base_soap_formatter;
@@ -2967,6 +2975,18 @@ begin
   Fail('Write me!');
 end;
 
+{ TTest_TTimeRemotable }
+
+procedure TTest_TTimeRemotable.FormatDate();
+begin
+  Fail('Write me!');
+end;
+
+procedure TTest_TTimeRemotable.ParseDate();
+begin
+  Fail('Write me!');
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -2997,4 +3017,5 @@ initialization
   RegisterTest(TTestBinaryFormatterAttributes);
   RegisterTest(TTest_TDateRemotable);
   RegisterTest(TTest_TDurationRemotable);
+  RegisterTest(TTest_TTimeRemotable);
 end.

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls, eBaySvc_intf;
+  Buttons, StdCtrls, ComCtrls;
 
 type
 

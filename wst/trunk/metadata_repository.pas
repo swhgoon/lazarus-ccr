@@ -59,6 +59,7 @@ type
     Name             : ShortString;
     OperationsCount  : Byte;
     Operations       : PServiceOperation;
+    Properties       : PPropertyData;
   end;
 
   PServiceRepository = ^TServiceRepository;
@@ -81,6 +82,12 @@ type
       out   ARepository  : PServiceRepository
     ):Integer;
     procedure ClearRepository(var ARepository : PServiceRepository);
+    procedure SetServiceCustomData(
+      const ARepName       : shortstring;
+      const AServiceName   : shortstring;
+      const ADataName,
+            AData          : string
+    );
     procedure SetOperationCustomData(
       const ARepName       : shortstring;
       const AServiceName   : shortstring;
@@ -211,6 +218,8 @@ begin
     end;
     Freemem(AService^.Operations, k * SizeOf(PServiceOperation^) );
     AService^.Operations := nil;
+    ClearProperties(AService^.Properties);
+    AService^.Properties := nil;
   end;
   if AFreeService then
     Freemem(AService,SizeOf(PService^));
@@ -276,6 +285,7 @@ var
     po : PServiceOperation;
   begin
     AService^.Name := rdr.ReadStr();
+    AService^.Properties := nil;
     k := rdr.ReadInt8U();
     if ( k > 0 ) then begin
       AService^.Operations := GetMem( k * SizeOf(PServiceOperation^) );
@@ -354,6 +364,7 @@ var
   po : PServiceOperation;
 begin
   ADestService^.Name := ASrcService^.Name;
+  ADestService^.Properties := CloneProperties(ASrcService^.Properties);
   k := ASrcService^.OperationsCount;
   if ( k > 0 ) then begin
     ADestService^.Operations := GetMem( k * SizeOf(PServiceOperation^) );
@@ -435,6 +446,12 @@ type
       out   ARepository  : PServiceRepository
     ):Integer;
     procedure ClearRepository(var ARepository : PServiceRepository);
+    procedure SetServiceCustomData(
+      const ARepName       : shortstring;
+      const AServiceName   : shortstring;
+      const ADataName,
+            AData          : string
+    );
     procedure SetOperationCustomData(
       const ARepName       : shortstring;
       const AServiceName   : shortstring;
@@ -611,6 +628,27 @@ begin
     end;
   end;
   Result := nil;
+end;
+
+procedure TModuleMetadataMngr.SetServiceCustomData(
+  const ARepName      : shortstring;
+  const AServiceName  : shortstring;
+  const ADataName,
+        AData         : string
+);
+var
+  i : Integer;
+  rp : PServiceRepository;
+  sp : PService;
+begin
+  i := FindInnerListIndex(ARepName);
+  if ( i < 0 ) then
+    i := InternalLoadRepository(ARepName);
+  rp := FRepositories[i];
+  sp := FindService(rp,AServiceName);
+  if not Assigned(sp) then
+    raise EMetadataException.CreateFmt('Service non found : "%s"',[AServiceName]);
+  Add(sp^.Properties,ADataName,AData);
 end;
 
 function FindOperation(
