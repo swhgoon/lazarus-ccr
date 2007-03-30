@@ -221,6 +221,8 @@ var
   SvnLog: TSvnLog;
   Files: TStrings;
   i: Integer;
+const
+  DeletedFileCount : array[0..5] of byte = (0,1,1,2,0,0);
 begin
   SvnLog := TSvnLog.Create;
   Files := nil;
@@ -229,8 +231,8 @@ begin
     AssertEquals('Wrong number of log entries', 6, SvnLog.LogEntryCount);
     for i := 0 to SvnLog.LogEntryCount - 1 do begin
       Files := SvnLog.LogEntry[i].GetFileList;
-      AssertEquals('Wrong number of files',
-        SvnLog.LogEntry[i].PathCount, Files.Count);
+      AssertEquals('Wrong number of files for entry ' + IntToStr(i),
+        SvnLog.LogEntry[i].PathCount - DeletedFileCount[i], Files.Count);
       FreeAndNil(Files);
     end;
   finally

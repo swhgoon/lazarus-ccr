@@ -484,7 +484,7 @@ end;
 
 procedure TLogEntry.LoadFromNode(ANode: TDOMElement);
 var
-  PathsELement: TDomNode;
+  PathsElement: TDomNode;
   PathElement: TDomNode;
   NewLogPath: TLogPath;
 begin
@@ -495,7 +495,7 @@ begin
   
   PathsElement := ANode.FindNode('paths');
   if assigned(PathsELement) then begin
-    PathElement := PathsELement.FirstChild;
+    PathElement := PathsElement.FirstChild;
     while assigned(PathElement) do begin
       if (PathElement.NodeType=ELEMENT_NODE)
         and (PathElement.NodeName='path') then
