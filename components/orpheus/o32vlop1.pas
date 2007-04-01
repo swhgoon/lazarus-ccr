@@ -122,6 +122,45 @@ type
 
 implementation
 
+
+// Note that workaround below currently works only with win32.
+//  Other widgetsets currently don't implement Get/SetWindowLong
+//  or never call LclWndProc (don't implement CallWindowProc 
+//  correctly?), but the workaround code appears harmless.
+//  Just undefine LCLWndProc to disable workaround code.
+{$IFDEF LCL}
+ {$DEFINE LCLWndProc}
+{$ENDIF}
+
+{$IFDEF LCLWndProc}  
+// Workaround for lack of MakeObjectInstance in LCL for making 
+//  a WindowProc callback function from an object method.
+//  Pass pointer to this function to SetWindowLong wherever using 
+//  MakeObjectInstance. Also set window's user data to pointer to
+//  object method's pointers so method can be reconstituted here.
+// Note: Adapted from Felipe's CallbackAllocateHWnd procedure. 
+function LclWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM) : LRESULT; 
+          {$IFDEF MSWINDOWS} stdcall; {$ELSE} cdecl; {$ENDIF}
+var
+  AMsg      : TMessage;
+  MethodPtr : ^TWndMethod;
+begin
+  FillChar(AMsg, SizeOf(Msg), #0);
+  
+   {Populate message}
+  AMsg.Msg := Msg;  
+  AMsg.WParam := wParam;
+  AMsg.LParam := lParam;
+
+   {Get pointer to memory containing method's code and data pointers}
+  MethodPtr := Pointer(GetWindowLong(hWnd, GWL_USERDATA));
+
+  if Assigned(MethodPtr) then
+    MethodPtr^(AMsg);  {Dereference pointer and call method with message}
+end;
+{$ENDIF}
+
+
 {===== TValidatorOptions =============================================}
 constructor TValidatorOptions.Create(AOwner: TWinControl);
 begin
@@ -135,6 +174,10 @@ begin
     NewWndProc := Classes.MakeObjectInstance(voWndProc);
   {$ELSE}
     NewWndProc := MakeObjectInstance(voWndProc);
+  {$ENDIF}
+{$ELSE}
+  {$IFDEF LCLWndProc}
+    NewWndProc := @LclWndProc;
   {$ENDIF}
 {$ENDIF}
 
@@ -163,6 +206,9 @@ end;
 procedure TValidatorOptions.HookControl;
 var
   P : Pointer;
+{$IFDEF LCLWndProc}
+  MethodPtr : ^TWndMethod;
+{$ENDIF}
 begin
   if not FEnableHooking then exit;
   {hook into owner's window procedure}
@@ -173,6 +219,14 @@ begin
     if (P <> NewWndProc) then begin
       PrevWndProc := P;
       {redirect message handling to ours}
+{$IFDEF LCLWndProc}
+      GetMem(MethodPtr, SizeOf(TMethod));  {Allocate memory}
+      MethodPtr^ := voWndProc;  {Store method's code and data pointers}
+       {Associate pointer to memory with window}
+      SetWindowLong(FHookedControl.Handle, GWL_USERDATA, PtrInt(MethodPtr));
+      if not Assigned(Pointer(GetWindowLong(FHookedControl.Handle, GWL_USERDATA))) then
+        FreeMem(MethodPtr);  //SetWindowLong not implemented for widgetset
+{$ENDIF}
       SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LongInt(NewWndProc));
     end;
   end;
@@ -180,10 +234,22 @@ end;
 {=====}
 
 procedure TValidatorOptions.UnHookControl;
+{$IFDEF LCLWndProc}
+var
+  MethodPtr : ^TWndMethod;
+{$ENDIF}
 begin
   if (FHookedControl <> nil) then begin
     if Assigned(PrevWndProc) and FHookedControl.HandleAllocated then
+      begin
+{$IFDEF LCLWndProc}
+       {Get pointer to memory allocated previously}
+      MethodPtr := Pointer(GetWindowLong(FHookedControl.Handle, GWL_USERDATA));
+      if Assigned(MethodPtr) then
+        FreeMem(MethodPtr);
+{$ENDIF}    
       SetWindowLong(FHookedControl.Handle, GWL_WNDPROC, LongInt(PrevWndProc));
+      end;
   end;
   PrevWndProc := nil;
 end;
@@ -251,15 +317,20 @@ procedure TValidatorOptions.voWndProc(var Msg : TMessage);
 begin
   with Msg do begin
     case FEvent of
-      veOnEnter        : if Msg =  CM_ENTER   then
+      veOnEnter  : if Msg = {$IFNDEF LCL} CM_ENTER {$ELSE} LM_SETFOCUS {$ENDIF} then
         Validate;
 
-      veOnExit         : if Msg = CM_EXIT    then
+      veOnExit   : if Msg = {$IFNDEF LCL} CM_EXIT {$ELSE} LM_KILLFOCUS {$ENDIF} then
         if (not Validate) and (not FSoftValidation) then
+          begin
           FHookedControl.SetFocus;
+{$IFDEF LCL}
+          Exit;
+{$ENDIF}          
+          end;
 
       {TextChanged}
-      veOnChange       : if Msg = 48435 then
+      veOnChange : if Msg = 48435 then  //Probably doesn't work with LCL
         Validate;
 
     end;
