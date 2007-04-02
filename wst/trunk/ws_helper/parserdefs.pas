@@ -43,6 +43,7 @@ Type
     FName: String;
     FExternalAlias : string;
   protected
+    procedure SetName(const AName : string);virtual;
     procedure FixForwardTypeDefinitions(
       AFrw  : TForwardTypeDefinition;
       Atype : TTypeDefinition
@@ -129,6 +130,8 @@ Type
   TForwardTypeDefinition = class(TTypeDefinition)
   end;
 
+  TArrayStyle = ( asScoped, asEmbeded );
+  
   { TArrayDefinition }
 
   TArrayDefinition = class(TTypeDefinition)
@@ -136,6 +139,7 @@ Type
     FItemExternalName: string;
     FItemName: string;
     FItemType: TTypeDefinition;
+    FStyle: TArrayStyle;
   protected
     procedure FixForwardTypeDefinitions(
       AFrw  : TForwardTypeDefinition;
@@ -146,12 +150,14 @@ Type
       const AName              : string;
             AItemType          : TTypeDefinition;
       const AItemName,
-            AItemExternalName  : string
+            AItemExternalName  : string;
+      const AStyle             : TArrayStyle
       );
     function NeedFinalization():Boolean;override;
     property ItemName : string read FItemName;
     property ItemType : TTypeDefinition read FItemType;
     property ItemExternalName : string read FItemExternalName;
+    property Style : TArrayStyle read FStyle;
   end;
   
   TEnumTypeDefinition = class;
@@ -298,8 +304,8 @@ Type
   private
     FMethodType: TMethodType;
     FParameterList : TObjectList;
-  private
     FProperties: TStrings;
+  private
     function GetParameter(Index: Integer): TParameterDefinition;
     function GetParameterCount: Integer;
   protected
@@ -458,6 +464,11 @@ end;
 function TAbstractSymbolDefinition.SameName(const AName: string): Boolean;
 begin
   Result := AnsiSameText(AName,Self.Name) or AnsiSameText(AName,Self.ExternalName);
+end;
+
+procedure TAbstractSymbolDefinition.SetName(const AName: string);
+begin
+  FName := AName;
 end;
 
 procedure TAbstractSymbolDefinition.FixForwardTypeDefinitions(
@@ -1280,11 +1291,13 @@ constructor TArrayDefinition.Create(
   const AName              : string;
         AItemType          : TTypeDefinition;
   const AItemName,
-        AItemExternalName  : string
+        AItemExternalName  : string;
+  const AStyle             : TArrayStyle
 );
 begin
   Assert(Assigned(AItemType));
   inherited Create(AName);
+  FStyle := AStyle;
   FItemType := AItemType;
   FItemName := AItemName;
   FItemExternalName := AItemExternalName;

@@ -49,16 +49,19 @@ begin
 end;
 
 function ParseCmdLineOptions(out AAppOptions : TComandLineOptions):Integer;
-Var
+var
   c : Char;
-
 begin
   AAppOptions := [];
   c := #0;
-  Repeat
-    c := GetOpt('upibo:a:');
+  repeat
+    c := GetOpt('u:pibo:a:');
     case c of
-      'u' : Include(AAppOptions,cloInterface);
+      'u' :
+        begin
+          Include(AAppOptions,cloInterface);
+          OptionsArgsMAP[cloInterface] := OptArg;
+        end;
       'p' : Include(AAppOptions,cloProxy);
       'i' : Include(AAppOptions,cloImp);
       'b' : Include(AAppOptions,cloBinder);
@@ -73,7 +76,7 @@ begin
           OptionsArgsMAP[cloOutPutDirAbsolute] := OptArg;
         End;
     end;
-  Until ( c = EndOfOptions );
+  until ( c = EndOfOptions );
   Result := OptInd;
 end;
 

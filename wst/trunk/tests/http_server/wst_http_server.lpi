@@ -12,6 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -43,9 +44,11 @@
         <Filename Value="app_object.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="app_object"/>
-        <CursorPos X="46" Y="296"/>
-        <TopLine Value="63"/>
+        <CursorPos X="1" Y="238"/>
+        <TopLine Value="224"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="202"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="D:\Lazarus\others_package\indy\indy-10.2.0.1\fpc\Core\IdSocketHandle.pas"/>
@@ -244,9 +247,11 @@
         <Filename Value="..\..\metadata_repository.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_repository"/>
-        <CursorPos X="31" Y="629"/>
-        <TopLine Value="72"/>
+        <CursorPos X="1" Y="309"/>
+        <TopLine Value="247"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="201"/>
+        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\xml\dom.pp"/>
@@ -431,9 +436,11 @@
         <Filename Value="..\..\metadata_service_binder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_service_binder"/>
-        <CursorPos X="53" Y="11"/>
-        <TopLine Value="1"/>
+        <CursorPos X="1" Y="53"/>
+        <TopLine Value="46"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="186"/>
+        <Loaded Value="True"/>
       </Unit56>
       <Unit57>
         <Filename Value="..\..\metadata_service.lrs"/>
@@ -464,9 +471,11 @@
         <Filename Value="..\calculator\srv\calculator_imp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_imp"/>
-        <CursorPos X="65" Y="3"/>
-        <TopLine Value="129"/>
+        <CursorPos X="40" Y="135"/>
+        <TopLine Value="111"/>
+        <EditorIndex Value="0"/>
         <UsageCount Value="123"/>
+        <Loaded Value="True"/>
       </Unit61>
       <Unit62>
         <Filename Value="..\calculator\srv\calculator_binder.pas"/>
@@ -545,7 +554,64 @@
         <UsageCount Value="13"/>
       </Unit72>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="14" HistoryIndex="13">
+      <Position1>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="238" Column="26" TopLine="224"/>
+      </Position1>
+      <Position2>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="239" Column="1" TopLine="225"/>
+      </Position2>
+      <Position3>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="240" Column="1" TopLine="226"/>
+      </Position3>
+      <Position4>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="241" Column="1" TopLine="227"/>
+      </Position4>
+      <Position5>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="242" Column="1" TopLine="228"/>
+      </Position5>
+      <Position6>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="243" Column="1" TopLine="229"/>
+      </Position6>
+      <Position7>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="245" Column="1" TopLine="240"/>
+      </Position7>
+      <Position8>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="246" Column="1" TopLine="232"/>
+      </Position8>
+      <Position9>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="247" Column="36" TopLine="243"/>
+      </Position9>
+      <Position10>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="71" Column="20" TopLine="57"/>
+      </Position11>
+      <Position12>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="247" Column="1" TopLine="233"/>
+      </Position12>
+      <Position13>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="248" Column="1" TopLine="234"/>
+      </Position13>
+      <Position14>
+        <Filename Value="app_object.pas"/>
+        <Caret Line="238" Column="1" TopLine="224"/>
+      </Position14>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -572,31 +638,27 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="6">
+    <BreakPoints Count="5">
       <Item1>
-        <Source Value="..\..\metadata_repository.pas"/>
-        <Line Value="309"/>
+        <Source Value="..\..\metadata_wsdl.pas"/>
+        <Line Value="459"/>
       </Item1>
       <Item2>
         <Source Value="..\..\metadata_wsdl.pas"/>
-        <Line Value="459"/>
+        <Line Value="468"/>
       </Item2>
       <Item3>
         <Source Value="..\..\metadata_wsdl.pas"/>
-        <Line Value="468"/>
+        <Line Value="431"/>
       </Item3>
       <Item4>
         <Source Value="..\..\metadata_wsdl.pas"/>
-        <Line Value="431"/>
+        <Line Value="181"/>
       </Item4>
       <Item5>
-        <Source Value="..\..\metadata_wsdl.pas"/>
-        <Line Value="181"/>
-      </Item5>
-      <Item6>
         <Source Value="..\..\server_service_intf.pas"/>
         <Line Value="630"/>
-      </Item6>
+      </Item5>
     </BreakPoints>
     <Exceptions Count="2">
       <Item1>

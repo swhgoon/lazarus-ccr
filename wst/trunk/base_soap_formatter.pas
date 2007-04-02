@@ -56,7 +56,8 @@ Type
     FNameSpace: string;
     FScopeObject: TDOMNode;
     FScopeType: TScopeType;
-    function GetItemsCount: Integer;
+  protected
+    function GetItemsCount() : Integer;virtual;
   Public
     constructor Create(AScopeObject : TDOMNode;AScopeType : TScopeType);
     function FindNode(var ANodeName : string):TDOMNode;virtual;abstract;
@@ -74,14 +75,40 @@ Type
     function FindNode(var ANodeName : string):TDOMNode;override;
   End;
 
-  { TArrayStackItem }
+  { TAbstractArrayStackItem }
 
-  TArrayStackItem = class(TStackItem)
-  Private
+  TAbstractArrayStackItem = class(TStackItem)
+  private
+    FItemList : TDOMNodeList;
     FIndex : Integer;
-  Public
+    FItemName : string;
+  protected
+    procedure EnsureListCreated();
+    function GetItemsCount() : Integer;override;
+    function CreateList(const ANodeName : string):TDOMNodeList;virtual;abstract;
+  public
+    constructor Create(
+            AScopeObject : TDOMNode;
+      const AScopeType   : TScopeType;
+      const AItemName    : string
+    );
+    destructor Destroy();override;
     function FindNode(var ANodeName : string):TDOMNode;override;
-  End;
+  end;
+
+  { TScopedArrayStackItem }
+
+  TScopedArrayStackItem = class(TAbstractArrayStackItem)
+  protected
+    function CreateList(const ANodeName : string):TDOMNodeList;override;
+  end;
+
+  { TEmbeddedArrayStackItem }
+
+  TEmbeddedArrayStackItem = class(TAbstractArrayStackItem)
+  protected
+    function CreateList(const ANodeName : string):TDOMNodeList;override;
+  end;
 
   TSOAPEncodingStyle = ( Encoded, Litteral );
   TSOAPDocumentStyle = ( RPC, Document );
@@ -185,7 +212,12 @@ Type
     );
   protected
     function GetXmlDoc():TXMLDocument;
-    function PushStack(AScopeObject : TDOMNode;Const AScopeType : TScopeType = stObject):TStackItem;
+    function PushStack(AScopeObject : TDOMNode):TStackItem;overload;
+    function PushStack(
+            AScopeObject : TDOMNode;
+      const AStyle       : TArrayStyle;
+      const AItemName    : string
+    ):TStackItem;overload;
     function FindAttributeByValueInNode(
       Const AAttValue : String;
       Const ANode     : TDOMNode;
@@ -210,9 +242,17 @@ Type
     procedure ClearStack();
     procedure BeginScope(
       Const AScopeName,ANameSpace : string;
-      Const ANameSpaceShortName   : string = '';
-      Const AScopeType            : TScopeType = stObject
+      Const ANameSpaceShortName   : string ;
+      Const AScopeType            : TScopeType;
+      const AStyle                : TArrayStyle
     );
+    function InternalBeginScopeRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo;
+      const AScopeType : TScopeType;
+      const AStyle     : TArrayStyle;
+      const AItemName  : string
+    ):Integer;
 
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
@@ -234,20 +274,26 @@ Type
       Const ATypeInfo  : PTypeInfo
     );
     procedure BeginArray(
-      Const AName         : string;
-      Const ATypeInfo     : PTypeInfo;
-      Const AItemTypeInfo : PTypeInfo;
-      Const ABounds       : Array Of Integer
+      const AName         : string;
+      const ATypeInfo     : PTypeInfo;
+      const AItemTypeInfo : PTypeInfo;
+      const ABounds       : Array Of Integer;
+      const AStyle        : TArrayStyle
     );
 
     procedure NilCurrentScope();
     function IsCurrentScopeNil():Boolean;
     procedure EndScope();
     procedure AddScopeAttribute(Const AName,AValue : string);
-    function BeginScopeRead(
-      Var   AScopeName : string;
-      Const ATypeInfo  : PTypeInfo;
-      Const AScopeType : TScopeType = stObject
+    function BeginObjectRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo
+    ) : Integer;
+    function BeginArrayRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo;
+      const AStyle     : TArrayStyle;
+      const AItemName  : string
     ):Integer;
     procedure EndScopeRead();
 
@@ -330,24 +376,50 @@ begin
   Result:= ScopeObject.FindNode(ANodeName);
 end;
 
-{ TArrayStackItem }
+{ TAbstractArrayStackItem }
 
-function TArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
-var
-  chdLst : TDOMNodeList;
+procedure TAbstractArrayStackItem.EnsureListCreated();
 begin
-  if not ScopeObject.HasChildNodes then
-    raise ESOAPException.Create('This node has no children.');
-  chdLst := ScopeObject.ChildNodes;
-  try
-    if ( FIndex >= chdLst.Count ) then
-      raise ESOAPException.CreateFmt('Index out of bound : %d',[FIndex]);
-    Result:= chdLst.Item[FIndex];
-    Inc(FIndex);
-    ANodeName := Result.NodeName;
-  finally
-    chdLst.Release();
+  if ( FItemList = nil ) then begin
+    FItemList := CreateList(FItemName);
   end;
+end;
+
+function TAbstractArrayStackItem.GetItemsCount(): Integer;
+begin
+  EnsureListCreated();
+  if Assigned(FItemList) then begin
+    Result := FItemList.Count;
+  end else begin
+    Result := 0;
+  end;
+end;
+
+constructor TAbstractArrayStackItem.Create(
+        AScopeObject : TDOMNode;
+  const AScopeType   : TScopeType;
+  const AItemName    : string
+);
+begin
+  inherited Create(AScopeObject,AScopeType);
+  FItemName := AItemName;
+end;
+
+destructor TAbstractArrayStackItem.Destroy();
+begin
+  if Assigned(FItemList) then
+    FItemList.Release();
+  inherited Destroy();
+end;
+
+function TAbstractArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
+begin
+  EnsureListCreated();
+  if ( FIndex >= FItemList.Count ) then
+    raise ESOAPException.CreateFmt('Index out of bound : %d; Node Name = "%s"',[FIndex,ANodeName]);
+  Result:= FItemList.Item[FIndex];
+  Inc(FIndex);
+  ANodeName := Result.NodeName;
 end;
 
 { TSOAPBaseFormatter }
@@ -361,68 +433,41 @@ begin
     FStack.Pop().Free();
 end;
 
-function TSOAPBaseFormatter.PushStack(
-        AScopeObject : TDOMNode;
-  Const AScopeType   : TScopeType
-) : TStackItem;
+function TSOAPBaseFormatter.PushStack(AScopeObject : TDOMNode) : TStackItem;
 begin
-  if ( AScopeType = stArray ) then
-    Result := FStack.Push(TArrayStackItem.Create(AScopeObject,AScopeType)) as TStackItem
-  else
-    Result := FStack.Push(TObjectStackItem.Create(AScopeObject,AScopeType)) as TStackItem;
+  Result := FStack.Push(TObjectStackItem.Create(AScopeObject,stObject)) as TStackItem;
 end;
 
-function TSOAPBaseFormatter.BeginScopeRead(
-  Var   AScopeName : string;
-  Const ATypeInfo  : PTypeInfo;
-  Const AScopeType : TScopeType = stObject
-):Integer;
-Var
-  locNode : TDOMNode;
-  stk : TStackItem;
-  
-  typData : TTypeRegistryItem;
-  nmspc,nmspcSH : string;
-  strNodeName : string;
+function TSOAPBaseFormatter.PushStack(
+        AScopeObject : TDOMNode;
+  const AStyle       : TArrayStyle;
+  const AItemName    : string
+): TStackItem;
 begin
-  if ( Style = Document ) then begin
-    typData := GetTypeRegistry().Find(ATypeInfo,False);
-    if not Assigned(typData) then
-      Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
-    nmspc := typData.NameSpace;
-    if IsStrEmpty(nmspc) then
-      nmspcSH := ''
-    else begin
-      nmspcSH := FindAttributeByValueInScope(nmspc);
-      if not IsStrEmpty(nmspcSH) then begin
-        nmspcSH := Copy(nmspcSH,Length('xmlns:')+1,MaxInt);
-      end;
-    End;
-    if IsStrEmpty(nmspcSH) then begin
-      strNodeName := AScopeName
-    end else begin
-      if ( Pos(':',AScopeName) < 1 ) then
-        strNodeName := nmspcSH + ':' + AScopeName
-      else
-        strNodeName := AScopeName;
-    end;
-  end else begin
-    nmspcSH := '';
-    strNodeName := AScopeName;
+  case AStyle of
+    asScoped  : Result := FStack.Push(TScopedArrayStackItem.Create(AScopeObject,stArray,AItemName)) as TStackItem;
+    asEmbeded : Result := FStack.Push(TEmbeddedArrayStackItem.Create(AScopeObject,stArray,AItemName)) as TStackItem;
+    else
+      Assert(False);
   end;
+end;
 
-  stk := StackTop();
-  locNode := stk.FindNode(strNodeName);//(AScopeName);
-  If Not Assigned(locNode) Then
-    Error('Scope not found : "%s"',[strNodeName]);//[AScopeName]);
-  PushStack(locNode,AScopeType);
-  if ( Style = Document ) then begin
-    StackTop().SetNameSpace(nmspc);
-  end;
-  if locNode.HasChildNodes then
-    Result := GetNodeItemsCount(locNode)
-  else
-    Result := 0;
+function TSOAPBaseFormatter.BeginObjectRead(
+  var   AScopeName : string;
+  const ATypeInfo  : PTypeInfo
+): Integer;
+begin
+  Result := InternalBeginScopeRead(AScopeName,ATypeInfo,stObject,asNone,'');
+end;
+
+function TSOAPBaseFormatter.BeginArrayRead(
+  var   AScopeName : string;
+  const ATypeInfo  : PTypeInfo;
+  const AStyle     : TArrayStyle;
+  const AItemName  : string
+): Integer;
+begin
+  Result := InternalBeginScopeRead(AScopeName,ATypeInfo,stArray,AStyle,AItemName);
 end;
 
 procedure TSOAPBaseFormatter.EndScopeRead();
@@ -435,7 +480,7 @@ begin
   if ( FHeaderEnterCount <= 0 ) then begin
     Inc(FHeaderEnterCount);
     Prepare();
-    BeginScope(sHEADER,sSOAP_ENV,sSOAP_ENV_ABR);
+    BeginScope(sHEADER,sSOAP_ENV,sSOAP_ENV_ABR,stObject,asNone);
     SetStyleAndEncoding(Document,Litteral);
   end;
 end;
@@ -891,7 +936,7 @@ begin
     strNodeName := AName;
   end;
 
-  BeginScope(strNodeName,'');
+  BeginScope(strNodeName,'','',stObject,asNone);
   If mustAddAtt Then
     AddScopeAttribute('xmlns:'+nmspcSH, nmspc);
   if ( EncodingStyle = Encoded ) then begin
@@ -904,10 +949,11 @@ begin
 end;
 
 procedure TSOAPBaseFormatter.BeginArray(
-      Const AName         : string;
-      Const ATypeInfo     : PTypeInfo;
-      Const AItemTypeInfo : PTypeInfo;
-      Const ABounds       : Array Of Integer
+  const AName         : string;
+  const ATypeInfo     : PTypeInfo;
+  const AItemTypeInfo : PTypeInfo;
+  const ABounds       : Array Of Integer;
+  const AStyle        : TArrayStyle
 );
 Var
   typData : TTypeRegistryItem;
@@ -916,21 +962,23 @@ Var
   strNodeName : string;
   xsiNmspcSH : string;
 begin
-  If ( Length(ABounds) < 2 ) Then
+  if ( Length(ABounds) < 2 ) then begin
     Error('Invalid array bounds.');
+  end;
   i := ABounds[0];
   j := ABounds[1];
   k := j - i + 1;
-  If ( k < 0 ) Then
+  if ( k < 0 ) then begin
     Error('Invalid array bounds.');
-  k := j - i + 1;
+  end;
   typData := GetTypeRegistry().Find(ATypeInfo,False);
-  If Not Assigned(typData) Then
+  if not Assigned(typData) then begin
     Error('Array type not registered.');
+  end;
   nmspc := typData.NameSpace;
-  If IsStrEmpty(nmspc) Then
+  if IsStrEmpty(nmspc) then begin
     nmspcSH := 'tns'
-  Else Begin
+  end else begin
     nmspcSH := FindAttributeByValueInScope(nmspc);
     if IsStrEmpty(nmspcSH) then begin
       nmspcSH := 'ns' + IntToStr(NextNameSpaceCounter());
@@ -938,7 +986,7 @@ begin
     end else begin
       nmspcSH := Copy(nmspcSH,Length('xmlns:')+1,MaxInt);
     end;
-  End;
+  end;
 
   if ( Style = Document ) then begin
     strNodeName := nmspcSH + ':' + AName;
@@ -946,7 +994,9 @@ begin
     strNodeName := AName;
   end;
 
-  BeginScope(strNodeName,'');
+  if ( AStyle = asScoped ) then begin
+    BeginScope(strNodeName,'','',stArray,AStyle);
+  end;
 
   if ( EncodingStyle = Encoded ) then begin
     //AddScopeAttribute(sXSI_TYPE,nmspc);
@@ -1002,7 +1052,8 @@ end;
 procedure TSOAPBaseFormatter.BeginScope(
   Const AScopeName,ANameSpace : string;
   Const ANameSpaceShortName   : string;
-  Const AScopeType            : TScopeType
+  Const AScopeType            : TScopeType;
+  const AStyle                : TArrayStyle
 );
 Var
   nsStr, scpStr : String;
@@ -1030,11 +1081,79 @@ begin
     GetCurrentScopeObject().AppendChild(e)
   Else
     FDoc.AppendChild(e);
-  PushStack(e,AScopeType);
+  if ( AScopeType = stObject ) then begin
+    PushStack(e);
+  end else begin
+    PushStack(e,AStyle,'');
+  end;
   if hasNmspc and addAtt then begin
     e.SetAttribute('xmlns:'+nsStr,ANameSpace);
     StackTop().SetNameSpace(ANameSpace);
   end;
+end;
+
+function TSOAPBaseFormatter.InternalBeginScopeRead(
+  var   AScopeName : string;
+  const ATypeInfo  : PTypeInfo;
+  const AScopeType : TScopeType;
+  const AStyle     : TArrayStyle;
+  const AItemName  : string
+): Integer;
+var
+  locNode : TDOMNode;
+  stk : TStackItem;
+  typData : TTypeRegistryItem;
+  nmspc,nmspcSH : string;
+  strNodeName : string;
+begin
+  if ( Style = Document ) then begin
+    typData := GetTypeRegistry().Find(ATypeInfo,False);
+    if not Assigned(typData) then begin
+      Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
+    end;
+    nmspc := typData.NameSpace;
+    if IsStrEmpty(nmspc) then begin
+      nmspcSH := ''
+    end else begin
+      nmspcSH := FindAttributeByValueInScope(nmspc);
+      if not IsStrEmpty(nmspcSH) then begin
+        nmspcSH := Copy(nmspcSH,Length('xmlns:')+1,MaxInt);
+      end;
+    end;
+    if IsStrEmpty(nmspcSH) then begin
+      strNodeName := AScopeName
+    end else begin
+      if ( Pos(':',AScopeName) < 1 ) then begin
+        strNodeName := nmspcSH + ':' + AScopeName
+      end else begin
+        strNodeName := AScopeName;
+      end;
+    end;
+  end else begin
+    nmspcSH := '';
+    strNodeName := AScopeName;
+  end;
+
+  stk := StackTop();
+  if ( AScopeType = stObject ) or
+     ( ( AScopeType = stArray ) and ( AStyle = asScoped ) )
+  then begin
+    locNode := stk.FindNode(strNodeName);
+  end else begin
+    locNode := stk.ScopeObject;
+  end;
+  if not Assigned(locNode) then begin
+    Error('Scope not found : "%s"',[strNodeName]);
+  end;
+  if ( AScopeType = stObject ) then begin
+    PushStack(locNode);
+  end else begin
+    PushStack(locNode,AStyle,AItemName);
+  end;
+  if ( Style = Document ) then begin
+    StackTop().SetNameSpace(nmspc);
+  end;
+  Result := StackTop().GetItemsCount();
 end;
 
 procedure TSOAPBaseFormatter.SetSerializationStyle(const ASerializationStyle: TSerializationStyle);
@@ -1073,9 +1192,9 @@ begin
      AnsiSameText(locDoc.DocumentElement.NodeName,( sSOAP_ENV_ABR + ':' + sENVELOPE ))
   then begin
     ClearStack();
-    PushStack(locDoc.DocumentElement,stObject);
+    PushStack(locDoc.DocumentElement);
   end else begin
-    BeginScope(sENVELOPE,sSOAP_ENV,sSOAP_ENV_ABR);
+    BeginScope(sENVELOPE,sSOAP_ENV,sSOAP_ENV_ABR,stObject,asNone);
       AddScopeAttribute('xmlns:xsi',sXSI_NS);
       AddScopeAttribute('xmlns:'+sXSD, sXSD_NS);
       AddScopeAttribute('xmlns:'+sSOAP_ENC_ABR, sSOAP_ENC);
@@ -1505,5 +1624,28 @@ procedure TSOAPBaseFormatter.Error(const AMsg: string;const AArgs: array of cons
 begin
   Raise ESOAPException.CreateFmt(AMsg,AArgs);
 end;
+
+{ TScopedArrayStackItem }
+
+function TScopedArrayStackItem.CreateList(const ANodeName : string): TDOMNodeList;
+begin
+  if ScopeObject.HasChildNodes() then begin
+    Result := ScopeObject.GetChildNodes();
+  end else begin
+    Result := nil;
+  end;
+end;
+
+{ TEmbeddedArrayStackItem }
+
+function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
+begin
+  if ScopeObject.HasChildNodes() then begin
+    Result := TDOMNodeList.Create(ScopeObject,ANodeName);
+  end else begin
+    Result := nil;
+  end;
+end;
+
 
 end.

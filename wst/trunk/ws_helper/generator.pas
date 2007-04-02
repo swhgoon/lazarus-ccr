@@ -401,8 +401,7 @@ Var
 
       Indent();WriteLn('%s : %s;',[sLOC_SERIALIZER,sSERIALIZER_CLASS]);
       Indent();WriteLn('%s : %s;',[sPRM_NAME,'string']);
-      //If ( AMthd.MethodType = mtFunction ) Then
-        //Indent();WriteLn('%s : %s;',[sRES_TYPE_INFO,'PTypeInfo']);
+
     WriteLn('Begin');
     
       Indent();WriteLn('%s := GetSerializer();',[sLOC_SERIALIZER]);
@@ -1302,6 +1301,9 @@ procedure TInftGenerator.GenerateIntf(AIntf: TInterfaceDefinition);
   begin
     Indent();
     WriteLn('%s = interface',[GenerateIntfName(AIntf)]);
+    if not IsStrEmpty(AIntf.InterfaceGUID) then begin
+      Indent();Indent();WriteLn('[%s]',[QuotedStr(AIntf.InterfaceGUID)]);
+    end;
   end;
 
   procedure WriteMethod(AMthd : TMethodDefinition);
@@ -1759,8 +1761,16 @@ begin
   FImpTempStream.Indent();
   FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(ASymbol.ExternalName)]);
   if ( ASymbol.ItemName <> ASymbol.ItemExternalName ) then begin
+    FImpTempStream.Indent();
     FImpTempStream.WriteLn(
-      'GetTypeRegistry().ItemByTypeInfo[%s].RegisterExternalPropertyName(''item'',%s);',
+      'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_ITEM,%s);',
+      [ASymbol.Name,QuotedStr(ASymbol.ItemExternalName)]
+    );
+  end;
+  if ( ASymbol.Style = asEmbeded ) then begin
+    FImpTempStream.Indent();
+    FImpTempStream.WriteLn(
+      'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);',
       [ASymbol.Name,QuotedStr(ASymbol.ItemExternalName)]
     );
   end;

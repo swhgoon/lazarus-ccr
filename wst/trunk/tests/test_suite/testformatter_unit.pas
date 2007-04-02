@@ -277,6 +277,8 @@ type
     property Val_Currency : Currency Read FVal_Currency Write FVal_Currency;
   End;
 
+  TEmbeddedArrayOfStringRemotable = class(TArrayOfStringRemotable);
+  
   { TTestFormatterSimpleType }
 
   TTestFormatterSimpleType= class(TTestCase)
@@ -320,6 +322,7 @@ type
     procedure Test_Object();
     procedure Test_Object_Nil();
     procedure Test_StringArray();
+    procedure Test_StringArray_Embedded();
     procedure Test_StringArrayZeroLength();
     procedure Test_BooleanArray();
     
@@ -458,7 +461,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_U';
       f.Get(TypeInfo(Byte),x,intVal_U);
       x := 'intVal_S';
@@ -496,7 +499,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(Byte),intVal_U);
     f.EndScopeRead();
     AssertEquals(VAL_1,intVal_U);
@@ -515,7 +518,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(ShortInt),intVal_S);
     f.EndScopeRead();
     AssertEquals(VAL_2,intVal_S);
@@ -552,7 +555,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_U';
       f.Get(TypeInfo(Word),x,intVal_U);
       x := 'intVal_S';
@@ -594,7 +597,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_U';
       f.Get(TypeInfo(LongWord),x,intVal_U);
       x := 'intVal_S';
@@ -636,7 +639,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_U';
       f.Get(TypeInfo(QWord),x,intVal_U);
       x := 'intVal_S';
@@ -675,7 +678,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Single),x,tmpVal);
     f.EndScopeRead();
@@ -711,7 +714,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Double),x,tmpVal);
     f.EndScopeRead();
@@ -747,7 +750,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Currency),x,tmpVal);
     f.EndScopeRead();
@@ -783,7 +786,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Extended),x,tmpVal);
     f.EndScopeRead();
@@ -822,7 +825,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_1';
       f.Get(TypeInfo(string),x,intVal_1);
       x := 'intVal_3';
@@ -864,7 +867,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_1';
       f.Get(TypeInfo(Boolean),x,intVal_1);
       x := 'intVal_3';
@@ -906,7 +909,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_1';
       f.Get(TypeInfo(TTestEnum),x,intVal_1);
       x := 'intVal_3';
@@ -954,7 +957,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_Int),x,a);
     f.EndScopeRead();
@@ -1003,7 +1006,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Float),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'o1';
       f.Get(TypeInfo(TClass_Float),x,a);
     f.EndScopeRead();
@@ -1046,7 +1049,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Enum),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Enum));
       x := 'o1';
       f.Get(TypeInfo(TClass_Enum),x,a);
     f.EndScopeRead();
@@ -1106,7 +1109,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1179,7 +1182,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1252,7 +1255,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1325,7 +1328,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1404,7 +1407,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1471,7 +1474,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'o1';
       f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
       x := 'ns';
@@ -1521,7 +1524,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'o1';
       f.Get(TypeInfo(TClass_B),x,a);
     f.EndScopeRead();
@@ -1567,7 +1570,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'o1';
       f.Get(TypeInfo(TClass_B),x,a);
     f.EndScopeRead();
@@ -1614,7 +1617,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
     f.EndScopeRead();
@@ -1624,6 +1627,82 @@ begin
       AssertEquals(VAL_AR[i],a[i]);
 
   finally
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_StringArray_Embedded();
+const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of string = ('AzErTy','QwErTy','123456','','1');
+var
+  a : TArrayOfStringRemotable;
+  b : TEmbeddedArrayOfStringRemotable;
+  i, intVal : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+begin
+  b := nil;
+  a := TArrayOfStringRemotable.Create();
+  try
+    b := TEmbeddedArrayOfStringRemotable.Create();
+    AssertEquals(0,a.Length);
+    a.SetLength(0);
+    AssertEquals('Length 1', 0,a.Length);
+
+    a.SetLength(AR_LEN);
+    AssertEquals(AR_LEN,a.Length);
+
+    b.SetLength(AR_LEN);
+    AssertEquals(AR_LEN,b.Length);
+
+    for i := 0 to Pred(AR_LEN) do begin
+      a[i] := VAL_AR[i];
+      b[i] := VAL_AR[Pred(AR_LEN)-i];
+    end;
+
+    intVal := 1210;
+    
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
+      f.Put('x',TypeInfo(Integer),intVal);
+      f.Put('b',TypeInfo(TEmbeddedArrayOfStringRemotable),b);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.XML');
+    FreeAndNil(a);
+    FreeAndNil(b);
+    intVal := 0;
+    a := TArrayOfStringRemotable.Create();
+    b := TEmbeddedArrayOfStringRemotable.Create();
+    a.SetLength(0);
+    a.SetLength(0);
+    a.SetLength(0);
+    b.SetLength(0);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
+      x := 'x';
+      f.Get(TypeInfo(Integer),x,intVal);
+      x := 'b';
+      f.Get(TypeInfo(TEmbeddedArrayOfStringRemotable),x,b);
+    f.EndScopeRead();
+    AssertEquals('IntVal', 1210,intVal);
+    AssertEquals('Length 2', AR_LEN,a.Length);
+    AssertEquals('Length 2', AR_LEN,b.Length);
+
+    for i := 0 to Pred(AR_LEN) do begin
+      AssertEquals(VAL_AR[i],a[i]);
+      AssertEquals(VAL_AR[Pred(AR_LEN)-i],b[i]);
+    end;
+
+  finally
+    b.Free();
     a.Free();
     s.Free();
   end;
@@ -1652,7 +1731,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
     f.EndScopeRead();
@@ -1700,7 +1779,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfBooleanRemotable),x,a);
     f.EndScopeRead();
@@ -1750,7 +1829,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt8URemotable),x,a);
     f.EndScopeRead();
@@ -1800,7 +1879,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt8SRemotable),x,a);
     f.EndScopeRead();
@@ -1850,7 +1929,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt16SRemotable),x,a);
     f.EndScopeRead();
@@ -1900,7 +1979,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt16URemotable),x,a);
     f.EndScopeRead();
@@ -1950,7 +2029,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt32URemotable),x,a);
     f.EndScopeRead();
@@ -2000,7 +2079,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt32SRemotable),x,a);
     f.EndScopeRead();
@@ -2050,7 +2129,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt64SRemotable),x,a);
     f.EndScopeRead();
@@ -2100,7 +2179,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt64URemotable),x,a);
     f.EndScopeRead();
@@ -2150,7 +2229,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatSingleRemotable),x,a);
     f.EndScopeRead();
@@ -2200,7 +2279,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatDoubleRemotable),x,a);
     f.EndScopeRead();
@@ -2250,7 +2329,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatExtendedRemotable),x,a);
     f.EndScopeRead();
@@ -2300,7 +2379,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_B),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatCurrencyRemotable),x,a);
     f.EndScopeRead();
@@ -2347,7 +2426,7 @@ begin
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
-    f.BeginScopeRead(x,TypeInfo(TClass_Int),stObject);
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'a';
       f.Get(TypeInfo(TComplexInt32SContentRemotable),x,a);
       x := 'b';
@@ -3008,6 +3087,10 @@ initialization
   TClass_CplxSimpleContent.RegisterAttributeProperty('Elt_Exemple');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');
 
+  with GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TEmbeddedArrayOfStringRemotable),'TEmbeddedArrayOfStringRemotable') do begin
+    RegisterExternalPropertyName(sARRAY_ITEM,'abc');
+    RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  end;
 
   RegisterTest(TTestArray);
   RegisterTest(TTestSOAPFormatter);

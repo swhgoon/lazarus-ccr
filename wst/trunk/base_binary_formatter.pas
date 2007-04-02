@@ -266,20 +266,25 @@ type
       Const ATypeInfo  : PTypeInfo
     );
     procedure BeginArray(
-      Const AName         : string;
-      Const ATypeInfo     : PTypeInfo;
-      Const AItemTypeInfo : PTypeInfo;
-      Const ABounds       : Array Of Integer
+      const AName         : string;
+      const ATypeInfo     : PTypeInfo;
+      const AItemTypeInfo : PTypeInfo;
+      const ABounds       : Array Of Integer;
+      const AStyle        : TArrayStyle
     );
     procedure NilCurrentScope();
     function IsCurrentScopeNil():Boolean;
     procedure EndScope();
     procedure AddScopeAttribute(Const AName,AValue : string);
-    //If the scope is an array the return value must be the array' length;
-    function BeginScopeRead(
+    function BeginObjectRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo
+    ) : Integer;
+    function BeginArrayRead(
       var   AScopeName : string;
       const ATypeInfo  : PTypeInfo;
-      const AScopeType : TScopeType = stObject
+      const AStyle     : TArrayStyle;
+      const AItemName  : string
     ):Integer;
     procedure EndScopeRead();
     
@@ -1001,12 +1006,13 @@ begin
 end;
 
 procedure TBaseBinaryFormatter.BeginArray(
-      Const AName         : string;
-      Const ATypeInfo     : PTypeInfo;
-      Const AItemTypeInfo : PTypeInfo;
-      Const ABounds       : Array Of Integer
+  const AName         : string;
+  const ATypeInfo     : PTypeInfo;
+  const AItemTypeInfo : PTypeInfo;
+  const ABounds       : Array Of Integer;
+  const AStyle        : TArrayStyle
 );
-Var
+var
   i, j, k : Integer;
 begin
   If ( Length(ABounds) < 2 ) Then
@@ -1044,20 +1050,39 @@ procedure TBaseBinaryFormatter.AddScopeAttribute(const AName, AValue: string);
 begin
 end;
 
-function TBaseBinaryFormatter.BeginScopeRead(
+function TBaseBinaryFormatter.BeginObjectRead(
   var   AScopeName : string;
-  const ATypeInfo  : PTypeInfo;
-  const AScopeType : TScopeType = stObject
+  const ATypeInfo  : PTypeInfo
 ): Integer;
-Var
+var
   locNode : PDataBuffer;
   stk : TStackItem;
 begin
   stk := StackTop();
   locNode := stk.Find(AScopeName);
-  If Not Assigned(locNode) Then
+  if not Assigned(locNode) then begin
     Error('Scope not found : "%s"',[AScopeName]);
-  PushStack(locNode,AScopeType);
+  end;
+  PushStack(locNode,stObject);
+  Result := StackTop().GetItemCount();
+end;
+
+function TBaseBinaryFormatter.BeginArrayRead(
+  var AScopeName  : string;
+  const ATypeInfo : PTypeInfo;
+  const AStyle    : TArrayStyle;
+  const AItemName : string
+): Integer;
+var
+  locNode : PDataBuffer;
+  stk : TStackItem;
+begin
+  stk := StackTop();
+  locNode := stk.Find(AScopeName);
+  if not Assigned(locNode) then begin
+    Error('Scope not found : "%s"',[AScopeName]);
+  end;
+  PushStack(locNode,stArray);
   Result := StackTop().GetItemCount();
 end;
 

@@ -23,6 +23,13 @@ const
   stBase   = 0;
   stObject = stBase + 1;
   stArray  = stBase + 2;
+  
+  sARRAY_ITEM = 'item';
+  sARRAY_STYLE = 'style';
+
+  // array style string
+  sScoped  = 'scoped';
+  sEmbedded = 'embedded';
 
 type
   { standart data types defines }
@@ -31,6 +38,7 @@ type
   float = Single;
   
   TScopeType = Integer;
+  TArrayStyle = ( asScoped, asEmbeded, asNone );
   THeaderDirection = ( hdOut, hdIn );
   THeaderDirections = set of THeaderDirection;
 const
@@ -120,20 +128,25 @@ type
       Const ATypeInfo  : PTypeInfo
     );
     procedure BeginArray(
-      Const AName         : string;
-      Const ATypeInfo     : PTypeInfo;
-      Const AItemTypeInfo : PTypeInfo;
-      Const ABounds       : Array Of Integer
+      const AName         : string;
+      const ATypeInfo     : PTypeInfo;
+      const AItemTypeInfo : PTypeInfo;
+      const ABounds       : Array Of Integer;
+      const AStyle        : TArrayStyle
     );
     procedure NilCurrentScope();
     function IsCurrentScopeNil():Boolean;
     procedure EndScope();
     procedure AddScopeAttribute(Const AName,AValue : string);
-    //If the scope is an array the return value must be the array' length;
-    function BeginScopeRead(
-      Var   AScopeName : string;
-      Const ATypeInfo  : PTypeInfo;
-      Const AScopeType : TScopeType = stObject
+    function BeginObjectRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo
+    ) : Integer;
+    function BeginArrayRead(
+      var   AScopeName : string;
+      const ATypeInfo  : PTypeInfo;
+      const AStyle     : TArrayStyle;
+      const AItemName  : string
     ):Integer;
     procedure EndScopeRead();
     property CurrentScope : String Read GetCurrentScope;
@@ -509,6 +522,7 @@ type
   TBaseArrayRemotable = class(TAbstractComplexRemotable)
   protected
     class function GetItemName():string;virtual;
+    class function GetStyle():TArrayStyle;virtual;
     procedure CheckIndex(const AIndex : Integer);
     function GetLength():Integer;virtual;abstract;
   public
@@ -517,7 +531,7 @@ type
 
     procedure SetLength(const ANewSize : Integer);virtual;abstract;
     property Length : Integer Read GetLength;
-  End;
+  end;
 
   { TBaseObjectArrayRemotable
       An implementation for array handling. The array items are "owned" by
@@ -1550,7 +1564,7 @@ Var
   typRegItem : TTypeRegistryItem;
 begin
   oldSS := AStore.GetSerializationStyle();
-  AStore.BeginScopeRead(AName,ATypeInfo);
+  AStore.BeginObjectRead(AName,ATypeInfo);
   try
     if AStore.IsCurrentScopeNil() then
       Exit; // ???? FreeAndNil(AObject);
@@ -1706,7 +1720,6 @@ begin
   Result := System.Length(FArray);
 end;
 
-const sARRAY_ITEM = 'item';
 class procedure TBaseObjectArrayRemotable.Save(
         AObject    : TBaseRemotable;
         AStore     : IFormatterBase;
@@ -1719,24 +1732,31 @@ Var
   nativObj : TBaseObjectArrayRemotable;
   itm : TObject;
   itmName : string;
+  styl : TArrayStyle;
 begin
-  If Assigned(AObject) Then Begin
+  if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TBaseObjectArrayRemotable));
     nativObj := AObject as TBaseObjectArrayRemotable;
     j := nativObj.Length;
-  End Else
+  end else begin
     j := 0;
+  end;
   itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
-  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)]);
-  Try
-    itmName := GetItemName();
-    For i := 0 To Pred(j) Do Begin
+  styl := GetStyle();
+  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)],styl);
+  try
+    if ( styl = asScoped ) then begin
+      itmName := GetItemName();
+    end else begin
+      itmName := AName;
+    end;
+    for i := 0 to Pred(j) do begin
       itm := nativObj.Item[i];
       AStore.Put(itmName,itmTypInfo,itm);
-    End;
-  Finally
+    end;
+  finally
     AStore.EndScope();
-  End;
+  end;
 end;
 
 class procedure TBaseObjectArrayRemotable.Load(
@@ -1751,8 +1771,16 @@ Var
   s : string;
   itmTypInfo : PTypeInfo;
   itm : TBaseRemotable;
+  itmName : string;
+  styl : TArrayStyle;
 begin
-  len := AStore.BeginScopeRead(AName,ATypeInfo, stArray);
+  styl := GetStyle();
+  if ( styl = asScoped ) then begin
+    itmName := GetItemName();
+  end else begin
+    itmName := AName;
+  end;
+  len := AStore.BeginArrayRead(AName,ATypeInfo, GetStyle(),itmName);
   Try
     If Not Assigned(AObject) Then
       AObject := Create();
@@ -2233,6 +2261,7 @@ var
   i,j : Integer;
   nativObj : TBaseSimpleTypeArrayRemotable;
   itmName : string;
+  styl : TArrayStyle;
 begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TBaseSimpleTypeArrayRemotable));
@@ -2241,9 +2270,14 @@ begin
   end else begin
     j := 0;
   end;
-  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(j)]);
+  styl := GetStyle();
+  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(j)],styl);
   try
-    itmName := GetItemName();
+    if ( styl = asScoped ) then begin
+      itmName := GetItemName();
+    end else begin
+      itmName := AName;
+    end;
     for i := 0 to Pred(j) do begin
       nativObj.SaveItem(AStore,itmName,i);
     end;
@@ -2261,8 +2295,16 @@ class procedure TBaseSimpleTypeArrayRemotable.Load(
 Var
   i, len : Integer;
   nativObj : TBaseSimpleTypeArrayRemotable;
-begin ;
-  len := AStore.BeginScopeRead(AName,ATypeInfo, stArray);
+  itmName : string;
+  styl : TArrayStyle;
+begin
+  styl := GetStyle();
+  if ( styl = asScoped ) then begin
+    itmName := GetItemName();
+  end else begin
+    itmName := AName;
+  end;
+  len := AStore.BeginArrayRead(AName,ATypeInfo, GetStyle(),itmName);
   try
     if not Assigned(AObject) then
       AObject := Create();
@@ -2345,6 +2387,18 @@ begin
     Result := Trim(tri.GetExternalPropertyName(sARRAY_ITEM));
   if ( System.Length(Result) = 0 ) then
     Result := sARRAY_ITEM;
+end;
+
+class function TBaseArrayRemotable.GetStyle(): TArrayStyle;
+var
+  tri : TTypeRegistryItem;
+begin
+  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
+  if Assigned(tri) and AnsiSameText(sEmbedded,Trim(tri.GetExternalPropertyName(sARRAY_STYLE))) then begin
+    Result := asEmbeded;
+  end else begin
+    Result := asScoped;
+  end;
 end;
 
 procedure TBaseArrayRemotable.CheckIndex(const AIndex : Integer);
@@ -3354,7 +3408,7 @@ Var
   tr : TTypeRegistry;
 begin
   oldSS := AStore.GetSerializationStyle();
-  AStore.BeginScopeRead(AName,ATypeInfo);
+  AStore.BeginObjectRead(AName,ATypeInfo);
   try
     if AStore.IsCurrentScopeNil() then
       Exit; // ???? FreeAndNil(AObject);
@@ -3805,7 +3859,7 @@ procedure TBaseDateRemotable.Load(
 var
   strBuffer : string;
 begin
-  AStore.BeginScopeRead(AName,ATypeInfo, stObject);
+  AStore.BeginObjectRead(AName,ATypeInfo);
   try
     strBuffer := '';
     AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);

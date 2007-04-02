@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls;
+  Buttons, StdCtrls, ComCtrls, eBayWSDL;
 
 type
 
@@ -85,7 +85,7 @@ begin
     end;
   except
     on e : ESOAPException do begin
-      ShowMessageFmt('SOAP EXCEPTION Code : "%s"; String = "%s"',[e.FaultCode,e.FaultString]);
+      ShowMessageFmt('SOAP EXCEPTION Code : "%s"; String = "%s"; Msg : '#13'%s',[e.FaultCode,e.FaultString,e.Message]);
     end;
   end;
 end;
@@ -166,7 +166,7 @@ begin
     end;
   except
     on e : ESOAPException do begin
-      ShowMessageFmt('SOAP EXCEPTION Code : "%s"; String = "%s"',[e.FaultCode,e.FaultString]);
+      ShowMessageFmt('SOAP EXCEPTION Code : "%s"; String = "%s"; Msg : '#13'%s',[e.FaultCode,e.FaultString,e.Message]);
     end;
   end;
 end;

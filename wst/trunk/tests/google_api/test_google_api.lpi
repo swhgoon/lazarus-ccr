@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -180,9 +180,11 @@
       <Unit20>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="3" Y="225"/>
-        <TopLine Value="212"/>
+        <CursorPos X="35" Y="37"/>
+        <TopLine Value="33"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="55"/>
+        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\xml\dom.pp"/>
@@ -230,7 +232,7 @@
         <UnitName Value="soap_formatter"/>
         <CursorPos X="36" Y="29"/>
         <TopLine Value="12"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="49"/>
         <Loaded Value="True"/>
       </Unit27>
@@ -239,16 +241,16 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="3" Y="694"/>
         <TopLine Value="666"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="49"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="55" Y="2854"/>
-        <TopLine Value="2811"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="3" Y="119"/>
+        <TopLine Value="135"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -276,9 +278,11 @@
         <Filename Value="googlewebapi_proxy.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="googlewebapi_proxy"/>
-        <CursorPos X="6" Y="38"/>
-        <TopLine Value="24"/>
+        <CursorPos X="29" Y="64"/>
+        <TopLine Value="47"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="72"/>
+        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\v0.2\base_service_intf.pas"/>
@@ -354,7 +358,7 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="1" Y="498"/>
         <TopLine Value="139"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit44>
@@ -364,7 +368,7 @@
         <UnitName Value="wst_resources_imp"/>
         <CursorPos X="23" Y="1"/>
         <TopLine Value="19"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit45>
@@ -372,16 +376,21 @@
         <Filename Value="googlewebapi.wst"/>
         <CursorPos X="74" Y="13"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <SyntaxHighlighter Value="None"/>
       </Unit46>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="googlewebapi.wst"/>
-        <Caret Line="13" Column="74" TopLine="1"/>
+        <Filename Value="googlewebapi_proxy.pas"/>
+        <Caret Line="64" Column="29" TopLine="47"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="37" Column="35" TopLine="33"/>
+      </Position2>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

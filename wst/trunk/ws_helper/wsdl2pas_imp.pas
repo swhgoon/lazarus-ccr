@@ -81,6 +81,8 @@ type
     function Parse():TTypeDefinition;override;
   end;
 
+  TParserMode = ( pmUsedTypes, pmAllTypes );
+  
   { TWsdlParser }
 
   TWsdlParser = class
@@ -122,10 +124,11 @@ type
       const ASoapBindingStyle : string
     ) : TMethodDefinition;
     function ParseType(const AName, ATypeOrElement : string) : TTypeDefinition;
+    procedure ParseTypes();
   public
     constructor Create(ADoc : TXMLDocument; ASymbols : TSymbolTable);
     destructor Destroy();override;
-    procedure Parse();
+    procedure Parse(const AMode : TParserMode);
     property SymbolTable : TSymbolTable read FSymbols;
   end;
   
@@ -449,8 +452,22 @@ end;
 procedure TWsdlParser.ParsePort(ANode: TDOMNode);
 
   function FindBindingNode(const AName : WideString):TDOMNode;
+  var
+    crs : IObjectCursor;
   begin
     Result := FindNamedNode(FBindingCursor,AName);
+    if Assigned(Result) then begin
+      crs := CreateChildrenCursor(Result,cetRttiNode);
+      if Assigned(crs) then begin
+        crs := CreateCursorOn(crs,ParseFilter(CreateQualifiedNameFilterStr(s_binding,FSoapShortNames),TDOMNodeRttiExposer));
+        crs.Reset();
+        if not crs.MoveNext() then begin
+          Result := nil;
+        end;
+      end else begin
+        Result := nil;
+      end;
+    end;
   end;
   
   function ExtractBindingQName(out AName : WideString):Boolean ;
@@ -619,6 +636,7 @@ var
   locSoapBindingStyle : string;
   locWStrBuffer : WideString;
   locMthd : TMethodDefinition;
+  inft_guid : TGuid;
 begin
   locAttCursor := CreateAttributesCursor(ANode,cetRttiNode);
   locCursor := CreateCursorOn(locAttCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
@@ -634,6 +652,8 @@ begin
     raise;
   end;
   Result := locIntf;
+  if ( CreateGUID(inft_guid) = 0 ) then
+    locIntf.InterfaceGUID := GUIDToString(inft_guid);
   locCursor := CreateChildrenCursor(ANode,cetRttiNode);
   if Assigned(locCursor) then begin
     locOpCursor := CreateCursorOn(locCursor,ParseFilter(CreateQualifiedNameFilterStr(s_operation,FWsdlShortNames),TDOMNodeRttiExposer));
@@ -653,34 +673,12 @@ end;
 
 type
 
-  { TParamDefCrack }
+  TParamDefCrack = class(TParameterDefinition);
 
-  TParamDefCrack = class(TParameterDefinition)
-  public
-    procedure SetModifier(const AModifier : TParameterModifier);
-  end;
+  TMethodDefinitionCrack = class(TMethodDefinition);
 
-  { TMethodDefinitionCrack }
-
-  TMethodDefinitionCrack = class(TMethodDefinition)
-  public
-    procedure SetMethodType( AMethodType : TMethodType );
-  end;
-
-{ TMethodDefinitionCrack }
-
-procedure TMethodDefinitionCrack.SetMethodType(AMethodType: TMethodType);
-begin
-  inherited;
-end;
-
-{ TParamDefCrack }
-
-procedure TParamDefCrack.SetModifier(const AModifier: TParameterModifier);
-begin
-  inherited;
-end;
-
+  TTypeDefinitionCrack = class(TTypeDefinition);
+  
 function TWsdlParser.ParseOperation(
         AOwner : TInterfaceDefinition;
         ANode  : TDOMNode;
@@ -764,10 +762,11 @@ function TWsdlParser.ParseOperation(
       inMsg, strBuffer : string;
       inMsgNode, tmpNode : TDOMNode;
       crs, tmpCrs : IObjectCursor;
-      prmName, prmTypeName, prmTypeType : string;
+      prmName, prmTypeName, prmTypeType, prmTypeInternalName : string;
       prmInternameName : string;
       prmHasInternameName : Boolean;
       prmDef : TParameterDefinition;
+      prmTypeDef : TTypeDefinition;
     begin
       if ExtractMsgName(s_input,inMsg) then begin
         inMsgNode := FindMessageNode(inMsg);
@@ -775,18 +774,20 @@ function TWsdlParser.ParseOperation(
           crs := CreatePartCursor(inMsgNode);
           if ( crs <> nil ) then begin
             crs.Reset();
-            While crs.MoveNext() do begin
+            while crs.MoveNext() do begin
               tmpNode := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-              if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then
+              if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then begin
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+              end;
               strBuffer := s_NODE_NAME + '=' + QuotedStr(s_name);
               tmpCrs := CreateCursorOn(
                           CreateAttributesCursor(tmpNode,cetRttiNode),
                           ParseFilter(strBuffer,TDOMNodeRttiExposer)
                         );
               tmpCrs.Reset();
-              if not tmpCrs.MoveNext() then
+              if not tmpCrs.MoveNext() then begin
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+              end;
               prmName := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
               strBuffer := s_NODE_NAME + '=' + QuotedStr(s_element) + ' or ' + s_NODE_NAME + ' = ' + QuotedStr(s_type);
               tmpCrs := CreateCursorOn(
@@ -794,19 +795,30 @@ function TWsdlParser.ParseOperation(
                           ParseFilter(strBuffer,TDOMNodeRttiExposer)
                         );
               tmpCrs.Reset();
-              if not tmpCrs.MoveNext() then
+              if not tmpCrs.MoveNext() then begin
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+              end;
               prmTypeName := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
               prmTypeType := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeName;
-              if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then
+              if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then begin
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+              end;
               prmInternameName := Trim(prmName);
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or ( not IsValidIdent(prmInternameName) );
-              if prmHasInternameName then
+              if prmHasInternameName then begin
                 prmInternameName := '_' + prmInternameName;
-              prmDef := tmpMthd.AddParameter(prmInternameName,pmConst,GetDataType(prmTypeName,prmTypeType));
+              end;
+              prmTypeDef := GetDataType(prmTypeName,prmTypeType);
+              prmDef := tmpMthd.AddParameter(prmInternameName,pmConst,prmTypeDef);
               if prmHasInternameName then begin
                 prmDef.RegisterExternalAlias(prmName);
+              end;
+              if AnsiSameText(tmpMthd.Name,prmTypeDef.Name) then begin
+                prmTypeInternalName := prmTypeDef.Name + 'Type';
+                while ( FSymbols.IndexOf(prmTypeInternalName) >= 0 ) do begin
+                  prmTypeInternalName := '_' + prmTypeInternalName;
+                end;
+                TTypeDefinitionCrack(prmTypeDef).SetName(prmTypeInternalName);
               end;
             end;
           end;
@@ -1010,7 +1022,7 @@ var
 begin
   embededType := False;
   Result := FSymbols.Find(ExtractNameFromQName(AName),TTypeDefinition) as TTypeDefinition;
-  if ( not Assigned(Result) )or ( Result is TForwardTypeDefinition ) then begin
+  if ( not Assigned(Result) ) or ( Result is TForwardTypeDefinition ) then begin
     Result := nil;
     Init();
     FindTypeNode();
@@ -1021,6 +1033,51 @@ begin
     end;
     if Assigned(Result) then
       FSymbols.Add(Result);
+  end;
+end;
+
+procedure TWsdlParser.ParseTypes();
+var
+  locTypeCrs : IObjectCursor;
+  locObj : TDOMNodeRttiExposer;
+  nd : TDOMNodeRttiExposer;
+  schmCrsr, crsSchemaChild, typTmpCrs : IObjectCursor;
+  typFilterStr : string;
+  typNode : TDOMNode;
+begin
+  if Assigned(FSchemaCursor) then begin
+    schmCrsr := FSchemaCursor.Clone() as IObjectCursor;
+    schmCrsr.Reset();
+    while schmCrsr.MoveNext() do begin
+      nd := schmCrsr.GetCurrent() as TDOMNodeRttiExposer;
+      crsSchemaChild := CreateChildrenCursor(nd.InnerObject,cetRttiNode);
+      if Assigned(crsSchemaChild) then begin
+        typFilterStr := Format(
+                          '%s or %s or %s',
+                          [ CreateQualifiedNameFilterStr(s_complexType,FXSShortNames),
+                            CreateQualifiedNameFilterStr(s_simpleType,FXSShortNames),
+                            CreateQualifiedNameFilterStr(s_element,FXSShortNames)
+                          ]
+                        );
+        crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(typFilterStr,TDOMNodeRttiExposer));
+        crsSchemaChild.Reset();
+        while crsSchemaChild.MoveNext() do begin
+          typNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+          typTmpCrs := CreateAttributesCursor(typNode,cetRttiNode);
+          if Assigned(typTmpCrs) then begin
+            typTmpCrs.Reset();
+            typTmpCrs := CreateCursorOn(typTmpCrs,ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
+            typTmpCrs.Reset();
+            if typTmpCrs.MoveNext() then begin
+              ParseType(
+                (typTmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue,
+                ExtractNameFromQName(typNode.NodeName)
+              );
+            end;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -1044,7 +1101,7 @@ begin
   inherited Destroy();
 end;
 
-procedure TWsdlParser.Parse();
+procedure TWsdlParser.Parse(const AMode : TParserMode);
 
   procedure ParseForwardDeclarations();
   var
@@ -1124,6 +1181,9 @@ begin
     ParseService(locObj.InnerObject);
   end;
 
+  if ( AMode = pmAllTypes ) then begin
+    ParseTypes();
+  end;
   ParseForwardDeclarations();
   ExtractNameSpace();
 end;
@@ -1415,7 +1475,8 @@ var
           Format('%s_%sArray',[AClassName,locPropTyp.Name]),
           locPropTyp.DataType,
           locPropTyp.Name,
-          locPropTyp.ExternalName
+          locPropTyp.ExternalName,
+          asEmbeded
         )
       );
     end;
@@ -1480,7 +1541,7 @@ var
     end;
     if not locSym.InheritsFrom(TTypeDefinition) then
       raise EWslParserException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
-    Result := TArrayDefinition.Create(AInternalName,locSym as TTypeDefinition,s_item,s_item);
+    Result := TArrayDefinition.Create(AInternalName,locSym as TTypeDefinition,s_item,s_item,asScoped);
     if AHasInternalName then
       Result.RegisterExternalAlias(ATypeName);
   end;
@@ -1533,7 +1594,7 @@ begin
               Result := nil;
               propTyp := arrayItems[0] as TPropertyDefinition;
               //arrayDef := TArrayDefinition.Create(internalName,(arrayItemType as TTypeDefinition),arrayItemName);
-              arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name,propTyp.ExternalName);
+              arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name,propTyp.ExternalName,asScoped);
               FreeAndNil(classDef);
               Result := arrayDef;
               if hasInternalName then

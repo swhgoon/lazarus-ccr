@@ -107,10 +107,10 @@ begin
   ClearStack();
   PushStack(GetRootData(),stObject);
   s := 'Body';
-  BeginScopeRead(s,nil);
+  BeginObjectRead(s,nil);
     s := StackTop().GetByIndex(0)^.Name;
     If AnsiSameText(s,'Fault') Then Begin
-      BeginScopeRead(s,nil,stObject);
+      BeginObjectRead(s,nil);
       e := EBaseRemoteException.Create('');
       Try
         nme := 'faultcode';
@@ -127,9 +127,9 @@ begin
       Raise e;
     End;
     FCallTarget := s;
-    BeginScopeRead(FCallTarget,nil);
+    BeginObjectRead(FCallTarget,nil);
       FCallProcedureName := StackTop().GetByIndex(0)^.Name;
-      BeginScopeRead(FCallProcedureName,nil);
+      BeginObjectRead(FCallProcedureName,nil);
 end;
 
 function TBinaryFormatter.GetCallProcedureName(): String;

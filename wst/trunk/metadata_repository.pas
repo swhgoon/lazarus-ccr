@@ -108,6 +108,8 @@ type
   ):LongInt;
   procedure ClearRepositoryData(var ARepository : PServiceRepository);
   
+  function Find(const AProps : PPropertyData; const APropName : string) : PPropertyData;
+  
 implementation
 uses wst_resources_imp, binary_streamer;
 

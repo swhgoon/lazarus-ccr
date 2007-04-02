@@ -105,9 +105,7 @@ Type
         // ---- END >> ICallContext implementation ----
         procedure ClearHeaders(const ADirection : THeaderDirection);
   public
-    (* This is the primary constructor!
-          Objects passed by the parameter "AProtocol" will be freed by
-          this instance( the new one create by this constructor call ). *)
+    (* This is the primary constructor! *)
     constructor Create(
       Const ATarget   : String;             // the target service
       Const AProtocol : IServiceProtocol

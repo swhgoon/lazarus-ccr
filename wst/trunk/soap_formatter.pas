@@ -90,15 +90,11 @@ procedure TSOAPFormatter.BeginCall(
         ACallContext : ICallContext
 );
 begin
-  //BeginScope('Envelope',sSOAP_ENV,sSOAP_ENV_ABR);
-    //AddScopeAttribute('xmlns:xsi',sXSI_NS);
-    //AddScopeAttribute('xmlns:'+sXSD, sXSD_NS);
-    //AddScopeAttribute('xmlns:'+sSOAP_ENC_ABR, sSOAP_ENC);
-    Prepare();
-    WriteHeaders(ACallContext);
-    BeginScope('Body',sSOAP_ENV);
-    if ( Style = RPC ) then
-      BeginScope(AProcName,ATarget);
+  Prepare();
+  WriteHeaders(ACallContext);
+  BeginScope('Body',sSOAP_ENV,'',stObject,asNone);
+  if ( Style = RPC ) then
+    BeginScope(AProcName,ATarget,'',stObject,asNone);
       
   FCallTarget := ATarget;
   FCallProcedureName := AProcName;
@@ -146,7 +142,7 @@ begin
     hdrNd := bdyNd;
     bdyNd := hdrNd.NextSibling;
     if SameText(hdrNd.NodeName,eltName) then begin
-      PushStack(hdrNd,stArray).SetNameSpace(sSOAP_ENV);
+      PushStack(hdrNd,asScoped,'').SetNameSpace(sSOAP_ENV);
       ReadHeaders(ACallContext);
       PopStack().Free();
     end;

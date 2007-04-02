@@ -29,8 +29,9 @@ uses
   DOM, xmlread, wsdl2pas_imp;
 
 resourcestring
-  sUSAGE = 'ws_helper [-u] [-p] [-b] [-i] [-oPATH] inputFilename' + sNEW_LINE +
-           '  -u  Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
+  sUSAGE = 'ws_helper [-uMODE] [-p] [-b] [-i] [-oPATH] inputFilename' + sNEW_LINE +
+           '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
+           '       MODE value may be U for used types or A for all types' + sNEW_LINE +
            '  -p  Generate service proxy' + sNEW_LINE +
            '  -b  Generate service binder' + sNEW_LINE +
            '  -i  Generate service minimal implementation' + sNEW_LINE +
@@ -51,12 +52,14 @@ Var
   NextParam : Integer;
   sourceType : TSourceFileType;
   symtable : TSymbolTable;
+  parserMode : TParserMode;
 
   function ProcessCmdLine():boolean;
   begin
     NextParam := ParseCmdLineOptions(AppOptions);
-    If ( NextParam <= Paramcount ) Then
+    if ( NextParam <= Paramcount ) then begin
       inFileName := ParamStr(NextParam);
+    end;
     Result := FileExists(ExpandFileName(inFileName));
     if AnsiSameText(ExtractFileExt(inFileName),'.PAS') or
        AnsiSameText(ExtractFileExt(inFileName),'.PP')
@@ -65,11 +68,13 @@ Var
     end else if AnsiSameText(ExtractFileExt(inFileName),'.WSDL') then begin
       sourceType := sftWSDL;
     end;
-    If Result Then Begin
-      If ( AppOptions = [] ) Then
+    if Result then begin
+      if ( AppOptions = [] ) then begin
         Include(AppOptions,cloProxy);
-    End Else
+      end;
+    end else begin
       errStr := Format('File not Found : "%s"',[inFileName]);
+    end;
     if ( cloOutPutDirAbsolute in AppOptions ) then begin
       outPath := Trim(GetOptionArg(cloOutPutDirAbsolute));
     end else begin
@@ -79,6 +84,10 @@ Var
       end;
     end;
     outPath := IncludeTrailingPathDelimiter(outPath);
+    parserMode := pmUsedTypes;
+    if AnsiSameText('A',Trim(GetOptionArg(cloInterface))) then begin
+      parserMode := pmAllTypes;
+    end;
   end;
 
   function GenerateSymbolTable() : Boolean ;
@@ -110,7 +119,7 @@ Var
       ReadXMLFile(locDoc,inFileName);
       try
         prsr := TWsdlParser.Create(locDoc,symtable);
-        prsr.Parse();
+        prsr.Parse(parserMode);
       finally
         FreeAndNil(prsr);
         FreeAndNil(locDoc);

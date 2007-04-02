@@ -93,11 +93,11 @@ begin
   ClearStack();
   PushStack(GetRootData(),stObject);
   s := 'Body';
-  BeginScopeRead(s,nil);
+  BeginObjectRead(s,nil);
     FCallTarget := StackTop().GetByIndex(0)^.Name;
-    BeginScopeRead(FCallTarget,nil);
+    BeginObjectRead(FCallTarget,nil);
       FCallProcedureName := StackTop().GetByIndex(0)^.Name;
-      BeginScopeRead(FCallProcedureName,nil);
+      BeginObjectRead(FCallProcedureName,nil);
 end;
 
 function TBinaryFormatter.GetCallProcedureName(): String;

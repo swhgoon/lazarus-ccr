@@ -77,19 +77,11 @@ end;
 
 procedure TSOAPFormatter.BeginCallResponse(Const AProcName,ATarget:string);
 begin
-{  Clear();
-  BeginScope('Envelope',sSOAP_ENV,'SOAP-ENV');
-    AddScopeAttribute('xmlns:xsi',sXSI_NS);
-    AddScopeAttribute('xmlns:'+sXSD, sXSD_NS);
-    AddScopeAttribute('xmlns:'+sSOAP_ENC_ABR, sSOAP_ENC);
-    BeginScope('Body',sSOAP_ENV);
-        BeginScope(AProcName + 'Response',ATarget);
-}
   Clear();
   Prepare();
     WriteHeaders(FCallContext);
-    BeginScope('Body',sSOAP_ENV);
-        BeginScope(AProcName + 'Response',ATarget);
+    BeginScope('Body',sSOAP_ENV,'',stObject,asNone);
+      BeginScope(AProcName + 'Response',ATarget,'',stObject,asNone);
 end;
 
 procedure TSOAPFormatter.EndCallResponse();
@@ -131,7 +123,7 @@ begin
     hdrNd := bdyNd;
     bdyNd := hdrNd.NextSibling;
     if SameText(hdrNd.NodeName,eltName) then begin
-      PushStack(hdrNd,stArray).SetNameSpace(sSOAP_ENV);
+      PushStack(hdrNd,asScoped,'').SetNameSpace(sSOAP_ENV);
       ReadHeaders(FCallContext);
       PopStack().Free();
     end;
@@ -184,11 +176,11 @@ begin
   Else
     m := AErrorMsg;
   Clear();
-  BeginScope('Envelope',sSOAP_ENV,'SOAP-ENV');
+  BeginScope('Envelope',sSOAP_ENV,'SOAP-ENV',stObject,asNone);
     AddScopeAttribute('xmlns:xsi',sXSI_NS);
     AddScopeAttribute('xmlns:'+sXSD, sXSD_NS);
-    BeginScope('Body',sSOAP_ENV);
-      BeginScope('Fault',sSOAP_ENV);
+    BeginScope('Body',sSOAP_ENV,'',stObject,asNone);
+      BeginScope('Fault',sSOAP_ENV,'',stObject,asNone);
         Put('faultcode',TypeInfo(string),c);
         Put('faultstring',TypeInfo(string),m);
 end;
