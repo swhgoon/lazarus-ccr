@@ -164,7 +164,7 @@ type
     function GetDropTargetHelperSupported: Boolean; stdcall;
     function GetIsDropTarget: Boolean; stdcall;
   public
-    constructor Create(AOwner: TObject); virtual;
+    constructor Create(AOwner: TComponent); virtual;
     destructor Destroy; override;
 
     function DragEnter(const DataObject: IDataObject; KeyState: LongWord; Pt: TPoint;
@@ -959,7 +959,7 @@ end;
 
 //----------------- TVTDragManager -------------------------------------------------------------------------------------
 
-constructor TVTDragManager.Create(AOwner: TObject);
+constructor TVTDragManager.Create(AOwner: TComponent);
 
 begin
   inherited Create;

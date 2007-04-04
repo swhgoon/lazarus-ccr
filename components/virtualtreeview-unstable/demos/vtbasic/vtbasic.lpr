@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, Main,vtlogger,ipcchannel;
+  { add your units here }, Main,vtlogger,ipcchannel, lclextensions_package;
 
 begin
   Logger.Channels.Add(TIPCChannel.Create);

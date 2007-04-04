@@ -3,13 +3,17 @@ unit ViewCode;
 interface
 
    uses
-      Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-      Dialogs, StdCtrls, LResources;
+      delphicompat, LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      Dialogs, StdCtrls, LResources, SynHighlighterPas, SynEdit;
 
    type
-      TfrmViewCode = 
+
+      { TfrmViewCode }
+
+      TfrmViewCode =
       class(TForm)
-         memo: TMemo;
+        SynEdit1: TSynEdit;
+        SynPasSyn1: TSynPasSyn;
          procedure FormActivate(Sender: TObject);
          
          private
@@ -19,7 +23,6 @@ interface
       end;
 
 implementation
-{.$R *.dfm}
 
    procedure TfrmViewCode.FormActivate(Sender: TObject);
    var

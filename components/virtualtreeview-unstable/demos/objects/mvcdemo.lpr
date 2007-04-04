@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, MVCDemoMain;
+  { add your units here }, MVCDemoMain, lclextensions_package;
 
 begin
   Application.Initialize;

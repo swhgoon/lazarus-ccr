@@ -19,11 +19,11 @@ unit Main;
 interface
 
    uses
-      Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
       Dialogs, VirtualTrees, ImgList, ExtCtrls, StdCtrls, Buttons, LResources;
 
    type
-      TfrmMain = 
+TfrmMain =
       class(TForm)
          imgMaster: TImageList;
          panMain: TPanel;
@@ -190,7 +190,7 @@ implementation
          4: sFile := 'VTDBExample' ;
       end;
       f := ShowForm( TfrmViewCode, Left, Height );                            // ViewCode.pas      
-      TfrmViewCode(f).memo.Lines.LoadFromFile( ExtractFilePath(ParamStr(0)) + sFile + '.pas' );
+      TfrmViewCode(f).SynEdit1.Lines.LoadFromFile( ExtractFilePath(ParamStr(0)) + sFile + '.pas' );
    end;
 
 initialization

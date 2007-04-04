@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 294
+  Left = 354
   Height = 254
-  Top = 355
+  Top = 441
   Width = 401
   HorzScrollBar.Page = 400
   VertScrollBar.Page = 253

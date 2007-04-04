@@ -56,8 +56,8 @@ unit MVCTypes;
 
 interface
 
-uses Windows, LCLIntf,Messages,SysUtils,Graphics,VirtualTrees,Classes,StdCtrls,
-     Controls,Forms,ImgList,LCLType, delphicompat, vtlogger, LMessages;
+uses LCLIntf, Types, Messages,SysUtils,Graphics,VirtualTrees,Classes,StdCtrls,
+     Controls,Forms,ImgList,LCLType, DelphiCompat, vtlogger, LMessages;
 
 type { TMVCNode is the encapsulation of a single Node in the structure.
        This implementation is a bit bloated because in my project
@@ -680,7 +680,7 @@ begin
                 else Brush.Color:=clBlack;
               SaveFontColor:=Font.Color;
               Font.Color:=Self.Color;
-              Windows.DrawFocusRect(Handle,ContentRect);
+              LCLIntf.DrawFocusRect(Handle,ContentRect);
               Font.Color:=SaveFontColor;
             end;
 
@@ -1008,9 +1008,9 @@ begin
   // determine minimum and maximum sizes
   if Size.cx < 50 then Size.cx := 50;
   EditRect := ClientRect;
-  MapWindowPoints(Handle, HWND_DESKTOP, EditRect, 2);
+  MapWindowPoints(Handle, 0, EditRect, 2);
   TreeRect := FLink.FTree.ClientRect;
-  MapWindowPoints(FLink.FTree.Handle, HWND_DESKTOP, TreeRect, 2);
+  MapWindowPoints(FLink.FTree.Handle, 0, TreeRect, 2);
   if (EditRect.Left + Size.cx) > TreeRect.Right then Size.cx := TreeRect.Right - EditRect.Left;
   SetWindowPos(Handle, 0, 0, 0, Size.cx, Height, SWP_NOMOVE or SWP_NOOWNERZORDER or SWP_NOZORDER);
   ReleaseDC(Handle, DC);

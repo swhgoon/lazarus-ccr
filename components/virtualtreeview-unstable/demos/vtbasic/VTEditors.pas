@@ -9,8 +9,8 @@ unit VTEditors;
 interface
 
    uses
-      Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-      StdCtrls, VirtualTrees, ExtDlgs, ImgList, Buttons, ExtCtrls, ComCtrls, MaskEdit, LResources;
+      LCLIntf,LCLType, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+      StdCtrls, VirtualTrees, ExtDlgs, ImgList, Buttons, ExtCtrls, ComCtrls, MaskEdit, LResources, EditBtn;
 
    type
       // Describes the type of value a property tree node stores in its data property.
@@ -252,32 +252,24 @@ implementation
          end;
        vtDate:
          begin
-         //todo: implement
-           FEdit := TComboBox.Create(nil);
-           with FEdit as TComboBox do
+           FEdit := TDateEdit.Create(nil);
+           with FEdit as TDateEdit do
            begin
              //BorderStyle := bsNone;
              Visible := False;
              Parent := Tree;
-             Text := Data.Value;
-             OnKeyDown := EditKeyDown;
-           end;
-         {
-           FEdit := TDateTimePicker.Create(nil);
-           with FEdit as TDateTimePicker do
-           begin
-             //BorderStyle := bsNone;
-             Visible := False;
-             Parent := Tree;
+
+             {
              CalColors.MonthBackColor := clWindow;
              CalColors.TextColor := clBlack;
              CalColors.TitleBackColor := clBtnShadow;
              CalColors.TitleTextColor := clBlack;
              CalColors.TrailingTextColor := clBtnFace;
+             }
              Date := StrToDate(Data.Value);
              OnKeyDown := EditKeyDown;
            end;
-           }
+
          end;
      else
        Result := False;
@@ -290,16 +282,16 @@ implementation
    begin
      case Message.Msg of
        WM_KILLFOCUS:
-         //todo
-         {
-         if FEdit is TDateTimePicker then
+         if FEdit is TDateEdit then
          begin
+           //todo
+           {
            // When the user clicks on a dropped down calender we also get
            // the kill focus message.
-           if not TDateTimePicker(FEdit).DroppedDown then
+           if not TDateTimePicker(FEdit).DroppedDown then}
              FTree.EndEditNode;
          end
-         else}
+         else
            FTree.EndEditNode;
      else
        FOldEditProc(Message);
@@ -343,6 +335,8 @@ implementation
        // restore the edit's window proc
        FEdit.WindowProc := FOldEditProc;
        Data := FTree.GetNodeData(FNode);
+       //original
+       {
        if FEdit is TComboBox then
          S := TComboBox(FEdit).Text
        else
@@ -350,7 +344,17 @@ implementation
          GetWindowText(FEdit.Handle, Buffer, 1024);
          S := Buffer;
        end;
-
+       }
+       //lcl
+       case Data.ValueType of
+         vtString: S:= TEdit(FEdit).Text;
+         vtPickString, vtMemo: S:= TComboBox(FEdit).Text;
+         vtNumber: S:= TMaskEdit(FEdit).Text;
+         vtDate: S:= TDateEdit(FEdit).Text;
+         else
+           S:='BUG - Error getting value';
+       end;
+       
        if S <> Data.Value then
        begin
          Data.Value := S;
@@ -376,8 +380,8 @@ implementation
            if FEdit is TComboBox then
              CanAdvance := CanAdvance and not TComboBox(FEdit).DroppedDown;
            //todo
-           //if FEdit is TDateTimePicker then
-           //  CanAdvance :=  CanAdvance and not TDateTimePicker(FEdit).DroppedDown;
+           //if FEdit is TDateEdit then
+           //  CanAdvance :=  CanAdvance and not TDateEdit(FEdit).DroppedDown;
 
            if CanAdvance then
            begin
@@ -451,15 +455,24 @@ implementation
          end;
        end
        else
-       begin
-         GetWindowText(FEdit.Handle, Buffer, 1024);
-         S := Buffer;
-         if S <> Data.Value[FColumn - 1] then
+         if FEdit is TCustomEdit then
          begin
-           Data.Value[FColumn - 1] := S;
-           Data.Changed := True;
+           S := TCustomEdit(FEdit).Text;
+           if S <> Data.Value[FColumn - 1] then
+           begin
+             Data.Value[FColumn - 1] := S;
+             Data.Changed := True;
+           end;
+           {
+           GetWindowText(FEdit.Handle, Buffer, 1024);
+           S := Buffer;
+           if S <> Data.Value[FColumn - 1] then
+           begin
+             Data.Value[FColumn - 1] := S;
+             Data.Changed := True;
+           end;
+           }
          end;
-       end;
 
      if Data.Changed then
        FTree.InvalidateNode(FNode);
@@ -566,22 +579,22 @@ implementation
          end;
        vtDate:
          begin
-         //todo
-         {
-           FEdit := TDateTimePicker.Create(nil);
-           with FEdit as TDateTimePicker do
+           FEdit := TDateEdit.Create(nil);
+           with FEdit as TDateEdit do
            begin
              Visible := False;
              Parent := Tree;
+             {
              CalColors.MonthBackColor := clWindow;
              CalColors.TextColor := clBlack;
              CalColors.TitleBackColor := clBtnShadow;
              CalColors.TitleTextColor := clBlack;
              CalColors.TrailingTextColor := clBtnFace;
+             }
              Date := StrToDate(Data.Value[FColumn - 1]);
              OnKeyDown := EditKeyDown;
            end;
-           }
+
          end;
      else
        Result := False;

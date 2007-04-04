@@ -87,12 +87,10 @@ object frmVTDBExample: TfrmVTDBExample
           WideText = 'Contact'
         end      
         item
-          Position = 0
           Alignment = taCenter
           Width = 42
           WideText = 'Status'
         end>
-      WideDefaultText = 'Node'
     end
     object Panel2: TPanel
       Left = 7

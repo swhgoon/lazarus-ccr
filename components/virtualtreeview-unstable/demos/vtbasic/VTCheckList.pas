@@ -18,7 +18,7 @@ unit VTCheckList;
 interface
 
    uses
-      Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
       Dialogs, VirtualTrees, ImgList, ExtCtrls, StdCtrls, Buttons, LResources;
 
    type

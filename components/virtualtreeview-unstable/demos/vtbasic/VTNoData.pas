@@ -19,7 +19,7 @@ unit VTNoData;
 interface
 
    uses
-      Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      delphicompat, LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
       Dialogs, VirtualTrees, ImgList, ExtCtrls, StdCtrls, LResources;
 
    type

@@ -22,7 +22,7 @@ unit VTreeData;
 interface
 
    uses
-      Windows, Messages, SysUtils, Classes, Graphics, VirtualTrees;
+      LCLIntf, Messages, SysUtils, Classes, Graphics, VirtualTrees;
 
    type
       // declare common node class

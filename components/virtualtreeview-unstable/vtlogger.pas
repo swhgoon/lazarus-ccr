@@ -33,6 +33,8 @@ const
   lcTimer = 18;
   lcDrag = 19;
   lcOle = 20;
+  lcPanning = 21;
+  
 var
   Logger: TLCLLogger;
 

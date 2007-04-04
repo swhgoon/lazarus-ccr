@@ -22,7 +22,7 @@ unit VTDBExample;
 interface
 
    uses
-      Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+      delphicompat, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
       VirtualTrees, StdCtrls, ExtCtrls, sqlite3ds, DB, Menus, VTreeData, ImgList, Buttons, LResources;
 
    type

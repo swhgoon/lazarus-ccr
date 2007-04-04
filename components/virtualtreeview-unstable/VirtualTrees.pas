@@ -102,6 +102,7 @@ uses
   {$ifdef UseExternalDragManager}
   virtualdragmanager,
   {$else}
+  Windows,
   ActiveX,
   OleUtils,
   {$endif}
@@ -111,6 +112,7 @@ uses
   Windows,
   DelphiCompat,
   {$endif}
+  virtualpanningwindow,
   vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   CommCtrl,  // image lists, common controls tree structures
@@ -1845,9 +1847,8 @@ TBaseVirtualTree = class(TCustomControl)
     // miscellanous
     FTotalInternalDataSize: Cardinal;            // Cache of the sum of the necessary internal data size for all tree
                                                  // classes derived from this base class.
-    FPanningWindow: HWND;                        // Helper window for wheel panning
+    FPanningWindow: TVirtualPanningWindow;       // Helper window for wheel panning
     FPanningCursor: HCURSOR;                     // Current wheel panning cursor.
-    FPanningImage: TBitmap;                      // A little 32x32 bitmap to indicate the panning reference point.
     FLastClickPos: TPoint;                       // Used for retained drag start and wheel mouse scrolling.
 
     {$ifdef EnableAccessible}
@@ -2321,7 +2322,6 @@ TBaseVirtualTree = class(TCustomControl)
       LineImage: TLineImage); virtual;
     procedure PaintSelectionRectangle(Target: TCanvas; WindowOrgX: Integer; const SelectionRect: TRect;
       TargetRect: TRect); virtual;
-    procedure PanningWindowProc(var Message: TLMessage); virtual;
     function ReadChunk(Stream: TStream; Version: Integer; Node: PVirtualNode; ChunkType,
       ChunkSize: Integer): Boolean; virtual;
     procedure ReadNode(Stream: TStream; Version: Integer; Node: PVirtualNode); virtual;
@@ -11731,6 +11731,8 @@ begin
   FIncrementalSearch := isNone;
   FClipboardFormats := TClipboardFormats.Create(Self);
   FOptions := GetOptionsClass.Create(Self);
+  //lcl
+  FPanningWindow:= TVirtualPanningWindow.Create;
 
   {$ifdef UseLocalMemoryManager}
     FNodeMemoryManager := TVTNodeMemoryManager.Create;
@@ -11738,6 +11740,7 @@ begin
   {$ifdef EnableThreadSupport}
   AddThreadReference;
   {$endif}
+
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11750,6 +11753,8 @@ begin
   ReleaseThreadReference(Self);
   {$endif}
   StopWheelPanning;
+  //lcl
+  FPanningWindow.Free;
   CancelEditNode;
 
   // Just in case it didn't happen already release the edit link.
@@ -18812,7 +18817,11 @@ begin
     DragEffect := DROPEFFECT_NONE;
     AllowedEffects := GetDragOperations;
     try
+      {$ifdef UseExternalDragManager}
       virtualdragmanager.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+      {$else}
+      ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+      {$endif}
       DragManager.ForceDragLeave;
     finally
       GetCursorPos(P);
@@ -22783,35 +22792,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.PanningWindowProc(var Message: TLMessage);
-
-var
-  PS: TPaintStruct;
-  Canvas: TCanvas;
-
-begin
-  if Message.Msg = LM_PAINT then
-  begin
-    BeginPaint(FPanningWindow, PS);
-    Canvas := TCanvas.Create;
-    Canvas.Handle := PS.hdc;
-    try
-      Canvas.Draw(0, 0, FPanningImage);
-    finally
-      Canvas.Handle := 0;
-      Canvas.Free;
-      EndPaint(FPanningWindow, PS);
-    end;
-    Message.Result := 0;
-  end
-  else;
-    //todo: see how implement panning
-    //with Message do
-    //  Result := DefWindowProc(FPanningWindow, Msg, wParam, lParam);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 function TBaseVirtualTree.ReadChunk(Stream: TStream; Version: Integer; Node: PVirtualNode; ChunkType,
   ChunkSize: Integer): Boolean;
 
@@ -23211,21 +23191,6 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-{$ifdef EnableWheelPanning}
-var
-  PanningWindowClass: TWndClass = (
-    style: 0;
-    lpfnWndProc: @DefWindowProc;
-    cbClsExtra: 0;
-    cbWndExtra: 0;
-    hInstance: 0;
-    hIcon: 0;
-    hCursor: 0;
-    hbrBackground: 0;
-    lpszMenuName: nil;
-    lpszClassName: 'VTPanningWindow'
-  );
-{$endif}
 procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
 
 // Called when wheel panning should start. A little helper window is created to indicate the reference position,
@@ -23244,11 +23209,11 @@ procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
     Temp: HRGN;
 
   begin
-    Assert(not FPanningImage.Empty, 'Invalid wheel panning image.');
+    Assert(not FPanningWindow.Image.Empty, 'Invalid wheel panning image.');
 
     // Create an initial region on which we operate.
     Result := CreateRectRgn(0, 0, 0, 0);
-    with FPanningImage, Canvas do
+    with FPanningWindow.Image, Canvas do
     begin
       for Y := 0 to Height - 1 do
       begin
@@ -23284,59 +23249,35 @@ procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
   //--------------- end local function ----------------------------------------
 
 var
-  TempClass: TWndClass;
-  ClassRegistered: Boolean;
   ImageName: string;
 
 begin
-  {$ifdef EnableWheelPanning}
-
   // Set both panning and scrolling flag. One will be removed shortly depending on whether the middle mouse button is
   // released before the mouse is moved or vice versa. The first case is referred to as wheel scrolling while the
   // latter is called wheel panning.
   StopTimer(ScrollTimer);
   DoStateChange([tsWheelPanning, tsWheelScrolling]);
 
-  // Register the helper window class.
-  PanningWindowClass.hInstance := HInstance;
-  ClassRegistered := GetClassInfo(HInstance, PanningWindowClass.lpszClassName, TempClass);
-  if not ClassRegistered or (TempClass.lpfnWndProc <> @DefWindowProc) then
-  begin
-    if ClassRegistered then
-      Windows.UnregisterClass(PanningWindowClass.lpszClassName, HInstance);
-    Windows.RegisterClass(PanningWindowClass.lpszClassName);
-  end;
-  // Create the helper window and show it at the given position without activating it.
-  with ClientToScreen(Position) do
-    FPanningWindow := CreateWindowEx(WS_EX_TOOLWINDOW, PanningWindowClass.lpszClassName, nil, WS_POPUP, X - 16, Y - 16,
-      32, 32, Handle, 0, HInstance, nil);
+  FPanningWindow.Start(Handle, ClientToScreen(Position));
 
-  FPanningImage := TBitmap.Create;
   if Integer(FRangeX) > ClientWidth then
   begin
     if Integer(FRangeY) > ClientHeight then
-      ImageName := 'VT_MOVEALL'
+      ImageName := 'VT_MOVEALL_BMP'
     else
-      ImageName := 'VT_MOVEEW'
+      ImageName := 'VT_MOVEEW_BMP'
   end
   else
-    ImageName := 'VT_MOVENS';
-  FPanningImage.LoadFromLazarusResource(ImageName);
-  SetWindowRgn(FPanningWindow, CreateClipRegion, False);
+    ImageName := 'VT_MOVENS_BMP';
+    
+  FPanningWindow.Image.LoadFromLazarusResource(ImageName);
 
-  {$ifdef COMPILER_6_UP}
-    SetWindowLong(FPanningWindow, GWL_WNDPROC, Integer(Classes.MakeObjectInstance(PanningWindowProc)));
-  {$else}
-    SetWindowLong(FPanningWindow, GWL_WNDPROC, Integer(MakeObjectInstance(PanningWindowProc)));
-  {$endif}
-  ShowWindow(FPanningWindow, SW_SHOWNOACTIVATE);
+  FPanningWindow.Show(CreateClipRegion);
 
   // Setup the panscroll timer and capture all mouse input.
   SetFocus;
   SetCapture(Handle);
   SetTimer(Handle, ScrollTimer, 20, nil);
-
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23345,11 +23286,7 @@ procedure TBaseVirtualTree.StopWheelPanning;
 
 // Stops panning if currently active and destroys the helper window.
 
-var
-  Instance: Pointer;
-
 begin
-  {$ifdef EnableWheelPanning}
   if [tsWheelPanning, tsWheelScrolling] * FStates <> [] then
   begin
     // Release the mouse capture and stop the panscroll timer.
@@ -23357,23 +23294,12 @@ begin
     ReleaseCapture;
     DoStateChange([], [tsWheelPanning, tsWheelScrolling]);
 
-    // Destroy the helper window.
-    Instance := Pointer(GetWindowLong(FPanningWindow, GWL_WNDPROC));
-    DestroyWindow(FPanningWindow);
-    if Instance <> @DefWindowProc then
-      {$ifdef COMPILER_6_UP}
-        Classes.FreeObjectInstance(Instance);
-      {$else}
-        FreeObjectInstance(Instance);
-      {$endif}
-    FPanningWindow := 0;
-    FPanningImage.Free;
-    FPanningImage := nil;
+    FPanningWindow.Stop;
+
     DeleteObject(FPanningCursor);
     FPanningCursor := 0;
-    Windows.SetCursor(Screen.Cursors[Cursor]);
+    LCLIntf.SetCursor(Screen.Cursors[Cursor]);
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28471,7 +28397,8 @@ type
 function TOLEMemoryStream.Write(const Buffer; Count: Integer): Integer;
 
 begin
-  raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
+  //raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
+  raise EStreamError.Create(SCantWriteResourceStreamError);
 end;
 
 {$endif}
