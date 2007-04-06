@@ -11,45 +11,45 @@ object fWikiHelp: TfWikiHelp
   OnCreate = FormCreate
   object lWikiPage: TLabel
     Left = 8
-    Height = 16
+    Height = 14
     Top = 8
-    Width = 50
+    Width = 44
     Caption = 'WikiPage'
     Color = clNone
     ParentColor = False
   end
   object lPageOffset: TLabel
     Left = 8
-    Height = 16
+    Height = 14
     Top = 60
-    Width = 62
+    Width = 58
     Caption = 'lPageOffset'
     Color = clNone
     ParentColor = False
   end
   object eFoundPages: TLabel
     Left = 8
-    Height = 16
+    Height = 14
     Top = 104
-    Width = 72
+    Width = 66
     Caption = 'eFoundPages'
     Color = clNone
     ParentColor = False
   end
   object lOutputDir: TLabel
     Left = 8
-    Height = 16
+    Height = 14
     Top = 240
-    Width = 57
+    Width = 51
     Caption = 'Output Dir'
     Color = clNone
     ParentColor = False
   end
   object lLanguage: TLabel
     Left = 288
-    Height = 16
+    Height = 14
     Top = 8
-    Width = 53
+    Width = 48
     Caption = 'Language'
     Color = clNone
     ParentColor = False
@@ -137,9 +137,9 @@ object fWikiHelp: TfWikiHelp
   end
   object cbAddLinkedPages: TCheckBox
     Left = 8
-    Height = 15
+    Height = 13
     Top = 220
-    Width = 105
+    Width = 103
     Caption = 'Add linked Pages'
     TabOrder = 7
   end

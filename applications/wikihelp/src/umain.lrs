@@ -5,15 +5,15 @@ LazarusResources.Add('TfWikiHelp','FORMDATA',[
   +#221#0#5'Width'#3#172#1#18'HorzScrollBar.Page'#3#171#1#18'VertScrollBar.Page'
   +#3'A'#1#13'ActiveControl'#7#9'eWikiPage'#7'Caption'#6#8'WikiHelp'#7'OnClose'
   +#7#9'FormClose'#8'OnCreate'#7#10'FormCreate'#0#6'TLabel'#9'lWikiPage'#4'Left'
-  +#2#8#6'Height'#2#16#3'Top'#2#8#5'Width'#2'2'#7'Caption'#6#8'WikiPage'#5'Colo'
+  +#2#8#6'Height'#2#14#3'Top'#2#8#5'Width'#2','#7'Caption'#6#8'WikiPage'#5'Colo'
   +'r'#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#11'lPageOffset'#4'Left'#2#8#6
-  +'Height'#2#16#3'Top'#2'<'#5'Width'#2'>'#7'Caption'#6#11'lPageOffset'#5'Color'
+  +'Height'#2#14#3'Top'#2'<'#5'Width'#2':'#7'Caption'#6#11'lPageOffset'#5'Color'
   +#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#11'eFoundPages'#4'Left'#2#8#6'H'
-  +'eight'#2#16#3'Top'#2'h'#5'Width'#2'H'#7'Caption'#6#11'eFoundPages'#5'Color'
+  +'eight'#2#14#3'Top'#2'h'#5'Width'#2'B'#7'Caption'#6#11'eFoundPages'#5'Color'
   +#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#10'lOutputDir'#4'Left'#2#8#6'He'
-  +'ight'#2#16#3'Top'#3#240#0#5'Width'#2'9'#7'Caption'#6#10'Output Dir'#5'Color'
+  +'ight'#2#14#3'Top'#3#240#0#5'Width'#2'3'#7'Caption'#6#10'Output Dir'#5'Color'
   +#7#6'clNone'#11'ParentColor'#8#0#0#6'TLabel'#9'lLanguage'#4'Left'#3' '#1#6'H'
-  +'eight'#2#16#3'Top'#2#8#5'Width'#2'5'#7'Caption'#6#8'Language'#5'Color'#7#6
+  +'eight'#2#14#3'Top'#2#8#5'Width'#2'0'#7'Caption'#6#8'Language'#5'Color'#7#6
   +'clNone'#11'ParentColor'#8#0#0#5'TEdit'#9'eWikiPage'#4'Left'#2#8#6'Height'#2
   +#23#3'Top'#2#28#5'Width'#3#12#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0
   +#8'TabOrder'#2#0#4'Text'#6'!http://www.ullihome.de/index.php/'#0#0#5'TEdit'
@@ -37,7 +37,7 @@ LazarusResources.Add('TfWikiHelp','FORMDATA',[
   +'mplete'#20'cbactSearchAscending'#0#13'Items.Strings'#1#6#16'Special:Allpage'
   +'s'#6#16'Spezial:Allpages'#0#9'MaxLength'#2#0#8'OnSelect'#7#16'cbLanguageSel'
   +'ect'#8'TabOrder'#2#6#0#0#9'TCheckBox'#16'cbAddLinkedPages'#4'Left'#2#8#6'He'
-  +'ight'#2#15#3'Top'#3#220#0#5'Width'#2'i'#7'Caption'#6#16'Add linked Pages'#8
+  +'ight'#2#13#3'Top'#3#220#0#5'Width'#2'g'#7'Caption'#6#16'Add linked Pages'#8
   +'TabOrder'#2#7#0#0#15'TXMLPropStorage'#10'Properties'#12'StoredValues'#14#1#4
   +'Name'#6#9'OUTPUTDIR'#0#1#4'Name'#6#8'WIKIPAGE'#0#1#4'Name'#6#10'PAGEOFFSET'
   +#0#0#4'left'#2#4#3'top'#2#4#0#0#0

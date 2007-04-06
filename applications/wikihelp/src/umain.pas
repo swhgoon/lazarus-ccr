@@ -181,6 +181,8 @@ begin
   act_uls := 0;
   //Remove NOTOC
   istr := StringReplace(istr,'__NOTOC__','',[rfReplaceAll]);
+  //Remove TOC
+  istr := StringReplace(istr,'__TOC__','',[rfReplaceAll]);
   //Remove Templates
   while pos('{{',istr) > 0 do
     begin
@@ -384,7 +386,7 @@ begin
               lbFoundPages.Items.Add(linkcontent);
               pbProgress.Max := pbProgress.Max+1;
             end;
-          if lbFoundPages.Items.IndexOf(linkcontent) > -1 then
+          if (lbFoundPages.Items.IndexOf(linkcontent) > -1) or (FileExists(AppendPathDelim(OutputDir)+ValidateFileName(lowercase(linkcontent)+'.html'))) then
             begin
               ostr := ostr+'<a href="'+ValidateFileName(linkcontent)+'.html">';
               istr := copy(istr,pos('|',istr)+1,length(istr));
