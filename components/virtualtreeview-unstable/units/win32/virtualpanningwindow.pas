@@ -1,5 +1,7 @@
 unit virtualpanningwindow;
 
+{Adapted from VirtualTrees by Luiz Américo to work in LCL/Lazarus}
+
 {$mode objfpc}{$H+}
 
 interface
@@ -8,7 +10,6 @@ uses
   Windows, Graphics, Classes, SysUtils;
   
 type
-
   { TVirtualPanningWindow }
 
   TVirtualPanningWindow = class
@@ -63,18 +64,10 @@ var
 procedure TVirtualPanningWindow.HandlePaintMessage;
 var
   PS: PaintStruct;
-  Canvas: TCanvas;
 begin
   BeginPaint(FHandle, PS);
-  Canvas := TCanvas.Create;
-  Canvas.Handle := PS.hdc;
-  try
-    Canvas.Draw(0, 0, FImage);
-  finally
-    Canvas.Handle := 0;
-    Canvas.Free;
-    EndPaint(FHandle, PS);
-  end;
+  BitBlt(PS.hdc,0,0,FImage.Width,FImage.Height,FImage.Canvas.Handle,0,0,SRCCOPY);
+  EndPaint(FHandle, PS);
 end;
 
 
@@ -83,10 +76,12 @@ var
   TempClass: TWndClass;
 begin
   // Register the helper window class.
-  PanningWindowClass.hInstance := HInstance;
   if not GetClassInfo(HInstance, PanningWindowClass.lpszClassName, TempClass) then
+  begin
+    PanningWindowClass.hInstance := HInstance;
     Windows.RegisterClass(PanningWindowClass);
-
+  end;
+  
   // Create the helper window and show it at the given position without activating it.
   with Position do
     FHandle := CreateWindowEx(WS_EX_TOOLWINDOW, PanningWindowClass.lpszClassName, nil, WS_POPUP, X - 16, Y - 16,
@@ -101,7 +96,6 @@ procedure TVirtualPanningWindow.Stop;
 begin
   // Destroy the helper window.
   DestroyWindow(FHandle);
-  FHandle := 0;
   FImage.Free;
   FImage := nil;
 end;
@@ -109,6 +103,7 @@ end;
 procedure TVirtualPanningWindow.Show(ClipRegion: HRGN);
 begin
   Logger.SendBitmap([lcPanning],'Panning Image',FImage);
+  //todo: move SetWindowRgn to DelphiCompat
   SetWindowRgn(FHandle, ClipRegion, False);
   ShowWindow(FHandle, SW_SHOWNOACTIVATE);
 end;

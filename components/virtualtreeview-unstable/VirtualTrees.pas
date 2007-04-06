@@ -23205,20 +23205,21 @@ procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
   // Since we only work on a very small image (32x32 pixels) this is acceptable.
 
   var
-    Start, X, Y: Integer;
+    Start, X, Y, ImageHeight, ImageWidth: Integer;
     Temp: HRGN;
 
   begin
     Assert(not FPanningWindow.Image.Empty, 'Invalid wheel panning image.');
-
+    ImageWidth:= FPanningWindow.Image.Width;
+    ImageHeight:= FPanningWindow.Image.Height;
     // Create an initial region on which we operate.
     Result := CreateRectRgn(0, 0, 0, 0);
-    with FPanningWindow.Image, Canvas do
+    with FPanningWindow.Image.Canvas do
     begin
-      for Y := 0 to Height - 1 do
+      for Y := 0 to ImageHeight - 1 do
       begin
         Start := -1;
-        for X := 0 to Width - 1 do
+        for X := 0 to ImageWidth - 1 do
         begin
           // Start a new span if we found a non-transparent pixel and no span is currently started.
           if (Start = -1) and (Pixels[X, Y] <> clFuchsia) then
@@ -23236,7 +23237,7 @@ procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
         // If there is an open span then add this also to the result region.
         if Start > -1 then
         begin
-          Temp := CreateRectRgn(Start, Y, Width, Y + 1);
+          Temp := CreateRectRgn(Start, Y, ImageWidth, Y + 1);
           CombineRgn(Result, Result, Temp, RGN_OR);
           DeleteObject(Temp);
         end;
