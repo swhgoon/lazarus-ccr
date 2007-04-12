@@ -15,6 +15,7 @@ type
 
   TWsdlParser = class;
 
+  TAbstractTypeParserClass = class of TAbstractTypeParser;
   { TAbstractTypeParser }
 
   TAbstractTypeParser = class
@@ -32,6 +33,16 @@ type
       const ATypeName    : string;
       const AEmbededDef  : Boolean
     );
+    class function ExtractEmbeddedTypeFromElement(
+            AOwner       : TWsdlParser;
+            AEltNode     : TDOMNode;
+            ASymbols     : TSymbolTable;
+      const ATypeName    : string
+    ) : TTypeDefinition;
+    class function GetParserSupportedStyle():string;virtual;abstract;
+    class procedure RegisterParser(AParserClass : TAbstractTypeParserClass);
+    class function GetRegisteredParserCount() : Integer;
+    class function GetRegisteredParser(const AIndex : Integer):TAbstractTypeParserClass;
     function Parse():TTypeDefinition;virtual;abstract;
   end;
   
@@ -59,6 +70,7 @@ type
     function ParseSimpleContent(const ATypeName : string):TTypeDefinition;
     function ParseEmptyContent(const ATypeName : string):TTypeDefinition;
   public
+    class function GetParserSupportedStyle():string;override;
     function Parse():TTypeDefinition;override;
   end;
 
@@ -74,10 +86,11 @@ type
   private
     procedure CreateNodeCursors();
     procedure ExtractTypeName();
-    procedure ExtractContentType();
+    function ExtractContentType() : Boolean;
     function ParseEnumContent():TTypeDefinition;
     function ParseOtherContent():TTypeDefinition;
   public
+    class function GetParserSupportedStyle():string;override;
     function Parse():TTypeDefinition;override;
   end;
 
@@ -101,15 +114,6 @@ type
     FTypesCursor : IObjectCursor;
     FSchemaCursor : IObjectCursor;
   private
-    procedure CreateWsdlNameFilter(
-            AFltrCreator : TRttiFilterCreator;
-      const AName        : WideString
-    );overload;
-    procedure CreateXsNameFilter(
-            AFltrCreator : TRttiFilterCreator;
-      const AName        : WideString
-    );
-
     function CreateWsdlNameFilter(const AName : WideString):IObjectFilter;
     function FindNamedNode(AList : IObjectCursor; const AName : WideString):TDOMNode;
     procedure Prepare();
@@ -165,6 +169,7 @@ const
   s_port                       : WideString = 'port';
   s_portType                   : WideString = 'portType';
   s_prohibited                 : WideString = 'prohibited';
+  s_ref                        : WideString = 'ref';
   s_required                   : WideString = 'required';
   s_restriction                : WideString = 'restriction';
   //s_return                     : WideString = 'return';
@@ -222,28 +227,6 @@ begin
     Result := Copy(Result,( i + 1 ), MaxInt);
 end;
 
-procedure CreateQualifiedNameFilter(
-        AFltrCreator : TRttiFilterCreator;
-  const AName        : WideString;
-        APrefixList  : TStrings
-);
-var
-  k : Integer;
-  locStr : string;
-  locWStr : WideString;
-begin
-  AFltrCreator.Clear(clrFreeObjects);
-  for k := 0 to Pred(APrefixList.Count) do begin
-    if IsStrEmpty(APrefixList[k]) then
-      locWStr := ''
-    else
-      locWStr := APrefixList[k] + ':';
-    locWStr := locWStr + AName;
-    locStr := s_NODE_NAME;
-    AFltrCreator.AddCondition(locStr,sfoEqualCaseInsensitive,locWStr,fcOr);
-  end;
-end;
-
 function CreateQualifiedNameFilterStr(
   const AName        : WideString;
         APrefixList  : TStrings
@@ -254,30 +237,26 @@ var
   locWStr : WideString;
 begin
   Result := '';
-  for k := 0 to Pred(APrefixList.Count) do begin
-    if IsStrEmpty(APrefixList[k]) then
-      locWStr := ''
-    else
-      locWStr := APrefixList[k] + ':';
-    locWStr := locWStr + AName;
-    locStr := s_NODE_NAME;
-    Result := Result + ' or ' + locStr + ' = ' + QuotedStr(locWStr);
+  if ( APrefixList.Count > 0 ) then begin
+    for k := 0 to Pred(APrefixList.Count) do begin
+      if IsStrEmpty(APrefixList[k]) then begin
+        locWStr := ''
+      end else begin
+        locWStr := APrefixList[k] + ':';
+      end;
+      locWStr := locWStr + AName;
+      locStr := s_NODE_NAME;
+      Result := Result + ' or ' + locStr + ' = ' + QuotedStr(locWStr);
+    end;
+    if ( Length(Result) > 0 ) then begin
+      Delete(Result,1,Length(' or'));
+    end;
+  end else begin
+    Result := Format('%s = %s',[s_NODE_NAME,QuotedStr(AName)]);
   end;
-  if ( Length(Result) > 0 ) then
-    Delete(Result,1,Length(' or'));
 end;
 
 { TWsdlParser }
-
-procedure TWsdlParser.CreateWsdlNameFilter(AFltrCreator : TRttiFilterCreator; const AName : WideString);
-begin
-  CreateQualifiedNameFilter(AFltrCreator,AName,FWsdlShortNames);
-end;
-
-procedure TWsdlParser.CreateXsNameFilter(AFltrCreator: TRttiFilterCreator;const AName: WideString);
-begin
-  CreateQualifiedNameFilter(AFltrCreator,AName,FXSShortNames);
-end;
 
 function TWsdlParser.CreateWsdlNameFilter(const AName: WideString): IObjectFilter;
 begin
@@ -330,6 +309,7 @@ begin
   if AClearBefore then begin
     AResList.Clear();
   end;
+  AAttribCursor.Reset();
   crs := CreateCursorOn(AAttribCursor,ParseFilter(Format('%s=%s',[s_NODE_VALUE,QuotedStr(ANameSpace)]),TDOMNodeRttiExposer));
   crs.Reset();
   if crs.MoveNext() then begin
@@ -384,7 +364,7 @@ begin
 
   ExtractNameSpaceShortNames(locAttCursor,FWsdlShortNames,s_wsdl,nfaRaiseException,True);
   ExtractNameSpaceShortNames(locAttCursor,FSoapShortNames,s_soap,nfaRaiseException,False);
-  ExtractNameSpaceShortNames(locAttCursor,FXSShortNames,s_xs,nfaRaiseException,True);
+  ExtractNameSpaceShortNames(locAttCursor,FXSShortNames,s_xs,nfaNone,True);
 
   FServiceCursor := CreateCursorOn(
                       FChildCursor.Clone() as IObjectCursor,
@@ -558,6 +538,19 @@ begin
   end;
 end;
 
+function StrToBindingStyle(const AStr : string):TBindingStyle;
+begin
+  if IsStrEmpty(AStr) then begin
+    Result := bsDocument;
+  end else if AnsiSameText(AStr,s_document) then begin
+    Result := bsDocument;
+  end else if AnsiSameText(AStr,s_rpc) then begin
+    Result := bsRPC;
+  end else begin
+    Result := bsUnknown;
+  end;
+end;
+
 function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceDefinition;
 
   function ExtractSoapBindingStyle(out AName : WideString):Boolean ;
@@ -660,6 +653,7 @@ begin
     locOpCursor.Reset();
     ExtractSoapBindingStyle(locWStrBuffer);
     locSoapBindingStyle := locWStrBuffer;
+    locIntf.BindingStyle := StrToBindingStyle(locSoapBindingStyle);
     locBindingOperationCursor := ExtractBindingOperationCursor();
     while locOpCursor.MoveNext() do begin
       locObj := locOpCursor.GetCurrent() as TDOMNodeRttiExposer;
@@ -1038,8 +1032,6 @@ end;
 
 procedure TWsdlParser.ParseTypes();
 var
-  locTypeCrs : IObjectCursor;
-  locObj : TDOMNodeRttiExposer;
   nd : TDOMNodeRttiExposer;
   schmCrsr, crsSchemaChild, typTmpCrs : IObjectCursor;
   typFilterStr : string;
@@ -1208,6 +1200,107 @@ begin
   FEmbededDef := AEmbededDef;
 end;
 
+class function TAbstractTypeParser.ExtractEmbeddedTypeFromElement(
+        AOwner       : TWsdlParser;
+        AEltNode     : TDOMNode;
+        ASymbols     : TSymbolTable;
+  const ATypeName    : string
+): TTypeDefinition;
+
+  function ExtractTypeName() : string;
+  var
+    locCrs : IObjectCursor;
+  begin
+    locCrs := CreateCursorOn(
+                CreateAttributesCursor(AEltNode,cetRttiNode),
+                ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer)
+              );
+    locCrs.Reset();
+    if not locCrs.MoveNext() then
+      raise EWslParserException.Create('Unable to find the <name> tag in the type/element node attributes.');
+    Result := (locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+    if IsStrEmpty(Result) then begin
+      raise EWslParserException.Create('Invalid type/element name( the name is empty ).');
+    end;
+  end;
+  
+  function FindParser(out AFoundTypeNode : TDOMNode):TAbstractTypeParserClass;
+  var
+    k : Integer;
+    locPrsClss : TAbstractTypeParserClass;
+    locFilter : string;
+    locCrs : IObjectCursor;
+  begin
+    Result := nil;
+    AFoundTypeNode := nil;
+    for k := 0 to Pred(GetRegisteredParserCount()) do begin
+      locPrsClss := GetRegisteredParser(k);
+      locFilter := locPrsClss.GetParserSupportedStyle();
+      if not IsStrEmpty(locFilter) then begin
+        locFilter := CreateQualifiedNameFilterStr(locFilter,AOwner.FXSShortNames);
+        locCrs := CreateCursorOn(CreateChildrenCursor(AEltNode,cetRttiNode),ParseFilter(locFilter,TDOMNodeRttiExposer));
+        locCrs.Reset();
+        if locCrs.MoveNext() then begin
+          AFoundTypeNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+          Result := locPrsClss;
+          Break;
+        end;
+      end;
+    end;
+  end;
+  
+var
+  typName : string;
+  prsClss : TAbstractTypeParserClass;
+  prs : TAbstractTypeParser;
+  typNode : TDOMNode;
+begin
+  if not AEltNode.HasChildNodes() then begin;
+    raise EWslParserException.Create('Invalid type definition, this element must have children.');
+  end;
+  Result := nil;
+  typName := ATypeName;
+  if IsStrEmpty(typName) then begin
+    typName := ExtractTypeName();
+  end;
+  prsClss := FindParser(typNode);
+  if ( prsClss = nil ) then begin;
+    raise EWslParserException.CreateFmt('This type style is not supported : "%s".',[typName]);
+  end;
+  prs := prsClss.Create(AOwner,typNode,ASymbols,typName,True);
+  try
+    Result := prs.Parse();
+  finally
+    FreeAndNil(prs);
+  end;
+end;
+
+var
+  FTypeParserList : TClassList = nil;
+class procedure TAbstractTypeParser.RegisterParser(AParserClass: TAbstractTypeParserClass);
+begin
+  if ( FTypeParserList = nil ) then begin
+    FTypeParserList := TClassList.Create();
+  end;
+  if ( FTypeParserList.IndexOf(AParserClass) < 0 ) then begin
+    FTypeParserList.Add(AParserClass);
+  end;
+end;
+
+class function TAbstractTypeParser.GetRegisteredParserCount(): Integer;
+begin
+  if Assigned(FTypeParserList) then begin
+    Result := FTypeParserList.Count;
+  end else begin
+    Result := 0;
+  end;
+end;
+
+class function TAbstractTypeParser.GetRegisteredParser(const AIndex: Integer): TAbstractTypeParserClass;
+begin
+  Result := TAbstractTypeParserClass(FTypeParserList[AIndex]);
+end;
+
 
 { TComplexTypeParser }
 
@@ -1273,7 +1366,7 @@ procedure TComplexTypeParser.ExtractBaseType();
 var
   locContentChildCrs, locCrs : IObjectCursor;
   locSymbol : TAbstractSymbolDefinition;
-  locBaseTypeName, locFilterStr : string;
+  locBaseTypeName, locBaseTypeInternalName, locFilterStr : string;
 begin
   locFilterStr := CreateQualifiedNameFilterStr(s_extension,FOwner.FXSShortNames);
   locContentChildCrs := CreateChildrenCursor(FContentNode,cetRttiNode);
@@ -1313,6 +1406,9 @@ begin
     if Assigned(locSymbol) then begin
       if locSymbol.InheritsFrom(TTypeDefinition) then begin
         FBaseType := locSymbol as TTypeDefinition;
+        while Assigned(FBaseType) and FBaseType.InheritsFrom(TTypeAliasDefinition) do begin
+          FBaseType := (FBaseType as TTypeAliasDefinition).BaseType;
+        end;
         if FBaseType.InheritsFrom(TNativeSimpleTypeDefinition) then begin
           Assert(Assigned(TNativeSimpleTypeDefinition(FBaseType).BoxedType));
           FBaseType := TNativeSimpleTypeDefinition(FBaseType).BoxedType;
@@ -1321,7 +1417,12 @@ begin
         raise EWslParserException.CreateFmt('"%s" was expected to be a type definition.',[locSymbol.Name]);
       end;
     end else begin
-      FBaseType := TForwardTypeDefinition.Create(locBaseTypeName);
+      locBaseTypeInternalName := ExtractIdentifier(locBaseTypeName);
+      if IsReservedKeyWord(locBaseTypeInternalName) then
+        locBaseTypeInternalName := '_' + locBaseTypeInternalName ;
+      FBaseType := TForwardTypeDefinition.Create(locBaseTypeInternalName);
+      if not AnsiSameText(locBaseTypeInternalName,locBaseTypeName) then
+        FBaseType.RegisterExternalAlias(locBaseTypeName);
       FSymbols.Add(FBaseType);
     end;
   end;
@@ -1388,7 +1489,7 @@ var
   procedure ParseElement(AElement : TDOMNode);
   var
     locAttCursor, locPartCursor : IObjectCursor;
-    locName, locTypeName : string;
+    locName, locTypeName, locTypeInternalName : string;
     locType : TAbstractSymbolDefinition;
     locInternalEltName : string;
     locProp : TPropertyDefinition;
@@ -1396,25 +1497,54 @@ var
     locMinOccur, locMaxOccur : Integer;
     locMaxOccurUnbounded : Boolean;
     locStrBuffer : string;
+    locIsRefElement : Boolean;
   begin
+    locType := nil;
+    locTypeName := '';
     locAttCursor := CreateAttributesCursor(AElement,cetRttiNode);
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
-    if not locPartCursor.MoveNext() then
-      raise EWslParserException.Create('Invalid <element> definition : missing "name" attribute.');
+    locIsRefElement := False;
+    if not locPartCursor.MoveNext() then begin
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_ref)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if not locPartCursor.MoveNext() then begin
+        raise EWslParserException.Create('Invalid <element> definition : missing "name" or "ref" attribute.');
+      end;
+      locIsRefElement := True;
+    end;
     locName := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+    if locIsRefElement then begin
+      locName := ExtractNameFromQName(locName);
+    end;
     if IsStrEmpty(locName) then
       raise EWslParserException.Create('Invalid <element> definition : empty "name".');
-    locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
-    locPartCursor.Reset();
-    if not locPartCursor.MoveNext() then
-      raise EWslParserException.Create('Invalid <element> definition : missing "type" attribute.');
-    locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+    if locIsRefElement then begin
+      locTypeName := locName;
+    end else begin
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if locPartCursor.MoveNext() then begin
+        locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+      end else begin
+        locTypeName := Format('%s_%s_Type',[FTypeName,locName]);
+        locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(FOwner,AElement,FSymbols,locTypeName);
+        if ( locType = nil ) then begin
+          raise EWslParserException.CreateFmt('Invalid <element> definition : unable to determine the type.'#13'Type name : "%s"; Element name :"%s".',[FTypeName,locName]);
+        end;
+        FSymbols.Add(locType);
+      end;
+    end;
     if IsStrEmpty(locTypeName) then
       raise EWslParserException.Create('Invalid <element> definition : empty "type".');
     locType := FSymbols.Find(locTypeName);
     if not Assigned(locType) then begin
-      locType := TForwardTypeDefinition.Create(locTypeName);
+      locTypeInternalName := locTypeName;
+      if IsReservedKeyWord(locTypeInternalName) then
+        locTypeInternalName := '_' + locTypeInternalName;
+      locType := TForwardTypeDefinition.Create(locTypeInternalName);
+      if not AnsiSameText(locTypeInternalName,locTypeName) then
+        locType.RegisterExternalAlias(locTypeName);
       FSymbols.Add(locType);
     end;
     
@@ -1467,18 +1597,24 @@ var
   var
     locPropTyp : TPropertyDefinition;
     k : Integer;
+    locString : string;
+    locSym : TAbstractSymbolDefinition;
   begin
     for k := 0 to Pred(AArrayPropList.Count) do begin
       locPropTyp := AArrayPropList[k] as TPropertyDefinition;
-      FSymbols.Add(
-        TArrayDefinition.Create(
-          Format('%s_%sArray',[AClassName,locPropTyp.Name]),
-          locPropTyp.DataType,
-          locPropTyp.Name,
-          locPropTyp.ExternalName,
-          asEmbeded
-        )
-      );
+      locString := Format('%s_%sArray',[AClassName,locPropTyp.Name]);
+      locSym := FSymbols.Find(locString);
+      if ( locSym = nil ) then begin
+        FSymbols.Add(
+          TArrayDefinition.Create(
+            locString,
+            locPropTyp.DataType,
+            locPropTyp.Name,
+            locPropTyp.ExternalName,
+            asEmbeded
+          )
+        );
+      end;
     end;
   end;
   
@@ -1558,13 +1694,20 @@ begin
   ExtractBaseType();
   eltCrs := ExtractElementCursor();
   
-  internalName := ATypeName;
-  hasInternalName := IsReservedKeyWord(internalName) or
-                     ( not IsValidIdent(internalName) );{ or
-                     ( FSymbols.IndexOf(internalName) <> -1 );}
-  if hasInternalName then
+  internalName := ExtractIdentifier(ATypeName);
+{  while IsReservedKeyWord(internalName) or ( FSymbols.IndexOf(internalName) <> -1 ) do begin
     internalName := Format('_%s',[internalName]);
-  
+  end;
+  hasInternalName := ( not AnsiSameText(internalName,ATypeName) );
+}
+  hasInternalName := IsReservedKeyWord(internalName) or
+                     ( not IsValidIdent(internalName) ) or
+                     //( FSymbols.IndexOf(internalName) <> -1 ) or
+                     ( not AnsiSameText(internalName,ATypeName) );
+  if hasInternalName then begin
+    internalName := Format('_%s',[internalName]);
+  end;
+
   if ( FDerivationMode = dmRestriction ) and FBaseType.SameName(s_array) then begin
     Result := ExtractSoapArray(internalName,hasInternalName);
   end else begin
@@ -1789,6 +1932,11 @@ begin
   );
 end;
 
+function TComplexTypeParser.GetParserSupportedStyle(): string;
+begin
+  Result := s_complexType;
+end;
+
 function TComplexTypeParser.Parse() : TTypeDefinition;
 var
   locSym : TAbstractSymbolDefinition;
@@ -1846,7 +1994,7 @@ begin
     raise EWslParserException.Create('Invalid type name( the name is empty ).');
 end;
 
-procedure TSimpleTypeParser.ExtractContentType();
+function TSimpleTypeParser.ExtractContentType() : Boolean;
 var
   locCrs, locAttCrs : IObjectCursor;
   tmpNode : TDOMNode;
@@ -1890,8 +2038,10 @@ begin
         raise EWslParserException.CreateFmt('Base type is not specified for the simple type, parsing : "%s".',[FTypeName]);
       FIsEnum := False
     end;
+    Result := True;
   end else begin
-    raise EWslParserException.CreateFmt('The parser only support "Restriction" mode simple type derivation, parsing : "%s".',[FTypeName]);
+    //raise EWslParserException.CreateFmt('The parser only support "Restriction" mode simple type derivation, parsing : "%s".',[FTypeName]);
+    Result := False;
   end;
 end;
 
@@ -1916,6 +2066,7 @@ var
     locCrs : IObjectCursor;
     locItem : TEnumItemDefinition;
     locHasInternalName : Boolean;
+    locBuffer : string;
   begin
     locCrs := CreateCursorOn(CreateAttributesCursor(AItemNode,cetRttiNode),ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_value)]),TDOMNodeRttiExposer)) as IObjectCursor;
     if not Assigned(locCrs) then
@@ -1928,12 +2079,19 @@ var
     if IsStrEmpty(locItemName) then
       raise EWslParserException.CreateFmt('Invalid "enum" item node : the value attribute is empty, type = "%s".',[FTypeName]);
 
-    locInternalItemName := locItemName;
+    locInternalItemName := ExtractIdentifier(locItemName);
     locHasInternalName := IsReservedKeyWord(locInternalItemName) or
                           ( not IsValidIdent(locInternalItemName) ) or
-                          ( FSymbols.IndexOf(locInternalItemName) <> -1 );
-    if locHasInternalName then
-      locInternalItemName := Format('%s_%s',[locRes.ExternalName,locInternalItemName]);
+                          ( FSymbols.IndexOf(locInternalItemName) <> -1 ) or
+                          ( not AnsiSameText(locInternalItemName,locItemName) );
+    if locHasInternalName then begin
+      locBuffer := ExtractIdentifier(locRes.ExternalName);
+      if IsStrEmpty(locBuffer) and ( locBuffer[Length(locBuffer)] <> '_' ) then begin
+        locInternalItemName := Format('%s_%s',[locBuffer,locInternalItemName]);
+      end else begin
+        locInternalItemName := Format('%s%s',[locBuffer,locInternalItemName]);
+      end;
+    end;
     locItem := TEnumItemDefinition.Create(locInternalItemName,locRes,locOrder);
     if locHasInternalName then
       locItem.RegisterExternalAlias(locItemName);
@@ -1951,7 +2109,7 @@ begin
 
   intrName := FTypeName;
   hasIntrnName := IsReservedKeyWord(FTypeName) or
-                  ( FSymbols.IndexOf(intrName) < 0 );
+                  ( ( FSymbols.IndexOf(intrName) >= 0 ) and ( not FSymbols.ByName(intrName).InheritsFrom(TForwardTypeDefinition) ) );
   if hasIntrnName then
     intrName := '_' + intrName;
 
@@ -1978,6 +2136,11 @@ begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   Result := TTypeAliasDefinition.Create(FTypeName,FSymbols.ByName(FBaseName) as TTypeDefinition);
 end;
 
+function TSimpleTypeParser.GetParserSupportedStyle(): string;
+begin
+  Result := s_simpleType;
+end;
+
 function TSimpleTypeParser.Parse(): TTypeDefinition;
 var
   locSym : TAbstractSymbolDefinition;
@@ -1998,14 +2161,25 @@ begin
     end;
   end;
   if locContinue then begin
-    ExtractContentType();
-    if FIsEnum then begin
-      Result := ParseEnumContent()
+    if ExtractContentType() then begin
+      if FIsEnum then begin
+        Result := ParseEnumContent()
+      end else begin
+        Result := ParseOtherContent();
+      end;
     end else begin
+      FBaseName := 'string';
       Result := ParseOtherContent();
     end;
   end;
 end;
 
-end.
 
+initialization
+  TAbstractTypeParser.RegisterParser(TSimpleTypeParser);
+  TAbstractTypeParser.RegisterParser(TComplexTypeParser);
+
+finalization
+  FreeAndNil(FTypeParserList);
+  
+end.

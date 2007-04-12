@@ -35,6 +35,8 @@ type
   { standart data types defines }
   anyURI = type string;
   token = type string;
+  nonNegativeInteger = type LongWord;
+  positiveInteger = type nonNegativeInteger;
   float = Single;
   
   TScopeType = Integer;
@@ -1121,6 +1123,9 @@ begin
   r := GetTypeRegistry();
   r.Register(sXSD_NS,TypeInfo(Integer),'int').AddPascalSynonym('Integer');
     r.Register(sXSD_NS,TypeInfo(LongWord),'unsignedInt');
+    r.Register(sXSD_NS,TypeInfo(positiveInteger),'positiveInteger');
+    r.Register(sXSD_NS,TypeInfo(nonNegativeInteger),'nonNegativeInteger');
+
 
   r.Register(sXSD_NS,TypeInfo(string),'string').AddPascalSynonym('string');
   r.Register(sXSD_NS,TypeInfo(AnsiString),'ansistring').AddPascalSynonym('ansistring');

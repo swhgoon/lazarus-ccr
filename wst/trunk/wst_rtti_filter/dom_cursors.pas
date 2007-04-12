@@ -1,7 +1,9 @@
 unit dom_cursors;
 
 {$mode objfpc}{$H+}
-//{$define FPC_211}
+{$IF (FPC_VERSION = 2) and (FPC_RELEASE > 0)}
+  {$define FPC_211}
+{$ENDIF}
 interface
 
 uses

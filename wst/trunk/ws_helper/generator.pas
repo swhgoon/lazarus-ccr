@@ -1813,6 +1813,17 @@ procedure TInftGenerator.GenerateCustomMetadatas();
         DecIndent();
       Indent();WriteLn(');');
     end;
+    
+    if ( AIntf.BindingStyle = bsRPC ) then begin
+      Indent();WriteLn('mm.SetServiceCustomData(');
+        IncIndent();
+          Indent(); WriteLn('%s,',[sUNIT_NAME]);
+          Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
+          Indent(); WriteLn('%s,',[QuotedStr('SoapStyle')]);
+          Indent(); WriteLn('%s' ,[QuotedStr('rpc')]);
+        DecIndent();
+      Indent();WriteLn(');');
+    end;
 
     for k := 0 to Pred(AIntf.MethodCount) do begin
       WriteOperationDatas(AIntf,AIntf.Method[k]);

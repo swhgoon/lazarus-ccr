@@ -330,6 +330,8 @@ Type
     property Properties : TStrings read FProperties;
   End;
 
+  TBindingStyle = ( bsDocument, bsRPC, bsUnknown );
+  
   { TInterfaceDefinition }
 
   TInterfaceDefinition = class(TAbstractSymbolDefinition)
@@ -338,6 +340,7 @@ Type
     FMethodList : TObjectList;
   private
     FAddress: string;
+    FBindingStyle: TBindingStyle;
     function GetMethod(Index: Integer): TMethodDefinition;
     function GetMethodCount: Integer;
   protected
@@ -359,6 +362,7 @@ Type
     Property Method[Index:Integer] : TMethodDefinition Read GetMethod;
     property InterfaceGUID : string read FInterfaceGUID write FInterfaceGUID;
     property Address : string read FAddress write FAddress;
+    property BindingStyle : TBindingStyle read FBindingStyle write FBindingStyle;
   End;
   
   { TSymbolTable }
@@ -442,9 +446,11 @@ const LANGAGE_TOKEN : array[0..107] of string = (
   'THEN', 'TO', 'TRY', 'TYPE', 'UNIT', 'UNTIL', 'USES',
   'VAR', 'VARARGS', 'VARIANT', 'VIRTUAL', 'WHILE', 'WIDECHAR', 'WITH', 'WORD', 'WRITE', 'XOR'
 );
+const WST_RESERVED_TOKEN : array[0..1] of string = ( 'Item', 'Item' );
 function IsReservedKeyWord(const AValue : string):Boolean ;
 begin
-  Result := AnsiMatchText(AValue,LANGAGE_TOKEN);
+  Result := AnsiMatchText(AValue,LANGAGE_TOKEN) or
+            AnsiMatchText(AValue,WST_RESERVED_TOKEN);
 end;
 
 { TAbstractSymbolDefinition }
@@ -791,7 +797,7 @@ begin
       then
         locNeedFix := True
       else
-        raise ESymbolException.CreateFmt('Duplicated symbol name : %s',[ASym.Name]);
+        raise ESymbolException.CreateFmt('Duplicated symbol name %s : ( %s/%s ), ( %s/%s )',[ASym.Name,Item[i].ClassName,Item[i].ExternalName,ASym.ClassName,ASym.ExternalName]);
     end;
     NotifyChange(Self,ASym,stcAdding);
     Result := FList.Add(ASym);
@@ -1229,7 +1235,11 @@ begin
     Result.Add(locTyp);
     locTyp := TTypeAliasDefinition.Create('float',Result.ByName('Single') as TTypeDefinition);
     Result.Add(locTyp);
-
+    locTyp := TTypeAliasDefinition.Create('nonNegativeInteger',Result.ByName('LongWord') as TTypeDefinition);
+    Result.Add(locTyp);
+    locTyp := TTypeAliasDefinition.Create('positiveInteger',Result.ByName('nonNegativeInteger') as TTypeDefinition);
+    Result.Add(locTyp);
+    
     locTyp := TTypeAliasDefinition.Create('base64Binary',Result.ByName('string') as TTypeDefinition);
     Result.Add(locTyp);
 

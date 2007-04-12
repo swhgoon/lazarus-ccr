@@ -80,12 +80,13 @@
         <Filename Value="..\..\base_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="3" Y="119"/>
-        <TopLine Value="132"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="28"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
-        <Bookmarks Count="1">
-          <Item0 X="5" Y="1175" ID="1"/>
+        <Bookmarks Count="2">
+          <Item0 X="33" Y="1126" ID="0"/>
+          <Item1 X="5" Y="1180" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit5>
@@ -330,11 +331,39 @@
         <UsageCount Value="8"/>
       </Unit37>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
         <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="587" Column="29" TopLine="571"/>
+        <Caret Line="119" Column="3" TopLine="132"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="825" Column="90" TopLine="817"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="3944" Column="90" TopLine="3937"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1125" Column="66" TopLine="1112"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="36" Column="9" TopLine="25"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1129" Column="37" TopLine="1115"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1127" Column="72" TopLine="1113"/>
+      </Position8>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

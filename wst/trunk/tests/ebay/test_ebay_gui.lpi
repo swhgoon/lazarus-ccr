@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -33,7 +33,7 @@
         <UnitName Value="test_ebay_gui"/>
         <CursorPos X="5" Y="8"/>
         <TopLine Value="1"/>
-        <UsageCount Value="127"/>
+        <UsageCount Value="128"/>
       </Unit0>
       <Unit1>
         <Filename Value="umain.pas"/>
@@ -41,10 +41,10 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="umain.lrs"/>
         <UnitName Value="umain"/>
-        <CursorPos X="40" Y="9"/>
-        <TopLine Value="4"/>
+        <CursorPos X="36" Y="69"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="127"/>
+        <UsageCount Value="128"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -53,32 +53,34 @@
         <UnitName Value="synapse_http_protocol"/>
         <CursorPos X="1" Y="162"/>
         <TopLine Value="149"/>
-        <UsageCount Value="127"/>
+        <UsageCount Value="128"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="13" Y="3058"/>
-        <TopLine Value="3056"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="63"/>
+        <CursorPos X="68" Y="109"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="1" Y="253"/>
-        <TopLine Value="239"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="28"/>
+        <CursorPos X="32" Y="78"/>
+        <TopLine Value="67"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\soap_formatter.pas"/>
         <UnitName Value="soap_formatter"/>
-        <CursorPos X="1" Y="146"/>
-        <TopLine Value="132"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="3" Y="93"/>
+        <TopLine Value="87"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\imp_utils.pas"/>
@@ -90,10 +92,10 @@
       <Unit7>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="1" Y="1625"/>
-        <TopLine Value="1611"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="56"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="219"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="57"/>
         <Bookmarks Count="2">
           <Item0 X="14" Y="670" ID="1"/>
           <Item1 X="1" Y="437" ID="2"/>
@@ -111,10 +113,10 @@
         <Filename Value="ebay.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ebay"/>
-        <CursorPos X="49" Y="126"/>
-        <TopLine Value="124"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="111"/>
+        <CursorPos X="3" Y="237"/>
+        <TopLine Value="226"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="112"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -129,8 +131,8 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="3" Y="112"/>
         <TopLine Value="9"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="19"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="20"/>
         <Bookmarks Count="1">
           <Item0 X="1" Y="91" ID="3"/>
         </Bookmarks>
@@ -140,10 +142,10 @@
         <Filename Value="ebay_proxy.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ebay_proxy"/>
-        <CursorPos X="1" Y="75"/>
-        <TopLine Value="61"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="111"/>
+        <CursorPos X="44" Y="16"/>
+        <TopLine Value="5"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="112"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -244,26 +246,28 @@
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\inc\objpash.inc"/>
-        <CursorPos X="8" Y="116"/>
-        <TopLine Value="102"/>
-        <UsageCount Value="6"/>
+        <CursorPos X="50" Y="190"/>
+        <TopLine Value="179"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\binary_streamer.pas"/>
         <UnitName Value="binary_streamer"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="55"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="31"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\files\eBayWSDL.pas"/>
         <UnitName Value="eBayWSDL"/>
-        <CursorPos X="48" Y="10961"/>
-        <TopLine Value="10947"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="18"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit30>
       <Unit31>
@@ -316,31 +320,47 @@
         <UsageCount Value="10"/>
       </Unit37>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="10" HistoryIndex="9">
       <Position1>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="33919" Column="45" TopLine="33905"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="77" Column="14" TopLine="64"/>
       </Position1>
       <Position2>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="32893" Column="23" TopLine="32867"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="54" Column="20" TopLine="43"/>
       </Position2>
       <Position3>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="12" Column="53" TopLine="1"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="45" Column="70" TopLine="39"/>
       </Position3>
       <Position4>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="32726" Column="1" TopLine="32699"/>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="245" Column="15" TopLine="239"/>
       </Position4>
       <Position5>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="23" Column="12" TopLine="21"/>
       </Position5>
       <Position6>
-        <Filename Value="..\files\eBayWSDL.pas"/>
-        <Caret Line="503" Column="3" TopLine="489"/>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position6>
+      <Position7>
+        <Filename Value="umain.pas"/>
+        <Caret Line="45" Column="27" TopLine="39"/>
+      </Position7>
+      <Position8>
+        <Filename Value="umain.pas"/>
+        <Caret Line="69" Column="36" TopLine="56"/>
+      </Position8>
+      <Position9>
+        <Filename Value="ebay_proxy.pas"/>
+        <Caret Line="16" Column="44" TopLine="5"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\service_intf.pas"/>
+        <Caret Line="78" Column="32" TopLine="67"/>
+      </Position10>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
