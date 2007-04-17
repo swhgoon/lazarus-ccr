@@ -394,7 +394,6 @@ procedure CloneRepository(
   out   ADest   : PServiceRepository
 );
 var
-  buf : string;
   i, c : LongInt;
   ps : PService;
 begin

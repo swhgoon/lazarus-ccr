@@ -1569,146 +1569,147 @@ Var
   typRegItem : TTypeRegistryItem;
 begin
   oldSS := AStore.GetSerializationStyle();
-  AStore.BeginObjectRead(AName,ATypeInfo);
-  try
-    if AStore.IsCurrentScopeNil() then
-      Exit; // ???? FreeAndNil(AObject);
-    If Not Assigned(AObject) Then
-      AObject := Create();
-    objTypeData := GetTypeData(ATypeInfo);
-    propCount := objTypeData^.PropCount;
-    If ( propCount > 0 ) Then Begin
-      propListLen := GetPropList(ATypeInfo,propList);
-      Try
-        typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
-        For i := 0 To Pred(propCount) Do Begin
-          p := propList^[i];
-          persistType := IsStoredPropClass(objTypeData^.ClassType,p);
-          If ( persistType in [pstOptional,pstAlways] ) Then Begin
-            pt := p^.PropType;
-            propName := typRegItem.GetExternalPropertyName(p^.Name);
-            if IsAttributeProperty(p^.Name) then begin
-              ss := ssAttibuteSerialization;
-            end else begin
-              ss := ssNodeSerialization;
-            end;
-            if ( ss <> AStore.GetSerializationStyle() ) then
-              AStore.SetSerializationStyle(ss);
-            try
-              Case pt^.Kind Of
-                tkInt64,tkQWord :
-                  Begin
-                    AStore.Get(pt,propName,int64Data);
-                    SetOrdProp(AObject,p^.Name,int64Data);
-                  End;
-                tkLString, tkAString :
-                  Begin
-                    AStore.Get(pt,propName,strData);
-                    SetStrProp(AObject,p^.Name,strData);
-                  End;
-                tkBool :
-                  Begin
-                    AStore.Get(pt,propName,boolData);
-                    SetOrdProp(AObject,p^.Name,Ord(boolData));
-                  End;
-                tkClass :
-                  Begin
-                    objData := GetObjectProp(AObject,p^.Name);
-                    objDataCreateHere := not Assigned(objData);
-                    try
-                      AStore.Get(pt,propName,objData);
-                      if objDataCreateHere then
-                        SetObjectProp(AObject,p^.Name,objData);
-                    finally
-                      if objDataCreateHere then
-                        FreeAndNil(objData);
-                    end;
-                  End;
-                tkEnumeration,tkInteger :
-                  Begin
-                    FillChar(enumData,SizeOf(enumData),#0);
-                    Case GetTypeData(p^.PropType)^.OrdType Of
-                      otSByte :
-                        Begin
-                          AStore.Get(pt,propName,enumData.ShortIntData);
-                          int64Data := enumData.ShortIntData;
-                        End;
-                      otUByte :
-                        Begin
-                          AStore.Get(pt,propName,enumData.ByteData);
-                          int64Data := enumData.ByteData;
-                        End;
-                      otSWord :
-                        Begin
-                          AStore.Get(pt,propName,enumData.SmallIntData);
-                          int64Data := enumData.SmallIntData;
-                        End;
-                      otUWord :
-                        Begin
-                          AStore.Get(pt,propName,enumData.WordData);
-                          int64Data := enumData.WordData;
-                        End;
-                      otSLong:
-                        Begin
-                          AStore.Get(pt,propName,enumData.SLongIntData);
-                          int64Data := enumData.SLongIntData;
-                        End;
-                      otULong :
-                        Begin
-                          AStore.Get(pt,propName,enumData.ULongIntData);
-                          int64Data := enumData.ULongIntData;
-                        End;
-                    End;
-                    SetOrdProp(AObject,p^.Name,int64Data);
-                  End;
-                tkFloat :
-                  Begin
-                    FillChar(floatDt,SizeOf(floatBuffer),#0);
-                    Case GetTypeData(p^.PropType)^.FloatType Of
-                      ftSingle :
-                        Begin
-                          AStore.Get(pt,propName,floatBuffer.SingleData);
-                          floatDt := floatBuffer.SingleData;
-                        End;
-                      ftDouble :
-                        Begin
-                          AStore.Get(pt,propName,floatBuffer.DoubleData);
-                          floatDt := floatBuffer.DoubleData;
-                        End;
-                      ftExtended :
-                        Begin
-                          AStore.Get(pt,propName,floatBuffer.ExtendedData);
-                          floatDt := floatBuffer.ExtendedData;
-                        End;
-                      ftCurr :
-                        Begin
-                          AStore.Get(pt,propName,floatBuffer.CurrencyData);
-                          floatDt := floatBuffer.CurrencyData;
-                        End;
-                      ftComp :
-                        Begin
-                          AStore.Get(pt,propName,floatBuffer.CompData);
-                          floatDt := floatBuffer.CompData;
-                        End;
-                    End;
-                    SetFloatProp(AObject,p^.Name,floatDt);
-                  End;
-              End;
-            except
-              on E : EServiceException do begin
-                if ( persistType = pstAlways ) then
-                  raise;
+  if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+    try
+      if AStore.IsCurrentScopeNil() then
+        Exit; // ???? FreeAndNil(AObject);
+      If Not Assigned(AObject) Then
+        AObject := Create();
+      objTypeData := GetTypeData(ATypeInfo);
+      propCount := objTypeData^.PropCount;
+      If ( propCount > 0 ) Then Begin
+        propListLen := GetPropList(ATypeInfo,propList);
+        Try
+          typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
+          For i := 0 To Pred(propCount) Do Begin
+            p := propList^[i];
+            persistType := IsStoredPropClass(objTypeData^.ClassType,p);
+            If ( persistType in [pstOptional,pstAlways] ) Then Begin
+              pt := p^.PropType;
+              propName := typRegItem.GetExternalPropertyName(p^.Name);
+              if IsAttributeProperty(p^.Name) then begin
+                ss := ssAttibuteSerialization;
+              end else begin
+                ss := ssNodeSerialization;
               end;
-            end;
+              if ( ss <> AStore.GetSerializationStyle() ) then
+                AStore.SetSerializationStyle(ss);
+              try
+                Case pt^.Kind Of
+                  tkInt64,tkQWord :
+                    Begin
+                      AStore.Get(pt,propName,int64Data);
+                      SetOrdProp(AObject,p^.Name,int64Data);
+                    End;
+                  tkLString, tkAString :
+                    Begin
+                      AStore.Get(pt,propName,strData);
+                      SetStrProp(AObject,p^.Name,strData);
+                    End;
+                  tkBool :
+                    Begin
+                      AStore.Get(pt,propName,boolData);
+                      SetOrdProp(AObject,p^.Name,Ord(boolData));
+                    End;
+                  tkClass :
+                    Begin
+                      objData := GetObjectProp(AObject,p^.Name);
+                      objDataCreateHere := not Assigned(objData);
+                      try
+                        AStore.Get(pt,propName,objData);
+                        if objDataCreateHere then
+                          SetObjectProp(AObject,p^.Name,objData);
+                      finally
+                        if objDataCreateHere and ( objData <> GetObjectProp(AObject,p^.Name) ) then
+                          FreeAndNil(objData);
+                      end;
+                    End;
+                  tkEnumeration,tkInteger :
+                    Begin
+                      FillChar(enumData,SizeOf(enumData),#0);
+                      Case GetTypeData(p^.PropType)^.OrdType Of
+                        otSByte :
+                          Begin
+                            AStore.Get(pt,propName,enumData.ShortIntData);
+                            int64Data := enumData.ShortIntData;
+                          End;
+                        otUByte :
+                          Begin
+                            AStore.Get(pt,propName,enumData.ByteData);
+                            int64Data := enumData.ByteData;
+                          End;
+                        otSWord :
+                          Begin
+                            AStore.Get(pt,propName,enumData.SmallIntData);
+                            int64Data := enumData.SmallIntData;
+                          End;
+                        otUWord :
+                          Begin
+                            AStore.Get(pt,propName,enumData.WordData);
+                            int64Data := enumData.WordData;
+                          End;
+                        otSLong:
+                          Begin
+                            AStore.Get(pt,propName,enumData.SLongIntData);
+                            int64Data := enumData.SLongIntData;
+                          End;
+                        otULong :
+                          Begin
+                            AStore.Get(pt,propName,enumData.ULongIntData);
+                            int64Data := enumData.ULongIntData;
+                          End;
+                      End;
+                      SetOrdProp(AObject,p^.Name,int64Data);
+                    End;
+                  tkFloat :
+                    Begin
+                      FillChar(floatDt,SizeOf(floatBuffer),#0);
+                      Case GetTypeData(p^.PropType)^.FloatType Of
+                        ftSingle :
+                          Begin
+                            AStore.Get(pt,propName,floatBuffer.SingleData);
+                            floatDt := floatBuffer.SingleData;
+                          End;
+                        ftDouble :
+                          Begin
+                            AStore.Get(pt,propName,floatBuffer.DoubleData);
+                            floatDt := floatBuffer.DoubleData;
+                          End;
+                        ftExtended :
+                          Begin
+                            AStore.Get(pt,propName,floatBuffer.ExtendedData);
+                            floatDt := floatBuffer.ExtendedData;
+                          End;
+                        ftCurr :
+                          Begin
+                            AStore.Get(pt,propName,floatBuffer.CurrencyData);
+                            floatDt := floatBuffer.CurrencyData;
+                          End;
+                        ftComp :
+                          Begin
+                            AStore.Get(pt,propName,floatBuffer.CompData);
+                            floatDt := floatBuffer.CompData;
+                          End;
+                      End;
+                      SetFloatProp(AObject,p^.Name,floatDt);
+                    End;
+                End;
+              except
+                on E : EServiceException do begin
+                  if ( persistType = pstAlways ) then
+                    raise;
+                end;
+              end;
+            End;
           End;
+        Finally
+          Freemem(propList,propListLen*SizeOf(Pointer));
         End;
-      Finally
-        Freemem(propList,propListLen*SizeOf(Pointer));
       End;
-    End;
-  finally
-    AStore.EndScopeRead();
-    AStore.SetSerializationStyle(oldSS);
+    finally
+      AStore.EndScopeRead();
+      AStore.SetSerializationStyle(oldSS);
+    end;
   end;
 end;
 
@@ -1786,22 +1787,24 @@ begin
     itmName := AName;
   end;
   len := AStore.BeginArrayRead(AName,ATypeInfo, GetStyle(),itmName);
-  Try
-    If Not Assigned(AObject) Then
-      AObject := Create();
-    itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
-    nativObj := AObject as TBaseObjectArrayRemotable;
-    If ( len > 0 ) Then Begin
-      s := '';
-      nativObj.SetLength(len);
-      For i := 0 To Pred(len) Do Begin
-        itm := nativObj[i];
-        AStore.Get(itmTypInfo,s,itm);
+  if ( len > 0 ) then begin
+    Try
+      If Not Assigned(AObject) Then
+        AObject := Create();
+      itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+      nativObj := AObject as TBaseObjectArrayRemotable;
+      If ( len > 0 ) Then Begin
+        s := '';
+        nativObj.SetLength(len);
+        For i := 0 To Pred(len) Do Begin
+          itm := nativObj[i];
+          AStore.Get(itmTypInfo,s,itm);
+        End;
       End;
+    Finally
+      AStore.EndScopeRead();
     End;
-  Finally
-    AStore.EndScopeRead();
-  End;
+  end;
 end;
 
 class function TBaseObjectArrayRemotable.GetItemTypeInfo(): PTypeInfo;
@@ -3561,7 +3564,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(LongInt),(AObject as TComplexInt32SContentRemotable).Value);
 end;
 
-procedure TComplexInt32SContentRemotable.LoadValue(
+class procedure TComplexInt32SContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3575,7 +3578,7 @@ end;
 
 { TComplexInt32UContentRemotable }
 
-procedure TComplexInt32UContentRemotable.SaveValue(
+class procedure TComplexInt32UContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3583,7 +3586,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(LongWord),(AObject as TComplexInt32UContentRemotable).Value);
 end;
 
-procedure TComplexInt32UContentRemotable.LoadValue(
+class procedure TComplexInt32UContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3597,7 +3600,7 @@ end;
 
 { TComplexInt16SContentRemotable }
 
-procedure TComplexInt16SContentRemotable.SaveValue(
+class procedure TComplexInt16SContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3605,7 +3608,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(SmallInt),(AObject as TComplexInt16SContentRemotable).Value);
 end;
 
-procedure TComplexInt16SContentRemotable.LoadValue(
+class procedure TComplexInt16SContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3619,7 +3622,7 @@ end;
 
 { TComplexInt16UContentRemotable }
 
-procedure TComplexInt16UContentRemotable.SaveValue(
+class procedure TComplexInt16UContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3627,7 +3630,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Word),(AObject as TComplexInt16UContentRemotable).Value);
 end;
 
-procedure TComplexInt16UContentRemotable.LoadValue(
+class procedure TComplexInt16UContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3641,7 +3644,7 @@ end;
 
 { TComplexFloatExtendedContentRemotable }
 
-procedure TComplexFloatExtendedContentRemotable.SaveValue(
+class procedure TComplexFloatExtendedContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3649,7 +3652,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Extended),(AObject as TComplexFloatExtendedContentRemotable).Value);
 end;
 
-procedure TComplexFloatExtendedContentRemotable.LoadValue(
+class procedure TComplexFloatExtendedContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3663,7 +3666,7 @@ end;
 
 { TComplexFloatDoubleContentRemotable }
 
-procedure TComplexFloatDoubleContentRemotable.SaveValue(
+class procedure TComplexFloatDoubleContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3671,7 +3674,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Double),(AObject as TComplexFloatDoubleContentRemotable).Value);
 end;
 
-procedure TComplexFloatDoubleContentRemotable.LoadValue(
+class procedure TComplexFloatDoubleContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3794,9 +3797,8 @@ var
   end;
   
 var
-  s: string;
   d, m, y : Word;
-  hh, mn, ss, ssss : Word;
+  hh, mn, ss : Word;
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
@@ -3837,7 +3839,7 @@ begin
   FDay := d;
 end;
 
-procedure TBaseDateRemotable.Save(
+class procedure TBaseDateRemotable.Save(
         AObject   : TBaseRemotable;
         AStore    : IFormatterBase;
   const AName     : string;
@@ -3855,7 +3857,7 @@ begin
   end;
 end;
 
-procedure TBaseDateRemotable.Load(
+class procedure TBaseDateRemotable.Load(
   var AObject     : TObject;
       AStore      : IFormatterBase;
   var AName       : string;
@@ -3885,7 +3887,7 @@ end;
 
 { TComplexInt8SContentRemotable }
 
-procedure TComplexInt8SContentRemotable.SaveValue(
+class procedure TComplexInt8SContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3893,7 +3895,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(ShortInt),(AObject as TComplexInt8SContentRemotable).Value);
 end;
 
-procedure TComplexInt8SContentRemotable.LoadValue(
+class procedure TComplexInt8SContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3907,7 +3909,7 @@ end;
 
 { TComplexInt8UContentRemotable }
 
-procedure TComplexInt8UContentRemotable.SaveValue(
+class procedure TComplexInt8UContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3915,7 +3917,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Byte),(AObject as TComplexInt8UContentRemotable).Value);
 end;
 
-procedure TComplexInt8UContentRemotable.LoadValue(
+class procedure TComplexInt8UContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3929,7 +3931,7 @@ end;
 
 { TComplexFloatSingleContentRemotable }
 
-procedure TComplexFloatSingleContentRemotable.SaveValue(
+class procedure TComplexFloatSingleContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3937,7 +3939,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Single),(AObject as TComplexFloatSingleContentRemotable).Value);
 end;
 
-procedure TComplexFloatSingleContentRemotable.LoadValue(
+class procedure TComplexFloatSingleContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3951,7 +3953,7 @@ end;
 
 { TComplexInt64SContentRemotable }
 
-procedure TComplexInt64SContentRemotable.SaveValue(
+class procedure TComplexInt64SContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3959,7 +3961,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Int64),(AObject as TComplexInt64SContentRemotable).Value);
 end;
 
-procedure TComplexInt64SContentRemotable.LoadValue(
+class procedure TComplexInt64SContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3973,7 +3975,7 @@ end;
 
 { TComplexInt64UContentRemotable }
 
-procedure TComplexInt64UContentRemotable.SaveValue(
+class procedure TComplexInt64UContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -3981,7 +3983,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(QWord),(AObject as TComplexInt64UContentRemotable).Value);
 end;
 
-procedure TComplexInt64UContentRemotable.LoadValue(
+class procedure TComplexInt64UContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );
@@ -3995,7 +3997,7 @@ end;
 
 { TComplexBooleanContentRemotable }
 
-procedure TComplexBooleanContentRemotable.SaveValue(
+class procedure TComplexBooleanContentRemotable.SaveValue(
   AObject : TBaseRemotable;
   AStore  : IFormatterBase
 );
@@ -4003,7 +4005,7 @@ begin
   AStore.PutScopeInnerValue(TypeInfo(Boolean),(AObject as TComplexBooleanContentRemotable).Value);
 end;
 
-procedure TComplexBooleanContentRemotable.LoadValue(
+class procedure TComplexBooleanContentRemotable.LoadValue(
   var AObject : TObject;
       AStore  : IFormatterBase
 );

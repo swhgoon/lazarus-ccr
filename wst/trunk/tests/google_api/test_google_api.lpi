@@ -37,10 +37,10 @@
         <Filename Value="test_google_api.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_google_api"/>
-        <CursorPos X="54" Y="12"/>
-        <TopLine Value="12"/>
+        <CursorPos X="17" Y="11"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="154"/>
+        <UsageCount Value="155"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -49,7 +49,7 @@
         <UnitName Value="googlewebapi"/>
         <CursorPos X="47" Y="85"/>
         <TopLine Value="73"/>
-        <UsageCount Value="154"/>
+        <UsageCount Value="155"/>
       </Unit1>
       <Unit2>
         <Filename Value="googlewebapiimpunit.pas"/>
@@ -153,15 +153,17 @@
         <UnitName Value="indy_http_protocol"/>
         <CursorPos X="45" Y="166"/>
         <TopLine Value="156"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="70"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\ics_http_protocol.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ics_http_protocol"/>
-        <CursorPos X="3" Y="17"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="131"/>
+        <CursorPos X="8" Y="177"/>
+        <TopLine Value="166"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="132"/>
+        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="D:\Lazarus\others_package\ics\latest_distr\Delphi\Vc32\HttpProt.pas"/>
@@ -180,11 +182,9 @@
       <Unit20>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="35" Y="37"/>
-        <TopLine Value="33"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="15" Y="47"/>
+        <TopLine Value="36"/>
         <UsageCount Value="55"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="D:\Lazarus\fpcsrc\fcl\xml\dom.pp"/>
@@ -233,7 +233,7 @@
         <CursorPos X="36" Y="29"/>
         <TopLine Value="12"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -242,7 +242,7 @@
         <CursorPos X="3" Y="694"/>
         <TopLine Value="666"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
@@ -251,7 +251,7 @@
         <CursorPos X="3" Y="119"/>
         <TopLine Value="135"/>
         <EditorIndex Value="8"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -280,9 +280,7 @@
         <UnitName Value="googlewebapi_proxy"/>
         <CursorPos X="29" Y="64"/>
         <TopLine Value="47"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="72"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="73"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\v0.2\base_service_intf.pas"/>
@@ -301,9 +299,11 @@
       <Unit36>
         <Filename Value="..\..\synapse_http_protocol.pas"/>
         <UnitName Value="synapse_http_protocol"/>
-        <CursorPos X="3" Y="178"/>
-        <TopLine Value="134"/>
+        <CursorPos X="17" Y="25"/>
+        <TopLine Value="9"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit36>
       <Unit37>
         <Filename Value="D:\Lazarus\others_package\synapse\httpsend.pas"/>
@@ -359,7 +359,7 @@
         <CursorPos X="1" Y="498"/>
         <TopLine Value="139"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit44>
       <Unit45>
@@ -369,7 +369,7 @@
         <CursorPos X="23" Y="1"/>
         <TopLine Value="19"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit45>
       <Unit46>
@@ -377,21 +377,12 @@
         <CursorPos X="74" Y="13"/>
         <TopLine Value="1"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="None"/>
       </Unit46>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
-      <Position1>
-        <Filename Value="googlewebapi_proxy.pas"/>
-        <Caret Line="64" Column="29" TopLine="47"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\service_intf.pas"/>
-        <Caret Line="37" Column="35" TopLine="33"/>
-      </Position2>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

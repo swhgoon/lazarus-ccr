@@ -13,6 +13,9 @@
 unit base_soap_formatter;
 
 {$mode objfpc}{$H+}
+{$IF (FPC_VERSION = 2) and (FPC_RELEASE > 0)}
+  {$define FPC_211}
+{$ENDIF}
 
 interface
 
@@ -53,6 +56,7 @@ Type
 
   TStackItem = class
   private
+    FEmbeddedScopeCount: Integer;
     FNameSpace: string;
     FScopeObject: TDOMNode;
     FScopeType: TScopeType;
@@ -66,6 +70,10 @@ Type
     property ScopeType : TScopeType Read FScopeType;
     property NameSpace : string Read FNameSpace;
     property ItemsCount : Integer read GetItemsCount;
+
+    property EmbeddedScopeCount : Integer read FEmbeddedScopeCount;
+    function BeginEmbeddedScope() : Integer;
+    function EndEmbeddedScope() : Integer;
   End;
 
   { TObjectStackItem }
@@ -110,7 +118,7 @@ Type
     function CreateList(const ANodeName : string):TDOMNodeList;override;
   end;
 
-  TSOAPEncodingStyle = ( Encoded, Litteral );
+  TSOAPEncodingStyle = ( Encoded, Literal );
   TSOAPDocumentStyle = ( RPC, Document );
   
 {$M+}
@@ -369,6 +377,21 @@ begin
   FNameSpace := ANameSpace;
 end;
 
+function TStackItem.BeginEmbeddedScope(): Integer;
+begin
+  Inc(FEmbeddedScopeCount);
+  Result := FEmbeddedScopeCount;
+end;
+
+function TStackItem.EndEmbeddedScope(): Integer;
+begin
+  if ( FEmbeddedScopeCount < 1 ) then begin
+    raise Exception.Create('Invalid opération on scope, their are no embedded scope.');
+  end;
+  Dec(FEmbeddedScopeCount);
+  Result := FEmbeddedScopeCount;
+end;
+
 { TObjectStackItem }
 
 function TObjectStackItem.FindNode(var ANodeName: string): TDOMNode;
@@ -481,7 +504,7 @@ begin
     Inc(FHeaderEnterCount);
     Prepare();
     BeginScope(sHEADER,sSOAP_ENV,sSOAP_ENV_ABR,stObject,asNone);
-    SetStyleAndEncoding(Document,Litteral);
+    SetStyleAndEncoding(Document,Literal);
   end;
 end;
 
@@ -771,7 +794,6 @@ begin
   end else begin
     Error('Param or Attribute not found : "%s"',[AName]);
   end;
-  //WriteLn(StringOfChar(' ',FStack.Count), AName,' = ',Result);
 end;
 
 procedure TSOAPBaseFormatter.GetEnum(
@@ -994,9 +1016,9 @@ begin
     strNodeName := AName;
   end;
 
-  if ( AStyle = asScoped ) then begin
+  //if ( AStyle = asScoped ) then begin
     BeginScope(strNodeName,'','',stArray,AStyle);
-  end;
+  //end;
 
   if ( EncodingStyle = Encoded ) then begin
     //AddScopeAttribute(sXSI_TYPE,nmspc);
@@ -1060,35 +1082,41 @@ Var
   e : TDOMElement;
   hasNmspc, addAtt : Boolean;
 begin
-  scpStr := AScopeName;
-  hasNmspc := Not IsStrEmpty(ANameSpace);
-  If hasNmspc Then Begin
-    nsStr := FindAttributeByValueInScope(ANameSpace);
-    addAtt := IsStrEmpty(nsStr);
-    If addAtt Then Begin
-      If IsStrEmpty(ANameSpaceShortName) Then
-        nsStr := 'ns' + IntToStr(NextNameSpaceCounter())
-      Else
-        nsStr := Trim(ANameSpaceShortName);
-    End Else Begin
-      nsStr := Copy(nsStr,Succ(AnsiPos(':',nsStr)),MaxInt);
+  if ( AScopeType = stObject ) or
+     ( ( AScopeType = stArray ) and ( AStyle = asScoped ) )
+  then begin
+    scpStr := AScopeName;
+    hasNmspc := Not IsStrEmpty(ANameSpace);
+    If hasNmspc Then Begin
+      nsStr := FindAttributeByValueInScope(ANameSpace);
+      addAtt := IsStrEmpty(nsStr);
+      If addAtt Then Begin
+        If IsStrEmpty(ANameSpaceShortName) Then
+          nsStr := 'ns' + IntToStr(NextNameSpaceCounter())
+        Else
+          nsStr := Trim(ANameSpaceShortName);
+      End Else Begin
+        nsStr := Copy(nsStr,Succ(AnsiPos(':',nsStr)),MaxInt);
+      End;
+      scpStr := nsStr + ':' + scpStr;
     End;
-    scpStr := nsStr + ':' + scpStr;
-  End;
 
-  e := FDoc.CreateElement(scpStr);
-  If HasScope() Then
-    GetCurrentScopeObject().AppendChild(e)
-  Else
-    FDoc.AppendChild(e);
-  if ( AScopeType = stObject ) then begin
-    PushStack(e);
-  end else begin
-    PushStack(e,AStyle,'');
-  end;
-  if hasNmspc and addAtt then begin
-    e.SetAttribute('xmlns:'+nsStr,ANameSpace);
-    StackTop().SetNameSpace(ANameSpace);
+    e := FDoc.CreateElement(scpStr);
+    If HasScope() Then
+      GetCurrentScopeObject().AppendChild(e)
+    Else
+      FDoc.AppendChild(e);
+    if ( AScopeType = stObject ) then begin
+      PushStack(e);
+    end else begin
+      PushStack(e,AStyle,'');
+    end;
+    if hasNmspc and addAtt then begin
+      e.SetAttribute('xmlns:'+nsStr,ANameSpace);
+      StackTop().SetNameSpace(ANameSpace);
+    end;
+  end else if ( ( AScopeType = stArray ) and ( AStyle = asEmbeded ) ) then begin
+    StackTop().BeginEmbeddedScope();
   end;
 end;
 
@@ -1142,18 +1170,20 @@ begin
   end else begin
     locNode := stk.ScopeObject;
   end;
-  if not Assigned(locNode) then begin
-    Error('Scope not found : "%s"',[strNodeName]);
-  end;
-  if ( AScopeType = stObject ) then begin
-    PushStack(locNode);
+  
+  if ( locNode = nil ) then begin
+    Result := -1;
   end else begin
-    PushStack(locNode,AStyle,AItemName);
+    if ( AScopeType = stObject ) then begin
+      PushStack(locNode);
+    end else begin
+      PushStack(locNode,AStyle,AItemName);
+    end;
+    if ( Style = Document ) then begin
+      StackTop().SetNameSpace(nmspc);
+    end;
+    Result := StackTop().GetItemsCount();
   end;
-  if ( Style = Document ) then begin
-    StackTop().SetNameSpace(nmspc);
-  end;
-  Result := StackTop().GetItemsCount();
 end;
 
 procedure TSOAPBaseFormatter.SetSerializationStyle(const ASerializationStyle: TSerializationStyle);
@@ -1230,7 +1260,7 @@ var
   locName : string;
   chdLst : TDOMNodeList;
 begin
-  SetStyleAndEncoding(Document,Litteral);
+  SetStyleAndEncoding(Document,Literal);
   try
     Result := StackTop().ItemsCount;
     if ( Result > 0 ) then begin
@@ -1287,7 +1317,11 @@ end;
 procedure TSOAPBaseFormatter.EndScope();
 begin
   CheckScope();
-  FStack.Pop().Free();
+  if ( StackTop().EmbeddedScopeCount = 0 ) then begin
+    FStack.Pop().Free();
+  end else begin
+    StackTop().EndEmbeddedScope();
+  end;
 end;
 
 procedure TSOAPBaseFormatter.AddScopeAttribute(const AName, AValue: string);
@@ -1641,7 +1675,7 @@ end;
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
-    Result := TDOMNodeList.Create(ScopeObject,ANodeName);
+    Result := {$IFNDEF FPC_211}TDOMNodeList{$ELSE}TDOMElementList{$ENDIF}.Create(ScopeObject,ANodeName);
   end else begin
     Result := nil;
   end;

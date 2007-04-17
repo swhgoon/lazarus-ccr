@@ -163,9 +163,10 @@ begin
   AResponse.CopyFrom(FConnection.Document,0);
   FConnection.Clear();
 {$IFDEF WST_DBG}
-  TMemoryStream(AResponse).SaveToFile('log.log');
+  TMemoryStream(ARequest).SaveToFile('request.log');
   SetLength(s,AResponse.Size);
   Move(TMemoryStream(AResponse).Memory^,s[1],Length(s));
+  TMemoryStream(AResponse).SaveToFile('response.log');
   if IsConsole then
     WriteLn(s)
   else

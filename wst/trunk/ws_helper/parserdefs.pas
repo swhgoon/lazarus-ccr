@@ -255,6 +255,8 @@ Type
     property Properties[const Index : Integer] : TPropertyDefinition read GetProperty;
   end;
 
+  TClassTypeDefinitionClass = class of TClassTypeDefinition;
+
   TNativeClassTypeDefinition = class(TClassTypeDefinition)
   end;
   
@@ -565,7 +567,7 @@ function TMethodDefinition.AddParameter(
         ADataType     : TTypeDefinition
 ): TParameterDefinition;
 begin
-  If ( GetParameterIndex(Name) = -1 ) Then Begin
+  If ( GetParameterIndex(AName) = -1 ) Then Begin
     Result := TParameterDefinition.Create(AName,AModifier,ADataType);
     FParameterList.Add(Result);
   End Else Begin
@@ -1182,10 +1184,15 @@ function CreateWstInterfaceSymbolTable() : TSymbolTable;
   function AddClassDef(
           ATable      : TSymbolTable;
     const AClassName,
-          AParentName : string
+          AParentName : string;
+    const AClassType  : TClassTypeDefinition = nil
   ):TClassTypeDefinition;
   begin
-    Result := TClassTypeDefinition.Create(AClassName);
+    if Assigned(AClassType) then begin
+      Result := AClassType.Create(AClassName);
+    end else begin
+      Result := TClassTypeDefinition.Create(AClassName);
+    end;
     if not IsStrEmpty(AParentName) then
       Result.SetParent(ATable.ByName(AParentName) as TClassTypeDefinition);
     ATable.Add(Result);

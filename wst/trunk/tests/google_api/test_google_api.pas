@@ -13,11 +13,11 @@ uses
 
 Const
   //sADRESS = 'http:Address=http://api.google.com/search/beta2;Proxy';
-  sADDRESS  = 'http:Address=http://api.google.com/search/beta2'+
-              ';ProxyServer=10.0.0.5;ProxyPort=8080';
+  sADDRESS  = 'http:Address=http://api.google.com/search/beta2';//+
+              //';ProxyServer=10.0.0.5;ProxyPort=8080';
   sTARGET = 'urn:GoogleSearch';
-  sKEY    = '<your key here>';
-  sSERVICE_PROTOCOL = 'SOAP';
+  sKEY    = '0w9pU3tQFHJyjRUP/bKgv2qwCoXf5pop';//'<your key here>';
+  sSERVICE_PROTOCOL = 'SOAP:style=rpc';
 Var
   tmpObj : IGoogleSearch;
   qryRes : TGoogleSearchResult;

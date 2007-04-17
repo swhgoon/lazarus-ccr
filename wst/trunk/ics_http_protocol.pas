@@ -14,12 +14,12 @@ unit ics_http_protocol;
 
 {$mode objfpc}{$H+}
 
-//{$DEFINE WST_DBG}
+{$DEFINE WST_DBG}
 
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, {$IFDEF WST_DBG}Dialogs,{$ENDIF}
   service_intf, imp_utils, base_service_intf,
   HttpProt;
 
@@ -174,7 +174,7 @@ begin
   ARequest.Position := 0;
   SetLength(s,ARequest.Size);
   ARequest.Read(s[1],ARequest.Size);
-  WriteLn(s);
+  TMemoryStream(AResponse).SaveToFile('request.log');
   ARequest.Position := i;
   {$ENDIF WST_DBG}
 
@@ -183,10 +183,15 @@ begin
   FConnection.Post();
 
   {$IFDEF WST_DBG}
+  TMemoryStream(AResponse).SaveToFile('request.log');
   i := AResponse.Position;
   SetLength(s,AResponse.Size);
-  AResponse.Read(s[1],AResponse.Size);TMemoryStream(AResponse).SaveToFile('E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log');
-  WriteLn(s);
+  AResponse.Read(s[1],AResponse.Size);
+  TMemoryStream(AResponse).SaveToFile('response.log');
+  if IsConsole then
+    WriteLn(s)
+  else
+    ShowMessage(s);
   {$ENDIF WST_DBG}
 end;
 

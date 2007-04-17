@@ -146,6 +146,7 @@ type
     FDecStream : ISourceStream;
     FImpStream : ISourceStream;
     FImpTempStream : ISourceStream;
+    FImpLastStream : ISourceStream;
   private
     function GenerateIntfName(AIntf : TInterfaceDefinition):string;
 
@@ -1292,7 +1293,8 @@ begin
   NewLine();
   NewLine();
   FImpTempStream.NewLine();
-  FImpTempStream.WriteLn('End.');
+  FImpLastStream.NewLine();
+  FImpLastStream.WriteLn('End.');
 end;
 
 procedure TInftGenerator.GenerateIntf(AIntf: TInterfaceDefinition);
@@ -1382,7 +1384,7 @@ end;
 
 procedure TInftGenerator.GenerateClass(ASymbol: TClassTypeDefinition);
 var
-  locClassPropNbr, locStoredPropsNbr : Integer;
+  locClassPropNbr, locStoredPropsNbr, locArrayPropsNbr : Integer;
   loc_BaseComplexSimpleContentRemotable : TClassTypeDefinition;
   
   procedure Prepare();
@@ -1392,13 +1394,17 @@ var
   begin
     locClassPropNbr   := 0;
     locStoredPropsNbr := 0;
+    locArrayPropsNbr  := 0;
     for k := 0 to Pred(ASymbol.PropertyCount) do begin
       p := ASymbol.Properties[k];
       if ( p.StorageOption = soOptional ) then
         Inc(locStoredPropsNbr);
       if p.DataType.InheritsFrom(TClassTypeDefinition) then
         Inc(locClassPropNbr);
+      if p.DataType.InheritsFrom(TArrayDefinition) then
+        Inc(locArrayPropsNbr);
     end;
+    locClassPropNbr := locClassPropNbr + locArrayPropsNbr;
   end;
   
   procedure WriteDec();
@@ -1440,12 +1446,12 @@ var
     Indent();
     WriteLn('property %s : %s read F%s write F%s%s;',[propName,AProp.DataType.Name,propName,propName,locStore]);
     if not AnsiSameText(AProp.Name,AProp.ExternalName) then begin
-      FImpTempStream.Indent();
-      FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(AProp.Name),QuotedStr(AProp.ExternalName)]);
+      FImpLastStream.Indent();
+      FImpLastStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(AProp.Name),QuotedStr(AProp.ExternalName)]);
     end;
-    if AProp.IsAttribute and ( not ASymbol.IsDescendantOf(loc_BaseComplexSimpleContentRemotable) ) then begin
-      FImpTempStream.Indent();
-      FImpTempStream.WriteLn('%s.RegisterAttributeProperty(%s);',[ASymbol.Name,QuotedStr(AProp.Name)]);
+    if AProp.IsAttribute then begin
+      FImpLastStream.Indent();
+      FImpLastStream.WriteLn('%s.RegisterAttributeProperty(%s);',[ASymbol.Name,QuotedStr(AProp.Name)]);
     end;
   end;
 
@@ -1478,12 +1484,19 @@ var
         DecIndent();
       end;
       //
-      if ( locClassPropNbr > 0 ) then begin
+      if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) then begin
         Indent();
         WriteLn('public');
+      end;
+      if ( locArrayPropsNbr > 0 ) then begin
         IncIndent();
-          Indent();
-          WriteLn('destructor Destroy();override;');
+          Indent(); WriteLn('constructor Create();override;');
+        DecIndent();
+      end;
+
+      if ( locClassPropNbr > 0 ) then begin
+        IncIndent();
+          Indent(); WriteLn('destructor Destroy();override;');
         DecIndent();
       end;
       //
@@ -1505,6 +1518,24 @@ var
       NewLine();
       WriteLn('{ %s }',[ASymbol.Name]);
       
+      if ( locArrayPropsNbr > 0 ) then begin
+        NewLine();
+        WriteLn('constructor %s.Create();',[ASymbol.Name]);
+        WriteLn('begin');
+        IncIndent();
+          Indent();
+          WriteLn('inherited Create();');
+          for k := 0 to Pred(ASymbol.PropertyCount) do begin
+            p := ASymbol.Properties[k];
+            if p.DataType.InheritsFrom(TArrayDefinition) then begin
+              Indent();
+              WriteLn('F%s := %s.Create();',[p.Name,p.DataType.Name]);
+            end;
+          end;
+        DecIndent();
+        WriteLn('end;');
+      end;
+
       if ( locClassPropNbr > 0 ) then begin
         NewLine();
         WriteLn('destructor %s.Destroy();',[ASymbol.Name]);
@@ -1526,7 +1557,7 @@ var
         DecIndent();
         WriteLn('end;');
       end;
-
+      
       if ( locStoredPropsNbr > 0 ) then begin
         for k := 0 to Pred(ASymbol.PropertyCount) do begin
           p := ASymbol.Properties[k];
@@ -1819,8 +1850,17 @@ procedure TInftGenerator.GenerateCustomMetadatas();
         IncIndent();
           Indent(); WriteLn('%s,',[sUNIT_NAME]);
           Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
-          Indent(); WriteLn('%s,',[QuotedStr('SoapStyle')]);
+          Indent(); WriteLn('%s,',[QuotedStr('SoapDocumentStyle')]);
           Indent(); WriteLn('%s' ,[QuotedStr('rpc')]);
+        DecIndent();
+      Indent();WriteLn(');');
+    end else if ( AIntf.BindingStyle = bsDocument ) then begin
+      Indent();WriteLn('mm.SetServiceCustomData(');
+        IncIndent();
+          Indent(); WriteLn('%s,',[sUNIT_NAME]);
+          Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
+          Indent(); WriteLn('%s,',[QuotedStr('SoapDocumentStyle')]);
+          Indent(); WriteLn('%s' ,[QuotedStr('document')]);
         DecIndent();
       Indent();WriteLn(');');
     end;
@@ -1867,7 +1907,9 @@ begin
   FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
   FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
   FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
+  FImpLastStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_last');
   FImpTempStream.IncIndent();
+  FImpLastStream.IncIndent();
 end;
 
 procedure TInftGenerator.Execute();
@@ -1967,7 +2009,7 @@ begin
     GenerateCustomMetadatas();
     
     GenerateUnitImplementationFooter();
-    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FImpTempStream]);
+    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FImpTempStream,FImpLastStream]);
     FDecStream := nil;
     FImpStream := nil;
     FImpTempStream := nil;

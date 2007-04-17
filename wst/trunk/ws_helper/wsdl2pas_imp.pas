@@ -797,11 +797,22 @@ function TWsdlParser.ParseOperation(
               if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then begin
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               end;
+              if SameText(s_document,ASoapBindingStyle) and
+                 AnsiSameText(prmTypeType,s_element)
+              then begin
+                prmName := ExtractNameFromQName(prmTypeName);
+              end;
               prmInternameName := Trim(prmName);
-              prmHasInternameName := IsReservedKeyWord(prmInternameName) or ( not IsValidIdent(prmInternameName) );
+              if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
+                prmInternameName := prmInternameName + 'Param';
+              end;
+              prmHasInternameName := IsReservedKeyWord(prmInternameName) or
+                                     ( not IsValidIdent(prmInternameName) ) or
+                                     ( tmpMthd.GetParameterIndex(prmInternameName) >= 0 );
               if prmHasInternameName then begin
                 prmInternameName := '_' + prmInternameName;
               end;
+              prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
               prmTypeDef := GetDataType(prmTypeName,prmTypeType);
               prmDef := tmpMthd.AddParameter(prmInternameName,pmConst,prmTypeDef);
               if prmHasInternameName then begin
@@ -859,11 +870,23 @@ function TWsdlParser.ParseOperation(
               prmTypeType := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeName;
               if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+              if SameText(s_document,ASoapBindingStyle) and
+                 AnsiSameText(prmTypeType,s_element)
+              then begin
+                prmName := ExtractNameFromQName(prmTypeName);
+              end;
               prmInternameName := Trim(prmName);
-              prmHasInternameName := IsReservedKeyWord(prmInternameName) or ( not IsValidIdent(prmInternameName) );
+              if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
+                prmInternameName := prmInternameName + 'Param';
+              end;
+              //prmHasInternameName := IsReservedKeyWord(prmInternameName) or ( not IsValidIdent(prmInternameName) );
+              prmHasInternameName := IsReservedKeyWord(prmInternameName) or
+                                     ( not IsValidIdent(prmInternameName) ) or
+                                     ( tmpMthd.GetParameterIndex(prmInternameName) >= 0 );
               if prmHasInternameName then
                 prmInternameName := '_' + prmInternameName;
-              prmDef := tmpMthd.FindParameter(prmName);
+              prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
+              prmDef := tmpMthd.FindParameter(prmInternameName);//(prmName);
               if ( prmDef = nil ) then begin
                 prmDef := tmpMthd.AddParameter(prmInternameName,pmOut,GetDataType(prmTypeName,prmTypeType));
                 if prmHasInternameName then begin
@@ -1012,11 +1035,15 @@ var
       FreeAndNil(locParser);
     end;
   end;
-  
+
+var
+  frwType : TTypeDefinition;
 begin
   embededType := False;
+  Result := nil;
   Result := FSymbols.Find(ExtractNameFromQName(AName),TTypeDefinition) as TTypeDefinition;
   if ( not Assigned(Result) ) or ( Result is TForwardTypeDefinition ) then begin
+    frwType := Result;
     Result := nil;
     Init();
     FindTypeNode();
@@ -1025,8 +1052,12 @@ begin
     end else if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_simpleType) then begin
       Result := ParseSimpleType();
     end;
-    if Assigned(Result) then
+    if Assigned(Result) then begin
+      if Assigned(frwType) and AnsiSameText(Result.ExternalName,frwType.ExternalName) then begin
+        TTypeDefinitionCrack(Result).SetName(frwType.Name);
+      end;
       FSymbols.Add(Result);
+    end;
   end;
 end;
 
@@ -1121,9 +1152,9 @@ procedure TWsdlParser.Parse(const AMode : TParserMode);
               sym := FSymbols[i];
               if ( sym is TForwardTypeDefinition ) then begin
                 typeCursor.Reset();
-                tmpNode := FindNamedNode(typeCursor,sym.Name);
+                tmpNode := FindNamedNode(typeCursor,sym.ExternalName);
                 if Assigned(tmpNode) then begin
-                  ParseType(sym.Name,ExtractNameFromQName(tmpNode.NodeName));
+                  ParseType(sym.ExternalName,ExtractNameFromQName(tmpNode.NodeName));
                   Dec(i);
                   c := FSymbols.Count;
                 end else begin
@@ -1402,7 +1433,7 @@ begin
     if not locCrs.MoveNext() then
       raise EWslParserException.CreateFmt('Invalid extention/restriction of type "%s" : "base" attribute not found.',[FTypeName]);
     locBaseTypeName := ExtractNameFromQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
-    locSymbol := FSymbols.Find(locBaseTypeName);//,TClassTypeDefinition);
+    locSymbol := FSymbols.Find(locBaseTypeName);
     if Assigned(locSymbol) then begin
       if locSymbol.InheritsFrom(TTypeDefinition) then begin
         FBaseType := locSymbol as TTypeDefinition;
@@ -1430,18 +1461,23 @@ end;
 
 function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TTypeDefinition;
 
-  function ExtractElementCursor():IObjectCursor;
+  function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
   var
     frstCrsr, tmpCursor : IObjectCursor;
     parentNode, tmpNode : TDOMNode;
   begin
     Result := nil;
+    AAttCursor := nil;
     case FDerivationMode of
       dmNone          : parentNode := FContentNode;
       dmRestriction,
       dmExtension     : parentNode := FDerivationNode;
     end;
     if parentNode.HasChildNodes() then begin;
+      AAttCursor := CreateCursorOn(
+                     CreateChildrenCursor(parentNode,cetRttiNode),
+                     ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FOwner.FXSShortNames),TDOMNodeRttiExposer)
+                   );
       frstCrsr := CreateChildrenCursor(parentNode,cetRttiNode);
       tmpCursor := CreateCursorOn(
                      frstCrsr.Clone() as IObjectCursor,
@@ -1538,10 +1574,20 @@ var
     if IsStrEmpty(locTypeName) then
       raise EWslParserException.Create('Invalid <element> definition : empty "type".');
     locType := FSymbols.Find(locTypeName);
-    if not Assigned(locType) then begin
+    if Assigned(locType) then begin
+      if locIsRefElement then begin
+        locTypeInternalName := locTypeName;
+        locTypeInternalName := locTypeInternalName + '_Type';
+        TTypeDefinitionCrack(locType).SetName(locTypeInternalName);
+      end;
+    end else begin
       locTypeInternalName := locTypeName;
-      if IsReservedKeyWord(locTypeInternalName) then
+      if locIsRefElement then begin
+        locTypeInternalName := locTypeInternalName + '_Type';
+      end;
+      if IsReservedKeyWord(locTypeInternalName) then begin
         locTypeInternalName := '_' + locTypeInternalName;
+      end;
       locType := TForwardTypeDefinition.Create(locTypeInternalName);
       if not AnsiSameText(locTypeInternalName,locTypeName) then
         locType.RegisterExternalAlias(locTypeName);
@@ -1587,6 +1633,9 @@ var
     isArrayDef := locMaxOccurUnbounded or ( locMaxOccur > 1 );
     if isArrayDef then begin
       arrayItems.Add(locProp);
+    end;
+    if AnsiSameText(s_attribute,ExtractNameFromQName(AElement.NodeName)) then begin
+      locProp.IsAttribute := True;
     end;
   end;
   
@@ -1683,23 +1732,18 @@ var
   end;
   
 var
-  eltCrs : IObjectCursor;
+  eltCrs, eltAttCrs : IObjectCursor;
   internalName : string;
   hasInternalName : Boolean;
   arrayDef : TArrayDefinition;
-  propTyp : TPropertyDefinition;
+  propTyp, tmpPropTyp : TPropertyDefinition;
   tmpClassDef : TClassTypeDefinition;
   i : Integer;
 begin
   ExtractBaseType();
-  eltCrs := ExtractElementCursor();
+  eltCrs := ExtractElementCursor(eltAttCrs);
   
   internalName := ExtractIdentifier(ATypeName);
-{  while IsReservedKeyWord(internalName) or ( FSymbols.IndexOf(internalName) <> -1 ) do begin
-    internalName := Format('_%s',[internalName]);
-  end;
-  hasInternalName := ( not AnsiSameText(internalName,ATypeName) );
-}
   hasInternalName := IsReservedKeyWord(internalName) or
                      ( not IsValidIdent(internalName) ) or
                      //( FSymbols.IndexOf(internalName) <> -1 ) or
@@ -1726,17 +1770,24 @@ begin
             (FSymbols.ByName('base_service_intf') as TSymbolTable)
             .ByName('TBaseComplexRemotable') as TClassTypeDefinition
           );
-        if Assigned(eltCrs) then begin
+        if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
-          eltCrs.Reset();
-          while eltCrs.MoveNext() do begin
-            ParseElement((eltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+          if Assigned(eltCrs) then begin
+            eltCrs.Reset();
+            while eltCrs.MoveNext() do begin
+              ParseElement((eltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+            end;
+          end;
+          if Assigned(eltAttCrs) then begin
+            eltAttCrs.Reset();
+            while eltAttCrs.MoveNext() do begin
+              ParseElement((eltAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+            end;
           end;
           if ( arrayItems.Count > 0 ) then begin
             if ( arrayItems.Count = 1 ) and ( classDef.PropertyCount = 1 ) then begin
               Result := nil;
               propTyp := arrayItems[0] as TPropertyDefinition;
-              //arrayDef := TArrayDefinition.Create(internalName,(arrayItemType as TTypeDefinition),arrayItemName);
               arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name,propTyp.ExternalName,asScoped);
               FreeAndNil(classDef);
               Result := arrayDef;
@@ -1753,7 +1804,10 @@ begin
               for i := 0 to Pred(tmpClassDef.PropertyCount) do begin
                 propTyp := tmpClassDef.Properties[i];
                 if ( arrayItems.IndexOf(propTyp) = -1 ) then begin
-                  classDef.AddProperty(propTyp.Name,propTyp.DataType);
+                  tmpPropTyp := classDef.AddProperty(propTyp.Name,propTyp.DataType);
+                  tmpPropTyp.IsAttribute := propTyp.IsAttribute;
+                  tmpPropTyp.StorageOption := propTyp.StorageOption;
+                  tmpPropTyp.RegisterExternalAlias(propTyp.ExternalName);
                 end else begin
                   classDef.AddProperty(
                     propTyp.Name,
