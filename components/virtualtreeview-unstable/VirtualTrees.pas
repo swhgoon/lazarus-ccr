@@ -12567,7 +12567,8 @@ begin
           else
           begin
             Brush.Color := Self.Color;
-            Logger.Send([lcPaintDetails],'Setting the color of a NOT selected node - Brush.Color',Brush.Color);
+            Logger.SendColor([lcPaintDetails],'Setting the color of a NOT selected node - Brush.Color',Brush.Color);
+            Logger.Send([lcPaintDetails],'Clearing rectangle (R)',R);
             FillRect(R);
           end;
         end;
@@ -20437,7 +20438,7 @@ end;
 
 procedure TBaseVirtualTree.DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer);
 
-// Draws a horizontal line with alternating pixels (this style is not supported for pens under Win9x).
+// Draws a vertical line with alternating pixels (this style is not supported for pens under Win9x).
 
 var
   R: TRect;
@@ -22434,9 +22435,9 @@ begin
       Logger.Send([lcPaintDetails],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
 
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
-      Logger.Active:=Logger.CalledBy('DoDragging');
+      //Logger.Active:=Logger.CalledBy('DoDragging');
       PaintTree(Canvas, Window, Target, Options);
-      Logger.Active:=True;
+      //Logger.Active:=True;
     end
     else
     begin
@@ -27627,11 +27628,18 @@ begin
                 PaintInfo.PaintOptions := PaintOptions;
                 Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // The node background can contain a single color, a bitmap or can be drawn by the application.
+                {$ifdef Windows}
                 ClearNodeBackground(PaintInfo, UseBackground, True, Rect(Window.Left, TargetRect.Top, Window.Right,
                   TargetRect.Bottom));
+                {$else}
+                ClearNodeBackground(PaintInfo, UseBackground, True, Rect(0, TargetRect.Top, Window.Right - Window.Left,
+                  TargetRect.Bottom));
+                {$endif}
+                Logger.SendBitmap([lcPaintBitmap],'After Clear BackGround',NodeBitmap);
                 Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // Prepare column, position and node clipping rectangle.
                 PaintInfo.CellRect := R;
+                Logger.Send([lcPaintDetails],'PaintInfo.CellRect',PaintInfo.CellRect);
                 if UseColumns then
                   InitializeFirstColumnValues(PaintInfo);
 
@@ -27857,7 +27865,7 @@ begin
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
-                  BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle, Window.Left, 0, SRCCOPY);
+                  BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle,{$ifdef Windows} Window.Left {$else} 0{$endif}, 0, SRCCOPY);
               end;
             end;
 
