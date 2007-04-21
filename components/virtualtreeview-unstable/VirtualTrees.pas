@@ -27612,7 +27612,8 @@ begin
                   // Avoid that the VCL copies the bitmap while changing its height.
                   Height := 0;
                   Height := PaintInfo.Node.NodeHeight;
-                  SetWindowOrgEx(Canvas.Handle, Window.Left, 0, nil);
+                  //Workaround to LCL bug 8626
+                  SetWindowOrgEx(Canvas.Handle, {$ifndef Windows}-{$endif}Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
@@ -27628,13 +27629,8 @@ begin
                 PaintInfo.PaintOptions := PaintOptions;
                 Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // The node background can contain a single color, a bitmap or can be drawn by the application.
-                {$ifdef Windows}
                 ClearNodeBackground(PaintInfo, UseBackground, True, Rect(Window.Left, TargetRect.Top, Window.Right,
                   TargetRect.Bottom));
-                {$else}
-                ClearNodeBackground(PaintInfo, UseBackground, True, Rect(0, TargetRect.Top, Window.Right - Window.Left,
-                  TargetRect.Bottom));
-                {$endif}
                 Logger.SendBitmap([lcPaintBitmap],'After Clear BackGround',NodeBitmap);
                 Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
                 // Prepare column, position and node clipping rectangle.
@@ -27865,7 +27861,7 @@ begin
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
-                  BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle,{$ifdef Windows} Window.Left {$else} 0{$endif}, 0, SRCCOPY);
+                  BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle, Window.Left, 0, SRCCOPY);
               end;
             end;
 
