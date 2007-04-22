@@ -439,7 +439,7 @@ function TAbstractArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
   EnsureListCreated();
   if ( FIndex >= FItemList.Count ) then
-    raise ESOAPException.CreateFmt('Index out of bound : %d; Node Name = "%s"',[FIndex,ANodeName]);
+    raise ESOAPException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
   Inc(FIndex);
   ANodeName := Result.NodeName;

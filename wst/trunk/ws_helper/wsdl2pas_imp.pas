@@ -1812,7 +1812,7 @@ begin
                   classDef.AddProperty(
                     propTyp.Name,
                     FSymbols.ByName(Format('%s_%sArray',[internalName,propTyp.Name])) as TTypeDefinition
-                  );
+                  ).RegisterExternalAlias(propTyp.ExternalName);
                 end;
               end;
               FreeAndNil(tmpClassDef);
