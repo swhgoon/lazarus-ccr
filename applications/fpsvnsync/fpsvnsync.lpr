@@ -301,8 +301,6 @@ begin
     CommitChanges;
 
     writeln;
-    //break;
-    //if Revision>10670 then break;
   end;
 
   XmlOutput.Free;
