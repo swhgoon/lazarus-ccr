@@ -1860,7 +1860,6 @@ TBaseVirtualTree = class(TCustomControl)
     FTotalInternalDataSize: Cardinal;            // Cache of the sum of the necessary internal data size for all tree
                                                  // classes derived from this base class.
     FPanningWindow: TVirtualPanningWindow;       // Helper window for wheel panning
-    FPanningCursor: HCURSOR;                     // Current wheel panning cursor.
     FLastClickPos: TPoint;                       // Used for retained drag start and wheel mouse scrolling.
 
     {$ifdef EnableAccessible}
@@ -23287,9 +23286,7 @@ begin
 
     FPanningWindow.Stop;
 
-    DeleteObject(FPanningCursor);
-    FPanningCursor := 0;
-    LCLIntf.SetCursor(Screen.Cursors[Cursor]);
+    Cursor := crDefault;
   end;
 end;
 
