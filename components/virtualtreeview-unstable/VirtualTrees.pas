@@ -232,6 +232,18 @@ const
 
   // Header standard split cursor.
   crHeaderSplit = TCursor(63);
+  //Panning Cursors
+  crVT_MOVEALL = TCursor(64);
+  crVT_MOVEEW = TCursor(65);
+  crVT_MOVENS = TCursor(66);
+  crVT_MOVENW = TCursor(67);
+  crVT_MOVESW = TCursor(68);
+  crVT_MOVENE = TCursor(69);
+  crVT_MOVESE = TCursor(70);
+  crVT_MOVEW = TCursor(71);
+  crVT_MOVEE = TCursor(72);
+  crVT_MOVEN = TCursor(73);
+  crVT_MOVES = TCursor(74);
 
   UtilityImageSize = 16; // Needed by descendants for hittests.
 
@@ -2015,6 +2027,8 @@ TBaseVirtualTree = class(TCustomControl)
     function IsFirstVisibleChild(Parent, Node: PVirtualNode): Boolean;
     function IsLastVisibleChild(Parent, Node: PVirtualNode): Boolean;
     procedure LimitPaintingToArea(Canvas: TCanvas; ClipRect: TRect; VisibleRegion: HRGN = 0);
+    //lcl
+    procedure LoadPanningCursors;
     function MakeNewNode: PVirtualNode;
     function PackArrayAsm(TheArray: TNodeArray; Count: Integer): Integer;
     function PackArray(TheArray: TNodeArray; Count: Integer): Integer;
@@ -2127,7 +2141,6 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMRButtonDblClk(var Message: TLMRButtonDblClk); message LM_RBUTTONDBLCLK;
     procedure WMRButtonDown(var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
-    procedure WMSetCursor(var Message: TLMessage); message LM_SETCURSOR;
     procedure WMSetFocus(var Msg: TLMSetFocus); message LM_SETFOCUS;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMTimer(var Message: TLMTimer); message LM_TIMER;
@@ -10591,7 +10604,6 @@ var
 
 begin
   Result := False;
-  {$ifdef EnableHeader}
   case Message.Msg of
     LM_SIZE:
       begin
@@ -10835,8 +10847,11 @@ begin
         
         P:=Point(XPos,YPos);
         //P := Treeview.ScreenToClient(Point(XPos, YPos));
+        //todo: see if OnHeaderMouseMove is fired even if not inside header
         Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y + Integer(FHeight));
-        if InHeader(P) and ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
+        if not InHeader(P) then
+          Exit;
+        if ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
         begin
           // We need a mouse leave detection from here for the non client area. The best solution available would be the
           // TrackMouseEvent API. Unfortunately, it leaves Win95 totally and WinNT4 for non-client stuff out and
@@ -10852,7 +10867,39 @@ begin
             YPos := P.y + Integer(FHeight);
             Application.HintMouseMessage(Treeview, Message);
           end;
+        end;
+        //Adjust Cursor
+        if FStates = [] then
+        begin
+          //lcl: The code above already did these checks
+          {
+          // Retrieve last cursor position (GetMessagePos does not work here, I don't know why).
+          GetCursorPos(P);
+          // Is the mouse in the header rectangle?
+          P := Treeview.ScreenToClient(P);
+          if InHeader(P) then
+          }
+          //todo: see a way to store the  user defined cursor.
+          NewCursor := crDefault;
+          if hoColumnResize in FOptions then
+          begin
+            if DetermineSplitterIndex(P) then
+              NewCursor := crHeaderSplit;
+
+            Treeview.DoGetHeaderCursor(NewCursor);
+            if NewCursor <> crDefault then
+            begin
+              Treeview.Cursor := NewCursor;
+              HandleMessage := True;
+              Message.Result := 1;
+            end;
+          end;
         end
+        else
+        begin
+          Message.Result := 1;
+          HandleMessage := True;
+        end;
       end;
 
     LM_TIMER:
@@ -10874,42 +10921,6 @@ begin
             Invalidate(nil);
           end;
         end;
-      end;
-
-    //todo
-    {
-    LM_MOUSEMOVE: // mouse capture and general message redirection
-      Result := HandleHeaderMouseMove(TLMMouseMove(Message));
-    }
-    LM_SETCURSOR:
-      if FStates = [] then
-      begin
-        // Retrieve last cursor position (GetMessagePos does not work here, I don't know why).
-        GetCursorPos(P);
-        // Is the mouse in the header rectangle?
-        P := Treeview.ScreenToClient(P);
-        if InHeader(P) then
-        begin
-          NewCursor := Screen.Cursors[Treeview.Cursor];
-          if hoColumnResize in FOptions then
-          begin
-            if DetermineSplitterIndex(P) then
-              NewCursor := Screen.Cursors[crHeaderSplit];
-
-            Treeview.DoGetHeaderCursor(NewCursor);
-            Result := NewCursor <> Screen.Cursors[crDefault];
-            if Result then
-            begin
-              LclIntf.SetCursor(NewCursor);
-              Message.Result := 1;
-            end
-          end;
-        end;
-      end
-      else
-      begin
-        Message.Result := 1;
-        Result := True;
       end;
     LM_KEYDOWN,
     LM_KILLFOCUS:
@@ -10936,7 +10947,6 @@ begin
           end;
       end;
   end;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11731,9 +11741,6 @@ begin
   FIncrementalSearch := isNone;
   FClipboardFormats := TClipboardFormats.Create(Self);
   FOptions := GetOptionsClass.Create(Self);
-  //lcl
-  FPanningWindow:= TVirtualPanningWindow.Create;
-
   {$ifdef UseLocalMemoryManager}
     FNodeMemoryManager := TVTNodeMemoryManager.Create;
   {$endif UseLocalMemoryManager}
@@ -13450,6 +13457,26 @@ begin
   DeleteObject(ClipRegion);
 end;
 
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TBaseVirtualTree.LoadPanningCursors;
+
+begin
+  with Screen do
+  begin
+    Cursors[crVT_MOVEALL]:=LoadCursorFromLazarusResource('VT_MOVEALL');
+    Cursors[crVT_MOVEEW]:=LoadCursorFromLazarusResource('VT_MOVEEW');
+    Cursors[crVT_MOVENS]:=LoadCursorFromLazarusResource('VT_MOVENS');
+    Cursors[crVT_MOVENW]:=LoadCursorFromLazarusResource('VT_MOVENW');
+    Cursors[crVT_MOVESW]:=LoadCursorFromLazarusResource('VT_MOVESW');
+    Cursors[crVT_MOVESE]:=LoadCursorFromLazarusResource('VT_MOVESE');
+    Cursors[crVT_MOVENE]:=LoadCursorFromLazarusResource('VT_MOVENE');
+    Cursors[crVT_MOVEW]:=LoadCursorFromLazarusResource('VT_MOVEW');
+    Cursors[crVT_MOVEE]:=LoadCursorFromLazarusResource('VT_MOVEE');
+    Cursors[crVT_MOVEN]:=LoadCursorFromLazarusResource('VT_MOVEN');
+    Cursors[crVT_MOVES]:=LoadCursorFromLazarusResource('VT_MOVES');
+  end;
+end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.MakeNewNode: PVirtualNode;
@@ -17085,55 +17112,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.WMSetCursor(var Message: TLMessage);
-
-// Sets the hot node mouse cursor for the tree. Cursor changes for the header are handled in Header.HandleMessage.
-
-var
-  NewCursor: TCursor;
-
-begin
-  Logger.EnterMethod([lcSetCursor],'WMSetCursor');
-  {
-  lcl
-  wParam: Handle to the window that contains the cursor.
-  lParam:
-     The low-order word of lParam specifies the hit-test code.
-     The high-order word of lParam specifies the identifier of the mouse message
-  }
-  with Message do
-  begin
-    if (wParam = Handle) and not (csDesigning in ComponentState) and
-      ([tsWheelPanning, tsWheelScrolling] * FStates = []) then
-    begin
-      if not FHeader.HandleMessage(TLMessage(Message)) then
-      begin
-        // Apply own cursors only if there is no global cursor set.
-        if Screen.Cursor = crDefault then
-        begin
-          if (toHotTrack in FOptions.PaintOptions) and Assigned(FCurrentHotNode) and (FHotCursor <> crDefault) then
-            NewCursor := FHotCursor
-          else
-            NewCursor := Cursor;
-
-          DoGetCursor(NewCursor);
-          SetCursor(Screen.Cursors[NewCursor]);
-          Message.Result := 1;
-        end;
-        //lcl does not have WMSetCursor
-        //else
-        //  inherited WMSetCursor(Message);
-      end;
-    end;
-    //else
-    //  inherited WMSetCursor(Message);
-  end;
-
-  Logger.ExitMethod([lcSetCursor],'WMSetCursor');
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TBaseVirtualTree.WMSetFocus(var Msg: TLMSetFocus);
 
 begin
@@ -17375,7 +17353,6 @@ procedure TBaseVirtualTree.AdjustPanningCursor(X, Y: Integer);
 // Loads the proper cursor which indicates into which direction scrolling is done.
 
 var
-  Name: string;
   NewCursor: HCURSOR;
   ScrollHorizontal,
   ScrollVertical: Boolean;
@@ -17390,12 +17367,12 @@ begin
     if ScrollHorizontal then
     begin
       if ScrollVertical then
-        Name := 'VT_MOVEALL'
+        NewCursor := crVT_MOVEALL
       else
-        Name := 'VT_MOVEEW'
+        NewCursor := crVT_MOVEEW
     end
     else
-      Name := 'VT_MOVENS';
+      NewCursor := crVT_MOVENS;
   end
   else
   begin
@@ -17408,32 +17385,32 @@ begin
       begin
         // Left hand side.
         if Y - FLastClickPos.Y < -8 then
-          Name := 'VT_MOVENW'
+          NewCursor := crVT_MOVENW
         else
           if Y - FLastClickPos.Y > 8 then
-            Name := 'VT_MOVESW'
+            NewCursor := crVT_MOVESW
           else
-            Name := 'VT_MOVEW';
+            NewCursor := crVT_MOVEW;
       end
       else
         if X - FLastClickPos.X > 8 then
         begin
           // Right hand side.
           if Y - FLastClickPos.Y < -8 then
-            Name := 'VT_MOVENE'
+            NewCursor := crVT_MOVENE
           else
             if Y - FLastClickPos.Y > 8 then
-              Name := 'VT_MOVESE'
+              NewCursor := crVT_MOVESE
             else
-              Name := 'VT_MOVEE';
+              NewCursor := crVT_MOVEE;
         end
         else
         begin
           // Up or down.
           if Y < FLastClickPos.Y then
-            Name := 'VT_MOVEN'
+            NewCursor := crVT_MOVEN
           else
-            Name := 'VT_MOVES';
+            NewCursor := crVT_MOVES;
         end;
     end
     else
@@ -17441,32 +17418,22 @@ begin
       begin
         // Only horizontal movement allowed.
         if X < FlastClickPos.X then
-          Name := 'VT_MOVEW'
+          NewCursor := crVT_MOVEW
         else
-          Name := 'VT_MOVEE';
+          NewCursor := crVT_MOVEE;
       end
       else
       begin
         // Only vertical movement allowed.
         if Y < FlastClickPos.Y then
-          Name := 'VT_MOVEN'
+          NewCursor := crVT_MOVEN
         else
-          Name := 'VT_MOVES';
+          NewCursor := crVT_MOVES;
       end;
   end;
 
   // Now load the cursor and apply it.
-  //todo_lcl  See a way to avoid callig LoadCursor every time. Add a log to see how frequent is
-  //  DeleteObject is necessary
-  NewCursor := LoadCursorFromLazarusResource(Name);
-  if FPanningCursor <> NewCursor then
-  begin
-    DeleteObject(FPanningCursor);
-    FPanningCursor := NewCursor;
-    LCLIntf.SetCursor(FPanningCursor);
-  end
-  else
-    DeleteObject(NewCursor);
+  Cursor := NewCursor;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22198,8 +22165,24 @@ procedure TBaseVirtualTree.MouseMove(Shift: TShiftState; X, Y: Integer);
 
 var
   R: TRect;
+  NewCursor: TCursor;
 
 begin
+  // lcl: Adjust cursor
+  if ([tsWheelPanning, tsWheelScrolling] * FStates = []) then
+  begin
+    // Apply own cursors only if there is no global cursor set.
+    if Screen.Cursor = crDefault then
+    begin
+      if (toHotTrack in FOptions.PaintOptions) and Assigned(FCurrentHotNode) and (FHotCursor <> crDefault) then
+        NewCursor := FHotCursor
+      else
+        NewCursor := crDefault;
+
+      DoGetCursor(NewCursor);
+      Cursor := NewCursor;
+    end;
+  end;
   // Remove current selection in case the user clicked somewhere in the window (but not a node)
   // and moved the mouse.
   if tsDrawSelPending in FStates then
@@ -23260,6 +23243,12 @@ begin
   StopTimer(ScrollTimer);
   DoStateChange([tsWheelPanning, tsWheelScrolling]);
 
+  if FPanningWindow = nil then
+  begin
+    FPanningWindow := TVirtualPanningWindow.Create;
+    LoadPanningCursors;
+  end;
+  
   FPanningWindow.Start(Handle, ClientToScreen(Position));
 
   if Integer(FRangeX) > ClientWidth then
