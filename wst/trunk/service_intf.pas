@@ -160,7 +160,7 @@ var
   sd : PService;
   opd : PServiceOperation;
   mm : IModuleMetadataMngr;
-  strBuffer : string;
+  strTransportBuffer, strFormatBuffer, strName : string;
 begin
   if not Assigned(FOperationsProperties) then begin
     FOperationsProperties := TStringList.Create();
@@ -170,15 +170,29 @@ begin
       Assert(Assigned(sd));
       for i := 0 to Pred(sd^.OperationsCount) do begin
         opd := @(sd^.Operations[i]);
-        strBuffer := '';
+        strFormatBuffer := '';
+        strTransportBuffer := '';
         pd := opd^.Properties;
         while Assigned(pd) do begin
-          strBuffer := Format('%s%s=%s;',[strBuffer,pd^.Name,pd^.Data]);
+          strName := ExtractOptionName(pd^.Name);
+          if ( AnsiPos(sFORMAT + '_',pd^.Name) = 1 ) then begin
+            if ( Length(strName) > 0 ) then begin
+              strFormatBuffer := Format('%s%s=%s;',[strFormatBuffer,strName,pd^.Data]);
+            end;
+          end else if ( AnsiPos(sTRANSPORT + '_',pd^.Name) = 1 ) then begin
+            if ( Length(strName) > 0 ) then begin
+              strTransportBuffer := Format('%s%s=%s;',[strTransportBuffer,strName,pd^.Data]);
+            end;
+          end;
           pd := pd^.Next;
         end;
-        if not IsStrEmpty(strBuffer) then begin
-          Delete(strBuffer,Length(strBuffer),1);
-          FOperationsProperties.Values[opd^.Name] := strBuffer;
+        if not IsStrEmpty(strFormatBuffer) then begin
+          Delete(strFormatBuffer,Length(strFormatBuffer),1);
+          FOperationsProperties.Values[opd^.Name + '_' + sFORMAT] := strFormatBuffer;
+        end;
+        if not IsStrEmpty(strTransportBuffer) then begin
+          Delete(strTransportBuffer,Length(strTransportBuffer),1);
+          FOperationsProperties.Values[opd^.Name + '_' + sTRANSPORT] := strTransportBuffer;
         end;
       end;
     finally
@@ -208,20 +222,29 @@ begin
 end;
 
 procedure TBaseProxy.MakeCall();
-
-  procedure PrepareTransport();
+var
+  trans : ITransport;
+  frmt : IFormatterClient;
+  
+  procedure PrepareCall();
   var
-    strBuffer : string;
+    strBuffer, strName : string;
   begin
     LoadProperties();
-    strBuffer := FOperationsProperties.Values[GetSerializer().GetCallProcedureName()];
+    strName := frmt.GetCallProcedureName() + '_';
+    strBuffer := FOperationsProperties.Values[strName + sTRANSPORT];
     if not IsStrEmpty(strBuffer) then
-      GetTransport().GetPropertyManager().SetProperties(strBuffer);
+      trans.GetPropertyManager().SetProperties(strBuffer);
+    strBuffer := FOperationsProperties.Values[strName + sFORMAT];
+    if not IsStrEmpty(strBuffer) then
+      frmt.GetPropertyManager().SetProperties(strBuffer);
   end;
   
 begin
-  PrepareTransport();
-  GetCallHandler().MakeCall(GetSerializer(),GetTransport());
+  trans := GetTransport();
+  frmt := GetSerializer();
+  PrepareCall();
+  GetCallHandler().MakeCall(frmt,trans);
 end;
 
 procedure TBaseProxy.AddObjectToFree(const AObject: TObject);

@@ -44,12 +44,27 @@ Type
   End;
 
   function IsStrEmpty(Const AStr:String):Boolean;
+  function ExtractOptionName(const ACompleteName : string):string;
   
 implementation
 
 function IsStrEmpty(Const AStr:String):Boolean;
 begin
   Result := ( Length(Trim(AStr)) = 0 );
+end;
+
+function ExtractOptionName(const ACompleteName : string):string;
+var
+  i, c : Integer;
+begin
+  Result := '';
+  c := Length(ACompleteName);
+  for i := c downto 1 do begin
+    if ( ACompleteName[i] = '_' ) then
+      Break;
+    Result := ACompleteName[i] + Result;
+  end;
+  Result := Trim(Result);
 end;
 
 { TPublishedPropertyManager }

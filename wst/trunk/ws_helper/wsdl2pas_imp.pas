@@ -149,6 +149,7 @@ const
   s_attribute                  : WideString = 'attribute';
   s_base                       : WideString = 'base';
   s_binding                    : WideString = 'binding';
+  s_body                       : WideString = 'body';
   s_complexContent             : WideString = 'complexContent';
   s_complexType                : WideString = 'complexType';
   s_document                   : WideString = 'document';
@@ -182,6 +183,9 @@ const
   s_simpleType                 : WideString = 'simpleType';
   s_soap                       : WideString = 'http://schemas.xmlsoap.org/wsdl/soap/';
   s_soapAction                 : WideString = 'soapAction';
+  s_soapInputEncoding          : WideString = 'Input_EncodingStyle';
+  s_soapOutputEncoding         : WideString = 'OutputEncodingStyle';
+  s_soapStyle                  : WideString = 'style';
   s_style                      : WideString = 'style';
   s_targetNamespace            : WideString = 'targetNamespace';
   s_type                       : WideString = 'type';
@@ -195,6 +199,8 @@ const
   //----------------------------------------------------------
   s_NODE_NAME = 'NodeName';
   s_NODE_VALUE = 'NodeValue';
+  s_TRANSPORT  = 'TRANSPORT';
+  s_FORMAT     = 'FORMAT';
 
 type TCursorExposedType = ( cetRttiNode, cetDomNode );
 function CreateAttributesCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
@@ -592,7 +598,62 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
     end;
   end;
   
-  procedure ParseOperationAtt_SoapAction(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
+  procedure ParseOperation_EncodingStyle(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
+  var
+    nd, ndSoap : TDOMNode;
+    tmpCrs, tmpSoapCrs, tmpXcrs : IObjectCursor;
+    in_out_count : Integer;
+    strBuffer : string;
+  begin
+    nd := FindNamedNode(ABndngOpCurs,AOp.ExternalName);
+    if Assigned(nd) and nd.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(nd,cetRttiNode),
+                  ParseFilter(
+                   CreateQualifiedNameFilterStr(s_input,FWsdlShortNames) + ' or ' +
+                     CreateQualifiedNameFilterStr(s_output,FWsdlShortNames)
+                   ,
+                   TDOMNodeRttiExposer
+                  )
+                );
+      tmpCrs.Reset();
+      in_out_count := 0;
+      while tmpCrs.MoveNext() and ( in_out_count < 2 ) do begin
+        Inc(in_out_count);
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if nd.HasChildNodes() then begin
+          tmpSoapCrs := CreateCursorOn(
+                          CreateChildrenCursor(nd,cetRttiNode),
+                          ParseFilter(CreateQualifiedNameFilterStr(s_body,FSoapShortNames),TDOMNodeRttiExposer)
+                        );
+          tmpSoapCrs.Reset();
+          if tmpSoapCrs.MoveNext() then begin
+            ndSoap := (tmpSoapCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+            if Assigned(ndSoap.Attributes) and ( ndSoap.Attributes.Length > 0 ) then begin
+              tmpXcrs := CreateCursorOn(
+                          CreateAttributesCursor(ndSoap,cetRttiNode),
+                          ParseFilter(
+                            Format('%s = %s',[s_NODE_NAME,QuotedStr(s_use)]),
+                            TDOMNodeRttiExposer
+                          )
+                        );
+              tmpXcrs.Reset();
+              if tmpXcrs.MoveNext() then begin
+                if AnsiSameText(s_input,ExtractNameFromQName(nd.NodeName)) then begin
+                  strBuffer := s_soapInputEncoding;
+                end else begin
+                  strBuffer := s_soapOutputEncoding;
+                end;
+                AOp.Properties.Values[s_FORMAT + '_' + strBuffer] := (tmpXcrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  procedure ParseOperationAttributes(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
   var
     nd : TDOMNode;
     tmpCrs : IObjectCursor;
@@ -609,18 +670,30 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
         if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
           tmpCrs := CreateCursorOn(
                       CreateAttributesCursor(nd,cetRttiNode),
-                      ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_soapAction)]),TDOMNodeRttiExposer)
+                      ParseFilter(
+                        Format( '%s = %s or %s = %s',
+                                [ s_NODE_NAME,QuotedStr(s_soapAction),
+                                  s_NODE_NAME,QuotedStr(s_style)
+                                ]
+                        ),
+                        TDOMNodeRttiExposer
+                      )
                     );
           tmpCrs.Reset();
           if tmpCrs.MoveNext() then begin
             nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-            AOp.Properties.Values[s_soapAction] := nd.NodeValue;
+            if AnsiSameText(nd.NodeName,s_style) then begin
+              AOp.Properties.Values[s_soapStyle] := nd.NodeValue;
+            end else if AnsiSameText(nd.NodeName,s_soapAction) then begin
+              AOp.Properties.Values[s_TRANSPORT + '_' + s_soapAction] := nd.NodeValue;
+            end;
           end;
         end;
       end;
+      ParseOperation_EncodingStyle(ABndngOpCurs,AOp);
     end;
   end;
-  
+
 var
   locIntf : TInterfaceDefinition;
   locAttCursor : IObjectCursor;
@@ -659,7 +732,7 @@ begin
       locObj := locOpCursor.GetCurrent() as TDOMNodeRttiExposer;
       locMthd := ParseOperation(locIntf,locObj.InnerObject,locSoapBindingStyle);
       if Assigned(locMthd) then begin
-        ParseOperationAtt_SoapAction(locBindingOperationCursor,locMthd);
+        ParseOperationAttributes(locBindingOperationCursor,locMthd);
       end;
     end;
   end;
@@ -1986,7 +2059,7 @@ begin
   );
 end;
 
-function TComplexTypeParser.GetParserSupportedStyle(): string;
+class function TComplexTypeParser.GetParserSupportedStyle(): string;
 begin
   Result := s_complexType;
 end;
@@ -2190,7 +2263,7 @@ begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   Result := TTypeAliasDefinition.Create(FTypeName,FSymbols.ByName(FBaseName) as TTypeDefinition);
 end;
 
-function TSimpleTypeParser.GetParserSupportedStyle(): string;
+class function TSimpleTypeParser.GetParserSupportedStyle(): string;
 begin
   Result := s_simpleType;
 end;

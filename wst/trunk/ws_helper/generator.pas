@@ -69,6 +69,7 @@ type
   TProxyGenerator = class(TBaseGenerator)
   Private
     FDecStream : ISourceStream;
+    FDecProcStream : ISourceStream;
     FImpStream : ISourceStream;
 
     function GenerateClassName(AIntf : TInterfaceDefinition):String;
@@ -246,6 +247,7 @@ constructor TProxyGenerator.Create(
 begin
   Inherited Create(ASymTable,ASrcMngr);
   FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
+  FDecProcStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec_proc');
   FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
 end;
 
@@ -265,7 +267,7 @@ begin
     End;
   End;
   GenerateUnitImplementationFooter();
-  FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream]);
+  FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FDecProcStream,FImpStream]);
   FDecStream := Nil;
   FImpStream := Nil;
 end;
@@ -276,10 +278,19 @@ begin
 end;
 
 procedure TProxyGenerator.GenerateProxyIntf(AIntf: TInterfaceDefinition);
+
   procedure WriteDec();
   begin
     Indent();
     WriteLn('%s=class(%s,%s)',[GenerateClassName(AIntf),sPROXY_BASE_CLASS,AIntf.Name]);
+    FDecProcStream.IncIndent();
+    try
+      FDecProcStream.NewLine();
+      FDecProcStream.Indent();
+      FDecProcStream.WriteLn('Function wst_CreateInstance_%s(const AFormat : string = %s; const ATransport : string = %s):%s;',[AIntf.Name,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name]);
+    finally
+      FDecProcStream.DecIndent();
+    end;
   end;
   
   procedure WriteMethod(AMthd : TMethodDefinition);
@@ -352,6 +363,24 @@ Var
   
   procedure WriteDec();
   begin
+    NewLine();
+    WriteLn('Function wst_CreateInstance_%s(const AFormat : string; const ATransport : string):%s;',[AIntf.Name,AIntf.Name]);
+    WriteLn('Begin');
+      IncIndent();
+      try
+        Indent();
+        WriteLn(
+          'Result := %s.Create(%s,AFormat+%s,ATransport + %s);',
+          [ strClassName,QuotedStr(AIntf.Name),
+            Format('GetServiceDefaultFormatProperties(TypeInfo(%s))',[AIntf.Name]),
+            QuotedStr('address=') + Format(' + GetServiceDefaultAddress(TypeInfo(%s))',[AIntf.Name])
+          ]
+        );
+      finally
+        DecIndent();
+      end;
+    WriteLn('End;');
+    NewLine();
     If ( AIntf.MethodCount > 0 ) Then
       WriteLn('{ %s implementation }',[strClassName]);
   end;
@@ -1302,7 +1331,7 @@ procedure TInftGenerator.GenerateIntf(AIntf: TInterfaceDefinition);
   procedure WriteDec();
   begin
     Indent();
-    WriteLn('%s = interface',[GenerateIntfName(AIntf)]);
+    WriteLn('%s = interface(IInvokable)',[GenerateIntfName(AIntf)]);
     if not IsStrEmpty(AIntf.InterfaceGUID) then begin
       Indent();Indent();WriteLn('[%s]',[QuotedStr(AIntf.InterfaceGUID)]);
     end;
@@ -1839,7 +1868,7 @@ procedure TInftGenerator.GenerateCustomMetadatas();
         IncIndent();
           Indent(); WriteLn('%s,',[sUNIT_NAME]);
           Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
-          Indent(); WriteLn('%s,',[QuotedStr('Address')]);
+          Indent(); WriteLn('%s,',[QuotedStr('TRANSPORT_Address')]);
           Indent(); WriteLn('%s' ,[QuotedStr(AIntf.Address)]);
         DecIndent();
       Indent();WriteLn(');');
@@ -1850,7 +1879,7 @@ procedure TInftGenerator.GenerateCustomMetadatas();
         IncIndent();
           Indent(); WriteLn('%s,',[sUNIT_NAME]);
           Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
-          Indent(); WriteLn('%s,',[QuotedStr('SoapDocumentStyle')]);
+          Indent(); WriteLn('%s,',[QuotedStr('FORMAT_Style')]);
           Indent(); WriteLn('%s' ,[QuotedStr('rpc')]);
         DecIndent();
       Indent();WriteLn(');');
@@ -1859,7 +1888,7 @@ procedure TInftGenerator.GenerateCustomMetadatas();
         IncIndent();
           Indent(); WriteLn('%s,',[sUNIT_NAME]);
           Indent(); WriteLn('%s,',[QuotedStr(AIntf.Name)]);
-          Indent(); WriteLn('%s,',[QuotedStr('SoapDocumentStyle')]);
+          Indent(); WriteLn('%s,',[QuotedStr('FORMAT_Style')]);
           Indent(); WriteLn('%s' ,[QuotedStr('document')]);
         DecIndent();
       Indent();WriteLn(');');

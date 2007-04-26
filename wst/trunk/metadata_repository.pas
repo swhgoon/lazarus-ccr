@@ -18,12 +18,14 @@ unit metadata_repository;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, TypInfo;
 
 
 const
   sWST_SIGNATURE = 'WST_METADATA_0.2.2.0';
   sWST_META      = 'wst_meta';
+  sFORMAT = 'FORMAT';
+  sTRANSPORT = 'TRANSPORT';
 
 type
 
@@ -110,8 +112,64 @@ type
   
   function Find(const AProps : PPropertyData; const APropName : string) : PPropertyData;
   
+  
+  function GetServiceDefaultAddress(AServiceTyp : PTypeInfo):string;
+  function GetServiceDefaultFormatProperties(AServiceTyp : PTypeInfo):string;
+  
 implementation
-uses wst_resources_imp, binary_streamer;
+uses wst_resources_imp, binary_streamer, imp_utils;
+
+const sADDRESS = 'Address';
+function GetServiceDefaultAddress(AServiceTyp : PTypeInfo):string;
+var
+  typData : PTypeData;
+  servcMdt : PService;
+  propData : PPropertyData;
+begin
+  Result := '';
+  if Assigned(AServiceTyp) and (AServiceTyp^.Kind = tkInterface) then begin
+    typData := GetTypeData(AServiceTyp);
+    if Assigned(typData) then begin
+      servcMdt := GetModuleMetadataMngr().GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
+      if Assigned(AServiceTyp) then begin
+        propData := Find(servcMdt^.Properties,sTRANSPORT + '_' + sADDRESS);
+        if Assigned(propData) then
+          Result := propData^.Data;
+      end;
+    end;
+  end;
+end;
+
+function GetServiceDefaultFormatProperties(AServiceTyp : PTypeInfo):string;
+var
+  typData : PTypeData;
+  servcMdt : PService;
+  propData : PPropertyData;
+  strName : string;
+begin
+  Result := '';
+  if Assigned(AServiceTyp) and (AServiceTyp^.Kind = tkInterface) then begin
+    typData := GetTypeData(AServiceTyp);
+    if Assigned(typData) then begin
+      servcMdt := GetModuleMetadataMngr().GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
+      if Assigned(AServiceTyp) then begin
+        propData := servcMdt^.Properties;
+        while Assigned(propData) do begin
+          if ( AnsiPos(sFORMAT + '_',propData^.Name) = 1 ) then begin
+            strName := ExtractOptionName(propData^.Name);
+            if ( Length(strName) > 0 ) then begin
+              Result := Format('%s%s=%s;',[Result,strName,propData^.Data]);
+            end;
+          end;
+          propData := propData^.Next;
+        end;
+        if not IsStrEmpty(Result) then begin
+          Delete(Result,Length(Result),1);
+        end;
+      end;
+    end;
+  end;
+end;
 
 procedure ClearProperties(var AProps : PPropertyData);
 var
@@ -183,10 +241,10 @@ begin
   end else begin
     Result := Find(AProps,APropName);
     if not Assigned(Result) then begin
-      AProps^.Next := GetMem(SizeOf(PPropertyData^));
-      FillChar(AProps^.Next^,SizeOf(PPropertyData^),#0);
-      Result := AProps^.Next;
-      Result^.Next := nil;
+      Result := GetMem(SizeOf(PPropertyData^));
+      FillChar(Result^,SizeOf(PPropertyData^),#0);
+      Result^.Next := AProps;
+      AProps := Result;
     end;
   end;
   Result^.Name := APropName;

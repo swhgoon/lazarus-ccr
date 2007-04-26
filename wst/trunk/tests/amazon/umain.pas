@@ -38,7 +38,8 @@ var
 implementation
 uses soap_formatter,
      synapse_http_protocol,
-     AWSECommerceService_proxy;
+     AWSECommerceService_proxy,
+     metadata_repository;
 
 { TfMain }
 
@@ -48,11 +49,7 @@ var
   rqst : ItemSearch_Type;
   rsps : ItemSearchResponse_Type;
   rspsItem : Items_Type;
-  i, j, k, l : Integer;
-  locSearchBinSets : SearchBinSets_Type;
-  locSrchBinSet : SearchBinSet_Type;
-  locBin : Bin_Type;
-  bp : Bin_BinParameter_Type;
+  i, j, k : Integer;
   itm : Item_Type;
 begin
   mmoRes.Clear();
@@ -60,11 +57,7 @@ begin
   rqst := ItemSearch_Type.Create();
   try
     Screen.Cursor := crHourGlass;
-    locService := TAWSECommerceServicePortType_Proxy.Create(
-                    'AWSECommerceServicePortType',
-                    'SOAP:style=document;EncodingStyle=Literal',
-                    'http:address=http://soap.amazon.com/onca/soap?Service=AWSECommerceService'
-                  );
+    locService := wst_CreateInstance_AWSECommerceServicePortType();
     rqst.AWSAccessKeyId := edtAccessID.Text;
     rqst.Request.SetLength(1);
     rqst.Request[0].Manufacturer := edtManufacturer.Text;
@@ -106,6 +99,7 @@ begin
             mmoRes.Lines.Add('');
           end;
         end;
+        mmoRes.SelStart := 0;
       end else begin
         ShowMessage('not Assigned(rsps)');
       end;
@@ -117,10 +111,10 @@ begin
   end;
 end;
 
+
 initialization
   {$I umain.lrs}
 
-  Register_AWSECommerceService_ServiceMetadata();
   SYNAPSE_RegisterHTTP_Transport();
   
 end.
