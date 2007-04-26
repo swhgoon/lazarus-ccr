@@ -45,7 +45,7 @@ uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, Types, LclType, MyMisc, {$ENDIF} 
   Classes, Controls, Forms, SysUtils, StdCtrls, Buttons,
   OvcData, O32Editf, OvcEF, Graphics, O32SR, O32bordr, O32Vldtr,
-  O32VlOp1, o32ovldr, o32pvldr, o32rxvld, Dialogs;
+  O32VlOp1, o32ovldr, {$IFNDEF LCL} o32pvldr, {$ENDIF} o32rxvld, Dialogs;
 
 type
   {Forward Declaration}

@@ -41,7 +41,7 @@ unit o32vpool;
 interface
 
 uses
-  OvcBase, Classes, Graphics, stdctrls, O32Vldtr, o32ovldr, o32pvldr, o32rxvld;
+  OvcBase, Classes, Graphics, stdctrls, O32Vldtr, o32ovldr, {$IFNDEF LCL} o32pvldr, {$ENDIF} o32rxvld;
 
 type
   TO32ValidatorPool = class;
