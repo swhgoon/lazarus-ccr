@@ -51,8 +51,6 @@
       </Debugging>
     </Linking>
     <Other>
-      <CustomOptions Value="-Faheaptrc
-"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

@@ -184,16 +184,16 @@ var
   
   procedure ApplyPropChanges;
   var
+    Files: TStrings;
     SourcePropInfo: TSvnPropInfo;
     DestPropInfo: TSvnPropInfo;
-    BaseFileName: string;
+    SourceFileName: string;
+    SourceFileProp: TSvnFileProp;
     DestFileName: string;
     DestFileProp: TSvnFileProp;
     i: Integer;
 
     function CreatePropInfo(const BaseDir: string): TSvnPropInfo;
-    var
-      Files: TStrings;
     begin
       Result := TSvnPropInfo.Create;
       Files := SvnLog.LogEntry[0].GetFileList(BaseDir);
@@ -233,26 +233,40 @@ var
   begin
     SourcePropInfo := CreatePropInfo(FSourceWC);
     DestPropInfo := CreatePropInfo(FDestWC);
-    
-    if SourcePropInfo.FileCount<>DestPropInfo.FileCount then begin
-        writeln('FileName number mismatch: ',
-          SourcePropInfo.FileCount, '<>', DestPropInfo.FileCount);
+    Files := SvnLog.LogEntry[0].GetFileList('');
+
+    if SourcePropInfo.FileCount<>Files.Count then begin
+        writeln('Source FileName number mismatch: ',
+          SourcePropInfo.FileCount, '<>', Files.Count);
         halt(2);
     end;
 
-    for i := 0 to SourcePropInfo.FileCount-1 do begin
-      BaseFileName := Copy(SourcePropInfo[i].FileName, length(FSourceWC)+1, 4000);
-      DestFileName := FDestWC + BaseFileName;
-      DestFileProp := DestPropInfo.GetFileItem(DestFileName);
-
-      if BaseFileName <>  Copy(DestFileProp.FileName, Length(FDestWC)+1, 4000)  then begin
-        writeln('FileName mismatch: ',
-          SourcePropInfo[i].FileName, '<>', DestFileProp.FileName);
-        halt(3);
-      end;
-      CopyFileProp(SourcePropInfo[i], DestPropInfo[i]);
+    if DestPropInfo.FileCount<>Files.Count then begin
+        writeln('Destination FileName number mismatch: ',
+          DestPropInfo.FileCount, '<>', Files.Count);
+        halt(2);
     end;
 
+    for i := 0 to Files.Count-1 do begin
+      SourceFileName := FSourceWC + Files[i];
+      DestFileName := FDestWC + Files[i];
+      SourceFileProp := SourcePropInfo.GetFileItem(SourceFileName); 
+      DestFileProp := DestPropInfo.GetFileItem(DestFileName);
+
+      if SourceFileProp=nil then begin
+        writeln('Missing source file properties for ', SourceFileName);
+        halt(3);
+      end;
+
+      if SourceFileProp=nil then begin
+        writeln('Missing destination file properties for ', DestFileName);
+        halt(3);
+      end;
+
+      CopyFileProp(SourceFileProp, DestFileProp);
+    end;
+    
+    Files.Free;
     SourcePropInfo.Free;
     DestPropInfo.Free;
   end;
