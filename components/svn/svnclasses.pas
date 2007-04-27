@@ -189,6 +189,7 @@ type
     FProperties: TStrings;
   public
     constructor Create;
+    constructor Create(const AFileName: string);
     destructor Destroy; override;
     property FileName: string read FFileName;
     property Properties: TStrings read FProperties;
@@ -198,15 +199,17 @@ type
 
   TSvnPropInfo = class
   private
-    FFiles: TFPObjectList;
+    FFiles: TFPHashObjectList;
     function GetFile(index: integer): TSvnFileProp;
     function GetFileCount: integer;
+    function ContainsFile(const AFileName: string) : boolean;
   public
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromStream(s: TStream);
     procedure LoadFromFile(FileName: string);
     procedure LoadForFiles(FileNames: TStrings);
+    function GetFileItem(const s: string): TSvnFileProp;
     property FileItem[index: integer]: TSvnFileProp read GetFile; default;
     property FileCount: integer read GetFileCount;
   end;
@@ -561,6 +564,12 @@ begin
   FProperties := TStringList.Create;
 end;
 
+constructor TSvnFileProp.Create(const AFileName: string);
+begin
+  Create;
+  FFileName := AFileName;
+end;
+
 destructor TSvnFileProp.Destroy;
 begin
   FProperties.Free;
@@ -579,9 +588,14 @@ begin
   Result := FFiles.Count;
 end;
 
+function TSvnPropInfo.ContainsFile(const AFileName: string): boolean;
+begin
+  Result := true;
+end;
+
 constructor TSvnPropInfo.Create;
 begin
-  FFiles := TFPObjectList.Create(true);
+  FFiles := TFPHashObjectList.Create(true);
 end;
 
 destructor TSvnPropInfo.Destroy;
@@ -609,11 +623,10 @@ begin
     while (i<Lines.Count) do begin
       Line := Lines[i];
       if copy(Line, 1, length(PropertiesOn))=PropertiesOn then begin
-        FileProp := TSvnFileProp.Create;
         QuotePos := PosEx('''', Line, Length(PropertiesOn)+2);
-        FileProp.FFileName :=
-          Copy(Line, Length(PropertiesOn)+2, QuotePos - Length(PropertiesOn)-2);
-        FFiles.Add(FileProp);
+        FileProp := TSvnFileProp.Create(
+          Copy(Line, Length(PropertiesOn)+2, QuotePos - Length(PropertiesOn)-2));
+        FFiles.Add(FileProp.FileName, FileProp);
         inc(i);
         while (i<Lines.Count) do begin
 
@@ -664,9 +677,19 @@ begin
     ExecuteSvnCommand('proplist -v' + Files, Output);
     Output.Position := 0;
     LoadFromStream(Output);
+    for i := 0 to FileNames.Count -1 do begin
+      if FFiles.FindIndexOf(FileNames[i])<0 then begin
+        FFiles.Add(FileNames[i], TSvnFileProp.Create(FileNames[i]));
+      end;
+    end;
   finally
     Output.Free;
   end;
+end;
+
+function TSvnPropInfo.GetFileItem(const s: string): TSvnFileProp;
+begin
+  Result := TSvnFileProp(FFiles.Find(s));
 end;
 
 end.

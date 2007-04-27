@@ -186,6 +186,9 @@ var
   var
     SourcePropInfo: TSvnPropInfo;
     DestPropInfo: TSvnPropInfo;
+    BaseFileName: string;
+    DestFileName: string;
+    DestFileProp: TSvnFileProp;
     i: Integer;
 
     function CreatePropInfo(const BaseDir: string): TSvnPropInfo;
@@ -238,9 +241,13 @@ var
     end;
 
     for i := 0 to SourcePropInfo.FileCount-1 do begin
-      if Copy(SourcePropInfo[i].FileName, length(FSourceWC)+1, 4000) <>  Copy(DestPropInfo[i].FileName, Length(FDestWC)+1, 4000)  then begin
+      BaseFileName := Copy(SourcePropInfo[i].FileName, length(FSourceWC)+1, 4000);
+      DestFileName := FDestWC + BaseFileName;
+      DestFileProp := DestPropInfo.GetFileItem(DestFileName);
+
+      if BaseFileName <>  Copy(DestFileProp.FileName, Length(FDestWC)+1, 4000)  then begin
         writeln('FileName mismatch: ',
-          SourcePropInfo[i].FileName, '<>', DestPropInfo[i].FileName);
+          SourcePropInfo[i].FileName, '<>', DestFileProp.FileName);
         halt(3);
       end;
       CopyFileProp(SourcePropInfo[i], DestPropInfo[i]);
@@ -274,14 +281,18 @@ var
   end;
   
 begin
-  SourceHead := GetRevision('-rHEAD '+FSourceWC);
-  writeln(FSourceWC, ' HEAD at revision ', SourceHead);
+  try
+    SourceHead := GetRevision('-rHEAD '+FSourceWC);
+    writeln(FSourceWC, ' HEAD at revision ', SourceHead);
 
-  Revision := GetRevision('-rHEAD '+FDestWC);
-  writeln(FDestWC, ' HEAD at revision ', Revision);
+    Revision := GetRevision('-rHEAD '+FDestWC);
+    writeln(FDestWC, ' HEAD at revision ', Revision);
 
-  DestRoot := GetRepositoryRoot(FDestWC);
-  writeln('------');
+    DestRoot := GetRepositoryRoot(FDestWC);
+    writeln('------');
+  except
+    halt(9);
+  end;
   XmlOutput := TMemoryStream.Create;
 
   SvnLog := TSvnLog.Create;

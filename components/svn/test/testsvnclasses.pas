@@ -272,16 +272,20 @@ procedure TTestSvnClasses.TestPropListLoadForFiles;
 var
   SvnPropInfo: TSvnPropInfo;
   FileNames: TStrings;
+  i : integer;
 begin
   FileNames:= TStringList.Create;
   FileNames.Add('testsvnclasses.pas');
+  FileNames.Add(ExtractFileDir(ParamStr(0)));
   FileNames.Add('fpcunitsvnpkg.lpi');
   SvnPropInfo := TSvnPropInfo.Create;
   try
     SvnPropInfo.LoadForFiles(FileNames);
-    AssertEquals('Wrong number of files', 2, SvnPropInfo.FileCount);
-    AssertEquals('Wrong file name', FileNames[0], SvnPropInfo[0].FileName);
-    AssertEquals('Wrong file name', FileNames[1], SvnPropInfo[1].FileName);
+    AssertEquals('Wrong number of files', FileNames.Count, SvnPropInfo.FileCount);
+    for i := 0 to FileNames.Count-1 do begin
+      AssertNotNull('File name missing: '+ FileNames[i],
+        SvnPropInfo.GetFileItem(FileNames[i]));
+    end;
   finally
     FileNames.Free;
     SvnPropInfo.Free;

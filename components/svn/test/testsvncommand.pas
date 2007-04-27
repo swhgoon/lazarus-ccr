@@ -29,7 +29,7 @@ begin
     XmlOutput:= TMemoryStream.Create;
     SvnExitCode := ExecuteSvnCommand('log --xml -rHEAD', XmlOutput);
     AssertEquals('Unexpected exit code', 0, SvnExitCode);
-    AssertTrue('No XmlOuput', XmlOutput.Size>0)
+    AssertTrue('No XmlOutput', XmlOutput.Size>0)
   finally
     XmlOutput.Free;
   end;
