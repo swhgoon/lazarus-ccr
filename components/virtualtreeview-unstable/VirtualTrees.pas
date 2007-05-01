@@ -3294,8 +3294,6 @@ type
     bmConstantAlphaAndColor  // blend the destination color with the given constant color und the constant alpha value
   );
 
-procedure Register;
-
 // OLE Clipboard and drag'n drop helper
 procedure EnumerateVTClipboardFormats(TreeClass: TVirtualTreeClass; const List: TStrings); overload;
 procedure EnumerateVTClipboardFormats(TreeClass: TVirtualTreeClass; var Formats: TFormatEtcArray); overload;
@@ -32208,11 +32206,6 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
-procedure Register;
-begin
-  RegisterComponents('VirtualTreeView', [TVirtualDrawTree,TVirtualStringTree]);
-end;
 
 initialization
   {$I virtualtrees.lrs}

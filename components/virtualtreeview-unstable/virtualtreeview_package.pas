@@ -7,13 +7,13 @@ unit virtualtreeview_package;
 interface
 
 uses
-  VirtualTrees, VTHeaderPopup, LazarusPackageIntf; 
+  VirtualTrees, VTHeaderPopup, registervirtualtreeview, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('VirtualTrees', @VirtualTrees.Register); 
+  RegisterUnit('registervirtualtreeview', @registervirtualtreeview.Register); 
 end; 
 
 initialization
