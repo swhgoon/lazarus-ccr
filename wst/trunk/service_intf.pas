@@ -14,7 +14,7 @@
 { Base service interface }
 
 unit service_intf;
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -109,13 +109,13 @@ Type
     constructor Create(
       Const ATarget   : String;             // the target service
       Const AProtocol : IServiceProtocol
-    );virtual;
+    );overload;virtual;
     (* A User friendly constructor *)
     constructor Create(
       Const ATarget        : String;
       Const AProtocolData  : string;
       Const ATransportData : string
-    );virtual;
+    );overload;virtual;
     destructor Destroy();override;
   End;
 
@@ -141,7 +141,7 @@ Type
     ):Boolean;
     procedure Register(
       const ATransportName : string;
-      const AFactory       : IItemFactory
+            AFactory       : IItemFactory
     );
   End;
 
@@ -168,8 +168,8 @@ begin
     sd := mm.GetServiceMetadata(GetTypeData(GetServiceType())^.IntfUnit,GetServiceType()^.Name);
     try
       Assert(Assigned(sd));
+      opd := sd^.Operations;
       for i := 0 to Pred(sd^.OperationsCount) do begin
-        opd := @(sd^.Operations[i]);
         strFormatBuffer := '';
         strTransportBuffer := '';
         pd := opd^.Properties;
@@ -194,6 +194,7 @@ begin
           Delete(strTransportBuffer,Length(strTransportBuffer),1);
           FOperationsProperties.Values[opd^.Name + '_' + sTRANSPORT] := strTransportBuffer;
         end;
+        Inc(opd);
       end;
     finally
       mm.ClearServiceMetadata(sd);

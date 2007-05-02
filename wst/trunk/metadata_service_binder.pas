@@ -5,7 +5,7 @@ This unit has been produced by ws_helper.
   Date            : "12/11/2006 11:12".
 }
 unit metadata_service_binder;
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 interface
 
 uses SysUtils, Classes, base_service_intf, server_service_intf, metadata_service;

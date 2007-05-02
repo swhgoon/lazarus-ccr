@@ -13,7 +13,7 @@
 
 unit server_service_intf;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 

@@ -64,7 +64,9 @@ uses base_service_intf,
      server_service_soap, server_binary_formatter,
      metadata_repository, metadata_wsdl, DOM, XMLWrite,
      calculator, calculator_binder, calculator_imp,
-     metadata_service, metadata_service_binder, metadata_service_imp;
+     metadata_service, metadata_service_binder, metadata_service_imp,
+
+     user_service_intf, user_service_intf_binder, user_service_intf_imp;
 
 const
   sSEPARATOR = '/';
@@ -275,6 +277,9 @@ begin
   FHTTPServerObject.ServerSoftware := 'Web Service Toolkit Sample WebServer';
   FHTTPServerObject.Active := True;
   FHTTPServerObject.OnCommandGet := @Handler_CommandGet;
+  
+  Server_service_RegisterUserServiceService();
+  RegisterUserServiceImplementationFactory();
 end;
 
 destructor TwstWebApplication.Destroy();
@@ -298,4 +303,7 @@ initialization
   
   Server_service_RegisterWSTMetadataServiceService();
   RegisterWSTMetadataServiceImplementationFactory();
+
+  
+  
 end.

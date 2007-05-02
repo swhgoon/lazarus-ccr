@@ -12,18 +12,20 @@
 }
 unit base_service_intf;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs;
 
+{$INCLUDE wst_delphi.inc}
+
 const
   stBase   = 0;
   stObject = stBase + 1;
   stArray  = stBase + 2;
-  
+
   sARRAY_ITEM = 'item';
   sARRAY_STYLE = 'style';
 
@@ -32,6 +34,7 @@ const
   sEmbedded = 'embedded';
 
 type
+
   { standart data types defines }
   anyURI = type string;
   token = type string;
@@ -179,8 +182,8 @@ type
     procedure LoadFromStream(AStream : TStream);
 
     // This procedures will raise exceptions!!!
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   End;
 
   { TSimpleCallContext }
@@ -563,6 +566,7 @@ type
     class function GetItemTypeInfo():PTypeInfo;override;
 
     constructor Create();override;
+    procedure Assign(Source: TPersistent); override;
 
     procedure SetLength(Const ANewSize : Integer);override;
     Property Item[AIndex:Integer] : TBaseRemotable Read GetItem;Default;
@@ -959,7 +963,7 @@ type
     function FindFactory(const AName: string): IItemFactory;
     procedure Register(
       const AName    : string;
-      const AFactory : IItemFactory
+            AFactory : IItemFactory
     );
   protected
     property Count : Integer read GetCount;
@@ -1075,8 +1079,8 @@ type
   TStoredPropertyManager = class(TInterfacedObject,IPropertyManager)
   private
     FData : TStringList;
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   protected
     procedure SetProperty(Const AName,AValue:string);
     procedure SetProperties(Const APropsStr:string);
@@ -1198,6 +1202,7 @@ begin
   r.Register(sXSD_NS,TypeInfo(TComplexBooleanContentRemotable),'boolean').AddPascalSynonym('TComplexBooleanContentRemotable');
 end;
 
+{$IFDEF FPC}
 function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 begin
   case (PropInfo^.PropProcs shr 4) and 3 of
@@ -1215,6 +1220,38 @@ begin
       Result := pstOptional;
   end;
 end;
+{$ELSE}
+function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
+{var
+  b : PByte;
+begin
+  if ( ( PropInfo^.StoredProc and $0FFFFFF00 ) = 0 ) then begin
+    if LongBool(PropInfo^.StoredProc) then // constante
+      Result := pstAlways
+    else
+      Result := pstNever;
+  end else begin
+    b := PByte(PropInfo^.StoredProc);
+    Inc(b,3);
+    if ( b^ < $FE ) then begin //StaticMethod
+      Result := pstOptional;
+    end else ( b^ > $FE ) begin Field
+    end else begin // virtual method
+    end;
+  end;
+end;}
+begin
+  if ( ( Cardinal(PropInfo^.StoredProc) and $0FFFFFF00 ) = 0 ) then begin
+    if LongBool(PropInfo^.StoredProc) then begin
+      Result := pstAlways
+    end else begin
+      Result := pstNever;
+    end;
+  end else begin
+    Result := pstOptional;
+  end;
+end;
+{$ENDIF}
 
 { TBaseRemotable }
 
@@ -1428,7 +1465,7 @@ begin
         typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
-          pt := p^.PropType;
+          pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
           if IsStoredProp(AObject,p) then begin
             if IsAttributeProperty(p^.Name) then begin
               if ( ss <> ssAttibuteSerialization ) then
@@ -1441,12 +1478,12 @@ begin
               AStore.SetSerializationStyle(ss);
             prpName := typRegItem.GetExternalPropertyName(p^.Name);
             case pt^.Kind of
-              tkInt64,tkQWord :
+              tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
                 begin
                   int64Data := GetOrdProp(AObject,p^.Name);
                   AStore.Put(prpName,pt,int64Data);
                 end;
-              tkLString, tkAString :
+              tkLString{$IFDEF FPC},tkAString{$ENDIF} :
                 begin
                   strData := GetStrProp(AObject,p^.Name);
                   AStore.Put(prpName,pt,strData);
@@ -1456,59 +1493,72 @@ begin
                   objData := GetObjectProp(AObject,p^.Name);
                   AStore.Put(prpName,pt,objData);
                 end;
+              {$IFDEF FPC}
               tkBool :
                 begin
                   boolData := Boolean(GetOrdProp(AObject,p^.Name));
                   AStore.Put(prpName,pt,boolData);
                 end;
+              {$ENDIF}
               tkEnumeration,tkInteger :
                 begin
-                  FillChar(enumData,SizeOf(enumData),#0);
-                  case GetTypeData(p^.PropType)^.OrdType of
-                    otSByte :
-                      begin
-                        enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.ShortIntData);
-                      end;
-                    otUByte :
-                      begin
-                        enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.ByteData);
-                      end;
-                    otSWord :
-                      begin
-                        enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.SmallIntData);
-                      end;
-                    otUWord :
-                      begin
-                        enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.WordData);
-                      end;
-                    otSLong :
-                      begin
-                        enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.SLongIntData);
-                      end;
-                    otULong :
-                      begin
-                        enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(prpName,pt,enumData.ULongIntData);
-                      end;
+                {$IFNDEF FPC}
+                  if ( pt^.Kind = tkEnumeration ) and
+                     ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
+                  then begin
+                    boolData := Boolean(GetOrdProp(AObject,p^.Name));
+                    AStore.Put(prpName,pt,boolData);
+                  end else begin
+                {$ENDIF}
+                    FillChar(enumData,SizeOf(enumData),#0);
+                    case GetTypeData(pt)^.OrdType of
+                      otSByte :
+                        begin
+                          enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.ShortIntData);
+                        end;
+                      otUByte :
+                        begin
+                          enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.ByteData);
+                        end;
+                      otSWord :
+                        begin
+                          enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.SmallIntData);
+                        end;
+                      otUWord :
+                        begin
+                          enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.WordData);
+                        end;
+                      otSLong :
+                        begin
+                          enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.SLongIntData);
+                        end;
+                      otULong :
+                        begin
+                          enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(prpName,pt,enumData.ULongIntData);
+                        end;
+                    end;
+                {$IFNDEF FPC}
                   end;
+                {$ENDIF}
                 end;
               tkFloat :
                 begin
                   FillChar(floatDt,SizeOf(floatDt),#0);
-                  case GetTypeData(p^.PropType)^.FloatType of
+                  case GetTypeData(pt)^.FloatType of
                     ftSingle :
                       begin
-                        floatDt.SingleData := Single(GetFloatProp(AObject,p^.Name));
+                        floatDt.SingleData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.SingleData);
                       end;
                     ftDouble :
                       begin
-                        floatDt.DoubleData := Double(GetFloatProp(AObject,p^.Name));
+                        floatDt.DoubleData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.DoubleData);
                       end;
                     ftExtended :
@@ -1518,12 +1568,12 @@ begin
                       end;
                     ftCurr :
                       begin
-                        floatDt.CurrencyData := Currency(GetFloatProp(AObject,p^.Name));
+                        floatDt.CurrencyData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.CurrencyData);
                       end;
                     ftComp :
                       begin
-                        floatDt.CompData := Comp(GetFloatProp(AObject,p^.Name));
+                        floatDt.CompData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.CompData);
                       end;
                   end;
@@ -1585,7 +1635,7 @@ begin
             p := propList^[i];
             persistType := IsStoredPropClass(objTypeData^.ClassType,p);
             If ( persistType in [pstOptional,pstAlways] ) Then Begin
-              pt := p^.PropType;
+              pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
               propName := typRegItem.GetExternalPropertyName(p^.Name);
               if IsAttributeProperty(p^.Name) then begin
                 ss := ssAttibuteSerialization;
@@ -1596,21 +1646,23 @@ begin
                 AStore.SetSerializationStyle(ss);
               try
                 Case pt^.Kind Of
-                  tkInt64,tkQWord :
+                  tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
                     Begin
                       AStore.Get(pt,propName,int64Data);
                       SetOrdProp(AObject,p^.Name,int64Data);
                     End;
-                  tkLString, tkAString :
+                  tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
                     Begin
                       AStore.Get(pt,propName,strData);
                       SetStrProp(AObject,p^.Name,strData);
                     End;
+                  {$IFDEF FPC}
                   tkBool :
                     Begin
                       AStore.Get(pt,propName,boolData);
                       SetOrdProp(AObject,p^.Name,Ord(boolData));
                     End;
+                  {$ENDIF}
                   tkClass :
                     Begin
                       objData := GetObjectProp(AObject,p^.Name);
@@ -1626,45 +1678,56 @@ begin
                     End;
                   tkEnumeration,tkInteger :
                     Begin
-                      FillChar(enumData,SizeOf(enumData),#0);
-                      Case GetTypeData(p^.PropType)^.OrdType Of
-                        otSByte :
-                          Begin
-                            AStore.Get(pt,propName,enumData.ShortIntData);
-                            int64Data := enumData.ShortIntData;
-                          End;
-                        otUByte :
-                          Begin
-                            AStore.Get(pt,propName,enumData.ByteData);
-                            int64Data := enumData.ByteData;
-                          End;
-                        otSWord :
-                          Begin
-                            AStore.Get(pt,propName,enumData.SmallIntData);
-                            int64Data := enumData.SmallIntData;
-                          End;
-                        otUWord :
-                          Begin
-                            AStore.Get(pt,propName,enumData.WordData);
-                            int64Data := enumData.WordData;
-                          End;
-                        otSLong:
-                          Begin
-                            AStore.Get(pt,propName,enumData.SLongIntData);
-                            int64Data := enumData.SLongIntData;
-                          End;
-                        otULong :
-                          Begin
-                            AStore.Get(pt,propName,enumData.ULongIntData);
-                            int64Data := enumData.ULongIntData;
-                          End;
-                      End;
+                    {$IFNDEF FPC}
+                      if ( pt^.Kind = tkEnumeration ) and
+                         ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
+                      then begin
+                        boolData := Boolean(GetOrdProp(AObject,p^.Name));
+                        AStore.Put(propName,pt,boolData);
+                      end else begin
+                    {$ENDIF}
+                        FillChar(enumData,SizeOf(enumData),#0);
+                        Case GetTypeData(pt)^.OrdType Of
+                          otSByte :
+                            Begin
+                              AStore.Get(pt,propName,enumData.ShortIntData);
+                              int64Data := enumData.ShortIntData;
+                            End;
+                          otUByte :
+                            Begin
+                              AStore.Get(pt,propName,enumData.ByteData);
+                              int64Data := enumData.ByteData;
+                            End;
+                          otSWord :
+                            Begin
+                              AStore.Get(pt,propName,enumData.SmallIntData);
+                              int64Data := enumData.SmallIntData;
+                            End;
+                          otUWord :
+                            Begin
+                              AStore.Get(pt,propName,enumData.WordData);
+                              int64Data := enumData.WordData;
+                            End;
+                          otSLong:
+                            Begin
+                              AStore.Get(pt,propName,enumData.SLongIntData);
+                              int64Data := enumData.SLongIntData;
+                            End;
+                          otULong :
+                            Begin
+                              AStore.Get(pt,propName,enumData.ULongIntData);
+                              int64Data := enumData.ULongIntData;
+                            End;
+                        End;
+                    {$IFNDEF FPC}
+                      end;
+                    {$ENDIF}
                       SetOrdProp(AObject,p^.Name,int64Data);
                     End;
                   tkFloat :
                     Begin
                       FillChar(floatDt,SizeOf(floatBuffer),#0);
-                      Case GetTypeData(p^.PropType)^.FloatType Of
+                      Case GetTypeData(pt)^.FloatType Of
                         ftSingle :
                           Begin
                             AStore.Get(pt,propName,floatBuffer.SingleData);
@@ -1817,6 +1880,27 @@ begin
   FArray := Nil;
 end;
 
+procedure TBaseObjectArrayRemotable.Assign(Source: TPersistent);
+var
+  src : TBaseObjectArrayRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) then begin
+    if Source.InheritsFrom(TBaseObjectArrayRemotable) then begin
+      src := TBaseObjectArrayRemotable(Source);
+      c := src.Length;
+      SetLength(c);
+      for i := 0 to Pred(c) do begin
+        Item[i].Assign(src.Item[i]);
+      end;
+    end else begin
+      inherited Assign(Source);
+    end;
+  end else begin
+    SetLength(0);
+  end;
+end;
+
 procedure TBaseObjectArrayRemotable.SetLength(const ANewSize: Integer);
 var
   i,oldLen : Integer;
@@ -1889,7 +1973,7 @@ end;
 
 procedure TBaseFactoryRegistry.Register(
   const AName    : string;
-  const AFactory : IItemFactory
+        AFactory : IItemFactory
 );
 begin
   Assert(Assigned(AFactory));
@@ -3217,6 +3301,7 @@ var
   i, propCount, propListLen : Integer;
   p, sp : PPropInfo;
   selfTypeInfo : PTypeInfo;
+  srcObj, dstObj : TObject;
 begin
   if not Assigned(Source) then
     Exit;
@@ -3232,12 +3317,30 @@ begin
            Assigned(p^.SetProc)
         then begin
           case p^.PropType^.Kind of
-            tkInt64,tkQWord, tkBool, tkEnumeration,tkInteger :
+            tkInt64{$IFDEF FPC},tkQWord, tkBool{$ENDIF}, tkEnumeration,tkInteger :
               SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
-            tkLString, tkAString :
+            tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
               SetStrProp(Self,p,GetStrProp(Source,p^.Name));
             tkClass :
-              SetObjectProp(Self,p,GetObjectProp(Source,p^.Name));
+              begin
+                srcObj := GetObjectProp(Source,p^.Name);
+                dstObj := GetObjectProp(Self,p^.Name);
+                if ( not Assigned(dstObj) ) and
+                   ( Assigned(srcObj) and srcObj.InheritsFrom(TAbstractComplexRemotable) )
+                then begin
+                  dstObj := TAbstractComplexRemotableClass(srcObj.ClassType).Create();
+                  SetObjectProp(Self,p,dstObj);
+                end;
+                if Assigned(dstObj) then begin
+                  if ( srcObj = nil ) then begin
+                    FreeAndNil(dstObj);
+                    SetObjectProp(Self,p,dstObj);
+                  end else begin
+                    if dstObj.InheritsFrom(TPersistent) and srcObj.InheritsFrom(TPersistent) then
+                      TPersistent(dstObj).Assign(TPersistent(srcObj));
+                  end;
+                end;
+              end;
             tkFloat :
               SetFloatProp(Self,p,GetFloatProp(Source,p^.Name));
           end;
@@ -3288,16 +3391,16 @@ begin
         AStore.SetSerializationStyle(ssAttibuteSerialization);
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
-          pt := p^.PropType;
+          pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
           propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
           if IsStoredProp(AObject,p) then begin
             case pt^.Kind of
-              tkInt64,tkQWord :
+              tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
                 begin
                   int64Data := GetOrdProp(AObject,p^.Name);
                   AStore.Put(propName,pt,int64Data);
                 end;
-              tkLString, tkAString :
+              tkLString{$IFDEF FPC},tkAString{$ENDIF} :
                 begin
                   strData := GetStrProp(AObject,p^.Name);
                   AStore.Put(propName,pt,strData);
@@ -3307,59 +3410,72 @@ begin
                   objData := GetObjectProp(AObject,p^.Name);
                   AStore.Put(propName,pt,objData);
                 end;
+              {$IFDEF FPC}
               tkBool :
                 begin
                   boolData := Boolean(GetOrdProp(AObject,p^.Name));
                   AStore.Put(propName,pt,boolData);
                 end;
+              {$ENDIF}
               tkEnumeration,tkInteger :
                 begin
-                  FillChar(enumData,SizeOf(enumData),#0);
-                  case GetTypeData(p^.PropType)^.OrdType of
-                    otSByte :
-                      begin
-                        enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.ShortIntData);
-                      end;
-                    otUByte :
-                      begin
-                        enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.ByteData);
-                      end;
-                    otSWord :
-                      begin
-                        enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.SmallIntData);
-                      end;
-                    otUWord :
-                      begin
-                        enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.WordData);
-                      end;
-                    otSLong :
-                      begin
-                        enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.SLongIntData);
-                      end;
-                    otULong :
-                      begin
-                        enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,enumData.ULongIntData);
-                      end;
+                {$IFNDEF FPC}
+                  if ( pt^.Kind = tkEnumeration ) and
+                     ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
+                  then begin
+                    boolData := Boolean(GetOrdProp(AObject,p^.Name));
+                    AStore.Put(propName,pt,boolData);
+                  end else begin
+                {$ENDIF}
+                    FillChar(enumData,SizeOf(enumData),#0);
+                    case GetTypeData(pt)^.OrdType of
+                      otSByte :
+                        begin
+                          enumData.ShortIntData := ShortInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.ShortIntData);
+                        end;
+                      otUByte :
+                        begin
+                          enumData.ByteData := Byte(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.ByteData);
+                        end;
+                      otSWord :
+                        begin
+                          enumData.SmallIntData := SmallInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.SmallIntData);
+                        end;
+                      otUWord :
+                        begin
+                          enumData.WordData := Word(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.WordData);
+                        end;
+                      otSLong :
+                        begin
+                          enumData.SLongIntData := LongInt(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.SLongIntData);
+                        end;
+                      otULong :
+                        begin
+                          enumData.ULongIntData := LongWord(GetOrdProp(AObject,p^.Name));
+                          AStore.Put(propName,pt,enumData.ULongIntData);
+                        end;
+                    end;
+                {$IFNDEF FPC}
                   end;
+                {$ENDIF}
                 end;
               tkFloat :
                 begin
                   FillChar(floatDt,SizeOf(floatDt),#0);
-                  case GetTypeData(p^.PropType)^.FloatType of
+                  case GetTypeData(pt)^.FloatType of
                     ftSingle :
                       begin
-                        floatDt.SingleData := Single(GetFloatProp(AObject,p^.Name));
+                        floatDt.SingleData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.SingleData);
                       end;
                     ftDouble :
                       begin
-                        floatDt.DoubleData := Double(GetFloatProp(AObject,p^.Name));
+                        floatDt.DoubleData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.DoubleData);
                       end;
                     ftExtended :
@@ -3369,12 +3485,12 @@ begin
                       end;
                     ftCurr :
                       begin
-                        floatDt.CurrencyData := Currency(GetFloatProp(AObject,p^.Name));
+                        floatDt.CurrencyData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.CurrencyData);
                       end;
                     ftComp :
                       begin
-                        floatDt.CompData := Comp(GetFloatProp(AObject,p^.Name));
+                        floatDt.CompData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.CompData);
                       end;
                   end;
@@ -3436,25 +3552,27 @@ begin
             p := propList^[i];
             persistType := IsStoredPropClass(objTypeData^.ClassType,p);
             If ( persistType in [pstOptional,pstAlways] ) Then Begin
-              pt := p^.PropType;
+              pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
               propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
               try
                 Case pt^.Kind Of
-                  tkInt64,tkQWord :
+                  tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
                     Begin
                       AStore.Get(pt,propName,int64Data);
                       SetOrdProp(AObject,p^.Name,int64Data);
                     End;
-                  tkLString, tkAString :
+                  tkLString{$IFDEF FPC},tkAString{$ENDIF} :
                     Begin
                       AStore.Get(pt,propName,strData);
                       SetStrProp(AObject,p^.Name,strData);
                     End;
+                  {$IFDEF FPC}
                   tkBool :
                     Begin
                       AStore.Get(pt,propName,boolData);
                       SetOrdProp(AObject,p^.Name,Ord(boolData));
                     End;
+                  {$ENDIF}
                   tkClass :
                     Begin
                       objData := GetObjectProp(AObject,p^.Name);
@@ -3471,7 +3589,7 @@ begin
                   tkEnumeration,tkInteger :
                     Begin
                       FillChar(enumData,SizeOf(enumData),#0);
-                      Case GetTypeData(p^.PropType)^.OrdType Of
+                      Case GetTypeData(pt)^.OrdType Of
                         otSByte :
                           Begin
                             AStore.Get(pt,propName,enumData.ShortIntData);
@@ -3508,7 +3626,7 @@ begin
                   tkFloat :
                     Begin
                       FillChar(floatDt,SizeOf(floatBuffer),#0);
-                      Case GetTypeData(p^.PropType)^.FloatType Of
+                      Case GetTypeData(pt)^.FloatType Of
                         ftSingle :
                           Begin
                             AStore.Get(pt,propName,floatBuffer.SingleData);

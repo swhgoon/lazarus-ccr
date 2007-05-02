@@ -118,7 +118,7 @@ Type
     function CreateList(const ANodeName : string):TDOMNodeList;override;
   end;
 
-  TSOAPEncodingStyle = ( Encoded, Literal );
+  TSOAPEncodingStyle = ( Literal, Encoded );
   TSOAPDocumentStyle = ( RPC, Document );
   
 {$M+}

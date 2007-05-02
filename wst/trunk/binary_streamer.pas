@@ -12,12 +12,14 @@
 }
 unit binary_streamer;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Types;
+
+{$INCLUDE wst_delphi.inc}
 
 Const
   MAX_ARRAY_LENGTH = 1024*1024;
@@ -79,7 +81,7 @@ Type
     function ReadBool():TBoolData;
     function ReadEnum():TEnumData;
     function ReadStr():TStringData;
-    
+
     function ReadSingle():TFloat_Single_4;
     function ReadDouble():TFloat_Double_8;
     function ReadExtended():TFloat_Extended_10;
@@ -90,19 +92,19 @@ Type
   function CreateBinaryWriter(AStream : TStream):IDataStore;
   
   procedure ReverseBytes(var AData; const ALength : Integer);{$IFDEF ENDIAN_BIG}inline;{$ENDIF}
-  function Reverse_16(AValue:Word):Word;inline;
-  function Reverse_32(AValue:DWord):DWord;inline;
-  function Reverse_64(AValue:QWord):QWord;inline;
+  function Reverse_16(AValue:Word):Word;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function Reverse_32(AValue:DWord):DWord;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function Reverse_64(AValue:QWord):QWord;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
-  function Reverse_Single(AValue:Single):Single;inline;
-  function Reverse_Double(AValue:Double):Double;inline;
-  function Reverse_Extended(AValue:Extended):Extended;inline;
-  function Reverse_Currency(AValue:Currency):Currency;inline;
+  function Reverse_Single(AValue:Single):Single;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function Reverse_Double(AValue:Double):Double;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function Reverse_Extended(AValue:Extended):Extended;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function Reverse_Currency(AValue:Currency):Currency;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
 implementation
 
 {$IFDEF ENDIAN_BIG}
-procedure ReverseBytes(var AData; const ALength : Integer);inline;
+procedure ReverseBytes(var AData; const ALength : Integer);{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
 end;
 {$ELSE} // assume ENDIAN_LITTLE
@@ -110,55 +112,55 @@ procedure ReverseBytes(var AData; const ALength : Integer);
 Var
   i,j : PtrInt;
   c : Byte;
-  pDt : ^Byte;
+  pDt : {$IFDEF FPC}^Byte{$ELSE}PByteArray{$ENDIF};
 begin
   pDt := @AData;
   j := ALength div 2;
   For i := 0 To Pred(j) Do Begin
-    c := pDt[i];
+    c := pDt{$IFNDEF FPC}^{$ENDIF}[i];
     pDt[i] := pDt[(ALength - 1 ) - i];
     pDt[(ALength - 1 ) - i] := c;
   End;
 end;
 {$ENDIF}
 
-function Reverse_16(AValue:Word):Word;inline;
+function Reverse_16(AValue:Word):Word;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,2)
 end;
 
-function Reverse_32(AValue:DWord):DWord;inline;
+function Reverse_32(AValue:DWord):DWord;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,4)
 end;
 
-function Reverse_64(AValue:QWord):QWord;inline;
+function Reverse_64(AValue:QWord):QWord;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,8)
 end;
 
-function Reverse_Single(AValue:Single):Single;inline;
+function Reverse_Single(AValue:Single):Single;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,4)
 end;
 
-function Reverse_Double(AValue:Double):Double;inline;
+function Reverse_Double(AValue:Double):Double;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,8)
 end;
 
-function Reverse_Extended(AValue:Extended):Extended;inline;
+function Reverse_Extended(AValue:Extended):Extended;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,10);
 end;
 
-function Reverse_Currency(AValue:Currency):Currency;inline;
+function Reverse_Currency(AValue:Currency):Currency;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := AValue;
   ReverseBytes(Result,8);
@@ -248,6 +250,7 @@ begin
   FStream.Write(AData,SizeOf(AData));
 end;
 
+{$IFDEF FPC}
 procedure TDataStore.WriteInt16U(const AData: TInt16U);
 begin
   FStream.Write(Reverse_16(AData),SizeOf(AData));
@@ -277,6 +280,55 @@ procedure TDataStore.WriteInt64S(const AData: TInt64S);
 begin
   FStream.Write(Reverse_64(AData),SizeOf(AData));
 end;
+{$ELSE}
+procedure TDataStore.WriteInt16U(const AData: TInt16U);
+var
+  bffr : TInt16U;
+begin
+  bffr := Reverse_16(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteInt16S(const AData: TInt16S);
+var
+  bffr : TInt16U;
+begin
+  bffr := Reverse_16(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteInt32U(const AData: TInt32U);
+var
+  bffr : TInt32U;
+begin
+  bffr := Reverse_32(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteInt32S(const AData: TInt32S);
+var
+  bffr : TInt32U;
+begin
+  bffr := Reverse_32(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteInt64U(const AData: TInt64U);
+var
+  bffr : TInt64U;
+begin
+  bffr := Reverse_64(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteInt64S(const AData: TInt64S);
+var
+  bffr : TInt64U;
+begin
+  bffr := Reverse_64(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+{$ENDIF}
 
 procedure TDataStore.WriteBool(const AData: TBoolData);
 Var
@@ -304,6 +356,7 @@ begin
     FStream.Write(AData[1],i);
 end;
 
+{$IFDEF FPC}
 procedure TDataStore.WriteSingle(const AData: TFloat_Single_4);
 begin
   FStream.Write(Reverse_Single(AData),SizeOf(AData));
@@ -323,6 +376,39 @@ procedure TDataStore.WriteCurrency(const AData: TFloat_Currency_8);
 begin
   FStream.Write(Reverse_Currency(AData),SizeOf(AData));
 end;
+{$ELSE}
+procedure TDataStore.WriteSingle(const AData: TFloat_Single_4);
+var
+  bffr : TFloat_Single_4;
+begin
+  bffr := Reverse_Single(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteDouble(const AData: TFloat_Double_8);
+var
+  bffr : TFloat_Double_8;
+begin
+  bffr := Reverse_Double(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteExtended(const AData: TFloat_Extended_10);
+var
+  bffr : TFloat_Extended_10;
+begin
+  bffr := Reverse_Extended(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+
+procedure TDataStore.WriteCurrency(const AData: TFloat_Currency_8);
+var
+  bffr : TFloat_Currency_8;
+begin
+  bffr := Reverse_Currency(AData);
+  FStream.Write(bffr,SizeOf(AData));
+end;
+{$ENDIF}
 
 constructor TDataStore.Create(AStream: TStream);
 begin

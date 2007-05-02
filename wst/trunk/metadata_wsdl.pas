@@ -13,7 +13,7 @@
 
 unit metadata_wsdl;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -138,6 +138,9 @@ const
   sWSDL_TYPE               = sTYPE;
   sWSDL_TYPES              = 'types';
   
+  sFORMAT_Input_EncodingStyle = 'FORMAT_Input_EncodingStyle';
+  sFORMAT_Input_EncodingStyleURI = 'FORMAT_Input_EncodingStyleURI';
+
 var
   WsdlTypeHandlerRegistryInst : IWsdlTypeHandlerRegistry;
   
@@ -290,7 +293,7 @@ begin
   if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
     Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
   end else begin
-    Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.Count]) ;
+    Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
     AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
   end;
 end;
@@ -395,24 +398,39 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
     var
       opNode, inNode, outNode, bdyNode : TDOMElement;
       strBuff : string;
+      propData : PPropertyData;
+      encdStyl,encdStylURI : string;
     begin
       strBuff := Format('%s:%s',[sSOAP,sWSDL_OPERATION]);
-      CreateElement(strBuff,ABndngNode,ADoc).SetAttribute(sSOAP_ACTION,Format('%s/%s%s',[AMdtdRep^.NameSpace,AService^.Name,AOperation^.Name]));
+      //CreateElement(strBuff,ABndngNode,ADoc).SetAttribute(sSOAP_ACTION,Format('%s/%s%s',[AMdtdRep^.NameSpace,AService^.Name,AOperation^.Name]));
       opNode := CreateElement(sWSDL_OPERATION,ABndngNode,ADoc);
       opNode.SetAttribute(sWSDL_NAME,AOperation^.Name);
+        CreateElement(strBuff,opNode,ADoc).SetAttribute(sSOAP_ACTION,Format('%s/%s%s',[AMdtdRep^.NameSpace,AService^.Name,AOperation^.Name]));
         inNode := CreateElement(sWSDL_INPUT,opNode,ADoc);
           strBuff := Format('%s:%s',[sSOAP,sBODY]);
           bdyNode := CreateElement(strBuff,inNode,ADoc);
-          bdyNode.SetAttribute(sSOAP_USE,sSOAP_ENCODED);
+          encdStyl := 'literal';
+          encdStylURI := '';
+          propData := Find(AOperation^.Properties,sFORMAT_Input_EncodingStyle);
+          if Assigned(propData) and ( Length(Trim(propData^.Data)) > 0 ) then begin
+            encdStyl := Trim(propData^.Data);
+          end;
+          bdyNode.SetAttribute(sSOAP_USE,encdStyl);
           bdyNode.SetAttribute(sNAME_SPACE,Format('%s',[AMdtdRep^.NameSpace]));
-          bdyNode.SetAttribute(sSOAP_ENCODING_STYLE,sSOAP_ENC_NS);
+          propData := Find(AOperation^.Properties,sFORMAT_Input_EncodingStyleURI);
+          if Assigned(propData) and ( Length(Trim(propData^.Data)) > 0 ) then begin
+            encdStylURI := Trim(propData^.Data);
+          end;
+          if ( Length(encdStylURI) > 0 ) then
+            bdyNode.SetAttribute(sSOAP_ENCODING_STYLE,encdStylURI);
 
         outNode := CreateElement(sWSDL_OUTPUT,opNode,ADoc);
           strBuff := Format('%s:%s',[sSOAP,sBODY]);
           bdyNode := CreateElement(strBuff,outNode,ADoc);
-          bdyNode.SetAttribute(sSOAP_USE,sSOAP_ENCODED);
+          bdyNode.SetAttribute(sSOAP_USE,encdStyl);
           bdyNode.SetAttribute(sNAME_SPACE,Format('%s',[AMdtdRep^.NameSpace]));
-          bdyNode.SetAttribute(sSOAP_ENCODING_STYLE,sSOAP_ENC_NS);
+          if ( Length(encdStylURI) > 0 ) then
+            bdyNode.SetAttribute(sSOAP_ENCODING_STYLE,encdStylURI);
     end;
 
   var
@@ -651,7 +669,7 @@ begin
     if FindAttributeByValueInNode(typItm.NameSpace,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      ns_shortName := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.Count]) ;
+      ns_shortName := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,ns_shortName]),typItm.NameSpace);
     end;
     defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
@@ -749,7 +767,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
     if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
       Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.Count]) ;
+      Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
     end;
   end;

@@ -12,7 +12,7 @@
 }
 unit synapse_http_protocol;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 //{$DEFINE WST_DBG}
 
 interface

@@ -11,7 +11,7 @@
 }
 unit base_binary_formatter;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 {$DEFINE wst_binary_header}
 
 interface
@@ -154,7 +154,7 @@ type
       const ADataType : TDataType
     ):PDataBuffer;override;
     function CreateInnerBuffer(const ADataType : TDataType):PDataBuffer;override;
-    function GetInnerBuffer():PDataBuffer;
+    function GetInnerBuffer():PDataBuffer;overload;override;
     procedure NilCurrentScope();override;
     function IsCurrentScopeNil():Boolean;override;
   End;
@@ -169,7 +169,7 @@ type
     {$IFDEF wst_binary_header}
     FHeaderEnterCount : Integer;
     {$ENDIF}
-  private
+  protected
     function GetCurrentScope: String;
     function GetCurrentScopeObject():PDataBuffer;
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
@@ -315,8 +315,8 @@ type
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
 
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   End;
 
   TDBGPinterProc = procedure(const AMsg:string);
@@ -338,6 +338,8 @@ type
   procedure PrintObj(const ARoot: PDataBuffer; const ALevel : Integer; const APrinterProc : TDBGPinterProc);
 
 implementation
+
+{$INCLUDE wst_rtl_imp.inc}
 
 procedure PrintObj(const ARoot: PDataBuffer; const ALevel : Integer; const APrinterProc : TDBGPinterProc);
 Var
@@ -418,7 +420,7 @@ Var
   p : PObjectBufferItem;
 Begin
   If ( AOwner^.DataType = dtObject ) Then Begin
-    p := GetMem(SizeOf(PObjectBufferItem^));
+    p := wst_GetMem(SizeOf(TObjectBufferItem));
     p^.Data := AChildData;
     p^.Next := Nil;
     If Assigned(AOwner^.ObjectData^.Head) Then Begin
@@ -446,8 +448,8 @@ function CreateObjBuffer(
 var
   resLen, i : Integer;
 begin
-  resLen := SizeOf(PDataBuffer^);
-  Result := GetMem(resLen);
+  resLen := SizeOf(TDataBuffer);
+  Result := wst_GetMem(resLen);
   Try
     FillChar(Result^,resLen,#0);
     Result^.Name := AName;
@@ -455,15 +457,15 @@ begin
     Case Result^.DataType Of
       dtString :
         Begin
-          i := SizeOf(PStringBuffer^);
-          Result^.StrData := GetMem(i);
+          i := SizeOf(TStringBuffer);
+          Result^.StrData := wst_GetMem(i);
           FillChar(Result^.StrData^,i,#0);
           Result^.StrData^.Data := '';
         End;
       dtObject :
         Begin
-          Result^.ObjectData := GetMem(SizeOf(PObjectBuffer^));
-          FillChar(Result^.ObjectData^,SizeOf(PObjectBuffer^),#0);
+          Result^.ObjectData := wst_GetMem(SizeOf(TObjectBuffer));
+          FillChar(Result^.ObjectData^,SizeOf(TObjectBuffer),#0);
         End;
     End;
     If Assigned(AOwner) Then
@@ -484,18 +486,18 @@ Var
   i, resLen : Integer;
 begin
   Assert(ALength>=0);
-  resLen := SizeOf(PDataBuffer^);
-  Result := GetMem(resLen);
+  resLen := SizeOf(TDataBuffer);
+  Result := wst_GetMem(resLen);
   Try
     FillChar(Result^,resLen,#0);
     Result^.Name := AName;
     Result^.DataType := dtArray;
-    Result^.ArrayData := GetMem(SizeOf(PArrayBuffer^));
-    FillChar(Result^.ArrayData^,SizeOf(PArrayBuffer^),#0);
+    Result^.ArrayData := wst_GetMem(SizeOf(TArrayBuffer));
+    FillChar(Result^.ArrayData^,SizeOf(TArrayBuffer),#0);
     Result^.ArrayData^.Count := ALength;
     If ( ALength > 0 ) Then Begin
       i := ALength*SizeOf(PDataBuffer);
-      Result^.ArrayData^.Items := GetMem(i);
+      Result^.ArrayData^.Items := wst_GetMem(i);
       FillChar(Result^.ArrayData^.Items^[0],i,#0);
     End Else Begin
       Result^.ArrayData^.Items := Nil;
@@ -669,7 +671,7 @@ Begin
       End;
     dtArray :
       Begin
-        eltLen := SizeOf(PDataBuffer^);
+        eltLen := SizeOf(TDataBuffer);
         For j := 0 to Pred(AOwner^.ArrayData^.Count) Do Begin
           ClearObj(AOwner^.ArrayData^.Items^[j]);
           Freemem(AOwner^.ArrayData^.Items^[j],eltLen);
@@ -679,7 +681,7 @@ Begin
         Freemem(AOwner^.ArrayData^.Items,i);
         AOwner^.ArrayData^.Items := Nil;
         ClearObjectBuffer(AOwner^.ArrayData^.Attributes);
-        i := SizeOf(PArrayBuffer^);
+        i := SizeOf(TArrayBuffer);
         Freemem(AOwner^.ArrayData,i);
         AOwner^.ArrayData := Nil;
       End;
@@ -829,7 +831,7 @@ end;
 
 function TBaseBinaryFormatter.HasScope(): Boolean;
 begin
-  Result := Assigned(FStack.Peek);
+  Result := ( FStack.Peek <> nil );
 end;
 
 procedure TBaseBinaryFormatter.CheckScope();
@@ -1121,12 +1123,12 @@ Var
   floatDt : TFloat_Extended_10;
 begin
   Case ATypeInfo^.Kind Of
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
         PutStr(AName,ATypeInfo,strData);
       End;
-    tkInt64,tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
         PutInt64(AName,ATypeInfo,int64Data);
@@ -1136,27 +1138,40 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := Boolean(AData);
         PutBool(AName,ATypeInfo,boolData);
       End;
+    {$ENDIF}
     tkInteger, tkEnumeration :
-      Begin
-        enumData := 0;
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong : enumData := LongInt(AData);
-          otULong : enumData := LongWord(AData);
-        End;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          PutInt(AName,ATypeInfo,enumData)
-        Else
-          PutEnum(AName,ATypeInfo,enumData);
-      End;
+      begin
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+        boolData := Boolean(AData);
+        PutBool(AName,ATypeInfo,boolData);
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
+          End;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            PutInt(AName,ATypeInfo,enumData)
+          Else
+            PutEnum(AName,ATypeInfo,enumData);
+      {$IFNDEF FPC}
+        end;
+      {$ENDIF}
+      end;
     tkFloat :
       Begin
         floatDt := 0;
@@ -1186,7 +1201,7 @@ var
 begin
   CheckScope();
   case ATypeInfo^.Kind of
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
         StackTop().CreateInnerBuffer(dtString)^.StrData^.Data := strData;
@@ -1196,20 +1211,24 @@ begin
         int64SData := Int64(AData);
         StackTop().CreateInnerBuffer(dtInt64S)^.Int64S := int64SData;
       end;
+    {$IFDEF FPC}
     tkQWord :
       begin
         int64UData := QWord(AData);
         StackTop().CreateInnerBuffer(dtInt64U)^.Int64U := int64UData;
       end;
+    {$ENDIF}
     tkClass :
       begin
         raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
       end;
+    {$IFDEF FPC}
     tkBool :
       begin
         boolData := Boolean(AData);
         StackTop().CreateInnerBuffer(dtBool)^.BoolData := boolData;
       end;
+    {$ENDIF}
     tkInteger :
       begin
         enumData := 0;
@@ -1248,16 +1267,27 @@ begin
       end;
     tkEnumeration :
       begin
-        enumData := 0;
-        case GetTypeData(ATypeInfo)^.OrdType of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong : enumData := LongInt(AData);
-          otULong : enumData := LongWord(AData);
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+        boolData := Boolean(AData);
+        StackTop().CreateInnerBuffer(dtBool)^.BoolData := boolData;
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          case GetTypeData(ATypeInfo)^.OrdType of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
+          end;
+          StackTop().CreateInnerBuffer(dtEnum)^.EnumData := enumData;
+      {$IFNDEF FPC}
         end;
-        StackTop().CreateInnerBuffer(dtEnum)^.EnumData := enumData;
+      {$ENDIF}
       end;
     tkFloat :
       begin
@@ -1309,13 +1339,13 @@ Var
   floatDt : TFloat_Extended_10;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64, tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,AName,int64Data);
         Int64(AData) := int64Data;
       End;
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
         GetStr(ATypeInfo,AName,strData);
@@ -1327,27 +1357,41 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
         GetBool(ATypeInfo,AName,boolData);
         Boolean(AData) := boolData;
       End;
+    {$ENDIF}
     tkInteger, tkEnumeration :
       Begin
-        enumData := 0;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          GetInt(ATypeInfo,AName,enumData)
-        Else
-          GetEnum(ATypeInfo,AName,enumData);
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : ShortInt(AData)    := enumData;
-          otUByte : Byte(AData)        := enumData;
-          otSWord : SmallInt(AData)    := enumData;
-          otUWord : Word(AData)        := enumData;
-          otSLong : LongInt(AData)     := enumData;
-          otULong : LongWord(AData)    := enumData;
-        End;
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          boolData := False;
+          GetBool(ATypeInfo,AName,boolData);
+          Boolean(AData) := boolData;
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            GetInt(ATypeInfo,AName,enumData)
+          Else
+            GetEnum(ATypeInfo,AName,enumData);
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : ShortInt(AData)    := enumData;
+            otUByte : Byte(AData)        := enumData;
+            otSWord : SmallInt(AData)    := enumData;
+            otUWord : Word(AData)        := enumData;
+            otSLong : LongInt(AData)     := enumData;
+            otULong : LongWord(AData)    := enumData;
+          End;
+      {$IFNDEF FPC}
+        end;
+      {$ENDIF}
       End;
     tkFloat :
       Begin
@@ -1375,11 +1419,19 @@ begin
   dataBuffer := StackTop().GetInnerBuffer();
   Case ATypeInfo^.Kind Of
     tkInt64        : Int64(AData) := dataBuffer^.Int64S;
+    {$IFDEF FPC}
     tkQWord        : QWord(AData) := dataBuffer^.Int64U;
-    tkLString,
-    tkAString      : string(AData) := dataBuffer^.StrData^.Data;
+    {$ENDIF}
+
+    tkLString
+    {$IFDEF FPC},
+    tkAString
+    {$ENDIF}       : string(AData) := dataBuffer^.StrData^.Data;
+
     tkClass        : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+    {$IFDEF FPC}
     tkBool         : Boolean(AData) := dataBuffer^.BoolData;
+    {$ENDIF}
     tkInteger      :
       begin
         case GetTypeData(ATypeInfo)^.OrdType Of
@@ -1393,14 +1445,24 @@ begin
       end;
     tkEnumeration      :
       begin
-        case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : ShortInt(AData)    := dataBuffer^.EnumData;
-          otUByte : Byte(AData)        := dataBuffer^.EnumData;
-          otSWord : SmallInt(AData)    := dataBuffer^.EnumData;
-          otUWord : Word(AData)        := dataBuffer^.EnumData;
-          otSLong : LongInt(AData)     := dataBuffer^.EnumData;
-          otULong : LongWord(AData)    := dataBuffer^.EnumData;
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          Boolean(AData) := dataBuffer^.BoolData;
+        end else begin
+      {$ENDIF}
+          case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : ShortInt(AData)    := dataBuffer^.EnumData;
+            otUByte : Byte(AData)        := dataBuffer^.EnumData;
+            otSWord : SmallInt(AData)    := dataBuffer^.EnumData;
+            otUWord : Word(AData)        := dataBuffer^.EnumData;
+            otSLong : LongInt(AData)     := dataBuffer^.EnumData;
+            otULong : LongWord(AData)    := dataBuffer^.EnumData;
+          end;
+      {$IFNDEF FPC}
         end;
+      {$ENDIF}
       end;
     tkFloat :
       begin

@@ -12,7 +12,7 @@
 }
 unit binary_formatter; 
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 
 interface

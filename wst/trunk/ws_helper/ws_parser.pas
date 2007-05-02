@@ -454,6 +454,7 @@ begin
   FStream := AStream;
   FTokenizer := TParser.Create(FStream);
   FSymbolTable := ASymbolTable;
+  FSymbolTable.Add(CreateWstInterfaceSymbolTable());
   FCurrentSymbol := Nil;
 end;
 

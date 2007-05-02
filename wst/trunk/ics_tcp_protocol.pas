@@ -12,7 +12,7 @@
 }
 unit ics_tcp_protocol;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -138,8 +138,8 @@ begin
   FAllDataRead := False;
   FPropMngr := TPublishedPropertyManager.Create(Self);
   FConnection := TWSocket.Create(Nil);
-  FConnection.OnDataAvailable := @DataAvailable;
-  FConnection.OnBgException := @BgExceptionHandler;
+  FConnection.OnDataAvailable := {$IFDEF FPC}@{$ENDIF}DataAvailable;
+  FConnection.OnBgException := {$IFDEF FPC}@{$ENDIF}BgExceptionHandler;
 end;
 
 destructor TTCPTransport.Destroy();

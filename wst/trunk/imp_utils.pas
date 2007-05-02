@@ -12,7 +12,7 @@
 }
 unit imp_utils;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -30,8 +30,8 @@ Type
   TPublishedPropertyManager = class(TInterfacedObject,IPropertyManager)
   Private
     FParent : TObject;
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   Protected
     procedure SetProperty(Const AName,AValue:string);
     procedure SetProperties(Const APropsStr:string);
@@ -87,11 +87,11 @@ begin
   pinf := GetPropInfo(FParent,AName);
   If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
     Case pinf^.PropType^.Kind of
-      tkSString,tkLString,tkAString,tkWString:
+      tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString:
         SetStrProp(FParent,pinf,AValue);
       tkEnumeration :
         SetEnumProp(FParent,pinf,AValue);
-      tkInteger,tkInt64,tkQWord:
+      tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
         Begin
           If TryStrToInt64(AValue,int64Val) Then
             SetOrdProp(FParent,AName,int64Val);
@@ -127,11 +127,11 @@ begin
   pinf := GetPropInfo(FParent,AName);
   If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
     Case pinf^.PropType^.Kind of
-      tkSString,tkLString,tkAString,tkWString:
+      tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString:
         Result := GetStrProp(FParent,pinf);
       tkEnumeration :
         Result := GetEnumProp(FParent,pinf);
-      tkInteger,tkInt64,tkQWord:
+      tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
         Result := IntToStr(GetOrdProp(FParent,pinf));
     End;
   End;
@@ -147,9 +147,9 @@ begin
   Try
     For i := 0 To Pred(propListLen) Do Begin
       If ( propList^[i]^.PropType^.Kind in
-           [ tkSString,tkLString,tkAString,tkWString,
+           [ tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString,
              tkEnumeration,
-             tkInteger,tkInt64,tkQWord
+             tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}
            ]
          )
       Then

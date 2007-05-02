@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -41,8 +41,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="main_unit.lrs"/>
         <UnitName Value="main_unit"/>
-        <CursorPos X="40" Y="42"/>
-        <TopLine Value="25"/>
+        <CursorPos X="3" Y="129"/>
+        <TopLine Value="109"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="82"/>
         <Loaded Value="True"/>
@@ -60,8 +60,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_proxy"/>
         <CursorPos X="20" Y="39"/>
-        <TopLine Value="25"/>
-        <EditorIndex Value="4"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="82"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -318,78 +318,16 @@
       <Unit40>
         <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
         <UnitName Value="DOM"/>
-        <CursorPos X="32" Y="210"/>
+        <CursorPos X="40" Y="373"/>
         <TopLine Value="356"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit40>
     </Units>
-    <JumpHistory Count="16" HistoryIndex="15">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
         <Filename Value="main_unit.pas"/>
         <Caret Line="42" Column="40" TopLine="25"/>
       </Position1>
-      <Position2>
-        <Filename Value="..\..\..\soap_formatter.pas"/>
-        <Caret Line="20" Column="33" TopLine="4"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="63" Column="20" TopLine="49"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="78" Column="5" TopLine="64"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="84" Column="51" TopLine="70"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="88" Column="98" TopLine="74"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="106" Column="44" TopLine="92"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="112" Column="28" TopLine="98"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="117" Column="9" TopLine="103"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="179" Column="28" TopLine="151"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="193" Column="9" TopLine="177"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\..\soap_formatter.pas"/>
-        <Caret Line="21" Column="53" TopLine="4"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\..\soap_formatter.pas"/>
-        <Caret Line="125" Column="24" TopLine="115"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="1266" Column="20" TopLine="1264"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\dom.pp"/>
-        <Caret Line="975" Column="24" TopLine="962"/>
-      </Position16>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -422,7 +360,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="6">
+    <BreakPoints Count="5">
       <Item1>
         <Source Value="..\..\..\..\home\inoussa\Projets\Laz\tests\soap\test_soap.pas"/>
         <Line Value="15"/>
@@ -443,10 +381,6 @@
         <Source Value="..\..\..\..\basic_binder.pas"/>
         <Line Value="62"/>
       </Item5>
-      <Item6>
-        <Source Value="main_unit.pas"/>
-        <Line Value="54"/>
-      </Item6>
     </BreakPoints>
     <Watches Count="1">
       <Item1>

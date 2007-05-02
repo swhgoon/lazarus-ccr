@@ -5,7 +5,7 @@ This unit has been produced by ws_helper.
   Date            : "01/07/2006 22:14".
 }
 Unit metadata_service_imp;
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 Interface
 
 Uses SysUtils, Classes, 

@@ -59,7 +59,7 @@ begin
   try
     if not Assigned(FObj) then
       FObj := TCalculator_Proxy.Create(
-                'Calculator', // Target
+                'ICalculator', // Target
                 edtFormat.Text,//'SOAP',//'binary',  // Protocol Data
                 edtAddress.Text
                 //'http:Address=http://127.0.0.1:8000/services/ICalculator'
@@ -126,7 +126,7 @@ end;
 procedure Tfmain.FormCreate(Sender: TObject);
 begin
   FObj := Nil;
-  //ICS_RegisterTCP_Transport();
+  ICS_RegisterTCP_Transport();
   ICS_RegisterHTTP_Transport();
   LIB_Register_Transport();
   //SYNAPSE_RegisterHTTP_Transport();

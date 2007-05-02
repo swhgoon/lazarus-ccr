@@ -13,7 +13,7 @@
 
 unit metadata_repository;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -115,9 +115,11 @@ type
   
   function GetServiceDefaultAddress(AServiceTyp : PTypeInfo):string;
   function GetServiceDefaultFormatProperties(AServiceTyp : PTypeInfo):string;
-  
+
 implementation
 uses wst_resources_imp, binary_streamer, imp_utils;
+
+{$INCLUDE wst_rtl_imp.inc}
 
 const sADDRESS = 'Address';
 function GetServiceDefaultAddress(AServiceTyp : PTypeInfo):string;
@@ -178,7 +180,7 @@ var
 begin
   if not Assigned(AProps) then
     Exit;
-  c := SizeOf(PPropertyData^);
+  c := SizeOf(TPropertyData);
   p := AProps;
   while Assigned(p) do begin
     q := p;
@@ -198,12 +200,12 @@ begin
   Result := nil;
   if not Assigned(AProps) then
     Exit;
-  c := SizeOf(PPropertyData^);
-  q0 := GetMem(c);
+  c := SizeOf(TPropertyData);
+  q0 := wst_GetMem(c);
   q := q0;
   p := AProps;
   while Assigned(p) do begin
-    q^.Next := GetMem(c);
+    q^.Next := wst_GetMem(c);
     FillChar(q^.Next^,c,#0);
     q := q^.Next;
     q^.Name := p^.Name;
@@ -234,15 +236,15 @@ function Add(
 ) : PPropertyData;
 begin
   if not Assigned(AProps) then begin
-    AProps := GetMem(SizeOf(PPropertyData^));
-    FillChar(AProps^,SizeOf(PPropertyData^),#0);
+    AProps := wst_GetMem(SizeOf(TPropertyData));
+    FillChar(AProps^,SizeOf(TPropertyData),#0);
     AProps^.Next := nil;
     Result := AProps;
   end else begin
     Result := Find(AProps,APropName);
     if not Assigned(Result) then begin
-      Result := GetMem(SizeOf(PPropertyData^));
-      FillChar(Result^,SizeOf(PPropertyData^),#0);
+      Result := wst_GetMem(SizeOf(TPropertyData));
+      FillChar(Result^,SizeOf(TPropertyData),#0);
       Result^.Next := AProps;
       AProps := Result;
     end;
@@ -259,7 +261,7 @@ procedure ClearService(AService : PService; const AFreeService : Boolean);
   begin
     cc := AOperation^.ParamsCount;
     if ( cc > 0 ) then begin
-      Freemem(AOperation^.Params, cc * SizeOf(POperationParam^) );
+      Freemem(AOperation^.Params, cc * SizeOf(TOperationParam) );
     end;
     ClearProperties(AOperation^.Properties);
   end;
@@ -274,15 +276,17 @@ begin
   if ( k > 0 ) then begin
     po := AService^.Operations;
     for j := 0 to Pred(k) do begin
-      ClearOperation(@(po[j]));
+      //ClearOperation(@(po[j]));
+      ClearOperation(po);
+      Inc(po);
     end;
-    Freemem(AService^.Operations, k * SizeOf(PServiceOperation^) );
+    Freemem(AService^.Operations, k * SizeOf(TServiceOperation) );
     AService^.Operations := nil;
     ClearProperties(AService^.Properties);
     AService^.Properties := nil;
   end;
   if AFreeService then
-    Freemem(AService,SizeOf(PService^));
+    Freemem(AService,SizeOf(TService));
 end;
 
 procedure ClearRepositoryData(var ARepository : PServiceRepository);
@@ -295,11 +299,13 @@ begin
     if ( c > 0 ) then begin
       ps := ARepository^.Services;
       for i := 0 to Pred(c) do begin
-        ClearService(@(ps[i]),false);
+        //ClearService(@(ps[i]),false);
+        ClearService(ps,false);
+        Inc(ps);
       end;
-      Freemem(ARepository^.Services, c * SizeOf(PService^) );
+      Freemem(ARepository^.Services, c * SizeOf(TService) );
     end;
-    Freemem(ARepository,SizeOf(PServiceRepository^));
+    Freemem(ARepository,SizeOf(TServiceRepository));
     ARepository := nil;
   end;
 end;
@@ -330,12 +336,14 @@ var
       AOperation^.Properties := nil;
       cc := rdr.ReadInt8U();
       if ( cc > 0 ) then begin
-        AOperation^.Params := GetMem( cc * SizeOf(POperationParam^) );
-        FillChar(AOperation^.Params^, cc * SizeOf(POperationParam^), #0);
+        AOperation^.Params := wst_GetMem( cc * SizeOf(TOperationParam) );
+        FillChar(AOperation^.Params^, cc * SizeOf(TOperationParam), #0);
         AOperation^.ParamsCount := cc;
         pp := AOperation^.Params;
         for ii := 0 to Pred(cc) do begin
-          LoadParam(@(pp[ii]));
+          //LoadParam(@(pp[ii]));
+          LoadParam(pp);
+          Inc(pp);
         end;
       end;
     end;
@@ -348,12 +356,14 @@ var
     AService^.Properties := nil;
     k := rdr.ReadInt8U();
     if ( k > 0 ) then begin
-      AService^.Operations := GetMem( k * SizeOf(PServiceOperation^) );
+      AService^.Operations := wst_GetMem( k * SizeOf(TServiceOperation) );
       AService^.OperationsCount := k;
-      FillChar(AService^.Operations^,k * SizeOf(PServiceOperation^), #0);
+      FillChar(AService^.Operations^,k * SizeOf(TServiceOperation), #0);
       po := AService^.Operations;
       for j := 0 to Pred(k) do begin
-        LoadOperation(@(po[j]));
+        //LoadOperation(@(po[j]));
+        LoadOperation(po);
+        Inc(po);
       end;
     end;
   end;
@@ -369,19 +379,21 @@ begin
   buf := rdr.ReadStr();
   if ( sWST_SIGNATURE <> buf ) then
     raise EMetadataException.CreateFmt('Invalid Metadata signature : "%s"',[buf]);
-  c := SizeOf(PServiceRepository^);
-  ARepository := GetMem(c);
+  c := SizeOf(TServiceRepository);
+  ARepository := wst_GetMem(c);
   try
     FillChar(ARepository^,c,#0);
     ARepository^.Name := rdr.ReadStr();
     c := rdr.ReadInt8U();
     if ( c > 0 ) then begin
-      ARepository^.Services := GetMem( c * SizeOf(PService^) );
+      ARepository^.Services := wst_GetMem( c * SizeOf(TService) );
       ARepository^.ServicesCount := c;
-      FillChar(ARepository^.Services^,c * SizeOf(PService^),#0);
+      FillChar(ARepository^.Services^,c * SizeOf(TService),#0);
       ps := ARepository^.Services;
       for i := 0 to Pred(c) do begin
-        LoadService(@(ps[i]));
+        //LoadService(@(ps[i]));
+        LoadService(ps);
+        Inc(ps);
       end;
     end;
     Result := c;
@@ -403,36 +415,44 @@ procedure CopyService(ASrcService,ADestService : PService);
 
   var
     ii, cc : LongInt;
-    pp : POperationParam;
+    ppSrc, pp : POperationParam;
   begin
     ADstOperation^.Name := ASrcOperation^.Name;
     ADstOperation^.Properties := CloneProperties(ASrcOperation^.Properties);
     cc := ASrcOperation^.ParamsCount;
     if ( cc > 0 ) then begin
-      ADstOperation^.Params := GetMem( cc * SizeOf(POperationParam^) );
-      FillChar(ADstOperation^.Params^, cc * SizeOf(POperationParam^), #0);
+      ADstOperation^.Params := wst_GetMem( cc * SizeOf(TOperationParam) );
+      FillChar(ADstOperation^.Params^, cc * SizeOf(TOperationParam), #0);
       ADstOperation^.ParamsCount := cc;
+      ppSrc := ASrcOperation^.Params;
       pp := ADstOperation^.Params;
       for ii := 0 to Pred(cc) do begin
-        CopyParam(@(ASrcOperation^.Params[ii]),@(pp[ii]));
+        //CopyParam(@(ASrcOperation^.Params[ii]),@(pp[ii]));
+        CopyParam(ppSrc,pp);
+        Inc(ppSrc);
+        Inc(pp);
       end;
     end;
   end;
 
 var
   j, k : LongInt;
-  po : PServiceOperation;
+  poSrc, po : PServiceOperation;
 begin
   ADestService^.Name := ASrcService^.Name;
   ADestService^.Properties := CloneProperties(ASrcService^.Properties);
   k := ASrcService^.OperationsCount;
   if ( k > 0 ) then begin
-    ADestService^.Operations := GetMem( k * SizeOf(PServiceOperation^) );
+    ADestService^.Operations := wst_GetMem( k * SizeOf(TServiceOperation) );
     ADestService^.OperationsCount := k;
-    FillChar(ADestService^.Operations^,k * SizeOf(PServiceOperation^), #0);
+    FillChar(ADestService^.Operations^,k * SizeOf(TServiceOperation), #0);
     po := ADestService^.Operations;
+    poSrc := ASrcService^.Operations;
     for j := 0 to Pred(k) do begin
-      CopyOperation(@(ASrcService^.Operations[j]),@(po[j]));
+      //CopyOperation(@(ASrcService^.Operations[j]),@(po[j]));
+      CopyOperation(poSrc,po);
+      Inc(poSrc);
+      Inc(po);
     end;
   end;
 end;
@@ -441,8 +461,8 @@ function CloneService(const ASrcService : PService) : PService;
 var
   c : Integer;
 begin
-  c := SizeOf(PService^);
-  Result := GetMem(c);
+  c := SizeOf(TService);
+  Result := wst_GetMem(c);
   FillChar(Result^,c,#0);
   CopyService(ASrcService,Result);
 end;
@@ -453,13 +473,13 @@ procedure CloneRepository(
 );
 var
   i, c : LongInt;
-  ps : PService;
+  psSrc, ps : PService;
 begin
   ADest := nil;
   if not Assigned(ASource) then
     Exit;
-  c := SizeOf(PServiceRepository^);
-  ADest := GetMem(c);
+  c := SizeOf(TServiceRepository);
+  ADest := wst_GetMem(c);
   try
     FillChar(ADest^,c,#0);
     ADest^.Name := ASource^.Name;
@@ -467,12 +487,14 @@ begin
     ADest^.RootAddress := ASource^.RootAddress;
     c := ASource^.ServicesCount;
     if ( c > 0 ) then begin
-      ADest^.Services := GetMem( c * SizeOf(PService^) );
+      ADest^.Services := wst_GetMem( c * SizeOf(TService) );
       ADest^.ServicesCount := c;
-      FillChar(ADest^.Services^,c * SizeOf(PService^),#0);
+      FillChar(ADest^.Services^,c * SizeOf(TService),#0);
       ps := ADest^.Services;
+      psSrc := ASource^.Services;
       for i := 0 to Pred(c) do begin
-        CopyService(@(ASource^.Services[i]),@(ps[i]));
+        //CopyService(@(ASource^.Services[i]),@(ps[i]));
+        CopyService(psSrc,ps);
       end;
     end;
   except
@@ -679,12 +701,16 @@ function FindService(
 ) : PService;
 var
   i : Integer;
+  srv : PService;
 begin
+  srv := ARep^.Services;
   for i := 0 to Pred(ARep^.ServicesCount) do begin
-    if AnsiSameText(AServiceName,ARep^.Services[i].Name) then begin
-      Result := @(ARep^.Services[i]);
+    //if AnsiSameText(AServiceName,ARep^.Services[i].Name) then begin
+    if AnsiSameText(AServiceName,srv^.Name) then begin
+      Result := srv;
       Exit;
     end;
+    Inc(srv);
   end;
   Result := nil;
 end;
@@ -716,12 +742,15 @@ function FindOperation(
 ) : PServiceOperation;
 var
   i : Integer;
+  sop : PServiceOperation;
 begin
+  sop := AServ^.Operations;
   for i := 0 to Pred(AServ^.OperationsCount) do begin
-    if AnsiSameText(AOperationName,AServ^.Operations[i].Name) then begin
-      Result := @(AServ^.Operations[i]);
+    if AnsiSameText(AOperationName,sop^.Name) then begin
+      Result := sop;
       Exit;
     end;
+    Inc(sop);
   end;
   Result := nil;
 end;
@@ -762,11 +791,9 @@ begin
   if ( i < 0 ) then
     i := InternalLoadRepository(ARepName);
   rp := FRepositories[i];
-  for i := 0 to Pred(rp^.ServicesCount) do begin
-    if AnsiSameText(AServiceName,rp^.Services[i].Name) then begin
-      Result := CloneService(@(rp^.Services[i]));
-      Exit;
-    end;
+  Result := FindService(rp,AServiceName);
+  if ( Result <> nil ) then begin
+    Result := CloneService(Result);
   end;
 end;
 

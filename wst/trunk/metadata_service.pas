@@ -13,7 +13,7 @@
 
 unit metadata_service;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 

@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="8"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -26,15 +26,15 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="41">
+    <Units Count="42">
       <Unit0>
         <Filename Value="tcp_gui_server.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_gui_server"/>
         <CursorPos X="1" Y="16"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="131"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="132"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -46,17 +46,17 @@
         <CursorPos X="51" Y="90"/>
         <TopLine Value="73"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="131"/>
+        <UsageCount Value="132"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="server_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_unit"/>
-        <CursorPos X="48" Y="14"/>
-        <TopLine Value="243"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="131"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="132"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -233,19 +233,19 @@
       <Unit28>
         <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
-        <CursorPos X="1" Y="202"/>
-        <TopLine Value="195"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="46"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="46" Y="224"/>
-        <TopLine Value="235"/>
+        <CursorPos X="13" Y="965"/>
+        <TopLine Value="963"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -293,10 +293,10 @@
         <Filename Value="..\calculator\calculator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="9" Y="10"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
@@ -305,8 +305,8 @@
         <UnitName Value="calculator_imp"/>
         <CursorPos X="48" Y="117"/>
         <TopLine Value="110"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -315,7 +315,7 @@
         <UnitName Value="calculator_binder"/>
         <CursorPos X="80" Y="174"/>
         <TopLine Value="170"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
       </Unit37>
       <Unit38>
         <Filename Value="..\..\metadata_service.pas"/>
@@ -323,7 +323,7 @@
         <CursorPos X="36" Y="89"/>
         <TopLine Value="114"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -332,71 +332,52 @@
         <CursorPos X="62" Y="17"/>
         <TopLine Value="1"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>
         <Filename Value="..\..\metadata_service_binder.pas"/>
         <UnitName Value="metadata_service_binder"/>
         <CursorPos X="61" Y="29"/>
-        <TopLine Value="19"/>
+        <TopLine Value="10"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit40>
+      <Unit41>
+        <Filename Value="..\..\wst.inc"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit41>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="4" HistoryIndex="3">
       <Position1>
-        <Filename Value="umain.pas"/>
-        <Caret Line="42" Column="60" TopLine="37"/>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1952" Column="32" TopLine="1939"/>
       </Position1>
       <Position2>
-        <Filename Value="tcp_gui_server.lpr"/>
-        <Caret Line="3" Column="25" TopLine="1"/>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="1954" Column="8" TopLine="1939"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\metadata_service.pas"/>
-        <Caret Line="252" Column="23" TopLine="227"/>
+        <Filename Value="..\calculator\calculator.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="..\..\metadata_service.pas"/>
-        <Caret Line="159" Column="23" TopLine="134"/>
+        <Filename Value="..\calculator\calculator.pas"/>
+        <Caret Line="3" Column="2" TopLine="1"/>
       </Position4>
-      <Position5>
-        <Filename Value="..\..\metadata_service.pas"/>
-        <Caret Line="252" Column="23" TopLine="227"/>
-      </Position5>
-      <Position6>
-        <Filename Value="umain.pas"/>
-        <Caret Line="43" Column="38" TopLine="43"/>
-      </Position6>
-      <Position7>
-        <Filename Value="tcp_gui_server.lpr"/>
-        <Caret Line="16" Column="1" TopLine="1"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\metadata_service_imp.pas"/>
-        <Caret Line="17" Column="62" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="umain.pas"/>
-        <Caret Line="43" Column="53" TopLine="24"/>
-      </Position9>
-      <Position10>
-        <Filename Value="umain.pas"/>
-        <Caret Line="31" Column="15" TopLine="24"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\metadata_service.pas"/>
-        <Caret Line="89" Column="36" TopLine="80"/>
-      </Position11>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="c:\LazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\calculator\;..\calculator\srv\;..\..\"/>
+      <OtherUnitFiles Value="c:\LazarusClean\others_package\ics\latest_distr\Delphi\Vc32\;..\calculator\;..\calculator\srv\;..\..\;..\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>

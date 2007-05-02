@@ -1,6 +1,6 @@
 unit wst_resources_imp;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
@@ -17,8 +17,8 @@ type
     Procedure Assign(Source : TPersistent); override;
     Function  HasResource(Const AName : String) : Boolean; virtual; abstract;
     Function  ResourceAsString(Const AName : String) : String; virtual; abstract;
-    Procedure AddResource(Const AName,AValue : String); virtual; Abstract;
-    Procedure AddResource(const Name: AnsiString; Values: array of string);
+    Procedure AddResource(Const AName,AValue : String); overload;virtual; Abstract;
+    Procedure AddResource(const Name: AnsiString; Values: array of string);overload;
     Procedure GetResourceList(List : TStrings); virtual; abstract;
   end;
   

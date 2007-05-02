@@ -12,7 +12,7 @@
 }
 unit server_service_soap;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
 
 interface
 
