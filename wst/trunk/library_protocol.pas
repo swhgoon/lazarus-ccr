@@ -12,8 +12,6 @@
 }
 unit library_protocol;
 
-{$mode objfpc}{$H+}
-
 //{$DEFINE WST_DBG}
 
 interface
@@ -23,7 +21,9 @@ uses
   service_intf, imp_utils, base_service_intf, library_base_intf,
   library_imp_utils;
 
-Const
+{$INCLUDE wst.inc}
+
+const
   sTRANSPORT_NAME = 'LIB';
 
 Type

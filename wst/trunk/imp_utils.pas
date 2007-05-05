@@ -12,13 +12,13 @@
 }
 unit imp_utils;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
   Classes, SysUtils, TypInfo,
   base_service_intf;
+
+{$INCLUDE wst.inc}
 
 Type
 

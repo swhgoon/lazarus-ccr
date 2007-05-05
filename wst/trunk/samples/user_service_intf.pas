@@ -2,10 +2,10 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "02/05/2007 20:07".
+  Date            : "05/05/2007 19:07".
 }
 unit user_service_intf;
-{$mode objfpc}{$H+}
+{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
 interface
 
 uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;
@@ -46,7 +46,7 @@ type
   end;
 
   UserService = interface(IInvokable)
-    ['{CA6F6192-C3DE-4D9C-B3DF-E616376A0DC9}']
+    ['{842D8408-E142-470F-9CDD-FAD0D8AEEB12}']
     function GetList():TUserArray;
     procedure Add(
       Const AUser : TUser

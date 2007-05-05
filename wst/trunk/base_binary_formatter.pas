@@ -11,15 +11,15 @@
 }
 unit base_binary_formatter;
 
-{$INCLUDE wst.inc}
-{$DEFINE wst_binary_header}
-
 interface
 
 uses
   Classes, SysUtils, Contnrs, TypInfo,
   base_service_intf, binary_streamer;
 
+{$INCLUDE wst.inc}
+{$DEFINE wst_binary_header}
+  
 const
   sROOT   = 'ROOT';
   sSCOPE_INNER_NAME = 'INNER_VAL';

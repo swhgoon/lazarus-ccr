@@ -10,8 +10,8 @@ uses
   base_binary_formatter,
   binary_formatter,
   //ics_tcp_protocol,
-  calculator,
-  calculator_proxy,
+  user_service_intf,
+  user_service_intf_proxy,
   TypInfo,
   synapse_http_protocol,
   synapse_tcp_protocol;

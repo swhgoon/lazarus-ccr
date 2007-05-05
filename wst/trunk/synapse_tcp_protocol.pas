@@ -12,14 +12,14 @@
 }
 unit synapse_tcp_protocol;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf,
   blcksock;
+
+{$INCLUDE wst.inc}
 
 Const
   sTRANSPORT_NAME = 'TCP';

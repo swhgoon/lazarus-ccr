@@ -12,13 +12,12 @@
 }
 unit binary_streamer;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
   Classes, SysUtils, Types;
 
+{$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
 Const

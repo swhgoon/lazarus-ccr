@@ -37,7 +37,7 @@ resourcestring
            '  -i  Generate service minimal implementation' + sNEW_LINE +
            '  -o  PATH  Relative output directory' + sNEW_LINE +
            '  -a  PATH  Absolute output directory' + sNEW_LINE;
-  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.3 Copyright (c) 2006 by Inoussa OUEDRAOGO';
+  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.4 Copyright (c) 2006, 2007 by Inoussa OUEDRAOGO';
 
 const
   sWST_META = 'wst_meta';

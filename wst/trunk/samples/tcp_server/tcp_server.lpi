@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -29,24 +29,23 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="36">
+    <Units Count="37">
       <Unit0>
         <Filename Value="tcp_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_server"/>
-        <CursorPos X="28" Y="25"/>
-        <TopLine Value="17"/>
+        <CursorPos X="14" Y="22"/>
+        <TopLine Value="12"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="synapse_tcp_server.pas"/>
-        <IsPartOfProject Value="True"/>
         <UnitName Value="synapse_tcp_server"/>
         <CursorPos X="42" Y="211"/>
         <TopLine Value="197"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="65"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\classesh.inc"/>
@@ -113,10 +112,10 @@
         <Filename Value="..\user_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_service_intf"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="174"/>
+        <CursorPos X="14" Y="48"/>
+        <TopLine Value="55"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -135,7 +134,7 @@
         <CursorPos X="1" Y="48"/>
         <TopLine Value="36"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -148,10 +147,10 @@
       <Unit15>
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
-        <CursorPos X="70" Y="11"/>
+        <CursorPos X="30" Y="7"/>
         <TopLine Value="1"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -227,10 +226,10 @@
       <Unit27>
         <Filename Value="..\user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
-        <CursorPos X="72" Y="128"/>
-        <TopLine Value="108"/>
+        <CursorPos X="42" Y="16"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -267,9 +266,7 @@
         <UnitName Value="imp_helper"/>
         <CursorPos X="1" Y="44"/>
         <TopLine Value="32"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="33"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="37"/>
       </Unit32>
       <Unit33>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\persist.inc"/>
@@ -290,8 +287,22 @@
         <TopLine Value="314"/>
         <UsageCount Value="9"/>
       </Unit35>
+      <Unit36>
+        <Filename Value="..\..\synapse_tcp_server.pas"/>
+        <UnitName Value="synapse_tcp_server"/>
+        <CursorPos X="83" Y="24"/>
+        <TopLine Value="10"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit36>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="..\..\synapse_tcp_server.pas"/>
+        <Caret Line="174" Column="57" TopLine="176"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -301,7 +312,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="C:\Programmes\lazarus\wst\"/>
-      <OtherUnitFiles Value="C:\Programmes\lazarus\wst\;C:\Programmes\lazarus\wst\wst_rtti_filter\;$(LazarusDir)\others_package\synapse\;C:\Programmes\lazarus\wst\samples\"/>
+      <OtherUnitFiles Value="..\;..\..\;..\..\wst\wst_rtti_filter\;$(LazarusDir)\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <CodeGeneration>

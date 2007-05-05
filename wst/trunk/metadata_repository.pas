@@ -13,13 +13,12 @@
 
 unit metadata_repository;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
   Classes, SysUtils, TypInfo;
 
+{$INCLUDE wst.inc}
 
 const
   sWST_SIGNATURE = 'WST_METADATA_0.2.2.0';

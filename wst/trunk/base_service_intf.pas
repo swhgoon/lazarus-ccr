@@ -12,13 +12,12 @@
 }
 unit base_service_intf;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs;
 
+{$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
 const

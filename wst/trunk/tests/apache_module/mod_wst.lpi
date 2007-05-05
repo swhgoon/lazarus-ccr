@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="6"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -31,10 +31,10 @@
         <Filename Value="mod_wst.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_wst"/>
-        <CursorPos X="36" Y="47"/>
+        <CursorPos X="3" Y="10"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -43,7 +43,7 @@
         <UnitName Value="httpd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="82"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
       </Unit1>
       <Unit2>
         <Filename Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apr\apr.pas"/>
@@ -51,7 +51,7 @@
         <UnitName Value="apr"/>
         <CursorPos X="20" Y="141"/>
         <TopLine Value="122"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
       </Unit2>
       <Unit3>
         <Filename Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apriconv\apriconv.pas"/>
@@ -59,7 +59,7 @@
         <UnitName Value="apriconv"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="21"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
       </Unit3>
       <Unit4>
         <Filename Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\aprutil\aprutil.pas"/>
@@ -67,7 +67,7 @@
         <UnitName Value="aprutil"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="26"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
       </Unit4>
       <Unit5>
         <Filename Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\http_config.inc"/>
@@ -125,7 +125,7 @@
         <CursorPos X="29" Y="298"/>
         <TopLine Value="113"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -152,7 +152,7 @@
         <CursorPos X="19" Y="105"/>
         <TopLine Value="94"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit17>
       <Unit18>
@@ -161,7 +161,7 @@
         <CursorPos X="5" Y="20"/>
         <TopLine Value="1"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
@@ -188,7 +188,7 @@
         <CursorPos X="3" Y="25"/>
         <TopLine Value="14"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit22>
       <Unit23>
@@ -204,7 +204,7 @@
         <CursorPos X="5" Y="20"/>
         <TopLine Value="6"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -213,27 +213,15 @@
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit25>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="17" Column="43" TopLine="10"/>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="47" Column="36" TopLine="1"/>
       </Position1>
-      <Position2>
-        <Filename Value="..\..\metadata_wsdl.pas"/>
-        <Caret Line="5" Column="76" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\metadata_repository.pas"/>
-        <Caret Line="105" Column="19" TopLine="94"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\wst_resources_imp.pas"/>
-        <Caret Line="226" Column="1" TopLine="189"/>
-      </Position4>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -243,7 +231,7 @@
       <Filename Value="mod_wst.so"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apr\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apriconv\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\aprutil\;..\..\;..\..\tests\calculator\;..\..\tests\calculator\srv\"/>
+      <OtherUnitFiles Value="$(LazarusDir)\others_package\apache\httpd\httpd-2.2\;$(LazarusDir)\others_package\apache\httpd\httpd-2.2\apr\;$(LazarusDir)\others_package\apache\httpd\httpd-2.2\apriconv\;$(LazarusDir)\others_package\apache\httpd\httpd-2.2\aprutil\;..\..\;..\..\tests\calculator\;..\..\tests\calculator\srv\"/>
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apr\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\apriconv\;D:\lazarusClean\others_package\apache\httpd-0.2\httpd\httpd_2_0\aprutil\;..\..\;..\..\tests\calculator\;..\..\tests\calculator\srv\"/>
     </SearchPaths>
@@ -261,7 +249,8 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-WR"/>
+      <CustomOptions Value="-WR
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

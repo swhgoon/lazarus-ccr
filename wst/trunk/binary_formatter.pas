@@ -12,15 +12,14 @@
 }
 unit binary_formatter; 
 
-{$INCLUDE wst.inc}
-
-
 interface
 
 uses
   Classes, SysUtils, TypInfo,
   base_service_intf, service_intf, imp_utils,
   base_binary_formatter;
+
+{$INCLUDE wst.inc}
 
 Const
   sCONTENT_TYPE = 'contenttype';

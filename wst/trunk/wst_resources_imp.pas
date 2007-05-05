@@ -1,11 +1,11 @@
 unit wst_resources_imp;
 
-{$INCLUDE wst.inc}
-
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils;
+
+{$INCLUDE wst.inc}
 
 type
 

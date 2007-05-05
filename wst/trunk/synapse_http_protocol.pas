@@ -12,7 +12,6 @@
 }
 unit synapse_http_protocol;
 
-{$INCLUDE wst.inc}
 //{$DEFINE WST_DBG}
 
 interface
@@ -21,6 +20,8 @@ uses
   Classes, SysUtils,{$IFDEF WST_DBG}Dialogs,{$ENDIF}
   service_intf, imp_utils, base_service_intf,
   httpsend;
+
+{$INCLUDE wst.inc}
 
 Const
   sTRANSPORT_NAME = 'HTTP';

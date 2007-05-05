@@ -205,9 +205,9 @@ begin
   WriteLn('  This unit name  : "%s".',[GetDestUnitName()]);
   WriteLn('  Date            : "%s".',[DateTimeToStr(Now())]);
   WriteLn('}');
-  
+  WriteLn('');
   WriteLn('Unit %s;',[GetDestUnitName()]);
-  WriteLn('{$mode objfpc}{$H+}');
+  WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('Interface');
   WriteLn('');
   WriteLn('Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, %s;',[SymbolTable.Name]);
@@ -236,7 +236,7 @@ begin
   s := Format('Register_%s_ServiceMetadata',[SymbolTable.Name]);
   WriteLn('  {$IF DECLARED(%s)}',[s]);
   WriteLn('  %s();',[s]);
-  WriteLn('  {$ENDIF}');
+  WriteLn('  {$IFEND}');
   WriteLn('End.');
 end;
 
@@ -645,7 +645,7 @@ begin
   WriteLn('}');
 
   WriteLn('unit %s;',[GetDestUnitName()]);
-  WriteLn('{$mode objfpc}{$H+}');
+  WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('interface');
   WriteLn('');
   WriteLn('uses SysUtils, Classes, base_service_intf, server_service_intf, %s;',[SymbolTable.Name]);
@@ -1042,7 +1042,7 @@ begin
   WriteLn('}');
 
   WriteLn('Unit %s;',[GetDestUnitName()]);
-  WriteLn('{$mode objfpc}{$H+}');
+  WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('Interface');
   WriteLn('');
   WriteLn('Uses SysUtils, Classes, ');
@@ -1290,7 +1290,7 @@ begin
   WriteLn('}');
 
   WriteLn('unit %s;',[GetDestUnitName()]);
-  WriteLn('{$mode objfpc}{$H+}');
+  WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('interface');
   WriteLn('');
   WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;');

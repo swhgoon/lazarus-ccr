@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<definitions name="user_service_intf" targetNamespace="urn:UserService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:UserService" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<definitions name="user_service_intf" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:UserService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:UserService">
   <types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:UserService">
       <xsd:simpleType name="TUserCategory">
@@ -11,46 +11,30 @@
       <xsd:element name="TUser">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="Category" type="tns:TUserCategory" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="Name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="eMail" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-            <xsd:element name="Preferences" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="Category" type="tns:TUserCategory" maxOccurs="1" minOccurs="1"/>
+            <xsd:element name="UserName" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+            <xsd:element name="eMail" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+            <xsd:element name="Preferences" type="xsd:string" maxOccurs="1" minOccurs="1"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="TUserArray">
         <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="item" type="tns:TUser" minOccurs="0" maxOccurs="unbounded"/>
-          </xsd:sequence>
+          <xsd:sequence><xsd:element name="item" type="tns:TUser" maxOccurs="unbounded" minOccurs="0"/></xsd:sequence>
         </xsd:complexType>
       </xsd:element>
     </xsd:schema>
   </types>
   <message name="GetList"/>
-  <message name="GetListResponse">
-    <part name="result" type="tns:TUserArray"/>
-  </message>
-  <message name="Add">
-    <part name="AUser" type="tns:TUser"/>
-  </message>
+  <message name="GetListResponse"><part name="result" type="tns:TUserArray"/></message>
+  <message name="Add"><part name="AUser" type="tns:TUser"/></message>
   <message name="AddResponse"/>
-  <message name="Update">
-    <part name="AUser" type="tns:TUser"/>
-  </message>
+  <message name="Update"><part name="AUser" type="tns:TUser"/></message>
   <message name="UpdateResponse"/>
-  <message name="Find">
-    <part name="AName" type="xsd:string"/>
-  </message>
-  <message name="FindResponse">
-    <part name="result" type="tns:TUser"/>
-  </message>
-  <message name="Delete">
-    <part name="AName" type="xsd:string"/>
-  </message>
-  <message name="DeleteResponse">
-    <part name="result" type="xsd:boolean"/>
-  </message>
+  <message name="Find"><part name="AName" type="xsd:string"/></message>
+  <message name="FindResponse"><part name="result" type="tns:TUser"/></message>
+  <message name="Delete"><part name="AName" type="xsd:string"/></message>
+  <message name="DeleteResponse"><part name="result" type="xsd:boolean"/></message>
   <portType name="UserService">
     <operation name="GetList">
       <input message="tns:GetList"/>
@@ -77,53 +61,31 @@
     <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="GetList">
       <soap:operation soapAction="urn:UserService/UserServiceGetList"/>
-      <input>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </input>
-      <output>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </output>
+      <input><soap:body use="literal" namespace="urn:UserService"/></input>
+      <output><soap:body use="literal" namespace="urn:UserService"/></output>
     </operation>
     <operation name="Add">
       <soap:operation soapAction="urn:UserService/UserServiceAdd"/>
-      <input>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </input>
-      <output>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </output>
+      <input><soap:body use="literal" namespace="urn:UserService"/></input>
+      <output><soap:body use="literal" namespace="urn:UserService"/></output>
     </operation>
     <operation name="Update">
       <soap:operation soapAction="urn:UserService/UserServiceUpdate"/>
-      <input>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </input>
-      <output>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </output>
+      <input><soap:body use="literal" namespace="urn:UserService"/></input>
+      <output><soap:body use="literal" namespace="urn:UserService"/></output>
     </operation>
     <operation name="Find">
       <soap:operation soapAction="urn:UserService/UserServiceFind"/>
-      <input>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </input>
-      <output>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </output>
+      <input><soap:body use="literal" namespace="urn:UserService"/></input>
+      <output><soap:body use="literal" namespace="urn:UserService"/></output>
     </operation>
     <operation name="Delete">
       <soap:operation soapAction="urn:UserService/UserServiceDelete"/>
-      <input>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </input>
-      <output>
-        <soap:body use="literal" namespace="urn:UserService"/>
-      </output>
+      <input><soap:body use="literal" namespace="urn:UserService"/></input>
+      <output><soap:body use="literal" namespace="urn:UserService"/></output>
     </operation>
   </binding>
   <service name="UserService">
-    <port name="UserServicePort" binding="tns:UserServiceBinding">
-      <soap:address location="http://127.0.0.1:8000/services/UserService"/>
-    </port>
+    <port name="UserServicePort" binding="tns:UserServiceBinding"><soap:address location="http://127.0.0.1:8000/services/UserService"/></port>
   </service>
 </definitions>

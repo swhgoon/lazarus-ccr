@@ -962,9 +962,7 @@ function TWsdlParser.ParseOperation(
               prmDef := tmpMthd.FindParameter(prmInternameName);//(prmName);
               if ( prmDef = nil ) then begin
                 prmDef := tmpMthd.AddParameter(prmInternameName,pmOut,GetDataType(prmTypeName,prmTypeType));
-                if prmHasInternameName then begin
-                  prmDef.RegisterExternalAlias(prmName);
-                end;
+                prmDef.RegisterExternalAlias(prmName);
               end else begin
                 if prmDef.DataType.SameName(prmTypeName) then begin
                   TParamDefCrack(prmDef).SetModifier(pmVar);
@@ -972,9 +970,6 @@ function TWsdlParser.ParseOperation(
                   prmInternameName := '_' + prmInternameName;
                   prmDef := tmpMthd.AddParameter(prmInternameName,pmOut,GetDataType(prmTypeName,prmTypeType));
                   prmDef.RegisterExternalAlias(prmName);
-                  if prmHasInternameName then begin
-                    prmDef.RegisterExternalAlias(prmName);
-                  end;
                 end;
               end;
             end;

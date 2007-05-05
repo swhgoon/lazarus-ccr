@@ -12,10 +12,10 @@
 }
 unit library_base_intf;
 
-{$mode objfpc}{$H+}
-
 interface
 uses base_service_intf;
+
+{$INCLUDE wst.inc}
 
 const
   RET_OK = 0;

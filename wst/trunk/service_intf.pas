@@ -14,7 +14,6 @@
 { Base service interface }
 
 unit service_intf;
-{$INCLUDE wst.inc}
 
 interface
 
@@ -22,6 +21,8 @@ uses
   Classes, SysUtils, TypInfo, Contnrs,
   base_service_intf;
 
+{$INCLUDE wst.inc}
+  
 Const
   sTARGET = 'target';
   

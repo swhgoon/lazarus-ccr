@@ -2,10 +2,11 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_proxy".
-  Date            : "02/05/2007 20:07".
+  Date            : "05/05/2007 19:12".
 }
+
 Unit user_service_intf_proxy;
-{$mode objfpc}{$H+}
+{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
 Interface
 
 Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, user_service_intf;
@@ -170,5 +171,5 @@ initialization
 
   {$IF DECLARED(Register_user_service_intf_ServiceMetadata)}
   Register_user_service_intf_ServiceMetadata();
-  {$ENDIF}
+  {$IFEND}
 End.

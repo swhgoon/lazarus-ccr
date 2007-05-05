@@ -1,11 +1,11 @@
 unit library_imp_utils;
 
-{$mode objfpc}{$H+}
-
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils;
+
+{$INCLUDE wst.inc}
 
 type
 
@@ -25,7 +25,14 @@ var
   LibraryManager : IwstModuleManager = nil;
 
 implementation
-uses DynLibs;
+{$IFDEF FPC}
+  uses DynLibs;
+{$ELSE}
+  uses Windows;
+
+  type TLibHandle = THandle;
+  const NilHandle = 0;
+{$ENDIF}
 
 
 type
@@ -67,7 +74,11 @@ procedure TwstModule.Load(const ADoLoad : Boolean);
 begin
   if ADoLoad then begin
     if ( FHandle = NilHandle ) then begin
+      {$IFDEF FPC}
       FHandle := LoadLibrary(FFileName);
+      {$ELSE}
+      FHandle := LoadLibrary(PCHAR(FFileName));
+      {$ENDIF}
       if ( FHandle = NilHandle ) then
         raise Exception.CreateFmt('Error while loading : "%s".',[FFileName]);
     end;
@@ -86,7 +97,11 @@ end;
 
 function TwstModule.GetProc(const AProcName: string): Pointer;
 begin
+  {$IFDEF FPC}
   Result := GetProcAddress(FHandle,AProcName);
+  {$ELSE}
+  Result := GetProcAddress(FHandle,PCHAR(AProcName));
+  {$ENDIF}
   if not Assigned(Result) then
     raise Exception.CreateFmt('Procedure "%s" not found in this module( "%s" ).',[AProcName,FFileName]);
 end;

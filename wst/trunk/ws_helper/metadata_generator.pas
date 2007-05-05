@@ -75,8 +75,8 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TInterfaceDefinition);
 
     procedure WriteParam(APrm : TParameterDefinition);
     begin
-      FStream.WriteStr(APrm.Name);
-      FStream.WriteStr(APrm.DataType.Name);
+      FStream.WriteStr(APrm.ExternalName);
+      FStream.WriteStr(APrm.DataType.ExternalName);
       FStream.WriteEnum(Ord(APrm.Modifier));
     end;
 
