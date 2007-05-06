@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService".
-  Date            : "05/05/2007 10:07".
+  Date            : "6-5-07 19:37:08".
 }
 unit AWSECommerceService;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -7256,7 +7256,7 @@ type
   end;
 
   AWSECommerceServicePortType = interface(IInvokable)
-    ['{C470F61C-058A-4BDA-B4BC-2E565FE84674}']
+    ['{44FE21A3-034C-4AC2-81F3-73F0DD856713}']
     function Help(
       Const HelpParam : Help_Type
     ):HelpResponse_Type;

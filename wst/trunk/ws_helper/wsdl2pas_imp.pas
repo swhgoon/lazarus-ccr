@@ -288,7 +288,7 @@ begin
       if Assigned(attCrs) then begin
         crs := CreateCursorOn(attCrs,fltr);
         crs.Reset();
-        if crs.MoveNext() and WideSameText(AName,TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue) then begin
+        if crs.MoveNext() and AnsiSameText(AName,TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue) then begin
           Result := curObj.InnerObject;
           exit;
         end;

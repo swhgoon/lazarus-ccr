@@ -646,9 +646,9 @@ end;
 function TRttiExpWideStringNodeItem.Evaluate(AInstance: TRttiFilterCreatorTarget): Boolean;
 begin
   case Operation of
-    sfoEqualCaseSensitive   :  Result := ( GetStrProp(AInstance,PropInfo) = ComparedValue );
-    sfoEqualCaseInsensitive :  Result := WideSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
-    sfoNotEqual             :  Result := ( GetStrProp(AInstance,PropInfo) <> ComparedValue );
+    sfoEqualCaseSensitive   :  Result := AnsiSameStr(GetStrProp(AInstance,PropInfo),ComparedValue);
+    sfoEqualCaseInsensitive :  Result := AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
+    sfoNotEqual             :  Result := not AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
   end;
 end;
 

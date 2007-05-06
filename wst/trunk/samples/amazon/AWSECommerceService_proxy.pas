@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService_proxy".
-  Date            : "05/05/2007 10:07".
+  Date            : "6-5-07 19:37:08".
 }
 
 Unit AWSECommerceService_proxy;
@@ -575,5 +575,5 @@ initialization
 
   {$IF DECLARED(Register_AWSECommerceService_ServiceMetadata)}
   Register_AWSECommerceService_ServiceMetadata();
-  {$ENDIF}
+  {$IFEND}
 End.

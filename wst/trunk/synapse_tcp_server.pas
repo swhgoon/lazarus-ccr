@@ -237,7 +237,7 @@ begin
     FSocketObject.RaiseExcept := True;
     FSocketObject.CreateSocket();
     FSocketObject.SetLinger(True,10);
-    FSocketObject.Bind('0.0.0.0',sSERVER_PORT);
+    FSocketObject.Bind('127.0.0.1',sSERVER_PORT);
     FSocketObject.Listen();
     while not Terminated do begin
       if FSocketObject.CanRead(DefaultTimeOut) then begin

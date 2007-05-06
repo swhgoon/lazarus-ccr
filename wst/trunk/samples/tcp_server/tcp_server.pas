@@ -15,6 +15,14 @@ program tcp_server;
 {$INCLUDE wst.inc}
 
 uses
+{$IFDEF FPC}
+  {$IFDEF UNIX}
+    {$DEFINE UseCThreads}
+  {$ENDIF}
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+{$ENDIF}
   Classes, SysUtils,
   base_service_intf, server_service_soap,
   base_binary_formatter, server_binary_formatter,
