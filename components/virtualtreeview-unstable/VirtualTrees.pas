@@ -4764,6 +4764,7 @@ begin
     else
       Images.Handle := LoadBitmap(FindClassHInstance(TBaseVirtualTree), PChar(ImageName));
     }
+    Images.TransparentColor := clNone;
     Images.LoadFromLazarusResource(ImageName);
     Logger.SendBitmap([lcCheck],ImageName,Images);
     try
@@ -13702,8 +13703,7 @@ begin
 
   if NeedLines then
   begin
-    //Workaround till LCL gets fixed
-    {$ifdef Windows}
+    //WARNING: It requires a patched LCL
     if FDottedBrush <> 0 then
       DeleteObject(FDottedBrush);
 
@@ -13719,9 +13719,6 @@ begin
     PatternBitmap := CreateBitmap(8, 8, 1, 1, Bits);
     FDottedBrush := CreatePatternBrush(PatternBitmap);
     DeleteObject(PatternBitmap);
-    {$else}
-    FDottedBrush := CreatePatternBrush(0);
-    {$endif}
   end;
 end;
 
