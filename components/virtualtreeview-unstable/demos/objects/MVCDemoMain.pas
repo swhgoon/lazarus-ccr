@@ -15,11 +15,13 @@ unit MVCDemoMain;
 
 interface
 
-uses LCLIntf,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,
-     MVCTypes,MVCPanel,StdCtrls,ExtCtrls,ImgList,VirtualTrees,ComCtrls,
+uses
+  LCLIntf, SysUtils,Classes,Graphics,Controls,Forms,Dialogs,
+  MVCTypes,MVCPanel,StdCtrls,ExtCtrls,VirtualTrees,ComCtrls,
   Buttons, LResources, vtlogger,ipcchannel;
 
-type TfmMVCDemo=class(TForm)
+type
+  TfmMVCDemo=class(TForm)
        pnlControls:TPanel;
        ImageList1:TImageList;
        edCaption:TEdit;
@@ -52,7 +54,8 @@ type TfmMVCDemo=class(TForm)
        function CreateDefaultTree:TMVCTree;
      end;
 
-var fmMVCDemo:TfmMVCDemo;
+var
+  fmMVCDemo:TfmMVCDemo;
 
 implementation
 

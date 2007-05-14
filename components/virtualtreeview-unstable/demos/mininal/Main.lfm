@@ -1,30 +1,31 @@
 object MainForm: TMainForm
-  Left = 437
-  Height = 481
-  Top = 278
-  Width = 425
-  HorzScrollBar.Page = 424
-  VertScrollBar.Page = 480
+  Left = 340
+  Height = 486
+  Top = 147
+  Width = 427
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 485
   ActiveControl = VST
   Caption = 'Simple Virtual Treeview demo'
+  ClientHeight = 486
+  ClientWidth = 427
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   object Label1: TLabel
-    Left = 12
-    Height = 14
-    Top = 12
-    Width = 152
+    Left = 10
+    Height = 17
+    Top = 8
+    Width = 171
     Caption = 'Last operation duration:'
     Color = clNone
     ParentColor = False
   end
   object VST: TVirtualStringTree
-    Left = 8
-    Height = 318
-    Top = 36
-    Width = 397
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Left = 10
+    Height = 360
+    Top = 24
+    Width = 410
     BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
@@ -51,31 +52,28 @@ object MainForm: TMainForm
   object ClearButton: TButton
     Left = 97
     Height = 25
-    Top = 421
-    Width = 129
-    Anchors = [akLeft, akBottom]
+    Top = 452
+    Width = 183
     BorderSpacing.InnerBorder = 4
     Caption = 'Clear tree'
     OnClick = ClearButtonClick
     TabOrder = 1
   end
   object AddOneButton: TButton
-    Left = 96
+    Left = 97
     Height = 25
-    Top = 361
-    Width = 130
-    Anchors = [akLeft, akBottom]
+    Top = 392
+    Width = 183
     BorderSpacing.InnerBorder = 4
     Caption = 'Add node(s) to root'
     OnClick = AddButtonClick
     TabOrder = 2
   end
   object Edit1: TEdit
-    Left = 8
+    Left = 10
     Height = 21
-    Top = 377
-    Width = 81
-    Anchors = [akLeft, akBottom]
+    Top = 392
+    Width = 79
     TabOrder = 3
     Text = '1'
   end
@@ -83,20 +81,18 @@ object MainForm: TMainForm
     Tag = 1
     Left = 96
     Height = 25
-    Top = 389
-    Width = 130
-    Anchors = [akLeft, akBottom]
+    Top = 422
+    Width = 184
     BorderSpacing.InnerBorder = 4
     Caption = 'Add node(s) as children'
     OnClick = AddButtonClick
     TabOrder = 4
   end
   object CloseButton: TButton
-    Left = 330
+    Left = 345
     Height = 25
-    Top = 421
+    Top = 452
     Width = 75
-    Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Caption = 'Close'
     OnClick = CloseButtonClick

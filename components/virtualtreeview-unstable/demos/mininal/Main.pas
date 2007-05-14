@@ -12,7 +12,7 @@ uses
   {$ifdef DEBUG}
   vtlogger, ipcchannel,
   {$endif}
-  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   VirtualTrees, StdCtrls, ExtCtrls, LResources, Buttons;
 
 type

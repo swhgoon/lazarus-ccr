@@ -56,8 +56,9 @@ unit MVCTypes;
 
 interface
 
-uses LCLIntf, Types, Messages,SysUtils,Graphics,VirtualTrees,Classes,StdCtrls,
-     Controls,Forms,ImgList,LCLType, DelphiCompat, vtlogger, LMessages;
+uses
+  LCLIntf, Types, SysUtils, Graphics, VirtualTrees, Classes, StdCtrls,
+  Controls, Forms, ImgList, LCLType, DelphiCompat, vtlogger, LMessages;
 
 type { TMVCNode is the encapsulation of a single Node in the structure.
        This implementation is a bit bloated because in my project
@@ -65,230 +66,234 @@ type { TMVCNode is the encapsulation of a single Node in the structure.
        In such an implementation there is not much "virtual" about the
        tree anymore - still it's of incredible usefulness as you will
        see. }
-     TMVCNode=class(TObject)
-       private
-         { Here's the data associated with a single Node in the
-           tree. This structure defines a caption and a subcaption, add
-           whatever defines your data completely. }
-         FParent:TMVCNode;
-         FChildren:TList;
-         FCheckState:TCheckState;
-         FCaption,FSubCaption:string;
-         { The FIncidence-Field is special in the way that it's
-           value is never displayed directly but used to
-           graphically alter the node's display. In my project it
-           is a "weight" showing the number of hits from a
-           database. Here it is displayed next to the caption
-           as a colored speck. }
-         FIncidence:integer;
+  TMVCNode = class(TObject)
+   private
+     { Here's the data associated with a single Node in the
+       tree. This structure defines a caption and a subcaption, add
+       whatever defines your data completely. }
+     FParent:TMVCNode;
+     FChildren:TFpList;
+     FCheckState:TCheckState;
+     FCaption,FSubCaption:string;
+     { The FIncidence-Field is special in the way that it's
+       value is never displayed directly but used to
+       graphically alter the node's display. In my project it
+       is a "weight" showing the number of hits from a
+       database. Here it is displayed next to the caption
+       as a colored speck. }
+     FIncidence:integer;
 
-        { Here's where we start to think of visualization. This
-          field points to the VirtualNode in a virtual tree that
-          is associated with the Node - if there is one,
-          otherwise it is NIL, there may be no virtual node
-          allocated for the TMVCNode or no tree linked. }
-         FVirtualNode:PVirtualNode;
+    { Here's where we start to think of visualization. This
+      field points to the VirtualNode in a virtual tree that
+      is associated with the Node - if there is one,
+      otherwise it is NIL, there may be no virtual node
+      allocated for the TMVCNode or no tree linked. }
+     FVirtualNode:PVirtualNode;
 
-         { Here are reader/writer-methods for the properties that
-           define our data. We need set-properties because we want
-           to update linked nodes directly. }
-         procedure SetCaption(aCaption:string);
-         procedure SetSubCaption(aSubCaption:string);
-         procedure SetCheckState(aCheckState:TCheckState);
-         procedure SetIncidence(aValue:integer);
-         function GetChildCount:integer;
-         function GetChild(n:integer):TMVCNode;
-       public
-         constructor Create;
-         destructor Destroy; override;
+     { Here are reader/writer-methods for the properties that
+       define our data. We need set-properties because we want
+       to update linked nodes directly. }
+     procedure SetCaption(aCaption:string);
+     procedure SetSubCaption(aSubCaption:string);
+     procedure SetCheckState(aCheckState:TCheckState);
+     procedure SetIncidence(aValue:integer);
+     function GetChildCount:integer;
+     function GetChild(n:integer):TMVCNode;
+   public
+     constructor Create;
+     destructor Destroy; override;
 
-         { Take a look at our data and pick an icon from the
-           Imagelist to be displayed in the tree. }
-         function GetImageIndex:integer; virtual;
-         { Tell the tree to invalidate the node it displayes the
-           information for this Node in. It will be repainted
-           next }
-         procedure InvalidateVirtualNode;
+     { Take a look at our data and pick an icon from the
+       Imagelist to be displayed in the tree. }
+     function GetImageIndex:integer; virtual;
+     { Tell the tree to invalidate the node it displayes the
+       information for this Node in. It will be repainted
+       next }
+     procedure InvalidateVirtualNode;
 
-         { properties exposing our internal data to the world.
-           set-methods are given so the Node can always invalidate
-           its node. }
-         property CheckState:TCheckState read FCheckState write SetCheckState;
-         property Caption:string read FCaption write SetCaption;
-         property SubCaption:string read FSubCaption write SetSubCaption;
-         property Incidence:integer read FIncidence write SetIncidence;
+     { properties exposing our internal data to the world.
+       set-methods are given so the Node can always invalidate
+       its node. }
+     property CheckState:TCheckState read FCheckState write SetCheckState;
+     property Caption:string read FCaption write SetCaption;
+     property SubCaption:string read FSubCaption write SetSubCaption;
+     property Incidence:integer read FIncidence write SetIncidence;
 
-         property Parent:TMVCNode read FParent;
-         property ChildCount:integer read GetChildCount;
-         property Child[n:integer]:TMVCNode read GetChild;
-         function CreateChild:TMVCNode;
-         procedure RemoveChild(n:integer);
-         procedure DestroyChild(n:integer);
+     property Parent:TMVCNode read FParent;
+     property ChildCount:integer read GetChildCount;
+     property Child[n:integer]:TMVCNode read GetChild;
+     function CreateChild:TMVCNode;
+     procedure RemoveChild(n:integer);
+     procedure DestroyChild(n:integer);
 
-         { This field is only exposed because I advise you to put
-           the Tree-Code in a separate unit and then you won't get
-           far privatizing it. Allowing public write-access to it
-           is a bit hairy though, you should never write to the
-           field outside of this or the Tree-unit.
-           This is where a friend-declaration is missing from OP}
-         property VirtualNode:PVirtualNode read FVirtualNode write FVirtualNode;
-       end;
+     { This field is only exposed because I advise you to put
+       the Tree-Code in a separate unit and then you won't get
+       far privatizing it. Allowing public write-access to it
+       is a bit hairy though, you should never write to the
+       field outside of this or the Tree-unit.
+       This is where a friend-declaration is missing from OP}
+     property VirtualNode:PVirtualNode read FVirtualNode write FVirtualNode;
+   end;
 
-     { TMVCTree keeps the TMVCNodes. It also maintains the link to a
-       virtual treeview. }
-     TMVCTree=class
-       private
-         { This is the Root of the Tree. In this Demo that Root is there
-           purely to hold the structure together, it is never displayed -
-           just like TVirtualTrees own Root. }
-         FRoot:TMVCNode;
+ { TMVCTree keeps the TMVCNodes. It also maintains the link to a
+   virtual treeview. }
+ TMVCTree=class
+   private
+     { This is the Root of the Tree. In this Demo that Root is there
+       purely to hold the structure together, it is never displayed -
+       just like TVirtualTrees own Root. }
+     FRoot:TMVCNode;
 
-         { The Viewer-Field points to any component or object
-           used to visualize or edit this structure. It is
-           not really used in this demo, in a real application
-           you will find situations where you have to find out
-           whether you are linked and if so where to.
+     { The Viewer-Field points to any component or object
+       used to visualize or edit this structure. It is
+       not really used in this demo, in a real application
+       you will find situations where you have to find out
+       whether you are linked and if so where to.
 
-           Why is the Viewer declared as TObject and not as
-           the specific class? Two reasons:
+       Why is the Viewer declared as TObject and not as
+       the specific class? Two reasons:
 
-           1) The viewer should be implemented in a different
-              unit, either there or here you will have to
-              cast or you will build a circular reference. I
-              choose to cast here because
+       1) The viewer should be implemented in a different
+          unit, either there or here you will have to
+          cast or you will build a circular reference. I
+          choose to cast here because
 
-           2) You may want to have _different_ viewers for
-              the same structure. Keeping that in mind you
-              may even want to change the declaration to
-              a list of linked viewers... }
-         FSettingViewer:integer;
-         FViewer:TObject;
+       2) You may want to have _different_ viewers for
+          the same structure. Keeping that in mind you
+          may even want to change the declaration to
+          a list of linked viewers... }
+     FSettingViewer:integer;
+     FViewer:TObject;
 
-         { Access-methods to expose the list in a type safe
-           way. }
+     { Access-methods to expose the list in a type safe
+       way. }
 
-         { A set-method that updates the link to a viewer. }
-         procedure SetViewer(aViewer:TObject);
+     { A set-method that updates the link to a viewer. }
+     procedure SetViewer(aViewer:TObject);
 
-       public
-         constructor Create;
-         destructor Destroy; override;
+   public
+     constructor Create;
+     destructor Destroy; override;
 
-         property Root:TMVCNode read FRoot;
+     property Root:TMVCNode read FRoot;
 
-         { Assign to this to create or break the link with
-           a viewer. If you are about to add, remove or edit
-           a zillion Nodes you can call BeginUpdate and
-           EndUpdate. In this demo they just do the same for
-           any assigned viewer - Caution: The demo does not
-           make provisions for the case where you call
-           BeginUpdate and then switch to another viewer! }
-         property Viewer:TObject read FViewer write SetViewer;
-         procedure BeginUpdate;
-         procedure EndUpdate;
-       end;
+     { Assign to this to create or break the link with
+       a viewer. If you are about to add, remove or edit
+       a zillion Nodes you can call BeginUpdate and
+       EndUpdate. In this demo they just do the same for
+       any assigned viewer - Caution: The demo does not
+       make provisions for the case where you call
+       BeginUpdate and then switch to another viewer! }
+     property Viewer:TObject read FViewer write SetViewer;
+     procedure BeginUpdate;
+     procedure EndUpdate;
+   end;
 
-     { Here's the Viewer. I have descended from the base class to maximize
-       the functionality that is moved to our code, should you be happy
-       with any of the predeclared descendants use of them. }
-     TMVCEditLink=class;
-     TMVCTreeView=class(TBaseVirtualTree)
-       private
-         { This is a pointer to the structure associated with
-           this viewer. }
-         FTree:TMVCTree;
-         FInternalDataOffset: Cardinal;               // offset to the internal data
+ { Here's the Viewer. I have descended from the base class to maximize
+   the functionality that is moved to our code, should you be happy
+   with any of the predeclared descendants use of them. }
+ TMVCEditLink=class;
+ TMVCTreeView=class(TBaseVirtualTree)
+   private
+     { This is a pointer to the structure associated with
+       this viewer. }
+     FTree:TMVCTree;
+     FInternalDataOffset: Cardinal;               // offset to the internal data
 
-         { Make and break the link with a list }
-         procedure SetTree(aTree:TMVCTree);
+     { Make and break the link with a list }
+     procedure SetTree(aTree:TMVCTree);
 
-         { These are for direct access to our structure
-           through the viewer. You can use them to find
-           the TMVCNode that corresponds to a selected
-           VirtualNode for instance. }
-         function GetMVCNode(VirtualNode:PVirtualNode):TMVCNode;
-         procedure SetMVCNode(VirtualNode:PVirtualNode; aNode:TMVCNode);
+     { These are for direct access to our structure
+       through the viewer. You can use them to find
+       the TMVCNode that corresponds to a selected
+       VirtualNode for instance. }
+     function GetMVCNode(VirtualNode:PVirtualNode):TMVCNode;
+     procedure SetMVCNode(VirtualNode:PVirtualNode; aNode:TMVCNode);
 
-          function GetOptions: TVirtualTreeOptions;
-          procedure SetOptions(const Value: TVirtualTreeOptions);
-       protected
-         { Overridden methods of the tree, see their implementation for
-           details on what they do and why they are overridden. }
-         function DoGetNodeWidth(Node: PVirtualNode; Column: TColumnIndex; Canvas: TCanvas = nil): Integer; override;
-         procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
-         procedure DoInitChildren(Node:PVirtualNode;var ChildCount:Cardinal); override;
-         procedure DoInitNode(aParent,aNode:PVirtualNode;
-                              var aInitStates:TVirtualNodeInitStates); override;
-         procedure DoFreeNode(aNode:PVirtualNode); override;
-         function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
-           var Ghosted: Boolean; var Index: Integer): TCustomImageList; override;
-         procedure DoChecked(aNode:PVirtualNode); override;
-         function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; override;
-         function InternalData(Node: PVirtualNode): Pointer;
-         function InternalDataSize: Cardinal;
+      function GetOptions: TVirtualTreeOptions;
+      procedure SetOptions(const Value: TVirtualTreeOptions);
+   protected
+     { Overridden methods of the tree, see their implementation for
+       details on what they do and why they are overridden. }
+     function DoGetNodeWidth(Node: PVirtualNode; Column: TColumnIndex; Canvas: TCanvas = nil): Integer; override;
+     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
+     procedure DoInitChildren(Node:PVirtualNode;var ChildCount:Cardinal); override;
+     procedure DoInitNode(aParent,aNode:PVirtualNode;
+                          var aInitStates:TVirtualNodeInitStates); override;
+     procedure DoFreeNode(aNode:PVirtualNode); override;
+     function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
+       var Ghosted: Boolean; var Index: Integer): TCustomImageList; override;
+     procedure DoChecked(aNode:PVirtualNode); override;
+     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; override;
+     function InternalData(Node: PVirtualNode): Pointer;
+     function InternalDataSize: Cardinal;
 
-         function GetOptionsClass: TTreeOptionsClass; override;
-       public
-         constructor Create(AOwner: TComponent); override;
-         destructor Destroy; override;
+     function GetOptionsClass: TTreeOptionsClass; override;
+   public
+     constructor Create(AOwner: TComponent); override;
+     destructor Destroy; override;
 
-         { Properties for the link to a list and the individual Node.
-           these form the interface to the application. See the main form
-           to check it out. }
-         property Tree:TMVCTree read FTree write SetTree;
-         property MVCNode[VirtualNode:PVirtualNode]:TMVCNode read GetMVCNode;
+     { Properties for the link to a list and the individual Node.
+       these form the interface to the application. See the main form
+       to check it out. }
+     property Tree:TMVCTree read FTree write SetTree;
+     property MVCNode[VirtualNode:PVirtualNode]:TMVCNode read GetMVCNode;
 
-         function GetNodeText(aNode:TMVCNode;
-                              aColumn:integer):string;
-         procedure SetNodeText(aNode:TMVCNode;
-                               aColumn:integer;
-                               aText:string);
-       published
-         { We descend from the base class, publish whatever you want to.
-           The demo only needs the Header, it is initialized in the fixed
-           panel-code. }
-         property TreeOptions: TVirtualTreeOptions read GetOptions write SetOptions;
-         property Header;
-         property Images;
-         property OnChange;
-       end;
+     function GetNodeText(aNode:TMVCNode;
+                          aColumn:integer):string;
+     procedure SetNodeText(aNode:TMVCNode;
+                           aColumn:integer;
+                           aText:string);
+   published
+     { We descend from the base class, publish whatever you want to.
+       The demo only needs the Header, it is initialized in the fixed
+       panel-code. }
+     property TreeOptions: TVirtualTreeOptions read GetOptions write SetOptions;
+     property Header;
+     property Images;
+     property OnChange;
+   end;
 
    { TMVCEdit }
 
-   TMVCEdit=class(TCustomEdit)
-              private
-                FLink:TMVCEditLink;
-                procedure WMMove(var Message: TLMMove); message LM_MOVE;
-                procedure WMChar(var Message: TWMChar); message WM_CHAR;
-                procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
-                procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-              protected
-                procedure AutoAdjustSize;
-                procedure CreateParams(var Params:TCreateParams); override;
-              public
-                constructor Create(Link:TMVCEditLink); reintroduce;
-              end;
+  TMVCEdit=class(TCustomEdit)
+  private
+    FLink:TMVCEditLink;
+    procedure WMMove(var Message: TLMMove); message LM_MOVE;
+    procedure WMChar(var Message: TWMChar); message WM_CHAR;
+    procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
+    //gtk1 has problems freeing a control inside keydow
+    {$ifdef LCLGtk}
+    procedure WMKeyUp(var Message: TWMKeyUp); message WM_KEYUP;
+    {$endif}
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+  protected
+    procedure AutoAdjustSize;
+    procedure CreateParams(var Params:TCreateParams); override;
+  public
+    constructor Create(Link:TMVCEditLink); reintroduce;
+  end;
 
-   TMVCEditLink=class(TInterfacedObject,IVTEditLink)
-                   private
-                     FEdit:TMVCEdit;                    // a normal custom edit control
-                     FTree:TMVCTreeView;               // a back reference to the tree calling
-                     FNode:PVirtualNode;               // the node to be edited
-                     FColumn:Integer;                  // the column of the node
-                   public
-                     constructor Create;
-                     destructor Destroy; override;
+  TMVCEditLink=class(TInterfacedObject,IVTEditLink)
+  private
+    FEdit:TMVCEdit;                    // a normal custom edit control
+    FTree:TMVCTreeView;               // a back reference to the tree calling
+    FNode:PVirtualNode;               // the node to be edited
+    FColumn:Integer;                  // the column of the node
+  public
+    constructor Create;
+    destructor Destroy; override;
 
-                     function BeginEdit: Boolean; stdcall;
-                     function CancelEdit: Boolean; stdcall;
-                     function EndEdit: Boolean; stdcall;
-                     function GetBounds: TRect; stdcall;
-                     function PrepareEdit(Tree: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex): Boolean; stdcall;
-                     procedure ProcessMessage(var Message: TMessage); stdcall;
-                     procedure SetBounds(R:TRect); stdcall;
+    function BeginEdit: Boolean; stdcall;
+    function CancelEdit: Boolean; stdcall;
+    function EndEdit: Boolean; stdcall;
+    function GetBounds: TRect; stdcall;
+    function PrepareEdit(Tree: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex): Boolean; stdcall;
+    procedure ProcessMessage(var Message: TMessage); stdcall;
+    procedure SetBounds(R:TRect); stdcall;
 
-                     property Tree:TMVCTreeView read FTree;
-                   end;
+    property Tree:TMVCTreeView read FTree;
+  end;
 
 
 implementation
@@ -300,7 +305,7 @@ implementation
 constructor TMVCNode.Create;
 begin
   inherited Create;
-  FChildren:=TList.Create;
+  FChildren:=TFpList.Create;
 end;
 
 destructor TMVCNode.Destroy;
@@ -956,8 +961,10 @@ begin
     VK_UP,
     VK_DOWN:
       FLink.FTree.WndProc(TMessage(Message));
+    {$ifndef LCLGtk}
     VK_RETURN:
       FLink.FTree.DoEndEdit;
+    {$endif}
     // standard clipboard actions,
     // Caution: to make these work you must not use default TAction classes like TEditPaste etc. in the application!
     Ord('C'):
@@ -985,6 +992,14 @@ begin
   end;
   Logger.ExitMethod([lcEditLink],'TMVCEdit.WMKeyDown');
 end;
+
+{$ifdef LCLGtk}
+procedure TMVCEdit.WMKeyUp(var Message: TWMKeyUp);
+begin
+  if Message.CharCode = VK_RETURN then
+    FLink.FTree.DoEndEdit;
+end;
+{$endif}
 
 procedure TMVCEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
@@ -1018,7 +1033,7 @@ end;
 
 procedure TMVCEdit.CreateParams(var Params:TCreateParams);
 begin
-  //todo: propbably remove this since CTL3D does nothing in LCL
+  //todo: probably remove this since CTL3D does nothing in LCL
   Ctl3D := False;
   inherited;
 end;

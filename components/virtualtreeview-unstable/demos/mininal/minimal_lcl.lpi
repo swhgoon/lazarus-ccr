@@ -34,32 +34,20 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="2">
       <Unit0>
         <Filename Value="minimal_lcl.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="minimal_lcl"/>
       </Unit0>
       <Unit1>
-        <Filename Value="fmain.pas"/>
-        <ComponentName Value="Form1"/>
-        <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="fmain.lrs"/>
-        <UnitName Value="fmain"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="Main.pas"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="Main.lrs"/>
         <UnitName Value="Main"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="../../units/gtk/mmsystem.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mmsystem"/>
-      </Unit3>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -70,11 +58,6 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
-    <Linking>
-      <Debugging>
-        <UseLineInfoUnit Value="False"/>
-      </Debugging>
-    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

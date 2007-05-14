@@ -1,66 +1,70 @@
 object fmMVCDemo: TfmMVCDemo
-  Left = 258
-  Height = 480
-  Top = 174
-  Width = 709
-  HorzScrollBar.Page = 708
-  VertScrollBar.Page = 479
+  Left = 165
+  Height = 518
+  Top = 154
+  Width = 742
+  HorzScrollBar.Page = 741
+  VertScrollBar.Page = 517
   ActiveControl = edCaption
   Caption = 'Virtual Tree - MVC Demo written by Marian Aldenhövel'
+  ClientHeight = 518
+  ClientWidth = 742
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   object pnlControls: TPanel
-    Height = 84
-    Top = 396
-    Width = 709
+    Height = 118
+    Top = 400
+    Width = 742
     Align = alBottom
     BevelInner = bvLowered
     BevelOuter = bvNone
     Caption = ' '
+    ClientHeight = 118
+    ClientWidth = 742
     TabOrder = 0
     object Label1: TLabel
-      Left = 51
-      Height = 14
-      Top = 8
-      Width = 42
+      Left = 72
+      Height = 17
+      Top = 7
+      Width = 61
       Alignment = taRightJustify
       Caption = 'Caption:'
       Color = clNone
       ParentColor = False
     end
     object Label3: TLabel
-      Left = 33
-      Height = 14
+      Left = 47
+      Height = 17
       Top = 31
-      Width = 58
+      Width = 86
       Alignment = taRightJustify
       Caption = 'Subcaption:'
       Color = clNone
       ParentColor = False
     end
     object Label4: TLabel
-      Left = 7
-      Height = 14
-      Top = 56
-      Width = 88
+      Left = 8
+      Height = 17
+      Top = 55
+      Width = 125
       Alignment = taRightJustify
       Caption = 'Incidence (0..63):'
       Color = clNone
       ParentColor = False
     end
     object Label2: TLabel
-      Left = 212
-      Height = 92
-      Top = 4
-      Width = 186
-      Caption = 'Edit the current node.'#13#10#13#10'Note that you are setting data in a structure without referring to a visual component except for the information about what node currently has the focus.'
+      Left = 256
+      Height = 97
+      Top = 5
+      Width = 296
+      Caption = 'Edit the current node.'#10'Note that you are setting data in a structure without referring to a visual component except for the information about what node currently has the focus.'
       Color = clNone
       ParentColor = False
       WordWrap = True
     end
     object edCaption: TEdit
-      Left = 92
+      Left = 136
       Height = 21
       Top = 5
       Width = 112
@@ -69,7 +73,7 @@ object fmMVCDemo: TfmMVCDemo
       Text = 'edCaption'
     end
     object edSubcaption: TEdit
-      Left = 92
+      Left = 136
       Height = 21
       Top = 29
       Width = 112
@@ -78,10 +82,10 @@ object fmMVCDemo: TfmMVCDemo
       Text = 'edCaption'
     end
     object edIncidence: TEdit
-      Left = 92
+      Left = 136
       Height = 21
       Top = 53
-      Width = 59
+      Width = 51
       OnChange = edIncidenceChange
       OnKeyDown = nil
       OnKeyPress = edIncidenceKeyPress
@@ -89,7 +93,7 @@ object fmMVCDemo: TfmMVCDemo
       Text = '0'
     end
     object UpDown1: TUpDown
-      Left = 151
+      Left = 187
       Height = 21
       Top = 53
       Width = 15
@@ -98,30 +102,30 @@ object fmMVCDemo: TfmMVCDemo
       TabOrder = 3
     end
     object btnAdd: TButton
-      Left = 429
+      Left = 560
       Height = 25
-      Top = 4
-      Width = 75
+      Top = 8
+      Width = 112
       BorderSpacing.InnerBorder = 4
       Caption = '+ Add a child'
       OnClick = btnAddClick
       TabOrder = 4
     end
     object btnDelete: TButton
-      Left = 429
+      Left = 560
       Height = 25
-      Top = 32
-      Width = 75
+      Top = 40
+      Width = 112
       BorderSpacing.InnerBorder = 4
-      Caption = '- delete node'
+      Caption = '- Delete node'
       OnClick = btnDeleteClick
       TabOrder = 5
     end
     object cbLive: TCheckBox
-      Left = 618
-      Height = 13
-      Top = 9
-      Width = 48
+      Left = 680
+      Height = 24
+      Top = 8
+      Width = 58
       Caption = 'Live!'
       Font.Height = -11
       Font.Name = 'MS Sans Serif'

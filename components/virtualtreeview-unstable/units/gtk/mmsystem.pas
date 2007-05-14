@@ -26,8 +26,12 @@ begin
 end;
 
 function timeGetTime: DWORD;
+var
+  ATime: TSystemTime;
 begin
-
+  //todo: properly implement
+  GetLocalTime(ATime);
+  Result := ATime.MilliSecond;
 end;
 
 end.

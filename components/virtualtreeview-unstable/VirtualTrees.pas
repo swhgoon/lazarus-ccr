@@ -16475,6 +16475,7 @@ begin
             end
             else
               DoStateChange([tsIncrementalSearchPending]);
+
           VK_ESCAPE: // cancel actions currently in progress
             begin
               if IsMouseSelecting then
@@ -16482,9 +16483,12 @@ begin
                 DoStateChange([], [tsDrawSelecting, tsDrawSelPending]);
                 Invalidate;
               end
+              //gtk1 does not like to free a component in KeyDown
+              {$ifndef LCLGtk}
               else
                 if IsEditing then
                   CancelEditNode;
+              {$endif}
             end;
           VK_SPACE:
             if (toCheckSupport in FOptions.FMiscOptions) and Assigned(FFocusedNode) and
@@ -17505,6 +17509,10 @@ var
   CurrentTime: Cardinal;
 
 begin
+  {$ifndef Windows}
+  //Is necessary to properly implement timeGetTime in non Windows
+  Exit;
+  {$endif}
   if not (tsInAnimation in FStates) and (Duration > 0) then
   begin
     DoStateChange([tsInAnimation]);
@@ -18338,6 +18346,7 @@ begin
       if (ClientHeight - FOffsetY < Integer(FRangeY)) and (Y > ClientHeight - Integer(FDefaultNodeHeight)) then
         Include(Result, sdDown);
 
+      //todo: probably the code below is bug due to poor timeGetTime implementation
       // Since scrolling during dragging is not handled via the timer we do a check here whether the auto
       // scroll timeout already has elapsed or not.
       if (Result <> []) and
