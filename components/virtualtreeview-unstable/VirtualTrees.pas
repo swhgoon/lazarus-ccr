@@ -115,7 +115,6 @@ uses
   virtualpanningwindow,
   vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
-  CommCtrl,  // image lists, common controls tree structures
   SyncObjs  // Thread support
   //Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
@@ -267,8 +266,6 @@ type
   {$I lcltypes.inc}
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
-
-  PCardinal = ^Cardinal;
 
   // Limits the speed interval which can be used for auto scrolling (milliseconds).
   TAutoScrollInterval = 1..1000;
@@ -948,8 +945,6 @@ type
     vsOwnerDraw
   );
 
-
-  TImageIndex = Integer;
 
   TVTHeaderColumnLayout = (
     blGlyphLeft,
@@ -2281,7 +2276,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
-    procedure FontChanged(AFont: TObject); virtual;
+    procedure FontChanged(AFont: TObject); override;
     //lcl
     procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
@@ -4744,7 +4739,7 @@ var
   OneImage,
   AnotherImage: TBitmap;
   I: Integer;
-  MaskColor: TColor;
+  //MaskColor: TColor;
   Source,
   Dest: TRect;
   //Small (???) hack while a solution does not come
@@ -4777,7 +4772,7 @@ begin
       //OneImage.Width := IL.Width;
       //OneImage.Height := IL.Height;
 
-      MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
+      //MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
       Dest := Rect(0, 0, IL.Width, IL.Height);
       for I := 0 to (Images.Width div Images.Height) - 1 do
       begin
@@ -5195,7 +5190,7 @@ begin
     WorkEvent := TEvent.Create(nil, False, False, '');
     //todo: see how to check if a event was succesfully created under linux since handle is allways 0
     {$ifdef Windows}
-    if WorkEvent.Handle = 0 then
+    if WorkEvent.Handle = TEventHandle(0) then
       Raise Exception.Create('VirtualTreeView - Error creating TEvent instance');
     {$endif}
     // Create worker thread, initialize it and send it to its wait loop.
@@ -5580,15 +5575,18 @@ end;
 
 procedure TCustomVirtualTreeOptions.SetPaintOptions(const Value: TVTPaintOptions);
 
+{$ifdef ThemeSupport}
 var
   ToBeSet,
   ToBeCleared: TVTPaintOptions;
-
+{$endif}
 begin
   if FPaintOptions <> Value then
   begin
+    {$ifdef ThemeSupport}
     ToBeSet := Value - FPaintOptions;
     ToBeCleared := FPaintOptions - Value;
+    {$endif}
     FPaintOptions := Value;
     with FOwner do
       if not (csLoading in ComponentState) and HandleAllocated then
@@ -11133,8 +11131,10 @@ type
   {$hints off}
   TWriterHack = class(TFiler)
   private
+    FDriver: TAbstractObjectWriter;
+    FDestroyDriver: Boolean;
     FRootAncestor: TComponent;
-    FPropPath: string;
+    FPropPath: String;
   end;
   {$hints on}
 
@@ -11215,25 +11215,10 @@ function TVTHeader.InHeader(P: TPoint): Boolean;
 
 // Determines whether the given point (client coordinates!) is within the header rectangle (non-client coordinates).
 
-var
-  R, RW: TRect;
-
 begin
   //lclheader
+  //todo: remove this function and use PtInRect directly
   Result := PtInRect(TreeView.FHeaderRect,P);
-  {
-  R := Treeview.FHeaderRect;
-
-  // Current position of the owner in screen coordinates.
-  GetWindowRect(Treeview.Handle, RW);
-
-  // Convert to client coordinates.
-  MapWindowPoints(0, Treeview.Handle, RW, 2);
-
-  // Consider the header within this rectangle.
-  OffsetRect(R, RW.Left, RW.Top);
-  Result := PtInRect(R, P);
-  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

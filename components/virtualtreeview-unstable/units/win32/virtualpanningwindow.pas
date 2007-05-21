@@ -15,7 +15,6 @@ type
   TVirtualPanningWindow = class
   private
     FHandle: THandle;
-    FOwnerHandle: THandle;
     FImage: TBitmap;
     procedure HandlePaintMessage;
   public
