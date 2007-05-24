@@ -60,7 +60,6 @@ unit VTHeaderPopup;
 //   - Added the event to filter the items as they are added to the menu.
 //----------------------------------------------------------------------------------------------------------------------
 {$mode delphi}
-{$I Compilers.inc}
 
 interface
 
