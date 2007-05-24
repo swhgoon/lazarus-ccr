@@ -2276,7 +2276,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
-    procedure FontChanged(AFont: TObject); override;
+    procedure FontChanged(AFont: TObject); virtual;
     //lcl
     procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
