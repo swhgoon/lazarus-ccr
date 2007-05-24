@@ -1,0 +1,44 @@
+LazarusResources.Add('TNodeForm','FORMDATA',[
+  'TPF0'#9'TNodeForm'#8'NodeForm'#4'Left'#3'='#2#6'Height'#3#30#2#3'Top'#3'L'#1
+  +#5'Width'#3#5#3#18'HorzScrollBar.Page'#3#4#3#18'VertScrollBar.Page'#3#29#2#13
+  +'ActiveControl'#7#6'MLTree'#7'Caption'#6#8'NodeForm'#12'ClientHeight'#3#30#2
+  +#11'ClientWidth'#3#5#3#11'Font.Height'#2#243#9'Font.Name'#6#13'MS Sans Serif'
+  +#8'OnCreate'#7#10'FormCreate'#0#6'TLabel'#6'Label8'#4'Left'#2#12#6'Height'#2
+  +'H'#3'Top'#3#173#1#5'Width'#3#220#2#7'Anchors'#11#6'akLeft'#7'akRight'#8'akB'
+  +'ottom'#0#8'AutoSize'#8#7'Caption'#12#199#1#0#0'Since Virtual Treeview uses '
+  +'Unicode for text display it is not easy to provide multiline support on Win'
+  +'dows 9x/Me systems. Under Windows NT (4.0, 2000, XP) there is support by th'
+  +'e operation system and so full word breaking is possible there. Otherwise y'
+  +'ou have to insert line breaks manually to have multiline captions. Of cours'
+  +'e there is no difference in handling between multiline and single line node'
+  +'s (except for the vertical alignment of the latter).'#5'Color'#7#6'clNone'
+  +#11'ParentColor'#8#13'ShowAccelChar'#8#8'WordWrap'#9#0#0#6'TPanel'#6'Panel1'
+  +#4'Left'#2#12#6'Height'#3#137#1#3'Top'#2#4#5'Width'#3#220#2#7'Anchors'#11#5
+  +'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#12'ClientHeight'#3#137#1#11'Clien'
+  +'tWidth'#3#220#2#5'Color'#7#14'clAppWorkspace'#11'ParentColor'#8#8'TabOrder'
+  +#2#0#0#18'TVirtualStringTree'#6'MLTree'#4'Left'#2'`'#6'Height'#3'u'#1#3'Top'
+  +#2#8#5'Width'#3'%'#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'
+  +#0#24'ClipboardFormats.Strings'#1#6#3'CSV'#6#11'HTML Format'#6#10'Plain text'
+  +#6#16'Rich Text Format'#6' Rich Text Format Without Objects'#6#12'Unicode te'
+  +'xt'#6#17'Virtual Tree Data'#0'#Colors.SelectionRectangleBlendColor'#4#195
+  +#208#160#0#17'DefaultNodeHeight'#3#130#0#18'Header.Font.Height'#2#245#16'Hea'
+  +'der.Font.Name'#6#13'MS Sans Serif'#14'Header.Options'#11#12'hoAutoResize'#14
+  +'hoColumnResize'#6'hoDrag'#0#13'HintAnimation'#7#7'hatNone'#8'HintMode'#7#9
+  +'hmTooltip'#8'LineMode'#7#7'lmBands'#13'NodeAlignment'#7#9'naFromTop'#12'Nod'
+  +'eDataSize'#2#4#14'ParentShowHint'#8#13'RootNodeCount'#2#30#20'SelectionCurv'
+  +'eRadius'#2#10#8'ShowHint'#9#8'TabOrder'#2#0#10'TextMargin'#2#5#23'TreeOptio'
+  +'ns.AutoOptions'#11#16'toAutoDropExpand'#12'toAutoScroll'#20'toAutoScrollOnE'
+  +'xpand'#17'toAutoSpanColumns'#22'toAutoTristateTracking'#22'toAutoDeleteMove'
+  +'dNodes'#0#23'TreeOptions.MiscOptions'#11#10'toEditable'#12'toInitOnSave'#12
+  +'toReportMode'#18'toToggleOnDblClick'#14'toWheelPanning'#0#24'TreeOptions.Pa'
+  +'intOptions'#11#15'toHideFocusRect'#14'toShowDropmark'#15'toShowTreeLines'#12
+  +'toThemeAware'#18'toUseBlendedImages'#0#28'TreeOptions.SelectionOptions'#11
+  +#13'toMultiSelect'#0#9'OnEditing'#7#13'MLTreeEditing'#9'OnGetText'#7#13'MLTr'
+  +'eeGetText'#11'OnPaintText'#7#15'MLTreePaintText'#10'OnInitNode'#7#14'MLTree'
+  +'InitNode'#13'OnMeasureItem'#7#17'MLTreeMeasureItem'#13'OnStateChange'#7#17
+  +'MLTreeStateChange'#7'Columns'#14#1#8'Position'#2#1#5'Width'#3#227#1#0#1#0#0
+  +#0#0#0#9'TCheckBox'#18'AutoAdjustCheckBox'#4'Left'#2#12#6'Height'#2#13#3'Top'
+  +#3#152#1#5'Width'#3#234#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6
+  +'.Automatically adjust node height to node text.'#7'OnClick'#7#23'AutoAdjust'
+  +'CheckBoxClick'#8'TabOrder'#2#1#0#0#0
+]);

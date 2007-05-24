@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <Flags>
+        <AlwaysBuild Value="False"/>
+      </Flags>
+      <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="virtualtreeview_package"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="Printer4Lazarus"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="15">
+      <Unit0>
+        <Filename Value="Advanced.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="WindowsXPStyleDemo.pas"/>
+        <ComponentName Value="WindowsXPForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="WindowsXPStyleDemo.lrs"/>
+        <UnitName Value="WindowsXPStyleDemo"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="AlignDemo.pas"/>
+        <ComponentName Value="AlignForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="AlignDemo.lrs"/>
+        <UnitName Value="AlignDemo"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="DrawTreeDemo.pas"/>
+        <ComponentName Value="DrawTreeForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="DrawTreeDemo.lrs"/>
+        <UnitName Value="DrawTreeDemo"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="Editors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Editors"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="GeneralAbilitiesDemo.pas"/>
+        <ComponentName Value="GeneralForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="GeneralAbilitiesDemo.lrs"/>
+        <UnitName Value="GeneralAbilitiesDemo"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="GridDemo.pas"/>
+        <ComponentName Value="GridForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="GridDemo.lrs"/>
+        <UnitName Value="GridDemo"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="HeaderCustomDrawDemo.pas"/>
+        <ComponentName Value="HeaderOwnerDrawForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="HeaderCustomDrawDemo.lrs"/>
+        <UnitName Value="HeaderCustomDrawDemo"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="Main.pas"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="Main.lrs"/>
+        <UnitName Value="Main"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="MultilineDemo.pas"/>
+        <ComponentName Value="NodeForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="MultilineDemo.lrs"/>
+        <UnitName Value="MultilineDemo"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="PropertiesDemo.pas"/>
+        <ComponentName Value="PropertiesForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="PropertiesDemo.lrs"/>
+        <UnitName Value="PropertiesDemo"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="SpeedDemo.pas"/>
+        <ComponentName Value="SpeedForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="SpeedDemo.lrs"/>
+        <UnitName Value="SpeedDemo"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="States.pas"/>
+        <ComponentName Value="StateForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="States.lrs"/>
+        <UnitName Value="States"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="VisibilityDemo.pas"/>
+        <ComponentName Value="VisibilityForm"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="VisibilityDemo.lrs"/>
+        <UnitName Value="VisibilityDemo"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="shlobjext.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="shlobjext"/>
+      </Unit14>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>

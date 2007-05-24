@@ -1,0 +1,126 @@
+object DrawTreeForm: TDrawTreeForm
+  Left = 544
+  Height = 477
+  Top = 320
+  Width = 710
+  HorzScrollBar.Page = 709
+  VertScrollBar.Page = 476
+  ActiveControl = VDT1
+  Caption = 'DrawTreeForm'
+  ClientHeight = 477
+  ClientWidth = 710
+  Font.Height = -13
+  Font.Name = 'Trebuchet MS'
+  OnCreate = FormCreate
+  object Label7: TLabel
+    Height = 61
+    Width = 710
+    Align = alTop
+    AutoSize = False
+    Caption = 'A sample for a draw tree, which shows images of all known types as thumbnails. By default this tree uses the image loader library GraphicEx  to support many common image formats like png, gif etc. (see www.delphi-gems.com for more infos and download).'
+    Color = clNone
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label1: TLabel
+    Left = 4
+    Height = 14
+    Top = 385
+    Width = 199
+    Anchors = [akLeft, akBottom]
+    Caption = 'Adjust vertical image alignment of nodes:'
+    Color = clNone
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 424
+    Height = 14
+    Top = 385
+    Width = 24
+    Anchors = [akLeft, akBottom]
+    Caption = '50%'
+    Color = clNone
+    ParentColor = False
+  end
+  object VDT1: TVirtualDrawTree
+    Left = 10
+    Height = 278
+    Top = 84
+    Width = 684
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoExpandDelay = 200
+    AutoScrollDelay = 200
+    ClipboardFormats.Strings = (
+      'Virtual Tree Data'
+    )
+    Colors.BorderColor = clWindowText
+    Colors.HotColor = clBlack
+    Colors.TreeLineColor = clBtnFace
+    DefaultNodeHeight = 32
+    Header.AutoSizeIndex = -1
+    Header.Background = clBtnHighlight
+    Header.Height = 22
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoRestrictDrag, hoShowSortGlyphs, hoVisible]
+    Header.ParentFont = True
+    Header.Style = hsPlates
+    HintAnimation = hatNone
+    HintMode = hmHint
+    Images = SystemImages
+    IncrementalSearch = isAll
+    Indent = 20
+    LineMode = lmBands
+    ParentShowHint = False
+    RootNodeCount = 10
+    ScrollBarOptions.VerticalIncrement = 32
+    ShowHint = True
+    TabOrder = 0
+    TreeOptions.AnimationOptions = [toAnimatedToggle]
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking, toAutoDeleteMovedNodes]
+    TreeOptions.PaintOptions = [toShowBackground, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware]
+    TreeOptions.SelectionOptions = [toFullRowSelect]
+    OnCompareNodes = VDT1CompareNodes
+    OnDrawHint = VDT1DrawHint
+    OnDrawNode = VDT1DrawNode
+    OnFreeNode = VDT1FreeNode
+    OnGetHintSize = VDT1GetHintSize
+    OnGetImageIndex = VDT1GetImageIndex
+    OnGetNodeWidth = VDT1GetNodeWidth
+    OnHeaderClick = VDT1HeaderClick
+    OnInitChildren = VDT1InitChildren
+    OnInitNode = VDT1InitNode
+    OnStateChange = VDT1StateChange
+    Columns = <    
+      item
+        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
+        Width = 217
+        WideText = 'Image file name'
+      end    
+      item
+        Position = 1
+        Width = 200
+        WideText = 'Thumbnail'
+      end    
+      item
+        Position = 2
+        Width = 160
+        WideText = 'Properties'
+      end>
+  end
+  object TrackBar1: TTrackBar
+    Left = 264
+    Height = 21
+    Top = 379
+    Width = 157
+    Max = 100
+    OnChange = TrackBar1Change
+    Position = 50
+    ScalePos = trTop
+    TickStyle = tsNone
+    Anchors = [akLeft, akBottom]
+    TabOrder = 1
+  end
+  object SystemImages: TImageList
+    left = 450
+    top = 404
+  end
+end
