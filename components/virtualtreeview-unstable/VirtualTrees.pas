@@ -11746,7 +11746,9 @@ begin
   //lcl
   FPanningWindow.Free;
   CancelEditNode;
-
+  //todo: remove this as soon as fpc fixes this bug
+  if FDragManager <> nil then
+    FDragManager._Release;
   // Just in case it didn't happen already release the edit link.
   FEditLink := nil;
   FClipboardFormats.Free;
