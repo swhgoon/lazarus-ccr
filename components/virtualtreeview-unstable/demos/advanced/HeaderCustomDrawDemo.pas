@@ -10,8 +10,8 @@ unit HeaderCustomDrawDemo;
 interface
 
 uses
-  LCLIntf, Types, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, VirtualTrees, StdCtrls, ExtCtrls, LResources;
+  LCLIntf, Types, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ImgList, VirtualTrees, StdCtrls, ExtCtrls, LResources, LCLType;
 
 type
   THeaderOwnerDrawForm = class(TForm)

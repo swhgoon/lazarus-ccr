@@ -19,7 +19,7 @@ uses
   {$ifdef VER140}
     Variants,
   {$endif}
-  LCLIntf, Windows, SysUtils, Classes, Graphics, Controls, Forms,
+  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, VirtualTrees, ComCtrls, ToolWin, Menus, StdCtrls,
   LResources, Printers, PrintersDlgs, ExtCtrls;
 
@@ -266,7 +266,8 @@ end;
 procedure TWindowsXPForm.Label4Click(Sender: TObject);
 
 begin
-  ShellExecute(0, 'open', 'http://groups.yahoo.com/group/VirtualExplorerTree', nil, nil, SW_SHOW);
+  //todo
+  //ShellExecute(0, 'open', 'http://groups.yahoo.com/group/VirtualExplorerTree', nil, nil, SW_SHOW);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

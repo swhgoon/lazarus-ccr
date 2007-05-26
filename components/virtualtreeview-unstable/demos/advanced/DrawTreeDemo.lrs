@@ -1,3 +1,5 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TDrawTreeForm','FORMDATA',[
   'TPF0'#13'TDrawTreeForm'#12'DrawTreeForm'#4'Left'#3' '#2#6'Height'#3#221#1#3
   +'Top'#3'@'#1#5'Width'#3#198#2#18'HorzScrollBar.Page'#3#197#2#18'VertScrollBa'
@@ -41,11 +43,31 @@ LazarusResources.Add('TDrawTreeForm','FORMDATA',[
   +'nInitNode'#7#12'VDT1InitNode'#13'OnStateChange'#7#15'VDT1StateChange'#7'Col'
   +'umns'#14#1#7'Options'#11#12'coAllowClick'#9'coEnabled'#13'coParentColor'#11
   +'coResizable'#14'coShowDropMark'#9'coVisible'#0#5'Width'#3#217#0#8'WideText'
-  +#6#15'Image file name'#0#1#8'Position'#2#1#5'Width'#3#200#0#8'WideText'#6#9
-  +'Thumbnail'#0#1#8'Position'#2#2#5'Width'#3#160#0#8'WideText'#6#10'Properties'
-  +#0#0#0#0#9'TTrackBar'#9'TrackBar1'#4'Left'#3#8#1#6'Height'#2#21#3'Top'#3'{'#1
-  +#5'Width'#3#157#0#3'Max'#2'd'#8'OnChange'#7#15'TrackBar1Change'#8'Position'#2
+  +#18#15#0#0#0'I'#0'm'#0'a'#0'g'#0'e'#0' '#0'f'#0'i'#0'l'#0'e'#0' '#0'n'#0'a'#0
+  +'m'#0'e'#0#0#1#8'Position'#2#1#5'Width'#3#200#0#8'WideText'#18#9#0#0#0'T'#0
+  +'h'#0'u'#0'm'#0'b'#0'n'#0'a'#0'i'#0'l'#0#0#1#8'Position'#2#2#5'Width'#3#160#0
+  +#8'WideText'#18#10#0#0#0'P'#0'r'#0'o'#0'p'#0'e'#0'r'#0't'#0'i'#0'e'#0's'#0#0
+  +#0#0#0#9'TTrackBar'#9'TrackBar1'#4'Left'#3#8#1#6'Height'#2#21#3'Top'#3'{'#1#5
+  +'Width'#3#157#0#3'Max'#2'd'#8'OnChange'#7#15'TrackBar1Change'#8'Position'#2
   +'2'#8'ScalePos'#7#5'trTop'#9'TickStyle'#7#6'tsNone'#7'Anchors'#11#6'akLeft'#8
   +'akBottom'#0#8'TabOrder'#2#1#0#0#10'TImageList'#12'SystemImages'#4'left'#3
-  +#194#1#3'top'#3#148#1#0#0#0
+  +#194#1#3'top'#3#148#1#6'Bitmap'#10#22#4#0#0'li'#1#0#0#0#16#0#0#0#16#0#0#0#4#4
+  +#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"16 16 44 1",'#10'". c Non'
+  +'e",'#10'", c #CC9933",'#10'"- c #CB9832",'#10'"* c #C99630",'#10'"a c #C794'
+  +'2E",'#10'"b c #FFFFFF",'#10'"c c #C28F29",'#10'"d c #FFFF99",'#10'"e c #BD8'
+  +'A24",'#10'"f c #BA8721",'#10'"g c #B7841E",'#10'"h c #B5821C",'#10'"i c #B3'
+  +'801A",'#10'"j c #B07D17",'#10'"k c #FFF791",'#10'"l c #FFF48E",'#10'"m c #A'
+  +'E7B15",'#10'"n c #FFEB85",'#10'"o c #FFE680",'#10'"p c #C5922C",'#10'"q c #'
+  +'C08D27",'#10'"r c #BC8923",'#10'"s c #B8851F",'#10'"t c #B4811B",'#10'"u c '
+  +'#FFE07A",'#10'"v c #A3700A",'#10'"w c #FFD46E",'#10'"x c #F8C55F",'#10'"y c'
+  +' #A06D07",'#10'"z c #030303",'#10'"A c #FFCC66",'#10'"B c #EFBC56",'#10'"C '
+  +'c #9E6B05",'#10'"D c #E6B34D",'#10'"E c #9C6903",'#10'"F c #BF8C26",'#10'"G'
+  +' c #DCA943",'#10'"H c #9A6701",'#10'"I c #D3A03A",'#10'"J c #996600",'#10'"'
+  +'K c #AB7812",'#10'"L c #A8750F",'#10'"M c #A5720C",'#10'"N c #020202",'#10
+  +'"................",'#10'"................",'#10'"..,-*a..........",'#10'".,'
+  ,'bbbbc.........",'#10'",bddddbefghij...",'#10'"-klllllbbbbbm...",'#10'"*nopp'
+  +'ppppqrstii.",'#10'"aupbbbbbbbbbobv.",'#10'"pw,dddddddddxdyz",'#10'"cA-dkkkk'
+  +'kkkkBdCz",'#10'"qApdnnnnnnnnDdEz",'#10'"eAFduuuuuuuuGdHz",'#10'"fAsdwwwwwww'
+  +'wIdJz",'#10'".hijmKLMvyCEHJN.",'#10'"...zzzzzzzzzzz..",'#10'"..............'
+  +'.."}'#10#0#0#0
 ]);

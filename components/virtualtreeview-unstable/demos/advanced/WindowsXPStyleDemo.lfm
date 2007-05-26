@@ -124,15 +124,16 @@ object WindowsXPForm: TWindowsXPForm
       end>
   end
   object CoolBar1: TPanel
-    Height = 34
+    Height = 64
     Width = 829
     Align = alTop
     AutoSize = True
-    ClientHeight = 34
+    ClientHeight = 64
     ClientWidth = 829
     TabOrder = 1
     object ToolBar1: TToolBar
       Left = 1
+      Height = 62
       Top = 1
       Width = 827
       AutoSize = True
@@ -151,48 +152,47 @@ object WindowsXPForm: TWindowsXPForm
         Style = tbsDropDown
       end
       object ToolButton2: TToolButton
-        Left = 45
+        Left = 44
         Top = 2
         AutoSize = True
         ImageIndex = 10
         Style = tbsDropDown
       end
       object ToolButton3: TToolButton
-        Left = 89
+        Left = 257
         Top = 2
         AutoSize = True
         ImageIndex = 18
       end
       object ToolButton4: TToolButton
-        Left = 123
+        Left = 470
         Top = 2
         AutoSize = True
         ImageIndex = 14
       end
       object ToolButton5: TToolButton
-        Left = 157
-        Top = 2
+        Top = 32
         AutoSize = True
         ImageIndex = 21
       end
       object ToolButton6: TToolButton
-        Left = 191
-        Top = 2
+        Left = 213
+        Top = 32
         AutoSize = True
         ImageIndex = 8
         Style = tbsDropDown
       end
       object ToolButton8: TToolButton
-        Left = 235
-        Top = 2
+        Left = 426
+        Top = 32
         Width = 8
         Caption = 'ToolButton8'
         ImageIndex = 9
         Style = tbsSeparator
       end
       object ToolButton9: TToolButton
-        Left = 243
-        Top = 2
+        Left = 434
+        Top = 32
         AutoSize = True
         Caption = 'Click here to print the treeview.'
         ImageIndex = 24

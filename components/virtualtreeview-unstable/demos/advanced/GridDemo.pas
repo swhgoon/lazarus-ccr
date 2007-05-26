@@ -13,8 +13,8 @@ unit GridDemo;
 interface
 
 uses
-  Windows, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ImgList, LResources;
+  delphicompat, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, VirtualTrees, ImgList, LResources, LCLType;
 
 type
   TGridForm = class(TForm)

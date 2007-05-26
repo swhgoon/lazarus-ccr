@@ -8,7 +8,7 @@ unit Editors;
 interface
 
 uses
-  Windows, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, VirtualTrees, ExtDlgs, ImgList, Buttons, ExtCtrls, ComCtrls,
   MaskEdit, LCLType;
 
@@ -285,10 +285,12 @@ begin
     S := TComboBox(FEdit).Text
   else
   begin
-    GetWindowText(FEdit.Handle, Buffer, 1024);
-    S := Buffer;
+    if FEdit is TCustomEdit then
+      S := TCustomEdit(FEdit).Text
+    else
+      raise Exception.Create('Unknow edit control');
   end;
-
+  
   if S <> Data.Value then
   begin
     Data.Value := S;
@@ -468,15 +470,17 @@ begin
       end;
     end
     else
-    begin
-      GetWindowText(FEdit.Handle, Buffer, 1024);
-      S := Buffer;
-      if S <> Data.Value[FColumn - 1] then
+      if FEdit is TCustomEdit then
       begin
-        Data.Value[FColumn - 1] := S;
-        Data.Changed := True;
-      end;
-    end;
+        S := TCustomEdit(FEdit).Text;
+        if S <> Data.Value[FColumn - 1] then
+        begin
+          Data.Value[FColumn - 1] := S;
+          Data.Changed := True;
+        end;
+      end
+      else
+        raise Exception.Create('Unknow Edit Control');
 
   if Data.Changed then
     FTree.InvalidateNode(FNode);

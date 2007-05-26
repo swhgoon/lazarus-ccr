@@ -7,6 +7,8 @@ object GridForm: TGridForm
   VertScrollBar.Page = 431
   ActiveControl = VST5
   Caption = 'GridForm'
+  ClientHeight = 432
+  ClientWidth = 736
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate

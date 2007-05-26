@@ -28,8 +28,10 @@ unit DrawTreeDemo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  VirtualTrees, StdCtrls, {$ifdef GraphicEx} GraphicEx, {$else} {JPEG,} {$endif}
+  {$ifdef Windows}
+  Windows,
+  {$endif} Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  VirtualTrees, StdCtrls,  JPEGLib,
   ImgList, ComCtrls, shlobjext, LResources;
 
 type
@@ -77,9 +79,7 @@ var
 implementation
 
 uses
-  FileCtrl, ShellAPI, MaskEdit, ShlObj, ActiveX, States;
-
-{.$R *.DFM}
+  FileCtrl, MaskEdit, States;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -96,28 +96,7 @@ type
     Image: TBitmap;
     Properties: WideString;   // some image properties, preformatted
   end;
-
-//----------------- utility functions ----------------------------------------------------------------------------------
-
-function IncludeTrailingBackslash(const S: string): string;
-
-begin
-  if not IsPathDelimiter(S, Length(S)) then
-    Result := S + '\'
-  else
-    Result := S;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function ExcludeTrailingBackslash(const S: string): string;
-
-begin
-  Result := S;
-  if IsPathDelimiter(Result, Length(Result)) then
-    SetLength(Result, Length(Result) - 1);
-end;
-
+  
 //----------------------------------------------------------------------------------------------------------------------
 
 function HasChildren(const Folder: string): Boolean;
@@ -128,7 +107,7 @@ var
   SR: TSearchRec;
 
 begin
-  Result := FindFirst(IncludeTrailingBackslash(Folder) + '*.*', faReadOnly or faHidden or faSysFile or faArchive, SR) = 0;
+  Result := FindFirst(IncludeTrailingPathDelimiter(Folder) + '*.*', faAnyFile, SR) = 0;
   if Result then
     FindClose(SR);
 end;
@@ -143,10 +122,13 @@ var
   SFI: TSHFileInfo;
 
 begin
+  //todo
+  {
   if SHGetFileInfo(PChar(Name), 0, SFI, SizeOf(TSHFileInfo), Flags) = 0 then
     Result := -1
   else
     Result := SFI.iIcon;
+  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -154,40 +136,57 @@ end;
 procedure GetOpenAndClosedIcons(Name: string; var Open, Closed: Integer);
 
 begin
+  //todo
+  Closed := 0;
+  Open := 0;
+  {
   Closed := GetIconIndex(Name, SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   Open := GetIconIndex(Name, SHGFI_SYSICONINDEX or SHGFI_SMALLICON or SHGFI_OPENICON);
+  }
 end;
 
 //----------------- TDrawTreeForm --------------------------------------------------------------------------------------
 
-procedure TDrawTreeForm.FormCreate(Sender: TObject);
-
+procedure GetLogicalDrivesInfo(var DriveStrings: String; var DriveCount: Integer);
 var
-  SFI: TSHFileInfo;
   I,
-  Count: Integer;
+  BufferSize,
   DriveMap,
   Mask: Cardinal;
 
 begin
-  VDT1.NodeDataSize := SizeOf(TShellObjectData);
-
-  // Fill root level of image tree. Determine which drives are mapped.
-  Count := 0;
+  {$ifdef Windows}
+  DriveCount := 0;
   DriveMap := GetLogicalDrives;
   Mask := 1;
   for I := 0 to 25 do
   begin
     if (DriveMap and Mask) <> 0 then
-      Inc(Count);
+      Inc(DriveCount);
     Mask := Mask shl 1;
   end;
+  BufferSize := GetLogicalDriveStrings(0, nil);
+  SetLength(DriveStrings, BufferSize);
+  GetLogicalDriveStrings(BufferSize, PChar(DriveStrings));
+
+  {$else}
+  DriveCount := 1;
+  DriveStrings := '/';
+  {$endif}
+end;
+
+procedure TDrawTreeForm.FormCreate(Sender: TObject);
+
+var
+  //SFI: TSHFileInfo;
+  I,
+  Count: Integer;
+
+begin
+  VDT1.NodeDataSize := SizeOf(TShellObjectData);
+  GetLogicalDrivesInfo(FDriveStrings,Count);
   VDT1.RootNodeCount := Count;
-  // Determine drive strings which are used in the initialization process.
-  Count := GetLogicalDriveStrings(0, nil);
-  SetLength(FDriveStrings, Count);
-  GetLogicalDriveStrings(Count, PChar(FDriveStrings));
-  
+
   //todo
   {
   SystemImages.Handle := SHGetFileInfo('', 0, SFI, SizeOf(SFI), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
@@ -224,8 +223,8 @@ begin
       Add('.ico');
       Add('.jpg');
       Add('.jpeg');
-      Add('.wmf');
-      Add('.emf');
+      //Add('.wmf');
+      //Add('.emf');
     end;
     {$endif}
     FExtensionList.Sort;
@@ -270,13 +269,15 @@ function TDrawTreeForm.ReadAttributes(const Name: WideString): Cardinal;
 const
   SFGAO_CONTENTSMASK = $F0000000; // This value is wrongly defined in ShlObj.
 
-var
+//var
   //Desktop: IShellFolder;
+  {
   Eaten: Cardinal;
   PIDL: PItemIDList;
   Malloc: IMalloc;
-
+}
 begin
+  Result := 0;
   //todo
   {
   // Get the root folder of the shell name space.
@@ -346,7 +347,7 @@ begin
   else
   begin
     Picture := TPicture.Create;
-    Data.Display := ExtractFileName(ExcludeTrailingBackslash(Data.FullPath));
+    Data.Display := ExtractFileName(ExcludeTrailingPathDelimiter(Data.FullPath));
     if (Data.Attributes and SFGAO_FOLDER) = 0 then
     try
       try
@@ -399,9 +400,10 @@ begin
   end;
   //todo
 
-  Data.Attributes := ReadAttributes(Data.FullPath);
-  if ((Data.Attributes and SFGAO_HASSUBFOLDER) <> 0) or
-    (((Data.Attributes and SFGAO_FOLDER) <> 0) and HasChildren(Data.FullPath)) then
+  //Data.Attributes := ReadAttributes(Data.FullPath);
+  //if ((Data.Attributes and SFGAO_HASSUBFOLDER) <> 0) or
+  //  (((Data.Attributes and SFGAO_FOLDER) <> 0) and HasChildren(Data.FullPath)) then
+  if HasChildren(Data.FullPath) then
     Include(InitialStates, ivsHasChildren);
 
 end;
@@ -537,22 +539,25 @@ var
 
 begin
   Data := Sender.GetNodeData(Node);
-  if FindFirst(IncludeTrailingBackslash(Data.FullPath) + '*.*', faAnyFile, SR) = 0 then
+  if FindFirst(IncludeTrailingPathDelimiter(Data.FullPath) + '*.*', faAnyFile, SR) = 0 then
   begin
     Screen.Cursor := crHourGlass;
     try
       repeat
         if (SR.Name <> '.') and (SR.Name <> '..') then
         begin
-          NewName := IncludeTrailingBackslash(Data.FullPath) + SR.Name;
+          NewName := IncludeTrailingPathDelimiter(Data.FullPath) + SR.Name;
           if (SR.Attr and faDirectory <> 0) or CanDisplay(NewName) then
           begin
             ChildNode := Sender.AddChild(Node);
             ChildData := Sender.GetNodeData(ChildNode);
             ChildData.FullPath := NewName;
-            ChildData.Attributes := ReadAttributes(NewName);
-            if (ChildData.Attributes and SFGAO_FOLDER) = 0 then
-              ChildData.Properties := Format('%n KB, ', [SR.Size / 1024]);
+            ChildData.Attributes := 0; //ReadAttributes(NewName);
+            //if (ChildData.Attributes and SFGAO_FOLDER) = 0 then
+            if (SR.Attr and faDirectory = 0) then
+              ChildData.Properties := Format('%n KB, ', [SR.Size / 1024])
+            else
+              ChildData.Attributes := SFGAO_FOLDER;
             GetOpenAndClosedIcons(ChildData.FullPath, ChildData.OpenIndex, ChildData.CloseIndex);
 
             Sender.ValidateNode(Node, False);
