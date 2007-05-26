@@ -67,7 +67,7 @@ end;
 procedure TNodeForm.FormCreate(Sender: TObject);
 
 begin
-  LoadUnicodeStrings('LoremIpsum', DemoText);
+  LoadUnicodeStrings('Lorem ipsum', DemoText);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

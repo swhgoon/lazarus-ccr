@@ -9,8 +9,6 @@ unit Main;
 
 interface
 
-{.$include Compilers.inc}
-
 {$ifdef COMPILER_7_UP}
   // For some things to work we need code, which is classified as being unsafe for .NET.
   {$warn UNSAFE_TYPE off}
@@ -92,19 +90,23 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+
 procedure LoadUnicodeStrings(Name: string; var Strings: array of WideString);
 
 // Loads the Unicode strings from the resource.
 
 var
-  Stream: TResourceStream;
+  Res: TLResource;
   Head, Tail: PWideChar;
   I: Integer;
-                              
+
 begin
-  Stream := TResourceStream.Create(0, Name, 'Unicode');
-  try
-    Head := Stream.Memory;
+  //Stream := TResourceStream.Create(0, Name, 'Unicode');
+  Res := LazarusResources.Find(Name);
+  if (Res <> nil) and (Res.Value <> '') then
+  begin
+    //Head := Stream.Memory;
+    Head := PWideChar(Res.Value);
     // Skip byte order mark.
     Inc(Head);
     Tail := Head;
@@ -117,8 +119,6 @@ begin
       // Skip carriage return and linefeed.
       Inc(Tail, 2);
     end;
-  finally
-    Stream.Free;
   end;
 end;
 
@@ -212,6 +212,7 @@ end;
 
 initialization
   {$i Main.lrs}
+  {$i unicode.lrs}
 
 end.
 

@@ -1,6 +1,5 @@
 program Advanced;
 
-{$R Res\ExtraRes.res}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
@@ -22,7 +21,6 @@ uses
   //HeaderCustomDrawDemo in 'HeaderCustomDrawDemo.pas' {HeaderOwnerDrawForm},
   States in 'States.pas' {StateForm}, Printer4Lazarus;
 
-{.$R *.RES}
 
 begin
   Application.Initialize;

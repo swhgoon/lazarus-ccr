@@ -7,6 +7,8 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   VertScrollBar.Page = 439
   ActiveControl = HeaderCustomDrawTree
   Caption = 'HeaderOwnerDrawForm'
+  ClientHeight = 440
+  ClientWidth = 776
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate

@@ -241,8 +241,7 @@ begin
   FBackBitmap2.PixelFormat := pf32Bit;
   CreateCheckerBackground;
   FHeaderBitmap := TBitmap.Create;
-  //FHeaderBitmap.Handle := LoadImage(HInstance, 'Transcriptions', IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
-  FHeaderBitmap.LoadFromResourceName(HINSTANCE,'Transcriptions');
+  FHeaderBitmap.LoadFromLazarusResource('Transcriptions');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -261,7 +260,7 @@ end;
 procedure THeaderOwnerDrawForm.AnimationTimerTimer(Sender: TObject);
 
 begin
-  //FLeftPos := (FLeftPos + FHeaderBitmap.Width div 2000) mod FHeaderBitmap.Width;
+  FLeftPos := (FLeftPos + FHeaderBitmap.Width div 2000) mod FHeaderBitmap.Width;
   with HeaderCustomDrawTree.Header do
     Invalidate(Columns[2]);
 end;
@@ -308,5 +307,6 @@ end;
 
 initialization
   {$i HeaderCustomDrawDemo.lrs}
+  {$i bitmap.lrs}
 
 end.
