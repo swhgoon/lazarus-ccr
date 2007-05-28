@@ -7,6 +7,8 @@ object MainForm: TMainForm
   VertScrollBar.Page = 574
   ActiveControl = Button1
   Caption = 'Demo for drag''n drop and clipboard transfers'
+  ClientHeight = 575
+  ClientWidth = 790
   Font.CharSet = ANSI_CHARSET
   Font.Height = -12
   Font.Name = 'Arial'
@@ -42,6 +44,8 @@ object MainForm: TMainForm
     Height = 69
     Width = 790
     Align = alTop
+    ClientHeight = 69
+    ClientWidth = 790
     Color = clWhite
     ParentColor = False
     TabOrder = 0
@@ -178,6 +182,8 @@ object MainForm: TMainForm
     TabOrder = 5
     object RichTextTabSheet: TTabSheet
       Caption = 'Rich text'
+      ClientHeight = 219
+      ClientWidth = 677
       ImageIndex = 1
       object Label3: TLabel
         Left = 8
@@ -191,6 +197,8 @@ object MainForm: TMainForm
     end
     object LogTabSheet: TTabSheet
       Caption = 'Drag''n drop operation log'
+      ClientHeight = 219
+      ClientWidth = 677
       object Label7: TLabel
         Left = 6
         Height = 41
@@ -229,6 +237,8 @@ object MainForm: TMainForm
     end
     object TabSheet2: TTabSheet
       Caption = 'More info'
+      ClientHeight = 219
+      ClientWidth = 677
       ImageIndex = 3
       object Label4: TLabel
         Left = 12
@@ -266,6 +276,8 @@ object MainForm: TMainForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Tips'
+      ClientHeight = 219
+      ClientWidth = 677
       ImageIndex = 2
       object Label8: TLabel
         Left = 12
