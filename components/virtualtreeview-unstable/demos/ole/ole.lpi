@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="ole.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -48,11 +48,6 @@
         <ResourceFilename Value="Main.lrs"/>
         <UnitName Value="Main"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\..\units\win32\virtualdragmanager.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="virtualdragmanager"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -62,6 +57,9 @@
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

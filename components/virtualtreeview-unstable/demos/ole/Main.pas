@@ -1,7 +1,7 @@
 unit Main;
 
 {$MODE Delphi}
- 
+{$define UseExternalDragManager}
 // Virtual Treeview sample application demonstrating clipboard and drag'n drop operations.
 // The treeview uses OLE for these operations but can also issue and accept VCL drag'n drop.
 // Written by Mike Lischke.
@@ -11,7 +11,7 @@ interface
 uses 
   Windows, LCLIntf, Messages, ActiveX, SysUtils, Forms, Dialogs, Graphics,
   VirtualTrees, ActnList, ComCtrls, ExtCtrls, StdCtrls, Controls, Classes, Buttons,
-  ImgList, LResources, vtLogger,ipcchannel, virtualdragmanager;
+  ImgList, LResources, vtLogger,ipcchannel {$ifdef UseExternalDragManager},virtualdragmanager{$endif};
 
 type
   TMainForm = class(TForm)
