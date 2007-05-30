@@ -23975,7 +23975,13 @@ begin
         Sort(Parent, FHeader.FSortColumn, FHeader.FSortDirection, True);
 
       InvalidateToBottom(Parent);
-      UpdateScrollbars(True);
+
+      //Calling UpdateHorizontalScrollBar without a header leads to a
+      //wrong NodeWidth because the node is not initialized at this time.
+      //As result the horizontal scrollbar is not correctly
+      //sized and the node can not be selected by a click.
+      if HandleAllocated then
+        UpdateVerticalScrollBar(True)
     end;
   end
   else
