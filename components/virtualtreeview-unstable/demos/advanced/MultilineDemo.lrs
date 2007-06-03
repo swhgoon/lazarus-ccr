@@ -1,7 +1,7 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TNodeForm','FORMDATA',[
-  'TPF0'#9'TNodeForm'#8'NodeForm'#4'Left'#3'='#2#6'Height'#3#30#2#3'Top'#3'L'#1
+  'TPF0'#9'TNodeForm'#8'NodeForm'#4'Left'#3#241#1#6'Height'#3#30#2#3'Top'#3'L'#1
   +#5'Width'#3#5#3#18'HorzScrollBar.Page'#3#4#3#18'VertScrollBar.Page'#3#29#2#13
   +'ActiveControl'#7#6'MLTree'#7'Caption'#6#8'NodeForm'#12'ClientHeight'#3#30#2
   +#11'ClientWidth'#3#5#3#11'Font.Height'#2#243#9'Font.Name'#6#13'MS Sans Serif'
@@ -38,9 +38,9 @@ LazarusResources.Add('TNodeForm','FORMDATA',[
   +#13'toMultiSelect'#0#9'OnEditing'#7#13'MLTreeEditing'#9'OnGetText'#7#13'MLTr'
   +'eeGetText'#11'OnPaintText'#7#15'MLTreePaintText'#10'OnInitNode'#7#14'MLTree'
   +'InitNode'#13'OnMeasureItem'#7#17'MLTreeMeasureItem'#13'OnStateChange'#7#17
-  +'MLTreeStateChange'#7'Columns'#14#1#8'Position'#2#1#5'Width'#3#227#1#0#1#0#0
-  +#0#0#0#9'TCheckBox'#18'AutoAdjustCheckBox'#4'Left'#2#12#6'Height'#2#13#3'Top'
-  +#3#152#1#5'Width'#3#234#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6
+  +'MLTreeStateChange'#7'Columns'#14#1#8'Position'#2#1#5'Width'#3#225#1#0#1#0#0
+  +#0#0#0#9'TCheckBox'#18'AutoAdjustCheckBox'#4'Left'#2#12#6'Height'#2#24#3'Top'
+  +#3#141#1#5'Width'#3'c'#1#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6
   +'.Automatically adjust node height to node text.'#7'OnClick'#7#23'AutoAdjust'
   +'CheckBoxClick'#8'TabOrder'#2#1#0#0#0
 ]);

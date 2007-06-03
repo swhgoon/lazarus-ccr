@@ -11,13 +11,14 @@ unit PropertiesDemo;
 interface
 
 uses
-  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ImgList, ExtCtrls, LResources;
+  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, VirtualTrees, ExtCtrls, LResources;
 
+{$ifdef Windows}
 const
   // Helper message to decouple node change handling from edit handling.
   WM_STARTEDITING = WM_USER + 778;
-  
+{$endif}
 type
   TPropertiesForm = class(TForm)
     VST3: TVirtualStringTree;
@@ -45,7 +46,9 @@ type
     procedure RadioGroup1Click(Sender: TObject);
     procedure VST3StateChange(Sender: TBaseVirtualTree; Enter, Leave: TVirtualTreeStates);
   private
+    {$ifdef Windows}
     procedure WMStartEditing(var Message: TMessage); message WM_STARTEDITING;
+    {$endif}
   end;
 
 var
@@ -202,7 +205,9 @@ begin
       // to start a new edit operation if the last one is still in progress. So we post us a special message and
       // in the message handler we then can start editing the new node. This works because the posted message
       // is first executed *after* this event and the message, which triggered it is finished.
+      {$ifdef Windows}
       PostMessage(Self.Handle, WM_STARTEDITING, Integer(Node), 0);
+      {$endif}
     end;
   end;
 end;
@@ -306,6 +311,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$ifdef Windows}
 procedure TPropertiesForm.WMStartEditing(var Message: TMessage);
 
 // This message was posted by ourselves from the node change handler above to decouple that change event and our
@@ -320,7 +326,7 @@ begin
   // Note: the test whether a node can really be edited is done in the OnEditing event.
   VST3.EditNode(Node, 1);
 end;
-
+{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
 initialization

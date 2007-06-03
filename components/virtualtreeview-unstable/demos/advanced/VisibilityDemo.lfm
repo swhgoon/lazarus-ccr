@@ -1,5 +1,5 @@
 object VisibilityForm: TVisibilityForm
-  Left = 573
+  Left = 518
   Height = 529
   Top = 362
   Width = 752
@@ -7,6 +7,8 @@ object VisibilityForm: TVisibilityForm
   VertScrollBar.Page = 528
   ActiveControl = VST1
   Caption = 'VisibilityForm'
+  ClientHeight = 529
+  ClientWidth = 752
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
@@ -88,6 +90,8 @@ object VisibilityForm: TVisibilityForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 88
+    ClientWidth = 365
     ItemIndex = 0
     Items.Strings = (
       'show all nodes'
@@ -104,6 +108,8 @@ object VisibilityForm: TVisibilityForm
     Top = 212
     Width = 489
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ClientHeight = 266
+    ClientWidth = 489
     FullRepaint = False
     TabOrder = 1
     object Splitter2: TSplitter
@@ -4146,7 +4152,7 @@ object VisibilityForm: TVisibilityForm
       ShowHint = True
       TabOrder = 0
       TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking]
-      TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+      TreeOptions.MiscOptions = [toCheckSupport, toInitOnSave, toToggleOnDblClick, toWheelPanning]
       TreeOptions.PaintOptions = [toHideFocusRect, toShowBackground, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseBlendedSelection]
       TreeOptions.SelectionOptions = [toExtendedFocus]
       OnChange = VST2Change
@@ -8193,7 +8199,7 @@ object VisibilityForm: TVisibilityForm
       ShowHint = True
       TabOrder = 1
       TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking]
-      TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+      TreeOptions.MiscOptions = [toCheckSupport, toInitOnSave, toToggleOnDblClick, toWheelPanning]
       TreeOptions.PaintOptions = [toHideFocusRect, toShowBackground, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseBlendedSelection]
       TreeOptions.SelectionOptions = [toExtendedFocus, toFullRowSelect]
       OnChange = VST2Change

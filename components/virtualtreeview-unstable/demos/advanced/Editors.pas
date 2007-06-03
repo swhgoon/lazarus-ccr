@@ -8,8 +8,8 @@ unit Editors;
 interface
 
 uses
-  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ExtDlgs, ImgList, Buttons, ExtCtrls, ComCtrls,
+  LCLIntf, delphicompat, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, VirtualTrees, ExtDlgs,  Buttons, ExtCtrls, ComCtrls,
   MaskEdit, LCLType;
 
 type

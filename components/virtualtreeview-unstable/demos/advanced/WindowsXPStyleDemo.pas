@@ -20,7 +20,7 @@ uses
     Variants,
   {$endif}
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, VirtualTrees, ComCtrls, ToolWin, Menus, StdCtrls,
+  Dialogs, VirtualTrees, ComCtrls, Menus, StdCtrls,
   LResources, Printers, PrintersDlgs, ExtCtrls;
 
 type
@@ -72,7 +72,10 @@ var
 implementation
 
 uses
-  Main, ShellAPI, States;
+  {$ifdef Windows}
+  ShellAPI,
+  {$endif}
+  Main, States;
 
 
 type

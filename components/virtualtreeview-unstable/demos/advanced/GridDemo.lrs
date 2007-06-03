@@ -1,63 +1,63 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TGridForm','FORMDATA',[
-  'TPF0'#9'TGridForm'#8'GridForm'#4'Left'#3#155#1#6'Height'#3#176#1#3'Top'#3'R'
-  +#1#5'Width'#3#224#2#18'HorzScrollBar.Page'#3#223#2#18'VertScrollBar.Page'#3
-  +#175#1#13'ActiveControl'#7#4'VST5'#7'Caption'#6#8'GridForm'#12'ClientHeight'
-  +#3#176#1#11'ClientWidth'#3#224#2#11'Font.Height'#2#243#9'Font.Name'#6#13'MS '
-  +'Sans Serif'#8'OnCreate'#7#10'FormCreate'#0#6'TLabel'#7'Label15'#4'Left'#3#12
-  +#2#6'Height'#3#153#0#3'Top'#2#8#5'Width'#3#195#0#7'Anchors'#11#5'akTop'#7'ak'
-  +'Right'#0#8'AutoSize'#8#7'Caption'#6#255'This sample demonstrates the grid e'
-  +'xtensions introduced in Virtual Treeview. The main difference to normal mod'
-  +'e is the  way cell content is handled (editing, selection etc.). In Grid mo'
-  +'de always the entire cell is used. Another point is the key handling .'#5'C'
-  +'olor'#7#6'clNone'#11'ParentColor'#8#8'WordWrap'#9#0#0#6'TLabel'#6'Label1'#4
-  +'Left'#3#14#2#6'Height'#2'm'#3'Top'#3#168#0#5'Width'#3#195#0#7'Anchors'#11#5
+  'TPF0'#9'TGridForm'#8'GridForm'#4'Left'#3'U'#1#6'Height'#3#176#1#3'Top'#3'a'#1
+  +#5'Width'#3#224#2#18'HorzScrollBar.Page'#3#223#2#18'VertScrollBar.Page'#3#175
+  +#1#13'ActiveControl'#7#4'VST5'#7'Caption'#6#8'GridForm'#12'ClientHeight'#3
+  +#176#1#11'ClientWidth'#3#224#2#11'Font.Height'#2#243#9'Font.Name'#6#13'MS Sa'
+  +'ns Serif'#8'OnCreate'#7#10'FormCreate'#0#6'TLabel'#7'Label15'#4'Left'#3#12#2
+  +#6'Height'#3#153#0#3'Top'#2#8#5'Width'#3#195#0#7'Anchors'#11#5'akTop'#7'akRi'
+  +'ght'#0#8'AutoSize'#8#7'Caption'#6#255'This sample demonstrates the grid ext'
+  +'ensions introduced in Virtual Treeview. The main difference to normal mode '
+  +'is the  way cell content is handled (editing, selection etc.). In Grid mode'
+  +' always the entire cell is used. Another point is the key handling .'#5'Col'
+  +'or'#7#6'clNone'#11'ParentColor'#8#8'WordWrap'#9#0#0#6'TLabel'#6'Label1'#4'L'
+  +'eft'#3#14#2#6'Height'#2'm'#3'Top'#3#168#0#5'Width'#3#195#0#7'Anchors'#11#5
   +'akTop'#7'akRight'#0#8'AutoSize'#8#7'Caption'#6'WThe main column in this sam'
   +'ple is reduced to an indicator and is set as a fixed column.'#5'Color'#7#6
-  +'clNone'#11'ParentColor'#8#8'WordWrap'#9#0#0#18'TVirtualStringTree'#4'VST5'#4
-  +'Left'#2#8#6'Height'#3#128#1#3'Top'#2#6#5'Width'#3#243#1#7'Anchors'#11#5'akT'
-  +'op'#6'akLeft'#7'akRight'#8'akBottom'#0#24'ClipboardFormats.Strings'#1#6#3'C'
-  +'SV'#6#11'HTML Format'#6#10'Plain text'#6#16'Rich Text Format'#6' Rich Text '
-  +'Format Without Objects'#6#12'Unicode text'#6#17'Virtual Tree Data'#0#18'Col'
-  +'ors.BorderColor'#7#12'clWindowText'#15'Colors.HotColor'#7#7'clBlack'#17'Def'
-  +'aultNodeHeight'#2#19#8'DragMode'#7#11'dmAutomatic'#9'EditDelay'#3','#1#11'F'
-  +'ont.Height'#2#245#9'Font.Name'#6#20'Microsoft Sans Serif'#20'Header.AutoSiz'
-  +'eIndex'#2#2#17'Header.Background'#7#11'clBtnShadow'#18'Header.Font.Height'#2
-  +#244#16'Header.Font.Name'#6#20'Microsoft Sans Serif'#14'Header.Options'#11#14
-  +'hoColumnResize'#16'hoDblClickResize'#6'hoDrag'#12'hoShowImages'#9'hoVisible'
-  +#0#12'Header.Style'#7#13'hsFlatButtons'#13'HintAnimation'#7#7'hatFade'#8'Hin'
-  +'tMode'#7#9'hmTooltip'#14'ParentShowHint'#8#13'RootNodeCount'#2'd'#30'Scroll'
-  +'BarOptions.AlwaysVisible'#9#8'ShowHint'#9#8'TabOrder'#2#0#23'TreeOptions.Au'
-  +'toOptions'#11#16'toAutoDropExpand'#12'toAutoScroll'#22'toAutoTristateTracki'
-  +'ng'#0#23'TreeOptions.MiscOptions'#11#15'toAcceptOLEDrop'#10'toEditable'#16
-  +'toGridExtensions'#12'toInitOnSave'#18'toToggleOnDblClick'#14'toWheelPanning'
-  +#0#24'TreeOptions.PaintOptions'#11#10'toHotTrack'#13'toShowButtons'#14'toSho'
-  +'wDropmark'#19'toShowHorzGridLines'#19'toShowVertGridLines'#18'toUseBlendedI'
-  +'mages'#0#28'TreeOptions.SelectionOptions'#11#22'toDisableDrawSelection'#15
-  +'toExtendedFocus'#19'toMiddleClickSelect'#13'toMultiSelect'#18'toRightClickS'
-  +'elect'#22'toCenterScrollIntoView'#0#8'WantTabs'#9#16'OnAfterCellPaint'#7#18
-  +'VST5AfterCellPaint'#17'OnBeforeCellPaint'#7#19'VST5BeforeCellPaint'#17'OnBe'
-  +'foreItemErase'#7#19'VST5BeforeItemErase'#14'OnCreateEditor'#7#16'VST5Create'
-  +'Editor'#15'OnFocusChanging'#7#17'VST5FocusChanging'#9'OnGetText'#7#11'VST5G'
-  +'etText'#11'OnPaintText'#7#13'VST5PaintText'#10'OnInitNode'#7#12'VST5InitNod'
-  +'e'#13'OnStateChange'#7#15'VST5StateChange'#7'Columns'#14#1#7'Options'#11#16
-  +'coParentBidiMode'#9'coVisible'#7'coFixed'#0#5'Width'#2#20#0#1#6'Margin'#2#0
-  +#8'Position'#2#1#5'Width'#2'd'#8'WideText'#18#11#0#0#0'C'#0'u'#0's'#0't'#0'o'
-  +#0'm'#0'e'#0'r'#0' '#0'I'#0'D'#0#0#1#6'Margin'#2#0#8'Position'#2#2#5'Width'#2
-  +'x'#8'WideText'#18#10#0#0#0'F'#0'i'#0'r'#0's'#0't'#0' '#0'N'#0'a'#0'm'#0'e'#0
-  +#0#1#6'Margin'#2#0#8'Position'#2#3#5'Width'#2'x'#8'WideText'#18#9#0#0#0'L'#0
-  +'a'#0's'#0't'#0' '#0'N'#0'a'#0'm'#0'e'#0#0#1#6'Margin'#2#0#8'Position'#2#4#5
-  +'Width'#2'd'#8'WideText'#18#10#0#0#0'O'#0'r'#0'd'#0'e'#0'r'#0' '#0'd'#0'a'#0
-  +'t'#0'e'#0#0#0#0#0#9'TCheckBox'#16'GridLineCheckBox'#4'Left'#3'J'#2#6'Height'
-  +#2#13#3'Top'#3'u'#1#5'Width'#2'a'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'C'
-  +'aption'#6#17'Toggle grid lines'#7'Checked'#9#7'OnClick'#7#21'GridLineCheckB'
-  +'oxClick'#5'State'#7#9'cbChecked'#8'TabOrder'#2#1#0#0#10'TImageList'#10'Tree'
-  +'Images'#4'left'#2#22#3'top'#2'$'#6'Bitmap'#10#211#31#0#0'li'#18#0#0#0#16#0#0
-  +#0#16#0#0#0#156#1#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"16 16 3 '
-  +'1",'#10'". c None",'#10'", c #000000",'#10'"- c #FFFFFF",'#10'"............'
-  +'....",'#10'"................",'#10'"...,,,,,,,,.....",'#10'"...,------,,...'
-  +'.",'#10'"...,------,-,...",'#10'"...,------,,,,..",'#10'"...,---------,..",'
+  +'clNone'#11'ParentColor'#8#8'WordWrap'#9#0#0#18'TVirtualStringTree'#4'VST5'#6
+  +'Cursor'#2'?'#4'Left'#2#8#6'Height'#3#128#1#3'Top'#2#6#5'Width'#3#243#1#7'An'
+  +'chors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#24'ClipboardFormats.S'
+  +'trings'#1#6#3'CSV'#6#11'HTML Format'#6#10'Plain text'#6#16'Rich Text Format'
+  +#6' Rich Text Format Without Objects'#6#12'Unicode text'#6#17'Virtual Tree D'
+  +'ata'#0#18'Colors.BorderColor'#7#12'clWindowText'#15'Colors.HotColor'#7#7'cl'
+  +'Black'#17'DefaultNodeHeight'#2#19#8'DragMode'#7#11'dmAutomatic'#9'EditDelay'
+  +#3','#1#11'Font.Height'#2#245#9'Font.Name'#6#20'Microsoft Sans Serif'#20'Hea'
+  +'der.AutoSizeIndex'#2#2#17'Header.Background'#7#11'clBtnShadow'#18'Header.Fo'
+  +'nt.Height'#2#244#16'Header.Font.Name'#6#20'Microsoft Sans Serif'#14'Header.'
+  +'Options'#11#14'hoColumnResize'#16'hoDblClickResize'#6'hoDrag'#12'hoShowImag'
+  +'es'#9'hoVisible'#0#12'Header.Style'#7#13'hsFlatButtons'#13'HintAnimation'#7
+  +#7'hatFade'#8'HintMode'#7#9'hmTooltip'#14'ParentShowHint'#8#13'RootNodeCount'
+  +#2'd'#30'ScrollBarOptions.AlwaysVisible'#9#8'ShowHint'#9#8'TabOrder'#2#0#23
+  +'TreeOptions.AutoOptions'#11#16'toAutoDropExpand'#12'toAutoScroll'#22'toAuto'
+  +'TristateTracking'#0#23'TreeOptions.MiscOptions'#11#10'toEditable'#16'toGrid'
+  +'Extensions'#12'toInitOnSave'#18'toToggleOnDblClick'#14'toWheelPanning'#0#24
+  +'TreeOptions.PaintOptions'#11#10'toHotTrack'#13'toShowButtons'#14'toShowDrop'
+  +'mark'#19'toShowHorzGridLines'#19'toShowVertGridLines'#18'toUseBlendedImages'
+  +#0#28'TreeOptions.SelectionOptions'#11#22'toDisableDrawSelection'#15'toExten'
+  +'dedFocus'#19'toMiddleClickSelect'#13'toMultiSelect'#18'toRightClickSelect'
+  +#22'toCenterScrollIntoView'#0#8'WantTabs'#9#16'OnAfterCellPaint'#7#18'VST5Af'
+  +'terCellPaint'#17'OnBeforeCellPaint'#7#19'VST5BeforeCellPaint'#17'OnBeforeIt'
+  +'emErase'#7#19'VST5BeforeItemErase'#14'OnCreateEditor'#7#16'VST5CreateEditor'
+  +#15'OnFocusChanging'#7#17'VST5FocusChanging'#9'OnGetText'#7#11'VST5GetText'
+  +#11'OnPaintText'#7#13'VST5PaintText'#10'OnInitNode'#7#12'VST5InitNode'#13'On'
+  +'StateChange'#7#15'VST5StateChange'#7'Columns'#14#1#7'Options'#11#16'coParen'
+  +'tBidiMode'#9'coVisible'#7'coFixed'#0#5'Width'#2#20#0#1#6'Margin'#2#0#8'Posi'
+  +'tion'#2#1#5'Width'#2'd'#8'WideText'#18#11#0#0#0'C'#0'u'#0's'#0't'#0'o'#0'm'
+  +#0'e'#0'r'#0' '#0'I'#0'D'#0#0#1#6'Margin'#2#0#8'Position'#2#2#5'Width'#2'x'#8
+  +'WideText'#18#10#0#0#0'F'#0'i'#0'r'#0's'#0't'#0' '#0'N'#0'a'#0'm'#0'e'#0#0#1
+  +#6'Margin'#2#0#8'Position'#2#3#5'Width'#2'x'#8'WideText'#18#9#0#0#0'L'#0'a'#0
+  +'s'#0't'#0' '#0'N'#0'a'#0'm'#0'e'#0#0#1#6'Margin'#2#0#8'Position'#2#4#5'Widt'
+  +'h'#2'd'#8'WideText'#18#10#0#0#0'O'#0'r'#0'd'#0'e'#0'r'#0' '#0'd'#0'a'#0't'#0
+  +'e'#0#0#0#0#0#9'TCheckBox'#16'GridLineCheckBox'#4'Left'#3#30#2#6'Height'#2#24
+  +#3'Top'#3'j'#1#5'Width'#3#141#0#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Cap'
+  +'tion'#6#17'Toggle grid lines'#7'Checked'#9#7'OnClick'#7#21'GridLineCheckBox'
+  +'Click'#5'State'#7#9'cbChecked'#8'TabOrder'#2#1#0#0#10'TImageList'#10'TreeIm'
+  +'ages'#4'left'#2#22#3'top'#2'$'#6'Bitmap'#10#211#31#0#0'li'#18#0#0#0#16#0#0#0
+  +#16#0#0#0#156#1#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"16 16 3 1"'
+  +','#10'". c None",'#10'", c #000000",'#10'"- c #FFFFFF",'#10'"..............'
+  +'..",'#10'"................",'#10'"...,,,,,,,,.....",'#10'"...,------,,...."'
+  +','#10'"...,------,-,...",'#10'"...,------,,,,..",'#10'"...,---------,..",'
   +#10'"...,---------,..",'#10'"...,---------,..",'#10'"...,---------,..",'#10
   +'"...,---------,..",'#10'"...,---------,..",'#10'"...,---------,..",'#10'"..'
   +'.,---------,..",'#10'"...,,,,,,,,,,,..",'#10'"................"}'#10#171#1#0

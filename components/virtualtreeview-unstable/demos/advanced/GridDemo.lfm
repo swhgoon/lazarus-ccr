@@ -1,7 +1,7 @@
 object GridForm: TGridForm
-  Left = 411
+  Left = 341
   Height = 432
-  Top = 338
+  Top = 353
   Width = 736
   HorzScrollBar.Page = 735
   VertScrollBar.Page = 431
@@ -37,6 +37,7 @@ object GridForm: TGridForm
     WordWrap = True
   end
   object VST5: TVirtualStringTree
+    Cursor = 63
     Left = 8
     Height = 384
     Top = 6
@@ -72,7 +73,7 @@ object GridForm: TGridForm
     ShowHint = True
     TabOrder = 0
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking]
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.MiscOptions = [toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
     TreeOptions.PaintOptions = [toHotTrack, toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toUseBlendedImages]
     TreeOptions.SelectionOptions = [toDisableDrawSelection, toExtendedFocus, toMiddleClickSelect, toMultiSelect, toRightClickSelect, toCenterScrollIntoView]
     WantTabs = True
@@ -116,10 +117,10 @@ object GridForm: TGridForm
       end>
   end
   object GridLineCheckBox: TCheckBox
-    Left = 586
-    Height = 13
-    Top = 373
-    Width = 97
+    Left = 542
+    Height = 24
+    Top = 362
+    Width = 141
     Anchors = [akRight, akBottom]
     Caption = 'Toggle grid lines'
     Checked = True

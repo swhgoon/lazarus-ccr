@@ -30,9 +30,9 @@ interface
 uses
   {$ifdef Windows}
   Windows,
-  {$endif} Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  VirtualTrees, StdCtrls,  JPEGLib,
-  ImgList, ComCtrls, shlobjext, LResources;
+  {$endif}
+  LCLIntf, delphicompat, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  VirtualTrees, StdCtrls, ComCtrls, shlobjext, LResources;
 
 type
   TDrawTreeForm = class(TForm)
@@ -107,7 +107,8 @@ var
   SR: TSearchRec;
 
 begin
-  Result := FindFirst(IncludeTrailingPathDelimiter(Folder) + '*.*', faAnyFile, SR) = 0;
+  Result := FindFirst(IncludeTrailingPathDelimiter(Folder) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
+    faAnyFile, SR) = 0;
   if Result then
     FindClose(SR);
 end;
@@ -117,10 +118,10 @@ end;
 function GetIconIndex(Name: string; Flags: Cardinal): Integer;
 
 // Returns the index of the system icon for the given file object.
-
+{
 var
   SFI: TSHFileInfo;
-
+}
 begin
   //todo
   {
@@ -168,7 +169,6 @@ begin
   BufferSize := GetLogicalDriveStrings(0, nil);
   SetLength(DriveStrings, BufferSize);
   GetLogicalDriveStrings(BufferSize, PChar(DriveStrings));
-
   {$else}
   DriveCount := 1;
   DriveStrings := '/';
@@ -471,7 +471,7 @@ begin
               if (NodeWidth - 2 * Margin) > (Right - Left) then
                 S := ShortenString(Canvas.Handle, S, Right - Left);
             end;
-            DrawTextW(Canvas.Handle, PWideChar(S), Length(S), R, DT_TOP or DT_LEFT or DT_VCENTER or DT_SINGLELINE, False);
+            DrawTextW(Canvas.Handle, PWideChar(S), Length(S), R, DT_TOP or DT_LEFT or DT_VCENTER or DT_SINGLELINE);
           end;
         end;
       1:
@@ -539,7 +539,8 @@ var
 
 begin
   Data := Sender.GetNodeData(Node);
-  if FindFirst(IncludeTrailingPathDelimiter(Data.FullPath) + '*.*', faAnyFile, SR) = 0 then
+  if FindFirst(IncludeTrailingPathDelimiter(Data.FullPath) + {$ifdef Windows}'*.*'{$else}'*'{$endif},
+    faAnyFile, SR) = 0 then
   begin
     Screen.Cursor := crHourGlass;
     try

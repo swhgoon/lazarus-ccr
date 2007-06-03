@@ -19,7 +19,6 @@ unit GeneralAbilitiesDemo;
 
 interface
 
-{.$include Compilers.inc}
 
 {$ifdef COMPILER_7_UP}
   // For some things to work we need code, which is classified as being unsafe for .NET.
@@ -29,9 +28,9 @@ interface
 {$endif COMPILER_7_UP}
 
 uses
-  LCLIntf, LCLType,Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, VTHeaderPopup, VirtualTrees, ComCtrls, ExtCtrls, ImgList, Menus,
-  StdActns, ActnList,  LResources;
+  LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Buttons, VTHeaderPopup, VirtualTrees, ComCtrls, ExtCtrls, Menus,
+   ActnList,  LResources, ImgList;
 
 type                                        
   TGeneralForm = class(TForm)
@@ -96,7 +95,9 @@ var
 implementation
 
 uses
-  ShellAPI, Main, States;
+  {$ifdef Windows}
+  ShellAPI,
+  {$endif} Main, States;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -123,7 +124,11 @@ var
 
 begin
   // Determine if we are running on Windows XP.
+  {$ifdef Windows}
   ThemeRadioGroup.Enabled := (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
+  {$else}
+  ThemeRadioGroup.Enabled := False;
+  {$endif}
   if ThemeRadioGroup.Enabled then
     ThemeRadioGroup.ItemIndex := 0;
 

@@ -12,8 +12,8 @@ unit VisibilityDemo;
 interface
 
 uses
-  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ComCtrls, ExtCtrls, ImgList, LResources;
+  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, VirtualTrees, ComCtrls, ExtCtrls, LResources;
 
 type
   TVisibilityForm = class(TForm)

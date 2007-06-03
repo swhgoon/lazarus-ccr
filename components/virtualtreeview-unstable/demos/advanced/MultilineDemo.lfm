@@ -1,5 +1,5 @@
 object NodeForm: TNodeForm
-  Left = 573
+  Left = 497
   Height = 542
   Top = 332
   Width = 773
@@ -80,7 +80,7 @@ object NodeForm: TNodeForm
       Columns = <      
         item
           Position = 1
-          Width = 483
+          Width = 481
         end      
         item
         end>
@@ -88,9 +88,9 @@ object NodeForm: TNodeForm
   end
   object AutoAdjustCheckBox: TCheckBox
     Left = 12
-    Height = 13
-    Top = 408
-    Width = 234
+    Height = 24
+    Top = 397
+    Width = 355
     Anchors = [akLeft, akBottom]
     Caption = 'Automatically adjust node height to node text.'
     OnClick = AutoAdjustCheckBoxClick

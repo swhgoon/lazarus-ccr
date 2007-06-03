@@ -1,7 +1,7 @@
 object DrawTreeForm: TDrawTreeForm
-  Left = 544
+  Left = 333
   Height = 477
-  Top = 320
+  Top = 339
   Width = 710
   HorzScrollBar.Page = 709
   VertScrollBar.Page = 476
@@ -24,9 +24,9 @@ object DrawTreeForm: TDrawTreeForm
   end
   object Label1: TLabel
     Left = 4
-    Height = 14
-    Top = 385
-    Width = 199
+    Height = 17
+    Top = 382
+    Width = 298
     Anchors = [akLeft, akBottom]
     Caption = 'Adjust vertical image alignment of nodes:'
     Color = clNone
@@ -34,9 +34,9 @@ object DrawTreeForm: TDrawTreeForm
   end
   object Label3: TLabel
     Left = 424
-    Height = 14
-    Top = 385
-    Width = 24
+    Height = 17
+    Top = 382
+    Width = 33
     Anchors = [akLeft, akBottom]
     Caption = '50%'
     Color = clNone
@@ -108,8 +108,8 @@ object DrawTreeForm: TDrawTreeForm
   end
   object TrackBar1: TTrackBar
     Left = 264
-    Height = 21
-    Top = 379
+    Height = 33
+    Top = 367
     Width = 157
     Max = 100
     OnChange = TrackBar1Change

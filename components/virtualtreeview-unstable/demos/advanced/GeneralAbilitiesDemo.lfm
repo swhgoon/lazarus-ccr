@@ -15,20 +15,20 @@ object GeneralForm: TGeneralForm
   OnCreate = FormCreate
   ShowHint = True
   object Label18: TLabel
-    Left = 505
-    Height = 14
-    Top = 384
-    Width = 102
+    Left = 450
+    Height = 17
+    Top = 381
+    Width = 157
     Anchors = [akRight, akBottom]
     Caption = 'Switch check images:'
     Color = clNone
     ParentColor = False
   end
   object Label19: TLabel
-    Left = 507
-    Height = 14
-    Top = 432
-    Width = 97
+    Left = 454
+    Height = 17
+    Top = 429
+    Width = 150
     Anchors = [akRight, akBottom]
     Caption = 'Switch main column:'
     Color = clNone
@@ -91,7 +91,7 @@ object GeneralForm: TGeneralForm
     TabOrder = 0
     TreeOptions.AnimationOptions = [toAnimatedToggle]
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoSpanColumns, toAutoTristateTracking, toAutoHideButtons, toDisableAutoscrollOnFocus, toAutoChangeScale]
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toEditable, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.MiscOptions = [toCheckSupport, toEditable, toInitOnSave, toToggleOnDblClick, toWheelPanning]
     TreeOptions.PaintOptions = [toHideSelection, toHotTrack, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toShowVertGridLines, toThemeAware, toUseBlendedImages, toFullVertGridLines, toUseBlendedSelection]
     TreeOptions.SelectionOptions = [toExtendedFocus, toMiddleClickSelect, toMultiSelect, toRightClickSelect]
     TreeOptions.StringOptions = [toSaveCaptions, toShowStaticText, toAutoAcceptEditChange]
@@ -142,7 +142,6 @@ object GeneralForm: TGeneralForm
     Width = 200
     Anchors = [akRight, akBottom]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
     Items.Strings = (
       'Light check marks'
       'Dark check marks'
@@ -217,6 +216,8 @@ object GeneralForm: TGeneralForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 56
+    ClientWidth = 201
     ItemIndex = 0
     Items.Strings = (
       'Usual +/- buttons and lines'
@@ -241,6 +242,8 @@ object GeneralForm: TGeneralForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 56
+    ClientWidth = 201
     ItemIndex = 1
     Items.Strings = (
       'Dotted rectangle'
@@ -265,6 +268,8 @@ object GeneralForm: TGeneralForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 56
+    ClientWidth = 201
     Items.Strings = (
       'Theme aware'
       'Not theme aware'

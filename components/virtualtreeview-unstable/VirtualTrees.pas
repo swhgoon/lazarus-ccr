@@ -3295,8 +3295,6 @@ function RegisterVTClipboardFormat(Description: string; TreeClass: TVirtualTreeC
 
 // utility routines
 procedure AlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
-procedure DrawTextW(DC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Cardinal;
-  AdjustRight: Boolean);
 {$ifdef EnablePrint}
 procedure PrtStretchDrawDIB(Canvas: TCanvas; DestRect: TRect; ABitmap: TBitmap);
 {$endif}
@@ -3973,146 +3971,6 @@ begin
       QuickSort(TheArray, L, J);
     L := I;
   until I >= R;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure DrawTextW(DC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Cardinal;
-  AdjustRight: Boolean);
-
-// This procedure implements a subset of Window's DrawText API for Unicode which is not available for
-// Windows 9x. For a description of the parameters see DrawText in the online help.
-// Supported flags are currently:
-//   - DT_LEFT
-//   - DT_TOP
-//   - DT_CALCRECT
-//   - DT_NOCLIP
-//   - DT_RTLREADING
-//   - DT_SINGLELINE
-//   - DT_VCENTER
-// Differences to the DrawTextW Windows API:
-//   - The additional parameter AdjustRight determines whether to adjust the right border of the given rectangle to
-//     accomodate the largest line in the text. It has only a meaning if also DT_CALCRECT is specified.
-
-var
-  Head, Tail: PWideChar;
-  Size: TSize;
-  MaxWidth: Integer;
-  TextOutFlags: Integer;
-  TextAlign,
-  OldTextAlign: Cardinal;
-  TM: TTextMetric;
-  TextHeight: Integer;
-  LineRect: TRect;
-  TextPosY,
-  TextPosX: Integer;
-
-  CalculateRect: Boolean;
-
-begin
-  // Prepare some work variables.
-  MaxWidth := 0;
-  Head := lpString;
-  GetTextMetrics(DC, TM);
-  TextHeight := TM.tmHeight;
-  if uFormat and DT_SINGLELINE <> 0 then
-    LineRect := lpRect
-  else
-    LineRect := Rect(lpRect.Left, lpRect.Top, lpRect.Right, lpRect.Top + TextHeight);
-
-  CalculateRect := uFormat and DT_CALCRECT <> 0;
-
-  // Prepare text output.
-  TextOutFlags := 0;
-  if uFormat and DT_NOCLIP = 0 then
-    TextOutFlags := TextOutFlags or ETO_CLIPPED;
-  if uFormat and DT_RTLREADING <> 0 then
-    TextOutFlags := TextOutFlags or ETO_RTLREADING;
-
-  // Determine horizontal and vertical text alignment.
-  OldTextAlign := GetTextAlign(DC);
-  TextAlign := TA_LEFT or TA_TOP;
-  TextPosX := lpRect.Left;
-  if uFormat and DT_RIGHT <> 0 then
-  begin
-    TextAlign := TextAlign or TA_RIGHT and not TA_LEFT;
-    TextPosX := lpRect.Right;
-  end
-  else
-    if uFormat and DT_CENTER <> 0 then
-    begin
-      TextAlign := TextAlign or TA_CENTER and not TA_LEFT;
-      TextPosX := (lpRect.Left + lpRect.Right) div 2;
-    end;
-
-  TextPosY := lpRect.Top;
-  if uFormat and DT_VCENTER <> 0 then
-  begin
-    // Note: vertical alignment does only work with single line text ouput!
-    TextPosY := (lpRect.Top + lpRect.Bottom - TextHeight) div 2;
-  end;
-  SetTextAlign(DC, TextAlign);
-
-  if uFormat and DT_SINGLELINE <> 0 then
-  begin
-    if CalculateRect then
-    begin
-      GetTextExtentPoint32W(DC, Head, nCount, Size);
-      if Size.cx > MaxWidth then
-        MaxWidth := Size.cx;
-    end
-    else
-      ExtTextOutW(DC, TextPosX, TextPosY, TextOutFlags, @LineRect, Head, nCount, nil);
-    OffsetRect(LineRect, 0, TextHeight);
-  end
-  else
-  begin
-    while (nCount > 0) and (Head^ <> WideNull) do
-    begin
-      Tail := Head;
-      // Look for the end of the current line. A line is finished either by the string end or a line break.
-      while (nCount > 0) and not (Tail^ in [WideNull, WideCR, WideLF]) and (Tail^ <> WideLineSeparator) do
-      begin
-        Inc(Tail);
-        Dec(nCount);
-      end;
-
-      if CalculateRect then
-      begin
-        GetTextExtentPoint32W(DC, Head, Tail - Head, Size);
-        if Size.cx > MaxWidth then
-          MaxWidth := Size.cx;
-      end
-      else
-        ExtTextOutW(DC, TextPosX, LineRect.Top, TextOutFlags, @LineRect, Head, Tail - Head, nil);
-      OffsetRect(LineRect, 0, TextHeight);
-
-      // Get out of the loop if the rectangle is filled up.
-      if (nCount = 0) or (not CalculateRect and (LineRect.Top >= lpRect.Bottom)) then
-        Break;
-
-      if (nCount > 0) and (Tail^ = WideCR) or (Tail^ = WideLineSeparator) then
-      begin
-        Inc(Tail);
-        Dec(nCount);
-      end;
-
-      if (nCount > 0) and (Tail^ = WideLF) then
-      begin
-        Inc(Tail);
-        Dec(nCount);
-      end;
-      Head := Tail;
-    end;
-  end;
-
-  SetTextAlign(DC, OldTextAlign);
-  if CalculateRect then
-  begin
-    if AdjustRight then
-      lpRect.Right := lpRect.Left + MaxWidth;
-    lpRect.Bottom := LineRect.Top;
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6661,10 +6519,8 @@ begin
           R.Top := Y;
           if Assigned(Node) and (LineBreakStyle = hlbForceMultiLine) then
             DrawFormat := DrawFormat or DT_WORDBREAK;
-          if IsWinNT then
-            DelphiCompat.DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat)
-          else
-            DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat, False);
+
+          DrawTextW(Handle, PWideChar(HintText), Length(HintText), R, DrawFormat)
         end;
     end;
   end;
@@ -6831,6 +6687,8 @@ begin
 
     FHintData.Tree.Update;
 
+    {$ifdef Windows}
+    //todo: implement this under gtk
     // capture screen
     DC := GetDC(0);
     try
@@ -6839,6 +6697,7 @@ begin
     finally
       ReleaseDC(0, DC);
     end;
+    {$endif}
 
     SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height, SWP_SHOWWINDOW or SWP_NOACTIVATE);
     with FHintData.Tree do
@@ -6958,10 +6817,7 @@ begin
               // We don't have Unicode word wrap on the latter so the tooltip gets as wide as the largest line
               // in the caption (limited by carriage return), which results in unoptimal overlay of the tooltip.
               // On Windows NT the tooltip exactly overlays the node text.
-              if IsWinNT then
-                DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT or DT_WORDBREAK)
-              else
-                DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT, True);
+              DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), R, DT_CALCRECT or DT_WORDBREAK);
               if BidiMode = bdLeftToRight then
                 Result.Right := R.Right + Tree.FTextMargin
               else
@@ -7000,10 +6856,7 @@ begin
             // Start with the base size of the hint in client coordinates.
             Result := Rect(0, 0, MaxWidth, FTextHeight);
             // Calculate the true size of the text rectangle.
-            if IsWinNT then
-              DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT)
-            else
-              DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT, True);
+            DrawTextW(Canvas.Handle, PWideChar(HintText), Length(HintText), Result, DT_CALCRECT);
             // The height of the text plus 2 pixels vertical margin plus the border determine the hint window height.
             Inc(Result.Bottom, 6);
             // The text is centered horizontally with usual text margin for left and right borders (plus border).
@@ -8822,16 +8675,10 @@ begin
   begin
     OffsetRect(Bounds, 1, 1);
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
-    if IsWinNT then
-      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
-    else
-      DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
+    DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat);
     OffsetRect(Bounds, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
-    if IsWinNT then
-      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
-    else
-      DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
+    DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat);
   end
   else
   begin
@@ -8839,10 +8686,7 @@ begin
       SetTextColor(DC, ColorToRGB(FHeader.Treeview.FColors.HeaderHotColor))
     else
       SetTextColor(DC, ColorToRGB(FHeader.FFont.Color));
-    if IsWinNT then
-      DelphiCompat.DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat)
-    else
-      DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat, False);
+    DrawTextW(DC, PWideChar(Caption), Length(Caption), Bounds, DrawFormat);
   end;
 end;
 
@@ -30215,10 +30059,7 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT)
     else
       SetBkMode(Canvas.Handle, OPAQUE);
-    if IsWinNT then
-      DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat)
-    else
-      DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat, False);
+    DrawTextW(Canvas.Handle, PWideChar(Text), Length(Text), R, DrawFormat)
   end;
   Logger.ExitMethod([lcPaintDetails],'PaintStaticText');
 end;
@@ -30575,10 +30416,7 @@ procedure TCustomVirtualStringTree.DoTextDrawing(var PaintInfo: TVTPaintInfo; Te
   DrawFormat: Cardinal);
 
 begin
-  if IsWinNT then
-    DelphiCompat.DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat)
-  else
-    DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat, False);
+  DrawTextW(PaintInfo.Canvas.Handle, PWideChar(Text), Length(Text), CellRect, DrawFormat);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30821,10 +30659,7 @@ begin
     DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING
   else
     DrawFormat := DrawFormat or DT_LEFT;
-  if IsWinNT then
-    DelphiCompat.DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat)
-  else
-    DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat, False);
+  DrawTextW(Canvas.Handle, PWideChar(S), Length(S), PaintInfo.CellRect, DrawFormat);
   Result := PaintInfo.CellRect.Bottom - PaintInfo.CellRect.Top;
 end;
 

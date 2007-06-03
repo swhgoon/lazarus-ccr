@@ -11,7 +11,7 @@ interface
 
 uses
   LCLIntf, SysUtils, Classes, Forms, Controls, Graphics, VirtualTrees,
-  ExtCtrls, StdCtrls, ImgList, LResources;
+  ExtCtrls, StdCtrls, LResources;
   
 type
   TNodeForm = class(TForm)

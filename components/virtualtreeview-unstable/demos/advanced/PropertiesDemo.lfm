@@ -7,6 +7,8 @@ object PropertiesForm: TPropertiesForm
   VertScrollBar.Page = 418
   ActiveControl = VST3
   Caption = 'PropertiesForm'
+  ClientHeight = 419
+  ClientWidth = 637
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
@@ -60,7 +62,7 @@ object PropertiesForm: TPropertiesForm
     TabOrder = 0
     TreeOptions.AnimationOptions = [toAnimatedToggle]
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoTristateTracking, toAutoDeleteMovedNodes]
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.MiscOptions = [toEditable, toGridExtensions, toInitOnSave, toToggleOnDblClick, toWheelPanning]
     TreeOptions.SelectionOptions = [toExtendedFocus, toFullRowSelect, toCenterScrollIntoView]
     TreeOptions.StringOptions = [toAutoAcceptEditChange]
     OnChange = VST3Change
@@ -103,6 +105,8 @@ object PropertiesForm: TPropertiesForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 48
+    ClientWidth = 198
     ItemIndex = 0
     Items.Strings = (
       'forward'

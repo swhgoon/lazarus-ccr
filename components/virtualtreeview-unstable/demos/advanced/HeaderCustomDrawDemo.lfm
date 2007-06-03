@@ -1,5 +1,5 @@
 object HeaderOwnerDrawForm: THeaderOwnerDrawForm
-  Left = 572
+  Left = 494
   Height = 440
   Top = 407
   Width = 776
