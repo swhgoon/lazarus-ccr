@@ -28,16 +28,16 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="JPEGForLazarus"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item1>
       <Item2>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item2>
       <Item3>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="JPEGForLazarus"/>
       </Item4>
     </RequiredPackages>
     <Units Count="15">

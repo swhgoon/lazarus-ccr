@@ -854,7 +854,6 @@ type
     FDrawBuffer,
     FTarget: TBitmap;
     FTextHeight: Integer;
-    FBidiMode: TBidiMode;
     function AnimationCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
     procedure InternalPaint(Step, StepSize: Integer);
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
@@ -863,7 +862,6 @@ type
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
-
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -872,7 +870,6 @@ type
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
     function IsHintMsg(var Msg: TMsg): Boolean; {override;}
-    property BidiMode: TBidiMode read FBidiMode write FBidiMode;
   end;
 
   // Drag image support for the tree.
@@ -1718,7 +1715,6 @@ type
   // ----- TBaseVirtualTree
 TBaseVirtualTree = class(TCustomControl)
   private
-    FBidiMode: TBidiMode;
     //FBorderStyle: TBorderStyle;
     FHeader: TVTHeader;
     FRoot: PVirtualNode;
@@ -2365,7 +2361,6 @@ TBaseVirtualTree = class(TCustomControl)
     property Background: TPicture read FBackground write SetBackground;
     property BackgroundOffsetX: Integer index 0 read FBackgroundOffsetX write SetBackgroundOffset default 0;
     property BackgroundOffsetY: Integer index 1 read FBackgroundOffsetY write SetBackgroundOffset default 0;
-    property BidiMode: TBidiMode read FBidiMode write FBidiMode default bdLeftToRight;
     //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property BottomSpace: Cardinal read FBottomSpace write SetBottomSpace default 0;
     property ButtonFillMode: TVTButtonFillMode read FButtonFillMode write SetButtonFillMode default fmTreeColor;
@@ -2624,8 +2619,8 @@ TBaseVirtualTree = class(TCustomControl)
     procedure UpdateHorizontalScrollBar(DoRepaint: Boolean);
     procedure UpdateScrollBars(DoRepaint: Boolean); virtual;
     procedure UpdateVerticalScrollBar(DoRepaint: Boolean);
-    function UseRightToLeftAlignment: Boolean;
-    function UseRightToLeftReading: Boolean;
+    //lcl: reenable in case TControl implementation change to match Delphi
+//  function UseRightToLeftReading: Boolean;
     procedure ValidateChildren(Node: PVirtualNode; Recursive: Boolean);
     procedure ValidateNode(Node: PVirtualNode; Recursive: Boolean);
     {$ifdef EnableAccessible}
@@ -2957,7 +2952,7 @@ type
     property Margin;
     property NodeAlignment;
     property NodeDataSize;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor default False;
     property ParentCtl3D;
     property ParentFont;
@@ -3167,7 +3162,7 @@ type
     property Margin;
     property NodeAlignment;
     property NodeDataSize;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor default False;
     property ParentCtl3D;
     property ParentFont;
@@ -13600,7 +13595,7 @@ begin
     begin
       // box is always of odd size
       //The TCanvas of VCL does not has width and height. It cause a conflict here
-      //FMinusBM.Height:= 0;
+
       FMinusBM.Width := 9;
       FMinusBM.Height := 9;
 
@@ -13638,7 +13633,6 @@ begin
     Logger.SendBitmap([lcPaintBitmap],'FMinusBM',FMinusBM);
     with FPlusBM, Canvas do
     begin
-      //FPlusBM.Width := 0;
       FPlusBM.Width := 9;
       FPlusBM.Height := 9;
       Transparent := True;
@@ -19552,8 +19546,6 @@ begin
   begin
     FOffsetX := Value.X;
     FOffsetY := Value.Y;
-    //todo: remove this assignment?
-    Result := True;
 
     Application.CancelHint;
     if FUpdateCount = 0 then
@@ -27926,11 +27918,10 @@ begin
           R := Rect(TargetRect.Left, 0, TargetRect.Left, MaximumBottom - Target.Y);
           TargetRect := Rect(0, 0, MaximumRight - Target.X, MaximumBottom - Target.Y);
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
-          // Avoid unnecessary copying of bitmap content. This will destroy the DC handle too.
-          NodeBitmap.Height := 0;
+
           NodeBitmap.PixelFormat := pf32Bit;
-          NodeBitmap.Width := TargetRect.Right - TargetRect.Left + 1;
-          NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top + 1;
+          NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
+          NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
           Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
           Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
@@ -29436,14 +29427,11 @@ begin
   end;
 end;
 
-function TBaseVirtualTree.UseRightToLeftAlignment: Boolean;
-begin
-  //todo_lcl
-  Result:=False;
-end;
-
 //----------------------------------------------------------------------------------------------------------------------
 
+//lcl: the current implementation in TControl is exactly equal to this.
+//     disable for now and reenable in the case the TControl implementation change
+{
 function TBaseVirtualTree.UseRightToLeftReading: Boolean;
 
 // The tree can handle right-to-left reading also on non-middle-east systems, so we cannot use the same function as
@@ -29452,6 +29440,7 @@ function TBaseVirtualTree.UseRightToLeftReading: Boolean;
 begin
   Result := BiDiMode <> bdLeftToRight;
 end;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
