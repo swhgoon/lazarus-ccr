@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!--Copyright 2007 Phil Hess-->
+<HTML>
+
+<HEAD>
+
+<TITLE>Status of XDev Toolkit</TITLE>
+
+<META NAME="AUTHOR" CONTENT="Phil Hess">
+</HEAD>
+
+<BODY>
+
+<CENTER>
+<H1>Status of XDev Toolkit</H1>
+</CENTER>
+
+<HR>
+<H3>Contents</H3>
+<A HREF="#Introduction">Introduction</A><BR>
+<A HREF="#Installation">Installation</A><BR>
+<A HREF="#CodeConverters">MakePasX & DfmToLfm: Delphi converters</A><BR>
+<A HREF="#VersionInfo">MakeVer: Create a version info file</A><BR>
+<A HREF="#HelpConverter">CvtHelp & HelpUtil: Convert WinHelp RTF to HTML</A><BR>
+<A HREF="#OSXscripts">OS X scripts: Create an app bundle</A><BR>
+<A HREF="#RTF">RtfDoc & ViewDoc: RTF document creation and viewing</A><BR>
+<A HREF="#To_Do">To Do</A><BR>
+<A HREF="#Other_Resources">Other Resources</A><P>
+
+<HR>
+<A name="Introduction"></A><H3>Introduction</H3>
+
+These notes describe the status of the XDev Toolkit, a set of utilities for
+cross-platform development with <A HREF="http://www.lazarus.freepascal.org">Lazarus</A>
+and <A HREF="http://www.freepascal.org">Free Pascal</A>. Please send your bug 
+reports, suggestions and comments to:<P>
+
+&nbsp;&nbsp;MacPgmr (at) fastermac (dot) net<P>
+
+<I>Note:</I> You can also post to the Lazarus forum if you want your bug reports
+and suggestions to be seen by the entire Lazarus community.<P>
+
+The XDev Toolkit source code is here: <A HREF="http://web.fastermac.net/~MacPgmr/XDev/downloads">http://web.fastermac.net/~MacPgmr/XDev/downloads</A><P>   
+
+All source code included in the XDev Toolkit is released under the Modified LGPL license.
+
+<HR>
+<A name="Installation"></A><H3>Installation</H3>
+
+<OL>
+<LI>Unzip the source files into their own folder.<P>
+<LI>Open a terminal window and compile each utility and test program with FPC. 
+For example:<P>
+
+fpc -Sd DfmToLfm.pas
+
+<LI>To see a utility's syntax, simply run it in a terminal window
+without any parameters or switches. For example:<P>
+
+dfmtolfm
+
+</OL>
+
+<HR>
+<A name="CodeConverters"></A><H3>MakePasX & DfmToLfm: Delphi converters</H3>
+
+These two utilities are provided for converting Delphi projects to Lazarus
+and optionally maintaining the project's forms on both Delphi and Lazarus.
+The MakePasX utility is used to make Delphi code files cross-platform (.dpr
+and .pas). The DfmToLfm utility is used to create Lazarus form design files 
+(.lfm) from Delphi form design files (.dfm).<p>
+
+Once you've converted a Delphi app to Lazarus you can continue to
+develop the app with Delphi on Windows and use Lazarus to compile 
+the app on other platforms. This type of app can provide the best of both 
+worlds: taking advantage of the Windows-specific features of Delphi while 
+utilizing Free Pascal and Lazarus to add cross-platform capability to the app.
+
+<OL>
+<LI>Use the MakePasX utility to make the Delphi project file (.dpr) and form 
+code files (.pas) cross-platform. This is a one-time conversion that results 
+in a set of source files that can be compiled by both Delphi and Lazarus.<P>
+<LI>Use the DfmToLfm utility to create Lazarus form files (.lfm) from the Delphi 
+form files (.dfm).<P>
+<LI>Use the Lazarus lazres utility to create the Lazarus resource file (.lrs)
+from the form file (.lfm) Repeat steps 2 and 3 whenever you make changes 
+to the Delphi form files. If your project has a number of forms, run these 
+utilities for each form in a batch or shell file to automate the conversion.<P>
+<LI>Compile the resulting files with Lazarus on Windows 
+to test the converted code and form files.<P>
+<LI>Move the Lazarus project's files over to OS X or Linux and compile and 
+test them there with that platform's version of Lazarus.
+</OL>
+
+
+<HR>
+<A name="VersionInfo"></A><H3>MakeVer: Create a version info file</H3>
+
+This simple utility extracts version information from a Delphi .dof file and
+creates an INI-style .version file that can be distributed with a Lazarus app.<BR><BR>
+
+<HR>
+<A name="HelpConverter"></A><H3>CvtHelp & HelpUtil: Convert WinHelp RTF to HTML</H3>
+
+The CvtHelp utility can be used to convert a WinHelp RTF help file
+to an HTML file that can be used in a Lazarus app that uses the HelpUtil unit.
+
+<OL>
+<LI>Use Word to save the WinHelp RTF file to a "Web Page, Filtered" HTML file. 
+For example, open myapp.rtf and save it as myapp.htm.<P>
+<LI>Run CvtHelp on the resulting HTML file and the WinHelp help project (.hpj)
+file. For example:<P>
+cvthelp myapp.htm myapp.html
+<LI>Add the HelpUtil unit to the uses section of your Lazarus app's main form.<P>
+<LI>In your main form's FormCreate handler:<P>
+Application.HelpFile := ChangeFileExt(ParamStr(0), '.html');<P>
+HelpManager := THelpUtilManager.Create;
+<LI>In your main form's FormDestroy handler:<P>
+HelpManager.Free;
+<LI>To invoke help, add something like this to a menu command or button OnClick
+handler:<P>
+Application.HelpContext(1); 
+</OL>
+
+For more information, refer to the CvtHelp and HelpUtil source code.<BR><BR>
+
+<HR>
+<A name="OSXscripts"></A><H3>OS X scripts: Create an app bundle</H3>
+
+This script (create_app_mac.sh) creates an .app bundle (folder) for an executable 
+created with Lazarus and its Carbon widgetset so you can double-click the app 
+to start it or drag and drop the app on the dock.<P>
+
+<UL>
+<LI>Before using this script, make sure you've made it executable:<P>
+
+chmod +x create_app_mac.sh<P>
+
+<LI>Example: Your executable is file myapp and you want to create an .app bundle 
+for it named My Application.app:<P>
+
+./create_app_mac.sh myapp "My Application"<P>
+</UL>
+
+For more information or to customize this script for a specific app, 
+open it in a text editor and read the comments.<P>
+
+<HR>
+<A name="RTF"></A><H3>RtfDoc & ViewDoc: RTF document creation and viewing</H3>
+
+With Delphi, you can use a TRichEdit control to create, display and allow the 
+user to edit simple documents in Rich Text Format (RTF). TRichEdit is a wrapper 
+around the Windows RICHED32.DLL library that's also used by Windows WordPad 
+to create and edit RTF files. RTF is a well-documented text format that's 
+fully supported by Microsoft Word and OpenOffice.org.<P>
+
+TRichEdit is a handy control for creating or displaying simple reports, 
+but if you try to use it for more than that you will be quickly disappointed 
+because TRichEdit has serious limitations. For one thing, Borland never added 
+support to TRichEdit for newer versions of the Rich Edit library (RICHED20.DLL). 
+And although it's possible to hack the Delphi ComCtrls unit to add support 
+for RICHED20.DLL, Microsoft never fixed some of the bugs in this library 
+or supported more than just a subset of RTF.<P>
+
+Since Lazarus is a cross-platform tool, it doesn't provide a TRichEdit control. 
+And even if it did, this type of control might not meet your needs. After all, 
+TRichEdit is trying to be a word processor, something the creators of Word 
+and OpenOffice.org have spent many years developing. Wouldn't it make more 
+sense just to use an actual word processor to create and display reports?
+
+<H4>Using TRtfParser to create RTF documents</H4>
+
+With Windows, the easiest way to control a word processor externally from 
+another program is to start the Word or OpenOffice.org Automation server 
+and use the server to create, manipulate and display documents. But this 
+is a Windows-only solution; OS X and Linux don't have an equivalent to 
+Windows Automation.<P>
+
+Fortunately Free Pascal includes a unit named RtfPars that includes the 
+TRtfParser class. While this class was designed to parse and proof existing 
+RTF documents, you can also run it "backwards" to create RTF documents as well.<P>
+
+To simplify use of the TRtfParser class, the XDev Toolkit includes unit RtfDoc, 
+which introduces a TRtfParser descendant, TRtfDoc, which can be used 
+to create RTF files without knowing how TRtfParser works. For information 
+on how to use it, look at the RtfDoc.pas file and TestRtfDoc.pas example 
+program. You'll also want to look at the Free Pascal rtfdata.inc file for 
+a list of constants that you'll need to use with TRtfDoc.<P>
+
+For more information on the RTF specification, refer to Microsoft's documentation.<P>
+
+<H4>Using Word and OpenOffice.org to display RTF documents</H4>
+
+Assuming you can create your RTF report document as described in the previous 
+section, you now need a way to display it with a word processor. With Windows, 
+you would probably start the Word or OpenOffice.org Automation server, load 
+the report document, then make the program visible so the user can browse, 
+edit, print or save the report. To do this in a cross-platform way, you can 
+instead shell to the word processor and pass the report file name on the 
+command line. Here are the steps:
+
+<UL>
+<LI>Determine that the word processor exists and the location of its executable.
+<LI>Start the word processor by shelling to it, passing it the name of the RTF 
+report document.
+<LI>Clean up.
+</UL>
+
+The XDev Toolkit includes unit ViewDoc, which takes care of most of the details.
+The first two steps are handled by its ViewDocument function, to which you pass
+the document name and which word processor to use (Word or OO) and let it 
+determine the word processor's location and launch it. The clean-up step is 
+handled by the unit's DeleteViewedDocs function. For more information on how 
+to use these functions, look at file ViewDoc.pas and ViewWith.pas, a test 
+program that uses the ViewDoc unit.<P>
+
+Why would you need to clean up after launching the word processor? Usually 
+this step is necessary because the report document will be a temporary file 
+that you'll want to delete. You probably shouldn't require your users to name 
+each report document that your program creates. This will quickly annoy them; 
+it also forces your users to clean up the clutter of saved report documents. 
+Instead, you should use the GetTempFilename function (in the Lazarus FileUtil 
+unit) to get a file name to use for your temporary file, then delete this file 
+yourself at some point after launching the word processor. (Don't use the same 
+file name for all reports since this will restrict your users to viewing only 
+one report at a time.)<P>
+
+But how can you delete a file if it's open in another program? Remember, your 
+word processor is running externally to your program and locks the file as 
+long as it's open. The file and the word processor won't be closed until the 
+user decides to close them. And even if the file has already been closed, 
+are you sure you want to delete it? What if your user made changes to the 
+report and saved it?<P>
+
+The solution that ViewDocument uses is to start the word processor with 
+a switch that tells it to create a new document based on the report file 
+(that is, using it as a template). ViewDocument can also add the report file 
+to a list of temporary files to be deleted when your program shuts down. Even 
+though your program still can't delete the temporary file as long as the new
+document based on it is open in the word processor, this does mean that if
+the user saves the new document, it won't be with the report file's name.<P>
+
+To delete the temporary files created by your program, call the DeleteViewedDocs
+function in your main form's FormCloseQuery handler. If DeleteViewedDocs 
+returns False, you can remind your user to save or close any reports still 
+open in the word processor. DeleteViewedDocs is also called by the ViewDoc 
+unit's finalization code to clean up whatever it can when the program finally 
+does shut down.<P>
+
+One final note: With OS X, the normal way to start a program from a terminal 
+command line or when shelling is to use the Open command. Unfortunately, the
+only parameter that Open passes along to the program is the name of the file 
+to open, so there's no way to pass any switches to Word or NeoOffice. With OS X, 
+ViewDocument instead sets the temporary report file to read-only, thus forcing 
+the user to use a different name when saving the report. A disadvantage of this 
+approach is that the word processor shows the name of the temporary file in 
+the title bar (for example, rpt1.tmp) rather than Document1 or Untitled1 as it 
+normally does with a new document. ViewDocument also uses this approach with
+AbiWord, which doesn't appear to support a command line template switch.
+
+<HR>
+<A name="To_Do"></A><H3>To Do</H3>
+<OL>
+<LI>Generalize MakeVer so it can use a Delphi .bdsproj file as input and
+also be able to output version information to a Lazarus .lpi file.<P>
+<LI>Review Free Pascal's rtfdata.inc file for additional bugs.
+</OL>
+
+<HR>
+<A name="Other_Resources"></A><H3>Other Resources</H3>
+
+<A HREF="http://wiki.lazarus.freepascal.org/The_Power_of_Proper_Planning_and_Practices">http://wiki.lazarus.freepascal.org/The_Power_of_Proper_Planning_and_Practices</A><P>
+
+<A HREF="http://wiki.lazarus.freepascal.org/Multiplatform_Programming_Guide">http://wiki.lazarus.freepascal.org/Multiplatform_Programming_Guide</A><P>
+
+<A HREF="http://wiki.lazarus.freepascal.org/OS_X_Programming_Tips">http://wiki.lazarus.freepascal.org/OS_X_Programming_Tips</A><P>
+
+<A HREF="http://wiki.lazarus.freepascal.org/Deploying_Your_Application">http://wiki.lazarus.freepascal.org/Deploying_Your_Application</A><P>
+<P>
+<HR>
+Last updated: April 15, 2007
+<P>
+
+</BODY>
+
+</HTML>
