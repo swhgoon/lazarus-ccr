@@ -2909,6 +2909,7 @@ type
     //property BevelOuter;
     //property BevelKind;
     //property BevelWidth;
+    property BorderSpacing;
     property BorderStyle;
     property BottomSpace;
     property ButtonFillMode;
@@ -3120,6 +3121,7 @@ type
     //property BevelOuter;
     //property BevelKind;
    // property BevelWidth;
+    property BorderSpacing;
     property BorderStyle;
     property BottomSpace;
     property ButtonFillMode;
@@ -14586,6 +14588,8 @@ begin
       Run := Run.Parent;
     end;
     R := GetDisplayRect(Node, FHeader.MainColumn, True);
+    if hoVisible in FHeader.Options then
+      Dec(R.Top, FHeader.Height);
     SetOffsetY(FOffsetY - R.Top);
   end;
 end;
@@ -29048,7 +29052,8 @@ begin
           // Scroll as much child nodes into view as possible if the node has been expanded.
           if (toAutoScrollOnExpand in FOptions.FAutoOptions) and (vsExpanded in Node.States) then
           begin
-            if Integer(Node.TotalHeight) <= ClientHeight then
+            //lcl adjust header
+            if Integer(Node.TotalHeight) <= (ClientHeight - FHeaderRect.Bottom) then
               ScrollIntoView(GetLastChild(Node), toCenterScrollIntoView in FOptions.SelectionOptions)
             else
               TopNode := Node;
