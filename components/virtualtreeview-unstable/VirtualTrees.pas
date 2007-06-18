@@ -10624,6 +10624,12 @@ begin
         if FStates <> [] then
         begin
           ReleaseCapture;
+          //lcl
+          if hsTracking in FStates then
+          begin
+            if not InHeader(SmallPointToPoint(TLMLButtonUp(Message).Pos)) then
+              TreeView.Cursor := crDefault;
+          end;
           if hsDragging in FStates then
           begin
             // successfull dragging moves columns
@@ -17281,7 +17287,7 @@ begin
   end;
   
   // Now load the cursor and apply it.
-  Cursor := NewCursor;
+  LCLIntf.SetCursor(Screen.Cursors[NewCursor]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23119,6 +23125,7 @@ begin
   // Setup the panscroll timer and capture all mouse input.
   SetFocus;
   SetCapture(Handle);
+  AdjustPanningCursor(Position.X, Position.Y);
   SetTimer(Handle, ScrollTimer, 20, nil);
 end;
 
