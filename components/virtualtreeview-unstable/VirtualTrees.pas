@@ -2098,13 +2098,15 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMCancelMode(var Message: TLMNoParams); message LM_CANCELMODE;
     procedure WMChangeState(var Message: TLMessage); message WM_CHANGESTATE;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
-    procedure WMContextMenu(var Message: TLMContextMenu); {message LM_CONTEXTMENU;}
+    procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
     procedure WMCopy(var Message: TLMNoParams); message LM_COPYTOCLIP;
     procedure WMCut(var Message: TLMNoParams); message LM_CUTTOCLIP;
     procedure WMEnable(var Message: TLMNoParams); message LM_ENABLE;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
+    {$ifdef EnableAccessible}
     procedure WMGetObject(var Message: TLMessage);{ message WM_GETOBJECT;}
+    {$endif}
     procedure WMHScroll(var Message: TLMHScroll); message LM_HSCROLL;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
     procedure WMKeyUp(var Message: TLMKeyUp); message LM_KEYUP;
@@ -15704,9 +15706,8 @@ procedure TBaseVirtualTree.WMContextMenu(var Message: TLMContextMenu);
 begin
   Logger.EnterMethod([lcMessages],'WMContextMenu');
   DoStateChange([], [tsClearPending, tsEditPending, tsOLEDragPending, tsVCLDragPending]);
-  //todo: remove comment after LCL update
-  //if not (tsPopupMenuShown in FStates) then
-  //  inherited WMContextMenu(Messages);
+  if not (tsPopupMenuShown in FStates) then
+    inherited WMContextMenu(Message);
   Logger.ExitMethod([lcMessages],'WMContextMenu');
 end;
 
@@ -15745,12 +15746,8 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.WMEraseBkgnd(var Message: TLMEraseBkgnd);
-var
-  R: TRect;
 begin
   Logger.EnterMethod([lcEraseBkgnd],'WMEraseBkgnd');
-  //Windows.GetUpdateRect(Handle,R,True);
-  //Logger.Send([lcPaint],'UpdateRect',R);
   Message.Result := 1;
   Logger.ExitMethod([lcEraseBkgnd],'WMEraseBkgnd');
 end;
@@ -15768,11 +15765,12 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$ifdef EnableAccessible}
 procedure TBaseVirtualTree.WMGetObject(var Message: TLMessage);
 
 begin
   Logger.EnterMethod([lcMessages],'WMGetObject');
-  {$ifdef EnableAccessible}
+
   GetAccessibilityFactory;
 
   // Create the IAccessibles for the tree view and tree view items, if necessary.
@@ -15789,12 +15787,10 @@ begin
       Message.Result := LresultFromObject(IID_IAccessible, Message.WParam, FAccessible)
     else
       Message.Result := 0;
-  {$else}
-  Message.Result := 0;
-  {$endif}
+
   Logger.ExitMethod([lcMessages],'WMGetObject');
 end;
-
+{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.WMHScroll(var Message: TLMHScroll);
@@ -17033,7 +17029,6 @@ procedure TBaseVirtualTree.WMTimer(var Message: TLMTimer);
 
 begin
   Logger.EnterMethod([lcMessages,lcTimer],'WMTimer');
-  {$ifdef EnableTimer}
   with Message do
   begin
     Logger.Send([lcTimer],'TimerId',TimerId);
@@ -17068,7 +17063,6 @@ begin
         end;
     end;
   end;
-  {$endif}
   Logger.ExitMethod([lcMessages,lcTimer],'WMTimer');
 end;
 
@@ -23144,8 +23138,6 @@ begin
     DoStateChange([], [tsWheelPanning, tsWheelScrolling]);
 
     FPanningWindow.Stop;
-
-    Cursor := crDefault;
   end;
 end;
 
