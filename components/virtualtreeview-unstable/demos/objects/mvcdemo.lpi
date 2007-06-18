@@ -65,10 +65,7 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-<<<<<<< .mine
-=======
     <PathDelim Value="\"/>
->>>>>>> .r167
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

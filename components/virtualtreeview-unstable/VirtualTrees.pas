@@ -263,7 +263,6 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   {$MinEnumSize 1, make enumerations as small as possible}
 
 type
-  {$I lcltypes.inc}
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
 
@@ -4444,6 +4443,21 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function GetBitmapBitsFromBitmap(Bitmap: HBITMAP): Pointer;
+var
+  DIB: TDIBSection;
+begin
+  Result := nil;
+  if Bitmap <> 0 then
+  begin
+    if GetObject(Bitmap, SizeOf(DIB), @DIB) = SizeOf(DIB) then
+    begin
+      Assert(DIB.dsBm.bmPlanes * DIB.dsBm.bmBitsPixel = 32, 'Alpha blending error: bitmap must use 32 bpp.');
+      Result := DIB.dsBm.bmBits;
+    end;
+  end;
+end;
+
 function CalculateScanline(Bits: Pointer; Width, Height, Row: Integer): Pointer;
 
 // Helper function to calculate the start address for the given row.
@@ -6991,9 +7005,16 @@ var
   HalfWidth,
   HalfHeight: Integer;
   T: Extended;
+  SourceBits, TargetBits: Pointer;
 
 begin
   {$ifdef EnableAdvancedGraphics}
+  SourceBits := GetBitmapBitsFromBitmap(Source.Handle);
+  TargetBits := GetBitmapBitsFromBitmap(Target.Handle);
+  
+  if (SourceBits = nil) or (TargetBits = nil) then
+    Exit;
+
   UseColorKey := ColorKey <> clNone;
   ColorKeyRef := ColorToRGB(ColorKey) and $FFFFFF;
   // Color values are in the form BGR (red on LSB) while bitmap colors are in the form ARGB (blue on LSB)
@@ -7013,8 +7034,8 @@ begin
     HalfHeight := Height div 2;
     for Y := 0 to Height - 1 do
     begin
-      TargetRun := Scanline[Y];
-      SourceRun := Source.Scanline[Y];
+      TargetRun := CalculateScanline(TargetBits, Width, Height, Y);
+      SourceRun := CalculateScanline(SourceBits, Source.Width, Source.Height, Y);
       for X := 0 to Width - 1 do
       begin
         Color := SourceRun.Color and $FFFFFF;
@@ -17258,7 +17279,7 @@ begin
           NewCursor := crVT_MOVES;
       end;
   end;
-
+  
   // Now load the cursor and apply it.
   Cursor := NewCursor;
 end;

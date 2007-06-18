@@ -30,7 +30,8 @@
 {.$define EnablePrint}
 {$define NeedWindows}
 {.$define EnableNCFunctions}
-{.$define EnableAdvancedGraphics}
+{$define EnableAdvancedGraphics}
+{$define EnableAlphaBlend}
 {$define EnableHeader}
 {$define EnableTimer}
 {.$define EnableAccessible}
