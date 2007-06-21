@@ -26,7 +26,7 @@ unit Unit1;
 interface
 
 uses
-  DelphiCompat, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  DelphiCompat, LCLIntf, Messages, LCLType, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, VirtualTrees, LResources;
 
 type

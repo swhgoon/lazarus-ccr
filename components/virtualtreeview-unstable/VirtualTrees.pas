@@ -27790,11 +27790,11 @@ begin
           NodeBitmap.PixelFormat := pf32Bit;
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
-          Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
+          Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);
           Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
           Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
           // Call back application/descendants whether they want to erase this area.
-          SetWindowOrgEx(NodeBitmap.Canvas.Handle, Target.X, 0, nil);
+          SetWindowOrgEx(NodeBitmap.Canvas.Handle,{$ifndef Windows}-{$endif}Target.X, 0, nil);
           if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
           begin
             if UseBackground then
