@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="19">
+      <Unit0>
+        <Filename Value="user_client_console.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="user_client_console"/>
+        <CursorPos X="12" Y="14"/>
+        <TopLine Value="16"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="34"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="../user_service_intf_proxy.pas"/>
+        <UnitName Value="user_service_intf_proxy"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../synapse_tcp_protocol.pas"/>
+        <UnitName Value="synapse_tcp_protocol"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../service_intf.pas"/>
+        <UnitName Value="service_intf"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../user_service_intf.pas"/>
+        <UnitName Value="user_service_intf"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../../lazarus23_213/others_package/synapse/blcksock.pas"/>
+        <UnitName Value="blcksock"/>
+        <CursorPos X="60" Y="2413"/>
+        <TopLine Value="2393"/>
+        <UsageCount Value="9"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../base_service_intf.pas"/>
+        <UnitName Value="base_service_intf"/>
+        <CursorPos X="52" Y="4135"/>
+        <TopLine Value="4000"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../library_protocol.pas"/>
+        <UnitName Value="library_protocol"/>
+        <CursorPos X="18" Y="5"/>
+        <TopLine Value="26"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/sysutils/finah.inc"/>
+        <CursorPos X="10" Y="33"/>
+        <TopLine Value="17"/>
+        <UsageCount Value="9"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/sysutils/fina.inc"/>
+        <CursorPos X="13" Y="112"/>
+        <TopLine Value="105"/>
+        <UsageCount Value="9"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/sysutils/sysutilh.inc"/>
+        <CursorPos X="33" Y="202"/>
+        <TopLine Value="188"/>
+        <UsageCount Value="9"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/win32/system.pp"/>
+        <UnitName Value="System"/>
+        <CursorPos X="20" Y="35"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="9"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/inc/fexpand.inc"/>
+        <CursorPos X="10" Y="86"/>
+        <TopLine Value="226"/>
+        <UsageCount Value="9"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/sysutils/sysstrh.inc"/>
+        <CursorPos X="54" Y="33"/>
+        <TopLine Value="19"/>
+        <UsageCount Value="9"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../synapse_http_protocol.pas"/>
+        <UnitName Value="synapse_http_protocol"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="22"/>
+        <UsageCount Value="17"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../metadata_repository.pas"/>
+        <UnitName Value="metadata_repository"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../wst.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="12"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../library_imp_utils.pas"/>
+        <UnitName Value="library_imp_utils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/win/dynlibs.inc"/>
+        <CursorPos X="17" Y="27"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <Target>
+      <Filename Value="user_client_console.exe"/>
+    </Target>
+    <SearchPaths>
+      <OtherUnitFiles Value="../;../../;$(LazarusDir)/others_package/synapse/"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="4">
+      <Item1>
+        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Line Value="230"/>
+      </Item1>
+      <Item2>
+        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Line Value="193"/>
+      </Item2>
+      <Item3>
+        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Line Value="198"/>
+      </Item3>
+      <Item4>
+        <Source Value="../../ws_helper/wsdl2pas_imp.pas"/>
+        <Line Value="606"/>
+      </Item4>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="locStrFilter"/>
+      </Item1>
+      <Item2>
+        <Expression Value="i"/>
+      </Item2>
+    </Watches>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
