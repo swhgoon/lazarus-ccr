@@ -242,15 +242,24 @@ begin
   begin
     Icon := TIcon.Create;
     try
+      // First image in std bitmap
       Icon.LoadFromFile(FileName);
-      for I := 0 to Pred(Icon.Bitmaps.Count) do
-      begin
-        NewPage := CreatePage(Icon.Bitmaps[I] as TBitmap);
-        NewPage.Parent := Self;
-        ActivePage := NewPage;
-        NewPage.Caption := FindNewUniqueName;
-        Change;
-      end;
+      NewPage := CreatePage(Icon as TBitmap);
+      NewPage.Parent := Self;
+      ActivePage := NewPage;
+      NewPage.Caption := FindNewUniqueName;
+      Change;
+      
+      // other image in Bimaps if assigned
+      if Icon.Bitmaps <> nil then
+        for I := 0 to Pred(Icon.Bitmaps.Count) do
+        begin
+          NewPage := CreatePage(Icon.Bitmaps[I] as TBitmap);
+          NewPage.Parent := Self;
+          ActivePage := NewPage;
+          NewPage.Caption := FindNewUniqueName;
+          Change;
+        end;
     finally
       Icon.Free;
     end;
@@ -386,4 +395,5 @@ begin
 end;
 
 end.
+
 
