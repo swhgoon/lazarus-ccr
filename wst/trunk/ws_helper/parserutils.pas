@@ -32,7 +32,36 @@ const
   function IsStrEmpty(Const AStr : String):Boolean;
   function ExtractIdentifier(const AValue : string) : string ;
   
+  function IsReservedKeyWord(const AValue : string):Boolean ;
+  
 implementation
+uses StrUtils;
+
+const LANGAGE_TOKEN : array[0..107] of string = (
+  'ABSTRACT', 'AND', 'ARRAY', 'AS', 'ASM',
+  'BEGIN', 'BOOLEAN', 'BYTE',
+  'CASE', 'CDECL', 'CHAR', 'CLASS', 'COMP', 'CONST', 'CONSTRUCTOR', 'CONTAINS', 'CURRENCY',
+  'DEFAULT', 'DESTRUCTOR', 'DIV', 'DO', 'DOUBLE', 'DOWNTO', 'DYNAMIC',
+  'END', 'EXPORT', 'EXPORTS', 'EXTERNAL',
+  'FAR', 'FILE', 'FINALLY', 'FOR', 'FORWARD', 'FUNCTION', 'GOTO',
+  'ELSE', 'EXCEPT', 'EXTENDED',
+  'IF', 'IMPLEMENTATION', 'IMPLEMENTS', 'IN', 'INHERITED', 'INT64', 'INITIALIZATION',
+    'INTEGER', 'INTERFACE', 'IS',
+  'LABEL', 'LIBRARY', 'LOCAL', 'LONGINT', 'LONGWORD',
+  'MOD', 'NEAR', 'NIL', 'NODEFAULT', 'NOT',
+  'OBJECT', 'OF', 'OLEVARIANT', 'OR', 'OUT', 'OVERLOAD', 'OVERRIDE',
+  'PACKAGE', 'PACKED', 'PASCAL', 'PCHAR', 'PRIVATE', 'PROCEDURE', 'PROGRAM', 'PUBLISHED',
+  'RAISE', 'READ', 'REAL', 'RECORD', 'REGISTER', 'REINTRODUCE', 'REPEAT', 'REQUIRES', 'RESULT',
+  'SAFECALL', 'SET', 'SHL', 'SHORTINT', 'SHR', 'SINGLE', 'SMALLINT', 'STDCALL', 'STORED',
+  'THEN', 'TO', 'TRY', 'TYPE', 'UNIT', 'UNTIL', 'USES',
+  'VAR', 'VARARGS', 'VARIANT', 'VIRTUAL', 'WHILE', 'WIDECHAR', 'WITH', 'WORD', 'WRITE', 'XOR'
+);
+const WST_RESERVED_TOKEN : array[0..1] of string = ( 'Item', 'Item' );
+function IsReservedKeyWord(const AValue : string):Boolean ;
+begin
+  Result := AnsiMatchText(AValue,LANGAGE_TOKEN) or
+            AnsiMatchText(AValue,WST_RESERVED_TOKEN);
+end;
 
 function IsStrEmpty(Const AStr : String):Boolean;
 begin

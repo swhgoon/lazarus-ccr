@@ -1,0 +1,105 @@
+object fInterfaceEdit: TfInterfaceEdit
+  Left = 627
+  Height = 564
+  Top = 101
+  Width = 531
+  HorzScrollBar.Page = 530
+  VertScrollBar.Page = 563
+  ActiveControl = Button1
+  BorderStyle = bsSizeToolWin
+  Caption = 'fInterfaceEdit'
+  ClientHeight = 564
+  ClientWidth = 531
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  object Panel1: TPanel
+    Height = 50
+    Top = 514
+    Width = 531
+    Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 531
+    TabOrder = 0
+    object Button1: TButton
+      Left = 436
+      Height = 25
+      Top = 10
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 346
+      Height = 25
+      Top = 10
+      Width = 75
+      Action = actOK
+      Anchors = [akTop, akRight]
+      BorderSpacing.InnerBorder = 4
+      Default = True
+      TabOrder = 1
+    end
+  end
+  object PC: TPageControl
+    Height = 514
+    Width = 531
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Interface definition'
+      ClientHeight = 488
+      ClientWidth = 523
+      object Label1: TLabel
+        Left = 20
+        Height = 14
+        Top = 26
+        Width = 28
+        Caption = 'Name'
+        Color = clNone
+        ParentColor = False
+      end
+      object edtName: TEdit
+        Left = 60
+        Height = 23
+        Top = 26
+        Width = 443
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+      end
+      object GroupBox1: TGroupBox
+        Left = 20
+        Height = 384
+        Top = 74
+        Width = 484
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Caption = '  Methods  '
+        ClientHeight = 366
+        ClientWidth = 480
+        TabOrder = 1
+        object trvMethods: TTreeView
+          Height = 366
+          Width = 480
+          Align = alClient
+          DefaultItemHeight = 15
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object AL: TActionList
+    left = 130
+    top = 201
+    object actOK: TAction
+      Caption = 'OK'
+      DisableIfNoHandler = True
+      OnExecute = actOKExecute
+      OnUpdate = actOKUpdate
+    end
+  end
+end

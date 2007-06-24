@@ -24,9 +24,12 @@ program ws_helper;
 
 uses
   Classes, SysUtils, wst_resources_utils,
-  parserdefs, ws_parser, generator, parserutils, source_utils,
+  //parserdefs, ws_parser,
+  generator, parserutils, source_utils,
   command_line_parser, metadata_generator, binary_streamer,
-  DOM, xmlread, wsdl2pas_imp;
+  DOM, xmlread, wsdl2pas_imp,
+
+  pastree, pparser, pascal_parser_intf, logger_intf;
 
 resourcestring
   sUSAGE = 'ws_helper [-uMODE] [-p] [-b] [-i] [-oPATH] inputFilename' + sNEW_LINE +
@@ -45,14 +48,16 @@ const
 type
   TSourceFileType = ( sftPascal, sftWSDL );
   
-Var
+var
   inFileName,outPath,errStr : string;
   srcMngr : ISourceManager;
   AppOptions : TComandLineOptions;
   NextParam : Integer;
   sourceType : TSourceFileType;
-  symtable : TSymbolTable;
+  symtable : TwstPasTreeContainer;
   parserMode : TParserMode;
+  
+  osParam, targetParam : string;
 
   function ProcessCmdLine():boolean;
   begin
@@ -93,21 +98,8 @@ Var
   function GenerateSymbolTable() : Boolean ;
 
     procedure ParsePascalFile();
-    var
-      s : TFileStream;
-      p : TPascalParser;
     begin
-      s := nil;
-      p := nil;
-      try
-        s := TFileStream.Create(inFileName,fmOpenRead);
-        p := TPascalParser.Create(s,symtable);
-        if not p.Parse() then
-          p.Error('"%s" at line %d',[p.ErrorMessage,p.SourceLine]);
-      finally
-        FreeAndNil(p);
-        FreeAndNil(s);
-      end;
+      ParseSource(symtable,inFileName,osParam,targetParam);
     end;
     
     procedure ParseWsdlFile();
@@ -119,7 +111,7 @@ Var
       ReadXMLFile(locDoc,inFileName);
       try
         prsr := TWsdlParser.Create(locDoc,symtable);
-        prsr.Parse(parserMode);
+        prsr.Parse(parserMode,ChangeFileExt(ExtractFileName(inFileName),''));
       finally
         FreeAndNil(prsr);
         FreeAndNil(locDoc);
@@ -192,7 +184,7 @@ Var
           mtdaFS.SaveToFile(ChangeFileExt(inFileName,'.' + sWST_META));
           rsrcStrm := TMemoryStream.Create();
           mtdaFS.Position := 0;
-          BinToWstRessource(UpperCase(symtable.Name),mtdaFS,rsrcStrm);
+          BinToWstRessource(UpperCase(symtable.CurrentModule.Name),mtdaFS,rsrcStrm);
           rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(inFileName),'.' + sWST_EXTENSION));
         end;
         
@@ -213,6 +205,11 @@ Var
 
 
 begin
+  osParam := 'windows';
+  targetParam := 'x86';
+  
+  SetLogger(TSimpleConsoleLogger.Create());
+  
   symtable := nil;
   try
     try
@@ -226,7 +223,7 @@ begin
         WriteLn(errStr);
         Exit;
       end;
-      symtable := TSymbolTable.Create(ChangeFileExt(ExtractFileName(inFileName),''));
+      symtable := TwstPasTreeContainer.Create();//ChangeFileExt(ExtractFileName(inFileName),'')
       srcMngr := CreateSourceManager();
 
       if not GenerateSymbolTable() then begin
@@ -240,12 +237,17 @@ begin
       End;
 
       srcMngr.SaveToFile(outPath);
-      WriteLn(Format('File "%s" parsed succesfully.',[inFileName]));
+      if ( GetLogger().GetMessageCount(mtError) = 0 ) then begin
+        WriteLn(Format('File "%s" parsed succesfully.',[inFileName]));
+      end else begin
+        WriteLn(Format('Paring complete with %d error(s).',[GetLogger().GetMessageCount(mtError)]));
+      end;
     except
       on e:exception Do
         Writeln('Exception : ' + e.Message)
     end;
   finally
     FreeAndNil(symtable);
+    SetLogger(nil);
   end;
 end.

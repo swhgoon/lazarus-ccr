@@ -21,7 +21,7 @@ procedure BinToWstRessource(
         AWstRstream   : TStream
 );
 const MAX_LINE_LEN = 80; READ_LEN = 1024; WRITE_LEN = 1024;
-type TWritingState = ( wsBegin, wsInString, wsOutString);
+type TWritingState = ( wsBegin, wsInString, wsOutString );
 var
   locInBuffer, locOutBuffer : string;
   locInBufferLen, locOutBufferLen, locLineLen, locInIdx : Integer;

@@ -1,0 +1,56 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
+LazarusResources.Add('TfClassEdit','FORMDATA',[
+  'TPF0'#11'TfClassEdit'#10'fClassEdit'#4'Left'#3#242#2#6'Height'#3'#'#2#3'Top'
+  +#3#162#0#5'Width'#3#6#2#18'HorzScrollBar.Page'#3#5#2#18'VertScrollBar.Page'#3
+  +'"'#2#13'ActiveControl'#7#7'Button1'#11'BorderStyle'#7#13'bsSizeToolWin'#7'C'
+  +'aption'#6#10'fClassEdit'#12'ClientHeight'#3'#'#2#11'ClientWidth'#3#6#2#8'Po'
+  +'sition'#7#15'poDesktopCenter'#0#6'TPanel'#6'Panel1'#6'Height'#2'2'#3'Top'#3
+  +#241#1#5'Width'#3#6#2#5'Align'#7#8'alBottom'#12'ClientHeight'#2'2'#11'Client'
+  +'Width'#3#6#2#8'TabOrder'#2#0#0#7'TButton'#7'Button1'#4'Left'#3#174#1#6'Heig'
+  +'ht'#2#25#3'Top'#2#10#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'B'
+  +'orderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalRe'
+  +'sult'#2#2#8'TabOrder'#2#0#0#0#7'TButton'#7'Button2'#4'Left'#3'T'#1#6'Height'
+  +#2#25#3'Top'#2#10#5'Width'#2'K'#6'Action'#7#5'actOK'#7'Anchors'#11#5'akTop'#7
+  +'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#7'Default'#9#8'TabOrder'#2#1#0
+  +#0#0#12'TPageControl'#2'PC'#6'Height'#3#241#1#5'Width'#3#6#2#10'ActivePage'#7
+  +#9'TabSheet1'#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#1#0#9'TTa'
+  +'bSheet'#9'TabSheet1'#7'Caption'#6#15'Compound Object'#12'ClientHeight'#3#215
+  +#1#11'ClientWidth'#3#254#1#0#6'TLabel'#6'Label1'#4'Left'#2#4#6'Height'#2#14#3
+  +'Top'#2#18#5'Width'#2#28#7'Caption'#6#4'Name'#5'Color'#7#6'clNone'#11'Parent'
+  +'Color'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#4#6'Height'#2#14#3'Top'#2';'#5'W'
+  +'idth'#2'C'#7'Caption'#6#14'Inheritts from'#5'Color'#7#6'clNone'#11'ParentCo'
+  +'lor'#8#0#0#5'TEdit'#7'edtName'#4'Left'#2'\'#6'Height'#2#23#3'Top'#2#18#5'Wi'
+  +'dth'#3#150#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0#0
+  +#0#9'TGroupBox'#9'GroupBox1'#4'Left'#2#4#6'Height'#3'8'#1#3'Top'#2'b'#5'Widt'
+  +'h'#3#239#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Capt'
+  +'ion'#6#14'  Properties  '#12'ClientHeight'#3'&'#1#11'ClientWidth'#3#235#1#8
+  +'TabOrder'#2#1#0#9'TListView'#7'edtProp'#6'Height'#3'&'#1#5'Width'#3#235#1#5
+  +'Align'#7#8'alClient'#11'BorderWidth'#2#2#7'Columns'#14#1#8'AutoSize'#9#7'Ca'
+  +'ption'#6#4'Name'#5'Width'#3#210#0#0#1#7'Caption'#6#4'Type'#5'Width'#3#200#0
+  +#0#1#7'Caption'#6#8'Attrbute'#0#0#9'PopupMenu'#7#10'PopupMenu1'#9'RowSelect'
+  +#9#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#10'OnDblClick'#7#15'edtPropDbl'
+  +'Click'#0#0#0#7'TButton'#7'Button3'#4'Left'#2#4#6'Height'#2#25#3'Top'#3#165#1
+  +#5'Width'#2'['#6'Action'#7#10'actPropAdd'#25'BorderSpacing.InnerBorder'#2#4#8
+  +'TabOrder'#2#2#0#0#7'TButton'#7'Button4'#4'Left'#2'd'#6'Height'#2#25#3'Top'#3
+  +#165#1#5'Width'#2'['#6'Action'#7#11'actPropEdit'#25'BorderSpacing.InnerBorde'
+  +'r'#2#4#8'TabOrder'#2#3#0#0#7'TButton'#7'Button5'#4'Left'#3#196#0#6'Height'#2
+  +#25#3'Top'#3#165#1#5'Width'#2'['#6'Action'#7#13'actPropDelete'#25'BorderSpac'
+  +'ing.InnerBorder'#2#4#8'TabOrder'#2#4#0#0#9'TComboBox'#9'edtParent'#4'Left'#2
+  +'\'#6'Height'#2#21#3'Top'#2';'#5'Width'#3#150#1#16'AutoCompleteText'#11#22'c'
+  +'bactEndOfLineComplete'#20'cbactSearchAscending'#0#9'MaxLength'#2#0#5'Style'
+  +#7#14'csDropDownList'#8'TabOrder'#2#5#0#0#0#0#11'TActionList'#11'ActionList1'
+  +#4'left'#3#19#1#3'top'#3#147#0#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'#18'D'
+  +'isableIfNoHandler'#9#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOK'
+  +'Update'#0#0#7'TAction'#10'actPropAdd'#7'Caption'#6#12'New Property'#18'Disa'
+  +'bleIfNoHandler'#9#9'OnExecute'#7#17'actPropAddExecute'#0#0#7'TAction'#11'ac'
+  +'tPropEdit'#7'Caption'#6#13'Edit Property'#18'DisableIfNoHandler'#9#9'OnExec'
+  +'ute'#7#18'actPropEditExecute'#8'OnUpdate'#7#17'actPropEditUpdate'#0#0#7'TAc'
+  +'tion'#13'actPropDelete'#7'Caption'#6#15'Delete Property'#18'DisableIfNoHand'
+  +'ler'#9#9'OnExecute'#7#20'actPropDeleteExecute'#8'OnUpdate'#7#17'actPropEdit'
+  +'Update'#0#0#0#10'TPopupMenu'#10'PopupMenu1'#4'left'#2'i'#3'top'#3#186#0#0#9
+  +'TMenuItem'#9'MenuItem1'#6'Action'#7#10'actPropAdd'#7'OnClick'#7#17'actPropA'
+  +'ddExecute'#0#0#9'TMenuItem'#9'MenuItem2'#6'Action'#7#11'actPropEdit'#7'OnCl'
+  +'ick'#7#18'actPropEditExecute'#0#0#9'TMenuItem'#9'MenuItem3'#6'Action'#7#13
+  +'actPropDelete'#7'OnClick'#7#20'actPropDeleteExecute'#0#0#0#0
+]);

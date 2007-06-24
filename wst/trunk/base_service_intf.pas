@@ -1475,6 +1475,7 @@ begin
   FElementClass := AElementClass;
   FAttributeFieldList := TStringList.Create();
   FAttributeFieldList.Duplicates := dupIgnore;
+  FAttributeFieldList.Sorted := True;
 end;
 
 destructor TSerializeOptions.Destroy();

@@ -29,9 +29,10 @@ uses
 Type
 
   EsourceException = class(Exception)
-  End;
+  end;
 
-  ISourceStream = Interface
+  ISourceStream = interface
+    ['{91EA7DA6-340C-477A-A6FD-06F2BAEA9A97}']
     function GetFileName():string;
     procedure SaveToFile(const APath : string);
     procedure Indent();
@@ -44,9 +45,10 @@ Type
     procedure NewLine();
     procedure BeginAutoIndent();
     procedure EndAutoIndent();
-  End;
+  end;
 
   ISourceManager = Interface
+    ['{91348FC9-C39E-45D4-A692-C8A363695D78}']
     function CreateItem(const AFileName : string):ISourceStream;
     function Find(const AFileName : string):ISourceStream;
     function Merge(
@@ -54,24 +56,27 @@ Type
       const ASourceList : array of ISourceStream
     ) : ISourceStream;
     procedure SaveToFile(const APath : string);
-  End;
+    function GetCount():Integer;
+    function GetItem(const AIndex :Integer):ISourceStream;
+  end;
+
+  ISavableSourceStream = Interface(ISourceStream)
+    ['{B5F03006-FD33-4DA8-A2E7-168BDABE8832}']
+    procedure SaveToStream(AStream : TStream);
+    procedure SaveToFile(const APath : string);
+    function GetStream(): TStream;
+  end;
   
   function CreateSourceManager():ISourceManager;
   
 implementation
 uses StrUtils, parserutils;
 
-Type
-
-  ISavableSourceStream = Interface(ISourceStream)
-    procedure SaveToStream(AStream : TStream);
-    procedure SaveToFile(const APath : string);
-    function GetStream(): TStream;
-  End;
+type
 
   { TSourceStream }
 
-  TSourceStream = class(TInterfacedObject,ISavableSourceStream)
+  TSourceStream = class(TInterfacedObject,ISourceStream,ISavableSourceStream)
   Private
     FStream : TMemoryStream;
     FIndentCount : Integer;
@@ -106,9 +111,6 @@ Type
   Private
     procedure Error(AText : String);overload;
     procedure Error(AText : String; Const AArgs : array of const);overload;
-    
-    function GetCount():Integer;
-    function GetItem(const AIndex:Integer):ISourceStream;
   Protected
     function CreateItem(const AFileName : string):ISourceStream;
     function Find(const AFileName : string):ISourceStream;
@@ -117,6 +119,8 @@ Type
       const AFinalFileName : string;
       const ASourceList : array of ISourceStream
     ) : ISourceStream;
+    function GetCount():Integer;
+    function GetItem(const AIndex:Integer):ISourceStream;
   Public
     constructor Create();
   End;

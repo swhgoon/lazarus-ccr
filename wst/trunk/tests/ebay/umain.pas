@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls, eBayWSDL;
+  Buttons, StdCtrls, ComCtrls,
+  eBayWSDL, eBayWSDL_proxy;
 
 type
 
@@ -43,38 +44,38 @@ uses  TypInfo, StrUtils,
       httpsend,
       ssl_openssl,
       service_intf, soap_formatter, base_service_intf, base_soap_formatter,
-      ebay, ebay_proxy,
+      //ebay, ebay_proxy,
       synapse_http_protocol;
 
-
+const sEBAY_VERSION = '503';
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  locService : IeBayAPIInterfaceService;
-  locHdr : TCustomSecurityHeaderType;
-  r : TGetCategoriesRequestType;
-  rsp : TGetCategoriesResponseType;
+  locService : eBayAPIInterface;
+  locHdr : CustomSecurityHeaderType;
+  r : GetCategoriesRequestType;
+  rsp : GetCategoriesResponseType;
 begin
   try
     r := nil;
     rsp := nil;
-    locHdr := TCustomSecurityHeaderType.Create();
+    locHdr := CustomSecurityHeaderType.Create();
     try
       locHdr.eBayAuthToken := edteBayAuthToken.Text;
 
       locHdr.Credentials.AppId := edtAppId.Text;
       locHdr.Credentials.DevId := edtDevId.Text;
       locHdr.Credentials.AuthCert := edtAuthCert.Text;
-      locService := TeBayAPIInterfaceService_Proxy.Create(
+      locService := TeBayAPIInterface_Proxy.Create(
                       'eBayAPIInterfaceService',
-                      'SOAP:Style=Document;EncodingStyle=Litteral;UniqueAddress=false',
+                      'SOAP:Style=Document;EncodingStyle=Literal;UniqueAddress=false',
                       'http:Address=https://api.sandbox.ebay.com/wsapi'
                     );
       (locService as ICallContext).AddHeader(locHdr,True);
-      r := TGetCategoriesRequestType.Create();
+      r := GetCategoriesRequestType.Create();
       r.Version := sEBAY_VERSION;
-      locService.GetCategories(r,rsp);
+      rsp := locService.GetCategories(r);
       if Assigned(rsp) then
         ShowMessageFmt('CategoryCount=%d; Message=%s; Version = %s',[rsp.CategoryCount,rsp.Message,rsp.Version])
       else
@@ -92,11 +93,11 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 
-  procedure ShowResponse(ARsp : TGetPopularKeywordsResponseType);
+  procedure ShowResponse(ARsp : GetPopularKeywordsResponseType);
   var
     nd, an, nn, pn : TTreeNode;
     k : Integer;
-    ci : TCategoryType;
+    ci : CategoryType_Type;
   begin
     trvOut.BeginUpdate();
     try
@@ -104,7 +105,7 @@ procedure TForm1.Button3Click(Sender: TObject);
       if not Assigned(ARsp) then
         Exit;
       nd := trvOut.Items.AddChild(nil,'Response');
-      trvOut.Items.AddChild(nd,'Ack = ' + GetEnumName(TypeInfo(TAckCodeType),Ord(ARsp.Ack)));
+      trvOut.Items.AddChild(nd,'Ack = ' + GetEnumName(TypeInfo(AckCodeType_Type),Ord(ARsp.Ack)));
       trvOut.Items.AddChild(nd,'Version = ' + ARsp.Version);
       trvOut.Items.AddChild(nd,'HasMore = ' + IfThen(ARsp.HasMore,'True','False'));
 
@@ -117,7 +118,8 @@ procedure TForm1.Button3Click(Sender: TObject);
         ci := ARsp.CategoryArray[k];
         nn := trvOut.Items.AddChild(an,'Category ( ' + IntToStr(k) + ' )');
         trvOut.Items.AddChild(nn,'CategoryID = ' + ci.CategoryID);
-        trvOut.Items.AddChild(nn,'CategoryParentID = ' + ci.CategoryParentID);
+        if ( ci.CategoryParentID.Length > 0 ) then
+          trvOut.Items.AddChild(nn,'CategoryParentID = ' + ci.CategoryParentID[0]);
         trvOut.Items.AddChild(nn,'Keywords = ' + ci.Keywords);
       end;
     finally
@@ -126,17 +128,17 @@ procedure TForm1.Button3Click(Sender: TObject);
   end;
   
 var
-  locService : IeBayAPIInterfaceService;
-  locHdr : TCustomSecurityHeaderType;
-  r : TGetPopularKeywordsRequestType;
-  rsp : TGetPopularKeywordsResponseType;
+  locService : eBayAPIInterface;
+  locHdr : CustomSecurityHeaderType;
+  r : GetPopularKeywordsRequestType;
+  rsp : GetPopularKeywordsResponseType;
   kpCrs : TCursor;
 begin
   try
     r := nil;
     rsp := nil;
     kpCrs := Screen.Cursor;
-    locHdr := TCustomSecurityHeaderType.Create();
+    locHdr := CustomSecurityHeaderType.Create();
     try
       Screen.Cursor := crHourGlass;
       locHdr.eBayAuthToken := edteBayAuthToken.Text;
@@ -144,16 +146,16 @@ begin
       locHdr.Credentials.AppId := edtAppId.Text;
       locHdr.Credentials.DevId := edtDevId.Text;
       locHdr.Credentials.AuthCert := edtAuthCert.Text;
-      locService := TeBayAPIInterfaceService_Proxy.Create(
+      locService := TeBayAPIInterface_Proxy.Create(
                       'eBayAPIInterfaceService',
-                      'SOAP:Style=Document;EncodingStyle=Litteral;UniqueAddress=false',
+                      'SOAP:Style=Document;EncodingStyle=Literal;UniqueAddress=false',
                       'http:Address=https://api.sandbox.ebay.com/wsapi'
                     );
       (locService as ICallContext).AddHeader(locHdr,True);
-      r := TGetPopularKeywordsRequestType.Create();
+      r := GetPopularKeywordsRequestType.Create();
       r.Version := sEBAY_VERSION;
       r.IncludeChildCategories := True;
-      locService.GetPopularKeywords(r,rsp);
+      rsp := locService.GetPopularKeywords(r);
       if Assigned(rsp) then begin
         ShowResponse(rsp);
       end else begin

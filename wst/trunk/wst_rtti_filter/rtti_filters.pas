@@ -324,6 +324,7 @@ begin
       prsr.NextToken();
     end;
   finally
+    FreeAndNil(prsr);
     FreeAndNil(strm);
   end;
 end;

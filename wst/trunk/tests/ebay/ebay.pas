@@ -557,6 +557,6 @@ begin
 end;
 
 initialization
-  RegisterEbayTypes();
+  //RegisterEbayTypes();
   
 end.

@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils,
-  parserdefs, binary_streamer;
+  pastree, pascal_parser_intf, binary_streamer;
 
 const
   sWST_META = 'WST_METADATA_0.2.2.0';
@@ -37,13 +37,13 @@ type
   TMetadataGenerator = class
   private
     FStream : IDataStore;
-    FSymbolTable: TSymbolTable;
+    FSymbolTable: TwstPasTreeContainer;
 
     procedure GenerateHeader();
-    procedure GenerateIntfMetadata(AIntf : TInterfaceDefinition);
+    procedure GenerateIntfMetadata(AIntf : TPasClassType);
   public
     constructor Create(
-      ASymTable   : TSymbolTable;
+      ASymTable   : TwstPasTreeContainer;
       ADstStream  : IDataStore
     );
     procedure Execute();
@@ -57,50 +57,76 @@ implementation
 procedure TMetadataGenerator.GenerateHeader();
 var
   c, i, k : LongInt;
+  typeList : TList;
+  elt : TPasElement;
 begin
   FStream.WriteStr(sWST_META);
-  FStream.WriteStr(FSymbolTable.Name);
+  FStream.WriteStr(FSymbolTable.CurrentModule.Name);
   k := 0;
-  c := FSymbolTable.Count;
+  typeList := FSymbolTable.CurrentModule.InterfaceSection.Types;
+  c := typeList.Count;
   for i := 0 to pred(c) do begin
-    if FSymbolTable.Item[i] is TInterfaceDefinition then
+    elt := TPasElement(typeList[i]);
+    if elt.InheritsFrom(TPasClassType) and ( TPasClassType(elt).ObjKind = okInterface ) then
       inc(k);
   end;
   FStream.WriteInt8U(k);
 end;
 
-procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TInterfaceDefinition);
+procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
 
-  procedure WriteMethod(AMeth:TMethodDefinition);
+  procedure WriteMethod(AMeth : TPasProcedure);
 
-    procedure WriteParam(APrm : TParameterDefinition);
+    procedure WriteParam(APrm : TPasArgument);
     begin
-      FStream.WriteStr(APrm.ExternalName);
-      FStream.WriteStr(APrm.DataType.ExternalName);
-      FStream.WriteEnum(Ord(APrm.Modifier));
+      FStream.WriteStr(FSymbolTable.GetExternalName(APrm));
+      FStream.WriteStr(FSymbolTable.GetExternalName(APrm.ArgType));
+      FStream.WriteEnum(Ord(APrm.Access));
+    end;
+
+    procedure WriteResult(ARes : TPasResultElement);
+    begin
+      FStream.WriteStr(FSymbolTable.GetExternalName(ARes));
+      FStream.WriteStr(FSymbolTable.GetExternalName(ARes.ResultType));
+      FStream.WriteEnum(Ord(argOut));
     end;
 
   var
     j, k : LongInt;
+    argLst : TList;
   begin
-    k := AMeth.ParameterCount;
+    argLst := AMeth.ProcType.Args;
+    k := argLst.Count;
     FStream.WriteStr(AMeth.Name);
-    FStream.WriteInt8U(k);
-    for j := 0 to pred(k) do
-      WriteParam(AMeth.Parameter[j]);
+    if AMeth.InheritsFrom(TPasFunction) then begin
+      FStream.WriteInt8U(k + 1);
+    end;
+    for j := 0 to pred(k) do begin
+      WriteParam(TPasArgument(argLst[j]));
+    end;
+    if AMeth.InheritsFrom(TPasFunction) then begin
+      WriteResult(TPasFunctionType(AMeth.ProcType).ResultEl);
+    end;
   end;
   
 var
   i, c : LongInt;
+  mbrs : TList;
+  elt : TPasElement;
 begin
   FStream.WriteStr(AIntf.Name);
-  c := AIntf.MethodCount;
+  c := GetElementCount(AIntf.Members,TPasProcedure);
   FStream.WriteInt8U(c);
-  for i := 0 to pred(c) do
-    WriteMethod(AIntf.Method[i]);
+  mbrs := AIntf.Members;
+  for i := 0 to pred(mbrs.Count) do begin
+    elt := TPasElement(mbrs[i]);
+    if elt.InheritsFrom(TPasProcedure) then begin
+      WriteMethod(TPasProcedure(elt));
+    end;
+  end;
 end;
 
-constructor TMetadataGenerator.Create(ASymTable: TSymbolTable;ADstStream: IDataStore);
+constructor TMetadataGenerator.Create(ASymTable: TwstPasTreeContainer;ADstStream: IDataStore);
 begin
   Assert(Assigned(ASymTable));
   Assert(Assigned(ADstStream));
@@ -111,13 +137,17 @@ end;
 procedure TMetadataGenerator.Execute();
 Var
   i,c : Integer;
-  intf : TInterfaceDefinition;
+  intf : TPasClassType;
+  typeList : TList;
+  elt : TPasElement;
 begin
   GenerateHeader();
-  c := Pred(FSymbolTable.Count);
+  typeList := FSymbolTable.CurrentModule.InterfaceSection.Types;
+  c := Pred(typeList.Count);
   for i := 0 to c do begin
-    if FSymbolTable.Item[i] is TInterfaceDefinition then begin
-      intf := FSymbolTable.Item[i] as TInterfaceDefinition;
+    elt := TPasElement(typeList[i]);
+    if elt.InheritsFrom(TPasClassType) and ( TPasClassType(elt).ObjKind = okInterface ) then begin
+      intf := TPasClassType(elt);
       GenerateIntfMetadata(intf);
     end;
   end;

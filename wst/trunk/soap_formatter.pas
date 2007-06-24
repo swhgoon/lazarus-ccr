@@ -164,7 +164,9 @@ begin
   end;
   eltName := nsShortName + 'Fault';
   If SameText(eltName,bdyNd.FirstChild.NodeName) Then Begin
+    Self.Style := RPC;
     fltNd := bdyNd.FirstChild;
+    PushStack(fltNd);
     excpt_Obj := ESOAPException.Create('');
     Try
       eltName := 'faultcode';

@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, umain, synapse_http_protocol, ebay, ebay_proxy;
+  { add your units here }, umain, synapse_http_protocol;
 
 begin
   Application.Initialize;

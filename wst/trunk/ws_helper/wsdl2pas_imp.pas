@@ -6,44 +6,51 @@ interface
 
 uses
   Classes, SysUtils, DOM,
-  parserdefs, cursor_intf, rtti_filters;
+  cursor_intf, rtti_filters,
+  pparser, pastree, pascal_parser_intf, logger_intf;
 
 type
 
   EWslParserException = class(Exception)
   end;
 
+  EWslTypeNotFoundException = class(EWslParserException)
+  end;
+  
+  TOnParserMessage = procedure (const AMsgType : TMessageType; const AMsg : string) of object;
+  
   TWsdlParser = class;
 
   TAbstractTypeParserClass = class of TAbstractTypeParser;
+  
   { TAbstractTypeParser }
 
   TAbstractTypeParser = class
   private
     FOwner : TWsdlParser;
     FTypeNode : TDOMNode;
-    FSymbols : TSymbolTable;
+    FSymbols : TwstPasTreeContainer;
     FTypeName : string;
     FEmbededDef : Boolean;
   public
     constructor Create(
             AOwner       : TWsdlParser;
             ATypeNode    : TDOMNode;
-            ASymbols     : TSymbolTable;
+            ASymbols     : TwstPasTreeContainer;
       const ATypeName    : string;
       const AEmbededDef  : Boolean
     );
     class function ExtractEmbeddedTypeFromElement(
             AOwner       : TWsdlParser;
             AEltNode     : TDOMNode;
-            ASymbols     : TSymbolTable;
+            ASymbols     : TwstPasTreeContainer;
       const ATypeName    : string
-    ) : TTypeDefinition;
+    ) : TPasType;
     class function GetParserSupportedStyle():string;virtual;abstract;
     class procedure RegisterParser(AParserClass : TAbstractTypeParserClass);
     class function GetRegisteredParserCount() : Integer;
     class function GetRegisteredParser(const AIndex : Integer):TAbstractTypeParserClass;
-    function Parse():TTypeDefinition;virtual;abstract;
+    function Parse():TPasType;virtual;abstract;
   end;
   
   TDerivationMode = ( dmNone, dmExtension, dmRestriction );
@@ -57,7 +64,7 @@ type
     FChildCursor : IObjectCursor;
     FContentNode : TDOMNode;
     FContentType : string;
-    FBaseType : TTypeDefinition;
+    FBaseType : TPasType;
     FDerivationMode : TDerivationMode;
     FDerivationNode : TDOMNode;
     FSequenceType : TSequenceType;
@@ -66,12 +73,12 @@ type
     procedure ExtractTypeName();
     procedure ExtractContentType();
     procedure ExtractBaseType();
-    function ParseComplexContent(const ATypeName : string):TTypeDefinition;
-    function ParseSimpleContent(const ATypeName : string):TTypeDefinition;
-    function ParseEmptyContent(const ATypeName : string):TTypeDefinition;
+    function ParseComplexContent(const ATypeName : string):TPasType;
+    function ParseSimpleContent(const ATypeName : string):TPasType;
+    function ParseEmptyContent(const ATypeName : string):TPasType;
   public
     class function GetParserSupportedStyle():string;override;
-    function Parse():TTypeDefinition;override;
+    function Parse():TPasType;override;
   end;
 
   { TSimpleTypeParser }
@@ -87,11 +94,11 @@ type
     procedure CreateNodeCursors();
     procedure ExtractTypeName();
     function ExtractContentType() : Boolean;
-    function ParseEnumContent():TTypeDefinition;
-    function ParseOtherContent():TTypeDefinition;
+    function ParseEnumContent():TPasType;
+    function ParseOtherContent():TPasType;
   public
     class function GetParserSupportedStyle():string;override;
-    function Parse():TTypeDefinition;override;
+    function Parse():TPasType;override;
   end;
 
   TParserMode = ( pmUsedTypes, pmAllTypes );
@@ -101,7 +108,8 @@ type
   TWsdlParser = class
   private
     FDoc : TXMLDocument;
-    FSymbols : TSymbolTable;
+    FSymbols : TwstPasTreeContainer;
+    FModule : TPasModule;
   private
     FWsdlShortNames : TStringList;
     FSoapShortNames : TStringList;
@@ -113,27 +121,33 @@ type
     FMessageCursor : IObjectCursor;
     FTypesCursor : IObjectCursor;
     FSchemaCursor : IObjectCursor;
+    FOnMessage: TOnParserMessage;
+  private
+    procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
     function CreateWsdlNameFilter(const AName : WideString):IObjectFilter;
-    function FindNamedNode(AList : IObjectCursor; const AName : WideString):TDOMNode;
-    procedure Prepare();
+    function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
+    procedure Prepare(const AModuleName : string);
     procedure ParseService(ANode : TDOMNode);
     procedure ParsePort(ANode : TDOMNode);
     function ParsePortType(
-      ANode, ABindingNode : TDOMNode
-    ) : TInterfaceDefinition;
+            ANode, ABindingNode : TDOMNode;
+      const ABindingStyle : string
+    ) : TPasClassType;
     function ParseOperation(
-            AOwner : TInterfaceDefinition;
+            AOwner : TPasClassType;
             ANode  : TDOMNode;
       const ASoapBindingStyle : string
-    ) : TMethodDefinition;
-    function ParseType(const AName, ATypeOrElement : string) : TTypeDefinition;
+    ) : TPasProcedure;
+    function ParseType(const AName, ATypeOrElement : string) : TPasType;
     procedure ParseTypes();
   public
-    constructor Create(ADoc : TXMLDocument; ASymbols : TSymbolTable);
+    constructor Create(ADoc : TXMLDocument; ASymbols : TwstPasTreeContainer);
     destructor Destroy();override;
-    procedure Parse(const AMode : TParserMode);
-    property SymbolTable : TSymbolTable read FSymbols;
+    procedure Parse(const AMode : TParserMode; const AModuleName : string);
+    property SymbolTable : TwstPasTreeContainer read FSymbols;
+
+    property OnMessage : TOnParserMessage read FOnMessage write FOnMessage;
   end;
   
   
@@ -264,6 +278,15 @@ end;
 
 { TWsdlParser }
 
+procedure TWsdlParser.DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
+begin
+  if Assigned(FOnMessage) then begin
+    FOnMessage(AMsgType,AMsg);
+  end else if IsConsole then begin
+    GetLogger().Log(AMsgType, AMsg);
+  end;
+end;
+
 function TWsdlParser.CreateWsdlNameFilter(const AName: WideString): IObjectFilter;
 begin
   Result := ParseFilter(CreateQualifiedNameFilterStr(AName,FWsdlShortNames),TDOMNodeRttiExposer);
@@ -271,17 +294,20 @@ end;
 
 function TWsdlParser.FindNamedNode(
         AList : IObjectCursor;
-  const AName : WideString
+  const AName : WideString;
+  const AOrder : Integer
 ): TDOMNode;
 var
   attCrs, crs : IObjectCursor;
   curObj : TDOMNodeRttiExposer;
   fltr : IObjectFilter;
+  locOrder : Integer;
 begin
   Result := nil;
   if Assigned(AList) then begin
     fltr := ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer);
     AList.Reset();
+    locOrder := AOrder;
     while AList.MoveNext() do begin
       curObj := AList.GetCurrent() as TDOMNodeRttiExposer;
       attCrs := CreateAttributesCursor(curObj.InnerObject,cetRttiNode);
@@ -289,8 +315,11 @@ begin
         crs := CreateCursorOn(attCrs,fltr);
         crs.Reset();
         if crs.MoveNext() and AnsiSameText(AName,TDOMNodeRttiExposer(crs.GetCurrent()).NodeValue) then begin
-          Result := curObj.InnerObject;
-          exit;
+          Dec(locOrder);
+          if ( locOrder <= 0 ) then begin
+            Result := curObj.InnerObject;
+            exit;
+          end;
         end;
       end;
     end;
@@ -356,11 +385,16 @@ begin
   end;
 end;
 
-procedure TWsdlParser.Prepare();
+procedure TWsdlParser.Prepare(const AModuleName : string);
 var
   locAttCursor : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
+  
 begin
+  CreateWstInterfaceSymbolTable(SymbolTable);
+  FModule := TPasModule(SymbolTable.CreateElement(TPasModule,AModuleName,SymbolTable.Package,visDefault,'',0));
+  FModule.InterfaceSection := TPasSection(SymbolTable.CreateElement(TPasSection,'',FModule,visDefault,'',0));
+
   FPortTypeCursor := nil;
   FWsdlShortNames.Clear();
   locAttCursor := CreateAttributesCursor(FDoc.DocumentElement,cetRttiNode);
@@ -432,6 +466,19 @@ begin
       locObj := locPortCursor.GetCurrent() as TDOMNodeRttiExposer;
       ParsePort(locObj.InnerObject);
     end;
+  end;
+end;
+
+function StrToBindingStyle(const AStr : string):TBindingStyle;
+begin
+  if IsStrEmpty(AStr) then begin
+    Result := bsDocument;
+  end else if AnsiSameText(AStr,s_document) then begin
+    Result := bsDocument;
+  end else if AnsiSameText(AStr,s_rpc) then begin
+    Result := bsRPC;
+  end else begin
+    Result := bsUnknown;
   end;
 end;
 
@@ -520,46 +567,7 @@ procedure TWsdlParser.ParsePort(ANode: TDOMNode);
     end;
   end;
   
-var
-  bindingName, typeName : WideString;
-  i : Integer;
-  bindingNode, typeNode : TDOMNode;
-  intfDef : TInterfaceDefinition;
-begin
-  if ExtractBindingQName(bindingName) then begin
-    i := Pos(':',bindingName);
-    bindingName := Copy(bindingName,( i + 1 ), MaxInt);
-    bindingNode := FindBindingNode(bindingName);
-    if Assigned(bindingNode) then begin
-      if ExtractTypeQName(bindingNode,typeName) then begin
-        i := Pos(':',typeName);
-        typeName := Copy(typeName,( i + 1 ), MaxInt);
-        typeNode := FindTypeNode(typeName);
-        if Assigned(typeNode) then begin
-          intfDef := ParsePortType(typeNode,bindingNode);
-          intfDef.Address := ExtractAddress();
-        end;
-      end;
-    end;
-  end;
-end;
-
-function StrToBindingStyle(const AStr : string):TBindingStyle;
-begin
-  if IsStrEmpty(AStr) then begin
-    Result := bsDocument;
-  end else if AnsiSameText(AStr,s_document) then begin
-    Result := bsDocument;
-  end else if AnsiSameText(AStr,s_rpc) then begin
-    Result := bsRPC;
-  end else begin
-    Result := bsUnknown;
-  end;
-end;
-
-function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceDefinition;
-
-  function ExtractSoapBindingStyle(out AName : WideString):Boolean ;
+  function ExtractSoapBindingStyle(ABindingNode : TDOMNode;out AName : WideString):Boolean ;
   var
     childrenCrs, crs, attCrs : IObjectCursor;
     s : string;
@@ -586,7 +594,46 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
       end;
     end;
   end;
-  
+
+var
+  bindingName, typeName : WideString;
+  i : Integer;
+  bindingNode, typeNode : TDOMNode;
+  intfDef : TPasClassType;
+  bdng : TwstBinding;
+  locSoapBindingStyle : string;
+  locWStrBuffer : WideString;
+begin
+  if ExtractBindingQName(bindingName) then begin
+    i := Pos(':',bindingName);
+    bindingName := Copy(bindingName,( i + 1 ), MaxInt);
+    bindingNode := FindBindingNode(bindingName);
+    if Assigned(bindingNode) then begin
+      if ExtractTypeQName(bindingNode,typeName) then begin
+        i := Pos(':',typeName);
+        typeName := Copy(typeName,( i + 1 ), MaxInt);
+        typeNode := FindTypeNode(typeName);
+        if Assigned(typeNode) then begin
+          ExtractSoapBindingStyle(bindingNode,locWStrBuffer);
+          locSoapBindingStyle := locWStrBuffer;
+          intfDef := ParsePortType(typeNode,bindingNode,locSoapBindingStyle);
+          bdng := SymbolTable.AddBinding(bindingName,intfDef);
+          bdng.Address := ExtractAddress();
+          bdng.BindingStyle := StrToBindingStyle(locSoapBindingStyle);
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TWsdlParser.ParsePortType(
+        ANode, ABindingNode : TDOMNode;
+  const ABindingStyle : string
+) : TPasClassType;
+var
+  s : string;
+  ws : widestring;
+    
   function ExtractBindingOperationCursor() : IObjectCursor ;
   begin
     Result := nil;
@@ -598,14 +645,14 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
     end;
   end;
   
-  procedure ParseOperation_EncodingStyle(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
+  procedure ParseOperation_EncodingStyle(ABndngOpCurs : IObjectCursor; AOp : TPasProcedure);
   var
     nd, ndSoap : TDOMNode;
     tmpCrs, tmpSoapCrs, tmpXcrs : IObjectCursor;
     in_out_count : Integer;
     strBuffer : string;
   begin
-    nd := FindNamedNode(ABndngOpCurs,AOp.ExternalName);
+    nd := FindNamedNode(ABndngOpCurs,SymbolTable.GetExternalName(AOp));
     if Assigned(nd) and nd.HasChildNodes() then begin
       tmpCrs := CreateCursorOn(
                   CreateChildrenCursor(nd,cetRttiNode),
@@ -644,7 +691,7 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
                 end else begin
                   strBuffer := s_soapOutputEncoding;
                 end;
-                AOp.Properties.Values[s_FORMAT + '_' + strBuffer] := (tmpXcrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue;
+                SymbolTable.Properties.SetValue(AOp,s_FORMAT + '_' + strBuffer,(tmpXcrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue);
               end;
             end;
           end;
@@ -653,12 +700,17 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
     end;
   end;
 
-  procedure ParseOperationAttributes(ABndngOpCurs : IObjectCursor; AOp : TMethodDefinition);
+  procedure ParseOperationAttributes(ABndngOpCurs : IObjectCursor; AOp : TPasProcedure);
   var
     nd : TDOMNode;
     tmpCrs : IObjectCursor;
+    //s : string;
+    //ws : widestring;
   begin
-    nd := FindNamedNode(ABndngOpCurs,AOp.ExternalName);
+    ws := '';
+    s := SymbolTable.GetExternalName(AOp);
+    ws := s;
+    nd := FindNamedNode(ABndngOpCurs,ws);
     if Assigned(nd) and nd.HasChildNodes() then begin
       tmpCrs := CreateCursorOn(
                   CreateChildrenCursor(nd,cetRttiNode),
@@ -683,9 +735,9 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
           if tmpCrs.MoveNext() then begin
             nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
             if AnsiSameText(nd.NodeName,s_style) then begin
-              AOp.Properties.Values[s_soapStyle] := nd.NodeValue;
+              SymbolTable.Properties.SetValue(AOp,s_soapStyle,nd.NodeValue);
             end else if AnsiSameText(nd.NodeName,s_soapAction) then begin
-              AOp.Properties.Values[s_TRANSPORT + '_' + s_soapAction] := nd.NodeValue;
+              SymbolTable.Properties.SetValue(AOp,s_TRANSPORT + '_' + s_soapAction,nd.NodeValue);
             end;
           end;
         end;
@@ -695,14 +747,13 @@ function TWsdlParser.ParsePortType(ANode, ABindingNode : TDOMNode) : TInterfaceD
   end;
 
 var
-  locIntf : TInterfaceDefinition;
+  locIntf : TPasClassType;
   locAttCursor : IObjectCursor;
   locCursor, locOpCursor, locBindingOperationCursor : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
-  locSoapBindingStyle : string;
-  locWStrBuffer : WideString;
-  locMthd : TMethodDefinition;
+  locMthd : TPasProcedure;
   inft_guid : TGuid;
+  ansiStrBuffer : ansistring;
 begin
   locAttCursor := CreateAttributesCursor(ANode,cetRttiNode);
   locCursor := CreateCursorOn(locAttCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
@@ -710,13 +761,12 @@ begin
   if not locCursor.MoveNext() then
     raise EWslParserException.CreateFmt('PortType Attribute not found : "%s"',[s_name]);
   locObj := locCursor.GetCurrent() as TDOMNodeRttiExposer;
-  locIntf := TInterfaceDefinition.Create(locObj.NodeValue);
-  try
-    FSymbols.Add(locIntf);
-  except
-    FreeAndNil(locIntf);
-    raise;
-  end;
+  ansiStrBuffer := locObj.NodeValue;
+  locIntf := TPasClassType(SymbolTable.CreateElement(TPasClassType,ansiStrBuffer,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+  FModule.InterfaceSection.Declarations.Add(locIntf);
+  FModule.InterfaceSection.Types.Add(locIntf);
+  FModule.InterfaceSection.Classes.Add(locIntf);
+  locIntf.ObjKind := okInterface;
   Result := locIntf;
   if ( CreateGUID(inft_guid) = 0 ) then
     locIntf.InterfaceGUID := GUIDToString(inft_guid);
@@ -724,13 +774,10 @@ begin
   if Assigned(locCursor) then begin
     locOpCursor := CreateCursorOn(locCursor,ParseFilter(CreateQualifiedNameFilterStr(s_operation,FWsdlShortNames),TDOMNodeRttiExposer));
     locOpCursor.Reset();
-    ExtractSoapBindingStyle(locWStrBuffer);
-    locSoapBindingStyle := locWStrBuffer;
-    locIntf.BindingStyle := StrToBindingStyle(locSoapBindingStyle);
     locBindingOperationCursor := ExtractBindingOperationCursor();
     while locOpCursor.MoveNext() do begin
       locObj := locOpCursor.GetCurrent() as TDOMNodeRttiExposer;
-      locMthd := ParseOperation(locIntf,locObj.InnerObject,locSoapBindingStyle);
+      locMthd := ParseOperation(locIntf,locObj.InnerObject,ABindingStyle);
       if Assigned(locMthd) then begin
         ParseOperationAttributes(locBindingOperationCursor,locMthd);
       end;
@@ -740,23 +787,32 @@ end;
 
 type
 
-  TParamDefCrack = class(TParameterDefinition);
+  { TPasEmentCrack }
 
-  TMethodDefinitionCrack = class(TMethodDefinition);
+  TPasEmentCrack = class(TPasElement)
+  protected
+    procedure SetName(const AName : string);
+  end;
 
-  TTypeDefinitionCrack = class(TTypeDefinition);
-  
+{ TPasEmentCrack }
+
+procedure TPasEmentCrack.SetName(const AName: string);
+begin
+  Name := AName;
+end;
+
 function TWsdlParser.ParseOperation(
-        AOwner : TInterfaceDefinition;
+        AOwner : TPasClassType;
         ANode  : TDOMNode;
   const ASoapBindingStyle : string
-) : TMethodDefinition;
+) : TPasProcedure;
 
   function ExtractOperationName(out AName : string):Boolean;
   var
     attCrs, crs : IObjectCursor;
   begin
     Result := False;
+    AName := '';
     attCrs := CreateAttributesCursor(ANode,cetRttiNode);
     if Assigned(attCrs) then begin
       crs := CreateCursorOn(attCrs,ParseFilter(s_NODE_NAME + '=' + QuotedStr(s_name) ,TDOMNodeRttiExposer));
@@ -806,23 +862,25 @@ function TWsdlParser.ParseOperation(
       Result := CreateCursorOn(Result,CreateWsdlNameFilter(s_part));
   end;
   
-  function GetDataType(const AName, ATypeOrElement : string):TTypeDefinition;
+  function GetDataType(const AName, ATypeOrElement : string):TPasType;
   begin
+    Result := nil;
     try
       Result := ParseType(AName,ATypeOrElement);
     except
       on e : Exception do begin
-        WriteLn(e.Message + ' ' + AName + ' ' + ATypeOrElement);
+        DoOnMessage(mtError, e.Message + ' ' + AName + ' ' + ATypeOrElement);
       end;
     end;
   end;
   
   procedure ExtractMethod(
     const AMthdName : string;
-    out   AMthd     : TMethodDefinition
+    out   AMthd     : TPasProcedure
   );
   var
-    tmpMthd : TMethodDefinition;
+    tmpMthd : TPasProcedure;
+    tmpMthdType : TPasProcedureType;
     
     procedure ParseInputMessage();
     var
@@ -832,9 +890,11 @@ function TWsdlParser.ParseOperation(
       prmName, prmTypeName, prmTypeType, prmTypeInternalName : string;
       prmInternameName : string;
       prmHasInternameName : Boolean;
-      prmDef : TParameterDefinition;
-      prmTypeDef : TTypeDefinition;
+      prmDef : TPasArgument;
+      prmTypeDef : TPasType;
     begin
+      tmpMthdType := TPasProcedureType(SymbolTable.CreateElement(TPasProcedureType,'',tmpMthd,visDefault,'',0));
+      tmpMthd.ProcType := tmpMthdType;
       if ExtractMsgName(s_input,inMsg) then begin
         inMsgNode := FindMessageNode(inMsg);
         if ( inMsgNode <> nil ) then begin
@@ -881,22 +941,27 @@ function TWsdlParser.ParseOperation(
               end;
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or
                                      ( not IsValidIdent(prmInternameName) ) or
-                                     ( tmpMthd.GetParameterIndex(prmInternameName) >= 0 );
+                                     ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
               if prmHasInternameName then begin
                 prmInternameName := '_' + prmInternameName;
               end;
               prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
               prmTypeDef := GetDataType(prmTypeName,prmTypeType);
-              prmDef := tmpMthd.AddParameter(prmInternameName,pmConst,prmTypeDef);
+              prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
+              tmpMthdType.Args.Add(prmDef);
+              prmDef.ArgType := prmTypeDef;
+              prmTypeDef.AddRef();
+              prmDef.Access := argConst;
               if prmHasInternameName then begin
-                prmDef.RegisterExternalAlias(prmName);
+                SymbolTable.RegisterExternalAlias(prmDef,prmName);
               end;
               if AnsiSameText(tmpMthd.Name,prmTypeDef.Name) then begin
-                prmTypeInternalName := prmTypeDef.Name + 'Type';
-                while ( FSymbols.IndexOf(prmTypeInternalName) >= 0 ) do begin
+                prmTypeInternalName := prmTypeDef.Name + '_Type';
+                while Assigned(FSymbols.FindElement(prmTypeInternalName)) do begin
                   prmTypeInternalName := '_' + prmTypeInternalName;
                 end;
-                TTypeDefinitionCrack(prmTypeDef).SetName(prmTypeInternalName);
+                SymbolTable.RegisterExternalAlias(prmTypeDef,SymbolTable.GetExternalName(prmTypeDef));
+                TPasEmentCrack(prmTypeDef).SetName(prmTypeInternalName);
               end;
             end;
           end;
@@ -910,9 +975,13 @@ function TWsdlParser.ParseOperation(
       outMsgNode, tmpNode : TDOMNode;
       crs, tmpCrs : IObjectCursor;
       prmName, prmTypeName, prmTypeType : string;
-      prmDef : TParameterDefinition;
+      prmDef : TPasArgument;
       prmInternameName : string;
       prmHasInternameName : Boolean;
+      locProcType : TPasProcedureType;
+      locFunc : TPasFunction;
+      locFuncType : TPasFunctionType;
+      j : Integer;
     begin
       if ExtractMsgName(s_output,outMsg) then begin
         outMsgNode := FindMessageNode(outMsg);
@@ -921,7 +990,7 @@ function TWsdlParser.ParseOperation(
           if ( crs <> nil ) then begin
             prmDef := nil;
             crs.Reset();
-            While crs.MoveNext() do begin
+            while crs.MoveNext() do begin
               tmpNode := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
               if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then
                 raise EWslParserException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
@@ -952,38 +1021,58 @@ function TWsdlParser.ParseOperation(
               if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
                 prmInternameName := prmInternameName + 'Param';
               end;
-              //prmHasInternameName := IsReservedKeyWord(prmInternameName) or ( not IsValidIdent(prmInternameName) );
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or
                                      ( not IsValidIdent(prmInternameName) ) or
-                                     ( tmpMthd.GetParameterIndex(prmInternameName) >= 0 );
+                                     ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
               if prmHasInternameName then
                 prmInternameName := '_' + prmInternameName;
               prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
-              prmDef := tmpMthd.FindParameter(prmInternameName);//(prmName);
+              prmDef := FindParameter(tmpMthdType,prmInternameName);
               if ( prmDef = nil ) then begin
-                prmDef := tmpMthd.AddParameter(prmInternameName,pmOut,GetDataType(prmTypeName,prmTypeType));
-                prmDef.RegisterExternalAlias(prmName);
+                prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
+                tmpMthdType.Args.Add(prmDef);
+                prmDef.ArgType := GetDataType(prmTypeName,prmTypeType);
+                prmDef.Access := argOut;
+                if prmHasInternameName then begin
+                  SymbolTable.RegisterExternalAlias(prmDef,prmName);
+                end;
               end else begin
-                if prmDef.DataType.SameName(prmTypeName) then begin
-                  TParamDefCrack(prmDef).SetModifier(pmVar);
+                if SymbolTable.SameName(prmDef.ArgType,prmTypeName) then begin
+                  prmDef.Access := argVar;
                 end else begin
                   prmInternameName := '_' + prmInternameName;
-                  prmDef := tmpMthd.AddParameter(prmInternameName,pmOut,GetDataType(prmTypeName,prmTypeType));
-                  prmDef.RegisterExternalAlias(prmName);
+                  prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
+                  prmDef.Access := argOut;
+                  tmpMthdType.Args.Add(prmDef);
+                  SymbolTable.RegisterExternalAlias(prmDef,prmName);
                 end;
               end;
             end;
             if ( SameText(ASoapBindingStyle,s_rpc) and
-                 ( prmDef <> nil ) and ( prmDef.Modifier = pmOut ) and//and SameText(prmDef.Name,s_return) and
-                 ( prmDef = tmpMthd.Parameter[Pred(tmpMthd.ParameterCount)] )
+                 ( prmDef <> nil ) and ( prmDef.Access = argOut ) and
+                 ( prmDef = TPasArgument(tmpMthdType.Args[Pred(tmpMthdType.Args.Count)]) )
                ) or
                ( SameText(ASoapBindingStyle,s_document) and
                  ( prmDef <> nil ) and
-                 ( prmDef.Modifier = pmOut ) and
-                 ( prmDef = tmpMthd.Parameter[Pred(tmpMthd.ParameterCount)] )
+                 ( prmDef.Access = argOut ) and
+                 ( prmDef = TPasArgument(tmpMthdType.Args[Pred(tmpMthdType.Args.Count)]) )
                )
             then begin
-              TMethodDefinitionCrack(tmpMthd).SetMethodType(mtFunction);
+              locProcType := tmpMthd.ProcType;
+              locFunc := TPasFunction(SymbolTable.CreateElement(TPasFunction,tmpMthd.Name,AOwner,visDefault,'',0));
+              locFuncType := SymbolTable.CreateFunctionType('','Result',locFunc,True,'',0);
+              locFunc.ProcType := locFuncType;
+              for j := 0 to ( locProcType.Args.Count - 2 ) do begin
+                locFuncType.Args.Add(locProcType.Args[j]);
+              end;
+              j := locProcType.Args.Count - 1;
+              locFuncType.ResultEl.ResultType := TPasType(TPasArgument(locProcType.Args[j]).ArgType);
+              SymbolTable.RegisterExternalAlias(locFuncType.ResultEl,SymbolTable.GetExternalName(TPasArgument(locProcType.Args[j])));
+              locFuncType.ResultEl.ResultType.AddRef();
+              TPasArgument(locProcType.Args[j]).Release();
+              tmpMthdType.Args.Clear();
+              tmpMthd.Release();
+              tmpMthd := locFunc;
             end;
           end;
         end;
@@ -992,7 +1081,7 @@ function TWsdlParser.ParseOperation(
     
   begin
     AMthd := nil;
-    tmpMthd := TMethodDefinition.Create(AMthdName,mtProcedure);
+    tmpMthd := TPasProcedure(SymbolTable.CreateElement(TPasProcedure,AMthdName,AOwner,visDefault,'',0));
     try
       ParseInputMessage();
       ParseOutputMessage();
@@ -1005,7 +1094,7 @@ function TWsdlParser.ParseOperation(
   end;
 
 var
-  locMthd : TMethodDefinition;
+  locMthd : TPasProcedure;
   mthdName : string;
 begin
   Result := nil;
@@ -1014,17 +1103,19 @@ begin
     raise EWslParserException.CreateFmt('Operation Attribute not found : "%s"',[s_name]);
   if SameText(s_document,ASoapBindingStyle) then begin
     ExtractMethod(mthdName,locMthd);
-    if ( locMthd <> nil ) then
-      AOwner.AddMethod(locMthd);
+    if ( locMthd <> nil ) then begin
+      AOwner.Members.Add(locMthd);
+    end;
   end else if SameText(s_rpc,ASoapBindingStyle) then begin
     ExtractMethod(mthdName,locMthd);
-    if ( locMthd <> nil ) then
-      AOwner.AddMethod(locMthd);
+    if ( locMthd <> nil ) then begin
+      AOwner.Members.Add(locMthd);
+    end;
   end;
   Result := locMthd;
 end;
 
-function TWsdlParser.ParseType(const AName, ATypeOrElement: string): TTypeDefinition;
+function TWsdlParser.ParseType(const AName, ATypeOrElement: string): TPasType;
 var
   crsSchemaChild : IObjectCursor;
   typNd : TDOMNode;
@@ -1046,24 +1137,37 @@ var
     crsSchemaChild := CreateChildrenCursor(nd.InnerObject,cetRttiNode);
   end;
   
-  procedure FindTypeNode();
+  function FindTypeNode(out ASimpleTypeAlias : TPasType) : Boolean;
   var
-    nd : TDOMNode;
+    nd, oldTypeNode : TDOMNode;
     crs : IObjectCursor;
     locStrFilter : string;
   begin
+    ASimpleTypeAlias := nil;
+    Result := True;
     typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(AName));
     if not Assigned(typNd) then
-      raise EWslParserException.CreateFmt('Type definition not found 1 : "%s"',[AName]);
+      raise EWslTypeNotFoundException.CreateFmt('Type definition not found 1 : "%s"',[AName]);
     if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_element) then begin
       crs := CreateCursorOn(CreateAttributesCursor(typNd,cetRttiNode),ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
       crs.Reset();
       if crs.MoveNext() then begin
         nd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(nd.NodeValue));
-        if not Assigned(typNd) then
-          raise EWslParserException.CreateFmt('Type definition not found 2 : "%s"',[AName]);
-        embededType := False;
+        ASimpleTypeAlias := FSymbols.FindElement(ExtractNameFromQName(nd.NodeValue)) as TPasType;
+        if Assigned(ASimpleTypeAlias) then begin
+          Result := False;
+        end else begin
+          oldTypeNode := typNd;
+          typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(nd.NodeValue));
+          if not Assigned(typNd) then
+            raise EWslTypeNotFoundException.CreateFmt('Type definition not found 2 : "%s"',[AName]);
+          embededType := False;
+          if ( typNd = oldTypeNode ) then begin
+            typNd := FindNamedNode(crsSchemaChild,ExtractNameFromQName(nd.NodeValue),2);
+            if not Assigned(typNd) then
+              raise EWslTypeNotFoundException.CreateFmt('Type definition not found 2.1 : "%s"',[AName]);
+          end;
+        end;
       end else begin
         //locStrFilter := Format('%s = %s or %s = %s ',[s_NODE_NAME,QuotedStr(s_complexType),s_NODE_NAME,QuotedStr(s_simpleType)]);
         locStrFilter := CreateQualifiedNameFilterStr(s_complexType,FXSShortNames) + ' or ' +
@@ -1071,7 +1175,7 @@ var
         crs := CreateCursorOn(CreateChildrenCursor(typNd,cetRttiNode),ParseFilter(locStrFilter,TDOMNodeRttiExposer));
         crs.Reset();
         if not crs.MoveNext() then begin
-          raise EWslParserException.CreateFmt('Type definition not found 3 : "%s"',[AName]);
+          raise EWslTypeNotFoundException.CreateFmt('Type definition not found 3 : "%s"',[AName]);
         end;
         typNd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
         typName := ExtractNameFromQName(AName);
@@ -1080,7 +1184,7 @@ var
     end;
   end;
 
-  function ParseComplexType():TTypeDefinition;
+  function ParseComplexType():TPasType;
   var
     locParser : TComplexTypeParser;
   begin
@@ -1092,7 +1196,7 @@ var
     end;
   end;
   
-  function ParseSimpleType():TTypeDefinition;
+  function ParseSimpleType():TPasType;
   var
     locParser : TSimpleTypeParser;
   begin
@@ -1103,28 +1207,87 @@ var
       FreeAndNil(locParser);
     end;
   end;
-
-var
-  frwType : TTypeDefinition;
-begin
-  embededType := False;
-  Result := nil;
-  Result := FSymbols.Find(ExtractNameFromQName(AName),TTypeDefinition) as TTypeDefinition;
-  if ( not Assigned(Result) ) or ( Result is TForwardTypeDefinition ) then begin
-    frwType := Result;
-    Result := nil;
-    Init();
-    FindTypeNode();
-    if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_complexType) then begin
-      Result := ParseComplexType();
-    end else if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_simpleType) then begin
-      Result := ParseSimpleType();
+  
+  function CreateTypeAlias(const ABase : TPasType): TPasType;
+  var
+    hasInternameName : Boolean;
+    internameName : string;
+  begin
+    internameName := ExtractNameFromQName(AName);
+    hasInternameName := IsReservedKeyWord(internameName) or
+                           ( not IsValidIdent(internameName) );
+    if hasInternameName then begin
+      internameName := '_' + internameName;
     end;
-    if Assigned(Result) then begin
-      if Assigned(frwType) and AnsiSameText(Result.ExternalName,frwType.ExternalName) then begin
-        TTypeDefinitionCrack(Result).SetName(frwType.Name);
+    Result := TPasType(SymbolTable.CreateElement(TPasAliasType,internameName,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+    TPasAliasType(Result).DestType := ABase;
+    ABase.AddRef();
+  end;
+
+  function CreateUnresolveType(): TPasType;
+  var
+    hasInternameName : Boolean;
+    internameName : string;
+  begin
+    internameName := ExtractNameFromQName(AName);
+    hasInternameName := IsReservedKeyWord(internameName) or
+                           ( not IsValidIdent(internameName) );
+    if hasInternameName then begin
+      internameName := '_' + internameName;
+    end;
+    Result := TPasUnresolvedTypeRef(SymbolTable.CreateElement(TPasUnresolvedTypeRef,internameName,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+    if not AnsiSameText(internameName,AName) then
+      SymbolTable.RegisterExternalAlias(Result,AName);
+  end;
+  
+var
+  frwType, aliasType : TPasType;
+  sct : TPasSection;
+begin
+  DoOnMessage(mtInfo, Format('Parsing "%s" ...',[AName]));
+  try
+    embededType := False;
+    aliasType := nil;
+    Result := nil;
+    Result := FSymbols.FindElement(ExtractNameFromQName(AName)) as TPasType;
+    if ( Result = nil ) or Result.InheritsFrom(TPasUnresolvedTypeRef) then begin
+      sct := FSymbols.CurrentModule.InterfaceSection;
+      frwType := Result;
+      Result := nil;
+      Init();
+      if FindTypeNode(aliasType) then begin
+        if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_complexType) then begin
+          Result := ParseComplexType();
+        end else if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_simpleType) then begin
+          Result := ParseSimpleType();
+        end;
+        if Assigned(Result) then begin
+          if Assigned(frwType) and AnsiSameText(SymbolTable.GetExternalName(Result),SymbolTable.GetExternalName(frwType)) then begin
+            TPasEmentCrack(Result).SetName(frwType.Name);
+            SymbolTable.RegisterExternalAlias(Result,SymbolTable.GetExternalName(frwType));
+          end;
+        end else begin
+          raise EWslTypeNotFoundException.CreateFmt('Type node found but unable to parse it : "%s"',[AName]);
+        end;
+      end else begin
+        Result := CreateTypeAlias(aliasType);
       end;
-      FSymbols.Add(Result);
+      if ( frwType <> nil ) then begin
+        sct.Declarations.Extract(frwType);
+        sct.Types.Extract(frwType);
+        frwType.Release();
+      end;
+      sct.Declarations.Add(Result);
+      sct.Types.Add(Result);
+      if Result.InheritsFrom(TPasClassType) then begin
+        sct.Classes.Add(Result);
+      end;
+    end;
+  except
+    on e : EWslTypeNotFoundException do begin
+      Result := CreateUnresolveType();
+      sct.Declarations.Add(Result);
+      sct.Types.Add(Result);
     end;
   end;
 end;
@@ -1172,7 +1335,7 @@ begin
   end;
 end;
 
-constructor TWsdlParser.Create(ADoc: TXMLDocument; ASymbols : TSymbolTable);
+constructor TWsdlParser.Create(ADoc: TXMLDocument; ASymbols : TwstPasTreeContainer);
 begin
   Assert(Assigned(ADoc));
   Assert(Assigned(ASymbols));
@@ -1181,7 +1344,6 @@ begin
   FSoapShortNames := TStringList.Create();
   FXSShortNames   := TStringList.Create();
   FSymbols := ASymbols;
-  FSymbols.Add(CreateWstInterfaceSymbolTable());
 end;
 
 destructor TWsdlParser.Destroy();
@@ -1192,15 +1354,16 @@ begin
   inherited Destroy();
 end;
 
-procedure TWsdlParser.Parse(const AMode : TParserMode);
+procedure TWsdlParser.Parse(const AMode : TParserMode; const AModuleName : string);
 
   procedure ParseForwardDeclarations();
   var
     i, c : Integer;
-    sym : TAbstractSymbolDefinition;
+    sym, symNew : TPasElement;
     typeCursor : IObjectCursor;
     tmpNode : TDOMNode;
     s : string;
+    typeList : TList;
   begin
     if Assigned(FSchemaCursor) then begin
       FSchemaCursor.Reset();
@@ -1214,19 +1377,27 @@ procedure TWsdlParser.Parse(const AMode : TParserMode);
           typeCursor := CreateCursorOn(typeCursor,ParseFilter(s,TDOMNodeRttiExposer));
           typeCursor.Reset();
           if typeCursor.MoveNext() then begin
-            c := FSymbols.Count;
+            typeList := FSymbols.CurrentModule.InterfaceSection.Declarations;
+            c := typeList.Count;
             i := 0;
             while ( i < c ) do begin
-              sym := FSymbols[i];
-              if ( sym is TForwardTypeDefinition ) then begin
+              sym := TPasElement(typeList[i]);
+              if sym.InheritsFrom(TPasUnresolvedTypeRef) then begin
                 typeCursor.Reset();
-                tmpNode := FindNamedNode(typeCursor,sym.ExternalName);
+                tmpNode := FindNamedNode(typeCursor,FSymbols.GetExternalName(sym));
                 if Assigned(tmpNode) then begin
-                  ParseType(sym.ExternalName,ExtractNameFromQName(tmpNode.NodeName));
-                  Dec(i);
-                  c := FSymbols.Count;
+                  symNew := ParseType(FSymbols.GetExternalName(sym),ExtractNameFromQName(tmpNode.NodeName));
+                  if ( sym <> symNew ) then begin
+                    FModule.InterfaceSection.Declarations.Extract(sym);
+                    FModule.InterfaceSection.Types.Extract(sym);
+                    TPasEmentCrack(symNew).SetName(sym.Name);
+                    GetLogger().Log(mtInfo,'forward type paring %s = %s',[sym.Name, symNew.Name]);
+                    //sym.Release();
+                  end;
+                  i := 0; //Dec(i);
+                  c := typeList.Count;
                 end else begin
-                  WriteLn('XXXXXXXXXXXXXX = ',sym.Name);
+                  DoOnMessage(mtInfo, 'unable to find the node of this type : ' + sym.Name);
                 end;
               end;
               Inc(i);
@@ -1253,7 +1424,7 @@ procedure TWsdlParser.Parse(const AMode : TParserMode);
       if tmpCrs.MoveNext() then begin
         s := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
         if not IsStrEmpty(s) then begin
-          FSymbols.RegisterExternalAlias(s);
+          FSymbols.RegisterExternalAlias(FSymbols.CurrentModule,s);
         end;
       end;
     end;
@@ -1263,7 +1434,7 @@ var
   locSrvcCrs : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
 begin
-  Prepare();
+  Prepare(AModuleName);
 
   locSrvcCrs := FServiceCursor.Clone() as IObjectCursor;
   locSrvcCrs.Reset();
@@ -1277,6 +1448,7 @@ begin
   end;
   ParseForwardDeclarations();
   ExtractNameSpace();
+  SymbolTable.SetCurrentModule(FModule);
 end;
 
 { TAbstractTypeParser }
@@ -1284,7 +1456,7 @@ end;
 constructor TAbstractTypeParser.Create(
         AOwner       : TWsdlParser;
         ATypeNode    : TDOMNode;
-        ASymbols     : TSymbolTable;
+        ASymbols     : TwstPasTreeContainer;
   const ATypeName    : string;
   const AEmbededDef  : Boolean
 );
@@ -1302,9 +1474,9 @@ end;
 class function TAbstractTypeParser.ExtractEmbeddedTypeFromElement(
         AOwner       : TWsdlParser;
         AEltNode     : TDOMNode;
-        ASymbols     : TSymbolTable;
+        ASymbols     : TwstPasTreeContainer;
   const ATypeName    : string
-): TTypeDefinition;
+): TPasType;
 
   function ExtractTypeName() : string;
   var
@@ -1464,7 +1636,7 @@ end;
 procedure TComplexTypeParser.ExtractBaseType();
 var
   locContentChildCrs, locCrs : IObjectCursor;
-  locSymbol : TAbstractSymbolDefinition;
+  locSymbol : TPasElement;
   locBaseTypeName, locBaseTypeInternalName, locFilterStr : string;
 begin
   locFilterStr := CreateQualifiedNameFilterStr(s_extension,FOwner.FXSShortNames);
@@ -1501,16 +1673,16 @@ begin
     if not locCrs.MoveNext() then
       raise EWslParserException.CreateFmt('Invalid extention/restriction of type "%s" : "base" attribute not found.',[FTypeName]);
     locBaseTypeName := ExtractNameFromQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
-    locSymbol := FSymbols.Find(locBaseTypeName);
+    locSymbol := FSymbols.FindElement(locBaseTypeName);
     if Assigned(locSymbol) then begin
-      if locSymbol.InheritsFrom(TTypeDefinition) then begin
-        FBaseType := locSymbol as TTypeDefinition;
-        while Assigned(FBaseType) and FBaseType.InheritsFrom(TTypeAliasDefinition) do begin
-          FBaseType := (FBaseType as TTypeAliasDefinition).BaseType;
+      if locSymbol.InheritsFrom(TPasType) then begin
+        FBaseType := locSymbol as TPasType;
+        while Assigned(FBaseType) and FBaseType.InheritsFrom(TPasAliasType) do begin
+          FBaseType := (FBaseType as TPasAliasType).DestType;
         end;
-        if FBaseType.InheritsFrom(TNativeSimpleTypeDefinition) then begin
-          Assert(Assigned(TNativeSimpleTypeDefinition(FBaseType).BoxedType));
-          FBaseType := TNativeSimpleTypeDefinition(FBaseType).BoxedType;
+        if FBaseType.InheritsFrom(TPasNativeSimpleType) then begin
+          Assert(Assigned(TPasNativeSimpleType(FBaseType).BoxedType));
+          FBaseType := TPasNativeSimpleType(FBaseType).BoxedType;
         end;
       end else begin
         raise EWslParserException.CreateFmt('"%s" was expected to be a type definition.',[locSymbol.Name]);
@@ -1519,15 +1691,16 @@ begin
       locBaseTypeInternalName := ExtractIdentifier(locBaseTypeName);
       if IsReservedKeyWord(locBaseTypeInternalName) then
         locBaseTypeInternalName := '_' + locBaseTypeInternalName ;
-      FBaseType := TForwardTypeDefinition.Create(locBaseTypeInternalName);
+      FBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
+      FSymbols.CurrentModule.InterfaceSection.Declarations.Add(FBaseType);
+      FSymbols.CurrentModule.InterfaceSection.Types.Add(FBaseType);
       if not AnsiSameText(locBaseTypeInternalName,locBaseTypeName) then
-        FBaseType.RegisterExternalAlias(locBaseTypeName);
-      FSymbols.Add(FBaseType);
+        FSymbols.RegisterExternalAlias(FBaseType,locBaseTypeName);
     end;
   end;
 end;
 
-function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TTypeDefinition;
+function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TPasType;
 
   function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
   var
@@ -1586,7 +1759,7 @@ function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TTyp
   end;
   
 var
-  classDef : TClassTypeDefinition;
+  classDef : TPasClassType;
   isArrayDef : Boolean;
   arrayItems : TObjectList;
   
@@ -1594,9 +1767,9 @@ var
   var
     locAttCursor, locPartCursor : IObjectCursor;
     locName, locTypeName, locTypeInternalName : string;
-    locType : TAbstractSymbolDefinition;
+    locType : TPasElement;
     locInternalEltName : string;
-    locProp : TPropertyDefinition;
+    locProp : TPasProperty;
     locHasInternalName : Boolean;
     locMinOccur, locMaxOccur : Integer;
     locMaxOccurUnbounded : Boolean;
@@ -1636,30 +1809,36 @@ var
         if ( locType = nil ) then begin
           raise EWslParserException.CreateFmt('Invalid <element> definition : unable to determine the type.'#13'Type name : "%s"; Element name :"%s".',[FTypeName,locName]);
         end;
-        FSymbols.Add(locType);
+        FSymbols.CurrentModule.InterfaceSection.Declarations.Add(locType);
+        FSymbols.CurrentModule.InterfaceSection.Types.Add(locType);
+        if locType.InheritsFrom(TPasClassType) then begin
+          FSymbols.CurrentModule.InterfaceSection.Classes.Add(locType);
+        end;
       end;
     end;
     if IsStrEmpty(locTypeName) then
       raise EWslParserException.Create('Invalid <element> definition : empty "type".');
-    locType := FSymbols.Find(locTypeName);
+    locType := FSymbols.FindElement(locTypeName);
     if Assigned(locType) then begin
       if locIsRefElement then begin
         locTypeInternalName := locTypeName;
         locTypeInternalName := locTypeInternalName + '_Type';
-        TTypeDefinitionCrack(locType).SetName(locTypeInternalName);
+        TPasEmentCrack(locType).SetName(locTypeInternalName);
+        FSymbols.RegisterExternalAlias(locType,locTypeName);
       end;
     end else begin
       locTypeInternalName := locTypeName;
-      if locIsRefElement then begin
+      if locIsRefElement or AnsiSameText(locInternalEltName,locInternalEltName) then begin
         locTypeInternalName := locTypeInternalName + '_Type';
       end;
       if IsReservedKeyWord(locTypeInternalName) then begin
         locTypeInternalName := '_' + locTypeInternalName;
       end;
-      locType := TForwardTypeDefinition.Create(locTypeInternalName);
+      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeInternalName,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
+      FSymbols.CurrentModule.InterfaceSection.Declarations.Add(locType);
+      FSymbols.CurrentModule.InterfaceSection.Types.Add(locType);
       if not AnsiSameText(locTypeInternalName,locTypeName) then
-        locType.RegisterExternalAlias(locTypeName);
-      FSymbols.Add(locType);
+        FSymbols.RegisterExternalAlias(locType,locTypeName);
     end;
     
     locInternalEltName := locName;
@@ -1667,9 +1846,16 @@ var
     if locHasInternalName then
       locInternalEltName := Format('_%s',[locInternalEltName]);
 
-    locProp := classDef.AddProperty(locInternalEltName,locType as TTypeDefinition);
+    locProp := TPasProperty(FSymbols.CreateElement(TPasProperty,locInternalEltName,classDef,visPublished,'',0));
+    classDef.Members.Add(locProp);
+    locProp.VarType := locType as TPasType;
+    locType.AddRef();
     if locHasInternalName then
-      locProp.RegisterExternalAlias(locName);
+      FSymbols.RegisterExternalAlias(locProp,locName);
+    {if AnsiSameText(locType.Name,locProp.Name) then begin
+      FSymbols.RegisterExternalAlias(locType,FSymbols.GetExternalName(locType));
+      TPasEmentCrack(locType).SetName(locType.Name + '_Type');
+    end;}
 
     locMinOccur := 1;
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
@@ -1680,8 +1866,13 @@ var
       if ( locMinOccur < 0 ) then
         raise EWslParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
     end;
-    if ( locMinOccur = 0 ) then
-      locProp.StorageOption := soOptional;
+    locProp.ReadAccessorName := 'F' + locProp.Name;
+    locProp.WriteAccessorName := 'F' + locProp.Name;
+    if ( locMinOccur = 0 ) then begin
+      locProp.StoredAccessorName := 'Has' + locProp.Name;
+    end else begin
+      locProp.StoredAccessorName := 'True';
+    end;
 
     locMaxOccur := 1;
     locMaxOccurUnbounded := False;
@@ -1703,7 +1894,7 @@ var
       arrayItems.Add(locProp);
     end;
     if AnsiSameText(s_attribute,ExtractNameFromQName(AElement.NodeName)) then begin
-      locProp.IsAttribute := True;
+      FSymbols.SetPropertyAsAttribute(locProp,True);
     end;
   end;
   
@@ -1712,36 +1903,36 @@ var
           AArrayPropList : TObjectList
   );
   var
-    locPropTyp : TPropertyDefinition;
+    locPropTyp : TPasProperty;
     k : Integer;
     locString : string;
-    locSym : TAbstractSymbolDefinition;
+    locSym : TPasElement;
   begin
     for k := 0 to Pred(AArrayPropList.Count) do begin
-      locPropTyp := AArrayPropList[k] as TPropertyDefinition;
+      locPropTyp := AArrayPropList[k] as TPasProperty;
       locString := Format('%s_%sArray',[AClassName,locPropTyp.Name]);
-      locSym := FSymbols.Find(locString);
+      locSym := FSymbols.FindElement(locString);
       if ( locSym = nil ) then begin
-        FSymbols.Add(
-          TArrayDefinition.Create(
-            locString,
-            locPropTyp.DataType,
-            locPropTyp.Name,
-            locPropTyp.ExternalName,
-            asEmbeded
-          )
+        locSym := FSymbols.CreateArray(
+          locString,
+          locPropTyp.VarType,
+          locPropTyp.Name,
+          FSymbols.GetExternalName(locPropTyp),
+          asEmbeded
         );
+        FSymbols.CurrentModule.InterfaceSection.Declarations.Add(locSym);
+        FSymbols.CurrentModule.InterfaceSection.Types.Add(locSym);
       end;
     end;
   end;
   
-  function ExtractSoapArray(const AInternalName : string; const AHasInternalName : Boolean) : TArrayDefinition;
+  function ExtractSoapArray(const AInternalName : string; const AHasInternalName : Boolean) : TPasArrayType;
   var
     ls : TStringList;
     crs, locCrs : IObjectCursor;
     s : string;
     i : Integer;
-    locSym : TAbstractSymbolDefinition;
+    locSym : TPasElement;
     ok : Boolean;
     nd : TDOMNode;
   begin
@@ -1787,25 +1978,26 @@ var
       i := MaxInt;
     end;
     s := Copy(s,1,Pred(i));
-    locSym := FSymbols.Find(s);
+    locSym := FSymbols.FindElement(s);
     if not Assigned(locSym) then begin
-      locSym := TForwardTypeDefinition.Create(s);
-      FSymbols.Add(locSym);
+      locSym := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,s,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
+      FSymbols.CurrentModule.InterfaceSection.Declarations.Add(locSym);
+      FSymbols.CurrentModule.InterfaceSection.Types.Add(locSym);
     end;
-    if not locSym.InheritsFrom(TTypeDefinition) then
+    if not locSym.InheritsFrom(TPasType) then
       raise EWslParserException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
-    Result := TArrayDefinition.Create(AInternalName,locSym as TTypeDefinition,s_item,s_item,asScoped);
+    Result := FSymbols.CreateArray(AInternalName,locSym as TPasType,s_item,s_item,asScoped);
     if AHasInternalName then
-      Result.RegisterExternalAlias(ATypeName);
+      FSymbols.RegisterExternalAlias(Result,ATypeName);
   end;
   
 var
   eltCrs, eltAttCrs : IObjectCursor;
   internalName : string;
   hasInternalName : Boolean;
-  arrayDef : TArrayDefinition;
-  propTyp, tmpPropTyp : TPropertyDefinition;
-  tmpClassDef : TClassTypeDefinition;
+  arrayDef : TPasArrayType;
+  propTyp, tmpPropTyp : TPasProperty;
+  tmpClassDef : TPasClassType;
   i : Integer;
 begin
   ExtractBaseType();
@@ -1820,24 +2012,23 @@ begin
     internalName := Format('_%s',[internalName]);
   end;
 
-  if ( FDerivationMode = dmRestriction ) and FBaseType.SameName(s_array) then begin
+  if ( FDerivationMode = dmRestriction ) and FSymbols.SameName(FBaseType,s_array) then begin
     Result := ExtractSoapArray(internalName,hasInternalName);
   end else begin
     arrayItems := TObjectList.Create(False);
     try
-      classDef := TClassTypeDefinition.Create(internalName);
+      classDef := TPasClassType(FSymbols.CreateElement(TPasClassType,internalName,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
       try
+        classDef.ObjKind := okClass;
         Result := classDef;
         if hasInternalName then
-          classDef.RegisterExternalAlias(ATypeName);
+          FSymbols.RegisterExternalAlias(classDef,ATypeName);
         if ( FDerivationMode in [dmExtension, dmRestriction] ) then begin
-          classDef.SetParent(FBaseType);
+          classDef.AncestorType := FBaseType;
         end;
-        if ( classDef.Parent = nil ) then
-          classDef.SetParent(
-            (FSymbols.ByName('base_service_intf') as TSymbolTable)
-            .ByName('TBaseComplexRemotable') as TClassTypeDefinition
-          );
+        if ( classDef.AncestorType = nil ) then
+          classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+        classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
           if Assigned(eltCrs) then begin
@@ -1853,34 +2044,45 @@ begin
             end;
           end;
           if ( arrayItems.Count > 0 ) then begin
-            if ( arrayItems.Count = 1 ) and ( classDef.PropertyCount = 1 ) then begin
+            if ( arrayItems.Count = 1 ) and ( GetElementCount(classDef.Members,TPasProperty) = 1 ) then begin
               Result := nil;
-              propTyp := arrayItems[0] as TPropertyDefinition;
-              arrayDef := TArrayDefinition.Create(internalName,propTyp.DataType,propTyp.Name,propTyp.ExternalName,asScoped);
+              propTyp := arrayItems[0] as TPasProperty;
+              arrayDef := FSymbols.CreateArray(internalName,propTyp.VarType,propTyp.Name,FSymbols.GetExternalName(propTyp),asScoped);
               FreeAndNil(classDef);
               Result := arrayDef;
               if hasInternalName then
-                arrayDef.RegisterExternalAlias(ATypeName);
+                FSymbols.RegisterExternalAlias(arrayDef,ATypeName);
             end else begin
               GenerateArrayTypes(internalName,arrayItems);
               tmpClassDef := classDef;
-              classDef := TClassTypeDefinition.Create(tmpClassDef.Name);
+              classDef := TPasClassType(FSymbols.CreateElement(TPasClassType,tmpClassDef.Name,FSymbols.CurrentModule.InterfaceSection,visPublic,'',0));
+              classDef.ObjKind := okClass;
               Result := classDef;
-              classDef.SetParent(tmpClassDef.Parent);
+              classDef.AncestorType := tmpClassDef.AncestorType;
+              classDef.AncestorType.AddRef();
               if hasInternalName then
-                classDef.RegisterExternalAlias(ATypeName);
-              for i := 0 to Pred(tmpClassDef.PropertyCount) do begin
-                propTyp := tmpClassDef.Properties[i];
-                if ( arrayItems.IndexOf(propTyp) = -1 ) then begin
-                  tmpPropTyp := classDef.AddProperty(propTyp.Name,propTyp.DataType);
-                  tmpPropTyp.IsAttribute := propTyp.IsAttribute;
-                  tmpPropTyp.StorageOption := propTyp.StorageOption;
-                  tmpPropTyp.RegisterExternalAlias(propTyp.ExternalName);
-                end else begin
-                  classDef.AddProperty(
-                    propTyp.Name,
-                    FSymbols.ByName(Format('%s_%sArray',[internalName,propTyp.Name])) as TTypeDefinition
-                  ).RegisterExternalAlias(propTyp.ExternalName);
+                FSymbols.RegisterExternalAlias(classDef,ATypeName);
+              for i := 0 to Pred(tmpClassDef.Members.Count) do begin
+                if TPasElement(tmpClassDef.Members[i]).InheritsFrom(TPasProperty) then begin
+                  propTyp := TPasProperty(tmpClassDef.Members[i]);
+                  if ( arrayItems.IndexOf(propTyp) = -1 ) then begin
+                    tmpPropTyp := TPasProperty(FSymbols.CreateElement(TPasProperty,propTyp.Name,classDef,visPublished,'',0));
+                    if FSymbols.IsAttributeProperty(propTyp) then begin
+                      FSymbols.SetPropertyAsAttribute(tmpPropTyp,True);
+                    end;
+                    tmpPropTyp.VarType := propTyp.VarType;
+                    tmpPropTyp.VarType.AddRef();
+                    tmpPropTyp.StoredAccessorName := propTyp.StoredAccessorName;
+                    FSymbols.RegisterExternalAlias(tmpPropTyp,FSymbols.GetExternalName(propTyp));
+                    classDef.Members.Add(tmpPropTyp);
+                  end else begin
+                    tmpPropTyp := TPasProperty(FSymbols.CreateElement(TPasProperty,propTyp.Name,classDef,visPublished,'',0));
+                    tmpPropTyp.StoredAccessorName := propTyp.StoredAccessorName;
+                    tmpPropTyp.VarType := FSymbols.FindElement(Format('%s_%sArray',[internalName,propTyp.Name])) as TPasType;
+                    tmpPropTyp.VarType.AddRef();
+                    FSymbols.RegisterExternalAlias(tmpPropTyp,FSymbols.GetExternalName(propTyp));
+                    classDef.Members.Add(tmpPropTyp);
+                  end;
                 end;
               end;
               FreeAndNil(tmpClassDef);
@@ -1897,7 +2099,7 @@ begin
   end;
 end;
 
-function TComplexTypeParser.ParseSimpleContent(const ATypeName : string) : TTypeDefinition;
+function TComplexTypeParser.ParseSimpleContent(const ATypeName : string) : TPasType;
 
   function ExtractAttributeCursor():IObjectCursor;
   var
@@ -1932,15 +2134,15 @@ function TComplexTypeParser.ParseSimpleContent(const ATypeName : string) : TType
   end;
 
 var
-  locClassDef : TClassTypeDefinition;
+  locClassDef : TPasClassType;
 
   procedure ParseAttribute(AElement : TDOMNode);
   var
     locAttCursor, locPartCursor : IObjectCursor;
     locName, locTypeName, locStoreOpt : string;
-    locType : TAbstractSymbolDefinition;
+    locType : TPasElement;
     locStoreOptIdx : Integer;
-    locAttObj : TPropertyDefinition;
+    locAttObj : TPasProperty;
     locInternalEltName : string;
     locHasInternalName : boolean;
   begin
@@ -1960,10 +2162,11 @@ var
     locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
     if IsStrEmpty(locTypeName) then
       raise EWslParserException.CreateFmt('Invalid <%s> definition : empty "type".',[s_attribute]);
-    locType := FSymbols.Find(locTypeName);
+    locType := FSymbols.FindElement(locTypeName) as TPasType;
     if not Assigned(locType) then begin
-      locType := TForwardTypeDefinition.Create(locTypeName);
-      FSymbols.Add(locType);
+      locType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locTypeName,FSymbols.CurrentModule.InterfaceSection,visPublic,'',0));
+      FSymbols.CurrentModule.InterfaceSection.Declarations.Add(locType);
+      FSymbols.CurrentModule.InterfaceSection.Types.Add(locType);
     end;
     
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_use)]),TDOMNodeRttiExposer));
@@ -1973,7 +2176,7 @@ var
       if IsStrEmpty(locStoreOpt) then
         raise EWslParserException.CreateFmt('Invalid <%s> definition : empty "use".',[s_attribute]);
       locStoreOptIdx := AnsiIndexText(locStoreOpt,[s_required,s_optional,s_prohibited]);
-      if ( locStoreOptIdx < Ord(Low(TStorageOption)) ) or ( locStoreOptIdx > Ord(High(TStorageOption)) ) then
+      if ( locStoreOptIdx < 0 ) then
         raise EWslParserException.CreateFmt('Invalid <%s> definition : invalid "use" value "%s".',[s_attribute,locStoreOpt]);
     end else begin
       locStoreOptIdx := 0;
@@ -1984,11 +2187,18 @@ var
     if locHasInternalName then
       locInternalEltName := Format('_%s',[locInternalEltName]);
       
-    locAttObj := locClassDef.AddProperty(locInternalEltName,locType as TTypeDefinition);
+    locAttObj := TPasProperty(FSymbols.CreateElement(TPasProperty,locInternalEltName,locClassDef,visPublished,'',0));
+    locClassDef.Members.Add(locAttObj);
+    locAttObj.VarType := locType as TPasType;
+    locAttObj.VarType.AddRef();
     if locHasInternalName then
-      locAttObj.RegisterExternalAlias(locName);
-    locAttObj.IsAttribute := True;
-    locAttObj.StorageOption := TStorageOption(locStoreOptIdx);
+      FSymbols.RegisterExternalAlias(locAttObj,locName);
+    FSymbols.SetPropertyAsAttribute(locAttObj,True);
+    case locStoreOptIdx of
+      0 : locAttObj.StoredAccessorName := 'True';
+      1 : locAttObj.StoredAccessorName := 'Has' + locAttObj.Name;
+      2 : locAttObj.StoredAccessorName := 'False';
+    end;
   end;
 
 var
@@ -2008,20 +2218,19 @@ begin
     internalName := Format('_%s',[internalName]);
 
   locAttCrs := ExtractAttributeCursor();
-  locClassDef := TClassTypeDefinition.Create(Trim(internalName));
+  locClassDef := TPasClassType(FSymbols.CreateElement(TPasClassType,Trim(internalName),FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
   try
+    locClassDef.ObjKind := okClass;
     Result := locClassDef;
     if hasInternalName then
-      locClassDef.RegisterExternalAlias(ATypeName);
+      FSymbols.RegisterExternalAlias(locClassDef,ATypeName);
     if ( FDerivationMode in [dmExtension, dmRestriction] ) then begin
-      locClassDef.SetParent(FBaseType);
+      locClassDef.AncestorType := FBaseType;
     end;
-    if ( locClassDef.Parent = nil ) then begin
-      locClassDef.SetParent(
-        (FSymbols.ByName('base_service_intf') as TSymbolTable)
-        .ByName('TBaseComplexRemotable') as TClassTypeDefinition
-      );
+    if ( locClassDef.AncestorType = nil ) then begin
+      locClassDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
     end;
+    locClassDef.AncestorType.AddRef();
     if ( locAttCrs <> nil ) then begin
       locAttCrs.Reset();
       while locAttCrs.MoveNext() do begin
@@ -2034,7 +2243,7 @@ begin
   end;
 end;
 
-function TComplexTypeParser.ParseEmptyContent(const ATypeName: string): TTypeDefinition;
+function TComplexTypeParser.ParseEmptyContent(const ATypeName: string): TPasType;
 var
   internalName : string;
   hasInternalName : Boolean;
@@ -2045,13 +2254,12 @@ begin
                      ( FSymbols.IndexOf(internalName) <> -1 );}
   if hasInternalName then
     internalName := Format('_%s',[internalName]);
-  Result := TClassTypeDefinition.Create(internalName);
+  Result := TPasClassType(FSymbols.CreateElement(TPasClassType,internalName,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
+  TPasClassType(Result).ObjKind := okClass;
   if hasInternalName then
-    Result.RegisterExternalAlias(ATypeName);
-  TClassTypeDefinition(Result).SetParent(
-    (FSymbols.ByName('base_service_intf') as TSymbolTable)
-    .ByName('TBaseComplexRemotable') as TClassTypeDefinition
-  );
+    FSymbols.RegisterExternalAlias(Result,ATypeName);
+  TPasClassType(Result).AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+  TPasClassType(Result).AncestorType.AddRef();
 end;
 
 class function TComplexTypeParser.GetParserSupportedStyle(): string;
@@ -2059,9 +2267,9 @@ begin
   Result := s_complexType;
 end;
 
-function TComplexTypeParser.Parse() : TTypeDefinition;
+function TComplexTypeParser.Parse() : TPasType;
 var
-  locSym : TAbstractSymbolDefinition;
+  locSym : TPasElement;
   locContinue : Boolean;
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_complexType) then
@@ -2069,13 +2277,13 @@ begin
   CreateNodeCursors();
   ExtractTypeName();
   locContinue := True;
-  locSym := FSymbols.Find(FTypeName);
+  locSym := FSymbols.FindElement(FTypeName);
   if Assigned(locSym) then begin
-    if not locSym.InheritsFrom(TTypeDefinition) then
+    if not locSym.InheritsFrom(TPasType) then
       raise EWslParserException.CreateFmt('Symbol found in the symbol table but is not a type definition : %s.',[FTypeName]);
-    locContinue := locSym.InheritsFrom(TForwardTypeDefinition);
+    locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef);
     if not locContinue then;
-      Result := locSym as TTypeDefinition;
+      Result := locSym as TPasType;
   end;
   if locContinue then begin
     ExtractContentType();
@@ -2167,7 +2375,7 @@ begin
   end;
 end;
 
-function TSimpleTypeParser.ParseEnumContent(): TTypeDefinition;
+function TSimpleTypeParser.ParseEnumContent(): TPasType;
 
   function ExtractEnumCursor():IObjectCursor ;
   begin
@@ -2178,7 +2386,7 @@ function TSimpleTypeParser.ParseEnumContent(): TTypeDefinition;
   end;
   
 var
-  locRes : TEnumTypeDefinition;
+  locRes : TPasEnumType;
   locOrder : Integer;
   
   procedure ParseEnumItem(AItemNode : TDOMNode);
@@ -2186,7 +2394,7 @@ var
     tmpNode : TDOMNode;
     locItemName, locInternalItemName : string;
     locCrs : IObjectCursor;
-    locItem : TEnumItemDefinition;
+    locItem : TPasEnumValue;
     locHasInternalName : Boolean;
     locBuffer : string;
   begin
@@ -2204,21 +2412,23 @@ var
     locInternalItemName := ExtractIdentifier(locItemName);
     locHasInternalName := IsReservedKeyWord(locInternalItemName) or
                           ( not IsValidIdent(locInternalItemName) ) or
-                          ( FSymbols.IndexOf(locInternalItemName) <> -1 ) or
+                          ( FSymbols.FindElementInModule(locInternalItemName,FSymbols.CurrentModule) <> nil ) or
+                          FSymbols.IsEnumItemNameUsed(locInternalItemName) or
                           ( not AnsiSameText(locInternalItemName,locItemName) );
     if locHasInternalName then begin
-      locBuffer := ExtractIdentifier(locRes.ExternalName);
-      if IsStrEmpty(locBuffer) and ( locBuffer[Length(locBuffer)] <> '_' ) then begin
+      locBuffer := ExtractIdentifier(FSymbols.GetExternalName(locRes));
+      if ( not IsStrEmpty(locBuffer) ) and ( locBuffer[Length(locBuffer)] <> '_' ) then begin
         locInternalItemName := Format('%s_%s',[locBuffer,locInternalItemName]);
       end else begin
         locInternalItemName := Format('%s%s',[locBuffer,locInternalItemName]);
       end;
     end;
-    locItem := TEnumItemDefinition.Create(locInternalItemName,locRes,locOrder);
+    locItem := TPasEnumValue(FSymbols.CreateElement(TPasEnumValue,locInternalItemName,locRes,visDefault,'',0));
+    locItem.Value := locOrder;
+    locRes.Values.Add(locItem);
+    //locItem := TEnumItemDefinition.Create(locInternalItemName,locRes,locOrder);
     if locHasInternalName then
-      locItem.RegisterExternalAlias(locItemName);
-    FSymbols.Add(locItem);
-    locRes.AddItem(locItem);
+      FSymbols.RegisterExternalAlias(locItem,locItemName);
     Inc(locOrder);
   end;
   
@@ -2231,15 +2441,15 @@ begin
 
   intrName := FTypeName;
   hasIntrnName := IsReservedKeyWord(FTypeName) or
-                  ( ( FSymbols.IndexOf(intrName) >= 0 ) and ( not FSymbols.ByName(intrName).InheritsFrom(TForwardTypeDefinition) ) );
+                  ( ( FSymbols.FindElement(intrName) <> nil ) and ( not FSymbols.FindElement(intrName).InheritsFrom(TPasUnresolvedTypeRef) ) );
   if hasIntrnName then
     intrName := '_' + intrName;
 
-  locRes := TEnumTypeDefinition.Create(Trim(intrName));
+  locRes := TPasEnumType(FSymbols.CreateElement(TPasEnumType,Trim(intrName),FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
   try
     Result := locRes;
     if hasIntrnName then
-      locRes.RegisterExternalAlias(FTypeName);
+      FSymbols.RegisterExternalAlias(locRes,FTypeName);
     locEnumCrs.Reset();
     locOrder := 0;
     while locEnumCrs.MoveNext() do begin
@@ -2251,11 +2461,13 @@ begin
   end;
 end;
 
-function TSimpleTypeParser.ParseOtherContent(): TTypeDefinition;
+function TSimpleTypeParser.ParseOtherContent(): TPasType;
 begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   if IsStrEmpty(FBaseName) then
     raise EWslParserException.CreateFmt('Invalid simple type definition : base type not provided, "%s".',[FTypeName]);
-  Result := TTypeAliasDefinition.Create(FTypeName,FSymbols.ByName(FBaseName) as TTypeDefinition);
+  Result := TPasTypeAliasType(FSymbols.CreateElement(TPasTypeAliasType,FTypeName,FSymbols.CurrentModule.InterfaceSection,visDefault,'',0));
+  TPasTypeAliasType(Result).DestType := FSymbols.FindElement(FBaseName) as TPasType;
+  TPasTypeAliasType(Result).DestType.AddRef();
 end;
 
 class function TSimpleTypeParser.GetParserSupportedStyle(): string;
@@ -2263,9 +2475,9 @@ begin
   Result := s_simpleType;
 end;
 
-function TSimpleTypeParser.Parse(): TTypeDefinition;
+function TSimpleTypeParser.Parse(): TPasType;
 var
-  locSym : TAbstractSymbolDefinition;
+  locSym : TPasElement;
   locContinue : Boolean;
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_simpleType) then
@@ -2273,13 +2485,13 @@ begin
   CreateNodeCursors();
   ExtractTypeName();
   locContinue := True;
-  locSym := FSymbols.Find(FTypeName);
+  locSym := FSymbols.FindElement(FTypeName);
   if Assigned(locSym) then begin
-    if not locSym.InheritsFrom(TTypeDefinition) then
+    if not locSym.InheritsFrom(TPasType) then
       raise EWslParserException.CreateFmt('Symbol found in the symbol table but is not a type definition : %s.',[FTypeName]);
-    locContinue := locSym.InheritsFrom(TForwardTypeDefinition);
+    locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef);
     if not locContinue then begin
-      Result := locSym as TTypeDefinition;
+      Result := locSym as TPasType;
     end;
   end;
   if locContinue then begin

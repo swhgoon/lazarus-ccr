@@ -7,44 +7,48 @@ object Form1: TForm1
   VertScrollBar.Page = 387
   ActiveControl = Button1
   Caption = 'Form1'
+  ClientHeight = 388
+  ClientWidth = 400
   OnCreate = FormCreate
   object Panel1: TPanel
     Height = 184
     Width = 400
     Align = alTop
+    ClientHeight = 184
+    ClientWidth = 400
     TabOrder = 0
     object Label1: TLabel
       Left = 16
-      Height = 18
+      Height = 14
       Top = 53
-      Width = 98
+      Width = 77
       Caption = 'eBayAuthToken'
       Color = clNone
       ParentColor = False
     end
     object Label2: TLabel
       Left = 16
-      Height = 18
+      Height = 14
       Top = 79
-      Width = 37
+      Width = 30
       Caption = 'AppId'
       Color = clNone
       ParentColor = False
     end
     object Label3: TLabel
       Left = 16
-      Height = 18
+      Height = 14
       Top = 111
-      Width = 38
+      Width = 30
       Caption = 'DevId'
       Color = clNone
       ParentColor = False
     end
     object Label4: TLabel
       Left = 16
-      Height = 18
+      Height = 14
       Top = 144
-      Width = 56
+      Width = 45
       Caption = 'AuthCert'
       Color = clNone
       ParentColor = False
@@ -84,6 +88,7 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 2
+      Text = 'AgAAAA**AQAAAA**aAAAAA**OeGvRA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJnY+lAZOEpgqdj6x9nY+seQ**uoUAAA**AAMAAA**z5djiOw1a7Tk12KGGPqSpvnxxNYOVUtaSbmQ7hYd4pX4XfafLKBtImKsW9SUsbmBS9fXOyBnXA3k0jLelpiMptvlZ8N52UQA/ePc6+JE7LJFrARMoBaW5lHEQOMESJLAdFJiGmLwrnagdeo6WRI89gu'
     end
     object edtAppId: TEdit
       Left = 96
@@ -92,6 +97,7 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 3
+      Text = 'INOUSSAOUEU258CIC9Z5E83UXC1BE5'
     end
     object edtDevId: TEdit
       Left = 96
@@ -100,6 +106,7 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 4
+      Text = 'L11ZDC63VDJ1FPLJL5EA161OQ2MS95'
     end
     object edtAuthCert: TEdit
       Left = 96
@@ -108,6 +115,7 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 5
+      Text = 'A266GKZC9F5$HI2HIH58A-D3JH2YA4'
     end
   end
   object trvOut: TTreeView
@@ -115,7 +123,7 @@ object Form1: TForm1
     Top = 184
     Width = 400
     Align = alClient
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     TabOrder = 1
   end
 end
