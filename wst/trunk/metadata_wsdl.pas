@@ -577,7 +577,7 @@ procedure TBaseComplexRemotable_TypeHandler.Generate(
 var
   typItm, propTypItm : TTypeRegistryItem;
   s, prop_ns_shortName : string;
-  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode, eltNode : TDOMElement;
+  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
   i : Integer;
   propList : PPropList;
   propCount, propListLen : Integer;
@@ -596,13 +596,10 @@ begin
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
     
-    s := Format('%s:%s',[sXSD,sELEMENT]);
-    eltNode := CreateElement(s,defSchemaNode,AWsdlDocument);
-    eltNode.SetAttribute(sNAME, typItm.DeclaredName) ;
-
     s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
-    cplxNode := CreateElement(s,eltNode,AWsdlDocument);
-    //cplxNode.SetAttribute(sNAME, typItm.DeclaredName) ;
+    cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
+    cplxNode.SetAttribute(sNAME, typItm.DeclaredName) ;
+
       s := Format('%s:%s',[sXSD,sSEQUENCE]);
       sqcNode := CreateElement(s,cplxNode,AWsdlDocument);
       objTypeData := GetTypeData(typItm.DataType);
@@ -623,7 +620,7 @@ begin
                 s := Format('%s:%s',[sXSD,sELEMENT]);
                 propNode := CreateElement(s,sqcNode,AWsdlDocument);
               end;
-              propNode.SetAttribute(sNAME,p^.Name);
+              propNode.SetAttribute(sNAME,typItm.GetExternalPropertyName(p^.Name));
               propTypItm := GetTypeRegistry().Find(p^.PropType^.Name);
               if Assigned(propTypItm) then begin
                 prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace,AWsdlDocument);
@@ -775,7 +772,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
 var
   typItm, propTypItm : TTypeRegistryItem;
   s, prop_ns_shortName : string;
-  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode, eltNode : TDOMElement;
+  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
   arrayTypeData : PTypeData;
   arrayTypeClass : TBaseArrayRemotableClass;
 begin
@@ -792,13 +789,10 @@ begin
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
-    s := Format('%s:%s',[sXSD,sELEMENT]);
-    eltNode := CreateElement(s,defSchemaNode,AWsdlDocument);
-    eltNode.SetAttribute(sNAME, typItm.DeclaredName) ;
-
     s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
-    cplxNode := CreateElement(s,eltNode,AWsdlDocument);
-    //cplxNode.SetAttribute(sNAME, typItm.DeclaredName) ;
+    cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
+    cplxNode.SetAttribute(sNAME, typItm.DeclaredName) ;
+
       s := Format('%s:%s',[sXSD,sSEQUENCE]);
       sqcNode := CreateElement(s,cplxNode,AWsdlDocument);
       arrayTypeClass := TBaseArrayRemotableClass(arrayTypeData^.ClassType);

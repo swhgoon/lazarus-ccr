@@ -15,16 +15,23 @@ type
 
   TWSTMetadataService_ServiceBinder=class(TBaseServiceBinder)
   Protected
-    procedure GetRepositoryListHandler(AFormatter:IFormatterResponse);
-    procedure GetRepositoryInfoHandler(AFormatter:IFormatterResponse);
+    procedure GetRepositoryListHandler(AFormatter:IFormatterResponse; AContext : ICallContext);
+    procedure GetRepositoryInfoHandler(AFormatter:IFormatterResponse; AContext : ICallContext);
   Public
     constructor Create();
   End;
 
+  { TWSTMetadataService_ServiceBinderFactory }
+
   TWSTMetadataService_ServiceBinderFactory = class(TInterfacedObject,IItemFactory)
+  private
+    FInstance : IInterface;
   protected
     function CreateInstance():IInterface;
-  End;
+  public
+    constructor Create();
+    destructor Destroy();override;
+  end;
 
   procedure Server_service_RegisterWSTMetadataServiceService();
 
@@ -32,7 +39,7 @@ Implementation
 uses TypInfo, wst_resources_imp,metadata_repository;
 
 { TWSTMetadataService_ServiceBinder implementation }
-procedure TWSTMetadataService_ServiceBinder.GetRepositoryListHandler(AFormatter:IFormatterResponse);
+procedure TWSTMetadataService_ServiceBinder.GetRepositoryListHandler(AFormatter:IFormatterResponse; AContext : ICallContext);
 Var
   cllCntrl : ICallControl;
   tmpObj : IWSTMetadataService;
@@ -41,14 +48,14 @@ Var
   procName,trgName : string;
   returnVal : TArrayOfStringRemotable;
 Begin
-  callCtx := GetCallContext();
+  callCtx := AContext;
   If ( PTypeInfo(TypeInfo(TArrayOfStringRemotable))^.Kind in [tkClass,tkInterface] ) Then
     Pointer(returnVal) := Nil;
   
   
   tmpObj := Self.GetFactory().CreateInstance() as IWSTMetadataService;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
+    cllCntrl.SetCallContext(callCtx);
   
   returnVal := tmpObj.GetRepositoryList();
   If ( PTypeInfo(TypeInfo(TArrayOfStringRemotable))^.Kind = tkClass ) And Assigned(Pointer(returnVal)) Then
@@ -64,7 +71,7 @@ Begin
   callCtx := Nil;
 End;
 
-procedure TWSTMetadataService_ServiceBinder.GetRepositoryInfoHandler(AFormatter:IFormatterResponse);
+procedure TWSTMetadataService_ServiceBinder.GetRepositoryInfoHandler(AFormatter:IFormatterResponse; AContext : ICallContext);
 Var
   cllCntrl : ICallControl;
   tmpObj : IWSTMetadataService;
@@ -74,14 +81,14 @@ Var
   AName : string;
   returnVal : TWSTMtdRepository;
 Begin
-  callCtx := GetCallContext();
+  callCtx := AContext;
   Pointer(returnVal) := Nil;
   
   strPrmName := 'AName';  AFormatter.Get(TypeInfo(string),strPrmName,AName);
   
   tmpObj := Self.GetFactory().CreateInstance() as IWSTMetadataService;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
+    cllCntrl.SetCallContext(callCtx);
   
   returnVal := tmpObj.GetRepositoryInfo(AName);
   If Assigned(Pointer(returnVal)) Then
@@ -109,8 +116,19 @@ End;
 { TWSTMetadataService_ServiceBinderFactory }
 function TWSTMetadataService_ServiceBinderFactory.CreateInstance():IInterface;
 Begin
-  Result := TWSTMetadataService_ServiceBinder.Create() as IInterface;
+  Result := FInstance;
 End;
+
+constructor TWSTMetadataService_ServiceBinderFactory.Create();
+begin
+  FInstance := TWSTMetadataService_ServiceBinder.Create();
+end;
+
+destructor TWSTMetadataService_ServiceBinderFactory.Destroy();
+begin
+  FInstance := nil;
+  inherited Destroy();
+end;
 
 
 procedure Server_service_RegisterWSTMetadataServiceService();

@@ -33,6 +33,7 @@ Type
 
   IServiceExtension = interface;
   IServiceExtensionRegistry = interface;
+  IObjectControl = interface;
 
   ICallControl = interface
     ['{7B4B7192-EE96-4B52-92C7-AE855FBC31E7}']
@@ -95,7 +96,7 @@ Type
       const AExtensionList : array of string
     );
     function GetExtension(
-      out   AExtensionList : string
+      out AExtensionList : string
     ) : Boolean;
   end;
   
@@ -122,15 +123,21 @@ Type
     procedure EndExceptionList();
   End;
 
-  TServiceVerbMethod = procedure(AFormatter:IFormatterResponse) of object;
+  IObjectControl = interface
+    ['{C422C7CA-4C95-48A4-9A82-2616E619F851}']
+    procedure Activate();
+    procedure Deactivate();
+    function CanBePooled() : Boolean;
+  end;
+    
+  TServiceVerbMethod = procedure(AFormatter:IFormatterResponse; AContext : ICallContext) of object;
   
   { TBaseServiceBinder }
 
-  TBaseServiceBinder = Class(TInterfacedObject,IServerService)
+  TBaseServiceBinder = Class(TInterfacedPersistent,IServerService)
   Private
     FVerbList : TObjectList;
     FImplementationFactory : IServiceImplementationFactory;
-    FCallContext : ICallContext;
   Protected
     procedure RegisterVerbHandler(
       const AVerb        : string;
@@ -138,9 +145,8 @@ Type
     );
     function FindVerbHandler(const AVerb : string):TServiceVerbMethod;
     procedure HandleRequest(ARequestBuffer : IRequestBuffer);
-    function GetFactory():IItemFactory;
+    function GetFactory():IServiceImplementationFactory;
     function CreateCallContext():ICallContext;virtual;
-    function GetCallContext():ICallContext;
     procedure DoProcessMessage(
       const AMessageStage  : TMessageStage;
             ACallContext   : ICallContext;
@@ -163,6 +169,14 @@ Type
     function GetCallContext():ICallContext;
   End;
 
+  { TActivableServiceImplementation }
+
+  TActivableServiceImplementation = class(TBaseServiceImplementation,IObjectControl)
+  protected
+    procedure Activate();virtual;
+    procedure Deactivate();virtual;
+    function CanBePooled() : Boolean;virtual;
+  end;
 
   { TImplementationFactory }
 
@@ -178,7 +192,7 @@ Type
       const AExtensionList : array of string
     );
     function GetExtension(
-      out   AExtensionList : string
+      out AExtensionList : string
     ) : Boolean;
   end;
 
@@ -332,17 +346,17 @@ begin
   if not Assigned(f) then
     Error('No formatter for that content type : "%s"',[s]);
   try
-    cllCtx := GetCallContext();
+    cllCtx := CreateCallContext();
     DoProcessMessage(msBeforeDeserialize,cllCtx,ARequestBuffer);
     strm := ARequestBuffer.GetContent();
     f.LoadFromStream(strm);
-    f.BeginCallRead(GetCallContext());
+    f.BeginCallRead(cllCtx);
     DoProcessMessage(msAfterDeserialize,cllCtx,f);
     s := f.GetCallProcedureName();
     m := FindVerbHandler(s);
     if not Assigned(m) then
       Error('No handler for that verb : "%s"',[s]);
-    m(f);
+    m(f,cllCtx);
     for i := 0 to Pred(cllCtx.GetHeaderCount(AllHeaderDirection)) do begin
       hdr := cllCtx.GetHeader(i);
       if ( hdr.Direction = hdIn ) and ( hdr.mustUnderstand <> 0 ) and ( not hdr.Understood ) then begin
@@ -368,23 +382,14 @@ begin
   DoProcessMessage(msAfterSerialize,cllCtx,ARequestBuffer);
 end;
 
-function TBaseServiceBinder.GetFactory(): IItemFactory;
+function TBaseServiceBinder.GetFactory(): IServiceImplementationFactory;
 begin
   Result := FImplementationFactory;
 end;
 
 function TBaseServiceBinder.CreateCallContext(): ICallContext;
 begin
-  if not Assigned(FCallContext) then
-    FCallContext := TSimpleCallContext.Create() as ICallContext;
-  Result := FCallContext;
-end;
-
-function TBaseServiceBinder.GetCallContext(): ICallContext;
-begin
-  if not Assigned(FCallContext) then
-    CreateCallContext();
-  Result := FCallContext;
+  Result := TSimpleCallContext.Create() as ICallContext;
 end;
 
 procedure TBaseServiceBinder.DoProcessMessage(
@@ -421,6 +426,7 @@ end;
 constructor TBaseServiceBinder.Create(AImplementationFactory : IServiceImplementationFactory);
 begin
   Assert(Assigned(AImplementationFactory));
+  inherited Create();
   FImplementationFactory := AImplementationFactory;
   FVerbList := TObjectList.Create(True);
 end;
@@ -554,6 +560,7 @@ end;
 
 { TImplementationFactory }
 const sSERVICES_EXTENSIONS = 'extensions';sLIST = 'list';
+
 procedure TImplementationFactory.RegisterExtension(
   const AExtensionList : array of string
 );
@@ -619,6 +626,23 @@ end;
 function GetServiceExtensionRegistry():IServiceExtensionRegistry ;
 begin
   Result := ServiceExtensionRegistryInst;
+end;
+
+{ TActivableServiceImplementation }
+
+procedure TActivableServiceImplementation.Activate();
+begin
+
+end;
+
+procedure TActivableServiceImplementation.Deactivate();
+begin
+
+end;
+
+function TActivableServiceImplementation.CanBePooled(): Boolean;
+begin
+  Result := False;
 end;
 
 Initialization

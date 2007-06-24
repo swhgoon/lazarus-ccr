@@ -96,6 +96,10 @@ begin
           If TryStrToInt64(AValue,int64Val) Then
             SetOrdProp(FParent,AName,int64Val);
         End;
+      {$IFDEF FPC}
+      tkBool :
+        SetOrdProp(FParent,AName,Ord(StrToBool(AValue)));
+      {$ENDIF}
     End;
   End;
 end;
