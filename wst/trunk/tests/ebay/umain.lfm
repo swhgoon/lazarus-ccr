@@ -88,7 +88,6 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 2
-      Text = 'AgAAAA**AQAAAA**aAAAAA**OeGvRA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJnY+lAZOEpgqdj6x9nY+seQ**uoUAAA**AAMAAA**z5djiOw1a7Tk12KGGPqSpvnxxNYOVUtaSbmQ7hYd4pX4XfafLKBtImKsW9SUsbmBS9fXOyBnXA3k0jLelpiMptvlZ8N52UQA/ePc6+JE7LJFrARMoBaW5lHEQOMESJLAdFJiGmLwrnagdeo6WRI89gu'
     end
     object edtAppId: TEdit
       Left = 96
@@ -97,7 +96,6 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 3
-      Text = 'INOUSSAOUEU258CIC9Z5E83UXC1BE5'
     end
     object edtDevId: TEdit
       Left = 96
@@ -106,7 +104,6 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 4
-      Text = 'L11ZDC63VDJ1FPLJL5EA161OQ2MS95'
     end
     object edtAuthCert: TEdit
       Left = 96
@@ -115,7 +112,6 @@ object Form1: TForm1
       Width = 288
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 5
-      Text = 'A266GKZC9F5$HI2HIH58A-D3JH2YA4'
     end
   end
   object trvOut: TTreeView

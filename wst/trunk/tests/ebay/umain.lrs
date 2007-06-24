@@ -23,18 +23,12 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +#7'Caption'#6#18'GetPopularKeywords'#7'OnClick'#7#12'Button3Click'#8'TabOrde'
   +'r'#2#1#0#0#5'TEdit'#16'edteBayAuthToken'#4'Left'#2'`'#6'Height'#2#23#3'Top'
   +#2'0'#5'Width'#3' '#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrd'
-  +'er'#2#2#4'Text'#6#255'AgAAAA**AQAAAA**aAAAAA**OeGvRA**nY+sHZ2PrBmdj6wVnY+sE'
-  +'Z2PrA2dj6wJnY+lAZOEpgqdj6x9nY+seQ**uoUAAA**AAMAAA**z5djiOw1a7Tk12KGGPqSpvnx'
-  +'xNYOVUtaSbmQ7hYd4pX4XfafLKBtImKsW9SUsbmBS9fXOyBnXA3k0jLelpiMptvlZ8N52UQA/eP'
-  +'c6+JE7LJFrARMoBaW5lHEQOMESJLAdFJiGmLwrnagdeo6WRI89gu'#0#0#5'TEdit'#8'edtApp'
-  +'Id'#4'Left'#2'`'#6'Height'#2#23#3'Top'#2'M'#5'Width'#3' '#1#7'Anchors'#11#5
-  +'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#3#4'Text'#6#30'INOUSSAOUEU258CI'
-  +'C9Z5E83UXC1BE5'#0#0#5'TEdit'#8'edtDevId'#4'Left'#2'`'#6'Height'#2#23#3'Top'
-  +#2'l'#5'Width'#3' '#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrd'
-  +'er'#2#4#4'Text'#6#30'L11ZDC63VDJ1FPLJL5EA161OQ2MS95'#0#0#5'TEdit'#11'edtAut'
-  +'hCert'#4'Left'#2'`'#6'Height'#2#23#3'Top'#3#136#0#5'Width'#3' '#1#7'Anchors'
-  +#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#5#4'Text'#6#30'A266GKZC9F5'
-  +'$HI2HIH58A-D3JH2YA4'#0#0#0#9'TTreeView'#6'trvOut'#6'Height'#3#204#0#3'Top'#3
-  +#184#0#5'Width'#3#144#1#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2#15#8
-  +'TabOrder'#2#1#0#0#0
+  +'er'#2#2#0#0#5'TEdit'#8'edtAppId'#4'Left'#2'`'#6'Height'#2#23#3'Top'#2'M'#5
+  +'Width'#3' '#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#3
+  +#0#0#5'TEdit'#8'edtDevId'#4'Left'#2'`'#6'Height'#2#23#3'Top'#2'l'#5'Width'#3
+  +' '#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#4#0#0#5'TE'
+  +'dit'#11'edtAuthCert'#4'Left'#2'`'#6'Height'#2#23#3'Top'#3#136#0#5'Width'#3
+  +' '#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#5#0#0#0#9
+  +'TTreeView'#6'trvOut'#6'Height'#3#204#0#3'Top'#3#184#0#5'Width'#3#144#1#5'Al'
+  +'ign'#7#8'alClient'#17'DefaultItemHeight'#2#15#8'TabOrder'#2#1#0#0#0
 ]);
