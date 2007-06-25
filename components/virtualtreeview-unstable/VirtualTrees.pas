@@ -17281,7 +17281,11 @@ begin
   end;
   
   // Now load the cursor and apply it.
+  {$ifdef Windows}
   LCLIntf.SetCursor(Screen.Cursors[NewCursor]);
+  {$else}
+  Cursor := NewCursor;
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23138,6 +23142,9 @@ begin
     DoStateChange([], [tsWheelPanning, tsWheelScrolling]);
 
     FPanningWindow.Stop;
+    {$ifndef Windows}
+    Cursor := crDefault;
+    {$endif}
   end;
 end;
 
