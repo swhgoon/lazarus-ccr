@@ -303,7 +303,7 @@ var
 
 implementation
 
-uses Test;
+uses Test, IconStrConsts;
 
 procedure SetControlsEnabled(AControl: TControl; AEnabled: Boolean);
 var
@@ -414,7 +414,7 @@ begin
   if ActivePictureEdit.Modified then
   begin
     case MessageDlg(Application.Title,
-      Format('Save changes to %s?', [ActivePicturePage.Caption]), mtWarning,
+      Format(lieSaveChanges, [ActivePicturePage.Caption]), mtWarning,
       mbYesNoCancel, 0) of
     mrYes:
     begin
@@ -829,11 +829,21 @@ begin
   UpdateToolSettings;
   
   Palette.LoadPalette('../../default.pal');
+  
+  MenuItemFile.Caption := lieMenuFile;
+  MenuItemEdit.Caption := lieMenuEdit;
+  MenuItemPicture.Caption := lieMenuPicture;
+  MenuItemMask.Caption := lieMenuMask;
+  MenuItemView.Caption := lieMenuView;
+  MenuItemHelp.Caption := lieMenuHelp;
+  FileNew.Caption := lieFileNew;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
+  {$IFDEF EnableTestForm}
   TestForm.Show;
+  {$ENDIF}
 end;
 
 procedure TMainForm.MaskInvertExecute(Sender: TObject);
@@ -1035,4 +1045,5 @@ initialization
   {$I main.lrs}
 
 end.
+
 

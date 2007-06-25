@@ -1,129 +1,125 @@
 object NewDialogForm: TNewDialogForm
+  Left = 478
+  Height = 185
+  Top = 79
+  Width = 249
+  HorzScrollBar.Page = 248
+  VertScrollBar.Page = 184
   ActiveControl = EditWidth
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New picture'
   ClientHeight = 185
   ClientWidth = 249
-  PixelsPerInch = 96
   Position = poMainFormCenter
-  HorzScrollBar.Page = 248
-  VertScrollBar.Page = 184
-  Left = 478
-  Height = 185
-  Top = 79
-  Width = 249
   object GroupBoxProperties: TGroupBox
+    Left = 6
+    Height = 136
+    Top = 6
+    Width = 236
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Properties'
     ClientHeight = 118
     ClientWidth = 232
     TabOrder = 0
-    Left = 6
-    Height = 136
-    Top = 6
-    Width = 236
     object LabelWidth: TLabel
-      Caption = 'Width:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 14
       Width = 33
+      Caption = 'Width:'
+      ParentColor = False
     end
     object LabelHeight: TLabel
-      Caption = 'Height:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 50
       Width = 36
+      Caption = 'Height:'
+      ParentColor = False
     end
     object LabelPaperColor: TLabel
-      Caption = 'Paper color:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 86
       Width = 59
+      Caption = 'Paper color:'
+      ParentColor = False
     end
     object ColorButtonPaper: TColorButton
+      Left = 118
+      Height = 25
+      Top = 82
+      Width = 80
       BorderWidth = 2
       ButtonColorSize = 16
       ButtonColor = clWhite
       Caption = 'Change...'
       Color = clBtnFace
-      Left = 118
-      Height = 25
-      Top = 82
-      Width = 80
     end
     object EditWidth: TEdit
-      OnKeyDown = nil
-      TabOrder = 0
-      Text = '512'
       Left = 118
       Height = 23
       Top = 8
       Width = 80
+      OnKeyDown = nil
+      TabOrder = 0
+      Text = '512'
     end
     object EditHeight: TEdit
-      OnKeyDown = nil
-      TabOrder = 1
-      Text = '512'
       Left = 118
       Height = 23
       Top = 44
       Width = 80
+      OnKeyDown = nil
+      TabOrder = 1
+      Text = '512'
     end
     object UpDownWidth: TUpDown
+      Left = 198
+      Height = 23
+      Top = 8
+      Width = 17
       Associate = EditWidth
       Min = 1
       Max = 4096
       Position = 512
       Thousands = False
-      Left = 198
-      Height = 23
-      Top = 8
-      Width = 17
     end
     object UpDownHeight: TUpDown
+      Left = 198
+      Height = 23
+      Top = 44
+      Width = 17
       Associate = EditHeight
       Min = 1
       Max = 4096
       Position = 512
       Thousands = False
-      Left = 198
-      Height = 23
-      Top = 44
-      Width = 17
     end
   end
   object ButtonCancel: TButton
+    Left = 167
+    Height = 25
+    Top = 149
+    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
-    Left = 167
+  end
+  object ButtonOK: TButton
+    Left = 85
     Height = 25
     Top = 149
     Width = 75
-  end
-  object ButtonOK: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 2
-    Left = 85
-    Height = 25
-    Top = 149
-    Width = 75
   end
 end

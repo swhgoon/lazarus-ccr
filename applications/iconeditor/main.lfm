@@ -1,4 +1,10 @@
 object MainForm: TMainForm
+  Left = 301
+  Height = 569
+  Top = 155
+  Width = 640
+  HorzScrollBar.Page = 639
+  VertScrollBar.Page = 549
   ActiveControl = ComboBoxZoom
   Caption = 'Lazarus Icon Editor'
   ClientHeight = 550
@@ -7,109 +13,91 @@ object MainForm: TMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 645
-  VertScrollBar.Page = 519
-  Left = 301
-  Height = 569
-  Top = 155
-  Width = 640
   object PanelTools: TPanel
+    Height = 425
+    Top = 105
+    Width = 40
     Align = alLeft
     BevelOuter = bvNone
     ClientHeight = 425
     ClientWidth = 40
     ParentColor = False
     TabOrder = 0
-    Height = 425
-    Top = 105
-    Width = 40
     object ToolBarTools: TToolBar
+      Height = 425
+      Width = 40
       Align = alLeft
       ButtonHeight = 40
       ButtonWidth = 40
       Caption = 'ToolBarTools'
       Constraints.MinHeight = 402
       DisabledImages = ImageListToolsDisabled
-      Height = 425
       Images = ImageListTools
       Indent = 0
       TabOrder = 0
-      Height = 425
-      Width = 40
       object ToolSpray: TToolButton
+        Hint = 'Spray'
+        Top = 362
         Grouped = True
         ImageIndex = 9
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolSprayClick
-        Height = 40
-        Hint = 'Spray'
-        Top = 362
-        Width = 40
       end
       object ToolFloodFill: TToolButton
+        Hint = 'Flood Fill'
+        Top = 322
         Grouped = True
         ImageIndex = 8
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolFloodFillClick
-        Height = 40
-        Hint = 'Flood Fill'
-        Top = 322
-        Width = 40
       end
       object ToolEraser: TToolButton
+        Hint = 'Eraser/Replacer'
+        Top = 122
         Grouped = True
         ImageIndex = 3
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolEraserClick
-        Height = 40
-        Hint = 'Eraser/Replacer'
-        Top = 122
-        Width = 40
       end
       object ToolPen: TToolButton
+        Hint = 'Pen'
+        Top = 82
         Grouped = True
         ImageIndex = 2
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolPenClick
-        Height = 40
-        Hint = 'Pen'
-        Top = 82
-        Width = 40
       end
       object ToolColorPick: TToolButton
+        Hint = 'Color Pick'
+        Top = 42
         Grouped = True
         ImageIndex = 1
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolColorPickClick
-        Height = 40
-        Hint = 'Color Pick'
-        Top = 42
-        Width = 40
       end
       object ToolMask: TToolButton
+        Hint = 'Mask'
+        Top = 2
         Grouped = True
         ImageIndex = 0
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolMaskClick
-        Height = 40
-        Hint = 'Mask'
-        Top = 2
-        Width = 40
       end
       object ToolLine: TToolButton
+        Hint = 'Line'
+        Top = 162
         Down = True
         Grouped = True
         ImageIndex = 4
@@ -117,50 +105,43 @@ object MainForm: TMainForm
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolLineClick
-        Height = 40
-        Hint = 'Line'
-        Top = 162
-        Width = 40
       end
       object ToolPolygon: TToolButton
+        Hint = 'Polygon'
+        Top = 282
         Grouped = True
         ImageIndex = 5
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolPolygonClick
-        Height = 40
-        Hint = 'Polygon'
-        Top = 282
-        Width = 40
       end
       object ToolEllipse: TToolButton
+        Hint = 'Ellipse'
+        Top = 242
         Grouped = True
         ImageIndex = 7
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolEllipseClick
-        Height = 40
-        Hint = 'Ellipse'
-        Top = 242
-        Width = 40
       end
       object ToolRectangle: TToolButton
+        Hint = 'Rectangle/Round rectangle'
+        Top = 202
         Grouped = True
         ImageIndex = 6
         ParentShowHint = False
         ShowHint = True
         Style = tbsCheck
         OnClick = ToolRectangleClick
-        Height = 40
-        Hint = 'Rectangle/Round rectangle'
-        Top = 202
-        Width = 40
       end
     end
   end
   object StatusBar: TStatusBar
+    Height = 20
+    Top = 530
+    Width = 640
     Panels = <    
       item
         Width = 250
@@ -183,181 +164,153 @@ object MainForm: TMainForm
         Width = 50
       end>
     SimplePanel = False
-    Height = 20
-    Top = 530
-    Width = 640
   end
   object PanelPallete: TPanel
+    Left = 543
+    Height = 425
+    Top = 105
+    Width = 97
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 425
     ClientWidth = 97
     TabOrder = 1
-    Left = 543
-    Height = 425
-    Top = 105
-    Width = 97
     object Palette: TColorPalette
+      Height = 25
+      Width = 97
       ButtonWidth = 12
       ButtonHeight = 12
       OnColorMouseMove = PaletteColorMouseMove
       OnColorPick = PaletteColorPick
-      Height = 25
-      Width = 97
     end
   end
   object PanelToolBar: TPanel
+    Height = 105
+    Width = 640
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 105
     ClientWidth = 640
     TabOrder = 2
-    Height = 105
-    Width = 640
     object Bevel1: TBevel
+      Height = 2
+      Top = 69
+      Width = 640
       Align = alTop
-      Height = 2
-      Name = 'Bevel1'
       Shape = bsBottomLine
-      Top = 69
-      Width = 640
-      Height = 2
-      Top = 69
-      Width = 640
     end
     object Bevel2: TBevel
+      Height = 2
+      Top = 33
+      Width = 640
       Align = alTop
-      Height = 2
-      Name = 'Bevel2'
       Shape = bsBottomLine
-      Top = 33
-      Width = 640
-      Height = 2
-      Top = 33
-      Width = 640
     end
     object ToolBar: TToolBar
+      Height = 33
+      Width = 640
       ButtonHeight = 32
       ButtonWidth = 36
       Color = clBtnFace
       DisabledImages = ImageListActionsDisabled
       EdgeBorders = []
-      Height = 33
       Images = ImageListActions
       ParentColor = False
       TabOrder = 0
-      Height = 33
-      Width = 640
       object LabelZoom: TLabel
-        Caption = 'Zoom:'
-        Color = clNone
-        Constraints.MinHeight = 32
-        Layout = tlCenter
-        ParentColor = False
         Left = 379
         Height = 32
         Width = 31
+        Caption = 'Zoom:'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
       end
       object ToolClose: TToolButton
+        Left = 109
+        Hint = 'Close'
         Action = FileClose
         ParentShowHint = False
         ShowHint = True
-        Left = 109
-        Height = 32
-        Hint = 'Close'
-        Width = 36
       end
       object ToolSave: TToolButton
+        Left = 73
+        Hint = 'Save'
         Action = FileSave
         ParentShowHint = False
         ShowHint = True
-        Left = 73
-        Height = 32
-        Hint = 'Save'
-        Width = 36
       end
       object ToolOpen: TToolButton
+        Left = 37
+        Hint = 'Open'
         Action = FileOpen
         ParentShowHint = False
         ShowHint = True
-        Left = 37
-        Height = 32
-        Hint = 'Open'
-        Width = 36
       end
       object ToolNew: TToolButton
+        Left = 1
+        Hint = 'New'
         Action = FileNew
         ParentShowHint = False
         ShowHint = True
-        Left = 1
-        Height = 32
-        Hint = 'New'
-        Width = 36
       end
       object ToolButton6: TToolButton
+        Left = 145
+        Width = 6
         Caption = 'ToolButton6'
         Style = tbsSeparator
-        Width = 6
-        Left = 145
-        Height = 32
-        Width = 6
       end
       object ToolCut: TToolButton
+        Left = 229
+        Hint = 'Cut'
         Action = EditCut
         ParentShowHint = False
         ShowHint = True
-        Left = 229
-        Height = 32
-        Hint = 'Cut'
-        Width = 36
       end
       object ToolButton8: TToolButton
+        Left = 265
+        Hint = 'Copy'
         Action = EditCopy
         ParentShowHint = False
         ShowHint = True
-        Left = 265
-        Height = 32
-        Hint = 'Copy'
-        Width = 36
       end
       object ToolButton9: TToolButton
+        Left = 301
+        Hint = 'Paste'
         Action = EditPaste
         ParentShowHint = False
         ShowHint = True
-        Left = 301
-        Height = 32
-        Hint = 'Paste'
-        Width = 36
       end
       object ToolButton10: TToolButton
+        Left = 373
+        Width = 6
         Caption = 'ToolButton10'
         Style = tbsSeparator
-        Width = 6
-        Left = 373
-        Height = 32
-        Width = 6
       end
       object ToolButton11: TToolButton
+        Left = 337
+        Hint = 'Delete'
         Action = EditDelete
         ParentShowHint = False
         ShowHint = True
-        Left = 337
-        Height = 32
-        Hint = 'Delete'
-        Width = 36
       end
       object PanelZoom: TPanel
+        Left = 410
+        Height = 32
+        Width = 77
         BevelOuter = bvNone
         ClientHeight = 32
         ClientWidth = 77
         TabOrder = 0
-        Left = 410
-        Height = 32
-        Width = 77
         object ComboBoxZoom: TComboBox
+          Left = 4
+          Height = 21
+          Top = 5
+          Width = 70
           Anchors = [akLeft]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 13
           ItemIndex = 2
           Items.Strings = (
             '25 %'
@@ -374,40 +327,33 @@ object MainForm: TMainForm
           ParentShowHint = False
           TabOrder = 0
           Text = '100 %'
-          Left = 4
-          Height = 21
-          Top = 5
-          Width = 70
         end
       end
       object ToolUndo: TToolButton
+        Left = 151
+        Hint = 'Undo'
         Action = EditUndo
         ParentShowHint = False
         ShowHint = True
-        Left = 151
-        Height = 32
-        Hint = 'Undo'
-        Width = 36
       end
       object ToolButton2: TToolButton
+        Left = 223
+        Width = 6
         Caption = 'ToolButton2'
         Style = tbsSeparator
-        Width = 6
-        Left = 223
-        Height = 32
-        Width = 6
       end
       object ToolRedo: TToolButton
+        Left = 187
+        Hint = 'Redo'
         Action = EditRedo
         ParentShowHint = False
         ShowHint = True
-        Left = 187
-        Height = 32
-        Hint = 'Redo'
-        Width = 36
       end
     end
     object PanelOptions: TPanel
+      Height = 34
+      Top = 35
+      Width = 640
       Align = alTop
       BorderSpacing.InnerBorder = 4
       BorderSpacing.CellAlignVertical = ccaCenter
@@ -415,42 +361,39 @@ object MainForm: TMainForm
       ClientHeight = 34
       ClientWidth = 640
       TabOrder = 1
-      Height = 34
-      Top = 35
-      Width = 640
       object LabelFillOutline: TLabel
-        Align = alLeft
-        Caption = 'Fill, Outline:'
-        Color = clNone
-        Constraints.MinHeight = 32
-        Layout = tlCenter
-        ParentColor = False
         Left = 96
         Height = 34
         Width = 58
+        Align = alLeft
+        Caption = 'Fill, Outline:'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
       end
       object LabelShape: TLabel
-        Align = alLeft
-        Caption = 'Shape:'
-        Color = clNone
-        Constraints.MinHeight = 32
-        Layout = tlCenter
-        ParentColor = False
         Height = 34
         Width = 35
-      end
-      object LabelMaskTool: TLabel
         Align = alLeft
-        Caption = 'Mask Tool:'
-        Color = clNone
+        Caption = 'Shape:'
         Constraints.MinHeight = 32
         Layout = tlCenter
         ParentColor = False
+      end
+      object LabelMaskTool: TLabel
         Left = 237
         Height = 34
         Width = 52
+        Align = alLeft
+        Caption = 'Mask Tool:'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
       end
       object PanelColors: TPanel
+        Left = 444
+        Height = 34
+        Width = 196
         Align = alRight
         AutoSize = True
         BorderSpacing.InnerBorder = 4
@@ -460,95 +403,87 @@ object MainForm: TMainForm
         ClientHeight = 34
         ClientWidth = 196
         TabOrder = 0
-        Left = 444
-        Height = 34
-        Width = 196
         object LabelOutline: TLabel
-          Align = alRight
-          Caption = 'Outline:'
-          Color = clNone
-          Layout = tlCenter
-          ParentColor = False
           Left = 11
           Height = 34
           Width = 39
-        end
-        object LabelFill: TLabel
           Align = alRight
-          Caption = 'Fill:'
-          Color = clNone
+          Caption = 'Outline:'
           Layout = tlCenter
           ParentColor = False
+        end
+        object LabelFill: TLabel
           Left = 82
           Height = 34
           Width = 17
-        end
-        object LabelPaper: TLabel
           Align = alRight
-          Caption = 'Paper:'
-          Color = clNone
+          Caption = 'Fill:'
           Layout = tlCenter
           ParentColor = False
+        end
+        object LabelPaper: TLabel
           Left = 131
           Height = 34
           Width = 33
+          Align = alRight
+          Caption = 'Paper:'
+          Layout = tlCenter
+          ParentColor = False
         end
         object PanelOutline: TPanel
-          Align = alRight
-          BorderSpacing.Around = 6
-          BevelInner = bvLowered
-          ClientHeight = 22
-          ClientWidth = 20
-          Color = clWhite
-          ParentColor = False
-          TabOrder = 0
-          OnDblClick = PanelOutlineDblClick
           Left = 56
           Height = 22
           Top = 6
           Width = 20
-        end
-        object PanelFill: TPanel
           Align = alRight
           BorderSpacing.Around = 6
           BevelInner = bvLowered
-          ClientHeight = 22
-          ClientWidth = 20
           Color = clWhite
           ParentColor = False
-          TabOrder = 1
-          OnDblClick = PanelFillDblClick
+          TabOrder = 0
+          OnDblClick = PanelOutlineDblClick
+        end
+        object PanelFill: TPanel
           Left = 105
           Height = 22
           Top = 6
           Width = 20
-        end
-        object PanelPaper: TPanel
           Align = alRight
           BorderSpacing.Around = 6
           BevelInner = bvLowered
-          ClientHeight = 22
-          ClientWidth = 20
           Color = clWhite
           ParentColor = False
-          TabOrder = 2
-          OnDblClick = PanelPaperDblClick
+          TabOrder = 1
+          OnDblClick = PanelFillDblClick
+        end
+        object PanelPaper: TPanel
           Left = 170
           Height = 22
           Top = 6
           Width = 20
+          Align = alRight
+          BorderSpacing.Around = 6
+          BevelInner = bvLowered
+          Color = clWhite
+          ParentColor = False
+          TabOrder = 2
+          OnDblClick = PanelPaperDblClick
         end
       end
       object PanelFillOutline: TPanel
+        Left = 154
+        Height = 34
+        Width = 83
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 83
         TabOrder = 1
-        Left = 154
-        Height = 34
-        Width = 83
         object ToolFillOutline: TSpeedButton
+          Left = 4
+          Height = 24
+          Top = 5
+          Width = 25
           Anchors = [akLeft]
           Color = clBtnFace
           Down = True
@@ -575,12 +510,12 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolFillOutlineClick
-          Left = 4
+        end
+        object ToolOutline: TSpeedButton
+          Left = 29
           Height = 24
           Top = 5
           Width = 25
-        end
-        object ToolOutline: TSpeedButton
           Anchors = [akLeft]
           Color = clBtnFace
           Glyph.Data = {
@@ -606,12 +541,12 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolOutlineClick
-          Left = 29
+        end
+        object ToolFill: TSpeedButton
+          Left = 54
           Height = 24
           Top = 5
           Width = 25
-        end
-        object ToolFill: TSpeedButton
           Anchors = [akLeft]
           Color = clBtnFace
           Glyph.Data = {
@@ -637,22 +572,22 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolFillClick
-          Left = 54
-          Height = 24
-          Top = 5
-          Width = 25
         end
       end
       object PanelShape: TPanel
+        Left = 35
+        Height = 34
+        Width = 61
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 61
         TabOrder = 2
-        Left = 35
-        Height = 34
-        Width = 61
         object ToolRectShape: TSpeedButton
+          Left = 7
+          Height = 24
+          Top = 5
+          Width = 25
           Anchors = [akLeft]
           Color = clBtnFace
           Down = True
@@ -679,12 +614,12 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolRectShapeClick
-          Left = 7
+        end
+        object ToolCircleShape: TSpeedButton
+          Left = 31
           Height = 24
           Top = 5
           Width = 25
-        end
-        object ToolCircleShape: TSpeedButton
           Anchors = [akLeft]
           Color = clBtnFace
           Glyph.Data = {
@@ -717,22 +652,22 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolCircleShapeClick
-          Left = 31
-          Height = 24
-          Top = 5
-          Width = 25
         end
       end
       object PanelMaskTool: TPanel
+        Left = 289
+        Height = 34
+        Width = 86
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 86
         TabOrder = 3
-        Left = 289
-        Height = 34
-        Width = 86
         object ToolMaskRectangle: TSpeedButton
+          Left = 7
+          Height = 24
+          Top = 5
+          Width = 25
           Anchors = [akLeft]
           Color = clBtnFace
           Down = True
@@ -759,12 +694,12 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolMaskRectangleClick
-          Left = 7
+        end
+        object ToolMaskEllipse: TSpeedButton
+          Left = 31
           Height = 24
           Top = 5
           Width = 25
-        end
-        object ToolMaskEllipse: TSpeedButton
           Anchors = [akLeft]
           Color = clBtnFace
           Glyph.Data = {
@@ -797,12 +732,12 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolMaskEllipseClick
-          Left = 31
+        end
+        object ToolMaskFloodFill: TSpeedButton
+          Left = 56
           Height = 24
           Top = 5
           Width = 25
-        end
-        object ToolMaskFloodFill: TSpeedButton
           Anchors = [akLeft]
           Color = clBtnFace
           Glyph.Data = {
@@ -889,198 +824,188 @@ object MainForm: TMainForm
           GroupIndex = 1
           NumGlyphs = 0
           OnClick = ToolMaskFloodFillClick
-          Left = 56
-          Height = 24
-          Top = 5
-          Width = 25
         end
       end
     end
     object PanelToolOptions: TPanel
+      Height = 34
+      Top = 71
+      Width = 640
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 34
       ClientWidth = 640
       TabOrder = 2
-      Height = 34
-      Top = 71
-      Width = 640
       object LabelSize: TLabel
-        Align = alLeft
-        Caption = 'Size:'
-        Color = clNone
-        Constraints.MinHeight = 32
-        Layout = tlCenter
-        ParentColor = False
         Height = 34
         Width = 24
-      end
-      object LabelDensity: TLabel
         Align = alLeft
-        Caption = 'Density:'
-        Color = clNone
+        Caption = 'Size:'
         Constraints.MinHeight = 32
         Layout = tlCenter
         ParentColor = False
+      end
+      object LabelDensity: TLabel
         Left = 217
         Height = 34
         Width = 41
-      end
-      object LabelRoundness: TLabel
         Align = alLeft
-        Caption = 'Roundness:'
-        Color = clNone
+        Caption = 'Density:'
         Constraints.MinHeight = 32
         Layout = tlCenter
         ParentColor = False
+      end
+      object LabelRoundness: TLabel
         Left = 91
         Height = 34
         Width = 58
-      end
-      object LabelTolerance: TLabel
         Align = alLeft
-        Caption = 'Tolerance:'
-        Color = clNone
+        Caption = 'Roundness:'
         Constraints.MinHeight = 32
         Layout = tlCenter
         ParentColor = False
+      end
+      object LabelTolerance: TLabel
         Left = 327
         Height = 34
         Width = 52
+        Align = alLeft
+        Caption = 'Tolerance:'
+        Constraints.MinHeight = 32
+        Layout = tlCenter
+        ParentColor = False
       end
       object PanelSize: TPanel
+        Left = 24
+        Height = 34
+        Width = 67
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 67
         TabOrder = 0
-        Left = 24
-        Height = 34
-        Width = 67
         object EditSize: TEdit
+          Left = 3
+          Height = 23
+          Top = 5
+          Width = 43
           Anchors = [akLeft]
           OnChange = EditSizeChange
           OnKeyDown = nil
           TabOrder = 0
           Text = '10'
-          Left = 3
-          Height = 23
-          Top = 5
-          Width = 43
         end
         object UpDownSize: TUpDown
+          Left = 46
+          Height = 23
+          Top = 5
+          Width = 17
           Associate = EditSize
           Min = 1
           Max = 200
           Position = 10
           Thousands = False
-          Left = 46
-          Height = 23
-          Top = 5
-          Width = 17
         end
       end
       object PanelDensity: TPanel
+        Left = 258
+        Height = 34
+        Width = 69
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 69
         TabOrder = 1
-        Left = 258
-        Height = 34
-        Width = 69
         object EditDensity: TEdit
+          Left = 3
+          Height = 23
+          Top = 5
+          Width = 42
           Anchors = [akLeft]
           OnChange = EditDensityChange
           OnKeyDown = nil
           TabOrder = 0
           Text = '100'
-          Left = 3
-          Height = 23
-          Top = 5
-          Width = 42
         end
         object UpDownDensity: TUpDown
-          Associate = EditDensity
-          Position = 100
-          Thousands = False
           Left = 45
           Height = 23
           Top = 5
           Width = 17
+          Associate = EditDensity
+          Position = 100
+          Thousands = False
         end
       end
       object PanelRoundness: TPanel
+        Left = 149
+        Height = 34
+        Width = 68
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 68
         TabOrder = 2
-        Left = 149
-        Height = 34
-        Width = 68
         object EditRoundness: TEdit
+          Left = 4
+          Height = 23
+          Top = 5
+          Width = 42
           Anchors = [akLeft]
           OnChange = EditRoundnessChange
           OnKeyDown = nil
           TabOrder = 0
           Text = '0'
-          Left = 4
-          Height = 23
-          Top = 5
-          Width = 42
         end
         object UpDownRoundness: TUpDown
-          Associate = EditRoundness
-          Max = 4096
-          Thousands = False
           Left = 46
           Height = 23
           Top = 5
           Width = 17
+          Associate = EditRoundness
+          Max = 4096
+          Thousands = False
         end
       end
       object PanelTolerance: TPanel
+        Left = 379
+        Height = 34
+        Width = 68
         Align = alLeft
         BevelOuter = bvNone
         ClientHeight = 34
         ClientWidth = 68
         TabOrder = 3
-        Left = 379
-        Height = 34
-        Width = 68
         object EditTolerance: TEdit
+          Left = 2
+          Height = 23
+          Top = 5
+          Width = 42
           Anchors = [akLeft]
           OnChange = EditToleranceChange
           OnKeyDown = nil
           TabOrder = 0
           Text = '0'
-          Left = 2
-          Height = 23
-          Top = 5
-          Width = 42
         end
         object UpDownTolerance: TUpDown
-          Associate = EditTolerance
-          Thousands = False
           Left = 44
           Height = 23
           Top = 5
           Width = 17
+          Associate = EditTolerance
+          Thousands = False
         end
       end
     end
   end
   object PanelPictures: TPanel
-    Align = alClient
-    BevelOuter = bvLowered
-    ClientHeight = 425
-    ClientWidth = 503
-    TabOrder = 3
     Left = 40
     Height = 425
     Top = 105
     Width = 503
+    Align = alClient
+    BevelOuter = bvLowered
+    TabOrder = 3
   end
   object MainMenu: TMainMenu
     Images = ImageListActions
@@ -1921,195 +1846,225 @@ object MainForm: TMainForm
     left = 114
     top = 90
     object FileNew: TAction
+      Category = 'File'
       Caption = '&New...'
+      DisableIfNoHandler = True
       Hint = 'New'
       ImageIndex = 0
       OnExecute = FileNewExecute
       ShortCut = 16462
-      Category = 'File'
     end
     object FileOpen: TAction
+      Category = 'File'
       Caption = '&Open...'
+      DisableIfNoHandler = True
       Hint = 'Open'
       ImageIndex = 1
       OnExecute = FileOpenExecute
       ShortCut = 16463
-      Category = 'File'
     end
     object FileSave: TAction
+      Category = 'File'
       Caption = '&Save'
+      DisableIfNoHandler = True
       Hint = 'Save'
       ImageIndex = 2
       OnExecute = FileSaveExecute
       ShortCut = 16467
-      Category = 'File'
     end
     object FileSaveAs: TAction
+      Category = 'File'
       Caption = 'Save &As...'
+      DisableIfNoHandler = True
       Hint = 'Save As'
       OnExecute = FileSaveAsExecute
-      Category = 'File'
     end
     object FileClose: TAction
+      Category = 'File'
       Caption = '&Close'
+      DisableIfNoHandler = True
       Hint = 'Close'
       ImageIndex = 3
       OnExecute = FileCloseExecute
       ShortCut = 16499
-      Category = 'File'
     end
     object EditUndo: TEditUndo
+      Category = 'Edit'
       Caption = '&Undo'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Undo'
       ImageIndex = 4
       ShortCut = 16474
-      Category = 'Edit'
     end
     object EditRedo: TAction
+      Category = 'Edit'
       Caption = '&Redo'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Redo'
       ImageIndex = 5
       ShortCut = 24666
-      Category = 'Edit'
     end
     object EditCut: TEditCut
+      Category = 'Edit'
       Caption = 'Cu&t'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Cut'
       ImageIndex = 6
       OnExecute = EditCutExecute
       ShortCut = 16472
-      Category = 'Edit'
     end
     object EditCopy: TEditCopy
+      Category = 'Edit'
       Caption = '&Copy'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Copy'
       ImageIndex = 7
       OnExecute = EditCopyExecute
       ShortCut = 16451
-      Category = 'Edit'
     end
     object EditPaste: TEditPaste
+      Category = 'Edit'
       Caption = '&Paste'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Paste'
       ImageIndex = 8
       OnExecute = EditPasteExecute
       ShortCut = 16470
-      Category = 'Edit'
     end
     object EditDelete: TEditDelete
+      Category = 'Edit'
       Caption = '&Delete'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Delete'
       ImageIndex = 9
       OnExecute = EditDeleteExecute
       ShortCut = 46
-      Category = 'Edit'
     end
     object EditSelectAll: TEditSelectAll
+      Category = 'Edit'
       Caption = 'Select &All'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Select All'
       OnExecute = EditSelectAllExecute
       ShortCut = 16449
-      Category = 'Edit'
     end
     object PictureResize: TAction
-      Caption = 'Resize...'
       Category = 'Picture'
+      Caption = 'Resize...'
+      DisableIfNoHandler = True
     end
     object PictureResizePaper: TAction
-      Caption = 'Resize Paper...'
       Category = 'Picture'
+      Caption = 'Resize Paper...'
+      DisableIfNoHandler = True
     end
     object FlipHorizontally: TAction
-      Caption = 'Horizontally'
-      OnExecute = FlipHorizontallyExecute
       Category = 'PictureFlip'
+      Caption = 'Horizontally'
+      DisableIfNoHandler = True
+      OnExecute = FlipHorizontallyExecute
     end
     object FlipVertically: TAction
-      Caption = 'Vertically'
-      OnExecute = FlipVerticallyExecute
       Category = 'PictureFlip'
+      Caption = 'Vertically'
+      DisableIfNoHandler = True
+      OnExecute = FlipVerticallyExecute
     end
     object Rotate90: TAction
-      Caption = '90° Clockwise'
-      OnExecute = Rotate90Execute
       Category = 'PictureRotate'
+      Caption = '90° Clockwise'
+      DisableIfNoHandler = True
+      OnExecute = Rotate90Execute
     end
     object Rotate180: TAction
-      Caption = '180° Clockwise'
-      OnExecute = Rotate180Execute
       Category = 'PictureRotate'
+      Caption = '180° Clockwise'
+      DisableIfNoHandler = True
+      OnExecute = Rotate180Execute
     end
     object Rotate270: TAction
-      Caption = '270° Clockwise'
-      OnExecute = Rotate270Execute
       Category = 'PictureRotate'
+      Caption = '270° Clockwise'
+      DisableIfNoHandler = True
+      OnExecute = Rotate270Execute
     end
     object RotateCustom: TAction
-      Caption = 'Custom...'
-      Enabled = False
       Category = 'PictureRotate'
+      Caption = 'Custom...'
+      DisableIfNoHandler = True
+      Enabled = False
     end
     object ColorsInvert: TAction
-      Caption = 'Invert'
-      OnExecute = ColorsInvertExecute
       Category = 'PictureColors'
+      Caption = 'Invert'
+      DisableIfNoHandler = True
+      OnExecute = ColorsInvertExecute
     end
     object ColorsGrayscale: TAction
-      Caption = 'Grayscale'
-      OnExecute = ColorsGrayscaleExecute
       Category = 'PictureColors'
+      Caption = 'Grayscale'
+      DisableIfNoHandler = True
+      OnExecute = ColorsGrayscaleExecute
     end
     object ColorsDisable: TAction
-      Caption = 'Disable'
-      OnExecute = ColorsDisableExecute
       Category = 'PictureColors'
+      Caption = 'Disable'
+      DisableIfNoHandler = True
+      OnExecute = ColorsDisableExecute
     end
     object FileExportAsLRS: TAction
-      Caption = '&Export As *.lrs...'
-      OnExecute = FileExportAsLRSExecute
       Category = 'File'
+      Caption = '&Export As *.lrs...'
+      DisableIfNoHandler = True
+      OnExecute = FileExportAsLRSExecute
     end
     object MaskRemove: TAction
-      Caption = 'Remove'
-      OnExecute = MaskRemoveExecute
       Category = 'Mask'
+      Caption = 'Remove'
+      DisableIfNoHandler = True
+      OnExecute = MaskRemoveExecute
     end
     object MaskInvert: TAction
-      Caption = 'Invert'
-      OnExecute = MaskInvertExecute
       Category = 'Mask'
+      Caption = 'Invert'
+      DisableIfNoHandler = True
+      OnExecute = MaskInvertExecute
     end
     object PictureClipPaperToMask: TAction
-      Caption = 'Clip Paper To Mask'
       Category = 'Picture'
+      Caption = 'Clip Paper To Mask'
+      DisableIfNoHandler = True
     end
     object ViewShowGrid: TAction
+      Category = 'View'
       AutoCheck = True
       Caption = 'Show Grid'
       Checked = True
+      DisableIfNoHandler = True
       OnExecute = ViewShowGridExecute
-      Category = 'View'
     end
     object ViewShowMask: TAction
+      Category = 'View'
       AutoCheck = True
       Caption = 'Show Mask'
       Checked = True
+      DisableIfNoHandler = True
       OnExecute = ViewShowMaskExecute
-      Category = 'View'
     end
     object ViewShowPreview: TAction
+      Category = 'View'
       AutoCheck = True
       Caption = 'Show Preview'
       Checked = True
+      DisableIfNoHandler = True
       OnExecute = ViewShowPreviewExecute
-      Category = 'View'
     end
   end
   object ImageListTools: TImageList
@@ -4278,39 +4233,33 @@ object MainForm: TMainForm
     }
   end
   object OpenPictureDialog: TOpenPictureDialog
-    Filter = 'Graphic (*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|TGA Image File (*.tga)|*.tga|JPEG Image File (*.jpeg)|*.jpeg|JPEG Image File (*.jpg)|*.'
-    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing]
     Title = 'Open existing file'
     Filter = 'Graphic (*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.tga;*.jpeg;*.jpg;*.pbm;*.pgm;*.ppm;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|TGA Image File (*.tga)|*.tga|JPEG Image File (*.jpeg)|*.jpeg|JPEG Image File (*.jpg)|*.'
     FilterIndex = 0
-    Title = 'Open existing file'
+    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing]
     left = 150
     top = 90
   end
   object ColorDialog: TColorDialog
     Title = 'Select color'
-    Title = 'Select color'
     left = 186
     top = 90
   end
   object SavePictureDialog: TSavePictureDialog
-    Filter = 'Graphic (*.png; *.xpm; *.bmp)|*.png; *.xpm; *.bmp|Pixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp|Portable Network Graphic (*.png)|*.png'
-    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail, ofAutoPreview]
     Title = 'Save file as'
     DefaultExt = '.xpm'
     Filter = 'Graphic (*.png; *.xpm; *.bmp)|*.png; *.xpm; *.bmp|Pixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp|Portable Network Graphic (*.png)|*.png'
     FilterIndex = 0
-    Title = 'Save file as'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 150
     top = 126
   end
   object ExportResourceDialog: TSaveDialog
-    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     Title = 'Export as lazarus resource'
     DefaultExt = '.lrs'
     Filter = 'Lazarus resource (*.lrs)|*.lrs|Alll files (*.*)|*.*'
     FilterIndex = 0
-    Title = 'Export as lazarus resource'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     left = 186
     top = 126
   end

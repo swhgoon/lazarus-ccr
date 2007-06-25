@@ -1,132 +1,130 @@
 inherited ResizePaperDialogForm: TResizePaperDialogForm
+  Height = 507
+  Width = 276
+  HorzScrollBar.Page = 275
+  VertScrollBar.Page = 506
   ActiveControl = EditHeight
   Caption = 'Resize paper'
   ClientHeight = 507
   ClientWidth = 276
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 275
-  VertScrollBar.Page = 506
-  Height = 507
-  Width = 276
   object PanelPreview: TPanel
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BevelOuter = bvNone
-    ClientHeight = 264
-    ClientWidth = 264
-    Color = clBlack
-    FullRepaint = False
-    ParentColor = False
-    TabOrder = 0
     Left = 6
     Height = 264
     Top = 6
     Width = 264
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    Color = clBlack
+    FullRepaint = False
+    ParentColor = False
+    TabOrder = 0
   end
   object GroupBoxProperties: TGroupBox
+    Left = 6
+    Height = 186
+    Top = 280
+    Width = 264
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Properties'
     ClientHeight = 168
     ClientWidth = 260
     TabOrder = 1
-    Left = 6
-    Height = 186
-    Top = 280
-    Width = 264
     object LabelWidth: TLabel
-      Caption = 'Paper width:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 44
       Width = 62
+      Caption = 'Paper width:'
+      ParentColor = False
     end
     object LabelHeight: TLabel
-      Caption = 'Paper height:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 80
       Width = 66
+      Caption = 'Paper height:'
+      ParentColor = False
     end
     object LabelPaperColor: TLabel
-      Caption = 'Paper color:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 140
       Width = 59
+      Caption = 'Paper color:'
+      ParentColor = False
     end
     object LabelPicturePosition: TLabel
-      Caption = 'Picture position:'
-      Color = clNone
-      ParentColor = False
       Left = 16
       Height = 14
       Top = 13
       Width = 78
+      Caption = 'Picture position:'
+      ParentColor = False
     end
     object ColorButtonPaper: TColorButton
+      Left = 148
+      Height = 25
+      Top = 135
+      Width = 80
       BorderWidth = 2
       ButtonColorSize = 16
       ButtonColor = clWhite
       Caption = 'Change...'
       Color = clBtnFace
       OnColorChanged = ColorButtonPaperColorChanged
-      Left = 148
-      Height = 25
-      Top = 135
-      Width = 80
     end
     object EditHeight: TEdit
-      OnChange = EditHeightChange
-      OnKeyDown = nil
-      TabOrder = 0
-      Text = '512'
       Left = 148
       Height = 23
       Top = 74
       Width = 80
+      OnChange = EditHeightChange
+      OnKeyDown = nil
+      TabOrder = 0
+      Text = '512'
     end
     object UpDownWidth: TUpDown
+      Left = 228
+      Height = 23
+      Top = 38
+      Width = 17
       Associate = EditWidth
       Min = 1
       Max = 4096
       Position = 512
       Thousands = False
-      Left = 228
-      Height = 23
-      Top = 38
-      Width = 17
     end
     object UpDownHeight: TUpDown
+      Left = 228
+      Height = 23
+      Top = 74
+      Width = 17
       Associate = EditHeight
       Min = 1
       Max = 4096
       Position = 512
       Thousands = False
-      Left = 228
-      Height = 23
-      Top = 74
-      Width = 17
     end
     object CheckBoxAspectRatio: TCheckBox
+      Left = 16
+      Height = 13
+      Top = 110
+      Width = 120
       Caption = 'Preserve aspect ratio'
       Checked = True
       OnChange = CheckBoxAspectRatioChange
       State = cbChecked
       TabOrder = 1
-      Left = 16
-      Height = 13
-      Top = 110
-      Width = 120
     end
     object ComboBoxPicturePosition: TComboBox
+      Left = 148
+      Height = 21
+      Top = 8
+      Width = 96
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      ItemHeight = 13
       ItemIndex = 0
       Items.Strings = (
         'Top Left'
@@ -144,44 +142,40 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
       Style = csDropDownList
       TabOrder = 2
       Text = 'Top Left'
-      Left = 148
-      Height = 21
-      Top = 8
-      Width = 96
     end
     object EditWidth: TEdit
-      OnChange = EditWidthChange
-      OnKeyDown = nil
-      TabOrder = 3
-      Text = '512'
       Left = 148
       Height = 23
       Top = 38
       Width = 80
+      OnChange = EditWidthChange
+      OnKeyDown = nil
+      TabOrder = 3
+      Text = '512'
     end
   end
   object ButtonOK: TButton
+    Left = 112
+    Height = 25
+    Top = 474
+    Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 2
-    Left = 112
+  end
+  object ButtonCancel: TButton
+    Left = 193
     Height = 25
     Top = 474
     Width = 75
-  end
-  object ButtonCancel: TButton
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
-    Left = 193
-    Height = 25
-    Top = 474
-    Width = 75
   end
 end

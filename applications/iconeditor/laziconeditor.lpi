@@ -8,10 +8,9 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Icon Editor"/>
-      <ActiveEditorIndexAtStart Value="6"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
-      <UseVersionInfo Value="True"/>
       <CurrentMajorRevNr Value="1"/>
       <ProjectVersion Value="0.1.0.0"/>
     </VersionInfo>
@@ -30,26 +29,28 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="LazColorPalette"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LazRGBGraphics"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazRGBGraphics"/>
+        <PackageName Value="LazColorPalette"/>
       </Item3>
       <Item4>
         <PackageName Value="JPEGForLazarus"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="129">
+    <Units Count="136">
       <Unit0>
         <Filename Value="laziconeditor.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="laziconeditor"/>
-        <CursorPos X="32" Y="28"/>
-        <TopLine Value="1"/>
+        <CursorPos X="8" Y="27"/>
+        <TopLine Value="4"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="146"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -57,8 +58,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="main.lrs"/>
         <UnitName Value="Main"/>
-        <CursorPos X="36" Y="8"/>
-        <TopLine Value="1"/>
+        <CursorPos X="88" Y="843"/>
+        <TopLine Value="831"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="146"/>
         <Loaded Value="True"/>
@@ -78,7 +79,7 @@
         <UnitName Value="Preview"/>
         <CursorPos X="37" Y="38"/>
         <TopLine Value="15"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="146"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -86,9 +87,9 @@
         <Filename Value="picturemanager.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PictureManager"/>
-        <CursorPos X="1" Y="364"/>
-        <TopLine Value="333"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="31" Y="260"/>
+        <TopLine Value="234"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="146"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -118,7 +119,7 @@
         <UnitName Value="PictureCtrls"/>
         <CursorPos X="3" Y="358"/>
         <TopLine Value="337"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="144"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -140,7 +141,7 @@
         <UnitName Value="Controls"/>
         <CursorPos X="22" Y="1623"/>
         <TopLine Value="1607"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -175,9 +176,11 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="test.lrs"/>
         <UnitName Value="Test"/>
-        <CursorPos X="52" Y="60"/>
-        <TopLine Value="36"/>
+        <CursorPos X="11" Y="79"/>
+        <TopLine Value="64"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="143"/>
+        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\lazarus\lcl\graphics.pp"/>
@@ -422,9 +425,9 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="newdialog.lrs"/>
         <UnitName Value="NewDialog"/>
-        <CursorPos X="30" Y="18"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
+        <CursorPos X="31" Y="34"/>
+        <TopLine Value="20"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit53>
@@ -436,7 +439,7 @@
         <UnitName Value="ResizeDialog"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit54>
@@ -446,9 +449,9 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="resizepaperdialog.lrs"/>
         <UnitName Value="ResizePaperDialog"/>
-        <CursorPos X="59" Y="163"/>
-        <TopLine Value="144"/>
-        <EditorIndex Value="12"/>
+        <CursorPos X="25" Y="38"/>
+        <TopLine Value="171"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit55>
@@ -716,8 +719,8 @@
         <ResourceFilename Value="aboutdialog.lrs"/>
         <UnitName Value="AboutDialog"/>
         <CursorPos X="40" Y="27"/>
-        <TopLine Value="12"/>
-        <EditorIndex Value="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="66"/>
         <Loaded Value="True"/>
       </Unit94>
@@ -737,11 +740,9 @@
       <Unit97>
         <Filename Value="..\packages\LazRGBGraphics\rgbgraphics.pas"/>
         <UnitName Value="RGBGraphics"/>
-        <CursorPos X="1" Y="28"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
+        <CursorPos X="20" Y="38"/>
+        <TopLine Value="19"/>
         <UsageCount Value="29"/>
-        <Loaded Value="True"/>
       </Unit97>
       <Unit98>
         <Filename Value="home\tombo\lazarus-svn\lcl\graphmath.pp"/>
@@ -753,11 +754,9 @@
       <Unit99>
         <Filename Value="..\packages\LazRGBGraphics\rgbroutines.pas"/>
         <UnitName Value="RGBRoutines"/>
-        <CursorPos X="24" Y="878"/>
-        <TopLine Value="867"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <UsageCount Value="27"/>
-        <Loaded Value="True"/>
       </Unit99>
       <Unit100>
         <Filename Value="..\lazarus\lcl\lresources.pp"/>
@@ -796,9 +795,7 @@
         <UnitName Value="RGBTypes"/>
         <CursorPos X="76" Y="628"/>
         <TopLine Value="484"/>
-        <EditorIndex Value="10"/>
         <UsageCount Value="27"/>
-        <Loaded Value="True"/>
       </Unit105>
       <Unit106>
         <Filename Value="..\lazarus\lcl\include\tabsheet.inc"/>
@@ -849,9 +846,7 @@
         <UnitName Value="RGBUtils"/>
         <CursorPos X="11" Y="170"/>
         <TopLine Value="154"/>
-        <EditorIndex Value="11"/>
         <UsageCount Value="23"/>
-        <Loaded Value="True"/>
       </Unit113>
       <Unit114>
         <Filename Value="..\fpc\fcl\image\fppen.inc"/>
@@ -947,105 +942,66 @@
         <TopLine Value="10"/>
         <UsageCount Value="10"/>
       </Unit128>
+      <Unit129>
+        <Filename Value="..\packages\LazRGBGraphics\lazrgbgraphics.pas"/>
+        <UnitName Value="LazRGBGraphics"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit129>
+      <Unit130>
+        <Filename Value="..\packages\LazRGBGraphics_svn\rgbutils.pas"/>
+        <UnitName Value="RGBUtils"/>
+        <CursorPos X="4" Y="27"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit130>
+      <Unit131>
+        <Filename Value="..\packages\LazRGBGraphics_svn\rgbtypes.pas"/>
+        <UnitName Value="RGBTypes"/>
+        <CursorPos X="4" Y="31"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit131>
+      <Unit132>
+        <Filename Value="..\packages\LazRGBGraphics_svn\rgbroutines.pas"/>
+        <UnitName Value="RGBRoutines"/>
+        <CursorPos X="84" Y="27"/>
+        <TopLine Value="20"/>
+        <UsageCount Value="10"/>
+      </Unit132>
+      <Unit133>
+        <Filename Value="..\packages\LazRGBGraphics_svn\rgbgraphics.pas"/>
+        <UnitName Value="RGBGraphics"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit133>
+      <Unit134>
+        <Filename Value="..\packages\LazRGBGraphics_svn\lazrgbgraphics.pas"/>
+        <UnitName Value="LazRGBGraphics"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit134>
+      <Unit135>
+        <Filename Value="iconstrconsts.pas"/>
+        <UnitName Value="IconStrConsts"/>
+        <CursorPos X="33" Y="47"/>
+        <TopLine Value="29"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit135>
     </Units>
-    <JumpHistory Count="22" HistoryIndex="21">
-      <Position1>
-        <Filename Value="main.pas"/>
-        <Caret Line="19" Column="86" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="main.pas"/>
-        <Caret Line="62" Column="43" TopLine="31"/>
-      </Position2>
-      <Position3>
-        <Filename Value="main.pas"/>
-        <Caret Line="19" Column="12" TopLine="18"/>
-      </Position3>
-      <Position4>
-        <Filename Value="main.pas"/>
-        <Caret Line="618" Column="3" TopLine="611"/>
-      </Position4>
-      <Position5>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="1046" Column="37" TopLine="1035"/>
-      </Position5>
-      <Position6>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="294" Column="18" TopLine="277"/>
-      </Position6>
-      <Position7>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="322" Column="17" TopLine="309"/>
-      </Position7>
-      <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="330" Column="17" TopLine="317"/>
-      </Position8>
-      <Position9>
-        <Filename Value="main.pas"/>
-        <Caret Line="8" Column="36" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="465" Column="44" TopLine="453"/>
-      </Position10>
-      <Position11>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position11>
-      <Position12>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="57" Column="29" TopLine="41"/>
-      </Position12>
-      <Position13>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="58" Column="29" TopLine="46"/>
-      </Position13>
-      <Position14>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="428" Column="25" TopLine="412"/>
-      </Position14>
-      <Position15>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="456" Column="44" TopLine="440"/>
-      </Position15>
-      <Position16>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="465" Column="44" TopLine="449"/>
-      </Position16>
-      <Position17>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="635" Column="23" TopLine="619"/>
-      </Position17>
-      <Position18>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="644" Column="39" TopLine="628"/>
-      </Position18>
-      <Position19>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="27" Column="57" TopLine="1"/>
-      </Position19>
-      <Position20>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="57" Column="29" TopLine="41"/>
-      </Position20>
-      <Position21>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="58" Column="29" TopLine="42"/>
-      </Position21>
-      <Position22>
-        <Filename Value="picturectrls.pas"/>
-        <Caret Line="358" Column="19" TopLine="336"/>
-      </Position22>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="..\Packages\LazRGBGraphics\;..\Packages\LazColorPalette\"/>
+      <OtherUnitFiles Value="..\packages\LazRGBGraphics_svn\;..\packages\LazColorPalette\"/>
       <UnitOutputDirectory Value="Units\$(LCLWidgetType)"/>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
