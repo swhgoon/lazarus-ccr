@@ -284,6 +284,8 @@ type
   TTestFormatterSimpleType= class(TTestCase)
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;virtual;abstract;
+    function Support_ComplextType_with_SimpleContent():Boolean;virtual;
+    function Support_nil():Boolean;virtual;
   published
     procedure Test_Int_8;
     procedure Test_Int_8_ScopeData;
@@ -374,6 +376,20 @@ type
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
   end;
 
+  { TTestXmlRpcFormatterAttributes }
+
+  TTestXmlRpcFormatterAttributes = class(TTestFormatterSimpleType)
+  protected
+    function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
+  end;
+  
+  TTestXmlRpcFormatter= class(TTestFormatter)
+  protected
+    function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
+    function Support_ComplextType_with_SimpleContent():Boolean;override;
+    function Support_nil():Boolean;override;
+  end;
+  
   { TTestArray }
 
   TTestArray= class(TTestCase)
@@ -431,7 +447,17 @@ type
   end;
   
 implementation
-uses base_binary_formatter, base_soap_formatter;
+uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter;
+
+function TTestFormatterSimpleType.Support_ComplextType_with_SimpleContent( ): Boolean;
+begin
+  Result := True;
+end;
+
+function TTestFormatterSimpleType.Support_nil(): Boolean;
+begin
+  Result := True;
+end;
 
 procedure TTestFormatterSimpleType.Test_Int_8;
 const VAL_1 = 12; VAL_2 = -10;
@@ -453,7 +479,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.xml');
     intVal_U := 0;
     intVal_S := 0;
 
@@ -1074,6 +1100,9 @@ var
   nu : TComplexInt64UContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+    
   s := nil;
   ns := TComplexInt64SContentRemotable.Create();
   nu := TComplexInt64UContentRemotable.Create();
@@ -1147,6 +1176,9 @@ var
   nu : TComplexInt32UContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   ns := TComplexInt32SContentRemotable.Create();
   nu := TComplexInt32UContentRemotable.Create();
@@ -1220,6 +1252,9 @@ var
   nu : TComplexInt16UContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   ns := TComplexInt16SContentRemotable.Create();
   nu := TComplexInt16UContentRemotable.Create();
@@ -1293,6 +1328,9 @@ var
   nu : TComplexInt8UContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   ns := TComplexInt8SContentRemotable.Create();
   nu := TComplexInt8UContentRemotable.Create();
@@ -1366,6 +1404,9 @@ var
   nu : TComplexFloatDoubleContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   ns := TComplexFloatExtendedContentRemotable.Create();
   nu := TComplexFloatDoubleContentRemotable.Create();
@@ -1440,6 +1481,9 @@ var
   ns : TComplexStringContentRemotable;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   ns := TComplexStringContentRemotable.Create();
   a := TClass_CplxSimpleContent.Create();
@@ -1552,6 +1596,9 @@ var
   a : TClass_B;
   x : string;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   a := nil;
   try
@@ -2402,6 +2449,9 @@ var
   x : string;
   a, b : TComplexInt32SContentRemotable;
 begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
   s := nil;
   a := nil;
   b := nil;
@@ -3066,6 +3116,31 @@ begin
   Fail('Write me!');
 end;
 
+{ TTestXmlRpcFormatterAttributes }
+
+function TTestXmlRpcFormatterAttributes.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
+begin
+  Result := TXmlRpcBaseFormatter.Create() as IFormatterBase;
+  //Result.BeginObject('Env',ARootType)
+end;
+
+{ TTestXmlRpcFormatter }
+
+function TTestXmlRpcFormatter.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
+begin
+  Result := TXmlRpcBaseFormatter.Create() as IFormatterBase;
+end;
+
+function TTestXmlRpcFormatter.Support_ComplextType_with_SimpleContent(): Boolean;
+begin
+  Result := False;
+end;
+
+function TTestXmlRpcFormatter.Support_nil(): Boolean;
+begin
+  Result := False;
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -3101,4 +3176,8 @@ initialization
   RegisterTest(TTest_TDateRemotable);
   RegisterTest(TTest_TDurationRemotable);
   RegisterTest(TTest_TTimeRemotable);
+  
+  RegisterTest(TTestXmlRpcFormatterAttributes);
+  RegisterTest(TTestXmlRpcFormatter);
+  
 end.

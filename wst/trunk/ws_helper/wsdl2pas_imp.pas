@@ -211,31 +211,9 @@ const
   s_xmlns                      : WideString = 'xmlns';
 
   //----------------------------------------------------------
-  s_NODE_NAME = 'NodeName';
-  s_NODE_VALUE = 'NodeValue';
   s_TRANSPORT  = 'TRANSPORT';
   s_FORMAT     = 'FORMAT';
 
-type TCursorExposedType = ( cetRttiNode, cetDomNode );
-function CreateAttributesCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
-begin
-  Result := nil;
-  if ( ANode <> nil ) and ( ANode.Attributes <> nil ) and ( ANode.Attributes.Length > 0 ) then begin
-    Result := TDOMNamedNodeMapCursor.Create(ANode.Attributes,faNone) ;
-    if ( AExposedType = cetRttiNode ) then
-      Result := TDOMNodeRttiExposerCursor.Create(Result);
-  end;
-end;
-
-function CreateChildrenCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
-begin
-  Result := nil;
-  if ( ANode <> nil ) and ANode.HasChildNodes() then begin
-    Result := TDOMNodeListCursor.Create(ANode.GetChildNodes(),faFreeOnDestroy) ;
-    if ( AExposedType = cetRttiNode ) then
-      Result := TDOMNodeRttiExposerCursor.Create(Result);
-  end;
-end;
 
 function ExtractNameFromQName(const AQName : string):string ;
 var

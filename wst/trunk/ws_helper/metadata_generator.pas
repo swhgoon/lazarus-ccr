@@ -63,7 +63,7 @@ begin
   FStream.WriteStr(sWST_META);
   FStream.WriteStr(FSymbolTable.CurrentModule.Name);
   k := 0;
-  typeList := FSymbolTable.CurrentModule.InterfaceSection.Types;
+  typeList := FSymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := typeList.Count;
   for i := 0 to pred(c) do begin
     elt := TPasElement(typeList[i]);
@@ -100,6 +100,8 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
     FStream.WriteStr(AMeth.Name);
     if AMeth.InheritsFrom(TPasFunction) then begin
       FStream.WriteInt8U(k + 1);
+    end else begin
+      FStream.WriteInt8U(k);
     end;
     for j := 0 to pred(k) do begin
       WriteParam(TPasArgument(argLst[j]));
@@ -142,7 +144,7 @@ Var
   elt : TPasElement;
 begin
   GenerateHeader();
-  typeList := FSymbolTable.CurrentModule.InterfaceSection.Types;
+  typeList := FSymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := Pred(typeList.Count);
   for i := 0 to c do begin
     elt := TPasElement(typeList[i]);

@@ -20,7 +20,8 @@ interface
 uses
   Classes, SysUtils, DOM, XMLWrite,
   fpcunit, testutils, testregistry,
-  metadata_generator, binary_streamer, metadata_repository, parserdefs,
+  metadata_generator, binary_streamer, metadata_repository, pastree,
+  pascal_parser_intf,
   metadata_wsdl;
   
 type
@@ -29,7 +30,7 @@ type
 
   TTestMetadata= class(TTestCase)
   protected
-    function CreateSymbolTable():TSymbolTable;
+    function CreateSymbolTable():TwstPasTreeContainer;
   published
     procedure test_Metadata();
   end;
@@ -39,32 +40,74 @@ implementation
 
 { TTestMetadata }
 
-function TTestMetadata.CreateSymbolTable(): TSymbolTable;
-Var
-  inft : TInterfaceDefinition;
+function TTestMetadata.CreateSymbolTable(): TwstPasTreeContainer;
+
+  function CreateProc(
+    const AName : string;
+          AClass : TPasClassType;
+          AContainer : TwstPasTreeContainer
+  ) : TPasProcedure ;
+  begin
+    Result := TPasProcedure(AContainer.CreateElement(TPasProcedure,AName,AContainer.CurrentModule.InterfaceSection,visDefault,'',0));
+    Result.ProcType := TPasProcedureType(AContainer.CreateElement(TPasProcedureType,'',Result,visDefault,'',0));
+    AClass.Members.Add(Result);
+  end;
+
+  function CreateFunc(
+    const AName, AResultTypeName : string;
+          AClass : TPasClassType;
+          AContainer : TwstPasTreeContainer
+  ) : TPasFunction ;
+  begin
+    Result := TPasFunction(AContainer.CreateElement(TPasFunction,AName,AContainer.CurrentModule.InterfaceSection,visDefault,'',0));
+    Result.ProcType := AContainer.CreateFunctionType('','result',Result,True,'',0);
+    AClass.Members.Add(Result);
+    TPasFunctionType(Result.ProcType).ResultEl.ResultType := AContainer.FindElement(AResultTypeName) as TPasType;
+    TPasFunctionType(Result.ProcType).ResultEl.ResultType.AddRef();
+  end;
+
+  function CreateParam(
+    const AName, ATypeName : string;
+    const AAccess : TArgumentAccess;
+          AProc : TPasProcedure;
+          AContainer : TwstPasTreeContainer
+  ) : TPasArgument ;
+  begin
+    Result := TPasArgument(AContainer.CreateElement(TPasArgument,AName,AProc,visDefault,'',0));
+    Result.ArgType := AContainer.FindElement(ATypeName) as TPasType;
+    Result.ArgType.AddRef();
+    Result.Access := AAccess;
+  end;
+  
+var
+  inft : TPasClassType;
+  sct : TPasSection;
+  locProc : TPasProcedure;
 begin
-  Result := TSymbolTable.Create('test_unit_name');
-  Result.Add(TTypeDefinition.Create('integer'));
-  Result.Add(TTypeDefinition.Create('string'));
-  Result.Add(TTypeDefinition.Create('double'));
+  Result := TwstPasTreeContainer.Create();
+  CreateWstInterfaceSymbolTable(Result);
+  Result.CreateElement(TPasModule,'test_unit_name',Result.Package,visDefault,'',0);
+  sct := TPasSection(Result.CreateElement(TPasSection,'',Result.CurrentModule,visDefault,'',0));
+  Result.CurrentModule.InterfaceSection := sct;
 
-  inft := TInterfaceDefinition.Create('service_1');
-  Result.Add(inft);
-  inft.AddMethod('void_operation_proc',mtProcedure);
-  inft.AddMethod('void_operation_func',mtProcedure).AddParameter('result',pmOut,Result.ByName('integer') as TTypeDefinition);
+  inft := TPasClassType(Result.CreateElement(TPasClassType,'service_1',sct,visDefault,'',0));
+  inft.ObjKind := okInterface;
+  sct.Declarations.Add(inft);
+  sct.Types.Add(inft);
+    CreateProc('void_operation_proc',inft,Result);
+    CreateFunc('void_operation_func','Integer',inft,Result);
 
-  inft := TInterfaceDefinition.Create('service_2');
-  Result.Add(inft);
-  with inft.AddMethod('dis_proc',mtProcedure) do begin
-    AddParameter('d',pmNone,Result.ByName('double') as TTypeDefinition);
-    AddParameter('i',pmConst,Result.ByName('integer') as TTypeDefinition);
-    AddParameter('s',pmOut,Result.ByName('string') as TTypeDefinition);
-  end;
-  with inft.AddMethod('sid_func',mtFunction) do begin
-    AddParameter('s',pmConst,Result.ByName('string') as TTypeDefinition);
-    AddParameter('i',pmVar,Result.ByName('integer') as TTypeDefinition);
-    AddParameter('d',pmOut,Result.ByName('double') as TTypeDefinition);
-  end;
+  inft := TPasClassType(Result.CreateElement(TPasClassType,'service_2',sct,visDefault,'',0));
+  inft.ObjKind := okInterface;
+  sct.Declarations.Add(inft);
+  sct.Types.Add(inft);
+    locProc := CreateProc('dis_proc',inft,Result);
+      CreateParam('d','double',argDefault,locProc,Result);
+      CreateParam('i','Integer',argConst,locProc,Result);
+      CreateParam('s','string',argOut,locProc,Result);
+    locProc := CreateFunc('sid_func','double',inft,Result);
+      CreateParam('s','string',argConst,locProc,Result);
+      CreateParam('i','Integer',argVar,locProc,Result);
 end;
 
 procedure PrintWSDL(ARep : PServiceRepository);
@@ -92,7 +135,7 @@ end;
 
 procedure TTestMetadata.test_Metadata();
 var
-  st : TSymbolTable;
+  st : TwstPasTreeContainer;
   mg : TMetadataGenerator;
   wtr : IDataStore;
   strm : TMemoryStream;
@@ -134,8 +177,8 @@ begin
       AssertNotNull('params pointer',po^.Params);
         pop := po^.Params;
         AssertEquals('param name','result',pop^.Name);
-        AssertEquals('param type name','integer',pop^.TypeName);
-        AssertEquals('param modifier',ord(pmOut),ord(pop^.Modifier));
+        AssertEquals('param type name','int',pop^.TypeName);
+        AssertEquals('param modifier',ord(argOut),ord(pop^.Modifier));
         
      rp^.NameSpace := 'http://test_name_space/';
      //PrintWSDL(rp);

@@ -10,6 +10,11 @@ uses
   Classes, SysUtils,
   cursor_intf, DOM;
 
+const
+
+  s_NODE_NAME = 'NodeName';
+  s_NODE_VALUE = 'NodeValue';
+  
 type
 
   TFreeAction = ( faNone, faFreeOnDestroy );
@@ -87,7 +92,33 @@ type
     destructor Destroy();override;
   end;
   
+  TCursorExposedType = ( cetRttiNode, cetDomNode );
+
+
+  function CreateChildrenCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
+  function CreateAttributesCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
+  
 implementation
+
+function CreateChildrenCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
+begin
+  Result := nil;
+  if ( ANode <> nil ) and ANode.HasChildNodes() then begin
+    Result := TDOMNodeListCursor.Create(ANode.GetChildNodes(),faFreeOnDestroy) ;
+    if ( AExposedType = cetRttiNode ) then
+      Result := TDOMNodeRttiExposerCursor.Create(Result);
+  end;
+end;
+
+function CreateAttributesCursor(ANode : TDOMNode; const AExposedType : TCursorExposedType):IObjectCursor;
+begin
+  Result := nil;
+  if ( ANode <> nil ) and ( ANode.Attributes <> nil ) and ( ANode.Attributes.Length > 0 ) then begin
+    Result := TDOMNamedNodeMapCursor.Create(ANode.Attributes,faNone) ;
+    if ( AExposedType = cetRttiNode ) then
+      Result := TDOMNodeRttiExposerCursor.Create(Result);
+  end;
+end;
 
 { TDOMNodeListCursor }
 
