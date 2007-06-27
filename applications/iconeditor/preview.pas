@@ -38,6 +38,7 @@ type
   { TPreviewForm }
 
   TPreviewForm = class(TForm)
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -50,8 +51,14 @@ var
   View: TPictureView;
 
 implementation
-
+uses main;
 { TPreviewForm }
+
+procedure TPreviewForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
+  );
+begin
+  MainForm.ViewShowPreview.Checked:=False;
+end;
 
 procedure TPreviewForm.FormCreate(Sender: TObject);
 begin
@@ -72,4 +79,5 @@ initialization
   {$I preview.lrs}
 
 end.
+
 
