@@ -29,7 +29,8 @@ uses
   metadata_service, metadata_service_imp, metadata_service_binder,
   synapse_tcp_server,
 
-  user_service_intf, user_service_intf_binder, user_service_intf_imp , imp_helper;
+  user_service_intf, user_service_intf_binder, user_service_intf_imp , imp_helper,
+  server_service_xmlrpc;
 
 
 var
@@ -38,12 +39,15 @@ begin
   SetLogger(TConsoleLogger.Create());
   
   Server_service_RegisterBinaryFormat();
-  Server_service_RegisterSoapFormat();
-  Server_service_RegisterWSTMetadataServiceService();
+  //Server_service_RegisterSoapFormat();
+  Server_service_RegisterXmlRpcFormat();
+  
+  RegisterWSTMetadataServiceImplementationFactory();
+  //Server_service_RegisterWSTMetadataServiceService();
   RegisterWSTMetadataServiceImplementationFactory();
   
-  Server_service_RegisterUserServiceService();
   RegisterUserServiceImplementationFactory();
+  Server_service_RegisterUserServiceService();
   
   Logger().Log('WST sample TCP Server listning on "%s"',[sSERVER_PORT]);
   Logger().Log('Hit <enter> to stop.');

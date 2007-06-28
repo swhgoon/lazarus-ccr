@@ -101,7 +101,8 @@ type
     ['{E4D69D2A-F0A5-43E1-8C56-B47E7AB5D1AF}']
     function Find(const AFormatterName : string):IFormatterBase;
     procedure Register(
-      const AFormatterName : string;
+      const AFormatterName,
+            AContentType   : string;
             AFactory       : IItemFactory
     );
   End;
@@ -2043,8 +2044,8 @@ end;
 
 constructor TBaseFactoryRegistry.Create();
 begin
-  FList := TObjectList.Create(True);
   inherited Create();
+  FList := TObjectList.Create(True);
 end;
 
 destructor TBaseFactoryRegistry.Destroy();

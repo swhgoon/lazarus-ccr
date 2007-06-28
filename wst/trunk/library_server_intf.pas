@@ -89,7 +89,7 @@ begin
           inStream.Write(buff[1],Length(buff));
           SetLength(buff,0);
           inStream.Position := 0;
-          rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,bufStream);
+          rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,bufStream,'');
           HandleServiceRequest(rqst);
           bs := bufStream.Size;
           wstCheck(ARequestBuffer.SetSize(bs));

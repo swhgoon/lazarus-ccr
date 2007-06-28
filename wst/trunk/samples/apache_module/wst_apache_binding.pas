@@ -1,4 +1,4 @@
-//{$DEFINE WST_DBG}
+{$DEFINE WST_DBG}
 
 unit wst_apache_binding;
 
@@ -35,6 +35,7 @@ type
     URI         : string;
     ContentType : string;
     Buffer      : string;
+    Argument    : string;
   end;
   
   TResponseInfo = record
@@ -232,7 +233,7 @@ begin
       AResponseInfo.ContentType := sHTTP_BINARY_CONTENT_TYPE
     else
       AResponseInfo.ContentType := ctntyp;
-    rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,outStream);
+    rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,outStream,'');
     HandleServiceRequest(rqst);
     i := outStream.Size;
     if ( i > 0 ) then begin
@@ -243,8 +244,8 @@ begin
     outStream.Free();
     inStream.Free();
     {$IFDEF WST_DBG}
-      {SaveStringToFile('RequestInfo.ContentType=' + ARequestInfo.ContentType + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',False);
-      SaveStringToFile('RequestInfo.Buffer=' + ARequestInfo.Buffer + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
+      SaveStringToFile('RequestInfo.ContentType=' + ARequestInfo.Argument + LineEnding,'c:\log.log',False);
+      {SaveStringToFile('RequestInfo.Buffer=' + ARequestInfo.Buffer + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
       SaveStringToFile('RequestInfo.URI=' + ARequestInfo.URI + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
       SaveStringToFile('ResponseInfo.ContentType=' + AResponseInfo.ContentType + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
       SaveStringToFile('ResponseInfo.ContentText=' + AResponseInfo.ContentText + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
@@ -260,6 +261,7 @@ function wst_RequestHandler(r: Prequest_rec): Integer;
     ARequestInfo.ContentType := apr_table_get(r^.headers_in,sCONTENT_TYPE);
     ARequestInfo.Root := ap_get_server_name(r) + sSEPARATOR + sWST_ROOT + sSEPARATOR;
     ARequestInfo.URI := r^.uri;
+    ARequestInfo.Argument := r^.args;
     Result := ReadBuffer(r,ARequestInfo.Buffer);
   end;
 
@@ -312,7 +314,7 @@ initialization
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();
 
-  Server_service_RegisterWSTMetadataServiceService();
   RegisterWSTMetadataServiceImplementationFactory();
+  Server_service_RegisterWSTMetadataServiceService();
 
 end.

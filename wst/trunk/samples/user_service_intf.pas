@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "05/05/2007 19:07".
+  Date            : "26/06/2007 23:46:28".
 }
 unit user_service_intf;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -16,22 +16,22 @@ const
 
 type
 
-  TUser = class;
   TUserArray = class;
+  TUser_Type = class;
 
-  TUserCategory = ( 
+  TUserCategory_Type = ( 
     Normal
     ,Admin
   );
 
-  TUser = class(TBaseComplexRemotable)
+  TUser_Type = class(TBaseComplexRemotable)
   private
-    FCategory : TUserCategory;
+    FCategory : TUserCategory_Type;
     FUserName : string;
     FeMail : string;
     FPreferences : string;
   published
-    property Category : TUserCategory read FCategory write FCategory;
+    property Category : TUserCategory_Type read FCategory write FCategory;
     property UserName : string read FUserName write FUserName;
     property eMail : string read FeMail write FeMail;
     property Preferences : string read FPreferences write FPreferences;
@@ -39,26 +39,26 @@ type
 
   TUserArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): TUser;
+    function GetItem(AIndex: Integer): TUser_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TUser Read GetItem;Default;
+    property Item[AIndex:Integer] : TUser_Type Read GetItem;Default;
   end;
 
   UserService = interface(IInvokable)
-    ['{842D8408-E142-470F-9CDD-FAD0D8AEEB12}']
+    ['{757DE451-CE83-454C-8757-6D72428EB1AA}']
     function GetList():TUserArray;
     procedure Add(
-      Const AUser : TUser
+      const  AUser : TUser_Type
     );
     procedure Update(
-      Const AUser : TUser
+      const  AUser : TUser_Type
     );
     function Find(
-      Const AName : string
-    ):TUser;
+      const  AName : string
+    ):TUser_Type;
     function Delete(
-      Const AName : string
+      const  AName : string
     ):boolean;
   end;
 
@@ -69,14 +69,14 @@ uses metadata_repository;
 
 { TUserArray }
 
-function TUserArray.GetItem(AIndex: Integer): TUser;
+function TUserArray.GetItem(AIndex: Integer): TUser_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TUser;
+  Result := Inherited GetItem(AIndex) As TUser_Type;
 end;
 
 class function TUserArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= TUser;
+  Result:= TUser_Type;
 end;
 
 
@@ -207,10 +207,11 @@ end;
 
 
 initialization
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory_Type),'TUserCategory');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser_Type),'TUser');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
 
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUser_Type)].RegisterExternalPropertyName('Category','item');
 
 End.

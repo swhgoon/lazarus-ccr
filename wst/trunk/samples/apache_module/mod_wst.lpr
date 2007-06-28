@@ -23,7 +23,7 @@ exports
 {$endif}
 
 
-function DefaultHandler(r: Prequest_rec): Integer; cdecl;
+function DefaultHandler(r: Prequest_rec): Integer;cdecl;
 begin
   if not SameText(r^.handler, 'wst-handler') then
   begin
@@ -34,7 +34,7 @@ begin
   Result := wst_RequestHandler(r);
 end;
 
-procedure RegisterHooks(p: Papr_pool_t); cdecl;
+procedure RegisterHooks(p: Papr_pool_t);cdecl;
 begin
   ap_hook_handler(@DefaultHandler, nil, nil, APR_HOOK_MIDDLE);
 end;

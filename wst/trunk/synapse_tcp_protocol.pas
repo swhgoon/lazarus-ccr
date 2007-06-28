@@ -21,6 +21,8 @@ uses
 
 {$INCLUDE wst.inc}
 
+{$DEFINE WST_DBG}
+
 Const
   sTRANSPORT_NAME = 'TCP';
 
@@ -88,9 +90,6 @@ Var
   strBuff : string;
   bufferLen : LongInt;
   i, j, c : PtrInt;
-{$IFDEF WST_DBG}
-  s : string;
-{$ENDIF WST_DBG}
 begin
   buffStream := TMemoryStream.Create();
   Try
@@ -130,10 +129,7 @@ begin
     end;
     AResponse.Position := 0;
     {$IFDEF WST_DBG}
-    i := AResponse.Position;
-    SetLength(s,AResponse.Size);
-    AResponse.Read(s[1],AResponse.Size);
-    WriteLn(s);
+    TMemoryStream(AResponse).SaveToFile('response.log');
     {$ENDIF WST_DBG}
   Finally
     buffStream.Free();

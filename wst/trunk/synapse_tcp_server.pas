@@ -185,7 +185,7 @@ begin
           rdr := CreateBinaryReader(FInputStream);
           trgt := rdr.ReadStr();
           ctntyp := rdr.ReadStr();
-          buff := rdr.ReadStr();
+          buff := rdr.ReadStr(); WriteLn();WriteLn('ContentType=',ctntyp,', ','Target = ',trgt);WriteLn();WriteLn(buff);
           rdr := nil;
           FInputStream.Size := 0;
           FInputStream.Write(buff[1],Length(buff));

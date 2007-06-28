@@ -24,7 +24,7 @@ uses
   DOM,
   base_service_intf;
   
-Const
+const
   sPROTOCOL_NAME = 'SOAP';
 
   sXML_NS = 'xmlns';

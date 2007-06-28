@@ -12,7 +12,8 @@
 }
 unit soap_formatter;
 
-{$mode objfpc}{$H+}
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 interface
 

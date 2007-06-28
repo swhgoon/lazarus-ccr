@@ -20,6 +20,7 @@ uses
   base_binary_formatter;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Const
   sCONTENT_TYPE = 'contenttype';

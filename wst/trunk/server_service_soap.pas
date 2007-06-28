@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
-unit server_service_soap;
-
 {$INCLUDE wst.inc}
+unit server_service_soap;
 
 interface
 
@@ -194,7 +193,7 @@ end;
 
 procedure Server_service_RegisterSoapFormat();
 begin
-  GetFormatterRegistry().Register(sSOAP_CONTENT_TYPE,TSimpleItemFactory.Create(TSOAPFormatter) as IItemFactory);
+  GetFormatterRegistry().Register(sPROTOCOL_NAME,sSOAP_CONTENT_TYPE,TSimpleItemFactory.Create(TSOAPFormatter) as IItemFactory);
   RegisterStdTypes();
 end;
 

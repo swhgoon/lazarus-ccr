@@ -28,7 +28,7 @@ Type
   private
     FTargetService : string;
     FContentType   : string;
-    //FLength        : Integer;
+    FFormat        : string;
     FContent       : TStream;
     FResponse      : TStream;
   protected
@@ -37,15 +37,16 @@ Type
     //function GetLength():Integer;
     function GetContent():TStream;
     function GetResponse():TStream;
+    function GetFormat() : string;
   public
     constructor Create(
-      ATargetService : string;
-      AContentType   : string;
-      //ALength        : Integer;
-      AContent       : TStream;
-      AResponse      : TStream
+      const ATargetService : string;
+      const AContentType   : string;
+            AContent       : TStream;
+            AResponse      : TStream;
+            AFormat        : string
     );
-  End;
+  end;
 
 
   function IsStrEmpty(Const AStr:String):Boolean;
@@ -84,17 +85,22 @@ begin
   Result := FResponse;
 end;
 
+function TRequestBuffer.GetFormat(): string;
+begin
+  Result := FFormat;
+end;
+
 constructor TRequestBuffer.Create(
-  ATargetService : string;
-  AContentType   : string;
-  //ALength        : Integer;
-  AContent       : TStream;
-  AResponse      : TStream
+  const ATargetService : string;
+  const AContentType   : string;
+        AContent       : TStream;
+        AResponse      : TStream;
+        AFormat        : string
 );
 begin
   FTargetService := ATargetService;
   FContentType   := AContentType;
-  //FLength        := ALength;
+  FFormat        := AFormat;
   FContent       := AContent;
   FResponse      := AResponse;
 end;

@@ -23,6 +23,7 @@ uses
 
 const
   sBINARY_CONTENT_TYPE = 'binary';
+  sPROTOCOL_NAME = sBINARY_CONTENT_TYPE;
 
   procedure Server_service_RegisterBinaryFormat();
   
@@ -129,7 +130,7 @@ end;
 
 procedure Server_service_RegisterBinaryFormat();
 begin
-  GetFormatterRegistry().Register(sBINARY_CONTENT_TYPE,TBinaryFormatterFactory.Create() as IItemFactory);
+  GetFormatterRegistry().Register(sPROTOCOL_NAME,sBINARY_CONTENT_TYPE,TBinaryFormatterFactory.Create() as IItemFactory);
 end;
 
 Initialization

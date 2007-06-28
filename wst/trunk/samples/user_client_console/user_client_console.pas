@@ -7,8 +7,12 @@ uses
   user_service_intf_proxy,
   synapse_tcp_protocol, synapse_http_protocol, library_protocol,
   soap_formatter, binary_formatter,
-  user_service_intf;
+  user_service_intf, xmlrpc_formatter;
 
+type
+  TUser = TUser_Type;
+  TUserCategory = TUserCategory_Type;
+  
 var
   UserServiceInst : UserService;
 
@@ -56,8 +60,9 @@ begin
   end;
 end;
 
-procedure HandleAdd();
-
+type TAddType = ( atAdd, atUpdate );
+procedure HandleAdd(const AType :TAddType);
+const CAPTIONS : array[TAddType] of string = ( 'Adding a user :', 'Updating a user :' );
   function ReadItem(const APrompt : string; const ANonNull : Boolean):string ;
   begin
     Result := '';
@@ -72,7 +77,7 @@ var
   buff : string;
 begin
   buff := '';
-  WriteLn('Adding a user :');
+  WriteLn(CAPTIONS[AType]);
   try
     usr := TUser.Create();
     try
@@ -84,7 +89,10 @@ begin
         usr.Category:= Normal;
       usr.eMail := ReadItem('Enter user e-mail : ',False);
       usr.Preferences := ReadItem('Enter user Preferences : ',False);
-      UserServiceInst.Add(usr);
+      if ( AType = atUpdate ) then
+        UserServiceInst.Update(usr)
+      else
+        UserServiceInst.Add(usr);
     finally
       FreeAndNil(usr);
     end;
@@ -110,28 +118,46 @@ begin
   end;
 end;
 
-type TTransportType = ( ttLibrary, ttTCP, ttHTTP );
-procedure CreateProxy(const ATransportType :TTransportType);
-const ADDRESS_MAP : array[TTransportType] of string = (
-        'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
-        'TCP:Address=127.0.0.1;Port=1234;target=UserService',
-        'http:Address=http://127.0.0.1:8080/wst/services/UserService'
-        //'http:Address=http://127.0.0.1:8000/services/UserService'
-      );
+procedure HandleDeleteUser();
 var
   buff : string;
 begin
-  buff := ADDRESS_MAP[ATransportType];
-  if ( ATransportType = ttLibrary ) then
+  Write('Enter User Name : ');
+  ReadLn(buff);
+  UserServiceInst.Delete(buff);
+end;
+
+type
+  TTransportType = ( ttLibrary, ttTCP, ttHTTP );
+  TFormatType = ( ftBinary, ftSoap, ftXmlRPC );
+var
+  TransportType : TTransportType;
+  FormatValue : TFormatType;
+procedure CreateProxy();
+const ADDRESS_MAP : array[TTransportType] of string = (
+        'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
+        'TCP:Address=127.0.0.1;Port=1234;target=UserService',
+        //'http:Address=http://127.0.0.1:8080/wst/services/UserService/?format=soap'
+        'http:Address=http://127.0.0.1:8000/services/UserService'
+      );
+      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc' );
+var
+  buff : string;
+begin
+  if ( TransportType = ttHTTP ) then
+    buff := Format('%s/?format=%s',[ADDRESS_MAP[TransportType],FORMAT_MAP[FormatValue]])
+  else
+    buff := ADDRESS_MAP[TransportType];
+  if ( TransportType = ttLibrary ) then
     buff := StringReplace(buff,'\',DirectorySeparator,[rfReplaceAll, rfIgnoreCase]);
   UserServiceInst := TUserService_Proxy.Create(
                        'UserService',
-                       'binary:',
+                       FORMAT_MAP[FormatValue] + ':',
                        buff
                      );
 end;
 
-function ReadTransportType():TTransportType;
+procedure ReadTransportType();
 var
   buff : string;
 begin
@@ -147,9 +173,34 @@ begin
     buff := UpperCase(Trim(buff));
     if ( Length(buff) > 0 ) and ( buff[1] in ['L','T', 'H'] ) then begin
       case buff[1] of
-        'L' : Result := ttLibrary;
-        'T' : Result := ttTCP;
-        'H' : Result := ttHTTP;
+        'L' : TransportType := ttLibrary;
+        'T' : TransportType := ttTCP;
+        'H' : TransportType := ttHTTP;
+      end;
+      Break;
+    end;
+  end;
+end;
+
+procedure ReadFormatType();
+var
+  buff : string;
+begin
+  WriteLn();
+  WriteLn('Select a messaging format : ');
+  WriteLn('  B : binary ( binary_formatter.pas )');
+  WriteLn('  S : soap   ( soap_formatter.pas )');
+  WriteLn('  X : XmlRpc ( xmlrpc_formatter.pas )');
+  WriteLn();
+  Write('Your selection : ');
+  while True do begin
+    ReadLn(buff);
+    buff := UpperCase(Trim(buff));
+    if ( Length(buff) > 0 ) and ( buff[1] in ['B','S', 'X'] ) then begin
+      case buff[1] of
+        'B' : FormatValue := ftBinary;
+        'S' : FormatValue := ftSoap;
+        'X' : FormatValue := ftXmlRPC;
       end;
       Break;
     end;
@@ -158,18 +209,22 @@ end;
 
 var
   strBuffer : string;
-  tt : TTransportType;
 begin
   SYNAPSE_RegisterTCP_Transport();
   SYNAPSE_RegisterHTTP_Transport();
   LIB_Register_Transport();
   WriteLn('Sample Application using Web Services Toolkit');
-  CreateProxy(ReadTransportType());
+  ReadFormatType();
+  ReadTransportType();
+  CreateProxy();
   WriteLn('Menu :');
   WriteLn(' L : Show the user list');
   WriteLn(' A : Add a new user');
+  WriteLn(' U : Update a user');
+  WriteLn(' D : Delete a user');
   WriteLn(' F : Find a new');
   WriteLn(' C : Change the communication protocol');
+  WriteLn(' Z : Change the messaging format');
   WriteLn(' X : Exit');
   WriteLn();
   Write('Choose a item : ');
@@ -180,9 +235,20 @@ begin
     if ( Length(strBuffer) > 0 ) then begin
       case strBuffer[1] of
         'L' : HandleShowAll();
-        'A' : HandleAdd();
+        'A' : HandleAdd(atAdd);
+        'U' : HandleAdd(atUpdate);
+        'D' : HandleDeleteUser();
         'F' : HandleFindUser();
-        'C' : CreateProxy(ReadTransportType());
+        'C' :
+          begin
+            ReadTransportType();
+            CreateProxy();
+          end;
+        'Z' :
+          begin
+            ReadFormatType();
+            CreateProxy();
+          end;
         'X' : Break;
       end;
       WriteLn();

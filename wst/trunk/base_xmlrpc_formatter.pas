@@ -12,10 +12,8 @@
 }
 unit base_xmlrpc_formatter;
 
-{$mode objfpc}{$H+}
-{$IF (FPC_VERSION = 2) and (FPC_RELEASE > 0)}
-  {$define FPC_211}
-{$ENDIF}
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 interface
 
@@ -30,6 +28,19 @@ const
 
   sCONTENT_TYPE = 'contenttype';
   sXMLRPC_CONTENT_TYPE = 'text/xml';
+
+  sDATA  = 'data';
+  sFAULT = 'fault';
+  sFAULT_CODE = 'faultCode';
+  sFAULT_STRING = 'faultString';
+  sMEMBER = 'member';
+  sMETHOD_CALL  = 'methodCall';
+  sMETHOD_NAME  = 'methodName';
+  sMETHOD_RESPONSE  = 'methodResponse';
+  sNAME = 'name';
+  sPARAM = 'param';
+  sPARAMS = 'params';
+  sVALUE = 'value';
 
 type
 
@@ -218,6 +229,7 @@ type
       const AStyle       : TArrayStyle;
       const AItemName    : string
     ):TStackItem;overload;
+    function PushStackParams(AScopeObject : TDOMNode) : TStackItem;
     function FindAttributeByValueInNode(
       Const AAttValue : String;
       Const ANode     : TDOMNode;
@@ -318,15 +330,8 @@ type
 {$M-}
 
 implementation
-Uses XMLWrite, XMLRead, StrUtils,
+Uses XMLWrite, XMLRead,
      imp_utils;
-     
-const
-  sDATA  = 'data';
-  sMEMBER = 'member';
-  sNAME = 'name';
-  sPARAM = 'param';
-  sVALUE = 'value';
 
 function GetNodeItemsCount(const ANode : TDOMNode): Integer;
 var
@@ -457,8 +462,8 @@ begin
   if ( FIndex >= FItemList.Count ) then
     raise EXmlRpcException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
-  if Result.HasChildNodes() then begin
-    Result := Result.FirstChild;
+  if Result.HasChildNodes() and Result.FirstChild.HasChildNodes() then begin
+    Result := Result.FirstChild;//.FirstChild;
     Inc(FIndex);
     ANodeName := Result.NodeName;
   end else begin
@@ -507,6 +512,11 @@ function TXmlRpcBaseFormatter.PushStack(
 ): TStackItem;
 begin
   Result := FStack.Push(TArrayStackItem.Create(AScopeObject,stArray)) as TStackItem;
+end;
+
+function TXmlRpcBaseFormatter.PushStackParams(AScopeObject: TDOMNode): TStackItem;
+begin
+  Result := FStack.Push(TParamsArrayStackItem.Create(AScopeObject,stArray)) as TStackItem;
 end;
 
 function TXmlRpcBaseFormatter.BeginObjectRead(
@@ -1355,8 +1365,8 @@ begin
   if ( FIndex >= FItemList.Count ) then
     raise EXmlRpcException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
-  if Result.HasChildNodes() then begin
-    Result := Result.FirstChild;
+  if Result.HasChildNodes() and Result.FirstChild.HasChildNodes() then begin
+    Result := Result.FirstChild.FirstChild;
     Inc(FIndex);
     ANodeName := Result.NodeName;
   end else begin

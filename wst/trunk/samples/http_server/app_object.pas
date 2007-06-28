@@ -61,7 +61,7 @@ type
 implementation
 uses base_service_intf,
      server_service_intf, server_service_imputils,
-     server_service_soap, server_binary_formatter,
+     server_service_soap, server_binary_formatter, server_service_xmlrpc,
      metadata_repository, metadata_wsdl, DOM, XMLWrite,
      metadata_service, metadata_service_binder, metadata_service_imp,
 
@@ -195,7 +195,7 @@ procedure TwstWebApplication.ProcessServiceRequest(
   var APath           : string
 );
 var
-  trgt,ctntyp : string;
+  trgt,ctntyp, frmt : string;
   rqst : IRequestBuffer;
   inStream: TMemoryStream;
 begin
@@ -214,7 +214,8 @@ begin
       inStream.CopyFrom(ARequestInfo.PostStream,0);
       inStream.Position := 0;
       AResponseInfo.ContentType := ctntyp;
-      rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,AResponseInfo.ContentStream);
+      frmt := Trim(ARequestInfo.Params.Values['format']);
+      rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,AResponseInfo.ContentStream,frmt);
       HandleServiceRequest(rqst);
     finally
       inStream.Free();
@@ -276,9 +277,6 @@ begin
   FHTTPServerObject.ServerSoftware := 'Web Service Toolkit Sample WebServer';
   FHTTPServerObject.Active := True;
   FHTTPServerObject.OnCommandGet := @Handler_CommandGet;
-  
-  Server_service_RegisterUserServiceService();
-  RegisterUserServiceImplementationFactory();
 end;
 
 destructor TwstWebApplication.Destroy();
@@ -296,14 +294,14 @@ initialization
   RegisterStdTypes();
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
+  Server_service_RegisterXmlRpcFormat();
   
-  Server_service_RegisterUserServiceService();
   RegisterUserServiceImplementationFactory();
+  Server_service_RegisterUserServiceService();
+
   Register_user_service_intf_ServiceMetadata();
   
-  Server_service_RegisterWSTMetadataServiceService();
   RegisterWSTMetadataServiceImplementationFactory();
-
-  
+  Server_service_RegisterWSTMetadataServiceService();
   
 end.

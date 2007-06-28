@@ -45,10 +45,10 @@ Type
     ['{6BF71D1F-DDC0-4432-83C6-6D50D26762C3}']
     function GetTargetService():string;
     function GetContentType():string;
-    //function GetLength():Integer;
     function GetContent():TStream;
     function GetResponse():TStream;
-  End;
+    function GetFormat() : string;
+  end;
   
   IServerService = Interface
     ['{EEBF8E24-8B20-462F-AA4A-48A5C8BAE680}']
@@ -234,12 +234,42 @@ Begin
   s.HandleRequest(ARequestBuffer);
 End;
 
-Type
+type
 
-  TFormatterRegistry = class(TBaseFactoryRegistry,IFormatterRegistry)
-  protected
-    function Find(const AFormatterName : string):IFormatterBase;
-  End;
+  { TFormatterRegistryItem }
+
+  TFormatterRegistryItem = class(TBaseFactoryRegistryItem)
+  private
+    FContentType: string;
+  public
+    constructor Create(
+      const AName,
+            AContentType : string;
+      const AFactory     : IItemFactory
+    );
+    property ContentType : string read FContentType;
+  end;
+  
+  TFormatterRegistry = class(TInterfacedObject,IInterface,IFormatterRegistry)
+  private
+    FList : TObjectList;
+  private
+    function GetCount: Integer;
+    function GetItem(Index: Integer): TFormatterRegistryItem;
+    function FindFactory(const AName: string): IItemFactory;
+    function Find(const AName: string): IFormatterBase;
+  private
+    property Count : Integer read GetCount;
+    property Item[Index:Integer] : TFormatterRegistryItem read GetItem;
+  public
+    constructor Create();
+    destructor Destroy();override;
+    procedure Register(
+      const AName,
+            AContentType   : string;
+            AFactory       : IItemFactory
+    );
+  end;
 
   { TServerServiceRegistry }
 
@@ -247,6 +277,18 @@ Type
   protected
     function Find(const AServiceName : string):IServerService;
   End;
+
+{ TBaseFormatterRegistryItem }
+
+constructor TFormatterRegistryItem.Create(
+  const AName,
+        AContentType : string;
+  const AFactory     : IItemFactory
+);
+begin
+  inherited Create(AName,AFactory);
+  FContentType := AContentType;
+end;
 
 { TServerServiceRegistry }
 
@@ -261,15 +303,73 @@ begin
     Result := Nil;
 end;
 
-function TFormatterRegistry.Find(const AFormatterName: string): IFormatterBase;
+function TFormatterRegistry.Find(const AName : string): IFormatterBase;
 Var
   fct : IItemFactory;
 begin
-  fct := FindFactory(AFormatterName);
-  If Assigned(fct) Then
+  fct := FindFactory(AName);
+  if Assigned(fct) then
     Result := fct.CreateInstance() as IFormatterBase
-  Else
-    Result := Nil;
+  else
+    Result := nil;
+end;
+
+function TFormatterRegistry.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TFormatterRegistry.GetItem(Index: Integer) : TFormatterRegistryItem;
+begin
+  Result := FList[Index] as TFormatterRegistryItem;
+end;
+
+function TFormatterRegistry.FindFactory(const AName: string): IItemFactory;
+var
+  i , c : Integer;
+  s : string;
+  itm : TFormatterRegistryItem;
+begin
+  s := LowerCase(Trim(AName));
+  c := Pred(FList.Count);
+  for i := 0 to c do begin
+    itm := Item[i];
+    if AnsiSameText(itm.Name,s) then begin
+      Result := itm.Factory;
+      Exit;
+    end;
+  end;
+  for i := 0 to c do begin
+    itm := Item[i];
+    if AnsiSameText(itm.ContentType,s) then begin
+      Result := itm.Factory;
+      Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+constructor TFormatterRegistry.Create();
+begin
+  inherited Create();
+  FList := TObjectList.Create(True);
+end;
+
+destructor TFormatterRegistry.Destroy();
+begin
+  FreeAndNil(FList);
+  inherited Destroy();
+end;
+
+procedure TFormatterRegistry.Register(
+  const AName,
+        AContentType   : string;
+        AFactory       : IItemFactory
+);
+begin
+  Assert(Assigned(AFactory));
+  if not Assigned(FindFactory(AName)) then
+    FList.Add(TFormatterRegistryItem.Create(AName,AContentType,AFactory));
 end;
 
 Type
@@ -341,7 +441,10 @@ Var
   hdr : THeaderBlock;
   typRegItm : TTypeRegistryItem;
 begin
-  s := ARequestBuffer.GetContentType();
+  s := Trim(ARequestBuffer.GetFormat());
+  if ( Length(s) = 0 ) then begin
+    s := ARequestBuffer.GetContentType();
+  end;
   f := GetFormatterRegistry().Find(s) as IFormatterResponse;
   if not Assigned(f) then
     Error('No formatter for that content type : "%s"',[s]);
