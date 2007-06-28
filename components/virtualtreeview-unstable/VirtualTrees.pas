@@ -112,6 +112,7 @@ uses
   Windows,
   DelphiCompat,
   {$endif}
+  lclext,
   virtualpanningwindow,
   vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
@@ -13455,6 +13456,7 @@ procedure TBaseVirtualTree.PrepareBitmaps(NeedButtons, NeedLines: Boolean);
 const
   LineBitsDotted: array [0..8] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA, $55);
   LineBitsSolid: array [0..7] of Word = (0, 0, 0, 0, 0, 0, 0, 0);
+  ButtonSize = 9;
 
 var
   PatternBitmap: HBITMAP;
@@ -13470,19 +13472,25 @@ begin
     begin
       // box is always of odd size
       //The TCanvas of VCL does not has width and height. It cause a conflict here
-
-      FMinusBM.Width := 9;
-      FMinusBM.Height := 9;
-
+      FMinusBM.Width := ButtonSize;
+      FMinusBM.Height := ButtonSize;
+      {
       Transparent := True;
       TransparentColor := clFuchsia;
+      }
+      //todo: remove when transparency is fixed in gtk
+      {$ifdef Windows}
       Brush.Color := clFuchsia;
-      FillRect(Rect(0, 0, FMinusBM.Width, FMinusBM.Height));
+      {$else}
+      Brush.Color := Self.Color;
+      {$endif}
+      FillRect(Rect(0, 0, ButtonSize, ButtonSize));
       if FButtonStyle = bsTriangle then
       begin
         Brush.Color := clBlack;
         Pen.Color := clBlack;
         Polygon([Point(0, 2), Point(8, 2), Point(4, 6)]);
+        MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
       end
       else
       begin
@@ -13496,29 +13504,39 @@ begin
               Brush.Color := clWindow;
           end;
           Pen.Color := FColors.TreeLineColor;
-          Rectangle(0, 0, FMinusBM.Width, FMinusBM.Height);
+          Rectangle(0, 0, ButtonSize, ButtonSize);
           Pen.Color := Self.Font.Color;
-          MoveTo(2, FMinusBM.Width div 2);
-          LineTo(FMinusBM.Width - 2 , FMinusBM.Width div 2);
+          MoveTo(2, ButtonSize div 2);
+          LineTo(ButtonSize - 2 , ButtonSize div 2);
+          if FButtonFillMode = fmTransparent then
+            MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
         end
         else
           FMinusBM.LoadFromLazarusResource('VT_XPBUTTONMINUS');
       end;
     end;
-    Logger.SendBitmap([lcPaintBitmap],'FMinusBM',FMinusBM);
+
     with FPlusBM, Canvas do
     begin
-      FPlusBM.Width := 9;
-      FPlusBM.Height := 9;
+      FPlusBM.Width := ButtonSize;
+      FPlusBM.Height := ButtonSize;
+      {
       Transparent := True;
       TransparentColor := clFuchsia;
+      }
+      //todo: remove when transparency is fixed in gtk
+      {$ifdef Windows}
       Brush.Color := clFuchsia;
-      FillRect(Rect(0, 0, FPlusBM.Width, FPlusBM.Height));
+      {$else}
+      Brush.Color := Self.Color;
+      {$endif}
+      FillRect(Rect(0, 0, ButtonSize, ButtonSize));
       if FButtonStyle = bsTriangle then
       begin
         Brush.Color := clBlack;
         Pen.Color := clBlack;
         Polygon([Point(2, 0), Point(6, 4), Point(2, 8)]);
+        MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
       end
       else
       begin
@@ -13531,14 +13549,15 @@ begin
             fmWindowColor:
               Brush.Color := clWindow;
           end;
-
           Pen.Color := FColors.TreeLineColor;
-          Rectangle(0, 0, FPlusBM.Width, FPlusBM.Height);
+          Rectangle(0, 0, ButtonSize, ButtonSize);
           Pen.Color := Self.Font.Color;
-          MoveTo(2, FPlusBM.Width div 2);
-          LineTo(FPlusBM.Width - 2 , FPlusBM.Width div 2);
-          MoveTo(FPlusBM.Width div 2, 2);
-          LineTo(FPlusBM.Width div 2, FPlusBM.Width - 2);
+          MoveTo(2, ButtonSize div 2);
+          LineTo(ButtonSize - 2 , ButtonSize div 2);
+          MoveTo(ButtonSize div 2, 2);
+          LineTo(ButtonSize div 2, ButtonSize - 2);
+          if FButtonFillMode = fmTransparent then
+            MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
         end
         else
           FPlusBM.LoadFromLazarusResource('VT_XPBUTTONPLUS');

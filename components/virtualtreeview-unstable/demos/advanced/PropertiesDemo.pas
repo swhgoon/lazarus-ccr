@@ -11,6 +11,7 @@ unit PropertiesDemo;
 interface
 
 uses
+  {$ifdef Windows} Messages, {$endif}
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, VirtualTrees, ExtCtrls, LResources;
 
