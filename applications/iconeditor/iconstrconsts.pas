@@ -36,22 +36,153 @@ uses
   Classes, SysUtils; 
 
 resourcestring
+
+  // standard Buttons
+  lieButtonClose = 'Close';
+  lieButtonOK = 'OK';
+  lieButtonCancel = 'Cancel';
+
   //Messages
   lieSaveChanges = 'Save changes to %s?';
+  lieNew = 'New';
+  lieSetResource = 'Set resource name';
+  lieResourceName = 'Resource name: ';
 
+  // Main Form
+  lieMain = 'Lazarus Icon Editor';
   // main bar menu
   lieMenuFile = '&File';
   lieMenuEdit = '&Edit';
   lieMenuPicture = '&Picture';
-  lieMenuMask = '&Mask';
-  lieMenuView = '&View';
+  lieMenuMask = 'Mask';
+  lieMenuView = 'View';
   lieMenuHelp = '&Help';
 
   // Action Lists
   lieFileNew = '&New...';
+  lieFileOpen = '&Open...';
+  lieFileSave = '&Save';
+  lieFileSaveAs = 'Save &As...';
+  lieFileExportAsLRS = '&Export As *.lrs...';
+  lieFileClose = '&Close';
+  lieRotate90 = '90° Clockwise';
+  lieRotate180 = '180° Clockwise';
+  lieRotate270 = '270° Clockwise';
+  lieRotateCustom = 'Custom...';
+  lieFlipVertically = 'Vertically';
+  lieFlipHorizontally = 'Horizontally';
+  liePictureResizePaper = 'Resize Paper...';
+  liePictureResize = 'Resize...';
+  lieColorsGrayscale = 'Grayscale';
+  lieColorsInvert = 'Invert';
+  lieColorsDisable = 'Disable';
+  lieViewShowPreview = 'Show Preview';
+  lieViewShowMask = 'Show Mask';
+  lieViewShowGrid = 'Show Grid';
+  lieMaskInvert = 'Invert';
+  lieMaskRemove = 'Remove';
+  lieEditCopy = '&Copy';
+  lieEditCut = 'Cu&t';
+  lieEditDelete = '&Delete';
+  lieEditPaste = '&Paste';
+  lieEditRedo = '&Redo';
+  lieEditSelectAll = 'Select &All';
+  lieEditUndo = '&Undo';
 
+  // hints For Actions list
+  lieHintFileNew = 'New';
+  lieHintFileOpen = 'Open';
+  lieHintFileSave = 'Save';
+  lieHintFileSaveAs = 'Save As';
+  lieHintFileExportAsLRS = 'Export As *.lrs';
+  lieHintFileClose = 'Close';
+  lieHintRotate90 = '90° Clockwise';
+  lieHintRotate180 = '180° Clockwise';
+  lieHintRotate270 = '270° Clockwise';
+  lieHintRotateCustom = 'Custom';
+  lieHintFlipVertically = 'Vertically';
+  lieHintFlipHorizontally = 'Horizontally';
+  lieHintPictureResizePaper = 'Resize Paper';
+  lieHintPictureResize = 'Resize';
+  lieHintColorsGrayscale = 'Grayscale';
+  lieHintColorsInvert = 'Invert';
+  lieHintColorsDisable = 'Disable';
+  lieHintViewShowPreview = 'Show Preview';
+  lieHintViewShowMask = 'Show Mask';
+  lieHintViewShowGrid = 'Show Grid';
+  lieHintMaskInvert = 'Invert';
+  lieHintMaskRemove = 'Remove';
+  lieHintEditCopy = 'Copy';
+  lieHintEditCut = 'Cut';
+  lieHintEditDelete = 'Delete';
+  lieHintEditPaste = 'Paste';
+  lieHintEditRedo = 'Redo';
+  lieHintEditSelectAll = 'Select All';
+  lieHintEditUndo = 'Undo';
+
+  // Hints for Tools
+  lieHintToolSpray = 'Spray';
+  lieHintToolFloodFill = 'Flood Fill';
+  lieHintToolEraser = 'Eraser/Replacer';
+  lieHintToolPen = 'Pen';
+  lieHintToolColorPick = 'Color Pick';
+  lieHintToolMask = 'Mask';
+  lieHintToolLine = 'Line';
+  lieHintToolPolygon = 'Polygon';
+  lieHintToolEllipse = 'Ellipse';
+  lieHintToolRectangle = 'Rectangle/Round rectangle';
+
+  //Labels
+  lieLabelZoom = 'Zoom:';
+  lieLabelShape = 'Shape:';
+  lieLabelFillOutline = 'Fill, Outline:';
+  lieLabelMaskTool = 'Mask Tool:';
+  lieLabelOutline = 'Outline:';
+  lieLabelFill = 'Fill:';
+  lieLabelPaper = 'Paper:';
+  lieLabelSize = 'Size:';
+  lieLabelRoundness = 'Roundness:';
+  lieLabelDensity = 'Density:';
+  lieLabelTolerance = 'Tolerance:';
+
+  // Dialog About
+  lieAbouDialog = 'About Lazarus Icon Editor';
+  lieLabelVersion = 'Version: 0.1';
+  lieLabelAuthor = 'Author: Tom Gregorovic';
+
+  // Dialog New
+  lieNewDialog = 'New picture';
+  lieLabelWidth = 'Width:';
+  lieLabelHeight = 'Height:';
+  lieLabelPaperColor = 'Paper color:';
+  lieColorButtonPaper = 'Change...';
+
+  // Dialog Preview
+  liePreviewDialog = 'Preview';
+
+  // Dialog Resize
+  lieResizeDialog = 'Resize picture';
+  lieGroupBoxProperties = 'Properties';
+  lieLabelNewWidth = 'New width:';
+  lieLabelNewHeight = 'New height:';
+  lieCheckBoxAspectRatio = 'Preserve aspect ratio';
+  lieGroupBoxStretchMethod = 'Stretch method';
+  lieRadioButtonTruncate = 'Truncate';
+  lieRadioButtonSmooth = 'Smooth:';
+  // Todo lieComboBoxSmooth = 'Area pixel';
+
+  // Dialog Resize Paper
+  lielieResizePaperDialog = 'Resize paper';
+  lieLabelPicturePosition = 'Picture position:';
+  lieLabelPaperWidth = 'Paper width:';
+  lieLabelPaperHeight = 'Paper height:';
+//  lieCheckBoxAspectRatio = 'Preserve aspect ratio';  in dialog Resize
+//  lieLabelPaperColor = 'Paper color:';  in dialog New
+//  lieColorButtonPaper = 'Change...';  in dialog New
+  // Todo lieComboBoxPicturePosition = '';
 
 implementation
 
 end.
+
 

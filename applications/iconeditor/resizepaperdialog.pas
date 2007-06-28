@@ -75,7 +75,7 @@ var
   Preview: TPictureEdit;
 
 implementation
-
+uses IconStrConsts;
 { TResizePaperDialogForm }
 
 procedure TResizePaperDialogForm.FormCreate(Sender: TObject);
@@ -83,6 +83,18 @@ begin
   Preview := TPictureEdit.Create(PanelPreview);
   Preview.Parent := PanelPreview;
   Preview.Align := alClient;
+
+  Caption:=lielieResizePaperDialog;
+  LabelPicturePosition.Caption:=lieLabelPicturePosition;
+  LabelWidth.Caption:=lieLabelPaperWidth;
+  LabelHeight.Caption:=lieLabelPaperHeight;
+  CheckBoxAspectRatio.Caption:=lieCheckBoxAspectRatio;
+  LabelPaperColor.Caption:=lieLabelPaperColor;
+  ColorButtonPaper.Caption:=lieColorButtonPaper;
+  ButtonOK.Caption:=lieButtonOK;
+  ButtonCancel.Caption:=lieButtonCancel;
+// Todo ComboBoxPicturePosition
+
 end;
 
 procedure TResizePaperDialogForm.EditHeightChange(Sender: TObject);
@@ -196,4 +208,5 @@ initialization
   {$I resizepaperdialog.lrs}
 
 end.
+
 

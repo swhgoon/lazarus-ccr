@@ -830,13 +830,101 @@ begin
   
   Palette.LoadPalette('../../default.pal');
   
+  Caption:=lieMain;
+  // Menus
   MenuItemFile.Caption := lieMenuFile;
   MenuItemEdit.Caption := lieMenuEdit;
   MenuItemPicture.Caption := lieMenuPicture;
   MenuItemMask.Caption := lieMenuMask;
   MenuItemView.Caption := lieMenuView;
   MenuItemHelp.Caption := lieMenuHelp;
+
+  // Actions
   FileNew.Caption := lieFileNew;
+  FileOpen.Caption:=lieFileOpen;
+  FileSave.Caption:=lieFileSave;
+  FileSaveAs.Caption:=lieFileSaveAs;
+  FileExportAsLRS.Caption:=lieFileExportAsLRS;
+  FileClose.Caption:=lieFileClose;
+  Rotate90.Caption:=lieRotate90;
+  Rotate180.Caption:=lieRotate180;
+  Rotate270.Caption:=lieRotate270;
+  RotateCustom.Caption:=lieRotateCustom;
+  FlipVertically.Caption:=lieFlipVertically;
+  FlipHorizontally.Caption:=lieFlipHorizontally;
+  PictureResizePaper.Caption:=liePictureResizePaper;
+  PictureResize.Caption:=liePictureResize;
+  ColorsGrayscale.Caption:=lieColorsGrayscale;
+  ColorsInvert.Caption:=lieColorsInvert;
+  ColorsDisable.Caption:=lieColorsDisable;
+  ViewShowPreview.Caption:=lieViewShowPreview;
+  ViewShowMask.Caption:=lieViewShowMask;
+  ViewShowGrid.Caption:=lieViewShowGrid;
+  MaskInvert.Caption:=lieMaskInvert;
+  MaskRemove.Caption:=lieMaskRemove;
+  EditCopy.Caption:=lieEditCopy;
+  EditCut.Caption:=lieEditCut;
+  EditDelete.Caption:=lieEditDelete;
+  EditPaste.Caption:=lieEditPaste;
+  EditRedo.Caption:=lieEditRedo;
+  EditSelectAll.Caption:=lieEditSelectAll;
+  EditUndo.Caption:=lieEditUndo;
+
+  // Hints for Actions
+  FileNew.Hint := lieHintFileNew;
+  FileOpen.Hint:=lieHintFileOpen;
+  FileSave.Hint:=lieHintFileSave;
+  FileSaveAs.Hint:=lieHintFileSaveAs;
+  FileExportAsLRS.Hint:=lieHintFileExportAsLRS;
+  FileClose.Hint:=lieHintFileClose;
+  Rotate90.Hint:=lieHintRotate90;
+  Rotate180.Hint:=lieHintRotate180;
+  Rotate270.Hint:=lieHintRotate270;
+  RotateCustom.Hint:=lieHintRotateCustom;
+  FlipVertically.Hint:=lieHintFlipVertically;
+  FlipHorizontally.Hint:=lieHintFlipHorizontally;
+  PictureResizePaper.Hint:=lieHintPictureResizePaper;
+  PictureResize.Hint:=lieHintPictureResize;
+  ColorsGrayscale.Hint:=lieHintColorsGrayscale;
+  ColorsInvert.Hint:=lieHintColorsInvert;
+  ColorsDisable.Hint:=lieHintColorsDisable;
+  ViewShowPreview.Hint:=lieHintViewShowPreview;
+  ViewShowMask.Hint:=lieHintViewShowMask;
+  ViewShowGrid.Hint:=lieHintViewShowGrid;
+  MaskInvert.Hint:=lieHintMaskInvert;
+  MaskRemove.Hint:=lieHintMaskRemove;
+  EditCopy.Hint:=lieHintEditCopy;
+  EditCut.Hint:=lieHintEditCut;
+  EditDelete.Hint:=lieHintEditDelete;
+  EditPaste.Hint:=lieHintEditPaste;
+  EditRedo.Hint:=lieHintEditRedo;
+  EditSelectAll.Hint:=lieHintEditSelectAll;
+  EditUndo.Hint:=lieHintEditUndo;
+
+  //Labels
+  LabelZoom.Caption:=lieLabelZoom;
+  LabelShape.Caption:=lieLabelShape;
+  LabelFillOutline.Caption:=lieLabelFillOutline;
+  LabelMaskTool.Caption:=lieLabelMaskTool;
+  LabelOutline.Caption:=lieLabelOutline;
+  LabelFill.Caption:=lieLabelFill;
+  LabelPaper.Caption:=lieLabelPaper;
+  LabelSize.Caption:=lieLabelSize;
+  LabelRoundness.Caption:=lieLabelRoundness;
+  LabelDensity.Caption:=lieLabelDensity;
+  LabelTolerance.Caption:=lieLabelTolerance;
+
+  //Hints for Tools
+  ToolSpray.Hint:=lieHintToolSpray;
+  ToolFloodFill.Hint:=lieHintToolFloodFill;
+  ToolEraser.Hint:=lieHintToolEraser;
+  ToolPen.Hint:=lieHintToolPen;
+  ToolColorPick.Hint:=lieHintToolColorPick;
+  ToolMask.Hint:=lieHintToolMask;
+  ToolLine.Hint:=lieHintToolLine;
+  ToolPolygon.Hint:=lieHintToolPolygon;
+  ToolEllipse.Hint:=lieHintToolEllipse;
+  ToolRectangle.Hint:=lieHintToolRectangle;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -911,7 +999,7 @@ begin
   begin
     Value := ExtractFileName(ExportResourceDialog.FileName);
     Value := Copy(Value, 1, Length(Value) - Length(ExtractFileExt(Value)));
-    if InputQuery('Set resource name', 'Resource name: ', Value) then
+    if InputQuery(lieSetResource, lieResourceName, Value) then
     begin
       Pictures.ExportAsLazarusResource(ExportResourceDialog.FileName, Value);
     end;
@@ -1045,5 +1133,6 @@ initialization
   {$I main.lrs}
 
 end.
+
 
 

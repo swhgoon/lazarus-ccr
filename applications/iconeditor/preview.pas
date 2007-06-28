@@ -51,11 +51,12 @@ var
   View: TPictureView;
 
 implementation
-uses main;
+
+uses Main, IconStrConsts;
+
 { TPreviewForm }
 
-procedure TPreviewForm.FormClose(Sender: TObject; var CloseAction: TCloseAction
-  );
+procedure TPreviewForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   MainForm.ViewShowPreview.Checked:=False;
 end;
@@ -68,6 +69,8 @@ begin
   View.Parent := Self;
   
   Left := Screen.Width - Width - 10;
+
+  Caption:=liePreviewDialog;
 end;
 
 procedure TPreviewForm.Preview(Bitmap: TPictureBitmap);

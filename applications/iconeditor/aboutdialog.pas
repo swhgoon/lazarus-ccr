@@ -53,16 +53,21 @@ var
   AboutDialogForm: TAboutDialogForm;
 
 implementation
-
+uses IconStrConsts;
 { TAboutDialogForm }
 
 procedure TAboutDialogForm.FormCreate(Sender: TObject);
 begin
   Image.Picture.LoadFromFile('..\..\Images\icon.png');
+  Caption:=lieAbouDialog;
+  LabelVersion.Caption:=lieLabelVersion;
+  LabelAuthor.Caption:=lieLabelAuthor;
+  ButtonClose.Caption:=lieButtonClose;
 end;
 
 initialization
   {$I aboutdialog.lrs}
 
 end.
+
 

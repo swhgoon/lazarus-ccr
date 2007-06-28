@@ -8,7 +8,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Icon Editor"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="5"/>
     </General>
     <VersionInfo>
       <CurrentMajorRevNr Value="1"/>
@@ -77,8 +77,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="preview.lrs"/>
         <UnitName Value="Preview"/>
-        <CursorPos X="37" Y="38"/>
-        <TopLine Value="15"/>
+        <CursorPos X="22" Y="55"/>
+        <TopLine Value="38"/>
         <EditorIndex Value="5"/>
         <UsageCount Value="146"/>
         <Loaded Value="True"/>

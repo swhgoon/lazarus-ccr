@@ -113,7 +113,7 @@ type
 
 
 implementation
-
+uses IconStrConsts;
 { TPictureManager }
 
 function TPictureManager.FindNewUniqueName: String;
@@ -128,7 +128,7 @@ begin
     Exists := False;
     for J := 0 to Pred(PageCount) do
     begin
-      if Pages[J].Caption = 'New' + IntToStr(I) then
+      if Pages[J].Caption = lieNew + IntToStr(I) then
       begin
         Inc(I);
         Exists := True;
@@ -138,7 +138,7 @@ begin
     if not Exists then Break;
   end;
   
-  Result := 'New' + IntToStr(I);
+  Result := lieNew + IntToStr(I);
 end;
 
 function TPictureManager.GetActivePicturePage: TPicturePage;
@@ -395,5 +395,6 @@ begin
 end;
 
 end.
+
 
 
