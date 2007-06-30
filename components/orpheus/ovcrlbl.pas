@@ -209,7 +209,11 @@ begin
   FShadowColor    := clBtnShadow;
   FShadowedText   := False;
 
+{$IFDEF MSWINDOWS}
   Font.Name       := 'Arial';
+{$ELSE}
+  Font.Name       := 'default';
+{$ENDIF}
   Height          := 20;
   Width           := 130;
 
@@ -490,7 +494,9 @@ begin
         GetTextMetrics(Canvas.Handle, TM);
         if (TM.tmPitchAndFamily and TMPF_TRUETYPE) = 0 then
           {force true-type font}
+{$IFDEF MSWINDOWS}
           Font.Name := 'Arial';
+{$ENDIF}
       end;
     end;
     if Value < 0 then Neg := -1 else Neg := 1;

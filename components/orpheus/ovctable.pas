@@ -4494,7 +4494,9 @@ procedure TOvcCustomTable.tbDrawActiveCell;
      cell, otherwise, draw the focus box around the cell contents}
     if InEditingState then
       begin
-        UpdateWindow(tbActCell.EditHandle);
+{$IFDEF MSWINDOWS}
+        UpdateWindow(tbActCell.EditHandle);  //Not implemented on Gtk/Qt and recurses w/ Carbon
+{$ENDIF}
       end
     else
       begin

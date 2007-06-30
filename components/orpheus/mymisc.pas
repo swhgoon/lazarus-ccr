@@ -288,10 +288,10 @@ function GlobalAlloc(uFlags: UINT; dwBytes: DWORD): HGLOBAL;
 function GlobalLock(hMem: HGLOBAL): Pointer;
 function GlobalUnlock(hMem: HGLOBAL): BOOL;
 //function DestroyCursor(hCursor: HICON): BOOL;
-{$IFDEF MSWINDOWS}  //Shouldn't be needed with GTK widgetset.
+//{$IFDEF MSWINDOWS}  //Not needed with GTK and Qt (but doesn't hurt); Win32 and Carbon need it.
 function PostMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): BOOL;
 function SendMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
-{$ENDIF}
+//{$ENDIF}
 procedure RecreateWnd(const AWinControl:TWinControl);
 
  {These belong in Classes unit}
@@ -780,11 +780,11 @@ end;
 
 
 function PostMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): BOOL;
- {Use control's Perform method to force it to respond to message}
+ {Use control's Perform method to force it to respond to posted message.
+  This doesn't work:  Result := LclIntf.PostMessage(hWnd, Msg, wParam, lParam); }
 var
   AWinControl : TWinControl;
 begin
-//  Result := LclIntf.PostMessage(hWnd, Msg, wParam, lParam);  {Doesn't work}
   Assert(hWnd <> 0, 'Window handle not assigned on entry to PostMessage');
   AWinControl := FindOwnerControl(hWnd);
 //  Assert(AWinControl <> nil, 
@@ -795,11 +795,11 @@ begin
 end;
 
 function SendMessage(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
- {Use control's Perform method to force it to respond to message}
+ {Use control's Perform method to force it to respond to sent message.
+  This doesn't work: Result := LclIntf.SendMessage(hWnd, Msg, wParam, lParam); }
 var
   AWinControl : TWinControl;
 begin
-//  Result := LclIntf.SendMessage(hWnd, Msg, wParam, lParam);  {Doesn't work}
   Assert(hWnd <> 0, 'Window handle not assigned on entry to SendMessage');
   AWinControl := FindOwnerControl(hWnd);
 //  Assert(AWinControl <> nil,
