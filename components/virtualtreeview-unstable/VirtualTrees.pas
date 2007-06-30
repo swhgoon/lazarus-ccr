@@ -2510,6 +2510,7 @@ TBaseVirtualTree = class(TCustomControl)
       ChildrenOnly: Boolean): PVirtualNode; overload;
     procedure CopyToClipBoard; virtual;
     procedure CutToClipBoard; virtual;
+    procedure DefaultHandler(var AMessage); override;
     procedure DeleteChildren(Node: PVirtualNode; ResetHasChildren: Boolean = False);
     procedure DeleteNode(Node: PVirtualNode; Reindex: Boolean = True);
     procedure DeleteSelectedNodes; virtual;
@@ -15421,10 +15422,7 @@ begin
   Logger.EnterMethod([lcScroll],'CMMouseWheel');
   StopWheelPanning;
 
-  //todo:
-  //The only thing that inherited WMMouseWheel does is to call DoMouseWheel
-  //in the other hand it call a DefaultHandler that causes bug here. So skip it
-  //inherited WMMouseWheel(Message);
+  inherited WMMouseWheel(Message);
 
   if Message.Result = 0  then
   begin
@@ -24404,6 +24402,12 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+procedure TBaseVirtualTree.DefaultHandler(var AMessage);
+begin
+  //used to avoid default handler of LM_MOUSEWHEEL
+end;
+
 
 procedure TBaseVirtualTree.DeleteChildren(Node: PVirtualNode; ResetHasChildren: Boolean = False);
 
