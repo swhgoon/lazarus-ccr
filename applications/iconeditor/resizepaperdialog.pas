@@ -72,7 +72,7 @@ type
 
 var
   ResizePaperDialogForm: TResizePaperDialogForm;
-  Preview: TPictureEdit;
+  Preview: TPictureView;
 
 implementation
 uses IconStrConsts;
@@ -80,7 +80,7 @@ uses IconStrConsts;
 
 procedure TResizePaperDialogForm.FormCreate(Sender: TObject);
 begin
-  Preview := TPictureEdit.Create(PanelPreview);
+  Preview := TPictureView.Create(PanelPreview);
   Preview.Parent := PanelPreview;
   Preview.Align := alClient;
 
@@ -93,8 +93,16 @@ begin
   ColorButtonPaper.Caption:=lieColorButtonPaper;
   ButtonOK.Caption:=lieButtonOK;
   ButtonCancel.Caption:=lieButtonCancel;
-// Todo ComboBoxPicturePosition
-
+  ComboBoxPicturePosition.Items.Clear;
+  ComboBoxPicturePosition.Items.Add(lieTopLeft);
+  ComboBoxPicturePosition.Items.Add(lieTopCenter);
+  ComboBoxPicturePosition.Items.Add(lieTopRight);
+  ComboBoxPicturePosition.Items.Add(lieCenterLeft);
+  ComboBoxPicturePosition.Items.Add(lieCentered);
+  ComboBoxPicturePosition.Items.Add(lieCenterRight);
+  ComboBoxPicturePosition.Items.Add(lieBottomLeft);
+  ComboBoxPicturePosition.Items.Add(lieBottomCenter);
+  ComboBoxPicturePosition.Items.Add(lieBottomRight);
 end;
 
 procedure TResizePaperDialogForm.EditHeightChange(Sender: TObject);
@@ -208,5 +216,6 @@ initialization
   {$I resizepaperdialog.lrs}
 
 end.
+
 
 

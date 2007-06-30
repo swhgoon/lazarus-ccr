@@ -13,6 +13,7 @@ object ResizeDialogForm: TResizeDialogForm
   Height = 300
   Top = 155
   Width = 246
+  OnCreate = FormCreate
   object GroupBoxProperties: TGroupBox
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Properties'

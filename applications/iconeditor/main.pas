@@ -830,7 +830,9 @@ begin
   
   Palette.LoadPalette('../../default.pal');
   
+  // Main Form
   Caption:=lieMain;
+
   // Menus
   MenuItemFile.Caption := lieMenuFile;
   MenuItemEdit.Caption := lieMenuEdit;
@@ -925,6 +927,12 @@ begin
   ToolPolygon.Hint:=lieHintToolPolygon;
   ToolEllipse.Hint:=lieHintToolEllipse;
   ToolRectangle.Hint:=lieHintToolRectangle;
+
+  //File Dialogs
+  ColorDialog.Title:=lieColorDialog;
+  OpenPictureDialog.Title:=lieOpenPictureDialog;
+  SavePictureDialog.Title:=lieSavePictureDialog;
+  ExportResourceDialog.Title:=lieExportResourceDialog;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -1133,6 +1141,7 @@ initialization
   {$I main.lrs}
 
 end.
+
 
 
 

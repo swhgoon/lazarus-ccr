@@ -55,6 +55,7 @@ type
     procedure EditHeightChange(Sender: TObject);
     procedure EditWidthChange(Sender: TObject);
     procedure CheckBoxAspectRatioClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   protected
     procedure Initialize; override;
   public
@@ -65,7 +66,7 @@ var
   ResizeDialogForm: TResizeDialogForm;
 
 implementation
-
+uses IconStrConsts;
 { TResizeDialogForm }
 
 procedure TResizeDialogForm.EditHeightChange(Sender: TObject);
@@ -103,6 +104,24 @@ begin
   end;
 end;
 
+procedure TResizeDialogForm.FormCreate(Sender: TObject);
+begin
+  Caption:=lieResizeDialog;
+  GroupBoxProperties.Caption:=lieGroupBoxProperties;
+  LabelWidth.Caption:=lieLabelNewWidth;
+  LabelHeight.Caption:=lieLabelNewHeight;
+  CheckBoxAspectRatio.Caption:=lieCheckBoxAspectRatio;
+  GroupBoxStretchMethod.Caption:=lieGroupBoxStretchMethod;
+  RadioButtonTruncate.Caption:=lieRadioButtonTruncate;
+  RadioButtonSmooth.Caption:=lieRadioButtonSmooth;
+  ComboBoxSmooth.Items.Clear;
+  ComboBoxSmooth.Items.Add(lieAreapixel);
+  ComboBoxSmooth.Items.Add(lieBilinear);
+  ComboBoxSmooth.Items.Add(lieBicubic);
+  ButtonOK.Caption:=lieButtonOK;
+  ButtonCancel.Caption:=lieButtonCancel;
+end;
+
 procedure TResizeDialogForm.Initialize;
 begin
   UpDownWidth.Position := Picture.Width;
@@ -124,4 +143,5 @@ initialization
   {$I resizedialog.lrs}
 
 end.
+
 

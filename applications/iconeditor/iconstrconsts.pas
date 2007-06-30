@@ -50,6 +50,7 @@ resourcestring
 
   // Main Form
   lieMain = 'Lazarus Icon Editor';
+
   // main bar menu
   lieMenuFile = '&File';
   lieMenuEdit = '&Edit';
@@ -169,7 +170,9 @@ resourcestring
   lieGroupBoxStretchMethod = 'Stretch method';
   lieRadioButtonTruncate = 'Truncate';
   lieRadioButtonSmooth = 'Smooth:';
-  // Todo lieComboBoxSmooth = 'Area pixel';
+  lieAreapixel = 'Area pixel';
+  lieBilinear = 'Bilinear';
+  lieBicubic = 'Bicubic';
 
   // Dialog Resize Paper
   lielieResizePaperDialog = 'Resize paper';
@@ -179,10 +182,28 @@ resourcestring
 //  lieCheckBoxAspectRatio = 'Preserve aspect ratio';  in dialog Resize
 //  lieLabelPaperColor = 'Paper color:';  in dialog New
 //  lieColorButtonPaper = 'Change...';  in dialog New
-  // Todo lieComboBoxPicturePosition = '';
+  lieTopLeft = 'Top Left';
+  lieTopCenter = 'Top Center';
+  lieTopRight = 'Top Right';
+  lieCenterLeft = 'Center Left';
+  lieCentered = 'Centered';
+  lieCenterRight = 'Center Right';
+  lieBottomLeft = 'Bottom Left';
+  lieBottomCenter = 'Bottom Center';
+  lieBottomRight = 'Bottom Right';
+
+  //File Dialogs
+  lieColorDialog = 'Select color';
+  lieOpenPictureDialog = 'Open existing file';
+  lieSavePictureDialog = 'Save file as';
+  lieExportResourceDialog = 'Export as lazarus resource';
 
 implementation
 
 end.
+
+
+
+
 
 

@@ -49,6 +49,7 @@ type
     LabelHeight: TLabel;
     UpDownWidth: TUpDown;
     UpDownHeight: TUpDown;
+    procedure FormCreate(Sender: TObject);
   private
   public
   end; 
@@ -57,12 +58,23 @@ var
   NewDialogForm: TNewDialogForm;
 
 implementation
-
+uses IconStrConsts;
 { TNewDialogForm }
 
+procedure TNewDialogForm.FormCreate(Sender: TObject);
+begin
+  Caption:=lieNewDialog;
+  LabelWidth.Caption:=lieLabelWidth;
+  LabelHeight.Caption:=lieLabelHeight;
+  LabelPaperColor.Caption:=lieLabelPaperColor;
+  ColorButtonPaper.Caption:=lieColorButtonPaper;
+  ButtonOK.Caption:=lieButtonOK;
+  ButtonCancel.Caption:=lieButtonCancel;
+end;
 
 initialization
   {$I newdialog.lrs}
 
 end.
+
 

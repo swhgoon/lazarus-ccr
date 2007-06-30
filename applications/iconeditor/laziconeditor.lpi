@@ -8,7 +8,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Icon Editor"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="11"/>
     </General>
     <VersionInfo>
       <CurrentMajorRevNr Value="1"/>
@@ -77,8 +77,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="preview.lrs"/>
         <UnitName Value="Preview"/>
-        <CursorPos X="22" Y="55"/>
-        <TopLine Value="38"/>
+        <CursorPos X="23" Y="66"/>
+        <TopLine Value="58"/>
         <EditorIndex Value="5"/>
         <UsageCount Value="146"/>
         <Loaded Value="True"/>
@@ -449,8 +449,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="resizepaperdialog.lrs"/>
         <UnitName Value="ResizePaperDialog"/>
-        <CursorPos X="25" Y="38"/>
-        <TopLine Value="171"/>
+        <CursorPos X="24" Y="75"/>
+        <TopLine Value="69"/>
         <EditorIndex Value="11"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
@@ -994,7 +994,24 @@
         <Loaded Value="True"/>
       </Unit135>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="4" HistoryIndex="3">
+      <Position1>
+        <Filename Value="preview.pas"/>
+        <Caret Line="55" Column="31" TopLine="38"/>
+      </Position1>
+      <Position2>
+        <Filename Value="preview.pas"/>
+        <Caret Line="61" Column="3" TopLine="58"/>
+      </Position2>
+      <Position3>
+        <Filename Value="resizepaperdialog.pas"/>
+        <Caret Line="185" Column="60" TopLine="171"/>
+      </Position3>
+      <Position4>
+        <Filename Value="resizepaperdialog.pas"/>
+        <Caret Line="83" Column="26" TopLine="81"/>
+      </Position4>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
