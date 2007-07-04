@@ -33,6 +33,15 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20070704 release (0.1.6):
+  <UL>
+  <LI>3 new example programs have been added for demonstrating TOvcSpinner,
+      TOvcSimpleField, TOvcTCSimpleField and TO32TCSimpleField. Note that the
+      TestSimpField and TestTblEdits examples are intended primarily for
+      Windows at this time since TOvcSimpleField and TOvcTCSimpleField are not 
+      yet working on other widgetsets (see table below).
+  <LI>Fix improves functionality of TO32TCFlexEdit validation.<P>
+  </UL>
 <LI>20070630 release (0.1.5):
   <UL>
   <LI>Most of the Orpheus controls now work with the Lazarus Carbon widgetset.<P>
@@ -213,7 +222,11 @@ headers, row labels, string, memo, check box, combo box, bitmap).
 <LI>TestRLbl - demos TOvcRotatedLabel
 <LI>TestLabel - demos TOvcLabel
 <LI>TestVLB - demos TOvcVirtualListBox
-<LI>TestFlexEdit - demos TO32FlexEdit
+<LI>TestSpinner - demos TOvcSpinner
+<LI>TestFlexEdit - demos TO32FlexEdit validation
+<LI>TestSimpField - demos TOvcSimpleField validation (Windows only for now)
+<LI>TestTblEdits - demos TOvcTCString, TOvcTCSimpleField validation and TO32TCFlexEdit
+validation (Windows only for now)
 </UL>
 
 To see the TOvcSpinner control in action, try out the table's Rows and Columns
@@ -273,10 +286,10 @@ tell the added comments by their context (near IFDEF's, for example).
 the Orpheus unit to the uses section of your main source file (.lpr). 
 This pulls in a great deal of code that you don't need. Delete the Orpheus unit
 from the uses section to reduce the size of your executable file.<P>
-<LI>Several of the ported controls are not supported by the GTK widgetset
-(see table below). Don't use these controls in cross-platform applications.
-Just opening a form that has a TOvcSimpleField or TOvcTCSimpleField control
-on it will likely crash the Lazarus IDE with GTK. Use the 
+<LI>The TOvcSimpleField and TOvcTCSimpleField controls do not work on non-Windows
+widgetsets (see table below). For now, don't use these controls in cross-platform 
+applications. Just opening a form that has a TOvcSimpleField or TOvcTCSimpleField 
+control on it may crash non-Windows versions of Lazarus. Use the 
 TO32FlexEdit and TO32TCFlexEdit controls in place of TOvcSimpleField and 
 TOvcTCSimpleField controls in cross-platform applications.<P>
 <LI>To display the TOvcLabel's Style Manager property editor in the Lazarus 
@@ -302,11 +315,11 @@ is all that's needed to enable the button code.<P>
 <LI>Widgetsets generally implement LCL controls by creating native controls
 that correspond to the LCL controls (text edit, check box, etc.). However,
 Orpheus builds its TOvcSimpleField control from TCustomControl, rather than
-descending from an existing edit control such as TCustomEdit. This sort of
-edit control does not appear to be supported by the GTK widgetset.<P>
-<LI>The GTK and Carbon widgetsets do not support TOvcRotatedLabel, apparently
-because the GetTextMetrics function is not fully implemented on those
-widgetsets. 
+descending from an existing edit control such as TCustomEdit. Currently
+TOvcSimpleField and TOvcTCSimpleField do not work on non-Windows widgetsets.<P>
+<LI>The GTK widgetset does not support TOvcRotatedLabel, apparently
+because the GetTextMetrics function is not fully implemented on that
+widgetset. 
 </OL>
 
 <HR>
@@ -462,10 +475,10 @@ widgetsets.
 <TD>TOvcTCSimpleField<BR><IMG SRC="TOVCTCSIMPLEFIELD.bmp"></TD>
 <TD>TComponent<BR>(edits with TOvcSimpleField)</TD>
 <TD>Table cell for editing strings, with validation</TD>
-<TD>gtk doesn't support</TD>
+<TD>&nbsp;</TD>
 <TD>Working</TD>
-<TD>Crashes</TD>
-<TD>Crashes</TD>
+<TD>Not working</TD>
+<TD>Not working</TD>
 <TD>Not working</TD>
 <TD>?</TD>
 </TR>
@@ -550,7 +563,7 @@ widgetsets.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 <TD>?</TD>
 </TR>
 
@@ -623,8 +636,15 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   </UL>
 <LI>TO32TCFlexEdit
   <UL>
-  <LI>Need a way of setting OnValidationError handler (an apparent 
-  omission since TO32FlexEdit has it).
+  <LI>Need a way of setting OnValidationError handler (an apparent omission 
+  since TO32FlexEdit has it). For now, you can display error message in
+  OnUserValidation handler.
+  </UL>
+<LI>TOvcSimpleField and TOvcTCSimpleField
+  <UL>
+  <LI>Recent improvements in GTK and Carbon widgetsets mean these controls no
+  longer crash programs when they're used. However, they don't yet work as edit 
+  controls. Determine whether this means more improvement in widgetsets is needed.
   </UL>
 <LI>TOvcController
   <UL>
@@ -647,7 +667,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: July 1, 2007
+Last updated: July 4, 2007
 <P>
 
 </BODY>

@@ -396,16 +396,6 @@ begin
   inherited WMKillFocus(Msg);
 {$ENDIF}
 
-// Apparent TurboPower bug: change of focus with tab or mouse doesn't
-//  trigger validation, so do it here and don't change focus if invalid.
-  if not TO32TCCustomFlexEdit(CellOwner).ValidateEntry then //These lines added
-    begin
-{$IFNDEF LCL}
-    SetFocus;
-{$ENDIF}    
-    Exit;
-    end;
-
   CellOwner.PostMessageToTable(ctim_KillFocus, Msg.FocusedWnd, 0);
 end;
 {=====}

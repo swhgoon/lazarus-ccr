@@ -1541,6 +1541,15 @@ function TOvcBaseEntryField.efGetTextExtent(S : PChar; Len : Integer) : Word;
 var
   Size : TSize;
 begin
+// Apparent TurboPower bug: sometimes Len is 1 when string is blank.
+//  Probably meaningless width returned in that case.
+//  Could also return width of "x" if a non-zero width is assumed
+//  by calling code.
+  if Length(S) = 0 then
+    begin
+    Result := 0;
+    Exit;
+    end;
   GetTextExtentPoint32(Canvas.Handle, S, Len, Size);
   Result := Size.cX;
 end;
