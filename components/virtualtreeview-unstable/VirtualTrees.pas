@@ -3309,8 +3309,6 @@ function TreeFromNode(Node: PVirtualNode): TBaseVirtualTree;
 
 implementation
 
-{.$R VirtualTrees.res}
-
 uses
   {Consts,} Math,
   {$ifdef EnableOLE}
@@ -4702,13 +4700,13 @@ var
     OffsetY := (IL.Height - DarkCheckImages.Height) div 2;
     for I := 21 to 24 do
     begin
-      BM.Canvas.Brush.Color := MaskColor;
+      //BM.Canvas.Brush.Color := MaskColor;
       BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
       if Flat then
         FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
       else
         DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
-      //IL.AddMasked(BM, MaskColor);
+      BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
       IL.AddCopy(BM,nil);
     end;
   end;
@@ -4722,7 +4720,7 @@ var
     ButtonType: Cardinal;
 
   begin
-    BM.Canvas.Brush.Color := MaskColor;
+    //BM.Canvas.Brush.Color := MaskColor;
     BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
     if Index < 8 then
       ButtonType := DFCS_BUTTONRADIO
@@ -4747,8 +4745,8 @@ var
       ButtonState := ButtonState or DFCS_FLAT;
     //lcl has difference to windows
     DelphiCompat.DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
+    BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
     IL.AddCopy(BM,nil);
-    //IL.AddMasked(BM, MaskColor);
   end;
 
   //--------------- end local functions ---------------------------------------
@@ -4767,11 +4765,6 @@ begin
   {$endif}
   
   IL := TImageList.CreateSize(Width, Height);
-  //with IL do
-  //  Handle := ImageList_Create(Width, Height, Flags, 0, AllocBy);
-  IL.Masked := True;
-  //todo: see why compiler complain here
-  //IL.BkColor := clWhite;
 
   // Create a temporary bitmap, which holds the intermediate images.
   BM := TBitmap.Create;
@@ -4780,9 +4773,9 @@ begin
     BM.Width := IL.Width;
     BM.Height := IL.Height;
     BM.Canvas.Brush.Color := MaskColor;
-    BM.Canvas.Brush.Style := bsSolid;
+    //BM.Canvas.Brush.Style := bsSolid;
     BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-    //IL.AddMasked(BM, MaskColor);
+    BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
     IL.AddCopy(BM,nil);
 
     // Add the 20 system checkbox and radiobutton images.
