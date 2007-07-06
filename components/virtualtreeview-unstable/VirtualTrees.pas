@@ -3436,17 +3436,6 @@ const
   WideLineSeparator = WideChar(#2028);
 
 type
-  TVTCriticalSection = class(TObject)
-  protected
-    FSection: LCLType.TCriticalSection;
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure Enter;
-    procedure Leave;
-  end;
-
   // internal worker thread
   TWorkerThread = class(TThread)
   private
@@ -3500,7 +3489,6 @@ type
 var
   WorkerThread: TWorkerThread;
   WorkEvent: TEvent;
-  Watcher: TVTCriticalSection;
   LightCheckImages,                    // global light check images
   DarkCheckImages,                     // global heavy check images
   LightTickImages,                     // global light tick images
@@ -4595,86 +4583,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-const
-  Grays: array[0..3] of TColor = (clWhite, clSilver, clGray, clBlack);
-  SysGrays: array[0..3] of TColor = (clWindow, clBtnFace, clBtnShadow, clBtnText);
-
-procedure ConvertImageList(IL: TImageList; const ImageName: string; ColorRemapping: Boolean = True);
-
-// Loads a bunch of images given by ImageName into IL. If ColorRemapping = True then a mapping of gray values to
-// system colors is performed.
-
-var
-  Images,
-  OneImage,
-  AnotherImage: TBitmap;
-  I: Integer;
-  //MaskColor: TColor;
-  Source,
-  Dest: TRect;
-  //Small (???) hack while a solution does not come
-  Stream: TMemoryStream;
-begin
-  Watcher.Enter;
-  try
-    // Since we want the image list appearing in the correct system colors, we have to remap its colors.
-    Images := TBitmap.Create;
-    //OneImage := TBitmap.Create;
-    //todo: remove this ugly hack ASAP
-    Stream:=TMemoryStream.Create;
-    //todo: see what CreateMappedRes do and replace it
-    {
-    if ColorRemapping then
-      Images.Handle := CreateMappedRes(FindClassHInstance(TBaseVirtualTree), PChar(ImageName), Grays, SysGrays)
-    else
-      Images.Handle := LoadBitmap(FindClassHInstance(TBaseVirtualTree), PChar(ImageName));
-    }
-    Images.TransparentColor := clNone;
-    Images.LoadFromLazarusResource(ImageName);
-    Logger.SendBitmap([lcCheck],ImageName,Images);
-    try
-      Assert(Images.Height > 0, 'Internal image "' + ImageName + '" is missing or corrupt.');
-
-      // It is assumed that the image height determines also the width of one entry in the image list.
-      IL.Clear;
-      IL.Height := Images.Height;
-      IL.Width := Images.Height;
-      //OneImage.Width := IL.Width;
-      //OneImage.Height := IL.Height;
-
-      //MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
-      Dest := Rect(0, 0, IL.Width, IL.Height);
-      for I := 0 to (Images.Width div Images.Height) - 1 do
-      begin
-        Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
-        OneImage:= TBitmap.Create;
-        OneImage.Width:=IL.Height;
-        OneImage.Height:=IL.Width;
-        OneImage.Canvas.CopyRect(Dest, Images.Canvas, Source);
-        //somehow SaveToStream - LoadFromStream restores the tranparency lost in CopyRect
-        OneImage.SaveToStream(Stream);
-        OneImage.Free;
-        AnotherImage:=TBitmap.Create;
-        Stream.Position:=0;
-        AnotherImage.LoadFromStream(Stream);
-        Stream.Size:=0;
-        Logger.SendBitmap([lcCheck],'AnotherImage - '+IntToStr(i),AnotherImage);
-        IL.AddDirect(AnotherImage, nil);
-      end;
-    finally
-      Images.Free;
-      //OneImage.Free;
-      Stream.Free;
-    end;
-    Logger.Send([lcCheck],'IL.Count',IL.Count);
-  finally
-    Watcher.Leave;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure CreateSystemImageSet(var IL: TImageList; Flags: Cardinal; Flat: Boolean);
+procedure CreateSystemImageSet(var BM: TBitmap; Flags: Cardinal; Flat: Boolean);
 
 // Creates a system check image set.
 // Note: the DarkCheckImages and FlatImages image lists must already be filled, as some images from them are copied here.
@@ -4682,48 +4591,40 @@ procedure CreateSystemImageSet(var IL: TImageList; Flags: Cardinal; Flat: Boolea
 const
   MaskColor: TColor = clRed;
 
-var
-  BM: TBitmap;
-
   //--------------- local functions -------------------------------------------
 
-  procedure AddNodeImages(IL: TImageList);
+  procedure AddNodeImages;
 
   var
     I: Integer;
     OffsetX,
     OffsetY: Integer;
+    SrcBM: TBitmap;
 
   begin
     // The offsets are used to center the node images in case the sizes differ.
-    OffsetX := (IL.Width - DarkCheckImages.Width) div 2;
-    OffsetY := (IL.Height - DarkCheckImages.Height) div 2;
+    OffsetX := (BM.Height - DarkCheckImages.Height) div 2;
+    OffsetY := (BM.Height - DarkCheckImages.Height) div 2;
+    if Flat then
+      SrcBM := FlatImages
+    else
+      SrcBM := DarkCheckImages;
     for I := 21 to 24 do
     begin
-      //BM.Canvas.Brush.Color := MaskColor;
-      BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-      {
-      if Flat then
-        FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
-      else
-        DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
-      }
-      BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
-      IL.AddCopy(BM,nil);
+      StretchMaskBlt(BM.Canvas.Handle, I*BM.Height + OffsetX, OffsetY, BM.Height, BM.Height, SrcBM.Canvas.Handle,
+        I*SrcBM.Height, 0, BM.Height, BM.Height, SrcBM.MaskHandle, 0, 0, 0);
     end;
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure AddSystemImage(IL: TImageList; Index: Integer);
+  procedure AddSystemImage(Index: Integer);
 
   var
     ButtonState: Cardinal;
     ButtonType: Cardinal;
 
   begin
-    //BM.Canvas.Brush.Color := MaskColor;
-    BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
     if Index < 8 then
       ButtonType := DFCS_BUTTONRADIO
     else
@@ -4745,10 +4646,8 @@ var
       ButtonState := ButtonState or DFCS_CHECKED;
     if Flat then
       ButtonState := ButtonState or DFCS_FLAT;
-    //lcl has difference to windows
-    DelphiCompat.DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
-    BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
-    IL.AddCopy(BM,nil);
+    //lcl DrawFrameControl is different from windows
+    DelphiCompat.DrawFrameControl(BM.Canvas.Handle, Rect((Index + 1)*BM.Height + 1, 2, ((Index + 2)*BM.Height) - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
   end;
 
   //--------------- end local functions ---------------------------------------
@@ -4762,33 +4661,23 @@ begin
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
   {$else}
-  Width:=16;
-  Height:=16;
+  Width := 16;
+  Height := 16;
   {$endif}
   
-  IL := TImageList.CreateSize(Width, Height);
-
   // Create a temporary bitmap, which holds the intermediate images.
   BM := TBitmap.Create;
-  try
-    // Make the bitmap the same size as the image list is to avoid problems when adding.
-    BM.Width := IL.Width;
-    BM.Height := IL.Height;
-    BM.Canvas.Brush.Color := MaskColor;
-    //BM.Canvas.Brush.Style := bsSolid;
-    BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-    BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
-    IL.AddCopy(BM,nil);
-
-    // Add the 20 system checkbox and radiobutton images.
-    for I := 0 to 19 do
-      AddSystemImage(IL, I);
-    // Add the 4 node images from the dark check set.
-    AddNodeImages(IL);
-
-  finally
-    BM.Free;
-  end;
+  BM.Width := Width * 25;
+  BM.Height := Height;
+  BM.Canvas.Brush.Color := MaskColor;
+  //BM.Canvas.Brush.Style := bsSolid;
+  BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
+  // Add the 20 system checkbox and radiobutton images.
+  for I := 0 to 19 do
+    AddSystemImage(I);
+  // Add the 4 node images from the dark check set.
+  AddNodeImages;
+  BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -4885,7 +4774,7 @@ begin
   // serious trouble within GDI (see method WMNCPaint).
 
   //IsWinNT := (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0;
-  IsWinNT:=True;
+  IsWinNT := True;
 
   {$ifdef EnableOLE}
   // Initialize OLE subsystem for drag'n drop and clipboard operations.
@@ -4916,10 +4805,9 @@ begin
   UtilityImages := TBitmap.Create;
   UtilityImages.LoadFromLazarusResource('VT_UTILITIES');
 
-{
   CreateSystemImageSet(SystemCheckImages, Flags, False);
   CreateSystemImageSet(SystemFlatCheckImages, Flags, True);
-}
+
   // Specify an useful timer resolution for timeGetTime.
   timeBeginPeriod(MinimumTimerInterval);
 
@@ -4987,40 +4875,6 @@ begin
       Application.ShowHint := True;
   end;
   }
-end;
-
-//----------------- TCriticalSection -----------------------------------------------------------------------------------
-
-constructor TVTCriticalSection.Create;
-
-begin
-  inherited Create;
-  InitializeCriticalSection(FSection);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-destructor TVTCriticalSection.Destroy;
-
-begin
-  DeleteCriticalSection(FSection);
-  inherited Destroy;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVTCriticalSection.Enter;
-
-begin
-  EnterCriticalSection(FSection);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVTCriticalSection.Leave;
-
-begin
-  LeaveCriticalSection(FSection);
 end;
 
 //----------------- TWorkerThread --------------------------------------------------------------------------------------
@@ -15443,8 +15297,9 @@ end;
 procedure TBaseVirtualTree.CMSysColorChange(var Message: TLMessage);
 
 begin
+  //todo: see the meaning of this message and if is useful in LCL
   inherited;
-  //todo_lcl_block
+
   {
   ConvertImageList(LightCheckImages, 'VT_CHECK_LIGHT');
   ConvertImageList(DarkCheckImages, 'VT_CHECK_DARK');
@@ -32061,16 +31916,12 @@ initialization
   Initialized := False;
   NeedToUnitialize := False;
 
-  // This watcher is used whenever a global structure could be modified by more than one thread.
-  Watcher := TVTCriticalSection.Create;
 finalization
   if Initialized then
     FinalizeGlobalStructures;
 
   InternalClipboardFormats.Free;
   InternalClipboardFormats := nil;
-  Watcher.Free;
-  Watcher := nil;
   {$ifdef EnableAccessible}
   if VTAccessibleFactory <> nil then
   begin
