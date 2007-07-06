@@ -1782,10 +1782,10 @@ TBaseVirtualTree = class(TCustomControl)
     FPlusBM,
     FMinusBM: TBitmap;                           // small bitmaps used for tree buttons
     FImages,                                     // normal images in the tree
-    FStateImages,                                // state images in the tree
-    FCustomCheckImages: TCustomImageList;        // application defined check images
+    FStateImages: TCustomImageList;              // state images in the tree
+    FCustomCheckImages: TBitmap;                 // application defined check images
     FCheckImageKind: TCheckImageKind;            // light or dark, cross marks or tick marks
-    FCheckImages: TCustomImageList;              // Reference to global image list to be used for the check images.
+    FCheckImages: TBitmap;                       // Reference to global image list to be used for the check images.
     FImageChangeLink,
     FStateChangeLink,
     FCustomCheckChangeLink: TChangeLink;         // connections to the image lists
@@ -1967,7 +1967,7 @@ TBaseVirtualTree = class(TCustomControl)
     FOnIncrementalSearch: TVTIncrementalSearchEvent; // triggered on every key press (not key down)
 
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
-    procedure AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
+    procedure AdjustImageBorder(ImageWidth, ImageHeight: Integer; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
       var ImageInfo: TVTImageInfo);
     procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
     procedure AdjustTotalHeight(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
@@ -2039,7 +2039,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure SetChildCount(Node: PVirtualNode; NewChildCount: Cardinal);
     procedure SetClipboardFormats(const Value: TClipboardFormats);
     procedure SetColors(const Value: TVTColors);
-    procedure SetCustomCheckImages(const Value: TCustomImageList);
+    procedure SetCustomCheckImages(const Value: TBitmap);
     procedure SetDefaultNodeHeight(Value: Cardinal);
     procedure SetDisabled(Node: PVirtualNode; Value: Boolean);
     procedure SetExpanded(Node: PVirtualNode; Value: Boolean);
@@ -2278,7 +2278,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode): Integer; virtual;
-    class function GetCheckImageListFor(Kind: TCheckImageKind): TCustomImageList; virtual;
+    class function GetCheckImageListFor(Kind: TCheckImageKind): TBitmap; virtual;
     function GetClientRect: TRect; override;
     function GetColumnClass: TVirtualTreeColumnClass; virtual;
     function GetHeaderClass: TVTHeaderClass; virtual;
@@ -2370,7 +2370,7 @@ TBaseVirtualTree = class(TCustomControl)
     property CheckImageKind: TCheckImageKind read FCheckImageKind write SetCheckImageKind default ckLightCheck;
     property ClipboardFormats: TClipboardFormats read FClipboardFormats write SetClipboardFormats;
     property Colors: TVTColors read FColors write SetColors;
-    property CustomCheckImages: TCustomImageList read FCustomCheckImages write SetCustomCheckImages;
+    property CustomCheckImages: TBitmap read FCustomCheckImages write SetCustomCheckImages;
     property DefaultNodeHeight: Cardinal read FDefaultNodeHeight write SetDefaultNodeHeight default 18;
     property DefaultPasteMode: TVTNodeAttachMode read FDefaultPasteMode write FDefaultPasteMode default amAddChildLast;
     property DragHeight: Integer read FDragHeight write FDragHeight default 350;
@@ -2630,7 +2630,7 @@ TBaseVirtualTree = class(TCustomControl)
     property AccessibleItem: IAccessible read FAccessibleItem write FAccessibleItem;
     property AccessibleName: string read FAccessibleName write FAccessibleName;
     {$endif}
-    property CheckImages: TCustomImageList read FCheckImages;
+    property CheckImages: TBitmap read FCheckImages;
     property CheckState[Node: PVirtualNode]: TCheckState read GetCheckState write SetCheckState;
     property CheckType[Node: PVirtualNode]: TCheckType read GetCheckType write SetCheckType;
     property ChildCount[Node: PVirtualNode]: Cardinal read GetChildCount write SetChildCount;
@@ -3509,7 +3509,7 @@ var
   XPImages,                            // global XP style check images
   UtilityImages,                       // some small additional images (e.g for header dragging)
   SystemCheckImages,                   // global system check images
-  SystemFlatCheckImages: TImageList;   // global flat system check images
+  SystemFlatCheckImages: TBitmap;   // global flat system check images
   Initialized: Boolean;                // True if global structures have been initialized.
   NeedToUnitialize: Boolean;           // True if the OLE subsystem could be initialized successfully.
 
@@ -4702,10 +4702,12 @@ var
     begin
       //BM.Canvas.Brush.Color := MaskColor;
       BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
+      {
       if Flat then
         FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
       else
         DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
+      }
       BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
       IL.AddCopy(BM,nil);
     end;
@@ -4893,54 +4895,31 @@ begin
   // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
   CF_VTREFERENCE := ClipboardRegisterFormat(CFSTR_VTREFERENCE);
 
-  // Load all internal image lists and convert their colors to current desktop color scheme.
-  // In order to use high color images we have to create the image list handle ourselves.
+  LightCheckImages := TBitmap.Create;
+  LightCheckImages.LoadFromLazarusResource('VT_CHECK_LIGHT');
 
-  //todo: later remove flags when absolute sure is not necessary
-  {
-  if IsWinNT then
-    Flags := ILC_COLOR32 or ILC_MASK
-  else
-    Flags := ILC_COLOR16 or ILC_MASK;
-  }
-  LightCheckImages := TImageList.CreateSize(16,16);
-  //with LightCheckImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(LightCheckImages, 'VT_CHECK_LIGHT');
+  DarkCheckImages := TBitmap.Create;
+  DarkCheckImages.LoadFromLazarusResource('VT_CHECK_DARK');
 
-  DarkCheckImages := TImageList.CreateSize(16, 16);
-  //with DarkCheckImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(DarkCheckImages, 'VT_CHECK_DARK');
+  LightTickImages := TBitmap.Create;
+  LightTickImages.LoadFromLazarusResource('VT_TICK_LIGHT');
 
-  LightTickImages := TImageList.CreateSize(16, 16);
-  //with LightTickImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(LightTickImages, 'VT_TICK_LIGHT');
+  DarkTickImages := TBitmap.Create;
+  DarkTickImages.LoadFromLazarusResource('VT_TICK_DARK');
 
-  DarkTickImages := TImageList.CreateSize(16, 16);
-  //with DarkTickImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(DarkTickImages, 'VT_TICK_DARK');
+  FlatImages := TBitmap.Create;
+  FlatImages.LoadFromLazarusResource('VT_FLAT');
 
-  FlatImages := TImageList.CreateSize(16, 16);
-  //with FlatImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(FlatImages, 'VT_FLAT');
+  XPImages := TBitmap.Create;
+  XPImages.LoadFromLazarusResource('VT_XP');
 
-  XPImages := TImageList.CreateSize(16, 16);
-  //with XPImages do
-  //  Handle := ImageList_Create(16, 16, Flags, 0, AllocBy);
-  ConvertImageList(XPImages, 'VT_XP', False);
+  UtilityImages := TBitmap.Create;
+  UtilityImages.LoadFromLazarusResource('VT_UTILITIES');
 
-  UtilityImages := TImageList.CreateSize(UtilityImageSize, UtilityImageSize);
-  //with UtilityImages do
-  //  Handle := ImageList_Create(UtilityImageSize, UtilityImageSize, Flags, 0, AllocBy);
-  ConvertImageList(UtilityImages, 'VT_UTILITIES');
-
+{
   CreateSystemImageSet(SystemCheckImages, Flags, False);
   CreateSystemImageSet(SystemFlatCheckImages, Flags, True);
-
+}
   // Specify an useful timer resolution for timeGetTime.
   timeBeginPeriod(MinimumTimerInterval);
 
@@ -7890,7 +7869,7 @@ begin
       HeaderGlyphSize := Point(0, 0);
     if UseSortGlyph then
     begin
-      SortGlyphSize := Point(UtilityImages.Width, UtilityImages.Height);
+      SortGlyphSize := Point(UtilityImages.Height, UtilityImages.Height);
       // In any case, the sort glyph is vertically centered.
       SortGlyphPos.Y := (ClientSize.Y - SortGlyphSize.Y) div 2;
     end
@@ -8805,22 +8784,32 @@ begin
       Width := ButtonR.Right - ButtonR.Left;
       if Width <= 32 then
       begin
-        //todo
+        //todo: replace StretchMask by BitBlt
+        StretchMaskBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            8 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
         //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
+        StretchMaskBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, UtilityImages.Canvas.Handle,
+            6 * UtilityImageSize, 0, Width div 2, 3, UtilityImages.MaskHandle, 0, 0, 0);
         //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, CLR_NONE,
         //  CLR_NONE, ILD_NORMAL);
       end
       else
       begin
+        StretchMaskBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            6 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
         //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
         // Replicate inner part as many times as need to fill up the button rectangle.
         XPos := ButtonR.Left + 16;
         repeat
+          StretchMaskBlt(DC, XPos, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            7 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
           //ImageList_DrawEx(UtilityImages.Handle, 7, DC, XPos, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE, ILD_NORMAL);
           Inc(XPos, 16);
         until XPos + 16 >= ButtonR.Right;
+        StretchMaskBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            8 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
         //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
       end;
@@ -9841,17 +9830,24 @@ begin
               if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
               begin
                 SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
-                UtilityImages.Draw(FHeaderBitmap.Canvas, SortGlyphPos.X, SortGlyphPos.Y, SortIndex);
+                StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                  SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0);
+                //UtilityImages.Draw(FHeaderBitmap.Canvas, SortGlyphPos.X, SortGlyphPos.X, SortIndex);
               end;
 
               // Show an indication if this column is the current drop target in a header drag operation.
               if not (hpeDropMark in ActualElements) and (DropMark <> dmmNone) then
               begin
                 Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
+
                 if DropMark = dmmLeft then
-                  UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Left, Y, 0)
+                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    0 * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0)
+                  //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Left, Y, 0)
                 else
-                  UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Right - 16 , Y,  1);
+                   StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    1 * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0);
+                  //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Right - 16 , Y,  1);
               end;
 
               if ActualElements <> [] then
@@ -11680,7 +11676,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
+procedure TBaseVirtualTree.AdjustImageBorder(ImageWidth, ImageHeight: Integer; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
   var ImageInfo: TVTImageInfo);
 
 // Depending on the width of the image list as well as the given bidi mode R must be adjusted.
@@ -11689,14 +11685,14 @@ begin
   if BidiMode = bdLeftToRight then
   begin
     ImageInfo.XPos := R.Left;
-    Inc(R.Left, Images.Width + 2);
+    Inc(R.Left, ImageWidth + 2);
   end
   else
   begin
     ImageInfo.XPos := R.Right - Images.Width;
-    Dec(R.Right, Images.Width + 2);
+    Dec(R.Right, ImageWidth + 2);
   end;
-  ImageInfo.YPos := R.Top + VAlign - Images.Height div 2;
+  ImageInfo.YPos := R.Top + VAlign - ImageHeight div 2;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12026,7 +12022,7 @@ begin
     else
       StateImageOffset := 0;
     if WithCheck then
-      CheckOffset := FCheckImages.Width + 2
+      CheckOffset := FCheckImages.Height + 2
     else
       CheckOffset := 0;
     AutoSpan := FHeader.UseColumns and (toAutoSpanColumns in FOptions.FAutoOptions);
@@ -12220,7 +12216,7 @@ begin
     else
       StateImageOffset := 0;
     if WithCheck then
-      CheckOffset := FCheckImages.Width + 2
+      CheckOffset := FCheckImages.Height + 2
     else
       CheckOffset := 0;
     AutoSpan := FHeader.UseColumns and (toAutoSpanColumns in FOptions.FAutoOptions);
@@ -14101,26 +14097,18 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.SetCustomCheckImages(const Value: TCustomImageList);
+procedure TBaseVirtualTree.SetCustomCheckImages(const Value: TBitmap);
 
 begin
   if FCustomCheckImages <> Value then
   begin
     if Assigned(FCustomCheckImages) then
     begin
-      FCustomCheckImages.UnRegisterChanges(FCustomCheckChangeLink);
-      FCustomCheckImages.RemoveFreeNotification(Self);
-
       // Reset the internal check image list reference too, if necessary.
       if FCheckImages = FCustomCheckImages then
         FCheckImages := nil;
     end;
     FCustomCheckImages := Value;
-    if Assigned(FCustomCheckImages) then
-    begin
-      FCustomCheckImages.RegisterChanges(FCustomCheckChangeLink);
-      FCustomCheckImages.FreeNotification(Self);
-    end;
     // Check if currently custom check images are active.
     if FCheckImageKind = ckCustom then
       FCheckImages := Value;
@@ -17944,7 +17932,7 @@ begin
       // Check support is only available for the main column.
       if MainColumnHit and (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and
         (HitInfo.HitNode.CheckType <> ctNone) then
-        Inc(ImageOffset, FCheckImages.Width + 2);
+        Inc(ImageOffset, FCheckImages.Height + 2);
 
       if MainColumnHit and (Offset < ImageOffset) then
       begin
@@ -18074,7 +18062,7 @@ begin
       // Check support is only available for the main column.
       if MainColumnHit and (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and
         (HitInfo.HitNode.CheckType <> ctNone) then
-        Dec(ImageOffset, FCheckImages.Width + 2);
+        Dec(ImageOffset, FCheckImages.Height + 2);
 
       if MainColumnHit and (Offset > ImageOffset) then
       begin
@@ -20466,7 +20454,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class function TBaseVirtualTree.GetCheckImageListFor(Kind: TCheckImageKind): TCustomImageList;
+class function TBaseVirtualTree.GetCheckImageListFor(Kind: TCheckImageKind): TBitmap;
 
 begin
   case Kind of
@@ -20579,7 +20567,7 @@ begin
     Inc(NodeLeft, FImages.Width + 2);
   WithCheck := (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages);
   if WithCheck then
-    CheckOffset := FCheckImages.Width + 2
+    CheckOffset := FCheckImages.Height + 2
   else
     CheckOffset := 0;
 
@@ -22138,26 +22126,18 @@ begin
           Invalidate;
       end
       else
-        if AComponent = FCustomCheckImages then
-        begin
-          CustomCheckImages := nil;
-          FCheckImageKind := ckLightCheck;
-          if not (csDestroying in ComponentState) then
-            Invalidate;
-        end
+        if AComponent = PopupMenu then
+          PopupMenu := nil
         else
-          if AComponent = PopupMenu then
-            PopupMenu := nil
-          else
-            // Check for components linked to the header.
-            if Assigned(FHeader) then
-            begin
-              if AComponent = FHeader.FImages then
-                FHeader.Images := nil
-              else
-                if AComponent = FHeader.PopupMenu then
-                  FHeader.PopupMenu := nil;
-            end;
+          // Check for components linked to the header.
+          if Assigned(FHeader) then
+          begin
+            if AComponent = FHeader.FImages then
+              FHeader.Images := nil
+            else
+              if AComponent = FHeader.PopupMenu then
+                FHeader.PopupMenu := nil;
+          end;
   end;
   inherited;
 end;
@@ -22379,6 +22359,7 @@ begin
     {$endif ThemeSupport}
       with FCheckImages do
       begin
+        //todo: see what means ForegroundColor
         if (vsSelected in Node.States) and not Ghosted then
         begin
           if Focused or (toPopupMode in FOptions.FPaintOptions) then
@@ -22387,9 +22368,11 @@ begin
             ForegroundColor := ColorToRGB(FColors.UnfocusedSelectionColor);
         end
         else
-          ForegroundColor := GetRGBColor(BlendColor);
+          //ForegroundColor := GetRGBColor(BlendColor);
+          ForegroundColor := ColorToRGB(FColors.UnfocusedSelectionColor);
 
-          Draw(Canvas,XPos,YPos,Index);
+          StretchMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
+            Index * Height, 0, Height, Height, MaskHandle, 0, 0, 0);
           //ImageList_DrawEx(Handle, Index, Canvas.Handle, XPos, YPos, 0, 0, GetRGBColor(BkColor), ForegroundColor,
           //  ILD_TRANSPARENT);
       end;
@@ -25022,7 +25005,7 @@ begin
       if toShowRoot in FOptions.FPaintOptions then
         Inc(Offset, FIndent);
       if (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and (Node.CheckType <> ctNone) then
-        Inc(Offset, FCheckImages.Width + 2);
+        Inc(Offset, FCheckImages.Height + 2);
     end;
     // Consider associated images.
     if Assigned(FStateImages) and HasImage(Node, ikState, Column) then
@@ -25652,7 +25635,7 @@ begin
   else
     StateImageOffset := 0;
   if Assigned(FCheckImages) then
-    CheckOffset := FCheckImages.Width + 2
+    CheckOffset := FCheckImages.Height + 2
   else
     CheckOffset := 0;
 
@@ -27566,7 +27549,7 @@ begin
                             ImageInfo[iiCheck].Index := GetCheckImage(Node);
                             if ImageInfo[iiCheck].Index > -1 then
                             begin
-                              AdjustImageBorder(FCheckImages, BidiMode, VAlign, ContentRect, ImageInfo[iiCheck]);
+                              AdjustImageBorder(FCheckImages.Height, FCheckImages.Height, BidiMode, VAlign, ContentRect, ImageInfo[iiCheck]);
                               ImageInfo[iiCheck].Ghosted := False;
                             end;
                           end
@@ -27576,7 +27559,7 @@ begin
                           begin
                             GetImageIndex(PaintInfo, ikState, iiState, FStateImages);
                             if ImageInfo[iiState].Index > -1 then
-                              AdjustImageBorder(FStateImages, BidiMode, VAlign, ContentRect, ImageInfo[iiState]);
+                              AdjustImageBorder(FStateImages.Width, FStateImages.Height, BidiMode, VAlign, ContentRect, ImageInfo[iiState]);
                           end
                           else
                             ImageInfo[iiState].Index := -1;
@@ -27584,7 +27567,7 @@ begin
                           begin
                             GetImageIndex(PaintInfo, ImageKind[vsSelected in Node.States], iiNormal, FImages);
                             if ImageInfo[iiNormal].Index > -1 then
-                              AdjustImageBorder(FImages, BidiMode, VAlign, ContentRect, ImageInfo[iiNormal]);
+                              AdjustImageBorder(FImages.Width, FImages.Height, BidiMode, VAlign, ContentRect, ImageInfo[iiNormal]);
                           end
                           else
                             ImageInfo[iiNormal].Index := -1;
