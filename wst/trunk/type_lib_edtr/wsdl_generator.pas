@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   DOM,
-  pastree, pascal_parser_intf; //parserdefs;
+  pastree, pascal_parser_intf;
   
 type
 
@@ -127,15 +127,15 @@ const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
   sSOAP_NS       = 'http://schemas.xmlsoap.org/wsdl/soap/';
   sSOAP          = 'soap';
-  sSOAP_ENC_NS   = 'http://schemas.xmlsoap.org/soap/encoding/';
+  //sSOAP_ENC_NS   = 'http://schemas.xmlsoap.org/soap/encoding/';
   sXMLNS         = 'xmlns';
   sXSD_NS        = 'http://www.w3.org/2001/XMLSchema';
   sXSD           = 'xsd';
   sTNS           = 'tns';
 
   sSOAP_ACTION      = 'soapAction';
-  sSOAP_ENCODED     = 'encoded';
-  sSOAP_ENCODING_STYLE = 'encodingStyle';
+  //sSOAP_ENCODED     = 'encoded';
+  //sSOAP_ENCODING_STYLE = 'encodingStyle';
   sSOAP_RPC         = 'rpc';
   sSOAP_TRANSPORT   = 'http://schemas.xmlsoap.org/soap/http';
   sSOAP_USE         = 'use';
@@ -146,9 +146,11 @@ const
   sBINDING            = 'binding';
   sBODY               = 'body';
   sCOMPLEX_TYPE       = 'complexType';
+  sDOCUMENT           = 'document';
   sELEMENT            = 'element';
   sENUMERATION        = 'enumeration';
   sEXTENSION          = 'extension';
+  sGUID               = 'GUID';
   sITEM               = 'item';
   sLOCATION           = 'location';
   sMIN_OCCURS         = 'minOccurs';
@@ -164,7 +166,7 @@ const
   sTRANSPORT          = 'transport';
   sTYPE               = 'type';
   sUNBOUNDED          = 'unbounded';
-  sUSE                = 'use';
+  //sUSE                = 'use';
   sVALUE              = 'value';
 
   sWSDL_DEFINITIONS        = 'definitions';
@@ -183,7 +185,35 @@ const
   
 var
   WsdlTypeHandlerRegistryInst : IWsdlTypeHandlerRegistry;
-  
+
+
+function GetTypeNameSpace(
+  AContainer : TwstPasTreeContainer;
+  AType      : TPasElement
+) : string;
+var
+  locElt : TPasElement;
+begin
+  Result := '';
+  locElt := AType;
+  if ( locElt <> nil ) then begin
+    if locElt.InheritsFrom(TPasUnresolvedTypeRef) then
+      locElt := AContainer.FindElement(AContainer.GetExternalName(locElt));
+    if ( locElt <> nil ) and
+       ( not locElt.InheritsFrom(TPasUnresolvedTypeRef) ) and
+       //locElt.InheritsFrom(TPasType) and
+       ( locElt.Parent <> nil ) and
+       ( locElt.Parent.Parent <> nil )
+    then begin
+      Result := AContainer.GetExternalName(locElt.Parent.Parent);
+    end;
+  end;
+  Result := Trim(Result);
+  if ( Length(Result) = 0 ) then
+    Result := AContainer.GetExternalName(AContainer.CurrentModule);
+end;
+
+
 type
 
   { TWsdlTypeHandlerRegistry }
@@ -407,11 +437,17 @@ procedure GenerateWSDL(ASymbolTable : TwstPasTreeContainer; ADoc : TDOMDocument)
     end;
 
   var
-    prtTypeNode : TDOMElement;
+    prtTypeNode, docNode : TDOMElement;
     j, k : Integer;
     po : TPasProcedure;
   begin
     prtTypeNode := CreateElement(sWSDL_PORT_TYPE,ARootNode,ADoc);
+    if ( Length(AContract.InterfaceGUID) > 0 ) then begin
+      docNode := CreateElement(sDOCUMENT,prtTypeNode,ADoc);
+      CreateElement(sGUID,docNode,ADoc).SetAttribute(sVALUE,AContract.InterfaceGUID);
+    end else begin
+      docNode := nil;
+    end;
     prtTypeNode.SetAttribute(sWSDL_NAME,ASymbolTable.GetExternalName(AContract));
     k := AContract.Members.Count;
     if ( k > 0 ) then begin
@@ -429,13 +465,17 @@ procedure GenerateWSDL(ASymbolTable : TwstPasTreeContainer; ADoc : TDOMDocument)
     procedure GenerateOperation(AOperation : TPasProcedure; ABndngNode : TDOMElement);
     var
       opNode, inNode, outNode, bdyNode : TDOMElement;
-      strBuff : string;
+      strBuff, strSoapActBuffer : string;
       encdStyl{,encdStylURI} : string;
     begin
       strBuff := Format('%s:%s',[sSOAP,sWSDL_OPERATION]);
       opNode := CreateElement(sWSDL_OPERATION,ABndngNode,ADoc);
       opNode.SetAttribute(sWSDL_NAME,ASymbolTable.GetExternalName(AOperation));
-        CreateElement(strBuff,opNode,ADoc).SetAttribute(sSOAP_ACTION,Format('%s/%s%s',[ASymbolTable.GetExternalName(ASymbolTable.CurrentModule),ASymbolTable.GetExternalName(ABinding.Intf),ASymbolTable.GetExternalName(AOperation)]));
+        strSoapActBuffer := Trim(ASymbolTable.Properties.GetValue(AOperation,sTRANSPORT + '_' + sSOAP_ACTION));
+        {if ( Length(strSoapActBuffer) = 0 ) then begin
+          strSoapActBuffer := Format('%s/%s/%s',[ASymbolTable.GetExternalName(ASymbolTable.CurrentModule),ASymbolTable.GetExternalName(ABinding.Intf),ASymbolTable.GetExternalName(AOperation)]);
+        end;}
+        CreateElement(strBuff,opNode,ADoc).SetAttribute(sSOAP_ACTION,strSoapActBuffer);
         inNode := CreateElement(sWSDL_INPUT,opNode,ADoc);
           strBuff := Format('%s:%s',[sSOAP,sBODY]);
           bdyNode := CreateElement(strBuff,inNode,ADoc);
@@ -645,7 +685,7 @@ begin
       then begin
         typeCategory := tcSimpleContent;
         derivationNode := CreateElement(Format('%s:%s',[sXSD,sEXTENSION]),cplxNode,AWsdlDocument);
-        s := Trim(GetNameSpaceShortName(AContainer.GetExternalName(trueParent.Parent.Parent),AWsdlDocument));
+        s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),AWsdlDocument));
         if ( Length(s) > 0 ) then begin
           s := s + ':';
         end;
@@ -694,7 +734,7 @@ begin
             propNode.SetAttribute(sNAME,AContainer.GetExternalName(p));
             propTypItm := p.VarType;
             if Assigned(propTypItm) then begin
-              prop_ns_shortName := GetNameSpaceShortName(AContainer.GetExternalName(propTypItm.Parent.Parent),AWsdlDocument);
+              prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),AWsdlDocument);
               propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
               if AContainer.IsAttributeProperty(p) then begin
                 if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
@@ -717,7 +757,8 @@ end;
 
 class function TClassTypeDefinition_TypeHandler.CanHandle(ASymbol: TClass): Boolean;
 begin
-  Result := inherited CanHandle(ASymbol) and ASymbol.InheritsFrom(TPasClassType);
+  Result := inherited CanHandle(ASymbol) and
+            ( ASymbol.InheritsFrom(TPasClassType) and ( TPasClassType(ASymbol).ObjKind = okClass ));
 end;
   
 { TEnumTypeHandler }
@@ -736,7 +777,7 @@ var
 begin
   typItm := ASymbol as TPasEnumType;
   if Assigned(typItm) then begin
-    unitExternalName := AContainer.GetExternalName(ASymbol.Parent.Parent);
+    unitExternalName := GetTypeNameSpace(AContainer,ASymbol);
     if FindAttributeByValueInNode(unitExternalName,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
@@ -813,7 +854,7 @@ begin
   if not Assigned(typItm) then
     Exit;
   if Assigned(typItm) then begin
-    unitExternalName := AContainer.GetExternalName(typItm.Parent.Parent);
+    unitExternalName := GetTypeNameSpace(AContainer,typItm);
     GetNameSpaceShortName(unitExternalName);
     defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
@@ -830,7 +871,7 @@ begin
       propNode := CreateElement(s,sqcNode,AWsdlDocument);
       propNode.SetAttribute(sNAME,sITEM);
       if Assigned(propTypItm) then begin
-        prop_ns_shortName := GetNameSpaceShortName(AContainer.GetExternalName(propTypItm.Parent.Parent));
+        prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm));//  AContainer.GetExternalName(propTypItm.Parent.Parent));
         propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
         propNode.SetAttribute(sMIN_OCCURS,'0');
         propNode.SetAttribute(sMAX_OCCURS,sUNBOUNDED);
@@ -885,7 +926,7 @@ var
 begin
   typItm := ASymbol as TPasAliasType;
   if Assigned(typItm) then begin
-    unitExternalName := AContainer.GetExternalName(ASymbol.Parent.Parent);
+    unitExternalName := GetTypeNameSpace(AContainer,ASymbol);
     if FindAttributeByValueInNode(unitExternalName,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
@@ -900,7 +941,7 @@ begin
     resNode := CreateElement(s,defSchemaNode,AWsdlDocument);
     resNode.SetAttribute(sNAME, AContainer.GetExternalName(typItm)) ;
 
-    baseUnitExternalName := AContainer.GetExternalName(typItm.DestType.Parent.Parent);
+    baseUnitExternalName := GetTypeNameSpace(AContainer,typItm.DestType);
     s := GetNameSpaceShortName(baseUnitExternalName,AWsdlDocument);
     s := Format('%s:%s',[s,AContainer.GetExternalName(typItm.DestType)]);
     resNode.SetAttribute(sTYPE,s) ;

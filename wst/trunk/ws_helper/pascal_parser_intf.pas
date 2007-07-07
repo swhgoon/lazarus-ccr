@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit pascal_parser_intf;
 
 {$mode objfpc}{$H+}
@@ -22,22 +34,29 @@ const
 type
 
   TBindingStyle = ( bsDocument, bsRPC, bsUnknown );
+  
+const
+  BindingStyleNames : array[TBindingStyle] of string = ( 'Document', 'RPC', 'Unknown' );
+  
+type
   TArrayStyle = ( asScoped, asEmbeded );
 
   ESymbolException = class(Exception)
   end;
   { TwstBinding }
 
-  TwstBinding = class
+  TwstBinding = class(TPasElement)
   private
     FAddress: string;
     FBindingStyle: TBindingStyle;
     FIntf: TPasClassType;
-    FName: string;
   public
-    constructor Create(const AName : string; AIntf : TPasClassType);
+    constructor Create(
+      const AName : string;
+            AIntf : TPasClassType;
+            AParent: TPasElement
+    );
     destructor Destroy();override;
-    property Name : string read FName;
     property Intf : TPasClassType read FIntf;
     property Address : string read FAddress write FAddress;
     property BindingStyle : TBindingStyle read FBindingStyle write FBindingStyle;
@@ -98,7 +117,9 @@ type
     property CurrentModule : TPasModule read FCurrentModule;
     
     function AddBinding(const AName : string; AIntf : TPasClassType):TwstBinding;
-    function FindBinding(const AName : string):TwstBinding;
+    procedure DeleteBinding(ABinding : TwstBinding);
+    function FindBinding(const AName : string):TwstBinding;overload;
+    function FindBinding(const AIntf : TPasClassType; const AOrder : Integer = 0):TwstBinding;overload;
     property BindingCount : Integer read GetBindingCount;
     property Binding[AIndex : Integer] : TwstBinding read GetBinding;
     property Properties : TPropertyHolder read FProperties;
@@ -128,8 +149,16 @@ type
     property BoxedType : TPasNativeSimpleContentClassType read FBoxedType;
   end;
   
-  function GetParameterIndex(AProcType : TPasProcedureType; const AParamName : string) : Integer;
-  function FindParameter(AProcType : TPasProcedureType; const AParamName : string) : TPasArgument;
+  function GetParameterIndex(
+          AProcType  : TPasProcedureType;
+    const AParamName : string;
+    const AStartPos  : Integer = 0
+  ) : Integer;
+  function FindParameter(
+          AProcType  : TPasProcedureType;
+    const AParamName : string;
+    const AStartPos  : Integer = 0
+  ) : TPasArgument;
   function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ;
   function GetElementCount(AList : TList; AElementClass : TPTreeElement):Integer ;
   
@@ -307,13 +336,21 @@ begin
   end;
 end;
 
-function GetParameterIndex(AProcType : TPasProcedureType; const AParamName : string) : Integer;
+function GetParameterIndex(
+        AProcType  : TPasProcedureType;
+  const AParamName : string;
+  const AStartPos  : Integer
+) : Integer;
 var
   pl : TList;
   i : Integer;
 begin
   pl := AProcType.Args;
-  for i := 0 to Pred(pl.Count) do begin
+  if ( AStartPos >= 0 ) then
+    i := AStartPos
+  else
+    i := 0;
+  for i := i to Pred(pl.Count) do begin
     if AnsiSameText(AParamName,TPasArgument(pl[i]).Name) then begin
       Result := i;
       Exit;
@@ -322,11 +359,15 @@ begin
   Result := -1;
 end;
 
-function FindParameter(AProcType : TPasProcedureType; const AParamName : string) : TPasArgument;
+function FindParameter(
+        AProcType  : TPasProcedureType;
+  const AParamName : string;
+  const AStartPos  : Integer
+) : TPasArgument;
 var
   i : Integer;
 begin
-  i := GetParameterIndex(AProcType,AParamName);
+  i := GetParameterIndex(AProcType,AParamName,i);
   if ( i >= 0 ) then begin
     Result := TPasArgument(AProcType.Args[i]);
   end else begin
@@ -564,8 +605,14 @@ begin
   if Assigned(Result) then begin
     raise Exception.CreateFmt('Duplicated binding : "%s"',[AName]);
   end;
-  Result := TwstBinding.Create(AName, AIntf);
+  Result := TwstBinding.Create(AName, AIntf, AIntf.Parent);
   FBindingList.Add(Result);
+end;
+
+procedure TwstPasTreeContainer.DeleteBinding(ABinding: TwstBinding);
+begin
+  FBindingList.Extract(ABinding);
+  ABinding.Release();
 end;
 
 function TwstPasTreeContainer.FindBinding(const AName: string): TwstBinding;
@@ -576,6 +623,24 @@ begin
     if AnsiSameText(AName,Binding[i].Name) then begin
       Result := Binding[i];
       Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function TwstPasTreeContainer.FindBinding(const AIntf: TPasClassType; const AOrder : Integer): TwstBinding;
+var
+  i, c, ordr : Integer;
+begin
+  ordr := AOrder;
+  c := BindingCount;
+  for i := 0 to Pred(c) do begin
+    Result := Binding[i];
+    if ( Result.Intf = AIntf ) then begin
+      if ( ordr <= 0 ) then
+        Exit
+      else
+        Dec(ordr);
     end;
   end;
   Result := nil;
@@ -623,9 +688,14 @@ end;
 
 { TwstBinding }
 
-constructor TwstBinding.Create(const AName : string; AIntf: TPasClassType);
+constructor TwstBinding.Create(
+  const AName : string;
+        AIntf : TPasClassType;
+        AParent: TPasElement
+);
 begin
   Assert((not IsStrEmpty(AName)) and Assigned(AIntf) and ( AIntf.ObjKind = okInterface ));
+  inherited Create(AName,AParent);
   FIntf := AIntf;
   FIntf.AddRef();
 end;
@@ -708,11 +778,14 @@ procedure TPasNativeSimpleType.SetBoxedType(
   ABoxedType : TPasNativeSimpleContentClassType
 );
 begin
-  if ( FBoxedType <> nil ) then begin
-    FBoxedType.Release();
+  if ( FBoxedType <> ABoxedType ) then begin
+    if ( FBoxedType <> nil ) then begin
+      FBoxedType.Release();
+    end;
+    FBoxedType := ABoxedType;
+    if ( FBoxedType <> nil ) then
+      FBoxedType.AddRef();
   end;
-  FBoxedType := ABoxedType;
-  FBoxedType.AddRef();
 end;
 
 end.

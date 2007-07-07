@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit ufclassedit;
 
 {$mode objfpc}{$H+}
@@ -7,7 +19,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ActnList,
   ExtCtrls, ComCtrls, Buttons, StdCtrls,
-  pastree, pascal_parser_intf, //parserdefs,
+  pastree, pascal_parser_intf,
   edit_helper, Menus;
 
 type
@@ -70,20 +82,8 @@ var
   fClassEdit: TfClassEdit;
 
 implementation
-uses parserutils, ufpropedit;
+uses parserutils, ufpropedit, common_gui_utils;
 
-function FindItem(const ACaption : string; AList : TListItems) : TListItem ;
-var
-  i : Integer;
-begin
-  for i := 0 to Pred(AList.Count) do begin
-    if AnsiSameText(ACaption,AList[i].Caption) then begin
-      Result := AList[i];
-      Exit;
-    end;
-  end;
-  Result := nil;
-end;
 
 { TfClassEdit }
 

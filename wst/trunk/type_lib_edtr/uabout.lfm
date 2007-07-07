@@ -18,7 +18,6 @@ object fAbout: TfAbout
     Top = 24
     Width = 211
     Caption = 'Web Services Toolkit for FPC/Lazarus'
-    Color = clNone
     Font.Style = [fsBold]
     ParentColor = False
   end
@@ -28,7 +27,6 @@ object fAbout: TfAbout
     Top = 56
     Width = 113
     Caption = 'Type Librarry Editor'
-    Color = clNone
     Font.Style = [fsBold, fsItalic]
     ParentColor = False
   end
@@ -38,7 +36,6 @@ object fAbout: TfAbout
     Top = 112
     Width = 200
     Caption = 'Copyright (c) 2007 Inoussa OUEDRAOGO'
-    Color = clNone
     ParentColor = False
   end
   object Button1: TButton

@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit rtti_filters;
 
 {$mode objfpc}{$H+}

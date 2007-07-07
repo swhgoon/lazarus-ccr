@@ -1,7 +1,7 @@
 object fClassEdit: TfClassEdit
-  Left = 754
+  Left = 702
   Height = 547
-  Top = 162
+  Top = 150
   Width = 518
   HorzScrollBar.Page = 517
   VertScrollBar.Page = 546
@@ -60,7 +60,6 @@ object fClassEdit: TfClassEdit
         Top = 18
         Width = 28
         Caption = 'Name'
-        Color = clNone
         ParentColor = False
       end
       object Label2: TLabel
@@ -69,7 +68,6 @@ object fClassEdit: TfClassEdit
         Top = 59
         Width = 67
         Caption = 'Inheritts from'
-        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit
@@ -119,26 +117,29 @@ object fClassEdit: TfClassEdit
         Left = 4
         Height = 25
         Top = 421
-        Width = 91
+        Width = 100
         Action = actPropAdd
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 2
       end
       object Button4: TButton
-        Left = 100
+        Left = 116
         Height = 25
         Top = 421
-        Width = 91
+        Width = 100
         Action = actPropEdit
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 3
       end
       object Button5: TButton
-        Left = 196
+        Left = 228
         Height = 25
         Top = 421
-        Width = 91
+        Width = 100
         Action = actPropDelete
+        Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
         TabOrder = 4
       end
@@ -148,6 +149,7 @@ object fClassEdit: TfClassEdit
         Top = 59
         Width = 406
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 13
         MaxLength = 0
         Style = csDropDownList
         TabOrder = 5
@@ -155,8 +157,8 @@ object fClassEdit: TfClassEdit
     end
   end
   object ActionList1: TActionList
-    left = 275
-    top = 147
+    left = 232
+    top = 200
     object actOK: TAction
       Caption = 'OK'
       DisableIfNoHandler = True

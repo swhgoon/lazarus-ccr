@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit ufpropedit;
 
 {$mode objfpc}{$H+}
@@ -84,47 +96,6 @@ begin
   end;
 end;
 
-procedure InternalFillList(ALs : TStrings; AContainer : TwstPasTreeContainer);
-var
-  i, j : Integer;
-  sym : TPasElement;
-  moduleList, decList : TList;
-  mdl : TPasModule;
-begin
-  moduleList := AContainer.Package.Modules;
-  for i := 0 to Pred(moduleList.Count) do begin
-    mdl := TPasModule(moduleList[i]);
-    decList := mdl.InterfaceSection.Declarations;
-    for j := 0 to Pred(decList.Count) do begin
-      sym := TPasElement(decList[i]);
-      if sym.InheritsFrom(TPasType) then begin
-        if ( ALs.IndexOfObject(sym) = -1 ) then begin
-          ALs.AddObject(AContainer.GetExternalName(sym),sym);
-        end;
-      end;
-    end;
-  end;
-end;
-
-procedure FillList(
-  ALs : TStrings;
-  ASymbol : TwstPasTreeContainer
-);
-var
-  locLST : TStringList;
-begin
-  locLST := TStringList.Create();
-  try
-    locLST.Assign(ALs);
-    locLST.Duplicates := dupAccept;
-    InternalFillList(locLST,ASymbol);
-    locLST.Sort();
-    ALs.Assign(locLST);
-  finally
-    FreeAndNil(locLST);
-  end;
-end;
-
 { TfPropEdit }
 
 procedure TfPropEdit.actOKUpdate(Sender: TObject);
@@ -150,7 +121,7 @@ begin
   edtType.Items.BeginUpdate();
   try
     edtType.Items.Clear();
-    FillList(edtType.Items,FSymbolTable);
+    FillTypeList(edtType.Items,FSymbolTable);
   finally
     edtType.Items.EndUpdate();
   end;

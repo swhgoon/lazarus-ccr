@@ -1,7 +1,7 @@
 object fInterfaceEdit: TfInterfaceEdit
-  Left = 627
+  Left = 340
   Height = 564
-  Top = 101
+  Top = 122
   Width = 531
   HorzScrollBar.Page = 530
   VertScrollBar.Page = 563
@@ -61,7 +61,6 @@ object fInterfaceEdit: TfInterfaceEdit
         Top = 26
         Width = 28
         Caption = 'Name'
-        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit
@@ -74,32 +73,116 @@ object fInterfaceEdit: TfInterfaceEdit
       end
       object GroupBox1: TGroupBox
         Left = 20
-        Height = 384
+        Height = 368
         Top = 74
         Width = 484
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Methods  '
-        ClientHeight = 366
+        ClientHeight = 350
         ClientWidth = 480
         TabOrder = 1
         object trvMethods: TTreeView
-          Height = 366
+          Height = 350
           Width = 480
           Align = alClient
           DefaultItemHeight = 15
+          PopupMenu = PopupMenu1
           TabOrder = 0
         end
+      end
+      object Button3: TButton
+        Left = 20
+        Height = 25
+        Top = 450
+        Width = 99
+        Action = actNewMethod
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 2
+      end
+      object Button4: TButton
+        Left = 132
+        Height = 25
+        Top = 450
+        Width = 107
+        Action = actUpdateOperation
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 3
+      end
+      object Button5: TButton
+        Left = 252
+        Height = 25
+        Top = 450
+        Width = 104
+        Action = actDeleteOperation
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 4
+      end
+      object Button6: TButton
+        Left = 396
+        Height = 25
+        Top = 450
+        Width = 107
+        Action = actBindingEdit
+        Anchors = [akTop, akRight]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 5
       end
     end
   end
   object AL: TActionList
     left = 130
-    top = 201
+    top = 200
     object actOK: TAction
       Caption = 'OK'
       DisableIfNoHandler = True
       OnExecute = actOKExecute
       OnUpdate = actOKUpdate
+    end
+    object actNewMethod: TAction
+      Caption = 'New operation'
+      DisableIfNoHandler = True
+      OnExecute = actNewMethodExecute
+    end
+    object actUpdateOperation: TAction
+      Caption = 'Edit Operation'
+      DisableIfNoHandler = True
+      OnExecute = actUpdateOperationExecute
+      OnUpdate = actUpdateOperationUpdate
+    end
+    object actDeleteOperation: TAction
+      Caption = 'Delete Operation'
+      DisableIfNoHandler = True
+      OnExecute = actDeleteOperationExecute
+      OnUpdate = actUpdateOperationUpdate
+    end
+    object actBindingEdit: TAction
+      Caption = 'Edit Binding'
+      DisableIfNoHandler = True
+      OnExecute = actBindingEditExecute
+      OnUpdate = actBindingEditUpdate
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 84
+    top = 233
+    object MenuItem1: TMenuItem
+      Action = actNewMethod
+      OnClick = actNewMethodExecute
+    end
+    object MenuItem2: TMenuItem
+      Action = actUpdateOperation
+      OnClick = actUpdateOperationExecute
+    end
+    object MenuItem3: TMenuItem
+      Action = actDeleteOperation
+      OnClick = actDeleteOperationExecute
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem5: TMenuItem
+      Action = actBindingEdit
+      OnClick = actBindingEditExecute
     end
   end
 end

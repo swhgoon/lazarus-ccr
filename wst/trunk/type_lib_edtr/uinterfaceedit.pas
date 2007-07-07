@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit uinterfaceedit;
 
 {$mode objfpc}{$H+}
@@ -8,26 +20,46 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ActnList,
   ExtCtrls, ComCtrls, StdCtrls, Buttons,
   pastree, pascal_parser_intf,
-  edit_helper;
+  edit_helper, Menus;
 
 type
 
   { TfInterfaceEdit }
 
   TfInterfaceEdit = class(TForm)
+    actDeleteOperation: TAction;
+    actBindingEdit: TAction;
+    actUpdateOperation: TAction;
+    actNewMethod: TAction;
     actOK: TAction;
     AL: TActionList;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
     edtName: TEdit;
     GroupBox1: TGroupBox;
     Label1: TLabel;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
     PC: TPageControl;
     Panel1: TPanel;
+    PopupMenu1: TPopupMenu;
     TabSheet1: TTabSheet;
     trvMethods: TTreeView;
+    procedure actBindingEditExecute(Sender: TObject);
+    procedure actBindingEditUpdate(Sender: TObject);
+    procedure actDeleteOperationExecute(Sender: TObject);
+    procedure actNewMethodExecute(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
     procedure actOKUpdate(Sender: TObject);
+    procedure actUpdateOperationExecute(Sender: TObject);
+    procedure actUpdateOperationUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FUpdateType : TEditType;
@@ -60,6 +92,32 @@ begin
   TAction(Sender).Enabled := not IsStrEmpty(ExtractIdentifier(edtName.Text));
 end;
 
+procedure TfInterfaceEdit.actUpdateOperationExecute(Sender: TObject);
+var
+  node, newNode : TTreeNode;
+  locObj : TPasProcedure;
+begin
+  node := trvMethods.Selected;
+  locObj := TPasProcedure(node.Data);
+  edit_helper.UpdateObject(locObj,FSymbolTable);
+  trvMethods.BeginUpdate();
+  try
+    newNode := FindPainter(locObj).Paint(FSymbolTable,locObj,node.Parent);
+    newNode.MoveTo(node,naInsert);
+    node.Free();
+  finally
+    trvMethods.EndUpdate();
+  end;
+end;
+
+procedure TfInterfaceEdit.actUpdateOperationUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled :=
+    ( trvMethods.Selected <> nil ) and
+    ( trvMethods.Selected.Data <> nil ) and
+    ( TPasElement(trvMethods.Selected.Data).InheritsFrom(TPasProcedure) );
+end;
+
 procedure TfInterfaceEdit.FormCreate(Sender: TObject);
 begin
   trvMethods.Images := DM.IM;
@@ -68,6 +126,60 @@ end;
 procedure TfInterfaceEdit.actOKExecute(Sender: TObject);
 begin
   ModalResult := mrOK;
+end;
+
+procedure TfInterfaceEdit.actNewMethodExecute(Sender: TObject);
+var
+  prp : TPasProcedure;
+begin
+  prp := CreateMethod(FObject,FSymbolTable);
+  if Assigned(prp) then begin
+    LoadMethod(prp);
+  end;
+end;
+
+procedure TfInterfaceEdit.actDeleteOperationExecute(Sender: TObject);
+var
+  node : TTreeNode;
+  locObj : TPasProcedure;
+begin
+  node := trvMethods.Selected;
+  locObj := TPasProcedure(node.Data);
+  node.Data := nil;
+  trvMethods.BeginUpdate();
+  try
+    node.Free();
+    locObj.Release();
+    node.Free();
+  finally
+    trvMethods.EndUpdate();
+  end;
+end;
+
+procedure TfInterfaceEdit.actBindingEditUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled :=
+    ( trvMethods.Selected <> nil ) and
+    ( trvMethods.Selected.Data <> nil ) and
+    ( TPasElement(trvMethods.Selected.Data).InheritsFrom(TwstBinding) );
+end;
+
+procedure TfInterfaceEdit.actBindingEditExecute(Sender: TObject);
+var
+  node, newNode : TTreeNode;
+  locObj : TwstBinding;
+begin
+  node := trvMethods.Selected;
+  locObj := TwstBinding(node.Data);
+  edit_helper.UpdateObject(locObj,FSymbolTable);
+  trvMethods.BeginUpdate();
+  try
+    newNode := FindPainter(locObj).Paint(FSymbolTable,locObj,node.Parent);
+    newNode.MoveTo(node,naInsert);
+    node.Free();
+  finally
+    trvMethods.EndUpdate();
+  end;
 end;
 
 procedure TfInterfaceEdit.LoadMethod(AMthDef: TPasProcedure);
@@ -83,6 +195,8 @@ var
   i : Integer;
   mthd : TPasProcedure;
   extName : string;
+  bindingsNode : TTreeNode;
+  b : TwstBinding;
 begin
   edtName.Text := '';
   trvMethods.BeginUpdate();
@@ -102,6 +216,16 @@ begin
     end else begin
       Self.Caption := 'New';
     end;
+
+    i := 0;
+    bindingsNode := trvMethods.Items.AddChild(nil,'Bindings');
+      while True do begin
+        b := FSymbolTable.FindBinding(FObject,i);
+        if ( b = nil ) then
+          Break;
+        Inc(i);
+        FindPainter(b).Paint(FSymbolTable,b,bindingsNode);
+      end;
     trvMethods.Items[0].Expand(False);
   finally
     trvMethods.EndUpdate();
@@ -111,11 +235,18 @@ end;
 procedure TfInterfaceEdit.SaveToObject();
 var
   typExtName, typIntName : string;
+  b : TwstBinding;
 begin
   typExtName := ExtractIdentifier(edtName.Text);
   typIntName := MakeInternalSymbolNameFrom(typExtName);
   FObject.Name := typIntName;
   FSymbolTable.RegisterExternalAlias(FObject,typExtName);
+  b := FSymbolTable.FindBinding(FObject,0);
+  if ( b = nil ) then begin
+    FSymbolTable.AddBinding(Format('%sBinding',[typExtName]),FObject);
+  end else begin
+    b.Name := Format('%sBinding',[typExtName]);
+  end
 end;
 
 function TfInterfaceEdit.UpdateObject(
@@ -126,6 +257,7 @@ function TfInterfaceEdit.UpdateObject(
 var
   intName : string;
   i : Integer;
+  b : TwstBinding;
 begin
   Assert(Assigned(ASymbolTable));
   FSymbolTable := ASymbolTable;
@@ -142,6 +274,7 @@ begin
     FObject.ObjKind := okInterface;
     FSymbolTable.CurrentModule.InterfaceSection.Declarations.Add(FObject);
     FSymbolTable.CurrentModule.InterfaceSection.Types.Add(FObject);
+    FSymbolTable.AddBinding(Format('%sBinding',[FObject.Name]),FObject);
   end;
   try
     LoadFromObject();
@@ -154,6 +287,9 @@ begin
     end;
   except
     if ( FUpdateType = etCreate ) then begin
+      b := FSymbolTable.FindBinding(FObject,0);
+      if ( b <> nil ) then
+        FSymbolTable.DeleteBinding(b);
       FSymbolTable.CurrentModule.InterfaceSection.Declarations.Extract(FObject);
       FSymbolTable.CurrentModule.InterfaceSection.Types.Extract(FObject);
       FObject.Release();

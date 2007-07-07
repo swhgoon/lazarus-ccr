@@ -1631,7 +1631,7 @@ var
   var
     k : Integer;
     p : TPasProperty;
-    pt : TPasElement;
+    //pt : TPasElement;
   begin
     if ( locPropCount > 0 ) then begin
       Indent();
@@ -1639,14 +1639,14 @@ var
       IncIndent();
         for k := 0 to Pred(locPropCount) do begin
           p := TPasProperty(locPropList[k]);
-          if p.VarType.InheritsFrom(TPasUnresolvedTypeRef) then begin
+          {if p.VarType.InheritsFrom(TPasUnresolvedTypeRef) then begin
             pt := SymbolTable.FindElement(SymbolTable.GetExternalName(p.VarType));
             if ( pt <> nil ) and pt.InheritsFrom(TPasType) and ( pt <> p.VarType ) then begin
               p.VarType.Release();
               p.VarType := pt as TPasType;
               p.VarType.AddRef();
             end;
-          end;
+          end;}
           WritePropertyField(p);
         end;
       DecIndent();

@@ -123,6 +123,7 @@ type
     function GetItem(const AIndex:Integer):ISourceStream;
   Public
     constructor Create();
+    destructor Destroy();override;
   End;
   
 function CreateSourceManager():ISourceManager;
@@ -199,6 +200,14 @@ end;
 constructor TSourceManager.Create();
 begin
   FList := TInterfaceList.Create() as IInterfaceList;
+end;
+
+destructor TSourceManager.Destroy();
+begin
+  if ( FList <> nil ) then
+    FList.Clear();
+  FList := nil;
+  inherited Destroy();
 end;
 
 { TSourceStream }

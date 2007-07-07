@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit edit_helper;
 
 {$mode objfpc}{$H+}
@@ -27,7 +39,17 @@ type
   function CreateEnum(AContainer : TwstPasTreeContainer) : TPasEnumType;
   function CreateCompoundObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
   function CreateInterface(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
-  
+  function CreateMethod(
+    AOwner       : TPasClassType;
+    ASymbolTable : TwstPasTreeContainer
+  ) : TPasProcedure;
+  function CreateArgument(
+    AOwner       : TPasProcedureType;
+    ASymbolTable : TwstPasTreeContainer
+  ) : TPasArgument;
+
+
+
   function HasEditor(AObject : TPasElement):Boolean;
   function UpdateObject(
     AObject : TPasElement;
@@ -35,9 +57,15 @@ type
   ):Boolean;
   
   procedure FillList(ALs : TStrings;AContainer : TwstPasTreeContainer);
-  
+  procedure FillTypeList(
+    ALs : TStrings;
+    ASymbol : TwstPasTreeContainer
+  );
+
+
 implementation
-uses Contnrs, Forms, ufEnumedit, ufclassedit, uinterfaceedit;
+uses Contnrs, Forms, ufEnumedit, ufclassedit, uinterfaceedit, uprocedit,
+     uargedit, umoduleedit, ubindingedit;
 
 type
 
@@ -123,6 +151,146 @@ type
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
+
+  { TMethodUpdater }
+
+  TMethodUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+
+  { TArgumentUpdater }
+
+  TArgumentUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+
+  { TModuleUpdater }
+
+  TModuleUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+
+  { TBindingUpdater }
+
+  TBindingUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+
+{ TBindingUpdater }
+
+class function TBindingUpdater.CanHandle(AObject: TObject): Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TwstBinding);
+end;
+
+class function TBindingUpdater.UpdateObject(
+  AObject: TPasElement;
+  ASymbolTable: TwstPasTreeContainer
+): Boolean;
+var
+  f : TfBindingEdit;
+  e : TwstBinding;
+begin
+  e := AObject as TwstBinding;
+  f := TfBindingEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+  
+{ TModuleUpdater }
+
+class function TModuleUpdater.CanHandle(AObject: TObject): Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasModule);
+end;
+
+class function TModuleUpdater.UpdateObject(
+  AObject: TPasElement;
+  ASymbolTable: TwstPasTreeContainer
+): Boolean;
+var
+  f : TfModuleEdit;
+  e : TPasModule;
+begin
+  e := AObject as TPasModule;
+  f := TfModuleEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+  
+{ TArgumentUpdater }
+
+class function TArgumentUpdater.CanHandle(AObject: TObject): Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasArgument);
+end;
+
+class function TArgumentUpdater.UpdateObject(
+  AObject      : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+): Boolean;
+var
+  f : TfArgEdit;
+  e : TPasArgument;
+begin
+  e := AObject as TPasArgument;
+  f := TfArgEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+
+{ TMethodUpdater }
+
+class function TMethodUpdater.CanHandle(AObject: TObject): Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and  AObject.InheritsFrom(TPasProcedure);
+end;
+
+class function TMethodUpdater.UpdateObject(
+  AObject: TPasElement;
+  ASymbolTable: TwstPasTreeContainer
+): Boolean;
+var
+  f : TfProcEdit;
+  e : TPasProcedure;
+begin
+  e := AObject as TPasProcedure;
+  f := TfProcEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
 
 { TInterfaceUpdater }
 
@@ -269,6 +437,40 @@ begin
   end;
 end;
 
+function CreateMethod(
+  AOwner       : TPasClassType;
+  ASymbolTable : TwstPasTreeContainer
+) : TPasProcedure;
+var
+  f : TfProcEdit;
+begin
+  Result := TPasProcedure(ASymbolTable.CreateElement(TPasProcedure,'new_proc',AOwner,visPublic,'',0));
+  Result.ProcType := TPasProcedureType(ASymbolTable.CreateElement(TPasProcedureType,'',Result,visDefault,'',0));
+  AOwner.Members.Add(Result);
+  f := TfProcEdit.Create(Application);
+  try
+    f.UpdateObject(Result,etCreate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+
+function CreateArgument(
+  AOwner       : TPasProcedureType;
+  ASymbolTable : TwstPasTreeContainer
+) : TPasArgument;
+var
+  f : TfArgEdit;
+begin
+  Result := TPasArgument(ASymbolTable.CreateElement(TPasArgument,'AValue',AOwner,visPublic,'',0));
+  Result.ArgType := ASymbolTable.FindElement('string') as TPasType;
+  f := TfArgEdit.Create(Application);
+  try
+    f.UpdateObject(Result,etCreate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
 
 { TObjectUpdater }
 
@@ -326,11 +528,56 @@ begin
   end;
 end;
 
+procedure InternalFillTypeList(ALs : TStrings; AContainer : TwstPasTreeContainer);
+var
+  i, j : Integer;
+  sym : TPasElement;
+  moduleList, decList : TList;
+  mdl : TPasModule;
+begin
+  moduleList := AContainer.Package.Modules;
+  for i := 0 to Pred(moduleList.Count) do begin
+    mdl := TPasModule(moduleList[i]);
+    decList := mdl.InterfaceSection.Declarations;
+    for j := 0 to Pred(decList.Count) do begin
+      sym := TPasElement(decList[j]);
+      if sym.InheritsFrom(TPasType) then begin
+        if ( ALs.IndexOfObject(sym) = -1 ) then begin
+          ALs.AddObject(AContainer.GetExternalName(sym),sym);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure FillTypeList(
+  ALs : TStrings;
+  ASymbol : TwstPasTreeContainer
+);
+var
+  locLST : TStringList;
+begin
+  locLST := TStringList.Create();
+  try
+    locLST.Assign(ALs);
+    locLST.Duplicates := dupAccept;
+    InternalFillTypeList(locLST,ASymbol);
+    locLST.Sort();
+    ALs.Assign(locLST);
+  finally
+    FreeAndNil(locLST);
+  end;
+end;
+
 initialization
   UpdaterRegistryInst := TUpdaterRegistry.Create();
   UpdaterRegistryInst.RegisterHandler(TEnumUpdater);
   UpdaterRegistryInst.RegisterHandler(TClassUpdater);
   UpdaterRegistryInst.RegisterHandler(TInterfaceUpdater);
+  UpdaterRegistryInst.RegisterHandler(TMethodUpdater);
+  UpdaterRegistryInst.RegisterHandler(TArgumentUpdater);
+  UpdaterRegistryInst.RegisterHandler(TModuleUpdater);
+  UpdaterRegistryInst.RegisterHandler(TBindingUpdater);
   
 finalization
   FreeAndNil(UpdaterRegistryInst);

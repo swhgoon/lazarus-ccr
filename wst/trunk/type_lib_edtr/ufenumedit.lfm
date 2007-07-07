@@ -10,6 +10,7 @@ object fEnumEdit: TfEnumEdit
   Caption = 'fEnumEdit'
   ClientHeight = 368
   ClientWidth = 400
+  Position = poMainFormCenter
   object PC: TPageControl
     Height = 318
     Width = 400
@@ -27,7 +28,6 @@ object fEnumEdit: TfEnumEdit
         Top = 18
         Width = 28
         Caption = 'Name'
-        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit

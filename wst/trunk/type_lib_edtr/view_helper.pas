@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2007 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 unit view_helper;
 
 {$mode objfpc}{$H+}
@@ -32,11 +44,12 @@ const
   IMG_CONST   = 2;
   IMG_TYPE_DEF    = 4;
   IMG_INTF_DEF    = 5;
-  IMG_PROP_DEF    = 6;
+  //IMG_PROP_DEF    = 6;
   IMG_ENUM        = 6;
   IMG_CONST_ITEM  = 7;
   IMG_ENUM_ITEM   = 8;
   IMG_PROC_ITEM   = 9;
+  IMG_BINDING_ITEM   = 10;
 
 type
 
@@ -260,6 +273,43 @@ type
   public
     class function CanHandle(AObj : TObject):Boolean;override;
   end;
+  
+  { TBindingPainter }
+
+  TBindingPainter = class(TAbstractSymbolPainter)
+  protected
+    function Paint(
+      AContainer : TwstPasTreeContainer;
+      AObj    : TPasElement;
+      AParent : TTreeNode
+    ):TTreeNode;override;
+  public
+    class function CanHandle(AObj : TObject):Boolean;override;
+  end;
+
+{ TBindingPainter }
+
+function TBindingPainter.Paint(
+  AContainer: TwstPasTreeContainer;
+  AObj: TPasElement;
+  AParent: TTreeNode
+): TTreeNode;
+var
+  locObj : TwstBinding;
+begin
+  locObj := TwstBinding(AObj);
+  Result := inherited Paint(AContainer, locObj, AParent);
+  Result.ImageIndex := IMG_BINDING_ITEM;
+  Result.StateIndex := IMG_BINDING_ITEM;
+  Result.SelectedIndex := IMG_BINDING_ITEM;
+    AddChildNode(Result,BindingStyleNames[locObj.BindingStyle]);
+    AddChildNode(Result,locObj.Address);
+end;
+
+class function TBindingPainter.CanHandle(AObj: TObject): Boolean;
+begin
+  Result := ( inherited CanHandle(AObj) ) and AObj.InheritsFrom(TwstBinding);
+end;
 
 { TPasNativeSimpleTypePainter }
 
@@ -299,7 +349,7 @@ var
   i , c: Integer;
   locObj : TPasModule;
   objPtr : ISymbolPainter;
-  constNode, typNode, intfNode : TTreeNode;
+  {constNode,} typNode, intfNode : TTreeNode;
   objItm : TPasElement;
   decList : TList;
 begin
@@ -308,10 +358,10 @@ begin
   Result.ImageIndex := IMG_TABLE;
   Result.StateIndex := IMG_TABLE;
   Result.SelectedIndex := IMG_TABLE;
-  constNode := AddChildNode(Result,'Const');
+  {constNode := AddChildNode(Result,'Const');
   constNode.ImageIndex := IMG_CONST;
   constNode.StateIndex := IMG_CONST;
-  constNode.SelectedIndex := IMG_CONST;
+  constNode.SelectedIndex := IMG_CONST;}
   typNode := AddChildNode(Result,'Type');
   typNode.ImageIndex := IMG_TYPES;
   typNode.StateIndex := IMG_TYPES;
@@ -327,13 +377,6 @@ begin
         objPtr.Paint(AContainer,objItm,intfNode)
       else
         objPtr.Paint(AContainer,objItm,typNode);
-      {if objItm.InheritsFrom(TpasTypeDefinition) then begin
-        objPtr.Paint(objItm,typNode);
-      end else if objItm.InheritsFrom(TInterfaceDefinition) then begin
-        objPtr.Paint(objItm,intfNode);
-      end else if objItm.InheritsFrom(TAbstractConstantDefinition) then begin
-        objPtr.Paint(objItm,constNode);
-      end;}
     end;
   end;
 end;
@@ -373,7 +416,10 @@ begin
     AddChildNode(Result,ss);
   end;
   if locMthd.InheritsFrom(TPasFunction) then begin
-    AddChildNode(Result,'>> ' + AContainer.GetExternalName(TPasFunctionType(locMthd.ProcType).ResultEl));
+    AddChildNode(
+      Result,
+      '>> ' + AContainer.GetExternalName(TPasFunctionType(locMthd.ProcType).ResultEl)
+    );
   end;
 end;
 
@@ -389,33 +435,13 @@ function TInterfaceDefinitionPainter.Paint(
   AObj : TPasElement;
   AParent: TTreeNode
 ): TTreeNode;
-
-{  function PaintMethod(AIntfNode : TTreeNode; AMthd : TMethodDefinition):TTreeNode ;
-  var
-    j : Integer;
-    ss : string;
-    pmr : TParameterDefinition;
-  begin
-    Result := AddChildNode(AIntfNode,AMthd.ExternalName);
-    Result.Data := AMthd;
-    Result.ImageIndex := IMG_PROC_ITEM;
-    Result.StateIndex := IMG_PROC_ITEM;
-    Result.SelectedIndex := IMG_PROC_ITEM;
-    for j := 0 to Pred(AMthd.ParameterCount) do begin
-      pmr := AMthd.Parameter[j];
-      ss := ParameterModifierMAP[pmr.Modifier];
-      if ( Length(ss) > 0 ) then begin
-        ss := ss + ' ' + pmr.ExternalName;
-      end;
-      AddChildNode(Result,ss);
-    end;
-  end; }
-  
 var
   locObj : TPasClassType;
   locMthd : TPasProcedure;
   i : Integer;
   memberList : TList;
+  bindingsNode : TTreeNode;
+  b : TwstBinding;
 begin
   locObj := AObj as TPasClassType;
   Result := inherited Paint(AContainer, locObj, AParent);
@@ -429,6 +455,15 @@ begin
       FindPainter(locMthd).Paint(AContainer,locMthd,Result);
     end;
   end;
+  i := 0;
+  bindingsNode := AddChildNode(Result,'Bindings >');
+    while True do begin
+      b := AContainer.FindBinding(locObj,i);
+      if ( b = nil ) then
+        Break;
+      Inc(i);
+      FindPainter(b).Paint(AContainer,b,bindingsNode);
+    end;
 end;
 
 class function TInterfaceDefinitionPainter.CanHandle(AObj : TObject): Boolean;
@@ -672,7 +707,8 @@ initialization
   FPainterRegistryInst.RegisterHandler(TAbstractConstantDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TInterfaceDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TMethodDefinitionPainter);
-  FPainterRegistryInst.RegisterHandler(TPasNativeSimpleTypePainter)
+  FPainterRegistryInst.RegisterHandler(TPasNativeSimpleTypePainter);
+  FPainterRegistryInst.RegisterHandler(TBindingPainter)
 
 finalization
   FreeAndNil(FPainterRegistryInst);
