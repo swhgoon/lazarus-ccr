@@ -164,14 +164,15 @@ begin
       sym := TPasElement(decList[j]);
       if sym.InheritsFrom(TPasType) and
          ( sym.InheritsFrom(TPasClassType) or
-           sym.InheritsFrom(TPasNativeSimpleType) or
+           sym.InheritsFrom(TPasNativeSimpleContentClassType) or
            ( sym.InheritsFrom(TPasAliasType) and
              Assigned(TPasAliasType(sym).DestType) and
              ( TPasAliasType(sym).DestType.InheritsFrom(TPasClassType) or
                TPasAliasType(sym).DestType.InheritsFrom(TPasNativeSimpleType)
              )
            )
-         )
+         )  and
+        ( not sym.InheritsFrom(TPasNativeSimpleType) )
       then begin
         if ( ALs.IndexOfObject(sym) = -1 ) then begin
           ALs.AddObject(AContainer.GetExternalName(sym),sym);
@@ -286,6 +287,7 @@ begin
     if ( FOldAncestor <> nil ) then
       FOldAncestor.Release();
     locObj.AncestorType := trueParent;
+    locObj.AncestorType.AddRef();
   end;
 end;
 
@@ -301,6 +303,7 @@ begin
   FObject := AObject;
   if ( UpdateType = etCreate ) and ( FObject = nil ) then begin
     FObject := TPasClassType(FSymbolTable.CreateElement(TPasClassType,'new_class',FSymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
+    FObject.ObjKind := okClass;
     FSymbolTable.CurrentModule.InterfaceSection.Declarations.Add(FObject);
     FSymbolTable.CurrentModule.InterfaceSection.Types.Add(FObject);
     FSymbolTable.CurrentModule.InterfaceSection.Classes.Add(FObject);

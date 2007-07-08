@@ -1,20 +1,20 @@
 object fPropEdit: TfPropEdit
   Left = 306
-  Height = 272
+  Height = 326
   Top = 266
   Width = 324
   HorzScrollBar.Page = 323
-  VertScrollBar.Page = 271
+  VertScrollBar.Page = 325
   ActiveControl = Button1
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'fPropEdit'
-  ClientHeight = 272
+  ClientHeight = 326
   ClientWidth = 324
   Position = poDesktopCenter
   object Panel1: TPanel
     Height = 50
-    Top = 222
+    Top = 276
     Width = 324
     Align = alBottom
     ClientHeight = 50
@@ -45,7 +45,7 @@ object fPropEdit: TfPropEdit
     end
   end
   object PageControl1: TPageControl
-    Height = 222
+    Height = 276
     Width = 324
     ActivePage = TabSheet1
     Align = alClient
@@ -53,7 +53,7 @@ object fPropEdit: TfPropEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Property'
-      ClientHeight = 196
+      ClientHeight = 250
       ClientWidth = 316
       object Label1: TLabel
         Left = 20
@@ -96,6 +96,15 @@ object fPropEdit: TfPropEdit
         Width = 101
         Caption = 'Attribute Property'
         TabOrder = 2
+      end
+      object edtOptional: TCheckBox
+        Left = 20
+        Height = 13
+        Top = 218
+        Width = 100
+        Caption = 'Optional property'
+        Font.Style = [fsItalic]
+        TabOrder = 3
       end
     end
   end

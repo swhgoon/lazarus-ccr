@@ -12,7 +12,7 @@
 }
 unit uwsttypelibraryedit;
 
-{$DEFINE WST_IDE}
+//{$DEFINE WST_IDE}
 {$mode objfpc}{$H+}
 
 interface
@@ -146,7 +146,7 @@ implementation
 uses view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
      wsdl2pas_imp, source_utils, command_line_parser, generator, metadata_generator,
      binary_streamer, wst_resources_utils, wsdl_generator,
-     uabout, edit_helper, udm, ufrmsaveoption
+     uabout, edit_helper, udm, ufrmsaveoption, pparser
      {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF};
 
 
@@ -173,7 +173,51 @@ const
 type
   TSourceType = cloInterface .. cloBinder;
   TSourceTypes = set of TSourceType;
+
+function ParsePascalFile(
+  const AFileName : string;
+  const ANotifier : TOnParserMessage
+) : TwstPasTreeContainer;overload;
+const
+  s_ostype =
+    {$IFDEF WINDOWS}
+      'WINDOWS'
+    {$ELSE}
+      {$IFDEF LINUX}
+        'LINUX'
+      {$ELSE}
+        ''
+      {$ENDIF}
+    {$ENDIF};
+    
+  procedure DoNotify(const AMsgType : TMessageType; const AMsg : string);
+  begin
+    if ( ANotifier <> nil ) then
+      ANotifier(AMsgType,AMsg);
+  end;
   
+var
+  symName : string;
+begin
+  symName := ChangeFileExt(ExtractFileName(AFileName),'');
+  if ( symName[Length(symName)] = '.' ) then begin
+    Delete(symName,Length(symName),1);
+  end;
+  Result := TwstPasTreeContainer.Create();
+  try
+    DoNotify(mtInfo,Format('Parsing file %s ...',[AFileName]));
+    CreateWstInterfaceSymbolTable(Result);
+    ParseSource(Result,AFileName,s_ostype,'');
+    DoNotify(mtInfo,Format('File parsed %s .',[AFileName]));
+  except
+    on e : Exception do begin
+      FreeAndNil(Result);
+      DoNotify(mtError,e.Message);
+      raise;
+    end;
+  end;
+end;
+
 function ParseWsdlFile(
   const AFileName : string;
         AContent  : TStream;
@@ -448,12 +492,12 @@ end;
 
 function TfWstTypeLibraryEdit.GetTypeNode(): TTreeNode;
 begin
-  Result := trvSchema.TopItem.GetFirstChild().Items[1];
+  Result := trvSchema.TopItem.GetFirstChild().Items[0];
 end;
 
 function TfWstTypeLibraryEdit.GetInterfaceNode(): TTreeNode;
 begin
-  Result := trvSchema.TopItem.GetFirstChild().Items[2];
+  Result := trvSchema.TopItem.GetFirstChild().Items[1];
 end;
 
 procedure TfWstTypeLibraryEdit.ShowStatusMessage(const AMsgType : TMessageType;const AMsg: string);
@@ -672,12 +716,17 @@ begin
   mmoLog.Clear();
   PC.ActivePage := tsLog;
   curLok := SetCursorHourGlass();
-  if ( AContent = nil ) then
-    tmpTable := ParseWsdlFile(AFileName,@ShowStatusMessage)
-  else
-    tmpTable := ParseWsdlFile(AFileName,AContent,@ShowStatusMessage);
+  if AnsiSameText('.pas',ExtractFileExt(AFileName)) then begin
+    tmpTable := ParsePascalFile(AFileName,@ShowStatusMessage);
+  end else begin
+    if ( AContent = nil ) then
+      tmpTable := ParseWsdlFile(AFileName,@ShowStatusMessage)
+    else
+      tmpTable := ParseWsdlFile(AFileName,AContent,@ShowStatusMessage);
+  end;
   if Assigned(tmpTable) then begin
-    FCurrentFileName := AFileName;
+    if AnsiSameText('.pas',ExtractFileExt(AFileName)) then
+      FCurrentFileName := ChangeFileExt(AFileName,'.wsdl');
     trvSchema.Items.Clear();
     FreeAndNil(FSymbolTable);
     FSymbolTable := tmpTable;

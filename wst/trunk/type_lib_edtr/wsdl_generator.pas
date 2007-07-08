@@ -40,7 +40,7 @@ type
   IWsdlTypeHandlerRegistry = Interface
     ['{C5666646-3426-4696-93EE-AFA8EE7CAE53}']
     function Find(
-          ASymbol  : TPTreeElement;
+          ASymbol  : TPasElement;
       out AHandler : IWsdlTypeHandler
     ) : Boolean;
     procedure Register(AFactory : TBaseTypeHandlerClass);
@@ -53,7 +53,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );virtual;abstract;
-    class function CanHandle(ASymbol : TClass) : Boolean;virtual;abstract;
+    class function CanHandle(ASymbol : TObject) : Boolean;virtual;abstract;
   end;
 
   { TTypeDefinition_TypeHandler }
@@ -65,7 +65,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );override;
-    class function CanHandle(ASymbol : TClass) : Boolean;override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
   { TTypeAliasDefinition_TypeHandler }
@@ -77,7 +77,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );override;
-    class function CanHandle(ASymbol : TClass) : Boolean;override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
   
   { TEnumTypeHandler }
@@ -89,7 +89,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );override;
-    class function CanHandle(ASymbol : TClass) : Boolean;override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
   { TClassTypeDefinition_TypeHandler }
@@ -101,7 +101,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );override;
-    class function CanHandle(ASymbol : TClass) : Boolean;override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
   { TBaseArrayRemotable_TypeHandler }
@@ -113,7 +113,7 @@ type
       const ASymbol       : TPasElement;
             AWsdlDocument : TDOMDocument
     );override;
-    class function CanHandle(ASymbol : TClass) : Boolean;override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
   procedure GenerateWSDL(ASymbolTable : TwstPasTreeContainer; ADoc : TDOMDocument);
@@ -146,11 +146,13 @@ const
   sBINDING            = 'binding';
   sBODY               = 'body';
   sCOMPLEX_TYPE       = 'complexType';
+  sCUSTOM_ATTRIBUTE   = 'customAttributes';
   sDOCUMENT           = 'document';
   sELEMENT            = 'element';
   sENUMERATION        = 'enumeration';
   sEXTENSION          = 'extension';
   sGUID               = 'GUID';
+  sHEADER_Block       = 'headerBlock';
   sITEM               = 'item';
   sLOCATION           = 'location';
   sMIN_OCCURS         = 'minOccurs';
@@ -222,10 +224,10 @@ type
   private
     FList : TClassList;
   private
-    function FindIndexOfHandler(ASymbol : TPTreeElement) : Integer;
+    function FindIndexOfHandler(ASymbol : TPasElement) : Integer;
   protected
     function Find(
-          ASymbol  : TPTreeElement;
+          ASymbol  : TPasElement;
       out AHandler : IWsdlTypeHandler
     ) : Boolean;
     procedure Register(AFactory : TBaseTypeHandlerClass);
@@ -236,7 +238,7 @@ type
 
 { TWsdlTypeHandlerRegistry }
 
-function TWsdlTypeHandlerRegistry.FindIndexOfHandler(ASymbol: TPTreeElement): Integer;
+function TWsdlTypeHandlerRegistry.FindIndexOfHandler(ASymbol: TPasElement): Integer;
 Var
   i, c : Integer;
 begin
@@ -251,7 +253,7 @@ begin
 end;
 
 function TWsdlTypeHandlerRegistry.Find(
-          ASymbol  : TPTreeElement;
+          ASymbol  : TPasElement;
       out AHandler : IWsdlTypeHandler
 ) : Boolean;
 var
@@ -564,7 +566,7 @@ procedure GenerateWSDL(ASymbolTable : TwstPasTreeContainer; ADoc : TDOMDocument)
          ( not tri.InheritsFrom(TPasNativeClassType) ) and
          ( not tri.InheritsFrom(TPasNativeSimpleType) )
       then begin
-        if gr.Find(TPTreeElement(tri.ClassType),g) then
+        if gr.Find(tri,g) then
           g.Generate(ASymbolTable, tri,ADoc);
       end;
     end;
@@ -650,10 +652,20 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
         AWsdlDocument : TDOMDocument
 );
 var
+  cplxNode, docNode : TDOMElement;
+  
+  procedure CreateDocNode();
+  begin
+    if ( docNode = nil ) then begin
+      docNode := CreateElement(sDOCUMENT,cplxNode,AWsdlDocument);
+    end;
+  end;
+  
+var
   typItm : TPasClassType;
   propTypItm : TPasType;
   s, prop_ns_shortName : string;
-  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode, derivationNode : TDOMElement;
+  defTypesNode, defSchemaNode, sqcNode, propNode, derivationNode : TDOMElement;
   i : Integer;
   p : TPasProperty;
   typeCategory : TTypeCategory;
@@ -661,6 +673,7 @@ var
   trueParent : TPasType;
 begin
   inherited;
+  docNode := nil;
   typItm := ASymbol as TPasClassType;
   if Assigned(typItm) then begin
     GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
@@ -677,6 +690,12 @@ begin
     hasSequence := True;
     if Assigned(typItm.AncestorType) then begin
       trueParent := typItm.AncestorType;
+      
+      if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
+        CreateDocNode();
+        CreateElement(sCUSTOM_ATTRIBUTE,docNode,AWsdlDocument).SetAttribute(sHEADER_Block,'true');
+      end;
+
       if trueParent.InheritsFrom(TPasAliasType) then begin
         trueParent := GetUltimeType(trueParent);
       end;
@@ -755,7 +774,7 @@ begin
   end;
 end;
 
-class function TClassTypeDefinition_TypeHandler.CanHandle(ASymbol: TClass): Boolean;
+class function TClassTypeDefinition_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := inherited CanHandle(ASymbol) and
             ( ASymbol.InheritsFrom(TPasClassType) and ( TPasClassType(ASymbol).ObjKind = okClass ));
@@ -808,7 +827,7 @@ begin
   end;
 end;
 
-class function TEnumTypeHandler.CanHandle(ASymbol: TClass): Boolean;
+class function TEnumTypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := inherited CanHandle(ASymbol) and ASymbol.InheritsFrom(TPasEnumType);
 end;
@@ -879,7 +898,7 @@ begin
   end;
 end;
 
-class function TBaseArrayRemotable_TypeHandler.CanHandle(ASymbol: TClass): Boolean;
+class function TBaseArrayRemotable_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := inherited CanHandle(ASymbol) and ASymbol.InheritsFrom(TPasArrayType);
 end;
@@ -895,7 +914,7 @@ begin
   Assert(ASymbol.InheritsFrom(TPasType));
 end;
 
-class function TTypeDefinition_TypeHandler.CanHandle(ASymbol: TClass): Boolean;
+class function TTypeDefinition_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := Assigned(ASymbol) and ASymbol.InheritsFrom(TPasType);
 end;
@@ -948,7 +967,7 @@ begin
   end;
 end;
 
-class function TTypeAliasDefinition_TypeHandler.CanHandle(ASymbol: TClass): Boolean;
+class function TTypeAliasDefinition_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := Assigned(ASymbol) and ASymbol.InheritsFrom(TPasAliasType);
 end;

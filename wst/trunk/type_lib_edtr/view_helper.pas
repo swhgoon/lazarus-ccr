@@ -539,7 +539,7 @@ end;
 class function TClassTypeDefinitionPainter.CanHandle(AObj : TObject): Boolean;
 begin
   Result := ( inherited CanHandle(AObj) ) and
-            ( AObj.InheritsFrom(TPasClassType) and ( TPasClassType(AObj).ObjKind = okClass ) )and
+            ( AObj.InheritsFrom(TPasClassType) and ( TPasClassType(AObj).ObjKind = okClass ) ) and
             ( not AObj.InheritsFrom(TPasNativeClassType) );
 
 end;
@@ -704,7 +704,7 @@ initialization
   FPainterRegistryInst.RegisterHandler(TTypeAliasDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TEnumTypeDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TClassTypeDefinitionPainter);
-  FPainterRegistryInst.RegisterHandler(TAbstractConstantDefinitionPainter);
+  //FPainterRegistryInst.RegisterHandler(TAbstractConstantDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TInterfaceDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TMethodDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TPasNativeSimpleTypePainter);

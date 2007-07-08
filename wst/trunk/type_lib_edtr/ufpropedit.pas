@@ -32,6 +32,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button4: TButton;
+    edtOptional : TCheckBox;
     edtAttribute: TCheckBox;
     edtType: TComboBox;
     edtName: TEdit;
@@ -130,6 +131,7 @@ begin
     edtName.Text := FSymbolTable.GetExternalName(FObject);
     edtType.ItemIndex := edtType.Items.IndexOfObject(FObject.VarType);
     edtAttribute.Checked := FSymbolTable.IsAttributeProperty(FObject);
+    edtOptional.Checked := AnsiSameText('Has',Copy(FObject.StoredAccessorName,1,3)) ;
   end else begin
     Self.Caption := 'New';
   end;
@@ -151,6 +153,7 @@ begin
     FObject := locObj;
     locObj.VarType := propType;
     locObj.VarType.AddRef();
+    ClassObject.Members.Add(FObject);
   end else begin
     locObj := FObject;
     if ( propType <> locObj.VarType ) then begin
@@ -161,6 +164,12 @@ begin
     end;
     locObj.Name := typIntName;
   end;
+  if edtOptional.Checked then
+    locObj.StoredAccessorName := 'Has' + locObj.Name
+  else
+    locObj.StoredAccessorName := 'True';
+  locObj.ReadAccessorName := 'F' + locObj.Name;
+  locObj.WriteAccessorName := 'F' + locObj.Name;
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
   //if ( edtAttribute.Checked <> FSymbolTable.IsAttributeProperty(locObj) ) then
     FSymbolTable.SetPropertyAsAttribute(locObj,edtAttribute.Checked);

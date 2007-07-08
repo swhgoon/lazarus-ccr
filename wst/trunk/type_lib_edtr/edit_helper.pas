@@ -500,7 +500,8 @@ begin
              TPasAliasType(sym).DestType.InheritsFrom(TPasNativeSimpleType)
            )
          )
-       )
+       ) and
+       ( not sym.InheritsFrom(TPasNativeSimpleContentClassType) )
     then begin
       if ( ALs.IndexOfObject(sym) = -1 ) then begin
         ALs.AddObject(AContainer.GetExternalName(sym),sym);
@@ -541,7 +542,7 @@ begin
     decList := mdl.InterfaceSection.Declarations;
     for j := 0 to Pred(decList.Count) do begin
       sym := TPasElement(decList[j]);
-      if sym.InheritsFrom(TPasType) then begin
+      if sym.InheritsFrom(TPasType) and ( not sym.InheritsFrom(TPasNativeSimpleContentClassType) ) then begin
         if ( ALs.IndexOfObject(sym) = -1 ) then begin
           ALs.AddObject(AContainer.GetExternalName(sym),sym);
         end;

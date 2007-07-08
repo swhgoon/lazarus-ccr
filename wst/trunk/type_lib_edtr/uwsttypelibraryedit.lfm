@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 142
+  Left = 217
   Height = 644
-  Top = 192
+  Top = 507
   Width = 833
   HorzScrollBar.Page = 832
   VertScrollBar.Page = 623
@@ -1985,7 +1985,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   end
   object OD: TOpenDialog
     Title = 'Ouvrir un fichier existant'
-    Filter = 'WDSL files(*.WSDL)|*.WSDL'
+    Filter = 'WDSL files(*.WSDL)|*.WSDL|Pascal file (*.pas)|*.pas'
     FilterIndex = 0
     InitialDir = '.\'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]

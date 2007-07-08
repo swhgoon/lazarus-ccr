@@ -1,3 +1,5 @@
+{ Ceci est un fichier ressource généré automatiquement par Lazarus }
+
 LazarusResources.Add('TfClassEdit','FORMDATA',[
   'TPF0'#11'TfClassEdit'#10'fClassEdit'#4'Left'#3#190#2#6'Height'#3'#'#2#3'Top'
   +#3#150#0#5'Width'#3#6#2#18'HorzScrollBar.Page'#3#5#2#18'VertScrollBar.Page'#3
