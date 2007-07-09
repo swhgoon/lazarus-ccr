@@ -18,7 +18,6 @@ object MainForm: TMainForm
     Top = 8
     Width = 171
     Caption = 'Last operation duration:'
-    Color = clNone
     ParentColor = False
   end
   object VST: TVirtualStringTree

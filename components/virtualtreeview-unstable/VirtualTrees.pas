@@ -8638,32 +8638,31 @@ begin
       Width := ButtonR.Right - ButtonR.Left;
       if Width <= 32 then
       begin
-        //todo: replace StretchMask by BitBlt
-        StretchMaskBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
-            8 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
+        BitBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+           8 * UtilityImageSize, 0, SRCCOPY);
         //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
-        StretchMaskBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, UtilityImages.Canvas.Handle,
-            6 * UtilityImageSize, 0, Width div 2, 3, UtilityImages.MaskHandle, 0, 0, 0);
+        BitBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, UtilityImages.Canvas.Handle,
+            6 * UtilityImageSize, 0, SRCCOPY);
         //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, Width div 2, 3, CLR_NONE,
         //  CLR_NONE, ILD_NORMAL);
       end
       else
       begin
-        StretchMaskBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
-            6 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
+        BitBlt(DC, ButtonR.Left, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            6 * UtilityImageSize, 0, SRCCOPY);
         //ImageList_DrawEx(UtilityImages.Handle, 6, DC, ButtonR.Left, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
         // Replicate inner part as many times as need to fill up the button rectangle.
         XPos := ButtonR.Left + 16;
         repeat
-          StretchMaskBlt(DC, XPos, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
-            7 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
+          BitBlt(DC, XPos, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            7 * UtilityImageSize, 0, SRCCOPY);
           //ImageList_DrawEx(UtilityImages.Handle, 7, DC, XPos, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE, ILD_NORMAL);
           Inc(XPos, 16);
         until XPos + 16 >= ButtonR.Right;
-        StretchMaskBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
-            8 * UtilityImageSize, 0, UtilityImageSize, 3, UtilityImages.MaskHandle, 0, 0, 0);
+        BitBlt(DC, ButtonR.Right - 16, ButtonR.Bottom - 3, UtilityImageSize, 3, UtilityImages.Canvas.Handle,
+            8 * UtilityImageSize, 0, SRCCOPY);
         //ImageList_DrawEx(UtilityImages.Handle, 8, DC, ButtonR.Right - 16, ButtonR.Bottom - 3, 16, 3, CLR_NONE, CLR_NONE,
         //  ILD_NORMAL);
       end;
@@ -22170,12 +22169,11 @@ end;
 
 procedure TBaseVirtualTree.PaintCheckImage(const PaintInfo: TVTPaintInfo);
 
+{$ifdef ThemeSupport}
 var
-  ForegroundColor: COLORREF;
-  {$ifdef ThemeSupport}
-    R: TRect;
-    Details: TThemedElementDetails;
-  {$endif ThemeSupport}
+  R: TRect;
+  Details: TThemedElementDetails;
+{$endif ThemeSupport}
 
 begin
   Logger.EnterMethod([lcCheck],'PaintCheckImage');
@@ -22214,22 +22212,8 @@ begin
     {$endif ThemeSupport}
       with FCheckImages do
       begin
-        //todo: see what means ForegroundColor
-        if (vsSelected in Node.States) and not Ghosted then
-        begin
-          if Focused or (toPopupMode in FOptions.FPaintOptions) then
-            ForegroundColor := ColorToRGB(FColors.FocusedSelectionColor)
-          else
-            ForegroundColor := ColorToRGB(FColors.UnfocusedSelectionColor);
-        end
-        else
-          //ForegroundColor := GetRGBColor(BlendColor);
-          ForegroundColor := ColorToRGB(FColors.UnfocusedSelectionColor);
-
-          StretchMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
-            Index * Height, 0, Height, Height, MaskHandle, 0, 0, 0);
-          //ImageList_DrawEx(Handle, Index, Canvas.Handle, XPos, YPos, 0, 0, GetRGBColor(BkColor), ForegroundColor,
-          //  ILD_TRANSPARENT);
+        StretchMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
+          Index * Height, 0, Height, Height, MaskHandle, 0, 0, 0);
       end;
   end;
   Logger.ExitMethod([lcCheck],'PaintCheckImage');
