@@ -10,10 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
-
+{$INCLUDE wst_global.inc}
 unit testformatter_unit;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -1654,7 +1652,7 @@ begin
       f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
     f.EndScope();
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_StringArray.xml');
     FreeAndNil(a);
     a := TArrayOfStringRemotable.Create();
     a.SetLength(0);

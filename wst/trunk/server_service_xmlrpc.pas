@@ -10,23 +10,26 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit server_service_xmlrpc;
-
-{$INCLUDE wst.inc}
 
 interface
 
 uses
-  Classes, SysUtils, TypInfo, DOM,
+  Classes, SysUtils, TypInfo,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf, server_service_intf,
   base_xmlrpc_formatter;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+  
 type
 
 {$M+}
 
   { TXmlRpcFormatter }
-  
+
   TXmlRpcFormatter = class(TXmlRpcBaseFormatter,IFormatterBase,IFormatterResponse)
   private
     FCallProcedureName : string;
@@ -51,6 +54,7 @@ type
   procedure Server_service_RegisterXmlRpcFormat();
 
 implementation
+{$IFDEF FPC}uses wst_fpc_xml;{$ENDIF}
 
 { TXmlRpcFormatter }
 
@@ -86,14 +90,14 @@ begin
   if not SameText(sMETHOD_CALL,callNode.NodeName) then
     Error('XML root node must be "%s".',[sMETHOD_CALL]);
 
-  tmpNode := callNode.FindNode(sMETHOD_NAME);
+  tmpNode := FindNode(callNode,sMETHOD_NAME);
   if not Assigned(tmpNode) then
     Error('Node not found : "%s".',[sMETHOD_NAME]);
   if not tmpNode.HasChildNodes() then
     Error('"%s" does not provide value node.',[sMETHOD_NAME]);
   FCallProcedureName := Trim(tmpNode.FirstChild.NodeValue);
   
-  tmpNode := callNode.FindNode(sPARAMS);
+  tmpNode := FindNode(callNode,sPARAMS);
   if not Assigned(tmpNode) then
     Error('Node not found : "%s".',[sPARAMS]);
   PushStackParams(tmpNode);

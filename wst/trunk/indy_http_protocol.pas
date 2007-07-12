@@ -10,6 +10,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit indy_http_protocol;
 
 {$mode objfpc}{$H+}
@@ -22,6 +23,9 @@ uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf,
   IdHTTP;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Const
   sTRANSPORT_NAME = 'HTTP';

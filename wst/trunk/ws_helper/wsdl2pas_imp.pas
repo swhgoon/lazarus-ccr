@@ -178,11 +178,13 @@ const
   s_body                       : WideString = 'body';
   s_complexContent             : WideString = 'complexContent';
   s_complexType                : WideString = 'complexType';
+  s_customAttributes           : WideString = 'customAttributes';
   s_document                   : WideString = 'document';
   s_element                    : WideString = 'element';
   s_enumeration                : WideString = 'enumeration';
   s_extension                  : WideString = 'extension';
   s_guid                       : WideString = 'GUID';
+  s_headerBlock                : WideString = 'headerBlock';
   s_input                      : WideString = 'input';
   s_item                       : WideString = 'item';
   s_location                   : WideString = 'location';
@@ -2019,6 +2021,37 @@ var
       FSymbols.RegisterExternalAlias(Result,ATypeName);
   end;
   
+  function IsHeaderBlock() : Boolean;
+  var
+    nd : TDOMNode;
+    tmpCrs : IObjectCursor;
+  begin
+    Result := False;
+    tmpCrs := CreateCursorOn(
+                CreateChildrenCursor(FTypeNode,cetRttiNode),
+                ParseFilter(CreateQualifiedNameFilterStr(s_document,FOwner.FWsdlShortNames),TDOMNodeRttiExposer)
+              );
+    tmpCrs.Reset();
+    if tmpCrs.MoveNext() then begin
+      nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if nd.HasChildNodes() then begin
+        tmpCrs := CreateCursorOn(
+                    CreateChildrenCursor(nd,cetRttiNode),
+                    ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_customAttributes)]),TDOMNodeRttiExposer)
+                  );
+        tmpCrs.Reset();
+        if tmpCrs.MoveNext() then begin
+          nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+          if nd.HasAttributes() then begin
+            nd := nd.Attributes.GetNamedItem(s_headerBlock);
+            if Assigned(nd) then
+              Result := AnsiSameText('true',Trim(nd.NodeValue));
+          end;
+        end;
+      end;
+    end;
+  end;
+  
 var
   eltCrs, eltAttCrs : IObjectCursor;
   internalName : string;
@@ -2054,8 +2087,12 @@ begin
         if ( FDerivationMode in [dmExtension, dmRestriction] ) then begin
           classDef.AncestorType := FBaseType;
         end;
-        if ( classDef.AncestorType = nil ) then
-          classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+        if ( classDef.AncestorType = nil ) then begin
+          if IsHeaderBlock() then
+            classDef.AncestorType := FSymbols.FindElementInModule('THeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
+          else
+            classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+        end;
         classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;

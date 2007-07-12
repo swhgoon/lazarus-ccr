@@ -10,12 +10,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit library_base_intf;
 
 interface
 uses base_service_intf;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 const
   RET_OK = 0;

@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit server_binary_formatter;
-
-{$INCLUDE wst.inc}
 
 interface
 
@@ -21,6 +20,9 @@ uses
   base_service_intf, server_service_intf,
   base_binary_formatter;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+  
 const
   sBINARY_CONTENT_TYPE = 'binary';
   sPROTOCOL_NAME = sBINARY_CONTENT_TYPE;

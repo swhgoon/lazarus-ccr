@@ -10,18 +10,18 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit dom_cursors;
 
-{$mode objfpc}{$H+}
-{$IF (FPC_VERSION = 2) and (FPC_RELEASE > 0)}
-  {$define FPC_211}
-{$ENDIF}
 interface
 
 uses
   Classes, SysUtils,
   cursor_intf, DOM;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}  
+  
 const
 
   s_NODE_NAME = 'NodeName';

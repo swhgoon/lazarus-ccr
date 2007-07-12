@@ -10,20 +10,19 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit base_soap_formatter;
-
-{$mode objfpc}{$H+}
-{$IF (FPC_VERSION = 2) and (FPC_RELEASE > 0)}
-  {$define FPC_211}
-{$ENDIF}
 
 interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs,
-  DOM,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf;
-  
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+
 const
   sPROTOCOL_NAME = 'SOAP';
 
@@ -43,7 +42,9 @@ const
   sHEADER   = 'Header';
   sENVELOPE = 'Envelope';
 
-Type
+type
+
+  TwstXMLDocument = {$IFNDEF FPC}wst_delphi_xml.TXMLDocument{$ELSE}TXMLDocument{$ENDIF};
 
   TEnumIntType = Int64;
 
@@ -133,7 +134,7 @@ Type
     FHeaderEnterCount : Integer;
     
     FNameSpaceCounter : Integer;
-    FDoc : TXMLDocument;
+    FDoc : TwstXMLDocument;
     FStack : TObjectStack;
 
     FKeepedStyle : TSOAPDocumentStyle;
@@ -156,11 +157,13 @@ Type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
     ):TDOMNode;
+    {$IFDEF FPC}
     function PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;
+    {$ENDIF}
     function PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -188,6 +191,7 @@ Type
       Var   AName     : String;
       Var   AData     : TEnumIntType
     );
+    {$IFDEF FPC}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -198,6 +202,7 @@ Type
       Var   AName     : String;
       Var   AData     : Integer
     );
+    {$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -219,7 +224,7 @@ Type
       Var   AData     : TObject
     );
   protected
-    function GetXmlDoc():TXMLDocument;
+    function GetXmlDoc():TwstXMLDocument;
     function PushStack(AScopeObject : TDOMNode):TStackItem;overload;
     function PushStack(
             AScopeObject : TDOMNode;
@@ -326,12 +331,13 @@ Type
       const ATypeInfo : PTypeInfo;
       var   AData
     );
+    function ReadBuffer(const AName : string) : string;
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
 
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   Published
     property EncodingStyle : TSOAPEncodingStyle Read FEncodingStyle Write FEncodingStyle;
     property ContentType : string Read FContentType Write FContentType;
@@ -340,24 +346,8 @@ Type
 {$M-}
 
 implementation
-Uses XMLWrite, XMLRead, StrUtils,
-     imp_utils;
-
-function GetNodeItemsCount(const ANode : TDOMNode): Integer;
-var
-  chdLst : TDOMNodeList;
-begin
-  if ANode.HasChildNodes then begin
-    chdLst := ANode.ChildNodes;
-    try
-      Result := chdLst.Count
-    finally
-      chdLst.Release();
-    end;
-  end else begin
-    Result := 0;
-  end;
-end;
+Uses {$IFNDEF FPC}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
+     StrUtils, imp_utils;
 
 { TStackItem }
 
@@ -396,7 +386,11 @@ end;
 
 function TObjectStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
-  Result:= ScopeObject.FindNode(ANodeName);
+{$IFNDEF FPC}
+  Result := wst_delphi_xml.FindNode(ScopeObject,ANodeName);
+{$ELSE}
+  Result := ScopeObject.FindNode(ANodeName);
+{$ENDIF}
 end;
 
 { TAbstractArrayStackItem }
@@ -412,7 +406,7 @@ function TAbstractArrayStackItem.GetItemsCount(): Integer;
 begin
   EnsureListCreated();
   if Assigned(FItemList) then begin
-    Result := FItemList.Count;
+    Result := GetNodeListCount(FItemList);
   end else begin
     Result := 0;
   end;
@@ -431,14 +425,14 @@ end;
 destructor TAbstractArrayStackItem.Destroy();
 begin
   if Assigned(FItemList) then
-    FItemList.Release();
+    ReleaseDomNode(FItemList);
   inherited Destroy();
 end;
 
 function TAbstractArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
   EnsureListCreated();
-  if ( FIndex >= FItemList.Count ) then
+  if ( FIndex >= GetNodeListCount(FItemList) ) then
     raise ESOAPException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
   Inc(FIndex);
@@ -520,9 +514,9 @@ end;
 procedure TSOAPBaseFormatter.InternalClear(const ACreateDoc: Boolean);
 begin
   ClearStack();
-  FreeAndNil(FDoc);
+  ReleaseDomNode(FDoc);
   if ACreateDoc then
-    FDoc := TXMLDocument.Create();
+    FDoc := CreateDoc();
 end;
 
 function TSOAPBaseFormatter.NextNameSpaceCounter(): Integer;
@@ -533,7 +527,7 @@ end;
 
 function TSOAPBaseFormatter.HasScope(): Boolean;
 begin
-  Result := Assigned(FStack.Peek);
+  Result := FStack.AtLeast(1);
 end;
 
 function TSOAPBaseFormatter.FindAttributeByValueInNode(
@@ -705,6 +699,7 @@ begin
             );
 end;
 
+{$IFDEF FPC}
 function TSOAPBaseFormatter.PutBool(
   const AName     : String;
   const ATypeInfo : PTypeInfo;
@@ -713,6 +708,7 @@ function TSOAPBaseFormatter.PutBool(
 begin
   Result := InternalPutData(AName,ATypeInfo,LowerCase(BoolToStr(AData)));
 end;
+{$ENDIF}
 
 function TSOAPBaseFormatter.PutInt64(
   const AName      : String;
@@ -811,6 +807,7 @@ begin
     AData := GetEnumValue(ATypeInfo,locBuffer)
 End;
 
+{$IFDEF FPC}
 procedure TSOAPBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
   var   AName      : String;
@@ -834,6 +831,7 @@ procedure TSOAPBaseFormatter.GetInt(
 begin
   AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
 end;
+{$ENDIF}
 
 procedure TSOAPBaseFormatter.GetInt64(
   const ATypeInfo : PTypeInfo;
@@ -871,7 +869,7 @@ begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
 end;
 
-function TSOAPBaseFormatter.GetXmlDoc(): TXMLDocument;
+function TSOAPBaseFormatter.GetXmlDoc(): TwstXMLDocument;
 begin
   Result := FDoc;
 end;
@@ -904,13 +902,12 @@ begin
   Inherited Create();
   FContentType := sSOAP_CONTENT_TYPE;
   FStack := TObjectStack.Create();
-  FDoc := TXMLDocument.Create();
-  FDoc.Encoding := 'UTF-8';
+  FDoc := CreateDoc();
 end;
 
 destructor TSOAPBaseFormatter.Destroy();
 begin
-  FDoc.Free();
+  ReleaseDomNode(FDoc);
   ClearStack();
   FStack.Free();
   inherited Destroy();
@@ -1215,7 +1212,7 @@ end;
 
 procedure TSOAPBaseFormatter.Prepare();
 var
-  locDoc : TDOMDocument;
+  locDoc : TwstXMLDocument;
 begin
   locDoc := GetXmlDoc();
   if Assigned(locDoc.DocumentElement) and
@@ -1282,7 +1279,7 @@ begin
           end;
         end;
       finally
-        chdLst.Release();
+        ReleaseDomNode(chdLst);
       end;
     end;
   finally
@@ -1339,17 +1336,17 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  boolData : Boolean;
+  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64, tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
         PutInt64(AName,ATypeInfo,int64Data);
       End;
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
         PutStr(AName,ATypeInfo,strData);
@@ -1359,11 +1356,13 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := Boolean(AData);
         PutBool(AName,ATypeInfo,boolData);
       End;
+    {$ENDIF}  
     tkInteger, tkEnumeration :
       Begin
         enumData := 0;
@@ -1401,10 +1400,11 @@ procedure TSOAPBaseFormatter.PutScopeInnerValue(
 );
 Var
   int64SData : Int64;
-  int64UData : QWord;
+  {$IFDEF FPC}
+    int64UData : QWord;
+    boolData : Boolean;
+  {$ENDIF}
   strData : string;
-  objData : TObject;
-  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
   dataBuffer : string;
@@ -1418,12 +1418,14 @@ begin
         int64SData := Int64(AData);
         dataBuffer := IntToStr(int64SData);
       end;
+    {$IFDEF FPC}
     tkQWord :
       begin
         int64UData := QWord(AData);
         dataBuffer := IntToStr(int64UData);
       end;
-    tkLString, tkAString :
+    {$ENDIF}
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
         dataBuffer := strData;
@@ -1432,11 +1434,13 @@ begin
       begin
         raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
       end;
+    {$IFDEF FPC}
     tkBool :
       begin
         boolData := Boolean(AData);
         dataBuffer := BoolToStr(boolData);
       end;
+    {$ENDIF}
     tkInteger :
       begin
         case GetTypeData(ATypeInfo)^.OrdType of
@@ -1511,18 +1515,18 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  boolData : Boolean;
+  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64,tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,AName,int64Data);
         Int64(AData) := int64Data;
       End;
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
         GetStr(ATypeInfo,AName,strData);
@@ -1534,12 +1538,14 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
         GetBool(ATypeInfo,AName,boolData);
         Boolean(AData) := boolData;
       End;
+    {$ENDIF}
     tkInteger, tkEnumeration :
       Begin
         enumData := 0;
@@ -1589,13 +1595,15 @@ begin
     dataBuffer := StackTop().ScopeObject.NodeValue;
   Case ATypeInfo^.Kind Of
     tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
+    {$IFDEF FPC}
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
-    tkLString,
-    tkAString    : string(AData) := dataBuffer;
+    {$ENDIF}
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
     tkClass :
       begin
         raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
       end;
+    {$IFDEF FPC}
     tkBool :
       begin
         dataBuffer := LowerCase(Trim(dataBuffer));
@@ -1604,6 +1612,7 @@ begin
         else
           Boolean(AData) := StrToBool(dataBuffer);
       end;
+    {$ENDIF}
     tkInteger, tkEnumeration :
       begin
         if ( ATypeInfo^.Kind = tkInteger ) then
@@ -1630,6 +1639,34 @@ begin
           ftComp      : Comp(AData)          := floatDt;
         end;
       end;
+  end;
+end;
+
+function TSOAPBaseFormatter.ReadBuffer (const AName : string ) : string;
+Var
+  locElt : TDOMNode;
+  namespaceShortName, strNodeName, s : string;
+begin
+  strNodeName := AName;
+  if ( Style = Document ) then begin
+    namespaceShortName := Copy(FindAttributeByValueInScope(StackTop().NameSpace),AnsiPos(':',namespaceShortName) + 1,MaxInt);
+    if not IsStrEmpty(namespaceShortName) then begin
+      s := ExtractNameSpaceShortName(namespaceShortName);
+      if not IsStrEmpty(s) then
+        strNodeName := s + ':' + strNodeName;
+    end;
+  end;
+
+  if ( FSerializationStyle = ssNodeSerialization ) then begin
+    locElt := StackTop().FindNode(strNodeName);
+  end else begin
+    locElt := GetCurrentScopeObject().GetAttributeNode(strNodeName);
+  end;
+
+  if Assigned(locElt) then begin
+    Result := NodeToBuffer(locElt);
+  end else begin
+    Error('Param or Attribute not found : "%s"',[AName]);
   end;
 end;
 
@@ -1664,7 +1701,7 @@ end;
 function TScopedArrayStackItem.CreateList(const ANodeName : string): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
-    Result := ScopeObject.GetChildNodes();
+    Result := ScopeObject.ChildNodes;
   end else begin
     Result := nil;
   end;
@@ -1675,11 +1712,14 @@ end;
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
+    {$IFNDEF FPC}
+    Result := ScopeObject.childNodes;
+    {$ELSE}
     Result := {$IFNDEF FPC_211}TDOMNodeList{$ELSE}TDOMElementList{$ENDIF}.Create(ScopeObject,ANodeName);
+    {$ENDIF}
   end else begin
     Result := nil;
   end;
 end;
-
 
 end.

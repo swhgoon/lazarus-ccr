@@ -4,11 +4,15 @@ This unit has been produced by ws_helper.
   This unit name  : "metadata_service_binder".
   Date            : "12/11/2006 11:12".
 }
+{$INCLUDE wst_global.inc}
 unit metadata_service_binder;
-{$INCLUDE wst.inc}
+
 interface
 
 uses SysUtils, Classes, base_service_intf, server_service_intf, metadata_service;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 type
 
@@ -108,8 +112,8 @@ End;
 constructor TWSTMetadataService_ServiceBinder.Create();
 Begin
   Inherited Create(GetServiceImplementationRegistry().FindFactory('IWSTMetadataService'));
-  RegisterVerbHandler('GetRepositoryList',@GetRepositoryListHandler);
-  RegisterVerbHandler('GetRepositoryInfo',@GetRepositoryInfoHandler);
+  RegisterVerbHandler('GetRepositoryList',{$IFDEF FPC}@{$ENDIF}GetRepositoryListHandler);
+  RegisterVerbHandler('GetRepositoryInfo',{$IFDEF FPC}@{$ENDIF}GetRepositoryInfoHandler);
 End;
 
 
@@ -140,7 +144,7 @@ initialization
 
   {$IF DECLARED(Register_metadata_service_NameSpace)}
   Register_metadata_service_NameSpace();
-  {$ENDIF}
+  {$IFEND}
 
   {$i metadata_service.wst}
 

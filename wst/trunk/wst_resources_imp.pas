@@ -1,3 +1,4 @@
+{$INCLUDE wst_global.inc}
 unit wst_resources_imp;
 
 interface
@@ -6,6 +7,7 @@ uses
   Classes, SysUtils;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 type
 

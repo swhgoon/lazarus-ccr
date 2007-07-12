@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit same_process_protocol;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -20,6 +19,9 @@ uses
   Classes, SysUtils,
   service_intf, imp_utils,
   server_service_intf, server_service_imputils, base_service_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Const
   sTRANSPORT_NAME = 'SAME_PROCESS';

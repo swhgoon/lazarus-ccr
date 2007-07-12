@@ -10,15 +10,17 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit rtti_filters;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
   Classes, SysUtils, Contnrs, TypInfo,
   cursor_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}  
 
 type
 
@@ -326,9 +328,9 @@ begin
         propInfo := GetPropInfo(AFltrCrtr.TargetClass,propName);
         if ( propInfo = nil ) then
           raise ERttiFilterException.CreateFmt('Invalid property : "%s"',[propName]);
-        if ( propInfo^.PropType^.Kind in [tkSString,tkLString,tkAString,tkWString] ) then
+        if ( propInfo^.PropType^.Kind in [{$IFDEF FPC}tkSString,tkAString,{$ENDIF}tkLString,tkWString] ) then
           Handle_String()
-        else if ( propInfo^.PropType^.Kind in [tkInteger,tkInt64,tkQWord] ) then
+        else if ( propInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}] ) then
           Handle_Integer()
         else
           raise ERttiFilterException.CreateFmt('Type not handled : "%s"',[GetEnumName(TypeInfo(TTypeKind),Ord(propInfo^.PropType^.Kind))]);
@@ -421,7 +423,7 @@ constructor TRttiExpIntegerNodeItem.Create(
 );
 begin
   Assert(Assigned(APropInfo));
-  if not ( APropInfo^.PropType^.Kind in [tkInteger,tkInt64,tkQWord] ) then
+  if not ( APropInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}] ) then
     raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['Integer']);
   inherited Create(APropInfo,AOperation);
   FComparedValue := AComparedValue;
@@ -626,7 +628,7 @@ constructor TRttiExpAnsiStringNodeItem.Create(
 );
 begin
   Assert(Assigned(APropInfo));
-  if not ( APropInfo^.PropType^.Kind in [tkSString,tkLString,tkAString] ) then
+  if not ( APropInfo^.PropType^.Kind in [{$IFDEF FPC}tkSString,tkAString,{$ENDIF}tkLString] ) then
     raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['AnsiString']);
   inherited Create(APropInfo,AOperation);
   FComparedValue := AComparedValue;

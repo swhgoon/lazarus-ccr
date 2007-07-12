@@ -1,12 +1,14 @@
+{$INCLUDE wst_global.inc}
 unit std_cursors;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
   Classes, SysUtils, Contnrs,
   cursor_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}  
 
 type
 

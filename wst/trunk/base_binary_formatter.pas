@@ -9,6 +9,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit base_binary_formatter;
 
 interface
@@ -311,6 +312,7 @@ type
       const ATypeInfo : PTypeInfo;
       var   AData
     );
+    function ReadBuffer(const AName : string) : string;
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -1193,7 +1195,7 @@ procedure TBaseBinaryFormatter.PutScopeInnerValue(
 );
 var
   int64SData : Int64;
-  int64UData : QWord;
+  {$IFDEF FPC}int64UData : QWord;{$ENDIF}
   strData : string;
   boolData : Boolean;
   enumData : TEnumData;
@@ -1475,6 +1477,25 @@ begin
             Comp(AData) := dataBuffer^.ExtendedData;
         end;
       end;
+  end;
+end;
+
+function TBaseBinaryFormatter.ReadBuffer (const AName : string ) : string;
+Var
+  locStore : IDataStore;
+  bffr : PDataBuffer;
+  locName : string;
+  locStream : TStringStream;
+begin
+  locName := AName;
+  bffr := GetDataBuffer(locName);
+  locStream := TStringStream.Create('');
+  try
+    locStore := CreateBinaryWriter(locStream);
+    SaveObjectToStream(bffr,locStore);
+    Result := locStream.DataString;
+  finally
+    locStream.Free();
   end;
 end;
 

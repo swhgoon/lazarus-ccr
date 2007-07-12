@@ -250,11 +250,11 @@ end;
 constructor TUserService_ServiceBinder.Create();
 begin
   inherited Create(GetServiceImplementationRegistry().FindFactory('UserService'));
-  RegisterVerbHandler('GetList',@GetListHandler);
-  RegisterVerbHandler('Add',@AddHandler);
-  RegisterVerbHandler('Update',@UpdateHandler);
-  RegisterVerbHandler('Find',@FindHandler);
-  RegisterVerbHandler('Delete',@DeleteHandler);
+  RegisterVerbHandler('GetList',{$IFDEF FPC}@{$ENDIF}GetListHandler);
+  RegisterVerbHandler('Add',{$IFDEF FPC}@{$ENDIF}AddHandler);
+  RegisterVerbHandler('Update',{$IFDEF FPC}@{$ENDIF}UpdateHandler);
+  RegisterVerbHandler('Find',{$IFDEF FPC}@{$ENDIF}FindHandler);
+  RegisterVerbHandler('Delete',{$IFDEF FPC}@{$ENDIF}DeleteHandler);
 end;
 
 
@@ -286,7 +286,7 @@ initialization
 
   {$IF DECLARED(Register_user_service_intf_NameSpace)}
   Register_user_service_intf_NameSpace();
-  {$ENDIF}
+  {$IFEND}
 
   {$i user_service_intf.wst}
 

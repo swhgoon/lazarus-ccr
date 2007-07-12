@@ -10,6 +10,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit base_service_intf;
 
 interface
@@ -90,7 +91,7 @@ type
 
   IItemFactoryEx = interface(IItemFactory)
     ['{66B77926-7E45-4780-8FFB-FB78625EDC1D}']
-    procedure ReleaseInstance(var AInstance : IInterface);
+    procedure ReleaseInstance(var AInstance);
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -178,6 +179,7 @@ type
       const ATypeInfo : PTypeInfo;
       var   AData
     );
+    function ReadBuffer(const AName : string) : string;
     
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -232,6 +234,29 @@ type
   TAbstractSimpleRemotable = class(TBaseRemotable)
   end;
 
+  { TStringBufferRemotable }
+
+  TStringBufferRemotable = class(TAbstractSimpleRemotable)
+  private
+    FData : string;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+
+    procedure Assign(Source: TPersistent); override;
+    property Data : string read FData write FData;
+  end;
+  
   { TBaseDateRemotable }
 
   TBaseDateRemotable = class(TAbstractSimpleRemotable)
@@ -1049,7 +1074,7 @@ type
     procedure SetPoolMin(const AValue: PtrInt);
   protected
     function CreateInstance():IInterface;override;
-    procedure ReleaseInstance(var AInstance : IInterface);virtual;
+    procedure ReleaseInstance(var AInstance);virtual;
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -2121,12 +2146,16 @@ begin
   end;
 end;
 
-procedure TSimpleItemFactoryEx.ReleaseInstance(var AInstance: IInterface);
+procedure TSimpleItemFactoryEx.ReleaseInstance(var AInstance);
+var
+  tmpIntf : IInterface;
 begin
+  tmpIntf := IInterface(AInstance);
+  Pointer(AInstance) := nil;
   if Pooled then begin
-    FPool.Release(AInstance);
+    FPool.Release(tmpIntf);
   end else begin
-    AInstance := nil;
+    tmpIntf := nil;
   end;
 end;
 
@@ -3660,7 +3689,7 @@ Var
   strData : String;
   objData : TObject;
     objDataCreateHere : Boolean;
-  boolData : Boolean;
+  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   p : PPropInfo;
   enumData : TEnumBuffer;
   floatDt : TFloatExtendedType;
@@ -4379,6 +4408,55 @@ begin
     end;
   end;
 end;
+
+{ TStringBufferRemotable }
+
+class procedure TStringBufferRemotable.Save (
+        AObject : TBaseRemotable;
+        AStore : IFormatterBase;
+  const AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  if ( AObject <> nil ) then
+    buffer := TStringBufferRemotable(AObject).Data
+  else
+    buffer := '';
+  AStore.Put(AName,TypeInfo(string),buffer);
+end;
+
+class procedure TStringBufferRemotable.Load (
+  var AObject : TObject;
+      AStore : IFormatterBase;
+  var AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+  locObj : TStringBufferRemotable;
+begin
+  buffer := AStore.ReadBuffer(AName);
+  if ( AObject = nil ) then
+    AObject := Create();
+  writeLn;writeLn(AObject.ClassName);
+  locObj := AObject as TStringBufferRemotable;;
+  locObj.Data := buffer;
+end;
+
+procedure TStringBufferRemotable.Assign (Source : TPersistent );
+begin
+  if ( Source = nil ) then begin
+    FData := '';
+  end else begin
+    if Source.InheritsFrom(TStringBufferRemotable) then
+      Self.Data := TStringBufferRemotable(Source).Data
+    else
+      inherited Assign(Source);
+  end;
+end;
+
 
 initialization
   TypeRegistryInstance := TTypeRegistry.Create();

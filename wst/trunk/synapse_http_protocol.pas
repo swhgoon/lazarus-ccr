@@ -10,9 +10,10 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit synapse_http_protocol;
 
-//{$DEFINE WST_DBG}
+{$DEFINE WST_DBG}
 
 interface
 
@@ -22,6 +23,7 @@ uses
   httpsend;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Const
   sTRANSPORT_NAME = 'HTTP';
@@ -170,8 +172,8 @@ begin
   TMemoryStream(AResponse).SaveToFile('response.log');
   if IsConsole then
     WriteLn(s)
-  else
-    ShowMessage(s);
+  {else
+    ShowMessage(s)};
 {$ENDIF}
 end;
 

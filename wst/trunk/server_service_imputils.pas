@@ -10,15 +10,17 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit server_service_imputils;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
   Classes, SysUtils, TypInfo,
   server_service_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
   
 Type
 

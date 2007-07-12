@@ -33,6 +33,10 @@ type
       AObject : TPasElement;
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;virtual;abstract;
+    class procedure DeleteObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    );virtual;
   end;
   TObjectUpdaterClass = class of TObjectUpdater;
   
@@ -55,6 +59,10 @@ type
     AObject : TPasElement;
     ASymbolTable : TwstPasTreeContainer
   ):Boolean;
+  procedure DeleteObject(
+    AObject : TPasElement;
+    ASymbolTable : TwstPasTreeContainer
+  );
   
   procedure FillList(ALs : TStrings;AContainer : TwstPasTreeContainer);
   procedure FillTypeList(
@@ -116,6 +124,19 @@ begin
     raise Exception.Create('No handler found.');
   end;
   Result := h.UpdateObject(AObject,ASymbolTable);
+end;
+
+procedure DeleteObject(
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+);
+var
+  h : TObjectUpdaterClass;
+begin
+  if not UpdaterRegistryInst.FindHandler(AObject,h) then begin
+    raise Exception.Create('No handler found.');
+  end;
+  h.DeleteObject(AObject,ASymbolTable);
 end;
 
 type
@@ -477,6 +498,22 @@ end;
 class function TObjectUpdater.CanHandle(AObject: TObject): Boolean;
 begin
   Result := Assigned(AObject);
+end;
+
+class procedure TObjectUpdater.DeleteObject (
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+);
+var
+  sct : TPasSection;
+begin
+  if ( AObject <> nil ) then begin
+    sct := ASymbolTable.CurrentModule.InterfaceSection;
+    sct.Declarations.Extract(AObject);
+    sct.Types.Extract(AObject);
+    sct.Classes.Extract(AObject);
+    AObject.Release();
+  end;
 end;
 
 procedure InternalFillList(

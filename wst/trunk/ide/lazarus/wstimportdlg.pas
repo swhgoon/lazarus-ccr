@@ -270,7 +270,7 @@ begin
   try
     tree := ParseWsdlFile(edtInputFile.Text,@ShowStatusMessage);
     try
-      srcMgnr := GenerateSource(tree,GetOptions(),otFileSystem,edtOutputDir.Text,@ShowStatusMessage);
+      srcMgnr := GenerateSource(tree,GetOptions(),otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),@ShowStatusMessage);
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
       openFlags := [];

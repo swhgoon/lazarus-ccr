@@ -5,4 +5,5 @@
     PtrInt = Cardinal;
     PByteArray = ^ByteArray;
     ByteArray = array[0..$effffff] of Byte;
+    PtrUInt = Cardinal;
 {$ENDIF}

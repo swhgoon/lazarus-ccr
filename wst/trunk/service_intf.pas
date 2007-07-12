@@ -12,7 +12,7 @@
 }
 
 { Base service interface }
-
+{$INCLUDE wst_global.inc}
 unit service_intf;
 
 interface
@@ -22,6 +22,7 @@ uses
   base_service_intf;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
   
 Const
   sTARGET = 'target';

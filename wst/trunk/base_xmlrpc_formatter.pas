@@ -10,17 +10,18 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit base_xmlrpc_formatter;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
 
 interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs,
-  DOM,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 const
   sPROTOCOL_NAME = 'XMLRPC';
@@ -44,6 +45,8 @@ const
 
 type
 
+  TwstXMLDocument = {$IFNDEF FPC}wst_delphi_xml.TXMLDocument{$ELSE}TXMLDocument{$ENDIF};
+  
   TEnumIntType = Int64;
 
   TXmlRpcDataType = (
@@ -63,14 +66,18 @@ type
   EXmlRpcException = class(EBaseRemoteException)
   end;
 
+  TFoundState = ( fsNone, fsFoundNonNil, fsFoundNil );
+  
   { TStackItem }
 
   TStackItem = class
   private
+    FFoundState : TFoundState;
     FScopeObject: TDOMNode;
     FScopeType: TScopeType;
   protected
     function GetItemsCount() : Integer;virtual;
+    procedure SetFoundState(const AFoundState : TFoundState);
   public
     constructor Create(AScopeObject : TDOMNode;AScopeType : TScopeType);
     function FindNode(var ANodeName : string):TDOMNode;virtual;abstract;
@@ -81,6 +88,7 @@ type
     property ScopeObject : TDOMNode Read FScopeObject;
     property ScopeType : TScopeType Read FScopeType;
     property ItemsCount : Integer read GetItemsCount;
+    property FoundState : TFoundState read FFoundState;
   end;
 
   { TObjectStackItem }
@@ -159,11 +167,13 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
     ):TDOMNode;
+    {$IFDEF FPC}
     function PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;
+    {$ENDIF}
     function PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -191,6 +201,7 @@ type
       Var   AName     : String;
       Var   AData     : TEnumIntType
     );
+    {$IFDEF FPC}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -201,6 +212,7 @@ type
       Var   AName     : String;
       Var   AData     : Integer
     );
+    {$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -318,42 +330,32 @@ type
       const ATypeInfo : PTypeInfo;
       var   AData
     );
+    function ReadBuffer(const AName : string) : string;
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
 
-    procedure Error(Const AMsg:string);
-    procedure Error(Const AMsg:string; Const AArgs : array of const);
+    procedure Error(Const AMsg:string);overload;
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   published
     property ContentType : string Read FContentType Write FContentType;
   end;
 {$M-}
 
 implementation
-Uses XMLWrite, XMLRead,
+Uses {$IFNDEF FPC}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
      imp_utils;
-
-function GetNodeItemsCount(const ANode : TDOMNode): Integer;
-var
-  chdLst : TDOMNodeList;
-begin
-  if ANode.HasChildNodes then begin
-    chdLst := ANode.ChildNodes;
-    try
-      Result := chdLst.Count
-    finally
-      chdLst.Release();
-    end;
-  end else begin
-    Result := 0;
-  end;
-end;
 
 { TStackItem }
 
-function TStackItem.GetItemsCount: Integer;
+function TStackItem.GetItemsCount(): Integer;
 begin
   Result := GetNodeItemsCount(ScopeObject);
+end;
+
+procedure TStackItem.SetFoundState (const AFoundState : TFoundState );
+begin
+  FFoundState := AFoundState;
 end;
 
 constructor TStackItem.Create(AScopeObject: TDOMNode; AScopeType: TScopeType);
@@ -378,7 +380,7 @@ begin
     while ( not nodeFound ) and ( memberNode <> nil ) do begin
       if memberNode.HasChildNodes() then begin
         chilNodes := memberNode.ChildNodes;
-        for i := 0 to Pred(chilNodes.Count) do begin
+        for i := 0 to Pred(GetNodeListCount(chilNodes)) do begin
           tmpNode := chilNodes.Item[i];
           if AnsiSameText(sNAME,tmpNode.NodeName) and
              ( tmpNode.FirstChild <> nil ) and
@@ -389,7 +391,11 @@ begin
           end;
         end;
         if nodeFound then begin
+        {$IFNDEF FPC}
+          tmpNode := wst_delphi_xml.FindNode(memberNode,sVALUE);
+        {$ELSE}
           tmpNode := memberNode.FindNode(sVALUE);
+        {$ENDIF}
           if ( tmpNode <> nil ) and ( tmpNode.FirstChild <> nil ) then begin
             Result := tmpNode.FirstChild;
             Break;
@@ -399,6 +405,14 @@ begin
       memberNode := memberNode.NextSibling;
     end;
   end;
+  if ( Result <> nil ) then begin
+    if Result.HasChildNodes() then
+      SetFoundState(fsFoundNonNil)
+    else
+      SetFoundState(fsFoundNil);
+  end else begin
+    SetFoundState(fsNone);
+  end;
 end;
 
 function TObjectStackItem.CreateBuffer(
@@ -406,7 +420,7 @@ function TObjectStackItem.CreateBuffer(
   const ADataType: TXmlRpcDataType
 ): TDOMNode;
 var
-  memberNode, nd, ndVal : TDOMNode;
+  memberNode, nd : TDOMNode;
 begin
   memberNode := ScopeObject.OwnerDocument.CreateElement(sMEMBER);
   ScopeObject.AppendChild(memberNode);
@@ -434,7 +448,7 @@ function TArrayStackItem.GetItemsCount(): Integer;
 begin
   EnsureListCreated();
   if Assigned(FItemList) then begin
-    Result := FItemList.Count;
+    Result := GetNodeListCount(FItemList);
   end else begin
     Result := 0;
   end;
@@ -443,7 +457,7 @@ end;
 function TArrayStackItem.CreateList(): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() and ScopeObject.FirstChild.HasChildNodes() then begin
-    Result := ScopeObject.FirstChild.GetChildNodes();
+    Result := ScopeObject.FirstChild.ChildNodes;
   end else begin
     Result := nil;
   end;
@@ -452,17 +466,21 @@ end;
 destructor TArrayStackItem.Destroy();
 begin
   if Assigned(FItemList) then
-    FItemList.Release();
+    ReleaseDomNode(FItemList);
   inherited Destroy();
 end;
 
 function TArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
   EnsureListCreated();
-  if ( FIndex >= FItemList.Count ) then
+  if ( FIndex >= GetNodeListCount(FItemList) ) then
     raise EXmlRpcException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
-  if Result.HasChildNodes() and Result.FirstChild.HasChildNodes() then begin
+  if Result.HasChildNodes() then begin
+    if Result.FirstChild.HasChildNodes() then
+      SetFoundState(fsFoundNonNil)
+    else
+      SetFoundState(fsFoundNil);
     Result := Result.FirstChild;//.FirstChild;
     Inc(FIndex);
     ANodeName := Result.NodeName;
@@ -476,7 +494,7 @@ function TArrayStackItem.CreateBuffer(
   const ADataType: TXmlRpcDataType
 ): TDOMNode;
 var
-  nd, ndVal : TDOMNode;
+  nd : TDOMNode;
 begin
   if ( FDataScope = nil ) then begin
     FDataScope := ScopeObject.OwnerDocument.CreateElement(sDATA);
@@ -553,14 +571,14 @@ end;
 procedure TXmlRpcBaseFormatter.InternalClear(const ACreateDoc: Boolean);
 begin
   ClearStack();
-  FreeAndNil(FDoc);
+  ReleaseDomNode(FDoc);
   if ACreateDoc then
-    FDoc := TXMLDocument.Create();
+    FDoc := CreateDoc();
 end;
 
 function TXmlRpcBaseFormatter.HasScope(): Boolean;
 begin
-  Result := Assigned(FStack.Peek);
+  Result := FStack.AtLeast(1);
 end;
 
 function TXmlRpcBaseFormatter.FindAttributeByValueInNode(
@@ -665,6 +683,7 @@ begin
             );
 end;
 
+{$IFDEF FPC}
 function TXmlRpcBaseFormatter.PutBool(
   const AName     : String;
   const ATypeInfo : PTypeInfo;
@@ -679,6 +698,7 @@ begin
     v := '0';
   Result := InternalPutData(AName,xdtBoolean,v);
 end;
+{$ENDIF}
 
 function TXmlRpcBaseFormatter.PutInt64(
   const AName      : String;
@@ -738,14 +758,20 @@ end;
 function TXmlRpcBaseFormatter.GetNodeValue(var AName: string): DOMString;
 var
   locElt : TDOMNode;
+  stkTop : TStackItem;
 begin
-  locElt := StackTop().FindNode(AName) as TDOMElement;
+  stkTop := StackTop();
+  locElt := stkTop.FindNode(AName) as TDOMElement;
 
   if Assigned(locElt) then begin
-    if locElt.HasChildNodes then
+    if locElt.HasChildNodes then begin
       Result := locElt.FirstChild.NodeValue
-    else
-      Result := locElt.NodeValue;
+    end else begin
+      if ( stkTop.FoundState = fsFoundNil ) then
+        Result := ''
+      else
+        Result := locElt.NodeValue;
+    end;
   end else begin
     Error('Param or Attribute not found : "%s"',[AName]);
   end;
@@ -766,6 +792,7 @@ begin
     AData := GetEnumValue(ATypeInfo,locBuffer)
 End;
 
+{$IFDEF FPC}
 procedure TXmlRpcBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
   var   AName      : String;
@@ -789,6 +816,7 @@ procedure TXmlRpcBaseFormatter.GetInt(
 begin
   AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
 end;
+{$ENDIF}
 
 procedure TXmlRpcBaseFormatter.GetInt64(
   const ATypeInfo : PTypeInfo;
@@ -826,7 +854,7 @@ begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
 end;
 
-function TXmlRpcBaseFormatter.GetXmlDoc(): TXMLDocument;
+function TXmlRpcBaseFormatter.GetXmlDoc(): TwstXMLDocument;
 begin
   Result := FDoc;
 end;
@@ -859,13 +887,12 @@ begin
   Inherited Create();
   FContentType := sXMLRPC_CONTENT_TYPE;
   FStack := TObjectStack.Create();
-  FDoc := TXMLDocument.Create();
-  FDoc.Encoding := 'UTF-8';
+  FDoc := CreateDoc();
 end;
 
 destructor TXmlRpcBaseFormatter.Destroy();
 begin
-  FDoc.Free();
+  ReleaseDomNode(FDoc);
   ClearStack();
   FStack.Free();
   inherited Destroy();
@@ -891,12 +918,8 @@ procedure TXmlRpcBaseFormatter.BeginArray(
   const ABounds       : Array Of Integer;
   const AStyle        : TArrayStyle
 );
-Var
-  typData : TTypeRegistryItem;
-  nmspc,nmspcSH : string;
+var
   i,j, k : Integer;
-  strNodeName : string;
-  xsiNmspcSH : string;
 begin
   if ( Length(ABounds) < 2 ) then begin
     Error('Invalid array bounds.');
@@ -1003,17 +1026,17 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  boolData : Boolean;
+  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64, tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
         PutInt64(AName,ATypeInfo,int64Data);
       End;
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
         PutStr(AName,ATypeInfo,strData);
@@ -1023,11 +1046,13 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := Boolean(AData);
         PutBool(AName,ATypeInfo,boolData);
       End;
+    {$ENDIF}
     tkInteger, tkEnumeration :
       Begin
         enumData := 0;
@@ -1065,10 +1090,11 @@ procedure TXmlRpcBaseFormatter.PutScopeInnerValue(
 );
 Var
   int64SData : Int64;
-  int64UData : QWord;
+  {$IFDEF FPC}
+    int64UData : QWord;
+    boolData : Boolean;
+  {$ENDIF}
   strData : string;
-  objData : TObject;
-  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
   dataBuffer : string;
@@ -1082,12 +1108,14 @@ begin
         int64SData := Int64(AData);
         dataBuffer := IntToStr(int64SData);
       end;
+    {$IFDEF FPC}
     tkQWord :
       begin
         int64UData := QWord(AData);
         dataBuffer := IntToStr(int64UData);
       end;
-    tkLString, tkAString :
+    {$ENDIF}
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
         dataBuffer := strData;
@@ -1096,11 +1124,13 @@ begin
       begin
         raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
       end;
+    {$IFDEF FPC}
     tkBool :
       begin
         boolData := Boolean(AData);
         dataBuffer := BoolToStr(boolData);
       end;
+    {$ENDIF}  
     tkInteger :
       begin
         case GetTypeData(ATypeInfo)^.OrdType of
@@ -1175,18 +1205,18 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  boolData : Boolean;
+  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64,tkQWord :
+    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,AName,int64Data);
         Int64(AData) := int64Data;
       End;
-    tkLString, tkAString :
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
         GetStr(ATypeInfo,AName,strData);
@@ -1198,12 +1228,14 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
         GetBool(ATypeInfo,AName,boolData);
         Boolean(AData) := boolData;
       End;
+    {$ENDIF}  
     tkInteger, tkEnumeration :
       Begin
         enumData := 0;
@@ -1253,13 +1285,15 @@ begin
     dataBuffer := StackTop().ScopeObject.NodeValue;
   Case ATypeInfo^.Kind Of
     tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
+    {$IFDEF FPC}
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
-    tkLString,
-    tkAString    : string(AData) := dataBuffer;
+    {$ENDIF}
+    tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
     tkClass :
       begin
         raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
       end;
+    {$IFDEF FPC}
     tkBool :
       begin
         dataBuffer := LowerCase(Trim(dataBuffer));
@@ -1268,6 +1302,7 @@ begin
         else
           Boolean(AData) := StrToBool(dataBuffer);
       end;
+    {$ENDIF}
     tkInteger, tkEnumeration :
       begin
         if ( ATypeInfo^.Kind = tkInteger ) then
@@ -1294,6 +1329,23 @@ begin
           ftComp      : Comp(AData)          := floatDt;
         end;
       end;
+  end;
+end;
+
+function TXmlRpcBaseFormatter.ReadBuffer (const AName : string ) : string;
+var
+  locElt : TDOMNode;
+  stkTop : TStackItem;
+  locName : string;
+begin
+  stkTop := StackTop();
+  locName := AName;
+  locElt := stkTop.FindNode(locName);
+
+  if Assigned(locElt) then begin
+    Result := NodeToBuffer(locElt);
+  end else begin
+    Error('Param or Attribute not found : "%s"',[AName]);
   end;
 end;
 
@@ -1337,7 +1389,7 @@ function TParamsArrayStackItem.GetItemsCount(): Integer;
 begin
   EnsureListCreated();
   if Assigned(FItemList) then begin
-    Result := FItemList.Count;
+    Result := GetNodeListCount(FItemList);
   end else begin
     Result := 0;
   end;
@@ -1346,7 +1398,7 @@ end;
 function TParamsArrayStackItem.CreateList(): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
-    Result := ScopeObject.GetChildNodes();
+    Result := ScopeObject.ChildNodes;
   end else begin
     Result := nil;
   end;
@@ -1355,17 +1407,21 @@ end;
 destructor TParamsArrayStackItem.Destroy();
 begin
   if Assigned(FItemList) then
-    FItemList.Release();
+    ReleaseDomNode(FItemList);
   inherited Destroy();
 end;
 
 function TParamsArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
   EnsureListCreated();
-  if ( FIndex >= FItemList.Count ) then
+  if ( FIndex >= GetNodeListCount(FItemList) ) then
     raise EXmlRpcException.CreateFmt('Index out of bound : %d; Node Name = "%s"; Parent Node = "%s"',[FIndex,ANodeName,ScopeObject.NodeName]);
   Result:= FItemList.Item[FIndex];
-  if Result.HasChildNodes() and Result.FirstChild.HasChildNodes() then begin
+  if Result.HasChildNodes() then begin
+    if Result.FirstChild.HasChildNodes() then
+      SetFoundState(fsFoundNonNil)
+    else
+      SetFoundState(fsFoundNil);
     Result := Result.FirstChild.FirstChild;
     Inc(FIndex);
     ANodeName := Result.NodeName;

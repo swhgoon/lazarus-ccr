@@ -1,6 +1,5 @@
+{$INCLUDE wst_global.inc}
 unit test_std_cursors;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -8,6 +7,9 @@ uses
   Classes, SysUtils, Contnrs,
   fpcunit, testutils, testregistry,
   cursor_intf, std_cursors, rtti_filters;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}  
   
 type
 

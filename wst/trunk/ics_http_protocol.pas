@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit ics_http_protocol;
-
-{$mode objfpc}{$H+}
 
 {$DEFINE WST_DBG}
 
@@ -22,6 +21,9 @@ uses
   Classes, SysUtils, {$IFDEF WST_DBG}Dialogs,{$ENDIF}
   service_intf, imp_utils, base_service_intf,
   HttpProt;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Const
   sTRANSPORT_NAME = 'HTTP';

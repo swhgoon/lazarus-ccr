@@ -4,12 +4,16 @@ This unit has been produced by ws_helper.
   This unit name  : "metadata_service_imp".
   Date            : "01/07/2006 22:14".
 }
+{$INCLUDE wst_global.inc}
 Unit metadata_service_imp;
-{$INCLUDE wst.inc}
+
 Interface
 
 Uses SysUtils, Classes, 
      base_service_intf, server_service_intf, server_service_imputils, metadata_service;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Type
 
@@ -64,25 +68,37 @@ function TWSTMetadataService_ServiceImp.GetRepositoryInfo(Const AName : string):
 
     var
       ii, cc : Integer;
+      pprm : POperationParam;
     begin
       if Assigned(ARawOper) and Assigned(AObjOper) then begin
         AObjOper.Name :=ARawOper^.Name;
         cc := ARawOper^.ParamsCount;
         AObjOper.Params.SetLength(cc);
-        for ii := 0 to Pred(cc) do
-          LoadParam(@(ARawOper^.Params[ii]),AObjOper.Params[ii]);
+        if ( cc > 0 ) then begin
+          pprm := ARawOper^.Params;
+          for ii := 0 to Pred(cc) do begin
+            LoadParam(pprm,AObjOper.Params[ii]);
+            Inc(pprm);
+          end;
+        end;
       end;
     end;
 
   var
     k, d : Integer;
+    pservOP : PServiceOperation;
   begin
     if Assigned(ARawServ) and Assigned(AObjServ) then begin
       AObjServ.Name :=ARawServ^.Name;
       d := ARawServ^.OperationsCount;
       AObjServ.Operations.SetLength(d);
-      for k := 0 to Pred(d) do
-        LoadOperation(@(ARawServ^.Operations[k]),AObjServ.Operations[k]);
+      if ( d > 0 ) then begin
+        pservOP := ARawServ^.Operations;
+        for k := 0 to Pred(d) do begin
+          LoadOperation(pservOP,AObjServ.Operations[k]);
+          Inc(pservOP);
+        end;
+      end;
     end;
   end;
 
@@ -90,6 +106,7 @@ var
   repData : PServiceRepository;
   mn : IModuleMetadataMngr;
   i, c : Integer;
+  pserv : PService;
 Begin
   Result := nil;
   mn := GetModuleMetadataMngr();
@@ -103,8 +120,10 @@ Begin
         c := repData^.ServicesCount;
         Result.Services.SetLength(c);
         if ( c > 0 ) then begin
+          pserv := repData^.Services;
           for i := 0 to Pred(c) do begin
-            LoadService(@(repData^.Services[i]),Result.Services[i]);
+            LoadService(pserv,Result.Services[i]);
+            Inc(pserv);
           end;
         end;
       except

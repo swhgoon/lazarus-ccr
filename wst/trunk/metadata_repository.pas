@@ -10,7 +10,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
-
+{$INCLUDE wst_global.inc}
 unit metadata_repository;
 
 interface
@@ -19,6 +19,7 @@ uses
   Classes, SysUtils, TypInfo;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 const
   sWST_SIGNATURE = 'WST_METADATA_0.2.2.0';

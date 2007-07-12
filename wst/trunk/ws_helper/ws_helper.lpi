@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="8"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -131,8 +131,8 @@
         <Filename Value="metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
-        <CursorPos X="37" Y="122"/>
-        <TopLine Value="114"/>
+        <CursorPos X="2" Y="19"/>
+        <TopLine Value="5"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -500,7 +500,12 @@
         <UsageCount Value="11"/>
       </Unit62>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="metadata_generator.pas"/>
+        <Caret Line="122" Column="37" TopLine="114"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -509,6 +514,7 @@
       <Filename Value="ws_helper.exe"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="..\"/>
       <OtherUnitFiles Value="$(LazarusDir)\fpc\2.1.5\source\packages\fcl-passrc\src\;..\;..\wst_rtti_filter\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>

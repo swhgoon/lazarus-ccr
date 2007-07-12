@@ -10,6 +10,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit library_protocol;
 
 //{$DEFINE WST_DBG}
@@ -22,6 +23,7 @@ uses
   library_imp_utils;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 const
   sTRANSPORT_NAME = 'LIB';

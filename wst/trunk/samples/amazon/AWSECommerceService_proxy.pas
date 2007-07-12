@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService_proxy".
-  Date            : "6-5-07 19:37:08".
+  Date            : "11/07/2007 22:01:03".
 }
 
 Unit AWSECommerceService_proxy;
@@ -18,61 +18,61 @@ Type
   Protected
     class function GetServiceType() : PTypeInfo;override;
     function Help(
-      Const HelpParam : Help_Type
+      const  HelpParam : Help_Type
     ):HelpResponse_Type;
     function ItemSearch(
-      Const ItemSearchParam : ItemSearch_Type
+      const  ItemSearchParam : ItemSearch_Type
     ):ItemSearchResponse_Type;
     function ItemLookup(
-      Const ItemLookupParam : ItemLookup_Type
+      const  ItemLookupParam : ItemLookup_Type
     ):ItemLookupResponse_Type;
     function BrowseNodeLookup(
-      Const BrowseNodeLookupParam : BrowseNodeLookup_Type
+      const  BrowseNodeLookupParam : BrowseNodeLookup_Type
     ):BrowseNodeLookupResponse_Type;
     function ListSearch(
-      Const ListSearchParam : ListSearch_Type
+      const  ListSearchParam : ListSearch_Type
     ):ListSearchResponse_Type;
     function ListLookup(
-      Const ListLookupParam : ListLookup_Type
+      const  ListLookupParam : ListLookup_Type
     ):ListLookupResponse_Type;
     function CustomerContentSearch(
-      Const CustomerContentSearchParam : CustomerContentSearch_Type
+      const  CustomerContentSearchParam : CustomerContentSearch_Type
     ):CustomerContentSearchResponse_Type;
     function CustomerContentLookup(
-      Const CustomerContentLookupParam : CustomerContentLookup_Type
+      const  CustomerContentLookupParam : CustomerContentLookup_Type
     ):CustomerContentLookupResponse_Type;
     function SimilarityLookup(
-      Const SimilarityLookupParam : SimilarityLookup_Type
+      const  SimilarityLookupParam : SimilarityLookup_Type
     ):SimilarityLookupResponse_Type;
     function SellerLookup(
-      Const SellerLookupParam : SellerLookup_Type
+      const  SellerLookupParam : SellerLookup_Type
     ):SellerLookupResponse_Type;
     function CartGet(
-      Const CartGetParam : CartGet_Type
+      const  CartGetParam : CartGet_Type
     ):CartGetResponse_Type;
     function CartAdd(
-      Const CartAddParam : CartAdd_Type
+      const  CartAddParam : CartAdd_Type
     ):CartAddResponse_Type;
     function CartCreate(
-      Const CartCreateParam : CartCreate_Type
+      const  CartCreateParam : CartCreate_Type
     ):CartCreateResponse_Type;
     function CartModify(
-      Const CartModifyParam : CartModify_Type
+      const  CartModifyParam : CartModify_Type
     ):CartModifyResponse_Type;
     function CartClear(
-      Const CartClearParam : CartClear_Type
+      const  CartClearParam : CartClear_Type
     ):CartClearResponse_Type;
     function TransactionLookup(
-      Const TransactionLookupParam : TransactionLookup_Type
+      const  TransactionLookupParam : TransactionLookup_Type
     ):TransactionLookupResponse_Type;
     function SellerListingSearch(
-      Const SellerListingSearchParam : SellerListingSearch_Type
+      const  SellerListingSearchParam : SellerListingSearch_Type
     ):SellerListingSearchResponse_Type;
     function SellerListingLookup(
-      Const SellerListingLookupParam : SellerListingLookup_Type
+      const  SellerListingLookupParam : SellerListingLookup_Type
     ):SellerListingLookupResponse_Type;
     function MultiOperation(
-      Const MultiOperationParam : MultiOperationType
+      const  MultiOperationParam : MultiOperation_Type
     ):MultiOperationResponse;
   End;
 
@@ -95,7 +95,7 @@ begin
 end;
 
 function TAWSECommerceServicePortType_Proxy.Help(
-  Const HelpParam : Help_Type
+  const  HelpParam : Help_Type
 ):HelpResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -104,7 +104,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('Help', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('Help', TypeInfo(Help_Type), HelpParam);
+      locSerializer.Put('HelpParam', TypeInfo(Help_Type), HelpParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -120,7 +120,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.ItemSearch(
-  Const ItemSearchParam : ItemSearch_Type
+  const  ItemSearchParam : ItemSearch_Type
 ):ItemSearchResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -129,7 +129,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ItemSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ItemSearch', TypeInfo(ItemSearch_Type), ItemSearchParam);
+      locSerializer.Put('ItemSearchParam', TypeInfo(ItemSearch_Type), ItemSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -145,7 +145,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.ItemLookup(
-  Const ItemLookupParam : ItemLookup_Type
+  const  ItemLookupParam : ItemLookup_Type
 ):ItemLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -154,7 +154,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ItemLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ItemLookup', TypeInfo(ItemLookup_Type), ItemLookupParam);
+      locSerializer.Put('ItemLookupParam', TypeInfo(ItemLookup_Type), ItemLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -170,7 +170,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.BrowseNodeLookup(
-  Const BrowseNodeLookupParam : BrowseNodeLookup_Type
+  const  BrowseNodeLookupParam : BrowseNodeLookup_Type
 ):BrowseNodeLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -179,7 +179,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('BrowseNodeLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('BrowseNodeLookup', TypeInfo(BrowseNodeLookup_Type), BrowseNodeLookupParam);
+      locSerializer.Put('BrowseNodeLookupParam', TypeInfo(BrowseNodeLookup_Type), BrowseNodeLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -195,7 +195,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.ListSearch(
-  Const ListSearchParam : ListSearch_Type
+  const  ListSearchParam : ListSearch_Type
 ):ListSearchResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -204,7 +204,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ListSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ListSearch', TypeInfo(ListSearch_Type), ListSearchParam);
+      locSerializer.Put('ListSearchParam', TypeInfo(ListSearch_Type), ListSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -220,7 +220,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.ListLookup(
-  Const ListLookupParam : ListLookup_Type
+  const  ListLookupParam : ListLookup_Type
 ):ListLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -229,7 +229,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ListLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ListLookup', TypeInfo(ListLookup_Type), ListLookupParam);
+      locSerializer.Put('ListLookupParam', TypeInfo(ListLookup_Type), ListLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -245,7 +245,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CustomerContentSearch(
-  Const CustomerContentSearchParam : CustomerContentSearch_Type
+  const  CustomerContentSearchParam : CustomerContentSearch_Type
 ):CustomerContentSearchResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -254,7 +254,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CustomerContentSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CustomerContentSearch', TypeInfo(CustomerContentSearch_Type), CustomerContentSearchParam);
+      locSerializer.Put('CustomerContentSearchParam', TypeInfo(CustomerContentSearch_Type), CustomerContentSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -270,7 +270,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CustomerContentLookup(
-  Const CustomerContentLookupParam : CustomerContentLookup_Type
+  const  CustomerContentLookupParam : CustomerContentLookup_Type
 ):CustomerContentLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -279,7 +279,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CustomerContentLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CustomerContentLookup', TypeInfo(CustomerContentLookup_Type), CustomerContentLookupParam);
+      locSerializer.Put('CustomerContentLookupParam', TypeInfo(CustomerContentLookup_Type), CustomerContentLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -295,7 +295,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.SimilarityLookup(
-  Const SimilarityLookupParam : SimilarityLookup_Type
+  const  SimilarityLookupParam : SimilarityLookup_Type
 ):SimilarityLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -304,7 +304,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SimilarityLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SimilarityLookup', TypeInfo(SimilarityLookup_Type), SimilarityLookupParam);
+      locSerializer.Put('SimilarityLookupParam', TypeInfo(SimilarityLookup_Type), SimilarityLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -320,7 +320,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.SellerLookup(
-  Const SellerLookupParam : SellerLookup_Type
+  const  SellerLookupParam : SellerLookup_Type
 ):SellerLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -329,7 +329,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerLookup', TypeInfo(SellerLookup_Type), SellerLookupParam);
+      locSerializer.Put('SellerLookupParam', TypeInfo(SellerLookup_Type), SellerLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -345,7 +345,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CartGet(
-  Const CartGetParam : CartGet_Type
+  const  CartGetParam : CartGet_Type
 ):CartGetResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -354,7 +354,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartGet', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartGet', TypeInfo(CartGet_Type), CartGetParam);
+      locSerializer.Put('CartGetParam', TypeInfo(CartGet_Type), CartGetParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -370,7 +370,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CartAdd(
-  Const CartAddParam : CartAdd_Type
+  const  CartAddParam : CartAdd_Type
 ):CartAddResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -379,7 +379,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartAdd', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartAdd', TypeInfo(CartAdd_Type), CartAddParam);
+      locSerializer.Put('CartAddParam', TypeInfo(CartAdd_Type), CartAddParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -395,7 +395,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CartCreate(
-  Const CartCreateParam : CartCreate_Type
+  const  CartCreateParam : CartCreate_Type
 ):CartCreateResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -404,7 +404,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartCreate', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartCreate', TypeInfo(CartCreate_Type), CartCreateParam);
+      locSerializer.Put('CartCreateParam', TypeInfo(CartCreate_Type), CartCreateParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -420,7 +420,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CartModify(
-  Const CartModifyParam : CartModify_Type
+  const  CartModifyParam : CartModify_Type
 ):CartModifyResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -429,7 +429,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartModify', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartModify', TypeInfo(CartModify_Type), CartModifyParam);
+      locSerializer.Put('CartModifyParam', TypeInfo(CartModify_Type), CartModifyParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -445,7 +445,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.CartClear(
-  Const CartClearParam : CartClear_Type
+  const  CartClearParam : CartClear_Type
 ):CartClearResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -454,7 +454,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartClear', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartClear', TypeInfo(CartClear_Type), CartClearParam);
+      locSerializer.Put('CartClearParam', TypeInfo(CartClear_Type), CartClearParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -470,7 +470,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.TransactionLookup(
-  Const TransactionLookupParam : TransactionLookup_Type
+  const  TransactionLookupParam : TransactionLookup_Type
 ):TransactionLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -479,7 +479,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('TransactionLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('TransactionLookup', TypeInfo(TransactionLookup_Type), TransactionLookupParam);
+      locSerializer.Put('TransactionLookupParam', TypeInfo(TransactionLookup_Type), TransactionLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -495,7 +495,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.SellerListingSearch(
-  Const SellerListingSearchParam : SellerListingSearch_Type
+  const  SellerListingSearchParam : SellerListingSearch_Type
 ):SellerListingSearchResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -504,7 +504,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerListingSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerListingSearch', TypeInfo(SellerListingSearch_Type), SellerListingSearchParam);
+      locSerializer.Put('SellerListingSearchParam', TypeInfo(SellerListingSearch_Type), SellerListingSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -520,7 +520,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.SellerListingLookup(
-  Const SellerListingLookupParam : SellerListingLookup_Type
+  const  SellerListingLookupParam : SellerListingLookup_Type
 ):SellerListingLookupResponse_Type;
 Var
   locSerializer : IFormatterClient;
@@ -529,7 +529,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerListingLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerListingLookup', TypeInfo(SellerListingLookup_Type), SellerListingLookupParam);
+      locSerializer.Put('SellerListingLookupParam', TypeInfo(SellerListingLookup_Type), SellerListingLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -545,7 +545,7 @@ Begin
 End;
 
 function TAWSECommerceServicePortType_Proxy.MultiOperation(
-  Const MultiOperationParam : MultiOperationType
+  const  MultiOperationParam : MultiOperation_Type
 ):MultiOperationResponse;
 Var
   locSerializer : IFormatterClient;
@@ -554,7 +554,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('MultiOperation', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('MultiOperation', TypeInfo(MultiOperationType), MultiOperationParam);
+      locSerializer.Put('MultiOperationParam', TypeInfo(MultiOperation_Type), MultiOperationParam);
     locSerializer.EndCall();
 
     MakeCall();

@@ -37,6 +37,7 @@ type
     actIntfCreate: TAction;
     actFullExpand: TAction;
     actFullCollapse: TAction;
+    actDelete : TAction;
     actSave : TAction;
     actNewFile: TAction;
     actRefreshView: TAction;
@@ -68,6 +69,8 @@ type
     MenuItem30: TMenuItem;
     MenuItem31: TMenuItem;
     MenuItem32: TMenuItem;
+    MenuItem33 : TMenuItem;
+    MenuItem34 : TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
@@ -103,6 +106,7 @@ type
     trvSchema: TTreeView;
     procedure actAboutExecute(Sender: TObject);
     procedure actCompoundCreateExecute(Sender: TObject);
+    procedure actDeleteExecute (Sender : TObject );
     procedure actEnumCreateExecute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
@@ -535,6 +539,26 @@ begin
   e := CreateCompoundObject(FSymbolTable);
   if Assigned(e) then begin
     FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
+  end;
+end;
+
+procedure TfWstTypeLibraryEdit.actDeleteExecute (Sender : TObject );
+var
+  o : TPasElement;
+  nd : TTreeNode;
+begin
+  nd := trvSchema.Selected;
+  if Assigned(nd) and Assigned(nd.Data) then begin
+    o := TPasElement(nd.Data);
+    if HasEditor(o) then begin
+      DeleteObject(o,FSymbolTable);
+      trvSchema.BeginUpdate();
+      try
+        FreeAndNil(nd);
+      finally
+        trvSchema.EndUpdate();
+      end;
+    end;
   end;
 end;
 

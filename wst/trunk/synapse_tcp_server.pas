@@ -10,15 +10,17 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit synapse_tcp_server;
-
-{$INCLUDE wst.inc}
 
 interface
 
 uses
   Classes, SysUtils, blcksock, synsock;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+  
 const
   sSERVER_PORT = '1234';
   
@@ -75,7 +77,8 @@ type
   function SetLogger(ALogger : ILogger):ILogger ;
 
 implementation
-uses binary_streamer, server_service_intf, server_service_imputils;
+uses binary_streamer, server_service_intf, server_service_imputils
+     {$IFNDEF FPC},ActiveX{$ENDIF}, ComObj;
 
 var FLoggerInst : ILogger = nil;
 function SetLogger(ALogger : ILogger):ILogger ;
@@ -163,6 +166,15 @@ begin
   inherited Destroy();
 end;
 
+function GetFormatForContentType(const AContentType : string):string ;
+begin
+  Result := Trim(AContentType);
+  if AnsiSameText(Result,'text/xml') then
+    Result := 'soap'
+  else
+    Result := 'binary';
+end;
+
 procedure TClientHandlerThread.Execute();
 var
   wrtr : IDataStore;
@@ -171,46 +183,55 @@ var
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
-  FInputStream := TMemoryStream.Create();
-  FOutputStream := TMemoryStream.Create();
-  FSocketObject := TTCPBlockSocket.Create();
+{$IFNDEF FPC}
+  CoInitialize(nil);
   try
-    FSocketObject.RaiseExcept := True;
+{$ENDIF}
+    FInputStream := TMemoryStream.Create();
+    FOutputStream := TMemoryStream.Create();
+    FSocketObject := TTCPBlockSocket.Create();
     try
-      FSocketObject.Socket := FSocketHandle;
-      FSocketObject.GetSins();
-      while not Terminated do begin
-        FOutputStream.Size := 0;
-        if ( ReadInputBuffer() >= SizeOf(LongInt) ) then begin
-          rdr := CreateBinaryReader(FInputStream);
-          trgt := rdr.ReadStr();
-          ctntyp := rdr.ReadStr();
-          buff := rdr.ReadStr(); WriteLn();WriteLn('ContentType=',ctntyp,', ','Target = ',trgt);WriteLn();WriteLn(buff);
-          rdr := nil;
-          FInputStream.Size := 0;
-          FInputStream.Write(buff[1],Length(buff));
-          FInputStream.Position := 0;
-          rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream);
-          HandleServiceRequest(rqst);
-          i := FOutputStream.Size;
-          SetLength(buff,i);
-          FOutputStream.Position := 0;
-          FOutputStream.Read(buff[1],i);
+      FSocketObject.RaiseExcept := True;
+      try
+        FSocketObject.Socket := FSocketHandle;
+        FSocketObject.GetSins();
+        while not Terminated do begin
           FOutputStream.Size := 0;
-          wrtr := CreateBinaryWriter(FOutputStream);
-          wrtr.WriteStr(buff);
-          SendOutputBuffer();
-          ClearBuffers();
+          if ( ReadInputBuffer() >= SizeOf(LongInt) ) then begin
+            rdr := CreateBinaryReader(FInputStream);
+            trgt := rdr.ReadStr();
+            ctntyp := rdr.ReadStr();
+            buff := rdr.ReadStr(); WriteLn;WriteLn('ContentType=',ctntyp,', ','Target = ',trgt);WriteLn;WriteLn(buff);
+            rdr := nil;
+            FInputStream.Size := 0;
+            FInputStream.Write(buff[1],Length(buff));
+            FInputStream.Position := 0;
+            rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,GetFormatForContentType(ctntyp));
+            HandleServiceRequest(rqst);
+            i := FOutputStream.Size;
+            SetLength(buff,i);
+            FOutputStream.Position := 0;
+            FOutputStream.Read(buff[1],i);
+            FOutputStream.Size := 0;
+            wrtr := CreateBinaryWriter(FOutputStream);
+            wrtr.WriteStr(buff);
+            SendOutputBuffer();
+            ClearBuffers();
+          end;
+        end;
+      except
+        on e : Exception do begin
+          Logger().Log('Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
         end;
       end;
-    except
-      on e : Exception do begin
-        Logger().Log('Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
-      end;
+    finally
+      FreeAndNil(FSocketObject);
     end;
+{$IFNDEF FPC}
   finally
-    FreeAndNil(FSocketObject);
+    CoUninitialize();
   end;
+{$ENDIF}    
 end;
 
 { TServerListnerThread }
@@ -233,24 +254,33 @@ procedure TServerListnerThread.Execute();
 var
   ClientSock : TSocket;
 begin
+{$IFNDEF FPC}
+  CoInitialize(nil);
   try
-    FSocketObject.RaiseExcept := True;
-    FSocketObject.CreateSocket();
-    FSocketObject.SetLinger(True,10);
-    FSocketObject.Bind('127.0.0.1',sSERVER_PORT);
-    FSocketObject.Listen();
-    while not Terminated do begin
-      if FSocketObject.CanRead(DefaultTimeOut) then begin
-        ClientSock := FSocketObject.Accept();
-        TClientHandlerThread.Create(ClientSock);
+{$ENDIF}
+    try
+      FSocketObject.RaiseExcept := True;
+      FSocketObject.CreateSocket();
+      FSocketObject.SetLinger(True,10);
+      FSocketObject.Bind('127.0.0.1',sSERVER_PORT);
+      FSocketObject.Listen();
+      while not Terminated do begin
+        if FSocketObject.CanRead(DefaultTimeOut) then begin
+          ClientSock := FSocketObject.Accept();
+          TClientHandlerThread.Create(ClientSock);
+        end;
+      end;
+    except
+      on e : Exception do begin
+        Logger().Log('Listner Thread Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
+        Logger().Log('Listner stoped.');
       end;
     end;
-  except
-    on e : Exception do begin
-      Logger().Log('Listner Thread Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
-      Logger().Log('Listner stoped.');
-    end;
+{$IFNDEF FPC}
+  finally
+    CoUninitialize();
   end;
+{$ENDIF}
 end;
 
 end.

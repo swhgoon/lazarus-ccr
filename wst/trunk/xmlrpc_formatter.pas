@@ -10,12 +10,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit xmlrpc_formatter;
 
 interface
 
 uses
-  Classes, SysUtils, TypInfo, DOM,
+  Classes, SysUtils, TypInfo,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf, service_intf, imp_utils, base_xmlrpc_formatter;
 
 {$INCLUDE wst.inc}
@@ -67,7 +69,7 @@ type
 {$M-}
 
 implementation
-
+{$IFDEF FPC}uses wst_fpc_xml;{$ENDIF}
 
 { TXmlRpcFormatter }
 
@@ -134,19 +136,19 @@ begin
   if not SameText(sMETHOD_RESPONSE,callNode.NodeName) then
     Error('XML root node must be "%s".',[sMETHOD_RESPONSE]);
 
-  prmsNode := callNode.FindNode(sPARAMS);
+  prmsNode := FindNode(callNode,sPARAMS);
   if ( prmsNode <> nil ) then begin
     PushStackParams(prmsNode);
   end else begin
-    faultNode := callNode.FindNode(sFAULT);
+    faultNode := FindNode(callNode,sFAULT);
     if ( faultNode = nil ) then begin
       raise EServiceException.CreateFmt('Invalid XmlRPC response message, "%s" or "%s" are not present.',[sPARAMS,sFAULT]);
     end;
-    tmpNode := faultNode.FindNode(sVALUE);
+    tmpNode := FindNode(faultNode,sVALUE);
     if ( tmpNode = nil ) then begin
       raise EServiceException.CreateFmt('Invalid XmlRPC fault response message, "%s"  is not present.',[sVALUE]);
     end;
-    tmpNode := tmpNode.FindNode(XmlRpcDataTypeNames[xdtStruct]);
+    tmpNode := FindNode(tmpNode,XmlRpcDataTypeNames[xdtStruct]);
     if ( tmpNode = nil ) then begin
       raise EServiceException.CreateFmt('Invalid XmlRPC fault response message, "%s"  is not present.',[XmlRpcDataTypeNames[xdtStruct]]);
     end;

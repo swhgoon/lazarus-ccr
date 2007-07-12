@@ -10,16 +10,16 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
-
+{$INCLUDE wst_global.inc}
 unit metadata_service;
-
-{$INCLUDE wst.inc}
 
 interface
 
 uses
   Classes, SysUtils,
   base_service_intf, metadata_repository;
+
+{$INCLUDE wst.inc}
 
 type
 

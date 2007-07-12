@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit ics_tcp_protocol;
-
-{$INCLUDE wst.inc}
 
 interface
 
@@ -21,6 +20,9 @@ uses
   service_intf, imp_utils, base_service_intf,
   WSocket;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+  
 Const
   sTRANSPORT_NAME = 'TCP';
 

@@ -1,23 +1,40 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2006 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
+{$INCLUDE wst_global.inc}
 unit semaphore;
 
-{$mode objfpc}{$H+}
 interface
 
 uses
-  Classes, SysUtils, syncobjs;
-  
+  Classes, SysUtils, syncobjs{$IFNDEF FPC},Windows{$ENDIF};
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+
 type
 
   ESemaphoreException = class(Exception);
-  
+
   { TSemaphoreObject }
 
   TSemaphoreObject = class
   private
-    FHandle : PRTLEvent;
+    FHandle : {$IFNDEF FPC}THandle{$ELSE}PRTLEvent{$ENDIF};
     FLimit: Integer;
+    {$IFDEF FPC}
     FCurrentState : Integer;
     FCriticalSection : TCriticalSection;
+    {$ENDIF}
   public
     constructor Create(const ALimit : Integer);
     destructor Destroy(); override;
@@ -34,20 +51,42 @@ constructor TSemaphoreObject.Create(const ALimit: Integer);
 begin
   Assert(ALimit>0);
   FLimit := ALimit;
+{$IFNDEF FPC}
+  FHandle := CreateSemaphore(nil,ALimit,ALimit,'');
+{$ELSE}
   FHandle := RTLEventCreate();
   FCriticalSection := TCriticalSection.Create();
   FCurrentState := FLimit;
-  RTLeventSetEvent(FHandle);
+  RTLeventSetEvent(FHandle);  
+{$ENDIF}
 end;
 
 destructor TSemaphoreObject.Destroy();
 begin
+{$IFNDEF FPC}
+  CloseHandle(FHandle);
+{$ELSE}
   RTLeventdestroy(FHandle);
   FreeAndNil(FCriticalSection);
+{$ENDIF}
   inherited Destroy();
 end;
 
 function TSemaphoreObject.WaitFor(ATimeout: Cardinal): TWaitResult;
+{$IFNDEF FPC}
+var
+  intRes : DWORD;
+begin
+  intRes := WaitForSingleObject(FHandle,ATimeout);
+  case intRes of
+    WAIT_OBJECT_0  : Result := wrSignaled;
+    WAIT_TIMEOUT   : Result := wrTimeout;
+    WAIT_ABANDONED : Result := wrAbandoned;
+    else
+                     Result := wrTimeout;
+  end;
+end;
+{$ELSE}
 var
   ok : Boolean;
 begin
@@ -79,9 +118,13 @@ begin
   if ok then
     Result := wrSignaled;
 end;
+{$ENDIF}
 
 procedure TSemaphoreObject.Release();
 begin
+{$IFNDEF FPC}
+  ReleaseSemaphore(FHandle,1,nil);
+{$ELSE}
   FCriticalSection.Acquire();
   try
     if ( FCurrentState < Limit ) then begin
@@ -93,6 +136,7 @@ begin
     FCriticalSection.Release();
   end;
   RTLeventSetEvent(FHandle);
+{$ENDIF}
 end;
 
 end.

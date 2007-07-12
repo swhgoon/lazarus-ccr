@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -34,108 +34,114 @@
         <PackageName Value="indylaz"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="40">
       <Unit0>
         <Filename Value="http_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="http_server"/>
-        <CursorPos X="19" Y="14"/>
+        <CursorPos X="26" Y="14"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="56"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="app_object.pas"/>
         <UnitName Value="app_object"/>
-        <CursorPos X="17" Y="217"/>
-        <TopLine Value="196"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="15"/>
+        <CursorPos X="41" Y="68"/>
+        <TopLine Value="50"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="64" Y="102"/>
-        <TopLine Value="85"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="14"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="19"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\metadata_wsdl.pas"/>
         <UnitName Value="metadata_wsdl"/>
-        <CursorPos X="56" Y="308"/>
-        <TopLine Value="296"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="15"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="21"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\..\metadata_service_imp.pas"/>
         <UnitName Value="metadata_service_imp"/>
-        <CursorPos X="73" Y="68"/>
-        <TopLine Value="54"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
-        <CursorPos X="1" Y="178"/>
+        <CursorPos X="22" Y="161"/>
         <TopLine Value="160"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
-        <CursorPos X="69" Y="11"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="23" Y="291"/>
+        <TopLine Value="264"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\user_service_intf.pas"/>
         <UnitName Value="user_service_intf"/>
-        <CursorPos X="3" Y="87"/>
-        <TopLine Value="158"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="12"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="180"/>
+        <EditorIndex Value="17"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\metadata_repository.pas"/>
         <UnitName Value="metadata_repository"/>
-        <CursorPos X="5" Y="45"/>
-        <TopLine Value="99"/>
-        <EditorIndex Value="13"/>
-        <UsageCount Value="15"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="22"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
-        <CursorPos X="35" Y="85"/>
-        <TopLine Value="24"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="2" Y="12"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="20"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
-        <CursorPos X="14" Y="268"/>
-        <TopLine Value="267"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="14"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\server_service_soap.pas"/>
         <UnitName Value="server_service_soap"/>
-        <CursorPos X="44" Y="196"/>
-        <TopLine Value="79"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="14"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -143,17 +149,17 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="17" Y="28"/>
         <TopLine Value="13"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="14"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\server_service_imputils.pas"/>
         <UnitName Value="server_service_imputils"/>
-        <CursorPos X="25" Y="94"/>
-        <TopLine Value="68"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="13"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="18"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -161,177 +167,189 @@
         <UnitName Value="IdCustomHTTPServer"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\i386\i386.inc"/>
         <CursorPos X="49" Y="1252"/>
         <TopLine Value="1231"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\wst.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="7"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\xmlrpc_formatter.pas"/>
         <UnitName Value="xmlrpc_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="28"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <UnitName Value="server_service_xmlrpc"/>
-        <CursorPos X="53" Y="177"/>
-        <TopLine Value="152"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="12"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\server_binary_formatter.pas"/>
         <UnitName Value="server_binary_formatter"/>
-        <CursorPos X="50" Y="133"/>
-        <TopLine Value="109"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <UnitName Value="base_xmlrpc_formatter"/>
-        <CursorPos X="3" Y="30"/>
-        <TopLine Value="15"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="18" Y="21"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\..\..\lazarus23_213\others_package\indy\indy-10.2.0.1\fpc\Core\IdSocketHandle.pas"/>
+        <UnitName Value="IdSocketHandle"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="8"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\indy\indy-10.2.0.1\lazarus\IdAboutVCL.pas"/>
+        <UnitName Value="IdAboutVCL"/>
+        <CursorPos X="19" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\indy\indy-10.2.0.1\fpc\System\IdGlobal.pas"/>
+        <UnitName Value="IdGlobal"/>
+        <CursorPos X="59" Y="982"/>
+        <TopLine Value="981"/>
+        <UsageCount Value="9"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\systemh.inc"/>
+        <CursorPos X="12" Y="852"/>
+        <TopLine Value="871"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\innr.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="42"/>
+        <UsageCount Value="9"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\i386\fastmove.inc"/>
+        <CursorPos X="11" Y="835"/>
+        <TopLine Value="821"/>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\system.inc"/>
+        <CursorPos X="11" Y="306"/>
+        <TopLine Value="285"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\generic.inc"/>
+        <CursorPos X="5" Y="1289"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="16"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\system.fpd"/>
+        <CursorPos X="22" Y="17"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
+        <UnitName Value="wst_fpc_xml"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="16"/>
+        <Loaded Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\sysutils\sysstrh.inc"/>
+        <CursorPos X="11" Y="66"/>
+        <TopLine Value="52"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="16"/>
+        <Loaded Value="True"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\sysutils\sysstr.inc"/>
+        <CursorPos X="6" Y="44"/>
+        <TopLine Value="30"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\win\sysosh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="51"/>
+        <UsageCount Value="9"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpash.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="322"/>
+        <UsageCount Value="9"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\varianth.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\rtti.inc"/>
+        <CursorPos X="21" Y="77"/>
+        <TopLine Value="77"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="16"/>
+        <Loaded Value="True"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="..\..\metadata_service.pas"/>
+        <UnitName Value="metadata_service"/>
+        <CursorPos X="26" Y="13"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="..\..\wst_rtti_filter\cursor_intf.pas"/>
+        <UnitName Value="cursor_intf"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="..\user_service_intf.wst"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit39>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="2020" Column="1" TopLine="2004"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1188" Column="13" TopLine="1173"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1272" Column="15" TopLine="1243"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1424" Column="44" TopLine="1408"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="351" Column="33" TopLine="330"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="266" Column="15" TopLine="251"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="359" Column="1" TopLine="336"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="351" Column="1" TopLine="336"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="371" Column="63" TopLine="348"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="253" Column="70" TopLine="244"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="260" Column="18" TopLine="244"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="314" Column="16" TopLine="306"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="306" Column="29" TopLine="291"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="260" Column="56" TopLine="260"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="306" Column="41" TopLine="306"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="260" Column="25" TopLine="260"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="306" Column="46" TopLine="306"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="310" Column="27" TopLine="295"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="365" Column="10" TopLine="356"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\..\server_service_intf.pas"/>
-        <Caret Line="364" Column="30" TopLine="349"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="21" Column="18" TopLine="31"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="196" Column="38" TopLine="171"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\..\server_binary_formatter.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\..\server_binary_formatter.pas"/>
-        <Caret Line="132" Column="37" TopLine="108"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="196" Column="44" TopLine="171"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\..\server_binary_formatter.pas"/>
-        <Caret Line="26" Column="41" TopLine="15"/>
-      </Position28>
-      <Position29>
-        <Filename Value="..\..\server_service_xmlrpc.pas"/>
-        <Caret Line="51" Column="55" TopLine="40"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\..\server_service_xmlrpc.pas"/>
-        <Caret Line="177" Column="37" TopLine="152"/>
-      </Position30>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -340,8 +358,10 @@
       <Filename Value="http_server"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="..\..\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Inc\"/>
       <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\"/>
       <UnitOutputDirectory Value="obj"/>
+      <SrcPath Value="$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Core\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Protocols\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\System\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

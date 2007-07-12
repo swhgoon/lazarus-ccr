@@ -1092,7 +1092,7 @@ Var
 begin
   GenerateUnitHeader();
   GenerateUnitImplementationHeader();
-  typeList := SymbolTable.CurrentModule.InterfaceSection.Types;
+  typeList := SymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := Pred(typeList.Count);
   for i := 0 to c do begin
     elt := TPasElement(typeList[i]);
@@ -1363,7 +1363,7 @@ Var
 begin
   GenerateUnitHeader();
   GenerateUnitImplementationHeader();
-  typeList := SymbolTable.CurrentModule.InterfaceSection.Types;
+  typeList := SymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := Pred(typeList.Count);
   for i := 0 to c do begin
     elt := TPasElement(typeList[i]);
@@ -2131,7 +2131,7 @@ begin
   try
     GenerateUnitHeader();
     GenerateUnitImplementationHeader();
-    typeList := SymbolTable.CurrentModule.InterfaceSection.Types;
+    typeList := SymbolTable.CurrentModule.InterfaceSection.Declarations;
     c := Pred(typeList.Count);
 
     SetCurrentStream(FDecStream);
@@ -2200,7 +2200,7 @@ begin
           for j := 0 to k do begin
             clssTyp := objLst[k-j] as TPasClassType;
             if ( gnrClssLst.IndexOf(clssTyp) = -1 ) then begin
-              if ( FSymbolTable.CurrentModule.InterfaceSection.Types.IndexOf(clssTyp) <> -1 ) then begin
+              if ( FSymbolTable.CurrentModule.InterfaceSection.Declarations.IndexOf(clssTyp) <> -1 ) then begin
                 GenerateClass(clssTyp);
                 gnrClssLst.Add(clssTyp);
               end;

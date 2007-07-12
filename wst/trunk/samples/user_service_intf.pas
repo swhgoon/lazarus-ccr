@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "26/06/2007 23:46:28".
+  Date            : "12/07/2007 10:55:02".
 }
 unit user_service_intf;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -18,6 +18,7 @@ type
 
   TUserArray = class;
   TUser_Type = class;
+  TNote_Type = class;
 
   TUserCategory_Type = ( 
     Normal
@@ -30,11 +31,27 @@ type
     FUserName : string;
     FeMail : string;
     FPreferences : string;
+    FNote : TNote_Type;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   published
     property Category : TUserCategory_Type read FCategory write FCategory;
     property UserName : string read FUserName write FUserName;
     property eMail : string read FeMail write FeMail;
     property Preferences : string read FPreferences write FPreferences;
+    property Note : TNote_Type read FNote write FNote;
+  end;
+
+  TNote_Type = class(TBaseComplexRemotable)
+  private
+    FHeader : string;
+    FAuthor : string;
+    FDate : string;
+  published
+    property Header : string read FHeader write FHeader;
+    property Author : string read FAuthor write FAuthor;
+    property Date : string read FDate write FDate;
   end;
 
   TUserArray = class(TBaseObjectArrayRemotable)
@@ -46,7 +63,7 @@ type
   end;
 
   UserService = interface(IInvokable)
-    ['{757DE451-CE83-454C-8757-6D72428EB1AA}']
+    ['{F49D8FA4-9BBC-4321-9869-5BA745070ABC}']
     function GetList():TUserArray;
     procedure Add(
       const  AUser : TUser_Type
@@ -66,6 +83,21 @@ type
 
 Implementation
 uses metadata_repository;
+
+{ TUser_Type }
+
+constructor TUser_Type.Create();
+begin
+  inherited Create();
+  FNote := TNote_Type.Create();
+end;
+
+destructor TUser_Type.Destroy();
+begin
+  if Assigned(FNote) then
+    FreeAndNil(FNote);
+  inherited Destroy();
+end;
 
 { TUserArray }
 
@@ -208,10 +240,11 @@ end;
 
 initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory_Type),'TUserCategory');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserCategory_Type)].RegisterExternalPropertyName('Normal','result');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser_Type),'TUser');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TNote_Type),'TNote');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
 
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUser_Type)].RegisterExternalPropertyName('Category','item');
 
 End.

@@ -1,28 +1,32 @@
 <?xml version="1.0"?>
-<definitions name="user_service_intf" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:UserService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:UserService">
+<definitions name="urn:UserService" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:UserService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:UserService">
   <types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:UserService">
+      <xsd:complexType name="TUserArray">
+        <xsd:sequence><xsd:element name="item" type="tns:TUser" maxOccurs="unbounded" minOccurs="0"/></xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TUser">
+        <xsd:sequence>
+          <xsd:element name="Category" type="tns:TUserCategory" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="UserName" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="eMail" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="Preferences" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="Note" type="tns:TNote" maxOccurs="1" minOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:simpleType name="TUserCategory">
         <xsd:restriction base="xsd:string">
           <xsd:enumeration value="Normal"/>
           <xsd:enumeration value="Admin"/>
         </xsd:restriction>
       </xsd:simpleType>
-      <xsd:element name="TUser">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element name="Category" type="tns:TUserCategory" maxOccurs="1" minOccurs="1"/>
-            <xsd:element name="UserName" type="xsd:string" maxOccurs="1" minOccurs="1"/>
-            <xsd:element name="eMail" type="xsd:string" maxOccurs="1" minOccurs="1"/>
-            <xsd:element name="Preferences" type="xsd:string" maxOccurs="1" minOccurs="1"/>
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="TUserArray">
-        <xsd:complexType>
-          <xsd:sequence><xsd:element name="item" type="tns:TUser" maxOccurs="unbounded" minOccurs="0"/></xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
+      <xsd:complexType name="TNote">
+        <xsd:sequence>
+          <xsd:element name="Header" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="Author" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="Date" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
     </xsd:schema>
   </types>
   <message name="GetList"/>
@@ -36,6 +40,7 @@
   <message name="Delete"><part name="AName" type="xsd:string"/></message>
   <message name="DeleteResponse"><part name="result" type="xsd:boolean"/></message>
   <portType name="UserService">
+    <document><GUID value="{F49D8FA4-9BBC-4321-9869-5BA745070ABC}"/></document>
     <operation name="GetList">
       <input message="tns:GetList"/>
       <output message="tns:GetListResponse"/>

@@ -10,19 +10,20 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit soap_formatter;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
 
 interface
 
 uses
-  Classes, SysUtils, TypInfo, DOM,
+  Classes, SysUtils, TypInfo,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf, service_intf, imp_utils, base_soap_formatter;
-  
 
-Type
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+
+type
 
 
   { TSOAPFormatter }

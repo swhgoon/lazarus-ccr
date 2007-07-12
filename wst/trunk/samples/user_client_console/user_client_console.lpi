@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="13"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,24 +30,24 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="30">
+    <Units Count="35">
       <Unit0>
         <Filename Value="user_client_console.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_client_console"/>
-        <CursorPos X="40" Y="150"/>
-        <TopLine Value="133"/>
+        <CursorPos X="64" Y="30"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="..\user_service_intf_proxy.pas"/>
         <UnitName Value="user_service_intf_proxy"/>
-        <CursorPos X="1" Y="68"/>
-        <TopLine Value="54"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="25"/>
+        <CursorPos X="74" Y="12"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -55,26 +55,24 @@
         <UnitName Value="synapse_tcp_protocol"/>
         <CursorPos X="29" Y="132"/>
         <TopLine Value="101"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="27"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="3" Y="31"/>
-        <TopLine Value="9"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
+        <CursorPos X="38" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="28"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\user_service_intf.pas"/>
         <UnitName Value="user_service_intf"/>
-        <CursorPos X="3" Y="3"/>
+        <CursorPos X="53" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -82,184 +80,345 @@
         <UnitName Value="blcksock"/>
         <CursorPos X="60" Y="2413"/>
         <TopLine Value="2393"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="27"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\library_protocol.pas"/>
         <UnitName Value="library_protocol"/>
-        <CursorPos X="18" Y="5"/>
-        <TopLine Value="26"/>
-        <UsageCount Value="15"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\sysutils\finah.inc"/>
         <CursorPos X="10" Y="33"/>
         <TopLine Value="17"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\sysutils\fina.inc"/>
         <CursorPos X="13" Y="112"/>
         <TopLine Value="105"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\sysutils\sysutilh.inc"/>
         <CursorPos X="33" Y="202"/>
         <TopLine Value="188"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\win32\system.pp"/>
         <UnitName Value="System"/>
         <CursorPos X="20" Y="35"/>
         <TopLine Value="21"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\inc\fexpand.inc"/>
         <CursorPos X="10" Y="86"/>
         <TopLine Value="226"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\sysutils\sysstrh.inc"/>
         <CursorPos X="54" Y="33"/>
         <TopLine Value="19"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\synapse_http_protocol.pas"/>
         <UnitName Value="synapse_http_protocol"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="22"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\metadata_repository.pas"/>
         <UnitName Value="metadata_repository"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\wst.inc"/>
         <CursorPos X="17" Y="15"/>
         <TopLine Value="1"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\library_imp_utils.pas"/>
         <UnitName Value="library_imp_utils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\win\dynlibs.inc"/>
         <CursorPos X="17" Y="27"/>
         <TopLine Value="13"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="96"/>
         <TopLine Value="72"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\soap_formatter.pas"/>
         <UnitName Value="soap_formatter"/>
         <CursorPos X="21" Y="42"/>
         <TopLine Value="46"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="17"/>
       </Unit20>
       <Unit21>
         <Filename Value="..\..\xmlrpc_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xmlrpc_formatter"/>
-        <CursorPos X="18" Y="139"/>
-        <TopLine Value="128"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="39"/>
+        <CursorPos X="25" Y="72"/>
+        <TopLine Value="65"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\binary_formatter.pas"/>
         <UnitName Value="binary_formatter"/>
-        <CursorPos X="17" Y="23"/>
+        <CursorPos X="20" Y="21"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\wst_delphi.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <UnitName Value="base_xmlrpc_formatter"/>
-        <CursorPos X="1" Y="1323"/>
-        <TopLine Value="1309"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="20" Y="1346"/>
+        <TopLine Value="1326"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="19"/>
+        <CursorPos X="56" Y="334"/>
+        <TopLine Value="319"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\classes\classesh.inc"/>
         <CursorPos X="3" Y="592"/>
         <TopLine Value="590"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="1" Y="483"/>
         <TopLine Value="469"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="2407"/>
         <TopLine Value="2393"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\packages\fcl-xml\src\xmlread.pp"/>
         <UnitName Value="XMLRead"/>
         <CursorPos X="1" Y="2763"/>
         <TopLine Value="2749"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="..\..\imp_utils.pas"/>
+        <UnitName Value="imp_utils"/>
+        <CursorPos X="26" Y="13"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
+        <UnitName Value="wst_fpc_xml"/>
+        <CursorPos X="34" Y="67"/>
+        <TopLine Value="54"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\typinfo.pp"/>
+        <UnitName Value="typinfo"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="34"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
+        <UnitName Value="base_binary_formatter"/>
+        <CursorPos X="35" Y="1496"/>
+        <TopLine Value="1483"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <UnitName Value="DOM"/>
+        <CursorPos X="14" Y="287"/>
+        <TopLine Value="274"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit34>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="user_client_console.pas"/>
-        <Caret Line="147" Column="27" TopLine="133"/>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
+        <Caret Line="67" Column="34" TopLine="54"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="304" Column="36" TopLine="298"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="249" Column="54" TopLine="236"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="320" Column="63" TopLine="307"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="345" Column="58" TopLine="332"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="347" Column="60" TopLine="334"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="449" Column="66" TopLine="436"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="541" Column="58" TopLine="528"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="543" Column="62" TopLine="530"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="544" Column="62" TopLine="531"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="546" Column="66" TopLine="533"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="548" Column="58" TopLine="535"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="968" Column="3" TopLine="966"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1357" Column="75" TopLine="1344"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1360" Column="22" TopLine="1347"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1465" Column="71" TopLine="1452"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1532" Column="74" TopLine="1519"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1862" Column="75" TopLine="1849"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="1864" Column="65" TopLine="1851"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2038" Column="66" TopLine="2025"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2045" Column="63" TopLine="2032"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2074" Column="12" TopLine="2061"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2104" Column="70" TopLine="2091"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2107" Column="65" TopLine="2094"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2148" Column="74" TopLine="2135"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2150" Column="65" TopLine="2137"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2159" Column="66" TopLine="2146"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2171" Column="22" TopLine="2170"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="2172" Column="26" TopLine="2158"/>
+      </Position29>
+      <Position30>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
+        <Caret Line="258" Column="23" TopLine="245"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService".
-  Date            : "6-5-07 19:37:08".
+  Date            : "11/07/2007 22:01:01".
 }
 unit AWSECommerceService;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -16,107 +16,79 @@ const
 
 type
 
-  HelpRequest = class;
   Help_RequestArray = class;
   Help_Type = class;
-  OperationRequest_Type = class;
-  Information_Type = class;
   HelpResponse_InformationArray = class;
   HelpResponse_Type = class;
-  ItemSearchRequest = class;
   ItemSearch_RequestArray = class;
   ItemSearch_Type = class;
-  Items_Type = class;
   ItemSearchResponse_ItemsArray = class;
   ItemSearchResponse_Type = class;
-  ItemLookupRequest = class;
   ItemLookup_RequestArray = class;
   ItemLookup_Type = class;
   ItemLookupResponse_ItemsArray = class;
   ItemLookupResponse_Type = class;
-  BrowseNodeLookupRequest = class;
   BrowseNodeLookup_RequestArray = class;
   BrowseNodeLookup_Type = class;
-  BrowseNodes_Type = class;
   BrowseNodeLookupResponse_BrowseNodesArray = class;
   BrowseNodeLookupResponse_Type = class;
-  ListSearchRequest = class;
   ListSearch_RequestArray = class;
   ListSearch_Type = class;
-  Lists_Type = class;
   ListSearchResponse_ListsArray = class;
   ListSearchResponse_Type = class;
-  ListLookupRequest = class;
   ListLookup_RequestArray = class;
   ListLookup_Type = class;
   ListLookupResponse_ListsArray = class;
   ListLookupResponse_Type = class;
-  CustomerContentSearchRequest = class;
   CustomerContentSearch_RequestArray = class;
   CustomerContentSearch_Type = class;
-  Customers_Type = class;
   CustomerContentSearchResponse_CustomersArray = class;
   CustomerContentSearchResponse_Type = class;
-  CustomerContentLookupRequest = class;
   CustomerContentLookup_RequestArray = class;
   CustomerContentLookup_Type = class;
   CustomerContentLookupResponse_CustomersArray = class;
   CustomerContentLookupResponse_Type = class;
-  SimilarityLookupRequest = class;
   SimilarityLookup_RequestArray = class;
   SimilarityLookup_Type = class;
   SimilarityLookupResponse_ItemsArray = class;
   SimilarityLookupResponse_Type = class;
-  SellerLookupRequest = class;
   SellerLookup_RequestArray = class;
   SellerLookup_Type = class;
-  Sellers_Type = class;
   SellerLookupResponse_SellersArray = class;
   SellerLookupResponse_Type = class;
-  CartGetRequest = class;
   CartGet_RequestArray = class;
   CartGet_Type = class;
-  Cart_Type = class;
   CartGetResponse_CartArray = class;
   CartGetResponse_Type = class;
-  CartAddRequest = class;
   CartAdd_RequestArray = class;
   CartAdd_Type = class;
   CartAddResponse_CartArray = class;
   CartAddResponse_Type = class;
-  CartCreateRequest = class;
   CartCreate_RequestArray = class;
   CartCreate_Type = class;
   CartCreateResponse_CartArray = class;
   CartCreateResponse_Type = class;
-  CartModifyRequest = class;
   CartModify_RequestArray = class;
   CartModify_Type = class;
   CartModifyResponse_CartArray = class;
   CartModifyResponse_Type = class;
-  CartClearRequest = class;
   CartClear_RequestArray = class;
   CartClear_Type = class;
   CartClearResponse_CartArray = class;
   CartClearResponse_Type = class;
-  TransactionLookupRequest = class;
   TransactionLookup_RequestArray = class;
   TransactionLookup_Type = class;
-  Transactions_Type = class;
   TransactionLookupResponse_TransactionsArray = class;
   TransactionLookupResponse_Type = class;
-  SellerListingSearchRequest = class;
   SellerListingSearch_RequestArray = class;
   SellerListingSearch_Type = class;
-  SellerListings_Type = class;
   SellerListingSearchResponse_SellerListingsArray = class;
   SellerListingSearchResponse_Type = class;
-  SellerListingLookupRequest = class;
   SellerListingLookup_RequestArray = class;
   SellerListingLookup_Type = class;
   SellerListingLookupResponse_SellerListingsArray = class;
   SellerListingLookupResponse_Type = class;
-  MultiOperationType = class;
+  MultiOperation_Type = class;
   MultiOperationResponse = class;
   Bin_BinParameter_Type = class;
   Bin_BinParameterArray = class;
@@ -125,170 +97,193 @@ type
   SearchBinSet_Type = class;
   SearchBinSets_Type = class;
   HelpRequest_ResponseGroupArray = class;
+  HelpRequest_Type = class;
   ItemSearchRequest_AudienceRatingArray = class;
   ItemSearchRequest_ResponseGroupArray = class;
+  ItemSearchRequest_Type = class;
   ItemLookupRequest_ItemIdArray = class;
   ItemLookupRequest_ResponseGroupArray = class;
+  ItemLookupRequest_Type = class;
   ListSearchRequest_ResponseGroupArray = class;
+  ListSearchRequest_Type = class;
   ListLookupRequest_ResponseGroupArray = class;
+  ListLookupRequest_Type = class;
   CustomerContentSearchRequest_ResponseGroupArray = class;
+  CustomerContentSearchRequest_Type = class;
   CustomerContentLookupRequest_ResponseGroupArray = class;
+  CustomerContentLookupRequest_Type = class;
   SimilarityLookupRequest_ItemIdArray = class;
   SimilarityLookupRequest_ResponseGroupArray = class;
+  SimilarityLookupRequest_Type = class;
   SellerLookupRequest_ResponseGroupArray = class;
   SellerLookupRequest_SellerIdArray = class;
+  SellerLookupRequest_Type = class;
   CartGetRequest_ResponseGroupArray = class;
+  CartGetRequest_Type = class;
   CartAddRequest_Items_Type_Item_Type = class;
   CartAddRequest_Items_Type = class;
   CartAddRequest_ResponseGroupArray = class;
+  CartAddRequest_Type = class;
   CartCreateRequest_Items_Type_Item_Type = class;
   CartCreateRequest_Items_Type = class;
   CartCreateRequest_ResponseGroupArray = class;
+  CartCreateRequest_Type = class;
   CartModifyRequest_Items_Type_Item_Type = class;
   CartModifyRequest_Items_Type = class;
   CartModifyRequest_ResponseGroupArray = class;
+  CartModifyRequest_Type = class;
   CartClearRequest_ResponseGroupArray = class;
+  CartClearRequest_Type = class;
   TransactionLookupRequest_ResponseGroupArray = class;
   TransactionLookupRequest_TransactionIdArray = class;
+  TransactionLookupRequest_Type = class;
   SellerListingSearchRequest_ResponseGroupArray = class;
+  SellerListingSearchRequest_Type = class;
   SellerListingLookupRequest_ResponseGroupArray = class;
+  SellerListingLookupRequest_Type = class;
   BrowseNodeLookupRequest_BrowseNodeIdArray = class;
   BrowseNodeLookupRequest_ResponseGroupArray = class;
-  HTTPHeaders_Type = class;
-  Arguments_Type = class;
-  Errors_Type = class;
+  BrowseNodeLookupRequest_Type = class;
+  OperationRequest_Type = class;
   Request_Type = class;
   Arguments_Argument_Type = class;
+  Arguments_Type = class;
   HTTPHeaders_Header_Type = class;
+  HTTPHeaders_Type = class;
   Errors_Error_Type = class;
-  OperationInformation_Type = class;
-  ResponseGroupInformation_Type = class;
+  Errors_Type = class;
   Information_OperationInformationArray = class;
   Information_ResponseGroupInformationArray = class;
-  CorrectedQuery_Type = class;
-  SearchResultsMap_Type = class;
-  Item_Type = class;
+  Information_Type = class;
   Items__ItemArray = class;
-  List_Type = class;
+  Items_Type = class;
+  CorrectedQuery_Type = class;
   Lists_ListArray = class;
-  Customer_Type = class;
+  Lists_Type = class;
   Customers_CustomerArray = class;
-  Price = class;
-  CartItems_Type = class;
-  SavedForLaterItems_Type = class;
-  SimilarProducts_Type = class;
-  TopSellers_Type = class;
-  NewReleases_Type = class;
-  SimilarViewedProducts_Type = class;
-  OtherCategoriesSimilarProducts_Type = class;
-  Transaction_Type = class;
+  Customers_Type = class;
+  Cart_Type = class;
   Transactions_TransactionArray = class;
-  Seller_Type = class;
+  Transactions_Type = class;
   Sellers_SellerArray = class;
-  SellerListing_Type = class;
+  Sellers_Type = class;
   SellerListings_SellerListingArray = class;
+  SellerListings_Type = class;
   OperationInformation_RequiredParameters_Type = class;
   OperationInformation_AvailableParameters_Type = class;
   OperationInformation_DefaultResponseGroups_Type = class;
   OperationInformation_AvailableResponseGroups_Type = class;
+  OperationInformation_Type = class;
   ResponseGroupInformation_ValidOperations_Type = class;
   ResponseGroupInformation_Elements_Type = class;
-  Image = class;
-  ListItem_Type = class;
+  ResponseGroupInformation_Type = class;
   List_ListItemArray = class;
+  List_Type = class;
+  ListItem_Type = class;
   Customer_Location_Type = class;
-  CustomerReviews_Type = class;
   Customer_CustomerReviewsArray = class;
+  Customer_Type = class;
   SearchResultsMap_SearchIndex_Type_ASINArray = class;
   SearchResultsMap_SearchIndex_Type = class;
-  ImageSet_Type = class;
+  SearchResultsMap_Type = class;
   Item_ImageSets_Type_ImageSetArray = class;
   Item_ImageSets_Type = class;
-  ItemAttributes_Type = class;
-  MerchantItemAttributes_Type = class;
-  Collections_Type = class;
   Item_Subjects_Type = class;
-  OfferSummary_Type = class;
-  Offers_Type = class;
-  VariationSummary_Type = class;
-  Variations_Type = class;
-  EditorialReviews_Type = class;
-  Accessories_Type = class;
-  Tracks_Type = class;
-  ListmaniaLists_Type = class;
-  SearchInside_Type = class;
   Item_AlternateVersions_Type_AlternateVersion_Type = class;
   Item_AlternateVersions_Type = class;
   _Item_ImageSetsArray = class;
-  Offer_Type = class;
+  Item_Type = class;
+  OfferSummary_Type = class;
   Offers_OfferArray = class;
-  Merchant_Type = class;
-  OfferAttributes_Type = class;
-  OfferListing_Type = class;
-  LoyaltyPoints_Type = class;
-  Promotions_Type = class;
+  Offers_Type = class;
   Offer_OfferListingArray = class;
+  Offer_Type = class;
+  OfferAttributes_Type = class;
+  Merchant_Type = class;
   OfferListing_AvailabilityAttributes_Type = class;
-  Address = class;
   OfferListing_ShippingCharge_Type = class;
   OfferListing_ShippingChargeArray = class;
-  VariationDimensions_Type = class;
+  OfferListing_Type = class;
+  LoyaltyPoints_Type = class;
+  VariationSummary_Type = class;
   Variations__ItemArray = class;
-  EditorialReview_Type = class;
+  Variations_Type = class;
+  VariationDimensions_Type = class;
+  EditorialReviews_Type = class;
   Collections_Collection_Type_CollectionSummary_Type = class;
   Collections_Collection_Type_CollectionParent_Type = class;
   Collections_Collection_Type_CollectionItem_Type = class;
   Collections_Collection_Type_CollectionItemArray = class;
   Collections_Collection_Type = class;
-  Review_Type = class;
+  Collections_Type = class;
+  EditorialReview_Type = class;
   CustomerReviews_ReviewArray = class;
+  CustomerReviews_Type = class;
+  Review_Type = class;
   Reviewer_Type = class;
   Tracks_Disc_Type_Track_Type = class;
   Tracks_Disc_Type_TrackArray = class;
   Tracks_Disc_Type = class;
+  Tracks_Type = class;
   SimilarProducts_SimilarProduct_Type = class;
+  SimilarProducts_Type = class;
   TopSellers_TopSeller_Type = class;
+  TopSellers_Type = class;
   NewReleases_NewRelease_Type = class;
+  NewReleases_Type = class;
   SimilarViewedProducts_SimilarViewedProduct_Type = class;
+  SimilarViewedProducts_Type = class;
   OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type = class;
+  OtherCategoriesSimilarProducts_Type = class;
   Accessories_Accessory_Type = class;
-  Promotion_Type = class;
+  Accessories_Type = class;
+  Promotions_Type = class;
   Promotion_Summary_Type = class;
-  PromotionEligibilityRequirements = class;
-  PromotionBenefits = class;
-  PromotionItemApplicability = class;
   Promotion_Details_Type = class;
-  PromotionEligibilityRequirement = class;
-  PromotionBenefit = class;
-  BrowseNode_Type = class;
+  Promotion_Type = class;
+  PromotionEligibilityRequirements_Type = class;
+  PromotionBenefits_Type = class;
+  PromotionBenefit_Type = class;
+  PromotionEligibilityRequirement_Type = class;
+  PromotionItemApplicability_Type = class;
   BrowseNodes_BrowseNodeArray = class;
+  BrowseNodes_Type = class;
   BrowseNode_Children_Type = class;
   BrowseNode_Ancestors_Type = class;
+  BrowseNode_Type = class;
   ListmaniaLists_ListmaniaList_Type = class;
+  ListmaniaLists_Type = class;
   SearchInside_Excerpt_Type = class;
-  CartItem = class;
+  SearchInside_Type = class;
   CartItems_CartItemArray = class;
+  CartItems_Type = class;
   SavedForLaterItems_SavedForLaterItemArray = class;
+  SavedForLaterItems_Type = class;
+  CartItem_Type = class;
   Transaction_Totals_Type = class;
-  TransactionItem_Type = class;
   Transaction_TransactionItems_Type = class;
   Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type = class;
   Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type = class;
   Transaction_Shipments_Type_Shipment_Type_Packages_Type = class;
   Transaction_Shipments_Type_Shipment_Type = class;
   Transaction_Shipments_Type = class;
+  Transaction_Type = class;
   TransactionItem_ChildTransactionItems_Type = class;
+  TransactionItem_Type = class;
   Seller_Location_Type = class;
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type = class;
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray = class;
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type = class;
   Seller_SellerFeedbackSummary_Type = class;
-  SellerFeedback_Type = class;
+  Seller_Type = class;
   SellerFeedback_Feedback_Type = class;
-  DecimalWithUnits = class;
-  NonNegativeIntegerWithUnits = class;
+  SellerFeedback_Type = class;
+  Address_Type = class;
+  SellerListing_Type = class;
+  Price_Type = class;
+  ImageSet_Type = class;
+  Image_Type = class;
   ItemAttributes_Creator_Type = class;
-  StringWithUnits = class;
   ItemAttributes_ItemDimensions_Type = class;
   ItemAttributes_Languages_Type_Language_Type = class;
   ItemAttributes_Languages_Type = class;
@@ -311,6 +306,7 @@ type
   ItemAttributes_ReturnMethodArray = class;
   ItemAttributes_SpecialFeaturesArray = class;
   ItemAttributes_SupportedImageTypeArray = class;
+  ItemAttributes_Type = class;
   MerchantItemAttributes_Creator_Type = class;
   MerchantItemAttributes_ItemDimensions_Type = class;
   MerchantItemAttributes_Languages_Type_Language_Type = class;
@@ -333,6 +329,10 @@ type
   MerchantItemAttributes_ReturnMethodArray = class;
   MerchantItemAttributes_SpecialFeaturesArray = class;
   MerchantItemAttributes_SupportedImageTypeArray = class;
+  MerchantItemAttributes_Type = class;
+  NonNegativeIntegerWithUnits_Type = class;
+  DecimalWithUnits_Type = class;
+  StringWithUnits_Type = class;
 
   HelpRequest_HelpType_Type = ( 
     Operation
@@ -341,34 +341,6 @@ type
 
   ItemSearchRequest_Availability_Type = ( 
     Available
-  );
-
-  AudienceRating_Type = ( 
-    G
-    ,PG
-    ,AudienceRatingPG_13
-    ,R
-    ,AudienceRatingNC_17
-    ,NR
-    ,Unrated
-    ,AudienceRating_6
-    ,AudienceRating_12
-    ,AudienceRating_16
-    ,AudienceRating_18
-    ,FamilyViewing
-  );
-
-  Condition_Type = ( 
-    All
-    ,New
-    ,Used
-    ,Collectible
-    ,Refurbished
-  );
-
-  DeliveryMethod_Type = ( 
-    Ship
-    ,ISPU
   );
 
   ItemLookupRequest_IdType_Type = ( 
@@ -386,9 +358,9 @@ type
   );
 
   ListLookupRequest_ListType_Type = ( 
-    ListLookupRequest_ListType_TypeWishList
+    ListLookupRequest_ListType_Type_WishList
     ,Listmania
-    ,ListLookupRequest_ListType_TypeWeddingRegistry
+    ,ListLookupRequest_ListType_Type_WeddingRegistry
   );
 
   SimilarityLookupRequest_SimilarityType_Type = ( 
@@ -409,35 +381,46 @@ type
   SellerListingLookupRequest_IdType_Type = ( 
     Exchange
     ,Listing
-    ,SellerListingLookupRequest_IdType_TypeASIN
-    ,SellerListingLookupRequest_IdType_TypeSKU
+    ,SellerListingLookupRequest_IdType_Type_ASIN
+    ,SellerListingLookupRequest_IdType_Type_SKU
+  );
+
+  Condition_Type = ( 
+    All
+    ,New
+    ,Used
+    ,Collectible
+    ,Refurbished
+  );
+
+  DeliveryMethod_Type = ( 
+    Ship
+    ,ISPU
+  );
+
+  AudienceRating_Type = ( 
+    G
+    ,PG
+    ,AudienceRating_PG_13
+    ,R
+    ,AudienceRating_NC_17
+    ,NR
+    ,Unrated
+    ,AudienceRating__6
+    ,AudienceRating__12
+    ,AudienceRating__16
+    ,AudienceRating__18
+    ,FamilyViewing
   );
 
   List_ListType_Type = ( 
-    List_ListType_TypeWishList
-    ,List_ListType_TypeWeddingRegistry
-    ,List_ListType_TypeBabyRegistry
-    ,List_ListType_TypeListmania
+    List_ListType_Type_WishList
+    ,List_ListType_Type_WeddingRegistry
+    ,List_ListType_Type_BabyRegistry
+    ,List_ListType_Type_Listmania
   );
 
-  positiveIntegerOrAll = type string;
-
-  HelpRequest = class(TBaseComplexRemotable)
-  private
-    FAbout : string;
-    FHelpType : HelpRequest_HelpType_Type;
-    FResponseGroup : HelpRequest_ResponseGroupArray;
-  private
-    function HasAbout() : Boolean;
-    function HasHelpType() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property About : string read FAbout write FAbout stored HasAbout;
-    property HelpType : HelpRequest_HelpType_Type read FHelpType write FHelpType stored HasHelpType;
-    property ResponseGroup : HelpRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-  end;
+  positiveIntegerOrAll_Type = type string;
 
   Help_Type = class(TBaseComplexRemotable)
   private
@@ -446,7 +429,7 @@ type
     FSubscriptionId : string;
     FAssociateTag : string;
     FValidate : string;
-    FShared : HelpRequest;
+    FShared : HelpRequest_Type;
     FRequest : Help_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -455,6 +438,7 @@ type
     function HasAssociateTag() : Boolean;
     function HasValidate() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -464,48 +448,8 @@ type
     property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
-    property Shared : HelpRequest read FShared write FShared stored HasShared;
-    property Request : Help_RequestArray read FRequest write FRequest;
-  end;
-
-  OperationRequest_Type = class(TBaseComplexRemotable)
-  private
-    FHTTPHeaders : HTTPHeaders_Type;
-    FRequestId : string;
-    FArguments : Arguments_Type;
-    FErrors : Errors_Type;
-    FRequestProcessingTime : float;
-  private
-    function HasHTTPHeaders() : Boolean;
-    function HasRequestId() : Boolean;
-    function HasArguments() : Boolean;
-    function HasErrors() : Boolean;
-    function HasRequestProcessingTime() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property HTTPHeaders : HTTPHeaders_Type read FHTTPHeaders write FHTTPHeaders stored HasHTTPHeaders;
-    property RequestId : string read FRequestId write FRequestId stored HasRequestId;
-    property Arguments : Arguments_Type read FArguments write FArguments stored HasArguments;
-    property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
-    property RequestProcessingTime : float read FRequestProcessingTime write FRequestProcessingTime stored HasRequestProcessingTime;
-  end;
-
-  Information_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FOperationInformation : Information_OperationInformationArray;
-    FResponseGroupInformation : Information_ResponseGroupInformationArray;
-  private
-    function HasRequest() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property OperationInformation : Information_OperationInformationArray read FOperationInformation write FOperationInformation;
-    property ResponseGroupInformation : Information_ResponseGroupInformationArray read FResponseGroupInformation write FResponseGroupInformation;
+    property Shared : HelpRequest_Type read FShared write FShared stored HasShared;
+    property Request : Help_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   HelpResponse_Type = class(TBaseComplexRemotable)
@@ -514,130 +458,13 @@ type
     FInformation : HelpResponse_InformationArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasInformation() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Information : HelpResponse_InformationArray read FInformation write FInformation;
-  end;
-
-  ItemSearchRequest = class(TBaseComplexRemotable)
-  private
-    FActor : string;
-    FArtist : string;
-    FAvailability : ItemSearchRequest_Availability_Type;
-    FAudienceRating : ItemSearchRequest_AudienceRatingArray;
-    FAuthor : string;
-    FBrand : string;
-    FBrowseNode : string;
-    FCity : string;
-    FComposer : string;
-    FCondition : Condition_Type;
-    FConductor : string;
-    FCount : positiveInteger;
-    FCuisine : string;
-    FDeliveryMethod : DeliveryMethod_Type;
-    FDirector : string;
-    FFutureLaunchDate : string;
-    FISPUPostalCode : string;
-    FItemPage : positiveInteger;
-    FKeywords : string;
-    FManufacturer : string;
-    FMaximumPrice : nonNegativeInteger;
-    FMerchantId : string;
-    FMinimumPrice : nonNegativeInteger;
-    FMusicLabel : string;
-    FNeighborhood : string;
-    FOrchestra : string;
-    FPostalCode : string;
-    FPower : string;
-    FPublisher : string;
-    FResponseGroup : ItemSearchRequest_ResponseGroupArray;
-    FReviewSort : string;
-    FSearchIndex : string;
-    FSort : string;
-    FState : string;
-    FTextStream : string;
-    FTitle : string;
-    FReleaseDate : string;
-  private
-    function HasActor() : Boolean;
-    function HasArtist() : Boolean;
-    function HasAvailability() : Boolean;
-    function HasAuthor() : Boolean;
-    function HasBrand() : Boolean;
-    function HasBrowseNode() : Boolean;
-    function HasCity() : Boolean;
-    function HasComposer() : Boolean;
-    function HasCondition() : Boolean;
-    function HasConductor() : Boolean;
-    function HasCount() : Boolean;
-    function HasCuisine() : Boolean;
-    function HasDeliveryMethod() : Boolean;
-    function HasDirector() : Boolean;
-    function HasFutureLaunchDate() : Boolean;
-    function HasISPUPostalCode() : Boolean;
-    function HasItemPage() : Boolean;
-    function HasKeywords() : Boolean;
-    function HasManufacturer() : Boolean;
-    function HasMaximumPrice() : Boolean;
-    function HasMerchantId() : Boolean;
-    function HasMinimumPrice() : Boolean;
-    function HasMusicLabel() : Boolean;
-    function HasNeighborhood() : Boolean;
-    function HasOrchestra() : Boolean;
-    function HasPostalCode() : Boolean;
-    function HasPower() : Boolean;
-    function HasPublisher() : Boolean;
-    function HasReviewSort() : Boolean;
-    function HasSearchIndex() : Boolean;
-    function HasSort() : Boolean;
-    function HasState() : Boolean;
-    function HasTextStream() : Boolean;
-    function HasTitle() : Boolean;
-    function HasReleaseDate() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Actor : string read FActor write FActor stored HasActor;
-    property Artist : string read FArtist write FArtist stored HasArtist;
-    property Availability : ItemSearchRequest_Availability_Type read FAvailability write FAvailability stored HasAvailability;
-    property AudienceRating : ItemSearchRequest_AudienceRatingArray read FAudienceRating write FAudienceRating;
-    property Author : string read FAuthor write FAuthor stored HasAuthor;
-    property Brand : string read FBrand write FBrand stored HasBrand;
-    property BrowseNode : string read FBrowseNode write FBrowseNode stored HasBrowseNode;
-    property City : string read FCity write FCity stored HasCity;
-    property Composer : string read FComposer write FComposer stored HasComposer;
-    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
-    property Conductor : string read FConductor write FConductor stored HasConductor;
-    property Count : positiveInteger read FCount write FCount stored HasCount;
-    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
-    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
-    property Director : string read FDirector write FDirector stored HasDirector;
-    property FutureLaunchDate : string read FFutureLaunchDate write FFutureLaunchDate stored HasFutureLaunchDate;
-    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
-    property ItemPage : positiveInteger read FItemPage write FItemPage stored HasItemPage;
-    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
-    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
-    property MaximumPrice : nonNegativeInteger read FMaximumPrice write FMaximumPrice stored HasMaximumPrice;
-    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
-    property MinimumPrice : nonNegativeInteger read FMinimumPrice write FMinimumPrice stored HasMinimumPrice;
-    property MusicLabel : string read FMusicLabel write FMusicLabel stored HasMusicLabel;
-    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
-    property Orchestra : string read FOrchestra write FOrchestra stored HasOrchestra;
-    property PostalCode : string read FPostalCode write FPostalCode stored HasPostalCode;
-    property Power : string read FPower write FPower stored HasPower;
-    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
-    property ResponseGroup : ItemSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
-    property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
-    property Sort : string read FSort write FSort stored HasSort;
-    property State : string read FState write FState stored HasState;
-    property TextStream : string read FTextStream write FTextStream stored HasTextStream;
-    property Title : string read FTitle write FTitle stored HasTitle;
-    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
+    property Information : HelpResponse_InformationArray read FInformation write FInformation stored HasInformation;
   end;
 
   ItemSearch_Type = class(TBaseComplexRemotable)
@@ -648,7 +475,7 @@ type
     FAssociateTag : string;
     FXMLEscaping : string;
     FValidate : string;
-    FShared : ItemSearchRequest;
+    FShared : ItemSearchRequest_Type;
     FRequest : ItemSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -658,6 +485,7 @@ type
     function HasXMLEscaping() : Boolean;
     function HasValidate() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -668,40 +496,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
     property Validate : string read FValidate write FValidate stored HasValidate;
-    property Shared : ItemSearchRequest read FShared write FShared stored HasShared;
-    property Request : ItemSearch_RequestArray read FRequest write FRequest;
-  end;
-
-  Items_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FCorrectedQuery : CorrectedQuery_Type;
-    FQid : string;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FSearchResultsMap : SearchResultsMap_Type;
-    F_Item : Items__ItemArray;
-    FSearchBinSets : SearchBinSets_Type;
-  private
-    function HasRequest() : Boolean;
-    function HasCorrectedQuery() : Boolean;
-    function HasQid() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-    function HasSearchResultsMap() : Boolean;
-    function HasSearchBinSets() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property CorrectedQuery : CorrectedQuery_Type read FCorrectedQuery write FCorrectedQuery stored HasCorrectedQuery;
-    property Qid : string read FQid write FQid stored HasQid;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property SearchResultsMap : SearchResultsMap_Type read FSearchResultsMap write FSearchResultsMap stored HasSearchResultsMap;
-    property _Item : Items__ItemArray read F_Item write F_Item;
-    property SearchBinSets : SearchBinSets_Type read FSearchBinSets write FSearchBinSets stored HasSearchBinSets;
+    property Shared : ItemSearchRequest_Type read FShared write FShared stored HasShared;
+    property Request : ItemSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   ItemSearchResponse_Type = class(TBaseComplexRemotable)
@@ -710,61 +506,13 @@ type
     FItems : ItemSearchResponse_ItemsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasItems() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Items : ItemSearchResponse_ItemsArray read FItems write FItems;
-  end;
-
-  ItemLookupRequest = class(TBaseComplexRemotable)
-  private
-    FCondition : Condition_Type;
-    FDeliveryMethod : DeliveryMethod_Type;
-    FFutureLaunchDate : string;
-    FIdType : ItemLookupRequest_IdType_Type;
-    FISPUPostalCode : string;
-    FMerchantId : string;
-    FOfferPage : positiveInteger;
-    FItemId : ItemLookupRequest_ItemIdArray;
-    FResponseGroup : ItemLookupRequest_ResponseGroupArray;
-    FReviewPage : positiveInteger;
-    FReviewSort : string;
-    FSearchIndex : string;
-    FSearchInsideKeywords : string;
-    FVariationPage : positiveIntegerOrAll;
-  private
-    function HasCondition() : Boolean;
-    function HasDeliveryMethod() : Boolean;
-    function HasFutureLaunchDate() : Boolean;
-    function HasIdType() : Boolean;
-    function HasISPUPostalCode() : Boolean;
-    function HasMerchantId() : Boolean;
-    function HasOfferPage() : Boolean;
-    function HasReviewPage() : Boolean;
-    function HasReviewSort() : Boolean;
-    function HasSearchIndex() : Boolean;
-    function HasSearchInsideKeywords() : Boolean;
-    function HasVariationPage() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
-    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
-    property FutureLaunchDate : string read FFutureLaunchDate write FFutureLaunchDate stored HasFutureLaunchDate;
-    property IdType : ItemLookupRequest_IdType_Type read FIdType write FIdType stored HasIdType;
-    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
-    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
-    property OfferPage : positiveInteger read FOfferPage write FOfferPage stored HasOfferPage;
-    property ItemId : ItemLookupRequest_ItemIdArray read FItemId write FItemId;
-    property ResponseGroup : ItemLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property ReviewPage : positiveInteger read FReviewPage write FReviewPage stored HasReviewPage;
-    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
-    property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
-    property SearchInsideKeywords : string read FSearchInsideKeywords write FSearchInsideKeywords stored HasSearchInsideKeywords;
-    property VariationPage : positiveIntegerOrAll read FVariationPage write FVariationPage stored HasVariationPage;
+    property Items : ItemSearchResponse_ItemsArray read FItems write FItems stored HasItems;
   end;
 
   ItemLookup_Type = class(TBaseComplexRemotable)
@@ -775,7 +523,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ItemLookupRequest;
+    FShared : ItemLookupRequest_Type;
     FRequest : ItemLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -785,6 +533,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -795,8 +544,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ItemLookupRequest read FShared write FShared stored HasShared;
-    property Request : ItemLookup_RequestArray read FRequest write FRequest;
+    property Shared : ItemLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : ItemLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   ItemLookupResponse_Type = class(TBaseComplexRemotable)
@@ -805,24 +554,13 @@ type
     FItems : ItemLookupResponse_ItemsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasItems() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Items : ItemLookupResponse_ItemsArray read FItems write FItems;
-  end;
-
-  BrowseNodeLookupRequest = class(TBaseComplexRemotable)
-  private
-    FBrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray;
-    FResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property BrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray read FBrowseNodeId write FBrowseNodeId;
-    property ResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Items : ItemLookupResponse_ItemsArray read FItems write FItems stored HasItems;
   end;
 
   BrowseNodeLookup_Type = class(TBaseComplexRemotable)
@@ -833,7 +571,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : BrowseNodeLookupRequest;
+    FShared : BrowseNodeLookupRequest_Type;
     FRequest : BrowseNodeLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -843,6 +581,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -853,22 +592,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : BrowseNodeLookupRequest read FShared write FShared stored HasShared;
-    property Request : BrowseNodeLookup_RequestArray read FRequest write FRequest;
-  end;
-
-  BrowseNodes_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FBrowseNode : BrowseNodes_BrowseNodeArray;
-  private
-    function HasRequest() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property BrowseNode : BrowseNodes_BrowseNodeArray read FBrowseNode write FBrowseNode;
+    property Shared : BrowseNodeLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : BrowseNodeLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   BrowseNodeLookupResponse_Type = class(TBaseComplexRemotable)
@@ -877,46 +602,13 @@ type
     FBrowseNodes : BrowseNodeLookupResponse_BrowseNodesArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasBrowseNodes() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property BrowseNodes : BrowseNodeLookupResponse_BrowseNodesArray read FBrowseNodes write FBrowseNodes;
-  end;
-
-  ListSearchRequest = class(TBaseComplexRemotable)
-  private
-    FCity : string;
-    FEmail : string;
-    FFirstName : string;
-    FLastName : string;
-    FListPage : positiveInteger;
-    FListType : ListSearchRequest_ListType_Type;
-    FName : string;
-    FResponseGroup : ListSearchRequest_ResponseGroupArray;
-    FState : string;
-  private
-    function HasCity() : Boolean;
-    function HasEmail() : Boolean;
-    function HasFirstName() : Boolean;
-    function HasLastName() : Boolean;
-    function HasListPage() : Boolean;
-    function HasName() : Boolean;
-    function HasState() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property City : string read FCity write FCity stored HasCity;
-    property Email : string read FEmail write FEmail stored HasEmail;
-    property FirstName : string read FFirstName write FFirstName stored HasFirstName;
-    property LastName : string read FLastName write FLastName stored HasLastName;
-    property ListPage : positiveInteger read FListPage write FListPage stored HasListPage;
-    property ListType : ListSearchRequest_ListType_Type read FListType write FListType;
-    property Name : string read FName write FName stored HasName;
-    property ResponseGroup : ListSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property State : string read FState write FState stored HasState;
+    property BrowseNodes : BrowseNodeLookupResponse_BrowseNodesArray read FBrowseNodes write FBrowseNodes stored HasBrowseNodes;
   end;
 
   ListSearch_Type = class(TBaseComplexRemotable)
@@ -927,7 +619,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ListSearchRequest;
+    FShared : ListSearchRequest_Type;
     FRequest : ListSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -937,6 +629,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -947,28 +640,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ListSearchRequest read FShared write FShared stored HasShared;
-    property Request : ListSearch_RequestArray read FRequest write FRequest;
-  end;
-
-  Lists_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FList : Lists_ListArray;
-  private
-    function HasRequest() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property List : Lists_ListArray read FList write FList;
+    property Shared : ListSearchRequest_Type read FShared write FShared stored HasShared;
+    property Request : ListSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   ListSearchResponse_Type = class(TBaseComplexRemotable)
@@ -977,53 +650,13 @@ type
     FLists : ListSearchResponse_ListsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasLists() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Lists : ListSearchResponse_ListsArray read FLists write FLists;
-  end;
-
-  ListLookupRequest = class(TBaseComplexRemotable)
-  private
-    FCondition : Condition_Type;
-    FDeliveryMethod : DeliveryMethod_Type;
-    FISPUPostalCode : string;
-    FListId : string;
-    FListType : ListLookupRequest_ListType_Type;
-    FMerchantId : string;
-    FProductGroup : string;
-    FProductPage : positiveInteger;
-    FResponseGroup : ListLookupRequest_ResponseGroupArray;
-    FReviewSort : string;
-    FSort : string;
-  private
-    function HasCondition() : Boolean;
-    function HasDeliveryMethod() : Boolean;
-    function HasISPUPostalCode() : Boolean;
-    function HasListId() : Boolean;
-    function HasListType() : Boolean;
-    function HasMerchantId() : Boolean;
-    function HasProductGroup() : Boolean;
-    function HasProductPage() : Boolean;
-    function HasReviewSort() : Boolean;
-    function HasSort() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
-    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
-    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
-    property ListId : string read FListId write FListId stored HasListId;
-    property ListType : ListLookupRequest_ListType_Type read FListType write FListType stored HasListType;
-    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
-    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
-    property ProductPage : positiveInteger read FProductPage write FProductPage stored HasProductPage;
-    property ResponseGroup : ListLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
-    property Sort : string read FSort write FSort stored HasSort;
+    property Lists : ListSearchResponse_ListsArray read FLists write FLists stored HasLists;
   end;
 
   ListLookup_Type = class(TBaseComplexRemotable)
@@ -1034,7 +667,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ListLookupRequest;
+    FShared : ListLookupRequest_Type;
     FRequest : ListLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1044,6 +677,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1054,8 +688,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ListLookupRequest read FShared write FShared stored HasShared;
-    property Request : ListLookup_RequestArray read FRequest write FRequest;
+    property Shared : ListLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : ListLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   ListLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1064,32 +698,13 @@ type
     FLists : ListLookupResponse_ListsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasLists() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Lists : ListLookupResponse_ListsArray read FLists write FLists;
-  end;
-
-  CustomerContentSearchRequest = class(TBaseComplexRemotable)
-  private
-    FCustomerPage : positiveInteger;
-    FEmail : string;
-    FName : string;
-    FResponseGroup : CustomerContentSearchRequest_ResponseGroupArray;
-  private
-    function HasCustomerPage() : Boolean;
-    function HasEmail() : Boolean;
-    function HasName() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CustomerPage : positiveInteger read FCustomerPage write FCustomerPage stored HasCustomerPage;
-    property Email : string read FEmail write FEmail stored HasEmail;
-    property Name : string read FName write FName stored HasName;
-    property ResponseGroup : CustomerContentSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Lists : ListLookupResponse_ListsArray read FLists write FLists stored HasLists;
   end;
 
   CustomerContentSearch_Type = class(TBaseComplexRemotable)
@@ -1100,7 +715,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CustomerContentSearchRequest;
+    FShared : CustomerContentSearchRequest_Type;
     FRequest : CustomerContentSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1110,6 +725,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1120,28 +736,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CustomerContentSearchRequest read FShared write FShared stored HasShared;
-    property Request : CustomerContentSearch_RequestArray read FRequest write FRequest;
-  end;
-
-  Customers_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FCustomer : Customers_CustomerArray;
-  private
-    function HasRequest() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property Customer : Customers_CustomerArray read FCustomer write FCustomer;
+    property Shared : CustomerContentSearchRequest_Type read FShared write FShared stored HasShared;
+    property Request : CustomerContentSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CustomerContentSearchResponse_Type = class(TBaseComplexRemotable)
@@ -1150,29 +746,13 @@ type
     FCustomers : CustomerContentSearchResponse_CustomersArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCustomers() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Customers : CustomerContentSearchResponse_CustomersArray read FCustomers write FCustomers;
-  end;
-
-  CustomerContentLookupRequest = class(TBaseComplexRemotable)
-  private
-    FCustomerId : string;
-    FResponseGroup : CustomerContentLookupRequest_ResponseGroupArray;
-    FReviewPage : positiveInteger;
-  private
-    function HasCustomerId() : Boolean;
-    function HasReviewPage() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CustomerId : string read FCustomerId write FCustomerId stored HasCustomerId;
-    property ResponseGroup : CustomerContentLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property ReviewPage : positiveInteger read FReviewPage write FReviewPage stored HasReviewPage;
+    property Customers : CustomerContentSearchResponse_CustomersArray read FCustomers write FCustomers stored HasCustomers;
   end;
 
   CustomerContentLookup_Type = class(TBaseComplexRemotable)
@@ -1183,7 +763,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CustomerContentLookupRequest;
+    FShared : CustomerContentLookupRequest_Type;
     FRequest : CustomerContentLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1193,6 +773,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1203,8 +784,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CustomerContentLookupRequest read FShared write FShared stored HasShared;
-    property Request : CustomerContentLookup_RequestArray read FRequest write FRequest;
+    property Shared : CustomerContentLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : CustomerContentLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CustomerContentLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1213,43 +794,13 @@ type
     FCustomers : CustomerContentLookupResponse_CustomersArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCustomers() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Customers : CustomerContentLookupResponse_CustomersArray read FCustomers write FCustomers;
-  end;
-
-  SimilarityLookupRequest = class(TBaseComplexRemotable)
-  private
-    FCondition : Condition_Type;
-    FDeliveryMethod : DeliveryMethod_Type;
-    FItemId : SimilarityLookupRequest_ItemIdArray;
-    FISPUPostalCode : string;
-    FMerchantId : string;
-    FResponseGroup : SimilarityLookupRequest_ResponseGroupArray;
-    FReviewSort : string;
-    FSimilarityType : SimilarityLookupRequest_SimilarityType_Type;
-  private
-    function HasCondition() : Boolean;
-    function HasDeliveryMethod() : Boolean;
-    function HasISPUPostalCode() : Boolean;
-    function HasMerchantId() : Boolean;
-    function HasReviewSort() : Boolean;
-    function HasSimilarityType() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
-    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
-    property ItemId : SimilarityLookupRequest_ItemIdArray read FItemId write FItemId;
-    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
-    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
-    property ResponseGroup : SimilarityLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
-    property SimilarityType : SimilarityLookupRequest_SimilarityType_Type read FSimilarityType write FSimilarityType stored HasSimilarityType;
+    property Customers : CustomerContentLookupResponse_CustomersArray read FCustomers write FCustomers stored HasCustomers;
   end;
 
   SimilarityLookup_Type = class(TBaseComplexRemotable)
@@ -1260,7 +811,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SimilarityLookupRequest;
+    FShared : SimilarityLookupRequest_Type;
     FRequest : SimilarityLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1270,6 +821,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1280,8 +832,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SimilarityLookupRequest read FShared write FShared stored HasShared;
-    property Request : SimilarityLookup_RequestArray read FRequest write FRequest;
+    property Shared : SimilarityLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : SimilarityLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   SimilarityLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1290,28 +842,13 @@ type
     FItems : SimilarityLookupResponse_ItemsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasItems() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Items : SimilarityLookupResponse_ItemsArray read FItems write FItems;
-  end;
-
-  SellerLookupRequest = class(TBaseComplexRemotable)
-  private
-    FResponseGroup : SellerLookupRequest_ResponseGroupArray;
-    FSellerId : SellerLookupRequest_SellerIdArray;
-    FFeedbackPage : positiveInteger;
-  private
-    function HasFeedbackPage() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property ResponseGroup : SellerLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property SellerId : SellerLookupRequest_SellerIdArray read FSellerId write FSellerId;
-    property FeedbackPage : positiveInteger read FFeedbackPage write FFeedbackPage stored HasFeedbackPage;
+    property Items : SimilarityLookupResponse_ItemsArray read FItems write FItems stored HasItems;
   end;
 
   SellerLookup_Type = class(TBaseComplexRemotable)
@@ -1322,7 +859,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerLookupRequest;
+    FShared : SellerLookupRequest_Type;
     FRequest : SellerLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1332,6 +869,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1342,28 +880,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerLookupRequest read FShared write FShared stored HasShared;
-    property Request : SellerLookup_RequestArray read FRequest write FRequest;
-  end;
-
-  Sellers_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FSeller : Sellers_SellerArray;
-  private
-    function HasRequest() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property Seller : Sellers_SellerArray read FSeller write FSeller;
+    property Shared : SellerLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : SellerLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   SellerLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1372,32 +890,13 @@ type
     FSellers : SellerLookupResponse_SellersArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasSellers() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Sellers : SellerLookupResponse_SellersArray read FSellers write FSellers;
-  end;
-
-  CartGetRequest = class(TBaseComplexRemotable)
-  private
-    FCartId : string;
-    FHMAC : string;
-    FMergeCart : string;
-    FResponseGroup : CartGetRequest_ResponseGroupArray;
-  private
-    function HasCartId() : Boolean;
-    function HasHMAC() : Boolean;
-    function HasMergeCart() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CartId : string read FCartId write FCartId stored HasCartId;
-    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
-    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
-    property ResponseGroup : CartGetRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Sellers : SellerLookupResponse_SellersArray read FSellers write FSellers stored HasSellers;
   end;
 
   CartGet_Type = class(TBaseComplexRemotable)
@@ -1408,7 +907,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartGetRequest;
+    FShared : CartGetRequest_Type;
     FRequest : CartGet_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1418,6 +917,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1428,53 +928,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartGetRequest read FShared write FShared stored HasShared;
-    property Request : CartGet_RequestArray read FRequest write FRequest;
-  end;
-
-  Cart_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FCartId : string;
-    FHMAC : string;
-    FURLEncodedHMAC : string;
-    FPurchaseURL : string;
-    FSubTotal : Price;
-    FCartItems : CartItems_Type;
-    FSavedForLaterItems : SavedForLaterItems_Type;
-    FSimilarProducts : SimilarProducts_Type;
-    FTopSellers : TopSellers_Type;
-    FNewReleases : NewReleases_Type;
-    FSimilarViewedProducts : SimilarViewedProducts_Type;
-    FOtherCategoriesSimilarProducts : OtherCategoriesSimilarProducts_Type;
-  private
-    function HasRequest() : Boolean;
-    function HasPurchaseURL() : Boolean;
-    function HasSubTotal() : Boolean;
-    function HasCartItems() : Boolean;
-    function HasSavedForLaterItems() : Boolean;
-    function HasSimilarProducts() : Boolean;
-    function HasTopSellers() : Boolean;
-    function HasNewReleases() : Boolean;
-    function HasSimilarViewedProducts() : Boolean;
-    function HasOtherCategoriesSimilarProducts() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property CartId : string read FCartId write FCartId;
-    property HMAC : string read FHMAC write FHMAC;
-    property URLEncodedHMAC : string read FURLEncodedHMAC write FURLEncodedHMAC;
-    property PurchaseURL : string read FPurchaseURL write FPurchaseURL stored HasPurchaseURL;
-    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
-    property CartItems : CartItems_Type read FCartItems write FCartItems stored HasCartItems;
-    property SavedForLaterItems : SavedForLaterItems_Type read FSavedForLaterItems write FSavedForLaterItems stored HasSavedForLaterItems;
-    property SimilarProducts : SimilarProducts_Type read FSimilarProducts write FSimilarProducts stored HasSimilarProducts;
-    property TopSellers : TopSellers_Type read FTopSellers write FTopSellers stored HasTopSellers;
-    property NewReleases : NewReleases_Type read FNewReleases write FNewReleases stored HasNewReleases;
-    property SimilarViewedProducts : SimilarViewedProducts_Type read FSimilarViewedProducts write FSimilarViewedProducts stored HasSimilarViewedProducts;
-    property OtherCategoriesSimilarProducts : OtherCategoriesSimilarProducts_Type read FOtherCategoriesSimilarProducts write FOtherCategoriesSimilarProducts stored HasOtherCategoriesSimilarProducts;
+    property Shared : CartGetRequest_Type read FShared write FShared stored HasShared;
+    property Request : CartGet_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CartGetResponse_Type = class(TBaseComplexRemotable)
@@ -1483,35 +938,13 @@ type
     FCart : CartGetResponse_CartArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCart() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Cart : CartGetResponse_CartArray read FCart write FCart;
-  end;
-
-  CartAddRequest = class(TBaseComplexRemotable)
-  private
-    FCartId : string;
-    FHMAC : string;
-    FMergeCart : string;
-    FItems : CartAddRequest_Items_Type;
-    FResponseGroup : CartAddRequest_ResponseGroupArray;
-  private
-    function HasCartId() : Boolean;
-    function HasHMAC() : Boolean;
-    function HasMergeCart() : Boolean;
-    function HasItems() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CartId : string read FCartId write FCartId stored HasCartId;
-    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
-    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
-    property Items : CartAddRequest_Items_Type read FItems write FItems stored HasItems;
-    property ResponseGroup : CartAddRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Cart : CartGetResponse_CartArray read FCart write FCart stored HasCart;
   end;
 
   CartAdd_Type = class(TBaseComplexRemotable)
@@ -1522,7 +955,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartAddRequest;
+    FShared : CartAddRequest_Type;
     FRequest : CartAdd_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1532,6 +965,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1542,8 +976,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartAddRequest read FShared write FShared stored HasShared;
-    property Request : CartAdd_RequestArray read FRequest write FRequest;
+    property Shared : CartAddRequest_Type read FShared write FShared stored HasShared;
+    property Request : CartAdd_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CartAddResponse_Type = class(TBaseComplexRemotable)
@@ -1552,29 +986,13 @@ type
     FCart : CartAddResponse_CartArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCart() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Cart : CartAddResponse_CartArray read FCart write FCart;
-  end;
-
-  CartCreateRequest = class(TBaseComplexRemotable)
-  private
-    FMergeCart : string;
-    FItems : CartCreateRequest_Items_Type;
-    FResponseGroup : CartCreateRequest_ResponseGroupArray;
-  private
-    function HasMergeCart() : Boolean;
-    function HasItems() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
-    property Items : CartCreateRequest_Items_Type read FItems write FItems stored HasItems;
-    property ResponseGroup : CartCreateRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Cart : CartAddResponse_CartArray read FCart write FCart stored HasCart;
   end;
 
   CartCreate_Type = class(TBaseComplexRemotable)
@@ -1585,7 +1003,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartCreateRequest;
+    FShared : CartCreateRequest_Type;
     FRequest : CartCreate_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1595,6 +1013,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1605,8 +1024,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartCreateRequest read FShared write FShared stored HasShared;
-    property Request : CartCreate_RequestArray read FRequest write FRequest;
+    property Shared : CartCreateRequest_Type read FShared write FShared stored HasShared;
+    property Request : CartCreate_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CartCreateResponse_Type = class(TBaseComplexRemotable)
@@ -1615,35 +1034,13 @@ type
     FCart : CartCreateResponse_CartArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCart() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Cart : CartCreateResponse_CartArray read FCart write FCart;
-  end;
-
-  CartModifyRequest = class(TBaseComplexRemotable)
-  private
-    FCartId : string;
-    FHMAC : string;
-    FMergeCart : string;
-    FItems : CartModifyRequest_Items_Type;
-    FResponseGroup : CartModifyRequest_ResponseGroupArray;
-  private
-    function HasCartId() : Boolean;
-    function HasHMAC() : Boolean;
-    function HasMergeCart() : Boolean;
-    function HasItems() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CartId : string read FCartId write FCartId stored HasCartId;
-    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
-    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
-    property Items : CartModifyRequest_Items_Type read FItems write FItems stored HasItems;
-    property ResponseGroup : CartModifyRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Cart : CartCreateResponse_CartArray read FCart write FCart stored HasCart;
   end;
 
   CartModify_Type = class(TBaseComplexRemotable)
@@ -1654,7 +1051,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartModifyRequest;
+    FShared : CartModifyRequest_Type;
     FRequest : CartModify_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1664,6 +1061,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1674,8 +1072,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartModifyRequest read FShared write FShared stored HasShared;
-    property Request : CartModify_RequestArray read FRequest write FRequest;
+    property Shared : CartModifyRequest_Type read FShared write FShared stored HasShared;
+    property Request : CartModify_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CartModifyResponse_Type = class(TBaseComplexRemotable)
@@ -1684,32 +1082,13 @@ type
     FCart : CartModifyResponse_CartArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCart() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Cart : CartModifyResponse_CartArray read FCart write FCart;
-  end;
-
-  CartClearRequest = class(TBaseComplexRemotable)
-  private
-    FCartId : string;
-    FHMAC : string;
-    FMergeCart : string;
-    FResponseGroup : CartClearRequest_ResponseGroupArray;
-  private
-    function HasCartId() : Boolean;
-    function HasHMAC() : Boolean;
-    function HasMergeCart() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CartId : string read FCartId write FCartId stored HasCartId;
-    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
-    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
-    property ResponseGroup : CartClearRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property Cart : CartModifyResponse_CartArray read FCart write FCart stored HasCart;
   end;
 
   CartClear_Type = class(TBaseComplexRemotable)
@@ -1720,7 +1099,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartClearRequest;
+    FShared : CartClearRequest_Type;
     FRequest : CartClear_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1730,6 +1109,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1740,8 +1120,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartClearRequest read FShared write FShared stored HasShared;
-    property Request : CartClear_RequestArray read FRequest write FRequest;
+    property Shared : CartClearRequest_Type read FShared write FShared stored HasShared;
+    property Request : CartClear_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   CartClearResponse_Type = class(TBaseComplexRemotable)
@@ -1750,24 +1130,13 @@ type
     FCart : CartClearResponse_CartArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasCart() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Cart : CartClearResponse_CartArray read FCart write FCart;
-  end;
-
-  TransactionLookupRequest = class(TBaseComplexRemotable)
-  private
-    FResponseGroup : TransactionLookupRequest_ResponseGroupArray;
-    FTransactionId : TransactionLookupRequest_TransactionIdArray;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property ResponseGroup : TransactionLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property TransactionId : TransactionLookupRequest_TransactionIdArray read FTransactionId write FTransactionId;
+    property Cart : CartClearResponse_CartArray read FCart write FCart stored HasCart;
   end;
 
   TransactionLookup_Type = class(TBaseComplexRemotable)
@@ -1778,7 +1147,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : TransactionLookupRequest;
+    FShared : TransactionLookupRequest_Type;
     FRequest : TransactionLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1788,6 +1157,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1798,28 +1168,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : TransactionLookupRequest read FShared write FShared stored HasShared;
-    property Request : TransactionLookup_RequestArray read FRequest write FRequest;
-  end;
-
-  Transactions_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FTransaction : Transactions_TransactionArray;
-  private
-    function HasRequest() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property Transaction : Transactions_TransactionArray read FTransaction write FTransaction;
+    property Shared : TransactionLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : TransactionLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   TransactionLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1828,40 +1178,13 @@ type
     FTransactions : TransactionLookupResponse_TransactionsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasTransactions() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property Transactions : TransactionLookupResponse_TransactionsArray read FTransactions write FTransactions;
-  end;
-
-  SellerListingSearchRequest = class(TBaseComplexRemotable)
-  private
-    FKeywords : string;
-    FListingPage : positiveInteger;
-    FOfferStatus : SellerListingSearchRequest_OfferStatus_Type;
-    FResponseGroup : SellerListingSearchRequest_ResponseGroupArray;
-    FSellerId : string;
-    FSort : string;
-    FTitle : string;
-  private
-    function HasKeywords() : Boolean;
-    function HasListingPage() : Boolean;
-    function HasOfferStatus() : Boolean;
-    function HasSort() : Boolean;
-    function HasTitle() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
-    property ListingPage : positiveInteger read FListingPage write FListingPage stored HasListingPage;
-    property OfferStatus : SellerListingSearchRequest_OfferStatus_Type read FOfferStatus write FOfferStatus stored HasOfferStatus;
-    property ResponseGroup : SellerListingSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
-    property SellerId : string read FSellerId write FSellerId;
-    property Sort : string read FSort write FSort stored HasSort;
-    property Title : string read FTitle write FTitle stored HasTitle;
+    property Transactions : TransactionLookupResponse_TransactionsArray read FTransactions write FTransactions stored HasTransactions;
   end;
 
   SellerListingSearch_Type = class(TBaseComplexRemotable)
@@ -1872,7 +1195,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerListingSearchRequest;
+    FShared : SellerListingSearchRequest_Type;
     FRequest : SellerListingSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1882,6 +1205,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1892,28 +1216,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerListingSearchRequest read FShared write FShared stored HasShared;
-    property Request : SellerListingSearch_RequestArray read FRequest write FRequest;
-  end;
-
-  SellerListings_Type = class(TBaseComplexRemotable)
-  private
-    FRequest : Request_Type;
-    FTotalResults : nonNegativeInteger;
-    FTotalPages : nonNegativeInteger;
-    FSellerListing : SellerListings_SellerListingArray;
-  private
-    function HasRequest() : Boolean;
-    function HasTotalResults() : Boolean;
-    function HasTotalPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Request : Request_Type read FRequest write FRequest stored HasRequest;
-    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
-    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
-    property SellerListing : SellerListings_SellerListingArray read FSellerListing write FSellerListing;
+    property Shared : SellerListingSearchRequest_Type read FShared write FShared stored HasShared;
+    property Request : SellerListingSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   SellerListingSearchResponse_Type = class(TBaseComplexRemotable)
@@ -1922,30 +1226,13 @@ type
     FSellerListings : SellerListingSearchResponse_SellerListingsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasSellerListings() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property SellerListings : SellerListingSearchResponse_SellerListingsArray read FSellerListings write FSellerListings;
-  end;
-
-  SellerListingLookupRequest = class(TBaseComplexRemotable)
-  private
-    FId : string;
-    FSellerId : string;
-    FIdType : SellerListingLookupRequest_IdType_Type;
-    FResponseGroup : SellerListingLookupRequest_ResponseGroupArray;
-  private
-    function HasSellerId() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Id : string read FId write FId;
-    property SellerId : string read FSellerId write FSellerId stored HasSellerId;
-    property IdType : SellerListingLookupRequest_IdType_Type read FIdType write FIdType;
-    property ResponseGroup : SellerListingLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup;
+    property SellerListings : SellerListingSearchResponse_SellerListingsArray read FSellerListings write FSellerListings stored HasSellerListings;
   end;
 
   SellerListingLookup_Type = class(TBaseComplexRemotable)
@@ -1956,7 +1243,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerListingLookupRequest;
+    FShared : SellerListingLookupRequest_Type;
     FRequest : SellerListingLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1966,6 +1253,7 @@ type
     function HasValidate() : Boolean;
     function HasXMLEscaping() : Boolean;
     function HasShared() : Boolean;
+    function HasRequest() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1976,8 +1264,8 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerListingLookupRequest read FShared write FShared stored HasShared;
-    property Request : SellerListingLookup_RequestArray read FRequest write FRequest;
+    property Shared : SellerListingLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : SellerListingLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
   SellerListingLookupResponse_Type = class(TBaseComplexRemotable)
@@ -1986,15 +1274,16 @@ type
     FSellerListings : SellerListingLookupResponse_SellerListingsArray;
   private
     function HasOperationRequest() : Boolean;
+    function HasSellerListings() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
-    property SellerListings : SellerListingLookupResponse_SellerListingsArray read FSellerListings write FSellerListings;
+    property SellerListings : SellerListingLookupResponse_SellerListingsArray read FSellerListings write FSellerListings stored HasSellerListings;
   end;
 
-  MultiOperationType = class(TBaseComplexRemotable)
+  MultiOperation_Type = class(TBaseComplexRemotable)
   private
     FHelp : Help_Type;
     FItemSearch : ItemSearch_Type;
@@ -2034,6 +1323,7 @@ type
     function HasSellerListingLookup() : Boolean;
     function HasBrowseNodeLookup() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property Help : Help_Type read FHelp write FHelp stored HasHelp;
@@ -2098,6 +1388,7 @@ type
     function HasSellerListingLookupResponse() : Boolean;
     function HasBrowseNodeLookupResponse() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
@@ -2135,25 +1426,406 @@ type
     FBinName : string;
     FBinItemCount : positiveInteger;
     FBinParameter : Bin_BinParameterArray;
+  private
+    function HasBinParameter() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property BinName : string read FBinName write FBinName;
     property BinItemCount : positiveInteger read FBinItemCount write FBinItemCount;
-    property BinParameter : Bin_BinParameterArray read FBinParameter write FBinParameter;
+    property BinParameter : Bin_BinParameterArray read FBinParameter write FBinParameter stored HasBinParameter;
   end;
 
   SearchBinSet_Type = class(TBaseComplexRemotable)
   private
     FBin : SearchBinSet_BinArray;
     FNarrowBy : string;
+  private
+    function HasBin() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Bin : SearchBinSet_BinArray read FBin write FBin;
+    property Bin : SearchBinSet_BinArray read FBin write FBin stored HasBin;
     property NarrowBy : string read FNarrowBy write FNarrowBy;
+  end;
+
+  HelpRequest_Type = class(TBaseComplexRemotable)
+  private
+    FAbout : string;
+    FHelpType : HelpRequest_HelpType_Type;
+    FResponseGroup : HelpRequest_ResponseGroupArray;
+  private
+    function HasAbout() : Boolean;
+    function HasHelpType() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property About : string read FAbout write FAbout stored HasAbout;
+    property HelpType : HelpRequest_HelpType_Type read FHelpType write FHelpType stored HasHelpType;
+    property ResponseGroup : HelpRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  ItemSearchRequest_Type = class(TBaseComplexRemotable)
+  private
+    FActor : string;
+    FArtist : string;
+    FAvailability : ItemSearchRequest_Availability_Type;
+    FAudienceRating : ItemSearchRequest_AudienceRatingArray;
+    FAuthor : string;
+    FBrand : string;
+    FBrowseNode : string;
+    FCity : string;
+    FComposer : string;
+    FCondition : Condition_Type;
+    FConductor : string;
+    FCount : positiveInteger;
+    FCuisine : string;
+    FDeliveryMethod : DeliveryMethod_Type;
+    FDirector : string;
+    FFutureLaunchDate : string;
+    FISPUPostalCode : string;
+    FItemPage : positiveInteger;
+    FKeywords : string;
+    FManufacturer : string;
+    FMaximumPrice : nonNegativeInteger;
+    FMerchantId : string;
+    FMinimumPrice : nonNegativeInteger;
+    FMusicLabel : string;
+    FNeighborhood : string;
+    FOrchestra : string;
+    FPostalCode : string;
+    FPower : string;
+    FPublisher : string;
+    FResponseGroup : ItemSearchRequest_ResponseGroupArray;
+    FReviewSort : string;
+    FSearchIndex : string;
+    FSort : string;
+    FState : string;
+    FTextStream : string;
+    FTitle : string;
+    FReleaseDate : string;
+  private
+    function HasActor() : Boolean;
+    function HasArtist() : Boolean;
+    function HasAvailability() : Boolean;
+    function HasAudienceRating() : Boolean;
+    function HasAuthor() : Boolean;
+    function HasBrand() : Boolean;
+    function HasBrowseNode() : Boolean;
+    function HasCity() : Boolean;
+    function HasComposer() : Boolean;
+    function HasCondition() : Boolean;
+    function HasConductor() : Boolean;
+    function HasCount() : Boolean;
+    function HasCuisine() : Boolean;
+    function HasDeliveryMethod() : Boolean;
+    function HasDirector() : Boolean;
+    function HasFutureLaunchDate() : Boolean;
+    function HasISPUPostalCode() : Boolean;
+    function HasItemPage() : Boolean;
+    function HasKeywords() : Boolean;
+    function HasManufacturer() : Boolean;
+    function HasMaximumPrice() : Boolean;
+    function HasMerchantId() : Boolean;
+    function HasMinimumPrice() : Boolean;
+    function HasMusicLabel() : Boolean;
+    function HasNeighborhood() : Boolean;
+    function HasOrchestra() : Boolean;
+    function HasPostalCode() : Boolean;
+    function HasPower() : Boolean;
+    function HasPublisher() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasReviewSort() : Boolean;
+    function HasSearchIndex() : Boolean;
+    function HasSort() : Boolean;
+    function HasState() : Boolean;
+    function HasTextStream() : Boolean;
+    function HasTitle() : Boolean;
+    function HasReleaseDate() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Actor : string read FActor write FActor stored HasActor;
+    property Artist : string read FArtist write FArtist stored HasArtist;
+    property Availability : ItemSearchRequest_Availability_Type read FAvailability write FAvailability stored HasAvailability;
+    property AudienceRating : ItemSearchRequest_AudienceRatingArray read FAudienceRating write FAudienceRating stored HasAudienceRating;
+    property Author : string read FAuthor write FAuthor stored HasAuthor;
+    property Brand : string read FBrand write FBrand stored HasBrand;
+    property BrowseNode : string read FBrowseNode write FBrowseNode stored HasBrowseNode;
+    property City : string read FCity write FCity stored HasCity;
+    property Composer : string read FComposer write FComposer stored HasComposer;
+    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
+    property Conductor : string read FConductor write FConductor stored HasConductor;
+    property Count : positiveInteger read FCount write FCount stored HasCount;
+    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
+    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
+    property Director : string read FDirector write FDirector stored HasDirector;
+    property FutureLaunchDate : string read FFutureLaunchDate write FFutureLaunchDate stored HasFutureLaunchDate;
+    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
+    property ItemPage : positiveInteger read FItemPage write FItemPage stored HasItemPage;
+    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
+    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
+    property MaximumPrice : nonNegativeInteger read FMaximumPrice write FMaximumPrice stored HasMaximumPrice;
+    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
+    property MinimumPrice : nonNegativeInteger read FMinimumPrice write FMinimumPrice stored HasMinimumPrice;
+    property MusicLabel : string read FMusicLabel write FMusicLabel stored HasMusicLabel;
+    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
+    property Orchestra : string read FOrchestra write FOrchestra stored HasOrchestra;
+    property PostalCode : string read FPostalCode write FPostalCode stored HasPostalCode;
+    property Power : string read FPower write FPower stored HasPower;
+    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
+    property ResponseGroup : ItemSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
+    property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
+    property Sort : string read FSort write FSort stored HasSort;
+    property State : string read FState write FState stored HasState;
+    property TextStream : string read FTextStream write FTextStream stored HasTextStream;
+    property Title : string read FTitle write FTitle stored HasTitle;
+    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
+  end;
+
+  ItemLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCondition : Condition_Type;
+    FDeliveryMethod : DeliveryMethod_Type;
+    FFutureLaunchDate : string;
+    FIdType : ItemLookupRequest_IdType_Type;
+    FISPUPostalCode : string;
+    FMerchantId : string;
+    FOfferPage : positiveInteger;
+    FItemId : ItemLookupRequest_ItemIdArray;
+    FResponseGroup : ItemLookupRequest_ResponseGroupArray;
+    FReviewPage : positiveInteger;
+    FReviewSort : string;
+    FSearchIndex : string;
+    FSearchInsideKeywords : string;
+    FVariationPage : positiveIntegerOrAll_Type;
+  private
+    function HasCondition() : Boolean;
+    function HasDeliveryMethod() : Boolean;
+    function HasFutureLaunchDate() : Boolean;
+    function HasIdType() : Boolean;
+    function HasISPUPostalCode() : Boolean;
+    function HasMerchantId() : Boolean;
+    function HasOfferPage() : Boolean;
+    function HasItemId() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasReviewPage() : Boolean;
+    function HasReviewSort() : Boolean;
+    function HasSearchIndex() : Boolean;
+    function HasSearchInsideKeywords() : Boolean;
+    function HasVariationPage() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
+    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
+    property FutureLaunchDate : string read FFutureLaunchDate write FFutureLaunchDate stored HasFutureLaunchDate;
+    property IdType : ItemLookupRequest_IdType_Type read FIdType write FIdType stored HasIdType;
+    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
+    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
+    property OfferPage : positiveInteger read FOfferPage write FOfferPage stored HasOfferPage;
+    property ItemId : ItemLookupRequest_ItemIdArray read FItemId write FItemId stored HasItemId;
+    property ResponseGroup : ItemLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property ReviewPage : positiveInteger read FReviewPage write FReviewPage stored HasReviewPage;
+    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
+    property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
+    property SearchInsideKeywords : string read FSearchInsideKeywords write FSearchInsideKeywords stored HasSearchInsideKeywords;
+    property VariationPage : positiveIntegerOrAll_Type read FVariationPage write FVariationPage stored HasVariationPage;
+  end;
+
+  ListSearchRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCity : string;
+    FEmail : string;
+    FFirstName : string;
+    FLastName : string;
+    FListPage : positiveInteger;
+    FListType : ListSearchRequest_ListType_Type;
+    FName : string;
+    FResponseGroup : ListSearchRequest_ResponseGroupArray;
+    FState : string;
+  private
+    function HasCity() : Boolean;
+    function HasEmail() : Boolean;
+    function HasFirstName() : Boolean;
+    function HasLastName() : Boolean;
+    function HasListPage() : Boolean;
+    function HasName() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasState() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property City : string read FCity write FCity stored HasCity;
+    property Email : string read FEmail write FEmail stored HasEmail;
+    property FirstName : string read FFirstName write FFirstName stored HasFirstName;
+    property LastName : string read FLastName write FLastName stored HasLastName;
+    property ListPage : positiveInteger read FListPage write FListPage stored HasListPage;
+    property ListType : ListSearchRequest_ListType_Type read FListType write FListType;
+    property Name : string read FName write FName stored HasName;
+    property ResponseGroup : ListSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property State : string read FState write FState stored HasState;
+  end;
+
+  ListLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCondition : Condition_Type;
+    FDeliveryMethod : DeliveryMethod_Type;
+    FISPUPostalCode : string;
+    FListId : string;
+    FListType : ListLookupRequest_ListType_Type;
+    FMerchantId : string;
+    FProductGroup : string;
+    FProductPage : positiveInteger;
+    FResponseGroup : ListLookupRequest_ResponseGroupArray;
+    FReviewSort : string;
+    FSort : string;
+  private
+    function HasCondition() : Boolean;
+    function HasDeliveryMethod() : Boolean;
+    function HasISPUPostalCode() : Boolean;
+    function HasListId() : Boolean;
+    function HasListType() : Boolean;
+    function HasMerchantId() : Boolean;
+    function HasProductGroup() : Boolean;
+    function HasProductPage() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasReviewSort() : Boolean;
+    function HasSort() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
+    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
+    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
+    property ListId : string read FListId write FListId stored HasListId;
+    property ListType : ListLookupRequest_ListType_Type read FListType write FListType stored HasListType;
+    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
+    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
+    property ProductPage : positiveInteger read FProductPage write FProductPage stored HasProductPage;
+    property ResponseGroup : ListLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
+    property Sort : string read FSort write FSort stored HasSort;
+  end;
+
+  CustomerContentSearchRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCustomerPage : positiveInteger;
+    FEmail : string;
+    FName : string;
+    FResponseGroup : CustomerContentSearchRequest_ResponseGroupArray;
+  private
+    function HasCustomerPage() : Boolean;
+    function HasEmail() : Boolean;
+    function HasName() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CustomerPage : positiveInteger read FCustomerPage write FCustomerPage stored HasCustomerPage;
+    property Email : string read FEmail write FEmail stored HasEmail;
+    property Name : string read FName write FName stored HasName;
+    property ResponseGroup : CustomerContentSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  CustomerContentLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCustomerId : string;
+    FResponseGroup : CustomerContentLookupRequest_ResponseGroupArray;
+    FReviewPage : positiveInteger;
+  private
+    function HasCustomerId() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasReviewPage() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CustomerId : string read FCustomerId write FCustomerId stored HasCustomerId;
+    property ResponseGroup : CustomerContentLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property ReviewPage : positiveInteger read FReviewPage write FReviewPage stored HasReviewPage;
+  end;
+
+  SimilarityLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCondition : Condition_Type;
+    FDeliveryMethod : DeliveryMethod_Type;
+    FItemId : SimilarityLookupRequest_ItemIdArray;
+    FISPUPostalCode : string;
+    FMerchantId : string;
+    FResponseGroup : SimilarityLookupRequest_ResponseGroupArray;
+    FReviewSort : string;
+    FSimilarityType : SimilarityLookupRequest_SimilarityType_Type;
+  private
+    function HasCondition() : Boolean;
+    function HasDeliveryMethod() : Boolean;
+    function HasItemId() : Boolean;
+    function HasISPUPostalCode() : Boolean;
+    function HasMerchantId() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasReviewSort() : Boolean;
+    function HasSimilarityType() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Condition : Condition_Type read FCondition write FCondition stored HasCondition;
+    property DeliveryMethod : DeliveryMethod_Type read FDeliveryMethod write FDeliveryMethod stored HasDeliveryMethod;
+    property ItemId : SimilarityLookupRequest_ItemIdArray read FItemId write FItemId stored HasItemId;
+    property ISPUPostalCode : string read FISPUPostalCode write FISPUPostalCode stored HasISPUPostalCode;
+    property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
+    property ResponseGroup : SimilarityLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
+    property SimilarityType : SimilarityLookupRequest_SimilarityType_Type read FSimilarityType write FSimilarityType stored HasSimilarityType;
+  end;
+
+  SellerLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FResponseGroup : SellerLookupRequest_ResponseGroupArray;
+    FSellerId : SellerLookupRequest_SellerIdArray;
+    FFeedbackPage : positiveInteger;
+  private
+    function HasResponseGroup() : Boolean;
+    function HasSellerId() : Boolean;
+    function HasFeedbackPage() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ResponseGroup : SellerLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property SellerId : SellerLookupRequest_SellerIdArray read FSellerId write FSellerId stored HasSellerId;
+    property FeedbackPage : positiveInteger read FFeedbackPage write FFeedbackPage stored HasFeedbackPage;
+  end;
+
+  CartGetRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCartId : string;
+    FHMAC : string;
+    FMergeCart : string;
+    FResponseGroup : CartGetRequest_ResponseGroupArray;
+  private
+    function HasCartId() : Boolean;
+    function HasHMAC() : Boolean;
+    function HasMergeCart() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CartId : string read FCartId write FCartId stored HasCartId;
+    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
+    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
+    property ResponseGroup : CartGetRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
   CartAddRequest_Items_Type_Item_Type = class(TBaseComplexRemotable)
@@ -2177,6 +1849,30 @@ type
     property ListItemId : string read FListItemId write FListItemId stored HasListItemId;
   end;
 
+  CartAddRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCartId : string;
+    FHMAC : string;
+    FMergeCart : string;
+    FItems : CartAddRequest_Items_Type;
+    FResponseGroup : CartAddRequest_ResponseGroupArray;
+  private
+    function HasCartId() : Boolean;
+    function HasHMAC() : Boolean;
+    function HasMergeCart() : Boolean;
+    function HasItems() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CartId : string read FCartId write FCartId stored HasCartId;
+    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
+    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
+    property Items : CartAddRequest_Items_Type read FItems write FItems stored HasItems;
+    property ResponseGroup : CartAddRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
   CartCreateRequest_Items_Type_Item_Type = class(TBaseComplexRemotable)
   private
     FASIN : string;
@@ -2198,6 +1894,24 @@ type
     property ListItemId : string read FListItemId write FListItemId stored HasListItemId;
   end;
 
+  CartCreateRequest_Type = class(TBaseComplexRemotable)
+  private
+    FMergeCart : string;
+    FItems : CartCreateRequest_Items_Type;
+    FResponseGroup : CartCreateRequest_ResponseGroupArray;
+  private
+    function HasMergeCart() : Boolean;
+    function HasItems() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
+    property Items : CartCreateRequest_Items_Type read FItems write FItems stored HasItems;
+    property ResponseGroup : CartCreateRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
   CartModifyRequest_Items_Type_Item_Type = class(TBaseComplexRemotable)
   private
     FAction : CartModifyRequest_Items_Type_Item_Type_Action_Type;
@@ -2213,27 +1927,174 @@ type
     property Quantity : nonNegativeInteger read FQuantity write FQuantity stored HasQuantity;
   end;
 
+  CartModifyRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCartId : string;
+    FHMAC : string;
+    FMergeCart : string;
+    FItems : CartModifyRequest_Items_Type;
+    FResponseGroup : CartModifyRequest_ResponseGroupArray;
+  private
+    function HasCartId() : Boolean;
+    function HasHMAC() : Boolean;
+    function HasMergeCart() : Boolean;
+    function HasItems() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CartId : string read FCartId write FCartId stored HasCartId;
+    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
+    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
+    property Items : CartModifyRequest_Items_Type read FItems write FItems stored HasItems;
+    property ResponseGroup : CartModifyRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  CartClearRequest_Type = class(TBaseComplexRemotable)
+  private
+    FCartId : string;
+    FHMAC : string;
+    FMergeCart : string;
+    FResponseGroup : CartClearRequest_ResponseGroupArray;
+  private
+    function HasCartId() : Boolean;
+    function HasHMAC() : Boolean;
+    function HasMergeCart() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property CartId : string read FCartId write FCartId stored HasCartId;
+    property HMAC : string read FHMAC write FHMAC stored HasHMAC;
+    property MergeCart : string read FMergeCart write FMergeCart stored HasMergeCart;
+    property ResponseGroup : CartClearRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  TransactionLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FResponseGroup : TransactionLookupRequest_ResponseGroupArray;
+    FTransactionId : TransactionLookupRequest_TransactionIdArray;
+  private
+    function HasResponseGroup() : Boolean;
+    function HasTransactionId() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ResponseGroup : TransactionLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property TransactionId : TransactionLookupRequest_TransactionIdArray read FTransactionId write FTransactionId stored HasTransactionId;
+  end;
+
+  SellerListingSearchRequest_Type = class(TBaseComplexRemotable)
+  private
+    FKeywords : string;
+    FListingPage : positiveInteger;
+    FOfferStatus : SellerListingSearchRequest_OfferStatus_Type;
+    FResponseGroup : SellerListingSearchRequest_ResponseGroupArray;
+    FSellerId : string;
+    FSort : string;
+    FTitle : string;
+  private
+    function HasKeywords() : Boolean;
+    function HasListingPage() : Boolean;
+    function HasOfferStatus() : Boolean;
+    function HasResponseGroup() : Boolean;
+    function HasSort() : Boolean;
+    function HasTitle() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
+    property ListingPage : positiveInteger read FListingPage write FListingPage stored HasListingPage;
+    property OfferStatus : SellerListingSearchRequest_OfferStatus_Type read FOfferStatus write FOfferStatus stored HasOfferStatus;
+    property ResponseGroup : SellerListingSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+    property SellerId : string read FSellerId write FSellerId;
+    property Sort : string read FSort write FSort stored HasSort;
+    property Title : string read FTitle write FTitle stored HasTitle;
+  end;
+
+  SellerListingLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FId : string;
+    FSellerId : string;
+    FIdType : SellerListingLookupRequest_IdType_Type;
+    FResponseGroup : SellerListingLookupRequest_ResponseGroupArray;
+  private
+    function HasSellerId() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Id : string read FId write FId;
+    property SellerId : string read FSellerId write FSellerId stored HasSellerId;
+    property IdType : SellerListingLookupRequest_IdType_Type read FIdType write FIdType;
+    property ResponseGroup : SellerListingLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  BrowseNodeLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FBrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray;
+    FResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray;
+  private
+    function HasBrowseNodeId() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property BrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray read FBrowseNodeId write FBrowseNodeId stored HasBrowseNodeId;
+    property ResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  OperationRequest_Type = class(TBaseComplexRemotable)
+  private
+    FHTTPHeaders : HTTPHeaders_Type;
+    FRequestId : string;
+    FArguments : Arguments_Type;
+    FErrors : Errors_Type;
+    FRequestProcessingTime : float;
+  private
+    function HasHTTPHeaders() : Boolean;
+    function HasRequestId() : Boolean;
+    function HasArguments() : Boolean;
+    function HasErrors() : Boolean;
+    function HasRequestProcessingTime() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property HTTPHeaders : HTTPHeaders_Type read FHTTPHeaders write FHTTPHeaders stored HasHTTPHeaders;
+    property RequestId : string read FRequestId write FRequestId stored HasRequestId;
+    property Arguments : Arguments_Type read FArguments write FArguments stored HasArguments;
+    property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
+    property RequestProcessingTime : float read FRequestProcessingTime write FRequestProcessingTime stored HasRequestProcessingTime;
+  end;
+
   Request_Type = class(TBaseComplexRemotable)
   private
     FIsValid : string;
-    FHelpRequest : HelpRequest;
-    FBrowseNodeLookupRequest : BrowseNodeLookupRequest;
-    FItemSearchRequest : ItemSearchRequest;
-    FItemLookupRequest : ItemLookupRequest;
-    FListSearchRequest : ListSearchRequest;
-    FListLookupRequest : ListLookupRequest;
-    FCustomerContentSearchRequest : CustomerContentSearchRequest;
-    FCustomerContentLookupRequest : CustomerContentLookupRequest;
-    FSimilarityLookupRequest : SimilarityLookupRequest;
-    FCartGetRequest : CartGetRequest;
-    FCartAddRequest : CartAddRequest;
-    FCartCreateRequest : CartCreateRequest;
-    FCartModifyRequest : CartModifyRequest;
-    FCartClearRequest : CartClearRequest;
-    FTransactionLookupRequest : TransactionLookupRequest;
-    FSellerListingSearchRequest : SellerListingSearchRequest;
-    FSellerListingLookupRequest : SellerListingLookupRequest;
-    FSellerLookupRequest : SellerLookupRequest;
+    FHelpRequest : HelpRequest_Type;
+    FBrowseNodeLookupRequest : BrowseNodeLookupRequest_Type;
+    FItemSearchRequest : ItemSearchRequest_Type;
+    FItemLookupRequest : ItemLookupRequest_Type;
+    FListSearchRequest : ListSearchRequest_Type;
+    FListLookupRequest : ListLookupRequest_Type;
+    FCustomerContentSearchRequest : CustomerContentSearchRequest_Type;
+    FCustomerContentLookupRequest : CustomerContentLookupRequest_Type;
+    FSimilarityLookupRequest : SimilarityLookupRequest_Type;
+    FCartGetRequest : CartGetRequest_Type;
+    FCartAddRequest : CartAddRequest_Type;
+    FCartCreateRequest : CartCreateRequest_Type;
+    FCartModifyRequest : CartModifyRequest_Type;
+    FCartClearRequest : CartClearRequest_Type;
+    FTransactionLookupRequest : TransactionLookupRequest_Type;
+    FSellerListingSearchRequest : SellerListingSearchRequest_Type;
+    FSellerListingLookupRequest : SellerListingLookupRequest_Type;
+    FSellerLookupRequest : SellerLookupRequest_Type;
     FErrors : Errors_Type;
   private
     function HasIsValid() : Boolean;
@@ -2261,24 +2122,24 @@ type
     destructor Destroy();override;
   published
     property IsValid : string read FIsValid write FIsValid stored HasIsValid;
-    property HelpRequest : HelpRequest read FHelpRequest write FHelpRequest stored HasHelpRequest;
-    property BrowseNodeLookupRequest : BrowseNodeLookupRequest read FBrowseNodeLookupRequest write FBrowseNodeLookupRequest stored HasBrowseNodeLookupRequest;
-    property ItemSearchRequest : ItemSearchRequest read FItemSearchRequest write FItemSearchRequest stored HasItemSearchRequest;
-    property ItemLookupRequest : ItemLookupRequest read FItemLookupRequest write FItemLookupRequest stored HasItemLookupRequest;
-    property ListSearchRequest : ListSearchRequest read FListSearchRequest write FListSearchRequest stored HasListSearchRequest;
-    property ListLookupRequest : ListLookupRequest read FListLookupRequest write FListLookupRequest stored HasListLookupRequest;
-    property CustomerContentSearchRequest : CustomerContentSearchRequest read FCustomerContentSearchRequest write FCustomerContentSearchRequest stored HasCustomerContentSearchRequest;
-    property CustomerContentLookupRequest : CustomerContentLookupRequest read FCustomerContentLookupRequest write FCustomerContentLookupRequest stored HasCustomerContentLookupRequest;
-    property SimilarityLookupRequest : SimilarityLookupRequest read FSimilarityLookupRequest write FSimilarityLookupRequest stored HasSimilarityLookupRequest;
-    property CartGetRequest : CartGetRequest read FCartGetRequest write FCartGetRequest stored HasCartGetRequest;
-    property CartAddRequest : CartAddRequest read FCartAddRequest write FCartAddRequest stored HasCartAddRequest;
-    property CartCreateRequest : CartCreateRequest read FCartCreateRequest write FCartCreateRequest stored HasCartCreateRequest;
-    property CartModifyRequest : CartModifyRequest read FCartModifyRequest write FCartModifyRequest stored HasCartModifyRequest;
-    property CartClearRequest : CartClearRequest read FCartClearRequest write FCartClearRequest stored HasCartClearRequest;
-    property TransactionLookupRequest : TransactionLookupRequest read FTransactionLookupRequest write FTransactionLookupRequest stored HasTransactionLookupRequest;
-    property SellerListingSearchRequest : SellerListingSearchRequest read FSellerListingSearchRequest write FSellerListingSearchRequest stored HasSellerListingSearchRequest;
-    property SellerListingLookupRequest : SellerListingLookupRequest read FSellerListingLookupRequest write FSellerListingLookupRequest stored HasSellerListingLookupRequest;
-    property SellerLookupRequest : SellerLookupRequest read FSellerLookupRequest write FSellerLookupRequest stored HasSellerLookupRequest;
+    property HelpRequest : HelpRequest_Type read FHelpRequest write FHelpRequest stored HasHelpRequest;
+    property BrowseNodeLookupRequest : BrowseNodeLookupRequest_Type read FBrowseNodeLookupRequest write FBrowseNodeLookupRequest stored HasBrowseNodeLookupRequest;
+    property ItemSearchRequest : ItemSearchRequest_Type read FItemSearchRequest write FItemSearchRequest stored HasItemSearchRequest;
+    property ItemLookupRequest : ItemLookupRequest_Type read FItemLookupRequest write FItemLookupRequest stored HasItemLookupRequest;
+    property ListSearchRequest : ListSearchRequest_Type read FListSearchRequest write FListSearchRequest stored HasListSearchRequest;
+    property ListLookupRequest : ListLookupRequest_Type read FListLookupRequest write FListLookupRequest stored HasListLookupRequest;
+    property CustomerContentSearchRequest : CustomerContentSearchRequest_Type read FCustomerContentSearchRequest write FCustomerContentSearchRequest stored HasCustomerContentSearchRequest;
+    property CustomerContentLookupRequest : CustomerContentLookupRequest_Type read FCustomerContentLookupRequest write FCustomerContentLookupRequest stored HasCustomerContentLookupRequest;
+    property SimilarityLookupRequest : SimilarityLookupRequest_Type read FSimilarityLookupRequest write FSimilarityLookupRequest stored HasSimilarityLookupRequest;
+    property CartGetRequest : CartGetRequest_Type read FCartGetRequest write FCartGetRequest stored HasCartGetRequest;
+    property CartAddRequest : CartAddRequest_Type read FCartAddRequest write FCartAddRequest stored HasCartAddRequest;
+    property CartCreateRequest : CartCreateRequest_Type read FCartCreateRequest write FCartCreateRequest stored HasCartCreateRequest;
+    property CartModifyRequest : CartModifyRequest_Type read FCartModifyRequest write FCartModifyRequest stored HasCartModifyRequest;
+    property CartClearRequest : CartClearRequest_Type read FCartClearRequest write FCartClearRequest stored HasCartClearRequest;
+    property TransactionLookupRequest : TransactionLookupRequest_Type read FTransactionLookupRequest write FTransactionLookupRequest stored HasTransactionLookupRequest;
+    property SellerListingSearchRequest : SellerListingSearchRequest_Type read FSellerListingSearchRequest write FSellerListingSearchRequest stored HasSellerListingSearchRequest;
+    property SellerListingLookupRequest : SellerListingLookupRequest_Type read FSellerListingLookupRequest write FSellerListingLookupRequest stored HasSellerListingLookupRequest;
+    property SellerLookupRequest : SellerLookupRequest_Type read FSellerLookupRequest write FSellerLookupRequest stored HasSellerLookupRequest;
     property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
   end;
 
@@ -2307,6 +2168,218 @@ type
   published
     property Code : string read FCode write FCode;
     property Message : string read FMessage write FMessage;
+  end;
+
+  Information_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FOperationInformation : Information_OperationInformationArray;
+    FResponseGroupInformation : Information_ResponseGroupInformationArray;
+  private
+    function HasRequest() : Boolean;
+    function HasOperationInformation() : Boolean;
+    function HasResponseGroupInformation() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property OperationInformation : Information_OperationInformationArray read FOperationInformation write FOperationInformation stored HasOperationInformation;
+    property ResponseGroupInformation : Information_ResponseGroupInformationArray read FResponseGroupInformation write FResponseGroupInformation stored HasResponseGroupInformation;
+  end;
+
+  Items_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FCorrectedQuery : CorrectedQuery_Type;
+    FQid : string;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FSearchResultsMap : SearchResultsMap_Type;
+    F_Item : Items__ItemArray;
+    FSearchBinSets : SearchBinSets_Type;
+  private
+    function HasRequest() : Boolean;
+    function HasCorrectedQuery() : Boolean;
+    function HasQid() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+    function HasSearchResultsMap() : Boolean;
+    function Has_Item() : Boolean;
+    function HasSearchBinSets() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property CorrectedQuery : CorrectedQuery_Type read FCorrectedQuery write FCorrectedQuery stored HasCorrectedQuery;
+    property Qid : string read FQid write FQid stored HasQid;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property SearchResultsMap : SearchResultsMap_Type read FSearchResultsMap write FSearchResultsMap stored HasSearchResultsMap;
+    property _Item : Items__ItemArray read F_Item write F_Item stored Has_Item;
+    property SearchBinSets : SearchBinSets_Type read FSearchBinSets write FSearchBinSets stored HasSearchBinSets;
+  end;
+
+  CorrectedQuery_Type = class(TBaseComplexRemotable)
+  private
+    FKeywords : string;
+    FMessage : string;
+  private
+    function HasKeywords() : Boolean;
+    function HasMessage() : Boolean;
+  published
+    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
+    property Message : string read FMessage write FMessage stored HasMessage;
+  end;
+
+  Lists_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FList : Lists_ListArray;
+  private
+    function HasRequest() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+    function HasList() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property List : Lists_ListArray read FList write FList stored HasList;
+  end;
+
+  Customers_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FCustomer : Customers_CustomerArray;
+  private
+    function HasRequest() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+    function HasCustomer() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property Customer : Customers_CustomerArray read FCustomer write FCustomer stored HasCustomer;
+  end;
+
+  Cart_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FCartId : string;
+    FHMAC : string;
+    FURLEncodedHMAC : string;
+    FPurchaseURL : string;
+    FSubTotal : Price_Type;
+    FCartItems : CartItems_Type;
+    FSavedForLaterItems : SavedForLaterItems_Type;
+    FSimilarProducts : SimilarProducts_Type;
+    FTopSellers : TopSellers_Type;
+    FNewReleases : NewReleases_Type;
+    FSimilarViewedProducts : SimilarViewedProducts_Type;
+    FOtherCategoriesSimilarProducts : OtherCategoriesSimilarProducts_Type;
+  private
+    function HasRequest() : Boolean;
+    function HasPurchaseURL() : Boolean;
+    function HasSubTotal() : Boolean;
+    function HasCartItems() : Boolean;
+    function HasSavedForLaterItems() : Boolean;
+    function HasSimilarProducts() : Boolean;
+    function HasTopSellers() : Boolean;
+    function HasNewReleases() : Boolean;
+    function HasSimilarViewedProducts() : Boolean;
+    function HasOtherCategoriesSimilarProducts() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property CartId : string read FCartId write FCartId;
+    property HMAC : string read FHMAC write FHMAC;
+    property URLEncodedHMAC : string read FURLEncodedHMAC write FURLEncodedHMAC;
+    property PurchaseURL : string read FPurchaseURL write FPurchaseURL stored HasPurchaseURL;
+    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property CartItems : CartItems_Type read FCartItems write FCartItems stored HasCartItems;
+    property SavedForLaterItems : SavedForLaterItems_Type read FSavedForLaterItems write FSavedForLaterItems stored HasSavedForLaterItems;
+    property SimilarProducts : SimilarProducts_Type read FSimilarProducts write FSimilarProducts stored HasSimilarProducts;
+    property TopSellers : TopSellers_Type read FTopSellers write FTopSellers stored HasTopSellers;
+    property NewReleases : NewReleases_Type read FNewReleases write FNewReleases stored HasNewReleases;
+    property SimilarViewedProducts : SimilarViewedProducts_Type read FSimilarViewedProducts write FSimilarViewedProducts stored HasSimilarViewedProducts;
+    property OtherCategoriesSimilarProducts : OtherCategoriesSimilarProducts_Type read FOtherCategoriesSimilarProducts write FOtherCategoriesSimilarProducts stored HasOtherCategoriesSimilarProducts;
+  end;
+
+  Transactions_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FTransaction : Transactions_TransactionArray;
+  private
+    function HasRequest() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property Transaction : Transactions_TransactionArray read FTransaction write FTransaction;
+  end;
+
+  Sellers_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FSeller : Sellers_SellerArray;
+  private
+    function HasRequest() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+    function HasSeller() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property Seller : Sellers_SellerArray read FSeller write FSeller stored HasSeller;
+  end;
+
+  SellerListings_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FTotalResults : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FSellerListing : SellerListings_SellerListingArray;
+  private
+    function HasRequest() : Boolean;
+    function HasTotalResults() : Boolean;
+    function HasTotalPages() : Boolean;
+    function HasSellerListing() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
+    property SellerListing : SellerListings_SellerListingArray read FSellerListing write FSellerListing stored HasSellerListing;
   end;
 
   OperationInformation_Type = class(TBaseComplexRemotable)
@@ -2357,103 +2430,6 @@ type
     property Elements : ResponseGroupInformation_Elements_Type read FElements write FElements stored HasElements;
   end;
 
-  CorrectedQuery_Type = class(TBaseComplexRemotable)
-  private
-    FKeywords : string;
-    FMessage : string;
-  private
-    function HasKeywords() : Boolean;
-    function HasMessage() : Boolean;
-  published
-    property Keywords : string read FKeywords write FKeywords stored HasKeywords;
-    property Message : string read FMessage write FMessage stored HasMessage;
-  end;
-
-  Item_Type = class(TBaseComplexRemotable)
-  private
-    FASIN : string;
-    FParentASIN : string;
-    FErrors : Errors_Type;
-    FDetailPageURL : string;
-    FSalesRank : string;
-    FSmallImage : Image;
-    FMediumImage : Image;
-    FLargeImage : Image;
-    FImageSets : _Item_ImageSetsArray;
-    FItemAttributes : ItemAttributes_Type;
-    FMerchantItemAttributes : MerchantItemAttributes_Type;
-    FCollections : Collections_Type;
-    FSubjects : Item_Subjects_Type;
-    FOfferSummary : OfferSummary_Type;
-    FOffers : Offers_Type;
-    FVariationSummary : VariationSummary_Type;
-    FVariations : Variations_Type;
-    FCustomerReviews : CustomerReviews_Type;
-    FEditorialReviews : EditorialReviews_Type;
-    FSimilarProducts : SimilarProducts_Type;
-    FAccessories : Accessories_Type;
-    FTracks : Tracks_Type;
-    FBrowseNodes : BrowseNodes_Type;
-    FListmaniaLists : ListmaniaLists_Type;
-    FSearchInside : SearchInside_Type;
-    FAlternateVersions : Item_AlternateVersions_Type;
-  private
-    function HasParentASIN() : Boolean;
-    function HasErrors() : Boolean;
-    function HasDetailPageURL() : Boolean;
-    function HasSalesRank() : Boolean;
-    function HasSmallImage() : Boolean;
-    function HasMediumImage() : Boolean;
-    function HasLargeImage() : Boolean;
-    function HasItemAttributes() : Boolean;
-    function HasMerchantItemAttributes() : Boolean;
-    function HasCollections() : Boolean;
-    function HasSubjects() : Boolean;
-    function HasOfferSummary() : Boolean;
-    function HasOffers() : Boolean;
-    function HasVariationSummary() : Boolean;
-    function HasVariations() : Boolean;
-    function HasCustomerReviews() : Boolean;
-    function HasEditorialReviews() : Boolean;
-    function HasSimilarProducts() : Boolean;
-    function HasAccessories() : Boolean;
-    function HasTracks() : Boolean;
-    function HasBrowseNodes() : Boolean;
-    function HasListmaniaLists() : Boolean;
-    function HasSearchInside() : Boolean;
-    function HasAlternateVersions() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property ASIN : string read FASIN write FASIN;
-    property ParentASIN : string read FParentASIN write FParentASIN stored HasParentASIN;
-    property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
-    property DetailPageURL : string read FDetailPageURL write FDetailPageURL stored HasDetailPageURL;
-    property SalesRank : string read FSalesRank write FSalesRank stored HasSalesRank;
-    property SmallImage : Image read FSmallImage write FSmallImage stored HasSmallImage;
-    property MediumImage : Image read FMediumImage write FMediumImage stored HasMediumImage;
-    property LargeImage : Image read FLargeImage write FLargeImage stored HasLargeImage;
-    property ImageSets : _Item_ImageSetsArray read FImageSets write FImageSets;
-    property ItemAttributes : ItemAttributes_Type read FItemAttributes write FItemAttributes stored HasItemAttributes;
-    property MerchantItemAttributes : MerchantItemAttributes_Type read FMerchantItemAttributes write FMerchantItemAttributes stored HasMerchantItemAttributes;
-    property Collections : Collections_Type read FCollections write FCollections stored HasCollections;
-    property Subjects : Item_Subjects_Type read FSubjects write FSubjects stored HasSubjects;
-    property OfferSummary : OfferSummary_Type read FOfferSummary write FOfferSummary stored HasOfferSummary;
-    property Offers : Offers_Type read FOffers write FOffers stored HasOffers;
-    property VariationSummary : VariationSummary_Type read FVariationSummary write FVariationSummary stored HasVariationSummary;
-    property Variations : Variations_Type read FVariations write FVariations stored HasVariations;
-    property CustomerReviews : CustomerReviews_Type read FCustomerReviews write FCustomerReviews stored HasCustomerReviews;
-    property EditorialReviews : EditorialReviews_Type read FEditorialReviews write FEditorialReviews stored HasEditorialReviews;
-    property SimilarProducts : SimilarProducts_Type read FSimilarProducts write FSimilarProducts stored HasSimilarProducts;
-    property Accessories : Accessories_Type read FAccessories write FAccessories stored HasAccessories;
-    property Tracks : Tracks_Type read FTracks write FTracks stored HasTracks;
-    property BrowseNodes : BrowseNodes_Type read FBrowseNodes write FBrowseNodes stored HasBrowseNodes;
-    property ListmaniaLists : ListmaniaLists_Type read FListmaniaLists write FListmaniaLists stored HasListmaniaLists;
-    property SearchInside : SearchInside_Type read FSearchInside write FSearchInside stored HasSearchInside;
-    property AlternateVersions : Item_AlternateVersions_Type read FAlternateVersions write FAlternateVersions stored HasAlternateVersions;
-  end;
-
   List_Type = class(TBaseComplexRemotable)
   private
     FListId : string;
@@ -2469,7 +2445,7 @@ type
     FPartnerName : string;
     FAdditionalName : string;
     FComment : string;
-    FImage : Image;
+    FImage : Image_Type;
     FAverageRating : Extended;
     FTotalVotes : nonNegativeInteger;
     FTotalTimesRead : nonNegativeInteger;
@@ -2491,6 +2467,7 @@ type
     function HasAverageRating() : Boolean;
     function HasTotalVotes() : Boolean;
     function HasTotalTimesRead() : Boolean;
+    function HasListItem() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -2508,238 +2485,11 @@ type
     property PartnerName : string read FPartnerName write FPartnerName stored HasPartnerName;
     property AdditionalName : string read FAdditionalName write FAdditionalName stored HasAdditionalName;
     property Comment : string read FComment write FComment stored HasComment;
-    property Image : Image read FImage write FImage stored HasImage;
+    property Image : Image_Type read FImage write FImage stored HasImage;
     property AverageRating : Extended read FAverageRating write FAverageRating stored HasAverageRating;
     property TotalVotes : nonNegativeInteger read FTotalVotes write FTotalVotes stored HasTotalVotes;
     property TotalTimesRead : nonNegativeInteger read FTotalTimesRead write FTotalTimesRead stored HasTotalTimesRead;
-    property ListItem : List_ListItemArray read FListItem write FListItem;
-  end;
-
-  Customer_Type = class(TBaseComplexRemotable)
-  private
-    FCustomerId : string;
-    FNickname : string;
-    FBirthday : string;
-    FWishListId : string;
-    FLocation : Customer_Location_Type;
-    FCustomerReviews : Customer_CustomerReviewsArray;
-  private
-    function HasNickname() : Boolean;
-    function HasBirthday() : Boolean;
-    function HasWishListId() : Boolean;
-    function HasLocation() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property CustomerId : string read FCustomerId write FCustomerId;
-    property Nickname : string read FNickname write FNickname stored HasNickname;
-    property Birthday : string read FBirthday write FBirthday stored HasBirthday;
-    property WishListId : string read FWishListId write FWishListId stored HasWishListId;
-    property Location : Customer_Location_Type read FLocation write FLocation stored HasLocation;
-    property CustomerReviews : Customer_CustomerReviewsArray read FCustomerReviews write FCustomerReviews;
-  end;
-
-  Price = class(TBaseComplexRemotable)
-  private
-    FAmount : integer;
-    FCurrencyCode : string;
-    FFormattedPrice : string;
-  private
-    function HasAmount() : Boolean;
-    function HasCurrencyCode() : Boolean;
-  published
-    property Amount : integer read FAmount write FAmount stored HasAmount;
-    property CurrencyCode : string read FCurrencyCode write FCurrencyCode stored HasCurrencyCode;
-    property FormattedPrice : string read FFormattedPrice write FFormattedPrice;
-  end;
-
-  CartItems_Type = class(TBaseComplexRemotable)
-  private
-    FSubTotal : Price;
-    FCartItem : CartItems_CartItemArray;
-  private
-    function HasSubTotal() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
-    property CartItem : CartItems_CartItemArray read FCartItem write FCartItem;
-  end;
-
-  SavedForLaterItems_Type = class(TBaseComplexRemotable)
-  private
-    FSubTotal : Price;
-    FSavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray;
-  private
-    function HasSubTotal() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
-    property SavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray read FSavedForLaterItem write FSavedForLaterItem;
-  end;
-
-  Transaction_Type = class(TBaseComplexRemotable)
-  private
-    FTransactionId : string;
-    FSellerId : string;
-    FCondition : string;
-    FTransactionDate : string;
-    FTransactionDateEpoch : string;
-    FSellerName : string;
-    FPayingCustomerId : string;
-    FOrderingCustomerId : string;
-    FTotals : Transaction_Totals_Type;
-    FTransactionItems : Transaction_TransactionItems_Type;
-    FShipments : Transaction_Shipments_Type;
-  private
-    function HasSellerName() : Boolean;
-    function HasPayingCustomerId() : Boolean;
-    function HasOrderingCustomerId() : Boolean;
-    function HasTotals() : Boolean;
-    function HasTransactionItems() : Boolean;
-    function HasShipments() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property TransactionId : string read FTransactionId write FTransactionId;
-    property SellerId : string read FSellerId write FSellerId;
-    property Condition : string read FCondition write FCondition;
-    property TransactionDate : string read FTransactionDate write FTransactionDate;
-    property TransactionDateEpoch : string read FTransactionDateEpoch write FTransactionDateEpoch;
-    property SellerName : string read FSellerName write FSellerName stored HasSellerName;
-    property PayingCustomerId : string read FPayingCustomerId write FPayingCustomerId stored HasPayingCustomerId;
-    property OrderingCustomerId : string read FOrderingCustomerId write FOrderingCustomerId stored HasOrderingCustomerId;
-    property Totals : Transaction_Totals_Type read FTotals write FTotals stored HasTotals;
-    property TransactionItems : Transaction_TransactionItems_Type read FTransactionItems write FTransactionItems stored HasTransactionItems;
-    property Shipments : Transaction_Shipments_Type read FShipments write FShipments stored HasShipments;
-  end;
-
-  Seller_Type = class(TBaseComplexRemotable)
-  private
-    FSellerId : string;
-    FSellerName : string;
-    FSellerLegalName : string;
-    FNickname : string;
-    FGlancePage : string;
-    FAbout : string;
-    FMoreAbout : string;
-    FLocation : Seller_Location_Type;
-    FAverageFeedbackRating : Extended;
-    FTotalFeedback : nonNegativeInteger;
-    FTotalFeedbackPages : nonNegativeInteger;
-    FSellerFeedbackSummary : Seller_SellerFeedbackSummary_Type;
-    FSellerFeedback : SellerFeedback_Type;
-  private
-    function HasSellerName() : Boolean;
-    function HasSellerLegalName() : Boolean;
-    function HasNickname() : Boolean;
-    function HasGlancePage() : Boolean;
-    function HasAbout() : Boolean;
-    function HasMoreAbout() : Boolean;
-    function HasLocation() : Boolean;
-    function HasAverageFeedbackRating() : Boolean;
-    function HasTotalFeedback() : Boolean;
-    function HasTotalFeedbackPages() : Boolean;
-    function HasSellerFeedbackSummary() : Boolean;
-    function HasSellerFeedback() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property SellerId : string read FSellerId write FSellerId;
-    property SellerName : string read FSellerName write FSellerName stored HasSellerName;
-    property SellerLegalName : string read FSellerLegalName write FSellerLegalName stored HasSellerLegalName;
-    property Nickname : string read FNickname write FNickname stored HasNickname;
-    property GlancePage : string read FGlancePage write FGlancePage stored HasGlancePage;
-    property About : string read FAbout write FAbout stored HasAbout;
-    property MoreAbout : string read FMoreAbout write FMoreAbout stored HasMoreAbout;
-    property Location : Seller_Location_Type read FLocation write FLocation stored HasLocation;
-    property AverageFeedbackRating : Extended read FAverageFeedbackRating write FAverageFeedbackRating stored HasAverageFeedbackRating;
-    property TotalFeedback : nonNegativeInteger read FTotalFeedback write FTotalFeedback stored HasTotalFeedback;
-    property TotalFeedbackPages : nonNegativeInteger read FTotalFeedbackPages write FTotalFeedbackPages stored HasTotalFeedbackPages;
-    property SellerFeedbackSummary : Seller_SellerFeedbackSummary_Type read FSellerFeedbackSummary write FSellerFeedbackSummary stored HasSellerFeedbackSummary;
-    property SellerFeedback : SellerFeedback_Type read FSellerFeedback write FSellerFeedback stored HasSellerFeedback;
-  end;
-
-  SellerListing_Type = class(TBaseComplexRemotable)
-  private
-    FExchangeId : string;
-    FListingId : string;
-    FASIN : string;
-    FSKU : string;
-    FUPC : string;
-    FEAN : string;
-    FWillShipExpedited : boolean;
-    FWillShipInternational : boolean;
-    FTitle : string;
-    FPrice : Price;
-    FStartDate : string;
-    FEndDate : string;
-    FStatus : string;
-    FQuantity : string;
-    FCondition : string;
-    FSubCondition : string;
-    FSeller : Seller_Type;
-  private
-    function HasExchangeId() : Boolean;
-    function HasListingId() : Boolean;
-    function HasASIN() : Boolean;
-    function HasSKU() : Boolean;
-    function HasUPC() : Boolean;
-    function HasEAN() : Boolean;
-    function HasWillShipExpedited() : Boolean;
-    function HasWillShipInternational() : Boolean;
-    function HasTitle() : Boolean;
-    function HasPrice() : Boolean;
-    function HasStartDate() : Boolean;
-    function HasEndDate() : Boolean;
-    function HasStatus() : Boolean;
-    function HasQuantity() : Boolean;
-    function HasCondition() : Boolean;
-    function HasSubCondition() : Boolean;
-    function HasSeller() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property ExchangeId : string read FExchangeId write FExchangeId stored HasExchangeId;
-    property ListingId : string read FListingId write FListingId stored HasListingId;
-    property ASIN : string read FASIN write FASIN stored HasASIN;
-    property SKU : string read FSKU write FSKU stored HasSKU;
-    property UPC : string read FUPC write FUPC stored HasUPC;
-    property EAN : string read FEAN write FEAN stored HasEAN;
-    property WillShipExpedited : boolean read FWillShipExpedited write FWillShipExpedited stored HasWillShipExpedited;
-    property WillShipInternational : boolean read FWillShipInternational write FWillShipInternational stored HasWillShipInternational;
-    property Title : string read FTitle write FTitle stored HasTitle;
-    property Price : Price read FPrice write FPrice stored HasPrice;
-    property StartDate : string read FStartDate write FStartDate stored HasStartDate;
-    property EndDate : string read FEndDate write FEndDate stored HasEndDate;
-    property Status : string read FStatus write FStatus stored HasStatus;
-    property Quantity : string read FQuantity write FQuantity stored HasQuantity;
-    property Condition : string read FCondition write FCondition stored HasCondition;
-    property SubCondition : string read FSubCondition write FSubCondition stored HasSubCondition;
-    property Seller : Seller_Type read FSeller write FSeller stored HasSeller;
-  end;
-
-  Image = class(TBaseComplexRemotable)
-  private
-    FURL : string;
-    FHeight : DecimalWithUnits;
-    FWidth : DecimalWithUnits;
-    FIsVerified : string;
-  private
-    function HasIsVerified() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property URL : string read FURL write FURL;
-    property Height : DecimalWithUnits read FHeight write FHeight;
-    property Width : DecimalWithUnits read FWidth write FWidth;
-    property IsVerified : string read FIsVerified write FIsVerified stored HasIsVerified;
+    property ListItem : List_ListItemArray read FListItem write FListItem stored HasListItem;
   end;
 
   ListItem_Type = class(TBaseComplexRemotable)
@@ -2758,6 +2508,7 @@ type
     function HasQuantityReceived() : Boolean;
     function Has_Item() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property ListItemId : string read FListItemId write FListItemId stored HasListItemId;
@@ -2786,24 +2537,30 @@ type
     property Country : string read FCountry write FCountry stored HasCountry;
   end;
 
-  CustomerReviews_Type = class(TBaseComplexRemotable)
+  Customer_Type = class(TBaseComplexRemotable)
   private
-    FAverageRating : Extended;
-    FTotalReviews : nonNegativeInteger;
-    FTotalReviewPages : nonNegativeInteger;
-    FReview : CustomerReviews_ReviewArray;
+    FCustomerId : string;
+    FNickname : string;
+    FBirthday : string;
+    FWishListId : string;
+    FLocation : Customer_Location_Type;
+    FCustomerReviews : Customer_CustomerReviewsArray;
   private
-    function HasAverageRating() : Boolean;
-    function HasTotalReviews() : Boolean;
-    function HasTotalReviewPages() : Boolean;
+    function HasNickname() : Boolean;
+    function HasBirthday() : Boolean;
+    function HasWishListId() : Boolean;
+    function HasLocation() : Boolean;
+    function HasCustomerReviews() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property AverageRating : Extended read FAverageRating write FAverageRating stored HasAverageRating;
-    property TotalReviews : nonNegativeInteger read FTotalReviews write FTotalReviews stored HasTotalReviews;
-    property TotalReviewPages : nonNegativeInteger read FTotalReviewPages write FTotalReviewPages stored HasTotalReviewPages;
-    property Review : CustomerReviews_ReviewArray read FReview write FReview;
+    property CustomerId : string read FCustomerId write FCustomerId;
+    property Nickname : string read FNickname write FNickname stored HasNickname;
+    property Birthday : string read FBirthday write FBirthday stored HasBirthday;
+    property WishListId : string read FWishListId write FWishListId stored HasWishListId;
+    property Location : Customer_Location_Type read FLocation write FLocation stored HasLocation;
+    property CustomerReviews : Customer_CustomerReviewsArray read FCustomerReviews write FCustomerReviews stored HasCustomerReviews;
   end;
 
   SearchResultsMap_SearchIndex_Type = class(TBaseComplexRemotable)
@@ -2830,1660 +2587,19 @@ type
     property ASIN : SearchResultsMap_SearchIndex_Type_ASINArray read FASIN write FASIN;
   end;
 
-  ImageSet_Type = class(TBaseComplexRemotable)
-  private
-    FSwatchImage : Image;
-    FSmallImage : Image;
-    FMediumImage : Image;
-    FLargeImage : Image;
-    FCategory : string;
-  private
-    function HasSwatchImage() : Boolean;
-    function HasSmallImage() : Boolean;
-    function HasMediumImage() : Boolean;
-    function HasLargeImage() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property SwatchImage : Image read FSwatchImage write FSwatchImage stored HasSwatchImage;
-    property SmallImage : Image read FSmallImage write FSmallImage stored HasSmallImage;
-    property MediumImage : Image read FMediumImage write FMediumImage stored HasMediumImage;
-    property LargeImage : Image read FLargeImage write FLargeImage stored HasLargeImage;
-    property Category : string read FCategory write FCategory;
-  end;
-
   Item_ImageSets_Type = class(TBaseComplexRemotable)
   private
     FMerchantId : string;
     FImageSet : Item_ImageSets_Type_ImageSetArray;
   private
     function HasMerchantId() : Boolean;
+    function HasImageSet() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property MerchantId : string read FMerchantId write FMerchantId stored HasMerchantId;
-    property ImageSet : Item_ImageSets_Type_ImageSetArray read FImageSet write FImageSet;
-  end;
-
-  ItemAttributes_Type = class(TBaseComplexRemotable)
-  private
-    FActor : ItemAttributes_ActorArray;
-    FAddress : Address;
-    FAmazonMaximumAge : DecimalWithUnits;
-    FAmazonMinimumAge : DecimalWithUnits;
-    FAnalogVideoFormat : string;
-    FApertureModes : string;
-    FArtist : ItemAttributes_ArtistArray;
-    FAspectRatio : string;
-    FAssemblyInstructions : string;
-    FAssemblyRequired : string;
-    FAudienceRating : string;
-    FAudioFormat : ItemAttributes_AudioFormatArray;
-    FAuthor : ItemAttributes_AuthorArray;
-    FBackFinding : string;
-    FBandMaterialType : string;
-    FBatteriesIncluded : string;
-    FBatteriesRequired : string;
-    FBatteries : NonNegativeIntegerWithUnits;
-    FBatteryDescription : string;
-    FBatteryType : string;
-    FBezelMaterialType : string;
-    FBinding : string;
-    FBrand : string;
-    FCalendarType : string;
-    FCameraManualFeatures : ItemAttributes_CameraManualFeaturesArray;
-    FCaseDiameter : DecimalWithUnits;
-    FCaseMaterialType : string;
-    FCaseThickness : DecimalWithUnits;
-    FCaseType : string;
-    FCatalogNumber : string;
-    FCDRWDescription : string;
-    FChainType : string;
-    FCEROAgeRating : string;
-    FClaspType : string;
-    FClothingSize : string;
-    FClubType : string;
-    FColor : string;
-    FCompatibility : string;
-    FCompatibleDevices : ItemAttributes_CompatibleDevicesArray;
-    FComputerHardwareType : string;
-    FComputerPlatform : string;
-    FConnectivity : string;
-    FContinuousShootingSpeed : DecimalWithUnits;
-    FCountry : string;
-    FCPUManufacturer : string;
-    FCPUSpeed : DecimalWithUnits;
-    FCPUType : string;
-    FCreator : ItemAttributes_CreatorArray;
-    FCuisine : string;
-    FDataLinkProtocol : ItemAttributes_DataLinkProtocolArray;
-    FDeliveryOption : string;
-    FDelayBetweenShots : DecimalWithUnits;
-    FDepartment : string;
-    FDeweyDecimalNumber : string;
-    FDialColor : string;
-    FDialWindowMaterialType : string;
-    FDigitalZoom : DecimalWithUnits;
-    FDirector : ItemAttributes_DirectorArray;
-    FDisplayColorSupport : string;
-    FDisplaySize : DecimalWithUnits;
-    FDrumSetPieceQuantity : nonNegativeInteger;
-    FDVDLayers : nonNegativeInteger;
-    FDVDRWDescription : string;
-    FDVDSides : nonNegativeInteger;
-    FDPCI : string;
-    FEAN : string;
-    FEdition : string;
-    FESRBAgeRating : string;
-    FExternalDisplaySupportDescription : string;
-    FFabricType : string;
-    FFaxNumber : string;
-    FFeature : ItemAttributes_FeatureArray;
-    FFilmColorType : string;
-    FFirstIssueLeadTime : StringWithUnits;
-    FFloppyDiskDriveDescription : string;
-    FFormat : ItemAttributes_FormatArray;
-    FFormFactor : ItemAttributes_FormFactorArray;
-    FGemType : string;
-    FGenre : string;
-    FGraphicsCardInterface : string;
-    FGraphicsDescription : string;
-    FGraphicsMemorySize : DecimalWithUnits;
-    FGuitarAttribute : string;
-    FGuitarBridgeSystem : string;
-    FGuitarPickThickness : string;
-    FGuitarPickupConfiguration : string;
-    FHandOrientation : string;
-    FHardDiskCount : nonNegativeInteger;
-    FHardDiskSize : DecimalWithUnits;
-    FHardDiskInterface : string;
-    FHardwarePlatform : string;
-    FHasAutoFocus : boolean;
-    FHasBurstMode : boolean;
-    FHasInCameraEditing : boolean;
-    FHasRedEyeReduction : boolean;
-    FHasSelfTimer : boolean;
-    FHasTripodMount : boolean;
-    FHasVideoOut : boolean;
-    FHasViewfinder : boolean;
-    FHazardousMaterialType : string;
-    FHoursOfOperation : string;
-    FIncludedSoftware : string;
-    FIncludesMp3Player : boolean;
-    FIngredients : string;
-    FInstrumentKey : string;
-    FIsAdultProduct : boolean;
-    FIsAutographed : boolean;
-    FISBN : string;
-    FIsFragile : boolean;
-    FIsLabCreated : boolean;
-    FIsMemorabilia : boolean;
-    FISOEquivalent : NonNegativeIntegerWithUnits;
-    FIsPreannounce : boolean;
-    FIssuesPerYear : string;
-    FItemDimensions : ItemAttributes_ItemDimensions_Type;
-    FKeyboardDescription : string;
-    F_Label : string;
-    FLanguages : ItemAttributes_Languages_Type;
-    FLegalDisclaimer : string;
-    FLensType : string;
-    FLineVoltage : string;
-    FListPrice : Price;
-    FMacroFocusRange : string;
-    FMagazineType : string;
-    FMalletHardness : string;
-    FManufacturer : string;
-    FManufacturerLaborWarrantyDescription : string;
-    FManufacturerMaximumAge : DecimalWithUnits;
-    FManufacturerMinimumAge : DecimalWithUnits;
-    FManufacturerPartsWarrantyDescription : string;
-    FMaterialType : string;
-    FMaximumAperture : DecimalWithUnits;
-    FMaximumColorDepth : string;
-    FMaximumFocalLength : DecimalWithUnits;
-    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits;
-    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits;
-    FMaximumLowResolutionImages : string;
-    FMaximumResolution : DecimalWithUnits;
-    FMaximumShutterSpeed : DecimalWithUnits;
-    FMaximumVerticalResolution : NonNegativeIntegerWithUnits;
-    FMaximumWeightRecommendation : DecimalWithUnits;
-    FMediaType : string;
-    FMemorySlotsAvailable : string;
-    FMetalStamp : string;
-    FMetalType : string;
-    FMiniMovieDescription : string;
-    FMinimumFocalLength : DecimalWithUnits;
-    FMinimumShutterSpeed : DecimalWithUnits;
-    FModel : string;
-    FModelYear : nonNegativeInteger;
-    FModemDescription : string;
-    FMonitorSize : DecimalWithUnits;
-    FMonitorViewableDiagonalSize : DecimalWithUnits;
-    FMouseDescription : string;
-    FMPN : string;
-    FMusicalStyle : string;
-    FNativeResolution : string;
-    FNeighborhood : string;
-    FNetworkInterfaceDescription : string;
-    FNotebookDisplayTechnology : string;
-    FNotebookPointingDeviceDescription : string;
-    FNumberOfDiscs : nonNegativeInteger;
-    FNumberOfIssues : nonNegativeInteger;
-    FNumberOfItems : nonNegativeInteger;
-    FNumberOfKeys : nonNegativeInteger;
-    FNumberOfPages : nonNegativeInteger;
-    FNumberOfPearls : nonNegativeInteger;
-    FNumberOfRapidFireShots : nonNegativeInteger;
-    FNumberOfStones : nonNegativeInteger;
-    FNumberOfStrings : nonNegativeInteger;
-    FNumberOfTracks : nonNegativeInteger;
-    FOperatingSystem : string;
-    FOpticalSensorResolution : DecimalWithUnits;
-    FOpticalZoom : DecimalWithUnits;
-    FOriginalReleaseDate : string;
-    FOutputWattage : nonNegativeInteger;
-    FPackageDimensions : ItemAttributes_PackageDimensions_Type;
-    FPackageQuantity : nonNegativeInteger;
-    FPearlLustre : string;
-    FPearlMinimumColor : string;
-    FPearlShape : string;
-    FPearlStringingMethod : string;
-    FPearlSurfaceBlemishes : string;
-    FPearlType : string;
-    FPearlUniformity : string;
-    FPhoneNumber : string;
-    FPhotoFlashType : ItemAttributes_PhotoFlashTypeArray;
-    FPictureFormat : ItemAttributes_PictureFormatArray;
-    FPlatform : ItemAttributes_PlatformArray;
-    FPriceRating : nonNegativeInteger;
-    FProcessorCount : nonNegativeInteger;
-    FProductGroup : string;
-    FProductSiteLaunchDate : string;
-    FProductTypeName : string;
-    FProductTypeSubcategory : string;
-    FPromotionalTag : string;
-    FPublicationDate : string;
-    FPublisher : string;
-    FPOBoxShippingExcluded : string;
-    FReadingLevel : string;
-    FReturnMethod : ItemAttributes_ReturnMethodArray;
-    FRecorderTrackCount : nonNegativeInteger;
-    FRegionCode : string;
-    FRegionOfOrigin : string;
-    FReturnPolicy : string;
-    FReleaseDate : string;
-    FRemovableMemory : string;
-    FRemovableStorage : string;
-    FRequiredVoltageRange : string;
-    FResolutionModes : string;
-    FRingSize : string;
-    FRunningTime : DecimalWithUnits;
-    FScentName : string;
-    FSecondaryCacheSize : NonNegativeIntegerWithUnits;
-    FSettingType : string;
-    FShaftMaterialType : string;
-    FSize : string;
-    FSizePerPearl : string;
-    FSkillLevel : string;
-    FSKU : string;
-    FSoldInStores : string;
-    FSoundCardDescription : string;
-    FSpeakerCount : nonNegativeInteger;
-    FSpeakerDescription : string;
-    FSpecialFeatures : ItemAttributes_SpecialFeaturesArray;
-    FStoneClarity : string;
-    FStoneColor : string;
-    FStoneCut : string;
-    FStoneShape : string;
-    FStoneWeight : DecimalWithUnits;
-    FStudio : string;
-    FStyle : string;
-    FSubscriptionLength : NonNegativeIntegerWithUnits;
-    FSupportedImageType : ItemAttributes_SupportedImageTypeArray;
-    FSupportedMediaSize : string;
-    FSystemBusSpeed : DecimalWithUnits;
-    FSystemMemorySizeMax : DecimalWithUnits;
-    FSystemMemorySize : DecimalWithUnits;
-    FSystemMemoryType : string;
-    FTellingPageIndicator : string;
-    FTheatricalReleaseDate : string;
-    FTitle : string;
-    FTotalDiamondWeight : DecimalWithUnits;
-    FTotalExternalBaysFree : nonNegativeInteger;
-    FTotalFirewirePorts : nonNegativeInteger;
-    FTotalGemWeight : DecimalWithUnits;
-    FTotalInternalBaysFree : nonNegativeInteger;
-    FTotalMetalWeight : DecimalWithUnits;
-    FTotalNTSCPALPorts : nonNegativeInteger;
-    FTotalParallelPorts : nonNegativeInteger;
-    FTotalPCCardSlots : nonNegativeInteger;
-    FTotalPCISlotsFree : nonNegativeInteger;
-    FTotalSerialPorts : nonNegativeInteger;
-    FTotalSVideoOutPorts : nonNegativeInteger;
-    FTotalUSB2Ports : nonNegativeInteger;
-    FTotalUSBPorts : nonNegativeInteger;
-    FTotalVGAOutPorts : nonNegativeInteger;
-    FUPC : string;
-    FVariationDenomination : string;
-    FVariationDescription : string;
-    FWarranty : string;
-    FWatchMovementType : string;
-    FWaterResistanceDepth : DecimalWithUnits;
-    FWEEETaxValue : Price;
-    FWirelessMicrophoneFrequency : nonNegativeInteger;
-  private
-    function HasAddress() : Boolean;
-    function HasAmazonMaximumAge() : Boolean;
-    function HasAmazonMinimumAge() : Boolean;
-    function HasAnalogVideoFormat() : Boolean;
-    function HasApertureModes() : Boolean;
-    function HasAspectRatio() : Boolean;
-    function HasAssemblyInstructions() : Boolean;
-    function HasAssemblyRequired() : Boolean;
-    function HasAudienceRating() : Boolean;
-    function HasBackFinding() : Boolean;
-    function HasBandMaterialType() : Boolean;
-    function HasBatteriesIncluded() : Boolean;
-    function HasBatteriesRequired() : Boolean;
-    function HasBatteries() : Boolean;
-    function HasBatteryDescription() : Boolean;
-    function HasBatteryType() : Boolean;
-    function HasBezelMaterialType() : Boolean;
-    function HasBinding() : Boolean;
-    function HasBrand() : Boolean;
-    function HasCalendarType() : Boolean;
-    function HasCaseDiameter() : Boolean;
-    function HasCaseMaterialType() : Boolean;
-    function HasCaseThickness() : Boolean;
-    function HasCaseType() : Boolean;
-    function HasCatalogNumber() : Boolean;
-    function HasCDRWDescription() : Boolean;
-    function HasChainType() : Boolean;
-    function HasCEROAgeRating() : Boolean;
-    function HasClaspType() : Boolean;
-    function HasClothingSize() : Boolean;
-    function HasClubType() : Boolean;
-    function HasColor() : Boolean;
-    function HasCompatibility() : Boolean;
-    function HasComputerHardwareType() : Boolean;
-    function HasComputerPlatform() : Boolean;
-    function HasConnectivity() : Boolean;
-    function HasContinuousShootingSpeed() : Boolean;
-    function HasCountry() : Boolean;
-    function HasCPUManufacturer() : Boolean;
-    function HasCPUSpeed() : Boolean;
-    function HasCPUType() : Boolean;
-    function HasCuisine() : Boolean;
-    function HasDeliveryOption() : Boolean;
-    function HasDelayBetweenShots() : Boolean;
-    function HasDepartment() : Boolean;
-    function HasDeweyDecimalNumber() : Boolean;
-    function HasDialColor() : Boolean;
-    function HasDialWindowMaterialType() : Boolean;
-    function HasDigitalZoom() : Boolean;
-    function HasDisplayColorSupport() : Boolean;
-    function HasDisplaySize() : Boolean;
-    function HasDrumSetPieceQuantity() : Boolean;
-    function HasDVDLayers() : Boolean;
-    function HasDVDRWDescription() : Boolean;
-    function HasDVDSides() : Boolean;
-    function HasDPCI() : Boolean;
-    function HasEAN() : Boolean;
-    function HasEdition() : Boolean;
-    function HasESRBAgeRating() : Boolean;
-    function HasExternalDisplaySupportDescription() : Boolean;
-    function HasFabricType() : Boolean;
-    function HasFaxNumber() : Boolean;
-    function HasFilmColorType() : Boolean;
-    function HasFirstIssueLeadTime() : Boolean;
-    function HasFloppyDiskDriveDescription() : Boolean;
-    function HasGemType() : Boolean;
-    function HasGenre() : Boolean;
-    function HasGraphicsCardInterface() : Boolean;
-    function HasGraphicsDescription() : Boolean;
-    function HasGraphicsMemorySize() : Boolean;
-    function HasGuitarAttribute() : Boolean;
-    function HasGuitarBridgeSystem() : Boolean;
-    function HasGuitarPickThickness() : Boolean;
-    function HasGuitarPickupConfiguration() : Boolean;
-    function HasHandOrientation() : Boolean;
-    function HasHardDiskCount() : Boolean;
-    function HasHardDiskSize() : Boolean;
-    function HasHardDiskInterface() : Boolean;
-    function HasHardwarePlatform() : Boolean;
-    function HasHasAutoFocus() : Boolean;
-    function HasHasBurstMode() : Boolean;
-    function HasHasInCameraEditing() : Boolean;
-    function HasHasRedEyeReduction() : Boolean;
-    function HasHasSelfTimer() : Boolean;
-    function HasHasTripodMount() : Boolean;
-    function HasHasVideoOut() : Boolean;
-    function HasHasViewfinder() : Boolean;
-    function HasHazardousMaterialType() : Boolean;
-    function HasHoursOfOperation() : Boolean;
-    function HasIncludedSoftware() : Boolean;
-    function HasIncludesMp3Player() : Boolean;
-    function HasIngredients() : Boolean;
-    function HasInstrumentKey() : Boolean;
-    function HasIsAdultProduct() : Boolean;
-    function HasIsAutographed() : Boolean;
-    function HasISBN() : Boolean;
-    function HasIsFragile() : Boolean;
-    function HasIsLabCreated() : Boolean;
-    function HasIsMemorabilia() : Boolean;
-    function HasISOEquivalent() : Boolean;
-    function HasIsPreannounce() : Boolean;
-    function HasIssuesPerYear() : Boolean;
-    function HasItemDimensions() : Boolean;
-    function HasKeyboardDescription() : Boolean;
-    function Has_Label() : Boolean;
-    function HasLanguages() : Boolean;
-    function HasLegalDisclaimer() : Boolean;
-    function HasLensType() : Boolean;
-    function HasLineVoltage() : Boolean;
-    function HasListPrice() : Boolean;
-    function HasMacroFocusRange() : Boolean;
-    function HasMagazineType() : Boolean;
-    function HasMalletHardness() : Boolean;
-    function HasManufacturer() : Boolean;
-    function HasManufacturerLaborWarrantyDescription() : Boolean;
-    function HasManufacturerMaximumAge() : Boolean;
-    function HasManufacturerMinimumAge() : Boolean;
-    function HasManufacturerPartsWarrantyDescription() : Boolean;
-    function HasMaterialType() : Boolean;
-    function HasMaximumAperture() : Boolean;
-    function HasMaximumColorDepth() : Boolean;
-    function HasMaximumFocalLength() : Boolean;
-    function HasMaximumHighResolutionImages() : Boolean;
-    function HasMaximumHorizontalResolution() : Boolean;
-    function HasMaximumLowResolutionImages() : Boolean;
-    function HasMaximumResolution() : Boolean;
-    function HasMaximumShutterSpeed() : Boolean;
-    function HasMaximumVerticalResolution() : Boolean;
-    function HasMaximumWeightRecommendation() : Boolean;
-    function HasMediaType() : Boolean;
-    function HasMemorySlotsAvailable() : Boolean;
-    function HasMetalStamp() : Boolean;
-    function HasMetalType() : Boolean;
-    function HasMiniMovieDescription() : Boolean;
-    function HasMinimumFocalLength() : Boolean;
-    function HasMinimumShutterSpeed() : Boolean;
-    function HasModel() : Boolean;
-    function HasModelYear() : Boolean;
-    function HasModemDescription() : Boolean;
-    function HasMonitorSize() : Boolean;
-    function HasMonitorViewableDiagonalSize() : Boolean;
-    function HasMouseDescription() : Boolean;
-    function HasMPN() : Boolean;
-    function HasMusicalStyle() : Boolean;
-    function HasNativeResolution() : Boolean;
-    function HasNeighborhood() : Boolean;
-    function HasNetworkInterfaceDescription() : Boolean;
-    function HasNotebookDisplayTechnology() : Boolean;
-    function HasNotebookPointingDeviceDescription() : Boolean;
-    function HasNumberOfDiscs() : Boolean;
-    function HasNumberOfIssues() : Boolean;
-    function HasNumberOfItems() : Boolean;
-    function HasNumberOfKeys() : Boolean;
-    function HasNumberOfPages() : Boolean;
-    function HasNumberOfPearls() : Boolean;
-    function HasNumberOfRapidFireShots() : Boolean;
-    function HasNumberOfStones() : Boolean;
-    function HasNumberOfStrings() : Boolean;
-    function HasNumberOfTracks() : Boolean;
-    function HasOperatingSystem() : Boolean;
-    function HasOpticalSensorResolution() : Boolean;
-    function HasOpticalZoom() : Boolean;
-    function HasOriginalReleaseDate() : Boolean;
-    function HasOutputWattage() : Boolean;
-    function HasPackageDimensions() : Boolean;
-    function HasPackageQuantity() : Boolean;
-    function HasPearlLustre() : Boolean;
-    function HasPearlMinimumColor() : Boolean;
-    function HasPearlShape() : Boolean;
-    function HasPearlStringingMethod() : Boolean;
-    function HasPearlSurfaceBlemishes() : Boolean;
-    function HasPearlType() : Boolean;
-    function HasPearlUniformity() : Boolean;
-    function HasPhoneNumber() : Boolean;
-    function HasPriceRating() : Boolean;
-    function HasProcessorCount() : Boolean;
-    function HasProductGroup() : Boolean;
-    function HasProductSiteLaunchDate() : Boolean;
-    function HasProductTypeName() : Boolean;
-    function HasProductTypeSubcategory() : Boolean;
-    function HasPromotionalTag() : Boolean;
-    function HasPublicationDate() : Boolean;
-    function HasPublisher() : Boolean;
-    function HasPOBoxShippingExcluded() : Boolean;
-    function HasReadingLevel() : Boolean;
-    function HasRecorderTrackCount() : Boolean;
-    function HasRegionCode() : Boolean;
-    function HasRegionOfOrigin() : Boolean;
-    function HasReturnPolicy() : Boolean;
-    function HasReleaseDate() : Boolean;
-    function HasRemovableMemory() : Boolean;
-    function HasRemovableStorage() : Boolean;
-    function HasRequiredVoltageRange() : Boolean;
-    function HasResolutionModes() : Boolean;
-    function HasRingSize() : Boolean;
-    function HasRunningTime() : Boolean;
-    function HasScentName() : Boolean;
-    function HasSecondaryCacheSize() : Boolean;
-    function HasSettingType() : Boolean;
-    function HasShaftMaterialType() : Boolean;
-    function HasSize() : Boolean;
-    function HasSizePerPearl() : Boolean;
-    function HasSkillLevel() : Boolean;
-    function HasSKU() : Boolean;
-    function HasSoldInStores() : Boolean;
-    function HasSoundCardDescription() : Boolean;
-    function HasSpeakerCount() : Boolean;
-    function HasSpeakerDescription() : Boolean;
-    function HasStoneClarity() : Boolean;
-    function HasStoneColor() : Boolean;
-    function HasStoneCut() : Boolean;
-    function HasStoneShape() : Boolean;
-    function HasStoneWeight() : Boolean;
-    function HasStudio() : Boolean;
-    function HasStyle() : Boolean;
-    function HasSubscriptionLength() : Boolean;
-    function HasSupportedMediaSize() : Boolean;
-    function HasSystemBusSpeed() : Boolean;
-    function HasSystemMemorySizeMax() : Boolean;
-    function HasSystemMemorySize() : Boolean;
-    function HasSystemMemoryType() : Boolean;
-    function HasTellingPageIndicator() : Boolean;
-    function HasTheatricalReleaseDate() : Boolean;
-    function HasTitle() : Boolean;
-    function HasTotalDiamondWeight() : Boolean;
-    function HasTotalExternalBaysFree() : Boolean;
-    function HasTotalFirewirePorts() : Boolean;
-    function HasTotalGemWeight() : Boolean;
-    function HasTotalInternalBaysFree() : Boolean;
-    function HasTotalMetalWeight() : Boolean;
-    function HasTotalNTSCPALPorts() : Boolean;
-    function HasTotalParallelPorts() : Boolean;
-    function HasTotalPCCardSlots() : Boolean;
-    function HasTotalPCISlotsFree() : Boolean;
-    function HasTotalSerialPorts() : Boolean;
-    function HasTotalSVideoOutPorts() : Boolean;
-    function HasTotalUSB2Ports() : Boolean;
-    function HasTotalUSBPorts() : Boolean;
-    function HasTotalVGAOutPorts() : Boolean;
-    function HasUPC() : Boolean;
-    function HasVariationDenomination() : Boolean;
-    function HasVariationDescription() : Boolean;
-    function HasWarranty() : Boolean;
-    function HasWatchMovementType() : Boolean;
-    function HasWaterResistanceDepth() : Boolean;
-    function HasWEEETaxValue() : Boolean;
-    function HasWirelessMicrophoneFrequency() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Actor : ItemAttributes_ActorArray read FActor write FActor;
-    property Address : Address read FAddress write FAddress stored HasAddress;
-    property AmazonMaximumAge : DecimalWithUnits read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
-    property AmazonMinimumAge : DecimalWithUnits read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
-    property AnalogVideoFormat : string read FAnalogVideoFormat write FAnalogVideoFormat stored HasAnalogVideoFormat;
-    property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
-    property Artist : ItemAttributes_ArtistArray read FArtist write FArtist;
-    property AspectRatio : string read FAspectRatio write FAspectRatio stored HasAspectRatio;
-    property AssemblyInstructions : string read FAssemblyInstructions write FAssemblyInstructions stored HasAssemblyInstructions;
-    property AssemblyRequired : string read FAssemblyRequired write FAssemblyRequired stored HasAssemblyRequired;
-    property AudienceRating : string read FAudienceRating write FAudienceRating stored HasAudienceRating;
-    property AudioFormat : ItemAttributes_AudioFormatArray read FAudioFormat write FAudioFormat;
-    property Author : ItemAttributes_AuthorArray read FAuthor write FAuthor;
-    property BackFinding : string read FBackFinding write FBackFinding stored HasBackFinding;
-    property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
-    property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
-    property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
-    property Batteries : NonNegativeIntegerWithUnits read FBatteries write FBatteries stored HasBatteries;
-    property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
-    property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
-    property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
-    property Binding : string read FBinding write FBinding stored HasBinding;
-    property Brand : string read FBrand write FBrand stored HasBrand;
-    property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
-    property CameraManualFeatures : ItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures;
-    property CaseDiameter : DecimalWithUnits read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
-    property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
-    property CaseThickness : DecimalWithUnits read FCaseThickness write FCaseThickness stored HasCaseThickness;
-    property CaseType : string read FCaseType write FCaseType stored HasCaseType;
-    property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
-    property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
-    property ChainType : string read FChainType write FChainType stored HasChainType;
-    property CEROAgeRating : string read FCEROAgeRating write FCEROAgeRating stored HasCEROAgeRating;
-    property ClaspType : string read FClaspType write FClaspType stored HasClaspType;
-    property ClothingSize : string read FClothingSize write FClothingSize stored HasClothingSize;
-    property ClubType : string read FClubType write FClubType stored HasClubType;
-    property Color : string read FColor write FColor stored HasColor;
-    property Compatibility : string read FCompatibility write FCompatibility stored HasCompatibility;
-    property CompatibleDevices : ItemAttributes_CompatibleDevicesArray read FCompatibleDevices write FCompatibleDevices;
-    property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
-    property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
-    property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
-    property ContinuousShootingSpeed : DecimalWithUnits read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
-    property Country : string read FCountry write FCountry stored HasCountry;
-    property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
-    property CPUSpeed : DecimalWithUnits read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
-    property CPUType : string read FCPUType write FCPUType stored HasCPUType;
-    property Creator : ItemAttributes_CreatorArray read FCreator write FCreator;
-    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
-    property DataLinkProtocol : ItemAttributes_DataLinkProtocolArray read FDataLinkProtocol write FDataLinkProtocol;
-    property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
-    property DelayBetweenShots : DecimalWithUnits read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
-    property Department : string read FDepartment write FDepartment stored HasDepartment;
-    property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
-    property DialColor : string read FDialColor write FDialColor stored HasDialColor;
-    property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
-    property DigitalZoom : DecimalWithUnits read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
-    property Director : ItemAttributes_DirectorArray read FDirector write FDirector;
-    property DisplayColorSupport : string read FDisplayColorSupport write FDisplayColorSupport stored HasDisplayColorSupport;
-    property DisplaySize : DecimalWithUnits read FDisplaySize write FDisplaySize stored HasDisplaySize;
-    property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
-    property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
-    property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
-    property DVDSides : nonNegativeInteger read FDVDSides write FDVDSides stored HasDVDSides;
-    property DPCI : string read FDPCI write FDPCI stored HasDPCI;
-    property EAN : string read FEAN write FEAN stored HasEAN;
-    property Edition : string read FEdition write FEdition stored HasEdition;
-    property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
-    property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
-    property FabricType : string read FFabricType write FFabricType stored HasFabricType;
-    property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
-    property Feature : ItemAttributes_FeatureArray read FFeature write FFeature;
-    property FilmColorType : string read FFilmColorType write FFilmColorType stored HasFilmColorType;
-    property FirstIssueLeadTime : StringWithUnits read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
-    property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
-    property Format : ItemAttributes_FormatArray read FFormat write FFormat;
-    property FormFactor : ItemAttributes_FormFactorArray read FFormFactor write FFormFactor;
-    property GemType : string read FGemType write FGemType stored HasGemType;
-    property Genre : string read FGenre write FGenre stored HasGenre;
-    property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
-    property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
-    property GraphicsMemorySize : DecimalWithUnits read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
-    property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
-    property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
-    property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
-    property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
-    property HandOrientation : string read FHandOrientation write FHandOrientation stored HasHandOrientation;
-    property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
-    property HardDiskSize : DecimalWithUnits read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
-    property HardDiskInterface : string read FHardDiskInterface write FHardDiskInterface stored HasHardDiskInterface;
-    property HardwarePlatform : string read FHardwarePlatform write FHardwarePlatform stored HasHardwarePlatform;
-    property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
-    property HasBurstMode : boolean read FHasBurstMode write FHasBurstMode stored HasHasBurstMode;
-    property HasInCameraEditing : boolean read FHasInCameraEditing write FHasInCameraEditing stored HasHasInCameraEditing;
-    property HasRedEyeReduction : boolean read FHasRedEyeReduction write FHasRedEyeReduction stored HasHasRedEyeReduction;
-    property HasSelfTimer : boolean read FHasSelfTimer write FHasSelfTimer stored HasHasSelfTimer;
-    property HasTripodMount : boolean read FHasTripodMount write FHasTripodMount stored HasHasTripodMount;
-    property HasVideoOut : boolean read FHasVideoOut write FHasVideoOut stored HasHasVideoOut;
-    property HasViewfinder : boolean read FHasViewfinder write FHasViewfinder stored HasHasViewfinder;
-    property HazardousMaterialType : string read FHazardousMaterialType write FHazardousMaterialType stored HasHazardousMaterialType;
-    property HoursOfOperation : string read FHoursOfOperation write FHoursOfOperation stored HasHoursOfOperation;
-    property IncludedSoftware : string read FIncludedSoftware write FIncludedSoftware stored HasIncludedSoftware;
-    property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
-    property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
-    property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
-    property IsAdultProduct : boolean read FIsAdultProduct write FIsAdultProduct stored HasIsAdultProduct;
-    property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
-    property ISBN : string read FISBN write FISBN stored HasISBN;
-    property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
-    property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
-    property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
-    property ISOEquivalent : NonNegativeIntegerWithUnits read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
-    property IsPreannounce : boolean read FIsPreannounce write FIsPreannounce stored HasIsPreannounce;
-    property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
-    property ItemDimensions : ItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
-    property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
-    property _Label : string read F_Label write F_Label stored Has_Label;
-    property Languages : ItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
-    property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
-    property LensType : string read FLensType write FLensType stored HasLensType;
-    property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
-    property ListPrice : Price read FListPrice write FListPrice stored HasListPrice;
-    property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
-    property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
-    property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
-    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
-    property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
-    property ManufacturerMaximumAge : DecimalWithUnits read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
-    property ManufacturerMinimumAge : DecimalWithUnits read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
-    property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
-    property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
-    property MaximumAperture : DecimalWithUnits read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
-    property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
-    property MaximumFocalLength : DecimalWithUnits read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
-    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
-    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
-    property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
-    property MaximumResolution : DecimalWithUnits read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
-    property MaximumShutterSpeed : DecimalWithUnits read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
-    property MaximumVerticalResolution : NonNegativeIntegerWithUnits read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
-    property MaximumWeightRecommendation : DecimalWithUnits read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
-    property MediaType : string read FMediaType write FMediaType stored HasMediaType;
-    property MemorySlotsAvailable : string read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
-    property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
-    property MetalType : string read FMetalType write FMetalType stored HasMetalType;
-    property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
-    property MinimumFocalLength : DecimalWithUnits read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
-    property MinimumShutterSpeed : DecimalWithUnits read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
-    property Model : string read FModel write FModel stored HasModel;
-    property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
-    property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
-    property MonitorSize : DecimalWithUnits read FMonitorSize write FMonitorSize stored HasMonitorSize;
-    property MonitorViewableDiagonalSize : DecimalWithUnits read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
-    property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
-    property MPN : string read FMPN write FMPN stored HasMPN;
-    property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
-    property NativeResolution : string read FNativeResolution write FNativeResolution stored HasNativeResolution;
-    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
-    property NetworkInterfaceDescription : string read FNetworkInterfaceDescription write FNetworkInterfaceDescription stored HasNetworkInterfaceDescription;
-    property NotebookDisplayTechnology : string read FNotebookDisplayTechnology write FNotebookDisplayTechnology stored HasNotebookDisplayTechnology;
-    property NotebookPointingDeviceDescription : string read FNotebookPointingDeviceDescription write FNotebookPointingDeviceDescription stored HasNotebookPointingDeviceDescription;
-    property NumberOfDiscs : nonNegativeInteger read FNumberOfDiscs write FNumberOfDiscs stored HasNumberOfDiscs;
-    property NumberOfIssues : nonNegativeInteger read FNumberOfIssues write FNumberOfIssues stored HasNumberOfIssues;
-    property NumberOfItems : nonNegativeInteger read FNumberOfItems write FNumberOfItems stored HasNumberOfItems;
-    property NumberOfKeys : nonNegativeInteger read FNumberOfKeys write FNumberOfKeys stored HasNumberOfKeys;
-    property NumberOfPages : nonNegativeInteger read FNumberOfPages write FNumberOfPages stored HasNumberOfPages;
-    property NumberOfPearls : nonNegativeInteger read FNumberOfPearls write FNumberOfPearls stored HasNumberOfPearls;
-    property NumberOfRapidFireShots : nonNegativeInteger read FNumberOfRapidFireShots write FNumberOfRapidFireShots stored HasNumberOfRapidFireShots;
-    property NumberOfStones : nonNegativeInteger read FNumberOfStones write FNumberOfStones stored HasNumberOfStones;
-    property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
-    property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
-    property OperatingSystem : string read FOperatingSystem write FOperatingSystem stored HasOperatingSystem;
-    property OpticalSensorResolution : DecimalWithUnits read FOpticalSensorResolution write FOpticalSensorResolution stored HasOpticalSensorResolution;
-    property OpticalZoom : DecimalWithUnits read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
-    property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
-    property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
-    property PackageDimensions : ItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
-    property PackageQuantity : nonNegativeInteger read FPackageQuantity write FPackageQuantity stored HasPackageQuantity;
-    property PearlLustre : string read FPearlLustre write FPearlLustre stored HasPearlLustre;
-    property PearlMinimumColor : string read FPearlMinimumColor write FPearlMinimumColor stored HasPearlMinimumColor;
-    property PearlShape : string read FPearlShape write FPearlShape stored HasPearlShape;
-    property PearlStringingMethod : string read FPearlStringingMethod write FPearlStringingMethod stored HasPearlStringingMethod;
-    property PearlSurfaceBlemishes : string read FPearlSurfaceBlemishes write FPearlSurfaceBlemishes stored HasPearlSurfaceBlemishes;
-    property PearlType : string read FPearlType write FPearlType stored HasPearlType;
-    property PearlUniformity : string read FPearlUniformity write FPearlUniformity stored HasPearlUniformity;
-    property PhoneNumber : string read FPhoneNumber write FPhoneNumber stored HasPhoneNumber;
-    property PhotoFlashType : ItemAttributes_PhotoFlashTypeArray read FPhotoFlashType write FPhotoFlashType;
-    property PictureFormat : ItemAttributes_PictureFormatArray read FPictureFormat write FPictureFormat;
-    property Platform : ItemAttributes_PlatformArray read FPlatform write FPlatform;
-    property PriceRating : nonNegativeInteger read FPriceRating write FPriceRating stored HasPriceRating;
-    property ProcessorCount : nonNegativeInteger read FProcessorCount write FProcessorCount stored HasProcessorCount;
-    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
-    property ProductSiteLaunchDate : string read FProductSiteLaunchDate write FProductSiteLaunchDate stored HasProductSiteLaunchDate;
-    property ProductTypeName : string read FProductTypeName write FProductTypeName stored HasProductTypeName;
-    property ProductTypeSubcategory : string read FProductTypeSubcategory write FProductTypeSubcategory stored HasProductTypeSubcategory;
-    property PromotionalTag : string read FPromotionalTag write FPromotionalTag stored HasPromotionalTag;
-    property PublicationDate : string read FPublicationDate write FPublicationDate stored HasPublicationDate;
-    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
-    property POBoxShippingExcluded : string read FPOBoxShippingExcluded write FPOBoxShippingExcluded stored HasPOBoxShippingExcluded;
-    property ReadingLevel : string read FReadingLevel write FReadingLevel stored HasReadingLevel;
-    property ReturnMethod : ItemAttributes_ReturnMethodArray read FReturnMethod write FReturnMethod;
-    property RecorderTrackCount : nonNegativeInteger read FRecorderTrackCount write FRecorderTrackCount stored HasRecorderTrackCount;
-    property RegionCode : string read FRegionCode write FRegionCode stored HasRegionCode;
-    property RegionOfOrigin : string read FRegionOfOrigin write FRegionOfOrigin stored HasRegionOfOrigin;
-    property ReturnPolicy : string read FReturnPolicy write FReturnPolicy stored HasReturnPolicy;
-    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
-    property RemovableMemory : string read FRemovableMemory write FRemovableMemory stored HasRemovableMemory;
-    property RemovableStorage : string read FRemovableStorage write FRemovableStorage stored HasRemovableStorage;
-    property RequiredVoltageRange : string read FRequiredVoltageRange write FRequiredVoltageRange stored HasRequiredVoltageRange;
-    property ResolutionModes : string read FResolutionModes write FResolutionModes stored HasResolutionModes;
-    property RingSize : string read FRingSize write FRingSize stored HasRingSize;
-    property RunningTime : DecimalWithUnits read FRunningTime write FRunningTime stored HasRunningTime;
-    property ScentName : string read FScentName write FScentName stored HasScentName;
-    property SecondaryCacheSize : NonNegativeIntegerWithUnits read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
-    property SettingType : string read FSettingType write FSettingType stored HasSettingType;
-    property ShaftMaterialType : string read FShaftMaterialType write FShaftMaterialType stored HasShaftMaterialType;
-    property Size : string read FSize write FSize stored HasSize;
-    property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
-    property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
-    property SKU : string read FSKU write FSKU stored HasSKU;
-    property SoldInStores : string read FSoldInStores write FSoldInStores stored HasSoldInStores;
-    property SoundCardDescription : string read FSoundCardDescription write FSoundCardDescription stored HasSoundCardDescription;
-    property SpeakerCount : nonNegativeInteger read FSpeakerCount write FSpeakerCount stored HasSpeakerCount;
-    property SpeakerDescription : string read FSpeakerDescription write FSpeakerDescription stored HasSpeakerDescription;
-    property SpecialFeatures : ItemAttributes_SpecialFeaturesArray read FSpecialFeatures write FSpecialFeatures;
-    property StoneClarity : string read FStoneClarity write FStoneClarity stored HasStoneClarity;
-    property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
-    property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
-    property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
-    property StoneWeight : DecimalWithUnits read FStoneWeight write FStoneWeight stored HasStoneWeight;
-    property Studio : string read FStudio write FStudio stored HasStudio;
-    property Style : string read FStyle write FStyle stored HasStyle;
-    property SubscriptionLength : NonNegativeIntegerWithUnits read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
-    property SupportedImageType : ItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType;
-    property SupportedMediaSize : string read FSupportedMediaSize write FSupportedMediaSize stored HasSupportedMediaSize;
-    property SystemBusSpeed : DecimalWithUnits read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
-    property SystemMemorySizeMax : DecimalWithUnits read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
-    property SystemMemorySize : DecimalWithUnits read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
-    property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
-    property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
-    property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
-    property Title : string read FTitle write FTitle stored HasTitle;
-    property TotalDiamondWeight : DecimalWithUnits read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
-    property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
-    property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
-    property TotalGemWeight : DecimalWithUnits read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
-    property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
-    property TotalMetalWeight : DecimalWithUnits read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
-    property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
-    property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
-    property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
-    property TotalPCISlotsFree : nonNegativeInteger read FTotalPCISlotsFree write FTotalPCISlotsFree stored HasTotalPCISlotsFree;
-    property TotalSerialPorts : nonNegativeInteger read FTotalSerialPorts write FTotalSerialPorts stored HasTotalSerialPorts;
-    property TotalSVideoOutPorts : nonNegativeInteger read FTotalSVideoOutPorts write FTotalSVideoOutPorts stored HasTotalSVideoOutPorts;
-    property TotalUSB2Ports : nonNegativeInteger read FTotalUSB2Ports write FTotalUSB2Ports stored HasTotalUSB2Ports;
-    property TotalUSBPorts : nonNegativeInteger read FTotalUSBPorts write FTotalUSBPorts stored HasTotalUSBPorts;
-    property TotalVGAOutPorts : nonNegativeInteger read FTotalVGAOutPorts write FTotalVGAOutPorts stored HasTotalVGAOutPorts;
-    property UPC : string read FUPC write FUPC stored HasUPC;
-    property VariationDenomination : string read FVariationDenomination write FVariationDenomination stored HasVariationDenomination;
-    property VariationDescription : string read FVariationDescription write FVariationDescription stored HasVariationDescription;
-    property Warranty : string read FWarranty write FWarranty stored HasWarranty;
-    property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
-    property WaterResistanceDepth : DecimalWithUnits read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
-    property WEEETaxValue : Price read FWEEETaxValue write FWEEETaxValue stored HasWEEETaxValue;
-    property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
-  end;
-
-  MerchantItemAttributes_Type = class(TBaseComplexRemotable)
-  private
-    FActor : MerchantItemAttributes_ActorArray;
-    FAddress : Address;
-    FAmazonMaximumAge : DecimalWithUnits;
-    FAmazonMinimumAge : DecimalWithUnits;
-    FApertureModes : string;
-    FArtist : MerchantItemAttributes_ArtistArray;
-    FAspectRatio : string;
-    FAssemblyInstructions : string;
-    FAssemblyRequired : string;
-    FAudienceRating : string;
-    FAudioFormat : MerchantItemAttributes_AudioFormatArray;
-    FAuthor : MerchantItemAttributes_AuthorArray;
-    FBackFinding : string;
-    FBandMaterialType : string;
-    FBatteriesIncluded : string;
-    FBatteriesRequired : string;
-    FBatteries : NonNegativeIntegerWithUnits;
-    FBatteryDescription : string;
-    FBatteryType : string;
-    FBezelMaterialType : string;
-    FBinding : string;
-    FBrand : string;
-    FCalendarType : string;
-    FCameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray;
-    FCaseDiameter : DecimalWithUnits;
-    FCaseMaterialType : string;
-    FCaseThickness : DecimalWithUnits;
-    FCaseType : string;
-    FCatalogNumber : string;
-    FCDRWDescription : string;
-    FChainType : string;
-    FClaspType : string;
-    FClothingSize : string;
-    FColor : string;
-    FCompatibility : string;
-    FComputerHardwareType : string;
-    FComputerPlatform : string;
-    FConnectivity : string;
-    FContinuousShootingSpeed : DecimalWithUnits;
-    FCountry : string;
-    FCountryOfOrigin : string;
-    FCPUManufacturer : string;
-    FCPUSpeed : DecimalWithUnits;
-    FCPUType : string;
-    FCreator : MerchantItemAttributes_CreatorArray;
-    FCuisine : string;
-    FCustomizable : string;
-    FDelayBetweenShots : DecimalWithUnits;
-    FDeliveryOption : string;
-    FDepartment : string;
-    FDescription : string;
-    FDeweyDecimalNumber : string;
-    FDialColor : string;
-    FDialWindowMaterialType : string;
-    FDigitalZoom : DecimalWithUnits;
-    FDirector : MerchantItemAttributes_DirectorArray;
-    FDisplaySize : DecimalWithUnits;
-    FDrumSetPieceQuantity : nonNegativeInteger;
-    FDVDLayers : nonNegativeInteger;
-    FDVDRWDescription : string;
-    FDVDSides : nonNegativeInteger;
-    FDPCI : string;
-    FEAN : string;
-    FEdition : string;
-    FESRBAgeRating : string;
-    FExternalDisplaySupportDescription : string;
-    FFabricType : string;
-    FFaxNumber : string;
-    FFeature : MerchantItemAttributes_FeatureArray;
-    FFirstIssueLeadTime : StringWithUnits;
-    FFloppyDiskDriveDescription : string;
-    FFormat : MerchantItemAttributes_FormatArray;
-    FFixedShippingCharge : Price;
-    FGemType : string;
-    FGraphicsCardInterface : string;
-    FGraphicsDescription : string;
-    FGraphicsMemorySize : DecimalWithUnits;
-    FGuitarAttribute : string;
-    FGuitarBridgeSystem : string;
-    FGuitarPickThickness : string;
-    FGuitarPickupConfiguration : string;
-    FHardDiskCount : nonNegativeInteger;
-    FHardDiskSize : NonNegativeIntegerWithUnits;
-    FHasAutoFocus : boolean;
-    FHasBurstMode : boolean;
-    FHasInCameraEditing : boolean;
-    FHasRedEyeReduction : boolean;
-    FHasSelfTimer : boolean;
-    FHasTripodMount : boolean;
-    FHasVideoOut : boolean;
-    FHasViewfinder : boolean;
-    FHazardousMaterialType : string;
-    FHoursOfOperation : string;
-    FIncludedSoftware : string;
-    FIncludesMp3Player : boolean;
-    FIndications : string;
-    FIngredients : string;
-    FInstrumentKey : string;
-    FIsAutographed : boolean;
-    FISBN : string;
-    FIsFragile : boolean;
-    FIsLabCreated : boolean;
-    FIsMemorabilia : boolean;
-    FISOEquivalent : NonNegativeIntegerWithUnits;
-    FIssuesPerYear : string;
-    FItemDimensions : MerchantItemAttributes_ItemDimensions_Type;
-    FKeyboardDescription : string;
-    F_Label : string;
-    FLanguages : MerchantItemAttributes_Languages_Type;
-    FLegalDisclaimer : string;
-    FLineVoltage : string;
-    FListPrice : Price;
-    FMacroFocusRange : string;
-    FMagazineType : string;
-    FMalletHardness : string;
-    FManufacturer : string;
-    FManufacturerLaborWarrantyDescription : string;
-    FManufacturerMaximumAge : DecimalWithUnits;
-    FManufacturerMinimumAge : DecimalWithUnits;
-    FManufacturerPartsWarrantyDescription : string;
-    FMaterialType : string;
-    FMaximumAperture : DecimalWithUnits;
-    FMaximumColorDepth : string;
-    FMaximumFocalLength : DecimalWithUnits;
-    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits;
-    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits;
-    FMaximumLowResolutionImages : string;
-    FMaximumResolution : DecimalWithUnits;
-    FMaximumShutterSpeed : DecimalWithUnits;
-    FMaximumVerticalResolution : NonNegativeIntegerWithUnits;
-    FMaximumWeightRecommendation : DecimalWithUnits;
-    FMemorySlotsAvailable : nonNegativeInteger;
-    FMetalStamp : string;
-    FMetalType : string;
-    FMiniMovieDescription : string;
-    FMinimumFocalLength : DecimalWithUnits;
-    FMinimumShutterSpeed : DecimalWithUnits;
-    FModel : string;
-    FModelYear : nonNegativeInteger;
-    FModemDescription : string;
-    FMonitorSize : DecimalWithUnits;
-    FMonitorViewableDiagonalSize : DecimalWithUnits;
-    FMouseDescription : string;
-    FMPN : string;
-    FMusicalStyle : string;
-    FNativeResolution : string;
-    FNeighborhood : string;
-    FNetworkInterfaceDescription : string;
-    FNotebookDisplayTechnology : string;
-    FNotebookPointingDeviceDescription : string;
-    FNumberOfDiscs : nonNegativeInteger;
-    FNumberOfIssues : nonNegativeInteger;
-    FNumberOfItems : nonNegativeInteger;
-    FNumberOfKeys : nonNegativeInteger;
-    FNumberOfPages : nonNegativeInteger;
-    FNumberOfPearls : nonNegativeInteger;
-    FNumberOfRapidFireShots : nonNegativeInteger;
-    FNumberOfStones : nonNegativeInteger;
-    FNumberOfStrings : nonNegativeInteger;
-    FNumberOfTracks : nonNegativeInteger;
-    FOpticalZoom : DecimalWithUnits;
-    FOriginalReleaseDate : string;
-    FOutputWattage : nonNegativeInteger;
-    FPackageDimensions : MerchantItemAttributes_PackageDimensions_Type;
-    FPearlLustre : string;
-    FPearlMinimumColor : string;
-    FPearlShape : string;
-    FPearlStringingMethod : string;
-    FPearlSurfaceBlemishes : string;
-    FPearlType : string;
-    FPearlUniformity : string;
-    FPhoneNumber : string;
-    FPhotoFlashType : MerchantItemAttributes_PhotoFlashTypeArray;
-    FPictureFormat : MerchantItemAttributes_PictureFormatArray;
-    FPlatform : MerchantItemAttributes_PlatformArray;
-    FPriceRating : nonNegativeInteger;
-    FProcessorCount : nonNegativeInteger;
-    FProductGroup : string;
-    FPromotionalTag : string;
-    FPOBoxShippingExcluded : string;
-    FPublicationDate : string;
-    FPublisher : string;
-    FPurchasingChannel : MerchantItemAttributes_PurchasingChannelArray;
-    FReadingLevel : string;
-    FRecorderTrackCount : nonNegativeInteger;
-    FRegionCode : string;
-    FRegionOfOrigin : string;
-    FReleaseDate : string;
-    FReturnMethod : MerchantItemAttributes_ReturnMethodArray;
-    FRemovableMemory : string;
-    FResolutionModes : string;
-    FReturnPolicy : string;
-    FRingSize : string;
-    FSafetyWarning : string;
-    FSalesRestriction : string;
-    FSecondaryCacheSize : NonNegativeIntegerWithUnits;
-    FSettingType : string;
-    FSize : string;
-    FSKU : string;
-    FSoldInStores : string;
-    FSizePerPearl : string;
-    FSkillLevel : string;
-    FSoundCardDescription : string;
-    FSpeakerCount : nonNegativeInteger;
-    FSpeakerDescription : string;
-    FSpecialFeatures : MerchantItemAttributes_SpecialFeaturesArray;
-    FStoneClarity : string;
-    FStoneColor : string;
-    FStoneCut : string;
-    FStoneShape : string;
-    FStoneWeight : DecimalWithUnits;
-    FStudio : string;
-    FSubscriptionLength : NonNegativeIntegerWithUnits;
-    FSupportedImageType : MerchantItemAttributes_SupportedImageTypeArray;
-    FSystemBusSpeed : DecimalWithUnits;
-    FSystemMemorySizeMax : DecimalWithUnits;
-    FSystemMemorySize : DecimalWithUnits;
-    FSystemMemoryType : string;
-    FTellingPageIndicator : string;
-    FTheatricalReleaseDate : string;
-    FTitle : string;
-    FTotalDiamondWeight : DecimalWithUnits;
-    FTotalExternalBaysFree : nonNegativeInteger;
-    FTotalFirewirePorts : nonNegativeInteger;
-    FTotalGemWeight : DecimalWithUnits;
-    FTotalInternalBaysFree : nonNegativeInteger;
-    FTotalMetalWeight : DecimalWithUnits;
-    FTotalNTSCPALPorts : nonNegativeInteger;
-    FTotalParallelPorts : nonNegativeInteger;
-    FTotalPCCardSlots : nonNegativeInteger;
-    FTotalPCISlotsFree : nonNegativeInteger;
-    FTotalSerialPorts : nonNegativeInteger;
-    FTotalSVideoOutPorts : nonNegativeInteger;
-    FTotalUSB2Ports : nonNegativeInteger;
-    FTotalUSBPorts : nonNegativeInteger;
-    FTotalVGAOutPorts : nonNegativeInteger;
-    FUPC : string;
-    FVariationDenomination : string;
-    FVariationDescription : string;
-    FVendorRebate : MerchantItemAttributes_VendorRebate_Type;
-    FWarranty : string;
-    FWatchMovementType : string;
-    FWebsiteBuyability : string;
-    FWaterResistanceDepth : DecimalWithUnits;
-    FWirelessMicrophoneFrequency : nonNegativeInteger;
-  private
-    function HasAddress() : Boolean;
-    function HasAmazonMaximumAge() : Boolean;
-    function HasAmazonMinimumAge() : Boolean;
-    function HasApertureModes() : Boolean;
-    function HasAspectRatio() : Boolean;
-    function HasAssemblyInstructions() : Boolean;
-    function HasAssemblyRequired() : Boolean;
-    function HasAudienceRating() : Boolean;
-    function HasBackFinding() : Boolean;
-    function HasBandMaterialType() : Boolean;
-    function HasBatteriesIncluded() : Boolean;
-    function HasBatteriesRequired() : Boolean;
-    function HasBatteries() : Boolean;
-    function HasBatteryDescription() : Boolean;
-    function HasBatteryType() : Boolean;
-    function HasBezelMaterialType() : Boolean;
-    function HasBinding() : Boolean;
-    function HasBrand() : Boolean;
-    function HasCalendarType() : Boolean;
-    function HasCaseDiameter() : Boolean;
-    function HasCaseMaterialType() : Boolean;
-    function HasCaseThickness() : Boolean;
-    function HasCaseType() : Boolean;
-    function HasCatalogNumber() : Boolean;
-    function HasCDRWDescription() : Boolean;
-    function HasChainType() : Boolean;
-    function HasClaspType() : Boolean;
-    function HasClothingSize() : Boolean;
-    function HasColor() : Boolean;
-    function HasCompatibility() : Boolean;
-    function HasComputerHardwareType() : Boolean;
-    function HasComputerPlatform() : Boolean;
-    function HasConnectivity() : Boolean;
-    function HasContinuousShootingSpeed() : Boolean;
-    function HasCountry() : Boolean;
-    function HasCountryOfOrigin() : Boolean;
-    function HasCPUManufacturer() : Boolean;
-    function HasCPUSpeed() : Boolean;
-    function HasCPUType() : Boolean;
-    function HasCuisine() : Boolean;
-    function HasCustomizable() : Boolean;
-    function HasDelayBetweenShots() : Boolean;
-    function HasDeliveryOption() : Boolean;
-    function HasDepartment() : Boolean;
-    function HasDescription() : Boolean;
-    function HasDeweyDecimalNumber() : Boolean;
-    function HasDialColor() : Boolean;
-    function HasDialWindowMaterialType() : Boolean;
-    function HasDigitalZoom() : Boolean;
-    function HasDisplaySize() : Boolean;
-    function HasDrumSetPieceQuantity() : Boolean;
-    function HasDVDLayers() : Boolean;
-    function HasDVDRWDescription() : Boolean;
-    function HasDVDSides() : Boolean;
-    function HasDPCI() : Boolean;
-    function HasEAN() : Boolean;
-    function HasEdition() : Boolean;
-    function HasESRBAgeRating() : Boolean;
-    function HasExternalDisplaySupportDescription() : Boolean;
-    function HasFabricType() : Boolean;
-    function HasFaxNumber() : Boolean;
-    function HasFirstIssueLeadTime() : Boolean;
-    function HasFloppyDiskDriveDescription() : Boolean;
-    function HasFixedShippingCharge() : Boolean;
-    function HasGemType() : Boolean;
-    function HasGraphicsCardInterface() : Boolean;
-    function HasGraphicsDescription() : Boolean;
-    function HasGraphicsMemorySize() : Boolean;
-    function HasGuitarAttribute() : Boolean;
-    function HasGuitarBridgeSystem() : Boolean;
-    function HasGuitarPickThickness() : Boolean;
-    function HasGuitarPickupConfiguration() : Boolean;
-    function HasHardDiskCount() : Boolean;
-    function HasHardDiskSize() : Boolean;
-    function HasHasAutoFocus() : Boolean;
-    function HasHasBurstMode() : Boolean;
-    function HasHasInCameraEditing() : Boolean;
-    function HasHasRedEyeReduction() : Boolean;
-    function HasHasSelfTimer() : Boolean;
-    function HasHasTripodMount() : Boolean;
-    function HasHasVideoOut() : Boolean;
-    function HasHasViewfinder() : Boolean;
-    function HasHazardousMaterialType() : Boolean;
-    function HasHoursOfOperation() : Boolean;
-    function HasIncludedSoftware() : Boolean;
-    function HasIncludesMp3Player() : Boolean;
-    function HasIndications() : Boolean;
-    function HasIngredients() : Boolean;
-    function HasInstrumentKey() : Boolean;
-    function HasIsAutographed() : Boolean;
-    function HasISBN() : Boolean;
-    function HasIsFragile() : Boolean;
-    function HasIsLabCreated() : Boolean;
-    function HasIsMemorabilia() : Boolean;
-    function HasISOEquivalent() : Boolean;
-    function HasIssuesPerYear() : Boolean;
-    function HasItemDimensions() : Boolean;
-    function HasKeyboardDescription() : Boolean;
-    function Has_Label() : Boolean;
-    function HasLanguages() : Boolean;
-    function HasLegalDisclaimer() : Boolean;
-    function HasLineVoltage() : Boolean;
-    function HasListPrice() : Boolean;
-    function HasMacroFocusRange() : Boolean;
-    function HasMagazineType() : Boolean;
-    function HasMalletHardness() : Boolean;
-    function HasManufacturer() : Boolean;
-    function HasManufacturerLaborWarrantyDescription() : Boolean;
-    function HasManufacturerMaximumAge() : Boolean;
-    function HasManufacturerMinimumAge() : Boolean;
-    function HasManufacturerPartsWarrantyDescription() : Boolean;
-    function HasMaterialType() : Boolean;
-    function HasMaximumAperture() : Boolean;
-    function HasMaximumColorDepth() : Boolean;
-    function HasMaximumFocalLength() : Boolean;
-    function HasMaximumHighResolutionImages() : Boolean;
-    function HasMaximumHorizontalResolution() : Boolean;
-    function HasMaximumLowResolutionImages() : Boolean;
-    function HasMaximumResolution() : Boolean;
-    function HasMaximumShutterSpeed() : Boolean;
-    function HasMaximumVerticalResolution() : Boolean;
-    function HasMaximumWeightRecommendation() : Boolean;
-    function HasMemorySlotsAvailable() : Boolean;
-    function HasMetalStamp() : Boolean;
-    function HasMetalType() : Boolean;
-    function HasMiniMovieDescription() : Boolean;
-    function HasMinimumFocalLength() : Boolean;
-    function HasMinimumShutterSpeed() : Boolean;
-    function HasModel() : Boolean;
-    function HasModelYear() : Boolean;
-    function HasModemDescription() : Boolean;
-    function HasMonitorSize() : Boolean;
-    function HasMonitorViewableDiagonalSize() : Boolean;
-    function HasMouseDescription() : Boolean;
-    function HasMPN() : Boolean;
-    function HasMusicalStyle() : Boolean;
-    function HasNativeResolution() : Boolean;
-    function HasNeighborhood() : Boolean;
-    function HasNetworkInterfaceDescription() : Boolean;
-    function HasNotebookDisplayTechnology() : Boolean;
-    function HasNotebookPointingDeviceDescription() : Boolean;
-    function HasNumberOfDiscs() : Boolean;
-    function HasNumberOfIssues() : Boolean;
-    function HasNumberOfItems() : Boolean;
-    function HasNumberOfKeys() : Boolean;
-    function HasNumberOfPages() : Boolean;
-    function HasNumberOfPearls() : Boolean;
-    function HasNumberOfRapidFireShots() : Boolean;
-    function HasNumberOfStones() : Boolean;
-    function HasNumberOfStrings() : Boolean;
-    function HasNumberOfTracks() : Boolean;
-    function HasOpticalZoom() : Boolean;
-    function HasOriginalReleaseDate() : Boolean;
-    function HasOutputWattage() : Boolean;
-    function HasPackageDimensions() : Boolean;
-    function HasPearlLustre() : Boolean;
-    function HasPearlMinimumColor() : Boolean;
-    function HasPearlShape() : Boolean;
-    function HasPearlStringingMethod() : Boolean;
-    function HasPearlSurfaceBlemishes() : Boolean;
-    function HasPearlType() : Boolean;
-    function HasPearlUniformity() : Boolean;
-    function HasPhoneNumber() : Boolean;
-    function HasPriceRating() : Boolean;
-    function HasProcessorCount() : Boolean;
-    function HasProductGroup() : Boolean;
-    function HasPromotionalTag() : Boolean;
-    function HasPOBoxShippingExcluded() : Boolean;
-    function HasPublicationDate() : Boolean;
-    function HasPublisher() : Boolean;
-    function HasReadingLevel() : Boolean;
-    function HasRecorderTrackCount() : Boolean;
-    function HasRegionCode() : Boolean;
-    function HasRegionOfOrigin() : Boolean;
-    function HasReleaseDate() : Boolean;
-    function HasRemovableMemory() : Boolean;
-    function HasResolutionModes() : Boolean;
-    function HasReturnPolicy() : Boolean;
-    function HasRingSize() : Boolean;
-    function HasSafetyWarning() : Boolean;
-    function HasSalesRestriction() : Boolean;
-    function HasSecondaryCacheSize() : Boolean;
-    function HasSettingType() : Boolean;
-    function HasSize() : Boolean;
-    function HasSKU() : Boolean;
-    function HasSoldInStores() : Boolean;
-    function HasSizePerPearl() : Boolean;
-    function HasSkillLevel() : Boolean;
-    function HasSoundCardDescription() : Boolean;
-    function HasSpeakerCount() : Boolean;
-    function HasSpeakerDescription() : Boolean;
-    function HasStoneClarity() : Boolean;
-    function HasStoneColor() : Boolean;
-    function HasStoneCut() : Boolean;
-    function HasStoneShape() : Boolean;
-    function HasStoneWeight() : Boolean;
-    function HasStudio() : Boolean;
-    function HasSubscriptionLength() : Boolean;
-    function HasSystemBusSpeed() : Boolean;
-    function HasSystemMemorySizeMax() : Boolean;
-    function HasSystemMemorySize() : Boolean;
-    function HasSystemMemoryType() : Boolean;
-    function HasTellingPageIndicator() : Boolean;
-    function HasTheatricalReleaseDate() : Boolean;
-    function HasTitle() : Boolean;
-    function HasTotalDiamondWeight() : Boolean;
-    function HasTotalExternalBaysFree() : Boolean;
-    function HasTotalFirewirePorts() : Boolean;
-    function HasTotalGemWeight() : Boolean;
-    function HasTotalInternalBaysFree() : Boolean;
-    function HasTotalMetalWeight() : Boolean;
-    function HasTotalNTSCPALPorts() : Boolean;
-    function HasTotalParallelPorts() : Boolean;
-    function HasTotalPCCardSlots() : Boolean;
-    function HasTotalPCISlotsFree() : Boolean;
-    function HasTotalSerialPorts() : Boolean;
-    function HasTotalSVideoOutPorts() : Boolean;
-    function HasTotalUSB2Ports() : Boolean;
-    function HasTotalUSBPorts() : Boolean;
-    function HasTotalVGAOutPorts() : Boolean;
-    function HasUPC() : Boolean;
-    function HasVariationDenomination() : Boolean;
-    function HasVariationDescription() : Boolean;
-    function HasVendorRebate() : Boolean;
-    function HasWarranty() : Boolean;
-    function HasWatchMovementType() : Boolean;
-    function HasWebsiteBuyability() : Boolean;
-    function HasWaterResistanceDepth() : Boolean;
-    function HasWirelessMicrophoneFrequency() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property Actor : MerchantItemAttributes_ActorArray read FActor write FActor;
-    property Address : Address read FAddress write FAddress stored HasAddress;
-    property AmazonMaximumAge : DecimalWithUnits read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
-    property AmazonMinimumAge : DecimalWithUnits read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
-    property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
-    property Artist : MerchantItemAttributes_ArtistArray read FArtist write FArtist;
-    property AspectRatio : string read FAspectRatio write FAspectRatio stored HasAspectRatio;
-    property AssemblyInstructions : string read FAssemblyInstructions write FAssemblyInstructions stored HasAssemblyInstructions;
-    property AssemblyRequired : string read FAssemblyRequired write FAssemblyRequired stored HasAssemblyRequired;
-    property AudienceRating : string read FAudienceRating write FAudienceRating stored HasAudienceRating;
-    property AudioFormat : MerchantItemAttributes_AudioFormatArray read FAudioFormat write FAudioFormat;
-    property Author : MerchantItemAttributes_AuthorArray read FAuthor write FAuthor;
-    property BackFinding : string read FBackFinding write FBackFinding stored HasBackFinding;
-    property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
-    property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
-    property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
-    property Batteries : NonNegativeIntegerWithUnits read FBatteries write FBatteries stored HasBatteries;
-    property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
-    property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
-    property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
-    property Binding : string read FBinding write FBinding stored HasBinding;
-    property Brand : string read FBrand write FBrand stored HasBrand;
-    property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
-    property CameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures;
-    property CaseDiameter : DecimalWithUnits read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
-    property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
-    property CaseThickness : DecimalWithUnits read FCaseThickness write FCaseThickness stored HasCaseThickness;
-    property CaseType : string read FCaseType write FCaseType stored HasCaseType;
-    property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
-    property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
-    property ChainType : string read FChainType write FChainType stored HasChainType;
-    property ClaspType : string read FClaspType write FClaspType stored HasClaspType;
-    property ClothingSize : string read FClothingSize write FClothingSize stored HasClothingSize;
-    property Color : string read FColor write FColor stored HasColor;
-    property Compatibility : string read FCompatibility write FCompatibility stored HasCompatibility;
-    property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
-    property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
-    property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
-    property ContinuousShootingSpeed : DecimalWithUnits read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
-    property Country : string read FCountry write FCountry stored HasCountry;
-    property CountryOfOrigin : string read FCountryOfOrigin write FCountryOfOrigin stored HasCountryOfOrigin;
-    property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
-    property CPUSpeed : DecimalWithUnits read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
-    property CPUType : string read FCPUType write FCPUType stored HasCPUType;
-    property Creator : MerchantItemAttributes_CreatorArray read FCreator write FCreator;
-    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
-    property Customizable : string read FCustomizable write FCustomizable stored HasCustomizable;
-    property DelayBetweenShots : DecimalWithUnits read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
-    property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
-    property Department : string read FDepartment write FDepartment stored HasDepartment;
-    property Description : string read FDescription write FDescription stored HasDescription;
-    property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
-    property DialColor : string read FDialColor write FDialColor stored HasDialColor;
-    property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
-    property DigitalZoom : DecimalWithUnits read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
-    property Director : MerchantItemAttributes_DirectorArray read FDirector write FDirector;
-    property DisplaySize : DecimalWithUnits read FDisplaySize write FDisplaySize stored HasDisplaySize;
-    property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
-    property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
-    property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
-    property DVDSides : nonNegativeInteger read FDVDSides write FDVDSides stored HasDVDSides;
-    property DPCI : string read FDPCI write FDPCI stored HasDPCI;
-    property EAN : string read FEAN write FEAN stored HasEAN;
-    property Edition : string read FEdition write FEdition stored HasEdition;
-    property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
-    property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
-    property FabricType : string read FFabricType write FFabricType stored HasFabricType;
-    property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
-    property Feature : MerchantItemAttributes_FeatureArray read FFeature write FFeature;
-    property FirstIssueLeadTime : StringWithUnits read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
-    property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
-    property Format : MerchantItemAttributes_FormatArray read FFormat write FFormat;
-    property FixedShippingCharge : Price read FFixedShippingCharge write FFixedShippingCharge stored HasFixedShippingCharge;
-    property GemType : string read FGemType write FGemType stored HasGemType;
-    property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
-    property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
-    property GraphicsMemorySize : DecimalWithUnits read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
-    property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
-    property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
-    property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
-    property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
-    property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
-    property HardDiskSize : NonNegativeIntegerWithUnits read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
-    property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
-    property HasBurstMode : boolean read FHasBurstMode write FHasBurstMode stored HasHasBurstMode;
-    property HasInCameraEditing : boolean read FHasInCameraEditing write FHasInCameraEditing stored HasHasInCameraEditing;
-    property HasRedEyeReduction : boolean read FHasRedEyeReduction write FHasRedEyeReduction stored HasHasRedEyeReduction;
-    property HasSelfTimer : boolean read FHasSelfTimer write FHasSelfTimer stored HasHasSelfTimer;
-    property HasTripodMount : boolean read FHasTripodMount write FHasTripodMount stored HasHasTripodMount;
-    property HasVideoOut : boolean read FHasVideoOut write FHasVideoOut stored HasHasVideoOut;
-    property HasViewfinder : boolean read FHasViewfinder write FHasViewfinder stored HasHasViewfinder;
-    property HazardousMaterialType : string read FHazardousMaterialType write FHazardousMaterialType stored HasHazardousMaterialType;
-    property HoursOfOperation : string read FHoursOfOperation write FHoursOfOperation stored HasHoursOfOperation;
-    property IncludedSoftware : string read FIncludedSoftware write FIncludedSoftware stored HasIncludedSoftware;
-    property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
-    property Indications : string read FIndications write FIndications stored HasIndications;
-    property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
-    property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
-    property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
-    property ISBN : string read FISBN write FISBN stored HasISBN;
-    property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
-    property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
-    property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
-    property ISOEquivalent : NonNegativeIntegerWithUnits read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
-    property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
-    property ItemDimensions : MerchantItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
-    property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
-    property _Label : string read F_Label write F_Label stored Has_Label;
-    property Languages : MerchantItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
-    property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
-    property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
-    property ListPrice : Price read FListPrice write FListPrice stored HasListPrice;
-    property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
-    property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
-    property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
-    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
-    property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
-    property ManufacturerMaximumAge : DecimalWithUnits read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
-    property ManufacturerMinimumAge : DecimalWithUnits read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
-    property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
-    property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
-    property MaximumAperture : DecimalWithUnits read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
-    property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
-    property MaximumFocalLength : DecimalWithUnits read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
-    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
-    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
-    property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
-    property MaximumResolution : DecimalWithUnits read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
-    property MaximumShutterSpeed : DecimalWithUnits read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
-    property MaximumVerticalResolution : NonNegativeIntegerWithUnits read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
-    property MaximumWeightRecommendation : DecimalWithUnits read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
-    property MemorySlotsAvailable : nonNegativeInteger read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
-    property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
-    property MetalType : string read FMetalType write FMetalType stored HasMetalType;
-    property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
-    property MinimumFocalLength : DecimalWithUnits read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
-    property MinimumShutterSpeed : DecimalWithUnits read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
-    property Model : string read FModel write FModel stored HasModel;
-    property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
-    property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
-    property MonitorSize : DecimalWithUnits read FMonitorSize write FMonitorSize stored HasMonitorSize;
-    property MonitorViewableDiagonalSize : DecimalWithUnits read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
-    property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
-    property MPN : string read FMPN write FMPN stored HasMPN;
-    property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
-    property NativeResolution : string read FNativeResolution write FNativeResolution stored HasNativeResolution;
-    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
-    property NetworkInterfaceDescription : string read FNetworkInterfaceDescription write FNetworkInterfaceDescription stored HasNetworkInterfaceDescription;
-    property NotebookDisplayTechnology : string read FNotebookDisplayTechnology write FNotebookDisplayTechnology stored HasNotebookDisplayTechnology;
-    property NotebookPointingDeviceDescription : string read FNotebookPointingDeviceDescription write FNotebookPointingDeviceDescription stored HasNotebookPointingDeviceDescription;
-    property NumberOfDiscs : nonNegativeInteger read FNumberOfDiscs write FNumberOfDiscs stored HasNumberOfDiscs;
-    property NumberOfIssues : nonNegativeInteger read FNumberOfIssues write FNumberOfIssues stored HasNumberOfIssues;
-    property NumberOfItems : nonNegativeInteger read FNumberOfItems write FNumberOfItems stored HasNumberOfItems;
-    property NumberOfKeys : nonNegativeInteger read FNumberOfKeys write FNumberOfKeys stored HasNumberOfKeys;
-    property NumberOfPages : nonNegativeInteger read FNumberOfPages write FNumberOfPages stored HasNumberOfPages;
-    property NumberOfPearls : nonNegativeInteger read FNumberOfPearls write FNumberOfPearls stored HasNumberOfPearls;
-    property NumberOfRapidFireShots : nonNegativeInteger read FNumberOfRapidFireShots write FNumberOfRapidFireShots stored HasNumberOfRapidFireShots;
-    property NumberOfStones : nonNegativeInteger read FNumberOfStones write FNumberOfStones stored HasNumberOfStones;
-    property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
-    property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
-    property OpticalZoom : DecimalWithUnits read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
-    property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
-    property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
-    property PackageDimensions : MerchantItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
-    property PearlLustre : string read FPearlLustre write FPearlLustre stored HasPearlLustre;
-    property PearlMinimumColor : string read FPearlMinimumColor write FPearlMinimumColor stored HasPearlMinimumColor;
-    property PearlShape : string read FPearlShape write FPearlShape stored HasPearlShape;
-    property PearlStringingMethod : string read FPearlStringingMethod write FPearlStringingMethod stored HasPearlStringingMethod;
-    property PearlSurfaceBlemishes : string read FPearlSurfaceBlemishes write FPearlSurfaceBlemishes stored HasPearlSurfaceBlemishes;
-    property PearlType : string read FPearlType write FPearlType stored HasPearlType;
-    property PearlUniformity : string read FPearlUniformity write FPearlUniformity stored HasPearlUniformity;
-    property PhoneNumber : string read FPhoneNumber write FPhoneNumber stored HasPhoneNumber;
-    property PhotoFlashType : MerchantItemAttributes_PhotoFlashTypeArray read FPhotoFlashType write FPhotoFlashType;
-    property PictureFormat : MerchantItemAttributes_PictureFormatArray read FPictureFormat write FPictureFormat;
-    property Platform : MerchantItemAttributes_PlatformArray read FPlatform write FPlatform;
-    property PriceRating : nonNegativeInteger read FPriceRating write FPriceRating stored HasPriceRating;
-    property ProcessorCount : nonNegativeInteger read FProcessorCount write FProcessorCount stored HasProcessorCount;
-    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
-    property PromotionalTag : string read FPromotionalTag write FPromotionalTag stored HasPromotionalTag;
-    property POBoxShippingExcluded : string read FPOBoxShippingExcluded write FPOBoxShippingExcluded stored HasPOBoxShippingExcluded;
-    property PublicationDate : string read FPublicationDate write FPublicationDate stored HasPublicationDate;
-    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
-    property PurchasingChannel : MerchantItemAttributes_PurchasingChannelArray read FPurchasingChannel write FPurchasingChannel;
-    property ReadingLevel : string read FReadingLevel write FReadingLevel stored HasReadingLevel;
-    property RecorderTrackCount : nonNegativeInteger read FRecorderTrackCount write FRecorderTrackCount stored HasRecorderTrackCount;
-    property RegionCode : string read FRegionCode write FRegionCode stored HasRegionCode;
-    property RegionOfOrigin : string read FRegionOfOrigin write FRegionOfOrigin stored HasRegionOfOrigin;
-    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
-    property ReturnMethod : MerchantItemAttributes_ReturnMethodArray read FReturnMethod write FReturnMethod;
-    property RemovableMemory : string read FRemovableMemory write FRemovableMemory stored HasRemovableMemory;
-    property ResolutionModes : string read FResolutionModes write FResolutionModes stored HasResolutionModes;
-    property ReturnPolicy : string read FReturnPolicy write FReturnPolicy stored HasReturnPolicy;
-    property RingSize : string read FRingSize write FRingSize stored HasRingSize;
-    property SafetyWarning : string read FSafetyWarning write FSafetyWarning stored HasSafetyWarning;
-    property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
-    property SecondaryCacheSize : NonNegativeIntegerWithUnits read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
-    property SettingType : string read FSettingType write FSettingType stored HasSettingType;
-    property Size : string read FSize write FSize stored HasSize;
-    property SKU : string read FSKU write FSKU stored HasSKU;
-    property SoldInStores : string read FSoldInStores write FSoldInStores stored HasSoldInStores;
-    property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
-    property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
-    property SoundCardDescription : string read FSoundCardDescription write FSoundCardDescription stored HasSoundCardDescription;
-    property SpeakerCount : nonNegativeInteger read FSpeakerCount write FSpeakerCount stored HasSpeakerCount;
-    property SpeakerDescription : string read FSpeakerDescription write FSpeakerDescription stored HasSpeakerDescription;
-    property SpecialFeatures : MerchantItemAttributes_SpecialFeaturesArray read FSpecialFeatures write FSpecialFeatures;
-    property StoneClarity : string read FStoneClarity write FStoneClarity stored HasStoneClarity;
-    property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
-    property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
-    property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
-    property StoneWeight : DecimalWithUnits read FStoneWeight write FStoneWeight stored HasStoneWeight;
-    property Studio : string read FStudio write FStudio stored HasStudio;
-    property SubscriptionLength : NonNegativeIntegerWithUnits read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
-    property SupportedImageType : MerchantItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType;
-    property SystemBusSpeed : DecimalWithUnits read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
-    property SystemMemorySizeMax : DecimalWithUnits read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
-    property SystemMemorySize : DecimalWithUnits read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
-    property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
-    property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
-    property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
-    property Title : string read FTitle write FTitle stored HasTitle;
-    property TotalDiamondWeight : DecimalWithUnits read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
-    property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
-    property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
-    property TotalGemWeight : DecimalWithUnits read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
-    property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
-    property TotalMetalWeight : DecimalWithUnits read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
-    property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
-    property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
-    property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
-    property TotalPCISlotsFree : nonNegativeInteger read FTotalPCISlotsFree write FTotalPCISlotsFree stored HasTotalPCISlotsFree;
-    property TotalSerialPorts : nonNegativeInteger read FTotalSerialPorts write FTotalSerialPorts stored HasTotalSerialPorts;
-    property TotalSVideoOutPorts : nonNegativeInteger read FTotalSVideoOutPorts write FTotalSVideoOutPorts stored HasTotalSVideoOutPorts;
-    property TotalUSB2Ports : nonNegativeInteger read FTotalUSB2Ports write FTotalUSB2Ports stored HasTotalUSB2Ports;
-    property TotalUSBPorts : nonNegativeInteger read FTotalUSBPorts write FTotalUSBPorts stored HasTotalUSBPorts;
-    property TotalVGAOutPorts : nonNegativeInteger read FTotalVGAOutPorts write FTotalVGAOutPorts stored HasTotalVGAOutPorts;
-    property UPC : string read FUPC write FUPC stored HasUPC;
-    property VariationDenomination : string read FVariationDenomination write FVariationDenomination stored HasVariationDenomination;
-    property VariationDescription : string read FVariationDescription write FVariationDescription stored HasVariationDescription;
-    property VendorRebate : MerchantItemAttributes_VendorRebate_Type read FVendorRebate write FVendorRebate stored HasVendorRebate;
-    property Warranty : string read FWarranty write FWarranty stored HasWarranty;
-    property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
-    property WebsiteBuyability : string read FWebsiteBuyability write FWebsiteBuyability stored HasWebsiteBuyability;
-    property WaterResistanceDepth : DecimalWithUnits read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
-    property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
-  end;
-
-  OfferSummary_Type = class(TBaseComplexRemotable)
-  private
-    FLowestNewPrice : Price;
-    FLowestUsedPrice : Price;
-    FLowestCollectiblePrice : Price;
-    FLowestRefurbishedPrice : Price;
-    FTotalNew : string;
-    FTotalUsed : string;
-    FTotalCollectible : string;
-    FTotalRefurbished : string;
-  private
-    function HasLowestNewPrice() : Boolean;
-    function HasLowestUsedPrice() : Boolean;
-    function HasLowestCollectiblePrice() : Boolean;
-    function HasLowestRefurbishedPrice() : Boolean;
-    function HasTotalNew() : Boolean;
-    function HasTotalUsed() : Boolean;
-    function HasTotalCollectible() : Boolean;
-    function HasTotalRefurbished() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property LowestNewPrice : Price read FLowestNewPrice write FLowestNewPrice stored HasLowestNewPrice;
-    property LowestUsedPrice : Price read FLowestUsedPrice write FLowestUsedPrice stored HasLowestUsedPrice;
-    property LowestCollectiblePrice : Price read FLowestCollectiblePrice write FLowestCollectiblePrice stored HasLowestCollectiblePrice;
-    property LowestRefurbishedPrice : Price read FLowestRefurbishedPrice write FLowestRefurbishedPrice stored HasLowestRefurbishedPrice;
-    property TotalNew : string read FTotalNew write FTotalNew stored HasTotalNew;
-    property TotalUsed : string read FTotalUsed write FTotalUsed stored HasTotalUsed;
-    property TotalCollectible : string read FTotalCollectible write FTotalCollectible stored HasTotalCollectible;
-    property TotalRefurbished : string read FTotalRefurbished write FTotalRefurbished stored HasTotalRefurbished;
-  end;
-
-  Offers_Type = class(TBaseComplexRemotable)
-  private
-    FTotalOffers : nonNegativeInteger;
-    FTotalOfferPages : nonNegativeInteger;
-    FOffer : Offers_OfferArray;
-  private
-    function HasTotalOffers() : Boolean;
-    function HasTotalOfferPages() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property TotalOffers : nonNegativeInteger read FTotalOffers write FTotalOffers stored HasTotalOffers;
-    property TotalOfferPages : nonNegativeInteger read FTotalOfferPages write FTotalOfferPages stored HasTotalOfferPages;
-    property Offer : Offers_OfferArray read FOffer write FOffer;
-  end;
-
-  VariationSummary_Type = class(TBaseComplexRemotable)
-  private
-    FLowestPrice : Price;
-    FHighestPrice : Price;
-    FLowestSalePrice : Price;
-    FHighestSalePrice : Price;
-    FSingleMerchantId : string;
-  private
-    function HasLowestPrice() : Boolean;
-    function HasHighestPrice() : Boolean;
-    function HasLowestSalePrice() : Boolean;
-    function HasHighestSalePrice() : Boolean;
-    function HasSingleMerchantId() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property LowestPrice : Price read FLowestPrice write FLowestPrice stored HasLowestPrice;
-    property HighestPrice : Price read FHighestPrice write FHighestPrice stored HasHighestPrice;
-    property LowestSalePrice : Price read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
-    property HighestSalePrice : Price read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
-    property SingleMerchantId : string read FSingleMerchantId write FSingleMerchantId stored HasSingleMerchantId;
-  end;
-
-  Variations_Type = class(TBaseComplexRemotable)
-  private
-    FTotalVariations : nonNegativeInteger;
-    FTotalVariationPages : nonNegativeInteger;
-    FVariationDimensions : VariationDimensions_Type;
-    F_Item : Variations__ItemArray;
-  private
-    function HasTotalVariations() : Boolean;
-    function HasTotalVariationPages() : Boolean;
-    function HasVariationDimensions() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property TotalVariations : nonNegativeInteger read FTotalVariations write FTotalVariations stored HasTotalVariations;
-    property TotalVariationPages : nonNegativeInteger read FTotalVariationPages write FTotalVariationPages stored HasTotalVariationPages;
-    property VariationDimensions : VariationDimensions_Type read FVariationDimensions write FVariationDimensions stored HasVariationDimensions;
-    property _Item : Variations__ItemArray read F_Item write F_Item;
-  end;
-
-  SearchInside_Type = class(TBaseComplexRemotable)
-  private
-    FTotalExcerpts : nonNegativeInteger;
-    FExcerpt : SearchInside_Excerpt_Type;
-  private
-    function HasTotalExcerpts() : Boolean;
-    function HasExcerpt() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property TotalExcerpts : nonNegativeInteger read FTotalExcerpts write FTotalExcerpts stored HasTotalExcerpts;
-    property Excerpt : SearchInside_Excerpt_Type read FExcerpt write FExcerpt stored HasExcerpt;
+    property ImageSet : Item_ImageSets_Type_ImageSetArray read FImageSet write FImageSet stored HasImageSet;
   end;
 
   Item_AlternateVersions_Type_AlternateVersion_Type = class(TBaseComplexRemotable)
@@ -4500,6 +2616,143 @@ type
     property Binding : string read FBinding write FBinding stored HasBinding;
   end;
 
+  Item_Type = class(TBaseComplexRemotable)
+  private
+    FASIN : string;
+    FParentASIN : string;
+    FErrors : Errors_Type;
+    FDetailPageURL : string;
+    FSalesRank : string;
+    FSmallImage : Image_Type;
+    FMediumImage : Image_Type;
+    FLargeImage : Image_Type;
+    FImageSets : _Item_ImageSetsArray;
+    FItemAttributes : ItemAttributes_Type;
+    FMerchantItemAttributes : MerchantItemAttributes_Type;
+    FCollections : Collections_Type;
+    FSubjects : Item_Subjects_Type;
+    FOfferSummary : OfferSummary_Type;
+    FOffers : Offers_Type;
+    FVariationSummary : VariationSummary_Type;
+    FVariations : Variations_Type;
+    FCustomerReviews : CustomerReviews_Type;
+    FEditorialReviews : EditorialReviews_Type;
+    FSimilarProducts : SimilarProducts_Type;
+    FAccessories : Accessories_Type;
+    FTracks : Tracks_Type;
+    FBrowseNodes : BrowseNodes_Type;
+    FListmaniaLists : ListmaniaLists_Type;
+    FSearchInside : SearchInside_Type;
+    FAlternateVersions : Item_AlternateVersions_Type;
+  private
+    function HasParentASIN() : Boolean;
+    function HasErrors() : Boolean;
+    function HasDetailPageURL() : Boolean;
+    function HasSalesRank() : Boolean;
+    function HasSmallImage() : Boolean;
+    function HasMediumImage() : Boolean;
+    function HasLargeImage() : Boolean;
+    function HasImageSets() : Boolean;
+    function HasItemAttributes() : Boolean;
+    function HasMerchantItemAttributes() : Boolean;
+    function HasCollections() : Boolean;
+    function HasSubjects() : Boolean;
+    function HasOfferSummary() : Boolean;
+    function HasOffers() : Boolean;
+    function HasVariationSummary() : Boolean;
+    function HasVariations() : Boolean;
+    function HasCustomerReviews() : Boolean;
+    function HasEditorialReviews() : Boolean;
+    function HasSimilarProducts() : Boolean;
+    function HasAccessories() : Boolean;
+    function HasTracks() : Boolean;
+    function HasBrowseNodes() : Boolean;
+    function HasListmaniaLists() : Boolean;
+    function HasSearchInside() : Boolean;
+    function HasAlternateVersions() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ASIN : string read FASIN write FASIN;
+    property ParentASIN : string read FParentASIN write FParentASIN stored HasParentASIN;
+    property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
+    property DetailPageURL : string read FDetailPageURL write FDetailPageURL stored HasDetailPageURL;
+    property SalesRank : string read FSalesRank write FSalesRank stored HasSalesRank;
+    property SmallImage : Image_Type read FSmallImage write FSmallImage stored HasSmallImage;
+    property MediumImage : Image_Type read FMediumImage write FMediumImage stored HasMediumImage;
+    property LargeImage : Image_Type read FLargeImage write FLargeImage stored HasLargeImage;
+    property ImageSets : _Item_ImageSetsArray read FImageSets write FImageSets stored HasImageSets;
+    property ItemAttributes : ItemAttributes_Type read FItemAttributes write FItemAttributes stored HasItemAttributes;
+    property MerchantItemAttributes : MerchantItemAttributes_Type read FMerchantItemAttributes write FMerchantItemAttributes stored HasMerchantItemAttributes;
+    property Collections : Collections_Type read FCollections write FCollections stored HasCollections;
+    property Subjects : Item_Subjects_Type read FSubjects write FSubjects stored HasSubjects;
+    property OfferSummary : OfferSummary_Type read FOfferSummary write FOfferSummary stored HasOfferSummary;
+    property Offers : Offers_Type read FOffers write FOffers stored HasOffers;
+    property VariationSummary : VariationSummary_Type read FVariationSummary write FVariationSummary stored HasVariationSummary;
+    property Variations : Variations_Type read FVariations write FVariations stored HasVariations;
+    property CustomerReviews : CustomerReviews_Type read FCustomerReviews write FCustomerReviews stored HasCustomerReviews;
+    property EditorialReviews : EditorialReviews_Type read FEditorialReviews write FEditorialReviews stored HasEditorialReviews;
+    property SimilarProducts : SimilarProducts_Type read FSimilarProducts write FSimilarProducts stored HasSimilarProducts;
+    property Accessories : Accessories_Type read FAccessories write FAccessories stored HasAccessories;
+    property Tracks : Tracks_Type read FTracks write FTracks stored HasTracks;
+    property BrowseNodes : BrowseNodes_Type read FBrowseNodes write FBrowseNodes stored HasBrowseNodes;
+    property ListmaniaLists : ListmaniaLists_Type read FListmaniaLists write FListmaniaLists stored HasListmaniaLists;
+    property SearchInside : SearchInside_Type read FSearchInside write FSearchInside stored HasSearchInside;
+    property AlternateVersions : Item_AlternateVersions_Type read FAlternateVersions write FAlternateVersions stored HasAlternateVersions;
+  end;
+
+  OfferSummary_Type = class(TBaseComplexRemotable)
+  private
+    FLowestNewPrice : Price_Type;
+    FLowestUsedPrice : Price_Type;
+    FLowestCollectiblePrice : Price_Type;
+    FLowestRefurbishedPrice : Price_Type;
+    FTotalNew : string;
+    FTotalUsed : string;
+    FTotalCollectible : string;
+    FTotalRefurbished : string;
+  private
+    function HasLowestNewPrice() : Boolean;
+    function HasLowestUsedPrice() : Boolean;
+    function HasLowestCollectiblePrice() : Boolean;
+    function HasLowestRefurbishedPrice() : Boolean;
+    function HasTotalNew() : Boolean;
+    function HasTotalUsed() : Boolean;
+    function HasTotalCollectible() : Boolean;
+    function HasTotalRefurbished() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property LowestNewPrice : Price_Type read FLowestNewPrice write FLowestNewPrice stored HasLowestNewPrice;
+    property LowestUsedPrice : Price_Type read FLowestUsedPrice write FLowestUsedPrice stored HasLowestUsedPrice;
+    property LowestCollectiblePrice : Price_Type read FLowestCollectiblePrice write FLowestCollectiblePrice stored HasLowestCollectiblePrice;
+    property LowestRefurbishedPrice : Price_Type read FLowestRefurbishedPrice write FLowestRefurbishedPrice stored HasLowestRefurbishedPrice;
+    property TotalNew : string read FTotalNew write FTotalNew stored HasTotalNew;
+    property TotalUsed : string read FTotalUsed write FTotalUsed stored HasTotalUsed;
+    property TotalCollectible : string read FTotalCollectible write FTotalCollectible stored HasTotalCollectible;
+    property TotalRefurbished : string read FTotalRefurbished write FTotalRefurbished stored HasTotalRefurbished;
+  end;
+
+  Offers_Type = class(TBaseComplexRemotable)
+  private
+    FTotalOffers : nonNegativeInteger;
+    FTotalOfferPages : nonNegativeInteger;
+    FOffer : Offers_OfferArray;
+  private
+    function HasTotalOffers() : Boolean;
+    function HasTotalOfferPages() : Boolean;
+    function HasOffer() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TotalOffers : nonNegativeInteger read FTotalOffers write FTotalOffers stored HasTotalOffers;
+    property TotalOfferPages : nonNegativeInteger read FTotalOfferPages write FTotalOfferPages stored HasTotalOfferPages;
+    property Offer : Offers_OfferArray read FOffer write FOffer stored HasOffer;
+  end;
+
   Offer_Type = class(TBaseComplexRemotable)
   private
     FMerchant : Merchant_Type;
@@ -4512,6 +2765,7 @@ type
     function HasMerchant() : Boolean;
     function HasSeller() : Boolean;
     function HasOfferAttributes() : Boolean;
+    function HasOfferListing() : Boolean;
     function HasLoyaltyPoints() : Boolean;
     function HasPromotions() : Boolean;
   public
@@ -4521,9 +2775,30 @@ type
     property Merchant : Merchant_Type read FMerchant write FMerchant stored HasMerchant;
     property Seller : Seller_Type read FSeller write FSeller stored HasSeller;
     property OfferAttributes : OfferAttributes_Type read FOfferAttributes write FOfferAttributes stored HasOfferAttributes;
-    property OfferListing : Offer_OfferListingArray read FOfferListing write FOfferListing;
+    property OfferListing : Offer_OfferListingArray read FOfferListing write FOfferListing stored HasOfferListing;
     property LoyaltyPoints : LoyaltyPoints_Type read FLoyaltyPoints write FLoyaltyPoints stored HasLoyaltyPoints;
     property Promotions : Promotions_Type read FPromotions write FPromotions stored HasPromotions;
+  end;
+
+  OfferAttributes_Type = class(TBaseComplexRemotable)
+  private
+    FCondition : string;
+    FSubCondition : string;
+    FConditionNote : string;
+    FWillShipExpedited : boolean;
+    FWillShipInternational : boolean;
+  private
+    function HasCondition() : Boolean;
+    function HasSubCondition() : Boolean;
+    function HasConditionNote() : Boolean;
+    function HasWillShipExpedited() : Boolean;
+    function HasWillShipInternational() : Boolean;
+  published
+    property Condition : string read FCondition write FCondition stored HasCondition;
+    property SubCondition : string read FSubCondition write FSubCondition stored HasSubCondition;
+    property ConditionNote : string read FConditionNote write FConditionNote stored HasConditionNote;
+    property WillShipExpedited : boolean read FWillShipExpedited write FWillShipExpedited stored HasWillShipExpedited;
+    property WillShipInternational : boolean read FWillShipInternational write FWillShipInternational stored HasWillShipInternational;
   end;
 
   Merchant_Type = class(TBaseComplexRemotable)
@@ -4549,91 +2824,6 @@ type
     property TotalFeedbackPages : nonNegativeInteger read FTotalFeedbackPages write FTotalFeedbackPages stored HasTotalFeedbackPages;
   end;
 
-  OfferAttributes_Type = class(TBaseComplexRemotable)
-  private
-    FCondition : string;
-    FSubCondition : string;
-    FConditionNote : string;
-    FWillShipExpedited : boolean;
-    FWillShipInternational : boolean;
-  private
-    function HasCondition() : Boolean;
-    function HasSubCondition() : Boolean;
-    function HasConditionNote() : Boolean;
-    function HasWillShipExpedited() : Boolean;
-    function HasWillShipInternational() : Boolean;
-  published
-    property Condition : string read FCondition write FCondition stored HasCondition;
-    property SubCondition : string read FSubCondition write FSubCondition stored HasSubCondition;
-    property ConditionNote : string read FConditionNote write FConditionNote stored HasConditionNote;
-    property WillShipExpedited : boolean read FWillShipExpedited write FWillShipExpedited stored HasWillShipExpedited;
-    property WillShipInternational : boolean read FWillShipInternational write FWillShipInternational stored HasWillShipInternational;
-  end;
-
-  OfferListing_Type = class(TBaseComplexRemotable)
-  private
-    FOfferListingId : string;
-    FExchangeId : string;
-    FPrice : Price;
-    FSalePrice : Price;
-    FAmountSaved : Price;
-    FPercentageSaved : nonNegativeInteger;
-    FAvailability : string;
-    FAvailabilityAttributes : OfferListing_AvailabilityAttributes_Type;
-    FQuantity : integer;
-    FISPUStoreAddress : Address;
-    FISPUStoreHours : string;
-    FIsEligibleForSuperSaverShipping : boolean;
-    FSalesRestriction : string;
-    FShippingCharge : OfferListing_ShippingChargeArray;
-  private
-    function HasOfferListingId() : Boolean;
-    function HasExchangeId() : Boolean;
-    function HasPrice() : Boolean;
-    function HasSalePrice() : Boolean;
-    function HasAmountSaved() : Boolean;
-    function HasPercentageSaved() : Boolean;
-    function HasAvailability() : Boolean;
-    function HasAvailabilityAttributes() : Boolean;
-    function HasQuantity() : Boolean;
-    function HasISPUStoreAddress() : Boolean;
-    function HasISPUStoreHours() : Boolean;
-    function HasIsEligibleForSuperSaverShipping() : Boolean;
-    function HasSalesRestriction() : Boolean;
-  public
-    constructor Create();override;
-    destructor Destroy();override;
-  published
-    property OfferListingId : string read FOfferListingId write FOfferListingId stored HasOfferListingId;
-    property ExchangeId : string read FExchangeId write FExchangeId stored HasExchangeId;
-    property Price : Price read FPrice write FPrice stored HasPrice;
-    property SalePrice : Price read FSalePrice write FSalePrice stored HasSalePrice;
-    property AmountSaved : Price read FAmountSaved write FAmountSaved stored HasAmountSaved;
-    property PercentageSaved : nonNegativeInteger read FPercentageSaved write FPercentageSaved stored HasPercentageSaved;
-    property Availability : string read FAvailability write FAvailability stored HasAvailability;
-    property AvailabilityAttributes : OfferListing_AvailabilityAttributes_Type read FAvailabilityAttributes write FAvailabilityAttributes stored HasAvailabilityAttributes;
-    property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
-    property ISPUStoreAddress : Address read FISPUStoreAddress write FISPUStoreAddress stored HasISPUStoreAddress;
-    property ISPUStoreHours : string read FISPUStoreHours write FISPUStoreHours stored HasISPUStoreHours;
-    property IsEligibleForSuperSaverShipping : boolean read FIsEligibleForSuperSaverShipping write FIsEligibleForSuperSaverShipping stored HasIsEligibleForSuperSaverShipping;
-    property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
-    property ShippingCharge : OfferListing_ShippingChargeArray read FShippingCharge write FShippingCharge;
-  end;
-
-  LoyaltyPoints_Type = class(TBaseComplexRemotable)
-  private
-    FPoints : nonNegativeInteger;
-    FTypicalRedemptionValue : Price;
-  private
-    function HasPoints() : Boolean;
-    function HasTypicalRedemptionValue() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property Points : nonNegativeInteger read FPoints write FPoints stored HasPoints;
-    property TypicalRedemptionValue : Price read FTypicalRedemptionValue write FTypicalRedemptionValue stored HasTypicalRedemptionValue;
-  end;
-
   OfferListing_AvailabilityAttributes_Type = class(TBaseComplexRemotable)
   private
     FAvailabilityType : string;
@@ -4652,77 +2842,148 @@ type
     property MaximumHours : integer read FMaximumHours write FMaximumHours stored HasMaximumHours;
   end;
 
-  Address = class(TBaseComplexRemotable)
-  private
-    FName : string;
-    FAddress1 : string;
-    FAddress2 : string;
-    FAddress3 : string;
-    FCity : string;
-    FState : string;
-    FPostalCode : string;
-    FCountry : string;
-  private
-    function HasName() : Boolean;
-    function HasAddress1() : Boolean;
-    function HasAddress2() : Boolean;
-    function HasAddress3() : Boolean;
-    function HasCity() : Boolean;
-    function HasState() : Boolean;
-    function HasPostalCode() : Boolean;
-    function HasCountry() : Boolean;
-  published
-    property Name : string read FName write FName stored HasName;
-    property Address1 : string read FAddress1 write FAddress1 stored HasAddress1;
-    property Address2 : string read FAddress2 write FAddress2 stored HasAddress2;
-    property Address3 : string read FAddress3 write FAddress3 stored HasAddress3;
-    property City : string read FCity write FCity stored HasCity;
-    property State : string read FState write FState stored HasState;
-    property PostalCode : string read FPostalCode write FPostalCode stored HasPostalCode;
-    property Country : string read FCountry write FCountry stored HasCountry;
-  end;
-
   OfferListing_ShippingCharge_Type = class(TBaseComplexRemotable)
   private
     FShippingType : string;
-    FShippingPrice : Price;
+    FShippingPrice : Price_Type;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property ShippingType : string read FShippingType write FShippingType;
-    property ShippingPrice : Price read FShippingPrice write FShippingPrice;
+    property ShippingPrice : Price_Type read FShippingPrice write FShippingPrice;
   end;
 
-  EditorialReview_Type = class(TBaseComplexRemotable)
+  OfferListing_Type = class(TBaseComplexRemotable)
   private
-    FSource : string;
-    FContent : string;
+    FOfferListingId : string;
+    FExchangeId : string;
+    FPrice : Price_Type;
+    FSalePrice : Price_Type;
+    FAmountSaved : Price_Type;
+    FPercentageSaved : nonNegativeInteger;
+    FAvailability : string;
+    FAvailabilityAttributes : OfferListing_AvailabilityAttributes_Type;
+    FQuantity : integer;
+    FISPUStoreAddress : Address_Type;
+    FISPUStoreHours : string;
+    FIsEligibleForSuperSaverShipping : boolean;
+    FSalesRestriction : string;
+    FShippingCharge : OfferListing_ShippingChargeArray;
   private
-    function HasSource() : Boolean;
-    function HasContent() : Boolean;
+    function HasOfferListingId() : Boolean;
+    function HasExchangeId() : Boolean;
+    function HasPrice() : Boolean;
+    function HasSalePrice() : Boolean;
+    function HasAmountSaved() : Boolean;
+    function HasPercentageSaved() : Boolean;
+    function HasAvailability() : Boolean;
+    function HasAvailabilityAttributes() : Boolean;
+    function HasQuantity() : Boolean;
+    function HasISPUStoreAddress() : Boolean;
+    function HasISPUStoreHours() : Boolean;
+    function HasIsEligibleForSuperSaverShipping() : Boolean;
+    function HasSalesRestriction() : Boolean;
+    function HasShippingCharge() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   published
-    property Source : string read FSource write FSource stored HasSource;
-    property Content : string read FContent write FContent stored HasContent;
+    property OfferListingId : string read FOfferListingId write FOfferListingId stored HasOfferListingId;
+    property ExchangeId : string read FExchangeId write FExchangeId stored HasExchangeId;
+    property Price : Price_Type read FPrice write FPrice stored HasPrice;
+    property SalePrice : Price_Type read FSalePrice write FSalePrice stored HasSalePrice;
+    property AmountSaved : Price_Type read FAmountSaved write FAmountSaved stored HasAmountSaved;
+    property PercentageSaved : nonNegativeInteger read FPercentageSaved write FPercentageSaved stored HasPercentageSaved;
+    property Availability : string read FAvailability write FAvailability stored HasAvailability;
+    property AvailabilityAttributes : OfferListing_AvailabilityAttributes_Type read FAvailabilityAttributes write FAvailabilityAttributes stored HasAvailabilityAttributes;
+    property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
+    property ISPUStoreAddress : Address_Type read FISPUStoreAddress write FISPUStoreAddress stored HasISPUStoreAddress;
+    property ISPUStoreHours : string read FISPUStoreHours write FISPUStoreHours stored HasISPUStoreHours;
+    property IsEligibleForSuperSaverShipping : boolean read FIsEligibleForSuperSaverShipping write FIsEligibleForSuperSaverShipping stored HasIsEligibleForSuperSaverShipping;
+    property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
+    property ShippingCharge : OfferListing_ShippingChargeArray read FShippingCharge write FShippingCharge stored HasShippingCharge;
+  end;
+
+  LoyaltyPoints_Type = class(TBaseComplexRemotable)
+  private
+    FPoints : nonNegativeInteger;
+    FTypicalRedemptionValue : Price_Type;
+  private
+    function HasPoints() : Boolean;
+    function HasTypicalRedemptionValue() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Points : nonNegativeInteger read FPoints write FPoints stored HasPoints;
+    property TypicalRedemptionValue : Price_Type read FTypicalRedemptionValue write FTypicalRedemptionValue stored HasTypicalRedemptionValue;
+  end;
+
+  VariationSummary_Type = class(TBaseComplexRemotable)
+  private
+    FLowestPrice : Price_Type;
+    FHighestPrice : Price_Type;
+    FLowestSalePrice : Price_Type;
+    FHighestSalePrice : Price_Type;
+    FSingleMerchantId : string;
+  private
+    function HasLowestPrice() : Boolean;
+    function HasHighestPrice() : Boolean;
+    function HasLowestSalePrice() : Boolean;
+    function HasHighestSalePrice() : Boolean;
+    function HasSingleMerchantId() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property LowestPrice : Price_Type read FLowestPrice write FLowestPrice stored HasLowestPrice;
+    property HighestPrice : Price_Type read FHighestPrice write FHighestPrice stored HasHighestPrice;
+    property LowestSalePrice : Price_Type read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
+    property HighestSalePrice : Price_Type read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
+    property SingleMerchantId : string read FSingleMerchantId write FSingleMerchantId stored HasSingleMerchantId;
+  end;
+
+  Variations_Type = class(TBaseComplexRemotable)
+  private
+    FTotalVariations : nonNegativeInteger;
+    FTotalVariationPages : nonNegativeInteger;
+    FVariationDimensions : VariationDimensions_Type;
+    F_Item : Variations__ItemArray;
+  private
+    function HasTotalVariations() : Boolean;
+    function HasTotalVariationPages() : Boolean;
+    function HasVariationDimensions() : Boolean;
+    function Has_Item() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TotalVariations : nonNegativeInteger read FTotalVariations write FTotalVariations stored HasTotalVariations;
+    property TotalVariationPages : nonNegativeInteger read FTotalVariationPages write FTotalVariationPages stored HasTotalVariationPages;
+    property VariationDimensions : VariationDimensions_Type read FVariationDimensions write FVariationDimensions stored HasVariationDimensions;
+    property _Item : Variations__ItemArray read F_Item write F_Item stored Has_Item;
   end;
 
   Collections_Collection_Type_CollectionSummary_Type = class(TBaseComplexRemotable)
   private
-    FLowestListPrice : Price;
-    FHighestListPrice : Price;
-    FLowestSalePrice : Price;
-    FHighestSalePrice : Price;
+    FLowestListPrice : Price_Type;
+    FHighestListPrice : Price_Type;
+    FLowestSalePrice : Price_Type;
+    FHighestSalePrice : Price_Type;
   private
     function HasLowestListPrice() : Boolean;
     function HasHighestListPrice() : Boolean;
     function HasLowestSalePrice() : Boolean;
     function HasHighestSalePrice() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property LowestListPrice : Price read FLowestListPrice write FLowestListPrice stored HasLowestListPrice;
-    property HighestListPrice : Price read FHighestListPrice write FHighestListPrice stored HasHighestListPrice;
-    property LowestSalePrice : Price read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
-    property HighestSalePrice : Price read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
+    property LowestListPrice : Price_Type read FLowestListPrice write FLowestListPrice stored HasLowestListPrice;
+    property HighestListPrice : Price_Type read FHighestListPrice write FHighestListPrice stored HasHighestListPrice;
+    property LowestSalePrice : Price_Type read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
+    property HighestSalePrice : Price_Type read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
   end;
 
   Collections_Collection_Type_CollectionParent_Type = class(TBaseComplexRemotable)
@@ -4757,13 +3018,47 @@ type
   private
     function HasCollectionSummary() : Boolean;
     function HasCollectionParent() : Boolean;
+    function HasCollectionItem() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property CollectionSummary : Collections_Collection_Type_CollectionSummary_Type read FCollectionSummary write FCollectionSummary stored HasCollectionSummary;
     property CollectionParent : Collections_Collection_Type_CollectionParent_Type read FCollectionParent write FCollectionParent stored HasCollectionParent;
-    property CollectionItem : Collections_Collection_Type_CollectionItemArray read FCollectionItem write FCollectionItem;
+    property CollectionItem : Collections_Collection_Type_CollectionItemArray read FCollectionItem write FCollectionItem stored HasCollectionItem;
+  end;
+
+  EditorialReview_Type = class(TBaseComplexRemotable)
+  private
+    FSource : string;
+    FContent : string;
+  private
+    function HasSource() : Boolean;
+    function HasContent() : Boolean;
+  published
+    property Source : string read FSource write FSource stored HasSource;
+    property Content : string read FContent write FContent stored HasContent;
+  end;
+
+  CustomerReviews_Type = class(TBaseComplexRemotable)
+  private
+    FAverageRating : Extended;
+    FTotalReviews : nonNegativeInteger;
+    FTotalReviewPages : nonNegativeInteger;
+    FReview : CustomerReviews_ReviewArray;
+  private
+    function HasAverageRating() : Boolean;
+    function HasTotalReviews() : Boolean;
+    function HasTotalReviewPages() : Boolean;
+    function HasReview() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property AverageRating : Extended read FAverageRating write FAverageRating stored HasAverageRating;
+    property TotalReviews : nonNegativeInteger read FTotalReviews write FTotalReviews stored HasTotalReviews;
+    property TotalReviewPages : nonNegativeInteger read FTotalReviewPages write FTotalReviewPages stored HasTotalReviewPages;
+    property Review : CustomerReviews_ReviewArray read FReview write FReview stored HasReview;
   end;
 
   Review_Type = class(TBaseComplexRemotable)
@@ -4788,6 +3083,7 @@ type
     function HasSummary() : Boolean;
     function HasContent() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property ASIN : string read FASIN write FASIN stored HasASIN;
@@ -4910,20 +3206,6 @@ type
     property Title : string read FTitle write FTitle stored HasTitle;
   end;
 
-  Promotion_Type = class(TBaseComplexRemotable)
-  private
-    FSummary : Promotion_Summary_Type;
-    FDetails : Promotion_Details_Type;
-  private
-    function HasSummary() : Boolean;
-    function HasDetails() : Boolean;
-  public
-    destructor Destroy();override;
-  published
-    property Summary : Promotion_Summary_Type read FSummary write FSummary stored HasSummary;
-    property Details : Promotion_Details_Type read FDetails write FDetails stored HasDetails;
-  end;
-
   Promotion_Summary_Type = class(TBaseComplexRemotable)
   private
     FPromotionId : string;
@@ -4950,17 +3232,6 @@ type
     property TermsAndConditions : string read FTermsAndConditions write FTermsAndConditions stored HasTermsAndConditions;
   end;
 
-  PromotionItemApplicability = class(TBaseComplexRemotable)
-  private
-    FASIN : string;
-    FIsInBenefitSet : boolean;
-    FIsInEligibilityRequirementSet : boolean;
-  published
-    property ASIN : string read FASIN write FASIN;
-    property IsInBenefitSet : boolean read FIsInBenefitSet write FIsInBenefitSet;
-    property IsInEligibilityRequirementSet : boolean read FIsInEligibilityRequirementSet write FIsInEligibilityRequirementSet;
-  end;
-
   Promotion_Details_Type = class(TBaseComplexRemotable)
   private
     FMerchantId : string;
@@ -4973,9 +3244,9 @@ type
     FStartDate : string;
     FEndDate : string;
     FTermsAndConditions : string;
-    FEligibilityRequirements : PromotionEligibilityRequirements;
-    FBenefits : PromotionBenefits;
-    FItemApplicability : PromotionItemApplicability;
+    FEligibilityRequirements : PromotionEligibilityRequirements_Type;
+    FBenefits : PromotionBenefits_Type;
+    FItemApplicability : PromotionItemApplicability_Type;
   private
     function HasMerchantPromotionId() : Boolean;
     function HasGroupClaimCode() : Boolean;
@@ -5000,49 +3271,92 @@ type
     property StartDate : string read FStartDate write FStartDate stored HasStartDate;
     property EndDate : string read FEndDate write FEndDate stored HasEndDate;
     property TermsAndConditions : string read FTermsAndConditions write FTermsAndConditions stored HasTermsAndConditions;
-    property EligibilityRequirements : PromotionEligibilityRequirements read FEligibilityRequirements write FEligibilityRequirements stored HasEligibilityRequirements;
-    property Benefits : PromotionBenefits read FBenefits write FBenefits stored HasBenefits;
-    property ItemApplicability : PromotionItemApplicability read FItemApplicability write FItemApplicability stored HasItemApplicability;
+    property EligibilityRequirements : PromotionEligibilityRequirements_Type read FEligibilityRequirements write FEligibilityRequirements stored HasEligibilityRequirements;
+    property Benefits : PromotionBenefits_Type read FBenefits write FBenefits stored HasBenefits;
+    property ItemApplicability : PromotionItemApplicability_Type read FItemApplicability write FItemApplicability stored HasItemApplicability;
   end;
 
-  PromotionEligibilityRequirement = class(TBaseComplexRemotable)
+  Promotion_Type = class(TBaseComplexRemotable)
   private
-    FEligibilityRequirementType : string;
-    FQuantity : integer;
-    FCurrencyAmount : Price;
+    FSummary : Promotion_Summary_Type;
+    FDetails : Promotion_Details_Type;
   private
-    function HasQuantity() : Boolean;
-    function HasCurrencyAmount() : Boolean;
+    function HasSummary() : Boolean;
+    function HasDetails() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property EligibilityRequirementType : string read FEligibilityRequirementType write FEligibilityRequirementType;
-    property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
-    property CurrencyAmount : Price read FCurrencyAmount write FCurrencyAmount stored HasCurrencyAmount;
+    property Summary : Promotion_Summary_Type read FSummary write FSummary stored HasSummary;
+    property Details : Promotion_Details_Type read FDetails write FDetails stored HasDetails;
   end;
 
-  PromotionBenefit = class(TBaseComplexRemotable)
+  PromotionBenefit_Type = class(TBaseComplexRemotable)
   private
     FBenefitType : string;
     FComponentType : string;
     FQuantity : integer;
     FPercentOff : Double;
-    FFixedAmount : Price;
-    FCeiling : Price;
+    FFixedAmount : Price_Type;
+    FCeiling : Price_Type;
   private
     function HasQuantity() : Boolean;
     function HasPercentOff() : Boolean;
     function HasFixedAmount() : Boolean;
     function HasCeiling() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property BenefitType : string read FBenefitType write FBenefitType;
     property ComponentType : string read FComponentType write FComponentType;
     property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
     property PercentOff : Double read FPercentOff write FPercentOff stored HasPercentOff;
-    property FixedAmount : Price read FFixedAmount write FFixedAmount stored HasFixedAmount;
-    property Ceiling : Price read FCeiling write FCeiling stored HasCeiling;
+    property FixedAmount : Price_Type read FFixedAmount write FFixedAmount stored HasFixedAmount;
+    property Ceiling : Price_Type read FCeiling write FCeiling stored HasCeiling;
+  end;
+
+  PromotionEligibilityRequirement_Type = class(TBaseComplexRemotable)
+  private
+    FEligibilityRequirementType : string;
+    FQuantity : integer;
+    FCurrencyAmount : Price_Type;
+  private
+    function HasQuantity() : Boolean;
+    function HasCurrencyAmount() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property EligibilityRequirementType : string read FEligibilityRequirementType write FEligibilityRequirementType;
+    property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
+    property CurrencyAmount : Price_Type read FCurrencyAmount write FCurrencyAmount stored HasCurrencyAmount;
+  end;
+
+  PromotionItemApplicability_Type = class(TBaseComplexRemotable)
+  private
+    FASIN : string;
+    FIsInBenefitSet : boolean;
+    FIsInEligibilityRequirementSet : boolean;
+  published
+    property ASIN : string read FASIN write FASIN;
+    property IsInBenefitSet : boolean read FIsInBenefitSet write FIsInBenefitSet;
+    property IsInEligibilityRequirementSet : boolean read FIsInEligibilityRequirementSet write FIsInEligibilityRequirementSet;
+  end;
+
+  BrowseNodes_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FBrowseNode : BrowseNodes_BrowseNodeArray;
+  private
+    function HasRequest() : Boolean;
+    function HasBrowseNode() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property BrowseNode : BrowseNodes_BrowseNodeArray read FBrowseNode write FBrowseNode stored HasBrowseNode;
   end;
 
   BrowseNode_Type = class(TBaseComplexRemotable)
@@ -5107,7 +3421,50 @@ type
     property Text : string read FText write FText stored HasText;
   end;
 
-  CartItem = class(TBaseComplexRemotable)
+  SearchInside_Type = class(TBaseComplexRemotable)
+  private
+    FTotalExcerpts : nonNegativeInteger;
+    FExcerpt : SearchInside_Excerpt_Type;
+  private
+    function HasTotalExcerpts() : Boolean;
+    function HasExcerpt() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TotalExcerpts : nonNegativeInteger read FTotalExcerpts write FTotalExcerpts stored HasTotalExcerpts;
+    property Excerpt : SearchInside_Excerpt_Type read FExcerpt write FExcerpt stored HasExcerpt;
+  end;
+
+  CartItems_Type = class(TBaseComplexRemotable)
+  private
+    FSubTotal : Price_Type;
+    FCartItem : CartItems_CartItemArray;
+  private
+    function HasSubTotal() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property CartItem : CartItems_CartItemArray read FCartItem write FCartItem;
+  end;
+
+  SavedForLaterItems_Type = class(TBaseComplexRemotable)
+  private
+    FSubTotal : Price_Type;
+    FSavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray;
+  private
+    function HasSubTotal() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property SavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray read FSavedForLaterItem write FSavedForLaterItem;
+  end;
+
+  CartItem_Type = class(TBaseComplexRemotable)
   private
     FCartItemId : string;
     FASIN : string;
@@ -5120,8 +3477,8 @@ type
     FProductGroup : string;
     FListOwner : string;
     FListType : string;
-    FPrice : Price;
-    FItemTotal : Price;
+    FPrice : Price_Type;
+    FItemTotal : Price_Type;
   private
     function HasASIN() : Boolean;
     function HasExchangeId() : Boolean;
@@ -5135,6 +3492,7 @@ type
     function HasPrice() : Boolean;
     function HasItemTotal() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
     property CartItemId : string read FCartItemId write FCartItemId;
@@ -5148,48 +3506,26 @@ type
     property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
     property ListOwner : string read FListOwner write FListOwner stored HasListOwner;
     property ListType : string read FListType write FListType stored HasListType;
-    property Price : Price read FPrice write FPrice stored HasPrice;
-    property ItemTotal : Price read FItemTotal write FItemTotal stored HasItemTotal;
+    property Price : Price_Type read FPrice write FPrice stored HasPrice;
+    property ItemTotal : Price_Type read FItemTotal write FItemTotal stored HasItemTotal;
   end;
 
   Transaction_Totals_Type = class(TBaseComplexRemotable)
   private
-    FTotal : Price;
-    FSubtotal : Price;
-    FTax : Price;
-    FShippingCharge : Price;
-    FPromotion : Price;
-  public
-    destructor Destroy();override;
-  published
-    property Total : Price read FTotal write FTotal;
-    property Subtotal : Price read FSubtotal write FSubtotal;
-    property Tax : Price read FTax write FTax;
-    property ShippingCharge : Price read FShippingCharge write FShippingCharge;
-    property Promotion : Price read FPromotion write FPromotion;
-  end;
-
-  TransactionItem_Type = class(TBaseComplexRemotable)
-  private
-    FTransactionItemId : string;
-    FQuantity : string;
-    FUnitPrice : Price;
-    FTotalPrice : Price;
-    FASIN : string;
-    FChildTransactionItems : TransactionItem_ChildTransactionItems_Type;
-  private
-    function HasASIN() : Boolean;
-    function HasChildTransactionItems() : Boolean;
+    FTotal : Price_Type;
+    FSubtotal : Price_Type;
+    FTax : Price_Type;
+    FShippingCharge : Price_Type;
+    FPromotion : Price_Type;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property TransactionItemId : string read FTransactionItemId write FTransactionItemId;
-    property Quantity : string read FQuantity write FQuantity;
-    property UnitPrice : Price read FUnitPrice write FUnitPrice;
-    property TotalPrice : Price read FTotalPrice write FTotalPrice;
-    property ASIN : string read FASIN write FASIN stored HasASIN;
-    property ChildTransactionItems : TransactionItem_ChildTransactionItems_Type read FChildTransactionItems write FChildTransactionItems stored HasChildTransactionItems;
+    property Total : Price_Type read FTotal write FTotal;
+    property Subtotal : Price_Type read FSubtotal write FSubtotal;
+    property Tax : Price_Type read FTax write FTax;
+    property ShippingCharge : Price_Type read FShippingCharge write FShippingCharge;
+    property Promotion : Price_Type read FPromotion write FPromotion;
   end;
 
   Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type = class(TBaseComplexRemotable)
@@ -5218,6 +3554,66 @@ type
     property DeliveryMethod : string read FDeliveryMethod write FDeliveryMethod;
     property ShipmentItems : Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type read FShipmentItems write FShipmentItems stored HasShipmentItems;
     property Packages : Transaction_Shipments_Type_Shipment_Type_Packages_Type read FPackages write FPackages stored HasPackages;
+  end;
+
+  Transaction_Type = class(TBaseComplexRemotable)
+  private
+    FTransactionId : string;
+    FSellerId : string;
+    FCondition : string;
+    FTransactionDate : string;
+    FTransactionDateEpoch : string;
+    FSellerName : string;
+    FPayingCustomerId : string;
+    FOrderingCustomerId : string;
+    FTotals : Transaction_Totals_Type;
+    FTransactionItems : Transaction_TransactionItems_Type;
+    FShipments : Transaction_Shipments_Type;
+  private
+    function HasSellerName() : Boolean;
+    function HasPayingCustomerId() : Boolean;
+    function HasOrderingCustomerId() : Boolean;
+    function HasTotals() : Boolean;
+    function HasTransactionItems() : Boolean;
+    function HasShipments() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TransactionId : string read FTransactionId write FTransactionId;
+    property SellerId : string read FSellerId write FSellerId;
+    property Condition : string read FCondition write FCondition;
+    property TransactionDate : string read FTransactionDate write FTransactionDate;
+    property TransactionDateEpoch : string read FTransactionDateEpoch write FTransactionDateEpoch;
+    property SellerName : string read FSellerName write FSellerName stored HasSellerName;
+    property PayingCustomerId : string read FPayingCustomerId write FPayingCustomerId stored HasPayingCustomerId;
+    property OrderingCustomerId : string read FOrderingCustomerId write FOrderingCustomerId stored HasOrderingCustomerId;
+    property Totals : Transaction_Totals_Type read FTotals write FTotals stored HasTotals;
+    property TransactionItems : Transaction_TransactionItems_Type read FTransactionItems write FTransactionItems stored HasTransactionItems;
+    property Shipments : Transaction_Shipments_Type read FShipments write FShipments stored HasShipments;
+  end;
+
+  TransactionItem_Type = class(TBaseComplexRemotable)
+  private
+    FTransactionItemId : string;
+    FQuantity : string;
+    FUnitPrice : Price_Type;
+    FTotalPrice : Price_Type;
+    FASIN : string;
+    FChildTransactionItems : TransactionItem_ChildTransactionItems_Type;
+  private
+    function HasASIN() : Boolean;
+    function HasChildTransactionItems() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TransactionItemId : string read FTransactionItemId write FTransactionItemId;
+    property Quantity : string read FQuantity write FQuantity;
+    property UnitPrice : Price_Type read FUnitPrice write FUnitPrice;
+    property TotalPrice : Price_Type read FTotalPrice write FTotalPrice;
+    property ASIN : string read FASIN write FASIN stored HasASIN;
+    property ChildTransactionItems : TransactionItem_ChildTransactionItems_Type read FChildTransactionItems write FChildTransactionItems stored HasChildTransactionItems;
   end;
 
   Seller_Location_Type = class(TBaseComplexRemotable)
@@ -5256,12 +3652,61 @@ type
   private
     FSellerFeedbackRating : Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray;
     FPeriod : string;
+  private
+    function HasSellerFeedbackRating() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property SellerFeedbackRating : Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray read FSellerFeedbackRating write FSellerFeedbackRating;
+    property SellerFeedbackRating : Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray read FSellerFeedbackRating write FSellerFeedbackRating stored HasSellerFeedbackRating;
     property Period : string read FPeriod write FPeriod;
+  end;
+
+  Seller_Type = class(TBaseComplexRemotable)
+  private
+    FSellerId : string;
+    FSellerName : string;
+    FSellerLegalName : string;
+    FNickname : string;
+    FGlancePage : string;
+    FAbout : string;
+    FMoreAbout : string;
+    FLocation : Seller_Location_Type;
+    FAverageFeedbackRating : Extended;
+    FTotalFeedback : nonNegativeInteger;
+    FTotalFeedbackPages : nonNegativeInteger;
+    FSellerFeedbackSummary : Seller_SellerFeedbackSummary_Type;
+    FSellerFeedback : SellerFeedback_Type;
+  private
+    function HasSellerName() : Boolean;
+    function HasSellerLegalName() : Boolean;
+    function HasNickname() : Boolean;
+    function HasGlancePage() : Boolean;
+    function HasAbout() : Boolean;
+    function HasMoreAbout() : Boolean;
+    function HasLocation() : Boolean;
+    function HasAverageFeedbackRating() : Boolean;
+    function HasTotalFeedback() : Boolean;
+    function HasTotalFeedbackPages() : Boolean;
+    function HasSellerFeedbackSummary() : Boolean;
+    function HasSellerFeedback() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property SellerId : string read FSellerId write FSellerId;
+    property SellerName : string read FSellerName write FSellerName stored HasSellerName;
+    property SellerLegalName : string read FSellerLegalName write FSellerLegalName stored HasSellerLegalName;
+    property Nickname : string read FNickname write FNickname stored HasNickname;
+    property GlancePage : string read FGlancePage write FGlancePage stored HasGlancePage;
+    property About : string read FAbout write FAbout stored HasAbout;
+    property MoreAbout : string read FMoreAbout write FMoreAbout stored HasMoreAbout;
+    property Location : Seller_Location_Type read FLocation write FLocation stored HasLocation;
+    property AverageFeedbackRating : Extended read FAverageFeedbackRating write FAverageFeedbackRating stored HasAverageFeedbackRating;
+    property TotalFeedback : nonNegativeInteger read FTotalFeedback write FTotalFeedback stored HasTotalFeedback;
+    property TotalFeedbackPages : nonNegativeInteger read FTotalFeedbackPages write FTotalFeedbackPages stored HasTotalFeedbackPages;
+    property SellerFeedbackSummary : Seller_SellerFeedbackSummary_Type read FSellerFeedbackSummary write FSellerFeedbackSummary stored HasSellerFeedbackSummary;
+    property SellerFeedback : SellerFeedback_Type read FSellerFeedback write FSellerFeedback stored HasSellerFeedback;
   end;
 
   SellerFeedback_Feedback_Type = class(TBaseComplexRemotable)
@@ -5282,18 +3727,149 @@ type
     property RatedBy : string read FRatedBy write FRatedBy stored HasRatedBy;
   end;
 
-  DecimalWithUnits = class(TComplexFloatExtendedContentRemotable)
+  Address_Type = class(TBaseComplexRemotable)
   private
-    FUnits : string;
+    FName : string;
+    FAddress1 : string;
+    FAddress2 : string;
+    FAddress3 : string;
+    FCity : string;
+    FState : string;
+    FPostalCode : string;
+    FCountry : string;
+  private
+    function HasName() : Boolean;
+    function HasAddress1() : Boolean;
+    function HasAddress2() : Boolean;
+    function HasAddress3() : Boolean;
+    function HasCity() : Boolean;
+    function HasState() : Boolean;
+    function HasPostalCode() : Boolean;
+    function HasCountry() : Boolean;
   published
-    property Units : string read FUnits write FUnits;
+    property Name : string read FName write FName stored HasName;
+    property Address1 : string read FAddress1 write FAddress1 stored HasAddress1;
+    property Address2 : string read FAddress2 write FAddress2 stored HasAddress2;
+    property Address3 : string read FAddress3 write FAddress3 stored HasAddress3;
+    property City : string read FCity write FCity stored HasCity;
+    property State : string read FState write FState stored HasState;
+    property PostalCode : string read FPostalCode write FPostalCode stored HasPostalCode;
+    property Country : string read FCountry write FCountry stored HasCountry;
   end;
 
-  NonNegativeIntegerWithUnits = class(TComplexInt32UContentRemotable)
+  SellerListing_Type = class(TBaseComplexRemotable)
   private
-    FUnits : string;
+    FExchangeId : string;
+    FListingId : string;
+    FASIN : string;
+    FSKU : string;
+    FUPC : string;
+    FEAN : string;
+    FWillShipExpedited : boolean;
+    FWillShipInternational : boolean;
+    FTitle : string;
+    FPrice : Price_Type;
+    FStartDate : string;
+    FEndDate : string;
+    FStatus : string;
+    FQuantity : string;
+    FCondition : string;
+    FSubCondition : string;
+    FSeller : Seller_Type;
+  private
+    function HasExchangeId() : Boolean;
+    function HasListingId() : Boolean;
+    function HasASIN() : Boolean;
+    function HasSKU() : Boolean;
+    function HasUPC() : Boolean;
+    function HasEAN() : Boolean;
+    function HasWillShipExpedited() : Boolean;
+    function HasWillShipInternational() : Boolean;
+    function HasTitle() : Boolean;
+    function HasPrice() : Boolean;
+    function HasStartDate() : Boolean;
+    function HasEndDate() : Boolean;
+    function HasStatus() : Boolean;
+    function HasQuantity() : Boolean;
+    function HasCondition() : Boolean;
+    function HasSubCondition() : Boolean;
+    function HasSeller() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   published
-    property Units : string read FUnits write FUnits;
+    property ExchangeId : string read FExchangeId write FExchangeId stored HasExchangeId;
+    property ListingId : string read FListingId write FListingId stored HasListingId;
+    property ASIN : string read FASIN write FASIN stored HasASIN;
+    property SKU : string read FSKU write FSKU stored HasSKU;
+    property UPC : string read FUPC write FUPC stored HasUPC;
+    property EAN : string read FEAN write FEAN stored HasEAN;
+    property WillShipExpedited : boolean read FWillShipExpedited write FWillShipExpedited stored HasWillShipExpedited;
+    property WillShipInternational : boolean read FWillShipInternational write FWillShipInternational stored HasWillShipInternational;
+    property Title : string read FTitle write FTitle stored HasTitle;
+    property Price : Price_Type read FPrice write FPrice stored HasPrice;
+    property StartDate : string read FStartDate write FStartDate stored HasStartDate;
+    property EndDate : string read FEndDate write FEndDate stored HasEndDate;
+    property Status : string read FStatus write FStatus stored HasStatus;
+    property Quantity : string read FQuantity write FQuantity stored HasQuantity;
+    property Condition : string read FCondition write FCondition stored HasCondition;
+    property SubCondition : string read FSubCondition write FSubCondition stored HasSubCondition;
+    property Seller : Seller_Type read FSeller write FSeller stored HasSeller;
+  end;
+
+  Price_Type = class(TBaseComplexRemotable)
+  private
+    FAmount : integer;
+    FCurrencyCode : string;
+    FFormattedPrice : string;
+  private
+    function HasAmount() : Boolean;
+    function HasCurrencyCode() : Boolean;
+  published
+    property Amount : integer read FAmount write FAmount stored HasAmount;
+    property CurrencyCode : string read FCurrencyCode write FCurrencyCode stored HasCurrencyCode;
+    property FormattedPrice : string read FFormattedPrice write FFormattedPrice;
+  end;
+
+  ImageSet_Type = class(TBaseComplexRemotable)
+  private
+    FSwatchImage : Image_Type;
+    FSmallImage : Image_Type;
+    FMediumImage : Image_Type;
+    FLargeImage : Image_Type;
+    FCategory : string;
+  private
+    function HasSwatchImage() : Boolean;
+    function HasSmallImage() : Boolean;
+    function HasMediumImage() : Boolean;
+    function HasLargeImage() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property SwatchImage : Image_Type read FSwatchImage write FSwatchImage stored HasSwatchImage;
+    property SmallImage : Image_Type read FSmallImage write FSmallImage stored HasSmallImage;
+    property MediumImage : Image_Type read FMediumImage write FMediumImage stored HasMediumImage;
+    property LargeImage : Image_Type read FLargeImage write FLargeImage stored HasLargeImage;
+    property Category : string read FCategory write FCategory;
+  end;
+
+  Image_Type = class(TBaseComplexRemotable)
+  private
+    FURL : string;
+    FHeight : DecimalWithUnits_Type;
+    FWidth : DecimalWithUnits_Type;
+    FIsVerified : string;
+  private
+    function HasIsVerified() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property URL : string read FURL write FURL;
+    property Height : DecimalWithUnits_Type read FHeight write FHeight;
+    property Width : DecimalWithUnits_Type read FWidth write FWidth;
+    property IsVerified : string read FIsVerified write FIsVerified stored HasIsVerified;
   end;
 
   ItemAttributes_Creator_Type = class(TComplexStringContentRemotable)
@@ -5303,31 +3879,25 @@ type
     property Role : string read FRole write FRole;
   end;
 
-  StringWithUnits = class(TComplexStringContentRemotable)
-  private
-    FUnits : string;
-  published
-    property Units : string read FUnits write FUnits;
-  end;
-
   ItemAttributes_ItemDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits;
-    FLength : DecimalWithUnits;
-    FWeight : DecimalWithUnits;
-    FWidth : DecimalWithUnits;
+    FHeight : DecimalWithUnits_Type;
+    FLength : DecimalWithUnits_Type;
+    FWeight : DecimalWithUnits_Type;
+    FWidth : DecimalWithUnits_Type;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
     function HasWeight() : Boolean;
     function HasWidth() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
   end;
 
   ItemAttributes_Languages_Type_Language_Type = class(TBaseComplexRemotable)
@@ -5346,22 +3916,827 @@ type
 
   ItemAttributes_PackageDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits;
-    FLength : DecimalWithUnits;
-    FWeight : DecimalWithUnits;
-    FWidth : DecimalWithUnits;
+    FHeight : DecimalWithUnits_Type;
+    FLength : DecimalWithUnits_Type;
+    FWeight : DecimalWithUnits_Type;
+    FWidth : DecimalWithUnits_Type;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
     function HasWeight() : Boolean;
     function HasWidth() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
+  end;
+
+  ItemAttributes_Type = class(TBaseComplexRemotable)
+  private
+    FActor : ItemAttributes_ActorArray;
+    FAddress : Address_Type;
+    FAmazonMaximumAge : DecimalWithUnits_Type;
+    FAmazonMinimumAge : DecimalWithUnits_Type;
+    FAnalogVideoFormat : string;
+    FApertureModes : string;
+    FArtist : ItemAttributes_ArtistArray;
+    FAspectRatio : string;
+    FAssemblyInstructions : string;
+    FAssemblyRequired : string;
+    FAudienceRating : string;
+    FAudioFormat : ItemAttributes_AudioFormatArray;
+    FAuthor : ItemAttributes_AuthorArray;
+    FBackFinding : string;
+    FBandMaterialType : string;
+    FBatteriesIncluded : string;
+    FBatteriesRequired : string;
+    FBatteries : NonNegativeIntegerWithUnits_Type;
+    FBatteryDescription : string;
+    FBatteryType : string;
+    FBezelMaterialType : string;
+    FBinding : string;
+    FBrand : string;
+    FCalendarType : string;
+    FCameraManualFeatures : ItemAttributes_CameraManualFeaturesArray;
+    FCaseDiameter : DecimalWithUnits_Type;
+    FCaseMaterialType : string;
+    FCaseThickness : DecimalWithUnits_Type;
+    FCaseType : string;
+    FCatalogNumber : string;
+    FCDRWDescription : string;
+    FChainType : string;
+    FCEROAgeRating : string;
+    FClaspType : string;
+    FClothingSize : string;
+    FClubType : string;
+    FColor : string;
+    FCompatibility : string;
+    FCompatibleDevices : ItemAttributes_CompatibleDevicesArray;
+    FComputerHardwareType : string;
+    FComputerPlatform : string;
+    FConnectivity : string;
+    FContinuousShootingSpeed : DecimalWithUnits_Type;
+    FCountry : string;
+    FCPUManufacturer : string;
+    FCPUSpeed : DecimalWithUnits_Type;
+    FCPUType : string;
+    FCreator : ItemAttributes_CreatorArray;
+    FCuisine : string;
+    FDataLinkProtocol : ItemAttributes_DataLinkProtocolArray;
+    FDeliveryOption : string;
+    FDelayBetweenShots : DecimalWithUnits_Type;
+    FDepartment : string;
+    FDeweyDecimalNumber : string;
+    FDialColor : string;
+    FDialWindowMaterialType : string;
+    FDigitalZoom : DecimalWithUnits_Type;
+    FDirector : ItemAttributes_DirectorArray;
+    FDisplayColorSupport : string;
+    FDisplaySize : DecimalWithUnits_Type;
+    FDrumSetPieceQuantity : nonNegativeInteger;
+    FDVDLayers : nonNegativeInteger;
+    FDVDRWDescription : string;
+    FDVDSides : nonNegativeInteger;
+    FDPCI : string;
+    FEAN : string;
+    FEdition : string;
+    FESRBAgeRating : string;
+    FExternalDisplaySupportDescription : string;
+    FFabricType : string;
+    FFaxNumber : string;
+    FFeature : ItemAttributes_FeatureArray;
+    FFilmColorType : string;
+    FFirstIssueLeadTime : StringWithUnits_Type;
+    FFloppyDiskDriveDescription : string;
+    FFormat : ItemAttributes_FormatArray;
+    FFormFactor : ItemAttributes_FormFactorArray;
+    FGemType : string;
+    FGenre : string;
+    FGraphicsCardInterface : string;
+    FGraphicsDescription : string;
+    FGraphicsMemorySize : DecimalWithUnits_Type;
+    FGuitarAttribute : string;
+    FGuitarBridgeSystem : string;
+    FGuitarPickThickness : string;
+    FGuitarPickupConfiguration : string;
+    FHandOrientation : string;
+    FHardDiskCount : nonNegativeInteger;
+    FHardDiskSize : DecimalWithUnits_Type;
+    FHardDiskInterface : string;
+    FHardwarePlatform : string;
+    FHasAutoFocus : boolean;
+    FHasBurstMode : boolean;
+    FHasInCameraEditing : boolean;
+    FHasRedEyeReduction : boolean;
+    FHasSelfTimer : boolean;
+    FHasTripodMount : boolean;
+    FHasVideoOut : boolean;
+    FHasViewfinder : boolean;
+    FHazardousMaterialType : string;
+    FHoursOfOperation : string;
+    FIncludedSoftware : string;
+    FIncludesMp3Player : boolean;
+    FIngredients : string;
+    FInstrumentKey : string;
+    FIsAdultProduct : boolean;
+    FIsAutographed : boolean;
+    FISBN : string;
+    FIsFragile : boolean;
+    FIsLabCreated : boolean;
+    FIsMemorabilia : boolean;
+    FISOEquivalent : NonNegativeIntegerWithUnits_Type;
+    FIsPreannounce : boolean;
+    FIssuesPerYear : string;
+    FItemDimensions : ItemAttributes_ItemDimensions_Type;
+    FKeyboardDescription : string;
+    F_Label : string;
+    FLanguages : ItemAttributes_Languages_Type;
+    FLegalDisclaimer : string;
+    FLensType : string;
+    FLineVoltage : string;
+    FListPrice : Price_Type;
+    FMacroFocusRange : string;
+    FMagazineType : string;
+    FMalletHardness : string;
+    FManufacturer : string;
+    FManufacturerLaborWarrantyDescription : string;
+    FManufacturerMaximumAge : DecimalWithUnits_Type;
+    FManufacturerMinimumAge : DecimalWithUnits_Type;
+    FManufacturerPartsWarrantyDescription : string;
+    FMaterialType : string;
+    FMaximumAperture : DecimalWithUnits_Type;
+    FMaximumColorDepth : string;
+    FMaximumFocalLength : DecimalWithUnits_Type;
+    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type;
+    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumLowResolutionImages : string;
+    FMaximumResolution : DecimalWithUnits_Type;
+    FMaximumShutterSpeed : DecimalWithUnits_Type;
+    FMaximumVerticalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumWeightRecommendation : DecimalWithUnits_Type;
+    FMediaType : string;
+    FMemorySlotsAvailable : string;
+    FMetalStamp : string;
+    FMetalType : string;
+    FMiniMovieDescription : string;
+    FMinimumFocalLength : DecimalWithUnits_Type;
+    FMinimumShutterSpeed : DecimalWithUnits_Type;
+    FModel : string;
+    FModelYear : nonNegativeInteger;
+    FModemDescription : string;
+    FMonitorSize : DecimalWithUnits_Type;
+    FMonitorViewableDiagonalSize : DecimalWithUnits_Type;
+    FMouseDescription : string;
+    FMPN : string;
+    FMusicalStyle : string;
+    FNativeResolution : string;
+    FNeighborhood : string;
+    FNetworkInterfaceDescription : string;
+    FNotebookDisplayTechnology : string;
+    FNotebookPointingDeviceDescription : string;
+    FNumberOfDiscs : nonNegativeInteger;
+    FNumberOfIssues : nonNegativeInteger;
+    FNumberOfItems : nonNegativeInteger;
+    FNumberOfKeys : nonNegativeInteger;
+    FNumberOfPages : nonNegativeInteger;
+    FNumberOfPearls : nonNegativeInteger;
+    FNumberOfRapidFireShots : nonNegativeInteger;
+    FNumberOfStones : nonNegativeInteger;
+    FNumberOfStrings : nonNegativeInteger;
+    FNumberOfTracks : nonNegativeInteger;
+    FOperatingSystem : string;
+    FOpticalSensorResolution : DecimalWithUnits_Type;
+    FOpticalZoom : DecimalWithUnits_Type;
+    FOriginalReleaseDate : string;
+    FOutputWattage : nonNegativeInteger;
+    FPackageDimensions : ItemAttributes_PackageDimensions_Type;
+    FPackageQuantity : nonNegativeInteger;
+    FPearlLustre : string;
+    FPearlMinimumColor : string;
+    FPearlShape : string;
+    FPearlStringingMethod : string;
+    FPearlSurfaceBlemishes : string;
+    FPearlType : string;
+    FPearlUniformity : string;
+    FPhoneNumber : string;
+    FPhotoFlashType : ItemAttributes_PhotoFlashTypeArray;
+    FPictureFormat : ItemAttributes_PictureFormatArray;
+    FPlatform : ItemAttributes_PlatformArray;
+    FPriceRating : nonNegativeInteger;
+    FProcessorCount : nonNegativeInteger;
+    FProductGroup : string;
+    FProductSiteLaunchDate : string;
+    FProductTypeName : string;
+    FProductTypeSubcategory : string;
+    FPromotionalTag : string;
+    FPublicationDate : string;
+    FPublisher : string;
+    FPOBoxShippingExcluded : string;
+    FReadingLevel : string;
+    FReturnMethod : ItemAttributes_ReturnMethodArray;
+    FRecorderTrackCount : nonNegativeInteger;
+    FRegionCode : string;
+    FRegionOfOrigin : string;
+    FReturnPolicy : string;
+    FReleaseDate : string;
+    FRemovableMemory : string;
+    FRemovableStorage : string;
+    FRequiredVoltageRange : string;
+    FResolutionModes : string;
+    FRingSize : string;
+    FRunningTime : DecimalWithUnits_Type;
+    FScentName : string;
+    FSecondaryCacheSize : NonNegativeIntegerWithUnits_Type;
+    FSettingType : string;
+    FShaftMaterialType : string;
+    FSize : string;
+    FSizePerPearl : string;
+    FSkillLevel : string;
+    FSKU : string;
+    FSoldInStores : string;
+    FSoundCardDescription : string;
+    FSpeakerCount : nonNegativeInteger;
+    FSpeakerDescription : string;
+    FSpecialFeatures : ItemAttributes_SpecialFeaturesArray;
+    FStoneClarity : string;
+    FStoneColor : string;
+    FStoneCut : string;
+    FStoneShape : string;
+    FStoneWeight : DecimalWithUnits_Type;
+    FStudio : string;
+    FStyle : string;
+    FSubscriptionLength : NonNegativeIntegerWithUnits_Type;
+    FSupportedImageType : ItemAttributes_SupportedImageTypeArray;
+    FSupportedMediaSize : string;
+    FSystemBusSpeed : DecimalWithUnits_Type;
+    FSystemMemorySizeMax : DecimalWithUnits_Type;
+    FSystemMemorySize : DecimalWithUnits_Type;
+    FSystemMemoryType : string;
+    FTellingPageIndicator : string;
+    FTheatricalReleaseDate : string;
+    FTitle : string;
+    FTotalDiamondWeight : DecimalWithUnits_Type;
+    FTotalExternalBaysFree : nonNegativeInteger;
+    FTotalFirewirePorts : nonNegativeInteger;
+    FTotalGemWeight : DecimalWithUnits_Type;
+    FTotalInternalBaysFree : nonNegativeInteger;
+    FTotalMetalWeight : DecimalWithUnits_Type;
+    FTotalNTSCPALPorts : nonNegativeInteger;
+    FTotalParallelPorts : nonNegativeInteger;
+    FTotalPCCardSlots : nonNegativeInteger;
+    FTotalPCISlotsFree : nonNegativeInteger;
+    FTotalSerialPorts : nonNegativeInteger;
+    FTotalSVideoOutPorts : nonNegativeInteger;
+    FTotalUSB2Ports : nonNegativeInteger;
+    FTotalUSBPorts : nonNegativeInteger;
+    FTotalVGAOutPorts : nonNegativeInteger;
+    FUPC : string;
+    FVariationDenomination : string;
+    FVariationDescription : string;
+    FWarranty : string;
+    FWatchMovementType : string;
+    FWaterResistanceDepth : DecimalWithUnits_Type;
+    FWEEETaxValue : Price_Type;
+    FWirelessMicrophoneFrequency : nonNegativeInteger;
+  private
+    function HasActor() : Boolean;
+    function HasAddress() : Boolean;
+    function HasAmazonMaximumAge() : Boolean;
+    function HasAmazonMinimumAge() : Boolean;
+    function HasAnalogVideoFormat() : Boolean;
+    function HasApertureModes() : Boolean;
+    function HasArtist() : Boolean;
+    function HasAspectRatio() : Boolean;
+    function HasAssemblyInstructions() : Boolean;
+    function HasAssemblyRequired() : Boolean;
+    function HasAudienceRating() : Boolean;
+    function HasAudioFormat() : Boolean;
+    function HasAuthor() : Boolean;
+    function HasBackFinding() : Boolean;
+    function HasBandMaterialType() : Boolean;
+    function HasBatteriesIncluded() : Boolean;
+    function HasBatteriesRequired() : Boolean;
+    function HasBatteries() : Boolean;
+    function HasBatteryDescription() : Boolean;
+    function HasBatteryType() : Boolean;
+    function HasBezelMaterialType() : Boolean;
+    function HasBinding() : Boolean;
+    function HasBrand() : Boolean;
+    function HasCalendarType() : Boolean;
+    function HasCameraManualFeatures() : Boolean;
+    function HasCaseDiameter() : Boolean;
+    function HasCaseMaterialType() : Boolean;
+    function HasCaseThickness() : Boolean;
+    function HasCaseType() : Boolean;
+    function HasCatalogNumber() : Boolean;
+    function HasCDRWDescription() : Boolean;
+    function HasChainType() : Boolean;
+    function HasCEROAgeRating() : Boolean;
+    function HasClaspType() : Boolean;
+    function HasClothingSize() : Boolean;
+    function HasClubType() : Boolean;
+    function HasColor() : Boolean;
+    function HasCompatibility() : Boolean;
+    function HasCompatibleDevices() : Boolean;
+    function HasComputerHardwareType() : Boolean;
+    function HasComputerPlatform() : Boolean;
+    function HasConnectivity() : Boolean;
+    function HasContinuousShootingSpeed() : Boolean;
+    function HasCountry() : Boolean;
+    function HasCPUManufacturer() : Boolean;
+    function HasCPUSpeed() : Boolean;
+    function HasCPUType() : Boolean;
+    function HasCreator() : Boolean;
+    function HasCuisine() : Boolean;
+    function HasDataLinkProtocol() : Boolean;
+    function HasDeliveryOption() : Boolean;
+    function HasDelayBetweenShots() : Boolean;
+    function HasDepartment() : Boolean;
+    function HasDeweyDecimalNumber() : Boolean;
+    function HasDialColor() : Boolean;
+    function HasDialWindowMaterialType() : Boolean;
+    function HasDigitalZoom() : Boolean;
+    function HasDirector() : Boolean;
+    function HasDisplayColorSupport() : Boolean;
+    function HasDisplaySize() : Boolean;
+    function HasDrumSetPieceQuantity() : Boolean;
+    function HasDVDLayers() : Boolean;
+    function HasDVDRWDescription() : Boolean;
+    function HasDVDSides() : Boolean;
+    function HasDPCI() : Boolean;
+    function HasEAN() : Boolean;
+    function HasEdition() : Boolean;
+    function HasESRBAgeRating() : Boolean;
+    function HasExternalDisplaySupportDescription() : Boolean;
+    function HasFabricType() : Boolean;
+    function HasFaxNumber() : Boolean;
+    function HasFeature() : Boolean;
+    function HasFilmColorType() : Boolean;
+    function HasFirstIssueLeadTime() : Boolean;
+    function HasFloppyDiskDriveDescription() : Boolean;
+    function HasFormat() : Boolean;
+    function HasFormFactor() : Boolean;
+    function HasGemType() : Boolean;
+    function HasGenre() : Boolean;
+    function HasGraphicsCardInterface() : Boolean;
+    function HasGraphicsDescription() : Boolean;
+    function HasGraphicsMemorySize() : Boolean;
+    function HasGuitarAttribute() : Boolean;
+    function HasGuitarBridgeSystem() : Boolean;
+    function HasGuitarPickThickness() : Boolean;
+    function HasGuitarPickupConfiguration() : Boolean;
+    function HasHandOrientation() : Boolean;
+    function HasHardDiskCount() : Boolean;
+    function HasHardDiskSize() : Boolean;
+    function HasHardDiskInterface() : Boolean;
+    function HasHardwarePlatform() : Boolean;
+    function HasHasAutoFocus() : Boolean;
+    function HasHasBurstMode() : Boolean;
+    function HasHasInCameraEditing() : Boolean;
+    function HasHasRedEyeReduction() : Boolean;
+    function HasHasSelfTimer() : Boolean;
+    function HasHasTripodMount() : Boolean;
+    function HasHasVideoOut() : Boolean;
+    function HasHasViewfinder() : Boolean;
+    function HasHazardousMaterialType() : Boolean;
+    function HasHoursOfOperation() : Boolean;
+    function HasIncludedSoftware() : Boolean;
+    function HasIncludesMp3Player() : Boolean;
+    function HasIngredients() : Boolean;
+    function HasInstrumentKey() : Boolean;
+    function HasIsAdultProduct() : Boolean;
+    function HasIsAutographed() : Boolean;
+    function HasISBN() : Boolean;
+    function HasIsFragile() : Boolean;
+    function HasIsLabCreated() : Boolean;
+    function HasIsMemorabilia() : Boolean;
+    function HasISOEquivalent() : Boolean;
+    function HasIsPreannounce() : Boolean;
+    function HasIssuesPerYear() : Boolean;
+    function HasItemDimensions() : Boolean;
+    function HasKeyboardDescription() : Boolean;
+    function Has_Label() : Boolean;
+    function HasLanguages() : Boolean;
+    function HasLegalDisclaimer() : Boolean;
+    function HasLensType() : Boolean;
+    function HasLineVoltage() : Boolean;
+    function HasListPrice() : Boolean;
+    function HasMacroFocusRange() : Boolean;
+    function HasMagazineType() : Boolean;
+    function HasMalletHardness() : Boolean;
+    function HasManufacturer() : Boolean;
+    function HasManufacturerLaborWarrantyDescription() : Boolean;
+    function HasManufacturerMaximumAge() : Boolean;
+    function HasManufacturerMinimumAge() : Boolean;
+    function HasManufacturerPartsWarrantyDescription() : Boolean;
+    function HasMaterialType() : Boolean;
+    function HasMaximumAperture() : Boolean;
+    function HasMaximumColorDepth() : Boolean;
+    function HasMaximumFocalLength() : Boolean;
+    function HasMaximumHighResolutionImages() : Boolean;
+    function HasMaximumHorizontalResolution() : Boolean;
+    function HasMaximumLowResolutionImages() : Boolean;
+    function HasMaximumResolution() : Boolean;
+    function HasMaximumShutterSpeed() : Boolean;
+    function HasMaximumVerticalResolution() : Boolean;
+    function HasMaximumWeightRecommendation() : Boolean;
+    function HasMediaType() : Boolean;
+    function HasMemorySlotsAvailable() : Boolean;
+    function HasMetalStamp() : Boolean;
+    function HasMetalType() : Boolean;
+    function HasMiniMovieDescription() : Boolean;
+    function HasMinimumFocalLength() : Boolean;
+    function HasMinimumShutterSpeed() : Boolean;
+    function HasModel() : Boolean;
+    function HasModelYear() : Boolean;
+    function HasModemDescription() : Boolean;
+    function HasMonitorSize() : Boolean;
+    function HasMonitorViewableDiagonalSize() : Boolean;
+    function HasMouseDescription() : Boolean;
+    function HasMPN() : Boolean;
+    function HasMusicalStyle() : Boolean;
+    function HasNativeResolution() : Boolean;
+    function HasNeighborhood() : Boolean;
+    function HasNetworkInterfaceDescription() : Boolean;
+    function HasNotebookDisplayTechnology() : Boolean;
+    function HasNotebookPointingDeviceDescription() : Boolean;
+    function HasNumberOfDiscs() : Boolean;
+    function HasNumberOfIssues() : Boolean;
+    function HasNumberOfItems() : Boolean;
+    function HasNumberOfKeys() : Boolean;
+    function HasNumberOfPages() : Boolean;
+    function HasNumberOfPearls() : Boolean;
+    function HasNumberOfRapidFireShots() : Boolean;
+    function HasNumberOfStones() : Boolean;
+    function HasNumberOfStrings() : Boolean;
+    function HasNumberOfTracks() : Boolean;
+    function HasOperatingSystem() : Boolean;
+    function HasOpticalSensorResolution() : Boolean;
+    function HasOpticalZoom() : Boolean;
+    function HasOriginalReleaseDate() : Boolean;
+    function HasOutputWattage() : Boolean;
+    function HasPackageDimensions() : Boolean;
+    function HasPackageQuantity() : Boolean;
+    function HasPearlLustre() : Boolean;
+    function HasPearlMinimumColor() : Boolean;
+    function HasPearlShape() : Boolean;
+    function HasPearlStringingMethod() : Boolean;
+    function HasPearlSurfaceBlemishes() : Boolean;
+    function HasPearlType() : Boolean;
+    function HasPearlUniformity() : Boolean;
+    function HasPhoneNumber() : Boolean;
+    function HasPhotoFlashType() : Boolean;
+    function HasPictureFormat() : Boolean;
+    function HasPlatform() : Boolean;
+    function HasPriceRating() : Boolean;
+    function HasProcessorCount() : Boolean;
+    function HasProductGroup() : Boolean;
+    function HasProductSiteLaunchDate() : Boolean;
+    function HasProductTypeName() : Boolean;
+    function HasProductTypeSubcategory() : Boolean;
+    function HasPromotionalTag() : Boolean;
+    function HasPublicationDate() : Boolean;
+    function HasPublisher() : Boolean;
+    function HasPOBoxShippingExcluded() : Boolean;
+    function HasReadingLevel() : Boolean;
+    function HasReturnMethod() : Boolean;
+    function HasRecorderTrackCount() : Boolean;
+    function HasRegionCode() : Boolean;
+    function HasRegionOfOrigin() : Boolean;
+    function HasReturnPolicy() : Boolean;
+    function HasReleaseDate() : Boolean;
+    function HasRemovableMemory() : Boolean;
+    function HasRemovableStorage() : Boolean;
+    function HasRequiredVoltageRange() : Boolean;
+    function HasResolutionModes() : Boolean;
+    function HasRingSize() : Boolean;
+    function HasRunningTime() : Boolean;
+    function HasScentName() : Boolean;
+    function HasSecondaryCacheSize() : Boolean;
+    function HasSettingType() : Boolean;
+    function HasShaftMaterialType() : Boolean;
+    function HasSize() : Boolean;
+    function HasSizePerPearl() : Boolean;
+    function HasSkillLevel() : Boolean;
+    function HasSKU() : Boolean;
+    function HasSoldInStores() : Boolean;
+    function HasSoundCardDescription() : Boolean;
+    function HasSpeakerCount() : Boolean;
+    function HasSpeakerDescription() : Boolean;
+    function HasSpecialFeatures() : Boolean;
+    function HasStoneClarity() : Boolean;
+    function HasStoneColor() : Boolean;
+    function HasStoneCut() : Boolean;
+    function HasStoneShape() : Boolean;
+    function HasStoneWeight() : Boolean;
+    function HasStudio() : Boolean;
+    function HasStyle() : Boolean;
+    function HasSubscriptionLength() : Boolean;
+    function HasSupportedImageType() : Boolean;
+    function HasSupportedMediaSize() : Boolean;
+    function HasSystemBusSpeed() : Boolean;
+    function HasSystemMemorySizeMax() : Boolean;
+    function HasSystemMemorySize() : Boolean;
+    function HasSystemMemoryType() : Boolean;
+    function HasTellingPageIndicator() : Boolean;
+    function HasTheatricalReleaseDate() : Boolean;
+    function HasTitle() : Boolean;
+    function HasTotalDiamondWeight() : Boolean;
+    function HasTotalExternalBaysFree() : Boolean;
+    function HasTotalFirewirePorts() : Boolean;
+    function HasTotalGemWeight() : Boolean;
+    function HasTotalInternalBaysFree() : Boolean;
+    function HasTotalMetalWeight() : Boolean;
+    function HasTotalNTSCPALPorts() : Boolean;
+    function HasTotalParallelPorts() : Boolean;
+    function HasTotalPCCardSlots() : Boolean;
+    function HasTotalPCISlotsFree() : Boolean;
+    function HasTotalSerialPorts() : Boolean;
+    function HasTotalSVideoOutPorts() : Boolean;
+    function HasTotalUSB2Ports() : Boolean;
+    function HasTotalUSBPorts() : Boolean;
+    function HasTotalVGAOutPorts() : Boolean;
+    function HasUPC() : Boolean;
+    function HasVariationDenomination() : Boolean;
+    function HasVariationDescription() : Boolean;
+    function HasWarranty() : Boolean;
+    function HasWatchMovementType() : Boolean;
+    function HasWaterResistanceDepth() : Boolean;
+    function HasWEEETaxValue() : Boolean;
+    function HasWirelessMicrophoneFrequency() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Actor : ItemAttributes_ActorArray read FActor write FActor stored HasActor;
+    property Address : Address_Type read FAddress write FAddress stored HasAddress;
+    property AmazonMaximumAge : DecimalWithUnits_Type read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
+    property AmazonMinimumAge : DecimalWithUnits_Type read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
+    property AnalogVideoFormat : string read FAnalogVideoFormat write FAnalogVideoFormat stored HasAnalogVideoFormat;
+    property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
+    property Artist : ItemAttributes_ArtistArray read FArtist write FArtist stored HasArtist;
+    property AspectRatio : string read FAspectRatio write FAspectRatio stored HasAspectRatio;
+    property AssemblyInstructions : string read FAssemblyInstructions write FAssemblyInstructions stored HasAssemblyInstructions;
+    property AssemblyRequired : string read FAssemblyRequired write FAssemblyRequired stored HasAssemblyRequired;
+    property AudienceRating : string read FAudienceRating write FAudienceRating stored HasAudienceRating;
+    property AudioFormat : ItemAttributes_AudioFormatArray read FAudioFormat write FAudioFormat stored HasAudioFormat;
+    property Author : ItemAttributes_AuthorArray read FAuthor write FAuthor stored HasAuthor;
+    property BackFinding : string read FBackFinding write FBackFinding stored HasBackFinding;
+    property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
+    property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
+    property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
+    property Batteries : NonNegativeIntegerWithUnits_Type read FBatteries write FBatteries stored HasBatteries;
+    property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
+    property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
+    property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
+    property Binding : string read FBinding write FBinding stored HasBinding;
+    property Brand : string read FBrand write FBrand stored HasBrand;
+    property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
+    property CameraManualFeatures : ItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures stored HasCameraManualFeatures;
+    property CaseDiameter : DecimalWithUnits_Type read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
+    property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
+    property CaseThickness : DecimalWithUnits_Type read FCaseThickness write FCaseThickness stored HasCaseThickness;
+    property CaseType : string read FCaseType write FCaseType stored HasCaseType;
+    property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
+    property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
+    property ChainType : string read FChainType write FChainType stored HasChainType;
+    property CEROAgeRating : string read FCEROAgeRating write FCEROAgeRating stored HasCEROAgeRating;
+    property ClaspType : string read FClaspType write FClaspType stored HasClaspType;
+    property ClothingSize : string read FClothingSize write FClothingSize stored HasClothingSize;
+    property ClubType : string read FClubType write FClubType stored HasClubType;
+    property Color : string read FColor write FColor stored HasColor;
+    property Compatibility : string read FCompatibility write FCompatibility stored HasCompatibility;
+    property CompatibleDevices : ItemAttributes_CompatibleDevicesArray read FCompatibleDevices write FCompatibleDevices stored HasCompatibleDevices;
+    property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
+    property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
+    property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
+    property ContinuousShootingSpeed : DecimalWithUnits_Type read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
+    property Country : string read FCountry write FCountry stored HasCountry;
+    property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
+    property CPUSpeed : DecimalWithUnits_Type read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
+    property CPUType : string read FCPUType write FCPUType stored HasCPUType;
+    property Creator : ItemAttributes_CreatorArray read FCreator write FCreator stored HasCreator;
+    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
+    property DataLinkProtocol : ItemAttributes_DataLinkProtocolArray read FDataLinkProtocol write FDataLinkProtocol stored HasDataLinkProtocol;
+    property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
+    property DelayBetweenShots : DecimalWithUnits_Type read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
+    property Department : string read FDepartment write FDepartment stored HasDepartment;
+    property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
+    property DialColor : string read FDialColor write FDialColor stored HasDialColor;
+    property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
+    property DigitalZoom : DecimalWithUnits_Type read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
+    property Director : ItemAttributes_DirectorArray read FDirector write FDirector stored HasDirector;
+    property DisplayColorSupport : string read FDisplayColorSupport write FDisplayColorSupport stored HasDisplayColorSupport;
+    property DisplaySize : DecimalWithUnits_Type read FDisplaySize write FDisplaySize stored HasDisplaySize;
+    property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
+    property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
+    property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
+    property DVDSides : nonNegativeInteger read FDVDSides write FDVDSides stored HasDVDSides;
+    property DPCI : string read FDPCI write FDPCI stored HasDPCI;
+    property EAN : string read FEAN write FEAN stored HasEAN;
+    property Edition : string read FEdition write FEdition stored HasEdition;
+    property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
+    property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
+    property FabricType : string read FFabricType write FFabricType stored HasFabricType;
+    property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
+    property Feature : ItemAttributes_FeatureArray read FFeature write FFeature stored HasFeature;
+    property FilmColorType : string read FFilmColorType write FFilmColorType stored HasFilmColorType;
+    property FirstIssueLeadTime : StringWithUnits_Type read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
+    property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
+    property Format : ItemAttributes_FormatArray read FFormat write FFormat stored HasFormat;
+    property FormFactor : ItemAttributes_FormFactorArray read FFormFactor write FFormFactor stored HasFormFactor;
+    property GemType : string read FGemType write FGemType stored HasGemType;
+    property Genre : string read FGenre write FGenre stored HasGenre;
+    property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
+    property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
+    property GraphicsMemorySize : DecimalWithUnits_Type read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
+    property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
+    property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
+    property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
+    property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
+    property HandOrientation : string read FHandOrientation write FHandOrientation stored HasHandOrientation;
+    property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
+    property HardDiskSize : DecimalWithUnits_Type read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
+    property HardDiskInterface : string read FHardDiskInterface write FHardDiskInterface stored HasHardDiskInterface;
+    property HardwarePlatform : string read FHardwarePlatform write FHardwarePlatform stored HasHardwarePlatform;
+    property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
+    property HasBurstMode : boolean read FHasBurstMode write FHasBurstMode stored HasHasBurstMode;
+    property HasInCameraEditing : boolean read FHasInCameraEditing write FHasInCameraEditing stored HasHasInCameraEditing;
+    property HasRedEyeReduction : boolean read FHasRedEyeReduction write FHasRedEyeReduction stored HasHasRedEyeReduction;
+    property HasSelfTimer : boolean read FHasSelfTimer write FHasSelfTimer stored HasHasSelfTimer;
+    property HasTripodMount : boolean read FHasTripodMount write FHasTripodMount stored HasHasTripodMount;
+    property HasVideoOut : boolean read FHasVideoOut write FHasVideoOut stored HasHasVideoOut;
+    property HasViewfinder : boolean read FHasViewfinder write FHasViewfinder stored HasHasViewfinder;
+    property HazardousMaterialType : string read FHazardousMaterialType write FHazardousMaterialType stored HasHazardousMaterialType;
+    property HoursOfOperation : string read FHoursOfOperation write FHoursOfOperation stored HasHoursOfOperation;
+    property IncludedSoftware : string read FIncludedSoftware write FIncludedSoftware stored HasIncludedSoftware;
+    property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
+    property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
+    property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
+    property IsAdultProduct : boolean read FIsAdultProduct write FIsAdultProduct stored HasIsAdultProduct;
+    property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
+    property ISBN : string read FISBN write FISBN stored HasISBN;
+    property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
+    property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
+    property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
+    property ISOEquivalent : NonNegativeIntegerWithUnits_Type read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
+    property IsPreannounce : boolean read FIsPreannounce write FIsPreannounce stored HasIsPreannounce;
+    property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
+    property ItemDimensions : ItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
+    property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
+    property _Label : string read F_Label write F_Label stored Has_Label;
+    property Languages : ItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
+    property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
+    property LensType : string read FLensType write FLensType stored HasLensType;
+    property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
+    property ListPrice : Price_Type read FListPrice write FListPrice stored HasListPrice;
+    property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
+    property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
+    property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
+    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
+    property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
+    property ManufacturerMaximumAge : DecimalWithUnits_Type read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
+    property ManufacturerMinimumAge : DecimalWithUnits_Type read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
+    property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
+    property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
+    property MaximumAperture : DecimalWithUnits_Type read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
+    property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
+    property MaximumFocalLength : DecimalWithUnits_Type read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
+    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
+    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
+    property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
+    property MaximumResolution : DecimalWithUnits_Type read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
+    property MaximumShutterSpeed : DecimalWithUnits_Type read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
+    property MaximumVerticalResolution : NonNegativeIntegerWithUnits_Type read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
+    property MaximumWeightRecommendation : DecimalWithUnits_Type read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
+    property MediaType : string read FMediaType write FMediaType stored HasMediaType;
+    property MemorySlotsAvailable : string read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
+    property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
+    property MetalType : string read FMetalType write FMetalType stored HasMetalType;
+    property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
+    property MinimumFocalLength : DecimalWithUnits_Type read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
+    property MinimumShutterSpeed : DecimalWithUnits_Type read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
+    property Model : string read FModel write FModel stored HasModel;
+    property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
+    property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
+    property MonitorSize : DecimalWithUnits_Type read FMonitorSize write FMonitorSize stored HasMonitorSize;
+    property MonitorViewableDiagonalSize : DecimalWithUnits_Type read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
+    property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
+    property MPN : string read FMPN write FMPN stored HasMPN;
+    property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
+    property NativeResolution : string read FNativeResolution write FNativeResolution stored HasNativeResolution;
+    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
+    property NetworkInterfaceDescription : string read FNetworkInterfaceDescription write FNetworkInterfaceDescription stored HasNetworkInterfaceDescription;
+    property NotebookDisplayTechnology : string read FNotebookDisplayTechnology write FNotebookDisplayTechnology stored HasNotebookDisplayTechnology;
+    property NotebookPointingDeviceDescription : string read FNotebookPointingDeviceDescription write FNotebookPointingDeviceDescription stored HasNotebookPointingDeviceDescription;
+    property NumberOfDiscs : nonNegativeInteger read FNumberOfDiscs write FNumberOfDiscs stored HasNumberOfDiscs;
+    property NumberOfIssues : nonNegativeInteger read FNumberOfIssues write FNumberOfIssues stored HasNumberOfIssues;
+    property NumberOfItems : nonNegativeInteger read FNumberOfItems write FNumberOfItems stored HasNumberOfItems;
+    property NumberOfKeys : nonNegativeInteger read FNumberOfKeys write FNumberOfKeys stored HasNumberOfKeys;
+    property NumberOfPages : nonNegativeInteger read FNumberOfPages write FNumberOfPages stored HasNumberOfPages;
+    property NumberOfPearls : nonNegativeInteger read FNumberOfPearls write FNumberOfPearls stored HasNumberOfPearls;
+    property NumberOfRapidFireShots : nonNegativeInteger read FNumberOfRapidFireShots write FNumberOfRapidFireShots stored HasNumberOfRapidFireShots;
+    property NumberOfStones : nonNegativeInteger read FNumberOfStones write FNumberOfStones stored HasNumberOfStones;
+    property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
+    property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
+    property OperatingSystem : string read FOperatingSystem write FOperatingSystem stored HasOperatingSystem;
+    property OpticalSensorResolution : DecimalWithUnits_Type read FOpticalSensorResolution write FOpticalSensorResolution stored HasOpticalSensorResolution;
+    property OpticalZoom : DecimalWithUnits_Type read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
+    property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
+    property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
+    property PackageDimensions : ItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
+    property PackageQuantity : nonNegativeInteger read FPackageQuantity write FPackageQuantity stored HasPackageQuantity;
+    property PearlLustre : string read FPearlLustre write FPearlLustre stored HasPearlLustre;
+    property PearlMinimumColor : string read FPearlMinimumColor write FPearlMinimumColor stored HasPearlMinimumColor;
+    property PearlShape : string read FPearlShape write FPearlShape stored HasPearlShape;
+    property PearlStringingMethod : string read FPearlStringingMethod write FPearlStringingMethod stored HasPearlStringingMethod;
+    property PearlSurfaceBlemishes : string read FPearlSurfaceBlemishes write FPearlSurfaceBlemishes stored HasPearlSurfaceBlemishes;
+    property PearlType : string read FPearlType write FPearlType stored HasPearlType;
+    property PearlUniformity : string read FPearlUniformity write FPearlUniformity stored HasPearlUniformity;
+    property PhoneNumber : string read FPhoneNumber write FPhoneNumber stored HasPhoneNumber;
+    property PhotoFlashType : ItemAttributes_PhotoFlashTypeArray read FPhotoFlashType write FPhotoFlashType stored HasPhotoFlashType;
+    property PictureFormat : ItemAttributes_PictureFormatArray read FPictureFormat write FPictureFormat stored HasPictureFormat;
+    property Platform : ItemAttributes_PlatformArray read FPlatform write FPlatform stored HasPlatform;
+    property PriceRating : nonNegativeInteger read FPriceRating write FPriceRating stored HasPriceRating;
+    property ProcessorCount : nonNegativeInteger read FProcessorCount write FProcessorCount stored HasProcessorCount;
+    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
+    property ProductSiteLaunchDate : string read FProductSiteLaunchDate write FProductSiteLaunchDate stored HasProductSiteLaunchDate;
+    property ProductTypeName : string read FProductTypeName write FProductTypeName stored HasProductTypeName;
+    property ProductTypeSubcategory : string read FProductTypeSubcategory write FProductTypeSubcategory stored HasProductTypeSubcategory;
+    property PromotionalTag : string read FPromotionalTag write FPromotionalTag stored HasPromotionalTag;
+    property PublicationDate : string read FPublicationDate write FPublicationDate stored HasPublicationDate;
+    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
+    property POBoxShippingExcluded : string read FPOBoxShippingExcluded write FPOBoxShippingExcluded stored HasPOBoxShippingExcluded;
+    property ReadingLevel : string read FReadingLevel write FReadingLevel stored HasReadingLevel;
+    property ReturnMethod : ItemAttributes_ReturnMethodArray read FReturnMethod write FReturnMethod stored HasReturnMethod;
+    property RecorderTrackCount : nonNegativeInteger read FRecorderTrackCount write FRecorderTrackCount stored HasRecorderTrackCount;
+    property RegionCode : string read FRegionCode write FRegionCode stored HasRegionCode;
+    property RegionOfOrigin : string read FRegionOfOrigin write FRegionOfOrigin stored HasRegionOfOrigin;
+    property ReturnPolicy : string read FReturnPolicy write FReturnPolicy stored HasReturnPolicy;
+    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
+    property RemovableMemory : string read FRemovableMemory write FRemovableMemory stored HasRemovableMemory;
+    property RemovableStorage : string read FRemovableStorage write FRemovableStorage stored HasRemovableStorage;
+    property RequiredVoltageRange : string read FRequiredVoltageRange write FRequiredVoltageRange stored HasRequiredVoltageRange;
+    property ResolutionModes : string read FResolutionModes write FResolutionModes stored HasResolutionModes;
+    property RingSize : string read FRingSize write FRingSize stored HasRingSize;
+    property RunningTime : DecimalWithUnits_Type read FRunningTime write FRunningTime stored HasRunningTime;
+    property ScentName : string read FScentName write FScentName stored HasScentName;
+    property SecondaryCacheSize : NonNegativeIntegerWithUnits_Type read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
+    property SettingType : string read FSettingType write FSettingType stored HasSettingType;
+    property ShaftMaterialType : string read FShaftMaterialType write FShaftMaterialType stored HasShaftMaterialType;
+    property Size : string read FSize write FSize stored HasSize;
+    property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
+    property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
+    property SKU : string read FSKU write FSKU stored HasSKU;
+    property SoldInStores : string read FSoldInStores write FSoldInStores stored HasSoldInStores;
+    property SoundCardDescription : string read FSoundCardDescription write FSoundCardDescription stored HasSoundCardDescription;
+    property SpeakerCount : nonNegativeInteger read FSpeakerCount write FSpeakerCount stored HasSpeakerCount;
+    property SpeakerDescription : string read FSpeakerDescription write FSpeakerDescription stored HasSpeakerDescription;
+    property SpecialFeatures : ItemAttributes_SpecialFeaturesArray read FSpecialFeatures write FSpecialFeatures stored HasSpecialFeatures;
+    property StoneClarity : string read FStoneClarity write FStoneClarity stored HasStoneClarity;
+    property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
+    property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
+    property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
+    property StoneWeight : DecimalWithUnits_Type read FStoneWeight write FStoneWeight stored HasStoneWeight;
+    property Studio : string read FStudio write FStudio stored HasStudio;
+    property Style : string read FStyle write FStyle stored HasStyle;
+    property SubscriptionLength : NonNegativeIntegerWithUnits_Type read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
+    property SupportedImageType : ItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType stored HasSupportedImageType;
+    property SupportedMediaSize : string read FSupportedMediaSize write FSupportedMediaSize stored HasSupportedMediaSize;
+    property SystemBusSpeed : DecimalWithUnits_Type read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
+    property SystemMemorySizeMax : DecimalWithUnits_Type read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
+    property SystemMemorySize : DecimalWithUnits_Type read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
+    property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
+    property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
+    property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
+    property Title : string read FTitle write FTitle stored HasTitle;
+    property TotalDiamondWeight : DecimalWithUnits_Type read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
+    property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
+    property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
+    property TotalGemWeight : DecimalWithUnits_Type read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
+    property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
+    property TotalMetalWeight : DecimalWithUnits_Type read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
+    property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
+    property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
+    property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
+    property TotalPCISlotsFree : nonNegativeInteger read FTotalPCISlotsFree write FTotalPCISlotsFree stored HasTotalPCISlotsFree;
+    property TotalSerialPorts : nonNegativeInteger read FTotalSerialPorts write FTotalSerialPorts stored HasTotalSerialPorts;
+    property TotalSVideoOutPorts : nonNegativeInteger read FTotalSVideoOutPorts write FTotalSVideoOutPorts stored HasTotalSVideoOutPorts;
+    property TotalUSB2Ports : nonNegativeInteger read FTotalUSB2Ports write FTotalUSB2Ports stored HasTotalUSB2Ports;
+    property TotalUSBPorts : nonNegativeInteger read FTotalUSBPorts write FTotalUSBPorts stored HasTotalUSBPorts;
+    property TotalVGAOutPorts : nonNegativeInteger read FTotalVGAOutPorts write FTotalVGAOutPorts stored HasTotalVGAOutPorts;
+    property UPC : string read FUPC write FUPC stored HasUPC;
+    property VariationDenomination : string read FVariationDenomination write FVariationDenomination stored HasVariationDenomination;
+    property VariationDescription : string read FVariationDescription write FVariationDescription stored HasVariationDescription;
+    property Warranty : string read FWarranty write FWarranty stored HasWarranty;
+    property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
+    property WaterResistanceDepth : DecimalWithUnits_Type read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
+    property WEEETaxValue : Price_Type read FWEEETaxValue write FWEEETaxValue stored HasWEEETaxValue;
+    property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
   end;
 
   MerchantItemAttributes_Creator_Type = class(TComplexStringContentRemotable)
@@ -5373,22 +4748,23 @@ type
 
   MerchantItemAttributes_ItemDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits;
-    FLength : DecimalWithUnits;
-    FWeight : DecimalWithUnits;
-    FWidth : DecimalWithUnits;
+    FHeight : DecimalWithUnits_Type;
+    FLength : DecimalWithUnits_Type;
+    FWeight : DecimalWithUnits_Type;
+    FWidth : DecimalWithUnits_Type;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
     function HasWeight() : Boolean;
     function HasWidth() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
   end;
 
   MerchantItemAttributes_Languages_Type_Language_Type = class(TBaseComplexRemotable)
@@ -5406,22 +4782,23 @@ type
 
   MerchantItemAttributes_PackageDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits;
-    FLength : DecimalWithUnits;
-    FWeight : DecimalWithUnits;
-    FWidth : DecimalWithUnits;
+    FHeight : DecimalWithUnits_Type;
+    FLength : DecimalWithUnits_Type;
+    FWeight : DecimalWithUnits_Type;
+    FWidth : DecimalWithUnits_Type;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
     function HasWeight() : Boolean;
     function HasWidth() : Boolean;
   public
+    constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
   end;
 
   MerchantItemAttributes_VendorRebate_Type = class(TBaseComplexRemotable)
@@ -5439,12 +4816,777 @@ type
     property EndDate : string read FEndDate write FEndDate stored HasEndDate;
   end;
 
+  MerchantItemAttributes_Type = class(TBaseComplexRemotable)
+  private
+    FActor : MerchantItemAttributes_ActorArray;
+    FAddress : Address_Type;
+    FAmazonMaximumAge : DecimalWithUnits_Type;
+    FAmazonMinimumAge : DecimalWithUnits_Type;
+    FApertureModes : string;
+    FArtist : MerchantItemAttributes_ArtistArray;
+    FAspectRatio : string;
+    FAssemblyInstructions : string;
+    FAssemblyRequired : string;
+    FAudienceRating : string;
+    FAudioFormat : MerchantItemAttributes_AudioFormatArray;
+    FAuthor : MerchantItemAttributes_AuthorArray;
+    FBackFinding : string;
+    FBandMaterialType : string;
+    FBatteriesIncluded : string;
+    FBatteriesRequired : string;
+    FBatteries : NonNegativeIntegerWithUnits_Type;
+    FBatteryDescription : string;
+    FBatteryType : string;
+    FBezelMaterialType : string;
+    FBinding : string;
+    FBrand : string;
+    FCalendarType : string;
+    FCameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray;
+    FCaseDiameter : DecimalWithUnits_Type;
+    FCaseMaterialType : string;
+    FCaseThickness : DecimalWithUnits_Type;
+    FCaseType : string;
+    FCatalogNumber : string;
+    FCDRWDescription : string;
+    FChainType : string;
+    FClaspType : string;
+    FClothingSize : string;
+    FColor : string;
+    FCompatibility : string;
+    FComputerHardwareType : string;
+    FComputerPlatform : string;
+    FConnectivity : string;
+    FContinuousShootingSpeed : DecimalWithUnits_Type;
+    FCountry : string;
+    FCountryOfOrigin : string;
+    FCPUManufacturer : string;
+    FCPUSpeed : DecimalWithUnits_Type;
+    FCPUType : string;
+    FCreator : MerchantItemAttributes_CreatorArray;
+    FCuisine : string;
+    FCustomizable : string;
+    FDelayBetweenShots : DecimalWithUnits_Type;
+    FDeliveryOption : string;
+    FDepartment : string;
+    FDescription : string;
+    FDeweyDecimalNumber : string;
+    FDialColor : string;
+    FDialWindowMaterialType : string;
+    FDigitalZoom : DecimalWithUnits_Type;
+    FDirector : MerchantItemAttributes_DirectorArray;
+    FDisplaySize : DecimalWithUnits_Type;
+    FDrumSetPieceQuantity : nonNegativeInteger;
+    FDVDLayers : nonNegativeInteger;
+    FDVDRWDescription : string;
+    FDVDSides : nonNegativeInteger;
+    FDPCI : string;
+    FEAN : string;
+    FEdition : string;
+    FESRBAgeRating : string;
+    FExternalDisplaySupportDescription : string;
+    FFabricType : string;
+    FFaxNumber : string;
+    FFeature : MerchantItemAttributes_FeatureArray;
+    FFirstIssueLeadTime : StringWithUnits_Type;
+    FFloppyDiskDriveDescription : string;
+    FFormat : MerchantItemAttributes_FormatArray;
+    FFixedShippingCharge : Price_Type;
+    FGemType : string;
+    FGraphicsCardInterface : string;
+    FGraphicsDescription : string;
+    FGraphicsMemorySize : DecimalWithUnits_Type;
+    FGuitarAttribute : string;
+    FGuitarBridgeSystem : string;
+    FGuitarPickThickness : string;
+    FGuitarPickupConfiguration : string;
+    FHardDiskCount : nonNegativeInteger;
+    FHardDiskSize : NonNegativeIntegerWithUnits_Type;
+    FHasAutoFocus : boolean;
+    FHasBurstMode : boolean;
+    FHasInCameraEditing : boolean;
+    FHasRedEyeReduction : boolean;
+    FHasSelfTimer : boolean;
+    FHasTripodMount : boolean;
+    FHasVideoOut : boolean;
+    FHasViewfinder : boolean;
+    FHazardousMaterialType : string;
+    FHoursOfOperation : string;
+    FIncludedSoftware : string;
+    FIncludesMp3Player : boolean;
+    FIndications : string;
+    FIngredients : string;
+    FInstrumentKey : string;
+    FIsAutographed : boolean;
+    FISBN : string;
+    FIsFragile : boolean;
+    FIsLabCreated : boolean;
+    FIsMemorabilia : boolean;
+    FISOEquivalent : NonNegativeIntegerWithUnits_Type;
+    FIssuesPerYear : string;
+    FItemDimensions : MerchantItemAttributes_ItemDimensions_Type;
+    FKeyboardDescription : string;
+    F_Label : string;
+    FLanguages : MerchantItemAttributes_Languages_Type;
+    FLegalDisclaimer : string;
+    FLineVoltage : string;
+    FListPrice : Price_Type;
+    FMacroFocusRange : string;
+    FMagazineType : string;
+    FMalletHardness : string;
+    FManufacturer : string;
+    FManufacturerLaborWarrantyDescription : string;
+    FManufacturerMaximumAge : DecimalWithUnits_Type;
+    FManufacturerMinimumAge : DecimalWithUnits_Type;
+    FManufacturerPartsWarrantyDescription : string;
+    FMaterialType : string;
+    FMaximumAperture : DecimalWithUnits_Type;
+    FMaximumColorDepth : string;
+    FMaximumFocalLength : DecimalWithUnits_Type;
+    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type;
+    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumLowResolutionImages : string;
+    FMaximumResolution : DecimalWithUnits_Type;
+    FMaximumShutterSpeed : DecimalWithUnits_Type;
+    FMaximumVerticalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumWeightRecommendation : DecimalWithUnits_Type;
+    FMemorySlotsAvailable : nonNegativeInteger;
+    FMetalStamp : string;
+    FMetalType : string;
+    FMiniMovieDescription : string;
+    FMinimumFocalLength : DecimalWithUnits_Type;
+    FMinimumShutterSpeed : DecimalWithUnits_Type;
+    FModel : string;
+    FModelYear : nonNegativeInteger;
+    FModemDescription : string;
+    FMonitorSize : DecimalWithUnits_Type;
+    FMonitorViewableDiagonalSize : DecimalWithUnits_Type;
+    FMouseDescription : string;
+    FMPN : string;
+    FMusicalStyle : string;
+    FNativeResolution : string;
+    FNeighborhood : string;
+    FNetworkInterfaceDescription : string;
+    FNotebookDisplayTechnology : string;
+    FNotebookPointingDeviceDescription : string;
+    FNumberOfDiscs : nonNegativeInteger;
+    FNumberOfIssues : nonNegativeInteger;
+    FNumberOfItems : nonNegativeInteger;
+    FNumberOfKeys : nonNegativeInteger;
+    FNumberOfPages : nonNegativeInteger;
+    FNumberOfPearls : nonNegativeInteger;
+    FNumberOfRapidFireShots : nonNegativeInteger;
+    FNumberOfStones : nonNegativeInteger;
+    FNumberOfStrings : nonNegativeInteger;
+    FNumberOfTracks : nonNegativeInteger;
+    FOpticalZoom : DecimalWithUnits_Type;
+    FOriginalReleaseDate : string;
+    FOutputWattage : nonNegativeInteger;
+    FPackageDimensions : MerchantItemAttributes_PackageDimensions_Type;
+    FPearlLustre : string;
+    FPearlMinimumColor : string;
+    FPearlShape : string;
+    FPearlStringingMethod : string;
+    FPearlSurfaceBlemishes : string;
+    FPearlType : string;
+    FPearlUniformity : string;
+    FPhoneNumber : string;
+    FPhotoFlashType : MerchantItemAttributes_PhotoFlashTypeArray;
+    FPictureFormat : MerchantItemAttributes_PictureFormatArray;
+    FPlatform : MerchantItemAttributes_PlatformArray;
+    FPriceRating : nonNegativeInteger;
+    FProcessorCount : nonNegativeInteger;
+    FProductGroup : string;
+    FPromotionalTag : string;
+    FPOBoxShippingExcluded : string;
+    FPublicationDate : string;
+    FPublisher : string;
+    FPurchasingChannel : MerchantItemAttributes_PurchasingChannelArray;
+    FReadingLevel : string;
+    FRecorderTrackCount : nonNegativeInteger;
+    FRegionCode : string;
+    FRegionOfOrigin : string;
+    FReleaseDate : string;
+    FReturnMethod : MerchantItemAttributes_ReturnMethodArray;
+    FRemovableMemory : string;
+    FResolutionModes : string;
+    FReturnPolicy : string;
+    FRingSize : string;
+    FSafetyWarning : string;
+    FSalesRestriction : string;
+    FSecondaryCacheSize : NonNegativeIntegerWithUnits_Type;
+    FSettingType : string;
+    FSize : string;
+    FSKU : string;
+    FSoldInStores : string;
+    FSizePerPearl : string;
+    FSkillLevel : string;
+    FSoundCardDescription : string;
+    FSpeakerCount : nonNegativeInteger;
+    FSpeakerDescription : string;
+    FSpecialFeatures : MerchantItemAttributes_SpecialFeaturesArray;
+    FStoneClarity : string;
+    FStoneColor : string;
+    FStoneCut : string;
+    FStoneShape : string;
+    FStoneWeight : DecimalWithUnits_Type;
+    FStudio : string;
+    FSubscriptionLength : NonNegativeIntegerWithUnits_Type;
+    FSupportedImageType : MerchantItemAttributes_SupportedImageTypeArray;
+    FSystemBusSpeed : DecimalWithUnits_Type;
+    FSystemMemorySizeMax : DecimalWithUnits_Type;
+    FSystemMemorySize : DecimalWithUnits_Type;
+    FSystemMemoryType : string;
+    FTellingPageIndicator : string;
+    FTheatricalReleaseDate : string;
+    FTitle : string;
+    FTotalDiamondWeight : DecimalWithUnits_Type;
+    FTotalExternalBaysFree : nonNegativeInteger;
+    FTotalFirewirePorts : nonNegativeInteger;
+    FTotalGemWeight : DecimalWithUnits_Type;
+    FTotalInternalBaysFree : nonNegativeInteger;
+    FTotalMetalWeight : DecimalWithUnits_Type;
+    FTotalNTSCPALPorts : nonNegativeInteger;
+    FTotalParallelPorts : nonNegativeInteger;
+    FTotalPCCardSlots : nonNegativeInteger;
+    FTotalPCISlotsFree : nonNegativeInteger;
+    FTotalSerialPorts : nonNegativeInteger;
+    FTotalSVideoOutPorts : nonNegativeInteger;
+    FTotalUSB2Ports : nonNegativeInteger;
+    FTotalUSBPorts : nonNegativeInteger;
+    FTotalVGAOutPorts : nonNegativeInteger;
+    FUPC : string;
+    FVariationDenomination : string;
+    FVariationDescription : string;
+    FVendorRebate : MerchantItemAttributes_VendorRebate_Type;
+    FWarranty : string;
+    FWatchMovementType : string;
+    FWebsiteBuyability : string;
+    FWaterResistanceDepth : DecimalWithUnits_Type;
+    FWirelessMicrophoneFrequency : nonNegativeInteger;
+  private
+    function HasActor() : Boolean;
+    function HasAddress() : Boolean;
+    function HasAmazonMaximumAge() : Boolean;
+    function HasAmazonMinimumAge() : Boolean;
+    function HasApertureModes() : Boolean;
+    function HasArtist() : Boolean;
+    function HasAspectRatio() : Boolean;
+    function HasAssemblyInstructions() : Boolean;
+    function HasAssemblyRequired() : Boolean;
+    function HasAudienceRating() : Boolean;
+    function HasAudioFormat() : Boolean;
+    function HasAuthor() : Boolean;
+    function HasBackFinding() : Boolean;
+    function HasBandMaterialType() : Boolean;
+    function HasBatteriesIncluded() : Boolean;
+    function HasBatteriesRequired() : Boolean;
+    function HasBatteries() : Boolean;
+    function HasBatteryDescription() : Boolean;
+    function HasBatteryType() : Boolean;
+    function HasBezelMaterialType() : Boolean;
+    function HasBinding() : Boolean;
+    function HasBrand() : Boolean;
+    function HasCalendarType() : Boolean;
+    function HasCameraManualFeatures() : Boolean;
+    function HasCaseDiameter() : Boolean;
+    function HasCaseMaterialType() : Boolean;
+    function HasCaseThickness() : Boolean;
+    function HasCaseType() : Boolean;
+    function HasCatalogNumber() : Boolean;
+    function HasCDRWDescription() : Boolean;
+    function HasChainType() : Boolean;
+    function HasClaspType() : Boolean;
+    function HasClothingSize() : Boolean;
+    function HasColor() : Boolean;
+    function HasCompatibility() : Boolean;
+    function HasComputerHardwareType() : Boolean;
+    function HasComputerPlatform() : Boolean;
+    function HasConnectivity() : Boolean;
+    function HasContinuousShootingSpeed() : Boolean;
+    function HasCountry() : Boolean;
+    function HasCountryOfOrigin() : Boolean;
+    function HasCPUManufacturer() : Boolean;
+    function HasCPUSpeed() : Boolean;
+    function HasCPUType() : Boolean;
+    function HasCreator() : Boolean;
+    function HasCuisine() : Boolean;
+    function HasCustomizable() : Boolean;
+    function HasDelayBetweenShots() : Boolean;
+    function HasDeliveryOption() : Boolean;
+    function HasDepartment() : Boolean;
+    function HasDescription() : Boolean;
+    function HasDeweyDecimalNumber() : Boolean;
+    function HasDialColor() : Boolean;
+    function HasDialWindowMaterialType() : Boolean;
+    function HasDigitalZoom() : Boolean;
+    function HasDirector() : Boolean;
+    function HasDisplaySize() : Boolean;
+    function HasDrumSetPieceQuantity() : Boolean;
+    function HasDVDLayers() : Boolean;
+    function HasDVDRWDescription() : Boolean;
+    function HasDVDSides() : Boolean;
+    function HasDPCI() : Boolean;
+    function HasEAN() : Boolean;
+    function HasEdition() : Boolean;
+    function HasESRBAgeRating() : Boolean;
+    function HasExternalDisplaySupportDescription() : Boolean;
+    function HasFabricType() : Boolean;
+    function HasFaxNumber() : Boolean;
+    function HasFeature() : Boolean;
+    function HasFirstIssueLeadTime() : Boolean;
+    function HasFloppyDiskDriveDescription() : Boolean;
+    function HasFormat() : Boolean;
+    function HasFixedShippingCharge() : Boolean;
+    function HasGemType() : Boolean;
+    function HasGraphicsCardInterface() : Boolean;
+    function HasGraphicsDescription() : Boolean;
+    function HasGraphicsMemorySize() : Boolean;
+    function HasGuitarAttribute() : Boolean;
+    function HasGuitarBridgeSystem() : Boolean;
+    function HasGuitarPickThickness() : Boolean;
+    function HasGuitarPickupConfiguration() : Boolean;
+    function HasHardDiskCount() : Boolean;
+    function HasHardDiskSize() : Boolean;
+    function HasHasAutoFocus() : Boolean;
+    function HasHasBurstMode() : Boolean;
+    function HasHasInCameraEditing() : Boolean;
+    function HasHasRedEyeReduction() : Boolean;
+    function HasHasSelfTimer() : Boolean;
+    function HasHasTripodMount() : Boolean;
+    function HasHasVideoOut() : Boolean;
+    function HasHasViewfinder() : Boolean;
+    function HasHazardousMaterialType() : Boolean;
+    function HasHoursOfOperation() : Boolean;
+    function HasIncludedSoftware() : Boolean;
+    function HasIncludesMp3Player() : Boolean;
+    function HasIndications() : Boolean;
+    function HasIngredients() : Boolean;
+    function HasInstrumentKey() : Boolean;
+    function HasIsAutographed() : Boolean;
+    function HasISBN() : Boolean;
+    function HasIsFragile() : Boolean;
+    function HasIsLabCreated() : Boolean;
+    function HasIsMemorabilia() : Boolean;
+    function HasISOEquivalent() : Boolean;
+    function HasIssuesPerYear() : Boolean;
+    function HasItemDimensions() : Boolean;
+    function HasKeyboardDescription() : Boolean;
+    function Has_Label() : Boolean;
+    function HasLanguages() : Boolean;
+    function HasLegalDisclaimer() : Boolean;
+    function HasLineVoltage() : Boolean;
+    function HasListPrice() : Boolean;
+    function HasMacroFocusRange() : Boolean;
+    function HasMagazineType() : Boolean;
+    function HasMalletHardness() : Boolean;
+    function HasManufacturer() : Boolean;
+    function HasManufacturerLaborWarrantyDescription() : Boolean;
+    function HasManufacturerMaximumAge() : Boolean;
+    function HasManufacturerMinimumAge() : Boolean;
+    function HasManufacturerPartsWarrantyDescription() : Boolean;
+    function HasMaterialType() : Boolean;
+    function HasMaximumAperture() : Boolean;
+    function HasMaximumColorDepth() : Boolean;
+    function HasMaximumFocalLength() : Boolean;
+    function HasMaximumHighResolutionImages() : Boolean;
+    function HasMaximumHorizontalResolution() : Boolean;
+    function HasMaximumLowResolutionImages() : Boolean;
+    function HasMaximumResolution() : Boolean;
+    function HasMaximumShutterSpeed() : Boolean;
+    function HasMaximumVerticalResolution() : Boolean;
+    function HasMaximumWeightRecommendation() : Boolean;
+    function HasMemorySlotsAvailable() : Boolean;
+    function HasMetalStamp() : Boolean;
+    function HasMetalType() : Boolean;
+    function HasMiniMovieDescription() : Boolean;
+    function HasMinimumFocalLength() : Boolean;
+    function HasMinimumShutterSpeed() : Boolean;
+    function HasModel() : Boolean;
+    function HasModelYear() : Boolean;
+    function HasModemDescription() : Boolean;
+    function HasMonitorSize() : Boolean;
+    function HasMonitorViewableDiagonalSize() : Boolean;
+    function HasMouseDescription() : Boolean;
+    function HasMPN() : Boolean;
+    function HasMusicalStyle() : Boolean;
+    function HasNativeResolution() : Boolean;
+    function HasNeighborhood() : Boolean;
+    function HasNetworkInterfaceDescription() : Boolean;
+    function HasNotebookDisplayTechnology() : Boolean;
+    function HasNotebookPointingDeviceDescription() : Boolean;
+    function HasNumberOfDiscs() : Boolean;
+    function HasNumberOfIssues() : Boolean;
+    function HasNumberOfItems() : Boolean;
+    function HasNumberOfKeys() : Boolean;
+    function HasNumberOfPages() : Boolean;
+    function HasNumberOfPearls() : Boolean;
+    function HasNumberOfRapidFireShots() : Boolean;
+    function HasNumberOfStones() : Boolean;
+    function HasNumberOfStrings() : Boolean;
+    function HasNumberOfTracks() : Boolean;
+    function HasOpticalZoom() : Boolean;
+    function HasOriginalReleaseDate() : Boolean;
+    function HasOutputWattage() : Boolean;
+    function HasPackageDimensions() : Boolean;
+    function HasPearlLustre() : Boolean;
+    function HasPearlMinimumColor() : Boolean;
+    function HasPearlShape() : Boolean;
+    function HasPearlStringingMethod() : Boolean;
+    function HasPearlSurfaceBlemishes() : Boolean;
+    function HasPearlType() : Boolean;
+    function HasPearlUniformity() : Boolean;
+    function HasPhoneNumber() : Boolean;
+    function HasPhotoFlashType() : Boolean;
+    function HasPictureFormat() : Boolean;
+    function HasPlatform() : Boolean;
+    function HasPriceRating() : Boolean;
+    function HasProcessorCount() : Boolean;
+    function HasProductGroup() : Boolean;
+    function HasPromotionalTag() : Boolean;
+    function HasPOBoxShippingExcluded() : Boolean;
+    function HasPublicationDate() : Boolean;
+    function HasPublisher() : Boolean;
+    function HasPurchasingChannel() : Boolean;
+    function HasReadingLevel() : Boolean;
+    function HasRecorderTrackCount() : Boolean;
+    function HasRegionCode() : Boolean;
+    function HasRegionOfOrigin() : Boolean;
+    function HasReleaseDate() : Boolean;
+    function HasReturnMethod() : Boolean;
+    function HasRemovableMemory() : Boolean;
+    function HasResolutionModes() : Boolean;
+    function HasReturnPolicy() : Boolean;
+    function HasRingSize() : Boolean;
+    function HasSafetyWarning() : Boolean;
+    function HasSalesRestriction() : Boolean;
+    function HasSecondaryCacheSize() : Boolean;
+    function HasSettingType() : Boolean;
+    function HasSize() : Boolean;
+    function HasSKU() : Boolean;
+    function HasSoldInStores() : Boolean;
+    function HasSizePerPearl() : Boolean;
+    function HasSkillLevel() : Boolean;
+    function HasSoundCardDescription() : Boolean;
+    function HasSpeakerCount() : Boolean;
+    function HasSpeakerDescription() : Boolean;
+    function HasSpecialFeatures() : Boolean;
+    function HasStoneClarity() : Boolean;
+    function HasStoneColor() : Boolean;
+    function HasStoneCut() : Boolean;
+    function HasStoneShape() : Boolean;
+    function HasStoneWeight() : Boolean;
+    function HasStudio() : Boolean;
+    function HasSubscriptionLength() : Boolean;
+    function HasSupportedImageType() : Boolean;
+    function HasSystemBusSpeed() : Boolean;
+    function HasSystemMemorySizeMax() : Boolean;
+    function HasSystemMemorySize() : Boolean;
+    function HasSystemMemoryType() : Boolean;
+    function HasTellingPageIndicator() : Boolean;
+    function HasTheatricalReleaseDate() : Boolean;
+    function HasTitle() : Boolean;
+    function HasTotalDiamondWeight() : Boolean;
+    function HasTotalExternalBaysFree() : Boolean;
+    function HasTotalFirewirePorts() : Boolean;
+    function HasTotalGemWeight() : Boolean;
+    function HasTotalInternalBaysFree() : Boolean;
+    function HasTotalMetalWeight() : Boolean;
+    function HasTotalNTSCPALPorts() : Boolean;
+    function HasTotalParallelPorts() : Boolean;
+    function HasTotalPCCardSlots() : Boolean;
+    function HasTotalPCISlotsFree() : Boolean;
+    function HasTotalSerialPorts() : Boolean;
+    function HasTotalSVideoOutPorts() : Boolean;
+    function HasTotalUSB2Ports() : Boolean;
+    function HasTotalUSBPorts() : Boolean;
+    function HasTotalVGAOutPorts() : Boolean;
+    function HasUPC() : Boolean;
+    function HasVariationDenomination() : Boolean;
+    function HasVariationDescription() : Boolean;
+    function HasVendorRebate() : Boolean;
+    function HasWarranty() : Boolean;
+    function HasWatchMovementType() : Boolean;
+    function HasWebsiteBuyability() : Boolean;
+    function HasWaterResistanceDepth() : Boolean;
+    function HasWirelessMicrophoneFrequency() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Actor : MerchantItemAttributes_ActorArray read FActor write FActor stored HasActor;
+    property Address : Address_Type read FAddress write FAddress stored HasAddress;
+    property AmazonMaximumAge : DecimalWithUnits_Type read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
+    property AmazonMinimumAge : DecimalWithUnits_Type read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
+    property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
+    property Artist : MerchantItemAttributes_ArtistArray read FArtist write FArtist stored HasArtist;
+    property AspectRatio : string read FAspectRatio write FAspectRatio stored HasAspectRatio;
+    property AssemblyInstructions : string read FAssemblyInstructions write FAssemblyInstructions stored HasAssemblyInstructions;
+    property AssemblyRequired : string read FAssemblyRequired write FAssemblyRequired stored HasAssemblyRequired;
+    property AudienceRating : string read FAudienceRating write FAudienceRating stored HasAudienceRating;
+    property AudioFormat : MerchantItemAttributes_AudioFormatArray read FAudioFormat write FAudioFormat stored HasAudioFormat;
+    property Author : MerchantItemAttributes_AuthorArray read FAuthor write FAuthor stored HasAuthor;
+    property BackFinding : string read FBackFinding write FBackFinding stored HasBackFinding;
+    property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
+    property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
+    property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
+    property Batteries : NonNegativeIntegerWithUnits_Type read FBatteries write FBatteries stored HasBatteries;
+    property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
+    property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
+    property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
+    property Binding : string read FBinding write FBinding stored HasBinding;
+    property Brand : string read FBrand write FBrand stored HasBrand;
+    property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
+    property CameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures stored HasCameraManualFeatures;
+    property CaseDiameter : DecimalWithUnits_Type read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
+    property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
+    property CaseThickness : DecimalWithUnits_Type read FCaseThickness write FCaseThickness stored HasCaseThickness;
+    property CaseType : string read FCaseType write FCaseType stored HasCaseType;
+    property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
+    property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
+    property ChainType : string read FChainType write FChainType stored HasChainType;
+    property ClaspType : string read FClaspType write FClaspType stored HasClaspType;
+    property ClothingSize : string read FClothingSize write FClothingSize stored HasClothingSize;
+    property Color : string read FColor write FColor stored HasColor;
+    property Compatibility : string read FCompatibility write FCompatibility stored HasCompatibility;
+    property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
+    property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
+    property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
+    property ContinuousShootingSpeed : DecimalWithUnits_Type read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
+    property Country : string read FCountry write FCountry stored HasCountry;
+    property CountryOfOrigin : string read FCountryOfOrigin write FCountryOfOrigin stored HasCountryOfOrigin;
+    property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
+    property CPUSpeed : DecimalWithUnits_Type read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
+    property CPUType : string read FCPUType write FCPUType stored HasCPUType;
+    property Creator : MerchantItemAttributes_CreatorArray read FCreator write FCreator stored HasCreator;
+    property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
+    property Customizable : string read FCustomizable write FCustomizable stored HasCustomizable;
+    property DelayBetweenShots : DecimalWithUnits_Type read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
+    property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
+    property Department : string read FDepartment write FDepartment stored HasDepartment;
+    property Description : string read FDescription write FDescription stored HasDescription;
+    property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
+    property DialColor : string read FDialColor write FDialColor stored HasDialColor;
+    property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
+    property DigitalZoom : DecimalWithUnits_Type read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
+    property Director : MerchantItemAttributes_DirectorArray read FDirector write FDirector stored HasDirector;
+    property DisplaySize : DecimalWithUnits_Type read FDisplaySize write FDisplaySize stored HasDisplaySize;
+    property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
+    property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
+    property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
+    property DVDSides : nonNegativeInteger read FDVDSides write FDVDSides stored HasDVDSides;
+    property DPCI : string read FDPCI write FDPCI stored HasDPCI;
+    property EAN : string read FEAN write FEAN stored HasEAN;
+    property Edition : string read FEdition write FEdition stored HasEdition;
+    property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
+    property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
+    property FabricType : string read FFabricType write FFabricType stored HasFabricType;
+    property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
+    property Feature : MerchantItemAttributes_FeatureArray read FFeature write FFeature stored HasFeature;
+    property FirstIssueLeadTime : StringWithUnits_Type read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
+    property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
+    property Format : MerchantItemAttributes_FormatArray read FFormat write FFormat stored HasFormat;
+    property FixedShippingCharge : Price_Type read FFixedShippingCharge write FFixedShippingCharge stored HasFixedShippingCharge;
+    property GemType : string read FGemType write FGemType stored HasGemType;
+    property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
+    property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
+    property GraphicsMemorySize : DecimalWithUnits_Type read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
+    property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
+    property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
+    property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
+    property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
+    property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
+    property HardDiskSize : NonNegativeIntegerWithUnits_Type read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
+    property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
+    property HasBurstMode : boolean read FHasBurstMode write FHasBurstMode stored HasHasBurstMode;
+    property HasInCameraEditing : boolean read FHasInCameraEditing write FHasInCameraEditing stored HasHasInCameraEditing;
+    property HasRedEyeReduction : boolean read FHasRedEyeReduction write FHasRedEyeReduction stored HasHasRedEyeReduction;
+    property HasSelfTimer : boolean read FHasSelfTimer write FHasSelfTimer stored HasHasSelfTimer;
+    property HasTripodMount : boolean read FHasTripodMount write FHasTripodMount stored HasHasTripodMount;
+    property HasVideoOut : boolean read FHasVideoOut write FHasVideoOut stored HasHasVideoOut;
+    property HasViewfinder : boolean read FHasViewfinder write FHasViewfinder stored HasHasViewfinder;
+    property HazardousMaterialType : string read FHazardousMaterialType write FHazardousMaterialType stored HasHazardousMaterialType;
+    property HoursOfOperation : string read FHoursOfOperation write FHoursOfOperation stored HasHoursOfOperation;
+    property IncludedSoftware : string read FIncludedSoftware write FIncludedSoftware stored HasIncludedSoftware;
+    property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
+    property Indications : string read FIndications write FIndications stored HasIndications;
+    property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
+    property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
+    property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
+    property ISBN : string read FISBN write FISBN stored HasISBN;
+    property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
+    property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
+    property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
+    property ISOEquivalent : NonNegativeIntegerWithUnits_Type read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
+    property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
+    property ItemDimensions : MerchantItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
+    property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
+    property _Label : string read F_Label write F_Label stored Has_Label;
+    property Languages : MerchantItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
+    property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
+    property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
+    property ListPrice : Price_Type read FListPrice write FListPrice stored HasListPrice;
+    property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
+    property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
+    property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
+    property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
+    property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
+    property ManufacturerMaximumAge : DecimalWithUnits_Type read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
+    property ManufacturerMinimumAge : DecimalWithUnits_Type read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
+    property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
+    property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
+    property MaximumAperture : DecimalWithUnits_Type read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
+    property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
+    property MaximumFocalLength : DecimalWithUnits_Type read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
+    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
+    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
+    property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
+    property MaximumResolution : DecimalWithUnits_Type read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
+    property MaximumShutterSpeed : DecimalWithUnits_Type read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
+    property MaximumVerticalResolution : NonNegativeIntegerWithUnits_Type read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
+    property MaximumWeightRecommendation : DecimalWithUnits_Type read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
+    property MemorySlotsAvailable : nonNegativeInteger read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
+    property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
+    property MetalType : string read FMetalType write FMetalType stored HasMetalType;
+    property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
+    property MinimumFocalLength : DecimalWithUnits_Type read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
+    property MinimumShutterSpeed : DecimalWithUnits_Type read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
+    property Model : string read FModel write FModel stored HasModel;
+    property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
+    property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
+    property MonitorSize : DecimalWithUnits_Type read FMonitorSize write FMonitorSize stored HasMonitorSize;
+    property MonitorViewableDiagonalSize : DecimalWithUnits_Type read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
+    property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
+    property MPN : string read FMPN write FMPN stored HasMPN;
+    property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
+    property NativeResolution : string read FNativeResolution write FNativeResolution stored HasNativeResolution;
+    property Neighborhood : string read FNeighborhood write FNeighborhood stored HasNeighborhood;
+    property NetworkInterfaceDescription : string read FNetworkInterfaceDescription write FNetworkInterfaceDescription stored HasNetworkInterfaceDescription;
+    property NotebookDisplayTechnology : string read FNotebookDisplayTechnology write FNotebookDisplayTechnology stored HasNotebookDisplayTechnology;
+    property NotebookPointingDeviceDescription : string read FNotebookPointingDeviceDescription write FNotebookPointingDeviceDescription stored HasNotebookPointingDeviceDescription;
+    property NumberOfDiscs : nonNegativeInteger read FNumberOfDiscs write FNumberOfDiscs stored HasNumberOfDiscs;
+    property NumberOfIssues : nonNegativeInteger read FNumberOfIssues write FNumberOfIssues stored HasNumberOfIssues;
+    property NumberOfItems : nonNegativeInteger read FNumberOfItems write FNumberOfItems stored HasNumberOfItems;
+    property NumberOfKeys : nonNegativeInteger read FNumberOfKeys write FNumberOfKeys stored HasNumberOfKeys;
+    property NumberOfPages : nonNegativeInteger read FNumberOfPages write FNumberOfPages stored HasNumberOfPages;
+    property NumberOfPearls : nonNegativeInteger read FNumberOfPearls write FNumberOfPearls stored HasNumberOfPearls;
+    property NumberOfRapidFireShots : nonNegativeInteger read FNumberOfRapidFireShots write FNumberOfRapidFireShots stored HasNumberOfRapidFireShots;
+    property NumberOfStones : nonNegativeInteger read FNumberOfStones write FNumberOfStones stored HasNumberOfStones;
+    property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
+    property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
+    property OpticalZoom : DecimalWithUnits_Type read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
+    property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
+    property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
+    property PackageDimensions : MerchantItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
+    property PearlLustre : string read FPearlLustre write FPearlLustre stored HasPearlLustre;
+    property PearlMinimumColor : string read FPearlMinimumColor write FPearlMinimumColor stored HasPearlMinimumColor;
+    property PearlShape : string read FPearlShape write FPearlShape stored HasPearlShape;
+    property PearlStringingMethod : string read FPearlStringingMethod write FPearlStringingMethod stored HasPearlStringingMethod;
+    property PearlSurfaceBlemishes : string read FPearlSurfaceBlemishes write FPearlSurfaceBlemishes stored HasPearlSurfaceBlemishes;
+    property PearlType : string read FPearlType write FPearlType stored HasPearlType;
+    property PearlUniformity : string read FPearlUniformity write FPearlUniformity stored HasPearlUniformity;
+    property PhoneNumber : string read FPhoneNumber write FPhoneNumber stored HasPhoneNumber;
+    property PhotoFlashType : MerchantItemAttributes_PhotoFlashTypeArray read FPhotoFlashType write FPhotoFlashType stored HasPhotoFlashType;
+    property PictureFormat : MerchantItemAttributes_PictureFormatArray read FPictureFormat write FPictureFormat stored HasPictureFormat;
+    property Platform : MerchantItemAttributes_PlatformArray read FPlatform write FPlatform stored HasPlatform;
+    property PriceRating : nonNegativeInteger read FPriceRating write FPriceRating stored HasPriceRating;
+    property ProcessorCount : nonNegativeInteger read FProcessorCount write FProcessorCount stored HasProcessorCount;
+    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
+    property PromotionalTag : string read FPromotionalTag write FPromotionalTag stored HasPromotionalTag;
+    property POBoxShippingExcluded : string read FPOBoxShippingExcluded write FPOBoxShippingExcluded stored HasPOBoxShippingExcluded;
+    property PublicationDate : string read FPublicationDate write FPublicationDate stored HasPublicationDate;
+    property Publisher : string read FPublisher write FPublisher stored HasPublisher;
+    property PurchasingChannel : MerchantItemAttributes_PurchasingChannelArray read FPurchasingChannel write FPurchasingChannel stored HasPurchasingChannel;
+    property ReadingLevel : string read FReadingLevel write FReadingLevel stored HasReadingLevel;
+    property RecorderTrackCount : nonNegativeInteger read FRecorderTrackCount write FRecorderTrackCount stored HasRecorderTrackCount;
+    property RegionCode : string read FRegionCode write FRegionCode stored HasRegionCode;
+    property RegionOfOrigin : string read FRegionOfOrigin write FRegionOfOrigin stored HasRegionOfOrigin;
+    property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
+    property ReturnMethod : MerchantItemAttributes_ReturnMethodArray read FReturnMethod write FReturnMethod stored HasReturnMethod;
+    property RemovableMemory : string read FRemovableMemory write FRemovableMemory stored HasRemovableMemory;
+    property ResolutionModes : string read FResolutionModes write FResolutionModes stored HasResolutionModes;
+    property ReturnPolicy : string read FReturnPolicy write FReturnPolicy stored HasReturnPolicy;
+    property RingSize : string read FRingSize write FRingSize stored HasRingSize;
+    property SafetyWarning : string read FSafetyWarning write FSafetyWarning stored HasSafetyWarning;
+    property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
+    property SecondaryCacheSize : NonNegativeIntegerWithUnits_Type read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
+    property SettingType : string read FSettingType write FSettingType stored HasSettingType;
+    property Size : string read FSize write FSize stored HasSize;
+    property SKU : string read FSKU write FSKU stored HasSKU;
+    property SoldInStores : string read FSoldInStores write FSoldInStores stored HasSoldInStores;
+    property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
+    property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
+    property SoundCardDescription : string read FSoundCardDescription write FSoundCardDescription stored HasSoundCardDescription;
+    property SpeakerCount : nonNegativeInteger read FSpeakerCount write FSpeakerCount stored HasSpeakerCount;
+    property SpeakerDescription : string read FSpeakerDescription write FSpeakerDescription stored HasSpeakerDescription;
+    property SpecialFeatures : MerchantItemAttributes_SpecialFeaturesArray read FSpecialFeatures write FSpecialFeatures stored HasSpecialFeatures;
+    property StoneClarity : string read FStoneClarity write FStoneClarity stored HasStoneClarity;
+    property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
+    property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
+    property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
+    property StoneWeight : DecimalWithUnits_Type read FStoneWeight write FStoneWeight stored HasStoneWeight;
+    property Studio : string read FStudio write FStudio stored HasStudio;
+    property SubscriptionLength : NonNegativeIntegerWithUnits_Type read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
+    property SupportedImageType : MerchantItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType stored HasSupportedImageType;
+    property SystemBusSpeed : DecimalWithUnits_Type read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
+    property SystemMemorySizeMax : DecimalWithUnits_Type read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
+    property SystemMemorySize : DecimalWithUnits_Type read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
+    property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
+    property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
+    property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
+    property Title : string read FTitle write FTitle stored HasTitle;
+    property TotalDiamondWeight : DecimalWithUnits_Type read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
+    property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
+    property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
+    property TotalGemWeight : DecimalWithUnits_Type read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
+    property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
+    property TotalMetalWeight : DecimalWithUnits_Type read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
+    property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
+    property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
+    property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
+    property TotalPCISlotsFree : nonNegativeInteger read FTotalPCISlotsFree write FTotalPCISlotsFree stored HasTotalPCISlotsFree;
+    property TotalSerialPorts : nonNegativeInteger read FTotalSerialPorts write FTotalSerialPorts stored HasTotalSerialPorts;
+    property TotalSVideoOutPorts : nonNegativeInteger read FTotalSVideoOutPorts write FTotalSVideoOutPorts stored HasTotalSVideoOutPorts;
+    property TotalUSB2Ports : nonNegativeInteger read FTotalUSB2Ports write FTotalUSB2Ports stored HasTotalUSB2Ports;
+    property TotalUSBPorts : nonNegativeInteger read FTotalUSBPorts write FTotalUSBPorts stored HasTotalUSBPorts;
+    property TotalVGAOutPorts : nonNegativeInteger read FTotalVGAOutPorts write FTotalVGAOutPorts stored HasTotalVGAOutPorts;
+    property UPC : string read FUPC write FUPC stored HasUPC;
+    property VariationDenomination : string read FVariationDenomination write FVariationDenomination stored HasVariationDenomination;
+    property VariationDescription : string read FVariationDescription write FVariationDescription stored HasVariationDescription;
+    property VendorRebate : MerchantItemAttributes_VendorRebate_Type read FVendorRebate write FVendorRebate stored HasVendorRebate;
+    property Warranty : string read FWarranty write FWarranty stored HasWarranty;
+    property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
+    property WebsiteBuyability : string read FWebsiteBuyability write FWebsiteBuyability stored HasWebsiteBuyability;
+    property WaterResistanceDepth : DecimalWithUnits_Type read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
+    property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
+  end;
+
+  NonNegativeIntegerWithUnits_Type = class(TComplexInt32UContentRemotable)
+  private
+    FUnits : string;
+  published
+    property Units : string read FUnits write FUnits;
+  end;
+
+  DecimalWithUnits_Type = class(TComplexFloatExtendedContentRemotable)
+  private
+    FUnits : string;
+  published
+    property Units : string read FUnits write FUnits;
+  end;
+
+  StringWithUnits_Type = class(TComplexStringContentRemotable)
+  private
+    FUnits : string;
+  published
+    property Units : string read FUnits write FUnits;
+  end;
+
   Help_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): HelpRequest;
+    function GetItem(AIndex: Integer): HelpRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : HelpRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : HelpRequest_Type Read GetItem;Default;
   end;
 
   HelpResponse_InformationArray = class(TBaseObjectArrayRemotable)
@@ -5457,10 +5599,10 @@ type
 
   ItemSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ItemSearchRequest;
+    function GetItem(AIndex: Integer): ItemSearchRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ItemSearchRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : ItemSearchRequest_Type Read GetItem;Default;
   end;
 
   ItemSearchResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -5473,10 +5615,10 @@ type
 
   ItemLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ItemLookupRequest;
+    function GetItem(AIndex: Integer): ItemLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ItemLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : ItemLookupRequest_Type Read GetItem;Default;
   end;
 
   ItemLookupResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -5489,10 +5631,10 @@ type
 
   BrowseNodeLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): BrowseNodeLookupRequest;
+    function GetItem(AIndex: Integer): BrowseNodeLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : BrowseNodeLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : BrowseNodeLookupRequest_Type Read GetItem;Default;
   end;
 
   BrowseNodeLookupResponse_BrowseNodesArray = class(TBaseObjectArrayRemotable)
@@ -5505,10 +5647,10 @@ type
 
   ListSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ListSearchRequest;
+    function GetItem(AIndex: Integer): ListSearchRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ListSearchRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : ListSearchRequest_Type Read GetItem;Default;
   end;
 
   ListSearchResponse_ListsArray = class(TBaseObjectArrayRemotable)
@@ -5521,10 +5663,10 @@ type
 
   ListLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ListLookupRequest;
+    function GetItem(AIndex: Integer): ListLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ListLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : ListLookupRequest_Type Read GetItem;Default;
   end;
 
   ListLookupResponse_ListsArray = class(TBaseObjectArrayRemotable)
@@ -5537,10 +5679,10 @@ type
 
   CustomerContentSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CustomerContentSearchRequest;
+    function GetItem(AIndex: Integer): CustomerContentSearchRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CustomerContentSearchRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CustomerContentSearchRequest_Type Read GetItem;Default;
   end;
 
   CustomerContentSearchResponse_CustomersArray = class(TBaseObjectArrayRemotable)
@@ -5553,10 +5695,10 @@ type
 
   CustomerContentLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CustomerContentLookupRequest;
+    function GetItem(AIndex: Integer): CustomerContentLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CustomerContentLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CustomerContentLookupRequest_Type Read GetItem;Default;
   end;
 
   CustomerContentLookupResponse_CustomersArray = class(TBaseObjectArrayRemotable)
@@ -5569,10 +5711,10 @@ type
 
   SimilarityLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SimilarityLookupRequest;
+    function GetItem(AIndex: Integer): SimilarityLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SimilarityLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : SimilarityLookupRequest_Type Read GetItem;Default;
   end;
 
   SimilarityLookupResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -5585,10 +5727,10 @@ type
 
   SellerLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerLookupRequest;
+    function GetItem(AIndex: Integer): SellerLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerLookupRequest_Type Read GetItem;Default;
   end;
 
   SellerLookupResponse_SellersArray = class(TBaseObjectArrayRemotable)
@@ -5601,10 +5743,10 @@ type
 
   CartGet_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartGetRequest;
+    function GetItem(AIndex: Integer): CartGetRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartGetRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CartGetRequest_Type Read GetItem;Default;
   end;
 
   CartGetResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -5617,10 +5759,10 @@ type
 
   CartAdd_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartAddRequest;
+    function GetItem(AIndex: Integer): CartAddRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartAddRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CartAddRequest_Type Read GetItem;Default;
   end;
 
   CartAddResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -5633,10 +5775,10 @@ type
 
   CartCreate_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartCreateRequest;
+    function GetItem(AIndex: Integer): CartCreateRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartCreateRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CartCreateRequest_Type Read GetItem;Default;
   end;
 
   CartCreateResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -5649,10 +5791,10 @@ type
 
   CartModify_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartModifyRequest;
+    function GetItem(AIndex: Integer): CartModifyRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartModifyRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CartModifyRequest_Type Read GetItem;Default;
   end;
 
   CartModifyResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -5665,10 +5807,10 @@ type
 
   CartClear_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartClearRequest;
+    function GetItem(AIndex: Integer): CartClearRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartClearRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : CartClearRequest_Type Read GetItem;Default;
   end;
 
   CartClearResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -5681,10 +5823,10 @@ type
 
   TransactionLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): TransactionLookupRequest;
+    function GetItem(AIndex: Integer): TransactionLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TransactionLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : TransactionLookupRequest_Type Read GetItem;Default;
   end;
 
   TransactionLookupResponse_TransactionsArray = class(TBaseObjectArrayRemotable)
@@ -5697,10 +5839,10 @@ type
 
   SellerListingSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerListingSearchRequest;
+    function GetItem(AIndex: Integer): SellerListingSearchRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerListingSearchRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerListingSearchRequest_Type Read GetItem;Default;
   end;
 
   SellerListingSearchResponse_SellerListingsArray = class(TBaseObjectArrayRemotable)
@@ -5713,10 +5855,10 @@ type
 
   SellerListingLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerListingLookupRequest;
+    function GetItem(AIndex: Integer): SellerListingLookupRequest_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerListingLookupRequest Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerListingLookupRequest_Type Read GetItem;Default;
   end;
 
   SellerListingLookupResponse_SellerListingsArray = class(TBaseObjectArrayRemotable)
@@ -6159,20 +6301,20 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
-  HTTPHeaders_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): HTTPHeaders_Header_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : HTTPHeaders_Header_Type Read GetItem;Default;
-  end;
-
   Arguments_Type = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): Arguments_Argument_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : Arguments_Argument_Type Read GetItem;Default;
+  end;
+
+  HTTPHeaders_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): HTTPHeaders_Header_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : HTTPHeaders_Header_Type Read GetItem;Default;
   end;
 
   Errors_Type = class(TBaseObjectArrayRemotable)
@@ -6199,14 +6341,6 @@ type
     property Item[AIndex:Integer] : ResponseGroupInformation_Type Read GetItem;Default;
   end;
 
-  SearchResultsMap_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): SearchResultsMap_SearchIndex_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SearchResultsMap_SearchIndex_Type Read GetItem;Default;
-  end;
-
   Items__ItemArray = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): Item_Type;
@@ -6229,46 +6363,6 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : Customer_Type Read GetItem;Default;
-  end;
-
-  SimilarProducts_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): SimilarProducts_SimilarProduct_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SimilarProducts_SimilarProduct_Type Read GetItem;Default;
-  end;
-
-  TopSellers_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): TopSellers_TopSeller_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TopSellers_TopSeller_Type Read GetItem;Default;
-  end;
-
-  NewReleases_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): NewReleases_NewRelease_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : NewReleases_NewRelease_Type Read GetItem;Default;
-  end;
-
-  SimilarViewedProducts_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SimilarViewedProducts_SimilarViewedProduct_Type Read GetItem;Default;
-  end;
-
-  OtherCategoriesSimilarProducts_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type Read GetItem;Default;
   end;
 
   Transactions_TransactionArray = class(TBaseObjectArrayRemotable)
@@ -6423,20 +6517,20 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
+  SearchResultsMap_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): SearchResultsMap_SearchIndex_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : SearchResultsMap_SearchIndex_Type Read GetItem;Default;
+  end;
+
   Item_ImageSets_Type_ImageSetArray = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): ImageSet_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : ImageSet_Type Read GetItem;Default;
-  end;
-
-  Collections_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): Collections_Collection_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : Collections_Collection_Type Read GetItem;Default;
   end;
 
   Item_Subjects_Type = class(TBaseSimpleTypeArrayRemotable)
@@ -6453,38 +6547,6 @@ type
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
-  end;
-
-  EditorialReviews_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): EditorialReview_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : EditorialReview_Type Read GetItem;Default;
-  end;
-
-  Accessories_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): Accessories_Accessory_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : Accessories_Accessory_Type Read GetItem;Default;
-  end;
-
-  Tracks_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): Tracks_Disc_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : Tracks_Disc_Type Read GetItem;Default;
-  end;
-
-  ListmaniaLists_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ListmaniaLists_ListmaniaList_Type Read GetItem;Default;
   end;
 
   Item_AlternateVersions_Type = class(TBaseObjectArrayRemotable)
@@ -6511,14 +6573,6 @@ type
     property Item[AIndex:Integer] : Offer_Type Read GetItem;Default;
   end;
 
-  Promotions_Type = class(TBaseObjectArrayRemotable)
-  private
-    function GetItem(AIndex: Integer): Promotion_Type;
-  public
-    class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : Promotion_Type Read GetItem;Default;
-  end;
-
   Offer_OfferListingArray = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): OfferListing_Type;
@@ -6533,6 +6587,14 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : OfferListing_ShippingCharge_Type Read GetItem;Default;
+  end;
+
+  Variations__ItemArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Item_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Item_Type Read GetItem;Default;
   end;
 
   VariationDimensions_Type = class(TBaseSimpleTypeArrayRemotable)
@@ -6551,12 +6613,12 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
-  Variations__ItemArray = class(TBaseObjectArrayRemotable)
+  EditorialReviews_Type = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): Item_Type;
+    function GetItem(AIndex: Integer): EditorialReview_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : Item_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : EditorialReview_Type Read GetItem;Default;
   end;
 
   Collections_Collection_Type_CollectionItemArray = class(TBaseObjectArrayRemotable)
@@ -6565,6 +6627,14 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : Collections_Collection_Type_CollectionItem_Type Read GetItem;Default;
+  end;
+
+  Collections_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Collections_Collection_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Collections_Collection_Type Read GetItem;Default;
   end;
 
   CustomerReviews_ReviewArray = class(TBaseObjectArrayRemotable)
@@ -6583,20 +6653,84 @@ type
     property Item[AIndex:Integer] : Tracks_Disc_Type_Track_Type Read GetItem;Default;
   end;
 
-  PromotionEligibilityRequirements = class(TBaseObjectArrayRemotable)
+  Tracks_Type = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): PromotionEligibilityRequirement;
+    function GetItem(AIndex: Integer): Tracks_Disc_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : PromotionEligibilityRequirement Read GetItem;Default;
+    property Item[AIndex:Integer] : Tracks_Disc_Type Read GetItem;Default;
   end;
 
-  PromotionBenefits = class(TBaseObjectArrayRemotable)
+  SimilarProducts_Type = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): PromotionBenefit;
+    function GetItem(AIndex: Integer): SimilarProducts_SimilarProduct_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : PromotionBenefit Read GetItem;Default;
+    property Item[AIndex:Integer] : SimilarProducts_SimilarProduct_Type Read GetItem;Default;
+  end;
+
+  TopSellers_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TopSellers_TopSeller_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TopSellers_TopSeller_Type Read GetItem;Default;
+  end;
+
+  NewReleases_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): NewReleases_NewRelease_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : NewReleases_NewRelease_Type Read GetItem;Default;
+  end;
+
+  SimilarViewedProducts_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : SimilarViewedProducts_SimilarViewedProduct_Type Read GetItem;Default;
+  end;
+
+  OtherCategoriesSimilarProducts_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type Read GetItem;Default;
+  end;
+
+  Accessories_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Accessories_Accessory_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Accessories_Accessory_Type Read GetItem;Default;
+  end;
+
+  Promotions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Promotion_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Promotion_Type Read GetItem;Default;
+  end;
+
+  PromotionEligibilityRequirements_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): PromotionEligibilityRequirement_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : PromotionEligibilityRequirement_Type Read GetItem;Default;
+  end;
+
+  PromotionBenefits_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): PromotionBenefit_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : PromotionBenefit_Type Read GetItem;Default;
   end;
 
   BrowseNodes_BrowseNodeArray = class(TBaseObjectArrayRemotable)
@@ -6623,20 +6757,28 @@ type
     property Item[AIndex:Integer] : BrowseNode_Type Read GetItem;Default;
   end;
 
-  CartItems_CartItemArray = class(TBaseObjectArrayRemotable)
+  ListmaniaLists_Type = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartItem;
+    function GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartItem Read GetItem;Default;
+    property Item[AIndex:Integer] : ListmaniaLists_ListmaniaList_Type Read GetItem;Default;
+  end;
+
+  CartItems_CartItemArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): CartItem_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : CartItem_Type Read GetItem;Default;
   end;
 
   SavedForLaterItems_SavedForLaterItemArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartItem;
+    function GetItem(AIndex: Integer): CartItem_Type;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartItem Read GetItem;Default;
+    property Item[AIndex:Integer] : CartItem_Type Read GetItem;Default;
   end;
 
   Transaction_TransactionItems_Type = class(TBaseObjectArrayRemotable)
@@ -7256,63 +7398,63 @@ type
   end;
 
   AWSECommerceServicePortType = interface(IInvokable)
-    ['{44FE21A3-034C-4AC2-81F3-73F0DD856713}']
+    ['{471618D5-F3F4-4D62-B826-61A428DC2F63}']
     function Help(
-      Const HelpParam : Help_Type
+      const  HelpParam : Help_Type
     ):HelpResponse_Type;
     function ItemSearch(
-      Const ItemSearchParam : ItemSearch_Type
+      const  ItemSearchParam : ItemSearch_Type
     ):ItemSearchResponse_Type;
     function ItemLookup(
-      Const ItemLookupParam : ItemLookup_Type
+      const  ItemLookupParam : ItemLookup_Type
     ):ItemLookupResponse_Type;
     function BrowseNodeLookup(
-      Const BrowseNodeLookupParam : BrowseNodeLookup_Type
+      const  BrowseNodeLookupParam : BrowseNodeLookup_Type
     ):BrowseNodeLookupResponse_Type;
     function ListSearch(
-      Const ListSearchParam : ListSearch_Type
+      const  ListSearchParam : ListSearch_Type
     ):ListSearchResponse_Type;
     function ListLookup(
-      Const ListLookupParam : ListLookup_Type
+      const  ListLookupParam : ListLookup_Type
     ):ListLookupResponse_Type;
     function CustomerContentSearch(
-      Const CustomerContentSearchParam : CustomerContentSearch_Type
+      const  CustomerContentSearchParam : CustomerContentSearch_Type
     ):CustomerContentSearchResponse_Type;
     function CustomerContentLookup(
-      Const CustomerContentLookupParam : CustomerContentLookup_Type
+      const  CustomerContentLookupParam : CustomerContentLookup_Type
     ):CustomerContentLookupResponse_Type;
     function SimilarityLookup(
-      Const SimilarityLookupParam : SimilarityLookup_Type
+      const  SimilarityLookupParam : SimilarityLookup_Type
     ):SimilarityLookupResponse_Type;
     function SellerLookup(
-      Const SellerLookupParam : SellerLookup_Type
+      const  SellerLookupParam : SellerLookup_Type
     ):SellerLookupResponse_Type;
     function CartGet(
-      Const CartGetParam : CartGet_Type
+      const  CartGetParam : CartGet_Type
     ):CartGetResponse_Type;
     function CartAdd(
-      Const CartAddParam : CartAdd_Type
+      const  CartAddParam : CartAdd_Type
     ):CartAddResponse_Type;
     function CartCreate(
-      Const CartCreateParam : CartCreate_Type
+      const  CartCreateParam : CartCreate_Type
     ):CartCreateResponse_Type;
     function CartModify(
-      Const CartModifyParam : CartModify_Type
+      const  CartModifyParam : CartModify_Type
     ):CartModifyResponse_Type;
     function CartClear(
-      Const CartClearParam : CartClear_Type
+      const  CartClearParam : CartClear_Type
     ):CartClearResponse_Type;
     function TransactionLookup(
-      Const TransactionLookupParam : TransactionLookup_Type
+      const  TransactionLookupParam : TransactionLookup_Type
     ):TransactionLookupResponse_Type;
     function SellerListingSearch(
-      Const SellerListingSearchParam : SellerListingSearch_Type
+      const  SellerListingSearchParam : SellerListingSearch_Type
     ):SellerListingSearchResponse_Type;
     function SellerListingLookup(
-      Const SellerListingLookupParam : SellerListingLookup_Type
+      const  SellerListingLookupParam : SellerListingLookup_Type
     ):SellerListingLookupResponse_Type;
     function MultiOperation(
-      Const MultiOperationParam : MultiOperationType
+      const  MultiOperationParam : MultiOperation_Type
     ):MultiOperationResponse;
   end;
 
@@ -7321,34 +7463,12 @@ type
 Implementation
 uses metadata_repository;
 
-{ HelpRequest }
-
-constructor HelpRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := HelpRequest_ResponseGroupArray.Create();
-end;
-
-destructor HelpRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function HelpRequest.HasAbout() : Boolean;
-begin
-  Result := True;
-end;
-
-function HelpRequest.HasHelpType() : Boolean;
-begin
-  Result := True;
-end;
-
 { Help_Type }
 
 constructor Help_Type.Create();
 begin
   inherited Create();
+  FShared := HelpRequest_Type.Create();
   FRequest := Help_RequestArray.Create();
 end;
 
@@ -7356,6 +7476,8 @@ destructor Help_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -7389,63 +7511,7 @@ begin
   Result := True;
 end;
 
-{ OperationRequest_Type }
-
-constructor OperationRequest_Type.Create();
-begin
-  inherited Create();
-  FHTTPHeaders := HTTPHeaders_Type.Create();
-  FArguments := Arguments_Type.Create();
-  FErrors := Errors_Type.Create();
-end;
-
-destructor OperationRequest_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function OperationRequest_Type.HasHTTPHeaders() : Boolean;
-begin
-  Result := True;
-end;
-
-function OperationRequest_Type.HasRequestId() : Boolean;
-begin
-  Result := True;
-end;
-
-function OperationRequest_Type.HasArguments() : Boolean;
-begin
-  Result := True;
-end;
-
-function OperationRequest_Type.HasErrors() : Boolean;
-begin
-  Result := True;
-end;
-
-function OperationRequest_Type.HasRequestProcessingTime() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Information_Type }
-
-constructor Information_Type.Create();
-begin
-  inherited Create();
-  FOperationInformation := Information_OperationInformationArray.Create();
-  FResponseGroupInformation := Information_ResponseGroupInformationArray.Create();
-end;
-
-destructor Information_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function Information_Type.HasRequest() : Boolean;
+function Help_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -7455,6 +7521,7 @@ end;
 constructor HelpResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FInformation := HelpResponse_InformationArray.Create();
 end;
 
@@ -7462,6 +7529,8 @@ destructor HelpResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FInformation) then
+    FreeAndNil(FInformation);
   inherited Destroy();
 end;
 
@@ -7470,191 +7539,7 @@ begin
   Result := True;
 end;
 
-{ ItemSearchRequest }
-
-constructor ItemSearchRequest.Create();
-begin
-  inherited Create();
-  FAudienceRating := ItemSearchRequest_AudienceRatingArray.Create();
-  FResponseGroup := ItemSearchRequest_ResponseGroupArray.Create();
-end;
-
-destructor ItemSearchRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function ItemSearchRequest.HasActor() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasArtist() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasAvailability() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasAuthor() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasBrand() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasBrowseNode() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasCity() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasComposer() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasConductor() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasCount() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasCuisine() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasDeliveryMethod() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasDirector() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasFutureLaunchDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasISPUPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasItemPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasKeywords() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasManufacturer() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasMaximumPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasMinimumPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasMusicLabel() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasNeighborhood() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasOrchestra() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasPower() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasPublisher() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasReviewSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasSearchIndex() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasState() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasTextStream() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemSearchRequest.HasReleaseDate() : Boolean;
+function HelpResponse_Type.HasInformation() : Boolean;
 begin
   Result := True;
 end;
@@ -7664,6 +7549,7 @@ end;
 constructor ItemSearch_Type.Create();
 begin
   inherited Create();
+  FShared := ItemSearchRequest_Type.Create();
   FRequest := ItemSearch_RequestArray.Create();
 end;
 
@@ -7671,6 +7557,8 @@ destructor ItemSearch_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -7709,56 +7597,7 @@ begin
   Result := True;
 end;
 
-{ Items_Type }
-
-constructor Items_Type.Create();
-begin
-  inherited Create();
-  FSearchResultsMap := SearchResultsMap_Type.Create();
-  F_Item := Items__ItemArray.Create();
-  FSearchBinSets := SearchBinSets_Type.Create();
-end;
-
-destructor Items_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  if Assigned(FCorrectedQuery) then
-    FreeAndNil(FCorrectedQuery);
-  inherited Destroy();
-end;
-
-function Items_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasCorrectedQuery() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasQid() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasTotalPages() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasSearchResultsMap() : Boolean;
-begin
-  Result := True;
-end;
-
-function Items_Type.HasSearchBinSets() : Boolean;
+function ItemSearch_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -7768,6 +7607,7 @@ end;
 constructor ItemSearchResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FItems := ItemSearchResponse_ItemsArray.Create();
 end;
 
@@ -7775,6 +7615,8 @@ destructor ItemSearchResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
   inherited Destroy();
 end;
 
@@ -7783,76 +7625,7 @@ begin
   Result := True;
 end;
 
-{ ItemLookupRequest }
-
-constructor ItemLookupRequest.Create();
-begin
-  inherited Create();
-  FItemId := ItemLookupRequest_ItemIdArray.Create();
-  FResponseGroup := ItemLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor ItemLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function ItemLookupRequest.HasCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasDeliveryMethod() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasFutureLaunchDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasIdType() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasISPUPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasOfferPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasReviewPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasReviewSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasSearchIndex() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasSearchInsideKeywords() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemLookupRequest.HasVariationPage() : Boolean;
+function ItemSearchResponse_Type.HasItems() : Boolean;
 begin
   Result := True;
 end;
@@ -7862,6 +7635,7 @@ end;
 constructor ItemLookup_Type.Create();
 begin
   inherited Create();
+  FShared := ItemLookupRequest_Type.Create();
   FRequest := ItemLookup_RequestArray.Create();
 end;
 
@@ -7869,6 +7643,8 @@ destructor ItemLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -7907,11 +7683,17 @@ begin
   Result := True;
 end;
 
+function ItemLookup_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { ItemLookupResponse_Type }
 
 constructor ItemLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FItems := ItemLookupResponse_ItemsArray.Create();
 end;
 
@@ -7919,6 +7701,8 @@ destructor ItemLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
   inherited Destroy();
 end;
 
@@ -7927,18 +7711,9 @@ begin
   Result := True;
 end;
 
-{ BrowseNodeLookupRequest }
-
-constructor BrowseNodeLookupRequest.Create();
+function ItemLookupResponse_Type.HasItems() : Boolean;
 begin
-  inherited Create();
-  FBrowseNodeId := BrowseNodeLookupRequest_BrowseNodeIdArray.Create();
-  FResponseGroup := BrowseNodeLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor BrowseNodeLookupRequest.Destroy();
-begin
-  inherited Destroy();
+  Result := True;
 end;
 
 { BrowseNodeLookup_Type }
@@ -7946,6 +7721,7 @@ end;
 constructor BrowseNodeLookup_Type.Create();
 begin
   inherited Create();
+  FShared := BrowseNodeLookupRequest_Type.Create();
   FRequest := BrowseNodeLookup_RequestArray.Create();
 end;
 
@@ -7953,6 +7729,8 @@ destructor BrowseNodeLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -7991,22 +7769,7 @@ begin
   Result := True;
 end;
 
-{ BrowseNodes_Type }
-
-constructor BrowseNodes_Type.Create();
-begin
-  inherited Create();
-  FBrowseNode := BrowseNodes_BrowseNodeArray.Create();
-end;
-
-destructor BrowseNodes_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function BrowseNodes_Type.HasRequest() : Boolean;
+function BrowseNodeLookup_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -8016,6 +7779,7 @@ end;
 constructor BrowseNodeLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FBrowseNodes := BrowseNodeLookupResponse_BrowseNodesArray.Create();
 end;
 
@@ -8023,6 +7787,8 @@ destructor BrowseNodeLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FBrowseNodes) then
+    FreeAndNil(FBrowseNodes);
   inherited Destroy();
 end;
 
@@ -8031,50 +7797,7 @@ begin
   Result := True;
 end;
 
-{ ListSearchRequest }
-
-constructor ListSearchRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := ListSearchRequest_ResponseGroupArray.Create();
-end;
-
-destructor ListSearchRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function ListSearchRequest.HasCity() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasEmail() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasFirstName() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasLastName() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasListPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasName() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListSearchRequest.HasState() : Boolean;
+function BrowseNodeLookupResponse_Type.HasBrowseNodes() : Boolean;
 begin
   Result := True;
 end;
@@ -8084,6 +7807,7 @@ end;
 constructor ListSearch_Type.Create();
 begin
   inherited Create();
+  FShared := ListSearchRequest_Type.Create();
   FRequest := ListSearch_RequestArray.Create();
 end;
 
@@ -8091,6 +7815,8 @@ destructor ListSearch_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8129,32 +7855,7 @@ begin
   Result := True;
 end;
 
-{ Lists_Type }
-
-constructor Lists_Type.Create();
-begin
-  inherited Create();
-  FList := Lists_ListArray.Create();
-end;
-
-destructor Lists_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function Lists_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Lists_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function Lists_Type.HasTotalPages() : Boolean;
+function ListSearch_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -8164,6 +7865,7 @@ end;
 constructor ListSearchResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FLists := ListSearchResponse_ListsArray.Create();
 end;
 
@@ -8171,6 +7873,8 @@ destructor ListSearchResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FLists) then
+    FreeAndNil(FLists);
   inherited Destroy();
 end;
 
@@ -8179,65 +7883,7 @@ begin
   Result := True;
 end;
 
-{ ListLookupRequest }
-
-constructor ListLookupRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := ListLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor ListLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function ListLookupRequest.HasCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasDeliveryMethod() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasISPUPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasListId() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasListType() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasProductGroup() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasProductPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasReviewSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListLookupRequest.HasSort() : Boolean;
+function ListSearchResponse_Type.HasLists() : Boolean;
 begin
   Result := True;
 end;
@@ -8247,6 +7893,7 @@ end;
 constructor ListLookup_Type.Create();
 begin
   inherited Create();
+  FShared := ListLookupRequest_Type.Create();
   FRequest := ListLookup_RequestArray.Create();
 end;
 
@@ -8254,6 +7901,8 @@ destructor ListLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8292,11 +7941,17 @@ begin
   Result := True;
 end;
 
+function ListLookup_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { ListLookupResponse_Type }
 
 constructor ListLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FLists := ListLookupResponse_ListsArray.Create();
 end;
 
@@ -8304,6 +7959,8 @@ destructor ListLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FLists) then
+    FreeAndNil(FLists);
   inherited Destroy();
 end;
 
@@ -8312,30 +7969,7 @@ begin
   Result := True;
 end;
 
-{ CustomerContentSearchRequest }
-
-constructor CustomerContentSearchRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := CustomerContentSearchRequest_ResponseGroupArray.Create();
-end;
-
-destructor CustomerContentSearchRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CustomerContentSearchRequest.HasCustomerPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function CustomerContentSearchRequest.HasEmail() : Boolean;
-begin
-  Result := True;
-end;
-
-function CustomerContentSearchRequest.HasName() : Boolean;
+function ListLookupResponse_Type.HasLists() : Boolean;
 begin
   Result := True;
 end;
@@ -8345,6 +7979,7 @@ end;
 constructor CustomerContentSearch_Type.Create();
 begin
   inherited Create();
+  FShared := CustomerContentSearchRequest_Type.Create();
   FRequest := CustomerContentSearch_RequestArray.Create();
 end;
 
@@ -8352,6 +7987,8 @@ destructor CustomerContentSearch_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8390,32 +8027,7 @@ begin
   Result := True;
 end;
 
-{ Customers_Type }
-
-constructor Customers_Type.Create();
-begin
-  inherited Create();
-  FCustomer := Customers_CustomerArray.Create();
-end;
-
-destructor Customers_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function Customers_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Customers_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function Customers_Type.HasTotalPages() : Boolean;
+function CustomerContentSearch_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -8425,6 +8037,7 @@ end;
 constructor CustomerContentSearchResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCustomers := CustomerContentSearchResponse_CustomersArray.Create();
 end;
 
@@ -8432,6 +8045,8 @@ destructor CustomerContentSearchResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCustomers) then
+    FreeAndNil(FCustomers);
   inherited Destroy();
 end;
 
@@ -8440,25 +8055,7 @@ begin
   Result := True;
 end;
 
-{ CustomerContentLookupRequest }
-
-constructor CustomerContentLookupRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := CustomerContentLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor CustomerContentLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CustomerContentLookupRequest.HasCustomerId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CustomerContentLookupRequest.HasReviewPage() : Boolean;
+function CustomerContentSearchResponse_Type.HasCustomers() : Boolean;
 begin
   Result := True;
 end;
@@ -8468,6 +8065,7 @@ end;
 constructor CustomerContentLookup_Type.Create();
 begin
   inherited Create();
+  FShared := CustomerContentLookupRequest_Type.Create();
   FRequest := CustomerContentLookup_RequestArray.Create();
 end;
 
@@ -8475,6 +8073,8 @@ destructor CustomerContentLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8513,11 +8113,17 @@ begin
   Result := True;
 end;
 
+function CustomerContentLookup_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { CustomerContentLookupResponse_Type }
 
 constructor CustomerContentLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCustomers := CustomerContentLookupResponse_CustomersArray.Create();
 end;
 
@@ -8525,6 +8131,8 @@ destructor CustomerContentLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCustomers) then
+    FreeAndNil(FCustomers);
   inherited Destroy();
 end;
 
@@ -8533,46 +8141,7 @@ begin
   Result := True;
 end;
 
-{ SimilarityLookupRequest }
-
-constructor SimilarityLookupRequest.Create();
-begin
-  inherited Create();
-  FItemId := SimilarityLookupRequest_ItemIdArray.Create();
-  FResponseGroup := SimilarityLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor SimilarityLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function SimilarityLookupRequest.HasCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarityLookupRequest.HasDeliveryMethod() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarityLookupRequest.HasISPUPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarityLookupRequest.HasMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarityLookupRequest.HasReviewSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarityLookupRequest.HasSimilarityType() : Boolean;
+function CustomerContentLookupResponse_Type.HasCustomers() : Boolean;
 begin
   Result := True;
 end;
@@ -8582,6 +8151,7 @@ end;
 constructor SimilarityLookup_Type.Create();
 begin
   inherited Create();
+  FShared := SimilarityLookupRequest_Type.Create();
   FRequest := SimilarityLookup_RequestArray.Create();
 end;
 
@@ -8589,6 +8159,8 @@ destructor SimilarityLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8627,11 +8199,17 @@ begin
   Result := True;
 end;
 
+function SimilarityLookup_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { SimilarityLookupResponse_Type }
 
 constructor SimilarityLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FItems := SimilarityLookupResponse_ItemsArray.Create();
 end;
 
@@ -8639,6 +8217,8 @@ destructor SimilarityLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
   inherited Destroy();
 end;
 
@@ -8647,21 +8227,7 @@ begin
   Result := True;
 end;
 
-{ SellerLookupRequest }
-
-constructor SellerLookupRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := SellerLookupRequest_ResponseGroupArray.Create();
-  FSellerId := SellerLookupRequest_SellerIdArray.Create();
-end;
-
-destructor SellerLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function SellerLookupRequest.HasFeedbackPage() : Boolean;
+function SimilarityLookupResponse_Type.HasItems() : Boolean;
 begin
   Result := True;
 end;
@@ -8671,6 +8237,7 @@ end;
 constructor SellerLookup_Type.Create();
 begin
   inherited Create();
+  FShared := SellerLookupRequest_Type.Create();
   FRequest := SellerLookup_RequestArray.Create();
 end;
 
@@ -8678,6 +8245,8 @@ destructor SellerLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8716,32 +8285,7 @@ begin
   Result := True;
 end;
 
-{ Sellers_Type }
-
-constructor Sellers_Type.Create();
-begin
-  inherited Create();
-  FSeller := Sellers_SellerArray.Create();
-end;
-
-destructor Sellers_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function Sellers_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Sellers_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function Sellers_Type.HasTotalPages() : Boolean;
+function SellerLookup_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -8751,6 +8295,7 @@ end;
 constructor SellerLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FSellers := SellerLookupResponse_SellersArray.Create();
 end;
 
@@ -8758,6 +8303,8 @@ destructor SellerLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FSellers) then
+    FreeAndNil(FSellers);
   inherited Destroy();
 end;
 
@@ -8766,30 +8313,7 @@ begin
   Result := True;
 end;
 
-{ CartGetRequest }
-
-constructor CartGetRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := CartGetRequest_ResponseGroupArray.Create();
-end;
-
-destructor CartGetRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CartGetRequest.HasCartId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartGetRequest.HasHMAC() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartGetRequest.HasMergeCart() : Boolean;
+function SellerLookupResponse_Type.HasSellers() : Boolean;
 begin
   Result := True;
 end;
@@ -8799,6 +8323,7 @@ end;
 constructor CartGet_Type.Create();
 begin
   inherited Create();
+  FShared := CartGetRequest_Type.Create();
   FRequest := CartGet_RequestArray.Create();
 end;
 
@@ -8806,6 +8331,8 @@ destructor CartGet_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -8844,77 +8371,7 @@ begin
   Result := True;
 end;
 
-{ Cart_Type }
-
-constructor Cart_Type.Create();
-begin
-  inherited Create();
-  FSimilarProducts := SimilarProducts_Type.Create();
-  FTopSellers := TopSellers_Type.Create();
-  FNewReleases := NewReleases_Type.Create();
-  FSimilarViewedProducts := SimilarViewedProducts_Type.Create();
-  FOtherCategoriesSimilarProducts := OtherCategoriesSimilarProducts_Type.Create();
-end;
-
-destructor Cart_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  if Assigned(FSubTotal) then
-    FreeAndNil(FSubTotal);
-  if Assigned(FCartItems) then
-    FreeAndNil(FCartItems);
-  if Assigned(FSavedForLaterItems) then
-    FreeAndNil(FSavedForLaterItems);
-  inherited Destroy();
-end;
-
-function Cart_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasPurchaseURL() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasSubTotal() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasCartItems() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasSavedForLaterItems() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasSimilarProducts() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasTopSellers() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasNewReleases() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasSimilarViewedProducts() : Boolean;
-begin
-  Result := True;
-end;
-
-function Cart_Type.HasOtherCategoriesSimilarProducts() : Boolean;
+function CartGet_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -8924,6 +8381,7 @@ end;
 constructor CartGetResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCart := CartGetResponse_CartArray.Create();
 end;
 
@@ -8931,6 +8389,8 @@ destructor CartGetResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCart) then
+    FreeAndNil(FCart);
   inherited Destroy();
 end;
 
@@ -8939,36 +8399,7 @@ begin
   Result := True;
 end;
 
-{ CartAddRequest }
-
-constructor CartAddRequest.Create();
-begin
-  inherited Create();
-  FItems := CartAddRequest_Items_Type.Create();
-  FResponseGroup := CartAddRequest_ResponseGroupArray.Create();
-end;
-
-destructor CartAddRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CartAddRequest.HasCartId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartAddRequest.HasHMAC() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartAddRequest.HasMergeCart() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartAddRequest.HasItems() : Boolean;
+function CartGetResponse_Type.HasCart() : Boolean;
 begin
   Result := True;
 end;
@@ -8978,6 +8409,7 @@ end;
 constructor CartAdd_Type.Create();
 begin
   inherited Create();
+  FShared := CartAddRequest_Type.Create();
   FRequest := CartAdd_RequestArray.Create();
 end;
 
@@ -8985,6 +8417,8 @@ destructor CartAdd_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9023,11 +8457,17 @@ begin
   Result := True;
 end;
 
+function CartAdd_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { CartAddResponse_Type }
 
 constructor CartAddResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCart := CartAddResponse_CartArray.Create();
 end;
 
@@ -9035,6 +8475,8 @@ destructor CartAddResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCart) then
+    FreeAndNil(FCart);
   inherited Destroy();
 end;
 
@@ -9043,26 +8485,7 @@ begin
   Result := True;
 end;
 
-{ CartCreateRequest }
-
-constructor CartCreateRequest.Create();
-begin
-  inherited Create();
-  FItems := CartCreateRequest_Items_Type.Create();
-  FResponseGroup := CartCreateRequest_ResponseGroupArray.Create();
-end;
-
-destructor CartCreateRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CartCreateRequest.HasMergeCart() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartCreateRequest.HasItems() : Boolean;
+function CartAddResponse_Type.HasCart() : Boolean;
 begin
   Result := True;
 end;
@@ -9072,6 +8495,7 @@ end;
 constructor CartCreate_Type.Create();
 begin
   inherited Create();
+  FShared := CartCreateRequest_Type.Create();
   FRequest := CartCreate_RequestArray.Create();
 end;
 
@@ -9079,6 +8503,8 @@ destructor CartCreate_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9117,11 +8543,17 @@ begin
   Result := True;
 end;
 
+function CartCreate_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { CartCreateResponse_Type }
 
 constructor CartCreateResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCart := CartCreateResponse_CartArray.Create();
 end;
 
@@ -9129,6 +8561,8 @@ destructor CartCreateResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCart) then
+    FreeAndNil(FCart);
   inherited Destroy();
 end;
 
@@ -9137,36 +8571,7 @@ begin
   Result := True;
 end;
 
-{ CartModifyRequest }
-
-constructor CartModifyRequest.Create();
-begin
-  inherited Create();
-  FItems := CartModifyRequest_Items_Type.Create();
-  FResponseGroup := CartModifyRequest_ResponseGroupArray.Create();
-end;
-
-destructor CartModifyRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CartModifyRequest.HasCartId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartModifyRequest.HasHMAC() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartModifyRequest.HasMergeCart() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartModifyRequest.HasItems() : Boolean;
+function CartCreateResponse_Type.HasCart() : Boolean;
 begin
   Result := True;
 end;
@@ -9176,6 +8581,7 @@ end;
 constructor CartModify_Type.Create();
 begin
   inherited Create();
+  FShared := CartModifyRequest_Type.Create();
   FRequest := CartModify_RequestArray.Create();
 end;
 
@@ -9183,6 +8589,8 @@ destructor CartModify_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9221,11 +8629,17 @@ begin
   Result := True;
 end;
 
+function CartModify_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { CartModifyResponse_Type }
 
 constructor CartModifyResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCart := CartModifyResponse_CartArray.Create();
 end;
 
@@ -9233,6 +8647,8 @@ destructor CartModifyResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCart) then
+    FreeAndNil(FCart);
   inherited Destroy();
 end;
 
@@ -9241,30 +8657,7 @@ begin
   Result := True;
 end;
 
-{ CartClearRequest }
-
-constructor CartClearRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := CartClearRequest_ResponseGroupArray.Create();
-end;
-
-destructor CartClearRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CartClearRequest.HasCartId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartClearRequest.HasHMAC() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartClearRequest.HasMergeCart() : Boolean;
+function CartModifyResponse_Type.HasCart() : Boolean;
 begin
   Result := True;
 end;
@@ -9274,6 +8667,7 @@ end;
 constructor CartClear_Type.Create();
 begin
   inherited Create();
+  FShared := CartClearRequest_Type.Create();
   FRequest := CartClear_RequestArray.Create();
 end;
 
@@ -9281,6 +8675,8 @@ destructor CartClear_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9319,11 +8715,17 @@ begin
   Result := True;
 end;
 
+function CartClear_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { CartClearResponse_Type }
 
 constructor CartClearResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FCart := CartClearResponse_CartArray.Create();
 end;
 
@@ -9331,6 +8733,8 @@ destructor CartClearResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FCart) then
+    FreeAndNil(FCart);
   inherited Destroy();
 end;
 
@@ -9339,18 +8743,9 @@ begin
   Result := True;
 end;
 
-{ TransactionLookupRequest }
-
-constructor TransactionLookupRequest.Create();
+function CartClearResponse_Type.HasCart() : Boolean;
 begin
-  inherited Create();
-  FResponseGroup := TransactionLookupRequest_ResponseGroupArray.Create();
-  FTransactionId := TransactionLookupRequest_TransactionIdArray.Create();
-end;
-
-destructor TransactionLookupRequest.Destroy();
-begin
-  inherited Destroy();
+  Result := True;
 end;
 
 { TransactionLookup_Type }
@@ -9358,6 +8753,7 @@ end;
 constructor TransactionLookup_Type.Create();
 begin
   inherited Create();
+  FShared := TransactionLookupRequest_Type.Create();
   FRequest := TransactionLookup_RequestArray.Create();
 end;
 
@@ -9365,6 +8761,8 @@ destructor TransactionLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9403,32 +8801,7 @@ begin
   Result := True;
 end;
 
-{ Transactions_Type }
-
-constructor Transactions_Type.Create();
-begin
-  inherited Create();
-  FTransaction := Transactions_TransactionArray.Create();
-end;
-
-destructor Transactions_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function Transactions_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function Transactions_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function Transactions_Type.HasTotalPages() : Boolean;
+function TransactionLookup_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -9438,6 +8811,7 @@ end;
 constructor TransactionLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FTransactions := TransactionLookupResponse_TransactionsArray.Create();
 end;
 
@@ -9445,6 +8819,8 @@ destructor TransactionLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FTransactions) then
+    FreeAndNil(FTransactions);
   inherited Destroy();
 end;
 
@@ -9453,40 +8829,7 @@ begin
   Result := True;
 end;
 
-{ SellerListingSearchRequest }
-
-constructor SellerListingSearchRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := SellerListingSearchRequest_ResponseGroupArray.Create();
-end;
-
-destructor SellerListingSearchRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function SellerListingSearchRequest.HasKeywords() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListingSearchRequest.HasListingPage() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListingSearchRequest.HasOfferStatus() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListingSearchRequest.HasSort() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListingSearchRequest.HasTitle() : Boolean;
+function TransactionLookupResponse_Type.HasTransactions() : Boolean;
 begin
   Result := True;
 end;
@@ -9496,6 +8839,7 @@ end;
 constructor SellerListingSearch_Type.Create();
 begin
   inherited Create();
+  FShared := SellerListingSearchRequest_Type.Create();
   FRequest := SellerListingSearch_RequestArray.Create();
 end;
 
@@ -9503,6 +8847,8 @@ destructor SellerListingSearch_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9541,32 +8887,7 @@ begin
   Result := True;
 end;
 
-{ SellerListings_Type }
-
-constructor SellerListings_Type.Create();
-begin
-  inherited Create();
-  FSellerListing := SellerListings_SellerListingArray.Create();
-end;
-
-destructor SellerListings_Type.Destroy();
-begin
-  if Assigned(FRequest) then
-    FreeAndNil(FRequest);
-  inherited Destroy();
-end;
-
-function SellerListings_Type.HasRequest() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListings_Type.HasTotalResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerListings_Type.HasTotalPages() : Boolean;
+function SellerListingSearch_Type.HasRequest() : Boolean;
 begin
   Result := True;
 end;
@@ -9576,6 +8897,7 @@ end;
 constructor SellerListingSearchResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FSellerListings := SellerListingSearchResponse_SellerListingsArray.Create();
 end;
 
@@ -9583,6 +8905,8 @@ destructor SellerListingSearchResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FSellerListings) then
+    FreeAndNil(FSellerListings);
   inherited Destroy();
 end;
 
@@ -9591,20 +8915,7 @@ begin
   Result := True;
 end;
 
-{ SellerListingLookupRequest }
-
-constructor SellerListingLookupRequest.Create();
-begin
-  inherited Create();
-  FResponseGroup := SellerListingLookupRequest_ResponseGroupArray.Create();
-end;
-
-destructor SellerListingLookupRequest.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function SellerListingLookupRequest.HasSellerId() : Boolean;
+function SellerListingSearchResponse_Type.HasSellerListings() : Boolean;
 begin
   Result := True;
 end;
@@ -9614,6 +8925,7 @@ end;
 constructor SellerListingLookup_Type.Create();
 begin
   inherited Create();
+  FShared := SellerListingLookupRequest_Type.Create();
   FRequest := SellerListingLookup_RequestArray.Create();
 end;
 
@@ -9621,6 +8933,8 @@ destructor SellerListingLookup_Type.Destroy();
 begin
   if Assigned(FShared) then
     FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
   inherited Destroy();
 end;
 
@@ -9659,11 +8973,17 @@ begin
   Result := True;
 end;
 
+function SellerListingLookup_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
 { SellerListingLookupResponse_Type }
 
 constructor SellerListingLookupResponse_Type.Create();
 begin
   inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
   FSellerListings := SellerListingLookupResponse_SellerListingsArray.Create();
 end;
 
@@ -9671,6 +8991,8 @@ destructor SellerListingLookupResponse_Type.Destroy();
 begin
   if Assigned(FOperationRequest) then
     FreeAndNil(FOperationRequest);
+  if Assigned(FSellerListings) then
+    FreeAndNil(FSellerListings);
   inherited Destroy();
 end;
 
@@ -9679,9 +9001,37 @@ begin
   Result := True;
 end;
 
-{ MultiOperationType }
+function SellerListingLookupResponse_Type.HasSellerListings() : Boolean;
+begin
+  Result := True;
+end;
 
-destructor MultiOperationType.Destroy();
+{ MultiOperation_Type }
+
+constructor MultiOperation_Type.Create();
+begin
+  inherited Create();
+  FHelp := Help_Type.Create();
+  FItemSearch := ItemSearch_Type.Create();
+  FItemLookup := ItemLookup_Type.Create();
+  FListSearch := ListSearch_Type.Create();
+  FListLookup := ListLookup_Type.Create();
+  FCustomerContentSearch := CustomerContentSearch_Type.Create();
+  FCustomerContentLookup := CustomerContentLookup_Type.Create();
+  FSimilarityLookup := SimilarityLookup_Type.Create();
+  FSellerLookup := SellerLookup_Type.Create();
+  FCartGet := CartGet_Type.Create();
+  FCartAdd := CartAdd_Type.Create();
+  FCartCreate := CartCreate_Type.Create();
+  FCartModify := CartModify_Type.Create();
+  FCartClear := CartClear_Type.Create();
+  FTransactionLookup := TransactionLookup_Type.Create();
+  FSellerListingSearch := SellerListingSearch_Type.Create();
+  FSellerListingLookup := SellerListingLookup_Type.Create();
+  FBrowseNodeLookup := BrowseNodeLookup_Type.Create();
+end;
+
+destructor MultiOperation_Type.Destroy();
 begin
   if Assigned(FHelp) then
     FreeAndNil(FHelp);
@@ -9722,97 +9072,121 @@ begin
   inherited Destroy();
 end;
 
-function MultiOperationType.HasHelp() : Boolean;
+function MultiOperation_Type.HasHelp() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasItemSearch() : Boolean;
+function MultiOperation_Type.HasItemSearch() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasItemLookup() : Boolean;
+function MultiOperation_Type.HasItemLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasListSearch() : Boolean;
+function MultiOperation_Type.HasListSearch() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasListLookup() : Boolean;
+function MultiOperation_Type.HasListLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCustomerContentSearch() : Boolean;
+function MultiOperation_Type.HasCustomerContentSearch() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCustomerContentLookup() : Boolean;
+function MultiOperation_Type.HasCustomerContentLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasSimilarityLookup() : Boolean;
+function MultiOperation_Type.HasSimilarityLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasSellerLookup() : Boolean;
+function MultiOperation_Type.HasSellerLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCartGet() : Boolean;
+function MultiOperation_Type.HasCartGet() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCartAdd() : Boolean;
+function MultiOperation_Type.HasCartAdd() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCartCreate() : Boolean;
+function MultiOperation_Type.HasCartCreate() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCartModify() : Boolean;
+function MultiOperation_Type.HasCartModify() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasCartClear() : Boolean;
+function MultiOperation_Type.HasCartClear() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasTransactionLookup() : Boolean;
+function MultiOperation_Type.HasTransactionLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasSellerListingSearch() : Boolean;
+function MultiOperation_Type.HasSellerListingSearch() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasSellerListingLookup() : Boolean;
+function MultiOperation_Type.HasSellerListingLookup() : Boolean;
 begin
   Result := True;
 end;
 
-function MultiOperationType.HasBrowseNodeLookup() : Boolean;
+function MultiOperation_Type.HasBrowseNodeLookup() : Boolean;
 begin
   Result := True;
 end;
 
 { MultiOperationResponse }
+
+constructor MultiOperationResponse.Create();
+begin
+  inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
+  FHelpResponse := HelpResponse_Type.Create();
+  FItemSearchResponse := ItemSearchResponse_Type.Create();
+  FItemLookupResponse := ItemLookupResponse_Type.Create();
+  FListSearchResponse := ListSearchResponse_Type.Create();
+  FListLookupResponse := ListLookupResponse_Type.Create();
+  FCustomerContentSearchResponse := CustomerContentSearchResponse_Type.Create();
+  FCustomerContentLookupResponse := CustomerContentLookupResponse_Type.Create();
+  FSimilarityLookupResponse := SimilarityLookupResponse_Type.Create();
+  FSellerLookupResponse := SellerLookupResponse_Type.Create();
+  FCartGetResponse := CartGetResponse_Type.Create();
+  FCartAddResponse := CartAddResponse_Type.Create();
+  FCartCreateResponse := CartCreateResponse_Type.Create();
+  FCartModifyResponse := CartModifyResponse_Type.Create();
+  FCartClearResponse := CartClearResponse_Type.Create();
+  FTransactionLookupResponse := TransactionLookupResponse_Type.Create();
+  FSellerListingSearchResponse := SellerListingSearchResponse_Type.Create();
+  FSellerListingLookupResponse := SellerListingLookupResponse_Type.Create();
+  FBrowseNodeLookupResponse := BrowseNodeLookupResponse_Type.Create();
+end;
 
 destructor MultiOperationResponse.Destroy();
 begin
@@ -9962,7 +9336,14 @@ end;
 
 destructor Bin_Type.Destroy();
 begin
+  if Assigned(FBinParameter) then
+    FreeAndNil(FBinParameter);
   inherited Destroy();
+end;
+
+function Bin_Type.HasBinParameter() : Boolean;
+begin
+  Result := True;
 end;
 
 { SearchBinSet_Type }
@@ -9975,10 +9356,652 @@ end;
 
 destructor SearchBinSet_Type.Destroy();
 begin
+  if Assigned(FBin) then
+    FreeAndNil(FBin);
   inherited Destroy();
 end;
 
-{ CartAddRequest_Items_Type_Item_Type }
+function SearchBinSet_Type.HasBin() : Boolean;
+begin
+  Result := True;
+end;
+
+{ HelpRequest_Type }
+
+constructor HelpRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := HelpRequest_ResponseGroupArray.Create();
+end;
+
+destructor HelpRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function HelpRequest_Type.HasAbout() : Boolean;
+begin
+  Result := True;
+end;
+
+function HelpRequest_Type.HasHelpType() : Boolean;
+begin
+  Result := True;
+end;
+
+function HelpRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ItemSearchRequest_Type }
+
+constructor ItemSearchRequest_Type.Create();
+begin
+  inherited Create();
+  FAudienceRating := ItemSearchRequest_AudienceRatingArray.Create();
+  FResponseGroup := ItemSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor ItemSearchRequest_Type.Destroy();
+begin
+  if Assigned(FAudienceRating) then
+    FreeAndNil(FAudienceRating);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function ItemSearchRequest_Type.HasActor() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasArtist() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasAvailability() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasAudienceRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasAuthor() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasBrand() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasBrowseNode() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasCity() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasComposer() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasConductor() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasCount() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasCuisine() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasDeliveryMethod() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasDirector() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasFutureLaunchDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasISPUPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasItemPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasKeywords() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasManufacturer() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasMaximumPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasMinimumPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasMusicLabel() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasNeighborhood() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasOrchestra() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasPower() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasPublisher() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasReviewSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasSearchIndex() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasState() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasTextStream() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemSearchRequest_Type.HasReleaseDate() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ItemLookupRequest_Type }
+
+constructor ItemLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FItemId := ItemLookupRequest_ItemIdArray.Create();
+  FResponseGroup := ItemLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor ItemLookupRequest_Type.Destroy();
+begin
+  if Assigned(FItemId) then
+    FreeAndNil(FItemId);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function ItemLookupRequest_Type.HasCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasDeliveryMethod() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasFutureLaunchDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasIdType() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasISPUPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasOfferPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasItemId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasReviewPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasReviewSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasSearchIndex() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasSearchInsideKeywords() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemLookupRequest_Type.HasVariationPage() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ListSearchRequest_Type }
+
+constructor ListSearchRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := ListSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor ListSearchRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function ListSearchRequest_Type.HasCity() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasEmail() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasFirstName() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasLastName() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasListPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListSearchRequest_Type.HasState() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ListLookupRequest_Type }
+
+constructor ListLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := ListLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor ListLookupRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function ListLookupRequest_Type.HasCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasDeliveryMethod() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasISPUPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasListId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasListType() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasProductGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasProductPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasReviewSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListLookupRequest_Type.HasSort() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CustomerContentSearchRequest_Type }
+
+constructor CustomerContentSearchRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := CustomerContentSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor CustomerContentSearchRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CustomerContentSearchRequest_Type.HasCustomerPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerContentSearchRequest_Type.HasEmail() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerContentSearchRequest_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerContentSearchRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CustomerContentLookupRequest_Type }
+
+constructor CustomerContentLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := CustomerContentLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor CustomerContentLookupRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CustomerContentLookupRequest_Type.HasCustomerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerContentLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerContentLookupRequest_Type.HasReviewPage() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SimilarityLookupRequest_Type }
+
+constructor SimilarityLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FItemId := SimilarityLookupRequest_ItemIdArray.Create();
+  FResponseGroup := SimilarityLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor SimilarityLookupRequest_Type.Destroy();
+begin
+  if Assigned(FItemId) then
+    FreeAndNil(FItemId);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function SimilarityLookupRequest_Type.HasCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasDeliveryMethod() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasItemId() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasISPUPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasReviewSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarityLookupRequest_Type.HasSimilarityType() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SellerLookupRequest_Type }
+
+constructor SellerLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := SellerLookupRequest_ResponseGroupArray.Create();
+  FSellerId := SellerLookupRequest_SellerIdArray.Create();
+end;
+
+destructor SellerLookupRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  if Assigned(FSellerId) then
+    FreeAndNil(FSellerId);
+  inherited Destroy();
+end;
+
+function SellerLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerLookupRequest_Type.HasSellerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerLookupRequest_Type.HasFeedbackPage() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CartGetRequest_Type }
+
+constructor CartGetRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := CartGetRequest_ResponseGroupArray.Create();
+end;
+
+destructor CartGetRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CartGetRequest_Type.HasCartId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartGetRequest_Type.HasHMAC() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartGetRequest_Type.HasMergeCart() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartGetRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
 
 function CartAddRequest_Items_Type_Item_Type.HasASIN() : Boolean;
 begin
@@ -10005,7 +10028,48 @@ begin
   Result := True;
 end;
 
-{ CartCreateRequest_Items_Type_Item_Type }
+{ CartAddRequest_Type }
+
+constructor CartAddRequest_Type.Create();
+begin
+  inherited Create();
+  FItems := CartAddRequest_Items_Type.Create();
+  FResponseGroup := CartAddRequest_ResponseGroupArray.Create();
+end;
+
+destructor CartAddRequest_Type.Destroy();
+begin
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CartAddRequest_Type.HasCartId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartAddRequest_Type.HasHMAC() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartAddRequest_Type.HasMergeCart() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartAddRequest_Type.HasItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartAddRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasASIN() : Boolean;
 begin
@@ -10032,7 +10096,38 @@ begin
   Result := True;
 end;
 
-{ CartModifyRequest_Items_Type_Item_Type }
+{ CartCreateRequest_Type }
+
+constructor CartCreateRequest_Type.Create();
+begin
+  inherited Create();
+  FItems := CartCreateRequest_Items_Type.Create();
+  FResponseGroup := CartCreateRequest_ResponseGroupArray.Create();
+end;
+
+destructor CartCreateRequest_Type.Destroy();
+begin
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CartCreateRequest_Type.HasMergeCart() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartCreateRequest_Type.HasItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartCreateRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
 
 function CartModifyRequest_Items_Type_Item_Type.HasAction() : Boolean;
 begin
@@ -10049,11 +10144,279 @@ begin
   Result := True;
 end;
 
+{ CartModifyRequest_Type }
+
+constructor CartModifyRequest_Type.Create();
+begin
+  inherited Create();
+  FItems := CartModifyRequest_Items_Type.Create();
+  FResponseGroup := CartModifyRequest_ResponseGroupArray.Create();
+end;
+
+destructor CartModifyRequest_Type.Destroy();
+begin
+  if Assigned(FItems) then
+    FreeAndNil(FItems);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CartModifyRequest_Type.HasCartId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartModifyRequest_Type.HasHMAC() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartModifyRequest_Type.HasMergeCart() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartModifyRequest_Type.HasItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartModifyRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CartClearRequest_Type }
+
+constructor CartClearRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := CartClearRequest_ResponseGroupArray.Create();
+end;
+
+destructor CartClearRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function CartClearRequest_Type.HasCartId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartClearRequest_Type.HasHMAC() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartClearRequest_Type.HasMergeCart() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartClearRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ TransactionLookupRequest_Type }
+
+constructor TransactionLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := TransactionLookupRequest_ResponseGroupArray.Create();
+  FTransactionId := TransactionLookupRequest_TransactionIdArray.Create();
+end;
+
+destructor TransactionLookupRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  if Assigned(FTransactionId) then
+    FreeAndNil(FTransactionId);
+  inherited Destroy();
+end;
+
+function TransactionLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function TransactionLookupRequest_Type.HasTransactionId() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SellerListingSearchRequest_Type }
+
+constructor SellerListingSearchRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := SellerListingSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor SellerListingSearchRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function SellerListingSearchRequest_Type.HasKeywords() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingSearchRequest_Type.HasListingPage() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingSearchRequest_Type.HasOfferStatus() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingSearchRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingSearchRequest_Type.HasSort() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingSearchRequest_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SellerListingLookupRequest_Type }
+
+constructor SellerListingLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FResponseGroup := SellerListingLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor SellerListingLookupRequest_Type.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function SellerListingLookupRequest_Type.HasSellerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListingLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ BrowseNodeLookupRequest_Type }
+
+constructor BrowseNodeLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FBrowseNodeId := BrowseNodeLookupRequest_BrowseNodeIdArray.Create();
+  FResponseGroup := BrowseNodeLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor BrowseNodeLookupRequest_Type.Destroy();
+begin
+  if Assigned(FBrowseNodeId) then
+    FreeAndNil(FBrowseNodeId);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function BrowseNodeLookupRequest_Type.HasBrowseNodeId() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNodeLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+{ OperationRequest_Type }
+
+constructor OperationRequest_Type.Create();
+begin
+  inherited Create();
+  FHTTPHeaders := HTTPHeaders_Type.Create();
+  FArguments := Arguments_Type.Create();
+  FErrors := Errors_Type.Create();
+end;
+
+destructor OperationRequest_Type.Destroy();
+begin
+  if Assigned(FHTTPHeaders) then
+    FreeAndNil(FHTTPHeaders);
+  if Assigned(FArguments) then
+    FreeAndNil(FArguments);
+  if Assigned(FErrors) then
+    FreeAndNil(FErrors);
+  inherited Destroy();
+end;
+
+function OperationRequest_Type.HasHTTPHeaders() : Boolean;
+begin
+  Result := True;
+end;
+
+function OperationRequest_Type.HasRequestId() : Boolean;
+begin
+  Result := True;
+end;
+
+function OperationRequest_Type.HasArguments() : Boolean;
+begin
+  Result := True;
+end;
+
+function OperationRequest_Type.HasErrors() : Boolean;
+begin
+  Result := True;
+end;
+
+function OperationRequest_Type.HasRequestProcessingTime() : Boolean;
+begin
+  Result := True;
+end;
+
 { Request_Type }
 
 constructor Request_Type.Create();
 begin
   inherited Create();
+  FHelpRequest := HelpRequest_Type.Create();
+  FBrowseNodeLookupRequest := BrowseNodeLookupRequest_Type.Create();
+  FItemSearchRequest := ItemSearchRequest_Type.Create();
+  FItemLookupRequest := ItemLookupRequest_Type.Create();
+  FListSearchRequest := ListSearchRequest_Type.Create();
+  FListLookupRequest := ListLookupRequest_Type.Create();
+  FCustomerContentSearchRequest := CustomerContentSearchRequest_Type.Create();
+  FCustomerContentLookupRequest := CustomerContentLookupRequest_Type.Create();
+  FSimilarityLookupRequest := SimilarityLookupRequest_Type.Create();
+  FCartGetRequest := CartGetRequest_Type.Create();
+  FCartAddRequest := CartAddRequest_Type.Create();
+  FCartCreateRequest := CartCreateRequest_Type.Create();
+  FCartModifyRequest := CartModifyRequest_Type.Create();
+  FCartClearRequest := CartClearRequest_Type.Create();
+  FTransactionLookupRequest := TransactionLookupRequest_Type.Create();
+  FSellerListingSearchRequest := SellerListingSearchRequest_Type.Create();
+  FSellerListingLookupRequest := SellerListingLookupRequest_Type.Create();
+  FSellerLookupRequest := SellerLookupRequest_Type.Create();
   FErrors := Errors_Type.Create();
 end;
 
@@ -10095,6 +10458,8 @@ begin
     FreeAndNil(FSellerListingLookupRequest);
   if Assigned(FSellerLookupRequest) then
     FreeAndNil(FSellerLookupRequest);
+  if Assigned(FErrors) then
+    FreeAndNil(FErrors);
   inherited Destroy();
 end;
 
@@ -10198,6 +10563,393 @@ begin
   Result := True;
 end;
 
+{ Information_Type }
+
+constructor Information_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FOperationInformation := Information_OperationInformationArray.Create();
+  FResponseGroupInformation := Information_ResponseGroupInformationArray.Create();
+end;
+
+destructor Information_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FOperationInformation) then
+    FreeAndNil(FOperationInformation);
+  if Assigned(FResponseGroupInformation) then
+    FreeAndNil(FResponseGroupInformation);
+  inherited Destroy();
+end;
+
+function Information_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Information_Type.HasOperationInformation() : Boolean;
+begin
+  Result := True;
+end;
+
+function Information_Type.HasResponseGroupInformation() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Items_Type }
+
+constructor Items_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FCorrectedQuery := CorrectedQuery_Type.Create();
+  FSearchResultsMap := SearchResultsMap_Type.Create();
+  F_Item := Items__ItemArray.Create();
+  FSearchBinSets := SearchBinSets_Type.Create();
+end;
+
+destructor Items_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FCorrectedQuery) then
+    FreeAndNil(FCorrectedQuery);
+  if Assigned(FSearchResultsMap) then
+    FreeAndNil(FSearchResultsMap);
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  if Assigned(FSearchBinSets) then
+    FreeAndNil(FSearchBinSets);
+  inherited Destroy();
+end;
+
+function Items_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasCorrectedQuery() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasQid() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasSearchResultsMap() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.Has_Item() : Boolean;
+begin
+  Result := True;
+end;
+
+function Items_Type.HasSearchBinSets() : Boolean;
+begin
+  Result := True;
+end;
+
+function CorrectedQuery_Type.HasKeywords() : Boolean;
+begin
+  Result := True;
+end;
+
+function CorrectedQuery_Type.HasMessage() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Lists_Type }
+
+constructor Lists_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FList := Lists_ListArray.Create();
+end;
+
+destructor Lists_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FList) then
+    FreeAndNil(FList);
+  inherited Destroy();
+end;
+
+function Lists_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Lists_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function Lists_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function Lists_Type.HasList() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Customers_Type }
+
+constructor Customers_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FCustomer := Customers_CustomerArray.Create();
+end;
+
+destructor Customers_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FCustomer) then
+    FreeAndNil(FCustomer);
+  inherited Destroy();
+end;
+
+function Customers_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customers_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customers_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customers_Type.HasCustomer() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Cart_Type }
+
+constructor Cart_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FSubTotal := Price_Type.Create();
+  FCartItems := CartItems_Type.Create();
+  FSavedForLaterItems := SavedForLaterItems_Type.Create();
+  FSimilarProducts := SimilarProducts_Type.Create();
+  FTopSellers := TopSellers_Type.Create();
+  FNewReleases := NewReleases_Type.Create();
+  FSimilarViewedProducts := SimilarViewedProducts_Type.Create();
+  FOtherCategoriesSimilarProducts := OtherCategoriesSimilarProducts_Type.Create();
+end;
+
+destructor Cart_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FSubTotal) then
+    FreeAndNil(FSubTotal);
+  if Assigned(FCartItems) then
+    FreeAndNil(FCartItems);
+  if Assigned(FSavedForLaterItems) then
+    FreeAndNil(FSavedForLaterItems);
+  if Assigned(FSimilarProducts) then
+    FreeAndNil(FSimilarProducts);
+  if Assigned(FTopSellers) then
+    FreeAndNil(FTopSellers);
+  if Assigned(FNewReleases) then
+    FreeAndNil(FNewReleases);
+  if Assigned(FSimilarViewedProducts) then
+    FreeAndNil(FSimilarViewedProducts);
+  if Assigned(FOtherCategoriesSimilarProducts) then
+    FreeAndNil(FOtherCategoriesSimilarProducts);
+  inherited Destroy();
+end;
+
+function Cart_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasPurchaseURL() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasSubTotal() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasCartItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasSavedForLaterItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasSimilarProducts() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasTopSellers() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasNewReleases() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasSimilarViewedProducts() : Boolean;
+begin
+  Result := True;
+end;
+
+function Cart_Type.HasOtherCategoriesSimilarProducts() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Transactions_Type }
+
+constructor Transactions_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FTransaction := Transactions_TransactionArray.Create();
+end;
+
+destructor Transactions_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FTransaction) then
+    FreeAndNil(FTransaction);
+  inherited Destroy();
+end;
+
+function Transactions_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Transactions_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function Transactions_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Sellers_Type }
+
+constructor Sellers_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FSeller := Sellers_SellerArray.Create();
+end;
+
+destructor Sellers_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FSeller) then
+    FreeAndNil(FSeller);
+  inherited Destroy();
+end;
+
+function Sellers_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function Sellers_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function Sellers_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function Sellers_Type.HasSeller() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SellerListings_Type }
+
+constructor SellerListings_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FSellerListing := SellerListings_SellerListingArray.Create();
+end;
+
+destructor SellerListings_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FSellerListing) then
+    FreeAndNil(FSellerListing);
+  inherited Destroy();
+end;
+
+function SellerListings_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListings_Type.HasTotalResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListings_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerListings_Type.HasSellerListing() : Boolean;
+begin
+  Result := True;
+end;
+
 { OperationInformation_Type }
 
 constructor OperationInformation_Type.Create();
@@ -10211,6 +10963,14 @@ end;
 
 destructor OperationInformation_Type.Destroy();
 begin
+  if Assigned(FRequiredParameters) then
+    FreeAndNil(FRequiredParameters);
+  if Assigned(FAvailableParameters) then
+    FreeAndNil(FAvailableParameters);
+  if Assigned(FDefaultResponseGroups) then
+    FreeAndNil(FDefaultResponseGroups);
+  if Assigned(FAvailableResponseGroups) then
+    FreeAndNil(FAvailableResponseGroups);
   inherited Destroy();
 end;
 
@@ -10255,6 +11015,10 @@ end;
 
 destructor ResponseGroupInformation_Type.Destroy();
 begin
+  if Assigned(FValidOperations) then
+    FreeAndNil(FValidOperations);
+  if Assigned(FElements) then
+    FreeAndNil(FElements);
   inherited Destroy();
 end;
 
@@ -10278,14 +11042,281 @@ begin
   Result := True;
 end;
 
-{ CorrectedQuery_Type }
+{ List_Type }
 
-function CorrectedQuery_Type.HasKeywords() : Boolean;
+constructor List_Type.Create();
+begin
+  inherited Create();
+  FImage := Image_Type.Create();
+  FListItem := List_ListItemArray.Create();
+end;
+
+destructor List_Type.Destroy();
+begin
+  if Assigned(FImage) then
+    FreeAndNil(FImage);
+  if Assigned(FListItem) then
+    FreeAndNil(FListItem);
+  inherited Destroy();
+end;
+
+function List_Type.HasListURL() : Boolean;
 begin
   Result := True;
 end;
 
-function CorrectedQuery_Type.HasMessage() : Boolean;
+function List_Type.HasRegistryNumber() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasListName() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasListType() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasTotalItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasTotalPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasDateCreated() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasOccasionDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasCustomerName() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasPartnerName() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasAdditionalName() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasComment() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasImage() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasAverageRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasTotalVotes() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasTotalTimesRead() : Boolean;
+begin
+  Result := True;
+end;
+
+function List_Type.HasListItem() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ListItem_Type }
+
+constructor ListItem_Type.Create();
+begin
+  inherited Create();
+  F_Item := Item_Type.Create();
+end;
+
+destructor ListItem_Type.Destroy();
+begin
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  inherited Destroy();
+end;
+
+function ListItem_Type.HasListItemId() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListItem_Type.HasDateAdded() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListItem_Type.HasComment() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListItem_Type.HasQuantityDesired() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListItem_Type.HasQuantityReceived() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListItem_Type.Has_Item() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Location_Type.HasUserDefinedLocation() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Location_Type.HasCity() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Location_Type.HasState() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Location_Type.HasCountry() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Customer_Type }
+
+constructor Customer_Type.Create();
+begin
+  inherited Create();
+  FLocation := Customer_Location_Type.Create();
+  FCustomerReviews := Customer_CustomerReviewsArray.Create();
+end;
+
+destructor Customer_Type.Destroy();
+begin
+  if Assigned(FLocation) then
+    FreeAndNil(FLocation);
+  if Assigned(FCustomerReviews) then
+    FreeAndNil(FCustomerReviews);
+  inherited Destroy();
+end;
+
+function Customer_Type.HasNickname() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Type.HasBirthday() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Type.HasWishListId() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Type.HasLocation() : Boolean;
+begin
+  Result := True;
+end;
+
+function Customer_Type.HasCustomerReviews() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SearchResultsMap_SearchIndex_Type }
+
+constructor SearchResultsMap_SearchIndex_Type.Create();
+begin
+  inherited Create();
+  FCorrectedQuery := CorrectedQuery_Type.Create();
+  FASIN := SearchResultsMap_SearchIndex_Type_ASINArray.Create();
+end;
+
+destructor SearchResultsMap_SearchIndex_Type.Destroy();
+begin
+  if Assigned(FCorrectedQuery) then
+    FreeAndNil(FCorrectedQuery);
+  if Assigned(FASIN) then
+    FreeAndNil(FASIN);
+  inherited Destroy();
+end;
+
+function SearchResultsMap_SearchIndex_Type.HasResults() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchResultsMap_SearchIndex_Type.HasPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchResultsMap_SearchIndex_Type.HasCorrectedQuery() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Item_ImageSets_Type }
+
+constructor Item_ImageSets_Type.Create();
+begin
+  inherited Create();
+  FImageSet := Item_ImageSets_Type_ImageSetArray.Create();
+end;
+
+destructor Item_ImageSets_Type.Destroy();
+begin
+  if Assigned(FImageSet) then
+    FreeAndNil(FImageSet);
+  inherited Destroy();
+end;
+
+function Item_ImageSets_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function Item_ImageSets_Type.HasImageSet() : Boolean;
+begin
+  Result := True;
+end;
+
+function Item_AlternateVersions_Type_AlternateVersion_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function Item_AlternateVersions_Type_AlternateVersion_Type.HasBinding() : Boolean;
 begin
   Result := True;
 end;
@@ -10296,29 +11327,49 @@ constructor Item_Type.Create();
 begin
   inherited Create();
   FErrors := Errors_Type.Create();
+  FSmallImage := Image_Type.Create();
+  FMediumImage := Image_Type.Create();
+  FLargeImage := Image_Type.Create();
   FImageSets := _Item_ImageSetsArray.Create();
+  FItemAttributes := ItemAttributes_Type.Create();
+  FMerchantItemAttributes := MerchantItemAttributes_Type.Create();
   FCollections := Collections_Type.Create();
   FSubjects := Item_Subjects_Type.Create();
+  FOfferSummary := OfferSummary_Type.Create();
+  FOffers := Offers_Type.Create();
+  FVariationSummary := VariationSummary_Type.Create();
+  FVariations := Variations_Type.Create();
+  FCustomerReviews := CustomerReviews_Type.Create();
   FEditorialReviews := EditorialReviews_Type.Create();
   FSimilarProducts := SimilarProducts_Type.Create();
   FAccessories := Accessories_Type.Create();
   FTracks := Tracks_Type.Create();
+  FBrowseNodes := BrowseNodes_Type.Create();
   FListmaniaLists := ListmaniaLists_Type.Create();
+  FSearchInside := SearchInside_Type.Create();
   FAlternateVersions := Item_AlternateVersions_Type.Create();
 end;
 
 destructor Item_Type.Destroy();
 begin
+  if Assigned(FErrors) then
+    FreeAndNil(FErrors);
   if Assigned(FSmallImage) then
     FreeAndNil(FSmallImage);
   if Assigned(FMediumImage) then
     FreeAndNil(FMediumImage);
   if Assigned(FLargeImage) then
     FreeAndNil(FLargeImage);
+  if Assigned(FImageSets) then
+    FreeAndNil(FImageSets);
   if Assigned(FItemAttributes) then
     FreeAndNil(FItemAttributes);
   if Assigned(FMerchantItemAttributes) then
     FreeAndNil(FMerchantItemAttributes);
+  if Assigned(FCollections) then
+    FreeAndNil(FCollections);
+  if Assigned(FSubjects) then
+    FreeAndNil(FSubjects);
   if Assigned(FOfferSummary) then
     FreeAndNil(FOfferSummary);
   if Assigned(FOffers) then
@@ -10329,10 +11380,22 @@ begin
     FreeAndNil(FVariations);
   if Assigned(FCustomerReviews) then
     FreeAndNil(FCustomerReviews);
+  if Assigned(FEditorialReviews) then
+    FreeAndNil(FEditorialReviews);
+  if Assigned(FSimilarProducts) then
+    FreeAndNil(FSimilarProducts);
+  if Assigned(FAccessories) then
+    FreeAndNil(FAccessories);
+  if Assigned(FTracks) then
+    FreeAndNil(FTracks);
   if Assigned(FBrowseNodes) then
     FreeAndNil(FBrowseNodes);
+  if Assigned(FListmaniaLists) then
+    FreeAndNil(FListmaniaLists);
   if Assigned(FSearchInside) then
     FreeAndNil(FSearchInside);
+  if Assigned(FAlternateVersions) then
+    FreeAndNil(FAlternateVersions);
   inherited Destroy();
 end;
 
@@ -10367,6 +11430,11 @@ begin
 end;
 
 function Item_Type.HasLargeImage() : Boolean;
+begin
+  Result := True;
+end;
+
+function Item_Type.HasImageSets() : Boolean;
 begin
   Result := True;
 end;
@@ -10456,144 +11524,1082 @@ begin
   Result := True;
 end;
 
-{ List_Type }
+{ OfferSummary_Type }
 
-constructor List_Type.Create();
+constructor OfferSummary_Type.Create();
 begin
   inherited Create();
-  FListItem := List_ListItemArray.Create();
+  FLowestNewPrice := Price_Type.Create();
+  FLowestUsedPrice := Price_Type.Create();
+  FLowestCollectiblePrice := Price_Type.Create();
+  FLowestRefurbishedPrice := Price_Type.Create();
 end;
 
-destructor List_Type.Destroy();
+destructor OfferSummary_Type.Destroy();
 begin
-  if Assigned(FImage) then
-    FreeAndNil(FImage);
+  if Assigned(FLowestNewPrice) then
+    FreeAndNil(FLowestNewPrice);
+  if Assigned(FLowestUsedPrice) then
+    FreeAndNil(FLowestUsedPrice);
+  if Assigned(FLowestCollectiblePrice) then
+    FreeAndNil(FLowestCollectiblePrice);
+  if Assigned(FLowestRefurbishedPrice) then
+    FreeAndNil(FLowestRefurbishedPrice);
   inherited Destroy();
 end;
 
-function List_Type.HasListURL() : Boolean;
+function OfferSummary_Type.HasLowestNewPrice() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasRegistryNumber() : Boolean;
+function OfferSummary_Type.HasLowestUsedPrice() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasListName() : Boolean;
+function OfferSummary_Type.HasLowestCollectiblePrice() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasListType() : Boolean;
+function OfferSummary_Type.HasLowestRefurbishedPrice() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasTotalItems() : Boolean;
+function OfferSummary_Type.HasTotalNew() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasTotalPages() : Boolean;
+function OfferSummary_Type.HasTotalUsed() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasDateCreated() : Boolean;
+function OfferSummary_Type.HasTotalCollectible() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasOccasionDate() : Boolean;
+function OfferSummary_Type.HasTotalRefurbished() : Boolean;
 begin
   Result := True;
 end;
 
-function List_Type.HasCustomerName() : Boolean;
-begin
-  Result := True;
-end;
+{ Offers_Type }
 
-function List_Type.HasPartnerName() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasAdditionalName() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasComment() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasImage() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasAverageRating() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasTotalVotes() : Boolean;
-begin
-  Result := True;
-end;
-
-function List_Type.HasTotalTimesRead() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Customer_Type }
-
-constructor Customer_Type.Create();
+constructor Offers_Type.Create();
 begin
   inherited Create();
-  FCustomerReviews := Customer_CustomerReviewsArray.Create();
+  FOffer := Offers_OfferArray.Create();
 end;
 
-destructor Customer_Type.Destroy();
+destructor Offers_Type.Destroy();
 begin
-  if Assigned(FLocation) then
-    FreeAndNil(FLocation);
+  if Assigned(FOffer) then
+    FreeAndNil(FOffer);
   inherited Destroy();
 end;
 
-function Customer_Type.HasNickname() : Boolean;
+function Offers_Type.HasTotalOffers() : Boolean;
 begin
   Result := True;
 end;
 
-function Customer_Type.HasBirthday() : Boolean;
+function Offers_Type.HasTotalOfferPages() : Boolean;
 begin
   Result := True;
 end;
 
-function Customer_Type.HasWishListId() : Boolean;
+function Offers_Type.HasOffer() : Boolean;
 begin
   Result := True;
 end;
 
-function Customer_Type.HasLocation() : Boolean;
+{ Offer_Type }
+
+constructor Offer_Type.Create();
+begin
+  inherited Create();
+  FMerchant := Merchant_Type.Create();
+  FSeller := Seller_Type.Create();
+  FOfferAttributes := OfferAttributes_Type.Create();
+  FOfferListing := Offer_OfferListingArray.Create();
+  FLoyaltyPoints := LoyaltyPoints_Type.Create();
+  FPromotions := Promotions_Type.Create();
+end;
+
+destructor Offer_Type.Destroy();
+begin
+  if Assigned(FMerchant) then
+    FreeAndNil(FMerchant);
+  if Assigned(FSeller) then
+    FreeAndNil(FSeller);
+  if Assigned(FOfferAttributes) then
+    FreeAndNil(FOfferAttributes);
+  if Assigned(FOfferListing) then
+    FreeAndNil(FOfferListing);
+  if Assigned(FLoyaltyPoints) then
+    FreeAndNil(FLoyaltyPoints);
+  if Assigned(FPromotions) then
+    FreeAndNil(FPromotions);
+  inherited Destroy();
+end;
+
+function Offer_Type.HasMerchant() : Boolean;
 begin
   Result := True;
 end;
 
-{ Price }
-
-function Price.HasAmount() : Boolean;
+function Offer_Type.HasSeller() : Boolean;
 begin
   Result := True;
 end;
 
-function Price.HasCurrencyCode() : Boolean;
+function Offer_Type.HasOfferAttributes() : Boolean;
+begin
+  Result := True;
+end;
+
+function Offer_Type.HasOfferListing() : Boolean;
+begin
+  Result := True;
+end;
+
+function Offer_Type.HasLoyaltyPoints() : Boolean;
+begin
+  Result := True;
+end;
+
+function Offer_Type.HasPromotions() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferAttributes_Type.HasCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferAttributes_Type.HasSubCondition() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferAttributes_Type.HasConditionNote() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferAttributes_Type.HasWillShipExpedited() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferAttributes_Type.HasWillShipInternational() : Boolean;
+begin
+  Result := True;
+end;
+
+function Merchant_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function Merchant_Type.HasGlancePage() : Boolean;
+begin
+  Result := True;
+end;
+
+function Merchant_Type.HasAverageFeedbackRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function Merchant_Type.HasTotalFeedback() : Boolean;
+begin
+  Result := True;
+end;
+
+function Merchant_Type.HasTotalFeedbackPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_AvailabilityAttributes_Type.HasAvailabilityType() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_AvailabilityAttributes_Type.HasIsPreorder() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_AvailabilityAttributes_Type.HasMinimumHours() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_AvailabilityAttributes_Type.HasMaximumHours() : Boolean;
+begin
+  Result := True;
+end;
+
+{ OfferListing_ShippingCharge_Type }
+
+constructor OfferListing_ShippingCharge_Type.Create();
+begin
+  inherited Create();
+  FShippingPrice := Price_Type.Create();
+end;
+
+destructor OfferListing_ShippingCharge_Type.Destroy();
+begin
+  if Assigned(FShippingPrice) then
+    FreeAndNil(FShippingPrice);
+  inherited Destroy();
+end;
+
+{ OfferListing_Type }
+
+constructor OfferListing_Type.Create();
+begin
+  inherited Create();
+  FPrice := Price_Type.Create();
+  FSalePrice := Price_Type.Create();
+  FAmountSaved := Price_Type.Create();
+  FAvailabilityAttributes := OfferListing_AvailabilityAttributes_Type.Create();
+  FISPUStoreAddress := Address_Type.Create();
+  FShippingCharge := OfferListing_ShippingChargeArray.Create();
+end;
+
+destructor OfferListing_Type.Destroy();
+begin
+  if Assigned(FPrice) then
+    FreeAndNil(FPrice);
+  if Assigned(FSalePrice) then
+    FreeAndNil(FSalePrice);
+  if Assigned(FAmountSaved) then
+    FreeAndNil(FAmountSaved);
+  if Assigned(FAvailabilityAttributes) then
+    FreeAndNil(FAvailabilityAttributes);
+  if Assigned(FISPUStoreAddress) then
+    FreeAndNil(FISPUStoreAddress);
+  if Assigned(FShippingCharge) then
+    FreeAndNil(FShippingCharge);
+  inherited Destroy();
+end;
+
+function OfferListing_Type.HasOfferListingId() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasExchangeId() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasSalePrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasAmountSaved() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasPercentageSaved() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasAvailability() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasAvailabilityAttributes() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasQuantity() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasISPUStoreAddress() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasISPUStoreHours() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasIsEligibleForSuperSaverShipping() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasSalesRestriction() : Boolean;
+begin
+  Result := True;
+end;
+
+function OfferListing_Type.HasShippingCharge() : Boolean;
+begin
+  Result := True;
+end;
+
+{ LoyaltyPoints_Type }
+
+constructor LoyaltyPoints_Type.Create();
+begin
+  inherited Create();
+  FTypicalRedemptionValue := Price_Type.Create();
+end;
+
+destructor LoyaltyPoints_Type.Destroy();
+begin
+  if Assigned(FTypicalRedemptionValue) then
+    FreeAndNil(FTypicalRedemptionValue);
+  inherited Destroy();
+end;
+
+function LoyaltyPoints_Type.HasPoints() : Boolean;
+begin
+  Result := True;
+end;
+
+function LoyaltyPoints_Type.HasTypicalRedemptionValue() : Boolean;
+begin
+  Result := True;
+end;
+
+{ VariationSummary_Type }
+
+constructor VariationSummary_Type.Create();
+begin
+  inherited Create();
+  FLowestPrice := Price_Type.Create();
+  FHighestPrice := Price_Type.Create();
+  FLowestSalePrice := Price_Type.Create();
+  FHighestSalePrice := Price_Type.Create();
+end;
+
+destructor VariationSummary_Type.Destroy();
+begin
+  if Assigned(FLowestPrice) then
+    FreeAndNil(FLowestPrice);
+  if Assigned(FHighestPrice) then
+    FreeAndNil(FHighestPrice);
+  if Assigned(FLowestSalePrice) then
+    FreeAndNil(FLowestSalePrice);
+  if Assigned(FHighestSalePrice) then
+    FreeAndNil(FHighestSalePrice);
+  inherited Destroy();
+end;
+
+function VariationSummary_Type.HasLowestPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function VariationSummary_Type.HasHighestPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function VariationSummary_Type.HasLowestSalePrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function VariationSummary_Type.HasHighestSalePrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function VariationSummary_Type.HasSingleMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Variations_Type }
+
+constructor Variations_Type.Create();
+begin
+  inherited Create();
+  FVariationDimensions := VariationDimensions_Type.Create();
+  F_Item := Variations__ItemArray.Create();
+end;
+
+destructor Variations_Type.Destroy();
+begin
+  if Assigned(FVariationDimensions) then
+    FreeAndNil(FVariationDimensions);
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  inherited Destroy();
+end;
+
+function Variations_Type.HasTotalVariations() : Boolean;
+begin
+  Result := True;
+end;
+
+function Variations_Type.HasTotalVariationPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function Variations_Type.HasVariationDimensions() : Boolean;
+begin
+  Result := True;
+end;
+
+function Variations_Type.Has_Item() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Collections_Collection_Type_CollectionSummary_Type }
+
+constructor Collections_Collection_Type_CollectionSummary_Type.Create();
+begin
+  inherited Create();
+  FLowestListPrice := Price_Type.Create();
+  FHighestListPrice := Price_Type.Create();
+  FLowestSalePrice := Price_Type.Create();
+  FHighestSalePrice := Price_Type.Create();
+end;
+
+destructor Collections_Collection_Type_CollectionSummary_Type.Destroy();
+begin
+  if Assigned(FLowestListPrice) then
+    FreeAndNil(FLowestListPrice);
+  if Assigned(FHighestListPrice) then
+    FreeAndNil(FHighestListPrice);
+  if Assigned(FLowestSalePrice) then
+    FreeAndNil(FLowestSalePrice);
+  if Assigned(FHighestSalePrice) then
+    FreeAndNil(FHighestSalePrice);
+  inherited Destroy();
+end;
+
+function Collections_Collection_Type_CollectionSummary_Type.HasLowestListPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionSummary_Type.HasHighestListPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionSummary_Type.HasLowestSalePrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionSummary_Type.HasHighestSalePrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionParent_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionParent_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionItem_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type_CollectionItem_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Collections_Collection_Type }
+
+constructor Collections_Collection_Type.Create();
+begin
+  inherited Create();
+  FCollectionSummary := Collections_Collection_Type_CollectionSummary_Type.Create();
+  FCollectionParent := Collections_Collection_Type_CollectionParent_Type.Create();
+  FCollectionItem := Collections_Collection_Type_CollectionItemArray.Create();
+end;
+
+destructor Collections_Collection_Type.Destroy();
+begin
+  if Assigned(FCollectionSummary) then
+    FreeAndNil(FCollectionSummary);
+  if Assigned(FCollectionParent) then
+    FreeAndNil(FCollectionParent);
+  if Assigned(FCollectionItem) then
+    FreeAndNil(FCollectionItem);
+  inherited Destroy();
+end;
+
+function Collections_Collection_Type.HasCollectionSummary() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type.HasCollectionParent() : Boolean;
+begin
+  Result := True;
+end;
+
+function Collections_Collection_Type.HasCollectionItem() : Boolean;
+begin
+  Result := True;
+end;
+
+function EditorialReview_Type.HasSource() : Boolean;
+begin
+  Result := True;
+end;
+
+function EditorialReview_Type.HasContent() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CustomerReviews_Type }
+
+constructor CustomerReviews_Type.Create();
+begin
+  inherited Create();
+  FReview := CustomerReviews_ReviewArray.Create();
+end;
+
+destructor CustomerReviews_Type.Destroy();
+begin
+  if Assigned(FReview) then
+    FreeAndNil(FReview);
+  inherited Destroy();
+end;
+
+function CustomerReviews_Type.HasAverageRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerReviews_Type.HasTotalReviews() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerReviews_Type.HasTotalReviewPages() : Boolean;
+begin
+  Result := True;
+end;
+
+function CustomerReviews_Type.HasReview() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Review_Type }
+
+constructor Review_Type.Create();
+begin
+  inherited Create();
+  FReviewer := Reviewer_Type.Create();
+end;
+
+destructor Review_Type.Destroy();
+begin
+  if Assigned(FReviewer) then
+    FreeAndNil(FReviewer);
+  inherited Destroy();
+end;
+
+function Review_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasHelpfulVotes() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasCustomerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasReviewer() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasTotalVotes() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasSummary() : Boolean;
+begin
+  Result := True;
+end;
+
+function Review_Type.HasContent() : Boolean;
+begin
+  Result := True;
+end;
+
+function Reviewer_Type.HasCustomerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function Reviewer_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function Reviewer_Type.HasNickname() : Boolean;
+begin
+  Result := True;
+end;
+
+function Reviewer_Type.HasLocation() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Tracks_Disc_Type }
+
+constructor Tracks_Disc_Type.Create();
+begin
+  inherited Create();
+  FTrack := Tracks_Disc_Type_TrackArray.Create();
+end;
+
+destructor Tracks_Disc_Type.Destroy();
+begin
+  if Assigned(FTrack) then
+    FreeAndNil(FTrack);
+  inherited Destroy();
+end;
+
+function SimilarProducts_SimilarProduct_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarProducts_SimilarProduct_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function TopSellers_TopSeller_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function TopSellers_TopSeller_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function NewReleases_NewRelease_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function NewReleases_NewRelease_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarViewedProducts_SimilarViewedProduct_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function SimilarViewedProducts_SimilarViewedProduct_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function Accessories_Accessory_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function Accessories_Accessory_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasCategory() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasStartDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasEndDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasEligibilityRequirementDescription() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasBenefitDescription() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Summary_Type.HasTermsAndConditions() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Promotion_Details_Type }
+
+constructor Promotion_Details_Type.Create();
+begin
+  inherited Create();
+  FEligibilityRequirements := PromotionEligibilityRequirements_Type.Create();
+  FBenefits := PromotionBenefits_Type.Create();
+  FItemApplicability := PromotionItemApplicability_Type.Create();
+end;
+
+destructor Promotion_Details_Type.Destroy();
+begin
+  if Assigned(FEligibilityRequirements) then
+    FreeAndNil(FEligibilityRequirements);
+  if Assigned(FBenefits) then
+    FreeAndNil(FBenefits);
+  if Assigned(FItemApplicability) then
+    FreeAndNil(FItemApplicability);
+  inherited Destroy();
+end;
+
+function Promotion_Details_Type.HasMerchantPromotionId() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasGroupClaimCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasCouponCombinationType() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasStartDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasEndDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasTermsAndConditions() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasEligibilityRequirements() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasBenefits() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Details_Type.HasItemApplicability() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Promotion_Type }
+
+constructor Promotion_Type.Create();
+begin
+  inherited Create();
+  FSummary := Promotion_Summary_Type.Create();
+  FDetails := Promotion_Details_Type.Create();
+end;
+
+destructor Promotion_Type.Destroy();
+begin
+  if Assigned(FSummary) then
+    FreeAndNil(FSummary);
+  if Assigned(FDetails) then
+    FreeAndNil(FDetails);
+  inherited Destroy();
+end;
+
+function Promotion_Type.HasSummary() : Boolean;
+begin
+  Result := True;
+end;
+
+function Promotion_Type.HasDetails() : Boolean;
+begin
+  Result := True;
+end;
+
+{ PromotionBenefit_Type }
+
+constructor PromotionBenefit_Type.Create();
+begin
+  inherited Create();
+  FFixedAmount := Price_Type.Create();
+  FCeiling := Price_Type.Create();
+end;
+
+destructor PromotionBenefit_Type.Destroy();
+begin
+  if Assigned(FFixedAmount) then
+    FreeAndNil(FFixedAmount);
+  if Assigned(FCeiling) then
+    FreeAndNil(FCeiling);
+  inherited Destroy();
+end;
+
+function PromotionBenefit_Type.HasQuantity() : Boolean;
+begin
+  Result := True;
+end;
+
+function PromotionBenefit_Type.HasPercentOff() : Boolean;
+begin
+  Result := True;
+end;
+
+function PromotionBenefit_Type.HasFixedAmount() : Boolean;
+begin
+  Result := True;
+end;
+
+function PromotionBenefit_Type.HasCeiling() : Boolean;
+begin
+  Result := True;
+end;
+
+{ PromotionEligibilityRequirement_Type }
+
+constructor PromotionEligibilityRequirement_Type.Create();
+begin
+  inherited Create();
+  FCurrencyAmount := Price_Type.Create();
+end;
+
+destructor PromotionEligibilityRequirement_Type.Destroy();
+begin
+  if Assigned(FCurrencyAmount) then
+    FreeAndNil(FCurrencyAmount);
+  inherited Destroy();
+end;
+
+function PromotionEligibilityRequirement_Type.HasQuantity() : Boolean;
+begin
+  Result := True;
+end;
+
+function PromotionEligibilityRequirement_Type.HasCurrencyAmount() : Boolean;
+begin
+  Result := True;
+end;
+
+{ BrowseNodes_Type }
+
+constructor BrowseNodes_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FBrowseNode := BrowseNodes_BrowseNodeArray.Create();
+end;
+
+destructor BrowseNodes_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FBrowseNode) then
+    FreeAndNil(FBrowseNode);
+  inherited Destroy();
+end;
+
+function BrowseNodes_Type.HasRequest() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNodes_Type.HasBrowseNode() : Boolean;
+begin
+  Result := True;
+end;
+
+{ BrowseNode_Type }
+
+constructor BrowseNode_Type.Create();
+begin
+  inherited Create();
+  FChildren := BrowseNode_Children_Type.Create();
+  FAncestors := BrowseNode_Ancestors_Type.Create();
+  FTopSellers := TopSellers_Type.Create();
+  FNewReleases := NewReleases_Type.Create();
+end;
+
+destructor BrowseNode_Type.Destroy();
+begin
+  if Assigned(FChildren) then
+    FreeAndNil(FChildren);
+  if Assigned(FAncestors) then
+    FreeAndNil(FAncestors);
+  if Assigned(FTopSellers) then
+    FreeAndNil(FTopSellers);
+  if Assigned(FNewReleases) then
+    FreeAndNil(FNewReleases);
+  inherited Destroy();
+end;
+
+function BrowseNode_Type.HasBrowseNodeId() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasIsCategoryRoot() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasChildren() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasAncestors() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasTopSellers() : Boolean;
+begin
+  Result := True;
+end;
+
+function BrowseNode_Type.HasNewReleases() : Boolean;
+begin
+  Result := True;
+end;
+
+function ListmaniaLists_ListmaniaList_Type.HasListName() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Excerpt_Type.HasChecksum() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Excerpt_Type.HasPageType() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Excerpt_Type.HasPageNumber() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Excerpt_Type.HasSequenceNumber() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Excerpt_Type.HasText() : Boolean;
+begin
+  Result := True;
+end;
+
+{ SearchInside_Type }
+
+constructor SearchInside_Type.Create();
+begin
+  inherited Create();
+  FExcerpt := SearchInside_Excerpt_Type.Create();
+end;
+
+destructor SearchInside_Type.Destroy();
+begin
+  if Assigned(FExcerpt) then
+    FreeAndNil(FExcerpt);
+  inherited Destroy();
+end;
+
+function SearchInside_Type.HasTotalExcerpts() : Boolean;
+begin
+  Result := True;
+end;
+
+function SearchInside_Type.HasExcerpt() : Boolean;
 begin
   Result := True;
 end;
@@ -10603,6 +12609,7 @@ end;
 constructor CartItems_Type.Create();
 begin
   inherited Create();
+  FSubTotal := Price_Type.Create();
   FCartItem := CartItems_CartItemArray.Create();
 end;
 
@@ -10610,6 +12617,8 @@ destructor CartItems_Type.Destroy();
 begin
   if Assigned(FSubTotal) then
     FreeAndNil(FSubTotal);
+  if Assigned(FCartItem) then
+    FreeAndNil(FCartItem);
   inherited Destroy();
 end;
 
@@ -10623,6 +12632,7 @@ end;
 constructor SavedForLaterItems_Type.Create();
 begin
   inherited Create();
+  FSubTotal := Price_Type.Create();
   FSavedForLaterItem := SavedForLaterItems_SavedForLaterItemArray.Create();
 end;
 
@@ -10630,10 +12640,140 @@ destructor SavedForLaterItems_Type.Destroy();
 begin
   if Assigned(FSubTotal) then
     FreeAndNil(FSubTotal);
+  if Assigned(FSavedForLaterItem) then
+    FreeAndNil(FSavedForLaterItem);
   inherited Destroy();
 end;
 
 function SavedForLaterItems_Type.HasSubTotal() : Boolean;
+begin
+  Result := True;
+end;
+
+{ CartItem_Type }
+
+constructor CartItem_Type.Create();
+begin
+  inherited Create();
+  FPrice := Price_Type.Create();
+  FItemTotal := Price_Type.Create();
+end;
+
+destructor CartItem_Type.Destroy();
+begin
+  if Assigned(FPrice) then
+    FreeAndNil(FPrice);
+  if Assigned(FItemTotal) then
+    FreeAndNil(FItemTotal);
+  inherited Destroy();
+end;
+
+function CartItem_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasExchangeId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasMerchantId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasSellerId() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasSellerNickname() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasTitle() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasProductGroup() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasListOwner() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasListType() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasPrice() : Boolean;
+begin
+  Result := True;
+end;
+
+function CartItem_Type.HasItemTotal() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Transaction_Totals_Type }
+
+constructor Transaction_Totals_Type.Create();
+begin
+  inherited Create();
+  FTotal := Price_Type.Create();
+  FSubtotal := Price_Type.Create();
+  FTax := Price_Type.Create();
+  FShippingCharge := Price_Type.Create();
+  FPromotion := Price_Type.Create();
+end;
+
+destructor Transaction_Totals_Type.Destroy();
+begin
+  if Assigned(FTotal) then
+    FreeAndNil(FTotal);
+  if Assigned(FSubtotal) then
+    FreeAndNil(FSubtotal);
+  if Assigned(FTax) then
+    FreeAndNil(FTax);
+  if Assigned(FShippingCharge) then
+    FreeAndNil(FShippingCharge);
+  if Assigned(FPromotion) then
+    FreeAndNil(FPromotion);
+  inherited Destroy();
+end;
+
+{ Transaction_Shipments_Type_Shipment_Type }
+
+constructor Transaction_Shipments_Type_Shipment_Type.Create();
+begin
+  inherited Create();
+  FShipmentItems := Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type.Create();
+  FPackages := Transaction_Shipments_Type_Shipment_Type_Packages_Type.Create();
+end;
+
+destructor Transaction_Shipments_Type_Shipment_Type.Destroy();
+begin
+  if Assigned(FShipmentItems) then
+    FreeAndNil(FShipmentItems);
+  if Assigned(FPackages) then
+    FreeAndNil(FPackages);
+  inherited Destroy();
+end;
+
+function Transaction_Shipments_Type_Shipment_Type.HasShipmentItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function Transaction_Shipments_Type_Shipment_Type.HasPackages() : Boolean;
 begin
   Result := True;
 end;
@@ -10643,6 +12783,7 @@ end;
 constructor Transaction_Type.Create();
 begin
   inherited Create();
+  FTotals := Transaction_Totals_Type.Create();
   FTransactionItems := Transaction_TransactionItems_Type.Create();
   FShipments := Transaction_Shipments_Type.Create();
 end;
@@ -10651,6 +12792,10 @@ destructor Transaction_Type.Destroy();
 begin
   if Assigned(FTotals) then
     FreeAndNil(FTotals);
+  if Assigned(FTransactionItems) then
+    FreeAndNil(FTransactionItems);
+  if Assigned(FShipments) then
+    FreeAndNil(FShipments);
   inherited Destroy();
 end;
 
@@ -10684,11 +12829,93 @@ begin
   Result := True;
 end;
 
+{ TransactionItem_Type }
+
+constructor TransactionItem_Type.Create();
+begin
+  inherited Create();
+  FUnitPrice := Price_Type.Create();
+  FTotalPrice := Price_Type.Create();
+  FChildTransactionItems := TransactionItem_ChildTransactionItems_Type.Create();
+end;
+
+destructor TransactionItem_Type.Destroy();
+begin
+  if Assigned(FUnitPrice) then
+    FreeAndNil(FUnitPrice);
+  if Assigned(FTotalPrice) then
+    FreeAndNil(FTotalPrice);
+  if Assigned(FChildTransactionItems) then
+    FreeAndNil(FChildTransactionItems);
+  inherited Destroy();
+end;
+
+function TransactionItem_Type.HasASIN() : Boolean;
+begin
+  Result := True;
+end;
+
+function TransactionItem_Type.HasChildTransactionItems() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_Location_Type.HasUserDefinedLocation() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_Location_Type.HasCity() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_Location_Type.HasState() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_Location_Type.HasCountry() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasCount() : Boolean;
+begin
+  Result := True;
+end;
+
+function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasPercentage() : Boolean;
+begin
+  Result := True;
+end;
+
+{ Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type }
+
+constructor Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.Create();
+begin
+  inherited Create();
+  FSellerFeedbackRating := Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray.Create();
+end;
+
+destructor Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.Destroy();
+begin
+  if Assigned(FSellerFeedbackRating) then
+    FreeAndNil(FSellerFeedbackRating);
+  inherited Destroy();
+end;
+
+function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.HasSellerFeedbackRating() : Boolean;
+begin
+  Result := True;
+end;
+
 { Seller_Type }
 
 constructor Seller_Type.Create();
 begin
   inherited Create();
+  FLocation := Seller_Location_Type.Create();
   FSellerFeedbackSummary := Seller_SellerFeedbackSummary_Type.Create();
   FSellerFeedback := SellerFeedback_Type.Create();
 end;
@@ -10697,6 +12924,10 @@ destructor Seller_Type.Destroy();
 begin
   if Assigned(FLocation) then
     FreeAndNil(FLocation);
+  if Assigned(FSellerFeedbackSummary) then
+    FreeAndNil(FSellerFeedbackSummary);
+  if Assigned(FSellerFeedback) then
+    FreeAndNil(FSellerFeedback);
   inherited Destroy();
 end;
 
@@ -10760,7 +12991,74 @@ begin
   Result := True;
 end;
 
+function SellerFeedback_Feedback_Type.HasRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerFeedback_Feedback_Type.HasComment() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerFeedback_Feedback_Type.HasDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function SellerFeedback_Feedback_Type.HasRatedBy() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasName() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasAddress1() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasAddress2() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasAddress3() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasCity() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasState() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasPostalCode() : Boolean;
+begin
+  Result := True;
+end;
+
+function Address_Type.HasCountry() : Boolean;
+begin
+  Result := True;
+end;
+
 { SellerListing_Type }
+
+constructor SellerListing_Type.Create();
+begin
+  inherited Create();
+  FPrice := Price_Type.Create();
+  FSeller := Seller_Type.Create();
+end;
 
 destructor SellerListing_Type.Destroy();
 begin
@@ -10856,142 +13154,26 @@ begin
   Result := True;
 end;
 
-{ Image }
-
-destructor Image.Destroy();
-begin
-  if Assigned(FHeight) then
-    FreeAndNil(FHeight);
-  if Assigned(FWidth) then
-    FreeAndNil(FWidth);
-  inherited Destroy();
-end;
-
-function Image.HasIsVerified() : Boolean;
+function Price_Type.HasAmount() : Boolean;
 begin
   Result := True;
 end;
 
-{ ListItem_Type }
-
-destructor ListItem_Type.Destroy();
-begin
-  if Assigned(F_Item) then
-    FreeAndNil(F_Item);
-  inherited Destroy();
-end;
-
-function ListItem_Type.HasListItemId() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListItem_Type.HasDateAdded() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListItem_Type.HasComment() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListItem_Type.HasQuantityDesired() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListItem_Type.HasQuantityReceived() : Boolean;
-begin
-  Result := True;
-end;
-
-function ListItem_Type.Has_Item() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Customer_Location_Type }
-
-function Customer_Location_Type.HasUserDefinedLocation() : Boolean;
-begin
-  Result := True;
-end;
-
-function Customer_Location_Type.HasCity() : Boolean;
-begin
-  Result := True;
-end;
-
-function Customer_Location_Type.HasState() : Boolean;
-begin
-  Result := True;
-end;
-
-function Customer_Location_Type.HasCountry() : Boolean;
-begin
-  Result := True;
-end;
-
-{ CustomerReviews_Type }
-
-constructor CustomerReviews_Type.Create();
-begin
-  inherited Create();
-  FReview := CustomerReviews_ReviewArray.Create();
-end;
-
-destructor CustomerReviews_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function CustomerReviews_Type.HasAverageRating() : Boolean;
-begin
-  Result := True;
-end;
-
-function CustomerReviews_Type.HasTotalReviews() : Boolean;
-begin
-  Result := True;
-end;
-
-function CustomerReviews_Type.HasTotalReviewPages() : Boolean;
-begin
-  Result := True;
-end;
-
-{ SearchResultsMap_SearchIndex_Type }
-
-constructor SearchResultsMap_SearchIndex_Type.Create();
-begin
-  inherited Create();
-  FASIN := SearchResultsMap_SearchIndex_Type_ASINArray.Create();
-end;
-
-destructor SearchResultsMap_SearchIndex_Type.Destroy();
-begin
-  if Assigned(FCorrectedQuery) then
-    FreeAndNil(FCorrectedQuery);
-  inherited Destroy();
-end;
-
-function SearchResultsMap_SearchIndex_Type.HasResults() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchResultsMap_SearchIndex_Type.HasPages() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchResultsMap_SearchIndex_Type.HasCorrectedQuery() : Boolean;
+function Price_Type.HasCurrencyCode() : Boolean;
 begin
   Result := True;
 end;
 
 { ImageSet_Type }
+
+constructor ImageSet_Type.Create();
+begin
+  inherited Create();
+  FSwatchImage := Image_Type.Create();
+  FSmallImage := Image_Type.Create();
+  FMediumImage := Image_Type.Create();
+  FLargeImage := Image_Type.Create();
+end;
 
 destructor ImageSet_Type.Destroy();
 begin
@@ -11026,20 +13208,123 @@ begin
   Result := True;
 end;
 
-{ Item_ImageSets_Type }
+{ Image_Type }
 
-constructor Item_ImageSets_Type.Create();
+constructor Image_Type.Create();
 begin
   inherited Create();
-  FImageSet := Item_ImageSets_Type_ImageSetArray.Create();
+  FHeight := DecimalWithUnits_Type.Create();
+  FWidth := DecimalWithUnits_Type.Create();
 end;
 
-destructor Item_ImageSets_Type.Destroy();
+destructor Image_Type.Destroy();
 begin
+  if Assigned(FHeight) then
+    FreeAndNil(FHeight);
+  if Assigned(FWidth) then
+    FreeAndNil(FWidth);
   inherited Destroy();
 end;
 
-function Item_ImageSets_Type.HasMerchantId() : Boolean;
+function Image_Type.HasIsVerified() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ItemAttributes_ItemDimensions_Type }
+
+constructor ItemAttributes_ItemDimensions_Type.Create();
+begin
+  inherited Create();
+  FHeight := DecimalWithUnits_Type.Create();
+  FLength := DecimalWithUnits_Type.Create();
+  FWeight := DecimalWithUnits_Type.Create();
+  FWidth := DecimalWithUnits_Type.Create();
+end;
+
+destructor ItemAttributes_ItemDimensions_Type.Destroy();
+begin
+  if Assigned(FHeight) then
+    FreeAndNil(FHeight);
+  if Assigned(FLength) then
+    FreeAndNil(FLength);
+  if Assigned(FWeight) then
+    FreeAndNil(FWeight);
+  if Assigned(FWidth) then
+    FreeAndNil(FWidth);
+  inherited Destroy();
+end;
+
+function ItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Languages_Type_Language_Type.Has_Type() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+{ ItemAttributes_PackageDimensions_Type }
+
+constructor ItemAttributes_PackageDimensions_Type.Create();
+begin
+  inherited Create();
+  FHeight := DecimalWithUnits_Type.Create();
+  FLength := DecimalWithUnits_Type.Create();
+  FWeight := DecimalWithUnits_Type.Create();
+  FWidth := DecimalWithUnits_Type.Create();
+end;
+
+destructor ItemAttributes_PackageDimensions_Type.Destroy();
+begin
+  if Assigned(FHeight) then
+    FreeAndNil(FHeight);
+  if Assigned(FLength) then
+    FreeAndNil(FLength);
+  if Assigned(FWeight) then
+    FreeAndNil(FWeight);
+  if Assigned(FWidth) then
+    FreeAndNil(FWidth);
+  inherited Destroy();
+end;
+
+function ItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
 begin
   Result := True;
 end;
@@ -11050,52 +13335,122 @@ constructor ItemAttributes_Type.Create();
 begin
   inherited Create();
   FActor := ItemAttributes_ActorArray.Create();
+  FAddress := Address_Type.Create();
+  FAmazonMaximumAge := DecimalWithUnits_Type.Create();
+  FAmazonMinimumAge := DecimalWithUnits_Type.Create();
   FArtist := ItemAttributes_ArtistArray.Create();
   FAudioFormat := ItemAttributes_AudioFormatArray.Create();
   FAuthor := ItemAttributes_AuthorArray.Create();
+  FBatteries := NonNegativeIntegerWithUnits_Type.Create();
   FCameraManualFeatures := ItemAttributes_CameraManualFeaturesArray.Create();
+  FCaseDiameter := DecimalWithUnits_Type.Create();
+  FCaseThickness := DecimalWithUnits_Type.Create();
   FCompatibleDevices := ItemAttributes_CompatibleDevicesArray.Create();
+  FContinuousShootingSpeed := DecimalWithUnits_Type.Create();
+  FCPUSpeed := DecimalWithUnits_Type.Create();
   FCreator := ItemAttributes_CreatorArray.Create();
   FDataLinkProtocol := ItemAttributes_DataLinkProtocolArray.Create();
+  FDelayBetweenShots := DecimalWithUnits_Type.Create();
+  FDigitalZoom := DecimalWithUnits_Type.Create();
   FDirector := ItemAttributes_DirectorArray.Create();
+  FDisplaySize := DecimalWithUnits_Type.Create();
   FFeature := ItemAttributes_FeatureArray.Create();
+  FFirstIssueLeadTime := StringWithUnits_Type.Create();
   FFormat := ItemAttributes_FormatArray.Create();
   FFormFactor := ItemAttributes_FormFactorArray.Create();
+  FGraphicsMemorySize := DecimalWithUnits_Type.Create();
+  FHardDiskSize := DecimalWithUnits_Type.Create();
+  FISOEquivalent := NonNegativeIntegerWithUnits_Type.Create();
+  FItemDimensions := ItemAttributes_ItemDimensions_Type.Create();
   FLanguages := ItemAttributes_Languages_Type.Create();
+  FListPrice := Price_Type.Create();
+  FManufacturerMaximumAge := DecimalWithUnits_Type.Create();
+  FManufacturerMinimumAge := DecimalWithUnits_Type.Create();
+  FMaximumAperture := DecimalWithUnits_Type.Create();
+  FMaximumFocalLength := DecimalWithUnits_Type.Create();
+  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumResolution := DecimalWithUnits_Type.Create();
+  FMaximumShutterSpeed := DecimalWithUnits_Type.Create();
+  FMaximumVerticalResolution := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumWeightRecommendation := DecimalWithUnits_Type.Create();
+  FMinimumFocalLength := DecimalWithUnits_Type.Create();
+  FMinimumShutterSpeed := DecimalWithUnits_Type.Create();
+  FMonitorSize := DecimalWithUnits_Type.Create();
+  FMonitorViewableDiagonalSize := DecimalWithUnits_Type.Create();
+  FOpticalSensorResolution := DecimalWithUnits_Type.Create();
+  FOpticalZoom := DecimalWithUnits_Type.Create();
+  FPackageDimensions := ItemAttributes_PackageDimensions_Type.Create();
   FPhotoFlashType := ItemAttributes_PhotoFlashTypeArray.Create();
   FPictureFormat := ItemAttributes_PictureFormatArray.Create();
   FPlatform := ItemAttributes_PlatformArray.Create();
   FReturnMethod := ItemAttributes_ReturnMethodArray.Create();
+  FRunningTime := DecimalWithUnits_Type.Create();
+  FSecondaryCacheSize := NonNegativeIntegerWithUnits_Type.Create();
   FSpecialFeatures := ItemAttributes_SpecialFeaturesArray.Create();
+  FStoneWeight := DecimalWithUnits_Type.Create();
+  FSubscriptionLength := NonNegativeIntegerWithUnits_Type.Create();
   FSupportedImageType := ItemAttributes_SupportedImageTypeArray.Create();
+  FSystemBusSpeed := DecimalWithUnits_Type.Create();
+  FSystemMemorySizeMax := DecimalWithUnits_Type.Create();
+  FSystemMemorySize := DecimalWithUnits_Type.Create();
+  FTotalDiamondWeight := DecimalWithUnits_Type.Create();
+  FTotalGemWeight := DecimalWithUnits_Type.Create();
+  FTotalMetalWeight := DecimalWithUnits_Type.Create();
+  FWaterResistanceDepth := DecimalWithUnits_Type.Create();
+  FWEEETaxValue := Price_Type.Create();
 end;
 
 destructor ItemAttributes_Type.Destroy();
 begin
+  if Assigned(FActor) then
+    FreeAndNil(FActor);
   if Assigned(FAddress) then
     FreeAndNil(FAddress);
   if Assigned(FAmazonMaximumAge) then
     FreeAndNil(FAmazonMaximumAge);
   if Assigned(FAmazonMinimumAge) then
     FreeAndNil(FAmazonMinimumAge);
+  if Assigned(FArtist) then
+    FreeAndNil(FArtist);
+  if Assigned(FAudioFormat) then
+    FreeAndNil(FAudioFormat);
+  if Assigned(FAuthor) then
+    FreeAndNil(FAuthor);
   if Assigned(FBatteries) then
     FreeAndNil(FBatteries);
+  if Assigned(FCameraManualFeatures) then
+    FreeAndNil(FCameraManualFeatures);
   if Assigned(FCaseDiameter) then
     FreeAndNil(FCaseDiameter);
   if Assigned(FCaseThickness) then
     FreeAndNil(FCaseThickness);
+  if Assigned(FCompatibleDevices) then
+    FreeAndNil(FCompatibleDevices);
   if Assigned(FContinuousShootingSpeed) then
     FreeAndNil(FContinuousShootingSpeed);
   if Assigned(FCPUSpeed) then
     FreeAndNil(FCPUSpeed);
+  if Assigned(FCreator) then
+    FreeAndNil(FCreator);
+  if Assigned(FDataLinkProtocol) then
+    FreeAndNil(FDataLinkProtocol);
   if Assigned(FDelayBetweenShots) then
     FreeAndNil(FDelayBetweenShots);
   if Assigned(FDigitalZoom) then
     FreeAndNil(FDigitalZoom);
+  if Assigned(FDirector) then
+    FreeAndNil(FDirector);
   if Assigned(FDisplaySize) then
     FreeAndNil(FDisplaySize);
+  if Assigned(FFeature) then
+    FreeAndNil(FFeature);
   if Assigned(FFirstIssueLeadTime) then
     FreeAndNil(FFirstIssueLeadTime);
+  if Assigned(FFormat) then
+    FreeAndNil(FFormat);
+  if Assigned(FFormFactor) then
+    FreeAndNil(FFormFactor);
   if Assigned(FGraphicsMemorySize) then
     FreeAndNil(FGraphicsMemorySize);
   if Assigned(FHardDiskSize) then
@@ -11104,6 +13459,8 @@ begin
     FreeAndNil(FISOEquivalent);
   if Assigned(FItemDimensions) then
     FreeAndNil(FItemDimensions);
+  if Assigned(FLanguages) then
+    FreeAndNil(FLanguages);
   if Assigned(FListPrice) then
     FreeAndNil(FListPrice);
   if Assigned(FManufacturerMaximumAge) then
@@ -11140,14 +13497,26 @@ begin
     FreeAndNil(FOpticalZoom);
   if Assigned(FPackageDimensions) then
     FreeAndNil(FPackageDimensions);
+  if Assigned(FPhotoFlashType) then
+    FreeAndNil(FPhotoFlashType);
+  if Assigned(FPictureFormat) then
+    FreeAndNil(FPictureFormat);
+  if Assigned(FPlatform) then
+    FreeAndNil(FPlatform);
+  if Assigned(FReturnMethod) then
+    FreeAndNil(FReturnMethod);
   if Assigned(FRunningTime) then
     FreeAndNil(FRunningTime);
   if Assigned(FSecondaryCacheSize) then
     FreeAndNil(FSecondaryCacheSize);
+  if Assigned(FSpecialFeatures) then
+    FreeAndNil(FSpecialFeatures);
   if Assigned(FStoneWeight) then
     FreeAndNil(FStoneWeight);
   if Assigned(FSubscriptionLength) then
     FreeAndNil(FSubscriptionLength);
+  if Assigned(FSupportedImageType) then
+    FreeAndNil(FSupportedImageType);
   if Assigned(FSystemBusSpeed) then
     FreeAndNil(FSystemBusSpeed);
   if Assigned(FSystemMemorySizeMax) then
@@ -11165,6 +13534,11 @@ begin
   if Assigned(FWEEETaxValue) then
     FreeAndNil(FWEEETaxValue);
   inherited Destroy();
+end;
+
+function ItemAttributes_Type.HasActor() : Boolean;
+begin
+  Result := True;
 end;
 
 function ItemAttributes_Type.HasAddress() : Boolean;
@@ -11192,6 +13566,11 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasArtist() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasAspectRatio() : Boolean;
 begin
   Result := True;
@@ -11208,6 +13587,16 @@ begin
 end;
 
 function ItemAttributes_Type.HasAudienceRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasAudioFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasAuthor() : Boolean;
 begin
   Result := True;
 end;
@@ -11263,6 +13652,11 @@ begin
 end;
 
 function ItemAttributes_Type.HasCalendarType() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasCameraManualFeatures() : Boolean;
 begin
   Result := True;
 end;
@@ -11332,6 +13726,11 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasCompatibleDevices() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasComputerHardwareType() : Boolean;
 begin
   Result := True;
@@ -11372,7 +13771,17 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasCreator() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasCuisine() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasDataLinkProtocol() : Boolean;
 begin
   Result := True;
 end;
@@ -11408,6 +13817,11 @@ begin
 end;
 
 function ItemAttributes_Type.HasDigitalZoom() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasDirector() : Boolean;
 begin
   Result := True;
 end;
@@ -11477,6 +13891,11 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasFeature() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasFilmColorType() : Boolean;
 begin
   Result := True;
@@ -11488,6 +13907,16 @@ begin
 end;
 
 function ItemAttributes_Type.HasFloppyDiskDriveDescription() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasFormFactor() : Boolean;
 begin
   Result := True;
 end;
@@ -12037,6 +14466,21 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasPhotoFlashType() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasPictureFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasPlatform() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasPriceRating() : Boolean;
 begin
   Result := True;
@@ -12088,6 +14532,11 @@ begin
 end;
 
 function ItemAttributes_Type.HasReadingLevel() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasReturnMethod() : Boolean;
 begin
   Result := True;
 end;
@@ -12207,6 +14656,11 @@ begin
   Result := True;
 end;
 
+function ItemAttributes_Type.HasSpecialFeatures() : Boolean;
+begin
+  Result := True;
+end;
+
 function ItemAttributes_Type.HasStoneClarity() : Boolean;
 begin
   Result := True;
@@ -12243,6 +14697,11 @@ begin
 end;
 
 function ItemAttributes_Type.HasSubscriptionLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function ItemAttributes_Type.HasSupportedImageType() : Boolean;
 begin
   Result := True;
 end;
@@ -12402,40 +14861,203 @@ begin
   Result := True;
 end;
 
+{ MerchantItemAttributes_ItemDimensions_Type }
+
+constructor MerchantItemAttributes_ItemDimensions_Type.Create();
+begin
+  inherited Create();
+  FHeight := DecimalWithUnits_Type.Create();
+  FLength := DecimalWithUnits_Type.Create();
+  FWeight := DecimalWithUnits_Type.Create();
+  FWidth := DecimalWithUnits_Type.Create();
+end;
+
+destructor MerchantItemAttributes_ItemDimensions_Type.Destroy();
+begin
+  if Assigned(FHeight) then
+    FreeAndNil(FHeight);
+  if Assigned(FLength) then
+    FreeAndNil(FLength);
+  if Assigned(FWeight) then
+    FreeAndNil(FWeight);
+  if Assigned(FWidth) then
+    FreeAndNil(FWidth);
+  inherited Destroy();
+end;
+
+function MerchantItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+{ MerchantItemAttributes_PackageDimensions_Type }
+
+constructor MerchantItemAttributes_PackageDimensions_Type.Create();
+begin
+  inherited Create();
+  FHeight := DecimalWithUnits_Type.Create();
+  FLength := DecimalWithUnits_Type.Create();
+  FWeight := DecimalWithUnits_Type.Create();
+  FWidth := DecimalWithUnits_Type.Create();
+end;
+
+destructor MerchantItemAttributes_PackageDimensions_Type.Destroy();
+begin
+  if Assigned(FHeight) then
+    FreeAndNil(FHeight);
+  if Assigned(FLength) then
+    FreeAndNil(FLength);
+  if Assigned(FWeight) then
+    FreeAndNil(FWeight);
+  if Assigned(FWidth) then
+    FreeAndNil(FWidth);
+  inherited Destroy();
+end;
+
+function MerchantItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_VendorRebate_Type.Has_Type() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_VendorRebate_Type.HasStartDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_VendorRebate_Type.HasEndDate() : Boolean;
+begin
+  Result := True;
+end;
+
 { MerchantItemAttributes_Type }
 
 constructor MerchantItemAttributes_Type.Create();
 begin
   inherited Create();
   FActor := MerchantItemAttributes_ActorArray.Create();
+  FAddress := Address_Type.Create();
+  FAmazonMaximumAge := DecimalWithUnits_Type.Create();
+  FAmazonMinimumAge := DecimalWithUnits_Type.Create();
   FArtist := MerchantItemAttributes_ArtistArray.Create();
   FAudioFormat := MerchantItemAttributes_AudioFormatArray.Create();
   FAuthor := MerchantItemAttributes_AuthorArray.Create();
+  FBatteries := NonNegativeIntegerWithUnits_Type.Create();
   FCameraManualFeatures := MerchantItemAttributes_CameraManualFeaturesArray.Create();
+  FCaseDiameter := DecimalWithUnits_Type.Create();
+  FCaseThickness := DecimalWithUnits_Type.Create();
+  FContinuousShootingSpeed := DecimalWithUnits_Type.Create();
+  FCPUSpeed := DecimalWithUnits_Type.Create();
   FCreator := MerchantItemAttributes_CreatorArray.Create();
+  FDelayBetweenShots := DecimalWithUnits_Type.Create();
+  FDigitalZoom := DecimalWithUnits_Type.Create();
   FDirector := MerchantItemAttributes_DirectorArray.Create();
+  FDisplaySize := DecimalWithUnits_Type.Create();
   FFeature := MerchantItemAttributes_FeatureArray.Create();
+  FFirstIssueLeadTime := StringWithUnits_Type.Create();
   FFormat := MerchantItemAttributes_FormatArray.Create();
+  FFixedShippingCharge := Price_Type.Create();
+  FGraphicsMemorySize := DecimalWithUnits_Type.Create();
+  FHardDiskSize := NonNegativeIntegerWithUnits_Type.Create();
+  FISOEquivalent := NonNegativeIntegerWithUnits_Type.Create();
+  FItemDimensions := MerchantItemAttributes_ItemDimensions_Type.Create();
   FLanguages := MerchantItemAttributes_Languages_Type.Create();
+  FListPrice := Price_Type.Create();
+  FManufacturerMaximumAge := DecimalWithUnits_Type.Create();
+  FManufacturerMinimumAge := DecimalWithUnits_Type.Create();
+  FMaximumAperture := DecimalWithUnits_Type.Create();
+  FMaximumFocalLength := DecimalWithUnits_Type.Create();
+  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumResolution := DecimalWithUnits_Type.Create();
+  FMaximumShutterSpeed := DecimalWithUnits_Type.Create();
+  FMaximumVerticalResolution := NonNegativeIntegerWithUnits_Type.Create();
+  FMaximumWeightRecommendation := DecimalWithUnits_Type.Create();
+  FMinimumFocalLength := DecimalWithUnits_Type.Create();
+  FMinimumShutterSpeed := DecimalWithUnits_Type.Create();
+  FMonitorSize := DecimalWithUnits_Type.Create();
+  FMonitorViewableDiagonalSize := DecimalWithUnits_Type.Create();
+  FOpticalZoom := DecimalWithUnits_Type.Create();
+  FPackageDimensions := MerchantItemAttributes_PackageDimensions_Type.Create();
   FPhotoFlashType := MerchantItemAttributes_PhotoFlashTypeArray.Create();
   FPictureFormat := MerchantItemAttributes_PictureFormatArray.Create();
   FPlatform := MerchantItemAttributes_PlatformArray.Create();
   FPurchasingChannel := MerchantItemAttributes_PurchasingChannelArray.Create();
   FReturnMethod := MerchantItemAttributes_ReturnMethodArray.Create();
+  FSecondaryCacheSize := NonNegativeIntegerWithUnits_Type.Create();
   FSpecialFeatures := MerchantItemAttributes_SpecialFeaturesArray.Create();
+  FStoneWeight := DecimalWithUnits_Type.Create();
+  FSubscriptionLength := NonNegativeIntegerWithUnits_Type.Create();
   FSupportedImageType := MerchantItemAttributes_SupportedImageTypeArray.Create();
+  FSystemBusSpeed := DecimalWithUnits_Type.Create();
+  FSystemMemorySizeMax := DecimalWithUnits_Type.Create();
+  FSystemMemorySize := DecimalWithUnits_Type.Create();
+  FTotalDiamondWeight := DecimalWithUnits_Type.Create();
+  FTotalGemWeight := DecimalWithUnits_Type.Create();
+  FTotalMetalWeight := DecimalWithUnits_Type.Create();
+  FVendorRebate := MerchantItemAttributes_VendorRebate_Type.Create();
+  FWaterResistanceDepth := DecimalWithUnits_Type.Create();
 end;
 
 destructor MerchantItemAttributes_Type.Destroy();
 begin
+  if Assigned(FActor) then
+    FreeAndNil(FActor);
   if Assigned(FAddress) then
     FreeAndNil(FAddress);
   if Assigned(FAmazonMaximumAge) then
     FreeAndNil(FAmazonMaximumAge);
   if Assigned(FAmazonMinimumAge) then
     FreeAndNil(FAmazonMinimumAge);
+  if Assigned(FArtist) then
+    FreeAndNil(FArtist);
+  if Assigned(FAudioFormat) then
+    FreeAndNil(FAudioFormat);
+  if Assigned(FAuthor) then
+    FreeAndNil(FAuthor);
   if Assigned(FBatteries) then
     FreeAndNil(FBatteries);
+  if Assigned(FCameraManualFeatures) then
+    FreeAndNil(FCameraManualFeatures);
   if Assigned(FCaseDiameter) then
     FreeAndNil(FCaseDiameter);
   if Assigned(FCaseThickness) then
@@ -12444,14 +15066,22 @@ begin
     FreeAndNil(FContinuousShootingSpeed);
   if Assigned(FCPUSpeed) then
     FreeAndNil(FCPUSpeed);
+  if Assigned(FCreator) then
+    FreeAndNil(FCreator);
   if Assigned(FDelayBetweenShots) then
     FreeAndNil(FDelayBetweenShots);
   if Assigned(FDigitalZoom) then
     FreeAndNil(FDigitalZoom);
+  if Assigned(FDirector) then
+    FreeAndNil(FDirector);
   if Assigned(FDisplaySize) then
     FreeAndNil(FDisplaySize);
+  if Assigned(FFeature) then
+    FreeAndNil(FFeature);
   if Assigned(FFirstIssueLeadTime) then
     FreeAndNil(FFirstIssueLeadTime);
+  if Assigned(FFormat) then
+    FreeAndNil(FFormat);
   if Assigned(FFixedShippingCharge) then
     FreeAndNil(FFixedShippingCharge);
   if Assigned(FGraphicsMemorySize) then
@@ -12462,6 +15092,8 @@ begin
     FreeAndNil(FISOEquivalent);
   if Assigned(FItemDimensions) then
     FreeAndNil(FItemDimensions);
+  if Assigned(FLanguages) then
+    FreeAndNil(FLanguages);
   if Assigned(FListPrice) then
     FreeAndNil(FListPrice);
   if Assigned(FManufacturerMaximumAge) then
@@ -12496,12 +15128,26 @@ begin
     FreeAndNil(FOpticalZoom);
   if Assigned(FPackageDimensions) then
     FreeAndNil(FPackageDimensions);
+  if Assigned(FPhotoFlashType) then
+    FreeAndNil(FPhotoFlashType);
+  if Assigned(FPictureFormat) then
+    FreeAndNil(FPictureFormat);
+  if Assigned(FPlatform) then
+    FreeAndNil(FPlatform);
+  if Assigned(FPurchasingChannel) then
+    FreeAndNil(FPurchasingChannel);
+  if Assigned(FReturnMethod) then
+    FreeAndNil(FReturnMethod);
   if Assigned(FSecondaryCacheSize) then
     FreeAndNil(FSecondaryCacheSize);
+  if Assigned(FSpecialFeatures) then
+    FreeAndNil(FSpecialFeatures);
   if Assigned(FStoneWeight) then
     FreeAndNil(FStoneWeight);
   if Assigned(FSubscriptionLength) then
     FreeAndNil(FSubscriptionLength);
+  if Assigned(FSupportedImageType) then
+    FreeAndNil(FSupportedImageType);
   if Assigned(FSystemBusSpeed) then
     FreeAndNil(FSystemBusSpeed);
   if Assigned(FSystemMemorySizeMax) then
@@ -12519,6 +15165,11 @@ begin
   if Assigned(FWaterResistanceDepth) then
     FreeAndNil(FWaterResistanceDepth);
   inherited Destroy();
+end;
+
+function MerchantItemAttributes_Type.HasActor() : Boolean;
+begin
+  Result := True;
 end;
 
 function MerchantItemAttributes_Type.HasAddress() : Boolean;
@@ -12541,6 +15192,11 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasArtist() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasAspectRatio() : Boolean;
 begin
   Result := True;
@@ -12557,6 +15213,16 @@ begin
 end;
 
 function MerchantItemAttributes_Type.HasAudienceRating() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasAudioFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasAuthor() : Boolean;
 begin
   Result := True;
 end;
@@ -12612,6 +15278,11 @@ begin
 end;
 
 function MerchantItemAttributes_Type.HasCalendarType() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasCameraManualFeatures() : Boolean;
 begin
   Result := True;
 end;
@@ -12716,6 +15387,11 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasCreator() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasCuisine() : Boolean;
 begin
   Result := True;
@@ -12762,6 +15438,11 @@ begin
 end;
 
 function MerchantItemAttributes_Type.HasDigitalZoom() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasDirector() : Boolean;
 begin
   Result := True;
 end;
@@ -12826,12 +15507,22 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasFeature() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasFirstIssueLeadTime() : Boolean;
 begin
   Result := True;
 end;
 
 function MerchantItemAttributes_Type.HasFloppyDiskDriveDescription() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasFormat() : Boolean;
 begin
   Result := True;
 end;
@@ -13336,6 +16027,21 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasPhotoFlashType() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasPictureFormat() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasPlatform() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasPriceRating() : Boolean;
 begin
   Result := True;
@@ -13371,6 +16077,11 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasPurchasingChannel() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasReadingLevel() : Boolean;
 begin
   Result := True;
@@ -13392,6 +16103,11 @@ begin
 end;
 
 function MerchantItemAttributes_Type.HasReleaseDate() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasReturnMethod() : Boolean;
 begin
   Result := True;
 end;
@@ -13476,6 +16192,11 @@ begin
   Result := True;
 end;
 
+function MerchantItemAttributes_Type.HasSpecialFeatures() : Boolean;
+begin
+  Result := True;
+end;
+
 function MerchantItemAttributes_Type.HasStoneClarity() : Boolean;
 begin
   Result := True;
@@ -13507,6 +16228,11 @@ begin
 end;
 
 function MerchantItemAttributes_Type.HasSubscriptionLength() : Boolean;
+begin
+  Result := True;
+end;
+
+function MerchantItemAttributes_Type.HasSupportedImageType() : Boolean;
 begin
   Result := True;
 end;
@@ -13666,1362 +16392,16 @@ begin
   Result := True;
 end;
 
-{ OfferSummary_Type }
-
-destructor OfferSummary_Type.Destroy();
-begin
-  if Assigned(FLowestNewPrice) then
-    FreeAndNil(FLowestNewPrice);
-  if Assigned(FLowestUsedPrice) then
-    FreeAndNil(FLowestUsedPrice);
-  if Assigned(FLowestCollectiblePrice) then
-    FreeAndNil(FLowestCollectiblePrice);
-  if Assigned(FLowestRefurbishedPrice) then
-    FreeAndNil(FLowestRefurbishedPrice);
-  inherited Destroy();
-end;
-
-function OfferSummary_Type.HasLowestNewPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasLowestUsedPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasLowestCollectiblePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasLowestRefurbishedPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasTotalNew() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasTotalUsed() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasTotalCollectible() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferSummary_Type.HasTotalRefurbished() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Offers_Type }
-
-constructor Offers_Type.Create();
-begin
-  inherited Create();
-  FOffer := Offers_OfferArray.Create();
-end;
-
-destructor Offers_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function Offers_Type.HasTotalOffers() : Boolean;
-begin
-  Result := True;
-end;
-
-function Offers_Type.HasTotalOfferPages() : Boolean;
-begin
-  Result := True;
-end;
-
-{ VariationSummary_Type }
-
-destructor VariationSummary_Type.Destroy();
-begin
-  if Assigned(FLowestPrice) then
-    FreeAndNil(FLowestPrice);
-  if Assigned(FHighestPrice) then
-    FreeAndNil(FHighestPrice);
-  if Assigned(FLowestSalePrice) then
-    FreeAndNil(FLowestSalePrice);
-  if Assigned(FHighestSalePrice) then
-    FreeAndNil(FHighestSalePrice);
-  inherited Destroy();
-end;
-
-function VariationSummary_Type.HasLowestPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function VariationSummary_Type.HasHighestPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function VariationSummary_Type.HasLowestSalePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function VariationSummary_Type.HasHighestSalePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function VariationSummary_Type.HasSingleMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Variations_Type }
-
-constructor Variations_Type.Create();
-begin
-  inherited Create();
-  FVariationDimensions := VariationDimensions_Type.Create();
-  F_Item := Variations__ItemArray.Create();
-end;
-
-destructor Variations_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function Variations_Type.HasTotalVariations() : Boolean;
-begin
-  Result := True;
-end;
-
-function Variations_Type.HasTotalVariationPages() : Boolean;
-begin
-  Result := True;
-end;
-
-function Variations_Type.HasVariationDimensions() : Boolean;
-begin
-  Result := True;
-end;
-
-{ SearchInside_Type }
-
-destructor SearchInside_Type.Destroy();
-begin
-  if Assigned(FExcerpt) then
-    FreeAndNil(FExcerpt);
-  inherited Destroy();
-end;
-
-function SearchInside_Type.HasTotalExcerpts() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchInside_Type.HasExcerpt() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Item_AlternateVersions_Type_AlternateVersion_Type }
-
-function Item_AlternateVersions_Type_AlternateVersion_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-function Item_AlternateVersions_Type_AlternateVersion_Type.HasBinding() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Offer_Type }
-
-constructor Offer_Type.Create();
-begin
-  inherited Create();
-  FOfferListing := Offer_OfferListingArray.Create();
-  FPromotions := Promotions_Type.Create();
-end;
-
-destructor Offer_Type.Destroy();
-begin
-  if Assigned(FMerchant) then
-    FreeAndNil(FMerchant);
-  if Assigned(FSeller) then
-    FreeAndNil(FSeller);
-  if Assigned(FOfferAttributes) then
-    FreeAndNil(FOfferAttributes);
-  if Assigned(FLoyaltyPoints) then
-    FreeAndNil(FLoyaltyPoints);
-  inherited Destroy();
-end;
-
-function Offer_Type.HasMerchant() : Boolean;
-begin
-  Result := True;
-end;
-
-function Offer_Type.HasSeller() : Boolean;
-begin
-  Result := True;
-end;
-
-function Offer_Type.HasOfferAttributes() : Boolean;
-begin
-  Result := True;
-end;
-
-function Offer_Type.HasLoyaltyPoints() : Boolean;
-begin
-  Result := True;
-end;
-
-function Offer_Type.HasPromotions() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Merchant_Type }
-
-function Merchant_Type.HasName() : Boolean;
-begin
-  Result := True;
-end;
-
-function Merchant_Type.HasGlancePage() : Boolean;
-begin
-  Result := True;
-end;
-
-function Merchant_Type.HasAverageFeedbackRating() : Boolean;
-begin
-  Result := True;
-end;
-
-function Merchant_Type.HasTotalFeedback() : Boolean;
-begin
-  Result := True;
-end;
-
-function Merchant_Type.HasTotalFeedbackPages() : Boolean;
-begin
-  Result := True;
-end;
-
-{ OfferAttributes_Type }
-
-function OfferAttributes_Type.HasCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferAttributes_Type.HasSubCondition() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferAttributes_Type.HasConditionNote() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferAttributes_Type.HasWillShipExpedited() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferAttributes_Type.HasWillShipInternational() : Boolean;
-begin
-  Result := True;
-end;
-
-{ OfferListing_Type }
-
-constructor OfferListing_Type.Create();
-begin
-  inherited Create();
-  FShippingCharge := OfferListing_ShippingChargeArray.Create();
-end;
-
-destructor OfferListing_Type.Destroy();
-begin
-  if Assigned(FPrice) then
-    FreeAndNil(FPrice);
-  if Assigned(FSalePrice) then
-    FreeAndNil(FSalePrice);
-  if Assigned(FAmountSaved) then
-    FreeAndNil(FAmountSaved);
-  if Assigned(FAvailabilityAttributes) then
-    FreeAndNil(FAvailabilityAttributes);
-  if Assigned(FISPUStoreAddress) then
-    FreeAndNil(FISPUStoreAddress);
-  inherited Destroy();
-end;
-
-function OfferListing_Type.HasOfferListingId() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasExchangeId() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasSalePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasAmountSaved() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasPercentageSaved() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasAvailability() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasAvailabilityAttributes() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasQuantity() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasISPUStoreAddress() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasISPUStoreHours() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasIsEligibleForSuperSaverShipping() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_Type.HasSalesRestriction() : Boolean;
-begin
-  Result := True;
-end;
-
-{ LoyaltyPoints_Type }
-
-destructor LoyaltyPoints_Type.Destroy();
-begin
-  if Assigned(FTypicalRedemptionValue) then
-    FreeAndNil(FTypicalRedemptionValue);
-  inherited Destroy();
-end;
-
-function LoyaltyPoints_Type.HasPoints() : Boolean;
-begin
-  Result := True;
-end;
-
-function LoyaltyPoints_Type.HasTypicalRedemptionValue() : Boolean;
-begin
-  Result := True;
-end;
-
-{ OfferListing_AvailabilityAttributes_Type }
-
-function OfferListing_AvailabilityAttributes_Type.HasAvailabilityType() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_AvailabilityAttributes_Type.HasIsPreorder() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_AvailabilityAttributes_Type.HasMinimumHours() : Boolean;
-begin
-  Result := True;
-end;
-
-function OfferListing_AvailabilityAttributes_Type.HasMaximumHours() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Address }
-
-function Address.HasName() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasAddress1() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasAddress2() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasAddress3() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasCity() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasState() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasPostalCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function Address.HasCountry() : Boolean;
-begin
-  Result := True;
-end;
-
-{ OfferListing_ShippingCharge_Type }
-
-destructor OfferListing_ShippingCharge_Type.Destroy();
-begin
-  if Assigned(FShippingPrice) then
-    FreeAndNil(FShippingPrice);
-  inherited Destroy();
-end;
-
-{ EditorialReview_Type }
-
-function EditorialReview_Type.HasSource() : Boolean;
-begin
-  Result := True;
-end;
-
-function EditorialReview_Type.HasContent() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Collections_Collection_Type_CollectionSummary_Type }
-
-destructor Collections_Collection_Type_CollectionSummary_Type.Destroy();
-begin
-  if Assigned(FLowestListPrice) then
-    FreeAndNil(FLowestListPrice);
-  if Assigned(FHighestListPrice) then
-    FreeAndNil(FHighestListPrice);
-  if Assigned(FLowestSalePrice) then
-    FreeAndNil(FLowestSalePrice);
-  if Assigned(FHighestSalePrice) then
-    FreeAndNil(FHighestSalePrice);
-  inherited Destroy();
-end;
-
-function Collections_Collection_Type_CollectionSummary_Type.HasLowestListPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type_CollectionSummary_Type.HasHighestListPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type_CollectionSummary_Type.HasLowestSalePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type_CollectionSummary_Type.HasHighestSalePrice() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Collections_Collection_Type_CollectionParent_Type }
-
-function Collections_Collection_Type_CollectionParent_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type_CollectionParent_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Collections_Collection_Type_CollectionItem_Type }
-
-function Collections_Collection_Type_CollectionItem_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type_CollectionItem_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Collections_Collection_Type }
-
-constructor Collections_Collection_Type.Create();
-begin
-  inherited Create();
-  FCollectionItem := Collections_Collection_Type_CollectionItemArray.Create();
-end;
-
-destructor Collections_Collection_Type.Destroy();
-begin
-  if Assigned(FCollectionSummary) then
-    FreeAndNil(FCollectionSummary);
-  if Assigned(FCollectionParent) then
-    FreeAndNil(FCollectionParent);
-  inherited Destroy();
-end;
-
-function Collections_Collection_Type.HasCollectionSummary() : Boolean;
-begin
-  Result := True;
-end;
-
-function Collections_Collection_Type.HasCollectionParent() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Review_Type }
-
-destructor Review_Type.Destroy();
-begin
-  if Assigned(FReviewer) then
-    FreeAndNil(FReviewer);
-  inherited Destroy();
-end;
-
-function Review_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasRating() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasHelpfulVotes() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasCustomerId() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasReviewer() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasTotalVotes() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasSummary() : Boolean;
-begin
-  Result := True;
-end;
-
-function Review_Type.HasContent() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Reviewer_Type }
-
-function Reviewer_Type.HasCustomerId() : Boolean;
-begin
-  Result := True;
-end;
-
-function Reviewer_Type.HasName() : Boolean;
-begin
-  Result := True;
-end;
-
-function Reviewer_Type.HasNickname() : Boolean;
-begin
-  Result := True;
-end;
-
-function Reviewer_Type.HasLocation() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Tracks_Disc_Type }
-
-constructor Tracks_Disc_Type.Create();
-begin
-  inherited Create();
-  FTrack := Tracks_Disc_Type_TrackArray.Create();
-end;
-
-destructor Tracks_Disc_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-{ SimilarProducts_SimilarProduct_Type }
-
-function SimilarProducts_SimilarProduct_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarProducts_SimilarProduct_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ TopSellers_TopSeller_Type }
-
-function TopSellers_TopSeller_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function TopSellers_TopSeller_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ NewReleases_NewRelease_Type }
-
-function NewReleases_NewRelease_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function NewReleases_NewRelease_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ SimilarViewedProducts_SimilarViewedProduct_Type }
-
-function SimilarViewedProducts_SimilarViewedProduct_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function SimilarViewedProducts_SimilarViewedProduct_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type }
-
-function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Accessories_Accessory_Type }
-
-function Accessories_Accessory_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function Accessories_Accessory_Type.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Promotion_Type }
-
-destructor Promotion_Type.Destroy();
-begin
-  if Assigned(FSummary) then
-    FreeAndNil(FSummary);
-  if Assigned(FDetails) then
-    FreeAndNil(FDetails);
-  inherited Destroy();
-end;
-
-function Promotion_Type.HasSummary() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Type.HasDetails() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Promotion_Summary_Type }
-
-function Promotion_Summary_Type.HasCategory() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Summary_Type.HasStartDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Summary_Type.HasEndDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Summary_Type.HasEligibilityRequirementDescription() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Summary_Type.HasBenefitDescription() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Summary_Type.HasTermsAndConditions() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Promotion_Details_Type }
-
-constructor Promotion_Details_Type.Create();
-begin
-  inherited Create();
-  FEligibilityRequirements := PromotionEligibilityRequirements.Create();
-  FBenefits := PromotionBenefits.Create();
-end;
-
-destructor Promotion_Details_Type.Destroy();
-begin
-  if Assigned(FItemApplicability) then
-    FreeAndNil(FItemApplicability);
-  inherited Destroy();
-end;
-
-function Promotion_Details_Type.HasMerchantPromotionId() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasGroupClaimCode() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasCouponCombinationType() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasStartDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasEndDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasTermsAndConditions() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasEligibilityRequirements() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasBenefits() : Boolean;
-begin
-  Result := True;
-end;
-
-function Promotion_Details_Type.HasItemApplicability() : Boolean;
-begin
-  Result := True;
-end;
-
-{ PromotionEligibilityRequirement }
-
-destructor PromotionEligibilityRequirement.Destroy();
-begin
-  if Assigned(FCurrencyAmount) then
-    FreeAndNil(FCurrencyAmount);
-  inherited Destroy();
-end;
-
-function PromotionEligibilityRequirement.HasQuantity() : Boolean;
-begin
-  Result := True;
-end;
-
-function PromotionEligibilityRequirement.HasCurrencyAmount() : Boolean;
-begin
-  Result := True;
-end;
-
-{ PromotionBenefit }
-
-destructor PromotionBenefit.Destroy();
-begin
-  if Assigned(FFixedAmount) then
-    FreeAndNil(FFixedAmount);
-  if Assigned(FCeiling) then
-    FreeAndNil(FCeiling);
-  inherited Destroy();
-end;
-
-function PromotionBenefit.HasQuantity() : Boolean;
-begin
-  Result := True;
-end;
-
-function PromotionBenefit.HasPercentOff() : Boolean;
-begin
-  Result := True;
-end;
-
-function PromotionBenefit.HasFixedAmount() : Boolean;
-begin
-  Result := True;
-end;
-
-function PromotionBenefit.HasCeiling() : Boolean;
-begin
-  Result := True;
-end;
-
-{ BrowseNode_Type }
-
-constructor BrowseNode_Type.Create();
-begin
-  inherited Create();
-  FChildren := BrowseNode_Children_Type.Create();
-  FAncestors := BrowseNode_Ancestors_Type.Create();
-  FTopSellers := TopSellers_Type.Create();
-  FNewReleases := NewReleases_Type.Create();
-end;
-
-destructor BrowseNode_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function BrowseNode_Type.HasBrowseNodeId() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasName() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasIsCategoryRoot() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasChildren() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasAncestors() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasTopSellers() : Boolean;
-begin
-  Result := True;
-end;
-
-function BrowseNode_Type.HasNewReleases() : Boolean;
-begin
-  Result := True;
-end;
-
-{ ListmaniaLists_ListmaniaList_Type }
-
-function ListmaniaLists_ListmaniaList_Type.HasListName() : Boolean;
-begin
-  Result := True;
-end;
-
-{ SearchInside_Excerpt_Type }
-
-function SearchInside_Excerpt_Type.HasChecksum() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchInside_Excerpt_Type.HasPageType() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchInside_Excerpt_Type.HasPageNumber() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchInside_Excerpt_Type.HasSequenceNumber() : Boolean;
-begin
-  Result := True;
-end;
-
-function SearchInside_Excerpt_Type.HasText() : Boolean;
-begin
-  Result := True;
-end;
-
-{ CartItem }
-
-destructor CartItem.Destroy();
-begin
-  if Assigned(FPrice) then
-    FreeAndNil(FPrice);
-  if Assigned(FItemTotal) then
-    FreeAndNil(FItemTotal);
-  inherited Destroy();
-end;
-
-function CartItem.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasExchangeId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasMerchantId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasSellerId() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasSellerNickname() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasTitle() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasProductGroup() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasListOwner() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasListType() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasPrice() : Boolean;
-begin
-  Result := True;
-end;
-
-function CartItem.HasItemTotal() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Transaction_Totals_Type }
-
-destructor Transaction_Totals_Type.Destroy();
-begin
-  if Assigned(FTotal) then
-    FreeAndNil(FTotal);
-  if Assigned(FSubtotal) then
-    FreeAndNil(FSubtotal);
-  if Assigned(FTax) then
-    FreeAndNil(FTax);
-  if Assigned(FShippingCharge) then
-    FreeAndNil(FShippingCharge);
-  if Assigned(FPromotion) then
-    FreeAndNil(FPromotion);
-  inherited Destroy();
-end;
-
-{ TransactionItem_Type }
-
-constructor TransactionItem_Type.Create();
-begin
-  inherited Create();
-  FChildTransactionItems := TransactionItem_ChildTransactionItems_Type.Create();
-end;
-
-destructor TransactionItem_Type.Destroy();
-begin
-  if Assigned(FUnitPrice) then
-    FreeAndNil(FUnitPrice);
-  if Assigned(FTotalPrice) then
-    FreeAndNil(FTotalPrice);
-  inherited Destroy();
-end;
-
-function TransactionItem_Type.HasASIN() : Boolean;
-begin
-  Result := True;
-end;
-
-function TransactionItem_Type.HasChildTransactionItems() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Transaction_Shipments_Type_Shipment_Type }
-
-constructor Transaction_Shipments_Type_Shipment_Type.Create();
-begin
-  inherited Create();
-  FShipmentItems := Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type.Create();
-  FPackages := Transaction_Shipments_Type_Shipment_Type_Packages_Type.Create();
-end;
-
-destructor Transaction_Shipments_Type_Shipment_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function Transaction_Shipments_Type_Shipment_Type.HasShipmentItems() : Boolean;
-begin
-  Result := True;
-end;
-
-function Transaction_Shipments_Type_Shipment_Type.HasPackages() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Seller_Location_Type }
-
-function Seller_Location_Type.HasUserDefinedLocation() : Boolean;
-begin
-  Result := True;
-end;
-
-function Seller_Location_Type.HasCity() : Boolean;
-begin
-  Result := True;
-end;
-
-function Seller_Location_Type.HasState() : Boolean;
-begin
-  Result := True;
-end;
-
-function Seller_Location_Type.HasCountry() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type }
-
-function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasCount() : Boolean;
-begin
-  Result := True;
-end;
-
-function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasPercentage() : Boolean;
-begin
-  Result := True;
-end;
-
-{ Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type }
-
-constructor Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.Create();
-begin
-  inherited Create();
-  FSellerFeedbackRating := Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray.Create();
-end;
-
-destructor Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.Destroy();
-begin
-  inherited Destroy();
-end;
-
-{ SellerFeedback_Feedback_Type }
-
-function SellerFeedback_Feedback_Type.HasRating() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerFeedback_Feedback_Type.HasComment() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerFeedback_Feedback_Type.HasDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function SellerFeedback_Feedback_Type.HasRatedBy() : Boolean;
-begin
-  Result := True;
-end;
-
-{ ItemAttributes_ItemDimensions_Type }
-
-destructor ItemAttributes_ItemDimensions_Type.Destroy();
-begin
-  if Assigned(FHeight) then
-    FreeAndNil(FHeight);
-  if Assigned(FLength) then
-    FreeAndNil(FLength);
-  if Assigned(FWeight) then
-    FreeAndNil(FWeight);
-  if Assigned(FWidth) then
-    FreeAndNil(FWidth);
-  inherited Destroy();
-end;
-
-function ItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
-begin
-  Result := True;
-end;
-
-{ ItemAttributes_Languages_Type_Language_Type }
-
-function ItemAttributes_Languages_Type_Language_Type.Has_Type() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
-begin
-  Result := True;
-end;
-
-{ ItemAttributes_PackageDimensions_Type }
-
-destructor ItemAttributes_PackageDimensions_Type.Destroy();
-begin
-  if Assigned(FHeight) then
-    FreeAndNil(FHeight);
-  if Assigned(FLength) then
-    FreeAndNil(FLength);
-  if Assigned(FWeight) then
-    FreeAndNil(FWeight);
-  if Assigned(FWidth) then
-    FreeAndNil(FWidth);
-  inherited Destroy();
-end;
-
-function ItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function ItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
-begin
-  Result := True;
-end;
-
-{ MerchantItemAttributes_ItemDimensions_Type }
-
-destructor MerchantItemAttributes_ItemDimensions_Type.Destroy();
-begin
-  if Assigned(FHeight) then
-    FreeAndNil(FHeight);
-  if Assigned(FLength) then
-    FreeAndNil(FLength);
-  if Assigned(FWeight) then
-    FreeAndNil(FWeight);
-  if Assigned(FWidth) then
-    FreeAndNil(FWidth);
-  inherited Destroy();
-end;
-
-function MerchantItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
-begin
-  Result := True;
-end;
-
-{ MerchantItemAttributes_Languages_Type_Language_Type }
-
-function MerchantItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
-begin
-  Result := True;
-end;
-
-{ MerchantItemAttributes_PackageDimensions_Type }
-
-destructor MerchantItemAttributes_PackageDimensions_Type.Destroy();
-begin
-  if Assigned(FHeight) then
-    FreeAndNil(FHeight);
-  if Assigned(FLength) then
-    FreeAndNil(FLength);
-  if Assigned(FWeight) then
-    FreeAndNil(FWeight);
-  if Assigned(FWidth) then
-    FreeAndNil(FWidth);
-  inherited Destroy();
-end;
-
-function MerchantItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
-begin
-  Result := True;
-end;
-
-{ MerchantItemAttributes_VendorRebate_Type }
-
-function MerchantItemAttributes_VendorRebate_Type.Has_Type() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_VendorRebate_Type.HasStartDate() : Boolean;
-begin
-  Result := True;
-end;
-
-function MerchantItemAttributes_VendorRebate_Type.HasEndDate() : Boolean;
-begin
-  Result := True;
-end;
-
 { Help_RequestArray }
 
-function Help_RequestArray.GetItem(AIndex: Integer): HelpRequest;
+function Help_RequestArray.GetItem(AIndex: Integer): HelpRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As HelpRequest;
+  Result := Inherited GetItem(AIndex) As HelpRequest_Type;
 end;
 
 class function Help_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= HelpRequest;
+  Result:= HelpRequest_Type;
 end;
 
 { HelpResponse_InformationArray }
@@ -15038,14 +16418,14 @@ end;
 
 { ItemSearch_RequestArray }
 
-function ItemSearch_RequestArray.GetItem(AIndex: Integer): ItemSearchRequest;
+function ItemSearch_RequestArray.GetItem(AIndex: Integer): ItemSearchRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ItemSearchRequest;
+  Result := Inherited GetItem(AIndex) As ItemSearchRequest_Type;
 end;
 
 class function ItemSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ItemSearchRequest;
+  Result:= ItemSearchRequest_Type;
 end;
 
 { ItemSearchResponse_ItemsArray }
@@ -15062,14 +16442,14 @@ end;
 
 { ItemLookup_RequestArray }
 
-function ItemLookup_RequestArray.GetItem(AIndex: Integer): ItemLookupRequest;
+function ItemLookup_RequestArray.GetItem(AIndex: Integer): ItemLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ItemLookupRequest;
+  Result := Inherited GetItem(AIndex) As ItemLookupRequest_Type;
 end;
 
 class function ItemLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ItemLookupRequest;
+  Result:= ItemLookupRequest_Type;
 end;
 
 { ItemLookupResponse_ItemsArray }
@@ -15086,14 +16466,14 @@ end;
 
 { BrowseNodeLookup_RequestArray }
 
-function BrowseNodeLookup_RequestArray.GetItem(AIndex: Integer): BrowseNodeLookupRequest;
+function BrowseNodeLookup_RequestArray.GetItem(AIndex: Integer): BrowseNodeLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNodeLookupRequest;
+  Result := Inherited GetItem(AIndex) As BrowseNodeLookupRequest_Type;
 end;
 
 class function BrowseNodeLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= BrowseNodeLookupRequest;
+  Result:= BrowseNodeLookupRequest_Type;
 end;
 
 { BrowseNodeLookupResponse_BrowseNodesArray }
@@ -15110,14 +16490,14 @@ end;
 
 { ListSearch_RequestArray }
 
-function ListSearch_RequestArray.GetItem(AIndex: Integer): ListSearchRequest;
+function ListSearch_RequestArray.GetItem(AIndex: Integer): ListSearchRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ListSearchRequest;
+  Result := Inherited GetItem(AIndex) As ListSearchRequest_Type;
 end;
 
 class function ListSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ListSearchRequest;
+  Result:= ListSearchRequest_Type;
 end;
 
 { ListSearchResponse_ListsArray }
@@ -15134,14 +16514,14 @@ end;
 
 { ListLookup_RequestArray }
 
-function ListLookup_RequestArray.GetItem(AIndex: Integer): ListLookupRequest;
+function ListLookup_RequestArray.GetItem(AIndex: Integer): ListLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ListLookupRequest;
+  Result := Inherited GetItem(AIndex) As ListLookupRequest_Type;
 end;
 
 class function ListLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ListLookupRequest;
+  Result:= ListLookupRequest_Type;
 end;
 
 { ListLookupResponse_ListsArray }
@@ -15158,14 +16538,14 @@ end;
 
 { CustomerContentSearch_RequestArray }
 
-function CustomerContentSearch_RequestArray.GetItem(AIndex: Integer): CustomerContentSearchRequest;
+function CustomerContentSearch_RequestArray.GetItem(AIndex: Integer): CustomerContentSearchRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CustomerContentSearchRequest;
+  Result := Inherited GetItem(AIndex) As CustomerContentSearchRequest_Type;
 end;
 
 class function CustomerContentSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CustomerContentSearchRequest;
+  Result:= CustomerContentSearchRequest_Type;
 end;
 
 { CustomerContentSearchResponse_CustomersArray }
@@ -15182,14 +16562,14 @@ end;
 
 { CustomerContentLookup_RequestArray }
 
-function CustomerContentLookup_RequestArray.GetItem(AIndex: Integer): CustomerContentLookupRequest;
+function CustomerContentLookup_RequestArray.GetItem(AIndex: Integer): CustomerContentLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CustomerContentLookupRequest;
+  Result := Inherited GetItem(AIndex) As CustomerContentLookupRequest_Type;
 end;
 
 class function CustomerContentLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CustomerContentLookupRequest;
+  Result:= CustomerContentLookupRequest_Type;
 end;
 
 { CustomerContentLookupResponse_CustomersArray }
@@ -15206,14 +16586,14 @@ end;
 
 { SimilarityLookup_RequestArray }
 
-function SimilarityLookup_RequestArray.GetItem(AIndex: Integer): SimilarityLookupRequest;
+function SimilarityLookup_RequestArray.GetItem(AIndex: Integer): SimilarityLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SimilarityLookupRequest;
+  Result := Inherited GetItem(AIndex) As SimilarityLookupRequest_Type;
 end;
 
 class function SimilarityLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SimilarityLookupRequest;
+  Result:= SimilarityLookupRequest_Type;
 end;
 
 { SimilarityLookupResponse_ItemsArray }
@@ -15230,14 +16610,14 @@ end;
 
 { SellerLookup_RequestArray }
 
-function SellerLookup_RequestArray.GetItem(AIndex: Integer): SellerLookupRequest;
+function SellerLookup_RequestArray.GetItem(AIndex: Integer): SellerLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerLookupRequest;
+  Result := Inherited GetItem(AIndex) As SellerLookupRequest_Type;
 end;
 
 class function SellerLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerLookupRequest;
+  Result:= SellerLookupRequest_Type;
 end;
 
 { SellerLookupResponse_SellersArray }
@@ -15254,14 +16634,14 @@ end;
 
 { CartGet_RequestArray }
 
-function CartGet_RequestArray.GetItem(AIndex: Integer): CartGetRequest;
+function CartGet_RequestArray.GetItem(AIndex: Integer): CartGetRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartGetRequest;
+  Result := Inherited GetItem(AIndex) As CartGetRequest_Type;
 end;
 
 class function CartGet_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartGetRequest;
+  Result:= CartGetRequest_Type;
 end;
 
 { CartGetResponse_CartArray }
@@ -15278,14 +16658,14 @@ end;
 
 { CartAdd_RequestArray }
 
-function CartAdd_RequestArray.GetItem(AIndex: Integer): CartAddRequest;
+function CartAdd_RequestArray.GetItem(AIndex: Integer): CartAddRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartAddRequest;
+  Result := Inherited GetItem(AIndex) As CartAddRequest_Type;
 end;
 
 class function CartAdd_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartAddRequest;
+  Result:= CartAddRequest_Type;
 end;
 
 { CartAddResponse_CartArray }
@@ -15302,14 +16682,14 @@ end;
 
 { CartCreate_RequestArray }
 
-function CartCreate_RequestArray.GetItem(AIndex: Integer): CartCreateRequest;
+function CartCreate_RequestArray.GetItem(AIndex: Integer): CartCreateRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartCreateRequest;
+  Result := Inherited GetItem(AIndex) As CartCreateRequest_Type;
 end;
 
 class function CartCreate_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartCreateRequest;
+  Result:= CartCreateRequest_Type;
 end;
 
 { CartCreateResponse_CartArray }
@@ -15326,14 +16706,14 @@ end;
 
 { CartModify_RequestArray }
 
-function CartModify_RequestArray.GetItem(AIndex: Integer): CartModifyRequest;
+function CartModify_RequestArray.GetItem(AIndex: Integer): CartModifyRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartModifyRequest;
+  Result := Inherited GetItem(AIndex) As CartModifyRequest_Type;
 end;
 
 class function CartModify_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartModifyRequest;
+  Result:= CartModifyRequest_Type;
 end;
 
 { CartModifyResponse_CartArray }
@@ -15350,14 +16730,14 @@ end;
 
 { CartClear_RequestArray }
 
-function CartClear_RequestArray.GetItem(AIndex: Integer): CartClearRequest;
+function CartClear_RequestArray.GetItem(AIndex: Integer): CartClearRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartClearRequest;
+  Result := Inherited GetItem(AIndex) As CartClearRequest_Type;
 end;
 
 class function CartClear_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartClearRequest;
+  Result:= CartClearRequest_Type;
 end;
 
 { CartClearResponse_CartArray }
@@ -15374,14 +16754,14 @@ end;
 
 { TransactionLookup_RequestArray }
 
-function TransactionLookup_RequestArray.GetItem(AIndex: Integer): TransactionLookupRequest;
+function TransactionLookup_RequestArray.GetItem(AIndex: Integer): TransactionLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TransactionLookupRequest;
+  Result := Inherited GetItem(AIndex) As TransactionLookupRequest_Type;
 end;
 
 class function TransactionLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= TransactionLookupRequest;
+  Result:= TransactionLookupRequest_Type;
 end;
 
 { TransactionLookupResponse_TransactionsArray }
@@ -15398,14 +16778,14 @@ end;
 
 { SellerListingSearch_RequestArray }
 
-function SellerListingSearch_RequestArray.GetItem(AIndex: Integer): SellerListingSearchRequest;
+function SellerListingSearch_RequestArray.GetItem(AIndex: Integer): SellerListingSearchRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListingSearchRequest;
+  Result := Inherited GetItem(AIndex) As SellerListingSearchRequest_Type;
 end;
 
 class function SellerListingSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerListingSearchRequest;
+  Result:= SellerListingSearchRequest_Type;
 end;
 
 { SellerListingSearchResponse_SellerListingsArray }
@@ -15422,14 +16802,14 @@ end;
 
 { SellerListingLookup_RequestArray }
 
-function SellerListingLookup_RequestArray.GetItem(AIndex: Integer): SellerListingLookupRequest;
+function SellerListingLookup_RequestArray.GetItem(AIndex: Integer): SellerListingLookupRequest_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListingLookupRequest;
+  Result := Inherited GetItem(AIndex) As SellerListingLookupRequest_Type;
 end;
 
 class function SellerListingLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerListingLookupRequest;
+  Result:= SellerListingLookupRequest_Type;
 end;
 
 { SellerListingLookupResponse_SellerListingsArray }
@@ -16668,18 +18048,6 @@ begin
   System.SetLength(FData,i);
 end;
 
-{ HTTPHeaders_Type }
-
-function HTTPHeaders_Type.GetItem(AIndex: Integer): HTTPHeaders_Header_Type;
-begin
-  Result := Inherited GetItem(AIndex) As HTTPHeaders_Header_Type;
-end;
-
-class function HTTPHeaders_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= HTTPHeaders_Header_Type;
-end;
-
 { Arguments_Type }
 
 function Arguments_Type.GetItem(AIndex: Integer): Arguments_Argument_Type;
@@ -16690,6 +18058,18 @@ end;
 class function Arguments_Type.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= Arguments_Argument_Type;
+end;
+
+{ HTTPHeaders_Type }
+
+function HTTPHeaders_Type.GetItem(AIndex: Integer): HTTPHeaders_Header_Type;
+begin
+  Result := Inherited GetItem(AIndex) As HTTPHeaders_Header_Type;
+end;
+
+class function HTTPHeaders_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= HTTPHeaders_Header_Type;
 end;
 
 { Errors_Type }
@@ -16728,18 +18108,6 @@ begin
   Result:= ResponseGroupInformation_Type;
 end;
 
-{ SearchResultsMap_Type }
-
-function SearchResultsMap_Type.GetItem(AIndex: Integer): SearchResultsMap_SearchIndex_Type;
-begin
-  Result := Inherited GetItem(AIndex) As SearchResultsMap_SearchIndex_Type;
-end;
-
-class function SearchResultsMap_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= SearchResultsMap_SearchIndex_Type;
-end;
-
 { Items__ItemArray }
 
 function Items__ItemArray.GetItem(AIndex: Integer): Item_Type;
@@ -16774,66 +18142,6 @@ end;
 class function Customers_CustomerArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= Customer_Type;
-end;
-
-{ SimilarProducts_Type }
-
-function SimilarProducts_Type.GetItem(AIndex: Integer): SimilarProducts_SimilarProduct_Type;
-begin
-  Result := Inherited GetItem(AIndex) As SimilarProducts_SimilarProduct_Type;
-end;
-
-class function SimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= SimilarProducts_SimilarProduct_Type;
-end;
-
-{ TopSellers_Type }
-
-function TopSellers_Type.GetItem(AIndex: Integer): TopSellers_TopSeller_Type;
-begin
-  Result := Inherited GetItem(AIndex) As TopSellers_TopSeller_Type;
-end;
-
-class function TopSellers_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= TopSellers_TopSeller_Type;
-end;
-
-{ NewReleases_Type }
-
-function NewReleases_Type.GetItem(AIndex: Integer): NewReleases_NewRelease_Type;
-begin
-  Result := Inherited GetItem(AIndex) As NewReleases_NewRelease_Type;
-end;
-
-class function NewReleases_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= NewReleases_NewRelease_Type;
-end;
-
-{ SimilarViewedProducts_Type }
-
-function SimilarViewedProducts_Type.GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
-begin
-  Result := Inherited GetItem(AIndex) As SimilarViewedProducts_SimilarViewedProduct_Type;
-end;
-
-class function SimilarViewedProducts_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= SimilarViewedProducts_SimilarViewedProduct_Type;
-end;
-
-{ OtherCategoriesSimilarProducts_Type }
-
-function OtherCategoriesSimilarProducts_Type.GetItem(AIndex: Integer): OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
-begin
-  Result := Inherited GetItem(AIndex) As OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
-end;
-
-class function OtherCategoriesSimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
 end;
 
 { Transactions_TransactionArray }
@@ -17232,6 +18540,18 @@ begin
   System.SetLength(FData,i);
 end;
 
+{ SearchResultsMap_Type }
+
+function SearchResultsMap_Type.GetItem(AIndex: Integer): SearchResultsMap_SearchIndex_Type;
+begin
+  Result := Inherited GetItem(AIndex) As SearchResultsMap_SearchIndex_Type;
+end;
+
+class function SearchResultsMap_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= SearchResultsMap_SearchIndex_Type;
+end;
+
 { Item_ImageSets_Type_ImageSetArray }
 
 function Item_ImageSets_Type_ImageSetArray.GetItem(AIndex: Integer): ImageSet_Type;
@@ -17242,18 +18562,6 @@ end;
 class function Item_ImageSets_Type_ImageSetArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= ImageSet_Type;
-end;
-
-{ Collections_Type }
-
-function Collections_Type.GetItem(AIndex: Integer): Collections_Collection_Type;
-begin
-  Result := Inherited GetItem(AIndex) As Collections_Collection_Type;
-end;
-
-class function Collections_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= Collections_Collection_Type;
 end;
 
 { Item_Subjects_Type }
@@ -17304,54 +18612,6 @@ begin
   System.SetLength(FData,i);
 end;
 
-{ EditorialReviews_Type }
-
-function EditorialReviews_Type.GetItem(AIndex: Integer): EditorialReview_Type;
-begin
-  Result := Inherited GetItem(AIndex) As EditorialReview_Type;
-end;
-
-class function EditorialReviews_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= EditorialReview_Type;
-end;
-
-{ Accessories_Type }
-
-function Accessories_Type.GetItem(AIndex: Integer): Accessories_Accessory_Type;
-begin
-  Result := Inherited GetItem(AIndex) As Accessories_Accessory_Type;
-end;
-
-class function Accessories_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= Accessories_Accessory_Type;
-end;
-
-{ Tracks_Type }
-
-function Tracks_Type.GetItem(AIndex: Integer): Tracks_Disc_Type;
-begin
-  Result := Inherited GetItem(AIndex) As Tracks_Disc_Type;
-end;
-
-class function Tracks_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= Tracks_Disc_Type;
-end;
-
-{ ListmaniaLists_Type }
-
-function ListmaniaLists_Type.GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
-begin
-  Result := Inherited GetItem(AIndex) As ListmaniaLists_ListmaniaList_Type;
-end;
-
-class function ListmaniaLists_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= ListmaniaLists_ListmaniaList_Type;
-end;
-
 { Item_AlternateVersions_Type }
 
 function Item_AlternateVersions_Type.GetItem(AIndex: Integer): Item_AlternateVersions_Type_AlternateVersion_Type;
@@ -17388,18 +18648,6 @@ begin
   Result:= Offer_Type;
 end;
 
-{ Promotions_Type }
-
-function Promotions_Type.GetItem(AIndex: Integer): Promotion_Type;
-begin
-  Result := Inherited GetItem(AIndex) As Promotion_Type;
-end;
-
-class function Promotions_Type.GetItemClass(): TBaseRemotableClass;
-begin
-  Result:= Promotion_Type;
-end;
-
 { Offer_OfferListingArray }
 
 function Offer_OfferListingArray.GetItem(AIndex: Integer): OfferListing_Type;
@@ -17422,6 +18670,18 @@ end;
 class function OfferListing_ShippingChargeArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= OfferListing_ShippingCharge_Type;
+end;
+
+{ Variations__ItemArray }
+
+function Variations__ItemArray.GetItem(AIndex: Integer): Item_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Item_Type;
+end;
+
+class function Variations__ItemArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Item_Type;
 end;
 
 { VariationDimensions_Type }
@@ -17472,16 +18732,16 @@ begin
   System.SetLength(FData,i);
 end;
 
-{ Variations__ItemArray }
+{ EditorialReviews_Type }
 
-function Variations__ItemArray.GetItem(AIndex: Integer): Item_Type;
+function EditorialReviews_Type.GetItem(AIndex: Integer): EditorialReview_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Item_Type;
+  Result := Inherited GetItem(AIndex) As EditorialReview_Type;
 end;
 
-class function Variations__ItemArray.GetItemClass(): TBaseRemotableClass;
+class function EditorialReviews_Type.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= Item_Type;
+  Result:= EditorialReview_Type;
 end;
 
 { Collections_Collection_Type_CollectionItemArray }
@@ -17494,6 +18754,18 @@ end;
 class function Collections_Collection_Type_CollectionItemArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= Collections_Collection_Type_CollectionItem_Type;
+end;
+
+{ Collections_Type }
+
+function Collections_Type.GetItem(AIndex: Integer): Collections_Collection_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Collections_Collection_Type;
+end;
+
+class function Collections_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Collections_Collection_Type;
 end;
 
 { CustomerReviews_ReviewArray }
@@ -17520,28 +18792,124 @@ begin
   Result:= Tracks_Disc_Type_Track_Type;
 end;
 
-{ PromotionEligibilityRequirements }
+{ Tracks_Type }
 
-function PromotionEligibilityRequirements.GetItem(AIndex: Integer): PromotionEligibilityRequirement;
+function Tracks_Type.GetItem(AIndex: Integer): Tracks_Disc_Type;
 begin
-  Result := Inherited GetItem(AIndex) As PromotionEligibilityRequirement;
+  Result := Inherited GetItem(AIndex) As Tracks_Disc_Type;
 end;
 
-class function PromotionEligibilityRequirements.GetItemClass(): TBaseRemotableClass;
+class function Tracks_Type.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= PromotionEligibilityRequirement;
+  Result:= Tracks_Disc_Type;
 end;
 
-{ PromotionBenefits }
+{ SimilarProducts_Type }
 
-function PromotionBenefits.GetItem(AIndex: Integer): PromotionBenefit;
+function SimilarProducts_Type.GetItem(AIndex: Integer): SimilarProducts_SimilarProduct_Type;
 begin
-  Result := Inherited GetItem(AIndex) As PromotionBenefit;
+  Result := Inherited GetItem(AIndex) As SimilarProducts_SimilarProduct_Type;
 end;
 
-class function PromotionBenefits.GetItemClass(): TBaseRemotableClass;
+class function SimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= PromotionBenefit;
+  Result:= SimilarProducts_SimilarProduct_Type;
+end;
+
+{ TopSellers_Type }
+
+function TopSellers_Type.GetItem(AIndex: Integer): TopSellers_TopSeller_Type;
+begin
+  Result := Inherited GetItem(AIndex) As TopSellers_TopSeller_Type;
+end;
+
+class function TopSellers_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TopSellers_TopSeller_Type;
+end;
+
+{ NewReleases_Type }
+
+function NewReleases_Type.GetItem(AIndex: Integer): NewReleases_NewRelease_Type;
+begin
+  Result := Inherited GetItem(AIndex) As NewReleases_NewRelease_Type;
+end;
+
+class function NewReleases_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= NewReleases_NewRelease_Type;
+end;
+
+{ SimilarViewedProducts_Type }
+
+function SimilarViewedProducts_Type.GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
+begin
+  Result := Inherited GetItem(AIndex) As SimilarViewedProducts_SimilarViewedProduct_Type;
+end;
+
+class function SimilarViewedProducts_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= SimilarViewedProducts_SimilarViewedProduct_Type;
+end;
+
+{ OtherCategoriesSimilarProducts_Type }
+
+function OtherCategoriesSimilarProducts_Type.GetItem(AIndex: Integer): OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
+begin
+  Result := Inherited GetItem(AIndex) As OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
+end;
+
+class function OtherCategoriesSimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
+end;
+
+{ Accessories_Type }
+
+function Accessories_Type.GetItem(AIndex: Integer): Accessories_Accessory_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Accessories_Accessory_Type;
+end;
+
+class function Accessories_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Accessories_Accessory_Type;
+end;
+
+{ Promotions_Type }
+
+function Promotions_Type.GetItem(AIndex: Integer): Promotion_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Promotion_Type;
+end;
+
+class function Promotions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Promotion_Type;
+end;
+
+{ PromotionEligibilityRequirements_Type }
+
+function PromotionEligibilityRequirements_Type.GetItem(AIndex: Integer): PromotionEligibilityRequirement_Type;
+begin
+  Result := Inherited GetItem(AIndex) As PromotionEligibilityRequirement_Type;
+end;
+
+class function PromotionEligibilityRequirements_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= PromotionEligibilityRequirement_Type;
+end;
+
+{ PromotionBenefits_Type }
+
+function PromotionBenefits_Type.GetItem(AIndex: Integer): PromotionBenefit_Type;
+begin
+  Result := Inherited GetItem(AIndex) As PromotionBenefit_Type;
+end;
+
+class function PromotionBenefits_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= PromotionBenefit_Type;
 end;
 
 { BrowseNodes_BrowseNodeArray }
@@ -17580,28 +18948,40 @@ begin
   Result:= BrowseNode_Type;
 end;
 
+{ ListmaniaLists_Type }
+
+function ListmaniaLists_Type.GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
+begin
+  Result := Inherited GetItem(AIndex) As ListmaniaLists_ListmaniaList_Type;
+end;
+
+class function ListmaniaLists_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= ListmaniaLists_ListmaniaList_Type;
+end;
+
 { CartItems_CartItemArray }
 
-function CartItems_CartItemArray.GetItem(AIndex: Integer): CartItem;
+function CartItems_CartItemArray.GetItem(AIndex: Integer): CartItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartItem;
+  Result := Inherited GetItem(AIndex) As CartItem_Type;
 end;
 
 class function CartItems_CartItemArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartItem;
+  Result:= CartItem_Type;
 end;
 
 { SavedForLaterItems_SavedForLaterItemArray }
 
-function SavedForLaterItems_SavedForLaterItemArray.GetItem(AIndex: Integer): CartItem;
+function SavedForLaterItems_SavedForLaterItemArray.GetItem(AIndex: Integer): CartItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartItem;
+  Result := Inherited GetItem(AIndex) As CartItem_Type;
 end;
 
 class function SavedForLaterItems_SavedForLaterItemArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartItem;
+  Result:= CartItem_Type;
 end;
 
 { Transaction_TransactionItems_Type }
@@ -19744,147 +21124,134 @@ end;
 initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest_HelpType_Type),'HelpRequest_HelpType_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_Availability_Type),'ItemSearchRequest_Availability_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(AudienceRating_Type),'AudienceRating');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRatingPG_13','PG-13');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRatingNC_17','NC-17');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_6','6');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_12','12');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_16','16');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_18','18');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Condition_Type),'Condition');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DeliveryMethod_Type),'DeliveryMethod');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_IdType_Type),'ItemLookupRequest_IdType_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest_ListType_Type),'ListSearchRequest_ListType_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest_ListType_Type),'ListLookupRequest_ListType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_TypeWishList','WishList');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_TypeWeddingRegistry','WeddingRegistry');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WishList','WishList');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WeddingRegistry','WeddingRegistry');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_SimilarityType_Type),'SimilarityLookupRequest_SimilarityType_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type_Action_Type),'CartModifyRequest_Items_Type_Item_Type_Action_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_OfferStatus_Type),'SellerListingSearchRequest_OfferStatus_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_IdType_Type),'SellerListingLookupRequest_IdType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_TypeASIN','ASIN');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_TypeSKU','SKU');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_ASIN','ASIN');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_SKU','SKU');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Condition_Type),'Condition');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DeliveryMethod_Type),'DeliveryMethod');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(AudienceRating_Type),'AudienceRating');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_PG_13','PG-13');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_NC_17','NC-17');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__6','6');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__12','12');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__16','16');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__18','18');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(List_ListType_Type),'List_ListType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_TypeWishList','WishList');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_TypeWeddingRegistry','WeddingRegistry');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_TypeBabyRegistry','BabyRegistry');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_TypeListmania','Listmania');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest),'HelpRequest');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WishList','WishList');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WeddingRegistry','WeddingRegistry');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_BabyRegistry','BabyRegistry');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_Listmania','Listmania');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Help_Type),'Help');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationRequest_Type),'OperationRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_Type),'Information');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpResponse_Type),'HelpResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest),'ItemSearchRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearch_Type),'ItemSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Items_Type),'Items');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchResponse_Type),'ItemSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest),'ItemLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookup_Type),'ItemLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupResponse_Type),'ItemLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest),'BrowseNodeLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookup_Type),'BrowseNodeLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_Type),'BrowseNodes');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupResponse_Type),'BrowseNodeLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest),'ListSearchRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearch_Type),'ListSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Lists_Type),'Lists');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchResponse_Type),'ListSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest),'ListLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookup_Type),'ListLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupResponse_Type),'ListLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest),'CustomerContentSearchRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearch_Type),'CustomerContentSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customers_Type),'Customers');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchResponse_Type),'CustomerContentSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest),'CustomerContentLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookup_Type),'CustomerContentLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupResponse_Type),'CustomerContentLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest),'SimilarityLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookup_Type),'SimilarityLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupResponse_Type),'SimilarityLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest),'SellerLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookup_Type),'SellerLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Sellers_Type),'Sellers');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupResponse_Type),'SellerLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest),'CartGetRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGet_Type),'CartGet');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Cart_Type),'Cart');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetResponse_Type),'CartGetResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest),'CartAddRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAdd_Type),'CartAdd');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddResponse_Type),'CartAddResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest),'CartCreateRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreate_Type),'CartCreate');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateResponse_Type),'CartCreateResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest),'CartModifyRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModify_Type),'CartModify');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyResponse_Type),'CartModifyResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest),'CartClearRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClear_Type),'CartClear');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearResponse_Type),'CartClearResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest),'TransactionLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookup_Type),'TransactionLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transactions_Type),'Transactions');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupResponse_Type),'TransactionLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest),'SellerListingSearchRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearch_Type),'SellerListingSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListings_Type),'SellerListings');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_Type),'SellerListingSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest),'SellerListingLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookup_Type),'SellerListingLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_Type),'SellerListingLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperationType),'MultiOperation');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperation_Type),'MultiOperation');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperationResponse),'MultiOperationResponse');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_BinParameter_Type),'Bin_BinParameter_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_Type),'Bin');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchBinSet_Type),'SearchBinSet');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest_Type),'HelpRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_Type),'ItemSearchRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_Type),'ItemLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest_Type),'ListSearchRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest_Type),'ListLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest_Type),'CustomerContentSearchRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest_Type),'CustomerContentLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_Type),'SimilarityLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_Type),'SellerLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest_Type),'CartGetRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type),'CartAddRequest_Items_Type_Item_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Type),'CartAddRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type),'CartCreateRequest_Items_Type_Item_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Type),'CartCreateRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type),'CartModifyRequest_Items_Type_Item_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Type),'CartModifyRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest_Type),'CartClearRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_Type),'TransactionLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_Type),'SellerListingSearchRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_Type),'SellerListingLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_Type),'BrowseNodeLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationRequest_Type),'OperationRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Request_Type),'Request');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Arguments_Argument_Type),'Arguments_Argument_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Header_Type),'HTTPHeaders_Header_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Errors_Error_Type),'Errors_Error_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_Type),'Information');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Items_Type),'Items');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CorrectedQuery_Type),'CorrectedQuery');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Lists_Type),'Lists');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customers_Type),'Customers');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Cart_Type),'Cart');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transactions_Type),'Transactions');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Sellers_Type),'Sellers');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListings_Type),'SellerListings');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_Type),'OperationInformation');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_Type),'ResponseGroupInformation');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CorrectedQuery_Type),'CorrectedQuery');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Type),'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(List_Type),'List');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_Type),'Customer');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Price),'Price');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_Type),'CartItems');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_Type),'SavedForLaterItems');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Type),'Transaction');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_Type),'Seller');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListing_Type),'SellerListing');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Image),'Image');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListItem_Type),'ListItem');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_Location_Type),'Customer_Location_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerReviews_Type),'CustomerReviews');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_Type),'Customer');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type),'SearchResultsMap_SearchIndex_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ImageSet_Type),'ImageSet');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type),'Item_ImageSets_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Type),'ItemAttributes');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Type),'MerchantItemAttributes');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type_AlternateVersion_Type),'Item_AlternateVersions_Type_AlternateVersion_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Type),'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferSummary_Type),'OfferSummary');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_Type),'Offers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationSummary_Type),'VariationSummary');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Variations_Type),'Variations');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Type),'SearchInside');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type_AlternateVersion_Type),'Item_AlternateVersions_Type_AlternateVersion_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_Type),'Offer');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Merchant_Type),'Merchant');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferAttributes_Type),'OfferAttributes');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Merchant_Type),'Merchant');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_AvailabilityAttributes_Type),'OfferListing_AvailabilityAttributes_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingCharge_Type),'OfferListing_ShippingCharge_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_Type),'OfferListing');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(LoyaltyPoints_Type),'LoyaltyPoints');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_AvailabilityAttributes_Type),'OfferListing_AvailabilityAttributes_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Address),'Address');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingCharge_Type),'OfferListing_ShippingCharge_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReview_Type),'EditorialReview');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationSummary_Type),'VariationSummary');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Variations_Type),'Variations');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionSummary_Type),'Collections_Collection_Type_CollectionSummary_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionParent_Type),'Collections_Collection_Type_CollectionParent_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItem_Type),'Collections_Collection_Type_CollectionItem_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type),'Collections_Collection_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReview_Type),'EditorialReview');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerReviews_Type),'CustomerReviews');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Review_Type),'Review');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Reviewer_Type),'Reviewer');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_Track_Type),'Tracks_Disc_Type_Track_Type');
@@ -19895,36 +21262,49 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_SimilarViewedProduct_Type),'SimilarViewedProducts_SimilarViewedProduct_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type),'OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Accessories_Accessory_Type),'Accessories_Accessory_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Type),'Promotion');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Summary_Type),'Promotion_Summary_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionItemApplicability),'PromotionItemApplicability');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Details_Type),'Promotion_Details_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirement),'PromotionEligibilityRequirement');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefit),'PromotionBenefit');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Type),'Promotion');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefit_Type),'PromotionBenefit');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirement_Type),'PromotionEligibilityRequirement');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionItemApplicability_Type),'PromotionItemApplicability');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_Type),'BrowseNodes');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Type),'BrowseNode');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_ListmaniaList_Type),'ListmaniaLists_ListmaniaList_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Excerpt_Type),'SearchInside_Excerpt_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem),'CartItem');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Type),'SearchInside');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_Type),'CartItems');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_Type),'SavedForLaterItems');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_Type),'CartItem');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Totals_Type),'Transaction_Totals_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionItem_Type),'TransactionItem');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type),'Transaction_Shipments_Type_Shipment_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Type),'Transaction');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionItem_Type),'TransactionItem');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_Location_Type),'Seller_Location_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_Type),'Seller');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerFeedback_Feedback_Type),'SellerFeedback_Feedback_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DecimalWithUnits),'DecimalWithUnits');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NonNegativeIntegerWithUnits),'NonNegativeIntegerWithUnits');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Address_Type),'Address');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListing_Type),'SellerListing');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Price_Type),'Price');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ImageSet_Type),'ImageSet');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Image_Type),'Image');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Creator_Type),'ItemAttributes_Creator_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(StringWithUnits),'StringWithUnits');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ItemDimensions_Type),'ItemAttributes_ItemDimensions_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type_Language_Type),'ItemAttributes_Languages_Type_Language_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PackageDimensions_Type),'ItemAttributes_PackageDimensions_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Type),'ItemAttributes');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Creator_Type),'MerchantItemAttributes_Creator_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ItemDimensions_Type),'MerchantItemAttributes_ItemDimensions_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type),'MerchantItemAttributes_Languages_Type_Language_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PackageDimensions_Type),'MerchantItemAttributes_PackageDimensions_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_VendorRebate_Type),'MerchantItemAttributes_VendorRebate_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Type),'MerchantItemAttributes');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NonNegativeIntegerWithUnits_Type),'NonNegativeIntegerWithUnits');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DecimalWithUnits_Type),'DecimalWithUnits');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(StringWithUnits_Type),'StringWithUnits');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Help_RequestArray),'Help_RequestArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Help_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpResponse_InformationArray),'HelpResponse_InformationArray');
@@ -20043,8 +21423,10 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_ResponseGroupArray),'CartModifyRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest_ResponseGroupArray),'CartClearRequest_ResponseGroupArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_ResponseGroupArray),'TransactionLookupRequest_ResponseGroupArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_TransactionIdArray),'TransactionLookupRequest_TransactionIdArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_TransactionIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
@@ -20056,14 +21438,13 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray),'BrowseNodeLookupRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Type),'HTTPHeaders');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Arguments_Type),'Arguments');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Type),'HTTPHeaders');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Errors_Type),'Errors');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_OperationInformationArray),'Information_OperationInformationArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Information_OperationInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_ResponseGroupInformationArray),'Information_ResponseGroupInformationArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Information_ResponseGroupInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_Type),'SearchResultsMap');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Items__ItemArray),'Items__ItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items__ItemArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
@@ -20071,11 +21452,6 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Lists_ListArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customers_CustomerArray),'Customers_CustomerArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Customers_CustomerArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarProducts_Type),'SimilarProducts');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TopSellers_Type),'TopSellers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NewReleases_Type),'NewReleases');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_Type),'SimilarViewedProducts');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_Type),'OtherCategoriesSimilarProducts');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transactions_TransactionArray),'Transactions_TransactionArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Transactions_TransactionArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Sellers_SellerArray),'Sellers_SellerArray');
@@ -20094,40 +21470,48 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Customer_CustomerReviewsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray),'SearchResultsMap_SearchIndex_Type_ASINArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_Type),'SearchResultsMap');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type_ImageSetArray),'Item_ImageSets_Type_ImageSetArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Item_ImageSets_Type_ImageSetArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Type),'Collections');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Subjects_Type),'Item_Subjects_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReviews_Type),'EditorialReviews');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Accessories_Type),'Accessories');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Type),'Tracks');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_Type),'ListmaniaLists');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type),'Item_AlternateVersions_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(_Item_ImageSetsArray),'_Item_ImageSetsArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(_Item_ImageSetsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_OfferArray),'Offers_OfferArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Offers_OfferArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotions_Type),'Promotions');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_OfferListingArray),'Offer_OfferListingArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Offer_OfferListingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingChargeArray),'OfferListing_ShippingChargeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(OfferListing_ShippingChargeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationDimensions_Type),'VariationDimensions');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Variations__ItemArray),'Variations__ItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationDimensions_Type),'VariationDimensions');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(VariationDimensions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReviews_Type),'EditorialReviews');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(EditorialReviews_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItemArray),'Collections_Collection_Type_CollectionItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Type),'Collections');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerReviews_ReviewArray),'CustomerReviews_ReviewArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerReviews_ReviewArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_TrackArray),'Tracks_Disc_Type_TrackArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tracks_Disc_Type_TrackArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirements),'PromotionEligibilityRequirements');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefits),'PromotionBenefits');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Type),'Tracks');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarProducts_Type),'SimilarProducts');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TopSellers_Type),'TopSellers');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NewReleases_Type),'NewReleases');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_Type),'SimilarViewedProducts');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_Type),'OtherCategoriesSimilarProducts');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Accessories_Type),'Accessories');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotions_Type),'Promotions');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirements_Type),'PromotionEligibilityRequirements');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefits_Type),'PromotionBenefits');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_BrowseNodeArray),'BrowseNodes_BrowseNodeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodes_BrowseNodeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Children_Type),'BrowseNode_Children_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Ancestors_Type),'BrowseNode_Ancestors_Type');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_Type),'ListmaniaLists');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_CartItemArray),'CartItems_CartItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartItems_CartItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_SavedForLaterItemArray),'SavedForLaterItems_SavedForLaterItemArray');
@@ -20213,29 +21597,47 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_SupportedImageTypeArray),'MerchantItemAttributes_SupportedImageTypeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
 
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items_Type)].RegisterExternalPropertyName('_Item','Item');
   SearchBinSet_Type.RegisterAttributeProperty('NarrowBy');
+  HelpRequest_Type.RegisterAttributeProperty('About');
+  ItemSearchRequest_Type.RegisterAttributeProperty('Availability');
+  ListLookupRequest_Type.RegisterAttributeProperty('Condition');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Type)].RegisterExternalPropertyName('Items','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type_Item_Type)].RegisterExternalPropertyName('ASIN','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Type)].RegisterExternalPropertyName('Items','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_Type)].RegisterExternalPropertyName('HMAC','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_Type)].RegisterExternalPropertyName('Items','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_Type)].RegisterExternalPropertyName('HMAC','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_Type)].RegisterExternalPropertyName('ResponseGroup','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_Type)].RegisterExternalPropertyName('ResponseGroup','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearchRequest_Type)].RegisterExternalPropertyName('ListingPage','Item');
   Arguments_Argument_Type.RegisterAttributeProperty('Name');
   Arguments_Argument_Type.RegisterAttributeProperty('Value');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Name');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Value');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items_Type)].RegisterExternalPropertyName('_Item','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CorrectedQuery_Type)].RegisterExternalPropertyName('Message','Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListItem_Type)].RegisterExternalPropertyName('_Item','Item');
-  ImageSet_Type.RegisterAttributeProperty('Category');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations_Type)].RegisterExternalPropertyName('_Item','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItem_Type)].RegisterExternalPropertyName('ASIN','Item');
   Tracks_Disc_Type_Track_Type.RegisterAttributeProperty('Number');
   Tracks_Disc_Type.RegisterAttributeProperty('Number');
+  SimilarProducts_SimilarProduct_Type.RegisterAttributeProperty('ASIN');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type_Shipment_Type)].RegisterExternalPropertyName('Packages','Package');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type)].RegisterExternalPropertyName('_Type','Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.RegisterAttributeProperty('_Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.RegisterAttributeProperty('Period');
-  DecimalWithUnits.RegisterAttributeProperty('Units');
-  NonNegativeIntegerWithUnits.RegisterAttributeProperty('Units');
+  Seller_Type.RegisterAttributeProperty('SellerFeedbackSummary');
+  ImageSet_Type.RegisterAttributeProperty('Category');
   ItemAttributes_Creator_Type.RegisterAttributeProperty('Role');
-  StringWithUnits.RegisterAttributeProperty('Units');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
   MerchantItemAttributes_Creator_Type.RegisterAttributeProperty('Role');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_VendorRebate_Type)].RegisterExternalPropertyName('_Type','Type');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('ModemDescription','Label');
+  NonNegativeIntegerWithUnits_Type.RegisterAttributeProperty('Units');
+  DecimalWithUnits_Type.RegisterAttributeProperty('Units');
+  StringWithUnits_Type.RegisterAttributeProperty('Units');
 
 End.

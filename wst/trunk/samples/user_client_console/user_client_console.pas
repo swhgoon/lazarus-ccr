@@ -23,6 +23,10 @@ begin
     WriteLn('  Category = ',GetEnumName(TypeInfo(TUserCategory),Ord(AUser.Category)));
     WriteLn('  e-Mail = ',AUser.eMail);
     WriteLn('  Preferences = ',AUser.Preferences);
+    WriteLn('  Note');
+    WriteLn('    Header = ',AUser.Note.Header);
+    WriteLn('    Author = ',AUser.Note.Author);
+    WriteLn('    Date = ',AUser.Note.Date);
   end else begin
     WriteLn('<Empty User>');
   end;
@@ -89,6 +93,12 @@ begin
         usr.Category:= Normal;
       usr.eMail := ReadItem('Enter user e-mail : ',False);
       usr.Preferences := ReadItem('Enter user Preferences : ',False);
+      buff := UpperCase(ReadItem('Do you want to add some notes : ',True));
+      if ( buff[1] = 'O' ) then begin
+        usr.Note.Header := ReadItem('Enter user Note.Header : ',False);
+        usr.Note.Author := ReadItem('Enter user Note.Author : ',False);
+        usr.Note.Date := ReadItem('Enter user Note.Date : ',False);
+      end;
       if ( AType = atUpdate ) then
         UserServiceInst.Update(usr)
       else

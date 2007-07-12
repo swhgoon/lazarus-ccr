@@ -218,6 +218,9 @@ begin
     splTyp := AContainer.FindElementInModule(SIMPLE_TYPES[i][0],ADest) as TPasNativeSimpleType;
     if not IsStrEmpty(SIMPLE_TYPES[i][2]) then begin
       AContainer.RegisterExternalAlias(splTyp,SIMPLE_TYPES[i][2]);
+      if ( splTyp.BoxedType <> nil ) then begin
+        AContainer.RegisterExternalAlias(splTyp.BoxedType,SIMPLE_TYPES[i][2]);
+      end;
     end;
   end;
 end;
@@ -279,10 +282,10 @@ begin
           (AContainer.FindElementInModule('TComplexFloatDoubleContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
 
         AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable',TPasNativeClassType);
-          AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable');
-        AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable');
-          AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable');
-          AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable');
+          AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable',TPasNativeClassType);
+        AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable',TPasNativeClassType);
+          AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
+          AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
             AddClassDef(Result,'TArrayOfStringRemotable','TBaseSimpleTypeArrayRemotable');
             AddClassDef(Result,'TArrayOfBooleanRemotable','TBaseSimpleTypeArrayRemotable');
             AddClassDef(Result,'TArrayOfInt8URemotable','TBaseSimpleTypeArrayRemotable');
@@ -439,8 +442,8 @@ function TwstPasTreeContainer.CreateElement(
             ASourceLinenumber   : Integer
 ) : TPasElement;
 begin
-  //WriteLn('TwstPasTreeContainer.CreateElement(',AName,')');
   Result := AClass.Create(AName,AParent);
+  RegisterExternalAlias(Result,AName);
   Result.Visibility := AVisibility;
   Result.SourceFilename := ASourceFilename;
   Result.SourceLinenumber := ASourceLinenumber;

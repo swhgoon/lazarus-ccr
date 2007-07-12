@@ -5,7 +5,7 @@ This unit has been produced by ws_helper.
   Date            : "30/04/2007 00:07".
 }
 Unit user_service_intf_imp;
-{$mode objfpc}{$H+}
+{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
 Interface
 
 Uses SysUtils, Classes, 

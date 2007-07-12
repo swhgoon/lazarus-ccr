@@ -10,6 +10,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit imp_utils;
 
 interface
@@ -19,6 +20,7 @@ uses
   base_service_intf;
 
 {$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Type
 

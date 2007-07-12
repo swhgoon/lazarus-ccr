@@ -4,11 +4,15 @@ This unit has been produced by ws_helper.
   This unit name  : "metadata_service_proxy".
   Date            : "12/11/2006 11:12".
 }
+{$INCLUDE wst_global.inc}
 Unit metadata_service_proxy;
-{$mode objfpc}{$H+}
+
 Interface
 
 Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, metadata_service;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 Type
 
