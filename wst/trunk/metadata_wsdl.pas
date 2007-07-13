@@ -13,15 +13,15 @@
 {$INCLUDE wst_global.inc}
 unit metadata_wsdl;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 interface
 
 uses
   Classes, SysUtils, TypInfo,
-  DOM,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf, metadata_repository;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
   
 type
 
@@ -29,7 +29,7 @@ type
     ['{DA9AF8B1-392B-49A8-91CC-6B5C5131E6FA}']
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TDOMDocument
+            AWsdlDocument   : TXMLDocument
     );
   end;
 
@@ -52,7 +52,7 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TDOMDocument
+            AWsdlDocument   : TXMLDocument
     );
   end;
 
@@ -62,7 +62,7 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TDOMDocument
+            AWsdlDocument   : TXMLDocument
     );
   end;
 
@@ -72,15 +72,16 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TDOMDocument
+            AWsdlDocument   : TXMLDocument
     );
   end;
 
-  procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
+  procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
 
   function GetWsdlTypeHandlerRegistry():IWsdlTypeHandlerRegistry;
   
 implementation
+uses {$IFNDEF FPC}wst_delphi_rtti_utils{$ELSE}wst_fpc_xml{$ENDIF};
 
 const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
@@ -250,7 +251,7 @@ begin
   inherited Destroy();
 end;
 
-function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TDOMDocument):TDOMElement;//inline;
+function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TXMLDocument):TDOMElement;//inline;
 begin
   Result := ADoc.CreateElement(ANodeName);
   AParent.AppendChild(Result);
@@ -272,8 +273,10 @@ begin
     b := ( Length(AStartingWith) = 0);
     c := Pred(ANode.Attributes.Length);
     if ( AStartIndex >= 0 ) then
-      i := AStartIndex;
-    for i := 0 to c do begin
+      i := AStartIndex
+    else
+      i := 0;
+    for i := i to c do begin
       if AnsiSameText(AAttValue,ANode.Attributes.Item[i].NodeValue) and
          ( b or ( Pos(AStartingWith,ANode.Attributes.Item[i].NodeName) = 1 ))
       then begin
@@ -288,13 +291,13 @@ end;
 
 function GetNameSpaceShortName(
   const ANameSpace    : string;
-        AWsdlDocument : TDOMDocument
+        AWsdlDocument : TXMLDocument
 ):string;//inline;
 begin
   if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
     Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
   end else begin
-    Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+    Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
     AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
   end;
 end;
@@ -306,7 +309,7 @@ begin
   Result := AService^.Name + PART_NAME_MAP[AServicePart];
 end;
 
-procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
+procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
 
   procedure GenerateServiceMessages(
           AService   : PService;
@@ -342,12 +345,15 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
       rspNode := CreateElement(sWSDL_MESSAGE,ARootNode,ADoc);
       rspNode.SetAttribute(sWSDL_NAME,Format('%sResponse',[AOperation^.Name]));
       cc := AOperation^.ParamsCount;
-      for ii := 0 to Pred(cc) do begin
-        pp := @(AOperation^.Params[ii]);
-        if ( pp^.Modifier in [opfNone, opfIn] ) then
-          GenerateParam(pp,qryNode)
-        else if ( pp^.Modifier in [opfVar, opfOut] ) then
-          GenerateParam(pp,rspNode);
+      if ( cc > 0 ) then begin
+        pp := AOperation^.Params;
+        for ii := 0 to Pred(cc) do begin
+          if ( pp^.Modifier in [opfNone, opfIn] ) then
+            GenerateParam(pp,qryNode)
+          else if ( pp^.Modifier in [opfVar, opfOut] ) then
+            GenerateParam(pp,rspNode);
+          Inc(pp);
+        end;
       end;
     end;
     
@@ -358,8 +364,10 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
     k := AService^.OperationsCount;
     if ( k > 0 ) then begin
       po := AService^.Operations;
-      for j := 0 to pred(k) do
-        GenerateOperationMessage(@(po[j]));
+      for j := 0 to pred(k) do begin
+        GenerateOperationMessage(po);
+        Inc(po);
+      end;
     end;
   end;
 
@@ -388,7 +396,8 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
     if ( k > 0 ) then begin
       po := AService^.Operations;
       for j := 0 to pred(k) do begin
-        GenerateOperation(@(po[j]),prtTypeNode);
+        GenerateOperation(po,prtTypeNode);
+        Inc(po);
       end;
     end;
   end;
@@ -453,7 +462,8 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TDOMDocument);
     if ( k > 0 ) then begin
       po := AService^.Operations;
       for j := 0 to pred(k) do begin
-        GenerateOperation(@(po[j]),bndgNode);
+        GenerateOperation(po,bndgNode);
+        Inc(po);
       end;
     end;
   end;
@@ -537,16 +547,23 @@ begin
   if ( c > 0 ) then begin
     ps := AMdtdRep^.Services;
     for i := 0 to Pred(c) do begin
-      GenerateServiceMessages(@(ps[i]),defNode);
+      GenerateServiceMessages(ps,defNode);
+      Inc(ps);
     end;
+    ps := AMdtdRep^.Services;
     for i := 0 to Pred(c) do begin
-      GenerateServicePortType(@(ps[i]),defNode);
+      GenerateServicePortType(ps,defNode);
+      Inc(ps);
     end;
+    ps := AMdtdRep^.Services;
     for i := 0 to Pred(c) do begin
-      GenerateServiceBinding(@(ps[i]),defNode);
+      GenerateServiceBinding(ps,defNode);
+      Inc(ps);
     end;
+    ps := AMdtdRep^.Services;
     for i := 0 to Pred(c) do begin
-      GenerateServicePublication(@(ps[i]),defNode);
+      GenerateServicePublication(ps,defNode);
+      Inc(ps);
     end;
   end;
   
@@ -565,7 +582,7 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TDOMDocument
+            AWsdlDocument   : TXMLDocument
     );
   end;
 
@@ -573,7 +590,7 @@ type
 
 procedure TBaseComplexRemotable_TypeHandler.Generate(
   const APascalTypeName : string;
-        AWsdlDocument   : TDOMDocument
+        AWsdlDocument   : TXMLDocument
 );
 var
   typItm, propTypItm : TTypeRegistryItem;
@@ -593,7 +610,7 @@ begin
      ( typItm.DataType^.Kind = tkClass )
   then begin
     GetNameSpaceShortName(typItm.NameSpace,AWsdlDocument);
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode :=  FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
     
@@ -652,12 +669,12 @@ end;
 
 procedure TEnumTypeHandler.Generate(
   const APascalTypeName: string;
-        AWsdlDocument: TDOMDocument
+        AWsdlDocument: TXMLDocument
 );
 var
   typItm : TTypeRegistryItem;
   ns_shortName, s : string;
-  defTypesNode, defSchemaNode, resNode, restrictNode, eltNode : TDOMElement;
+  defTypesNode, defSchemaNode, resNode, restrictNode : TDOMElement;
   i, c : Integer;
 begin
   typItm := GetTypeRegistry().Find(APascalTypeName);
@@ -667,10 +684,10 @@ begin
     if FindAttributeByValueInNode(typItm.NameSpace,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      ns_shortName := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+      ns_shortName := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,ns_shortName]),typItm.NameSpace);
     end;
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
@@ -700,7 +717,7 @@ end;
 
 procedure TFakeTypeHandler.Generate(
   const APascalTypeName: string;
-  AWsdlDocument: TDOMDocument
+  AWsdlDocument: TXMLDocument
 );
 begin
 end;
@@ -712,17 +729,19 @@ begin
   r := GetWsdlTypeHandlerRegistry();
   r.RegisterDefaultHandler(tkInteger,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
   r.RegisterDefaultHandler(tkInt64,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  r.RegisterDefaultHandler(tkQWord,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
 
+{$IFDEF FPC}
+  r.RegisterDefaultHandler(tkQWord,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
   r.RegisterDefaultHandler(tkSString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  r.RegisterDefaultHandler(tkLString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
   r.RegisterDefaultHandler(tkAString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  r.RegisterDefaultHandler(tkWString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  
-  r.RegisterDefaultHandler(tkWString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  
   r.RegisterDefaultHandler(tkBool,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
-  
+{$ENDIF}
+
+  r.RegisterDefaultHandler(tkLString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
+  r.RegisterDefaultHandler(tkWString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
+
+  r.RegisterDefaultHandler(tkWString,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
+
   r.RegisterDefaultHandler(tkEnumeration,TSimpleItemFactory.Create(TEnumTypeHandler) as IItemFactory);
 
   r.RegisterDefaultHandler(tkClass,TSimpleItemFactory.Create(TBaseComplexRemotable_TypeHandler) as IItemFactory);
@@ -757,7 +776,7 @@ end;
 
 procedure TBaseArrayRemotable_TypeHandler.Generate(
   const APascalTypeName: string;
-        AWsdlDocument: TDOMDocument
+        AWsdlDocument: TXMLDocument
 );
 
   function GetNameSpaceShortName(const ANameSpace : string):string;//inline;
@@ -765,7 +784,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
     if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
       Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+      Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
     end;
   end;
@@ -786,7 +805,7 @@ begin
      ( arrayTypeData^.ClassType.InheritsFrom(TBaseArrayRemotable) )
   then begin
     GetNameSpaceShortName(typItm.NameSpace);
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 

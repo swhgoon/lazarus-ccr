@@ -9,7 +9,7 @@ LazarusResources.Add('TfAbout','FORMDATA',[
   +'Left'#2','#6'Height'#2#14#3'Top'#2#24#5'Width'#3#211#0#7'Caption'#6'$Web Se'
   +'rvices Toolkit for FPC/Lazarus'#10'Font.Style'#11#6'fsBold'#0#11'ParentColo'
   +'r'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2']'#6'Height'#2#14#3'Top'#2'8'#5'Widt'
-  +'h'#2'q'#7'Caption'#6#20'Type Librarry Editor'#10'Font.Style'#11#6'fsBold'#8
+  +'h'#2'l'#7'Caption'#6#19'Type Library Editor'#10'Font.Style'#11#6'fsBold'#8
   +'fsItalic'#0#11'ParentColor'#8#0#0#6'TLabel'#6'Label3'#4'Left'#2'1'#6'Height'
   +#2#14#3'Top'#2'p'#5'Width'#3#200#0#7'Caption'#6'$Copyright (c) 2007 Inoussa '
   +'OUEDRAOGO'#11'ParentColor'#8#0#0#7'TButton'#7'Button1'#4'Left'#2'p'#6'Heigh'

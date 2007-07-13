@@ -77,15 +77,15 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
 
     procedure WriteParam(APrm : TPasArgument);
     begin
-      FStream.WriteStr(FSymbolTable.GetExternalName(APrm));
-      FStream.WriteStr(FSymbolTable.GetExternalName(APrm.ArgType));
+      FStream.WriteStr(APrm.Name);
+      FStream.WriteStr(APrm.ArgType.Name);
       FStream.WriteEnum(Ord(APrm.Access));
     end;
 
     procedure WriteResult(ARes : TPasResultElement);
     begin
-      FStream.WriteStr(FSymbolTable.GetExternalName(ARes));
-      FStream.WriteStr(FSymbolTable.GetExternalName(ARes.ResultType));
+      FStream.WriteStr(ARes.Name);
+      FStream.WriteStr(ARes.ResultType.Name);
       FStream.WriteEnum(Ord(argOut));
     end;
 

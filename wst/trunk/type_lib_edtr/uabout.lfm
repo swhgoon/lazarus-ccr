@@ -25,8 +25,8 @@ object fAbout: TfAbout
     Left = 93
     Height = 14
     Top = 56
-    Width = 113
-    Caption = 'Type Librarry Editor'
+    Width = 108
+    Caption = 'Type Library Editor'
     Font.Style = [fsBold, fsItalic]
     ParentColor = False
   end

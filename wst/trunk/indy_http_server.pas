@@ -11,17 +11,34 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
 
-unit app_object;
+{$INCLUDE wst_global.inc}
+{$IFDEF FPC}
+  //{$UNDEF INDY_9}
+  //{$DEFINE INDY_10}
+{$ELSE}
+  //{$UNDEF INDY_10}
+  //{$DEFINE INDY_9}
+{$ENDIF}
 
-{$mode objfpc}{$H+}
+unit indy_http_server;
 
 interface
 
 uses
   Classes, SysUtils,
   IdCustomHTTPServer,
-  IdHTTPServer, IdContext, IdSocketHandle;
+  IdHTTPServer,
+{$IFDEF INDY_10}
+  IdContext,
+{$ENDIF}
+{$IFDEF INDY_9}
+  IdTCPServer,
+{$ENDIF}
+  IdSocketHandle;
 
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+  
 type
 
   { TwstWebApplication }
@@ -34,27 +51,43 @@ type
     function GenerateWSDLTable():string;
 
     procedure ProcessWSDLRequest(
+          {$IFDEF INDY_10}
           AContext        : TIdContext;
+          {$ENDIF}
           ARequestInfo    : TIdHTTPRequestInfo;
           AResponseInfo   : TIdHTTPResponseInfo;
       var APath           : string
     );
     procedure ProcessServiceRequest(
+          {$IFDEF INDY_10}
           AContext        : TIdContext;
+          {$ENDIF}
           ARequestInfo    : TIdHTTPRequestInfo;
           AResponseInfo   : TIdHTTPResponseInfo;
       var APath           : string
     );
   private
     procedure Handler_CommandGet(
+    {$IFDEF INDY_10}
       AContext        : TIdContext;
+    {$ENDIF}
+    {$IFDEF INDY_9}
+      AThread: TIdPeerThread;
+    {$ENDIF}
       ARequestInfo    : TIdHTTPRequestInfo;
       AResponseInfo   : TIdHTTPResponseInfo
     );
   public
-    constructor Create();
+    constructor Create(
+      const AServerIpAddress   : string  = '127.0.0.1';
+      const AListningPort      : Integer = 8000;
+      const ADefaultClientPort : Integer = 25000;
+      const AServerSoftware    : string  = 'Web Service Toolkit Application'
+    );
     destructor Destroy(); override;
     procedure Display(const AMsg : string);
+    procedure Start();
+    procedure Stop();
   end;
 
 
@@ -62,10 +95,38 @@ implementation
 uses base_service_intf,
      server_service_intf, server_service_imputils,
      server_service_soap, server_binary_formatter, server_service_xmlrpc,
-     metadata_repository, metadata_wsdl, DOM, XMLWrite,
+     metadata_repository, metadata_wsdl,
+{$IFNDEF FPC}
+     ActiveX, XMLDoc,XMLIntf,xmldom, wst_delphi_xml,
+{$ELSE}
+     DOM, XMLWrite, wst_fpc_xml,
+{$ENDIF}
      metadata_service, metadata_service_binder, metadata_service_imp,
 
      user_service_intf, user_service_intf_binder, user_service_intf_imp;
+
+{$IFNDEF FPC}
+type
+  TwstIndy9Thread = class(TIdPeerThread)
+  protected
+    procedure AfterExecute; override;
+    procedure BeforeExecute; override;
+  end;
+
+{ TwstIndy9Thread }
+
+procedure TwstIndy9Thread.AfterExecute;
+begin
+  CoUninitialize();
+  inherited;
+end;
+
+procedure TwstIndy9Thread.BeforeExecute;
+begin
+  inherited;
+  CoInitialize(nil);
+end;
+{$ENDIF}
 
 const
   sSEPARATOR = '/';
@@ -113,7 +174,7 @@ begin
     //if ( GetModuleMetadataMngr().LoadRepositoryName(s,rep) > 0 ) then
       //rep^.namespace := 'urn:wst';
     strm.Clear();
-    doc := TXMLDocument.Create();
+    doc := CreateDoc();
     GenerateWSDL(rep,doc);
     WriteXMLFile(doc,strm);
     i := strm.Size;
@@ -122,7 +183,7 @@ begin
       Move(strm.memory^,Result[1],i);
     end;
   finally
-    doc.Free();
+    ReleaseDomNode(doc);
     strm.Free();
     GetModuleMetadataMngr().ClearRepository(rep);
   end;
@@ -163,7 +224,9 @@ begin
 end;
 
 procedure TwstWebApplication.ProcessWSDLRequest(
+      {$IFDEF INDY_10}
       AContext        : TIdContext;
+      {$ENDIF}
       ARequestInfo    : TIdHTTPRequestInfo;
       AResponseInfo   : TIdHTTPResponseInfo;
   var APath           : string
@@ -189,7 +252,9 @@ begin
 end;
 
 procedure TwstWebApplication.ProcessServiceRequest(
+      {$IFDEF INDY_10}
       AContext        : TIdContext;
+      {$ENDIF}
       ARequestInfo    : TIdHTTPRequestInfo;
       AResponseInfo   : TIdHTTPResponseInfo;
   var APath           : string
@@ -197,21 +262,23 @@ procedure TwstWebApplication.ProcessServiceRequest(
 var
   trgt,ctntyp, frmt : string;
   rqst : IRequestBuffer;
-  inStream: TMemoryStream;
+  inStream : {$IFDEF FPC}TMemoryStream{$ELSE}TStringStream{$ENDIF};
 begin
   trgt := ExtractNextPathElement(APath);
   if AnsiSameText(sWSDL,trgt) then begin
-    ProcessWSDLRequest(AContext,ARequestInfo,AResponseInfo,APath);
+    ProcessWSDLRequest({$IFDEF INDY_10}AContext,{$ENDIF}ARequestInfo,AResponseInfo,APath);
     Exit;
   end;
   inStream := nil;
   try
     try
-      inStream := TMemoryStream.Create();
+      inStream := {$IFDEF FPC}TMemoryStream.Create();{$ELSE}TStringStream.Create(ARequestInfo.FormParams);{$ENDIF}
       AResponseInfo.ContentStream := TMemoryStream.Create();
 
       ctntyp := ARequestInfo.ContentType;
+    {$IFDEF FPC}
       inStream.CopyFrom(ARequestInfo.PostStream,0);
+    {$ENDIF}
       inStream.Position := 0;
       AResponseInfo.ContentType := ctntyp;
       frmt := Trim(ARequestInfo.Params.Values['format']);
@@ -229,7 +296,12 @@ begin
 end;
 
 procedure TwstWebApplication.Handler_CommandGet(
-  AContext       : TIdContext;
+  {$IFDEF INDY_10}
+    AContext        : TIdContext;
+  {$ENDIF}
+  {$IFDEF INDY_9}
+    AThread: TIdPeerThread;
+  {$ENDIF}
   ARequestInfo   : TIdHTTPRequestInfo;
   AResponseInfo  : TIdHTTPResponseInfo
 );
@@ -247,7 +319,7 @@ begin
   locPath := ARequestInfo.Document;
   locPathPart := ExtractNextPathElement(locPath);
   if AnsiSameText(sSERVICES_PREFIXE,locPathPart)  then begin
-    ProcessServiceRequest(AContext,ARequestInfo,AResponseInfo,locPath);
+    ProcessServiceRequest({$IFDEF INDY_10}AContext,{$ENDIF}ARequestInfo,AResponseInfo,locPath);
     if Assigned(AResponseInfo.ContentStream) and ( AResponseInfo.ContentStream.Size > 0 ) then begin
       j := AResponseInfo.ContentStream.Size;
       SetLength(s,j);
@@ -259,24 +331,32 @@ begin
     Exit;
   end;
 
-  ProcessWSDLRequest(AContext,ARequestInfo,AResponseInfo,locPath);
+  ProcessWSDLRequest({$IFDEF INDY_10}AContext,{$ENDIF}ARequestInfo,AResponseInfo,locPath);
 end;
 
-constructor TwstWebApplication.Create();
+constructor TwstWebApplication.Create(
+      const AServerIpAddress   : string;
+      const AListningPort      : Integer;
+      const ADefaultClientPort : Integer;
+      const AServerSoftware    : string
+);
 var
   b : TIdSocketHandle;
 begin
   inherited Create();
-  FHTTPServerObject := TIdHTTPServer.Create();
+  FHTTPServerObject := TIdHTTPServer.Create({$IFNDEF INDY_10}nil{$ENDIF});
+{$IFNDEF FPC}
+  FHTTPServerObject.ThreadClass := TwstIndy9Thread;
+{$ENDIF}
   b := FHTTPServerObject.Bindings.Add();
-  b.IP:='127.0.0.1';
-  b.port:=8000;
-  FRootAddress := 'http://127.0.0.1:8000/';
-  
-  FHTTPServerObject.DefaultPort := 25000;
-  FHTTPServerObject.ServerSoftware := 'Web Service Toolkit Sample WebServer';
+  b.IP := AServerIpAddress;
+  b.port := AListningPort;
+  FRootAddress := Format('http://%s:%d/',[AServerIpAddress,AListningPort]);
+
+  FHTTPServerObject.DefaultPort := ADefaultClientPort;
+  FHTTPServerObject.ServerSoftware := AServerSoftware;
   FHTTPServerObject.Active := True;
-  FHTTPServerObject.OnCommandGet := @Handler_CommandGet;
+  FHTTPServerObject.OnCommandGet := {$IFDEF FPC}@{$ENDIF}Handler_CommandGet;
 end;
 
 destructor TwstWebApplication.Destroy();
@@ -287,7 +367,20 @@ end;
 
 procedure TwstWebApplication.Display(const AMsg: string);
 begin
-  WriteLn(AMsg);
+  //WriteLn(AMsg);
+end;
+
+
+procedure TwstWebApplication.Start();
+begin
+  if not FHTTPServerObject.Active then
+    FHTTPServerObject.Active := True;
+end;
+
+procedure TwstWebApplication.Stop();
+begin
+  if FHTTPServerObject.Active then
+    FHTTPServerObject.Active := False;
 end;
 
 initialization
@@ -295,13 +388,13 @@ initialization
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
   Server_service_RegisterXmlRpcFormat();
-  
+
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();
 
   Register_user_service_intf_ServiceMetadata();
-  
+
   RegisterWSTMetadataServiceImplementationFactory();
   Server_service_RegisterWSTMetadataServiceService();
-  
+
 end.

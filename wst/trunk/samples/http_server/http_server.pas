@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Classes, SysUtils,
-  app_object, metadata_service, logger_extension;
+  indy_http_server, metadata_service, logger_extension;
 
 
 var

@@ -10,7 +10,8 @@ uses
 {$INCLUDE wst_delphi.inc}
 
   function GetNodeItemsCount(const ANode : TDOMNode): Integer;
-  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReleaseDomNode(ADomNode : TDOMNode);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function CreateDoc() : TXMLDocument ;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -37,11 +38,15 @@ begin
   end;
 end;
 
-function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin
   Result := ANodeList.Count;
 end;
 
+function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+begin
+  Result := ANodeList.Length;
+end;
 
 procedure ReleaseDomNode(ADomNode : TDOMNode);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
 begin

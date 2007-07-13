@@ -46,12 +46,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 31
-        Width = 412
+        Width = 408
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
       end
       object Button2: TButton
-        Left = 439
+        Left = 435
         Height = 25
         Top = 31
         Width = 40
@@ -64,12 +64,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 88
-        Width = 412
+        Width = 408
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 2
       end
       object Button3: TButton
-        Left = 439
+        Left = 435
         Height = 25
         Top = 88
         Width = 40
@@ -149,8 +149,8 @@ object formImport: TformImport
         Left = 294
         Height = 13
         Top = 56
-        Width = 155
-        Caption = 'Implementation Skeletton file'
+        Width = 152
+        Caption = 'Implementation Skeleton file'
         TabOrder = 4
       end
       object edtOptionIntfALL: TCheckBox
@@ -221,8 +221,8 @@ object formImport: TformImport
     Filter = 'WSDL Files ( *.wsdl )|*.wsdl'
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 160
-    top = 16
+    left = 272
+    top = 32
   end
   object SDD: TSelectDirectoryDialog
     Title = 'Choisir un répertoire'

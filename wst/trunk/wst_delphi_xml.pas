@@ -11,12 +11,14 @@ type
 
   TDOMNode = IDOMNode;
   TDOMNodeList = IDOMNodeList;
+  TDOMNamedNodeMap  = IDOMNamedNodeMap;
   TXMLDocument = IDOMDocument;
   TDOMElement = IDOMElement;
 
   function FindNode(ANode : TDOMNode; const ANodeName : string):TDOMNode;
   function GetNodeItemsCount(const ANode : TDOMNode): Integer;
-  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;
+  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;
+  function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;
   procedure ReleaseDomNode(ADomNode : IInterface);overload;
   procedure ReleaseDomNode(var ADomNode : TXMLDocument);overload;
 
@@ -65,7 +67,12 @@ begin
   end;
 end;
 
-function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;
+function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;
+begin
+  Result := ANodeList.length;
+end;
+
+function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;
 begin
   Result := ANodeList.length;
 end;

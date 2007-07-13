@@ -691,7 +691,7 @@ begin
   s := Format('Register_%s_NameSpace',[SymbolTable.CurrentModule.Name]);
   WriteLn('  {$IF DECLARED(%s)}',[s]);
   WriteLn('  %s();',[s]);
-  WriteLn('  {$ENDIF}');
+  WriteLn('  {$IFEND}');
   NewLine();
   WriteLn('  {$i %s.%s}',[SymbolTable.CurrentModule.Name,sWST_EXTENSION]);
   NewLine();
@@ -977,7 +977,7 @@ Var
       for k := 0 to Pred(mtds.Count) do begin
         if TPasElement(mtds[k]).InheritsFrom(TPasProcedure) then begin
           mtd := TPasProcedure(mtds[k]);
-          WriteLn('RegisterVerbHandler(%s,@%sHandler);',[QuotedStr(mtd.Name),mtd.Name]);
+          WriteLn('RegisterVerbHandler(%s,{$IFDEF FPC}@{$ENDIF}%sHandler);',[QuotedStr(mtd.Name),mtd.Name]);
         end;
       end;
     EndAutoIndent();

@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "13/07/2007 21:34:10".
+  Date            : "12/07/2007 11:50:48".
 }
 unit user_service_intf;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -18,12 +18,13 @@ type
 
   TUserArray = class;
   TUser_Type = class;
-  TNote_Type = class;
 
   TUserCategory_Type = ( 
     Normal
     ,Admin
   );
+
+  { TUser_Type }
 
   TUser_Type = class(TBaseComplexRemotable)
   private
@@ -31,7 +32,7 @@ type
     FUserName : string;
     FeMail : string;
     FPreferences : string;
-    FNote : TNote_Type;
+    FNote : TStringBufferRemotable;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -40,18 +41,7 @@ type
     property UserName : string read FUserName write FUserName;
     property eMail : string read FeMail write FeMail;
     property Preferences : string read FPreferences write FPreferences;
-    property Note : TNote_Type read FNote write FNote;
-  end;
-
-  TNote_Type = class(TBaseComplexRemotable)
-  private
-    FHeader : string;
-    FAuthor : string;
-    FDate : string;
-  published
-    property Header : string read FHeader write FHeader;
-    property Author : string read FAuthor write FAuthor;
-    property Date : string read FDate write FDate;
+    property Note : TStringBufferRemotable read FNote write FNote;
   end;
 
   TUserArray = class(TBaseObjectArrayRemotable)
@@ -83,21 +73,6 @@ type
 
 Implementation
 uses metadata_repository;
-
-{ TUser_Type }
-
-constructor TUser_Type.Create();
-begin
-  inherited Create();
-  FNote := TNote_Type.Create();
-end;
-
-destructor TUser_Type.Destroy();
-begin
-  if Assigned(FNote) then
-    FreeAndNil(FNote);
-  inherited Destroy();
-end;
 
 { TUserArray }
 
@@ -272,11 +247,23 @@ begin
   );
 end;
 
+{ TUser_Type }
+
+constructor TUser_Type.Create( );
+begin
+  inherited Create( );
+  FNote := TStringBufferRemotable.Create();
+end;
+
+destructor TUser_Type.Destroy( );
+begin
+  FreeAndNil(FNote);
+  inherited Destroy( );
+end;
 
 initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory_Type),'TUserCategory');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser_Type),'TUser');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TNote_Type),'TNote');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
 
