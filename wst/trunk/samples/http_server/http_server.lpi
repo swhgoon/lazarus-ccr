@@ -34,15 +34,15 @@
         <PackageName Value="indylaz"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="48">
+    <Units Count="49">
       <Unit0>
         <Filename Value="http_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="http_server"/>
-        <CursorPos X="19" Y="10"/>
+        <CursorPos X="33" Y="16"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="73"/>
+        <UsageCount Value="81"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -50,15 +50,15 @@
         <UnitName Value="app_object"/>
         <CursorPos X="42" Y="214"/>
         <TopLine Value="200"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="35"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="20"/>
-        <UsageCount Value="35"/>
+        <EditorIndex Value="21"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -66,8 +66,8 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="22"/>
-        <UsageCount Value="36"/>
+        <EditorIndex Value="23"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -75,8 +75,8 @@
         <UnitName Value="metadata_service_imp"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -84,8 +84,8 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="22" Y="161"/>
         <TopLine Value="160"/>
-        <EditorIndex Value="16"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="17"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -93,8 +93,8 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="19"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -102,8 +102,8 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="17"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="18"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -111,8 +111,8 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="25"/>
-        <UsageCount Value="36"/>
+        <EditorIndex Value="26"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -120,8 +120,8 @@
         <UnitName Value="semaphore"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="21"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -129,8 +129,8 @@
         <UnitName Value="server_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="15"/>
-        <UsageCount Value="35"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -138,8 +138,8 @@
         <UnitName Value="server_service_soap"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="35"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -147,8 +147,8 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="17" Y="28"/>
         <TopLine Value="13"/>
-        <EditorIndex Value="14"/>
-        <UsageCount Value="35"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -156,8 +156,8 @@
         <UnitName Value="server_service_imputils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="19"/>
-        <UsageCount Value="34"/>
+        <EditorIndex Value="20"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -165,34 +165,34 @@
         <UnitName Value="IdCustomHTTPServer"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\i386\i386.inc"/>
         <CursorPos X="49" Y="1252"/>
         <TopLine Value="1231"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\wst.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\xmlrpc_formatter.pas"/>
         <UnitName Value="xmlrpc_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="28"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
@@ -200,8 +200,8 @@
         <UnitName Value="server_binary_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="13"/>
-        <UsageCount Value="31"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
@@ -209,8 +209,8 @@
         <UnitName Value="base_xmlrpc_formatter"/>
         <CursorPos X="18" Y="21"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="31"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -218,109 +218,109 @@
         <UnitName Value="IdSocketHandle"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\indy\indy-10.2.0.1\lazarus\IdAboutVCL.pas"/>
         <UnitName Value="IdAboutVCL"/>
         <CursorPos X="19" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\indy\indy-10.2.0.1\fpc\System\IdGlobal.pas"/>
         <UnitName Value="IdGlobal"/>
         <CursorPos X="59" Y="982"/>
         <TopLine Value="981"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\systemh.inc"/>
         <CursorPos X="21" Y="208"/>
         <TopLine Value="193"/>
-        <EditorIndex Value="24"/>
-        <UsageCount Value="17"/>
+        <EditorIndex Value="25"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\innr.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="42"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\i386\fastmove.inc"/>
         <CursorPos X="11" Y="835"/>
         <TopLine Value="821"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\system.inc"/>
         <CursorPos X="11" Y="306"/>
         <TopLine Value="285"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\generic.inc"/>
         <CursorPos X="5" Y="1289"/>
         <TopLine Value="1"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\system.fpd"/>
         <CursorPos X="22" Y="17"/>
         <TopLine Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\..\wst_fpc_xml.pas"/>
         <UnitName Value="wst_fpc_xml"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit30>
       <Unit31>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\sysutils\sysstrh.inc"/>
         <CursorPos X="11" Y="66"/>
         <TopLine Value="52"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit31>
       <Unit32>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\sysutils\sysstr.inc"/>
         <CursorPos X="6" Y="44"/>
         <TopLine Value="30"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit32>
       <Unit33>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\win\sysosh.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="51"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpash.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="322"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit34>
       <Unit35>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\varianth.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit35>
       <Unit36>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\rtti.inc"/>
         <CursorPos X="21" Y="77"/>
         <TopLine Value="5"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -328,8 +328,8 @@
         <UnitName Value="metadata_service"/>
         <CursorPos X="26" Y="13"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit37>
       <Unit38>
@@ -337,15 +337,15 @@
         <UnitName Value="cursor_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
         <Filename Value="..\user_service_intf.wst"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
         <SyntaxHighlighter Value="None"/>
       </Unit39>
       <Unit40>
@@ -353,15 +353,15 @@
         <UnitName Value="DOM"/>
         <CursorPos X="42" Y="228"/>
         <TopLine Value="215"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="16"/>
       </Unit40>
       <Unit41>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="46" Y="371"/>
         <TopLine Value="366"/>
-        <EditorIndex Value="23"/>
-        <UsageCount Value="18"/>
+        <EditorIndex Value="24"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit41>
       <Unit42>
@@ -369,8 +369,8 @@
         <UnitName Value="user_service_intf_proxy"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="18"/>
-        <UsageCount Value="17"/>
+        <EditorIndex Value="19"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit42>
       <Unit43>
@@ -378,7 +378,7 @@
         <UnitName Value="IdCustomHTTPServer"/>
         <CursorPos X="14" Y="252"/>
         <TopLine Value="239"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit43>
       <Unit44>
         <Filename Value="..\..\type_lib_edtr\uabout.pas"/>
@@ -388,7 +388,7 @@
         <UnitName Value="uabout"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit44>
       <Unit45>
         <Filename Value="..\..\type_lib_edtr\uwsttypelibraryedit.pas"/>
@@ -397,7 +397,7 @@
         <UnitName Value="uwsttypelibraryedit"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit45>
       <Unit46>
         <Filename Value="..\..\ide\lazarus\wstimportdlg.pas"/>
@@ -407,43 +407,76 @@
         <UnitName Value="wstimportdlg"/>
         <CursorPos X="27" Y="7"/>
         <TopLine Value="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit46>
       <Unit47>
         <Filename Value="..\..\indy_http_server.pas"/>
         <UnitName Value="indy_http_server"/>
-        <CursorPos X="20" Y="20"/>
-        <TopLine Value="8"/>
+        <CursorPos X="36" Y="205"/>
+        <TopLine Value="197"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit47>
+      <Unit48>
+        <Filename Value="..\..\server_listener.pas"/>
+        <UnitName Value="server_listener"/>
+        <CursorPos X="21" Y="15"/>
+        <TopLine Value="12"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit48>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="12" HistoryIndex="11">
       <Position1>
-        <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="16" Column="28" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="160" Column="20" TopLine="147"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="14" Column="19" TopLine="1"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="1" Column="1" TopLine="28"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="23" Column="15" TopLine="1"/>
       </Position3>
       <Position4>
         <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="102" Column="11" TopLine="84"/>
+        <Caret Line="47" Column="37" TopLine="28"/>
       </Position4>
       <Position5>
-        <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="359" Column="76" TopLine="346"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="10" Column="72" TopLine="1"/>
       </Position5>
       <Position6>
-        <Filename Value="..\..\indy_http_server.pas"/>
-        <Caret Line="20" Column="5" TopLine="1"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="23" Column="23" TopLine="2"/>
       </Position6>
+      <Position7>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="16" Column="33" TopLine="2"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <Caret Line="213" Column="17" TopLine="200"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <Caret Line="219" Column="25" TopLine="207"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <Caret Line="220" Column="29" TopLine="206"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <Caret Line="181" Column="19" TopLine="168"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\indy_http_server.pas"/>
+        <Caret Line="221" Column="31" TopLine="206"/>
+      </Position12>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -466,8 +499,15 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
     <Other>
-      <CustomOptions Value="-dINDY_10"/>
+      <CustomOptions Value="-dINDY_10
+"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

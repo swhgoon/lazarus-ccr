@@ -1888,6 +1888,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Action = actIntfCreate
         OnClick = actIntfCreateExecute
       end
+      object MenuItem35: TMenuItem
+        Action = actArrayCreate
+        OnClick = actArrayCreateExecute
+      end
       object MenuItem12: TMenuItem
         Caption = '-'
       end
@@ -1988,6 +1992,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       DisableIfNoHandler = True
       OnExecute = actDeleteExecute
       OnUpdate = actUpdateObjectUpdate
+    end
+    object actArrayCreate: TAction
+      Caption = 'Create Array'
+      DisableIfNoHandler = True
+      OnExecute = actArrayCreateExecute
     end
   end
   object OD: TOpenDialog

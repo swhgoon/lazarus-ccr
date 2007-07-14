@@ -235,6 +235,13 @@ type
     class function CanHandle(AObj : TObject):Boolean;override;
   end;
 
+  { TArrayTypeDefinitionPainter }
+
+  TArrayTypeDefinitionPainter = class(TTypeSymbolPainter)
+  public
+    class function CanHandle(AObj : TObject):Boolean;override;
+  end;
+  
   { TMethodDefinitionPainter }
 
   TMethodDefinitionPainter = class(TTypeSymbolPainter)
@@ -286,6 +293,13 @@ type
   public
     class function CanHandle(AObj : TObject):Boolean;override;
   end;
+
+{ TArrayTypeDefinitionPainter }
+
+class function TArrayTypeDefinitionPainter.CanHandle(AObj : TObject) : Boolean;
+begin
+  Result := ( inherited CanHandle(AObj) ) and AObj.InheritsFrom(TPasArrayType);
+end;
 
 { TBindingPainter }
 
@@ -541,7 +555,6 @@ begin
   Result := ( inherited CanHandle(AObj) ) and
             ( AObj.InheritsFrom(TPasClassType) and ( TPasClassType(AObj).ObjKind = okClass ) ) and
             ( not AObj.InheritsFrom(TPasNativeClassType) );
-
 end;
   
 { TEnumTypeDefinitionPainter }
@@ -708,7 +721,8 @@ initialization
   FPainterRegistryInst.RegisterHandler(TInterfaceDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TMethodDefinitionPainter);
   FPainterRegistryInst.RegisterHandler(TPasNativeSimpleTypePainter);
-  FPainterRegistryInst.RegisterHandler(TBindingPainter)
+  FPainterRegistryInst.RegisterHandler(TBindingPainter);
+  FPainterRegistryInst.RegisterHandler(TArrayTypeDefinitionPainter);
 
 finalization
   FreeAndNil(FPainterRegistryInst);

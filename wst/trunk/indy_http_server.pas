@@ -34,16 +34,17 @@ uses
 {$IFDEF INDY_9}
   IdTCPServer,
 {$ENDIF}
-  IdSocketHandle;
+  IdSocketHandle,
+  server_listener;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
   
 type
 
-  { TwstWebApplication }
+  { TwstIndyHttpListener }
 
-  TwstWebApplication = class(TObject)
+  TwstIndyHttpListener = class(TwstListener)
   private
     FHTTPServerObject: TIdHTTPServer;
     FRootAddress : string;
@@ -85,9 +86,9 @@ type
       const AServerSoftware    : string  = 'Web Service Toolkit Application'
     );
     destructor Destroy(); override;
-    procedure Display(const AMsg : string);
-    procedure Start();
-    procedure Stop();
+    class function GetDescription() : string;override;
+    procedure Start();override;
+    procedure Stop();override;
   end;
 
 
@@ -190,9 +191,9 @@ begin
 end;
 
 
-{ TwstWebApplication }
+{ TwstIndyHttpListener }
 
-function TwstWebApplication.GenerateWSDLTable(): string;
+function TwstIndyHttpListener.GenerateWSDLTable(): string;
 var
   r : IModuleMetadataMngr;
   i : Integer;
@@ -201,29 +202,31 @@ begin
   Result := '<html>' +
               '<head>'+
                 '<title>'+
-                  'The Web Service Toolkit generated Metadata table'+
+                  'The Web Services Toolkit generated Metadata table'+
                 '</title>'+
                 '<body>' +
                   '<p BGCOLOR="#DDEEFF"><FONT FACE="Arial" COLOR="#0000A0" SIZE="+2">The following repositories has available. Click on the link to view the corresponding WSDL.</FONT></p>'+
-                  '<table width="100%">' +
-                    '<tr>';
-                    
-  for i := 0 to Pred(r.GetCount()) do
-    Result := Result + '<td align="center">' +
+                  '<table width="100%">';
+
+  for i := 0 to Pred(r.GetCount()) do begin
+    Result := Result +
+                '<tr>' +
+                      '<td align="left">' +
                           Format('<a href="%s">',[sSEPARATOR+sSERVICES_PREFIXE+sSEPARATOR+sWSDL+sSEPARATOR+r.GetRepositoryName(i)])+
                           r.GetRepositoryName(i) +
                           '</a>'+
-                      '</td>';
-    
+                      '</td>' +
+                '</tr>';
+  end;
   Result := Result +
-                    '</tr>'+
+
                   '</table>'+
                 '</body>'+
               '</head>'+
             '</html>';
 end;
 
-procedure TwstWebApplication.ProcessWSDLRequest(
+procedure TwstIndyHttpListener.ProcessWSDLRequest(
       {$IFDEF INDY_10}
       AContext        : TIdContext;
       {$ENDIF}
@@ -251,7 +254,7 @@ begin
   AResponseInfo.ContentType := 'text/html';
 end;
 
-procedure TwstWebApplication.ProcessServiceRequest(
+procedure TwstIndyHttpListener.ProcessServiceRequest(
       {$IFDEF INDY_10}
       AContext        : TIdContext;
       {$ENDIF}
@@ -289,13 +292,13 @@ begin
     end;
   except
     on e : Exception do begin
-      Display('ProcessData()>> Exception = '+e.Message);
+      NotifyMessage('ProcessData()>> Exception = '+e.Message);
       raise;
     end;
   end;
 end;
 
-procedure TwstWebApplication.Handler_CommandGet(
+procedure TwstIndyHttpListener.Handler_CommandGet(
   {$IFDEF INDY_10}
     AContext        : TIdContext;
   {$ENDIF}
@@ -306,20 +309,26 @@ procedure TwstWebApplication.Handler_CommandGet(
   AResponseInfo  : TIdHTTPResponseInfo
 );
 var
-  locPath, locPathPart, s : string;
+{$IFDEF WST_DBG}
+  s : string;
+{$ENDIF}
+  locPath, locPathPart : string;
   j : SizeInt;
 begin
+{$IFDEF WST_DBG}
   if Assigned(ARequestInfo.PostStream) and ( ARequestInfo.PostStream.Size > 0 ) then begin
     j := ARequestInfo.PostStream.Size;
     SetLength(s,j);
     ARequestInfo.PostStream.Read(s[1],j);
-    Display('----------- QUERY ----------------------');
+    NotifyMessage('----------- QUERY ----------------------');
     Display(s);
   end;
+{$ENDIF}
   locPath := ARequestInfo.Document;
   locPathPart := ExtractNextPathElement(locPath);
   if AnsiSameText(sSERVICES_PREFIXE,locPathPart)  then begin
     ProcessServiceRequest({$IFDEF INDY_10}AContext,{$ENDIF}ARequestInfo,AResponseInfo,locPath);
+  {$IFDEF WST_DBG}
     if Assigned(AResponseInfo.ContentStream) and ( AResponseInfo.ContentStream.Size > 0 ) then begin
       j := AResponseInfo.ContentStream.Size;
       SetLength(s,j);
@@ -328,13 +337,14 @@ begin
       Display('--------- RESPONSE ------------------------');
       Display(s);
     end;
+  {$ENDIF}
     Exit;
   end;
 
   ProcessWSDLRequest({$IFDEF INDY_10}AContext,{$ENDIF}ARequestInfo,AResponseInfo,locPath);
 end;
 
-constructor TwstWebApplication.Create(
+constructor TwstIndyHttpListener.Create(
       const AServerIpAddress   : string;
       const AListningPort      : Integer;
       const ADefaultClientPort : Integer;
@@ -355,32 +365,33 @@ begin
 
   FHTTPServerObject.DefaultPort := ADefaultClientPort;
   FHTTPServerObject.ServerSoftware := AServerSoftware;
-  FHTTPServerObject.Active := True;
+  //FHTTPServerObject.Active := True;
   FHTTPServerObject.OnCommandGet := {$IFDEF FPC}@{$ENDIF}Handler_CommandGet;
 end;
 
-destructor TwstWebApplication.Destroy();
+destructor TwstIndyHttpListener.Destroy();
 begin
+  if ( FHTTPServerObject <> nil ) then
+    Stop();
   FreeAndNil(FHTTPServerObject);
   inherited Destroy();
 end;
 
-procedure TwstWebApplication.Display(const AMsg: string);
-begin
-  //WriteLn(AMsg);
-end;
-
-
-procedure TwstWebApplication.Start();
+procedure TwstIndyHttpListener.Start();
 begin
   if not FHTTPServerObject.Active then
     FHTTPServerObject.Active := True;
 end;
 
-procedure TwstWebApplication.Stop();
+procedure TwstIndyHttpListener.Stop();
 begin
   if FHTTPServerObject.Active then
     FHTTPServerObject.Active := False;
+end;
+
+class function TwstIndyHttpListener.GetDescription: string;
+begin
+  Result := 'Indy HTTP Listener';
 end;
 
 initialization

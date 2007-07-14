@@ -11,11 +11,11 @@ uses
   , uwsttypelibraryedit, view_helper, source_utils, uabout, ufEnumedit,
   edit_helper, ufclassedit, wsdl_generator, ufpropedit, uinterfaceedit, udm,
   pascal_parser_intf, PasTree, PParser, uprocedit, common_gui_utils, uargedit,
-  umoduleedit, ubindingedit, ufrmsaveoption;
+  umoduleedit, ubindingedit, ufrmsaveoption, ufarrayedit;
 
 begin
   Application.Initialize;
-  Application.CreateForm (TfWstTypeLibraryEdit, fWstTypeLibraryEdit );
+  Application.CreateForm(TfWstTypeLibraryEdit, fWstTypeLibraryEdit);
   Application.Run;
 end.
 

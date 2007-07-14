@@ -42,6 +42,7 @@ Type
     FFileName: string;
     FTarget: string;
   private
+    FFormat : string;
     procedure SetFileName(const AValue: string);
     procedure LoadModule();
   public
@@ -53,6 +54,7 @@ Type
     property ContentType : string read FContentType write FContentType;
     property Target : string read FTarget write FTarget;
     property FileName : string read FFileName write SetFileName;
+    property Format : string read FFormat write FFormat;
   end;
 {$M+}
 
@@ -207,6 +209,7 @@ begin
     wrtr.WriteInt32S(0);
     wrtr.WriteStr(Target);
     wrtr.WriteStr(ContentType);
+    wrtr.WriteStr(Self.Format);
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));

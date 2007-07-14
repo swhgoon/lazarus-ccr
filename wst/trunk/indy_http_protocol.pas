@@ -13,8 +13,6 @@
 {$INCLUDE wst_global.inc}
 unit indy_http_protocol;
 
-{$mode objfpc}{$H+}
-
 //{$DEFINE WST_DBG}
 
 interface
@@ -36,6 +34,7 @@ Type
   { THTTPTransport }
   THTTPTransport = class(TSimpleFactoryItem,ITransport)
   Private
+    FFormat : string;
     FPropMngr : IPropertyManager;
     FConnection : TidHttp;
     FSoapAction: string;
@@ -63,6 +62,7 @@ Type
     property ProxyUsername : string read GetProxyUsername write SetProxyUsername;
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
     property SoapAction : string read FSoapAction write FSoapAction;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 

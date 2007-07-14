@@ -48,6 +48,7 @@ Type
     FDataBuffer : string;
     FAllDataRead : Boolean;
     FBeginRead : Boolean;
+    FFormat : string;
     FHasException : Boolean;
     FExceptionMessage : string;
     procedure DataAvailable(Sender: TObject; Error: Word);
@@ -62,6 +63,7 @@ Type
     property ContentType : string Read FContentType Write FContentType;
     property Address : string Read GetAddress Write SetAddress;
     property Port : string Read GetPort Write SetPort;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 
@@ -173,6 +175,7 @@ begin
     wrtr.WriteInt32S(0);
     wrtr.WriteStr(Target);
     wrtr.WriteStr(ContentType);
+    wrtr.WriteStr(Self.Format);
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));

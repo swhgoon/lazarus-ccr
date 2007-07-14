@@ -54,7 +54,7 @@ function wstHandleRequest(
   end;
   
 Var
-  buff, trgt,ctntyp : string;
+  buff, trgt,ctntyp, frmt : string;
   rqst : IRequestBuffer;
   rdr : IDataStoreReader;
   inStream, bufStream : TMemoryStream;
@@ -84,6 +84,7 @@ begin
             wstCheck(RET_FALSE,'Invalid buffer.');
           trgt := rdr.ReadStr();
           ctntyp := rdr.ReadStr();
+          frmt := rdr.ReadStr();
           buff := rdr.ReadStr();
           rdr := nil;
           bufStream.Size := 0;
@@ -91,7 +92,7 @@ begin
           inStream.Write(buff[1],Length(buff));
           SetLength(buff,0);
           inStream.Position := 0;
-          rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,bufStream,'');
+          rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,bufStream,frmt);
           HandleServiceRequest(rqst);
           bs := bufStream.Size;
           wstCheck(ARequestBuffer.SetSize(bs));

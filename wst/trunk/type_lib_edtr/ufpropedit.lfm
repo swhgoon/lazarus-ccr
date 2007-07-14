@@ -1,7 +1,7 @@
 object fPropEdit: TfPropEdit
-  Left = 306
+  Left = 862
   Height = 326
-  Top = 266
+  Top = 68
   Width = 324
   HorzScrollBar.Page = 323
   VertScrollBar.Page = 325
@@ -101,7 +101,7 @@ object fPropEdit: TfPropEdit
         Left = 20
         Height = 13
         Top = 218
-        Width = 100
+        Width = 105
         Caption = 'Optional property'
         Font.Style = [fsItalic]
         TabOrder = 3

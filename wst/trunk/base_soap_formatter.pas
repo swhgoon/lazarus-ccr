@@ -37,6 +37,7 @@ const
   sARRAY_TYPE = 'arrayType';
 
   sCONTENT_TYPE = 'contenttype';
+  sFORMAT = 'format';
   sSOAP_CONTENT_TYPE = 'text/xml';
 
   sHEADER   = 'Header';

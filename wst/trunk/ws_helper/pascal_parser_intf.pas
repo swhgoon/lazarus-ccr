@@ -109,6 +109,8 @@ type
     function GetArrayItemName(AArray : TPasArrayType) : string;
     function GetArrayItemExternalName(AArray : TPasArrayType) : string;
     function GetArrayStyle(AArray : TPasArrayType) : TArrayStyle;
+    procedure SetArrayStyle(AArray : TPasArrayType; const AStyle : TArrayStyle);
+    procedure SetArrayItemExternalName(AArray : TPasArrayType; const AExternalName : string);
     function FindElement(const AName: String): TPasElement; override;
     function FindElementInModule(const AName: String; AModule: TPasModule): TPasElement;
     function FindModule(const AName: String): TPasModule;override;
@@ -491,6 +493,25 @@ begin
     Result := asEmbeded
   else
     Result := asScoped;
+end;
+
+procedure TwstPasTreeContainer.SetArrayStyle(
+        AArray : TPasArrayType;
+  const AStyle : TArrayStyle
+);
+begin
+  if ( AStyle = asEmbeded ) then
+    Properties.SetValue(AArray,sARRAY_STYLE,sARRAY_STYLE_EMBEDDED)
+  else
+    Properties.SetValue(AArray,sARRAY_STYLE,sARRAY_STYLE_SCOPED);
+end;
+
+procedure TwstPasTreeContainer.SetArrayItemExternalName(
+        AArray : TPasArrayType;
+  const AExternalName : string
+);
+begin
+  Properties.SetValue(AArray,sARRAY_ITEM_EXT_NAME,AExternalName);
 end;
 
 function TwstPasTreeContainer.FindElementInModule(const AName: String; AModule : TPasModule): TPasElement;

@@ -46,12 +46,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 31
-        Width = 408
+        Width = 404
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
       end
       object Button2: TButton
-        Left = 435
+        Left = 431
         Height = 25
         Top = 31
         Width = 40
@@ -64,12 +64,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 88
-        Width = 408
+        Width = 404
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 2
       end
       object Button3: TButton
-        Left = 435
+        Left = 431
         Height = 25
         Top = 88
         Width = 40

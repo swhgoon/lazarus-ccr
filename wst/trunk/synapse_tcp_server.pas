@@ -16,22 +16,18 @@ unit synapse_tcp_server;
 interface
 
 uses
-  Classes, SysUtils, blcksock, synsock;
+  Classes, SysUtils, blcksock, synsock, server_listener;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
   
 const
-  sSERVER_PORT = '1234';
+  sSERVER_PORT = 1234;
   
 type
 
-  ILogger = interface
-    ['{CA357B9A-604F-4603-96FA-65D445837E80}']
-    procedure Log(const AMsg : string);overload;
-    procedure Log(const AMsg : string;const AArgs : array of const);overload;
-  end;
-  
+  TwstSynapseTcpListener = class;
+
   { TClientHandlerThread }
 
   TClientHandlerThread = class(TThread)
@@ -41,12 +37,13 @@ type
     FSocketHandle : TSocket;
     FInputStream : TMemoryStream;
     FOutputStream : TMemoryStream;
+    FOwner : TwstSynapseTcpListener;
   private
     procedure ClearBuffers();
     function ReadInputBuffer():Integer;
     procedure SendOutputBuffer();
   public
-    constructor Create (ASocketHandle : TSocket);
+    constructor Create (ASocketHandle : TSocket; AOwner : TwstSynapseTcpListener);
     destructor Destroy();override;
     procedure Execute(); override;
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
@@ -58,51 +55,42 @@ type
   private
     FDefaultTimeOut: Integer;
     FSocketObject : TTCPBlockSocket;
+    FSuspendingCount : Integer;
+    FOwner : TwstSynapseTcpListener;
   public
-    constructor Create();
+    constructor Create(AOwner : TwstSynapseTcpListener);
     destructor Destroy(); override;
     procedure Execute(); override;
+    procedure SuspendAsSoonAsPossible();
+    procedure ResumeListening();
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
   end;
   
-  { TConsoleLogger }
+  { TwstSynapseTcpListener }
 
-  TConsoleLogger = class(TInterfacedObject,IInterface,ILogger)
-  protected
-    procedure Log(const AMsg : string);overload;
-    procedure Log(const AMsg : string;const AArgs : array of const);overload;
+  TwstSynapseTcpListener = class(TwstListener)
+  private
+    FServerThread : TServerListnerThread;
+    FServerIpAddress : string;
+    FListningPort : Integer;
+    FDefaultClientPort : Integer;
+    FServerSoftware : string;
+  public
+    constructor Create(
+      const AServerIpAddress   : string  = '127.0.0.1';
+      const AListningPort      : Integer = sSERVER_PORT;
+      const ADefaultClientPort : Integer = 25000;
+      const AServerSoftware    : string  = 'Web Service Toolkit Application'
+    );
+    destructor Destroy();override;
+    procedure Start();override;
+    procedure Stop();override;
   end;
   
-  function Logger():ILogger ;
-  function SetLogger(ALogger : ILogger):ILogger ;
-
 implementation
 uses binary_streamer, server_service_intf, server_service_imputils
      {$IFNDEF FPC},ActiveX{$ENDIF}, ComObj;
 
-var FLoggerInst : ILogger = nil;
-function SetLogger(ALogger : ILogger):ILogger ;
-begin
-  Result := FLoggerInst;
-  FLoggerInst := ALogger;
-end;
-
-function Logger():ILogger ;
-begin
-  Result := FLoggerInst;
-end;
-
-{ TConsoleLogger }
-
-procedure TConsoleLogger.Log(const AMsg: string);
-begin
-  WriteLn(AMsg);
-end;
-
-procedure TConsoleLogger.Log(const AMsg: string; const AArgs: array of const);
-begin
-  WriteLn(Format(AMsg,AArgs));
-end;
 
 { TClientHandlerThread }
 
@@ -151,11 +139,15 @@ begin
   FSocketObject.SendBuffer(FOutputStream.Memory,FOutputStream.Size);
 end;
 
-constructor TClientHandlerThread.Create(ASocketHandle: TSocket);
+constructor TClientHandlerThread.Create(
+  ASocketHandle : TSocket;
+  AOwner : TwstSynapseTcpListener
+);
 begin
   FSocketHandle := ASocketHandle;
   FreeOnTerminate := True;
   FDefaultTimeOut := 90000;
+  FOwner := AOwner;
   inherited Create(False);
 end;
 
@@ -179,7 +171,7 @@ procedure TClientHandlerThread.Execute();
 var
   wrtr : IDataStore;
   rdr : IDataStoreReader;
-  buff, trgt,ctntyp : string;
+  buff, trgt,ctntyp, frmt : string;
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
@@ -201,12 +193,13 @@ begin
             rdr := CreateBinaryReader(FInputStream);
             trgt := rdr.ReadStr();
             ctntyp := rdr.ReadStr();
-            buff := rdr.ReadStr(); WriteLn;WriteLn('ContentType=',ctntyp,', ','Target = ',trgt);WriteLn;WriteLn(buff);
+            frmt := rdr.ReadStr();
+            buff := rdr.ReadStr();
             rdr := nil;
             FInputStream.Size := 0;
             FInputStream.Write(buff[1],Length(buff));
             FInputStream.Position := 0;
-            rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,GetFormatForContentType(ctntyp));
+            rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,frmt);
             HandleServiceRequest(rqst);
             i := FOutputStream.Size;
             SetLength(buff,i);
@@ -221,7 +214,7 @@ begin
         end;
       except
         on e : Exception do begin
-          Logger().Log('Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
+          FOwner.NotifyMessage(Format('Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]));
         end;
       end;
     finally
@@ -236,11 +229,12 @@ end;
 
 { TServerListnerThread }
 
-constructor TServerListnerThread.Create();
+constructor TServerListnerThread.Create(AOwner : TwstSynapseTcpListener);
 begin
   FSocketObject := TTCPBlockSocket.Create();
   FreeOnTerminate := True;
   FDefaultTimeOut := 1000;
+  FOwner := AOwner;
   inherited Create(false);
 end;
 
@@ -262,18 +256,21 @@ begin
       FSocketObject.RaiseExcept := True;
       FSocketObject.CreateSocket();
       FSocketObject.SetLinger(True,10);
-      FSocketObject.Bind('127.0.0.1',sSERVER_PORT);
+      FSocketObject.Bind(FOwner.FServerIpAddress,IntToStr(FOwner.FListningPort));
       FSocketObject.Listen();
       while not Terminated do begin
+        if ( FSuspendingCount > 0 ) then begin
+          Suspend();
+        end;
         if FSocketObject.CanRead(DefaultTimeOut) then begin
           ClientSock := FSocketObject.Accept();
-          TClientHandlerThread.Create(ClientSock);
+          TClientHandlerThread.Create(ClientSock,FOwner);
         end;
       end;
     except
       on e : Exception do begin
-        Logger().Log('Listner Thread Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]);
-        Logger().Log('Listner stoped.');
+        FOwner.NotifyMessage(Format('Listner Thread Error : ThreadID = %d; Message = %s',[Self.ThreadID,e.Message]));
+        FOwner.NotifyMessage('Listner stoped.');
       end;
     end;
 {$IFNDEF FPC}
@@ -281,6 +278,58 @@ begin
     CoUninitialize();
   end;
 {$ENDIF}
+end;
+
+procedure TServerListnerThread.SuspendAsSoonAsPossible();
+begin
+  InterLockedIncrement(FSuspendingCount);
+end;
+
+procedure TServerListnerThread.ResumeListening();
+begin
+  InterLockedDecrement(FSuspendingCount);
+  if ( FSuspendingCount <= 0 ) then begin
+    if Suspended then
+      Resume();
+  end;
+end;
+
+{ TwstSynapseTcpListener }
+
+constructor TwstSynapseTcpListener.Create(
+  const AServerIpAddress : string;
+  const AListningPort : Integer;
+  const ADefaultClientPort : Integer;
+  const AServerSoftware : string
+);
+begin
+  FServerIpAddress := AServerIpAddress;
+  FListningPort := AListningPort;
+  FDefaultClientPort := ADefaultClientPort;
+  FServerSoftware := AServerSoftware;
+end;
+
+destructor TwstSynapseTcpListener.Destroy();
+begin
+  if ( FServerThread <> nil ) then begin
+    FServerThread.Terminate();
+    Start();
+  end;
+  inherited Destroy();
+end;
+
+procedure TwstSynapseTcpListener.Start();
+begin
+  if ( FServerThread = nil ) then
+    FServerThread := TServerListnerThread.Create(Self);
+  if FServerThread.Suspended then
+    FServerThread.ResumeListening();
+end;
+
+procedure TwstSynapseTcpListener.Stop();
+begin
+  if ( FServerThread <> nil ) and ( not FServerThread.Suspended ) then
+    FServerThread.SuspendAsSoonAsPossible();
 end;
 
 end.

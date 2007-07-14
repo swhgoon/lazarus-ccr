@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -32,13 +32,15 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="71">
+    <Units Count="72">
       <Unit0>
         <Filename Value="typ_lib_edtr.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="24" Y="11"/>
+        <CursorPos X="20" Y="5"/>
         <TopLine Value="1"/>
-        <UsageCount Value="189"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="191"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="uwsttypelibraryedit.pas"/>
@@ -47,10 +49,10 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uwsttypelibraryedit.lrs"/>
         <UnitName Value="uwsttypelibraryedit"/>
-        <CursorPos X="38" Y="333"/>
-        <TopLine Value="288"/>
+        <CursorPos X="19" Y="552"/>
+        <TopLine Value="535"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="189"/>
+        <UsageCount Value="191"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -65,8 +67,8 @@
         <UnitName Value="wsdl2pas_imp"/>
         <CursorPos X="38" Y="805"/>
         <TopLine Value="792"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="79"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="80"/>
         <Bookmarks Count="1">
           <Item0 X="65" Y="750" ID="2"/>
         </Bookmarks>
@@ -78,8 +80,8 @@
         <UnitName Value="wsdl_generator"/>
         <CursorPos X="45" Y="707"/>
         <TopLine Value="684"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="189"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="191"/>
         <Bookmarks Count="1">
           <Item0 X="49" Y="446" ID="1"/>
         </Bookmarks>
@@ -94,7 +96,7 @@
         <UnitName Value="uabout"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="189"/>
+        <UsageCount Value="191"/>
       </Unit5>
       <Unit6>
         <Filename Value="ufenumedit.pas"/>
@@ -103,20 +105,20 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufenumedit.lrs"/>
         <UnitName Value="ufEnumedit"/>
-        <CursorPos X="1" Y="77"/>
+        <CursorPos X="27" Y="78"/>
         <TopLine Value="58"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="189"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="191"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="view_helper.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="view_helper"/>
-        <CursorPos X="31" Y="535"/>
-        <TopLine Value="16"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="189"/>
+        <CursorPos X="1" Y="241"/>
+        <TopLine Value="234"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="191"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -125,16 +127,16 @@
         <UnitName Value="source_utils"/>
         <CursorPos X="18" Y="20"/>
         <TopLine Value="1"/>
-        <UsageCount Value="189"/>
+        <UsageCount Value="191"/>
       </Unit8>
       <Unit9>
         <Filename Value="edit_helper.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="edit_helper"/>
-        <CursorPos X="44" Y="519"/>
-        <TopLine Value="5"/>
+        <CursorPos X="15" Y="491"/>
+        <TopLine Value="484"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="189"/>
+        <UsageCount Value="191"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -144,10 +146,10 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufclassedit.lrs"/>
         <UnitName Value="ufclassedit"/>
-        <CursorPos X="29" Y="158"/>
-        <TopLine Value="121"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="189"/>
+        <CursorPos X="1" Y="307"/>
+        <TopLine Value="294"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="191"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -156,9 +158,11 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufpropedit.lrs"/>
         <UnitName Value="ufpropedit"/>
-        <CursorPos X="3" Y="154"/>
-        <TopLine Value="140"/>
-        <UsageCount Value="189"/>
+        <CursorPos X="33" Y="106"/>
+        <TopLine Value="92"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="191"/>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\..\..\lazarus23_213\lcl\comctrls.pp"/>
@@ -170,10 +174,10 @@
       <Unit13>
         <Filename Value="..\ws_helper\parserutils.pas"/>
         <UnitName Value="parserutils"/>
-        <CursorPos X="1" Y="93"/>
-        <TopLine Value="54"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="66"/>
+        <CursorPos X="17" Y="20"/>
+        <TopLine Value="19"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -259,7 +263,7 @@
         <UnitName Value="uinterfaceedit"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="153"/>
+        <UsageCount Value="155"/>
       </Unit26>
       <Unit27>
         <Filename Value="uinterfaceedit.lfm"/>
@@ -276,7 +280,7 @@
         <UnitName Value="udm"/>
         <CursorPos X="15" Y="2"/>
         <TopLine Value="1"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="150"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\..\..\lazarus23_213\lcl\include\treeview.inc"/>
@@ -288,10 +292,10 @@
         <Filename Value="..\ws_helper\pascal_parser_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pascal_parser_intf"/>
-        <CursorPos X="37" Y="446"/>
-        <TopLine Value="436"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="111"/>
+        <CursorPos X="24" Y="13"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="113"/>
         <Loaded Value="True"/>
       </Unit30>
       <Unit31>
@@ -300,7 +304,7 @@
         <UnitName Value="PParser"/>
         <CursorPos X="4" Y="2133"/>
         <TopLine Value="2127"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="113"/>
       </Unit31>
       <Unit32>
         <Filename Value="..\ws_helper\logger_intf.pas"/>
@@ -315,7 +319,7 @@
         <UnitName Value="PasTree"/>
         <CursorPos X="33" Y="332"/>
         <TopLine Value="315"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="113"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\..\..\..\lazarus_23_215\lcl\include\treeview.inc"/>
@@ -340,17 +344,15 @@
         <UnitName Value="rtti_filters"/>
         <CursorPos X="1" Y="236"/>
         <TopLine Value="219"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="27"/>
       </Unit37>
       <Unit38>
         <Filename Value="..\ws_helper\generator.pas"/>
         <UnitName Value="generator"/>
         <CursorPos X="2" Y="16"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="29"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -358,9 +360,7 @@
         <UnitName Value="dom_cursors"/>
         <CursorPos X="1" Y="239"/>
         <TopLine Value="222"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="24"/>
       </Unit39>
       <Unit40>
         <Filename Value="..\ws_helper\command_line_parser.pas"/>
@@ -442,7 +442,7 @@
         <UnitName Value="uprocedit"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="67"/>
+        <UsageCount Value="69"/>
       </Unit50>
       <Unit51>
         <Filename Value="..\..\..\..\..\lazarus_23_215XX\lcl\comctrls.pp"/>
@@ -457,7 +457,7 @@
         <UnitName Value="common_gui_utils"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="67"/>
       </Unit52>
       <Unit53>
         <Filename Value="..\..\..\..\..\DOCUME~1\ADMINI~1\LOCALS~1\Temp\DestBug.pas"/>
@@ -474,7 +474,7 @@
         <UnitName Value="uargedit"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="60"/>
       </Unit54>
       <Unit55>
         <Filename Value="..\..\..\..\..\lazarus_23_215XX\lcl\interfaces\win32\win32wscontrols.pp"/>
@@ -498,7 +498,7 @@
         <UnitName Value="umoduleedit"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="50"/>
+        <UsageCount Value="52"/>
       </Unit57>
       <Unit58>
         <Filename Value="..\..\..\..\..\lazarus_23_215XX\lcl\stdctrls.pp"/>
@@ -515,7 +515,7 @@
         <UnitName Value="ubindingedit"/>
         <CursorPos X="2" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="42"/>
       </Unit59>
       <Unit60>
         <Filename Value="..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpash.inc"/>
@@ -556,7 +556,7 @@
         <UnitName Value="ufrmsaveoption"/>
         <CursorPos X="42" Y="64"/>
         <TopLine Value="42"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="38"/>
       </Unit65>
       <Unit66>
         <Filename Value="..\..\..\..\..\lazarus_23_215XX\lcl\dialogs.pp"/>
@@ -577,8 +577,8 @@
         <UnitName Value="cursor_intf"/>
         <CursorPos X="2" Y="90"/>
         <TopLine Value="71"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit68>
       <Unit69>
@@ -593,11 +593,23 @@
         <TopLine Value="1398"/>
         <UsageCount Value="10"/>
       </Unit70>
+      <Unit71>
+        <Filename Value="ufarrayedit.pas"/>
+        <ComponentName Value="fArrayEdit"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="ufarrayedit.lrs"/>
+        <UnitName Value="ufarrayedit"/>
+        <CursorPos X="67" Y="117"/>
+        <TopLine Value="95"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit71>
     </Units>
     <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="uwsttypelibraryedit.pas"/>
-        <Caret Line="595" Column="20" TopLine="575"/>
+        <Filename Value="typ_lib_edtr.lpr"/>
+        <Caret Line="17" Column="43" TopLine="1"/>
       </Position1>
     </JumpHistory>
   </ProjectOptions>

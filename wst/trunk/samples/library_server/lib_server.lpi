@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -25,24 +25,24 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="7">
+    <Units Count="8">
       <Unit0>
         <Filename Value="lib_server.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lib_server"/>
-        <CursorPos X="17" Y="32"/>
-        <TopLine Value="17"/>
+        <CursorPos X="49" Y="35"/>
+        <TopLine Value="7"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="..\..\library_server_intf.pas"/>
         <UnitName Value="library_server_intf"/>
-        <CursorPos X="74" Y="92"/>
-        <TopLine Value="78"/>
+        <CursorPos X="32" Y="91"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -50,8 +50,8 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="43" Y="179"/>
         <TopLine Value="157"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -59,17 +59,17 @@
         <UnitName Value="rtti_filters"/>
         <CursorPos X="53" Y="43"/>
         <TopLine Value="184"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
-        <CursorPos X="54" Y="32"/>
-        <TopLine Value="22"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="64"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -77,8 +77,8 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="52" Y="4125"/>
         <TopLine Value="4118"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -86,29 +86,21 @@
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="96"/>
         <TopLine Value="72"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="..\..\wst_rtti_filter\cursor_intf.pas"/>
+        <UnitName Value="cursor_intf"/>
+        <CursorPos X="2" Y="13"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit7>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
-      <Position1>
-        <Filename Value="lib_server.lpr"/>
-        <Caret Line="32" Column="17" TopLine="17"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\semaphore.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\library_server_intf.pas"/>
-        <Caret Line="61" Column="3" TopLine="47"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\library_server_intf.pas"/>
-        <Caret Line="92" Column="71" TopLine="27"/>
-      </Position4>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -117,6 +109,7 @@
       <Filename Value="lib_server.dll"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="..\..\"/>
       <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
@@ -124,6 +117,10 @@
       <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <ExecutableType Value="Library"/>
       </Options>

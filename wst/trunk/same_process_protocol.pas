@@ -36,6 +36,7 @@ Type
   Private
     FAdress: string;
     FContentType: string;
+    FFormat : string;
     FPropMngr : IPropertyManager;
   Public
     constructor Create();override;
@@ -45,6 +46,7 @@ Type
   Published
     property ContentType : string Read FContentType Write FContentType;
     property Adress : string Read FAdress Write FAdress;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 
@@ -78,7 +80,7 @@ Var
   i : Int64;
 {$ENDIF WST_DBG}
 begin
-  bffr := TRequestBuffer.Create(Adress,ContentType,ARequest,AResponse);
+  bffr := TRequestBuffer.Create(Adress,ContentType,ARequest,AResponse,Format);
   HandleServiceRequest(bffr);
   {$IFDEF WST_DBG}
   i := AResponse.Position;

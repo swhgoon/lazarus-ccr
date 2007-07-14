@@ -224,15 +224,21 @@ procedure TSOAPCallMaker.MakeCall(
 );
 Var
   rqt, rsps : TMemoryStream;
+  propMngr : IPropertyManager;
   {$IFDEF WST_DBG}
   s : string;
   {$ENDIF WST_DBG}
 begin
   Assert(Assigned(ASerializer));
   Assert(Assigned(ATransport));
-  ATransport.GetPropertyManager().SetProperty(
+  propMngr := ATransport.GetPropertyManager();
+  propMngr.SetProperty(
     sCONTENT_TYPE,
     ASerializer.GetPropertyManager().GetProperty(sCONTENT_TYPE)
+  );
+  propMngr.SetProperty(
+    sFORMAT,
+    sPROTOCOL_NAME
   );
   rsps := Nil;
   rqt := TMemoryStream.Create();

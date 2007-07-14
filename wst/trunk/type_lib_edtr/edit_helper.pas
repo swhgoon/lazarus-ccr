@@ -42,6 +42,7 @@ type
   
   function CreateEnum(AContainer : TwstPasTreeContainer) : TPasEnumType;
   function CreateCompoundObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
+  function CreateArray(ASymbolTable : TwstPasTreeContainer) : TPasArrayType;
   function CreateInterface(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
   function CreateMethod(
     AOwner       : TPasClassType;
@@ -73,7 +74,7 @@ type
 
 implementation
 uses Contnrs, Forms, ufEnumedit, ufclassedit, uinterfaceedit, uprocedit,
-     uargedit, umoduleedit, ubindingedit;
+     uargedit, umoduleedit, ubindingedit, ufarrayedit;
 
 type
 
@@ -162,6 +163,17 @@ type
     ):Boolean;override;
   end;
 
+  { TArrayUpdater }
+
+  TArrayUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+  
   { TInterfaceUpdater }
 
   TInterfaceUpdater = class(TObjectUpdater)
@@ -216,6 +228,30 @@ type
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
+
+{ TArrayUpdater }
+
+class function TArrayUpdater.CanHandle(AObject : TObject) : Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasArrayType);
+end;
+
+class function TArrayUpdater.UpdateObject(
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+): Boolean;
+var
+  f : TfArrayEdit;
+  e : TPasArrayType;
+begin
+  e := AObject as TPasArrayType;
+  f := TfArrayEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
 
 { TBindingUpdater }
 
@@ -458,6 +494,19 @@ begin
   end;
 end;
 
+function CreateArray(ASymbolTable : TwstPasTreeContainer) : TPasArrayType;
+var
+  f : TfArrayEdit;
+begin
+  Result := nil;
+  f := TfArrayEdit.Create(Application);
+  try
+    f.UpdateObject(Result,etCreate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+
 function CreateMethod(
   AOwner       : TPasClassType;
   ASymbolTable : TwstPasTreeContainer
@@ -616,6 +665,7 @@ initialization
   UpdaterRegistryInst.RegisterHandler(TArgumentUpdater);
   UpdaterRegistryInst.RegisterHandler(TModuleUpdater);
   UpdaterRegistryInst.RegisterHandler(TBindingUpdater);
+  UpdaterRegistryInst.RegisterHandler(TArrayUpdater);
   
 finalization
   FreeAndNil(UpdaterRegistryInst);

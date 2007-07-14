@@ -38,6 +38,7 @@ Type
     FConnection : THTTPSend;
     FAddress : string;
   private
+    FFormat : string;
     FSoapAction: string;
     function GetAddress: string;
     function GetContentType: string;
@@ -64,6 +65,7 @@ Type
     property ProxyUsername : string read GetProxyUsername write SetProxyUsername;
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
     property SoapAction : string read FSoapAction write FSoapAction;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 

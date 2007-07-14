@@ -292,41 +292,44 @@ LazarusResources.Add('TfWstTypeLibraryEdit','FORMDATA',[
   +'ion'#7#13'actEnumCreate'#7'OnClick'#7#20'actEnumCreateExecute'#0#0#9'TMenuI'
   +'tem'#10'MenuItem23'#6'Action'#7#17'actCompoundCreate'#7'OnClick'#7#24'actCo'
   +'mpoundCreateExecute'#0#0#9'TMenuItem'#10'MenuItem25'#6'Action'#7#13'actIntf'
-  +'Create'#7'OnClick'#7#20'actIntfCreateExecute'#0#0#9'TMenuItem'#10'MenuItem1'
-  +'2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#10'MenuItem13'#6'Action'#7#15'actUpda'
-  +'teObject'#7'Caption'#6#13'Update Object'#7'OnClick'#7#22'actUpdateObjectExe'
-  +'cute'#0#0#9'TMenuItem'#10'MenuItem34'#6'Action'#7#9'actDelete'#7'OnClick'#7
-  +#16'actDeleteExecute'#0#0#0#9'TMenuItem'#9'MenuItem6'#6'Action'#7#8'actAbout'
-  +#7'Caption'#6#6'&About'#7'OnClick'#7#15'actAboutExecute'#0#0#0#11'TActionLis'
-  +'t'#2'AL'#4'left'#3'X'#1#3'top'#2'8'#0#7'TAction'#11'actOpenFile'#7'Caption'
-  +#6#9'Open File'#18'DisableIfNoHandler'#9#9'OnExecute'#7#18'actOpenFileExecut'
-  +'e'#0#0#7'TAction'#7'actExit'#7'Caption'#6#4'Exit'#18'DisableIfNoHandler'#9#9
-  +'OnExecute'#7#14'actExitExecute'#0#0#7'TAction'#9'actExport'#7'Caption'#6#24
-  +'Save generated files ...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#16'actExp'
-  +'ortExecute'#8'OnUpdate'#7#15'actExportUpdate'#0#0#7'TAction'#8'actAbout'#7
-  +'Caption'#6#5'About'#18'DisableIfNoHandler'#9#9'OnExecute'#7#15'actAboutExec'
-  +'ute'#0#0#7'TAction'#9'actSaveAs'#7'Caption'#6#11'Save As ...'#18'DisableIfN'
-  +'oHandler'#9#9'OnExecute'#7#16'actSaveAsExecute'#8'OnUpdate'#7#15'actExportU'
-  +'pdate'#0#0#7'TAction'#13'actEnumCreate'#7'Caption'#6#18'Create Enumeration'
-  +#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'actEnumCreateExecute'#0#0#7'TAct'
-  +'ion'#15'actUpdateObject'#7'Caption'#6#6'Update'#18'DisableIfNoHandler'#9#9
-  +'OnExecute'#7#22'actUpdateObjectExecute'#8'OnUpdate'#7#21'actUpdateObjectUpd'
-  +'ate'#0#0#7'TAction'#14'actRefreshView'#7'Caption'#6#14'&Refresh Views'#18'D'
-  +'isableIfNoHandler'#9#9'OnExecute'#7#21'actRefreshViewExecute'#0#0#7'TAction'
-  +#10'actNewFile'#7'Caption'#6#8'New File'#18'DisableIfNoHandler'#9#9'OnExecut'
-  +'e'#7#17'actNewFileExecute'#0#0#7'TAction'#17'actCompoundCreate'#7'Caption'#6
-  +#20'Create Compound Type'#18'DisableIfNoHandler'#9#9'OnExecute'#7#24'actComp'
-  +'oundCreateExecute'#0#0#7'TAction'#13'actIntfCreate'#7'Caption'#6#16'Create '
-  +'Interface'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'actIntfCreateExecute'
-  +#0#0#7'TAction'#13'actFullExpand'#7'Caption'#6#11'Full expand'#18'DisableIfN'
-  +'oHandler'#9#9'OnExecute'#7#20'actFullExpandExecute'#0#0#7'TAction'#15'actFu'
-  +'llCollapse'#7'Caption'#6#13'Full Collapse'#18'DisableIfNoHandler'#9#9'OnExe'
-  ,'cute'#7#22'actFullCollapseExecute'#0#0#7'TAction'#7'actSave'#7'Caption'#6#4
-  +'Save'#18'DisableIfNoHandler'#9#9'OnExecute'#7#14'actSaveExecute'#0#0#7'TAct'
-  +'ion'#9'actDelete'#7'Caption'#6#6'Delete'#18'DisableIfNoHandler'#9#9'OnExecu'
-  +'te'#7#16'actDeleteExecute'#8'OnUpdate'#7#21'actUpdateObjectUpdate'#0#0#0#11
-  +'TOpenDialog'#2'OD'#5'Title'#6#26'Ouvrir un fichier existant'#6'Filter'#6'3W'
-  +'DSL files(*.WSDL)|*.WSDL|Pascal file (*.pas)|*.pas'#11'FilterIndex'#2#0#10
+  +'Create'#7'OnClick'#7#20'actIntfCreateExecute'#0#0#9'TMenuItem'#10'MenuItem3'
+  +'5'#6'Action'#7#14'actArrayCreate'#7'OnClick'#7#21'actArrayCreateExecute'#0#0
+  +#9'TMenuItem'#10'MenuItem12'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#10'MenuItem1'
+  +'3'#6'Action'#7#15'actUpdateObject'#7'Caption'#6#13'Update Object'#7'OnClick'
+  +#7#22'actUpdateObjectExecute'#0#0#9'TMenuItem'#10'MenuItem34'#6'Action'#7#9
+  +'actDelete'#7'OnClick'#7#16'actDeleteExecute'#0#0#0#9'TMenuItem'#9'MenuItem6'
+  +#6'Action'#7#8'actAbout'#7'Caption'#6#6'&About'#7'OnClick'#7#15'actAboutExec'
+  +'ute'#0#0#0#11'TActionList'#2'AL'#4'left'#3'X'#1#3'top'#2'8'#0#7'TAction'#11
+  +'actOpenFile'#7'Caption'#6#9'Open File'#18'DisableIfNoHandler'#9#9'OnExecute'
+  +#7#18'actOpenFileExecute'#0#0#7'TAction'#7'actExit'#7'Caption'#6#4'Exit'#18
+  +'DisableIfNoHandler'#9#9'OnExecute'#7#14'actExitExecute'#0#0#7'TAction'#9'ac'
+  +'tExport'#7'Caption'#6#24'Save generated files ...'#18'DisableIfNoHandler'#9
+  +#9'OnExecute'#7#16'actExportExecute'#8'OnUpdate'#7#15'actExportUpdate'#0#0#7
+  +'TAction'#8'actAbout'#7'Caption'#6#5'About'#18'DisableIfNoHandler'#9#9'OnExe'
+  +'cute'#7#15'actAboutExecute'#0#0#7'TAction'#9'actSaveAs'#7'Caption'#6#11'Sav'
+  +'e As ...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#16'actSaveAsExecute'#8'On'
+  +'Update'#7#15'actExportUpdate'#0#0#7'TAction'#13'actEnumCreate'#7'Caption'#6
+  +#18'Create Enumeration'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'actEnumCr'
+  +'eateExecute'#0#0#7'TAction'#15'actUpdateObject'#7'Caption'#6#6'Update'#18'D'
+  +'isableIfNoHandler'#9#9'OnExecute'#7#22'actUpdateObjectExecute'#8'OnUpdate'#7
+  +#21'actUpdateObjectUpdate'#0#0#7'TAction'#14'actRefreshView'#7'Caption'#6#14
+  +'&Refresh Views'#18'DisableIfNoHandler'#9#9'OnExecute'#7#21'actRefreshViewEx'
+  +'ecute'#0#0#7'TAction'#10'actNewFile'#7'Caption'#6#8'New File'#18'DisableIfN'
+  +'oHandler'#9#9'OnExecute'#7#17'actNewFileExecute'#0#0#7'TAction'#17'actCompo'
+  +'undCreate'#7'Caption'#6#20'Create Compound Type'#18'DisableIfNoHandler'#9#9
+  +'OnExecute'#7#24'actCompoundCreateExecute'#0#0#7'TAction'#13'actIntfCreate'#7
+  +'Caption'#6#16'Create Interface'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20
+  +'actIntfCreateExecute'#0#0#7'TAction'#13'actFullExpand'#7'Caption'#6#11'Full'
+  +' expand'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'actFullExpandExecute'#0
+  ,#0#7'TAction'#15'actFullCollapse'#7'Caption'#6#13'Full Collapse'#18'DisableI'
+  +'fNoHandler'#9#9'OnExecute'#7#22'actFullCollapseExecute'#0#0#7'TAction'#7'ac'
+  +'tSave'#7'Caption'#6#4'Save'#18'DisableIfNoHandler'#9#9'OnExecute'#7#14'actS'
+  +'aveExecute'#0#0#7'TAction'#9'actDelete'#7'Caption'#6#6'Delete'#18'DisableIf'
+  +'NoHandler'#9#9'OnExecute'#7#16'actDeleteExecute'#8'OnUpdate'#7#21'actUpdate'
+  +'ObjectUpdate'#0#0#7'TAction'#14'actArrayCreate'#7'Caption'#6#12'Create Arra'
+  +'y'#18'DisableIfNoHandler'#9#9'OnExecute'#7#21'actArrayCreateExecute'#0#0#0
+  +#11'TOpenDialog'#2'OD'#5'Title'#6#26'Ouvrir un fichier existant'#6'Filter'#6
+  +'3WDSL files(*.WSDL)|*.WSDL|Pascal file (*.pas)|*.pas'#11'FilterIndex'#2#0#10
   +'InitialDir'#6#2'.\'#7'Options'#11#15'ofPathMustExist'#15'ofFileMustExist'#14
   +'ofEnableSizing'#12'ofViewDetail'#0#4'left'#3#153#1#3'top'#2'X'#0#0#10'TSynP'
   +'asSyn'#10'SynPasSyn1'#7'Enabled'#8#23'CommentAttri.Foreground'#7#6'clBlue'

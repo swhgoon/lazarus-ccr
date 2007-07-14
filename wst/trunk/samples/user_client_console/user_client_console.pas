@@ -3,9 +3,9 @@ program user_client_console;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, TypInfo,
+  Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
-  synapse_tcp_protocol, synapse_http_protocol, library_protocol,
+  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, ics_tcp_protocol, ics_http_protocol,
   soap_formatter, binary_formatter,
   user_service_intf, xmlrpc_formatter;
 
@@ -220,50 +220,59 @@ end;
 var
   strBuffer : string;
 begin
-  SYNAPSE_RegisterTCP_Transport();
-  SYNAPSE_RegisterHTTP_Transport();
-  LIB_Register_Transport();
-  WriteLn('Sample Application using Web Services Toolkit');
-  ReadFormatType();
-  ReadTransportType();
-  CreateProxy();
-  WriteLn('Menu :');
-  WriteLn(' L : Show the user list');
-  WriteLn(' A : Add a new user');
-  WriteLn(' U : Update a user');
-  WriteLn(' D : Delete a user');
-  WriteLn(' F : Find a new');
-  WriteLn(' C : Change the communication protocol');
-  WriteLn(' Z : Change the messaging format');
-  WriteLn(' X : Exit');
-  WriteLn();
-  Write('Choose a item : ');
-  while True do begin
-    strBuffer := '';
-    ReadLn(strBuffer);
-    strBuffer := UpperCase(Trim(strBuffer));
-    if ( Length(strBuffer) > 0 ) then begin
-      case strBuffer[1] of
-        'L' : HandleShowAll();
-        'A' : HandleAdd(atAdd);
-        'U' : HandleAdd(atUpdate);
-        'D' : HandleDeleteUser();
-        'F' : HandleFindUser();
-        'C' :
-          begin
-            ReadTransportType();
-            CreateProxy();
-          end;
-        'Z' :
-          begin
-            ReadFormatType();
-            CreateProxy();
-          end;
-        'X' : Break;
+{$IFDEF WINDOWS}
+  CoInitialize(nil);
+  try
+{$ENDIF}
+    SYNAPSE_RegisterTCP_Transport();
+    SYNAPSE_RegisterHTTP_Transport();
+    LIB_Register_Transport();
+    WriteLn('Sample Application using Web Services Toolkit');
+    ReadFormatType();
+    ReadTransportType();
+    CreateProxy();
+    WriteLn('Menu :');
+    WriteLn(' L : Show the user list');
+    WriteLn(' A : Add a new user');
+    WriteLn(' U : Update a user');
+    WriteLn(' D : Delete a user');
+    WriteLn(' F : Find a new');
+    WriteLn(' C : Change the communication protocol');
+    WriteLn(' Z : Change the messaging format');
+    WriteLn(' X : Exit');
+    WriteLn();
+    Write('Choose a item : ');
+    while True do begin
+      strBuffer := '';
+      ReadLn(strBuffer);
+      strBuffer := UpperCase(Trim(strBuffer));
+      if ( Length(strBuffer) > 0 ) then begin
+        case strBuffer[1] of
+          'L' : HandleShowAll();
+          'A' : HandleAdd(atAdd);
+          'U' : HandleAdd(atUpdate);
+          'D' : HandleDeleteUser();
+          'F' : HandleFindUser();
+          'C' :
+            begin
+              ReadTransportType();
+              CreateProxy();
+            end;
+          'Z' :
+            begin
+              ReadFormatType();
+              CreateProxy();
+            end;
+          'X' : Break;
+        end;
+        WriteLn();
+        Write('Choose a item : ');
       end;
-      WriteLn();
-      Write('Choose a item : ');
     end;
+{$IFDEF WINDOWS}
+  finally
+    CoUninitialize();
   end;
+{$ENDIF}
 end.
 

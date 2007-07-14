@@ -38,6 +38,7 @@ type
     actFullExpand: TAction;
     actFullCollapse: TAction;
     actDelete : TAction;
+    actArrayCreate : TAction;
     actSave : TAction;
     actNewFile: TAction;
     actRefreshView: TAction;
@@ -71,6 +72,7 @@ type
     MenuItem32: TMenuItem;
     MenuItem33 : TMenuItem;
     MenuItem34 : TMenuItem;
+    MenuItem35 : TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
@@ -105,6 +107,7 @@ type
     tsProxy: TTabSheet;
     trvSchema: TTreeView;
     procedure actAboutExecute(Sender: TObject);
+    procedure actArrayCreateExecute(Sender : TObject);
     procedure actCompoundCreateExecute(Sender: TObject);
     procedure actDeleteExecute (Sender : TObject );
     procedure actEnumCreateExecute(Sender: TObject);
@@ -529,6 +532,16 @@ begin
     fa.ShowModal();
   finally
     fa.Release();
+  end;
+end;
+
+procedure TfWstTypeLibraryEdit.actArrayCreateExecute(Sender : TObject);
+var
+  e : TPasArrayType;
+begin
+  e := CreateArray(FSymbolTable);
+  if Assigned(e) then begin
+    FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
   end;
 end;
 

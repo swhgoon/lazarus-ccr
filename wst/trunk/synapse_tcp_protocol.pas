@@ -37,6 +37,7 @@ Type
   { TTCPTransport }
   TTCPTransport = class(TSimpleFactoryItem,ITransport)
   Private
+    FFormat : string;
     FPropMngr : IPropertyManager;
     FConnection : TTCPBlockSocket;
     FContentType : string;
@@ -55,6 +56,7 @@ Type
     property Address : string Read FAddress Write FAddress;
     property Port : string Read FPort Write FPort;
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 
@@ -99,6 +101,7 @@ begin
     wrtr.WriteInt32S(0);
     wrtr.WriteStr(Target);
     wrtr.WriteStr(ContentType);
+    wrtr.WriteStr(Self.Format);
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));

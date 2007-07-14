@@ -13,7 +13,7 @@
 {$INCLUDE wst_global.inc}
 unit ics_http_protocol;
 
-{$DEFINE WST_DBG}
+//{$DEFINE WST_DBG}
 
 interface
 
@@ -50,6 +50,7 @@ Type
     procedure SetProxyServer(const AValue: string);
     procedure SetProxyUsername(const AValue: string);
   private
+    FFormat : string;
     procedure HttpBeforeHeaderSendHandler(
             Sender   : TObject;
       const Method   : String;
@@ -68,6 +69,7 @@ Type
     property ProxyUsername : string read GetProxyUsername write SetProxyUsername;
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
     property SoapAction : string read FSoapAction write FSoapAction;
+    property Format : string read FFormat write FFormat;
   End;
 {$M+}
 

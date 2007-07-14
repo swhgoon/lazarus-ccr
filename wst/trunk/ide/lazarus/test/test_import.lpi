@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -29,7 +29,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="39">
+    <Units Count="40">
       <Unit0>
         <Filename Value="test_import.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -44,8 +44,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="..\wstimportdlg.lrs"/>
         <UnitName Value="wstimportdlg"/>
-        <CursorPos X="22" Y="256"/>
-        <TopLine Value="233"/>
+        <CursorPos X="1" Y="5"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="73"/>
         <Loaded Value="True"/>
@@ -76,7 +76,7 @@
         <UnitName Value="pascal_parser_intf"/>
         <CursorPos X="1" Y="390"/>
         <TopLine Value="375"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -92,7 +92,7 @@
         <UnitName Value="wsdl2pas_imp"/>
         <CursorPos X="18" Y="747"/>
         <TopLine Value="736"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit7>
@@ -108,7 +108,7 @@
         <UnitName Value="source_utils"/>
         <CursorPos X="14" Y="311"/>
         <TopLine Value="291"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -117,7 +117,7 @@
         <UnitName Value="generator"/>
         <CursorPos X="31" Y="1645"/>
         <TopLine Value="1633"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -126,7 +126,7 @@
         <UnitName Value="metadata_generator"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -149,9 +149,11 @@
       <Unit14>
         <Filename Value="..\..\..\wst_rtti_filter\cursor_intf.pas"/>
         <UnitName Value="cursor_intf"/>
-        <CursorPos X="1" Y="99"/>
-        <TopLine Value="77"/>
+        <CursorPos X="2" Y="13"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="16"/>
+        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="..\..\..\wst_rtti_filter\dom_cursors.pas"/>
@@ -199,7 +201,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uform2.lrs"/>
         <UnitName Value="uform2"/>
-        <CursorPos X="5" Y="44"/>
+        <CursorPos X="45" Y="28"/>
         <TopLine Value="19"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="73"/>
@@ -271,7 +273,7 @@
       <Unit32>
         <Filename Value="..\wst_register.pas"/>
         <UnitName Value="wst_register"/>
-        <CursorPos X="12" Y="8"/>
+        <CursorPos X="14" Y="6"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="30"/>
@@ -315,13 +317,42 @@
         <TopLine Value="465"/>
         <UsageCount Value="10"/>
       </Unit38>
+      <Unit39>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <UnitName Value="service_intf"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit39>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="5" HistoryIndex="4">
+      <Position1>
+        <Filename Value="..\..\..\wst_rtti_filter\cursor_intf.pas"/>
+        <Caret Line="99" Column="1" TopLine="77"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\..\ws_helper\wst_resources_utils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\wstimportdlg.pas"/>
+        <Caret Line="256" Column="22" TopLine="233"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\wstimportdlg.pas"/>
+        <Caret Line="12" Column="31" TopLine="54"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\ws_helper\wst_resources_utils.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position5>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
+      <IncludeFiles Value="..\..\..\"/>
       <OtherUnitFiles Value="..\;..\..\..\;..\..\..\ws_helper\;..\..\..\wst_rtti_filter\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>

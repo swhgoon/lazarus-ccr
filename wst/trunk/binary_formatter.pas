@@ -167,12 +167,18 @@ procedure TBinaryCallMaker.MakeCall(
 );
 Var
   rqt, rsps : TMemoryStream;
+  propMngr : IPropertyManager;
 begin
   Assert(Assigned(ASerializer));
   Assert(Assigned(ATransport));
-  ATransport.GetPropertyManager().SetProperty(
+  propMngr := ATransport.GetPropertyManager();
+  propMngr.SetProperty(
     sCONTENT_TYPE,
     sBINARY_CONTENT
+  );
+  propMngr.SetProperty(
+    sFORMAT,
+    sPROTOCOL_NAME
   );
   rsps := Nil;
   rqt := TMemoryStream.Create();

@@ -24,6 +24,7 @@ uses
 const
   sROOT   = 'ROOT';
   sSCOPE_INNER_NAME = 'INNER_VAL';
+  sFORMAT = 'format';
 {$IFDEF wst_binary_header}
   sHEADER = 'HEADER';
 {$ENDIF}

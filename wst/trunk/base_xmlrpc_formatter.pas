@@ -28,6 +28,7 @@ const
 
 
   sCONTENT_TYPE = 'contenttype';
+  sFORMAT = 'format';
   sXMLRPC_CONTENT_TYPE = 'text/xml';
 
   sDATA  = 'data';
