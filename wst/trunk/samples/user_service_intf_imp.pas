@@ -15,10 +15,14 @@ Uses SysUtils, Classes,
 Type
 
   TUser = TUser_Type;
-  
+
   { TUserService_ServiceImp }
 
-  TUserService_ServiceImp=class(TBaseServiceImplementation,UserService)
+  TUserService_ServiceImp=class(TActivableServiceImplementation,UserService)
+  protected
+    procedure Activate();override;
+    procedure Deactivate();override;
+    function CanBePooled() : Boolean;override;
   Protected
     function GetList():TUserArray;
     procedure Add(
@@ -33,6 +37,9 @@ Type
     function Delete(
       Const AName : string
     ):boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   End;
 
   const sDATA_FILE_NAME = 'sample.data';
@@ -41,7 +48,7 @@ Type
   procedure SaveDataToFile(const AFileName : string);
 
 Implementation
-uses Contnrs, std_cursors, rtti_filters, imp_helper;
+uses Contnrs, std_cursors, rtti_filters, imp_helper, config_objects;
 
 var
   FUserList : TObjectList = nil;
@@ -67,9 +74,6 @@ end;
 
 { TUserService_ServiceImp implementation }
 function TUserService_ServiceImp.GetList():TUserArray;
-var
-  locCrs : IObjectCursor;
-  srcUsr, locUsr : TUser;
 Begin
   Result := TUserArray.Create();
   try
@@ -135,7 +139,7 @@ End;
 
 procedure RegisterUserServiceImplementationFactory();
 Begin
-  GetServiceImplementationRegistry().Register('UserService',TImplementationFactory.Create(TUserService_ServiceImp) as IServiceImplementationFactory);
+  GetServiceImplementationRegistry().Register('UserService',TImplementationFactory.Create(TUserService_ServiceImp,wst_GetServiceConfigText('UserService')) as IServiceImplementationFactory);
 End;
 
 procedure FillSampleData();
@@ -184,6 +188,35 @@ begin
   finally
     FreeAndNil(objArray);
   end;
+end;
+
+constructor TUserService_ServiceImp.Create;
+begin
+  inherited;
+  WriteLn('TUserService_ServiceImp.Create();');
+end;
+
+procedure TUserService_ServiceImp.Activate;
+begin
+  inherited;
+  WriteLn(Format('TUserService_ServiceImp.Activate(), Self = %p',[Pointer(Self)]));
+end;
+
+function TUserService_ServiceImp.CanBePooled: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TUserService_ServiceImp.Deactivate;
+begin
+  WriteLn(Format('TUserService_ServiceImp.Deactivate(), Self = %p',[Pointer(Self)]));
+  inherited;
+end;
+
+destructor TUserService_ServiceImp.Destroy;
+begin
+  WriteLn('TUserService_ServiceImp.Destroy();');
+  inherited;
 end;
 
 initialization

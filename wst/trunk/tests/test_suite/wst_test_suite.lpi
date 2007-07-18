@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="13"/>
+      <ActiveEditorIndexAtStart Value="14"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -141,16 +141,18 @@
         <Filename Value="testmetadata_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="testmetadata_unit"/>
-        <CursorPos X="44" Y="180"/>
-        <TopLine Value="153"/>
+        <CursorPos X="48" Y="180"/>
+        <TopLine Value="158"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="202"/>
+        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="..\..\ws_helper\metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
         <CursorPos X="1" Y="19"/>
-        <TopLine Value="1"/>
+        <TopLine Value="67"/>
         <EditorIndex Value="10"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
@@ -285,7 +287,7 @@
         <UnitName Value="test_parserdef"/>
         <CursorPos X="93" Y="76"/>
         <TopLine Value="11"/>
-        <UsageCount Value="144"/>
+        <UsageCount Value="145"/>
       </Unit30>
       <Unit31>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\inc\objpash.inc"/>
@@ -328,7 +330,7 @@
         <CursorPos X="26" Y="13"/>
         <TopLine Value="1"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="82"/>
+        <UsageCount Value="83"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -454,7 +456,7 @@
         <CursorPos X="8" Y="38"/>
         <TopLine Value="11"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit54>
       <Unit55>

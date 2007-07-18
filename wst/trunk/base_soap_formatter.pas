@@ -158,13 +158,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
     ):TDOMNode;
-    {$IFDEF FPC}
     function PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;
-    {$ENDIF}
     function PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -192,12 +190,12 @@ type
       Var   AName     : String;
       Var   AData     : TEnumIntType
     );
-    {$IFDEF FPC}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
     );
+    {$IFDEF FPC}
     procedure GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -700,7 +698,6 @@ begin
             );
 end;
 
-{$IFDEF FPC}
 function TSOAPBaseFormatter.PutBool(
   const AName     : String;
   const ATypeInfo : PTypeInfo;
@@ -709,7 +706,6 @@ function TSOAPBaseFormatter.PutBool(
 begin
   Result := InternalPutData(AName,ATypeInfo,LowerCase(BoolToStr(AData)));
 end;
-{$ENDIF}
 
 function TSOAPBaseFormatter.PutInt64(
   const AName      : String;
@@ -808,7 +804,6 @@ begin
     AData := GetEnumValue(ATypeInfo,locBuffer)
 End;
 
-{$IFDEF FPC}
 procedure TSOAPBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
   var   AName      : String;
@@ -824,6 +819,7 @@ begin
     AData := StrToBool(locBuffer);
 end;
 
+{$IFDEF FPC}
 procedure TSOAPBaseFormatter.GetInt(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
@@ -1337,7 +1333,7 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
+  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
@@ -1365,21 +1361,32 @@ begin
       End;
     {$ENDIF}  
     tkInteger, tkEnumeration :
-      Begin
-        enumData := 0;
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong,
-          otULong : enumData := LongInt(AData);
-        End;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          PutInt64(AName,ATypeInfo,enumData)
-        Else
-          PutEnum(AName,ATypeInfo,enumData);
-      End;
+      begin
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          boolData := Boolean(AData);
+          PutBool(AName,ATypeInfo,boolData);
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong,
+            otULong : enumData := LongInt(AData);
+          End;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            PutInt64(AName,ATypeInfo,enumData)
+          Else
+            PutEnum(AName,ATypeInfo,enumData);
+      {$IFNDEF FPC}
+        end;
+      {$ENDIF}
+      end;
     tkFloat :
       Begin
         floatDt := 0;
@@ -1516,7 +1523,7 @@ Var
   int64Data : Int64;
   strData : string;
   objData : TObject;
-  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
+  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
 begin
@@ -1548,21 +1555,33 @@ begin
       End;
     {$ENDIF}
     tkInteger, tkEnumeration :
-      Begin
-        enumData := 0;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          GetInt64(ATypeInfo,AName,enumData)
-        Else
-          GetEnum(ATypeInfo,AName,enumData);
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : ShortInt(AData) := enumData;
-          otUByte : Byte(AData) := enumData;
-          otSWord : SmallInt(AData) := enumData;
-          otUWord : Word(AData) := enumData;
-          otSLong,
-          otULong : LongInt(AData) := enumData;
-        End;
-      End;
+      begin
+      {$IFNDEF FPC}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          boolData := False;
+          GetBool(ATypeInfo,AName,boolData);
+          Boolean(AData) := boolData;
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            GetInt64(ATypeInfo,AName,enumData)
+          Else
+            GetEnum(ATypeInfo,AName,enumData);
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : ShortInt(AData) := enumData;
+            otUByte : Byte(AData) := enumData;
+            otSWord : SmallInt(AData) := enumData;
+            otUWord : Word(AData) := enumData;
+            otSLong,
+            otULong : LongInt(AData) := enumData;
+          End;
+      {$IFNDEF FPC}
+        end;
+      {$ENDIF}
+      end;
     tkFloat :
       Begin
         floatDt := 0;

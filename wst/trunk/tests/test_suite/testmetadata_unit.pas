@@ -177,7 +177,7 @@ begin
       AssertNotNull('params pointer',po^.Params);
         pop := po^.Params;
         AssertEquals('param name','result',pop^.Name);
-        AssertEquals('param type name','int',pop^.TypeName);
+        AssertEquals('param type name','integer',pop^.TypeName);
         AssertEquals('param modifier',ord(argOut),ord(pop^.Modifier));
         
      rp^.NameSpace := 'http://test_name_space/';

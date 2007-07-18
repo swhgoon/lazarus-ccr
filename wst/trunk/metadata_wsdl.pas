@@ -76,12 +76,18 @@ type
     );
   end;
 
-  procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
+  procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);overload;
+  function GenerateWSDL(const ARepName, ARootAddress : string):string;overload;
 
   function GetWsdlTypeHandlerRegistry():IWsdlTypeHandlerRegistry;
   
 implementation
-uses {$IFNDEF FPC}wst_delphi_rtti_utils{$ELSE}wst_fpc_xml{$ENDIF};
+uses
+{$IFNDEF FPC}
+  wst_delphi_rtti_utils
+{$ELSE}
+  wst_fpc_xml, XmlWrite
+{$ENDIF};
 
 const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
@@ -567,6 +573,40 @@ begin
     end;
   end;
   
+end;
+
+function GenerateWSDL(const ARepName, ARootAddress : string):string;overload;
+var
+  strm : TMemoryStream;
+  rep : PServiceRepository;
+  doc :TXMLDocument;
+  i : SizeInt;
+  s : string;
+begin
+  Result := '';
+  rep := nil;
+  doc := Nil;
+  i := GetModuleMetadataMngr().IndexOfName(ARepName);
+  if ( i < 0 ) then
+    Exit;
+  strm := TMemoryStream.Create();
+  try
+    s := GetModuleMetadataMngr().GetRepositoryName(i);
+    GetModuleMetadataMngr().LoadRepositoryName(s,ARootAddress,rep);
+    strm.Clear();
+    doc := CreateDoc();
+    GenerateWSDL(rep,doc);
+    WriteXMLFile(doc,strm);
+    i := strm.Size;
+    if ( i > 0 ) then begin
+      SetLength(Result,i);
+      Move(strm.memory^,Result[1],i);
+    end;
+  finally
+    ReleaseDomNode(doc);
+    strm.Free();
+    GetModuleMetadataMngr().ClearRepository(rep);
+  end;
 end;
 
 function GetWsdlTypeHandlerRegistry():IWsdlTypeHandlerRegistry;

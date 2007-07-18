@@ -97,7 +97,6 @@ end;
 
 function NodeToBuffer(ANode : TDOMNode):string ;
 var
-  locStream : TStringStream;
   locNodeEx : IDOMNodeEx;
 begin
   if Supports(ANode,IDOMNodeEx,locNodeEx) then begin

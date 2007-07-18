@@ -82,14 +82,16 @@ Type
     );
   end;
 
-  IServerServiceRegistry = Interface
+  IServerServiceRegistry = interface
     ['{83E7BBEB-A33D-4A3E-896D-D351C2819009}']
     function Find(const AServiceName : string):IServerService;
     procedure Register(
       const AServiceName : string;
             AFactory     : IItemFactory
     );
-  End;
+    function GetCount() : Integer;
+    function GetName(const AIndex : Integer) : string;
+  end;
 
   IServiceImplementationFactory = interface(IItemFactoryEx)
     ['{23A745BC-5F63-404D-BF53-55A6E64DE5BE}']
@@ -277,7 +279,9 @@ type
   TServerServiceRegistry = class(TBaseFactoryRegistry,IServerServiceRegistry)
   protected
     function Find(const AServiceName : string):IServerService;
-  End;
+    function GetCount() : Integer;
+    function GetName(const AIndex : Integer) : string;
+  end;
 
 { TBaseFormatterRegistryItem }
 
@@ -389,6 +393,16 @@ Type
     property Verb : string Read FVerb;
     property VerbHandler : TServiceVerbMethod Read FVerbHandler;
   End;
+
+function TServerServiceRegistry.GetCount: Integer;
+begin
+  Result := Count;
+end;
+
+function TServerServiceRegistry.GetName(const AIndex: Integer): string;
+begin
+  Result := Item[AIndex].Name;
+end;
 
 { TServiceVerbItem }
 

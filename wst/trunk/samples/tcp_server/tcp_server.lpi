@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="12"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,15 +30,15 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="50">
+    <Units Count="51">
       <Unit0>
         <Filename Value="tcp_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_server"/>
-        <CursorPos X="1" Y="53"/>
+        <CursorPos X="33" Y="40"/>
         <TopLine Value="29"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -77,8 +77,8 @@
       <Unit6>
         <Filename Value="..\..\server_service_soap.pas"/>
         <UnitName Value="server_service_soap"/>
-        <CursorPos X="53" Y="177"/>
-        <TopLine Value="157"/>
+        <CursorPos X="42" Y="32"/>
+        <TopLine Value="16"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="29"/>
         <Loaded Value="True"/>
@@ -117,8 +117,8 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="3" Y="27"/>
         <TopLine Value="5"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="83"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -126,7 +126,7 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="15" Y="307"/>
         <TopLine Value="293"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="31"/>
         <Bookmarks Count="1">
           <Item0 X="19" Y="545" ID="0"/>
@@ -138,9 +138,7 @@
         <UnitName Value="std_cursors"/>
         <CursorPos X="14" Y="21"/>
         <TopLine Value="7"/>
-        <EditorIndex Value="14"/>
         <UsageCount Value="36"/>
-        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\..\wst_rtti_filter\cursor_intf.pas"/>
@@ -154,7 +152,7 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="48" Y="34"/>
         <TopLine Value="11"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -220,7 +218,7 @@
         <UnitName Value="server_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="46"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -235,7 +233,7 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="1" Y="56"/>
         <TopLine Value="40"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit27>
@@ -249,9 +247,11 @@
       <Unit29>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="65" Y="313"/>
-        <TopLine Value="304"/>
-        <UsageCount Value="8"/>
+        <CursorPos X="24" Y="967"/>
+        <TopLine Value="941"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\typinfo.pp"/>
@@ -273,7 +273,7 @@
         <UnitName Value="imp_helper"/>
         <CursorPos X="1" Y="44"/>
         <TopLine Value="32"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="53"/>
       </Unit32>
       <Unit33>
         <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\persist.inc"/>
@@ -297,9 +297,9 @@
       <Unit36>
         <Filename Value="..\..\synapse_tcp_server.pas"/>
         <UnitName Value="synapse_tcp_server"/>
-        <CursorPos X="3" Y="325"/>
-        <TopLine Value="309"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="40" Y="92"/>
+        <TopLine Value="67"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit36>
@@ -335,9 +335,7 @@
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="2407"/>
         <TopLine Value="2393"/>
-        <EditorIndex Value="13"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit41>
       <Unit42>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
@@ -345,8 +343,8 @@
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="1" Y="83"/>
         <TopLine Value="69"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="34"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit42>
       <Unit43>
@@ -354,7 +352,7 @@
         <UnitName Value="base_xmlrpc_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit43>
@@ -381,8 +379,8 @@
         <Filename Value="..\..\server_listener.pas"/>
         <UnitName Value="server_listener"/>
         <CursorPos X="3" Y="28"/>
-        <TopLine Value="14"/>
-        <EditorIndex Value="7"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit47>
@@ -397,132 +395,29 @@
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="2407"/>
         <TopLine Value="2393"/>
-        <EditorIndex Value="12"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit49>
+      <Unit50>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\base\winunits\comobj.pp"/>
+        <UnitName Value="comobj"/>
+        <CursorPos X="14" Y="97"/>
+        <TopLine Value="114"/>
+        <UsageCount Value="10"/>
+      </Unit50>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="302" Column="5" TopLine="270"/>
+        <Caret Line="92" Column="40" TopLine="81"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="308" Column="5" TopLine="276"/>
+        <Filename Value="tcp_server.pas"/>
+        <Caret Line="40" Column="33" TopLine="29"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="287" Column="54" TopLine="267"/>
+        <Filename Value="..\..\server_service_soap.pas"/>
+        <Caret Line="32" Column="42" TopLine="16"/>
       </Position3>
-      <Position4>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="75" Column="1" TopLine="62"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="79" Column="1" TopLine="76"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="46" Column="17" TopLine="32"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="205" Column="104" TopLine="191"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="254" Column="35" TopLine="240"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="61" Column="24" TopLine="47"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="226" Column="19" TopLine="221"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="256" Column="56" TopLine="242"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="263" Column="1" TopLine="247"/>
-      </Position12>
-      <Position13>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="30" Column="17" TopLine="15"/>
-      </Position13>
-      <Position14>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="39" Column="1" TopLine="25"/>
-      </Position14>
-      <Position15>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="51" Column="11" TopLine="28"/>
-      </Position15>
-      <Position16>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="30" Column="26" TopLine="28"/>
-      </Position16>
-      <Position17>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="52" Column="31" TopLine="28"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="300" Column="1" TopLine="266"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="81" Column="41" TopLine="63"/>
-      </Position19>
-      <Position20>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="52" Column="40" TopLine="28"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="81" Column="50" TopLine="65"/>
-      </Position21>
-      <Position22>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="52" Column="40" TopLine="28"/>
-      </Position22>
-      <Position23>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="53" Column="16" TopLine="29"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="315" Column="5" TopLine="283"/>
-      </Position24>
-      <Position25>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="37" Column="19" TopLine="29"/>
-      </Position25>
-      <Position26>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="52" Column="21" TopLine="29"/>
-      </Position26>
-      <Position27>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="267" Column="24" TopLine="247"/>
-      </Position27>
-      <Position28>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="52" Column="27" TopLine="29"/>
-      </Position28>
-      <Position29>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="53" Column="1" TopLine="29"/>
-      </Position29>
-      <Position30>
-        <Filename Value="..\user_service_intf_imp.pas"/>
-        <Caret Line="56" Column="1" TopLine="40"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

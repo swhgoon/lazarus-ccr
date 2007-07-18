@@ -49,8 +49,6 @@ type
     FHTTPServerObject: TIdHTTPServer;
     FRootAddress : string;
   private
-    function GenerateWSDLTable():string;
-
     procedure ProcessWSDLRequest(
           {$IFDEF INDY_10}
           AContext        : TIdContext;
@@ -93,18 +91,14 @@ type
 
 
 implementation
-uses base_service_intf,
-     server_service_intf, server_service_imputils,
-     server_service_soap, server_binary_formatter, server_service_xmlrpc,
-     metadata_repository, metadata_wsdl,
+uses
 {$IFNDEF FPC}
-     ActiveX, XMLDoc,XMLIntf,xmldom, wst_delphi_xml,
-{$ELSE}
-     DOM, XMLWrite, wst_fpc_xml,
+     ActiveX,
 {$ENDIF}
-     metadata_service, metadata_service_binder, metadata_service_imp,
+     base_service_intf,
+     server_service_intf, server_service_imputils,
+     metadata_wsdl;
 
-     user_service_intf, user_service_intf_binder, user_service_intf_imp;
 
 {$IFNDEF FPC}
 type
@@ -129,11 +123,6 @@ begin
 end;
 {$ENDIF}
 
-const
-  sSEPARATOR = '/';
-  sSERVICES_PREFIXE = 'services';
-  sWSDL = 'WSDL';
-
 function ExtractNextPathElement(var AFullPath : string):string;
 var
   i : SizeInt;
@@ -154,77 +143,7 @@ begin
   end;
 end;
 
-function GetWSDL(const ARepName, ARootAddress: shortstring):string;
-var
-  strm : TMemoryStream;
-  rep : PServiceRepository;
-  doc :TXMLDocument;
-  i : SizeInt;
-  s : string;
-begin
-  Result := '';
-  rep := nil;
-  doc := Nil;
-  i := GetModuleMetadataMngr().IndexOfName(ARepName);
-  if ( i < 0 ) then
-    Exit;
-  strm := TMemoryStream.Create();
-  try
-    s := GetModuleMetadataMngr().GetRepositoryName(i);
-    GetModuleMetadataMngr().LoadRepositoryName(s,ARootAddress,rep);
-    //if ( GetModuleMetadataMngr().LoadRepositoryName(s,rep) > 0 ) then
-      //rep^.namespace := 'urn:wst';
-    strm.Clear();
-    doc := CreateDoc();
-    GenerateWSDL(rep,doc);
-    WriteXMLFile(doc,strm);
-    i := strm.Size;
-    if ( i > 0 ) then begin
-      SetLength(Result,i);
-      Move(strm.memory^,Result[1],i);
-    end;
-  finally
-    ReleaseDomNode(doc);
-    strm.Free();
-    GetModuleMetadataMngr().ClearRepository(rep);
-  end;
-end;
-
-
 { TwstIndyHttpListener }
-
-function TwstIndyHttpListener.GenerateWSDLTable(): string;
-var
-  r : IModuleMetadataMngr;
-  i : Integer;
-begin
-  r := GetModuleMetadataMngr();
-  Result := '<html>' +
-              '<head>'+
-                '<title>'+
-                  'The Web Services Toolkit generated Metadata table'+
-                '</title>'+
-                '<body>' +
-                  '<p BGCOLOR="#DDEEFF"><FONT FACE="Arial" COLOR="#0000A0" SIZE="+2">The following repositories has available. Click on the link to view the corresponding WSDL.</FONT></p>'+
-                  '<table width="100%">';
-
-  for i := 0 to Pred(r.GetCount()) do begin
-    Result := Result +
-                '<tr>' +
-                      '<td align="left">' +
-                          Format('<a href="%s">',[sSEPARATOR+sSERVICES_PREFIXE+sSEPARATOR+sWSDL+sSEPARATOR+r.GetRepositoryName(i)])+
-                          r.GetRepositoryName(i) +
-                          '</a>'+
-                      '</td>' +
-                '</tr>';
-  end;
-  Result := Result +
-
-                  '</table>'+
-                '</body>'+
-              '</head>'+
-            '</html>';
-end;
 
 procedure TwstIndyHttpListener.ProcessWSDLRequest(
       {$IFDEF INDY_10}
@@ -241,7 +160,7 @@ begin
   locRepName := ExtractNextPathElement(APath);
   if AnsiSameText(sWSDL,locRepName) then
     locRepName := ExtractNextPathElement(APath);
-  strBuff := GetWSDL(locRepName,FRootAddress);
+  strBuff := GenerateWSDL(locRepName,FRootAddress);
   i := Length(strBuff);
   if ( i > 0 ) then begin
     AResponseInfo.ContentType := 'text/xml';
@@ -250,7 +169,7 @@ begin
     AResponseInfo.ContentStream.Write(strBuff[1],i);
     Exit;
   end;
-  AResponseInfo.ContentText := GenerateWSDLTable();
+  AResponseInfo.ContentText := GenerateWSDLHtmlTable();
   AResponseInfo.ContentType := 'text/html';
 end;
 
@@ -395,17 +314,6 @@ begin
 end;
 
 initialization
-  RegisterStdTypes();
-  Server_service_RegisterBinaryFormat();
-  Server_service_RegisterSoapFormat();
-  Server_service_RegisterXmlRpcFormat();
 
-  RegisterUserServiceImplementationFactory();
-  Server_service_RegisterUserServiceService();
-
-  Register_user_service_intf_ServiceMetadata();
-
-  RegisterWSTMetadataServiceImplementationFactory();
-  Server_service_RegisterWSTMetadataServiceService();
 
 end.

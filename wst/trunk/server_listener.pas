@@ -21,6 +21,11 @@ uses
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
+const
+  sSEPARATOR = '/';
+  sSERVICES_PREFIXE = 'services';
+  sWSDL = 'WSDL';
+  
 type
 
   TListnerNotifyMessage = procedure(Sender : TObject; const AMsg : string) of object;
@@ -36,8 +41,45 @@ type
     property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write FOnNotifyMessage;
   end;
 
-
+  function GenerateWSDLHtmlTable(): string;
+  
 implementation
+uses base_service_intf, metadata_repository,
+     metadata_service, metadata_service_binder, metadata_service_imp ;
+
+
+function GenerateWSDLHtmlTable(): string;
+var
+  r : IModuleMetadataMngr;
+  i : Integer;
+begin
+  r := GetModuleMetadataMngr();
+  Result := '<html>' +
+              '<head>'+
+                '<title>'+
+                  'The Web Services Toolkit generated Metadata table'+
+                '</title>'+
+                '<body>' +
+                  '<p BGCOLOR="#DDEEFF"><FONT FACE="Arial" COLOR="#0000A0" SIZE="+2">The following repositories has available. Click on the link to view the corresponding WSDL.</FONT></p>'+
+                  '<table width="100%">';
+
+  for i := 0 to Pred(r.GetCount()) do begin
+    Result := Result +
+                '<tr>' +
+                      '<td align="left">' +
+                          Format('<a href="%s">',[sSEPARATOR+sSERVICES_PREFIXE+sSEPARATOR+sWSDL+sSEPARATOR+r.GetRepositoryName(i)])+
+                          r.GetRepositoryName(i) +
+                          '</a>'+
+                      '</td>' +
+                '</tr>';
+  end;
+  Result := Result +
+
+                  '</table>'+
+                '</body>'+
+              '</head>'+
+            '</html>';
+end;
 
 { TwstListener }
 
@@ -52,4 +94,9 @@ begin
     FOnNotifyMessage(Self,AMsg);
 end;
 
+initialization
+  RegisterStdTypes();
+  RegisterWSTMetadataServiceImplementationFactory();
+  Server_service_RegisterWSTMetadataServiceService();
+  
 end.

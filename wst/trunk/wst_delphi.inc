@@ -2,7 +2,7 @@
   type
     QWord = type Int64;
     DWORD = LongWord;
-    PtrInt = Cardinal;
+    PtrInt = Integer;
     PByteArray = ^ByteArray;
     ByteArray = array[0..$effffff] of Byte;
     PtrUInt = Cardinal;

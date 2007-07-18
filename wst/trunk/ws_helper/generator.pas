@@ -688,12 +688,12 @@ begin
   NewLine();
   WriteLn('initialization');
   NewLine();
-  s := Format('Register_%s_NameSpace',[SymbolTable.CurrentModule.Name]);
+  WriteLn('  {$i %s.%s}',[SymbolTable.CurrentModule.Name,sWST_EXTENSION]);
+  NewLine();
+  s := Format('Register_%s_ServiceMetadata',[SymbolTable.CurrentModule.Name]);
   WriteLn('  {$IF DECLARED(%s)}',[s]);
   WriteLn('  %s();',[s]);
   WriteLn('  {$IFEND}');
-  NewLine();
-  WriteLn('  {$i %s.%s}',[SymbolTable.CurrentModule.Name,sWST_EXTENSION]);
   NewLine();
   WriteLn('End.');
 end;
@@ -1142,6 +1142,7 @@ begin
   SetCurrentStream(FImpStream);
   WriteLn('');
   WriteLn('Implementation');
+  WriteLn('uses config_objects;');
 end;
 
 procedure TImplementationGenerator.GenerateUnitImplementationFooter();
@@ -1323,7 +1324,7 @@ var
       WriteLn('procedure Register%sImplementationFactory();',[strBuff]);
       WriteLn('Begin');
         IncIndent();
-          WriteLn('GetServiceImplementationRegistry().Register(%s,TImplementationFactory.Create(%s) as IServiceImplementationFactory);',[QuotedStr(AIntf.Name),strClassName]);
+          WriteLn('GetServiceImplementationRegistry().Register(%s,TImplementationFactory.Create(%s,wst_GetServiceConfigText(%s)) as IServiceImplementationFactory);',[QuotedStr(AIntf.Name),strClassName,QuotedStr(AIntf.Name)]);
         DecIndent();
       WriteLn('End;');
     EndAutoIndent();

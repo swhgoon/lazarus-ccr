@@ -91,7 +91,7 @@ type
 
   IItemFactoryEx = interface(IItemFactory)
     ['{66B77926-7E45-4780-8FFB-FB78625EDC1D}']
-    procedure ReleaseInstance(var AInstance);
+    procedure ReleaseInstance(const AInstance : IInterface);
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -1051,7 +1051,7 @@ type
     );
     destructor Destroy();override;
     function Get(const ATimeOut : Cardinal) : IInterface;
-    procedure Release(var AItem : IInterface);
+    procedure Release(const AItem : IInterface);
     property Min : PtrInt read FMin;
     property Max : PtrInt read FMax;
   end;
@@ -1074,7 +1074,7 @@ type
     procedure SetPoolMin(const AValue: PtrInt);
   protected
     function CreateInstance():IInterface;override;
-    procedure ReleaseInstance(var AInstance);virtual;
+    procedure ReleaseInstance(const AInstance : IInterface);virtual;
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -1768,8 +1768,8 @@ begin
                       if ( pt^.Kind = tkEnumeration ) and
                          ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                       then begin
-                        boolData := Boolean(GetOrdProp(AObject,p^.Name));
-                        AStore.Put(propName,pt,boolData);
+                        AStore.Get(pt,propName,boolData);
+                        SetPropValue(AObject,p^.Name,boolData);
                       end else begin
                     {$ENDIF}
                         FillChar(enumData,SizeOf(enumData),#0);
@@ -1805,10 +1805,10 @@ begin
                               int64Data := enumData.ULongIntData;
                             End;
                         End;
+                        SetOrdProp(AObject,p^.Name,int64Data);
                     {$IFNDEF FPC}
                       end;
                     {$ENDIF}
-                      SetOrdProp(AObject,p^.Name,int64Data);
                     End;
                   tkFloat :
                     Begin
@@ -2146,16 +2146,10 @@ begin
   end;
 end;
 
-procedure TSimpleItemFactoryEx.ReleaseInstance(var AInstance);
-var
-  tmpIntf : IInterface;
+procedure TSimpleItemFactoryEx.ReleaseInstance(const AInstance : IInterface);
 begin
-  tmpIntf := IInterface(AInstance);
-  Pointer(AInstance) := nil;
   if Pooled then begin
-    FPool.Release(tmpIntf);
-  end else begin
-    tmpIntf := nil;
+    FPool.Release(AInstance);
   end;
 end;
 
@@ -4396,14 +4390,14 @@ begin
   end;
 end;
 
-procedure TIntfPool.Release(var AItem: IInterface);
+procedure TIntfPool.Release(const AItem: IInterface);
 var
   i : PtrInt;
 begin
   for i := 0 to Pred(FList.Count) do begin
     if ( TIntfPoolItem(FList[i]).Intf = AItem ) then begin
       TIntfPoolItem(FList[i]).Used := False;
-      AItem := nil;
+      FLock.Release();
       Break;
     end;
   end;
@@ -4440,7 +4434,6 @@ begin
   buffer := AStore.ReadBuffer(AName);
   if ( AObject = nil ) then
     AObject := Create();
-  writeLn;writeLn(AObject.ClassName);
   locObj := AObject as TStringBufferRemotable;;
   locObj.Data := buffer;
 end;
