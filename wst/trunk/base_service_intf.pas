@@ -92,6 +92,7 @@ type
   IItemFactoryEx = interface(IItemFactory)
     ['{66B77926-7E45-4780-8FFB-FB78625EDC1D}']
     procedure ReleaseInstance(const AInstance : IInterface);
+    procedure DiscardInstance(const AInstance : IInterface);
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -1042,7 +1043,7 @@ type
     FMin : PtrInt;
     FMax : PtrInt;
   private
-    function CreateNew() : TIntfPoolItem;
+    function CreateNew(const AUsed : Boolean) : TIntfPoolItem;
     function TryGet(const AIndex : PtrInt) : Boolean;
   public
     constructor Create(
@@ -1052,6 +1053,8 @@ type
     destructor Destroy();override;
     function Get(const ATimeOut : Cardinal) : IInterface;
     procedure Release(const AItem : IInterface);
+    procedure Discard(const AItem : IInterface);
+    function GetInstancesCount() : PtrInt;
     property Min : PtrInt read FMin;
     property Max : PtrInt read FMax;
   end;
@@ -1075,6 +1078,7 @@ type
   protected
     function CreateInstance():IInterface;override;
     procedure ReleaseInstance(const AInstance : IInterface);virtual;
+    procedure DiscardInstance(const AInstance : IInterface);virtual;
     function GetPropertyManager(
       const APropertyGroup : string;
       const ACreateIfNotExists : Boolean
@@ -2151,6 +2155,12 @@ begin
   if Pooled then begin
     FPool.Release(AInstance);
   end;
+end;
+
+procedure TSimpleItemFactoryEx.DiscardInstance(const AInstance : IInterface);
+begin
+  if Pooled then
+    FPool.Discard(AInstance);
 end;
 
 function TSimpleItemFactoryEx.GetPropertyManager(
@@ -4303,7 +4313,7 @@ end;
 
 constructor TIntfPoolItem.Create(AIntf: IInterface; const AUsed: Boolean);
 begin
-  FIntf := AIntf;
+  FIntf := AIntf as IInterface;
   FUsed := AUsed;
 end;
 
@@ -4315,11 +4325,11 @@ end;
 
 { TIntfPool }
 
-function TIntfPool.CreateNew(): TIntfPoolItem;
+function TIntfPool.CreateNew(const AUsed : Boolean): TIntfPoolItem;
 begin
   FCS.Acquire();
   try
-    Result := TIntfPoolItem.Create(FFactory.CreateInstance(),True);
+    Result := TIntfPoolItem.Create(FFactory.CreateInstance(),AUsed);
     FList.Add(Result);
   finally
     FCS.Release();
@@ -4349,7 +4359,8 @@ constructor TIntfPool.Create(
 var
   i : PtrInt;
 begin
-  Assert( ( AMin >= 0 ) and ( AMax >= AMin ) and ( AFactory <> nil ) );
+  if not ( ( AMin >= 0 ) and ( AMax >= AMin ) and ( AFactory <> nil ) ) then
+    raise Exception.CreateFmt('Invalid pool arguments Min = %d; Max = %d .',[AMin,AMax]);
   FMax := AMax;
   FMin := AMin;
   FFactory := AFactory;
@@ -4357,7 +4368,7 @@ begin
   FList := TObjectList.Create(True);
   FCS := TCriticalSection.Create();
   for i := 0 to Pred(AMin) do begin
-    CreateNew();
+    CreateNew(False);
   end;
 end;
 
@@ -4383,7 +4394,7 @@ begin
       end;
     end;
     if ( Result = nil ) then begin
-      Result := CreateNew().Intf;
+      Result := CreateNew(True).Intf;
     end;
   end else begin
     raise EServiceException.Create('Unable to create the object : Timeout expired.');
@@ -4393,13 +4404,43 @@ end;
 procedure TIntfPool.Release(const AItem: IInterface);
 var
   i : PtrInt;
+  a : IInterface;
 begin
+  a := AItem as IInterface;
   for i := 0 to Pred(FList.Count) do begin
-    if ( TIntfPoolItem(FList[i]).Intf = AItem ) then begin
+    if ( TIntfPoolItem(FList[i]).Intf = a ) then begin
       TIntfPoolItem(FList[i]).Used := False;
       FLock.Release();
       Break;
     end;
+  end;
+end;
+
+procedure TIntfPool.Discard(const AItem : IInterface);
+var
+  i : PtrInt;
+  a : IInterface;
+  itm : TIntfPoolItem;
+begin
+  a := AItem as IInterface;
+  for i := 0 to Pred(FList.Count) do begin
+    if ( TIntfPoolItem(FList[i]).Intf = a ) then begin
+      itm := TIntfPoolItem(FList[i]);
+      itm.FIntf := FFactory.CreateInstance() as IInterface;
+      itm.Used := False;
+      FLock.Release();
+      Break;
+    end;
+  end;
+end;
+
+function TIntfPool.GetInstancesCount() : PtrInt;
+begin
+  FCS.Acquire();
+  try
+    Result := FList.Count;
+  finally
+    FCS.Release();
   end;
 end;
 

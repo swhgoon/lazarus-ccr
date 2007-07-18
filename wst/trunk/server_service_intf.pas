@@ -191,6 +191,7 @@ Type
     IServiceImplementationFactory
   )
   protected
+    procedure ReleaseInstance(const AInstance : IInterface);override;
     procedure RegisterExtension(
       const AExtensionList : array of string
     );
@@ -678,6 +679,20 @@ end;
 
 { TImplementationFactory }
 const sSERVICES_EXTENSIONS = 'extensions';sLIST = 'list';
+
+procedure TImplementationFactory.ReleaseInstance(const AInstance : IInterface);
+var
+  objCtrl : IObjectControl;
+begin
+  if Pooled and
+     Supports(AInstance,IObjectControl,objCtrl) and
+     ( not objCtrl.CanBePooled() )
+  then begin
+    DiscardInstance(AInstance);
+  end else begin
+    inherited ReleaseInstance(AInstance);
+  end;
+end;
 
 procedure TImplementationFactory.RegisterExtension(
   const AExtensionList : array of string

@@ -9,7 +9,7 @@ uses
   base_service_intf, base_soap_formatter, binary_formatter, binary_streamer,
   server_binary_formatter, metadata_repository,
   metadata_generator, parserdefs, server_service_intf, metadata_wsdl,
-  test_parserdef, base_xmlrpc_formatter, wst_fpc_xml;
+  test_parserdef, base_xmlrpc_formatter, wst_fpc_xml, test_utilities;
 
 Const
   ShortOpts = 'alh';
