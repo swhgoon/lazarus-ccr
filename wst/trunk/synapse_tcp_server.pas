@@ -89,7 +89,7 @@ type
   
 implementation
 uses binary_streamer, server_service_intf, server_service_imputils
-     {$IFNDEF FPC},ActiveX{$ENDIF}, ComObj;
+     {$IFNDEF FPC},ActiveX, ComObj{$ENDIF};
 
 
 { TClientHandlerThread }

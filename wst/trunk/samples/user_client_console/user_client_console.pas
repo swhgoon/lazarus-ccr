@@ -5,7 +5,7 @@ program user_client_console;
 uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
-  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, ics_tcp_protocol, ics_http_protocol,
+  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, //ics_tcp_protocol, ics_http_protocol,
   soap_formatter, binary_formatter,
   user_service_intf, xmlrpc_formatter;
 
@@ -146,6 +146,7 @@ var
 procedure CreateProxy();
 const ADDRESS_MAP : array[TTransportType] of string = (
         'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
+        //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
         'TCP:Address=127.0.0.1;Port=1234;target=UserService',
         //'http:Address=http://127.0.0.1:8080/wst/services/UserService/?format=soap'
         'http:Address=http://127.0.0.1:8000/services/UserService'

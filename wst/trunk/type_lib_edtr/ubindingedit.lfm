@@ -52,21 +52,21 @@ object fBindingEdit: TfBindingEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Interface Binding'
-      ClientHeight = 278
-      ClientWidth = 392
+      ClientHeight = 270
+      ClientWidth = 396
       object Label1: TLabel
         Left = 12
-        Height = 14
+        Height = 17
         Top = 26
-        Width = 28
+        Width = 45
         Caption = 'Name'
         ParentColor = False
       end
       object Label2: TLabel
         Left = 12
-        Height = 14
+        Height = 17
         Top = 98
-        Width = 40
+        Width = 60
         Caption = 'Address'
         ParentColor = False
       end
@@ -103,7 +103,7 @@ object fBindingEdit: TfBindingEdit
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 74
+        ClientHeight = 71
         ClientWidth = 356
         Columns = 2
         Items.Strings = (
