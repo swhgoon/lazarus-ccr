@@ -94,34 +94,13 @@ implementation
 uses
 {$IFNDEF FPC}
      ActiveX,
+  {$IFDEF INDY_9}
+     wst_indy9_utils,
+  {$ENDIF}
 {$ENDIF}
      base_service_intf,
      server_service_intf, server_service_imputils,
      metadata_wsdl;
-
-
-{$IFNDEF FPC}
-type
-  TwstIndy9Thread = class(TIdPeerThread)
-  protected
-    procedure AfterExecute; override;
-    procedure BeforeExecute; override;
-  end;
-
-{ TwstIndy9Thread }
-
-procedure TwstIndy9Thread.AfterExecute;
-begin
-  CoUninitialize();
-  inherited;
-end;
-
-procedure TwstIndy9Thread.BeforeExecute;
-begin
-  inherited;
-  CoInitialize(nil);
-end;
-{$ENDIF}
 
 function ExtractNextPathElement(var AFullPath : string):string;
 var
@@ -273,8 +252,8 @@ var
   b : TIdSocketHandle;
 begin
   inherited Create();
-  FHTTPServerObject := TIdHTTPServer.Create({$IFNDEF INDY_10}nil{$ENDIF});
-{$IFNDEF FPC}
+  FHTTPServerObject := TIdHTTPServer.Create({$IFDEF INDY_9}nil{$ENDIF});
+{$IFDEF INDY_9}
   FHTTPServerObject.ThreadClass := TwstIndy9Thread;
 {$ENDIF}
   b := FHTTPServerObject.Bindings.Add();
@@ -310,7 +289,7 @@ end;
 
 class function TwstIndyHttpListener.GetDescription: string;
 begin
-  Result := 'Indy HTTP Listener';
+  Result := 'WST Indy HTTP Listener';
 end;
 
 initialization

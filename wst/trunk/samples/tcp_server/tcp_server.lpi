@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="7"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -35,8 +35,8 @@
         <Filename Value="tcp_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_server"/>
-        <CursorPos X="33" Y="40"/>
-        <TopLine Value="29"/>
+        <CursorPos X="34" Y="52"/>
+        <TopLine Value="13"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="84"/>
         <Loaded Value="True"/>
@@ -117,7 +117,7 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="3" Y="27"/>
         <TopLine Value="5"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="84"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -152,7 +152,7 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="48" Y="34"/>
         <TopLine Value="11"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -218,7 +218,7 @@
         <UnitName Value="server_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="46"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -233,7 +233,7 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="1" Y="56"/>
         <TopLine Value="40"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit27>
@@ -297,11 +297,9 @@
       <Unit36>
         <Filename Value="..\..\synapse_tcp_server.pas"/>
         <UnitName Value="synapse_tcp_server"/>
-        <CursorPos X="40" Y="92"/>
-        <TopLine Value="67"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="1" Y="251"/>
+        <TopLine Value="237"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit36>
       <Unit37>
         <Filename Value="..\..\semaphore.pas"/>
@@ -378,9 +376,9 @@
       <Unit47>
         <Filename Value="..\..\server_listener.pas"/>
         <UnitName Value="server_listener"/>
-        <CursorPos X="3" Y="28"/>
+        <CursorPos X="37" Y="36"/>
         <TopLine Value="21"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit47>
@@ -393,8 +391,8 @@
       <Unit49>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
-        <CursorPos X="1" Y="2407"/>
-        <TopLine Value="2393"/>
+        <CursorPos X="7" Y="1397"/>
+        <TopLine Value="1375"/>
         <UsageCount Value="10"/>
       </Unit49>
       <Unit50>
@@ -405,19 +403,11 @@
         <UsageCount Value="10"/>
       </Unit50>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="..\..\synapse_tcp_server.pas"/>
-        <Caret Line="92" Column="40" TopLine="81"/>
-      </Position1>
-      <Position2>
         <Filename Value="tcp_server.pas"/>
-        <Caret Line="40" Column="33" TopLine="29"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="32" Column="42" TopLine="16"/>
-      </Position3>
+        <Caret Line="52" Column="34" TopLine="29"/>
+      </Position1>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -430,6 +420,7 @@
       <IncludeFiles Value="..\..\;..\"/>
       <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\;$(LazarusDir)\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
+      <SrcPath Value="$(LazarusDir)\others_package\synapse\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

@@ -22,7 +22,7 @@ uses
   server_service_intf in '..\..\..\server_service_intf.pas';
 
 var
-  AppObject : TwstIndyHttpListener;
+  AppObject : TwstListener; AppObject2 : TwstListener;
 begin
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
