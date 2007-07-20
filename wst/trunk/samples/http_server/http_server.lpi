@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -39,10 +39,10 @@
         <Filename Value="http_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="http_server"/>
-        <CursorPos X="35" Y="6"/>
+        <CursorPos X="38" Y="7"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="131"/>
+        <UsageCount Value="132"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -57,8 +57,8 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="62"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -66,8 +66,8 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="80" Y="80"/>
         <TopLine Value="66"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="63"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -80,10 +80,10 @@
       <Unit5>
         <Filename Value="../user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
-        <CursorPos X="46" Y="21"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="60"/>
+        <CursorPos X="60" Y="51"/>
+        <TopLine Value="32"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -91,8 +91,8 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="37" Y="247"/>
         <TopLine Value="224"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="46"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -101,8 +101,8 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="7" Y="3"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="82"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="83"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -110,8 +110,8 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="7"/>
-        <EditorIndex Value="11"/>
-        <UsageCount Value="63"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -119,17 +119,15 @@
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="140"/>
         <TopLine Value="113"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="24"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="25"/>
       </Unit9>
       <Unit10>
         <Filename Value="../../server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="62"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -383,8 +381,8 @@
         <UnitName Value="indy_http_server"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="37"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
       </Unit47>
       <Unit48>
@@ -422,10 +420,10 @@
       <Unit53>
         <Filename Value="../../config_objects.pas"/>
         <UnitName Value="config_objects"/>
-        <CursorPos X="59" Y="16"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="26"/>
+        <CursorPos X="74" Y="99"/>
+        <TopLine Value="85"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit53>
       <Unit54>
@@ -440,8 +438,8 @@
         <UnitName Value="indy_tcp_server"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="30"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit55>
       <Unit56>
@@ -557,11 +555,19 @@
         <UsageCount Value="13"/>
       </Unit71>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
-        <Filename Value="../../semaphore.pas"/>
-        <Caret Line="141" Column="1" TopLine="113"/>
+        <Filename Value="http_server.pas"/>
+        <Caret Line="12" Column="56" TopLine="1"/>
       </Position1>
+      <Position2>
+        <Filename Value="../user_service_intf_imp.pas"/>
+        <Caret Line="51" Column="60" TopLine="32"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../config_objects.pas"/>
+        <Caret Line="99" Column="60" TopLine="76"/>
+      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

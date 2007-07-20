@@ -96,7 +96,7 @@ end;
 
 function wst_GetConfigFileName():string;
 begin
-  Result := IncludeTrailingPathDelimiter(GetAppConfigDir(True)) + sCONFIG_FILE_NAME;
+  Result := ChangeFileExt(GetAppConfigFile(True),'.' + sCONFIG_FILE_NAME);
 end;
 
 procedure wst_LoadConfigObject(AConfig: TWstConfigurationObject; AStream : TStream);overload;
