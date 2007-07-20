@@ -2278,7 +2278,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode): Integer; virtual;
-    class function GetCheckImageListFor(Kind: TCheckImageKind): TBitmap; virtual;
+    procedure GetCheckImageList; virtual;
     function GetClientRect: TRect; override;
     function GetColumnClass: TVirtualTreeColumnClass; virtual;
     function GetHeaderClass: TVTHeaderClass; virtual;
@@ -3410,6 +3410,17 @@ type // streaming support
   end;
 
 const
+  CheckImagesStrings: array [TCheckImageKind] of String =
+    ('VT_CHECK_LIGHT',
+    'VT_CHECK_DARK',
+    'VT_TICK_LIGHT',
+    'VT_TICK_DARK',
+    'VT_FLAT',
+    'VT_XP',
+    '',//ckCustom,
+    '',//ckSystem,
+    ''//ckSystemFlat
+     );
   MagicID: TMagicID = (#$2045, 'V', 'T', WideChar(VTTreeStreamVersion), ' ', #$2046);
 
   // chunk IDs
@@ -3489,19 +3500,9 @@ type
 var
   WorkerThread: TWorkerThread;
   WorkEvent: TEvent;
-  LightCheckImages,                    // global light check images
-  DarkCheckImages,                     // global heavy check images
-  LightTickImages,                     // global light tick images
-  DarkTickImages,                      // global heavy check images
-  FlatImages,                          // global flat check images
-  XPImages,                            // global XP style check images
-  UtilityImages,                       // some small additional images (e.g for header dragging)
-  SystemCheckImages,                   // global system check images
-  SystemFlatCheckImages: TBitmap;   // global flat system check images
+  UtilityImages: TBitmap;              // some small additional images (e.g for header dragging)
   Initialized: Boolean;                // True if global structures have been initialized.
   NeedToUnitialize: Boolean;           // True if the OLE subsystem could be initialized successfully.
-
-{.$I lclfunctions.inc}
 
 //----------------- TClipboardFormats ----------------------------------------------------------------------------------
 
@@ -4583,40 +4584,16 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure CreateSystemImageSet(var BM: TBitmap; Flags: Cardinal; Flat: Boolean);
+procedure CreateSystemImageSet(BM: TBitmap; Flat: Boolean);
 
 // Creates a system check image set.
-// Note: the DarkCheckImages and FlatImages image lists must already be filled, as some images from them are copied here.
+// Note: some images are copied from DarkCheckImages and FlatImages
 
 const
-  MaskColor: TColor = clRed;
+  MaskColor: TColor = clFuchsia;
+  FlatToCheckKind: array[Boolean] of TCheckImageKind = (ckDarkCheck,ckFlat);
 
   //--------------- local functions -------------------------------------------
-
-  procedure AddNodeImages;
-
-  var
-    I: Integer;
-    OffsetX,
-    OffsetY: Integer;
-    SrcBM: TBitmap;
-
-  begin
-    // The offsets are used to center the node images in case the sizes differ.
-    OffsetX := (BM.Height - DarkCheckImages.Height) div 2;
-    OffsetY := (BM.Height - DarkCheckImages.Height) div 2;
-    if Flat then
-      SrcBM := FlatImages
-    else
-      SrcBM := DarkCheckImages;
-    for I := 21 to 24 do
-    begin
-      StretchMaskBlt(BM.Canvas.Handle, I*BM.Height + OffsetX, OffsetY, BM.Height, BM.Height, SrcBM.Canvas.Handle,
-        I*SrcBM.Height, 0, BM.Height, BM.Height, SrcBM.MaskHandle, 0, 0, 0);
-    end;
-  end;
-
-  //---------------------------------------------------------------------------
 
   procedure AddSystemImage(Index: Integer);
 
@@ -4664,20 +4641,23 @@ begin
   Width := 16;
   Height := 16;
   {$endif}
-  
-  // Create a temporary bitmap, which holds the intermediate images.
-  BM := TBitmap.Create;
-  BM.Width := Width * 25;
-  BM.Height := Height;
+  {$ifdef Windows}
+  //Transparent property does not work for 4bpp bitmaps (LCL bug 8823)
+  //BM.Transparent := False;
+  BM.TransparentColor := clNone;
+  {$endif}
+  BM.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
+  //DrawFrameControl is not properly implemented in gtk
+  {$ifdef Windows}
   BM.Canvas.Brush.Color := MaskColor;
-  //BM.Canvas.Brush.Style := bsSolid;
-  BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
+  //clear the first 21 images
+  BM.Canvas.FillRect(Rect(0, 0, Width * 21, BM.Height));
   // Add the 20 system checkbox and radiobutton images.
   for I := 0 to 19 do
     AddSystemImage(I);
   // Add the 4 node images from the dark check set.
-  AddNodeImages;
   BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -4761,9 +4741,6 @@ procedure InitializeGlobalStructures;
 
 // initialization of stuff global to the unit
 
-var
-  Flags: Cardinal;
-
 begin
   Initialized := True;
 
@@ -4784,29 +4761,8 @@ begin
   // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
   CF_VTREFERENCE := ClipboardRegisterFormat(CFSTR_VTREFERENCE);
 
-  LightCheckImages := TBitmap.Create;
-  LightCheckImages.LoadFromLazarusResource('VT_CHECK_LIGHT');
-
-  DarkCheckImages := TBitmap.Create;
-  DarkCheckImages.LoadFromLazarusResource('VT_CHECK_DARK');
-
-  LightTickImages := TBitmap.Create;
-  LightTickImages.LoadFromLazarusResource('VT_TICK_LIGHT');
-
-  DarkTickImages := TBitmap.Create;
-  DarkTickImages.LoadFromLazarusResource('VT_TICK_DARK');
-
-  FlatImages := TBitmap.Create;
-  FlatImages.LoadFromLazarusResource('VT_FLAT');
-
-  XPImages := TBitmap.Create;
-  XPImages.LoadFromLazarusResource('VT_XP');
-
   UtilityImages := TBitmap.Create;
   UtilityImages.LoadFromLazarusResource('VT_UTILITIES');
-
-  CreateSystemImageSet(SystemCheckImages, Flags, False);
-  CreateSystemImageSet(SystemFlatCheckImages, Flags, True);
 
   // Specify an useful timer resolution for timeGetTime.
   timeBeginPeriod(MinimumTimerInterval);
@@ -4840,24 +4796,7 @@ var
 begin
   timeEndPeriod(MinimumTimerInterval);
 
-  LightCheckImages.Free;
-  LightCheckImages := nil;
-  DarkCheckImages.Free;
-  DarkCheckImages := nil;
-  LightTickImages.Free;
-  LightTickImages := nil;
-  DarkTickImages.Free;
-  DarkTickImages := nil;
-  FlatImages.Free;
-  FlatImages := nil;
-  XPImages.Free;
-  XPImages := nil;
-  UtilityImages.Free;
-  UtilityImages := nil;
-  SystemCheckImages.Free;
-  SystemCheckImages := nil;
-  SystemFlatCheckImages.Free;
-  SystemFlatCheckImages := nil;
+  FreeAndNil(UtilityImages);
 
   if NeedToUnitialize then
     OleUninitialize;
@@ -11394,7 +11333,6 @@ begin
   DoubleBuffered := False;
 
   FCheckImageKind := ckLightCheck;
-  FCheckImages := LightCheckImages;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
@@ -11475,6 +11413,8 @@ begin
   FCustomCheckChangeLink.Free;
   FScrollBarOptions.Free;
   FOptions.Free;
+  if FCheckImages <> FCustomCheckImages then
+    FCheckImages.Free;
 
   // The window handle must be destroyed before the header is freed because it is needed in WM_NCDESTROY.
   //todo_lcl_check
@@ -13778,9 +13718,8 @@ begin
   if FCheckImageKind <> Value then
   begin
     FCheckImageKind := Value;
-    FCheckImages := GetCheckImageListFor(Value);
-    if FCheckImages = nil then
-      FCheckImages := FCustomCheckImages;
+    if toCheckSupport in FOptions.FMiscOptions then
+      GetCheckImageList;
     if HandleAllocated and (FUpdateCount = 0) and not (csLoading in ComponentState) then
       InvalidateRect(Handle, nil, False);
   end;
@@ -17638,6 +17577,8 @@ begin
   if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
      RegisterDragDrop(Handle, DragManager as IDropTarget);
 
+  if toCheckSupport in FOptions.FMiscOptions then
+    GetCheckImageList;
   UpdateScrollBars(True);
   UpdateHeaderRect;
 end;
@@ -20308,28 +20249,28 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class function TBaseVirtualTree.GetCheckImageListFor(Kind: TCheckImageKind): TBitmap;
+procedure TBaseVirtualTree.GetCheckImageList;
 
 begin
-  case Kind of
-    ckDarkCheck:
-      Result := DarkCheckImages;
-    ckLightTick:
-      Result := LightTickImages;
-    ckDarkTick:
-      Result := DarkTickImages;
-    ckLightCheck:
-      Result := LightCheckImages;
-    ckFlat:
-      Result := FlatImages;
-    ckXP:
-      Result := XPImages;
-    ckSystem:
-      Result := SystemCheckImages;
-    ckSystemFlat:
-      Result := SystemFlatCheckImages;
-    else
-      Result := nil;
+  if FCheckImageKind = ckCustom then
+  begin
+    if FCheckImages <> FCustomCheckImages then
+      FCheckImages.Free;
+    FCheckImages := FCustomCheckImages;
+  end
+  else
+  begin
+    if (FCheckImages = nil) or (FCheckImages = FCustomCheckImages) then
+      FCheckImages := TBitmap.Create;
+    case FCheckImageKind of
+      ckSystem:
+        CreateSystemImageSet(FCheckImages, False);
+      ckSystemFlat:
+        CreateSystemImageSet(FCheckImages, True);
+      else
+        FCheckImages.TransparentColor := clDefault;
+        FCheckImages.LoadFromLazarusResource(CheckImagesStrings[FCheckImageKind]);
+    end;
   end;
 end;
 
