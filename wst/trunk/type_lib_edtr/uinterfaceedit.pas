@@ -243,7 +243,7 @@ begin
   FSymbolTable.RegisterExternalAlias(FObject,typExtName);
   b := FSymbolTable.FindBinding(FObject,0);
   if ( b = nil ) then begin
-    FSymbolTable.AddBinding(Format('%sBinding',[typExtName]),FObject);
+    FSymbolTable.AddBinding(Format('%sBinding',[typExtName]),FObject).BindingStyle := bsRPC;
   end else begin
     b.Name := Format('%sBinding',[typExtName]);
   end
@@ -258,6 +258,7 @@ var
   intName : string;
   i : Integer;
   b : TwstBinding;
+  g : TGuid;
 begin
   Assert(Assigned(ASymbolTable));
   FSymbolTable := ASymbolTable;
@@ -272,9 +273,11 @@ begin
     end;
     FObject := TPasClassType(FSymbolTable.CreateElement(TPasClassType,intName,FSymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
     FObject.ObjKind := okInterface;
+    if ( CreateGUID(g) = 0 ) then
+      FObject.InterfaceGUID := GUIDToString(g);
     FSymbolTable.CurrentModule.InterfaceSection.Declarations.Add(FObject);
     FSymbolTable.CurrentModule.InterfaceSection.Types.Add(FObject);
-    FSymbolTable.AddBinding(Format('%sBinding',[FObject.Name]),FObject);
+    FSymbolTable.AddBinding(Format('%sBinding',[FObject.Name]),FObject).BindingStyle := bsRPC;
   end;
   try
     LoadFromObject();

@@ -24,7 +24,7 @@ object fAbout: TfAbout
   object Label2: TLabel
     Left = 93
     Height = 14
-    Top = 56
+    Top = 64
     Width = 108
     Caption = 'Type Library Editor'
     Font.Style = [fsBold, fsItalic]

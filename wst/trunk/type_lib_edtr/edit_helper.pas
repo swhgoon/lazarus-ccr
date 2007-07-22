@@ -52,6 +52,7 @@ type
     AOwner       : TPasProcedureType;
     ASymbolTable : TwstPasTreeContainer
   ) : TPasArgument;
+  function CreateAliasType(ASymbolTable : TwstPasTreeContainer) : TPasAliasType;
 
 
 
@@ -74,7 +75,7 @@ type
 
 implementation
 uses Contnrs, Forms, ufEnumedit, ufclassedit, uinterfaceedit, uprocedit,
-     uargedit, umoduleedit, ubindingedit, ufarrayedit;
+     uargedit, umoduleedit, ubindingedit, ufarrayedit, uftypealiasedit;
 
 type
 
@@ -163,6 +164,17 @@ type
     ):Boolean;override;
   end;
 
+  { TTypeAliasUpdater }
+
+  TTypeAliasUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+  
   { TArrayUpdater }
 
   TArrayUpdater = class(TObjectUpdater)
@@ -228,6 +240,30 @@ type
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
+
+{ TTypeAliasUpdater }
+
+class function TTypeAliasUpdater.CanHandle(AObject : TObject) : Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasAliasType);
+end;
+
+class function TTypeAliasUpdater.UpdateObject(
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+): Boolean;
+var
+  f : TfTypeAliasEdit;
+  e : TPasAliasType;
+begin
+  e := AObject as TPasAliasType;
+  f := TfTypeAliasEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
 
 { TArrayUpdater }
 
@@ -542,6 +578,19 @@ begin
   end;
 end;
 
+function CreateAliasType(ASymbolTable : TwstPasTreeContainer) : TPasAliasType;
+var
+  f : TfTypeAliasEdit;
+begin
+  Result := nil;
+  f := TfTypeAliasEdit.Create(Application);
+  try
+    f.UpdateObject(Result,etCreate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+
 { TObjectUpdater }
 
 class function TObjectUpdater.CanHandle(AObject: TObject): Boolean;
@@ -666,6 +715,7 @@ initialization
   UpdaterRegistryInst.RegisterHandler(TModuleUpdater);
   UpdaterRegistryInst.RegisterHandler(TBindingUpdater);
   UpdaterRegistryInst.RegisterHandler(TArrayUpdater);
+  UpdaterRegistryInst.RegisterHandler(TTypeAliasUpdater);
   
 finalization
   FreeAndNil(UpdaterRegistryInst);

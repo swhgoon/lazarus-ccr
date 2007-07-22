@@ -1,7 +1,7 @@
 object fClassEdit: TfClassEdit
-  Left = 702
+  Left = 358
   Height = 547
-  Top = 150
+  Top = 113
   Width = 518
   HorzScrollBar.Page = 517
   VertScrollBar.Page = 546
@@ -146,8 +146,9 @@ object fClassEdit: TfClassEdit
       object edtParent: TComboBox
         Left = 92
         Height = 21
-        Top = 59
+        Top = 58
         Width = 406
+        Anchors = [akTop, akLeft, akRight]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
         MaxLength = 0

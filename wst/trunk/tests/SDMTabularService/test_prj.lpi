@@ -172,24 +172,7 @@
         <UsageCount Value="10"/>
       </Unit16>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
-      <Position1>
-        <Filename Value="..\..\synapse_http_protocol.pas"/>
-        <Caret Line="176" Column="30" TopLine="142"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\synapse_http_protocol.pas"/>
-        <Caret Line="26" Column="4" TopLine="11"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\synapse_http_protocol.pas"/>
-        <Caret Line="13" Column="18" TopLine="13"/>
-      </Position3>
-      <Position4>
-        <Filename Value="test_prj.pas"/>
-        <Caret Line="8" Column="13" TopLine="1"/>
-      </Position4>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -201,6 +184,12 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

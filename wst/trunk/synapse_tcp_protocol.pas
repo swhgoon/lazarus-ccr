@@ -45,6 +45,8 @@ Type
     FAddress : string;
     FPort : string;
     FDefaultTimeOut: Integer;
+  private
+    procedure Connect();
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -66,6 +68,26 @@ implementation
 uses binary_streamer, Math;
 
 { TTCPTransport }
+
+procedure TTCPTransport.Connect();
+var
+  locReconnect : Boolean;
+begin
+  if ( FConnection.Socket = NOT(0) ) then begin
+    FConnection.Connect(Address,Port);
+  end else begin
+    locReconnect := False;
+    try
+      locReconnect := not FConnection.CanRead(0);
+    except
+      locReconnect := True;
+    end;
+    if locReconnect then begin
+      FConnection.CloseSocket();
+      FConnection.Connect(Address,Port);
+    end;
+  end;
+end;
 
 constructor TTCPTransport.Create();
 begin
@@ -109,8 +131,9 @@ begin
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
 
-    if ( FConnection.Socket = NOT(0) ) then
-      FConnection.Connect(Address,Port);
+    //if ( FConnection.Socket = NOT(0) ) then
+      //FConnection.Connect(Address,Port);
+    Connect();
     FConnection.SendBuffer(buffStream.Memory,buffStream.Size);
 
     bufferLen := 0;

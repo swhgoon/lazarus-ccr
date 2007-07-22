@@ -39,6 +39,7 @@ type
     actFullCollapse: TAction;
     actDelete : TAction;
     actArrayCreate : TAction;
+    actTypeALiasCreate : TAction;
     actSave : TAction;
     actNewFile: TAction;
     actRefreshView: TAction;
@@ -73,6 +74,16 @@ type
     MenuItem33 : TMenuItem;
     MenuItem34 : TMenuItem;
     MenuItem35 : TMenuItem;
+    MenuItem36 : TMenuItem;
+    MenuItem37 : TMenuItem;
+    MenuItem38 : TMenuItem;
+    MenuItem39 : TMenuItem;
+    MenuItem40 : TMenuItem;
+    MenuItem41 : TMenuItem;
+    MenuItem42 : TMenuItem;
+    MenuItem43 : TMenuItem;
+    MenuItem44 : TMenuItem;
+    MenuItem45 : TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
@@ -122,6 +133,7 @@ type
     procedure actRefreshViewExecute(Sender: TObject);
     procedure actSaveAsExecute(Sender: TObject);
     procedure actSaveExecute (Sender : TObject );
+    procedure actTypeALiasCreateExecute(Sender : TObject);
     procedure actUpdateObjectExecute(Sender: TObject);
     procedure actUpdateObjectUpdate(Sender: TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
@@ -414,6 +426,16 @@ begin
     actSaveAs.Execute() ;
 end;
 
+procedure TfWstTypeLibraryEdit.actTypeALiasCreateExecute(Sender : TObject);
+var
+  e : TPasAliasType;
+begin
+  e := CreateAliasType(FSymbolTable);
+  if Assigned(e) then begin
+    FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
+  end;
+end;
+
 procedure TfWstTypeLibraryEdit.actUpdateObjectExecute(Sender: TObject);
 var
   o : TPasElement;
@@ -560,16 +582,18 @@ var
   o : TPasElement;
   nd : TTreeNode;
 begin
-  nd := trvSchema.Selected;
-  if Assigned(nd) and Assigned(nd.Data) then begin
-    o := TPasElement(nd.Data);
-    if HasEditor(o) then begin
-      DeleteObject(o,FSymbolTable);
-      trvSchema.BeginUpdate();
-      try
-        FreeAndNil(nd);
-      finally
-        trvSchema.EndUpdate();
+  if ( MessageDlg('Delete the select object ?',mtConfirmation,mbYesNo,0) = mrYes ) then begin
+    nd := trvSchema.Selected;
+    if Assigned(nd) and Assigned(nd.Data) then begin
+      o := TPasElement(nd.Data);
+      if HasEditor(o) then begin
+        DeleteObject(o,FSymbolTable);
+        trvSchema.BeginUpdate();
+        try
+          FreeAndNil(nd);
+        finally
+          trvSchema.EndUpdate();
+        end;
       end;
     end;
   end;
@@ -763,7 +787,9 @@ begin
   end;
   if Assigned(tmpTable) then begin
     if AnsiSameText('.pas',ExtractFileExt(AFileName)) then
-      FCurrentFileName := ChangeFileExt(AFileName,'.wsdl');
+      FCurrentFileName := ChangeFileExt(AFileName,'.wsdl')
+    else
+      FCurrentFileName := AFileName;
     trvSchema.Items.Clear();
     FreeAndNil(FSymbolTable);
     FSymbolTable := tmpTable;
@@ -771,6 +797,7 @@ begin
     PC.ActivePage := tsInterface;
   end;
   curLok := nil;
+  SB.Panels[0].Text := FCurrentFileName;
 end;
 
 procedure TfWstTypeLibraryEdit.SaveToFile (const AFileName : string );
