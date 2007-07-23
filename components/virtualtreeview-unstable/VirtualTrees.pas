@@ -2,7 +2,7 @@ unit VirtualTrees;
 
 {$mode delphi}{$H+}
 
-// Version 4.5.1
+// Version 4.5.4
 //
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you may not use this file except in compliance
@@ -26,9 +26,24 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+// June 2007
+//   - Bug fix: Fixed a problem with potentially large amount of nodes (larger than 2 billion) in
+//              TBaseVirtualTree.SetChildCount.
+//   - Bug fix: remove hint if any in case the tree loses the focus.
+//   - Improvement: TVirtualTreeColumns.HandleClick is now virtual, introduced TVTHeader.DoSetSortColumn.
+//   - Bug fix: compiler error due to old variable reference when enabling flat scrollbars.
+// May 2007
+//   - Improvement: new functions: GetPreviousSelected, GetPreviousChecked, GetCheckedCount,
+//     GetPreviousCutCopy, GetCutCopyCount, GetFirstLeaf, GetNextLeaf,
+//     GetPreviousLeaf, GetFirstLevel, GetNextLevel, GetPreviousLevel
+//   - Improvement: new properties: CheckedCount, CutCopyCount
+//   - Improvement: DoFocusChanging for finding a valid column (TBaseVirtualTree.WMKeyDown)
+// March 2007
+//   - Improvement: adjusted accessibility implementation to compile with pre-BDS IDEs.
+//   - If a column is not visible, MultiColumnAccessibility now will not include it.
 // January 2007
 //   - Improvement: added code donation from Marco Zehe (with help from Sebastian Modersohn) which implements the
-//                  MS accessability interface for Virtual Treeview.
+//                  MS accessibility interface for Virtual Treeview.
 // December 2006
 //   - Improvement: bidi mode implementation finished (toAutoBidiColumnOrdering introduced)
 //   - Change: right-to-left flag removed from shorten string methods/events (not necessary)
@@ -135,7 +150,7 @@ uses
 const
   {$I lclconstants.inc}
 
-  VTVersion = '4.5.1';
+  VTVersion = '4.5.4';
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 3;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -1072,7 +1087,7 @@ type
     procedure FixPositions;
     function GetColumnAndBounds(P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
     function GetOwner: TPersistent; override;
-    procedure HandleClick(P: TPoint; Button: TMouseButton; Force, DblClick: Boolean);
+    procedure HandleClick(P: TPoint; Button: TMouseButton; Force, DblClick: Boolean); virtual;
     procedure IndexChanged(OldIndex, NewIndex: Integer);
     procedure InitializePositionArray;
     procedure ReorderColumns(RTL: Boolean);
@@ -1208,6 +1223,7 @@ type
     function CanWriteColumns: Boolean; virtual;
     procedure ChangeScale(M, D: Integer); virtual;
     function DetermineSplitterIndex(P: TPoint): Boolean; virtual;
+    procedure DoSetSortColumn(Value: TColumnIndex); virtual;
     procedure DragTo(P: TPoint);
     function GetColumnsClass: TVirtualTreeColumnsClass; virtual;
     function GetOwner: TPersistent; override;
@@ -1986,10 +2002,12 @@ TBaseVirtualTree = class(TCustomControl)
     function FindInPositionCache(Position: Cardinal; var CurrentPos: Cardinal): PVirtualNode; overload;
     procedure FixupTotalCount(Node: PVirtualNode);
     procedure FixupTotalHeight(Node: PVirtualNode);
+    function GetCheckedCount: Integer;
     function GetCheckState(Node: PVirtualNode): TCheckState;
     function GetCheckType(Node: PVirtualNode): TCheckType;
     function GetChildCount(Node: PVirtualNode): Cardinal;
     function GetChildrenInitialized(Node: PVirtualNode): Boolean;
+    function GetCutCopyCount: Integer;
     function GetDisabled(Node: PVirtualNode): Boolean;
     function GetDragManager: IVTDragManager;
     function GetExpanded(Node: PVirtualNode): Boolean;
@@ -2261,6 +2279,8 @@ TBaseVirtualTree = class(TCustomControl)
     procedure DoTimerScroll; virtual;
     procedure DoUpdating(State: TVTUpdateState); virtual;
     function DoValidateCache: Boolean; virtual;
+    procedure DragAndDrop(AllowedEffects: Integer; DataObject: IDataObject;
+      DragEffect: Integer); virtual;
     procedure DragCanceled; override;
     function DragDrop(const DataObject: IDataObject; KeyState: Integer; Pt: TPoint;
       var Effect: LongWord): HResult; reintroduce; virtual;
@@ -2532,6 +2552,8 @@ TBaseVirtualTree = class(TCustomControl)
     function GetFirstChild(Node: PVirtualNode): PVirtualNode;
     function GetFirstCutCopy: PVirtualNode;
     function GetFirstInitialized: PVirtualNode;
+    function GetFirstLeaf: PVirtualNode;
+    function GetFirstLevel(NodeLevel: Cardinal): PVirtualNode;
     function GetFirstNoInit: PVirtualNode;
     function GetFirstSelected: PVirtualNode;
     function GetFirstVisible: PVirtualNode;
@@ -2553,6 +2575,8 @@ TBaseVirtualTree = class(TCustomControl)
     function GetNextChecked(Node: PVirtualNode; State: TCheckState = csCheckedNormal): PVirtualNode;
     function GetNextCutCopy(Node: PVirtualNode): PVirtualNode;
     function GetNextInitialized(Node: PVirtualNode): PVirtualNode;
+    function GetNextLeaf(Node: PVirtualNode): PVirtualNode;
+    function GetNextLevel(Node: PVirtualNode; NodeLevel: Cardinal): PVirtualNode;
     function GetNextNoInit(Node: PVirtualNode): PVirtualNode;
     function GetNextSelected(Node: PVirtualNode): PVirtualNode;
     function GetNextSibling(Node: PVirtualNode): PVirtualNode;
@@ -2565,8 +2589,13 @@ TBaseVirtualTree = class(TCustomControl)
     function GetNodeData(Node: PVirtualNode): Pointer;
     function GetNodeLevel(Node: PVirtualNode): Cardinal;
     function GetPrevious(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousChecked(Node: PVirtualNode; State: TCheckState = csCheckedNormal): PVirtualNode;
+    function GetPreviousCutCopy(Node: PVirtualNode): PVirtualNode;
     function GetPreviousInitialized(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousLeaf(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousLevel(Node: PVirtualNode; NodeLevel: Cardinal): PVirtualNode;
     function GetPreviousNoInit(Node: PVirtualNode): PVirtualNode;
+    function GetPreviousSelected(Node: PVirtualNode): PVirtualNode;
     function GetPreviousSibling(Node: PVirtualNode): PVirtualNode;
     function GetPreviousVisible(Node: PVirtualNode): PVirtualNode;
     function GetPreviousVisibleNoInit(Node: PVirtualNode): PVirtualNode;
@@ -2630,11 +2659,13 @@ TBaseVirtualTree = class(TCustomControl)
     property AccessibleItem: IAccessible read FAccessibleItem write FAccessibleItem;
     property AccessibleName: string read FAccessibleName write FAccessibleName;
     {$endif}
+    property CheckedCount: Integer read GetCheckedCount;
     property CheckImages: TBitmap read FCheckImages;
     property CheckState[Node: PVirtualNode]: TCheckState read GetCheckState write SetCheckState;
     property CheckType[Node: PVirtualNode]: TCheckType read GetCheckType write SetCheckType;
     property ChildCount[Node: PVirtualNode]: Cardinal read GetChildCount write SetChildCount;
     property ChildrenInitialized[Node: PVirtualNode]: Boolean read GetChildrenInitialized;
+    property CutCopyCount: Integer read GetCutCopyCount;
     property DragImage: TVTDragImage read FDragImage;
     property DragManager: IVTDragManager read GetDragManager;
     property DropTargetNode: PVirtualNode read FDropTargetNode;
@@ -2924,7 +2955,8 @@ type
     property Colors;
     property Constraints;
     property Ctl3D;
-    property CustomCheckImages;
+    //todo: see a way to set CustomCheckImages at design time
+    //property CustomCheckImages;
     property DefaultNodeHeight;
     property DefaultPasteMode;
     property DefaultText;
@@ -9936,22 +9968,7 @@ begin
   if csLoading in Treeview.ComponentState then
     FSortColumn := Value
   else
-  begin
-    if Value < NoColumn then
-      Value := NoColumn;
-    if Value > Columns.Count - 1 then
-      Value := Columns.Count - 1;
-    if FSortColumn <> Value then
-    begin
-      if FSortColumn > NoColumn then
-        Invalidate(Columns[FSortColumn]);
-      FSortColumn := Value;
-      if FSortColumn > NoColumn then
-        Invalidate(Columns[FSortColumn]);
-      if (toAutoSort in Treeview.FOptions.FAutoOptions) and (Treeview.FUpdateCount = 0) then
-        Treeview.SortTree(FSortColumn, FSortDirection, True);
-    end;
-  end;
+    DoSetSortColumn(Value);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -10069,6 +10086,27 @@ begin
             Dec(SplitPoint, FWidth);
           end;
     end;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TVTHeader.DoSetSortColumn(Value: TColumnIndex);
+
+begin
+  if Value < NoColumn then
+    Value := NoColumn;
+  if Value > Columns.Count - 1 then
+    Value := Columns.Count - 1;
+  if FSortColumn <> Value then
+  begin
+    if FSortColumn > NoColumn then
+      Invalidate(Columns[FSortColumn]);
+    FSortColumn := Value;
+    if FSortColumn > NoColumn then
+      Invalidate(Columns[FSortColumn]);
+    if (toAutoSort in Treeview.FOptions.FAutoOptions) and (Treeview.FUpdateCount = 0) then
+      Treeview.SortTree(FSortColumn, FSortDirection, True);
   end;
 end;
 
@@ -12284,6 +12322,16 @@ begin
   end;
 end;
 
+procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
+  DataObject: IDataObject; DragEffect: Integer);
+begin
+  {$ifdef UseExternalDragManager}
+  VirtualDragManager.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+  {$else}
+  ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+  {$endif}
+end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.DrawLineImage(const PaintInfo: TVTPaintInfo; X, Y, H, VAlign: Integer; Style: TVTLineType;
@@ -12457,6 +12505,22 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetCheckedCount: Integer;
+
+var
+  Node: PVirtualNode;
+
+begin
+  Result := 0;
+  Node := GetFirstChecked;
+  while Assigned(Node) do begin
+     Inc(Result);
+     Node := GetNextChecked(Node);
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.GetCheckState(Node: PVirtualNode): TCheckState;
 
 begin
@@ -12492,6 +12556,21 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetCutCopyCount: Integer;
+
+var
+  Node: PVirtualNode;
+
+begin
+  Result := 0;
+  Node := GetFirstCutCopy;
+  while Assigned(Node) do begin
+     Inc(Result);
+     Node := GetNextCutCopy(Node);
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
 function TBaseVirtualTree.GetDisabled(Node: PVirtualNode): Boolean;
 
 begin
@@ -13025,7 +13104,10 @@ begin
         if PeekMessage(Msg, Handle, 0, 0, PM_REMOVE) then
         begin
           if Msg.message = WM_QUIT then
+          begin
+            PostQuitMessage(Msg.WParam);
             Break;
+          end;
           TranslateMessage(Msg);
           DispatchMessage(Msg);
         end;
@@ -13766,10 +13848,10 @@ procedure TBaseVirtualTree.SetChildCount(Node: PVirtualNode; NewChildCount: Card
 // routine is used.
 
 var
-  Count: Integer;
+  Remaining: Cardinal;
   Index: Cardinal;
   Child: PVirtualNode;
-  C: Integer;
+  Count: Integer;
   NewHeight: Integer;
 
 begin
@@ -13782,18 +13864,17 @@ begin
       DeleteChildren(Node)
     else
     begin
-      Count := Integer(NewChildCount) - Integer(Node.ChildCount);
-
       // If nothing changed then do nothing.
-      if Count <> 0 then
+      if NewChildCount <> Node.ChildCount then
       begin
         InterruptValidation;
-
-        C := Count;
         NewHeight := 0;
 
-        if Count > 0 then
+        if NewChildCount > Node.ChildCount then
         begin
+          Remaining := NewChildCount - Node.ChildCount;
+          Count := Remaining;
+
           // New nodes to add.
           if Assigned(Node.LastChild) then
             Index := Node.LastChild.Index + 1
@@ -13805,7 +13886,7 @@ begin
           Node.States := Node.States - [vsAllChildrenHidden, vsHeightMeasured];
 
           // New nodes are by default always visible, so we don't need to check the visibility.
-          while Count > 0 do
+          while Remaining > 0 do
           begin
             Child := MakeNewNode;
             Child.Index := Index;
@@ -13816,7 +13897,7 @@ begin
             Node.LastChild := Child;
             if Node.FirstChild = nil then
               Node.FirstChild := Child;
-            Dec(Count);
+            Dec(Remaining);
             Inc(Index);
 
             // The actual node height will later be computed once it is clear
@@ -13828,10 +13909,10 @@ begin
           begin
             AdjustTotalHeight(Node, NewHeight, True);
             if FullyVisible[Node] then
-              Inc(Integer(FVisibleCount), C);
+              Inc(Integer(FVisibleCount), Count);
           end;
 
-          AdjustTotalCount(Node, C, True);
+          AdjustTotalCount(Node, Count, True);
           Node.ChildCount := NewChildCount;
           if (FUpdateCount = 0) and (toAutoSort in FOptions.FAutoOptions) and (FHeader.FSortColumn > InvalidColumn) then
             Sort(Node, FHeader.FSortColumn, FHeader.FSortDirection, True);
@@ -13841,10 +13922,11 @@ begin
         else
         begin
           // Nodes have to be deleted.
-          while Count < 0 do
+          Remaining := Node.ChildCount - NewChildCount;
+          while Remaining > 0 do
           begin
             DeleteNode(Node.LastChild);
-            Inc(Count);
+            Dec(Remaining);
           end;
         end;
 
@@ -15749,7 +15831,10 @@ begin
               else
                 NewColumn := NoColumn;
               // Find a column for the new/current node which can be focused.
-              while (NewColumn > NoColumn) and not DoFocusChanging(FFocusedNode, Node, FFocusedColumn, NewColumn) do
+              // Make the 'DoFocusChanging' for finding a valid column
+              // identifiable from the 'DoFocusChanging' raised later on by
+              // "FocusedNode := Node;"
+              while (NewColumn > NoColumn) and not DoFocusChanging(FFocusedNode, FFocusedNode, FFocusedColumn, NewColumn) do
                 NewColumn := GetNextColumn(NewColumn);
               if NewColumn > InvalidColumn then
               begin
@@ -16242,6 +16327,9 @@ var
 begin
   Logger.EnterMethod([lcMessages],'WMKillFocus');
   inherited WMKillFocus(Msg);
+  
+  // Remove hint if shown currently.
+  Application.CancelHint;
 
   // Stop wheel panning if active.
   StopWheelPanning;
@@ -18428,11 +18516,7 @@ begin
     DragEffect := DROPEFFECT_NONE;
     AllowedEffects := GetDragOperations;
     try
-      {$ifdef UseExternalDragManager}
-      virtualdragmanager.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
-      {$else}
-      ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
-      {$endif}
+      DragAndDrop(AllowedEffects, DataObject, DragEffect);
       DragManager.ForceDragLeave;
     finally
       GetCursorPos(P);
@@ -24931,6 +25015,36 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetFirstLeaf: PVirtualNode;
+
+// Returns the first node in the tree which has currently no children.
+// The result is initialized if necessary.
+
+begin
+  Result := GetNextLeaf(nil);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetFirstLevel(NodeLevel: Cardinal): PVirtualNode;
+
+// Returns the first node in the tree on a specific level.
+// The result is initialized if necessary.
+
+begin
+  Result := GetFirstNoInit;
+  while Assigned(Result) and (GetNodeLevel(Result) <> NodeLevel) do
+    Result := GetNextNoInit(Result);
+
+  if Assigned(Result) and (GetNodeLevel(Result) <> NodeLevel) then // i.e. there is no node with the desired level in the tree
+    Result := nil;
+
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.GetFirstNoInit: PVirtualNode;
 
 begin
@@ -25573,6 +25687,69 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetNextLeaf(Node: PVirtualNode): PVirtualNode;
+
+// Returns the next node in the tree which has currently no children.
+// The result is initialized if necessary.
+
+begin
+  if (Node = nil) or (Node = FRoot) then
+    Result := FRoot.FirstChild
+  else
+    Result := GetNext(Node);
+  while Assigned(Result) and (vsHasChildren in Result.States) do
+    Result := GetNext(Result);
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetNextLevel(Node: PVirtualNode; NodeLevel: Cardinal): PVirtualNode;
+
+// Returns the next node in the tree on a specific level.
+// The result is initialized if necessary.
+
+var
+  StartNodeLevel: Cardinal;
+
+begin
+  Result := nil;
+
+  if Assigned(Node) and (Node <> FRoot) then
+  begin
+    StartNodeLevel := GetNodeLevel(Node);
+
+    if StartNodeLevel < NodeLevel then
+    begin
+      Result := GetNext(Node);
+      if Assigned(Result) and (GetNodeLevel(Result) <> NodeLevel) then
+        Result := GetNextLevel(Result, NodeLevel);
+    end else if StartNodeLevel = NodeLevel then
+    begin
+      Result := Node.NextSibling;
+      if not Assigned(Result) then // i.e. start node was a last sibling
+      begin
+        Result := Node.Parent;
+        if Assigned(Result) then
+        begin
+          // go to next anchestor of the start node which has a next sibling (if exists)
+          while Assigned(Result) and not Assigned(Result.NextSibling) do
+            Result := Result.Parent;
+          if Assigned(Result) then
+            Result := GetNextLevel(Result.NextSibling, NodeLevel);
+        end;
+      end;
+    end else // i.e. StartNodeLevel > NodeLevel
+      Result := GetNextLevel(Node.Parent, NodeLevel);
+  end;
+
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.GetNextNoInit(Node: PVirtualNode): PVirtualNode;
 
 // Optimized variant of GetNext, no initialization of nodes is performed (if a node is not initialized
@@ -25998,6 +26175,49 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.GetPreviousChecked(Node: PVirtualNode; State: TCheckState = csCheckedNormal): PVirtualNode;
+
+begin
+
+  if (Node = nil) or (Node = FRoot) then
+    Result := FRoot.LastChild
+  else
+    Result := GetPreviousNoInit(Node);
+
+  while Assigned(Result) and (Result.CheckState <> State) do
+    Result := GetPreviousNoInit(Result);
+
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
+
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetPreviousCutCopy(Node: PVirtualNode): PVirtualNode;
+
+// Returns the previous node in the tree which is currently marked for a clipboard operation. Since only visible nodes can
+// be marked (or they are hidden after they have been marked) it is not necessary to initialize nodes to check for
+// child nodes. The result, however, is initialized if necessary.
+
+begin
+  if ClipboardStates * FStates <> [] then
+  begin
+    if (Node = nil) or (Node = FRoot) then
+      Result := FRoot.LastChild
+    else
+      Result := GetPreviousNoInit(Node);
+    while Assigned(Result) and not (vsCutOrCopy in Result.States) do
+      Result := GetPreviousNoInit(Result);
+    if Assigned(Result) and not (vsInitialized in Result.States) then
+      InitNode(Result);
+  end
+  else
+    Result := nil;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.GetPreviousInitialized(Node: PVirtualNode): PVirtualNode;
 
 // Returns the previous node in tree which is initialized.
@@ -26007,6 +26227,70 @@ begin
   repeat
     Result := GetPreviousNoInit(Result);
   until (Result = nil) or (vsInitialized in Result.States);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetPreviousLeaf(Node: PVirtualNode): PVirtualNode;
+
+// Returns the previous node in the tree which has currently no children.
+// The result is initialized if necessary.
+
+begin
+  if (Node = nil) or (Node = FRoot) then
+    Result := FRoot.LastChild
+  else
+    Result := GetPrevious(Node);
+  while Assigned(Result) and (vsHasChildren in Result.States) do
+    Result := GetPrevious(Result);
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetPreviousLevel(Node: PVirtualNode; NodeLevel: Cardinal): PVirtualNode;
+
+// Returns the previous node in the tree on a specific level.
+// The result is initialized if necessary.
+
+var
+  StartNodeLevel: Cardinal;
+
+begin
+  Result := nil;
+
+  if Assigned(Node) and (Node <> FRoot) then
+  begin
+    StartNodeLevel := GetNodeLevel(Node);
+
+    if StartNodeLevel < NodeLevel then
+    begin
+      Result := Node.PrevSibling;
+      if Assigned(Result) then
+      begin
+        // go to last descendant of previous sibling with desired node level (if exists)
+        while Assigned(Result) and (GetNodeLevel(Result) < NodeLevel) do
+          Result := GetLastChild(Result);
+        if not Assigned(Result) then
+          Result := GetPreviousLevel(Node.PrevSibling, NodeLevel);
+      end else
+        Result := GetPreviousLevel(Node.Parent, NodeLevel);
+    end else if StartNodeLevel = NodeLevel then
+    begin
+      Result := Node.PrevSibling;
+      if not Assigned(Result) then // i.e. start node was a first sibling
+      begin
+        Result := Node.Parent;
+        if Assigned(Result) then
+          Result := GetPreviousLevel(Result, NodeLevel);
+      end;
+    end else // i.e. StartNodeLevel > NodeLevel
+      Result := GetPreviousLevel(Node.Parent, NodeLevel);
+  end;
+
+  if Assigned(Result) and not (vsInitialized in Result.States) then
+    InitNode(Result);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26037,6 +26321,30 @@ begin
       else
         Result := nil
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetPreviousSelected(Node: PVirtualNode): PVirtualNode;
+
+// Returns the previous node in the tree which is currently selected. Since children of unitialized nodes cannot be
+// in the current selection (because they simply do not exist yet) it is not necessary to initialize nodes here.
+// The result however is initialized if necessary.
+
+begin
+  if FSelectionCount > 0 then
+  begin
+    if (Node = nil) or (Node = FRoot) then
+      Result := FRoot.LastChild
+    else
+      Result := GetPreviousNoInit(Node);
+    while Assigned(Result) and not (vsSelected in Result.States) do
+      Result := GetPreviousNoInit(Result);
+    if Assigned(Result) and not (vsInitialized in Result.States) then
+      InitNode(Result);
+  end
+  else
+    Result := nil;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28970,7 +29278,7 @@ begin
     // Since the position is automatically changed if it doesn't meet the range
     // we better read the current position back to stay synchronized.
     {$ifdef UseFlatScrollbars}
-      FScrollOffsetX := FlatSB_GetScrollPos(Handle, SB_HORZ);
+      FEffectiveOffsetX := FlatSB_GetScrollPos(Handle, SB_HORZ);
     {$else}
       //todo: Use get scrollinfo instead of GetScrollPos??
       FEffectiveOffsetX := GetScrollPos(Handle, SB_HORZ);
