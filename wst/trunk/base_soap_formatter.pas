@@ -344,6 +344,7 @@ type
   End;
 {$M-}
 
+
 implementation
 Uses {$IFNDEF FPC}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
      StrUtils, imp_utils;
@@ -741,7 +742,7 @@ function TSOAPBaseFormatter.PutFloat(
 ):TDOMNode;
 Var
   s, frmt : string;
-  prcsn,i : Integer;
+  prcsn : Integer;
 begin
   Case GetTypeData(ATypeInfo)^.FloatType Of
     ftSingle,
@@ -751,10 +752,10 @@ begin
     ftExtended  : prcsn := 15;
   End;
   frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
-  s := FormatFloat(frmt,AData);
-  i := Pos(',',s);
-  If ( i > 0 ) Then
-    s[i] := '.';
+  s := FormatFloat(frmt,AData,wst_FormatSettings);
+//  i := Pos(',',s);
+  //If ( i > 0 ) Then
+    //s[i] := '.';
   Result := InternalPutData(AName,ATypeInfo,s);
 end;
 
@@ -845,7 +846,7 @@ procedure TSOAPBaseFormatter.GetFloat(
   var AData        : Extended
 );
 begin
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0);
+  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
 end;
 
 procedure TSOAPBaseFormatter.GetStr(
@@ -1591,7 +1592,9 @@ begin
           ftDouble : Double(AData)    := floatDt;
           ftExtended : Extended(AData)    := floatDt;
           ftCurr : Currency(AData)    := floatDt;
+{$IFDEF CPU86}
           ftComp : Comp(AData)    := floatDt;
+{$ENDIF}
         End;
       End;
   End;
@@ -1650,13 +1653,15 @@ begin
       end;
     tkFloat :
       begin
-        floatDt := StrToFloatDef(Trim(dataBuffer),0);
+        floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
         case GetTypeData(ATypeInfo)^.FloatType of
           ftSingle    : Single(AData)        := floatDt;
           ftDouble    : Double(AData)        := floatDt;
           ftExtended  : Extended(AData)      := floatDt;
           ftCurr      : Currency(AData)      := floatDt;
+{$IFDEF CPU86}
           ftComp      : Comp(AData)          := floatDt;
+{$ENDIF}
         end;
       end;
   end;
@@ -1730,13 +1735,18 @@ end;
 { TEmbeddedArrayStackItem }
 
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
+{$IFNDEF FPC}
+var
+  slct : IDOMNodeSelect;
+{$ENDIF}
 begin
   if ScopeObject.HasChildNodes() then begin
-    {$IFNDEF FPC}
-    Result := ScopeObject.childNodes;
-    {$ELSE}
+{$IFNDEF FPC}
+    slct := ScopeObject as IDOMNodeSelect;
+    Result := slct.selectNodes(ANodeName); //ScopeObject.childNodes;
+{$ELSE}
     Result := {$IFNDEF FPC_211}TDOMNodeList{$ELSE}TDOMElementList{$ENDIF}.Create(ScopeObject,ANodeName);
-    {$ENDIF}
+{$ENDIF}
   end else begin
     Result := nil;
   end;

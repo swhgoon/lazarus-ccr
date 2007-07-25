@@ -16,9 +16,17 @@ unit testformatter_unit;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
+  Classes, SysUtils,
+{$IFDEF FPC}
+  fpcunit, testutils, testregistry,
+{$ELSE}
+  TestFrameWork,
+{$ENDIF}
   TypInfo,
   base_service_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
 
 type
 
@@ -276,7 +284,7 @@ type
   End;
 
   TEmbeddedArrayOfStringRemotable = class(TArrayOfStringRemotable);
-  
+
   { TTestFormatterSimpleType }
 
   TTestFormatterSimpleType= class(TTestCase)
@@ -492,8 +500,8 @@ begin
       f.Get(TypeInfo(ShortInt),x,intVal_S);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_U);
-    AssertEquals(VAL_2,intVal_S);
+    CheckEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
   End;
@@ -526,7 +534,7 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(Byte),intVal_U);
     f.EndScopeRead();
-    AssertEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_1,intVal_U);
     ///
     intVal_S := VAL_2;
     f := CreateFormatter(TypeInfo(TClass_Int));
@@ -545,7 +553,7 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(ShortInt),intVal_S);
     f.EndScopeRead();
-    AssertEquals(VAL_2,intVal_S);
+    CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
   End;
@@ -586,8 +594,8 @@ begin
       f.Get(TypeInfo(SmallInt),x,intVal_S);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_U);
-    AssertEquals(VAL_2,intVal_S);
+    CheckEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
   End;
@@ -628,8 +636,8 @@ begin
       f.Get(TypeInfo(LongInt),x,intVal_S);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_U);
-    AssertEquals(VAL_2,intVal_S);
+    CheckEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
   End;
@@ -670,15 +678,15 @@ begin
       f.Get(TypeInfo(Int64),x,intVal_S);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_U);
-    AssertEquals(VAL_2,intVal_S);
+    CheckEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
   End;
 end;
 
 procedure TTestFormatterSimpleType.Test_Single_4;
-const VAL_1 = 12.10;
+const VAL_1 : single = 12.10;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -707,14 +715,14 @@ begin
       f.Get(TypeInfo(Single),x,tmpVal);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,tmpVal);
+    CheckEquals(VAL_1,tmpVal);//,0.00001);
   Finally
     s.Free();
   End;
 end;
 
 procedure TTestFormatterSimpleType.Test_Double_8;
-const VAL_1 = 12.10;
+const VAL_1 : Double = 12.10;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -743,14 +751,14 @@ begin
       f.Get(TypeInfo(Double),x,tmpVal);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,tmpVal);
+    CheckEquals(VAL_1,tmpVal);
   Finally
     s.Free();
   End;
 end;
 
 procedure TTestFormatterSimpleType.Test_Currency_8;
-const VAL_1 = 12.10;
+const VAL_1 : Currency = 12.10;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -779,14 +787,14 @@ begin
       f.Get(TypeInfo(Currency),x,tmpVal);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,tmpVal);
+    CheckEquals(VAL_1,tmpVal);
   Finally
     s.Free();
   End;
 end;
 
 procedure TTestFormatterSimpleType.Test_Extended_10;
-const VAL_1 = 12.10;
+const VAL_1 : Extended = 12.10;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -815,7 +823,7 @@ begin
       f.Get(TypeInfo(Extended),x,tmpVal);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,tmpVal);
+    CheckEquals(VAL_1,tmpVal);
   Finally
     s.Free();
   End;
@@ -856,8 +864,8 @@ begin
       f.Get(TypeInfo(string),x,intVal_3);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_1);
-    AssertEquals(VAL_2,intVal_3);
+    CheckEquals(VAL_1,intVal_1);
+    CheckEquals(VAL_2,intVal_3);
   Finally
     s.Free();
   End;
@@ -898,8 +906,8 @@ begin
       f.Get(TypeInfo(Boolean),x,intVal_3);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,intVal_1);
-    AssertEquals(VAL_2,intVal_3);
+    CheckEquals(VAL_1,intVal_1);
+    CheckEquals(VAL_2,intVal_3);
   Finally
     s.Free();
   End;
@@ -940,8 +948,8 @@ begin
       f.Get(TypeInfo(TTestEnum),x,intVal_3);
     f.EndScopeRead();
 
-    AssertEquals(Ord(VAL_1),Ord(intVal_1));
-    AssertEquals(Ord(VAL_2),Ord(intVal_3));
+    CheckEquals(Ord(VAL_1),Ord(intVal_1));
+    CheckEquals(Ord(VAL_2),Ord(intVal_3));
   Finally
     s.Free();
   End;
@@ -967,7 +975,7 @@ begin
       a.Val_64S := -64;
 
     f := CreateFormatter(TypeInfo(TClass_Int));
-    
+
     f.BeginObject('Root',TypeInfo(TClass_Int));
       f.Put('o1',TypeInfo(TClass_Int),a);
     f.EndScope();
@@ -986,14 +994,14 @@ begin
       f.Get(TypeInfo(TClass_Int),x,a);
     f.EndScopeRead();
     
-    AssertEquals(8,a.Val_8U);
-      AssertEquals(-8,a.Val_8S);
-    AssertEquals(16,a.Val_16U);
-      AssertEquals(-16,a.Val_16S);
-    AssertEquals(32,a.Val_32U);
-      AssertEquals(-32,a.Val_32S);
-    AssertEquals(64,a.Val_64U);
-      AssertEquals(-64,a.Val_64S);
+    CheckEquals(8,a.Val_8U);
+      CheckEquals(-8,a.Val_8S);
+    CheckEquals(16,a.Val_16U);
+      CheckEquals(-16,a.Val_16S);
+    CheckEquals(32,a.Val_32U);
+      CheckEquals(-32,a.Val_32S);
+    CheckEquals(64,a.Val_64U);
+      CheckEquals(-64,a.Val_64S);
   Finally
     a.Free();
     s.Free();
@@ -1001,6 +1009,10 @@ begin
 end;
 
 procedure TTestFormatter.Test_Float_WithClass;
+const VAL_CUR : Currency = 8.8;
+      VAL_DBL : Double = 8.8;
+      VAL_SGL : Single = 4.4;
+      VAL_EXT : Extended = 10.10;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1010,10 +1022,10 @@ begin
   s := Nil;
   a := TClass_Float.Create();
   Try
-    a.Val_Currency := 8.8;
-    a.Val_Double := 8.8;
-    a.Val_Extended := 10.10;
-    a.Val_Single := 4.4;
+    a.Val_Currency := VAL_CUR;
+    a.Val_Double := VAL_DBL;
+    a.Val_Extended := VAL_EXT;
+    a.Val_Single := VAL_SGL;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
 
@@ -1035,10 +1047,10 @@ begin
       f.Get(TypeInfo(TClass_Float),x,a);
     f.EndScopeRead();
 
-    AssertEquals(4.4,a.Val_Single);
-    AssertEquals(8.8,a.Val_Double);
-    AssertEquals(8.8,a.Val_Currency);
-    AssertEquals(10.10,a.Val_Extended);
+    CheckEquals(VAL_SGL,a.Val_Single);
+    CheckEquals(VAL_DBL,a.Val_Double);
+    CheckEquals(VAL_CUR,a.Val_Currency);
+    CheckEquals(VAL_EXT,a.Val_Extended);
   Finally
     a.Free();
     s.Free();
@@ -1078,9 +1090,9 @@ begin
       f.Get(TypeInfo(TClass_Enum),x,a);
     f.EndScopeRead();
 
-    AssertEquals(True,a.Val_Bool);
-    AssertEquals(Ord(teThree),Ord(a.Val_Enum));
-    AssertEquals('atou',a.Val_String);
+    CheckEquals(True,a.Val_Bool);
+    CheckEquals(Ord(teThree),Ord(a.Val_Enum));
+    CheckEquals('atou',a.Val_String);
   Finally
     a.Free();
     s.Free();
@@ -1145,16 +1157,16 @@ begin
       f.Get(TypeInfo(TComplexInt64UContentRemotable),x,nu);
     f.EndScopeRead();
 
-    AssertEquals(VAL_S,a.Val_CplxInt64S.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt64S.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_S,a.Val_CplxInt64S.StrSimpleAtt_Exemple);
-    AssertEquals(True,a.Val_CplxInt64S.BoolSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+    CheckEquals(VAL_S,a.Val_CplxInt64S.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt64S.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_S,a.Val_CplxInt64S.StrSimpleAtt_Exemple);
+    CheckEquals(True,a.Val_CplxInt64S.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_X,a.Elt_Exemple);
 
-    AssertEquals(VAL_U,a.Val_CplxInt64U.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt64U.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_U,a.Val_CplxInt64U.StrSimpleAtt_Exemple);
-    AssertEquals(False,a.Val_CplxInt64U.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_U,a.Val_CplxInt64U.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt64U.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_U,a.Val_CplxInt64U.StrSimpleAtt_Exemple);
+    CheckEquals(False,a.Val_CplxInt64U.BoolSimpleAtt_Exemple);
   finally
     FreeAndNil(nu);
     FreeAndNil(ns);
@@ -1221,16 +1233,16 @@ begin
       f.Get(TypeInfo(TComplexInt32UContentRemotable),x,nu);
     f.EndScopeRead();
 
-    AssertEquals(VAL_S,a.Val_CplxInt32S.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt32S.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_S,a.Val_CplxInt32S.StrSimpleAtt_Exemple);
-    AssertEquals(True,a.Val_CplxInt32S.BoolSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+    CheckEquals(VAL_S,a.Val_CplxInt32S.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt32S.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_S,a.Val_CplxInt32S.StrSimpleAtt_Exemple);
+    CheckEquals(True,a.Val_CplxInt32S.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_X,a.Elt_Exemple);
     
-    AssertEquals(VAL_U,a.Val_CplxInt32U.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt32U.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_U,a.Val_CplxInt32U.StrSimpleAtt_Exemple);
-    AssertEquals(False,a.Val_CplxInt32U.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_U,a.Val_CplxInt32U.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt32U.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_U,a.Val_CplxInt32U.StrSimpleAtt_Exemple);
+    CheckEquals(False,a.Val_CplxInt32U.BoolSimpleAtt_Exemple);
   finally
     FreeAndNil(nu);
     FreeAndNil(ns);
@@ -1297,16 +1309,16 @@ begin
       f.Get(TypeInfo(TComplexInt16UContentRemotable),x,nu);
     f.EndScopeRead();
 
-    AssertEquals(VAL_S,a.Val_CplxInt16S.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt16S.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_S,a.Val_CplxInt16S.StrSimpleAtt_Exemple);
-    AssertEquals(True,a.Val_CplxInt16S.BoolSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+    CheckEquals(VAL_S,a.Val_CplxInt16S.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt16S.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_S,a.Val_CplxInt16S.StrSimpleAtt_Exemple);
+    CheckEquals(True,a.Val_CplxInt16S.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_X,a.Elt_Exemple);
 
-    AssertEquals(VAL_U,a.Val_CplxInt16U.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt16U.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_U,a.Val_CplxInt16U.StrSimpleAtt_Exemple);
-    AssertEquals(False,a.Val_CplxInt16U.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_U,a.Val_CplxInt16U.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt16U.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_U,a.Val_CplxInt16U.StrSimpleAtt_Exemple);
+    CheckEquals(False,a.Val_CplxInt16U.BoolSimpleAtt_Exemple);
   finally
     FreeAndNil(nu);
     FreeAndNil(ns);
@@ -1373,16 +1385,16 @@ begin
       f.Get(TypeInfo(TComplexInt8UContentRemotable),x,nu);
     f.EndScopeRead();
 
-    AssertEquals(VAL_S,a.Val_CplxInt8S.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt8S.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_S,a.Val_CplxInt8S.StrSimpleAtt_Exemple);
-    AssertEquals(True,a.Val_CplxInt8S.BoolSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_X,a.Elt_Exemple);
+    CheckEquals(VAL_S,a.Val_CplxInt8S.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt8S.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_S,a.Val_CplxInt8S.StrSimpleAtt_Exemple);
+    CheckEquals(True,a.Val_CplxInt8S.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_X,a.Elt_Exemple);
 
-    AssertEquals(VAL_U,a.Val_CplxInt8U.Value);
-    AssertEquals(VAL_X,a.Val_CplxInt8U.IntSimpleAtt_Exemple);
-    AssertEquals(VAL_STR_U,a.Val_CplxInt8U.StrSimpleAtt_Exemple);
-    AssertEquals(False,a.Val_CplxInt8U.BoolSimpleAtt_Exemple);
+    CheckEquals(VAL_U,a.Val_CplxInt8U.Value);
+    CheckEquals(VAL_X,a.Val_CplxInt8U.IntSimpleAtt_Exemple);
+    CheckEquals(VAL_STR_U,a.Val_CplxInt8U.StrSimpleAtt_Exemple);
+    CheckEquals(False,a.Val_CplxInt8U.BoolSimpleAtt_Exemple);
   finally
     FreeAndNil(nu);
     FreeAndNil(ns);
@@ -1392,7 +1404,7 @@ begin
 end;
 
 procedure TTestFormatter.Test_CplxFloatExtendedSimpleContent_WithClass;
-const VAL_S = -12.10; VAL_U = 10.76; VAL_X = 1210.76;
+const VAL_S : Extended = -12.10; VAL_U : Double = 10.76; VAL_X = 1210.76;
       VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
 var
   f : IFormatterBase;
@@ -1455,12 +1467,12 @@ begin
       f.Get(TypeInfo(TComplexFloatDoubleContentRemotable),x,nu);
     f.EndScopeRead();
 
-    AssertEquals('VAL_S <> a.Val_CplxExtended.Value',VAL_S,a.Val_CplxExtended.Value);
-    AssertEquals('VAL_S <> a.Val_CplxDouble.Value',VAL_U,a.Val_CplxDouble.Value);
-    AssertEquals('VAL_S <> ns.Value',VAL_S,ns.Value);
-    AssertEquals('VAL_U <> nu.Value',VAL_U,nu.Value);
-    AssertNull('a.Val_CplxInt32S <> nil',a.Val_CplxInt32S);
-    AssertNull('a.Val_CplxInt32U <> nil',a.Val_CplxInt32U);
+    CheckEquals(VAL_S,a.Val_CplxExtended.Value,'VAL_S <> a.Val_CplxExtended.Value');
+    CheckEquals(VAL_U,a.Val_CplxDouble.Value,'VAL_S <> a.Val_CplxDouble.Value');
+    CheckEquals(VAL_S,ns.Value,'VAL_S <> ns.Value');
+    CheckEquals(VAL_U,nu.Value,'VAL_U <> nu.Value');
+    CheckNull(a.Val_CplxInt32S,'a.Val_CplxInt32S <> nil');
+    CheckNull(a.Val_CplxInt32U,'a.Val_CplxInt32U <> nil');
   finally
     FreeAndNil(nu);
     FreeAndNil(ns);
@@ -1523,8 +1535,8 @@ begin
       f.Get(TypeInfo(TComplexStringContentRemotable),x,ns);
     f.EndScopeRead();
 
-    AssertEquals('VAL_S <> a.Val_CplxString.Value',VAL_S,a.Val_CplxString.Value);
-    AssertEquals('VAL_STR_S <> ns.Value',VAL_STR_S,ns.Value);
+    CheckEquals(VAL_S,a.Val_CplxString.Value,'VAL_S <> a.Val_CplxString.Value');
+    CheckEquals(VAL_STR_S,ns.Value,'VAL_STR_S <> ns.Value');
   finally
     FreeAndNil(ns);
     a.Free();
@@ -1571,16 +1583,16 @@ begin
       f.Get(TypeInfo(TClass_B),x,a);
     f.EndScopeRead();
 
-    AssertEquals(False,a.Val_Bool);
-    AssertEquals(Ord(teThree),Ord(a.Val_Enum));
-    AssertEquals('123',a.Val_String);
+    CheckEquals(False,a.Val_Bool);
+    CheckEquals(Ord(teThree),Ord(a.Val_Enum));
+    CheckEquals('123',a.Val_String);
     
-    AssertEquals(True,a.ObjProp.Val_Bool);
-    AssertEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
-    AssertEquals('456',a.ObjProp.Val_String);
-    AssertEquals(121076,a.ObjProp.Val_32S);
+    CheckEquals(True,a.ObjProp.Val_Bool);
+    CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
+    CheckEquals('456',a.ObjProp.Val_String);
+    CheckEquals(121076,a.ObjProp.Val_32S);
     
-    AssertEquals(0,a.NonStored);
+    CheckEquals(0,a.NonStored);
   Finally
     a.Free();
     s.Free();
@@ -1620,7 +1632,7 @@ begin
       f.Get(TypeInfo(TClass_B),x,a);
     f.EndScopeRead();
 
-    AssertNull(a);
+    CheckNull(a);
   finally
     a.Free();
     s.Free();
@@ -1638,12 +1650,12 @@ var
 begin
   a := TArrayOfStringRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals('Length 1', 0,a.Length);
-    
+    CheckEquals(0,a.Length, 'Length 1');
+
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -1666,10 +1678,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals('Length 2', AR_LEN,a.Length);
-    
+    CheckEquals(AR_LEN,a.Length, 'Length 2');
+
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -1691,15 +1703,15 @@ begin
   a := TArrayOfStringRemotable.Create();
   try
     b := TEmbeddedArrayOfStringRemotable.Create();
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals('Length 1', 0,a.Length);
+    CheckEquals(0,a.Length, 'Length 1');
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     b.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,b.Length);
+    CheckEquals(AR_LEN,b.Length);
 
     for i := 0 to Pred(AR_LEN) do begin
       a[i] := VAL_AR[i];
@@ -1737,13 +1749,13 @@ begin
       x := 'b';
       f.Get(TypeInfo(TEmbeddedArrayOfStringRemotable),x,b);
     f.EndScopeRead();
-    AssertEquals('IntVal', 1210,intVal);
-    AssertEquals('Length 2', AR_LEN,a.Length);
-    AssertEquals('Length 2', AR_LEN,b.Length);
+    CheckEquals(1210,intVal, 'IntVal');
+    CheckEquals(AR_LEN,a.Length, 'Length 2 a');
+    CheckEquals(AR_LEN,b.Length,'Length 2 b');
 
     for i := 0 to Pred(AR_LEN) do begin
-      AssertEquals(VAL_AR[i],a[i]);
-      AssertEquals(VAL_AR[Pred(AR_LEN)-i],b[i]);
+      CheckEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[Pred(AR_LEN)-i],b[i]);
     end;
 
   finally
@@ -1762,7 +1774,7 @@ var
 begin
   a := TArrayOfStringRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     f := CreateFormatter(TypeInfo(TClass_B));
     f.BeginObject('Root',TypeInfo(TClass_B));
@@ -1780,8 +1792,8 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
     f.EndScopeRead();
-    AssertNotNull(a);
-    AssertEquals(0,a.Length);
+    CheckNotNull(a);
+    CheckEquals(0,a.Length);
 
   finally
     a.Free();
@@ -1800,12 +1812,12 @@ var
 begin
   a := TArrayOfBooleanRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -1828,10 +1840,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfBooleanRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -1850,12 +1862,12 @@ var
 begin
   a := TArrayOfInt8URemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -1878,10 +1890,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt8URemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -1890,7 +1902,7 @@ begin
 end;
 
 procedure TTestFormatter.Test_Int8SArray();
-const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of ShortInt = (-12,-34,100,200,180);
+const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of ShortInt = (-12,-34,100,120,110);
 var
   a : TArrayOfInt8SRemotable;
   i : Integer;
@@ -1900,12 +1912,12 @@ var
 begin
   a := TArrayOfInt8SRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -1928,10 +1940,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt8SRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -1950,12 +1962,12 @@ var
 begin
   a := TArrayOfInt16SRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -1978,10 +1990,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt16SRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -2000,12 +2012,12 @@ var
 begin
   a := TArrayOfInt16URemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2028,10 +2040,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt16URemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -2050,12 +2062,12 @@ var
 begin
   a := TArrayOfInt32URemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2078,10 +2090,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt32URemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(True,VAL_AR[i] = a[i],Format('VAL_AR[%d] = a[%d]',[i,i]));
 
   finally
     a.Free();
@@ -2100,12 +2112,12 @@ var
 begin
   a := TArrayOfInt32SRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2128,10 +2140,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt32SRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -2150,12 +2162,12 @@ var
 begin
   a := TArrayOfInt64SRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2178,10 +2190,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt64SRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertEquals(VAL_AR[i],a[i]);
+      CheckEquals(VAL_AR[i],a[i]);
 
   finally
     a.Free();
@@ -2200,12 +2212,12 @@ var
 begin
   a := TArrayOfInt64URemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2228,10 +2240,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfInt64URemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertTrue(VAL_AR[i]=a[i]);
+      Check(VAL_AR[i]=a[i]);
 
   finally
     a.Free();
@@ -2250,12 +2262,12 @@ var
 begin
   a := TArrayOfFloatSingleRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2278,10 +2290,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatSingleRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertTrue(VAL_AR[i]=a[i]);
+      Check(VAL_AR[i]=a[i]);
 
   finally
     a.Free();
@@ -2300,12 +2312,12 @@ var
 begin
   a := TArrayOfFloatDoubleRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2328,10 +2340,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatDoubleRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertTrue(VAL_AR[i]=a[i]);
+      Check(VAL_AR[i]=a[i]);
 
   finally
     a.Free();
@@ -2350,12 +2362,12 @@ var
 begin
   a := TArrayOfFloatExtendedRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2378,10 +2390,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatExtendedRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertTrue(VAL_AR[i]=a[i]);
+      Check(VAL_AR[i]=a[i]);
 
   finally
     a.Free();
@@ -2400,12 +2412,12 @@ var
 begin
   a := TArrayOfFloatCurrencyRemotable.Create();
   try
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     a.SetLength(AR_LEN);
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
       a[i] := VAL_AR[i];
@@ -2428,10 +2440,10 @@ begin
       x := 'a';
       f.Get(TypeInfo(TArrayOfFloatCurrencyRemotable),x,a);
     f.EndScopeRead();
-    AssertEquals(AR_LEN,a.Length);
+    CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      AssertTrue(VAL_AR[i]=a[i]);
+      Check(VAL_AR[i]=a[i]);
 
   finally
     a.Free();
@@ -2481,8 +2493,8 @@ begin
       f.Get(TypeInfo(TComplexInt32SContentRemotable),x,b);
     f.EndScopeRead();
 
-    AssertEquals(VAL_1,a.Value);
-    AssertEquals(VAL_2,b.Value);
+    CheckEquals(VAL_1,a.Value);
+    CheckEquals(VAL_2,b.Value);
   finally
     s.Free();
     FreeAndNil(a);
@@ -2536,24 +2548,24 @@ var
 begin
   a := TArrayOfStringRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(ansistring))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(ansistring))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(ansistring))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(ansistring))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
     
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2567,24 +2579,24 @@ var
 begin
   a := TArrayOfBooleanRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Boolean))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Boolean))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Boolean))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Boolean))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2598,55 +2610,55 @@ var
 begin
   a := TArrayOfInt8URemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Byte))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Byte))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Byte))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Byte))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
 end;
 
 procedure TTestArray.Test_Int8SArray();
-const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of ShortInt = (-12,-34,100,200,180);
+const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of ShortInt = (-12,-34,100,120,110);
 var
   a : TArrayOfInt8SRemotable;
   i, j : Integer;
 begin
   a := TArrayOfInt8SRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(ShortInt))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(ShortInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(ShortInt))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(ShortInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2660,24 +2672,24 @@ var
 begin
   a := TArrayOfInt16SRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(SmallInt))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(SmallInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(SmallInt))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(SmallInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2691,24 +2703,24 @@ var
 begin
   a := TArrayOfInt16URemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Word))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Word))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Word))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Word))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2722,24 +2734,24 @@ var
 begin
   a := TArrayOfInt32URemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(LongWord))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(LongWord))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(LongWord))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(LongWord))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2753,24 +2765,24 @@ var
 begin
   a := TArrayOfInt32SRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(LongInt))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(LongInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(LongInt))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(LongInt))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2784,24 +2796,24 @@ var
 begin
   a := TArrayOfInt64SRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Int64))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Int64))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Int64))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Int64))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertEquals('Item',VAL_AR[j],a[j]);
+        CheckEquals(VAL_AR[j],a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2815,24 +2827,24 @@ var
 begin
   a := TArrayOfInt64URemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(QWord))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(QWord))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(QWord))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(QWord))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertTrue('Item',VAL_AR[j]=a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2846,24 +2858,24 @@ var
 begin
   a := TArrayOfFloatSingleRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Single))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Single))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Single))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Single))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertTrue('Item',VAL_AR[j]=a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2877,24 +2889,24 @@ var
 begin
   a := TArrayOfFloatDoubleRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Double))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Double))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Double))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Double))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertTrue('Item',VAL_AR[j]=a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2908,24 +2920,24 @@ var
 begin
   a := TArrayOfFloatExtendedRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Extended))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Extended))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Extended))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Extended))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertTrue('Item',VAL_AR[j]=a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2939,24 +2951,24 @@ var
 begin
   a := TArrayOfFloatCurrencyRemotable.Create();
   try
-    AssertEquals('TypeInfo',PTypeInfo(TypeInfo(Currency))^.Name,a.GetItemTypeInfo()^.Name);
-    AssertEquals('TypeInfo',Ord(PTypeInfo(TypeInfo(Currency))^.Kind),Ord(a.GetItemTypeInfo()^.Kind));
+    CheckEquals(PTypeInfo(TypeInfo(Currency))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(Currency))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
 
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
 
     for i := 1 to AR_LEN do begin
       a.SetLength(i);
-      AssertEquals('Length',i,a.Length);
+      CheckEquals(i,a.Length,'Length');
       for j := 0 to Pred(i) do
         a[j] := VAL_AR[j];
       for j := 0 to Pred(i) do
-        AssertTrue('Item',VAL_AR[j]=a[j]);
+        Check(VAL_AR[j]=a[j],'Item');
     end;
 
     a.SetLength(0);
-    AssertEquals(0,a.Length);
+    CheckEquals(0,a.Length);
   finally
     a.Free();
   end;
@@ -2984,13 +2996,13 @@ begin
     
     b.Assign(a);
 
-    AssertEquals(a.Val_Bool,b.Val_Bool);
-    AssertEquals(Ord(a.Val_Enum),Ord(b.Val_Enum));
-    AssertEquals(a.Val_String,b.Val_String);
+    CheckEquals(a.Val_Bool,b.Val_Bool);
+    CheckEquals(Ord(a.Val_Enum),Ord(b.Val_Enum));
+    CheckEquals(a.Val_String,b.Val_String);
 
-    AssertEquals(a.ObjProp.Val_Bool,b.ObjProp.Val_Bool);
-    AssertEquals(Ord(a.ObjProp.Val_Enum),Ord(b.ObjProp.Val_Enum));
-    AssertEquals(a.ObjProp.Val_String,a.ObjProp.Val_String);
+    CheckEquals(a.ObjProp.Val_Bool,b.ObjProp.Val_Bool);
+    CheckEquals(Ord(a.ObjProp.Val_Enum),Ord(b.ObjProp.Val_Enum));
+    CheckEquals(a.ObjProp.Val_String,a.ObjProp.Val_String);
   Finally
     a.Free();
     b.Free();
@@ -3051,7 +3063,7 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
-  AssertTrue(AnsiPos(TDateRemotable.FormatDate(d),sDATE) = 1);
+  Check(AnsiPos(TDateRemotable.FormatDate(d),sDATE) = 1);
 end;
 
 procedure TTest_TDateRemotable.ParseDate();
@@ -3067,24 +3079,24 @@ begin
   s := '1976-10-12T23:34:56';
   d := TDateRemotable.ParseDate(s);
   DecodeDate(d,y,m,dy);
-    AssertEquals('Year',y,1976);
-    AssertEquals('Month',m,10);
-    AssertEquals('Day',dy,12);
+    CheckEquals(y,1976,'Year');
+    CheckEquals(m,10,'Month');
+    CheckEquals(dy,12,'Day');
 
   DecodeTime(d,hh,mn,ss,ssss);
-    AssertEquals('Hour',hh,23);
-    AssertEquals('Minute',mn,34);
-    AssertEquals('Second',ss,56);
+    CheckEquals(hh,23,'Hour');
+    CheckEquals(mn,34,'Minute');
+    CheckEquals(ss,56,'Second');
 
   objd := TDateRemotable.Create();
   try
     objd.AsDate := d;
-    AssertEquals('Year',objd.Year,1976);
-    AssertEquals('Month',objd.Month,10);
-    AssertEquals('Day',objd.Day,12);
-    AssertEquals('Hour',objd.Hour,23);
-    AssertEquals('Minute',objd.Minute,34);
-    AssertEquals('Second',objd.Second,56);
+    CheckEquals(objd.Year,1976,'Year');
+    CheckEquals(objd.Month,10,'Month');
+    CheckEquals(objd.Day,12,'Day');
+    CheckEquals(objd.Hour,23,'Hour');
+    CheckEquals(objd.Minute,34,'Minute');
+    CheckEquals(objd.Second,56,'Second');
   finally
     FreeAndNil(objd);
   end;
@@ -3165,6 +3177,7 @@ initialization
     RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   end;
 
+{$IFDEF FPC}
   RegisterTest(TTestArray);
   RegisterTest(TTestSOAPFormatter);
   RegisterTest(TTestBinaryFormatter);
@@ -3174,8 +3187,21 @@ initialization
   RegisterTest(TTest_TDateRemotable);
   RegisterTest(TTest_TDurationRemotable);
   RegisterTest(TTest_TTimeRemotable);
-  
+
   RegisterTest(TTestXmlRpcFormatterAttributes);
   RegisterTest(TTestXmlRpcFormatter);
-  
+{$ELSE}
+  RegisterTest(TTestArray.Suite);
+  RegisterTest(TTestSOAPFormatter.Suite);
+  RegisterTest(TTestBinaryFormatter.Suite);
+  RegisterTest(TTest_TBaseComplexRemotable.Suite);
+  RegisterTest(TTestSOAPFormatterAttributes.Suite);
+  RegisterTest(TTestBinaryFormatterAttributes.Suite);
+  RegisterTest(TTest_TDateRemotable.Suite);
+  RegisterTest(TTest_TDurationRemotable.Suite);
+  RegisterTest(TTest_TTimeRemotable.Suite);
+
+  RegisterTest(TTestXmlRpcFormatterAttributes.Suite);
+  RegisterTest(TTestXmlRpcFormatter.Suite);
+{$ENDIF}
 end.

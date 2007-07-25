@@ -16,7 +16,11 @@ unit base_service_intf;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Contnrs, syncobjs, semaphore;
+  Classes, SysUtils, TypInfo, Contnrs, syncobjs, semaphore
+{$IFNDEF FPC}
+  ,Windows
+{$ENDIF}
+  ;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
@@ -1195,6 +1199,9 @@ const
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 
+var
+  wst_FormatSettings : TFormatSettings;
+
 implementation
 uses imp_utils;
 
@@ -1570,7 +1577,7 @@ begin
             case pt^.Kind of
               tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
                 begin
-                  int64Data := GetOrdProp(AObject,p^.Name);
+                  int64Data := GetInt64Prop(AObject,p^.Name);
                   AStore.Put(prpName,pt,int64Data);
                 end;
               tkLString{$IFDEF FPC},tkAString{$ENDIF} :
@@ -1661,11 +1668,13 @@ begin
                         floatDt.CurrencyData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.CurrencyData);
                       end;
+{$IFDEF CPU86}
                     ftComp :
                       begin
                         floatDt.CompData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(prpName,pt,floatDt.CompData);
                       end;
+{$ENDIF}
                   end;
                 end;
             end;
@@ -1737,10 +1746,10 @@ begin
               try
                 Case pt^.Kind Of
                   tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
-                    Begin
+                    begin
                       AStore.Get(pt,propName,int64Data);
-                      SetOrdProp(AObject,p^.Name,int64Data);
-                    End;
+                      SetInt64Prop(AObject,p^.Name,int64Data);
+                    end;
                   tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
                     Begin
                       AStore.Get(pt,propName,strData);
@@ -3658,11 +3667,13 @@ begin
                         floatDt.CurrencyData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.CurrencyData);
                       end;
+{$IFDEF CPU86}
                     ftComp :
                       begin
                         floatDt.CompData := GetFloatProp(AObject,p^.Name);
                         AStore.Put(propName,pt,floatDt.CompData);
                       end;
+{$ENDIF}
                   end;
                 end;
             end;
@@ -4493,9 +4504,15 @@ end;
 
 
 initialization
+{$IFDEF FPC}
+  wst_FormatSettings := DefaultFormatSettings;
+{$ELSE}
+  GetLocaleFormatSettings(GetThreadLocale(),wst_FormatSettings);
+{$ENDIF}
+  wst_FormatSettings.DecimalSeparator := '.';
   TypeRegistryInstance := TTypeRegistry.Create();
   SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
-  
+
 finalization
   FreeAndNil(SerializeOptionsRegistryInstance);
   FreeAndNil(TypeRegistryInstance);

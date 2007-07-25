@@ -11,19 +11,25 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
 
+{$INCLUDE wst_global.inc}
 unit testmetadata_unit;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, DOM, XMLWrite,
-  fpcunit, testutils, testregistry,
+  Classes, SysUtils,
+{$IFDEF FPC}
+  fpcunit, testutils, testregistry, DOM, XMLWrite,
+{$ELSE}
+  TestFrameWork, xmldom, wst_delphi_xml,
+{$ENDIF}
   metadata_generator, binary_streamer, metadata_repository, pastree,
   pascal_parser_intf,
   metadata_wsdl;
-  
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
+
 type
 
   { TTestMetadata }

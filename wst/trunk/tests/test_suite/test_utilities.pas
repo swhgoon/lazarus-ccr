@@ -1,13 +1,20 @@
+{$INCLUDE wst_global.inc}
 unit test_utilities;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
+  Classes, SysUtils,
+{$IFDEF FPC}
+  fpcunit, testutils, testregistry,
+{$ELSE}
+  TestFrameWork,
+{$ENDIF}
   TypInfo,
   base_service_intf, server_service_intf;
+
+{$INCLUDE wst.inc}
+{$INCLUDE wst_delphi.inc}
   
 type
 
@@ -441,8 +448,14 @@ begin
 end;
 
 initialization
+{$IFDEF FPC}
   RegisterTest(TTest_TIntfPool);
   RegisterTest(TTest_TSimpleItemFactoryEx);
   RegisterTest(TTest_TImplementationFactory);
-  
+{$ELSE}
+  RegisterTest(TTest_TIntfPool.Suite);
+  RegisterTest(TTest_TSimpleItemFactoryEx.Suite);
+  RegisterTest(TTest_TImplementationFactory.Suite);
+{$ENDIF}
+
 end.
