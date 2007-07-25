@@ -539,7 +539,10 @@ Var
   i,c : Integer;
 begin
   AResAtt := '';
-  If Assigned(ANode) And Assigned(ANode.Attributes) Then Begin
+  if Assigned(ANode) and
+     Assigned(ANode.Attributes) and
+     ( ANode.Attributes.Length > 0 )
+  then begin
     c := Pred(ANode.Attributes.Length);
     For i := 0 To c Do Begin
       If AnsiSameText(AAttValue,ANode.Attributes.Item[i].NodeValue) Then Begin
@@ -548,7 +551,7 @@ begin
         Exit;
       End;
     End;
-  End;
+  end;
   Result := False;
 end;
 

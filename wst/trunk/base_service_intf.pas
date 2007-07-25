@@ -4065,9 +4065,9 @@ end;
 class function TDateRemotable.ParseDate(const ABuffer: string): TDateTime;
 var
   buffer : string;
-  bufferPos, bufferLen : Integer;
+  bufferPos, bufferLen : PtrUInt;
 
-  function ReadInt() : Integer;
+  function ReadInt() : PtrUInt;
   var
     neg : Boolean;
     s : shortstring;
@@ -4105,27 +4105,30 @@ begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
   buffer := Trim(ABuffer);
-  bufferPos := 0;
+  bufferPos := 1;
   bufferLen := Length(buffer);
+  if ( bufferLen > 0 ) then begin
+    y := ReadInt();
+    Inc(bufferPos);
 
-  y := ReadInt();
-  Inc(bufferPos);
-  
-  m := ReadInt();
-  Inc(bufferPos);
-  
-  d := ReadInt();
-  Inc(bufferPos);
-  
-  hh := ReadInt();
-  Inc(bufferPos);
+    m := ReadInt();
+    Inc(bufferPos);
 
-  mn := ReadInt();
-  Inc(bufferPos);
+    d := ReadInt();
+    Inc(bufferPos);
 
-  ss := ReadInt();
+    hh := ReadInt();
+    Inc(bufferPos);
 
-  Result := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
+    mn := ReadInt();
+    Inc(bufferPos);
+
+    ss := ReadInt();
+
+    Result := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
+  end else begin
+    Result := 0;
+  end;
 end;
 
 { TBaseDateRemotable }

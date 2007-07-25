@@ -11,6 +11,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
 {$INCLUDE wst_global.inc}
+{$RANGECHECKS OFF}
 unit binary_streamer;
 
 interface
