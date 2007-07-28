@@ -477,7 +477,7 @@ begin
   Result := TStringList.Create;
   for i:= 0 to PathCount -1 do
     if Path[i].Action in [caModify, caAdd] then
-      Result.Add(BaseDir + Path[i].Path);
+      Result.Add(SetDirSeparators(BaseDir + Path[i].Path));
 end;
 
 function TLogEntry.GetLogPathCount: integer;
@@ -639,6 +639,17 @@ begin
           ColonPos := Pos(' : ', Line);
           PropName := Copy(Line, 3, ColonPos - 3);
           PropValue := Copy(Line, ColonPos + 3, Length(Line)-ColonPos-2);
+          // try for a multiline property
+          inc(i);
+          while (i<Lines.Count) do begin
+            if (length(Lines[i])>=2) and (copy(Lines[i],1,2)='  ') then begin
+              // new property, unget line
+              dec(i);
+              break;
+            end;
+            PropValue := PropValue + LineEnding + Lines[i];
+            inc(i);
+          end;
           FileProp.Properties.Values[PropName] := PropValue;
           inc(i);
         end;

@@ -93,7 +93,7 @@ begin
     ReadOutput;
     Result := SvnProcess.ExitStatus;
     if Result<>0 then
-      Raise Exception.Create('Svn ' + Command + ' failed.');
+      Raise Exception.Create('svn ' + Command + ' failed.');
   finally
     SvnProcess.Free;
   end;
