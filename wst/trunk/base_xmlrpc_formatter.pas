@@ -834,7 +834,16 @@ procedure TXmlRpcBaseFormatter.GetFloat(
   var AData        : Extended
 );
 begin
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+{$IFDEF FPC}
+  {$IFDEF FPC_211}
+    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+  {$ELSE}
+  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0);
+  {$ENDIF}
+{$ELSE}
+    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+{$ENDIF}
+  //AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
 end;
 
 procedure TXmlRpcBaseFormatter.GetStr(
@@ -1321,7 +1330,16 @@ begin
       end;
     tkFloat :
       begin
+{$IFDEF FPC}
+  {$IFDEF FPC_211}
         floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
+  {$ELSE}
+        floatDt := StrToFloatDef(Trim(dataBuffer),0);
+  {$ENDIF}
+{$ELSE}
+        floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
+{$ENDIF}
+        //floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
         case GetTypeData(ATypeInfo)^.FloatType of
           ftSingle    : Single(AData)        := floatDt;
           ftDouble    : Double(AData)        := floatDt;

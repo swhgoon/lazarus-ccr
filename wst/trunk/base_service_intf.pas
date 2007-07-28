@@ -1199,8 +1199,15 @@ const
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 
+{$IFDEF FPC}
+  {$IFDEF FPC_211}
 var
   wst_FormatSettings : TFormatSettings;
+  {$ENDIF}
+{$ELSE}
+var
+  wst_FormatSettings : TFormatSettings;
+{$ENDIF}
 
 implementation
 uses imp_utils;
@@ -4508,11 +4515,15 @@ end;
 
 initialization
 {$IFDEF FPC}
+  {$IFDEF FPC_211}
   wst_FormatSettings := DefaultFormatSettings;
+  wst_FormatSettings.DecimalSeparator := '.';
+  {$ENDIF}
 {$ELSE}
   GetLocaleFormatSettings(GetThreadLocale(),wst_FormatSettings);
-{$ENDIF}
   wst_FormatSettings.DecimalSeparator := '.';
+{$ENDIF}
+
   TypeRegistryInstance := TTypeRegistry.Create();
   SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
 
