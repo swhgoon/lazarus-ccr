@@ -40,10 +40,13 @@
         <Filename Value="testformatter_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="testformatter_unit"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="52" Y="984"/>
+        <TopLine Value="958"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="200"/>
+        <Bookmarks Count="1">
+          <Item0 X="17" Y="984" ID="3"/>
+        </Bookmarks>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -66,9 +69,11 @@
         <Filename Value="..\..\base_binary_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_binary_formatter"/>
-        <CursorPos X="3" Y="11"/>
-        <TopLine Value="1"/>
+        <CursorPos X="15" Y="1479"/>
+        <TopLine Value="1464"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\base_service_intf.pas"/>
@@ -108,7 +113,7 @@
         <UnitName Value="binary_streamer"/>
         <CursorPos X="14" Y="14"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
           <Item0 X="38" Y="490" ID="2"/>
@@ -137,7 +142,7 @@
         <UnitName Value="testmetadata_unit"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -167,7 +172,7 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="44" Y="21"/>
         <TopLine Value="209"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="206"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -319,8 +324,8 @@
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_xmlrpc_formatter"/>
-        <CursorPos X="9" Y="1341"/>
-        <TopLine Value="1319"/>
+        <CursorPos X="8" Y="1352"/>
+        <TopLine Value="1335"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="111"/>
         <Loaded Value="True"/>
@@ -466,7 +471,7 @@
         <UnitName Value="test_utilities"/>
         <CursorPos X="29" Y="43"/>
         <TopLine Value="3"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit57>
@@ -482,7 +487,7 @@
         <UnitName Value="testregistry"/>
         <CursorPos X="39" Y="27"/>
         <TopLine Value="17"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit59>
@@ -519,7 +524,24 @@
         <UsageCount Value="11"/>
       </Unit64>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="4" HistoryIndex="3">
+      <Position1>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
+        <Caret Line="21" Column="14" TopLine="13"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
+        <Caret Line="1410" Column="3" TopLine="1393"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
+        <Caret Line="1341" Column="9" TopLine="1319"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
+        <Caret Line="1274" Column="15" TopLine="1259"/>
+      </Position4>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

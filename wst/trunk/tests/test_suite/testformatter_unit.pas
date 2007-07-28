@@ -981,7 +981,7 @@ begin
     f.EndScope();
     
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s); s.SaveToFile(ClassName + '_test_int_withclass.xml');
     FreeAndNil(a);
     
     a := TClass_Int.Create();

@@ -1271,7 +1271,9 @@ begin
           ftDouble : Double(AData)    := floatDt;
           ftExtended : Extended(AData)    := floatDt;
           ftCurr : Currency(AData)    := floatDt;
+{$IFDEF CPU86}
           ftComp : Comp(AData)    := floatDt;
+{$ENDIF}
         End;
       End;
   End;
@@ -1345,7 +1347,9 @@ begin
           ftDouble    : Double(AData)        := floatDt;
           ftExtended  : Extended(AData)      := floatDt;
           ftCurr      : Currency(AData)      := floatDt;
+{$IFDEF CPU86}
           ftComp      : Comp(AData)          := floatDt;
+{$ENDIF}
         end;
       end;
   end;

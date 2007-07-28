@@ -1405,7 +1405,9 @@ begin
           ftDouble : Double(AData)    := floatDt;
           ftExtended : Extended(AData)    := floatDt;
           ftCurr : Currency(AData)    := floatDt;
+{$IFDEF CPU86}
           ftComp : Comp(AData)    := floatDt;
+{$ENDIF}
         End;
       End;
   End;
@@ -1474,8 +1476,10 @@ begin
           ftDouble   : Double(AData)      := dataBuffer^.DoubleData;
           ftExtended : Extended(AData)    := dataBuffer^.ExtendedData;
           ftCurr     : Currency(AData)    := dataBuffer^.CurrencyData;
+{$IFDEF CPU86}
           else
             Comp(AData) := dataBuffer^.ExtendedData;
+{$ENDIF}
         end;
       end;
   end;
