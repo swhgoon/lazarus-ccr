@@ -238,12 +238,16 @@ var
     if SourcePropInfo.FileCount<>Files.Count then begin
         writeln('Source FileName number mismatch: ',
           SourcePropInfo.FileCount, '<>', Files.Count);
+        for i := 0 to SourcePropInfo.FileCount - 1 do
+          writeln('Source ',i ,': ',SourcePropInfo.FileItem[i].FileName);
         halt(2);
     end;
 
     if DestPropInfo.FileCount<>Files.Count then begin
         writeln('Destination FileName number mismatch: ',
           DestPropInfo.FileCount, '<>', Files.Count);
+        for i := 0 to DestPropInfo.FileCount - 1 do
+          writeln('Dest ',i ,': ',DestPropInfo.FileItem[i].FileName);
         halt(2);
     end;
 
@@ -258,7 +262,7 @@ var
         halt(3);
       end;
 
-      if SourceFileProp=nil then begin
+      if DestFileProp=nil then begin
         writeln('Missing destination file properties for ', DestFileName);
         halt(3);
       end;
@@ -343,8 +347,8 @@ begin
   begin
     FSourceWC := 'd:\lazarus\lazmirror\source';
     FDestWC := 'd:\lazarus\lazmirror\dest';
-    FSourceWC := 'c:\lazarus\lazmirror\source';
-    FDestWC := 'c:\lazarus\lazmirror\dest';
+    FSourceWC := 'C:\lazarus\lazmirror\source';
+    FDestWC := 'C:\lazarus\lazmirror\dest';
   end;
 
 end;
