@@ -1693,7 +1693,7 @@ type
     FOnCompareNodes: TVTCompareEvent;            // used during sort
 
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
-    procedure AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
+    procedure AdjustImageBorder(Images: TCustomImageList; xBidiMode: TBidiMode; VAlign: Integer; var R: TRect;
       var ImageInfo: TVTImageInfo);
     procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
     procedure AdjustTotalHeight(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
@@ -2006,7 +2006,7 @@ type
     procedure PaintImage(const PaintInfo: TVTPaintInfo; ImageInfoIndex: TVTImageInfoIndex; Images: TCustomImageList;
       DoOverlay: Boolean); virtual;
     procedure PaintNodeButton(xCanvas: TCanvas; Node: PVirtualNode; const R: TRect; ButtonX, ButtonY: Integer;
-      BidiMode: TBiDiMode); virtual;
+      xBidiMode: TBiDiMode); virtual;
     procedure PaintTreeLines(const PaintInfo: TVTPaintInfo; VAlignment, IndentSize: Integer;
       LineImage: TLineImage); virtual;
     procedure PaintSelectionRectangle(Target: TCanvas; WindowOrgX: Integer; const SelectionRect: TRect;
@@ -3096,7 +3096,7 @@ begin
     // Note: vertical alignment does only work with single line text ouput!
     TextPosY := (lpRect.Top + lpRect.Bottom - TextHeight) div 2;
   end;
-  SetTextAlign(DC, TextAlign);
+//  SetTextAlign(DC, TextAlign);
   if uFormat and DT_SINGLELINE <> 0 then
   begin
     if CalculateRect then
@@ -9894,7 +9894,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.AdjustImageBorder(Images: TCustomImageList; BidiMode: TBidiMode; VAlign: Integer; var R: TRect; 
+procedure TBaseVirtualTree.AdjustImageBorder(Images: TCustomImageList; xBidiMode: TBidiMode; VAlign: Integer; var R: TRect;
   var ImageInfo: TVTImageInfo);
 
 // Depending on the width of the image list as well as the given bidi mode R must be adjusted.
@@ -19259,7 +19259,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.PaintNodeButton(xCanvas: TCanvas; Node: PVirtualNode; const R: TRect; ButtonX,
-  ButtonY: Integer; BidiMode: TBiDiMode);
+  ButtonY: Integer; xBidiMode: TBiDiMode);
 
 var
   Bitmap: TBitmap;

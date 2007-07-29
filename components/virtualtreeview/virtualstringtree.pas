@@ -1570,7 +1570,7 @@ var
   R: TRect;
   S: WideString;
   DrawFormat: Cardinal;
-  BidiMode: TBidiMode;
+  xxBidiMode: TBidiMode;
 //  xAlignment: TAlignment;
   PaintInfo: TVTPaintInfo;
   Dummy: TColumnIndex;
