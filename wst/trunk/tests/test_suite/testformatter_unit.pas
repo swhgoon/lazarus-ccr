@@ -703,7 +703,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Single_4.xml');
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -739,7 +739,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Double_8.xml');
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -775,7 +775,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Currency_8.xml');
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -811,7 +811,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Extended_10.xml');
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));

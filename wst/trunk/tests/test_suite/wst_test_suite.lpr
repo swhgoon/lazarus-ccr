@@ -2,7 +2,13 @@ program wst_test_suite;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE UseCThreads}
+
 uses
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+
   custapp, classes, sysutils, fpcunit, testreport, testregistry, 
   TestFormatter_unit, testmetadata_unit,
   server_service_soap, soap_formatter, base_binary_formatter,
