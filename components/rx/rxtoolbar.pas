@@ -61,7 +61,7 @@ type
     procedure UpdateSize;
     procedure SetEnabled(NewEnabled: boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
-    function GetDrawFlags: integer; override;
+    function GetDrawFlags: integer; virtual;
   public
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     destructor Destroy; override;

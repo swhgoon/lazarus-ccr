@@ -336,7 +336,7 @@ end;
 
 function TRxDBGrid.GetColumns: TRxDbGridColumns;
 begin
-  result := TRxDbGridColumns(TCustomGrid(Self).Columns);
+  result := TRxDbGridColumns(inherited Columns);
 end;
 
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
@@ -346,12 +346,12 @@ end;
 
 function TRxDBGrid.IsColumnsStored: boolean;
 begin
-  result := TRxDbGridColumns(TCustomGrid(Self).Columns).Enabled;
+  result := TRxDbGridColumns(inherited Columns).Enabled;
 end;
 
 procedure TRxDBGrid.SetColumns(const AValue: TRxDbGridColumns);
 begin
-  TRxDbGridColumns(TCustomGrid(Self).Columns).Assign(Avalue);
+  TRxDbGridColumns(inherited Columns).Assign(Avalue);
 end;
 
 procedure TRxDBGrid.SetPropertyStorage(const AValue: TCustomPropertyStorage);
