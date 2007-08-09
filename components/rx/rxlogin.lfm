@@ -1,0 +1,172 @@
+object RxLoginForm: TRxLoginForm
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'RxLoginForm'
+  ClientHeight = 159
+  ClientWidth = 442
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  FormStyle = fsStayOnTop
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 441
+  VertScrollBar.Page = 158
+  Cursor = crArrow
+  Left = 213
+  Height = 159
+  Top = 102
+  Width = 442
+  object AppIcon: TImage
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    Transparent = True
+    Left = 14
+    Height = 32
+    Top = 12
+    Width = 32
+  end
+  object KeyImage: TImage
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    Picture.Data = {
+      055449636F6EFE0200000000010001002020100000000000E802000016000000
+      2800000020000000400000000100040000000000800200000000000000000000
+      0000000000000000000000000000800000800000008080008000000080008000
+      80800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00FF00
+      FFFF0000FFFFFF00000000000000000000000000000000008FFFFFFFFFFFFFFF
+      FF000000000000008FFFFFFFFFFFFFFFFF000000000000008FFFFFFFFFF00F00
+      FF000000000000008FF800FFFFF00F00FF000000000000008F80800FFFF00F00
+      FF000000000000008F00FF00000000000F000000000000008F00FF0000000000
+      0F000000000000008F80800FFFFFFFFFFF000000000000008FF800FFFFFFFFFF
+      FF000000000000008FFFFFFFFFFFFFFFFF000000000000008888888888888888
+      8800000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000001FFF00001FFF00001FFF00001FFF00001FFF00001FFF
+      00001FFF00001FFF00001FFF00001FFF00001FFF00001FFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFF
+    }
+    Transparent = True
+    Left = 10
+    Height = 32
+    Top = 15
+    Width = 32
+  end
+  object HintLabel: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Color = clNone
+    ShowAccelChar = False
+    Left = 64
+    Height = 13
+    Top = 31
+    Width = 285
+  end
+  object UserNameLabel: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Color = clNone
+    FocusControl = UserNameEdit
+    Left = 64
+    Height = 13
+    Top = 64
+    Width = 105
+  end
+  object PasswordLabel: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Color = clNone
+    FocusControl = PasswordEdit
+    Left = 64
+    Height = 13
+    Top = 96
+    Width = 105
+  end
+  object AppTitleLabel: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Color = clNone
+    ShowAccelChar = False
+    Left = 64
+    Height = 13
+    Top = 12
+    Width = 285
+  end
+  object CustomLabel: TLabel
+    AutoSize = False
+    BorderSpacing.OnChange = nil
+    Color = clNone
+    FocusControl = CustomCombo
+    Left = 64
+    Height = 13
+    Top = 128
+    Width = 105
+  end
+  object UserNameEdit: TEdit
+    BorderSpacing.OnChange = nil
+    TabOrder = 0
+    Cursor = crIBeam
+    Left = 172
+    Height = 21
+    Top = 60
+    Width = 169
+  end
+  object PasswordEdit: TEdit
+    BorderSpacing.OnChange = nil
+    PasswordChar = '*'
+    TabOrder = 1
+    Cursor = crIBeam
+    Left = 172
+    Height = 21
+    Top = 92
+    Width = 169
+  end
+  object OkBtn: TButton
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OK'
+    Default = True
+    OnClick = OkBtnClick
+    TabOrder = 3
+    Left = 356
+    Height = 25
+    Top = 12
+    Width = 77
+  end
+  object CancelBtn: TButton
+    BorderSpacing.OnChange = nil
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+    Left = 356
+    Height = 25
+    Top = 44
+    Width = 77
+  end
+  object CustomCombo: TComboBox
+    BorderSpacing.OnChange = nil
+    ItemHeight = 13
+    MaxLength = 0
+    Sorted = True
+    Style = csDropDownList
+    TabOrder = 2
+    Left = 172
+    Height = 21
+    Top = 124
+    Width = 169
+  end
+end

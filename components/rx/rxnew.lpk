@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <PathDelim Value="\"/>
+    <Name Value="rxnew"/>
+    <Author Value="Lagunov Aleksey"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Delphi VCL Extensions (RX) 
+Copyright (c) 1998 Master-Bank
+translate to Lazarus by alexs in 2005 
+"/>
+    <License Value="free ware
+"/>
+    <Version Major="1" Release="12" Build="38"/>
+    <Files Count="32">
+      <Item1>
+        <Filename Value="rxlookup.pas"/>
+        <UnitName Value="rxlookup"/>
+      </Item1>
+      <Item2>
+        <Filename Value="vclutils.pas"/>
+        <UnitName Value="vclutils"/>
+      </Item2>
+      <Item3>
+        <Filename Value="dateutil.pas"/>
+        <UnitName Value="dateutil"/>
+      </Item3>
+      <Item4>
+        <Filename Value="dbutils.pas"/>
+        <UnitName Value="dbutils"/>
+      </Item4>
+      <Item5>
+        <Filename Value="rxapputils.pas"/>
+        <UnitName Value="rxapputils"/>
+      </Item5>
+      <Item6>
+        <Filename Value="rxdconst.pas"/>
+        <UnitName Value="rxdconst"/>
+      </Item6>
+      <Item7>
+        <Filename Value="rxstrutils.pas"/>
+        <UnitName Value="rxstrutils"/>
+      </Item7>
+      <Item8>
+        <Filename Value="rx.inc"/>
+        <Type Value="Include"/>
+      </Item8>
+      <Item9>
+        <Filename Value="dbdateedit.pas"/>
+        <UnitName Value="dbdateedit"/>
+      </Item9>
+      <Item10>
+        <Filename Value="registerrx.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="registerrx"/>
+      </Item10>
+      <Item11>
+        <Filename Value="curredit.pas"/>
+        <UnitName Value="curredit"/>
+      </Item11>
+      <Item12>
+        <Filename Value="folderlister.pas"/>
+        <UnitName Value="folderlister"/>
+      </Item12>
+      <Item13>
+        <Filename Value="rxdbgrid.pas"/>
+        <UnitName Value="rxdbgrid"/>
+      </Item13>
+      <Item14>
+        <Filename Value="rxmemds.pas"/>
+        <UnitName Value="rxmemds"/>
+      </Item14>
+      <Item15>
+        <Filename Value="duallist.pas"/>
+        <UnitName Value="duallist"/>
+      </Item15>
+      <Item16>
+        <Filename Value="boxprocs.pas"/>
+        <UnitName Value="boxprocs"/>
+      </Item16>
+      <Item17>
+        <Filename Value="tooledit.pas"/>
+        <UnitName Value="tooledit"/>
+      </Item17>
+      <Item18>
+        <Filename Value="rxswitch.pas"/>
+        <UnitName Value="rxswitch"/>
+      </Item18>
+      <Item19>
+        <Filename Value="rxdice.pas"/>
+        <UnitName Value="rxdice"/>
+      </Item19>
+      <Item20>
+        <Filename Value="rxdbcomb.pas"/>
+        <UnitName Value="rxdbcomb"/>
+      </Item20>
+      <Item21>
+        <Filename Value="rxtoolbar.pas"/>
+        <UnitName Value="rxtoolbar"/>
+      </Item21>
+      <Item22>
+        <Filename Value="rxtbrsetup.pas"/>
+        <UnitName Value="rxtbrsetup"/>
+      </Item22>
+      <Item23>
+        <Filename Value="fduallst.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="fduallst.lrs"/>
+        <Type Value="LRS"/>
+      </Item24>
+      <Item25>
+        <Filename Value="fduallst.pas"/>
+        <UnitName Value="fduallst"/>
+      </Item25>
+      <Item26>
+        <Filename Value="rxxpman.pas"/>
+        <UnitName Value="rxxpman"/>
+      </Item26>
+      <Item27>
+        <Filename Value="pagemngr.pas"/>
+        <UnitName Value="PageMngr"/>
+      </Item27>
+      <Item28>
+        <Filename Value="rxappicon.pas"/>
+        <UnitName Value="rxappicon"/>
+      </Item28>
+      <Item29>
+        <Filename Value="seldsfrm.pas"/>
+        <UnitName Value="seldsfrm"/>
+      </Item29>
+      <Item30>
+        <Filename Value="rxctrls.pas"/>
+        <UnitName Value="rxctrls"/>
+      </Item30>
+      <Item31>
+        <Filename Value="rxlogin.lfm"/>
+        <Type Value="LFM"/>
+      </Item31>
+      <Item32>
+        <Filename Value="rxlogin.pas"/>
+        <UnitName Value="RxLogin"/>
+      </Item32>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="rx"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item4>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

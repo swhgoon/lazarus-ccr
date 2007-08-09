@@ -1,0 +1,167 @@
+object DualListForm: TDualListForm
+  BorderIcons = []
+  BorderStyle = bsDialog
+  Caption = 'DualListForm'
+  ClientHeight = 269
+  ClientWidth = 392
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = [fsBold]
+  OnActivate = ListClick
+  OnCreate = FormCreate
+  OnShow = ListClick
+  PixelsPerInch = 96
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 391
+  VertScrollBar.Page = 268
+  Left = 311
+  Height = 269
+  Top = 225
+  Width = 392
+  object Bevel1: TBevel
+    Height = 224
+    Left = 4
+    Name = 'Bevel1'
+    Top = 7
+    Width = 384
+    Left = 4
+    Height = 224
+    Top = 7
+    Width = 384
+  end
+  object SrcLabel: TLabel
+    Caption = 'Source'
+    Color = clNone
+    Left = 12
+    Height = 13
+    Top = 12
+    Width = 33
+  end
+  object DstLabel: TLabel
+    Caption = 'Dest'
+    Color = clNone
+    Left = 216
+    Height = 13
+    Top = 12
+    Width = 22
+  end
+  object SrcList: TListBox
+    ItemHeight = 13
+    MultiSelect = True
+    OnClick = ListClick
+    OnDblClick = IncBtnClick
+    OnKeyDown = SrcListKeyDown
+    ParentShowHint = False
+    ShowHint = True
+    Sorted = True
+    TabOrder = 0
+    Left = 12
+    Height = 194
+    Top = 30
+    Width = 164
+  end
+  object DstList: TListBox
+    ItemHeight = 13
+    MultiSelect = True
+    OnClick = ListClick
+    OnDblClick = ExclBtnClick
+    OnKeyDown = DstListKeyDown
+    ParentShowHint = False
+    ShowHint = True
+    Sorted = True
+    TabOrder = 5
+    Left = 216
+    Height = 194
+    Top = 30
+    Width = 164
+  end
+  object IncBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = '>'
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    OnClick = IncBtnClick
+    TabOrder = 1
+    Left = 183
+    Height = 26
+    Top = 32
+    Width = 26
+  end
+  object IncAllBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = '>>'
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    OnClick = IncAllBtnClick
+    TabOrder = 2
+    Left = 183
+    Height = 26
+    Top = 64
+    Width = 26
+  end
+  object ExclBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = '<'
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    OnClick = ExclBtnClick
+    TabOrder = 3
+    Left = 183
+    Height = 26
+    Top = 97
+    Width = 26
+  end
+  object ExclAllBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = '<<'
+    Font.Color = clBlack
+    Font.Height = -12
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    OnClick = ExclAllBtnClick
+    TabOrder = 4
+    Left = 183
+    Height = 26
+    Top = 129
+    Width = 26
+  end
+  object OkBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 6
+    Left = 138
+    Height = 25
+    Top = 239
+    Width = 77
+  end
+  object CancelBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 7
+    Left = 221
+    Height = 25
+    Top = 239
+    Width = 77
+  end
+  object HelpBtn: TButton
+    BorderSpacing.InnerBorder = 2
+    Caption = 'Help'
+    OnClick = HelpBtnClick
+    TabOrder = 8
+    Left = 310
+    Height = 25
+    Top = 239
+    Width = 77
+  end
+end

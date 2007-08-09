@@ -1,0 +1,67 @@
+object SelectDataSetForm: TSelectDataSetForm
+  Caption = 'Select dataset to copy to'
+  ClientHeight = 315
+  ClientWidth = 400
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 314
+  Left = 501
+  Height = 315
+  Top = 189
+  Width = 400
+  object Label1: TLabel
+    Caption = 'Sourse dataset'
+    Color = clNone
+    FocusControl = DataSetList
+    Left = 8
+    Height = 13
+    Top = 32
+    Width = 73
+  end
+  object CheckBox1: TCheckBox
+    Caption = 'Copy only metadata'
+    OnChange = CheckBox1Change
+    TabOrder = 0
+    UseOnChange = True
+    Left = 8
+    Height = 13
+    Top = 8
+    Width = 116
+  end
+  object DataSetList: TListBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    OnDblClick = ListBox1DblClick
+    OnKeyPress = ListBox1KeyPress
+    TabOrder = 1
+    Left = 8
+    Height = 224
+    Top = 48
+    Width = 388
+  end
+  object OkBtn: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = '&Œ '
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 2
+    Left = 240
+    Height = 30
+    Top = 280
+    Width = 75
+  end
+  object BitBtn2: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 3
+    Left = 320
+    Height = 30
+    Top = 280
+    Width = 75
+  end
+end

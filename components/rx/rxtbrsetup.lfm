@@ -1,0 +1,227 @@
+object ToolPanelSetupForm: TToolPanelSetupForm
+  ActiveControl = BitBtn1
+  Caption = 'Tool panel setup'
+  ClientHeight = 396
+  ClientWidth = 442
+  FormStyle = fsStayOnTop
+  OnClose = FormClose
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 441
+  VertScrollBar.Page = 395
+  Left = 289
+  Height = 396
+  Top = 169
+  Width = 442
+  object BitBtn1: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = '&Закрыть'
+    Kind = bkClose
+    NumGlyphs = 0
+    TabOrder = 0
+    Left = 266
+    Height = 30
+    Top = 360
+    Width = 83
+  end
+  object BitBtn2: TBitBtn
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 2
+    Caption = '&Справка'
+    Kind = bkHelp
+    NumGlyphs = 0
+    TabOrder = 1
+    Left = 354
+    Height = 30
+    Top = 360
+    Width = 83
+  end
+  object PageControl1: TPageControl
+    ActivePage = TabSheet1
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 2
+    Height = 353
+    Width = 442
+    object TabSheet1: TTabSheet
+      Caption = 'Visible buttons'
+      ClientHeight = 327
+      ClientWidth = 434
+      Height = 327
+      Width = 434
+      object Label1: TLabel
+        Caption = 'Avaliable buttons'
+        Color = clNone
+        FocusControl = ListBtnAvaliable
+        ParentColor = False
+        Left = 263
+        Height = 14
+        Top = 5
+        Width = 84
+      end
+      object Label2: TLabel
+        Caption = 'Visible buttons'
+        Color = clNone
+        FocusControl = ListBtnVisible
+        ParentColor = False
+        Left = 8
+        Height = 14
+        Top = 7
+        Width = 70
+      end
+      object BitBtn3: TBitBtn
+        Anchors = [akTop]
+        BorderSpacing.InnerBorder = 2
+        Caption = '<<'
+        NumGlyphs = 0
+        OnClick = BitBtn3Click
+        TabOrder = 0
+        Left = 202
+        Height = 30
+        Top = 157
+        Width = 30
+      end
+      object BitBtn4: TBitBtn
+        Anchors = [akTop]
+        BorderSpacing.InnerBorder = 2
+        Caption = '<'
+        NumGlyphs = 0
+        OnClick = BitBtn4Click
+        TabOrder = 1
+        Left = 202
+        Height = 30
+        Top = 115
+        Width = 30
+      end
+      object BitBtn5: TBitBtn
+        Anchors = [akTop]
+        BorderSpacing.InnerBorder = 2
+        Caption = '>'
+        NumGlyphs = 0
+        OnClick = BitBtn5Click
+        TabOrder = 2
+        Left = 202
+        Height = 30
+        Top = 74
+        Width = 30
+      end
+      object BitBtn6: TBitBtn
+        Anchors = [akTop]
+        BorderSpacing.InnerBorder = 2
+        Caption = '>>'
+        NumGlyphs = 0
+        OnClick = BitBtn6Click
+        TabOrder = 3
+        Left = 202
+        Height = 30
+        Top = 40
+        Width = 30
+      end
+      object ListBtnAvaliable: TListBox
+        Anchors = [akTop, akLeft, akBottom]
+        Items.Strings = (
+          '111'
+          '222'
+          '333'
+          '44'
+          '555'
+          '666'
+          '777'
+        )
+        OnClick = ListBtnAvaliableClick
+        OnDrawItem = ListBox1DrawItem
+        Style = lbOwnerDrawFixed
+        TabOrder = 4
+        Left = 259
+        Height = 234
+        Top = 24
+        Width = 172
+      end
+      object ListBtnVisible: TListBox
+        Anchors = [akTop, akLeft, akBottom]
+        OnClick = ListBtnAvaliableClick
+        OnDrawItem = ListBox1DrawItem
+        Style = lbOwnerDrawFixed
+        TabOrder = 5
+        Left = 8
+        Height = 234
+        Top = 24
+        Width = 168
+      end
+      object Panel1: TPanel
+        Alignment = taLeftJustify
+        Anchors = [akLeft, akRight, akBottom]
+        BevelOuter = bvLowered
+        ClientHeight = 43
+        ClientWidth = 430
+        FullRepaint = False
+        TabOrder = 6
+        Left = 3
+        Height = 43
+        Top = 282
+        Width = 430
+      end
+      object cbShowCaption: TCheckBox
+        Anchors = [akLeft, akBottom]
+        Caption = 'Show caption'
+        OnChange = cbShowCaptionChange
+        TabOrder = 7
+        UseOnChange = True
+        Left = 8
+        Height = 13
+        Top = 264
+        Width = 85
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Options'
+      ClientHeight = 327
+      ClientWidth = 434
+      Height = 327
+      Width = 434
+      object cbShowHint: TCheckBox
+        Caption = 'Show hint'
+        OnClick = CheckBox1Change
+        TabOrder = 0
+        UseOnChange = True
+        Left = 9
+        Height = 13
+        Top = 58
+        Width = 67
+      end
+      object cbTransp: TCheckBox
+        Caption = 'Transparent'
+        OnClick = CheckBox1Change
+        TabOrder = 1
+        UseOnChange = True
+        Left = 9
+        Height = 13
+        Top = 34
+        Width = 77
+      end
+      object cbFlatBtn: TCheckBox
+        Caption = 'Flat buttons'
+        OnClick = CheckBox1Change
+        TabOrder = 2
+        UseOnChange = True
+        Left = 9
+        Height = 13
+        Top = 10
+        Width = 75
+      end
+      object cbsBarStyle: TCheckBox
+        Caption = 'XP style'
+        OnClick = CheckBox1Change
+        TabOrder = 3
+        UseOnChange = True
+        Left = 9
+        Height = 13
+        Top = 79
+        Width = 58
+      end
+    end
+  end
+end

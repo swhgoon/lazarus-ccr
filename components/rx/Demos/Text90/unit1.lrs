@@ -1,0 +1,32 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#13'ActiveControl'#7#5'Edit1'#7'Caption'#6#5'Form1'
+  +#12'ClientHeight'#3#207#1#11'ClientWidth'#3#6#2#8'OnCreate'#7#10'FormCreate'
+  +#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'#3#5#2#18'VertScrollBar.Page'#3
+  +#206#1#4'Left'#3#214#1#6'Height'#3#207#1#3'Top'#3#247#0#5'Width'#3#6#2#0#9'T'
+  +'PaintBox'#9'PaintBox1'#7'OnPaint'#7#14'PaintBox1Paint'#4'Left'#2#16#6'Heigh'
+  +'t'#3#129#0#3'Top'#2#16#5'Width'#3#184#0#0#0#5'TEdit'#5'Edit1'#8'OnChange'#7
+  +#11'Edit1Change'#8'TabOrder'#2#0#4'Text'#6#5'Edit1'#4'Left'#2#16#6'Height'#2
+  +#23#3'Top'#3#160#0#5'Width'#3#184#0#0#0#11'TRadioGroup'#11'RadioGroup1'#7'Ca'
+  +'ption'#6#11'RadioGroup1'#9'ItemIndex'#2#4#13'Items.Strings'#1#6#3'0 %'#6#4
+  +'90 %'#6#5'180 %'#6#5'270 %'#6#5'360 %'#0#7'OnClick'#7#15'CheckBox1Change'#8
+  +'TabOrder'#2#1#4'Left'#3#216#0#6'Height'#2'w'#3'Top'#2'8'#5'Width'#3'('#1#0#0
+  +#9'TRxDBGrid'#9'RxDBGrid1'#7'Columns'#14#1#9'FieldName'#6#6'DEMO_1'#0#0#5'Al'
+  +'ign'#7#8'alBottom'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0
+  +#11'BorderStyle'#7#8'bsSingle'#10'DataSource'#7#11'Datasource1'#10'FixedColo'
+  +'r'#7#9'clBtnFace'#7'Options'#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14
+  +'dgColumnResize'#12'dgColumnMove'#10'dgColLines'#10'dgRowLines'#6'dgTabs'#21
+  +'dgAlwaysShowSelection'#15'dgConfirmDelete'#14'dgCancelOnExit'#0#12'OptionsE'
+  +'xtra'#11#14'dgeAutoColumns'#17'dgeCheckboxColumn'#0#11'ParentColor'#8#10'Sc'
+  +'rollbars'#7#6'ssBoth'#6'Height'#3#15#1#3'Top'#3#192#0#5'Width'#3#6#2#0#0#13
+  +'TRxMemoryData'#13'RxMemoryData1'#9'FieldDefs'#14#1#4'Name'#6#6'DEMO_1'#11'D'
+  +'isplayName'#6#6'DEMO_1'#8'DataType'#7#9'ftInteger'#9'Precision'#2#255#0#1#4
+  +'Name'#6#5'Demo2'#11'DisplayName'#6#5'Demo2'#8'DataType'#7#8'ftString'#9'Pre'
+  +'cision'#2#255#4'Size'#2'('#0#0#4'left'#3'8'#1#3'top'#2'@'#0#13'TLongintFiel'
+  +'d'#20'RxMemoryData1DEMO_11'#9'AlignMent'#7#14'taRightJustify'#12'DisplayWid'
+  +'th'#2#10#9'FieldName'#6#6'DEMO_1'#0#0#12'TStringField'#19'RxMemoryData1Demo'
+  +'21'#4'Size'#2'('#12'DisplayWidth'#2'('#9'FieldName'#6#5'Demo2'#5'Index'#2#1
+  +#0#0#0#11'TDatasource'#11'Datasource1'#7'DataSet'#7#13'RxMemoryData1'#4'left'
+  +#3'8'#1#3'top'#2' '#0#0#0
+]);

@@ -1,0 +1,11 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TAboutForm','FORMDATA',[
+  'TPF0'#10'TAboutForm'#9'AboutForm'#7'Caption'#6#8'About...'#12'ClientHeight'#3
+  +','#1#11'ClientWidth'#3#144#1#13'PixelsPerInch'#2'`'#18'HorzScrollBar.Page'#3
+  +#143#1#18'VertScrollBar.Page'#3'+'#1#4'Left'#3#185#1#6'Height'#3','#1#3'Top'
+  +#3'A'#1#5'Width'#3#144#1#0#7'TBitBtn'#7'BitBtn1'#7'Anchors'#11#8'akBottom'#0
+  +#22'BorderSpacing.OnChange'#13#25'BorderSpacing.InnerBorder'#2#2#7'Caption'#6
+  +#3'&'#206#202#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#8'TabOrder'
+  +#2#0#4'Left'#3#162#0#6'Height'#2#30#3'Top'#3#8#1#5'Width'#2'K'#0#0#0
+]);

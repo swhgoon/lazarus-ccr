@@ -1,0 +1,126 @@
+object MainForm: TMainForm
+  Caption = 'Main form'
+  ClientHeight = 281
+  ClientWidth = 391
+  Menu = MainMenu1
+  PixelsPerInch = 96
+  ShowHint = True
+  HorzScrollBar.Page = 390
+  VertScrollBar.Page = 280
+  Left = 251
+  Height = 300
+  Top = 138
+  Width = 391
+  object Label1: TLabel
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    Caption = 'Folder for scan'
+    Color = clNone
+    Left = 8
+    Height = 13
+    Top = 56
+    Width = 72
+  end
+  object Label2: TLabel
+    AutoSize = True
+    BorderSpacing.OnChange = nil
+    Caption = 'Default ext'
+    Color = clNone
+    Left = 8
+    Height = 13
+    Top = 8
+    Width = 54
+  end
+  object Button1: TButton
+    Action = sysScan
+    BorderSpacing.OnChange = nil
+    TabOrder = 0
+    Left = 8
+    Height = 25
+    Hint = 'Scan folder'
+    Top = 112
+    Width = 75
+  end
+  object DirectoryEdit1: TDirectoryEdit
+    Directory = 'C:\lazarus\components\'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
+    TabOrder = 1
+    Text = 'C:\lazarus\components\'
+    Left = 16
+    Height = 23
+    Top = 80
+    Width = 344
+  end
+  object Edit1: TEdit
+    BorderSpacing.OnChange = nil
+    TabOrder = 2
+    Text = '.pas'
+    Left = 16
+    Height = 23
+    Top = 24
+    Width = 80
+  end
+  object ActionList1: TActionList
+    left = 144
+    top = 112
+    object sysExit: TAction
+      Caption = 'Exit'
+      Enabled = False
+      Hint = 'Exit form demo app'
+      ShortCut = 32856
+      Category = 'System'
+    end
+    object hlpAbout: TAction
+      Caption = 'About'
+      Hint = 'Information of app'
+      OnExecute = hlpAboutExecute
+      Category = 'Help'
+    end
+    object sysScan: TAction
+      Caption = 'Scan'
+      Hint = 'Scan folder'
+      OnExecute = sysRescanExecute
+      Category = 'System'
+    end
+  end
+  object MainMenu1: TMainMenu
+    left = 144
+    top = 48
+    object SystemItems: TMenuItem
+      Caption = 'System'
+      object MenuItem3: TMenuItem
+        Action = sysScan
+        OnClick = sysRescanExecute
+      end
+      object MenuItem4: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem2: TMenuItem
+        Action = sysExit
+      end
+    end
+    object FolderItems: TMenuItem
+      Caption = 'Folder'
+    end
+    object HelpItems: TMenuItem
+      Caption = 'Помощь'
+      object MenuItem1: TMenuItem
+        Action = hlpAbout
+        OnClick = hlpAboutExecute
+      end
+    end
+  end
+  object FolderLister1: TFolderLister
+    DefaultExt = '.pas'
+    OnExecuteItem = FolderLister1ExecuteItem
+    MenuItem = FolderItems
+    left = 144
+    top = 12
+  end
+end

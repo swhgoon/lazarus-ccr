@@ -1,0 +1,99 @@
+object Form1: TForm1
+  ActiveControl = Edit1
+  Caption = 'Form1'
+  ClientHeight = 463
+  ClientWidth = 518
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 517
+  VertScrollBar.Page = 462
+  Left = 470
+  Height = 463
+  Top = 247
+  Width = 518
+  object PaintBox1: TPaintBox
+    OnPaint = PaintBox1Paint
+    Left = 16
+    Height = 129
+    Top = 16
+    Width = 184
+  end
+  object Edit1: TEdit
+    OnChange = Edit1Change
+    TabOrder = 0
+    Text = 'Edit1'
+    Left = 16
+    Height = 23
+    Top = 160
+    Width = 184
+  end
+  object RadioGroup1: TRadioGroup
+    Caption = 'RadioGroup1'
+    ItemIndex = 4
+    Items.Strings = (
+      '0 %'
+      '90 %'
+      '180 %'
+      '270 %'
+      '360 %'
+    )
+    OnClick = CheckBox1Change
+    TabOrder = 1
+    Left = 216
+    Height = 119
+    Top = 56
+    Width = 296
+  end
+  object RxDBGrid1: TRxDBGrid
+    Columns = <    
+      item
+        FieldName = 'DEMO_1'
+      end>
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderStyle = bsSingle
+    DataSource = Datasource1
+    FixedColor = clBtnFace
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    Scrollbars = ssBoth
+    Height = 271
+    Top = 192
+    Width = 518
+  end
+  object RxMemoryData1: TRxMemoryData
+    FieldDefs = <    
+      item
+        Name = 'DEMO_1'
+        DisplayName = 'DEMO_1'
+        DataType = ftInteger
+        Precision = -1
+      end    
+      item
+        Name = 'Demo2'
+        DisplayName = 'Demo2'
+        DataType = ftString
+        Precision = -1
+        Size = 40
+      end>
+    left = 312
+    top = 64
+    object RxMemoryData1DEMO_11: TLongintField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'DEMO_1'
+    end
+    object RxMemoryData1Demo21: TStringField
+      Size = 40
+      DisplayWidth = 40
+      FieldName = 'Demo2'
+      Index = 1
+    end
+  end
+  object Datasource1: TDatasource
+    DataSet = RxMemoryData1
+    left = 312
+    top = 32
+  end
+end

@@ -1,0 +1,241 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <Title Value="FolderLister"/>
+    </General>
+    <JumpHistory Count="16" HistoryIndex="15">
+      <Position1>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="86" Column="29" TopLine="79"/>
+      </Position1>
+      <Position2>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="18" Column="5" TopLine="15"/>
+      </Position2>
+      <Position3>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="108" Column="4" TopLine="104"/>
+      </Position3>
+      <Position4>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="71" Column="27" TopLine="58"/>
+      </Position4>
+      <Position5>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="78" Column="16" TopLine="65"/>
+      </Position5>
+      <Position6>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="80" Column="20" TopLine="67"/>
+      </Position6>
+      <Position7>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="95" Column="16" TopLine="82"/>
+      </Position7>
+      <Position8>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="36" Column="5" TopLine="32"/>
+      </Position8>
+      <Position9>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="67" Column="33" TopLine="51"/>
+      </Position9>
+      <Position10>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="22" Column="32" TopLine="21"/>
+      </Position10>
+      <Position11>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="137" Column="26" TopLine="135"/>
+      </Position11>
+      <Position12>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="19" Column="5" TopLine="19"/>
+      </Position12>
+      <Position13>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="23" Column="1" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="118" Column="5" TopLine="82"/>
+      </Position14>
+      <Position15>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="1" Column="7" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Caret Line="5" Column="1" TopLine="1"/>
+      </Position16>
+    </JumpHistory>
+    <Units Count="15">
+      <Unit0>
+        <CursorPos X="24" Y="2"/>
+        <Filename Value="FolderLister.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="FolderLister"/>
+        <UsageCount Value="23"/>
+      </Unit0>
+      <Unit1>
+        <CursorPos X="12" Y="23"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="unit1.pas"/>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ResourceFilename Value="unit1.lrs"/>
+        <TopLine Value="23"/>
+        <UnitName Value="Unit1"/>
+        <UsageCount Value="23"/>
+      </Unit1>
+      <Unit2>
+        <CursorPos X="1" Y="88"/>
+        <EditorIndex Value="1"/>
+        <Filename Value="C:\lazarus\components\RxNew\FolderLister.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="70"/>
+        <UnitName Value="FolderLister"/>
+        <UsageCount Value="11"/>
+      </Unit2>
+      <Unit3>
+        <CursorPos X="64" Y="123"/>
+        <Filename Value="c:\lazarus\fpcsrc\rtl\objpas\sysutils\filutilh.inc"/>
+        <TopLine Value="110"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <CursorPos X="52" Y="331"/>
+        <Filename Value="C:\lazarus\fpcsrc\rtl\win32\system.pp"/>
+        <TopLine Value="314"/>
+        <UnitName Value="System"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <CursorPos X="6" Y="1"/>
+        <Filename Value="C:\lazarus\components\RxNew\RxAppUtils.pas"/>
+        <TopLine Value="1"/>
+        <UnitName Value="RxAppUtils"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <CursorPos X="28" Y="12"/>
+        <Filename Value="AboutUnit.pas"/>
+        <ComponentName Value="AboutForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="AboutUnit.lrs"/>
+        <TopLine Value="10"/>
+        <UnitName Value="AboutUnit"/>
+        <UsageCount Value="22"/>
+      </Unit6>
+      <Unit7>
+        <CursorPos X="43" Y="1700"/>
+        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
+        <TopLine Value="1695"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <CursorPos X="49" Y="2"/>
+        <Filename Value="unit1.lrs"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <CursorPos X="37" Y="1169"/>
+        <Filename Value="C:\lazarus\lcl\Forms.pp"/>
+        <TopLine Value="1166"/>
+        <UnitName Value="Forms"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <CursorPos X="50" Y="146"/>
+        <Filename Value="C:\lazarus\lcl\include\application.inc"/>
+        <TopLine Value="142"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <CursorPos X="38" Y="48"/>
+        <Filename Value="C:\lazarus\lcl\Dialogs.pp"/>
+        <TopLine Value="37"/>
+        <UnitName Value="Dialogs"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <CursorPos X="2" Y="1182"/>
+        <Filename Value="C:\lazarus\lcl\Controls.pp"/>
+        <TopLine Value="1176"/>
+        <UnitName Value="Controls"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <CursorPos X="1" Y="1"/>
+        <EditorIndex Value="2"/>
+        <Filename Value="C:\lazarus\components\RxNew\RX.INC"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <CursorPos X="1" Y="15"/>
+        <EditorIndex Value="3"/>
+        <Filename Value="C:\lazarus\components\RxNew\RXStrutils.pas"/>
+        <Loaded Value="True"/>
+        <TopLine Value="1"/>
+        <UnitName Value="RxStrUtils"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+    </Units>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="RxNew"/>
+        <MinVersion Major="1" Release="1" Build="2" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="4"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
