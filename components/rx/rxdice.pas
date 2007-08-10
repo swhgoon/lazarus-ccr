@@ -40,11 +40,11 @@ type
     procedure CMFocusChanged(var Message: TLMessage); message CM_FOCUSCHANGED;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure CreateBitmap;
-    procedure SetAutoSize(aValue: Boolean);
-    procedure SetInterval(aValue: Cardinal);
+    procedure SetAutoSize(Value: Boolean);
+    procedure SetInterval(Value: Cardinal);
     procedure SetRotate(AValue: Boolean);
     procedure SetShowFocus(AValue: Boolean);
-    procedure SetValue(aValue: TRxDiceValue);
+    procedure SetValue(Value: TRxDiceValue);
     procedure TimerExpired(Sender: TObject);
   protected
     { Protected declarations }
@@ -238,11 +238,7 @@ var
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
       TmpImage.Canvas.Brush.Color := Self.Brush.Color;
-// Changes by MJW. Start ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Replacing BrushCopy() by CopyRect. As BrushCopy is not defined in FPC/Laz
-      TmpImage.Canvas.CopyRect(IRect, FBitmap.Canvas, IRect);
 //      TmpImage.Canvas.BrushCopy(IRect, FBitmap, IRect, FBitmap.TransparentColor);
-// Changes by MJW. Eind +++++++++++++++++++++++++++++++++++++++++++++++++++++++
       InflateRect(ARect, -1, -1);
 //      Canvas.StretchDraw(ARect, TmpImage);
       Canvas.StretchDraw(ARect, FBitmap);
@@ -292,32 +288,32 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TRxDice.SetValue(aValue: TRxDiceValue);
+procedure TRxDice.SetValue(Value: TRxDiceValue);
 begin
-  if FValue <> aValue then
+  if FValue <> Value then
   begin
-    FValue := aValue;
+    FValue := Value;
     CreateBitmap;
     Invalidate;
     Change;
   end;
 end;
 
-procedure TRxDice.SetAutoSize(aValue: Boolean);
+procedure TRxDice.SetAutoSize(Value: Boolean);
 begin
-  if aValue <> FAutoSize then
+  if Value <> FAutoSize then
   begin
-    FAutoSize := aValue;
+    FAutoSize := Value;
     AdjustSize;
     Invalidate;
   end;
 end;
 
-procedure TRxDice.SetInterval(aValue: Cardinal);
+procedure TRxDice.SetInterval(Value: Cardinal);
 begin
-  if FInterval <> aValue then
+  if FInterval <> Value then
   begin
-    FInterval := aValue;
+    FInterval := Value;
     if FTimer <> nil then FTimer.Interval := FInterval;
   end;
 end;

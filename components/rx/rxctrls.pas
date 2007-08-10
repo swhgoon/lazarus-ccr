@@ -576,7 +576,8 @@ type
     procedure LinesChanged(Sender: TObject);
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CMColorChanged(var Message: TLMessage); message CM_COLORCHANGED;
-    procedure WMSize(var Message: TLMessage); message LM_SIZE;
+//    procedure WMSize(var Message: TLMessage); message LM_SIZE;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
   protected
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure Paint; override;
@@ -3111,7 +3112,8 @@ begin
   if Active then UpdateMemoryImage;
 end;
 
-procedure TSecretPanel.WMSize(var Message: TLMessage);
+//procedure TSecretPanel.WMSize(var Message: TLMessage);
+procedure TSecretPanel.WMSize(var Message: TLMSize);
 begin
   inherited;
   if Active then begin

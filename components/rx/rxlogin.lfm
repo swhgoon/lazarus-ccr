@@ -1,4 +1,11 @@
 object RxLoginForm: TRxLoginForm
+  Cursor = crArrow
+  Left = 213
+  Height = 159
+  Top = 102
+  Width = 442
+  HorzScrollBar.Page = 441
+  VertScrollBar.Page = 158
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'RxLoginForm'
@@ -12,25 +19,20 @@ object RxLoginForm: TRxLoginForm
   PixelsPerInch = 96
   Position = poScreenCenter
   TextHeight = 13
-  HorzScrollBar.Page = 441
-  VertScrollBar.Page = 158
-  Cursor = crArrow
-  Left = 213
-  Height = 159
-  Top = 102
-  Width = 442
   object AppIcon: TImage
-    AutoSize = True
-    BorderSpacing.OnChange = nil
-    Transparent = True
     Left = 14
     Height = 32
     Top = 12
     Width = 32
+    AutoSize = True
+    Transparent = True
   end
   object KeyImage: TImage
+    Left = 10
+    Height = 32
+    Top = 15
+    Width = 32
     AutoSize = True
-    BorderSpacing.OnChange = nil
     Picture.Data = {
       055449636F6EFE0200000000010001002020100000000000E802000016000000
       2800000020000000400000000100040000000000800200000000000000000000
@@ -59,114 +61,106 @@ object RxLoginForm: TRxLoginForm
       FFFFFFFFFFFFFFFF
     }
     Transparent = True
-    Left = 10
-    Height = 32
-    Top = 15
-    Width = 32
   end
   object HintLabel: TLabel
-    AutoSize = False
-    BorderSpacing.OnChange = nil
-    Color = clNone
-    ShowAccelChar = False
     Left = 64
     Height = 13
     Top = 31
     Width = 285
+    AutoSize = False
+    Color = clNone
+    ParentColor = False
+    ShowAccelChar = False
   end
   object UserNameLabel: TLabel
-    AutoSize = False
-    BorderSpacing.OnChange = nil
-    Color = clNone
-    FocusControl = UserNameEdit
     Left = 64
     Height = 13
     Top = 64
     Width = 105
+    AutoSize = False
+    Color = clNone
+    FocusControl = UserNameEdit
+    ParentColor = False
   end
   object PasswordLabel: TLabel
-    AutoSize = False
-    BorderSpacing.OnChange = nil
-    Color = clNone
-    FocusControl = PasswordEdit
     Left = 64
     Height = 13
     Top = 96
     Width = 105
+    AutoSize = False
+    Color = clNone
+    FocusControl = PasswordEdit
+    ParentColor = False
   end
   object AppTitleLabel: TLabel
-    AutoSize = False
-    BorderSpacing.OnChange = nil
-    Color = clNone
-    ShowAccelChar = False
     Left = 64
     Height = 13
     Top = 12
     Width = 285
+    AutoSize = False
+    Color = clNone
+    ParentColor = False
+    ShowAccelChar = False
   end
   object CustomLabel: TLabel
-    AutoSize = False
-    BorderSpacing.OnChange = nil
-    Color = clNone
-    FocusControl = CustomCombo
     Left = 64
     Height = 13
     Top = 128
     Width = 105
+    AutoSize = False
+    Color = clNone
+    FocusControl = CustomCombo
+    ParentColor = False
   end
   object UserNameEdit: TEdit
-    BorderSpacing.OnChange = nil
-    TabOrder = 0
     Cursor = crIBeam
     Left = 172
     Height = 21
     Top = 60
     Width = 169
+    TabOrder = 0
   end
   object PasswordEdit: TEdit
-    BorderSpacing.OnChange = nil
-    PasswordChar = '*'
-    TabOrder = 1
     Cursor = crIBeam
     Left = 172
     Height = 21
     Top = 92
     Width = 169
+    PasswordChar = '*'
+    TabOrder = 1
   end
   object OkBtn: TButton
-    BorderSpacing.OnChange = nil
+    Left = 356
+    Height = 25
+    Top = 12
+    Width = 77
     BorderSpacing.InnerBorder = 2
     Caption = 'OK'
     Default = True
     OnClick = OkBtnClick
     TabOrder = 3
-    Left = 356
-    Height = 25
-    Top = 12
-    Width = 77
   end
   object CancelBtn: TButton
-    BorderSpacing.OnChange = nil
+    Left = 356
+    Height = 25
+    Top = 44
+    Width = 77
     BorderSpacing.InnerBorder = 2
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 4
-    Left = 356
-    Height = 25
-    Top = 44
-    Width = 77
   end
   object CustomCombo: TComboBox
-    BorderSpacing.OnChange = nil
+    Left = 172
+    Height = 21
+    Top = 124
+    Width = 169
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
     MaxLength = 0
     Sorted = True
     Style = csDropDownList
     TabOrder = 2
-    Left = 172
-    Height = 21
-    Top = 124
-    Width = 169
   end
 end

@@ -5,8 +5,8 @@ unit rxtoolbar;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLType, LCLIntf, Buttons, Controls, ExtCtrls, ActnList,
-  PropertyStorage, Menus, Forms;
+  Classes, SysUtils, LCLType, LCLIntf, Buttons, Controls, ExtCtrls, ActnList,
+  PropertyStorage, Menus, Forms, types;
 
 const
   DefButtonWidth = 24;
@@ -17,6 +17,7 @@ type
   TToolbarItem = class;
   TToolbarButtonStyle = (tbrButton, tbrCheck, tbrDropDown, tbrSeparator, tbrDivider);
   TToolBarStyle = (tbsStandart, tbsWindowsXP);
+  TToolButtonAllign = (tbaNone, tbaLeft, tbaRignt);
 
   TToolPanelOption = (tpFlatBtns, tpTransparentBtns, tpStretchBitmap,
        tpCustomizable, tpGlyphPopup, tpCaptionPopup);
@@ -28,6 +29,8 @@ type
   protected
     procedure SetImageIndex(Value: Integer); override;
     function IsImageIndexLinked: Boolean; override;
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetCaption(const Value: string); override;
   end;
   
   TToolbarButtonActionLinkClass = class of TToolbarButtonActionLink;
@@ -40,6 +43,7 @@ type
     FDesignY:integer;
     FDrag:boolean;
     FImageList:TImageList;
+    FImageListSelected:TImageList;
     FDropDownMenu:TPopupMenu;
     FShowCaption:boolean;
     FToolbarButtonStyle:TToolbarButtonStyle;
@@ -47,6 +51,7 @@ type
     FAutoSize:boolean;
     FOwnerItem:TToolbarItem;
     function IsDesignMode:boolean;
+    procedure PaintSeparator;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -61,7 +66,7 @@ type
     procedure UpdateSize;
     procedure SetEnabled(NewEnabled: boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
-    function GetDrawFlags: integer; virtual;
+    function GetDrawFlagsA: integer;
   public
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     destructor Destroy; override;
@@ -72,6 +77,7 @@ type
   TToolbarItem = class(TCollectionItem)
   private
     FButton: TToolbarButton;
+    FSaveLeft:integer;
 //    FActionLink:TActionLink;
     function GetAction: TBasicAction;
     function GetAutoSize: boolean;
@@ -100,6 +106,8 @@ type
     procedure SetTop(const AValue: Integer);
     procedure SetVisible(const AValue: boolean);
     procedure SetWidth(const AValue: Integer);
+
+    procedure UpdateLeftAfterLoad;
   protected
     function GetDisplayName: string; override;
   public
@@ -139,7 +147,9 @@ type
 
   TToolPanel = class(TCustomPanel)
   private
+    FButtonAllign: TToolButtonAllign;
     FImageList: TImageList;
+    FImageListSelected: TImageList;
     FOptions: TToolPanelOptions;
     FPropertyStorageLink:TPropertyStorageLink;
     FToolbarItems:TToolbarItems;
@@ -153,7 +163,9 @@ type
     function GetPropertyStorage: TCustomPropertyStorage;
     procedure SetBtnHeight(const AValue: Integer);
     procedure SetBtnWidth(const AValue: Integer);
+    procedure SetButtonAllign(const AValue: TToolButtonAllign);
     procedure SetImageList(const AValue: TImageList);
+    procedure SetImageListSelected(const AValue: TImageList);
     procedure SetItems(const AValue: TToolbarItems);
     procedure SetOptions(const AValue: TToolPanelOptions);
     procedure SetPropertyStorage(const AValue: TCustomPropertyStorage);
@@ -168,6 +180,7 @@ type
     procedure DoAutoSize; Override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -175,12 +188,14 @@ type
   published
     property Items:TToolbarItems read GetItems write SetItems;
     property ImageList:TImageList read FImageList write SetImageList;
+    property ImageListSelected:TImageList read FImageListSelected write SetImageListSelected;
     property PropertyStorage:TCustomPropertyStorage read GetPropertyStorage write SetPropertyStorage;
     property BtnWidth: Integer read GetBtnWidth write SetBtnWidth default DefButtonWidth;
     property BtnHeight: Integer read GetBtnHeight write SetBtnHeight default DefButtonHeight;
     property ToolBarStyle:TToolBarStyle read FToolBarStyle write SetToolBarStyle default tbsStandart;
     property Options:TToolPanelOptions read FOptions write SetOptions;
     property Version: Integer read FVersion write FVersion default 0;
+    property ButtonAllign:TToolButtonAllign read FButtonAllign write SetButtonAllign;
 
     property Align;
     property Alignment;
@@ -226,11 +241,33 @@ type
 implementation
 uses Math, Graphics, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst;
 
+const
+  BtnAl2Align:array [TToolButtonAllign] of TAlign = (alNone, alLeft, alRight);
+
 { TToolbarButton }
 
 function TToolbarButton.IsDesignMode: boolean;
 begin
   Result:=(Assigned(Parent) and (csDesigning in Parent.ComponentState)) or (FDesign);
+end;
+
+procedure TToolbarButton.PaintSeparator;
+var
+  PaintRect: TRect;
+  X, H:integer;
+begin
+  PaintRect:=ClientRect;
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(PaintRect);
+  X:=Width div 2 - 1;
+  H:=TToolPanel(Parent).Height;
+  if X>0 then
+  begin
+    Canvas.Pen.Color:=clBtnShadow;
+    Canvas.Line(X, 1, X, H);
+    Canvas.Pen.Color:=clWindow;
+    Canvas.Line(X+1, 1, X+1, H);
+  end;
 end;
 
 procedure TToolbarButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -281,6 +318,13 @@ var
   SIndex : Longint;
   TMP : String;
 begin
+  if FToolbarButtonStyle = tbrSeparator then
+  begin
+    PaintSeparator;
+    exit;
+  end;
+  inherited Paint;
+
   UpdateState(false);
   if not Assigned(Action) then exit;
   PaintRect:=ClientRect;
@@ -289,7 +333,8 @@ begin
      (TCustomAction(Action).ImageIndex < FImageList.Count) then
   begin
 
-    FLastDrawFlagsA:=GetDrawFlags;
+    FLastDrawFlagsA:=GetDrawFlagsA;
+//    FLastDrawFlagsA:=GetDrawDetails;
 
     if not Transparent then
     begin
@@ -317,11 +362,11 @@ begin
       TMP := Caption;
       SIndex := DeleteAmpersands(TMP);
       TextSize:= Canvas.TextExtent(TMP);
-{      If SIndex > 0 then
+(*      If SIndex > 0 then
         If SIndex <= Length(TMP) then
         begin
           FShortcut := Ord(TMP[SIndex]);
-        end;}
+        end;*)
     end
     else
     begin
@@ -407,7 +452,12 @@ begin
       Dec(Offset.X, 2);
       Dec(Offset.Y, 2);
     end;
-    FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, TCustomAction(Action).Enabled);
+
+    if Assigned(FImageListSelected) and (FImageListSelected.Count>TCustomAction(Action).ImageIndex) and
+       ((FLastDrawFlagsA and DFCS_FLAT) <> 0) and ((FLastDrawFlagsA and DFCS_PUSHED) = 0) then
+      FImageListSelected.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, TCustomAction(Action).Enabled)
+    else
+      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, TCustomAction(Action).Enabled);
   end;
   if (Caption <> '') and FShowCaption then
   begin
@@ -467,7 +517,7 @@ var
 begin
   OldState:=FState;
   inherited UpdateState(InvalidateOnChange);
-  if InvalidateOnChange and ((FState<>OldState) or (FLastDrawFlagsA<>GetDrawFlags)) then
+  if InvalidateOnChange and ((FState<>OldState) or (FLastDrawFlagsA<>GetDrawFlagsA)) then
     Invalidate;
 end;
 
@@ -503,6 +553,12 @@ procedure TToolbarButton.SetEnabled(NewEnabled: boolean);
 begin
   if FToolbarButtonStyle = tbrDropDown then
     NewEnabled :=true;
+  if (not NewEnabled) and Enabled then
+  begin
+    FState := bsDisabled;
+    MouseLeave;
+//    Flat:=false;
+  end;
   inherited SetEnabled(NewEnabled);
 end;
 
@@ -511,10 +567,10 @@ begin
   Result:=TToolbarButtonActionLink;
 end;
 
-function TToolbarButton.GetDrawFlags: integer;
+function TToolbarButton.GetDrawFlagsA: integer;
 begin
   // if flat and not mouse in control and not down, don't draw anything
-  if Flat and not MouseInControl and not (FState in [bsDown, bsExclusive]) then
+  if (Flat and not MouseInControl and not (FState in [bsDown, bsExclusive])) or (not Enabled) then
   begin
     Result := 0;
   end
@@ -538,6 +594,15 @@ var
 begin
   if Assigned(Parent) and not (csLoading in TToolPanel(Parent).ComponentState) then
   begin
+    if FToolbarButtonStyle = tbrSeparator then
+    begin
+      aWidth:=7;
+      if Assigned(FImageList) then
+        aHeight:=FImageList.Height+8
+      else
+        aHeight:=TToolPanel(Parent).BtnHeight;
+    end
+    else
     if FAutoSize and Assigned(Canvas) then
     begin
       if Assigned(FImageList) then
@@ -602,7 +667,7 @@ var
 begin
   Result:=nil;
   for i:=0 to Count-1 do
-    if Items[i].Action.Name = ActionName then
+    if Assigned(Items[i].Action) and (Items[i].Action.Name = ActionName) then
     begin
       Result:=Items[i];
     end;
@@ -666,6 +731,18 @@ begin
   end;
 end;
 
+procedure TToolPanel.SetButtonAllign(const AValue: TToolButtonAllign);
+var
+  i:integer;
+begin
+  if FButtonAllign=AValue then exit;
+  FButtonAllign:=AValue;
+  
+  if not (csLoading in ComponentState) then
+    for i:=0 to FToolbarItems.Count - 1 do
+      FToolbarItems[i].FButton.Align:=BtnAl2Align[AValue];
+end;
+
 procedure TToolPanel.SetImageList(const AValue: TImageList);
 var
   i:integer;
@@ -674,6 +751,16 @@ begin
   FImageList:=AValue;
   for i:=0 to FToolbarItems.Count - 1 do
     FToolbarItems[i].FButton.FImageList:=AValue;
+end;
+
+procedure TToolPanel.SetImageListSelected(const AValue: TImageList);
+var
+  i:integer;
+begin
+  if FImageListSelected=AValue then exit;
+  FImageListSelected:=AValue;
+  for i:=0 to FToolbarItems.Count - 1 do
+    FToolbarItems[i].FButton.FImageListSelected:=AValue;
 end;
 
 procedure TToolPanel.SetItems(const AValue: TToolbarItems);
@@ -716,17 +803,21 @@ begin
   tpo:=FOptions;
   FPropertyStorageLink.Storage.WriteString(S+sOptions, SetToString(GetPropInfo(Self, 'Options'), tpo1));
   FPropertyStorageLink.Storage.WriteString(S+sToolBarStyle, GetEnumProp(Self, 'ToolBarStyle'));
+  FPropertyStorageLink.Storage.WriteString(S+sButtonAllign, GetEnumProp(Self, 'ButtonAllign'));
   FPropertyStorageLink.Storage.WriteInteger(S+sCount, FToolbarItems.Count);
   S:=S+sItem;
   for i:=0 to FToolbarItems.Count-1 do
   begin
     S1:=S+IntToStr(i);
-    FPropertyStorageLink.Storage.WriteString(S1+sAction, FToolbarItems[i].Action.Name);
-    FPropertyStorageLink.Storage.WriteInteger(S1+sVisible, ord(FToolbarItems[i].Visible));
-    FPropertyStorageLink.Storage.WriteInteger(S1+sShowCaption, ord(FToolbarItems[i].ShowCaption));
-    FPropertyStorageLink.Storage.WriteInteger(S1+sTop, FToolbarItems[i].Top);
-    FPropertyStorageLink.Storage.WriteInteger(S1+sLeft, FToolbarItems[i].Left);
-    FPropertyStorageLink.Storage.WriteInteger(S1+sWidth, FToolbarItems[i].Width);
+    if Assigned(FToolbarItems[i].Action) then
+    begin
+      FPropertyStorageLink.Storage.WriteString(S1+sAction, FToolbarItems[i].Action.Name);
+      FPropertyStorageLink.Storage.WriteInteger(S1+sVisible, ord(FToolbarItems[i].Visible));
+      FPropertyStorageLink.Storage.WriteInteger(S1+sShowCaption, ord(FToolbarItems[i].ShowCaption));
+      FPropertyStorageLink.Storage.WriteInteger(S1+sTop, FToolbarItems[i].Top);
+      FPropertyStorageLink.Storage.WriteInteger(S1+sLeft, FToolbarItems[i].Left);
+      FPropertyStorageLink.Storage.WriteInteger(S1+sWidth, FToolbarItems[i].Width);
+    end;
   end;
 end;
 
@@ -749,6 +840,7 @@ begin
     SetOptions(tpo);
 
     SetEnumProp(Self, 'ToolBarStyle', FPropertyStorageLink.Storage.ReadString(S+sToolBarStyle, GetEnumProp(Self, 'ToolBarStyle')));
+    SetEnumProp(Self, 'ButtonAllign', FPropertyStorageLink.Storage.ReadString(S+sButtonAllign, GetEnumProp(Self, 'ButtonAllign')));
 
     ACount:=FPropertyStorageLink.Storage.ReadInteger(S+sCount, 0);
     S:=S+sItem;
@@ -846,9 +938,35 @@ begin
     Customize(HelpContext);
 end;
 
+procedure TToolPanel.Loaded;
+var
+  i, L:integer;
+begin
+  inherited Loaded;
+  L:=0;
+  for i:=0 to FToolbarItems.Count - 1 do
+  begin
+    if ButtonAllign = tbaLeft then
+    begin
+      FToolbarItems[i].FSaveLeft:=L;
+      FToolbarItems[i].UpdateLeftAfterLoad;
+      Inc(L, FToolbarItems[i].Left + FToolbarItems[i].Width);
+    end
+    else
+      FToolbarItems[i].UpdateLeftAfterLoad;
+  end;
+
+  for i:=0 to FToolbarItems.Count - 1 do
+  begin
+    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+  end;
+
+end;
+
 constructor TToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AutoSize:=true;
   FToolbarItems:=TToolbarItems.Create(Self);
   Align:=alTop;
   Height:=DefButtonHeight;
@@ -944,7 +1062,10 @@ end;
 
 procedure TToolbarItem.SetLeft(const AValue: Integer);
 begin
-  FButton.Left:=AValue;
+  if csLoading in TToolbarItems(Collection).FToolPanel.ComponentState then
+    FSaveLeft:=AValue
+  else
+    FButton.Left:=AValue;
 end;
 
 procedure TToolbarItem.SetShowCaption(const AValue: boolean);
@@ -1046,8 +1167,18 @@ begin
   FButton.Width:=AValue;
 end;
 
+procedure TToolbarItem.UpdateLeftAfterLoad;
+begin
+  FButton.Left:=FSaveLeft;
+end;
+
 function TToolbarItem.GetDisplayName: string;
 begin
+  if ButtonStyle = tbrSeparator then
+  begin
+    Result:='Separator' //inherited GetDisplayName;
+  end
+  else
   if Assigned(Action) then
   begin
     if (Action is TCustomAction) then
@@ -1060,6 +1191,8 @@ begin
 end;
 
 constructor TToolbarItem.Create(ACollection: TCollection);
+var
+  i, W:integer;
 begin
   inherited Create(ACollection);
   FButton:=TToolbarButton.Create(TToolbarItems(ACollection).FToolPanel);
@@ -1070,6 +1203,17 @@ begin
   FButton.FShowCaption:=false;
   FButton.FAutoSize:=true;
   FButton.FOwnerItem:=Self;
+  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
+    FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
+{  if TToolbarItems(ACollection).FToolPanel.ButtonAllign = tbaLeft then
+  begin
+    W:=0;
+    for i:=0 to ACollection.Count - 1 do
+    begin
+      W:=Max(W, TToolbarItems(ACollection).Items[I].Width + TToolbarItems(ACollection).Items[I].Left);
+    end;
+    Left:=W+1;
+  end;}
 end;
 
 destructor TToolbarItem.Destroy;
@@ -1089,6 +1233,20 @@ end;
 function TToolbarButtonActionLink.IsImageIndexLinked: Boolean;
 begin
   Result:=true;
+end;
+
+procedure TToolbarButtonActionLink.SetEnabled(Value: Boolean);
+begin
+  if (FClient as TToolbarButton).FToolbarButtonStyle = tbrDropDown then
+    FClient.Enabled:=true
+  else
+    inherited SetEnabled(Value);
+end;
+
+procedure TToolbarButtonActionLink.SetCaption(const Value: string);
+begin
+  inherited SetCaption(Value);
+  (FClient as TToolbarButton).UpdateSize;
 end;
 
 end.

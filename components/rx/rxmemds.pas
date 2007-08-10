@@ -118,10 +118,12 @@ type
     procedure SortOnFields(const FieldNames: string;
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
     procedure EmptyTable;
+    procedure CloseOpen;
     procedure CopyStructure(Source: TDataSet);
     function LoadFromDataSet(Source: TDataSet; ARecordCount: Integer;
       Mode: TLoadMode): Integer;
     function SaveToDataSet(Dest: TDataSet; ARecordCount: Integer): Integer;
+    procedure AppendRecord(const Values: array of const);
   published
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
     property Active;
@@ -190,8 +192,8 @@ type
   protected
     procedure SetIndex(Value: Integer); virtual;
   public
-    constructor Create(aMemoryData: TRxMemoryData); virtual;
-    constructor CreateEx(aMemoryData: TRxMemoryData; UpdateParent: Boolean); virtual;
+    constructor Create(MemoryData: TRxMemoryData); virtual;
+    constructor CreateEx(MemoryData: TRxMemoryData; UpdateParent: Boolean); virtual;
     destructor Destroy; override;
     property MemoryData: TRxMemoryData read FMemoryData;
     property ID: Integer read FID write FID;
@@ -342,16 +344,16 @@ type
 
 { TMemoryRecord }
 
-constructor TMemoryRecord.Create(aMemoryData: TRxMemoryData);
+constructor TMemoryRecord.Create(MemoryData: TRxMemoryData);
 begin
-  CreateEx(aMemoryData, True);
+  CreateEx(MemoryData, True);
 end;
 
-constructor TMemoryRecord.CreateEx(aMemoryData: TRxMemoryData;
+constructor TMemoryRecord.CreateEx(MemoryData: TRxMemoryData;
   UpdateParent: Boolean);
 begin
   inherited Create;
-  SetMemoryData(aMemoryData, UpdateParent);
+  SetMemoryData(MemoryData, UpdateParent);
 end;
 
 destructor TMemoryRecord.Destroy;
@@ -510,7 +512,7 @@ begin
     for I := 0 to FieldCount - 1 do
     begin
       FD:=FieldDefs.AddFieldDef;
-      FD.DisplayName:=Fields[I].DisplayName;
+//      FD.DisplayName:=Fields[I].DisplayName;
       FD.Name:=Fields[I].FieldName;
       FD.Size:=Fields[I].Size;
       FD.DataType:=Fields[I].DataType;
@@ -1094,7 +1096,7 @@ begin
   BindFields(True);
   InitBufferPointers(True);
   InternalFirst;
-  OpenCursor(false);
+//  OpenCursor(false);
   //           Убрать после исправления бага в лазарусе насчёт сохранения в ресурс FieldDefs
 {  Fields.Clear;
   CreateFields;
@@ -1179,6 +1181,12 @@ begin
     ClearBuffers;
     DataEvent(deDataSetChange, 0);
   end;
+end;
+
+procedure TRxMemoryData.CloseOpen;
+begin
+  Close;
+  Open;
 end;
 
 procedure TRxMemoryData.CopyStructure(Source: TDataSet);
@@ -1307,6 +1315,16 @@ begin
   end;
 end;
 
+procedure TRxMemoryData.AppendRecord(const Values: array of const);
+var
+  I: Integer;
+begin
+  if State <> dsInsert then
+    Append;
+  for I := 0 to High(Values) do Fields[I].AssignValue(Values[I]);
+  Post;
+end;
+
 { Index Related }
 
 procedure TRxMemoryData.SortOnFields(const FieldNames: string;
@@ -1327,14 +1345,16 @@ procedure TRxMemoryData.Sort;
 var
   Pos: TBookmarkStr;
 begin
-  if Active and (FRecords <> nil) and (FRecords.Count > 0) then begin
+  if Active and (FRecords <> nil) and (FRecords.Count > 0) then
+  begin
     Pos := Bookmark;
     try
       QuickSort(0, FRecords.Count - 1, @CompareRecords);
       SetBufListSize(0);
       InitBufferPointers(False);
       try
-        SetBufListSize(BufferCount + 1);
+        RecalcBufListSize;
+//        SetBufListSize(BufferCount + 1);
       except
         SetState(dsInactive);
         CloseCursor;

@@ -7,7 +7,7 @@
 {                                                       }
 {*******************************************************}
 
-unit RxLogin;
+unit rxlogin;
 
 {$I RX.INC}
 
@@ -454,22 +454,24 @@ end;
 
 procedure TRxLoginDialog.OkButtonClick(Sender: TObject);
 var
-  ChangeCursor: Boolean;
+  SC: Boolean;
 begin
-  with TRxLoginForm(Sender) do begin
+  with TRxLoginForm(Sender) do
+  begin
 {$IFDEF WIN32}
-    ChangeCursor := GetCurrentThreadID = MainThreadID;
+    SC := GetCurrentThreadID = MainThreadID;
 {$ELSE}
-    ChangeCursor := True;
+    SC := True;
 {$ENDIF}
     try
-      if ChangeCursor then Screen.Cursor := crHourGlass;
+      if SC then Screen.Cursor := crHourGlass;
       try
         if DoCheckUser(UserNameEdit.Text, PasswordEdit.Text) then
           ModalResult := mrOk
-        else ModalResult := mrNone;
+        else
+          ModalResult := mrNone;
       finally
-        if ChangeCursor then Screen.Cursor := crDefault;
+        if SC then Screen.Cursor := crDefault;
       end;
     except
       Application.HandleException(Self);

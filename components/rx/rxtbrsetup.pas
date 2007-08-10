@@ -30,6 +30,7 @@ type
     ListBtnVisible: TListBox;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    RadioGroup1: TRadioGroup;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     procedure BitBtn3Click(Sender: TObject);
@@ -143,7 +144,7 @@ begin
   List.Clear;
   for i:=0 to FToolPanel.Items.Count - 1 do
   begin
-    if FToolPanel.Items[i].Visible = AVisible then
+    if (FToolPanel.Items[i].Visible = AVisible) and Assigned(FToolPanel.Items[i].Action) then
     begin
       P:=List.Add(FToolPanel.Items[i].Action.Name);
       List.Objects[P]:=FToolPanel.Items[i];
@@ -201,6 +202,8 @@ begin
 
   FToolPanel.ShowHint:=cbShowHint.Checked;
   FToolPanel.Options:=tpo;
+  
+  FToolPanel.ButtonAllign:=TToolButtonAllign(RadioGroup1.ItemIndex);
 end;
 
 procedure TToolPanelSetupForm.BitBtn4Click(Sender: TObject);
@@ -240,6 +243,7 @@ begin
   ListBtnVisible.ItemHeight:=FToolPanel.BtnHeight + 4;
   FillItems(ListBtnVisible.Items, true);
   FillItems(ListBtnAvaliable.Items, false);
+  RadioGroup1.ItemIndex:=Ord(FToolPanel.ButtonAllign);
   UpdateStates;
 end;
 

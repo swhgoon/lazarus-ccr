@@ -8,7 +8,7 @@
       <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\"/>
+        <UnitOutputDirectory Value="lib"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -19,12 +19,12 @@
     </CompilerOptions>
     <Description Value="Delphi VCL Extensions (RX) 
 Copyright (c) 1998 Master-Bank
-translate to Lazarus by alexs in 2005 
+translate to Lazarus by alexs in 2005 - 2007
 "/>
     <License Value="free ware
 "/>
-    <Version Major="1" Release="12" Build="38"/>
-    <Files Count="32">
+    <Version Major="1" Minor="1" Release="3" Build="86"/>
+    <Files Count="37">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -132,7 +132,7 @@ translate to Lazarus by alexs in 2005
       </Item26>
       <Item27>
         <Filename Value="pagemngr.pas"/>
-        <UnitName Value="PageMngr"/>
+        <UnitName Value="pagemngr"/>
       </Item27>
       <Item28>
         <Filename Value="rxappicon.pas"/>
@@ -152,8 +152,28 @@ translate to Lazarus by alexs in 2005
       </Item31>
       <Item32>
         <Filename Value="rxlogin.pas"/>
-        <UnitName Value="RxLogin"/>
+        <UnitName Value="rxlogin"/>
       </Item32>
+      <Item33>
+        <Filename Value="rxdbgrid_findunit.pas"/>
+        <UnitName Value="rxdbgrid_findunit"/>
+      </Item33>
+      <Item34>
+        <Filename Value="rxdbgrid_columsunit.pas"/>
+        <UnitName Value="rxdbgrid_columsunit"/>
+      </Item34>
+      <Item35>
+        <Filename Value="rxpopupunit.pas"/>
+        <UnitName Value="rxpopupunit"/>
+      </Item35>
+      <Item36>
+        <Filename Value="rxcustomchartpanel.pas"/>
+        <UnitName Value="rxcustomchartpanel"/>
+      </Item36>
+      <Item37>
+        <Filename Value="rxsortmemds.pas"/>
+        <UnitName Value="rxsortmemds"/>
+      </Item37>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">

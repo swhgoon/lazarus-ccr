@@ -1,0 +1,155 @@
+object RxDBGridMainForm: TRxDBGridMainForm
+  Left = 353
+  Height = 582
+  Top = 161
+  Width = 652
+  HorzScrollBar.Page = 651
+  VertScrollBar.Page = 581
+  ActiveControl = RxDBGrid1
+  Caption = 'RxDBGrid Demo (ver 2)  ...'
+  ClientHeight = 582
+  ClientWidth = 652
+  OnCreate = FormCreate
+  object RxDBGrid1: TRxDBGrid
+    Height = 532
+    Top = 50
+    Width = 652
+    Columns = <    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Code'
+        FieldName = 'ID'
+        Footer.Alignment = taRightJustify
+        Footer.DisplayFormat = 'Count: %d'
+        Footer.ValueType = fvtCount
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Software Name'
+        Width = 450
+        FieldName = 'NAME'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Cost'
+        Width = 90
+        FieldName = 'PRICE'
+        DisplayFormat = '#,##0.00'
+        Footer.Alignment = taRightJustify
+        Footer.DisplayFormat = '#,##0.00'
+        Footer.FieldName = 'PRICE'
+        Footer.ValueType = fvtSum
+        Filter.ItemIndex = -1
+      end>
+    OptionsRx = [rdgFooterRows]
+    FooterColor = clYellow
+    FooterRowCount = 1
+    Align = alClient
+    FocusColor = clRed
+    SelectedColor = clHighlight
+    DataSource = Datasource1
+    FixedColor = clBtnFace
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    PopupMenu = PopupMenu1
+    Scrollbars = ssBoth
+    TabOrder = 0
+    TabStop = True
+  end
+  object Panel1: TPanel
+    Height = 50
+    Width = 652
+    Align = alTop
+    ClientHeight = 50
+    ClientWidth = 652
+    TabOrder = 1
+    object Button1: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 75
+      Action = actCalcTotal
+      BorderSpacing.InnerBorder = 4
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 88
+      Height = 25
+      Top = 8
+      Width = 136
+      Action = actOptimizeColumnsWidthAll
+      BorderSpacing.InnerBorder = 4
+      TabOrder = 1
+    end
+  end
+  object RxMemoryData1: TRxMemoryData
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'ID'
+        DataType = ftInteger
+        Precision = -1
+        Size = 7
+      end    
+      item
+        Name = 'NAME'
+        DataType = ftString
+        Precision = -1
+        Size = 150
+      end    
+      item
+        Name = 'PRICE'
+        DataType = ftFloat
+        Precision = 2
+        Size = 12
+      end>
+    left = 152
+    top = 264
+  end
+  object Datasource1: TDatasource
+    DataSet = RxMemoryData1
+    left = 120
+    top = 264
+  end
+  object PopupMenu1: TPopupMenu
+    left = 152
+    top = 197
+    object MenuItem1: TMenuItem
+      Action = actOptimizeWidthCol1
+      OnClick = actOptimizeWidthCol1Execute
+    end
+    object MenuItem2: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem4: TMenuItem
+      Action = actCalcTotal
+      OnClick = actCalcTotalExecute
+    end
+    object MenuItem3: TMenuItem
+      Action = actOptimizeColumnsWidthAll
+      OnClick = actOptimizeColumnsWidthAllExecute
+    end
+  end
+  object ActionList1: TActionList
+    left = 206
+    top = 197
+    object actCalcTotal: TAction
+      Caption = 'Calc total...'
+      DisableIfNoHandler = True
+      OnExecute = actCalcTotalExecute
+    end
+    object actOptimizeColumnsWidthAll: TAction
+      Caption = 'Optimize width for all...'
+      DisableIfNoHandler = True
+      OnExecute = actOptimizeColumnsWidthAllExecute
+    end
+    object actOptimizeWidthCol1: TAction
+      Caption = 'Optimize width...'
+      DisableIfNoHandler = True
+      OnExecute = actOptimizeWidthCol1Execute
+    end
+  end
+end

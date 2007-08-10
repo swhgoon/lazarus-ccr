@@ -360,11 +360,7 @@ var
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
       TmpImage.Canvas.Brush.Color := Self.Brush.Color;
-// Changes by MJW. Start ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Replacing BrushCopy() by CopyRect. As BrushCopy is not defined in FPC/Laz
-      TmpImage.Canvas.CopyRect(IRect, Bmp.Canvas, IRect);
 //      TmpImage.Canvas.BrushCopy(IRect, Bmp, IRect, Bmp.TransparentColor);
-// Changes by MJW. Eind +++++++++++++++++++++++++++++++++++++++++++++++++++++++
       X := 0; Y := 0;
       case FTextPosition of
         tpNone:

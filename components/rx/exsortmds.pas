@@ -1,4 +1,4 @@
-unit exSortMDS;
+unit exsortmds;
 
 {$mode objfpc}{$H+}
 

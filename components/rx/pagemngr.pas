@@ -1,4 +1,4 @@
-unit PageMngr;
+unit pagemngr;
 
 {$mode objfpc}{$H+}
 
@@ -47,13 +47,13 @@ type
   protected
     function GetPriorPageIndex(Page: Integer): Integer; virtual;
     function GetNextPageIndex(Page: Integer): Integer; virtual;
-    procedure PageChanged;virtual;
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); virtual;
     procedure CheckBtnEnabled;
     procedure NextPage;
     procedure PriorPage;
+    procedure PageChanged;virtual;
     property PageCount: Integer read GetPageCount;
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
   published

@@ -1,4 +1,4 @@
-unit exSortFB;
+unit exsortfb;
 
 {$mode objfpc}{$H+}
 

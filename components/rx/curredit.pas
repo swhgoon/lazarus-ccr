@@ -44,7 +44,7 @@ type
     procedure SetZeroEmpty(const AValue: Boolean);
     function TextToValText(const AValue: string): string;
     function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    procedure SetFocused(aValue: Boolean);
+    procedure SetFocused(Value: Boolean);
   protected
     //messages
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
@@ -63,7 +63,7 @@ type
     function DefaultDisplayFormat: string; virtual;
     procedure KeyPress(var Key: Char); override;
     function IsValidChar(Key: Char): Boolean; virtual;
-    function FormatDisplayText(aValue: Extended): string;
+    function FormatDisplayText(Value: Extended): string;
     function GetDisplayText: string; virtual;
     procedure Reset; override;
     procedure CheckRange;
@@ -425,11 +425,11 @@ begin
   end;
 end;
 
-procedure TCustomNumEdit.SetFocused(aValue: Boolean);
+procedure TCustomNumEdit.SetFocused(Value: Boolean);
 begin
-  if FFocused <> aValue then
+  if FFocused <> Value then
   begin
-    FFocused := aValue;
+    FFocused := Value;
     Invalidate;
     FFormatting := True;
     try
@@ -465,7 +465,7 @@ begin
     raise;
   end;
   SetFocused(False);
-  SetCursor(0);
+  Cursor:=0;
   DoExit;
 end;
 
@@ -524,7 +524,7 @@ begin
     raise;
   end;
   SetFocused(False);
-  SetCursor(0);
+  Cursor:=0;
 
   inherited DoExit;
   Invalidate;
@@ -638,12 +638,12 @@ begin
     Result := False;
 end;
 
-function TCustomNumEdit.FormatDisplayText(aValue: Extended): string;
+function TCustomNumEdit.FormatDisplayText(Value: Extended): string;
 begin
   if DisplayFormat <> '' then
-    Result := FormatFloat(DisplayFormat, aValue)
+    Result := FormatFloat(DisplayFormat, Value)
   else
-    Result := FloatToStr(aValue);
+    Result := FloatToStr(Value);
 end;
 
 procedure TCustomNumEdit.Clear;

@@ -176,6 +176,7 @@ const
   sShowHint     = '.ShowHint';
   sShowCaption  = '.ShowCaption';
   sToolBarStyle = '.ToolBarStyle';
+  sButtonAllign = '.ButtonAllign';
   sOptions      = '.Options';
   sCaption      = '.Caption';
   

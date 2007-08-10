@@ -258,6 +258,7 @@ begin
   FDataLink.OnActiveChange:=@ActiveChange;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
+  Text:='';
 end;
 
 destructor TDBDateEdit.Destroy;

@@ -1,0 +1,52 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
+  'TPF0'#17'TRxDBGridMainForm'#16'RxDBGridMainForm'#4'Left'#3'a'#1#6'Height'#3
+  +'F'#2#3'Top'#3#161#0#5'Width'#3#140#2#18'HorzScrollBar.Page'#3#139#2#18'Vert'
+  +'ScrollBar.Page'#3'E'#2#13'ActiveControl'#7#9'RxDBGrid1'#7'Caption'#6#26'RxD'
+  +'BGrid Demo (ver 2)  ...'#12'ClientHeight'#3'F'#2#11'ClientWidth'#3#140#2#8
+  +'OnCreate'#7#10'FormCreate'#0#9'TRxDBGrid'#9'RxDBGrid1'#6'Height'#3#20#2#3'T'
+  +'op'#2'2'#5'Width'#3#140#2#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'
+  +#13'Title.Caption'#6#4'Code'#9'FieldName'#6#2'ID'#16'Footer.Alignment'#7#14
+  +'taRightJustify'#20'Footer.DisplayFormat'#6#9'Count: %d'#16'Footer.ValueType'
+  +#7#8'fvtCount'#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCent'
+  +'er'#13'Title.Caption'#6#13'Software Name'#5'Width'#3#194#1#9'FieldName'#6#4
+  +'NAME'#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'T'
+  +'itle.Caption'#6#4'Cost'#5'Width'#2'Z'#9'FieldName'#6#5'PRICE'#13'DisplayFor'
+  +'mat'#6#8'#,##0.00'#16'Footer.Alignment'#7#14'taRightJustify'#20'Footer.Disp'
+  +'layFormat'#6#8'#,##0.00'#16'Footer.FieldName'#6#5'PRICE'#16'Footer.ValueTyp'
+  +'e'#7#6'fvtSum'#16'Filter.ItemIndex'#2#255#0#0#9'OptionsRx'#11#13'rdgFooterR'
+  +'ows'#0#11'FooterColor'#7#8'clYellow'#14'FooterRowCount'#2#1#5'Align'#7#8'al'
+  +'Client'#10'FocusColor'#7#5'clRed'#13'SelectedColor'#7#11'clHighlight'#10'Da'
+  +'taSource'#7#11'Datasource1'#10'FixedColor'#7#9'clBtnFace'#7'Options'#11#9'd'
+  +'gEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#12'dgColumnMove'#10
+  +'dgColLines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'#15'dgConfirm'
+  +'Delete'#14'dgCancelOnExit'#13'dgMultiselect'#0#12'OptionsExtra'#11#14'dgeAu'
+  +'toColumns'#17'dgeCheckboxColumn'#0#11'ParentColor'#8#9'PopupMenu'#7#10'Popu'
+  +'pMenu1'#10'Scrollbars'#7#6'ssBoth'#8'TabOrder'#2#0#7'TabStop'#9#0#0#6'TPane'
+  +'l'#6'Panel1'#6'Height'#2'2'#5'Width'#3#140#2#5'Align'#7#5'alTop'#12'ClientH'
+  +'eight'#2'2'#11'ClientWidth'#3#140#2#8'TabOrder'#2#1#0#7'TButton'#7'Button1'
+  +#4'Left'#2#8#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#6'Action'#7#12'actCalcT'
+  +'otal'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2#0#0#0#7'TButton'#7'Bu'
+  +'tton2'#4'Left'#2'X'#6'Height'#2#25#3'Top'#2#8#5'Width'#3#136#0#6'Action'#7
+  +#26'actOptimizeColumnsWidthAll'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'
+  +#2#1#0#0#0#13'TRxMemoryData'#13'RxMemoryData1'#6'Active'#9#9'FieldDefs'#14#1
+  +#4'Name'#6#2'ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2#255#4'Size'#2#7#0
+  +#1#4'Name'#6#4'NAME'#8'DataType'#7#8'ftString'#9'Precision'#2#255#4'Size'#3
+  +#150#0#0#1#4'Name'#6#5'PRICE'#8'DataType'#7#7'ftFloat'#9'Precision'#2#2#4'Si'
+  +'ze'#2#12#0#0#4'left'#3#152#0#3'top'#3#8#1#0#0#11'TDatasource'#11'Datasource'
+  +'1'#7'DataSet'#7#13'RxMemoryData1'#4'left'#2'x'#3'top'#3#8#1#0#0#10'TPopupMe'
+  +'nu'#10'PopupMenu1'#4'left'#3#152#0#3'top'#3#197#0#0#9'TMenuItem'#9'MenuItem'
+  +'1'#6'Action'#7#20'actOptimizeWidthCol1'#7'OnClick'#7#27'actOptimizeWidthCol'
+  +'1Execute'#0#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#9
+  +'MenuItem4'#6'Action'#7#12'actCalcTotal'#7'OnClick'#7#19'actCalcTotalExecute'
+  +#0#0#9'TMenuItem'#9'MenuItem3'#6'Action'#7#26'actOptimizeColumnsWidthAll'#7
+  +'OnClick'#7'!actOptimizeColumnsWidthAllExecute'#0#0#0#11'TActionList'#11'Act'
+  +'ionList1'#4'left'#3#206#0#3'top'#3#197#0#0#7'TAction'#12'actCalcTotal'#7'Ca'
+  +'ption'#6#13'Calc total...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#19'actCa'
+  +'lcTotalExecute'#0#0#7'TAction'#26'actOptimizeColumnsWidthAll'#7'Caption'#6
+  +#25'Optimize width for all...'#18'DisableIfNoHandler'#9#9'OnExecute'#7'!actO'
+  +'ptimizeColumnsWidthAllExecute'#0#0#7'TAction'#20'actOptimizeWidthCol1'#7'Ca'
+  +'ption'#6#17'Optimize width...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#27'a'
+  +'ctOptimizeWidthCol1Execute'#0#0#0#0
+]);

@@ -18,7 +18,7 @@ type
     FOnExecuteItem: TNotifyEvent;
     FFileFolder: string;
     FFileList:TStringList;
-    procedure DoFind(S:string; aMenuItem:TMenuItem);
+    procedure DoFind(S:string; MenuItem:TMenuItem);
     function GetCount: integer;
     function GetFiles(Item: integer): string;
     procedure SetMenuItem(const AValue: TMenuItem);
@@ -64,7 +64,7 @@ begin
 end;
 
 { TCustomFolderLister }
-procedure TCustomFolderLister.DoFind(S: string; aMenuItem: TMenuItem);
+procedure TCustomFolderLister.DoFind(S: string; MenuItem: TMenuItem);
 var
   Rec:TSearchRec;
   R:integer;
@@ -97,7 +97,7 @@ begin
   begin
     M:=TMenuItem.Create(Application.MainForm);
     M.Caption:=MenuItemStr(AFolderList[i]);
-    aMenuItem.Add(M);
+    MenuItem.Add(M);
     DoFind(AFolderList[i]+DirectorySeparator,M);
   end;
 end;
