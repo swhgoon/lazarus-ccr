@@ -2099,8 +2099,12 @@ end;
 initialization
   ExDBGridSortEngineList:=TStringList.Create;
   ExDBGridSortEngineList.Sorted:=true;
+
 finalization
-  ExDBGridSortEngineList.Clear;
+  while (ExDBGridSortEngineList.Count>0) do begin
+    ExDBGridSortEngineList.Objects[0].Free;
+    ExDBGridSortEngineList.Delete(0);
+  end;
   ExDBGridSortEngineList.Free;
 end.
 
