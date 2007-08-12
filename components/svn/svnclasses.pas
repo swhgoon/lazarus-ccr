@@ -642,7 +642,8 @@ begin
           // try for a multiline property
           inc(i);
           while (i<Lines.Count) do begin
-            if (length(Lines[i])>=2) and (copy(Lines[i],1,2)='  ') then begin
+            if ((length(Lines[i])>=2) and (copy(Lines[i],1,2)='  '))
+              or (copy(Lines[i], 1, length(PropertiesOn))=PropertiesOn) then begin
               // new property, unget line
               dec(i);
               break;
