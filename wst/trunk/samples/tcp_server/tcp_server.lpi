@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -10,15 +10,16 @@
         <MainUnitHasTitleStatement Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="10"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -26,7 +27,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <Units Count="60">
@@ -34,8 +35,8 @@
         <Filename Value="tcp_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_server"/>
-        <CursorPos X="61" Y="32"/>
-        <TopLine Value="10"/>
+        <CursorPos X="22" Y="37"/>
+        <TopLine Value="27"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="89"/>
         <Loaded Value="True"/>
@@ -48,33 +49,33 @@
         <UsageCount Value="64"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/classes/classesh.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\classesh.inc"/>
         <CursorPos X="26" Y="686"/>
         <TopLine Value="672"/>
         <UsageCount Value="8"/>
       </Unit2>
       <Unit3>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/win/sysosh.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\win\sysosh.inc"/>
         <CursorPos X="3" Y="25"/>
         <TopLine Value="4"/>
         <UsageCount Value="5"/>
       </Unit3>
       <Unit4>
-        <Filename Value="../../../../../lazarus23_213/others_package/synapse/blcksock.pas"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="2407"/>
         <TopLine Value="2395"/>
         <UsageCount Value="8"/>
       </Unit4>
       <Unit5>
-        <Filename Value="../../binary_streamer.pas"/>
+        <Filename Value="..\..\binary_streamer.pas"/>
         <UnitName Value="binary_streamer"/>
         <CursorPos X="37" Y="13"/>
         <TopLine Value="178"/>
         <UsageCount Value="7"/>
       </Unit5>
       <Unit6>
-        <Filename Value="../../server_service_soap.pas"/>
+        <Filename Value="..\..\server_service_soap.pas"/>
         <UnitName Value="server_service_soap"/>
         <CursorPos X="33" Y="21"/>
         <TopLine Value="1"/>
@@ -83,35 +84,35 @@
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="../../server_binary_formatter.pas"/>
+        <Filename Value="..\..\server_binary_formatter.pas"/>
         <UnitName Value="server_binary_formatter"/>
         <CursorPos X="24" Y="22"/>
         <TopLine Value="1"/>
         <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
-        <Filename Value="../../metadata_service.pas"/>
+        <Filename Value="..\..\metadata_service.pas"/>
         <UnitName Value="metadata_service"/>
         <CursorPos X="11" Y="121"/>
         <TopLine Value="99"/>
         <UsageCount Value="12"/>
       </Unit8>
       <Unit9>
-        <Filename Value="../../metadata_service_imp.pas"/>
+        <Filename Value="..\..\metadata_service_imp.pas"/>
         <UnitName Value="metadata_service_imp"/>
         <CursorPos X="58" Y="121"/>
         <TopLine Value="1"/>
         <UsageCount Value="14"/>
       </Unit9>
       <Unit10>
-        <Filename Value="../../metadata_service_binder.pas"/>
+        <Filename Value="..\..\metadata_service_binder.pas"/>
         <UnitName Value="metadata_service_binder"/>
         <CursorPos X="47" Y="16"/>
         <TopLine Value="1"/>
         <UsageCount Value="12"/>
       </Unit10>
       <Unit11>
-        <Filename Value="../user_service_intf.pas"/>
+        <Filename Value="..\user_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_service_intf"/>
         <CursorPos X="3" Y="27"/>
@@ -119,7 +120,7 @@
         <UsageCount Value="89"/>
       </Unit11>
       <Unit12>
-        <Filename Value="../../base_service_intf.pas"/>
+        <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="13" Y="1199"/>
         <TopLine Value="1"/>
@@ -131,85 +132,85 @@
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
-        <Filename Value="../../wst_rtti_filter/std_cursors.pas"/>
+        <Filename Value="..\..\wst_rtti_filter\std_cursors.pas"/>
         <UnitName Value="std_cursors"/>
         <CursorPos X="14" Y="21"/>
         <TopLine Value="7"/>
         <UsageCount Value="36"/>
       </Unit13>
       <Unit14>
-        <Filename Value="../../wst_rtti_filter/cursor_intf.pas"/>
+        <Filename Value="..\..\wst_rtti_filter\cursor_intf.pas"/>
         <UnitName Value="cursor_intf"/>
         <CursorPos X="3" Y="27"/>
         <TopLine Value="15"/>
         <UsageCount Value="23"/>
       </Unit14>
       <Unit15>
-        <Filename Value="../user_service_intf_binder.pas"/>
+        <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="48" Y="34"/>
         <TopLine Value="11"/>
         <UsageCount Value="39"/>
       </Unit15>
       <Unit16>
-        <Filename Value="../user_service_intf.wst"/>
+        <Filename Value="..\user_service_intf.wst"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="7"/>
         <SyntaxHighlighter Value="None"/>
       </Unit16>
       <Unit17>
-        <Filename Value="../../metadata_repository.pas"/>
+        <Filename Value="..\..\metadata_repository.pas"/>
         <UnitName Value="metadata_repository"/>
         <CursorPos X="37" Y="571"/>
         <TopLine Value="562"/>
         <UsageCount Value="7"/>
       </Unit17>
       <Unit18>
-        <Filename Value="../../wst_resources_imp.pas"/>
+        <Filename Value="..\..\wst_resources_imp.pas"/>
         <UnitName Value="wst_resources_imp"/>
         <CursorPos X="15" Y="63"/>
         <TopLine Value="45"/>
         <UsageCount Value="7"/>
       </Unit18>
       <Unit19>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/inc/except.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\inc\except.inc"/>
         <CursorPos X="3" Y="95"/>
         <TopLine Value="73"/>
         <UsageCount Value="5"/>
       </Unit19>
       <Unit20>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/i386/setjump.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\i386\setjump.inc"/>
         <CursorPos X="1" Y="36"/>
         <TopLine Value="16"/>
         <UsageCount Value="5"/>
       </Unit20>
       <Unit21>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/inc/objpas.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\inc\objpas.inc"/>
         <CursorPos X="1" Y="76"/>
         <TopLine Value="64"/>
         <UsageCount Value="5"/>
       </Unit21>
       <Unit22>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/classes/collect.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\collect.inc"/>
         <CursorPos X="1" Y="264"/>
         <TopLine Value="252"/>
         <UsageCount Value="5"/>
       </Unit22>
       <Unit23>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/classes/lists.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\lists.inc"/>
         <CursorPos X="1" Y="381"/>
         <TopLine Value="369"/>
         <UsageCount Value="5"/>
       </Unit23>
       <Unit24>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/inc/system.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\inc\system.inc"/>
         <CursorPos X="1" Y="674"/>
         <TopLine Value="662"/>
         <UsageCount Value="5"/>
       </Unit24>
       <Unit25>
-        <Filename Value="../../server_service_intf.pas"/>
+        <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
         <CursorPos X="5" Y="18"/>
         <TopLine Value="72"/>
@@ -218,13 +219,13 @@
         <Loaded Value="True"/>
       </Unit25>
       <Unit26>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/i386/i386.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\i386\i386.inc"/>
         <CursorPos X="1" Y="1125"/>
         <TopLine Value="1113"/>
         <UsageCount Value="5"/>
       </Unit26>
       <Unit27>
-        <Filename Value="../user_service_intf_imp.pas"/>
+        <Filename Value="..\user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="60" Y="51"/>
         <TopLine Value="28"/>
@@ -233,14 +234,14 @@
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
-        <Filename Value="../../service_intf.pas"/>
+        <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
         <CursorPos X="15" Y="23"/>
         <TopLine Value="19"/>
         <UsageCount Value="6"/>
       </Unit28>
       <Unit29>
-        <Filename Value="../../base_soap_formatter.pas"/>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="24" Y="967"/>
         <TopLine Value="325"/>
@@ -249,14 +250,14 @@
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/typinfo.pp"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="11" Y="247"/>
         <TopLine Value="226"/>
         <UsageCount Value="7"/>
       </Unit30>
       <Unit31>
-        <Filename Value="../../base_binary_formatter.pas"/>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
         <UnitName Value="base_binary_formatter"/>
         <CursorPos X="3" Y="1063"/>
         <TopLine Value="1055"/>
@@ -271,26 +272,26 @@
         <UsageCount Value="58"/>
       </Unit32>
       <Unit33>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/classes/persist.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\persist.inc"/>
         <CursorPos X="3" Y="36"/>
         <TopLine Value="32"/>
         <UsageCount Value="8"/>
       </Unit33>
       <Unit34>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/objpas/classes/streams.inc"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\objpas\classes\streams.inc"/>
         <CursorPos X="43" Y="511"/>
         <TopLine Value="506"/>
         <UsageCount Value="8"/>
       </Unit34>
       <Unit35>
-        <Filename Value="../../../../../lazarus23_213/fpc/2.1.3/source/rtl/win/sysutils.pp"/>
+        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\rtl\win\sysutils.pp"/>
         <UnitName Value="sysutils"/>
         <CursorPos X="1" Y="326"/>
         <TopLine Value="314"/>
         <UsageCount Value="8"/>
       </Unit35>
       <Unit36>
-        <Filename Value="../../synapse_tcp_server.pas"/>
+        <Filename Value="..\..\synapse_tcp_server.pas"/>
         <UnitName Value="synapse_tcp_server"/>
         <CursorPos X="35" Y="92"/>
         <TopLine Value="74"/>
@@ -299,39 +300,39 @@
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
-        <Filename Value="../../semaphore.pas"/>
+        <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="140"/>
         <TopLine Value="30"/>
         <UsageCount Value="10"/>
       </Unit37>
       <Unit38>
-        <Filename Value="../../wst.inc"/>
+        <Filename Value="..\..\wst.inc"/>
         <CursorPos X="4" Y="6"/>
         <TopLine Value="1"/>
         <UsageCount Value="18"/>
       </Unit38>
       <Unit39>
-        <Filename Value="../../../../../../lazarus_23_215/fpc/2.1.5/source/rtl/i386/i386.inc"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\i386\i386.inc"/>
         <CursorPos X="1" Y="1246"/>
         <TopLine Value="1234"/>
         <UsageCount Value="9"/>
       </Unit39>
       <Unit40>
-        <Filename Value="../../../../../../lazarus_23_215/fpc/2.1.5/source/rtl/objpas/sysutils/sysutils.inc"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\sysutils\sysutils.inc"/>
         <CursorPos X="1" Y="347"/>
         <TopLine Value="334"/>
         <UsageCount Value="9"/>
       </Unit40>
       <Unit41>
-        <Filename Value="../../../../../../lazarus_23_215/others_package/synapse/blcksock.pas"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="2407"/>
         <TopLine Value="2393"/>
         <UsageCount Value="13"/>
       </Unit41>
       <Unit42>
-        <Filename Value="../../server_service_xmlrpc.pas"/>
+        <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="26" Y="57"/>
@@ -341,104 +342,104 @@
         <Loaded Value="True"/>
       </Unit42>
       <Unit43>
-        <Filename Value="../../base_xmlrpc_formatter.pas"/>
+        <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <UnitName Value="base_xmlrpc_formatter"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="16"/>
       </Unit43>
       <Unit44>
-        <Filename Value="../../../../../../lazarus_23_215/fpc/2.1.5/source/rtl/objpas/sysutils/sysstrh.inc"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\sysutils\sysstrh.inc"/>
         <CursorPos X="10" Y="111"/>
         <TopLine Value="97"/>
         <UsageCount Value="9"/>
       </Unit44>
       <Unit45>
-        <Filename Value="../../../../../../lazarus_23_215/fpc/2.1.5/source/rtl/objpas/sysutils/sysstr.inc"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\sysutils\sysstr.inc"/>
         <CursorPos X="3" Y="759"/>
         <TopLine Value="756"/>
         <UsageCount Value="9"/>
       </Unit45>
       <Unit46>
-        <Filename Value="../../../../../../lazarus_23_215/fpc/2.1.5/source/rtl/objpas/typinfo.pp"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="1" Y="483"/>
         <TopLine Value="469"/>
         <UsageCount Value="10"/>
       </Unit46>
       <Unit47>
-        <Filename Value="../../server_listener.pas"/>
+        <Filename Value="..\..\server_listener.pas"/>
         <UnitName Value="server_listener"/>
-        <CursorPos X="3" Y="33"/>
-        <TopLine Value="28"/>
+        <CursorPos X="21" Y="15"/>
+        <TopLine Value="6"/>
         <EditorIndex Value="10"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit47>
       <Unit48>
-        <Filename Value="../../../../../../lazarus_23_215XX/fpc/source/rtl/inc/objpash.inc"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpash.inc"/>
         <CursorPos X="23" Y="147"/>
         <TopLine Value="133"/>
         <UsageCount Value="10"/>
       </Unit48>
       <Unit49>
-        <Filename Value="../../../../../../lazarus_23_215XX/others_package/synapse/blcksock.pas"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
         <CursorPos X="7" Y="1397"/>
         <TopLine Value="1375"/>
         <UsageCount Value="10"/>
       </Unit49>
       <Unit50>
-        <Filename Value="../../../../../../lazarus_23_215XX/fpc/source/packages/base/winunits/comobj.pp"/>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\base\winunits\comobj.pp"/>
         <UnitName Value="comobj"/>
         <CursorPos X="14" Y="97"/>
         <TopLine Value="114"/>
         <UsageCount Value="10"/>
       </Unit50>
       <Unit51>
-        <Filename Value="../../../../lazarus/lazarus/others_package/synapse/synaip.pas"/>
+        <Filename Value="..\..\..\..\lazarus\lazarus\others_package\synapse\synaip.pas"/>
         <UnitName Value="synaip"/>
         <CursorPos X="18" Y="59"/>
         <TopLine Value="47"/>
         <UsageCount Value="10"/>
       </Unit51>
       <Unit52>
-        <Filename Value="../../../../lazarus/lazarus/others_package/synapse/blcksock.pas"/>
+        <Filename Value="..\..\..\..\lazarus\lazarus\others_package\synapse\blcksock.pas"/>
         <UnitName Value="blcksock"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit52>
       <Unit53>
-        <Filename Value="../../../../lazarus/lazarus/others_package/synapse/ssfpc.pas"/>
+        <Filename Value="..\..\..\..\lazarus\lazarus\others_package\synapse\ssfpc.pas"/>
         <UnitName Value="ssfpc"/>
         <CursorPos X="13" Y="554"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit53>
       <Unit54>
-        <Filename Value="../../../../lazarus/lazarus/others_package/synapse/synautil.pas"/>
+        <Filename Value="..\..\..\..\lazarus\lazarus\others_package\synapse\synautil.pas"/>
         <UnitName Value="synautil"/>
         <CursorPos X="44" Y="34"/>
         <TopLine Value="26"/>
         <UsageCount Value="10"/>
       </Unit54>
       <Unit55>
-        <Filename Value="../../../../lazarus/lazarus/others_package/synapse/synafpc.pas"/>
+        <Filename Value="..\..\..\..\lazarus\lazarus\others_package\synapse\synafpc.pas"/>
         <UnitName Value="synafpc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="76"/>
         <UsageCount Value="10"/>
       </Unit55>
       <Unit56>
-        <Filename Value="../../wst_fpc_xml.pas"/>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
         <UnitName Value="wst_fpc_xml"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit56>
       <Unit57>
-        <Filename Value="../../imp_utils.pas"/>
+        <Filename Value="..\..\imp_utils.pas"/>
         <UnitName Value="imp_utils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="10"/>
@@ -447,110 +448,34 @@
         <Loaded Value="True"/>
       </Unit57>
       <Unit58>
-        <Filename Value="../../wst_delphi.inc"/>
+        <Filename Value="..\..\wst_delphi.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit58>
       <Unit59>
-        <Filename Value="../../config_objects.pas"/>
+        <Filename Value="..\..\config_objects.pas"/>
         <UnitName Value="config_objects"/>
-        <CursorPos X="62" Y="99"/>
-        <TopLine Value="86"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit59>
     </Units>
-    <JumpHistory Count="19" HistoryIndex="18">
-      <Position1>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="33" Column="22" TopLine="8"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../../server_service_xmlrpc.pas"/>
-        <Caret Line="57" Column="26" TopLine="21"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../base_service_intf.pas"/>
-        <Caret Line="307" Column="15" TopLine="173"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../base_service_intf.pas"/>
-        <Caret Line="158" Column="52" TopLine="137"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../base_service_intf.pas"/>
-        <Caret Line="572" Column="17" TopLine="546"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../base_service_intf.pas"/>
-        <Caret Line="970" Column="13" TopLine="945"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../base_service_intf.pas"/>
-        <Caret Line="1199" Column="13" TopLine="1175"/>
-      </Position7>
-      <Position8>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="41" Column="10" TopLine="26"/>
-      </Position8>
-      <Position9>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="50" Column="5" TopLine="31"/>
-      </Position9>
-      <Position10>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="30" Column="29" TopLine="30"/>
-      </Position10>
-      <Position11>
-        <Filename Value="../../synapse_tcp_server.pas"/>
-        <Caret Line="19" Column="52" TopLine="10"/>
-      </Position11>
-      <Position12>
-        <Filename Value="../../server_listener.pas"/>
-        <Caret Line="22" Column="18" TopLine="14"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../../synapse_tcp_server.pas"/>
-        <Caret Line="19" Column="52" TopLine="10"/>
-      </Position13>
-      <Position14>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="37" Column="19" TopLine="20"/>
-      </Position14>
-      <Position15>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="27" Column="33" TopLine="10"/>
-      </Position15>
-      <Position16>
-        <Filename Value="../../server_service_soap.pas"/>
-        <Caret Line="21" Column="33" TopLine="1"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../../server_service_intf.pas"/>
-        <Caret Line="11" Column="6" TopLine="6"/>
-      </Position17>
-      <Position18>
-        <Filename Value="tcp_server.pas"/>
-        <Caret Line="32" Column="61" TopLine="10"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../user_service_intf_imp.pas"/>
-        <Caret Line="51" Column="60" TopLine="28"/>
-      </Position19>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <Target>
       <Filename Value="tcp_server.exe"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="../../;../"/>
-      <OtherUnitFiles Value="../;../../;../../wst_rtti_filter/;$(LazarusDir)/others_package/synapse/"/>
+      <IncludeFiles Value="..\..\;..\"/>
+      <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\;$(LazarusDir)\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
-      <SrcPath Value="$(LazarusDir)/others_package/synapse/"/>
+      <SrcPath Value="$(LazarusDir)\others_package\synapse\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -568,27 +493,27 @@
   <Debugging>
     <BreakPoints Count="6">
       <Item1>
-        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
         <Line Value="230"/>
       </Item1>
       <Item2>
-        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
         <Line Value="193"/>
       </Item2>
       <Item3>
-        <Source Value="D:/lazarusClean/fpcsrc/rtl/inc/getopts.pp"/>
+        <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
         <Line Value="198"/>
       </Item3>
       <Item4>
-        <Source Value="../../ws_helper/wsdl2pas_imp.pas"/>
+        <Source Value="..\..\ws_helper\wsdl2pas_imp.pas"/>
         <Line Value="606"/>
       </Item4>
       <Item5>
-        <Source Value="../user_service_intf_imp.pas"/>
+        <Source Value="..\user_service_intf_imp.pas"/>
         <Line Value="89"/>
       </Item5>
       <Item6>
-        <Source Value="../user_service_intf_imp.pas"/>
+        <Source Value="..\user_service_intf_imp.pas"/>
         <Line Value="88"/>
       </Item6>
     </BreakPoints>

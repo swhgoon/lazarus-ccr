@@ -8,16 +8,12 @@ object fArrayEdit: TfArrayEdit
   ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'fArrayEdit'
-  ClientHeight = 361
-  ClientWidth = 392
   Position = poMainFormCenter
   object Panel1: TPanel
     Height = 50
     Top = 311
     Width = 392
     Align = alBottom
-    ClientHeight = 50
-    ClientWidth = 392
     TabOrder = 0
     object Button1: TButton
       Left = 216
@@ -51,14 +47,13 @@ object fArrayEdit: TfArrayEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Array definition'
-      ClientHeight = 285
-      ClientWidth = 384
       object Label1: TLabel
         Left = 19
         Height = 14
         Top = 21
         Width = 28
         Caption = 'Name'
+        Color = clNone
         ParentColor = False
       end
       object Label2: TLabel
@@ -67,6 +62,7 @@ object fArrayEdit: TfArrayEdit
         Top = 102
         Width = 66
         Caption = 'Element Type'
+        Color = clNone
         ParentColor = False
       end
       object Label3: TLabel
@@ -75,6 +71,7 @@ object fArrayEdit: TfArrayEdit
         Top = 170
         Width = 69
         Caption = 'Element Name'
+        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit

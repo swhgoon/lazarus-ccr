@@ -89,7 +89,7 @@ type
   
 implementation
 uses binary_streamer, server_service_intf, server_service_imputils
-     {$IFNDEF FPC},ActiveX, ComObj{$ENDIF};
+     {$IFNDEF FPC}, Windows, ActiveX, ComObj{$ENDIF};
 
 
 { TClientHandlerThread }
@@ -104,34 +104,39 @@ function TClientHandlerThread.ReadInputBuffer(): Integer;
 var
   strBuff : string;
   bufferLen : LongInt;
-  i, j, c : PtrInt;
+  i, j, c, readBufferLen : PtrInt;
 begin
   FInputStream.Size := 0;
   Result := 0;
   bufferLen := 0;
-  FSocketObject.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
-  FSocketObject.ExceptCheck();
-  bufferLen := Reverse_32(bufferLen);
-  FInputStream.Size := bufferLen;
-  if ( bufferLen > 0 ) then begin
-    c := 0;
-    i := 1024;
-    if ( i > bufferLen ) then
-      i := bufferLen;
-    SetLength(strBuff,i);
-    repeat
-      j := FSocketObject.RecvBufferEx(@(strBuff[1]),i,DefaultTimeOut);
-      FSocketObject.ExceptCheck();
-      FInputStream.Write(strBuff[1],j);
-      Inc(c,j);
-      if ( ( bufferLen - c ) > 1024 ) then
-        i := 1024
-      else
-        i := bufferLen - c;
-    until ( i = 0 ) or ( j <= 0 );
+  readBufferLen := FSocketObject.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
+  if ( readBufferLen = 0 ) and ( FSocketObject.LastError = WSAETIMEDOUT ) then begin
+    Result := 0;
+    WriteLn('ReadInputBuffer() => TimeOut');
+  end else begin
+    FSocketObject.ExceptCheck();
+    bufferLen := Reverse_32(bufferLen);
+    FInputStream.Size := bufferLen;
+    if ( bufferLen > 0 ) then begin
+      c := 0;
+      i := 1024;
+      if ( i > bufferLen ) then
+        i := bufferLen;
+      SetLength(strBuff,i);
+      repeat
+        j := FSocketObject.RecvBufferEx(@(strBuff[1]),i,DefaultTimeOut);
+        FSocketObject.ExceptCheck();
+        FInputStream.Write(strBuff[1],j);
+        Inc(c,j);
+        if ( ( bufferLen - c ) > 1024 ) then
+          i := 1024
+        else
+          i := bufferLen - c;
+      until ( i = 0 ) or ( j <= 0 );
+    end;
+    FInputStream.Position := 0;
+    Result := FInputStream.Size;
   end;
-  FInputStream.Position := 0;
-  Result := FInputStream.Size;
 end;
 
 procedure TClientHandlerThread.SendOutputBuffer();
@@ -146,7 +151,7 @@ constructor TClientHandlerThread.Create(
 begin
   FSocketHandle := ASocketHandle;
   FreeOnTerminate := True;
-  FDefaultTimeOut := 90000;
+  FDefaultTimeOut := -1;//90000;
   FOwner := AOwner;
   inherited Create(False);
 end;

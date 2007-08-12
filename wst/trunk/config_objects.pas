@@ -92,6 +92,11 @@ function GetAppConfigDir(const AGlobal : Boolean) : string;
 begin
   Result := ExtractFilePath(ParamStr(0));
 end;
+
+function GetAppConfigFile(const AGlobal : Boolean) : string;
+begin
+  Result := ChangeFileExt(ParamStr(0),'.xml');
+end;
 {$ENDIF}
 
 function wst_GetConfigFileName():string;

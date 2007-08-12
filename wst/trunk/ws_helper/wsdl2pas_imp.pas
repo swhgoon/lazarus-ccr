@@ -760,7 +760,7 @@ var
         tmpCrs.Reset();
         if tmpCrs.MoveNext() then begin
           nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-          if nd.HasAttributes() then begin
+          if ( nd.Attributes <> nil ) then begin
             nd := nd.Attributes.GetNamedItem(s_value);
             if Assigned(nd) then
               Result := Trim(nd.NodeValue);
@@ -2042,7 +2042,7 @@ var
         tmpCrs.Reset();
         if tmpCrs.MoveNext() then begin
           nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-          if nd.HasAttributes() then begin
+          if ( nd.Attributes <> nil ) then begin
             nd := nd.Attributes.GetNamedItem(s_headerBlock);
             if Assigned(nd) then
               Result := AnsiSameText('true',Trim(nd.NodeValue));

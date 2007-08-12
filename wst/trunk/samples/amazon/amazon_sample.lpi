@@ -35,7 +35,7 @@
         <Filename Value="amazon_sample.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="amazon_sample"/>
-        <CursorPos X="19" Y="12"/>
+        <CursorPos X="44" Y="12"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="24"/>
@@ -88,7 +88,7 @@
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="140"/>
-        <TopLine Value="116"/>
+        <TopLine Value="114"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>

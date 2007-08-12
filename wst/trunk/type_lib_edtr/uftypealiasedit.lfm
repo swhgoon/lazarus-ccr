@@ -5,18 +5,15 @@ object fTypeAliasEdit: TfTypeAliasEdit
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
+  ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'fTypeAliasEdit'
-  ClientHeight = 300
-  ClientWidth = 400
   Position = poScreenCenter
   object Panel1: TPanel
     Height = 50
     Top = 250
     Width = 400
     Align = alBottom
-    ClientHeight = 50
-    ClientWidth = 400
     TabOrder = 0
     object Button1: TButton
       Left = 232
@@ -49,14 +46,13 @@ object fTypeAliasEdit: TfTypeAliasEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Type Alias'
-      ClientHeight = 224
-      ClientWidth = 392
       object Label1: TLabel
         Left = 20
         Height = 14
         Top = 26
         Width = 28
         Caption = 'Name'
+        Color = clNone
         ParentColor = False
       end
       object Label2: TLabel
@@ -65,6 +61,7 @@ object fTypeAliasEdit: TfTypeAliasEdit
         Top = 114
         Width = 51
         Caption = 'Base Type'
+        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit

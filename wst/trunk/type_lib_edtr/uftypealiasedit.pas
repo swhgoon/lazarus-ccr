@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, StdCtrls,
+  ComCtrls, StdCtrls, Buttons,
   pastree, pascal_parser_intf, edit_helper, ActnList;
 
 type

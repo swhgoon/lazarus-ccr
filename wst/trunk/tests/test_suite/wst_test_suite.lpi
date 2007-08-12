@@ -27,7 +27,7 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="65">
+    <Units Count="72">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -73,7 +73,7 @@
         <UnitName Value="base_binary_formatter"/>
         <CursorPos X="15" Y="1479"/>
         <TopLine Value="1464"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="13"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -115,7 +115,7 @@
         <UnitName Value="binary_streamer"/>
         <CursorPos X="14" Y="14"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="18"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
           <Item0 X="38" Y="490" ID="2"/>
@@ -144,7 +144,7 @@
         <UnitName Value="testmetadata_unit"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="15"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -174,7 +174,7 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="44" Y="21"/>
         <TopLine Value="209"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="206"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -473,7 +473,7 @@
         <UnitName Value="test_utilities"/>
         <CursorPos X="29" Y="43"/>
         <TopLine Value="3"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="17"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit57>
@@ -489,7 +489,7 @@
         <UnitName Value="testregistry"/>
         <CursorPos X="39" Y="27"/>
         <TopLine Value="17"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="16"/>
         <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit59>
@@ -525,21 +525,86 @@
         <TopLine Value="46"/>
         <UsageCount Value="11"/>
       </Unit64>
+      <Unit65>
+        <Filename Value="..\..\ws_helper\wsdl2pas_imp.pas"/>
+        <UnitName Value="wsdl2pas_imp"/>
+        <CursorPos X="16" Y="2045"/>
+        <TopLine Value="2031"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="..\..\..\..\..\..\lazarus2204\fpc\2.0.4\source\fcl\xml\dom.pp"/>
+        <UnitName Value="DOM"/>
+        <CursorPos X="3" Y="196"/>
+        <TopLine Value="191"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="..\..\type_lib_edtr\umoduleedit.pas"/>
+        <ComponentName Value="fModuleEdit"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\type_lib_edtr\umoduleedit.lrs"/>
+        <UnitName Value="umoduleedit"/>
+        <CursorPos X="47" Y="21"/>
+        <TopLine Value="18"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="..\..\type_lib_edtr\ubindingedit.pas"/>
+        <ComponentName Value="fBindingEdit"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\type_lib_edtr\ubindingedit.lrs"/>
+        <UnitName Value="ubindingedit"/>
+        <CursorPos X="41" Y="21"/>
+        <TopLine Value="18"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="..\..\type_lib_edtr\ufarrayedit.pas"/>
+        <ComponentName Value="fArrayEdit"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\type_lib_edtr\ufarrayedit.lrs"/>
+        <UnitName Value="ufarrayedit"/>
+        <CursorPos X="41" Y="9"/>
+        <TopLine Value="5"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="..\..\type_lib_edtr\uftypealiasedit.pas"/>
+        <ComponentName Value="fTypeAliasEdit"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\type_lib_edtr\uftypealiasedit.lrs"/>
+        <UnitName Value="uftypealiasedit"/>
+        <CursorPos X="22" Y="9"/>
+        <TopLine Value="7"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="..\..\type_lib_edtr\ufrmsaveoption.pas"/>
+        <ComponentName Value="frmSaveOptions"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\type_lib_edtr\ufrmsaveoption.lrs"/>
+        <UnitName Value="ufrmsaveoption"/>
+        <CursorPos X="22" Y="9"/>
+        <TopLine Value="6"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit71>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
-      <Position1>
-        <Filename Value="testformatter_unit.pas"/>
-        <Caret Line="314" Column="36" TopLine="301"/>
-      </Position1>
-      <Position2>
-        <Filename Value="testformatter_unit.pas"/>
-        <Caret Line="724" Column="3" TopLine="695"/>
-      </Position2>
-      <Position3>
-        <Filename Value="testformatter_unit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position3>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

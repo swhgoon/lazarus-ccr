@@ -31,6 +31,9 @@ uses
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
+const
+  sSERVER_PORT = 1234;
+  
 type
 
 {$IFDEF INDY_9}
@@ -55,7 +58,7 @@ type
   public
     constructor Create(
       const AServerIpAddress   : string  = '127.0.0.1';
-      const AListningPort      : Integer = 1234;
+      const AListningPort      : Integer = sSERVER_PORT;
       const ADefaultClientPort : Integer = 25000
     );
     destructor Destroy(); override;

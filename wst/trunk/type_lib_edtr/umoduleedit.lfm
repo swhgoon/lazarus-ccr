@@ -8,16 +8,12 @@ object fModuleEdit: TfModuleEdit
   ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'fModuleEdit'
-  ClientHeight = 300
-  ClientWidth = 400
   Position = poMainFormCenter
   object Panel1: TPanel
     Height = 50
     Top = 250
     Width = 400
     Align = alBottom
-    ClientHeight = 50
-    ClientWidth = 400
     TabOrder = 0
     object Button1: TButton
       Left = 224
@@ -50,14 +46,13 @@ object fModuleEdit: TfModuleEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Module'
-      ClientHeight = 224
-      ClientWidth = 392
       object Label1: TLabel
         Left = 20
         Height = 14
         Top = 39
         Width = 28
         Caption = 'Name'
+        Color = clNone
         ParentColor = False
       end
       object Label2: TLabel
@@ -66,6 +61,7 @@ object fModuleEdit: TfModuleEdit
         Top = 127
         Width = 56
         Caption = 'Namespace'
+        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit

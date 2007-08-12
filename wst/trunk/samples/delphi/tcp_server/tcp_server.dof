@@ -96,7 +96,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\;..\..\..\;C:\Program Files\Borland\Delphi7\plate_forme\synapse;..\..\..\wst_rtti_filter
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;FIBDBMidas7;Jcl;JclVcl;JvCoreD7R;JvSystemD7R;JvStdCtrlsD7R;JvAppFrmD7R;JvBandsD7R;JvDBD7R;JvDlgsD7R;JvBDED7R;JvCmpD7R;JvCryptD7R;JvCtrlsD7R;JvCustomD7R;JvDockingD7R;JvDotNetCtrlsD7R;JvEDID7R;JvGlobusD7R;JvHMID7R;JvInterpreterD7R;JvJansD7R;JvManagedThreadsD7R;JvMMD7R;JvNetD7R;JvPageCompsD7R;JvPluginD7R;JvPrintPreviewD7R;JvRuntimeDesignD7R;JvTimeFrameworkD7R;JvUIBD7R;JvValidatorsD7R;JvWizardD7R;JvXPCtrlsD7R;dxForumLibD7;cxLibraryVCLD7;cxPageControlVCLD7;dxBarD7;dxComnD7;dxBarDBNavD7;dxBarExtItemsD7;dxBarExtDBItemsD7;dxsbD7;dxmdsD7;dxdbtrD7;dxtrmdD7;dxorgcD7;dxdborD7;dxEdtrD7;EQTLD7;ECQDBCD7;EQDBTLD7;EQGridD7;dxGrEdD7;dxExELD7;dxELibD7;cxEditorsVCLD7;cxGridVCLD7;dxThemeD7;cxDataD7;cxGridUtilsVCLD7;dxPSCoreD7;dxPsPrVwAdvD7;dxPSLnksD7;dxPSTeeChartD7;dxPSDBTeeChartD7;dxPSdxDBTVLnkD7;dxPSdxOCLnkD7;dxPSdxDBOCLnkD7;dxPScxGridLnkD7;dxPSTLLnkD7;qrpt
-Conditionals=
+Conditionals=INDY_9
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
@@ -142,6 +142,9 @@ C:\Program Files\Developer Express Inc\ExpressPrinting System\Delphi 7\Lib\dxPSd
 C:\Program Files\Developer Express Inc\ExpressPrinting System\Delphi 7\Lib\dxPSdxMVLnkD7.bpl=ExpressPrinting System ReportLink for ExpressMasterView by Developer Express Inc.
 C:\Program Files\Developer Express Inc\ExpressPrinting System\Delphi 7\Lib\dxPSdxFCLnkD7.bpl=ExpressPrinting System ReportLinks for ExpressFlowChart by Developer Express Inc.
 C:\Program Files\Developer Express Inc\ExpressPrinting System\Delphi 7\Lib\dxPScxSSLnkD7.bpl=ExpressPrinting System ReportLink for ExpressSpreadSheet by Developer Express Inc.
+[HistoryLists\hlConditionals]
+Count=1
+Item0=INDY_9
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

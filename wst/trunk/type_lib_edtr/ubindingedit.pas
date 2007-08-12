@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, StdCtrls, ActnList,
+  ComCtrls, StdCtrls, ActnList, Buttons,
   pastree, pascal_parser_intf,
   edit_helper;
 
