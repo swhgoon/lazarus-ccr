@@ -1764,15 +1764,10 @@ end;
 { TEmbeddedArrayStackItem }
 
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
-{$IFNDEF FPC}
-var
-  slct : IDOMNodeSelect;
-{$ENDIF}
 begin
   if ScopeObject.HasChildNodes() then begin
 {$IFNDEF FPC}
-    slct := ScopeObject as IDOMNodeSelect;
-    Result := slct.selectNodes(ANodeName); //ScopeObject.childNodes;
+    Result := FilterList(ScopeObject.childNodes,ANodeName);
 {$ELSE}
     Result := {$IFNDEF FPC_211}TDOMNodeList{$ELSE}TDOMElementList{$ENDIF}.Create(ScopeObject,ANodeName);
 {$ENDIF}

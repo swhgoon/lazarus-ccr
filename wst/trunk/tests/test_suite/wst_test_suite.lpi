@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -42,8 +42,8 @@
         <Filename Value="testformatter_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="testformatter_unit"/>
-        <CursorPos X="48" Y="814"/>
-        <TopLine Value="796"/>
+        <CursorPos X="17" Y="1733"/>
+        <TopLine Value="1726"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
@@ -73,7 +73,7 @@
         <UnitName Value="base_binary_formatter"/>
         <CursorPos X="15" Y="1479"/>
         <TopLine Value="1464"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -82,7 +82,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="46" Y="4524"/>
-        <TopLine Value="4504"/>
+        <TopLine Value="4490"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
@@ -95,8 +95,8 @@
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="1" Y="1705"/>
-        <TopLine Value="1676"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -115,7 +115,7 @@
         <UnitName Value="binary_streamer"/>
         <CursorPos X="14" Y="14"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="17"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
           <Item0 X="38" Y="490" ID="2"/>
@@ -144,7 +144,7 @@
         <UnitName Value="testmetadata_unit"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -174,7 +174,7 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="44" Y="21"/>
         <TopLine Value="209"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="13"/>
         <UsageCount Value="206"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -288,7 +288,7 @@
         <UnitName Value="test_parserdef"/>
         <CursorPos X="93" Y="76"/>
         <TopLine Value="11"/>
-        <UsageCount Value="173"/>
+        <UsageCount Value="176"/>
       </Unit30>
       <Unit31>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\inc\objpash.inc"/>
@@ -329,7 +329,7 @@
         <CursorPos X="8" Y="1352"/>
         <TopLine Value="1335"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="114"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -452,7 +452,7 @@
         <UnitName Value="wst_fpc_xml"/>
         <CursorPos X="8" Y="38"/>
         <TopLine Value="11"/>
-        <UsageCount Value="57"/>
+        <UsageCount Value="60"/>
       </Unit54>
       <Unit55>
         <Filename Value="..\..\wst_global.inc"/>
@@ -473,8 +473,8 @@
         <UnitName Value="test_utilities"/>
         <CursorPos X="29" Y="43"/>
         <TopLine Value="3"/>
-        <EditorIndex Value="17"/>
-        <UsageCount Value="48"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
       </Unit57>
       <Unit58>
@@ -489,8 +489,8 @@
         <UnitName Value="testregistry"/>
         <CursorPos X="39" Y="27"/>
         <TopLine Value="17"/>
-        <EditorIndex Value="16"/>
-        <UsageCount Value="15"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit59>
       <Unit60>
@@ -531,7 +531,7 @@
         <CursorPos X="16" Y="2045"/>
         <TopLine Value="2031"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit65>
       <Unit66>
@@ -539,9 +539,7 @@
         <UnitName Value="DOM"/>
         <CursorPos X="3" Y="196"/>
         <TopLine Value="191"/>
-        <EditorIndex Value="12"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit66>
       <Unit67>
         <Filename Value="..\..\type_lib_edtr\umoduleedit.pas"/>
@@ -552,7 +550,7 @@
         <CursorPos X="47" Y="21"/>
         <TopLine Value="18"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit67>
       <Unit68>
@@ -564,7 +562,7 @@
         <CursorPos X="41" Y="21"/>
         <TopLine Value="18"/>
         <EditorIndex Value="8"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit68>
       <Unit69>
@@ -576,7 +574,7 @@
         <CursorPos X="41" Y="9"/>
         <TopLine Value="5"/>
         <EditorIndex Value="9"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit69>
       <Unit70>
@@ -588,7 +586,7 @@
         <CursorPos X="22" Y="9"/>
         <TopLine Value="7"/>
         <EditorIndex Value="10"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit70>
       <Unit71>
@@ -600,7 +598,7 @@
         <CursorPos X="22" Y="9"/>
         <TopLine Value="6"/>
         <EditorIndex Value="11"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit71>
     </Units>

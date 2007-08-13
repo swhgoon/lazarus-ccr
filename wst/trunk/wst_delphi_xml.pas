@@ -26,6 +26,8 @@ type
   procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);
   procedure ReadXMLFile(ADoc : TXMLDocument; AStream : TStream);
   function NodeToBuffer(ANode : TDOMNode):string ;
+
+  function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
   
 implementation
 uses XmlDoc;
@@ -103,6 +105,84 @@ begin
     Result := locNodeEx.xml;
   end else begin
     raise Exception.Create('This Xml library do not provide "IDOMNodeEx" support.');
+  end;
+end;
+
+type
+  TDOMNodeSelectListImp = class(TInterfacedObject,IDOMNodeList)
+  private
+    FItemName : widestring;
+    FInnerList : IDOMNodeList;
+    FCount : Integer;
+  private
+    function internal_get_item(index: Integer): IDOMNode;
+  protected
+    function get_item(index: Integer): IDOMNode; safecall;
+    function get_length: Integer; safecall;
+  public
+    constructor Create(
+      const AInnerList : IDOMNodeList;
+      const AItemName  : widestring
+    );
+  end;
+
+function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
+begin
+  Result := TDOMNodeSelectListImp.Create(ALIst,ANodeName);
+end;
+
+{ TDOMNodeSelectListImp }
+
+constructor TDOMNodeSelectListImp.Create(
+  const AInnerList: IDOMNodeList;
+  const AItemName: widestring
+);
+begin
+  Assert(AInnerList <> nil);
+  FInnerList := AInnerList;
+  FItemName := AItemName;
+  FCount := -1;
+end;
+
+function TDOMNodeSelectListImp.get_item(index: Integer): IDOMNode;
+begin
+  Result := internal_get_item(index);
+  if ( Result = nil ) then
+    raise Exception.CreateFmt('Invalid item at %d.',[index]);
+end;
+
+function TDOMNodeSelectListImp.get_length() : Integer;
+begin
+  if ( FCount >= 0 ) then begin
+    Result := FCount;
+  end else begin
+    FCount := 0;
+    while Assigned(internal_get_item(FCount)) do begin
+      Inc(FCount);
+    end;
+    Result := FCount;
+  end;
+end;
+
+function TDOMNodeSelectListImp.internal_get_item(index: Integer): IDOMNode;
+var
+  i : Integer;
+  crt : IDOMNode;
+begin
+  Result := nil;
+  if ( FInnerList.length > 0 ) then begin
+    i := -1;
+    crt := FInnerList.item[0];
+    while ( crt <> nil ) do begin
+      if ( FItemName = crt.nodeName ) then begin
+        Inc(i);
+        if ( i = index ) then begin
+          Result := crt;
+          Break;
+        end;
+      end;
+      crt := crt.nextSibling;
+    end;
   end;
 end;
 
