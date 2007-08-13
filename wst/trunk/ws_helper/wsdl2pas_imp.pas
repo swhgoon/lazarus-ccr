@@ -973,7 +973,7 @@ function TWsdlParser.ParseOperation(
               prmDef.ArgType := prmTypeDef;
               prmTypeDef.AddRef();
               prmDef.Access := argConst;
-              if prmHasInternameName then begin
+              if prmHasInternameName or ( not AnsiSameText(prmName,prmInternameName) ) then begin
                 SymbolTable.RegisterExternalAlias(prmDef,prmName);
               end;
               if AnsiSameText(tmpMthd.Name,prmTypeDef.Name) then begin
@@ -1094,6 +1094,7 @@ function TWsdlParser.ParseOperation(
                 arg_b.Access := arg_a.Access;
                 arg_b.ArgType := arg_a.ArgType;
                 arg_b.ArgType.AddRef();
+                SymbolTable.RegisterExternalAlias(arg_b,SymbolTable.GetExternalName(arg_a));
               end;
               j := locProcType.Args.Count - 1;
               arg_a := TPasArgument(locProcType.Args[j]);

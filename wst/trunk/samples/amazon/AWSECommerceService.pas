@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService".
-  Date            : "11/07/2007 22:01:01".
+  Date            : "12/08/2007 22:38:54".
 }
 unit AWSECommerceService;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -11,7 +11,7 @@ interface
 uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;
 
 const
-  sNAME_SPACE = 'http://webservices.amazon.com/AWSECommerceService/2007-04-04';
+  sNAME_SPACE = 'http://webservices.amazon.com/AWSECommerceService/2007-07-16';
   sUNIT_NAME = 'AWSECommerceService';
 
 type
@@ -88,6 +88,10 @@ type
   SellerListingLookup_Type = class;
   SellerListingLookupResponse_SellerListingsArray = class;
   SellerListingLookupResponse_Type = class;
+  TagLookup_RequestArray = class;
+  TagLookup_Type = class;
+  TagLookupResponse_TagsArray = class;
+  TagLookupResponse_Type = class;
   MultiOperation_Type = class;
   MultiOperationResponse = class;
   Bin_BinParameter_Type = class;
@@ -120,10 +124,14 @@ type
   SellerLookupRequest_Type = class;
   CartGetRequest_ResponseGroupArray = class;
   CartGetRequest_Type = class;
+  CartAddRequest_Items_Type_Item_Type_MetaData_Type = class;
+  CartAddRequest_Items_Type_Item_Type_MetaDataArray = class;
   CartAddRequest_Items_Type_Item_Type = class;
   CartAddRequest_Items_Type = class;
   CartAddRequest_ResponseGroupArray = class;
   CartAddRequest_Type = class;
+  CartCreateRequest_Items_Type_Item_Type_MetaData_Type = class;
+  CartCreateRequest_Items_Type_Item_Type_MetaDataArray = class;
   CartCreateRequest_Items_Type_Item_Type = class;
   CartCreateRequest_Items_Type = class;
   CartCreateRequest_ResponseGroupArray = class;
@@ -141,6 +149,9 @@ type
   SellerListingSearchRequest_Type = class;
   SellerListingLookupRequest_ResponseGroupArray = class;
   SellerListingLookupRequest_Type = class;
+  TagLookupRequest_TagNameArray = class;
+  TagLookupRequest_ResponseGroupArray = class;
+  TagLookupRequest_Type = class;
   BrowseNodeLookupRequest_BrowseNodeIdArray = class;
   BrowseNodeLookupRequest_ResponseGroupArray = class;
   BrowseNodeLookupRequest_Type = class;
@@ -193,6 +204,17 @@ type
   Item_AlternateVersions_Type = class;
   _Item_ImageSetsArray = class;
   Item_Type = class;
+  Tags_TagArray = class;
+  Tags_Type = class;
+  Tag_TaggedItemsArray = class;
+  Tag_TaggedListmaniaListsArray = class;
+  Tag_TaggedGuidesArray = class;
+  Tag_Type = class;
+  TaggedItems_Type = class;
+  TaggedListmaniaLists_Type = class;
+  TaggedGuides_Type = class;
+  Guide_Type = class;
+  Tagging_Type = class;
   OfferSummary_Type = class;
   Offers_OfferArray = class;
   Offers_Type = class;
@@ -248,6 +270,8 @@ type
   PromotionItemApplicability_Type = class;
   BrowseNodes_BrowseNodeArray = class;
   BrowseNodes_Type = class;
+  Property_Type = class;
+  BrowseNode_Properties_Type = class;
   BrowseNode_Children_Type = class;
   BrowseNode_Ancestors_Type = class;
   BrowseNode_Type = class;
@@ -259,6 +283,8 @@ type
   CartItems_Type = class;
   SavedForLaterItems_SavedForLaterItemArray = class;
   SavedForLaterItems_Type = class;
+  CartItem_MetaData_Type_KeyValuePair_Type = class;
+  CartItem_MetaData_Type = class;
   CartItem_Type = class;
   Transaction_Totals_Type = class;
   Transaction_TransactionItems_Type = class;
@@ -289,23 +315,40 @@ type
   ItemAttributes_Languages_Type = class;
   ItemAttributes_PackageDimensions_Type = class;
   ItemAttributes_ActorArray = class;
+  ItemAttributes_AgeArray = class;
   ItemAttributes_ArtistArray = class;
   ItemAttributes_AudioFormatArray = class;
   ItemAttributes_AuthorArray = class;
   ItemAttributes_CameraManualFeaturesArray = class;
+  ItemAttributes_CategoryArray = class;
+  ItemAttributes_CategoryBinArray = class;
+  ItemAttributes_CharacterArray = class;
   ItemAttributes_CompatibleDevicesArray = class;
   ItemAttributes_CreatorArray = class;
   ItemAttributes_DataLinkProtocolArray = class;
   ItemAttributes_DirectorArray = class;
+  ItemAttributes_EducationalFocusArray = class;
+  ItemAttributes_EthnicityArray = class;
   ItemAttributes_FeatureArray = class;
   ItemAttributes_FormatArray = class;
   ItemAttributes_FormFactorArray = class;
+  ItemAttributes_GemTypeSetElementArray = class;
+  ItemAttributes_GenderArray = class;
+  ItemAttributes_IngredientsSetElementArray = class;
+  ItemAttributes_InterestArray = class;
+  ItemAttributes_LanguageNameArray = class;
+  ItemAttributes_MaterialTypeSetElementArray = class;
+  ItemAttributes_PantLengthArray = class;
+  ItemAttributes_PantSizeArray = class;
   ItemAttributes_PhotoFlashTypeArray = class;
   ItemAttributes_PictureFormatArray = class;
   ItemAttributes_PlatformArray = class;
+  ItemAttributes_PrimaryColorArray = class;
   ItemAttributes_ReturnMethodArray = class;
+  ItemAttributes_ShoeSizeArray = class;
   ItemAttributes_SpecialFeaturesArray = class;
   ItemAttributes_SupportedImageTypeArray = class;
+  ItemAttributes_TargetBrandArray = class;
   ItemAttributes_Type = class;
   MerchantItemAttributes_Creator_Type = class;
   MerchantItemAttributes_ItemDimensions_Type = class;
@@ -418,6 +461,12 @@ type
     ,List_ListType_Type_WeddingRegistry
     ,List_ListType_Type_BabyRegistry
     ,List_ListType_Type_Listmania
+  );
+
+  Tag_TagType_Type = ( 
+    Tag_TagType_Type_Item
+    ,ListmaniaList
+    ,Guide
   );
 
   positiveIntegerOrAll_Type = type string;
@@ -1283,6 +1332,54 @@ type
     property SellerListings : SellerListingLookupResponse_SellerListingsArray read FSellerListings write FSellerListings stored HasSellerListings;
   end;
 
+  TagLookup_Type = class(TBaseComplexRemotable)
+  private
+    FMarketplaceDomain : string;
+    FAWSAccessKeyId : string;
+    FSubscriptionId : string;
+    FAssociateTag : string;
+    FValidate : string;
+    FXMLEscaping : string;
+    FShared : TagLookupRequest_Type;
+    FRequest : TagLookup_RequestArray;
+  private
+    function HasMarketplaceDomain() : Boolean;
+    function HasAWSAccessKeyId() : Boolean;
+    function HasSubscriptionId() : Boolean;
+    function HasAssociateTag() : Boolean;
+    function HasValidate() : Boolean;
+    function HasXMLEscaping() : Boolean;
+    function HasShared() : Boolean;
+    function HasRequest() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MarketplaceDomain : string read FMarketplaceDomain write FMarketplaceDomain stored HasMarketplaceDomain;
+    property AWSAccessKeyId : string read FAWSAccessKeyId write FAWSAccessKeyId stored HasAWSAccessKeyId;
+    property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
+    property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
+    property Validate : string read FValidate write FValidate stored HasValidate;
+    property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
+    property Shared : TagLookupRequest_Type read FShared write FShared stored HasShared;
+    property Request : TagLookup_RequestArray read FRequest write FRequest stored HasRequest;
+  end;
+
+  TagLookupResponse_Type = class(TBaseComplexRemotable)
+  private
+    FOperationRequest : OperationRequest_Type;
+    FTags : TagLookupResponse_TagsArray;
+  private
+    function HasOperationRequest() : Boolean;
+    function HasTags() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
+    property Tags : TagLookupResponse_TagsArray read FTags write FTags stored HasTags;
+  end;
+
   MultiOperation_Type = class(TBaseComplexRemotable)
   private
     FHelp : Help_Type;
@@ -1302,6 +1399,7 @@ type
     FTransactionLookup : TransactionLookup_Type;
     FSellerListingSearch : SellerListingSearch_Type;
     FSellerListingLookup : SellerListingLookup_Type;
+    FTagLookup : TagLookup_Type;
     FBrowseNodeLookup : BrowseNodeLookup_Type;
   private
     function HasHelp() : Boolean;
@@ -1321,6 +1419,7 @@ type
     function HasTransactionLookup() : Boolean;
     function HasSellerListingSearch() : Boolean;
     function HasSellerListingLookup() : Boolean;
+    function HasTagLookup() : Boolean;
     function HasBrowseNodeLookup() : Boolean;
   public
     constructor Create();override;
@@ -1343,6 +1442,7 @@ type
     property TransactionLookup : TransactionLookup_Type read FTransactionLookup write FTransactionLookup stored HasTransactionLookup;
     property SellerListingSearch : SellerListingSearch_Type read FSellerListingSearch write FSellerListingSearch stored HasSellerListingSearch;
     property SellerListingLookup : SellerListingLookup_Type read FSellerListingLookup write FSellerListingLookup stored HasSellerListingLookup;
+    property TagLookup : TagLookup_Type read FTagLookup write FTagLookup stored HasTagLookup;
     property BrowseNodeLookup : BrowseNodeLookup_Type read FBrowseNodeLookup write FBrowseNodeLookup stored HasBrowseNodeLookup;
   end;
 
@@ -1366,6 +1466,7 @@ type
     FTransactionLookupResponse : TransactionLookupResponse_Type;
     FSellerListingSearchResponse : SellerListingSearchResponse_Type;
     FSellerListingLookupResponse : SellerListingLookupResponse_Type;
+    FTagLookupResponse : TagLookupResponse_Type;
     FBrowseNodeLookupResponse : BrowseNodeLookupResponse_Type;
   private
     function HasOperationRequest() : Boolean;
@@ -1386,6 +1487,7 @@ type
     function HasTransactionLookupResponse() : Boolean;
     function HasSellerListingSearchResponse() : Boolean;
     function HasSellerListingLookupResponse() : Boolean;
+    function HasTagLookupResponse() : Boolean;
     function HasBrowseNodeLookupResponse() : Boolean;
   public
     constructor Create();override;
@@ -1409,6 +1511,7 @@ type
     property TransactionLookupResponse : TransactionLookupResponse_Type read FTransactionLookupResponse write FTransactionLookupResponse stored HasTransactionLookupResponse;
     property SellerListingSearchResponse : SellerListingSearchResponse_Type read FSellerListingSearchResponse write FSellerListingSearchResponse stored HasSellerListingSearchResponse;
     property SellerListingLookupResponse : SellerListingLookupResponse_Type read FSellerListingLookupResponse write FSellerListingLookupResponse stored HasSellerListingLookupResponse;
+    property TagLookupResponse : TagLookupResponse_Type read FTagLookupResponse write FTagLookupResponse stored HasTagLookupResponse;
     property BrowseNodeLookupResponse : BrowseNodeLookupResponse_Type read FBrowseNodeLookupResponse write FBrowseNodeLookupResponse stored HasBrowseNodeLookupResponse;
   end;
 
@@ -1505,6 +1608,9 @@ type
     FSearchIndex : string;
     FSort : string;
     FState : string;
+    FTagPage : positiveInteger;
+    FTagsPerPage : positiveInteger;
+    FTagSort : string;
     FTextStream : string;
     FTitle : string;
     FReleaseDate : string;
@@ -1543,6 +1649,9 @@ type
     function HasSearchIndex() : Boolean;
     function HasSort() : Boolean;
     function HasState() : Boolean;
+    function HasTagPage() : Boolean;
+    function HasTagsPerPage() : Boolean;
+    function HasTagSort() : Boolean;
     function HasTextStream() : Boolean;
     function HasTitle() : Boolean;
     function HasReleaseDate() : Boolean;
@@ -1584,6 +1693,9 @@ type
     property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
     property Sort : string read FSort write FSort stored HasSort;
     property State : string read FState write FState stored HasState;
+    property TagPage : positiveInteger read FTagPage write FTagPage stored HasTagPage;
+    property TagsPerPage : positiveInteger read FTagsPerPage write FTagsPerPage stored HasTagsPerPage;
+    property TagSort : string read FTagSort write FTagSort stored HasTagSort;
     property TextStream : string read FTextStream write FTextStream stored HasTextStream;
     property Title : string read FTitle write FTitle stored HasTitle;
     property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
@@ -1604,6 +1716,9 @@ type
     FReviewSort : string;
     FSearchIndex : string;
     FSearchInsideKeywords : string;
+    FTagPage : positiveInteger;
+    FTagsPerPage : positiveInteger;
+    FTagSort : string;
     FVariationPage : positiveIntegerOrAll_Type;
   private
     function HasCondition() : Boolean;
@@ -1619,6 +1734,9 @@ type
     function HasReviewSort() : Boolean;
     function HasSearchIndex() : Boolean;
     function HasSearchInsideKeywords() : Boolean;
+    function HasTagPage() : Boolean;
+    function HasTagsPerPage() : Boolean;
+    function HasTagSort() : Boolean;
     function HasVariationPage() : Boolean;
   public
     constructor Create();override;
@@ -1637,6 +1755,9 @@ type
     property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
     property SearchIndex : string read FSearchIndex write FSearchIndex stored HasSearchIndex;
     property SearchInsideKeywords : string read FSearchInsideKeywords write FSearchInsideKeywords stored HasSearchInsideKeywords;
+    property TagPage : positiveInteger read FTagPage write FTagPage stored HasTagPage;
+    property TagsPerPage : positiveInteger read FTagsPerPage write FTagsPerPage stored HasTagsPerPage;
+    property TagSort : string read FTagSort write FTagSort stored HasTagSort;
     property VariationPage : positiveIntegerOrAll_Type read FVariationPage write FVariationPage stored HasVariationPage;
   end;
 
@@ -1743,10 +1864,16 @@ type
     FCustomerId : string;
     FResponseGroup : CustomerContentLookupRequest_ResponseGroupArray;
     FReviewPage : positiveInteger;
+    FTagPage : positiveInteger;
+    FTagsPerPage : positiveInteger;
+    FTagSort : string;
   private
     function HasCustomerId() : Boolean;
     function HasResponseGroup() : Boolean;
     function HasReviewPage() : Boolean;
+    function HasTagPage() : Boolean;
+    function HasTagsPerPage() : Boolean;
+    function HasTagSort() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1754,6 +1881,9 @@ type
     property CustomerId : string read FCustomerId write FCustomerId stored HasCustomerId;
     property ResponseGroup : CustomerContentLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
     property ReviewPage : positiveInteger read FReviewPage write FReviewPage stored HasReviewPage;
+    property TagPage : positiveInteger read FTagPage write FTagPage stored HasTagPage;
+    property TagsPerPage : positiveInteger read FTagsPerPage write FTagsPerPage stored HasTagsPerPage;
+    property TagSort : string read FTagSort write FTagSort stored HasTagSort;
   end;
 
   SimilarityLookupRequest_Type = class(TBaseComplexRemotable)
@@ -1828,6 +1958,18 @@ type
     property ResponseGroup : CartGetRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
+  CartAddRequest_Items_Type_Item_Type_MetaData_Type = class(TBaseComplexRemotable)
+  private
+    FKey : string;
+    FValue : string;
+  private
+    function HasKey() : Boolean;
+    function HasValue() : Boolean;
+  published
+    property Key : string read FKey write FKey stored HasKey;
+    property Value : string read FValue write FValue stored HasValue;
+  end;
+
   CartAddRequest_Items_Type_Item_Type = class(TBaseComplexRemotable)
   private
     FASIN : string;
@@ -1835,18 +1977,24 @@ type
     FQuantity : positiveInteger;
     FAssociateTag : string;
     FListItemId : string;
+    FMetaData : CartAddRequest_Items_Type_Item_Type_MetaDataArray;
   private
     function HasASIN() : Boolean;
     function HasOfferListingId() : Boolean;
     function HasQuantity() : Boolean;
     function HasAssociateTag() : Boolean;
     function HasListItemId() : Boolean;
+    function HasMetaData() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   published
     property ASIN : string read FASIN write FASIN stored HasASIN;
     property OfferListingId : string read FOfferListingId write FOfferListingId stored HasOfferListingId;
     property Quantity : positiveInteger read FQuantity write FQuantity stored HasQuantity;
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property ListItemId : string read FListItemId write FListItemId stored HasListItemId;
+    property MetaData : CartAddRequest_Items_Type_Item_Type_MetaDataArray read FMetaData write FMetaData stored HasMetaData;
   end;
 
   CartAddRequest_Type = class(TBaseComplexRemotable)
@@ -1873,6 +2021,18 @@ type
     property ResponseGroup : CartAddRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
+  CartCreateRequest_Items_Type_Item_Type_MetaData_Type = class(TBaseComplexRemotable)
+  private
+    FKey : string;
+    FValue : string;
+  private
+    function HasKey() : Boolean;
+    function HasValue() : Boolean;
+  published
+    property Key : string read FKey write FKey stored HasKey;
+    property Value : string read FValue write FValue stored HasValue;
+  end;
+
   CartCreateRequest_Items_Type_Item_Type = class(TBaseComplexRemotable)
   private
     FASIN : string;
@@ -1880,18 +2040,24 @@ type
     FQuantity : positiveInteger;
     FAssociateTag : string;
     FListItemId : string;
+    FMetaData : CartCreateRequest_Items_Type_Item_Type_MetaDataArray;
   private
     function HasASIN() : Boolean;
     function HasOfferListingId() : Boolean;
     function HasQuantity() : Boolean;
     function HasAssociateTag() : Boolean;
     function HasListItemId() : Boolean;
+    function HasMetaData() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   published
     property ASIN : string read FASIN write FASIN stored HasASIN;
     property OfferListingId : string read FOfferListingId write FOfferListingId stored HasOfferListingId;
     property Quantity : positiveInteger read FQuantity write FQuantity stored HasQuantity;
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property ListItemId : string read FListItemId write FListItemId stored HasListItemId;
+    property MetaData : CartCreateRequest_Items_Type_Item_Type_MetaDataArray read FMetaData write FMetaData stored HasMetaData;
   end;
 
   CartCreateRequest_Type = class(TBaseComplexRemotable)
@@ -2035,6 +2201,33 @@ type
     property ResponseGroup : SellerListingLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
+  TagLookupRequest_Type = class(TBaseComplexRemotable)
+  private
+    FTagName : TagLookupRequest_TagNameArray;
+    FCustomerId : string;
+    FTagPage : positiveInteger;
+    FCount : positiveInteger;
+    FTagSort : string;
+    FResponseGroup : TagLookupRequest_ResponseGroupArray;
+  private
+    function HasTagName() : Boolean;
+    function HasCustomerId() : Boolean;
+    function HasTagPage() : Boolean;
+    function HasCount() : Boolean;
+    function HasTagSort() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TagName : TagLookupRequest_TagNameArray read FTagName write FTagName stored HasTagName;
+    property CustomerId : string read FCustomerId write FCustomerId stored HasCustomerId;
+    property TagPage : positiveInteger read FTagPage write FTagPage stored HasTagPage;
+    property Count : positiveInteger read FCount write FCount stored HasCount;
+    property TagSort : string read FTagSort write FTagSort stored HasTagSort;
+    property ResponseGroup : TagLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
   BrowseNodeLookupRequest_Type = class(TBaseComplexRemotable)
   private
     FBrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray;
@@ -2095,6 +2288,7 @@ type
     FSellerListingSearchRequest : SellerListingSearchRequest_Type;
     FSellerListingLookupRequest : SellerListingLookupRequest_Type;
     FSellerLookupRequest : SellerLookupRequest_Type;
+    FTagLookupRequest : TagLookupRequest_Type;
     FErrors : Errors_Type;
   private
     function HasIsValid() : Boolean;
@@ -2116,6 +2310,7 @@ type
     function HasSellerListingSearchRequest() : Boolean;
     function HasSellerListingLookupRequest() : Boolean;
     function HasSellerLookupRequest() : Boolean;
+    function HasTagLookupRequest() : Boolean;
     function HasErrors() : Boolean;
   public
     constructor Create();override;
@@ -2140,6 +2335,7 @@ type
     property SellerListingSearchRequest : SellerListingSearchRequest_Type read FSellerListingSearchRequest write FSellerListingSearchRequest stored HasSellerListingSearchRequest;
     property SellerListingLookupRequest : SellerListingLookupRequest_Type read FSellerListingLookupRequest write FSellerListingLookupRequest stored HasSellerListingLookupRequest;
     property SellerLookupRequest : SellerLookupRequest_Type read FSellerLookupRequest write FSellerLookupRequest stored HasSellerLookupRequest;
+    property TagLookupRequest : TagLookupRequest_Type read FTagLookupRequest write FTagLookupRequest stored HasTagLookupRequest;
     property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
   end;
 
@@ -2193,6 +2389,7 @@ type
     FRequest : Request_Type;
     FCorrectedQuery : CorrectedQuery_Type;
     FQid : string;
+    FEngineQuery : string;
     FTotalResults : nonNegativeInteger;
     FTotalPages : nonNegativeInteger;
     FSearchResultsMap : SearchResultsMap_Type;
@@ -2202,6 +2399,7 @@ type
     function HasRequest() : Boolean;
     function HasCorrectedQuery() : Boolean;
     function HasQid() : Boolean;
+    function HasEngineQuery() : Boolean;
     function HasTotalResults() : Boolean;
     function HasTotalPages() : Boolean;
     function HasSearchResultsMap() : Boolean;
@@ -2214,6 +2412,7 @@ type
     property Request : Request_Type read FRequest write FRequest stored HasRequest;
     property CorrectedQuery : CorrectedQuery_Type read FCorrectedQuery write FCorrectedQuery stored HasCorrectedQuery;
     property Qid : string read FQid write FQid stored HasQid;
+    property EngineQuery : string read FEngineQuery write FEngineQuery stored HasEngineQuery;
     property TotalResults : nonNegativeInteger read FTotalResults write FTotalResults stored HasTotalResults;
     property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
     property SearchResultsMap : SearchResultsMap_Type read FSearchResultsMap write FSearchResultsMap stored HasSearchResultsMap;
@@ -2449,6 +2648,7 @@ type
     FAverageRating : Extended;
     FTotalVotes : nonNegativeInteger;
     FTotalTimesRead : nonNegativeInteger;
+    FTags : Tags_Type;
     FListItem : List_ListItemArray;
   private
     function HasListURL() : Boolean;
@@ -2467,6 +2667,7 @@ type
     function HasAverageRating() : Boolean;
     function HasTotalVotes() : Boolean;
     function HasTotalTimesRead() : Boolean;
+    function HasTags() : Boolean;
     function HasListItem() : Boolean;
   public
     constructor Create();override;
@@ -2489,6 +2690,7 @@ type
     property AverageRating : Extended read FAverageRating write FAverageRating stored HasAverageRating;
     property TotalVotes : nonNegativeInteger read FTotalVotes write FTotalVotes stored HasTotalVotes;
     property TotalTimesRead : nonNegativeInteger read FTotalTimesRead write FTotalTimesRead stored HasTotalTimesRead;
+    property Tags : Tags_Type read FTags write FTags stored HasTags;
     property ListItem : List_ListItemArray read FListItem write FListItem stored HasListItem;
   end;
 
@@ -2545,12 +2747,14 @@ type
     FWishListId : string;
     FLocation : Customer_Location_Type;
     FCustomerReviews : Customer_CustomerReviewsArray;
+    FTags : Tags_Type;
   private
     function HasNickname() : Boolean;
     function HasBirthday() : Boolean;
     function HasWishListId() : Boolean;
     function HasLocation() : Boolean;
     function HasCustomerReviews() : Boolean;
+    function HasTags() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -2561,6 +2765,7 @@ type
     property WishListId : string read FWishListId write FWishListId stored HasWishListId;
     property Location : Customer_Location_Type read FLocation write FLocation stored HasLocation;
     property CustomerReviews : Customer_CustomerReviewsArray read FCustomerReviews write FCustomerReviews stored HasCustomerReviews;
+    property Tags : Tags_Type read FTags write FTags stored HasTags;
   end;
 
   SearchResultsMap_SearchIndex_Type = class(TBaseComplexRemotable)
@@ -2641,6 +2846,7 @@ type
     FAccessories : Accessories_Type;
     FTracks : Tracks_Type;
     FBrowseNodes : BrowseNodes_Type;
+    FTags : Tags_Type;
     FListmaniaLists : ListmaniaLists_Type;
     FSearchInside : SearchInside_Type;
     FAlternateVersions : Item_AlternateVersions_Type;
@@ -2667,6 +2873,7 @@ type
     function HasAccessories() : Boolean;
     function HasTracks() : Boolean;
     function HasBrowseNodes() : Boolean;
+    function HasTags() : Boolean;
     function HasListmaniaLists() : Boolean;
     function HasSearchInside() : Boolean;
     function HasAlternateVersions() : Boolean;
@@ -2697,9 +2904,181 @@ type
     property Accessories : Accessories_Type read FAccessories write FAccessories stored HasAccessories;
     property Tracks : Tracks_Type read FTracks write FTracks stored HasTracks;
     property BrowseNodes : BrowseNodes_Type read FBrowseNodes write FBrowseNodes stored HasBrowseNodes;
+    property Tags : Tags_Type read FTags write FTags stored HasTags;
     property ListmaniaLists : ListmaniaLists_Type read FListmaniaLists write FListmaniaLists stored HasListmaniaLists;
     property SearchInside : SearchInside_Type read FSearchInside write FSearchInside stored HasSearchInside;
     property AlternateVersions : Item_AlternateVersions_Type read FAlternateVersions write FAlternateVersions stored HasAlternateVersions;
+  end;
+
+  Tags_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FDistinctTags : string;
+    FDistinctItems : string;
+    FDistinctUsers : string;
+    FTotalUsages : string;
+    FFirstTagging : Tagging_Type;
+    FLastTagging : Tagging_Type;
+    FTag : Tags_TagArray;
+  private
+    function HasRequest() : Boolean;
+    function HasDistinctTags() : Boolean;
+    function HasDistinctItems() : Boolean;
+    function HasDistinctUsers() : Boolean;
+    function HasTotalUsages() : Boolean;
+    function HasFirstTagging() : Boolean;
+    function HasLastTagging() : Boolean;
+    function HasTag() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property DistinctTags : string read FDistinctTags write FDistinctTags stored HasDistinctTags;
+    property DistinctItems : string read FDistinctItems write FDistinctItems stored HasDistinctItems;
+    property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
+    property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
+    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property Tag : Tags_TagArray read FTag write FTag stored HasTag;
+  end;
+
+  Tag_Type = class(TBaseComplexRemotable)
+  private
+    FName : string;
+    FTagType : Tag_TagType_Type;
+    FDistinctItems : string;
+    FDistinctUsers : string;
+    FTotalUsages : string;
+    FFirstTagging : Tagging_Type;
+    FLastTagging : Tagging_Type;
+    FTaggedItems : Tag_TaggedItemsArray;
+    FTaggedListmaniaLists : Tag_TaggedListmaniaListsArray;
+    FTaggedGuides : Tag_TaggedGuidesArray;
+  private
+    function HasName() : Boolean;
+    function HasTagType() : Boolean;
+    function HasDistinctItems() : Boolean;
+    function HasDistinctUsers() : Boolean;
+    function HasTotalUsages() : Boolean;
+    function HasFirstTagging() : Boolean;
+    function HasLastTagging() : Boolean;
+    function HasTaggedItems() : Boolean;
+    function HasTaggedListmaniaLists() : Boolean;
+    function HasTaggedGuides() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Name : string read FName write FName stored HasName;
+    property TagType : Tag_TagType_Type read FTagType write FTagType stored HasTagType;
+    property DistinctItems : string read FDistinctItems write FDistinctItems stored HasDistinctItems;
+    property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
+    property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
+    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property TaggedItems : Tag_TaggedItemsArray read FTaggedItems write FTaggedItems stored HasTaggedItems;
+    property TaggedListmaniaLists : Tag_TaggedListmaniaListsArray read FTaggedListmaniaLists write FTaggedListmaniaLists stored HasTaggedListmaniaLists;
+    property TaggedGuides : Tag_TaggedGuidesArray read FTaggedGuides write FTaggedGuides stored HasTaggedGuides;
+  end;
+
+  TaggedItems_Type = class(TBaseComplexRemotable)
+  private
+    F_Item : Item_Type;
+    FDistinctUsers : string;
+    FTotalUsages : string;
+    FFirstTagging : Tagging_Type;
+    FLastTagging : Tagging_Type;
+  private
+    function Has_Item() : Boolean;
+    function HasDistinctUsers() : Boolean;
+    function HasTotalUsages() : Boolean;
+    function HasFirstTagging() : Boolean;
+    function HasLastTagging() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property _Item : Item_Type read F_Item write F_Item stored Has_Item;
+    property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
+    property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
+    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+  end;
+
+  TaggedListmaniaLists_Type = class(TBaseComplexRemotable)
+  private
+    FList : List_Type;
+    FDistinctUsers : string;
+    FTotalUsages : string;
+    FFirstTagging : Tagging_Type;
+    FLastTagging : Tagging_Type;
+  private
+    function HasList() : Boolean;
+    function HasDistinctUsers() : Boolean;
+    function HasTotalUsages() : Boolean;
+    function HasFirstTagging() : Boolean;
+    function HasLastTagging() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property List : List_Type read FList write FList stored HasList;
+    property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
+    property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
+    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+  end;
+
+  TaggedGuides_Type = class(TBaseComplexRemotable)
+  private
+    FGuide : Guide_Type;
+    FDistinctUsers : string;
+    FTotalUsages : string;
+    FFirstTagging : Tagging_Type;
+    FLastTagging : Tagging_Type;
+  private
+    function HasGuide() : Boolean;
+    function HasDistinctUsers() : Boolean;
+    function HasTotalUsages() : Boolean;
+    function HasFirstTagging() : Boolean;
+    function HasLastTagging() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Guide : Guide_Type read FGuide write FGuide stored HasGuide;
+    property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
+    property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
+    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+  end;
+
+  Guide_Type = class(TBaseComplexRemotable)
+  private
+    FGuideId : string;
+  private
+    function HasGuideId() : Boolean;
+  published
+    property GuideId : string read FGuideId write FGuideId stored HasGuideId;
+  end;
+
+  Tagging_Type = class(TBaseComplexRemotable)
+  private
+    FName : string;
+    FEntityId : string;
+    FUserId : string;
+    FTime : string;
+  private
+    function HasName() : Boolean;
+    function HasEntityId() : Boolean;
+    function HasUserId() : Boolean;
+    function HasTime() : Boolean;
+  published
+    property Name : string read FName write FName stored HasName;
+    property EntityId : string read FEntityId write FEntityId stored HasEntityId;
+    property UserId : string read FUserId write FUserId stored HasUserId;
+    property Time : string read FTime write FTime stored HasTime;
   end;
 
   OfferSummary_Type = class(TBaseComplexRemotable)
@@ -3032,12 +3411,15 @@ type
   private
     FSource : string;
     FContent : string;
+    FIsLinkSuppressed : boolean;
   private
     function HasSource() : Boolean;
     function HasContent() : Boolean;
+    function HasIsLinkSuppressed() : Boolean;
   published
     property Source : string read FSource write FSource stored HasSource;
     property Content : string read FContent write FContent stored HasContent;
+    property IsLinkSuppressed : boolean read FIsLinkSuppressed write FIsLinkSuppressed stored HasIsLinkSuppressed;
   end;
 
   CustomerReviews_Type = class(TBaseComplexRemotable)
@@ -3247,6 +3629,7 @@ type
     FEligibilityRequirements : PromotionEligibilityRequirements_Type;
     FBenefits : PromotionBenefits_Type;
     FItemApplicability : PromotionItemApplicability_Type;
+    FMerchandisingMessage : string;
   private
     function HasMerchantPromotionId() : Boolean;
     function HasGroupClaimCode() : Boolean;
@@ -3257,6 +3640,7 @@ type
     function HasEligibilityRequirements() : Boolean;
     function HasBenefits() : Boolean;
     function HasItemApplicability() : Boolean;
+    function HasMerchandisingMessage() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -3274,6 +3658,7 @@ type
     property EligibilityRequirements : PromotionEligibilityRequirements_Type read FEligibilityRequirements write FEligibilityRequirements stored HasEligibilityRequirements;
     property Benefits : PromotionBenefits_Type read FBenefits write FBenefits stored HasBenefits;
     property ItemApplicability : PromotionItemApplicability_Type read FItemApplicability write FItemApplicability stored HasItemApplicability;
+    property MerchandisingMessage : string read FMerchandisingMessage write FMerchandisingMessage stored HasMerchandisingMessage;
   end;
 
   Promotion_Type = class(TBaseComplexRemotable)
@@ -3359,11 +3744,24 @@ type
     property BrowseNode : BrowseNodes_BrowseNodeArray read FBrowseNode write FBrowseNode stored HasBrowseNode;
   end;
 
+  Property_Type = class(TBaseComplexRemotable)
+  private
+    FName : string;
+    FValue : string;
+  private
+    function HasName() : Boolean;
+    function HasValue() : Boolean;
+  published
+    property Name : string read FName write FName stored HasName;
+    property Value : string read FValue write FValue stored HasValue;
+  end;
+
   BrowseNode_Type = class(TBaseComplexRemotable)
   private
     FBrowseNodeId : string;
     FName : string;
     FIsCategoryRoot : boolean;
+    FProperties : BrowseNode_Properties_Type;
     FChildren : BrowseNode_Children_Type;
     FAncestors : BrowseNode_Ancestors_Type;
     FTopSellers : TopSellers_Type;
@@ -3372,6 +3770,7 @@ type
     function HasBrowseNodeId() : Boolean;
     function HasName() : Boolean;
     function HasIsCategoryRoot() : Boolean;
+    function HasProperties() : Boolean;
     function HasChildren() : Boolean;
     function HasAncestors() : Boolean;
     function HasTopSellers() : Boolean;
@@ -3383,6 +3782,7 @@ type
     property BrowseNodeId : string read FBrowseNodeId write FBrowseNodeId stored HasBrowseNodeId;
     property Name : string read FName write FName stored HasName;
     property IsCategoryRoot : boolean read FIsCategoryRoot write FIsCategoryRoot stored HasIsCategoryRoot;
+    property Properties : BrowseNode_Properties_Type read FProperties write FProperties stored HasProperties;
     property Children : BrowseNode_Children_Type read FChildren write FChildren stored HasChildren;
     property Ancestors : BrowseNode_Ancestors_Type read FAncestors write FAncestors stored HasAncestors;
     property TopSellers : TopSellers_Type read FTopSellers write FTopSellers stored HasTopSellers;
@@ -3464,6 +3864,15 @@ type
     property SavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray read FSavedForLaterItem write FSavedForLaterItem;
   end;
 
+  CartItem_MetaData_Type_KeyValuePair_Type = class(TBaseComplexRemotable)
+  private
+    FKey : string;
+    FValue : string;
+  published
+    property Key : string read FKey write FKey;
+    property Value : string read FValue write FValue;
+  end;
+
   CartItem_Type = class(TBaseComplexRemotable)
   private
     FCartItemId : string;
@@ -3477,6 +3886,7 @@ type
     FProductGroup : string;
     FListOwner : string;
     FListType : string;
+    FMetaData : CartItem_MetaData_Type;
     FPrice : Price_Type;
     FItemTotal : Price_Type;
   private
@@ -3489,6 +3899,7 @@ type
     function HasProductGroup() : Boolean;
     function HasListOwner() : Boolean;
     function HasListType() : Boolean;
+    function HasMetaData() : Boolean;
     function HasPrice() : Boolean;
     function HasItemTotal() : Boolean;
   public
@@ -3506,6 +3917,7 @@ type
     property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
     property ListOwner : string read FListOwner write FListOwner stored HasListOwner;
     property ListType : string read FListType write FListType stored HasListType;
+    property MetaData : CartItem_MetaData_Type read FMetaData write FMetaData stored HasMetaData;
     property Price : Price_Type read FPrice write FPrice stored HasPrice;
     property ItemTotal : Price_Type read FItemTotal write FItemTotal stored HasItemTotal;
   end;
@@ -3835,12 +4247,16 @@ type
   private
     FSwatchImage : Image_Type;
     FSmallImage : Image_Type;
+    FThumbnailImage : Image_Type;
+    FTinyImage : Image_Type;
     FMediumImage : Image_Type;
     FLargeImage : Image_Type;
     FCategory : string;
   private
     function HasSwatchImage() : Boolean;
     function HasSmallImage() : Boolean;
+    function HasThumbnailImage() : Boolean;
+    function HasTinyImage() : Boolean;
     function HasMediumImage() : Boolean;
     function HasLargeImage() : Boolean;
   public
@@ -3849,6 +4265,8 @@ type
   published
     property SwatchImage : Image_Type read FSwatchImage write FSwatchImage stored HasSwatchImage;
     property SmallImage : Image_Type read FSmallImage write FSmallImage stored HasSmallImage;
+    property ThumbnailImage : Image_Type read FThumbnailImage write FThumbnailImage stored HasThumbnailImage;
+    property TinyImage : Image_Type read FTinyImage write FTinyImage stored HasTinyImage;
     property MediumImage : Image_Type read FMediumImage write FMediumImage stored HasMediumImage;
     property LargeImage : Image_Type read FLargeImage write FLargeImage stored HasLargeImage;
     property Category : string read FCategory write FCategory;
@@ -3939,6 +4357,7 @@ type
   private
     FActor : ItemAttributes_ActorArray;
     FAddress : Address_Type;
+    FAge : ItemAttributes_AgeArray;
     FAmazonMaximumAge : DecimalWithUnits_Type;
     FAmazonMinimumAge : DecimalWithUnits_Type;
     FAnalogVideoFormat : string;
@@ -3967,8 +4386,11 @@ type
     FCaseThickness : DecimalWithUnits_Type;
     FCaseType : string;
     FCatalogNumber : string;
+    FCategory : ItemAttributes_CategoryArray;
+    FCategoryBin : ItemAttributes_CategoryBinArray;
     FCDRWDescription : string;
     FChainType : string;
+    FCharacter : ItemAttributes_CharacterArray;
     FCEROAgeRating : string;
     FClaspType : string;
     FClothingSize : string;
@@ -4004,6 +4426,8 @@ type
     FDPCI : string;
     FEAN : string;
     FEdition : string;
+    FEducationalFocus : ItemAttributes_EducationalFocusArray;
+    FEthnicity : ItemAttributes_EthnicityArray;
     FESRBAgeRating : string;
     FExternalDisplaySupportDescription : string;
     FFabricType : string;
@@ -4011,11 +4435,17 @@ type
     FFeature : ItemAttributes_FeatureArray;
     FFilmColorType : string;
     FFirstIssueLeadTime : StringWithUnits_Type;
+    FFlavorName : string;
     FFloppyDiskDriveDescription : string;
     FFormat : ItemAttributes_FormatArray;
     FFormFactor : ItemAttributes_FormFactorArray;
     FGemType : string;
+    FGemTypeSetElement : ItemAttributes_GemTypeSetElementArray;
+    FGender : ItemAttributes_GenderArray;
     FGenre : string;
+    FGLProductGroup : string;
+    FGolfClubFlex : string;
+    FGolfClubLoft : string;
     FGraphicsCardInterface : string;
     FGraphicsDescription : string;
     FGraphicsMemorySize : DecimalWithUnits_Type;
@@ -4041,7 +4471,9 @@ type
     FIncludedSoftware : string;
     FIncludesMp3Player : boolean;
     FIngredients : string;
+    FIngredientsSetElement : ItemAttributes_IngredientsSetElementArray;
     FInstrumentKey : string;
+    FInterest : ItemAttributes_InterestArray;
     FIsAdultProduct : boolean;
     FIsAutographed : boolean;
     FISBN : string;
@@ -4054,6 +4486,7 @@ type
     FItemDimensions : ItemAttributes_ItemDimensions_Type;
     FKeyboardDescription : string;
     F_Label : string;
+    FLanguageName : ItemAttributes_LanguageNameArray;
     FLanguages : ItemAttributes_Languages_Type;
     FLegalDisclaimer : string;
     FLensType : string;
@@ -4068,6 +4501,7 @@ type
     FManufacturerMinimumAge : DecimalWithUnits_Type;
     FManufacturerPartsWarrantyDescription : string;
     FMaterialType : string;
+    FMaterialTypeSetElement : ItemAttributes_MaterialTypeSetElementArray;
     FMaximumAperture : DecimalWithUnits_Type;
     FMaximumColorDepth : string;
     FMaximumFocalLength : DecimalWithUnits_Type;
@@ -4115,6 +4549,8 @@ type
     FOutputWattage : nonNegativeInteger;
     FPackageDimensions : ItemAttributes_PackageDimensions_Type;
     FPackageQuantity : nonNegativeInteger;
+    FPantLength : ItemAttributes_PantLengthArray;
+    FPantSize : ItemAttributes_PantSizeArray;
     FPearlLustre : string;
     FPearlMinimumColor : string;
     FPearlShape : string;
@@ -4127,6 +4563,7 @@ type
     FPictureFormat : ItemAttributes_PictureFormatArray;
     FPlatform : ItemAttributes_PlatformArray;
     FPriceRating : nonNegativeInteger;
+    FPrimaryColor : ItemAttributes_PrimaryColorArray;
     FProcessorCount : nonNegativeInteger;
     FProductGroup : string;
     FProductSiteLaunchDate : string;
@@ -4153,6 +4590,7 @@ type
     FSecondaryCacheSize : NonNegativeIntegerWithUnits_Type;
     FSettingType : string;
     FShaftMaterialType : string;
+    FShoeSize : ItemAttributes_ShoeSizeArray;
     FSize : string;
     FSizePerPearl : string;
     FSkillLevel : string;
@@ -4176,6 +4614,7 @@ type
     FSystemMemorySizeMax : DecimalWithUnits_Type;
     FSystemMemorySize : DecimalWithUnits_Type;
     FSystemMemoryType : string;
+    FTargetBrand : ItemAttributes_TargetBrandArray;
     FTellingPageIndicator : string;
     FTheatricalReleaseDate : string;
     FTitle : string;
@@ -4205,6 +4644,7 @@ type
   private
     function HasActor() : Boolean;
     function HasAddress() : Boolean;
+    function HasAge() : Boolean;
     function HasAmazonMaximumAge() : Boolean;
     function HasAmazonMinimumAge() : Boolean;
     function HasAnalogVideoFormat() : Boolean;
@@ -4233,8 +4673,11 @@ type
     function HasCaseThickness() : Boolean;
     function HasCaseType() : Boolean;
     function HasCatalogNumber() : Boolean;
+    function HasCategory() : Boolean;
+    function HasCategoryBin() : Boolean;
     function HasCDRWDescription() : Boolean;
     function HasChainType() : Boolean;
+    function HasCharacter() : Boolean;
     function HasCEROAgeRating() : Boolean;
     function HasClaspType() : Boolean;
     function HasClothingSize() : Boolean;
@@ -4270,6 +4713,8 @@ type
     function HasDPCI() : Boolean;
     function HasEAN() : Boolean;
     function HasEdition() : Boolean;
+    function HasEducationalFocus() : Boolean;
+    function HasEthnicity() : Boolean;
     function HasESRBAgeRating() : Boolean;
     function HasExternalDisplaySupportDescription() : Boolean;
     function HasFabricType() : Boolean;
@@ -4277,11 +4722,17 @@ type
     function HasFeature() : Boolean;
     function HasFilmColorType() : Boolean;
     function HasFirstIssueLeadTime() : Boolean;
+    function HasFlavorName() : Boolean;
     function HasFloppyDiskDriveDescription() : Boolean;
     function HasFormat() : Boolean;
     function HasFormFactor() : Boolean;
     function HasGemType() : Boolean;
+    function HasGemTypeSetElement() : Boolean;
+    function HasGender() : Boolean;
     function HasGenre() : Boolean;
+    function HasGLProductGroup() : Boolean;
+    function HasGolfClubFlex() : Boolean;
+    function HasGolfClubLoft() : Boolean;
     function HasGraphicsCardInterface() : Boolean;
     function HasGraphicsDescription() : Boolean;
     function HasGraphicsMemorySize() : Boolean;
@@ -4307,7 +4758,9 @@ type
     function HasIncludedSoftware() : Boolean;
     function HasIncludesMp3Player() : Boolean;
     function HasIngredients() : Boolean;
+    function HasIngredientsSetElement() : Boolean;
     function HasInstrumentKey() : Boolean;
+    function HasInterest() : Boolean;
     function HasIsAdultProduct() : Boolean;
     function HasIsAutographed() : Boolean;
     function HasISBN() : Boolean;
@@ -4320,6 +4773,7 @@ type
     function HasItemDimensions() : Boolean;
     function HasKeyboardDescription() : Boolean;
     function Has_Label() : Boolean;
+    function HasLanguageName() : Boolean;
     function HasLanguages() : Boolean;
     function HasLegalDisclaimer() : Boolean;
     function HasLensType() : Boolean;
@@ -4334,6 +4788,7 @@ type
     function HasManufacturerMinimumAge() : Boolean;
     function HasManufacturerPartsWarrantyDescription() : Boolean;
     function HasMaterialType() : Boolean;
+    function HasMaterialTypeSetElement() : Boolean;
     function HasMaximumAperture() : Boolean;
     function HasMaximumColorDepth() : Boolean;
     function HasMaximumFocalLength() : Boolean;
@@ -4381,6 +4836,8 @@ type
     function HasOutputWattage() : Boolean;
     function HasPackageDimensions() : Boolean;
     function HasPackageQuantity() : Boolean;
+    function HasPantLength() : Boolean;
+    function HasPantSize() : Boolean;
     function HasPearlLustre() : Boolean;
     function HasPearlMinimumColor() : Boolean;
     function HasPearlShape() : Boolean;
@@ -4393,6 +4850,7 @@ type
     function HasPictureFormat() : Boolean;
     function HasPlatform() : Boolean;
     function HasPriceRating() : Boolean;
+    function HasPrimaryColor() : Boolean;
     function HasProcessorCount() : Boolean;
     function HasProductGroup() : Boolean;
     function HasProductSiteLaunchDate() : Boolean;
@@ -4419,6 +4877,7 @@ type
     function HasSecondaryCacheSize() : Boolean;
     function HasSettingType() : Boolean;
     function HasShaftMaterialType() : Boolean;
+    function HasShoeSize() : Boolean;
     function HasSize() : Boolean;
     function HasSizePerPearl() : Boolean;
     function HasSkillLevel() : Boolean;
@@ -4442,6 +4901,7 @@ type
     function HasSystemMemorySizeMax() : Boolean;
     function HasSystemMemorySize() : Boolean;
     function HasSystemMemoryType() : Boolean;
+    function HasTargetBrand() : Boolean;
     function HasTellingPageIndicator() : Boolean;
     function HasTheatricalReleaseDate() : Boolean;
     function HasTitle() : Boolean;
@@ -4474,6 +4934,7 @@ type
   published
     property Actor : ItemAttributes_ActorArray read FActor write FActor stored HasActor;
     property Address : Address_Type read FAddress write FAddress stored HasAddress;
+    property Age : ItemAttributes_AgeArray read FAge write FAge stored HasAge;
     property AmazonMaximumAge : DecimalWithUnits_Type read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
     property AmazonMinimumAge : DecimalWithUnits_Type read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
     property AnalogVideoFormat : string read FAnalogVideoFormat write FAnalogVideoFormat stored HasAnalogVideoFormat;
@@ -4502,8 +4963,11 @@ type
     property CaseThickness : DecimalWithUnits_Type read FCaseThickness write FCaseThickness stored HasCaseThickness;
     property CaseType : string read FCaseType write FCaseType stored HasCaseType;
     property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
+    property Category : ItemAttributes_CategoryArray read FCategory write FCategory stored HasCategory;
+    property CategoryBin : ItemAttributes_CategoryBinArray read FCategoryBin write FCategoryBin stored HasCategoryBin;
     property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
     property ChainType : string read FChainType write FChainType stored HasChainType;
+    property Character : ItemAttributes_CharacterArray read FCharacter write FCharacter stored HasCharacter;
     property CEROAgeRating : string read FCEROAgeRating write FCEROAgeRating stored HasCEROAgeRating;
     property ClaspType : string read FClaspType write FClaspType stored HasClaspType;
     property ClothingSize : string read FClothingSize write FClothingSize stored HasClothingSize;
@@ -4539,6 +5003,8 @@ type
     property DPCI : string read FDPCI write FDPCI stored HasDPCI;
     property EAN : string read FEAN write FEAN stored HasEAN;
     property Edition : string read FEdition write FEdition stored HasEdition;
+    property EducationalFocus : ItemAttributes_EducationalFocusArray read FEducationalFocus write FEducationalFocus stored HasEducationalFocus;
+    property Ethnicity : ItemAttributes_EthnicityArray read FEthnicity write FEthnicity stored HasEthnicity;
     property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
     property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
     property FabricType : string read FFabricType write FFabricType stored HasFabricType;
@@ -4546,11 +5012,17 @@ type
     property Feature : ItemAttributes_FeatureArray read FFeature write FFeature stored HasFeature;
     property FilmColorType : string read FFilmColorType write FFilmColorType stored HasFilmColorType;
     property FirstIssueLeadTime : StringWithUnits_Type read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
+    property FlavorName : string read FFlavorName write FFlavorName stored HasFlavorName;
     property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
     property Format : ItemAttributes_FormatArray read FFormat write FFormat stored HasFormat;
     property FormFactor : ItemAttributes_FormFactorArray read FFormFactor write FFormFactor stored HasFormFactor;
     property GemType : string read FGemType write FGemType stored HasGemType;
+    property GemTypeSetElement : ItemAttributes_GemTypeSetElementArray read FGemTypeSetElement write FGemTypeSetElement stored HasGemTypeSetElement;
+    property Gender : ItemAttributes_GenderArray read FGender write FGender stored HasGender;
     property Genre : string read FGenre write FGenre stored HasGenre;
+    property GLProductGroup : string read FGLProductGroup write FGLProductGroup stored HasGLProductGroup;
+    property GolfClubFlex : string read FGolfClubFlex write FGolfClubFlex stored HasGolfClubFlex;
+    property GolfClubLoft : string read FGolfClubLoft write FGolfClubLoft stored HasGolfClubLoft;
     property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
     property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
     property GraphicsMemorySize : DecimalWithUnits_Type read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
@@ -4576,7 +5048,9 @@ type
     property IncludedSoftware : string read FIncludedSoftware write FIncludedSoftware stored HasIncludedSoftware;
     property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
     property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
+    property IngredientsSetElement : ItemAttributes_IngredientsSetElementArray read FIngredientsSetElement write FIngredientsSetElement stored HasIngredientsSetElement;
     property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
+    property Interest : ItemAttributes_InterestArray read FInterest write FInterest stored HasInterest;
     property IsAdultProduct : boolean read FIsAdultProduct write FIsAdultProduct stored HasIsAdultProduct;
     property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
     property ISBN : string read FISBN write FISBN stored HasISBN;
@@ -4589,6 +5063,7 @@ type
     property ItemDimensions : ItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
     property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
     property _Label : string read F_Label write F_Label stored Has_Label;
+    property LanguageName : ItemAttributes_LanguageNameArray read FLanguageName write FLanguageName stored HasLanguageName;
     property Languages : ItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
     property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
     property LensType : string read FLensType write FLensType stored HasLensType;
@@ -4603,6 +5078,7 @@ type
     property ManufacturerMinimumAge : DecimalWithUnits_Type read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
     property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
     property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
+    property MaterialTypeSetElement : ItemAttributes_MaterialTypeSetElementArray read FMaterialTypeSetElement write FMaterialTypeSetElement stored HasMaterialTypeSetElement;
     property MaximumAperture : DecimalWithUnits_Type read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
     property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
     property MaximumFocalLength : DecimalWithUnits_Type read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
@@ -4650,6 +5126,8 @@ type
     property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
     property PackageDimensions : ItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
     property PackageQuantity : nonNegativeInteger read FPackageQuantity write FPackageQuantity stored HasPackageQuantity;
+    property PantLength : ItemAttributes_PantLengthArray read FPantLength write FPantLength stored HasPantLength;
+    property PantSize : ItemAttributes_PantSizeArray read FPantSize write FPantSize stored HasPantSize;
     property PearlLustre : string read FPearlLustre write FPearlLustre stored HasPearlLustre;
     property PearlMinimumColor : string read FPearlMinimumColor write FPearlMinimumColor stored HasPearlMinimumColor;
     property PearlShape : string read FPearlShape write FPearlShape stored HasPearlShape;
@@ -4662,6 +5140,7 @@ type
     property PictureFormat : ItemAttributes_PictureFormatArray read FPictureFormat write FPictureFormat stored HasPictureFormat;
     property Platform : ItemAttributes_PlatformArray read FPlatform write FPlatform stored HasPlatform;
     property PriceRating : nonNegativeInteger read FPriceRating write FPriceRating stored HasPriceRating;
+    property PrimaryColor : ItemAttributes_PrimaryColorArray read FPrimaryColor write FPrimaryColor stored HasPrimaryColor;
     property ProcessorCount : nonNegativeInteger read FProcessorCount write FProcessorCount stored HasProcessorCount;
     property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
     property ProductSiteLaunchDate : string read FProductSiteLaunchDate write FProductSiteLaunchDate stored HasProductSiteLaunchDate;
@@ -4688,6 +5167,7 @@ type
     property SecondaryCacheSize : NonNegativeIntegerWithUnits_Type read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
     property SettingType : string read FSettingType write FSettingType stored HasSettingType;
     property ShaftMaterialType : string read FShaftMaterialType write FShaftMaterialType stored HasShaftMaterialType;
+    property ShoeSize : ItemAttributes_ShoeSizeArray read FShoeSize write FShoeSize stored HasShoeSize;
     property Size : string read FSize write FSize stored HasSize;
     property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
     property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
@@ -4711,6 +5191,7 @@ type
     property SystemMemorySizeMax : DecimalWithUnits_Type read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
     property SystemMemorySize : DecimalWithUnits_Type read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
     property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
+    property TargetBrand : ItemAttributes_TargetBrandArray read FTargetBrand write FTargetBrand stored HasTargetBrand;
     property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
     property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
     property Title : string read FTitle write FTitle stored HasTitle;
@@ -5869,6 +6350,22 @@ type
     property Item[AIndex:Integer] : SellerListings_Type Read GetItem;Default;
   end;
 
+  TagLookup_RequestArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TagLookupRequest_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TagLookupRequest_Type Read GetItem;Default;
+  end;
+
+  TagLookupResponse_TagsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Tags_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Tags_Type Read GetItem;Default;
+  end;
+
   Bin_BinParameterArray = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): Bin_BinParameter_Type;
@@ -6117,6 +6614,14 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
+  CartAddRequest_Items_Type_Item_Type_MetaDataArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type_MetaData_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : CartAddRequest_Items_Type_Item_Type_MetaData_Type Read GetItem;Default;
+  end;
+
   CartAddRequest_Items_Type = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type;
@@ -6139,6 +6644,14 @@ type
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  CartCreateRequest_Items_Type_Item_Type_MetaDataArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : CartCreateRequest_Items_Type_Item_Type_MetaData_Type Read GetItem;Default;
   end;
 
   CartCreateRequest_Items_Type = class(TBaseObjectArrayRemotable)
@@ -6254,6 +6767,38 @@ type
   end;
 
   SellerListingLookupRequest_ResponseGroupArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  TagLookupRequest_TagNameArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  TagLookupRequest_ResponseGroupArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
   private
@@ -6565,6 +7110,38 @@ type
     property Item[AIndex:Integer] : Item_ImageSets_Type Read GetItem;Default;
   end;
 
+  Tags_TagArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Tag_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Tag_Type Read GetItem;Default;
+  end;
+
+  Tag_TaggedItemsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TaggedItems_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TaggedItems_Type Read GetItem;Default;
+  end;
+
+  Tag_TaggedListmaniaListsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TaggedListmaniaLists_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TaggedListmaniaLists_Type Read GetItem;Default;
+  end;
+
+  Tag_TaggedGuidesArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TaggedGuides_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TaggedGuides_Type Read GetItem;Default;
+  end;
+
   Offers_OfferArray = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): Offer_Type;
@@ -6741,6 +7318,14 @@ type
     property Item[AIndex:Integer] : BrowseNode_Type Read GetItem;Default;
   end;
 
+  BrowseNode_Properties_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Property_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Property_Type Read GetItem;Default;
+  end;
+
   BrowseNode_Children_Type = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): BrowseNode_Type;
@@ -6779,6 +7364,14 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : CartItem_Type Read GetItem;Default;
+  end;
+
+  CartItem_MetaData_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): CartItem_MetaData_Type_KeyValuePair_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : CartItem_MetaData_Type_KeyValuePair_Type Read GetItem;Default;
   end;
 
   Transaction_TransactionItems_Type = class(TBaseObjectArrayRemotable)
@@ -6877,6 +7470,22 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
+  ItemAttributes_AgeArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
   ItemAttributes_ArtistArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
@@ -6926,6 +7535,54 @@ type
   end;
 
   ItemAttributes_CameraManualFeaturesArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_CategoryArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_CategoryBinArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_CharacterArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
   private
@@ -6997,6 +7654,38 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
+  ItemAttributes_EducationalFocusArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_EthnicityArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
   ItemAttributes_FeatureArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
@@ -7030,6 +7719,134 @@ type
   end;
 
   ItemAttributes_FormFactorArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_GemTypeSetElementArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_GenderArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_IngredientsSetElementArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_InterestArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_LanguageNameArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_MaterialTypeSetElementArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_PantLengthArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_PantSizeArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
   private
@@ -7093,7 +7910,39 @@ type
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
+  ItemAttributes_PrimaryColorArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
   ItemAttributes_ReturnMethodArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_ShoeSizeArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
   private
@@ -7126,6 +7975,22 @@ type
   end;
 
   ItemAttributes_SupportedImageTypeArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemAttributes_TargetBrandArray = class(TBaseSimpleTypeArrayRemotable)
   private
     FData : array of string;
   private
@@ -7398,7 +8263,7 @@ type
   end;
 
   AWSECommerceServicePortType = interface(IInvokable)
-    ['{471618D5-F3F4-4D62-B826-61A428DC2F63}']
+    ['{CBBBC8FF-F0BE-40D0-89A9-471498383C10}']
     function Help(
       const  HelpParam : Help_Type
     ):HelpResponse_Type;
@@ -7453,6 +8318,9 @@ type
     function SellerListingLookup(
       const  SellerListingLookupParam : SellerListingLookup_Type
     ):SellerListingLookupResponse_Type;
+    function TagLookup(
+      const  TagLookupParam : TagLookup_Type
+    ):TagLookupResponse_Type;
     function MultiOperation(
       const  MultiOperationParam : MultiOperation_Type
     ):MultiOperationResponse;
@@ -7483,37 +8351,37 @@ end;
 
 function Help_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function Help_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function Help_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function Help_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function Help_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function Help_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> HelpRequest_Type(0) );
 end;
 
 function Help_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Help_RequestArray(0) );
 end;
 
 { HelpResponse_Type }
@@ -7536,12 +8404,12 @@ end;
 
 function HelpResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function HelpResponse_Type.HasInformation() : Boolean;
 begin
-  Result := True;
+  Result := ( FInformation <> HelpResponse_InformationArray(0) );
 end;
 
 { ItemSearch_Type }
@@ -7564,42 +8432,42 @@ end;
 
 function ItemSearch_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function ItemSearch_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function ItemSearch_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function ItemSearch_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function ItemSearch_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function ItemSearch_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function ItemSearch_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> ItemSearchRequest_Type(0) );
 end;
 
 function ItemSearch_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> ItemSearch_RequestArray(0) );
 end;
 
 { ItemSearchResponse_Type }
@@ -7622,12 +8490,12 @@ end;
 
 function ItemSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function ItemSearchResponse_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> ItemSearchResponse_ItemsArray(0) );
 end;
 
 { ItemLookup_Type }
@@ -7650,42 +8518,42 @@ end;
 
 function ItemLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function ItemLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function ItemLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function ItemLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function ItemLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function ItemLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function ItemLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> ItemLookupRequest_Type(0) );
 end;
 
 function ItemLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> ItemLookup_RequestArray(0) );
 end;
 
 { ItemLookupResponse_Type }
@@ -7708,12 +8576,12 @@ end;
 
 function ItemLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function ItemLookupResponse_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> ItemLookupResponse_ItemsArray(0) );
 end;
 
 { BrowseNodeLookup_Type }
@@ -7736,42 +8604,42 @@ end;
 
 function BrowseNodeLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function BrowseNodeLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> BrowseNodeLookupRequest_Type(0) );
 end;
 
 function BrowseNodeLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> BrowseNodeLookup_RequestArray(0) );
 end;
 
 { BrowseNodeLookupResponse_Type }
@@ -7794,12 +8662,12 @@ end;
 
 function BrowseNodeLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function BrowseNodeLookupResponse_Type.HasBrowseNodes() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodes <> BrowseNodeLookupResponse_BrowseNodesArray(0) );
 end;
 
 { ListSearch_Type }
@@ -7822,42 +8690,42 @@ end;
 
 function ListSearch_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function ListSearch_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function ListSearch_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function ListSearch_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function ListSearch_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function ListSearch_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function ListSearch_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> ListSearchRequest_Type(0) );
 end;
 
 function ListSearch_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> ListSearch_RequestArray(0) );
 end;
 
 { ListSearchResponse_Type }
@@ -7880,12 +8748,12 @@ end;
 
 function ListSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function ListSearchResponse_Type.HasLists() : Boolean;
 begin
-  Result := True;
+  Result := ( FLists <> ListSearchResponse_ListsArray(0) );
 end;
 
 { ListLookup_Type }
@@ -7908,42 +8776,42 @@ end;
 
 function ListLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function ListLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function ListLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function ListLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function ListLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function ListLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function ListLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> ListLookupRequest_Type(0) );
 end;
 
 function ListLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> ListLookup_RequestArray(0) );
 end;
 
 { ListLookupResponse_Type }
@@ -7966,12 +8834,12 @@ end;
 
 function ListLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function ListLookupResponse_Type.HasLists() : Boolean;
 begin
-  Result := True;
+  Result := ( FLists <> ListLookupResponse_ListsArray(0) );
 end;
 
 { CustomerContentSearch_Type }
@@ -7994,42 +8862,42 @@ end;
 
 function CustomerContentSearch_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CustomerContentSearch_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CustomerContentSearch_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CustomerContentSearch_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CustomerContentSearch_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CustomerContentSearch_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CustomerContentSearch_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CustomerContentSearchRequest_Type(0) );
 end;
 
 function CustomerContentSearch_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CustomerContentSearch_RequestArray(0) );
 end;
 
 { CustomerContentSearchResponse_Type }
@@ -8052,12 +8920,12 @@ end;
 
 function CustomerContentSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CustomerContentSearchResponse_Type.HasCustomers() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomers <> CustomerContentSearchResponse_CustomersArray(0) );
 end;
 
 { CustomerContentLookup_Type }
@@ -8080,42 +8948,42 @@ end;
 
 function CustomerContentLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CustomerContentLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CustomerContentLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CustomerContentLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CustomerContentLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CustomerContentLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CustomerContentLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CustomerContentLookupRequest_Type(0) );
 end;
 
 function CustomerContentLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CustomerContentLookup_RequestArray(0) );
 end;
 
 { CustomerContentLookupResponse_Type }
@@ -8138,12 +9006,12 @@ end;
 
 function CustomerContentLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CustomerContentLookupResponse_Type.HasCustomers() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomers <> CustomerContentLookupResponse_CustomersArray(0) );
 end;
 
 { SimilarityLookup_Type }
@@ -8166,42 +9034,42 @@ end;
 
 function SimilarityLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function SimilarityLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function SimilarityLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function SimilarityLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function SimilarityLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function SimilarityLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function SimilarityLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> SimilarityLookupRequest_Type(0) );
 end;
 
 function SimilarityLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> SimilarityLookup_RequestArray(0) );
 end;
 
 { SimilarityLookupResponse_Type }
@@ -8224,12 +9092,12 @@ end;
 
 function SimilarityLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function SimilarityLookupResponse_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> SimilarityLookupResponse_ItemsArray(0) );
 end;
 
 { SellerLookup_Type }
@@ -8252,42 +9120,42 @@ end;
 
 function SellerLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function SellerLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function SellerLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function SellerLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function SellerLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function SellerLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function SellerLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> SellerLookupRequest_Type(0) );
 end;
 
 function SellerLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> SellerLookup_RequestArray(0) );
 end;
 
 { SellerLookupResponse_Type }
@@ -8310,12 +9178,12 @@ end;
 
 function SellerLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function SellerLookupResponse_Type.HasSellers() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellers <> SellerLookupResponse_SellersArray(0) );
 end;
 
 { CartGet_Type }
@@ -8338,42 +9206,42 @@ end;
 
 function CartGet_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CartGet_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CartGet_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CartGet_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartGet_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CartGet_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CartGet_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CartGetRequest_Type(0) );
 end;
 
 function CartGet_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CartGet_RequestArray(0) );
 end;
 
 { CartGetResponse_Type }
@@ -8396,12 +9264,12 @@ end;
 
 function CartGetResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CartGetResponse_Type.HasCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FCart <> CartGetResponse_CartArray(0) );
 end;
 
 { CartAdd_Type }
@@ -8424,42 +9292,42 @@ end;
 
 function CartAdd_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CartAdd_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CartAdd_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CartAdd_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartAdd_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CartAdd_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CartAdd_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CartAddRequest_Type(0) );
 end;
 
 function CartAdd_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CartAdd_RequestArray(0) );
 end;
 
 { CartAddResponse_Type }
@@ -8482,12 +9350,12 @@ end;
 
 function CartAddResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CartAddResponse_Type.HasCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FCart <> CartAddResponse_CartArray(0) );
 end;
 
 { CartCreate_Type }
@@ -8510,42 +9378,42 @@ end;
 
 function CartCreate_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CartCreate_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CartCreate_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CartCreate_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartCreate_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CartCreate_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CartCreate_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CartCreateRequest_Type(0) );
 end;
 
 function CartCreate_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CartCreate_RequestArray(0) );
 end;
 
 { CartCreateResponse_Type }
@@ -8568,12 +9436,12 @@ end;
 
 function CartCreateResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CartCreateResponse_Type.HasCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FCart <> CartCreateResponse_CartArray(0) );
 end;
 
 { CartModify_Type }
@@ -8596,42 +9464,42 @@ end;
 
 function CartModify_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CartModify_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CartModify_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CartModify_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartModify_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CartModify_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CartModify_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CartModifyRequest_Type(0) );
 end;
 
 function CartModify_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CartModify_RequestArray(0) );
 end;
 
 { CartModifyResponse_Type }
@@ -8654,12 +9522,12 @@ end;
 
 function CartModifyResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CartModifyResponse_Type.HasCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FCart <> CartModifyResponse_CartArray(0) );
 end;
 
 { CartClear_Type }
@@ -8682,42 +9550,42 @@ end;
 
 function CartClear_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function CartClear_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function CartClear_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function CartClear_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartClear_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function CartClear_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function CartClear_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> CartClearRequest_Type(0) );
 end;
 
 function CartClear_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> CartClear_RequestArray(0) );
 end;
 
 { CartClearResponse_Type }
@@ -8740,12 +9608,12 @@ end;
 
 function CartClearResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function CartClearResponse_Type.HasCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FCart <> CartClearResponse_CartArray(0) );
 end;
 
 { TransactionLookup_Type }
@@ -8768,42 +9636,42 @@ end;
 
 function TransactionLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function TransactionLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function TransactionLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function TransactionLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function TransactionLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function TransactionLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function TransactionLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> TransactionLookupRequest_Type(0) );
 end;
 
 function TransactionLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> TransactionLookup_RequestArray(0) );
 end;
 
 { TransactionLookupResponse_Type }
@@ -8826,12 +9694,12 @@ end;
 
 function TransactionLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function TransactionLookupResponse_Type.HasTransactions() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactions <> TransactionLookupResponse_TransactionsArray(0) );
 end;
 
 { SellerListingSearch_Type }
@@ -8854,42 +9722,42 @@ end;
 
 function SellerListingSearch_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function SellerListingSearch_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function SellerListingSearch_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function SellerListingSearch_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function SellerListingSearch_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function SellerListingSearch_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function SellerListingSearch_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> SellerListingSearchRequest_Type(0) );
 end;
 
 function SellerListingSearch_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> SellerListingSearch_RequestArray(0) );
 end;
 
 { SellerListingSearchResponse_Type }
@@ -8912,12 +9780,12 @@ end;
 
 function SellerListingSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function SellerListingSearchResponse_Type.HasSellerListings() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListings <> SellerListingSearchResponse_SellerListingsArray(0) );
 end;
 
 { SellerListingLookup_Type }
@@ -8940,42 +9808,42 @@ end;
 
 function SellerListingLookup_Type.HasMarketplaceDomain() : Boolean;
 begin
-  Result := True;
+  Result := ( FMarketplaceDomain <> '' );
 end;
 
 function SellerListingLookup_Type.HasAWSAccessKeyId() : Boolean;
 begin
-  Result := True;
+  Result := ( FAWSAccessKeyId <> '' );
 end;
 
 function SellerListingLookup_Type.HasSubscriptionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionId <> '' );
 end;
 
 function SellerListingLookup_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function SellerListingLookup_Type.HasValidate() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidate <> '' );
 end;
 
 function SellerListingLookup_Type.HasXMLEscaping() : Boolean;
 begin
-  Result := True;
+  Result := ( FXMLEscaping <> '' );
 end;
 
 function SellerListingLookup_Type.HasShared() : Boolean;
 begin
-  Result := True;
+  Result := ( FShared <> SellerListingLookupRequest_Type(0) );
 end;
 
 function SellerListingLookup_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> SellerListingLookup_RequestArray(0) );
 end;
 
 { SellerListingLookupResponse_Type }
@@ -8998,12 +9866,98 @@ end;
 
 function SellerListingLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function SellerListingLookupResponse_Type.HasSellerListings() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListings <> SellerListingLookupResponse_SellerListingsArray(0) );
+end;
+
+{ TagLookup_Type }
+
+constructor TagLookup_Type.Create();
+begin
+  inherited Create();
+  FShared := TagLookupRequest_Type.Create();
+  FRequest := TagLookup_RequestArray.Create();
+end;
+
+destructor TagLookup_Type.Destroy();
+begin
+  if Assigned(FShared) then
+    FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  inherited Destroy();
+end;
+
+function TagLookup_Type.HasMarketplaceDomain() : Boolean;
+begin
+  Result := ( FMarketplaceDomain <> '' );
+end;
+
+function TagLookup_Type.HasAWSAccessKeyId() : Boolean;
+begin
+  Result := ( FAWSAccessKeyId <> '' );
+end;
+
+function TagLookup_Type.HasSubscriptionId() : Boolean;
+begin
+  Result := ( FSubscriptionId <> '' );
+end;
+
+function TagLookup_Type.HasAssociateTag() : Boolean;
+begin
+  Result := ( FAssociateTag <> '' );
+end;
+
+function TagLookup_Type.HasValidate() : Boolean;
+begin
+  Result := ( FValidate <> '' );
+end;
+
+function TagLookup_Type.HasXMLEscaping() : Boolean;
+begin
+  Result := ( FXMLEscaping <> '' );
+end;
+
+function TagLookup_Type.HasShared() : Boolean;
+begin
+  Result := ( FShared <> TagLookupRequest_Type(0) );
+end;
+
+function TagLookup_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> TagLookup_RequestArray(0) );
+end;
+
+{ TagLookupResponse_Type }
+
+constructor TagLookupResponse_Type.Create();
+begin
+  inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
+  FTags := TagLookupResponse_TagsArray.Create();
+end;
+
+destructor TagLookupResponse_Type.Destroy();
+begin
+  if Assigned(FOperationRequest) then
+    FreeAndNil(FOperationRequest);
+  if Assigned(FTags) then
+    FreeAndNil(FTags);
+  inherited Destroy();
+end;
+
+function TagLookupResponse_Type.HasOperationRequest() : Boolean;
+begin
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+end;
+
+function TagLookupResponse_Type.HasTags() : Boolean;
+begin
+  Result := ( FTags <> TagLookupResponse_TagsArray(0) );
 end;
 
 { MultiOperation_Type }
@@ -9028,6 +9982,7 @@ begin
   FTransactionLookup := TransactionLookup_Type.Create();
   FSellerListingSearch := SellerListingSearch_Type.Create();
   FSellerListingLookup := SellerListingLookup_Type.Create();
+  FTagLookup := TagLookup_Type.Create();
   FBrowseNodeLookup := BrowseNodeLookup_Type.Create();
 end;
 
@@ -9067,6 +10022,8 @@ begin
     FreeAndNil(FSellerListingSearch);
   if Assigned(FSellerListingLookup) then
     FreeAndNil(FSellerListingLookup);
+  if Assigned(FTagLookup) then
+    FreeAndNil(FTagLookup);
   if Assigned(FBrowseNodeLookup) then
     FreeAndNil(FBrowseNodeLookup);
   inherited Destroy();
@@ -9074,92 +10031,97 @@ end;
 
 function MultiOperation_Type.HasHelp() : Boolean;
 begin
-  Result := True;
+  Result := ( FHelp <> Help_Type(0) );
 end;
 
 function MultiOperation_Type.HasItemSearch() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemSearch <> ItemSearch_Type(0) );
 end;
 
 function MultiOperation_Type.HasItemLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemLookup <> ItemLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasListSearch() : Boolean;
 begin
-  Result := True;
+  Result := ( FListSearch <> ListSearch_Type(0) );
 end;
 
 function MultiOperation_Type.HasListLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FListLookup <> ListLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasCustomerContentSearch() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentSearch <> CustomerContentSearch_Type(0) );
 end;
 
 function MultiOperation_Type.HasCustomerContentLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentLookup <> CustomerContentLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasSimilarityLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarityLookup <> SimilarityLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasSellerLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerLookup <> SellerLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasCartGet() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartGet <> CartGet_Type(0) );
 end;
 
 function MultiOperation_Type.HasCartAdd() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartAdd <> CartAdd_Type(0) );
 end;
 
 function MultiOperation_Type.HasCartCreate() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartCreate <> CartCreate_Type(0) );
 end;
 
 function MultiOperation_Type.HasCartModify() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartModify <> CartModify_Type(0) );
 end;
 
 function MultiOperation_Type.HasCartClear() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartClear <> CartClear_Type(0) );
 end;
 
 function MultiOperation_Type.HasTransactionLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactionLookup <> TransactionLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasSellerListingSearch() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingSearch <> SellerListingSearch_Type(0) );
 end;
 
 function MultiOperation_Type.HasSellerListingLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingLookup <> SellerListingLookup_Type(0) );
+end;
+
+function MultiOperation_Type.HasTagLookup() : Boolean;
+begin
+  Result := ( FTagLookup <> TagLookup_Type(0) );
 end;
 
 function MultiOperation_Type.HasBrowseNodeLookup() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodeLookup <> BrowseNodeLookup_Type(0) );
 end;
 
 { MultiOperationResponse }
@@ -9185,6 +10147,7 @@ begin
   FTransactionLookupResponse := TransactionLookupResponse_Type.Create();
   FSellerListingSearchResponse := SellerListingSearchResponse_Type.Create();
   FSellerListingLookupResponse := SellerListingLookupResponse_Type.Create();
+  FTagLookupResponse := TagLookupResponse_Type.Create();
   FBrowseNodeLookupResponse := BrowseNodeLookupResponse_Type.Create();
 end;
 
@@ -9226,6 +10189,8 @@ begin
     FreeAndNil(FSellerListingSearchResponse);
   if Assigned(FSellerListingLookupResponse) then
     FreeAndNil(FSellerListingLookupResponse);
+  if Assigned(FTagLookupResponse) then
+    FreeAndNil(FTagLookupResponse);
   if Assigned(FBrowseNodeLookupResponse) then
     FreeAndNil(FBrowseNodeLookupResponse);
   inherited Destroy();
@@ -9233,97 +10198,102 @@ end;
 
 function MultiOperationResponse.HasOperationRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationRequest <> OperationRequest_Type(0) );
 end;
 
 function MultiOperationResponse.HasHelpResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FHelpResponse <> HelpResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasItemSearchResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemSearchResponse <> ItemSearchResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasItemLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemLookupResponse <> ItemLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasListSearchResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FListSearchResponse <> ListSearchResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasListLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FListLookupResponse <> ListLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCustomerContentSearchResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentSearchResponse <> CustomerContentSearchResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCustomerContentLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentLookupResponse <> CustomerContentLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasSimilarityLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarityLookupResponse <> SimilarityLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasSellerLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerLookupResponse <> SellerLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCartGetResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartGetResponse <> CartGetResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCartAddResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartAddResponse <> CartAddResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCartCreateResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartCreateResponse <> CartCreateResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCartModifyResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartModifyResponse <> CartModifyResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasCartClearResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartClearResponse <> CartClearResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasTransactionLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactionLookupResponse <> TransactionLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasSellerListingSearchResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingSearchResponse <> SellerListingSearchResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasSellerListingLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingLookupResponse <> SellerListingLookupResponse_Type(0) );
+end;
+
+function MultiOperationResponse.HasTagLookupResponse() : Boolean;
+begin
+  Result := ( FTagLookupResponse <> TagLookupResponse_Type(0) );
 end;
 
 function MultiOperationResponse.HasBrowseNodeLookupResponse() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodeLookupResponse <> BrowseNodeLookupResponse_Type(0) );
 end;
 
 { Bin_Type }
@@ -9343,7 +10313,7 @@ end;
 
 function Bin_Type.HasBinParameter() : Boolean;
 begin
-  Result := True;
+  Result := ( FBinParameter <> Bin_BinParameterArray(0) );
 end;
 
 { SearchBinSet_Type }
@@ -9363,7 +10333,7 @@ end;
 
 function SearchBinSet_Type.HasBin() : Boolean;
 begin
-  Result := True;
+  Result := ( FBin <> SearchBinSet_BinArray(0) );
 end;
 
 { HelpRequest_Type }
@@ -9383,7 +10353,7 @@ end;
 
 function HelpRequest_Type.HasAbout() : Boolean;
 begin
-  Result := True;
+  Result := ( FAbout <> '' );
 end;
 
 function HelpRequest_Type.HasHelpType() : Boolean;
@@ -9393,7 +10363,7 @@ end;
 
 function HelpRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> HelpRequest_ResponseGroupArray(0) );
 end;
 
 { ItemSearchRequest_Type }
@@ -9416,12 +10386,12 @@ end;
 
 function ItemSearchRequest_Type.HasActor() : Boolean;
 begin
-  Result := True;
+  Result := ( FActor <> '' );
 end;
 
 function ItemSearchRequest_Type.HasArtist() : Boolean;
 begin
-  Result := True;
+  Result := ( FArtist <> '' );
 end;
 
 function ItemSearchRequest_Type.HasAvailability() : Boolean;
@@ -9431,32 +10401,32 @@ end;
 
 function ItemSearchRequest_Type.HasAudienceRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudienceRating <> ItemSearchRequest_AudienceRatingArray(0) );
 end;
 
 function ItemSearchRequest_Type.HasAuthor() : Boolean;
 begin
-  Result := True;
+  Result := ( FAuthor <> '' );
 end;
 
 function ItemSearchRequest_Type.HasBrand() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrand <> '' );
 end;
 
 function ItemSearchRequest_Type.HasBrowseNode() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNode <> '' );
 end;
 
 function ItemSearchRequest_Type.HasCity() : Boolean;
 begin
-  Result := True;
+  Result := ( FCity <> '' );
 end;
 
 function ItemSearchRequest_Type.HasComposer() : Boolean;
 begin
-  Result := True;
+  Result := ( FComposer <> '' );
 end;
 
 function ItemSearchRequest_Type.HasCondition() : Boolean;
@@ -9466,17 +10436,17 @@ end;
 
 function ItemSearchRequest_Type.HasConductor() : Boolean;
 begin
-  Result := True;
+  Result := ( FConductor <> '' );
 end;
 
 function ItemSearchRequest_Type.HasCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FCount <> positiveInteger(0) );
 end;
 
 function ItemSearchRequest_Type.HasCuisine() : Boolean;
 begin
-  Result := True;
+  Result := ( FCuisine <> '' );
 end;
 
 function ItemSearchRequest_Type.HasDeliveryMethod() : Boolean;
@@ -9486,117 +10456,132 @@ end;
 
 function ItemSearchRequest_Type.HasDirector() : Boolean;
 begin
-  Result := True;
+  Result := ( FDirector <> '' );
 end;
 
 function ItemSearchRequest_Type.HasFutureLaunchDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FFutureLaunchDate <> '' );
 end;
 
 function ItemSearchRequest_Type.HasISPUPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUPostalCode <> '' );
 end;
 
 function ItemSearchRequest_Type.HasItemPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemPage <> positiveInteger(0) );
 end;
 
 function ItemSearchRequest_Type.HasKeywords() : Boolean;
 begin
-  Result := True;
+  Result := ( FKeywords <> '' );
 end;
 
 function ItemSearchRequest_Type.HasManufacturer() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturer <> '' );
 end;
 
 function ItemSearchRequest_Type.HasMaximumPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumPrice <> nonNegativeInteger(0) );
 end;
 
 function ItemSearchRequest_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function ItemSearchRequest_Type.HasMinimumPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumPrice <> nonNegativeInteger(0) );
 end;
 
 function ItemSearchRequest_Type.HasMusicLabel() : Boolean;
 begin
-  Result := True;
+  Result := ( FMusicLabel <> '' );
 end;
 
 function ItemSearchRequest_Type.HasNeighborhood() : Boolean;
 begin
-  Result := True;
+  Result := ( FNeighborhood <> '' );
 end;
 
 function ItemSearchRequest_Type.HasOrchestra() : Boolean;
 begin
-  Result := True;
+  Result := ( FOrchestra <> '' );
 end;
 
 function ItemSearchRequest_Type.HasPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FPostalCode <> '' );
 end;
 
 function ItemSearchRequest_Type.HasPower() : Boolean;
 begin
-  Result := True;
+  Result := ( FPower <> '' );
 end;
 
 function ItemSearchRequest_Type.HasPublisher() : Boolean;
 begin
-  Result := True;
+  Result := ( FPublisher <> '' );
 end;
 
 function ItemSearchRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> ItemSearchRequest_ResponseGroupArray(0) );
 end;
 
 function ItemSearchRequest_Type.HasReviewSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewSort <> '' );
 end;
 
 function ItemSearchRequest_Type.HasSearchIndex() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchIndex <> '' );
 end;
 
 function ItemSearchRequest_Type.HasSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FSort <> '' );
 end;
 
 function ItemSearchRequest_Type.HasState() : Boolean;
 begin
-  Result := True;
+  Result := ( FState <> '' );
+end;
+
+function ItemSearchRequest_Type.HasTagPage() : Boolean;
+begin
+  Result := ( FTagPage <> positiveInteger(0) );
+end;
+
+function ItemSearchRequest_Type.HasTagsPerPage() : Boolean;
+begin
+  Result := ( FTagsPerPage <> positiveInteger(0) );
+end;
+
+function ItemSearchRequest_Type.HasTagSort() : Boolean;
+begin
+  Result := ( FTagSort <> '' );
 end;
 
 function ItemSearchRequest_Type.HasTextStream() : Boolean;
 begin
-  Result := True;
+  Result := ( FTextStream <> '' );
 end;
 
 function ItemSearchRequest_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function ItemSearchRequest_Type.HasReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FReleaseDate <> '' );
 end;
 
 { ItemLookupRequest_Type }
@@ -9629,7 +10614,7 @@ end;
 
 function ItemLookupRequest_Type.HasFutureLaunchDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FFutureLaunchDate <> '' );
 end;
 
 function ItemLookupRequest_Type.HasIdType() : Boolean;
@@ -9639,52 +10624,67 @@ end;
 
 function ItemLookupRequest_Type.HasISPUPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUPostalCode <> '' );
 end;
 
 function ItemLookupRequest_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function ItemLookupRequest_Type.HasOfferPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferPage <> positiveInteger(0) );
 end;
 
 function ItemLookupRequest_Type.HasItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemId <> ItemLookupRequest_ItemIdArray(0) );
 end;
 
 function ItemLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> ItemLookupRequest_ResponseGroupArray(0) );
 end;
 
 function ItemLookupRequest_Type.HasReviewPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewPage <> positiveInteger(0) );
 end;
 
 function ItemLookupRequest_Type.HasReviewSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewSort <> '' );
 end;
 
 function ItemLookupRequest_Type.HasSearchIndex() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchIndex <> '' );
 end;
 
 function ItemLookupRequest_Type.HasSearchInsideKeywords() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchInsideKeywords <> '' );
+end;
+
+function ItemLookupRequest_Type.HasTagPage() : Boolean;
+begin
+  Result := ( FTagPage <> positiveInteger(0) );
+end;
+
+function ItemLookupRequest_Type.HasTagsPerPage() : Boolean;
+begin
+  Result := ( FTagsPerPage <> positiveInteger(0) );
+end;
+
+function ItemLookupRequest_Type.HasTagSort() : Boolean;
+begin
+  Result := ( FTagSort <> '' );
 end;
 
 function ItemLookupRequest_Type.HasVariationPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationPage <> '' );
 end;
 
 { ListSearchRequest_Type }
@@ -9704,42 +10704,42 @@ end;
 
 function ListSearchRequest_Type.HasCity() : Boolean;
 begin
-  Result := True;
+  Result := ( FCity <> '' );
 end;
 
 function ListSearchRequest_Type.HasEmail() : Boolean;
 begin
-  Result := True;
+  Result := ( FEmail <> '' );
 end;
 
 function ListSearchRequest_Type.HasFirstName() : Boolean;
 begin
-  Result := True;
+  Result := ( FFirstName <> '' );
 end;
 
 function ListSearchRequest_Type.HasLastName() : Boolean;
 begin
-  Result := True;
+  Result := ( FLastName <> '' );
 end;
 
 function ListSearchRequest_Type.HasListPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FListPage <> positiveInteger(0) );
 end;
 
 function ListSearchRequest_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function ListSearchRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> ListSearchRequest_ResponseGroupArray(0) );
 end;
 
 function ListSearchRequest_Type.HasState() : Boolean;
 begin
-  Result := True;
+  Result := ( FState <> '' );
 end;
 
 { ListLookupRequest_Type }
@@ -9769,12 +10769,12 @@ end;
 
 function ListLookupRequest_Type.HasISPUPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUPostalCode <> '' );
 end;
 
 function ListLookupRequest_Type.HasListId() : Boolean;
 begin
-  Result := True;
+  Result := ( FListId <> '' );
 end;
 
 function ListLookupRequest_Type.HasListType() : Boolean;
@@ -9784,32 +10784,32 @@ end;
 
 function ListLookupRequest_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function ListLookupRequest_Type.HasProductGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductGroup <> '' );
 end;
 
 function ListLookupRequest_Type.HasProductPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductPage <> positiveInteger(0) );
 end;
 
 function ListLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> ListLookupRequest_ResponseGroupArray(0) );
 end;
 
 function ListLookupRequest_Type.HasReviewSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewSort <> '' );
 end;
 
 function ListLookupRequest_Type.HasSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FSort <> '' );
 end;
 
 { CustomerContentSearchRequest_Type }
@@ -9829,22 +10829,22 @@ end;
 
 function CustomerContentSearchRequest_Type.HasCustomerPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerPage <> positiveInteger(0) );
 end;
 
 function CustomerContentSearchRequest_Type.HasEmail() : Boolean;
 begin
-  Result := True;
+  Result := ( FEmail <> '' );
 end;
 
 function CustomerContentSearchRequest_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function CustomerContentSearchRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CustomerContentSearchRequest_ResponseGroupArray(0) );
 end;
 
 { CustomerContentLookupRequest_Type }
@@ -9864,17 +10864,32 @@ end;
 
 function CustomerContentLookupRequest_Type.HasCustomerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerId <> '' );
 end;
 
 function CustomerContentLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CustomerContentLookupRequest_ResponseGroupArray(0) );
 end;
 
 function CustomerContentLookupRequest_Type.HasReviewPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewPage <> positiveInteger(0) );
+end;
+
+function CustomerContentLookupRequest_Type.HasTagPage() : Boolean;
+begin
+  Result := ( FTagPage <> positiveInteger(0) );
+end;
+
+function CustomerContentLookupRequest_Type.HasTagsPerPage() : Boolean;
+begin
+  Result := ( FTagsPerPage <> positiveInteger(0) );
+end;
+
+function CustomerContentLookupRequest_Type.HasTagSort() : Boolean;
+begin
+  Result := ( FTagSort <> '' );
 end;
 
 { SimilarityLookupRequest_Type }
@@ -9907,27 +10922,27 @@ end;
 
 function SimilarityLookupRequest_Type.HasItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemId <> SimilarityLookupRequest_ItemIdArray(0) );
 end;
 
 function SimilarityLookupRequest_Type.HasISPUPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUPostalCode <> '' );
 end;
 
 function SimilarityLookupRequest_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function SimilarityLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> SimilarityLookupRequest_ResponseGroupArray(0) );
 end;
 
 function SimilarityLookupRequest_Type.HasReviewSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewSort <> '' );
 end;
 
 function SimilarityLookupRequest_Type.HasSimilarityType() : Boolean;
@@ -9955,17 +10970,17 @@ end;
 
 function SellerLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> SellerLookupRequest_ResponseGroupArray(0) );
 end;
 
 function SellerLookupRequest_Type.HasSellerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerId <> SellerLookupRequest_SellerIdArray(0) );
 end;
 
 function SellerLookupRequest_Type.HasFeedbackPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FFeedbackPage <> positiveInteger(0) );
 end;
 
 { CartGetRequest_Type }
@@ -9985,47 +11000,77 @@ end;
 
 function CartGetRequest_Type.HasCartId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartId <> '' );
 end;
 
 function CartGetRequest_Type.HasHMAC() : Boolean;
 begin
-  Result := True;
+  Result := ( FHMAC <> '' );
 end;
 
 function CartGetRequest_Type.HasMergeCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FMergeCart <> '' );
 end;
 
 function CartGetRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CartGetRequest_ResponseGroupArray(0) );
+end;
+
+function CartAddRequest_Items_Type_Item_Type_MetaData_Type.HasKey() : Boolean;
+begin
+  Result := ( FKey <> '' );
+end;
+
+function CartAddRequest_Items_Type_Item_Type_MetaData_Type.HasValue() : Boolean;
+begin
+  Result := ( FValue <> '' );
+end;
+
+{ CartAddRequest_Items_Type_Item_Type }
+
+constructor CartAddRequest_Items_Type_Item_Type.Create();
+begin
+  inherited Create();
+  FMetaData := CartAddRequest_Items_Type_Item_Type_MetaDataArray.Create();
+end;
+
+destructor CartAddRequest_Items_Type_Item_Type.Destroy();
+begin
+  if Assigned(FMetaData) then
+    FreeAndNil(FMetaData);
+  inherited Destroy();
 end;
 
 function CartAddRequest_Items_Type_Item_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function CartAddRequest_Items_Type_Item_Type.HasOfferListingId() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferListingId <> '' );
 end;
 
 function CartAddRequest_Items_Type_Item_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> positiveInteger(0) );
 end;
 
 function CartAddRequest_Items_Type_Item_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartAddRequest_Items_Type_Item_Type.HasListItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FListItemId <> '' );
+end;
+
+function CartAddRequest_Items_Type_Item_Type.HasMetaData() : Boolean;
+begin
+  Result := ( FMetaData <> CartAddRequest_Items_Type_Item_Type_MetaDataArray(0) );
 end;
 
 { CartAddRequest_Type }
@@ -10048,52 +11093,82 @@ end;
 
 function CartAddRequest_Type.HasCartId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartId <> '' );
 end;
 
 function CartAddRequest_Type.HasHMAC() : Boolean;
 begin
-  Result := True;
+  Result := ( FHMAC <> '' );
 end;
 
 function CartAddRequest_Type.HasMergeCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FMergeCart <> '' );
 end;
 
 function CartAddRequest_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> CartAddRequest_Items_Type(0) );
 end;
 
 function CartAddRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CartAddRequest_ResponseGroupArray(0) );
+end;
+
+function CartCreateRequest_Items_Type_Item_Type_MetaData_Type.HasKey() : Boolean;
+begin
+  Result := ( FKey <> '' );
+end;
+
+function CartCreateRequest_Items_Type_Item_Type_MetaData_Type.HasValue() : Boolean;
+begin
+  Result := ( FValue <> '' );
+end;
+
+{ CartCreateRequest_Items_Type_Item_Type }
+
+constructor CartCreateRequest_Items_Type_Item_Type.Create();
+begin
+  inherited Create();
+  FMetaData := CartCreateRequest_Items_Type_Item_Type_MetaDataArray.Create();
+end;
+
+destructor CartCreateRequest_Items_Type_Item_Type.Destroy();
+begin
+  if Assigned(FMetaData) then
+    FreeAndNil(FMetaData);
+  inherited Destroy();
 end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasOfferListingId() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferListingId <> '' );
 end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> positiveInteger(0) );
 end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasAssociateTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssociateTag <> '' );
 end;
 
 function CartCreateRequest_Items_Type_Item_Type.HasListItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FListItemId <> '' );
+end;
+
+function CartCreateRequest_Items_Type_Item_Type.HasMetaData() : Boolean;
+begin
+  Result := ( FMetaData <> CartCreateRequest_Items_Type_Item_Type_MetaDataArray(0) );
 end;
 
 { CartCreateRequest_Type }
@@ -10116,17 +11191,17 @@ end;
 
 function CartCreateRequest_Type.HasMergeCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FMergeCart <> '' );
 end;
 
 function CartCreateRequest_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> CartCreateRequest_Items_Type(0) );
 end;
 
 function CartCreateRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CartCreateRequest_ResponseGroupArray(0) );
 end;
 
 function CartModifyRequest_Items_Type_Item_Type.HasAction() : Boolean;
@@ -10136,12 +11211,12 @@ end;
 
 function CartModifyRequest_Items_Type_Item_Type.HasCartItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartItemId <> '' );
 end;
 
 function CartModifyRequest_Items_Type_Item_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> nonNegativeInteger(0) );
 end;
 
 { CartModifyRequest_Type }
@@ -10164,27 +11239,27 @@ end;
 
 function CartModifyRequest_Type.HasCartId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartId <> '' );
 end;
 
 function CartModifyRequest_Type.HasHMAC() : Boolean;
 begin
-  Result := True;
+  Result := ( FHMAC <> '' );
 end;
 
 function CartModifyRequest_Type.HasMergeCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FMergeCart <> '' );
 end;
 
 function CartModifyRequest_Type.HasItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FItems <> CartModifyRequest_Items_Type(0) );
 end;
 
 function CartModifyRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CartModifyRequest_ResponseGroupArray(0) );
 end;
 
 { CartClearRequest_Type }
@@ -10204,22 +11279,22 @@ end;
 
 function CartClearRequest_Type.HasCartId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartId <> '' );
 end;
 
 function CartClearRequest_Type.HasHMAC() : Boolean;
 begin
-  Result := True;
+  Result := ( FHMAC <> '' );
 end;
 
 function CartClearRequest_Type.HasMergeCart() : Boolean;
 begin
-  Result := True;
+  Result := ( FMergeCart <> '' );
 end;
 
 function CartClearRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> CartClearRequest_ResponseGroupArray(0) );
 end;
 
 { TransactionLookupRequest_Type }
@@ -10242,12 +11317,12 @@ end;
 
 function TransactionLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> TransactionLookupRequest_ResponseGroupArray(0) );
 end;
 
 function TransactionLookupRequest_Type.HasTransactionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactionId <> TransactionLookupRequest_TransactionIdArray(0) );
 end;
 
 { SellerListingSearchRequest_Type }
@@ -10267,12 +11342,12 @@ end;
 
 function SellerListingSearchRequest_Type.HasKeywords() : Boolean;
 begin
-  Result := True;
+  Result := ( FKeywords <> '' );
 end;
 
 function SellerListingSearchRequest_Type.HasListingPage() : Boolean;
 begin
-  Result := True;
+  Result := ( FListingPage <> positiveInteger(0) );
 end;
 
 function SellerListingSearchRequest_Type.HasOfferStatus() : Boolean;
@@ -10282,17 +11357,17 @@ end;
 
 function SellerListingSearchRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> SellerListingSearchRequest_ResponseGroupArray(0) );
 end;
 
 function SellerListingSearchRequest_Type.HasSort() : Boolean;
 begin
-  Result := True;
+  Result := ( FSort <> '' );
 end;
 
 function SellerListingSearchRequest_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 { SellerListingLookupRequest_Type }
@@ -10312,12 +11387,60 @@ end;
 
 function SellerListingLookupRequest_Type.HasSellerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerId <> '' );
 end;
 
 function SellerListingLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> SellerListingLookupRequest_ResponseGroupArray(0) );
+end;
+
+{ TagLookupRequest_Type }
+
+constructor TagLookupRequest_Type.Create();
+begin
+  inherited Create();
+  FTagName := TagLookupRequest_TagNameArray.Create();
+  FResponseGroup := TagLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor TagLookupRequest_Type.Destroy();
+begin
+  if Assigned(FTagName) then
+    FreeAndNil(FTagName);
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function TagLookupRequest_Type.HasTagName() : Boolean;
+begin
+  Result := ( FTagName <> TagLookupRequest_TagNameArray(0) );
+end;
+
+function TagLookupRequest_Type.HasCustomerId() : Boolean;
+begin
+  Result := ( FCustomerId <> '' );
+end;
+
+function TagLookupRequest_Type.HasTagPage() : Boolean;
+begin
+  Result := ( FTagPage <> positiveInteger(0) );
+end;
+
+function TagLookupRequest_Type.HasCount() : Boolean;
+begin
+  Result := ( FCount <> positiveInteger(0) );
+end;
+
+function TagLookupRequest_Type.HasTagSort() : Boolean;
+begin
+  Result := ( FTagSort <> '' );
+end;
+
+function TagLookupRequest_Type.HasResponseGroup() : Boolean;
+begin
+  Result := ( FResponseGroup <> TagLookupRequest_ResponseGroupArray(0) );
 end;
 
 { BrowseNodeLookupRequest_Type }
@@ -10340,12 +11463,12 @@ end;
 
 function BrowseNodeLookupRequest_Type.HasBrowseNodeId() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodeId <> BrowseNodeLookupRequest_BrowseNodeIdArray(0) );
 end;
 
 function BrowseNodeLookupRequest_Type.HasResponseGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroup <> BrowseNodeLookupRequest_ResponseGroupArray(0) );
 end;
 
 { OperationRequest_Type }
@@ -10371,27 +11494,27 @@ end;
 
 function OperationRequest_Type.HasHTTPHeaders() : Boolean;
 begin
-  Result := True;
+  Result := ( FHTTPHeaders <> HTTPHeaders_Type(0) );
 end;
 
 function OperationRequest_Type.HasRequestId() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequestId <> '' );
 end;
 
 function OperationRequest_Type.HasArguments() : Boolean;
 begin
-  Result := True;
+  Result := ( FArguments <> Arguments_Type(0) );
 end;
 
 function OperationRequest_Type.HasErrors() : Boolean;
 begin
-  Result := True;
+  Result := ( FErrors <> Errors_Type(0) );
 end;
 
 function OperationRequest_Type.HasRequestProcessingTime() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequestProcessingTime <> 0 );
 end;
 
 { Request_Type }
@@ -10417,6 +11540,7 @@ begin
   FSellerListingSearchRequest := SellerListingSearchRequest_Type.Create();
   FSellerListingLookupRequest := SellerListingLookupRequest_Type.Create();
   FSellerLookupRequest := SellerLookupRequest_Type.Create();
+  FTagLookupRequest := TagLookupRequest_Type.Create();
   FErrors := Errors_Type.Create();
 end;
 
@@ -10458,6 +11582,8 @@ begin
     FreeAndNil(FSellerListingLookupRequest);
   if Assigned(FSellerLookupRequest) then
     FreeAndNil(FSellerLookupRequest);
+  if Assigned(FTagLookupRequest) then
+    FreeAndNil(FTagLookupRequest);
   if Assigned(FErrors) then
     FreeAndNil(FErrors);
   inherited Destroy();
@@ -10465,102 +11591,107 @@ end;
 
 function Request_Type.HasIsValid() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsValid <> '' );
 end;
 
 function Request_Type.HasHelpRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FHelpRequest <> HelpRequest_Type(0) );
 end;
 
 function Request_Type.HasBrowseNodeLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodeLookupRequest <> BrowseNodeLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasItemSearchRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemSearchRequest <> ItemSearchRequest_Type(0) );
 end;
 
 function Request_Type.HasItemLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemLookupRequest <> ItemLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasListSearchRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FListSearchRequest <> ListSearchRequest_Type(0) );
 end;
 
 function Request_Type.HasListLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FListLookupRequest <> ListLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasCustomerContentSearchRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentSearchRequest <> CustomerContentSearchRequest_Type(0) );
 end;
 
 function Request_Type.HasCustomerContentLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerContentLookupRequest <> CustomerContentLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasSimilarityLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarityLookupRequest <> SimilarityLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasCartGetRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartGetRequest <> CartGetRequest_Type(0) );
 end;
 
 function Request_Type.HasCartAddRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartAddRequest <> CartAddRequest_Type(0) );
 end;
 
 function Request_Type.HasCartCreateRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartCreateRequest <> CartCreateRequest_Type(0) );
 end;
 
 function Request_Type.HasCartModifyRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartModifyRequest <> CartModifyRequest_Type(0) );
 end;
 
 function Request_Type.HasCartClearRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartClearRequest <> CartClearRequest_Type(0) );
 end;
 
 function Request_Type.HasTransactionLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactionLookupRequest <> TransactionLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasSellerListingSearchRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingSearchRequest <> SellerListingSearchRequest_Type(0) );
 end;
 
 function Request_Type.HasSellerListingLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListingLookupRequest <> SellerListingLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasSellerLookupRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerLookupRequest <> SellerLookupRequest_Type(0) );
+end;
+
+function Request_Type.HasTagLookupRequest() : Boolean;
+begin
+  Result := ( FTagLookupRequest <> TagLookupRequest_Type(0) );
 end;
 
 function Request_Type.HasErrors() : Boolean;
 begin
-  Result := True;
+  Result := ( FErrors <> Errors_Type(0) );
 end;
 
 { Information_Type }
@@ -10586,17 +11717,17 @@ end;
 
 function Information_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Information_Type.HasOperationInformation() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperationInformation <> Information_OperationInformationArray(0) );
 end;
 
 function Information_Type.HasResponseGroupInformation() : Boolean;
 begin
-  Result := True;
+  Result := ( FResponseGroupInformation <> Information_ResponseGroupInformationArray(0) );
 end;
 
 { Items_Type }
@@ -10628,52 +11759,57 @@ end;
 
 function Items_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Items_Type.HasCorrectedQuery() : Boolean;
 begin
-  Result := True;
+  Result := ( FCorrectedQuery <> CorrectedQuery_Type(0) );
 end;
 
 function Items_Type.HasQid() : Boolean;
 begin
-  Result := True;
+  Result := ( FQid <> '' );
+end;
+
+function Items_Type.HasEngineQuery() : Boolean;
+begin
+  Result := ( FEngineQuery <> '' );
 end;
 
 function Items_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function Items_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function Items_Type.HasSearchResultsMap() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchResultsMap <> SearchResultsMap_Type(0) );
 end;
 
 function Items_Type.Has_Item() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Item <> Items__ItemArray(0) );
 end;
 
 function Items_Type.HasSearchBinSets() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchBinSets <> SearchBinSets_Type(0) );
 end;
 
 function CorrectedQuery_Type.HasKeywords() : Boolean;
 begin
-  Result := True;
+  Result := ( FKeywords <> '' );
 end;
 
 function CorrectedQuery_Type.HasMessage() : Boolean;
 begin
-  Result := True;
+  Result := ( FMessage <> '' );
 end;
 
 { Lists_Type }
@@ -10696,22 +11832,22 @@ end;
 
 function Lists_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Lists_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function Lists_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function Lists_Type.HasList() : Boolean;
 begin
-  Result := True;
+  Result := ( FList <> Lists_ListArray(0) );
 end;
 
 { Customers_Type }
@@ -10734,22 +11870,22 @@ end;
 
 function Customers_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Customers_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function Customers_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function Customers_Type.HasCustomer() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomer <> Customers_CustomerArray(0) );
 end;
 
 { Cart_Type }
@@ -10793,52 +11929,52 @@ end;
 
 function Cart_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Cart_Type.HasPurchaseURL() : Boolean;
 begin
-  Result := True;
+  Result := ( FPurchaseURL <> '' );
 end;
 
 function Cart_Type.HasSubTotal() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubTotal <> Price_Type(0) );
 end;
 
 function Cart_Type.HasCartItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FCartItems <> CartItems_Type(0) );
 end;
 
 function Cart_Type.HasSavedForLaterItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FSavedForLaterItems <> SavedForLaterItems_Type(0) );
 end;
 
 function Cart_Type.HasSimilarProducts() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarProducts <> SimilarProducts_Type(0) );
 end;
 
 function Cart_Type.HasTopSellers() : Boolean;
 begin
-  Result := True;
+  Result := ( FTopSellers <> TopSellers_Type(0) );
 end;
 
 function Cart_Type.HasNewReleases() : Boolean;
 begin
-  Result := True;
+  Result := ( FNewReleases <> NewReleases_Type(0) );
 end;
 
 function Cart_Type.HasSimilarViewedProducts() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarViewedProducts <> SimilarViewedProducts_Type(0) );
 end;
 
 function Cart_Type.HasOtherCategoriesSimilarProducts() : Boolean;
 begin
-  Result := True;
+  Result := ( FOtherCategoriesSimilarProducts <> OtherCategoriesSimilarProducts_Type(0) );
 end;
 
 { Transactions_Type }
@@ -10861,17 +11997,17 @@ end;
 
 function Transactions_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Transactions_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function Transactions_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 { Sellers_Type }
@@ -10894,22 +12030,22 @@ end;
 
 function Sellers_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function Sellers_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function Sellers_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function Sellers_Type.HasSeller() : Boolean;
 begin
-  Result := True;
+  Result := ( FSeller <> Sellers_SellerArray(0) );
 end;
 
 { SellerListings_Type }
@@ -10932,22 +12068,22 @@ end;
 
 function SellerListings_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function SellerListings_Type.HasTotalResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalResults <> nonNegativeInteger(0) );
 end;
 
 function SellerListings_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function SellerListings_Type.HasSellerListing() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerListing <> SellerListings_SellerListingArray(0) );
 end;
 
 { OperationInformation_Type }
@@ -10976,32 +12112,32 @@ end;
 
 function OperationInformation_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function OperationInformation_Type.HasDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FDescription <> '' );
 end;
 
 function OperationInformation_Type.HasRequiredParameters() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequiredParameters <> OperationInformation_RequiredParameters_Type(0) );
 end;
 
 function OperationInformation_Type.HasAvailableParameters() : Boolean;
 begin
-  Result := True;
+  Result := ( FAvailableParameters <> OperationInformation_AvailableParameters_Type(0) );
 end;
 
 function OperationInformation_Type.HasDefaultResponseGroups() : Boolean;
 begin
-  Result := True;
+  Result := ( FDefaultResponseGroups <> OperationInformation_DefaultResponseGroups_Type(0) );
 end;
 
 function OperationInformation_Type.HasAvailableResponseGroups() : Boolean;
 begin
-  Result := True;
+  Result := ( FAvailableResponseGroups <> OperationInformation_AvailableResponseGroups_Type(0) );
 end;
 
 { ResponseGroupInformation_Type }
@@ -11024,22 +12160,22 @@ end;
 
 function ResponseGroupInformation_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function ResponseGroupInformation_Type.HasCreationDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FCreationDate <> '' );
 end;
 
 function ResponseGroupInformation_Type.HasValidOperations() : Boolean;
 begin
-  Result := True;
+  Result := ( FValidOperations <> ResponseGroupInformation_ValidOperations_Type(0) );
 end;
 
 function ResponseGroupInformation_Type.HasElements() : Boolean;
 begin
-  Result := True;
+  Result := ( FElements <> ResponseGroupInformation_Elements_Type(0) );
 end;
 
 { List_Type }
@@ -11048,6 +12184,7 @@ constructor List_Type.Create();
 begin
   inherited Create();
   FImage := Image_Type.Create();
+  FTags := Tags_Type.Create();
   FListItem := List_ListItemArray.Create();
 end;
 
@@ -11055,6 +12192,8 @@ destructor List_Type.Destroy();
 begin
   if Assigned(FImage) then
     FreeAndNil(FImage);
+  if Assigned(FTags) then
+    FreeAndNil(FTags);
   if Assigned(FListItem) then
     FreeAndNil(FListItem);
   inherited Destroy();
@@ -11062,17 +12201,17 @@ end;
 
 function List_Type.HasListURL() : Boolean;
 begin
-  Result := True;
+  Result := ( FListURL <> '' );
 end;
 
 function List_Type.HasRegistryNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FRegistryNumber <> '' );
 end;
 
 function List_Type.HasListName() : Boolean;
 begin
-  Result := True;
+  Result := ( FListName <> '' );
 end;
 
 function List_Type.HasListType() : Boolean;
@@ -11082,67 +12221,72 @@ end;
 
 function List_Type.HasTotalItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalItems <> nonNegativeInteger(0) );
 end;
 
 function List_Type.HasTotalPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPages <> nonNegativeInteger(0) );
 end;
 
 function List_Type.HasDateCreated() : Boolean;
 begin
-  Result := True;
+  Result := ( FDateCreated <> '' );
 end;
 
 function List_Type.HasOccasionDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FOccasionDate <> '' );
 end;
 
 function List_Type.HasCustomerName() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerName <> '' );
 end;
 
 function List_Type.HasPartnerName() : Boolean;
 begin
-  Result := True;
+  Result := ( FPartnerName <> '' );
 end;
 
 function List_Type.HasAdditionalName() : Boolean;
 begin
-  Result := True;
+  Result := ( FAdditionalName <> '' );
 end;
 
 function List_Type.HasComment() : Boolean;
 begin
-  Result := True;
+  Result := ( FComment <> '' );
 end;
 
 function List_Type.HasImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FImage <> Image_Type(0) );
 end;
 
 function List_Type.HasAverageRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAverageRating <> 0 );
 end;
 
 function List_Type.HasTotalVotes() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVotes <> nonNegativeInteger(0) );
 end;
 
 function List_Type.HasTotalTimesRead() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalTimesRead <> nonNegativeInteger(0) );
+end;
+
+function List_Type.HasTags() : Boolean;
+begin
+  Result := ( FTags <> Tags_Type(0) );
 end;
 
 function List_Type.HasListItem() : Boolean;
 begin
-  Result := True;
+  Result := ( FListItem <> List_ListItemArray(0) );
 end;
 
 { ListItem_Type }
@@ -11162,52 +12306,52 @@ end;
 
 function ListItem_Type.HasListItemId() : Boolean;
 begin
-  Result := True;
+  Result := ( FListItemId <> '' );
 end;
 
 function ListItem_Type.HasDateAdded() : Boolean;
 begin
-  Result := True;
+  Result := ( FDateAdded <> '' );
 end;
 
 function ListItem_Type.HasComment() : Boolean;
 begin
-  Result := True;
+  Result := ( FComment <> '' );
 end;
 
 function ListItem_Type.HasQuantityDesired() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantityDesired <> '' );
 end;
 
 function ListItem_Type.HasQuantityReceived() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantityReceived <> '' );
 end;
 
 function ListItem_Type.Has_Item() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Item <> Item_Type(0) );
 end;
 
 function Customer_Location_Type.HasUserDefinedLocation() : Boolean;
 begin
-  Result := True;
+  Result := ( FUserDefinedLocation <> '' );
 end;
 
 function Customer_Location_Type.HasCity() : Boolean;
 begin
-  Result := True;
+  Result := ( FCity <> '' );
 end;
 
 function Customer_Location_Type.HasState() : Boolean;
 begin
-  Result := True;
+  Result := ( FState <> '' );
 end;
 
 function Customer_Location_Type.HasCountry() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountry <> '' );
 end;
 
 { Customer_Type }
@@ -11217,6 +12361,7 @@ begin
   inherited Create();
   FLocation := Customer_Location_Type.Create();
   FCustomerReviews := Customer_CustomerReviewsArray.Create();
+  FTags := Tags_Type.Create();
 end;
 
 destructor Customer_Type.Destroy();
@@ -11225,32 +12370,39 @@ begin
     FreeAndNil(FLocation);
   if Assigned(FCustomerReviews) then
     FreeAndNil(FCustomerReviews);
+  if Assigned(FTags) then
+    FreeAndNil(FTags);
   inherited Destroy();
 end;
 
 function Customer_Type.HasNickname() : Boolean;
 begin
-  Result := True;
+  Result := ( FNickname <> '' );
 end;
 
 function Customer_Type.HasBirthday() : Boolean;
 begin
-  Result := True;
+  Result := ( FBirthday <> '' );
 end;
 
 function Customer_Type.HasWishListId() : Boolean;
 begin
-  Result := True;
+  Result := ( FWishListId <> '' );
 end;
 
 function Customer_Type.HasLocation() : Boolean;
 begin
-  Result := True;
+  Result := ( FLocation <> Customer_Location_Type(0) );
 end;
 
 function Customer_Type.HasCustomerReviews() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerReviews <> Customer_CustomerReviewsArray(0) );
+end;
+
+function Customer_Type.HasTags() : Boolean;
+begin
+  Result := ( FTags <> Tags_Type(0) );
 end;
 
 { SearchResultsMap_SearchIndex_Type }
@@ -11273,17 +12425,17 @@ end;
 
 function SearchResultsMap_SearchIndex_Type.HasResults() : Boolean;
 begin
-  Result := True;
+  Result := ( FResults <> nonNegativeInteger(0) );
 end;
 
 function SearchResultsMap_SearchIndex_Type.HasPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FPages <> nonNegativeInteger(0) );
 end;
 
 function SearchResultsMap_SearchIndex_Type.HasCorrectedQuery() : Boolean;
 begin
-  Result := True;
+  Result := ( FCorrectedQuery <> CorrectedQuery_Type(0) );
 end;
 
 { Item_ImageSets_Type }
@@ -11303,22 +12455,22 @@ end;
 
 function Item_ImageSets_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function Item_ImageSets_Type.HasImageSet() : Boolean;
 begin
-  Result := True;
+  Result := ( FImageSet <> Item_ImageSets_Type_ImageSetArray(0) );
 end;
 
 function Item_AlternateVersions_Type_AlternateVersion_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function Item_AlternateVersions_Type_AlternateVersion_Type.HasBinding() : Boolean;
 begin
-  Result := True;
+  Result := ( FBinding <> '' );
 end;
 
 { Item_Type }
@@ -11345,6 +12497,7 @@ begin
   FAccessories := Accessories_Type.Create();
   FTracks := Tracks_Type.Create();
   FBrowseNodes := BrowseNodes_Type.Create();
+  FTags := Tags_Type.Create();
   FListmaniaLists := ListmaniaLists_Type.Create();
   FSearchInside := SearchInside_Type.Create();
   FAlternateVersions := Item_AlternateVersions_Type.Create();
@@ -11390,6 +12543,8 @@ begin
     FreeAndNil(FTracks);
   if Assigned(FBrowseNodes) then
     FreeAndNil(FBrowseNodes);
+  if Assigned(FTags) then
+    FreeAndNil(FTags);
   if Assigned(FListmaniaLists) then
     FreeAndNil(FListmaniaLists);
   if Assigned(FSearchInside) then
@@ -11401,127 +12556,436 @@ end;
 
 function Item_Type.HasParentASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FParentASIN <> '' );
 end;
 
 function Item_Type.HasErrors() : Boolean;
 begin
-  Result := True;
+  Result := ( FErrors <> Errors_Type(0) );
 end;
 
 function Item_Type.HasDetailPageURL() : Boolean;
 begin
-  Result := True;
+  Result := ( FDetailPageURL <> '' );
 end;
 
 function Item_Type.HasSalesRank() : Boolean;
 begin
-  Result := True;
+  Result := ( FSalesRank <> '' );
 end;
 
 function Item_Type.HasSmallImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FSmallImage <> Image_Type(0) );
 end;
 
 function Item_Type.HasMediumImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FMediumImage <> Image_Type(0) );
 end;
 
 function Item_Type.HasLargeImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FLargeImage <> Image_Type(0) );
 end;
 
 function Item_Type.HasImageSets() : Boolean;
 begin
-  Result := True;
+  Result := ( FImageSets <> _Item_ImageSetsArray(0) );
 end;
 
 function Item_Type.HasItemAttributes() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemAttributes <> ItemAttributes_Type(0) );
 end;
 
 function Item_Type.HasMerchantItemAttributes() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantItemAttributes <> MerchantItemAttributes_Type(0) );
 end;
 
 function Item_Type.HasCollections() : Boolean;
 begin
-  Result := True;
+  Result := ( FCollections <> Collections_Type(0) );
 end;
 
 function Item_Type.HasSubjects() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubjects <> Item_Subjects_Type(0) );
 end;
 
 function Item_Type.HasOfferSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferSummary <> OfferSummary_Type(0) );
 end;
 
 function Item_Type.HasOffers() : Boolean;
 begin
-  Result := True;
+  Result := ( FOffers <> Offers_Type(0) );
 end;
 
 function Item_Type.HasVariationSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationSummary <> VariationSummary_Type(0) );
 end;
 
 function Item_Type.HasVariations() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariations <> Variations_Type(0) );
 end;
 
 function Item_Type.HasCustomerReviews() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerReviews <> CustomerReviews_Type(0) );
 end;
 
 function Item_Type.HasEditorialReviews() : Boolean;
 begin
-  Result := True;
+  Result := ( FEditorialReviews <> EditorialReviews_Type(0) );
 end;
 
 function Item_Type.HasSimilarProducts() : Boolean;
 begin
-  Result := True;
+  Result := ( FSimilarProducts <> SimilarProducts_Type(0) );
 end;
 
 function Item_Type.HasAccessories() : Boolean;
 begin
-  Result := True;
+  Result := ( FAccessories <> Accessories_Type(0) );
 end;
 
 function Item_Type.HasTracks() : Boolean;
 begin
-  Result := True;
+  Result := ( FTracks <> Tracks_Type(0) );
 end;
 
 function Item_Type.HasBrowseNodes() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodes <> BrowseNodes_Type(0) );
+end;
+
+function Item_Type.HasTags() : Boolean;
+begin
+  Result := ( FTags <> Tags_Type(0) );
 end;
 
 function Item_Type.HasListmaniaLists() : Boolean;
 begin
-  Result := True;
+  Result := ( FListmaniaLists <> ListmaniaLists_Type(0) );
 end;
 
 function Item_Type.HasSearchInside() : Boolean;
 begin
-  Result := True;
+  Result := ( FSearchInside <> SearchInside_Type(0) );
 end;
 
 function Item_Type.HasAlternateVersions() : Boolean;
 begin
+  Result := ( FAlternateVersions <> Item_AlternateVersions_Type(0) );
+end;
+
+{ Tags_Type }
+
+constructor Tags_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FFirstTagging := Tagging_Type.Create();
+  FLastTagging := Tagging_Type.Create();
+  FTag := Tags_TagArray.Create();
+end;
+
+destructor Tags_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FFirstTagging) then
+    FreeAndNil(FFirstTagging);
+  if Assigned(FLastTagging) then
+    FreeAndNil(FLastTagging);
+  if Assigned(FTag) then
+    FreeAndNil(FTag);
+  inherited Destroy();
+end;
+
+function Tags_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> Request_Type(0) );
+end;
+
+function Tags_Type.HasDistinctTags() : Boolean;
+begin
+  Result := ( FDistinctTags <> '' );
+end;
+
+function Tags_Type.HasDistinctItems() : Boolean;
+begin
+  Result := ( FDistinctItems <> '' );
+end;
+
+function Tags_Type.HasDistinctUsers() : Boolean;
+begin
+  Result := ( FDistinctUsers <> '' );
+end;
+
+function Tags_Type.HasTotalUsages() : Boolean;
+begin
+  Result := ( FTotalUsages <> '' );
+end;
+
+function Tags_Type.HasFirstTagging() : Boolean;
+begin
+  Result := ( FFirstTagging <> Tagging_Type(0) );
+end;
+
+function Tags_Type.HasLastTagging() : Boolean;
+begin
+  Result := ( FLastTagging <> Tagging_Type(0) );
+end;
+
+function Tags_Type.HasTag() : Boolean;
+begin
+  Result := ( FTag <> Tags_TagArray(0) );
+end;
+
+{ Tag_Type }
+
+constructor Tag_Type.Create();
+begin
+  inherited Create();
+  FFirstTagging := Tagging_Type.Create();
+  FLastTagging := Tagging_Type.Create();
+  FTaggedItems := Tag_TaggedItemsArray.Create();
+  FTaggedListmaniaLists := Tag_TaggedListmaniaListsArray.Create();
+  FTaggedGuides := Tag_TaggedGuidesArray.Create();
+end;
+
+destructor Tag_Type.Destroy();
+begin
+  if Assigned(FFirstTagging) then
+    FreeAndNil(FFirstTagging);
+  if Assigned(FLastTagging) then
+    FreeAndNil(FLastTagging);
+  if Assigned(FTaggedItems) then
+    FreeAndNil(FTaggedItems);
+  if Assigned(FTaggedListmaniaLists) then
+    FreeAndNil(FTaggedListmaniaLists);
+  if Assigned(FTaggedGuides) then
+    FreeAndNil(FTaggedGuides);
+  inherited Destroy();
+end;
+
+function Tag_Type.HasName() : Boolean;
+begin
+  Result := ( FName <> '' );
+end;
+
+function Tag_Type.HasTagType() : Boolean;
+begin
   Result := True;
+end;
+
+function Tag_Type.HasDistinctItems() : Boolean;
+begin
+  Result := ( FDistinctItems <> '' );
+end;
+
+function Tag_Type.HasDistinctUsers() : Boolean;
+begin
+  Result := ( FDistinctUsers <> '' );
+end;
+
+function Tag_Type.HasTotalUsages() : Boolean;
+begin
+  Result := ( FTotalUsages <> '' );
+end;
+
+function Tag_Type.HasFirstTagging() : Boolean;
+begin
+  Result := ( FFirstTagging <> Tagging_Type(0) );
+end;
+
+function Tag_Type.HasLastTagging() : Boolean;
+begin
+  Result := ( FLastTagging <> Tagging_Type(0) );
+end;
+
+function Tag_Type.HasTaggedItems() : Boolean;
+begin
+  Result := ( FTaggedItems <> Tag_TaggedItemsArray(0) );
+end;
+
+function Tag_Type.HasTaggedListmaniaLists() : Boolean;
+begin
+  Result := ( FTaggedListmaniaLists <> Tag_TaggedListmaniaListsArray(0) );
+end;
+
+function Tag_Type.HasTaggedGuides() : Boolean;
+begin
+  Result := ( FTaggedGuides <> Tag_TaggedGuidesArray(0) );
+end;
+
+{ TaggedItems_Type }
+
+constructor TaggedItems_Type.Create();
+begin
+  inherited Create();
+  F_Item := Item_Type.Create();
+  FFirstTagging := Tagging_Type.Create();
+  FLastTagging := Tagging_Type.Create();
+end;
+
+destructor TaggedItems_Type.Destroy();
+begin
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  if Assigned(FFirstTagging) then
+    FreeAndNil(FFirstTagging);
+  if Assigned(FLastTagging) then
+    FreeAndNil(FLastTagging);
+  inherited Destroy();
+end;
+
+function TaggedItems_Type.Has_Item() : Boolean;
+begin
+  Result := ( F_Item <> Item_Type(0) );
+end;
+
+function TaggedItems_Type.HasDistinctUsers() : Boolean;
+begin
+  Result := ( FDistinctUsers <> '' );
+end;
+
+function TaggedItems_Type.HasTotalUsages() : Boolean;
+begin
+  Result := ( FTotalUsages <> '' );
+end;
+
+function TaggedItems_Type.HasFirstTagging() : Boolean;
+begin
+  Result := ( FFirstTagging <> Tagging_Type(0) );
+end;
+
+function TaggedItems_Type.HasLastTagging() : Boolean;
+begin
+  Result := ( FLastTagging <> Tagging_Type(0) );
+end;
+
+{ TaggedListmaniaLists_Type }
+
+constructor TaggedListmaniaLists_Type.Create();
+begin
+  inherited Create();
+  FList := List_Type.Create();
+  FFirstTagging := Tagging_Type.Create();
+  FLastTagging := Tagging_Type.Create();
+end;
+
+destructor TaggedListmaniaLists_Type.Destroy();
+begin
+  if Assigned(FList) then
+    FreeAndNil(FList);
+  if Assigned(FFirstTagging) then
+    FreeAndNil(FFirstTagging);
+  if Assigned(FLastTagging) then
+    FreeAndNil(FLastTagging);
+  inherited Destroy();
+end;
+
+function TaggedListmaniaLists_Type.HasList() : Boolean;
+begin
+  Result := ( FList <> List_Type(0) );
+end;
+
+function TaggedListmaniaLists_Type.HasDistinctUsers() : Boolean;
+begin
+  Result := ( FDistinctUsers <> '' );
+end;
+
+function TaggedListmaniaLists_Type.HasTotalUsages() : Boolean;
+begin
+  Result := ( FTotalUsages <> '' );
+end;
+
+function TaggedListmaniaLists_Type.HasFirstTagging() : Boolean;
+begin
+  Result := ( FFirstTagging <> Tagging_Type(0) );
+end;
+
+function TaggedListmaniaLists_Type.HasLastTagging() : Boolean;
+begin
+  Result := ( FLastTagging <> Tagging_Type(0) );
+end;
+
+{ TaggedGuides_Type }
+
+constructor TaggedGuides_Type.Create();
+begin
+  inherited Create();
+  FGuide := Guide_Type.Create();
+  FFirstTagging := Tagging_Type.Create();
+  FLastTagging := Tagging_Type.Create();
+end;
+
+destructor TaggedGuides_Type.Destroy();
+begin
+  if Assigned(FGuide) then
+    FreeAndNil(FGuide);
+  if Assigned(FFirstTagging) then
+    FreeAndNil(FFirstTagging);
+  if Assigned(FLastTagging) then
+    FreeAndNil(FLastTagging);
+  inherited Destroy();
+end;
+
+function TaggedGuides_Type.HasGuide() : Boolean;
+begin
+  Result := ( FGuide <> Guide_Type(0) );
+end;
+
+function TaggedGuides_Type.HasDistinctUsers() : Boolean;
+begin
+  Result := ( FDistinctUsers <> '' );
+end;
+
+function TaggedGuides_Type.HasTotalUsages() : Boolean;
+begin
+  Result := ( FTotalUsages <> '' );
+end;
+
+function TaggedGuides_Type.HasFirstTagging() : Boolean;
+begin
+  Result := ( FFirstTagging <> Tagging_Type(0) );
+end;
+
+function TaggedGuides_Type.HasLastTagging() : Boolean;
+begin
+  Result := ( FLastTagging <> Tagging_Type(0) );
+end;
+
+function Guide_Type.HasGuideId() : Boolean;
+begin
+  Result := ( FGuideId <> '' );
+end;
+
+function Tagging_Type.HasName() : Boolean;
+begin
+  Result := ( FName <> '' );
+end;
+
+function Tagging_Type.HasEntityId() : Boolean;
+begin
+  Result := ( FEntityId <> '' );
+end;
+
+function Tagging_Type.HasUserId() : Boolean;
+begin
+  Result := ( FUserId <> '' );
+end;
+
+function Tagging_Type.HasTime() : Boolean;
+begin
+  Result := ( FTime <> '' );
 end;
 
 { OfferSummary_Type }
@@ -11550,42 +13014,42 @@ end;
 
 function OfferSummary_Type.HasLowestNewPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestNewPrice <> Price_Type(0) );
 end;
 
 function OfferSummary_Type.HasLowestUsedPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestUsedPrice <> Price_Type(0) );
 end;
 
 function OfferSummary_Type.HasLowestCollectiblePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestCollectiblePrice <> Price_Type(0) );
 end;
 
 function OfferSummary_Type.HasLowestRefurbishedPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestRefurbishedPrice <> Price_Type(0) );
 end;
 
 function OfferSummary_Type.HasTotalNew() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalNew <> '' );
 end;
 
 function OfferSummary_Type.HasTotalUsed() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalUsed <> '' );
 end;
 
 function OfferSummary_Type.HasTotalCollectible() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalCollectible <> '' );
 end;
 
 function OfferSummary_Type.HasTotalRefurbished() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalRefurbished <> '' );
 end;
 
 { Offers_Type }
@@ -11605,17 +13069,17 @@ end;
 
 function Offers_Type.HasTotalOffers() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalOffers <> nonNegativeInteger(0) );
 end;
 
 function Offers_Type.HasTotalOfferPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalOfferPages <> nonNegativeInteger(0) );
 end;
 
 function Offers_Type.HasOffer() : Boolean;
 begin
-  Result := True;
+  Result := ( FOffer <> Offers_OfferArray(0) );
 end;
 
 { Offer_Type }
@@ -11650,102 +13114,102 @@ end;
 
 function Offer_Type.HasMerchant() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchant <> Merchant_Type(0) );
 end;
 
 function Offer_Type.HasSeller() : Boolean;
 begin
-  Result := True;
+  Result := ( FSeller <> Seller_Type(0) );
 end;
 
 function Offer_Type.HasOfferAttributes() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferAttributes <> OfferAttributes_Type(0) );
 end;
 
 function Offer_Type.HasOfferListing() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferListing <> Offer_OfferListingArray(0) );
 end;
 
 function Offer_Type.HasLoyaltyPoints() : Boolean;
 begin
-  Result := True;
+  Result := ( FLoyaltyPoints <> LoyaltyPoints_Type(0) );
 end;
 
 function Offer_Type.HasPromotions() : Boolean;
 begin
-  Result := True;
+  Result := ( FPromotions <> Promotions_Type(0) );
 end;
 
 function OfferAttributes_Type.HasCondition() : Boolean;
 begin
-  Result := True;
+  Result := ( FCondition <> '' );
 end;
 
 function OfferAttributes_Type.HasSubCondition() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubCondition <> '' );
 end;
 
 function OfferAttributes_Type.HasConditionNote() : Boolean;
 begin
-  Result := True;
+  Result := ( FConditionNote <> '' );
 end;
 
 function OfferAttributes_Type.HasWillShipExpedited() : Boolean;
 begin
-  Result := True;
+  Result := ( FWillShipExpedited <> boolean(0) );
 end;
 
 function OfferAttributes_Type.HasWillShipInternational() : Boolean;
 begin
-  Result := True;
+  Result := ( FWillShipInternational <> boolean(0) );
 end;
 
 function Merchant_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function Merchant_Type.HasGlancePage() : Boolean;
 begin
-  Result := True;
+  Result := ( FGlancePage <> '' );
 end;
 
 function Merchant_Type.HasAverageFeedbackRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAverageFeedbackRating <> 0 );
 end;
 
 function Merchant_Type.HasTotalFeedback() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFeedback <> nonNegativeInteger(0) );
 end;
 
 function Merchant_Type.HasTotalFeedbackPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFeedbackPages <> nonNegativeInteger(0) );
 end;
 
 function OfferListing_AvailabilityAttributes_Type.HasAvailabilityType() : Boolean;
 begin
-  Result := True;
+  Result := ( FAvailabilityType <> '' );
 end;
 
 function OfferListing_AvailabilityAttributes_Type.HasIsPreorder() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsPreorder <> boolean(0) );
 end;
 
 function OfferListing_AvailabilityAttributes_Type.HasMinimumHours() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumHours <> integer(0) );
 end;
 
 function OfferListing_AvailabilityAttributes_Type.HasMaximumHours() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumHours <> integer(0) );
 end;
 
 { OfferListing_ShippingCharge_Type }
@@ -11795,72 +13259,72 @@ end;
 
 function OfferListing_Type.HasOfferListingId() : Boolean;
 begin
-  Result := True;
+  Result := ( FOfferListingId <> '' );
 end;
 
 function OfferListing_Type.HasExchangeId() : Boolean;
 begin
-  Result := True;
+  Result := ( FExchangeId <> '' );
 end;
 
 function OfferListing_Type.HasPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FPrice <> Price_Type(0) );
 end;
 
 function OfferListing_Type.HasSalePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FSalePrice <> Price_Type(0) );
 end;
 
 function OfferListing_Type.HasAmountSaved() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmountSaved <> Price_Type(0) );
 end;
 
 function OfferListing_Type.HasPercentageSaved() : Boolean;
 begin
-  Result := True;
+  Result := ( FPercentageSaved <> nonNegativeInteger(0) );
 end;
 
 function OfferListing_Type.HasAvailability() : Boolean;
 begin
-  Result := True;
+  Result := ( FAvailability <> '' );
 end;
 
 function OfferListing_Type.HasAvailabilityAttributes() : Boolean;
 begin
-  Result := True;
+  Result := ( FAvailabilityAttributes <> OfferListing_AvailabilityAttributes_Type(0) );
 end;
 
 function OfferListing_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> integer(0) );
 end;
 
 function OfferListing_Type.HasISPUStoreAddress() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUStoreAddress <> Address_Type(0) );
 end;
 
 function OfferListing_Type.HasISPUStoreHours() : Boolean;
 begin
-  Result := True;
+  Result := ( FISPUStoreHours <> '' );
 end;
 
 function OfferListing_Type.HasIsEligibleForSuperSaverShipping() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsEligibleForSuperSaverShipping <> boolean(0) );
 end;
 
 function OfferListing_Type.HasSalesRestriction() : Boolean;
 begin
-  Result := True;
+  Result := ( FSalesRestriction <> '' );
 end;
 
 function OfferListing_Type.HasShippingCharge() : Boolean;
 begin
-  Result := True;
+  Result := ( FShippingCharge <> OfferListing_ShippingChargeArray(0) );
 end;
 
 { LoyaltyPoints_Type }
@@ -11880,12 +13344,12 @@ end;
 
 function LoyaltyPoints_Type.HasPoints() : Boolean;
 begin
-  Result := True;
+  Result := ( FPoints <> nonNegativeInteger(0) );
 end;
 
 function LoyaltyPoints_Type.HasTypicalRedemptionValue() : Boolean;
 begin
-  Result := True;
+  Result := ( FTypicalRedemptionValue <> Price_Type(0) );
 end;
 
 { VariationSummary_Type }
@@ -11914,27 +13378,27 @@ end;
 
 function VariationSummary_Type.HasLowestPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestPrice <> Price_Type(0) );
 end;
 
 function VariationSummary_Type.HasHighestPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FHighestPrice <> Price_Type(0) );
 end;
 
 function VariationSummary_Type.HasLowestSalePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestSalePrice <> Price_Type(0) );
 end;
 
 function VariationSummary_Type.HasHighestSalePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FHighestSalePrice <> Price_Type(0) );
 end;
 
 function VariationSummary_Type.HasSingleMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSingleMerchantId <> '' );
 end;
 
 { Variations_Type }
@@ -11957,22 +13421,22 @@ end;
 
 function Variations_Type.HasTotalVariations() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVariations <> nonNegativeInteger(0) );
 end;
 
 function Variations_Type.HasTotalVariationPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVariationPages <> nonNegativeInteger(0) );
 end;
 
 function Variations_Type.HasVariationDimensions() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationDimensions <> VariationDimensions_Type(0) );
 end;
 
 function Variations_Type.Has_Item() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Item <> Variations__ItemArray(0) );
 end;
 
 { Collections_Collection_Type_CollectionSummary_Type }
@@ -12001,42 +13465,42 @@ end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasLowestListPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestListPrice <> Price_Type(0) );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasHighestListPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FHighestListPrice <> Price_Type(0) );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasLowestSalePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FLowestSalePrice <> Price_Type(0) );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasHighestSalePrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FHighestSalePrice <> Price_Type(0) );
 end;
 
 function Collections_Collection_Type_CollectionParent_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function Collections_Collection_Type_CollectionParent_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function Collections_Collection_Type_CollectionItem_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function Collections_Collection_Type_CollectionItem_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 { Collections_Collection_Type }
@@ -12062,27 +13526,32 @@ end;
 
 function Collections_Collection_Type.HasCollectionSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FCollectionSummary <> Collections_Collection_Type_CollectionSummary_Type(0) );
 end;
 
 function Collections_Collection_Type.HasCollectionParent() : Boolean;
 begin
-  Result := True;
+  Result := ( FCollectionParent <> Collections_Collection_Type_CollectionParent_Type(0) );
 end;
 
 function Collections_Collection_Type.HasCollectionItem() : Boolean;
 begin
-  Result := True;
+  Result := ( FCollectionItem <> Collections_Collection_Type_CollectionItemArray(0) );
 end;
 
 function EditorialReview_Type.HasSource() : Boolean;
 begin
-  Result := True;
+  Result := ( FSource <> '' );
 end;
 
 function EditorialReview_Type.HasContent() : Boolean;
 begin
-  Result := True;
+  Result := ( FContent <> '' );
+end;
+
+function EditorialReview_Type.HasIsLinkSuppressed() : Boolean;
+begin
+  Result := ( FIsLinkSuppressed <> boolean(0) );
 end;
 
 { CustomerReviews_Type }
@@ -12102,22 +13571,22 @@ end;
 
 function CustomerReviews_Type.HasAverageRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAverageRating <> 0 );
 end;
 
 function CustomerReviews_Type.HasTotalReviews() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalReviews <> nonNegativeInteger(0) );
 end;
 
 function CustomerReviews_Type.HasTotalReviewPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalReviewPages <> nonNegativeInteger(0) );
 end;
 
 function CustomerReviews_Type.HasReview() : Boolean;
 begin
-  Result := True;
+  Result := ( FReview <> CustomerReviews_ReviewArray(0) );
 end;
 
 { Review_Type }
@@ -12137,67 +13606,67 @@ end;
 
 function Review_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function Review_Type.HasRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FRating <> 0 );
 end;
 
 function Review_Type.HasHelpfulVotes() : Boolean;
 begin
-  Result := True;
+  Result := ( FHelpfulVotes <> nonNegativeInteger(0) );
 end;
 
 function Review_Type.HasCustomerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerId <> '' );
 end;
 
 function Review_Type.HasReviewer() : Boolean;
 begin
-  Result := True;
+  Result := ( FReviewer <> Reviewer_Type(0) );
 end;
 
 function Review_Type.HasTotalVotes() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVotes <> nonNegativeInteger(0) );
 end;
 
 function Review_Type.HasDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FDate <> '' );
 end;
 
 function Review_Type.HasSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FSummary <> '' );
 end;
 
 function Review_Type.HasContent() : Boolean;
 begin
-  Result := True;
+  Result := ( FContent <> '' );
 end;
 
 function Reviewer_Type.HasCustomerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomerId <> '' );
 end;
 
 function Reviewer_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function Reviewer_Type.HasNickname() : Boolean;
 begin
-  Result := True;
+  Result := ( FNickname <> '' );
 end;
 
 function Reviewer_Type.HasLocation() : Boolean;
 begin
-  Result := True;
+  Result := ( FLocation <> '' );
 end;
 
 { Tracks_Disc_Type }
@@ -12217,92 +13686,92 @@ end;
 
 function SimilarProducts_SimilarProduct_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function SimilarProducts_SimilarProduct_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function TopSellers_TopSeller_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function TopSellers_TopSeller_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function NewReleases_NewRelease_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function NewReleases_NewRelease_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function SimilarViewedProducts_SimilarViewedProduct_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function SimilarViewedProducts_SimilarViewedProduct_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function Accessories_Accessory_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function Accessories_Accessory_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function Promotion_Summary_Type.HasCategory() : Boolean;
 begin
-  Result := True;
+  Result := ( FCategory <> '' );
 end;
 
 function Promotion_Summary_Type.HasStartDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FStartDate <> '' );
 end;
 
 function Promotion_Summary_Type.HasEndDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FEndDate <> '' );
 end;
 
 function Promotion_Summary_Type.HasEligibilityRequirementDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FEligibilityRequirementDescription <> '' );
 end;
 
 function Promotion_Summary_Type.HasBenefitDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FBenefitDescription <> '' );
 end;
 
 function Promotion_Summary_Type.HasTermsAndConditions() : Boolean;
 begin
-  Result := True;
+  Result := ( FTermsAndConditions <> '' );
 end;
 
 { Promotion_Details_Type }
@@ -12328,47 +13797,52 @@ end;
 
 function Promotion_Details_Type.HasMerchantPromotionId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantPromotionId <> '' );
 end;
 
 function Promotion_Details_Type.HasGroupClaimCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FGroupClaimCode <> '' );
 end;
 
 function Promotion_Details_Type.HasCouponCombinationType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCouponCombinationType <> '' );
 end;
 
 function Promotion_Details_Type.HasStartDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FStartDate <> '' );
 end;
 
 function Promotion_Details_Type.HasEndDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FEndDate <> '' );
 end;
 
 function Promotion_Details_Type.HasTermsAndConditions() : Boolean;
 begin
-  Result := True;
+  Result := ( FTermsAndConditions <> '' );
 end;
 
 function Promotion_Details_Type.HasEligibilityRequirements() : Boolean;
 begin
-  Result := True;
+  Result := ( FEligibilityRequirements <> PromotionEligibilityRequirements_Type(0) );
 end;
 
 function Promotion_Details_Type.HasBenefits() : Boolean;
 begin
-  Result := True;
+  Result := ( FBenefits <> PromotionBenefits_Type(0) );
 end;
 
 function Promotion_Details_Type.HasItemApplicability() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemApplicability <> PromotionItemApplicability_Type(0) );
+end;
+
+function Promotion_Details_Type.HasMerchandisingMessage() : Boolean;
+begin
+  Result := ( FMerchandisingMessage <> '' );
 end;
 
 { Promotion_Type }
@@ -12391,12 +13865,12 @@ end;
 
 function Promotion_Type.HasSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FSummary <> Promotion_Summary_Type(0) );
 end;
 
 function Promotion_Type.HasDetails() : Boolean;
 begin
-  Result := True;
+  Result := ( FDetails <> Promotion_Details_Type(0) );
 end;
 
 { PromotionBenefit_Type }
@@ -12419,22 +13893,22 @@ end;
 
 function PromotionBenefit_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> integer(0) );
 end;
 
 function PromotionBenefit_Type.HasPercentOff() : Boolean;
 begin
-  Result := True;
+  Result := ( FPercentOff <> 0 );
 end;
 
 function PromotionBenefit_Type.HasFixedAmount() : Boolean;
 begin
-  Result := True;
+  Result := ( FFixedAmount <> Price_Type(0) );
 end;
 
 function PromotionBenefit_Type.HasCeiling() : Boolean;
 begin
-  Result := True;
+  Result := ( FCeiling <> Price_Type(0) );
 end;
 
 { PromotionEligibilityRequirement_Type }
@@ -12454,12 +13928,12 @@ end;
 
 function PromotionEligibilityRequirement_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> integer(0) );
 end;
 
 function PromotionEligibilityRequirement_Type.HasCurrencyAmount() : Boolean;
 begin
-  Result := True;
+  Result := ( FCurrencyAmount <> Price_Type(0) );
 end;
 
 { BrowseNodes_Type }
@@ -12482,12 +13956,22 @@ end;
 
 function BrowseNodes_Type.HasRequest() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequest <> Request_Type(0) );
 end;
 
 function BrowseNodes_Type.HasBrowseNode() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNode <> BrowseNodes_BrowseNodeArray(0) );
+end;
+
+function Property_Type.HasName() : Boolean;
+begin
+  Result := ( FName <> '' );
+end;
+
+function Property_Type.HasValue() : Boolean;
+begin
+  Result := ( FValue <> '' );
 end;
 
 { BrowseNode_Type }
@@ -12495,6 +13979,7 @@ end;
 constructor BrowseNode_Type.Create();
 begin
   inherited Create();
+  FProperties := BrowseNode_Properties_Type.Create();
   FChildren := BrowseNode_Children_Type.Create();
   FAncestors := BrowseNode_Ancestors_Type.Create();
   FTopSellers := TopSellers_Type.Create();
@@ -12503,6 +13988,8 @@ end;
 
 destructor BrowseNode_Type.Destroy();
 begin
+  if Assigned(FProperties) then
+    FreeAndNil(FProperties);
   if Assigned(FChildren) then
     FreeAndNil(FChildren);
   if Assigned(FAncestors) then
@@ -12516,67 +14003,72 @@ end;
 
 function BrowseNode_Type.HasBrowseNodeId() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrowseNodeId <> '' );
 end;
 
 function BrowseNode_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function BrowseNode_Type.HasIsCategoryRoot() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsCategoryRoot <> boolean(0) );
+end;
+
+function BrowseNode_Type.HasProperties() : Boolean;
+begin
+  Result := ( FProperties <> BrowseNode_Properties_Type(0) );
 end;
 
 function BrowseNode_Type.HasChildren() : Boolean;
 begin
-  Result := True;
+  Result := ( FChildren <> BrowseNode_Children_Type(0) );
 end;
 
 function BrowseNode_Type.HasAncestors() : Boolean;
 begin
-  Result := True;
+  Result := ( FAncestors <> BrowseNode_Ancestors_Type(0) );
 end;
 
 function BrowseNode_Type.HasTopSellers() : Boolean;
 begin
-  Result := True;
+  Result := ( FTopSellers <> TopSellers_Type(0) );
 end;
 
 function BrowseNode_Type.HasNewReleases() : Boolean;
 begin
-  Result := True;
+  Result := ( FNewReleases <> NewReleases_Type(0) );
 end;
 
 function ListmaniaLists_ListmaniaList_Type.HasListName() : Boolean;
 begin
-  Result := True;
+  Result := ( FListName <> '' );
 end;
 
 function SearchInside_Excerpt_Type.HasChecksum() : Boolean;
 begin
-  Result := True;
+  Result := ( FChecksum <> '' );
 end;
 
 function SearchInside_Excerpt_Type.HasPageType() : Boolean;
 begin
-  Result := True;
+  Result := ( FPageType <> '' );
 end;
 
 function SearchInside_Excerpt_Type.HasPageNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FPageNumber <> '' );
 end;
 
 function SearchInside_Excerpt_Type.HasSequenceNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FSequenceNumber <> '' );
 end;
 
 function SearchInside_Excerpt_Type.HasText() : Boolean;
 begin
-  Result := True;
+  Result := ( FText <> '' );
 end;
 
 { SearchInside_Type }
@@ -12596,12 +14088,12 @@ end;
 
 function SearchInside_Type.HasTotalExcerpts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalExcerpts <> nonNegativeInteger(0) );
 end;
 
 function SearchInside_Type.HasExcerpt() : Boolean;
 begin
-  Result := True;
+  Result := ( FExcerpt <> SearchInside_Excerpt_Type(0) );
 end;
 
 { CartItems_Type }
@@ -12624,7 +14116,7 @@ end;
 
 function CartItems_Type.HasSubTotal() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubTotal <> Price_Type(0) );
 end;
 
 { SavedForLaterItems_Type }
@@ -12647,7 +14139,7 @@ end;
 
 function SavedForLaterItems_Type.HasSubTotal() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubTotal <> Price_Type(0) );
 end;
 
 { CartItem_Type }
@@ -12655,12 +14147,15 @@ end;
 constructor CartItem_Type.Create();
 begin
   inherited Create();
+  FMetaData := CartItem_MetaData_Type.Create();
   FPrice := Price_Type.Create();
   FItemTotal := Price_Type.Create();
 end;
 
 destructor CartItem_Type.Destroy();
 begin
+  if Assigned(FMetaData) then
+    FreeAndNil(FMetaData);
   if Assigned(FPrice) then
     FreeAndNil(FPrice);
   if Assigned(FItemTotal) then
@@ -12670,57 +14165,62 @@ end;
 
 function CartItem_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function CartItem_Type.HasExchangeId() : Boolean;
 begin
-  Result := True;
+  Result := ( FExchangeId <> '' );
 end;
 
 function CartItem_Type.HasMerchantId() : Boolean;
 begin
-  Result := True;
+  Result := ( FMerchantId <> '' );
 end;
 
 function CartItem_Type.HasSellerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerId <> '' );
 end;
 
 function CartItem_Type.HasSellerNickname() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerNickname <> '' );
 end;
 
 function CartItem_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function CartItem_Type.HasProductGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductGroup <> '' );
 end;
 
 function CartItem_Type.HasListOwner() : Boolean;
 begin
-  Result := True;
+  Result := ( FListOwner <> '' );
 end;
 
 function CartItem_Type.HasListType() : Boolean;
 begin
-  Result := True;
+  Result := ( FListType <> '' );
+end;
+
+function CartItem_Type.HasMetaData() : Boolean;
+begin
+  Result := ( FMetaData <> CartItem_MetaData_Type(0) );
 end;
 
 function CartItem_Type.HasPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FPrice <> Price_Type(0) );
 end;
 
 function CartItem_Type.HasItemTotal() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemTotal <> Price_Type(0) );
 end;
 
 { Transaction_Totals_Type }
@@ -12770,12 +14270,12 @@ end;
 
 function Transaction_Shipments_Type_Shipment_Type.HasShipmentItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FShipmentItems <> Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type(0) );
 end;
 
 function Transaction_Shipments_Type_Shipment_Type.HasPackages() : Boolean;
 begin
-  Result := True;
+  Result := ( FPackages <> Transaction_Shipments_Type_Shipment_Type_Packages_Type(0) );
 end;
 
 { Transaction_Type }
@@ -12801,32 +14301,32 @@ end;
 
 function Transaction_Type.HasSellerName() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerName <> '' );
 end;
 
 function Transaction_Type.HasPayingCustomerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FPayingCustomerId <> '' );
 end;
 
 function Transaction_Type.HasOrderingCustomerId() : Boolean;
 begin
-  Result := True;
+  Result := ( FOrderingCustomerId <> '' );
 end;
 
 function Transaction_Type.HasTotals() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotals <> Transaction_Totals_Type(0) );
 end;
 
 function Transaction_Type.HasTransactionItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FTransactionItems <> Transaction_TransactionItems_Type(0) );
 end;
 
 function Transaction_Type.HasShipments() : Boolean;
 begin
-  Result := True;
+  Result := ( FShipments <> Transaction_Shipments_Type(0) );
 end;
 
 { TransactionItem_Type }
@@ -12852,42 +14352,42 @@ end;
 
 function TransactionItem_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function TransactionItem_Type.HasChildTransactionItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FChildTransactionItems <> TransactionItem_ChildTransactionItems_Type(0) );
 end;
 
 function Seller_Location_Type.HasUserDefinedLocation() : Boolean;
 begin
-  Result := True;
+  Result := ( FUserDefinedLocation <> '' );
 end;
 
 function Seller_Location_Type.HasCity() : Boolean;
 begin
-  Result := True;
+  Result := ( FCity <> '' );
 end;
 
 function Seller_Location_Type.HasState() : Boolean;
 begin
-  Result := True;
+  Result := ( FState <> '' );
 end;
 
 function Seller_Location_Type.HasCountry() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountry <> '' );
 end;
 
 function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FCount <> nonNegativeInteger(0) );
 end;
 
 function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.HasPercentage() : Boolean;
 begin
-  Result := True;
+  Result := ( FPercentage <> nonNegativeInteger(0) );
 end;
 
 { Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type }
@@ -12907,7 +14407,7 @@ end;
 
 function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.HasSellerFeedbackRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerFeedbackRating <> Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray(0) );
 end;
 
 { Seller_Type }
@@ -12933,122 +14433,122 @@ end;
 
 function Seller_Type.HasSellerName() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerName <> '' );
 end;
 
 function Seller_Type.HasSellerLegalName() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerLegalName <> '' );
 end;
 
 function Seller_Type.HasNickname() : Boolean;
 begin
-  Result := True;
+  Result := ( FNickname <> '' );
 end;
 
 function Seller_Type.HasGlancePage() : Boolean;
 begin
-  Result := True;
+  Result := ( FGlancePage <> '' );
 end;
 
 function Seller_Type.HasAbout() : Boolean;
 begin
-  Result := True;
+  Result := ( FAbout <> '' );
 end;
 
 function Seller_Type.HasMoreAbout() : Boolean;
 begin
-  Result := True;
+  Result := ( FMoreAbout <> '' );
 end;
 
 function Seller_Type.HasLocation() : Boolean;
 begin
-  Result := True;
+  Result := ( FLocation <> Seller_Location_Type(0) );
 end;
 
 function Seller_Type.HasAverageFeedbackRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAverageFeedbackRating <> 0 );
 end;
 
 function Seller_Type.HasTotalFeedback() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFeedback <> nonNegativeInteger(0) );
 end;
 
 function Seller_Type.HasTotalFeedbackPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFeedbackPages <> nonNegativeInteger(0) );
 end;
 
 function Seller_Type.HasSellerFeedbackSummary() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerFeedbackSummary <> Seller_SellerFeedbackSummary_Type(0) );
 end;
 
 function Seller_Type.HasSellerFeedback() : Boolean;
 begin
-  Result := True;
+  Result := ( FSellerFeedback <> SellerFeedback_Type(0) );
 end;
 
 function SellerFeedback_Feedback_Type.HasRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FRating <> nonNegativeInteger(0) );
 end;
 
 function SellerFeedback_Feedback_Type.HasComment() : Boolean;
 begin
-  Result := True;
+  Result := ( FComment <> '' );
 end;
 
 function SellerFeedback_Feedback_Type.HasDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FDate <> '' );
 end;
 
 function SellerFeedback_Feedback_Type.HasRatedBy() : Boolean;
 begin
-  Result := True;
+  Result := ( FRatedBy <> '' );
 end;
 
 function Address_Type.HasName() : Boolean;
 begin
-  Result := True;
+  Result := ( FName <> '' );
 end;
 
 function Address_Type.HasAddress1() : Boolean;
 begin
-  Result := True;
+  Result := ( FAddress1 <> '' );
 end;
 
 function Address_Type.HasAddress2() : Boolean;
 begin
-  Result := True;
+  Result := ( FAddress2 <> '' );
 end;
 
 function Address_Type.HasAddress3() : Boolean;
 begin
-  Result := True;
+  Result := ( FAddress3 <> '' );
 end;
 
 function Address_Type.HasCity() : Boolean;
 begin
-  Result := True;
+  Result := ( FCity <> '' );
 end;
 
 function Address_Type.HasState() : Boolean;
 begin
-  Result := True;
+  Result := ( FState <> '' );
 end;
 
 function Address_Type.HasPostalCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FPostalCode <> '' );
 end;
 
 function Address_Type.HasCountry() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountry <> '' );
 end;
 
 { SellerListing_Type }
@@ -13071,97 +14571,97 @@ end;
 
 function SellerListing_Type.HasExchangeId() : Boolean;
 begin
-  Result := True;
+  Result := ( FExchangeId <> '' );
 end;
 
 function SellerListing_Type.HasListingId() : Boolean;
 begin
-  Result := True;
+  Result := ( FListingId <> '' );
 end;
 
 function SellerListing_Type.HasASIN() : Boolean;
 begin
-  Result := True;
+  Result := ( FASIN <> '' );
 end;
 
 function SellerListing_Type.HasSKU() : Boolean;
 begin
-  Result := True;
+  Result := ( FSKU <> '' );
 end;
 
 function SellerListing_Type.HasUPC() : Boolean;
 begin
-  Result := True;
+  Result := ( FUPC <> '' );
 end;
 
 function SellerListing_Type.HasEAN() : Boolean;
 begin
-  Result := True;
+  Result := ( FEAN <> '' );
 end;
 
 function SellerListing_Type.HasWillShipExpedited() : Boolean;
 begin
-  Result := True;
+  Result := ( FWillShipExpedited <> boolean(0) );
 end;
 
 function SellerListing_Type.HasWillShipInternational() : Boolean;
 begin
-  Result := True;
+  Result := ( FWillShipInternational <> boolean(0) );
 end;
 
 function SellerListing_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function SellerListing_Type.HasPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FPrice <> Price_Type(0) );
 end;
 
 function SellerListing_Type.HasStartDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FStartDate <> '' );
 end;
 
 function SellerListing_Type.HasEndDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FEndDate <> '' );
 end;
 
 function SellerListing_Type.HasStatus() : Boolean;
 begin
-  Result := True;
+  Result := ( FStatus <> '' );
 end;
 
 function SellerListing_Type.HasQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FQuantity <> '' );
 end;
 
 function SellerListing_Type.HasCondition() : Boolean;
 begin
-  Result := True;
+  Result := ( FCondition <> '' );
 end;
 
 function SellerListing_Type.HasSubCondition() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubCondition <> '' );
 end;
 
 function SellerListing_Type.HasSeller() : Boolean;
 begin
-  Result := True;
+  Result := ( FSeller <> Seller_Type(0) );
 end;
 
 function Price_Type.HasAmount() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmount <> integer(0) );
 end;
 
 function Price_Type.HasCurrencyCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FCurrencyCode <> '' );
 end;
 
 { ImageSet_Type }
@@ -13171,6 +14671,8 @@ begin
   inherited Create();
   FSwatchImage := Image_Type.Create();
   FSmallImage := Image_Type.Create();
+  FThumbnailImage := Image_Type.Create();
+  FTinyImage := Image_Type.Create();
   FMediumImage := Image_Type.Create();
   FLargeImage := Image_Type.Create();
 end;
@@ -13181,6 +14683,10 @@ begin
     FreeAndNil(FSwatchImage);
   if Assigned(FSmallImage) then
     FreeAndNil(FSmallImage);
+  if Assigned(FThumbnailImage) then
+    FreeAndNil(FThumbnailImage);
+  if Assigned(FTinyImage) then
+    FreeAndNil(FTinyImage);
   if Assigned(FMediumImage) then
     FreeAndNil(FMediumImage);
   if Assigned(FLargeImage) then
@@ -13190,22 +14696,32 @@ end;
 
 function ImageSet_Type.HasSwatchImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FSwatchImage <> Image_Type(0) );
 end;
 
 function ImageSet_Type.HasSmallImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FSmallImage <> Image_Type(0) );
+end;
+
+function ImageSet_Type.HasThumbnailImage() : Boolean;
+begin
+  Result := ( FThumbnailImage <> Image_Type(0) );
+end;
+
+function ImageSet_Type.HasTinyImage() : Boolean;
+begin
+  Result := ( FTinyImage <> Image_Type(0) );
 end;
 
 function ImageSet_Type.HasMediumImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FMediumImage <> Image_Type(0) );
 end;
 
 function ImageSet_Type.HasLargeImage() : Boolean;
 begin
-  Result := True;
+  Result := ( FLargeImage <> Image_Type(0) );
 end;
 
 { Image_Type }
@@ -13228,7 +14744,7 @@ end;
 
 function Image_Type.HasIsVerified() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsVerified <> '' );
 end;
 
 { ItemAttributes_ItemDimensions_Type }
@@ -13257,32 +14773,32 @@ end;
 
 function ItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FHeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FLength <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWidth <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Languages_Type_Language_Type.Has_Type() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Type <> '' );
 end;
 
 function ItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudioFormat <> '' );
 end;
 
 { ItemAttributes_PackageDimensions_Type }
@@ -13311,22 +14827,22 @@ end;
 
 function ItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FHeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FLength <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWidth <> DecimalWithUnits_Type(0) );
 end;
 
 { ItemAttributes_Type }
@@ -13336,6 +14852,7 @@ begin
   inherited Create();
   FActor := ItemAttributes_ActorArray.Create();
   FAddress := Address_Type.Create();
+  FAge := ItemAttributes_AgeArray.Create();
   FAmazonMaximumAge := DecimalWithUnits_Type.Create();
   FAmazonMinimumAge := DecimalWithUnits_Type.Create();
   FArtist := ItemAttributes_ArtistArray.Create();
@@ -13345,6 +14862,9 @@ begin
   FCameraManualFeatures := ItemAttributes_CameraManualFeaturesArray.Create();
   FCaseDiameter := DecimalWithUnits_Type.Create();
   FCaseThickness := DecimalWithUnits_Type.Create();
+  FCategory := ItemAttributes_CategoryArray.Create();
+  FCategoryBin := ItemAttributes_CategoryBinArray.Create();
+  FCharacter := ItemAttributes_CharacterArray.Create();
   FCompatibleDevices := ItemAttributes_CompatibleDevicesArray.Create();
   FContinuousShootingSpeed := DecimalWithUnits_Type.Create();
   FCPUSpeed := DecimalWithUnits_Type.Create();
@@ -13354,18 +14874,26 @@ begin
   FDigitalZoom := DecimalWithUnits_Type.Create();
   FDirector := ItemAttributes_DirectorArray.Create();
   FDisplaySize := DecimalWithUnits_Type.Create();
+  FEducationalFocus := ItemAttributes_EducationalFocusArray.Create();
+  FEthnicity := ItemAttributes_EthnicityArray.Create();
   FFeature := ItemAttributes_FeatureArray.Create();
   FFirstIssueLeadTime := StringWithUnits_Type.Create();
   FFormat := ItemAttributes_FormatArray.Create();
   FFormFactor := ItemAttributes_FormFactorArray.Create();
+  FGemTypeSetElement := ItemAttributes_GemTypeSetElementArray.Create();
+  FGender := ItemAttributes_GenderArray.Create();
   FGraphicsMemorySize := DecimalWithUnits_Type.Create();
   FHardDiskSize := DecimalWithUnits_Type.Create();
+  FIngredientsSetElement := ItemAttributes_IngredientsSetElementArray.Create();
+  FInterest := ItemAttributes_InterestArray.Create();
   FISOEquivalent := NonNegativeIntegerWithUnits_Type.Create();
   FItemDimensions := ItemAttributes_ItemDimensions_Type.Create();
+  FLanguageName := ItemAttributes_LanguageNameArray.Create();
   FLanguages := ItemAttributes_Languages_Type.Create();
   FListPrice := Price_Type.Create();
   FManufacturerMaximumAge := DecimalWithUnits_Type.Create();
   FManufacturerMinimumAge := DecimalWithUnits_Type.Create();
+  FMaterialTypeSetElement := ItemAttributes_MaterialTypeSetElementArray.Create();
   FMaximumAperture := DecimalWithUnits_Type.Create();
   FMaximumFocalLength := DecimalWithUnits_Type.Create();
   FMaximumHighResolutionImages := NonNegativeIntegerWithUnits_Type.Create();
@@ -13381,12 +14909,16 @@ begin
   FOpticalSensorResolution := DecimalWithUnits_Type.Create();
   FOpticalZoom := DecimalWithUnits_Type.Create();
   FPackageDimensions := ItemAttributes_PackageDimensions_Type.Create();
+  FPantLength := ItemAttributes_PantLengthArray.Create();
+  FPantSize := ItemAttributes_PantSizeArray.Create();
   FPhotoFlashType := ItemAttributes_PhotoFlashTypeArray.Create();
   FPictureFormat := ItemAttributes_PictureFormatArray.Create();
   FPlatform := ItemAttributes_PlatformArray.Create();
+  FPrimaryColor := ItemAttributes_PrimaryColorArray.Create();
   FReturnMethod := ItemAttributes_ReturnMethodArray.Create();
   FRunningTime := DecimalWithUnits_Type.Create();
   FSecondaryCacheSize := NonNegativeIntegerWithUnits_Type.Create();
+  FShoeSize := ItemAttributes_ShoeSizeArray.Create();
   FSpecialFeatures := ItemAttributes_SpecialFeaturesArray.Create();
   FStoneWeight := DecimalWithUnits_Type.Create();
   FSubscriptionLength := NonNegativeIntegerWithUnits_Type.Create();
@@ -13394,6 +14926,7 @@ begin
   FSystemBusSpeed := DecimalWithUnits_Type.Create();
   FSystemMemorySizeMax := DecimalWithUnits_Type.Create();
   FSystemMemorySize := DecimalWithUnits_Type.Create();
+  FTargetBrand := ItemAttributes_TargetBrandArray.Create();
   FTotalDiamondWeight := DecimalWithUnits_Type.Create();
   FTotalGemWeight := DecimalWithUnits_Type.Create();
   FTotalMetalWeight := DecimalWithUnits_Type.Create();
@@ -13407,6 +14940,8 @@ begin
     FreeAndNil(FActor);
   if Assigned(FAddress) then
     FreeAndNil(FAddress);
+  if Assigned(FAge) then
+    FreeAndNil(FAge);
   if Assigned(FAmazonMaximumAge) then
     FreeAndNil(FAmazonMaximumAge);
   if Assigned(FAmazonMinimumAge) then
@@ -13425,6 +14960,12 @@ begin
     FreeAndNil(FCaseDiameter);
   if Assigned(FCaseThickness) then
     FreeAndNil(FCaseThickness);
+  if Assigned(FCategory) then
+    FreeAndNil(FCategory);
+  if Assigned(FCategoryBin) then
+    FreeAndNil(FCategoryBin);
+  if Assigned(FCharacter) then
+    FreeAndNil(FCharacter);
   if Assigned(FCompatibleDevices) then
     FreeAndNil(FCompatibleDevices);
   if Assigned(FContinuousShootingSpeed) then
@@ -13443,6 +14984,10 @@ begin
     FreeAndNil(FDirector);
   if Assigned(FDisplaySize) then
     FreeAndNil(FDisplaySize);
+  if Assigned(FEducationalFocus) then
+    FreeAndNil(FEducationalFocus);
+  if Assigned(FEthnicity) then
+    FreeAndNil(FEthnicity);
   if Assigned(FFeature) then
     FreeAndNil(FFeature);
   if Assigned(FFirstIssueLeadTime) then
@@ -13451,14 +14996,24 @@ begin
     FreeAndNil(FFormat);
   if Assigned(FFormFactor) then
     FreeAndNil(FFormFactor);
+  if Assigned(FGemTypeSetElement) then
+    FreeAndNil(FGemTypeSetElement);
+  if Assigned(FGender) then
+    FreeAndNil(FGender);
   if Assigned(FGraphicsMemorySize) then
     FreeAndNil(FGraphicsMemorySize);
   if Assigned(FHardDiskSize) then
     FreeAndNil(FHardDiskSize);
+  if Assigned(FIngredientsSetElement) then
+    FreeAndNil(FIngredientsSetElement);
+  if Assigned(FInterest) then
+    FreeAndNil(FInterest);
   if Assigned(FISOEquivalent) then
     FreeAndNil(FISOEquivalent);
   if Assigned(FItemDimensions) then
     FreeAndNil(FItemDimensions);
+  if Assigned(FLanguageName) then
+    FreeAndNil(FLanguageName);
   if Assigned(FLanguages) then
     FreeAndNil(FLanguages);
   if Assigned(FListPrice) then
@@ -13467,6 +15022,8 @@ begin
     FreeAndNil(FManufacturerMaximumAge);
   if Assigned(FManufacturerMinimumAge) then
     FreeAndNil(FManufacturerMinimumAge);
+  if Assigned(FMaterialTypeSetElement) then
+    FreeAndNil(FMaterialTypeSetElement);
   if Assigned(FMaximumAperture) then
     FreeAndNil(FMaximumAperture);
   if Assigned(FMaximumFocalLength) then
@@ -13497,18 +15054,26 @@ begin
     FreeAndNil(FOpticalZoom);
   if Assigned(FPackageDimensions) then
     FreeAndNil(FPackageDimensions);
+  if Assigned(FPantLength) then
+    FreeAndNil(FPantLength);
+  if Assigned(FPantSize) then
+    FreeAndNil(FPantSize);
   if Assigned(FPhotoFlashType) then
     FreeAndNil(FPhotoFlashType);
   if Assigned(FPictureFormat) then
     FreeAndNil(FPictureFormat);
   if Assigned(FPlatform) then
     FreeAndNil(FPlatform);
+  if Assigned(FPrimaryColor) then
+    FreeAndNil(FPrimaryColor);
   if Assigned(FReturnMethod) then
     FreeAndNil(FReturnMethod);
   if Assigned(FRunningTime) then
     FreeAndNil(FRunningTime);
   if Assigned(FSecondaryCacheSize) then
     FreeAndNil(FSecondaryCacheSize);
+  if Assigned(FShoeSize) then
+    FreeAndNil(FShoeSize);
   if Assigned(FSpecialFeatures) then
     FreeAndNil(FSpecialFeatures);
   if Assigned(FStoneWeight) then
@@ -13523,6 +15088,8 @@ begin
     FreeAndNil(FSystemMemorySizeMax);
   if Assigned(FSystemMemorySize) then
     FreeAndNil(FSystemMemorySize);
+  if Assigned(FTargetBrand) then
+    FreeAndNil(FTargetBrand);
   if Assigned(FTotalDiamondWeight) then
     FreeAndNil(FTotalDiamondWeight);
   if Assigned(FTotalGemWeight) then
@@ -13538,1327 +15105,1432 @@ end;
 
 function ItemAttributes_Type.HasActor() : Boolean;
 begin
-  Result := True;
+  Result := ( FActor <> ItemAttributes_ActorArray(0) );
 end;
 
 function ItemAttributes_Type.HasAddress() : Boolean;
 begin
-  Result := True;
+  Result := ( FAddress <> Address_Type(0) );
+end;
+
+function ItemAttributes_Type.HasAge() : Boolean;
+begin
+  Result := ( FAge <> ItemAttributes_AgeArray(0) );
 end;
 
 function ItemAttributes_Type.HasAmazonMaximumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmazonMaximumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasAmazonMinimumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmazonMinimumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasAnalogVideoFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FAnalogVideoFormat <> '' );
 end;
 
 function ItemAttributes_Type.HasApertureModes() : Boolean;
 begin
-  Result := True;
+  Result := ( FApertureModes <> '' );
 end;
 
 function ItemAttributes_Type.HasArtist() : Boolean;
 begin
-  Result := True;
+  Result := ( FArtist <> ItemAttributes_ArtistArray(0) );
 end;
 
 function ItemAttributes_Type.HasAspectRatio() : Boolean;
 begin
-  Result := True;
+  Result := ( FAspectRatio <> '' );
 end;
 
 function ItemAttributes_Type.HasAssemblyInstructions() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssemblyInstructions <> '' );
 end;
 
 function ItemAttributes_Type.HasAssemblyRequired() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssemblyRequired <> '' );
 end;
 
 function ItemAttributes_Type.HasAudienceRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudienceRating <> '' );
 end;
 
 function ItemAttributes_Type.HasAudioFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudioFormat <> ItemAttributes_AudioFormatArray(0) );
 end;
 
 function ItemAttributes_Type.HasAuthor() : Boolean;
 begin
-  Result := True;
+  Result := ( FAuthor <> ItemAttributes_AuthorArray(0) );
 end;
 
 function ItemAttributes_Type.HasBackFinding() : Boolean;
 begin
-  Result := True;
+  Result := ( FBackFinding <> '' );
 end;
 
 function ItemAttributes_Type.HasBandMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBandMaterialType <> '' );
 end;
 
 function ItemAttributes_Type.HasBatteriesIncluded() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteriesIncluded <> '' );
 end;
 
 function ItemAttributes_Type.HasBatteriesRequired() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteriesRequired <> '' );
 end;
 
 function ItemAttributes_Type.HasBatteries() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteries <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasBatteryDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteryDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasBatteryType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteryType <> '' );
 end;
 
 function ItemAttributes_Type.HasBezelMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBezelMaterialType <> '' );
 end;
 
 function ItemAttributes_Type.HasBinding() : Boolean;
 begin
-  Result := True;
+  Result := ( FBinding <> '' );
 end;
 
 function ItemAttributes_Type.HasBrand() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrand <> '' );
 end;
 
 function ItemAttributes_Type.HasCalendarType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCalendarType <> '' );
 end;
 
 function ItemAttributes_Type.HasCameraManualFeatures() : Boolean;
 begin
-  Result := True;
+  Result := ( FCameraManualFeatures <> ItemAttributes_CameraManualFeaturesArray(0) );
 end;
 
 function ItemAttributes_Type.HasCaseDiameter() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseDiameter <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasCaseMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseMaterialType <> '' );
 end;
 
 function ItemAttributes_Type.HasCaseThickness() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseThickness <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasCaseType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseType <> '' );
 end;
 
 function ItemAttributes_Type.HasCatalogNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FCatalogNumber <> '' );
+end;
+
+function ItemAttributes_Type.HasCategory() : Boolean;
+begin
+  Result := ( FCategory <> ItemAttributes_CategoryArray(0) );
+end;
+
+function ItemAttributes_Type.HasCategoryBin() : Boolean;
+begin
+  Result := ( FCategoryBin <> ItemAttributes_CategoryBinArray(0) );
 end;
 
 function ItemAttributes_Type.HasCDRWDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FCDRWDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasChainType() : Boolean;
 begin
-  Result := True;
+  Result := ( FChainType <> '' );
+end;
+
+function ItemAttributes_Type.HasCharacter() : Boolean;
+begin
+  Result := ( FCharacter <> ItemAttributes_CharacterArray(0) );
 end;
 
 function ItemAttributes_Type.HasCEROAgeRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FCEROAgeRating <> '' );
 end;
 
 function ItemAttributes_Type.HasClaspType() : Boolean;
 begin
-  Result := True;
+  Result := ( FClaspType <> '' );
 end;
 
 function ItemAttributes_Type.HasClothingSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FClothingSize <> '' );
 end;
 
 function ItemAttributes_Type.HasClubType() : Boolean;
 begin
-  Result := True;
+  Result := ( FClubType <> '' );
 end;
 
 function ItemAttributes_Type.HasColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FColor <> '' );
 end;
 
 function ItemAttributes_Type.HasCompatibility() : Boolean;
 begin
-  Result := True;
+  Result := ( FCompatibility <> '' );
 end;
 
 function ItemAttributes_Type.HasCompatibleDevices() : Boolean;
 begin
-  Result := True;
+  Result := ( FCompatibleDevices <> ItemAttributes_CompatibleDevicesArray(0) );
 end;
 
 function ItemAttributes_Type.HasComputerHardwareType() : Boolean;
 begin
-  Result := True;
+  Result := ( FComputerHardwareType <> '' );
 end;
 
 function ItemAttributes_Type.HasComputerPlatform() : Boolean;
 begin
-  Result := True;
+  Result := ( FComputerPlatform <> '' );
 end;
 
 function ItemAttributes_Type.HasConnectivity() : Boolean;
 begin
-  Result := True;
+  Result := ( FConnectivity <> '' );
 end;
 
 function ItemAttributes_Type.HasContinuousShootingSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FContinuousShootingSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasCountry() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountry <> '' );
 end;
 
 function ItemAttributes_Type.HasCPUManufacturer() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUManufacturer <> '' );
 end;
 
 function ItemAttributes_Type.HasCPUSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasCPUType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUType <> '' );
 end;
 
 function ItemAttributes_Type.HasCreator() : Boolean;
 begin
-  Result := True;
+  Result := ( FCreator <> ItemAttributes_CreatorArray(0) );
 end;
 
 function ItemAttributes_Type.HasCuisine() : Boolean;
 begin
-  Result := True;
+  Result := ( FCuisine <> '' );
 end;
 
 function ItemAttributes_Type.HasDataLinkProtocol() : Boolean;
 begin
-  Result := True;
+  Result := ( FDataLinkProtocol <> ItemAttributes_DataLinkProtocolArray(0) );
 end;
 
 function ItemAttributes_Type.HasDeliveryOption() : Boolean;
 begin
-  Result := True;
+  Result := ( FDeliveryOption <> '' );
 end;
 
 function ItemAttributes_Type.HasDelayBetweenShots() : Boolean;
 begin
-  Result := True;
+  Result := ( FDelayBetweenShots <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasDepartment() : Boolean;
 begin
-  Result := True;
+  Result := ( FDepartment <> '' );
 end;
 
 function ItemAttributes_Type.HasDeweyDecimalNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FDeweyDecimalNumber <> '' );
 end;
 
 function ItemAttributes_Type.HasDialColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FDialColor <> '' );
 end;
 
 function ItemAttributes_Type.HasDialWindowMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FDialWindowMaterialType <> '' );
 end;
 
 function ItemAttributes_Type.HasDigitalZoom() : Boolean;
 begin
-  Result := True;
+  Result := ( FDigitalZoom <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasDirector() : Boolean;
 begin
-  Result := True;
+  Result := ( FDirector <> ItemAttributes_DirectorArray(0) );
 end;
 
 function ItemAttributes_Type.HasDisplayColorSupport() : Boolean;
 begin
-  Result := True;
+  Result := ( FDisplayColorSupport <> '' );
 end;
 
 function ItemAttributes_Type.HasDisplaySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FDisplaySize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasDrumSetPieceQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FDrumSetPieceQuantity <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasDVDLayers() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDLayers <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasDVDRWDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDRWDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasDVDSides() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDSides <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasDPCI() : Boolean;
 begin
-  Result := True;
+  Result := ( FDPCI <> '' );
 end;
 
 function ItemAttributes_Type.HasEAN() : Boolean;
 begin
-  Result := True;
+  Result := ( FEAN <> '' );
 end;
 
 function ItemAttributes_Type.HasEdition() : Boolean;
 begin
-  Result := True;
+  Result := ( FEdition <> '' );
+end;
+
+function ItemAttributes_Type.HasEducationalFocus() : Boolean;
+begin
+  Result := ( FEducationalFocus <> ItemAttributes_EducationalFocusArray(0) );
+end;
+
+function ItemAttributes_Type.HasEthnicity() : Boolean;
+begin
+  Result := ( FEthnicity <> ItemAttributes_EthnicityArray(0) );
 end;
 
 function ItemAttributes_Type.HasESRBAgeRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FESRBAgeRating <> '' );
 end;
 
 function ItemAttributes_Type.HasExternalDisplaySupportDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FExternalDisplaySupportDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasFabricType() : Boolean;
 begin
-  Result := True;
+  Result := ( FFabricType <> '' );
 end;
 
 function ItemAttributes_Type.HasFaxNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FFaxNumber <> '' );
 end;
 
 function ItemAttributes_Type.HasFeature() : Boolean;
 begin
-  Result := True;
+  Result := ( FFeature <> ItemAttributes_FeatureArray(0) );
 end;
 
 function ItemAttributes_Type.HasFilmColorType() : Boolean;
 begin
-  Result := True;
+  Result := ( FFilmColorType <> '' );
 end;
 
 function ItemAttributes_Type.HasFirstIssueLeadTime() : Boolean;
 begin
-  Result := True;
+  Result := ( FFirstIssueLeadTime <> StringWithUnits_Type(0) );
+end;
+
+function ItemAttributes_Type.HasFlavorName() : Boolean;
+begin
+  Result := ( FFlavorName <> '' );
 end;
 
 function ItemAttributes_Type.HasFloppyDiskDriveDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FFloppyDiskDriveDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FFormat <> ItemAttributes_FormatArray(0) );
 end;
 
 function ItemAttributes_Type.HasFormFactor() : Boolean;
 begin
-  Result := True;
+  Result := ( FFormFactor <> ItemAttributes_FormFactorArray(0) );
 end;
 
 function ItemAttributes_Type.HasGemType() : Boolean;
 begin
-  Result := True;
+  Result := ( FGemType <> '' );
+end;
+
+function ItemAttributes_Type.HasGemTypeSetElement() : Boolean;
+begin
+  Result := ( FGemTypeSetElement <> ItemAttributes_GemTypeSetElementArray(0) );
+end;
+
+function ItemAttributes_Type.HasGender() : Boolean;
+begin
+  Result := ( FGender <> ItemAttributes_GenderArray(0) );
 end;
 
 function ItemAttributes_Type.HasGenre() : Boolean;
 begin
-  Result := True;
+  Result := ( FGenre <> '' );
+end;
+
+function ItemAttributes_Type.HasGLProductGroup() : Boolean;
+begin
+  Result := ( FGLProductGroup <> '' );
+end;
+
+function ItemAttributes_Type.HasGolfClubFlex() : Boolean;
+begin
+  Result := ( FGolfClubFlex <> '' );
+end;
+
+function ItemAttributes_Type.HasGolfClubLoft() : Boolean;
+begin
+  Result := ( FGolfClubLoft <> '' );
 end;
 
 function ItemAttributes_Type.HasGraphicsCardInterface() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsCardInterface <> '' );
 end;
 
 function ItemAttributes_Type.HasGraphicsDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasGraphicsMemorySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsMemorySize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasGuitarAttribute() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarAttribute <> '' );
 end;
 
 function ItemAttributes_Type.HasGuitarBridgeSystem() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarBridgeSystem <> '' );
 end;
 
 function ItemAttributes_Type.HasGuitarPickThickness() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarPickThickness <> '' );
 end;
 
 function ItemAttributes_Type.HasGuitarPickupConfiguration() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarPickupConfiguration <> '' );
 end;
 
 function ItemAttributes_Type.HasHandOrientation() : Boolean;
 begin
-  Result := True;
+  Result := ( FHandOrientation <> '' );
 end;
 
 function ItemAttributes_Type.HasHardDiskCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardDiskCount <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasHardDiskSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardDiskSize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasHardDiskInterface() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardDiskInterface <> '' );
 end;
 
 function ItemAttributes_Type.HasHardwarePlatform() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardwarePlatform <> '' );
 end;
 
 function ItemAttributes_Type.HasHasAutoFocus() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasAutoFocus <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasBurstMode() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasBurstMode <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasInCameraEditing() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasInCameraEditing <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasRedEyeReduction() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasRedEyeReduction <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasSelfTimer() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasSelfTimer <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasTripodMount() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasTripodMount <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasVideoOut() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasVideoOut <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHasViewfinder() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasViewfinder <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasHazardousMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FHazardousMaterialType <> '' );
 end;
 
 function ItemAttributes_Type.HasHoursOfOperation() : Boolean;
 begin
-  Result := True;
+  Result := ( FHoursOfOperation <> '' );
 end;
 
 function ItemAttributes_Type.HasIncludedSoftware() : Boolean;
 begin
-  Result := True;
+  Result := ( FIncludedSoftware <> '' );
 end;
 
 function ItemAttributes_Type.HasIncludesMp3Player() : Boolean;
 begin
-  Result := True;
+  Result := ( FIncludesMp3Player <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasIngredients() : Boolean;
 begin
-  Result := True;
+  Result := ( FIngredients <> '' );
+end;
+
+function ItemAttributes_Type.HasIngredientsSetElement() : Boolean;
+begin
+  Result := ( FIngredientsSetElement <> ItemAttributes_IngredientsSetElementArray(0) );
 end;
 
 function ItemAttributes_Type.HasInstrumentKey() : Boolean;
 begin
-  Result := True;
+  Result := ( FInstrumentKey <> '' );
+end;
+
+function ItemAttributes_Type.HasInterest() : Boolean;
+begin
+  Result := ( FInterest <> ItemAttributes_InterestArray(0) );
 end;
 
 function ItemAttributes_Type.HasIsAdultProduct() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsAdultProduct <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasIsAutographed() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsAutographed <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasISBN() : Boolean;
 begin
-  Result := True;
+  Result := ( FISBN <> '' );
 end;
 
 function ItemAttributes_Type.HasIsFragile() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsFragile <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasIsLabCreated() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsLabCreated <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasIsMemorabilia() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsMemorabilia <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasISOEquivalent() : Boolean;
 begin
-  Result := True;
+  Result := ( FISOEquivalent <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasIsPreannounce() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsPreannounce <> boolean(0) );
 end;
 
 function ItemAttributes_Type.HasIssuesPerYear() : Boolean;
 begin
-  Result := True;
+  Result := ( FIssuesPerYear <> '' );
 end;
 
 function ItemAttributes_Type.HasItemDimensions() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemDimensions <> ItemAttributes_ItemDimensions_Type(0) );
 end;
 
 function ItemAttributes_Type.HasKeyboardDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FKeyboardDescription <> '' );
 end;
 
 function ItemAttributes_Type.Has_Label() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Label <> '' );
+end;
+
+function ItemAttributes_Type.HasLanguageName() : Boolean;
+begin
+  Result := ( FLanguageName <> ItemAttributes_LanguageNameArray(0) );
 end;
 
 function ItemAttributes_Type.HasLanguages() : Boolean;
 begin
-  Result := True;
+  Result := ( FLanguages <> ItemAttributes_Languages_Type(0) );
 end;
 
 function ItemAttributes_Type.HasLegalDisclaimer() : Boolean;
 begin
-  Result := True;
+  Result := ( FLegalDisclaimer <> '' );
 end;
 
 function ItemAttributes_Type.HasLensType() : Boolean;
 begin
-  Result := True;
+  Result := ( FLensType <> '' );
 end;
 
 function ItemAttributes_Type.HasLineVoltage() : Boolean;
 begin
-  Result := True;
+  Result := ( FLineVoltage <> '' );
 end;
 
 function ItemAttributes_Type.HasListPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FListPrice <> Price_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMacroFocusRange() : Boolean;
 begin
-  Result := True;
+  Result := ( FMacroFocusRange <> '' );
 end;
 
 function ItemAttributes_Type.HasMagazineType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMagazineType <> '' );
 end;
 
 function ItemAttributes_Type.HasMalletHardness() : Boolean;
 begin
-  Result := True;
+  Result := ( FMalletHardness <> '' );
 end;
 
 function ItemAttributes_Type.HasManufacturer() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturer <> '' );
 end;
 
 function ItemAttributes_Type.HasManufacturerLaborWarrantyDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerLaborWarrantyDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasManufacturerMaximumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerMaximumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasManufacturerMinimumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerMinimumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasManufacturerPartsWarrantyDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerPartsWarrantyDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaterialType <> '' );
+end;
+
+function ItemAttributes_Type.HasMaterialTypeSetElement() : Boolean;
+begin
+  Result := ( FMaterialTypeSetElement <> ItemAttributes_MaterialTypeSetElementArray(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumAperture() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumAperture <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumColorDepth() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumColorDepth <> '' );
 end;
 
 function ItemAttributes_Type.HasMaximumFocalLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumFocalLength <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumHighResolutionImages() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumHighResolutionImages <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumHorizontalResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumHorizontalResolution <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumLowResolutionImages() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumLowResolutionImages <> '' );
 end;
 
 function ItemAttributes_Type.HasMaximumResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumResolution <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumShutterSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumShutterSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumVerticalResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumVerticalResolution <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMaximumWeightRecommendation() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumWeightRecommendation <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMediaType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMediaType <> '' );
 end;
 
 function ItemAttributes_Type.HasMemorySlotsAvailable() : Boolean;
 begin
-  Result := True;
+  Result := ( FMemorySlotsAvailable <> '' );
 end;
 
 function ItemAttributes_Type.HasMetalStamp() : Boolean;
 begin
-  Result := True;
+  Result := ( FMetalStamp <> '' );
 end;
 
 function ItemAttributes_Type.HasMetalType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMetalType <> '' );
 end;
 
 function ItemAttributes_Type.HasMiniMovieDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FMiniMovieDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasMinimumFocalLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumFocalLength <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMinimumShutterSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumShutterSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasModel() : Boolean;
 begin
-  Result := True;
+  Result := ( FModel <> '' );
 end;
 
 function ItemAttributes_Type.HasModelYear() : Boolean;
 begin
-  Result := True;
+  Result := ( FModelYear <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasModemDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FModemDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasMonitorSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FMonitorSize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMonitorViewableDiagonalSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FMonitorViewableDiagonalSize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasMouseDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FMouseDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasMPN() : Boolean;
 begin
-  Result := True;
+  Result := ( FMPN <> '' );
 end;
 
 function ItemAttributes_Type.HasMusicalStyle() : Boolean;
 begin
-  Result := True;
+  Result := ( FMusicalStyle <> '' );
 end;
 
 function ItemAttributes_Type.HasNativeResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FNativeResolution <> '' );
 end;
 
 function ItemAttributes_Type.HasNeighborhood() : Boolean;
 begin
-  Result := True;
+  Result := ( FNeighborhood <> '' );
 end;
 
 function ItemAttributes_Type.HasNetworkInterfaceDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FNetworkInterfaceDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasNotebookDisplayTechnology() : Boolean;
 begin
-  Result := True;
+  Result := ( FNotebookDisplayTechnology <> '' );
 end;
 
 function ItemAttributes_Type.HasNotebookPointingDeviceDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FNotebookPointingDeviceDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasNumberOfDiscs() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfDiscs <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfIssues() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfIssues <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfItems <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfKeys() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfKeys <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfPages <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfPearls() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfPearls <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfRapidFireShots() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfRapidFireShots <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfStones() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfStones <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfStrings() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfStrings <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasNumberOfTracks() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfTracks <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasOperatingSystem() : Boolean;
 begin
-  Result := True;
+  Result := ( FOperatingSystem <> '' );
 end;
 
 function ItemAttributes_Type.HasOpticalSensorResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FOpticalSensorResolution <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasOpticalZoom() : Boolean;
 begin
-  Result := True;
+  Result := ( FOpticalZoom <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasOriginalReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FOriginalReleaseDate <> '' );
 end;
 
 function ItemAttributes_Type.HasOutputWattage() : Boolean;
 begin
-  Result := True;
+  Result := ( FOutputWattage <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasPackageDimensions() : Boolean;
 begin
-  Result := True;
+  Result := ( FPackageDimensions <> ItemAttributes_PackageDimensions_Type(0) );
 end;
 
 function ItemAttributes_Type.HasPackageQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FPackageQuantity <> nonNegativeInteger(0) );
+end;
+
+function ItemAttributes_Type.HasPantLength() : Boolean;
+begin
+  Result := ( FPantLength <> ItemAttributes_PantLengthArray(0) );
+end;
+
+function ItemAttributes_Type.HasPantSize() : Boolean;
+begin
+  Result := ( FPantSize <> ItemAttributes_PantSizeArray(0) );
 end;
 
 function ItemAttributes_Type.HasPearlLustre() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlLustre <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlMinimumColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlMinimumColor <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlShape() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlShape <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlStringingMethod() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlStringingMethod <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlSurfaceBlemishes() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlSurfaceBlemishes <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlType() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlType <> '' );
 end;
 
 function ItemAttributes_Type.HasPearlUniformity() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlUniformity <> '' );
 end;
 
 function ItemAttributes_Type.HasPhoneNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FPhoneNumber <> '' );
 end;
 
 function ItemAttributes_Type.HasPhotoFlashType() : Boolean;
 begin
-  Result := True;
+  Result := ( FPhotoFlashType <> ItemAttributes_PhotoFlashTypeArray(0) );
 end;
 
 function ItemAttributes_Type.HasPictureFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FPictureFormat <> ItemAttributes_PictureFormatArray(0) );
 end;
 
 function ItemAttributes_Type.HasPlatform() : Boolean;
 begin
-  Result := True;
+  Result := ( FPlatform <> ItemAttributes_PlatformArray(0) );
 end;
 
 function ItemAttributes_Type.HasPriceRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FPriceRating <> nonNegativeInteger(0) );
+end;
+
+function ItemAttributes_Type.HasPrimaryColor() : Boolean;
+begin
+  Result := ( FPrimaryColor <> ItemAttributes_PrimaryColorArray(0) );
 end;
 
 function ItemAttributes_Type.HasProcessorCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FProcessorCount <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasProductGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductGroup <> '' );
 end;
 
 function ItemAttributes_Type.HasProductSiteLaunchDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductSiteLaunchDate <> '' );
 end;
 
 function ItemAttributes_Type.HasProductTypeName() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductTypeName <> '' );
 end;
 
 function ItemAttributes_Type.HasProductTypeSubcategory() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductTypeSubcategory <> '' );
 end;
 
 function ItemAttributes_Type.HasPromotionalTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FPromotionalTag <> '' );
 end;
 
 function ItemAttributes_Type.HasPublicationDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FPublicationDate <> '' );
 end;
 
 function ItemAttributes_Type.HasPublisher() : Boolean;
 begin
-  Result := True;
+  Result := ( FPublisher <> '' );
 end;
 
 function ItemAttributes_Type.HasPOBoxShippingExcluded() : Boolean;
 begin
-  Result := True;
+  Result := ( FPOBoxShippingExcluded <> '' );
 end;
 
 function ItemAttributes_Type.HasReadingLevel() : Boolean;
 begin
-  Result := True;
+  Result := ( FReadingLevel <> '' );
 end;
 
 function ItemAttributes_Type.HasReturnMethod() : Boolean;
 begin
-  Result := True;
+  Result := ( FReturnMethod <> ItemAttributes_ReturnMethodArray(0) );
 end;
 
 function ItemAttributes_Type.HasRecorderTrackCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FRecorderTrackCount <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasRegionCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FRegionCode <> '' );
 end;
 
 function ItemAttributes_Type.HasRegionOfOrigin() : Boolean;
 begin
-  Result := True;
+  Result := ( FRegionOfOrigin <> '' );
 end;
 
 function ItemAttributes_Type.HasReturnPolicy() : Boolean;
 begin
-  Result := True;
+  Result := ( FReturnPolicy <> '' );
 end;
 
 function ItemAttributes_Type.HasReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FReleaseDate <> '' );
 end;
 
 function ItemAttributes_Type.HasRemovableMemory() : Boolean;
 begin
-  Result := True;
+  Result := ( FRemovableMemory <> '' );
 end;
 
 function ItemAttributes_Type.HasRemovableStorage() : Boolean;
 begin
-  Result := True;
+  Result := ( FRemovableStorage <> '' );
 end;
 
 function ItemAttributes_Type.HasRequiredVoltageRange() : Boolean;
 begin
-  Result := True;
+  Result := ( FRequiredVoltageRange <> '' );
 end;
 
 function ItemAttributes_Type.HasResolutionModes() : Boolean;
 begin
-  Result := True;
+  Result := ( FResolutionModes <> '' );
 end;
 
 function ItemAttributes_Type.HasRingSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FRingSize <> '' );
 end;
 
 function ItemAttributes_Type.HasRunningTime() : Boolean;
 begin
-  Result := True;
+  Result := ( FRunningTime <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasScentName() : Boolean;
 begin
-  Result := True;
+  Result := ( FScentName <> '' );
 end;
 
 function ItemAttributes_Type.HasSecondaryCacheSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSecondaryCacheSize <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasSettingType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSettingType <> '' );
 end;
 
 function ItemAttributes_Type.HasShaftMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FShaftMaterialType <> '' );
+end;
+
+function ItemAttributes_Type.HasShoeSize() : Boolean;
+begin
+  Result := ( FShoeSize <> ItemAttributes_ShoeSizeArray(0) );
 end;
 
 function ItemAttributes_Type.HasSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSize <> '' );
 end;
 
 function ItemAttributes_Type.HasSizePerPearl() : Boolean;
 begin
-  Result := True;
+  Result := ( FSizePerPearl <> '' );
 end;
 
 function ItemAttributes_Type.HasSkillLevel() : Boolean;
 begin
-  Result := True;
+  Result := ( FSkillLevel <> '' );
 end;
 
 function ItemAttributes_Type.HasSKU() : Boolean;
 begin
-  Result := True;
+  Result := ( FSKU <> '' );
 end;
 
 function ItemAttributes_Type.HasSoldInStores() : Boolean;
 begin
-  Result := True;
+  Result := ( FSoldInStores <> '' );
 end;
 
 function ItemAttributes_Type.HasSoundCardDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FSoundCardDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasSpeakerCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpeakerCount <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasSpeakerDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpeakerDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasSpecialFeatures() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpecialFeatures <> ItemAttributes_SpecialFeaturesArray(0) );
 end;
 
 function ItemAttributes_Type.HasStoneClarity() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneClarity <> '' );
 end;
 
 function ItemAttributes_Type.HasStoneColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneColor <> '' );
 end;
 
 function ItemAttributes_Type.HasStoneCut() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneCut <> '' );
 end;
 
 function ItemAttributes_Type.HasStoneShape() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneShape <> '' );
 end;
 
 function ItemAttributes_Type.HasStoneWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasStudio() : Boolean;
 begin
-  Result := True;
+  Result := ( FStudio <> '' );
 end;
 
 function ItemAttributes_Type.HasStyle() : Boolean;
 begin
-  Result := True;
+  Result := ( FStyle <> '' );
 end;
 
 function ItemAttributes_Type.HasSubscriptionLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionLength <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasSupportedImageType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSupportedImageType <> ItemAttributes_SupportedImageTypeArray(0) );
 end;
 
 function ItemAttributes_Type.HasSupportedMediaSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSupportedMediaSize <> '' );
 end;
 
 function ItemAttributes_Type.HasSystemBusSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemBusSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasSystemMemorySizeMax() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemorySizeMax <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasSystemMemorySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemorySize <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasSystemMemoryType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemoryType <> '' );
+end;
+
+function ItemAttributes_Type.HasTargetBrand() : Boolean;
+begin
+  Result := ( FTargetBrand <> ItemAttributes_TargetBrandArray(0) );
 end;
 
 function ItemAttributes_Type.HasTellingPageIndicator() : Boolean;
 begin
-  Result := True;
+  Result := ( FTellingPageIndicator <> '' );
 end;
 
 function ItemAttributes_Type.HasTheatricalReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FTheatricalReleaseDate <> '' );
 end;
 
 function ItemAttributes_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function ItemAttributes_Type.HasTotalDiamondWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalDiamondWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasTotalExternalBaysFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalExternalBaysFree <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalFirewirePorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFirewirePorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalGemWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalGemWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasTotalInternalBaysFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalInternalBaysFree <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalMetalWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalMetalWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasTotalNTSCPALPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalNTSCPALPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalParallelPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalParallelPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalPCCardSlots() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPCCardSlots <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalPCISlotsFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPCISlotsFree <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalSerialPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalSerialPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalSVideoOutPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalSVideoOutPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalUSB2Ports() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalUSB2Ports <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalUSBPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalUSBPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasTotalVGAOutPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVGAOutPorts <> nonNegativeInteger(0) );
 end;
 
 function ItemAttributes_Type.HasUPC() : Boolean;
 begin
-  Result := True;
+  Result := ( FUPC <> '' );
 end;
 
 function ItemAttributes_Type.HasVariationDenomination() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationDenomination <> '' );
 end;
 
 function ItemAttributes_Type.HasVariationDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationDescription <> '' );
 end;
 
 function ItemAttributes_Type.HasWarranty() : Boolean;
 begin
-  Result := True;
+  Result := ( FWarranty <> '' );
 end;
 
 function ItemAttributes_Type.HasWatchMovementType() : Boolean;
 begin
-  Result := True;
+  Result := ( FWatchMovementType <> '' );
 end;
 
 function ItemAttributes_Type.HasWaterResistanceDepth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWaterResistanceDepth <> DecimalWithUnits_Type(0) );
 end;
 
 function ItemAttributes_Type.HasWEEETaxValue() : Boolean;
 begin
-  Result := True;
+  Result := ( FWEEETaxValue <> Price_Type(0) );
 end;
 
 function ItemAttributes_Type.HasWirelessMicrophoneFrequency() : Boolean;
 begin
-  Result := True;
+  Result := ( FWirelessMicrophoneFrequency <> nonNegativeInteger(0) );
 end;
 
 { MerchantItemAttributes_ItemDimensions_Type }
@@ -14887,27 +16559,27 @@ end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FHeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FLength <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWidth <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudioFormat <> '' );
 end;
 
 { MerchantItemAttributes_PackageDimensions_Type }
@@ -14936,37 +16608,37 @@ end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FHeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FLength <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWidth <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_VendorRebate_Type.Has_Type() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Type <> '' );
 end;
 
 function MerchantItemAttributes_VendorRebate_Type.HasStartDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FStartDate <> '' );
 end;
 
 function MerchantItemAttributes_VendorRebate_Type.HasEndDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FEndDate <> '' );
 end;
 
 { MerchantItemAttributes_Type }
@@ -15169,1227 +16841,1227 @@ end;
 
 function MerchantItemAttributes_Type.HasActor() : Boolean;
 begin
-  Result := True;
+  Result := ( FActor <> MerchantItemAttributes_ActorArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasAddress() : Boolean;
 begin
-  Result := True;
+  Result := ( FAddress <> Address_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasAmazonMaximumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmazonMaximumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasAmazonMinimumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FAmazonMinimumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasApertureModes() : Boolean;
 begin
-  Result := True;
+  Result := ( FApertureModes <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasArtist() : Boolean;
 begin
-  Result := True;
+  Result := ( FArtist <> MerchantItemAttributes_ArtistArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasAspectRatio() : Boolean;
 begin
-  Result := True;
+  Result := ( FAspectRatio <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasAssemblyInstructions() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssemblyInstructions <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasAssemblyRequired() : Boolean;
 begin
-  Result := True;
+  Result := ( FAssemblyRequired <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasAudienceRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudienceRating <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasAudioFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FAudioFormat <> MerchantItemAttributes_AudioFormatArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasAuthor() : Boolean;
 begin
-  Result := True;
+  Result := ( FAuthor <> MerchantItemAttributes_AuthorArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasBackFinding() : Boolean;
 begin
-  Result := True;
+  Result := ( FBackFinding <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBandMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBandMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBatteriesIncluded() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteriesIncluded <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBatteriesRequired() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteriesRequired <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBatteries() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteries <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasBatteryDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteryDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBatteryType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBatteryType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBezelMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FBezelMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBinding() : Boolean;
 begin
-  Result := True;
+  Result := ( FBinding <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasBrand() : Boolean;
 begin
-  Result := True;
+  Result := ( FBrand <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCalendarType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCalendarType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCameraManualFeatures() : Boolean;
 begin
-  Result := True;
+  Result := ( FCameraManualFeatures <> MerchantItemAttributes_CameraManualFeaturesArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCaseDiameter() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseDiameter <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCaseMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCaseThickness() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseThickness <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCaseType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCaseType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCatalogNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FCatalogNumber <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCDRWDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FCDRWDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasChainType() : Boolean;
 begin
-  Result := True;
+  Result := ( FChainType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasClaspType() : Boolean;
 begin
-  Result := True;
+  Result := ( FClaspType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasClothingSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FClothingSize <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FColor <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCompatibility() : Boolean;
 begin
-  Result := True;
+  Result := ( FCompatibility <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasComputerHardwareType() : Boolean;
 begin
-  Result := True;
+  Result := ( FComputerHardwareType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasComputerPlatform() : Boolean;
 begin
-  Result := True;
+  Result := ( FComputerPlatform <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasConnectivity() : Boolean;
 begin
-  Result := True;
+  Result := ( FConnectivity <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasContinuousShootingSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FContinuousShootingSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCountry() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountry <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCountryOfOrigin() : Boolean;
 begin
-  Result := True;
+  Result := ( FCountryOfOrigin <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCPUManufacturer() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUManufacturer <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCPUSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCPUType() : Boolean;
 begin
-  Result := True;
+  Result := ( FCPUType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCreator() : Boolean;
 begin
-  Result := True;
+  Result := ( FCreator <> MerchantItemAttributes_CreatorArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasCuisine() : Boolean;
 begin
-  Result := True;
+  Result := ( FCuisine <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasCustomizable() : Boolean;
 begin
-  Result := True;
+  Result := ( FCustomizable <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDelayBetweenShots() : Boolean;
 begin
-  Result := True;
+  Result := ( FDelayBetweenShots <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDeliveryOption() : Boolean;
 begin
-  Result := True;
+  Result := ( FDeliveryOption <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDepartment() : Boolean;
 begin
-  Result := True;
+  Result := ( FDepartment <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDeweyDecimalNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FDeweyDecimalNumber <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDialColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FDialColor <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDialWindowMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FDialWindowMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDigitalZoom() : Boolean;
 begin
-  Result := True;
+  Result := ( FDigitalZoom <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDirector() : Boolean;
 begin
-  Result := True;
+  Result := ( FDirector <> MerchantItemAttributes_DirectorArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDisplaySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FDisplaySize <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDrumSetPieceQuantity() : Boolean;
 begin
-  Result := True;
+  Result := ( FDrumSetPieceQuantity <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDVDLayers() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDLayers <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDVDRWDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDRWDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasDVDSides() : Boolean;
 begin
-  Result := True;
+  Result := ( FDVDSides <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasDPCI() : Boolean;
 begin
-  Result := True;
+  Result := ( FDPCI <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasEAN() : Boolean;
 begin
-  Result := True;
+  Result := ( FEAN <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasEdition() : Boolean;
 begin
-  Result := True;
+  Result := ( FEdition <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasESRBAgeRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FESRBAgeRating <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasExternalDisplaySupportDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FExternalDisplaySupportDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasFabricType() : Boolean;
 begin
-  Result := True;
+  Result := ( FFabricType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasFaxNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FFaxNumber <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasFeature() : Boolean;
 begin
-  Result := True;
+  Result := ( FFeature <> MerchantItemAttributes_FeatureArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasFirstIssueLeadTime() : Boolean;
 begin
-  Result := True;
+  Result := ( FFirstIssueLeadTime <> StringWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasFloppyDiskDriveDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FFloppyDiskDriveDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FFormat <> MerchantItemAttributes_FormatArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasFixedShippingCharge() : Boolean;
 begin
-  Result := True;
+  Result := ( FFixedShippingCharge <> Price_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasGemType() : Boolean;
 begin
-  Result := True;
+  Result := ( FGemType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGraphicsCardInterface() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsCardInterface <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGraphicsDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGraphicsMemorySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FGraphicsMemorySize <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasGuitarAttribute() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarAttribute <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGuitarBridgeSystem() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarBridgeSystem <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGuitarPickThickness() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarPickThickness <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasGuitarPickupConfiguration() : Boolean;
 begin
-  Result := True;
+  Result := ( FGuitarPickupConfiguration <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasHardDiskCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardDiskCount <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHardDiskSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FHardDiskSize <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasAutoFocus() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasAutoFocus <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasBurstMode() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasBurstMode <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasInCameraEditing() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasInCameraEditing <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasRedEyeReduction() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasRedEyeReduction <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasSelfTimer() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasSelfTimer <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasTripodMount() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasTripodMount <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasVideoOut() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasVideoOut <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHasViewfinder() : Boolean;
 begin
-  Result := True;
+  Result := ( FHasViewfinder <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasHazardousMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FHazardousMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasHoursOfOperation() : Boolean;
 begin
-  Result := True;
+  Result := ( FHoursOfOperation <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasIncludedSoftware() : Boolean;
 begin
-  Result := True;
+  Result := ( FIncludedSoftware <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasIncludesMp3Player() : Boolean;
 begin
-  Result := True;
+  Result := ( FIncludesMp3Player <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasIndications() : Boolean;
 begin
-  Result := True;
+  Result := ( FIndications <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasIngredients() : Boolean;
 begin
-  Result := True;
+  Result := ( FIngredients <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasInstrumentKey() : Boolean;
 begin
-  Result := True;
+  Result := ( FInstrumentKey <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasIsAutographed() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsAutographed <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasISBN() : Boolean;
 begin
-  Result := True;
+  Result := ( FISBN <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasIsFragile() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsFragile <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasIsLabCreated() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsLabCreated <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasIsMemorabilia() : Boolean;
 begin
-  Result := True;
+  Result := ( FIsMemorabilia <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasISOEquivalent() : Boolean;
 begin
-  Result := True;
+  Result := ( FISOEquivalent <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasIssuesPerYear() : Boolean;
 begin
-  Result := True;
+  Result := ( FIssuesPerYear <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasItemDimensions() : Boolean;
 begin
-  Result := True;
+  Result := ( FItemDimensions <> MerchantItemAttributes_ItemDimensions_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasKeyboardDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FKeyboardDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.Has_Label() : Boolean;
 begin
-  Result := True;
+  Result := ( F_Label <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasLanguages() : Boolean;
 begin
-  Result := True;
+  Result := ( FLanguages <> MerchantItemAttributes_Languages_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasLegalDisclaimer() : Boolean;
 begin
-  Result := True;
+  Result := ( FLegalDisclaimer <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasLineVoltage() : Boolean;
 begin
-  Result := True;
+  Result := ( FLineVoltage <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasListPrice() : Boolean;
 begin
-  Result := True;
+  Result := ( FListPrice <> Price_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMacroFocusRange() : Boolean;
 begin
-  Result := True;
+  Result := ( FMacroFocusRange <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMagazineType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMagazineType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMalletHardness() : Boolean;
 begin
-  Result := True;
+  Result := ( FMalletHardness <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturer() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturer <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerLaborWarrantyDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerLaborWarrantyDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerMaximumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerMaximumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerMinimumAge() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerMinimumAge <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerPartsWarrantyDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FManufacturerPartsWarrantyDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMaterialType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaterialType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumAperture() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumAperture <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumColorDepth() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumColorDepth <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumFocalLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumFocalLength <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumHighResolutionImages() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumHighResolutionImages <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumHorizontalResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumHorizontalResolution <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumLowResolutionImages() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumLowResolutionImages <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumResolution <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumShutterSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumShutterSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumVerticalResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumVerticalResolution <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumWeightRecommendation() : Boolean;
 begin
-  Result := True;
+  Result := ( FMaximumWeightRecommendation <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMemorySlotsAvailable() : Boolean;
 begin
-  Result := True;
+  Result := ( FMemorySlotsAvailable <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMetalStamp() : Boolean;
 begin
-  Result := True;
+  Result := ( FMetalStamp <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMetalType() : Boolean;
 begin
-  Result := True;
+  Result := ( FMetalType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMiniMovieDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FMiniMovieDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMinimumFocalLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumFocalLength <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMinimumShutterSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FMinimumShutterSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasModel() : Boolean;
 begin
-  Result := True;
+  Result := ( FModel <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasModelYear() : Boolean;
 begin
-  Result := True;
+  Result := ( FModelYear <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasModemDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FModemDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMonitorSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FMonitorSize <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMonitorViewableDiagonalSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FMonitorViewableDiagonalSize <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasMouseDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FMouseDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMPN() : Boolean;
 begin
-  Result := True;
+  Result := ( FMPN <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasMusicalStyle() : Boolean;
 begin
-  Result := True;
+  Result := ( FMusicalStyle <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNativeResolution() : Boolean;
 begin
-  Result := True;
+  Result := ( FNativeResolution <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNeighborhood() : Boolean;
 begin
-  Result := True;
+  Result := ( FNeighborhood <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNetworkInterfaceDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FNetworkInterfaceDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNotebookDisplayTechnology() : Boolean;
 begin
-  Result := True;
+  Result := ( FNotebookDisplayTechnology <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNotebookPointingDeviceDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FNotebookPointingDeviceDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfDiscs() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfDiscs <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfIssues() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfIssues <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfItems() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfItems <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfKeys() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfKeys <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfPages() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfPages <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfPearls() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfPearls <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfRapidFireShots() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfRapidFireShots <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfStones() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfStones <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfStrings() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfStrings <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasNumberOfTracks() : Boolean;
 begin
-  Result := True;
+  Result := ( FNumberOfTracks <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasOpticalZoom() : Boolean;
 begin
-  Result := True;
+  Result := ( FOpticalZoom <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasOriginalReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FOriginalReleaseDate <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasOutputWattage() : Boolean;
 begin
-  Result := True;
+  Result := ( FOutputWattage <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasPackageDimensions() : Boolean;
 begin
-  Result := True;
+  Result := ( FPackageDimensions <> MerchantItemAttributes_PackageDimensions_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasPearlLustre() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlLustre <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlMinimumColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlMinimumColor <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlShape() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlShape <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlStringingMethod() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlStringingMethod <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlSurfaceBlemishes() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlSurfaceBlemishes <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlType() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPearlUniformity() : Boolean;
 begin
-  Result := True;
+  Result := ( FPearlUniformity <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPhoneNumber() : Boolean;
 begin
-  Result := True;
+  Result := ( FPhoneNumber <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPhotoFlashType() : Boolean;
 begin
-  Result := True;
+  Result := ( FPhotoFlashType <> MerchantItemAttributes_PhotoFlashTypeArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasPictureFormat() : Boolean;
 begin
-  Result := True;
+  Result := ( FPictureFormat <> MerchantItemAttributes_PictureFormatArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasPlatform() : Boolean;
 begin
-  Result := True;
+  Result := ( FPlatform <> MerchantItemAttributes_PlatformArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasPriceRating() : Boolean;
 begin
-  Result := True;
+  Result := ( FPriceRating <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasProcessorCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FProcessorCount <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasProductGroup() : Boolean;
 begin
-  Result := True;
+  Result := ( FProductGroup <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPromotionalTag() : Boolean;
 begin
-  Result := True;
+  Result := ( FPromotionalTag <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPOBoxShippingExcluded() : Boolean;
 begin
-  Result := True;
+  Result := ( FPOBoxShippingExcluded <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPublicationDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FPublicationDate <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPublisher() : Boolean;
 begin
-  Result := True;
+  Result := ( FPublisher <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasPurchasingChannel() : Boolean;
 begin
-  Result := True;
+  Result := ( FPurchasingChannel <> MerchantItemAttributes_PurchasingChannelArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasReadingLevel() : Boolean;
 begin
-  Result := True;
+  Result := ( FReadingLevel <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasRecorderTrackCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FRecorderTrackCount <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasRegionCode() : Boolean;
 begin
-  Result := True;
+  Result := ( FRegionCode <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasRegionOfOrigin() : Boolean;
 begin
-  Result := True;
+  Result := ( FRegionOfOrigin <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FReleaseDate <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasReturnMethod() : Boolean;
 begin
-  Result := True;
+  Result := ( FReturnMethod <> MerchantItemAttributes_ReturnMethodArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasRemovableMemory() : Boolean;
 begin
-  Result := True;
+  Result := ( FRemovableMemory <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasResolutionModes() : Boolean;
 begin
-  Result := True;
+  Result := ( FResolutionModes <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasReturnPolicy() : Boolean;
 begin
-  Result := True;
+  Result := ( FReturnPolicy <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasRingSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FRingSize <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSafetyWarning() : Boolean;
 begin
-  Result := True;
+  Result := ( FSafetyWarning <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSalesRestriction() : Boolean;
 begin
-  Result := True;
+  Result := ( FSalesRestriction <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSecondaryCacheSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSecondaryCacheSize <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSettingType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSettingType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSize <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSKU() : Boolean;
 begin
-  Result := True;
+  Result := ( FSKU <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSoldInStores() : Boolean;
 begin
-  Result := True;
+  Result := ( FSoldInStores <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSizePerPearl() : Boolean;
 begin
-  Result := True;
+  Result := ( FSizePerPearl <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSkillLevel() : Boolean;
 begin
-  Result := True;
+  Result := ( FSkillLevel <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSoundCardDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FSoundCardDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSpeakerCount() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpeakerCount <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSpeakerDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpeakerDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSpecialFeatures() : Boolean;
 begin
-  Result := True;
+  Result := ( FSpecialFeatures <> MerchantItemAttributes_SpecialFeaturesArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasStoneClarity() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneClarity <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasStoneColor() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneColor <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasStoneCut() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneCut <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasStoneShape() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneShape <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasStoneWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FStoneWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasStudio() : Boolean;
 begin
-  Result := True;
+  Result := ( FStudio <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasSubscriptionLength() : Boolean;
 begin
-  Result := True;
+  Result := ( FSubscriptionLength <> NonNegativeIntegerWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSupportedImageType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSupportedImageType <> MerchantItemAttributes_SupportedImageTypeArray(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSystemBusSpeed() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemBusSpeed <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemorySizeMax() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemorySizeMax <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemorySize() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemorySize <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemoryType() : Boolean;
 begin
-  Result := True;
+  Result := ( FSystemMemoryType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasTellingPageIndicator() : Boolean;
 begin
-  Result := True;
+  Result := ( FTellingPageIndicator <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasTheatricalReleaseDate() : Boolean;
 begin
-  Result := True;
+  Result := ( FTheatricalReleaseDate <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasTitle() : Boolean;
 begin
-  Result := True;
+  Result := ( FTitle <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasTotalDiamondWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalDiamondWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalExternalBaysFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalExternalBaysFree <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalFirewirePorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalFirewirePorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalGemWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalGemWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalInternalBaysFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalInternalBaysFree <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalMetalWeight() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalMetalWeight <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalNTSCPALPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalNTSCPALPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalParallelPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalParallelPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalPCCardSlots() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPCCardSlots <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalPCISlotsFree() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalPCISlotsFree <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalSerialPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalSerialPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalSVideoOutPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalSVideoOutPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalUSB2Ports() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalUSB2Ports <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalUSBPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalUSBPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasTotalVGAOutPorts() : Boolean;
 begin
-  Result := True;
+  Result := ( FTotalVGAOutPorts <> nonNegativeInteger(0) );
 end;
 
 function MerchantItemAttributes_Type.HasUPC() : Boolean;
 begin
-  Result := True;
+  Result := ( FUPC <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasVariationDenomination() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationDenomination <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasVariationDescription() : Boolean;
 begin
-  Result := True;
+  Result := ( FVariationDescription <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasVendorRebate() : Boolean;
 begin
-  Result := True;
+  Result := ( FVendorRebate <> MerchantItemAttributes_VendorRebate_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasWarranty() : Boolean;
 begin
-  Result := True;
+  Result := ( FWarranty <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasWatchMovementType() : Boolean;
 begin
-  Result := True;
+  Result := ( FWatchMovementType <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasWebsiteBuyability() : Boolean;
 begin
-  Result := True;
+  Result := ( FWebsiteBuyability <> '' );
 end;
 
 function MerchantItemAttributes_Type.HasWaterResistanceDepth() : Boolean;
 begin
-  Result := True;
+  Result := ( FWaterResistanceDepth <> DecimalWithUnits_Type(0) );
 end;
 
 function MerchantItemAttributes_Type.HasWirelessMicrophoneFrequency() : Boolean;
 begin
-  Result := True;
+  Result := ( FWirelessMicrophoneFrequency <> nonNegativeInteger(0) );
 end;
 
 { Help_RequestArray }
@@ -16822,6 +18494,30 @@ end;
 class function SellerListingLookupResponse_SellerListingsArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= SellerListings_Type;
+end;
+
+{ TagLookup_RequestArray }
+
+function TagLookup_RequestArray.GetItem(AIndex: Integer): TagLookupRequest_Type;
+begin
+  Result := Inherited GetItem(AIndex) As TagLookupRequest_Type;
+end;
+
+class function TagLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TagLookupRequest_Type;
+end;
+
+{ TagLookupResponse_TagsArray }
+
+function TagLookupResponse_TagsArray.GetItem(AIndex: Integer): Tags_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Tags_Type;
+end;
+
+class function TagLookupResponse_TagsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Tags_Type;
 end;
 
 { Bin_BinParameterArray }
@@ -17532,6 +19228,18 @@ begin
   System.SetLength(FData,i);
 end;
 
+{ CartAddRequest_Items_Type_Item_Type_MetaDataArray }
+
+function CartAddRequest_Items_Type_Item_Type_MetaDataArray.GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type_MetaData_Type;
+begin
+  Result := Inherited GetItem(AIndex) As CartAddRequest_Items_Type_Item_Type_MetaData_Type;
+end;
+
+class function CartAddRequest_Items_Type_Item_Type_MetaDataArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= CartAddRequest_Items_Type_Item_Type_MetaData_Type;
+end;
+
 { CartAddRequest_Items_Type }
 
 function CartAddRequest_Items_Type.GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type;
@@ -17590,6 +19298,18 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+{ CartCreateRequest_Items_Type_Item_Type_MetaDataArray }
+
+function CartCreateRequest_Items_Type_Item_Type_MetaDataArray.GetItem(AIndex: Integer): CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
+begin
+  Result := Inherited GetItem(AIndex) As CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
+end;
+
+class function CartCreateRequest_Items_Type_Item_Type_MetaDataArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
 end;
 
 { CartCreateRequest_Items_Type }
@@ -17942,6 +19662,102 @@ begin
 end;
 
 procedure SellerListingLookupRequest_ResponseGroupArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ TagLookupRequest_TagNameArray }
+
+function TagLookupRequest_TagNameArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure TagLookupRequest_TagNameArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function TagLookupRequest_TagNameArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure TagLookupRequest_TagNameArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('TagName',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure TagLookupRequest_TagNameArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'TagName';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function TagLookupRequest_TagNameArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure TagLookupRequest_TagNameArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ TagLookupRequest_ResponseGroupArray }
+
+function TagLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure TagLookupRequest_ResponseGroupArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function TagLookupRequest_ResponseGroupArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure TagLookupRequest_ResponseGroupArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ResponseGroup',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure TagLookupRequest_ResponseGroupArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ResponseGroup';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function TagLookupRequest_ResponseGroupArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure TagLookupRequest_ResponseGroupArray.SetLength(const ANewSize: Integer);
 var
   i : Integer;
 begin
@@ -18636,6 +20452,54 @@ begin
   Result:= Item_ImageSets_Type;
 end;
 
+{ Tags_TagArray }
+
+function Tags_TagArray.GetItem(AIndex: Integer): Tag_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Tag_Type;
+end;
+
+class function Tags_TagArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Tag_Type;
+end;
+
+{ Tag_TaggedItemsArray }
+
+function Tag_TaggedItemsArray.GetItem(AIndex: Integer): TaggedItems_Type;
+begin
+  Result := Inherited GetItem(AIndex) As TaggedItems_Type;
+end;
+
+class function Tag_TaggedItemsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TaggedItems_Type;
+end;
+
+{ Tag_TaggedListmaniaListsArray }
+
+function Tag_TaggedListmaniaListsArray.GetItem(AIndex: Integer): TaggedListmaniaLists_Type;
+begin
+  Result := Inherited GetItem(AIndex) As TaggedListmaniaLists_Type;
+end;
+
+class function Tag_TaggedListmaniaListsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TaggedListmaniaLists_Type;
+end;
+
+{ Tag_TaggedGuidesArray }
+
+function Tag_TaggedGuidesArray.GetItem(AIndex: Integer): TaggedGuides_Type;
+begin
+  Result := Inherited GetItem(AIndex) As TaggedGuides_Type;
+end;
+
+class function Tag_TaggedGuidesArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TaggedGuides_Type;
+end;
+
 { Offers_OfferArray }
 
 function Offers_OfferArray.GetItem(AIndex: Integer): Offer_Type;
@@ -18924,6 +20788,18 @@ begin
   Result:= BrowseNode_Type;
 end;
 
+{ BrowseNode_Properties_Type }
+
+function BrowseNode_Properties_Type.GetItem(AIndex: Integer): Property_Type;
+begin
+  Result := Inherited GetItem(AIndex) As Property_Type;
+end;
+
+class function BrowseNode_Properties_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Property_Type;
+end;
+
 { BrowseNode_Children_Type }
 
 function BrowseNode_Children_Type.GetItem(AIndex: Integer): BrowseNode_Type;
@@ -18982,6 +20858,18 @@ end;
 class function SavedForLaterItems_SavedForLaterItemArray.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= CartItem_Type;
+end;
+
+{ CartItem_MetaData_Type }
+
+function CartItem_MetaData_Type.GetItem(AIndex: Integer): CartItem_MetaData_Type_KeyValuePair_Type;
+begin
+  Result := Inherited GetItem(AIndex) As CartItem_MetaData_Type_KeyValuePair_Type;
+end;
+
+class function CartItem_MetaData_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= CartItem_MetaData_Type_KeyValuePair_Type;
 end;
 
 { Transaction_TransactionItems_Type }
@@ -19166,6 +21054,54 @@ begin
 end;
 
 procedure ItemAttributes_ActorArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_AgeArray }
+
+function ItemAttributes_AgeArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_AgeArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_AgeArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_AgeArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Age',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_AgeArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Age';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_AgeArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_AgeArray.SetLength(const ANewSize: Integer);
 var
   i : Integer;
 begin
@@ -19368,6 +21304,150 @@ begin
   System.SetLength(FData,i);
 end;
 
+{ ItemAttributes_CategoryArray }
+
+function ItemAttributes_CategoryArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_CategoryArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_CategoryArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_CategoryArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Category',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_CategoryArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Category';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_CategoryArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_CategoryArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_CategoryBinArray }
+
+function ItemAttributes_CategoryBinArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_CategoryBinArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_CategoryBinArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_CategoryBinArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('CategoryBin',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_CategoryBinArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'CategoryBin';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_CategoryBinArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_CategoryBinArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_CharacterArray }
+
+function ItemAttributes_CharacterArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_CharacterArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_CharacterArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_CharacterArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Character',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_CharacterArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Character';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_CharacterArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_CharacterArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
 { ItemAttributes_CompatibleDevicesArray }
 
 function ItemAttributes_CompatibleDevicesArray.GetItem(AIndex: Integer): string;
@@ -19524,6 +21604,102 @@ begin
   System.SetLength(FData,i);
 end;
 
+{ ItemAttributes_EducationalFocusArray }
+
+function ItemAttributes_EducationalFocusArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_EducationalFocusArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_EducationalFocusArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_EducationalFocusArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('EducationalFocus',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_EducationalFocusArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'EducationalFocus';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_EducationalFocusArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_EducationalFocusArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_EthnicityArray }
+
+function ItemAttributes_EthnicityArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_EthnicityArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_EthnicityArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_EthnicityArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Ethnicity',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_EthnicityArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Ethnicity';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_EthnicityArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_EthnicityArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
 { ItemAttributes_FeatureArray }
 
 function ItemAttributes_FeatureArray.GetItem(AIndex: Integer): string;
@@ -19658,6 +21834,390 @@ begin
 end;
 
 procedure ItemAttributes_FormFactorArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_GemTypeSetElementArray }
+
+function ItemAttributes_GemTypeSetElementArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_GemTypeSetElementArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_GemTypeSetElementArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_GemTypeSetElementArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('GemTypeSetElement',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_GemTypeSetElementArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'GemTypeSetElement';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_GemTypeSetElementArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_GemTypeSetElementArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_GenderArray }
+
+function ItemAttributes_GenderArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_GenderArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_GenderArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_GenderArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Gender',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_GenderArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Gender';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_GenderArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_GenderArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_IngredientsSetElementArray }
+
+function ItemAttributes_IngredientsSetElementArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_IngredientsSetElementArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_IngredientsSetElementArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_IngredientsSetElementArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('IngredientsSetElement',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_IngredientsSetElementArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'IngredientsSetElement';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_IngredientsSetElementArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_IngredientsSetElementArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_InterestArray }
+
+function ItemAttributes_InterestArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_InterestArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_InterestArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_InterestArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Interest',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_InterestArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Interest';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_InterestArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_InterestArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_LanguageNameArray }
+
+function ItemAttributes_LanguageNameArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_LanguageNameArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_LanguageNameArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_LanguageNameArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('LanguageName',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_LanguageNameArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'LanguageName';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_LanguageNameArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_LanguageNameArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_MaterialTypeSetElementArray }
+
+function ItemAttributes_MaterialTypeSetElementArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_MaterialTypeSetElementArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_MaterialTypeSetElementArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_MaterialTypeSetElementArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('MaterialTypeSetElement',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_MaterialTypeSetElementArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'MaterialTypeSetElement';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_MaterialTypeSetElementArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_MaterialTypeSetElementArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_PantLengthArray }
+
+function ItemAttributes_PantLengthArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_PantLengthArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_PantLengthArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_PantLengthArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('PantLength',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_PantLengthArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'PantLength';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_PantLengthArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_PantLengthArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_PantSizeArray }
+
+function ItemAttributes_PantSizeArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_PantSizeArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_PantSizeArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_PantSizeArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('PantSize',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_PantSizeArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'PantSize';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_PantSizeArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_PantSizeArray.SetLength(const ANewSize: Integer);
 var
   i : Integer;
 begin
@@ -19812,6 +22372,54 @@ begin
   System.SetLength(FData,i);
 end;
 
+{ ItemAttributes_PrimaryColorArray }
+
+function ItemAttributes_PrimaryColorArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_PrimaryColorArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_PrimaryColorArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_PrimaryColorArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('PrimaryColor',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_PrimaryColorArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'PrimaryColor';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_PrimaryColorArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_PrimaryColorArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
 { ItemAttributes_ReturnMethodArray }
 
 function ItemAttributes_ReturnMethodArray.GetItem(AIndex: Integer): string;
@@ -19850,6 +22458,54 @@ begin
 end;
 
 procedure ItemAttributes_ReturnMethodArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_ShoeSizeArray }
+
+function ItemAttributes_ShoeSizeArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_ShoeSizeArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_ShoeSizeArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_ShoeSizeArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ShoeSize',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_ShoeSizeArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ShoeSize';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_ShoeSizeArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_ShoeSizeArray.SetLength(const ANewSize: Integer);
 var
   i : Integer;
 begin
@@ -19946,6 +22602,54 @@ begin
 end;
 
 procedure ItemAttributes_SupportedImageTypeArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+{ ItemAttributes_TargetBrandArray }
+
+function ItemAttributes_TargetBrandArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemAttributes_TargetBrandArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemAttributes_TargetBrandArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemAttributes_TargetBrandArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('TargetBrand',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemAttributes_TargetBrandArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'TargetBrand';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemAttributes_TargetBrandArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemAttributes_TargetBrandArray.SetLength(const ANewSize: Integer);
 var
   i : Integer;
 begin
@@ -20723,6 +23427,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'Help',
+    '_E_N_',
+    'Help'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'Help',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20744,6 +23455,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'ItemSearch',
+    '_E_N_',
+    'ItemSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'ItemSearch',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20765,6 +23483,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'ItemLookup',
+    '_E_N_',
+    'ItemLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'ItemLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20786,6 +23511,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'BrowseNodeLookup',
+    '_E_N_',
+    'BrowseNodeLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'BrowseNodeLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20807,6 +23539,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'ListSearch',
+    '_E_N_',
+    'ListSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'ListSearch',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20828,6 +23567,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'ListLookup',
+    '_E_N_',
+    'ListLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'ListLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20849,6 +23595,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CustomerContentSearch',
+    '_E_N_',
+    'CustomerContentSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CustomerContentSearch',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20870,6 +23623,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CustomerContentLookup',
+    '_E_N_',
+    'CustomerContentLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CustomerContentLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20891,6 +23651,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'SimilarityLookup',
+    '_E_N_',
+    'SimilarityLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'SimilarityLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20912,6 +23679,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'SellerLookup',
+    '_E_N_',
+    'SellerLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'SellerLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20933,6 +23707,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CartGet',
+    '_E_N_',
+    'CartGet'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CartGet',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20954,6 +23735,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CartAdd',
+    '_E_N_',
+    'CartAdd'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CartAdd',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20975,6 +23763,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CartCreate',
+    '_E_N_',
+    'CartCreate'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CartCreate',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -20996,6 +23791,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CartModify',
+    '_E_N_',
+    'CartModify'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CartModify',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -21017,6 +23819,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'CartClear',
+    '_E_N_',
+    'CartClear'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'CartClear',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -21038,6 +23847,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'TransactionLookup',
+    '_E_N_',
+    'TransactionLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'TransactionLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -21059,6 +23875,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'SellerListingSearch',
+    '_E_N_',
+    'SellerListingSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'SellerListingSearch',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -21080,6 +23903,13 @@ begin
     sUNIT_NAME,
     'AWSECommerceServicePortType',
     'SellerListingLookup',
+    '_E_N_',
+    'SellerListingLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'SellerListingLookup',
     'TRANSPORT_soapAction',
     'http://soap.amazon.com'
   );
@@ -21096,6 +23926,41 @@ begin
     'SellerListingLookup',
     'FORMAT_OutputEncodingStyle',
     'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'TagLookup',
+    '_E_N_',
+    'TagLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'TagLookup',
+    'TRANSPORT_soapAction',
+    'http://soap.amazon.com'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'TagLookup',
+    'FORMAT_Input_EncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'TagLookup',
+    'FORMAT_OutputEncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'MultiOperation',
+    '_E_N_',
+    'MultiOperation'
   );
   mm.SetOperationCustomData(
     sUNIT_NAME,
@@ -21149,6 +24014,8 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WeddingRegistry','WeddingRegistry');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_BabyRegistry','BabyRegistry');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_Listmania','Listmania');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TagType_Type),'Tag_TagType_Type');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TagType_Type)].RegisterExternalPropertyName('Tag_TagType_Type_Item','Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Help_Type),'Help');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpResponse_Type),'HelpResponse');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearch_Type),'ItemSearch');
@@ -21185,6 +24052,8 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_Type),'SellerListingSearchResponse');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookup_Type),'SellerListingLookup');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_Type),'SellerListingLookupResponse');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookup_Type),'TagLookup');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupResponse_Type),'TagLookupResponse');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperation_Type),'MultiOperation');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperationResponse),'MultiOperationResponse');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_BinParameter_Type),'Bin_BinParameter_Type');
@@ -21200,8 +24069,10 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_Type),'SimilarityLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_Type),'SellerLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest_Type),'CartGetRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaData_Type),'CartAddRequest_Items_Type_Item_Type_MetaData_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type),'CartAddRequest_Items_Type_Item_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Type),'CartAddRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaData_Type),'CartCreateRequest_Items_Type_Item_Type_MetaData_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type),'CartCreateRequest_Items_Type_Item_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Type),'CartCreateRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type),'CartModifyRequest_Items_Type_Item_Type');
@@ -21210,6 +24081,7 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_Type),'TransactionLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_Type),'SellerListingSearchRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_Type),'SellerListingLookupRequest');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_Type),'TagLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_Type),'BrowseNodeLookupRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationRequest_Type),'OperationRequest');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Request_Type),'Request');
@@ -21235,6 +24107,13 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type),'Item_ImageSets_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type_AlternateVersion_Type),'Item_AlternateVersions_Type_AlternateVersion_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Type),'Item');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tags_Type),'Tags');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_Type),'Tag');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedItems_Type),'TaggedItems');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedListmaniaLists_Type),'TaggedListmaniaLists');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedGuides_Type),'TaggedGuides');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Guide_Type),'Guide');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tagging_Type),'Tagging');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferSummary_Type),'OfferSummary');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_Type),'Offers');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_Type),'Offer');
@@ -21269,12 +24148,14 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirement_Type),'PromotionEligibilityRequirement');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionItemApplicability_Type),'PromotionItemApplicability');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_Type),'BrowseNodes');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Property_Type),'Property');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Type),'BrowseNode');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_ListmaniaList_Type),'ListmaniaLists_ListmaniaList_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Excerpt_Type),'SearchInside_Excerpt_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Type),'SearchInside');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_Type),'CartItems');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_Type),'SavedForLaterItems');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type_KeyValuePair_Type),'CartItem_MetaData_Type_KeyValuePair_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_Type),'CartItem');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Totals_Type),'Transaction_Totals_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type');
@@ -21377,6 +24258,10 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_SellerListingsArray),'SellerListingLookupResponse_SellerListingsArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupResponse_SellerListingsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookup_RequestArray),'TagLookup_RequestArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupResponse_TagsArray),'TagLookupResponse_TagsArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupResponse_TagsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_BinParameterArray),'Bin_BinParameterArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Bin_BinParameterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchBinSet_BinArray),'SearchBinSet_BinArray');
@@ -21410,10 +24295,14 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerLookupRequest_SellerIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest_ResponseGroupArray),'CartGetRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartGetRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray),'CartAddRequest_Items_Type_Item_Type_MetaDataArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type),'CartAddRequest_Items_Type');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_ResponseGroupArray),'CartAddRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray),'CartCreateRequest_Items_Type_Item_Type_MetaDataArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type),'CartCreateRequest_Items_Type');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_ResponseGroupArray),'CartCreateRequest_ResponseGroupArray');
@@ -21423,10 +24312,8 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_ResponseGroupArray),'CartModifyRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest_ResponseGroupArray),'CartClearRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_ResponseGroupArray),'TransactionLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_TransactionIdArray),'TransactionLookupRequest_TransactionIdArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_TransactionIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
@@ -21434,6 +24321,10 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_ResponseGroupArray),'SellerListingLookupRequest_ResponseGroupArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_TagNameArray),'TagLookupRequest_TagNameArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupRequest_TagNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_ResponseGroupArray),'TagLookupRequest_ResponseGroupArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray),'BrowseNodeLookupRequest_BrowseNodeIdArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray),'BrowseNodeLookupRequest_ResponseGroupArray');
@@ -21477,6 +24368,14 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type),'Item_AlternateVersions_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(_Item_ImageSetsArray),'_Item_ImageSetsArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(_Item_ImageSetsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tags_TagArray),'Tags_TagArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tags_TagArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedItemsArray),'Tag_TaggedItemsArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedListmaniaListsArray),'Tag_TaggedListmaniaListsArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedListmaniaListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedGuidesArray),'Tag_TaggedGuidesArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedGuidesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_OfferArray),'Offers_OfferArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Offers_OfferArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_OfferListingArray),'Offer_OfferListingArray');
@@ -21487,9 +24386,7 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationDimensions_Type),'VariationDimensions');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(VariationDimensions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReviews_Type),'EditorialReviews');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(EditorialReviews_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItemArray),'Collections_Collection_Type_CollectionItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Type),'Collections');
@@ -21509,6 +24406,7 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefits_Type),'PromotionBenefits');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_BrowseNodeArray),'BrowseNodes_BrowseNodeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodes_BrowseNodeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Properties_Type),'BrowseNode_Properties_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Children_Type),'BrowseNode_Children_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Ancestors_Type),'BrowseNode_Ancestors_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_Type),'ListmaniaLists');
@@ -21516,6 +24414,7 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartItems_CartItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_SavedForLaterItemArray),'SavedForLaterItems_SavedForLaterItemArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(SavedForLaterItems_SavedForLaterItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type),'CartItem_MetaData_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_TransactionItems_Type),'Transaction_TransactionItems_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type),'Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type');
@@ -21529,6 +24428,8 @@ initialization
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type),'ItemAttributes_Languages_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ActorArray),'ItemAttributes_ActorArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_AgeArray),'ItemAttributes_AgeArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_AgeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ArtistArray),'ItemAttributes_ArtistArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_AudioFormatArray),'ItemAttributes_AudioFormatArray');
@@ -21537,6 +24438,12 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CameraManualFeaturesArray),'ItemAttributes_CameraManualFeaturesArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CameraManualFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryArray),'ItemAttributes_CategoryArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryBinArray),'ItemAttributes_CategoryBinArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryBinArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CharacterArray),'ItemAttributes_CharacterArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CharacterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CompatibleDevicesArray),'ItemAttributes_CompatibleDevicesArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CompatibleDevicesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CreatorArray),'ItemAttributes_CreatorArray');
@@ -21545,24 +24452,50 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_DataLinkProtocolArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_DirectorArray),'ItemAttributes_DirectorArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_DirectorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_EducationalFocusArray),'ItemAttributes_EducationalFocusArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_EducationalFocusArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_EthnicityArray),'ItemAttributes_EthnicityArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_EthnicityArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FeatureArray),'ItemAttributes_FeatureArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FeatureArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormatArray),'ItemAttributes_FormatArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormFactorArray),'ItemAttributes_FormFactorArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FormFactorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_GemTypeSetElementArray),'ItemAttributes_GemTypeSetElementArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_GemTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_GenderArray),'ItemAttributes_GenderArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_GenderArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_IngredientsSetElementArray),'ItemAttributes_IngredientsSetElementArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_IngredientsSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_InterestArray),'ItemAttributes_InterestArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_InterestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_LanguageNameArray),'ItemAttributes_LanguageNameArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_LanguageNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_MaterialTypeSetElementArray),'ItemAttributes_MaterialTypeSetElementArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_MaterialTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantLengthArray),'ItemAttributes_PantLengthArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PantLengthArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantSizeArray),'ItemAttributes_PantSizeArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PantSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PhotoFlashTypeArray),'ItemAttributes_PhotoFlashTypeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PhotoFlashTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PictureFormatArray),'ItemAttributes_PictureFormatArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PictureFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PlatformArray),'ItemAttributes_PlatformArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PlatformArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PrimaryColorArray),'ItemAttributes_PrimaryColorArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PrimaryColorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ReturnMethodArray),'ItemAttributes_ReturnMethodArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ReturnMethodArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ShoeSizeArray),'ItemAttributes_ShoeSizeArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ShoeSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_SpecialFeaturesArray),'ItemAttributes_SpecialFeaturesArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_SpecialFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_SupportedImageTypeArray),'ItemAttributes_SupportedImageTypeArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_TargetBrandArray),'ItemAttributes_TargetBrandArray');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_TargetBrandArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type),'MerchantItemAttributes_Languages_Type');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ActorArray),'MerchantItemAttributes_ActorArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
@@ -21599,30 +24532,18 @@ initialization
 
   SearchBinSet_Type.RegisterAttributeProperty('NarrowBy');
   HelpRequest_Type.RegisterAttributeProperty('About');
-  ItemSearchRequest_Type.RegisterAttributeProperty('Availability');
-  ListLookupRequest_Type.RegisterAttributeProperty('Condition');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Type)].RegisterExternalPropertyName('Items','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type_Item_Type)].RegisterExternalPropertyName('ASIN','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Type)].RegisterExternalPropertyName('Items','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_Type)].RegisterExternalPropertyName('HMAC','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_Type)].RegisterExternalPropertyName('Items','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_Type)].RegisterExternalPropertyName('HMAC','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_Type)].RegisterExternalPropertyName('ResponseGroup','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_Type)].RegisterExternalPropertyName('ResponseGroup','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearchRequest_Type)].RegisterExternalPropertyName('ListingPage','Item');
+  ItemLookupRequest_Type.RegisterAttributeProperty('VariationPage');
   Arguments_Argument_Type.RegisterAttributeProperty('Name');
   Arguments_Argument_Type.RegisterAttributeProperty('Value');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Name');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Value');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items_Type)].RegisterExternalPropertyName('_Item','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CorrectedQuery_Type)].RegisterExternalPropertyName('Message','Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListItem_Type)].RegisterExternalPropertyName('_Item','Item');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TaggedItems_Type)].RegisterExternalPropertyName('_Item','Item');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations_Type)].RegisterExternalPropertyName('_Item','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItem_Type)].RegisterExternalPropertyName('ASIN','Item');
   Tracks_Disc_Type_Track_Type.RegisterAttributeProperty('Number');
   Tracks_Disc_Type.RegisterAttributeProperty('Number');
-  SimilarProducts_SimilarProduct_Type.RegisterAttributeProperty('ASIN');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type_Shipment_Type)].RegisterExternalPropertyName('Packages','Package');
+  NewReleases_NewRelease_Type.RegisterAttributeProperty('Title');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type)].RegisterExternalPropertyName('_Type','Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.RegisterAttributeProperty('_Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.RegisterAttributeProperty('Period');
@@ -21635,7 +24556,6 @@ initialization
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_VendorRebate_Type)].RegisterExternalPropertyName('_Type','Type');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('ModemDescription','Label');
   NonNegativeIntegerWithUnits_Type.RegisterAttributeProperty('Units');
   DecimalWithUnits_Type.RegisterAttributeProperty('Units');
   StringWithUnits_Type.RegisterAttributeProperty('Units');

@@ -1696,6 +1696,8 @@ var
     k : Integer;
     p : TPasProperty;
     ss : string;
+    pte : TPasElement;
+    pt : TPasType;
   begin
     if ( locClassPropNbr > 0 ) then begin
       NewLine();
@@ -1759,7 +1761,32 @@ var
         WriteLn('begin');
         IncIndent();
           Indent();
-          WriteLn('Result := True;');
+          pte := FSymbolTable.FindElement(p.VarType.Name);
+          if ( pte <> nil ) and pte.InheritsFrom(TPasType) then begin
+            pt := pte as TPasType;
+            pt := GetUltimeType(pt);
+            if pt.InheritsFrom(TPasEnumType) then begin
+              WriteLn('Result := True;');
+            end else if pt.InheritsFrom(TPasNativeSimpleType) and
+                       ( AnsiPos('string', pt.Name) > 0 )
+            then begin
+              WriteLn('Result := ( F%s <> '''' );',[p.Name]);
+            end else if pt.InheritsFrom(TPasNativeSimpleType) and
+                       ( AnsiSameText(pt.Name,'Single') or
+                         AnsiSameText(pt.Name,'Double') or
+                         AnsiSameText(pt.Name,'Extended') or
+                         AnsiSameText(pt.Name,'Currency') or
+                         AnsiSameText(pt.Name,'Real') or
+                         AnsiSameText(pt.Name,'Comp')
+                       )
+            then begin
+              WriteLn('Result := ( F%s <> 0 );',[p.Name]);
+            end else begin
+              WriteLn('Result := ( F%s <> %s(0) );',[p.Name,p.VarType.Name]);
+            end;
+          end else begin
+            WriteLn('Result := ( F%s <> %s(0) );',[p.Name,p.VarType.Name]);
+          end;
         DecIndent();
         WriteLn('end;');
       end;

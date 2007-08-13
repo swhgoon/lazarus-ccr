@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService_proxy".
-  Date            : "11/07/2007 22:01:03".
+  Date            : "12/08/2007 22:38:58".
 }
 
 Unit AWSECommerceService_proxy;
@@ -71,6 +71,9 @@ Type
     function SellerListingLookup(
       const  SellerListingLookupParam : SellerListingLookup_Type
     ):SellerListingLookupResponse_Type;
+    function TagLookup(
+      const  TagLookupParam : TagLookup_Type
+    ):TagLookupResponse_Type;
     function MultiOperation(
       const  MultiOperationParam : MultiOperation_Type
     ):MultiOperationResponse;
@@ -104,7 +107,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('Help', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('HelpParam', TypeInfo(Help_Type), HelpParam);
+      locSerializer.Put('Help', TypeInfo(Help_Type), HelpParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -129,7 +132,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ItemSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ItemSearchParam', TypeInfo(ItemSearch_Type), ItemSearchParam);
+      locSerializer.Put('ItemSearch', TypeInfo(ItemSearch_Type), ItemSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -154,7 +157,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ItemLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ItemLookupParam', TypeInfo(ItemLookup_Type), ItemLookupParam);
+      locSerializer.Put('ItemLookup', TypeInfo(ItemLookup_Type), ItemLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -179,7 +182,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('BrowseNodeLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('BrowseNodeLookupParam', TypeInfo(BrowseNodeLookup_Type), BrowseNodeLookupParam);
+      locSerializer.Put('BrowseNodeLookup', TypeInfo(BrowseNodeLookup_Type), BrowseNodeLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -204,7 +207,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ListSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ListSearchParam', TypeInfo(ListSearch_Type), ListSearchParam);
+      locSerializer.Put('ListSearch', TypeInfo(ListSearch_Type), ListSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -229,7 +232,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('ListLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('ListLookupParam', TypeInfo(ListLookup_Type), ListLookupParam);
+      locSerializer.Put('ListLookup', TypeInfo(ListLookup_Type), ListLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -254,7 +257,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CustomerContentSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CustomerContentSearchParam', TypeInfo(CustomerContentSearch_Type), CustomerContentSearchParam);
+      locSerializer.Put('CustomerContentSearch', TypeInfo(CustomerContentSearch_Type), CustomerContentSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -279,7 +282,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CustomerContentLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CustomerContentLookupParam', TypeInfo(CustomerContentLookup_Type), CustomerContentLookupParam);
+      locSerializer.Put('CustomerContentLookup', TypeInfo(CustomerContentLookup_Type), CustomerContentLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -304,7 +307,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SimilarityLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SimilarityLookupParam', TypeInfo(SimilarityLookup_Type), SimilarityLookupParam);
+      locSerializer.Put('SimilarityLookup', TypeInfo(SimilarityLookup_Type), SimilarityLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -329,7 +332,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerLookupParam', TypeInfo(SellerLookup_Type), SellerLookupParam);
+      locSerializer.Put('SellerLookup', TypeInfo(SellerLookup_Type), SellerLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -354,7 +357,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartGet', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartGetParam', TypeInfo(CartGet_Type), CartGetParam);
+      locSerializer.Put('CartGet', TypeInfo(CartGet_Type), CartGetParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -379,7 +382,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartAdd', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartAddParam', TypeInfo(CartAdd_Type), CartAddParam);
+      locSerializer.Put('CartAdd', TypeInfo(CartAdd_Type), CartAddParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -404,7 +407,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartCreate', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartCreateParam', TypeInfo(CartCreate_Type), CartCreateParam);
+      locSerializer.Put('CartCreate', TypeInfo(CartCreate_Type), CartCreateParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -429,7 +432,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartModify', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartModifyParam', TypeInfo(CartModify_Type), CartModifyParam);
+      locSerializer.Put('CartModify', TypeInfo(CartModify_Type), CartModifyParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -454,7 +457,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('CartClear', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('CartClearParam', TypeInfo(CartClear_Type), CartClearParam);
+      locSerializer.Put('CartClear', TypeInfo(CartClear_Type), CartClearParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -479,7 +482,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('TransactionLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('TransactionLookupParam', TypeInfo(TransactionLookup_Type), TransactionLookupParam);
+      locSerializer.Put('TransactionLookup', TypeInfo(TransactionLookup_Type), TransactionLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -504,7 +507,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerListingSearch', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerListingSearchParam', TypeInfo(SellerListingSearch_Type), SellerListingSearchParam);
+      locSerializer.Put('SellerListingSearch', TypeInfo(SellerListingSearch_Type), SellerListingSearchParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -529,7 +532,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('SellerListingLookup', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('SellerListingLookupParam', TypeInfo(SellerListingLookup_Type), SellerListingLookupParam);
+      locSerializer.Put('SellerListingLookup', TypeInfo(SellerListingLookup_Type), SellerListingLookupParam);
     locSerializer.EndCall();
 
     MakeCall();
@@ -538,6 +541,31 @@ Begin
       TObject(Result) := Nil;
       strPrmName := 'SellerListingLookupResponse';
       locSerializer.Get(TypeInfo(SellerListingLookupResponse_Type), strPrmName, Result);
+
+  Finally
+    locSerializer.Clear();
+  End;
+End;
+
+function TAWSECommerceServicePortType_Proxy.TagLookup(
+  const  TagLookupParam : TagLookup_Type
+):TagLookupResponse_Type;
+Var
+  locSerializer : IFormatterClient;
+  strPrmName : string;
+Begin
+  locSerializer := GetSerializer();
+  Try
+    locSerializer.BeginCall('TagLookup', GetTarget(),(Self as ICallContext));
+      locSerializer.Put('TagLookup', TypeInfo(TagLookup_Type), TagLookupParam);
+    locSerializer.EndCall();
+
+    MakeCall();
+
+    locSerializer.BeginCallRead((Self as ICallContext));
+      TObject(Result) := Nil;
+      strPrmName := 'TagLookupResponse';
+      locSerializer.Get(TypeInfo(TagLookupResponse_Type), strPrmName, Result);
 
   Finally
     locSerializer.Clear();
@@ -554,7 +582,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('MultiOperation', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('MultiOperationParam', TypeInfo(MultiOperation_Type), MultiOperationParam);
+      locSerializer.Put('MultiOperation', TypeInfo(MultiOperation_Type), MultiOperationParam);
     locSerializer.EndCall();
 
     MakeCall();
