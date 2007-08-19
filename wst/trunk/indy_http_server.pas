@@ -209,9 +209,9 @@ procedure TwstIndyHttpListener.Handler_CommandGet(
 var
 {$IFDEF WST_DBG}
   s : string;
+  j : SizeInt;
 {$ENDIF}
   locPath, locPathPart : string;
-  j : SizeInt;
 begin
 {$IFDEF WST_DBG}
   if Assigned(ARequestInfo.PostStream) and ( ARequestInfo.PostStream.Size > 0 ) then begin

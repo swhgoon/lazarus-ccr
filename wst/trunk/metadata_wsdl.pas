@@ -20,9 +20,6 @@ uses
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf, metadata_repository;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 type
 
   IWsdlTypeHandler = interface
@@ -83,10 +80,11 @@ type
   
 implementation
 uses
+  wst_types
 {$IFNDEF FPC}
-  wst_delphi_rtti_utils
+  , wst_delphi_rtti_utils
 {$ELSE}
-  wst_fpc_xml, XmlWrite
+  , wst_fpc_xml, XmlWrite
 {$ENDIF};
 
 const

@@ -20,9 +20,6 @@ uses
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 const
   sPROTOCOL_NAME = 'XMLRPC';
 
@@ -195,6 +192,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TObject
     );
+    procedure PutRecord(
+      const AName     : string;
+      const ATypeInfo : PTypeInfo;
+      const AData     : Pointer
+    );
 
     function GetNodeValue(var AName : String):DOMString;
     procedure GetEnum(
@@ -233,6 +235,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
+    );
+    procedure GetRecord(
+      const ATypeInfo : PTypeInfo;
+      var   AName     : String;
+      var   AData     : Pointer
     );
   protected
     function GetXmlDoc():TXMLDocument;
@@ -573,6 +580,7 @@ procedure TXmlRpcBaseFormatter.InternalClear(const ACreateDoc: Boolean);
 begin
   ClearStack();
   ReleaseDomNode(FDoc);
+  FDoc := nil;
   if ACreateDoc then
     FDoc := CreateDoc();
 end;
@@ -732,6 +740,15 @@ begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Save(AData As TBaseRemotable, Self,AName,ATypeInfo);
 end;
 
+procedure TXmlRpcBaseFormatter.PutRecord(
+  const AName     : string;
+  const ATypeInfo : PTypeInfo;
+  const AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Save(AData,Self,AName,ATypeInfo);
+end;
+
 function TXmlRpcBaseFormatter.PutFloat(
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
@@ -862,6 +879,15 @@ procedure TXmlRpcBaseFormatter.GetObj(
 );
 begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+end;
+
+procedure TXmlRpcBaseFormatter.GetRecord(
+  const ATypeInfo : PTypeInfo;
+  var   AName     : String;
+  var   AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
 end;
 
 function TXmlRpcBaseFormatter.GetXmlDoc(): TwstXMLDocument;
@@ -1056,6 +1082,10 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    tkRecord :
+      begin
+        PutRecord(AName,ATypeInfo,Pointer(@AData));
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin
@@ -1218,6 +1248,7 @@ Var
   {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
+  recObject : Pointer;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1238,6 +1269,11 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    tkRecord :
+      begin
+        recObject := Pointer(@AData);
+        GetRecord(ATypeInfo,AName,recObject);
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin
@@ -1271,7 +1307,7 @@ begin
           ftDouble : Double(AData)    := floatDt;
           ftExtended : Extended(AData)    := floatDt;
           ftCurr : Currency(AData)    := floatDt;
-{$IFDEF CPU86}
+{$IFDEF HAS_COMP}
           ftComp : Comp(AData)    := floatDt;
 {$ENDIF}
         End;
@@ -1347,7 +1383,7 @@ begin
           ftDouble    : Double(AData)        := floatDt;
           ftExtended  : Extended(AData)      := floatDt;
           ftCurr      : Currency(AData)      := floatDt;
-{$IFDEF CPU86}
+{$IFDEF HAS_COMP}
           ftComp      : Comp(AData)          := floatDt;
 {$ENDIF}
         end;

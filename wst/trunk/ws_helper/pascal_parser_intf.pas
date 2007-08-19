@@ -451,7 +451,7 @@ begin
   Result.SourceLinenumber := ASourceLinenumber;
   if Result.InheritsFrom(TPasModule) then begin
     FCurrentModule := Result as TPasModule;
-    Package.Modules.Add(Result);
+    //Package.Modules.Add(Result);
   end;
 end;
 

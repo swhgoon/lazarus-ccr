@@ -20,9 +20,6 @@ uses
   service_intf, imp_utils,
   server_service_intf, server_service_imputils, base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Const
   sTRANSPORT_NAME = 'SAME_PROCESS';
 

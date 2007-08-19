@@ -1,4 +1,4 @@
-{$IFNDEF HAS_QWORD}
+{$IFNDEF FPC}
   type
     QWord = type Int64;
     DWORD = LongWord;

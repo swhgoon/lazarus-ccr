@@ -19,14 +19,12 @@ uses
   Classes, SysUtils,
 {$IFDEF FPC}
   fpcunit, testutils, testregistry,
-{$ELSE}
-  TestFrameWork,
+{$ENDIF}
+{$IFNDEF FPC}
+  TestFrameWork, ActiveX,
 {$ENDIF}
   TypInfo,
-  base_service_intf;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  base_service_intf, wst_types, server_service_intf, service_intf;
 
 type
 
@@ -285,6 +283,31 @@ type
 
   TEmbeddedArrayOfStringRemotable = class(TArrayOfStringRemotable);
 
+  TTestSmallRecord = record
+    fieldSmallint : Smallint;
+    fieldWord : Word;
+    fieldString : string;
+  end;
+  
+  TTestRecord = record
+    fieldByte : Byte;
+    fieldShortInt : ShortInt;
+    fieldSmallint : Smallint;
+    fieldWord : Word;
+    fieldInteger : Integer;
+    fieldLongWord : LongWord;
+    fieldInt64 : Int64;
+    fieldQWord : QWord;
+    fieldComp : Comp;
+    fieldSingle : Single;
+    fieldDouble : Double;
+    fieldExtended : Extended;
+    fieldCurrency : Currency;
+    fieldBoolean : Boolean;
+    fieldString : string;
+    fieldRecord : TTestSmallRecord;
+  end;
+  
   { TTestFormatterSimpleType }
 
   TTestFormatterSimpleType= class(TTestCase)
@@ -352,6 +375,9 @@ type
     procedure Test_FloatCurrencyArray();
     
     procedure  Test_ComplexInt32S();
+    
+    procedure Test_Record_simple();
+    procedure Test_Record_nested();
   end;
 
   { TTestBinaryFormatter }
@@ -452,8 +478,43 @@ type
     procedure ParseDate();
   end;
   
+  { TTest_SoapFormatterExceptionBlock }
+
+  TTest_SoapFormatterExceptionBlock = class(TTestCase)
+  protected
+    procedure SetUp(); override;
+    procedure TearDown(); override;
+    function CreateFormatter():IFormatterResponse;
+    function CreateFormatterClient():IFormatterClient;
+  published
+    procedure ExceptBlock_server();
+    procedure ExceptBlock_client();
+  end;
+
+  { TTest_XmlRpcFormatterExceptionBlock }
+
+  TTest_XmlRpcFormatterExceptionBlock = class(TTestCase)
+  protected
+    procedure SetUp(); override;
+    procedure TearDown(); override;
+    function CreateFormatter():IFormatterResponse;
+    function CreateFormatterClient():IFormatterClient;
+  published
+    procedure ExceptBlock_server();
+    procedure ExceptBlock_client();
+  end;
+  
 implementation
-uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter;
+uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_rtti,
+     Math, imp_utils
+{$IFNDEF FPC}
+     , xmldom, wst_delphi_xml
+{$ENDIF}
+{$IFDEF FPC}
+     , DOM, XMLRead, wst_fpc_xml
+{$ENDIF}
+     , server_service_soap, soap_formatter,
+     server_service_xmlrpc, xmlrpc_formatter;
 
 function TTestFormatterSimpleType.Support_ComplextType_with_SimpleContent( ): Boolean;
 begin
@@ -2502,6 +2563,139 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_Record_simple();
+const VAL_1 : Integer = 12; VAL_2 : Integer = -76; VAL_3 = 'wst record sample';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a : TTestSmallRecord;
+begin
+  s := nil;
+  try
+    a.fieldWord := VAL_1;
+    a.fieldSmallint := VAL_2;
+    a.fieldString := VAL_3;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TTestSmallRecord),a);
+    f.EndScope();
+    a.fieldWord := 0;
+    a.fieldSmallint := 0;
+    a.fieldString := '';
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Record_simple.xml');
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'a';
+      f.Get(TypeInfo(TTestSmallRecord),x,a);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,a.fieldWord);
+    CheckEquals(VAL_2,a.fieldSmallint);
+    CheckEquals(VAL_3,a.fieldString);
+  finally
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_Record_nested();
+const
+  VAL_EPSILON = 0.0001;
+  VAL_EMPTY_RECORD : TTestRecord = (
+    fieldByte : 0;
+    fieldShortInt :  0;
+    fieldSmallint : 0;
+    fieldWord : 0;
+    fieldInteger : 0;
+    fieldLongWord : 0;
+    fieldInt64 : 0;
+    fieldQWord : 0;
+    fieldComp : 0;
+    fieldSingle : 0;
+    fieldDouble : 0;
+    fieldExtended : 0;
+    fieldCurrency : 0;
+    fieldBoolean : False;
+    fieldString : '';
+    fieldRecord :  ( fieldSmallint : 0; fieldWord : 0; fieldString : '');
+  );
+  VAL_RECORD : TTestRecord = (
+    fieldByte : 12;
+    fieldShortInt :  -10;
+    fieldSmallint : 76;
+    fieldWord : 34;
+    fieldInteger : -45;
+    fieldLongWord : 567;
+    fieldInt64 : 8910;
+    fieldQWord : 111213;
+    fieldComp : 141516;
+    fieldSingle : 1718;
+    fieldDouble : -1819;
+    fieldExtended : 2021;
+    fieldCurrency : -2122;
+    fieldBoolean : True;
+    fieldString : 'sample record string 0123456789';
+    fieldRecord :  ( fieldSmallint : 10; fieldWord : 11; fieldString : 'azertyqwerty');
+  );
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a : TTestRecord;
+begin
+  s := nil;
+  try
+    a := VAL_RECORD;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TTestRecord),a);
+    f.EndScope();
+    a := VAL_EMPTY_RECORD;
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Record_nested.xml');
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'a';
+      f.Get(TypeInfo(TTestRecord),x,a);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_RECORD.fieldBoolean,a.fieldBoolean,'fieldBoolean');
+    CheckEquals(VAL_RECORD.fieldByte,a.fieldByte,'fieldByte');
+{$IFDEF HAS_COMP}
+    CheckEquals(VAL_RECORD.fieldComp,a.fieldComp,'fieldComp');
+{$ENDIF}
+    Check(IsZero(VAL_RECORD.fieldCurrency-a.fieldCurrency,VAL_EPSILON),'fieldCurrency');
+    Check(IsZero(VAL_RECORD.fieldExtended-a.fieldExtended,VAL_EPSILON),'fieldExtended');
+    CheckEquals(VAL_RECORD.fieldInt64,a.fieldInt64,'fieldInt64');
+    CheckEquals(VAL_RECORD.fieldInteger,a.fieldInteger,'fieldInteger');
+    Check(VAL_RECORD.fieldLongWord = a.fieldLongWord,'fieldLongWord');
+{$IFDEF HAS_QWORD}
+    CheckEquals(VAL_RECORD.fieldQWord,a.fieldQWord,'fieldQWord');
+{$ENDIF}
+    CheckEquals(VAL_RECORD.fieldRecord.fieldSmallint,a.fieldRecord.fieldSmallint,'fieldSmallint');
+    CheckEquals(VAL_RECORD.fieldRecord.fieldString,a.fieldRecord.fieldString,'fieldString');
+    CheckEquals(VAL_RECORD.fieldRecord.fieldWord,a.fieldRecord.fieldWord,'fieldWord');
+    CheckEquals(VAL_RECORD.fieldShortInt,a.fieldShortInt,'fieldShortInt');
+    Check(IsZero(VAL_RECORD.fieldSingle-a.fieldSingle,VAL_EPSILON),'fieldSingle');
+    CheckEquals(VAL_RECORD.fieldSmallint,a.fieldSmallint,'fieldSmallint');
+    CheckEquals(VAL_RECORD.fieldString,a.fieldString,'fieldString');
+    CheckEquals(VAL_RECORD.fieldWord,a.fieldWord,'fieldWord');
+  finally
+    s.Free();
+  end;
+end;
+
 
 { TTestBinaryFormatter }
 
@@ -3151,6 +3345,386 @@ begin
   Result := False;
 end;
 
+{ TTest_SoapFormatterExceptionBlock }
+
+function TTest_SoapFormatterExceptionBlock.CreateFormatter() : IFormatterResponse;
+begin
+  Result := server_service_soap.TSOAPFormatter.Create() as IFormatterResponse;
+end;
+
+function TTest_SoapFormatterExceptionBlock.CreateFormatterClient() : IFormatterClient;
+begin
+  Result := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+end;
+
+function FindAttributeByValueInNode(
+  const AAttValue : string;
+  const ANode     : TDOMNode;
+  out   AResAtt   : string
+):boolean;
+Var
+  i,c : Integer;
+begin
+  AResAtt := '';
+  if Assigned(ANode) and
+     Assigned(ANode.Attributes) and
+     ( ANode.Attributes.Length > 0 )
+  then begin
+    c := Pred(ANode.Attributes.Length);
+    For i := 0 To c Do Begin
+      If AnsiSameText(AAttValue,ANode.Attributes.Item[i].NodeValue) Then Begin
+        AResAtt := ANode.Attributes.Item[i].NodeName;
+        Result := True;
+        Exit;
+      End;
+    End;
+  end;
+  Result := False;
+end;
+
+procedure TTest_SoapFormatterExceptionBlock.ExceptBlock_server();
+const
+  VAL_CODE = 'Server.CustomCode.Test'; VAL_MSG = 'This is a sample exception message.';
+var
+  f : IFormatterResponse;
+  strm : TMemoryStream;
+
+  envNd : TDOMElement;
+  bdyNd, fltNd, hdrNd, tmpNode : TDOMNode;
+  nsShortName,eltName, msgBuff : string;
+  doc : TXMLDocument;
+begin
+  f := CreateFormatter();
+  f.BeginExceptionList(VAL_CODE,VAL_MSG);
+  f.EndExceptionList();
+  strm := TMemoryStream.Create();
+  try
+    f.SaveToStream(strm);strm.SaveToFile('TTest_SoapFormatterExceptionBlock.ExceptBlock.xml');
+    strm.Position := 0;
+    ReadXMLFile(doc,strm);
+    if FindAttributeByValueInNode(sSOAP_ENV,doc.DocumentElement,nsShortName) or
+       FindAttributeByValueInNode('"' + sSOAP_ENV + '"',doc.DocumentElement,nsShortName)
+    then begin
+      nsShortName := Copy(nsShortName,1 + Pos(':',nsShortName),MaxInt);
+      if not IsStrEmpty(nsShortName) then
+        nsShortName := nsShortName + ':';
+    end else begin
+      nsShortName := '';
+    end;
+    eltName := nsShortName + sENVELOPE;
+    envNd := doc.DocumentElement;
+    if not SameText(eltName,envNd.NodeName) then
+      check(False,Format('XML root node must be "Envelope", found : "%s"',[envNd.NodeName + ':::' + nsShortName]));
+
+    bdyNd := envNd.FirstChild;
+    if not Assigned(bdyNd) then
+      check(False,'Node not found : "Body".');
+
+    eltName := nsShortName + 'Body';
+    if not SameText(bdyNd.NodeName,eltName) then begin
+      check(False,'Node not found : "Body".');
+    end;
+
+    bdyNd := envNd.FirstChild;
+    If Not Assigned(bdyNd) Then
+      check(False,'Node not found : "Body"');
+    If Not SameText(bdyNd.NodeName,eltName) Then
+      bdyNd := bdyNd.NextSibling;
+    If Not Assigned(bdyNd) Then
+      Check(False,'Node not found : "Body"');
+    If Not Assigned(bdyNd.FirstChild) Then
+      Check(False,'Response Node not found');
+    eltName := nsShortName + 'Fault';
+    if SameText(eltName,bdyNd.FirstChild.NodeName) then begin
+      fltNd := bdyNd.FirstChild;
+        eltName := 'faultcode';
+        tmpNode := FindNode(fltNd,eltName);
+        if not Assigned(tmpNode) then
+          Check(False,Format('"%s" Node not found.',[eltName]));
+        if tmpNode.HasChildNodes then
+          msgBuff := tmpNode.FirstChild.NodeValue
+        else
+          msgBuff := tmpNode.NodeValue;
+        CheckEquals(VAL_CODE,msgBuff,eltName);
+
+        eltName := 'faultstring';
+        tmpNode := FindNode(fltNd,eltName);
+        if not Assigned(tmpNode) then
+          Check(False,Format('"%s" Node not found.',[eltName]));
+        if tmpNode.HasChildNodes then
+          msgBuff := tmpNode.FirstChild.NodeValue
+        else
+          msgBuff := tmpNode.NodeValue;
+        CheckEquals(VAL_MSG,msgBuff,eltName);
+    end;
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_SoapFormatterExceptionBlock.ExceptBlock_client();
+const
+  VAL_CODE = 'Server.CustomCode.Test'; VAL_MSG = 'This is a sample exception message.';
+  VAL_STREAM =
+    '<?xml version="1.0"?> '+
+    ' <SOAP-ENV:Envelope ' +
+        ' xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
+        ' xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" ' +
+        ' xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"> ' +
+     ' <SOAP-ENV:Body> '+
+       ' <SOAP-ENV:Fault> '+
+         ' <faultcode>' + VAL_CODE + '</faultcode> '+
+         ' <faultstring>' + VAL_MSG +'</faultstring> '+
+       ' </SOAP-ENV:Fault> '+
+     ' </SOAP-ENV:Body> '+
+    ' </SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TStringStream;
+  excpt_code, excpt_msg : string;
+begin
+  excpt_code := '';
+  excpt_msg := '';
+  f := CreateFormatterClient();
+  strm := TStringStream.Create(VAL_STREAM);
+  try
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    try
+      f.BeginCallRead(nil);
+      Check(False,'BeginCallRead() should raise an exception.');
+    except
+      on e : ESOAPException do begin
+        excpt_code := e.FaultCode;
+        excpt_msg := e.FaultString;
+      end;
+    end;
+    CheckEquals(VAL_CODE,excpt_code,'faultCode');
+    CheckEquals(VAL_MSG,excpt_msg,'faultString');
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+{$IFDEF WST_RECORD_RTTI}
+function __TTestSmallRecord_TYPEINFO_FUNC__() : PTypeInfo;
+var
+  p : ^TTestSmallRecord;
+  r : TTestSmallRecord;
+begin
+  p := @r;
+  Result := MakeRawTypeInfo(
+    'TTestSmallRecord',
+    SizeOf(TTestSmallRecord),
+    [ PtrUInt(@(p^.fieldSmallint)) - PtrUInt(p), PtrUInt(@(p^.fieldWord)) - PtrUInt(p), PtrUInt(@(p^.fieldString)) - PtrUInt(p) ],
+    [ TypeInfo(SmallInt), TypeInfo(Word), TypeInfo(String) ]
+  );
+end;
+{$ENDIF WST_RECORD_RTTI}
+
+{$IFDEF WST_RECORD_RTTI}
+function __TTestRecord_TYPEINFO_FUNC__() : PTypeInfo;
+var
+  p : ^TTestRecord;
+  r : TTestRecord;
+begin
+  p := @r;
+  Result := MakeRawTypeInfo(
+    'TTestRecord',
+    SizeOf(TTestRecord),
+    [ PtrUInt(@(p^.fieldByte)) - PtrUInt(p), PtrUInt(@(p^.fieldShortInt)) - PtrUInt(p), PtrUInt(@(p^.fieldSmallint)) - PtrUInt(p), PtrUInt(@(p^.fieldWord)) - PtrUInt(p), PtrUInt(@(p^.fieldInteger)) - PtrUInt(p), PtrUInt(@(p^.fieldLongWord)) - PtrUInt(p), PtrUInt(@(p^.fieldInt64)) - PtrUInt(p), PtrUInt(@(p^.fieldQWord)) - PtrUInt(p), PtrUInt(@(p^.fieldComp)) - PtrUInt(p), PtrUInt(@(p^.fieldSingle)) - PtrUInt(p), PtrUInt(@(p^.fieldDouble)) - PtrUInt(p), PtrUInt(@(p^.fieldExtended)) - PtrUInt(p), PtrUInt(@(p^.fieldCurrency)) - PtrUInt(p), PtrUInt(@(p^.fieldBoolean)) - PtrUInt(p), PtrUInt(@(p^.fieldString)) - PtrUInt(p), PtrUInt(@(p^.fieldRecord)) - PtrUInt(p) ],
+    [ TypeInfo(Byte), TypeInfo(ShortInt), TypeInfo(SmallInt), TypeInfo(Word), TypeInfo(Integer), TypeInfo(LongWord), TypeInfo(Int64), TypeInfo(QWord), TypeInfo(Comp), TypeInfo(Single), TypeInfo(Double), TypeInfo(Extended), TypeInfo(Currency), TypeInfo(Boolean), TypeInfo(String), TypeInfo(TTestSmallRecord) ]
+  );
+end;
+{$ENDIF WST_RECORD_RTTI}
+
+procedure TTest_SoapFormatterExceptionBlock.SetUp();
+begin
+  inherited;
+{$IFNDEF FPC}
+  CoInitialize(nil);
+{$ENDIF}
+end;
+
+procedure TTest_SoapFormatterExceptionBlock.TearDown();
+begin
+{$IFNDEF FPC}
+  CoUninitialize();
+{$ENDIF}
+  inherited;
+end;
+
+{ TTest_XmlRpcFormatterExceptionBlock }
+
+procedure TTest_XmlRpcFormatterExceptionBlock.SetUp();
+begin
+  inherited;
+{$IFNDEF FPC}
+  CoInitialize(nil);
+{$ENDIF}
+end;
+
+procedure TTest_XmlRpcFormatterExceptionBlock.TearDown();
+begin
+{$IFNDEF FPC}
+  CoUninitialize();
+{$ENDIF}
+  inherited;
+end;
+
+function TTest_XmlRpcFormatterExceptionBlock.CreateFormatter() : IFormatterResponse;
+begin
+  Result := server_service_xmlrpc.TXmlRpcFormatter.Create() as IFormatterResponse;
+end;
+
+function TTest_XmlRpcFormatterExceptionBlock.CreateFormatterClient() : IFormatterClient;
+begin
+  Result := xmlrpc_formatter.TXmlRpcFormatter.Create() as IFormatterClient;
+end;
+
+procedure TTest_XmlRpcFormatterExceptionBlock.ExceptBlock_server();
+  function loc_FindNode(AScope : TDOMNode; const ANodeName: string): TDOMNode;
+  var
+    memberNode, tmpNode : TDOMNode;
+    i : Integer;
+    chilNodes : TDOMNodeList;
+    nodeFound : Boolean;
+  begin
+    Result := nil;
+    if AScope.HasChildNodes() then begin
+      nodeFound := False;
+      memberNode := AScope.FirstChild;
+      while ( not nodeFound ) and ( memberNode <> nil ) do begin
+        if memberNode.HasChildNodes() then begin
+          chilNodes := memberNode.ChildNodes;
+          for i := 0 to Pred(GetNodeListCount(chilNodes)) do begin
+            tmpNode := chilNodes.Item[i];
+            if AnsiSameText(sNAME,tmpNode.NodeName) and
+               ( tmpNode.FirstChild <> nil ) and
+               AnsiSameText(ANodeName,tmpNode.FirstChild.NodeValue)
+            then begin
+              nodeFound := True;
+              Break;
+            end;
+          end;
+          if nodeFound then begin
+            tmpNode := FindNode(memberNode,sVALUE);
+            if ( tmpNode <> nil ) and ( tmpNode.FirstChild <> nil ) then begin
+              Result := tmpNode.FirstChild;
+              Break;
+            end;
+          end;
+        end;
+        memberNode := memberNode.NextSibling;
+      end;
+    end;
+  end;
+
+const VAL_CODE = '1210'; VAL_MSG = 'This is a sample exception message.';
+var
+  f : IFormatterResponse;
+  strm : TMemoryStream;
+  callNode : TDOMElement;
+  faultNode, faultStruct, tmpNode : TDOMNode;
+  doc : TXMLDocument;
+  eltName : string;
+  excpt_Obj : EXmlRpcException;
+  excpt_code, excpt_msg : string;
+begin
+  f := CreateFormatter();
+  f.BeginExceptionList(VAL_CODE,VAL_MSG);
+  f.EndExceptionList();
+  strm := TMemoryStream.Create();
+  try
+    f.SaveToStream(strm);strm.SaveToFile('TTest_XmlRpcFormatterExceptionBlock.ExceptBlock.xml');
+    strm.Position := 0;
+    ReadXMLFile(doc,strm);
+    callNode := doc.DocumentElement;
+    if not SameText(base_xmlrpc_formatter.sMETHOD_RESPONSE,callNode.NodeName) then
+      Check(False,Format('XML root node must be "%s".',[base_xmlrpc_formatter.sMETHOD_RESPONSE]));
+
+      faultNode := FindNode(callNode,base_xmlrpc_formatter.sFAULT);
+      if ( faultNode = nil ) then begin
+        Check(False,Format('Invalid XmlRPC response message, "%s" or "%s" are not present.',[base_xmlrpc_formatter.sPARAMS,base_xmlrpc_formatter.sFAULT]));
+      end;
+      tmpNode := FindNode(faultNode,base_xmlrpc_formatter.sVALUE);
+      if ( tmpNode = nil ) then begin
+        Check(False,Format('Invalid XmlRPC fault response message, "%s"  is not present.',[base_xmlrpc_formatter.sVALUE]));
+      end;
+      faultStruct := FindNode(tmpNode,XmlRpcDataTypeNames[xdtStruct]);
+      if ( faultStruct = nil ) then begin
+        Check(False,Format('Invalid XmlRPC fault response message, "%s"  is not present.',[XmlRpcDataTypeNames[xdtStruct]]));
+      end;
+      tmpNode := loc_FindNode(faultStruct,base_xmlrpc_formatter.sFAULT_CODE);
+      if ( tmpNode = nil ) then begin
+        Check(False,Format('Invalid XmlRPC fault response message, "%s"  is not present.',[base_xmlrpc_formatter.sFAULT_CODE]));
+      end;
+      excpt_code := tmpNode.FirstChild.NodeValue;
+      CheckEquals(VAL_CODE,excpt_code,base_xmlrpc_formatter.sFAULT_STRING);
+      tmpNode := loc_FindNode(faultStruct,base_xmlrpc_formatter.sFAULT_STRING);
+      if ( tmpNode = nil ) then begin
+        Check(False,Format('Invalid XmlRPC fault response message, "%s"  is not present.',[base_xmlrpc_formatter.sFAULT_STRING]));
+      end;
+      excpt_msg := tmpNode.FirstChild.NodeValue;
+      CheckEquals(VAL_MSG,excpt_msg,base_xmlrpc_formatter.sFAULT_STRING);
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_XmlRpcFormatterExceptionBlock.ExceptBlock_client();
+const
+  VAL_CODE = '1210'; VAL_MSG = 'This is a sample exception message.';
+  VAL_STREAM =
+'<?xml version="1.0"?> ' +
+' <methodResponse> ' +
+ ' <fault> ' +
+   ' <value> ' +
+     ' <struct> ' +
+       ' <member> ' +
+         ' <name>faultCode</name> ' +
+         ' <value> ' +
+           ' <int>' + VAL_CODE + '</int> ' +
+         ' </value> ' +
+       ' </member> ' +
+       ' <member> ' +
+         ' <name>faultString</name> ' +
+         ' <value> ' +
+           ' <string>' + VAL_MSG + '</string> ' +
+         ' </value> ' +
+       ' </member> ' +
+     ' </struct> ' +
+   ' </value> ' +
+ ' </fault>  ' +
+' </methodResponse>';
+var
+  f : IFormatterClient;
+  strm : TStringStream;
+  excpt_code, excpt_msg : string;
+begin
+  excpt_code := '';
+  excpt_msg := '';
+  f := CreateFormatterClient();
+  strm := TStringStream.Create(VAL_STREAM);
+  try
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    try
+      f.BeginCallRead(nil);
+      Check(False,'BeginCallRead() should raise an exception.');
+    except
+      on e : EXmlRpcException do begin
+        excpt_code := e.FaultCode;
+        excpt_msg := e.FaultString;
+      end;
+    end;
+    CheckEquals(VAL_CODE,excpt_code,'faultCode');
+    CheckEquals(VAL_MSG,excpt_msg,'faultString');
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -3177,6 +3751,22 @@ initialization
     RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
   end;
 
+  GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TTestSmallRecord),'TTestSmallRecord').RegisterExternalPropertyName('__FIELDS__','fieldSmallint;fieldWord;fieldString');
+{$IFNDEF WST_RECORD_RTTI}
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(TypeInfo(TTestSmallRecord)),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
+{$ENDIF WST_RECORD_RTTI}
+{$IFDEF WST_RECORD_RTTI}
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(__TTestSmallRecord_TYPEINFO_FUNC__()),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
+{$ENDIF WST_RECORD_RTTI}
+
+  GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TTestRecord),'TTestRecord').RegisterExternalPropertyName('__FIELDS__','fieldByte;fieldShortInt;fieldSmallint;fieldWord;fieldInteger;fieldLongWord;fieldInt64;fieldQWord;fieldComp;fieldSingle;fieldDouble;fieldExtended;fieldCurrency;fieldBoolean;fieldString;fieldRecord');
+{$IFNDEF WST_RECORD_RTTI}
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(TypeInfo(TTestRecord)),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].GetExternalPropertyName('__FIELDS__')));
+{$ENDIF WST_RECORD_RTTI}
+{$IFDEF WST_RECORD_RTTI}
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(__TTestRecord_TYPEINFO_FUNC__()),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].GetExternalPropertyName('__FIELDS__')));
+{$ENDIF WST_RECORD_RTTI}
+
 {$IFDEF FPC}
   RegisterTest(TTestArray);
   RegisterTest(TTestSOAPFormatter);
@@ -3190,6 +3780,8 @@ initialization
 
   RegisterTest(TTestXmlRpcFormatterAttributes);
   RegisterTest(TTestXmlRpcFormatter);
+  RegisterTest(TTest_SoapFormatterExceptionBlock);
+  RegisterTest(TTest_XmlRpcFormatterExceptionBlock);
 {$ELSE}
   RegisterTest(TTestArray.Suite);
   RegisterTest(TTestSOAPFormatter.Suite);
@@ -3203,5 +3795,9 @@ initialization
 
   RegisterTest(TTestXmlRpcFormatterAttributes.Suite);
   RegisterTest(TTestXmlRpcFormatter.Suite);
+  RegisterTest(TTest_SoapFormatterExceptionBlock.Suite);
+  RegisterTest(TTest_XmlRpcFormatterExceptionBlock.Suite);
 {$ENDIF}
+
+
 end.

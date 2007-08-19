@@ -18,7 +18,6 @@ uses
   Classes, SysUtils, Contnrs, TypInfo,
   base_service_intf, binary_streamer;
 
-{$INCLUDE wst.inc}
 {$DEFINE wst_binary_header}
   
 const
@@ -220,6 +219,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TObject
     );
+    procedure PutRecord(
+      const AName     : string;
+      const ATypeInfo : PTypeInfo;
+      const AData     : Pointer
+    );
 
     function GetDataBuffer(var AName : String):PDataBuffer;
     procedure GetEnum(
@@ -256,6 +260,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
+    );
+    procedure GetRecord(
+      const ATypeInfo : PTypeInfo;
+      var   AName     : String;
+      var   AData     : Pointer
     );
   public
     constructor Create();override;
@@ -909,6 +918,15 @@ begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Save(AData As TBaseRemotable, Self,AName,ATypeInfo);
 end;
 
+procedure TBaseBinaryFormatter.PutRecord(
+  const AName     : string;
+  const ATypeInfo : PTypeInfo;
+  const AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Save(AData,Self,AName,ATypeInfo);
+end;
+
 function TBaseBinaryFormatter.GetDataBuffer(var AName: String): PDataBuffer;
 begin
   Result := StackTop().Find(AName);
@@ -999,6 +1017,15 @@ procedure TBaseBinaryFormatter.GetObj(
 );
 begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+end;
+
+procedure TBaseBinaryFormatter.GetRecord(
+  const ATypeInfo : PTypeInfo;
+  var   AName     : String;
+  var   AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
 end;
 
 procedure TBaseBinaryFormatter.Clear();
@@ -1141,6 +1168,10 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    tkRecord :
+      begin
+        PutRecord(AName,ATypeInfo,Pointer(@AData));
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin
@@ -1340,6 +1371,7 @@ Var
   boolData : Boolean;
   enumData : TEnumData;
   floatDt : TFloat_Extended_10;
+  recObject : Pointer;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1360,6 +1392,11 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    tkRecord :
+      begin
+        recObject := Pointer(@AData);
+        GetRecord(ATypeInfo,AName,recObject);
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin
@@ -1405,7 +1442,7 @@ begin
           ftDouble : Double(AData)    := floatDt;
           ftExtended : Extended(AData)    := floatDt;
           ftCurr : Currency(AData)    := floatDt;
-{$IFDEF CPU86}
+{$IFDEF HAS_COMP}
           ftComp : Comp(AData)    := floatDt;
 {$ENDIF}
         End;
@@ -1476,7 +1513,7 @@ begin
           ftDouble   : Double(AData)      := dataBuffer^.DoubleData;
           ftExtended : Extended(AData)    := dataBuffer^.ExtendedData;
           ftCurr     : Currency(AData)    := dataBuffer^.CurrencyData;
-{$IFDEF CPU86}
+{$IFDEF HAS_COMP}
           else
             Comp(AData) := dataBuffer^.ExtendedData;
 {$ENDIF}

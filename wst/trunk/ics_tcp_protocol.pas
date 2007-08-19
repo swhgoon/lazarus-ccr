@@ -20,8 +20,6 @@ uses
   service_intf, imp_utils, base_service_intf,
   WSocket;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
   
 Const
   sTRANSPORT_NAME = 'TCP';

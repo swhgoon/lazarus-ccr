@@ -20,9 +20,6 @@ uses
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 const
   sPROTOCOL_NAME = 'SOAP';
 
@@ -183,7 +180,12 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TObject
     );
-
+    procedure PutRecord(
+      const AName     : string;
+      const ATypeInfo : PTypeInfo;
+      const AData     : Pointer
+    );
+    
     function GetNodeValue(var AName : String):DOMString;
     procedure GetEnum(
       Const ATypeInfo : PTypeInfo;
@@ -221,6 +223,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
+    );
+    procedure GetRecord(
+      const ATypeInfo : PTypeInfo;
+      var   AName     : String;
+      var   AData     : Pointer
     );
   protected
     function GetXmlDoc():TwstXMLDocument;
@@ -313,18 +320,18 @@ type
     procedure EndHeader();
 
     procedure Put(
-      Const AName     : String;
-      Const ATypeInfo : PTypeInfo;
-      Const AData
+      const AName     : string;
+      const ATypeInfo : PTypeInfo;
+      const AData
     );
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
     );
     procedure Get(
-      Const ATypeInfo : PTypeInfo;
-      Var   AName     : String;
-      Var   AData
+      const ATypeInfo : PTypeInfo;
+      var   AName     : string;
+      var   AData
     );
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
@@ -515,6 +522,7 @@ procedure TSOAPBaseFormatter.InternalClear(const ACreateDoc: Boolean);
 begin
   ClearStack();
   ReleaseDomNode(FDoc);
+  FDoc := nil;
   if ACreateDoc then
     FDoc := CreateDoc();
 end;
@@ -738,6 +746,15 @@ begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Save(AData As TBaseRemotable, Self,AName,ATypeInfo);
 end;
 
+procedure TSOAPBaseFormatter.PutRecord(
+  const AName     : string;
+  const ATypeInfo : PTypeInfo;
+  const AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Save(AData,Self,AName,ATypeInfo);
+end;
+
 function TSOAPBaseFormatter.PutFloat(
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
@@ -886,6 +903,15 @@ procedure TSOAPBaseFormatter.GetObj(
 );
 begin
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+end;
+
+procedure TSOAPBaseFormatter.GetRecord(
+  const ATypeInfo : PTypeInfo;
+  var   AName     : String;
+  var   AData     : Pointer
+);
+begin
+  TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
 end;
 
 function TSOAPBaseFormatter.GetXmlDoc(): TwstXMLDocument;
@@ -1375,6 +1401,10 @@ begin
         objData := TObject(AData);
         PutObj(AName,ATypeInfo,objData);
       End;
+    tkRecord :
+      begin
+        PutRecord(AName,ATypeInfo,Pointer(@AData));
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin
@@ -1548,6 +1578,7 @@ Var
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
+  recObject : Pointer;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1568,6 +1599,11 @@ begin
         GetObj(ATypeInfo,AName,objData);
         TObject(AData) := objData;
       End;
+    tkRecord :
+      begin
+        recObject := Pointer(@AData);
+        GetRecord(ATypeInfo,AName,recObject);
+      end;
     {$IFDEF FPC}
     tkBool :
       Begin

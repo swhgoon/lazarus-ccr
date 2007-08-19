@@ -230,9 +230,9 @@ begin
     DoNotify(mtInfo,Format('File parsed %s .',[AFileName]));
   except
     on e : Exception do begin
-      FreeAndNil(Result);
       DoNotify(mtError,e.Message);
-      raise;
+      FreeAndNil(Result);
+      //raise;
     end;
   end;
 end;

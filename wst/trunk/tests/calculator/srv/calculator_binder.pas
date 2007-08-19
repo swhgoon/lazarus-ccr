@@ -2,10 +2,10 @@
 This unit has been produced by ws_helper.
   Input unit name : "calculator".
   This unit name  : "calculator_binder".
-  Date            : "12/11/2006 11:22".
+  Date            : "15/08/2007 16:34:20".
 }
 unit calculator_binder;
-{$mode objfpc}{$H+}
+{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
 interface
 
 uses SysUtils, Classes, base_service_intf, server_service_intf, calculator;
@@ -13,20 +13,25 @@ uses SysUtils, Classes, base_service_intf, server_service_intf, calculator;
 type
 
 
-  TCalculator_ServiceBinder=class(TBaseServiceBinder)
-  Protected
-    procedure AddIntHandler(AFormatter:IFormatterResponse);
-    procedure DivIntHandler(AFormatter:IFormatterResponse);
-    procedure DoAllOperationsHandler(AFormatter:IFormatterResponse);
-    procedure DoOperationHandler(AFormatter:IFormatterResponse);
-  Public
+  TCalculator_ServiceBinder = class(TBaseServiceBinder)
+  protected
+    procedure AddIntHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+    procedure DivIntHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+    procedure DoAllOperationsHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+    procedure DoOperationHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+  public
     constructor Create();
-  End;
+  end;
 
   TCalculator_ServiceBinderFactory = class(TInterfacedObject,IItemFactory)
+  private
+    FInstance : IInterface;
   protected
     function CreateInstance():IInterface;
-  End;
+  public
+    constructor Create();
+    destructor Destroy();override;
+  end;
 
   procedure Server_service_RegisterCalculatorService();
 
@@ -34,9 +39,11 @@ Implementation
 uses TypInfo, wst_resources_imp,metadata_repository;
 
 { TCalculator_ServiceBinder implementation }
-procedure TCalculator_ServiceBinder.AddIntHandler(AFormatter:IFormatterResponse);
-Var
+procedure TCalculator_ServiceBinder.AddIntHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+var
   cllCntrl : ICallControl;
+  objCntrl : IObjectControl;
+  hasObjCntrl : Boolean;
   tmpObj : ICalculator;
   callCtx : ICallContext;
   strPrmName : string;
@@ -44,34 +51,44 @@ Var
   A : Integer;
   B : Integer;
   returnVal : TBinaryArgsResult;
-Begin
-  callCtx := GetCallContext();
-  Pointer(returnVal) := Nil;
+begin
+  callCtx := AContext;
+  TObject(returnVal) := nil;
   
   strPrmName := 'A';  AFormatter.Get(TypeInfo(Integer),strPrmName,A);
   strPrmName := 'B';  AFormatter.Get(TypeInfo(Integer),strPrmName,B);
   
   tmpObj := Self.GetFactory().CreateInstance() as ICalculator;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
-  
-  returnVal := tmpObj.AddInt(A,B);
-  If Assigned(Pointer(returnVal)) Then
-    callCtx.AddObjectToFree(TObject(returnVal));
-  
-  procName := AFormatter.GetCallProcedureName();
-  trgName := AFormatter.GetCallTarget();
-  AFormatter.Clear();
-  AFormatter.BeginCallResponse(procName,trgName);
-    AFormatter.Put('return',TypeInfo(TBinaryArgsResult),returnVal);
-  AFormatter.EndCallResponse();
-  
-  callCtx := Nil;
-End;
+    cllCntrl.SetCallContext(callCtx);
+  hasObjCntrl := Supports(tmpObj,IObjectControl,objCntrl);
+  if hasObjCntrl then
+    objCntrl.Activate();
+  try
+    returnVal := tmpObj.AddInt(A,B);
+    if Assigned(TObject(returnVal)) then
+      callCtx.AddObjectToFree(TObject(returnVal));
+    
+    procName := AFormatter.GetCallProcedureName();
+    trgName := AFormatter.GetCallTarget();
+    AFormatter.Clear();
+    AFormatter.BeginCallResponse(procName,trgName);
+      AFormatter.Put('Result',TypeInfo(TBinaryArgsResult),returnVal);
+    AFormatter.EndCallResponse();
+    
+    callCtx := nil;
+  finally
+    if hasObjCntrl then
+      objCntrl.Deactivate();
+    Self.GetFactory().ReleaseInstance(tmpObj);
+  end;
+end;
 
-procedure TCalculator_ServiceBinder.DivIntHandler(AFormatter:IFormatterResponse);
-Var
+procedure TCalculator_ServiceBinder.DivIntHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+var
   cllCntrl : ICallControl;
+  objCntrl : IObjectControl;
+  hasObjCntrl : Boolean;
   tmpObj : ICalculator;
   callCtx : ICallContext;
   strPrmName : string;
@@ -79,31 +96,41 @@ Var
   A : Integer;
   B : Integer;
   returnVal : Integer;
-Begin
-  callCtx := GetCallContext();
+begin
+  callCtx := AContext;
   
   strPrmName := 'A';  AFormatter.Get(TypeInfo(Integer),strPrmName,A);
   strPrmName := 'B';  AFormatter.Get(TypeInfo(Integer),strPrmName,B);
   
   tmpObj := Self.GetFactory().CreateInstance() as ICalculator;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
-  
-  returnVal := tmpObj.DivInt(A,B);
-  
-  procName := AFormatter.GetCallProcedureName();
-  trgName := AFormatter.GetCallTarget();
-  AFormatter.Clear();
-  AFormatter.BeginCallResponse(procName,trgName);
-    AFormatter.Put('return',TypeInfo(Integer),returnVal);
-  AFormatter.EndCallResponse();
-  
-  callCtx := Nil;
-End;
+    cllCntrl.SetCallContext(callCtx);
+  hasObjCntrl := Supports(tmpObj,IObjectControl,objCntrl);
+  if hasObjCntrl then
+    objCntrl.Activate();
+  try
+    returnVal := tmpObj.DivInt(A,B);
+    
+    procName := AFormatter.GetCallProcedureName();
+    trgName := AFormatter.GetCallTarget();
+    AFormatter.Clear();
+    AFormatter.BeginCallResponse(procName,trgName);
+      AFormatter.Put('Result',TypeInfo(Integer),returnVal);
+    AFormatter.EndCallResponse();
+    
+    callCtx := nil;
+  finally
+    if hasObjCntrl then
+      objCntrl.Deactivate();
+    Self.GetFactory().ReleaseInstance(tmpObj);
+  end;
+end;
 
-procedure TCalculator_ServiceBinder.DoAllOperationsHandler(AFormatter:IFormatterResponse);
-Var
+procedure TCalculator_ServiceBinder.DoAllOperationsHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+var
   cllCntrl : ICallControl;
+  objCntrl : IObjectControl;
+  hasObjCntrl : Boolean;
   tmpObj : ICalculator;
   callCtx : ICallContext;
   strPrmName : string;
@@ -111,34 +138,44 @@ Var
   A : Integer;
   B : Integer;
   returnVal : TBinaryArgsResultArray;
-Begin
-  callCtx := GetCallContext();
-  Pointer(returnVal) := Nil;
+begin
+  callCtx := AContext;
+  TObject(returnVal) := nil;
   
   strPrmName := 'A';  AFormatter.Get(TypeInfo(Integer),strPrmName,A);
   strPrmName := 'B';  AFormatter.Get(TypeInfo(Integer),strPrmName,B);
   
   tmpObj := Self.GetFactory().CreateInstance() as ICalculator;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
-  
-  returnVal := tmpObj.DoAllOperations(A,B);
-  If Assigned(Pointer(returnVal)) Then
-    callCtx.AddObjectToFree(TObject(returnVal));
-  
-  procName := AFormatter.GetCallProcedureName();
-  trgName := AFormatter.GetCallTarget();
-  AFormatter.Clear();
-  AFormatter.BeginCallResponse(procName,trgName);
-    AFormatter.Put('return',TypeInfo(TBinaryArgsResultArray),returnVal);
-  AFormatter.EndCallResponse();
-  
-  callCtx := Nil;
-End;
+    cllCntrl.SetCallContext(callCtx);
+  hasObjCntrl := Supports(tmpObj,IObjectControl,objCntrl);
+  if hasObjCntrl then
+    objCntrl.Activate();
+  try
+    returnVal := tmpObj.DoAllOperations(A,B);
+    if Assigned(TObject(returnVal)) then
+      callCtx.AddObjectToFree(TObject(returnVal));
+    
+    procName := AFormatter.GetCallProcedureName();
+    trgName := AFormatter.GetCallTarget();
+    AFormatter.Clear();
+    AFormatter.BeginCallResponse(procName,trgName);
+      AFormatter.Put('Result',TypeInfo(TBinaryArgsResultArray),returnVal);
+    AFormatter.EndCallResponse();
+    
+    callCtx := nil;
+  finally
+    if hasObjCntrl then
+      objCntrl.Deactivate();
+    Self.GetFactory().ReleaseInstance(tmpObj);
+  end;
+end;
 
-procedure TCalculator_ServiceBinder.DoOperationHandler(AFormatter:IFormatterResponse);
-Var
+procedure TCalculator_ServiceBinder.DoOperationHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
+var
   cllCntrl : ICallControl;
+  objCntrl : IObjectControl;
+  hasObjCntrl : Boolean;
   tmpObj : ICalculator;
   callCtx : ICallContext;
   strPrmName : string;
@@ -147,9 +184,9 @@ Var
   B : Integer;
   AOperation : TCalc_Op;
   returnVal : TBinaryArgsResult;
-Begin
-  callCtx := GetCallContext();
-  Pointer(returnVal) := Nil;
+begin
+  callCtx := AContext;
+  TObject(returnVal) := nil;
   
   strPrmName := 'A';  AFormatter.Get(TypeInfo(Integer),strPrmName,A);
   strPrmName := 'B';  AFormatter.Get(TypeInfo(Integer),strPrmName,B);
@@ -157,38 +194,58 @@ Begin
   
   tmpObj := Self.GetFactory().CreateInstance() as ICalculator;
   if Supports(tmpObj,ICallControl,cllCntrl) then
-    cllCntrl.SetCallContext(GetCallContext());
-  
-  returnVal := tmpObj.DoOperation(A,B,AOperation);
-  If Assigned(Pointer(returnVal)) Then
-    callCtx.AddObjectToFree(TObject(returnVal));
-  
-  procName := AFormatter.GetCallProcedureName();
-  trgName := AFormatter.GetCallTarget();
-  AFormatter.Clear();
-  AFormatter.BeginCallResponse(procName,trgName);
-    AFormatter.Put('return',TypeInfo(TBinaryArgsResult),returnVal);
-  AFormatter.EndCallResponse();
-  
-  callCtx := Nil;
-End;
+    cllCntrl.SetCallContext(callCtx);
+  hasObjCntrl := Supports(tmpObj,IObjectControl,objCntrl);
+  if hasObjCntrl then
+    objCntrl.Activate();
+  try
+    returnVal := tmpObj.DoOperation(A,B,AOperation);
+    if Assigned(TObject(returnVal)) then
+      callCtx.AddObjectToFree(TObject(returnVal));
+    
+    procName := AFormatter.GetCallProcedureName();
+    trgName := AFormatter.GetCallTarget();
+    AFormatter.Clear();
+    AFormatter.BeginCallResponse(procName,trgName);
+      AFormatter.Put('Result',TypeInfo(TBinaryArgsResult),returnVal);
+    AFormatter.EndCallResponse();
+    
+    callCtx := nil;
+  finally
+    if hasObjCntrl then
+      objCntrl.Deactivate();
+    Self.GetFactory().ReleaseInstance(tmpObj);
+  end;
+end;
 
 
 constructor TCalculator_ServiceBinder.Create();
-Begin
-  Inherited Create(GetServiceImplementationRegistry().FindFactory('ICalculator'));
-  RegisterVerbHandler('AddInt',@AddIntHandler);
-  RegisterVerbHandler('DivInt',@DivIntHandler);
-  RegisterVerbHandler('DoAllOperations',@DoAllOperationsHandler);
-  RegisterVerbHandler('DoOperation',@DoOperationHandler);
-End;
+begin
+  inherited Create(GetServiceImplementationRegistry().FindFactory('ICalculator'));
+  RegisterVerbHandler('AddInt',{$IFDEF FPC}@{$ENDIF}AddIntHandler);
+  RegisterVerbHandler('DivInt',{$IFDEF FPC}@{$ENDIF}DivIntHandler);
+  RegisterVerbHandler('DoAllOperations',{$IFDEF FPC}@{$ENDIF}DoAllOperationsHandler);
+  RegisterVerbHandler('DoOperation',{$IFDEF FPC}@{$ENDIF}DoOperationHandler);
+end;
 
 
 { TCalculator_ServiceBinderFactory }
+
 function TCalculator_ServiceBinderFactory.CreateInstance():IInterface;
-Begin
-  Result := TCalculator_ServiceBinder.Create() as IInterface;
-End;
+begin
+  Result := FInstance;
+end;
+
+constructor TCalculator_ServiceBinderFactory.Create();
+begin
+  FInstance := TCalculator_ServiceBinder.Create() as IInterface;
+end;
+
+destructor TCalculator_ServiceBinderFactory.Destroy();
+begin
+  FInstance := nil;
+  inherited Destroy();
+end;
 
 
 procedure Server_service_RegisterCalculatorService();
@@ -198,10 +255,10 @@ End;
 
 initialization
 
-  {$IF DECLARED(Register_calculator_NameSpace)}
-  Register_calculator_NameSpace();
-  {$ENDIF}
-
   {$i calculator.wst}
+
+  {$IF DECLARED(Register_calculator_ServiceMetadata)}
+  Register_calculator_ServiceMetadata();
+  {$IFEND}
 
 End.

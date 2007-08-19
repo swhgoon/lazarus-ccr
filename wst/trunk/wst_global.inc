@@ -5,4 +5,16 @@
 {$ELSE}
   {$UNDEF HAS_QWORD}
   {$UNDEF USE_INLINE}
+  {$DEFINE WST_RECORD_RTTI}
+{$ENDIF}
+{$IFDEF CPU86}
+  {$DEFINE HAS_COMP}
+{$ENDIF}
+
+{$IFDEF FPC}
+  {$IF Defined(FPC_VERSION) and (FPC_VERSION = 2)  }
+    {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 0) }
+      {$define FPC_211}
+    {$IFEND}
+  {$IFEND}
 {$ENDIF}

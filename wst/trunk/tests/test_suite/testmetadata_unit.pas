@@ -27,9 +27,6 @@ uses
   pascal_parser_intf,
   metadata_wsdl;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 type
 
   { TTestMetadata }

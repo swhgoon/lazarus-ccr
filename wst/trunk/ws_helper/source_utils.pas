@@ -31,6 +31,10 @@ Type
   EsourceException = class(Exception)
   end;
 
+  ISourceStream = interface;
+  ISourceManager = interface;
+  ISavableSourceStream = interface;
+  
   ISourceStream = interface
     ['{91EA7DA6-340C-477A-A6FD-06F2BAEA9A97}']
     function GetFileName():string;
@@ -45,6 +49,7 @@ Type
     procedure NewLine();
     procedure BeginAutoIndent();
     procedure EndAutoIndent();
+    procedure Append(ASource : ISavableSourceStream);
   end;
 
   ISourceManager = Interface
@@ -98,6 +103,7 @@ type
     procedure BeginAutoIndent();
     procedure EndAutoIndent();
     function IsInAutoInden():Boolean;
+    procedure Append(ASource : ISavableSourceStream);
   Public
     constructor Create(const AFileName:string);
     destructor Destroy();override;
@@ -301,6 +307,12 @@ end;
 function TSourceStream.IsInAutoInden(): Boolean;
 begin
   Result := ( FAutoIndentCount > 0 );
+end;
+
+procedure TSourceStream.Append(ASource : ISavableSourceStream);
+begin
+  if ( ASource <> nil ) then
+    FStream.CopyFrom(ASource.GetStream(),0);
 end;
 
 constructor TSourceStream.Create(const AFileName: string);

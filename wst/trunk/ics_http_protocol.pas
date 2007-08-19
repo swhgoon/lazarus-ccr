@@ -22,9 +22,6 @@ uses
   service_intf, imp_utils, base_service_intf,
   HttpProt;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Const
   sTRANSPORT_NAME = 'HTTP';
 

@@ -24,7 +24,7 @@ type
 
   function CreateDoc() : TXMLDocument ;
   procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);
-  procedure ReadXMLFile(ADoc : TXMLDocument; AStream : TStream);
+  procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);
   function NodeToBuffer(ANode : TDOMNode):string ;
 
   function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
@@ -55,8 +55,9 @@ begin
   (ADoc as IDOMPersist).saveToStream(AStream);
 end;
 
-procedure ReadXMLFile(ADoc : TXMLDocument; AStream : TStream);
+procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);
 begin
+  ADoc := CreateDoc();
   (ADoc as IDOMPersist).loadFromStream(AStream);
 end;
 

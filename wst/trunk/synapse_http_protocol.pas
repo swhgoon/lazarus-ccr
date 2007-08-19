@@ -22,9 +22,6 @@ uses
   service_intf, imp_utils, base_service_intf,
   httpsend;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Const
   sTRANSPORT_NAME = 'HTTP';
 
@@ -157,6 +154,14 @@ end;
 
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
 {$IFDEF WST_DBG}
+  procedure Display(const AStr : string);
+  begin
+    if IsConsole then
+      WriteLn(AStr)
+    {else
+      ShowMessage(AStr)};
+  end;
+  
 var
   s : string;
 {$ENDIF}
@@ -169,13 +174,13 @@ begin
   FConnection.Clear();
 {$IFDEF WST_DBG}
   TMemoryStream(ARequest).SaveToFile('request.log');
+  SetLength(s,ARequest.Size);
+  Move(TMemoryStream(ARequest).Memory^,s[1],Length(s));
+  Display(s);
   SetLength(s,AResponse.Size);
   Move(TMemoryStream(AResponse).Memory^,s[1],Length(s));
   TMemoryStream(AResponse).SaveToFile('response.log');
-  if IsConsole then
-    WriteLn(s)
-  {else
-    ShowMessage(s)};
+  Display(s);
 {$ENDIF}
 end;
 

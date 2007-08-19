@@ -18,9 +18,6 @@ interface
 uses
   Classes, SysUtils, TypInfo;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 const
   sWST_SIGNATURE = 'WST_METADATA_0.2.2.0';
   sWST_META      = 'wst_meta';

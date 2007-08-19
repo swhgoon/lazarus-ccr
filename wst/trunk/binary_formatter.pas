@@ -20,9 +20,6 @@ uses
   base_service_intf, service_intf, imp_utils,
   base_binary_formatter;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Const
   sCONTENT_TYPE = 'contenttype';
   sBINARY_CONTENT = 'binary';

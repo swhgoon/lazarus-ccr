@@ -18,9 +18,6 @@ interface
 uses
   Classes, SysUtils, syncobjs{$IFNDEF FPC},Windows{$ENDIF};
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 type
 
   ESemaphoreException = class(Exception);

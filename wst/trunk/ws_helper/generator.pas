@@ -17,10 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 }
 
-
+{$INCLUDE wst_global.inc}
 unit generator;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -149,6 +147,7 @@ type
     FImpStream : ISourceStream;
     FImpTempStream : ISourceStream;
     FImpLastStream : ISourceStream;
+    FRttiFunc : ISourceStream;
   private
     function GenerateIntfName(AIntf : TPasElement):string;
 
@@ -161,6 +160,7 @@ type
     procedure GenerateClass(ASymbol : TPasClassType);
     procedure GenerateEnum(ASymbol : TPasEnumType);
     procedure GenerateArray(ASymbol : TPasArrayType);
+    procedure GenerateRecord(ASymbol : TPasRecordType);
 
     procedure GenerateCustomMetadatas();
     function GetDestUnitName():string;
@@ -185,6 +185,7 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       RETURN_VAL_NAME = 'returnVal';
       sNAME_SPACE = 'sNAME_SPACE';
       sUNIT_NAME = 'sUNIT_NAME';
+      sRECORD_RTTI_DEFINE = 'WST_RECORD_RTTI';
 
       sPRM_NAME = 'strPrmName';
       sLOC_SERIALIZER = 'locSerializer';
@@ -1398,7 +1399,12 @@ begin
   WriteLn('}');
 
   WriteLn('unit %s;',[GetDestUnitName()]);
-  WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
+  WriteLn('{$IFDEF FPC}');
+  WriteLn('  {$mode objfpc} {$H+}');
+  WriteLn('{$ENDIF}');
+  WriteLn('{$IFNDEF FPC}');
+  WriteLn('  {$DEFINE WST_RECORD_RTTI}');
+  WriteLn('{$ENDIF}');
   WriteLn('interface');
   WriteLn('');
   WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;');
@@ -1420,7 +1426,7 @@ begin
   SetCurrentStream(FImpStream);
   WriteLn('');
   WriteLn('Implementation');
-  WriteLn('uses metadata_repository;');
+  WriteLn('uses metadata_repository, record_rtti, wst_types;');
   FImpTempStream.WriteLn('initialization');
 end;
 
@@ -2033,6 +2039,122 @@ begin
   end;
 end;
 
+procedure TInftGenerator.GenerateRecord(ASymbol : TPasRecordType);
+var
+  strFieldList : string;
+  
+  procedure WriteDec();
+  var
+    itm : TPasVariable;
+    i : PtrInt;
+  begin
+    SetCurrentStream(FDecStream);
+    NewLine();
+    IncIndent();
+      Indent(); WriteLn('%s = record',[ASymbol.Name]);
+      IncIndent();
+        strFieldList := '';
+        for i := 0 to Pred(ASymbol.Members.Count) do begin
+          itm := TPasVariable(ASymbol.Members[i]);
+          Indent();
+          WriteLn('%s : %s;',[itm.Name,itm.VarType.Name]);
+          if ( i > 0 ) then
+            strFieldList := Format('%s;%s',[strFieldList,itm.Name])
+          else
+            strFieldList := itm.Name;
+        end;
+      DecIndent();
+      Indent(); WriteLn('end;');
+    DecIndent();
+  end;
+
+  procedure WriteRTTI();
+  var
+    itm : TPasVariable;
+    k, c : PtrInt;
+    offsetLine, typeLine : string;
+  begin
+    SetCurrentStream(FRttiFunc);
+    NewLine();
+    WriteLn('{$IFDEF %s}',[sRECORD_RTTI_DEFINE]);
+    WriteLn('function __%s_TYPEINFO_FUNC__() : PTypeInfo;',[ASymbol.Name]);
+    WriteLn('var');
+      IncIndent();
+        Indent(); WriteLn('p : ^%s;',[ASymbol.Name]);
+        Indent(); WriteLn('r : %s;',[ASymbol.Name]);
+      DecIndent();
+    WriteLn('begin');
+    IncIndent();
+      Indent(); WriteLn('p := @r;');
+      Indent(); WriteLn('Result := MakeRawTypeInfo(');
+      IncIndent();
+        Indent(); WriteLn('%s,',[QuotedStr(ASymbol.Name)]);
+        Indent(); WriteLn('SizeOf(%s),',[ASymbol.Name]);
+        offsetLine := '[ ';
+        typeLine   := '[ ';
+        c := ASymbol.Members.Count;
+        if ( c > 0 ) then begin
+          k := 1;
+          itm := TPasVariable(ASymbol.Members[(k-1)]);
+          offsetLine := offsetLine + Format('PtrUInt(@(p^.%s)) - PtrUInt(p)',[itm.Name]);
+          typeLine := typeLine + Format('TypeInfo(%s)',[itm.VarType.Name]);
+          Inc(k);
+          for k := k to c do begin
+            itm := TPasVariable(ASymbol.Members[(k-1)]);
+            offsetLine := offsetLine + Format(', PtrUInt(@(p^.%s)) - PtrUInt(p)',[itm.Name]);
+            typeLine := typeLine + Format(', TypeInfo(%s)',[itm.VarType.Name]);
+          end;
+        end;
+        offsetLine := offsetLine + ' ]';
+        typeLine := typeLine + ' ]';
+        Indent(); WriteLn('%s,',[offsetLine]);
+        Indent(); WriteLn('%s',[typeLine]);
+      DecIndent();
+      Indent(); WriteLn(');');
+    DecIndent();
+    WriteLn('end;');
+    WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
+  end;
+
+var
+  s : string;
+begin
+  try
+    WriteDec();
+    WriteRTTI();
+    
+    SetCurrentStream(FImpLastStream);
+    NewLine();
+
+      Indent();
+      WriteLn(
+        'GetTypeRegistry().Register(%s,TypeInfo(%s),%s).RegisterExternalPropertyName(%s,%s);',
+        [ sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol)),
+          QuotedStr(Format('__FIELDS__',[ASymbol.Name])),QuotedStr(strFieldList)
+        ]
+      );
+      s := 'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)]' +
+             '.RegisterObject(' +
+               'FIELDS_STRING,' +
+               'TRecordRttiDataObject.Create(' +
+                 'MakeRecordTypeInfo(%s),' +
+                 'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].GetExternalPropertyName(''__FIELDS__'')' +
+               ')' +
+             ');';
+      WriteLn('{$IFNDEF %s}',[sRECORD_RTTI_DEFINE]);
+        Indent(); WriteLn(s,[ASymbol.Name,Format('TypeInfo(%s)',[ASymbol.Name]),ASymbol.Name]);
+      WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
+
+      WriteLn('{$IFDEF %s}',[sRECORD_RTTI_DEFINE]);
+        Indent(); WriteLn(s,[ASymbol.Name,Format('__%s_TYPEINFO_FUNC__()',[ASymbol.Name]),ASymbol.Name]);
+      WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
+    SetCurrentStream(FDecStream);
+  except
+    on e : Exception do
+      GetLogger.Log(mtError,'TInftGenerator.GenerateRecord()=', [ASymbol.Name, ' ;; ', e.Message]);
+  end;
+end;
+
 procedure TInftGenerator.GenerateCustomMetadatas();
 
   procedure WriteOperationDatas(AInftDef : TPasClassType; AOp : TPasProcedure);
@@ -2140,13 +2262,14 @@ begin
   FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
   FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
   FImpLastStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_last');
+  FRttiFunc := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_rtti_func');
   FImpTempStream.IncIndent();
   FImpLastStream.IncIndent();
 end;
 
 procedure TInftGenerator.Execute();
 var
-  i,c, j, k : Integer;
+  i,c, j, k : PtrInt;
   clssTyp : TPasClassType;
   gnrClssLst : TObjectList;
   objLst : TObjectList;
@@ -2191,6 +2314,13 @@ begin
       elt := TPasElement(typeList[i]);
       if elt.InheritsFrom(TPasEnumType) then begin
         GenerateEnum(TPasEnumType(elt));
+      end;
+    end;
+
+    for i := 0 to c do begin
+      elt := TPasElement(typeList[i]);
+      if elt.InheritsFrom(TPasRecordType) then begin
+        GenerateRecord(TPasRecordType(elt));
       end;
     end;
 
@@ -2258,8 +2388,9 @@ begin
     DecIndent();
     GenerateCustomMetadatas();
     
+    FImpLastStream.NewLine();
     GenerateUnitImplementationFooter();
-    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FImpTempStream,FImpLastStream]);
+    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FRttiFunc,FImpTempStream,FImpLastStream]);
     FDecStream := nil;
     FImpStream := nil;
     FImpTempStream := nil;

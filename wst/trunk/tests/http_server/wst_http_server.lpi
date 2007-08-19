@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="13"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -37,8 +37,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_http_server"/>
         <CursorPos X="1" Y="40"/>
-        <TopLine Value="18"/>
-        <EditorIndex Value="13"/>
+        <TopLine Value="11"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -46,7 +46,7 @@
         <Filename Value="app_object.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="app_object"/>
-        <CursorPos X="43" Y="69"/>
+        <CursorPos X="1" Y="69"/>
         <TopLine Value="50"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="202"/>
@@ -170,7 +170,7 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="82"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="201"/>
         <Bookmarks Count="1">
           <Item0 X="52" Y="707" ID="1"/>
@@ -199,7 +199,7 @@
         <UnitName Value="server_service_soap"/>
         <CursorPos X="14" Y="22"/>
         <TopLine Value="13"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit21>
@@ -287,7 +287,7 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="21" Y="121"/>
         <TopLine Value="109"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="59"/>
         <Loaded Value="True"/>
       </Unit32>
@@ -438,7 +438,7 @@
         <Filename Value="..\..\metadata_service_imp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_service_imp"/>
-        <CursorPos X="13" Y="8"/>
+        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="196"/>
@@ -489,9 +489,9 @@
         <Filename Value="..\calculator\srv\calculator_binder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="calculator_binder"/>
-        <CursorPos X="16" Y="205"/>
-        <TopLine Value="165"/>
-        <EditorIndex Value="12"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="133"/>
         <Loaded Value="True"/>
       </Unit62>
@@ -501,7 +501,7 @@
         <UnitName Value="calculator"/>
         <CursorPos X="44" Y="19"/>
         <TopLine Value="79"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="133"/>
         <Loaded Value="True"/>
       </Unit63>
@@ -570,18 +570,14 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit73>
       <Unit74>
         <Filename Value="user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="3" Y="56"/>
         <TopLine Value="54"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit74>
       <Unit75>
         <Filename Value="user_service_intf.wst"/>
@@ -595,9 +591,7 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="21" Y="43"/>
         <TopLine Value="33"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit76>
       <Unit77>
         <Filename Value="..\calculator\srv\calculator.wst"/>
@@ -640,27 +634,15 @@
         <UsageCount Value="10"/>
       </Unit82>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="..\..\metadata_wsdl.pas"/>
-        <Caret Line="369" Column="44" TopLine="358"/>
+        <Filename Value="..\calculator\srv\calculator_binder.pas"/>
+        <Caret Line="205" Column="16" TopLine="165"/>
       </Position1>
       <Position2>
-        <Filename Value="user_service_intf_imp.pas"/>
-        <Caret Line="70" Column="1" TopLine="29"/>
+        <Filename Value="..\..\metadata_service_imp.pas"/>
+        <Caret Line="8" Column="13" TopLine="1"/>
       </Position2>
-      <Position3>
-        <Filename Value="user_service_intf_imp.pas"/>
-        <Caret Line="23" Column="15" TopLine="12"/>
-      </Position3>
-      <Position4>
-        <Filename Value="user_service_intf_imp.pas"/>
-        <Caret Line="21" Column="3" TopLine="17"/>
-      </Position4>
-      <Position5>
-        <Filename Value="wst_http_server.pas"/>
-        <Caret Line="22" Column="24" TopLine="1"/>
-      </Position5>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

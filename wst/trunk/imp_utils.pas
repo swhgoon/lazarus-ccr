@@ -19,9 +19,6 @@ uses
   Classes, SysUtils, TypInfo,
   base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Type
 
   EPropertyManagerException = class(EServiceException)
@@ -46,13 +43,33 @@ Type
   End;
 
   function IsStrEmpty(Const AStr:String):Boolean;
+  function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
   
 implementation
+uses wst_types;
 
 function IsStrEmpty(Const AStr:String):Boolean;
 begin
   Result := ( Length(Trim(AStr)) = 0 );
+end;
+
+function GetToken(var ABuffer : string; const ADelimiter : string): string;
+var
+  locPos, locOfs, locLen : PtrInt;
+  locStr             : string;
+begin
+  locPos := Pos(ADelimiter, ABuffer);
+  locLen := Length(ADelimiter);
+  locOfs := locLen - 1;
+  if (IsStrEmpty(ABuffer)) or ((locPos = 0) and (Length(ABuffer) > 0)) then begin
+    Result := ABuffer;
+    ABuffer := '';
+  end else  begin
+    locStr := Copy(ABuffer, 1, locPos + locOfs);
+    ABuffer := Copy(ABuffer, locPos + locLen, Length(ABuffer));
+    Result := Copy(locStr, 1, Length(locStr) - locLen);
+  end;
 end;
 
 function ExtractOptionName(const ACompleteName : string):string;

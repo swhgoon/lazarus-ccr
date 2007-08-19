@@ -22,9 +22,6 @@ uses
   service_intf, imp_utils, base_service_intf, library_base_intf,
   library_imp_utils;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 const
   sTRANSPORT_NAME = 'LIB';
 

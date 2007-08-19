@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<definitions name="urn:record_sample" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:record_sample" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:record_sample">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:record_sample">
+      <xsd:complexType name="TRecordClass">
+        <xsd:sequence>
+          <xsd:element name="fieldA" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+          <xsd:element name="fieldB" type="xsd:single" maxOccurs="1" minOccurs="1"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="Add"><part name="AValue" type="tns:TRecordClass"/></message>
+  <message name="AddResponse"><part name="result" type="xsd:long"/></message>
+  <portType name="RecordService">
+    <document><GUID value="{E42B7653-4B50-4956-88B4-FBCEC57B667A}"/></document>
+    <operation name="Add">
+      <input message="tns:Add"/>
+      <output message="tns:AddResponse"/>
+    </operation>
+  </portType>
+  <binding name="RecordServiceBinding" type="tns:RecordService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="Add">
+      <soap:operation soapAction=""/>
+      <input><soap:body use="literal" namespace="urn:record_sample"/></input>
+      <output><soap:body use="literal" namespace="urn:record_sample"/></output>
+    </operation>
+  </binding>
+  <service name="RecordService">
+    <port name="RecordServicePort" binding="tns:RecordServiceBinding"><soap:address location="http://127.0.0.1:20000"/></port>
+  </service>
+</definitions>

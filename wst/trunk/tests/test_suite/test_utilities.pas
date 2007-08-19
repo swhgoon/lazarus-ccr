@@ -13,9 +13,6 @@ uses
   TypInfo,
   base_service_intf, server_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 type
 
   ITest = interface
@@ -37,7 +34,35 @@ type
     constructor Create();override;
   end;
 
+  ISimple_A = interface
+     ['{D015AD95-6062-4650-9B00-CF3004E9CA1A}']//['{4793180A-DAA4-4E50-9194-5EEEE851EBE3}']
+  end;
 
+  ISimple_B = interface
+     ['{4793180A-DAA4-4E50-9194-5EEEE851EBE3}']
+  end;
+
+  TSimpleFactoryItem_A = class(TSimpleFactoryItem,IInterface,ISimple_A)
+  end;
+
+  TSimpleFactoryItem_B = class(TSimpleFactoryItem,IInterface,ISimple_B)
+  end;
+
+  { TTest_TIntfPoolItem }
+
+  TTest_TIntfPoolItem = class(TTestCase)
+  published
+    procedure All();
+  end;
+
+  { TTest_TSimpleItemFactory }
+
+  TTest_TSimpleItemFactory = class(TTestCase)
+  published
+    procedure CreateProc();
+    procedure CreateInstance();
+  end;
+  
   { TTest_TIntfPool }
 
   TTest_TIntfPool= class(TTestCase)
@@ -447,14 +472,120 @@ begin
   Check(oldElt <> elt,'4.2');
 end;
 
+{ TTest_TIntfPoolItem }
+
+procedure TTest_TIntfPoolItem.All();
+var
+  i : IInterface;
+  b : Boolean;
+  a : TIntfPoolItem;
+begin
+  i := nil;
+  b := False;
+  a := TIntfPoolItem.Create(i,b);
+  try
+    Check(( i = a.Intf ),'Create() > Intf');
+    CheckEquals(b,a.Used,'Create() > Used');
+    b := not b;
+    a.Used := b;
+    CheckEquals(b,a.Used,'Used');
+  finally
+    FreeAndNil(a);
+  end;
+  a := nil;
+  
+  i := nil;
+  b := True;
+  a := TIntfPoolItem.Create(i,b);
+  try
+    Check(( i = a.Intf ),'Create() > Intf');
+    CheckEquals(b,a.Used,'Create() > Used');
+    b := not b;
+    a.Used := b;
+    CheckEquals(b,a.Used,'Used');
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+{ TTest_TSimpleItemFactory }
+
+procedure TTest_TSimpleItemFactory.CreateInstance();
+var
+  b, a : IItemFactory;
+  itm : IInterface;
+begin
+  a := TSimpleItemFactory.Create(TSimpleFactoryItem_A);
+    itm := a.CreateInstance();
+    CheckEquals(True,Assigned(itm));
+    CheckEquals(True,Supports(itm,ISimple_A));
+
+    itm := a.CreateInstance();
+    CheckEquals(True,Assigned(itm));
+    CheckEquals(True,Supports(itm,ISimple_A));
+
+  b := TSimpleItemFactory.Create(TSimpleFactoryItem_B);
+    itm := b.CreateInstance();
+    CheckEquals(True,Assigned(itm));
+    CheckEquals(True,Supports(itm,ISimple_B));
+    
+    itm := b.CreateInstance();
+    CheckEquals(True,Assigned(itm));
+    CheckEquals(True,Supports(itm,ISimple_B));
+end;
+
+type
+
+  { TSimpleItemFactoryCrack }
+
+  TSimpleItemFactoryCrack = class(TSimpleItemFactory)
+  public
+    function GetItemClass() : TSimpleFactoryItemClass;
+  end;
+
+{ TSimpleItemFactoryCrack }
+
+function TSimpleItemFactoryCrack.GetItemClass() : TSimpleFactoryItemClass;
+begin
+  Result := inherited GetItemClass();
+end;
+
+procedure TTest_TSimpleItemFactory.CreateProc();
+var
+  a : IItemFactory;
+  b : TSimpleItemFactoryCrack;
+  ok : Boolean;
+begin
+  ok := False;
+  try
+    TSimpleItemFactory.Create(nil);
+  except
+    on e : EServiceConfigException do begin
+      ok := True;
+    end;
+  end;
+  CheckEquals(True,ok,'Create(nil)');
+  
+  b := TSimpleItemFactoryCrack.Create(TSimpleFactoryItem_A);
+  CheckEquals(TSimpleFactoryItem_A,b.GetItemClass());
+  FreeAndNil(b);
+  
+  b := TSimpleItemFactoryCrack.Create(TSimpleFactoryItem_B);
+  CheckEquals(TSimpleFactoryItem_B,b.GetItemClass());
+end;
+
 initialization
 {$IFDEF FPC}
   RegisterTest(TTest_TIntfPool);
   RegisterTest(TTest_TSimpleItemFactoryEx);
   RegisterTest(TTest_TImplementationFactory);
+  RegisterTest(TTest_TIntfPoolItem);
+  RegisterTest(TTest_TImplementationFactory);
 {$ELSE}
   RegisterTest(TTest_TIntfPool.Suite);
   RegisterTest(TTest_TSimpleItemFactoryEx.Suite);
+  RegisterTest(TTest_TImplementationFactory.Suite);
+  RegisterTest(TTest_TIntfPoolItem.Suite);
   RegisterTest(TTest_TImplementationFactory.Suite);
 {$ENDIF}
 

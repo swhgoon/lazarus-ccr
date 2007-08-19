@@ -20,10 +20,7 @@ uses
   service_intf, imp_utils, base_service_intf,
   blcksock;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
-{$DEFINE WST_DBG}
+//{$DEFINE WST_DBG}
 
 Const
   sTRANSPORT_NAME = 'TCP';

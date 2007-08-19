@@ -5,7 +5,7 @@ program user_client_console;
 uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
-  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, //ics_tcp_protocol, ics_http_protocol,
+  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, ics_tcp_protocol, ics_http_protocol,
   soap_formatter, binary_formatter,
   user_service_intf, xmlrpc_formatter;
 
