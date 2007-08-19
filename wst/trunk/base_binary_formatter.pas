@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, Contnrs, TypInfo,
-  base_service_intf, binary_streamer;
+  base_service_intf, binary_streamer, wst_types;
 
 {$DEFINE wst_binary_header}
   
@@ -30,8 +30,11 @@ const
 
 type
   EBinaryFormatterException = class(EServiceException)
-  End;
+  end;
 
+  EBinaryException = class(EBaseRemoteException)
+  end;
+  
   TDataName = AnsiString;
   TDataType = (
     dtInt8U,    dtInt8S,
@@ -178,94 +181,94 @@ type
   protected
     function HasScope():Boolean;
     procedure CheckScope();
-    procedure ClearStack();
-    procedure PushStack(AScopeObject : PDataBuffer;Const AScopeType : TScopeType = stObject);
-    function StackTop():TStackItem;
-    function PopStack():TStackItem;
-    function GetRootData() : PDataBuffer;
+    procedure ClearStack();{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PushStack(AScopeObject : PDataBuffer;Const AScopeType : TScopeType = stObject);{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function StackTop():TStackItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PopStack():TStackItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetRootData() : PDataBuffer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
     procedure PutFloat(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TFloat_Extended_10
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutInt(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TInt64S
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutStr(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutEnum(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumData
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutObj(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TObject
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutRecord(
       const AName     : string;
       const ATypeInfo : PTypeInfo;
       const AData     : Pointer
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-    function GetDataBuffer(var AName : String):PDataBuffer;
+    function GetDataBuffer(var AName : String):PDataBuffer;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumData
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TFloat_Extended_10
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TInt64S
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Int64
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetRecord(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : Pointer
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
     constructor Create();override;
     destructor Destroy();override;

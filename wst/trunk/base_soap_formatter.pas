@@ -139,12 +139,12 @@ type
     FKeepedEncoding : TSOAPEncodingStyle;
     FSerializationStyle : TSerializationStyle;
 
-    procedure InternalClear(const ACreateDoc : Boolean);
+    procedure InternalClear(const ACreateDoc : Boolean);{$IFDEF USE_INLINE}inline;{$ENDIF}
     
-    function NextNameSpaceCounter():Integer;//inline;
-    function HasScope():Boolean;//inline;
+    function NextNameSpaceCounter():Integer;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function HasScope():Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-    procedure CheckScope();//inline;
+    procedure CheckScope();{$IFDEF USE_INLINE}inline;{$ENDIF}
     function InternalPutData(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -154,89 +154,89 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
-    ):TDOMNode;
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
-    ):TDOMNode;
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
-    ):TDOMNode;
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutStr(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
-    ):TDOMNode;
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutFloat(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Extended
-    ):TDOMNode;
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutObj(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TObject
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutRecord(
       const AName     : string;
       const ATypeInfo : PTypeInfo;
       const AData     : Pointer
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     
     function GetNodeValue(var AName : String):DOMString;
     procedure GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumIntType
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
     procedure GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Integer
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Int64
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Extended
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetRecord(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : Pointer
-    );
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
-    function GetXmlDoc():TwstXMLDocument;
-    function PushStack(AScopeObject : TDOMNode):TStackItem;overload;
+    function GetXmlDoc():TwstXMLDocument;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PushStack(AScopeObject : TDOMNode):TStackItem;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PushStack(
             AScopeObject : TDOMNode;
       const AStyle       : TArrayStyle;
       const AItemName    : string
-    ):TStackItem;overload;
+    ):TStackItem;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function FindAttributeByValueInNode(
       Const AAttValue : String;
       Const ANode     : TDOMNode;
@@ -252,13 +252,13 @@ type
     function GetNameSpaceShortName(
       const ANameSpace        : string;
       const ACreateIfNotFound : Boolean
-    ):shortstring;
+    ):shortstring;{$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
     function GetCurrentScope():String;
     function GetCurrentScopeObject():TDOMElement;
-    function StackTop():TStackItem;
-    function PopStack():TStackItem;
-    procedure ClearStack();
+    function StackTop():TStackItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PopStack():TStackItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure ClearStack();{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure BeginScope(
       Const AScopeName,ANameSpace : string;
       Const ANameSpaceShortName   : string ;

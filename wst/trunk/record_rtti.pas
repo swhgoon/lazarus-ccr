@@ -27,6 +27,8 @@ type
     Name : shortstring;
     TypeInfo : PPTypeInfo;
     Offset : PtrUInt;
+    IsAttribute : Boolean;
+    Visible : Boolean;
   end;
 
   PRecordTypeData = ^TRecordTypeData;
@@ -44,6 +46,8 @@ type
     constructor Create(const AData : PRecordTypeData; const AFieldList : string);
     destructor Destroy();override;
     function GetRecordTypeData() : PRecordTypeData;
+    function FindField(const AFieldName : shortstring) : PRecordFieldInfo;
+    function GetField(const AFieldName : shortstring) : PRecordFieldInfo;
   end;
 
   function MakeRecordTypeInfo(ARawTypeInfo : PTypeInfo) : PRecordTypeData;
@@ -182,6 +186,7 @@ begin
     fieldInfo := @(resBuffer^.Fields[(i - 1)]);
     fieldInfo^.TypeInfo := fld^.TypeInfo;
     fieldInfo^.Offset := fld^.Offset;
+    fieldInfo^.Visible := True;
   end;
   Result := resBuffer;
 end;
@@ -258,6 +263,7 @@ begin
     Inc(Temp,sizeof(Info));
     Offset := PLongint(Temp)^;
     fieldInfo^.Offset := Offset;
+    fieldInfo^.Visible := True;
     Inc(Temp,sizeof(Offset));
   end;
   Result := resBuffer;
@@ -304,6 +310,30 @@ end;
 function TRecordRttiDataObject.GetRecordTypeData() : PRecordTypeData;
 begin
   Result := PRecordTypeData(Data);
+end;
+
+function TRecordRttiDataObject.FindField(const AFieldName : shortstring) : PRecordFieldInfo;
+var
+  i : PtrInt;
+  locData : PRecordTypeData;
+  locField : shortstring;
+begin
+  Result := nil;
+  locData := PRecordTypeData(Data);
+  locField := UpperCase(AFieldName);
+  for i := 0 to Pred(locData^.FieldCount) do begin
+    if ( locField = UpperCase(locData^.Fields[i].Name) ) then begin
+      Result := @(locData^.Fields[i]);
+      Break;
+    end;
+  end;
+end;
+
+function TRecordRttiDataObject.GetField(const AFieldName : shortstring) : PRecordFieldInfo;
+begin
+  Result := FindField(AFieldName);
+  if ( Result = nil ) then
+    raise Exception.CreateFmt('"%s" is not a field of "%s".',[AFieldName,GetRecordTypeData()^.Name]);
 end;
 
 initialization

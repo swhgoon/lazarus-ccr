@@ -1,6 +1,6 @@
 {
     This file is part of the Web Service Toolkit
-    Copyright (c) 2006 by Inoussa OUEDRAOGO
+    Copyright (c) 2006, 2007 by Inoussa OUEDRAOGO
 
     This file is provide under modified LGPL licence
     ( the files COPYING.modifiedLGPL and COPYING.LGPL).
@@ -503,6 +503,17 @@ type
     procedure ExceptBlock_server();
     procedure ExceptBlock_client();
   end;
+
+  { TTest_BinaryFormatterExceptionBlock }
+
+  TTest_BinaryFormatterExceptionBlock = class(TTestCase)
+  protected
+    function CreateFormatter():IFormatterResponse;
+    function CreateFormatterClient():IFormatterClient;
+  published
+    procedure ExceptBlock_server();
+    procedure ExceptBlock_client();
+  end;
   
 implementation
 uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_rtti,
@@ -514,7 +525,8 @@ uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_r
      , DOM, XMLRead, wst_fpc_xml
 {$ENDIF}
      , server_service_soap, soap_formatter,
-     server_service_xmlrpc, xmlrpc_formatter;
+     server_service_xmlrpc, xmlrpc_formatter,
+     binary_streamer, server_binary_formatter, binary_formatter;
 
 function TTestFormatterSimpleType.Support_ComplextType_with_SimpleContent( ): Boolean;
 begin
@@ -3725,6 +3737,130 @@ begin
   end;
 end;
 
+{ TTest_BinaryFormatterExceptionBlock }
+
+function TTest_BinaryFormatterExceptionBlock.CreateFormatter() : IFormatterResponse;
+begin
+  Result := server_binary_formatter.TBinaryFormatter.Create() as IFormatterResponse;
+end;
+
+function TTest_BinaryFormatterExceptionBlock.CreateFormatterClient() : IFormatterClient;
+begin
+  Result := binary_formatter.TBinaryFormatter.Create() as IFormatterClient;
+end;
+
+function loc_FindObj(const AOwner: PDataBuffer; const AName : TDataName) : PDataBuffer;
+Var
+  p : PObjectBufferItem;
+Begin
+  Assert(AOwner^.DataType >= dtObject);
+  Result := Nil;
+   p:= AOwner^.ObjectData^.Head;
+  While Assigned(p) Do Begin
+    If AnsiSameText(AName,p^.Data^.Name) Then Begin
+      Result := p^.Data;
+      Exit;
+    End;
+    p := p^.Next;
+  End;
+End;
+
+procedure TTest_BinaryFormatterExceptionBlock.ExceptBlock_server();
+const VAL_CODE = '1210'; VAL_MSG = 'This is a sample exception message.';
+var
+  f : IFormatterResponse;
+  strm : TMemoryStream;
+  root, bodyNode, faultNode, tmpNode : PDataBuffer;
+  excpt_code, excpt_msg : string;
+begin
+  root := nil;
+  f := CreateFormatter();
+  f.BeginExceptionList(VAL_CODE,VAL_MSG);
+  f.EndExceptionList();
+  strm := TMemoryStream.Create();
+  try
+    f.SaveToStream(strm);
+    strm.Position := 0;
+    root := LoadObjectFromStream(CreateBinaryReader(strm));
+    Check(Assigned(root));
+    CheckEquals(Ord(dtObject), Ord(root^.DataType),'root^.DataType');
+    Check(Assigned(root^.ObjectData),'root^.ObjectData');
+    CheckEquals(False,root^.ObjectData^.NilObject,'root^.NilObject');
+    Check(root^.ObjectData^.Count > 0, 'root^.Count');
+      bodyNode := root^.ObjectData^.Head^.Data;
+      Check(Assigned(bodyNode),'body');
+      CheckEquals(Ord(dtObject), Ord(bodyNode^.DataType),'body.DataType');
+      CheckEquals(False,bodyNode^.ObjectData^.NilObject,'body.NilObject');
+      Check(bodyNode^.ObjectData^.Count > 0, 'body.Count');
+
+        faultNode := bodyNode^.ObjectData^.Head^.Data;
+        Check(Assigned(faultNode),'fault');
+        CheckEquals(Ord(dtObject), Ord(faultNode^.DataType),'fault.DataType');
+        CheckEquals(False,faultNode^.ObjectData^.NilObject,'fault.NilObject');
+        Check(faultNode^.ObjectData^.Count > 0, 'fault.Count');
+
+        tmpNode := loc_FindObj(faultNode,'faultcode');
+        Check(Assigned(tmpNode),'faultcode');
+        CheckEquals(Ord(dtString), Ord(tmpNode^.DataType),'faultcode.DataType');
+        excpt_code := tmpNode^.StrData^.Data;
+        CheckEquals(VAL_CODE,excpt_code,'faultCode');
+        
+        tmpNode := loc_FindObj(faultNode,'faultstring');
+        Check(Assigned(tmpNode),'faultstring');
+        CheckEquals(Ord(dtString), Ord(tmpNode^.DataType),'faultstring.DataType');
+        excpt_msg := tmpNode^.StrData^.Data;
+        CheckEquals(VAL_MSG,excpt_msg,'faultString');
+  finally
+    FreeAndNil(strm);
+    ClearObj(root);
+  end;
+end;
+
+procedure TTest_BinaryFormatterExceptionBlock.ExceptBlock_client();
+const
+  VAL_CODE = '1210'; VAL_MSG = 'This is a sample exception message.';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  root, bodyNode, faultNode, tmpNode : PDataBuffer;
+  excpt_code, excpt_msg : string;
+  locStore : IDataStore;
+begin
+  excpt_code := '';
+  excpt_msg := '';
+  root := CreateObjBuffer(dtObject,'ROOT');
+  try
+      bodyNode := CreateObjBuffer(dtObject,'Body',root);
+        faultNode := CreateObjBuffer(dtObject,'Fault',bodyNode);
+          CreateObjBuffer(dtString,'faultCode',faultNode)^.StrData^.Data := VAL_CODE;
+          CreateObjBuffer(dtString,'faultString',faultNode)^.StrData^.Data := VAL_MSG;
+    f := CreateFormatterClient();
+    strm := TMemoryStream.Create();
+    try
+      locStore := CreateBinaryWriter(strm);
+      SaveObjectToStream(root,locStore);
+      locStore := nil;
+      strm.Position := 0;
+      f.LoadFromStream(strm);
+      try
+        f.BeginCallRead(nil);
+        Check(False,'BeginCallRead() should raise an exception.');
+      except
+        on e : EBinaryException do begin
+          excpt_code := e.FaultCode;
+          excpt_msg := e.FaultString;
+        end;
+      end;
+      CheckEquals(VAL_CODE,excpt_code,'faultCode');
+      CheckEquals(VAL_MSG,excpt_msg,'faultString');
+    finally
+      FreeAndNil(strm);
+    end;
+  finally
+    ClearObj(root);
+  end;
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -3766,6 +3902,8 @@ initialization
 {$IFDEF WST_RECORD_RTTI}
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(__TTestRecord_TYPEINFO_FUNC__()),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestRecord)].GetExternalPropertyName('__FIELDS__')));
 {$ENDIF WST_RECORD_RTTI}
+  RegisterAttributeProperty(TypeInfo(TTestSmallRecord),'fieldWord');
+  RegisterAttributeProperty(TypeInfo(TTestRecord),'fieldWord');
 
 {$IFDEF FPC}
   RegisterTest(TTestArray);
@@ -3782,6 +3920,7 @@ initialization
   RegisterTest(TTestXmlRpcFormatter);
   RegisterTest(TTest_SoapFormatterExceptionBlock);
   RegisterTest(TTest_XmlRpcFormatterExceptionBlock);
+  RegisterTest(TTest_BinaryFormatterExceptionBlock);
 {$ELSE}
   RegisterTest(TTestArray.Suite);
   RegisterTest(TTestSOAPFormatter.Suite);
@@ -3797,6 +3936,7 @@ initialization
   RegisterTest(TTestXmlRpcFormatter.Suite);
   RegisterTest(TTest_SoapFormatterExceptionBlock.Suite);
   RegisterTest(TTest_XmlRpcFormatterExceptionBlock.Suite);
+  RegisterTest(TTest_BinaryFormatterExceptionBlock.Suite);
 {$ENDIF}
 
 

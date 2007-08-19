@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -35,7 +35,7 @@
         <PackageName Value="indylaz"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="72">
+    <Units Count="73">
       <Unit0>
         <Filename Value="http_server.pas"/>
         <IsPartOfProject Value="True"/>
@@ -421,8 +421,8 @@
       <Unit53>
         <Filename Value="..\..\config_objects.pas"/>
         <UnitName Value="config_objects"/>
-        <CursorPos X="74" Y="99"/>
-        <TopLine Value="85"/>
+        <CursorPos X="19" Y="14"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="27"/>
         <Loaded Value="True"/>
@@ -555,8 +555,19 @@
         <TopLine Value="176"/>
         <UsageCount Value="13"/>
       </Unit71>
+      <Unit72>
+        <Filename Value="..\..\wst_global.inc"/>
+        <CursorPos X="35" Y="3"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit72>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="..\..\config_objects.pas"/>
+        <Caret Line="14" Column="19" TopLine="1"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

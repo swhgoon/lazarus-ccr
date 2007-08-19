@@ -85,10 +85,10 @@ Type
   private
     procedure LoadProperties();
   protected
-    function GetTarget():String;
-    function GetSerializer() : IFormatterClient;
-    function GetCallHandler() : ICallMaker;
-    function GetTransport() : ITransport;
+    function GetTarget():String;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetSerializer() : IFormatterClient;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetCallHandler() : ICallMaker;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetTransport() : ITransport;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure MakeCall();
     class function GetServiceType() : PTypeInfo;virtual;abstract;
 
@@ -147,8 +147,8 @@ Type
     );
   End;
 
-  function GetFormaterRegistry():IFormaterQueryRegistry;
-  function GetTransportRegistry():ITransportRegistry;
+  function GetFormaterRegistry():IFormaterQueryRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetTransportRegistry():ITransportRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
 implementation
 uses imp_utils, metadata_repository;

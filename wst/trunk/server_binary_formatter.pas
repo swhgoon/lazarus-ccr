@@ -20,18 +20,12 @@ uses
   base_service_intf, server_service_intf,
   base_binary_formatter;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
+
 const
   sBINARY_CONTENT_TYPE = 'binary';
   sPROTOCOL_NAME = sBINARY_CONTENT_TYPE;
 
-  procedure Server_service_RegisterBinaryFormat();
-  
-implementation
-
-Type
+type
 
   { TBinaryFormatter }
 
@@ -51,6 +45,12 @@ Type
     );
     procedure EndExceptionList();
   End;
+  
+  procedure Server_service_RegisterBinaryFormat();
+  
+implementation
+
+Type
 
   { TBinaryFormatterFactory }
 

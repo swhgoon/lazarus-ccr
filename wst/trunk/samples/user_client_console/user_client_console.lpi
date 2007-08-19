@@ -355,16 +355,7 @@
         <UsageCount Value="10"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
-      <Position1>
-        <Filename Value="user_client_console.pas"/>
-        <Caret Line="252" Column="5" TopLine="250"/>
-      </Position1>
-      <Position2>
-        <Filename Value="user_client_console.pas"/>
-        <Caret Line="8" Column="111" TopLine="1"/>
-      </Position2>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

@@ -29,8 +29,8 @@ Type
   TPublishedPropertyManager = class(TInterfacedObject,IPropertyManager)
   Private
     FParent : TObject;
-    procedure Error(Const AMsg:string);overload;
-    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
+    procedure Error(Const AMsg:string);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   Protected
     procedure SetProperty(Const AName,AValue:string);
     procedure SetProperties(Const APropsStr:string);
@@ -42,7 +42,7 @@ Type
     constructor Create(AParent : TObject);
   End;
 
-  function IsStrEmpty(Const AStr:String):Boolean;
+  function IsStrEmpty(Const AStr:String):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
   

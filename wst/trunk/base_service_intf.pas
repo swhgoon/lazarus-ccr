@@ -1097,7 +1097,7 @@ type
     FPool : TIntfPool;
     FTimeOut: PtrUInt;
   private
-    procedure PreparePool();
+    procedure PreparePool();{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure SetPooled(const AValue: Boolean);
     procedure SetPoolMax(const AValue: PtrInt);
     procedure SetPoolMin(const AValue: PtrInt);
@@ -1138,7 +1138,7 @@ type
     FExternalNames : TStrings;
     FInternalNames : TStrings;
   private
-    procedure CreateInternalObjects();
+    procedure CreateInternalObjects();{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
     constructor Create(
             ANameSpace    : string;
@@ -1146,12 +1146,12 @@ type
       Const ADeclaredName : string = ''
     );
     destructor Destroy();override;
-    function AddPascalSynonym(const ASynonym : string):TTypeRegistryItem;//inline;
-    function IsSynonym(const APascalTypeName : string):Boolean;//inline;
+    function AddPascalSynonym(const ASynonym : string):TTypeRegistryItem;
+    function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     
     procedure RegisterExternalPropertyName(const APropName, AExtPropName : string);
-    function GetExternalPropertyName(const APropName : string) : string;
-    function GetInternalPropertyName(const AExtPropName : string) : string;
+    function GetExternalPropertyName(const APropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetInternalPropertyName(const AExtPropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
     
     procedure RegisterObject(const APropName : string; const AObject : TObject);
     function GetObject(const APropName : string) : TObject;
@@ -1167,8 +1167,8 @@ type
   TTypeRegistry = class
   Private
     FList : TObjectList;
-    function GetCount: Integer;
-    function GetItemByIndex(Index: Integer): TTypeRegistryItem;
+    function GetCount: Integer;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetItemByIndex(Index: Integer): TTypeRegistryItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetItemByTypeInfo(Index: PTypeInfo): TTypeRegistryItem;
   Public
     constructor Create();
@@ -1222,8 +1222,18 @@ const
   PROP_LIST_DELIMITER = ';';
   FIELDS_STRING = '__FIELDS__';
 
-  function GetTypeRegistry():TTypeRegistry;
+  function GetTypeRegistry():TTypeRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure RegisterStdTypes();
+  procedure RegisterAttributeProperty(
+    const ATypeInfo : PTypeInfo; // must be tkClass or tkRecord
+    const AProperty : shortstring
+  );
+  procedure SetFieldSerializationVisibility(
+    const ATypeInfo   : PTypeInfo; // must be tkRecord
+    const AField      : shortstring;
+    const AVisibility : Boolean
+  );
+
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 
@@ -1334,6 +1344,62 @@ begin
   
   r.Register(sXSD_NS,TypeInfo(TComplexStringContentRemotable),'string').AddPascalSynonym('TComplexStringContentRemotable');
   r.Register(sXSD_NS,TypeInfo(TComplexBooleanContentRemotable),'boolean').AddPascalSynonym('TComplexBooleanContentRemotable');
+end;
+
+procedure SetFieldSerializationVisibility(
+  const ATypeInfo   : PTypeInfo; // must be tkRecord
+  const AField      : shortstring;
+  const AVisibility : Boolean
+);
+var
+  recordData : TRecordRttiDataObject;
+begin
+  if Assigned(ATypeInfo) and ( ATypeInfo^.Kind = tkRecord ) and
+     ( not IsStrEmpty(AField) )
+  then begin
+    recordData := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetObject(FIELDS_STRING) as TRecordRttiDataObject;
+    if Assigned(recordData) then begin
+      recordData.GetField(AField)^.Visible := AVisibility;
+    end else begin
+      raise EServiceConfigException.CreateFmt('Record extended RTTI informations not found in type registry : "%s".',[ATypeInfo^.Name]);
+    end;
+  end else begin
+    raise EServiceConfigException.Create('Invalid parameters.');
+  end;
+end;
+
+procedure RegisterAttributeProperty(
+  const ATypeInfo : PTypeInfo;
+  const AProperty : shortstring
+);
+var
+  ok : Boolean;
+  recordData : TRecordRttiDataObject;
+begin
+  ok := False;
+  if Assigned(ATypeInfo) and
+     ( not IsStrEmpty(AProperty) )
+  then begin
+    case ATypeInfo^.Kind of
+      tkClass :
+        begin
+          if GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TAbstractComplexRemotable) then begin
+            TAbstractComplexRemotableClass(GetTypeData(ATypeInfo)^.ClassType).RegisterAttributeProperty(AProperty);
+            ok := True;
+          end;
+        end;
+      tkRecord :
+        begin
+          recordData := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetObject(FIELDS_STRING) as TRecordRttiDataObject;
+          if Assigned(recordData) then begin
+            recordData.GetField(AProperty)^.IsAttribute := True;
+            ok := True;
+          end;
+        end;
+    end;
+  end;
+  if not ok then
+    raise EServiceConfigException.Create('Invalid parameters.');
 end;
 
 {$IFDEF FPC}
@@ -2392,7 +2458,7 @@ begin
   inherited Destroy();
 end;
 
-function TTypeRegistryItem.AddPascalSynonym(const ASynonym: string):TTypeRegistryItem; //inline;
+function TTypeRegistryItem.AddPascalSynonym(const ASynonym: string):TTypeRegistryItem;
 begin
   Result := Self;
   if AnsiSameText(ASynonym,DataType^.Name) then
@@ -2405,7 +2471,7 @@ begin
     FSynonymTable.Add(AnsiLowerCase(ASynonym));
 end;
 
-function TTypeRegistryItem.IsSynonym(const APascalTypeName: string): Boolean;//inline;
+function TTypeRegistryItem.IsSynonym(const APascalTypeName: string): Boolean;
 begin
   Result := AnsiSameText(APascalTypeName,DataType^.Name);
   if ( not Result ) and Assigned(FSynonymTable) then
@@ -4614,64 +4680,66 @@ begin
       ss := AStore.GetSerializationStyle();
       for i := 0 to Pred(typData^.FieldCount) do begin
         p := @(typData^.Fields[i]);
-        pt := p^.TypeInfo^;//{$IFNDEF FPC}^{$ENDIF};
-        {if IsAttributeProperty(p^.Name) then begin
-          if ( ss <> ssAttibuteSerialization ) then
-            ss := ssAttibuteSerialization;
-        end else begin
-          if ( ss <> ssNodeSerialization ) then
-            ss := ssNodeSerialization;
-        end;
-        if ( ss <> AStore.GetSerializationStyle() ) then
-          AStore.SetSerializationStyle(ss);}
-        AStore.SetSerializationStyle(ssNodeSerialization);
-        prpName := typRegItem.GetExternalPropertyName(p^.Name);
-        recFieldAddress := recStart;
-        Inc(recFieldAddress,p^.Offset);
-        case pt^.Kind of
-          tkInt64 : AStore.Put(prpName,pt,PInt64(recFieldAddress)^);
-          {$IFDEF HAS_QWORD}
-          tkQWord : AStore.Put(prpName,pt,PQWord(recFieldAddress)^);
-          {$ENDIF}
-          tkLString{$IFDEF FPC},tkAString{$ENDIF} : AStore.Put(prpName,pt,PString(recFieldAddress)^);
-          tkClass : AStore.Put(prpName,pt,PObject(recFieldAddress)^);
-          tkRecord : AStore.Put(prpName,pt,Pointer(recFieldAddress)^);
-          {$IFDEF FPC}
-          tkBool : AStore.Put(prpName,pt,PBoolean(recFieldAddress)^);
-          {$ENDIF}
-          tkEnumeration,tkInteger :
-            begin
-            {$IFNDEF FPC}
-              if ( pt^.Kind = tkEnumeration ) and
-                 ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
-              then begin
-                AStore.Put(prpName,pt,PBoolean(recFieldAddress)^);
-              end else begin
+        if p^.Visible then begin
+          pt := p^.TypeInfo^;
+          if p^.IsAttribute then begin
+            if ( ss <> ssAttibuteSerialization ) then
+              ss := ssAttibuteSerialization;
+          end else begin
+            if ( ss <> ssNodeSerialization ) then
+              ss := ssNodeSerialization;
+          end;
+          if ( ss <> AStore.GetSerializationStyle() ) then
+            AStore.SetSerializationStyle(ss);
+          AStore.SetSerializationStyle(ss);
+          prpName := typRegItem.GetExternalPropertyName(p^.Name);
+          recFieldAddress := recStart;
+          Inc(recFieldAddress,p^.Offset);
+          case pt^.Kind of
+            tkInt64 : AStore.Put(prpName,pt,PInt64(recFieldAddress)^);
+            {$IFDEF HAS_QWORD}
+            tkQWord : AStore.Put(prpName,pt,PQWord(recFieldAddress)^);
             {$ENDIF}
-                case GetTypeData(pt)^.OrdType of
-                  otSByte : AStore.Put(prpName,pt,PShortInt(recFieldAddress)^);
-                  otUByte : AStore.Put(prpName,pt,PByte(recFieldAddress)^);
-                  otSWord : AStore.Put(prpName,pt,PSmallInt(recFieldAddress)^);
-                  otUWord : AStore.Put(prpName,pt,PWord(recFieldAddress)^);
-                  otSLong : AStore.Put(prpName,pt,PLongint(recFieldAddress)^);
-                  otULong : AStore.Put(prpName,pt,PLongWord(recFieldAddress)^);
+            tkLString{$IFDEF FPC},tkAString{$ENDIF} : AStore.Put(prpName,pt,PString(recFieldAddress)^);
+            tkClass : AStore.Put(prpName,pt,PObject(recFieldAddress)^);
+            tkRecord : AStore.Put(prpName,pt,Pointer(recFieldAddress)^);
+            {$IFDEF FPC}
+            tkBool : AStore.Put(prpName,pt,PBoolean(recFieldAddress)^);
+            {$ENDIF}
+            tkEnumeration,tkInteger :
+              begin
+              {$IFNDEF FPC}
+                if ( pt^.Kind = tkEnumeration ) and
+                   ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
+                then begin
+                  AStore.Put(prpName,pt,PBoolean(recFieldAddress)^);
+                end else begin
+              {$ENDIF}
+                  case GetTypeData(pt)^.OrdType of
+                    otSByte : AStore.Put(prpName,pt,PShortInt(recFieldAddress)^);
+                    otUByte : AStore.Put(prpName,pt,PByte(recFieldAddress)^);
+                    otSWord : AStore.Put(prpName,pt,PSmallInt(recFieldAddress)^);
+                    otUWord : AStore.Put(prpName,pt,PWord(recFieldAddress)^);
+                    otSLong : AStore.Put(prpName,pt,PLongint(recFieldAddress)^);
+                    otULong : AStore.Put(prpName,pt,PLongWord(recFieldAddress)^);
+                  end;
+              {$IFNDEF FPC}
                 end;
-            {$IFNDEF FPC}
+              {$ENDIF}
               end;
-            {$ENDIF}
-            end;
-          tkFloat :
-            begin
-              case GetTypeData(pt)^.FloatType of
-                ftSingle   : AStore.Put(prpName,pt,PSingle(recFieldAddress)^);
-                ftDouble   : AStore.Put(prpName,pt,PDouble(recFieldAddress)^);
-                ftExtended : AStore.Put(prpName,pt,PExtended(recFieldAddress)^);
-                ftCurr     : AStore.Put(prpName,pt,PCurrency(recFieldAddress)^);
-{$IFDEF HAS_COMP}
-                ftComp     : AStore.Put(prpName,pt,PComp(recFieldAddress)^);
-{$ENDIF}
+            tkFloat :
+              begin
+                case GetTypeData(pt)^.FloatType of
+                  ftSingle   : AStore.Put(prpName,pt,PSingle(recFieldAddress)^);
+                  ftDouble   : AStore.Put(prpName,pt,PDouble(recFieldAddress)^);
+                  ftExtended : AStore.Put(prpName,pt,PExtended(recFieldAddress)^);
+                  ftCurr     : AStore.Put(prpName,pt,PCurrency(recFieldAddress)^);
+  {$IFDEF HAS_COMP}
+                  ftComp     : AStore.Put(prpName,pt,PComp(recFieldAddress)^);
+  {$ENDIF}
+                end;
               end;
-            end;
+          end;
         end;
       end;
     end;
@@ -4694,7 +4762,6 @@ var
   pt : PTypeInfo;
   propName : String;
   p : PRecordFieldInfo;
-  persistType : TPropStoreType;
   oldSS,ss : TSerializationStyle;
   typRegItem : TTypeRegistryItem;
   typDataObj : TObject;
@@ -4718,70 +4785,71 @@ begin
         recStart := PByte(ARecord);
         for i := 0 to Pred(typData^.FieldCount) do begin
           p := @(typData^.Fields[i]);
-          persistType := pstOptional;// IsStoredPropClass(objTypeData^.ClassType,p);
-          pt := p^.TypeInfo^;//{$IFNDEF FPC}^{$ENDIF};
-          propName := typRegItem.GetExternalPropertyName(p^.Name);
-          {if IsAttributeProperty(p^.Name) then begin
-            ss := ssAttibuteSerialization;
-          end else begin
-            ss := ssNodeSerialization;
-          end;
-          if ( ss <> AStore.GetSerializationStyle() ) then
-            AStore.SetSerializationStyle(ss);}
-          AStore.SetSerializationStyle(ssNodeSerialization);
-          recFieldAddress := recStart;
-          Inc(recFieldAddress,p^.Offset);
-          try
-            Case pt^.Kind Of
-              tkInt64 : AStore.Get(pt,propName,PInt64(recFieldAddress)^);
-              {$IFDEF HAS_QWORD}
-              tkQWord : AStore.Get(pt,propName,PQWord(recFieldAddress)^);
-              {$ENDIF}
-              tkLString{$IFDEF FPC}, tkAString{$ENDIF} : AStore.Get(pt,propName,PString(recFieldAddress)^);
-              {$IFDEF FPC}
-              tkBool : AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
-              {$ENDIF}
-              tkClass : AStore.Get(pt,propName,PObject(recFieldAddress)^);
-              tkRecord : AStore.Get(pt,propName,Pointer(recFieldAddress)^);
-              tkEnumeration,tkInteger :
-                Begin
-                {$IFNDEF FPC}
-                  if ( pt^.Kind = tkEnumeration ) and
-                     ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
-                  then begin
-                    AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
-                  end else begin
-                {$ENDIF}
-                    case GetTypeData(pt)^.OrdType Of
-                      otSByte : AStore.Get(pt,propName,PShortInt(recFieldAddress)^);
-                      otUByte : AStore.Get(pt,propName,PByte(recFieldAddress)^);
-                      otSWord : AStore.Get(pt,propName,PSmallInt(recFieldAddress)^);
-                      otUWord : AStore.Get(pt,propName,PWord(recFieldAddress)^);
-                      otSLong : AStore.Get(pt,propName,PLongint(recFieldAddress)^);
-                      otULong : AStore.Get(pt,propName,PLongWord(recFieldAddress)^);
-                    end;
-                {$IFNDEF FPC}
-                  end;
-                {$ENDIF}
-                End;
-              tkFloat :
-                begin
-                  case GetTypeData(pt)^.FloatType of
-                    ftSingle   : AStore.Get(pt,propName,PSingle(recFieldAddress)^);
-                    ftDouble   : AStore.Get(pt,propName,PDouble(recFieldAddress)^);
-                    ftExtended : AStore.Get(pt,propName,PExtended(recFieldAddress)^);
-                    ftCurr     : AStore.Get(pt,propName,PCurrency(recFieldAddress)^);
-                    {$IFDEF HAS_COMP}
-                    ftComp     : AStore.Get(pt,propName,PComp(recFieldAddress)^);
-                    {$ENDIF}
-                  end;
-                end;
-            End;
-          except
-            on E : EServiceException do begin
-              if ( persistType = pstAlways ) then
-                raise;
+          if p^.Visible then begin
+            pt := p^.TypeInfo^;
+            propName := typRegItem.GetExternalPropertyName(p^.Name);
+            if p^.IsAttribute then begin
+              ss := ssAttibuteSerialization;
+            end else begin
+              ss := ssNodeSerialization;
             end;
+            if ( ss <> AStore.GetSerializationStyle() ) then
+              AStore.SetSerializationStyle(ss);
+            AStore.SetSerializationStyle(ss);
+            recFieldAddress := recStart;
+            Inc(recFieldAddress,p^.Offset);
+            //try
+              Case pt^.Kind Of
+                tkInt64 : AStore.Get(pt,propName,PInt64(recFieldAddress)^);
+                {$IFDEF HAS_QWORD}
+                tkQWord : AStore.Get(pt,propName,PQWord(recFieldAddress)^);
+                {$ENDIF}
+                tkLString{$IFDEF FPC}, tkAString{$ENDIF} : AStore.Get(pt,propName,PString(recFieldAddress)^);
+                {$IFDEF FPC}
+                tkBool : AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
+                {$ENDIF}
+                tkClass : AStore.Get(pt,propName,PObject(recFieldAddress)^);
+                tkRecord : AStore.Get(pt,propName,Pointer(recFieldAddress)^);
+                tkEnumeration,tkInteger :
+                  Begin
+                  {$IFNDEF FPC}
+                    if ( pt^.Kind = tkEnumeration ) and
+                       ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
+                    then begin
+                      AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
+                    end else begin
+                  {$ENDIF}
+                      case GetTypeData(pt)^.OrdType Of
+                        otSByte : AStore.Get(pt,propName,PShortInt(recFieldAddress)^);
+                        otUByte : AStore.Get(pt,propName,PByte(recFieldAddress)^);
+                        otSWord : AStore.Get(pt,propName,PSmallInt(recFieldAddress)^);
+                        otUWord : AStore.Get(pt,propName,PWord(recFieldAddress)^);
+                        otSLong : AStore.Get(pt,propName,PLongint(recFieldAddress)^);
+                        otULong : AStore.Get(pt,propName,PLongWord(recFieldAddress)^);
+                      end;
+                  {$IFNDEF FPC}
+                    end;
+                  {$ENDIF}
+                  End;
+                tkFloat :
+                  begin
+                    case GetTypeData(pt)^.FloatType of
+                      ftSingle   : AStore.Get(pt,propName,PSingle(recFieldAddress)^);
+                      ftDouble   : AStore.Get(pt,propName,PDouble(recFieldAddress)^);
+                      ftExtended : AStore.Get(pt,propName,PExtended(recFieldAddress)^);
+                      ftCurr     : AStore.Get(pt,propName,PCurrency(recFieldAddress)^);
+                      {$IFDEF HAS_COMP}
+                      ftComp     : AStore.Get(pt,propName,PComp(recFieldAddress)^);
+                      {$ENDIF}
+                    end;
+                  end;
+              End;
+            {except
+              on E : EServiceException do begin
+                if ( persistType = pstAlways ) then
+                  raise;
+              end;
+            end;}
           end;
         end;
       end;

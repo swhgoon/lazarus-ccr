@@ -17,10 +17,7 @@ unit binary_streamer;
 interface
 
 uses
-  Classes, SysUtils, Types;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  Classes, SysUtils, Types, wst_types;
 
 Const
   MAX_ARRAY_LENGTH = 1024*1024;
@@ -30,7 +27,7 @@ Type
   TInt8U  = Byte; TInt8S  = ShortInt;
   TInt16U = Word; TInt16S = SmallInt;
   TInt32U = LongWord; TInt32S = LongInt;
-  TInt64S = Int64;TInt64U = QWord;
+  TInt64S = Int64; TInt64U = QWord;
   TBoolData = Boolean;
   TEnumData = Int64;
   TStringData = AnsiString;
@@ -89,8 +86,8 @@ Type
     function ReadCurrency():TFloat_Currency_8;
   End;
 
-  function CreateBinaryReader(AStream : TStream):IDataStoreReader;
-  function CreateBinaryWriter(AStream : TStream):IDataStore;
+  function CreateBinaryReader(AStream : TStream):IDataStoreReader;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function CreateBinaryWriter(AStream : TStream):IDataStore;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
   procedure ReverseBytes(var AData; const ALength : Integer);{$IFDEF USE_INLINE}{$IFDEF ENDIAN_BIG}inline;{$ENDIF}{$ENDIF}
   function Reverse_16(const AValue:Word):Word;{$IFDEF USE_INLINE}inline;{$ENDIF}

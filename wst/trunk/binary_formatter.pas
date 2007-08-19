@@ -100,7 +100,7 @@ end;
 procedure TBinaryFormatter.BeginCallRead(ACallContext : ICallContext);
 Var
   s,nme : string;
-  e : EBaseRemoteException;
+  e : EBinaryException;
 begin
   ClearStack();
   PushStack(GetRootData(),stObject);
@@ -109,7 +109,7 @@ begin
     s := StackTop().GetByIndex(0)^.Name;
     If AnsiSameText(s,'Fault') Then Begin
       BeginObjectRead(s,nil);
-      e := EBaseRemoteException.Create('');
+      e := EBinaryException.Create('');
       Try
         nme := 'faultcode';
         Get(TypeInfo(string),nme,s);
