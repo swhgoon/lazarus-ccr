@@ -91,7 +91,7 @@ procedure TfClassEdit.actPropAddExecute(Sender: TObject);
 var
   prp : TPasProperty;
 begin
-  prp := CreateProperty(FObject,FSymbolTable);
+  prp := CreateProperty(FObject,FSymbolTable) as TPasProperty;
   if Assigned(prp) then begin
     LoadProperty(prp);
   end;

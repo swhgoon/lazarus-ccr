@@ -41,7 +41,8 @@ type
   TObjectUpdaterClass = class of TObjectUpdater;
   
   function CreateEnum(AContainer : TwstPasTreeContainer) : TPasEnumType;
-  function CreateCompoundObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
+  function CreateClassObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
+  function CreateRecordObject(ASymbolTable : TwstPasTreeContainer) : TPasRecordType;
   function CreateArray(ASymbolTable : TwstPasTreeContainer) : TPasArrayType;
   function CreateInterface(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
   function CreateMethod(
@@ -75,7 +76,8 @@ type
 
 implementation
 uses Contnrs, Forms, ufEnumedit, ufclassedit, uinterfaceedit, uprocedit,
-     uargedit, umoduleedit, ubindingedit, ufarrayedit, uftypealiasedit;
+     uargedit, umoduleedit, ubindingedit, ufarrayedit, uftypealiasedit,
+     ufrecordedit;
 
 type
 
@@ -164,6 +166,17 @@ type
     ):Boolean;override;
   end;
 
+  { TRecordUpdater }
+
+  TRecordUpdater = class(TObjectUpdater)
+  public
+    class function CanHandle(AObject : TObject):Boolean;override;
+    class function UpdateObject(
+      AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
+    ):Boolean;override;
+  end;
+  
   { TTypeAliasUpdater }
 
   TTypeAliasUpdater = class(TObjectUpdater)
@@ -240,6 +253,30 @@ type
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
+
+{ TRecordUpdater }
+
+class function TRecordUpdater.CanHandle(AObject : TObject) : Boolean;
+begin
+  Result := ( inherited CanHandle(AObject) ) and AObject.InheritsFrom(TPasRecordType) ;
+end;
+
+class function TRecordUpdater.UpdateObject(
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+) : Boolean;
+var
+  f : TfRecordEdit;
+  e : TPasRecordType;
+begin
+  e := AObject as TPasRecordType;
+  f := TfRecordEdit.Create(Application);
+  try
+    Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
 
 { TTypeAliasUpdater }
 
@@ -517,12 +554,25 @@ begin
   end;
 end;
 
-function CreateCompoundObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
+function CreateClassObject(ASymbolTable : TwstPasTreeContainer) : TPasClassType;
 var
   f : TfClassEdit;
 begin
   Result := nil;
   f := TfClassEdit.Create(Application);
+  try
+    f.UpdateObject(Result,etCreate,ASymbolTable);
+  finally
+    f.Release();
+  end;
+end;
+
+function CreateRecordObject(ASymbolTable : TwstPasTreeContainer) : TPasRecordType;
+var
+  f : TfRecordEdit;
+begin
+  Result := nil;
+  f := TfRecordEdit.Create(Application);
   try
     f.UpdateObject(Result,etCreate,ASymbolTable);
   finally
@@ -716,6 +766,7 @@ initialization
   UpdaterRegistryInst.RegisterHandler(TBindingUpdater);
   UpdaterRegistryInst.RegisterHandler(TArrayUpdater);
   UpdaterRegistryInst.RegisterHandler(TTypeAliasUpdater);
+  UpdaterRegistryInst.RegisterHandler(TRecordUpdater);
   
 finalization
   FreeAndNil(UpdaterRegistryInst);

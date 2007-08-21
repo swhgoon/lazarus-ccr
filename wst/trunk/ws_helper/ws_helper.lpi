@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -33,7 +33,7 @@
         <PackageName Value="FCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="63">
+    <Units Count="64">
       <Unit0>
         <Filename Value="ws_helper.pas"/>
         <IsPartOfProject Value="True"/>
@@ -50,7 +50,7 @@
         <UnitName Value="ws_parser"/>
         <CursorPos X="1" Y="487"/>
         <TopLine Value="444"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit1>
@@ -60,7 +60,7 @@
         <UnitName Value="generator"/>
         <CursorPos X="21" Y="694"/>
         <TopLine Value="113"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="3">
           <Item0 X="69" Y="935" ID="1"/>
@@ -75,7 +75,7 @@
         <UnitName Value="parserdefs"/>
         <CursorPos X="1" Y="322"/>
         <TopLine Value="308"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
           <Item0 X="69" Y="1245" ID="0"/>
@@ -88,7 +88,7 @@
         <UnitName Value="parserutils"/>
         <CursorPos X="35" Y="39"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -131,7 +131,7 @@
         <Filename Value="metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="20" Y="19"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="200"/>
@@ -173,7 +173,7 @@
         <UnitName Value="dom_cursors"/>
         <CursorPos X="1" Y="208"/>
         <TopLine Value="193"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -182,7 +182,7 @@
         <UnitName Value="cursor_intf"/>
         <CursorPos X="32" Y="41"/>
         <TopLine Value="39"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="105"/>
         <Loaded Value="True"/>
       </Unit16>
@@ -203,7 +203,7 @@
         <UnitName Value="wsdl2pas_imp"/>
         <CursorPos X="31" Y="434"/>
         <TopLine Value="412"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="102"/>
         <Bookmarks Count="2">
           <Item0 X="21" Y="763" ID="3"/>
@@ -292,7 +292,7 @@
         <UnitName Value="pascal_parser_intf"/>
         <CursorPos X="84" Y="131"/>
         <TopLine Value="108"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="155"/>
         <Loaded Value="True"/>
       </Unit31>
@@ -433,7 +433,7 @@
         <UnitName Value="logger_intf"/>
         <CursorPos X="17" Y="1"/>
         <TopLine Value="31"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="67"/>
         <Loaded Value="True"/>
       </Unit52>
@@ -499,33 +499,16 @@
         <TopLine Value="235"/>
         <UsageCount Value="11"/>
       </Unit62>
+      <Unit63>
+        <Filename Value="..\wst_global.inc"/>
+        <CursorPos X="20" Y="2"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit63>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
-      <Position1>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="117" Column="33" TopLine="96"/>
-      </Position1>
-      <Position2>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="81" Column="41" TopLine="67"/>
-      </Position3>
-      <Position4>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="88" Column="44" TopLine="74"/>
-      </Position4>
-      <Position5>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="99" Column="32" TopLine="85"/>
-      </Position5>
-      <Position6>
-        <Filename Value="metadata_generator.pas"/>
-        <Caret Line="117" Column="30" TopLine="104"/>
-      </Position6>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -560,7 +543,7 @@
     </Linking>
     <Other>
       <CustomOptions Value="-Xi
--H+
+
 "/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

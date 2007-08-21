@@ -235,6 +235,19 @@ type
     class function CanHandle(AObj : TObject):Boolean;override;
   end;
 
+  { TRecordTypeDefinitionPainter }
+
+  TRecordTypeDefinitionPainter = class(TTypeSymbolPainter)
+  protected
+    function Paint(
+      AContainer : TwstPasTreeContainer;
+      AObj    : TPasElement;
+      AParent : TTreeNode
+    ):TTreeNode;override;
+  public
+    class function CanHandle(AObj : TObject):Boolean;override;
+  end;
+  
   { TArrayTypeDefinitionPainter }
 
   TArrayTypeDefinitionPainter = class(TTypeSymbolPainter)
@@ -293,6 +306,38 @@ type
   public
     class function CanHandle(AObj : TObject):Boolean;override;
   end;
+
+{ TRecordTypeDefinitionPainter }
+
+function TRecordTypeDefinitionPainter.Paint(
+  AContainer : TwstPasTreeContainer;
+  AObj: TPasElement;
+  AParent: TTreeNode
+): TTreeNode;
+var
+  locObj : TPasRecordType;
+  locProp : TPasVariable;
+  i : Integer;
+  s : string;
+begin
+  locObj := AObj as TPasRecordType;
+  Result := inherited Paint(AContainer,locObj, AParent);
+  for i := 0 to Pred(locObj.Members.Count) do begin
+    if TPasElement(locObj.Members[i]).InheritsFrom(TPasVariable) then begin
+      locProp := TPasVariable(locObj.Members[i]);
+      s := Format('%s : %s',[AContainer.GetExternalName(locProp),AContainer.GetExternalName(locProp.VarType)]);
+      if AContainer.IsAttributeProperty(locProp) then begin
+        s := s + ' ( Attribute )';
+      end;
+      AddChildNode(Result,s);
+    end;
+  end;
+end;
+
+class function TRecordTypeDefinitionPainter.CanHandle(AObj : TObject) : Boolean;
+begin
+  Result := inherited CanHandle(AObj) and AObj.InheritsFrom(TPasRecordType);
+end;
 
 { TArrayTypeDefinitionPainter }
 
@@ -723,6 +768,7 @@ initialization
   FPainterRegistryInst.RegisterHandler(TPasNativeSimpleTypePainter);
   FPainterRegistryInst.RegisterHandler(TBindingPainter);
   FPainterRegistryInst.RegisterHandler(TArrayTypeDefinitionPainter);
+  FPainterRegistryInst.RegisterHandler(TRecordTypeDefinitionPainter);
 
 finalization
   FreeAndNil(FPainterRegistryInst);

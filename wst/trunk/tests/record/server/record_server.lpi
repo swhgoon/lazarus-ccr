@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="10"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -36,8 +36,8 @@
         <Filename Value="record_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="record_server"/>
-        <CursorPos X="61" Y="27"/>
-        <TopLine Value="7"/>
+        <CursorPos X="34" Y="16"/>
+        <TopLine Value="4"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="37"/>
         <Loaded Value="True"/>
@@ -98,8 +98,8 @@
       <Unit7>
         <Filename Value="..\..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="38" Y="1227"/>
+        <TopLine Value="1216"/>
         <EditorIndex Value="10"/>
         <UsageCount Value="19"/>
         <Bookmarks Count="1">
@@ -119,7 +119,7 @@
       <Unit9>
         <Filename Value="..\..\..\server_service_soap.pas"/>
         <UnitName Value="server_service_soap"/>
-        <CursorPos X="15" Y="22"/>
+        <CursorPos X="17" Y="21"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="19"/>
@@ -188,7 +188,16 @@
         <Loaded Value="True"/>
       </Unit17>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="..\..\..\server_service_soap.pas"/>
+        <Caret Line="21" Column="17" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\..\base_service_intf.pas"/>
+        <Caret Line="71" Column="44" TopLine="55"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

@@ -78,11 +78,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -407,7 +405,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
@@ -427,9 +424,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
-          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -754,7 +749,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
@@ -774,9 +768,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1101,6 +1097,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
@@ -1120,9 +1117,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1447,6 +1446,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
@@ -1466,10 +1466,12 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1794,6 +1796,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
@@ -1884,6 +1887,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         Action = actCompoundCreate
         OnClick = actCompoundCreateExecute
       end
+      object MenuItem48: TMenuItem
+        Action = actRecordCreate
+        OnClick = actRecordCreateExecute
+      end
       object MenuItem25: TMenuItem
         Action = actIntfCreate
         OnClick = actIntfCreateExecute
@@ -1967,7 +1974,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       OnExecute = actNewFileExecute
     end
     object actCompoundCreate: TAction
-      Caption = 'Create Compound Type'
+      Caption = 'Create Class Type'
       DisableIfNoHandler = True
       OnExecute = actCompoundCreateExecute
     end
@@ -2006,6 +2013,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Caption = 'Create Type ALias'
       DisableIfNoHandler = True
       OnExecute = actTypeALiasCreateExecute
+    end
+    object actRecordCreate: TAction
+      Caption = 'Create Record'
+      DisableIfNoHandler = True
+      OnExecute = actRecordCreateExecute
     end
   end
   object OD: TOpenDialog
@@ -2064,6 +2076,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Action = actCompoundCreate
       OnClick = actCompoundCreateExecute
     end
+    object MenuItem46: TMenuItem
+      Action = actRecordCreate
+      OnClick = actRecordCreateExecute
+    end
     object MenuItem24: TMenuItem
       Action = actIntfCreate
       OnClick = actIntfCreateExecute
@@ -2112,6 +2128,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object MenuItem45: TMenuItem
       Action = actCompoundCreate
       OnClick = actCompoundCreateExecute
+    end
+    object MenuItem47: TMenuItem
+      Action = actRecordCreate
+      OnClick = actRecordCreateExecute
     end
     object MenuItem44: TMenuItem
       Action = actEnumCreate

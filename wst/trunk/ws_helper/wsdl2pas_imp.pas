@@ -199,6 +199,7 @@ const
   s_port                       : WideString = 'port';
   s_portType                   : WideString = 'portType';
   s_prohibited                 : WideString = 'prohibited';
+  s_record                     : WideString = 'record';
   s_ref                        : WideString = 'ref';
   s_required                   : WideString = 'required';
   s_restriction                : WideString = 'restriction';
@@ -266,6 +267,44 @@ begin
     end;
   end else begin
     Result := Format('%s = %s',[s_NODE_NAME,QuotedStr(AName)]);
+  end;
+end;
+
+function wst_findCustomAttribute(
+        AWsdlShortNames : TStrings;
+        ANode      : TDOMNode;
+  const AAttribute : string;
+  out   AValue     : string
+) : Boolean;
+var
+  nd : TDOMNode;
+  tmpCrs : IObjectCursor;
+begin
+  Result := False;
+  tmpCrs := CreateCursorOn(
+              CreateChildrenCursor(ANode,cetRttiNode),
+              ParseFilter(CreateQualifiedNameFilterStr(s_document,AWsdlShortNames),TDOMNodeRttiExposer)
+            );
+  tmpCrs.Reset();
+  if tmpCrs.MoveNext() then begin
+    nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+    if nd.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(nd,cetRttiNode),
+                  ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_customAttributes)]),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if ( nd.Attributes <> nil ) then begin
+          nd := nd.Attributes.GetNamedItem(AAttribute);
+          if Assigned(nd) then begin
+            Result := True;
+            AValue := nd.NodeValue;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -386,6 +425,7 @@ var
 begin
   CreateWstInterfaceSymbolTable(SymbolTable);
   FModule := TPasModule(SymbolTable.CreateElement(TPasModule,AModuleName,SymbolTable.Package,visDefault,'',0));
+  SymbolTable.Package.Modules.Add(FModule);
   FModule.InterfaceSection := TPasSection(SymbolTable.CreateElement(TPasSection,'',FModule,visDefault,'',0));
 
   FPortTypeCursor := nil;
@@ -2024,31 +2064,30 @@ var
   
   function IsHeaderBlock() : Boolean;
   var
-    nd : TDOMNode;
-    tmpCrs : IObjectCursor;
+    strBuffer : string;
   begin
-    Result := False;
-    tmpCrs := CreateCursorOn(
-                CreateChildrenCursor(FTypeNode,cetRttiNode),
-                ParseFilter(CreateQualifiedNameFilterStr(s_document,FOwner.FWsdlShortNames),TDOMNodeRttiExposer)
-              );
-    tmpCrs.Reset();
-    if tmpCrs.MoveNext() then begin
-      nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-      if nd.HasChildNodes() then begin
-        tmpCrs := CreateCursorOn(
-                    CreateChildrenCursor(nd,cetRttiNode),
-                    ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_customAttributes)]),TDOMNodeRttiExposer)
-                  );
-        tmpCrs.Reset();
-        if tmpCrs.MoveNext() then begin
-          nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-          if ( nd.Attributes <> nil ) then begin
-            nd := nd.Attributes.GetNamedItem(s_headerBlock);
-            if Assigned(nd) then
-              Result := AnsiSameText('true',Trim(nd.NodeValue));
-          end;
-        end;
+    Result := wst_findCustomAttribute(FOwner.FWsdlShortNames,FTypeNode,s_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+  end;
+
+  function IsRecordType() : Boolean;
+  var
+    strBuffer : string;
+  begin
+    Result := wst_findCustomAttribute(FOwner.FWsdlShortNames,FTypeNode,s_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+  end;
+  
+  procedure ParseElementsAndAttributes(AEltCrs, AEltAttCrs : IObjectCursor);
+  begin
+    if Assigned(AEltCrs) then begin
+      AEltCrs.Reset();
+      while AEltCrs.MoveNext() do begin
+        ParseElement((AEltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
+      end;
+    end;
+    if Assigned(AEltAttCrs) then begin
+      AEltAttCrs.Reset();
+      while AEltAttCrs.MoveNext() do begin
+        ParseElement((AEltAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
       end;
     end;
   end;
@@ -2061,6 +2100,8 @@ var
   propTyp, tmpPropTyp : TPasProperty;
   tmpClassDef : TPasClassType;
   i : Integer;
+  recordType : TPasRecordType;
+  tmpRecVar : TPasVariable;
 begin
   ExtractBaseType();
   eltCrs := ExtractElementCursor(eltAttCrs);
@@ -2097,18 +2138,7 @@ begin
         classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
-          if Assigned(eltCrs) then begin
-            eltCrs.Reset();
-            while eltCrs.MoveNext() do begin
-              ParseElement((eltCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
-            end;
-          end;
-          if Assigned(eltAttCrs) then begin
-            eltAttCrs.Reset();
-            while eltAttCrs.MoveNext() do begin
-              ParseElement((eltAttCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
-            end;
-          end;
+          ParseElementsAndAttributes(eltCrs,eltAttCrs);
           if ( arrayItems.Count > 0 ) then begin
             if ( arrayItems.Count = 1 ) and ( GetElementCount(classDef.Members,TPasProperty) = 1 ) then begin
               Result := nil;
@@ -2154,6 +2184,30 @@ begin
               FreeAndNil(tmpClassDef);
             end;
           end;
+        end;
+        
+        //check for record
+        if ( FDerivationMode = dmNone ) and Result.InheritsFrom(TPasClassType) and IsRecordType() then begin
+          tmpClassDef := classDef;
+          classDef := nil;
+          recordType := TPasRecordType(FSymbols.CreateElement(TPasRecordType,tmpClassDef.Name,FSymbols.CurrentModule.InterfaceSection,visPublic,'',0));
+          Result := recordType;
+          if hasInternalName then
+            FSymbols.RegisterExternalAlias(recordType,ATypeName);
+          for i := 0 to Pred(tmpClassDef.Members.Count) do begin
+            if TPasElement(tmpClassDef.Members[i]).InheritsFrom(TPasProperty) then begin
+              propTyp := TPasProperty(tmpClassDef.Members[i]);
+              tmpRecVar := TPasVariable(FSymbols.CreateElement(TPasVariable,propTyp.Name,recordType,visPublic,'',0));
+              tmpRecVar.VarType := propTyp.VarType;
+              tmpRecVar.VarType.AddRef();
+              FSymbols.RegisterExternalAlias(tmpRecVar,FSymbols.GetExternalName(propTyp));
+              recordType.Members.Add(tmpRecVar);
+              if FSymbols.IsAttributeProperty(propTyp) then begin
+                FSymbols.SetPropertyAsAttribute(tmpRecVar,True);
+              end;
+            end;
+          end;
+          FreeAndNil(tmpClassDef);
         end;
       except
         FreeAndNil(Result);

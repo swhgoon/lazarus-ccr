@@ -44,19 +44,21 @@ type
     procedure actOKExecute(Sender: TObject);
     procedure actOKUpdate(Sender: TObject);
   private
-    FClassObject: TPasClassType;
+    FClassObject: TPasType;
     FUpdateType : TEditType;
-    FObject : TPasProperty;
+    FObject : TPasVariable;
     FSymbolTable : TwstPasTreeContainer;
   private
     property UpdateType : TEditType read FUpdateType;
-    property ClassObject : TPasClassType read FClassObject;
+    property ClassObject : TPasType read FClassObject;
   private
     procedure LoadFromObject();
     procedure SaveToObject();
+    function GetMembers() : TList;
+    function IsClassType() : Boolean;
   public
     function UpdateObject(
-      var   AObject      : TPasProperty;
+      var   AObject      : TPasVariable;
       const AUpdateType  : TEditType;
             ASymbolTable : TwstPasTreeContainer
     ) : Boolean;
@@ -65,16 +67,21 @@ type
 var
   fPropEdit: TfPropEdit;
 
-  function CreateProperty(AClass : TPasClassType; ASymboltable : TwstPasTreeContainer):TPasProperty ;
-  function UpdateProperty(AProp : TPasProperty; ASymboltable : TwstPasTreeContainer):Boolean;
+  function CreateProperty(AClass : TPasType; ASymboltable : TwstPasTreeContainer):TPasVariable ;
+  function UpdateProperty(AProp : TPasVariable; ASymboltable : TwstPasTreeContainer):Boolean;
   
 implementation
 uses parserutils;
 
-function CreateProperty(AClass : TPasClassType; ASymboltable : TwstPasTreeContainer):TPasProperty ;
+function CreateProperty(AClass : TPasType; ASymboltable : TwstPasTreeContainer):TPasVariable ;
 var
   f : TfPropEdit;
 begin
+  if ( AClass = nil ) or
+     ( not ( AClass.InheritsFrom(TPasClassType) or AClass.InheritsFrom(TPasRecordType) ) )
+  then begin
+    raise Exception.Create('Class or record expected.');
+  end;
   Result := nil;
   f := TfPropEdit.Create(Application);
   try
@@ -85,12 +92,13 @@ begin
   end;
 end;
 
-function UpdateProperty(AProp : TPasProperty; ASymboltable : TwstPasTreeContainer):Boolean;
+function UpdateProperty(AProp : TPasVariable; ASymboltable : TwstPasTreeContainer):Boolean;
 var
   f : TfPropEdit;
 begin
   f := TfPropEdit.Create(Application);
   try
+    f.FClassObject := AProp.Parent as TPasType;
     Result := f.UpdateObject(AProp,etUpdate,ASymboltable);
   finally
     f.Release();
@@ -107,7 +115,11 @@ begin
   TAction(Sender).Enabled :=
     ( not IsStrEmpty(internalName) ) and
     ( edtType.ItemIndex >= 0 ) and
-    ( FindMember(ClassObject,internalName) = nil );
+    ( ( UpdateType = etUpdate ) or
+      ( ( ClassObject.InheritsFrom(TPasClassType) and ( FindMember(TPasClassType(ClassObject),internalName) = nil ) ) or
+        ( ClassObject.InheritsFrom(TPasRecordType) and ( FindMember(TPasRecordType(ClassObject),internalName) = nil ) )
+      )
+    );
 end;
 
 procedure TfPropEdit.actOKExecute(Sender: TObject);
@@ -116,6 +128,9 @@ begin
 end;
 
 procedure TfPropEdit.LoadFromObject();
+var
+  i : PtrInt;
+  ls : TStrings;
 begin
   edtName.Text := '';
   edtType.Clear();
@@ -123,6 +138,16 @@ begin
   try
     edtType.Items.Clear();
     FillTypeList(edtType.Items,FSymbolTable);
+    ls := edtType.Items;
+    if IsClassType() then begin
+      i := ls.Count - 1;
+      while ( i > 0 ) do begin
+        if ls.Objects[i].InheritsFrom(TPasRecordType) then begin
+          ls.Delete(i);
+        end;
+        Dec(i);
+      end;
+    end;
   finally
     edtType.Items.EndUpdate();
   end;
@@ -131,7 +156,12 @@ begin
     edtName.Text := FSymbolTable.GetExternalName(FObject);
     edtType.ItemIndex := edtType.Items.IndexOfObject(FObject.VarType);
     edtAttribute.Checked := FSymbolTable.IsAttributeProperty(FObject);
-    edtOptional.Checked := AnsiSameText('Has',Copy(FObject.StoredAccessorName,1,3)) ;
+    if IsClassType() then begin
+      edtOptional.Checked := AnsiSameText('Has',Copy(TPasProperty(FObject).StoredAccessorName,1,3)) ;
+    end else begin
+      edtOptional.Checked := True;
+      edtOptional.Enabled := False;
+    end;
   end else begin
     Self.Caption := 'New';
   end;
@@ -139,21 +169,29 @@ end;
 
 procedure TfPropEdit.SaveToObject();
 var
-  locObj : TPasProperty;
+  locObj : TPasVariable;
+  locObjProp : TPasProperty;
   typExtName, typIntName : string;
   propType : TPasType;
+  eltClass : TPTreeElement;
+  locIsClass : Boolean;
 begin
   locObj := nil;
+  locIsClass := IsClassType();
+  if locIsClass then
+    eltClass := TPasProperty
+  else
+    eltClass := TPasVariable;
   typExtName := ExtractIdentifier(edtName.Text);
   typIntName := MakeInternalSymbolNameFrom(typExtName);
   propType := edtType.Items.Objects[edtType.ItemIndex] as TPasType;
   if ( UpdateType = etCreate ) then begin
-    locObj := TPasProperty(FSymbolTable.CreateElement(TPasProperty,typIntName,ClassObject,visPublished,'',0));
+    locObj := TPasVariable(FSymbolTable.CreateElement(eltClass,typIntName,ClassObject,visPublished,'',0));
     FreeAndNil(FObject);
     FObject := locObj;
     locObj.VarType := propType;
     locObj.VarType.AddRef();
-    ClassObject.Members.Add(FObject);
+    GetMembers().Add(FObject);
   end else begin
     locObj := FObject;
     if ( propType <> locObj.VarType ) then begin
@@ -164,19 +202,37 @@ begin
     end;
     locObj.Name := typIntName;
   end;
-  if edtOptional.Checked then
-    locObj.StoredAccessorName := 'Has' + locObj.Name
-  else
-    locObj.StoredAccessorName := 'True';
-  locObj.ReadAccessorName := 'F' + locObj.Name;
-  locObj.WriteAccessorName := 'F' + locObj.Name;
+  if IsClassType() then begin
+    locObjProp := locObj as TPasProperty;
+    if edtOptional.Checked then
+      locObjProp.StoredAccessorName := 'Has' + locObjProp.Name
+    else
+      locObjProp.StoredAccessorName := 'True';
+    locObjProp.ReadAccessorName := 'F' + locObjProp.Name;
+    locObjProp.WriteAccessorName := 'F' + locObjProp.Name;
+  end;
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
   //if ( edtAttribute.Checked <> FSymbolTable.IsAttributeProperty(locObj) ) then
     FSymbolTable.SetPropertyAsAttribute(locObj,edtAttribute.Checked);
 end;
 
+function TfPropEdit.GetMembers() : TList;
+begin
+  if ClassObject.InheritsFrom(TPasClassType) then
+    Result := TPasClassType(ClassObject).Members
+  else if ClassObject.InheritsFrom(TPasRecordType) then
+    Result := TPasRecordType(ClassObject).Members
+  else
+    Result := nil;
+end;
+
+function TfPropEdit.IsClassType() : Boolean;
+begin
+  Result := ClassObject.InheritsFrom(TPasClassType);
+end;
+
 function TfPropEdit.UpdateObject(
-  var   AObject       : TPasProperty;
+  var   AObject       : TPasVariable;
   const AUpdateType   : TEditType;
         ASymbolTable  : TwstPasTreeContainer
 ): Boolean;

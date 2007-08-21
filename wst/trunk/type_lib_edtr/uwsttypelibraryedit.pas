@@ -39,6 +39,7 @@ type
     actFullCollapse: TAction;
     actDelete : TAction;
     actArrayCreate : TAction;
+    actRecordCreate : TAction;
     actTypeALiasCreate : TAction;
     actSave : TAction;
     actNewFile: TAction;
@@ -84,6 +85,9 @@ type
     MenuItem43 : TMenuItem;
     MenuItem44 : TMenuItem;
     MenuItem45 : TMenuItem;
+    MenuItem46 : TMenuItem;
+    MenuItem47 : TMenuItem;
+    MenuItem48 : TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
@@ -130,6 +134,7 @@ type
     procedure actIntfCreateExecute(Sender: TObject);
     procedure actNewFileExecute(Sender: TObject);
     procedure actOpenFileExecute(Sender: TObject);
+    procedure actRecordCreateExecute(Sender : TObject);
     procedure actRefreshViewExecute(Sender: TObject);
     procedure actSaveAsExecute(Sender: TObject);
     procedure actSaveExecute (Sender : TObject );
@@ -405,6 +410,16 @@ begin
   end;
 end;
 
+procedure TfWstTypeLibraryEdit.actRecordCreateExecute(Sender : TObject);
+var
+  e : TPasRecordType;
+begin
+  e := CreateRecordObject(FSymbolTable);
+  if Assigned(e) then begin
+    FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
+  end;
+end;
+
 procedure TfWstTypeLibraryEdit.actRefreshViewExecute(Sender: TObject);
 begin
   RenderSymbols();
@@ -571,7 +586,7 @@ procedure TfWstTypeLibraryEdit.actCompoundCreateExecute(Sender: TObject);
 var
   e : TPasClassType;
 begin
-  e := CreateCompoundObject(FSymbolTable);
+  e := CreateClassObject(FSymbolTable);
   if Assigned(e) then begin
     FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
   end;

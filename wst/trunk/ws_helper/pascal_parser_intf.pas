@@ -129,8 +129,8 @@ type
     procedure RegisterExternalAlias(AObject : TPasElement; const AExternalName : String);
     function SameName(AObject : TPasElement; const AName : string) : Boolean;
     function GetExternalName(AObject : TPasElement) : string;
-    function IsAttributeProperty(AObject : TPasProperty) : Boolean;
-    procedure SetPropertyAsAttribute(AObject : TPasProperty; const AValue : Boolean);
+    function IsAttributeProperty(AObject : TPasVariable) : Boolean;
+    procedure SetPropertyAsAttribute(AObject : TPasVariable; const AValue : Boolean);
 
     function IsInitNeed(AType: TPasType): Boolean;
     function IsOfType(AType: TPasType; AClass: TClass): Boolean;
@@ -161,7 +161,8 @@ type
     const AParamName : string;
     const AStartPos  : Integer = 0
   ) : TPasArgument;
-  function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ;
+  function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ; overload;
+  function FindMember(AClass : TPasRecordType; const AName : string) : TPasElement ; overload;
   function GetElementCount(AList : TList; AElementClass : TPTreeElement):Integer ;
   
   function GetUltimeType(AType : TPasType) : TPasType;
@@ -269,6 +270,7 @@ var
 begin
   Result := TPasModule(AContainer.CreateElement(TPasModule,'base_service_intf',AContainer.Package,visPublic,'',0));
   try
+    AContainer.Package.Modules.Add(Result);
     AContainer.RegisterExternalAlias(Result,sXSD_NS);
     Result.InterfaceSection := TPasSection(AContainer.CreateElement(TPasSection,'',Result,visDefault,'',0));
     AddSystemSymbol(Result,AContainer);
@@ -380,19 +382,33 @@ begin
   end;
 end;
 
-function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ;
+function InternalFindMember(AMemberList : TList; const AName : string) : TPasElement ;
 var
-  memberList : TList;
   i : Integer;
 begin
   Result := nil;
-  if ( AClass <> nil ) then begin
-    memberList := AClass.Members;
-    for i := 0 to Pred(memberList.Count) do begin
-      if AnsiSameText(AName,TPasElement(memberList[i]).Name) then begin
-        Result := TPasElement(memberList[i]);
+  if ( AMemberList <> nil ) then begin
+    for i := 0 to Pred(AMemberList.Count) do begin
+      if AnsiSameText(AName,TPasElement(AMemberList[i]).Name) then begin
+        Result := TPasElement(AMemberList[i]);
       end;
     end;
+  end;
+end;
+
+function FindMember(AClass : TPasClassType; const AName : string) : TPasElement ;
+begin
+  Result := nil;
+  if ( AClass <> nil ) then begin
+    Result := InternalFindMember(AClass.Members,AName);
+  end;
+end;
+
+function FindMember(AClass : TPasRecordType; const AName : string) : TPasElement ;
+begin
+  Result := nil;
+  if ( AClass <> nil ) then begin
+    Result := InternalFindMember(AClass.Members,AName);
   end;
 end;
 
@@ -694,12 +710,12 @@ begin
   end;
 end;
 
-function TwstPasTreeContainer.IsAttributeProperty(AObject: TPasProperty): Boolean;
+function TwstPasTreeContainer.IsAttributeProperty(AObject: TPasVariable): Boolean;
 begin
   Result := AnsiSameText(Properties.GetValue(AObject,sATTRIBUTE),'True');
 end;
 
-procedure TwstPasTreeContainer.SetPropertyAsAttribute(AObject: TPasProperty; const AValue: Boolean);
+procedure TwstPasTreeContainer.SetPropertyAsAttribute(AObject: TPasVariable; const AValue: Boolean);
 var
   s : string;
 begin

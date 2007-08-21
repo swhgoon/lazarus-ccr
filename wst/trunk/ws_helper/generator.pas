@@ -2116,6 +2116,22 @@ var
     WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
   end;
 
+  procedure WriteAttributeProperties();
+  var
+    itm : TPasVariable;
+    k, c : PtrInt;
+    offsetLine, typeLine : string;
+  begin
+    c := ASymbol.Members.Count;
+    for k := 0 to Pred(c) do begin
+      itm := TPasVariable(ASymbol.Members[k]);
+      if SymbolTable.IsAttributeProperty(itm) then begin
+        Indent();
+        WriteLn('RegisterAttributeProperty(TypeInfo(%s),%s);',[ASymbol.Name,QuotedStr(itm.Name)]);
+      end;
+    end;
+  end;
+  
 var
   s : string;
 begin
@@ -2148,6 +2164,7 @@ begin
       WriteLn('{$IFDEF %s}',[sRECORD_RTTI_DEFINE]);
         Indent(); WriteLn(s,[ASymbol.Name,Format('__%s_TYPEINFO_FUNC__()',[ASymbol.Name]),ASymbol.Name]);
       WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
+      WriteAttributeProperties();
     SetCurrentStream(FDecStream);
   except
     on e : Exception do

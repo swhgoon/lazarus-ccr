@@ -12,7 +12,7 @@ uses
   edit_helper, ufclassedit, wsdl_generator, ufpropedit, uinterfaceedit, udm,
   pascal_parser_intf, PasTree, PParser, uprocedit, common_gui_utils, uargedit,
   umoduleedit, ubindingedit, ufrmsaveoption, ufarrayedit, generator,
-  uftypealiasedit;
+  uftypealiasedit, ufrecordedit;
 
 begin
   Application.Initialize;

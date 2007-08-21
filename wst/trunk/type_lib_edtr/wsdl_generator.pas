@@ -102,6 +102,18 @@ type
     class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
+  { TPasRecordType_TypeHandler }
+
+  TPasRecordType_TypeHandler = class(TTypeDefinition_TypeHandler)
+  protected
+    procedure Generate(
+            AContainer    : TwstPasTreeContainer;
+      const ASymbol       : TPasElement;
+            AWsdlDocument : TDOMDocument
+    );override;
+    class function CanHandle(ASymbol : TObject) : Boolean;override;
+  end;
+  
   { TBaseArrayRemotable_TypeHandler }
 
   TBaseArrayRemotable_TypeHandler = class(TTypeDefinition_TypeHandler)
@@ -158,6 +170,7 @@ const
   sNAME               = 'name';
   sNAME_SPACE         = 'namespace';
   sPORT_TYPE          = 'portType';
+  sRECORD             = 'record';
   sRESTRICTION        = 'restriction';
   sSEQUENCE           = 'sequence';
   sSERVICE           = 'service';
@@ -717,9 +730,9 @@ begin
         if not AContainer.IsAttributeProperty(p) then begin
           if ( typeCategory = tcSimpleContent ) then begin
             raise EWsdlGeneratorException.CreateFmt('Invalid type definition, a simple type cannot have "not attribute" properties : "%s"',[AContainer.GetExternalName(ASymbol)]);
-            hasSequence := True;
           end;
         end;
+        hasSequence := True;
       end;
     end;
     if hasSequence then begin
@@ -924,6 +937,7 @@ begin
   r := GetWsdlTypeHandlerRegistry();
   r.Register(TEnumTypeHandler);
   r.Register(TClassTypeDefinition_TypeHandler);
+  r.Register(TPasRecordType_TypeHandler);
   r.Register(TBaseArrayRemotable_TypeHandler);
   r.Register(TTypeAliasDefinition_TypeHandler);
 end;
@@ -968,6 +982,104 @@ end;
 class function TTypeAliasDefinition_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := Assigned(ASymbol) and ASymbol.InheritsFrom(TPasAliasType);
+end;
+
+{ TPasRecordType_TypeHandler }
+
+procedure TPasRecordType_TypeHandler.Generate(
+        AContainer : TwstPasTreeContainer;
+  const ASymbol : TPasElement;
+        AWsdlDocument : TDOMDocument
+);
+var
+  cplxNode, docNode : TDOMElement;
+
+  procedure CreateDocNode();
+  begin
+    if ( docNode = nil ) then begin
+      docNode := CreateElement(sDOCUMENT,cplxNode,AWsdlDocument);
+    end;
+  end;
+
+var
+  typItm : TPasRecordType;
+  propTypItm : TPasType;
+  s, prop_ns_shortName : string;
+  defTypesNode, defSchemaNode, sqcNode, propNode : TDOMElement;
+  i : Integer;
+  p : TPasVariable;
+  hasSequence : Boolean;
+begin
+  inherited;
+  docNode := nil;
+  typItm := ASymbol as TPasRecordType;
+  if Assigned(typItm) then begin
+    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
+    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    Assert(Assigned(defTypesNode));
+    defSchemaNode := defTypesNode.FirstChild as TDOMElement;
+
+    s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
+    cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
+    cplxNode.SetAttribute(sNAME, AContainer.GetExternalName(typItm)) ;
+
+    CreateDocNode();
+    CreateElement(sCUSTOM_ATTRIBUTE,docNode,AWsdlDocument).SetAttribute(sRECORD,'true');
+
+    hasSequence := False;
+    for i := 0 to Pred(typItm.Members.Count) do begin
+      if TPasElement(typItm.Members[i]).InheritsFrom(TPasVariable) then begin
+        p := TPasVariable(typItm.Members[i]);
+        if not AContainer.IsAttributeProperty(p) then begin
+          hasSequence := True;
+          Break;
+        end;
+      end;
+    end;
+    if hasSequence then begin
+      s := Format('%s:%s',[sXSD,sSEQUENCE]);
+      sqcNode := CreateElement(s,cplxNode,AWsdlDocument);
+    end else begin
+      sqcNode := nil;
+    end;
+
+
+      for i := 0 to Pred(typItm.Members.Count) do begin
+        if TPasElement(typItm.Members[i]).InheritsFrom(TPasVariable) then begin
+          p := TPasVariable(typItm.Members[i]);
+          if AContainer.IsAttributeProperty(p) then begin
+            s := Format('%s:%s',[sXSD,sATTRIBUTE]);
+            propNode := CreateElement(s,cplxNode,AWsdlDocument);
+          end else begin
+            s := Format('%s:%s',[sXSD,sELEMENT]);
+            propNode := CreateElement(s,sqcNode,AWsdlDocument);
+          end;
+          propNode.SetAttribute(sNAME,AContainer.GetExternalName(p));
+          propTypItm := p.VarType;
+          if Assigned(propTypItm) then begin
+            prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),AWsdlDocument);
+            propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
+            {if AContainer.IsAttributeProperty(p) then begin
+              if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
+                propNode.SetAttribute(sATTRIBUTE,'optional')
+              else
+                propNode.SetAttribute(sATTRIBUTE,'required');
+            end else begin
+              if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
+                propNode.SetAttribute(sMIN_OCCURS,'0')
+              else
+                propNode.SetAttribute(sMIN_OCCURS,'1');
+              propNode.SetAttribute(sMAX_OCCURS,'1');
+            end;}
+          end;
+        end;
+      end;
+  end;
+end;
+
+class function TPasRecordType_TypeHandler.CanHandle(ASymbol : TObject) : Boolean;
+begin
+  Result := inherited CanHandle(ASymbol) and ASymbol.InheritsFrom(TPasRecordType);
 end;
 
 initialization
