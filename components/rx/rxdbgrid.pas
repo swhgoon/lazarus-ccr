@@ -1366,30 +1366,29 @@ procedure TRxDBGrid.DrawCellBitmap(RxColumn: TRxColumn; aRect: TRect;
   aState: TGridDrawState; AImageIndex: integer);
 var
   ClientSize: TSize;
-  IBitmap, Stub:TBitmap;
-  ImageRect: TRect;
+  H, W: Integer;
 begin
   InflateRect(aRect, -1, -1);
 
-  RxColumn.ImageList.GetInternalImage(AImageIndex, IBitmap, Stub, ImageRect);
-//  RxColumn.ImageList.GetBitmap(AImageIndex, IBitmap);
+  H := RxColumn.ImageList.Height;
+  W := RxColumn.ImageList.Width;
 
-  ClientSize.cx:= Min(aRect.Right - aRect.Left, IBitmap.Width);
-  ClientSize.cy:= Min(aRect.Bottom - aRect.Top, IBitmap.Height);
+  ClientSize.cx:= Min(aRect.Right - aRect.Left, W);
+  ClientSize.cy:= Min(aRect.Bottom - aRect.Top, H);
 
-  if ClientSize.cx = IBitmap.Width then
+  if ClientSize.cx = W then
   begin
-    aRect.Left:= (aRect.Left + aRect.Right - IBitmap.Width) div 2;
-    aRect.Right:=aRect.Left + IBitmap.Width;
+    aRect.Left:= (aRect.Left + aRect.Right - W) div 2;
+    aRect.Right:=aRect.Left + W;
   end;
 
-  if ClientSize.cy = IBitmap.Height then
+  if ClientSize.cy = H then
   begin
-    aRect.Top:= (aRect.Top + aRect.Bottom - IBitmap.Height) div 2;
-    aRect.Bottom:=aRect.Top + IBitmap.Height;
+    aRect.Top:= (aRect.Top + aRect.Bottom - H) div 2;
+    aRect.Bottom:=aRect.Top + H;
   end;
 
-  Canvas.StretchDraw(aRect, IBitmap);
+  RxColumn.ImageList.StretchDraw(Canvas, AImageIndex, aRect);
 end;
 
 procedure TRxDBGrid.SetEditText(ACol, ARow: Longint; const Value: string);
