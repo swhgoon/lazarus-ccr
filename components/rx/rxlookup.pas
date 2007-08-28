@@ -144,6 +144,7 @@ type
     function GetFlat: Boolean;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: Integer;
+    function GetOnGetGridCellProps: TGetCellPropsEvent;
     function GetPopupVisible: boolean;
     procedure SetButtonNeedsFocus(const AValue: Boolean);
     procedure SetButtonWidth(const AValue: Integer);
@@ -161,6 +162,7 @@ type
     procedure SetLookupField(const AValue: string);
     procedure SetLookupSource(const AValue: TDataSource);
     procedure SetNumGlyphs(const AValue: Integer);
+    procedure SetOnGetGridCellProps(const AValue: TGetCellPropsEvent);
     procedure SetPopUpFormOptions(const AValue: TPopUpFormOptions);
     procedure SetReadOnly(const AValue: boolean);
     function StoreEmpty: boolean;
@@ -220,6 +222,8 @@ type
     property LookupDisplayIndex: Integer read FLookupDisplayIndex write SetLookupDisplayIndex default 0;
     property LookupField: string read FLookupField write SetLookupField;
     property LookupSource: TDataSource read GetLookupSource write SetLookupSource;
+    property OnGetGridCellProps: TGetCellPropsEvent read GetOnGetGridCellProps
+      write SetOnGetGridCellProps;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -267,6 +271,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnGetGridCellProps;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -296,7 +301,7 @@ uses VCLUtils, Math;
 function CreateArrowBitmap:TBitmap;
 begin
   Result:=Graphics.TBitmap.Create;
-  Result.LoadFromLazarusResource('btn_downarrow');
+  Result.LoadFromLazarusResource('rxbtn_downarrow');
 end;
 
 { TCustomDBLookupEdit }
@@ -604,6 +609,11 @@ begin
   else Result:=0;
 end;
 
+function TRxCustomDBLookupCombo.GetOnGetGridCellProps: TGetCellPropsEvent;
+begin
+  Result:=FPopUpFormOptions.OnGetCellProps;
+end;
+
 function TRxCustomDBLookupCombo.GetPopupVisible: boolean;
 begin
   Result:=Assigned(FRxPopUpForm);
@@ -733,6 +743,12 @@ procedure TRxCustomDBLookupCombo.SetNumGlyphs(const AValue: Integer);
 begin
   if Assigned(FButton) then
     FButton.NumGlyphs:=AValue;
+end;
+
+procedure TRxCustomDBLookupCombo.SetOnGetGridCellProps(
+  const AValue: TGetCellPropsEvent);
+begin
+  FPopUpFormOptions.OnGetCellProps:=AValue;
 end;
 
 procedure TRxCustomDBLookupCombo.SetPopUpFormOptions(
@@ -1323,4 +1339,10 @@ begin
     FDataControl.LookupDataSetChanged;
 end;
 
+initialization
+  LazarusResources.Add('rxbtn_downarrow','XPM',[
+  '/* XPM */'#13#10'static char * btn_downarrow_xpm[] = {'#13#10'"5 3 2 1",'#13
+  +#10'" '#9'c None",'#13#10'".'#9'c #000000",'#13#10'".....",'#13#10'" ... ",'
+  +#13#10'"  .  "};'#13#10
+]);
 end.

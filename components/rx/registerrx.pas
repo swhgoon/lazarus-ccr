@@ -12,7 +12,8 @@ procedure Register;
 implementation
 uses PropEdits, dbdateedit, rxlookup, folderlister, rxdbgrid, rxmemds, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
-  Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin, RxCustomChartPanel;
+  Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
+  RxCustomChartPanel, AutoPanel;
 
 type
 
@@ -209,6 +210,10 @@ begin
   RegisterComponents('RX',[TRxChart]);
 end;
 
+procedure RegisterAutoPanel;
+begin
+  RegisterComponents('RX',[TAutoPanel]);
+end;
 
 procedure Register;
 begin
@@ -231,6 +236,8 @@ begin
   RegisterUnit('rxdbgrid', @RegisterRxDbGrid);
   RegisterUnit('rxmemds', @RegisterRxMemDS);
   RegisterUnit('rxdbcomb', @RegisterRxDBComb);
+  RegisterUnit('AutoPanel', @RegisterAutoPanel);
+
 
   //Component Editors
   RegisterComponentEditor(TRxAppIcon, TRxAppIconEditor);

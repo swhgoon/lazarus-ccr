@@ -2,18 +2,18 @@ object RxDBGridMainForm: TRxDBGridMainForm
   Left = 353
   Height = 582
   Top = 161
-  Width = 652
-  HorzScrollBar.Page = 651
+  Width = 827
+  HorzScrollBar.Page = 826
   VertScrollBar.Page = 581
   ActiveControl = RxDBGrid1
   Caption = 'RxDBGrid Demo (ver 2)  ...'
   ClientHeight = 582
-  ClientWidth = 652
+  ClientWidth = 827
   OnCreate = FormCreate
   object RxDBGrid1: TRxDBGrid
     Height = 532
     Top = 50
-    Width = 652
+    Width = 827
     Columns = <    
       item
         Title.Alignment = taCenter
@@ -22,6 +22,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = 'Count: %d'
         Footer.ValueType = fvtCount
+        Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
@@ -29,6 +30,14 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.Caption = 'Software Name'
         Width = 450
         FieldName = 'NAME'
+        Filter.Color = clLime
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Width = 150
+        FieldName = 'Developer'
+        Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
@@ -41,11 +50,13 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.DisplayFormat = '#,##0.00'
         Footer.FieldName = 'PRICE'
         Footer.ValueType = fvtSum
+        Filter.Color = clLime
         Filter.ItemIndex = -1
       end>
     OptionsRx = [rdgFooterRows]
     FooterColor = clYellow
     FooterRowCount = 1
+    OnFiltred = RxDBGrid1Filtred
     Align = alClient
     FocusColor = clRed
     SelectedColor = clHighlight
@@ -61,10 +72,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
   end
   object Panel1: TPanel
     Height = 50
-    Width = 652
+    Width = 827
     Align = alTop
     ClientHeight = 50
-    ClientWidth = 652
+    ClientWidth = 827
     TabOrder = 1
     object Button1: TButton
       Left = 8
@@ -84,9 +95,18 @@ object RxDBGridMainForm: TRxDBGridMainForm
       BorderSpacing.InnerBorder = 4
       TabOrder = 1
     end
+    object CheckBox1: TCheckBox
+      Left = 241
+      Height = 13
+      Top = 8
+      Width = 61
+      Caption = 'Use filter'
+      OnChange = CheckBox1Change
+      TabOrder = 2
+      UseOnChange = True
+    end
   end
   object RxMemoryData1: TRxMemoryData
-    Active = True
     FieldDefs = <    
       item
         Name = 'ID'
@@ -105,9 +125,45 @@ object RxDBGridMainForm: TRxDBGridMainForm
         DataType = ftFloat
         Precision = 2
         Size = 12
+      end    
+      item
+        Name = 'Developer'
+        DataType = ftString
+        Precision = -1
+        Size = 150
       end>
-    left = 152
+    OnFilterRecordEx = RxMemoryData1FilterRecordEx
+    left = 144
     top = 264
+    object RxMemoryData1ID1: TLongintField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'ID'
+      ProviderFlags = [pfInUpdate, pfInWhere]
+    end
+    object RxMemoryData1NAME1: TStringField
+      DisplayWidth = 150
+      FieldName = 'NAME'
+      Index = 1
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 150
+    end
+    object RxMemoryData1PRICE1: TFloatField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'PRICE'
+      Index = 2
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      DisplayFormat = '#,##0.00'
+      Precision = 2
+    end
+    object RxMemoryData1Developer1: TStringField
+      DisplayWidth = 150
+      FieldName = 'Developer'
+      Index = 3
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 150
+    end
   end
   object Datasource1: TDatasource
     DataSet = RxMemoryData1

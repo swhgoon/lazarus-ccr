@@ -1,5 +1,5 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Этот файл был автоматически создан Lazarus. Не редактировать!
+Исходный код используется только для компиляции и установки пакета.
  }
 
 unit rxnew; 
@@ -12,7 +12,7 @@ uses
     duallist, boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, 
     rxtbrsetup, fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, 
     rxlogin, rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, 
-    rxcustomchartpanel, rxsortmemds, LazarusPackageIntf; 
+    rxcustomchartpanel, rxsortmemds, AutoPanel, LazarusPackageIntf; 
 
 implementation
 

@@ -117,6 +117,7 @@ type
     FColumns: TPopUpFormColumns;
     FDropDownCount: integer;
     FDropDownWidth: integer;
+    FOnGetCellProps: TGetCellPropsEvent;
     FOptions: TPopUpGridOptions;
     FShowTitles: boolean;
     FTitleButtons: boolean;
@@ -144,6 +145,8 @@ type
     property ShowTitles:boolean read FShowTitles write SetShowTitles default false;
     property TitleButtons:boolean read FTitleButtons write SetTitleButtons default false;
     property TitleStyle:TTitleStyle read FTitleStyle write SetTitleStyle default tsLazarus;
+    property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps
+      write FOnGetCellProps;
   end;
 
   { TPopUpForm }
@@ -466,6 +469,7 @@ begin
   FGrid.TitleButtons:=FPopUpFormOptions.TitleButtons;
   FGrid.TitleStyle:=FPopUpFormOptions.TitleStyle;
   FGrid.BorderStyle:=FPopUpFormOptions.BorderStyle;
+  FGrid.OnGetCellProps:=FPopUpFormOptions.OnGetCellProps;
 end;
 
 { TPopUpFormOptions }

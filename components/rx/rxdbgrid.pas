@@ -11,11 +11,14 @@ uses
 
 type
   TSortMarker = (smNone, smDown, smUp);
+
   TGetBtnParamsEvent = procedure (Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
     IsDown: Boolean) of object;
+
   TGetCellPropsEvent = procedure (Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor) of object;
+
   TRxDBGridAllowedOperation = (aoInsert, aoUpdate, aoDelete, aoAppend);
   TRxDBGridAllowedOperations = set of TRxDBGridAllowedOperation;
 
@@ -30,7 +33,8 @@ type
                rdgFooterRows,
                rdgXORColSizing,
                rdgFilter,
-               rdgMultiTitleLines
+               rdgMultiTitleLines,
+               rdgMrOkOnDblClik
                );
   
   TOptionsRx = set of TOptionRx;
@@ -274,6 +278,7 @@ type
     procedure FFilterListEditorOnChange(Sender: TObject);
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
     procedure InternalOptimizeColumnsWidth(AColList:TList);
+    function IsDefaultRowHeightStored:boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -330,7 +335,7 @@ type
     property Constraints;
     property DataSource;
     property DefaultDrawing;
-    property DefaultRowHeight default 18;
+    property DefaultRowHeight stored IsDefaultRowHeightStored default 18 ;
     //property DragCursor;
     //property DragKind;
     //property DragMode;
@@ -1269,7 +1274,17 @@ begin
       inherited MouseDown(Button, Shift, X, Y);
   end
   else
+  begin
+    if rdgMrOkOnDblClik in FOptionsRx then
+    begin
+      if (Cell.Y > 0) and (Cell.X >= ord(dgIndicator in Options)) and (ssDouble in Shift) then
+      begin
+        if Owner is TCustomForm then
+          TCustomForm(Owner).ModalResult:=mrOk;
+      end;
+    end;
     inherited MouseDown(Button, Shift, X, Y);
+  end;
 end;
 
 procedure TRxDBGrid.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
@@ -1466,6 +1481,7 @@ procedure TRxDBGrid.FFilterListEditorOnCloseUp(Sender: TObject);
 begin
   FFilterListEditor.Hide;
   FFilterListEditor.Changed;
+  SetFocus;
 end;
 
 procedure TRxDBGrid.InternalOptimizeColumnsWidth(AColList: TList);
@@ -1508,6 +1524,11 @@ begin
       TRxColumn(AColList[i]).Width:=WA^[i];
       
   FreeMem(WA, SizeOf(Integer) * AColList.Count);
+end;
+
+function TRxDBGrid.IsDefaultRowHeightStored: boolean;
+begin
+  Result:=DefaultRowHeight = Canvas.TextHeight('W');
 end;
 
 procedure TRxDBGrid.CalcStatTotals;
@@ -1593,7 +1614,10 @@ end;
 constructor TRxDBGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+{$IFDEF RXDBGRID_OPTIONS_WO_CANCEL_ON_EXIT}
+  Options:=Options - [dgCancelOnExit];
+{$ENDIF}
+
   FMarkerUp := TBitmap.Create;
   FMarkerUp.Handle := CreatePixmapIndirect(@IMGMarkerUp[0],
     GetSysColor(COLOR_BTNFACE));
@@ -2099,9 +2123,9 @@ end;
 initialization
   ExDBGridSortEngineList:=TStringList.Create;
   ExDBGridSortEngineList.Sorted:=true;
-
 finalization
-  while (ExDBGridSortEngineList.Count>0) do begin
+  while (ExDBGridSortEngineList.Count>0) do
+  begin
     ExDBGridSortEngineList.Objects[0].Free;
     ExDBGridSortEngineList.Delete(0);
   end;

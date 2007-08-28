@@ -83,6 +83,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Anchors;
+    property ArrowKeysTraverseList;
+    property AutoDropDown;
+    property BorderSpacing;
     property Style; { must be published before Items }
     property Color;
     property Ctl3D;
@@ -94,11 +98,12 @@ type
     property Enabled;
     property EnableValues: Boolean read FEnableValues write SetEnableValues;
     property Font;
-    property Anchors;
     property Constraints;
     property DragKind;
     property ItemHeight;
     property Items;
+    property ItemWidth;
+    property MaxLength default -1;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;

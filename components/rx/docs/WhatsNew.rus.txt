@@ -1,3 +1,18 @@
+12.08.2007 - версия 1.1.4.93
+  + В TRxDBComboBox опубликованы недостающие поля
+  + В TRxDBLookupCombo добавлено обработчик OnGetGridCellProps
+    - позволяет задавать при отрисовке фон в выпадающем списке
+  + В rx.inc ввёл новую дерективу компиляции 
+    RXDBGRID_OPTIONS_WO_CANCEL_ON_EXIT
+    если она определени - то в свойстве TRxDbGrid.Options выключается флаг
+    dgCancelOnExit (см. пункт 5 из readmy.txt)
+  - В RxDBGrid исправлена ошибка потери фокуса после закрытия списка фильтра
+  + В примере на RxDBGrid добавлен промер на визуальную фильтрацию данных
+  + Добавлен компонент TAutoPanel (автор Dmitry V. Bolshakov) - 
+    документация в папке auto_panel_doc
+  + В свойстве OptionsRX добавлен новый флаг - rdgMrOkOnDblClik
+    при его установке при двойном нажатии на RxDbGrid форме, которой принадлежит 
+    RxDbGrid присиваивается ModalResult:=mrOk;
 25.06.2007 - версия 1.1.3.86
   - Исправлена ошибка в методе TRxMemoryData.SortOnFields
   + Добавлена поддержка сортировок из RxDBGrid на TRxMemoryData 
