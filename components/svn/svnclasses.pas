@@ -683,11 +683,13 @@ var
 begin
   Output := TMemoryStream.Create;
   try
-    Files := '';
-    for i := 0 to FileNames.Count-1 do
-      Files := Files + ' ' + FileNames[i];
-    ExecuteSvnCommand('proplist -v' + Files, Output);
-    Output.Position := 0;
+    if FileNames.Count>0 then begin
+      Files := '';
+      for i := 0 to FileNames.Count-1 do
+        Files := Files + ' ' + FileNames[i];
+      ExecuteSvnCommand('proplist -v' + Files, Output);
+      Output.Position := 0;
+    end;
     LoadFromStream(Output);
     for i := 0 to FileNames.Count -1 do begin
       if FFiles.FindIndexOf(FileNames[i])<0 then begin
