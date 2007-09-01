@@ -28,6 +28,7 @@ procedure OutTextXY90(Canvas:TCanvas; X,Y:integer; Text:string; Orientation:TTex
 
 function IsForegroundTask: Boolean;
 function ValidParentForm(Control: TControl): TCustomForm;
+function CreateArrowBitmap:TBitmap;
 {
 function AllocMemo(Size: Longint): Pointer;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
@@ -508,6 +509,13 @@ begin
   raise Exception.Create('SOutOfResources');
 end;
 {$ENDIF}
+
+function CreateArrowBitmap:TBitmap;
+begin
+  Result:=Graphics.TBitmap.Create;
+  Result.LoadFromLazarusResource('rxbtn_downarrow');
+end;
+
 end.
 
 

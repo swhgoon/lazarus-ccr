@@ -6,16 +6,19 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Buttons, Controls, ExtCtrls, ActnList,
-  PropertyStorage, Menus, Forms, types;
+  PropertyStorage, Menus, Forms, types, Graphics;
 
 const
   DefButtonWidth = 24;
   DefButtonHeight = 23;
-
+const
+  DropDownExtraBtnWidth = 15;
+  
 type
   TToolPanel = class;
   TToolbarItem = class;
-  TToolbarButtonStyle = (tbrButton, tbrCheck, tbrDropDown, tbrSeparator, tbrDivider);
+  TToolbarButtonStyle = (tbrButton, tbrCheck, tbrDropDown, tbrSeparator,
+     tbrDivider, tbrDropDownExtra);
   TToolBarStyle = (tbsStandart, tbsWindowsXP);
   TToolButtonAllign = (tbaNone, tbaLeft, tbaRignt);
 
@@ -50,6 +53,7 @@ type
     FLastDrawFlagsA:integer;
     FAutoSize:boolean;
     FOwnerItem:TToolbarItem;
+    FFullPush:boolean;
     function IsDesignMode:boolean;
     procedure PaintSeparator;
   protected
@@ -58,6 +62,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure MouseLeave; override;
     procedure Paint; override;
     procedure Click; override;
     procedure UpdateState(InvalidateOnChange: boolean); override;
@@ -157,6 +162,7 @@ type
     FDefButtonHeight:integer;
     FToolBarStyle: TToolBarStyle;
     FVersion: Integer;
+    FArrowBmp:TBitmap;
     function GetBtnHeight: Integer;
     function GetBtnWidth: Integer;
     function GetItems: TToolbarItems;
@@ -239,7 +245,7 @@ type
   end;
 
 implementation
-uses Math, Graphics, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst;
+uses Math, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst;
 
 const
   BtnAl2Align:array [TToolButtonAllign] of TAlign = (alNone, alLeft, alRight);
@@ -259,14 +265,17 @@ begin
   PaintRect:=ClientRect;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(PaintRect);
-  X:=Width div 2 - 1;
-  H:=TToolPanel(Parent).Height;
-  if X>0 then
+  if FToolbarButtonStyle = tbrSeparator then
   begin
-    Canvas.Pen.Color:=clBtnShadow;
-    Canvas.Line(X, 1, X, H);
-    Canvas.Pen.Color:=clWindow;
-    Canvas.Line(X+1, 1, X+1, H);
+    X:=Width div 2 - 1;
+    H:=TToolPanel(Parent).Height;
+    if X>0 then
+    begin
+      Canvas.Pen.Color:=clBtnShadow;
+      Canvas.Line(X, 1, X, H);
+      Canvas.Pen.Color:=clWindow;
+      Canvas.Line(X+1, 1, X+1, H);
+    end;
   end;
 end;
 
@@ -280,7 +289,10 @@ begin
     FDesignY:=Max(Y-1, 1);
   end
   else
-  inherited MouseDown(Button, Shift, X, Y);
+  begin
+    FFullPush:=X < (Width - DropDownExtraBtnWidth - 5);
+    inherited MouseDown(Button, Shift, X, Y);
+  end;
 end;
 
 procedure TToolbarButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -291,7 +303,10 @@ begin
     Left:=Max(0, Min(X+Left-FDesignX, Parent.Width - Width));
   end
   else
-  inherited MouseMove(Shift, X, Y);
+  begin
+//    FFullPuch:=(X-Left) < (Width - DropDownExtraBtnWidth);
+    inherited MouseMove(Shift, X, Y);
+  end
 end;
 
 procedure TToolbarButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
@@ -306,9 +321,15 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
+procedure TToolbarButton.MouseLeave;
+begin
+  inherited MouseLeave;
+  FFullPush:=true;
+end;
+
 procedure TToolbarButton.Paint;
 var
-  PaintRect: TRect;
+  PaintRect, PaintRect1: TRect;
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize: TSize;
@@ -318,7 +339,7 @@ var
   SIndex : Longint;
   TMP : String;
 begin
-  if FToolbarButtonStyle = tbrSeparator then
+  if FToolbarButtonStyle in [tbrSeparator, tbrDivider] then
   begin
     PaintSeparator;
     exit;
@@ -345,12 +366,67 @@ begin
     if FLastDrawFlagsA <> 0 then
     begin
       if TToolbarItems(FOwnerItem.Collection).FToolPanel.FToolBarStyle = tbsWindowsXP then
-        DrawButtonFrameXP(Canvas, PaintRect, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+      begin
+
+        if FToolbarButtonStyle = tbrDropDownExtra then
+        begin
+          PaintRect1:=PaintRect;
+          Dec(PaintRect1.Right, DropDownExtraBtnWidth);
+          if FFullPush then
+          begin
+            DrawButtonFrameXP(Canvas, PaintRect1, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+                                          (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+          end
+          else
+            DrawButtonFrameXP(Canvas, PaintRect1, false,
+                                          (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+          ;
+
+          PaintRect1:=PaintRect;
+          PaintRect1.Left:=PaintRect1.Right -  DropDownExtraBtnWidth;
+          DrawButtonFrameXP(Canvas, PaintRect1, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+                                           (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+        end
+        else
+          DrawButtonFrameXP(Canvas, PaintRect, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
                                          (FLastDrawFlagsA and DFCS_FLAT) <> 0)
+      end
       else
-        DrawButtonFrame(Canvas, PaintRect, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+      begin
+        if FToolbarButtonStyle = tbrDropDownExtra then
+        begin
+          PaintRect1:=PaintRect;
+          Dec(PaintRect1.Right, DropDownExtraBtnWidth);
+
+          if FFullPush then
+          begin
+            DrawButtonFrame(Canvas, PaintRect1, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
                                          (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+          end
+          else
+          begin
+            DrawButtonFrame(Canvas, PaintRect1, false,
+                                         (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+          end;
+          
+          PaintRect1:=PaintRect;
+          PaintRect1.Left:=PaintRect1.Right - DropDownExtraBtnWidth;
+          DrawButtonFrame(Canvas, PaintRect1, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+                                           (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+        end
+        else
+          DrawButtonFrame(Canvas, PaintRect, (FLastDrawFlagsA and DFCS_PUSHED) <> 0,
+                                         (FLastDrawFlagsA and DFCS_FLAT) <> 0);
+      end;
     end;
+
+    if FToolbarButtonStyle = tbrDropDownExtra then
+    begin
+      Canvas.Draw(PaintRect.Right - 10, Height div 2, TToolbarItems(FOwnerItem.Collection).FToolPanel.FArrowBmp);
+//      FArrowBmp
+      Dec(PaintRect.Right, DropDownExtraBtnWidth);
+    end;
+      
     GlyphWidth:= FImageList.Width;
     GlyphHeight:=FImageList.Height;
 
@@ -446,7 +522,7 @@ begin
     end;
 
     if ((FLastDrawFlagsA and DFCS_FLAT) <> 0) and ((FLastDrawFlagsA and DFCS_PUSHED) = 0)
-      and (tpGlyphPopup in TToolbarItems(FOwnerItem.Collection).FToolPanel.Options)then
+      and (tpGlyphPopup in TToolbarItems(FOwnerItem.Collection).FToolPanel.Options) and FFullPush then
     begin
 //      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, false);
       Dec(Offset.X, 2);
@@ -489,6 +565,7 @@ begin
         OffsetRect(PaintRect, -2, -2);
     end;
     Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
+    
   end;
 end;
 
@@ -502,6 +579,17 @@ begin
     if Assigned(FDropDownMenu) then
     begin
       P.X:=0;
+      P.Y:=Height;
+      P:=ClientToScreen(P);
+      FDropDownMenu.PopUp(P.X, P.Y);
+    end;
+  end
+  else
+  if (FToolbarButtonStyle = tbrDropDownExtra) and (not FFullPush) then
+  begin
+    if Assigned(FDropDownMenu) then
+    begin
+      P.X:=Width - DropDownExtraBtnWidth;
       P.Y:=Height;
       P:=ClientToScreen(P);
       FDropDownMenu.PopUp(P.X, P.Y);
@@ -594,7 +682,7 @@ var
 begin
   if Assigned(Parent) and not (csLoading in TToolPanel(Parent).ComponentState) then
   begin
-    if FToolbarButtonStyle = tbrSeparator then
+    if FToolbarButtonStyle in [tbrSeparator, tbrDivider] then
     begin
       aWidth:=7;
       if Assigned(FImageList) then
@@ -615,6 +703,12 @@ begin
         ImgH:=TToolPanel(Parent).BtnHeight;
         ImgW:=TToolPanel(Parent).BtnWidth;
       end;
+
+      if FToolbarButtonStyle = tbrDropDownExtra then
+      begin
+        ImgW:=ImgW + DropDownExtraBtnWidth;
+      end;
+      
       if FShowCaption then
       begin
         TextSize:=Canvas.TextExtent(Caption);
@@ -966,6 +1060,7 @@ end;
 constructor TToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FArrowBmp:=CreateArrowBitmap;
   AutoSize:=true;
   FToolbarItems:=TToolbarItems.Create(Self);
   Align:=alTop;
@@ -990,6 +1085,7 @@ begin
   end;
   FreeAndNil(FToolbarItems);
   FreeAndNil(FPropertyStorageLink);
+  FreeAndNil(FArrowBmp);
   inherited Destroy;
 end;
 
@@ -1174,9 +1270,9 @@ end;
 
 function TToolbarItem.GetDisplayName: string;
 begin
-  if ButtonStyle = tbrSeparator then
+  if ButtonStyle in [tbrSeparator, tbrDivider] then
   begin
-    Result:='Separator' //inherited GetDisplayName;
+    Result:='Separator'
   end
   else
   if Assigned(Action) then
@@ -1203,6 +1299,7 @@ begin
   FButton.FShowCaption:=false;
   FButton.FAutoSize:=true;
   FButton.FOwnerItem:=Self;
+  FButton.FFullPush:=true;
   if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
     FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
 {  if TToolbarItems(ACollection).FToolPanel.ButtonAllign = tbaLeft then

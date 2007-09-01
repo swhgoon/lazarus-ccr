@@ -7,590 +7,8 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
-    <Units Count="85">
-      <Unit0>
-        <CursorPos X="9" Y="2"/>
-        <Filename Value="project1.lpr"/>
-        <IsPartOfProject Value="True"/>
-        <TopLine Value="1"/>
-        <UnitName Value="project1"/>
-        <UsageCount Value="46"/>
-      </Unit0>
-      <Unit1>
-        <CursorPos X="15" Y="18"/>
-        <EditorIndex Value="0"/>
-        <Filename Value="unit1.pas"/>
-        <ComponentName Value="MainForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="unit1.lrs"/>
-        <TopLine Value="18"/>
-        <UnitName Value="Unit1"/>
-        <UsageCount Value="46"/>
-      </Unit1>
-      <Unit2>
-        <CursorPos X="47" Y="303"/>
-        <Filename Value="C:\lazarus\lcl\buttons.pp"/>
-        <TopLine Value="301"/>
-        <UnitName Value="Buttons"/>
-        <UsageCount Value="14"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="48" Y="45"/>
-        <Filename Value="C:\lazarus\lcl\include\speedbutton.inc"/>
-        <TopLine Value="39"/>
-        <UsageCount Value="14"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="61" Y="1356"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\classesh.inc"/>
-        <TopLine Value="1344"/>
-        <UsageCount Value="13"/>
-      </Unit4>
-      <Unit5>
-        <CursorPos X="40" Y="146"/>
-        <Filename Value="C:\lazarus\lcl\imglist.pp"/>
-        <TopLine Value="141"/>
-        <UnitName Value="ImgList"/>
-        <UsageCount Value="12"/>
-      </Unit5>
-      <Unit6>
-        <CursorPos X="42" Y="2120"/>
-        <Filename Value="C:\lazarus\lcl\LCLType.pp"/>
-        <TopLine Value="2104"/>
-        <UnitName Value="LCLType"/>
-        <UsageCount Value="11"/>
-      </Unit6>
-      <Unit7>
-        <CursorPos X="46" Y="4"/>
-        <Filename Value="C:\lazarus\lcl\include\winapih.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit7>
-      <Unit8>
-        <CursorPos X="89" Y="4"/>
-        <Filename Value="C:\lazarus\lcl\include\intfbasewinapi.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="11"/>
-      </Unit8>
-      <Unit9>
-        <CursorPos X="10" Y="3109"/>
-        <Filename Value="C:\lazarus\lcl\dbgrids.pas"/>
-        <TopLine Value="3109"/>
-        <UnitName Value="DBGrids"/>
-        <UsageCount Value="14"/>
-      </Unit9>
-      <Unit10>
-        <CursorPos X="26" Y="370"/>
-        <Filename Value="C:\lazarus\lcl\grids.pas"/>
-        <TopLine Value="368"/>
-        <UnitName Value="Grids"/>
-        <UsageCount Value="14"/>
-      </Unit10>
-      <Unit11>
-        <CursorPos X="71" Y="885"/>
-        <Filename Value="C:\lazarus\lcl\extctrls.pp"/>
-        <TopLine Value="882"/>
-        <UnitName Value="ExtCtrls"/>
-        <UsageCount Value="12"/>
-      </Unit11>
-      <Unit12>
-        <CursorPos X="49" Y="834"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxtoolbar.pas"/>
-        <TopLine Value="826"/>
-        <UnitName Value="rxtoolbar"/>
-        <UsageCount Value="17"/>
-        <Bookmarks Count="1">
-          <Item0 X="27" Y="1019" ID="1"/>
-        </Bookmarks>
-      </Unit12>
-      <Unit13>
-        <CursorPos X="76" Y="721"/>
-        <Filename Value="C:\lazarus\lcl\Controls.pp"/>
-        <TopLine Value="710"/>
-        <UnitName Value="Controls"/>
-        <UsageCount Value="13"/>
-      </Unit13>
-      <Unit14>
-        <CursorPos X="59" Y="1095"/>
-        <Filename Value="C:\lazarus\lcl\Graphics.pp"/>
-        <TopLine Value="1090"/>
-        <UnitName Value="Graphics"/>
-        <UsageCount Value="11"/>
-      </Unit14>
-      <Unit15>
-        <CursorPos X="52" Y="81"/>
-        <Filename Value="C:\lazarus\components\RxNew\registerrx.pas"/>
-        <TopLine Value="75"/>
-        <UnitName Value="registerrx"/>
-        <UsageCount Value="11"/>
-      </Unit15>
-      <Unit16>
-        <CursorPos X="60" Y="644"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\reader.inc"/>
-        <TopLine Value="643"/>
-        <UsageCount Value="10"/>
-      </Unit16>
-      <Unit17>
-        <CursorPos X="50" Y="181"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\collect.inc"/>
-        <TopLine Value="174"/>
-        <UsageCount Value="10"/>
-      </Unit17>
-      <Unit18>
-        <CursorPos X="45" Y="2214"/>
-        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
-        <TopLine Value="2200"/>
-        <UsageCount Value="13"/>
-      </Unit18>
-      <Unit19>
-        <CursorPos X="56" Y="237"/>
-        <Filename Value="C:\lazarus\lcl\ActnList.pas"/>
-        <TopLine Value="232"/>
-        <UnitName Value="ActnList"/>
-        <UsageCount Value="10"/>
-      </Unit19>
-      <Unit20>
-        <CursorPos X="75" Y="40"/>
-        <Filename Value="C:\lazarus\lcl\include\graphiccontrol.inc"/>
-        <TopLine Value="31"/>
-        <UsageCount Value="10"/>
-      </Unit20>
-      <Unit21>
-        <CursorPos X="44" Y="244"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\compon.inc"/>
-        <TopLine Value="239"/>
-        <UsageCount Value="11"/>
-      </Unit21>
-      <Unit22>
-        <CursorPos X="93" Y="1"/>
-        <Filename Value="C:\lazarus\components\RxNew\tooledit.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="tooledit"/>
-        <UsageCount Value="13"/>
-      </Unit22>
-      <Unit23>
-        <CursorPos X="27" Y="4"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxlookup.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxlookup"/>
-        <UsageCount Value="13"/>
-      </Unit23>
-      <Unit24>
-        <CursorPos X="61" Y="3022"/>
-        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
-        <TopLine Value="3010"/>
-        <UsageCount Value="12"/>
-      </Unit24>
-      <Unit25>
-        <CursorPos X="43" Y="41"/>
-        <Filename Value="C:\lazarus\lcl\xmlpropstorage.pas"/>
-        <TopLine Value="35"/>
-        <UnitName Value="XMLPropStorage"/>
-        <UsageCount Value="10"/>
-      </Unit25>
-      <Unit26>
-        <CursorPos X="50" Y="27"/>
-        <Filename Value="C:\lazarus\lcl\inipropstorage.pas"/>
-        <TopLine Value="23"/>
-        <UnitName Value="IniPropStorage"/>
-        <UsageCount Value="10"/>
-      </Unit26>
-      <Unit27>
-        <CursorPos X="51" Y="469"/>
-        <Filename Value="C:\lazarus\lcl\Forms.pp"/>
-        <TopLine Value="461"/>
-        <UnitName Value="Forms"/>
-        <UsageCount Value="10"/>
-      </Unit27>
-      <Unit28>
-        <CursorPos X="29" Y="1350"/>
-        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
-        <TopLine Value="1349"/>
-        <UsageCount Value="10"/>
-      </Unit28>
-      <Unit29>
-        <CursorPos X="49" Y="146"/>
-        <Filename Value="C:\lazarus\lcl\propertystorage.pas"/>
-        <TopLine Value="139"/>
-        <UnitName Value="PropertyStorage"/>
-        <UsageCount Value="12"/>
-      </Unit29>
-      <Unit30>
-        <CursorPos X="49" Y="312"/>
-        <Filename Value="C:\lazarus\lcl\menus.pp"/>
-        <TopLine Value="311"/>
-        <UnitName Value="Menus"/>
-        <UsageCount Value="10"/>
-      </Unit30>
-      <Unit31>
-        <CursorPos X="40" Y="26"/>
-        <Filename Value="C:\lazarus\components\RxNew\RxTBRSetup.pas"/>
-        <ComponentName Value="ToolPanelSetupForm"/>
-        <ResourceFilename Value="C:\lazarus\components\RxNew\rxtbrsetup.lrs"/>
-        <TopLine Value="25"/>
-        <UnitName Value="rxtbrsetup"/>
-        <UsageCount Value="12"/>
-      </Unit31>
-      <Unit32>
-        <CursorPos X="36" Y="61"/>
-        <Filename Value="C:\lazarus\lcl\include\lclintfh.inc"/>
-        <TopLine Value="52"/>
-        <UsageCount Value="10"/>
-      </Unit32>
-      <Unit33>
-        <CursorPos X="49" Y="137"/>
-        <Filename Value="C:\lazarus\lcl\include\intfbaselcl.inc"/>
-        <TopLine Value="134"/>
-        <UsageCount Value="10"/>
-      </Unit33>
-      <Unit34>
-        <CursorPos X="62" Y="36"/>
-        <Filename Value="C:\lazarus\lcl\GraphType.pp"/>
-        <TopLine Value="27"/>
-        <UnitName Value="GraphType"/>
-        <UsageCount Value="10"/>
-      </Unit34>
-      <Unit35>
-        <CursorPos X="48" Y="470"/>
-        <Filename Value="C:\lazarus\lcl\LCLProc.pas"/>
-        <TopLine Value="469"/>
-        <UnitName Value="LCLProc"/>
-        <UsageCount Value="10"/>
-      </Unit35>
-      <Unit36>
-        <CursorPos X="39" Y="59"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\types.pp"/>
-        <TopLine Value="53"/>
-        <UnitName Value="types"/>
-        <UsageCount Value="10"/>
-      </Unit36>
-      <Unit37>
-        <CursorPos X="6" Y="1"/>
-        <Filename Value="C:\lazarus\components\RxNew\VCLUtils.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="vclutils"/>
-        <UsageCount Value="11"/>
-      </Unit37>
-      <Unit38>
-        <CursorPos X="41" Y="5"/>
-        <Filename Value="C:\lazarus\lcl\include\winapi.inc"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit38>
-      <Unit39>
-        <CursorPos X="61" Y="1529"/>
-        <Filename Value="C:\lazarus\lcl\include\application.inc"/>
-        <TopLine Value="1526"/>
-        <UsageCount Value="10"/>
-      </Unit39>
-      <Unit40>
-        <CursorPos X="51" Y="199"/>
-        <Filename Value="C:\lazarus\lcl\include\bitbtn.inc"/>
-        <TopLine Value="196"/>
-        <UsageCount Value="10"/>
-      </Unit40>
-      <Unit41>
-        <CursorPos X="46" Y="24"/>
-        <Filename Value="C:\lazarus\lcl\include\buttons.inc"/>
-        <TopLine Value="24"/>
-        <UsageCount Value="10"/>
-      </Unit41>
-      <Unit42>
-        <CursorPos X="49" Y="45"/>
-        <Filename Value="C:\lazarus\lcl\include\canvas.inc"/>
-        <TopLine Value="33"/>
-        <UsageCount Value="10"/>
-      </Unit42>
-      <Unit43>
-        <CursorPos X="73" Y="10"/>
-        <Filename Value="C:\lazarus\lcl\include\dragdock.inc"/>
-        <TopLine Value="5"/>
-        <UsageCount Value="10"/>
-      </Unit43>
-      <Unit44>
-        <CursorPos X="48" Y="11"/>
-        <Filename Value="C:\lazarus\components\RxNew\fduallst.lfm"/>
-        <SyntaxHighlighter Value="LFM"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit44>
-      <Unit45>
-        <CursorPos X="24" Y="5"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxdbgrid.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxdbgrid"/>
-        <UsageCount Value="10"/>
-      </Unit45>
-      <Unit46>
-        <CursorPos X="84" Y="1"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxdice.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxdice"/>
-        <UsageCount Value="10"/>
-      </Unit46>
-      <Unit47>
-        <CursorPos X="74" Y="5"/>
-        <Filename Value="C:\lazarus\components\RxNew\rx.inc"/>
-        <TopLine Value="1"/>
-        <UnitName Value="RX"/>
-        <UsageCount Value="10"/>
-      </Unit47>
-      <Unit48>
-        <CursorPos X="82" Y="7"/>
-        <Filename Value="C:\lazarus\components\RxNew\folderlister.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="folderlister"/>
-        <UsageCount Value="10"/>
-      </Unit48>
-      <Unit49>
-        <CursorPos X="80" Y="2"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxdbcomb.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxdbcomb"/>
-        <UsageCount Value="10"/>
-      </Unit49>
-      <Unit50>
-        <CursorPos X="63" Y="9"/>
-        <Filename Value="C:\lazarus\lcl\DbCtrls.pp"/>
-        <TopLine Value="1"/>
-        <UnitName Value="DbCtrls"/>
-        <UsageCount Value="10"/>
-      </Unit50>
-      <Unit51>
-        <CursorPos X="76" Y="9"/>
-        <Filename Value="C:\lazarus\components\RxNew\dateutil.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="dateutil"/>
-        <UsageCount Value="10"/>
-      </Unit51>
-      <Unit52>
-        <CursorPos X="13" Y="10"/>
-        <Filename Value="C:\lazarus\components\RxNew\dbutils.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="dbutils"/>
-        <UsageCount Value="10"/>
-      </Unit52>
-      <Unit53>
-        <CursorPos X="77" Y="9"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxapputils.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxapputils"/>
-        <UsageCount Value="10"/>
-      </Unit53>
-      <Unit54>
-        <CursorPos X="74" Y="146"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxdconst.pas"/>
-        <TopLine Value="140"/>
-        <UnitName Value="rxdconst"/>
-        <UsageCount Value="10"/>
-      </Unit54>
-      <Unit55>
-        <CursorPos X="74" Y="6"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxstrutils.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxstrutils"/>
-        <UsageCount Value="10"/>
-      </Unit55>
-      <Unit56>
-        <CursorPos X="74" Y="4"/>
-        <Filename Value="C:\lazarus\components\RxNew\dbdateedit.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="dbdateedit"/>
-        <UsageCount Value="10"/>
-      </Unit56>
-      <Unit57>
-        <CursorPos X="83" Y="7"/>
-        <Filename Value="C:\lazarus\components\RxNew\curredit.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="curredit"/>
-        <UsageCount Value="10"/>
-      </Unit57>
-      <Unit58>
-        <CursorPos X="72" Y="202"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxmemds.pas"/>
-        <TopLine Value="197"/>
-        <UnitName Value="rxmemds"/>
-        <UsageCount Value="10"/>
-      </Unit58>
-      <Unit59>
-        <CursorPos X="49" Y="40"/>
-        <Filename Value="C:\lazarus\components\RxNew\boxprocs.pas"/>
-        <TopLine Value="32"/>
-        <UnitName Value="boxprocs"/>
-        <UsageCount Value="11"/>
-      </Unit59>
-      <Unit60>
-        <CursorPos X="80" Y="70"/>
-        <Filename Value="C:\lazarus\components\RxNew\duallist.pas"/>
-        <TopLine Value="59"/>
-        <UnitName Value="duallist"/>
-        <UsageCount Value="10"/>
-      </Unit60>
-      <Unit61>
-        <CursorPos X="78" Y="1"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxswitch.pas"/>
-        <TopLine Value="1"/>
-        <UnitName Value="rxswitch"/>
-        <UsageCount Value="10"/>
-      </Unit61>
-      <Unit62>
-        <CursorPos X="25" Y="123"/>
-        <Filename Value="C:\lazarus\components\RxNew\fduallst.pas"/>
-        <ComponentName Value="DualListForm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="C:\lazarus\components\RxNew\fduallst.lrs"/>
-        <TopLine Value="119"/>
-        <UnitName Value="fduallst"/>
-        <UsageCount Value="10"/>
-      </Unit62>
-      <Unit63>
-        <CursorPos X="50" Y="431"/>
-        <Filename Value="C:\lazarus\lcl\stdctrls.pp"/>
-        <TopLine Value="422"/>
-        <UnitName Value="StdCtrls"/>
-        <UsageCount Value="10"/>
-      </Unit63>
-      <Unit64>
-        <CursorPos X="45" Y="314"/>
-        <Filename Value="C:\lazarus\lcl\include\customlistbox.inc"/>
-        <TopLine Value="309"/>
-        <UsageCount Value="10"/>
-      </Unit64>
-      <Unit65>
-        <CursorPos X="65" Y="72"/>
-        <Filename Value="C:\lazarus\lcl\include\controlactionlink.inc"/>
-        <TopLine Value="65"/>
-        <UsageCount Value="10"/>
-      </Unit65>
-      <Unit66>
-        <CursorPos X="65" Y="143"/>
-        <Filename Value="C:\lazarus\lcl\include\customaction.inc"/>
-        <TopLine Value="136"/>
-        <UsageCount Value="10"/>
-      </Unit66>
-      <Unit67>
-        <CursorPos X="71" Y="256"/>
-        <Filename Value="C:\lazarus\lcl\LMessages.pp"/>
-        <TopLine Value="245"/>
-        <UnitName Value="LMessages"/>
-        <UsageCount Value="10"/>
-      </Unit67>
-      <Unit68>
-        <CursorPos X="63" Y="36"/>
-        <Filename Value="C:\lazarus\lcl\include\menuactionlink.inc"/>
-        <TopLine Value="30"/>
-        <UsageCount Value="10"/>
-      </Unit68>
-      <Unit69>
-        <CursorPos X="60" Y="26"/>
-        <Filename Value="C:\lazarus\lcl\include\actionlink.inc"/>
-        <TopLine Value="19"/>
-        <UsageCount Value="10"/>
-      </Unit69>
-      <Unit70>
-        <CursorPos X="40" Y="228"/>
-        <Filename Value="C:\lazarus\fpcsrc\fcl\image\fpcanvas.pp"/>
-        <TopLine Value="215"/>
-        <UnitName Value="FPCanvas"/>
-        <UsageCount Value="10"/>
-      </Unit70>
-      <Unit71>
-        <CursorPos X="41" Y="270"/>
-        <Filename Value="C:\lazarus\fpcsrc\fcl\image\FPCanvas.inc"/>
-        <TopLine Value="269"/>
-        <UsageCount Value="10"/>
-      </Unit71>
-      <Unit72>
-        <CursorPos X="48" Y="215"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\sysutils\sysutilh.inc"/>
-        <TopLine Value="207"/>
-        <UsageCount Value="10"/>
-      </Unit72>
-      <Unit73>
-        <CursorPos X="51" Y="102"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\sysutils\sysutils.inc"/>
-        <TopLine Value="100"/>
-        <UsageCount Value="10"/>
-      </Unit73>
-      <Unit74>
-        <CursorPos X="65" Y="88"/>
-        <Filename Value="C:\lazarus\lcl\include\custompanel.inc"/>
-        <TopLine Value="79"/>
-        <UsageCount Value="10"/>
-      </Unit74>
-      <Unit75>
-        <CursorPos X="72" Y="305"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\lists.inc"/>
-        <TopLine Value="298"/>
-        <UsageCount Value="10"/>
-      </Unit75>
-      <Unit76>
-        <CursorPos X="48" Y="990"/>
-        <Filename Value="C:\lazarus\lcl\include\imglist.inc"/>
-        <TopLine Value="986"/>
-        <UsageCount Value="10"/>
-      </Unit76>
-      <Unit77>
-        <CursorPos X="47" Y="488"/>
-        <Filename Value="C:\lazarus\lcl\include\bitmap.inc"/>
-        <TopLine Value="486"/>
-        <UsageCount Value="10"/>
-      </Unit77>
-      <Unit78>
-        <CursorPos X="45" Y="120"/>
-        <Filename Value="C:\lazarus\lcl\include\customcheckbox.inc"/>
-        <TopLine Value="120"/>
-        <UsageCount Value="10"/>
-      </Unit78>
-      <Unit79>
-        <CursorPos X="22" Y="200"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\typinfo.pp"/>
-        <TopLine Value="197"/>
-        <UnitName Value="typinfo"/>
-        <UsageCount Value="10"/>
-      </Unit79>
-      <Unit80>
-        <CursorPos X="79" Y="34"/>
-        <Filename Value="C:\lazarus\lcl\LCLClasses.pp"/>
-        <TopLine Value="24"/>
-        <UnitName Value="LCLClasses"/>
-        <UsageCount Value="10"/>
-      </Unit80>
-      <Unit81>
-        <CursorPos X="49" Y="122"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\inc\objpash.inc"/>
-        <TopLine Value="116"/>
-        <UsageCount Value="10"/>
-      </Unit81>
-      <Unit82>
-        <CursorPos X="49" Y="116"/>
-        <Filename Value="C:\lazarus\fpcsrc\rtl\inc\objpas.inc"/>
-        <TopLine Value="111"/>
-        <UsageCount Value="10"/>
-      </Unit82>
-      <Unit83>
-        <CursorPos X="60" Y="41"/>
-        <Filename Value="C:\lazarus\components\RxNew\rxappicon.pas"/>
-        <TopLine Value="36"/>
-        <UnitName Value="RxAppIcon"/>
-        <UsageCount Value="10"/>
-      </Unit83>
-      <Unit84>
-        <CursorPos X="40" Y="5"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="aboutunit.pas"/>
-        <ComponentName Value="AboutForm"/>
-        <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
-        <ResourceFilename Value="aboutunit.lrs"/>
-        <TopLine Value="1"/>
-        <UnitName Value="AboutUnit"/>
-        <UsageCount Value="20"/>
-      </Unit84>
-    </Units>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -616,32 +34,590 @@
         <MinVersion Major="1" Valid="True"/>
       </Item3>
     </RequiredPackages>
-    <JumpHistory Count="6" HistoryIndex="5">
-      <Position1>
+    <Units Count="85">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="project1"/>
+        <CursorPos X="9" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="46"/>
+      </Unit0>
+      <Unit1>
         <Filename Value="unit1.pas"/>
-        <Caret Line="10" Column="32" TopLine="10"/>
-      </Position1>
-      <Position2>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="19" Column="26" TopLine="10"/>
-      </Position2>
-      <Position3>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="42" Column="48" TopLine="32"/>
-      </Position3>
-      <Position4>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="unit1.lrs"/>
+        <UnitName Value="Unit1"/>
+        <CursorPos X="47" Y="23"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="46"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\..\..\lcl\buttons.pp"/>
+        <UnitName Value="Buttons"/>
+        <CursorPos X="47" Y="303"/>
+        <TopLine Value="301"/>
+        <UsageCount Value="14"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\..\lcl\include\speedbutton.inc"/>
+        <CursorPos X="48" Y="45"/>
+        <TopLine Value="39"/>
+        <UsageCount Value="14"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="61" Y="1356"/>
+        <TopLine Value="1344"/>
+        <UsageCount Value="13"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\..\..\lcl\imglist.pp"/>
+        <UnitName Value="ImgList"/>
+        <CursorPos X="40" Y="146"/>
+        <TopLine Value="141"/>
+        <UsageCount Value="12"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\..\..\lcl\LCLType.pp"/>
+        <UnitName Value="LCLType"/>
+        <CursorPos X="42" Y="2120"/>
+        <TopLine Value="2104"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\..\..\lcl\include\winapih.inc"/>
+        <CursorPos X="46" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\..\..\lcl\include\intfbasewinapi.inc"/>
+        <CursorPos X="89" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\..\..\lcl\dbgrids.pas"/>
+        <UnitName Value="DBGrids"/>
+        <CursorPos X="10" Y="3109"/>
+        <TopLine Value="3109"/>
+        <UsageCount Value="14"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\..\lcl\grids.pas"/>
+        <UnitName Value="Grids"/>
+        <CursorPos X="26" Y="370"/>
+        <TopLine Value="368"/>
+        <UsageCount Value="14"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <CursorPos X="71" Y="885"/>
+        <TopLine Value="882"/>
+        <UsageCount Value="12"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\rxtoolbar.pas"/>
+        <UnitName Value="rxtoolbar"/>
+        <CursorPos X="1" Y="588"/>
+        <TopLine Value="571"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="17"/>
+        <Bookmarks Count="1">
+          <Item0 X="27" Y="1019" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\..\lcl\Controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="76" Y="721"/>
+        <TopLine Value="710"/>
+        <UsageCount Value="13"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\..\lcl\Graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <CursorPos X="59" Y="1095"/>
+        <TopLine Value="1090"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\registerrx.pas"/>
+        <UnitName Value="registerrx"/>
+        <CursorPos X="52" Y="81"/>
+        <TopLine Value="75"/>
+        <UsageCount Value="11"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\classes\reader.inc"/>
+        <CursorPos X="60" Y="644"/>
+        <TopLine Value="643"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\classes\collect.inc"/>
+        <CursorPos X="50" Y="181"/>
+        <TopLine Value="174"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\..\..\lcl\include\control.inc"/>
+        <CursorPos X="45" Y="2214"/>
+        <TopLine Value="2200"/>
+        <UsageCount Value="13"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\..\..\lcl\ActnList.pas"/>
+        <UnitName Value="ActnList"/>
+        <CursorPos X="56" Y="237"/>
+        <TopLine Value="232"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\..\..\lcl\include\graphiccontrol.inc"/>
+        <CursorPos X="75" Y="40"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\classes\compon.inc"/>
+        <CursorPos X="44" Y="244"/>
+        <TopLine Value="239"/>
+        <UsageCount Value="11"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\tooledit.pas"/>
+        <UnitName Value="tooledit"/>
+        <CursorPos X="93" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\rxlookup.pas"/>
+        <UnitName Value="rxlookup"/>
+        <CursorPos X="27" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\..\lcl\include\wincontrol.inc"/>
+        <CursorPos X="61" Y="3022"/>
+        <TopLine Value="3010"/>
+        <UsageCount Value="12"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\lcl\xmlpropstorage.pas"/>
+        <UnitName Value="XMLPropStorage"/>
+        <CursorPos X="43" Y="41"/>
+        <TopLine Value="35"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\..\..\lcl\inipropstorage.pas"/>
+        <UnitName Value="IniPropStorage"/>
+        <CursorPos X="50" Y="27"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\..\lcl\Forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="51" Y="469"/>
+        <TopLine Value="461"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\..\..\lcl\include\customform.inc"/>
+        <CursorPos X="29" Y="1350"/>
+        <TopLine Value="1349"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\..\..\lcl\propertystorage.pas"/>
+        <UnitName Value="PropertyStorage"/>
+        <CursorPos X="49" Y="146"/>
+        <TopLine Value="139"/>
+        <UsageCount Value="12"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="..\..\..\..\lcl\menus.pp"/>
+        <UnitName Value="Menus"/>
+        <CursorPos X="49" Y="312"/>
+        <TopLine Value="311"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\RxTBRSetup.pas"/>
+        <ComponentName Value="ToolPanelSetupForm"/>
+        <ResourceFilename Value="..\..\rxtbrsetup.lrs"/>
+        <UnitName Value="rxtbrsetup"/>
+        <CursorPos X="40" Y="26"/>
+        <TopLine Value="25"/>
+        <UsageCount Value="12"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\..\lcl\include\lclintfh.inc"/>
+        <CursorPos X="36" Y="61"/>
+        <TopLine Value="52"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\..\..\..\lcl\include\intfbaselcl.inc"/>
+        <CursorPos X="49" Y="137"/>
+        <TopLine Value="134"/>
+        <UsageCount Value="10"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\..\..\lcl\GraphType.pp"/>
+        <UnitName Value="GraphType"/>
+        <CursorPos X="62" Y="36"/>
+        <TopLine Value="27"/>
+        <UsageCount Value="10"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="..\..\..\..\lcl\LCLProc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="48" Y="470"/>
+        <TopLine Value="469"/>
+        <UsageCount Value="10"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\types.pp"/>
+        <UnitName Value="types"/>
+        <CursorPos X="39" Y="59"/>
+        <TopLine Value="53"/>
+        <UsageCount Value="10"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="..\..\VCLUtils.pas"/>
+        <UnitName Value="vclutils"/>
+        <CursorPos X="6" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="..\..\..\..\lcl\include\winapi.inc"/>
+        <CursorPos X="41" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="..\..\..\..\lcl\include\application.inc"/>
+        <CursorPos X="61" Y="1529"/>
+        <TopLine Value="1526"/>
+        <UsageCount Value="10"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="..\..\..\..\lcl\include\bitbtn.inc"/>
+        <CursorPos X="51" Y="199"/>
+        <TopLine Value="196"/>
+        <UsageCount Value="10"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="..\..\..\..\lcl\include\buttons.inc"/>
+        <CursorPos X="46" Y="24"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="10"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="..\..\..\..\lcl\include\canvas.inc"/>
+        <CursorPos X="49" Y="45"/>
+        <TopLine Value="33"/>
+        <UsageCount Value="10"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\..\..\..\lcl\include\dragdock.inc"/>
+        <CursorPos X="73" Y="10"/>
+        <TopLine Value="5"/>
+        <UsageCount Value="10"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="..\..\fduallst.lfm"/>
+        <CursorPos X="48" Y="11"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="..\..\rxdbgrid.pas"/>
+        <UnitName Value="rxdbgrid"/>
+        <CursorPos X="24" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="..\..\rxdice.pas"/>
+        <UnitName Value="rxdice"/>
+        <CursorPos X="84" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="..\..\rx.inc"/>
+        <CursorPos X="74" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="..\..\folderlister.pas"/>
+        <UnitName Value="folderlister"/>
+        <CursorPos X="82" Y="7"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="..\..\rxdbcomb.pas"/>
+        <UnitName Value="rxdbcomb"/>
+        <CursorPos X="80" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="..\..\..\..\lcl\DbCtrls.pp"/>
+        <UnitName Value="DbCtrls"/>
+        <CursorPos X="63" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="..\..\dateutil.pas"/>
+        <UnitName Value="dateutil"/>
+        <CursorPos X="76" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="..\..\dbutils.pas"/>
+        <UnitName Value="dbutils"/>
+        <CursorPos X="13" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="..\..\rxapputils.pas"/>
+        <UnitName Value="rxapputils"/>
+        <CursorPos X="77" Y="9"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="..\..\rxdconst.pas"/>
+        <UnitName Value="rxdconst"/>
+        <CursorPos X="74" Y="146"/>
+        <TopLine Value="140"/>
+        <UsageCount Value="10"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="..\..\rxstrutils.pas"/>
+        <UnitName Value="rxstrutils"/>
+        <CursorPos X="74" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="..\..\dbdateedit.pas"/>
+        <UnitName Value="dbdateedit"/>
+        <CursorPos X="74" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="..\..\curredit.pas"/>
+        <UnitName Value="curredit"/>
+        <CursorPos X="83" Y="7"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="..\..\rxmemds.pas"/>
+        <UnitName Value="rxmemds"/>
+        <CursorPos X="72" Y="202"/>
+        <TopLine Value="197"/>
+        <UsageCount Value="10"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="..\..\boxprocs.pas"/>
+        <UnitName Value="boxprocs"/>
+        <CursorPos X="49" Y="40"/>
+        <TopLine Value="32"/>
+        <UsageCount Value="11"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="..\..\duallist.pas"/>
+        <UnitName Value="duallist"/>
+        <CursorPos X="80" Y="70"/>
+        <TopLine Value="59"/>
+        <UsageCount Value="10"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="..\..\rxswitch.pas"/>
+        <UnitName Value="rxswitch"/>
+        <CursorPos X="78" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="..\..\fduallst.pas"/>
+        <ComponentName Value="DualListForm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\fduallst.lrs"/>
+        <UnitName Value="fduallst"/>
+        <CursorPos X="25" Y="123"/>
+        <TopLine Value="119"/>
+        <UsageCount Value="10"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="..\..\..\..\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <CursorPos X="50" Y="431"/>
+        <TopLine Value="422"/>
+        <UsageCount Value="10"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="..\..\..\..\lcl\include\customlistbox.inc"/>
+        <CursorPos X="45" Y="314"/>
+        <TopLine Value="309"/>
+        <UsageCount Value="10"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="..\..\..\..\lcl\include\controlactionlink.inc"/>
+        <CursorPos X="65" Y="72"/>
+        <TopLine Value="65"/>
+        <UsageCount Value="10"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="..\..\..\..\lcl\include\customaction.inc"/>
+        <CursorPos X="65" Y="143"/>
+        <TopLine Value="136"/>
+        <UsageCount Value="10"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="..\..\..\..\lcl\LMessages.pp"/>
+        <UnitName Value="LMessages"/>
+        <CursorPos X="71" Y="256"/>
+        <TopLine Value="245"/>
+        <UsageCount Value="10"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="..\..\..\..\lcl\include\menuactionlink.inc"/>
+        <CursorPos X="63" Y="36"/>
+        <TopLine Value="30"/>
+        <UsageCount Value="10"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="..\..\..\..\lcl\include\actionlink.inc"/>
+        <CursorPos X="60" Y="26"/>
+        <TopLine Value="19"/>
+        <UsageCount Value="10"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="..\..\..\..\fpcsrc\fcl\image\fpcanvas.pp"/>
+        <UnitName Value="FPCanvas"/>
+        <CursorPos X="40" Y="228"/>
+        <TopLine Value="215"/>
+        <UsageCount Value="10"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="..\..\..\..\fpcsrc\fcl\image\FPCanvas.inc"/>
+        <CursorPos X="41" Y="270"/>
+        <TopLine Value="269"/>
+        <UsageCount Value="10"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\sysutils\sysutilh.inc"/>
+        <CursorPos X="48" Y="215"/>
+        <TopLine Value="207"/>
+        <UsageCount Value="10"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\sysutils\sysutils.inc"/>
+        <CursorPos X="51" Y="102"/>
+        <TopLine Value="100"/>
+        <UsageCount Value="10"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="..\..\..\..\lcl\include\custompanel.inc"/>
+        <CursorPos X="65" Y="88"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="10"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\classes\lists.inc"/>
+        <CursorPos X="72" Y="305"/>
+        <TopLine Value="298"/>
+        <UsageCount Value="10"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="..\..\..\..\lcl\include\imglist.inc"/>
+        <CursorPos X="48" Y="990"/>
+        <TopLine Value="986"/>
+        <UsageCount Value="10"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="..\..\..\..\lcl\include\bitmap.inc"/>
+        <CursorPos X="47" Y="488"/>
+        <TopLine Value="486"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="..\..\..\..\lcl\include\customcheckbox.inc"/>
+        <CursorPos X="45" Y="120"/>
+        <TopLine Value="120"/>
+        <UsageCount Value="10"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\objpas\typinfo.pp"/>
+        <UnitName Value="typinfo"/>
+        <CursorPos X="22" Y="200"/>
+        <TopLine Value="197"/>
+        <UsageCount Value="10"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="..\..\..\..\lcl\LCLClasses.pp"/>
+        <UnitName Value="LCLClasses"/>
+        <CursorPos X="79" Y="34"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\inc\objpash.inc"/>
+        <CursorPos X="49" Y="122"/>
+        <TopLine Value="116"/>
+        <UsageCount Value="10"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="..\..\..\..\fpcsrc\rtl\inc\objpas.inc"/>
+        <CursorPos X="49" Y="116"/>
+        <TopLine Value="111"/>
+        <UsageCount Value="10"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="..\..\rxappicon.pas"/>
+        <UnitName Value="RxAppIcon"/>
+        <CursorPos X="60" Y="41"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="10"/>
+      </Unit83>
+      <Unit84>
         <Filename Value="aboutunit.pas"/>
-        <Caret Line="11" Column="13" TopLine="1"/>
-      </Position4>
-      <Position5>
-        <Filename Value="aboutunit.pas"/>
-        <Caret Line="20" Column="1" TopLine="1"/>
-      </Position5>
-      <Position6>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="41" Column="49" TopLine="27"/>
-      </Position6>
-    </JumpHistory>
+        <ComponentName Value="AboutForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="aboutunit.lrs"/>
+        <UnitName Value="AboutUnit"/>
+        <CursorPos X="40" Y="5"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit84>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

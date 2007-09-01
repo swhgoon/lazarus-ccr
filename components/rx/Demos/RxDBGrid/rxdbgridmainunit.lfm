@@ -2,18 +2,18 @@ object RxDBGridMainForm: TRxDBGridMainForm
   Left = 353
   Height = 582
   Top = 161
-  Width = 827
-  HorzScrollBar.Page = 826
+  Width = 859
+  HorzScrollBar.Page = 858
   VertScrollBar.Page = 581
   ActiveControl = RxDBGrid1
   Caption = 'RxDBGrid Demo (ver 2)  ...'
   ClientHeight = 582
-  ClientWidth = 827
+  ClientWidth = 859
   OnCreate = FormCreate
   object RxDBGrid1: TRxDBGrid
     Height = 532
     Top = 50
-    Width = 827
+    Width = 859
     Columns = <    
       item
         Title.Alignment = taCenter
@@ -72,10 +72,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
   end
   object Panel1: TPanel
     Height = 50
-    Width = 827
+    Width = 859
     Align = alTop
     ClientHeight = 50
-    ClientWidth = 827
+    ClientWidth = 859
     TabOrder = 1
     object Button1: TButton
       Left = 8
@@ -133,7 +133,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Size = 150
       end>
     OnFilterRecordEx = RxMemoryData1FilterRecordEx
-    left = 144
+    left = 152
     top = 264
     object RxMemoryData1ID1: TLongintField
       AlignMent = taRightJustify

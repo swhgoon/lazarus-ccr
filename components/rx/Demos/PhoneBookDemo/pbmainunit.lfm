@@ -1,0 +1,156 @@
+object pbMainForm: TpbMainForm
+  Left = 274
+  Height = 446
+  Top = 446
+  Width = 849
+  HorzScrollBar.Page = 848
+  VertScrollBar.Page = 445
+  Caption = 'pbMainForm'
+  ClientHeight = 446
+  ClientWidth = 849
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  object ToolPanel1: TToolPanel
+    Height = 23
+    Width = 849
+    Items = <>
+    Align = alTop
+    AutoSize = True
+    BorderWidth = 4
+    TabOrder = 0
+  end
+  object RxDBGrid1: TRxDBGrid
+    Height = 403
+    Top = 23
+    Width = 849
+    Columns = <    
+      item
+        Title.Alignment = taCenter
+        Width = 190
+        FieldName = 'PATRONYMIC'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Width = 150
+        FieldName = 'NAME'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Width = 150
+        FieldName = 'SURNAME'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Width = 130
+        FieldName = 'PHONE'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        FieldName = 'ICQ'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        FieldName = 'MEMO'
+        Filter.ItemIndex = -1
+      end>
+    Align = alClient
+    FocusColor = clRed
+    SelectedColor = clHighlight
+    DataSource = Datasource1
+    FixedColor = clBtnFace
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete]
+    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
+    ParentColor = False
+    Scrollbars = ssBoth
+    TabOrder = 1
+    TabStop = True
+  end
+  object StatusBar1: TStatusBar
+    Height = 20
+    Top = 426
+    Width = 849
+    Panels = <>
+  end
+  object ImageList1: TImageList
+    left = 167
+    top = 64
+  end
+  object ImageList2: TImageList
+    left = 200
+    top = 64
+  end
+  object ActionList1: TActionList
+    left = 167
+    top = 120
+  end
+  object MainMenu1: TMainMenu
+    left = 136
+    top = 120
+  end
+  object Dbf1: TDbf
+    FilePath = 'C:\Lazarus\components\rxnew\Demos\PhoneBookDemo\bases\'
+    IndexDefs = <>
+    TableName = 'PhoneBook.DBF'
+    TableLevel = 3
+    left = 167
+    top = 167
+    object Dbf1ID1: TLongintField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'ID'
+      ProviderFlags = [pfInUpdate, pfInWhere]
+    end
+    object Dbf1PATRONYMIC1: TStringField
+      DisplayWidth = 50
+      FieldName = 'PATRONYMIC'
+      Index = 1
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 50
+    end
+    object Dbf1NAME1: TStringField
+      DisplayWidth = 30
+      FieldName = 'NAME'
+      Index = 2
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 30
+    end
+    object Dbf1SURNAME1: TStringField
+      DisplayWidth = 30
+      FieldName = 'SURNAME'
+      Index = 3
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 30
+    end
+    object Dbf1PHONE1: TStringField
+      DisplayWidth = 20
+      FieldName = 'PHONE'
+      Index = 4
+      ProviderFlags = [pfInUpdate, pfInWhere]
+    end
+    object Dbf1ICQ1: TStringField
+      DisplayWidth = 15
+      FieldName = 'ICQ'
+      Index = 5
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 15
+    end
+    object Dbf1MEMO1: TMemoField
+      DisplayWidth = 10
+      FieldName = 'MEMO'
+      Index = 6
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Transliterate = False
+    end
+  end
+  object Datasource1: TDatasource
+    DataSet = Dbf1
+    left = 136
+    top = 168
+  end
+end

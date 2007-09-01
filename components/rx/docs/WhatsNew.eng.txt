@@ -1,3 +1,11 @@
+29.08.2007 - версия 1.1.5.98 (svn revision 39)
+  + In RxDBgrid - after close dataset  list of SelectedRows is cleared
+  + fix resaizing find form for RxDbGrd    
+  + compile in latest Lazarus
+  + in TToolbarButton stile tbrSeparator and tbrDivider as Delphi
+    tbrSeparator - separator with line
+    tbrDivider - empty separator 
+  + in TToolbarButton new style tbrDropDownExtra - button with dropdown menu.
 12.08.2007 - version 1.1.4.93
   + in TRxDBComboBox publishe any property
   + in TRxDBLookupCombo add event OnGetGridCellProps

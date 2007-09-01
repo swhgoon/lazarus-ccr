@@ -1,82 +1,103 @@
 object rxDBGridFindForm: TrxDBGridFindForm
   Left = 436
-  Height = 99
+  Height = 127
   Top = 423
-  Width = 434
-  HorzScrollBar.Page = 433
-  VertScrollBar.Page = 98
+  Width = 493
+  HorzScrollBar.Page = 492
+  VertScrollBar.Page = 126
   ActiveControl = BtnFind
   Caption = 'Find'
-  ClientHeight = 99
-  ClientWidth = 434
+  ClientHeight = 127
+  ClientWidth = 493
+  OnActivate = FormActivate
   OnShow = FormShow
-  PixelsPerInch = 96
   object Label1: TLabel
+    AnchorSideBottom.Control = Edit1
+    AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 14
-    Top = 19
-    Width = 57
+    Height = 13
+    Top = 17
+    Width = 62
+    Anchors = [akLeft, akBottom]
     Caption = 'Text to find'
-    Color = clNone
     FocusControl = Edit1
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 8
-    Height = 14
-    Top = 48
-    Width = 57
+    AnchorSideLeft.Control = Label1
+    AnchorSideBottom.Control = ComboBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 13
+    Top = 51
+    Width = 67
+    Anchors = [akLeft, akBottom]
     Caption = 'Find at filed'
-    Color = clNone
     ParentColor = False
   end
   object BtnFind: TButton
-    Left = 346
-    Height = 25
+    Left = 408
+    Height = 38
     Top = 8
-    Width = 83
+    Width = 80
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
     Caption = 'Find more'
     Default = True
     OnClick = BtnFindClick
     TabOrder = 4
   end
   object Button2: TButton
-    Left = 346
-    Height = 25
-    Top = 41
-    Width = 83
+    AnchorSideTop.Control = BtnFind
+    AnchorSideTop.Side = asrBottom
+    Left = 408
+    Height = 34
+    Top = 54
+    Width = 80
     Anchors = [akTop, akRight]
-    BorderSpacing.InnerBorder = 2
+    BorderSpacing.Top = 8
     Cancel = True
     Caption = 'Close'
     OnClick = Button2Click
     TabOrder = 5
   end
   object Edit1: TEdit
-    Left = 80
-    Height = 23
+    AnchorSideLeft.Control = ComboBox1
+    Left = 81
+    Height = 22
     Top = 8
-    Width = 258
+    Width = 316
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     TabOrder = 0
   end
   object ComboBox1: TComboBox
-    Left = 80
-    Height = 21
-    Top = 36
-    Width = 256
+    AnchorSideLeft.Control = Label2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Edit1
+    AnchorSideRight.Side = asrBottom
+    Left = 81
+    Height = 26
+    Top = 38
+    Width = 316
+    Anchors = [akTop, akLeft, akRight]
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
     MaxLength = 0
     Style = csDropDownList
     TabOrder = 1
   end
   object CheckBox1: TCheckBox
-    Left = 8
-    Height = 13
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = ComboBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 20
     Top = 72
-    Width = 92
+    Width = 113
+    BorderSpacing.Top = 8
     Caption = 'Case sensetive'
     TabOrder = 2
   end
@@ -95,6 +116,8 @@ object rxDBGridFindForm: TrxDBGridFindForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 59
+    ClientWidth = 146
     Items.Strings = (
       'All'
       'Forward'
@@ -104,10 +127,14 @@ object rxDBGridFindForm: TrxDBGridFindForm
     Visible = False
   end
   object CheckBox2: TCheckBox
-    Left = 128
-    Height = 13
-    Top = 70
-    Width = 69
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = CheckBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 100
+    Width = 86
+    BorderSpacing.Top = 8
     Caption = 'Partial key'
     TabOrder = 3
   end

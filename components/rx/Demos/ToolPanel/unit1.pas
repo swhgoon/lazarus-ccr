@@ -16,8 +16,13 @@ type
   TMainForm = class(TForm)
     actExit: TAction;
     actSysMenu: TAction;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
+    PopupMenu2: TPopupMenu;
     sysAbout: TAction;
     actNew: TAction;
     actNext: TAction;

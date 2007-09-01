@@ -1085,7 +1085,11 @@ begin
       FSortEngine:=nil;
   end
   else
+  begin
     FSortEngine:=nil;
+    if SelectedRows.Count>0 then
+      SelectedRows.Clear;
+  end;
   FSortField:=nil;
   FSortOrder:=smNone;
 end;

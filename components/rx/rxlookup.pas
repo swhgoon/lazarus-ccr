@@ -294,15 +294,9 @@ type
     property LookupSource;
   end;
   
-function CreateArrowBitmap:TBitmap;
 implementation
 uses VCLUtils, Math;
 
-function CreateArrowBitmap:TBitmap;
-begin
-  Result:=Graphics.TBitmap.Create;
-  Result.LoadFromLazarusResource('rxbtn_downarrow');
-end;
 
 { TCustomDBLookupEdit }
 

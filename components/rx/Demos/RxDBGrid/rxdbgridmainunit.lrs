@@ -2,11 +2,11 @@
 
 LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
   'TPF0'#17'TRxDBGridMainForm'#16'RxDBGridMainForm'#4'Left'#3'a'#1#6'Height'#3
-  +'F'#2#3'Top'#3#161#0#5'Width'#3';'#3#18'HorzScrollBar.Page'#3':'#3#18'VertSc'
+  +'F'#2#3'Top'#3#161#0#5'Width'#3'['#3#18'HorzScrollBar.Page'#3'Z'#3#18'VertSc'
   +'rollBar.Page'#3'E'#2#13'ActiveControl'#7#9'RxDBGrid1'#7'Caption'#6#26'RxDBG'
-  +'rid Demo (ver 2)  ...'#12'ClientHeight'#3'F'#2#11'ClientWidth'#3';'#3#8'OnC'
+  +'rid Demo (ver 2)  ...'#12'ClientHeight'#3'F'#2#11'ClientWidth'#3'['#3#8'OnC'
   +'reate'#7#10'FormCreate'#0#9'TRxDBGrid'#9'RxDBGrid1'#6'Height'#3#20#2#3'Top'
-  +#2'2'#5'Width'#3';'#3#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'#13'T'
+  +#2'2'#5'Width'#3'['#3#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'#13'T'
   +'itle.Caption'#6#4'Code'#9'FieldName'#6#2'ID'#16'Footer.Alignment'#7#14'taRi'
   +'ghtJustify'#20'Footer.DisplayFormat'#6#9'Count: %d'#16'Footer.ValueType'#7#8
   +'fvtCount'#12'Filter.Color'#7#6'clLime'#16'Filter.ItemIndex'#2#255#0#1#15'Ti'
@@ -27,8 +27,8 @@ LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
   +'aysShowSelection'#15'dgConfirmDelete'#14'dgCancelOnExit'#13'dgMultiselect'#0
   +#12'OptionsExtra'#11#14'dgeAutoColumns'#17'dgeCheckboxColumn'#0#11'ParentCol'
   +'or'#8#9'PopupMenu'#7#10'PopupMenu1'#10'Scrollbars'#7#6'ssBoth'#8'TabOrder'#2
-  +#0#7'TabStop'#9#0#0#6'TPanel'#6'Panel1'#6'Height'#2'2'#5'Width'#3';'#3#5'Ali'
-  +'gn'#7#5'alTop'#12'ClientHeight'#2'2'#11'ClientWidth'#3';'#3#8'TabOrder'#2#1
+  +#0#7'TabStop'#9#0#0#6'TPanel'#6'Panel1'#6'Height'#2'2'#5'Width'#3'['#3#5'Ali'
+  +'gn'#7#5'alTop'#12'ClientHeight'#2'2'#11'ClientWidth'#3'['#3#8'TabOrder'#2#1
   +#0#7'TButton'#7'Button1'#4'Left'#2#8#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'
   +#6'Action'#7#12'actCalcTotal'#25'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2
   +#0#0#0#7'TButton'#7'Button2'#4'Left'#2'X'#6'Height'#2#25#3'Top'#2#8#5'Width'
@@ -41,7 +41,7 @@ LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
   +#8'ftString'#9'Precision'#2#255#4'Size'#3#150#0#0#1#4'Name'#6#5'PRICE'#8'Dat'
   +'aType'#7#7'ftFloat'#9'Precision'#2#2#4'Size'#2#12#0#1#4'Name'#6#9'Developer'
   +#8'DataType'#7#8'ftString'#9'Precision'#2#255#4'Size'#3#150#0#0#0#16'OnFilte'
-  +'rRecordEx'#7#27'RxMemoryData1FilterRecordEx'#4'left'#3#144#0#3'top'#3#8#1#0
+  +'rRecordEx'#7#27'RxMemoryData1FilterRecordEx'#4'left'#3#152#0#3'top'#3#8#1#0
   +#13'TLongintField'#16'RxMemoryData1ID1'#9'AlignMent'#7#14'taRightJustify'#12
   +'DisplayWidth'#2#10#9'FieldName'#6#2'ID'#13'ProviderFlags'#11#10'pfInUpdate'
   +#9'pfInWhere'#0#0#0#12'TStringField'#18'RxMemoryData1NAME1'#12'DisplayWidth'

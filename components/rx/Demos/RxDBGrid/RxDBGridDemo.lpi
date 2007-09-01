@@ -46,7 +46,7 @@
         <UnitName Value="RxDBGridDemo"/>
         <CursorPos X="3" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -56,8 +56,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="rxdbgridmainunit.lrs"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <CursorPos X="78" Y="70"/>
-        <TopLine Value="37"/>
+        <CursorPos X="37" Y="33"/>
+        <TopLine Value="33"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
@@ -78,16 +78,18 @@
       <Unit4>
         <Filename Value="..\..\rxmemds.pas"/>
         <UnitName Value="rxmemds"/>
-        <CursorPos X="23" Y="1322"/>
-        <TopLine Value="1318"/>
+        <CursorPos X="1" Y="356"/>
+        <TopLine Value="337"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\rxdbgrid.pas"/>
         <UnitName Value="rxdbgrid"/>
         <CursorPos X="13" Y="626"/>
         <TopLine Value="608"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="12"/>
         <Bookmarks Count="1">
           <Item0 X="3" Y="1444" ID="1"/>
@@ -113,52 +115,40 @@
         <UnitName Value="DBGrids"/>
         <CursorPos X="14" Y="455"/>
         <TopLine Value="437"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit8>
     </Units>
-    <JumpHistory Count="10" HistoryIndex="9">
+    <JumpHistory Count="7" HistoryIndex="6">
       <Position1>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="34" Column="20" TopLine="14"/>
+        <Caret Line="70" Column="78" TopLine="37"/>
       </Position1>
       <Position2>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="62" Column="5" TopLine="19"/>
+        <Caret Line="34" Column="36" TopLine="33"/>
       </Position2>
       <Position3>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="36" Column="49" TopLine="35"/>
+        <Caret Line="52" Column="1" TopLine="40"/>
       </Position3>
       <Position4>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="35" Column="48" TopLine="34"/>
+        <Caret Line="60" Column="1" TopLine="41"/>
       </Position4>
       <Position5>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="39" Column="9" TopLine="37"/>
+        <Caret Line="61" Column="1" TopLine="42"/>
       </Position5>
       <Position6>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="79" Column="10" TopLine="55"/>
+        <Caret Line="60" Column="1" TopLine="42"/>
       </Position6>
       <Position7>
         <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="53" Column="30" TopLine="49"/>
+        <Caret Line="33" Column="37" TopLine="33"/>
       </Position7>
-      <Position8>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="32" Column="37" TopLine="31"/>
-      </Position8>
-      <Position9>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="33" Column="38" TopLine="31"/>
-      </Position9>
-      <Position10>
-        <Filename Value="rxdbgridmainunit.pas"/>
-        <Caret Line="34" Column="38" TopLine="31"/>
-      </Position10>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -182,7 +172,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="3">
+    <BreakPoints Count="2">
       <Item1>
         <Source Value="..\..\rxlookup.pas"/>
         <Line Value="1013"/>
@@ -191,10 +181,6 @@
         <Source Value="..\..\rxpopupunit.pas"/>
         <Line Value="267"/>
       </Item2>
-      <Item3>
-        <Source Value="rxdbgridmainunit.pas"/>
-        <Line Value="51"/>
-      </Item3>
     </BreakPoints>
     <Watches Count="1">
       <Item1>

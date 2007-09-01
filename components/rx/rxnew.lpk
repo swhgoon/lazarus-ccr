@@ -23,7 +23,7 @@ translate to Lazarus by alexs in 2005 - 2007
 "/>
     <License Value="free ware
 "/>
-    <Version Major="1" Minor="1" Release="4" Build="93"/>
+    <Version Major="1" Minor="1" Release="5" Build="98"/>
     <Files Count="38">
       <Item1>
         <Filename Value="rxlookup.pas"/>
@@ -182,17 +182,17 @@ translate to Lazarus by alexs in 2005 - 2007
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="rx"/>
-      </Item1>
-      <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="IDEIntf"/>
-      </Item3>
-      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="rx"/>
       </Item4>
     </RequiredPkgs>
     <UsageOptions>

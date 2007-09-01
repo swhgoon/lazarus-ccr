@@ -24,6 +24,7 @@ type
     RadioGroup1: TRadioGroup;
     procedure BtnFindClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     FGrid:TRxDBGrid;
@@ -53,6 +54,12 @@ end;
 procedure TrxDBGridFindForm.Button2Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TrxDBGridFindForm.FormActivate(Sender: TObject);
+begin
+{  BtnFind.Height:=Canvas.TextHeight('W') + 6;
+  Button2.Height:=BtnFind.Height;}
 end;
 
 procedure TrxDBGridFindForm.FormShow(Sender: TObject);
