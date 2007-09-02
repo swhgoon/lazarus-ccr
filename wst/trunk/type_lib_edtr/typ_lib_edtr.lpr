@@ -9,10 +9,10 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms
   , uwsttypelibraryedit, view_helper, uabout, ufEnumedit,
-  edit_helper, ufclassedit, wsdl_generator, ufpropedit, uinterfaceedit, udm,
+  edit_helper, ufclassedit, ufpropedit, uinterfaceedit, udm,
   pascal_parser_intf, PasTree, PParser, uprocedit, common_gui_utils, uargedit,
   umoduleedit, ubindingedit, ufrmsaveoption, ufarrayedit, generator,
-  uftypealiasedit, ufrecordedit;
+  uftypealiasedit, ufrecordedit, wsdl_generator;
 
 begin
   Application.Initialize;

@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils,
   PasTree,
-  pascal_parser_intf, source_utils;
+  pascal_parser_intf, source_utils, wst_types;
   
 const
   sWST_EXTENSION = 'wst';
@@ -842,25 +842,29 @@ Var
       if AMthd.InheritsFrom(TPasFunction) then begin
         resElt := TPasFunctionType(AMthd.ProcType).ResultEl;
         if SymbolTable.IsInitNeed(resElt.ResultType) then begin
-          if ( SymbolTable.IsOfType(resElt.ResultType,TPasClassType) and
+          WriteLn('Fillchar(%s,SizeOf(%s),#0);',[RETURN_VAL_NAME,resElt.ResultType.Name]);
+          {if ( SymbolTable.IsOfType(resElt.ResultType,TPasClassType) and
                ( TPasClassType(GetUltimeType(resElt.ResultType)).ObjKind = okClass )
              ) or
              SymbolTable.IsOfType(resElt.ResultType,TPasArrayType)
           then begin
             WriteLn('TObject(%s) := nil;',[RETURN_VAL_NAME]);
+          end else if SymbolTable.IsOfType(resElt.ResultType,TPasRecordType) then begin
+            WriteLn('Fillchar(%s,SizeOf(%s),#0);',[RETURN_VAL_NAME,resElt.ResultType.Name]);
           end else begin
             WriteLn('if ( PTypeInfo(TypeInfo(%s))^.Kind in [tkClass,tkInterface] ) then',[resElt.ResultType.Name]);
             IncIndent();
               WriteLn('Pointer(%s) := nil;',[RETURN_VAL_NAME]);
             DecIndent();
-          end;
+          end;}
         end;
       end;
 
       for k := 0 to Pred(prmCnt) do begin
         prm := TPasArgument(prms[k]);
         if SymbolTable.IsInitNeed(prm.ArgType) then begin
-          if SymbolTable.IsOfType(prm.ArgType,TPasClassType) or
+          WriteLn('Fillchar(%s,SizeOf(%s),#0);',[prm.Name,prm.ArgType.Name]);
+          {if SymbolTable.IsOfType(prm.ArgType,TPasClassType) or
              SymbolTable.IsOfType(prm.ArgType,TPasArrayType)
           then begin
             WriteLn('TObject(%s) := nil;',[prm.Name]);
@@ -869,7 +873,7 @@ Var
             IncIndent();
               WriteLn('Pointer(%s) := nil;',[prm.Name]);
             DecIndent();
-          end;
+          end;}
         end;
       end;
 
@@ -2120,7 +2124,6 @@ var
   var
     itm : TPasVariable;
     k, c : PtrInt;
-    offsetLine, typeLine : string;
   begin
     c := ASymbol.Members.Count;
     for k := 0 to Pred(c) do begin
@@ -2285,6 +2288,70 @@ begin
 end;
 
 procedure TInftGenerator.Execute();
+
+  procedure SortRecords(AList : TList);
+  var
+    j, k : PtrInt;
+    ordr_ls, mbrLs, locLs : TList;
+    locMemberType : TPasType;
+    rec, locRec : TPasRecordType;
+    locStack : TStack;
+    locElt : TPasElement;
+  begin
+    if ( AList.Count > 0 ) then begin
+      locStack := nil;
+      locLs := nil;
+      ordr_ls := TList.Create();
+      try
+        locStack := TStack.Create();
+        locLs := TList.Create();
+        for j := 0 to Pred(AList.Count) do begin
+          rec := TPasRecordType(AList[j]);
+          if ( ordr_ls.IndexOf(rec) = -1 ) then begin
+            locStack.Push(rec);
+            while locStack.AtLeast(1) do begin
+              locLs.Clear();
+              locRec := TPasRecordType(locStack.Pop());
+              if ( ordr_ls.IndexOf(locRec) = -1 ) then begin
+                mbrLs := locRec.Members;
+                for k := 0 to Pred(mbrLs.Count) do begin
+                  locMemberType := TPasVariable(mbrLs[k]).VarType;
+                  if locMemberType.InheritsFrom(TPasUnresolvedTypeRef) then begin
+                    locElt := SymbolTable.FindElement(SymbolTable.GetExternalName(locMemberType));
+                    if Assigned(locElt) and locElt.InheritsFrom(TPasType) then begin
+                      locMemberType := locElt as TPasType;
+                    end;
+                  end;
+                  if locMemberType.InheritsFrom(TPasRecordType) then begin
+                    if ( ordr_ls.IndexOf(locMemberType) = -1 ) then
+                      locLs.Add(locMemberType);
+                  end;
+                end; //for
+                if ( locLs.Count > 0 ) then begin
+                  locStack.Push(locRec);
+                  for k := 0 to Pred(locLs.Count) do begin
+                    locStack.Push(locLs[k]);
+                  end;
+                end else begin
+                  ordr_ls.Add(locRec);
+                end;
+              end;
+            end;
+          end;
+        end;
+        Assert(not locStack.AtLeast(1));
+        AList.Clear();
+        for k := 0 to Pred(ordr_ls.Count) do begin
+          AList.Add(ordr_ls[k]);
+        end;
+      finally
+        FreeAndNil(locLs);
+        FreeAndNil(locStack);
+        FreeAndNil(ordr_ls);
+      end;
+    end;
+  end;
+  
 var
   i,c, j, k : PtrInt;
   clssTyp : TPasClassType;
@@ -2293,8 +2360,10 @@ var
   typeList : TList;
   elt : TPasElement;
   classAncestor : TPasElement;
+  tmpList : TList;
 begin
   objLst := nil;
+  tmpList := nil;
   gnrClssLst := TObjectList.Create(False);
   try
     GenerateUnitHeader();
@@ -2334,10 +2403,17 @@ begin
       end;
     end;
 
+    tmpList := TList.Create();
     for i := 0 to c do begin
       elt := TPasElement(typeList[i]);
       if elt.InheritsFrom(TPasRecordType) then begin
-        GenerateRecord(TPasRecordType(elt));
+        tmpList.Add(elt);
+      end;
+    end;
+    if ( tmpList.Count > 0 ) then begin
+      SortRecords(tmpList);
+      for i := 0 to Pred(tmpList.Count) do begin
+        GenerateRecord(TPasRecordType(tmpList[i]));
       end;
     end;
 
@@ -2355,9 +2431,7 @@ begin
       if elt.InheritsFrom(TPasClassType) and ( TPasClassType(elt).ObjKind = okClass ) then begin
         clssTyp := TPasClassType(elt);
         if ( gnrClssLst.IndexOf(clssTyp) = -1 ) then begin
-          while ( objLst.Count > 0 ) do begin
-            objLst.Clear();
-          end;
+          objLst.Clear();
           while Assigned(clssTyp) do begin
             objLst.Add(clssTyp);
             classAncestor := clssTyp.AncestorType;
@@ -2412,6 +2486,7 @@ begin
     FImpStream := nil;
     FImpTempStream := nil;
   finally
+    FreeAndNil(tmpList);
     FreeAndNil(objLst);
     FreeAndNil(gnrClssLst);
   end;

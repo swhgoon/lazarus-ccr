@@ -18,10 +18,6 @@ uses
 
 {$INCLUDE wst.inc}
 
-type
-  TUser = TUser_Type;
-  TUserCategory = TUserCategory_Type;
-  
 var
   UserServiceInst : UserService;
 

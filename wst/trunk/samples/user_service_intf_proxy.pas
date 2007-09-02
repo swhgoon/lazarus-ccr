@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_proxy".
-  Date            : "14/08/2007 21:45:00".
+  Date            : "26/08/2007 01:03:09".
 }
 
 Unit user_service_intf_proxy;
@@ -19,14 +19,14 @@ Type
     class function GetServiceType() : PTypeInfo;override;
     function GetList():TUserArray;
     procedure Add(
-      const  AUser : TUser_Type
+      const  AUser : TUser
     );
     procedure Update(
-      const  AUser : TUser_Type
+      const  AUser : TUser
     );
     function Find(
       const  AName : string
-    ):TUser_Type;
+    ):TUser;
     function Delete(
       const  AName : string
     ):boolean;
@@ -73,7 +73,7 @@ Begin
 End;
 
 procedure TUserService_Proxy.Add(
-  const  AUser : TUser_Type
+  const  AUser : TUser
 );
 Var
   locSerializer : IFormatterClient;
@@ -82,7 +82,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('Add', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('AUser', TypeInfo(TUser_Type), AUser);
+      locSerializer.Put('AUser', TypeInfo(TUser), AUser);
     locSerializer.EndCall();
 
     MakeCall();
@@ -95,7 +95,7 @@ Begin
 End;
 
 procedure TUserService_Proxy.Update(
-  const  AUser : TUser_Type
+  const  AUser : TUser
 );
 Var
   locSerializer : IFormatterClient;
@@ -104,7 +104,7 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('Update', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('AUser', TypeInfo(TUser_Type), AUser);
+      locSerializer.Put('AUser', TypeInfo(TUser), AUser);
     locSerializer.EndCall();
 
     MakeCall();
@@ -118,7 +118,7 @@ End;
 
 function TUserService_Proxy.Find(
   const  AName : string
-):TUser_Type;
+):TUser;
 Var
   locSerializer : IFormatterClient;
   strPrmName : string;
@@ -134,7 +134,7 @@ Begin
     locSerializer.BeginCallRead((Self as ICallContext));
       TObject(Result) := Nil;
       strPrmName := 'result';
-      locSerializer.Get(TypeInfo(TUser_Type), strPrmName, Result);
+      locSerializer.Get(TypeInfo(TUser), strPrmName, Result);
 
   Finally
     locSerializer.Clear();

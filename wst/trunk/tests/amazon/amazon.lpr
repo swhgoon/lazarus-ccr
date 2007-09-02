@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms,
-  umain, AWSECommerceService;
+  umain;
 
 begin
   Application.Initialize;

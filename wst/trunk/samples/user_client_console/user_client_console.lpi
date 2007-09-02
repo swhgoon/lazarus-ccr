@@ -35,7 +35,7 @@
         <Filename Value="user_client_console.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_client_console"/>
-        <CursorPos X="111" Y="8"/>
+        <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="76"/>
@@ -176,7 +176,7 @@
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
         <CursorPos X="1" Y="140"/>
-        <TopLine Value="111"/>
+        <TopLine Value="110"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
@@ -355,7 +355,16 @@
         <UsageCount Value="10"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="user_client_console.pas"/>
+        <Caret Line="8" Column="111" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="user_client_console.pas"/>
+        <Caret Line="13" Column="1" TopLine="1"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

@@ -14,6 +14,7 @@ uses
   function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReleaseDomNode(ADomNode : TDOMNode);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure ReleaseDomNode(ADomNode : TDOMNamedNodeMap);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function CreateDoc() : TXMLDocument ;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function FindNode(ANode : TDOMNode;const ANodeName : string) : TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
@@ -38,27 +39,32 @@ begin
   end;
 end;
 
-function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;
 begin
   Result := ANodeList.Count;
 end;
 
-function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;
 begin
   Result := ANodeList.Length;
 end;
 
-procedure ReleaseDomNode(ADomNode : TDOMNode);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+procedure ReleaseDomNode(ADomNode : TDOMNode);overload;
 begin
   ADomNode.Free();
 end;
 
-procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;
 begin
   ADomNode.Release();
 end;
 
-function CreateDoc() : TXMLDocument ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+procedure ReleaseDomNode(ADomNode : TDOMNamedNodeMap);overload;
+begin
+  ADomNode.Free();
+end;
+
+function CreateDoc() : TXMLDocument ;
 begin
   Result := TXMLDocument.Create();
   Result.Encoding := 'UTF-8';

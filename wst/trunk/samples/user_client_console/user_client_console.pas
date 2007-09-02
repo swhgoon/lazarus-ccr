@@ -9,10 +9,6 @@ uses
   soap_formatter, binary_formatter,
   user_service_intf, xmlrpc_formatter;
 
-type
-  TUser = TUser_Type;
-  TUserCategory = TUserCategory_Type;
-  
 var
   UserServiceInst : UserService;
 

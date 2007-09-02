@@ -1,6 +1,5 @@
+{$INCLUDE wst_global.inc}
 unit wst_resources_utils;
-
-{$mode objfpc}{$H+}
 
 interface
 

@@ -14,8 +14,6 @@ Uses SysUtils, Classes,
 
 Type
 
-  TUser = TUser_Type;
-
   { TUserService_ServiceImp }
 
   TUserService_ServiceImp=class(TActivableServiceImplementation,UserService)

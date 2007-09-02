@@ -16,10 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 }
-
+{$INCLUDE wst_global.inc}
 unit command_line_parser;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -29,7 +27,7 @@ uses
 Type
 
   TComandLineOption = (
-    cloInterface, cloProxy, cloImp, cloBinder,
+    cloInterface, cloProxy, cloImp, cloBinder, cloWsdl,
     cloOutPutDirRelative, cloOutPutDirAbsolute
   );
   TComandLineOptions = set of TComandLineOption;
@@ -55,7 +53,7 @@ begin
   AAppOptions := [];
   c := #0;
   repeat
-    c := GetOpt('u:pibo:a:');
+    c := GetOpt('u:pibo:a:w');
     case c of
       'u' :
         begin
@@ -75,6 +73,7 @@ begin
           Include(AAppOptions,cloOutPutDirAbsolute);
           OptionsArgsMAP[cloOutPutDirAbsolute] := OptArg;
         End;
+      'w' : Include(AAppOptions,cloWsdl);
     end;
   until ( c = EndOfOptions );
   Result := OptInd;

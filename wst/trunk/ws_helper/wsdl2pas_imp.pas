@@ -10,14 +10,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit wsdl2pas_imp;
-
-{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, DOM,
+  Classes, SysUtils,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   cursor_intf, rtti_filters,
   pastree, pascal_parser_intf, logger_intf;
 
@@ -432,8 +432,7 @@ begin
   FWsdlShortNames.Clear();
   locAttCursor := CreateAttributesCursor(FDoc.DocumentElement,cetRttiNode);
 
-  FChildCursor := TDOMNodeListCursor.Create(FDoc.DocumentElement.GetChildNodes,faFreeOnDestroy) ;
-  FChildCursor := TDOMNodeRttiExposerCursor.Create(FChildCursor);
+  FChildCursor := CreateChildrenCursor(FDoc.DocumentElement,cetRttiNode);
 
   ExtractNameSpaceShortNames(locAttCursor,FWsdlShortNames,s_wsdl,nfaRaiseException,True);
   ExtractNameSpaceShortNames(locAttCursor,FSoapShortNames,s_soap,nfaRaiseException,False);
@@ -1899,7 +1898,7 @@ var
       end;
     end else begin
       locTypeInternalName := locTypeName;
-      if locIsRefElement or AnsiSameText(locInternalEltName,locInternalEltName) then begin
+      if locIsRefElement or AnsiSameText(locTypeInternalName,locInternalEltName) then begin
         locTypeInternalName := locTypeInternalName + '_Type';
       end;
       if IsReservedKeyWord(locTypeInternalName) then begin

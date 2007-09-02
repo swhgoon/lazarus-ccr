@@ -16,13 +16,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 }
-
-
 program ws_helper;
 
-{$mode objfpc}{$H+}
+{$APPTYPE CONSOLE}
 
 uses
+  delphi_init_com,
   Classes,
   SysUtils,
   wst_resources_utils,
@@ -33,14 +32,15 @@ uses
   command_line_parser,
   metadata_generator,
   binary_streamer,
-  DOM,
-  XMLWrite,
-  XMLRead,
-  wst_fpc_xml,
+  XMLDoc,
+  XMLIntf,
+  wst_delphi_xml,
   wsdl2pas_imp,
   pastree,
   pparser,
   pascal_parser_intf,
   logger_intf;
-  
+
 {$INCLUDE ws_helper_prog.inc}
+
+

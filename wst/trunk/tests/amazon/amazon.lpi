@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -38,7 +38,9 @@
         <UnitName Value="amazon"/>
         <CursorPos X="1" Y="17"/>
         <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="107"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="umain.pas"/>
@@ -54,7 +56,6 @@
       </Unit1>
       <Unit2>
         <Filename Value="..\files\free\AWSECommerceService.pas"/>
-        <IsPartOfProject Value="True"/>
         <UnitName Value="AWSECommerceService"/>
         <CursorPos X="3" Y="19328"/>
         <TopLine Value="19324"/>
@@ -67,7 +68,7 @@
       <Unit3>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="27" Y="13"/>
         <TopLine Value="1"/>
         <EditorIndex Value="5"/>
         <UsageCount Value="48"/>
@@ -217,87 +218,12 @@
       <Unit23>
         <Filename Value="..\files\AWSECommerceService.pas"/>
         <UnitName Value="AWSECommerceService"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="186"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="13" Y="2"/>
+        <TopLine Value="1"/>
         <UsageCount Value="13"/>
-        <Loaded Value="True"/>
       </Unit23>
     </Units>
-    <JumpHistory Count="18" HistoryIndex="17">
-      <Position1>
-        <Filename Value="umain.pas"/>
-        <Caret Line="60" Column="34" TopLine="50"/>
-      </Position1>
-      <Position2>
-        <Filename Value="umain.pas"/>
-        <Caret Line="9" Column="3" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="2760" Column="44" TopLine="2748"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="2760" Column="44" TopLine="2748"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="2777" Column="52" TopLine="2755"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="11628" Column="43" TopLine="11606"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="201" Column="18" TopLine="179"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="2760" Column="39" TopLine="2738"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\files\AWSECommerceService.pas"/>
-        <Caret Line="1" Column="1" TopLine="186"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\imp_utils.pas"/>
-        <Caret Line="87" Column="25" TopLine="64"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\..\service_intf.pas"/>
-        <Caret Line="576" Column="1" TopLine="551"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\..\imp_utils.pas"/>
-        <Caret Line="88" Column="56" TopLine="64"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\imp_utils.pas"/>
-        <Caret Line="86" Column="1" TopLine="74"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\..\service_intf.pas"/>
-        <Caret Line="253" Column="1" TopLine="238"/>
-      </Position17>
-      <Position18>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1699" Column="1" TopLine="1686"/>
-      </Position18>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

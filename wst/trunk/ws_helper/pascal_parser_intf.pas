@@ -10,9 +10,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
+{$INCLUDE wst_global.inc}
 unit pascal_parser_intf;
-
-{$mode objfpc}{$H+}
 
 interface
 
@@ -284,6 +283,8 @@ begin
         loc_TBaseComplexSimpleContentRemotable := AddClassDef(Result,'TBaseComplexSimpleContentRemotable','TAbstractComplexRemotable',TPasNativeClassType);
           (AContainer.FindElementInModule('TComplexInt16SContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
           (AContainer.FindElementInModule('TComplexFloatDoubleContentRemotable',Result) as TPasClassType).AncestorType := loc_TBaseComplexSimpleContentRemotable;
+            loc_TBaseComplexSimpleContentRemotable.AddRef();
+            loc_TBaseComplexSimpleContentRemotable.AddRef();
 
         AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable',TPasNativeClassType);
           AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable',TPasNativeClassType);
@@ -631,7 +632,8 @@ function TwstPasTreeContainer.IsInitNeed(AType : TPasType) : Boolean;
 begin
   Result := IsOfType(AType,TPasClassType) or
             IsOfType(AType,TPasPointerType) or
-            IsOfType(AType,TPasArrayType);
+            IsOfType(AType,TPasArrayType) or
+            IsOfType(AType,TPasRecordType);
 end;
 
 procedure TwstPasTreeContainer.SetCurrentModule(AModule: TPasModule);

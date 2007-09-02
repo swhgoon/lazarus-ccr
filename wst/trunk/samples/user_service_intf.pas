@@ -2,10 +2,15 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "14/08/2007 21:45:00".
+  Date            : "26/08/2007 01:03:09".
 }
 unit user_service_intf;
-{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
+{$IFDEF FPC}
+  {$mode objfpc} {$H+}
+{$ENDIF}
+{$IFNDEF FPC}
+  {$DEFINE WST_RECORD_RTTI}
+{$ENDIF}
 interface
 
 uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;
@@ -17,33 +22,33 @@ const
 type
 
   TUserArray = class;
-  TUser_Type = class;
-  TNote_Type = class;
+  TUser = class;
+  TNote = class;
 
-  TUserCategory_Type = ( 
+  TUserCategory = ( 
     Normal
     ,Admin
   );
 
-  TUser_Type = class(TBaseComplexRemotable)
+  TUser = class(TBaseComplexRemotable)
   private
-    FCategory : TUserCategory_Type;
+    FCategory : TUserCategory;
     FUserName : string;
     FeMail : string;
     FPreferences : string;
-    FNote : TNote_Type;
+    FNote : TNote;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Category : TUserCategory_Type read FCategory write FCategory;
+    property Category : TUserCategory read FCategory write FCategory;
     property UserName : string read FUserName write FUserName;
     property eMail : string read FeMail write FeMail;
     property Preferences : string read FPreferences write FPreferences;
-    property Note : TNote_Type read FNote write FNote;
+    property Note : TNote read FNote write FNote;
   end;
 
-  TNote_Type = class(TBaseComplexRemotable)
+  TNote = class(TBaseComplexRemotable)
   private
     FHeader : string;
     FAuthor : string;
@@ -56,24 +61,24 @@ type
 
   TUserArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): TUser_Type;
+    function GetItem(AIndex: Integer): TUser;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TUser_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : TUser Read GetItem;Default;
   end;
 
   UserService = interface(IInvokable)
     ['{F49D8FA4-9BBC-4321-9869-5BA745070ABC}']
     function GetList():TUserArray;
     procedure Add(
-      const  AUser : TUser_Type
+      const  AUser : TUser
     );
     procedure Update(
-      const  AUser : TUser_Type
+      const  AUser : TUser
     );
     function Find(
       const  AName : string
-    ):TUser_Type;
+    ):TUser;
     function Delete(
       const  AName : string
     ):boolean;
@@ -82,17 +87,17 @@ type
   procedure Register_user_service_intf_ServiceMetadata();
 
 Implementation
-uses metadata_repository;
+uses metadata_repository, record_rtti, wst_types;
 
-{ TUser_Type }
+{ TUser }
 
-constructor TUser_Type.Create();
+constructor TUser.Create();
 begin
   inherited Create();
-  FNote := TNote_Type.Create();
+  FNote := TNote.Create();
 end;
 
-destructor TUser_Type.Destroy();
+destructor TUser.Destroy();
 begin
   if Assigned(FNote) then
     FreeAndNil(FNote);
@@ -101,14 +106,14 @@ end;
 
 { TUserArray }
 
-function TUserArray.GetItem(AIndex: Integer): TUser_Type;
+function TUserArray.GetItem(AIndex: Integer): TUser;
 begin
-  Result := Inherited GetItem(AIndex) As TUser_Type;
+  Result := Inherited GetItem(AIndex) As TUser;
 end;
 
 class function TUserArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= TUser_Type;
+  Result:= TUser;
 end;
 
 
@@ -274,11 +279,12 @@ end;
 
 
 initialization
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory_Type),'TUserCategory');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser_Type),'TUser');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TNote_Type),'TNote');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
+  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TNote),'TNote');
   GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
+
 
 
 End.

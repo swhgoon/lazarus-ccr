@@ -12,7 +12,8 @@ type
   TDOMNode = IDOMNode;
   TDOMNodeList = IDOMNodeList;
   TDOMNamedNodeMap  = IDOMNamedNodeMap;
-  TXMLDocument = IDOMDocument;
+  TDOMDocument = IDOMDocument;
+  TXMLDocument = TDOMDocument;
   TDOMElement = IDOMElement;
 
   function FindNode(ANode : TDOMNode; const ANodeName : string):TDOMNode;
@@ -23,8 +24,12 @@ type
   procedure ReleaseDomNode(var ADomNode : TXMLDocument);overload;
 
   function CreateDoc() : TXMLDocument ;
-  procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);
-  procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);
+  procedure WriteXML(Element: TDOMNode; const AFileName: String);overload;
+  procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
+  procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
+  procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);overload;
+  procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);overload;
+  procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);overload;
   function NodeToBuffer(ANode : TDOMNode):string ;
 
   function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
@@ -50,15 +55,50 @@ begin
   end;
 end;
 
+procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String);
+var
+  fs: TFileStream;
+begin
+  fs := TFileStream.Create(AFileName, fmCreate);
+  try
+    WriteXMLFile(doc, fs);
+  finally
+    fs.Free;
+  end;
+end;
+
 procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);
 begin
   (ADoc as IDOMPersist).saveToStream(AStream);
+end;
+
+procedure WriteXML(Element: TDOMNode; const AFileName: String);
+begin
+  WriteXMLFile(TXMLDocument(Element), AFileName);
+end;
+
+procedure WriteXML(Element: TDOMNode; AStream: TStream);
+begin
+  WriteXMLFile(TXMLDocument(Element), AStream);
 end;
 
 procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);
 begin
   ADoc := CreateDoc();
   (ADoc as IDOMPersist).loadFromStream(AStream);
+end;
+
+procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
+var
+  FileStream: TStream;
+begin
+  ADoc := nil;
+  FileStream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  try
+    ReadXMLFile(ADoc, FileStream);
+  finally
+    FileStream.Free;
+  end;
 end;
 
 function GetNodeItemsCount(const ANode : TDOMNode): Integer;

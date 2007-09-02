@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "record_sample".
   This unit name  : "record_sample_proxy".
-  Date            : "17/08/2007 19:37:26".
+  Date            : "26/08/2007 01:12:11".
 }
 
 Unit record_sample_proxy;
@@ -18,13 +18,8 @@ Type
   Protected
     class function GetServiceType() : PTypeInfo;override;
     function Add(
-      const  AValue : RecordA
-    ):RecordB;
-    function AddRec(
-      const  AA : RecordA; 
-      const  AB : RecordB; 
-      const  AC : RecordC
-    ):RecordC;
+      const  AValue : TRecordClass
+    ):Int64;
   End;
 
   Function wst_CreateInstance_RecordService(const AFormat : string = 'SOAP:'; const ATransport : string = 'HTTP:'):RecordService;
@@ -46,8 +41,8 @@ begin
 end;
 
 function TRecordService_Proxy.Add(
-  const  AValue : RecordA
-):RecordB;
+  const  AValue : TRecordClass
+):Int64;
 Var
   locSerializer : IFormatterClient;
   strPrmName : string;
@@ -55,42 +50,14 @@ Begin
   locSerializer := GetSerializer();
   Try
     locSerializer.BeginCall('Add', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('AValue', TypeInfo(RecordA), AValue);
+      locSerializer.Put('AValue', TypeInfo(TRecordClass), AValue);
     locSerializer.EndCall();
 
     MakeCall();
 
     locSerializer.BeginCallRead((Self as ICallContext));
-      strPrmName := 'Result';
-      locSerializer.Get(TypeInfo(RecordB), strPrmName, Result);
-
-  Finally
-    locSerializer.Clear();
-  End;
-End;
-
-function TRecordService_Proxy.AddRec(
-  const  AA : RecordA; 
-  const  AB : RecordB; 
-  const  AC : RecordC
-):RecordC;
-Var
-  locSerializer : IFormatterClient;
-  strPrmName : string;
-Begin
-  locSerializer := GetSerializer();
-  Try
-    locSerializer.BeginCall('AddRec', GetTarget(),(Self as ICallContext));
-      locSerializer.Put('AA', TypeInfo(RecordA), AA);
-      locSerializer.Put('AB', TypeInfo(RecordB), AB);
-      locSerializer.Put('AC', TypeInfo(RecordC), AC);
-    locSerializer.EndCall();
-
-    MakeCall();
-
-    locSerializer.BeginCallRead((Self as ICallContext));
-      strPrmName := 'Result';
-      locSerializer.Get(TypeInfo(RecordC), strPrmName, Result);
+      strPrmName := 'result';
+      locSerializer.Get(TypeInfo(Int64), strPrmName, Result);
 
   Finally
     locSerializer.Clear();

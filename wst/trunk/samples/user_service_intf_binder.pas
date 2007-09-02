@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_binder".
-  Date            : "16/07/2007 19:01:46".
+  Date            : "26/08/2007 01:03:09".
 }
 unit user_service_intf_binder;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -52,7 +52,7 @@ var
   returnVal : TUserArray;
 begin
   callCtx := AContext;
-  TObject(returnVal) := nil;
+  Fillchar(returnVal,SizeOf(TUserArray),#0);
   
   
   tmpObj := Self.GetFactory().CreateInstance() as UserService;
@@ -90,12 +90,12 @@ var
   callCtx : ICallContext;
   strPrmName : string;
   procName,trgName : string;
-  AUser : TUser_Type;
+  AUser : TUser;
 begin
   callCtx := AContext;
-  TObject(AUser) := nil;
+  Fillchar(AUser,SizeOf(TUser),#0);
   
-  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser_Type),strPrmName,AUser);
+  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),strPrmName,AUser);
   if Assigned(Pointer(AUser)) then
     callCtx.AddObjectToFree(TObject(AUser));
   
@@ -131,12 +131,12 @@ var
   callCtx : ICallContext;
   strPrmName : string;
   procName,trgName : string;
-  AUser : TUser_Type;
+  AUser : TUser;
 begin
   callCtx := AContext;
-  TObject(AUser) := nil;
+  Fillchar(AUser,SizeOf(TUser),#0);
   
-  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser_Type),strPrmName,AUser);
+  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),strPrmName,AUser);
   if Assigned(Pointer(AUser)) then
     callCtx.AddObjectToFree(TObject(AUser));
   
@@ -173,10 +173,10 @@ var
   strPrmName : string;
   procName,trgName : string;
   AName : string;
-  returnVal : TUser_Type;
+  returnVal : TUser;
 begin
   callCtx := AContext;
-  TObject(returnVal) := nil;
+  Fillchar(returnVal,SizeOf(TUser),#0);
   
   strPrmName := 'AName';  AFormatter.Get(TypeInfo(string),strPrmName,AName);
   
@@ -195,7 +195,7 @@ begin
     trgName := AFormatter.GetCallTarget();
     AFormatter.Clear();
     AFormatter.BeginCallResponse(procName,trgName);
-      AFormatter.Put('result',TypeInfo(TUser_Type),returnVal);
+      AFormatter.Put('result',TypeInfo(TUser),returnVal);
     AFormatter.EndCallResponse();
     
     callCtx := nil;

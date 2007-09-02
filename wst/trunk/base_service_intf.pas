@@ -4691,7 +4691,6 @@ begin
           end;
           if ( ss <> AStore.GetSerializationStyle() ) then
             AStore.SetSerializationStyle(ss);
-          AStore.SetSerializationStyle(ss);
           prpName := typRegItem.GetExternalPropertyName(p^.Name);
           recFieldAddress := recStart;
           Inc(recFieldAddress,p^.Offset);
@@ -4795,7 +4794,6 @@ begin
             end;
             if ( ss <> AStore.GetSerializationStyle() ) then
               AStore.SetSerializationStyle(ss);
-            AStore.SetSerializationStyle(ss);
             recFieldAddress := recStart;
             Inc(recFieldAddress,p^.Offset);
             //try

@@ -22,6 +22,10 @@ uses
 {$INCLUDE wst_delphi.inc}
 
 type
+  IInterfaceCursor = interface;
+  IObjectCursor  = interface;
+  IDefaultTypedCursor = {$IFDEF WST_INTF_DOM}IInterfaceCursor{$ELSE}IObjectCursor{$ENDIF};
+  IDefaultItemType = {$IFDEF WST_INTF_DOM}IInterface{$ELSE}TObject{$ENDIF};
 
   ECursorException = class(Exception)
   end;
@@ -41,6 +45,11 @@ type
   IObjectCursor = interface(ICursor)
     ['{13E9C22D-0508-4D7A-A969-96E2291B4FE8}']
     function GetCurrent() : TObject;
+  end;
+
+  IInterfaceCursor = interface(ICursor)
+    ['{82FCF6F3-8008-4CCA-99DA-88945B250B92}']
+    function GetCurrent() : IInterface;
   end;
 
   IFilterableObjectCursor = interface(IObjectCursor)

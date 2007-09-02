@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
-  DOM,
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   pastree, pascal_parser_intf;
   
 type
@@ -129,9 +129,11 @@ type
   procedure GenerateWSDL(ASymbolTable : TwstPasTreeContainer; ADoc : TDOMDocument);
 
   function GetWsdlTypeHandlerRegistry():IWsdlTypeHandlerRegistry;
-  
+
 implementation
-uses Contnrs;
+uses
+  {$IFDEF FPC}wst_fpc_xml,{$ENDIF}
+  Contnrs ;
 
 const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
@@ -149,7 +151,7 @@ const
   sSOAP_RPC         = 'rpc';
   sSOAP_TRANSPORT   = 'http://schemas.xmlsoap.org/soap/http';
   sSOAP_USE         = 'use';
-  
+
   sADDRESS            = 'address';
   sATTRIBUTE          = 'attribute';
   sBASE               = 'base';
@@ -341,7 +343,7 @@ begin
   if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
     Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
   end else begin
-    Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+    Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
     AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
   end;
 end;
@@ -688,7 +690,7 @@ begin
   typItm := ASymbol as TPasClassType;
   if Assigned(typItm) then begin
     GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
     
@@ -811,10 +813,10 @@ begin
     if FindAttributeByValueInNode(unitExternalName,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      ns_shortName := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+      ns_shortName := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,ns_shortName]),unitExternalName);
     end;
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
@@ -867,7 +869,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
     if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
       Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      Result := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+      Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
     end;
   end;
@@ -886,7 +888,7 @@ begin
   if Assigned(typItm) then begin
     unitExternalName := GetTypeNameSpace(AContainer,typItm);
     GetNameSpaceShortName(unitExternalName);
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
@@ -961,10 +963,10 @@ begin
     if FindAttributeByValueInNode(unitExternalName,AWsdlDocument.DocumentElement,ns_shortName) then begin
       ns_shortName := Copy(ns_shortName,Length(sXMLNS+':')+1,MaxInt);
     end else begin
-      ns_shortName := Format('ns%d',[AWsdlDocument.DocumentElement.Attributes.{$IFNDEF FPC_211}Count{$ELSE}Length{$ENDIF}]) ;
+      ns_shortName := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
       AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,ns_shortName]),unitExternalName);
     end;
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
@@ -1015,7 +1017,7 @@ begin
   typItm := ASymbol as TPasRecordType;
   if Assigned(typItm) then begin
     GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
-    defTypesNode := AWsdlDocument.DocumentElement.FindNode(sWSDL_TYPES) as TDOMElement;
+    defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
 
