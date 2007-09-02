@@ -193,9 +193,6 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
 {$MinEnumSize 1, make enumerations as small as possible}
 
 type
-  // later: remove, only now a dummy
-  TBidiMode = Byte;
-
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
 
@@ -615,7 +612,7 @@ type
     DefaultHint: WideString; // used only if there is no node specific hint string available
                              // or a header hint is about to appear
     HintText: WideString;    // set when size of the hint window is calculated
-//b    BidiMode: TBidiMode;
+    BidiMode: TBidiMode;
     Alignment: TAlignment;
   end;
 
@@ -741,7 +738,7 @@ type
     FMaxWidth: Integer;
     FStyle: TVirtualTreeColumnStyle;
     FImageIndex: TImageIndex;
-//b    FBiDiMode: TBiDiMode;
+    FBiDiMode: TBiDiMode;
     FLayout: TVTHeaderColumnLayout;
     FMargin,
     FSpacing: Integer;
@@ -755,7 +752,7 @@ type
     function IsBiDiModeStored: Boolean;
     function IsColorStored: Boolean;
     procedure SetAlignment(const Value: TAlignment);
-//b    procedure SetBiDiMode(Value: TBiDiMode);
+    procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetColor(const Value: TColor);
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetLayout(Value: TVTHeaderColumnLayout);
@@ -798,7 +795,7 @@ type
     property Owner: TVirtualTreeColumns read GetOwner;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-//b    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
+    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
     property Color: TColor read FColor write SetColor stored IsColorStored default clWindow;
     property Hint: WideString read FHint write FHint stored False;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
@@ -1320,7 +1317,7 @@ type
     ContentRect: TRect;        // the area of the cell used for the node's content
     NodeWidth: Integer;        // the actual node width
     Alignment: TAlignment;     // how to align within the node rectangle
-//b    BidiMode: TBidiMode;       // directionality to be used for painting
+    BidiMode: TBidiMode;       // directionality to be used for painting
     BrushOrigin: TPoint;       // the alignment for the brush used to draw dotted lines
     ImageInfo: array[TVTImageInfoIndex] of TVTImageInfo; // info about each possible node image
   end;
@@ -3166,7 +3163,11 @@ procedure DrawTextW(Canvas: TCanvas; lpString: PWideChar; var lpRect: TRect; uFo
 var Style:TTextStyle;
 begin
   {$ifndef WINCE}
+<<<<<<< .mine
+   {$ifdef UNIX}
+=======
   {$ifdef LCLgtk}
+>>>>>>> .r252
   Style.Layout:=tlCenter;
   Canvas.TextRect(lpRect,lpRect.Left,lpRect.Top,lpString,Style); // theo 24.2.2007 Gibt sonst Striche auf GTK1
    {$else}
@@ -3795,7 +3796,7 @@ begin
         Stream.Position:=0;
         AnotherImage.LoadFromStream(Stream);
         Stream.Size:=0;
-        IL.AddDirect(AnotherImage, nil);
+        IL.Add(AnotherImage, nil);
       end;
       }
     finally
@@ -3846,8 +3847,7 @@ var
         FlatImages.Draw(BM.Canvas, OffsetX, OffsetY, I)
       else
         DarkCheckImages.Draw(BM.Canvas, OffsetX, OffsetY, I);
-      //IL.AddMasked(BM, MaskColor);
-      IL.AddCopy(BM,nil);
+      IL.AddMasked(BM, MaskColor);
     end;
   end;
 
@@ -3885,8 +3885,7 @@ var
       ButtonState := ButtonState or DFCS_FLAT;
     //todo: remap to LCLIntf
 //    DrawFrameControl(BM.Canvas.Handle, Rect(1, 2, BM.Width - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
-    IL.AddCopy(BM,nil);
-    //IL.AddMasked(BM, MaskColor);
+    IL.AddMasked(BM, MaskColor);
   end;
 
   //--------------- end local functions ---------------------------------------
@@ -3896,7 +3895,7 @@ var
 
 begin
 
-  {$IFDEF LINUX}     //theo 24.2.2007
+  {$IFDEF UNIX}     //theo 24.2.2007
   Width:=16;
   Height:=16;        {$message warn'nur um die exception zu verhindern. Werte nicht getestet'}
   {$ELSE}
@@ -3919,8 +3918,7 @@ begin
     BM.Canvas.Brush.Color := MaskColor;
     BM.Canvas.Brush.Style := bsSolid;
     BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-    //IL.AddMasked(BM, MaskColor);
-    IL.AddCopy(BM,nil);
+    IL.AddMasked(BM, MaskColor);
 
     // Add the 20 system checkbox and radiobutton images.
     for I := 0 to 19 do
@@ -4972,12 +4970,12 @@ begin
           // Determine text position and don't forget the border.
           InflateRect(R, -Tree.FTextMargin - 1, -1);
           DrawFormat := DT_TOP or DT_NOPREFIX;
-//b          if BidiMode <> bdLeftToRight then
-//b          begin
-//b            DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING;
-//b            Inc(R.Right);
-//b          end
-//b          else
+          if BidiMode <> bdLeftToRight then
+          begin
+            DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING;
+            Inc(R.Right);
+          end
+          else
             DrawFormat := DrawFormat or DT_LEFT;
           SetBkMode(Handle, LCLType.TRANSPARENT);
           R.Top := Y;
@@ -5207,7 +5205,7 @@ begin
     // The text alignment is based on the bidi mode passed in the hint data, hence we can
     // simply set the window's mode to left-to-right (it might have been modified by the caller, if the
     // tree window is right-to-left aligned).
-//b    BidiMode := bdLeftToRight;
+    BidiMode := bdLeftToRight;
 
     FHintData := PVTHintData(AData)^;
 
@@ -5221,17 +5219,17 @@ begin
       begin
         if Column <= NoColumn then
         begin
-//b          BidiMode := Tree.BidiMode;
+          BidiMode := Tree.BidiMode;
           Alignment := Tree.Alignment;
         end
         else
         begin
-//b          BidiMode := Tree.Header.Columns[Column].BidiMode;
+          BidiMode := Tree.Header.Columns[Column].BidiMode;
           Alignment := Tree.Header.Columns[Column].Alignment;
         end;
 
-//b        if BidiMode <> bdLeftToRight then
-//b          ChangeBidiModeAlignment(Alignment);
+//        if BidiMode <> bdLeftToRight then
+//          ChangeBidiModeAlignment(Alignment);
 
         if (Node = nil) or (Tree.FHintMode <> hmToolTip) then
         begin
@@ -5899,7 +5897,7 @@ begin
   FText := '';
   FOptions := DefaultColumnOptions;
   FAlignment := taLeftJustify;
-//b  FBidiMode := bdLeftToRight;
+  FBidiMode := bdLeftToRight;
   FColor := clWindow;
   FLayout := blGlyphLeft;
 
@@ -6011,8 +6009,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-{bprocedure TVirtualTreeColumn.SetBiDiMode(Value: TBiDiMode);
-
+procedure TVirtualTreeColumn.SetBiDiMode(Value: TBiDiMode);
 begin
   if Value <> FBiDiMode then
   begin
@@ -6022,7 +6019,7 @@ begin
     // Setting the alignment affects also the tree, hence invalidate it too.
     Owner.Header.TreeView.Invalidate;
   end;
-end;}
+end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -6340,12 +6337,12 @@ begin
       taLeftJustify:
         begin
           MinLeft := FMargin;
-//b          if UseSortGlyph and (FBidiMode <> bdLeftToRight) then
-//b          begin
-//b            // In RTL context is the sort glyph placed on the left hand side.
-//b            SortGlyphPos.X := MinLeft;
-//b            Inc(MinLeft, SortGlyphSize.X + FSpacing);
-//b          end;
+          if UseSortGlyph and (FBidiMode <> bdLeftToRight) then
+          begin
+            // In RTL context is the sort glyph placed on the left hand side.
+            SortGlyphPos.X := MinLeft;
+            Inc(MinLeft, SortGlyphSize.X + FSpacing);
+          end;
           if Layout in [blGlyphTop, blGlyphBottom] then
           begin
             // Header glyph is above or below text, so both must be considered when calculating
@@ -6378,8 +6375,8 @@ begin
               Inc(MinLeft, HeaderGlyphSize.X + FSpacing);
             end;
           end;
-//b          if UseSortGlyph and (FBidiMode = bdLeftToRight) then
-//b            SortGlyphPos.X := MinLeft;
+          if UseSortGlyph and (FBidiMode = bdLeftToRight) then
+            SortGlyphPos.X := MinLeft;
         end;
       taCenter:
         begin
@@ -6415,27 +6412,27 @@ begin
           end;
           // Place the sort glyph directly to the left or right of the larger item.
           if UseSortGlyph then
-//b            if FBidiMode = bdLeftToRight then
-//b            begin
-//b              // Sort glyph on the right hand side.
-//b              SortGlyphPos.X := MaxRight + FSpacing;
-//b            end
-//b            else
-//b            begin
+            if FBidiMode = bdLeftToRight then
+            begin
+              // Sort glyph on the right hand side.
+              SortGlyphPos.X := MaxRight + FSpacing;
+            end
+            else
+            begin
               // Sort glyph on the left hand side.
               SortGlyphPos.X := MinLeft - FSpacing - SortGlyphSize.X;
-//b            end;
+            end;
         end;
     else
       // taRightJustify
       MaxRight := ClientSize.X - FMargin;
-//b      if UseSortGlyph and (FBidiMode = bdLeftToRight) then
-//b      begin
-//b        // In LTR context is the sort glyph placed on the right hand side.
-//b        Dec(MaxRight, SortGlyphSize.X);
-//b        SortGlyphPos.X := MaxRight;
-//b        Dec(MaxRight, FSpacing);
-//b      end;
+      if UseSortGlyph and (FBidiMode = bdLeftToRight) then
+      begin
+        // In LTR context is the sort glyph placed on the right hand side.
+        Dec(MaxRight, SortGlyphSize.X);
+        SortGlyphPos.X := MaxRight;
+        Dec(MaxRight, FSpacing);
+      end;
       if Layout in [blGlyphTop, blGlyphBottom] then
       begin
         TextPos.X := MaxRight - TextSize.cx;
@@ -6466,8 +6463,8 @@ begin
           MaxRight := HeaderGlyphPos.X - FSpacing;
         end;
       end;
-//b      if UseSortGlyph and (FBidiMode <> bdLeftToRight) then
-//b        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
+      if UseSortGlyph and (FBidiMode <> bdLeftToRight) then
+        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
     end;
   end;
 
@@ -6480,20 +6477,20 @@ begin
   MaxRight := ClientSize.X - FMargin;
   if UseSortGlyph then
   begin
-//b    if FBidiMode = bdLeftToRight then
-//b    begin
-//b      // Sort glyph on the right hand side.
-//b      if SortGlyphPos.X + SortGlyphSize.X > MaxRight then
-//b        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
-//b      MaxRight := SortGlyphPos.X - FSpacing;
-//b    end;
+    if FBidiMode = bdLeftToRight then
+    begin
+      // Sort glyph on the right hand side.
+      if SortGlyphPos.X + SortGlyphSize.X > MaxRight then
+        SortGlyphPos.X := MaxRight - SortGlyphSize.X;
+      MaxRight := SortGlyphPos.X - FSpacing;
+    end;
 
     // Consider also the left side of the sort glyph regardless of the bidi mode.
     if SortGlyphPos.X < MinLeft then
       SortGlyphPos.X := MinLeft;
     // Left border needs only adjustment if the sort glyph marks the left border.
-//b    if FBidiMode <> bdLeftToRight then
-//b      MinLeft := SortGlyphPos.X + SortGlyphSize.X + FSpacing;
+    if FBidiMode <> bdLeftToRight then
+      MinLeft := SortGlyphPos.X + SortGlyphSize.X + FSpacing;
 
     // Finally transform sort glyph to its actual position.
     with SortGlyphPos do
@@ -6658,7 +6655,7 @@ begin
     OldOptions := FOptions;
     FOptions := [];
 
-//b    BiDiMode := TVirtualTreeColumn(Source).BiDiMode;
+    BiDiMode := TVirtualTreeColumn(Source).BiDiMode;
     ImageIndex := TVirtualTreeColumn(Source).ImageIndex;
     Layout := TVirtualTreeColumn(Source).Layout;
     Margin := TVirtualTreeColumn(Source).Margin;
@@ -6689,7 +6686,7 @@ end;
 function TVirtualTreeColumn.Equals(OtherColumn: TVirtualTreeColumn): Boolean;
 
 begin
-  Result := {b(BiDiMode = OtherColumn.BiDiMode) and}
+  Result := (BiDiMode = OtherColumn.BiDiMode) and
     (ImageIndex = OtherColumn.ImageIndex) and
     (Layout = OtherColumn.Layout) and
     (Margin = OtherColumn.Margin) and
@@ -6780,7 +6777,7 @@ begin
     ReadBuffer(Dummy, SizeOf(Dummy));
     Spacing := Dummy;
     ReadBuffer(Dummy, SizeOf(Dummy));
-//b    BiDiMode := TBiDiMode(Dummy);
+    BiDiMode := TBiDiMode(Dummy);
 
     ReadBuffer(Dummy, SizeOf(Dummy));
     Options := ConvertOptions(Dummy);
@@ -6813,9 +6810,9 @@ begin
   if coParentBiDiMode in FOptions then
   begin
     Columns := GetOwner as TVirtualTreeColumns;
-    if Assigned(Columns) {band (FBidiMode <> Columns.FHeader.Treeview.BiDiMode)} then
+    if Assigned(Columns) and (FBidiMode <> Columns.FHeader.Treeview.BiDiMode) then
     begin
-//b      FBiDiMode := Columns.FHeader.Treeview.BiDiMode;
+      FBiDiMode := Columns.FHeader.Treeview.BiDiMode;
       Changed(False);
     end;
   end;
@@ -6875,8 +6872,8 @@ begin
     WriteBuffer(Dummy, SizeOf(Dummy));
     WriteBuffer(FMargin, SizeOf(FMargin));
     WriteBuffer(FSpacing, SizeOf(FSpacing));
-//b    Dummy := Ord(FBiDiMode);
-//b    WriteBuffer(Dummy, SizeOf(Dummy));
+    Dummy := Ord(FBiDiMode);
+    WriteBuffer(Dummy, SizeOf(Dummy));
 //todo    Dummy := Word(FOptions);
 //    WriteBuffer(Dummy, SizeOf(Dummy));
 
@@ -6896,7 +6893,7 @@ end;
 function TVirtualTreeColumn.UseRightToLeftReading: Boolean;
 
 begin
-//b  Result := FBiDiMode <> bdLeftToRight;
+  Result := FBiDiMode <> bdLeftToRight;
   Result := False;
 end;
 
@@ -7987,8 +7984,8 @@ begin
 
     // Consider right-to-left directionality.
     with FHeader.Treeview do
-//b      if (BidiMode <> bdLeftToRight) and (Integer(FRangeY) > ClientHeight) then
-//b        Inc(HOffset, GetSystemMetrics(SM_CXVSCROLL));
+      if (BidiMode <> bdLeftToRight) and (Integer(FRangeY) > ClientHeight) then
+        Inc(HOffset, GetSystemMetrics(SM_CXVSCROLL));
 
     // Erase background of the header.
     // See if the application wants to do that on its own.
@@ -24085,7 +24082,7 @@ begin
                         ImageInfo[iiCheck].Index := GetCheckImage(Node);
                         if ImageInfo[iiCheck].Index > -1 then
                         begin
-                          AdjustImageBorder(FCheckImages, 0, VAlign, ContentRect, ImageInfo[iiCheck]);
+                          AdjustImageBorder(FCheckImages, BidiMode, VAlign, ContentRect, ImageInfo[iiCheck]);
                           ImageInfo[iiCheck].Ghosted := False;
                         end;
                       end
@@ -24095,7 +24092,7 @@ begin
                       begin
                         ImageInfo[iiState].Index := GetImageIndex(Node, ikState, Column, ImageInfo[iiState].Ghosted);
                         if ImageInfo[iiState].Index > -1 then
-                          AdjustImageBorder(FStateImages, 0, VAlign, ContentRect, ImageInfo[iiState]);
+                          AdjustImageBorder(FStateImages, BidiMode, VAlign, ContentRect, ImageInfo[iiState]);
                       end
                       else
                         ImageInfo[iiState].Index := -1;
@@ -24104,7 +24101,7 @@ begin
                         ImageInfo[iiNormal].Index := GetImageIndex(Node, ImageKind[vsSelected in Node^.States], Column,
                           ImageInfo[iiNormal].Ghosted);
                         if ImageInfo[iiNormal].Index > -1 then
-                          AdjustImageBorder(FImages, 0, VAlign, ContentRect, ImageInfo[iiNormal]);
+                          AdjustImageBorder(FImages, BidiMode, VAlign, ContentRect, ImageInfo[iiNormal]);
                       end
                       else
                         ImageInfo[iiNormal].Index := -1;
@@ -24169,7 +24166,7 @@ begin
                         if (toShowButtons in FOptions.FPaintOptions) and (vsHasChildren in Node^.States) and
                           not ((vsAllChildrenHidden in Node^.States) and
                           (toAutoHideButtons in TreeOptions.FAutoOptions)) then
-                          PaintNodeButton(Canvas, Node, CellRect, ButtonX, ButtonY, 0);
+                          PaintNodeButton(Canvas, Node, CellRect, ButtonX, ButtonY, BidiMode);
 
                         if ImageInfo[iiCheck].Index > -1 then
                           PaintCheckImage(PaintInfo);

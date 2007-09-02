@@ -1570,8 +1570,8 @@ var
   R: TRect;
   S: WideString;
   DrawFormat: Cardinal;
-  xxBidiMode: TBidiMode;
-//  xAlignment: TAlignment;
+  xBidiMode: Classes.TBidiMode;
+  xAlignment: TAlignment;
   PaintInfo: TVTPaintInfo;
   Dummy: TColumnIndex;
 
@@ -1584,28 +1584,28 @@ begin
     DrawFormat := DT_TOP or DT_NOPREFIX or DT_CALCRECT or DT_WORDBREAK;
     if Column <= NoColumn then
     begin
-//b      BidiMode := Self.BidiMode;
-//      xAlignment := Self.Alignment;
+      xBidiMode := Self.BidiMode;
+      xAlignment := Self.Alignment;
     end
     else
     begin
-//b      BidiMode := Header.Columns[Column].BidiMode;
-//      xAlignment := Header.Columns[Column].Alignment;
+      BidiMode := Header.Columns[Column].BidiMode;
+      xAlignment := Header.Columns[Column].Alignment;
     end;
 
-//b    if BidiMode <> bdLeftToRight then
-//b      ChangeBidiModeAlignment(Alignment);
+//    if xBidiMode <> bdLeftToRight then
+//      ChangeBidiModeAlignment(Alignment);
 
     // Allow for autospanning.
     PaintInfo.Node := Node;
-//b    PaintInfo.BidiMode := BidiMode;
+    PaintInfo.BidiMode := xBidiMode;
     PaintInfo.Column := Column;
     PaintInfo.CellRect := R;
     AdjustPaintCellRect(PaintInfo, Dummy);
 
-//b    if BidiMode <> bdLeftToRight then
-//b      DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING
-//b    else
+    if xBidiMode <> bdLeftToRight then
+      DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING
+    else
       DrawFormat := DrawFormat or DT_LEFT;
     DrawTextW(xCanvas, PWideChar(S), PaintInfo.CellRect, DrawFormat, False);  //theo
     Result := PaintInfo.CellRect.Bottom - PaintInfo.CellRect.Top;
