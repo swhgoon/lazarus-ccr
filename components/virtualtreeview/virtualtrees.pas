@@ -70,7 +70,7 @@ interface
 {.$define UseLocalMemoryManager}
 
 uses
-  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes, vt_opbitmap, vt_lazbridge, Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
+  LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes,Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
   LResources, GraphType, CustomTimer,
   SyncObjs, // critical sections
   CommCtrl  // image lists, common controls tree structures
@@ -3163,16 +3163,16 @@ procedure DrawTextW(Canvas: TCanvas; lpString: PWideChar; var lpRect: TRect; uFo
 var Style:TTextStyle;
 begin
   {$ifndef WINCE}
-<<<<<<< .mine
-   {$ifdef UNIX}
-=======
-  {$ifdef LCLgtk}
->>>>>>> .r252
-  Style.Layout:=tlCenter;
-  Canvas.TextRect(lpRect,lpRect.Left,lpRect.Top,lpString,Style); // theo 24.2.2007 Gibt sonst Striche auf GTK1
-   {$else}
-  DrawTextW(Canvas.Handle, lpString, Length(lpString), lpRect, uFormat, AdjustRight);
-   {$endif}
+    {$ifdef UNIX}
+      {$ifdef LCLgtk}
+        Style.Layout:=tlCenter;
+        Canvas.TextRect(lpRect,lpRect.Left,lpRect.Top,lpString,Style); // theo 24.2.2007 Gibt sonst Striche auf GTK1
+      {$else}
+        DrawTextW(Canvas.Handle, lpString, Length(lpString), lpRect, uFormat, AdjustRight);
+      {$endif}
+    {$else}
+    Canvas.TextOut(lpRect.Left,lpRect.Top,lpString);
+    {$endif}
   {$else}
   Canvas.TextOut(lpRect.Left,lpRect.Top,lpString);
   {$endif}
@@ -3734,7 +3734,6 @@ var
   Dest: TRect;
   //Small (???) hack while a solution does not come
   Stream: TMemoryStream;
-  TempOPB, SourceOPB:TCanvasOPBitmap;
 begin
   Watcher.Enter;
   try
@@ -3764,24 +3763,6 @@ begin
       MaskColor := clFuchsia;//Images.Canvas.Pixels[0, 0]; // this is usually clFuchsia
       Dest := Rect(0, 0, IL.Width, IL.Height);
       
-     SourceOPB:=TCanvasOPBitmap.create;      //theo 25.2.07
-     AssignBitmapToOpBitmap(Images,SourceOPB);
-     for I := 0 to (Images.Width div Images.Height) - 1 do
-      begin
-        Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
-        TempOPB:=TCanvasOPBitmap.create;
-        TempOPB.Width:=IL.Height;
-        TempOPB.Height:=IL.Width;
-        TempOPB.Canvas.CopyRect(Dest, SourceOPB.Canvas, Source);
-        TempOPB.TransparentColor:=MaskColor;
-        AnotherImage:=TBitmap.Create;
-        AssignOpBitmapToBitmap(TempOPB,AnotherImage);
-        TempOPB.free;
-        IL.AddDirect(AnotherImage, nil);
-      end;
-      SourceOPB.free;
-      
-      {
       for I := 0 to (Images.Width div Images.Height) - 1 do
       begin
         Source := Rect(I * IL.Width, 0, (I + 1) * IL.Width, IL.Height);
@@ -3798,7 +3779,6 @@ begin
         Stream.Size:=0;
         IL.Add(AnotherImage, nil);
       end;
-      }
     finally
       Images.Free;
       //OneImage.Free;
