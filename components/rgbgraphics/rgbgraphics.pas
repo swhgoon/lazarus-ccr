@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf,
-  LCLType, LCLProc, Interfaces, FPImage, LResources, IntfGraphics,
+  LCLType, LCLProc, FPImage, LResources, IntfGraphics,
   Graphics, Forms, Math, Clipbrd,
   RGBTypes, RGBRoutines, RGBUtils;
   
@@ -120,7 +120,7 @@ type
     procedure SetOutlineColor(const AValue: TColor);
     procedure SetPaperColor(const AValue: TColor);
   protected
-    function PixelMasked(X, Y: Integer): Boolean; inline;
+    function PixelMasked(X, Y: Integer): Boolean;
     function SamePixelUnsafe(X, Y: Integer; Value: TRGB32Pixel): Boolean;
     function SamePixelUnmasked(X, Y: Integer; Value: TRGB32Pixel): Boolean;
 
@@ -224,6 +224,19 @@ type
 
 implementation
 
+function AbsByte(Src: Integer): Byte; inline;
+begin
+  if Src >= 0 then Result := Src
+  else Result := -Src;
+end;
+
+function RGB32PixelDifference(A, B: TRGB32Pixel): TPixelDifference; inline;
+begin
+  Result := AbsByte(((A shr 16) and $FF) - ((B shr 16) and $FF))
+    + AbsByte(((A shr 8) and $FF) - ((B shr 8) and $FF))
+    + AbsByte((A and $FF) - (B and $FF));
+end;
+
 { TRGB32Bitmap }
 
 constructor TRGB32Bitmap.Create(AWidth, AHeight: Integer);
@@ -257,7 +270,6 @@ begin
   Image := TLazIntfImage.Create(0, 0);
   Reader := GetFPImageReaderForFileExtension(ExtractFileExt(FileName)).Create;
   try
-    Image.GetDescriptionFromDevice(0);
     Image.LoadFromFile(FileName, Reader);
     CreateFromLazIntfImage(Image);
   finally
@@ -345,7 +357,6 @@ begin
   Image := TLazIntfImage.Create(0, 0);
   Writer := GetFPImageWriterForFileExtension(ExtractFileExt(FileName)).Create;
   try
-    Image.GetDescriptionFromDevice(0);
     inherited SaveToLazIntfImage(Image);
     Image.SaveToFile(FileName, Writer);
   finally
@@ -515,38 +526,38 @@ var
   P: PRGB32Pixel;
 begin
   P := FOwner.Get32PixelPtr(X, Y);
-  if P <> nil then Result := RGB32PixelToColorInline(P^)
+  if P <> nil then Result := RGB32PixelToColor(P^)
   else Result := clNone;
 end;
 
 function TRGB32Canvas.GetFillColor: TColor;
 begin
-  Result := RGB32PixelToColorInline(FFillColor);
+  Result := RGB32PixelToColor(FFillColor);
 end;
 
 function TRGB32Canvas.GetOutlineColor: TColor;
 begin
-  Result := RGB32PixelToColorInline(FOutlineColor);
+  Result := RGB32PixelToColor(FOutlineColor);
 end;
 
 function TRGB32Canvas.GetPaperColor: TColor;
 begin
-  Result := RGB32PixelToColorInline(FPaperColor);
+  Result := RGB32PixelToColor(FPaperColor);
 end;
 
 procedure TRGB32Canvas.SetFillColor(const AValue: TColor);
 begin
-  FFillColor := ColorToRGB32PixelInline(AValue);
+  FFillColor := ColorToRGB32Pixel(AValue);
 end;
 
 procedure TRGB32Canvas.SetOutlineColor(const AValue: TColor);
 begin
-  FOutlineColor := ColorToRGB32PixelInline(AValue);
+  FOutlineColor := ColorToRGB32Pixel(AValue);
 end;
 
 procedure TRGB32Canvas.SetPaperColor(const AValue: TColor);
 begin
-  FPaperColor := ColorToRGB32PixelInline(AValue);
+  FPaperColor := ColorToRGB32Pixel(AValue);
 end;
 
 function TRGB32Canvas.PixelMasked(X, Y: Integer): Boolean;
@@ -565,13 +576,13 @@ end;
 
 function TRGB32Canvas.SamePixelUnsafe(X, Y: Integer; Value: TRGB32Pixel): Boolean;
 begin
-  Result := PixelMasked(X, Y) and (RGB32PixelDifferenceInline(FOwner.Get32PixelPtrUnsafe(X, Y)^, Value)
+  Result := PixelMasked(X, Y) and (RGB32PixelDifference(FOwner.Get32PixelUnsafe(X, Y), Value)
       <= FFloodFillTolerance);
 end;
 
 function TRGB32Canvas.SamePixelUnmasked(X, Y: Integer; Value: TRGB32Pixel): Boolean;
 begin
-  Result := RGB32PixelDifferenceInline(FOwner.Get32PixelPtrUnsafe(X, Y)^, Value)
+  Result := RGB32PixelDifference(FOwner.Get32PixelUnsafe(X, Y), Value)
       <= FFloodFillTolerance;
 end;
 

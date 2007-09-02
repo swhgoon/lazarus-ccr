@@ -4,16 +4,23 @@
     <PathDelim Value="\"/>
     <Name Value="LazRGBGraphics"/>
     <Author Value="Tom Gregorovic (_tom_@centrum.cz)"/>
+    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="include\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)-$(LCLWidgetType)"/>
+        <LCLWidgetType Value="gtk2"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -22,8 +29,8 @@
 "/>
     <License Value="Modified LGPL
 "/>
-    <Version Minor="1"/>
-    <Files Count="4">
+    <Version Minor="2"/>
+    <Files Count="7">
       <Item1>
         <Filename Value="rgbgraphics.pas"/>
         <UnitName Value="RGBGraphics"/>
@@ -40,14 +47,29 @@
         <Filename Value="rgbroutines.pas"/>
         <UnitName Value="RGBRoutines"/>
       </Item4>
+      <Item5>
+        <Filename Value="rgbwinroutines.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="RGBWinRoutines"/>
+      </Item5>
+      <Item6>
+        <Filename Value="rgbgtkroutines.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="RGBGTKRoutines"/>
+      </Item6>
+      <Item7>
+        <Filename Value="rgbcarbonroutines.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="RGBCarbonRoutines"/>
+      </Item7>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
-      </Item1>
-      <Item2>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
@@ -55,6 +77,7 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

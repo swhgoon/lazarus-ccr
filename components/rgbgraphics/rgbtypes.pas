@@ -28,21 +28,17 @@ unit RGBTypes;
 
 {$ifdef fpc}
   {$mode objfpc}{$H+}
-  {$define hasinline}
 {$endif}
 
-{$ifndef fpc}
- {$define Windows}
-{$endif}
-
-{$ifdef win32}
- {$define Windows}
+{$ifdef LCLwin32}
+ {$define RGB}
 {$endif}
 
 interface
 
 uses
-  Classes, SysUtils, FPImage, IntfGraphics, Graphics, Math, LCLProc;
+  Classes, SysUtils, FPImage, IntfGraphics, Graphics, Math, LCLProc,
+  RGBUtils;
 
 type
   PRGBPixel = PByte;
@@ -74,6 +70,7 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FRowPixelStride: Integer;
+    function GetSize: Integer;
   public
     constructor Create(AWidth, AHeight: Integer; ASizeOfPixel: Integer); virtual;
     constructor CreateAsCopy(ABitmap: TRGBBitmapCore; ASizeOfPixel: Integer); virtual;
@@ -82,8 +79,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure SwapWith(ABitmap: TRGBBitmapCore); virtual;
   public
-    function GetPixelPtrUnsafe(X, Y: Integer): PRGBPixel; {$ifdef hasinline}inline;{$endif}
-    function GetPixelPtr(X, Y: Integer): PRGBPixel; {$ifdef hasinline}inline;{$endif}
+    function GetPixelPtrUnsafe(X, Y: Integer): PRGBPixel;
+    function GetPixelPtr(X, Y: Integer): PRGBPixel;
     
     procedure Clear; virtual;
     procedure ClearWhite; virtual;
@@ -99,6 +96,7 @@ type
     property Height: Integer read FHeight;
     property Pixels: PRGBPixel read FPixels;
     property RowPixelStride: Integer read FRowPixelStride;
+    property Size: Integer read GetSize;
     property SizeOfPixel: Integer read FSizeOfPixel;
   end;
   
@@ -116,12 +114,12 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure SwapWith(ABitmap: TRGBBitmapCore); override;
   public
-    function Get8PixelPtrUnsafe(X, Y: Integer): PRGB8Pixel; {$ifdef hasinline}inline;{$endif}
-    function Get8PixelPtr(X, Y: Integer): PRGB8Pixel; {$ifdef hasinline}inline;{$endif}
+    function Get8PixelPtrUnsafe(X, Y: Integer): PRGB8Pixel;
+    function Get8PixelPtr(X, Y: Integer): PRGB8Pixel;
     function Get8PixelUnsafe(X, Y: Integer): TRGB8Pixel;
 
-    procedure Set8PixelUnsafe(X, Y: Integer; Value: TRGB8Pixel); {$ifdef hasinline}inline;{$endif}
-    procedure Set8Pixel(X, Y: Integer; Value: TRGB8Pixel); {$ifdef hasinline}inline;{$endif}
+    procedure Set8PixelUnsafe(X, Y: Integer; Value: TRGB8Pixel);
+    procedure Set8Pixel(X, Y: Integer; Value: TRGB8Pixel);
   end;
   
   { TRGB32BitmapCore }
@@ -137,39 +135,127 @@ type
     procedure SaveToLazIntfImage(AImage: TLazIntfImage); virtual;
     procedure SaveToLazIntfImage(AImage: TLazIntfImage; const ARect: TRect); virtual;
   public
-    function Get32PixelPtrUnsafe(X, Y: Integer): PRGB32Pixel; {$ifdef hasinline}inline;{$endif}
-    function Get32PixelPtr(X, Y: Integer): PRGB32Pixel; {$ifdef hasinline}inline;{$endif}
+    function Get32PixelPtrUnsafe(X, Y: Integer): PRGB32Pixel;
+    function Get32PixelPtr(X, Y: Integer): PRGB32Pixel;
     function Get32PixelUnsafe(X, Y: Integer): TRGB32Pixel;
 
-    procedure Set32PixelUnsafe(X, Y: Integer; Value: TRGB32Pixel); {$ifdef hasinline}inline;{$endif}
-    procedure Set32Pixel(X, Y: Integer; Value: TRGB32Pixel); {$ifdef hasinline}inline;{$endif}
+    procedure Set32PixelUnsafe(X, Y: Integer; Value: TRGB32Pixel);
+    procedure Set32Pixel(X, Y: Integer; Value: TRGB32Pixel);
   end;
-
-  procedure SwapRGBPixels(A, B: PRGBPixel; const Size: Integer); {$ifdef hasinline}inline;{$endif}
-  procedure CopyRGBPixels(Src, Dest: PRGBPixel; const Size: Integer); {$ifdef hasinline}inline;{$endif}
   
+  procedure FlipHorzRGBBitmap(Bitmap: TRGBBitmapCore);
+  procedure FlipVertRGBBitmap(Bitmap: TRGBBitmapCore);
+
+  // intensity tables
+  function GetIntensityFloatTable(A, B: Single): TIntensityFloatTable;
+
+  // rotate clockwise
+  procedure Rotate90CWRGBBitmap(Bitmap: TRGBBitmapCore);
+  procedure Rotate180CWRGBBitmap(Bitmap: TRGBBitmapCore);
+  procedure Rotate270CWRGBBitmap(Bitmap: TRGBBitmapCore);
+
+  procedure InvertRGBBitmap(Bitmap: TRGBBitmapCore);
+  procedure GrayscaleRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+  procedure DisableRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+
   function RGB32PixelToColor(P: TRGB32Pixel): TColor;
   function ColorToRGB32Pixel(C: TColor): TRGB32Pixel;
 
-  function GetRedInline(P: TRGB32Pixel): Byte; {$ifdef hasinline}inline;{$endif}
-  function GetGreenInline(P: TRGB32Pixel): Byte; {$ifdef hasinline}inline;{$endif}
-  function GetBlueInline(P: TRGB32Pixel): Byte; {$ifdef hasinline}inline;{$endif}
-  function RGBToRGB32PixelInline(R, G, B: Byte): TRGB32Pixel; {$ifdef hasinline}inline;{$endif}
-
-  function RGB32PixelToColorInline(P: TRGB32Pixel): TColor; {$ifdef hasinline}inline;{$endif}
-  function ColorToRGB32PixelInline(C: TColor): TRGB32Pixel; {$ifdef hasinline}inline;{$endif}
-
-  function RGB32PixelDifferenceInline(A, B: TRGB32Pixel): TPixelDifference; {$ifdef hasinline}inline;{$endif}
-
-  function FloatToIntensityFloatInline(F: Extended): TIntensityFloat; {$ifdef hasinline}inline;{$endif}
-  function RoundIntensityFloatInline(V: TIntensityFloat): Byte; {$ifdef hasinline}inline;{$endif}
-  
 implementation
 
-uses
-  RGBRoutines, RGBUtils;
+function GetRedInline(P: TRGB32Pixel): Byte; inline;
+begin
+  {$IFDEF RGB}
+  Result := (P and $FF0000) shr 16;
+  {$ELSE}
+  Result := P and $FF;
+  {$ENDIF}
+end;
 
-procedure SwapRGBPixels(A, B: PRGBPixel; const Size: Integer);
+function GetGreenInline(P: TRGB32Pixel): Byte; inline;
+begin
+  {$IFDEF RGB}
+  Result := (P and $FF00) shr 8;
+  {$ELSE}
+  Result := (P and $FF00) shr 8;
+  {$ENDIF}
+end;
+
+function GetBlueInline(P: TRGB32Pixel): Byte; inline;
+begin
+  {$IFDEF RGB}
+  Result := P and $FF;
+  {$ELSE}
+  Result := (P and $FF0000) shr 16;
+  {$ENDIF}
+end;
+
+function RGBToRGB32PixelInline(R, G, B: Byte): TRGB32Pixel; inline;
+begin
+  {$IFDEF RGB}
+  Result := B or (G shl 8) or (R shl 16);
+  {$ELSE}
+  Result := R or (G shl 8) or (B shl 16);
+  {$ENDIF}
+end;
+
+function RGB32PixelToColorInline(P: TRGB32Pixel): TColor; inline;
+begin
+  {$IFDEF RGB}
+  Result := ((P and $FF0000) shr 16) or (P and $FF00) or ((P and $FF) shl 16);
+  {$ELSE}
+  Result := P and $FFFFFF;
+  {$ENDIF}
+end;
+
+function ColorToRGB32PixelInline(C: TColor): TRGB32Pixel; inline;
+begin
+  {$IFDEF RGB}
+  Result := ((C and $FF0000) shr 16) or (C and $FF00) or ((C and $FF) shl 16);
+  {$ELSE}
+  Result := C and $FFFFFF;
+  {$ENDIF}
+end;
+
+function FPColorToRGB32PixelInline(F: TFPColor): TRGB32Pixel; inline;
+begin
+  {$IFDEF RGB}
+  Result := ((F.Blue shr 8) and $FF) or (F.Green and $FF00) or ((F.Red shl 8) and $FF0000);
+  {$ELSE}
+  Result := ((F.Red shr 8) and $FF) or (F.Green and $FF00) or ((F.Blue shl 8) and $FF0000);
+  {$ENDIF}
+end;
+
+function RGB32PixelToFPColorInline(P: TRGB32Pixel): TFPColor; inline;
+begin
+  {$IFDEF RGB}
+  Result.Red := (P shr 16) and $FF;
+  Result.Red := Result.Red or (Result.Red shl 8);
+  Result.Green := P and $FF00;
+  Result.Green := Result.Green or (Result.Green shr 8);
+  Result.Blue := P and $FF;
+  Result.Blue := Result.Blue or (Result.Blue shl 8);
+  {$ELSE}
+  Result.Red := P and $FF;
+  Result.Red := Result.Red or (Result.Red shl 8);
+  Result.Green := P and $FF00;
+  Result.Green := Result.Green or (Result.Green shr 8);
+  Result.Blue := (P shr 16) and $FF;
+  Result.Blue := Result.Blue or (Result.Blue shl 8);
+  {$ENDIF}
+end;
+
+function RGB32PixelToColor(P: TRGB32Pixel): TColor;
+begin
+  Result := RGB32PixelToColorInline(P);
+end;
+
+function ColorToRGB32Pixel(C: TColor): TRGB32Pixel;
+begin
+  Result := ColorToRGB32PixelInline(C);
+end;
+
+procedure SwapRGBPixels(A, B: PRGBPixel; const Size: Integer); inline;
 var
   T32: TRGB32Pixel;
   T8: TRGB8Pixel;
@@ -188,7 +274,7 @@ begin
   end;
 end;
 
-procedure CopyRGBPixels(Src, Dest: PRGBPixel; const Size: Integer);
+procedure CopyRGBPixels(Src, Dest: PRGBPixel; const Size: Integer); inline;
 begin
   if Size = 4 then PRGB32Pixel(Dest)^ := PRGB32Pixel(Src)^
   else
@@ -197,123 +283,217 @@ begin
   end;
 end;
 
-function GetRedInline(P: TRGB32Pixel): Byte;
+function GetRGBBitmapPixelPtr(const Bitmap: TRGBBitmapCore; X, Y: Integer): PRGBPixel; inline;
 begin
-  {$IFDEF Windows}
-  Result := (P and $FF0000) shr 16;
-  {$ELSE}
-  Result := P and $FF;
-  {$ENDIF}
+  Result := Bitmap.FPixels;
+  Inc(Result, Y * Bitmap.FRowPixelStride * Bitmap.FSizeOfPixel + X * Bitmap.FSizeOfPixel);
 end;
 
-function GetGreenInline(P: TRGB32Pixel): Byte;
-begin
-  {$IFDEF Windows}
-  Result := (P and $FF00) shr 8;
-  {$ELSE}
-  Result := (P and $FF00) shr 8;
-  {$ENDIF}
-end;
-
-function GetBlueInline(P: TRGB32Pixel): Byte;
-begin
-  {$IFDEF Windows}
-  Result := P and $FF;
-  {$ELSE}
-  Result := (P and $FF0000) shr 16;
-  {$ENDIF}
-end;
-
-function RGBToRGB32PixelInline(R, G, B: Byte): TRGB32Pixel;
-begin
-  {$IFDEF Windows}
-  Result := B or (G shl 8) or (R shl 16);
-  {$ELSE}
-  Result := R or (G shl 8) or (B shl 16);
-  {$ENDIF}
-end;
-
-// TODO: check on big-endian arch.
-function RGB32PixelToColorInline(P: TRGB32Pixel): TColor;
-begin
-  {$IFDEF Windows}
-  Result := ((P and $FF0000) shr 16) or (P and $FF00) or ((P and $FF) shl 16);
-  {$ELSE}
-  Result := P and $FFFFFF;
-  {$ENDIF}
-end;
-
-function ColorToRGB32PixelInline(C: TColor): TRGB32Pixel;
-begin
-  {$IFDEF Windows}
-  Result := ((C and $FF0000) shr 16) or (C and $FF00) or ((C and $FF) shl 16);
-  {$ELSE}
-  Result := C and $FFFFFF;
-  {$ENDIF}
-end;
-
-function FPColorToRGB32PixelInline(F: TFPColor): TRGB32Pixel;
-begin
-  {$IFDEF Windows}
-  Result := ((F.Blue shr 8) and $FF) or (F.Green and $FF00) or ((F.Red shl 8) and $FF0000);
-  {$ELSE}
-  Result := ((F.Red shr 8) and $FF) or (F.Green and $FF00) or ((F.Blue shl 8) and $FF0000);
-  {$ENDIF}
-end;
-
-function RGB32PixelToFPColorInline(P: TRGB32Pixel): TFPColor;
-begin
-  {$IFDEF Windows}
-  Result.Red := (P shr 16) and $FF;
-  Result.Red := Result.Red or (Result.Red shl 8);
-  Result.Green := P and $FF00;
-  Result.Green := Result.Green or (Result.Green shr 8);
-  Result.Blue := P and $FF;
-  Result.Blue := Result.Blue or (Result.Blue shl 8);
-  {$ELSE}
-  Result.Red := P and $FF;
-  Result.Red := Result.Red or (Result.Red shl 8);
-  Result.Green := P and $FF00;
-  Result.Green := Result.Green or (Result.Green shr 8);
-  Result.Blue := (P shr 16) and $FF;
-  Result.Blue := Result.Blue or (Result.Blue shl 8);
-  {$ENDIF}
-end;
-
-function AbsByte(Src: Integer): Byte; {$ifdef hasinline}inline;{$endif}
-begin
-  if Src >= 0 then Result := Src
-  else Result := -Src;
-end;
-
-function RGB32PixelDifferenceInline(A, B: TRGB32Pixel): TPixelDifference;
-begin
-  Result := AbsByte(((A shr 16) and $FF) - ((B shr 16) and $FF))
-    + AbsByte(((A shr 8) and $FF) - ((B shr 8) and $FF))
-    + AbsByte((A and $FF) - (B and $FF));
-end;
-
-function RGB32PixelToColor(P: TRGB32Pixel): TColor;
-begin
-  Result := RGB32PixelToColorInline(P);
-end;
-
-function ColorToRGB32Pixel(C: TColor): TRGB32Pixel;
-begin
-  Result := ColorToRGB32PixelInline(C);
-end;
-
-function FloatToIntensityFloatInline(F: Extended): TIntensityFloat;
-begin
-  Result := Round(F * 256);
-end;
-
-function RoundIntensityFloatInline(V: TIntensityFloat): Byte;
+function RoundIntensityFloatInline(V: TIntensityFloat): Byte; inline;
 begin
   Result := Max(0, Min(255, (V + 128) shr 8));
 end;
 
+procedure FlipHorzRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  X, Y: Integer;
+  PNew, POld: PRGBPixel;
+begin
+  for Y := 0 to Pred(Bitmap.Height) do
+  begin
+    PNew := Bitmap.GetPixelPtrUnsafe(0, Y);
+    POld := Bitmap.GetPixelPtrUnsafe(Pred(Bitmap.Width), Y);
+    for X := 0 to Pred(Bitmap.Width shr 1) do
+    begin
+      SwapRGBPixels(PNew, POld, Bitmap.SizeOfPixel);
+      Inc(PNew, Bitmap.SizeOfPixel);
+      Dec(POld, Bitmap.SizeOfPixel);
+    end;
+  end;
+end;
+
+procedure FlipVertRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  X, Y: Integer;
+  PNew, POld: PRGBPixel;
+begin
+  for Y := 0 to Pred(Bitmap.Height shr 1) do
+  begin
+    PNew := Bitmap.GetPixelPtrUnsafe(0, Y);
+    POld := Bitmap.GetPixelPtrUnsafe(0, Pred(Bitmap.Height) - Y);
+    for X := 0 to Pred(Bitmap.Width) do
+    begin
+      SwapRGBPixels(PNew, POld, Bitmap.SizeOfPixel);
+      Inc(PNew, Bitmap.SizeOfPixel);
+      Inc(POld, Bitmap.SizeOfPixel);
+    end;
+  end;
+end;
+
+(*
+  Creates look-up table T[I = 0..255] = A + I * B.
+*)
+
+function GetIntensityFloatTable(A, B: Single): TIntensityFloatTable;
+var
+  I: Integer;
+  C: Single;
+begin
+  C := A;
+  for I := 0 to High(Result) do
+  begin
+    Result[I] := Round(C * 256);
+    C := C + B;
+  end;
+end;
+
+procedure Rotate90CWRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  X, Y: Integer;
+  PNew, POld: PRGBPixel;
+  Result: TRGBBitmapCore;
+begin
+  Result := TRGBBitmapCore.Create(Bitmap.Height, Bitmap.Width, Bitmap.SizeOfPixel);
+  try
+    for Y := 0 to Pred(Bitmap.Height) do
+    begin
+      PNew := Result.GetPixelPtrUnsafe(Pred(Bitmap.Height) - Y, 0);
+      POld := Bitmap.GetPixelPtrUnsafe(0, Y);
+      for X := 0 to Pred(Bitmap.Width) do
+      begin
+        CopyRGBPixels(POld, PNew, Result.SizeOfPixel);
+        Inc(PNew, Result.RowPixelStride * Result.SizeOfPixel);
+        Inc(POld, Result.SizeOfPixel);
+      end;
+    end;
+    Bitmap.SwapWith(Result);
+  finally
+    FreeAndNil(Result);
+  end;
+end;
+
+
+procedure Rotate180CWRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  X, Y: Integer;
+  PNew, POld: PRGBPixel;
+begin
+  for Y := 0 to Pred(Bitmap.Height shr 1) do
+  begin
+    PNew := Bitmap.GetPixelPtrUnsafe(0, Y);
+    POld := Bitmap.GetPixelPtrUnsafe(Pred(Bitmap.Width), Pred(Bitmap.Height) - Y);
+    for X := 0 to Pred(Bitmap.Width) do
+    begin
+      SwapRGBPixels(PNew, POld, Bitmap.SizeOfPixel);
+      Inc(PNew, Bitmap.SizeOfPixel);
+      Dec(POld, Bitmap.SizeOfPixel);
+    end;
+  end;
+  if Odd(Bitmap.Height) then
+  begin
+    PNew := Bitmap.GetPixelPtrUnsafe(0, Bitmap.Height shr 1);
+    POld := Bitmap.GetPixelPtrUnsafe(Pred(Bitmap.Width), Bitmap.Height shr 1);
+    for X := 0 to Pred(Bitmap.Width shr 1) do
+    begin
+      SwapRGBPixels(PNew, POld, Bitmap.SizeOfPixel);
+      Inc(PNew, Bitmap.SizeOfPixel);
+      Dec(POld, Bitmap.SizeOfPixel);
+    end;
+  end;
+end;
+
+procedure Rotate270CWRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  X, Y: Integer;
+  PNew, POld: PRGBPixel;
+  Result: TRGBBitmapCore;
+begin
+  Result := TRGBBitmapCore.Create(Bitmap.Height, Bitmap.Width, Bitmap.SizeOfPixel);
+  try
+    for Y := 0 to Pred(Bitmap.Height) do
+    begin
+      PNew := Result.GetPixelPtrUnsafe(Y, Pred(Bitmap.Width));
+      POld := Bitmap.GetPixelPtrUnsafe(0, Y);
+      for X := 0 to Pred(Bitmap.Width) do
+      begin
+        CopyRGBPixels(POld, PNew, Result.SizeOfPixel);
+        Dec(PNew, Result.RowPixelStride * Result.SizeOfPixel);
+        Inc(POld, Result.SizeOfPixel);
+      end;
+    end;
+    Bitmap.SwapWith(Result);
+  finally
+    FreeAndNil(Result);
+  end;
+end;
+
+procedure InvertRGBBitmap(Bitmap: TRGBBitmapCore);
+var
+  I: Integer;
+  P: PRGBPixel;
+begin
+  P := Bitmap.Pixels;
+  for I := 0 to Pred(Bitmap.Height * Bitmap.RowPixelStride * Bitmap.SizeOfPixel) do
+  begin
+    P^ := $FF - P^;
+    Inc(P);
+  end;
+end;
+
+procedure GrayscaleRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+var
+  X, Y: Integer;
+  P: PRGB32Pixel;
+  S: Byte;
+  R, G, B: TIntensityFloatTable;
+begin
+  // R * 0.299 + G * 0.587 + B * 0.114
+  R := GetIntensityFloatTable(0, 0.299);
+  G := GetIntensityFloatTable(0, 0.587);
+  B := GetIntensityFloatTable(0, 0.114);
+  for Y := 0 to Pred(Bitmap.Height) do
+  begin
+    P := Bitmap.Get32PixelPtr(0, Y);
+    for X := 0 to Pred(Bitmap.Width) do
+    begin
+      S := RoundIntensityFloatInline(R[GetRedInline(P^)] + G[GetGreenInline(P^)]
+       + B[GetBlueInline(P^)]);
+      P^ := RGBToRGB32PixelInline(S, S, S);
+      Inc(P);
+    end;
+  end;
+end;
+
+procedure DisableRGB32Bitmap(Bitmap: TRGB32BitmapCore);
+var
+  X, Y: Integer;
+  P: PRGB32Pixel;
+  S: Byte;
+  R, G, B: TIntensityFloatTable;
+begin
+  // 128 + R * 0.299 / 4 + G * 0.587 / 4 + B * 0.114 / 4
+  R := GetIntensityFloatTable(128, 0.299 / 4);
+  G := GetIntensityFloatTable(0, 0.587 / 4);
+  B := GetIntensityFloatTable(0, 0.114 / 4);
+  for Y := 0 to Pred(Bitmap.Height) do
+  begin
+    P := Bitmap.Get32PixelPtr(0, Y);
+    for X := 0 to Pred(Bitmap.Width) do
+    begin
+      S := RoundIntensityFloatInline(R[GetRedInline(P^)] + G[GetGreenInline(P^)]
+       + B[GetBlueInline(P^)]);
+      P^ := RGBToRGB32PixelInline(S, S, S);
+      Inc(P);
+    end;
+  end;
+end;
+
 { TRGBBitmapCore }
+
+function TRGBBitmapCore.GetSize: Integer;
+begin
+  Result := Height * RowPixelStride * SizeOfPixel;
+end;
 
 constructor TRGBBitmapCore.Create(AWidth, AHeight: Integer; ASizeOfPixel: Integer);
 begin
@@ -371,9 +551,6 @@ begin
 end;
 
 procedure TRGBBitmapCore.SwapWith(ABitmap: TRGBBitmapCore);
-var
-  Temp: Pointer;
-  TempInt: Integer;
 begin
   if ABitmap = nil then Exit;
 
@@ -386,26 +563,25 @@ end;
 
 function TRGBBitmapCore.GetPixelPtrUnsafe(X, Y: Integer): PRGBPixel;
 begin
-  Result := FPixels;
-  Inc(Result, Y * FRowPixelStride * FSizeOfPixel + X * FSizeOfPixel);
+  Result := GetRGBBitmapPixelPtr(Self, X, Y);
 end;
 
 function TRGBBitmapCore.GetPixelPtr(X, Y: Integer): PRGBPixel;
 begin
   if (X >= 0) and (X < FWidth) and (Y >= 0) and (Y < FHeight) then
-    Result := GetPixelPtrUnsafe(X, Y)
+    Result := GetRGBBitmapPixelPtr(Self, X, Y)
   else
     Result := nil;
 end;
 
 procedure TRGBBitmapCore.Clear;
 begin
-  FillByte(Pixels^, Height * RowPixelStride * SizeOfPixel, 0);
+  FillByte(Pixels^, Size, 0);
 end;
 
 procedure TRGBBitmapCore.ClearWhite;
 begin
-  FillByte(Pixels^, Height * RowPixelStride * SizeOfPixel, $FF);
+  FillByte(Pixels^, Size, $FF);
 end;
 
 procedure TRGBBitmapCore.Invert;
@@ -430,7 +606,7 @@ end;
 
 procedure TRGBBitmapCore.Rotate180;
 begin
-   Rotate180CWRGBBitmap(Self);
+  Rotate180CWRGBBitmap(Self);
 end;
 
 procedure TRGBBitmapCore.Rotate270;
@@ -497,7 +673,6 @@ var
 begin
   W := ARect.Right - ARect.Left;
   H := ARect.Bottom - ARect.Top;
-  AImage.GetDescriptionFromDevice(0);
   AImage.SetSize(W, H);
   try
     for J := 0 to Pred(H) do
@@ -517,34 +692,32 @@ end;
 function TRGB32BitmapCore.Get32PixelPtrUnsafe(X, Y: Integer
   ): PRGB32Pixel;
 begin
-  Result := PRGB32Pixel(GetPixelPtrUnsafe(X, Y));
+  Result := PRGB32Pixel(GetRGBBitmapPixelPtr(Self, X, Y));
 end;
 
 function TRGB32BitmapCore.Get32PixelPtr(X, Y: Integer): PRGB32Pixel;
 begin
-  Result := PRGB32Pixel(GetPixelPtr(X, Y));
+  if (X >= 0) and (X < FWidth) and (Y >= 0) and (Y < FHeight) then
+    Result := PRGB32Pixel(GetRGBBitmapPixelPtr(Self, X, Y))
+  else
+    Result := nil;
 end;
 
 function TRGB32BitmapCore.Get32PixelUnsafe(X, Y: Integer): TRGB32Pixel;
 begin
-  Result := Get32PixelPtrUnsafe(X, Y)^;
+  Result := GetRGBBitmapPixelPtr(Self, X, Y)^;
 end;
 
 procedure TRGB32BitmapCore.Set32PixelUnsafe(X, Y: Integer;
   Value: TRGB32Pixel);
 begin
-  Get32PixelPtrUnsafe(X, Y)^ := Value;
+  GetRGBBitmapPixelPtr(Self, X, Y)^ := Value;
 end;
 
 procedure TRGB32BitmapCore.Set32Pixel(X, Y: Integer; Value: TRGB32Pixel);
-var
-  P: PRGB32Pixel;
 begin
-  P := Get32PixelPtr(X, Y);
-  if P <> nil then
-  begin
-    P^ := Value;
-  end;
+  if (X >= 0) and (X < FWidth) and (Y >= 0) and (Y < FHeight) then
+    PRGB32Pixel(GetRGBBitmapPixelPtr(Self, X, Y))^ := Value;
 end;
 
 { TRGB8BitmapCore }
@@ -616,34 +789,33 @@ end;
 
 function TRGB8BitmapCore.Get8PixelPtrUnsafe(X, Y: Integer): PRGB8Pixel;
 begin
-  Result := GetPixelPtrUnsafe(X, Y);
+  Result := GetRGBBitmapPixelPtr(Self, X, Y);
 end;
 
 function TRGB8BitmapCore.Get8PixelPtr(X, Y: Integer): PRGB8Pixel;
 begin
-  Result := GetPixelPtr(X, Y);
+  if (X >= 0) and (X < FWidth) and (Y >= 0) and (Y < FHeight) then
+    Result := GetRGBBitmapPixelPtr(Self, X, Y)
+  else
+    Result := nil;
 end;
 
 function TRGB8BitmapCore.Get8PixelUnsafe(X, Y: Integer): TRGB8Pixel;
 begin
-  Result := GetPixelPtrUnsafe(X, Y)^;
+  Result := GetRGBBitmapPixelPtr(Self, X, Y)^;
 end;
 
 procedure TRGB8BitmapCore.Set8PixelUnsafe(X, Y: Integer; Value: TRGB8Pixel);
 begin
-  GetPixelPtrUnsafe(X, Y)^ := Value;
+  GetRGBBitmapPixelPtr(Self, X, Y)^ := Value;
 end;
 
 procedure TRGB8BitmapCore.Set8Pixel(X, Y: Integer; Value: TRGB8Pixel);
-var
-  P: PRGB8Pixel;
 begin
-  P := Get8PixelPtr(X, Y);
-  if P <> nil then
-  begin
-    P^ := Value;
-  end;
+  if (X >= 0) and (X < FWidth) and (Y >= 0) and (Y < FHeight) then
+    GetRGBBitmapPixelPtr(Self, X, Y)^ := Value;
 end;
+
 
 end.
 

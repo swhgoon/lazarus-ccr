@@ -5,17 +5,16 @@
     <Version Value="5"/>
     <General>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -23,23 +22,25 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lazrgbgraphics"/>
       </Item1>
       <Item2>
-        <PackageName Value="lazrgbgraphics"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="35">
       <Unit0>
         <Filename Value="rgbexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RGBExample"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="28" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="31"/>
       </Unit0>
       <Unit1>
         <Filename Value="rgbunit.pas"/>
@@ -47,20 +48,18 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="rgbunit.lrs"/>
         <UnitName Value="RGBUnit"/>
-        <CursorPos X="70" Y="110"/>
-        <TopLine Value="85"/>
+        <CursorPos X="32" Y="38"/>
+        <TopLine Value="65"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\rgbgraphics.pas"/>
         <UnitName Value="RGBGraphics"/>
-        <CursorPos X="1" Y="9"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="19" Y="85"/>
+        <TopLine Value="72"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="unit1.lrs"/>
@@ -71,31 +70,263 @@
       <Unit4>
         <Filename Value="..\rgbroutines.pas"/>
         <UnitName Value="RGBRoutines"/>
-        <CursorPos X="79" Y="9"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="15" Y="52"/>
+        <TopLine Value="47"/>
+        <UsageCount Value="12"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\rgbutils.pas"/>
         <UnitName Value="RGBUtils"/>
-        <CursorPos X="79" Y="8"/>
-        <TopLine Value="1"/>
+        <CursorPos X="29" Y="53"/>
+        <TopLine Value="35"/>
         <UsageCount Value="10"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\rgbtypes.pas"/>
         <UnitName Value="RGBTypes"/>
-        <CursorPos X="79" Y="9"/>
+        <CursorPos X="3" Y="500"/>
+        <TopLine Value="498"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\lazrgbgraphics.pas"/>
+        <UnitName Value="LazRGBGraphics"/>
+        <CursorPos X="30" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\rgbwinroutines.pas"/>
+        <UnitName Value="RGBWinRoutines"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="11"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\rgbgtkroutines.pas"/>
+        <UnitName Value="RGBGTKRoutines"/>
+        <CursorPos X="15" Y="38"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\lazarus\lcl\include\canvas.inc"/>
+        <CursorPos X="1" Y="1460"/>
+        <TopLine Value="1446"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\lazarus\lcl\include\customcontrol.inc"/>
+        <CursorPos X="1" Y="81"/>
+        <TopLine Value="67"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\lazarus\lcl\include\customform.inc"/>
+        <CursorPos X="1" Y="804"/>
+        <TopLine Value="790"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\lazarus\lcl\include\wincontrol.inc"/>
+        <CursorPos X="1" Y="3062"/>
+        <TopLine Value="3048"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\gtk\gtkproc.inc"/>
+        <CursorPos X="1" Y="3645"/>
+        <TopLine Value="3631"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\interfaces.pp"/>
+        <UnitName Value="Interfaces"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="17"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\rgbcarbonroutines.pas"/>
+        <UnitName Value="RGBCarbonRoutines"/>
+        <CursorPos X="61" Y="73"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="11"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="\usr\local\share\fpcsrc\packages\extra\gtk2\gtk+\gtk\gtk2.pas"/>
+        <UnitName Value="gtk2"/>
+        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
-      </Unit6>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\interfaces.pas"/>
+        <UnitName Value="Interfaces"/>
+        <CursorPos X="52" Y="11"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\..\..\lazarus\lcl\extdlgs.pas"/>
+        <UnitName Value="ExtDlgs"/>
+        <CursorPos X="30" Y="55"/>
+        <TopLine Value="41"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carboncanvas.pp"/>
+        <UnitName Value="CarbonCanvas"/>
+        <CursorPos X="1" Y="708"/>
+        <TopLine Value="694"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonint.pas"/>
+        <UnitName Value="CarbonInt"/>
+        <CursorPos X="20" Y="114"/>
+        <TopLine Value="152"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonmenus.pp"/>
+        <UnitName Value="CarbonMenus"/>
+        <CursorPos X="52" Y="351"/>
+        <TopLine Value="324"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonlclintf.inc"/>
+        <CursorPos X="67" Y="499"/>
+        <TopLine Value="484"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonprivate.pp"/>
+        <UnitName Value="CarbonPrivate"/>
+        <CursorPos X="17" Y="322"/>
+        <TopLine Value="312"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonprivatewindow.inc"/>
+        <CursorPos X="9" Y="748"/>
+        <TopLine Value="744"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbongdiobjects.pp"/>
+        <UnitName Value="CarbonGDIObjects"/>
+        <CursorPos X="24" Y="163"/>
+        <TopLine Value="161"/>
+        <UsageCount Value="10"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\..\lazarus\lcl\interfaces\carbon\carbonwinapi.inc"/>
+        <CursorPos X="24" Y="181"/>
+        <TopLine Value="184"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\..\lazarus\lcl\lclintf.pas"/>
+        <UnitName Value="LCLIntf"/>
+        <CursorPos X="35" Y="38"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32int.pp"/>
+        <UnitName Value="Win32Int"/>
+        <CursorPos X="22" Y="188"/>
+        <TopLine Value="182"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32object.inc"/>
+        <CursorPos X="16" Y="422"/>
+        <TopLine Value="420"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\lazarus\lcl\interfacebase.pp"/>
+        <UnitName Value="InterfaceBase"/>
+        <CursorPos X="5" Y="62"/>
+        <TopLine Value="48"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\carbon\carbonobject.inc"/>
+        <CursorPos X="17" Y="873"/>
+        <TopLine Value="869"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <UnitName Value="CompilerOptionsDlg"/>
+        <CursorPos X="31" Y="2452"/>
+        <TopLine Value="2436"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\..\lazarus\ide\lazconf.pp"/>
+        <UnitName Value="LazConf"/>
+        <CursorPos X="38" Y="62"/>
+        <TopLine Value="44"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit34>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="9" HistoryIndex="8">
+      <Position1>
+        <Filename Value="rgbunit.pas"/>
+        <Caret Line="22" Column="36" TopLine="124"/>
+      </Position1>
+      <Position2>
+        <Filename Value="rgbunit.pas"/>
+        <Caret Line="33" Column="10" TopLine="28"/>
+      </Position2>
+      <Position3>
+        <Filename Value="rgbunit.pas"/>
+        <Caret Line="33" Column="10" TopLine="28"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\lazarus\lcl\interfaces\win32\win32object.inc"/>
+        <Caret Line="422" Column="16" TopLine="420"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <Caret Line="89" Column="26" TopLine="73"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <Caret Line="546" Column="26" TopLine="529"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <Caret Line="548" Column="26" TopLine="534"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <Caret Line="863" Column="27" TopLine="849"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\lazarus\ide\compileroptionsdlg.pp"/>
+        <Caret Line="2452" Column="31" TopLine="2436"/>
+      </Position9>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
+      <LCLWidgetType Value="win32"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <CodeGeneration>
@@ -103,9 +334,7 @@
     </CodeGeneration>
     <Linking>
       <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
+        <LinkerOptions Value="-framework carbon"/>
       </Options>
     </Linking>
     <Other>

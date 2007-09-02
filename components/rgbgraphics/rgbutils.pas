@@ -24,7 +24,6 @@ unit RGBUtils;
 
 {$ifdef fpc}
   {$mode objfpc}{$H+}
-  {$define hasinline}
 {$endif} 
 
 interface
@@ -41,7 +40,7 @@ type
   
   procedure SwapInt(var A, B: Integer);
   procedure SwapPtr(var A, B: Pointer);
-  procedure MinMax(var A, B: Integer); {$ifdef hasinline}inline;{$endif}
+  procedure MinMax(var A, B: Integer);
 
   procedure SortRect(var X1, Y1, X2, Y2: Integer); overload;
   procedure SortRect(var R: TRect); overload;
