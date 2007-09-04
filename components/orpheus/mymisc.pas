@@ -279,6 +279,9 @@ function GetTabbedTextExtent(hDC: HDC; lpString: PChar;
 function TabbedTextOut(hDC: HDC; X, Y: Integer; lpString: PChar; 
                        nCount, nTabPositions: Integer;
                        var lpnTabStopPositions; nTabOrigin: Integer): Longint;
+function SetTextAlign(DC: HDC; Flags: UINT): UINT;
+function GetMapMode(DC: HDC): Integer;
+function SetMapMode(DC: HDC; p2: Integer): Integer;
 //function LoadBitmap(hInstance: HINST; lpBitmapName: PAnsiChar): HBITMAP;
 function LoadCursor(hInstance: HINST; lpCursorName: PAnsiChar): HCURSOR;
 function EnumThreadWindows(dwThreadId: DWORD; lpfn: TFNWndEnumProc; lParam: LPARAM): BOOL;
@@ -695,6 +698,30 @@ begin
 {$IFDEF MSWINDOWS}
   Result := Windows.TabbedTextOut(hDC, X, Y, lpString, nCount, nTabPositions,
                                   lpnTabStopPositions, nTabOrigin);
+{$ELSE}
+{$ENDIF}
+end;
+
+function SetTextAlign(DC: HDC; Flags: UINT): UINT;
+begin
+{$IFDEF MSWINDOWS}
+  Result := Windows.SetTextAlign(DC, Flags);
+{$ELSE}
+{$ENDIF}
+end;
+
+function GetMapMode(DC: HDC): Integer;
+begin
+{$IFDEF MSWINDOWS}
+  Result := Windows.GetMapMode(DC);
+{$ELSE}
+{$ENDIF}
+end;
+
+function SetMapMode(DC: HDC; p2: Integer): Integer;
+begin
+{$IFDEF MSWINDOWS}
+  Result := Windows.SetMapMode(DC, p2);
 {$ELSE}
 {$ENDIF}
 end;
