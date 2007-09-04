@@ -11359,7 +11359,9 @@ begin
   FIndent := 18;
 
   FPlusBM := TBitmap.Create;
+  FPlusBM.Transparent := True;
   FMinusBM := TBitmap.Create;
+  FMinusBM.Transparent := True;
 
   //FBorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
@@ -13338,10 +13340,8 @@ begin
       //The TCanvas of VCL does not has width and height. It cause a conflict here
       FMinusBM.Width := ButtonSize;
       FMinusBM.Height := ButtonSize;
-      {
-      Transparent := True;
-      TransparentColor := clFuchsia;
-      }
+      //Reset mask
+      MaskHandle := 0;
       //todo: remove when transparency is fixed in gtk
       {$ifdef Windows}
       Brush.Color := clFuchsia;
@@ -13384,10 +13384,8 @@ begin
     begin
       FPlusBM.Width := ButtonSize;
       FPlusBM.Height := ButtonSize;
-      {
-      Transparent := True;
-      TransparentColor := clFuchsia;
-      }
+      //Reset mask
+      MaskHandle := 0;
       //todo: remove when transparency is fixed in gtk
       {$ifdef Windows}
       Brush.Color := clFuchsia;
