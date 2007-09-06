@@ -3370,6 +3370,7 @@ resourcestring
   SCannotSetUserData = 'Cannot set initial user data because there is not enough user data space allocated.';
 
 const
+  TreeButtonSize = 9; //default size for tree buttons (minus/plus)
   ClipboardStates = [tsCopyPending, tsCutPending];
   DefaultScrollUpdateFlags = [suoRepaintHeader, suoRepaintScrollbars, suoScrollClientArea, suoUpdateNCArea];
   MinimumTimerInterval = 1; // minimum resolution for timeGetTime
@@ -4480,6 +4481,31 @@ begin
   end;
 end;
 
+{$ifdef Windows}
+procedure ClearAlphaChannel(Bitmap: HBitmap; PixelCount: Integer);
+var
+  i: Integer;
+  DIB: TDIBSection;
+  P: PCardinal;
+begin
+  P := nil;
+  if Bitmap <> 0 then
+  begin
+    if GetObject(Bitmap, SizeOf(DIB), @DIB) = SizeOf(DIB) then
+    begin
+      if DIB.dsBm.bmPlanes * DIB.dsBm.bmBitsPixel = 32 then
+        P := DIB.dsBm.bmBits;
+    end;
+  end;
+
+  if P = nil then
+    Exit;
+  for i:= 0 to PixelCount - 1 do
+    (P + i)^ := (P + i)^ and $00FFFFFF;
+end;
+{$endif}
+
+
 function CalculateScanline(Bits: Pointer; Width, Height, Row: Integer): Pointer;
 
 // Helper function to calculate the start address for the given row.
@@ -4673,11 +4699,7 @@ begin
   Width := 16;
   Height := 16;
   {$endif}
-  {$ifdef Windows}
-  //Transparent property does not work for 4bpp bitmaps (LCL bug 8823)
-  //BM.Transparent := False;
-  BM.TransparentColor := clNone;
-  {$endif}
+  // Use the 4 node images from the dark check set.
   BM.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
   //DrawFrameControl is not properly implemented in gtk
   {$ifdef Windows}
@@ -4687,7 +4709,9 @@ begin
   // Add the 20 system checkbox and radiobutton images.
   for I := 0 to 19 do
     AddSystemImage(I);
-  // Add the 4 node images from the dark check set.
+  //todo: there's a bug in LCL that prevents mask creation of loaded bitmaps in windows
+  //is necessary to remove the alpha opacity
+  ClearAlphaChannel(BM.Handle, BM.Height*BM.Width);
   BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
   {$endif}
 end;
@@ -11360,8 +11384,10 @@ begin
 
   FPlusBM := TBitmap.Create;
   FPlusBM.Transparent := True;
+  FPlusBM.PixelFormat := pf32bit;
   FMinusBM := TBitmap.Create;
   FMinusBM.Transparent := True;
+  FMinusBM.PixelFormat := pf32bit;
 
   //FBorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
@@ -13322,7 +13348,6 @@ procedure TBaseVirtualTree.PrepareBitmaps(NeedButtons, NeedLines: Boolean);
 const
   LineBitsDotted: array [0..8] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA, $55);
   LineBitsSolid: array [0..7] of Word = (0, 0, 0, 0, 0, 0, 0, 0);
-  ButtonSize = 9;
 
 var
   PatternBitmap: HBITMAP;
@@ -13338,8 +13363,8 @@ begin
     begin
       // box is always of odd size
       //The TCanvas of VCL does not has width and height. It cause a conflict here
-      FMinusBM.Width := ButtonSize;
-      FMinusBM.Height := ButtonSize;
+      FMinusBM.Width := TreeButtonSize;
+      FMinusBM.Height := TreeButtonSize;
       //Reset mask
       MaskHandle := 0;
       //todo: remove when transparency is fixed in gtk
@@ -13348,13 +13373,13 @@ begin
       {$else}
       Brush.Color := Self.Color;
       {$endif}
-      FillRect(Rect(0, 0, ButtonSize, ButtonSize));
+      FillRect(Rect(0, 0, TreeButtonSize, TreeButtonSize));
       if FButtonStyle = bsTriangle then
       begin
         Brush.Color := clBlack;
         Pen.Color := clBlack;
         Polygon([Point(0, 2), Point(8, 2), Point(4, 6)]);
-        MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
+        MaskHandle := CreateBitmapMask(Handle, TreeButtonSize, TreeButtonSize, clFuchsia);
       end
       else
       begin
@@ -13368,12 +13393,12 @@ begin
               Brush.Color := clWindow;
           end;
           Pen.Color := FColors.TreeLineColor;
-          Rectangle(0, 0, ButtonSize, ButtonSize);
+          Rectangle(0, 0, TreeButtonSize, TreeButtonSize);
           Pen.Color := Self.Font.Color;
-          MoveTo(2, ButtonSize div 2);
-          LineTo(ButtonSize - 2 , ButtonSize div 2);
+          MoveTo(2, TreeButtonSize div 2);
+          LineTo(TreeButtonSize - 2 , TreeButtonSize div 2);
           if FButtonFillMode = fmTransparent then
-            MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
+            MaskHandle := CreateBitmapMask(Handle, TreeButtonSize, TreeButtonSize, clFuchsia);
         end
         else
           FMinusBM.LoadFromLazarusResource('VT_XPBUTTONMINUS');
@@ -13382,8 +13407,8 @@ begin
 
     with FPlusBM, Canvas do
     begin
-      FPlusBM.Width := ButtonSize;
-      FPlusBM.Height := ButtonSize;
+      FPlusBM.Width := TreeButtonSize;
+      FPlusBM.Height := TreeButtonSize;
       //Reset mask
       MaskHandle := 0;
       //todo: remove when transparency is fixed in gtk
@@ -13392,13 +13417,13 @@ begin
       {$else}
       Brush.Color := Self.Color;
       {$endif}
-      FillRect(Rect(0, 0, ButtonSize, ButtonSize));
+      FillRect(Rect(0, 0, TreeButtonSize, TreeButtonSize));
       if FButtonStyle = bsTriangle then
       begin
         Brush.Color := clBlack;
         Pen.Color := clBlack;
         Polygon([Point(2, 0), Point(6, 4), Point(2, 8)]);
-        MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
+        MaskHandle := CreateBitmapMask(Handle, TreeButtonSize, TreeButtonSize, clFuchsia);
       end
       else
       begin
@@ -13412,14 +13437,14 @@ begin
               Brush.Color := clWindow;
           end;
           Pen.Color := FColors.TreeLineColor;
-          Rectangle(0, 0, ButtonSize, ButtonSize);
+          Rectangle(0, 0, TreeButtonSize, TreeButtonSize);
           Pen.Color := Self.Font.Color;
-          MoveTo(2, ButtonSize div 2);
-          LineTo(ButtonSize - 2 , ButtonSize div 2);
-          MoveTo(ButtonSize div 2, 2);
-          LineTo(ButtonSize div 2, ButtonSize - 2);
+          MoveTo(2, TreeButtonSize div 2);
+          LineTo(TreeButtonSize - 2 , TreeButtonSize div 2);
+          MoveTo(TreeButtonSize div 2, 2);
+          LineTo(TreeButtonSize div 2, TreeButtonSize - 2);
           if FButtonFillMode = fmTransparent then
-            MaskHandle := CreateBitmapMask(Handle, ButtonSize, ButtonSize, clFuchsia);
+            MaskHandle := CreateBitmapMask(Handle, TreeButtonSize, TreeButtonSize, clFuchsia);
         end
         else
           FPlusBM.LoadFromLazarusResource('VT_XPBUTTONPLUS');
@@ -22235,8 +22260,8 @@ begin
     {$endif ThemeSupport}
       with FCheckImages do
       begin
-        StretchMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
-          Index * Height, 0, Height, Height, MaskHandle, 0, 0, 0);
+        DirectMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
+          Index * Height, 0, MaskHandle);
       end;
   end;
   Logger.ExitMethod([lcCheck],'PaintCheckImage');
@@ -22346,7 +22371,9 @@ begin
     XPos := R.Right - ButtonX - Bitmap.Width;
   Logger.SendBitmap([lcPaintBitmap],'NodeButton',Bitmap);
   // Need to draw this masked.
-  Canvas.Draw(XPos, R.Top + ButtonY, Bitmap);
+  DirectMaskBlt(Canvas.Handle, XPos, R.Top + ButtonY, TreeButtonSize, TreeButtonSize, Bitmap.Canvas.Handle,
+    0, 0, Bitmap.MaskHandle);
+
   Logger.ExitMethod([lcPaintDetails],'PaintNodeButton');
 end;
 
