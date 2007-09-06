@@ -20931,6 +20931,8 @@ var
   NewCheckState: TCheckState;
   AltPressed: Boolean;   // Pressing the Alt key enables special processing for selection.
   FullRowDrag: Boolean;  // Start dragging anywhere within a node's bound.
+  //LCL
+  FocusCanChange: Boolean; // Focus changing is allowed
 
 begin
   if [tsWheelPanning, tsWheelScrolling] * FStates <> [] then
@@ -21049,8 +21051,12 @@ begin
     with HitInfo, Message do
       CanClear := not AutoDrag and
         (not (tsRightButtonDown in FStates) or not HasPopupMenu(HitNode, HitColumn, Point(XPos, YPos)));
-    if (not (IsAnyHit or FullRowDrag) and MultiSelect and ShiftEmpty) or
-      (IsAnyHit and (not NodeSelected or (NodeSelected and CanClear)) and (ShiftEmpty or not MultiSelect)) then
+
+    //lcl
+    FocusCanChange := DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column);
+
+    if FocusCanChange and ((not (IsAnyHit or FullRowDrag) and MultiSelect and ShiftEmpty) or
+      (IsAnyHit and (not NodeSelected or (NodeSelected and CanClear)) and (ShiftEmpty or not MultiSelect))) then
     begin
       Assert(not (tsClearPending in FStates), 'Pending and direct clearance are mutual exclusive!');
 
@@ -21096,8 +21102,7 @@ begin
     FLastClickPos := Point(Message.XPos, Message.YPos);
 
     // Handle selection and node focus change.
-    if (IsHit or IsCellHit) and
-       DoFocusChanging(FFocusedNode, HitInfo.HitNode, FFocusedColumn, Column) then
+    if IsAnyHit and FocusCanChange then
     begin
       if NewColumn then
       begin
