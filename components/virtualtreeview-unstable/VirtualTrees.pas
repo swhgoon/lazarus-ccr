@@ -11384,10 +11384,10 @@ begin
 
   FPlusBM := TBitmap.Create;
   FPlusBM.Transparent := True;
-  FPlusBM.PixelFormat := pf32bit;
+  FPlusBM.PixelFormat := OptimalPixelFormat;
   FMinusBM := TBitmap.Create;
   FMinusBM.Transparent := True;
-  FMinusBM.PixelFormat := pf32bit;
+  FMinusBM.PixelFormat := OptimalPixelFormat;
 
   //FBorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
@@ -27450,6 +27450,12 @@ begin
   Logger.Send([lcPaintHeader],'ClientRect',ClientRect);
   Logger.Send([lcPaintHeader],'TreeRect',GetTreeRect);
   Logger.Send([lcPaintHeader],'OffsetX: %d  OffsetY: %d',[OffsetX,OffsetY]);
+  //lcl changes to 24bit color depth when screen depth is 32 bit
+  //todo: remove when this limitation is removed
+  {$ifdef Windows}
+  if (PixelFormat = pfDevice) and (ScreenInfo.ColorDepth = 32) then
+    PixelFormat := pf32bit;
+  {$endif}
   if not (tsPainting in FStates) then
   begin
     DoStateChange([tsPainting]);
