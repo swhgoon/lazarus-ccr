@@ -28,15 +28,10 @@
 {$define EnableOLE}
 {.$define EnableNativeTVM}
 {.$define EnablePrint}
-{$define NeedWindows}
 {.$define EnableNCFunctions}
 {$define EnableAdvancedGraphics}
 {$define EnableAlphaBlend}
-{$define EnableHeader}
-{$define EnableTimer}
 {.$define EnableAccessible}
-{$define UseExternalDragManager}
-{$define UseDelphiCompat}
 
 //under linux the performance is poor with threading enabled
 {$ifdef Windows}
