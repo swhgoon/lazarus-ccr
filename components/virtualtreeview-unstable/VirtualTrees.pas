@@ -11383,10 +11383,8 @@ begin
   FIndent := 18;
 
   FPlusBM := TBitmap.Create;
-  FPlusBM.Transparent := True;
   FPlusBM.PixelFormat := OptimalPixelFormat;
   FMinusBM := TBitmap.Create;
-  FMinusBM.Transparent := True;
   FMinusBM.PixelFormat := OptimalPixelFormat;
 
   //FBorderStyle := bsSingle;
