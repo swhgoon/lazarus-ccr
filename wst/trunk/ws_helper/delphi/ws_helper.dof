@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=C:\Programmes\lazarus\wst\trunk\fcl-units\rtl\;C:\Programmes\lazarus\wst\trunk\;C:\Programmes\lazarus\wst\trunk\fcl-units\fcl-passrc\src\
 UsePackages=0
 [Parameters]
-RunParams=-u -i -p -b -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\utils\googleapi\GoogleSearch.wsdl"
+RunParams=-uA -i -p -b -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\wst\trunk\type_lib_edtr\files\company.xsd"
 HostApplication=
 Launcher=
 UseLauncher=0
@@ -149,14 +149,15 @@ Item0=C:\Programmes\lazarus\wst\trunk\fcl-units\rtl\;C:\Programmes\lazarus\wst\t
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=7
+Count=8
 Item0=..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl\inc;..\..\wst_rtti_filter
-Item1=..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl;..\..\wst_rtti_filter
-Item2=..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl
-Item3=..\;..\..\;..\..\fcl-units\fcl-passrc\src
-Item4=..\;..\..\;..\..\fcl-passrc\src
-Item5=..\;..\..\
-Item6=..\
+Item1=$(DELPHI)\Lib\Debug;C:\PROGRA~1\Borland\Delphi7\MyTools\JVCL\3.20\jcl\lib\d7\debug;..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl\inc;..\..\wst_rtti_filter
+Item2=..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl;..\..\wst_rtti_filter
+Item3=..\;..\..\;..\..\fcl-units\fcl-passrc\src;..\..\fcl-units\rtl
+Item4=..\;..\..\;..\..\fcl-units\fcl-passrc\src
+Item5=..\;..\..\;..\..\fcl-passrc\src
+Item6=..\;..\..\
+Item7=..\
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=obj

@@ -421,7 +421,6 @@ procedure TWsdlParser.Prepare(const AModuleName : string);
 var
   locAttCursor : IObjectCursor;
   locObj : TDOMNodeRttiExposer;
-  
 begin
   CreateWstInterfaceSymbolTable(SymbolTable);
   FModule := TPasModule(SymbolTable.CreateElement(TPasModule,AModuleName,SymbolTable.Package,visDefault,'',0));
@@ -443,7 +442,7 @@ begin
                       ParseFilter(CreateQualifiedNameFilterStr(s_service,FWsdlShortNames),TDOMNodeRttiExposer)
                     );
   FServiceCursor.Reset();
-  
+
   FBindingCursor := CreateCursorOn(
                       FChildCursor.Clone() as IObjectCursor,
                       ParseFilter(CreateQualifiedNameFilterStr(s_binding,FWsdlShortNames),TDOMNodeRttiExposer)

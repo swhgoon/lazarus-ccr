@@ -168,7 +168,7 @@ var
 
 implementation
 uses view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
-     wsdl2pas_imp, source_utils, command_line_parser, generator, metadata_generator,
+     xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
      binary_streamer, wst_resources_utils, wsdl_generator,
      uabout, edit_helper, udm, ufrmsaveoption, pparser
      {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF};
@@ -249,7 +249,7 @@ function ParseWsdlFile(
 ):TwstPasTreeContainer;overload;
 var
   locDoc : TXMLDocument;
-  prsr : TWsdlParser;
+  prsr : IParser;
   symName : string;
 begin
   Result := nil;
@@ -262,15 +262,13 @@ begin
   try
     Result := TwstPasTreeContainer.Create();
     try
-      prsr := TWsdlParser.Create(locDoc,Result);
-      prsr.OnMessage := ANotifier;
-      prsr.Parse(pmAllTypes,symName);
+      prsr := TWsdlParser.Create(locDoc,Result,ANotifier);
+      prsr.Execute(pmAllTypes,symName);
     except
       FreeAndNil(Result);
       raise;
     end;
   finally
-    FreeAndNil(prsr);
     FreeAndNil(locDoc);
   end;
 end;
@@ -389,12 +387,15 @@ begin
 end;
 
 function CreateSymbolTable(const AName : string):TwstPasTreeContainer ;
+var
+  mdl : TPasModule;
 begin
   Result := TwstPasTreeContainer.Create();
   try
     CreateWstInterfaceSymbolTable(Result);
-    Result.CreateElement(TPasModule,AName,Result.Package,visDefault,'',0);
-    Result.CurrentModule.InterfaceSection := TPasSection(Result.CreateElement(TPasSection,'',Result.CurrentModule,visDefault,'',0));
+    mdl := TPasModule(Result.CreateElement(TPasModule,AName,Result.Package,visDefault,'',0));
+    mdl.InterfaceSection := TPasSection(Result.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    Result.Package.Modules.Add(mdl);
   except
     FreeAndNil(Result);
     raise;
@@ -708,6 +709,7 @@ var
   objPtr : ISymbolPainter;
   nd : TTreeNode;
 begin
+  mmoLog.Clear();
   trvSchema.BeginUpdate();
   try
     trvSchema.Items.Clear();

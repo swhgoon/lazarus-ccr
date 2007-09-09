@@ -46,8 +46,9 @@ type
   end;
 
 
-  function SetLogger(ALogger : ILogger) : ILogger;
-  function GetLogger() : ILogger;
+  function HasLogger() : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function SetLogger(ALogger : ILogger) : ILogger;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetLogger() : ILogger;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
 implementation
 
@@ -61,6 +62,11 @@ end;
 function GetLogger() : ILogger;
 begin
   Result := FLogger;
+end;
+
+function HasLogger() : Boolean;
+begin
+  Result := Assigned(FLogger);
 end;
 
 { TSimpleConsoleLogger }

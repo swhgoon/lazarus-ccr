@@ -15,7 +15,7 @@ const
   sWST_META = 'wst_meta';
   
 type
-  TSourceFileType = ( sftPascal, sftWSDL );
+  TSourceFileType = ( sftPascal, sftWSDL, sftXsd );
   
 var
   inFileName,outPath,errStr : string;
@@ -41,6 +41,8 @@ var
       sourceType := sftPascal;
     end else if AnsiSameText(ExtractFileExt(inFileName),'.WSDL') then begin
       sourceType := sftWSDL;
+    end else if AnsiSameText(ExtractFileExt(inFileName),'.XSD') then begin
+      sourceType := sftXsd;
     end;
     if Result then begin
       if ( AppOptions = [] ) then begin
@@ -62,6 +64,10 @@ var
     if AnsiSameText('A',Trim(GetOptionArg(cloInterface))) then begin
       parserMode := pmAllTypes;
     end;
+
+    if ( sourceType = sftXsd ) then begin
+      AppOptions := AppOptions - [ cloProxy, cloImp, cloBinder, cloWsdl ];
+    end;
   end;
 
   function GenerateSymbolTable() : Boolean ;
@@ -74,25 +80,48 @@ var
     procedure ParseWsdlFile();
     var
       locDoc : TXMLDocument;
-      prsr : TWsdlParser;
+      prsrW : IParser;
+    begin
+      ReadXMLFile(locDoc,inFileName);
+{$IFNDEF WST_INTF_DOM}
+      try
+{$ENDIF}
+        prsrW := TWsdlParser.Create(locDoc,symtable);// as IParser;
+        prsrW.Execute(parserMode,ChangeFileExt(ExtractFileName(inFileName),''));
+{$IFNDEF WST_INTF_DOM}
+      finally
+        prsrW := nil;
+        ReleaseDomNode(locDoc);
+      end;
+{$ENDIF}
+    end;
+
+    procedure ParseXsdFile();
+    var
+      locDoc : TXMLDocument;
+      prsr : IXsdPaser;
     begin
       prsr := nil;
       ReadXMLFile(locDoc,inFileName);
+{$IFNDEF WST_INTF_DOM}
       try
-        prsr := TWsdlParser.Create(locDoc,symtable);
-        prsr.Parse(parserMode,ChangeFileExt(ExtractFileName(inFileName),''));
+{$ENDIF}
+      prsr := TXsdParser.Create(locDoc,symtable,ChangeFileExt(ExtractFileName(inFileName),'')) as IXsdPaser;
+      prsr.ParseTypes();
+{$IFNDEF WST_INTF_DOM}
       finally
-        FreeAndNil(prsr);
-        FreeAndNil(locDoc);
+        ReleaseDomNode(locDoc);
       end;
+{$ENDIF}
     end;
-    
+
   begin
     try
       WriteLn('Parsing the file : ', inFileName);
       case sourceType of
         sftPascal : ParsePascalFile();
         sftWSDL   : ParseWsdlFile();
+        sftXsd    : ParseXsdFile();
       end;
       Result := True;
     except
@@ -112,7 +141,7 @@ var
       GenerateWSDL(ASymbol,doc);
       WriteXML(doc,ADest);
     finally
-      FreeAndNil(doc);
+      ReleaseDomNode(doc);
     end;
   end;
 
@@ -198,6 +227,11 @@ var
   end;
 
 begin
+{$IFDEF FPC}
+  {$IF Declared(SetHeapTraceOutput) }
+    SetHeapTraceOutput('heapOut.txt');
+  {$IFEND}
+{$ENDIF}
   osParam := 'windows';
   targetParam := 'x86';
   

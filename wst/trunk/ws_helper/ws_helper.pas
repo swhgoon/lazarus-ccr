@@ -37,10 +37,13 @@ uses
   XMLWrite,
   XMLRead,
   wst_fpc_xml,
-  wsdl2pas_imp,
   pastree,
   pparser,
   pascal_parser_intf,
-  logger_intf;
+  logger_intf,
+  xsd_parser,
+  ws_parser_imp,
+  wsdl_parser;
+
   
 {$INCLUDE ws_helper_prog.inc}

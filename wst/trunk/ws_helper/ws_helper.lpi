@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="7"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -24,7 +24,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="-i -p -b -a&quot;C:\Programmes\lazarus\release\tests\files&quot; &quot;C:\Programmes\lazarus\release\tests\files\AWSECommerceService.pas&quot; >test_res_AWSECommerceService2.txt"/>
+        <CommandLineParams Value="-uA -i -p -b -a&quot;C:\Programmes\lazarus\wst\trunk\tests\files&quot; &quot;C:\Programmes\lazarus\wst\trunk\type_lib_edtr\files\iplookup.wsdl&quot;"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -33,13 +33,13 @@
         <PackageName Value="FCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="76">
+    <Units Count="88">
       <Unit0>
         <Filename Value="ws_helper.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ws_helper"/>
-        <CursorPos X="32" Y="25"/>
-        <TopLine Value="21"/>
+        <CursorPos X="38" Y="31"/>
+        <TopLine Value="20"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -50,7 +50,7 @@
         <UnitName Value="ws_parser"/>
         <CursorPos X="1" Y="487"/>
         <TopLine Value="444"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="19"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit1>
@@ -58,9 +58,9 @@
         <Filename Value="generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="generator"/>
-        <CursorPos X="45" Y="3"/>
-        <TopLine Value="67"/>
-        <EditorIndex Value="14"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="20"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="3">
           <Item0 X="69" Y="935" ID="1"/>
@@ -84,9 +84,9 @@
         <Filename Value="parserutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="parserutils"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="10"/>
+        <CursorPos X="18" Y="400"/>
+        <TopLine Value="381"/>
+        <EditorIndex Value="17"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -94,9 +94,9 @@
         <Filename Value="source_utils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="source_utils"/>
-        <CursorPos X="32" Y="29"/>
+        <CursorPos X="17" Y="19"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="13"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -125,17 +125,15 @@
         <UnitName Value="command_line_parser"/>
         <CursorPos X="11" Y="39"/>
         <TopLine Value="19"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
         <CursorPos X="20" Y="19"/>
-        <TopLine Value="132"/>
-        <EditorIndex Value="7"/>
+        <TopLine Value="114"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -153,9 +151,7 @@
         <UnitName Value="wst_resources_utils"/>
         <CursorPos X="26" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="..\wsdl_to_pascal\wsdl2pas_imp.pas"/>
@@ -177,16 +173,18 @@
         <UnitName Value="dom_cursors"/>
         <CursorPos X="13" Y="353"/>
         <TopLine Value="317"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\wst_rtti_filter\cursor_intf.pas"/>
         <UnitName Value="cursor_intf"/>
-        <CursorPos X="32" Y="41"/>
-        <TopLine Value="1"/>
+        <CursorPos X="1" Y="159"/>
+        <TopLine Value="133"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="101"/>
+        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\..\..\..\lazarusClean\fpc\2.0.4\source\rtl\objpas\sysutils\sysstrh.inc"/>
@@ -205,13 +203,11 @@
         <UnitName Value="wsdl2pas_imp"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="11"/>
         <UsageCount Value="102"/>
         <Bookmarks Count="2">
           <Item0 X="21" Y="763" ID="3"/>
           <Item1 X="50" Y="657" ID="5"/>
         </Bookmarks>
-        <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\..\..\..\lazarus211\fpc\2.1.1\source\rtl\inc\getopts.pp"/>
@@ -292,10 +288,10 @@
         <Filename Value="pascal_parser_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pascal_parser_intf"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="199"/>
+        <CursorPos X="1" Y="652"/>
+        <TopLine Value="637"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit31>
       <Unit32>
@@ -435,8 +431,8 @@
         <UnitName Value="logger_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="12"/>
-        <UsageCount Value="111"/>
+        <EditorIndex Value="18"/>
+        <UsageCount Value="115"/>
         <Loaded Value="True"/>
       </Unit52>
       <Unit53>
@@ -503,18 +499,18 @@
       </Unit62>
       <Unit63>
         <Filename Value="..\wst_global.inc"/>
-        <CursorPos X="16" Y="1"/>
+        <CursorPos X="25" Y="4"/>
         <TopLine Value="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="10"/>
       </Unit63>
       <Unit64>
         <Filename Value="wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
-        <CursorPos X="34" Y="52"/>
-        <TopLine Value="128"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="64"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="116"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit64>
       <Unit65>
@@ -576,18 +572,19 @@
       <Unit73>
         <Filename Value="..\wst_fpc_xml.pas"/>
         <UnitName Value="wst_fpc_xml"/>
-        <CursorPos X="13" Y="17"/>
-        <TopLine Value="4"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="1" Y="55"/>
+        <TopLine Value="43"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit73>
       <Unit74>
         <Filename Value="ws_helper_prog.inc"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="20"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="33" Y="89"/>
+        <TopLine Value="75"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit74>
       <Unit75>
@@ -597,12 +594,224 @@
         <TopLine Value="486"/>
         <UsageCount Value="15"/>
       </Unit75>
+      <Unit76>
+        <Filename Value="xsd_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="xsd_parser"/>
+        <CursorPos X="16" Y="14"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\heaptrc.pp"/>
+        <UnitName Value="heaptrc"/>
+        <CursorPos X="29" Y="49"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="10"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="wsdl_parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wsdl_parser"/>
+        <CursorPos X="24" Y="178"/>
+        <TopLine Value="162"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="ws_parser_imp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_parser_imp"/>
+        <CursorPos X="52" Y="1265"/>
+        <TopLine Value="1242"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\heaptrc.pp"/>
+        <UnitName Value="heaptrc"/>
+        <CursorPos X="1" Y="182"/>
+        <TopLine Value="167"/>
+        <UsageCount Value="10"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\i386\i386.inc"/>
+        <CursorPos X="1" Y="1110"/>
+        <TopLine Value="1095"/>
+        <UsageCount Value="10"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\objpas\sysutils\fina.inc"/>
+        <CursorPos X="1" Y="32"/>
+        <TopLine Value="17"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\except.inc"/>
+        <CursorPos X="1" Y="223"/>
+        <TopLine Value="208"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit83>
+      <Unit84>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\i386\setjump.inc"/>
+        <CursorPos X="1" Y="36"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit84>
+      <Unit85>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <CursorPos X="9" Y="759"/>
+        <TopLine Value="756"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit85>
+      <Unit86>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\rtti.inc"/>
+        <CursorPos X="1" Y="166"/>
+        <TopLine Value="151"/>
+        <UsageCount Value="10"/>
+      </Unit86>
+      <Unit87>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpash.inc"/>
+        <CursorPos X="23" Y="241"/>
+        <TopLine Value="226"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit87>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="command_line_parser.pas"/>
-        <Caret Line="39" Column="11" TopLine="19"/>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="725" Column="1" TopLine="710"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="727" Column="1" TopLine="712"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="56" Column="1" TopLine="41"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="58" Column="1" TopLine="43"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="53" Column="1" TopLine="38"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="55" Column="1" TopLine="40"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\wst_rtti_filter\cursor_intf.pas"/>
+        <Caret Line="159" Column="1" TopLine="133"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="723" Column="1" TopLine="708"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="724" Column="1" TopLine="709"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="725" Column="1" TopLine="710"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="726" Column="1" TopLine="711"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="144" Column="1" TopLine="129"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="740" Column="1" TopLine="725"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="742" Column="1" TopLine="727"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="145" Column="1" TopLine="130"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="221" Column="1" TopLine="206"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="222" Column="1" TopLine="207"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="549" Column="1" TopLine="546"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="550" Column="1" TopLine="535"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="551" Column="1" TopLine="536"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
+        <Caret Line="555" Column="1" TopLine="564"/>
+      </Position21>
+      <Position22>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="39" Column="35" TopLine="35"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpash.inc"/>
+        <Caret Line="216" Column="37" TopLine="201"/>
+      </Position23>
+      <Position24>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="89" Column="16" TopLine="74"/>
+      </Position24>
+      <Position25>
+        <Filename Value="xsd_parser.pas"/>
+        <Caret Line="134" Column="39" TopLine="132"/>
+      </Position25>
+      <Position26>
+        <Filename Value="ws_helper.pas"/>
+        <Caret Line="31" Column="38" TopLine="20"/>
+      </Position26>
+      <Position27>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="358" Column="7" TopLine="343"/>
+      </Position27>
+      <Position28>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="1140" Column="41" TopLine="1122"/>
+      </Position28>
+      <Position29>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="186" Column="11" TopLine="162"/>
+      </Position29>
+      <Position30>
+        <Filename Value="wsdl_parser.pas"/>
+        <Caret Line="176" Column="12" TopLine="161"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -630,8 +839,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <UseHeaptrc Value="True"/>
+        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>

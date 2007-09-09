@@ -22,18 +22,121 @@ unit parserutils;
 interface
 
 uses
-  SysUtils;
+  SysUtils, Classes
+  {$IFNDEF FPC}, xmldom, wst_delphi_xml{$ELSE},DOM{$ENDIF}
+  , cursor_intf, dom_cursors
+  ;
 
 const
-  sNEW_LINE = {$ifndef Unix}#13#10{$else}#10{$endif};
+  s_address                    : WideString = 'address';
+  s_all                        : WideString = 'all';
+  //s_any                        : WideString = 'any';
+  s_annotation                 : WideString = 'annotation';
+  s_appinfo                    : WideString = 'appinfo';
+  s_array                      : WideString = 'array';
+  s_arrayType                  : WideString = 'arrayType';
+  s_attribute                  : WideString = 'attribute';
+  s_base                       : WideString = 'base';
+  s_binding                    : WideString = 'binding';
+  s_body                       : WideString = 'body';
+  s_complexContent             : WideString = 'complexContent';
+  s_complexType                : WideString = 'complexType';
+  s_customAttributes           : WideString = 'customAttributes';
+  s_document                   : WideString = 'document';
+  s_element                    : WideString = 'element';
+  s_enumeration                : WideString = 'enumeration';
+  s_extension                  : WideString = 'extension';
+  s_guid                       : WideString = 'GUID';
+  s_headerBlock                : WideString = 'headerBlock';
+  s_input                      : WideString = 'input';
+  s_item                       : WideString = 'item';
+  s_location                   : WideString = 'location';
+  s_message                    : WideString = 'message';
+  s_maxOccurs                  : WideString = 'maxOccurs';
+  s_minOccurs                  : WideString = 'minOccurs';
+  s_name                       : WideString = 'name';
+  s_operation                  : WideString = 'operation';
+  s_optional                   : WideString = 'optional';
+  s_output                     : WideString = 'output';
+  s_part                       : WideString = 'part';
+  s_port                       : WideString = 'port';
+  s_portType                   : WideString = 'portType';
+  s_prohibited                 : WideString = 'prohibited';
+  s_record                     : WideString = 'record';
+  s_ref                        : WideString = 'ref';
+  s_required                   : WideString = 'required';
+  s_restriction                : WideString = 'restriction';
+  //s_return                     : WideString = 'return';
+  s_rpc                        : WideString = 'rpc';
+  s_schema                     : WideString = 'schema';
+  s_xs                         : WideString = 'http://www.w3.org/2001/XMLSchema';
+  s_sequence                   : WideString = 'sequence';
+  s_service                    : WideString = 'service';
+  s_simpleContent              : WideString = 'simpleContent';
+  s_simpleType                 : WideString = 'simpleType';
+  s_soap                       : WideString = 'http://schemas.xmlsoap.org/wsdl/soap/';
+  s_soapAction                 : WideString = 'soapAction';
+  s_soapInputEncoding          : WideString = 'Input_EncodingStyle';
+  s_soapOutputEncoding         : WideString = 'OutputEncodingStyle';
+  s_soapStyle                  : WideString = 'style';
+  s_style                      : WideString = 'style';
+  s_targetNamespace            : WideString = 'targetNamespace';
+  s_type                       : WideString = 'type';
+  s_types                      : WideString = 'types';
+  s_unbounded                  : WideString = 'unbounded';
+  s_use                        : WideString = 'use';
+  s_value                      : WideString = 'value';
+  s_wsdl                       : WideString = 'http://schemas.xmlsoap.org/wsdl/';
+  s_xmlns                      : WideString = 'xmlns';
+
+type
+  TNotFoundAction = ( nfaNone, nfaRaiseException );
+
+const
+  sNEW_LINE = sLineBreak;
 
   function IsStrEmpty(Const AStr : String):Boolean;
   function ExtractIdentifier(const AValue : string) : string ;
-  
+
   function IsReservedKeyWord(const AValue : string):Boolean ;
+
+  procedure ExtractNameSpaceShortNamesNested(
+          ANode         : TDOMNode;
+          AResList      : TStrings;
+    const ANameSpace    : WideString
+  );
+  function CreateQualifiedNameFilterStr(
+    const AName        : WideString;
+          APrefixList  : TStrings
+  ) : string;
+  function ExtractNameFromQName(const AQName : string):string ;
+  procedure ExtractNameSpaceShortNames(
+          AAttribCursor   : IObjectCursor;
+          AResList        : TStrings;
+    const ANameSpace      : WideString;
+    const ANotFoundAction : TNotFoundAction;
+    const AClearBefore    : Boolean;
+    const AExceptionClass : ExceptClass
+  );
+  function AddNameSpace(const AValue: string; ANameSpaceList : TStrings): TStrings;
+  procedure BuildNameSpaceList(AAttCursor : IObjectCursor; ANameSpaceList : TStrings);
+  procedure ExplodeQName(const AQName : string; out ALocalName, ANameSpace : string) ;
   
+  function wst_findCustomAttribute(
+          AWsdlShortNames : TStrings;
+          ANode      : TDOMNode;
+    const AAttribute : string;
+    out   AValue     : string
+  ) : Boolean;
+  function wst_findCustomAttributeXsd(
+          AXsdShortNames : TStrings;
+          ANode      : TDOMNode;
+    const AAttribute : string;
+    out   AValue     : string
+  ) : Boolean;
+
 implementation
-uses StrUtils;
+uses StrUtils, rtti_filters;
 
 const LANGAGE_TOKEN : array[0..107] of string = (
   'ABSTRACT', 'AND', 'ARRAY', 'AS', 'ASM',
@@ -90,6 +193,246 @@ begin
   end;
 end;
 
+function ExtractNameFromQName(const AQName : string):string ;
+var
+  i : Integer;
+begin
+  Result := Trim(AQName);
+  i := Pos(':',Result);
+  if ( i > 0 ) then
+    Result := Copy(Result,( i + 1 ), MaxInt);
+end;
+
+function CreateQualifiedNameFilterStr(
+  const AName        : WideString;
+        APrefixList  : TStrings
+) : string;
+var
+  k : Integer;
+  locStr : string;
+  locWStr : WideString;
+begin
+  Result := '';
+  if ( APrefixList.Count > 0 ) then begin
+    for k := 0 to Pred(APrefixList.Count) do begin
+      if IsStrEmpty(APrefixList[k]) then begin
+        locWStr := ''
+      end else begin
+        locWStr := APrefixList[k] + ':';
+      end;
+      locWStr := locWStr + AName;
+      locStr := s_NODE_NAME;
+      Result := Result + ' or ' + locStr + ' = ' + QuotedStr(locWStr);
+    end;
+    if ( Length(Result) > 0 ) then begin
+      Delete(Result,1,Length(' or'));
+    end;
+  end else begin
+    Result := Format('%s = %s',[s_NODE_NAME,QuotedStr(AName)]);
+  end;
+end;
+
+procedure ExtractNameSpaceShortNamesNested(
+        ANode         : TDOMNode;
+        AResList      : TStrings;
+  const ANameSpace    : WideString
+);
+var
+  nd : TDOMNode;
+begin
+  AResList.Clear();
+  nd := ANode;
+  while Assigned(nd) do begin
+    if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
+      ExtractNameSpaceShortNames(CreateAttributesCursor(nd,cetRttiNode),AResList,ANameSpace,nfaNone,False,nil);
+    end;
+    nd := nd.ParentNode;
+  end;
+end;
+
+procedure ExtractNameSpaceShortNames(
+        AAttribCursor   : IObjectCursor;
+        AResList        : TStrings;
+  const ANameSpace      : WideString;
+  const ANotFoundAction : TNotFoundAction;
+  const AClearBefore    : Boolean;
+  const AExceptionClass : ExceptClass
+);
+var
+  crs : IObjectCursor;
+  locObj : TDOMNodeRttiExposer;
+  wStr : WideString;
+  i : Integer;
+  ec : ExceptClass;
+begin
+  if AClearBefore then begin
+    AResList.Clear();
+  end;
+  AAttribCursor.Reset();
+  crs := CreateCursorOn(AAttribCursor,ParseFilter(Format('%s=%s',[s_NODE_VALUE,QuotedStr(ANameSpace)]),TDOMNodeRttiExposer));
+  crs.Reset();
+  if crs.MoveNext() then begin
+    repeat
+      locObj := crs.GetCurrent() as TDOMNodeRttiExposer;
+      wStr := Trim(locObj.NodeName);
+      i := AnsiPos(s_xmlns + ':',wStr);
+      if ( i > 0 ) then begin
+        i := AnsiPos(':',wStr);
+        AResList.Add(Copy(wStr,( i + 1 ), MaxInt));
+      end else begin
+        if ( AResList.IndexOf('') = -1 ) then
+          AResList.Add('');
+      end;
+    until not crs.MoveNext();
+  end else begin
+    if ( ANotFoundAction = nfaRaiseException ) then begin
+      if Assigned(AExceptionClass) then
+        ec := AExceptionClass
+      else
+        ec := Exception;
+      raise ec.CreateFmt('Namespace not found : "%s"',[ANameSpace]);
+    end;
+  end;
+end;
+
+function wst_findCustomAttribute(
+        AWsdlShortNames : TStrings;
+        ANode      : TDOMNode;
+  const AAttribute : string;
+  out   AValue     : string
+) : Boolean;
+var
+  nd : TDOMNode;
+  tmpCrs : IObjectCursor;
+begin
+  Result := False;
+  tmpCrs := CreateCursorOn(
+              CreateChildrenCursor(ANode,cetRttiNode),
+              ParseFilter(CreateQualifiedNameFilterStr(s_document,AWsdlShortNames),TDOMNodeRttiExposer)
+            );
+  tmpCrs.Reset();
+  if tmpCrs.MoveNext() then begin
+    nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+    if nd.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(nd,cetRttiNode),
+                  ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_customAttributes)]),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if ( nd.Attributes <> nil ) then begin
+          nd := nd.Attributes.GetNamedItem(AAttribute);
+          if Assigned(nd) then begin
+            Result := True;
+            AValue := nd.NodeValue;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function wst_findCustomAttributeXsd(
+        AXsdShortNames : TStrings;
+        ANode      : TDOMNode;
+  const AAttribute : string;
+  out   AValue     : string
+) : Boolean;
+var
+  nd : TDOMNode;
+  tmpCrs : IObjectCursor;
+begin
+  Result := False;
+  tmpCrs := CreateCursorOn(
+              CreateChildrenCursor(ANode,cetRttiNode),
+              ParseFilter(CreateQualifiedNameFilterStr(s_annotation,AXsdShortNames),TDOMNodeRttiExposer)
+            );
+  tmpCrs.Reset();
+  if tmpCrs.MoveNext() then begin
+    nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+    if nd.HasChildNodes() then begin
+      tmpCrs := CreateCursorOn(
+                  CreateChildrenCursor(nd,cetRttiNode),
+                  ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_appinfo)]),TDOMNodeRttiExposer)
+                );
+      tmpCrs.Reset();
+      if tmpCrs.MoveNext() then begin
+        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if ( nd.Attributes <> nil ) then begin
+          nd := nd.Attributes.GetNamedItem(AAttribute);
+          if Assigned(nd) then begin
+            Result := True;
+            AValue := nd.NodeValue;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure ExplodeQName(const AQName : string; out ALocalName, ANameSpace : string) ;
+var
+  i : PtrInt;
+begin
+  i := Pos(':',AQName);
+  if ( i > 0 ) then begin
+    ANameSpace := Copy(AQName,1,Pred(i));
+    ALocalName := Copy(AQName,Succ(i),Length(AQName));
+  end else begin
+    ANameSpace := '';
+    ALocalName := AQName;
+  end;
+end;
+
+function AddNameSpace(const AValue: string; ANameSpaceList : TStrings): TStrings;
+var
+  i : PtrInt;
+  s : string;
+  ls : TStringList;
+begin
+  s := Trim(AValue);
+  i := ANameSpaceList.IndexOf(s);
+  if ( i < 0 ) then begin
+    i := ANameSpaceList.Add(s);
+    ls := TStringList.Create();
+    ANameSpaceList.Objects[i] := ls;
+    ls.Duplicates := dupIgnore;
+    ls.Sorted := True;
+    Result := ls;
+  end else begin
+    Result := ANameSpaceList.Objects[i] as TStrings;
+  end;
+end;
+
+procedure BuildNameSpaceList(AAttCursor : IObjectCursor; ANameSpaceList : TStrings);
+var
+  locObj : TDOMNodeRttiExposer;
+  locNameSpace, locNameSpaceShort : string;
+  tmpXmlNs : string;
+  found : Boolean;
+begin
+  if Assigned(AAttCursor) then begin
+    tmpXmlNs := s_xmlns + ':';
+    AAttCursor.Reset();
+    while AAttCursor.MoveNext() do begin
+      found := False;
+      locObj := AAttCursor.GetCurrent() as TDOMNodeRttiExposer;
+      if AnsiSameText(s_xmlns,locObj.NodeName) then begin
+        found := True;
+        locNameSpace := locObj.NodeValue;
+        locNameSpaceShort := '';
+      end else if AnsiStartsText(tmpXmlNs,locObj.NodeName) then begin
+        found := True;
+        locNameSpace := locObj.NodeValue;
+        locNameSpaceShort := locObj.NodeName;
+        locNameSpaceShort := Copy(locNameSpaceShort,Pos(':',locNameSpaceShort) + 1, Length(locNameSpaceShort));
+      end;
+      if found then
+        AddNameSpace(locNameSpace,ANameSpaceList).Add(locNameSpaceShort);
+    end;
+  end;
+end;
+
 
 end.
-

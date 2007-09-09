@@ -153,6 +153,8 @@ const
   sSOAP_USE         = 'use';
 
   sADDRESS            = 'address';
+  sANNOTATION         = 'annotation';
+  sAPPINFO            = 'appinfo';
   sATTRIBUTE          = 'attribute';
   sBASE               = 'base';
   sBINDING            = 'binding';
@@ -199,7 +201,7 @@ const
   sWSDL_TYPES              = 'types';
   
 var
-  WsdlTypeHandlerRegistryInst : IWsdlTypeHandlerRegistry;
+  WsdlTypeHandlerRegistryInst : IWsdlTypeHandlerRegistry = nil;
 
 
 function GetTypeNameSpace(
@@ -665,12 +667,12 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
         AWsdlDocument : TDOMDocument
 );
 var
-  cplxNode, docNode : TDOMElement;
+  cplxNode, annNode : TDOMElement;
   
   procedure CreateDocNode();
   begin
-    if ( docNode = nil ) then begin
-      docNode := CreateElement(sDOCUMENT,cplxNode,AWsdlDocument);
+    if ( annNode = nil ) then begin
+      annNode := CreateElement(sDOCUMENT,cplxNode,AWsdlDocument);
     end;
   end;
   
@@ -686,7 +688,7 @@ var
   trueParent : TPasType;
 begin
   inherited;
-  docNode := nil;
+  annNode := nil;
   typItm := ASymbol as TPasClassType;
   if Assigned(typItm) then begin
     GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
@@ -706,8 +708,8 @@ begin
       
       if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
         CreateDocNode();
-        CreateElement(sCUSTOM_ATTRIBUTE,docNode,AWsdlDocument).SetAttribute(sHEADER_Block,'true');
-      end;
+        CreateElement(sAPPINFO,annNode,AWsdlDocument).SetAttribute(sHEADER_Block,'true');
+      end;                                     
 
       if trueParent.InheritsFrom(TPasAliasType) then begin
         trueParent := GetUltimeType(trueParent);
@@ -994,12 +996,12 @@ procedure TPasRecordType_TypeHandler.Generate(
         AWsdlDocument : TDOMDocument
 );
 var
-  cplxNode, docNode : TDOMElement;
+  cplxNode, annNode : TDOMElement;
 
   procedure CreateDocNode();
   begin
-    if ( docNode = nil ) then begin
-      docNode := CreateElement(sDOCUMENT,cplxNode,AWsdlDocument);
+    if ( annNode = nil ) then begin
+      annNode := CreateElement(Format('%s:%s',[sXSD,sANNOTATION]),cplxNode,AWsdlDocument);
     end;
   end;
 
@@ -1013,7 +1015,7 @@ var
   hasSequence : Boolean;
 begin
   inherited;
-  docNode := nil;
+  annNode := nil;
   typItm := ASymbol as TPasRecordType;
   if Assigned(typItm) then begin
     GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,AWsdlDocument);
@@ -1026,7 +1028,7 @@ begin
     cplxNode.SetAttribute(sNAME, AContainer.GetExternalName(typItm)) ;
 
     CreateDocNode();
-    CreateElement(sCUSTOM_ATTRIBUTE,docNode,AWsdlDocument).SetAttribute(sRECORD,'true');
+    CreateElement(Format('%s:%s',[sXSD,sAPPINFO]),annNode,AWsdlDocument).SetAttribute(sRECORD,'true');
 
     hasSequence := False;
     for i := 0 to Pred(typItm.Members.Count) do begin

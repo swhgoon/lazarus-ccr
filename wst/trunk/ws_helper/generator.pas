@@ -164,11 +164,10 @@ type
 
     procedure GenerateCustomMetadatas();
     function GetDestUnitName():string;
+
+    procedure PrepareModule();
+    procedure InternalExecute();
   public
-    constructor Create(
-      ASymTable : TwstPasTreeContainer;
-      ASrcMngr  : ISourceManager
-    );
     procedure Execute();override;
   end;
   
@@ -2272,22 +2271,7 @@ begin
   Result := SymbolTable.CurrentModule.Name;
 end;
 
-constructor TInftGenerator.Create(
-  ASymTable : TwstPasTreeContainer;
-  ASrcMngr  : ISourceManager
-);
-begin
-  inherited Create(ASymTable,ASrcMngr);
-  FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
-  FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
-  FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
-  FImpLastStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_last');
-  FRttiFunc := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_rtti_func');
-  FImpTempStream.IncIndent();
-  FImpLastStream.IncIndent();
-end;
-
-procedure TInftGenerator.Execute();
+procedure TInftGenerator.InternalExecute();
 
   procedure SortRecords(AList : TList);
   var
@@ -2361,7 +2345,9 @@ var
   elt : TPasElement;
   classAncestor : TPasElement;
   tmpList : TList;
+  intfCount : PtrInt;
 begin
+  intfCount := 0;
   objLst := nil;
   tmpList := nil;
   gnrClssLst := TObjectList.Create(False);
@@ -2470,15 +2456,19 @@ begin
       elt := TPasElement(typeList[i]);
       if elt.InheritsFrom(TPasClassType) and ( TPasClassType(elt).ObjKind = okInterface ) then begin
         GenerateIntf(TPasClassType(elt));
+        Inc(intfCount);
       end;
     end;
 
-    NewLine();
-    IncIndent();
-    Indent(); WriteLn('procedure Register_%s_ServiceMetadata();',[SymbolTable.CurrentModule.Name]);
-    DecIndent();
-    GenerateCustomMetadatas();
-    
+    if ( intfCount > 0 ) then begin
+      SetCurrentStream(FDecStream);
+      NewLine();
+      IncIndent();
+      Indent(); WriteLn('procedure Register_%s_ServiceMetadata();',[SymbolTable.CurrentModule.Name]);
+      DecIndent();
+      GenerateCustomMetadatas();
+    end;
+
     FImpLastStream.NewLine();
     GenerateUnitImplementationFooter();
     FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FRttiFunc,FImpTempStream,FImpLastStream]);
@@ -2489,6 +2479,39 @@ begin
     FreeAndNil(tmpList);
     FreeAndNil(objLst);
     FreeAndNil(gnrClssLst);
+  end;
+end;
+
+procedure TInftGenerator.PrepareModule();
+begin
+  FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
+  FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
+  FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
+  FImpLastStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_last');
+  FRttiFunc := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_rtti_func');
+  FImpTempStream.IncIndent();
+  FImpLastStream.IncIndent();
+end;
+
+procedure TInftGenerator.Execute();
+var
+  oldCurrent, mdl : TPasModule;
+  i : PtrInt;
+  mdlList : TList;
+begin
+  oldCurrent := SymbolTable.CurrentModule;
+  try
+    mdlList := SymbolTable.Package.Modules;
+    for i := 0 to Pred(mdlList.Count) do begin
+      mdl := TPasModule(mdlList[i]);
+      if not mdl.InheritsFrom(TPasNativeModule) then begin
+        SymbolTable.SetCurrentModule(mdl);
+        PrepareModule();
+        InternalExecute();
+      end;
+    end;
+  finally
+    SymbolTable.SetCurrentModule(oldCurrent);
   end;
 end;
 

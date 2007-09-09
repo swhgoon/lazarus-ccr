@@ -1,11 +1,13 @@
 {$APPTYPE CONSOLE}
 program wst_test_suite;
 uses
-  SysUtils, ActiveX,
+  SysUtils,
+  ActiveX,
   TestFrameWork,
   TextTestRunner,
   test_utilities in '..\test_utilities.pas',
-  testformatter_unit in '..\testformatter_unit.pas';
+  testformatter_unit in '..\testformatter_unit.pas',
+  test_parsers in '..\test_parsers.pas';
 
 {$R *.res}
 
