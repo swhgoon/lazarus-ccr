@@ -3,7 +3,8 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   targetNamespace="urn:wst-test">
   
-    <xsd:complexType name="TClassSampleType">
+    <xsd:complexType name="TRecordSampleType">
+      <xsd:annotation><xsd:appinfo record="true"/></xsd:annotation>
 	    <xsd:sequence>
 		    <xsd:element name="intField" type="xsd:int" />
         <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -16,10 +17,11 @@
 	    <xsd:attribute name="intAtt" type="xsd:int"/>
     </xsd:complexType>
 
-    <xsd:element name="TClassSample" type="n:TClassSampleType"/>
+    <xsd:element name="TRecordSample" type="n:TRecordSampleType"/>
 
-    <xsd:complexType name="TClassSampleTypeAll">
-	    <xsd:all>
+    <xsd:complexType name="TRecordSampleTypeAll">
+      <xsd:annotation><xsd:appinfo record="true"/></xsd:annotation>
+      <xsd:all>
 		    <xsd:element name="intField" type="xsd:int" />
         <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
         <xsd:element name="floatField" type="xsd:float" minOccurs="0" maxOccurs="1"/>
@@ -30,18 +32,5 @@
 	    <xsd:attribute name="strAtt" type="xsd:string"/>
 	    <xsd:attribute name="intAtt" type="xsd:int"/>
     </xsd:complexType>
-    
-    <xsd:complexType name="TClassSampleDerivedType">
-		  <xsd:complexContent>
-			  <xsd:extension base="n:TClassSampleType">    
-    	    <xsd:sequence>
-    		    <xsd:element name="intFieldEx" type="xsd:int" />
-            <xsd:element name="strFieldEx" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-    	    </xsd:sequence>
-    	    <xsd:attribute name="strAttEx" type="xsd:string"/>
-    	    <xsd:attribute name="intAttEx" type="xsd:int"/>
-        </xsd:extension>
-      </xsd:complexContent>
-    </xsd:complexType>
-        
+      
 </xsd:schema>

@@ -7,7 +7,8 @@ uses
   TextTestRunner,
   test_utilities in '..\test_utilities.pas',
   testformatter_unit in '..\testformatter_unit.pas',
-  test_parsers in '..\test_parsers.pas';
+  test_parsers in '..\test_parsers.pas',
+  testmetadata_unit;
 
 {$R *.res}
 

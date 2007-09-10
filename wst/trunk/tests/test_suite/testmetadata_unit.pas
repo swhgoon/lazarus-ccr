@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils,
 {$IFDEF FPC}
-  fpcunit, testutils, testregistry, DOM, XMLWrite,
+  fpcunit, testutils, testregistry, DOM, XMLWrite, wst_fpc_xml,
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
@@ -120,7 +120,7 @@ var
   s : string;
 begin
   strm := nil;;
-  locDoc := TXMLDocument.Create();
+  locDoc := CreateDoc();// TXMLDocument.Create();
   try
     GenerateWSDL(ARep,locDoc);
     strm := TMemoryStream.Create();
@@ -131,7 +131,7 @@ begin
     WriteLn(s);
     WriteLn('*******************************************************');
   finally
-    locDoc.Free();
+    ReleaseDomNode(locDoc);
     strm.Free();
   end;
 end;
@@ -160,29 +160,29 @@ begin
     wtr := nil;
     strm.Position := 0;
     
-    AssertTrue(strm.Size>10);
-    AssertEquals('symbol count',2,LoadRepositoryData(strm,rp));
-    AssertEquals('unit name','test_unit_name',rp^.Name);
-    AssertEquals('services count',2,rp^.ServicesCount);
-    AssertNotNull('services pointer',rp^.Services);
+    Check(strm.Size>10);
+    CheckEquals(2,LoadRepositoryData(strm,rp),'symbol count');
+    CheckEquals('test_unit_name',rp^.Name,'unit name');
+    CheckEquals(2,rp^.ServicesCount,'services count');
+    Check( rp^.Services <> nil , 'services pointer');
     
     ps := rp^.Services;
-    AssertEquals('service name','service_1',ps^.Name);
-    AssertEquals('operations count',2,ps^.OperationsCount);
-    AssertNotNull('operations pointer',ps^.Operations);
+    CheckEquals('service_1',ps^.Name,'service name');
+    CheckEquals(2,ps^.OperationsCount,'operations count');
+    Check(ps^.Operations <> nil, 'operations pointer');
       po := ps^.Operations;
-      AssertEquals('operation name','void_operation_proc',po^.Name);
-      AssertEquals('params count',0,po^.ParamsCount);
-      AssertNull('params pointer',po^.Params);
+      CheckEquals('void_operation_proc',po^.Name, 'operation name');
+      CheckEquals(0,po^.ParamsCount,'params count');
+      Check( po^.Params = nil ,'params pointer');
       Inc(po);
-      AssertEquals('operation name','void_operation_func',po^.Name);
-      AssertEquals('params count',1,po^.ParamsCount);
-      AssertNotNull('params pointer',po^.Params);
+      CheckEquals('void_operation_func',po^.Name, 'operation name');
+      CheckEquals(1,po^.ParamsCount, 'params count');
+      Check( po^.Params <> nil, 'params pointer');
         pop := po^.Params;
-        AssertEquals('param name','result',pop^.Name);
-        AssertEquals('param type name','integer',pop^.TypeName);
-        AssertEquals('param modifier',ord(argOut),ord(pop^.Modifier));
-        
+        CheckEquals('result',pop^.Name,'param name');
+        CheckEquals('integer',pop^.TypeName,'param type name');
+        CheckEquals(ord(argOut),ord(pop^.Modifier),'param modifier');
+
      rp^.NameSpace := 'http://test_name_space/';
      //PrintWSDL(rp);
   finally
@@ -194,6 +194,6 @@ begin
 end;
 
 initialization
-  RegisterTest(TTestMetadata);
+  RegisterTest('Metadata', TTestMetadata.Suite);
   
 end.

@@ -814,7 +814,10 @@ begin
         end;
         
         //check for record
-        if ( FDerivationMode = dmNone ) and Result.InheritsFrom(TPasClassType) and IsRecordType() then begin
+        if ( FDerivationMode = dmNone ) and
+           Result.InheritsFrom(TPasClassType) and
+           IsRecordType()
+        then begin
           tmpClassDef := classDef;
           classDef := nil;
           recordType := TPasRecordType(FSymbols.CreateElement(TPasRecordType,tmpClassDef.Name,Self.Module.InterfaceSection,visPublic,'',0));
