@@ -16954,9 +16954,11 @@ begin
 
   PrepareBitmaps(True, True);
 
+  {$ifdef Windows}
   // Register tree as OLE drop target.
   if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
      RegisterDragDrop(Handle, DragManager as IDropTarget);
+  {$endif}
 
   if toCheckSupport in FOptions.FMiscOptions then
     GetCheckImageList;
