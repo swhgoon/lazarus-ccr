@@ -214,7 +214,7 @@ const
   CFSTR_RTF = 'Rich Text Format';
   CFSTR_RTFNOOBJS = 'Rich Text Format Without Objects';
   CFSTR_CSV = 'CSV';
-  {$ifndef UseExternalDragManager}
+
   // Drag image helpers for Windows 2000 and up.
   IID_IDropTargetHelper: TGUID = (D1: $4657278B; D2: $411B; D3: $11D2; D4: ($83, $9A, $00, $C0, $4F, $D9, $18, $D0));
   IID_IDragSourceHelper: TGUID = (D1: $DE5BF786; D2: $477A; D3: $11D2; D4: ($83, $9D, $00, $C0, $4F, $D9, $18, $D0));
@@ -224,7 +224,7 @@ const
   SID_IDropTargetHelper = '{4657278B-411B-11D2-839A-00C04FD918D0}';
   SID_IDragSourceHelper = '{DE5BF786-477A-11D2-839D-00C04FD918D0}';
   SID_IDropTarget = '{00000122-0000-0000-C000-000000000046}';
-  {$endif}
+
   // Help identifiers for exceptions. Application developers are responsible to link them with actual help topics.
   hcTFEditLinkIsNil      = 2000;
   hcTFWrongMoveError     = 2001;
@@ -692,7 +692,7 @@ type
     sdDown
   );
   
-  {$ifndef UseExternalDragManager}
+
   // OLE drag'n drop support
   TFormatEtcArray = array of TFormatEtc;
   TFormatArray = array of Word;
@@ -828,7 +828,7 @@ type
     function GiveFeedback(Effect: Integer): HResult; stdcall;
     function QueryContinueDrag(EscapePressed: BOOL; KeyState: Integer): HResult; stdcall;
   end;
-  {$endif} //UseExternalDragManager
+
 
   PVTHintData = ^TVTHintData;
   TVTHintData = record
@@ -2128,7 +2128,6 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
     {$ifdef EnableNCFunctions}
     procedure WMNCCalcSize(var Message: TWMNCCalcSize); message WM_NCCALCSIZE;
-    procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMNCPaint(var Message: TRealWMNCPaint); message WM_NCPAINT;
     {$endif}
@@ -2171,6 +2170,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
+    procedure DestroyHandle; override;
     procedure DetermineHiddenChildrenFlag(Node: PVirtualNode); virtual;
     procedure DetermineHiddenChildrenFlagAllNodes; virtual;
     procedure DetermineHitPositionLTR(var HitInfo: THitInfo; Offset, Right: Integer; Alignment: TAlignment); virtual;
@@ -2285,8 +2285,6 @@ TBaseVirtualTree = class(TCustomControl)
     function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
     procedure FontChanged(AFont: TObject); virtual;
-    //lcl
-    procedure FreeDragManager;
     function GetBorderDimensions: TSize; virtual;
     function GetCheckImage(Node: PVirtualNode): Integer; virtual;
     procedure GetCheckImageList; virtual;
@@ -10733,9 +10731,7 @@ begin
   //lcl
   FPanningWindow.Free;
   CancelEditNode;
-  //todo: remove this as soon as fpc fixes this bug
-  if FDragManager <> nil then
-    FDragManager._Release;
+
   // Just in case it didn't happen already release the edit link.
   FEditLink := nil;
   FClipboardFormats.Free;
@@ -11623,11 +11619,7 @@ end;
 procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
   DataObject: IDataObject; DragEffect: Integer);
 begin
-  {$ifdef UseExternalDragManager}
-  VirtualDragManager.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
-  {$else}
   ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15839,33 +15831,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.WMNCDestroy(var Message: TWMNCDestroy);
-
-// Used to release a reference of the drag manager. This is the only reliable way we get notified about
-// window destruction, because of the automatic release of a window if its parent window is freed.
-
-begin
-  Logger.EnterMethod([lcMessages],'WMNCDestroy');
-  InterruptValidation;
-
-  KillTimer(Handle, ChangeTimer);
-  KillTimer(Handle, StructureChangeTimer);
-
-  if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
-    RevokeDragDrop(Handle);
-
-  // Clean up other stuff.
-  DeleteObject(FDottedBrush);
-  FDottedBrush := 0;
-  if tsInAnimation in FStates then
-    HintWindowDestroyed := True; // Stop any pending animation.
-
-  inherited WMNCDestroy(Message);
-  Logger.ExitMethod([lcMessages],'WMNCDestroy')
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TBaseVirtualTree.WMNCHitTest(var Message: TWMNCHitTest);
 
 begin
@@ -16996,6 +16961,31 @@ begin
 
   Filer.DefineProperty('Columns', FHeader.ReadColumns, FHeader.WriteColumns, StoreIt);
   Filer.DefineProperty('Options', ReadOldOptions, nil, False);
+end;
+
+procedure TBaseVirtualTree.DestroyHandle;
+begin
+  Logger.EnterMethod([lcMessages],'DestroyHandle');
+  //lcl: this code was  originally called is response to WM_NCDESTROY
+  //  see if there will be issues calling here
+  InterruptValidation;
+
+  KillTimer(Handle, ChangeTimer);
+  KillTimer(Handle, StructureChangeTimer);
+
+  {$ifdef Windows}
+  if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
+    RevokeDragDrop(Handle);
+  {$endif}
+
+  // Clean up other stuff.
+  DeleteObject(FDottedBrush);
+  FDottedBrush := 0;
+  if tsInAnimation in FStates then
+    HintWindowDestroyed := True; // Stop any pending animation.
+
+  inherited;
+  Logger.ExitMethod([lcMessages],'DestroyHandle');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19509,13 +19499,6 @@ procedure TBaseVirtualTree.FontChanged(AFont: TObject);
 begin
   FFontChanged := True;
   FOldFontChange(AFont);
-end;
-
-
-procedure TBaseVirtualTree.FreeDragManager;
-begin
-  //lcl
-  Pointer(FDragManager) := nil;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
