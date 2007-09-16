@@ -98,7 +98,7 @@ type
   end;
 
 implementation
-uses ws_parser_imp, dom_cursors, parserutils, StrUtils;
+uses ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts;
 
 type
 

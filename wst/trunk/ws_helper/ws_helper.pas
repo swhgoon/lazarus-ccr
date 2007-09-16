@@ -27,7 +27,6 @@ uses
   SysUtils,
   wst_resources_utils,
   generator,
-  wsdl_generator,
   parserutils,
   source_utils,
   command_line_parser,
@@ -43,7 +42,8 @@ uses
   logger_intf,
   xsd_parser,
   ws_parser_imp,
-  wsdl_parser;
+  wsdl_parser,
+  xsd_generator, wsdl_generator;
 
   
 {$INCLUDE ws_helper_prog.inc}

@@ -37,6 +37,7 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
@@ -50,6 +51,7 @@ type
     procedure ComplexType_Class_Embedded();
     
     procedure ComplexType_Record();
+    procedure ComplexType_Record_Embedded();
     
     procedure ComplexType_ArraySequence();
     procedure ComplexType_ArraySequence_Embedded();
@@ -70,6 +72,7 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -90,6 +93,7 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -510,7 +514,7 @@ var
       CheckEquals(AName,tr.GetExternalName(prp));
       CheckNotNull(prp.VarType);
       CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
-      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp),Format('IsAttributeProperty("%s.%s")',[recType.Name, AName]));
   end;
 
 var
@@ -561,6 +565,90 @@ begin
       aliasType := elt as TPasAliasType;
       CheckNotNull(aliasType.DestType);
       CheckEquals(x_complexType_SampleRecordType, tr.GetExternalName(aliasType.DestType));
+
+    elt := tr.FindElement(x_complexType_SampleRecordTypeAll);
+      CheckNotNull(elt,x_complexType_SampleRecordTypeAll);
+      CheckEquals(x_complexType_SampleRecordTypeAll,elt.Name);
+      CheckEquals(x_complexType_SampleRecordTypeAll,tr.GetExternalName(elt));
+      CheckIs(elt,TPasRecordType,'Element type');
+      recType := elt as TPasRecordType;
+        prpLs.Clear();
+        for i := 0 to Pred(recType.Members.Count) do begin
+          if TPasElement(recType.Members[i]).InheritsFrom(TPasVariable) then
+            prpLs.Add(recType.Members[i]);
+        end;
+      CheckEquals(8,prpLs.Count);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+        CheckProperty(x_floatField,'float',ptField);
+        CheckProperty(x_byteField,'byte',ptField);
+        CheckProperty(x_charField,'char',ptField);
+        CheckProperty(x_longField,'long',ptField);
+        CheckProperty(x_strAtt,'string',ptAttribute);
+        CheckProperty(x_intAtt,'int',ptAttribute);
+
+  finally
+    FreeAndNil(prpLs);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Record_Embedded();
+var
+  tr : TwstPasTreeContainer;
+  recType : TPasRecordType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasVariable;
+  begin
+    prp := FindMember(recType,AName) as TPasVariable;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp),Format('IsAttributeProperty("%s.%s")',[recType.Name, AName]));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+  prpLs : TList;
+begin
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Record_Embedded_Schema();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals(x_complexType_record_embedded,mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(2,ls.Count);
+    elt := tr.FindElement(x_complexType_SampleRecordType);
+      CheckNotNull(elt,x_complexType_SampleRecordType);
+      CheckEquals(x_complexType_SampleRecordType,elt.Name);
+      CheckEquals(x_complexType_SampleRecordType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasRecordType,'Element Type');
+      recType := elt as TPasRecordType;
+        prpLs.Clear();
+        for i := 0 to Pred(recType.Members.Count) do begin
+          if TPasElement(recType.Members[i]).InheritsFrom(TPasVariable) then
+            prpLs.Add(recType.Members[i]);
+        end;
+      CheckEquals(8,prpLs.Count);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+        CheckProperty(x_floatField,'float',ptField);
+        CheckProperty(x_byteField,'byte',ptField);
+        CheckProperty(x_charField,'char',ptField);
+        CheckProperty(x_longField,'long',ptField);
+        CheckProperty(x_strAtt,'string',ptAttribute);
+        CheckProperty(x_intAtt,'int',ptAttribute);
+
 
     elt := tr.FindElement(x_complexType_SampleRecordTypeAll);
       CheckNotNull(elt,x_complexType_SampleRecordTypeAll);
@@ -817,6 +905,11 @@ begin
   Result := ParseDoc(x_complexType_record);
 end;
 
+function TTest_XsdParser.LoadComplexType_Record_Embedded_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_complexType_record_embedded);
+end;
+
 function TTest_XsdParser.LoadComplexType_ArraySequence_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_array_sequence);
@@ -878,6 +971,11 @@ end;
 function TTest_WsdlParser.LoadComplexType_Record_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_record);
+end;
+
+function TTest_WsdlParser.LoadComplexType_Record_Embedded_Schema(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_complexType_record_embedded);
 end;
 
 function TTest_WsdlParser.LoadComplexType_ArraySequence_Schema(): TwstPasTreeContainer;

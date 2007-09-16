@@ -8,7 +8,8 @@ resourcestring
            '  -i  Generate service minimal implementation' + sNEW_LINE +
            '  -o  PATH  Relative output directory' + sNEW_LINE +
            '  -a  PATH  Absolute output directory' + sNEW_LINE +
-           '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE;
+           '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE +
+           '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE;
   sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.5 Copyright (c) 2006, 2007 by Inoussa OUEDRAOGO';
 
 const
@@ -135,16 +136,33 @@ var
   procedure GenerateWSDLFromTree(ASymbol : TwstPasTreeContainer; ADest : TStream);
   var
     doc : TXMLDocument;
+    g : IGenerator;
   begin
-    doc := CreateDoc();// TXMLDocument.Create();
+    doc := CreateDoc();
     try
-      GenerateWSDL(ASymbol,doc);
+      g := TWsdlGenerator.Create(doc);
+      g.Execute(ASymbol,ASymbol.CurrentModule.Name);
       WriteXML(doc,ADest);
     finally
       ReleaseDomNode(doc);
     end;
   end;
 
+  procedure GenerateXsdFromTree(ASymbol : TwstPasTreeContainer; ADest : TStream);
+  var
+    doc : TXMLDocument;
+    gnrtr : IGenerator;
+  begin
+    doc := CreateDoc();
+    try
+      gnrtr := TXsdGenerator.Create(doc);
+      gnrtr.Execute(ASymbol,ASymbol.CurrentModule.Name);
+      WriteXML(doc,ADest);
+    finally
+      ReleaseDomNode(doc);
+    end;
+  end;
+  
   function ProcessFile():Boolean;
   Var
     mtdaFS: TMemoryStream;
@@ -207,6 +225,15 @@ var
           if not IsStrEmpty(strStream.DataString) then begin
             strStream.Position := 0;
             srcMngr.CreateItem(ChangeFileExt(ExtractFileName(inFileName),'.wsdl')).Write(strStream.DataString);
+          end;
+        end;
+
+        if ( cloXsd in AppOptions ) then begin
+          strStream := TStringStream.Create('');
+          GenerateXsdFromTree(symtable,strStream);
+          if not IsStrEmpty(strStream.DataString) then begin
+            strStream.Position := 0;
+            srcMngr.CreateItem(ChangeFileExt(ExtractFileName(inFileName),'.xsd')).Write(strStream.DataString);
           end;
         end;
         

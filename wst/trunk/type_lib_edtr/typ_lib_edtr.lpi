@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="8"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -36,7 +36,7 @@
       <Unit0>
         <Filename Value="typ_lib_edtr.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="1" Y="21"/>
+        <CursorPos X="60" Y="13"/>
         <TopLine Value="1"/>
         <EditorIndex Value="8"/>
         <UsageCount Value="200"/>
@@ -49,8 +49,8 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uwsttypelibraryedit.lrs"/>
         <UnitName Value="uwsttypelibraryedit"/>
-        <CursorPos X="45" Y="170"/>
-        <TopLine Value="151"/>
+        <CursorPos X="1" Y="385"/>
+        <TopLine Value="369"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -688,8 +688,8 @@
         <Filename Value="..\ws_helper\wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
-        <CursorPos X="50" Y="1031"/>
-        <TopLine Value="1004"/>
+        <CursorPos X="45" Y="21"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
@@ -750,7 +750,20 @@
         <UsageCount Value="10"/>
       </Unit92>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="uwsttypelibraryedit.pas"/>
+        <Caret Line="170" Column="45" TopLine="151"/>
+      </Position1>
+      <Position2>
+        <Filename Value="uwsttypelibraryedit.pas"/>
+        <Caret Line="378" Column="17" TopLine="364"/>
+      </Position2>
+      <Position3>
+        <Filename Value="uwsttypelibraryedit.pas"/>
+        <Caret Line="172" Column="59" TopLine="151"/>
+      </Position3>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

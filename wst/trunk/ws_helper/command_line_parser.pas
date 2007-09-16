@@ -27,7 +27,7 @@ uses
 Type
 
   TComandLineOption = (
-    cloInterface, cloProxy, cloImp, cloBinder, cloWsdl,
+    cloInterface, cloProxy, cloImp, cloBinder, cloWsdl, cloXsd,
     cloOutPutDirRelative, cloOutPutDirAbsolute
   );
   TComandLineOptions = set of TComandLineOption;
@@ -53,7 +53,7 @@ begin
   AAppOptions := [];
   c := #0;
   repeat
-    c := GetOpt('u:pibo:a:w');
+    c := GetOpt('u:pibo:a:wx');
     case c of
       'u' :
         begin
@@ -74,6 +74,7 @@ begin
           OptionsArgsMAP[cloOutPutDirAbsolute] := OptArg;
         End;
       'w' : Include(AAppOptions,cloWsdl);
+      'x' : Include(AAppOptions,cloXsd);
     end;
   until ( c = EndOfOptions );
   Result := OptInd;

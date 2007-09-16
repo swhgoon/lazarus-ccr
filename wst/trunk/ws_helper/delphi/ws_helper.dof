@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=C:\Programmes\lazarus\wst\trunk\fcl-units\rtl\;C:\Programmes\lazarus\wst\trunk\;C:\Programmes\lazarus\wst\trunk\fcl-units\fcl-passrc\src\
 UsePackages=0
 [Parameters]
-RunParams=-uA -i -p -b -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\wst\trunk\type_lib_edtr\files\company.xsd"
+RunParams=-uA -i -p -b -x -a"C:\Programmes\lazarus\wst\trunk\tests\files" "C:\Programmes\lazarus\utils\amazon\AWSECommerceService.wsdl"
 HostApplication=
 Launcher=
 UseLauncher=0

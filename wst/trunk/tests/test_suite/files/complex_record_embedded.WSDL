@@ -9,7 +9,8 @@
   <types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test" xmlns:n="urn:wst-test" >
     
-        <xsd:complexType name="TRecordSampleType" wst_record="true">
+      <xsd:element name="TRecordSampleType">
+        <xsd:complexType wst_record="true">
     	    <xsd:sequence>
     		    <xsd:element name="intField" type="xsd:int" />
             <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -21,10 +22,10 @@
     	    <xsd:attribute name="strAtt" type="xsd:string"/>
     	    <xsd:attribute name="intAtt" type="xsd:int"/>
         </xsd:complexType>
-
-        <xsd:element name="TRecordSample" type="n:TRecordSampleType"/>
-
-        <xsd:complexType name="TRecordSampleTypeAll" wst_record="true">
+      </xsd:element>
+      
+      <xsd:element name="TRecordSampleTypeAll">
+        <xsd:complexType wst_record="true">
           <xsd:all>
     		    <xsd:element name="intField" type="xsd:int" />
             <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -35,7 +36,8 @@
     	    </xsd:all>
     	    <xsd:attribute name="strAtt" type="xsd:string"/>
     	    <xsd:attribute name="intAtt" type="xsd:int"/>
-        </xsd:complexType>    
+        </xsd:complexType>
+      </xsd:element>    
     
     </xsd:schema>
   </types>

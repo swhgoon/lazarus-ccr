@@ -24,70 +24,8 @@ interface
 uses
   SysUtils, Classes
   {$IFNDEF FPC}, xmldom, wst_delphi_xml{$ELSE},DOM{$ENDIF}
-  , cursor_intf, dom_cursors
+  , cursor_intf, dom_cursors, xsd_consts
   ;
-
-const
-  s_address                    : WideString = 'address';
-  s_all                        : WideString = 'all';
-  //s_any                        : WideString = 'any';
-  s_annotation                 : WideString = 'annotation';
-  s_appinfo                    : WideString = 'appinfo';
-  s_array                      : WideString = 'array';
-  s_arrayType                  : WideString = 'arrayType';
-  s_attribute                  : WideString = 'attribute';
-  s_base                       : WideString = 'base';
-  s_binding                    : WideString = 'binding';
-  s_body                       : WideString = 'body';
-  s_complexContent             : WideString = 'complexContent';
-  s_complexType                : WideString = 'complexType';
-  s_customAttributes           : WideString = 'customAttributes';
-  s_document                   : WideString = 'document';
-  s_element                    : WideString = 'element';
-  s_enumeration                : WideString = 'enumeration';
-  s_extension                  : WideString = 'extension';
-  s_guid                       : WideString = 'GUID';
-  s_headerBlock                : WideString = 'headerBlock';
-  s_input                      : WideString = 'input';
-  s_item                       : WideString = 'item';
-  s_location                   : WideString = 'location';
-  s_message                    : WideString = 'message';
-  s_maxOccurs                  : WideString = 'maxOccurs';
-  s_minOccurs                  : WideString = 'minOccurs';
-  s_name                       : WideString = 'name';
-  s_operation                  : WideString = 'operation';
-  s_optional                   : WideString = 'optional';
-  s_output                     : WideString = 'output';
-  s_part                       : WideString = 'part';
-  s_port                       : WideString = 'port';
-  s_portType                   : WideString = 'portType';
-  s_prohibited                 : WideString = 'prohibited';
-  s_record                     : WideString = 'record';
-  s_ref                        : WideString = 'ref';
-  s_required                   : WideString = 'required';
-  s_restriction                : WideString = 'restriction';
-  //s_return                     : WideString = 'return';
-  s_rpc                        : WideString = 'rpc';
-  s_schema                     : WideString = 'schema';
-  s_xs                         : WideString = 'http://www.w3.org/2001/XMLSchema';
-  s_sequence                   : WideString = 'sequence';
-  s_service                    : WideString = 'service';
-  s_simpleContent              : WideString = 'simpleContent';
-  s_simpleType                 : WideString = 'simpleType';
-  s_soap                       : WideString = 'http://schemas.xmlsoap.org/wsdl/soap/';
-  s_soapAction                 : WideString = 'soapAction';
-  s_soapInputEncoding          : WideString = 'Input_EncodingStyle';
-  s_soapOutputEncoding         : WideString = 'OutputEncodingStyle';
-  s_soapStyle                  : WideString = 'style';
-  s_style                      : WideString = 'style';
-  s_targetNamespace            : WideString = 'targetNamespace';
-  s_type                       : WideString = 'type';
-  s_types                      : WideString = 'types';
-  s_unbounded                  : WideString = 'unbounded';
-  s_use                        : WideString = 'use';
-  s_value                      : WideString = 'value';
-  s_wsdl                       : WideString = 'http://schemas.xmlsoap.org/wsdl/';
-  s_xmlns                      : WideString = 'xmlns';
 
 type
   TNotFoundAction = ( nfaNone, nfaRaiseException );
@@ -341,32 +279,13 @@ function wst_findCustomAttributeXsd(
 ) : Boolean;
 var
   nd : TDOMNode;
-  tmpCrs : IObjectCursor;
 begin
   Result := False;
-  tmpCrs := CreateCursorOn(
-              CreateChildrenCursor(ANode,cetRttiNode),
-              ParseFilter(CreateQualifiedNameFilterStr(s_annotation,AXsdShortNames),TDOMNodeRttiExposer)
-            );
-  tmpCrs.Reset();
-  if tmpCrs.MoveNext() then begin
-    nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-    if nd.HasChildNodes() then begin
-      tmpCrs := CreateCursorOn(
-                  CreateChildrenCursor(nd,cetRttiNode),
-                  ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_appinfo)]),TDOMNodeRttiExposer)
-                );
-      tmpCrs.Reset();
-      if tmpCrs.MoveNext() then begin
-        nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        if ( nd.Attributes <> nil ) then begin
-          nd := nd.Attributes.GetNamedItem(AAttribute);
-          if Assigned(nd) then begin
-            Result := True;
-            AValue := nd.NodeValue;
-          end;
-        end;
-      end;
+  if Assigned(ANode) and ( ANode.Attributes <> nil ) then begin
+    nd := ANode.Attributes.GetNamedItem(AAttribute);
+    if Assigned(nd) then begin
+      Result := True;
+      AValue := nd.NodeValue;
     end;
   end;
 end;

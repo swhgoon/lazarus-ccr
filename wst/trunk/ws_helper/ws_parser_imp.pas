@@ -119,7 +119,7 @@ type
     SResolveError = 'Unable to resolve this namespace : "%s".';
 
 implementation
-uses dom_cursors, parserutils, StrUtils, Contnrs;
+uses dom_cursors, parserutils, StrUtils, Contnrs, xsd_consts;
 
 { TAbstractTypeParser }
 
@@ -555,19 +555,40 @@ var
       TPasEmentCrack(locType).SetName(locType.Name + '_Type');
     end;}
 
-    locMinOccur := 1;
-    locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
-    locPartCursor.Reset();
-    if locPartCursor.MoveNext() then begin
-      if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMinOccur) then
-        raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
-      if ( locMinOccur < 0 ) then
-        raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
+    if AnsiSameText(s_attribute,ExtractNameFromQName(AElement.NodeName)) then begin
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_use)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if locPartCursor.MoveNext() then begin
+        locStrBuffer := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+        if IsStrEmpty(locStrBuffer) then
+          raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : empty "use".',[s_attribute]);
+        case AnsiIndexText(locStrBuffer,[s_required,s_optional,s_prohibited]) of
+          0 : locMinOccur := 1;
+          1 : locMinOccur := 0;
+          2 : locMinOccur := -1;
+          else
+            raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : invalid "use" value "%s".',[s_attribute,locStrBuffer]);
+        end;
+      end else begin
+        locMinOccur := 0;
+      end;
+    end else begin
+      locMinOccur := 1;
+      locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_minOccurs)]),TDOMNodeRttiExposer));
+      locPartCursor.Reset();
+      if locPartCursor.MoveNext() then begin
+        if not TryStrToInt((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue,locMinOccur) then
+          raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
+        if ( locMinOccur < 0 ) then
+          raise EXsdParserException.CreateFmt('Invalid "minOccurs" value : "%s.%s".',[FTypeName,locName]);
+      end;
     end;
     locProp.ReadAccessorName := 'F' + locProp.Name;
     locProp.WriteAccessorName := 'F' + locProp.Name;
     if ( locMinOccur = 0 ) then begin
       locProp.StoredAccessorName := 'Has' + locProp.Name;
+    end else if ( locMinOccur = -1 ) then begin
+      locProp.StoredAccessorName := 'False';
     end else begin
       locProp.StoredAccessorName := 'True';
     end;
@@ -693,14 +714,14 @@ var
   var
     strBuffer : string;
   begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
 
   function IsRecordType() : Boolean;
   var
     strBuffer : string;
   begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
   
   procedure ParseElementsAndAttributes(AEltCrs, AEltAttCrs : IObjectCursor);
@@ -729,10 +750,11 @@ var
   i : Integer;
   recordType : TPasRecordType;
   tmpRecVar : TPasVariable;
+  locStrBuffer : string;
 begin
   ExtractBaseType();
   eltCrs := ExtractElementCursor(eltAttCrs);
-  
+
   internalName := ExtractIdentifier(ATypeName);
   hasInternalName := IsReservedKeyWord(internalName) or
                      ( not IsValidIdent(internalName) ) or
@@ -771,6 +793,7 @@ begin
               Result := nil;
               propTyp := arrayItems[0] as TPasProperty;
               arrayDef := FSymbols.CreateArray(internalName,propTyp.VarType,propTyp.Name,FSymbols.GetExternalName(propTyp),asScoped);
+              FSymbols.FreeProperties(classDef);
               FreeAndNil(classDef);
               Result := arrayDef;
               if hasInternalName then
@@ -808,11 +831,12 @@ begin
                   end;
                 end;
               end;
+              FSymbols.FreeProperties(tmpClassDef);
               FreeAndNil(tmpClassDef);
             end;
           end;
         end;
-        
+
         //check for record
         if ( FDerivationMode = dmNone ) and
            Result.InheritsFrom(TPasClassType) and
@@ -835,11 +859,20 @@ begin
               if FSymbols.IsAttributeProperty(propTyp) then begin
                 FSymbols.SetPropertyAsAttribute(tmpRecVar,True);
               end;
+              if AnsiSameText(propTyp.StoredAccessorName,'False') then
+                locStrBuffer := s_prohibited
+              else if AnsiSameText(Copy(propTyp.StoredAccessorName,1,3),'Has') then
+                locStrBuffer := s_optional
+              else
+                locStrBuffer := s_required;
+              FSymbols.Properties.SetValue(tmpRecVar,s_WST_storeType,locStrBuffer);    
             end;
           end;
+          FSymbols.FreeProperties(tmpClassDef);
           FreeAndNil(tmpClassDef);
         end;
       except
+        FSymbols.FreeProperties(Result);
         FreeAndNil(Result);
         raise;
       end;
@@ -931,7 +964,7 @@ var
       if ( locStoreOptIdx < 0 ) then
         raise EXsdInvalidDefinitionException.CreateFmt('Invalid <%s> definition : invalid "use" value "%s".',[s_attribute,locStoreOpt]);
     end else begin
-      locStoreOptIdx := 0;
+      locStoreOptIdx := 1{optional by default!}; //0;
     end;
 
     locInternalEltName := locName;
@@ -990,6 +1023,7 @@ begin
       end;
     end;
   except
+    FSymbols.FreeProperties(Result);
     FreeAndNil(Result);
     raise;
   end;
@@ -1212,6 +1246,7 @@ begin
       ParseEnumItem((locEnumCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject);
     end;
   except
+    FSymbols.FreeProperties(Result);
     FreeAndNil(Result);
     raise;
   end;

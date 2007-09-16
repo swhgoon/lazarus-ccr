@@ -41,7 +41,8 @@ uses
   logger_intf,
   xsd_parser,
   ws_parser_imp,
-  wsdl_parser;
+  wsdl_parser,
+  xsd_generator;
 
 {$INCLUDE ws_helper_prog.inc}
 

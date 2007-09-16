@@ -68,6 +68,7 @@ type
     FObjects : TObjectList;
     FProps : TObjectList;
   private
+    procedure FreeList(AObject : TObject);
   public
     constructor Create();
     destructor Destroy();override;
@@ -127,6 +128,7 @@ type
     property Binding[AIndex : Integer] : TwstBinding read GetBinding;
     property Properties : TPropertyHolder read FProperties;
     
+    procedure FreeProperties(AObject : TPasElement);
     procedure RegisterExternalAlias(AObject : TPasElement; const AExternalName : String);
     function SameName(AObject : TPasElement; const AName : string) : Boolean;
     function GetExternalName(AObject : TPasElement) : string;
@@ -176,7 +178,7 @@ type
   function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPasModule;
   
 implementation
-uses parserutils;
+uses parserutils, wst_types;
 
 const
     SIMPLE_TYPES_COUNT = 15;
@@ -715,6 +717,40 @@ begin
   Result := nil;
 end;
 
+procedure TwstPasTreeContainer.FreeProperties(AObject: TPasElement);
+
+  procedure FreeClassProps(AObj : TPasClassType);
+  var
+    ls : TList;
+    k : PtrInt;
+  begin
+    ls := AObj.Members;
+    for k := 0 to Pred(ls.Count) do begin
+      FProperties.FreeList(TPasElement(ls[k]));
+    end;
+  end;
+  
+  procedure FreeRecordFields(AObj : TPasRecordType);
+  var
+    ls : TList;
+    k : PtrInt;
+  begin
+    ls := AObj.Members;
+    for k := 0 to Pred(ls.Count) do begin
+      FProperties.FreeList(TPasElement(ls[k]));
+    end;
+  end;
+  
+begin
+  if Assigned(AObject) then begin
+    FProperties.FreeList(AObject);
+    if AObject.InheritsFrom(TPasClassType) then
+      FreeClassProps(AObject as TPasClassType)
+    else if AObject.InheritsFrom(TPasRecordType) then
+      FreeRecordFields(AObject as TPasRecordType);
+  end;
+end;
+
 procedure TwstPasTreeContainer.RegisterExternalAlias(
         AObject : TPasElement;
   const AExternalName : String
@@ -810,6 +846,17 @@ begin
     FObjects.Add(AOwner);
     Result := TStringList.Create();
     FProps.Add(Result);
+  end;
+end;
+
+procedure TPropertyHolder.FreeList(AObject: TObject);
+var
+  i : PtrInt;
+begin
+  i := FObjects.IndexOf(AObject);
+  if ( i >= 0 ) then begin
+    FObjects.Delete(i);
+    FProps.Delete(i);
   end;
 end;
 

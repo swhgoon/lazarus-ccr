@@ -169,7 +169,7 @@ var
 implementation
 uses view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
      xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
-     binary_streamer, wst_resources_utils, wsdl_generator,
+     binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
      uabout, edit_helper, udm, ufrmsaveoption, pparser
      {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF};
 
@@ -375,11 +375,13 @@ end;
 
 procedure GenerateWSDL_ToStream(ASymbol : TwstPasTreeContainer; ADest : TStream);
 var
+  g : IGenerator;
   doc : TXMLDocument;
 begin
   doc := TXMLDocument.Create();
   try
-    GenerateWSDL(ASymbol,doc);
+    g := TWsdlGenerator.Create(doc);
+    g.Execute(ASymbol,ASymbol.CurrentModule.Name);
     WriteXML(doc,ADest);
   finally
     FreeAndNil(doc);
