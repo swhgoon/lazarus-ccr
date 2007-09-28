@@ -56,13 +56,6 @@ var
 
 implementation
 
-uses
-{$ifdef win32}
-   windows;
-{$else}
-   baseunix, unix;
-{$endif}
-
 { TMultipleProcessDemoForm }
 
 procedure TMultipleProcessDemoForm.CloseButtonClick(Sender:TObject);
@@ -102,24 +95,26 @@ var
   procedure DoStuffForProcess(Process: TProcess; StartButton: TButton;
     OutputMemo: TMemo);
   var
-    TotalBytesAvailable: integer;
     Buffer: string;
+    BytesAvailable: DWord;
     BytesRead:LongInt;
   begin
     if not StartButton.Enabled then
       StartButton.Enabled := not Process.Running;
-    if Process.Running then begin
-      Windows.PeekNamedPipe(Process.Output.Handle, nil, 0, nil,
-                              @TotalBytesAvailable, nil);
-      while TotalBytesAvailable>0 do begin
-        SetLength(Buffer, TotalBytesAvailable);
-        BytesRead := Process.OutPut.Read(Buffer[1], TotalBytesAvailable);
+    if Process.Running then
+    begin
+      BytesAvailable := Process.Output.NumBytesAvailable;
+      BytesRead := 0;
+      while BytesAvailable>0 do
+      begin
+        SetLength(Buffer, BytesAvailable);
+        BytesRead := Process.OutPut.Read(Buffer[1], BytesAvailable);
         OutputMemo.Text := OutputMemo.Text + copy(Buffer,1, BytesRead);
-        Windows.PeekNamedPipe(Process.Output.Handle, nil, 0, nil,
-                                @TotalBytesAvailable, nil);
+        BytesAvailable := Process.Output.NumBytesAvailable;
         NoMoreOutput := false;
       end;
-      OutputMemo.SelStart := Length(OutputMemo.Text);
+      if BytesRead>0 then
+        OutputMemo.SelStart := Length(OutputMemo.Text);
     end;
   end;
 begin
