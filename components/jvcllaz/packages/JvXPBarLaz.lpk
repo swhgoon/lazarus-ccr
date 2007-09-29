@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <PathDelim Value="\"/>
+    <Name Value="JvXPBarLaz"/>
+    <Author Value="Sergio Samayoa"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\resource\"/>
+        <OtherUnitFiles Value="..\run\"/>
+        <UnitOutputDirectory Value="..\lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="JvXPBar (JVCL) conversion for Lazarus version 1.0
+"/>
+    <License Value="As JVCL."/>
+    <Version Major="1"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="..\run\JvXPCoreUtils.pas"/>
+        <UnitName Value="JvXPCoreUtils"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\run\JvXPBar.pas"/>
+        <UnitName Value="JvXPBar"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\run\JvXPCore.pas"/>
+        <UnitName Value="JvXPCore"/>
+      </Item3>
+      <Item4>
+        <Filename Value="JvXPBarReg.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JvXPBarReg"/>
+      </Item4>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <PathDelim Value="\"/>
+    <Name Value="JvCoreLaz"/>
+    <Author Value="Sergio Samayoa"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\resource\"/>
+        <OtherUnitFiles Value="..\run\"/>
+        <UnitOutputDirectory Value="..\lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="JVCL Core Components"/>
+    <Version Major="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="..\run\JvTypes.pas"/>
+        <UnitName Value="JvTypes"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\run\JvComponent.pas"/>
+        <UnitName Value="JvComponent"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\run\JvConsts.pas"/>
+        <UnitName Value="JvConsts"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\run\JvExControls.pas"/>
+        <UnitName Value="JvExControls"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\run\JvExExtCtrls.pas"/>
+        <UnitName Value="JvExExtCtrls"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\run\JvJCLUtils.pas"/>
+        <UnitName Value="JvJCLUtils"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\run\JvJVCLUtils.pas"/>
+        <UnitName Value="JvJVCLUtils"/>
+      </Item7>
+    </Files>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
