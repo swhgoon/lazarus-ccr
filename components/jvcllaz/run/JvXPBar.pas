@@ -380,7 +380,7 @@ type
   protected
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     class function GetBarItemsClass: TJvXPBarItemsClass; virtual;
-    function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
+    function GetHitTestRect(const AHitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -434,8 +434,11 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean;
+      {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
+    {$IFNDEF USEJVCL}
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
+    {$ENDIF !USEJVCL}
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -840,6 +843,11 @@ begin
     ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in LBar.ComponentState) or (LBar.ControlCount = 0)) then
       ItemCaption := Format(RsUntitledFmt, [RsUntitled, Index]);
+    SetBkMode(ACanvas.Handle, TRANSPARENT);
+    //{$IFDEF USEJVCL}
+    //DrawText(ACanvas, ItemCaption, -1, Rect,
+    //  DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS);
+    //{$ELSE}
     DrawText(ACanvas.Handle, PAnsiChar(ItemCaption), Length(ItemCaption), Rect,
       DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS);
   end;
@@ -1546,10 +1554,10 @@ begin
     Result := 18;
 end;
 
-function TJvXPCustomWinXPBar.GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
+function TJvXPCustomWinXPBar.GetHitTestRect(const AHitTest: TJvXPBarHitTest): TRect;
 
 begin
-  case HitTest of
+  case AHitTest of
     htHeader:
       Result := Bounds(0, FTopSpace, Width, FHeaderHeight);
     htRollButton:
@@ -1583,7 +1591,7 @@ begin
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
-    Invalidate;
+    InvalidateRect(Handle, @Rect, False);
   end;
 end;
 
@@ -1627,7 +1635,7 @@ begin
   if FHitTest <> OldHitTest then
   begin
     Rect := Bounds(0, FTopSpace, Width, FHeaderHeight); // header
-    Invalidate;
+    InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
       if FHitTest <> htNone then
         Cursor := crHandPoint
@@ -2073,6 +2081,10 @@ var
       ACanvas.Font.Color := FHotTrackColor;
     ARect.Bottom := ARect.Top + FHeaderHeight;
     Dec(ARect.Right, 3);
+    //{$IFDEF USEJVCL}
+    //DrawText(ACanvas, Caption, -1, ARect,
+    //  DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
+    //{$ELSE}
     DrawText(ACanvas.Handle, PChar(Caption), Length(Caption), ARect,
       DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
   end;

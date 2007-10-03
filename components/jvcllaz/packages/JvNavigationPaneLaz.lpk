@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="2">
     <PathDelim Value="\"/>
-    <Name Value="JvCoreLaz"/>
+    <Name Value="JvNavigationPaneLaz"/>
     <Author Value="Sergio Samayoa"/>
     <CompilerOptions>
       <Version Value="5"/>
@@ -19,40 +19,22 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="JVCL Core Components
+    <Description Value="JvNavigationPane (JVLC) conversion for Lazarus version 1.0
+
 "/>
     <Version Major="1"/>
-    <Files Count="7">
+    <Files Count="2">
       <Item1>
-        <Filename Value="..\run\JvTypes.pas"/>
-        <UnitName Value="JvTypes"/>
+        <Filename Value="JvNavigationPaneReg.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="JvNavigationPaneReg"/>
       </Item1>
       <Item2>
-        <Filename Value="..\run\JvComponent.pas"/>
-        <UnitName Value="JvComponent"/>
+        <Filename Value="..\run\JvNavigationPane.pas"/>
       </Item2>
-      <Item3>
-        <Filename Value="..\run\JvConsts.pas"/>
-        <UnitName Value="JvConsts"/>
-      </Item3>
-      <Item4>
-        <Filename Value="..\run\JvExControls.pas"/>
-        <UnitName Value="JvExControls"/>
-      </Item4>
-      <Item5>
-        <Filename Value="..\run\JvExExtCtrls.pas"/>
-        <UnitName Value="JvExExtCtrls"/>
-      </Item5>
-      <Item6>
-        <Filename Value="..\run\JvJCLUtils.pas"/>
-        <UnitName Value="JvJCLUtils"/>
-      </Item6>
-      <Item7>
-        <Filename Value="..\run\JvJVCLUtils.pas"/>
-        <UnitName Value="JvJVCLUtils"/>
-      </Item7>
     </Files>
-    <RequiredPkgs Count="2">
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
@@ -60,6 +42,9 @@
       <Item2>
         <PackageName Value="LCL"/>
       </Item2>
+      <Item3>
+        <PackageName Value="JvCoreLaz"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)\"/>

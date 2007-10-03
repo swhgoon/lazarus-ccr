@@ -1852,7 +1852,8 @@ end;
 
 procedure TJvCustomNavigationPane.WMEraseBkgnd(var Msg: TLMEraseBkgnd);
 begin
-  if ActivePage = nil then
+  // DEV: Doesn't clear, remove if...
+  //if ActivePage = nil then
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ClientRect);

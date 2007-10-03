@@ -40,7 +40,7 @@ uses
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED - NOT USED
 procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColor,
   EndColor: TColor; const AColors: TJvXPGradientColors; const Style: TJvXPGradientStyle;
   const Dithered: Boolean; var Bitmap: TBitmap);
@@ -57,17 +57,19 @@ procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   ACaption: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   var ARect: TRect; AFlags: Integer);
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
+
 procedure JvXPFrame3D(const ACanvas: TCanvas; const ARect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
-(* 23.09.2007 - SESS - unused
+
+(******************** NOT CONVERTED - NOT USED
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 procedure JvXPSetDrawFlags(const AAlignment: TAlignment; const AWordWrap: Boolean;
   var Flags: Integer);
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
   const AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 implementation
 
@@ -76,7 +78,7 @@ begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
 end;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT USED
 procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColor,
   EndColor: TColor; const AColors: TJvXPGradientColors; const Style: TJvXPGradientStyle;
   const Dithered: Boolean; var Bitmap: TBitmap);
@@ -220,7 +222,7 @@ begin
     end;
   end;
 end;
-*)
+******************** NOT USED *)
 
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
 begin
@@ -231,7 +233,7 @@ begin
   end;
 end;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED - NOT USED
 procedure JvXPAdjustBoundRect(const BorderWidth: Byte;
   const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines;
   var Rect: TRect);
@@ -322,7 +324,7 @@ begin
       DoDrawText;
   end;
 end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 procedure JvXPFrame3D(const ACanvas: TCanvas; const ARect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
@@ -352,7 +354,7 @@ begin
   end;
 end;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 var
   ColorMap: TBitmap;
@@ -413,7 +415,7 @@ begin
   OffsetRect(Rect, DX, (OH - Rect.Bottom) div 2);
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 end.
 

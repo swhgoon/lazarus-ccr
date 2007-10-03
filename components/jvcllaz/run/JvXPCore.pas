@@ -34,9 +34,9 @@ unit JvXPCore;
 interface
 
 uses
-  Classes, Controls, Forms, Graphics, LCLIntf, LCLType, LMessages;
+  Classes, Controls, Forms, Graphics, JvComponent, LCLIntf, LCLType, LMessages;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
 const
   { color constants.
 
@@ -82,7 +82,7 @@ type
     blRight,                            // right line
     blBottom                            // bottom line
    );
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 type
   TJvXPControlStyle = set of
@@ -111,7 +111,7 @@ type
     dsFocused                           // focused
    );
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
   TJvXPGlyphLayout =
    (
     glBottom,                           // bottom glyph
@@ -135,7 +135,7 @@ type
   published
     property Version: string read FVersion write SetVersion stored False;
   end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 type
   TJvXPWinControl = class(TWinControl)
@@ -145,7 +145,7 @@ type
   
   { baseclass for focusable control descendants. }
 
-  TJvXPCustomControl = class(TCustomControl)
+  TJvXPCustomControl = class(TJvCustomControl)
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -154,7 +154,6 @@ type
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    FVersion: string;
     procedure SetVersion(const Value: string);
     procedure CMFocusChanged(var Msg: TLMessage); message CM_FOCUSCHANGED;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
@@ -164,7 +163,7 @@ type
     procedure CMMouseLeave(var Msg: TLMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TLMessage); message CM_PARENTCOLORCHANGED;
 
-    //21.09.07 - SESS
+    //LCL doesnt fire it
     //procedure CMParentFontChanged(var Msg: TLMessage); message CM_PARENTFONTCHANGED;
 
     procedure CMTextChanged(var Msg: TLMessage); message CM_TEXTCHANGED;
@@ -202,11 +201,9 @@ type
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
-  published
-    property Version: string read FVersion write SetVersion stored False;
   end;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
   published
     //property BevelInner;
@@ -226,10 +223,7 @@ type
     property Constraints;
     property DragCursor;
     property DragKind;
-
-    //21.09.07 - SESS resolver
-    //property OnCanResize;
-
+    property OnCanResize;
     property DragMode;
     //property Enabled;
     property Font;
@@ -310,13 +304,13 @@ type
     property Style: TJvXPStyle read FStyle write FStyle;
     property StyleManager: TJvXPStyleManager read FStyleManager write SetStyleManager;
   end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
   TJvXPGradientColors = 2..255;
 
   TJvXPGradientStyle = (gsLeft, gsTop, gsRight, gsBottom);
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
   TJvXPGradient = class(TPersistent)
   private
     FColors: TJvXPGradientColors;
@@ -346,34 +340,32 @@ type
     property StartColor: TColor read FStartColor write SetStartColor default clGray;
     property Style: TJvXPGradientStyle read FGradientStyle write SetGradientStyle default gsLeft;
   end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 implementation
 
-(* 23.09.2007 - SESS - Original strings
-uses
-  JvXPCoreUtils;
-
+(******************** NOT CONVERTED
+{$IFNDEF USEJVCL}
 resourcestring
   RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
   RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
   RsVersion = '2.0.1'; // always increase version number on new releases!
-*)
-
-(* 23.09.2007 - SESS - unused
+{$ENDIF !USEJVCL}
 //=== { TJvXPCustomComponent } ===============================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFNDEF USEJVCL}
   FVersion := RsCopyright + RsVersion;
+  {$ENDIF !USEJVCL}
 end;
 
 procedure TJvXPCustomComponent.SetVersion(const Value: string);
 begin
   // do not enable overwriting this constant.
 end;
-23.09.2007 - SESS - unused *)
+******************** NOT CONVERTED *)
 
 //=== { TJvXPCustomControl } =================================================
 
@@ -390,9 +382,6 @@ begin
   FIsLocked := False;
   FIsSibling := False;
   FModalResult := 0;
-  // 23.09.2007 - SESS
-  // FVersion := RsCopyright2 + RsVersion;
-  FVersion := 'JvXP (JVCL) for Lazarus 1.0';
 end;
 
 procedure TJvXPCustomControl.SetVersion(const Value: string);
@@ -482,7 +471,7 @@ begin
   HookParentColorChanged;
 end;
 
-//21.09.07 - SESS resolver
+//LCL doesnt fire it...
 (*
 procedure TJvXPCustomControl.CMParentFontChanged(var Msg: TLMessage);
 begin
@@ -650,7 +639,7 @@ begin
 
     // does the cursor is over another supported control?
     GetCursorPos(CurrentPos);
-    //21.09.2007 - SESS resolver
+    //TODO:
     //NewControl := FindVCLWindow(CurrentPos);
     NewControl := nil;
     if (NewControl <> nil) and (NewControl <> Self) and
@@ -694,7 +683,7 @@ begin
     InternalRedraw;
 end;
 
-(* 23.09.2007 - SESS - unused
+(******************** NOT CONVERTED
 //=== { TJvXPStyle } =========================================================
 
 constructor TJvXPStyle.Create(AOwner: TComponent);
@@ -908,6 +897,7 @@ begin
     Parent.InternalRedraw;
   end;
 end;
-*)
+******************** NOT CONVERTED *)
+
 end.
 
