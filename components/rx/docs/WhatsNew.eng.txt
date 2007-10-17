@@ -1,3 +1,16 @@
+  + In TRxCustomDBLookupCombo add check for CircularDataLink
+  + in TRxCustomDBLookupCombo accelerated drawing data
+  - In TRxCustomDBLookupCombo fix select first record if DataField is emty
+  + In RxDBGrid are published missing events from DBGrid
+  + New component TRxCalendarGrid - simple calendar without heading.
+  - fix error compile module rxappicon.pas in Windows  for GTK2 (thx ViruZ)
+  + add new module rxiconv.pas (original module iconv.pas from A.Voito)
+  + minor fix in drawing button caption in setup form TToolbar
+  + fix draw disables state for TRxCustomDBLookupCombo
+  - fix compile rxctrls in fpc 2.2
+  + TPopUpColumnTitle used define NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID
+  + in RxDBGrid images of markers moved to rxdbgrids.lrs (Petr Smolik)
+  + add module for autosort in RxDBGrid exsortzeos.pas for ZeosDB (Petr Smolik)
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

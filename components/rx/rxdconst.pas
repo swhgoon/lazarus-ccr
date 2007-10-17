@@ -23,7 +23,7 @@ const
   less that above. }
   MaxExtStrID = 61300;
 
-const
+resourcestring
 (*
 { DBLists }
 

@@ -182,8 +182,9 @@ type
     procedure UpdateData;
     procedure OnClosePopup(AResult:boolean);
   protected
+    procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: char); dynamic;
+    procedure KeyPress(var Key: char); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure DoPositionButton; virtual;
@@ -295,7 +296,7 @@ type
   end;
   
 implementation
-uses VCLUtils, Math;
+uses VCLUtils, Math, rxdconst;
 
 
 { TCustomDBLookupEdit }
@@ -809,7 +810,7 @@ begin
       W := FPopUpFormOptions.Columns[i].Width
     else
     begin
-      W := F.DisplayWidth;
+      W :=  F.DisplayWidth;
       if I < LastIndex then
         W := W * TxtWidth + 4
       else
@@ -837,9 +838,9 @@ end;
 
 procedure TRxCustomDBLookupCombo.CheckNotCircular;
 begin
-{  if FDataLink.Active and ((DataSource = LookupSource) or
-    (FDataLink.DataSet = FLookupLink.DataSet)) then
-    _DBError(SCircularDataLink);}
+  if FDataLink.Active and ((DataSource = LookupSource) or
+    (FDataLink.DataSet = FLookupDataLink.DataSet)) then
+    _DBError(SCircularDataLink);
 end;
 
 procedure TRxCustomDBLookupCombo.DisplayValueChanged;
@@ -888,7 +889,7 @@ end;
 
 procedure TRxCustomDBLookupCombo.UpdateFieldValues;
 var
-  i:integer;
+  i, k:integer;
   F:TField;
 begin
   FValuesList.Clear;
@@ -901,16 +902,13 @@ begin
       for i:=0 to FFieldList.Count-1 do
       begin
         F:=FLookupDataLink.DataSet.FieldByName(FFieldList[i]);
-        FValuesList.Add(F.DisplayText);
+        k:=FValuesList.Add(F.DisplayText);
+        FValuesList.Objects[k]:=TObject(F.DisplayWidth);
       end;
   end;
 end;
 
 procedure TRxCustomDBLookupCombo.ShowList;
-var
-  i,c,W:integer;
-  GC:TColumn;
-  F, F1:TField;
 begin
   if Assigned(FLookupDataLink.DataSet) and (FLookupDataLink.DataSet.Active) then
     if not PopupVisible then
@@ -983,6 +981,12 @@ begin
     Parent.Repaint;
 end;
 
+procedure TRxCustomDBLookupCombo.SetEnabled(Value: Boolean);
+begin
+  inherited SetEnabled(Value);
+  Invalidate;
+end;
+
 procedure TRxCustomDBLookupCombo.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN, VK_RETURN, VK_HOME, VK_END]) and PopupVisible then
@@ -1017,12 +1021,14 @@ begin
     begin
       FDataLink.Edit;
       if not FDataField.IsNull then
-         FLocateObject.Locate(FLookupField, FDataField.AsString, true, false);
-      case Key of
-        VK_UP: if not FLookupDataLink.DataSet.BOF then
-                 FLookupDataLink.DataSet.Prior;
-        VK_DOWN: if not FLookupDataLink.DataSet.EOF then
-                 FLookupDataLink.DataSet.Next;
+      begin
+        FLocateObject.Locate(FLookupField, FDataField.AsString, true, false);
+        case Key of
+          VK_UP: if not FLookupDataLink.DataSet.BOF then
+                     FLookupDataLink.DataSet.Prior;
+          VK_DOWN: if not FLookupDataLink.DataSet.EOF then
+                     FLookupDataLink.DataSet.Next;
+        end;
       end;
       FDataLink.UpdateRecord;
       KeyValueChanged;
@@ -1118,10 +1124,9 @@ end;
 procedure TRxCustomDBLookupCombo.Paint;
 var
   Selected:boolean;
-  R, ImageRect: TRect;
-  X, Flags, TextMargin: Integer;
+  R: TRect;
+  X, TextMargin: Integer;
   AText: string;
-  Bmp: TBitmap;
 begin
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
@@ -1132,8 +1137,10 @@ begin
     Canvas.Brush.Color := clHighlight;
   end
   else
-  if not Enabled and NewStyleControls then
-    Canvas.Font.Color := clGrayText;
+  if not Enabled {and NewStyleControls }then
+  begin
+    Canvas.Font.Color := clInactiveCaption;
+  end;
 
   SetRect(R, 0, 0, ClientWidth, ClientHeight);
   if Flat then
@@ -1152,49 +1159,24 @@ begin
     SetRect(R, 2, 2, ClientWidth - 2, ClientHeight - 2);
     if TextMargin > 0 then Inc(TextMargin);
     X := 2 + TextMargin;
-{    if not (FPopupVisible and (FDataList.FSearchText <> '')) and not DrawList then
-      case Alignment of
-        taRightJustify: X := W - Canvas.TextWidth(AText) - 6;
-        taCenter: X := (W + TextMargin - Canvas.TextWidth(AText)) div 2;
-      end;}
-    Bmp := TBitmap.Create;
-    try
-      with Bmp.Canvas do
+    Canvas.FillRect(R);
+    if FDisplayAll then
+      PaintDisplayValues(Canvas, R, TextMargin)
+    else
+    begin
+      if Assigned(FDataField) and FDataField.IsNull then
       begin
-        Font := Self.Canvas.Font;
-        Brush := Self.Canvas.Brush;
-        Pen := Self.Canvas.Pen;
-      end;
-      Bmp.Width := WidthOf(R);
-      Bmp.Height := HeightOf(R);
-      ImageRect := Rect(0, 0, WidthOf(R), HeightOf(R));
-      Bmp.Canvas.FillRect(ImageRect);
-      if FDisplayAll then
-        PaintDisplayValues(Bmp.Canvas, ImageRect, TextMargin)
+        Canvas.Brush.Color:=FEmptyItemColor;
+        Canvas.FillRect(R);
+        AText:=FEmptyValue
+      end
       else
-      begin
-        if Assigned(FDataField) and FDataField.IsNull then
-        begin
-          Bmp.Canvas.Brush.Color:=FEmptyItemColor;
-          Bmp.Canvas.FillRect(ImageRect);
-          AText:=FEmptyValue
-        end
-        else
-        if FValuesList.Count>0 then
-          AText:=FValuesList[FLookupDisplayIndex]//FLookupDataLink.DataSet.FieldByName(FFieldList[FLookupDisplayIndex]).DisplayText;
-        else
-          AText:='';
-        Bmp.Canvas.TextRect(ImageRect, X, Max(0, (HeightOf(R) - Canvas.TextHeight(AText)) div 2), AText);
-      end;
-{      if Image <> nil then
-      begin
-        ImageRect.Right := ImageRect.Left + TextMargin + 2;
-        DrawPicture(Bmp.Canvas, ImageRect, Image);
-      end;}
-      Canvas.Draw(R.Left, R.Top, Bmp);
-    finally
-      Bmp.Free;
-    end;
+      if FValuesList.Count>0 then
+        AText:=FValuesList[FLookupDisplayIndex]
+      else
+        AText:='';
+      Canvas.TextRect(R, X, Max(0, (HeightOf(R) - Canvas.TextHeight(AText)) div 2), AText);
+    end
   end;
 end;
 
@@ -1210,7 +1192,6 @@ end;
 procedure TRxCustomDBLookupCombo.ListLinkActiveChanged;
 var
   DataSet: TDataSet;
-  ResultField: TField;
 begin
   FListActive := False;
   FKeyField := nil;
@@ -1333,10 +1314,4 @@ begin
     FDataControl.LookupDataSetChanged;
 end;
 
-initialization
-  LazarusResources.Add('rxbtn_downarrow','XPM',[
-  '/* XPM */'#13#10'static char * btn_downarrow_xpm[] = {'#13#10'"5 3 2 1",'#13
-  +#10'" '#9'c None",'#13#10'".'#9'c #000000",'#13#10'".....",'#13#10'" ... ",'
-  +#13#10'"  .  "};'#13#10
-]);
 end.

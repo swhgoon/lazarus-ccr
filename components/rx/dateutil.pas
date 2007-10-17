@@ -54,6 +54,7 @@ function StrToDateFmt(const DateFormat, S: string): TDateTime;
 function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDateTime;
 function DefDateFormat(FourDigitYear: Boolean): string;
 function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
+function NvlDate(DateValue, DefaultValue: TDateTime): TDateTime;
 
 {$IFDEF WIN32}
 function FormatLongDate(Value: TDateTime): string;
@@ -77,6 +78,13 @@ const
 implementation
 
 uses SysUtils, RXStrUtils, rxdconst{, DBConsts }{$IFDEF WIN32}, Windows{$ENDIF};
+
+
+function NvlDate(DateValue, DefaultValue: TDateTime): TDateTime;
+begin
+  if DateValue = NullDate then Result := DefaultValue
+  else Result := DateValue;
+end;
 
 function IsLeapYear(AYear: Integer): Boolean;
 begin
@@ -576,6 +584,7 @@ begin
   if Result <> '' then Result := Result + BlanksChar;
 end;
 
+
 {$IFDEF WIN32}
 
 function FormatLongDate(Value: TDateTime): string;
@@ -586,7 +595,8 @@ begin
 {$IFDEF RX_D3}
   DateTimeToSystemTime(Value, SystemTime);
 {$ELSE}
-  with SystemTime do begin
+  with SystemTime do
+  begin
     DecodeDate(Value, wYear, wMonth, wDay);
     DecodeTime(Value, wHour, wMinute, wSecond, wMilliseconds);
   end;

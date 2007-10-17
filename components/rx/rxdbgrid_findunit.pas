@@ -60,6 +60,7 @@ procedure TrxDBGridFindForm.FormActivate(Sender: TObject);
 begin
 {  BtnFind.Height:=Canvas.TextHeight('W') + 6;
   Button2.Height:=BtnFind.Height;}
+  ComboBox1.Height:=Edit1.Height;
 end;
 
 procedure TrxDBGridFindForm.FormShow(Sender: TObject);

@@ -365,13 +365,14 @@ type
     property OnColEnter;
     property OnColExit;
     property OnColumnMoved;
+    property OnColumnSized;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDrawColumnCell;
     property OnDblClick;
-    //property OnDragDrop;
-    //property OnDragOver;
     property OnEditButtonClick;
     //property OnEndDock;
-    //property OnEndDrag;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnFieldEditMask;
@@ -382,14 +383,17 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnPrepareCanvas;
+    property OnSelectEditor;
     //property OnStartDock;
-    //property OnStartDrag;
+    property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;
   end;
 
+{
 type
   PCharArray1   = Array[0..12] of PChar;
+
 
 const
   IMGMarkerUp : PCharArray1 =
@@ -426,7 +430,7 @@ const
    '....#a....',
    '..........')
   ;
-
+}
 
 procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
 
@@ -1118,21 +1122,28 @@ begin
   R.Bottom:=TotalYOffs + DefaultRowHeight * FooterRowCount + 2;
 
   Canvas.Brush.Color := FFooterColor;
+//  Writeln('[]Name ='+Owner.Name+'.'+Name);
   if (Columns.Count > 0) then
   begin
     TxS:=Canvas.TextStyle;
+//    writeln('GCache.VisibleGrid.Left =',GCache.VisibleGrid.Left,'   GCache.VisibleGrid.Right=', GCache.VisibleGrid.Right);
+//    writeln('Columns.Count=',Columns.Count);
     for i := GCache.VisibleGrid.Left to GCache.VisibleGrid.Right do
     begin
       ColRowToOffset(True, True, i, R.Left, R.Right);
       Canvas.FillRect(R);
       DrawCellGrid(i, 0, R, []);
 
-       C := ColumnFromGridColumn(i) as TRxColumn;
-
-       TxS.Alignment:=C.Footer.Alignment;
-       TxS.Layout:=C.Footer.Layout;
-       Canvas.TextStyle:=TxS;
-       DrawCellText(i, 0, R, [], C.Footer.DisplayText);
+      C := ColumnFromGridColumn(i) as TRxColumn;
+//       if C = nil then
+//         Writeln('i=',i,';', ' C = nil = ',C=nil);
+      if Assigned(C) then
+      begin
+        TxS.Alignment:=C.Footer.Alignment;
+        TxS.Layout:=C.Footer.Layout;
+        Canvas.TextStyle:=TxS;
+        DrawCellText(i, 0, R, [], C.Footer.DisplayText);
+      end;
     end;
 
     ClipArea := Canvas.ClipRect;
@@ -1622,11 +1633,9 @@ begin
 {$ENDIF}
 
   FMarkerUp := TBitmap.Create;
-  FMarkerUp.Handle := CreatePixmapIndirect(@IMGMarkerUp[0],
-    GetSysColor(COLOR_BTNFACE));
+  FMarkerUp.LoadFromLazarusResource('rx_markerup');
   FMarkerDown := TBitmap.Create;
-  FMarkerDown.Handle := CreatePixmapIndirect(@IMGMarkerDown[0],
-    GetSysColor(COLOR_BTNFACE));
+  FMarkerDown.LoadFromLazarusResource('rx_markerdown');
 
   FPropertyStorageLink:=TPropertyStorageLink.Create;
   FPropertyStorageLink.OnSave:=@OnIniSave;
@@ -2124,6 +2133,9 @@ begin
 end;
 
 initialization
+  {$I rxdbgrid.lrs}
+//  {$I rx_markerdown.lrs}
+
   ExDBGridSortEngineList:=TStringList.Create;
   ExDBGridSortEngineList.Sorted:=true;
 finalization

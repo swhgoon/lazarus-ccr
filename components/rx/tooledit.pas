@@ -5,8 +5,161 @@ unit tooledit;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LMessages, Graphics, MaskEdit, Controls;
+  Classes, SysUtils, LCLType, LMessages, Graphics, MaskEdit, Controls, EditBtn,
+  pickdate, dateutil;
 
+type
+  { TCustomDateEdit }
+
+  TYearDigits = (dyDefault, dyFour, dyTwo);
+  TPopupAlign = (epaRight, epaLeft);
+  TCalendarStyle = (csPopup, csDialog);
+
+const
+{$IFDEF DEFAULT_POPUP_CALENDAR}
+  dcsDefault = csPopup;
+{$ELSE}
+  dcsDefault = csDialog;
+{$ENDIF DEFAULT_POPUP_CALENDAR}
+
+type
+
+  { TCustomRxDateEdit }
+
+  TCustomRxDateEdit = class(TCustomEditButton)
+  private
+    FCalendarHints: TStrings;
+    FBlanksChar: Char;
+    FCancelCaption: TCaption;
+    FDefaultToday: Boolean;
+    FDialogTitle: TCaption;
+    FPopupColor: TColor;
+    FOKCaption: TCaption;
+    FOnAcceptDAte: TAcceptDateEvent;
+    FStartOfWeek: TDayOfWeekName;
+    FWeekendColor: TColor;
+    FWeekends: TDaysOfWeek;
+    FYearDigits: TYearDigits;
+    FDateFormat: string[10];
+    FFormatting: Boolean;
+    FPopupVisible: Boolean;
+    FPopupAlign: TPopupAlign;
+    function GetCalendarStyle: TCalendarStyle;
+    function GetDate: TDateTime;
+    function GetPopupColor: TColor;
+    function GetPopupVisible: Boolean;
+    function IsStoreTitle: boolean;
+    procedure SetBlanksChar(const AValue: Char);
+    procedure SetCalendarStyle(const AValue: TCalendarStyle);
+    procedure SetDate(const AValue: TDateTime);
+    procedure SetPopupColor(const AValue: TColor);
+    procedure SetStartOfWeek(const AValue: TDayOfWeekName);
+    procedure SetWeekendColor(const AValue: TColor);
+    procedure SetWeekends(const AValue: TDaysOfWeek);
+    procedure SetYearDigits(const AValue: TYearDigits);
+    procedure CalendarHintsChanged(Sender: TObject);
+  protected
+    FPopup: TPopupCalendar;
+    procedure UpdateFormat;
+    procedure UpdatePopup;
+    function TextStored: Boolean;
+    procedure PopupDropDown(DisableEdit: Boolean); virtual;
+    procedure PopupCloseUp(Sender: TObject; Accept: Boolean);
+    procedure HidePopup; virtual;
+    procedure ShowPopup(AOrigin: TPoint); virtual;
+    procedure ApplyDate(Value: TDateTime); virtual;
+    procedure Change; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure DoButtonClick (Sender: TObject); override;
+
+    property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
+    property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
+    Property OnAcceptDate : TAcceptDateEvent Read FOnAcceptDAte Write FOnAcceptDate;
+    property OKCaption:TCaption Read FOKCaption Write FOKCaption;
+    property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
+    property DefaultToday: Boolean read FDefaultToday write FDefaultToday
+      default False;
+    property StartOfWeek: TDayOfWeekName read FStartOfWeek write SetStartOfWeek default Mon;
+    property Weekends: TDaysOfWeek read FWeekends write SetWeekends default [Sun];
+    property WeekendColor: TColor read FWeekendColor write SetWeekendColor default clRed;
+    property YearDigits: TYearDigits read FYearDigits write SetYearDigits default dyDefault;
+    property PopupColor: TColor read GetPopupColor write SetPopupColor
+      default clBtnFace;
+    property CalendarStyle: TCalendarStyle read GetCalendarStyle
+      write SetCalendarStyle default dcsDefault;
+    property PopupVisible: Boolean read GetPopupVisible;
+    property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure CheckValidDate;
+    function GetDateMask: string;
+    procedure UpdateMask; virtual;
+    property Date: TDateTime read GetDate write SetDate;
+    property Formatting: Boolean read FFormatting;
+  end;
+  
+type
+  TRxDateEdit = class(TCustomRxDateEdit)
+  public
+    property PopupVisible;
+  published
+    property BlanksChar;
+    property StartOfWeek;
+    property DialogTitle;
+    Property OnAcceptDate;
+    property OKCaption;
+    property CancelCaption;
+    property DefaultToday;
+    property ReadOnly;
+    property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property Action;
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property AutoSelect;
+    property BorderSpacing;
+    property Color;
+    property Constraints;
+    property CharCase;
+    property Glyph;
+    property NumGlyphs;
+    property DragMode;
+    property EchoMode;
+    property Enabled;
+    property Font;
+    property MaxLength;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnEditingDone;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    Property OnMouseDown;
+    Property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Visible;
+    property YearDigits;
+    property Weekends;
+    property WeekendColor;
+    property PopupColor;
+    property PopupAlign;
+    property CalendarStyle;
+  end;
+  
 
 function PaintComboEdit(Editor: TCustomMaskEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
@@ -14,7 +167,7 @@ function PaintComboEdit(Editor: TCustomMaskEdit; const AText: string;
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 
 implementation
-uses lclintf;
+uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms;
 
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 var
@@ -162,5 +315,412 @@ begin
   end;
 end;
 
+{ TCustomRxDateEdit }
+
+function TCustomRxDateEdit.IsStoreTitle: boolean;
+begin
+  Result:=DialogTitle<>rsPickDate;
+end;
+
+procedure TCustomRxDateEdit.SetBlanksChar(const AValue: Char);
+begin
+  if FBlanksChar=AValue then exit;
+  if (AValue < ' ') then
+    FBlanksChar:=' '
+  else
+    FBlanksChar:=AValue;
+  UpdateMask;
+end;
+
+function TCustomRxDateEdit.GetCalendarStyle: TCalendarStyle;
+begin
+  if FPopup <> nil then
+    Result := csPopup
+  else
+    Result := csDialog;
+end;
+
+function TCustomRxDateEdit.GetDate: TDateTime;
+begin
+  if DefaultToday then Result := SysUtils.Date
+  else Result := NullDate;
+  Result := StrToDateFmtDef(FDateFormat, Text, Result);
+end;
+
+function TCustomRxDateEdit.GetPopupColor: TColor;
+begin
+  if FPopup <> nil then Result := TPopupCalendar(FPopup).Color
+  else Result := FPopupColor;
+end;
+
+function TCustomRxDateEdit.GetPopupVisible: Boolean;
+begin
+  Result := (FPopup <> nil) and FPopupVisible;
+end;
+
+procedure TCustomRxDateEdit.SetCalendarStyle(const AValue: TCalendarStyle);
+begin
+  if AValue <> CalendarStyle then
+  begin
+    case AValue of
+      csPopup:
+        begin
+          if FPopup = nil then
+            FPopup := CreatePopupCalendar(Self{$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
+          FPopup.OnCloseUp := @PopupCloseUp;
+          FPopup.Color := FPopupColor;
+//          UpdatePopup;
+        end;
+      csDialog:
+        begin
+          FPopup.Free;
+          FPopup := nil;
+        end;
+    end;
+  end;
+end;
+
+procedure TCustomRxDateEdit.SetDate(const AValue: TDateTime);
+var
+  D: TDateTime;
+begin
+{  if not ValidDate(AValue) or (AValue = NullDate) then
+  begin
+    if DefaultToday then AValue := SysUtils.Date
+    else Value := NullDate;
+  end;}
+  D := Date;
+  if AValue = NullDate then
+    Text := ''
+  else
+    Text := FormatDateTime(FDateFormat, AValue);
+  Modified := D <> Date;
+end;
+
+procedure TCustomRxDateEdit.SetPopupColor(const AValue: TColor);
+begin
+  if AValue <> PopupColor then
+  begin
+    if FPopup <> nil then FPopup.Color := AValue;
+    FPopupColor := AValue;
+  end;
+end;
+
+procedure TCustomRxDateEdit.SetStartOfWeek(const AValue: TDayOfWeekName);
+begin
+  if FStartOfWeek=AValue then exit;
+  FStartOfWeek:=AValue;
+end;
+
+procedure TCustomRxDateEdit.SetWeekendColor(const AValue: TColor);
+begin
+  if FWeekendColor=AValue then exit;
+  FWeekendColor:=AValue;
+end;
+
+procedure TCustomRxDateEdit.SetWeekends(const AValue: TDaysOfWeek);
+begin
+  if FWeekends=AValue then exit;
+  FWeekends:=AValue;
+end;
+
+procedure TCustomRxDateEdit.SetYearDigits(const AValue: TYearDigits);
+begin
+  if FYearDigits=AValue then exit;
+  FYearDigits:=AValue;
+end;
+
+procedure TCustomRxDateEdit.CalendarHintsChanged(Sender: TObject);
+begin
+  TStringList(FCalendarHints).OnChange := nil;
+  try
+    while (FCalendarHints.Count > 4) do
+      FCalendarHints.Delete(FCalendarHints.Count - 1);
+  finally
+    TStringList(FCalendarHints).OnChange := @CalendarHintsChanged;
+  end;
+  if not (csDesigning in ComponentState) then UpdatePopup;
+end;
+
+procedure TCustomRxDateEdit.UpdateFormat;
+begin
+  FDateFormat := DefDateFormat(FourDigitYear);
+end;
+
+procedure TCustomRxDateEdit.UpdatePopup;
+begin
+  if FPopup <> nil then SetupPopupCalendar(FPopup, FStartOfWeek,
+    FWeekends, FWeekendColor, FCalendarHints, FourDigitYear);
+end;
+
+function TCustomRxDateEdit.TextStored: Boolean;
+begin
+  Result := not IsEmptyStr(Text, [#0, ' ', DateSeparator, FBlanksChar]);
+end;
+
+procedure TCustomRxDateEdit.PopupDropDown(DisableEdit: Boolean);
+var
+  P: TPoint;
+  Y: Integer;
+begin
+  if (FPopup <> nil) and not (ReadOnly or FPopupVisible) then begin
+    P := Parent.ClientToScreen(Point(Left, Top));
+    Y := P.Y + Height;
+    if Y + FPopup.Height > Screen.Height then
+      Y := P.Y - FPopup.Height;
+    case FPopupAlign of
+      epaRight:
+        begin
+          Dec(P.X, FPopup.Width - Width);
+          if P.X < 0 then Inc(P.X, FPopup.Width - Width);
+        end;
+      epaLeft:
+        begin
+          if P.X + FPopup.Width > Screen.Width then
+            Dec(P.X, FPopup.Width - Width);
+        end;
+    end;
+    if P.X < 0 then P.X := 0
+    else if P.X + FPopup.Width > Screen.Width then
+      P.X := Screen.Width - FPopup.Width;
+{    if Text <> '' then
+      SetPopupValue(Text)
+    else
+      SetPopupValue(Null);}
+    if CanFocus then SetFocus;
+    ShowPopup(Point(P.X, Y));
+    FPopupVisible := True;
+    if DisableEdit then begin
+      inherited ReadOnly := True;
+      HideCaret(Handle);
+    end;
+  end;
+end;
+
+procedure TCustomRxDateEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
+var
+  AValue: Variant;
+begin
+  if (FPopup <> nil) and FPopupVisible then
+  begin
+{    if GetCapture <> 0 then
+      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);}
+//    AValue := GetPopupValue;
+    HidePopup;
+    try
+      try
+        if CanFocus then
+        begin
+          SetFocus;
+//          if GetFocus = Handle then SetShowCaret;
+        end;
+      except
+        { ignore exceptions }
+      end;
+//      SetDirectInput(DirectInput);
+      Invalidate;
+{      if Accept and AcceptPopup(AValue) and EditCanModify then
+      begin
+        AcceptValue(AValue);
+        if FFocused then inherited SelectAll;
+      end;}
+    finally
+      FPopupVisible := False;
+    end;
+  end;
+end;
+
+procedure TCustomRxDateEdit.HidePopup;
+begin
+  FPopup.Hide;
+end;
+
+procedure TCustomRxDateEdit.ShowPopup(AOrigin: TPoint);
+begin
+  FPopup.Show;
+{  FPopup.Show(AOrigin);
+  SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
+    SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
+  Visible := True;}
+end;
+
+procedure TCustomRxDateEdit.ApplyDate(Value: TDateTime);
+begin
+  SetDate(Value);
+  SelectAll;
+end;
+
+procedure TCustomRxDateEdit.Change;
+begin
+  if not FFormatting then inherited Change;
+end;
+
+procedure TCustomRxDateEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key in [VK_PRIOR, VK_NEXT, VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN,
+    VK_ADD, VK_SUBTRACT]) and
+    PopupVisible then
+  begin
+    FPopup.KeyDown(Key, Shift);
+    Key := 0;
+  end
+  else
+  if (Shift = []) and DirectInput then
+  begin
+    case Key of
+      VK_ADD:
+        begin
+          ApplyDate(NvlDate(Date, Now) + 1);
+          Key := 0;
+        end;
+      VK_SUBTRACT:
+        begin
+          ApplyDate(NvlDate(Date, Now) - 1);
+          Key := 0;
+        end;
+    end;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TCustomRxDateEdit.KeyPress(var Key: Char);
+begin
+  if (Key in ['T', 't', '+', '-']) and PopupVisible then
+  begin
+//    FPopup.KeyPress(Key);
+    Key := #0;
+  end
+  else
+  if DirectInput then
+  begin
+    case Key of
+      'T', 't':
+        begin
+          ApplyDate(Trunc(Now));
+          Key := #0;
+        end;
+      '+', '-':
+        begin
+          Key := #0;
+        end;
+    end;
+  end;
+  inherited KeyPress(Key);
+end;
+
+procedure TCustomRxDateEdit.DoButtonClick(Sender: TObject);
+var
+  D: TDateTime;
+  A: Boolean;
+begin
+  inherited DoButtonClick(Sender);
+  if FPopup <> nil then
+  begin
+    if FPopupVisible then
+      PopupCloseUp(FPopup, True)
+    else
+      PopupDropDown(True);
+  end
+  else
+  if CalendarStyle = csDialog then
+  begin
+    D := Self.Date;
+    A := SelectDate(D, DialogTitle, FStartOfWeek, FWeekends,
+      FWeekendColor, FCalendarHints);
+    if CanFocus then SetFocus;
+    if A then
+    begin
+      if Assigned(FOnAcceptDate) then FOnAcceptDate(Self, D, A);
+      if A then
+      begin
+        Self.Date := D;
+//        if FFocused then
+          inherited SelectAll;
+      end;
+    end;
+  end;
+end;
+
+constructor TCustomRxDateEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBlanksChar := ' ';
+  FDialogTitle := sDateDlgTitle;
+  FPopupColor := clBtnFace;
+  FStartOfWeek := Mon;
+  FWeekends := [Sun];
+  FWeekendColor := clRed;
+  FYearDigits := dyDefault;
+  FCalendarHints := TStringList.Create;
+  TStringList(FCalendarHints).OnChange := @CalendarHintsChanged;
+  ControlState := ControlState + [csCreating];
+  try
+    UpdateFormat;
+{$IFDEF DEFAULT_POPUP_CALENDAR}
+    FPopup := CreatePopupCalendar(Self {$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
+    FPopup.OnCloseUp := @PopupCloseUp;
+    FPopup.Color := FPopupColor;
+{$ENDIF DEFAULT_POPUP_CALENDAR}
+//    GlyphKind := gkDefault; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
+  Glyph:=LoadBitmapFromLazarusResource('picDateEdit');
+  NumGlyphs := 2;
+end;
+
+destructor TCustomRxDateEdit.Destroy;
+begin
+  if Assigned(FPopup) then
+  begin
+    FPopup.OnCloseUp := nil;
+    FreeAndNil(FPopup);
+  end;
+  TStringList(FCalendarHints).OnChange := nil;
+  FreeAndNil(FCalendarHints);
+  inherited Destroy;
+end;
+
+procedure TCustomRxDateEdit.CheckValidDate;
+begin
+  if TextStored then
+    try
+      FFormatting := True;
+      try
+        SetDate(StrToDateFmt(FDateFormat, Text));
+      finally
+        FFormatting := False;
+      end;
+    except
+      if CanFocus then SetFocus;
+      raise;
+    end;
+end;
+
+function TCustomRxDateEdit.GetDateMask: string;
+begin
+  Result := DefDateMask(FBlanksChar, FourDigitYear);
+end;
+
+procedure TCustomRxDateEdit.UpdateMask;
+var
+  DateValue: TDateTime;
+  OldFormat: string[10];
+begin
+  DateValue := GetDate;
+  OldFormat := FDateFormat;
+  UpdateFormat;
+{  if (GetDateMask <> EditMask) or (OldFormat <> FDateFormat) then
+  begin
+    { force update }
+    EditMask := '';
+    EditMask := GetDateMask;
+  end;}
+  UpdatePopup;
+  SetDate(DateValue);
+end;
+
+initialization
+  {$I tooledit.lrs}
 end.
 

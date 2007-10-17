@@ -6,9 +6,9 @@ interface
 
 uses
 {$IFDEF WIN32}
-  Windows,
+  windows,
 {$ENDIF}
-  Classes, SysUtils, Graphics, Controls, Forms
+  Classes, SysUtils, Graphics, Controls, Forms, LResources
   ;
 
 type
@@ -516,6 +516,11 @@ begin
   Result.LoadFromLazarusResource('rxbtn_downarrow');
 end;
 
+initialization
+  LazarusResources.Add('rxbtn_downarrow','XPM',[
+  '/* XPM */'#13#10'static char * btn_downarrow_xpm[] = {'#13#10'"5 3 2 1",'#13
+  +#10'" '#9'c None",'#13#10'".'#9'c #000000",'#13#10'".....",'#13#10'" ... ",'
+  +#13#10'"  .  "};'#13#10]);
 end.
 
 

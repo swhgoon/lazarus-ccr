@@ -1,6 +1,6 @@
 unit rxpopupunit;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
@@ -596,6 +596,9 @@ constructor TPopUpColumnTitle.Create;
 begin
   inherited Create;
   FColor:=clBtnFace;
+{$IFDEF NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID}
+  Alignment:=taCenter;
+{$ENDIF}
 end;
 
 procedure TPopUpColumnTitle.Assign(Source: TPersistent);

@@ -12,7 +12,8 @@ uses
     duallist, boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, 
     rxtbrsetup, fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, 
     rxlogin, rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, 
-    rxcustomchartpanel, rxsortmemds, AutoPanel, LazarusPackageIntf; 
+    rxcustomchartpanel, rxsortmemds, AutoPanel, pickdate, rxiconv, 
+    LazarusPackageIntf; 
 
 implementation
 

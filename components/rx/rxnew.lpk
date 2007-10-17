@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="rxnew"/>
     <Author Value="Lagunov Aleksey"/>
@@ -8,7 +8,7 @@
       <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -24,7 +24,7 @@ translate to Lazarus by alexs in 2005 - 2007
     <License Value="free ware
 "/>
     <Version Major="1" Minor="1" Release="5" Build="98"/>
-    <Files Count="38">
+    <Files Count="43">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -178,6 +178,26 @@ translate to Lazarus by alexs in 2005 - 2007
         <Filename Value="autopanel.pas"/>
         <UnitName Value="AutoPanel"/>
       </Item38>
+      <Item39>
+        <Filename Value="pickdate.pas"/>
+        <UnitName Value="pickdate"/>
+      </Item39>
+      <Item40>
+        <Filename Value="pickdate.lrs"/>
+        <Type Value="LRS"/>
+      </Item40>
+      <Item41>
+        <Filename Value="rxstrconsts.inc"/>
+        <Type Value="Include"/>
+      </Item41>
+      <Item42>
+        <Filename Value="rxiconv.pas"/>
+        <UnitName Value="rxiconv"/>
+      </Item42>
+      <Item43>
+        <Filename Value="rxdbgrid.lrs"/>
+        <Type Value="LRS"/>
+      </Item43>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">

@@ -1,3 +1,19 @@
+  + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
+  + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных
+  - У объекта TRxCustomDBLookupCombo исправлен выбор первой записи из справочника при
+    пустом значени в DataField
+  + В RxDBGrid опубликованы недостающие обработчики из DBGrid
+  + Реализован новый компонент TRxCalendarGrid - простой календарь без заголовка.
+  - Исправлена ошибка компиляции модуля rxappicon.pas под Windows при использовании 
+    интерфейса GTK2 (спасибо ViruZ - Вадим Витомский)
+  + Добавлен модуль rxiconv.pas (оригинальный модуль iconv.pas от A.Voito)
+  + Небольшое улучшение отрисовки заголовка кнопки в форме настройки TToolbar
+  + Исправлена отрисовка запрещённого состояния у TRxCustomDBLookupCombo
+  - Исправлена компиляция модуля rxctrls в fpc 2.2
+  + В TPopUpColumnTitle введена поддержка дерективы
+     NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID
+  + В RxDBGrid изображения маркеров вынесены в ресурсы (Petr Smolik)
+  + Добавлен модуль автоматической сортировки в RxDBGrid exsortzeos.pas для ZeosDB (Petr Smolik)
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается

@@ -13,7 +13,7 @@ implementation
 uses PropEdits, dbdateedit, rxlookup, folderlister, rxdbgrid, rxmemds, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
-  RxCustomChartPanel, AutoPanel;
+  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit;
 
 type
 
@@ -91,7 +91,7 @@ begin
   else
   begin
     case Index - DefaultEditor.GetVerbCount of
-      0:Result:='Load icon';
+      0:Result:=sLoadIcon;
     end;
   end;
 end;
@@ -107,11 +107,7 @@ begin
     case Index - DefaultEditor.GetVerbCount of
       0:begin
           OpenDialog1:=TOpenDialog.Create(nil);
-          {$IFDEF WIN32}
-          OpenDialog1.Filter:='Windows Ico files (*.ico)|*.ico|All files|*.*';
-          {$ELSE}
-          OpenDialog1.Filter:='Windows Ico files (*.ico)|*.ico|All files|*';
-          {$ENDIF}
+          OpenDialog1.Filter:=sWindowsIcoFiles;
           try
             if OpenDialog1.Execute then
               (Component as TRxAppIcon).LoadFromFile(OpenDialog1.FileName);
@@ -215,6 +211,16 @@ begin
   RegisterComponents('RX',[TAutoPanel]);
 end;
 
+procedure RegisterPickDate;
+begin
+  RegisterComponents('RX',[TRxCalendarGrid]);
+end;
+
+procedure RegisterToolEdit;
+begin
+  RegisterComponents('RX',[TRxDateEdit]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -230,13 +236,16 @@ begin
   RegisterUnit('rxctrls', @RegisterRxCtrls);
   RegisterUnit('RxLogin', @RegisterRxLogin);
   RegisterUnit('RxCustomChartPanel', @RegisterChartPanel);
+  RegisterUnit('AutoPanel', @RegisterAutoPanel);
+  RegisterUnit('pickdate', @RegisterPickDate);
+  RegisterUnit('tooledit', @RegisterToolEdit);
+
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
   RegisterUnit('rxlookup', @RegisterRXLookup);
   RegisterUnit('rxdbgrid', @RegisterRxDbGrid);
   RegisterUnit('rxmemds', @RegisterRxMemDS);
   RegisterUnit('rxdbcomb', @RegisterRxDBComb);
-  RegisterUnit('AutoPanel', @RegisterAutoPanel);
 
 
   //Component Editors

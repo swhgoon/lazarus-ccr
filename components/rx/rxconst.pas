@@ -37,65 +37,14 @@ const
 { TBitmap.GetTransparentColor from GRAPHICS.PAS uses this value }
   PaletteMask = $02000000;
 
-{$IFDEF VER90}
-const
-  SDelphiKey = 'Software\Borland\Delphi\2.0';
-{$ENDIF}
-
-{$IFDEF VER93}
-const
-  SDelphiKey = 'Software\Borland\C++Builder\1.0';
-{$ENDIF}
-
-{$IFDEF VER100}
-const
-  SDelphiKey = 'Software\Borland\Delphi\3.0';
-{$ENDIF}
-
-{$IFDEF VER110}
-const
-  SDelphiKey = 'Software\Borland\C++Builder\3.0';
-{$ENDIF}
-
-{$IFDEF VER120}
-const
-  SDelphiKey = 'Software\Borland\Delphi\4.0';
-{$ENDIF}
-
-{$IFDEF VER125}
-const
-  SDelphiKey = 'Software\Borland\C++Builder\4.0';
-{$ENDIF}
-
-{$IFDEF VER130}
-const
-{$IFDEF BCB}
-  SDelphiKey = 'Software\Borland\C++Builder\5.0';
-{$ELSE}
-  SDelphiKey = 'Software\Borland\Delphi\5.0';
-{$ENDIF}
-{$ENDIF}
-
-{$IFDEF VER140}
-const
-  SDelphiKey = 'Software\Borland\Delphi\6.0';
-{$ENDIF}
-
-{$IFDEF VER150}
-const
-  SDelphiKey = 'Software\Borland\Delphi\7.0';
-{$ENDIF}
-
+resourcestring
+//const
+  {$I rxstrconsts.inc}
+  
 implementation
 
 uses Forms;
-(*
-{$IFDEF WIN32}
- {$R *.R32}
-{$ELSE}
- {$R *.R16}
-{$ENDIF}
-*)
+
 initialization
 {  Screen.Cursors[crHand] := LoadCursor(hInstance, 'RX_HANDCUR');
   Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'RX_DRAGCUR'); }
