@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<definitions name="library1" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="library1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="library1">
+  <types><xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="library1" targetNamespace="library1"/></types>
+  <message name="sampleMethodA"/>
+  <message name="sampleMethodAResponse"/>
+  <message name="SampleMethodB">
+    <part name="A" type="xsd:string"/>
+    <part name="B" type="xsd:string"/>
+  </message>
+  <message name="SampleMethodBResponse"><part name="result" type="xsd:string"/></message>
+  <portType name="ISampleService">
+    <document><GUID value="{68678930-3C52-40D7-A8F8-24F96560FB3A}"/></document>
+    <operation name="sampleMethodA">
+      <input message="tns:sampleMethodA"/>
+      <output message="tns:sampleMethodAResponse"/>
+    </operation>
+    <operation name="SampleMethodB">
+      <input message="tns:SampleMethodB"/>
+      <output message="tns:SampleMethodBResponse"/>
+    </operation>
+  </portType>
+  <binding name="ISampleServiceBinding" type="tns:ISampleService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="sampleMethodA">
+      <soap:operation soapAction=""/>
+      <input><soap:body use="literal" namespace="library1"/></input>
+      <output><soap:body use="literal" namespace="library1"/></output>
+    </operation>
+    <operation name="SampleMethodB">
+      <soap:operation soapAction=""/>
+      <input><soap:body use="literal" namespace="library1"/></input>
+      <output><soap:body use="literal" namespace="library1"/></output>
+    </operation>
+  </binding>
+  <service name="ISampleService">
+    <port name="ISampleServicePort" binding="tns:ISampleServiceBinding"><soap:address location=""/></port>
+  </service>
+</definitions>

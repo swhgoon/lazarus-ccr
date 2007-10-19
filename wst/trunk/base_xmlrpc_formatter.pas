@@ -315,6 +315,7 @@ type
       const AStyle     : TArrayStyle;
       const AItemName  : string
     ):Integer;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;
     procedure EndScopeRead();
 
     procedure BeginHeader();
@@ -561,6 +562,12 @@ function TXmlRpcBaseFormatter.BeginArrayRead(
 ): Integer;
 begin
   Result := InternalBeginScopeRead(AScopeName,ATypeInfo,stArray,AStyle,AItemName);
+end;
+
+function TXmlRpcBaseFormatter.GetScopeItemNames(const AReturnList : TStrings
+  ) : Integer;
+begin
+
 end;
 
 procedure TXmlRpcBaseFormatter.EndScopeRead();

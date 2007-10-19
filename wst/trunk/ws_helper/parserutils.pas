@@ -76,7 +76,7 @@ const
 implementation
 uses StrUtils, rtti_filters;
 
-const LANGAGE_TOKEN : array[0..107] of string = (
+const LANGAGE_TOKEN : array[0..108] of string = (
   'ABSTRACT', 'AND', 'ARRAY', 'AS', 'ASM',
   'BEGIN', 'BOOLEAN', 'BYTE',
   'CASE', 'CDECL', 'CHAR', 'CLASS', 'COMP', 'CONST', 'CONSTRUCTOR', 'CONTAINS', 'CURRENCY',
@@ -91,7 +91,7 @@ const LANGAGE_TOKEN : array[0..107] of string = (
   'OBJECT', 'OF', 'OLEVARIANT', 'OR', 'OUT', 'OVERLOAD', 'OVERRIDE',
   'PACKAGE', 'PACKED', 'PASCAL', 'PCHAR', 'PRIVATE', 'PROCEDURE', 'PROGRAM', 'PUBLISHED',
   'RAISE', 'READ', 'REAL', 'RECORD', 'REGISTER', 'REINTRODUCE', 'REPEAT', 'REQUIRES', 'RESULT',
-  'SAFECALL', 'SET', 'SHL', 'SHORTINT', 'SHR', 'SINGLE', 'SMALLINT', 'STDCALL', 'STORED',
+  'SAFECALL', 'SET', 'SHL', 'SHORTINT', 'SHR', 'SINGLE', 'SMALLINT', 'STDCALL', 'STORED', 'STRING',
   'THEN', 'TO', 'TRY', 'TYPE', 'UNIT', 'UNTIL', 'USES',
   'VAR', 'VARARGS', 'VARIANT', 'VIRTUAL', 'WHILE', 'WIDECHAR', 'WITH', 'WORD', 'WRITE', 'XOR'
 );

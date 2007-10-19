@@ -132,6 +132,7 @@ type
     procedure RegisterExternalAlias(AObject : TPasElement; const AExternalName : String);
     function SameName(AObject : TPasElement; const AName : string) : Boolean;
     function GetExternalName(AObject : TPasElement) : string;
+    function GetNameSpace(AType : TPasType) : string ;
     function IsAttributeProperty(AObject : TPasVariable) : Boolean;
     procedure SetPropertyAsAttribute(AObject : TPasVariable; const AValue : Boolean);
 
@@ -320,6 +321,7 @@ begin
 
     AddAlias('token','string',Result);
     AddAlias('anyURI','string',Result);
+    AddAlias('ID','string',Result);
     AddAlias('float','Single',Result);
     AddAlias('nonNegativeInteger','LongWord',Result);
     AddAlias('positiveInteger','nonNegativeInteger',Result);
@@ -799,6 +801,18 @@ begin
   mdl := FindModule(ANameSpace);
   if Assigned(mdl) then begin
     Result := FindElementInModule(AName,mdl);
+  end;
+end;
+
+function TwstPasTreeContainer.GetNameSpace(AType: TPasType): string;
+begin
+  if Assigned(AType) and
+     Assigned(AType.Parent{Section}) and
+     Assigned(AType.Parent.Parent{Module})
+  then begin
+    Result := GetExternalName(AType.Parent.Parent);
+  end else begin
+    Result := '';
   end;
 end;
 

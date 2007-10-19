@@ -188,6 +188,8 @@ end;
 function TCustomXsdSchemaParser.FindElement(const AName: String): TPasElement;
 begin
   Result := SymbolTable.FindElementInModule(AName,FModule);
+  if ( Result = nil ) then
+    Result := SymbolTable.FindElement(AName);
 end;
 
 function TCustomXsdSchemaParser.FindNamedNode(
@@ -484,8 +486,7 @@ end;
 
 procedure TCustomXsdSchemaParser.ParseTypes();
 var
-  nd : TDOMNodeRttiExposer;
-  schmCrsr, crsSchemaChild, typTmpCrs : IObjectCursor;
+  crsSchemaChild, typTmpCrs : IObjectCursor;
   typFilterStr : string;
   typNode : TDOMNode;
 begin

@@ -279,7 +279,7 @@ begin
     c := Pred(ANode.Attributes.Length);
     if ( AStartIndex >= 0 ) then
       i := AStartIndex;
-    for i := 0 to c do begin
+    for i := AStartIndex to c do begin
       if AnsiSameText(AAttValue,ANode.Attributes.Item[i].NodeValue) and
          ( b or ( Pos(AStartingWith,ANode.Attributes.Item[i].NodeName) = 1 ))
       then begin
@@ -530,25 +530,28 @@ begin
          trueParent.InheritsFrom(TPasNativeSimpleType)
       then begin
         typeCategory := tcSimpleContent;
-        derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
-        s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument));
-        if ( Length(s) > 0 ) then begin
-          s := s + ':';
-        end;
-        s := s + AContainer.GetExternalName(trueParent);
-        derivationNode.SetAttribute(s_base,s);
-        hasSequence := False;
       end;
+      derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
+      s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument));
+      if ( Length(s) > 0 ) then begin
+        s := s + ':';
+      end;
+      s := s + AContainer.GetExternalName(trueParent);
+      derivationNode.SetAttribute(s_base,s);
+      hasSequence := False;
     end;
-    for i := 0 to Pred(typItm.Members.Count) do begin
-      if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then begin
-        p := TPasProperty(typItm.Members[i]);
-        if not AContainer.IsAttributeProperty(p) then begin
-          if ( typeCategory = tcSimpleContent ) then begin
-            raise EXsdGeneratorException.CreateFmt('Invalid type definition, a simple type cannot have "not attribute" properties : "%s"',[AContainer.GetExternalName(ASymbol)]);
+    if ( typItm.Members.Count > 0 ) then begin
+      hasSequence := False;
+      for i := 0 to Pred(typItm.Members.Count) do begin
+        if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then begin
+          p := TPasProperty(typItm.Members[i]);
+          if not AContainer.IsAttributeProperty(p) then begin
+            if ( typeCategory = tcSimpleContent ) then begin
+              raise EXsdGeneratorException.CreateFmt('Invalid type definition, a simple type cannot have "not attribute" properties : "%s"',[AContainer.GetExternalName(ASymbol)]);
+            end;
+            hasSequence := True;
           end;
         end;
-        hasSequence := True;
       end;
     end;
     if hasSequence then begin
@@ -581,7 +584,11 @@ begin
             propTypItm := p.VarType;
             if Assigned(propTypItm) then begin
               prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument);
-              propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
+              if GetUltimeType(propTypItm).InheritsFrom(TPasArrayType) then
+                s := AContainer.GetExternalName(TPasArrayType(GetUltimeType(propTypItm)).ElType)
+              else
+                s := AContainer.GetExternalName(propTypItm);
+              propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
               if AContainer.IsAttributeProperty(p) then begin
                 if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
                   propNode.SetAttribute(s_use,'optional')
@@ -589,10 +596,13 @@ begin
                   propNode.SetAttribute(s_use,'required');
               end else begin
                 if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
-                  propNode.SetAttribute(s_minOccurs,'0')
-                else
-                  propNode.SetAttribute(s_minOccurs,'1');
-                propNode.SetAttribute(s_maxOccurs,'1');
+                  propNode.SetAttribute(s_minOccurs,'0');
+                {else
+                  propNode.SetAttribute(s_minOccurs,'1');}
+                if GetUltimeType(propTypItm).InheritsFrom(TPasArrayType) then
+                  propNode.SetAttribute(s_maxOccurs,s_unbounded)
+                {else
+                  propNode.SetAttribute(s_maxOccurs,'1');}
               end;
             end;
           end;

@@ -846,6 +846,8 @@ begin
         if Assigned(typeNode) then begin
           ExtractSoapBindingStyle(bindingNode,locWStrBuffer);
           locSoapBindingStyle := locWStrBuffer;
+          if IsStrEmpty(locSoapBindingStyle) then
+            locSoapBindingStyle := s_document;
           intfDef := ParsePortType(typeNode,bindingNode,locSoapBindingStyle);
           bdng := SymbolTable.AddBinding(bindingName,intfDef);
           bdng.Address := ExtractAddress();

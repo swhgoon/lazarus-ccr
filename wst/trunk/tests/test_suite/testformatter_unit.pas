@@ -378,6 +378,8 @@ type
     
     procedure Test_Record_simple();
     procedure Test_Record_nested();
+    
+    procedure test_GetScopeItemNames();
   end;
 
   { TTestBinaryFormatter }
@@ -2704,6 +2706,56 @@ begin
     CheckEquals(VAL_RECORD.fieldString,a.fieldString,'fieldString');
     CheckEquals(VAL_RECORD.fieldWord,a.fieldWord,'fieldWord');
   finally
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.test_GetScopeItemNames();
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a, b : TClass_A;
+  x : string;
+  ls : TStringList;
+begin
+  ls := nil;
+  s := Nil;
+  b := nil;
+  a := TClass_A.Create();
+  try
+    a.Val_Bool := False;
+    a.Val_Enum := teThree;
+    a.Val_String := '123';
+    a.Val_32S := 55;
+    b := TClass_A.Create();
+    
+    f := CreateFormatter(TypeInfo(TClass_A));
+
+    f.BeginObject('Root',TypeInfo(TClass_A));
+      f.Put('a',TypeInfo(TClass_A),a);
+      f.Put('b',TypeInfo(TClass_A),b);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    FreeAndNil(a);
+
+    ls := TStringList.Create();
+    f := CreateFormatter(TypeInfo(TClass_A));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_A));
+      CheckEquals(0, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count()');
+      Check( ls.IndexOf('Val_Bool') >= 0 );
+      Check( ls.IndexOf('Val_Enum') >= 0 );
+      Check( ls.IndexOf('Val_String') >= 0 );
+      Check( ls.IndexOf('Val_32S') >= 0 );
+    f.EndScopeRead();
+  finally
+    ls.Free();
+    b.Free();;
+    a.Free();
     s.Free();
   end;
 end;

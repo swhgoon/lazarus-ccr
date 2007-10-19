@@ -162,6 +162,7 @@ type
       const AStyle     : TArrayStyle;
       const AItemName  : string
     ):Integer;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;
     procedure EndScopeRead();
     property CurrentScope : String Read GetCurrentScope;
 

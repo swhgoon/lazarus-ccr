@@ -300,6 +300,7 @@ type
       const AStyle     : TArrayStyle;
       const AItemName  : string
     ):Integer;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;
     procedure EndScopeRead();
     
     procedure BeginHeader();
@@ -1119,6 +1120,12 @@ begin
   end;
   PushStack(locNode,stArray);
   Result := StackTop().GetItemCount();
+end;
+
+function TBaseBinaryFormatter.GetScopeItemNames(const AReturnList : TStrings
+  ) : Integer;
+begin
+
 end;
 
 procedure TBaseBinaryFormatter.EndScopeRead();

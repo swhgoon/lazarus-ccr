@@ -32,6 +32,7 @@ type
     function LoadEmptySchema() : TwstPasTreeContainer;virtual;abstract;
     function LoadSimpleType_Enum_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadSimpleType_Enum_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadSimpleType_AliasToNativeType_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_Class_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
@@ -46,6 +47,7 @@ type
 
     procedure SimpleType_Enum();
     procedure SimpleType_Enum_Embedded();
+    procedure SimpleType_AliasToNativeType();
     
     procedure ComplexType_Class();
     procedure ComplexType_Class_Embedded();
@@ -67,6 +69,7 @@ type
     
     function LoadSimpleType_Enum_Schema() : TwstPasTreeContainer;override;
     function LoadSimpleType_Enum_Embedded_Schema() : TwstPasTreeContainer;override;
+    function LoadSimpleType_AliasToNativeType_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Class_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -88,6 +91,7 @@ type
 
     function LoadSimpleType_Enum_Schema() : TwstPasTreeContainer;override;
     function LoadSimpleType_Enum_Embedded_Schema() : TwstPasTreeContainer;override;
+    function LoadSimpleType_AliasToNativeType_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Class_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -97,6 +101,8 @@ type
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
+  published
+    procedure no_binding_style();
   end;
   
 implementation
@@ -127,8 +133,11 @@ const
   x_enumSampleType        = 'EnumSampleType';
     x_enumSampleLIST_COUNT = 7;
     x_enumSampleLIST      : array[0..( x_enumSampleLIST_COUNT - 1 )] of string = ( 'esOne', 'esTwo', 'esThree', 'begin', 'finally', 'True', 'False' );
+  x_simpleTypeAliasString = 'AliasString';
+  x_simpleTypeAliasInt    = 'AliasInt';
   x_simpleType            = 'simpletype';
   x_simpleTypeEmbedded    = 'simpletype_embedded';
+  x_simpletypeNativeAlias = 'simpletypeNativeAlias';
 
   x_targetNamespace       = 'urn:wst-test';
 
@@ -251,6 +260,42 @@ begin
       end;
       CheckEquals(x_enumSampleLIST[i],tr.GetExternalName(enumVal));
     end;
+end;
+
+procedure TTest_CustomXsdParser.SimpleType_AliasToNativeType();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  aliasType : TPasAliasType;
+  i : Integer;
+begin
+  tr := LoadSimpleType_AliasToNativeType_Schema();
+
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  CheckEquals(x_simpletypeNativeAlias,mdl.Name);
+  CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+  ls := mdl.InterfaceSection.Declarations;
+  CheckEquals(2,ls.Count);
+  elt := tr.FindElement(x_simpleTypeAliasString);
+    CheckNotNull(elt,x_simpleTypeAliasString);
+    CheckEquals(x_simpleTypeAliasString,elt.Name);
+    CheckEquals(x_simpleTypeAliasString,tr.GetExternalName(elt));
+    CheckIs(elt,TPasAliasType);
+    aliasType := elt as TPasAliasType;
+    CheckNotNull(aliasType.DestType);
+    Check(tr.SameName(aliasType.DestType,'string'));
+
+  elt := tr.FindElement(x_simpleTypeAliasInt);
+    CheckNotNull(elt,x_simpleTypeAliasInt);
+    CheckEquals(x_simpleTypeAliasInt,elt.Name);
+    CheckEquals(x_simpleTypeAliasInt,tr.GetExternalName(elt));
+    CheckIs(elt,TPasAliasType);
+    aliasType := elt as TPasAliasType;
+    CheckNotNull(aliasType.DestType);
+    Check(tr.SameName(aliasType.DestType,'int'));
 end;
 
 type
@@ -890,6 +935,11 @@ begin
   Result := ParseDoc(x_simpleTypeEmbedded);
 end;
 
+function TTest_XsdParser.LoadSimpleType_AliasToNativeType_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_simpletypeNativeAlias);
+end;
+
 function TTest_XsdParser.LoadComplexType_Class_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class);
@@ -958,6 +1008,11 @@ begin
   Result := ParseDoc(x_simpleTypeEmbedded);
 end;
 
+function TTest_WsdlParser.LoadSimpleType_AliasToNativeType_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_simpletypeNativeAlias);
+end;
+
 function TTest_WsdlParser.LoadComplexType_Class_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class);
@@ -986,6 +1041,25 @@ end;
 function TTest_WsdlParser.LoadComplexType_ArraySequence_Embedded_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_array_sequence_embedded);
+end;
+
+procedure TTest_WsdlParser.no_binding_style();
+var
+  symTable : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+begin
+  symTable := ParseDoc('no_binding_style');
+  try
+    elt := symTable.FindElement('ISampleService');
+    CheckNotNull(elt);
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    Check(intf.ObjKind = okInterface);
+    CheckEquals(2,GetElementCount(intf.Members,TPasProcedure));
+  finally
+    symTable.Free();
+  end;
 end;
 
 initialization

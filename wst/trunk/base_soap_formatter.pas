@@ -314,6 +314,7 @@ type
       const AStyle     : TArrayStyle;
       const AItemName  : string
     ):Integer;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;
     procedure EndScopeRead();
 
     procedure BeginHeader();
@@ -492,6 +493,11 @@ function TSOAPBaseFormatter.BeginArrayRead(
 ): Integer;
 begin
   Result := InternalBeginScopeRead(AScopeName,ATypeInfo,stArray,AStyle,AItemName);
+end;
+
+function TSOAPBaseFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;
+begin
+
 end;
 
 procedure TSOAPBaseFormatter.EndScopeRead();
@@ -1470,6 +1476,9 @@ Var
   dataBuffer : string;
   frmt : string;
   prcsn,i : Integer;
+  {strm : TStringStream;
+  locDoc : TwstXMLDocument;
+  locNode : TDOMNode;}
 begin
   CheckScope();
   Case ATypeInfo^.Kind Of
@@ -1563,6 +1572,16 @@ begin
           dataBuffer[i] := '.';
       end;
   end;
+  (*locDoc := nil;
+  strm := TStringStream.Create(dataBuffer);
+  try
+    ReadXMLFile(locDoc,strm);
+    locNode := locDoc.DocumentElement.CloneNode(True {$IFDEF FPC}, StackTop().ScopeObject.OwnerDocument{$ENDIF});
+    StackTop().ScopeObject.AppendChild(locNode);
+  finally
+    ReleaseDomNode(locDoc);
+    strm.Free();
+  end;*)
   StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
 end;
 
