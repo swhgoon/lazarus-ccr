@@ -1,4 +1,27 @@
-{$DEFINE WST_DBG}
+{$UNDEF WST_DBG}
+
+(*WST_BROKER enable the service brokering :
+  if enabled, this module just forwards the request to the
+  implementation libraries contained in the WstRootPath path.
+  WST load these libraries in the local file system folder
+  configured by the value of WstRootPath.
+  WstRootPath is a configuration directive which must be
+  in the wst "Location" scope.
+  Example :
+  
+    <Location /wst>
+      SetHandler wst-handler
+      WstRootPath "C:/Programmes/lazarus/wst/trunk/samples/library_server/"
+    </Location>
+
+ Services can then be invoked through the following addressing schema
+   http://127.0.0.1:8080/wst/services/lib_server/UserService
+   
+     lib_server   : the library name ( without extension )
+     UserService  : the target service
+     wst/services : constant.
+*)
+{$DEFINE WST_BROKER}
 
 unit wst_apache_binding;
 
@@ -17,25 +40,82 @@ const
   sWSDL = 'WSDL';
   sHTTP_BINARY_CONTENT_TYPE = 'application/octet-stream';
   sCONTENT_TYPE = 'Content-Type';
+  
+  sWstRootPath = 'WstRootPath'; // The WST local file system path configure in apache
+  sWST_LIBRARY_EXTENSION = '.wml';
+  
+type
+  PWstConfigData = ^TWstConfigData;
+  TWstConfigData = record
+    Dir : PChar;
+    BasePath : PChar;
+  end;
+  
+var
+  wst_module_ptr : Pmodule = nil;
+  WstConfigData : PWstConfigData = nil;
+  WstCommandStructArray : array[0..1] of command_rec = (
+    ( name    : sWstRootPath;
+      func      : ( func_take1 : @ap_set_string_slot );
+      cmd_data  : ( nil {@WstConfigData^.BasePath} );
+      req_override : OR_ALL;
+      args_how     : TAKE1;
+      errmsg       : 'usage : WstRootPath <path>' + LineEnding + '  path is the path to the WST root path.';
+    ),
+    ()
+  );
 
   function wst_RequestHandler(r: Prequest_rec): Integer;
+  function wst_create_dir_config(p: Papr_pool_t; dir: PChar) : Pointer;cdecl;
 
 implementation
 uses base_service_intf,
      server_service_intf, server_service_imputils,
-     server_service_soap, server_binary_formatter,
-     metadata_repository, metadata_wsdl, DOM, XMLWrite,
-     
-     user_service_intf, user_service_intf_binder, user_service_intf_imp,
+     server_service_soap, server_binary_formatter, server_service_xmlrpc,
+     metadata_repository, metadata_wsdl,
+     imp_utils, binary_streamer, library_base_intf, library_imp_utils,
+     DOM, XMLWrite,
      metadata_service, metadata_service_binder, metadata_service_imp;
 
+procedure wst_initialize();
+begin
+  RegisterStdTypes();
+  Server_service_RegisterBinaryFormat();
+  Server_service_RegisterSoapFormat();
+  //Server_service_RegisterXmlRpcFormat();
+
+  RegisterWSTMetadataServiceImplementationFactory();
+  Server_service_RegisterWSTMetadataServiceService();
+end;
+
+function wst_create_dir_config(p: Papr_pool_t; dir: PChar) : Pointer; cdecl;
+begin
+  WstConfigData := PWstConfigData(apr_palloc(p,SizeOf(TWstConfigData)));
+  FillChar(WstConfigData^,SizeOf(TWstConfigData),#0);
+  WstConfigData^.Dir := apr_pstrdup(p,dir);
+  Result := WstConfigData;
+end;
+
+function GetWstPath(): PChar;inline;
+begin
+  Result := WstConfigData^.BasePath;
+end;
+
 type
+  PRequestArgument = ^TRequestArgument;
+  TRequestArgument = record
+    Name  : shortstring;
+    Value : shortstring;
+    Next  : PRequestArgument;
+  end;
   TRequestInfo = record
-    Root        : string;
-    URI         : string;
-    ContentType : string;
-    Buffer      : string;
-    Argument    : string;
+    InnerRequest : Pointer;
+    Root         : string;
+    URI          : string;
+    ContentType  : string;
+    Buffer       : string;
+    Arguments    : string;
+    ArgList      : PRequestArgument;
   end;
   
   TResponseInfo = record
@@ -43,6 +123,52 @@ type
     ContentType : string;
   end;
 
+function ParseArgs(
+  const APool      : Papr_pool_t;
+  const AArgs      : string;
+  const ASeparator : Char = '&'
+) : PRequestArgument;
+var
+  locBuffer, locArg : string;
+  locPrev, locTmpArg : PRequestArgument;
+begin
+  Result := nil;
+  locBuffer := Trim(AArgs);
+  if not IsStrEmpty(locBuffer) then begin
+    locTmpArg := nil;
+    locPrev := nil;
+    while True do begin
+      locArg := GetToken(locBuffer,ASeparator);
+      if IsStrEmpty(locArg) then
+        Break;
+      locPrev := locTmpArg;
+      locTmpArg := PRequestArgument(apr_palloc(APool,SizeOf(TRequestArgument)));
+      FillChar(locTmpArg^,SizeOf(TRequestArgument),#0);
+      if ( Result = nil ) then begin
+        Result := locTmpArg;
+      end else begin
+        locPrev^.Next := locTmpArg;
+      end;
+      locTmpArg^.Name := GetToken(locArg,'=');
+      locTmpArg^.Value := locArg;
+    end;
+  end;
+end;
+
+function FindArg(const AArgs : PRequestArgument; const AName : string) : PRequestArgument;
+var
+  p : PRequestArgument;
+begin
+  Result := nil;
+  p := AArgs;
+  while Assigned(p) do begin
+    if AnsiSameText(AName,AArgs^.Name) then begin
+      Result := p;
+      Break;
+    end;
+    p := p^.Next;
+  end;
+end;
 
 procedure SaveStringToFile(const AStr,AFile:string;const AKeepExisting : Boolean);
 begin
@@ -154,7 +280,7 @@ begin
   Result := '<html>' +
               '<head>'+
                 '<title>'+
-                  'The Web Service Toolkit generated Metadata table'+
+                  'The Web Service Toolkit generated Metadata table XXXXX'+
                 '</title>'+
                 '<body>' +
                   '<p BGCOLOR="#DDEEFF"><FONT FACE="Arial" COLOR="#0000A0" SIZE="+2">The following repositories has available. Click on the link to view the corresponding WSDL.</FONT></p>'+
@@ -233,7 +359,7 @@ begin
       AResponseInfo.ContentType := sHTTP_BINARY_CONTENT_TYPE
     else
       AResponseInfo.ContentType := ctntyp;
-    rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,outStream,'');
+    rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,outStream,ARequestInfo.ContentType);
     HandleServiceRequest(rqst);
     i := outStream.Size;
     if ( i > 0 ) then begin
@@ -244,7 +370,7 @@ begin
     outStream.Free();
     inStream.Free();
     {$IFDEF WST_DBG}
-      SaveStringToFile('RequestInfo.ContentType=' + ARequestInfo.Argument + LineEnding,'c:\log.log',False);
+      SaveStringToFile('RequestInfo.ContentType=' + ARequestInfo.Arguments + LineEnding,'c:\log.log',False);
       {SaveStringToFile('RequestInfo.Buffer=' + ARequestInfo.Buffer + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
       SaveStringToFile('RequestInfo.URI=' + ARequestInfo.URI + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
       SaveStringToFile('ResponseInfo.ContentType=' + AResponseInfo.ContentType + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
@@ -254,14 +380,94 @@ begin
   end;
 end;
 
+const MAX_ERR_LEN = 500;
+function ProcessServiceRequestLibrary(
+  const ARequestInfo    : TRequestInfo;
+  out   AResponseInfo   : TResponseInfo
+) : Boolean;
+var
+  loc_path, ctntyp : string;
+  targetModuleName, targetFormat, targetService : string;
+  wrtr : IDataStore;
+  buffStream : TMemoryStream;
+  strBuff : string;
+  intfBuffer : IwstStream;
+  bl : LongInt;
+  targetModule : IwstModule;
+  handlerProc : TwstLibraryHandlerFunction;
+  pArg : PRequestArgument;
+  i : Integer;
+begin
+  try
+    FillChar(AResponseInfo,SizeOf(TResponseInfo),#0);
+    loc_path := ARequestInfo.URI;
+    targetModuleName := ExtractNextPathElement(loc_path);
+    Result := False;
+    targetModule := LibraryManager.Get(GetWstPath() + targetModuleName + sWST_LIBRARY_EXTENSION);
+    handlerProc := TwstLibraryHandlerFunction(targetModule.GetProc(WST_LIB_HANDLER));
+    if not Assigned(handlerProc) then
+      Exit;
+    targetService := ExtractNextPathElement(loc_path);
+    if AnsiSameText(sWSDL,targetService) then
+      Exit;
+    pArg := FindArg(ARequestInfo.ArgList,'format');
+    if Assigned(pArg) then
+      targetFormat := pArg^.Value;
+    if IsStrEmpty(targetFormat) then
+      targetFormat := ARequestInfo.ContentType;
+    buffStream := TMemoryStream.Create();
+    try
+      wrtr := CreateBinaryWriter(buffStream);
+      wrtr.WriteInt32S(0);
+      wrtr.WriteStr(targetService);
+      wrtr.WriteStr(ARequestInfo.ContentType);
+      wrtr.WriteStr(targetFormat);
+      wrtr.WriteStr(ARequestInfo.Buffer);
+      buffStream.Position := 0;
+      wrtr.WriteInt32S(buffStream.Size-4);
+
+      buffStream.Position := 0;
+      intfBuffer := TwstStream.Create(buffStream);
+      bl := MAX_ERR_LEN;
+      strBuff := StringOfChar(#0,bl);
+      i := handlerProc(intfBuffer,Pointer(strBuff),bl);
+      if ( i <> RET_OK ) then
+        raise Exception.CreateFmt('Library server error :'#13'Code : %d'#13'Message : %s',[i,strBuff]);
+
+      if AnsiSameText(sBINARY_CONTENT_TYPE,ARequestInfo.ContentType) then
+        AResponseInfo.ContentType := sHTTP_BINARY_CONTENT_TYPE
+      else
+        AResponseInfo.ContentType := ARequestInfo.ContentType;
+      buffStream.Position := 0;
+      if ( buffStream.Size > 0 ) then begin
+        SetLength(AResponseInfo.ContentText,buffStream.Size);
+        buffStream.Read(AResponseInfo.ContentText[1],Length(AResponseInfo.ContentText));
+      end else begin
+        AResponseInfo.ContentText := '';
+      end;
+    finally
+      buffStream.Free();
+    end;
+
+    Result := True;
+  except
+    on e : Exception do begin
+      Result := False;
+      ap_log_rerror(PCHAR('wst_apache_binding'),392,APLOG_ERR,0,Prequest_rec(ARequestInfo.InnerRequest),PCHAR(e.Message),[]);
+    end;
+  end;
+end;
+
 function wst_RequestHandler(r: Prequest_rec): Integer;
 
   function FillRequestInfo(var ARequestInfo    : TRequestInfo):Integer;
   begin
+    ARequestInfo.InnerRequest := r;
     ARequestInfo.ContentType := apr_table_get(r^.headers_in,sCONTENT_TYPE);
     ARequestInfo.Root := ap_get_server_name(r) + sSEPARATOR + sWST_ROOT + sSEPARATOR;
     ARequestInfo.URI := r^.uri;
-    ARequestInfo.Argument := r^.args;
+    ARequestInfo.Arguments := r^.args;
+    ARequestInfo.ArgList := ParseArgs(r^.pool,ARequestInfo.Arguments);
     Result := ReadBuffer(r,ARequestInfo.Buffer);
   end;
 
@@ -279,8 +485,14 @@ begin
 
   try
     if AnsiSameText(sSERVICES_PREFIXE,ExtractNextPathElement(loc_RequestInfo.URI)) then begin
+
+{$IFDEF WST_BROKER}
+      if not ProcessServiceRequestLibrary(loc_RequestInfo,loc_ResponseInfo) then
+        ProcessWSDLRequest(loc_RequestInfo,loc_ResponseInfo);
+{$ELSE}
       if not ProcessServiceRequest(loc_RequestInfo,loc_ResponseInfo) then
         ProcessWSDLRequest(loc_RequestInfo,loc_ResponseInfo);
+{$ENDIF}
     end else begin
       ProcessWSDLRequest(loc_RequestInfo,loc_ResponseInfo);
     end;
@@ -294,7 +506,6 @@ begin
       ap_rputs(PCHAR(loc_ResponseInfo.ContentText), r);
     end;
     Result := OK;
-    Exit;
   except
     on e : Exception do begin
       ap_set_content_type(r, 'text/html');
@@ -307,14 +518,6 @@ begin
 end;
 
 initialization
-  RegisterStdTypes();
-  Server_service_RegisterBinaryFormat();
-  Server_service_RegisterSoapFormat();
-
-  RegisterUserServiceImplementationFactory();
-  Server_service_RegisterUserServiceService();
-
-  RegisterWSTMetadataServiceImplementationFactory();
-  Server_service_RegisterWSTMetadataServiceService();
-
+  wst_initialize();
+  
 end.

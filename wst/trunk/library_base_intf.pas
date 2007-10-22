@@ -14,7 +14,7 @@
 unit library_base_intf;
 
 interface
-uses base_service_intf;
+uses SysUtils, Classes, base_service_intf;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
@@ -51,6 +51,30 @@ type
     function SetPosition(const ANewPos : LongWord):LongInt;
   end;
 
+  { TwstStream }
+
+  TwstStream = class(TInterfacedObject,IwstStream)
+  private
+    FStream : TStream;
+  protected
+    function Read(
+            ABuffer    : Pointer;
+      const ALenToRead : LongWord;
+      out   AReadedLen : LongWord
+    ):LongInt;
+    function Write(
+            ABuffer     : Pointer;
+      const ALenToWrite : LongWord;
+      out   AWrittenLen : LongWord
+    ):LongInt;
+    function GetSize(out ASize : LongWord):LongInt;
+    function SetSize(const ANewSize : LongWord):LongInt;
+    function GetPosition(out APos : LongWord):LongWord;
+    function SetPosition(const ANewPos : LongWord):LongInt;
+  public
+    constructor Create(AStream : TStream);
+  end;
+  
   TwstLibraryHandlerFunction =
     function(
       ARequestBuffer : IwstStream;
@@ -83,6 +107,66 @@ begin
     e.ReturnCode := AReturn;
     raise e;
   end;
+end;
+
+{ TwstStream }
+
+function TwstStream.Read(
+        ABuffer     : Pointer;
+  const ALenToRead  : LongWord;
+  out   AReadedLen  : LongWord
+): LongInt;
+begin
+  try
+    AReadedLen := FStream.Read(ABuffer^,ALenToRead);
+    Result := RET_OK;
+  except
+    Result := RET_FALSE;
+  end;
+end;
+
+function TwstStream.Write(
+        ABuffer      : Pointer;
+  const ALenToWrite  : LongWord;
+  out   AWrittenLen  : LongWord
+): LongInt;
+begin
+  try
+    AWrittenLen := FStream.Write(ABuffer^,ALenToWrite);
+    Result := RET_OK;
+  except
+    Result := RET_FALSE;
+  end;
+end;
+
+function TwstStream.GetSize(out ASize: LongWord): LongInt;
+begin
+  ASize := FStream.Size;
+  Result := RET_OK;
+end;
+
+function TwstStream.SetSize(const ANewSize: LongWord): LongInt;
+begin
+  FStream.Size := ANewSize;
+  Result := RET_OK;
+end;
+
+function TwstStream.GetPosition(out APos: LongWord): LongWord;
+begin
+  APos := FStream.Position;
+  Result := RET_OK;
+end;
+
+function TwstStream.SetPosition(const ANewPos: LongWord): LongInt;
+begin
+  FStream.Position := ANewPos;
+  Result := RET_OK;
+end;
+
+constructor TwstStream.Create(AStream: TStream);
+begin
+  Assert(Assigned(AStream));
+  FStream := AStream;
 end;
 
 end.

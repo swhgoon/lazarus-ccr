@@ -41,6 +41,7 @@ end;
 
 begin
   default_module_ptr := @wst_module;
+  wst_apache_binding.wst_module_ptr := default_module_ptr;
   FillChar(default_module_ptr^, SizeOf(default_module_ptr^), 0);
   STANDARD20_MODULE_STUFF(default_module_ptr^);
   with wst_module do
@@ -48,5 +49,9 @@ begin
     name := MODULE_NAME;
     magic := MODULE_MAGIC_COOKIE;
     register_hooks := @RegisterHooks;
+    create_dir_config := @wst_create_dir_config;
+    cmds := WstCommandStructArray;
   end;
+  WstCommandStructArray[0].cmd_data := @WstConfigData^.BasePath;
+  FillChar(WstCommandStructArray[1],SizeOf(command_rec),#0);
 end.

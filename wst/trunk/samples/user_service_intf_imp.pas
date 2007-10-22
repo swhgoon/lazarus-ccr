@@ -220,9 +220,9 @@ end;
 initialization
   FUserList := TObjectList.Create(True);
   FUserCursor := TObjectListCursor.Create(FUserList);
-  if FileExists(sDATA_FILE_NAME) then
+  {if FileExists(sDATA_FILE_NAME) then
     FillDataFromFile(sDATA_FILE_NAME)
-  else
+  else}
     FillSampleData();
 
 finalization

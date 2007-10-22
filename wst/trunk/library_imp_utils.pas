@@ -16,12 +16,27 @@ unit library_imp_utils;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils
+{$IFDEF FPC}
+  , DynLibs
+{$ELSE}
+  , Windows
+{$ENDIF}
+;
 
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
+{$IFNDEF FPC}
+const
+  NilHandle = 0;
+{$ENDIF}
+
 type
+
+{$IFNDEF FPC}
+  TLibHandle = Longint;
+{$ENDIF}
 
   IwstModule = interface
     ['{A62A9A71-727E-47AD-9B84-0F7CA0AE51D5}']
@@ -33,23 +48,9 @@ type
     ['{0A49D315-FF3E-40CD-BCA0-F958BCD5C57F}']
     function Get(const AFileName : string):IwstModule;
     procedure Clear();
+    function GetCount() : PtrInt;
+    function GetItem(const AIndex : PtrInt) : IwstModule;
   end;
-
-var
-  LibraryManager : IwstModuleManager = nil;
-
-implementation
-{$IFDEF FPC}
-  uses DynLibs;
-{$ELSE}
-  uses Windows;
-
-  type TLibHandle = THandle;
-  const NilHandle = 0;
-{$ENDIF}
-
-
-type
 
   { TwstModule }
 
@@ -57,37 +58,47 @@ type
   private
     FFileName : string;
     FHandle : TLibHandle;
-  private
-    procedure Load(const ADoLoad : Boolean);
   protected
     function GetFileName():string;
     function GetProc(const AProcName : string):Pointer;
+    procedure Load(const ADoLoad : Boolean);virtual;
   public
-    constructor Create(const AFileName : string);
+    constructor Create(const AFileName : string);virtual;
     destructor Destroy();override;
   end;
+  TwstModuleClass = class of TwstModule;
 
   { TwstModuleManager }
 
   TwstModuleManager = class(TInterfacedObject,IwstModuleManager)
   private
     FList : IInterfaceList;
+    FItemClass : TwstModuleClass;
   private
     function Load(const AFileName : string):IwstModule;
-    function GetItem(const AIndex : Integer):IwstModule;
     function IndexOf(const AFileName : string):Integer;
   protected
     function Get(const AFileName : string):IwstModule;
     procedure Clear();
+    function GetCount() : PtrInt;
+    function GetItem(const AIndex : PtrInt) : IwstModule;
   public
-    constructor Create();
+    constructor Create(AItemClass : TwstModuleClass);
     destructor Destroy();override;
   end;
+  
+var
+  LibraryManager : IwstModuleManager = nil;
+
+implementation
+
 
 procedure TwstModule.Load(const ADoLoad : Boolean);
 begin
   if ADoLoad then begin
     if ( FHandle = NilHandle ) then begin
+      if not FileExists(FFileName) then
+        raise Exception.CreateFmt('File not found : "%s".',[FFileName]);
       {$IFDEF FPC}
       FHandle := LoadLibrary(FFileName);
       {$ELSE}
@@ -122,8 +133,6 @@ end;
 
 constructor TwstModule.Create(const AFileName: string);
 begin
-  if not FileExists(AFileName) then
-    raise Exception.CreateFmt('File not found : "%s".',[AFileName]);
   FHandle := NilHandle;
   FFileName := AFileName;
   Load(True);
@@ -142,10 +151,22 @@ var
   i : Integer;
 begin
   i := IndexOf(AFileName);
-  if ( i < 0 ) then
-    Result := Load(AFileName)
-  else
+  if ( i < 0 ) then begin
+    FList.Lock();
+    try
+      i := IndexOf(AFileName);
+      if ( i < 0 ) then begin
+        Result := Load(AFileName);
+        FList.Add(Result);
+      end else begin
+        Result := GetItem(i);;
+      end;
+    finally
+      FList.Unlock();
+    end;
+  end else begin
     Result := GetItem(i);
+  end;
 end;
 
 procedure TwstModuleManager.Clear();
@@ -153,14 +174,19 @@ begin
   FList.Clear();
 end;
 
-function TwstModuleManager.Load(const AFileName: string): IwstModule;
+function TwstModuleManager.GetCount(): PtrInt;
 begin
-  Result := TwstModule.Create(AFileName);
+  Result := FList.Count;
 end;
 
-function TwstModuleManager.GetItem(const AIndex: Integer): IwstModule;
+function TwstModuleManager.GetItem(const AIndex: PtrInt): IwstModule;
 begin
   Result := FList[AIndex] as IwstModule;
+end;
+
+function TwstModuleManager.Load(const AFileName: string): IwstModule;
+begin
+  Result := FItemClass.Create(AFileName);
 end;
 
 function TwstModuleManager.IndexOf(const AFileName: string): Integer;
@@ -172,9 +198,11 @@ begin
   Result := -1;
 end;
 
-constructor TwstModuleManager.Create();
+constructor TwstModuleManager.Create(AItemClass : TwstModuleClass);
 begin
-  inherited;
+  Assert(Assigned(AItemClass));
+  inherited Create();
+  FItemClass := AItemClass;
   FList := TInterfaceList.Create();
 end;
 
@@ -186,7 +214,7 @@ end;
 
 procedure InitLibraryManager();
 begin
-  LibraryManager := TwstModuleManager.Create();
+  LibraryManager := TwstModuleManager.Create(TwstModule);
 end;
 
 initialization

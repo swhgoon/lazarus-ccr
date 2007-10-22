@@ -22,7 +22,8 @@ uses
   TestFrameWork,
 {$ENDIF}
   TypInfo,
-  base_service_intf, server_service_intf;
+  base_service_intf, server_service_intf,
+  library_imp_utils;
 
 type
 
@@ -102,7 +103,24 @@ type
   published
     procedure POOLED_Discard();
   end;
+  
+  { TwstModuleNotLoad }
 
+  TwstModuleNotLoad = class(TwstModule,IInterface,IwstModule)
+  protected
+    procedure Load(const ADoLoad : Boolean);override;
+  end;
+
+  { TTest_TwstModuleManager }
+
+  TTest_TwstModuleManager = class(TTestCase)
+  published
+    function Get(const AFileName : string):IwstModule;
+    procedure Clear();
+    function GetCount() : PtrInt;
+    function GetItem(const AIndex : PtrInt) : IwstModule;
+  end;
+  
 implementation
 
 { TTestClass }
@@ -585,19 +603,140 @@ begin
   CheckEquals(TSimpleFactoryItem_B,b.GetItemClass());
 end;
 
+{ TwstModuleNotLoad }
+
+procedure TwstModuleNotLoad.Load(const ADoLoad: Boolean);
+begin
+  //;
+end;
+
+{ TTest_TwstModuleManager }
+
+function TTest_TwstModuleManager.Get(const AFileName: string): IwstModule;
+const C = 10;
+var
+  locObj : IwstModuleManager;
+  locModule : IwstModule;
+  i, j, k: Integer;
+  ok : Boolean;
+  locName : string;
+begin
+  locObj := TwstModuleManager.Create(TwstModuleNotLoad);
+
+  for i := 0 to Pred(C) do begin
+    locObj.Get(Format('lib_%d',[i]));
+  end;
+
+  for i := 0 to Pred(C) do begin
+    ok := False;
+    locName := Format('lib_%d',[i]);
+    for j := 0 to Pred(locObj.GetCount()) do begin
+      locModule := locObj.GetItem(j);
+      if AnsiSameText(locName, locModule.GetFileName()) then begin
+        ok := True;
+        k := j + 1;
+        Break;
+      end;
+    end;
+    Check(ok);
+    for j := k to Pred(locObj.GetCount()) do begin
+      locModule := locObj.GetItem(j);
+      if AnsiSameText(locName, locModule.GetFileName()) then begin
+        Check(False,'Duplicated items : ' + locName);
+      end;
+    end;
+  end;
+end;
+
+procedure TTest_TwstModuleManager.Clear();
+const C = 12;
+var
+  locObj : IwstModuleManager;
+  i : Integer;
+begin
+  locObj := TwstModuleManager.Create(TwstModuleNotLoad);
+  locObj.Clear();
+  CheckEquals(0,locObj.GetCount());
+  for i := 0 to Pred(C) do begin
+    locObj.Get(Format('lib_%d',[i]));
+  end;
+  CheckEquals(C,locObj.GetCount());
+  locObj.Clear();
+  CheckEquals(0,locObj.GetCount());
+end;
+
+function TTest_TwstModuleManager.GetCount(): PtrInt;
+const C = 10;
+var
+  locObj : IwstModuleManager;
+  i : Integer;
+begin
+  locObj := TwstModuleManager.Create(TwstModuleNotLoad);
+  CheckEquals(0,locObj.GetCount());
+  CheckEquals(0,locObj.GetCount());
+  for i := 0 to Pred(C) do begin
+    CheckEquals(i,locObj.GetCount(),'before Add');
+    locObj.Get(Format('lib_%d',[i]));
+    CheckEquals(i + 1,locObj.GetCount(),'after Add');
+  end;
+  CheckEquals(C,locObj.GetCount());
+end;
+
+function TTest_TwstModuleManager.GetItem(const AIndex: PtrInt): IwstModule;
+const C = 10;
+var
+  locObj : IwstModuleManager;
+  locModule : IwstModule;
+  i : Integer;
+  ok : Boolean;
+begin
+  locObj := TwstModuleManager.Create(TwstModuleNotLoad);
+  ok := False;
+  try
+    locObj.GetItem(0);
+  except
+    on e : Exception do begin
+      ok := True;
+    end;
+  end;
+  Check(ok);
+
+  ok := False;
+  try
+    locObj.GetItem(1);
+  except
+    on e : Exception do begin
+      ok := True;
+    end;
+  end;
+  Check(ok);
+
+  for i := 0 to Pred(C) do begin
+    locObj.Get(Format('lib_%d',[i]));
+  end;
+
+  for i := 0 to Pred(C) do begin
+    locModule := locObj.GetItem(i);
+    CheckEquals(Format('lib_%d',[i]), locModule.GetFileName());
+  end;
+  
+  ok := False;
+  try
+    locObj.GetItem(C + 1);
+  except
+    on e : Exception do begin
+      ok := True;
+    end;
+  end;
+  Check(ok);
+end;
+
 initialization
-{$IFDEF FPC}
-  RegisterTest(TTest_TIntfPool);
-  RegisterTest(TTest_TSimpleItemFactoryEx);
-  RegisterTest(TTest_TImplementationFactory);
-  RegisterTest(TTest_TIntfPoolItem);
-  RegisterTest(TTest_TImplementationFactory);
-{$ELSE}
-  RegisterTest(TTest_TIntfPool.Suite);
-  RegisterTest(TTest_TSimpleItemFactoryEx.Suite);
-  RegisterTest(TTest_TImplementationFactory.Suite);
-  RegisterTest(TTest_TIntfPoolItem.Suite);
-  RegisterTest(TTest_TImplementationFactory.Suite);
-{$ENDIF}
+  RegisterTest('Utilities',TTest_TIntfPool.Suite);
+  RegisterTest('Utilities',TTest_TSimpleItemFactoryEx.Suite);
+  RegisterTest('Utilities',TTest_TImplementationFactory.Suite);
+  RegisterTest('Utilities',TTest_TIntfPoolItem.Suite);
+  RegisterTest('Utilities',TTest_TImplementationFactory.Suite);
+  RegisterTest('Utilities',TTest_TwstModuleManager.Suite);
 
 end.

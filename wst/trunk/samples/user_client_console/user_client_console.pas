@@ -144,8 +144,8 @@ const ADDRESS_MAP : array[TTransportType] of string = (
         'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
         //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
         'TCP:Address=127.0.0.1;Port=1234;target=UserService',
-        //'http:Address=http://127.0.0.1:8080/wst/services/UserService/?format=soap'
-        'http:Address=http://127.0.0.1:8000/services/UserService'
+        'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
+        //'http:Address=http://127.0.0.1:8000/services/UserService'
       );
       FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc' );
 var
