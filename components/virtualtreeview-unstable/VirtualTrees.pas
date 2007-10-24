@@ -113,6 +113,10 @@ interface
   {$warn UNSAFE_CODE off}
 {$endif COMPILER_7_UP}
 
+{$if defined (LCLGtk) or LCLGtk2}
+{$define Gtk}
+{$endif}
+
 uses
   {$i intf_uses.inc}
   ActiveX,
@@ -26546,7 +26550,9 @@ var
   ShowCheckImages,
   UseColumns,
   IsMainColumn: Boolean;
-
+  {$ifdef Gtk}
+  YCorrect,
+  {$endif}
   VAlign,
   IndentSize,
   ButtonX,
@@ -26947,11 +26953,26 @@ begin
                     NodeBitmap.Height));
                 end;
                 Logger.SendBitmap([lcPaintBitmap],'NodeBitmap',NodeBitmap);
-                Logger.SendIf([lcPaint],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
+                Logger.SendIf([lcPaintDetails],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
+                {$ifdef Gtk}
+                // This is a brute force fix AKA hack to prevent the header being cleared
+                // when the tree is scrolled (YOffset < 0) and the mouse is over the header
+                // Other widgetsets are not affected because excludecliprect works different (better?)
+                // this must be removed when/if the paint coordinate is modified to be header aware
+                YCorrect := 0;
+                if hoVisible in FHeader.Options then
+                begin
+                  if TargetRect.Top < FHeader.Height then
+                    YCorrect := FHeader.Height - TargetRect.Top;
+                end;
+                Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);
+                {$endif}
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
-                  BitBlt(TargetCanvas.Handle, Left, Top, Width, Height, Canvas.Handle, Window.Left, 0, SRCCOPY);
+                  BitBlt(TargetCanvas.Handle, Left,
+                    Top {$ifdef Gtk} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
+                    {$ifdef Gtk}YCorrect{$else}0{$endif}, SRCCOPY);
               end;
             end;
 
