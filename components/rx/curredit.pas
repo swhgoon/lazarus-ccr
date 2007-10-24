@@ -103,10 +103,11 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Alignment;
-//    property AutoSelect;
+    property AutoSelect;
     property AutoSize;
     property BeepOnError;
     property BorderStyle;
+    property BorderSpacing;
     property CheckOnExit;
     property Color;
     property Ctl3D;
@@ -118,13 +119,11 @@ type
     property Font;
     property FormatOnEditing;
 //    property HideSelection;
-{.$IFDEF RX_D4}
     property Anchors;
 //    property BiDiMode;
     property Constraints;
     property DragKind;
 //    property ParentBiDiMode;
-{.$ENDIF}
 {$IFDEF WIN32}
   {$IFNDEF VER90}
 //    property ImeMode;

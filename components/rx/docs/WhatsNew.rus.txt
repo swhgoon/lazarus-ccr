@@ -14,6 +14,7 @@
      NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID
   + ¬ RxDBGrid изображени€ маркеров вынесены в ресурсы (Petr Smolik)
   + ƒобавлен модуль автоматической сортировки в RxDBGrid exsortzeos.pas дл€ ZeosDB (Petr Smolik)
+  - ¬ TCurrencyEdit опубликовано свойство BorderSpacing
 29.08.2007 - верси€ 1.1.5.98 (svn revision 39)
   + ¬ RxDBGrid ѕосле закрыти€ набора данных список помеченных строк (SelectedRows) 
     очищаетс€

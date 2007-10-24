@@ -11,6 +11,7 @@
   + TPopUpColumnTitle used define NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID
   + in RxDBGrid images of markers moved to rxdbgrids.lrs (Petr Smolik)
   + add module for autosort in RxDBGrid exsortzeos.pas for ZeosDB (Petr Smolik)
+  - In TCurrencyEdit property BorderSpacing now published
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    
@@ -90,3 +91,8 @@
   + rewrite dropdown box for component TRxDBLookupCombo
   + for TRxDBLookupCombo add new property - PopUpFormOptions - all parametrs for
     dropdown list
+
+
+
+  Lagunov Aleksey (alexs)
+  ALEXS75-at-YANDEX-dot-RU
