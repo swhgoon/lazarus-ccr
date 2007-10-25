@@ -113,7 +113,7 @@ interface
   {$warn UNSAFE_CODE off}
 {$endif COMPILER_7_UP}
 
-{$if defined (LCLGtk) or LCLGtk2}
+{$if defined (LCLGtk) or defined(LCLGtk2)}
 {$define Gtk}
 {$endif}
 
@@ -15001,10 +15001,17 @@ begin
     SB_THUMBTRACK:
       begin
         DoStateChange([tsThumbTracking]);
+        {$ifdef LCLQt}
+        if UseRightToLeftAlignment then
+          SetOffsetX(-Integer(FRangeX) + ClientWidth + Message.Pos)
+        else
+          SetOffsetX(-Message.Pos);
+        {$else}
         if UseRightToLeftAlignment then
           SetOffsetX(-Integer(FRangeX) + ClientWidth + GetRealScrollPosition)
         else
           SetOffsetX(-GetRealScrollPosition);
+        {$endif}
       end;
     SB_TOP:
       SetOffsetX(0);
@@ -16254,7 +16261,11 @@ begin
     SB_THUMBTRACK:
       begin
         DoStateChange([tsThumbTracking]);
+        {$ifdef LCLQt}
+        SetOffsetY(-Message.Pos);
+        {$else}
         SetOffsetY(-GetRealScrollPosition);
+        {$endif}
       end;
     SB_TOP:
       SetOffsetY(0);
@@ -26709,7 +26720,7 @@ begin
                   Height := 0;
                   Height := PaintInfo.Node.NodeHeight;
                   //Workaround to LCL bug 8626
-                  SetWindowOrgEx(Canvas.Handle, {$ifndef Windows}-{$endif}Window.Left, 0, nil);
+                  SetWindowOrgEx(Canvas.Handle, {$ifdef Gtk}-{$endif}Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
                 end;
                 // Set the origin of the canvas' brush. This depends on the node heights.
