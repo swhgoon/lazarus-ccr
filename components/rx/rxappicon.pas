@@ -35,7 +35,9 @@ type
 
 implementation
 {$IFDEF WIN32}
+{$IFNDEF LCLGtk2} 
 uses Windows, win32int, InterfaceBase, vclutils;
+{$ENDIF}
 {$ENDIF}
 
 
@@ -86,6 +88,7 @@ end;
 
 procedure TRxAppIcon.ApplyIcon;
 {$IFDEF WIN32}
+{$IFNDEF LCLGtk2} 
 procedure DoApply;
 var
   H:HICON;
@@ -106,12 +109,15 @@ begin
   end;
 end;
 {$ENDIF}
+{$ENDIF}
 begin
   if FIconStream.Size>0 then
   begin
     Icon.LoadFromStream(FIconStream);
     {$IFDEF WIN32}
+{$IFNDEF LCLGtk2} 
     DoApply;
+{$ENDIF}
     {$ENDIF}
   end;
   FIconStream.Position:=0;

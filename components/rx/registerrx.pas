@@ -10,10 +10,12 @@ uses
 procedure Register;
 
 implementation
-uses PropEdits, dbdateedit, rxlookup, folderlister, rxdbgrid, rxmemds, duallist,
+uses
+  PropEdits, dbdateedit, rxlookup, folderlister, rxdbgrid, rxmemds, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
-  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit;
+  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit,
+  rxceEditLookupFields;
 
 type
 
@@ -253,6 +255,7 @@ begin
   RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);
   //
   RegisterPropertyEditor(TypeInfo(string), TRxColumn, 'FieldName', TRxDBGridFieldProperty);
+  RegisterCEEditLookupFields;
 end;
 
 initialization

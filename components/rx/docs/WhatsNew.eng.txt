@@ -12,6 +12,8 @@
   + in RxDBGrid images of markers moved to rxdbgrids.lrs (Petr Smolik)
   + add module for autosort in RxDBGrid exsortzeos.pas for ZeosDB (Petr Smolik)
   - In TCurrencyEdit property BorderSpacing now published
+  + New procedure  StrToStrings in module rxstrutils - fill List:TStrings 
+      procedure StrToStrings(const S:string; const List:TStrings; const Delims:Char);
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

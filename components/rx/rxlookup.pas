@@ -182,6 +182,7 @@ type
     procedure UpdateData;
     procedure OnClosePopup(AResult:boolean);
   protected
+    procedure DoAutoSize; override;
     procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
@@ -923,7 +924,7 @@ begin
         FLookupDataLink.DataSet.First;
 
       FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
-        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, ButtonWidth);
+        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, ButtonWidth, Font);
     end
 end;
 
@@ -969,7 +970,7 @@ begin
     FillPopupWidth(FPopUpFormOptions, FRxPopUpForm);
     
   FRxPopUpForm:=nil;
-  if AResult then
+  if AResult and Assigned(FDataLink.DataSource) then
   begin
     FDataLink.Edit;
     UpdateData;
@@ -979,6 +980,11 @@ begin
     TWinControl(Owner).Repaint
   else
     Parent.Repaint;
+end;
+
+procedure TRxCustomDBLookupCombo.DoAutoSize;
+begin
+  Height:=Canvas.TextHeight('Wg')+10;
 end;
 
 procedure TRxCustomDBLookupCombo.SetEnabled(Value: Boolean);
@@ -1049,7 +1055,7 @@ begin
   inherited SetParent(AParent);
   if FButton <> nil then
   begin
-    FButton.Parent := Parent;
+//    FButton.Parent := Parent;
     CheckButtonVisible;
   end;
 end;
@@ -1067,7 +1073,7 @@ begin
   end;
 
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  DoPositionButton;
+//  DoPositionButton;
 end;
 
 procedure TRxCustomDBLookupCombo.DoPositionButton;
@@ -1160,6 +1166,7 @@ begin
     if TextMargin > 0 then Inc(TextMargin);
     X := 2 + TextMargin;
     Canvas.FillRect(R);
+    R.Right:=R.Right - GetButtonWidth;
     if FDisplayAll then
       PaintDisplayValues(Canvas, R, TextMargin)
     else
@@ -1234,10 +1241,14 @@ begin
   FButton.Width := Self.Height;
   FButton.Height := Self.Height;
   FButton.FreeNotification(Self);
+  FButton.Parent:=Self;
   CheckButtonVisible;
   FButton.OnClick := @DoButtonClick;
   FButton.Cursor := crArrow;
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
+  FButton.Align:=alRight;
+  FButton.BorderSpacing.Around:=2;
+  
   ControlStyle := ControlStyle - [csSetCaption];
   FDirectInput := True;
   ParentColor:=false;
@@ -1248,6 +1259,7 @@ begin
   ButtonWidth:=15;
   Ctl3D:=true;
   TabStop:=true;
+  
 end;
 
 destructor TRxCustomDBLookupCombo.Destroy;

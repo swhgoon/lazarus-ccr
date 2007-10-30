@@ -5,9 +5,12 @@ object DualListForm: TDualListForm
   Width = 392
   HorzScrollBar.Page = 391
   VertScrollBar.Page = 268
+  ActiveControl = SrcList
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'DualListForm'
+  ClientHeight = 269
+  ClientWidth = 392
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = [fsBold]
@@ -27,7 +30,6 @@ object DualListForm: TDualListForm
     Top = 12
     Width = 34
     Caption = 'Source'
-    Color = clNone
     ParentColor = False
   end
   object DstLabel: TLabel
@@ -36,7 +38,6 @@ object DualListForm: TDualListForm
     Top = 12
     Width = 23
     Caption = 'Dest'
-    Color = clNone
     ParentColor = False
   end
   object SrcList: TListBox
@@ -74,6 +75,7 @@ object DualListForm: TDualListForm
     Height = 26
     Top = 32
     Width = 26
+    BorderSpacing.InnerBorder = 4
     Caption = '>'
     Font.Color = clBlack
     Font.Height = -12
@@ -87,6 +89,7 @@ object DualListForm: TDualListForm
     Height = 26
     Top = 64
     Width = 26
+    BorderSpacing.InnerBorder = 4
     Caption = '>>'
     Font.Color = clBlack
     Font.Height = -12
@@ -100,6 +103,7 @@ object DualListForm: TDualListForm
     Height = 26
     Top = 97
     Width = 26
+    BorderSpacing.InnerBorder = 4
     Caption = '<'
     Font.Color = clBlack
     Font.Height = -12
@@ -113,6 +117,7 @@ object DualListForm: TDualListForm
     Height = 26
     Top = 129
     Width = 26
+    BorderSpacing.InnerBorder = 4
     Caption = '<<'
     Font.Color = clBlack
     Font.Height = -12
@@ -126,6 +131,7 @@ object DualListForm: TDualListForm
     Height = 25
     Top = 239
     Width = 77
+    BorderSpacing.InnerBorder = 4
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -136,6 +142,7 @@ object DualListForm: TDualListForm
     Height = 25
     Top = 239
     Width = 77
+    BorderSpacing.InnerBorder = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -146,6 +153,7 @@ object DualListForm: TDualListForm
     Height = 25
     Top = 239
     Width = 77
+    BorderSpacing.InnerBorder = 4
     Caption = 'Help'
     OnClick = HelpBtnClick
     TabOrder = 8

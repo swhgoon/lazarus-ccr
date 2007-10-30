@@ -15,6 +15,12 @@
   + В RxDBGrid изображения маркеров вынесены в ресурсы (Petr Smolik)
   + Добавлен модуль автоматической сортировки в RxDBGrid exsortzeos.pas для ZeosDB (Petr Smolik)
   - В TCurrencyEdit опубликовано свойство BorderSpacing
+  + В модуль rxstrutils добавлена процедура StrToStrings - заполняет класс TStrings строками
+    содержащимися в строке S и разделёнными симовлом Delims
+  + Реализован редактор свойств для полей LookupField и LookupDisplay у компонент 
+    TRxLookupEdit и TRxDBLookupCombo
+  + TRxDBLookupCombo реализована поддержка свойства AutoSize
+  + При установке свойства Font у TRxDBLookupCombo выпадающий список использует этот же шрифт
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается

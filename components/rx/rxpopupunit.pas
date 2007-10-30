@@ -184,7 +184,7 @@ type
 
 function ShowRxDBPopUpForm(AControl:TWinControl; ADataSet:TDataSet;
   AOnPopUpCloseEvent:TPopUpCloseEvent; APopUpFormOptions:TPopUpFormOptions;
-  AFieldList:string; ALookupDisplayIndex, BtnWidtn: integer):TPopUpForm;
+  AFieldList:string; ALookupDisplayIndex, BtnWidtn: integer; const Font:TFont):TPopUpForm;
   
 procedure FillPopupWidth(APopUpFormOptions:TPopUpFormOptions; ARxPopUpForm:TPopUpForm);
 
@@ -194,12 +194,19 @@ uses dbutils, math;
 {.$DEFINE LINUX}
 function ShowRxDBPopUpForm(AControl:TWinControl; ADataSet:TDataSet;
   AOnPopUpCloseEvent:TPopUpCloseEvent; APopUpFormOptions:TPopUpFormOptions;
-  AFieldList:string; ALookupDisplayIndex, BtnWidtn: integer):TPopUpForm;
+  AFieldList:string; ALookupDisplayIndex, BtnWidtn: integer; const Font:TFont):TPopUpForm;
 begin
   Result:=TPopUpForm.CreatePopUp(AControl, APopUpFormOptions, AFieldList, BtnWidtn);
   Result.FOnPopUpCloseEvent:=AOnPopUpCloseEvent;
   Result.DataSet:=ADataSet;
   Result.LookupDisplayIndex:=ALookupDisplayIndex;
+
+  if Assigned(Font) then
+  begin
+    Result.FGrid.Font.Assign(Font);
+//    Result.Font.Assign(Font);
+  end;
+
 {$IFDEF LINUX}
   if Result.ShowModal = mrOk then
     if Assigned(AOnPopUpCloseEvent) then
@@ -470,6 +477,7 @@ begin
   FGrid.TitleStyle:=FPopUpFormOptions.TitleStyle;
   FGrid.BorderStyle:=FPopUpFormOptions.BorderStyle;
   FGrid.OnGetCellProps:=FPopUpFormOptions.OnGetCellProps;
+  
 end;
 
 { TPopUpFormOptions }

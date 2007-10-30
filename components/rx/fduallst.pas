@@ -138,20 +138,20 @@ procedure TDualListForm.SrcListDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted);
-{  if State = dsDragLeave then
+  if State = dsDragLeave then
     (Source as TListBox).DragCursor := crDrag;
   if (State = dsDragEnter) and ((Source as TListBox).SelCount > 1) then
-    (Source as TListBox).DragCursor := crMultiDrag;}
+    (Source as TListBox).DragCursor := crMultiDrag;
 end;
 
 procedure TDualListForm.DstListDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted);
-{  if State = dsDragLeave then
+  if State = dsDragLeave then
     (Source as TListBox).DragCursor := crDrag;
   if (State = dsDragEnter) and ((Source as TListBox).SelCount > 1) then
-    (Source as TListBox).DragCursor := crMultiDrag;}
+    (Source as TListBox).DragCursor := crMultiDrag;
 end;
 
 procedure TDualListForm.SrcListDragDrop(Sender, Source: TObject; X,
@@ -209,9 +209,9 @@ end;
 
 procedure TDualListForm.FormCreate(Sender: TObject);
 begin
-{  OkBtn.Caption := ResStr(SOKButton);
-  CancelBtn.Caption := ResStr(SCancelButton);
-  HelpBtn.Caption := ResStr(SHelpButton);}
+{  OkBtn.Caption := SOKButton;
+  CancelBtn.Caption := SCancelButton;
+  HelpBtn.Caption := SHelpButton;}
   if NewStyleControls then Font.Style := [];
 end;
 

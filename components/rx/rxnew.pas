@@ -13,7 +13,7 @@ uses
     rxtbrsetup, fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, 
     rxlogin, rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, 
     rxcustomchartpanel, rxsortmemds, AutoPanel, pickdate, rxiconv, 
-    LazarusPackageIntf; 
+    rxceEditLookupFields, LazarusPackageIntf; 
 
 implementation
 

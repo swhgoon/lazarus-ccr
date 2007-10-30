@@ -14,7 +14,8 @@ unit rxctrls;
 interface
 
 uses LResources, LCLType, LCLIntf, LMessages, Classes, Controls, Graphics,
-  StdCtrls, ExtCtrls, Forms, Buttons, Menus, RxConst, IniFiles, GraphType{, Placemnt};
+  StdCtrls, ExtCtrls, Forms, Buttons, Menus, RxConst, IniFiles, GraphType
+  {, Placemnt};
 
 type
   TPositiveInt = 1..MaxInt;
@@ -915,7 +916,7 @@ function CheckBitmap: TBitmap;
 implementation
 
 
-uses SysUtils, Dialogs, CommCtrl, VCLUtils, Math, RxAppUtils, ImgList,
+uses SysUtils, Dialogs, {CommCtrl,} VCLUtils, Math, RxAppUtils, ImgList,
  ActnList
 (*  Consts, {$IFDEF RX_D6}, RTLConsts{$ENDIF}
 *)

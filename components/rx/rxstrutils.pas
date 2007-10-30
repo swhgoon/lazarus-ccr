@@ -15,7 +15,7 @@ unit rxstrutils;
 
 interface
 
-uses SysUtils ;
+uses SysUtils, Classes;
 
 type
 {$IFNDEF RX_D4}
@@ -207,8 +207,10 @@ function RomanToInt(const S: string): Longint;
 { RomanToInt converts the given string to an integer value. If the string
   doesn't contain a valid roman numeric value, the 0 value is returned. }
 
+procedure StrToStrings(const S:string; const List:TStrings; const Delims:Char);
+
 const
-  CRLF = #13#10;
+//  CRLF = #13#10;
   DigitChars = ['0'..'9'];
 {$IFNDEF CBUILDER}
   Brackets = ['(',')','[',']','{','}'];
@@ -1078,6 +1080,29 @@ begin
   begin
     B:=StrToInt('$'+S[i*2-1]+S[i*2]);
     Result:=Result+Char(B);
+  end;
+end;
+
+procedure StrToStrings(const S:string; const List:TStrings; const Delims:Char);
+var
+  i,j:integer;
+begin
+  if S<>'' then
+  begin
+    j:=1;
+    for i:=1 to Length(S) do
+    begin
+      if S[i] = Delims then
+      begin
+        if i>j+1 then
+        begin
+          List.Add(Copy(S, j, i-j));
+        end;
+        j:=i+1;
+      end;
+    end;
+    if j<Length(S) then
+      List.Add(Copy(S, j, Length(S)));
   end;
 end;
 
