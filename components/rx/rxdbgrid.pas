@@ -228,6 +228,7 @@ type
 
     FVersion: Integer;
     FPropertyStorageLink:TPropertyStorageLink;
+    FRxDbGridLookupComboEditor:TCustomControl;
     
     function GetColumns: TRxDbGridColumns;
     function GetPropertyStorage: TCustomPropertyStorage;
@@ -279,6 +280,7 @@ type
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
     procedure InternalOptimizeColumnsWidth(AColList:TList);
     function IsDefaultRowHeightStored:boolean;
+    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -390,52 +392,10 @@ type
     property OnUserCheckboxBitmap;
   end;
 
-{
-type
-  PCharArray1   = Array[0..12] of PChar;
-
-
-const
-  IMGMarkerUp : PCharArray1 =
-  (
-   '10 9 3 1',
-   '. c None',
-   '# c #808080',
-   'a c #ffffff',
-
-   '..........',
-   '....#a....',
-   '...#..a...',
-   '...#..a...',
-   '..#....a..',
-   '..#....a..',
-   '.#......a.',
-   '.aaaaaaaa.',
-   '..........'
-  );
-
-  IMGMarkerDown : PCharArray1 =
-  (
-   '10 9 3 1',
-   '. c None',
-   '# c #808080',
-   'a c #ffffff',
-   '..........',
-   '.#######a.',
-   '.#......a.',
-   '..#....a..',
-   '..#....a..',
-   '...#..a...',
-   '...#..a...',
-   '....#a....',
-   '..........')
-  ;
-}
-
 procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
 
 implementation
-uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit;
+uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit, rxlookup;
 
 var
   ExDBGridSortEngineList:TStringList;
@@ -458,6 +418,101 @@ var
   I: Longint;
 begin
   for I := 0 to Grid.ColCount - 1 do Grid.InvalidateCell(I, Row);
+end;
+
+type
+
+  { TRxDBGridLookupComboEditor }
+
+  TRxDBGridLookupComboEditor =  class(TRxCustomDBLookupCombo)
+  private
+    FGrid: TRxDBGrid;
+    FCol,FRow: Integer;
+    FLDS:TDataSource;
+  protected
+    procedure WndProc(var TheMessage : TLMessage); override;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
+    procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+{ TRxDBGridLookupComboEditor }
+
+procedure TRxDBGridLookupComboEditor.WndProc(var TheMessage: TLMessage);
+begin
+  if TheMessage.msg=LM_KILLFOCUS then
+  begin
+    if HWND(TheMessage.WParam) = HWND(Handle) then
+    begin
+      // lost the focus but it returns to ourselves
+      // eat the message.
+      TheMessage.Result := 0;
+      exit;
+    end;
+  end;
+  inherited WndProc(TheMessage);
+end;
+
+procedure TRxDBGridLookupComboEditor.KeyDown(var Key: Word; Shift: TShiftState
+  );
+
+procedure doGridKeyDown;
+begin
+  if Assigned(FGrid) then
+    FGrid.KeyDown(Key, shift);
+end;
+
+begin
+  case Key of
+    VK_UP,
+    VK_DOWN :
+      if (not PopupVisible) and (not (ssAlt in Shift)) then
+      begin
+        doGridKeyDown;
+        exit;
+      end;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TRxDBGridLookupComboEditor.msg_SetGrid(var Msg: TGridMessage);
+begin
+  FGrid:=Msg.Grid as TRxDBGrid;
+  Msg.Options:=EO_AUTOSIZE;
+end;
+
+procedure TRxDBGridLookupComboEditor.msg_SetValue(var Msg: TGridMessage);
+var
+  F, LF:TField;
+begin
+  FCol := Msg.Col;
+  FRow := Msg.Row;
+  F:=FGrid.SelectedField;
+  DataSource:=FGrid.DataSource;
+  if Assigned(F) then
+  begin
+    DataField:=F.FieldName;
+    LookupDisplay:=F.LookupKeyFields;
+    LookupField:=F.LookupResultField;
+    FLDS.DataSet:=F.LookupDataSet;
+  end;
+end;
+
+
+constructor TRxDBGridLookupComboEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLDS:=TDataSource.Create(nil);
+  LookupSource:=FLDS;
+end;
+
+destructor TRxDBGridLookupComboEditor.Destroy;
+begin
+  FreeAndNil(FLDS);
+  inherited Destroy;
 end;
 
 { TRxDBGrid }
@@ -1016,7 +1071,10 @@ begin
       begin
         if F.dataType <> ftBlob then
         begin
-          S := F.DisplayText;
+{          if Assigned(F.LookupDataSet) and (F.LookupResultField<>'') then
+            S := F.LookupDataSet.FieldByName(F.LookupResultField).DisplayText
+          else}
+            S := F.DisplayText;
           if Assigned(C) and (C.KeyList.Count > 0) and (C.PickList.Count>0) then
           begin
             J:=C.KeyList.IndexOf(S);
@@ -1545,6 +1603,25 @@ begin
   Result:=DefaultRowHeight = Canvas.TextHeight('W');
 end;
 
+function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
+var
+  F:TField;
+begin
+  if Style = cbsAuto then
+  begin
+    F:=SelectedField;
+    if Assigned(F) then
+    begin
+      if Assigned(F.LookupDataSet) and (F.LookupKeyFields<>'') and (F.LookupResultField<>'') and (F.KeyFields<>'') then
+      begin
+        Result:=FRxDbGridLookupComboEditor;
+        exit;
+      end
+    end
+  end;
+  Result:=inherited EditorByStyle(Style);
+end;
+
 procedure TRxDBGrid.CalcStatTotals;
 var
   P:TBookmark;
@@ -1659,10 +1736,15 @@ begin
     OnCloseUp := @FFilterListEditorOnCloseUp;
   end;
   FColumnResizing := false;
+
+  FRxDbGridLookupComboEditor:=TRxDBGridLookupComboEditor.Create(nil);
+  FRxDbGridLookupComboEditor.Name:='RxDBGridLookupComboEditor';
+  FRxDbGridLookupComboEditor.Visible:=false;
 end;
 
 destructor TRxDBGrid.Destroy;
 begin
+  FreeAndNil(FRxDbGridLookupComboEditor);
   FreeAndNil(FMarkerDown);
   FreeAndNil(FMarkerUp);
   FreeAndNil(FPropertyStorageLink);

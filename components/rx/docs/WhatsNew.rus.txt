@@ -21,6 +21,8 @@
     TRxLookupEdit и TRxDBLookupCombo
   + TRxDBLookupCombo реализована поддержка свойства AutoSize
   + При установке свойства Font у TRxDBLookupCombo выпадающий список использует этот же шрифт
+  + Если у объекта TField установленый лукапные источники то при редактировании в RxDBGrid 
+    такого поля вызывается редактор на основе TRxDBLookupCombo
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается

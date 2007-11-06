@@ -175,13 +175,13 @@ type
     procedure DataLinkActiveChanged;
     procedure DataLinkRecordChanged(Field: TField);
     procedure UpdateFieldValues;
-    procedure ShowList;
     procedure SetValueKey(const Value: string);
     procedure UpdateKeyValue;
     procedure KeyValueChanged;
     procedure UpdateData;
-    procedure OnClosePopup(AResult:boolean);
   protected
+    procedure ShowList; virtual;
+    procedure OnClosePopup(AResult:boolean);virtual;
     procedure DoAutoSize; override;
     procedure SetEnabled(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -234,6 +234,8 @@ type
   
   { TRxDBLookupCombo }
   TRxDBLookupCombo = class(TRxCustomDBLookupCombo)
+  protected
+    procedure OnClosePopup(AResult:boolean);override;
   published
     property AutoSize;
     property Align;
@@ -924,7 +926,7 @@ begin
         FLookupDataLink.DataSet.First;
 
       FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
-        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, ButtonWidth, Font);
+        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
     end
 end;
 
@@ -975,11 +977,6 @@ begin
     FDataLink.Edit;
     UpdateData;
   end;
-  SetFocus;
-  if (Owner is TWinControl) then
-    TWinControl(Owner).Repaint
-  else
-    Parent.Repaint;
 end;
 
 procedure TRxCustomDBLookupCombo.DoAutoSize;
@@ -1324,6 +1321,18 @@ procedure TLookupSourceLink.DataSetChanged;
 begin
   if FDataControl <> nil then
     FDataControl.LookupDataSetChanged;
+end;
+
+{ TRxDBLookupCombo }
+
+procedure TRxDBLookupCombo.OnClosePopup(AResult: boolean);
+begin
+  inherited OnClosePopup(AResult);
+  SetFocus;
+  if (Owner is TWinControl) then
+    TWinControl(Owner).Repaint
+  else
+    Parent.Repaint;
 end;
 
 end.
