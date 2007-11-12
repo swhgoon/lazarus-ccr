@@ -110,6 +110,7 @@ type
   public
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
+    function GetFormatName() : string;
     procedure Clear();
 
     procedure BeginObject(
@@ -163,6 +164,7 @@ type
       var   AData
     );
     function ReadBuffer(const AName : string) : string;
+    procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -231,7 +233,12 @@ begin
   Result := FSerializationStyle;
 end;
 
-function TJsonRpcBaseFormatter.GetCurrentScope() : string;
+function TJsonRpcBaseFormatter.GetFormatName(): string;
+begin
+  Result := 'json';
+end;
+
+function TJsonRpcBaseFormatter.GetCurrentScope : string;
 begin
   CheckScope();
   Result := '';
@@ -345,6 +352,11 @@ begin
 end;
 
 function TJsonRpcBaseFormatter.ReadBuffer(const AName : string) : string;
+begin
+
+end;
+
+procedure TJsonRpcBaseFormatter.WriteBuffer(const AValue: string);
 begin
 
 end;

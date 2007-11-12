@@ -73,6 +73,8 @@ type
     property EmbeddedScopeCount : Integer read FEmbeddedScopeCount;
     function BeginEmbeddedScope() : Integer;
     function EndEmbeddedScope() : Integer;
+
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;virtual;
   End;
 
   { TObjectStackItem }
@@ -286,6 +288,7 @@ type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetFormatName() : string;
     procedure Clear();
 
     procedure BeginObject(
@@ -339,6 +342,7 @@ type
       var   AData
     );
     function ReadBuffer(const AName : string) : string;
+    procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -388,6 +392,17 @@ begin
   end;
   Dec(FEmbeddedScopeCount);
   Result := FEmbeddedScopeCount;
+end;
+
+function TStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+var
+  i : Integer;
+begin
+  AReturnList.Clear();
+  for i := 0 to Pred(GetItemsCount()) do begin
+    AReturnList.Add(ScopeObject.childNodes.Item[i].nodeName);
+  end;
+  Result := AReturnList.Count;
 end;
 
 { TObjectStackItem }
@@ -497,7 +512,8 @@ end;
 
 function TSOAPBaseFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;
 begin
-
+  CheckScope();
+  Result := StackTop().GetScopeItemNames(AReturnList);
 end;
 
 procedure TSOAPBaseFormatter.EndScopeRead();
@@ -769,7 +785,9 @@ function TSOAPBaseFormatter.PutFloat(
 Var
   s, frmt : string;
   prcsn : Integer;
-{$IFDEF FPC} {$IFNDEF FPC_211} i : Integer; {$ENDIF}{$ENDIF}
+{$IFNDEF HAS_FORMAT_SETTINGS}
+  i : Integer;
+{$ENDIF HAS_FORMAT_SETTINGS}
 begin
   Case GetTypeData(ATypeInfo)^.FloatType Of
     ftSingle,
@@ -779,18 +797,14 @@ begin
     ftExtended  : prcsn := 15;
   End;
   frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
+{$IFDEF HAS_FORMAT_SETTINGS}
   s := FormatFloat(frmt,AData,wst_FormatSettings);
-  {$ELSE}
+{$ELSE}
   s := FormatFloat(frmt,AData);
   i := Pos(',',s);
-  If ( i > 0 ) Then
+  if ( i > 0 ) then
     s[i] := '.';
-  {$ENDIF}
-{$ELSE}
-  s := FormatFloat(frmt,AData,wst_FormatSettings);
-{$ENDIF}
+{$ENDIF HAS_FORMAT_SETTINGS}
   Result := InternalPutData(AName,ATypeInfo,s);
 end;
 
@@ -881,16 +895,11 @@ procedure TSOAPBaseFormatter.GetFloat(
   var AData        : Extended
 );
 begin
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
-    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
-  {$ELSE}
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0);
-  {$ENDIF}
+{$IFDEF HAS_FORMAT_SETTINGS}
+  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
 {$ELSE}
-    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
-{$ENDIF}
-  //AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+  AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(GetNodeValue(AName))),0);
+{$ENDIF HAS_FORMAT_SETTINGS}
 end;
 
 procedure TSOAPBaseFormatter.GetStr(
@@ -1729,15 +1738,11 @@ begin
       end;
     tkFloat :
       begin
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
+{$IFDEF HAS_FORMAT_SETTINGS}
         floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
-  {$ELSE}
-        floatDt := StrToFloatDef(Trim(dataBuffer),0);
-  {$ENDIF}
 {$ELSE}
-        floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
-{$ENDIF}
+        floatDt := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(dataBuffer)),0);
+{$ENDIF HAS_FORMAT_SETTINGS}
         case GetTypeData(ATypeInfo)^.FloatType of
           ftSingle    : Single(AData)        := floatDt;
           ftDouble    : Double(AData)        := floatDt;
@@ -1803,6 +1808,30 @@ end;
 procedure TSOAPBaseFormatter.Error(const AMsg: string;const AArgs: array of const);
 begin
   Raise ESOAPException.CreateFmt(AMsg,AArgs);
+end;
+
+function TSOAPBaseFormatter.GetFormatName() : string;
+begin
+  Result := sPROTOCOL_NAME;
+end;
+
+procedure TSOAPBaseFormatter.WriteBuffer(const AValue: string);
+var
+  strm : TStringStream;
+  locDoc : TwstXMLDocument;
+  locNode : TDOMNode;
+begin
+  CheckScope();
+  locDoc := nil;
+  strm := TStringStream.Create(AValue);
+  try
+    ReadXMLFile(locDoc,strm);
+    locNode := locDoc.DocumentElement.CloneNode(True {$IFDEF FPC}, StackTop().ScopeObject.OwnerDocument{$ENDIF});
+    StackTop().ScopeObject.AppendChild(locNode);
+  finally
+    ReleaseDomNode(locDoc);
+    strm.Free();
+  end;
 end;
 
 { TScopedArrayStackItem }

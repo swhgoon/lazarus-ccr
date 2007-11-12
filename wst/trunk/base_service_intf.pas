@@ -132,6 +132,7 @@ type
   
   IFormatterBase = Interface
     ['{2AB3BF54-B7D6-4C46-8245-133C8775E9C1}']
+    function GetFormatName() : string;
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
     function GetCurrentScope():string;
@@ -188,6 +189,8 @@ type
       var   AData
     );
     function ReadBuffer(const AName : string) : string;
+    //Please use this method if and _only_ if you do not have another way achieve your aim!
+    procedure WriteBuffer(const AValue : string);
     
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -1238,15 +1241,10 @@ const
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
+{$IFDEF HAS_FORMAT_SETTINGS}
 var
   wst_FormatSettings : TFormatSettings;
-  {$ENDIF}
-{$ELSE}
-var
-  wst_FormatSettings : TFormatSettings;
-{$ENDIF}
+{$ENDIF HAS_FORMAT_SETTINGS}
 
 implementation
 uses imp_utils, record_rtti;
@@ -3512,7 +3510,7 @@ begin
     lst.Delimiter := PROP_LIST_DELIMITER;
     lst.DelimitedText := APropsStr;
     for i := 0 to Pred(lst.Count) do
-      SetProperty(lst.Names[i],lst.ValueFromIndex[i]);
+      SetProperty(lst.Names[i],lst.Values[lst.Names[i]]);
   finally
     lst.Free();
   end;
@@ -4860,15 +4858,15 @@ begin
 end;
 
 initialization
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
-  wst_FormatSettings := DefaultFormatSettings;
-  wst_FormatSettings.DecimalSeparator := '.';
+{$IFDEF HAS_FORMAT_SETTINGS}
+  {$IFDEF FPC}
+    wst_FormatSettings := DefaultFormatSettings;
+    wst_FormatSettings.DecimalSeparator := '.';
+  {$ELSE}
+    GetLocaleFormatSettings(GetThreadLocale(),wst_FormatSettings);
+    wst_FormatSettings.DecimalSeparator := '.';
   {$ENDIF}
-{$ELSE}
-  GetLocaleFormatSettings(GetThreadLocale(),wst_FormatSettings);
-  wst_FormatSettings.DecimalSeparator := '.';
-{$ENDIF}
+{$ENDIF HAS_FORMAT_SETTINGS}
 
   TypeRegistryInstance := TTypeRegistry.Create();
   SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();

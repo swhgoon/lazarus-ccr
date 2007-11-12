@@ -45,6 +45,7 @@ Type
   function IsStrEmpty(Const AStr:String):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
+  function TranslateDotToDecimalSeperator(const Value: string) : string;
   
 implementation
 uses wst_types;
@@ -86,6 +87,17 @@ begin
   Result := Trim(Result);
 end;
 
+function TranslateDotToDecimalSeperator(const Value: string) : string;
+var
+  i : PtrInt;
+begin
+  Result := Value;
+  for i := 1 to length(Result) do begin
+    if ( Result[i] = '.' ) then
+      Result[i] := DecimalSeparator;
+  end;
+end;
+
 { TPublishedPropertyManager }
 
 procedure TPublishedPropertyManager.Error(const AMsg: string);
@@ -124,9 +136,9 @@ begin
 end;
 
 procedure TPublishedPropertyManager.SetProperties(const APropsStr: string);
-Var
+var
   lst : TStringList;
-  i : Integer;
+  i : PtrInt;
 begin
   If IsStrEmpty(APropsStr) Then
     Exit;
@@ -135,8 +147,8 @@ begin
     lst.QuoteChar := #0;
     lst.Delimiter := PROP_LIST_DELIMITER;
     lst.DelimitedText := APropsStr;
-    For i := 0 To Pred(lst.Count) Do
-      SetProperty(lst.Names[i],lst.ValueFromIndex[i]);
+    for i := 0 to Pred(lst.Count) do
+      SetProperty(lst.Names[i],lst.Values[lst.Names[i]]);
   Finally
     lst.Free();
   End;

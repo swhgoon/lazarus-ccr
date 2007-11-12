@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="16"/>
+      <ActiveEditorIndexAtStart Value="15"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -27,7 +27,7 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="74">
+    <Units Count="72">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -40,12 +40,12 @@
         <Filename Value="testformatter_unit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="testformatter_unit"/>
-        <CursorPos X="57" Y="195"/>
-        <TopLine Value="181"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
-          <Item0 X="17" Y="1060" ID="3"/>
+          <Item0 X="17" Y="1105" ID="3"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit1>
@@ -69,8 +69,8 @@
         <Filename Value="..\..\base_binary_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_binary_formatter"/>
-        <CursorPos X="3" Y="1358"/>
-        <TopLine Value="1346"/>
+        <CursorPos X="1" Y="463"/>
+        <TopLine Value="448"/>
         <EditorIndex Value="14"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -79,8 +79,8 @@
         <Filename Value="..\..\base_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="3" Y="152"/>
-        <TopLine Value="152"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="13"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="2">
@@ -93,8 +93,8 @@
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_soap_formatter"/>
-        <CursorPos X="92" Y="1568"/>
-        <TopLine Value="1561"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -176,7 +176,7 @@
         <UnitName Value="DOM"/>
         <CursorPos X="15" Y="429"/>
         <TopLine Value="413"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="1"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\..\server_service_intf.pas"/>
@@ -191,21 +191,21 @@
         <UnitName Value="service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="15"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\..\imp_utils.pas"/>
         <UnitName Value="imp_utils"/>
         <CursorPos X="1" Y="105"/>
         <TopLine Value="90"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="7"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\..\..\..\..\lazarusClean\fpc\2.0.4\source\fcl\xml\xmlread.pp"/>
         <UnitName Value="XMLRead"/>
         <CursorPos X="43" Y="13"/>
         <TopLine Value="1"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="1"/>
       </Unit19>
       <Unit20>
         <Filename Value="test_parserdef.pas"/>
@@ -219,21 +219,21 @@
         <Filename Value="..\..\wst.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\test_fpc\interface_problem\interface_problem.pas"/>
         <UnitName Value="interface_problem"/>
         <CursorPos X="1" Y="10"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_xmlrpc_formatter"/>
-        <CursorPos X="3" Y="1242"/>
-        <TopLine Value="1224"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="10"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -243,7 +243,7 @@
         <UnitName Value="PScanner"/>
         <CursorPos X="19" Y="505"/>
         <TopLine Value="491"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\..\ws_helper\pascal_parser_intf.pas"/>
@@ -251,7 +251,7 @@
         <CursorPos X="3" Y="174"/>
         <TopLine Value="165"/>
         <EditorIndex Value="9"/>
-        <UsageCount Value="46"/>
+        <UsageCount Value="58"/>
         <Loaded Value="True"/>
       </Unit25>
       <Unit26>
@@ -259,46 +259,46 @@
         <UnitName Value="PasTree"/>
         <CursorPos X="3" Y="75"/>
         <TopLine Value="68"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="5"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215\fpc\2.1.5\source\packages\fcl-xml\src\dom.pp"/>
         <UnitName Value="DOM"/>
         <CursorPos X="38" Y="225"/>
         <TopLine Value="203"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\dom.pp"/>
         <UnitName Value="DOM"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-base\src\inc\contnrs.pp"/>
         <UnitName Value="contnrs"/>
         <CursorPos X="3" Y="1376"/>
         <TopLine Value="1370"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\..\wst_delphi.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit30>
       <Unit31>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpash.inc"/>
         <CursorPos X="8" Y="142"/>
         <TopLine Value="197"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="4"/>
       </Unit31>
       <Unit32>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\objpas.inc"/>
         <CursorPos X="11" Y="333"/>
         <TopLine Value="375"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit32>
       <Unit33>
         <Filename Value="..\..\wst_fpc_xml.pas"/>
@@ -309,56 +309,50 @@
         <UsageCount Value="201"/>
       </Unit33>
       <Unit34>
-        <Filename Value="..\..\wst_global.inc"/>
-        <CursorPos X="3" Y="4"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="1"/>
-      </Unit34>
-      <Unit35>
         <Filename Value="test_utilities.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_utilities"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="49"/>
-        <EditorIndex Value="15"/>
-        <UsageCount Value="195"/>
+        <EditorIndex Value="16"/>
+        <UsageCount Value="207"/>
         <Loaded Value="True"/>
-      </Unit35>
-      <Unit36>
+      </Unit34>
+      <Unit35>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-fpcunit\src\fpcunit.pp"/>
         <UnitName Value="fpcunit"/>
         <CursorPos X="66" Y="231"/>
         <TopLine Value="231"/>
-        <UsageCount Value="3"/>
-      </Unit36>
-      <Unit37>
+        <UsageCount Value="1"/>
+      </Unit35>
+      <Unit36>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-fpcunit\src\testregistry.pp"/>
         <UnitName Value="testregistry"/>
         <CursorPos X="11" Y="32"/>
         <TopLine Value="17"/>
-        <UsageCount Value="5"/>
-      </Unit37>
-      <Unit38>
+        <UsageCount Value="3"/>
+      </Unit36>
+      <Unit37>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-fpcunit\src\DUnitCompatibleInterface.inc"/>
         <CursorPos X="21" Y="9"/>
         <TopLine Value="1"/>
-        <UsageCount Value="2"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="0"/>
+      </Unit37>
+      <Unit38>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\objpas\typinfo.pp"/>
         <UnitName Value="typinfo"/>
         <CursorPos X="53" Y="41"/>
         <TopLine Value="37"/>
-        <UsageCount Value="10"/>
-      </Unit39>
-      <Unit40>
+        <UsageCount Value="8"/>
+      </Unit38>
+      <Unit39>
         <Filename Value="..\..\ws_helper\wsdl2pas_imp.pas"/>
         <UnitName Value="wsdl2pas_imp"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="31"/>
-        <UsageCount Value="10"/>
-      </Unit40>
-      <Unit41>
+        <UsageCount Value="8"/>
+      </Unit39>
+      <Unit40>
         <Filename Value="..\..\type_lib_edtr\umoduleedit.pas"/>
         <ComponentName Value="fModuleEdit"/>
         <HasResources Value="True"/>
@@ -366,9 +360,9 @@
         <UnitName Value="umoduleedit"/>
         <CursorPos X="47" Y="21"/>
         <TopLine Value="18"/>
-        <UsageCount Value="10"/>
-      </Unit41>
-      <Unit42>
+        <UsageCount Value="8"/>
+      </Unit40>
+      <Unit41>
         <Filename Value="..\..\type_lib_edtr\ubindingedit.pas"/>
         <ComponentName Value="fBindingEdit"/>
         <HasResources Value="True"/>
@@ -376,9 +370,9 @@
         <UnitName Value="ubindingedit"/>
         <CursorPos X="41" Y="21"/>
         <TopLine Value="18"/>
-        <UsageCount Value="10"/>
-      </Unit42>
-      <Unit43>
+        <UsageCount Value="8"/>
+      </Unit41>
+      <Unit42>
         <Filename Value="..\..\type_lib_edtr\ufarrayedit.pas"/>
         <ComponentName Value="fArrayEdit"/>
         <HasResources Value="True"/>
@@ -386,9 +380,9 @@
         <UnitName Value="ufarrayedit"/>
         <CursorPos X="41" Y="9"/>
         <TopLine Value="5"/>
-        <UsageCount Value="10"/>
-      </Unit43>
-      <Unit44>
+        <UsageCount Value="8"/>
+      </Unit42>
+      <Unit43>
         <Filename Value="..\..\type_lib_edtr\uftypealiasedit.pas"/>
         <ComponentName Value="fTypeAliasEdit"/>
         <HasResources Value="True"/>
@@ -396,9 +390,9 @@
         <UnitName Value="uftypealiasedit"/>
         <CursorPos X="22" Y="9"/>
         <TopLine Value="7"/>
-        <UsageCount Value="10"/>
-      </Unit44>
-      <Unit45>
+        <UsageCount Value="8"/>
+      </Unit43>
+      <Unit44>
         <Filename Value="..\..\type_lib_edtr\ufrmsaveoption.pas"/>
         <ComponentName Value="frmSaveOptions"/>
         <HasResources Value="True"/>
@@ -406,326 +400,221 @@
         <UnitName Value="ufrmsaveoption"/>
         <CursorPos X="22" Y="9"/>
         <TopLine Value="6"/>
-        <UsageCount Value="10"/>
-      </Unit45>
-      <Unit46>
+        <UsageCount Value="8"/>
+      </Unit44>
+      <Unit45>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="38" Y="33"/>
         <TopLine Value="27"/>
-        <UsageCount Value="149"/>
-      </Unit46>
-      <Unit47>
+        <UsageCount Value="175"/>
+      </Unit45>
+      <Unit46>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\xmlread.pp"/>
         <UnitName Value="XMLRead"/>
         <CursorPos X="3" Y="1205"/>
         <TopLine Value="1203"/>
-        <UsageCount Value="8"/>
-      </Unit47>
-      <Unit48>
+        <UsageCount Value="6"/>
+      </Unit46>
+      <Unit47>
         <Filename Value="..\..\xmlrpc_formatter.pas"/>
         <UnitName Value="xmlrpc_formatter"/>
         <CursorPos X="1" Y="169"/>
         <TopLine Value="154"/>
-        <UsageCount Value="4"/>
-      </Unit48>
-      <Unit49>
+        <UsageCount Value="2"/>
+      </Unit47>
+      <Unit48>
         <Filename Value="..\..\record_rtti.pas"/>
         <UnitName Value="record_rtti"/>
         <CursorPos X="37" Y="276"/>
         <TopLine Value="265"/>
-        <UsageCount Value="8"/>
-      </Unit49>
-      <Unit50>
+        <UsageCount Value="6"/>
+      </Unit48>
+      <Unit49>
         <Filename Value="..\..\wst_rtl_imp.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit50>
-      <Unit51>
+        <UsageCount Value="8"/>
+      </Unit49>
+      <Unit50>
         <Filename Value="test_parsers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_parsers"/>
         <CursorPos X="50" Y="24"/>
         <TopLine Value="1"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="127"/>
+        <UsageCount Value="153"/>
         <Loaded Value="True"/>
-      </Unit51>
-      <Unit52>
+      </Unit50>
+      <Unit51>
         <Filename Value="..\..\ws_helper\xsd_parser.pas"/>
         <UnitName Value="xsd_parser"/>
         <CursorPos X="17" Y="190"/>
         <TopLine Value="188"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
-      </Unit52>
-      <Unit53>
+      </Unit51>
+      <Unit52>
         <Filename Value="..\..\ws_helper\parserutils.pas"/>
         <UnitName Value="parserutils"/>
         <CursorPos X="98" Y="94"/>
         <TopLine Value="71"/>
         <EditorIndex Value="8"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
-      </Unit53>
-      <Unit54>
+      </Unit52>
+      <Unit53>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-fpcunit\src\testregistry.pp"/>
         <UnitName Value="testregistry"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="18"/>
-        <UsageCount Value="2"/>
-      </Unit54>
-      <Unit55>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-fpcunit\src\DUnitCompatibleInterface.inc"/>
-        <CursorPos X="3" Y="120"/>
-        <TopLine Value="115"/>
-        <UsageCount Value="1"/>
-      </Unit55>
-      <Unit56>
+        <UsageCount Value="0"/>
+      </Unit53>
+      <Unit54>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-fpcunit\src\fpcunit.pp"/>
         <UnitName Value="fpcunit"/>
-        <CursorPos X="60" Y="449"/>
-        <TopLine Value="424"/>
-        <UsageCount Value="4"/>
-      </Unit56>
-      <Unit57>
-        <Filename Value="..\..\ws_helper\logger_intf.pas"/>
-        <UnitName Value="logger_intf"/>
-        <CursorPos X="85" Y="50"/>
-        <TopLine Value="35"/>
-        <UsageCount Value="1"/>
-      </Unit57>
-      <Unit58>
+        <CursorPos X="33" Y="438"/>
+        <TopLine Value="431"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit54>
+      <Unit55>
         <Filename Value="..\..\ws_helper\ws_parser_imp.pas"/>
         <UnitName Value="ws_parser_imp"/>
         <CursorPos X="14" Y="91"/>
         <TopLine Value="77"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
-      </Unit58>
-      <Unit59>
+      </Unit55>
+      <Unit56>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpash.inc"/>
         <CursorPos X="21" Y="151"/>
         <TopLine Value="129"/>
-        <UsageCount Value="4"/>
-      </Unit59>
-      <Unit60>
+        <UsageCount Value="2"/>
+      </Unit56>
+      <Unit57>
         <Filename Value="..\..\ws_helper\wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
         <CursorPos X="27" Y="146"/>
         <TopLine Value="124"/>
-        <UsageCount Value="107"/>
-      </Unit60>
-      <Unit61>
+        <UsageCount Value="133"/>
+      </Unit57>
+      <Unit58>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-xml\src\xmlread.pp"/>
         <UnitName Value="XMLRead"/>
         <CursorPos X="1" Y="1975"/>
         <TopLine Value="1963"/>
-        <UsageCount Value="3"/>
-      </Unit61>
-      <Unit62>
+        <UsageCount Value="1"/>
+      </Unit58>
+      <Unit59>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\inc\objpas.inc"/>
         <CursorPos X="11" Y="222"/>
         <TopLine Value="219"/>
-        <UsageCount Value="4"/>
-      </Unit62>
-      <Unit63>
+        <UsageCount Value="2"/>
+      </Unit59>
+      <Unit60>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-base\src\inc\contnrs.pp"/>
         <UnitName Value="contnrs"/>
         <CursorPos X="3" Y="701"/>
         <TopLine Value="698"/>
-        <UsageCount Value="4"/>
-      </Unit63>
-      <Unit64>
+        <UsageCount Value="2"/>
+      </Unit60>
+      <Unit61>
         <Filename Value="..\..\ws_helper\xsd_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_generator"/>
         <CursorPos X="3" Y="81"/>
         <TopLine Value="261"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="116"/>
         <Loaded Value="True"/>
-      </Unit64>
-      <Unit65>
+      </Unit61>
+      <Unit62>
         <Filename Value="..\..\ws_helper\xsd_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_consts"/>
         <CursorPos X="8" Y="78"/>
         <TopLine Value="51"/>
-        <UsageCount Value="89"/>
-      </Unit65>
-      <Unit66>
+        <UsageCount Value="115"/>
+      </Unit62>
+      <Unit63>
         <Filename Value="..\..\ws_helper\wsdl_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_parser"/>
         <CursorPos X="28" Y="845"/>
         <TopLine Value="835"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="48"/>
         <Loaded Value="True"/>
-      </Unit66>
-      <Unit67>
+      </Unit63>
+      <Unit64>
         <Filename Value="..\..\base_json_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_json_formatter"/>
-        <CursorPos X="58" Y="112"/>
-        <TopLine Value="99"/>
+        <CursorPos X="3" Y="361"/>
+        <TopLine Value="359"/>
         <EditorIndex Value="11"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
-      </Unit67>
-      <Unit68>
+      </Unit64>
+      <Unit65>
         <Filename Value="..\..\fcl-json\src\fpjson.pp"/>
         <UnitName Value="fpjson"/>
-        <CursorPos X="3" Y="265"/>
-        <TopLine Value="296"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="330"/>
         <EditorIndex Value="12"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
-      </Unit68>
-      <Unit69>
+      </Unit65>
+      <Unit66>
         <Filename Value="..\..\wst_types.pas"/>
         <UnitName Value="wst_types"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="13"/>
-        <UsageCount Value="6"/>
-      </Unit69>
-      <Unit70>
+        <UsageCount Value="4"/>
+      </Unit66>
+      <Unit67>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\rtl\inc\systemh.inc"/>
         <CursorPos X="3" Y="389"/>
         <TopLine Value="375"/>
-        <UsageCount Value="6"/>
-      </Unit70>
-      <Unit71>
+        <UsageCount Value="4"/>
+      </Unit67>
+      <Unit68>
         <Filename Value="..\..\..\..\..\..\lazarus_23_215XX\fpc\source\packages\fcl-xml\src\xmlwrite.pp"/>
         <UnitName Value="XMLWrite"/>
         <CursorPos X="9" Y="609"/>
         <TopLine Value="586"/>
-        <UsageCount Value="16"/>
-      </Unit71>
-      <Unit72>
+        <UsageCount Value="14"/>
+      </Unit68>
+      <Unit69>
         <Filename Value="..\..\library_imp_utils.pas"/>
         <UnitName Value="library_imp_utils"/>
-        <CursorPos X="2" Y="31"/>
+        <CursorPos X="82" Y="43"/>
         <TopLine Value="19"/>
-        <EditorIndex Value="16"/>
-        <UsageCount Value="11"/>
+        <EditorIndex Value="17"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
-      </Unit72>
-      <Unit73>
+      </Unit69>
+      <Unit70>
         <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\win\dynlibs.inc"/>
         <CursorPos X="1" Y="26"/>
         <TopLine Value="9"/>
-        <UsageCount Value="10"/>
-      </Unit73>
+        <UsageCount Value="8"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-xml\src\dom.pp"/>
+        <UnitName Value="DOM"/>
+        <CursorPos X="22" Y="351"/>
+        <TopLine Value="336"/>
+        <UsageCount Value="9"/>
+      </Unit71>
     </Units>
-    <JumpHistory Count="25" HistoryIndex="24">
-      <Position1>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="26" Column="19" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="72" Column="52" TopLine="48"/>
-      </Position2>
-      <Position3>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="184" Column="38" TopLine="179"/>
-      </Position3>
-      <Position4>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="72" Column="24" TopLine="72"/>
-      </Position4>
-      <Position5>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="172" Column="23" TopLine="170"/>
-      </Position5>
-      <Position6>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="84" Column="1" TopLine="63"/>
-      </Position6>
-      <Position7>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="28" Column="1" TopLine="12"/>
-      </Position7>
-      <Position8>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="50" Column="25" TopLine="35"/>
-      </Position8>
-      <Position9>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="84" Column="15" TopLine="64"/>
-      </Position9>
-      <Position10>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="11" Column="5" TopLine="10"/>
-      </Position10>
-      <Position11>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="185" Column="21" TopLine="170"/>
-      </Position11>
-      <Position12>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="198" Column="56" TopLine="179"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="90" Column="25" TopLine="62"/>
-      </Position13>
-      <Position14>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="107" Column="35" TopLine="93"/>
-      </Position14>
-      <Position15>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="109" Column="3" TopLine="107"/>
-      </Position15>
-      <Position16>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="116" Column="3" TopLine="114"/>
-      </Position16>
-      <Position17>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="638" Column="1" TopLine="610"/>
-      </Position17>
-      <Position18>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="633" Column="26" TopLine="610"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="94" Column="62" TopLine="87"/>
-      </Position19>
-      <Position20>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="619" Column="1" TopLine="585"/>
-      </Position20>
-      <Position21>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="652" Column="5" TopLine="618"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="151" Column="4" TopLine="140"/>
-      </Position22>
-      <Position23>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="619" Column="1" TopLine="585"/>
-      </Position23>
-      <Position24>
-        <Filename Value="test_utilities.pas"/>
-        <Caret Line="647" Column="9" TopLine="623"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\..\library_imp_utils.pas"/>
-        <Caret Line="51" Column="18" TopLine="40"/>
-      </Position25>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -763,11 +652,15 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="1">
+    <BreakPoints Count="2">
       <Item1>
         <Source Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-xml\src\xmlread.pp"/>
         <Line Value="1975"/>
       </Item1>
+      <Item2>
+        <Source Value="testformatter_unit.pas"/>
+        <Line Value="2979"/>
+      </Item2>
     </BreakPoints>
     <Watches Count="2">
       <Item1>

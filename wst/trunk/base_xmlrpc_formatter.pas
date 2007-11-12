@@ -57,7 +57,7 @@ const
     'string', 'int', 'boolean', 'double', 'dateTime.iso8601', 'base64',
     'struct', 'array'
   );
-  
+
 type
   { ESOAPException }
 
@@ -65,7 +65,7 @@ type
   end;
 
   TFoundState = ( fsNone, fsFoundNonNil, fsFoundNil );
-  
+
   { TStackItem }
 
   TStackItem = class
@@ -87,6 +87,8 @@ type
     property ScopeType : TScopeType Read FScopeType;
     property ItemsCount : Integer read GetItemsCount;
     property FoundState : TFoundState read FFoundState;
+
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;virtual;abstract;
   end;
 
   { TObjectStackItem }
@@ -98,21 +100,36 @@ type
       Const AName     : string;
       const ADataType : TXmlRpcDataType
     ):TDOMNode;override;
+
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;override;
+  end;
+
+  TBaseArrayStackItem = class(TStackItem)
+  private
+    FItemList : TDOMNodeList;
+    FIndex : Integer;
+    FIndexStack : array of Integer;
+    FIndexStackIDX : Integer;
+  private
+    function PushIndex(const AValue : Integer) : Integer;
+    function PopIndex() : Integer;
+  public
+    destructor Destroy();override;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;override;
   end;
 
   { TArrayStackItem }
 
-  TArrayStackItem = class(TStackItem)
+  TArrayStackItem = class(TBaseArrayStackItem)
   private
-    FItemList : TDOMNodeList;
-    FIndex : Integer;
     FDataScope : TDOMNode;
   protected
     procedure EnsureListCreated();
     function GetItemsCount() : Integer;override;
     function CreateList():TDOMNodeList;
+    function PushIndex(const AValue : Integer) : Integer;
+    function PopIndex() : Integer;
   public
-    destructor Destroy();override;
     function FindNode(var ANodeName : string):TDOMNode;override;
     function CreateBuffer(
       Const AName     : string;
@@ -122,16 +139,12 @@ type
 
   { TParamsArrayStackItem }
 
-  TParamsArrayStackItem = class(TStackItem)
-  private
-    FItemList : TDOMNodeList;
-    FIndex : Integer;
+  TParamsArrayStackItem = class(TBaseArrayStackItem)
   protected
     procedure EnsureListCreated();
     function GetItemsCount() : Integer;override;
     function CreateList():TDOMNodeList;
   public
-    destructor Destroy();override;
     function FindNode(var ANodeName : string):TDOMNode;override;
     function CreateBuffer(
       Const AName     : string;
@@ -287,6 +300,7 @@ type
   public
     constructor Create();override;
     destructor Destroy();override;
+    function GetFormatName() : string;
     procedure Clear();
 
     procedure BeginObject(
@@ -340,6 +354,7 @@ type
       var   AData
     );
     function ReadBuffer(const AName : string) : string;
+    procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -444,6 +459,35 @@ begin
   nd.AppendChild(Result);
 end;
 
+function TObjectStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+var
+  memberNode, tmpNode : TDOMNode;
+  i : Integer;
+  chilNodes : TDOMNodeList;
+begin
+  AReturnList.Clear();
+  if ScopeObject.HasChildNodes() then begin
+    memberNode := ScopeObject.FirstChild;
+    while ( memberNode <> nil ) do begin
+      if memberNode.HasChildNodes() then begin
+        chilNodes := memberNode.ChildNodes;
+        for i := 0 to Pred(GetNodeListCount(chilNodes)) do begin
+          tmpNode := chilNodes.Item[i];
+          if AnsiSameText(sNAME,tmpNode.NodeName) then begin
+            if ( tmpNode.FirstChild <> nil ) then
+              AReturnList.Add(tmpNode.FirstChild.NodeValue)
+            else
+              AReturnList.Add('');
+            Break;
+          end;
+        end;
+      end;
+      memberNode := memberNode.NextSibling;
+    end;
+  end;
+  Result := AReturnList.Count;
+end;
+
 { TArrayStackItem }
 
 procedure TArrayStackItem.EnsureListCreated();
@@ -470,13 +514,6 @@ begin
   end else begin
     Result := nil;
   end;
-end;
-
-destructor TArrayStackItem.Destroy();
-begin
-  if Assigned(FItemList) then
-    ReleaseDomNode(FItemList);
-  inherited Destroy();
 end;
 
 function TArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
@@ -514,6 +551,26 @@ begin
   FDataScope.AppendChild(nd);
   Result := ScopeObject.OwnerDocument.CreateElement(XmlRpcDataTypeNames[ADataType]);
   nd.AppendChild(Result);
+end;
+
+function TArrayStackItem.PushIndex(const AValue: Integer): Integer;
+begin
+  if ( FIndexStackIDX = Length(FIndexStack) ) then begin
+    if ( Length(FIndexStack) = 0 ) then
+      FIndexStackIDX := -1;
+    SetLength(FIndexStack, Length(FIndexStack) + 4);
+  end;
+  Result := FIndex;
+  Inc(FIndexStackIDX);
+  FIndexStack[FIndexStackIDX] := AValue;
+end;
+
+function TArrayStackItem.PopIndex() : Integer;
+begin
+  if ( Length(FIndexStack) = 0 ) or ( FIndexStackIDX < 0 ) then
+    raise EXmlRpcException.Create('TArrayStackItem.PopIndex() >> No saved index.');
+  FIndex := FIndexStack[FIndexStackIDX];
+  Dec(FIndexStackIDX);
 end;
 
 { TXmlRpcBaseFormatter }
@@ -564,10 +621,10 @@ begin
   Result := InternalBeginScopeRead(AScopeName,ATypeInfo,stArray,AStyle,AItemName);
 end;
 
-function TXmlRpcBaseFormatter.GetScopeItemNames(const AReturnList : TStrings
-  ) : Integer;
+function TXmlRpcBaseFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;
 begin
-
+  CheckScope();
+  Result := StackTop.GetScopeItemNames(AReturnList);
 end;
 
 procedure TXmlRpcBaseFormatter.EndScopeRead();
@@ -858,16 +915,11 @@ procedure TXmlRpcBaseFormatter.GetFloat(
   var AData        : Extended
 );
 begin
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
-    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
-  {$ELSE}
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0);
-  {$ENDIF}
+{$IFDEF HAS_FORMAT_SETTINGS}
+  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
 {$ELSE}
-    AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
-{$ENDIF}
-  //AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+  AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(GetNodeValue(AName))),0);
+{$ENDIF HAS_FORMAT_SETTINGS}
 end;
 
 procedure TXmlRpcBaseFormatter.GetStr(
@@ -1375,16 +1427,11 @@ begin
       end;
     tkFloat :
       begin
-{$IFDEF FPC}
-  {$IFDEF FPC_211}
+{$IFDEF HAS_FORMAT_SETTINGS}
         floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
-  {$ELSE}
-        floatDt := StrToFloatDef(Trim(dataBuffer),0);
-  {$ENDIF}
 {$ELSE}
-        floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
-{$ENDIF}
-        //floatDt := StrToFloatDef(Trim(dataBuffer),0,wst_FormatSettings);
+        floatDt := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(dataBuffer)),0);        
+{$ENDIF HAS_FORMAT_SETTINGS}
         case GetTypeData(ATypeInfo)^.FloatType of
           ftSingle    : Single(AData)        := floatDt;
           ftDouble    : Double(AData)        := floatDt;
@@ -1440,7 +1487,30 @@ procedure TXmlRpcBaseFormatter.Error(const AMsg: string;const AArgs: array of co
 begin
   Raise EXmlRpcException.CreateFmt(AMsg,AArgs);
 end;
+                 
+function TXmlRpcBaseFormatter.GetFormatName() : string;
+begin
+  Result := sPROTOCOL_NAME;
+end;
 
+procedure TXmlRpcBaseFormatter.WriteBuffer(const AValue: string);
+var
+  strm : TStringStream;
+  locDoc : TwstXMLDocument;
+  locNode : TDOMNode;
+begin
+  CheckScope();
+  locDoc := nil;
+  strm := TStringStream.Create(AValue);
+  try
+    ReadXMLFile(locDoc,strm);
+    locNode := locDoc.DocumentElement.CloneNode(True {$IFDEF FPC}, StackTop().ScopeObject.OwnerDocument{$ENDIF});
+    StackTop().ScopeObject.AppendChild(locNode);
+  finally
+    ReleaseDomNode(locDoc);
+    strm.Free();
+  end;
+end;
 
 { TParamsArrayStackItem }
 
@@ -1468,13 +1538,6 @@ begin
   end else begin
     Result := nil;
   end;
-end;
-
-destructor TParamsArrayStackItem.Destroy();
-begin
-  if Assigned(FItemList) then
-    ReleaseDomNode(FItemList);
-  inherited Destroy();
 end;
 
 function TParamsArrayStackItem.FindNode(var ANodeName: string): TDOMNode;
@@ -1509,6 +1572,57 @@ begin
   prmNode.AppendChild(valueNode);
   Result := ScopeObject.OwnerDocument.CreateElement(XmlRpcDataTypeNames[ADataType]);
   valueNode.AppendChild(Result);
+end;
+
+{ TBaseArrayStackItem }
+
+destructor TBaseArrayStackItem.Destroy;
+begin
+  SetLength(FIndexStack,0);
+  if Assigned(FItemList) then
+    ReleaseDomNode(FItemList);
+  inherited Destroy();
+end;
+
+function TBaseArrayStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+var
+  i : Integer;
+  locName : string;
+begin
+  AReturnList.Clear();
+  PushIndex(0);
+  try
+    locName := '';
+    for i := 0 to Pred(GetItemsCount()) do begin
+      FindNode(locName);
+      AReturnList.Add(locName);
+    end;
+  finally
+    PopIndex();
+  end;
+  Result := AReturnList.Count;
+end;
+
+function TBaseArrayStackItem.PopIndex() : Integer;
+begin
+  if ( Length(FIndexStack) = 0 ) or ( FIndexStackIDX < 0 ) then
+    raise EXmlRpcException.Create('TArrayStackItem.PopIndex() >> No saved index.');
+  Result := FIndex;
+  FIndex := FIndexStack[FIndexStackIDX];
+  Dec(FIndexStackIDX);
+end;
+
+function TBaseArrayStackItem.PushIndex(const AValue: Integer): Integer;
+begin
+  if ( FIndexStackIDX = Length(FIndexStack) ) then begin
+    if ( Length(FIndexStack) = 0 ) then
+      FIndexStackIDX := -1;
+    SetLength(FIndexStack, Length(FIndexStack) + 4);
+  end;
+  Inc(FIndexStackIDX);
+  Result := FIndex;
+  FIndex := AValue;
+  FIndexStack[FIndexStackIDX] := Result;
 end;
 
 end.

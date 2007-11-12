@@ -21,6 +21,7 @@ uses
 {$DEFINE wst_binary_header}
   
 const
+  sBINARY_FORMAT_NAME = 'wst-binary';
   sROOT   = 'ROOT';
   sSCOPE_INNER_NAME = 'INNER_VAL';
   sFORMAT = 'format';
@@ -123,6 +124,8 @@ type
     function IsCurrentScopeNil():Boolean;virtual;abstract;
     property ScopeObject : PDataBuffer Read FScopeObject;
     property ScopeType : TScopeType Read FScopeType;
+
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;virtual;abstract;
   End;
 
   { TObjectStackItem }
@@ -141,6 +144,7 @@ type
     function GetInnerBuffer():PDataBuffer;override;
     procedure NilCurrentScope();override;
     function IsCurrentScopeNil():Boolean;override;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;override;
   End;
 
   { TArrayStackItem }
@@ -161,6 +165,7 @@ type
     function GetInnerBuffer():PDataBuffer;overload;override;
     procedure NilCurrentScope();override;
     function IsCurrentScopeNil():Boolean;override;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer;override;
   End;
 
   { TBaseBinaryFormatter }
@@ -272,7 +277,8 @@ type
   public
     constructor Create();override;
     destructor Destroy();override;
-
+    function GetFormatName() : string;
+    
     procedure Clear();
 
     procedure BeginObject(
@@ -327,6 +333,7 @@ type
       var   AData
     );
     function ReadBuffer(const AName : string) : string;
+    procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
@@ -776,6 +783,21 @@ begin
 end;
 
 //----------------------------------------------------------------
+function TObjectStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+var
+  locBuffer : PObjectBufferItem;
+begin
+  AReturnList.Clear();
+  if Assigned(ScopeObject) and ( ScopeObject^.ObjectData^.Count > 0 ) then begin
+    locBuffer := ScopeObject^.ObjectData^.Head;
+    while Assigned(locBuffer) do begin
+      AReturnList.Add(locBuffer^.Data^.Name);
+      locBuffer := locBuffer^.Next;
+    end;
+  end;
+  Result := AReturnList.Count;
+end;
+
 { TBaseBinaryFormatter }
 
 procedure TBaseBinaryFormatter.ClearStack();
@@ -1122,10 +1144,10 @@ begin
   Result := StackTop().GetItemCount();
 end;
 
-function TBaseBinaryFormatter.GetScopeItemNames(const AReturnList : TStrings
-  ) : Integer;
+function TBaseBinaryFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;
 begin
-
+  CheckScope();
+  Result := StackTop.GetScopeItemNames(AReturnList);
 end;
 
 procedure TBaseBinaryFormatter.EndScopeRead();
@@ -1600,6 +1622,29 @@ begin
   inherited Destroy();
 end;
 
+function TBaseBinaryFormatter.GetFormatName() : string;
+begin
+  Result := sBINARY_FORMAT_NAME;
+end;
+
+procedure TBaseBinaryFormatter.WriteBuffer(const AValue: string);
+var
+  locStore : IDataStoreReader;
+  bffr : PDataBuffer;
+  locStream : TStringStream;
+begin
+  CheckScope();
+  locStream := TStringStream.Create(AValue);
+  try
+    locStream.Position := 0;
+    locStore := CreateBinaryReader(locStream);
+    bffr := LoadObjectFromStream(locStore);
+    AddObj(StackTop.ScopeObject,bffr);
+  finally
+    locStream.Free();
+  end;
+end;
+
 { TArrayStackItem }
 
 constructor TArrayStackItem.Create(const AScopeObject: PDataBuffer);
@@ -1660,6 +1705,21 @@ end;
 function TArrayStackItem.IsCurrentScopeNil(): Boolean;
 begin
   Result := False;
+end;
+
+function TArrayStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+var
+  locBuffer : PDataBufferList;
+  i : PtrInt;
+begin
+  AReturnList.Clear();
+  if Assigned(ScopeObject) and ( ScopeObject^.ArrayData^.Count > 0 ) then begin
+    locBuffer := ScopeObject^.ArrayData^.Items;
+    for i := 0 to Pred(ScopeObject^.ArrayData^.Count) do begin
+      AReturnList.Add(locBuffer^[i]^.Name);
+    end;
+  end;
+  Result := AReturnList.Count;
 end;
 
 end.

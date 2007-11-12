@@ -30,6 +30,9 @@ type
 
   TTestEnum = ( teOne, teTwo, teThree, teFour );
 
+  TArrayOfStringRemotableSample = class(TArrayOfStringRemotable)
+  end;
+
   { TClass_A }
 
   TClass_A = class(TBaseComplexRemotable)
@@ -334,59 +337,65 @@ type
   
   { TTestFormatter }
 
-  TTestFormatter= class(TTestFormatterSimpleType)
+  TTestFormatter = class(TTestFormatterSimpleType)
+  protected
+    class function GetFormaterName() : string;virtual;abstract;
   published
     procedure Test_Int_WithClass;
-    
+
     procedure Test_Float_WithClass;
 
     procedure Test_Enum_Bool_String_WithClass;
-    
+
     procedure Test_CplxInt64SimpleContent_WithClass;
     procedure Test_CplxInt32SimpleContent_WithClass;
     procedure Test_CplxInt16SimpleContent_WithClass;
     procedure Test_CplxInt8SimpleContent_WithClass;
-    
+
     procedure Test_CplxFloatExtendedSimpleContent_WithClass;
     procedure Test_CplxStringSimpleContent_WithClass;
-    
+
     procedure Test_Object();
     procedure Test_Object_Nil();
     procedure Test_StringArray();
     procedure Test_StringArray_Embedded();
     procedure Test_StringArrayZeroLength();
     procedure Test_BooleanArray();
-    
+
     procedure Test_Int8UArray();
     procedure Test_Int8SArray();
-    
+
     procedure Test_Int16SArray();
     procedure Test_Int16UArray();
-    
+
     procedure Test_Int32UArray();
     procedure Test_Int32SArray();
-    
+
     procedure Test_Int64SArray();
     procedure Test_Int64UArray();
-    
+
     procedure Test_FloatSingleArray();
     procedure Test_FloatDoubleArray();
     procedure Test_FloatExtendedArray();
     procedure Test_FloatCurrencyArray();
-    
+
     procedure  Test_ComplexInt32S();
-    
+
     procedure Test_Record_simple();
     procedure Test_Record_nested();
-    
+
     procedure test_GetScopeItemNames();
+    procedure test_GetFormaterName();
   end;
 
   { TTestBinaryFormatter }
 
   TTestBinaryFormatter= class(TTestFormatter)
   protected
+    class function GetFormaterName() : string;override;
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
+  published
+    procedure test_WriteBuffer();
   end;
 
   { TTestBinaryFormatterAttributes }
@@ -400,7 +409,10 @@ type
 
   TTestSOAPFormatter= class(TTestFormatter)
   protected
+    class function GetFormaterName() : string;override;
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
+  published
+    procedure test_WriteBuffer();
   end;
 
   { TTestSOAPFormatterAttributes }
@@ -416,12 +428,15 @@ type
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
   end;
-  
+
   TTestXmlRpcFormatter= class(TTestFormatter)
   protected
+    class function GetFormaterName() : string;override;
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
     function Support_ComplextType_with_SimpleContent():Boolean;override;
     function Support_nil():Boolean;override;
+  published
+    procedure test_WriteBuffer();
   end;
   
   { TTestArray }
@@ -529,6 +544,152 @@ uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_r
      , server_service_soap, soap_formatter,
      server_service_xmlrpc, xmlrpc_formatter,
      binary_streamer, server_binary_formatter, binary_formatter;
+
+function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;forward;
+
+function CompareObjectBuffers(const A,B : PObjectBuffer) : Boolean;overload;
+var
+  ca, cb : PObjectBufferItem;
+  ok : Boolean;
+begin
+  if ( A = nil ) and ( B = nil ) then begin
+    Result := True
+  end else if ( A <> nil ) and ( B <> nil ) then begin
+    if ( A^.NilObject = B^.NilObject ) and
+       ( A^.Count = B^.Count ) and
+       ( CompareNodes(A^.InnerData,B^.InnerData) )
+    then begin
+      if ( A^.Count > 0 ) then begin
+        ca := A^.Head;
+        cb := B^.Head;
+        while Assigned(ca) do begin
+          if not CompareNodes(ca^.Data,cb^.Data) then
+            Break;
+          ca := ca^.Next;
+          cb := cb^.Next;
+        end;
+        ok := ( ca = nil );
+      end else begin
+        ok := True;
+      end;
+    end else begin
+      ok := False;
+    end;
+    if ok then
+      Result := CompareObjectBuffers(A^.Attributes,B^.Attributes);
+  end else begin
+    Result := False;
+  end;
+end;
+
+function CompareObjectBuffers(const A,B : PArrayBuffer) : Boolean;overload;
+var
+  i : Integer;
+  ok : Boolean;
+begin
+  if ( A = nil ) and ( B = nil ) then begin
+    Result := ok
+  end else if ( A <> nil ) and ( B <> nil ) then begin
+    if ( A^.Count = B^.Count ) then begin
+      ok := True;
+      if ( A^.Count > 0 ) then begin
+        for i := 0 to Pred(A^.Count) do begin
+          if not CompareNodes(A^.Items^[i],B^.Items^[i]) then begin
+            ok := False;
+            Break;
+          end;
+        end;
+      end;
+      if ok then
+        ok := CompareObjectBuffers(A^.Attributes,B^.Attributes);
+    end else begin
+      ok := False;
+    end;
+  end else begin
+    Result := ok;
+  end;
+  Result := ok;
+end;
+
+function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;
+var
+  ca, cb : PObjectBufferItem;
+  i : PtrInt;
+  ok : Boolean;
+begin
+  if ( A = nil ) and ( B = nil ) then begin
+    ok := True;
+  end else if ( A <> nil ) and ( B <> nil ) then begin
+    ok := False;
+    if ( A^.DataType = B^.DataType ) and
+       ( A^.Name = B^.Name )
+    then begin
+      case A^.DataType of
+        dtInt8U,dtInt8S   : ok := ( A^.Int8U = A^.Int8U );
+        dtInt16U,dtInt16S : ok := ( A^.Int16U = A^.Int16U );
+        dtInt32U,dtInt32S : ok := ( A^.Int32U = A^.Int32U );
+        dtInt64U,dtInt64S : ok := ( A^.Int64U = A^.Int64U );
+        dtBool            : ok := ( A^.BoolData = A^.BoolData );
+        dtEnum            : ok := ( A^.EnumData = A^.EnumData );
+        dtSingle          : ok := ( A^.SingleData = A^.SingleData );
+        dtDouble          : ok := ( A^.DoubleData = A^.DoubleData );
+        dtExtended        : ok := ( A^.ExtendedData = A^.ExtendedData );
+        dtCurrency        : ok := ( A^.CurrencyData = A^.CurrencyData );
+        dtString          : ok := ( A^.StrData = A^.StrData );
+        dtObject          : ok := CompareObjectBuffers(A^.ObjectData,B^.ObjectData);
+        dtArray           : ok := CompareObjectBuffers(A^.ArrayData,B^.ArrayData);
+      end;
+    end;
+  end else begin
+    ok := False;
+  end;
+  Result := ok;
+end;
+
+function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
+var
+  ca, cb : TDOMNode;
+  i : PtrInt;
+begin
+  if ( A = nil ) and ( B = nil ) then begin
+    Result := True;
+  end else if ( A <> nil ) and ( B <> nil ) then begin
+    Result := False;
+    if ( A.NodeName = B.NodeName ) and
+       ( A.NodeValue = B.NodeValue )
+    then begin
+      if ( ( A.FirstChild = nil ) and ( B.FirstChild = nil ) ) or
+         ( ( A.FirstChild <> nil ) and ( B.FirstChild <> nil ) )
+      then begin
+        ca := a.FirstChild;
+        cb := b.FirstChild;
+        while ( ca <> nil ) do begin
+          if not CompareNodes(ca,cb) then
+            Exit;
+          ca := ca.NextSibling;
+          cb := cb.NextSibling;
+        end;
+        if ( ( A.Attributes = nil ) and ( B.Attributes = nil ) ) or
+           ( ( A.Attributes <> nil ) and ( B.Attributes <> nil ) )
+        then begin
+          if ( A.Attributes <> nil ) then begin
+            if ( A.Attributes.Length <> B.Attributes.Length ) then
+              Exit;
+            if ( A.Attributes.Length > 0 ) then begin
+              for i := 0 to Pred(A.Attributes.Length) do begin
+                if not CompareNodes(A.Attributes.Item[i],B.Attributes.Item[i]) then
+                  Exit;
+              end;
+            end;
+          end;
+          Result := True;
+        end;
+      end;
+    end;
+  end else begin
+    Result := False;
+  end;
+end;
 
 function TTestFormatterSimpleType.Support_ComplextType_with_SimpleContent( ): Boolean;
 begin
@@ -2717,10 +2878,12 @@ Var
   a, b : TClass_A;
   x : string;
   ls : TStringList;
+  intv : TArrayOfStringRemotableSample;
 begin
   ls := nil;
   s := Nil;
   b := nil;
+  intv := nil;
   a := TClass_A.Create();
   try
     a.Val_Bool := False;
@@ -2728,17 +2891,25 @@ begin
     a.Val_String := '123';
     a.Val_32S := 55;
     b := TClass_A.Create();
-    
+    intv := TArrayOfStringRemotableSample.Create();
+    intv.SetLength(3);
+    intv[0] := 'wst';
+    intv[1] := 'azerty';
+    intv[2] := 'qwerty';
+
     f := CreateFormatter(TypeInfo(TClass_A));
 
     f.BeginObject('Root',TypeInfo(TClass_A));
       f.Put('a',TypeInfo(TClass_A),a);
       f.Put('b',TypeInfo(TClass_A),b);
+      f.Put('intv',TypeInfo(TArrayOfStringRemotable),intv);
     f.EndScope();
 
     s := TMemoryStream.Create();
     f.SaveToStream(s);
     FreeAndNil(a);
+    FreeAndNil(b);
+    FreeAndNil(intv);
 
     ls := TStringList.Create();
     f := CreateFormatter(TypeInfo(TClass_A));
@@ -2746,13 +2917,37 @@ begin
     f.LoadFromStream(s);
     x := 'Root';
     f.BeginObjectRead(x,TypeInfo(TClass_A));
-      CheckEquals(0, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count()');
-      Check( ls.IndexOf('Val_Bool') >= 0 );
-      Check( ls.IndexOf('Val_Enum') >= 0 );
-      Check( ls.IndexOf('Val_String') >= 0 );
-      Check( ls.IndexOf('Val_32S') >= 0 );
+      CheckEquals(3, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(Root)');
+      Check( ls.IndexOf('a') >= 0 );
+      Check( ls.IndexOf('b') >= 0 );
+      Check( ls.IndexOf('intv') >= 0 );
+      x := 'a';
+      f.BeginObjectRead(x,TypeInfo(TClass_A));
+        CheckEquals(4, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
+        Check( ls.IndexOf('Val_Bool') >= 0 );
+        Check( ls.IndexOf('Val_Enum') >= 0 );
+        Check( ls.IndexOf('Val_String') >= 0 );
+        Check( ls.IndexOf('Val_32S') >= 0 );
+      f.EndScopeRead();
+
+      x := 'b';
+      f.BeginObjectRead(x,TypeInfo(TClass_A));
+        CheckEquals(4, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
+        Check( ls.IndexOf('Val_Bool') >= 0 );
+        Check( ls.IndexOf('Val_Enum') >= 0 );
+        Check( ls.IndexOf('Val_String') >= 0 );
+        Check( ls.IndexOf('Val_32S') >= 0 );
+      f.EndScopeRead();
+
+      x := 'intv';
+      f.BeginArrayRead(x,TypeInfo(TArrayOfStringRemotableSample),asScoped,'OI');
+        CheckEquals(3, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(intv)');
+        //Check( ls.IndexOf('OI') >= 0 );
+      f.EndScopeRead();
+
     f.EndScopeRead();
   finally
+    intv.Free();
     ls.Free();
     b.Free();;
     a.Free();
@@ -2769,12 +2964,104 @@ begin
   //Result.BeginObject('root',Nil);
 end;
 
+class function TTestBinaryFormatter.GetFormaterName(): string;
+begin
+  Result := 'wst-binary';
+end;
+
+procedure TTestBinaryFormatter.test_WriteBuffer();
+var
+  bw : IDataStore;
+  br : IDataStoreReader;
+  f : IFormatterBase;
+  strm : TStringStream;
+  a, b, tmp : PDataBuffer;
+  locBuffer : string;
+begin
+  a := CreateObjBuffer(dtObject,'a',nil);
+    CreateObjBuffer(dtString,'aa',a)^.StrData^.Data := 'val_aa';
+    tmp := CreateObjBuffer(dtObject,'b',a);
+      tmp := CreateObjBuffer(dtObject,'c',tmp);
+        CreateObjBuffer(dtInt32U,'i',tmp)^.Int32S := 1210;
+        CreateObjBuffer(dtString,'s',tmp)^.StrData^.Data := 's string sample';
+  b := nil;
+  strm := TStringStream.Create('');
+  try
+    bw := CreateBinaryWriter(strm);
+    SaveObjectToStream(a,bw);
+    strm.Position := 0;
+    locBuffer := strm.DataString;
+
+    f := TBaseBinaryFormatter.Create() as IFormatterBase;
+    //f.BeginObject('Root',TypeInfo(TClass_A)); //done in the constructor!
+      f.WriteBuffer(locBuffer);
+    //f.EndScope();
+    strm.Size := 0;
+    f.SaveToStream(strm);
+    strm.Position := 0;
+    br := CreateBinaryReader(strm);
+    b := LoadObjectFromStream(br);
+    Check(CompareNodes(a,b^.ObjectData^.Head^.Data));
+  finally
+    strm.Free();
+    ClearObj(a);
+    ClearObj(b);
+  end;
+end;
+
 { TTestSOAPFormatter }
 
 function TTestSOAPFormatter.CreateFormatter(ARootType : PTypeInfo):IFormatterBase;
 begin
   Result := TSOAPBaseFormatter.Create() as IFormatterBase;
   Result.BeginObject('Env',ARootType)
+end;
+
+class function TTestSOAPFormatter.GetFormaterName(): string;
+begin
+  Result := 'SOAP';
+end;
+
+procedure TTestSOAPFormatter.test_WriteBuffer();
+const
+  s_XML_BUFFER =
+    '<?xml version="1.0"?> ' +
+    '<a aa="val_aa"> ' +
+     ' <b> ' +
+       ' <c cc="cc_val"> ' +
+         ' <i>-76</i> ' +
+         ' <s>wst record sample</s> ' +
+       ' </c> ' +
+     ' </b> ' +
+    '</a>';
+var
+  f : IFormatterBase;
+  strm : TMemoryStream;
+  da, db : TXMLDocument;
+begin
+  f := TSOAPBaseFormatter.Create() as IFormatterBase;
+  f.BeginObject('Root',TypeInfo(TClass_A));
+    f.WriteBuffer(s_XML_BUFFER);
+  f.EndScope();
+  da := nil;
+  db := nil;
+  strm := TMemoryStream.Create();
+  try
+    f.SaveToStream(strm);
+    strm.Position := 0;
+    ReadXMLFile(da,strm);
+
+    strm.Size := 0;
+    strm.WriteBuffer(s_XML_BUFFER[1],Length(s_XML_BUFFER));
+    strm.Position := 0;
+    ReadXMLFile(db,strm);
+
+    Check(CompareNodes(da.DocumentElement.FirstChild,db.DocumentElement));
+  finally
+    ReleaseDomNode(da);
+    ReleaseDomNode(db);
+    strm.Free();
+  end;
 end;
 
 { TClass_B }
@@ -3399,6 +3686,11 @@ begin
   Result := TXmlRpcBaseFormatter.Create() as IFormatterBase;
 end;
 
+class function TTestXmlRpcFormatter.GetFormaterName(): string;
+begin
+  Result := 'XMLRPC';
+end;
+
 function TTestXmlRpcFormatter.Support_ComplextType_with_SimpleContent(): Boolean;
 begin
   Result := False;
@@ -3407,6 +3699,48 @@ end;
 function TTestXmlRpcFormatter.Support_nil(): Boolean;
 begin
   Result := False;
+end;
+
+procedure TTestXmlRpcFormatter.test_WriteBuffer();
+const
+  s_XML_BUFFER =
+    '<?xml version="1.0"?> ' +
+    '<a aa="val_aa"> ' +
+     ' <b> ' +
+       ' <c cc="cc_val"> ' +
+         ' <i>-76</i> ' +
+         ' <s>wst record sample</s> ' +
+       ' </c> ' +
+     ' </b> ' +
+    '</a>';
+var
+  f : IFormatterBase;
+  strm : TMemoryStream;
+  da, db : TXMLDocument;
+begin
+  f := TXmlRpcBaseFormatter.Create() as IFormatterBase;
+  f.BeginObject('Root',TypeInfo(TClass_A));
+    f.WriteBuffer(s_XML_BUFFER);
+  f.EndScope();
+  da := nil;
+  db := nil;
+  strm := TMemoryStream.Create();
+  try
+    f.SaveToStream(strm);
+    strm.Position := 0;
+    ReadXMLFile(da,strm);
+
+    strm.Size := 0;
+    strm.WriteBuffer(s_XML_BUFFER[1],Length(s_XML_BUFFER));
+    strm.Position := 0;
+    ReadXMLFile(db,strm);
+
+    Check(CompareNodes(da.DocumentElement.FirstChild,db.DocumentElement));
+  finally
+    ReleaseDomNode(da);
+    ReleaseDomNode(db);
+    strm.Free();
+  end;
 end;
 
 { TTest_SoapFormatterExceptionBlock }
@@ -3913,6 +4247,14 @@ begin
   end;
 end;
 
+procedure TTestFormatter.test_GetFormaterName();
+var
+  f : IFormatterBase;
+begin
+  f := CreateFormatter(TypeInfo(TClass_A));
+  CheckEquals(Self.GetFormaterName(),f.GetFormatName());
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -3927,16 +4269,20 @@ initialization
 
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16SContent),'T_ComplexInt16SContent');
     GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16UContent),'T_ComplexInt16UContent');
-    
+
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
-  
+
   TClass_CplxSimpleContent.RegisterAttributeProperty('Elt_Exemple');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');
 
   with GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TEmbeddedArrayOfStringRemotable),'TEmbeddedArrayOfStringRemotable') do begin
     RegisterExternalPropertyName(sARRAY_ITEM,'abc');
     RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  end;
+  with GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TArrayOfStringRemotableSample),'TArrayOfStringRemotableSample') do begin
+    RegisterExternalPropertyName(sARRAY_ITEM,'OI');
+    RegisterExternalPropertyName(sARRAY_STYLE,sScoped);
   end;
 
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TTestSmallRecord),'TTestSmallRecord').RegisterExternalPropertyName('__FIELDS__','fieldSmallint;fieldWord;fieldString');
