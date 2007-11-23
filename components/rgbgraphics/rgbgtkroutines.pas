@@ -54,13 +54,21 @@ procedure WidgetSetDrawRGB32Bitmap(Dest: HDC; DstX, DstY: Integer; SrcX, SrcY, S
 var
   P: TPoint;
 begin
-  P := GetDCOffset(TDeviceContext(Dest));
+  {$IFDEF GTK_POST_0924}
+  P := TGtkDeviceContext(Dest).Offset;
   Inc(DstX, P.X);
   Inc(DstY, P.Y);
-
+  gdk_draw_rgb_32_image(TGtkDeviceContext(Dest).Drawable, TGtkDeviceContext(Dest).GC,
+    DstX, DstY, SrcWidth, SrcHeight, GDK_RGB_DITHER_NONE,
+    Pguchar(Bitmap.GetPixelPtrUnsafe(SrcX, SrcY)), Bitmap.RowPixelStride shl 2);
+  {$ELSE}
+  P := GetDCOffset(TGtkDeviceContext(Dest));
+  Inc(DstX, P.X);
+  Inc(DstY, P.Y);
   gdk_draw_rgb_32_image(TDeviceContext(Dest).Drawable, TDeviceContext(Dest).GC,
     DstX, DstY, SrcWidth, SrcHeight, GDK_RGB_DITHER_NONE,
     Pguchar(Bitmap.GetPixelPtrUnsafe(SrcX, SrcY)), Bitmap.RowPixelStride shl 2);
+  {$ENDIF}
 end;
 
 procedure WidgetSetDrawRGB8Bitmap(Dest: HDC; DstX, DstY: Integer; SrcX, SrcY,
@@ -68,13 +76,21 @@ procedure WidgetSetDrawRGB8Bitmap(Dest: HDC; DstX, DstY: Integer; SrcX, SrcY,
 var
   P: TPoint;
 begin
+  {$IFDEF GTK_POST_0924}
+  P := TGtkDeviceContext(Dest).Offset;
+  Inc(DstX, P.X);
+  Inc(DstY, P.Y);
+  gdk_draw_gray_image(TGtkDeviceContext(Dest).Drawable, TGtkDeviceContext(Dest).GC,
+    DstX, DstY, SrcWidth, SrcHeight, GDK_RGB_DITHER_NONE,
+    Pguchar(Bitmap.Get8PixelPtrUnsafe(SrcX, SrcY)), Bitmap.RowPixelStride);
+  {$ELSE}
   P := GetDCOffset(TDeviceContext(Dest));
   Inc(DstX, P.X);
   Inc(DstY, P.Y);
-
   gdk_draw_gray_image(TDeviceContext(Dest).Drawable, TDeviceContext(Dest).GC,
     DstX, DstY, SrcWidth, SrcHeight, GDK_RGB_DITHER_NONE,
     Pguchar(Bitmap.Get8PixelPtrUnsafe(SrcX, SrcY)), Bitmap.RowPixelStride);
+  {$ENDIF}
 end;
 
 initialization

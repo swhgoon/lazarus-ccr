@@ -558,7 +558,7 @@ begin
   SwapInt(FWidth, ABitmap.FWidth);
   SwapInt(FHeight, ABitmap.FHeight);
   SwapInt(FRowPixelStride, ABitmap.FRowPixelStride);
-  SwapInt(FSizeOfPixel, ABitmap.SizeOfPixel);
+  SwapInt(FSizeOfPixel, ABitmap.FSizeOfPixel);
 end;
 
 function TRGBBitmapCore.GetPixelPtrUnsafe(X, Y: Integer): PRGBPixel;
