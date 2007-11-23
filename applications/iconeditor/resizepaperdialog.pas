@@ -198,11 +198,11 @@ begin
   SW := Max(1, Round(Picture.Width * FPreviewFactor));
   SH := Max(1, Round(Picture.Height * FPreviewFactor));
 
-  Preview.PaperColor := ColorButtonPaper.ButtonColor;
+  Preview.Color := ColorButtonPaper.ButtonColor;
   Preview.Picture.Free;
   Preview.Picture := TPictureBitmap.CreateAsCopy(Picture);
   Preview.Picture.StretchTrunc(SW, SH);
-  Preview.ResizePaper(W, H, TPicturePos(ComboBoxPicturePosition.ItemIndex));
+  //Preview.ResizePaper(W, H, TPicturePos(ComboBoxPicturePosition.ItemIndex));
 end;
 
 procedure TResizePaperDialogForm.Apply;

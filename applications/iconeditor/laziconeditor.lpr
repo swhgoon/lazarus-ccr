@@ -11,8 +11,10 @@ uses
   { add your units here }, main, Preview, PictureManager, PictureCtrls, Test, JPEGForLazarus,
   NewDialog, ResizeDialog, ResizePaperDialog, PictureDialog, AboutDialog,
   LazRGBGraphics, LazColorPalette;
-
+  
+{$IFDEF WINDOWS}
 {$R laziconeditor.res}
+{$ENDIF}
 
 begin
   Application.Title:='Lazarus Icon Editor';

@@ -1017,8 +1017,7 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="..\packages\LazRGBGraphics_svn\;..\packages\LazColorPalette\"/>
-      <UnitOutputDirectory Value="Units\$(LCLWidgetType)"/>
+      <UnitOutputDirectory Value="units\$(LCLWidgetType)"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
