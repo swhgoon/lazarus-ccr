@@ -285,8 +285,10 @@ type
     
     procedure UpdateToolSettings;
     procedure SelectTool(Tool: TPictureEditTool);
+    procedure ChangeTool(Tool: TPictureEditTool);
     procedure UpdatePictureToolsEnabled;
     procedure UpdatePreview;
+    procedure UpdateAll;
   public
     property ActivePicture: TPictureBitmap read GetActivePicture;
     property ActivePicturePage: TPicturePage read GetActivePicturePage;
@@ -387,7 +389,6 @@ begin
     ViewShowPreview.Checked := ActivePicturePage.ShowPreview;
     
     SelectTool(Tool);
-    UpdateToolSettings;
     
     PictureSizeChange(nil);
     PictureFileNameChange(nil);
@@ -396,14 +397,12 @@ end;
 
 procedure TMainForm.PictureChange(Sender: TObject);
 begin
-  UpdatePreview;
-  UpdatePictureToolsEnabled;
-  UpdateToolSettings;
+  FileSave.Enabled := Pictures.CanEdit and ActivePictureEdit.Modified;
 end;
 
 procedure TMainForm.PicturePageClose(Sender: TObject);
 begin
-  PictureChange(Sender);
+  UpdateAll;
 end;
 
 procedure TMainForm.PicturePageCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -453,15 +452,13 @@ end;
 procedure TMainForm.ToolColorPickClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptColorPick;
-  UpdateToolSettings;
+  ChangeTool(ptColorPick);
 end;
 
 procedure TMainForm.ToolEllipseClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptEllipse;
-  UpdateToolSettings;
+  ChangeTool(ptEllipse);
 end;
 
 procedure TMainForm.ToolFillClick(Sender: TObject);
@@ -479,22 +476,19 @@ end;
 procedure TMainForm.ToolFloodFillClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptFloodFill;
-  UpdateToolSettings;
+  ChangeTool(ptFloodFill);
 end;
 
 procedure TMainForm.ToolLineClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptLine;
-  UpdateToolSettings;
+  ChangeTool(ptLine);
 end;
 
 procedure TMainForm.ToolMaskClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptMask;
-  UpdateToolSettings;
+  ChangeTool(ptMask);
 end;
 
 procedure TMainForm.ToolMaskEllipseClick(Sender: TObject);
@@ -524,22 +518,19 @@ end;
 procedure TMainForm.ToolPenClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptPen;
-  UpdateToolSettings;
+  ChangeTool(ptPen);
 end;
 
 procedure TMainForm.ToolPolygonClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptPolygon;
-  UpdateToolSettings;
+  ChangeTool(ptPolygon);
 end;
 
 procedure TMainForm.ToolRectangleClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptRectangle;
-  UpdateToolSettings;
+  ChangeTool(ptRectangle);
 end;
 
 procedure TMainForm.ToolRectShapeClick(Sender: TObject);
@@ -551,15 +542,13 @@ end;
 procedure TMainForm.ToolEraserClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptEraser;
-  UpdateToolSettings;
+  ChangeTool(ptEraser);
 end;
 
 procedure TMainForm.ToolSprayClick(Sender: TObject);
 begin
   if not Pictures.CanEdit then Exit;
-  ActivePictureEdit.Tool := ptSpray;
-  UpdateToolSettings;
+  ChangeTool(ptSpray);
 end;
 
 procedure TMainForm.PictureMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -698,6 +687,13 @@ begin
     ptRectangle: ToolRectangle.Down := True;
     ptEllipse: ToolEllipse.Down := True;
   end;
+  ChangeTool(Tool);
+end;
+
+procedure TMainForm.ChangeTool(Tool: TPictureEditTool);
+begin
+  ActivePictureEdit.Tool := Tool;
+  UpdateToolSettings;
 end;
 
 procedure TMainForm.UpdatePictureToolsEnabled;
@@ -761,6 +757,13 @@ begin
   else PreviewForm.Hide;
 end;
 
+procedure TMainForm.UpdateAll;
+begin
+  UpdatePreview;
+  UpdatePictureToolsEnabled;
+  UpdateToolSettings;
+end;
+
 function TMainForm.GetActivePictureEdit: TPictureEdit;
 begin
   Result := Pictures.ActivePicturePage.PictureEdit;
@@ -776,6 +779,7 @@ var
   Settings: TToolSettings;
 begin
   if not Pictures.CanEdit then Exit;
+  
   case ActivePictureEdit.Tool of
   ptColorPick: Settings := [];
   ptMask: Settings := [tsMaskTools, tsTolerance];
@@ -788,9 +792,7 @@ begin
   ptSpray: Settings := [tsShape, tsSize, tsDensity];
   end;
   
-  PanelShape.Enabled := tsShape in Settings;
-  LabelShape.Enabled := tsShape in Settings;
-  
+  // PanelToolBar/PanelToolOptions
   PanelSize.Enabled := tsSize in Settings;
   LabelSize.Enabled := tsSize in Settings;
   
@@ -802,6 +804,10 @@ begin
   
   PanelTolerance.Enabled := tsTolerance in Settings;
   LabelTolerance.Enabled := tsTolerance in Settings;
+
+  // PanelToolbar/PanelOptions
+  PanelShape.Enabled := tsShape in Settings;
+  LabelShape.Enabled := tsShape in Settings;
   
   PanelFillOutline.Enabled := tsFillAndOutline in Settings;
   LabelFillOutline.Enabled := tsFillAndOutline in Settings;
