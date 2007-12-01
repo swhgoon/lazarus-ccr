@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLIntf,
   LCLType, LCLProc, FPImage, LResources, IntfGraphics,
-  Graphics, Forms, Math, Clipbrd,
+  GraphType, Graphics, Forms, Math, Clipbrd,
   RGBTypes, RGBRoutines, RGBUtils;
   
 
@@ -179,6 +179,8 @@ type
   private
     FCanvas: TRGB32Canvas;
     FMask: TRGBMask;
+  protected
+    function CreateDefaultLazIntfImage: TLazIntfImage;
   public
     constructor Create(AWidth, AHeight: Integer); override;
     constructor CreateAsCopy(ABitmap: TRGBBitmapCore); override;
@@ -239,6 +241,22 @@ end;
 
 { TRGB32Bitmap }
 
+function TRGB32Bitmap.CreateDefaultLazIntfImage: TLazIntfImage;
+var
+  RID: TRawImageDescription;
+  DC: HDC;
+begin
+  DC := GetDC(0);
+  try
+    RawImage_DescriptionFromDevice(DC, RID);
+  finally
+    ReleaseDC(0, DC);
+  end;
+
+  Result := TLazIntfImage.Create(0, 0);
+  Result.DataDescription := RID;
+end;
+
 constructor TRGB32Bitmap.Create(AWidth, AHeight: Integer);
 begin
   inherited;
@@ -267,7 +285,7 @@ var
   Image: TLazIntfImage;
   Reader: TFPCustomImageReader;
 begin
-  Image := TLazIntfImage.Create(0, 0);
+  Image := CreateDefaultLazIntfImage;
   Reader := GetFPImageReaderForFileExtension(ExtractFileExt(FileName)).Create;
   try
     Image.LoadFromFile(FileName, Reader);
@@ -338,7 +356,7 @@ var
   Image: TLazIntfImage;
   Writer: TFPCustomImageWriter;
 begin
-  Image := TLazIntfImage.Create(0, 0);
+  Image := CreateDefaultLazIntfImage;
   Writer := AWriterClass.Create;
   try
     SaveToLazIntfImage(Image, ARect);
@@ -354,7 +372,7 @@ var
   Image: TLazIntfImage;
   Writer: TFPCustomImageWriter;
 begin
-  Image := TLazIntfImage.Create(0, 0);
+  Image := CreateDefaultLazIntfImage;
   Writer := GetFPImageWriterForFileExtension(ExtractFileExt(FileName)).Create;
   try
     inherited SaveToLazIntfImage(Image);
@@ -441,7 +459,7 @@ var
 begin
   PixmapStream := TMemoryStream.Create;
   BitmapStream := TMemoryStream.Create;
-  Image := TLazIntfImage.Create(0, 0);
+  Image := CreateDefaultLazIntfImage;
   PixmapWriter := TPixmap.GetDefaultFPWriter.Create;
   BitmapWriter := TBitmap.GetDefaultFPWriter.Create;
   try

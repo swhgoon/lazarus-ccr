@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="LazRGBGraphics"/>
     <Author Value="Tom Gregorovic (_tom_@centrum.cz)"/>
@@ -29,7 +29,7 @@
 "/>
     <License Value="Modified LGPL
 "/>
-    <Version Minor="2"/>
+    <Version Minor="2" Release="1"/>
     <Files Count="7">
       <Item1>
         <Filename Value="rgbgraphics.pas"/>
@@ -65,11 +65,11 @@
     </Files>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
