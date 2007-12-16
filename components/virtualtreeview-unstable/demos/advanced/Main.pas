@@ -51,7 +51,6 @@ type
 var
   MainForm: TMainForm;
 
-procedure ConvertToHighColor(ImageList: TImageList);
 procedure LoadUnicodeStrings(Name: string; var Strings: array of WideString);
 procedure SetStatusbarText(const S: string);
 
@@ -63,30 +62,6 @@ uses
   SpeedDemo, GeneralAbilitiesDemo, DrawTreeDemo, PropertiesDemo,
   GridDemo, VisibilityDemo, AlignDemo, WindowsXPStyleDemo, MultilineDemo, HeaderCustomDrawDemo,
   States;
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure ConvertToHighColor(ImageList: TImageList);
-
-// To show smooth images we have to convert the image list from 16 colors to high color.
-
-var
-  IL: TImageList;
-
-begin
-  // Have to create a temporary copy of the given list, because the list is cleared on handle creation.
-  //todo
-  {
-  IL := TImageList.Create(nil);
-  IL.Assign(ImageList);
-
-  with ImageList do
-    Handle := ImageList_Create(Width, Height, ILC_COLOR16 or ILC_MASK, Count, AllocBy);
-  ImageList.Assign(IL);
-  IL.Free;
-  }
-end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -190,12 +165,22 @@ begin
 
     if Assigned(NewDemoClass) then
     begin
+      //original code:
+      {
       NewDemo := NewDemoClass.Create(Self);
       NewDemo.Hide;
-      //NewDemo.BorderStyle := bsNone;
+      NewDemo.BorderStyle := bsNone;
       NewDemo.Parent := ContainerPanel;
       NewDemo.Align := alClient;
       NewDemo.Show;
+      }
+      //workaround
+      NewDemo := NewDemoClass.Create(Self);
+      NewDemo.Hide;
+      //NewDemo.BorderStyle := bsNone;
+      NewDemo.Align := alClient;
+      NewDemo.Show;
+      NewDemo.Parent := ContainerPanel;
     end;
   end;
 end;

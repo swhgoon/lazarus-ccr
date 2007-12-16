@@ -21523,7 +21523,6 @@ const
   Style: array[TImageType] of Cardinal = (0, ILD_MASK);
 
 var
-  ExtraStyle: Cardinal;
   CutNode: Boolean;
   PaintFocused: Boolean;
   DrawEnabled: Boolean;
@@ -21554,13 +21553,6 @@ begin
       else
         Images.BlendColor := Color;
 
-      // If the user returned an index >= 15 then we cannot use the built-in overlay image drawing.
-      // Instead we do it manually.
-      if (ImageInfo[iiOverlay].Index > -1) and (ImageInfo[iiOverlay].Index < 15) then
-        ExtraStyle := ILD_TRANSPARENT or ILD_OVERLAYMASK and IndexToOverlayMask(ImageInfo[iiOverlay].Index + 1)
-      else
-        ExtraStyle := ILD_TRANSPARENT;
-
       // Blend image if enabled and the tree has the focus (or ghosted images must be drawn also if unfocused) ...
       if (toUseBlendedImages in FOptions.FPaintOptions) and PaintFocused
         // ... and the image is ghosted...
@@ -21571,24 +21563,22 @@ begin
         not (toGridExtensions in FOptions.FMiscOptions)) or
         // ... or the node must be shown in cut mode.
         CutNode) then
-        ExtraStyle := ExtraStyle or ILD_BLEND50;
+          Images.DrawingStyle := dsSelected
+        else
+          Images.DrawingStyle := dsNormal;
 
       if (vsSelected in Node.States) and not Ghosted then
         Images.BlendColor := clDefault;
-      //todo_lcl
-      //TCustomImageListCast(Images).DoDraw(Index, Canvas, XPos, YPos, Style[Images.ImageType] or ExtraStyle, DrawEnabled);
+
       Images.Draw(Canvas, XPos, YPos, Index);
 
-      // Now, draw the overlay. This circumnavigates limitations in the overlay mask index (it has to be 4 bits in size,
-      // anything larger will be truncated by the ILD_OVERLAYMASK).
-      // However this will only be done if the overlay image index is > 15, to avoid breaking code that relies
-      // on overlay image indices (e.g. when using system image lists).
-      if PaintInfo.ImageInfo[iiOverlay].Index >= 15 then
-        // Note: XPos and YPos are those of the normal images.
-        //todo_lcl
-        //TCustomImageListCast(ImageInfo[iiOverlay].Images).DoDraw(ImageInfo[iiOverlay].Index, Canvas, XPos, YPos,
-        //  Style[ImageInfo[iiOverlay].Images.ImageType] or ExtraStyle, DrawEnabled);
-        ImageInfo[iiOverlay].Images.Draw(Canvas, XPos, YPos,ImageInfo[iiOverlay].Index);
+      // Now, draw the overlay.
+      // Delphi version has the ability to use the built in overlay indices of windows system image lists
+      // Since this is system dependent the LCL version will support only custom overlays
+
+      // Note: XPos and YPos are those of the normal images.
+      if PaintInfo.ImageInfo[iiOverlay].Index >= 0 then
+        ImageInfo[iiOverlay].Images.Draw(Canvas, XPos, YPos, ImageInfo[iiOverlay].Index);
     end;
   end;
 end;

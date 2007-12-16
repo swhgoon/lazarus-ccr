@@ -138,8 +138,6 @@ begin
   with VST2.Header do
     for I := 0 to Columns.Count - 1 do
       Columns[I].Hint := Columns[I].Hint + #10 + '(Can show further information in hints too.)';
-
-  ConvertToHighColor(TreeImages);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

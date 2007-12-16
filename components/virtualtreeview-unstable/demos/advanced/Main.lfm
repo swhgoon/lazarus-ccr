@@ -1010,7 +1010,6 @@ object MainForm: TMainForm
         Top = 28
         Width = 73
         Caption = 'Demo picker'
-        Color = clNone
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
@@ -1022,7 +1021,6 @@ object MainForm: TMainForm
         Top = 44
         Width = 160
         Caption = 'Which demo do you want to see?'
-        Color = clNone
         ParentColor = False
       end
       object SpeedButton1: TSpeedButton

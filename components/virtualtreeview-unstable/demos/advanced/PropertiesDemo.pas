@@ -71,9 +71,6 @@ begin
   // Always tell the tree how much data space per node it must allocated for us. We can do this here, in the
   // object inspector or in the OnGetNodeDataSize event.
   VST3.NodeDataSize := SizeOf(TPropertyData);
-  // The VCL (D7 and lower) still uses 16 color image lists. We create a high color version explicitely because it
-  // looks so much nicer.
-  ConvertToHighColor(TreeImages);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

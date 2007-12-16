@@ -137,9 +137,6 @@ procedure TWindowsXPForm.FormCreate(Sender: TObject);
 
 begin
   XPTree.NodeDataSize := SizeOf(TEntry);
-  
-  ConvertToHighColor(LargeImages);
-  ConvertToHighColor(SmallImages);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

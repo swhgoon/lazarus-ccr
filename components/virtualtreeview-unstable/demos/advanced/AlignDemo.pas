@@ -277,10 +277,6 @@ var
  NewItem: TMenuItem;
 
 begin
-  // High color image lists look much better.
-  ConvertToHighColor(TreeImages);
-  ConvertToHighColor(HeaderImages);
-
   // To display the various texts in a nice manner we use some specialized fonts of the system.
   // We could directly assign the font names used here in the OnPaintText event, but since this
   // would then be the only reference for the font it would cause the font to be recreated every

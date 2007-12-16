@@ -20,7 +20,6 @@ object NodeForm: TNodeForm
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
     Caption = 'Since Virtual Treeview uses Unicode for text display it is not easy to provide multiline support on Windows 9x/Me systems. Under Windows NT (4.0, 2000, XP) there is support by the operation system and so full word breaking is possible there. Otherwise you have to insert line breaks manually to have multiline captions. Of course there is no difference in handling between multiline and single line nodes (except for the vertical alignment of the latter).'
-    Color = clNone
     ParentColor = False
     ShowAccelChar = False
     WordWrap = True
@@ -80,7 +79,7 @@ object NodeForm: TNodeForm
       Columns = <      
         item
           Position = 1
-          Width = 481
+          Width = 483
         end      
         item
         end>
@@ -88,9 +87,9 @@ object NodeForm: TNodeForm
   end
   object AutoAdjustCheckBox: TCheckBox
     Left = 12
-    Height = 24
-    Top = 397
-    Width = 355
+    Height = 19
+    Top = 402
+    Width = 240
     Anchors = [akLeft, akBottom]
     Caption = 'Automatically adjust node height to node text.'
     OnClick = AutoAdjustCheckBoxClick
