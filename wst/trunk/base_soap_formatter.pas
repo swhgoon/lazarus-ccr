@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs,
-  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
+  {$IFDEF WST_DELPHI}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
   base_service_intf;
 
 const
@@ -42,7 +42,7 @@ const
 
 type
 
-  TwstXMLDocument = {$IFNDEF FPC}wst_delphi_xml.TXMLDocument{$ELSE}TXMLDocument{$ENDIF};
+  TwstXMLDocument = {$IFDEF WST_DELPHI}wst_delphi_xml.TXMLDocument{$ELSE}TXMLDocument{$ENDIF};
 
   TEnumIntType = Int64;
 
@@ -358,7 +358,7 @@ type
 
 
 implementation
-Uses {$IFNDEF FPC}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
+Uses {$IFDEF WST_DELPHI}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
      StrUtils, imp_utils;
 
 { TStackItem }
@@ -409,7 +409,7 @@ end;
 
 function TObjectStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
   Result := wst_delphi_xml.FindNode(ScopeObject,ANodeName);
 {$ELSE}
   Result := ScopeObject.FindNode(ANodeName);
@@ -847,7 +847,7 @@ procedure TSOAPBaseFormatter.GetEnum(
 Var
   locBuffer : String;
 begin
-  locBuffer := Trim(GetNodeValue(AName));
+  locBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(GetNodeValue(AName));
   If IsStrEmpty(locBuffer) Then
     AData := 0
   Else
@@ -1429,7 +1429,7 @@ begin
     {$ENDIF}  
     tkInteger, tkEnumeration :
       begin
-      {$IFNDEF FPC}
+      {$IFDEF WST_DELPHI}
         if ( ATypeInfo^.Kind = tkEnumeration ) and
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
@@ -1450,7 +1450,7 @@ begin
             PutInt64(AName,ATypeInfo,enumData)
           Else
             PutEnum(AName,ATypeInfo,enumData);
-      {$IFNDEF FPC}
+      {$IFDEF WST_DELPHI}
         end;
       {$ENDIF}
       end;
@@ -1642,7 +1642,7 @@ begin
     {$ENDIF}
     tkInteger, tkEnumeration :
       begin
-      {$IFNDEF FPC}
+      {$IFDEF WST_DELPHI}
         if ( ATypeInfo^.Kind = tkEnumeration ) and
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
@@ -1664,7 +1664,7 @@ begin
             otSLong,
             otULong : LongInt(AData) := enumData;
           End;
-      {$IFNDEF FPC}
+      {$IFDEF WST_DELPHI}
         end;
       {$ENDIF}
       end;
@@ -1850,7 +1850,7 @@ end;
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
     Result := FilterList(ScopeObject.childNodes,ANodeName);
 {$ELSE}
     Result := {$IFNDEF FPC_211}TDOMNodeList{$ELSE}TDOMElementList{$ENDIF}.Create(ScopeObject,ANodeName);

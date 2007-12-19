@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs, syncobjs, semaphore, wst_types
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
   ,Windows
 {$ENDIF}
   ;
@@ -239,6 +239,7 @@ type
       var   AName     : String;
       const ATypeInfo : PTypeInfo
     );virtual;abstract;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;virtual;
   End;
 
   TAbstractSimpleRemotableClass = class of TAbstractSimpleRemotable;
@@ -265,6 +266,7 @@ type
     );override;
 
     procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
     property Data : string read FData write FData;
   end;
   
@@ -295,6 +297,7 @@ type
     class function ParseDate(const ABuffer : string):TDateTime;virtual;abstract;
 
     procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
 
     property AsDate : TDateTime read FDate write SetDate;
     property Year : Integer read FYear;
@@ -342,6 +345,7 @@ type
     class function IsAttributeProperty(const AProperty : shortstring):Boolean;
 
     procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
   end;
 
   TBaseComplexRemotableClass = class of TBaseComplexRemotable;
@@ -624,6 +628,7 @@ type
 
     constructor Create();override;
     procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
 
     procedure SetLength(Const ANewSize : Integer);override;
     Property Item[AIndex:Integer] : TBaseRemotable Read GetItem;Default;
@@ -680,6 +685,8 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
     property Item[AIndex:Integer] : ansistring read GetItem write SetItem; default;
   end;
 
@@ -704,6 +711,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Boolean read GetItem write SetItem; default;
   end;
 
@@ -728,6 +736,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Byte read GetItem write SetItem; default;
   end;
 
@@ -752,6 +761,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : ShortInt read GetItem write SetItem; default;
   end;
 
@@ -776,6 +786,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : SmallInt read GetItem write SetItem; default;
   end;
 
@@ -800,6 +811,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Word read GetItem write SetItem; default;
   end;
 
@@ -824,6 +836,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : LongWord read GetItem write SetItem; default;
   end;
 
@@ -848,6 +861,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : LongInt read GetItem write SetItem; default;
   end;
 
@@ -872,6 +886,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Int64 read GetItem write SetItem; default;
   end;
 
@@ -895,6 +910,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : QWord read GetItem write SetItem; default;
   end;
 
@@ -919,6 +935,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Single read GetItem write SetItem; default;
   end;
 
@@ -943,6 +960,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Double read GetItem write SetItem; default;
   end;
 
@@ -967,6 +985,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Extended read GetItem write SetItem; default;
   end;
 
@@ -991,6 +1010,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : Currency read GetItem write SetItem; default;
   end;
 
@@ -1458,6 +1478,11 @@ constructor TBaseRemotable.Create();
 begin
 end;
 
+function TBaseRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+begin
+  Result := ( Self = ACompareTo );
+end;
+
 { TBaseComplexRemotable }
 Type
   TEnumBuffer = Record
@@ -1665,7 +1690,7 @@ begin
         typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
-          pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
+          pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
           if IsStoredProp(AObject,p) then begin
             if IsAttributeProperty(p^.Name) then begin
               if ( ss <> ssAttibuteSerialization ) then
@@ -1702,7 +1727,7 @@ begin
               {$ENDIF}
               tkEnumeration,tkInteger :
                 begin
-                {$IFNDEF FPC}
+                {$IFDEF WST_DELPHI}
                   if ( pt^.Kind = tkEnumeration ) and
                      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                   then begin
@@ -1743,7 +1768,7 @@ begin
                           AStore.Put(prpName,pt,enumData.ULongIntData);
                         end;
                     end;
-                {$IFNDEF FPC}
+                {$IFDEF WST_DELPHI}
                   end;
                 {$ENDIF}
                 end;
@@ -1837,7 +1862,7 @@ begin
             p := propList^[i];
             persistType := IsStoredPropClass(objTypeData^.ClassType,p);
             If ( persistType in [pstOptional,pstAlways] ) Then Begin
-              pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
+              pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
               propName := typRegItem.GetExternalPropertyName(p^.Name);
               if IsAttributeProperty(p^.Name) then begin
                 ss := ssAttibuteSerialization;
@@ -1880,7 +1905,7 @@ begin
                     End;
                   tkEnumeration,tkInteger :
                     Begin
-                    {$IFNDEF FPC}
+                    {$IFDEF WST_DELPHI}
                       if ( pt^.Kind = tkEnumeration ) and
                          ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                       then begin
@@ -1922,7 +1947,7 @@ begin
                             End;
                         End;
                         SetOrdProp(AObject,p^.Name,int64Data);
-                    {$IFNDEF FPC}
+                    {$IFDEF WST_DELPHI}
                       end;
                     {$ENDIF}
                     End;
@@ -2100,6 +2125,32 @@ begin
     end;
   end else begin
     SetLength(0);
+  end;
+end;
+
+function TBaseObjectArrayRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+var
+  i, c : PtrInt;
+  dst : TBaseObjectArrayRemotable;
+begin
+  if ( Self = ACompareTo ) then begin
+    Result := True;
+  end else begin
+    Result := ( Assigned(ACompareTo) and
+                ACompareTo.InheritsFrom(TBaseObjectArrayRemotable) and
+                ( Self.Length = TBaseObjectArrayRemotable(ACompareTo).Length ) and
+                ( TBaseObjectArrayRemotable(ACompareTo).GetItemClass().InheritsFrom(Self.GetItemClass()) )
+              ) ;
+    if Result and ( Self.Length > 0 ) then begin
+      dst := TBaseObjectArrayRemotable(ACompareTo);
+      c := Self.Length;
+      for i := 0 to Pred(c) do begin
+        if not Self.Item[i].Equal(dst.Item[i]) then begin
+          Result := False;
+          Break;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -2777,14 +2828,53 @@ begin
 end;
 
 procedure TArrayOfStringRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfStringRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfStringRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfStringRemotable) then begin
+    src := TArrayOfStringRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+function TArrayOfStringRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+var
+  i, c : Ptrint;
+  dst : TArrayOfStringRemotable;
+begin
+  if ( Self = ACompareTo ) then begin
+    Result := True;
+  end else begin
+    Result := Assigned(ACompareTo) and
+              ACompareTo.InheritsFrom(TArrayOfStringRemotable) and
+              ( Self.Length = TArrayOfStringRemotable(ACompareTo).Length );
+    if Result then begin
+      c := Self.Length;
+      dst := TArrayOfStringRemotable(ACompareTo);
+      for i := 0 to Pred(c) do begin
+        if ( Self.Item[i] <> dst.Item[i] ) then begin
+          Result := False;
+          Break;
+        end;
+      end;
+    end;
+  end;
 end;
 
 { TBaseArrayRemotable }
@@ -2863,14 +2953,29 @@ begin
 end;
 
 procedure TArrayOfBooleanRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfBooleanRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfBooleanRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfBooleanRemotable) then begin
+    src := TArrayOfBooleanRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt8URemotable }
@@ -2912,14 +3017,29 @@ begin
 end;
 
 procedure TArrayOfInt8URemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt8URemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt8URemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt8URemotable) then begin
+    src := TArrayOfInt8URemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt8SRemotable }
@@ -2961,14 +3081,29 @@ begin
 end;
 
 procedure TArrayOfInt8SRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt8SRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt8SRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt8SRemotable) then begin
+    src := TArrayOfInt8SRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt16SRemotable }
@@ -3010,14 +3145,29 @@ begin
 end;
 
 procedure TArrayOfInt16SRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt16SRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt16SRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt16SRemotable) then begin
+    src := TArrayOfInt16SRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt16URemotable }
@@ -3059,14 +3209,29 @@ begin
 end;
 
 procedure TArrayOfInt16URemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt16URemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt16URemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt16URemotable) then begin
+    src := TArrayOfInt16URemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt32URemotable }
@@ -3108,14 +3273,29 @@ begin
 end;
 
 procedure TArrayOfInt32URemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt32URemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt32URemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt32URemotable) then begin
+    src := TArrayOfInt32URemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt32SRemotable }
@@ -3157,14 +3337,29 @@ begin
 end;
 
 procedure TArrayOfInt32SRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt32SRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt32SRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt32SRemotable) then begin
+    src := TArrayOfInt32SRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt64SRemotable }
@@ -3206,14 +3401,29 @@ begin
 end;
 
 procedure TArrayOfInt64SRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt64SRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt64SRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt64SRemotable) then begin
+    src := TArrayOfInt64SRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfInt64URemotable }
@@ -3255,14 +3465,29 @@ begin
 end;
 
 procedure TArrayOfInt64URemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfInt64URemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfInt64URemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfInt64URemotable) then begin
+    src := TArrayOfInt64URemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfFloatSingleRemotable }
@@ -3304,14 +3529,29 @@ begin
 end;
 
 procedure TArrayOfFloatSingleRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfFloatSingleRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfFloatSingleRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfFloatSingleRemotable) then begin
+    src := TArrayOfFloatSingleRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfFloatDoubleRemotable }
@@ -3353,14 +3593,29 @@ begin
 end;
 
 procedure TArrayOfFloatDoubleRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfFloatDoubleRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfFloatDoubleRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfFloatDoubleRemotable) then begin
+    src := TArrayOfFloatDoubleRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfFloatExtendedRemotable }
@@ -3402,14 +3657,29 @@ begin
 end;
 
 procedure TArrayOfFloatExtendedRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfFloatExtendedRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfFloatExtendedRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfFloatExtendedRemotable) then begin
+    src := TArrayOfFloatExtendedRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TArrayOfFloatCurrencyRemotable }
@@ -3451,14 +3721,29 @@ begin
 end;
 
 procedure TArrayOfFloatCurrencyRemotable.SetLength(const ANewSize: Integer);
-var
-  i : Integer;
 begin
   if ( ANewSize < 0 ) then
-    i := 0
-  else
-    i := ANewSize;
-  System.SetLength(FData,i);
+    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+  System.SetLength(FData,ANewSize);
+end;
+
+procedure TArrayOfFloatCurrencyRemotable.Assign(Source: TPersistent);
+var
+  src : TArrayOfFloatCurrencyRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TArrayOfFloatCurrencyRemotable) then begin
+    src := TArrayOfFloatCurrencyRemotable(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 
@@ -3634,7 +3919,9 @@ begin
            Assigned(p^.SetProc)
         then begin
           case p^.PropType^.Kind of
-            tkInt64{$IFDEF HAS_QWORD} ,tkQWord{$ENDIF} {$IFDEF FPC} ,tkBool{$ENDIF}, tkEnumeration,tkInteger :
+            tkInt64{$IFDEF HAS_QWORD} ,tkQWord{$ENDIF} :
+              SetInt64Prop(Self,p,GetInt64Prop(Source,p^.Name));
+            {$IFDEF FPC}tkBool,{$ENDIF} tkEnumeration, tkInteger :
               SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
             tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
               SetStrProp(Self,p,GetStrProp(Source,p^.Name));
@@ -3667,6 +3954,61 @@ begin
       Freemem(propList,propListLen*SizeOf(Pointer));
     end;
   end;
+end;
+
+function TAbstractComplexRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+var
+  propList : PPropList;
+  i, propCount, propListLen : Integer;
+  p, sp : PPropInfo;
+  selfTypeInfo : PTypeInfo;
+  srcObj, dstObj : TObject;
+  ok : Boolean;
+begin
+  Result := False;
+  if not Assigned(ACompareTo) then
+    Exit;
+  if not ACompareTo.InheritsFrom(Self.ClassType) then
+    Exit;
+
+  ok := True;
+  selfTypeInfo := Self.ClassInfo;
+  propCount := GetTypeData(selfTypeInfo)^.PropCount;
+  if ( propCount > 0 ) then begin
+    propListLen := GetPropList(selfTypeInfo,propList);
+    try
+      for i := 0 to Pred(propCount) do begin
+        p := propList^[i];
+        sp := GetPropInfo(Self,p^.Name);
+        if Assigned(sp) and Assigned(sp^.GetProc) then begin
+          case p^.PropType^.Kind of
+            tkInt64{$IFDEF HAS_QWORD} ,tkQWord{$ENDIF} :
+              ok := ( GetInt64Prop(Self,p^.Name) = GetInt64Prop(ACompareTo,p^.Name) );
+            {$IFDEF FPC}tkBool,{$ENDIF} tkEnumeration, tkInteger :
+              ok := ( GetOrdProp(Self,p^.Name) = GetOrdProp(ACompareTo,p^.Name) );
+            tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
+              ok := ( GetStrProp(Self,p^.Name) = GetStrProp(ACompareTo,p^.Name) );
+            tkClass :
+              begin
+                if GetTypeData(p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF})^.ClassType.InheritsFrom(TBaseRemotable) then begin
+                  srcObj := GetObjectProp(Self,p^.Name);
+                  dstObj := GetObjectProp(ACompareTo,p^.Name);
+                  ok := ( Assigned(srcObj) and TBaseRemotable(srcObj).Equal(TBaseRemotable(dstObj)) ) or
+                        ( ( srcObj = nil ) and ( dstObj = nil ) ) ;
+                end;
+              end;
+            tkFloat :
+              ok := ( GetFloatProp(Self,p^.Name) = GetFloatProp(ACompareTo,p^.Name) );
+          end;
+          if not ok then
+            Break;
+        end;
+      end;
+    finally
+      Freemem(propList,propListLen*SizeOf(Pointer));
+    end;
+  end;
+  Result := ok;
 end;
 
 { TBaseComplexSimpleContentRemotable }
@@ -3708,7 +4050,7 @@ begin
         AStore.SetSerializationStyle(ssAttibuteSerialization);
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
-          pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
+          pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
           propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
           if IsStoredProp(AObject,p) then begin
             case pt^.Kind of
@@ -3736,7 +4078,7 @@ begin
               {$ENDIF}
               tkEnumeration,tkInteger :
                 begin
-                {$IFNDEF FPC}
+                {$IFDEF WST_DELPHI}
                   if ( pt^.Kind = tkEnumeration ) and
                      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                   then begin
@@ -3777,7 +4119,7 @@ begin
                           AStore.Put(propName,pt,enumData.ULongIntData);
                         end;
                     end;
-                {$IFNDEF FPC}
+                {$IFDEF WST_DELPHI}
                   end;
                 {$ENDIF}
                 end;
@@ -3871,7 +4213,7 @@ begin
             p := propList^[i];
             persistType := IsStoredPropClass(objTypeData^.ClassType,p);
             If ( persistType in [pstOptional,pstAlways] ) Then Begin
-              pt := p^.PropType{$IFNDEF FPC}^{$ENDIF};
+              pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
               propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
               try
                 Case pt^.Kind Of
@@ -4172,6 +4514,8 @@ begin
   DecodeDate(ADate,y,m,d);
     s := IntToStr(y);
     buffer := IntToStr(m);
+    if ( Length(s) < 4 ) then
+      s := StringOfChar('0', ( 4 - Length(s) ) ) + s;
     if ( m < 10 ) then
       buffer := '0' + buffer;
     s := Format('%s-%s',[s,buffer]);
@@ -4263,7 +4607,10 @@ begin
 
     ss := ReadInt();
 
-    Result := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
+    if ( ( y + m + d + hh + mn + ss ) = 0 ) then
+      Result := 0
+    else
+      Result := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
   end else begin
     Result := 0;
   end;
@@ -4327,6 +4674,15 @@ begin
   end else begin
     inherited Assign(Source);
   end;
+end;
+
+function TBaseDateRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+begin
+  Result := ( Self = ACompareTo ) or
+            ( Assigned(ACompareTo) and
+              ACompareTo.InheritsFrom(TBaseDateRemotable) and
+              ( Self.AsDate = TBaseDateRemotable(ACompareTo).AsDate )
+            );
 end;
 
 { TComplexInt8SContentRemotable }
@@ -4643,6 +4999,15 @@ begin
   end;
 end;
 
+function TStringBufferRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+begin
+  Result := ( Self = ACompareTo ) or
+            ( Assigned(ACompareTo) and
+              ACompareTo.InheritsFrom(TStringBufferRemotable) and
+              ( Self.Data = TStringBufferRemotable(ACompareTo).Data )
+            );
+end;
+
 { TRemotableRecordEncoder }
 
 class procedure TRemotableRecordEncoder.Save(
@@ -4706,7 +5071,7 @@ begin
             {$ENDIF}
             tkEnumeration,tkInteger :
               begin
-              {$IFNDEF FPC}
+              {$IFDEF WST_DELPHI}
                 if ( pt^.Kind = tkEnumeration ) and
                    ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                 then begin
@@ -4721,7 +5086,7 @@ begin
                     otSLong : AStore.Put(prpName,pt,PLongint(recFieldAddress)^);
                     otULong : AStore.Put(prpName,pt,PLongWord(recFieldAddress)^);
                   end;
-              {$IFNDEF FPC}
+              {$IFDEF WST_DELPHI}
                 end;
               {$ENDIF}
               end;
@@ -4809,7 +5174,7 @@ begin
                 tkRecord : AStore.Get(pt,propName,Pointer(recFieldAddress)^);
                 tkEnumeration,tkInteger :
                   Begin
-                  {$IFNDEF FPC}
+                  {$IFDEF WST_DELPHI}
                     if ( pt^.Kind = tkEnumeration ) and
                        ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
                     then begin
@@ -4824,7 +5189,7 @@ begin
                         otSLong : AStore.Get(pt,propName,PLongint(recFieldAddress)^);
                         otULong : AStore.Get(pt,propName,PLongWord(recFieldAddress)^);
                       end;
-                  {$IFNDEF FPC}
+                  {$IFDEF WST_DELPHI}
                     end;
                   {$ENDIF}
                   End;

@@ -867,7 +867,7 @@ procedure TXmlRpcBaseFormatter.GetEnum(
 Var
   locBuffer : String;
 begin
-  locBuffer := Trim(GetNodeValue(AName));
+  locBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(GetNodeValue(AName));
   If IsStrEmpty(locBuffer) Then
     AData := 0
   Else

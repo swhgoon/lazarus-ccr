@@ -102,6 +102,14 @@ uses
      server_service_intf, server_service_imputils,
      metadata_wsdl;
 
+{$IFDEF WST_DBG}
+procedure Display(const AMsg : string);
+begin
+  if IsConsole then
+    WriteLn(AMsg);
+end;
+{$ENDIF}
+
 function ExtractNextPathElement(var AFullPath : string):string;
 var
   i : SizeInt;

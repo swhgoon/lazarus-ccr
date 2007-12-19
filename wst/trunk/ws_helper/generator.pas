@@ -442,11 +442,15 @@ Var
     resPrm : TPasResultElement;
     prms : TList;
   Begin
+    prms := AMthd.ProcType.Args;
+    prmCnt := prms.Count;
     IncIndent();
     WriteLn('Var');
 
       Indent();WriteLn('%s : %s;',[sLOC_SERIALIZER,sSERIALIZER_CLASS]);
-      Indent();WriteLn('%s : %s;',[sPRM_NAME,'string']);
+      if ( prmCnt > 0 ) or AMthd.InheritsFrom(TPasFunction) then begin
+        Indent();WriteLn('%s : %s;',[sPRM_NAME,'string']);
+      end;
 
     WriteLn('Begin');
     
@@ -455,8 +459,6 @@ Var
 
       Indent();WriteLn('%s.BeginCall(''%s'', GetTarget(),(Self as ICallContext));',[sLOC_SERIALIZER,SymbolTable.GetExternalName(AMthd)]);
       IncIndent();
-        prms := AMthd.ProcType.Args;
-        prmCnt := prms.Count;
         for k := 0 To Pred(prmCnt) do begin
           prm := TPasArgument(prms[k]);
           If ( prm.Access <> argOut ) Then Begin
@@ -821,8 +823,8 @@ Var
       WriteLn('callCtx : ICallContext;');
       if ( prmCnt > 0 ) or AMthd.InheritsFrom(TPasFunction) then begin
         WriteLn('%s : string;',[sPRM_NAME]);
-        WriteLn('procName,trgName : string;');
       end;
+      WriteLn('procName,trgName : string;');
       if ( prmCnt > 0 ) then begin
         for k := 0 to Pred(prmCnt) do begin
           prm := TPasArgument(prms[k]);
@@ -1929,6 +1931,7 @@ procedure TInftGenerator.GenerateArray(ASymbol: TPasArrayType);
       WriteLn('public');
         Indent();WriteLn('class function GetItemTypeInfo():PTypeInfo;override;');
         Indent();WriteLn('procedure SetLength(const ANewSize : Integer);override;');
+        Indent();WriteLn('procedure Assign(Source: TPersistent); override;');
         Indent();WriteLn('property Item[AIndex:Integer] : %s read GetItem write SetItem; default;',[ASymbol.ElType.Name]);
       WriteLn('end;');
     finally
@@ -2004,6 +2007,32 @@ procedure TInftGenerator.GenerateArray(ASymbol: TPasArrayType);
       Indent();WriteLn('else');
         Indent();Indent();WriteLn('i := ANewSize;');
       Indent();WriteLn('System.SetLength(FData,i);');
+    DecIndent();
+    WriteLn('end;');
+    
+    NewLine();
+    IncIndent();
+    WriteLn('procedure %s.Assign(Source: TPersistent);',[ASymbol.Name]);
+    WriteLn('var');
+    Indent();WriteLn('src : %s;',[ASymbol.Name]);
+    Indent();WriteLn('i, c : PtrInt;');
+    WriteLn('begin');
+      Indent();WriteLn('if Assigned(Source) and Source.InheritsFrom(%s) then begin',[ASymbol.Name]);
+      IncIndent();
+        Indent();WriteLn('src := %s(Source);',[ASymbol.Name]);
+        Indent();WriteLn('c := src.Length;');
+        Indent();WriteLn('Self.SetLength(c);');
+        Indent();WriteLn('if ( c > 0 ) then begin');
+        IncIndent();
+          Indent();WriteLn('for i := 0 to Pred(c) do begin');
+          IncIndent(); Indent(); WriteLn('Self[i] := src[i];'); DecIndent();
+          Indent();WriteLn('end;');
+        DecIndent();
+        Indent();WriteLn('end;');
+      DecIndent();
+      Indent();WriteLn('end else begin');
+        IncIndent(); Indent(); WriteLn('inherited Assign(Source);'); DecIndent();
+      Indent();WriteLn('end;');
     DecIndent();
     WriteLn('end;');
   end;

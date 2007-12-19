@@ -502,6 +502,8 @@ var
   typeCategory : TTypeCategory;
   hasSequence : Boolean;
   trueParent : TPasType;
+  isEmbeddedArray : Boolean;
+  propItmUltimeType : TPasType;
 begin
   inherited;
   typItm := ASymbol as TPasClassType;
@@ -584,8 +586,11 @@ begin
             propTypItm := p.VarType;
             if Assigned(propTypItm) then begin
               prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument);
-              if GetUltimeType(propTypItm).InheritsFrom(TPasArrayType) then
-                s := AContainer.GetExternalName(TPasArrayType(GetUltimeType(propTypItm)).ElType)
+              propItmUltimeType := GetUltimeType(propTypItm);
+              isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
+                                 ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
+              if isEmbeddedArray then
+                s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType)
               else
                 s := AContainer.GetExternalName(propTypItm);
               propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
@@ -599,7 +604,7 @@ begin
                   propNode.SetAttribute(s_minOccurs,'0');
                 {else
                   propNode.SetAttribute(s_minOccurs,'1');}
-                if GetUltimeType(propTypItm).InheritsFrom(TPasArrayType) then
+                if isEmbeddedArray then
                   propNode.SetAttribute(s_maxOccurs,s_unbounded)
                 {else
                   propNode.SetAttribute(s_maxOccurs,'1');}

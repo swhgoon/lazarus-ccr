@@ -471,30 +471,6 @@ type
     procedure Test_Assign();
   end;
 
-  { TTest_TDateRemotable }
-
-  TTest_TDateRemotable = class(TTestCase)
-  published
-    procedure FormatDate();
-    procedure ParseDate();
-  end;
-
-  { TTest_TDurationRemotable }
-
-  TTest_TDurationRemotable = class(TTestCase)
-  published
-    procedure FormatDate();
-    procedure ParseDate();
-  end;
-
-  { TTest_TTimeRemotable }
-
-  TTest_TTimeRemotable = class(TTestCase)
-  published
-    procedure FormatDate();
-    procedure ParseDate();
-  end;
-  
   { TTest_SoapFormatterExceptionBlock }
 
   TTest_SoapFormatterExceptionBlock = class(TTestCase)
@@ -531,6 +507,14 @@ type
     procedure ExceptBlock_server();
     procedure ExceptBlock_client();
   end;
+  
+  { TTest_TStringBufferRemotable }
+
+  TTest_TStringBufferRemotable = class(TTestCase)
+  published
+    procedure Assign();
+  end;
+  
   
 implementation
 uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_rtti,
@@ -688,6 +672,16 @@ begin
     end;
   end else begin
     Result := False;
+  end;
+end;
+
+function RandomValue(const AMaxlen: Integer): ansistring;
+var
+  k : Integer;
+begin
+  SetLength(Result,AMaxlen);
+  for k := 1 to AMaxlen do begin
+    Result[k] := Char((Random(Ord(High(Char)))));
   end;
 end;
 
@@ -3599,78 +3593,6 @@ begin
   inherited Destroy();
 end;
 
-{ TTest_TDateRemotable }
-
-procedure TTest_TDateRemotable.FormatDate();
-const sDATE = '1976-10-12T23:34:56';
-var
-  d : TDateTime;
-begin
-  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-  d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
-  Check(AnsiPos(TDateRemotable.FormatDate(d),sDATE) = 1);
-end;
-
-procedure TTest_TDateRemotable.ParseDate();
-const sDATE = '1976-10-12T23:34:56';
-var
-  s : string;
-  objd : TDateRemotable;
-  d : TDateTime;
-  y,m,dy : Word;
-  hh,mn,ss, ssss : Word;
-begin
-  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-  s := '1976-10-12T23:34:56';
-  d := TDateRemotable.ParseDate(s);
-  DecodeDate(d,y,m,dy);
-    CheckEquals(y,1976,'Year');
-    CheckEquals(m,10,'Month');
-    CheckEquals(dy,12,'Day');
-
-  DecodeTime(d,hh,mn,ss,ssss);
-    CheckEquals(hh,23,'Hour');
-    CheckEquals(mn,34,'Minute');
-    CheckEquals(ss,56,'Second');
-
-  objd := TDateRemotable.Create();
-  try
-    objd.AsDate := d;
-    CheckEquals(objd.Year,1976,'Year');
-    CheckEquals(objd.Month,10,'Month');
-    CheckEquals(objd.Day,12,'Day');
-    CheckEquals(objd.Hour,23,'Hour');
-    CheckEquals(objd.Minute,34,'Minute');
-    CheckEquals(objd.Second,56,'Second');
-  finally
-    FreeAndNil(objd);
-  end;
-end;
-
-{ TTest_TDurationRemotable }
-
-procedure TTest_TDurationRemotable.FormatDate();
-begin
-  Fail('Write me!');
-end;
-
-procedure TTest_TDurationRemotable.ParseDate();
-begin
-  Fail('Write me!');
-end;
-
-{ TTest_TTimeRemotable }
-
-procedure TTest_TTimeRemotable.FormatDate();
-begin
-  Fail('Write me!');
-end;
-
-procedure TTest_TTimeRemotable.ParseDate();
-begin
-  Fail('Write me!');
-end;
-
 { TTestXmlRpcFormatterAttributes }
 
 function TTestXmlRpcFormatterAttributes.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
@@ -4255,9 +4177,38 @@ begin
   CheckEquals(Self.GetFormaterName(),f.GetFormatName());
 end;
 
+{ TTest_TStringBufferRemotable }
+
+procedure TTest_TStringBufferRemotable.Assign();
+const ITER = 100;
+var
+  a, b : TStringBufferRemotable;
+  i : Integer;
+begin
+  b := nil;
+  a := TStringBufferRemotable.Create();
+  try
+    b := TStringBufferRemotable.Create();
+    CheckEquals(a.Data,b.Data);
+    for i := 0 to ITER do begin
+      a.Data := RandomValue(i);
+      b.Assign(a);
+      CheckEquals(a.Data,b.Data);
+    end;
+    a.Data := '';
+    b.Assign(a);
+    CheckEquals(a.Data,b.Data);
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
+    GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestEnum)].RegisterExternalPropertyName('teThree', 'Three-external-name');
+    
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Int),'TClass_Int').RegisterExternalPropertyName('Val_8U','U8');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Enum),'TClass_Enum');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A),'TClass_A');
@@ -4310,15 +4261,13 @@ initialization
   RegisterTest(TTest_TBaseComplexRemotable);
   RegisterTest(TTestSOAPFormatterAttributes);
   RegisterTest(TTestBinaryFormatterAttributes);
-  RegisterTest(TTest_TDateRemotable);
-  RegisterTest(TTest_TDurationRemotable);
-  RegisterTest(TTest_TTimeRemotable);
 
   RegisterTest(TTestXmlRpcFormatterAttributes);
   RegisterTest(TTestXmlRpcFormatter);
   RegisterTest(TTest_SoapFormatterExceptionBlock);
   RegisterTest(TTest_XmlRpcFormatterExceptionBlock);
   RegisterTest(TTest_BinaryFormatterExceptionBlock);
+  RegisterTest(TTest_TStringBufferRemotable);
 {$ELSE}
   RegisterTest(TTestArray.Suite);
   RegisterTest(TTestSOAPFormatter.Suite);
@@ -4326,15 +4275,13 @@ initialization
   RegisterTest(TTest_TBaseComplexRemotable.Suite);
   RegisterTest(TTestSOAPFormatterAttributes.Suite);
   RegisterTest(TTestBinaryFormatterAttributes.Suite);
-  RegisterTest(TTest_TDateRemotable.Suite);
-  RegisterTest(TTest_TDurationRemotable.Suite);
-  RegisterTest(TTest_TTimeRemotable.Suite);
 
   RegisterTest(TTestXmlRpcFormatterAttributes.Suite);
   RegisterTest(TTestXmlRpcFormatter.Suite);
   RegisterTest(TTest_SoapFormatterExceptionBlock.Suite);
   RegisterTest(TTest_XmlRpcFormatterExceptionBlock.Suite);
   RegisterTest(TTest_BinaryFormatterExceptionBlock.Suite);
+  RegisterTest(TTest_TStringBufferRemotable.Suite);
 {$ENDIF}
 
 

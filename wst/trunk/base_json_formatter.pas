@@ -179,6 +179,8 @@ type
   
   
 implementation
+uses jsonparser;
+
 
 { TJsonRpcBaseFormatter }
 
@@ -287,7 +289,7 @@ end;
 
 procedure TJsonRpcBaseFormatter.AddScopeAttribute(const AName, AValue : string);
 begin
-
+  Put(AName,TypeInfo(string),AValue);
 end;
 
 function TJsonRpcBaseFormatter.BeginObjectRead(var AScopeName : string;
@@ -362,13 +364,26 @@ begin
 end;
 
 procedure TJsonRpcBaseFormatter.SaveToStream(AStream : TStream);
+var
+  locBuffer : string;
 begin
-
+  CheckScope();
+  locBuffer := StackTop().ScopeObject.AsJSON;
+  AStream.WriteBuffer(locBuffer[1],Length(locBuffer));
 end;
 
 procedure TJsonRpcBaseFormatter.LoadFromStream(AStream : TStream);
+var
+  locParser : TJSONParser;
 begin
-
+  ClearStack();
+  FSerializationStyle := Low(TSerializationStyle);
+  locParser := TJSONParser.Create(AStream);
+  try
+    //f locParser.Parse;
+  finally
+    locParser.Free();
+  end;
 end;
 
 procedure TJsonRpcBaseFormatter.Error(const AMsg : string);

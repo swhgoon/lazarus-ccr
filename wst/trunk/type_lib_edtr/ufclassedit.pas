@@ -251,7 +251,8 @@ begin
       end;
     end;
     if Assigned(FObject.AncestorType) then begin
-      edtParent.ItemIndex := edtParent.Items.IndexOfObject(FObject.AncestorType);
+      //edtParent.ItemIndex := edtParent.Items.IndexOfObject(FObject.AncestorType);
+      edtParent.ItemIndex := edtParent.Items.IndexOfObject(FSymbolTable.FindElement(FSymbolTable.GetExternalName(FObject.AncestorType)));
     end;
   end else begin
     Self.Caption := 'New';
@@ -287,7 +288,8 @@ begin
     if ( FOldAncestor <> nil ) then
       FOldAncestor.Release();
     locObj.AncestorType := trueParent;
-    locObj.AncestorType.AddRef();
+    if Assigned(locObj.AncestorType) then
+      locObj.AncestorType.AddRef();
   end;
 end;
 

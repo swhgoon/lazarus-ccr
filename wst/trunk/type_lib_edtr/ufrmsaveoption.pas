@@ -18,6 +18,8 @@ type
     Button1 : TButton;
     Button2 : TButton;
     btnSelectDir : TButton;
+    btnSelectAll: TButton;
+    btnUnselectAll: TButton;
     edtInterface : TCheckBox;
     edtProxy : TCheckBox;
     edtImplementation : TCheckBox;
@@ -30,9 +32,11 @@ type
     SD : TSelectDirectoryDialog;
     procedure actOKExecute (Sender : TObject );
     procedure actOKUpdate (Sender : TObject );
+    procedure btnSelectAllClick(Sender: TObject);
     procedure btnSelectDirClick (Sender : TObject );
+    procedure btnUnselectAllClick(Sender: TObject);
   private
-    { private declarations }
+    procedure SelectAll(const ADoSelect : Boolean);
   public
     { public declarations }
   end; 
@@ -53,12 +57,31 @@ begin
     );
 end;
 
+procedure TfrmSaveOptions.btnSelectAllClick(Sender: TObject);
+begin
+  SelectAll(True);
+end;
+
 procedure TfrmSaveOptions.btnSelectDirClick (Sender : TObject );
 begin
   SD.FileName := edtOutputDir.Text;
   if SD.Execute() then begin
     edtOutputDir.Text := SD.FileName;
   end;
+end;
+
+procedure TfrmSaveOptions.btnUnselectAllClick(Sender: TObject);
+begin
+  SelectAll(False);
+end;
+
+procedure TfrmSaveOptions.SelectAll(const ADoSelect: Boolean);
+begin
+  edtBinder.Checked := ADoSelect;
+  edtImplementation.Checked := edtBinder.Checked;
+  edtImplementation.Checked := edtBinder.Checked;
+  edtInterface.Checked := edtBinder.Checked;
+  edtProxy.Checked := edtBinder.Checked;
 end;
 
 
