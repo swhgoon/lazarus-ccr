@@ -74,7 +74,7 @@ var
   SourceHead: integer;
   Revision: integer;
   XmlOutput: TMemoryStream;
-  SvnResult: LongInt;
+  //SvnResult: LongInt;
   SvnLog: TSvnLog;
   SubPath: string;
   DestRoot: string;
@@ -105,7 +105,7 @@ var
     writeln(format('Updating %s to revision %s', [UpdatePath, RevisionStr]));
     Command := Format('up -r%s %s', [RevisionStr, UpdatePath]);
     writeln('svn ', Command);
-    SvnResult := ExecuteSvnCommand(Command);
+    writeln('Result: ', ExecuteSvnCommand(Command));
   end;
 
   procedure GetDiff;
@@ -117,7 +117,7 @@ var
     Command := Format('diff -c%d %s', [Revision, FSourceWC+SubPath]);
     writeln('svn ', Command);
     XmlOutput.Clear;
-    SvnResult := ExecuteSvnCommand(Command, XmlOutput);
+    ExecuteSvnCommand(Command, XmlOutput);
     XmlOutput.Position := 0;
     Diff := TStringList.Create;
     Diff.LoadFromStream(XmlOutput);
@@ -163,7 +163,7 @@ var
       if LogPath.Action in [caModify, caAdd] then begin
         SourceFile := FSourceWC + LogPath.Path;
         if LogPath.CopyFromPath<>'' then begin
-          Command := format('copy -r%d %s%s %s',
+          Command := format('copy -r%d "%s%s""%s"',
             [LogPath.CopyFromRevision,
              DestRoot, LogPath.CopyFromPath, DestFile]);
           writeln('svn '+ Command);
@@ -175,8 +175,9 @@ var
         else
           CopyFile(SourceFile, DestFile, true);
         if LogPath.Action=caAdd then begin
-          writeln('svn add '+ DestFile);
-          writeln('Result: ',ExecuteSvnCommand('add '+DestFile));
+          Command := format('svn add "%s"', [DestFile]);
+          writeln(Command);
+          writeln('Result: ',ExecuteSvnCommand(Command));
         end;
       end;
     end;
@@ -215,13 +216,13 @@ var
       writeln(DestProp.Properties.Text);
 
       for j:=0 to DestProp.Properties.Count-1 do begin
-        Command := format('propdel %s %s',
+        Command := format('propdel %s "%s"',
           [DestProp.Properties.Names[j], DestProp.FileName]);
         writeln('svn ', Command);
         writeln('svn result: ', ExecuteSvnCommand(Command));
       end;
       for j:=0 to SourceProp.Properties.Count-1 do begin
-        Command := format('propset %s "%s" %s',
+        Command := format('propset %s "%s" "%s"',
           [SourceProp.Properties.Names[j],
            SourceProp.Properties.ValueFromIndex[j],
            DestProp.FileName]);
@@ -292,7 +293,7 @@ var
     Message.SaveToFile(MessageFile);
     writeln(Message.Text);
     Message.Free;
-    Command := Format('commit -F "%s" %s', [MessageFile, FDestWC+LogEntry.CommonPath]);
+    Command := Format('commit -F "%s" "%s"', [MessageFile, FDestWC+LogEntry.CommonPath]);
     writeln('svn ', Command);
     writeln('svn commit result: ', ExecuteSvnCommand(Command));
     DeleteFile(MessageFile);
@@ -327,7 +328,7 @@ begin
     CopyChanges;
     //GetDiff;
     ApplyPropChanges;
-    CommitChanges;
+    //CommitChanges;
 
     writeln;
   end;
