@@ -202,7 +202,6 @@ type
     FFiles: TFPHashObjectList;
     function GetFile(index: integer): TSvnFileProp;
     function GetFileCount: integer;
-    function ContainsFile(const AFileName: string) : boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -588,11 +587,6 @@ begin
   Result := FFiles.Count;
 end;
 
-function TSvnPropInfo.ContainsFile(const AFileName: string): boolean;
-begin
-  Result := true;
-end;
-
 constructor TSvnPropInfo.Create;
 begin
   FFiles := TFPHashObjectList.Create(true);
@@ -686,7 +680,7 @@ begin
     if FileNames.Count>0 then begin
       Files := '';
       for i := 0 to FileNames.Count-1 do
-        Files := Files + ' ' + FileNames[i];
+        Files := Files + format(' "%s"', [FileNames[i]]);
       ExecuteSvnCommand('proplist -v' + Files, Output);
       Output.Position := 0;
     end;
