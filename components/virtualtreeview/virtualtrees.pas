@@ -72,8 +72,8 @@ interface
 uses
   LCLProc, LCLType, Types, LMessages, LCLIntf, SysUtils, Classes,Graphics, Controls, Forms, ImgList, {ActiveX,} StdCtrls, Menus, Printers,
   LResources, GraphType, CustomTimer,
-  SyncObjs, // critical sections
-  CommCtrl  // image lists, common controls tree structures
+  SyncObjs // critical sections
+//  ,CommCtrl  // image lists, common controls tree structures
   ;
 
 const

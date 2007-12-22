@@ -1,1 +1,1 @@
-d:\src\lazarus\tools\lazres.exe ..\VirtualTrees.lrs TVirtualDrawTree.xpm TVirtualStringTree.xpm TVTHeaderPopupMenu.xpm
+d:\lazarus\tools\lazres.exe ..\VirtualTrees.lrs TVirtualDrawTree.png TVirtualStringTree.png TVTHeaderPopupMenu.png
