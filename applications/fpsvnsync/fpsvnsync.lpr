@@ -175,7 +175,7 @@ var
         else
           CopyFile(SourceFile, DestFile, true);
         if LogPath.Action=caAdd then begin
-          Command := format('svn add "%s"', [DestFile]);
+          Command := format('add "%s"', [DestFile]);
           writeln(Command);
           writeln('Result: ',ExecuteSvnCommand(Command));
         end;
