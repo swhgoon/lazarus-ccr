@@ -328,7 +328,7 @@ begin
     CopyChanges;
     //GetDiff;
     ApplyPropChanges;
-    //CommitChanges;
+    CommitChanges;
 
     writeln;
   end;
