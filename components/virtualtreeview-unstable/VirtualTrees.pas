@@ -118,7 +118,9 @@ interface
 {$endif}
 
 uses
-  {$i intf_uses.inc}
+  {$ifdef LCLWin32}
+  Windows,
+  {$endif}
   ActiveX,
   OleUtils,
   DelphiCompat,
@@ -8952,8 +8954,8 @@ begin
               if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
               begin
                 SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
-                StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                  SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0);
+                DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                  SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
                 //UtilityImages.Draw(FHeaderBitmap.Canvas, SortGlyphPos.X, SortGlyphPos.X, SortIndex);
               end;
 
@@ -8963,12 +8965,12 @@ begin
                 Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
 
                 if DropMark = dmmLeft then
-                  StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    0 * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0)
+                  DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    0 * UtilityImageSize, 0, UtilityImages.MaskHandle)
                   //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Left, Y, 0)
                 else
-                   StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-                    1 * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, 0);
+                   DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
+                    1 * UtilityImageSize, 0, UtilityImages.MaskHandle);
                   //UtilityImages.Draw(FHeaderBitmap.Canvas, PaintRectangle.Right - 16 , Y,  1);
               end;
 
@@ -21513,9 +21515,6 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-
-type
-  TCustomImageListCast = class(TCustomImageList);
 
 procedure TBaseVirtualTree.PaintImage(var PaintInfo: TVTPaintInfo; ImageInfoIndex: TVTImageInfoIndex; DoOverlay: Boolean);
 
