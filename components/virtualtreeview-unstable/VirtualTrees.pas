@@ -137,9 +137,6 @@ uses
       , Themes, UxTheme
     {$endif COMPILE_7_UP}
   {$endif ThemeSupport}
-  {$ifdef TntSupport}
-    , TntStdCtrls       // Unicode aware inplace editor.
-  {$endif TntSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
   {$endif};
@@ -2738,11 +2735,7 @@ type
   // Edit support classes.
   TStringEditLink = class;
 
-  {$ifdef TntSupport}
-    TVTEdit = class(TTntEdit)
-  {$else}
-    TVTEdit = class(TCustomEdit)
-  {$endif TntSupport}
+  TVTEdit = class(TCustomEdit)
   private
     FRefLink: IVTEditLink;
     FLink: TStringEditLink;
@@ -28679,18 +28672,11 @@ var
 begin
   if not (vsMultiline in FLink.FNode.States) then
   begin
-    // avoid flicker
-    SendMessage(Handle, WM_SETREDRAW, 0, 0);
-
     DC := GetDC(Handle);
     LastFont := SelectObject(DC, Font.Handle);
     try
       // Read needed space for the current text.
-      {$ifdef TntSupport}
-        GetTextExtentPoint32W(DC, PWideChar(Text), Length(Text), Size);
-      {$else}
-        GetTextExtentPoint32(DC, PChar(Text), Length(Text), Size);
-      {$endif TntSupport}
+      GetTextExtentPoint32(DC, PChar(Text), Length(Text), Size);
       Inc(Size.cx, 2 * FLink.FTree.FTextMargin);
 
       // Repaint associated node if the edit becomes smaller.
@@ -28704,7 +28690,6 @@ begin
     finally
       SelectObject(DC, LastFont);
       ReleaseDC(Handle, DC);
-      SendMessage(Handle, WM_SETREDRAW, 1, 0);
     end;
   end;
 end;
@@ -28860,25 +28845,21 @@ begin
     FTree.GetTextInfo(Node, Column, FEdit.Font, FTextBounds, Text);
     FEdit.Font.Color := clWindowText;
     FEdit.Parent := Tree;
-    //todo_lcl_check see effect of recreatewnd
-    RecreateWnd(FEdit);
     FEdit.HandleNeeded;
     FEdit.Text := Text;
 
     if Column <= NoColumn then
     begin
-      //FEdit.BidiMode := FTree.BidiMode;
+      FEdit.BidiMode := FTree.BidiMode;
       FAlignment := FTree.Alignment;
     end
     else
     begin
-      //FEdit.BidiMode := FTree.Header.Columns[Column].BidiMode;
+      FEdit.BidiMode := FTree.Header.Columns[Column].BidiMode;
       FAlignment := FTree.Header.Columns[Column].Alignment;
     end;
-    {
     if FEdit.BidiMode <> bdLeftToRight then
       ChangeBidiModeAlignment(FAlignment);
-    }
   end;
 end;
 
