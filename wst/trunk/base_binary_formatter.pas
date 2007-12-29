@@ -1284,7 +1284,7 @@ begin
         StackTop().CreateInnerBuffer(dtInt64U)^.Int64U := int64UData;
       end;
     {$ENDIF}
-    tkClass :
+    tkClass, tkRecord :
       begin
         raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
       end;
@@ -1502,7 +1502,7 @@ begin
     tkAString
     {$ENDIF}       : string(AData) := dataBuffer^.StrData^.Data;
 
-    tkClass        : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+    tkClass, tkRecord : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
     {$IFDEF FPC}
     tkBool         : Boolean(AData) := dataBuffer^.BoolData;
     {$ENDIF}

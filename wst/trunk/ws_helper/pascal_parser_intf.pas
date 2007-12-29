@@ -144,18 +144,30 @@ type
   end;
   
   TPasClassTypeClass = class of TPasClassType;
-  TPasNativeClassType = class(TPasClassType) end;
+  TPasNativeSimpleContentClassType = class;
+
+  { TPasNativeClassType }
+
+  TPasNativeClassType = class(TPasClassType)
+  private
+    FExtendableType : TPasNativeSimpleContentClassType;
+  public
+    destructor Destroy();override;
+    procedure SetExtendableType(AExtendableType : TPasNativeSimpleContentClassType);
+    property ExtendableType : TPasNativeSimpleContentClassType read FExtendableType;
+  end;
+
   TPasNativeSimpleContentClassType = class(TPasNativeClassType) end;
 
   { TPasNativeSimpleType }
 
   TPasNativeSimpleType = class(TPasType)
   private
-    FBoxedType: TPasNativeSimpleContentClassType;
+    FExtendableType: TPasNativeSimpleContentClassType;
   public
     destructor Destroy();override;
-    procedure SetBoxedType(ABoxedType : TPasNativeSimpleContentClassType);
-    property BoxedType : TPasNativeSimpleContentClassType read FBoxedType;
+    procedure SetExtendableType(AExtendableType : TPasNativeSimpleContentClassType);
+    property ExtendableType : TPasNativeSimpleContentClassType read FExtendableType;
   end;
   
   function GetParameterIndex(
@@ -183,61 +195,106 @@ uses parserutils, wst_types;
 
 const
     SIMPLE_TYPES_COUNT = 15;
-    SIMPLE_TYPES : Array[0..Pred(SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
-        ('string', 'TComplexStringContentRemotable', 'string'),
-        ('integer', 'TComplexInt32SContentRemotable', 'int'),
-        ('LongWord', 'TComplexInt32UContentRemotable', 'unsignedInt' ),
-        ('SmallInt', 'TComplexInt16SContentRemotable', 'short'),
-        ('ShortInt', 'TComplexInt8SContentRemotable', 'byte'),
-        ('char', '', ''),
-        ('boolean', 'TComplexBooleanContentRemotable', 'boolean'),
-        ('Byte', 'TComplexInt8UContentRemotable', 'unsignedByte'),
-        ('Word', 'TComplexInt16UContentRemotable', 'unsignedShort'),
-        ('Longint', 'TComplexInt32SContentRemotable', 'int'),
-        ('Int64', 'TComplexInt64SContentRemotable', 'long'),
-        ('Qword', 'TComplexInt64UContentRemotable', 'unsignedLong'),
-        ('Single', 'TComplexFloatSingleContentRemotable', 'single'),
-        ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
-        ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
-      );
-
+      SIMPLE_TYPES : Array[0..Pred(SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
+          ('string', 'TComplexStringContentRemotable', 'string'),
+          ('integer', 'TComplexInt32SContentRemotable', 'int'),
+          ('LongWord', 'TComplexInt32UContentRemotable', 'unsignedInt' ),
+          ('SmallInt', 'TComplexInt16SContentRemotable', 'short'),
+          ('ShortInt', 'TComplexInt8SContentRemotable', 'byte'),
+          ('char', '', ''),
+          ('boolean', 'TComplexBooleanContentRemotable', 'boolean'),
+          ('Byte', 'TComplexInt8UContentRemotable', 'unsignedByte'),
+          ('Word', 'TComplexInt16UContentRemotable', 'unsignedShort'),
+          ('Longint', 'TComplexInt32SContentRemotable', 'int'),
+          ('Int64', 'TComplexInt64SContentRemotable', 'long'),
+          ('Qword', 'TComplexInt64UContentRemotable', 'unsignedLong'),
+          ('Single', 'TComplexFloatSingleContentRemotable', 'single'),
+          ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
+          ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
+        );
+   BOXED_TYPES_COUNT = 1;
+     BOXED_TYPES : Array[0..Pred(BOXED_TYPES_COUNT)] Of array[0..2] of string = (
+        ('TBase64StringRemotable', 'TBase64StringExtRemotable', 'base64Binary')
+     );
+     
+     
 procedure AddSystemSymbol(
   ADest : TPasModule;
   AContainer : TwstPasTreeContainer
 );
-var
-  i : Integer;
-  splTyp : TPasNativeSimpleType;
-  syb : TPasNativeSimpleContentClassType;
-  s : string;
-  typlst : array[0..Pred(SIMPLE_TYPES_COUNT)] of TPasNativeSimpleType;
+  procedure RegisterSimpleTypes();
+  var
+    i : Integer;
+    splTyp : TPasNativeSimpleType;
+    syb : TPasNativeSimpleContentClassType;
+    s : string;
+    typlst : array[0..Pred(SIMPLE_TYPES_COUNT)] of TPasNativeSimpleType;
+  begin
+    for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
+      splTyp := TPasNativeSimpleType(AContainer.CreateElement(TPasNativeSimpleType,SIMPLE_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
+      ADest.InterfaceSection.Declarations.Add(splTyp);
+      ADest.InterfaceSection.Types.Add(splTyp);
+      typlst[i] := splTyp;
+      s := SIMPLE_TYPES[i][1];
+      if not IsStrEmpty(s) then begin
+        syb := AContainer.FindElementInModule(SIMPLE_TYPES[i][1],ADest) as TPasNativeSimpleContentClassType;
+        if not Assigned(syb) then begin
+          syb := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
+          ADest.InterfaceSection.Declarations.Add(syb);
+          ADest.InterfaceSection.Types.Add(splTyp);
+        end;
+        splTyp.SetExtendableType(syb);
+      end;
+    end;
+    for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
+      splTyp := typlst[i];
+      if not IsStrEmpty(SIMPLE_TYPES[i][2]) then begin
+        AContainer.RegisterExternalAlias(splTyp,SIMPLE_TYPES[i][2]);
+        if ( splTyp.ExtendableType <> nil ) then begin
+          AContainer.RegisterExternalAlias(splTyp.ExtendableType,SIMPLE_TYPES[i][2]);
+        end;
+      end;
+    end;
+  end;
+  
+  procedure RegisterBoxedTypes();
+  var
+    i : Integer;
+    nativeType : TPasNativeClassType;
+    syb : TPasNativeSimpleContentClassType;
+    s : string;
+    typlst : array[0..Pred(BOXED_TYPES_COUNT)] of TPasNativeClassType;
+  begin
+    for i := Low(BOXED_TYPES) to High(BOXED_TYPES) do begin
+      nativeType := TPasNativeClassType(AContainer.CreateElement(TPasNativeClassType,BOXED_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
+      ADest.InterfaceSection.Declarations.Add(nativeType);
+      ADest.InterfaceSection.Types.Add(nativeType);
+      typlst[i] := nativeType;
+      s := BOXED_TYPES[i][1];
+      if not IsStrEmpty(s) then begin
+        syb := AContainer.FindElementInModule(BOXED_TYPES[i][1],ADest) as TPasNativeSimpleContentClassType;
+        if not Assigned(syb) then begin
+          syb := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
+          ADest.InterfaceSection.Declarations.Add(syb);
+          ADest.InterfaceSection.Types.Add(syb);
+        end;
+        nativeType.SetExtendableType(syb);
+      end;
+    end;
+    for i := Low(BOXED_TYPES) to High(BOXED_TYPES) do begin
+      nativeType := typlst[i];
+      if not IsStrEmpty(BOXED_TYPES[i][2]) then begin
+        AContainer.RegisterExternalAlias(nativeType,BOXED_TYPES[i][2]);
+        if ( nativeType.ExtendableType <> nil ) then begin
+          AContainer.RegisterExternalAlias(nativeType.ExtendableType,BOXED_TYPES[i][2]);
+        end;
+      end;
+    end;
+  end;
+
 begin
-  for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
-    splTyp := TPasNativeSimpleType(AContainer.CreateElement(TPasNativeSimpleType,SIMPLE_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
-    ADest.InterfaceSection.Declarations.Add(splTyp);
-    ADest.InterfaceSection.Types.Add(splTyp);
-    typlst[i] := splTyp;
-    s := SIMPLE_TYPES[i][1];
-    if not IsStrEmpty(s) then begin
-      syb := AContainer.FindElementInModule(SIMPLE_TYPES[i][1],ADest) as TPasNativeSimpleContentClassType;
-      if not Assigned(syb) then begin
-        syb := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
-        ADest.InterfaceSection.Declarations.Add(syb);
-        ADest.InterfaceSection.Types.Add(splTyp);
-      end;
-      splTyp.SetBoxedType(syb);
-    end;
-  end;
-  for i := Low(SIMPLE_TYPES) to High(SIMPLE_TYPES) do begin
-    //splTyp := AContainer.FindElementInModule(SIMPLE_TYPES[i][0],ADest) as TPasNativeSimpleType;
-    splTyp := typlst[i];
-    if not IsStrEmpty(SIMPLE_TYPES[i][2]) then begin
-      AContainer.RegisterExternalAlias(splTyp,SIMPLE_TYPES[i][2]);
-      if ( splTyp.BoxedType <> nil ) then begin
-        AContainer.RegisterExternalAlias(splTyp.BoxedType,SIMPLE_TYPES[i][2]);
-      end;
-    end;
-  end;
+  RegisterSimpleTypes();
+  RegisterBoxedTypes();
 end;
 
 function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPasModule;
@@ -325,7 +382,7 @@ begin
     AddAlias('float','Single',Result);
     AddAlias('nonNegativeInteger','LongWord',Result);
     AddAlias('positiveInteger','nonNegativeInteger',Result);
-    AddAlias('base64Binary','string',Result);
+    //AddAlias('base64Binary','string',Result);
   except
     FreeAndNil(Result);
     raise;
@@ -908,24 +965,47 @@ end;
 
 destructor TPasNativeSimpleType.Destroy();
 begin
-  if Assigned(FBoxedType) then begin
-    FBoxedType.Release();
-    FBoxedType := nil
+  if Assigned(FExtendableType) then begin
+    FExtendableType.Release();
+    FExtendableType := nil
   end;
   inherited Destroy();
 end;
 
-procedure TPasNativeSimpleType.SetBoxedType(
-  ABoxedType : TPasNativeSimpleContentClassType
+procedure TPasNativeSimpleType.SetExtendableType(
+  AExtendableType : TPasNativeSimpleContentClassType
 );
 begin
-  if ( FBoxedType <> ABoxedType ) then begin
-    if ( FBoxedType <> nil ) then begin
-      FBoxedType.Release();
+  if ( FExtendableType <> AExtendableType ) then begin
+    if ( FExtendableType <> nil ) then begin
+      FExtendableType.Release();
     end;
-    FBoxedType := ABoxedType;
-    if ( FBoxedType <> nil ) then
-      FBoxedType.AddRef();
+    FExtendableType := AExtendableType;
+    if ( FExtendableType <> nil ) then
+      FExtendableType.AddRef();
+  end;
+end;
+
+{ TPasNativeClassType }
+
+destructor TPasNativeClassType.Destroy();
+begin
+  if Assigned(FExtendableType) then begin
+    FExtendableType.Release();
+    FExtendableType := nil
+  end;
+  inherited Destroy();
+end;
+
+procedure TPasNativeClassType.SetExtendableType(AExtendableType : TPasNativeSimpleContentClassType);
+begin
+  if ( FExtendableType <> AExtendableType ) then begin
+    if ( FExtendableType <> nil ) then begin
+      FExtendableType.Release();
+    end;
+    FExtendableType := AExtendableType;
+    if ( FExtendableType <> nil ) then
+      FExtendableType.AddRef();
   end;
 end;
 

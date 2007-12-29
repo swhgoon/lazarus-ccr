@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "26/08/2007 01:03:09".
+  Date            : "29/12/2007 00:43:35".
 }
 unit user_service_intf;
 {$IFDEF FPC}

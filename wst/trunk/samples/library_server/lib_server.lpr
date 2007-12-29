@@ -19,7 +19,7 @@ uses
 
   base_service_intf,
   server_service_intf,
-  server_service_soap, server_binary_formatter, server_service_xmlrpc,
+  server_service_soap, server_binary_formatter, server_service_xmlrpc, server_service_json,
   metadata_repository, metadata_wsdl,
   metadata_service, metadata_service_binder, metadata_service_imp,
   library_base_intf, library_server_intf,
@@ -36,6 +36,7 @@ begin
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
   Server_service_RegisterXmlRpcFormat();
+  Server_service_RegisterJsonFormat();
 
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();

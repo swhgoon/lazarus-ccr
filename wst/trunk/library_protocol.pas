@@ -124,6 +124,10 @@ begin
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));
+{$IFDEF WST_DBG}
+    if IsConsole then
+      WriteLn(strBuff);
+{$ENDIF WST_DBG}
     wrtr.WriteStr(strBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
@@ -139,15 +143,15 @@ begin
     AResponse.Size := 0;
     AResponse.CopyFrom(buffStream,0);
     AResponse.Position := 0;
-    {$IFDEF WST_DBG}
+{$IFDEF WST_DBG}
     i := AResponse.Position;
     SetLength(s,AResponse.Size);
     AResponse.Read(s[1],AResponse.Size);
     if IsConsole then
       WriteLn(s)
-    else
-      ShowMessage(s);
-    {$ENDIF WST_DBG}
+    {else
+      ShowMessage(s);}
+{$ENDIF WST_DBG}
   finally
     buffStream.Free();
   end;

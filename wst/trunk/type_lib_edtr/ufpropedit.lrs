@@ -25,9 +25,9 @@ LazarusResources.Add('TfPropEdit','FORMDATA',[
   +#5'Width'#3#16#1#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbact'
   +'SearchAscending'#0#10'ItemHeight'#2#13#9'MaxLength'#2#0#5'Style'#7#14'csDro'
   +'pDownList'#8'TabOrder'#2#1#0#0#9'TCheckBox'#12'edtAttribute'#4'Left'#2#20#6
-  +'Height'#2#13#3'Top'#3#170#0#5'Width'#2'e'#7'Caption'#6#18'Attribute Propert'
+  +'Height'#2#19#3'Top'#3#170#0#5'Width'#2'k'#7'Caption'#6#18'Attribute Propert'
   +'y'#8'TabOrder'#2#2#0#0#9'TCheckBox'#11'edtOptional'#4'Left'#2#20#6'Height'#2
-  +#13#3'Top'#3#218#0#5'Width'#2'i'#7'Caption'#6#17'Optional property'#10'Font.'
+  +#19#3'Top'#3#218#0#5'Width'#2'o'#7'Caption'#6#17'Optional property'#10'Font.'
   +'Style'#11#8'fsItalic'#0#8'TabOrder'#2#3#0#0#0#0#11'TActionList'#11'ActionLi'
   +'st1'#4'left'#2'h'#3'top'#2'h'#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'#18'D'
   +'isableIfNoHandler'#9#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOK'

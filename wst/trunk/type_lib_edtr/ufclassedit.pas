@@ -155,6 +155,7 @@ var
   sym : TPasElement;
   modulList, decList : TList;
   mdl : TPasModule;
+  ok : Boolean;
 begin
   modulList := AContainer.Package.Modules;
   for i := 0 to Pred(modulList.Count) do begin
@@ -174,7 +175,8 @@ begin
          )  and
         ( not sym.InheritsFrom(TPasNativeSimpleType) )
       then begin
-        if ( ALs.IndexOfObject(sym) = -1 ) then begin
+        ok := ( not sym.InheritsFrom(TPasNativeClassType) ) or sym.InheritsFrom(TPasNativeSimpleContentClassType);
+        if ok and ( ALs.IndexOfObject(sym) = -1 ) then begin
           ALs.AddObject(AContainer.GetExternalName(sym),sym);
         end;
       end;
@@ -237,6 +239,7 @@ var
   i : Integer;
   prp : TPasProperty;
   extName : string;
+  ancestorType : TPasElement;
 begin
   edtName.Text := '';
   edtProp.Clear();
@@ -252,7 +255,17 @@ begin
     end;
     if Assigned(FObject.AncestorType) then begin
       //edtParent.ItemIndex := edtParent.Items.IndexOfObject(FObject.AncestorType);
-      edtParent.ItemIndex := edtParent.Items.IndexOfObject(FSymbolTable.FindElement(FSymbolTable.GetExternalName(FObject.AncestorType)));
+      ancestorType := FObject.AncestorType;
+      if ancestorType.InheritsFrom(TPasUnresolvedTypeRef) then begin
+        ancestorType := FSymbolTable.FindElement(FSymbolTable.GetExternalName(ancestorType));
+      end;
+      if Assigned(ancestorType) then begin
+        if ancestorType.InheritsFrom(TPasNativeSimpleType) then
+          ancestorType := TPasNativeSimpleType(ancestorType).ExtendableType
+        else if ancestorType.InheritsFrom(TPasNativeClassType) and Assigned(TPasNativeClassType(ancestorType).ExtendableType) then
+          ancestorType := TPasNativeClassType(ancestorType).ExtendableType;
+      end;
+      edtParent.ItemIndex := edtParent.Items.IndexOfObject(ancestorType);
     end;
   end else begin
     Self.Caption := 'New';
@@ -277,9 +290,9 @@ begin
       trueParent := GetUltimeType(trueParent);
     end;
     if trueParent.InheritsFrom(TPasNativeSimpleType) and
-       Assigned(TPasNativeSimpleType(trueParent).BoxedType)
+       Assigned(TPasNativeSimpleType(trueParent).ExtendableType)
     then begin
-      trueParent := TPasNativeSimpleType(trueParent).BoxedType;
+      trueParent := TPasNativeSimpleType(trueParent).ExtendableType;
     end;
   end else begin
     trueParent := nil;

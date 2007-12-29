@@ -2,12 +2,12 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="4"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -25,13 +25,13 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="9">
+    <Units Count="13">
       <Unit0>
         <Filename Value="lib_server.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lib_server"/>
-        <CursorPos X="49" Y="35"/>
-        <TopLine Value="7"/>
+        <CursorPos X="19" Y="22"/>
+        <TopLine Value="19"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
@@ -41,7 +41,7 @@
         <UnitName Value="library_server_intf"/>
         <CursorPos X="32" Y="91"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit1>
@@ -50,7 +50,7 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="43" Y="179"/>
         <TopLine Value="157"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -59,7 +59,7 @@
         <UnitName Value="rtti_filters"/>
         <CursorPos X="53" Y="43"/>
         <TopLine Value="184"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -67,26 +67,26 @@
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="1" Y="1"/>
-        <TopLine Value="64"/>
-        <EditorIndex Value="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="52" Y="4125"/>
-        <TopLine Value="4118"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="3" Y="133"/>
+        <TopLine Value="119"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
-        <CursorPos X="1" Y="140"/>
-        <TopLine Value="111"/>
-        <EditorIndex Value="4"/>
+        <CursorPos X="1" Y="137"/>
+        <TopLine Value="113"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -95,7 +95,7 @@
         <UnitName Value="cursor_intf"/>
         <CursorPos X="2" Y="13"/>
         <TopLine Value="34"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit7>
@@ -106,6 +106,42 @@
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <UnitName Value="server_service_json"/>
+        <CursorPos X="104" Y="54"/>
+        <TopLine Value="34"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <UnitName Value="base_json_formatter"/>
+        <CursorPos X="48" Y="177"/>
+        <TopLine Value="163"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\server_service_soap.pas"/>
+        <UnitName Value="server_service_soap"/>
+        <CursorPos X="95" Y="200"/>
+        <TopLine Value="177"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
+        <UnitName Value="base_soap_formatter"/>
+        <CursorPos X="57" Y="129"/>
+        <TopLine Value="115"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit12>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>

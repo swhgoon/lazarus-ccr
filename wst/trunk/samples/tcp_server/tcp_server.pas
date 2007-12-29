@@ -24,7 +24,7 @@ uses
   {$ENDIF}{$ENDIF}
 {$ENDIF}
   Classes, SysUtils,
-  base_service_intf, server_service_soap,
+  base_service_intf, server_service_soap, server_service_json,
   base_binary_formatter, server_binary_formatter,
   metadata_service, metadata_service_imp, metadata_service_binder,
   server_listener , synapse_tcp_server,
@@ -39,6 +39,7 @@ begin
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
   Server_service_RegisterXmlRpcFormat();
+  Server_service_RegisterJsonFormat();
   
   RegisterWSTMetadataServiceImplementationFactory();
   //Server_service_RegisterWSTMetadataServiceService();

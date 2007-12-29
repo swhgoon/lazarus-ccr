@@ -331,8 +331,27 @@ type
     procedure Equal();
   end;
   
+  { TTest_TBase64StringRemotable }
+
+  TTest_TBase64StringRemotable = class(TTestCase)
+  published
+    procedure test_Assign();
+    procedure Equal();
+    procedure SetBinaryData();
+    procedure SetEncodedString();
+  end;
+
+  { TTest_TBase64StringExtRemotable }
+
+  TTest_TBase64StringExtRemotable = class(TTestCase)
+  published
+    procedure Equal();
+    procedure SetBinaryData();
+    procedure SetEncodedString();
+  end;
+  
 implementation
-uses Math;
+uses Math, basex_encode;
 
 function RandomValue(const AMaxlen: Integer): ansistring;
 var
@@ -2291,6 +2310,214 @@ begin
   end;
 end;
 
+{ TTest_TBase64StringRemotable }
+
+procedure TTest_TBase64StringRemotable.test_Assign();
+const ITER = 100;
+var
+  i : Integer;
+  a, b : TBase64StringRemotable;
+begin
+  b := nil;
+  a := TBase64StringRemotable.Create();
+  try
+    b := TBase64StringRemotable.Create();
+    for i := 1 to ITER do begin
+      a.BinaryData := RandomValue(Random(500));
+      b.Assign(a);
+      CheckEquals(a.BinaryData, b.BinaryData);
+      CheckEquals(a.EncodedString, b.EncodedString);
+    end;
+  finally
+    FreeAndNil(b);
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.Equal();
+const ITER = 100;
+var
+  i : Integer;
+  a, b : TBase64StringRemotable;
+  c : TClass_A;
+begin
+  c := nil;
+  b := nil;
+  a := TBase64StringRemotable.Create();
+  try
+    b := TBase64StringRemotable.Create();
+    CheckEquals(False, a.Equal(nil));
+    c := TClass_A.Create();
+    CheckEquals(False, a.Equal(c));
+    a.BinaryData := 'wst';
+    b.BinaryData := 'azerty';
+    CheckEquals(False, a.Equal(b));
+    CheckEquals(False, b.Equal(a));
+
+    for i := 1 to ITER do begin
+      a.BinaryData := RandomValue(Random(500));
+      b.BinaryData := a.BinaryData;
+      CheckEquals(True, a.Equal(b));
+      CheckEquals(True, b.Equal(a));
+    end;
+  finally
+    FreeAndNil(c);
+    FreeAndNil(b);
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.SetBinaryData();
+const ITER = 100;
+var
+  i : Integer;
+  a : TBase64StringRemotable;
+  s, es : string;
+begin
+  a := TBase64StringRemotable.Create();
+  try
+    s := ''; es := Base64Encode(s);
+    a.BinaryData := s;
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := Base64Encode(s);
+      a.BinaryData := s;
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.SetEncodedString();
+const ITER = 100;
+var
+  i : Integer;
+  a : TBase64StringRemotable;
+  s, es : string;
+begin
+  a := TBase64StringRemotable.Create();
+  try
+    s := ''; es := Base64Encode(s);
+    a.EncodedString := es;
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := Base64Encode(s);
+      a.EncodedString := es;
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+{ TTest_TBase64StringExtRemotable }
+
+procedure TTest_TBase64StringExtRemotable.Equal();
+const ITER = 100;
+var
+  i : Integer;
+  a, b : TBase64StringExtRemotable;
+  c : TClass_A;
+begin
+  c := nil;
+  b := nil;
+  a := TBase64StringExtRemotable.Create();
+  try
+    b := TBase64StringExtRemotable.Create();
+    CheckEquals(False, a.Equal(nil));
+    c := TClass_A.Create();
+    CheckEquals(False, a.Equal(c));
+    a.BinaryData := 'wst';
+    b.BinaryData := 'azerty';
+    CheckEquals(False, a.Equal(b));
+    CheckEquals(False, b.Equal(a));
+
+    for i := 1 to ITER do begin
+      a.BinaryData := RandomValue(Random(500));
+      b.BinaryData := a.BinaryData;
+      CheckEquals(True, a.Equal(b));
+      CheckEquals(True, b.Equal(a));
+    end;
+  finally
+    FreeAndNil(c);
+    FreeAndNil(b);
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.SetBinaryData();
+const ITER = 100;
+var
+  i : Integer;
+  a : TBase64StringExtRemotable;
+  s, es : string;
+begin
+  a := TBase64StringExtRemotable.Create();
+  try
+    s := ''; es := Base64Encode(s);
+    a.BinaryData := s;
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := Base64Encode(s);
+      a.BinaryData := s;
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.SetEncodedString();
+const ITER = 100;
+var
+  i : Integer;
+  a : TBase64StringExtRemotable;
+  s, es : string;
+begin
+  a := TBase64StringExtRemotable.Create();
+  try
+    s := ''; es := Base64Encode(s);
+    a.EncodedString := es;
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(s,a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := Base64Encode(s);
+      a.EncodedString := es;
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(s,a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
 initialization
   RegisterTest('Support',TTest_TBaseComplexRemotable.Suite);
   RegisterTest('Support',TTest_TStringBufferRemotable.Suite);
@@ -2316,6 +2543,9 @@ initialization
   RegisterTest('Support',TTest_TArrayOfFloatCurrencyRemotable.Suite);
   
   RegisterTest('Support',TTest_TBaseObjectArrayRemotable.Suite);
+
+  RegisterTest('Support',TTest_TBase64StringRemotable.Suite);
+  RegisterTest('Support',TTest_TBase64StringExtRemotable.Suite);
   
 end.
 

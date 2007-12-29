@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 84
+  Left = 166
   Height = 644
-  Top = 315
+  Top = 209
   Width = 833
   HorzScrollBar.Page = 832
   VertScrollBar.Page = 623
@@ -78,9 +78,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -405,12 +407,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
         Caption = '&WSDL'
-        ClientHeight = 573
-        ClientWidth = 501
         object srcWSDL: TSynEdit
           Height = 573
           Width = 501
@@ -424,7 +425,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
+          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -749,12 +752,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
         Caption = '&Proxy'
-        ClientHeight = 573
-        ClientWidth = 501
         object srcProxy: TSynEdit
           Height = 573
           Width = 501
@@ -768,11 +770,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1097,13 +1097,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
         Caption = 'Im&plementation Skeleton'
-        ClientHeight = 573
-        ClientWidth = 501
         object srcImp: TSynEdit
           Height = 573
           Width = 501
@@ -1117,11 +1114,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1446,13 +1441,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
         Caption = '&Binder'
-        ClientHeight = 573
-        ClientWidth = 501
         object srcBinder: TSynEdit
           Height = 573
           Width = 501
@@ -1466,12 +1458,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1796,13 +1786,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
         Caption = '&Log'
-        ClientHeight = 573
-        ClientWidth = 501
         object mmoLog: TMemo
           Height = 573
           Width = 501
@@ -1864,6 +1851,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       object MenuItem15: TMenuItem
         Action = actRefreshView
         OnClick = actRefreshViewExecute
+      end
+      object MenuItem50: TMenuItem
+        Action = actSearch
+        OnClick = actSearchExecute
       end
       object MenuItem29: TMenuItem
         Caption = '-'
@@ -1935,6 +1926,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Caption = 'Exit'
       DisableIfNoHandler = True
       OnExecute = actExitExecute
+      ShortCut = 16499
     end
     object actExport: TAction
       Caption = 'Save generated files ...'
@@ -1968,11 +1960,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Caption = '&Refresh Views'
       DisableIfNoHandler = True
       OnExecute = actRefreshViewExecute
+      ShortCut = 116
     end
     object actNewFile: TAction
       Caption = 'New File'
       DisableIfNoHandler = True
       OnExecute = actNewFileExecute
+      ShortCut = 16462
     end
     object actCompoundCreate: TAction
       Caption = 'Create Class Type'
@@ -2020,6 +2014,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Caption = 'Create Record'
       DisableIfNoHandler = True
       OnExecute = actRecordCreateExecute
+    end
+    object actSearch: TAction
+      Caption = 'Search'
+      DisableIfNoHandler = True
+      OnExecute = actSearchExecute
+      OnUpdate = actSearchUpdate
+      ShortCut = 16454
     end
   end
   object OD: TOpenDialog
@@ -2113,6 +2114,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       Action = actRefreshView
       OnClick = actRefreshViewExecute
     end
+    object MenuItem49: TMenuItem
+      Action = actSearch
+      OnClick = actSearchExecute
+    end
     object MenuItem19: TMenuItem
       Caption = '-'
     end
@@ -2156,5 +2161,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     WantBracesParsed = False
     left = 466
     top = 252
+  end
+  object FD: TFindDialog
+    Title = 'Search'
+    OnFind = FDFind
+    left = 576
+    top = 143
   end
 end

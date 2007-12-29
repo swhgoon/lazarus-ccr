@@ -270,6 +270,34 @@ type
     property Data : string read FData write FData;
   end;
   
+  { TBase64StringRemotable }
+
+  TBase64StringRemotable = class(TAbstractSimpleRemotable)
+  private
+    FBinaryData : string;
+  private
+    function GetEncodedString : string;
+    procedure SetEncodedString(const AValue : string);
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    property BinaryData : string read FBinaryData write FBinaryData;
+    property EncodedString : string read GetEncodedString write SetEncodedString;
+  end;
+  
   { TBaseDateRemotable }
 
   TBaseDateRemotable = class(TAbstractSimpleRemotable)
@@ -549,6 +577,23 @@ type
     class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
   public
     property Value : string read FValue write FValue;
+  end;
+  
+  { TBase64StringExtRemotable }
+
+  TBase64StringExtRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FBinaryData : string;
+  private
+    function GetEncodedString() : string;
+    procedure SetEncodedString(const AValue : string);
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    property BinaryData : string read FBinaryData write FBinaryData;
+    property EncodedString : string read GetEncodedString write SetEncodedString;
   end;
 
   { TComplexBooleanContentRemotable }
@@ -1267,7 +1312,7 @@ var
 {$ENDIF HAS_FORMAT_SETTINGS}
 
 implementation
-uses imp_utils, record_rtti;
+uses imp_utils, record_rtti, basex_encode;
 
 type
   PObject = ^TObject;
@@ -5220,6 +5265,105 @@ begin
       AStore.SetSerializationStyle(oldSS);
     end;
   end;
+end;
+
+{ TBase64StringRemotable }
+
+function TBase64StringRemotable.GetEncodedString() : string;
+begin
+  Result := Base64Encode(BinaryData);
+end;
+
+procedure TBase64StringRemotable.SetEncodedString(const AValue : string);
+begin
+  BinaryData := Base64Decode(AValue,[xoDecodeIgnoreIllegalChar]);
+end;
+
+class procedure TBase64StringRemotable.Save(
+        AObject : TBaseRemotable;
+        AStore : IFormatterBase;
+  const AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  if ( AObject <> nil ) then
+    buffer := TBase64StringRemotable(AObject).BinaryData
+  else
+    buffer := '';
+  AStore.Put(AName,TypeInfo(string),buffer);
+end;
+
+class procedure TBase64StringRemotable.Load(
+  var AObject : TObject;
+      AStore : IFormatterBase;
+  var AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  buffer := '';
+  AStore.Get(TypeInfo(string),AName,buffer);
+  if ( AObject = nil ) then
+    AObject := Create();
+  TBase64StringRemotable(AObject).EncodedString := buffer;
+end;
+
+procedure TBase64StringRemotable.Assign(Source : TPersistent);
+begin
+  if Assigned(Source) then begin
+    if Source.InheritsFrom(TBase64StringRemotable) then
+      Self.BinaryData := TBase64StringRemotable(Source).BinaryData
+    else
+      inherited Assign(Source);
+  end else begin
+    BinaryData := '';
+  end;
+end;
+
+function TBase64StringRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+begin
+  Result := Assigned(ACompareTo) and
+            ACompareTo.InheritsFrom(TBase64StringRemotable) and
+            ( TBase64StringRemotable(ACompareTo).BinaryData = Self.BinaryData );
+end;
+
+{ TBase64StringExtRemotable }
+
+function TBase64StringExtRemotable.GetEncodedString() : string;
+begin
+  Result := Base64Encode(BinaryData);
+end;
+
+procedure TBase64StringExtRemotable.SetEncodedString(const AValue : string);
+begin
+  BinaryData := Base64Decode(AValue,[xoDecodeIgnoreIllegalChar]);
+end;
+
+class procedure TBase64StringExtRemotable.SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);
+var
+  s : string;
+begin
+  s := (AObject as TBase64StringExtRemotable).EncodedString;
+  AStore.PutScopeInnerValue(TypeInfo(string),s);
+end;
+
+class procedure TBase64StringExtRemotable.LoadValue(var AObject : TObject; AStore : IFormatterBase);
+var
+  s : string;
+begin
+  s := '';
+  AStore.GetScopeInnerValue(TypeInfo(string),s);
+  (AObject as TBase64StringExtRemotable).EncodedString := s;
+end;
+
+function TBase64StringExtRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+begin
+  Result := Assigned(ACompareTo) and
+            ACompareTo.InheritsFrom(TBase64StringExtRemotable) and
+            ( TBase64StringExtRemotable(ACompareTo).BinaryData = Self.BinaryData );
 end;
 
 initialization

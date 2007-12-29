@@ -379,8 +379,11 @@ begin
           FBaseType := (FBaseType as TPasAliasType).DestType;
         end;
         if FBaseType.InheritsFrom(TPasNativeSimpleType) then begin
-          Assert(Assigned(TPasNativeSimpleType(FBaseType).BoxedType));
-          FBaseType := TPasNativeSimpleType(FBaseType).BoxedType;
+          Assert(Assigned(TPasNativeSimpleType(FBaseType).ExtendableType));
+          FBaseType := TPasNativeSimpleType(FBaseType).ExtendableType;
+        end else if FBaseType.InheritsFrom(TPasNativeClassType) then begin
+          if Assigned(TPasNativeClassType(FBaseType).ExtendableType) then
+            FBaseType := TPasNativeClassType(FBaseType).ExtendableType;
         end;
       end else begin
         raise EXsdParserException.CreateFmt('"%s" was expected to be a type definition.',[locSymbol.Name]);

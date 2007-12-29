@@ -39,6 +39,7 @@ type
     actFullCollapse: TAction;
     actDelete : TAction;
     actArrayCreate : TAction;
+    actSearch : TAction;
     actRecordCreate : TAction;
     actTypeALiasCreate : TAction;
     actSave : TAction;
@@ -48,6 +49,7 @@ type
     actSaveAs: TAction;
     actOpenFile: TAction;
     AL: TActionList;
+    FD : TFindDialog;
     MainMenu1: TMainMenu;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
@@ -88,7 +90,9 @@ type
     MenuItem46 : TMenuItem;
     MenuItem47 : TMenuItem;
     MenuItem48 : TMenuItem;
+    MenuItem49 : TMenuItem;
     MenuItem5: TMenuItem;
+    MenuItem50 : TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
     MenuItem8: TMenuItem;
@@ -138,9 +142,12 @@ type
     procedure actRefreshViewExecute(Sender: TObject);
     procedure actSaveAsExecute(Sender: TObject);
     procedure actSaveExecute (Sender : TObject );
+    procedure actSearchExecute(Sender : TObject);
+    procedure actSearchUpdate(Sender : TObject);
     procedure actTypeALiasCreateExecute(Sender : TObject);
     procedure actUpdateObjectExecute(Sender: TObject);
     procedure actUpdateObjectUpdate(Sender: TObject);
+    procedure FDFind(Sender : TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
     procedure FormShow(Sender: TObject);
   private
@@ -148,6 +155,8 @@ type
     FStatusMessageTag : PtrInt;
     FCurrentFileName : string;
     {$IFDEF WST_IDE}FProjectLibrary : TLazProjectFile;{$ENDIF}
+  private
+    function Search(const AText : string) : Boolean;
   private
     function GetTypeNode() : TTreeNode;
     function GetInterfaceNode() : TTreeNode;
@@ -170,7 +179,7 @@ implementation
 uses view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
      xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
      binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
-     uabout, edit_helper, udm, ufrmsaveoption, pparser
+     uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
      {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF};
 
 
@@ -444,6 +453,16 @@ begin
     actSaveAs.Execute() ;
 end;
 
+procedure TfWstTypeLibraryEdit.actSearchExecute(Sender : TObject);
+begin
+  FD.Execute();
+end;
+
+procedure TfWstTypeLibraryEdit.actSearchUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled := ( PC.ActivePageIndex in [0..4] );
+end;
+
 procedure TfWstTypeLibraryEdit.actTypeALiasCreateExecute(Sender : TObject);
 var
   e : TPasAliasType;
@@ -483,6 +502,12 @@ begin
     Assigned(trvSchema.Selected) and
     Assigned(trvSchema.Selected.Data) and
     HasEditor(TPasElement(trvSchema.Selected.Data));
+end;
+
+procedure TfWstTypeLibraryEdit.FDFind(Sender : TObject);
+begin
+  if not Search(FD.FindText) then
+    ShowMessageFmt('Unable to find "%s".',[FD.FindText]);
 end;
 
 procedure TfWstTypeLibraryEdit.FormClose (Sender : TObject; var CloseAction : TCloseAction );
@@ -535,6 +560,33 @@ begin
   end;
 {$ENDIF}
   RenderSymbols();
+end;
+
+function TfWstTypeLibraryEdit.Search(const AText : string) : Boolean;
+var
+  edt : TSynEdit;
+  opts : TSynSearchOptions;
+begin
+  Result := False;
+  case PC.ActivePageIndex of
+    0 : edt := srcInterface;
+    1 : edt := srcWSDL;
+    2 : edt := srcProxy;
+    3 : edt := srcImp;
+    4 : edt := srcBinder;
+    else
+      edt := nil;
+  end;
+  if Assigned(edt) then begin
+    opts := [];
+    if not ( frDown in FD.Options ) then
+      Include(opts,ssoBackwards);
+    if ( frMatchCase in FD.Options ) then
+      Include(opts,ssoMatchCase);
+    if ( frWholeWord in FD.Options ) then
+      Include(opts,ssoWholeWord);
+    Result := edt.SearchReplace(AText,'',opts) <> 0;
+  end;
 end;
 
 function TfWstTypeLibraryEdit.GetTypeNode(): TTreeNode;

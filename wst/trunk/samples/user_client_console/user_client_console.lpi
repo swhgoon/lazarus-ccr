@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,13 +30,13 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="45">
+    <Units Count="48">
       <Unit0>
         <Filename Value="user_client_console.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="user_client_console"/>
-        <CursorPos X="44" Y="147"/>
-        <TopLine Value="136"/>
+        <CursorPos X="73" Y="8"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="82"/>
         <Loaded Value="True"/>
@@ -44,27 +44,27 @@
       <Unit1>
         <Filename Value="..\user_service_intf_proxy.pas"/>
         <UnitName Value="user_service_intf_proxy"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="1" Y="65"/>
+        <TopLine Value="51"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\..\synapse_tcp_protocol.pas"/>
         <UnitName Value="synapse_tcp_protocol"/>
-        <CursorPos X="1" Y="23"/>
+        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="17"/>
         <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\..\service_intf.pas"/>
         <UnitName Value="service_intf"/>
-        <CursorPos X="51" Y="34"/>
-        <TopLine Value="21"/>
-        <EditorIndex Value="13"/>
+        <CursorPos X="1" Y="251"/>
+        <TopLine Value="237"/>
+        <EditorIndex Value="15"/>
         <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -73,7 +73,7 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="53" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -94,9 +94,9 @@
       <Unit7>
         <Filename Value="..\..\library_protocol.pas"/>
         <UnitName Value="library_protocol"/>
-        <CursorPos X="1" Y="137"/>
-        <TopLine Value="19"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="5" Y="165"/>
+        <TopLine Value="138"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit7>
@@ -142,7 +142,7 @@
         <UnitName Value="synapse_http_protocol"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="13"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -162,9 +162,9 @@
       <Unit17>
         <Filename Value="..\..\library_imp_utils.pas"/>
         <UnitName Value="library_imp_utils"/>
-        <CursorPos X="1" Y="187"/>
-        <TopLine Value="170"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="89"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit17>
@@ -177,9 +177,9 @@
       <Unit19>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
-        <CursorPos X="1" Y="140"/>
-        <TopLine Value="110"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="1" Y="137"/>
+        <TopLine Value="113"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit19>
@@ -203,7 +203,7 @@
         <UnitName Value="binary_formatter"/>
         <CursorPos X="20" Y="21"/>
         <TopLine Value="12"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="16"/>
         <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit22>
@@ -308,7 +308,7 @@
         <UnitName Value="indy_http_protocol"/>
         <CursorPos X="1" Y="16"/>
         <TopLine Value="109"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="13"/>
         <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit37>
@@ -322,18 +322,16 @@
       <Unit39>
         <Filename Value="..\..\ics_tcp_protocol.pas"/>
         <UnitName Value="ics_tcp_protocol"/>
-        <CursorPos X="5" Y="41"/>
-        <TopLine Value="26"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <UsageCount Value="17"/>
-        <Loaded Value="True"/>
       </Unit39>
       <Unit40>
         <Filename Value="..\..\ics_http_protocol.pas"/>
         <UnitName Value="ics_http_protocol"/>
         <CursorPos X="1" Y="25"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit40>
@@ -342,7 +340,7 @@
         <UnitName Value="same_process_protocol"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="13"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit41>
@@ -359,9 +357,9 @@
       <Unit43>
         <Filename Value="..\..\binary_streamer.pas"/>
         <UnitName Value="binary_streamer"/>
-        <CursorPos X="21" Y="15"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
+        <CursorPos X="1" Y="270"/>
+        <TopLine Value="256"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit43>
@@ -370,12 +368,51 @@
         <UnitName Value="library_base_intf"/>
         <CursorPos X="25" Y="17"/>
         <TopLine Value="5"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit44>
+      <Unit45>
+        <Filename Value="..\..\json_formatter.pas"/>
+        <UnitName Value="json_formatter"/>
+        <CursorPos X="1" Y="123"/>
+        <TopLine Value="109"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <UnitName Value="base_json_formatter"/>
+        <CursorPos X="69" Y="1105"/>
+        <TopLine Value="1088"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="..\..\wst_global.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="4"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit47>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="..\..\library_protocol.pas"/>
+        <Caret Line="120" Column="8" TopLine="117"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\library_protocol.pas"/>
+        <Caret Line="16" Column="3" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\library_protocol.pas"/>
+        <Caret Line="1" Column="2" TopLine="1"/>
+      </Position3>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -392,7 +429,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <UseLineInfoUnit Value="False"/>
+        <GenerateDebugInfo Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
     </Linking>
@@ -401,7 +438,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="4">
+    <BreakPoints Count="6">
       <Item1>
         <Source Value="D:\lazarusClean\fpcsrc\rtl\inc\getopts.pp"/>
         <Line Value="230"/>
@@ -418,6 +455,14 @@
         <Source Value="..\..\ws_helper\wsdl2pas_imp.pas"/>
         <Line Value="606"/>
       </Item4>
+      <Item5>
+        <Source Value="..\..\json_formatter.pas"/>
+        <Line Value="184"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\user_service_intf_proxy.pas"/>
+        <Line Value="65"/>
+      </Item6>
     </BreakPoints>
     <Watches Count="2">
       <Item1>

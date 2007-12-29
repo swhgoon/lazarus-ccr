@@ -91,17 +91,17 @@ object fPropEdit: TfPropEdit
       end
       object edtAttribute: TCheckBox
         Left = 20
-        Height = 13
+        Height = 19
         Top = 170
-        Width = 101
+        Width = 107
         Caption = 'Attribute Property'
         TabOrder = 2
       end
       object edtOptional: TCheckBox
         Left = 20
-        Height = 13
+        Height = 19
         Top = 218
-        Width = 105
+        Width = 111
         Caption = 'Optional property'
         Font.Style = [fsItalic]
         TabOrder = 3

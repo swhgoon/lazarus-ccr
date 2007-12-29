@@ -134,6 +134,14 @@ var
 begin
   edtName.Text := '';
   edtType.Clear();
+  if Assigned(FClassObject) and
+     FClassObject.InheritsFrom(TPasClassType) and
+     Assigned(TPasClassType(FClassObject).AncestorType) and
+     TPasClassType(FClassObject).AncestorType.InheritsFrom(TPasNativeSimpleContentClassType)
+  then begin
+    edtAttribute.Checked := True;
+    edtAttribute.Enabled := False;
+  end;
   edtType.Items.BeginUpdate();
   try
     edtType.Items.Clear();

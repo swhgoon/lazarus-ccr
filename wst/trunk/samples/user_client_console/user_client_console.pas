@@ -5,8 +5,8 @@ program user_client_console;
 uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
-  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol, ics_tcp_protocol, ics_http_protocol,
-  soap_formatter, binary_formatter,
+  same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
+  soap_formatter, binary_formatter, json_formatter,
   user_service_intf, xmlrpc_formatter;
 
 var
@@ -135,19 +135,20 @@ end;
 
 type
   TTransportType = ( ttLibrary, ttTCP, ttHTTP );
-  TFormatType = ( ftBinary, ftSoap, ftXmlRPC );
+  TFormatType = ( ftBinary, ftSoap, ftXmlRPC, ftJSON );
 var
   TransportType : TTransportType;
   FormatValue : TFormatType;
 procedure CreateProxy();
 const ADDRESS_MAP : array[TTransportType] of string = (
         'LIB:FileName=..\library_server\lib_server.dll;target=UserService',
+        //'LIB:FileName=C:\Programmes\D7\etatcivil\partages\wst\samples\library_server\lib_server.dll;target=UserService',
         //'TCP:Address=172.16.82.31;Port=1234;target=UserService',
         'TCP:Address=127.0.0.1;Port=1234;target=UserService',
         'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
         //'http:Address=http://127.0.0.1:8000/services/UserService'
       );
-      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc' );
+      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc', 'json' );
 var
   buff : string;
 begin
@@ -196,6 +197,7 @@ begin
   WriteLn();
   WriteLn('Select a messaging format : ');
   WriteLn('  B : binary ( binary_formatter.pas )');
+  WriteLn('  J : JSON   ( json_formatter.pas )');
   WriteLn('  S : soap   ( soap_formatter.pas )');
   WriteLn('  X : XmlRpc ( xmlrpc_formatter.pas )');
   WriteLn();
@@ -203,9 +205,10 @@ begin
   while True do begin
     ReadLn(buff);
     buff := UpperCase(Trim(buff));
-    if ( Length(buff) > 0 ) and ( buff[1] in ['B','S', 'X'] ) then begin
+    if ( Length(buff) > 0 ) and ( buff[1] in ['B', 'J', 'S', 'X'] ) then begin
       case buff[1] of
         'B' : FormatValue := ftBinary;
+        'J' : FormatValue := ftJSON;
         'S' : FormatValue := ftSoap;
         'X' : FormatValue := ftXmlRPC;
       end;

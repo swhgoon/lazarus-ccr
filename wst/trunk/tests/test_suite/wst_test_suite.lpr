@@ -17,7 +17,8 @@ uses
   metadata_generator, parserdefs, server_service_intf, metadata_wsdl,
   test_parserdef, base_xmlrpc_formatter, wst_fpc_xml, test_utilities,
   server_service_xmlrpc, test_parsers, wsdl_generator, xsd_generator, 
-xsd_consts, base_json_formatter, wsdl_parser, test_support;
+xsd_consts, base_json_formatter, wsdl_parser, test_support, basex_encode,
+test_basex_encode, json_formatter, server_service_json;
 
 Const
   ShortOpts = 'alh';

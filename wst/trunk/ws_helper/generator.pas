@@ -1594,9 +1594,9 @@ var
         trueAncestor := ultimAnc;
       end;
       if trueAncestor.InheritsFrom(TPasNativeSimpleType) and
-         Assigned(TPasNativeSimpleType(trueAncestor).BoxedType)
+         Assigned(TPasNativeSimpleType(trueAncestor).ExtendableType)
       then begin
-        trueAncestor := TPasNativeSimpleType(trueAncestor).BoxedType;
+        trueAncestor := TPasNativeSimpleType(trueAncestor).ExtendableType;
       end;
       s := Format('%s',[trueAncestor.Name]);
     end else begin

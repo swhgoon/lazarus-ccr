@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="10"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -30,13 +30,13 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="60">
+    <Units Count="65">
       <Unit0>
         <Filename Value="tcp_server.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="tcp_server"/>
-        <CursorPos X="22" Y="37"/>
-        <TopLine Value="27"/>
+        <CursorPos X="25" Y="30"/>
+        <TopLine Value="18"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="89"/>
         <Loaded Value="True"/>
@@ -79,9 +79,7 @@
         <UnitName Value="server_service_soap"/>
         <CursorPos X="33" Y="21"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="31"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\..\server_binary_formatter.pas"/>
@@ -122,9 +120,9 @@
       <Unit12>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="13" Y="1199"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
+        <CursorPos X="1" Y="2470"/>
+        <TopLine Value="2456"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="33"/>
         <Bookmarks Count="1">
           <Item0 X="19" Y="545" ID="0"/>
@@ -148,9 +146,11 @@
       <Unit15>
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
-        <CursorPos X="48" Y="34"/>
-        <TopLine Value="11"/>
+        <CursorPos X="1" Y="82"/>
+        <TopLine Value="68"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="39"/>
+        <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="..\user_service_intf.wst"/>
@@ -212,9 +212,9 @@
       <Unit25>
         <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
-        <CursorPos X="5" Y="18"/>
-        <TopLine Value="72"/>
-        <EditorIndex Value="5"/>
+        <CursorPos X="1" Y="500"/>
+        <TopLine Value="486"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -227,9 +227,9 @@
       <Unit27>
         <Filename Value="..\user_service_intf_imp.pas"/>
         <UnitName Value="user_service_intf_imp"/>
-        <CursorPos X="60" Y="51"/>
-        <TopLine Value="28"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="1" Y="212"/>
+        <TopLine Value="198"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit27>
@@ -245,7 +245,7 @@
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="24" Y="967"/>
         <TopLine Value="325"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -293,18 +293,20 @@
       <Unit36>
         <Filename Value="..\..\synapse_tcp_server.pas"/>
         <UnitName Value="synapse_tcp_server"/>
-        <CursorPos X="35" Y="92"/>
-        <TopLine Value="74"/>
-        <EditorIndex Value="3"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="50"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
-        <CursorPos X="1" Y="140"/>
-        <TopLine Value="30"/>
+        <CursorPos X="5" Y="119"/>
+        <TopLine Value="113"/>
+        <EditorIndex Value="14"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit37>
       <Unit38>
         <Filename Value="..\..\wst.inc"/>
@@ -337,7 +339,7 @@
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="26" Y="57"/>
         <TopLine Value="21"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit42>
@@ -372,7 +374,7 @@
         <UnitName Value="server_listener"/>
         <CursorPos X="21" Y="15"/>
         <TopLine Value="6"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="13"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit47>
@@ -443,7 +445,7 @@
         <UnitName Value="imp_utils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="10"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="12"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit57>
@@ -458,12 +460,174 @@
         <UnitName Value="config_objects"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <UnitName Value="server_service_json"/>
+        <CursorPos X="1" Y="120"/>
+        <TopLine Value="2"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-      </Unit59>
+      </Unit60>
+      <Unit61>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\others_package\synapse\blcksock.pas"/>
+        <UnitName Value="blcksock"/>
+        <CursorPos X="1" Y="2407"/>
+        <TopLine Value="2393"/>
+        <UsageCount Value="10"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\fpc\2.2.1\source\packages\fcl-json\src\fpjson.pp"/>
+        <UnitName Value="fpjson"/>
+        <CursorPos X="30" Y="1324"/>
+        <TopLine Value="1323"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <UnitName Value="base_json_formatter"/>
+        <CursorPos X="1" Y="1073"/>
+        <TopLine Value="1059"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="..\..\server_service_imputils.pas"/>
+        <UnitName Value="server_service_imputils"/>
+        <CursorPos X="1" Y="88"/>
+        <TopLine Value="74"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit64>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\user_service_intf_imp.pas"/>
+        <Caret Line="211" Column="1" TopLine="197"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\user_service_intf_imp.pas"/>
+        <Caret Line="212" Column="1" TopLine="198"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\user_service_intf_binder.pas"/>
+        <Caret Line="80" Column="1" TopLine="66"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="792" Column="1" TopLine="765"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="686" Column="1" TopLine="672"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="687" Column="1" TopLine="673"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="693" Column="1" TopLine="679"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="695" Column="1" TopLine="681"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\user_service_intf_binder.pas"/>
+        <Caret Line="82" Column="1" TopLine="68"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="479" Column="1" TopLine="465"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="5386" Column="1" TopLine="5359"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="2460" Column="1" TopLine="2446"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="2461" Column="1" TopLine="2447"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="2462" Column="1" TopLine="2448"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="2463" Column="1" TopLine="2449"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <Caret Line="2470" Column="1" TopLine="2456"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="498" Column="1" TopLine="484"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\..\server_service_imputils.pas"/>
+        <Caret Line="108" Column="1" TopLine="86"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\..\server_service_imputils.pas"/>
+        <Caret Line="86" Column="1" TopLine="72"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\..\server_service_imputils.pas"/>
+        <Caret Line="87" Column="1" TopLine="73"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\..\server_service_imputils.pas"/>
+        <Caret Line="88" Column="1" TopLine="74"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="499" Column="1" TopLine="485"/>
+      </Position22>
+      <Position23>
+        <Filename Value="..\..\server_service_intf.pas"/>
+        <Caret Line="500" Column="1" TopLine="486"/>
+      </Position23>
+      <Position24>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <Caret Line="173" Column="1" TopLine="149"/>
+      </Position24>
+      <Position25>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <Caret Line="1071" Column="1" TopLine="1057"/>
+      </Position25>
+      <Position26>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <Caret Line="1072" Column="1" TopLine="1058"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\..\base_json_formatter.pas"/>
+        <Caret Line="1073" Column="1" TopLine="1059"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <Caret Line="109" Column="57" TopLine="89"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\..\server_service_json.pas"/>
+        <Caret Line="120" Column="1" TopLine="106"/>
+      </Position29>
+      <Position30>
+        <Filename Value="tcp_server.pas"/>
+        <Caret Line="30" Column="25" TopLine="18"/>
+      </Position30>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

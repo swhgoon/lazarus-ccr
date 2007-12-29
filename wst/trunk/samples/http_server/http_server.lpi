@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="7"/>
+      <ActiveEditorIndexAtStart Value="6"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -58,7 +58,7 @@
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="9"/>
         <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -67,7 +67,7 @@
         <UnitName Value="metadata_wsdl"/>
         <CursorPos X="80" Y="80"/>
         <TopLine Value="66"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="10"/>
         <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -83,7 +83,7 @@
         <UnitName Value="user_service_intf_imp"/>
         <CursorPos X="1" Y="17"/>
         <TopLine Value="44"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -92,7 +92,7 @@
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -102,7 +102,7 @@
         <UnitName Value="user_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="83"/>
         <Loaded Value="True"/>
       </Unit7>
@@ -111,7 +111,7 @@
         <UnitName Value="metadata_repository"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="7"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="11"/>
         <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -127,7 +127,7 @@
         <UnitName Value="server_service_intf"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -339,7 +339,7 @@
         <UnitName Value="user_service_intf_proxy"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit42>
@@ -441,7 +441,7 @@
         <UnitName Value="indy_tcp_server"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit55>
@@ -575,9 +575,7 @@
         <UnitName Value="user_service_intf_proxy"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit74>
       <Unit75>
         <Filename Value="user_service_intf_binder.pas"/>
@@ -587,12 +585,7 @@
         <UsageCount Value="10"/>
       </Unit75>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="..\user_service_intf_imp.pas"/>
-        <Caret Line="51" Column="60" TopLine="32"/>
-      </Position1>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
