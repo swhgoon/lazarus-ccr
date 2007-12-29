@@ -29,7 +29,10 @@ type
     FCallProcedureName : string;
     FCallTarget : string;
     FIDObject : TJSONData;
-  Protected
+    FVersion : string;
+    FVersionEnum : TJonRPCVersion;
+  protected
+    procedure SetVersion(const AValue : string);
     procedure BeginCallResponse(Const AProcName,ATarget:string);
     procedure EndCallResponse();
     procedure BeginCallRead(ACallContext : ICallContext);
@@ -41,13 +44,17 @@ type
     );
     procedure EndExceptionList();
   public
+    constructor Create();override;
     destructor Destroy();override;
+    property Version : string read FVersion;
+    property VersionEnum : TJonRPCVersion read FVersionEnum;
   end;
 
   procedure Server_service_RegisterJsonFormat();
 
 implementation
-uses jsonparser;
+uses
+  jsonparser, StrUtils;
 
 procedure Server_service_RegisterJsonFormat();
 begin
@@ -90,10 +97,29 @@ end;
 
 { TJsonRpcFormatter }
 
+procedure TJsonRpcFormatter.SetVersion(const AValue : string);
+var
+  i : PtrInt;
+begin
+  if ( FVersion = AValue ) then
+    Exit;
+  i := AnsiIndexStr(AValue,[s_json_rpc_version_10,s_json_rpc_version_11]);
+  if ( i < 0 ) then
+    Error('JSON-RPC version not supported : %s',[AValue]);
+  FVersion := AValue;
+  FVersionEnum := TJonRPCVersion(i);
+end;
+
 procedure TJsonRpcFormatter.BeginCallResponse(const AProcName, ATarget : string);
+var
+  locBuffer : string;
 begin
   Clear();
   BeginObject('',nil);
+    if ( VersionEnum = jsonRPC_11 ) then begin
+      locBuffer := s_json_rpc_version_11;
+      Put(s_json_version,TypeInfo(string),locBuffer);
+    end;
 end;
 
 procedure TJsonRpcFormatter.EndCallResponse();
@@ -101,12 +127,16 @@ var
   locRoot : TJSONObject;
 begin
     locRoot := GetRootData();
-    locRoot.Elements[s_json_error] := TJSONNull.Create();
+    if ( locRoot.IndexOfName(s_json_result) < 0 ) then
+      locRoot.Elements[s_json_result] := TJSONNull.Create();
+    if ( VersionEnum = jsonRPC_10 ) then
+      locRoot.Elements[s_json_error] := TJSONNull.Create();
     if Assigned(FIDObject) then begin
       locRoot.Elements[s_json_id] := FIDObject;
       FIDObject := nil;
     end else begin
-      locRoot.Elements[s_json_id] := TJSONNull.Create();
+      if ( VersionEnum = jsonRPC_10 ) then
+        locRoot.Elements[s_json_id] := TJSONNull.Create();
     end;
   EndScope();
 end;
@@ -115,19 +145,46 @@ procedure TJsonRpcFormatter.BeginCallRead(ACallContext : ICallContext);
 var
   nameBuffer, strBuffer : string;
   rootObj : TJSONObject;
+  tmpObj : TJSONData;
   i : PtrInt;
+  paramsAsArray : Boolean;
 begin
   ClearStack();
   FreeAndNil(FIDObject);
   rootObj := GetRootData();
   PushStack(rootObj,stObject);
+  
+  i := rootObj.IndexOfName(s_json_version);
+  strBuffer := s_json_rpc_version_10; // Assume 1.0 by default
+  if ( i > -1 ) then begin
+    tmpObj := rootObj.Items[i];
+    if not rootObj.Items[i].IsNull then
+      strBuffer := tmpObj.AsString;
+  end;
+  SetVersion(strBuffer);
+  
   nameBuffer := s_json_method;
   Get(TypeInfo(string),nameBuffer,FCallProcedureName);
   i := rootObj.IndexOfName(s_json_id);
   if ( i > -1 ) then
-    FIDObject := Clone(rootObj);
+    FIDObject := Clone(rootObj.Items[i]);
+
+  if ( VersionEnum = jsonRPC_11 ) then begin
+    i := rootObj.IndexOfName(s_json_params);
+    if ( i > 0 ) then begin
+      paramsAsArray := ( rootObj.Items[i].JSONType() = jtArray );
+    end else begin
+      rootObj.Add(s_json_params,TJSONArray.Create());
+      paramsAsArray := True;
+    end;
+  end else begin
+    paramsAsArray := True;
+  end;
   nameBuffer := s_json_params;
-  BeginArrayRead(nameBuffer,nil,asScoped,'');
+  if paramsAsArray then
+    BeginArrayRead(nameBuffer,nil,asScoped,'')
+  else
+    BeginObjectRead(nameBuffer,nil);
 end;
 
 function TJsonRpcFormatter.GetCallProcedureName() : String;
@@ -151,7 +208,10 @@ begin
   BeginObject('',nil);
 
     locRoot := GetRootData();
-    locRoot.Elements[s_json_result] := TJSONNull.Create();
+    case VersionEnum of
+      jsonRPC_10 : locRoot.Elements[s_json_result] := TJSONNull.Create();
+      jsonRPC_11 : locRoot.Add(s_json_version,s_json_rpc_version_11)
+    end;
     locError := TJSONObject.Create();
     locRoot.Elements[s_json_error] := locError;
     locError.Add(s_json_name,'');
@@ -168,6 +228,12 @@ end;
 procedure TJsonRpcFormatter.EndExceptionList();
 begin
   EndScope();
+end;
+
+constructor TJsonRpcFormatter.Create();
+begin
+  inherited Create();
+  SetVersion(s_json_rpc_version_10);
 end;
 
 destructor TJsonRpcFormatter.Destroy();
