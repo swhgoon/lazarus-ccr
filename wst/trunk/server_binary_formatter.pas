@@ -71,6 +71,7 @@ end;
 
 procedure TBinaryFormatter.BeginCallResponse(const AProcName, ATarget: string);
 begin
+  Clear();
   BeginObject('Body',Nil);
     BeginObject(ATarget,Nil);
       BeginObject(AProcName + 'Response',Nil);
@@ -118,6 +119,7 @@ procedure TBinaryFormatter.BeginExceptionList(
   const AErrorMsg: string
 );
 begin
+  Clear();
   BeginObject('Body',Nil);
     BeginObject('Fault',Nil);
       Put('faultcode',TypeInfo(string),AErrorCode);

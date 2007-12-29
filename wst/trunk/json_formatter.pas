@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   base_service_intf, service_intf, imp_utils,
-  base_json_formatter, fpjson;
+  base_json_formatter, fpjson, SyncObjs;
 
 type
 
@@ -31,8 +31,12 @@ type
     FPropMngr : IPropertyManager;
     FCallProcedureName : string;
     FCallTarget : string;
-  protected
+    FVersion : string;
+    FVersionEnum : TJonRPCVersion;
+  private
+    procedure SetVersion(const AValue : string);
   public
+    constructor Create();override;
     function GetPropertyManager():IPropertyManager;
 
     procedure BeginCall(
@@ -45,6 +49,9 @@ type
 
     function GetCallProcedureName():string;
     function GetCallTarget():string;
+    property VersionEnum : TJonRPCVersion read FVersionEnum;
+  published
+    property Version : string read FVersion write SetVersion;
   end;
   
   { TJsonRpcCallMaker }
@@ -62,11 +69,65 @@ type
     );
   End;
 
+  TJsonRpcCustomIdManager = class
+  public
+    function GetNewID() : PtrInt;virtual;abstract;
+  end;
+  
+  { TJsonRpcSequencedIdManager }
+
+  TJsonRpcSequencedIdManager = class(TJsonRpcCustomIdManager)
+  private
+    FIdSequence : PtrInt;
+    FIdSequenceLock : TCriticalSection;
+  public
+    constructor Create();
+    destructor Destroy();override;
+    function GetNewID() : PtrInt;override;
+  end;
+  
   procedure RegisterJsonProtocol();
+  procedure SetIdManager(AValue : TJsonRpcCustomIdManager);{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetIdManager():TJsonRpcCustomIdManager ;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
 implementation
+uses
+  StrUtils;
+  
+var
+  FIdManager : TJsonRpcCustomIdManager;
 
+function GetIdManager():TJsonRpcCustomIdManager ;
+begin
+  Result := FIdManager;
+end;
+
+procedure SetIdManager(AValue : TJsonRpcCustomIdManager);
+begin
+  FreeAndNil(FIdManager);
+  FIdManager := AValue;
+end;
+  
 { TJsonRpcFormatter }
+
+procedure TJsonRpcFormatter.SetVersion(const AValue : string);
+var
+  i : PtrInt;
+begin
+  if ( FVersion = AValue ) then
+    Exit;
+  i := AnsiIndexStr(AValue,[s_json_rpc_version_10,s_json_rpc_version_11]);
+  if ( i < 0 ) then
+    Error('JSON-RPC version not supported : %s',[AValue]);
+  FVersion := AValue;
+  FVersionEnum := TJonRPCVersion(i);
+end;
+
+constructor TJsonRpcFormatter.Create();
+begin
+  inherited Create();
+  SetVersion(s_json_rpc_version_10);
+end;
 
 function TJsonRpcFormatter.GetPropertyManager() : IPropertyManager;
 begin
@@ -83,14 +144,37 @@ begin
   FCallProcedureName := AProcName;
   FCallTarget := ATarget;
 
-  BeginObject('',Nil);
-    Put(s_json_method,TypeInfo(string),FCallProcedureName);
-    BeginArray(s_json_params,Nil,nil,[0,0],asScoped);
+  case VersionEnum of
+    jsonRPC_10 :
+      begin
+        BeginObject('',Nil);
+          Put(s_json_method,TypeInfo(string),FCallProcedureName);
+          BeginArray(s_json_params,Nil,nil,[0,0],asScoped);
+      end;
+    jsonRPC_11 :
+      begin
+        BeginObject('',Nil);
+          Put(s_json_version,TypeInfo(string),Version);
+          Put(s_json_method,TypeInfo(string),FCallProcedureName);
+          BeginArray(s_json_params,Nil,nil,[0,0],asScoped);
+      end;
+    else
+      Error('JSON-RPC version not supported : %s',[Version]);
+  end;
 end;
 
 procedure TJsonRpcFormatter.EndCall();
+var
+  i : PtrInt;
 begin
     EndScope(); // params
+    if ( VersionEnum = jsonRPC_10 ) then begin
+      if Assigned(FIdManager) then
+        i := FIdManager.GetNewID()
+      else
+        i := 0;
+      Put(s_json_id,TypeInfo(PtrInt),i);
+    end;
   EndScope();   // Root object
 end;
 
@@ -116,7 +200,7 @@ begin
     if ( i > -1 ) then
       errMsg := remoteErr.Items[i].AsString
     else
-      errMsg := '';
+      errMsg := remoteErr.AsJSON;
     e := EJsonRpcException.Create(errMsg);
     e.FaultCode := errCode;
     e.FaultString := errMsg;
@@ -197,7 +281,35 @@ begin
   );
 end;
 
-Initialization
+{ TJsonRpcSequencedIdManager }
+
+constructor TJsonRpcSequencedIdManager.Create();
+begin
+  FIdSequenceLock := TCriticalSection.Create();
+end;
+
+destructor TJsonRpcSequencedIdManager.Destroy();
+begin
+  FreeAndNil(FIdSequenceLock);
+  inherited Destroy();
+end;
+
+function TJsonRpcSequencedIdManager.GetNewID() : PtrInt;
+begin
+  FIdSequenceLock.Acquire();
+  try
+    Inc(FIdSequence);
+    Result := FIdSequence;
+  finally
+    FIdSequenceLock.Release();
+  end;
+end;
+
+initialization
+  SetIdManager(TJsonRpcSequencedIdManager.Create());
   RegisterJsonProtocol();
+  
+finalization
+  FreeAndNil(FIdManager);
   
 end.

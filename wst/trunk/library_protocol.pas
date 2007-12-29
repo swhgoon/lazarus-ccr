@@ -13,12 +13,12 @@
 {$INCLUDE wst_global.inc}
 unit library_protocol;
 
-//{$DEFINE WST_DBG}
+{$DEFINE WST_DBG}
 
 interface
 
 uses
-  Classes, SysUtils,{$IFDEF WST_DBG}Dialogs,{$ENDIF}
+  Classes, SysUtils,
   service_intf, imp_utils, base_service_intf, library_base_intf,
   library_imp_utils;
 
@@ -148,9 +148,7 @@ begin
     SetLength(s,AResponse.Size);
     AResponse.Read(s[1],AResponse.Size);
     if IsConsole then
-      WriteLn(s)
-    {else
-      ShowMessage(s);}
+      WriteLn(s);
 {$ENDIF WST_DBG}
   finally
     buffStream.Free();

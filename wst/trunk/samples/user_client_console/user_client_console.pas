@@ -135,7 +135,7 @@ end;
 
 type
   TTransportType = ( ttLibrary, ttTCP, ttHTTP );
-  TFormatType = ( ftBinary, ftSoap, ftXmlRPC, ftJSON );
+  TFormatType = ( ftBinary, ftSoap, ftXmlRPC, ftJSON_10, ftJSON_11 );
 var
   TransportType : TTransportType;
   FormatValue : TFormatType;
@@ -148,20 +148,23 @@ const ADDRESS_MAP : array[TTransportType] of string = (
         'http:Address=http://127.0.0.1:8888/wst/services/lib_server/UserService'
         //'http:Address=http://127.0.0.1:8000/services/UserService'
       );
-      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc', 'json' );
+      FORMAT_MAP : array[TFormatType] of string =( 'binary', 'soap', 'xmlrpc', 'json', 'json' );
 var
-  buff : string;
+  buffTransport, buffFormat : string;
 begin
   if ( TransportType = ttHTTP ) then
-    buff := Format('%s/?format=%s',[ADDRESS_MAP[TransportType],FORMAT_MAP[FormatValue]])
+    buffTransport := Format('%s/?format=%s',[ADDRESS_MAP[TransportType],FORMAT_MAP[FormatValue]])
   else
-    buff := ADDRESS_MAP[TransportType];
+    buffTransport := ADDRESS_MAP[TransportType];
   if ( TransportType = ttLibrary ) then
-    buff := StringReplace(buff,'\',DirectorySeparator,[rfReplaceAll, rfIgnoreCase]);
+    buffTransport := StringReplace(buffTransport,'\',DirectorySeparator,[rfReplaceAll, rfIgnoreCase]);
+  buffFormat := FORMAT_MAP[FormatValue] + ':';
+  if ( FormatValue = ftJSON_11 ) then
+    buffFormat := Format('%sversion=%s',[buffFormat,'1.1']);
   UserServiceInst := TUserService_Proxy.Create(
                        'UserService',
-                       FORMAT_MAP[FormatValue] + ':',
-                       buff
+                       buffFormat,
+                       buffTransport
                      );
 end;
 
@@ -197,7 +200,8 @@ begin
   WriteLn();
   WriteLn('Select a messaging format : ');
   WriteLn('  B : binary ( binary_formatter.pas )');
-  WriteLn('  J : JSON   ( json_formatter.pas )');
+  WriteLn('  J : JSON-RPC 1.0 ( json_formatter.pas )');
+  WriteLn('  K : JSON-RPC 1.1 ( json_formatter.pas )');
   WriteLn('  S : soap   ( soap_formatter.pas )');
   WriteLn('  X : XmlRpc ( xmlrpc_formatter.pas )');
   WriteLn();
@@ -205,10 +209,11 @@ begin
   while True do begin
     ReadLn(buff);
     buff := UpperCase(Trim(buff));
-    if ( Length(buff) > 0 ) and ( buff[1] in ['B', 'J', 'S', 'X'] ) then begin
+    if ( Length(buff) > 0 ) and ( buff[1] in ['B', 'J', 'K', 'S', 'X'] ) then begin
       case buff[1] of
         'B' : FormatValue := ftBinary;
-        'J' : FormatValue := ftJSON;
+        'J' : FormatValue := ftJSON_10;
+        'K' : FormatValue := ftJSON_11;
         'S' : FormatValue := ftSoap;
         'X' : FormatValue := ftXmlRPC;
       end;

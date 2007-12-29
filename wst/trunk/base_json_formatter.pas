@@ -33,11 +33,15 @@ const
   s_json_name = 'name';
   s_json_params = 'params';
   s_json_result = 'result';
+  s_json_version = 'version';
+  s_json_rpc_version_10 = '1.0';
+  s_json_rpc_version_11 = '1.1';
   
   stNilScope = stBase + 7;
   
 type
 
+  TJonRPCVersion = ( jsonRPC_10, jsonRPC_11 );
   TJsonInteger = Integer;
   TEnumIntType = Integer;
 
