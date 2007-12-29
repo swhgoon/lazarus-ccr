@@ -18,7 +18,7 @@ uses
   test_parserdef, base_xmlrpc_formatter, wst_fpc_xml, test_utilities,
   server_service_xmlrpc, test_parsers, wsdl_generator, xsd_generator, 
 xsd_consts, base_json_formatter, wsdl_parser, test_support, basex_encode,
-test_basex_encode, json_formatter, server_service_json;
+test_basex_encode, json_formatter, server_service_json, test_json;
 
 Const
   ShortOpts = 'alh';
