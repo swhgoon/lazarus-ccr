@@ -287,16 +287,6 @@ type
     Result: Integer;
   end;
 
-  // The next two message records are not declared in Delphi 6 and lower.
-  TWMPrint = packed record
-    Msg: Cardinal;
-    DC: HDC;
-    Flags: Cardinal;
-    Result: Integer;
-  end;
-
-  TWMPrintClient = TWMPrint;
-
   TLMContextMenu = TLMMouse;
 
   // Be careful when adding new states as this might change the size of the type which in turn
@@ -3553,7 +3543,7 @@ type
     procedure EnumerateFormats(TreeClass: TVirtualTreeClass; const Formats: TStrings); overload;
     function FindFormat(FormatString: string): PClipboardFormatListEntry; overload;
     function FindFormat(FormatString: string; var Fmt: Word): TVirtualTreeClass; overload;
-    function FindFormat(Fmt: Word; var Description: string): TVirtualTreeClass; overload;
+    function FindFormat(Fmt: Word; out Description: string): TVirtualTreeClass; overload;
   end;
 
 var
@@ -3756,7 +3746,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TClipboardFormatList.FindFormat(Fmt: Word; var Description: string): TVirtualTreeClass;
+function TClipboardFormatList.FindFormat(Fmt: Word; out Description: string): TVirtualTreeClass;
 
 var
   I: Integer;
@@ -3968,9 +3958,9 @@ begin
     J := R;
     P := TheArray[(L + R) shr 1];
     repeat
-      while Cardinal(TheArray[I]) < Cardinal(P) do
+      while PtrUInt(TheArray[I]) < PtrUInt(P) do
         Inc(I);
-      while Cardinal(TheArray[J]) > Cardinal(P) do
+      while PtrUInt(TheArray[J]) > PtrUInt(P) do
         Dec(J);
       if I <= J then
       begin
@@ -4423,7 +4413,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function GetBitmapBitsFromDeviceContext(DC: HDC; var Width, Height: Integer): Pointer;
+function GetBitmapBitsFromDeviceContext(DC: HDC; out Width, Height: Integer): Pointer;
 
 // Helper function used to retrieve the bitmap selected into the given device context. If there is a bitmap then
 // the function will return a pointer to its bits otherwise nil is returned.
@@ -4504,7 +4494,7 @@ begin
   if Height > 0 then  // bottom-up DIB
     Row := Height - Row - 1;
   // Return DWORD aligned address of the requested scanline.
-  Integer(Result) := Integer(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
+  PtrInt(Result) := PtrInt(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14138,84 +14128,81 @@ var
 
 begin
   Logger.EnterMethod([lcDrag],'DoDragMsg');
-  with Self do
+  S := ADragObject;
+  Formats := nil;
+
+  // Let the ancestor handle dock operations.
+  if S is TDragDockObject then
+    inherited
+  else
   begin
-    S := ADragObject;
-    Formats := nil;
+    // We need an extra check for the control drag object as there might be other objects not derived from
+    // this class (e.g. TActionDragObject).
+    if not (tsUserDragObject in FStates) and (S is TDragControlObject) then
+      S := (S as TDragControlObject).Control;
+    case ADragMessage of
+      dmDragEnter, dmDragLeave, dmDragMove:
+        begin
+          if ADragMessage = dmDragEnter then
+            DoStateChange([tsVCLDragging]);
+          if ADragMessage = dmDragLeave then
+            DoStateChange([], [tsVCLDragging]);
 
-    // Let the ancestor handle dock operations.
-    if S is TDragDockObject then
-      inherited
-    else
-    begin
-      // We need an extra check for the control drag object as there might be other objects not derived from
-      // this class (e.g. TActionDragObject).
-      if not (tsUserDragObject in FStates) and (S is TDragControlObject) then
-        S := (S as TDragControlObject).Control;
-      case ADragMessage of
-        dmDragEnter, dmDragLeave, dmDragMove:
+          if ADragMessage = dmDragMove then
+            with ScreenToClient(APosition) do
+              DoAutoScroll(X, Y);
+
+          ShiftState := 0;
+          // Alt key will be queried by the KeysToShiftState function in DragOver.
+          if GetKeyState(VK_SHIFT) < 0 then
+            ShiftState := ShiftState or MK_SHIFT;
+          if GetKeyState(VK_CONTROL) < 0 then
+            ShiftState := ShiftState or MK_CONTROL;
+
+          // Allowed drop effects are simulated for VCL dd.
+          Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
+          DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
+          FLastVCLDragTarget := FDropTargetNode;
+          FVCLDragEffect := Result;
+          if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
           begin
-            if ADragMessage = dmDragEnter then
-              DoStateChange([tsVCLDragging]);
-            if ADragMessage = dmDragLeave then
-              DoStateChange([], [tsVCLDragging]);
-
-            if ADragMessage = dmDragMove then
-              with ScreenToClient(APosition) do
-                DoAutoScroll(X, Y);
-
-            ShiftState := 0;
-            // Alt key will be queried by the KeysToShiftState function in DragOver.
-            if GetKeyState(VK_SHIFT) < 0 then
-              ShiftState := ShiftState or MK_SHIFT;
-            if GetKeyState(VK_CONTROL) < 0 then
-              ShiftState := ShiftState or MK_CONTROL;
-
-            // Allowed drop effects are simulated for VCL dd.
-            Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
-            DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
-            FLastVCLDragTarget := FDropTargetNode;
-            FVCLDragEffect := Result;
-            if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
-            begin
-              InvalidateNode(FDropTargetNode);
-              FDropTargetNode := nil;
-            end;
+            InvalidateNode(FDropTargetNode);
+            FDropTargetNode := nil;
           end;
-        dmDragDrop:
+        end;
+      dmDragDrop:
+        begin
+          ShiftState := 0;
+          // Alt key will be queried by the KeysToShiftState function in DragOver
+          if GetKeyState(VK_SHIFT) < 0 then
+            ShiftState := ShiftState or MK_SHIFT;
+          if GetKeyState(VK_CONTROL) < 0 then
+            ShiftState := ShiftState or MK_CONTROL;
+
+          // allowed drop effects are simulated for VCL dd,
+          // replace target node with cached node from other VCL dd messages
+          if Assigned(FDropTargetNode) then
+            InvalidateNode(FDropTargetNode);
+          FDropTargetNode := FLastVCLDragTarget;
+          P := ScreenToClient(APosition);
+          DoDragDrop(S, nil, Formats, KeysToShiftState(ShiftState), P, FVCLDragEffect, FLastDropMode);
+          if Assigned(FDropTargetNode) then
           begin
-            ShiftState := 0;
-            // Alt key will be queried by the KeysToShiftState function in DragOver
-            if GetKeyState(VK_SHIFT) < 0 then
-              ShiftState := ShiftState or MK_SHIFT;
-            if GetKeyState(VK_CONTROL) < 0 then
-              ShiftState := ShiftState or MK_CONTROL;
-
-            // allowed drop effects are simulated for VCL dd,
-            // replace target node with cached node from other VCL dd messages
-            if Assigned(FDropTargetNode) then
-              InvalidateNode(FDropTargetNode);
-            FDropTargetNode := FLastVCLDragTarget;
-            P := ScreenToClient(APosition);
-            DoDragDrop(S, nil, Formats, KeysToShiftState(ShiftState), P, FVCLDragEffect, FLastDropMode);
-            if Assigned(FDropTargetNode) then
-            begin
-              InvalidateNode(FDropTargetNode);
-              FDropTargetNode := nil;
-            end;
+            InvalidateNode(FDropTargetNode);
+            FDropTargetNode := nil;
           end;
-        dmFindTarget:
-          begin
-            Result := Integer(ControlAtPos(ScreenToClient(APosition), False));
-            if Result = 0 then
-              Result := Integer(Self);
+        end;
+      dmFindTarget:
+        begin
+          Result := Integer(ControlAtPos(ScreenToClient(APosition), False));
+          if Result = 0 then
+            Result := Integer(Self);
 
-            // This is a reliable place to check whether VCL drag has
-            // really begun.
-            if tsVCLDragPending in FStates then
-              DoStateChange([tsVCLDragging], [tsVCLDragPending, tsEditPending, tsClearPending]);
-          end;
-      end;
+          // This is a reliable place to check whether VCL drag has
+          // really begun.
+          if tsVCLDragPending in FStates then
+            DoStateChange([tsVCLDragging], [tsVCLDragPending, tsEditPending, tsClearPending]);
+        end;
     end;
   end;
   Logger.ExitMethod([lcDrag],'DoDragMsg');
@@ -29981,7 +29968,7 @@ begin
 
     // Create HTML table based on the tree structure. To simplify formatting we use styles defined in a small CSS area.
     Buffer.Add('<style type="text/css">');
-    Buffer.AddnewLine;
+    Buffer.AddNewLine;
     WriteStyle('default', Font);
     Buffer.AddNewLine;
     WriteStyle('header', FHeader.Font);
