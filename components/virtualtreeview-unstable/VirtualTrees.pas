@@ -2094,7 +2094,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMDenySubclassing(var Message: TLMessage); message CM_DENYSUBCLASSING;
-    procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    //procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
@@ -2210,6 +2210,8 @@ TBaseVirtualTree = class(TCustomControl)
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; virtual;
     procedure DoDragging(P: TPoint); virtual;
     procedure DoDragExpand; virtual;
+    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
+      ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord): Boolean; virtual;
     procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint;
@@ -2659,7 +2661,7 @@ TBaseVirtualTree = class(TCustomControl)
     property ChildrenInitialized[Node: PVirtualNode]: Boolean read GetChildrenInitialized;
     property CutCopyCount: Integer read GetCutCopyCount;
     property DragImage: TVTDragImage read FDragImage;
-    property DragManager: IVTDragManager read GetDragManager;
+    property VTVDragManager: IVTDragManager read GetDragManager;
     property DropTargetNode: PVirtualNode read FDropTargetNode;
     property EditLink: IVTEditLink read FEditLink;
     property Expanded[Node: PVirtualNode]: Boolean read GetExpanded write SetExpanded;
@@ -3538,7 +3540,7 @@ type
 
   TClipboardFormatList = class
   private
-    FList: TList;
+    FList: TFpList;
     procedure Sort;
   public
     constructor Create;
@@ -3562,7 +3564,7 @@ var
 constructor TClipboardFormatList.Create;
 
 begin
-  FList := TList.Create;
+  FList := TFpList.Create;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5439,7 +5441,7 @@ end;
 
 {$endif UseLocalMemoryManager}
 
-{$i dragmanager.inc}
+{$i vtvdragmanager.inc}
 
 //----------------- TVirtualTreeHintWindow -----------------------------------------------------------------------------
 
@@ -9526,8 +9528,8 @@ begin
           // start actual dragging if allowed
           if (hoDrag in FOptions) and Treeview.DoHeaderDragging(FColumns.FDownIndex) then
           begin
-            if ((Abs(FDragStart.X - P.X) > Mouse.DragThreshold) or
-               (Abs(FDragStart.Y - P.Y) > Mouse.DragThreshold)) then
+            if ((Abs(FDragStart.X - P.X) > DragManager.DragThreshold) or
+               (Abs(FDragStart.Y - P.Y) > DragManager.DragThreshold)) then
             begin
               KillTimer(Treeview.Handle, HeaderTimer);
               I := FColumns.FDownIndex;
@@ -11618,7 +11620,7 @@ end;
 procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
   DataObject: IDataObject; DragEffect: Integer);
 begin
-  ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+  ActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14125,7 +14127,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.CMDrag(var Message: TCMDrag);
+function TBaseVirtualTree.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
+  ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT;
 
 var
   S: TObject;
@@ -14134,10 +14137,10 @@ var
   Formats: TFormatArray;
 
 begin
-  Logger.EnterMethod([lcDrag],'CMDrag');
-  with Message, DragRec^ do
+  Logger.EnterMethod([lcDrag],'DoDragMsg');
+  with Self do
   begin
-    S := Source;
+    S := ADragObject;
     Formats := nil;
 
     // Let the ancestor handle dock operations.
@@ -14147,18 +14150,18 @@ begin
     begin
       // We need an extra check for the control drag object as there might be other objects not derived from
       // this class (e.g. TActionDragObject).
-      if not (tsUserDragObject in FStates) and (S is TBaseDragControlObject) then
-        S := (S as TBaseDragControlObject).Control;
-      case DragMessage of
+      if not (tsUserDragObject in FStates) and (S is TDragControlObject) then
+        S := (S as TDragControlObject).Control;
+      case ADragMessage of
         dmDragEnter, dmDragLeave, dmDragMove:
           begin
-            if DragMessage = dmDragEnter then
+            if ADragMessage = dmDragEnter then
               DoStateChange([tsVCLDragging]);
-            if DragMessage = dmDragLeave then
+            if ADragMessage = dmDragLeave then
               DoStateChange([], [tsVCLDragging]);
 
-            if DragMessage = dmDragMove then
-              with ScreenToClient(Pos) do
+            if ADragMessage = dmDragMove then
+              with ScreenToClient(APosition) do
                 DoAutoScroll(X, Y);
 
             ShiftState := 0;
@@ -14170,10 +14173,10 @@ begin
 
             // Allowed drop effects are simulated for VCL dd.
             Result := DROPEFFECT_MOVE or DROPEFFECT_COPY;
-            DragOver(S, ShiftState, TDragState(DragMessage), Pos, LongWord(Result));
+            DragOver(S, ShiftState, TDragState(ADragMessage), APosition, LongWord(Result));
             FLastVCLDragTarget := FDropTargetNode;
             FVCLDragEffect := Result;
-            if (DragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
+            if (ADragMessage = dmDragLeave) and Assigned(FDropTargetNode) then
             begin
               InvalidateNode(FDropTargetNode);
               FDropTargetNode := nil;
@@ -14193,8 +14196,7 @@ begin
             if Assigned(FDropTargetNode) then
               InvalidateNode(FDropTargetNode);
             FDropTargetNode := FLastVCLDragTarget;
-            P := Point(Pos.X, Pos.Y);
-            P := ScreenToClient(P);
+            P := ScreenToClient(APosition);
             DoDragDrop(S, nil, Formats, KeysToShiftState(ShiftState), P, FVCLDragEffect, FLastDropMode);
             if Assigned(FDropTargetNode) then
             begin
@@ -14204,7 +14206,7 @@ begin
           end;
         dmFindTarget:
           begin
-            Result := Integer(ControlAtPos(ScreenToClient(Pos), False));
+            Result := Integer(ControlAtPos(ScreenToClient(APosition), False));
             if Result = 0 then
               Result := Integer(Self);
 
@@ -14216,7 +14218,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod([lcDrag],'CMDrag');
+  Logger.ExitMethod([lcDrag],'DoDragMsg');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16611,7 +16613,7 @@ begin
   // Don't scroll the client area if the header is currently doing tracking or dragging.
   // Do auto scroll only if there is a draw selection in progress or the tree is the current drop target or
   // wheel panning/scrolling is active.
-  IsDropTarget := Assigned(FDragManager) and DragManager.IsDropTarget;
+  IsDropTarget := Assigned(FDragManager) and VTVDragManager.IsDropTarget;
   IsDrawSelecting := [tsDrawSelPending, tsDrawSelecting] * FStates <> [];
   IsWheelPanning := [tsWheelPanning, tsWheelScrolling] * FStates <> [];
   Result := ((toAutoScroll in FOptions.FAutoOptions) or IsWheelPanning) and
@@ -16932,7 +16934,7 @@ begin
   {$ifdef Windows}
   // Register tree as OLE drop target.
   if not (csDesigning in ComponentState) and (toAcceptOLEDrop in FOptions.FMiscOptions) then
-     RegisterDragDrop(Handle, DragManager as IDropTarget);
+     RegisterDragDrop(Handle, VTVDragManager as IDropTarget);
   {$endif}
 
   if toCheckSupport in FOptions.FMiscOptions then
@@ -17373,7 +17375,7 @@ begin
       // Since scrolling during dragging is not handled via the timer we do a check here whether the auto
       // scroll timeout already has elapsed or not.
       if (Result <> []) and
-        ((Assigned(FDragManager) and DragManager.IsDropTarget) or
+        ((Assigned(FDragManager) and VTVDragManager.IsDropTarget) or
         (FindDragTarget(Point(X, Y), False) = Self)) then
       begin
         if FDragScrollStart = 0 then
@@ -17803,7 +17805,7 @@ begin
     DoStartDrag(DragObject);
     DragObject.Free;
 
-    DataObject := DragManager.DataObject;
+    DataObject := VTVDragManager.DataObject;
     PrepareDragImage(P, DataObject);
 
     FLastDropMode := dmOnNode;
@@ -17812,7 +17814,7 @@ begin
     AllowedEffects := GetDragOperations;
     try
       DragAndDrop(AllowedEffects, DataObject, DragEffect);
-      DragManager.ForceDragLeave;
+      VTVDragManager.ForceDragLeave;
     finally
       GetCursorPos(P);
       P := ScreenToClient(P);
@@ -17856,15 +17858,15 @@ begin
     not (vsExpanded in FDropTargetNode.States) then
   begin
     if Assigned(FDragManager) then
-      SourceTree := TBaseVirtualTree(DragManager.DragSource)
+      SourceTree := TBaseVirtualTree(VTVDragManager.DragSource)
     else
       SourceTree := nil;
 
-    if not DragManager.DropTargetHelperSupported and Assigned(SourceTree) then
+    if not VTVDragManager.DropTargetHelperSupported and Assigned(SourceTree) then
       SourceTree.FDragImage.HideDragImage;
     ToggleNode(FDropTargetNode);
     UpdateWindow(Handle);
-    if not DragManager.DropTargetHelperSupported and Assigned(SourceTree) then
+    if not VTVDragManager.DropTargetHelperSupported and Assigned(SourceTree) then
       SourceTree.FDragImage.ShowDragImage;
   end;
 end;
@@ -18869,7 +18871,7 @@ begin
     else
     begin
       // Scroll only if there is no drag'n drop in progress. Drag'n drop scrolling is handled in DragOver.
-      if ((FDragManager = nil) or not DragManager.IsDropTarget) and ((DeltaX <> 0) or (DeltaY <> 0)) then
+      if ((FDragManager = nil) or not VTVDragManager.IsDropTarget) and ((DeltaX <> 0) or (DeltaY <> 0)) then
         DoSetOffsetXY(Point(FOffsetX + DeltaX, FOffsetY + DeltaY), DefaultScrollUpdateFlags, nil);
     end;
     UpdateWindow(Handle);
@@ -19028,7 +19030,7 @@ begin
   // Ask explicitly again whether the action is allowed. Otherwise we may accept a drop which is intentionally not
   // allowed but cannot be prevented by the application because when the tree was scrolling while dropping
   // no DragOver event is created by the OLE subsystem.
-  Result := DragOver(DragManager.DragSource, KeyState, dsDragMove, Pt, Effect);
+  Result := DragOver(VTVDragManager.DragSource, KeyState, dsDragMove, Pt, Effect);
   try
     if (Result <>  NOERROR) or ((Effect and not DROPEFFECT_SCROLL) = DROPEFFECT_NONE) then
       Result := E_FAIL
@@ -19056,7 +19058,7 @@ begin
           SetLength(Formats, Length(Formats) + 1);
           Formats[High(Formats)] := OLEFormat.cfFormat;
         end;
-        DoDragDrop(DragManager.DragSource, DataObject, Formats, Shift, Pt, Effect, FLastDropMode);
+        DoDragDrop(VTVDragManager.DragSource, DataObject, Formats, Shift, Pt, Effect, FLastDropMode);
       except
         Result := E_UNEXPECTED;
         raise;
@@ -19098,8 +19100,8 @@ begin
     if tsRightButtonDown in FStates then
       Include(Shift, ssRight);
     Pt := ScreenToClient(Pt);
-    Effect := SuggestDropEffect(DragManager.DragSource, Shift, Pt, Effect);
-    Accept := DoDragOver(DragManager.DragSource, Shift, dsDragEnter, Pt, FLastDropMode, Effect);
+    Effect := SuggestDropEffect(VTVDragManager.DragSource, Shift, Pt, Effect);
+    Accept := DoDragOver(VTVDragManager.DragSource, Shift, dsDragEnter, Pt, FLastDropMode, Effect);
     if not Accept then
       Effect := DROPEFFECT_NONE
     else
@@ -19125,8 +19127,8 @@ begin
     // If the drag source is a virtual tree then we know how to control the drag image
     // and can show it even if the source is not the target tree.
     // This is only necessary if we cannot use the drag image helper interfaces.
-    if not DragManager.DropTargetHelperSupported and Assigned(DragManager.DragSource) then
-      TBaseVirtualTree(DragManager.DragSource).FDragImage.ShowDragImage;
+    if not VTVDragManager.DropTargetHelperSupported and Assigned(VTVDragManager.DragSource) then
+      TBaseVirtualTree(VTVDragManager.DragSource).FDragImage.ShowDragImage;
     Result :=  NOERROR;
   except
     Result := E_UNEXPECTED;
@@ -19170,8 +19172,8 @@ var
 begin
   KillTimer(Handle, ExpandTimer);
 
-  if not DragManager.DropTargetHelperSupported and Assigned(DragManager.DragSource) then
-    TBaseVirtualTree(DragManager.DragSource).FDragImage.HideDragImage;
+  if not VTVDragManager.DropTargetHelperSupported and Assigned(VTVDragManager.DragSource) then
+    TBaseVirtualTree(VTVDragManager.DragSource).FDragImage.HideDragImage;
 
   if Assigned(FDropTargetNode) then
   begin
@@ -19211,7 +19213,7 @@ var
 
 begin
   //Logger.EnterMethod([lcDrag],'DragOver');
-  if not DragManager.DropTargetHelperSupported and (Source is TBaseVirtualTree) then
+  if not VTVDragManager.DropTargetHelperSupported and (Source is TBaseVirtualTree) then
   begin
     Tree := Source as TBaseVirtualTree;
     ScrollOptions := [suoUpdateNCArea];
@@ -21180,8 +21182,8 @@ begin
     begin
       InvalidateRect(Handle, @FNewSelRect, False);
       UpdateWindow(Handle);
-      if (Abs(FNewSelRect.Right - FNewSelRect.Left) > Mouse.DragThreshold) or
-         (Abs(FNewSelRect.Bottom - FNewSelRect.Top) > Mouse.DragThreshold) then
+      if (Abs(FNewSelRect.Right - FNewSelRect.Left) > DragManager.DragThreshold) or
+         (Abs(FNewSelRect.Bottom - FNewSelRect.Top) > DragManager.DragThreshold) then
       begin
         if tsClearPending in FStates then
         begin
@@ -21204,7 +21206,7 @@ begin
     // middle mouse button. This means panning is being used, hence remove the wheel scroll flag.
     if [tsWheelPanning, tsWheelScrolling] * FStates = [tsWheelPanning, tsWheelScrolling] then
     begin
-      if ((Abs(FLastClickPos.X - X) >= Mouse.DragThreshold) or (Abs(FLastClickPos.Y - Y) >= Mouse.DragThreshold)) then
+      if ((Abs(FLastClickPos.X - X) >= DragManager.DragThreshold) or (Abs(FLastClickPos.Y - Y) >= DragManager.DragThreshold)) then
         DoStateChange([], [tsWheelScrolling]);
     end;
 
@@ -23012,7 +23014,7 @@ begin
     begin
       // Drag start position has already been recorded in WMMouseDown.
       if Threshold < 0 then
-        FDragThreshold := Mouse.DragThreshold
+        FDragThreshold := DragManager.DragThreshold
       else
         FDragThreshold := Threshold;
       if Immediate then
