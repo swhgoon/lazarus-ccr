@@ -9,9 +9,9 @@ unit Main;
 interface
 
 uses 
-  Windows, LCLIntf, Messages, ActiveX, SysUtils, Forms, Dialogs, Graphics,
+  Windows, LCLIntf,  ActiveX, SysUtils, Forms, Dialogs, Graphics,
   VirtualTrees, ActnList, ComCtrls, ExtCtrls, StdCtrls, Controls, Classes, Buttons,
-  ImgList, LResources, vtLogger,ipcchannel {$ifdef UseExternalDragManager},virtualdragmanager{$endif};
+  LResources, vtLogger,ipcchannel;
 
 type
   TMainForm = class(TForm)
@@ -79,7 +79,7 @@ var
 implementation                          
 
 uses
-  TypInfo, ShlObj{, UrlMon};
+  TypInfo;
 
 {$R Res\Extra.res}  // Contains a little rich text for the rich edit control and a XP manifest.
 
