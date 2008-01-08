@@ -7,7 +7,7 @@ uses
   user_service_intf_proxy,
   same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
   soap_formatter, binary_formatter, json_formatter,
-  user_service_intf, xmlrpc_formatter;
+  user_service_intf, xmlrpc_formatter, service_intf;
 
 var
   UserServiceInst : UserService;
@@ -229,6 +229,9 @@ begin
   CoInitialize(nil);
   try
 {$ENDIF}
+{$IF DECLARED(SetHeapTraceOutput)}
+    SetHeapTraceOutput('heaptrace.txt');
+{$IFEND}
     SYNAPSE_RegisterTCP_Transport();
     SYNAPSE_RegisterHTTP_Transport();
     LIB_Register_Transport();
