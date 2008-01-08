@@ -366,6 +366,7 @@ Type
       AFormatter     : IFormatterClient;
       ACallHandler  : ICallMaker
     );
+    destructor Destroy();override;
   End;
 
   TFormatterFactoryRegistryItem = class
@@ -435,6 +436,14 @@ constructor TServiceProtocol.Create(AFormatter: IFormatterClient;ACallHandler: I
 begin
   FFormatter := AFormatter;
   FCallHandler := ACallHandler;
+end;
+
+destructor TServiceProtocol.Destroy();
+begin
+  FFormatter    := nil;
+  FCallHandler  := nil;
+  FTransport    := nil;
+  inherited;
 end;
 
 { TFormatterFactoryRegistryItem }

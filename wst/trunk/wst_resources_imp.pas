@@ -213,7 +213,7 @@ begin
 end;
 
 Var
-  ResMGR : TWSTResourceManager;
+  ResMGR : TWSTResourceManager = nil;
 
 Function GetWSTResourceManager(Force : Boolean = True) : TWSTResourceManager;
 
@@ -234,5 +234,8 @@ begin
   ResMGR:=AValue;
 end;
 
-end.
+initialization
+finalization
+  FreeAndNil(ResMGR);
 
+end.
