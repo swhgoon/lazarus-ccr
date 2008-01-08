@@ -3,6 +3,7 @@ program user_client_console;
 {$APPTYPE CONSOLE}
 
 uses
+  FastMM4,
   Classes,
   SysUtils,
   TypInfo,  ActiveX,
@@ -12,14 +13,14 @@ uses
   library_protocol,
   binary_formatter,
   base_soap_formatter, soap_formatter,
-  base_xmlrpc_formatter, xmlrpc_formatter,
+  base_xmlrpc_formatter, xmlrpc_formatter,  library_imp_utils,
   user_service_intf,
   wst_delphi_xml in '..\..\..\wst_delphi_xml.pas';
 
 {$INCLUDE wst.inc}
 
 var
-  UserServiceInst : UserService;
+  UserServiceInst : UserService = nil;
 
 procedure ShowUser(AUser : TUser);
 begin
@@ -262,6 +263,9 @@ begin
         Write('Choose a item : ');
       end;
     end;
+    strBuffer := '';
+    UserServiceInst := nil;
+    LibraryManager := nil;
   finally
     CoUninitialize();
   end;
