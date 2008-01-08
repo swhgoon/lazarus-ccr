@@ -591,6 +591,7 @@ type
     class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
     class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
   public
+    procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
     property BinaryData : string read FBinaryData write FBinaryData;
     property EncodedString : string read GetEncodedString write SetEncodedString;
@@ -674,6 +675,7 @@ type
     constructor Create();override;
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    procedure Exchange(const Index1,Index2 : Integer);
 
     procedure SetLength(Const ANewSize : Integer);override;
     Property Item[AIndex:Integer] : TBaseRemotable Read GetItem;Default;
@@ -1105,8 +1107,8 @@ type
   TSimpleFactoryItemClass = class of TSimpleFactoryItem;
 
   { TSimpleItemFactory }
-
-  TSimpleItemFactory = class(TInterfacedPersistent,IInterface,IItemFactory)
+{$TYPEINFO ON}
+  TSimpleItemFactory = class(TInterfacedObject,IInterface,IItemFactory)
   private
     FItemClass : TSimpleFactoryItemClass;
   protected
@@ -1115,7 +1117,7 @@ type
   public
     constructor Create(AItemClass : TSimpleFactoryItemClass);
   End;
-
+{$TYPEINFO OFF}
   { TIntfPoolItem }
 
   TIntfPoolItem = class
@@ -2220,6 +2222,19 @@ begin
     itmClss := GetItemClass();
     for i := oldLen to Pred(ANewSize) do
       FArray[i] := itmClss.Create();
+  end;
+end;
+
+procedure TBaseObjectArrayRemotable.Exchange(const Index1, Index2: Integer);
+var
+  tmp : TBaseRemotable;
+begin
+  if ( Index1 <> Index2 ) then begin
+    CheckIndex(Index1);
+    CheckIndex(Index2);
+    tmp := FArray[Index1];
+    FArray[Index1] := FArray[Index2];
+    FArray[Index2] := tmp;
   end;
 end;
 
@@ -5364,6 +5379,14 @@ begin
   Result := Assigned(ACompareTo) and
             ACompareTo.InheritsFrom(TBase64StringExtRemotable) and
             ( TBase64StringExtRemotable(ACompareTo).BinaryData = Self.BinaryData );
+end;
+
+procedure TBase64StringExtRemotable.Assign(Source: TPersistent);
+begin
+  if Assigned(Source) and Source.InheritsFrom(TBase64StringExtRemotable) then begin
+    Self.BinaryData := TBase64StringExtRemotable(Source).BinaryData;
+  end;
+  inherited;
 end;
 
 initialization
