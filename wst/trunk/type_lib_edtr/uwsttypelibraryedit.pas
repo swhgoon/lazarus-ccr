@@ -148,6 +148,7 @@ type
     procedure actUpdateObjectExecute(Sender: TObject);
     procedure actUpdateObjectUpdate(Sender: TObject);
     procedure FDFind(Sender : TObject);
+    procedure FDShow(Sender : TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
     procedure FormShow(Sender: TObject);
   private
@@ -156,6 +157,7 @@ type
     FCurrentFileName : string;
     {$IFDEF WST_IDE}FProjectLibrary : TLazProjectFile;{$ENDIF}
   private
+    function FindCurrentEditor() : TSynEdit;
     function Search(const AText : string) : Boolean;
   private
     function GetTypeNode() : TTreeNode;
@@ -510,6 +512,15 @@ begin
     ShowMessageFmt('Unable to find "%s".',[FD.FindText]);
 end;
 
+procedure TfWstTypeLibraryEdit.FDShow(Sender : TObject);
+var
+  edt : TSynEdit;
+begin
+  edt := FindCurrentEditor();
+  if Assigned(edt) and edt.SelAvail then
+    FD.FindText := edt.SelText;
+end;
+
 procedure TfWstTypeLibraryEdit.FormClose (Sender : TObject; var CloseAction : TCloseAction );
 var
   dlgRes : Integer;
@@ -562,12 +573,10 @@ begin
   RenderSymbols();
 end;
 
-function TfWstTypeLibraryEdit.Search(const AText : string) : Boolean;
+function TfWstTypeLibraryEdit.FindCurrentEditor() : TSynEdit;
 var
   edt : TSynEdit;
-  opts : TSynSearchOptions;
 begin
-  Result := False;
   case PC.ActivePageIndex of
     0 : edt := srcInterface;
     1 : edt := srcWSDL;
@@ -577,6 +586,16 @@ begin
     else
       edt := nil;
   end;
+  Result := edt;
+end;
+
+function TfWstTypeLibraryEdit.Search(const AText : string) : Boolean;
+var
+  edt : TSynEdit;
+  opts : TSynSearchOptions;
+begin
+  Result := False;
+  edt := FindCurrentEditor();
   if Assigned(edt) then begin
     opts := [];
     if not ( frDown in FD.Options ) then
