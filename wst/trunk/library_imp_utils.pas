@@ -35,7 +35,7 @@ const
 type
 
 {$IFNDEF FPC}
-  TLibHandle = Longint;
+  TLibHandle = HMODULE;//Longint;
 {$ENDIF}
 
   IwstModule = interface
