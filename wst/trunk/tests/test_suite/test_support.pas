@@ -346,6 +346,7 @@ type
   TTest_TBase64StringExtRemotable = class(TTestCase)
   published
     procedure Equal();
+    procedure test_Assign();
     procedure SetBinaryData();
     procedure SetEncodedString();
   end;
@@ -2514,6 +2515,28 @@ begin
       CheckEquals(es,a.EncodedString);
     end;
   finally
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.test_Assign();
+const ITER = 100;
+var
+  i : Integer;
+  a, b : TBase64StringExtRemotable;
+begin
+  b := nil;
+  a := TBase64StringExtRemotable.Create();
+  try
+    b := TBase64StringExtRemotable.Create();
+    for i := 1 to ITER do begin
+      a.BinaryData := RandomValue(Random(500));
+      b.Assign(a);
+      CheckEquals(a.BinaryData, b.BinaryData);
+      CheckEquals(a.EncodedString, b.EncodedString);
+    end;
+  finally
+    FreeAndNil(b);
     FreeAndNil(a);
   end;
 end;
