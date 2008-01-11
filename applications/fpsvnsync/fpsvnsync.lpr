@@ -204,7 +204,8 @@ var
     
     procedure CopyFileProp(SourceProp, DestProp: TSvnFileProp);
     var
-      j: integer;
+      j, pass: integer;
+      IsSvnEolProp: boolean;
       Command: string;
     begin
       if SourceProp.Properties.Text=DestProp.Properties.Text then exit;
@@ -221,13 +222,21 @@ var
         writeln('svn ', Command);
         writeln('svn result: ', ExecuteSvnCommand(Command));
       end;
-      for j:=0 to SourceProp.Properties.Count-1 do begin
-        Command := format('propset %s "%s" "%s"',
-          [SourceProp.Properties.Names[j],
-           SourceProp.Properties.ValueFromIndex[j],
-           DestProp.FileName]);
-        writeln('svn ', Command);
-        writeln('svn result: ', ExecuteSvnCommand(Command));
+      // first pass set svn:eolstyle, later it might not be possible
+      // because of the mime style is non-text.
+      for pass := 1 to 2 do begin
+        for j:=0 to SourceProp.Properties.Count-1 do begin
+          IsSvnEolProp := SourceProp.Properties.Names[j]='svn:eol-style';
+          if ((pass=1) and (IsSvnEolProp=true)) or
+             ((pass=2) and (IsSvnEolProp=false)) then begin
+            Command := format('propset %s "%s" "%s"',
+              [SourceProp.Properties.Names[j],
+               SourceProp.Properties.ValueFromIndex[j],
+               DestProp.FileName]);
+            writeln('svn ', Command);
+            writeln('svn result: ', ExecuteSvnCommand(Command));
+          end;
+        end;
       end;
     end;
     
@@ -309,8 +318,11 @@ begin
 
     DestRoot := GetRepositoryRoot(FDestWC);
     writeln('------');
-  except
-    halt(9);
+  except on E: Exception do
+    begin
+      writeln(E.Message);
+      halt(9);
+    end;
   end;
   XmlOutput := TMemoryStream.Create;
 

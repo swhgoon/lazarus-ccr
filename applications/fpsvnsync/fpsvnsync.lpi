@@ -26,10 +26,10 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="svnpkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="svnpkg"/>
+        <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
     <Units Count="1">
