@@ -157,7 +157,7 @@ type
     procedure CallOnProgress;
   public
     Parent : TObject;
-    bSuspend, Terminating : Boolean;
+    Terminating : Boolean;
     Stop : Boolean;
     HandleException : TACSHandleThreadException;
     Delay : Integer;
@@ -655,10 +655,9 @@ implementation
     ParentComponent : TACSCustomOutput;
     Res : Boolean;
   begin
-    bSuspend := false;
     ParentComponent := TACSCustomOutput(Parent);
     while not Terminating do
-    if not bSuspend then
+//    if not bSuspend then
     begin
       EnterCriticalSection(CS);
       if Delay > 5 then sleep(Delay);
@@ -683,7 +682,7 @@ implementation
           DoneThread.Resume;
           //Dont Suspend the thread maybe Stop has been set to false during OnDone
           //check this first
-          if (Stop or (not Res)) and bSuspend then
+          if (Stop or (not Res)) then
             Self.Suspend;
         end;
       except
@@ -691,7 +690,7 @@ implementation
         begin
           Stop := False;
           HandleException(E);
-          if bSuspend then
+//          if bSuspend then
             Self.Suspend;
         end;
       end;
@@ -822,12 +821,12 @@ implementation
 
   function TACSCustomOutput.GetSuspend : Boolean;
   begin
-    Result := Thread.bSuspend;
+    Result := Thread.Suspended;
   end;
 
   procedure TACSCustomOutput.SetSuspend(v : Boolean);
   begin
-    Thread.bSuspend := v;
+    Thread.Suspended:=v;
   end;
 
   constructor TACSStreamedInput.Create;
@@ -1160,20 +1159,17 @@ implementation
 
  constructor TACSThread.Create;
  begin
-   bSuspend := False;
    inherited Create(True);
  end;
 
  procedure TACSThread.DoPause;
  begin
     If not Suspended then Suspended := True;
-    bSuspend := true;
  end;
 
  procedure TACSThread.DoResume;
  begin
     If Suspended then Suspended := False;
-    bSuspend := false;
  end;
 
 {$IFDEF MSWINDOWS}
