@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
-    <PathDelim Value="\"/>
+  <Package Version="3">
     <Name Value="virtualtreeslcl"/>
     <Author Value="Joerg Thaler,Christian Ulrich"/>
     <CompilerOptions>
       <Version Value="5"/>
-      <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\"/>
-        <OtherUnitFiles Value="..\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <IncludeFiles Value="../"/>
+        <OtherUnitFiles Value="../"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -37,27 +35,27 @@ specific language governing rights and limitations under the License.
     <Version Major="4" Release="17" Build="25"/>
     <Files Count="6">
       <Item1>
-        <Filename Value="..\virtualTrees.lrs"/>
+        <Filename Value="../virtualTrees.lrs"/>
         <Type Value="LRS"/>
       </Item1>
       <Item2>
-        <Filename Value="..\virtualtrees.pas"/>
+        <Filename Value="../virtualtrees.pas"/>
         <UnitName Value="VirtualTrees"/>
       </Item2>
       <Item3>
-        <Filename Value="..\virtualdrawtree.pas"/>
+        <Filename Value="../virtualdrawtree.pas"/>
         <UnitName Value="VirtualDrawTree"/>
       </Item3>
       <Item4>
-        <Filename Value="..\virtualstringtree.pas"/>
+        <Filename Value="../virtualstringtree.pas"/>
         <UnitName Value="VirtualStringTree"/>
       </Item4>
       <Item5>
-        <Filename Value="..\vtheaderpopup.pas"/>
+        <Filename Value="../vtheaderpopup.pas"/>
         <UnitName Value="VTHeaderPopup"/>
       </Item5>
       <Item6>
-        <Filename Value="..\vtregister.pas"/>
+        <Filename Value="../vtregister.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="VTRegister"/>
       </Item6>
@@ -65,20 +63,17 @@ specific language governing rights and limitations under the License.
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <CustomOptions Value="-Facthreads
-"/>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

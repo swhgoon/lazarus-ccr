@@ -76,6 +76,14 @@ uses
 //  ,CommCtrl  // image lists, common controls tree structures
   ;
 
+type
+{$IFDEF CPU32}
+  PointerIncType = Cardinal;
+{$ENDIF}
+{$IFDEF CPU64}
+  PointerIncType = Int64;
+{$ENDIF}
+
 const
   VTVersion = '4.0.17';
   VTTreeStreamVersion = 2;
@@ -2987,9 +2995,9 @@ begin
     J := R;
     P := TheArray[(L + R) shr 1];
     repeat
-      while Cardinal(TheArray[I]) < Cardinal(P) do
+      while PointerIncType(TheArray[I]) < PointerIncType(P) do
         Inc(I);
-      while Cardinal(TheArray[J]) > Cardinal(P) do
+      while PointerIncType(TheArray[J]) > PointerIncType(P) do
         Dec(J);
       if I <= J then
       begin
@@ -3580,7 +3588,7 @@ begin exit;
   if Height > 0 then  // bottom-up DIB
     Row := Height - Row - 1;
   // Return DWORD aligned address of the requested scanline.
-  Integer(Result) := Integer(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
+//  Integer(Result) := Integer(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18388,7 +18396,7 @@ begin
       if ([vsSelected, vsDisabled] * NewItems[I]^.States <> []) or
          (Constrained and (Cardinal(FLastSelectionLevel) <> GetNodeLevel(NewItems[I]))) or
          (SiblingConstrained and (FRangeAnchor^.Parent <> NewItems[I]^.Parent)) then
-        Inc(Cardinal(NewItems[I]))
+        Inc(PointerIncType(NewItems[I]))
       else
         Include(NewItems[I]^.States, vsSelected);
   end;
@@ -18418,7 +18426,7 @@ begin
       // array and only the remaining new items must be inserted.
       if CurrentEnd >= 0 then
       begin
-        while (J >= 0) and (Cardinal(NewItems[J]) > Cardinal(FSelection[CurrentEnd])) do
+        while (J >= 0) and (PointerIncType(NewItems[J]) > PointerIncType(FSelection[CurrentEnd])) do
         begin
           FSelection[CurrentEnd + J + 1] := NewItems[J];
           Dec(J);
@@ -18774,7 +18782,7 @@ begin
   if FindNodeInSelection(Node, Index, -1, -1) then
   begin
     Exclude(Node^.States, vsSelected);
-    Inc(Cardinal(FSelection[Index]));
+    Inc(PointerIncType(FSelection[Index]));
   end;
 end;
 
