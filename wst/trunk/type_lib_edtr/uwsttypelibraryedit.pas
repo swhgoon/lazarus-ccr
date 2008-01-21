@@ -478,17 +478,17 @@ end;
 procedure TfWstTypeLibraryEdit.actUpdateObjectExecute(Sender: TObject);
 var
   o : TPasElement;
-  nd, nd_1 : TTreeNode;
+  nd, nd_1, locTypeNode : TTreeNode;
 begin
   nd := trvSchema.Selected;
   if Assigned(nd) and Assigned(nd.Data) then begin
     o := TPasElement(nd.Data);
-    if HasEditor(o) then begin
-      UpdateObject(o,FSymbolTable);
+    if HasEditor(o) and UpdateObject(o,FSymbolTable) then begin
       nd_1  := nd;
+      locTypeNode := GetTypeNode();
       trvSchema.BeginUpdate();
       try
-        nd := FindPainter(o).Paint(FSymbolTable,o,GetTypeNode());
+        nd := FindPainter(o).Paint(FSymbolTable,o,locTypeNode);
         nd.MoveTo(nd_1,naInsertBehind);
         FreeAndNil(nd_1);
       finally
@@ -610,7 +610,8 @@ end;
 
 function TfWstTypeLibraryEdit.GetTypeNode(): TTreeNode;
 begin
-  Result := trvSchema.TopItem.GetFirstChild().Items[0];
+  Result := trvSchema.Items[0].GetFirstChild().Items[0];
+  //trvSchema.TopItem.GetFirstChild().Items[0];
 end;
 
 function TfWstTypeLibraryEdit.GetInterfaceNode(): TTreeNode;

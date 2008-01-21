@@ -175,7 +175,10 @@ begin
          )  and
         ( not sym.InheritsFrom(TPasNativeSimpleType) )
       then begin
-        ok := ( not sym.InheritsFrom(TPasNativeClassType) ) or sym.InheritsFrom(TPasNativeSimpleContentClassType);
+        ok := ( not sym.InheritsFrom(TPasNativeClassType) ) or
+              ( sym.InheritsFrom(TPasNativeSimpleContentClassType) or
+                ( TPasNativeClassType(sym).ExtendableType = nil )
+              );
         if ok and ( ALs.IndexOfObject(sym) = -1 ) then begin
           ALs.AddObject(AContainer.GetExternalName(sym),sym);
         end;
