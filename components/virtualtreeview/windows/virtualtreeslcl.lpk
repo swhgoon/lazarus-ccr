@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="virtualtreeslcl"/>
     <Author Value="Christian Ulrich,Joerg Thaler"/>
@@ -39,7 +39,7 @@ Software distributed under the License is distributed on an &quot;AS IS&quot; ba
 WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the
 specific language governing rights and limitations under the License.
 "/>
-    <Version Major="4" Release="17" Build="25"/>
+    <Version Major="4" Release="17" Build="26"/>
     <Files Count="6">
       <Item1>
         <Filename Value="..\VirtualTrees.lrs"/>
@@ -70,10 +70,10 @@ specific language governing rights and limitations under the License.
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
