@@ -14,8 +14,8 @@ uses
 type
   TTextOrientation = (toHorizontal, toVertical90, toHorizontal180, toVertical270, toHorizontal360);
 
-function WidthOf(R: TRect): Integer;
-function HeightOf(R: TRect): Integer;
+function WidthOf(R: TRect): Integer; inline;
+function HeightOf(R: TRect): Integer; inline;
 
 procedure RxFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor;
   Width: Integer);

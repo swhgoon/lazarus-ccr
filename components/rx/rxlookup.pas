@@ -195,6 +195,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure Paint; override;
 
     procedure LookupDataSetChanged; virtual;
@@ -797,8 +798,8 @@ begin
   if FValuesList.Count=0 then exit;
   if ColorToRGB(Self.Color) <> ColorToRGB(clBtnFace) then
     ACanvas.Pen.Color := clBtnFace
-  else ACanvas.Pen.Color := clBtnShadow;
-//  LastIndex := FFieldList.Count-1;
+  else
+    ACanvas.Pen.Color := clBtnShadow;
   LastIndex := FValuesList.Count-1;
   TxtWidth := ACanvas.TextWidth('M');
   ATop := Max(0, (HeightOf(R) - ACanvas.TextHeight('Xy')) div 2);
@@ -981,7 +982,7 @@ end;
 
 procedure TRxCustomDBLookupCombo.DoAutoSize;
 begin
-  Height:=Canvas.TextHeight('Wg')+10;
+  Height:=Canvas.TextHeight('Wg')+12;
 end;
 
 procedure TRxCustomDBLookupCombo.SetEnabled(Value: Boolean);
@@ -1124,10 +1125,17 @@ begin
     FButton.Enabled:=Enabled;
 end;
 
+procedure TRxCustomDBLookupCombo.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  DoButtonClick(Self);
+end;
+
 procedure TRxCustomDBLookupCombo.Paint;
 var
   Selected:boolean;
-  R: TRect;
+  R, R1: TRect;
   X, TextMargin: Integer;
   AText: string;
 begin
@@ -1157,12 +1165,12 @@ begin
   end;
   
   TextMargin := 0;
-  if ClientWidth > 4 then
+  if ClientWidth > 6 then
   begin
-    SetRect(R, 2, 2, ClientWidth - 2, ClientHeight - 2);
+    SetRect(R1, 3, 3, ClientWidth - 3, ClientHeight - 3);
     if TextMargin > 0 then Inc(TextMargin);
-    X := 2 + TextMargin;
-    Canvas.FillRect(R);
+    X := 3 + TextMargin;
+    Canvas.FillRect(R1);
     R.Right:=R.Right - GetButtonWidth;
     if FDisplayAll then
       PaintDisplayValues(Canvas, R, TextMargin)
@@ -1179,7 +1187,7 @@ begin
         AText:=FValuesList[FLookupDisplayIndex]
       else
         AText:='';
-      Canvas.TextRect(R, X, Max(0, (HeightOf(R) - Canvas.TextHeight(AText)) div 2), AText);
+      Canvas.TextRect(R, X, Max(0, (HeightOf(R) - Canvas.TextHeight('Wg')) div 2), AText);
     end
   end;
 end;

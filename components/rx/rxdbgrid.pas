@@ -914,16 +914,21 @@ begin
 
     if TextOrient = toHorizontal then
     begin
+      aRect2:=aRect;
+      aRect2.Left:=aRect2.Left - 2;
+      if ASortMarker <> smNone then
+        aRect2.Right := aRect2.Right - FMarkerDown.Width;
+
       if Assigned(FTit) and (FTit.MCountLines>0) then
       begin
-        aRect2:=aRect;
-        aRect2.Left:=aRect2.Left - 2;
         dW:=Canvas.TextHeight('W') + 4;
         for i:=0 to FTit.MCountLines-1 do
         begin
           FCap:=FTit.MGetLine(i);
           dww:=ATextWidth(FCap)  * dW;
           aRect2.Bottom:=aRect2.Top +  dww;
+
+
           WriteTextHeader(Canvas, aRect2, FCap, GetColumnAlignment(aCol, true));
           aRect2.Top:=aRect2.Top + dww;
           
@@ -939,7 +944,9 @@ begin
         end;
       end
       else
-        WriteTextHeader(Canvas, aRect, FCap, GetColumnAlignment(aCol, true))
+      begin
+        WriteTextHeader(Canvas, aRect2, FCap, GetColumnAlignment(aCol, true))
+      end;
     end
     else
     begin

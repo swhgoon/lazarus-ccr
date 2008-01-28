@@ -93,7 +93,7 @@ type
     property CalendarStyle: TCalendarStyle read GetCalendarStyle
       write SetCalendarStyle default dcsDefault;
     property PopupVisible: Boolean read GetPopupVisible;
-    property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
+    property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaLeft;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -699,6 +699,7 @@ begin
   FBlanksChar := ' ';
   FDialogTitle := sDateDlgTitle;
   FPopupColor := clBtnFace;
+  FPopupAlign := epaLeft;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
   FWeekendColor := clRed;
