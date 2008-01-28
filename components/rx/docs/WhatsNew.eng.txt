@@ -15,6 +15,11 @@
   + New procedure  StrToStrings in module rxstrutils - fill List:TStrings 
       procedure StrToStrings(const S:string; const List:TStrings; const Delims:Char);
   + New editor for TField object with Lookup source in TRxDBGrid - base on class TRxDBLookupCombo
+  + In TRxDBLookupCombo work property AutoSize
+  + After change property Font in TRxDBLookupCombo dropdown list used this font
+  + In RxDBGrid create lookup editor for TField 
+  - Fix error in TRxLookupEdit 
+  + In RxDBGrid published new property from DBGrid
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

@@ -62,7 +62,7 @@ type
     function MCountLines:integer;
     function MGetLine(ALine:integer):string;
   protected
-    procedure SetCaption(const AValue: string); override;
+    procedure SetCaption(const AValue: TCaption); override;
   public
     constructor Create(TheColumn: TGridColumn); override;
     destructor Destroy; override;
@@ -323,6 +323,7 @@ type
     property Anchors;
     property AutoAdvance default aaRightDown;
     property AutoFillColumns;
+    property AutoEdit;
     //property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
@@ -345,6 +346,8 @@ type
     property FixedColor;
     property Flat;
     property Font;
+    property HeaderHotZones;
+    property HeaderPushZones;
     //property ImeMode;
     //property ImeName;
     property Options;
@@ -356,7 +359,7 @@ type
     //property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property Scrollbars;
+    property Scrollbars default ssBoth;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -1894,7 +1897,7 @@ begin
     Result:='';
 end;
 
-procedure TRxColumnTitle.SetCaption(const AValue: string);
+procedure TRxColumnTitle.SetCaption(const AValue: TCaption);
 var
   c:integer;
   s:string;

@@ -376,7 +376,7 @@ begin
   if not FPopupVisible then
   begin
     ShowPopUp;
-    FList.Columns.Clear;
+{    FList.Columns.Clear;
     W:=16;
     for I:=0 to FFieldList.Count-1 do
     begin;
@@ -388,7 +388,7 @@ begin
         GC.Width:=GC.Field.DisplayWidth * FList.Canvas.TextWidth('W');
       W:=W+GC.Width + 4;
     end;
-    FPopupVisible:=true;
+    FPopupVisible:=true;}
   end;
 end;
 

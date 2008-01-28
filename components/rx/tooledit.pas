@@ -58,6 +58,10 @@ type
     procedure SetWeekends(const AValue: TDaysOfWeek);
     procedure SetYearDigits(const AValue: TYearDigits);
     procedure CalendarHintsChanged(Sender: TObject);
+
+//    function AcceptPopup(var Value: Variant): Boolean;
+    procedure AcceptValue(const AValue: TDateTime);
+//    procedure SetPopupValue(const Value: Variant);
   protected
     FPopup: TPopupCalendar;
     procedure UpdateFormat;
@@ -108,6 +112,7 @@ type
     property BlanksChar;
     property StartOfWeek;
     property DialogTitle;
+    property DirectInput;
     Property OnAcceptDate;
     property OKCaption;
     property CancelCaption;
@@ -442,6 +447,36 @@ begin
   if not (csDesigning in ComponentState) then UpdatePopup;
 end;
 
+{function TCustomRxDateEdit.AcceptPopup(var Value: Variant): Boolean;
+var
+  D: TDateTime;
+begin
+  Result := True;
+  if Assigned(FOnAcceptDate) then begin
+    if VarIsNull(Value) or VarIsEmpty(Value) then D := NullDate
+    else
+      try
+        D := VarToDateTime(Value);
+      except
+        if DefaultToday then D := SysUtils.Date else D := NullDate;
+      end;
+    FOnAcceptDate(Self, D, Result);
+    if Result then Value := VarFromDateTime(D);
+  end;
+end;}
+
+procedure TCustomRxDateEdit.AcceptValue(const AValue: TDateTime);
+begin
+  SetDate(AValue);
+//  UpdatePopupVisible;
+  if Modified then inherited Change;
+end;
+
+{procedure TCustomRxDateEdit.SetPopupValue(const Value: Variant);
+begin
+
+end;}
+
 procedure TCustomRxDateEdit.UpdateFormat;
 begin
   FDateFormat := DefDateFormat(FourDigitYear);
@@ -463,7 +498,8 @@ var
   P: TPoint;
   Y: Integer;
 begin
-  if (FPopup <> nil) and not (ReadOnly or FPopupVisible) then begin
+  if (FPopup <> nil) and not (ReadOnly {or FPopupVisible}) then
+  begin
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;
     if Y + FPopup.Height > Screen.Height then
@@ -483,17 +519,19 @@ begin
     if P.X < 0 then P.X := 0
     else if P.X + FPopup.Width > Screen.Width then
       P.X := Screen.Width - FPopup.Width;
-{    if Text <> '' then
-      SetPopupValue(Text)
+
+    if Text <> '' then
+      FPopup.Date:=StrToDateDef(Text, Date)
     else
-      SetPopupValue(Null);}
-    if CanFocus then SetFocus;
+      FPopup.Date:=Date;
+      
     ShowPopup(Point(P.X, Y));
-    FPopupVisible := True;
-    if DisableEdit then begin
+//    FPopupVisible := True;
+{    if DisableEdit then
+    begin
       inherited ReadOnly := True;
       HideCaret(Handle);
-    end;
+    end;}
   end;
 end;
 
@@ -501,6 +539,7 @@ procedure TCustomRxDateEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
   AValue: Variant;
 begin
+(*
   if (FPopup <> nil) and FPopupVisible then
   begin
 {    if GetCapture <> 0 then
@@ -517,7 +556,7 @@ begin
       except
         { ignore exceptions }
       end;
-//      SetDirectInput(DirectInput);
+//      DirectInput:=DirectInput;
       Invalidate;
 {      if Accept and AcceptPopup(AValue) and EditCanModify then
       begin
@@ -528,6 +567,7 @@ begin
       FPopupVisible := False;
     end;
   end;
+*)
 end;
 
 procedure TCustomRxDateEdit.HidePopup;
@@ -536,8 +576,20 @@ begin
 end;
 
 procedure TCustomRxDateEdit.ShowPopup(AOrigin: TPoint);
+var
+  FAccept:boolean;
 begin
-  FPopup.Show;
+  FPopup.Left:=AOrigin.X;
+  FPopup.Top:=AOrigin.Y;
+  FAccept:=FPopup.ShowModal = mrOk;
+  if CanFocus then SetFocus;
+
+  if FAccept {and AcceptPopup(AValue) and EditCanModify }then
+  begin
+    AcceptValue(FPopup.Date);
+    if Focused then inherited SelectAll;
+  end;
+
 {  FPopup.Show(AOrigin);
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
@@ -616,9 +668,9 @@ begin
   inherited DoButtonClick(Sender);
   if FPopup <> nil then
   begin
-    if FPopupVisible then
+{    if FPopupVisible then
       PopupCloseUp(FPopup, True)
-    else
+    else}
       PopupDropDown(True);
   end
   else

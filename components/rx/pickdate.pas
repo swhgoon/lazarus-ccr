@@ -160,6 +160,7 @@ type
     procedure SetDate(const AValue: TDateTime);
     procedure TopPanelDblClick(Sender: TObject);
     procedure MonthMenuClick(Sender: TObject);
+    procedure CalendarDblClick(Sender: TObject);
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -842,6 +843,7 @@ begin
     Align := alClient;
     OnChange := @CalendarChange;
     OnMouseUp := @CalendarMouseUp;
+    OnDblClick := @CalendarDblClick;
   end;
 
   FBtns[0] := TRxTimerSpeedButton.Create(Self);
@@ -942,6 +944,11 @@ begin
     FCalendar.Month:=Cmd;
 end;
 
+procedure TPopupCalendar.CalendarDblClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
+end;
+
 procedure TPopupCalendar.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if FCalendar <> nil then
@@ -986,7 +993,7 @@ begin
   inherited Deactivate;
 {  if Assigned(FOnPopUpCloseEvent) then
     FOnPopUpCloseEvent(FFindResult);}
-  Close;
+//  Close;
 end;
 
 procedure TPopupCalendar.PrevYearBtnClick(Sender: TObject);
