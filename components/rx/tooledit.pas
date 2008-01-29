@@ -497,6 +497,20 @@ procedure TCustomRxDateEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
   Y: Integer;
+
+procedure DoTrySetDate;
+var
+  D:TDateTime;
+begin
+  try
+    D:=StrToDate(Text);
+    FPopup.Date:=D;
+  except
+    if FDefaultToday then
+      FPopup.Date:=sysutils.Date;
+  end;
+end;
+
 begin
   if (FPopup <> nil) and not (ReadOnly {or FPopupVisible}) then
   begin
@@ -520,11 +534,8 @@ begin
     else if P.X + FPopup.Width > Screen.Width then
       P.X := Screen.Width - FPopup.Width;
 
-    if Text <> '' then
-      FPopup.Date:=StrToDateDef(Text, Date)
-    else
-      FPopup.Date:=Date;
-      
+    DoTrySetDate;
+
     ShowPopup(Point(P.X, Y));
 //    FPopupVisible := True;
 {    if DisableEdit then
@@ -581,6 +592,7 @@ var
 begin
   FPopup.Left:=AOrigin.X;
   FPopup.Top:=AOrigin.Y;
+  FPopup.AutoSizeForm;
   FAccept:=FPopup.ShowModal = mrOk;
   if CanFocus then SetFocus;
 

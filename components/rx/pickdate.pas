@@ -162,12 +162,14 @@ type
     procedure MonthMenuClick(Sender: TObject);
     procedure CalendarDblClick(Sender: TObject);
   protected
+    FControlPanel:TPanel;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Paint;override;
     procedure Deactivate; override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure AutoSizeForm;
     property Date:TDateTime read GetDate write SetDate;
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
@@ -795,7 +797,7 @@ constructor TPopupCalendar.Create(AOwner: TComponent);
 const
   BtnSide = 14;
 var
-  Control, BackPanel: TWinControl;
+  BackPanel: TWinControl;
   MI:TMenuItem;
   i:integer;
 begin
@@ -824,8 +826,8 @@ begin
     ControlStyle := ControlStyle + [csReplicatable];
   end;
 
-  Control := TPanel.Create(Self);
-  with Control as TPanel do
+  FControlPanel := TPanel.Create(Self);
+  with FControlPanel do
   begin
     Parent := BackPanel;
     Align := alTop;
@@ -849,7 +851,7 @@ begin
   FBtns[0] := TRxTimerSpeedButton.Create(Self);
   with FBtns[0] do
   begin
-    Parent := Control;
+    Parent := FControlPanel;
     SetBounds(-1, -1, BtnSide, BtnSide);
     Glyph := LoadBitmapFromLazarusResource('prev2');
     OnClick := @PrevYearBtnClick;
@@ -860,7 +862,7 @@ begin
   FBtns[1] := TRxTimerSpeedButton.Create(Self);
   with FBtns[1] do
   begin
-    Parent := Control;
+    Parent := FControlPanel;
     SetBounds(BtnSide - 2, -1, BtnSide, BtnSide);
     Glyph:=LoadBitmapFromLazarusResource('prev1');
     OnClick := @PrevMonthBtnClick;
@@ -871,8 +873,8 @@ begin
   FBtns[2] := TRxTimerSpeedButton.Create(Self);
   with FBtns[2] do
   begin
-    Parent := Control;
-    SetBounds(Control.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
+    Parent := FControlPanel;
+    SetBounds(FControlPanel.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
     Glyph:=LoadBitmapFromLazarusResource('next1');
     OnClick := @NextMonthBtnClick;
     Hint := sNextMonth;
@@ -882,8 +884,8 @@ begin
   FBtns[3] := TRxTimerSpeedButton.Create(Self);
   with FBtns[3] do
   begin
-    Parent := Control;
-    SetBounds(Control.Width - BtnSide + 1, -1, BtnSide, BtnSide);
+    Parent := FControlPanel;
+    SetBounds(FControlPanel.Width - BtnSide + 1, -1, BtnSide, BtnSide);
     Glyph:=LoadBitmapFromLazarusResource('next2');
     OnClick := @NextYearBtnClick;
     Hint := sNextYear;
@@ -893,10 +895,10 @@ begin
   FTitleLabel := TLabel.Create(Self);
   with FTitleLabel do
   begin
-    Parent := Control;
+    Parent := FControlPanel;
     AutoSize := False;
     Alignment := taCenter;
-    SetBounds(BtnSide * 2 + 1, 1, Control.Width - 4 * BtnSide - 2, 14);
+    SetBounds(BtnSide * 2 + 1, 1, FControlPanel.Width - 4 * BtnSide - 2, 14);
     Transparent := True;
     OnDblClick := @TopPanelDblClick;
     ControlStyle := ControlStyle + [csReplicatable];
@@ -908,6 +910,14 @@ begin
   FTitleLabel.PopupMenu:=FMonthMenu;
   ActiveControl:=FCalendar;
   CalendarChange(nil);
+end;
+
+procedure TPopupCalendar.AutoSizeForm;
+begin
+  FControlPanel.Height:=FCalendar.Canvas.TextHeight('Wg')+4;
+  Height:=(FCalendar.Canvas.TextHeight('Wg')+4)*7+FControlPanel.Height;
+  Width:=FCalendar.Canvas.TextWidth('WWW')*7;
+  FCalendar.AutoFillColumns:=true;
 end;
 
 procedure TPopupCalendar.CalendarMouseUp(Sender: TObject; Button: TMouseButton;
@@ -1030,7 +1040,8 @@ begin
   FCalendar.CalendarDate:=AValue;
 end;
 
-
+  { TSelectDateDlg }
+  
 constructor TSelectDateDlg.Create(AOwner: TComponent);
 var
   Control: TWinControl;
