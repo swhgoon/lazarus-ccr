@@ -162,6 +162,7 @@ type
     procedure MonthMenuClick(Sender: TObject);
     procedure CalendarDblClick(Sender: TObject);
   protected
+    FCloseBtn:TBitBtn;
     FControlPanel:TPanel;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -848,6 +849,12 @@ begin
     OnDblClick := @CalendarDblClick;
   end;
 
+  FCloseBtn:=TBitBtn.Create(Self);
+  FCloseBtn.Parent := BackPanel;
+  FCloseBtn.Kind:=bkCancel;
+  FCloseBtn.Align:=alBottom;
+  FCloseBtn.AutoSize:=true;
+
   FBtns[0] := TRxTimerSpeedButton.Create(Self);
   with FBtns[0] do
   begin
@@ -915,7 +922,7 @@ end;
 procedure TPopupCalendar.AutoSizeForm;
 begin
   FControlPanel.Height:=FCalendar.Canvas.TextHeight('Wg')+4;
-  Height:=(FCalendar.Canvas.TextHeight('Wg')+4)*7+FControlPanel.Height;
+  Height:=(FCalendar.Canvas.TextHeight('Wg')+4)*7+FControlPanel.Height + FCloseBtn.Height;
   Width:=FCalendar.Canvas.TextWidth('WWW')*7;
   FCalendar.AutoFillColumns:=true;
 end;
