@@ -442,11 +442,11 @@ end;
 
 procedure TRxLoginDialog.Loaded;
 var
-  Loading: Boolean;
+  FLoading: Boolean;
 begin
-  Loading := csLoading in ComponentState;
+  FLoading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) and Loading then begin
+  if not (csDesigning in ComponentState) and FLoading then begin
     if Active and not Login then
       TerminateApplication;
   end;
