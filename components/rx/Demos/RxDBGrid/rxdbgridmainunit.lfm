@@ -1,19 +1,19 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 353
+  Left = 301
   Height = 582
   Top = 161
-  Width = 859
-  HorzScrollBar.Page = 858
+  Width = 969
+  HorzScrollBar.Page = 968
   VertScrollBar.Page = 581
   ActiveControl = RxDBGrid1
-  Caption = 'RxDBGrid Demo (ver 2)  ...'
+  Caption = 'RxDBGrid Demo (ver 3)  ...'
   ClientHeight = 582
-  ClientWidth = 859
+  ClientWidth = 969
   OnCreate = FormCreate
   object RxDBGrid1: TRxDBGrid
     Height = 532
     Top = 50
-    Width = 859
+    Width = 969
     Columns = <    
       item
         Title.Alignment = taCenter
@@ -28,7 +28,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Title.Alignment = taCenter
         Title.Caption = 'Software Name'
-        Width = 450
+        Width = 350
         FieldName = 'NAME'
         Filter.Color = clLime
         Filter.ItemIndex = -1
@@ -52,6 +52,19 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.ValueType = fvtSum
         Filter.Color = clLime
         Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Date Present'
+        Width = 100
+        FieldName = 'Date_Present'
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Width = 150
+        FieldName = 'DEVELOPER_ID'
+        Filter.ItemIndex = -1
       end>
     OptionsRx = [rdgFooterRows]
     FooterColor = clYellow
@@ -66,16 +79,15 @@ object RxDBGridMainForm: TRxDBGridMainForm
     OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
     ParentColor = False
     PopupMenu = PopupMenu1
-    Scrollbars = ssBoth
     TabOrder = 0
     TabStop = True
   end
   object Panel1: TPanel
     Height = 50
-    Width = 859
+    Width = 969
     Align = alTop
     ClientHeight = 50
-    ClientWidth = 859
+    ClientWidth = 969
     TabOrder = 1
     object Button1: TButton
       Left = 8
@@ -97,9 +109,9 @@ object RxDBGridMainForm: TRxDBGridMainForm
     end
     object CheckBox1: TCheckBox
       Left = 241
-      Height = 13
+      Height = 20
       Top = 8
-      Width = 61
+      Width = 75
       Caption = 'Use filter'
       OnChange = CheckBox1Change
       TabOrder = 2
@@ -131,6 +143,14 @@ object RxDBGridMainForm: TRxDBGridMainForm
         DataType = ftString
         Precision = -1
         Size = 150
+      end    
+      item
+        Name = 'Date_Present'
+        DataType = ftDate
+      end    
+      item
+        Name = 'DEVELOPER_ID'
+        DataType = ftInteger
       end>
     OnFilterRecordEx = RxMemoryData1FilterRecordEx
     left = 152
@@ -163,6 +183,23 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Index = 3
       ProviderFlags = [pfInUpdate, pfInWhere]
       Size = 150
+    end
+    object RxMemoryData1Date_Present1: TDateField
+      DisplayWidth = 10
+      FieldName = 'Date_Present'
+      Index = 4
+      ProviderFlags = [pfInUpdate, pfInWhere]
+    end
+    object RxMemoryData1DEVELOPER_ID1: TLongintField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'DEVELOPER_ID'
+      Index = 5
+      LookupDataSet = RxMemoryData2
+      LookupKeyFields = 'DEVELOPER_ID'
+      LookupResultField = 'DEVELOPER_NAME'
+      KeyFields = 'DEVELOPER_ID'
+      ProviderFlags = [pfInUpdate, pfInWhere]
     end
   end
   object Datasource1: TDatasource
@@ -206,6 +243,38 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Caption = 'Optimize width...'
       DisableIfNoHandler = True
       OnExecute = actOptimizeWidthCol1Execute
+    end
+  end
+  object Datasource2: TDatasource
+    DataSet = RxMemoryData2
+    left = 207
+    top = 264
+  end
+  object RxMemoryData2: TRxMemoryData
+    FieldDefs = <    
+      item
+        Name = 'DEVELOPER_ID'
+        DataType = ftInteger
+      end    
+      item
+        Name = 'DEVELOPER_NAME'
+        DataType = ftString
+        Size = 130
+      end>
+    left = 240
+    top = 264
+    object RxMemoryData2DEVELOPER_ID1: TLongintField
+      AlignMent = taRightJustify
+      DisplayWidth = 10
+      FieldName = 'DEVELOPER_ID'
+      ProviderFlags = [pfInUpdate, pfInWhere]
+    end
+    object RxMemoryData2DEVELOPER_NAME1: TStringField
+      DisplayWidth = 130
+      FieldName = 'DEVELOPER_NAME'
+      Index = 1
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      Size = 130
     end
   end
 end

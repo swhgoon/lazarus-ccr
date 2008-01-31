@@ -23,6 +23,10 @@
   + Cosmetic fix in paint TRxCustomDBLookupCombo
   + Dropdown list in TRxCustomDBLookupCombo show after clikc on component
   + minor fix in RxDBGrid paint sort marker and column title
+  + New component - TRxDateEdit
+  + In RxDBGrid create editor for field with type ftDate, ftDateTime - based on TRxDateEdit
+    (see Demos/RxDBGrid)
+  - minor fix in filter combobox in RxDBGrid for GTK and GTK2
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

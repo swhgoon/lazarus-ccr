@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
-  DB, rxdbgrid, ExtCtrls, Buttons, Menus, ActnList, StdCtrls;
+  DB, rxdbgrid, ExtCtrls, Buttons, Menus, ActnList, StdCtrls, DBGrids;
 
 type
 
@@ -21,6 +21,7 @@ type
     Button2: TButton;
     CheckBox1: TCheckBox;
     Datasource1: TDatasource;
+    Datasource2: TDatasource;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -29,10 +30,15 @@ type
     PopupMenu1: TPopupMenu;
     RxDBGrid1: TRxDBGrid;
     RxMemoryData1: TRxMemoryData;
+    RxMemoryData1Date_Present1: TDateField;
     RxMemoryData1Developer1: TStringField;
+    RxMemoryData1DEVELOPER_ID1: TLongintField;
     RxMemoryData1ID1: TLongintField;
     RxMemoryData1NAME1: TStringField;
     RxMemoryData1PRICE1: TFloatField;
+    RxMemoryData2: TRxMemoryData;
+    RxMemoryData2DEVELOPER_ID1: TLongintField;
+    RxMemoryData2DEVELOPER_NAME1: TStringField;
     procedure actCalcTotalExecute(Sender: TObject);
     procedure actOptimizeColumnsWidthAllExecute(Sender: TObject);
     procedure actOptimizeWidthCol1Execute(Sender: TObject);
@@ -56,18 +62,23 @@ implementation
 
 procedure TRxDBGridMainForm.FormCreate(Sender: TObject);
 begin
+  RxMemoryData2.Open;
+  RxMemoryData2.AppendRecord([1, 'Open source']);
+  RxMemoryData2.AppendRecord([2, 'Borland']);
+  RxMemoryData2.AppendRecord([3, 'Microsoft']);
+
   RxMemoryData1.Open;
-  RxMemoryData1.AppendRecord([1, 'Lazarus 0.9.23', 0, 'Open source']);
-  RxMemoryData1.AppendRecord([2, 'Delphi 7.0 Prof', 990, 'Borland']);
-  RxMemoryData1.AppendRecord([3, 'Open Office 2.2.0', 0, 'Open source']);
-  RxMemoryData1.AppendRecord([4, 'Microsoft Office', 150, 'Microsoft']);
-  RxMemoryData1.AppendRecord([5, 'Microsoft Windows 95', 50, 'Microsoft']);
-  RxMemoryData1.AppendRecord([6, 'Microsoft Windows 98', 90, 'Microsoft']);
-  RxMemoryData1.AppendRecord([7, 'Microsoft Windows ME', 90, 'Microsoft']);
-  RxMemoryData1.AppendRecord([8, 'Microsoft Windows NT 4.0', 250, 'Microsoft']);
-  RxMemoryData1.AppendRecord([9, 'Microsoft Windows 2000', 150, 'Microsoft']);
-  RxMemoryData1.AppendRecord([10, 'Microsoft Windows XP', 130, 'Microsoft']);
-  RxMemoryData1.AppendRecord([11, 'Microsoft Windows Vista', 180, 'Microsoft']);
+  RxMemoryData1.AppendRecord([1, 'Lazarus 0.9.23', 0, 'Open source', EncodeDate(2006, 1, 1), 1]);
+  RxMemoryData1.AppendRecord([2, 'Delphi 7.0 Prof', 990, 'Borland', EncodeDate(2002, 1, 1), 2]);
+  RxMemoryData1.AppendRecord([3, 'Open Office 2.2.0', 0, 'Open source', EncodeDate(2006, 10, 1), 1]);
+  RxMemoryData1.AppendRecord([4, 'Microsoft Office', 150, 'Microsoft', EncodeDate(1997, 8, 12), 3]);
+  RxMemoryData1.AppendRecord([5, 'Microsoft Windows 95', 50, 'Microsoft', EncodeDate(1995, 8, 12), 3]);
+  RxMemoryData1.AppendRecord([6, 'Microsoft Windows 98', 90, 'Microsoft', EncodeDate(1997, 12, 12), 3]);
+  RxMemoryData1.AppendRecord([7, 'Microsoft Windows ME', 90, 'Microsoft', EncodeDate(1999, 10, 25), 3]);
+  RxMemoryData1.AppendRecord([8, 'Microsoft Windows NT 4.0', 250, 'Microsoft', EncodeDate(1996, 2, 3), 3]);
+  RxMemoryData1.AppendRecord([9, 'Microsoft Windows 2000', 150, 'Microsoft', EncodeDate(1999, 11, 13), 3]);
+  RxMemoryData1.AppendRecord([10, 'Microsoft Windows XP', 130, 'Microsoft', EncodeDate(2003, 10, 1), 3]);
+  RxMemoryData1.AppendRecord([11, 'Microsoft Windows Vista', 180, 'Microsoft', EncodeDate(2007, 2, 1), 3]);
   DoFillFilters;
   RxMemoryData1.First;
   RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
@@ -100,6 +111,13 @@ var
   C:TRxColumn;
   i:integer;
 begin
+  for i:=0 to RxDBGrid1.Columns.Count-1 do
+  begin
+    C:=TRxColumn(RxDBGrid1.Columns[i]);
+    C.Filter.EmptyValue:='None...';
+    C.Filter.ValueList.Add(C.Filter.EmptyValue);
+  end;
+
   RxMemoryData1.First;
   while not RxMemoryData1.EOF do
   begin

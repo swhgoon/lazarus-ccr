@@ -39,7 +39,7 @@ type
   
   TOptionsRx = set of TOptionRx;
   
-  TDataSetClass = class of TDataSet;
+//  TDataSetClass = class of TDataSet;
 
   TRxColumn = class;
 
@@ -229,7 +229,8 @@ type
     FVersion: Integer;
     FPropertyStorageLink:TPropertyStorageLink;
     FRxDbGridLookupComboEditor:TCustomControl;
-    
+    FRxDbGridDateEditor:TWinControl;
+
     function GetColumns: TRxDbGridColumns;
     function GetPropertyStorage: TCustomPropertyStorage;
     function IsColumnsStored: boolean;
@@ -398,7 +399,8 @@ type
 procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
 
 implementation
-uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit, rxlookup;
+uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
+  rxlookup, tooledit, LCLProc;
 
 var
   ExDBGridSortEngineList:TStringList;
@@ -441,6 +443,164 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
+  { TRxDBGridDateEditor }
+  TRxDBGridDateEditor = class(TCustomRxDateEdit)
+  private
+    FGrid: TRxDBGrid;
+    FCol,FRow: Integer;
+  protected
+    procedure Change; override;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+
+    procedure WndProc(var TheMessage : TLMessage); override;
+    procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
+    procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
+    procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
+    procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
+
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+  public
+    procedure EditingDone; override;
+  end;
+
+
+{ TRxDBGridDateEditor }
+
+procedure TRxDBGridDateEditor.Change;
+begin
+  inherited Change;
+  if Assigned(FGrid) and FGrid.DatalinkActive and not FGrid.EditorIsReadOnly then
+  begin
+    if not (FGrid.DataSource.DataSet.State in dsEditModes) then
+      FGrid.DataSource.Edit;
+    if Self.Text <> '' then
+      FGrid.SelectedField.AsDateTime:=Self.Date
+    else
+      FGrid.SelectedField.Clear;
+
+    if FGrid<>nil then
+      FGrid.SetEditText(FCol, FRow, Text);
+  end;
+end;
+
+procedure TRxDBGridDateEditor.KeyDown(var Key: Word; Shift: TShiftState);
+  function AllSelected: boolean;
+  begin
+    result := (SelLength>0) and (SelLength=UTF8Length(Text));
+  end;
+  function AtStart: Boolean;
+  begin
+    Result:= (SelStart=0);
+  end;
+  function AtEnd: Boolean;
+  begin
+    result := ((SelStart+1)>UTF8Length(Text)) or AllSelected;
+  end;
+  procedure doEditorKeyDown;
+  begin
+    if FGrid<>nil then
+      FGrid.EditorkeyDown(Self, key, shift);
+  end;
+  procedure doGridKeyDown;
+  begin
+    if FGrid<>nil then
+      FGrid.KeyDown(Key, shift);
+  end;
+  function GetFastEntry: boolean;
+  begin
+    if FGrid<>nil then
+      Result := FGrid.FastEditing
+    else
+      Result := False;
+  end;
+  procedure CheckEditingKey;
+  begin
+    if (FGrid=nil) or FGrid.EditorIsReadOnly then
+      Key := 0;
+  end;
+var
+  IntSel: boolean;
+begin
+  inherited KeyDown(Key,Shift);
+  case Key of
+    VK_F2:
+      if AllSelected then begin
+        SelLength := 0;
+        SelStart := Length(Text);
+      end;
+    VK_DELETE:
+      CheckEditingKey;
+    VK_UP, VK_DOWN:
+      doGridKeyDown;
+    VK_LEFT, VK_RIGHT:
+      if GetFastEntry then begin
+        IntSel:=
+          ((Key=VK_LEFT) and not AtStart) or
+          ((Key=VK_RIGHT) and not AtEnd);
+      if not IntSel then begin
+          doGridKeyDown;
+      end;
+    end;
+    VK_END, VK_HOME:
+      ;
+    else
+      doEditorKeyDown;
+  end;
+end;
+
+procedure TRxDBGridDateEditor.WndProc(var TheMessage: TLMessage);
+begin
+  if TheMessage.msg=LM_KILLFOCUS then
+  begin
+    if HWND(TheMessage.WParam) = HWND(Handle) then
+    begin
+      // lost the focus but it returns to ourselves
+      // eat the message.
+      TheMessage.Result := 0;
+      exit;
+    end;
+  end;
+  inherited WndProc(TheMessage);
+end;
+
+procedure TRxDBGridDateEditor.msg_SetGrid(var Msg: TGridMessage);
+begin
+  FGrid:=Msg.Grid as TRxDBGrid;
+  Msg.Options:=EO_AUTOSIZE or EO_SELECTALL {or EO_HOOKEXIT or EO_HOOKKEYPRESS or EO_HOOKKEYUP};
+end;
+
+procedure TRxDBGridDateEditor.msg_SetValue(var Msg: TGridMessage);
+begin
+  Self.Date:=FGrid.SelectedField.AsDateTime;
+end;
+
+procedure TRxDBGridDateEditor.msg_GetValue(var Msg: TGridMessage);
+var
+  sText:string;
+begin
+  sText:=Text;
+  Msg.Value:=sText;
+end;
+
+procedure TRxDBGridDateEditor.msg_SelectAll(var Msg: TGridMessage);
+begin
+  SelectAll;
+end;
+
+procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  Dec(aWidth, 25);
+  inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+end;
+
+procedure TRxDBGridDateEditor.EditingDone;
+begin
+  inherited EditingDone;
+  if FGrid<>nil then
+    FGrid.EditingDone;
+end;
+
 
 { TRxDBGridLookupComboEditor }
 
@@ -489,7 +649,7 @@ end;
 
 procedure TRxDBGridLookupComboEditor.msg_SetValue(var Msg: TGridMessage);
 var
-  F, LF:TField;
+  F:TField;
 begin
   FCol := Msg.Col;
   FRow := Msg.Row;
@@ -498,8 +658,8 @@ begin
   if Assigned(F) then
   begin
     DataField:=F.FieldName;
-    LookupDisplay:=F.LookupKeyFields;
-    LookupField:=F.LookupResultField;
+    LookupDisplay:=F.LookupResultField;
+    LookupField:=F.LookupKeyFields;
     FLDS.DataSet:=F.LookupDataSet;
   end;
 end;
@@ -737,13 +897,13 @@ end;
 function TRxDBGrid.getFilterRect(bRect: TRect): TRect;
 begin
   Result := bRect;
-  Result.Top := bRect.Bottom - 19;
+  Result.Top := bRect.Bottom - DefaultRowHeight;
 end;
 
 function TRxDBGrid.getTitleRect(bRect: TRect): TRect;
 begin
   Result := bRect;
-  Result.Bottom := bRect.Bottom - 19;
+  Result.Bottom := bRect.Bottom - DefaultRowHeight;
 end;
 
 procedure TRxDBGrid.OnIniSave(Sender: TObject);
@@ -782,7 +942,7 @@ end;
 
 var
   i, ACount:integer;
-  S, S1, ColumName, S2:string;
+  S, S1, ColumName{, S2}:string;
   C:TRxColumn;
 
 begin
@@ -1278,11 +1438,11 @@ procedure TRxDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   Cell: TGridCoord;
   Rect : TRect;
-  X1,X2,Y1,Y2 : integer;
-  msg: TGridMessage;
-  pow : TForm;
-  curCol,curRow : integer;
-  dump : integer;
+//  X1,X2,Y1,Y2 : integer;
+//  msg: TGridMessage;
+//  pow : TForm;
+//  curCol,curRow : integer;
+//  dump : integer;
 begin
   Cell := MouseCoord(X, Y);
   if (Cell.Y=0) and (Cell.X >= ord(dgIndicator in Options))  then
@@ -1303,7 +1463,8 @@ begin
           Height := Rect.Bottom - Rect.Top;
           BoundsRect := Rect;
           Style := csDropDownList;
-          DropDownCount := TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.DropDownRows;
+//          DropDownCount := TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.DropDownRows;
+          Text:=TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.Value;
           Show(Self,Cell.x-1);
         end;
         exit;
@@ -1627,6 +1788,12 @@ begin
         Result:=FRxDbGridLookupComboEditor;
         exit;
       end
+      else
+      if F.DataType in [ftDate, ftDateTime] then
+      begin
+        Result:=FRxDbGridDateEditor;
+        exit;
+      end;
     end
   end;
   Result:=inherited EditorByStyle(Style);
@@ -1750,11 +1917,16 @@ begin
   FRxDbGridLookupComboEditor:=TRxDBGridLookupComboEditor.Create(nil);
   FRxDbGridLookupComboEditor.Name:='RxDBGridLookupComboEditor';
   FRxDbGridLookupComboEditor.Visible:=false;
+  
+  FRxDbGridDateEditor:=TRxDBGridDateEditor.Create(nil);
+  FRxDbGridDateEditor.Name:='RxDbGridDateEditor';
+  FRxDbGridDateEditor.Visible:=false;
 end;
 
 destructor TRxDBGrid.Destroy;
 begin
   FreeAndNil(FRxDbGridLookupComboEditor);
+  FreeAndNil(FRxDbGridDateEditor);
   FreeAndNil(FMarkerDown);
   FreeAndNil(FMarkerUp);
   FreeAndNil(FPropertyStorageLink);
@@ -2166,11 +2338,12 @@ end;
 
 procedure TFilterListCellEditor.Show(Grid: TCustomGrid; Col: Integer);
 begin
-   FGrid := Grid;
-   FCol := Col;
-   Visible := true;
-   DroppedDown := true;
-   SetFocus;
+  FGrid := Grid;
+  FCol := Col;
+  Visible := true;
+//  Text:=TRxColumn(TRxDBGrid(Grid).SelectedColumn).Filter.Value;
+  SetFocus;
+//  DroppedDown := true;
 end;
 
 
