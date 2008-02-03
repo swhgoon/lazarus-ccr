@@ -28230,7 +28230,8 @@ begin
   if FScrollBarOptions.ScrollBars in [ssHorizontal, ssBoth] then
   begin
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    //LCL automatically set cbSize field
+    //ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     {$ifdef UseFlatScrollbars}
       FlatSB_GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
@@ -28245,7 +28246,7 @@ begin
       ScrollInfo.nMin := 0;
       ScrollInfo.nMax := FRangeX;
       ScrollInfo.nPos := FEffectiveOffsetX;
-      ScrollInfo.nPage := Max(0, ClientWidth + 1);
+      ScrollInfo.nPage := Max(0, ClientWidth);
 
       ScrollInfo.fMask := SIF_ALL or ScrollMasks[FScrollBarOptions.AlwaysVisible];
       {$ifdef UseFlatScrollbars}
@@ -28322,7 +28323,8 @@ begin
   //  Inc(FRangeY,FHeader.Height);
   if FScrollBarOptions.ScrollBars in [ssVertical, ssBoth] then
   begin
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    //LCL automatically set cbSize field
+    //ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL;
     {$ifdef UseFlatScrollbars}
       FlatSB_GetScrollInfo(Handle, SB_VERT, ScrollInfo);
@@ -28337,7 +28339,7 @@ begin
       ScrollInfo.nMin := 0;
       ScrollInfo.nMax := FRangeY;
       ScrollInfo.nPos := -FOffsetY;
-      ScrollInfo.nPage := Max(0, ClientHeight + 1);
+      ScrollInfo.nPage := Max(0, ClientHeight);
 
       ScrollInfo.fMask := SIF_ALL or ScrollMasks[FScrollBarOptions.AlwaysVisible];
       {$ifdef UseFlatScrollbars}
