@@ -49,7 +49,8 @@ exports
   TCustomForm_Show,
   TForm_Create,
   { StdCtrlsExports }
-  TButton_Create;
+  TButton_Create,
+  TLabel_Create;
 
 begin
 end.

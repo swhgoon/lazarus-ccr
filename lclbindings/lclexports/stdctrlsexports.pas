@@ -20,13 +20,28 @@ uses
   Classes, SysUtils,
   StdCtrls;
 
+{ TButton }
+
 function TButton_Create(TheOwner: TComponent): TButton; cdecl;
 
+{ TLabel }
+
+function TLabel_Create(TheOwner: TComponent): TLabel; cdecl;
+
 implementation
+
+{ TButton }
 
 function TButton_Create(TheOwner: TComponent): TButton; cdecl;
 begin
   Result := TButton.Create(TheOwner);
+end;
+
+{ TLabel }
+
+function TLabel_Create(TheOwner: TComponent): TLabel; cdecl;
+begin
+  Result := TLabel.Create(TheOwner);
 end;
 
 end.

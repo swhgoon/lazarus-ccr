@@ -12,6 +12,7 @@ AUTHOR: Felipe Monteiro de Carvalho
 
 TFormH MyForm;
 TButtonH MyButton;
+TLabelH MyLabel;
 
 /* Callback for the close button */
 FASTCALL_TNOTIFYEVENT_START(MyButton_OnClick) /* void* Self, TObjectH Sender */
@@ -41,6 +42,13 @@ APPBEGIN()
 
     TControl_SetOnClick(MyButton, &MyButton_OnClick);
     TControl_SetCaption(MyButton, "Close Button");
+
+    MyLabel = TLabel_Create(MyForm);
+    TWinControl_SetParent(MyLabel, MyForm);
+
+    TControl_SetTop(MyLabel, 50);
+    TControl_SetLeft(MyLabel, 60);
+    TControl_SetCaption(MyLabel, "Toolbox is cool!!!");
 
     /* Enter main loop */
     Application_Run();

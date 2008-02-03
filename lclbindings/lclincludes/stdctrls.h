@@ -26,6 +26,12 @@ typedef void* TButtonH;
 
 __cdecl TButtonH TButton_Create(TComponentH TheOwner);
 
+/* TLabel */
+
+typedef void* TLabelH;
+
+__cdecl TLabelH TLabel_Create(TComponentH TheOwner);
+
 #ifdef __cplusplus
 }
 #endif

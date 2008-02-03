@@ -47,6 +47,8 @@ procedure TWinControl_SetParent(Self: TWinControl; AValue: TWinControl); cdecl;
 
 implementation
 
+{ TControl }
+
 function TControl_GetOnClick(Self: TControl): TNotifyEvent; cdecl;
 begin
   Result := Self.OnClick;
@@ -116,6 +118,8 @@ procedure TControl_SetWidth(Self: TControl; AValue: Integer); cdecl;
 begin
   Self.Width := AValue;
 end;
+
+{ TWinControl }
 
 function TWinControl_GetParent(Self: TWinControl): TWinControl; cdecl;
 begin
