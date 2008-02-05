@@ -34,6 +34,7 @@ type
     FDefaultToday: Boolean;
     FDialogTitle: TCaption;
     FPopupColor: TColor;
+    FNotInThisMonthColor:TColor;
     FOKCaption: TCaption;
     FOnAcceptDAte: TAcceptDateEvent;
     FStartOfWeek: TDayOfWeekName;
@@ -94,6 +95,7 @@ type
       write SetCalendarStyle default dcsDefault;
     property PopupVisible: Boolean read GetPopupVisible;
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaLeft;
+    property NotInThisMonthColor:TColor read FNotInThisMonthColor write FNotInThisMonthColor default clSilver;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,33 +111,50 @@ type
   public
     property PopupVisible;
   published
-    property BlanksChar;
-    property StartOfWeek;
-    property DialogTitle;
-    property DirectInput;
-    Property OnAcceptDate;
-    property OKCaption;
-    property CancelCaption;
-    property DefaultToday;
-    property ReadOnly;
-    property ButtonOnlyWhenFocused;
-    property ButtonWidth;
     property Action;
     property Align;
     property Anchors;
-    property AutoSize;
     property AutoSelect;
+    property AutoSize;
+    property BlanksChar;
     property BorderSpacing;
+    property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property CalendarStyle;
+    property CancelCaption;
+    property CharCase;
     property Color;
     property Constraints;
-    property CharCase;
-    property Glyph;
-    property NumGlyphs;
+    property DefaultToday;
+    property DialogTitle;
+    property DirectInput;
     property DragMode;
     property EchoMode;
     property Enabled;
     property Font;
+    property Glyph;
     property MaxLength;
+    property NotInThisMonthColor;
+    property NumGlyphs;
+    property OKCaption;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupAlign;
+    property PopupColor;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property StartOfWeek;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property Visible;
+    property WeekendColor;
+    property Weekends;
+    property YearDigits;
+
+    property OnAcceptDate;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -149,20 +168,6 @@ type
     Property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property ParentFont;
-    property ParentShowHint;
-    property PasswordChar;
-    property PopupMenu;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Visible;
-    property YearDigits;
-    property Weekends;
-    property WeekendColor;
-    property PopupColor;
-    property PopupAlign;
-    property CalendarStyle;
   end;
   
 
@@ -374,6 +379,7 @@ begin
             FPopup := CreatePopupCalendar(Self{$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
           FPopup.OnCloseUp := @PopupCloseUp;
           FPopup.Color := FPopupColor;
+          TRxCalendarGrid(FPopup.Calendar).NotInThisMonthColor:=FNotInThisMonthColor;
 //          UpdatePopup;
         end;
       csDialog:
@@ -404,7 +410,7 @@ end;
 
 procedure TCustomRxDateEdit.SetPopupColor(const AValue: TColor);
 begin
-  if AValue <> PopupColor then
+  if AValue <> FPopupColor then
   begin
     if FPopup <> nil then FPopup.Color := AValue;
     FPopupColor := AValue;
@@ -502,13 +508,19 @@ procedure DoTrySetDate;
 var
   D:TDateTime;
 begin
-  try
-    D:=StrToDate(Text);
-    FPopup.Date:=D;
-  except
-    if FDefaultToday then
-      FPopup.Date:=sysutils.Date;
-  end;
+  if Text<>'' then
+  begin
+    try
+      D:=StrToDate(Text);
+      FPopup.Date:=D;
+    except
+      if FDefaultToday then
+        FPopup.Date:=sysutils.Date;
+    end;
+  end
+  else
+  if FDefaultToday then
+    FPopup.Date:=sysutils.Date;
 end;
 
 begin
@@ -593,6 +605,7 @@ begin
   FPopup.Left:=AOrigin.X;
   FPopup.Top:=AOrigin.Y;
   FPopup.AutoSizeForm;
+  TRxCalendarGrid(FPopup.Calendar).NotInThisMonthColor := FNotInThisMonthColor;
   FAccept:=FPopup.ShowModal = mrOk;
   if CanFocus then SetFocus;
 
@@ -711,6 +724,7 @@ begin
   FBlanksChar := ' ';
   FDialogTitle := sDateDlgTitle;
   FPopupColor := clBtnFace;
+  FNotInThisMonthColor := clSilver;
   FPopupAlign := epaLeft;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
@@ -725,6 +739,8 @@ begin
     FPopup := CreatePopupCalendar(Self {$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
     FPopup.OnCloseUp := @PopupCloseUp;
     FPopup.Color := FPopupColor;
+{$ELSE}
+    FPopup:=nil;
 {$ENDIF DEFAULT_POPUP_CALENDAR}
 //    GlyphKind := gkDefault; { force update }
   finally

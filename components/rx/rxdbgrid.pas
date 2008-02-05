@@ -1075,7 +1075,9 @@ begin
     if TextOrient = toHorizontal then
     begin
       aRect2:=aRect;
-      aRect2.Left:=aRect2.Left - 2;
+//      aRect2.Left:=aRect2.Left - 2;
+      Inc(aRect2.Left, 2);
+      Dec(aRect2.Right, 2);
       if ASortMarker <> smNone then
         aRect2.Right := aRect2.Right - FMarkerDown.Width;
 
