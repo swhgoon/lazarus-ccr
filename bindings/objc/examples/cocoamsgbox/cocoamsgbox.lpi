@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="17">
+      <Unit0>
+        <Filename Value="cocoamsgbox.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="cocoamsgbox"/>
+        <CursorPos X="13" Y="6"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="../objc-runtime.inc"/>
+        <CursorPos X="68" Y="77"/>
+        <TopLine Value="64"/>
+        <UsageCount Value="11"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../objc.inc"/>
+        <CursorPos X="3" Y="50"/>
+        <TopLine Value="37"/>
+        <UsageCount Value="11"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../appkit/appkit.pas"/>
+        <UnitName Value="appkit"/>
+        <CursorPos X="22" Y="22"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../appkit/appkit.inc"/>
+        <CursorPos X="1" Y="14"/>
+        <TopLine Value="6"/>
+        <UsageCount Value="21"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/AppKit.h"/>
+        <CursorPos X="35" Y="120"/>
+        <TopLine Value="117"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../appkit/NSApplication.inc"/>
+        <CursorPos X="3" Y="49"/>
+        <TopLine Value="45"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../objc-api.inc"/>
+        <CursorPos X="42" Y="21"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../objc-class.inc"/>
+        <CursorPos X="41" Y="196"/>
+        <TopLine Value="184"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../objc.pas"/>
+        <UnitName Value="objc"/>
+        <CursorPos X="10" Y="7"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../appkit/NSAlert.inc"/>
+        <CursorPos X="34" Y="53"/>
+        <TopLine Value="51"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../appkit/NSPanel.inc"/>
+        <CursorPos X="20" Y="89"/>
+        <TopLine Value="68"/>
+        <UsageCount Value="11"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../teste/carbondemos/carbontest.lpr"/>
+        <UnitName Value="carbontest"/>
+        <CursorPos X="1" Y="65"/>
+        <TopLine Value="12"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../cocoa/appkit/appkit.pas"/>
+        <UnitName Value="appkit"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../cocoa/appkit/NSApplication.inc"/>
+        <CursorPos X="1" Y="348"/>
+        <TopLine Value="328"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../cocoa/appkit/NSPanel.inc"/>
+        <CursorPos X="94" Y="15"/>
+        <TopLine Value="5"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../objc.pas"/>
+        <UnitName Value="objc"/>
+        <CursorPos X="24" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="../../"/>
+      <SrcPath Value="../../"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-framework cocoa -lobjc"/>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
