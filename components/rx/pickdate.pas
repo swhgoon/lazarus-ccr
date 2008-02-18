@@ -173,6 +173,7 @@ type
     procedure AutoSizeForm;
     property Date:TDateTime read GetDate write SetDate;
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
+    property Calendar: TCustomRxCalendar read FCalendar;
   end;
 
 { TSelectDateDlg }
@@ -286,11 +287,11 @@ end;
 { TRxTimerSpeedButton }
 
 type
-  TRxTimerSpeedButton = class(TSpeedButton)
+  TRxTimerSpeedButton = class(TRxSpeedButton)
   public
     constructor Create(AOwner: TComponent); override;
   published
-//    property AllowTimer default True;
+    property AllowTimer default True;
 //    property Style default bsWin31;
   end;
 
@@ -298,7 +299,7 @@ constructor TRxTimerSpeedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 //  Style := bsWin31;
-//  AllowTimer := True;
+  AllowTimer := True;
   ControlStyle := ControlStyle + [csReplicatable];
 end;
 

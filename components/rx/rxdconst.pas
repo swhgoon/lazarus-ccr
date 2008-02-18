@@ -162,7 +162,6 @@ resourcestring
   SUnknownFieldType = 'SUnknownFieldType %s';
   SFieldReadOnly = 'SFieldReadOnly %s';
 
-
 const
   { The following strings should not be localized }
   sAction       = '.Action';

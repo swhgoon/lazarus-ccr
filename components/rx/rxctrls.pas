@@ -652,170 +652,37 @@ type
     property OnResize;
   end;
 
-(*
 { TRxSpeedButton }
+(*
 
   TRxNumGlyphs = 1..5;
   TRxDropDownMenuPos = (dmpBottom, dmpRight);
   TRxButtonState = (rbsUp, rbsDisabled, rbsDown, rbsExclusive, rbsInactive);
+*)
 
-  TRxSpeedButton = class(TGraphicControl)
+  TRxSpeedButton = class(TSpeedButton)
   private
-    FGroupIndex: Integer;
-    FStyle: TButtonStyle;
-    FGlyph: Pointer;
-    FDrawImage: TBitmap;
-    FDown: Boolean;
-    FDragging: Boolean;
-    FFlat: Boolean;
-    FMouseInControl: Boolean;
-    FAllowAllUp: Boolean;
-    FLayout: TButtonLayout;
-    FSpacing: Integer;
-    FMargin: Integer;
-    FModalResult: TModalResult;
-    FTransparent: Boolean;
-    FMarkDropDown: Boolean;
-    FDropDownMenu: TPopupMenu;
-    FMenuPosition: TRxDropDownMenuPos;
-    FInactiveGrayed: Boolean;
-    FMenuTracking: Boolean;
-    FRepeatTimer: TTimer;
     FAllowTimer: Boolean;
     FInitRepeatPause: Word;
     FRepeatPause: Word;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-    procedure GlyphChanged(Sender: TObject);
-    procedure UpdateExclusive;
-    function GetGlyph: TBitmap;
-    procedure SetGlyph(Value: TBitmap);
-    function GetNumGlyphs: TRxNumGlyphs;
-    procedure SetNumGlyphs(Value: TRxNumGlyphs);
-    function GetWordWrap: Boolean;
-    procedure SetWordWrap(Value: Boolean);
-    function GetAlignment: TAlignment;
-    procedure SetAlignment(Value: TAlignment);
-    procedure SetDown(Value: Boolean);
-    procedure SetAllowAllUp(Value: Boolean);
-    procedure SetGroupIndex(Value: Integer);
-    procedure SetLayout(Value: TButtonLayout);
-    procedure SetSpacing(Value: Integer);
-    procedure SetMargin(Value: Integer);
-    procedure SetDropDownMenu(Value: TPopupMenu);
-    procedure SetFlat(Value: Boolean);
-    procedure SetStyle(Value: TButtonStyle);
-    procedure SetInactiveGrayed(Value: Boolean);
-    procedure SetTransparent(Value: Boolean);
-    procedure SetMarkDropDown(Value: Boolean);
+    FRepeatTimer: TTimer;
+    procedure SetAllowTimer(const AValue: Boolean);
     procedure TimerExpired(Sender: TObject);
-    procedure SetAllowTimer(Value: Boolean);
-    function CheckMenuDropDown(const Pos: TSmallPoint;
-      Manual: Boolean): Boolean;
-    procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
-    procedure CMButtonPressed(var Message: TMessage); message CM_RXBUTTONPRESSED;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMVisibleChanged(var Message: TMessage); message CM_VISIBLECHANGED;
-    procedure WMLButtonDblClk(var Message: TWMLButtonDown); message WM_LBUTTONDBLCLK;
-    procedure WMMouseMove(var Message: TMessage); message WM_MOUSEMOVE;
-    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
-    procedure WMRButtonUp(var Message: TWMRButtonUp); message WM_RBUTTONUP;
   protected
-    FState: TRxButtonState;
-{$IFDEF RX_D4}
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-{$ENDIF}
-    function GetDropDownMenuPos: TPoint;
-    function GetPalette: HPALETTE; override;
-    procedure Paint; override;
-    procedure Loaded; override;
-    procedure PaintGlyph(Canvas: TCanvas; ARect: TRect; AState: TRxButtonState;
-      DrawMark: Boolean); virtual;
-    procedure MouseEnter; dynamic;
-    procedure MouseLeave; dynamic;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
-    property ButtonGlyph: Pointer read FGlyph;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ButtonClick;
-    function CheckBtnMenuDropDown: Boolean;
-    procedure Click; override;
-    procedure UpdateTracking;
   published
-{$IFDEF RX_D4}
-    property Action;
-    property Anchors;
-    property BiDiMode;
-    property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
-{$ENDIF}
-    property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
-    property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property AllowTimer: Boolean read FAllowTimer write SetAllowTimer default False;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    { Ensure group index is declared before Down }
-    property Down: Boolean read FDown write SetDown default False;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
-    property MenuPosition: TRxDropDownMenuPos read FMenuPosition write FMenuPosition
-      default dmpBottom;
-    property Caption;
-    property DragCursor;
-    property DragMode;
-    property Enabled;
-    property Flat: Boolean read FFlat write SetFlat default False;
-    property Font;
-    property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property GrayedInactive: Boolean read FInactiveGrayed write SetInactiveGrayed
-      default True;
     property InitPause: Word read FInitRepeatPause write FInitRepeatPause default 500;
-    property Layout: TButtonLayout read FLayout write SetLayout default blGlyphTop;
-    property Margin: Integer read FMargin write SetMargin default -1;
-    property MarkDropDown: Boolean read FMarkDropDown write SetMarkDropDown default True;
-    property ModalResult: TModalResult read FModalResult write FModalResult default 0;
-    property NumGlyphs: TRxNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
-    property ParentFont;
-    property ParentShowHint default False;
     property RepeatInterval: Word read FRepeatPause write FRepeatPause default 100;
-    property ShowHint default True;
-    property Spacing: Integer read FSpacing write SetSpacing default 1;
-    property Style: TButtonStyle read FStyle write SetStyle default bsAutoDetect;
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property WordWrap: Boolean read GetWordWrap write SetWordWrap default False;
-    property Visible;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-{$IFDEF WIN32}
-    property OnStartDrag;
-{$ENDIF}
-{$IFDEF RX_D4}
-    property OnEndDock;
-    property OnStartDock;
-{$ENDIF}
   end;
 
+(*
 { TButtonImage }
 
   TButtonImage = class(TObject)
@@ -2864,9 +2731,9 @@ end;
 procedure TRxCustomLabel.SetFocusControl(Value: TWinControl);
 begin
   FFocusControl := Value;
-{$IFDEF WIN32}
+{.$IFDEF WIN32}
   if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
+{.$ENDIF}
   if FShowFocus then Invalidate;
 end;
 
@@ -4458,677 +4325,6 @@ begin
   end;
 end;
 
-{ TRxSpeedButton }
-
-constructor TRxSpeedButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  SetBounds(0, 0, 25, 25);
-  ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
-{$IFDEF WIN32}
-  ControlStyle := ControlStyle + [csReplicatable];
-{$ENDIF}
-  FInactiveGrayed := True;
-  FDrawImage := TBitmap.Create;
-  FGlyph := TRxButtonGlyph.Create;
-  TRxButtonGlyph(FGlyph).OnChange := GlyphChanged;
-  ParentFont := True;
-  ParentShowHint := False;
-  ShowHint := True;
-  FSpacing := 1;
-  FMargin := -1;
-  FInitRepeatPause := 500;
-  FRepeatPause := 100;
-  FStyle := bsAutoDetect;
-  FLayout := blGlyphTop;
-  FMarkDropDown := True;
-  Inc(ButtonCount);
-end;
-
-destructor TRxSpeedButton.Destroy;
-begin
-  TRxButtonGlyph(FGlyph).Free;
-  Dec(ButtonCount);
-{$IFNDEF RX_D4}
-  if ButtonCount = 0 then begin
-    Pattern.Free;
-    Pattern := nil;
-  end;
-{$ENDIF}
-  FDrawImage.Free;
-  FDrawImage := nil;
-  if FRepeatTimer <> nil then FRepeatTimer.Free;
-  inherited Destroy;
-end;
-
-procedure TRxSpeedButton.Loaded;
-var
-  State: TRxButtonState;
-begin
-  inherited Loaded;
-  if Enabled then begin
-    if Flat then State := rbsInactive
-    else State := rbsUp;
-  end
-  else State := rbsDisabled;
-  TRxButtonGlyph(FGlyph).CreateButtonGlyph(State);
-end;
-
-procedure TRxSpeedButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
-  AState: TRxButtonState; DrawMark: Boolean);
-begin
-  TRxButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
-    FMargin, FSpacing, DrawMark, AState,
-    {$IFDEF RX_D4} DrawTextBiDiModeFlags(Alignments[Alignment]) {$ELSE}
-    Alignments[Alignment] {$ENDIF});
-end;
-
-procedure TRxSpeedButton.Paint;
-var
-  PaintRect: TRect;
-  AState: TRxButtonState;
-begin
-  if not Enabled {and not (csDesigning in ComponentState)} then begin
-    FState := rbsDisabled;
-    FDragging := False;
-  end
-  else if FState = rbsDisabled then
-    if FDown and (GroupIndex <> 0) then FState := rbsExclusive
-    else FState := rbsUp;
-  AState := FState;
-  if FFlat and not FMouseInControl and not (csDesigning in ComponentState) then
-    AState := rbsInactive;
-  PaintRect := Rect(0, 0, Width, Height);
-  FDrawImage.Width := Self.Width;
-  FDrawImage.Height := Self.Height;
-  with FDrawImage.Canvas do begin
-    Font := Self.Font;
-    Brush.Color := clBtnFace;
-    Brush.Style := bsSolid;
-    FillRect(PaintRect);
-    if FTransparent then CopyParentImage(Self, FDrawImage.Canvas);
-    if (AState <> rbsInactive) or (FState = rbsExclusive) then
-      PaintRect := DrawButtonFrame(FDrawImage.Canvas, PaintRect,
-        FState in [rbsDown, rbsExclusive], FFlat, FStyle)
-    else if FFlat then
-      InflateRect(PaintRect, -2, -2);
-  end;
-  if (FState = rbsExclusive) and not Transparent and
-    (not FFlat or (AState = rbsInactive)) then
-  begin
-{$IFDEF RX_D4}
-    FDrawImage.Canvas.Brush.Bitmap := AllocPatternBitmap(clBtnFace, clBtnHighlight);
-{$ELSE}
-    if Pattern = nil then
-      Pattern := CreateTwoColorsBrushPattern(clBtnFace, clBtnHighlight);
-    FDrawImage.Canvas.Brush.Bitmap := Pattern;
-{$ENDIF}
-    InflateRect(PaintRect, 1, 1);
-    FDrawImage.Canvas.FillRect(PaintRect);
-    InflateRect(PaintRect, -1, -1);
-  end;
-  if FState in [rbsDown, rbsExclusive] then OffsetRect(PaintRect, 1, 1);
-  if (FState = rbsDisabled) or not FInactiveGrayed then AState := FState;
-  PaintGlyph(FDrawImage.Canvas, PaintRect, AState, FMarkDropDown and
-    Assigned(FDropDownMenu));
-  Canvas.Draw(0, 0, FDrawImage);
-end;
-
-procedure TRxSpeedButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = DropDownMenu) and (Operation = opRemove) then
-    DropDownMenu := nil;
-end;
-
-function TRxSpeedButton.GetDropDownMenuPos: TPoint;
-begin
-  if Assigned(FDropDownMenu) then begin
-    if MenuPosition = dmpBottom then begin
-      case FDropDownMenu.Alignment of
-        paLeft: Result := Point(-1, Height);
-        paRight: Result := Point(Width + 1, Height);
-        else {paCenter} Result := Point(Width div 2, Height);
-      end;
-    end
-    else { dmpRight } begin
-      case FDropDownMenu.Alignment of
-        paLeft: Result := Point(Width, -1);
-        paRight: Result := Point(-1, -1);
-        else {paCenter} Result := Point(Width div 2, Height);
-      end;
-    end;
-  end else Result := Point(0, 0);
-end;
-
-function TRxSpeedButton.CheckBtnMenuDropDown: Boolean;
-begin
-  Result := CheckMenuDropDown(
-    {$IFDEF WIN32}PointToSmallPoint(GetDropDownMenuPos){$ELSE}
-    GetDropDownMenuPos{$ENDIF}, True);
-end;
-
-function TRxSpeedButton.CheckMenuDropDown(const Pos: TSmallPoint;
-  Manual: Boolean): Boolean;
-var
-  Form: TCustomForm;
-begin
-  Result := False;
-  if csDesigning in ComponentState then Exit;
-  if Assigned(FDropDownMenu) and (DropDownMenu.AutoPopup or Manual) then
-  begin
-    Form := GetParentForm(Self);
-    if Form <> nil then Form.SendCancelMode(nil);
-    DropDownMenu.PopupComponent := Self;
-    with ClientToScreen(SmallPointToPoint(Pos)) do DropDownMenu.Popup(X, Y);
-    Result := True;
-  end;
-end;
-
-procedure TRxSpeedButton.MouseEnter;
-begin
-  if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
-end;
-
-procedure TRxSpeedButton.MouseLeave;
-begin
-  if Assigned(FOnMouseLeave) then FOnMouseLeave(Self);
-end;
-
-procedure TRxSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  P: TPoint;
-  Msg: TMsg;
-begin
-  if FMenuTracking then Exit;
-  inherited MouseDown(Button, Shift, X, Y);
-  if (not FMouseInControl) and Enabled then begin
-    FMouseInControl := True;
-    Repaint;
-  end;
-  if (Button = mbLeft) and Enabled {and not (ssDouble in Shift)} then begin
-    if not FDown then begin
-      FState := rbsDown;
-      Repaint;
-    end;
-    FDragging := True;
-    FMenuTracking := True;
-    try
-      P := GetDropDownMenuPos;
-      if CheckMenuDropDown(PointToSmallPoint(P), False) then
-        DoMouseUp(Button, Shift, X, Y);
-      if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then begin
-        if (Msg.Message = WM_LBUTTONDOWN) or (Msg.Message = WM_LBUTTONDBLCLK) then
-        begin
-          P := ScreenToClient(Msg.Pt);
-          if (P.X >= 0) and (P.X < ClientWidth) and (P.Y >= 0)
-            and (P.Y <= ClientHeight) then KillMessage(0, Msg.Message);
-              {PeekMessage(Msg, 0, 0, 0, PM_REMOVE);}
-        end;
-      end;
-    finally
-      FMenuTracking := False;
-    end;
-    if FAllowTimer then begin
-      if FRepeatTimer = nil then FRepeatTimer := TTimer.Create(Self);
-      FRepeatTimer.Interval := InitPause;
-      FRepeatTimer.OnTimer := TimerExpired;
-      FRepeatTimer.Enabled  := True;
-    end;
-  end;
-end;
-
-procedure TRxSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-var
-  NewState: TRxButtonState;
-begin
-  inherited MouseMove(Shift, X, Y);
-  if FDragging then begin
-    if not FDown then NewState := rbsUp
-    else NewState := rbsExclusive;
-    if (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight) then
-      if FDown then NewState := rbsExclusive else NewState := rbsDown;
-    if NewState <> FState then begin
-      FState := NewState;
-      Repaint;
-    end;
-  end;
-end;
-
-procedure TRxSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  DoMouseUp(Button, Shift, X, Y);
-  if FRepeatTimer <> nil then FRepeatTimer.Enabled  := False;
-end;
-
-procedure TRxSpeedButton.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  DoClick: Boolean;
-begin
-  if FDragging and (Button = mbLeft) then begin
-    FDragging := False;
-    DoClick := (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight);
-    if FGroupIndex = 0 then begin
-      FState := rbsUp;
-      FMouseInControl := False;
-      if DoClick and not (FState in [rbsExclusive, rbsDown]) then
-        Repaint
-      else Invalidate;
-    end
-    else if DoClick then begin
-      SetDown(not FDown);
-      if FDown then Repaint;
-    end
-    else begin
-      if FDown then FState := rbsExclusive;
-      Repaint;
-    end;
-    if DoClick and not FMenuTracking then Click;
-  end;
-  UpdateTracking;
-end;
-
-procedure TRxSpeedButton.ButtonClick;
-var
-  FirstTickCount, Now: Longint;
-begin
-  if FMenuTracking or (not Enabled) or (Assigned(FDropDownMenu) and
-    DropDownMenu.AutoPopup) then Exit;
-  if not FDown then begin
-    FState := rbsDown;
-    Repaint;
-  end;
-  try
-    FirstTickCount := GetTickCount;
-    repeat
-      Now := GetTickCount;
-    until (Now - FirstTickCount >= 20) or (Now < FirstTickCount);
-    if FGroupIndex = 0 then Click;
-  finally
-    FState := rbsUp;
-    if FGroupIndex = 0 then Repaint
-    else begin
-      SetDown(not FDown);
-      Click;
-    end;
-  end;
-end;
-
-procedure TRxSpeedButton.Click;
-var
-  Form: TCustomForm;
-begin
-  Form := GetParentForm(Self);
-  if Form <> nil then Form.ModalResult := ModalResult;
-  inherited Click;
-end;
-
-function TRxSpeedButton.GetPalette: HPALETTE;
-begin
-  Result := Glyph.Palette;
-end;
-
-function TRxSpeedButton.GetWordWrap: Boolean;
-begin
-  Result := TRxButtonGlyph(FGlyph).WordWrap;
-end;
-
-procedure TRxSpeedButton.SetWordWrap(Value: Boolean);
-begin
-  if Value <> WordWrap then begin
-    TRxButtonGlyph(FGlyph).WordWrap := Value;
-    Invalidate;
-  end;
-end;
-
-function TRxSpeedButton.GetAlignment: TAlignment;
-begin
-  Result := TRxButtonGlyph(FGlyph).Alignment;
-end;
-
-procedure TRxSpeedButton.SetAlignment(Value: TAlignment);
-begin
-  if Alignment <> Value then begin
-    TRxButtonGlyph(FGlyph).Alignment := Value;
-    Invalidate;
-  end;
-end;
-
-function TRxSpeedButton.GetGlyph: TBitmap;
-begin
-  Result := TRxButtonGlyph(FGlyph).Glyph;
-end;
-
-procedure TRxSpeedButton.SetGlyph(Value: TBitmap);
-begin
-  TRxButtonGlyph(FGlyph).Glyph := Value;
-  Invalidate;
-end;
-
-function TRxSpeedButton.GetNumGlyphs: TRxNumGlyphs;
-begin
-  Result := TRxButtonGlyph(FGlyph).NumGlyphs;
-end;
-
-procedure TRxSpeedButton.SetNumGlyphs(Value: TRxNumGlyphs);
-begin
-  if Value < 0 then Value := 1
-  else if Value > Ord(High(TRxButtonState)) + 1 then
-    Value := Ord(High(TRxButtonState)) + 1;
-  if Value <> TRxButtonGlyph(FGlyph).NumGlyphs then begin
-    TRxButtonGlyph(FGlyph).NumGlyphs := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.GlyphChanged(Sender: TObject);
-begin
-  Invalidate;
-end;
-
-procedure TRxSpeedButton.UpdateExclusive;
-var
-  Msg: TMessage;
-begin
-  if (FGroupIndex <> 0) and (Parent <> nil) then begin
-    Msg.Msg := CM_RXBUTTONPRESSED;
-    Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
-  end;
-end;
-
-procedure TRxSpeedButton.SetDown(Value: Boolean);
-begin
-  if FGroupIndex = 0 then Value := False;
-  if Value <> FDown then begin
-    if FDown and (not FAllowAllUp) then Exit;
-    FDown := Value;
-    if Value then begin
-      if FState = rbsUp then Invalidate;
-      FState := rbsExclusive;
-    end
-    else begin
-      FState := rbsUp;
-    end;
-    Repaint;
-    if Value then UpdateExclusive;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetGroupIndex(Value: Integer);
-begin
-  if FGroupIndex <> Value then begin
-    FGroupIndex := Value;
-    UpdateExclusive;
-  end;
-end;
-
-procedure TRxSpeedButton.SetLayout(Value: TButtonLayout);
-begin
-  if FLayout <> Value then begin
-    FLayout := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetMargin(Value: Integer);
-begin
-  if (Value <> FMargin) and (Value >= -1) then begin
-    FMargin := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetSpacing(Value: Integer);
-begin
-  if Value <> FSpacing then begin
-    FSpacing := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetAllowAllUp(Value: Boolean);
-begin
-  if FAllowAllUp <> Value then begin
-    FAllowAllUp := Value;
-    UpdateExclusive;
-  end;
-end;
-
-procedure TRxSpeedButton.SetAllowTimer(Value: Boolean);
-begin
-  FAllowTimer := Value;
-  if not FAllowTimer and (FRepeatTimer <> nil) then begin
-    FRepeatTimer.Enabled := False;
-    FRepeatTimer.Free;
-    FRepeatTimer := nil;
-  end;
-end;
-
-procedure TRxSpeedButton.SetDropDownMenu(Value: TPopupMenu);
-begin
-  FDropDownMenu := Value;
-{$IFDEF WIN32}
-  if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
-  if FMarkDropDown then Invalidate;
-end;
-
-procedure TRxSpeedButton.SetInactiveGrayed(Value: Boolean);
-begin
-  if Value <> FInactiveGrayed then begin
-    FInactiveGrayed := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetFlat(Value: Boolean);
-begin
-  if Value <> FFlat then begin
-    FFlat := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetStyle(Value: TButtonStyle);
-begin
-  if Style <> Value then begin
-    FStyle := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetMarkDropDown(Value: Boolean);
-begin
-  if Value <> FMarkDropDown then begin
-    FMarkDropDown := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.SetTransparent(Value: Boolean);
-begin
-  if Value <> FTransparent then begin
-    FTransparent := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TRxSpeedButton.WMRButtonDown(var Message: TWMRButtonDown);
-begin
-  inherited;
-  UpdateTracking;
-end;
-
-procedure TRxSpeedButton.WMRButtonUp(var Message: TWMRButtonUp);
-begin
-  inherited;
-  UpdateTracking;
-end;
-
-procedure TRxSpeedButton.WMLButtonDblClk(var Message: TWMLButtonDown);
-begin
-  if not FMenuTracking then begin
-    inherited;
-    if FDown then DblClick;
-  end;
-end;
-
-procedure TRxSpeedButton.CMEnabledChanged(var Message: TMessage);
-var
-  State: TRxButtonState;
-begin
-  inherited;
-  if Enabled then begin
-    if Flat then State := rbsInactive
-    else State := rbsUp;
-  end else State := rbsDisabled;
-  TRxButtonGlyph(FGlyph).CreateButtonGlyph(State);
-  UpdateTracking;
-  Repaint;
-end;
-
-procedure TRxSpeedButton.CMVisibleChanged(var Message: TMessage);
-begin
-  inherited;
-  if Visible then UpdateTracking;
-end;
-
-procedure TRxSpeedButton.CMMouseEnter(var Message: TMessage);
-begin
-  inherited;
-  if (not FMouseInControl) and Enabled and IsForegroundTask then begin
-    FMouseInControl := True;
-    if FFlat then Repaint;
-    MouseEnter;
-  end;
-end;
-
-procedure TRxSpeedButton.CMMouseLeave(var Message: TMessage);
-begin
-  inherited;
-  if FMouseInControl and Enabled and not FDragging then begin
-    FMouseInControl := False;
-    if FFlat then Invalidate;
-    MouseLeave;
-  end;
-end;
-
-procedure TRxSpeedButton.WMMouseMove(var Message: TMessage);
-begin
-  inherited;
-end;
-
-procedure TRxSpeedButton.CMButtonPressed(var Message: TMessage);
-var
-  Sender: TControl;
-begin
-  if (Message.WParam = FGroupIndex) and Parent.HandleAllocated then begin
-    Sender := TControl(Message.LParam);
-    if (Sender <> nil) and (Sender is TRxSpeedButton) then
-      if Sender <> Self then begin
-        if TRxSpeedButton(Sender).Down and FDown then begin
-          FDown := False;
-          FState := rbsUp;
-          Repaint;
-        end;
-        FAllowAllUp := TRxSpeedButton(Sender).AllowAllUp;
-      end;
-  end;
-end;
-
-procedure TRxSpeedButton.CMDialogChar(var Message: TCMDialogChar);
-begin
-  with Message do
-    if IsAccel(CharCode, Caption) and Enabled then begin
-      Click;
-      Result := 1;
-    end
-    else inherited;
-end;
-
-procedure TRxSpeedButton.CMFontChanged(var Message: TMessage);
-begin
-  Invalidate;
-end;
-
-procedure TRxSpeedButton.CMTextChanged(var Message: TMessage);
-begin
-  Invalidate;
-end;
-
-procedure TRxSpeedButton.CMSysColorChange(var Message: TMessage);
-begin
-  TRxButtonGlyph(FGlyph).Invalidate;
-  Invalidate;
-end;
-
-procedure TRxSpeedButton.UpdateTracking;
-var
-  P: TPoint;
-  OldValue: Boolean;
-begin
-  OldValue := FMouseInControl;
-  GetCursorPos(P);
-  FMouseInControl := Enabled and (FindDragTarget(P, True) = Self) and
-    IsForegroundTask;
-  if (FMouseInControl <> OldValue) then
-    if FMouseInControl then begin
-      if Flat then Repaint;
-      MouseEnter;
-    end
-    else begin
-      if Flat then Invalidate;
-      MouseLeave;
-    end;
-end;
-
-procedure TRxSpeedButton.TimerExpired(Sender: TObject);
-begin
-  FRepeatTimer.Interval := RepeatInterval;
-  if (FState = rbsDown) and MouseCapture then
-    try
-      Click;
-    except
-      FRepeatTimer.Enabled := False;
-      raise;
-    end;
-end;
-
-{$IFDEF RX_D4}
-procedure TRxSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-
-  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
-  begin
-    with Glyph do begin
-      Width := ImageList.Width;
-      Height := ImageList.Height;
-      Canvas.Brush.Color := clFuchsia;
-      Canvas.FillRect(Rect(0, 0, Width, Height));
-      ImageList.Draw(Canvas, 0, 0, Index);
-      TransparentColor := clFuchsia;
-    end;
-  end;
-
-begin
-  inherited ActionChange(Sender, CheckDefaults);
-  if Sender is TCustomAction then
-    with TCustomAction(Sender) do begin
-      if (not CheckDefaults or (Self.Down = False)) and (FGroupIndex <> 0) then
-        Self.Down := Checked;
-      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil) and
-        (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
-        CopyImage(ActionList.Images, ImageIndex);
-    end;
-end;
 {$ENDIF RX_D4}
 
 {$IFDEF WIN32}
@@ -5142,4 +4338,67 @@ initialization
   AddExitProc(DestroyLocals);
 {$ENDIF}
 *)
+
+{ TRxSpeedButton }
+
+procedure TRxSpeedButton.SetAllowTimer(const AValue: Boolean);
+begin
+  if FAllowTimer=AValue then exit;
+  FAllowTimer:=AValue;
+  if not FAllowTimer and (FRepeatTimer <> nil) then
+  begin
+    FRepeatTimer.Enabled := False;
+    FRepeatTimer.Free;
+    FRepeatTimer := nil;
+  end;
+end;
+
+procedure TRxSpeedButton.TimerExpired(Sender: TObject);
+begin
+  FRepeatTimer.Interval := RepeatInterval;
+  if (FState = bsDown) and MouseCapture then
+  try
+      Click;
+  except
+    FRepeatTimer.Enabled := False;
+    raise;
+  end;
+end;
+
+procedure TRxSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button = mbLeft) and Enabled then
+  begin
+    if FAllowTimer then begin
+      if FRepeatTimer = nil then
+        FRepeatTimer := TTimer.Create(nil);
+      FRepeatTimer.Interval := InitPause;
+      FRepeatTimer.OnTimer := @TimerExpired;
+      FRepeatTimer.Enabled  := True;
+    end;
+  end;
+end;
+
+procedure TRxSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if FRepeatTimer <> nil then FRepeatTimer.Enabled  := False;
+end;
+
+constructor TRxSpeedButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FInitRepeatPause := 500;
+  FRepeatPause := 100;
+end;
+
+destructor TRxSpeedButton.Destroy;
+begin
+  inherited Destroy;
+  if FRepeatTimer <> nil then FRepeatTimer.Free;
+end;
+
 end.

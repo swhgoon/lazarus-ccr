@@ -8,7 +8,7 @@
       <Version Value="5"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
@@ -24,7 +24,7 @@ translate to Lazarus by alexs in 2005 - 2007
     <License Value="free ware
 "/>
     <Version Major="1" Minor="1" Release="5" Build="98"/>
-    <Files Count="44">
+    <Files Count="45">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -200,23 +200,27 @@ translate to Lazarus by alexs in 2005 - 2007
       </Item43>
       <Item44>
         <Filename Value="rxceeditlookupfields.pas"/>
-        <UnitName Value="rxceeditlookupfields"/>
+        <UnitName Value="rxceEditLookupFields"/>
       </Item44>
+      <Item45>
+        <Filename Value="rxclock.pas"/>
+        <UnitName Value="RXClock"/>
+      </Item45>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="rx"/>
-      </Item1>
-      <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="IDEIntf"/>
-      </Item3>
-      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="rx"/>
       </Item4>
     </RequiredPkgs>
     <UsageOptions>
