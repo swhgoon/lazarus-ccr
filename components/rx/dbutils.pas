@@ -88,6 +88,7 @@ procedure ConfirmDataSetCancel(DataSet: TDataSet);
 procedure CheckRequiredField(Field: TField);
 procedure CheckRequiredFields(const Fields: array of TField);
 function ExtractFieldName(const Fields: string; var Pos: Integer): string;
+procedure FillValueForField(const Field: TField; Value:Variant);
 
 { SQL expressions }
 
@@ -565,7 +566,7 @@ var
   FieldArray: PFieldArray;
 begin
 {  with DataSet do begin
-    FieldArray := AllocMemo(FieldCount * SizeOf(TFieldInfo));
+    FieldArray := AllocMem(FieldCount * SizeOf(TFieldInfo));
     try
       for I := 0 to FieldCount - 1 do begin
         S := IniReadString(IniFile, CheckSection(DataSet, Section),
@@ -823,18 +824,10 @@ end;
 procedure CheckRequiredField(Field: TField);
 begin
   with Field do
-    if not ReadOnly and not Calculated and IsNull then begin
+    if not ReadOnly and not Calculated and IsNull then
+    begin
       FocusControl;
       DatabaseErrorFmt(SFieldRequired, [DisplayName]);
-(*{$IFDEF WIN32}
-  {$IFNDEF RX_D3}
-      DBErrorFmt(SFieldRequired, [DisplayName]);
-  {$ELSE}
-      DatabaseErrorFmt(SFieldRequired, [DisplayName]);
-  {$ENDIF}
-{$ELSE}
-      DBErrorFmt(SFieldRequired, [DisplayName^]);
-{$ENDIF WIN32}*)
     end;
 end;
 
@@ -885,6 +878,29 @@ begin
   Result := Trim(Copy(Fields, Pos, I - Pos));
   if (I <= Length(Fields)) and (Fields[I] = ';') then Inc(I);
   Pos := I;
+end;
+
+procedure FillValueForField(const Field: TField; Value: Variant);
+var
+  DS:TDataSet;
+  P:TBookmarkStr;
+begin
+  DS:=Field.DataSet;
+  DS.DisableControls;
+  P:=DS.Bookmark;
+  try
+    DS.First;
+    while not DS.EOF do
+    begin
+      DS.Edit;
+      Field.Value:=Value;
+      DS.Post;
+      DS.Next;
+    end;
+  finally
+    DS.Bookmark:=P;
+    DS.EnableControls;
+  end;
 end;
 
 end.

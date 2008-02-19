@@ -33,6 +33,8 @@
     (см. Demos/RxDBGrid)
   + Доработки фильтрации в RxDBGrid для GTK и GTK2
   + Перенесены компоненты TRxSpeedButton и TRxClock
+  + новая функция в модуле dbutils -  FillValueForField
+  + Реализован редактор для RxColumnFooter.FieldName
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается

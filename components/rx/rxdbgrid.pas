@@ -99,6 +99,7 @@ type
     procedure UpdateTestValue;
   public
     constructor Create(Owner:TRxColumn);
+    property Owner:TRxColumn read FOwner;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Layout:TTextLayout read FLayout write SetLayout default tlCenter;

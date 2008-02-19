@@ -14,7 +14,7 @@ uses
   PropEdits, dbdateedit, rxlookup, folderlister, rxdbgrid, rxmemds, duallist,
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
-  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit,
+  RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
   rxceEditLookupFields;
 
 type
@@ -54,6 +54,28 @@ begin
     DataSource.DataSet.GetFieldNames(Values);
 end;
 
+type
+{ TRxDBGridFooterFieldProperty }
+  TRxDBGridFooterFieldProperty = class(TFieldProperty)
+  public
+    procedure FillValues(const Values: TStringList); override;
+  end;
+
+{ TRxDBGridFieldProperty }
+
+procedure TRxDBGridFooterFieldProperty.FillValues(const Values: TStringList);
+var
+  Footer: TRxColumnFooter;
+  Grid: TRxDBGrid;
+  DataSource: TDataSource;
+begin
+  Footer:=TRxColumnFooter(GetComponent(0));
+  Grid:=TRxDBGrid(Footer.Owner.Grid);
+  if not (Grid is TRxDBGrid) then exit;
+  DataSource := Grid.DataSource;
+  if Assigned(DataSource) and Assigned(DataSource.DataSet) then
+    DataSource.DataSet.GetFieldNames(Values);
+end;
 
 { TRxAppIcon }
 
@@ -195,7 +217,7 @@ end;
 
 procedure RegisterRxCtrls;
 begin
-  RegisterComponents('RX',[TRxLabel, TSecretPanel]);
+  RegisterComponents('RX',[TRxLabel, TSecretPanel, TRxSpeedButton]);
 end;
 
 procedure RegisterRxLogin;
@@ -223,6 +245,11 @@ begin
   RegisterComponents('RX',[TRxDateEdit]);
 end;
 
+procedure RegisterRxClock;
+begin
+  RegisterComponents('RX',[TRxClock]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -241,6 +268,7 @@ begin
   RegisterUnit('AutoPanel', @RegisterAutoPanel);
   RegisterUnit('pickdate', @RegisterPickDate);
   RegisterUnit('tooledit', @RegisterToolEdit);
+  RegisterUnit('rxclock', @RegisterRxClock);
 
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
@@ -255,6 +283,8 @@ begin
   RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);
   //
   RegisterPropertyEditor(TypeInfo(string), TRxColumn, 'FieldName', TRxDBGridFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TRxColumnFooter, 'FieldName', TRxDBGridFooterFieldProperty);
+
   RegisterCEEditLookupFields;
 end;
 
