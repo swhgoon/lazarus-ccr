@@ -30,7 +30,9 @@
   + TRxSpeedButton and TRxClock
   + new procedure in module dbutils -  FillValueForField
   + editor for property TRxColumnFooter.FieldName
-
+  + TDBDateEdit inherited from TRxDateEdit, for old style use DBDateEdit_OLD compiller directive
+    (see rx.inc). 
+  + In RxDBGrid property FixedHotColor now published
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

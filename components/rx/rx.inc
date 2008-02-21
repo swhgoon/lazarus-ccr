@@ -1,4 +1,5 @@
 {$mode objfpc}
+
 {$H+}
 
 {$DEFINE RX_D3}
@@ -10,3 +11,6 @@
 {$DEFINE DEFAULT_POPUP_CALENDAR}
 
 {.$DEFINE FIX_BUG_FieldNo}
+
+//
+{.$DEFINE DBDateEdit_OLD}

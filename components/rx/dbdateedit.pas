@@ -1,17 +1,21 @@
 unit dbdateedit;
 
-{$mode objfpc}{$H+}
+{$I rx.inc}
 
 interface
 
 uses
   Classes, SysUtils, LResources, LMessages, LCLType, Controls, Graphics,
-  DB, DbCtrls, EditBtn, CurrEdit;
+  DB, DbCtrls, EditBtn, tooledit;
 
 type
 
   { TDBDateEdit }
+{$IFDEF DBDateEdit_OLD}
   TDBDateEdit = class(TDateEdit)
+{$ELSE}
+  TDBDateEdit = class(TRxDateEdit)
+{$ENDIF}
   private
     FDataLink:TFieldDataLink;
     FDefaultToday: Boolean;

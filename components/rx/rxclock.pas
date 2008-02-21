@@ -72,7 +72,9 @@ type
     procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
+    {$IFDEF windows}
     procedure WMTimeChange(var Message: TLMessage); message WM_TIMECHANGE;
+    {$ENDIF}
   protected
     { Protected declarations }
     procedure SetAutoSize(const Value: Boolean); virtual;
@@ -390,15 +392,18 @@ begin
   if AutoSize then Realign;
 end;
 
+{$IFDEF windows}
 procedure TRxClock.WMTimeChange(var Message: TMessage);
 begin
   inherited;
   Invalidate;
   CheckAlarm;
 end;
+{$ENDIF}
 
 function TRxClock.FormatSettingsChange(var Message: TMessage): Boolean;
 begin
+{$IFDEF windows}
   Result := False;
   case Message.Msg of
     WM_WININICHANGE:
@@ -407,6 +412,7 @@ begin
         if AutoSize then Realign;
       end;
   end;
+{$ENDIF}
 end;
 
 function TRxClock.GetSystemTime: TDateTime;

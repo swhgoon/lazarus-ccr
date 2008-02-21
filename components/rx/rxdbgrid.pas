@@ -332,6 +332,7 @@ type
     property Color;
     property BorderColor;
     property FocusColor;
+    property FixedHotColor;
 
     property SelectedColor;
     property GridLineColor;
