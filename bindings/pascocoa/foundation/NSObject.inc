@@ -2,6 +2,10 @@
 	Copyright (c) 1994-2005, Apple, Inc. All rights reserved.
 }
 
+{$ifdef HEADER}
+{$ifndef NSOBJECT_PAS_H}
+{$define NSOBJECT_PAS_H}
+
 //#import <Foundation/NSObjCRuntime.h>
 //#import <Foundation/NSZone.h>
 
@@ -67,7 +71,28 @@ const
   Str_init = 'init';
   Str_release = 'release';
 
-type
+{***********	Object Allocation / Deallocation		*******}
+
+{FOUNDATION_EXPORT id <NSObject> NSAllocateObject(Class aClass, unsigned extraBytes, NSZone *zone);
+
+FOUNDATION_EXPORT void NSDeallocateObject(id <NSObject>object);
+
+FOUNDATION_EXPORT id <NSObject> NSCopyObject(id <NSObject>object, unsigned extraBytes, NSZone *zone);
+
+FOUNDATION_EXPORT BOOL NSShouldRetainWithZone(id <NSObject> anObject, NSZone *requestedZone);
+
+FOUNDATION_EXPORT void NSIncrementExtraRefCount(id object);
+
+FOUNDATION_EXPORT BOOL NSDecrementExtraRefCountWasZero(id object);
+
+FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
+
+{$endif}
+{$endif}
+{$ifdef CLASSES}
+{$ifndef NSOBJECT_PAS_C}
+{$define NSOBJECT_PAS_C}
+
   NSObject = class
   public
     { class id }
@@ -125,20 +150,19 @@ type
 
   end;
 
-{***********	Object Allocation / Deallocation		*******}
+{$endif}
+{$endif}
+{$ifdef IMPLEMENTATION}
 
-{FOUNDATION_EXPORT id <NSObject> NSAllocateObject(Class aClass, unsigned extraBytes, NSZone *zone);
+constructor NSObject.Create;
+begin
 
-FOUNDATION_EXPORT void NSDeallocateObject(id <NSObject>object);
+end;
 
-FOUNDATION_EXPORT id <NSObject> NSCopyObject(id <NSObject>object, unsigned extraBytes, NSZone *zone);
+destructor NSObject.Destroy;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
+end;
 
-FOUNDATION_EXPORT BOOL NSShouldRetainWithZone(id <NSObject> anObject, NSZone *requestedZone);
-
-FOUNDATION_EXPORT void NSIncrementExtraRefCount(id object);
-
-FOUNDATION_EXPORT BOOL NSDecrementExtraRefCountWasZero(id object);
-
-FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
-
+{$endif}
 

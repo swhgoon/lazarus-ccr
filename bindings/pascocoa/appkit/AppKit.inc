@@ -164,11 +164,4 @@
 #import <AppKit/NSPersistentDocument.h>
 }
 
-type
-{$include NSApplication_type.inc}
-{$include NSWindow_type.inc}
-
-var
-  NSApp: NSApplication;
-
 

@@ -3,6 +3,10 @@
 	Copyright (c) 1994-2005, Apple, Inc. All rights reserved.
 }
 
+{$ifdef HEADER}
+{$ifndef NSGEOMETRY_PAS_H}
+{$define NSGEOMETRY_PAS_H}
+
 {#import <Foundation/NSValue.h>
 #import <Foundation/NSCoder.h>}
 
@@ -146,4 +150,7 @@ FOUNDATION_EXPORT NSRect NSRectFromString(NSString *aString);
 - (NSRect)decodeRect;
 
 @end}
+
+{$endif}
+{$endif}
 

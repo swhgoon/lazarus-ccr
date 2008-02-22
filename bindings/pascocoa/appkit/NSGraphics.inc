@@ -1,9 +1,14 @@
+{%mainunit appkit.pas}
 {
 	NSGraphics.h
 	Application Kit
 	Copyright (c) 1994-2005, Apple Computer, Inc.
 	All rights reserved.
 }
+
+{$ifdef HEADER}
+{$ifndef NSGRAPHICS_PAS_H}
+{$define NSGRAPHICS_PAS_H}
 
 //#import <Foundation/NSGeometry.h>
 //#import <AppKit/AppKitDefines.h>
@@ -182,5 +187,8 @@ typedef enum _NSAnimationEffect {
 APPKIT_EXTERN void NSShowAnimationEffect(NSAnimationEffect animationEffect, NSPoint centerLocation, NSSize size, id animationDelegate, SEL didEndSelector, void *contextInfo) AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER;
 
 #endif      *)
+
+{$endif}
+{$endif}
 
 

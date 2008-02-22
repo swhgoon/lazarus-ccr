@@ -9,8 +9,6 @@
 #import <objc/objc.h>
 #import <objc/objc-auto.h>}
 
-{$include NSObject.inc}
-
 {#import <Foundation/NSObjCRuntime.h>
 #import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSArchiver.h>
@@ -61,7 +59,7 @@
 #import <Foundation/NSNotificationQueue.h>
 #import <Foundation/NSNull.h>
 #import <Foundation/NSNumberFormatter.h>   }
-{.$include NSObject.inc}
+{$include NSObject.inc}
 {#import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSPort.h>
 #import <Foundation/NSPortCoder.h>

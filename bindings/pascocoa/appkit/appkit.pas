@@ -17,11 +17,23 @@ interface
 
 uses ctypes, FPCMacOSAll, objc, foundation;
 
+{$define HEADER}
 {$include AppKit.inc}
+{$undef HEADER}
+
+type
+{$define CLASSES}
+{$include AppKit.inc}
+{$undef CLASSES}
+
+var
+  NSApp: NSApplication;
 
 implementation
 
-{$include AppKit_impl.inc}
+{$define IMPLEMENTATION}
+{$include AppKit.inc}
+{$undef IMPLEMENTATION}
 
 end.
 

@@ -9,11 +9,20 @@ interface
 
 uses ctypes, objc, FPCMacOSAll;
 
+{$define HEADER}
 {$include Foundation.inc}
+{$undef HEADER}
+
+type
+{$define CLASSES}
+{$include Foundation.inc}
+{$undef CLASSES}
 
 implementation
 
-{$include Foundation_impl.inc}
+{$define IMPLEMENTATION}
+{$include Foundation.inc}
+{$undef IMPLEMENTATION}
 
 end.
 

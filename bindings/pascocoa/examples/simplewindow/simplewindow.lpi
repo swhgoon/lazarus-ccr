@@ -11,7 +11,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="simplewindow"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -33,38 +33,40 @@
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="3" Y="53"/>
-        <TopLine Value="41"/>
+        <CursorPos X="45" Y="21"/>
+        <TopLine Value="43"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="47"/>
+        <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="../../appkit/appkit.pas"/>
         <UnitName Value="appkit"/>
-        <CursorPos X="9" Y="10"/>
-        <TopLine Value="5"/>
+        <CursorPos X="15" Y="21"/>
+        <TopLine Value="12"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="13"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../appkit/NSPanel.inc"/>
-        <CursorPos X="44" Y="7"/>
-        <TopLine Value="4"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="14" Y="89"/>
+        <TopLine Value="79"/>
+        <UsageCount Value="10"/>
       </Unit2>
       <Unit3>
         <Filename Value="../../appkit/NSApplication_impl.inc"/>
-        <CursorPos X="1" Y="4"/>
-        <TopLine Value="4"/>
-        <EditorIndex Value="4"/>
+        <CursorPos X="73" Y="11"/>
+        <TopLine Value="8"/>
         <UsageCount Value="19"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../appkit/AppKit.inc"/>
-        <CursorPos X="11" Y="157"/>
-        <TopLine Value="152"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="15" Y="92"/>
+        <TopLine Value="148"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../../fpc/packages/extra/univint/FPCMacOSAll.pas"/>
@@ -101,8 +103,8 @@
       </Unit9>
       <Unit10>
         <Filename Value="../../foundation/Foundation.inc"/>
-        <CursorPos X="22" Y="31"/>
-        <TopLine Value="27"/>
+        <CursorPos X="33" Y="3"/>
+        <TopLine Value="1"/>
         <UsageCount Value="11"/>
       </Unit10>
       <Unit11>
@@ -113,21 +115,21 @@
       </Unit11>
       <Unit12>
         <Filename Value="../../foundation/NSAutoreleasePool.inc"/>
-        <CursorPos X="49" Y="12"/>
-        <TopLine Value="2"/>
+        <CursorPos X="26" Y="15"/>
+        <TopLine Value="13"/>
         <UsageCount Value="26"/>
       </Unit12>
       <Unit13>
         <Filename Value="../../foundation/NSAutoreleasePool_impl.inc"/>
-        <CursorPos X="23" Y="3"/>
+        <CursorPos X="22" Y="9"/>
         <TopLine Value="1"/>
         <UsageCount Value="20"/>
       </Unit13>
       <Unit14>
         <Filename Value="../../foundation/foundation.pas"/>
         <UnitName Value="foundation"/>
-        <CursorPos X="12" Y="6"/>
-        <TopLine Value="1"/>
+        <CursorPos X="24" Y="7"/>
+        <TopLine Value="6"/>
         <UsageCount Value="25"/>
       </Unit14>
       <Unit15>
@@ -139,25 +141,21 @@
       </Unit15>
       <Unit16>
         <Filename Value="../../foundation/NSObject.inc"/>
-        <CursorPos X="37" Y="59"/>
-        <TopLine Value="56"/>
+        <CursorPos X="24" Y="89"/>
+        <TopLine Value="87"/>
         <UsageCount Value="21"/>
       </Unit16>
       <Unit17>
         <Filename Value="../../foundation/NSObject_impl.inc"/>
-        <CursorPos X="6" Y="11"/>
+        <CursorPos X="1" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="33"/>
-        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="../../appkit/NSApplication.inc"/>
-        <CursorPos X="1" Y="55"/>
-        <TopLine Value="57"/>
-        <EditorIndex Value="5"/>
+        <CursorPos X="44" Y="355"/>
+        <TopLine Value="352"/>
         <UsageCount Value="18"/>
-        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSWindow.h"/>
@@ -168,19 +166,17 @@
       </Unit19>
       <Unit20>
         <Filename Value="../../appkit/NSWindow.inc"/>
-        <CursorPos X="46" Y="65"/>
-        <TopLine Value="59"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="1" Y="474"/>
+        <TopLine Value="463"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="../../appkit/NSWindow_impl.inc"/>
-        <CursorPos X="106" Y="18"/>
-        <TopLine Value="11"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="65" Y="19"/>
+        <TopLine Value="14"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="/System/Library/Frameworks/Foundation.framework/Headers/NSGeometry.h"/>
@@ -191,8 +187,8 @@
       </Unit22>
       <Unit23>
         <Filename Value="../../foundation/NSGeometry.inc"/>
-        <CursorPos X="13" Y="4"/>
-        <TopLine Value="2"/>
+        <CursorPos X="26" Y="142"/>
+        <TopLine Value="138"/>
         <UsageCount Value="25"/>
       </Unit23>
       <Unit24>
@@ -204,8 +200,8 @@
       </Unit24>
       <Unit25>
         <Filename Value="../../appkit/NSGraphics.inc"/>
-        <CursorPos X="33" Y="31"/>
-        <TopLine Value="26"/>
+        <CursorPos X="22" Y="7"/>
+        <TopLine Value="1"/>
         <UsageCount Value="22"/>
       </Unit25>
       <Unit26>
@@ -247,15 +243,15 @@
       </Unit31>
       <Unit32>
         <Filename Value="../../appkit/NSWindow_type.inc"/>
-        <CursorPos X="13" Y="25"/>
-        <TopLine Value="20"/>
+        <CursorPos X="41" Y="4"/>
+        <TopLine Value="1"/>
         <UsageCount Value="10"/>
       </Unit32>
       <Unit33>
         <Filename Value="../../appkit/NSApplication_type.inc"/>
-        <CursorPos X="12" Y="49"/>
-        <TopLine Value="46"/>
-        <UsageCount Value="9"/>
+        <CursorPos X="40" Y="252"/>
+        <TopLine Value="244"/>
+        <UsageCount Value="10"/>
       </Unit33>
       <Unit34>
         <Filename Value="../../../fpc/rtl/inc/objpash.inc"/>
@@ -277,83 +273,39 @@
         <UsageCount Value="10"/>
       </Unit36>
     </Units>
-    <JumpHistory Count="19" HistoryIndex="18">
+    <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
         <Filename Value="simplewindow.pas"/>
-        <Caret Line="15" Column="6" TopLine="10"/>
+        <Caret Line="21" Column="45" TopLine="8"/>
       </Position1>
       <Position2>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="25" Column="12" TopLine="13"/>
+        <Filename Value="../../appkit/appkit.pas"/>
+        <Caret Line="21" Column="14" TopLine="12"/>
       </Position2>
       <Position3>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="59" Column="29" TopLine="50"/>
+        <Filename Value="../../appkit/NSWindow.inc"/>
+        <Caret Line="4" Column="24" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="60" Column="31" TopLine="50"/>
+        <Filename Value="../../appkit/appkit.pas"/>
+        <Caret Line="21" Column="15" TopLine="12"/>
       </Position4>
       <Position5>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="66" Column="20" TopLine="55"/>
+        <Filename Value="../../appkit/AppKit.inc"/>
+        <Caret Line="17" Column="14" TopLine="3"/>
       </Position5>
       <Position6>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="64" Column="53" TopLine="53"/>
+        <Filename Value="../../appkit/AppKit.inc"/>
+        <Caret Line="55" Column="19" TopLine="47"/>
       </Position6>
       <Position7>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="70" Column="29" TopLine="56"/>
+        <Filename Value="../../appkit/AppKit.inc"/>
+        <Caret Line="69" Column="16" TopLine="60"/>
       </Position7>
       <Position8>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="28" Column="77" TopLine="17"/>
+        <Filename Value="../../appkit/AppKit.inc"/>
+        <Caret Line="92" Column="15" TopLine="83"/>
       </Position8>
-      <Position9>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="64" Column="24" TopLine="53"/>
-      </Position9>
-      <Position10>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="65" Column="102" TopLine="59"/>
-      </Position10>
-      <Position11>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="18" Column="14" TopLine="59"/>
-      </Position11>
-      <Position12>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="66" Column="26" TopLine="55"/>
-      </Position12>
-      <Position13>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="31" Column="38" TopLine="20"/>
-      </Position13>
-      <Position14>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="29" Column="28" TopLine="18"/>
-      </Position14>
-      <Position15>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="67" Column="52" TopLine="56"/>
-      </Position15>
-      <Position16>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="72" Column="31" TopLine="58"/>
-      </Position16>
-      <Position17>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="68" Column="30" TopLine="59"/>
-      </Position17>
-      <Position18>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="63" Column="52" TopLine="52"/>
-      </Position18>
-      <Position19>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="47" Column="1" TopLine="42"/>
-      </Position19>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
