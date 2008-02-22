@@ -233,7 +233,7 @@ var
   DC: HDC;
   PS: TPaintStruct;
   S: string;
-{$IFDEF RX_D4}
+{$IFDEF USED_BiDi}
   ExStyle: DWORD;
 const
   AlignStyle: array[Boolean, TAlignment] of DWORD =
@@ -244,13 +244,13 @@ begin
   Result := True;
   with Editor do
   begin
-{$IFDEF RX_D4}
-//    if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
+{$IFDEF USED_BiDi}
+    if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
 {$ENDIF}
     if StandardPaint and not(csPaintCopy in ControlState) then
     begin
-{$IFDEF RX_D4}
-(*      if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
+{$IFDEF USED_BiDi}
+      if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
       begin { This keeps the right aligned text, right aligned }
         ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
           (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
@@ -262,8 +262,8 @@ begin
           AlignStyle[UseRightToLeftAlignment, AAlignment];
         if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
           SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-      end; *)
-{$ENDIF RX_D4}
+      end;
+{$ENDIF USED_BiDi}
       Result := False;
       { return false if we need to use standard paint handler }
       Exit;
@@ -312,7 +312,7 @@ begin
               ALeft := (ClientWidth {- ButtonWidth} - AWidth) div 2;
           end;
 {        end;}
-{$IFDEF RX_D4}
+{$IFDEF USED_BiDi}
         if SysLocale.MiddleEast then UpdateTextFlags;
 {$ENDIF}
         Brush.Style := bsClear;
@@ -354,7 +354,8 @@ function TCustomRxDateEdit.GetDate: TDateTime;
 begin
   if DefaultToday then Result := SysUtils.Date
   else Result := NullDate;
-  Result := StrToDateFmtDef(FDateFormat, Text, Result);
+  if Text<>'' then
+    Result := StrToDateFmtDef(FDateFormat, Text, Result);
 end;
 
 function TCustomRxDateEdit.GetPopupColor: TColor;

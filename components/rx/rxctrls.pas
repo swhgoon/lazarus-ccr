@@ -2561,7 +2561,7 @@ begin
   if (Flags and DT_CALCRECT <> 0) and ((AText = '') or FShowAccelChar and
     (AText[1] = '&') and (AText[2] = #0)) then AText := AText + ' ';
   if not FShowAccelChar then Flags := Flags or DT_NOPREFIX;
-{$IFDEF RX_D4}
+{$IFDEF USED_BiDi}
   Flags := DrawTextBiDiModeFlags(Flags);
 {$ENDIF}
   Canvas.Font := Font;
@@ -2647,7 +2647,7 @@ begin
     InflateRect(Rect, 1, 0);
     X := Left;
     AAlignment := FAlignment;
-{$IFDEF RX_D4}
+{$IFDEF USED_BiDi}
     if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
 {$ENDIF}
     if AAlignment = taRightJustify then Inc(X, Width - Rect.Right);
@@ -3145,7 +3145,7 @@ begin
     R.Bottom := R.Top + FTxtDivider;
     Flags := {DT_EXPANDTABS or }Alignments[FAlignment] or DT_SINGLELINE or
       DT_NOCLIP or DT_NOPREFIX;
-{$IFDEF RX_D4}
+{$IFDEF USED_BiDi}
     Flags := DrawTextBiDiModeFlags(Flags);
 {$ENDIF}
     for I := FFirstLine to FLines.Count do begin

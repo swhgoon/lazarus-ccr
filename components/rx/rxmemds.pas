@@ -538,17 +538,17 @@ function TRxMemoryData.FindFieldData(Buffer: Pointer; Field: TField): Pointer;
 var
   Index: Integer;
 begin
-{$IFDEF RX_D4}
-  Index := FieldDefList.IndexOf(Field.FullName);
-{$ELSE}
+{.$IFDEF RX_D4}
+//  Index := FieldDefList.IndexOf(Field.FullName);
+{.$ELSE}
   Index := FieldDefs.IndexOf(Field.FieldName);
-{$ENDIF}
+{.$ENDIF}
   if (Index >= 0) and (Buffer <> nil) and
-{$IFDEF RX_D4}
-    (FieldDefList[Index].DataType in ftSupported - ftBlobTypes) then
-{$ELSE}
+{.$IFDEF RX_D4}
+//    (FieldDefList[Index].DataType in ftSupported - ftBlobTypes) then
+{.$ELSE}
     (FieldDefs[Index].DataType in ftSupported - ftBlobTypes) then
-{$ENDIF}
+{.$ENDIF}
     Result := Pointer(Integer(PChar(Buffer)) + FOffsets^[Index])
   else Result := nil;
 end;
@@ -712,6 +712,7 @@ begin
   Result := RecBuf <> nil;
 end;
 
+{$IFDEF FIX_BUG_FieldNo}
 function GetFieldNo(DS:TDataSet; Field:TField):integer;
 var
   i:integer;
@@ -724,6 +725,7 @@ begin
     end;
   Result:=0;
 end;
+{$ENDIF}
 
 function TRxMemoryData.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
@@ -732,8 +734,11 @@ var
 begin
   Result := False;
   if not GetActiveRecBuf(RecBuf) then Exit;
-//  if Field.FieldNo > 0 then
+{$IFDEF FIX_BUG_FieldNo}
   if GetFieldNo(Self, Field) > 0 then
+{$ELSE}
+  if Field.FieldNo > 0 then
+{$ENDIF}
   begin
     Data := FindFieldData(RecBuf, Field);
     if Data <> nil then begin
@@ -767,13 +772,17 @@ procedure TRxMemoryData.SetFieldData(Field: TField; Buffer: Pointer);
 var
   RecBuf, Data: PChar;
   VarData: Variant;
+  PBl:PBoolean;
 begin
   if not (State in dsWriteModes) then Error(SNotEditing);
   GetActiveRecBuf(RecBuf);
   with Field do
   begin
-//  if Field.FieldNo > 0 then
+{$IFDEF FIX_BUG_FieldNo}
     if GetFieldNo(Self, Field) > 0 then
+{$ELSE}
+    if Field.FieldNo > 0 then
+{$ENDIF}
     begin
       if State in [dsCalcFields, dsFilter] then Error(SNotEditing);
       if ReadOnly and not (State in [dsSetKey, dsFilter]) then
@@ -800,9 +809,12 @@ begin
           end
           else
           begin
-            Boolean(Data[0]) := LongBool(Buffer);
+            PBl:=Pointer(Data);
+//            Boolean(Data^{[0]}) := Assigned(Buffer);//LongBool(Buffer);
+//            Pbl^:=Assigned(Buffer);
+            PBoolean(Pointer(Data))^:= Assigned(Buffer);
             Inc(Data);
-            if LongBool(Buffer) then
+            if Assigned(Buffer) then
               Move(Buffer^, Data^, CalcFieldLen(DataType, Size))
             else
               FillChar(Data^, CalcFieldLen(DataType, Size), 0);

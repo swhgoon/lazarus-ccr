@@ -12,7 +12,6 @@ unit rxclock;
 interface
 
 {$I rx.inc}
-
 uses LCLType, LMessages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   ExtCtrls, Menus, messages;
 
@@ -666,12 +665,16 @@ begin
   try
     Canvas.Brush.Color := Canvas.Pen.Color;
     MinDots := ((DotWidth > MinDotWidth) and (DotHeight > MinDotHeight));
-    for Pos := 0 to HandPositions - 1 do begin
+    for Pos := 0 to HandPositions - 1 do
+    begin
       R.Top := (CircleTab^[Pos].Y * FClockRadius) div CirTabScale + FClockCenter.Y;
       R.Left := (CircleTab^[Pos].X * FClockRadius) div CirTabScale + FClockCenter.X;
-      if (Pos mod 5) <> 0 then begin
-        if MinDots then begin
-          if Ctl3D then begin
+      if (Pos mod 5) <> 0 then
+      begin
+        if MinDots then
+        begin
+          if Ctl3D then
+          begin
             Canvas.Brush.Color := clBtnShadow;
             OffsetRect(R, -1, -1);
             R.Right := R.Left + 2;
@@ -790,24 +793,31 @@ begin
   Canvas.Pen.Color := Font.Color;
   Canvas.Brush.Color := Color;
   SetBkMode(Canvas.Handle, TRANSPARENT);
-  if PaintMode = pmPaintAll then begin
-    with Canvas do begin
+  if PaintMode = pmPaintAll then
+  begin
+    with Canvas do
+    begin
       FillRect(FClockRect);
       Pen.Color := Self.Font.Color;
       DrawAnalogFace;
       DrawFatHand(HourHandPos(FDisplayTime), True);
       DrawFatHand(FDisplayTime.Minute, False);
       Pen.Color := Brush.Color;
-      if ShowSeconds then DrawSecondHand(FDisplayTime.Second);
+      if ShowSeconds then
+        DrawSecondHand(FDisplayTime.Second);
     end;
   end
-  else begin
-    with Canvas do begin
+  else
+  begin
+    with Canvas do
+    begin
       Pen.Color := Brush.Color;
       GetTime(NewTime);
-      if NewTime.Hour >= 12 then Dec(NewTime.Hour, 12);
+      if NewTime.Hour >= 12 then
+        Dec(NewTime.Hour, 12);
       if (NewTime.Second <> FDisplayTime.Second) then
-        if ShowSeconds then DrawSecondHand(FDisplayTime.Second);
+        if ShowSeconds then
+          DrawSecondHand(FDisplayTime.Second);
       if ((NewTime.Minute <> FDisplayTime.Minute) or
         (NewTime.Hour <> FDisplayTime.Hour)) then
       begin
@@ -818,8 +828,10 @@ begin
         DrawFatHand(HourHandPos(NewTime), True);
       end;
       Pen.Color := Brush.Color;
-      if (NewTime.Second <> FDisplayTime.Second) then begin
-        if ShowSeconds then DrawSecondHand(NewTime.Second);
+      if (NewTime.Second <> FDisplayTime.Second) then
+      begin
+        if ShowSeconds then
+          DrawSecondHand(NewTime.Second);
         FDisplayTime := NewTime;
       end;
     end;
