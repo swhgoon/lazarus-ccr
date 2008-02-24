@@ -1,3 +1,4 @@
+{%mainunit appkit.pas}
 {
 	NSApplication.h
 	Application Kit
@@ -106,7 +107,7 @@ APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
 { The version of the AppKit framework }
 //APPKIT_EXTERN const double NSAppKitVersionNumber;
 
-  NSApplication = class(NSObject) //: NSResponder   }
+  NSApplication = class(NSResponder)
   public
     constructor sharedApplication;
 

@@ -114,7 +114,7 @@ APPKIT_EXTERN NSString *NSWindowDidChangeScreenProfileNotification  AVAILABLE_MA
 @class NSEvent;
 @class NSWindowController; }
 
-  NSWindow = class(NSObject) //: NSResponder
+  NSWindow = class(NSResponder)
   public
 
 

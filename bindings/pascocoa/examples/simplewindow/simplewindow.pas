@@ -1,10 +1,10 @@
 {
  simpleform.pas
 
- This example shows how to use the objective-c runtime headers to call
- initialization and finalization code for an objective-c class (in this case
- NSAutoreleasePool), and also shows a message box using minimal AppKit
- bindings to demonstrate that this can be used to build Cocoa applications.
+ This example shows how to use the PasCocoa bindings to create a
+ NSAutoreleasePool, initialize the application global variable, create
+ a simple window without contents and attach a close handler to it that
+ exits the application.
 
  Compilation of this example requires the following options:
  -k-framework -kcocoa -k-lobjc
@@ -49,8 +49,6 @@ begin
     NSBackingStoreBuffered, NO);
     
   MainWindow.orderFrontRegardless;
-
-//    CreateMenu();
 
   { Enters main message loop }
 

@@ -1,9 +1,14 @@
+{%mainunit appkit.pas}
 {
 	NSAlert.h
 	Application Kit
 	Copyright (c) 1994-2005, Apple Computer, Inc.
 	All rights reserved.
 }
+
+{$ifdef HEADER}
+{$ifndef NSALERT_PAS_H}
+{$define NSALERT_PAS_H}
 
 //#import <Foundation/NSObject.h>
 //#import <AppKit/NSGraphics.h>
@@ -17,6 +22,23 @@
 //    NSInformationalAlertStyle = 1,
 //    NSCriticalAlertStyle = 2
 //} NSAlertStyle;
+
+// by default, NSAlert return values are position dependent, with this mapping:
+// first (rightmost) button = NSAlertFirstButtonReturn
+// second button = NSAlertSecondButtonReturn
+// third button = NSAlertThirdButtonReturn
+// buttonPosition 3+x = NSAlertThirdButtonReturn + x
+
+const
+  NSAlertFirstButtonReturn  = 1000;
+  NSAlertSecondButtonReturn = 1001;
+  NSAlertThirdButtonReturn  = 1002;
+
+{$endif}
+{$endif}
+{$ifdef CLASSES}
+{$ifndef NSALERT_PAS_C}
+{$define NSALERT_PAS_C}
 
 //@interface NSAlert : NSObject
 {
@@ -53,7 +75,7 @@
     id reserved2;
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+{#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
 
 /* Given an NSError, create an NSAlert that can be used to present the error to the user. The error's localized description, recovery suggestion, and recovery options will be used to set the alert's message text, informative text, and button titles, respectively.
 */
@@ -79,18 +101,6 @@
 - (NSButton *)addButtonWithTitle:(NSString *)title;
 // get the buttons, where the rightmost button is at index 0
 - (NSArray *)buttons;
-
-// by default, NSAlert return values are position dependent, with this mapping:
-// first (rightmost) button = NSAlertFirstButtonReturn
-// second button = NSAlertSecondButtonReturn
-// third button = NSAlertThirdButtonReturn
-// buttonPosition 3+x = NSAlertThirdButtonReturn + x
-
-enum {
-	NSAlertFirstButtonReturn	= 1000,
-	NSAlertSecondButtonReturn	= 1001,
-	NSAlertThirdButtonReturn	= 1002
-};
 
 // The following method can be used to customize return values for buttons
 // setTag:(int)tag;	setting a tag on a button will cause that tag to be the button's return value
@@ -131,4 +141,8 @@ enum {
 - (BOOL)alertShowHelp:(NSAlert *)alert;
 @end        }
 
-#endif
+//#endif
+
+{$endif}
+{$endif}
+
