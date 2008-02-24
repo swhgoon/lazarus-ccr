@@ -10,7 +10,7 @@
 {$ifndef NSAPPLICATION_PAS_H}
 {$define NSAPPLICATION_PAS_H}
 
-//#import <AppKit/NSResponder.h>
+{$include NSResponder.inc}
 //#import <AppKit/AppKitDefines.h>
 
 { The version of the AppKit framework }
@@ -99,6 +99,8 @@ APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
 {$ifdef CLASSES}
 {$ifndef NSAPPLICATION_PAS_C}
 {$define NSAPPLICATION_PAS_C}
+
+{$include NSResponder.inc}
 
 //@class NSDate, NSDictionary, NSError, NSException, NSNotification;
 //@class NSGraphicsContext, NSImage, NSPasteboard, NSWindow;
