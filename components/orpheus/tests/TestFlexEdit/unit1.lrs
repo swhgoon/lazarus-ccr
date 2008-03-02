@@ -2,30 +2,30 @@ LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#192#0#3'Top'#2'r'#5'Width'#3#159#1#6'Heig'
   +'ht'#3'!'#1#7'Caption'#6#5'Form1'#5'Color'#7#9'clBtnFace'#12'Font.Charset'#7
   +#15'DEFAULT_CHARSET'#10'Font.Color'#7#12'clWindowText'#11'Font.Height'#2#245
-  +#10'Font.Style'#11#0#13'PixelsPerInch'#2'`'#10'TextHeight'#2#13#0#6'TLabel'#6
-  +'Label1'#4'Left'#2#16#3'Top'#2#24#5'Width'#3#129#1#6'Height'#2'!'#9'Alignmen'
-  +'t'#7#8'taCenter'#8'AutoSize'#8#7'Caption'#6'@Enter a positive integer, then'
-  +' move to next control to validate.'#8'WordWrap'#9#0#0#6'TLabel'#6'Label2'#4
-  +'Left'#2#16#3'Top'#2'h'#5'Width'#3#129#1#6'Height'#2'!'#9'Alignment'#7#8'taC'
-  +'enter'#8'AutoSize'#8#7'Caption'#6'DEnter a positive real number, then move '
-  +'to next control to validate.'#8'WordWrap'#9#0#0#12'TO32FlexEdit'#12'O32Flex'
-  +'Edit1'#4'Left'#3#168#0#3'Top'#2'8'#5'Width'#2'Q'#6'Height'#2#21#27'EfColors'
-  +'.Disabled.BackColor'#7#8'clWindow'#27'EfColors.Disabled.TextColor'#7#10'clG'
-  +'rayText'#24'EfColors.Error.BackColor'#7#5'clRed'#24'EfColors.Error.TextColo'
-  +'r'#7#7'clBlack'#28'EfColors.Highlight.BackColor'#7#11'clHighlight'#28'EfCol'
-  +'ors.Highlight.TextColor'#7#15'clHighlightText'#8'TabOrder'#2#0#22'Validatio'
-  +'n.BeepOnError'#9#25'Validation.SoftValidation'#8#26'Validation.ValidationEv'
-  +'ent'#7#8'veOnExit'#24'Validation.ValidatorType'#6#4'None'#25'Validation.Val'
-  +'idationType'#7#6'vtUser'#24'Validation.InputRequired'#8#16'OnUserValidation'
-  +#7#26'O32FlexEdit1UserValidation'#17'OnValidationError'#7#26'O32FlexEditVali'
-  +'dationError'#0#0#12'TO32FlexEdit'#12'O32FlexEdit2'#4'Left'#3#168#0#3'Top'#3
-  +#136#0#5'Width'#2'Q'#6'Height'#2#21#27'EfColors.Disabled.BackColor'#7#8'clWi'
-  +'ndow'#27'EfColors.Disabled.TextColor'#7#10'clGrayText'#24'EfColors.Error.Ba'
-  +'ckColor'#7#5'clRed'#24'EfColors.Error.TextColor'#7#7'clBlack'#28'EfColors.H'
-  +'ighlight.BackColor'#7#11'clHighlight'#28'EfColors.Highlight.TextColor'#7#15
-  +'clHighlightText'#8'TabOrder'#2#1#22'Validation.BeepOnError'#9#25'Validation'
-  +'.SoftValidation'#8#26'Validation.ValidationEvent'#7#8'veOnExit'#24'Validati'
-  +'on.ValidatorType'#6#4'None'#25'Validation.ValidationType'#7#6'vtUser'#24'Va'
-  +'lidation.InputRequired'#8#16'OnUserValidation'#7#26'O32FlexEdit2UserValidat'
-  +'ion'#17'OnValidationError'#7#26'O32FlexEditValidationError'#0#0#0
+  +#10'Font.Style'#11#0#13'PixelsPerInch'#2'`'#0#6'TLabel'#6'Label1'#4'Left'#2
+  +#16#3'Top'#2#24#5'Width'#3#129#1#6'Height'#2'!'#9'Alignment'#7#8'taCenter'#8
+  +'AutoSize'#8#7'Caption'#6'@Enter a positive integer, then move to next contr'
+  +'ol to validate.'#8'WordWrap'#9#0#0#6'TLabel'#6'Label2'#4'Left'#2#16#3'Top'#2
+  +'h'#5'Width'#3#129#1#6'Height'#2'!'#9'Alignment'#7#8'taCenter'#8'AutoSize'#8
+  +#7'Caption'#6'DEnter a positive real number, then move to next control to va'
+  +'lidate.'#8'WordWrap'#9#0#0#12'TO32FlexEdit'#12'O32FlexEdit1'#4'Left'#3#168#0
+  +#3'Top'#2'8'#5'Width'#2'Q'#6'Height'#2#21#27'EfColors.Disabled.BackColor'#7#8
+  +'clWindow'#27'EfColors.Disabled.TextColor'#7#10'clGrayText'#24'EfColors.Erro'
+  +'r.BackColor'#7#5'clRed'#24'EfColors.Error.TextColor'#7#7'clBlack'#28'EfColo'
+  +'rs.Highlight.BackColor'#7#11'clHighlight'#28'EfColors.Highlight.TextColor'#7
+  +#15'clHighlightText'#8'TabOrder'#2#0#22'Validation.BeepOnError'#9#25'Validat'
+  +'ion.SoftValidation'#8#26'Validation.ValidationEvent'#7#8'veOnExit'#24'Valid'
+  +'ation.ValidatorType'#6#4'None'#25'Validation.ValidationType'#7#6'vtUser'#24
+  +'Validation.InputRequired'#8#16'OnUserValidation'#7#26'O32FlexEdit1UserValid'
+  +'ation'#17'OnValidationError'#7#26'O32FlexEditValidationError'#0#0#12'TO32Fl'
+  +'exEdit'#12'O32FlexEdit2'#4'Left'#3#168#0#3'Top'#3#136#0#5'Width'#2'Q'#6'Hei'
+  +'ght'#2#21#27'EfColors.Disabled.BackColor'#7#8'clWindow'#27'EfColors.Disable'
+  +'d.TextColor'#7#10'clGrayText'#24'EfColors.Error.BackColor'#7#5'clRed'#24'Ef'
+  +'Colors.Error.TextColor'#7#7'clBlack'#28'EfColors.Highlight.BackColor'#7#11
+  +'clHighlight'#28'EfColors.Highlight.TextColor'#7#15'clHighlightText'#8'TabOr'
+  +'der'#2#1#22'Validation.BeepOnError'#9#25'Validation.SoftValidation'#8#26'Va'
+  +'lidation.ValidationEvent'#7#8'veOnExit'#24'Validation.ValidatorType'#6#4'No'
+  +'ne'#25'Validation.ValidationType'#7#6'vtUser'#24'Validation.InputRequired'#8
+  +#16'OnUserValidation'#7#26'O32FlexEdit2UserValidation'#17'OnValidationError'
+  +#7#26'O32FlexEditValidationError'#0#0#0
 ]);

@@ -33,6 +33,11 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20080301 release (0.1.8):
+  <UL>
+  <LI>Recent changes in the Lazarus LCL broke all Orpheus property editors and example
+      programs. This release fixes those problems.<P>
+  </UL>
 <LI>20070903 release (0.1.7):
   <UL>
   <LI>Recent changes in the Lazarus LCL broke Orpheus compilation. This release
@@ -161,7 +166,7 @@ Note that the ported source remains under the original MPL 1.1 license.
 <LI>Start Lazarus.
 <LI>Optionally, choose File | New | Application to make sure Lazarus doesn't
 mess up the currently open project.
-<LI>Choose Component | Open package file and select orpheus.lpk.
+<LI>Choose Package | Open package file and select orpheus.lpk.
 <LI>Click Compile to make sure your version of Lazarus can compile the
 Orpheus units.
 <LI>Click Install and click Yes when prompted to rebuild the Lazarus IDE.
@@ -195,15 +200,15 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>XP SP2</TD>
 <TD>&nbsp;</TD>
 <TD>win32</TD>
-<TD>20070831 snapshot of 0.9.23 with FPC 2.2.1</TD>
+<TD>20080229 snapshot of 0.9.25 with FPC 2.2.1</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>OS X</TD>
-<TD>10.4.10 (Tiger) on PowerPC</TD>
+<TD>10.4.11 (Tiger) on PowerPC</TD>
 <TD>gtk: 1.2.0.9.1<BR>gtk2: 2.6.10<BR>qt: 4.3.0</TD>
 <TD>gtk, gtk2, carbon, qt</TD>
-<TD>20070903 SVN LCL 0.9.23 with FPC 2.1.5</TD>
+<TD>20080229 snapshot of 0.9.25 with FPC 2.2.0</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -366,7 +371,7 @@ widgetset.
 <TD>Property editor still needs work</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Not working</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
 </TR>
@@ -392,7 +397,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Not working</TD>
+<TD>Crashes</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -440,7 +445,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Partial</TD>
-<TD>Not working</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -452,7 +457,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -464,7 +469,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -476,7 +481,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -488,7 +493,7 @@ widgetset.
 <TD>Not working</TD>
 <TD>Not working</TD>
 <TD>Not working</TD>
-<TD>?</TD>
+<TD>Crashes</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -500,7 +505,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -512,7 +517,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -524,7 +529,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -532,11 +537,11 @@ widgetset.
 <TD>TComponent</TD>
 <TD>Table cell for displaying bitmap</TD>
 <TD>&nbsp;</TD>
-<TD>Working</TD>
+<TD>Crashes</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Not working</TD>
-<TD>?</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -572,7 +577,7 @@ widgetset.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -612,23 +617,24 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   </UL>
 <LI>TOvcVirtualListBox
   <UL>
-  <LI>Fix scrolling problems on both Windows and GTK.
-  <LI>Figure out why double-click doesn't work on GTK.
+  <LI>Fix scrolling problems on Windows (not repainted right) and other platforms
+  (scrolls too many with each click of arrow).
+  <LI><strike>Figure out why double-click doesn't work on GTK.</strike> &lt;==Fixed.
   </UL>
 <LI>TO32FlexEdit
   <UL>
   <LI><strike>Figure out why, on Windows, presence of XP manifest prevents setting Text.</strike> 
-  <==Appears to be fixed with 20070401 Lazarus.
+  &lt;==Appears to be fixed with 20070401 Lazarus.
   <LI>Come up with workaround for LCL's lack of MakeObjectInstance for making
   callback function from method. Without this, control's validation is not
-  performed. <==Workaround in 0.1.3 release fixes this on win32 widgetset. 
+  performed. &lt;==Workaround in 0.1.3 release fixes this on win32 widgetset. 
   <LI><strike>Can't tab out of control on Windows with win32 widgetset (tabbing works
-  with qt widgetset on Windows though).</strike> <==Fixed in 0.1.3 release.
+  with qt widgetset on Windows though).</strike> &lt;==Fixed in 0.1.3 release.
   </UL>
 <LI>TOvcTable
   <UL>
   <LI><strike>Custom cursors not visible when sizing and moving columns and rows. 
-  Determine whether this is an LCL limitation.</strike> <==Recently fixed in
+  Determine whether this is an LCL limitation.</strike> &lt;==Recently fixed in
   Lazarus for Windows.
   <LI>Sizing and moving columns and rows doesn't work at all with GTK. 
   Determine whether this is a GTK limitation.
@@ -654,6 +660,11 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   longer crash programs when they're used. However, they don't yet work as edit 
   controls. Determine whether this means more improvement in widgetsets is needed.
   </UL>
+<LI>TOvcTCBitMap
+  <UL>
+  <LI>This previously worked, but changes to Lazarus LCL now cause it to crash
+  when cell gets focus.
+  </UL>
 <LI>TOvcController
   <UL>
   <LI>Rewrite ovccmdp0.pas property editor to use TTabControl instead of
@@ -675,7 +686,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: Sept. 3, 2007
+Last updated: March 1, 2008
 <P>
 
 </BODY>
