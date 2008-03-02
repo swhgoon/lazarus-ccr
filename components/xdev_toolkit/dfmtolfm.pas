@@ -19,13 +19,20 @@ program DfmToLfm;
   License:   Modified LGPL.
 }
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils,
   IniFiles;
 
 const
   ProgramName    = 'DfmToLfm';
-  ProgramVersion = '0.01';
+  ProgramVersion = '0.02';
   
   DfmFileExt     = '.dfm';  {Delphi form file extension}
   LfmFileExt     = '.lfm';  {Lazarus form file extension}
@@ -70,7 +77,8 @@ var
 begin
 
    {Base configuration file name on program file location and program name}
-  CfgFileName := ExtractFilePath(ParamStr(0)) + ProgramName + CfgFileExt;
+  CfgFileName := 
+   ExtractFilePath(ParamStr(0)) + LowerCase(ProgramName) + CfgFileExt;
 {$IFNDEF FPC}
   CfgFileName := ExpandFileNameCase(CfgFileName, MatchFound);
 {$ENDIF}
@@ -84,7 +92,7 @@ begin
     WriteLn('  -p  Add parent''s font to controls with no font ',
             '(useful with Windows).');
     WriteLn('  -d  Delete font name from controls ',
-            '(useful with OS X and Linux).');
+            '(useful with GTK and GTK2).');
     WriteLn('Looks for configuration data in file ', CfgFileName); 
     Halt;
     end;
@@ -261,6 +269,7 @@ begin
                   Copy(InStr, 1, Succ(Pos('=', InStr))),
                   IntToStr(StrToInt(Copy(StripStr, 5, MaxInt)) - 16))
 
+(*  This incorrect swapping has been fixed in FPC 2.2 based Lazarus releases.
          {Lazarus IDE appears to swap Top and Left properties for non-visual
            controls, so swap them for Orpheus table cell controls.}
         else if ((CompareText('Top=', Copy(StripStr, 1, 4)) = 0) or
@@ -279,6 +288,7 @@ begin
             WriteLn(LfmFileVar,
                     StringReplace(InStr, 'Left', 'Top', [rfIgnoreCase]));
           end
+*)
   
         else  {No change to property}
           WriteLn(LfmFileVar, InStr);

@@ -12,12 +12,19 @@ program MakePasX;
   License:   Modified LGPL.
 } 
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils;
 
 const
   ProgramName    = 'MakePasX';
-  ProgramVersion = '0.01';
+  ProgramVersion = '0.02';
   
   PasFileExt     = '.pas';  {Pascal code file extension}
   DelProjFileExt = '.dpr';  {Delphi project file extension}

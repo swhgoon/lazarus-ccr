@@ -8,6 +8,13 @@ program MakeVer;
   License:   Modified LGPL.
 }
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils,
   Classes,
@@ -15,7 +22,7 @@ uses
   
 const
   ProgramName    = 'MakeVer';
-  ProgramVersion = '0.01';
+  ProgramVersion = '0.02';
   
   DofFileExt     = '.dof';      {Delphi project options file extension}
   VerFileExt     = '.version';  {Linux/Mac version info file extension}

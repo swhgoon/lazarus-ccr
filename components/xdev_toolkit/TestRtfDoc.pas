@@ -4,6 +4,13 @@ program TestRtfDoc;
   Test program for RtfDoc unit.
 }
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils,
   RtfPars,  {Free Pascal unit with TRtfParser class and rtf constants}

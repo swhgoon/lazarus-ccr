@@ -14,6 +14,13 @@ program CvtHelp;
   License:   Modified LGPL.
 }
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils,
   Classes;

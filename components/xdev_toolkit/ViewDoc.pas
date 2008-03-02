@@ -15,6 +15,10 @@ unit ViewDoc;
 
 interface
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ENDIF} 
+
 uses
   SysUtils,
   Classes,

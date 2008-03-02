@@ -13,6 +13,10 @@ unit RtfDoc;
 
 interface
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ENDIF} 
+
 uses 
   SysUtils,
   RtfPars;

@@ -4,6 +4,13 @@ program ViewWith;
   Test program for ViewDoc unit.
 }
 
+{$IFDEF FPC}
+ {$MODE Delphi}
+{$ELSE}
+ {$APPTYPE CONSOLE}
+{$ENDIF} 
+{$R+,Q+}
+
 uses
   SysUtils,
   ViewDoc;

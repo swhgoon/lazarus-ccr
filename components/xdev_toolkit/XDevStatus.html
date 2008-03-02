@@ -17,6 +17,7 @@
 
 <HR>
 <H3>Contents</H3>
+<A HREF="#Whats_New">What's New</A><BR>
 <A HREF="#Introduction">Introduction</A><BR>
 <A HREF="#Installation">Installation</A><BR>
 <A HREF="#CodeConverters">MakePasX & DfmToLfm: Delphi converters</A><BR>
@@ -26,6 +27,17 @@
 <A HREF="#RTF">RtfDoc & ViewDoc: RTF document creation and viewing</A><BR>
 <A HREF="#To_Do">To Do</A><BR>
 <A HREF="#Other_Resources">Other Resources</A><P>
+
+<HR>
+<A name="Whats_New"></A><H3>What's New</H3>
+
+<UL>
+<LI>20080301 release:
+<UL>
+<LI>Expanded notes to help users who are new to Lazarus.
+<LI>Minor adjustments to converters to keep pace with latest Lazarus.
+</UL>
+</UL>
 
 <HR>
 <A name="Introduction"></A><H3>Introduction</H3>
@@ -42,6 +54,12 @@ and suggestions to be seen by the entire Lazarus community.<P>
 
 The XDev Toolkit source code is here: <A HREF="http://web.fastermac.net/~MacPgmr/XDev/downloads">http://web.fastermac.net/~MacPgmr/XDev/downloads</A><P>   
 
+You can also download the XDev Toolkit files via Subversion:<P>
+
+&nbsp;&nbsp;svn co https://lazarus-ccr.svn.sourceforge.net/svnroot/lazarus-ccr/components/xdev_toolkit [local dir]<P>
+
+Substitute your local directory where you want the files downloaded for "[local dir]".<P>
+
 All source code included in the XDev Toolkit is released under the Modified LGPL license.
 
 <HR>
@@ -49,15 +67,23 @@ All source code included in the XDev Toolkit is released under the Modified LGPL
 
 <OL>
 <LI>Unzip the source files into their own folder.<P>
-<LI>Open a terminal window and compile each utility and test program with FPC. 
+<LI>Open a terminal window and change to this folder, then compile each utility and test program with FPC. 
 For example:<P>
 
-fpc -Sd DfmToLfm.pas
+With Free Pascal:<P>
+
+&nbsp;&nbsp;fpc dfmtolfm<P>
+
+With Delphi:<P>
+
+&nbsp;&nbsp;dcc32 dfmtolfm<P>
 
 <LI>To see a utility's syntax, simply run it in a terminal window
 without any parameters or switches. For example:<P>
-
-dfmtolfm
+With Windows:<P>
+&nbsp;&nbsp;dfmtolfm<P>
+With OS X and Linux:<P>
+&nbsp;&nbsp;./dfmtolfm
 
 </OL>
 
@@ -73,23 +99,59 @@ and .pas). The DfmToLfm utility is used to create Lazarus form design files
 Once you've converted a Delphi app to Lazarus you can continue to
 develop the app with Delphi on Windows and use Lazarus to compile 
 the app on other platforms. This type of app can provide the best of both 
-worlds: taking advantage of the Windows-specific features of Delphi while 
-utilizing Free Pascal and Lazarus to add cross-platform capability to the app.
+worlds: taking advantage of the speed, stability and Windows-specific features
+of Delphi while utilizing Free Pascal and Lazarus to add cross-platform capability
+to the app.
 
 <OL>
+<LI>Make a copy of the Delphi files you want to convert in a different directory 
+since MakePasX will alter the source code files.<P>
+
 <LI>Use the MakePasX utility to make the Delphi project file (.dpr) and form 
 code files (.pas) cross-platform. This is a one-time conversion that results 
-in a set of source files that can be compiled by both Delphi and Lazarus.<P>
-<LI>Use the DfmToLfm utility to create Lazarus form files (.lfm) from the Delphi 
-form files (.dfm).<P>
-<LI>Use the Lazarus lazres utility to create the Lazarus resource file (.lrs)
-from the form file (.lfm) Repeat steps 2 and 3 whenever you make changes 
-to the Delphi form files. If your project has a number of forms, run these 
-utilities for each form in a batch or shell file to automate the conversion.<P>
-<LI>Compile the resulting files with Lazarus on Windows 
+in a set of source files that can be compiled by both Delphi and Lazarus.
+Examples:<P>
+&nbsp;&nbsp;makepasx myprogram.dpr<BR>
+&nbsp;&nbsp;makepasx myform.pas<P>
+MakePasX tries to insert the conditionals needed to compile with Lazarus, while 
+retaining compatibility with Delphi. After converting you can test to see that 
+the files can still be compiled by Delphi. You may have to make minor manual adjustments 
+if the converter couldn't figure out your code. Also, you can look at the source 
+code of the converter to see what it's doing.<P>
+
+<LI>Use the DfmToLfm utility to create a Lazarus form file (.lfm) from each Delphi 
+form file (.dfm). Example:<P>
+&nbsp;&nbsp;dfmtolfm myform.dfm<P>
+This creates an .lfm file that should be compatible with Lazarus. With Linux you
+can use the -d switch to delete the font names from the .lfm file. This generally 
+makes for a better look on Linux, which doesn't have the same TrueType fonts that 
+Windows and OS X have. Default fonts will be substituted at runtime. With Windows 
+you can use the -p switch to add a parent's font to controls with no font, 
+which generally makes for a better look on Windows.<P>
+Important! Make sure your .dfm files are text files. If not, save them as text 
+files with Delphi before attempting to convert them.<P>
+
+<LI>Use the Lazarus LazRes utility to create a Lazarus resource file (.lrs)
+from each form file (.lfm). Example:<P>
+&nbsp;&nbsp;lazres myform.lrs myform.lfm<P>
+Note: The lazres source code is located in the Lazarus tools folder. Open
+project file lazres.lpi in Lazarus and compile it in the IDE.<P>
+
+<LI>Repeat steps 3 and 4 whenever you make changes to the Delphi form files.
+If your project has a number of forms, run DfmToLfm and LazRes 
+for each form in a batch or shell file to automate the conversion.<P>
+
+<LI>Open the converted .dpr file with Lazarus and allow it to create a project
+file (.lpi), then compile the project with Lazarus 
 to test the converted code and form files.<P>
-<LI>Move the Lazarus project's files over to OS X or Linux and compile and 
-test them there with that platform's version of Lazarus.
+
+Tip: If you run your Lazarus-compiled app and get an error message about an unknown 
+property, that probably means you need to add this property to the [DeleteProps]
+section of dfmtolfm.ini file and rerun DfmToLfm on the .dfm file. Not all VCL components
+have been tested with DfmToLfm.<P>
+
+<LI>Move the Lazarus project's files over to other platforms and compile and 
+test them there with those platforms' version of Lazarus.
 </OL>
 
 
@@ -185,7 +247,8 @@ which introduces a TRtfParser descendant, TRtfDoc, which can be used
 to create RTF files without knowing how TRtfParser works. For information 
 on how to use it, look at the RtfDoc.pas file and TestRtfDoc.pas example 
 program. You'll also want to look at the Free Pascal rtfdata.inc file for 
-a list of constants that you'll need to use with TRtfDoc.<P>
+a list of constants that you'll need to use with TRtfDoc (rtfdata.inc is
+in Free Pascal's /packages/fcl-base/src/inc folder).<P>
 
 For more information on the RTF specification, refer to Microsoft's documentation.<P>
 
@@ -278,7 +341,7 @@ also be able to output version information to a Lazarus .lpi file.<P>
 <A HREF="http://wiki.lazarus.freepascal.org/Deploying_Your_Application">http://wiki.lazarus.freepascal.org/Deploying_Your_Application</A><P>
 <P>
 <HR>
-Last updated: April 15, 2007
+Last updated: March 1, 2008
 <P>
 
 </BODY>
