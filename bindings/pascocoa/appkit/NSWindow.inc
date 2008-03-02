@@ -59,11 +59,6 @@ const
 #define NSPopUpMenuWindowLevel           kCGPopUpMenuWindowLevel
 #define NSScreenSaverWindowLevel         kCGScreenSaverWindowLevel  }
 
-const
-  Str_NSWindow = 'NSWindow';
-  Str_initWithContentRect = 'initWithContentRect:styleMask:backing:defer:';
-  Str_orderFrontRegardless = 'orderFrontRegardless';
-
 type
   NSSelectionDirection = (
     NSDirectSelection = 0,
@@ -100,6 +95,15 @@ APPKIT_EXTERN NSString *NSWindowDidEndSheetNotification;
 APPKIT_EXTERN NSString *NSWindowDidChangeScreenProfileNotification  AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER;
 }
 
+{ Class and method name strings }
+const
+  Str_NSWindow = 'NSWindow';
+
+  Str_initWithContentRect = 'initWithContentRect:styleMask:backing:defer:';
+  Str_orderFrontRegardless = 'orderFrontRegardless';
+  Str_setTitle = 'setTitle:';
+  Str_contentView = 'contentView';
+
 {$endif}
 {$endif}
 {$ifdef CLASSES}
@@ -131,16 +135,16 @@ APPKIT_EXTERN NSString *NSWindowDidChangeScreenProfileNotification  AVAILABLE_MA
     constructor initWithContentRect(contentRect: NSRect; aStyle: cuint; bufferingType: NSBackingStoreType; defer: CBOOL);
 {- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag screen:(NSScreen *)screen;
 
-- (NSString *)title;
-- (void)setTitle:(NSString *)aString;
-- (NSString *)representedFilename;
+- (NSString *)title;}
+    procedure setTitle(aString: CFStringRef);
+{- (NSString *)representedFilename;
 - (void)setRepresentedFilename:(NSString *)aString;
 - (void)setTitleWithRepresentedFilename:(NSString *)filename;
 - (void)setExcludedFromWindowsMenu:(BOOL)flag;
 - (BOOL)isExcludedFromWindowsMenu;
-- (void)setContentView:(NSView *)aView;
-- (id)contentView;
-- (void)setDelegate:(id)anObject;
+- (void)setContentView:(NSView *)aView;}
+    function contentView: objc.id;
+{- (void)setDelegate:(id)anObject;
 - (id)delegate;
 - (int)windowNumber;
 - (unsigned int)styleMask;
@@ -496,6 +500,22 @@ begin
   Handle := vinit(allocbuf, sel_registerName(PChar(Str_initWithContentRect)),
    contentRect.origin.x, contentRect.origin.y, contentRect.size.width, contentRect.size.height,
    aStyle, bufferingType, defer);
+end;
+
+procedure NSWindow.setTitle(aString: CFStringRef);
+type
+  setTitle_t = procedure (param1: objc.id; param2: SEL;
+   param3: CFStringRef); cdecl;
+var
+  vmethod: setTitle_t;
+begin
+  vmethod := setTitle_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setTitle)), aString);
+end;
+
+function NSWindow.contentView: objc.id;
+begin
+  Result := objc_msgSend(Handle, sel_registerName(PChar(Str_contentView)), []);
 end;
 
 procedure NSWindow.orderFrontRegardless;

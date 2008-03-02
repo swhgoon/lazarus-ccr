@@ -19,9 +19,9 @@
 {$include NSButton.inc}
 {$include NSButtonCell.inc}
 {$include NSCell.inc}
-{#import <AppKit/NSClipView.h>
-#import <AppKit/NSControl.h>
-#import <AppKit/NSFont.h>
+//#import <AppKit/NSClipView.h>
+{$include NSControl.inc}
+{#import <AppKit/NSFont.h>
 #import <AppKit/NSFontDescriptor.h>
 #import <AppKit/NSFontManager.h>
 #import <AppKit/NSFontPanel.h>
@@ -82,13 +82,13 @@
 #import <AppKit/NSSlider.h>
 #import <AppKit/NSSliderCell.h>
 #import <AppKit/NSSpellProtocol.h>
-#import <AppKit/NSText.h>
-#import <AppKit/NSTextField.h>
-#import <AppKit/NSTextFieldCell.h>
+#import <AppKit/NSText.h>}
+{$include NSTextField.inc}
+{#import <AppKit/NSTextFieldCell.h>
 #import <AppKit/NSText.h>
 #import <AppKit/NSTokenField.h>
-#import <AppKit/NSTokenFieldCell.h>
-#import <AppKit/NSView.h> }
+#import <AppKit/NSTokenFieldCell.h>}
+{$include NSView.inc}
 {$include NSWindow.inc}
 {#import <AppKit/NSWindowController.h>
 #import <AppKit/NSWorkspace.h>
@@ -102,9 +102,9 @@
 #import <AppKit/NSAttributedString.h>
 #import <AppKit/NSLayoutManager.h>
 #import <AppKit/NSParagraphStyle.h>
-#import <AppKit/NSTextStorage.h>
-#import <AppKit/NSTextView.h>
-#import <AppKit/NSTextContainer.h>
+#import <AppKit/NSTextStorage.h>}
+//{$include NSTextView.inc}
+{#import <AppKit/NSTextContainer.h>
 #import <AppKit/NSTextAttachment.h>
 #import <AppKit/NSInputManager.h>
 #import <AppKit/NSInputServer.h>

@@ -101,6 +101,7 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     allocbuf, Handle: objc.id;
     { Constructor / Destructor }
     constructor Create; virtual;
+    constructor CreateWithHandle(aHandle: objc.id);
     destructor Destroy; override;
 
 {+ (void)load;
@@ -157,6 +158,13 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 constructor NSObject.Create;
 begin
 
+end;
+
+constructor NSObject.CreateWithHandle(aHandle: objc.id);
+begin
+  Handle := aHandle;
+  
+  inherited Create;
 end;
 
 destructor NSObject.Destroy;
