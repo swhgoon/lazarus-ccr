@@ -6,6 +6,18 @@
 	All rights reserved.
 }
 
+{$ifdef HEADER}
+{$ifndef NSBUTTON_PAS_H}
+{$define NSBUTTON_PAS_H}
+
+const
+  Str_NSButton = 'NSButton';
+
+  Str_setTitle = 'setTitle:';
+  Str_setBezelStyle = 'setBezelStyle:';
+
+{$endif}
+{$endif}
 {$ifdef CLASSES}
 {$ifndef NSBUTTON_PAS_C}
 {$define NSBUTTON_PAS_C}
@@ -17,10 +29,12 @@
 
   NSButton = class(NSControl)
   public
-
-{- (NSString *)title;
-- (void)setTitle:(NSString *)aString;
-- (NSString *)alternateTitle;
+    { Extra binding functions }
+    function getClass: objc.id; override;
+  public
+//- (NSString *)title;
+    procedure setTitle(aString: CFStringRef);
+{- (NSString *)alternateTitle;
 - (void)setAlternateTitle:(NSString *)aString;
 - (NSImage *)image;
 - (void)setImage:(NSImage *)image;
@@ -55,14 +69,14 @@
 - (void)setAttributedTitle:(NSAttributedString *)aString;
 - (NSAttributedString *)attributedAlternateTitle;
 - (void)setAttributedAlternateTitle:(NSAttributedString *)obj;
-@end
+@end}
 
-@interface NSButton(NSButtonBezelStyles)
-- (void) setBezelStyle:(NSBezelStyle)bezelStyle;
-- (NSBezelStyle)bezelStyle;
-@end
+//@interface NSButton(NSButtonBezelStyles)
+    procedure setBezelStyle(bezelStyle: NSBezelStyle);
+//- (NSBezelStyle)bezelStyle;
+//@end
 
-@interface NSButton(NSButtonMixedState)
+{@interface NSButton(NSButtonMixedState)
 - (void)setAllowsMixedState:(BOOL)flag;
 - (BOOL)allowsMixedState;
 - (void)setNextState;
@@ -81,5 +95,35 @@
   end;
 
 {$endif}
+{$endif}
+{$ifdef IMPLEMENTATION}
+
+function NSButton.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSButton);
+end;
+
+procedure NSButton.setTitle(aString: CFStringRef);
+type
+  setTitle_t = procedure (param1: objc.id; param2: SEL;
+   param3: CFStringRef); cdecl;
+var
+  vmethod: setTitle_t;
+begin
+  vmethod := setTitle_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setTitle)), aString);
+end;
+
+procedure NSButton.setBezelStyle(bezelStyle: NSBezelStyle);
+type
+  setBezelStyle_t = procedure (param1: objc.id; param2: SEL;
+   param3: NSBezelStyle); cdecl;
+var
+  vmethod: setBezelStyle_t;
+begin
+  vmethod := setBezelStyle_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setBezelStyle)), bezelStyle);
+end;
+
 {$endif}
 

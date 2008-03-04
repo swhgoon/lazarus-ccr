@@ -15,7 +15,7 @@
 }
 program simplewindow;
 
-{$mode delphi}
+{$ifdef fpc}{$mode delphi}{$endif}
 
 uses
   objc, ctypes, FPCMacOSAll, AppKit, Foundation;
@@ -56,12 +56,14 @@ begin
   MainWindow.setTitle(CFTitle);
 
   { Adds a NSTextField with a string }
+  
+  CFMessage := CFStringCreateWithPascalString(nil, Str_Window_Message, kCFStringEncodingUTF8);
   TextFieldRect.origin.x := 0.0;
-  TextFieldRect.origin.y := 0.0;
+  TextFieldRect.origin.y := 200.0;
   TextFieldRect.size.width := 300.0;
-  TextFieldRect.size.height := 500.0;
+  TextFieldRect.size.height := 100.0;
   TextField := NSTextField.initWithFrame(TextFieldRect);
-  TextField.setStringValue(CFTitle);
+  TextField.setStringValue(CFMessage);
   MainWindowView := NSView.CreateWithHandle(MainWindow.contentView);
   MainWindowView.addSubview(TextField);
 

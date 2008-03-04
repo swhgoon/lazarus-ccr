@@ -28,7 +28,9 @@ const
 
   NSTextField = class(NSControl)
   public
-    constructor initWithFrame(frameRect: NSRect); override;
+    { Extra binding functions }
+    function getClass: objc.id; override;
+  public
 
 {- (void)setBackgroundColor:(NSColor *)color;
 - (NSColor *)backgroundColor;
@@ -77,10 +79,9 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-constructor NSTextField.initWithFrame(frameRect: NSRect);
+function NSTextField.getClass: objc.id;
 begin
-  ClassId := objc_getClass(PChar(Str_NSTextField));
-  inherited initWithFrame(frameRect);
+  Result := objc_getClass(Str_NSTextField);
 end;
 
 {$endif}

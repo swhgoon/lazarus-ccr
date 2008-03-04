@@ -10,9 +10,7 @@
 {$ifndef NSCELL_PAS_H}
 {$define NSCELL_PAS_H}
 
-{#import <Foundation/NSObject.h>
-#import <Foundation/NSGeometry.h>
-#import <AppKit/NSText.h>
+{#import <AppKit/NSText.h>
 #import <AppKit/NSParagraphStyle.h>
 
 @class NSAttributedString, NSEvent, NSFont, NSFormatter, NSImage, NSMenu, NSText, NSView;}

@@ -14,9 +14,11 @@
 const
   Str_NSControl = 'NSControl';
   
-  Str_setStringValue = 'setStringValue:';
   Str_initWithFrame = 'initWithFrame:';
-  
+  Str_setTarget = 'setTarget:';
+  Str_setAction = 'setAction:';
+  Str_setStringValue = 'setStringValue:';
+
 {$endif}
 {$endif}
 {$ifdef CLASSES}
@@ -34,17 +36,17 @@ const
 {+ (void)setCellClass:(Class)factoryId;
 + (Class)cellClass;}
 
-    constructor initWithFrame(frameRect: NSRect); virtual;
+    constructor initWithFrame(frameRect: NSRect);
 {- (void)sizeToFit;
 - (void)calcSize;
 - (id)cell;
 - (void)setCell:(NSCell *)aCell;
 - (id)selectedCell;
-- (id)target;
-- (void)setTarget:(id)anObject;
-- (SEL)action;
-- (void)setAction:(SEL)aSelector;
-- (int)tag;
+- (id)target;}
+    procedure setTarget(anObject: objc.id);
+//- (SEL)action;
+    procedure setAction(aSelector: SEL);
+{- (int)tag;
 - (void)setTag:(int)anInt;
 - (int)selectedTag;
 - (void)setIgnoresMultiClick:(BOOL)flag;
@@ -150,11 +152,32 @@ type
 var
   vmethod: initWithFrame_t;
 begin
-  // Allows descendents to set a new ClassId
-  if ClassID = nil then ClassId := objc_getClass(PChar(Str_NSControl));
+  ClassID := getClass();
   allocbuf := objc_msgSend(ClassId, sel_registerName(PChar(Str_alloc)), []);
   vmethod := initWithFrame_t(@objc_msgSend);
   Handle := vmethod(allocbuf, sel_registerName(PChar(Str_initWithFrame)), frameRect);
+end;
+
+procedure NSControl.setTarget(anObject: objc.id);
+type
+  setTarget_t = procedure (param1: objc.id; param2: SEL;
+   param3: objc.id); cdecl;
+var
+  vmethod: setTarget_t;
+begin
+  vmethod := setTarget_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setTarget)), anObject);
+end;
+
+procedure NSControl.setAction(aSelector: SEL);
+type
+  setAction_t = procedure (param1: objc.id; param2: SEL;
+   param3: SEL); cdecl;
+var
+  vmethod: setAction_t;
+begin
+  vmethod := setAction_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setAction)), aSelector);
 end;
 
 procedure NSControl.setStringValue(aString: CFStringRef);

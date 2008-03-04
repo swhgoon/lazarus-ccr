@@ -33,8 +33,8 @@
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="31" Y="58"/>
-        <TopLine Value="55"/>
+        <CursorPos X="105" Y="56"/>
+        <TopLine Value="52"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
@@ -383,44 +383,7 @@
         <UsageCount Value="10"/>
       </Unit52>
     </Units>
-    <JumpHistory Count="9" HistoryIndex="8">
-      <Position1>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="102" Column="32" TopLine="98"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="103" Column="16" TopLine="96"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="14" Column="18" TopLine="7"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="92" Column="15" TopLine="82"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="103" Column="16" TopLine="96"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="320" Column="14" TopLine="307"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="107" Column="14" TopLine="98"/>
-      </Position7>
-      <Position8>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="92" Column="15" TopLine="82"/>
-      </Position8>
-      <Position9>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="364" Column="41" TopLine="360"/>
-      </Position9>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

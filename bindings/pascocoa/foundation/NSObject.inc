@@ -67,6 +67,8 @@
 {***********	Base class		***********}
 
 const
+  Str_NSObject = 'NSObject';
+
   Str_alloc = 'alloc';
   Str_init = 'init';
   Str_release = 'release';
@@ -103,7 +105,9 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     constructor Create; virtual;
     constructor CreateWithHandle(aHandle: objc.id);
     destructor Destroy; override;
-
+    { Extra binding functions }
+    function getClass: objc.id; virtual;
+  public
 {+ (void)load;
 
 + (void)initialize;
@@ -170,6 +174,11 @@ end;
 destructor NSObject.Destroy;
 begin
   objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
+end;
+
+function NSObject.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSObject);
 end;
 
 {$endif}

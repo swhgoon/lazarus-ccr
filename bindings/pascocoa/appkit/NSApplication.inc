@@ -111,6 +111,9 @@ APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
 
   NSApplication = class(NSResponder)
   public
+    { Extra binding functions }
+    function getClass: objc.id; override;
+  public
     constructor sharedApplication;
 
 {- (void)setDelegate:(id)anObject;
@@ -358,9 +361,14 @@ If not specified, obtain from CFBundleShortVersionString key in infoDictionary. 
 {$endif}
 {$ifdef IMPLEMENTATION}
 
+function NSApplication.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSApplication);
+end;
+
 constructor NSApplication.sharedApplication;
 begin
-  ClassId := objc_getClass(PChar(Str_NSApplication));
+  ClassId := getClass;
   Handle := objc_msgSend(ClassId, sel_registerName(PChar(Str_sharedApplication)), []);
 end;
 

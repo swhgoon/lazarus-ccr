@@ -101,7 +101,6 @@ const
 
   Str_initWithContentRect = 'initWithContentRect:styleMask:backing:defer:';
   Str_orderFrontRegardless = 'orderFrontRegardless';
-  Str_setTitle = 'setTitle:';
   Str_contentView = 'contentView';
 
 {$endif}
@@ -119,6 +118,9 @@ const
 @class NSWindowController; }
 
   NSWindow = class(NSResponder)
+  public
+    { Extra binding functions }
+    function getClass: objc.id; override;
   public
 
 
@@ -477,6 +479,11 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
+function NSWindow.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSWindow);
+end;
+
 constructor NSWindow.initWithContentRect(
   contentRect: NSRect;
   aStyle: cuint;
@@ -494,7 +501,7 @@ begin
       styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask
         backing: NSBackingStoreBuffered
           defer: NO]; }
-  ClassId := objc_getClass(PChar(Str_NSWindow));
+  ClassId := getClass();
   allocbuf := objc_msgSend(ClassId, sel_registerName(PChar(Str_alloc)), []);
   vinit := initWithContentRect_t(@objc_msgSend);
   Handle := vinit(allocbuf, sel_registerName(PChar(Str_initWithContentRect)),
