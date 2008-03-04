@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="33">
+      <Unit0>
+        <Filename Value="statusitem.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="statusitem"/>
+        <CursorPos X="3" Y="47"/>
+        <TopLine Value="37"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="36"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSButton.h"/>
+        <CursorPos X="29" Y="59"/>
+        <TopLine Value="56"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../appkit/NSButton.inc"/>
+        <CursorPos X="32" Y="98"/>
+        <TopLine Value="92"/>
+        <UsageCount Value="21"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../appkit/NSApplication.inc"/>
+        <CursorPos X="49" Y="107"/>
+        <TopLine Value="105"/>
+        <UsageCount Value="11"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../appkit/NSAlert.inc"/>
+        <CursorPos X="1" Y="12"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="19"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../appkit/NSStatusItem.inc"/>
+        <CursorPos X="47" Y="26"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="13"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../appkit/AppKit.inc"/>
+        <CursorPos X="51" Y="9"/>
+        <TopLine Value="6"/>
+        <UsageCount Value="11"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSActionCell.h"/>
+        <CursorPos X="20" Y="30"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSButtonCell.h"/>
+        <CursorPos X="34" Y="229"/>
+        <TopLine Value="222"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSCell.h"/>
+        <CursorPos X="108" Y="314"/>
+        <TopLine Value="298"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../appkit/NSActionCell.inc"/>
+        <CursorPos X="32" Y="7"/>
+        <TopLine Value="3"/>
+        <UsageCount Value="21"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../appkit/NSButtonCell.inc"/>
+        <CursorPos X="44" Y="32"/>
+        <TopLine Value="29"/>
+        <UsageCount Value="21"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../appkit/NSCell.inc"/>
+        <CursorPos X="28" Y="167"/>
+        <TopLine Value="162"/>
+        <UsageCount Value="21"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSControl.h"/>
+        <CursorPos X="29" Y="118"/>
+        <TopLine Value="116"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../appkit/NSControl.inc"/>
+        <CursorPos X="26" Y="147"/>
+        <TopLine Value="142"/>
+        <UsageCount Value="24"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSView.h"/>
+        <CursorPos X="10" Y="348"/>
+        <TopLine Value="344"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../appkit/NSView.inc"/>
+        <CursorPos X="40" Y="101"/>
+        <TopLine Value="97"/>
+        <UsageCount Value="20"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSResponder.h"/>
+        <CursorPos X="9" Y="225"/>
+        <TopLine Value="220"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../appkit/NSResponder.inc"/>
+        <CursorPos X="46" Y="3"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="22"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../appkit/appkit.pas"/>
+        <UnitName Value="appkit"/>
+        <CursorPos X="13" Y="21"/>
+        <TopLine Value="10"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../appkit/NSWindow.inc"/>
+        <CursorPos X="1" Y="522"/>
+        <TopLine Value="508"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSWindow.h"/>
+        <CursorPos X="21" Y="93"/>
+        <TopLine Value="89"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSApplication.h"/>
+        <CursorPos X="54" Y="52"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../appkit/NSTextField.inc"/>
+        <CursorPos X="47" Y="71"/>
+        <TopLine Value="69"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../../cleanroom/packages/fcl-db/src/base/dataset.inc"/>
+        <CursorPos X="38" Y="1522"/>
+        <TopLine Value="1521"/>
+        <UsageCount Value="11"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../../../cleanroom/packages/fcl-db/src/base/datasource.inc"/>
+        <CursorPos X="35" Y="55"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="11"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../../../cleanroom/packages/fcl-db/src/base/fields.inc"/>
+        <CursorPos X="33" Y="647"/>
+        <TopLine Value="642"/>
+        <UsageCount Value="11"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../cleanroom/rtl/objpas/classes/classes.inc"/>
+        <CursorPos X="16" Y="459"/>
+        <TopLine Value="453"/>
+        <UsageCount Value="10"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../foundation/NSObject.inc"/>
+        <CursorPos X="46" Y="102"/>
+        <TopLine Value="94"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../appkit/NSStatusBar.inc"/>
+        <CursorPos X="27" Y="15"/>
+        <TopLine Value="5"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../foundation/NSAutoreleasePool.inc"/>
+        <CursorPos X="33" Y="43"/>
+        <TopLine Value="37"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../objc/objc-class.inc"/>
+        <CursorPos X="45" Y="161"/>
+        <TopLine Value="159"/>
+        <UsageCount Value="12"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../../objc/objc.inc"/>
+        <CursorPos X="50" Y="52"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="12"/>
+      </Unit32>
+    </Units>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="statusitem.pas"/>
+        <Caret Line="80" Column="30" TopLine="69"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../appkit/NSWindow.inc"/>
+        <Caret Line="137" Column="17" TopLine="128"/>
+      </Position2>
+      <Position3>
+        <Filename Value="statusitem.pas"/>
+        <Caret Line="105" Column="15" TopLine="91"/>
+      </Position3>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="../../appkit/;../../../objc/;../../foundation/"/>
+      <SrcPath Value="../../appkit/;../../../objc/;../../foundation/"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-framework cocoa -lobjc"/>
+      </Options>
+    </Linking>
+    <Other>
+      <Verbosity>
+        <ShowSummary Value="True"/>
+      </Verbosity>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
