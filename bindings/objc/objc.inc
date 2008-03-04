@@ -39,7 +39,7 @@ type
                     // headers a lot.
                     //
                     // Cast variables of this type to Pobjc_class when necessary
-                    
+
   Pobjc_object = ^objc_object;
 
   objc_object = record

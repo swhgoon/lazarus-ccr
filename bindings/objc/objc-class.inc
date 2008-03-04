@@ -112,9 +112,9 @@ type
   Method = Pobjc_method;
 
   objc_method = record
-//  method_name: SEL;
+    method_name: SEL;
     method_types: PChar;
-//  method_imp: IMP;
+    method_imp: IMP;
   end;
 
   objc_method_list = record
@@ -165,8 +165,8 @@ function class_getInstanceVariable(param1: _Class; const param2: PChar): Ivar; c
 function class_getInstanceMethod(param1: _Class; param2: SEL): Method; cdecl; external;
 function class_getClassMethod(param1: _Class; param2: SEL): Method; cdecl; external;
 
-procedure class_addMethods(param1: _Class; param2: objc_method_list); cdecl; external;
-procedure class_removeMethods(param1: _Class; param2: objc_method_list); cdecl; external;
+procedure class_addMethods(param1: _Class; param2: Pobjc_method_list); cdecl; external;
+procedure class_removeMethods(param1: _Class; param2: Pobjc_method_list); cdecl; external;
 
 function class_poseAs(imposter, original: _Class): _Class; cdecl; external;
 
