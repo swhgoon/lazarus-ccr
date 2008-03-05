@@ -1820,8 +1820,8 @@ type
 //later:test if we need it    procedure WMChangeState(var Message: TLMessage); message WM_CHANGESTATE;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
 //todo    procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
-    procedure WMCopy(var Message: TLMNoParams {TWMCopy}); message LM_COPYTOCLIP;
-    procedure WMCut(var Message: TLMNoParams {TWMCut}); message LM_CUTTOCLIP;
+    procedure WMCopy(var Message: TLMNoParams {TWMCopy}); message LM_COPY;
+    procedure WMCut(var Message: TLMNoParams {TWMCut}); message LM_CUT;
 //later:test if we need it     procedure WMEnable(var Message: TLMEnable); message LM_ENABLE;*)
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TLMNoParams {TWMGetDlgCode}); message LM_GETDLGCODE;
@@ -1840,7 +1840,7 @@ type
 //nfl    procedure WMNCHitTest(var Message: TLMNCHitTest); message LM_NCHITTEST;
 //nfl    procedure WMNCPaint(var Message: TRealWMNCPaint); message LM_NCPAINT;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
-    procedure WMPaste(var Message: TLMNoParams {TWMPaste}); message LM_PASTEFROMCLIP;
+    procedure WMPaste(var Message: TLMNoParams {TWMPaste}); message LM_PASTE;
 //nfl    procedure WMPrint(var Message: TLMPrint); message LM_PRINT;
 //nfl    procedure WMPrintClient(var Message: TLMPrintClient); message LM_PRINTCLIENT;*)
     procedure WMRButtonDblClk(var Message: TLMRButtonDblClk); message LM_RBUTTONDBLCLK;
