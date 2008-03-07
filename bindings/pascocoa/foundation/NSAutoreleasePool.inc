@@ -21,7 +21,6 @@ const
 
   NSAutoreleasePool = class(NSObject)
   public
-    constructor Create; override;
     { Extra binding functions }
     function getClass: objc.id; override;
   public
@@ -43,14 +42,6 @@ const
 function NSAutoreleasePool.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSAutoreleasePool);
-end;
-
-constructor NSAutoreleasePool.Create;
-begin
-  {  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; }
-  ClassId := getClass();
-  allocbuf := objc_msgSend(ClassId, sel_registerName(PChar(Str_alloc)), []);
-  Handle := objc_msgSend(allocbuf, sel_registerName(PChar(Str_init)), []);
 end;
 
 {$endif}

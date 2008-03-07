@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -26,15 +26,15 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="33">
+    <Units Count="34">
       <Unit0>
         <Filename Value="statusitem.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="statusitem"/>
-        <CursorPos X="3" Y="47"/>
-        <TopLine Value="37"/>
+        <CursorPos X="19" Y="26"/>
+        <TopLine Value="54"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -60,7 +60,7 @@
         <Filename Value="../../appkit/NSAlert.inc"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -124,8 +124,10 @@
       <Unit14>
         <Filename Value="../../appkit/NSControl.inc"/>
         <CursorPos X="26" Y="147"/>
-        <TopLine Value="142"/>
+        <TopLine Value="145"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="24"/>
+        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSView.h"/>
@@ -158,16 +160,16 @@
         <UnitName Value="appkit"/>
         <CursorPos X="13" Y="21"/>
         <TopLine Value="10"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="18"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="../../appkit/NSWindow.inc"/>
         <CursorPos X="1" Y="522"/>
-        <TopLine Value="508"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="14"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -216,24 +218,24 @@
       </Unit27>
       <Unit28>
         <Filename Value="../../foundation/NSObject.inc"/>
-        <CursorPos X="46" Y="102"/>
-        <TopLine Value="94"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="16" Y="7"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="27" Y="15"/>
-        <TopLine Value="5"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="14"/>
+        <TopLine Value="36"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
         <Filename Value="../../foundation/NSAutoreleasePool.inc"/>
-        <CursorPos X="33" Y="43"/>
-        <TopLine Value="37"/>
+        <CursorPos X="26" Y="19"/>
+        <TopLine Value="13"/>
         <UsageCount Value="10"/>
       </Unit30>
       <Unit31>
@@ -248,20 +250,78 @@
         <TopLine Value="49"/>
         <UsageCount Value="12"/>
       </Unit32>
+      <Unit33>
+        <Filename Value="actions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="actions"/>
+        <CursorPos X="3" Y="61"/>
+        <TopLine Value="58"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit33>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="15" HistoryIndex="14">
       <Position1>
         <Filename Value="statusitem.pas"/>
-        <Caret Line="80" Column="30" TopLine="69"/>
+        <Caret Line="38" Column="25" TopLine="29"/>
       </Position1>
       <Position2>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="137" Column="17" TopLine="128"/>
+        <Filename Value="statusitem.pas"/>
+        <Caret Line="39" Column="22" TopLine="23"/>
       </Position2>
       <Position3>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="105" Column="15" TopLine="91"/>
+        <Filename Value="actions.pas"/>
+        <Caret Line="22" Column="1" TopLine="18"/>
       </Position3>
+      <Position4>
+        <Filename Value="actions.pas"/>
+        <Caret Line="15" Column="41" TopLine="9"/>
+      </Position4>
+      <Position5>
+        <Filename Value="actions.pas"/>
+        <Caret Line="18" Column="33" TopLine="9"/>
+      </Position5>
+      <Position6>
+        <Filename Value="actions.pas"/>
+        <Caret Line="17" Column="31" TopLine="9"/>
+      </Position6>
+      <Position7>
+        <Filename Value="actions.pas"/>
+        <Caret Line="15" Column="59" TopLine="12"/>
+      </Position7>
+      <Position8>
+        <Filename Value="actions.pas"/>
+        <Caret Line="21" Column="3" TopLine="18"/>
+      </Position8>
+      <Position9>
+        <Filename Value="actions.pas"/>
+        <Caret Line="70" Column="1" TopLine="58"/>
+      </Position9>
+      <Position10>
+        <Filename Value="actions.pas"/>
+        <Caret Line="59" Column="12" TopLine="57"/>
+      </Position10>
+      <Position11>
+        <Filename Value="actions.pas"/>
+        <Caret Line="36" Column="1" TopLine="19"/>
+      </Position11>
+      <Position12>
+        <Filename Value="actions.pas"/>
+        <Caret Line="41" Column="14" TopLine="32"/>
+      </Position12>
+      <Position13>
+        <Filename Value="actions.pas"/>
+        <Caret Line="27" Column="1" TopLine="14"/>
+      </Position13>
+      <Position14>
+        <Filename Value="actions.pas"/>
+        <Caret Line="58" Column="15" TopLine="43"/>
+      </Position14>
+      <Position15>
+        <Filename Value="actions.pas"/>
+        <Caret Line="57" Column="1" TopLine="44"/>
+      </Position15>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

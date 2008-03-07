@@ -161,7 +161,9 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 
 constructor NSObject.Create;
 begin
-
+  ClassId := getClass();
+  allocbuf := objc_msgSend(ClassId, sel_registerName(PChar(Str_alloc)), []);
+  Handle := objc_msgSend(allocbuf, sel_registerName(PChar(Str_init)), []);
 end;
 
 constructor NSObject.CreateWithHandle(aHandle: objc.id);
