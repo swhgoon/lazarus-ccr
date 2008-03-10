@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,10 +31,10 @@
         <Filename Value="statusitem.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="statusitem"/>
-        <CursorPos X="104" Y="43"/>
-        <TopLine Value="20"/>
+        <CursorPos X="1" Y="34"/>
+        <TopLine Value="32"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -60,7 +60,7 @@
         <Filename Value="../../appkit/NSAlert.inc"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -68,15 +68,15 @@
         <CursorPos X="12" Y="123"/>
         <TopLine Value="37"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="../../appkit/AppKit.inc"/>
         <CursorPos X="23" Y="56"/>
         <TopLine Value="44"/>
-        <EditorIndex Value="8"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="9"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -162,8 +162,8 @@
         <UnitName Value="appkit"/>
         <CursorPos X="13" Y="21"/>
         <TopLine Value="15"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
@@ -171,7 +171,7 @@
         <CursorPos X="1" Y="97"/>
         <TopLine Value="92"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -220,18 +220,18 @@
       </Unit27>
       <Unit28>
         <Filename Value="../../foundation/NSObject.inc"/>
-        <CursorPos X="1" Y="25"/>
-        <TopLine Value="9"/>
+        <CursorPos X="5" Y="206"/>
+        <TopLine Value="192"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="10" Y="61"/>
         <TopLine Value="36"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="16"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -248,18 +248,20 @@
       </Unit31>
       <Unit32>
         <Filename Value="../../../objc/objc.inc"/>
-        <CursorPos X="50" Y="52"/>
-        <TopLine Value="49"/>
+        <CursorPos X="10" Y="82"/>
+        <TopLine Value="73"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="actions.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="actions"/>
-        <CursorPos X="16" Y="84"/>
-        <TopLine Value="69"/>
+        <CursorPos X="13" Y="131"/>
+        <TopLine Value="118"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -271,77 +273,27 @@
       </Unit34>
       <Unit35>
         <Filename Value="../../appkit/NSImage.inc"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Unit1"/>
         <CursorPos X="16" Y="15"/>
         <TopLine Value="59"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
         <Filename Value="/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h"/>
         <CursorPos X="14" Y="35"/>
         <TopLine Value="113"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="C++"/>
       </Unit36>
     </Units>
-    <JumpHistory Count="13" HistoryIndex="12">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="../../appkit/appkit.pas"/>
-        <Caret Line="21" Column="13" TopLine="15"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../../appkit/NSImage.inc"/>
-        <Caret Line="3" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../appkit/NSImage.inc"/>
-        <Caret Line="39" Column="3" TopLine="30"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../appkit/NSImage.inc"/>
-        <Caret Line="170" Column="16" TopLine="51"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../appkit/NSImage.inc"/>
-        <Caret Line="51" Column="17" TopLine="47"/>
-      </Position5>
-      <Position6>
-        <Filename Value="actions.pas"/>
-        <Caret Line="63" Column="25" TopLine="58"/>
-      </Position6>
-      <Position7>
-        <Filename Value="actions.pas"/>
-        <Caret Line="70" Column="17" TopLine="65"/>
-      </Position7>
-      <Position8>
-        <Filename Value="actions.pas"/>
-        <Caret Line="33" Column="28" TopLine="24"/>
-      </Position8>
-      <Position9>
-        <Filename Value="actions.pas"/>
-        <Caret Line="79" Column="49" TopLine="69"/>
-      </Position9>
-      <Position10>
-        <Filename Value="../../appkit/NSStatusBar.inc"/>
-        <Caret Line="75" Column="32" TopLine="58"/>
-      </Position10>
-      <Position11>
-        <Filename Value="actions.pas"/>
-        <Caret Line="79" Column="39" TopLine="70"/>
-      </Position11>
-      <Position12>
         <Filename Value="/System/Library/Frameworks/Foundation.framework/Headers/NSObject.h"/>
         <Caret Line="1" Column="1" TopLine="1"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="9" Column="22" TopLine="1"/>
-      </Position13>
+      </Position1>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

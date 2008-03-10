@@ -21,16 +21,15 @@ uses
 const
   Str_Window_Title = 'StatusItem example project';
   Str_Show_Button = 'Show StatusItem';
+  Str_Hide_Button = 'Hide StatusItem';
 var
   { classes }
   pool: NSAutoreleasePool;
   MainWindow: NSWindow;
   MainWindowView: NSView;
-  MyButton: NSButton;
-  { strings }
-  CFTitle, CFButtonText: CFStringRef;
-  { sizes }
-  MainWindowRect, ButtonRect: NSRect;
+  { strings and sizes}
+  CFTitle: CFStringRef;
+  MainWindowRect: NSRect;
 begin
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool.Create;
@@ -57,19 +56,15 @@ begin
 
   actionList := TMyActionList.Create();
   
-  { Puts some buttons on the window }
+  { Adds the buttons }
 
-  CFButtonText := CFStringCreateWithPascalString(nil, Str_Show_Button, kCFStringEncodingUTF8);
-  ButtonRect.origin.x := 50.0;
-  ButtonRect.origin.y := MainWindowRect.size.height - 50.0;
-  ButtonRect.size.width := 100.0;
-  ButtonRect.size.height := 25.0;
-  MyButton := NSButton.initWithFrame(ButtonRect);
-  MyButton.setStringValue(CFButtonText);
-  MyButton.setBezelStyle(NSRoundedBezelStyle);
-  MyButton.setAction(sel_registerName('doShowStatusitem:'));
-  MyButton.setTarget(actionList.Handle);
-  MainWindowView.addSubview(MyButton);
+  CreateButton(MainWindowView, Str_Show_Button,
+   50.0, MainWindowRect.size.height - 50.0, 200.0, 25.0,
+   'doShowStatusitem:', actionList);
+
+  CreateButton(MainWindowView, Str_Hide_Button,
+   50.0, MainWindowRect.size.height - 100.0, 200.0, 25.0,
+   'doHideStatusitem:', actionList);
 
   { Enters main message loop }
 

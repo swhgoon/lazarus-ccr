@@ -59,6 +59,8 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     destructor Destroy; override;
     { Extra binding functions }
     function getClass: objc.id; virtual;
+    { Class creation methods }
+    procedure AddMethod(aName, aParameters: string; aPointer: Pointer);
   public
 {+ (void)load;
 
@@ -189,6 +191,19 @@ end;
 function NSObject.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSObject);
+end;
+
+procedure NSObject.AddMethod(aName, aParameters: string; aPointer: Pointer);
+var
+  method_list: Pobjc_method_list;
+begin
+  method_list := GetMem(SizeOf(objc_method_list)); { We can't free this until the last instance is freed }
+
+  method_list^.method_count := 1;
+  method_list^.method_list[0].method_name := sel_registerName(PChar(aName));
+  method_list^.method_list[0].method_types := PChar(aParameters);
+  method_list^.method_list[0].method_imp := IMP(aPointer);
+  class_addMethods(ClassId, method_list);
 end;
 
 {***************	Basic protocols		***************}

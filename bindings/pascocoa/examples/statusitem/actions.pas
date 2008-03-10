@@ -31,30 +31,32 @@ type
 
 { Objective-c Methods }
 procedure doShowStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+procedure doHideStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
 
 var
   actionList: TMyActionList;
+
+{ Other helper functions }
+function GetResourcesDir: string;
+function CreateButton(AView: NSView; ATitle: shortstring;
+ AX, AY, AWidth, AHeight: Double;
+ ACallbackName: string; ACallbackClass: NSObject): NSButton;
 
 implementation
 
 { TMyActionList }
 
+{ Adds methods to the class }
 procedure TMyActionList.AddMethods;
-var
-  method_list: Pobjc_method_list;
 begin
-  { Adds methods to the class }
-
-  method_list := GetMem(SizeOf(objc_method_list)); { We can't free this until the last instance is freed }
-
-  method_list^.method_count := 1;
-  method_list^.method_list[0].method_name := sel_registerName('doShowStatusitem:');
-  { The first parameter is the result (v = void),
+  { Parameters string:
+  
+    The first parameter is the result (v = void),
     followed by self and _cmd (@ = id and : = SEL),
     and on the end "sender" (@ = id) }
-  method_list^.method_list[0].method_types := 'v@:@';
-  method_list^.method_list[0].method_imp := IMP(@doShowStatusitem);
-  class_addMethods(ClassId, method_list);
+
+  AddMethod('doShowStatusitem:', 'v@:@', @doShowStatusitem);
+  AddMethod('doHideStatusitem:', 'v@:@', @doHideStatusitem);
 end;
 
 constructor TMyActionList.Create;
@@ -68,7 +70,7 @@ begin
   bar := NSStatusBar.systemStatusBar();
   
   fileName := CFStringCreateWithPascalString(nil,
-   ExtractFilePath(ParamStr(0)) + 'icon.ico', kCFStringEncodingUTF8);
+   GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);
   image := NSImage.initWithContentsOfFile(fileName);
 end;
 
@@ -76,13 +78,59 @@ end;
 
 procedure doShowStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
 begin
+  if actionList.item <> nil then Exit;
+
   actionList.item := actionList.bar.statusItemWithLength(NSSquareStatusItemLength);
-
-  if actionList.item = nil then WriteLn('The item is nil!');
-  if actionList.image = nil then WriteLn('The image is nil!');
-
   actionList.item.retain();
   actionList.item.setImage(actionList.image);
+end;
+
+procedure doHideStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+begin
+  if actionList.item = nil then Exit;
+
+  actionList.item.Free;
+  actionList.item := nil;
+end;
+
+{ Other helper functions }
+
+function GetResourcesDir: string;
+const
+  BundleResourcesDirectory = '/Contents/Resources/';
+var
+  pathRef: CFURLRef;
+  pathCFStr: CFStringRef;
+  pathStr: shortstring;
+begin
+  // Under Mac OS X we need to get the location of the bundle
+  pathRef := CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  pathCFStr := CFURLCopyFileSystemPath(pathRef, kCFURLPOSIXPathStyle);
+  CFStringGetPascalString(pathCFStr, @pathStr, 255, CFStringGetSystemEncoding());
+  CFRelease(pathRef);
+  CFRelease(pathCFStr);
+
+  Result := pathStr + BundleResourcesDirectory;
+end;
+
+function CreateButton(AView: NSView; ATitle: shortstring;
+ AX, AY, AWidth, AHeight: Double;
+ ACallbackName: string; ACallbackClass: NSObject): NSButton;
+var
+  CFButtonText: CFStringRef;
+  ButtonRect: NSRect;
+begin
+  CFButtonText := CFStringCreateWithPascalString(nil, ATitle, kCFStringEncodingUTF8);
+  ButtonRect.origin.x := AX;
+  ButtonRect.origin.y := AY;
+  ButtonRect.size.width := AWidth;
+  ButtonRect.size.height := AHeight;
+  Result := NSButton.initWithFrame(ButtonRect);
+  Result.setTitle(CFButtonText);
+  Result.setBezelStyle(NSRoundedBezelStyle);
+  Result.setAction(sel_registerName(PChar(ACallbackName)));
+  Result.setTarget(ACallbackClass.Handle);
+  AView.addSubview(Result);
 end;
 
 end.
