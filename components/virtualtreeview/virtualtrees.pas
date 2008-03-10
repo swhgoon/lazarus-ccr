@@ -3786,6 +3786,7 @@ begin
         AnotherImage.LoadFromStream(Stream);
         Stream.Size:=0;
         IL.Add(AnotherImage, nil);
+        AnotherImage.Free;
       end;
     finally
       Images.Free;
@@ -3917,7 +3918,7 @@ begin
   finally
     //todo: change to except??
     //lcl free the bitmap in IL
-    //BM.Free;
+    BM.Free;
   end;
 end;
 
@@ -8766,17 +8767,18 @@ begin
         if InHeader(P) then
           FOwner.DoHeaderMouseDown(mbMiddle, GetShiftState, P.X, P.Y + Integer(FHeight));
       end;}
-{    LM_NCMBUTTONUP:
+    LM_LBUTTONUP,LM_RBUTTONUP:
+//    LM_NCMBUTTONUP:
       begin
-        with TWMNCMButtonUp(Message) do
-          P := FOwner.ScreenToClient(Point(XCursor, YCursor));
+        with TLMMouse(Message) do
+          P := FOwner.ScreenToClient(Point(Pos.X, Pos.Y));
         if InHeader(P) then
         begin
           FColumns.HandleClick(P, mbMiddle, True, False);
           FOwner.DoHeaderMouseUp(mbMiddle, GetShiftState, P.X, P.Y + Integer(FHeight));
           FColumns.FDownIndex := NoColumn;
         end;
-      end;}
+      end;
 {    LM_NCLBUTTONDBLCLK,
     LM_NCMBUTTONDBLCLK,
     LM_NCRBUTTONDBLCLK:
