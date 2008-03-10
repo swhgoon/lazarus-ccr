@@ -9,68 +9,18 @@
 //#import <Foundation/NSObjCRuntime.h>
 //#import <Foundation/NSZone.h>
 
-//@class NSInvocation, NSMethodSignature, NSCoder, NSString, NSEnumerator;
-//@class Protocol;
-
-{***************	Basic protocols		***************}
-
-{@protocol NSObject
-
-- (BOOL)isEqual:(id)object;
-- (unsigned)hash;
-
-- (Class)superclass;
-- (Class)class;
-- (id)self;
-- (NSZone *)zone;
-
-- (id)performSelector:(SEL)aSelector;
-- (id)performSelector:(SEL)aSelector withObject:(id)object;
-- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
-
-- (BOOL)isProxy;
-
-- (BOOL)isKindOfClass:(Class)aClass;
-- (BOOL)isMemberOfClass:(Class)aClass;
-- (BOOL)conformsToProtocol:(Protocol *)aProtocol;
-
-- (BOOL)respondsToSelector:(SEL)aSelector;
-
-- (id)retain;
-- (oneway void)release;
-- (id)autorelease;
-- (unsigned)retainCount;
-
-- (NSString *)description;
-
-@end
-
-@protocol NSCopying
-
-- (id)copyWithZone:(NSZone *)zone;
-
-@end
-
-@protocol NSMutableCopying
-
-- (id)mutableCopyWithZone:(NSZone *)zone;
-
-@end
-
-@protocol NSCoding
-
-- (void)encodeWithCoder:(NSCoder *)aCoder;
-- (id)initWithCoder:(NSCoder *)aDecoder;
-
-@end     }
-
-{***********	Base class		***********}
-
+{ Class and method name strings }
 const
+  {***********	Base class		***********}
+
   Str_NSObject = 'NSObject';
 
   Str_alloc = 'alloc';
   Str_init = 'init';
+
+  {***************	Basic protocols		***************}
+
+  Str_retain = 'retain';
   Str_release = 'release';
 
 {***********	Object Allocation / Deallocation		*******}
@@ -94,6 +44,8 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 {$ifdef CLASSES}
 {$ifndef NSOBJECT_PAS_C}
 {$define NSOBJECT_PAS_C}
+
+{***********	Base class		***********}
 
   NSObject = class
   public
@@ -153,11 +105,68 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 - (id)replacementObjectForCoder:(NSCoder *)aCoder;
 - (id)awakeAfterUsingCoder:(NSCoder *)aDecoder;}
 
+//@class NSInvocation, NSMethodSignature, NSCoder, NSString, NSEnumerator;
+//@class Protocol;
+
+{***************	Basic protocols		***************}
+
+{@protocol NSObject
+
+- (BOOL)isEqual:(id)object;
+- (unsigned)hash;
+
+- (Class)superclass;
+- (Class)class;
+- (id)self;
+- (NSZone *)zone;
+
+- (id)performSelector:(SEL)aSelector;
+- (id)performSelector:(SEL)aSelector withObject:(id)object;
+- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
+
+- (BOOL)isProxy;
+
+- (BOOL)isKindOfClass:(Class)aClass;
+- (BOOL)isMemberOfClass:(Class)aClass;
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol;
+
+- (BOOL)respondsToSelector:(SEL)aSelector;}
+
+    function retain: objc.id;
+    procedure release;
+{- (id)autorelease;
+- (unsigned)retainCount;
+
+- (NSString *)description;
+
+@end
+
+@protocol NSCopying
+
+- (id)copyWithZone:(NSZone *)zone;
+
+@end
+
+@protocol NSMutableCopying
+
+- (id)mutableCopyWithZone:(NSZone *)zone;
+
+@end
+
+@protocol NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+- (id)initWithCoder:(NSCoder *)aDecoder;
+
+@end     }
+
   end;
 
 {$endif}
 {$endif}
 {$ifdef IMPLEMENTATION}
+
+{***********	Base class		***********}
 
 constructor NSObject.Create;
 begin
@@ -168,19 +177,30 @@ end;
 
 constructor NSObject.CreateWithHandle(aHandle: objc.id);
 begin
+  ClassId := getClass();
   Handle := aHandle;
-  
-  inherited Create;
 end;
 
 destructor NSObject.Destroy;
 begin
-  objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
+  release;
 end;
 
 function NSObject.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSObject);
+end;
+
+{***************	Basic protocols		***************}
+
+function NSObject.retain: objc.id;
+begin
+  Result := objc_msgSend(Handle, sel_registerName(PChar(Str_retain)), []);
+end;
+
+procedure NSObject.release;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
 end;
 
 {$endif}

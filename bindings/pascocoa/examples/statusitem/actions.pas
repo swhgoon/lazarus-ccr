@@ -26,6 +26,7 @@ type
     { Fields }
     bar: NSStatusBar;
     item: NSStatusItem;
+    image: NSImage;
   end;
 
 { Objective-c Methods }
@@ -57,12 +58,18 @@ begin
 end;
 
 constructor TMyActionList.Create;
+var
+  fileName: CFStringRef;
 begin
   inherited Create;
 
   AddMethods();
 
   bar := NSStatusBar.systemStatusBar();
+  
+  fileName := CFStringCreateWithPascalString(nil,
+   ExtractFilePath(ParamStr(0)) + 'icon.ico', kCFStringEncodingUTF8);
+  image := NSImage.initWithContentsOfFile(fileName);
 end;
 
 { Objective-c Methods }
@@ -70,6 +77,12 @@ end;
 procedure doShowStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
 begin
   actionList.item := actionList.bar.statusItemWithLength(NSSquareStatusItemLength);
+
+  if actionList.item = nil then WriteLn('The item is nil!');
+  if actionList.image = nil then WriteLn('The image is nil!');
+
+  actionList.item.retain();
+  actionList.item.setImage(actionList.image);
 end;
 
 end.

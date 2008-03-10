@@ -53,8 +53,8 @@
 #import <AppKit/NSFileWrapper.h>
 #import <AppKit/NSHelpManager.h>}
 {$include NSGraphics.inc}
-{#import <AppKit/NSImage.h>
-#import <AppKit/NSImageCell.h>
+{$include NSImage.inc}
+{#import <AppKit/NSImageCell.h>
 #import <AppKit/NSImageRep.h>
 #import <AppKit/NSImageView.h>
 #import <AppKit/NSNib.h>

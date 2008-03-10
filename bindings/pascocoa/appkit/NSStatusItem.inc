@@ -20,6 +20,12 @@
     unsigned int reserved:29;
 } _SBIFlags; *)
 
+{ Class and method name strings }
+const
+  Str_NSStatusItem = 'NSStatusItem';
+
+  Str_setImage = 'setImage:';
+
 {$endif}
 {$endif}
 {$ifdef CLASSES}
@@ -35,6 +41,9 @@
 @class NSWindow;}
 
   NSStatusItem = class(NSObject)
+  public
+    { Extra binding functions }
+    function getClass: objc.id; override;
   public
 
 {- (NSStatusBar*) statusBar;
@@ -63,10 +72,10 @@
 - (NSAttributedString*) attributedTitle;
 - (void) setAttributedTitle:(NSAttributedString*)title;
 
-- (NSImage*) image;
-- (void) setImage:(NSImage*)image;
+- (NSImage*) image;}
+    procedure setImage(image: NSImage);
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
+{#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
 - (NSImage *)alternateImage;
 - (void)setAlternateImage:(NSImage*)image;
 #endif
@@ -102,6 +111,22 @@
 {$endif}
 {$endif}
 {$ifdef IMPLEMENTATION}
+
+function NSStatusItem.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_NSStatusItem);
+end;
+
+procedure NSStatusItem.setImage(image: NSImage);
+type
+  setImage_t = procedure (param1: objc.id; param2: SEL;
+   param3: objc.id); cdecl;
+var
+  vmethod: setImage_t;
+begin
+  vmethod := setImage_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setImage)), image.Handle);
+end;
 
 {$endif}
 
