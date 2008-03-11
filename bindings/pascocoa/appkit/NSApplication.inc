@@ -45,15 +45,6 @@ const
 // threading information
 //typedef struct NSThreadPrivate _NSThreadPrivate;
 
-const
-  Str_NSApplication = 'NSApplication';
-  
-  Str_sharedApplication = 'sharedApplication';
-  Str_run = 'run';
-  Str_runModalForWindow = 'runModalForWindow:';
-
-  Str_orderFrontStandardAboutPanelWithOptions = 'orderFrontStandardAboutPanelWithOptions:';
-
 { An Application's startup function }
 
 //APPKIT_EXTERN int NSApplicationMain(int argc, const char *argv[]);
@@ -94,6 +85,17 @@ APPKIT_EXTERN NSString *NSApplicationWillUpdateNotification;
 APPKIT_EXTERN NSString *NSApplicationWillTerminateNotification;
 APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
 
+{ Class and method name strings }
+const
+  Str_NSApplication = 'NSApplication';
+
+  Str_sharedApplication = 'sharedApplication';
+  Str_setDelegate = 'setDelegate:';
+  Str_run = 'run';
+  Str_runModalForWindow = 'runModalForWindow:';
+
+  Str_orderFrontStandardAboutPanelWithOptions = 'orderFrontStandardAboutPanelWithOptions:';
+
 {$endif}
 {$endif}
 {$ifdef CLASSES}
@@ -116,8 +118,8 @@ APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
   public
     constructor sharedApplication;
 
-{- (void)setDelegate:(id)anObject;
-- (id)delegate;
+    procedure setDelegate(anObject: NSObject);
+{- (id)delegate;
 - (NSGraphicsContext*)context;
 - (void)hide:(id)sender;
 - (void)unhide:(id)sender;
@@ -370,6 +372,16 @@ constructor NSApplication.sharedApplication;
 begin
   ClassId := getClass;
   Handle := objc_msgSend(ClassId, sel_registerName(PChar(Str_sharedApplication)), []);
+end;
+
+procedure NSApplication.setDelegate(anObject: NSObject);
+type
+  setDelegate_t = procedure (param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+var
+  vmethod: setDelegate_t;
+begin
+  vmethod := setDelegate_t(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(Str_setDelegate)), anObject.Handle);
 end;
 
 procedure NSApplication.run;

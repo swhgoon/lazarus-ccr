@@ -1,11 +1,11 @@
 {
- actions.pas
+ controller.pas
 
  This example project is released under public domain
 
  AUTHORS: Felipe Monteiro de Carvalho
 }
-unit actions;
+unit controller;
 
 {$mode objfpc}{$H+}
 
@@ -16,9 +16,9 @@ uses
 
 type
 
-  { TMyActionList }
+  { TMyController }
 
-  TMyActionList = class(NSObject)
+  TMyController = class(NSObject)
   public
     { Extra binding functions }
     constructor Create; override;
@@ -30,11 +30,18 @@ type
   end;
 
 { Objective-c Methods }
-procedure doShowStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
-procedure doHideStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+procedure doShowStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
+procedure doHideStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
+function applicationShouldTerminateAfterLastWindowClosed(param1: objc.id;
+ param2: SEL; theApplication: objc.id): cbool; cdecl;
 
 var
-  actionList: TMyActionList;
+  myController: TMyController;
+
+const
+  Str_doShowStatusitem = 'doShowStatusitem:';
+  Str_doHideStatusitem = 'doHideStatusitem:';
+  Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
 
 { Other helper functions }
 function GetResourcesDir: string;
@@ -44,10 +51,10 @@ function CreateButton(AView: NSView; ATitle: shortstring;
 
 implementation
 
-{ TMyActionList }
+{ TMyController }
 
 { Adds methods to the class }
-procedure TMyActionList.AddMethods;
+procedure TMyController.AddMethods;
 begin
   { Parameters string:
   
@@ -55,11 +62,13 @@ begin
     followed by self and _cmd (@ = id and : = SEL),
     and on the end "sender" (@ = id) }
 
-  AddMethod('doShowStatusitem:', 'v@:@', @doShowStatusitem);
-  AddMethod('doHideStatusitem:', 'v@:@', @doHideStatusitem);
+  AddMethod(Str_doShowStatusItem, 'v@:@', @doShowStatusitem);
+  AddMethod(Str_doHideStatusitem, 'v@:@', @doHideStatusitem);
+  AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'b@:@',
+   @applicationShouldTerminateAfterLastWindowClosed);
 end;
 
-constructor TMyActionList.Create;
+constructor TMyController.Create;
 var
   fileName: CFStringRef;
 begin
@@ -69,28 +78,33 @@ begin
 
   bar := NSStatusBar.systemStatusBar();
   
-  fileName := CFStringCreateWithPascalString(nil,
-   GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);
+  fileName := CFStringCreateWithPascalString(nil, GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);
   image := NSImage.initWithContentsOfFile(fileName);
 end;
 
 { Objective-c Methods }
 
-procedure doShowStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+procedure doShowStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
 begin
-  if actionList.item <> nil then Exit;
+  if myController.item <> nil then Exit;
 
-  actionList.item := actionList.bar.statusItemWithLength(NSSquareStatusItemLength);
-  actionList.item.retain();
-  actionList.item.setImage(actionList.image);
+  myController.item := myController.bar.statusItemWithLength(NSSquareStatusItemLength);
+  myController.item.retain();
+  myController.item.setImage(myController.image);
 end;
 
-procedure doHideStatusitem(param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+procedure doHideStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
 begin
-  if actionList.item = nil then Exit;
+  if myController.item = nil then Exit;
 
-  actionList.item.Free;
-  actionList.item := nil;
+  myController.item.Free;
+  myController.item := nil;
+end;
+
+function applicationShouldTerminateAfterLastWindowClosed(param1: objc.id;
+ param2: SEL; theApplication: objc.id): cbool; cdecl;
+begin
+  Result := objc.YES;
 end;
 
 { Other helper functions }

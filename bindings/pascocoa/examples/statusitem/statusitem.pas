@@ -16,7 +16,7 @@ program statusitem;
 {$mode delphi}
 
 uses
-  objc, ctypes, FPCMacOSAll, AppKit, Foundation, actions;
+  objc, ctypes, FPCMacOSAll, AppKit, Foundation, controller;
 
 const
   Str_Window_Title = 'StatusItem example project';
@@ -52,23 +52,25 @@ begin
   CFTitle := CFStringCreateWithPascalString(nil, Str_Window_Title, kCFStringEncodingUTF8);
   MainWindow.setTitle(CFTitle);
   
-  { Initializes the action responding object }
+  { Initializes the controller object }
 
-  actionList := TMyActionList.Create();
+  myController := TMyController.Create();
   
   { Adds the buttons }
 
   CreateButton(MainWindowView, Str_Show_Button,
    50.0, MainWindowRect.size.height - 50.0, 200.0, 25.0,
-   'doShowStatusitem:', actionList);
+   Str_doShowStatusItem, myController);
 
   CreateButton(MainWindowView, Str_Hide_Button,
    50.0, MainWindowRect.size.height - 100.0, 200.0, 25.0,
-   'doHideStatusitem:', actionList);
+   Str_doHideStatusItem, myController);
 
   { Enters main message loop }
 
   MainWindow.orderFrontRegardless;
+
+  NSApp.setDelegate(myController);
 
   NSApp.run;
 
