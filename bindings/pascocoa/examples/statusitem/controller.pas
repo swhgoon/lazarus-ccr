@@ -7,7 +7,7 @@
 }
 unit controller;
 
-{$mode objfpc}{$H+}
+{$mode delphi}
 
 interface
 
@@ -23,49 +23,49 @@ type
     { Extra binding functions }
     constructor Create; override;
     procedure AddMethods;
+    { Objective-c Methods }
+    class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+    class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+    class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
+     _cmd: SEL; theApplication: objc.id): cbool; cdecl;
+    { Other helper functions }
+    function GetResourcesDir: string;
+    function CreateButton(AView: NSView; ATitle: shortstring;
+     AX, AY, AWidth, AHeight: Double;
+     ACallbackName: string; ACallbackClass: NSObject): NSButton;
     { Fields }
     bar: NSStatusBar;
     item: NSStatusItem;
     image: NSImage;
   end;
 
-{ Objective-c Methods }
-procedure doShowStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
-procedure doHideStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
-function applicationShouldTerminateAfterLastWindowClosed(param1: objc.id;
- param2: SEL; theApplication: objc.id): cbool; cdecl;
-
-var
-  myController: TMyController;
-
 const
   Str_doShowStatusitem = 'doShowStatusitem:';
   Str_doHideStatusitem = 'doHideStatusitem:';
   Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
 
-{ Other helper functions }
-function GetResourcesDir: string;
-function CreateButton(AView: NSView; ATitle: shortstring;
- AX, AY, AWidth, AHeight: Double;
- ACallbackName: string; ACallbackClass: NSObject): NSButton;
+var
+  myController: TMyController;
 
 implementation
 
 { TMyController }
 
-{ Adds methods to the class }
+{@@
+  Adds methods to the class
+
+  Details of the parameters string:
+
+  The first parameter is the result (v = void),
+  followed by self and _cmd (@ = id and : = SEL),
+  and on the end "sender" (@ = id)
+}
 procedure TMyController.AddMethods;
 begin
-  { Parameters string:
-  
-    The first parameter is the result (v = void),
-    followed by self and _cmd (@ = id and : = SEL),
-    and on the end "sender" (@ = id) }
-
-  AddMethod(Str_doShowStatusItem, 'v@:@', @doShowStatusitem);
-  AddMethod(Str_doHideStatusitem, 'v@:@', @doHideStatusitem);
+  AddMethod(Str_doShowStatusItem, 'v@:@', Pointer(doShowStatusitem));
+  AddMethod(Str_doHideStatusitem, 'v@:@', Pointer(doHideStatusitem));
   AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'b@:@',
-   @applicationShouldTerminateAfterLastWindowClosed);
+   Pointer(applicationShouldTerminateAfterLastWindowClosed));
 end;
 
 constructor TMyController.Create;
@@ -84,7 +84,7 @@ end;
 
 { Objective-c Methods }
 
-procedure doShowStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
+class procedure TMyController.doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
 begin
   if myController.item <> nil then Exit;
 
@@ -93,7 +93,7 @@ begin
   myController.item.setImage(myController.image);
 end;
 
-procedure doHideStatusitem(param1: objc.id; param2: SEL; sender: objc.id); cdecl;
+class procedure TMyController.doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
 begin
   if myController.item = nil then Exit;
 
@@ -101,15 +101,15 @@ begin
   myController.item := nil;
 end;
 
-function applicationShouldTerminateAfterLastWindowClosed(param1: objc.id;
- param2: SEL; theApplication: objc.id): cbool; cdecl;
+class function TMyController.applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
+ _cmd: SEL; theApplication: objc.id): cbool; cdecl;
 begin
   Result := objc.YES;
 end;
 
 { Other helper functions }
 
-function GetResourcesDir: string;
+function TMyController.GetResourcesDir: string;
 const
   BundleResourcesDirectory = '/Contents/Resources/';
 var
@@ -127,7 +127,7 @@ begin
   Result := pathStr + BundleResourcesDirectory;
 end;
 
-function CreateButton(AView: NSView; ATitle: shortstring;
+function TMyController.CreateButton(AView: NSView; ATitle: shortstring;
  AX, AY, AWidth, AHeight: Double;
  ACallbackName: string; ACallbackClass: NSObject): NSButton;
 var

@@ -31,10 +31,10 @@
         <Filename Value="statusitem.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="statusitem"/>
-        <CursorPos X="24" Y="71"/>
-        <TopLine Value="59"/>
+        <CursorPos X="18" Y="36"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -55,14 +55,14 @@
         <CursorPos X="3" Y="140"/>
         <TopLine Value="130"/>
         <EditorIndex Value="5"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../appkit/NSAlert.inc"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -70,15 +70,15 @@
         <CursorPos X="1" Y="129"/>
         <TopLine Value="113"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="../../appkit/AppKit.inc"/>
-        <CursorPos X="23" Y="56"/>
-        <TopLine Value="44"/>
-        <EditorIndex Value="9"/>
-        <UsageCount Value="14"/>
+        <CursorPos X="10" Y="39"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -162,10 +162,10 @@
       <Unit19>
         <Filename Value="../../appkit/appkit.pas"/>
         <UnitName Value="appkit"/>
-        <CursorPos X="13" Y="21"/>
-        <TopLine Value="15"/>
+        <CursorPos X="10" Y="39"/>
+        <TopLine Value="21"/>
         <EditorIndex Value="8"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
@@ -173,7 +173,7 @@
         <CursorPos X="17" Y="99"/>
         <TopLine Value="92"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -228,10 +228,10 @@
       </Unit28>
       <Unit29>
         <Filename Value="../../appkit/NSStatusBar.inc"/>
-        <CursorPos X="10" Y="61"/>
-        <TopLine Value="36"/>
-        <EditorIndex Value="10"/>
-        <UsageCount Value="18"/>
+        <CursorPos X="10" Y="39"/>
+        <TopLine Value="21"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -251,17 +251,17 @@
         <CursorPos X="10" Y="82"/>
         <TopLine Value="73"/>
         <EditorIndex Value="6"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-        <CursorPos X="42" Y="92"/>
-        <TopLine Value="83"/>
+        <CursorPos X="6" Y="105"/>
+        <TopLine Value="92"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -276,7 +276,7 @@
         <CursorPos X="1" Y="185"/>
         <TopLine Value="169"/>
         <EditorIndex Value="3"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
@@ -284,7 +284,7 @@
         <CursorPos X="14" Y="35"/>
         <TopLine Value="113"/>
         <EditorIndex Value="7"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="C++"/>
       </Unit36>
@@ -295,20 +295,20 @@
         <Caret Line="1" Column="1" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="3" Column="37" TopLine="1"/>
+        <Filename Value="controller.pas"/>
+        <Caret Line="71" Column="17" TopLine="69"/>
       </Position2>
       <Position3>
         <Filename Value="controller.pas"/>
-        <Caret Line="61" Column="22" TopLine="43"/>
+        <Caret Line="10" Column="14" TopLine="1"/>
       </Position3>
       <Position4>
         <Filename Value="controller.pas"/>
-        <Caret Line="99" Column="15" TopLine="85"/>
+        <Caret Line="65" Column="69" TopLine="55"/>
       </Position4>
       <Position5>
-        <Filename Value="controller.pas"/>
-        <Caret Line="90" Column="36" TopLine="81"/>
+        <Filename Value="statusitem.pas"/>
+        <Caret Line="70" Column="13" TopLine="25"/>
       </Position5>
     </JumpHistory>
   </ProjectOptions>

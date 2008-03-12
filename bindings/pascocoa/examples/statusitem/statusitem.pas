@@ -58,11 +58,11 @@ begin
   
   { Adds the buttons }
 
-  CreateButton(MainWindowView, Str_Show_Button,
+  myController.CreateButton(MainWindowView, Str_Show_Button,
    50.0, MainWindowRect.size.height - 50.0, 200.0, 25.0,
    Str_doShowStatusItem, myController);
 
-  CreateButton(MainWindowView, Str_Hide_Button,
+  myController.CreateButton(MainWindowView, Str_Hide_Button,
    50.0, MainWindowRect.size.height - 100.0, 200.0, 25.0,
    Str_doHideStatusItem, myController);
 
