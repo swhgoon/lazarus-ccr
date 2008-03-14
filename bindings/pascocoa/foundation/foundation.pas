@@ -1,13 +1,13 @@
 unit foundation;
 
 {$ifdef fpc}
-  {$mode delphi}
+  {$mode objfpc}{$H+}
   {$packrecords c}
 {$endif}
 
 interface
 
-uses ctypes, objc, FPCMacOSAll;
+uses SysUtils, ctypes, objc, FPCMacOSAll;
 
 {$define HEADER}
 {$include Foundation.inc}

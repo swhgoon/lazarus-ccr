@@ -7,7 +7,7 @@
 }
 unit controller;
 
-{$mode delphi}
+{$mode delphi}{$STATIC ON}
 
 interface
 
@@ -22,12 +22,13 @@ type
   public
     { Extra binding functions }
     constructor Create; override;
+    function getClass: objc.id; override;
     procedure AddMethods;
     { Objective-c Methods }
-    class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
-    class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+    class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
+    class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
-     _cmd: SEL; theApplication: objc.id): cbool; cdecl;
+     _cmd: SEL; theApplication: objc.id): cbool; cdecl; static;
     { Other helper functions }
     function GetResourcesDir: string;
     function CreateButton(AView: NSView; ATitle: shortstring;
@@ -40,6 +41,8 @@ type
   end;
 
 const
+  Str_TMyController = 'TMyController';
+
   Str_doShowStatusitem = 'doShowStatusitem:';
   Str_doHideStatusitem = 'doHideStatusitem:';
   Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
@@ -72,6 +75,8 @@ constructor TMyController.Create;
 var
   fileName: CFStringRef;
 begin
+  if not CreateClassDefinition(Str_TMyController, Str_NSObject) then WriteLn('Failed to create objc class');
+
   inherited Create;
 
   AddMethods();
@@ -80,6 +85,11 @@ begin
   
   fileName := CFStringCreateWithPascalString(nil, GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);
   image := NSImage.initWithContentsOfFile(fileName);
+end;
+
+function TMyController.getClass: objc.id;
+begin
+  Result := objc_getClass(Str_TMyController);
 end;
 
 { Objective-c Methods }

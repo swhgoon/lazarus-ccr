@@ -61,6 +61,7 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     function getClass: objc.id; virtual;
     { Class creation methods }
     procedure AddMethod(aName, aParameters: string; aPointer: Pointer);
+    function CreateClassDefinition(const name, superclassName: string): Boolean;
   public
 {+ (void)load;
 
@@ -185,7 +186,7 @@ end;
 
 destructor NSObject.Destroy;
 begin
-  release;
+  if Handle <> nil then release;
 end;
 
 function NSObject.getClass: objc.id;
@@ -204,6 +205,75 @@ begin
   method_list^.method_list[0].method_types := PChar(aParameters);
   method_list^.method_list[0].method_imp := IMP(aPointer);
   class_addMethods(ClassId, method_list);
+end;
+
+function NSObject.CreateClassDefinition(const name, superclassName: string): Boolean;
+var
+  meta_class, super_class, new_class, root_class: Pobjc_class;
+begin
+  // Ensure that the superclass exists and that someone
+  // hasn't already implemented a class with the same name
+  //
+  super_class := Pobjc_class(objc_lookUpClass (PChar(superclassName)));
+
+  if (super_class = nil) then Exit(False);
+
+  if (objc_lookUpClass (PChar(name)) <> nil) then Exit(False);
+
+  // Find the root class
+  //
+  root_class := super_class;
+  while ( root_class^.super_class <> nil ) do
+  begin
+    root_class := root_class^.super_class;
+  end;
+
+  // Allocate space for the class and its metaclass
+  //
+  new_class := CFAllocatorAllocate(kCFAllocatorMalloc, 2 * SizeOf(objc_class), 0);
+  meta_class := @new_class[1];
+
+  // setup class
+  new_class^.isa      := meta_class;
+  new_class^.info     := CLS_CLASS;
+  meta_class^.info    := CLS_META;
+
+  // Create a copy of the class name.
+  // For efficiency, we have the metaclass and the class itself
+  // to share this copy of the name, but this is not a requirement
+  // imposed by the runtime.
+  //
+  new_class^.name := CFAllocatorAllocate(kCFAllocatorMalloc, Length(name) + 1, 0);
+  SysUtils.strcopy(new_class^.name, PChar(name));
+  meta_class^.name := new_class^.name;
+
+  // Allocate empty method lists.
+  // We can add methods later.
+  //
+  new_class^.methodLists := CFAllocatorAllocate(kCFAllocatorMalloc, sizeof(Pobjc_method_list), 0);
+  new_class^.methodLists^ := Pointer(-1);
+  meta_class^.methodLists := CFAllocatorAllocate(kCFAllocatorMalloc, sizeof(Pobjc_method_list), 0);
+  meta_class^.methodLists^ := Pointer(-1);
+
+  // Connect the class definition to the class hierarchy:
+  // Connect the class to the superclass.
+  // Connect the metaclass to the metaclass of the superclass.
+  // Connect the metaclass of the metaclass to the metaclass of  the root class.
+  //
+  new_class^.super_class  := super_class;
+  meta_class^.super_class := super_class^.isa;
+  meta_class^.isa         := Pointer(root_class^.isa);
+
+  // Set the sizes of the class and the metaclass.
+  //
+  new_class^.instance_size := super_class^.instance_size;
+  meta_class^.instance_size := meta_class^.super_class^.instance_size;
+
+  // Finally, register the class with the runtime.
+  //
+  objc_addClass( new_class );
+
+  Result := True;
 end;
 
 {***************	Basic protocols		***************}
