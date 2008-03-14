@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,10 +31,10 @@
         <Filename Value="statusitem.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="statusitem"/>
-        <CursorPos X="11" Y="60"/>
-        <TopLine Value="49"/>
+        <CursorPos X="19" Y="57"/>
+        <TopLine Value="5"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="50"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -216,8 +216,8 @@
       </Unit27>
       <Unit28>
         <Filename Value="../../foundation/NSObject.inc"/>
-        <CursorPos X="15" Y="210"/>
-        <TopLine Value="231"/>
+        <CursorPos X="32" Y="202"/>
+        <TopLine Value="193"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="14"/>
         <Loaded Value="True"/>
@@ -252,10 +252,10 @@
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-        <CursorPos X="1" Y="92"/>
-        <TopLine Value="86"/>
+        <CursorPos X="26" Y="28"/>
+        <TopLine Value="19"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="34"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -305,7 +305,7 @@
         <Filename Value="../../foundation/foundation.pas"/>
         <UnitName Value="foundation"/>
         <CursorPos X="16" Y="10"/>
-        <TopLine Value="1"/>
+        <TopLine Value="9"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
@@ -365,7 +365,7 @@
         <UsageCount Value="10"/>
       </Unit48>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
+    <JumpHistory Count="5" HistoryIndex="4">
       <Position1>
         <Filename Value="../../foundation/NSObject.inc"/>
         <Caret Line="262" Column="13" TopLine="246"/>
@@ -382,6 +382,10 @@
         <Filename Value="../../foundation/NSObject.inc"/>
         <Caret Line="207" Column="8" TopLine="195"/>
       </Position4>
+      <Position5>
+        <Filename Value="../../foundation/NSObject.inc"/>
+        <Caret Line="204" Column="1" TopLine="194"/>
+      </Position5>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

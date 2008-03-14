@@ -23,7 +23,7 @@ type
     { Extra binding functions }
     constructor Create; override;
     function getClass: objc.id; override;
-    procedure AddMethods;
+    procedure AddMethods; override;
     { Objective-c Methods }
     class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
     class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;

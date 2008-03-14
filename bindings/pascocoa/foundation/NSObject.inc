@@ -59,6 +59,7 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     destructor Destroy; override;
     { Extra binding functions }
     function getClass: objc.id; virtual;
+    procedure AddMethods; virtual;
     { Class creation methods }
     procedure AddMethod(aName, aParameters: string; aPointer: Pointer);
     function CreateClassDefinition(const name, superclassName: string): Boolean;
@@ -176,6 +177,9 @@ begin
   ClassId := getClass();
   allocbuf := objc_msgSend(ClassId, sel_registerName(PChar(Str_alloc)), []);
   Handle := objc_msgSend(allocbuf, sel_registerName(PChar(Str_init)), []);
+  
+  { Adds custom methods, if any }
+  AddMethods();
 end;
 
 constructor NSObject.CreateWithHandle(aHandle: objc.id);
@@ -192,6 +196,12 @@ end;
 function NSObject.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSObject);
+end;
+
+{ Defines the appropriate place to register methods in the objective-c runtime }
+procedure NSObject.AddMethods;
+begin
+
 end;
 
 procedure NSObject.AddMethod(aName, aParameters: string; aPointer: Pointer);
