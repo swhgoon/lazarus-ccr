@@ -151,10 +151,18 @@ const
   WM_GETTEXT = $000D;
   WM_SETFOCUS = LM_SETFOCUS;
   WM_CHAR = LM_CHAR;
+  WM_CLEAR = LM_CLEAR;
+  WM_COPY = LM_COPY;
+  WM_CUT = LM_CUT;
+  WM_PASTE = LM_PASTE;
+// With Lazarus versions prior to March 2008, LM_CLEAR, etc. are not defined, 
+//  so comment previous 4 lines and uncomment next 4 lines.
+{
   WM_CLEAR = LM_CLEARSEL;
   WM_COPY = LM_COPYTOCLIP;
   WM_CUT = LM_CUTTOCLIP;
   WM_PASTE = LM_PASTEFROMCLIP;
+}  
   WM_GETDLGCODE = LM_GETDLGCODE;
   WM_SIZE = LM_SIZE;
   WM_SETFONT = LM_SETFONT;
