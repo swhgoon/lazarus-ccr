@@ -25,7 +25,7 @@ uses
 type
   TDayOfWeek = 0..6;
 
-  TDaysItem = record
+  TDaysItem = packed record
     DayNum:byte;
     DayDate:TDateTime;
     DayColor:TColor;
@@ -381,7 +381,11 @@ begin
 
   if ARow>0 then
   begin
-    Canvas.Font.Color:=FDaysArray[ACol, ARow].DayColor;
+    if not ((gdSelected in aState) and (gdFocused in aState)) then
+      Canvas.Font.Color:=FDaysArray[ACol, ARow].DayColor
+    else
+      Canvas.Font.Color:=clWindow
+    ;
     DrawCellText(ACol, ARow, ARect, AState, IntToStr(FDaysArray[ACol, ARow].DayNum));
   end
   else
@@ -820,10 +824,12 @@ begin
   if (csDesigning in ComponentState) then Exit;
 
   BackPanel := TPanel.Create(Self);
+  BackPanel.Anchors:=[akLeft, akRight, akTop, akBottom];
+
   with BackPanel as TPanel do
   begin
     Parent := Self;
-    Align := alClient;
+//    Align := alClient;
     ParentColor := True;
     ControlStyle := ControlStyle + [csReplicatable];
   end;
@@ -838,6 +844,7 @@ begin
     BevelOuter := bvNone;
     ParentColor := True;
     ControlStyle := ControlStyle + [csReplicatable];
+    Color:=clSkyBlue;
   end;
 
   FCalendar := TLocCalendar.Create(Self);
@@ -855,6 +862,14 @@ begin
   FCloseBtn.Kind:=bkCancel;
   FCloseBtn.Align:=alBottom;
   FCloseBtn.AutoSize:=true;
+
+  BackPanel.Top:=2;
+  BackPanel.Left:=2;
+  BackPanel.Width:=Width - 4;
+{.$IFDEF LINUX}
+//  BackPanel.Height:=Height - FCloseBtn.Height - 2;
+{.$ELSE}
+  BackPanel.Height:=Height - 4;
 
   FBtns[0] := TRxTimerSpeedButton.Create(Self);
   with FBtns[0] do
@@ -1004,6 +1019,9 @@ begin
     CR:=ClientRect;
     RxFrame3D(Canvas, CR, clBtnHighlight, clWindowFrame, 1);
     RxFrame3D(Canvas, CR, clBtnFace, clBtnShadow, 1);
+{    Canvas.Pen.Color:=clWindowText;
+    Canvas.Pen.Style := psSolid;
+    Canvas.Rectangle(0, 0, Width-1, Height-1)}
 end;
 
 procedure TPopupCalendar.Deactivate;

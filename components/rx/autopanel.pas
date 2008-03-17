@@ -8,7 +8,7 @@ uses
   SysUtils, Classes, LCLType, ExtCtrls;
 type
 
-  TPlacement = record
+  TPlacement = packed record
     Left, Top, Width, Height: Integer;
   end;
   

@@ -552,7 +552,7 @@ end;
 procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
   const Section: string; RestoreVisible: Boolean);
 type
-  TFieldInfo = record
+  TFieldInfo = packed record
     Field: TField;
     EndIndex: Integer;
   end;
@@ -618,7 +618,7 @@ end;
 procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
   const Section: string; RestoreVisible: Boolean);
 type
-  TFieldInfo = record
+  TFieldInfo = packed record
     Field: TField;
     EndIndex: Integer;
   end;

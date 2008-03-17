@@ -337,7 +337,7 @@ end;
 type
   TBookmarkData = Integer;
   PMemBookmarkInfo = ^TMemBookmarkInfo;
-  TMemBookmarkInfo = record
+  TMemBookmarkInfo = packed record
     BookmarkData: TBookmarkData;
     BookmarkFlag: TBookmarkFlag;
   end;

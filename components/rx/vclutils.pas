@@ -140,7 +140,7 @@ end;
 {$IFDEF WIN32}
 type
   PCheckTaskInfo = ^TCheckTaskInfo;
-  TCheckTaskInfo = record
+  TCheckTaskInfo = packed record
     FocusWnd: HWnd;
     Found: Boolean;
   end;
