@@ -32,8 +32,8 @@ type
     procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender:TObject);
     procedure CMExit(var Message:TLMessage); message CM_EXIT;
-    procedure LMCut(var Message: TLMessage); message LM_CUTTOCLIP;
-    procedure LMPaste(var Message: TLMessage); message LM_PASTEFROMCLIP;
+    procedure LMCut(var Message: TLMessage); message LM_CUT;
+    procedure LMPaste(var Message: TLMessage); message LM_PASTE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Change; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -70,8 +70,8 @@ type
     procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender:TObject);
     procedure CMExit(var Message:TLMessage); message CM_EXIT;
-    procedure LMCut(var Message: TLMessage); message LM_CUTTOCLIP;
-    procedure LMPaste(var Message: TLMessage); message LM_PASTEFROMCLIP;
+    procedure LMCut(var Message: TLMessage); message LM_CUT;
+    procedure LMPaste(var Message: TLMessage); message LM_PASTE;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Change; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

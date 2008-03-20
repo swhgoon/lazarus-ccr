@@ -52,7 +52,7 @@ type
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
-    procedure WMPaste(var Message: TLMessage); message LM_PASTEFROMCLIP;
+    procedure WMPaste(var Message: TLMessage); message LM_PASTE;
     procedure GetSel(var ASelStart: Integer; var SelStop: Integer);
     procedure DoEnter; override;
     procedure DoExit; override;
