@@ -1,3 +1,15 @@
+{
+ ObjCParserTypes.pas
+
+ Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
+ 
+ objc parsing unit
+}
+
+//todo: pre-compile directives
+//todo: enum and struct and a lot of other types...
+
+
 unit ObjCParserTypes;
 
 interface
@@ -11,7 +23,6 @@ type
   TTokenType = (tt_Ident, tt_Symbol, tt_None);
 
   TCharSet = set of Char;
-
 
   TTokenPair = record
     Open       : AnsiString;
@@ -42,8 +53,9 @@ type
 
   TEntity = class(TObject)
   public
+    owner : TEntity;
     Items : TList;
-    constructor Create;
+    constructor Create(AOwner: TEntity);
     destructor Destroy; override;
     procedure Parse(AParser: TTextParser); virtual; abstract;
   end;
@@ -53,6 +65,8 @@ type
   TResultTypeDef = class(TEntity)
     _isRef    : Boolean;
     _TypeName : AnsiString;
+    _isConst  : Boolean; // (const Sometype)
+    _Prefix   : AnsiString; // reserved-word  type descriptors
     procedure Parse(AParser: TTextParser); override;
   end;
 
@@ -81,8 +95,16 @@ type
     function GetResultType: TResultTypeDef;
   end;
 
-  { TClassDef }
+  { TSubSection }
 
+  //todo: implement
+  TSubSection = class(TEntity) // for public, protected and private sections
+    _EntityName : AnsiString;
+    procedure Parse(AParser: TTextParser); override;
+  end;
+
+  { TClassDef }
+  
   TClassDef = class(TEntity)
   public
     _ClassName    : AnsiString;
@@ -95,6 +117,7 @@ type
 
   TObjCHeader = class(TEntity)
   public
+    _FileName     : AnsiString;
     constructor Create;
     procedure Parse(AParser: TTextParser); override;
   end;
@@ -304,9 +327,10 @@ end;
 
 { TEntity }
 
-constructor TEntity.Create;
+constructor TEntity.Create(AOwner: TEntity);
 begin
-  inherited;
+  inherited Create;
+  Owner := AOwner;
   Items := TList.Create;
 end;
 
@@ -351,7 +375,7 @@ begin
       if s[1] ='#' then SkipLine(AParser.buf, AParser.Index);
       if (s = '+') or (s = '-') then begin
         dec(AParser.Index ); // roll back a single character
-        mtd := TClassMethodDef.Create;
+        mtd := TClassMethodDef.Create(Self);
         mtd.Parse(AParser);
         Items.Add(mtd);
       end;
@@ -363,12 +387,9 @@ end;
 
 constructor TObjCHeader.Create;
 begin
-
-  inherited Create;
-
+  //obj-c header does not have any entity owners
+  inherited Create(nil);
 end;
-
-
 
 procedure TObjCHeader.Parse(AParser:TTextParser);
 var
@@ -378,7 +399,7 @@ var
 begin
   while AParser.FindNextToken(s, tt) do begin
     if s = '@interface' then begin
-      cl := TClassDef.Create;
+      cl := TClassDef.Create(Self);
       cl.Parse(AParser);
       Items.Add(cl);
     end;
@@ -425,7 +446,7 @@ begin
   if (tt = tt_Symbol) and(s = '(') then begin
     // _Class methods can be with out type
     dec(AParser.Index);
-    res := TResultTypeDef.Create;
+    res := TResultTypeDef.Create(Self);
     res.Parse(AParser);
     Items.Add(res);
   end;
@@ -438,11 +459,11 @@ begin
     if s = ';' then
       Exit
     else if s = ':' then begin
-      para := TParameterDef.Create;
+      para := TParameterDef.Create(Self);
       para.Parse(AParser);
       Items.Add(para);
     end else if tt = tt_Ident then begin
-      des := TParamDescr.Create;
+      des := TParamDescr.Create(Self);
       des._Descr := s;
       Items.Add(des)
     end;
@@ -466,7 +487,7 @@ procedure TParameterDef.Parse(AParser:TTextParser);
 var
   tt  : TTokenType;
 begin
-  _Res := TResultTypeDef.Create;
+  _Res := TResultTypeDef.Create(Self);
   Items.Add(_Res);
   _Res.Parse(AParser);
   AParser.FindNextToken(_Name, tt)
@@ -474,6 +495,22 @@ end;
 
 { TResultTypeDef }
 
+const
+  TypeDefReserved : array [0..1] of AnsiString = (
+    'unsigned', 'const'
+  );
+
+function IsTypeDefReserved(const s: AnsiString): Boolean;
+var
+  i : integer;
+begin
+  Result := false;
+  for i := 0 to length(TypeDefReserved) - 1 do
+    if TypeDefReserved[i] = s then begin
+      Result := true;
+      Exit;
+    end;
+end;
 
 procedure TResultTypeDef.Parse(AParser: TTextParser);
 var
@@ -485,28 +522,24 @@ begin
 
   if (tt <> tt_Symbol) and (s <> '(') then Exit;
 
-  AParser.FindNextToken(_TypeName, tt);
-
-  if _TypeName = 'unsigned' then begin
-
+  _prefix := '';
+  _TypeName := '';
+  repeat
     AParser.FindNextToken(s, tt);
-
-    _TypeName := _TypeName + ' ' + s;
-
-  end;
+    if isTypeDefReserved(s) then begin
+      _prefix := _prefix + s;
+      if s = 'unsigned' then _TypeName := _typeName + ' ' + s;
+      s := '';
+    end;
+  until s <> '';
+  _TypeName := _TypeName + s;
 
   if tt <> tt_Ident then Exit; // an error
 
-
-
   AParser.FindNextToken(s, tt);
-
   if (tt = tt_Symbol) and (s = '*') then begin
-
     _isRef := true;
-
     AParser.FindNextToken(s, tt);
-
   end;
 
   if s <> ')' then ; // an error
@@ -522,11 +555,14 @@ procedure TParamDescr.Parse(AParser: TTextParser);
 var
   tt  : TTokenType;
 begin
-
   AParser.FindNextToken(_Descr, tt);
-
 end;
 
+{ TSubSection }
 
+procedure TSubSection.Parse(AParser: TTextParser);
+begin
+ //todo:
+end;
 
 end.
