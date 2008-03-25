@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -12,7 +12,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="6"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,41 +31,138 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="3">
+    <Units Count="17">
       <Unit0>
         <Filename Value="objcparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Project1"/>
-        <CursorPos X="45" Y="70"/>
-        <TopLine Value="57"/>
+        <CursorPos X="51" Y="15"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="ObjCParserUtils.pas"/>
         <UnitName Value="ObjCParserUtils"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="11" Y="368"/>
+        <TopLine Value="349"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="ObjCParserTypes.pas"/>
         <UnitName Value="ObjCParserTypes"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="40" Y="513"/>
+        <TopLine Value="477"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="../foundation/foundation.pas"/>
+        <UnitName Value="foundation"/>
+        <CursorPos X="28" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../appkit/AppKit.inc"/>
+        <CursorPos X="18" Y="74"/>
+        <TopLine Value="74"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../objc/objc.pas"/>
+        <UnitName Value="objc"/>
+        <CursorPos X="32" Y="38"/>
+        <TopLine Value="36"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../objc/objc-api.inc"/>
+        <CursorPos X="106" Y="9"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../appkit/NSActionCell.inc"/>
+        <CursorPos X="49" Y="34"/>
+        <TopLine Value="13"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../appkit/NSCell.inc"/>
+        <CursorPos X="1" Y="48"/>
+        <TopLine Value="42"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../foundation/NSGeometry.inc"/>
+        <CursorPos X="1" Y="45"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../foundation/NSObject.inc"/>
+        <CursorPos X="18" Y="53"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="pascodeutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pascodeutils"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="27"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../appkit/NSWindow.inc"/>
+        <CursorPos X="12" Y="497"/>
+        <TopLine Value="462"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="test.inc"/>
+        <CursorPos X="9" Y="18"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="11"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="NSWindow.h"/>
+        <CursorPos X="94" Y="281"/>
+        <TopLine Value="281"/>
+        <UsageCount Value="11"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../objc/objc-runtime.inc"/>
+        <CursorPos X="26" Y="68"/>
+        <TopLine Value="59"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="headers/NSScreen.h"/>
+        <CursorPos X="29" Y="27"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit16>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <PathDelim Value="\"/>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
@@ -76,11 +173,11 @@
   <Debugging>
     <BreakPoints Count="2">
       <Item1>
-        <Source Value="C:\Games\CodeTest2\Sources\examples\codecompletion.lpr"/>
+        <Source Value="C:/Games/CodeTest2/Sources/examples/codecompletion.lpr"/>
         <Line Value="47"/>
       </Item1>
       <Item2>
-        <Source Value="..\..\LazTest4\consolethreads.pas"/>
+        <Source Value="../../LazTest4/consolethreads.pas"/>
         <Line Value="18"/>
       </Item2>
     </BreakPoints>
