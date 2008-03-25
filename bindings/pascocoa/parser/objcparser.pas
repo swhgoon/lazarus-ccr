@@ -1,10 +1,18 @@
+{
+ Project1.pas
+
+ Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
+ 
+ main parser unit
+}
+
+
 program Project1;
 
 {$mode delphi}{$H+}
 
 uses
   Classes, SysUtils, ObjCParserUtils, ObjCParserTypes;
-  { add your units here }
 
 procedure ReadAndParseFile(const FileName: AnsiString; outdata: TStrings);
 var
@@ -12,7 +20,9 @@ var
   txt : TTextParser;
   s   : AnsiString;
 begin
-  if not FileExists(FileName) then Exit;
+  if not FileExists(FileName) then
+    Exit;
+  
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
   txt := TTextParser.Create;
@@ -20,13 +30,11 @@ begin
   try
     txt.Buf := s;
     try
+      hdr._FileName := ExtractFileName(FileName);
       hdr.Parse(txt);
     except
     end;
-    outdata.Add('');
-    outdata.Add('// ' + FileName);
-    outdata.Add('');
-    ReportHeader(hdr, outdata);
+    WriteOutIncludeFile(hdr, outdata);
   finally
     hdr.Free;
     txt.TokenTable.Free;
@@ -41,43 +49,25 @@ begin
 end;
 
 var
-  inpf, outf : AnsiString;
+  inpf  : AnsiString;
   f  : Text;
   st : TStrings;
   fn : AnsiString;
   i  : integer;
 begin
-  inpf := ''; outf := '';
-  GetParams(inpf, outf);
-  writeln('input file: ', inpf);
-  writeln('output file: ', outf);
+  inpf := ParamStr(1);
   if not FileExists(inpf) then begin
-    writeln('input file does not exists or anavailable');
     Exit;
   end;
 
   st := TStringList.Create;
   try
-    Assign(f, inpf); Reset(f);
-    while not eof(f) do begin
-      readln(f, fn);
-      try
-        ReadAndParseFile(fn, st);
-      except
-      end;
-    end;
-    Close(f);
-
-    Assign(f, outf); Rewrite(f);
-    try
-      for i := 0 to st.Count - 1 do
-       writeln(f, st[i]);
-    except
-    end;
-    Close(f);
-    
-  finally
-    st.Free;
+    ReadAndParseFile(inpf, st);
+    for i := 0 to st.Count - 1 do
+      writeln(st[i]);
+  except
   end;
+  st.Free;
+
 end.
 
