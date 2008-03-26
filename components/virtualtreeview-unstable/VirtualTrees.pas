@@ -2101,8 +2101,8 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMChangeState(var Message: TLMessage); message WM_CHANGESTATE;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
-    procedure WMCopy(var Message: TLMNoParams); message LM_COPYTOCLIP;
-    procedure WMCut(var Message: TLMNoParams); message LM_CUTTOCLIP;
+    procedure WMCopy(var Message: TLMNoParams); message LM_COPY;
+    procedure WMCut(var Message: TLMNoParams); message LM_CUT;
     procedure WMEnable(var Message: TLMNoParams); message LM_ENABLE;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
@@ -2125,7 +2125,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure WMNCPaint(var Message: TRealWMNCPaint); message WM_NCPAINT;
     {$endif}
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
-    procedure WMPaste(var Message: TLMNoParams); message LM_PASTEFROMCLIP;
+    procedure WMPaste(var Message: TLMNoParams); message LM_PASTE;
     {$ifdef EnablePrintFunctions}
     procedure WMPrint(var Message: TWMPrint); message WM_PRINT;
     procedure WMPrintClient(var Message: TWMPrintClient); message WM_PRINTCLIENT;
