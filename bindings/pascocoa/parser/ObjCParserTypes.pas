@@ -20,7 +20,7 @@ uses
   Classes;
 
 type
-  TTokenType = (tt_Ident, tt_Symbol, tt_None);
+  TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric);
 
   TCharSet = set of Char;
 
@@ -30,68 +30,125 @@ type
   end;
 
   TTokenTable = class(TObject)
-    SpaceChars : TCharSet;
-    CmtBlock   : array of TTokenPair;
-    CmtCount   : Integer;
-    CmtLine    : TStrings;
-    Symbols    : TCharSet;
+    SpaceChars  : TCharSet;
+    CmtBlock    : array of TTokenPair;
+    CmtCount    : Integer;
+    CmtLine     : TStrings;
+    Symbols     : TCharSet;
+    Precompile  : AnsiString;
     constructor Create;
     destructor Destroy; override;
   end;
 
+  { TTextParser }
+
   TTextParser = class(TObject)
+  protected
+    function HandlePrecomiler: Boolean; virtual;
   public
-    Buf        : AnsiString;
-    Index      : Integer;
-    TokenTable : TTokenTable;
+    Buf           : AnsiString;
+    Index         : Integer;
+    TokenTable    : TTokenTable;
+    OnPrecompile  : TNotifyEvent;
+
+    Stack         : TList;
+
+    constructor Create;
+    destructor Destroy; override;
+    
+    procedure BeginParse(AObject: TObject);
+    procedure EndParse;
+    
     function SkipComments: Boolean;
     function FindNextToken(var Token: AnsiString; var TokenType: TTokenType): Boolean;
-    constructor Create;
   end;
 
   { TEntity }
 
   TEntity = class(TObject)
+  protected
+    procedure DoParse(AParser: TTextParser); virtual; abstract;
   public
     owner : TEntity;
     Items : TList;
     constructor Create(AOwner: TEntity);
     destructor Destroy; override;
-    procedure Parse(AParser: TTextParser); virtual; abstract;
+    procedure Parse(AParser: TTextParser); virtual;
+  end;
+
+  { TPrecompiler }
+
+  TPrecompiler = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
+    _Directive : AnsiString;
+    _Params    : AnsiString;
+  end;
+  
+
+  { TEnumValue }
+
+  TEnumValue  = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
+    _Name     : AnsiString;
+    _Value    : AnsiString;
+  end;
+  
+  { TEnumTypeDef }
+  
+  TEnumTypeDef = class(TEntity)
+  protected
+    fValCount  : Integer;
+    function GetValue(idx: integer): TEnumValue;
+    procedure DoParse(AParser: TTextParser); override;
+  public
+    _Name     : AnsiString;
+    property Value[idx: Integer]: TEnumValue read GetValue;
+    property ValuesCount: Integer read fValCount;
   end;
 
   { TParameterDef }
 
   TResultTypeDef = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
     _isRef    : Boolean;
     _TypeName : AnsiString;
     _isConst  : Boolean; // (const Sometype)
     _Prefix   : AnsiString; // reserved-word  type descriptors
-    procedure Parse(AParser: TTextParser); override;
   end;
 
   TParameterDef = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
     _Res  : TResultTypeDef;
     _Name : AnsiString;
-    procedure Parse(AParser: TTextParser); override;
     function GetResultType: TResultTypeDef;
   end;
 
   { TParamDescr }
 
   TParamDescr = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
   public
     _Descr   : AnsiString;
-    procedure Parse(AParser: TTextParser); override;
   end;
 
   { TClassMethodDef }
 
   TClassMethodDef = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
     _IsClassMethod  : Boolean;  // is class function as delphi would say
     _CallChar       : AnsiChar; // + or -
     _Name           : AnsiString;
-    procedure Parse(AParser: TTextParser); override;
     function GetResultType: TResultTypeDef;
   end;
 
@@ -99,27 +156,31 @@ type
 
   //todo: implement
   TSubSection = class(TEntity) // for public, protected and private sections
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
     _EntityName : AnsiString;
-    procedure Parse(AParser: TTextParser); override;
   end;
 
   { TClassDef }
   
   TClassDef = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
   public
     _ClassName    : AnsiString;
     _SuperClass   : AnsiString;
     _Category     : AnsiString;
-    procedure Parse(AParser: TTextParser); override;
   end;
 
   { TObjCHeader }
 
   TObjCHeader = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
   public
     _FileName     : AnsiString;
     constructor Create;
-    procedure Parse(AParser: TTextParser); override;
   end;
 
 
@@ -127,13 +188,32 @@ const
   EoLnChars : TCharSet = [#10,#13];
   InvsChars : TCharSet = [#32,#9];
 
-procedure SkipLine(const s: AnsiString; var index: Integer);
+function IsSubStr(const sbs, s: AnsiString; index: Integer): Boolean;
+function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
 procedure SetCComments(Table: TTokenTable);
 procedure SetCSymbols(var ch: TCharSet);
 
 function CreateObjCTokenTable: TTokenTable;
 
+function LastEntity(ent: TEntity): TEntity;
+function ParseCExpression(AParser: TTextParser): AnsiString;
+
 implementation
+
+function LastEntity(ent: TEntity): TEntity;
+var
+  i   : integer;
+  pre : TEntity;
+begin
+  pre := nil;
+  while Assigned(ent) do begin
+    pre := ent;
+    i := pre.Items.Count - 1;
+    if i >= 0 then ent := TEntity(pre.Items[i])
+    else ent := nil;
+  end;
+  Result := pre;
+end;
 
 function CreateObjCTokenTable: TTokenTable;
 begin
@@ -191,15 +271,13 @@ begin
   index := length(s) + 1;
 end;
 
-{ TTextParser }
-
 function IsSubStr(const sbs, s: AnsiString; index: Integer): Boolean;
 var
   i : Integer;
   j : Integer;
 begin
   Result := false;
-  if length(sbs) > length(s) - index then Exit;
+  if (sbs = '') or (length(sbs) > length(s) - index) then Exit;
   j := index;
   for i := 1 to length(sbs) do begin
     if sbs[i] <> s[j] then Exit;
@@ -224,20 +302,45 @@ begin
   end;
 end;
 
-procedure SkipLine(const s: AnsiString; var index: Integer);
+function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
 begin
-  ScanTo(s, index, EoLnChars);
-  ScanWhile(s, index, EoLnChars);
+  Result := ScanTo(s, index, EoLnChars);
+  ScanWhile(s, index, EoLnChars); // todo: skip a single line!
 end;
+
+{ TTextParser }
 
 constructor TTextParser.Create;
 begin
-
   Index := 1;
-
+  Stack := TList.Create;
 end;
 
+destructor TTextParser.Destroy;
+begin
+  Stack.Free;
+  inherited Destroy;
+end;
 
+procedure TTextParser.BeginParse(AObject: TObject);
+begin
+  Stack.Add(AObject);
+end;
+
+procedure TTextParser.EndParse;
+begin
+  if Stack.Count > 0 then Stack.Delete(Stack.Count - 1);
+end;
+
+function TTextParser.HandlePrecomiler: Boolean;
+var
+  idx : Integer;
+begin
+  idx := Index;
+  if Assigned(OnPrecompile) then
+    OnPrecompile(Self);
+  Result := Index <> idx;
+end;
 
 function TTextParser.FindNextToken(var Token: AnsiString; var TokenType: TTokenType): Boolean;
 var
@@ -266,28 +369,36 @@ begin
   TokenType := tt_Ident;
   while (not Result) and (index <= length(Buf)) do begin
     ScanWhile(Buf, index, TokenTable.SpaceChars);
-    if (Buf[index] in TokenTable.Symbols) then begin
-      if (not (Buf[index] in blck)) or (not SkipComments) then begin
-        Result := true;
-        TokenType := tt_Symbol;
-        Token := Buf[index];
-        inc(index);
-        Exit;
-      end;
-    end else begin
-      Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols);
-      if (Buf[index] in blck)  then begin
-        Result := SkipComments;
-        Result := Result or (Buf[index] in TokenTable.SpaceChars);
-        if not Result then begin
-          Token := Token + Buf[index];
+    if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin
+      if (Buf[index] in TokenTable.Symbols) then begin
+        if (not (Buf[index] in blck)) or (not SkipComments) then begin
+          Result := true;
+          TokenType := tt_Symbol;
+          Token := Buf[index];
           inc(index);
+          Exit;
         end;
-      end else
+      end else if (Buf[index] in ['0'..'9']) then begin
+        //todo: Hex and floats support!
+        //todo: Negative numbers support;
+        TokenType := tt_Numeric;
+        Token := ScanWhile(Buf, index, ['0'..'9']);
         Result := true;
-      Result := Result and (Token <> '');
+        Exit;
+      end else begin
+        Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols);
+        if (Buf[index] in blck)  then begin
+          Result := SkipComments;
+          Result := Result or (Buf[index] in TokenTable.SpaceChars);
+          if not Result then begin
+            Token := Token + Buf[index];
+            inc(index);
+          end;
+        end else
+          Result := true;
+        Result := Result and (Token <> '');
+      end;
     end;
-
   end; {of while}
   if not Result then TokenType := tt_None;
 end;
@@ -340,15 +451,31 @@ begin
   inherited Destroy;
 end;
 
+procedure TEntity.Parse(AParser: TTextParser);
+begin
+  AParser.BeginParse(Self);
+  try
+    DoParse(AParser);
+  finally
+    AParser.EndParse;
+  end;
+end;
+
 { TClassDef }
 
-procedure TClassDef.Parse(AParser:TTextParser);
+procedure TClassDef.DoParse(AParser:TTextParser);
 var
   s   : AnsiString;
   tt  : TTokenType;
   cnt : Integer;
   mtd : TClassMethodDef;
 begin
+  AParser.FindNextToken(s, tt);
+  if s <> '@interface' then begin
+    //writeln(s);
+    Exit;
+  end;
+  
   AParser.FindNextToken(_ClassName, tt);
   if (not AParser.FindNextToken(s, tt)) then Exit;
   if tt = tt_Symbol then begin
@@ -391,18 +518,27 @@ begin
   inherited Create(nil);
 end;
 
-procedure TObjCHeader.Parse(AParser:TTextParser);
+procedure TObjCHeader.DoParse(AParser:TTextParser);
 var
   s   : AnsiString;
   tt  : TTokenType;
-  cl  : TClassDef;
+  ent : TEntity;
+  i   : Integer;
 begin
+  i := AParser.Index;
   while AParser.FindNextToken(s, tt) do begin
-    if s = '@interface' then begin
-      cl := TClassDef.Create(Self);
-      cl.Parse(AParser);
-      Items.Add(cl);
-    end;
+    if s = 'enum' then begin
+      AParser.Index := i;
+      ent := TEnumTypeDef.Create(Self);
+      ent.Parse(AParser);
+    end else if s = '@interface' then begin
+      AParser.Index := i;
+      ent := TClassDef.Create(Self);
+      ent.Parse(AParser);
+    end else
+      ent := nil;
+    if Assigned(ent) then Items.Add(ent);
+    i := AParser.Index;
   end;
 end;
 
@@ -429,7 +565,7 @@ end;
 
 
 
-procedure TClassMethodDef.Parse(AParser:TTextParser);
+procedure TClassMethodDef.DoParse(AParser:TTextParser);
 var
   s     : AnsiString;
   tt    : TTokenType;
@@ -483,7 +619,7 @@ end;
 
 
 
-procedure TParameterDef.Parse(AParser:TTextParser);
+procedure TParameterDef.DoParse(AParser:TTextParser);
 var
   tt  : TTokenType;
 begin
@@ -512,7 +648,7 @@ begin
     end;
 end;
 
-procedure TResultTypeDef.Parse(AParser: TTextParser);
+procedure TResultTypeDef.DoParse(AParser: TTextParser);
 var
   s   : AnsiString;
   tt  : TTokenType;
@@ -551,7 +687,7 @@ end;
 { TParamDescr }
 
 
-procedure TParamDescr.Parse(AParser: TTextParser);
+procedure TParamDescr.doParse(AParser: TTextParser);
 var
   tt  : TTokenType;
 begin
@@ -560,9 +696,147 @@ end;
 
 { TSubSection }
 
-procedure TSubSection.Parse(AParser: TTextParser);
+procedure TSubSection.DoParse(AParser: TTextParser);
 begin
  //todo:
+end;
+
+{ TPrecompiler }
+
+procedure TPrecompiler.DoParse(AParser: TTextParser);
+var
+  tt  : TTokenType;
+  idx : Integer;
+begin
+
+  idx := AParser.Index;
+  if not AParser.FindNextToken(_Directive, tt) then begin
+    AParser.Index := idx;
+    Exit;
+  end;
+  if (_Directive = '') or (_Directive[1] <> '#') then begin
+    AParser.Index := idx;
+    Exit;
+  end;
+  _Params := SkipLine(AParser.Buf, AParser.Index);
+end;
+
+{ TEnumTypeDef }
+
+function TEnumTypeDef.GetValue(idx: integer): TEnumValue;
+var
+  i   : Integer;
+  v   : Integer;
+begin
+  v := 0;
+  for i := 0 to Items.Count - 1 do
+    if (TObject(Items[i]) is TEnumValue) and (v=idx) then begin
+      Result := TEnumValue(Items[i]);
+      Exit;
+    end else
+      inc(v);
+  Result := nil;
+end;
+
+procedure TEnumTypeDef.DoParse(AParser: TTextParser);
+var
+  token : AnsiString;
+  tt    : TTokenType;
+  nm    : AnsiString;
+  i     : Integer;
+  vl    : TEnumValue;
+begin
+  if not AParser.FindNextToken(token, tt) then Exit;
+  if token <> 'enum' then Exit;
+  
+  i := AParser.Index;
+  if not AParser.FindNextToken(nm, tt) then Exit;
+  if tt <> tt_Ident then AParser.Index := i
+  else _Name := nm;
+  
+  AParser.FindNextToken(nm, tt);
+  if nm <> '{' then Exit;
+  repeat
+    vl := TEnumValue.Create(Self);
+    vl.Parse(AParser);
+    Items.Add(vl);
+    AParser.FindNextToken(nm, tt);
+    //writeln('enum separator: ', nm);
+    if (nm <> ',') and (nm <> '}') then // if not , then  ; must be followed!
+      Exit;
+  until nm = '}';
+  AParser.FindNextToken(nm, tt); // skip last ';'
+end;
+
+function ParseCOperator(AParser: TTextParser; var Vl: AnsiString): Boolean;
+var
+  nm  : AnsiSTring;
+  tt  : TTokenType;
+begin
+  Result := false;
+  if not AParser.FindNextToken(nm, tt) then Exit;
+  Result := nm <> '';
+  if not Result then Exit;
+  vl := nm[1];
+  case vl[1] of
+    '+', '-', '*': Result := true;
+    '<', '>': begin
+      Result := false;
+      vl := nm[1];
+      Result := AParser.FindNextToken(nm, tt);
+      if (not Result) or (nm = '') then Exit;
+      Result := nm[1] = vl[1] ;
+      if Result then vl := vl[1] + nm[1];
+    end;
+  else
+    Result := false;
+  end;
+end;
+
+function ParseCExpression(AParser: TTextParser): AnsiString;
+var
+  i   : integer;
+  nm  : AnsiString;
+  tt  : TTokenType;
+begin
+  i := AParser.Index;
+  Result := '';
+  while AParser.FindNextToken(nm, tt) do begin
+    if (tt = tt_Numeric) or (tt = tt_Ident) then begin
+      Result := Result + nm;
+      i := AParser.Index;
+      if not ParseCOperator(AParser, nm) then begin
+        AParser.Index := i;
+        Exit;
+      end else
+        Result := Result + ' ' + nm + ' ';
+    end else begin
+      i := AParser.Index;
+      Exit;
+    end;
+  end;
+end;
+
+{ TEnumValue }
+
+procedure TEnumValue.DoParse(AParser: TTextParser);
+var
+  i   : integer;
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(_Name, tt);
+  if tt <> tt_Ident then Exit;
+
+  i := AParser.Index;
+  AParser.FindNextToken(s, tt);
+  if s <> '=' then begin
+    AParser.Index := i;
+    Exit;
+  end;
+  _Value := ParseCExpression(AParser);
+  //writeln('enmvalName  ', _Name);
+  //writeln('enmvalValue ', _Value);
 end;
 
 end.
