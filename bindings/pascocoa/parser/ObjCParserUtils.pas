@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, ObjCParserTypes;
-
+  
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
 
 function ObjCToDelphiType(const objcType: AnsiString): AnsiString;
@@ -154,18 +154,115 @@ begin
     else Result := GetProcFuncHead(m._Name, '', GetMethodParams(m), GetMethodResultType(m), ft)
 end;
 
-
+// returns define pas file name form Objective C name, like
+// NSApplication.h  ->  NSAPPLICATION_PAS_H
+// SomePath/SomePath/SomeFileName.h -> SOMEFILENAME_PAS_H
 function GetIfDefFileName(const FileName: AnsiString): AnsiString;
 var
   i : integer;
   s : AnsiString;
 begin
+  //todo: don't like it...
   Result := Copy(FileName, 1, length(FileName) - length(ExtractFileExt(FileName)));
   Result := AnsiUpperCase(Result);
   for i := 1 to length(Result) do
     if Result[i] = '.' then
       Result[i] := '_';
   Result := Result + '_PAS_H';
+end;
+
+// returns include pas file name form Objective C name, like
+// <AppKit/NSApplication.h>  ->  NSApplication.inc
+// "SomePath/SomePath/SomeFileName.h> -> SomeFileName.h
+function GetIncludeFile(const s: AnsiString): AnsiString;
+var
+  i   : Integer;
+begin
+  //todo: don't like it...
+  Result := '';
+  if s = '' then Exit;
+  i := length(s);
+  if (s[i] = '"') or (s[i] = '>') then dec(i);
+  i := length(s) - 1;
+  // dummy, but it works =)
+  while (i > 0) and (s[i] in ['.', 'A'..'Z', 'a'..'z', '0'..'9']) do dec(i);
+
+  Result := Copy(s, i + 1, length(s) - i);
+  if Result <> '' then begin
+    if Result[length(Result)] in ['"', '>'] then Result :=
+      Copy(Result, 1, length(Result) - 1);
+    Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(Result))) + '.inc';
+  end;
+end;
+
+// returns pascal style of precomiler "if defined" section
+// exclusion is done for Cocoa known precompiler definion, for ex:
+// MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3 -> MAC_OS_X_VERSION_10_3
+// any other #ifdef excpresions would be passed "as is" even if are incorrect
+// for pascal
+function PrecompileIfDefToPascal(const prm: AnsiString): AnsiString;
+var
+  i   : Integer;
+const
+  VerExclude = 'MAC_OS_X_VERSION_MAX_ALLOWED >=';
+begin
+  // really slow... and... don't like this anyway!
+  Result := prm;
+  i := Pos(VerExclude, prm);
+  if i > 0 then begin
+    i := i + length(VerExclude);
+    while (i <= length(Result)) and (Result[i] = ' ') do inc(i);
+    if i <= length(Result) then
+      Result := Copy(prm, i, length(Result) - i + 1);
+  end;
+end;
+
+// converts TProcpmiler entity to pascal entity
+// #import or #include -> {$Include Something.inc}
+// #define SOMETHING -> {$define SOMETHING}
+// #ifdef SOMETHING -> {$ifdef SOMETHING}
+// etc...
+function WriteOutPrecompToPascal(Prec: TPrecompiler): AnsiString;
+var
+  dir : AnsiString;
+begin
+  dir := AnsiLowerCase(Prec._Directive);
+  if (dir = '#import') or (dir = '#include') then
+    Result := Format('{$include %s}', [GetIncludeFile(Prec._Params)])
+  else if (dir = '#if') then
+    Result := Format('{$ifdef %s}', [PrecompileIfDefToPascal(Prec._Params)])
+  else if (dir = '#else') then
+    Result := '{$else}'
+  else if (dir = '#endif') then
+    Result := '{$endif}';
+end;
+
+// clears empty precompile statements, like
+// {$ifdef SOMETHING}
+// {$endif}
+// and
+// {$ifdef SOMETHING}
+// {$else}
+// {$endif}
+// will be removed
+procedure ClearEmptyPrecompile(subs: TStrings);
+var
+  i   : integer;
+  j   : Integer;
+begin
+  // don't like it either...
+  i := subs.Count - 1; if i < 0 then Exit;
+  j := i;
+  
+  if Pos('{$endif', subs[i]) = 0 then Exit;
+  dec(i); if i < 0 then Exit;
+  
+  if Pos('{$else', subs[i]) > 0 then
+    dec(i); if i < 0 then Exit;
+  
+  if Pos('{$ifdef', subs[i]) > 0 then
+    for i := j downto i do
+      subs.Delete(i);
 end;
 
 procedure BeginSection(const FileName, SectionName: AnsiString; st: TStrings);
@@ -185,27 +282,155 @@ begin
   st.Add('{$endif}');
 end;
 
+// todo: remove Prefix param...
+procedure WriteOutIfDefPrecompiler(prec: TPrecompiler; subs: TStrings; const Prefix: AnsiString);
+var
+  ppas  : AnsiString;
+  isend : Boolean;
+begin
+  ppas := WriteOutPrecompToPascal(prec);
+  isend := IsSubStr('{$endif', ppas, 1);
+  if isend or IsSubStr('{$ifdef', ppas, 1) or IsSubStr('{$else', ppas, 1) then
+    subs.Add(Prefix + ppas);
+  if isend then ClearEmptyPrecompile(subs);
+end;
+
 procedure WriteOutClassToHeader(cl : TClassDef; subs: TStrings; conststr: TStrings);
 var
   i   : Integer;
+  j   : Integer;
   s   : AnsiString;
   ss  : AnsiString;
   mtd : TClassMethodDef;
+  obj : TObject;
 begin
   if conststr.IndexOf(cl._ClassName) < 0 then begin
     conststr.Add(cl._ClassName);
     s := Format('  Str_%s = '#39'%s'#39';', [cl._ClassName, cl._ClassName]);
     subs.Add(s);
   end;
-  for i := 0 to cl.Items.Count - 1 do
-    if TObject(cl.Items[i]) is TClassMethodDef then begin
+  for i := 0 to cl.Items.Count - 1 do begin
+    obj := TObject(cl.Items[i]);
+    if obj is TClassMethodDef then begin
       mtd := TClassMethodDef(cl.Items[i]);
       if conststr.IndexOf(mtd._Name) < 0 then begin
         conststr.Add(mtd._Name);
         ss := Format('  Str_%s = '#39'%s'#39';', [mtd._Name, mtd._Name]);
         subs.add(ss);
       end;
+    end else if obj is TPrecompiler then begin
+      WriteOutIfDefPrecompiler(TPrecompiler(obj), subs, '  ');
     end;
+  end; {of for}
+  subs.Add('');
+end;
+
+procedure WriteOutPrecompToHeader(Prec: TPrecompiler; st: TStrings);
+var
+  dlph  : AnsiString;
+begin
+  dlph := WriteOutPrecompToPascal(Prec);
+  if IsSubStr('{$include', dlph, 1) then st.Add(dlph);
+end;
+
+function GetPascalEnumValue(const Name, Param: AnsiString): AnsiString;
+begin
+  Result := Name;
+  if Param <> '' then Result := Result + ' = ' + Param;
+end;
+
+function GetPascalConstValue(const Vl: AnsiString): AnsiString;
+begin
+  Result := vl;
+end;
+
+procedure WriteOutEnumValues(enm: TEnumTypeDef; st: TStrings; const Prefix: AnsiString);
+var
+  vl  : TEnumValue;
+  s   : AnsiString;
+  i   : Integer;
+  j   : Integer;
+begin
+  j := st.Count;
+  for i := 0 to enm.Items.Count - 1 do
+    if TObject(enm.Items[i]) is TEnumValue then begin
+      vl := TEnumValue(enm.Items[i]);
+      if st.Count > j then st[st.Count-1]:=st[st.Count-1]+', ';
+      s := GetPascalEnumValue(vl._Name, GetPascalConstValue(vl._Value));
+      s := Prefix + s;
+      st.Add(s);
+    end;
+end;
+
+function Min(a, b: Integer): Integer;
+begin
+  if a < b then Result := a
+  else Result := b;
+end;
+
+procedure MatchFixes(const Name: AnsiString; var prefix, postfix: AnsiString);
+var
+  i     : integer;
+  ni, pi: integer;
+  nc, pc: AnsiChar;
+begin
+  for i := 1 to Min(length(Name), length(prefix)) do
+    if Name[i] <> prefix[i] then begin
+      prefix := Copy(prefix, 1, i - 1);
+      Break;
+    end;
+    
+  ni := length(Name);
+  pi := length(postfix);
+  for i := 1 to Min(length(Name), length(postfix)) do begin
+    if Name[ni] <> postfix[pi] then begin // this cause a bug
+      //writeln('postfix ', ni + 1, ' ', length(Name) - ni);
+      postfix := Copy(Name, ni + 1, length(Name) - ni);
+//      writeln('postfixing: ', postfix);
+      Break;
+    end;
+    dec(ni);
+    dec(pi);
+  end;
+
+end;
+
+function EvaluateEnumName(enm: TEnumTypeDef): AnsiString;
+var
+  prefix  : AnsiString;
+  postfix : AnsiSTring;
+  vl      : TEnumValue;
+  known   : integer;
+  i       : Integer;
+begin
+  known := 0;
+  for i := 0 to enm.Items.Count - 1 do begin
+    if TObject(enm.Items[i]) is TEnumValue then begin
+      vl := TEnumValue(enm.Items[i]);
+      if known = 0 then begin
+        prefix := vl._Name;
+        postfix := vl._Name;
+      end else
+        MatchFixes(vl._Name, prefix, postfix);
+      //writeln(vl._Name, ' "', prefix, '", "', postfix,'"');
+      inc(known)
+    end;
+  end;
+  if (known <= 1) or (length(Result) < 3) then Result := 'todoEnumName' // if only one enumaration or none, name cannot be defined...
+  else Result := prefix + postfix;
+end;
+
+procedure WriteOutEnumToHeader(enm: TEnumTypeDef; st: TStrings);
+var
+  i   : Integer;
+  s   : AnsiString;
+begin
+  if enm._Name = '' then s := EvaluateEnumName(enm)
+  else s := enm._Name;
+  st.Add(Format('  %s = (', [s] ));
+  WriteOutEnumValues(enm, st, '    ');
+  st.Add('  );');
+  st.Add('');
 end;
 
 procedure WriteOutHeaderSection(hdr: TObjCHeader; st: TStrings);
@@ -221,9 +446,13 @@ begin
   consts := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then begin
-        cl := TClassDef(hdr.Items[i]);
-        WriteOutClassToHeader(cl, subs, consts);
+      if Assigned(hdr.Items[i]) then begin
+        if (TObject(hdr.Items[i]) is TClassDef) then begin
+          cl := TClassDef(hdr.Items[i]);
+          WriteOutClassToHeader(cl, subs, consts);
+        end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
+          WriteOutPrecompToHeader(TPrecompiler(hdr.Items[i]), st);
+        end;
       end;
 
     if subs.Count > 0 then begin
@@ -231,6 +460,22 @@ begin
       st.AddStrings(subs);
       subs.Clear;
     end;
+    
+    for i := 0 to hdr.Items.Count - 1 do
+      if Assigned(hdr.Items[i]) then begin
+        if (TObject(hdr.Items[i]) is TEnumTypeDef) then begin
+          WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), subs);
+        end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
+          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), st, '  ');
+        end;
+      end; {of if}
+    
+    if subs.Count > 0 then begin
+      st.Add('type');
+      st.AddStrings(subs);
+      subs.Clear;
+    end;
+
   finally
     EndSection(st);
     subs.Free;
@@ -240,8 +485,16 @@ end;
 
 procedure WriteOutClassToClasses(cl: TClassDef; subs: TStrings);
 var
+  i   : Integer;
+  cnt : Integer;
   s   : AnsiString;
   j   : Integer;
+  obj : TObject; // or TEntity
+  
+  mtds   : TStringList; // name of methods
+  over   : TStringList; // overloaded names
+const
+  SpacePrefix = '    ';
 begin
   subs.Add('  { '+cl._ClassName +' }');
   subs.Add('');
@@ -254,21 +507,45 @@ begin
     subs.Add(s + '{from category '+ cl._Category +'}');
     subs.Add('  public');
   end;
-  for j := 0 to cl.Items.Count - 1 do
-    if TObject(cl.Items[j]) is TClassMethodDef then begin
-      s := GetMethodStr(cl, TClassMethodDef(cl.Items[j]), false);
-      subs.Add('    ' + s);
+
+  mtds := TStringList.Create;
+  try
+    for j := 0 to cl.Items.Count - 1 do begin
+      obj := TObject(cl.Items[j]);
+      if obj is TClassMethodDef then begin
+        i := mtds.indexOf(TClassMethodDef(obj)._Name);
+        if i < 0 then
+          mtds.Add( TClassMethodDef(obj)._Name)
+        else
+          mtds.Objects[i] := TObject(Integer(mtds.Objects[i]) + 1);
+      end;
     end;
+
+    for j := 0 to cl.Items.Count - 1 do begin
+      obj := TObject(cl.Items[j]);
+      if obj is TClassMethodDef then begin
+        s := GetMethodStr(cl, TClassMethodDef(cl.Items[j]), false);
+        i := mtds.IndexOf(TClassMethodDef(cl.Items[j])._Name);
+        if Integer(mtds.Objects[i]) > 0 then s := s + ' overload;';
+        subs.Add(SpacePrefix + s);
+      end else if obj is TPrecompiler then begin
+        WriteOutIfDefPrecompiler(TPrecompiler(obj), subs, SpacePrefix);
+      end;
+    end;
+  finally
+    mtds.Free;
+  end;
+  
   subs.Add('  end;');
   subs.Add('');
 end;
 
 procedure WriteOutClassesSection(hdr: TObjCHeader; st: TStrings);
 var
-  i   : integer;
-  cl  : TClassDef;
-  j   : integer;
-  s   : AnsiString;
+  i     : integer;
+  cl    : TClassDef;
+  j     : integer;
+  s     : AnsiString;
   subs  : TStringList;
 begin
   BeginSection(hdr._FileName, 'CLASSES', st);
@@ -390,6 +667,7 @@ end;
 procedure WriteOutClassToImplementation(cl: TClassDef; subs: TStrings);
 var
   i   : integer;
+  obj : TObject;
 begin
   subs.Add('{ '+cl._ClassName + ' }');
   
@@ -405,10 +683,13 @@ begin
   subs.Add('end');
   subs.Add('');
   
-  
-  for i := 0 to cl.Items.Count - 1 do
-    if TObject(cl.Items[i]) is TClassMethodDef then
-      WriteOutMethodToImplementation ( TClassMethodDef(cl.Items[i]), subs);
+  for i := 0 to cl.Items.Count - 1 do begin
+    obj := TObject(cl.Items[i]);
+    if obj is TClassMethodDef then
+      WriteOutMethodToImplementation ( TClassMethodDef(cl.Items[i]), subs)
+    else if obj is TPrecompiler then
+      WriteOutIfDefPrecompiler( TPrecompiler(obj), subs, '');
+  end;
 end;
 
 procedure WriteOutImplementationSection(hdr: TObjCHeader; st: TStrings);
@@ -418,8 +699,10 @@ begin
   BeginSection(hdr._FileName, 'IMPLEMENTATION', st);
   try
     for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then
-        WriteOutClassToImplementation(TClassDef(hdr.Items[i]), st);
+      if Assigned(hdr.Items[i]) then begin
+        if (TObject(hdr.Items[i]) is TClassDef) then
+          WriteOutClassToImplementation(TClassDef(hdr.Items[i]), st);
+      end;
   finally
     EndSection(st);
   end;
