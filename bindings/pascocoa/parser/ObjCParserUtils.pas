@@ -158,7 +158,7 @@ end;
 // returns define pas file name form Objective C name, like
 // NSApplication.h  ->  NSAPPLICATION_PAS_H
 // SomePath/SomePath/SomeFileName.h -> SOMEFILENAME_PAS_H
-function GetIfDefFileName(const FileName: AnsiString): AnsiString;
+function GetIfDefFileName(const FileName, DefExt: AnsiString): AnsiString;
 var
   i : integer;
   s : AnsiString;
@@ -169,7 +169,7 @@ begin
   for i := 1 to length(Result) do
     if Result[i] = '.' then
       Result[i] := '_';
-  Result := Result + '_PAS_H';
+  Result := Result + '_PAS_'+DefExt;
 end;
 
 // returns include pas file name form Objective C name, like
@@ -310,20 +310,19 @@ begin
       subs.Delete(i);
 end;
 
-procedure BeginSection(const FileName, SectionName: AnsiString; st: TStrings);
-var
-  nm : AnsiString;
+procedure BeginSection(const SectionName: AnsiString; st: TStrings);
 begin
-  nm := GetIfDefFileName(FileName);
   st.Add('{$ifdef '+SectionName+'}');
-  st.Add('{$ifndef '+nm+'}');
-  st.Add('{$define '+nm+'}');
-  st.Add('');
+end;
+
+procedure BeginExcludeSection(const DefineName: AnsiString; st: TStrings);
+begin
+  st.Add('{$ifndef '+DefineName+'}');
+  st.Add('{$define '+DefineName+'}');
 end;
 
 procedure EndSection(st: TStrings);
 begin
-  st.Add('{$endif}');
   st.Add('{$endif}');
 end;
 
@@ -370,7 +369,7 @@ begin
   subs.Add('');
 end;
 
-procedure WriteOutPrecompToHeader(Prec: TPrecompiler; st: TStrings);
+procedure WriteOutPrecompInclude(Prec: TPrecompiler; st: TStrings);
 var
   dlph  : AnsiString;
 begin
@@ -509,9 +508,11 @@ var
 const
   SpacePrefix = '  ';
 begin
-  BeginSection(hdr._FileName, 'HEADER', st);
+  BeginSection('HEADER', st);
+  BeginExcludeSection( GetIfDefFileName(hdr._FileName, 'H'), st);
   subs := TStringList.Create;
   consts := TStringList.Create;
+  
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -519,7 +520,7 @@ begin
           cl := TClassDef(hdr.Items[i]);
           WriteOutClassToHeader(cl, subs, consts);
         end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
-          WriteOutPrecompToHeader(TPrecompiler(hdr.Items[i]), st);
+          WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
         end;
       end;
 
@@ -548,6 +549,7 @@ begin
     end;
 
   finally
+    EndSection(st);
     EndSection(st);
     subs.Free;
     consts.Free;
@@ -620,9 +622,14 @@ var
   s     : AnsiString;
   subs  : TStringList;
 begin
-  BeginSection(hdr._FileName, 'CLASSES', st);
+  BeginSection('CLASSES', st);
+  BeginSection(GetIfDefFileName(hdr._FileName, 'C'), st);
   subs := TStringList.Create;
   try
+    for i := 0 to hdr.Items.Count - 1 do
+      if Assigned(hdr.Items[i]) then
+        WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
+
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then begin
         WriteOutIfComment(hdr.Items, i - 1, '    ', subs);
@@ -771,7 +778,7 @@ procedure WriteOutImplementationSection(hdr: TObjCHeader; st: TStrings);
 var
   i   : Integer;
 begin
-  BeginSection(hdr._FileName, 'IMPLEMENTATION', st);
+  BeginSection('IMPLEMENTATION', st);
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
