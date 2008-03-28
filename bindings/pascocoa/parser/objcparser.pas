@@ -16,10 +16,14 @@ uses
 
 type
   // this object is used only for precomile directives handling
+
+  { TPrecompileHandler }
+
   TPrecompileHandler = class(TObject)
   public
     hdr : TObjCHeader;
     procedure OnPrecompile(Sender: TObject);
+    procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
   end;
   
@@ -51,6 +55,31 @@ begin
   end;
 end;
 
+procedure TPrecompileHandler.OnComment(Sender: TObject; const Comment: AnsiString);
+var
+  parser  : TTextParser;
+  cmt     : TComment;
+  ent     : TEntity;
+begin
+  if length(Comment) < 2 then Exit;
+  parser := TTextParser(Sender);
+  //writeln(' > ', Comment);
+
+  if parser.Stack.Count > 0
+    then ent := TEntity(parser.Stack[parser.Stack.Count-1])
+    else ent := nil;
+
+  if not Assigned(ent) then Exit;
+  cmt := TComment.Create(ent);
+  cmt._Comment := Comment;
+  if IsSubStr('/*', cmt._Comment, 1) then begin
+    cmt._Comment[1] := '(';
+    if isSubStr('*/', cmt._Comment, length(cmt._Comment) - 1) then
+      cmt._Comment[ length(cmt._Comment)] := ')';
+  end;
+  ent.Items.Add(cmt);
+end;
+
 constructor TPrecompileHandler.Create(AHeader: TObjCHeader);
 begin
   hdr := AHeader;
@@ -58,10 +87,10 @@ end;
 
 procedure ReadAndParseFile(const FileName: AnsiString; outdata: TStrings);
 var
-  hdr   : TObjCHeader;
-  txt   : TTextParser;
-  prec  : TPrecompileHandler;
-  s     : AnsiString;
+  hdr     : TObjCHeader;
+  parser  : TTextParser;
+  prec    : TPrecompileHandler;
+  s       : AnsiString;
 begin
   if not FileExists(FileName) then
     Exit;
@@ -69,31 +98,26 @@ begin
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
   prec := TPrecompileHandler.Create(hdr);
-  txt := TTextParser.Create;
-  txt.TokenTable := CreateObjCTokenTable;
+  parser := TTextParser.Create;
+  parser.TokenTable := CreateObjCTokenTable;
 
   try
-    txt.Buf := s;
+    parser.Buf := s;
     try
-      txt.TokenTable.Precompile := '#';
-      txt.OnPrecompile := prec.OnPrecompile;
+      parser.TokenTable.Precompile := '#';
+      parser.OnPrecompile := prec.OnPrecompile;
+      parser.OnComment := prec.OnComment;
       hdr._FileName := ExtractFileName(FileName);
-      hdr.Parse(txt);
+      hdr.Parse(parser);
     except
     end;
     WriteOutIncludeFile(hdr, outdata);
   finally
     hdr.Free;
-    txt.TokenTable.Free;
-    txt.Free;
+    parser.TokenTable.Free;
+    parser.Free;
     prec.Free;
   end;
-end;
-
-procedure GetParams(var InpFile, OutFile: AnsiString);
-begin
-  InpFile := ParamStr(1);
-  OutFile := ParamStr(2);
 end;
 
 var
