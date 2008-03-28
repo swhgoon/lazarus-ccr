@@ -122,6 +122,7 @@ begin
   end;
 end;
 
+
 function IsMethodConstructor(cl: TClassDef; m: TClassMethodDef): Boolean;
 var
   res : TResultTypeDef;
@@ -237,6 +238,50 @@ begin
     Result := '{$endif}';
 end;
 
+procedure WriteOutCommentStr(const AComment, Prefix: AnsiString; Subs: TStrings);
+var
+  i     : Integer;
+  j     : Integer;
+  k     : Integer;
+  cmtln : AnsiString;
+begin
+  i := 1;
+  while i <= length(AComment) do begin
+    // scan for multylined comments
+    cmtln := ScanTo(AComment, i, [#10, #13]);
+    if i < length(AComment) then begin
+      if (AComment[i] = #10) and (AComment[i+1] = #13) then inc(i)
+      else if (AComment[i] = #13) and (AComment[i+1] = #10) then inc(i);
+    end;
+    inc(i);
+
+    // break long comments into lines
+    j := 1;
+    while j <= length(cmtln) do begin
+      k := j;
+      inc(j, 80);
+      if j > length(cmtln) then j := length(cmtln);
+      ScanTo(cmtln, j, [#32, #10, #13, #9]);
+      subs.Add(Prefix + '// ' + Copy(cmtln, k, j - k));
+      inc(j);
+    end;
+  end;
+end;
+
+procedure WriteOutIfComment(Items: TList; Index: Integer; const Prefix: AnsiString; Subs: TStrings);
+var
+  j   : integer;
+begin
+  if (Index < 0) or (Index >= Items.Count) then Exit;
+  
+  j := Index;
+  while (j >= 0) and (TObject(Items[j]) is TComment) do dec(j);
+  inc(j);
+  for j := j to index do
+  //if TObject(Items[Index]) is TComment then
+    WriteOutCommentStr( TComment(Items[j])._Comment, Prefix, Subs);
+end;
+
 // clears empty precompile statements, like
 // {$ifdef SOMETHING}
 // {$endif}
@@ -283,7 +328,7 @@ begin
 end;
 
 // todo: remove Prefix param...
-procedure WriteOutIfDefPrecompiler(prec: TPrecompiler; subs: TStrings; const Prefix: AnsiString);
+procedure WriteOutIfDefPrecompiler(prec: TPrecompiler; const Prefix: AnsiString; subs: TStrings);
 var
   ppas  : AnsiString;
   isend : Boolean;
@@ -319,7 +364,7 @@ begin
         subs.add(ss);
       end;
     end else if obj is TPrecompiler then begin
-      WriteOutIfDefPrecompiler(TPrecompiler(obj), subs, '  ');
+      WriteOutIfDefPrecompiler(TPrecompiler(obj), '  ', subs);
     end;
   end; {of for}
   subs.Add('');
@@ -336,15 +381,33 @@ end;
 function GetPascalEnumValue(const Name, Param: AnsiString): AnsiString;
 begin
   Result := Name;
-  if Param <> '' then Result := Result + ' = ' + Param;
+  if Param <> '' then
+    Result := Result + ' = ' + Param
+end;
+
+
+function ReplaceStr(const sub, subrep, s: AnsiString): AnsiString;
+var
+  i   : Integer;
+  j   : Integer;
+begin
+  i := Pos(sub, s);
+  if i = 0 then begin
+    Result := s;
+    Exit;
+  end;
+  j := i + length(sub);
+  Result := Copy(s, 1, i - 1) + subrep + Copy(s, j, length(s) - j + 1);
 end;
 
 function GetPascalConstValue(const Vl: AnsiString): AnsiString;
 begin
-  Result := vl;
+  //todo: improve! check at h2pas
+  Result := ReplaceStr('<<', 'shl', vl);
+  Result := ReplaceStr('>>', 'shr', Result);
 end;
 
-procedure WriteOutEnumValues(enm: TEnumTypeDef; st: TStrings; const Prefix: AnsiString);
+procedure WriteOutEnumValues(enm: TEnumTypeDef; const Prefix: AnsiString; st: TStrings);
 var
   vl  : TEnumValue;
   s   : AnsiString;
@@ -352,7 +415,7 @@ var
   j   : Integer;
 begin
   j := st.Count;
-  for i := 0 to enm.Items.Count - 1 do
+  for i := 0 to enm.Items.Count - 1 do begin
     if TObject(enm.Items[i]) is TEnumValue then begin
       vl := TEnumValue(enm.Items[i]);
       if st.Count > j then st[st.Count-1]:=st[st.Count-1]+', ';
@@ -360,6 +423,7 @@ begin
       s := Prefix + s;
       st.Add(s);
     end;
+  end;
 end;
 
 function Min(a, b: Integer): Integer;
@@ -384,15 +448,12 @@ begin
   pi := length(postfix);
   for i := 1 to Min(length(Name), length(postfix)) do begin
     if Name[ni] <> postfix[pi] then begin // this cause a bug
-      //writeln('postfix ', ni + 1, ' ', length(Name) - ni);
       postfix := Copy(Name, ni + 1, length(Name) - ni);
-//      writeln('postfixing: ', postfix);
       Break;
     end;
     dec(ni);
     dec(pi);
   end;
-
 end;
 
 function EvaluateEnumName(enm: TEnumTypeDef): AnsiString;
@@ -404,6 +465,7 @@ var
   i       : Integer;
 begin
   known := 0;
+  Result := '';
   for i := 0 to enm.Items.Count - 1 do begin
     if TObject(enm.Items[i]) is TEnumValue then begin
       vl := TEnumValue(enm.Items[i]);
@@ -412,7 +474,6 @@ begin
         postfix := vl._Name;
       end else
         MatchFixes(vl._Name, prefix, postfix);
-      //writeln(vl._Name, ' "', prefix, '", "', postfix,'"');
       inc(known)
     end;
   end;
@@ -428,9 +489,14 @@ begin
   if enm._Name = '' then s := EvaluateEnumName(enm)
   else s := enm._Name;
   st.Add(Format('  %s = (', [s] ));
-  WriteOutEnumValues(enm, st, '    ');
+  WriteOutEnumValues(enm, '    ', st );
   st.Add('  );');
   st.Add('');
+end;
+
+procedure WriteOutTypeDefToHeader(typedef: TTypeNameDef; const Prefix: AnsiString; subs: TStrings);
+begin
+  subs.Add( Prefix + Format('%s = %s;', [typedef._TypeName, typedef._Inherited]));
 end;
 
 procedure WriteOutHeaderSection(hdr: TObjCHeader; st: TStrings);
@@ -440,6 +506,8 @@ var
   subs    : TStringList;
   s       : AnsiString;
   consts  : TStringList;
+const
+  SpacePrefix = '  ';
 begin
   BeginSection(hdr._FileName, 'HEADER', st);
   subs := TStringList.Create;
@@ -464,9 +532,12 @@ begin
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
         if (TObject(hdr.Items[i]) is TEnumTypeDef) then begin
+          WriteOutIfComment(hdr.Items, i - 1, SpacePrefix, subs);
           WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), subs);
         end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
-          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), st, '  ');
+          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
+        end else if (TObject(hdr.Items[i]) is TTypeNameDef) then begin
+          WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, subs);
         end;
       end; {of if}
     
@@ -524,12 +595,13 @@ begin
     for j := 0 to cl.Items.Count - 1 do begin
       obj := TObject(cl.Items[j]);
       if obj is TClassMethodDef then begin
+        WriteOutIfComment(cl.Items, j - 1, '    ', subs);
         s := GetMethodStr(cl, TClassMethodDef(cl.Items[j]), false);
         i := mtds.IndexOf(TClassMethodDef(cl.Items[j])._Name);
         if Integer(mtds.Objects[i]) > 0 then s := s + ' overload;';
         subs.Add(SpacePrefix + s);
       end else if obj is TPrecompiler then begin
-        WriteOutIfDefPrecompiler(TPrecompiler(obj), subs, SpacePrefix);
+        WriteOutIfDefPrecompiler(TPrecompiler(obj), SpacePrefix, subs);
       end;
     end;
   finally
@@ -552,8 +624,10 @@ begin
   subs := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then
+      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then begin
+        WriteOutIfComment(hdr.Items, i - 1, '    ', subs);
         WriteOutClassToClasses(TClassDef(hdr.Items[i]), subs);
+      end;
 
     if subs.Count > 0 then begin
       st.Add('type');
@@ -624,6 +698,7 @@ var
   isConsts  : Boolean;
   typeName  : AnsiString;
 begin
+  typeName := '';
   if not Assigned(mtd.Owner) or (not (TObject(mtd.Owner) is TClassDef)) then Exit; // method cannot be without owning class
   cl := TClassDef(mtd.Owner);
   
@@ -688,7 +763,7 @@ begin
     if obj is TClassMethodDef then
       WriteOutMethodToImplementation ( TClassMethodDef(cl.Items[i]), subs)
     else if obj is TPrecompiler then
-      WriteOutIfDefPrecompiler( TPrecompiler(obj), subs, '');
+      WriteOutIfDefPrecompiler( TPrecompiler(obj), '', subs);
   end;
 end;
 
@@ -709,8 +784,66 @@ begin
 end;
 
 
-procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
+function AppleEnumType(items: TList; TypeDefIdx: Integer): Boolean;
+var
+  EnumIdx : integer;
+  typedef : TTypeNameDef;
+  enumdef : TEnumTypeDef;
+const
+  AppleInherit = 'NSUInteger';
 begin
+  Result := false;
+  EnumIdx := TypeDefIdx - 1;
+  if (EnumIdx < 0) or (EnumIdx >= items.Count) then Exit;
+  
+  if (TObject(items.Items[TypeDefIdx]) is TTypeNameDef) and
+    (TObject(items.Items[EnumIdx]) is TEnumTypeDef) then begin
+    typedef := TTypeNameDef(items.Items[TypeDefIdx]);
+    enumdef := TEnumTypeDef(items.Items[EnumIdx]);
+  end else
+    Exit;
+
+  if typedef._Inherited = AppleInherit then enumdef._Name := typedef._TypeName;
+  Result := true;
+end;
+
+procedure AppleHeaderFix(ent : TEntity);
+var
+  i   : Integer;
+  obj : TEntity;
+begin
+  i := 0;
+  while i < ent.Items.Count do begin
+    obj := TEntity(ent.Items[i]);
+    if obj is TTypeNameDef then begin
+      if AppleEnumType(ent.Items, i) then
+        ent.Items.Delete(i)
+      else
+        inc(i);
+    end else
+      inc(i)
+  end;
+  
+  for i := 0 to ent.Items.Count - 1 do
+    AppleHeaderFix( TEntity(ent.Items[i]));
+end;
+
+procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
+var
+  i   : integer;
+  cmt : TComment;
+begin
+  if hdr.Items.Count <= 0 then Exit;
+  AppleHeaderFix(hdr);
+
+  // .inc header-comment is the first comment entity in .h file , if any
+  if TObject(hdr.Items[0]) is TComment then begin
+    cmt := TComment(hdr.Items[0]);
+    st.Add('(*' + cmt._Comment + '*)');
+    cmt.Free;
+    hdr.Items.Delete(0);
+  end;
+  
   WriteOutHeaderSection(hdr, st);
   WriteOutClassesSection(hdr, st);
   WriteOutImplementationSection(hdr, st);
