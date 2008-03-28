@@ -48,8 +48,10 @@ type
   public
     Buf           : AnsiString;
     Index         : Integer;
+    TokenPos      : Integer;
     TokenTable    : TTokenTable;
     OnPrecompile  : TNotifyEvent;
+    OnComment     : procedure (Sender: TObject; const Comment: AnsiString) of object;
 
     Stack         : TList;
 
@@ -74,6 +76,15 @@ type
     constructor Create(AOwner: TEntity);
     destructor Destroy; override;
     procedure Parse(AParser: TTextParser); virtual;
+  end;
+  
+  { TComment }
+
+  TComment = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
+     _Comment : WideString;
   end;
 
   { TPrecompiler }
@@ -110,6 +121,18 @@ type
     property ValuesCount: Integer read fValCount;
   end;
 
+  { TTypeNameDef }
+  
+  TTypeNameDef = class(TEntity)
+  protected
+    procedure DoParse(AParser: TTextParser); override;
+  public
+    fValCount   : Integer;
+    _Inherited  : AnsiString;
+    _OfType     : TEntity;    // if _Inheried = '';
+    _TypeName   : AnsiString;
+  end;
+  
   { TParameterDef }
 
   TResultTypeDef = class(TEntity)
@@ -198,6 +221,9 @@ function CreateObjCTokenTable: TTokenTable;
 function LastEntity(ent: TEntity): TEntity;
 function ParseCExpression(AParser: TTextParser): AnsiString;
 
+function ScanWhile(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
+function ScanTo(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
+
 implementation
 
 function LastEntity(ent: TEntity): TEntity;
@@ -225,7 +251,7 @@ end;
 
 procedure SetCSymbols(var ch: TCharSet);
 begin
-  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';']
+  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',']
 end;
 
 procedure SetCComments(Table: TTokenTable);
@@ -286,19 +312,22 @@ begin
   Result := true;
 end;
 
-procedure SkipCommentBlock(const s: AnsiString; var index: Integer; const closecmt: AnsiString);
+function SkipCommentBlock(const s: AnsiString; var index: Integer; const closecmt: AnsiString): AnsiString;
 begin
+  Result := '';
   if closecmt = '' then begin
     index := length(s) + 1;
     Exit;
   end;
   while index <= length(s) do begin
-    ScanTo(s, index, [closecmt[1]]);
+    Result := Result + ScanTo(s, index, [closecmt[1]]);
     if IsSubStr(closecmt, s, index) then begin
       inc(index, length(closecmt));
       Exit;
-    end else
+    end else begin
+      Result := Result + s[index];
       inc(index);
+    end;
   end;
 end;
 
@@ -369,16 +398,16 @@ begin
   TokenType := tt_Ident;
   while (not Result) and (index <= length(Buf)) do begin
     ScanWhile(Buf, index, TokenTable.SpaceChars);
-    if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin
-      if (Buf[index] in TokenTable.Symbols) then begin
-        if (not (Buf[index] in blck)) or (not SkipComments) then begin
-          Result := true;
+    if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin // 1. check is Compiler directive is found
+      if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
+        if (not (Buf[index] in blck)) or (not SkipComments) then begin //   2.1 check if comment is found (comment prefixes match to the symbols)
+          Result := true;                                              //   2.2 check if symbol is found
           TokenType := tt_Symbol;
           Token := Buf[index];
           inc(index);
           Exit;
         end;
-      end else if (Buf[index] in ['0'..'9']) then begin
+      end else if (Buf[index] in ['0'..'9']) then begin  // 3. a number is found, so it's possibl a number
         //todo: Hex and floats support!
         //todo: Negative numbers support;
         TokenType := tt_Numeric;
@@ -386,7 +415,7 @@ begin
         Result := true;
         Exit;
       end else begin
-        Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols);
+        Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols); // scanning for token
         if (Buf[index] in blck)  then begin
           Result := SkipComments;
           Result := Result or (Buf[index] in TokenTable.SpaceChars);
@@ -400,27 +429,36 @@ begin
       end;
     end;
   end; {of while}
-  if not Result then TokenType := tt_None;
+  if not Result then TokenType := tt_None
+  else TokenPos := Index - length(Token);
 end;
 
 function TTextParser.SkipComments: Boolean;
 var
   i : Integer;
+  cmt : AnsiSTring;
 begin
-  Result := false;
-  for i := 0 to TokenTable.CmtCount - 1 do
-    if IsSubStr(TokenTable.CmtBlock[i].Open, Buf, index) then begin
-      inc(index, length(TokenTable.CmtBlock[i].Open));
-      SkipCommentBlock(Buf, index, TokenTable.CmtBlock[i].Close);
-      Result := true;
-      Exit;
-    end;
-  for i := 0 to TokenTable.CmtLine.Count - 1 do
-    if IsSubStr(TokenTable.CmtLine[i], Buf, index) then begin
-      SkipLine(Buf, index);
-      Result := true;
-      Exit;
-    end;
+  try
+    cmt := '';
+    Result := false;
+    for i := 0 to TokenTable.CmtCount - 1 do
+      if IsSubStr(TokenTable.CmtBlock[i].Open, Buf, index) then begin
+        inc(index, length(TokenTable.CmtBlock[i].Open));
+        cmt := SkipCommentBlock(Buf, index, TokenTable.CmtBlock[i].Close);
+        Result := true;
+        Exit;
+      end;
+    for i := 0 to TokenTable.CmtLine.Count - 1 do
+      if IsSubStr(TokenTable.CmtLine[i], Buf, index) then begin
+        cmt := SkipLine(Buf, index);
+        Delete(cmt, 1, length(TokenTable.CmtLine[i]) );
+        Result := true;
+        Exit;
+      end;
+  finally
+    if (Assigned(OnComment)) and (cmt <> '') then
+      OnComment(Self, cmt);
+  end;
 end;
 
 { TTokenTable }
@@ -523,22 +561,24 @@ var
   s   : AnsiString;
   tt  : TTokenType;
   ent : TEntity;
-  i   : Integer;
 begin
-  i := AParser.Index;
   while AParser.FindNextToken(s, tt) do begin
-    if s = 'enum' then begin
-      AParser.Index := i;
+    if s = 'typedef' then begin
+      AParser.Index := AParser.TokenPos;
+      ent := TTypeNameDef.Create(Self);
+      ent.Parse(AParser);
+    end else if s = 'enum' then begin
+      AParser.Index := AParser.TokenPos;
+      //writeln('start parse TEnumAt ', AParser.Index);
       ent := TEnumTypeDef.Create(Self);
       ent.Parse(AParser);
     end else if s = '@interface' then begin
-      AParser.Index := i;
+      AParser.Index := AParser.TokenPos;
       ent := TClassDef.Create(Self);
       ent.Parse(AParser);
     end else
       ent := nil;
     if Assigned(ent) then Items.Add(ent);
-    i := AParser.Index;
   end;
 end;
 
@@ -759,7 +799,14 @@ begin
   repeat
     vl := TEnumValue.Create(Self);
     vl.Parse(AParser);
-    Items.Add(vl);
+    if vl._Name <> '' then begin
+      inc(fValCount);
+      Items.Add(vl)
+    end else begin
+      vl.Free;
+      Exit; // incorrect header! enumeration value cannot go without name!
+    end;
+      
     AParser.FindNextToken(nm, tt);
     //writeln('enum separator: ', nm);
     if (nm <> ',') and (nm <> '}') then // if not , then  ; must be followed!
@@ -825,6 +872,7 @@ var
   s   : AnsiString;
   tt  : TTokenType;
 begin
+  //writeln('Start to TEnumVal scan at: ', AParser.Index);
   AParser.FindNextToken(_Name, tt);
   if tt <> tt_Ident then Exit;
 
@@ -832,11 +880,33 @@ begin
   AParser.FindNextToken(s, tt);
   if s <> '=' then begin
     AParser.Index := i;
-    Exit;
-  end;
-  _Value := ParseCExpression(AParser);
+    _Value := '';
+  end else
+    _Value := ParseCExpression(AParser);
   //writeln('enmvalName  ', _Name);
   //writeln('enmvalValue ', _Value);
+end;
+
+{ TComment }
+
+procedure TComment.DoParse(AParser: TTextParser);
+begin
+  //todo:! Comment parsing is now executed by TTextParser
+end;
+
+{ TTypeNameDef }
+
+procedure TTypeNameDef.DoParse(AParser: TTextParser);
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  if s <> 'typedef' then Exit;
+  // _OfType is not supported
+  AParser.FindNextToken(_Inherited, tt);
+  AParser.FindNextToken(_TypeName, tt);
+  AParser.FindNextToken(s, tt); // skip last ';';
 end;
 
 end.
