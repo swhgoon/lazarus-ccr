@@ -5,11 +5,13 @@
  
  main parser unit
 }
-
-
 program Project1;
 
-{$mode delphi}{$H+}
+{$ifdef fpc}
+  {$mode delphi}{$H+}
+{$else}
+  {$APPTYPE CONSOLE}
+{$endif}
 
 uses
   Classes, SysUtils, ObjCParserUtils, ObjCParserTypes;
@@ -46,10 +48,7 @@ begin
 
     preEntity := TPrecompiler.Create(lst);
     preEntity.Parse(parser);
-    //writeln('added to: ', lst.ClassName, ' ', preEntity._Directive + preEntity._Params);
     lst.Items.Add(preEntity);
-    //write('// debug: ');
-    //writeln('precompile: ', preEntity._Directive, ', params:', preEntity._Params);
   finally
     parser.OnPrecompile := prc;
   end;
@@ -63,7 +62,6 @@ var
 begin
   if length(Comment) < 2 then Exit;
   parser := TTextParser(Sender);
-  //writeln(' > ', Comment);
 
   if parser.Stack.Count > 0
     then ent := TEntity(parser.Stack[parser.Stack.Count-1])
@@ -122,24 +120,26 @@ end;
 
 var
   inpf  : AnsiString;
-  f  : Text;
-  st : TStrings;
-  fn : AnsiString;
-  i  : integer;
+  st    : TStrings;
+  i     : integer;
 begin
-  inpf := ParamStr(1);
-  if not FileExists(inpf) then begin
-    Exit;
-  end;
-
-  st := TStringList.Create;
   try
-    ReadAndParseFile(inpf, st);
-    for i := 0 to st.Count - 1 do
-      writeln(st[i]);
-  except
-  end;
-  st.Free;
+    inpf := ParamStr(1);
+    if not FileExists(inpf) then begin
+      Exit;
+    end;
 
+    st := TStringList.Create;
+    try
+      ReadAndParseFile(inpf, st);
+      for i := 0 to st.Count - 1 do
+        writeln(st[i]);
+    except
+    end;
+    st.Free;
+  except
+    on e: exception do
+      writeln(e.Message);
+  end;
 end.
 
