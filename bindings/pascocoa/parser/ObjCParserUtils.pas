@@ -19,7 +19,7 @@ uses
   
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
 
-function ObjCToDelphiType(const objcType: AnsiString): AnsiString;
+function ObjCToDelphiType(const objcType: AnsiString; isPointer: Boolean): AnsiString;
 
 function StrFromFile(const FileName: AnsiString): AnsiString;
 
@@ -28,13 +28,56 @@ function GetMethodStr(cl: TClassDef; m: TClassMethodDef; ForImplementation: Bool
 function GetProcFuncHead(const FuncName, OfClass, Params, ResType: AnsiString; const FuncDest: AnsiString = ''): AnsiString;
 function GetMethodParams(const m: TClassMethodDef): AnsiString;
 function GetMethodResultType(const m: TClassMethodDef): AnsiString;
+function IsPascalReserved(const s: AnsiString): Boolean;
 
 implementation
 
-function GetMethodResultType(const m: TClassMethodDef): AnsiString;
+function IsPascalReserved(const s: AnsiString): Boolean;
+var
+  ls  : AnsiString;
 begin
-  if not Assigned(m.GetResultType) then Result := ''
-  else Result := ObjCToDelphiType(m.GetResultType._TypeName);
+  //todo: a hash table should be used?
+  Result := true;
+  if s = '' then Exit;
+  ls := AnsiLowerCase(s);
+  case ls[1] of
+    'a': Result := (ls = 'absolute') or (ls = 'abstract') or (ls = 'and') or (ls = 'array') or (ls = 'as') or (ls= 'asm') or (ls = 'assembler');
+    'b': Result := (ls = 'begin') or (ls = 'break');
+    'c': Result := (ls = 'cdecl') or (ls = 'class') or (ls = 'const') or (ls = 'constructor') or (ls = 'continue') or (ls = 'cppclass');
+    'd': Result := (ls = 'deprecated') or (ls = 'destructor') or (ls = 'div') or (ls = 'do') or (ls = 'downto');
+    'e': Result := (ls = 'else') or (ls = 'end') or (ls = 'except') or (ls = 'exit') or (ls = 'export') or (ls = 'exports') or (ls = 'external');
+    'f': Result := (ls = 'fail') or (ls = 'false') or (ls = 'far') or (ls = 'file') or (ls = 'finally') or (ls = 'for') or (ls = 'forward') or (ls = 'function');
+    'g': Result := (ls = 'goto');
+    'i':
+      Result := (ls = 'if') or (ls = 'implementation') or (ls = 'in') or (ls = 'index') or (ls = 'inherited') or (ls = 'initialization') or (ls = 'inline')
+        or  (ls = 'interface') or (ls = 'interrupt') or (ls = 'is');
+    'l': Result := (ls = 'label') or (ls = 'library');
+    'm': Result := (ls = 'mod');  
+    'n': Result := {(ls = 'name') or} (ls = 'near') or (ls = 'nil') or (ls = 'not');
+    'o': Result := (ls = 'object') or (ls = 'of') or (ls = 'on') or (ls = 'operator') or (ls = 'or') or (ls = 'otherwise');
+    'p':
+      Result := (ls = 'packed') or (ls = 'popstack') or (ls = 'private') or (ls = 'procedure') or (ls = 'program') or (ls = 'property')
+        or (ls = 'protected') or (ls = 'public');
+    'r': Result := (ls = 'raise') or (ls = 'record') or (ls = 'reintroduce') or (ls = 'repeat');
+    's': Result := (ls = 'self') or (ls = 'set') or (ls = 'shl') or (ls = 'shr') or (ls = 'stdcall') or (ls = 'string');
+    't': Result := (ls = 'then') or (ls = 'to') or (ls = 'true') or (ls = 'try') or (ls = 'type');
+    'u': Result := (ls = 'unimplemented') or (ls = 'unit') or (ls = 'until') or (ls = 'uses');
+    'v': Result := (ls = 'var') or (ls = 'virtual');
+    'w': Result := (ls = 'while') or (ls = 'with');
+    'x': Result := (ls = 'xor');
+  end;
+
+
+
+end;
+
+function GetMethodResultType(const m: TClassMethodDef): AnsiString;
+var
+  res : TObjCResultTypeDef;
+begin
+  res := m.GetResultType;
+  if not Assigned(res) then Result := ''
+  else Result := ObjCToDelphiType(m.GetResultType._Name, m.GetResultType._IsPointer);
 end;
 
 function GetMethodParams(const m: TClassMethodDef): AnsiString;
@@ -51,9 +94,9 @@ begin
     p := TObject(m.Items[i]);
     if p is TParamDescr then
       vname := TParamDescr(p)._Descr
-    else if p is TParameterDef then begin
-      if vname = '' then vname := TParameterDef(p)._Name;
-      vtype := ObjCToDelphiType(TParameterDef(p)._Res._TypeName);
+    else if p is TObjCParameterDef then begin
+      if vname = '' then vname := TObjCParameterDef(p)._Name;
+      vtype := ObjCToDelphiType(TObjCParameterDef(p)._Res._Name, TObjCParameterDef(p)._Res._IsPointer);
       if Result <> '' then Result := Result + '; ';
       Result := Result + vname + ': ' + vtype;
       vname := '';
@@ -74,11 +117,9 @@ begin
   Result := Result + FuncName;
   if Params <> '' then
     Result := Result + '('+Params+')';
-  if ResType <> '' then Result := Result+':'+ResType;
+  if ResType <> '' then Result := Result+': '+ResType;
   Result := Result + ';';
 end;
-
-
 
 function StrFromFile(const FileName: AnsiString): AnsiString;
 var
@@ -93,7 +134,7 @@ begin
   end;
 end;
 
-function ObjCToDelphiType(const objcType: AnsiString): AnsiString;
+function ObjCToDelphiType(const objcType: AnsiString; isPointer: Boolean): AnsiString;
 var
   l : AnsiString;
 begin
@@ -102,7 +143,10 @@ begin
   if l = '' then Exit;
   case l[1] of
     'v':
-      if l = 'void' then Result := '';
+      if l = 'void' then begin
+        if not isPointer then Result := ''
+        else Result := 'Pointer';
+      end;
     'i':
       if l = 'id' then Result := 'objc.id'
       else if l = 'int' then Result := 'Integer';
@@ -125,7 +169,7 @@ end;
 
 function IsMethodConstructor(cl: TClassDef; m: TClassMethodDef): Boolean;
 var
-  res : TResultTypeDef;
+  res : TObjCResultTypeDef;
   l   : AnsiString;
 begin
   Result := m._IsClassMethod;
@@ -139,20 +183,26 @@ begin
   if not Result then Exit;
 
   res := m.GetResultType;
-  l := res._TypeName;
+  l := res._Name;
   Result := (l = 'id') or (l = cl._ClassName);
 end;
 
 function GetMethodStr(cl: TClassDef; m: TClassMethodDef; ForImplementation: Boolean): AnsiString;
 var
-  i     : integer;
+//  i     : integer;
   ft    : AnsiString;
+  res   : AnsiString;
 begin
-  if IsMethodConstructor(cl, m) then ft := 'constructor'
-  else ft := '';
+  res := GetMethodResultType(m);
+  if IsMethodConstructor(cl, m) then begin
+    ft := 'constructor';
+    res := '';
+  end else
+    ft := '';
+
   if ForImplementation
-    then Result := GetProcFuncHead(m._Name, cl._ClassName, GetMethodParams(m), GetMethodResultType(m), ft)
-    else Result := GetProcFuncHead(m._Name, '', GetMethodParams(m), GetMethodResultType(m), ft)
+    then Result := GetProcFuncHead(m._Name, cl._ClassName, GetMethodParams(m), res, ft)
+    else Result := GetProcFuncHead(m._Name, '', GetMethodParams(m), res, ft)
 end;
 
 // returns define pas file name form Objective C name, like
@@ -161,7 +211,7 @@ end;
 function GetIfDefFileName(const FileName, DefExt: AnsiString): AnsiString;
 var
   i : integer;
-  s : AnsiString;
+//  s : AnsiString;
 begin
   //todo: don't like it...
   Result := Copy(FileName, 1, length(FileName) - length(ExtractFileExt(FileName)));
@@ -182,8 +232,9 @@ begin
   //todo: don't like it...
   Result := '';
   if s = '' then Exit;
-  i := length(s);
-  if (s[i] = '"') or (s[i] = '>') then dec(i);
+//  i := length(s);
+{  if (s[i] = '"') or (s[i] = '>') then
+    dec(i);}
   i := length(s) - 1;
   // dummy, but it works =)
   while (i > 0) and (s[i] in ['.', 'A'..'Z', 'a'..'z', '0'..'9']) do dec(i);
@@ -342,7 +393,7 @@ end;
 procedure WriteOutClassToHeader(cl : TClassDef; subs: TStrings; conststr: TStrings);
 var
   i   : Integer;
-  j   : Integer;
+//  j   : Integer;
   s   : AnsiString;
   ss  : AnsiString;
   mtd : TClassMethodDef;
@@ -367,6 +418,32 @@ begin
     end;
   end; {of for}
   subs.Add('');
+end;
+
+procedure ParseDefine(const s: AnsiString; var DefWhat, DefTo: AnsiString);
+var
+  i   : Integer;
+begin
+  i := 1;
+  ScanWhile(s, i, [#9, #32, #10, #13]);
+  if i < length(s) then begin
+    DefWhat := ScanTo(s, i, [#9, #32, #10, #13]);
+    ScanWhile(s, i, [#9, #32]);
+    DefTo := Copy(s, i, length(s) - i + 1);
+  end else
+    DefTo := '';
+end;
+
+procedure WriteOutPrecompDefine(const Prec: TPrecompiler; Prefix: AnsiString; st: TStrings);
+var
+  a, b: AnsiString;
+begin
+  if Prec._Directive = '#define' then begin
+    ParseDefine(Prec._Params, a, b);
+    if b <> ''
+      then st.Add(Prefix + Format('%s = %s;', [a, b]))
+      else st.Add(Prefix + Format('{$define %s}', [a])); 
+  end;
 end;
 
 procedure WriteOutPrecompInclude(Prec: TPrecompiler; st: TStrings);
@@ -435,7 +512,7 @@ procedure MatchFixes(const Name: AnsiString; var prefix, postfix: AnsiString);
 var
   i     : integer;
   ni, pi: integer;
-  nc, pc: AnsiChar;
+//  nc, pc: AnsiChar;
 begin
   for i := 1 to Min(length(Name), length(prefix)) do
     if Name[i] <> prefix[i] then begin
@@ -482,7 +559,7 @@ end;
 
 procedure WriteOutEnumToHeader(enm: TEnumTypeDef; st: TStrings);
 var
-  i   : Integer;
+//  i   : Integer;
   s   : AnsiString;
 begin
   if enm._Name = '' then s := EvaluateEnumName(enm)
@@ -503,7 +580,7 @@ var
   i       : Integer;
   cl      : TClassDef;
   subs    : TStringList;
-  s       : AnsiString;
+//  s       : AnsiString;
   consts  : TStringList;
 const
   SpacePrefix = '  ';
@@ -521,6 +598,7 @@ begin
           WriteOutClassToHeader(cl, subs, consts);
         end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
           WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
+          WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs);
         end;
       end;
 
@@ -559,13 +637,13 @@ end;
 procedure WriteOutClassToClasses(cl: TClassDef; subs: TStrings);
 var
   i   : Integer;
-  cnt : Integer;
+//  cnt : Integer;
   s   : AnsiString;
   j   : Integer;
   obj : TObject; // or TEntity
   
   mtds   : TStringList; // name of methods
-  over   : TStringList; // overloaded names
+//  over   : TStringList; // overloaded names
 const
   SpacePrefix = '    ';
 begin
@@ -617,9 +695,9 @@ end;
 procedure WriteOutClassesSection(hdr: TObjCHeader; st: TStrings);
 var
   i     : integer;
-  cl    : TClassDef;
-  j     : integer;
-  s     : AnsiString;
+//  cl    : TClassDef;
+//  j     : integer;
+//  s     : AnsiString;
   subs  : TStringList;
 begin
   BeginSection('CLASSES', st);
@@ -627,7 +705,7 @@ begin
   subs := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) then
+      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TPrecompiler) then
         WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
 
     for i := 0 to hdr.Items.Count - 1 do
@@ -653,7 +731,7 @@ var
 begin
   Result := false;
   for i := 0 to mtd.Items.Count - 1 do
-    if TObject(mtd.Items[i]) is TParameterDef then begin
+    if TObject(mtd.Items[i]) is TObjCParameterDef then begin
       Result := true;
       Exit;
     end;
@@ -665,7 +743,7 @@ const
 
 procedure ObjCMethodToProcType(mtd: TClassMethodDef; var typeName: AnsiString; subs: TStrings);
 var
-  i   : integer;
+//  i   : integer;
   s   : AnsiString;
 begin
   typeName := MtdPrefix + mtd._Name + MtdPostFix;
@@ -688,8 +766,8 @@ begin
     if obj is TParamDescr then begin
       if vName <> '' then Result := Result + vname + ', ';
       vname := TParamDescr(obj)._Descr;
-    end else if obj is TParameterDef then begin
-      if vname = '' then vname := TParameterDef(obj)._Name;
+    end else if obj is TObjCParameterDef then begin
+      if vname = '' then vname := TObjCParameterDef(obj)._Name;
     end;
   end;
   Result := Result + vname;
@@ -702,7 +780,7 @@ var
   res : Ansistring;
   sp  : AnsiString;
   s   : AnsiString;
-  isConsts  : Boolean;
+//  isConsts  : Boolean;
   typeName  : AnsiString;
 begin
   typeName := '';
@@ -736,7 +814,7 @@ begin
     subs.Add('begin');
     subs.Add(Format('  vmethod := %s(@objc_msgSend);', [typeName]));
     s := Format('vmethod(Handle, sel_registerName(PChar(Str_%s)), %s)', [mtd._Name, GetParamsNames(mtd)]);
-    if ObjCToDelphiType(mtd.GetResultType._TypeName) <> '' then
+    if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
       s := 'Result := ' + s;
     s := s + ';';
     subs.Add('  ' + s);
@@ -814,46 +892,84 @@ begin
   Result := true;
 end;
 
+
+
+procedure FixAppleCategories(Items: TList; category: TClassDef);
+var
+  i   : Integer;
+  j   : Integer;
+  cl  : TClassdef;
+begin
+  for i := 0 to Items.Count - 1 do
+    if TObject(Items[i]) is TClassDef then begin
+      cl := TClassDef(Items[i]);
+      if cl._SuperClass <> '' then
+        for j := 0 to category.Items.Count - 1 do begin
+          cl.Items.Add(category.Items[j]);
+          TEntity(category.Items[j]).owner := cl;
+        end; {of if}
+    end; {of if}
+end;
+
 procedure AppleHeaderFix(ent : TEntity);
 var
   i   : Integer;
+  j   : Integer;
   obj : TEntity;
 begin
-  i := 0;
-  while i < ent.Items.Count do begin
+//  i := 0;
+  for i := 0 to ent.Items.Count - 1 do begin
     obj := TEntity(ent.Items[i]);
-    if obj is TTypeNameDef then begin
-      if AppleEnumType(ent.Items, i) then
-        ent.Items.Delete(i)
-      else
-        inc(i);
-    end else
-      inc(i)
+    if (obj is TTypeNameDef) and (AppleEnumType(ent.Items, i)) then begin
+      ent.Items[i] := nil;
+      obj.Free;
+    end else if (obj is TClassDef) and (TClassDef(obj)._SuperClass = '') then begin
+      FixAppleCategories(ent.Items, TClassDef(obj));
+      ent.Items[i] := nil;
+      obj.Free;
+    end else if (obj is TParamDescr) then begin
+      if IsPascalReserved(TParamDescr(obj)._Descr) then
+        TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr;
+    end else if (obj is TObjCParameterDef) then begin
+      if IsPascalReserved(TObjCParameterDef(obj)._Name) then
+        TObjCParameterDef(obj)._Name := '_' + TObjCParameterDef(obj)._Name;
+    end;
   end;
-  
+
+  j := 0;
+  for i := 0 to ent.Items.Count - 1 do
+    if Assigned(ent.Items[i]) then begin
+      ent.Items[j] := ent.Items[i];
+      inc(j);
+    end;
+  ent.Items.Count := j;
+
   for i := 0 to ent.Items.Count - 1 do
     AppleHeaderFix( TEntity(ent.Items[i]));
 end;
 
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
 var
-  i   : integer;
+//  i   : integer;
   cmt : TComment;
 begin
-  if hdr.Items.Count <= 0 then Exit;
-  AppleHeaderFix(hdr);
+  try
+    if hdr.Items.Count <= 0 then Exit;
+    AppleHeaderFix(hdr);
 
-  // .inc header-comment is the first comment entity in .h file , if any
-  if TObject(hdr.Items[0]) is TComment then begin
-    cmt := TComment(hdr.Items[0]);
-    st.Add('(*' + cmt._Comment + '*)');
-    cmt.Free;
-    hdr.Items.Delete(0);
+    // .inc header-comment is the first comment entity in .h file , if any
+    if TObject(hdr.Items[0]) is TComment then begin
+      cmt := TComment(hdr.Items[0]);
+      st.Add('(*' + cmt._Comment + '*)');
+      cmt.Free;
+      hdr.Items.Delete(0);
+    end;
+
+    WriteOutHeaderSection(hdr, st);
+    WriteOutClassesSection(hdr, st);
+    WriteOutImplementationSection(hdr, st);
+  except
   end;
-  
-  WriteOutHeaderSection(hdr, st);
-  WriteOutClassesSection(hdr, st);
-  WriteOutImplementationSection(hdr, st);
 end;
 
 end.
