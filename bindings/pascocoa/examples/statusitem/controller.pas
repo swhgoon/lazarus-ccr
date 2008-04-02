@@ -75,6 +75,7 @@ constructor TMyController.Create;
 var
   fileName: CFStringRef;
 begin
+  { The class is registered on the Objective-C runtime before the NSObject constructor is called }
   if not CreateClassDefinition(Str_TMyController, Str_NSObject) then WriteLn('Failed to create objc class');
 
   inherited Create;
