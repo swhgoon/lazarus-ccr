@@ -14,7 +14,7 @@ program Project1;
 {$endif}
 
 uses
-  Classes, SysUtils, ObjCParserUtils, ObjCParserTypes;
+  Classes, SysUtils, ObjCParserUtils,  ObjCParserTypes;
 
 type
   // this object is used only for precomile directives handling
@@ -87,7 +87,7 @@ procedure ReadAndParseFile(const FileName: AnsiString; outdata: TStrings);
 var
   hdr     : TObjCHeader;
   parser  : TTextParser;
-  prec    : TPrecompileHandler;
+  prec    : TPrecompileHandler ;
   s       : AnsiString;
 begin
   if not FileExists(FileName) then
@@ -111,12 +111,66 @@ begin
     end;
     WriteOutIncludeFile(hdr, outdata);
   finally
-    hdr.Free;
     parser.TokenTable.Free;
     parser.Free;
     prec.Free;
+    //FreeEntity(hdr);
   end;
 end;
+
+procedure ParseAll;
+var
+  ch    : char;
+  srch  : TSearchRec;
+  res   : Integer;
+  i     : Integer;
+  pth   : AnsiString;
+  incs  : AnsiString;
+  st    : TStringList;
+  f     : Text;
+begin
+  writeln('would you like to parse of local files .h to inc?');
+  readln(ch);
+  if (ch <> 'Y') and (ch <> 'y') then begin
+    writeln('as you wish, bye!');
+    Exit;
+  end;
+  
+  pth := IncludeTrailingPathDelimiter( GetCurrentDir);
+  writeln('looking for .h files in ', pth);
+  res := FindFirst(pth + '*.h', -1, srch);
+  if res = 0 then begin
+    st := TStringList.Create;
+    try
+      repeat
+        write('found: ', srch.Name);
+        write(' parsing...');
+        //writeln('parsing: ', pth+srch.Name);
+        ReadAndParseFile(pth+srch.Name, st);
+        write(' parsed ');
+        incs := pth + Copy(srch.Name,1, length(srch.Name) - length(ExtractFileExt(srch.Name)));
+        incs := incs + '.inc';
+        //writeln(incs);
+        assignfile(f, incs); rewrite(f);
+        try
+          for i := 0 to st.Count - 1 do
+            writeln(f, st[i]);
+        finally
+          closefile(f);
+        end;
+        st.Clear;
+        writeln(' converted!');
+      until FindNext(srch) <> 0;
+
+    finally
+      FindClose(srch);
+      st.Free;
+    end;
+  end;
+  
+  
+end;
+
 
 var
   inpf  : AnsiString;
@@ -126,6 +180,7 @@ begin
   try
     inpf := ParamStr(1);
     if not FileExists(inpf) then begin
+      //ParseAll;
       Exit;
     end;
 
