@@ -6,9 +6,6 @@
  objc parsing unit
 }
 
-// todo: remove last ';' skipping. must be added lately
-
-
 unit ObjCParserTypes;
 
 interface
@@ -16,7 +13,7 @@ interface
 {$ifdef fpc}{$mode delphi}{$endif fpc}
 
 uses
-  Classes, SysUtils;
+  Classes,  SysUtils;
 
 type
   TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric);
@@ -68,13 +65,13 @@ type
 
   TEntity = class(TObject)
   protected
-    procedure DoParse(AParser: TTextParser); virtual; abstract;
+    procedure  DoParse(AParser: TTextParser); virtual; abstract;
   public
     owner : TEntity;
     Items : TList;
     constructor Create(AOwner: TEntity);
     destructor Destroy; override;
-    procedure Parse(AParser: TTextParser); virtual;
+    procedure   Parse(AParser: TTextParser); virtual;
   end;
   
   { TComment }
@@ -142,14 +139,16 @@ type
   protected
     procedure DoParse(AParser: TTextParser); override;
   public
-    _Name     : AnsiString;
+    _Name       : AnsiString;
+    //todo: remove
+    _isPointer  : Boolean;
   end;
-  
+
   { TTypeDef }
   //C token - any type, including unsigned short
-  
+
   TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short);
-  
+
   TTypeDef = class(TEntity)
   protected
     procedure DoParse(AParser: TTextParser); override;
@@ -158,9 +157,9 @@ type
     _Spec : TTypeDefSpecs;
     _IsPointer  : Boolean;
   end;
-  
+
   { TTypeNameDef }
-  
+
   //C token: typdef
   TTypeNameDef = class(TEntity)
   protected
@@ -265,7 +264,18 @@ function ScanTo(const s: AnsiString; var index: Integer; const ch: TCharSet): An
 
 function ParseTypeDef(Owner: TEntity; AParser: TTextParser): TEntity;
 
+procedure FreeEntity(Item: TEntity);
+
 implementation
+
+procedure FreeEntity(Item: TEntity);
+var
+  i    : Integer;
+begin
+  for i := 0 to Item.Items.Count - 1 do
+    FreeEntity(TEntity(Item.Items[i]));
+  Item.Free;
+end;
 
 function GetTypeNameFromEntity(Entity: TEntity): AnsiString;
 begin
@@ -938,11 +948,14 @@ end;
 
 function ParseCExpression(AParser: TTextParser): AnsiString;
 var
-  i   : integer;
-  nm  : AnsiString;
-  tt  : TTokenType;
+  i     : integer;
+  nm    : AnsiString;
+  tt    : TTokenType;
+  brac  : Integer;
 begin
+//todo: better code. it's just a work around
 //  i := AParser.Index;
+  brac := 0;
   Result := '';
   while AParser.FindNextToken(nm, tt) do begin
     if (tt = tt_Numeric) or (tt = tt_Ident) then begin
@@ -950,14 +963,21 @@ begin
       i := AParser.Index;
       if not ParseCOperator(AParser, nm) then begin
         AParser.Index := i;
-        Exit;
+        Break;
       end else
         Result := Result + ' ' + nm + ' ';
+    end else if (tt = tt_Symbol) then begin
+      if nm ='(' then inc(brac)
+      else if nm = ')' then dec(brac);
     end else begin
       //i := AParser.Index;
       Exit;
     end;
   end;
+  if brac > 0 then
+    while (brac > 0) and (AParser.FindNextToken(nm, tt)) do
+      if nm = ')' then
+        dec(brac);
 end;
 
 { TEnumValue }
@@ -997,6 +1017,7 @@ begin
   AParser.FindNextToken(s, tt);
   if s <> 'typedef' then Exit;
   _Type := ParseTypeDef(Self, AParser);
+  
   AParser.FindNextToken(_TypeName, tt);
   _inherited := GetTypeNameFromEntity(_Type);
   AParser.FindNextToken(s, tt); // skip last ';';
@@ -1010,7 +1031,8 @@ var
   s   : AnsiString;
   tt  : TTokenType;
   i   : Integer;
-  st  : TStructField;
+  st    : TStructField;
+  prev  : TStructField;
 begin
   AParser.FindNextToken(s, tt);
   if s <> 'struct' then Exit;
@@ -1019,23 +1041,38 @@ begin
   if (tt = tt_Ident) then begin
     _Name := s;
     AParser.FindNextToken(s, tt);
-    AParser.Index := i;
+    i := AParser.TokenPos;
   end;
-  
-  if (tt <> tt_Symbol) and (s <> '{') then begin
-    AParser.Index := i;
+
+  if not ((tt = tt_Symbol) and (s = '{')) then begin
+    if (tt = tt_Symbol) and (s = '*')
+      then _isPointer := true
+      else AParser.Index := i;
     Exit;
   end;
 
   AParser.FindNextToken(s, tt);
+  prev := nil;
   while s <> '}' do begin
     //i := AParser.TokenPos;
     st := TStructField.Create(Self);
-    st.Parse(AParser);
+    if not Assigned(prev) then begin
+      st.Parse(AParser);
+    end else begin
+      AParser.FindNextToken(st._Name, tt);
+      st._TypeName := prev._TypeName;
+    end;
+
     Items.Add(st);
     AParser.FindNextToken(s, tt);
+    if s = ',' then prev := st
+    else prev := nil;
+    if s = ';' then begin
+      AParser.FindNextToken(s, tt);
+      if s <> '}' then AParser.Index := AParser.TokenPos;
+    end;
   end;
-  
+
   //no skipping last ';', because after structure a variable can be defined
   //ie: struct POINT {int x; int y} point;
 end;
@@ -1059,7 +1096,10 @@ begin
   if Assigned(_Type) then Exit;
   _TypeName := GetTypeNameFromEntity(_Type);
 
-  if not (AParser.FindNextToken(_Name, tt)) or (tt <> tt_Ident) then Exit;
+  if not (AParser.FindNextToken(s, tt)) or (tt <> tt_Ident) then begin
+    Exit;
+  end;
+  
   AParser.FindNextToken(s, tt);
   if (tt = tt_Symbol) and (s = ':') then begin
     AParser.FindNextToken(s, tt);
