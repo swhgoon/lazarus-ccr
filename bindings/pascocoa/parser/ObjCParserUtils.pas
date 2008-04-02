@@ -8,11 +8,11 @@
 
 //todo: a lot of things =)
 
-unit ObjCParserUtils;
+unit  ObjCParserUtils;
 
 interface
 
-{$ifdef fpc}{$mode delphi}{$H+}{$endif fpc}
+  {$ifdef fpc}{$mode delphi}{$H+}{$endif fpc}
 
 uses
   Classes, SysUtils, ObjCParserTypes;
