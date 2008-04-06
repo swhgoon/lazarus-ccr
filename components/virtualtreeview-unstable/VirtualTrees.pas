@@ -25161,14 +25161,18 @@ begin
 
   AbsolutePos := Y;
   if Relative then
+  begin
     Inc(AbsolutePos, -FOffsetY);
+    if hoVisible in FHeader.FOptions then
+      Inc(AbsolutePos, FHeader.Height);
+  end;
 
   // CurrentPos tracks a running term of the current position to test for.
   // It corresponds always to the top position of the currently considered node.
 
   //lclheader: adjust position if Header is visible
   if hoVisible in FHeader.FOptions then
-    CurrentPos:=FHeader.Height
+    CurrentPos := FHeader.Height
   else
     CurrentPos := 0;
   
