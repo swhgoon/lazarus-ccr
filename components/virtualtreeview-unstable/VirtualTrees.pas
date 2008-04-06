@@ -24371,6 +24371,14 @@ begin
     if X > Header.Columns.GetVisibleFixedWidth then
       Inc(X, FEffectiveOffsetX);
     Inc(Y, -FOffsetY);
+    //lclheder
+    if hoVisible in FHeader.Options then
+    begin
+      Dec(Y, FHeader.Height);
+      //the coordinate is in header
+      if Y < 0 then
+        Exit;
+    end;
   end;
 
   // If the point is in the tree area then check the nodes.
@@ -25146,7 +25154,7 @@ end;
 function TBaseVirtualTree.GetNodeAt(X, Y: Integer; Relative: Boolean; var NodeTop: Integer): PVirtualNode;
 
 // This method returns the node that occupies the specified point, or nil if there's none.
-// If Releative is True then X and Y are given in client coordinates otherwise they are considered as being
+// If Relative is True then X and Y are given in client coordinates otherwise they are considered as being
 // absolute values into the virtual tree image (regardless of the current offsets in the tree window).
 // NodeTop gets the absolute or relative top position of the node returned or is untouched if no node
 // could be found.
@@ -25161,22 +25169,13 @@ begin
 
   AbsolutePos := Y;
   if Relative then
-  begin
     Inc(AbsolutePos, -FOffsetY);
-    if hoVisible in FHeader.FOptions then
-      Inc(AbsolutePos, FHeader.Height);
-  end;
 
   // CurrentPos tracks a running term of the current position to test for.
   // It corresponds always to the top position of the currently considered node.
 
-  //lclheader: adjust position if Header is visible
-  if hoVisible in FHeader.FOptions then
-    CurrentPos := FHeader.Height
-  else
-    CurrentPos := 0;
+  CurrentPos := 0;
   
-
   // If the cache is available then use it.
   if tsUseCache in FStates then
     Result := FindInPositionCache(AbsolutePos, CurrentPos)
@@ -25237,10 +25236,7 @@ begin
   // of the found node this top position is returned.
   if Assigned(Result) then
   begin
-    //lclheader
     NodeTop := CurrentPos;
-    if hoVisible in FHeader.FOptions then
-      Dec(NodeTop,FHeader.Height);
     if Relative then
       Inc(NodeTop, FOffsetY);
     //Logger.Send([lcPaintHeader],'GetNodeAt Result: ',Result^.Index);
