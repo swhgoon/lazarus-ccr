@@ -14,13 +14,15 @@ program Project1;
 {$endif}
 
 uses
-  Classes, SysUtils, ObjCParserUtils,  ObjCParserTypes;
+  Classes,
+  SysUtils,
+  ObjCParserUtils,
+  ObjCParserTypes;
 
 type
   // this object is used only for precomile directives handling
 
   { TPrecompileHandler }
-
   TPrecompileHandler = class(TObject)
   public
     hdr : TObjCHeader;
@@ -28,7 +30,7 @@ type
     procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
   end;
-  
+
 procedure TPrecompileHandler.OnPrecompile(Sender: TObject);
 var
   parser    : TTextParser;
@@ -83,15 +85,19 @@ begin
   hdr := AHeader;
 end;
 
-procedure ReadAndParseFile(const FileName: AnsiString; outdata: TStrings);
+function ReadAndParseFile(const FileName: AnsiString; outdata: TStrings; var Err: AnsiString): Boolean;
 var
   hdr     : TObjCHeader;
   parser  : TTextParser;
   prec    : TPrecompileHandler ;
   s       : AnsiString;
+  i, cnt  : integer;
 begin
-  if not FileExists(FileName) then
+  Result :=false;
+  if not FileExists(FileName) then begin
+    Err :=  'File not found: ' + FileName;
     Exit;
+  end;
   
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
@@ -106,7 +112,21 @@ begin
       parser.OnPrecompile := prec.OnPrecompile;
       parser.OnComment := prec.OnComment;
       hdr._FileName := ExtractFileName(FileName);
-      hdr.Parse(parser);
+      Result := hdr.Parse(parser);
+      if not Result then begin
+        if parser.Errors.Count > 0 then Err := parser.Errors[0]
+        else Err := 'undesribed error';
+
+        Err := Err + #13#10;
+        cnt := 120;
+        i := parser.Index - cnt;
+        if i <= 0 then begin
+          i := 1;
+          cnt := parser.Index;
+        end;
+        Err := Err + Copy(parser.Buf, i, cnt);
+      end;
+
     except
     end;
     WriteOutIncludeFile(hdr, outdata);
@@ -128,14 +148,17 @@ var
   incs  : AnsiString;
   st    : TStringList;
   f     : Text;
+  err   : AnsiString;
+
+
 begin
-  writeln('would you like to parse of local files .h to inc?');
+  writeln('would you like to parse all current directory files .h to inc?');
   readln(ch);
   if (ch <> 'Y') and (ch <> 'y') then begin
     writeln('as you wish, bye!');
     Exit;
   end;
-  
+
   pth := IncludeTrailingPathDelimiter( GetCurrentDir);
   writeln('looking for .h files in ', pth);
   res := FindFirst(pth + '*.h', -1, srch);
@@ -146,20 +169,23 @@ begin
         write('found: ', srch.Name);
         write(' parsing...');
         //writeln('parsing: ', pth+srch.Name);
-        ReadAndParseFile(pth+srch.Name, st);
-        write(' parsed ');
-        incs := pth + Copy(srch.Name,1, length(srch.Name) - length(ExtractFileExt(srch.Name)));
-        incs := incs + '.inc';
-        //writeln(incs);
-        assignfile(f, incs); rewrite(f);
-        try
-          for i := 0 to st.Count - 1 do
-            writeln(f, st[i]);
-        finally
-          closefile(f);
+        if ReadAndParseFile(pth+srch.Name, st, err) then begin
+          write(' parsed ');
+          incs := pth + Copy(srch.Name,1, length(srch.Name) - length(ExtractFileExt(srch.Name)));
+          incs := incs + '.inc';
+          //writeln(incs);
+          assignfile(f, incs); rewrite(f);
+          try
+            for i := 0 to st.Count - 1 do
+              writeln(f, st[i]);
+          finally
+            closefile(f);
+          end;
+          st.Clear;
+          writeln(' converted!');
+        end else begin
+          writeln('Error: ', err);
         end;
-        st.Clear;
-        writeln(' converted!');
       until FindNext(srch) <> 0;
 
     finally
@@ -167,8 +193,6 @@ begin
       st.Free;
     end;
   end;
-  
-  
 end;
 
 
@@ -176,6 +200,7 @@ var
   inpf  : AnsiString;
   st    : TStrings;
   i     : integer;
+  err   : AnsiString;
 begin
   try
     inpf := ParamStr(1);
@@ -186,9 +211,11 @@ begin
 
     st := TStringList.Create;
     try
-      ReadAndParseFile(inpf, st);
-      for i := 0 to st.Count - 1 do
-        writeln(st[i]);
+      if not ReadAndParseFile(inpf, st, err) then
+        writeln('Error: ', err)
+      else
+        for i := 0 to st.Count - 1 do
+          writeln(st[i]);
     except
     end;
     st.Free;

@@ -1,23 +1,59 @@
 {
  ObjCParserUtils.pas
-
  Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
- 
- converting obj-c to objfpc unit
+ converting obj-c header to pascal (delphi compatible) unit
 }
 
-//todo: a lot of things =)
-
-unit  ObjCParserUtils;
+unit ObjCParserUtils;
 
 interface
-
-  {$ifdef fpc}{$mode delphi}{$H+}{$endif fpc}
+{$ifdef fpc}{$mode delphi}{$H+}{$endif}
 
 uses
   Classes, SysUtils, ObjCParserTypes;
-  
+
+type
+  { TConvertSettings }
+  //todo: hash table
+  TReplace = class(TObject)
+    Src : AnsiString;
+    Dst : AnsiString;
+  end;
+
+  TReplaceItem = class(TObject)
+    ReplaceStr : AnsiString;
+  end;
+
+  TReplaceList = class(TObject)
+  private
+    fItems  : TStringList;
+  protected
+    function GetReplace(const ARepl: AnsiString): AnsiString;
+    procedure SetReplace(const ARepl, AValue: AnsiString);
+
+    function GetCaseSense: Boolean;
+    procedure SetCaseSense(AValue: Boolean);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Replace[const s: AnsiString]: AnsiString read GetReplace write SetReplace; default;
+    property CaseSensetive: Boolean read GetCaseSense write SetCaseSense;
+  end;
+
+  TConvertSettings = class(TObject)
+  public
+    IgnoreIncludes  : TStringList;
+    DefineReplace   : TReplaceList;
+    TypeDefReplace  : TReplaceList; // replaces for C types
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+var
+  ConvertSettings : TConvertSettings;
+
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
+procedure WriteOutMainFramework(hdr: TObjCHeader; st: TStrings);
 
 function ObjCToDelphiType(const objcType: AnsiString; isPointer: Boolean): AnsiString;
 
@@ -66,9 +102,6 @@ begin
     'w': Result := (ls = 'while') or (ls = 'with');
     'x': Result := (ls = 'xor');
   end;
-
-
-
 end;
 
 function GetMethodResultType(const m: TClassMethodDef): AnsiString;
@@ -137,6 +170,7 @@ end;
 function ObjCToDelphiType(const objcType: AnsiString; isPointer: Boolean): AnsiString;
 var
   l : AnsiString;
+  r : AnsiString;
 begin
   Result := objcType;
   l := AnsiLowerCase(objcType);
@@ -164,6 +198,11 @@ begin
     'f':
       if l = 'float' then Result := 'Single';
   end;
+  if Result = objcType then begin
+    r := ConvertSettings.TypeDefReplace[objcType];
+    if r <> '' then Result := r;
+  end;
+
 end;
 
 
@@ -252,13 +291,27 @@ end;
 // MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3 -> MAC_OS_X_VERSION_10_3
 // any other #ifdef excpresions would be passed "as is" even if are incorrect
 // for pascal
-function PrecompileIfDefToPascal(const prm: AnsiString): AnsiString;
+function PrecompileIfDefToPascal(const prm: AnsiString; var isDef: Boolean): AnsiString;
 var
   i   : Integer;
-const
-  VerExclude = 'MAC_OS_X_VERSION_MAX_ALLOWED >=';
+  vs  : AnsiString;
 begin
+  i := 1;
+  ScanWhile(prm, i, [#32, #9]);
+  if prm[i] = '!' then begin
+    isDef := false;
+    inc(i);
+    ScanWhile(prm, i, [#32, #9]);
+  end else
+    isDef :=true;
+  vs := Copy(prm, i, length(prm) - i + 1);
+
   // really slow... and... don't like this anyway!
+  vs := ConvertSettings.DefineReplace[vs];
+  if vs <> ''
+    then Result := vs 
+    else Result := prm;
+{  for i := 0 to ConvertSettings.DefineReplace.C
   Result := prm;
   i := Pos(VerExclude, prm);
   if i > 0 then begin
@@ -266,7 +319,7 @@ begin
     while (i <= length(Result)) and (Result[i] = ' ') do inc(i);
     if i <= length(Result) then
       Result := Copy(prm, i, length(Result) - i + 1);
-  end;
+  end;}
 end;
 
 // converts TProcpmiler entity to pascal entity
@@ -277,13 +330,22 @@ end;
 function WriteOutPrecompToPascal(Prec: TPrecompiler): AnsiString;
 var
   dir : AnsiString;
+  prm : AnsiString;
+  isdef : Boolean;
+const
+  isdefConst : array [Boolean] of AnsiString = ('ifndef', 'ifdef');
 begin
   dir := AnsiLowerCase(Prec._Directive);
-  if (dir = '#import') or (dir = '#include') then
-    Result := Format('{$include %s}', [GetIncludeFile(Prec._Params)])
-  else if (dir = '#if') then
-    Result := Format('{$ifdef %s}', [PrecompileIfDefToPascal(Prec._Params)])
-  else if (dir = '#else') then
+  if (dir = '#import') or (dir = '#include') then begin
+
+    prm := GetIncludeFile(Prec._Params);
+    if (prm <> ' .inc') and (ConvertSettings.IgnoreIncludes.IndexOf(prm) < 0) then
+      Result := Format('{$include %s}', [prm]);
+
+  end else if (dir = '#if') then begin
+    prm := PrecompileIfDefToPascal(Prec._Params, isdef);
+    Result := Format('{$%s %s}', [isdefConst[isdef], prm]);
+  end else if (dir = '#else') then
     Result := '{$else}'
   else if (dir = '#endif') then
     Result := '{$endif}';
@@ -385,7 +447,7 @@ var
 begin
   ppas := WriteOutPrecompToPascal(prec);
   isend := IsSubStr('{$endif', ppas, 1);
-  if isend or IsSubStr('{$ifdef', ppas, 1) or IsSubStr('{$else', ppas, 1) then
+  if isend or IsSubStr('{$ifndef', ppas, 1) or IsSubStr('{$ifdef', ppas, 1) or IsSubStr('{$else', ppas, 1) then
     subs.Add(Prefix + ppas);
   if isend then ClearEmptyPrecompile(subs);
 end;
@@ -399,20 +461,20 @@ var
   mtd : TClassMethodDef;
   obj : TObject;
 begin
-  if conststr.IndexOf(cl._ClassName) < 0 then begin
-    conststr.Add(cl._ClassName);
-    s := Format('  Str_%s = '#39'%s'#39';', [cl._ClassName, cl._ClassName]);
+//  if conststr.IndexOf(cl._ClassName) < 0 then begin
+//    conststr.Add(cl._ClassName);
+    s := Format('  Str%s_%s = '#39'%s'#39';', [cl._ClassName, cl._ClassName, cl._ClassName]);
     subs.Add(s);
-  end;
+//  end;
   for i := 0 to cl.Items.Count - 1 do begin
     obj := TObject(cl.Items[i]);
     if obj is TClassMethodDef then begin
       mtd := TClassMethodDef(cl.Items[i]);
-      if conststr.IndexOf(mtd._Name) < 0 then begin
-        conststr.Add(mtd._Name);
-        ss := Format('  Str_%s = '#39'%s'#39';', [mtd._Name, mtd._Name]);
-        subs.add(ss);
-      end;
+//      if conststr.IndexOf(mtd._Name) < 0 then begin
+//        conststr.Add(mtd._Name);
+      ss := Format('  Str%s_%s = '#39'%s'#39';', [cl._ClassName, mtd._Name, mtd._Name]);
+      subs.add(ss);
+//      end;
     end else if obj is TPrecompiler then begin
       WriteOutIfDefPrecompiler(TPrecompiler(obj), '  ', subs);
     end;
@@ -451,7 +513,8 @@ var
   dlph  : AnsiString;
 begin
   dlph := WriteOutPrecompToPascal(Prec);
-  if IsSubStr('{$include', dlph, 1) then st.Add(dlph);
+  if IsSubStr('{$include', dlph, 1) then
+    st.Add(dlph);
 end;
 
 function GetPascalEnumValue(const Name, Param: AnsiString): AnsiString;
@@ -481,6 +544,10 @@ begin
   //todo: improve! check at h2pas
   Result := ReplaceStr('<<', 'shl', vl);
   Result := ReplaceStr('>>', 'shr', Result);
+  Result := ReplaceStr('||', 'or', Result);
+  Result := ReplaceStr('|', 'or', Result);
+  Result := ReplaceStr('&&', 'and', Result);
+  Result := ReplaceStr('&', 'and', Result);
 end;
 
 procedure WriteOutEnumValues(enm: TEnumTypeDef; const Prefix: AnsiString; st: TStrings);
@@ -559,20 +626,70 @@ end;
 
 procedure WriteOutEnumToHeader(enm: TEnumTypeDef; st: TStrings);
 var
-//  i   : Integer;
-  s   : AnsiString;
+  i   : Integer;
+//  ent : TEnumValue;
+  obj : TObject;
+  pre : TEnumValue;
+  vl  : TEnumValue;
+  vls : AnsiString;
+  vli : Integer;
 begin
-  if enm._Name = '' then s := EvaluateEnumName(enm)
-  else s := enm._Name;
-  st.Add(Format('  %s = (', [s] ));
-  WriteOutEnumValues(enm, '    ', st );
-  st.Add('  );');
-  st.Add('');
+  if enm._Name = '' then begin
+    // unnamed enums are written out as constants
+    pre := nil;
+    st.Add('const');
+    vli := 1;
+    for i := 0 to enm.Items.Count - 1 do begin
+      obj := TObject(enm.Items[i]);
+      if obj is TEnumValue then begin
+        vl := TEnumValue(obj);
+        if vl._Value = '' then begin
+          if not Assigned(pre) then begin
+            vls := '0';
+            pre := vl;
+          end else begin
+            vls := pre._Name + ' + ' + IntToStr(vli);
+            inc(vli);
+          end;
+        end else begin
+          vls := vl._Value;
+          vli := 1;
+          pre := vl;
+        end;
+        st.Add(Format('  %s = %s;', [vl._Name,  GetPascalConstValue(vls)]));
+      end;
+    end;
+    st.Add('');
+    //st.Add('type');
+  end else begin
+    st.Add('type');
+    // named enums are written out as delphi enumerations
+    st.Add(Format('  %s = (', [enm._Name] ));
+    WriteOutEnumValues(enm, '    ', st );
+    st.Add('  );');
+    st.Add('');
+  end;
 end;
 
 procedure WriteOutTypeDefToHeader(typedef: TTypeNameDef; const Prefix: AnsiString; subs: TStrings);
+var
+  vs    : AnsiString;
+  tmp   : AnsiString;
 begin
-  subs.Add( Prefix + Format('%s = %s;', [typedef._TypeName, typedef._Inherited]));
+  vs := ConvertSettings.TypeDefReplace[typedef._Inherited];
+  if vs = '' then vs := typedef._Inherited;
+  if not Assigned(typedef._Type) or (typedef._Type is TTypeDef) then begin
+    subs.Add('type');
+    subs.Add(Prefix + Format('%s = %s;', [typedef._TypeName, vs]))
+  end else begin
+    if typedef._Type is TEnumTypeDef then begin
+      tmp := TEnumTypeDef(typedef._Type)._Name;
+      TEnumTypeDef(typedef._Type)._Name := typedef._TypeName;
+      WriteOutEnumToHeader(TEnumTypeDef(typedef._Type), subs);
+      TEnumTypeDef(typedef._Type)._Name := tmp;
+    end;
+  end;
+  subs.Add('');
 end;
 
 procedure WriteOutHeaderSection(hdr: TObjCHeader; st: TStrings);
@@ -593,10 +710,12 @@ begin
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
+
         if (TObject(hdr.Items[i]) is TClassDef) then begin
           cl := TClassDef(hdr.Items[i]);
           WriteOutClassToHeader(cl, subs, consts);
         end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
+          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
           WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
           WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs);
         end;
@@ -607,7 +726,7 @@ begin
       st.AddStrings(subs);
       subs.Clear;
     end;
-    
+
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
         if (TObject(hdr.Items[i]) is TEnumTypeDef) then begin
@@ -617,11 +736,12 @@ begin
           WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
         end else if (TObject(hdr.Items[i]) is TTypeNameDef) then begin
           WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, subs);
-        end;
+        end else if (TObject(hdr.Items[i]) is TSkip) then
+          subs.Add('//'+ TSkip(hdr.Items[i])._Skip);
       end; {of if}
-    
+
     if subs.Count > 0 then begin
-      st.Add('type');
+      //if subs[0] <> 'const' then st.Add('type');
       st.AddStrings(subs);
       subs.Clear;
     end;
@@ -701,7 +821,9 @@ var
   subs  : TStringList;
 begin
   BeginSection('CLASSES', st);
-  BeginSection(GetIfDefFileName(hdr._FileName, 'C'), st);
+  //BeginSection(GetIfDefFileName(hdr._FileName, 'C'), st);
+  BeginExcludeSection( GetIfDefFileName(hdr._FileName, 'C'), st);
+
   subs := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
@@ -709,9 +831,13 @@ begin
         WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
 
     for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) and (TObject(hdr.Items[i]) is TClassDef) then begin
-        WriteOutIfComment(hdr.Items, i - 1, '    ', subs);
-        WriteOutClassToClasses(TClassDef(hdr.Items[i]), subs);
+      if Assigned(hdr.Items[i]) then begin
+        if TObject(hdr.Items[i]) is TPrecompiler then
+          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), '    ', subs)
+        else if (TObject(hdr.Items[i]) is TClassDef) then begin
+          WriteOutIfComment(hdr.Items, i - 1, '    ', subs);
+          WriteOutClassToClasses(TClassDef(hdr.Items[i]), subs);
+        end;
       end;
 
     if subs.Count > 0 then begin
@@ -720,6 +846,7 @@ begin
     end;
     
   finally
+    EndSection(st);
     EndSection(st);
     subs.Free;
   end;
@@ -745,12 +872,16 @@ procedure ObjCMethodToProcType(mtd: TClassMethodDef; var typeName: AnsiString; s
 var
 //  i   : integer;
   s   : AnsiString;
+  ms  : AnsiString;
 begin
   typeName := MtdPrefix + mtd._Name + MtdPostFix;
   subs.Add('type');
 //    function GetProcFuncHead(const FuncName, OfClass, Params, ResType, FuncDest: AnsiString): AnsiString;
-  s := typeName + ' = ' + GetProcFuncHead('', '',  'param1: objc.id; param2: SEL; ' + GetMethodParams(mtd),  GetMethodResultType(mtd), '' );
-  subs.Add('  ' + s + ' cdecl;');
+  ms := GetMethodParams(mtd);
+  if ms = '' then ms := 'param1: objc.id; param2: SEL'
+  else ms := 'param1: objc.id; param2: SEL' + ';' + ms;
+  s := Format('  %s = %s cdecl;',[typeName, GetProcFuncHead('', '', ms,  GetMethodResultType(mtd), '' )]);
+  subs.Add(s);
 end;
 
 function GetParamsNames(mtd: TClassMethodDef): AnsiString;
@@ -774,52 +905,93 @@ begin
 //  Result := Copy(Result, 1, length(Result) - 2);
 end;
 
+
+// procedure writes out constructor entity to the implementation section
+// with the followind structure
+// assignes object's ClassID usinng GetClass method
+// creates ObjC object calling objc_method Alloc
+// adds procedure type and variable of objC init??? method, to wrap obj_SendMsg
+// initialize ObjC object structure calling init??? method
+
+procedure WriteOutConstructorMethod(mtd: TClassMethodDef; subs: TStrings);
+var
+  typeName  : AnsiString;
+  cl  : TClassDef;
+begin
+  cl  := TClassDef(mtd.Owner);
+  ObjCMethodToProcType(mtd, typeName, subs);
+  subs.Add('var');
+  subs.Add(
+    Format('  vmethod: %s;', [typeName]));
+  subs.Add('begin');
+  subs.Add('  ClassID := getClass();');
+  subs.Add('  allocbuf := objc_msgSend(ClassID, sel_registerName(PChar(Str_alloc)), []);');
+  subs.Add(
+    Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+  subs.Add(
+    Format('  Handle := vmethod(allocbuf, sel_registerName(PChar(Str%s_%s)), %s);', [cl._ClassName, mtd._Name, GetParamsNames(mtd)]));
+  subs.Add('end;');
+end;
+
+// writes out a method to implementation section
+procedure WriteOutMethod(mtd: TClassMethodDef; subs: TStrings);
+var
+  s         : AnsiString;
+  typeName  : AnsiString;
+  cl        : TClassDef;
+begin
+  cl := TClassDef(mtd.Owner);
+  s := Format('vmethod(Handle, sel_registerName(PChar(Str%s_%s)), %s)', [cl._ClassName, mtd._Name, GetParamsNames(mtd)]);
+  if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
+    s := 'Result := ' + s;
+  ObjCMethodToProcType(mtd, typeName, subs);
+  subs.Add('var');
+  subs.Add(
+    Format('  vmethod: %s;', [typeName]));
+  subs.Add('begin');
+  subs.Add(
+    Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+  subs.Add(
+    Format('  %s;', [s]));
+  subs.Add('end;');
+end;
+
+// writes out a method to implementation section, that has no params
+procedure WriteOutMethodNoParams(mtd: TClassMethodDef; subs: TStrings);
+var
+  s   : AnsiString;
+  res : AnsiString;
+  cl  : TClassDef;
+begin
+  cl := TClassDef(mtd.owner);
+  s := Format('objc_msgSend(Handle, sel_registerName(PChar(Str%s_%s)), [])', [cl._ClassName, mtd._Name]);
+  res := GetMethodResultType(mtd);
+  if res <> '' then begin
+     if res = 'objc.id' then s := 'Result := ' +s
+      else s := 'Result := '+res+'('+s+')'
+  end;
+
+  subs.Add('begin');
+  subs.Add(Format('  %s;', [s]));
+  subs.Add('end;');
+end;
+
 procedure WriteOutMethodToImplementation(mtd: TClassMethodDef; subs: TStrings);
 var
-  cl  : TClassDef;
-  res : Ansistring;
-  sp  : AnsiString;
-  s   : AnsiString;
-//  isConsts  : Boolean;
+  cl        : TClassDef;
   typeName  : AnsiString;
 begin
   typeName := '';
   if not Assigned(mtd.Owner) or (not (TObject(mtd.Owner) is TClassDef)) then Exit; // method cannot be without owning class
   cl := TClassDef(mtd.Owner);
   
-  subs.Add(GetMethodStr(cl, mtd, true));
-
-  if IsMethodConstructor(cl, mtd) then begin
-    subs.Add('begin');
-    subs.Add('  //todo: constructors are not implemented, yet');
-    subs.Add('end;');
-  end else if not isAnyParam(mtd) then begin
-    subs.Add('begin');
-    try
-      sp := Format('objc_msgSend(Handle, sel_registerName(PChar(Str_%s)), [])', [mtd._Name]);
-      res := GetMethodResultType(mtd);
-      
-      if res <> '' then begin
-        if res = 'objc.id' then sp := 'Result := ' +sp
-        else sp := 'Result := '+res+'('+sp+')'
-      end;
-      subs.Add('  ' + sp+';');
-    finally
-      subs.Add('end;');
-    end;
-  end else begin
-    ObjCMethodToProcType(mtd, typeName, subs);
-    subs.Add('var');
-    subs.Add(Format('  vmethod: %s;', [typeName]));
-    subs.Add('begin');
-    subs.Add(Format('  vmethod := %s(@objc_msgSend);', [typeName]));
-    s := Format('vmethod(Handle, sel_registerName(PChar(Str_%s)), %s)', [mtd._Name, GetParamsNames(mtd)]);
-    if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
-      s := 'Result := ' + s;
-    s := s + ';';
-    subs.Add('  ' + s);
-    subs.Add('end;');
-  end;
+  subs.Add(GetMethodStr(cl, mtd, true));//writes out method header, like function NsType.NsName(params): Result
+  if IsMethodConstructor(cl, mtd) then
+    WriteOutConstructorMethod(mtd, subs)
+  else if not isAnyParam(mtd) then
+    WriteOutMethodNoParams(mtd, subs)
+  else
+    WriteOutMethod(mtd, subs);
   subs.Add('');
 end;
 
@@ -839,8 +1011,9 @@ begin
   subs.Add('');
   subs.Add(GetProcFuncHead('getClass', cl._ClassName, '', 'objc.id'));
   subs.Add('begin');
-  subs.Add('  Result := objc_getClass(Str_'+cl._ClassName+');');
-  subs.Add('end');
+  subs.Add(
+    Format('  Result := objc_getClass(Str%s_%s);', [cl._ClassName, cl._ClassName]));
+  subs.Add('end;');
   subs.Add('');
   
   for i := 0 to cl.Items.Count - 1 do begin
@@ -880,16 +1053,19 @@ begin
   Result := false;
   EnumIdx := TypeDefIdx - 1;
   if (EnumIdx < 0) or (EnumIdx >= items.Count) then Exit;
-  
+
   if (TObject(items.Items[TypeDefIdx]) is TTypeNameDef) and
-    (TObject(items.Items[EnumIdx]) is TEnumTypeDef) then begin
+   (TObject(items.Items[EnumIdx]) is TEnumTypeDef) then begin
     typedef := TTypeNameDef(items.Items[TypeDefIdx]);
     enumdef := TEnumTypeDef(items.Items[EnumIdx]);
   end else
     Exit;
 
-  if typedef._Inherited = AppleInherit then enumdef._Name := typedef._TypeName;
-  Result := true;
+  if typedef._Inherited = AppleInherit then begin
+    enumdef._Name := typedef._TypeName;
+    Result := true;
+  end;
+
 end;
 
 
@@ -971,5 +1147,244 @@ begin
   except
   end;
 end;
+
+procedure WriteOutMainFramework(hdr: TObjCHeader; st: TStrings);
+//var
+//  i   : integer;
+//  nm  : AnsiString;
+begin
+end;
+
+{ TConvertSettings }
+
+constructor TConvertSettings.Create;
+begin
+  IgnoreIncludes := TStringList.Create;
+  IgnoreIncludes.CaseSensitive := false;
+  DefineReplace := TReplaceList.Create;
+  TypeDefReplace := TReplaceList.Create; // replaces for default types
+end;
+
+destructor TConvertSettings.Destroy;
+begin
+  IgnoreIncludes.Free;
+  TypeDefReplace.Free;
+  DefineReplace.Free;
+  inherited Destroy;
+end;
+
+procedure InitConvertSettings;
+begin
+  with ConvertSettings.IgnoreIncludes do begin
+    // must not be $included, because they are used
+    Add('NSObjCRuntime.inc');
+    Add('NSObject.inc');
+    Add('Foundation.inc');
+
+    Add('NSZone.inc');
+    Add('NSAppleEventDescriptor.inc');
+    Add('NSAppleEventManager.inc');
+    Add('NSAppleScript.inc');
+    Add('NSArchiver.inc');
+    Add('NSArray.inc');
+    Add('NSAttributedString.inc');
+    Add('NSAutoreleasePool.inc');
+    Add('NSBundle.inc');
+    Add('NSByteOrder.inc');
+    Add('NSCalendar.inc');
+    Add('NSCalendarDate.inc');
+    Add('NSCharacterSet.inc');
+    Add('NSClassDescription.inc');
+    Add('NSCoder.inc');
+    Add('NSComparisonPredicate.inc');
+    Add('NSCompoundPredicate.inc');
+    Add('NSConnection.inc');
+    Add('NSData.inc');
+    Add('NSDate.inc');
+    Add('NSDateFormatter.inc');
+    Add('NSDebug.inc');
+    Add('NSDecimal.inc');
+    Add('NSDecimalNumber.inc');
+    Add('NSDictionary.inc');
+    Add('NSDistantObject.inc');
+    Add('NSDistributedLock.inc');
+    Add('NSDistributedNotificationCenter.inc');
+    Add('NSEnumerator.inc');
+    Add('NSError.inc');
+    Add('NSException.inc');
+    Add('NSExpression.inc');
+    Add('NSFileHandle.inc');
+    Add('NSFileManager.inc');
+    Add('NSFormatter.hinc');
+    Add('NSGarbageCollector.inc');
+    Add('NSGeometry.inc');
+    Add('NSHashTable.inc');
+    Add('NSHFSFileTypes.inc');
+    Add('NSHost.inc');
+    Add('NSHTTPCookie.inc');
+    Add('NSHTTPCookieStorage.inc');
+    Add('NSIndexPath.inc');
+    Add('NSIndexSet.inc');
+    Add('NSInvocation.inc');
+    Add('NSJavaSetup.inc');
+    Add('NSKeyedArchiver.inc');
+    Add('NSKeyValueCoding.inc');
+    Add('NSKeyValueObserving.inc');
+    Add('NSLocale.inc');
+    Add('NSLock.inc');
+    Add('NSMapTable.inc');
+    Add('NSMetadata.inc');
+    Add('NSMethodSignature.inc');
+    Add('NSNetServices.inc');
+    Add('NSNotification.inc');
+    Add('NSNotificationQueue.inc');
+    Add('NSNull.inc');
+    Add('NSNumberFormatter.inc');
+    Add('NSObjectScripting.inc');
+    Add('NSOperation.inc');
+    Add('NSPathUtilities.inc');
+    Add('NSPointerArray.inc');
+    Add('NSPointerFunctions.inc');
+    Add('NSPort.inc');
+    Add('NSPortCoder.inc');
+    Add('NSPortMessage.inc');
+    Add('NSPortNameServer.inc');
+    Add('NSPredicate.inc');
+    Add('NSProcessInfo.inc');
+    Add('NSPropertyList.inc');
+    Add('NSProtocolChecker.inc');
+    Add('NSProxy.inc');
+    Add('NSRange.inc');
+    Add('NSRunLoop.inc');
+    Add('NSScanner.inc');
+    Add('NSScriptClassDescription.inc');
+    Add('NSScriptCoercionHandler.inc');
+    Add('NSScriptCommand.inc');
+    Add('NSScriptCommandDescription.inc');
+    Add('NSScriptExecutionContext.inc');
+    Add('NSScriptKeyValueCoding.inc');
+    Add('NSScriptObjectSpecifiers.inc');
+    Add('NSScriptStandardSuiteCommands.inc');
+    Add('NSScriptSuiteRegistry.inc');
+    Add('NSScriptWhoseTests.inc');
+    Add('NSSet.inc');
+    Add('NSSortDescriptor.inc');
+    Add('NSSpellServer.inc');
+    Add('NSStream.inc');
+    Add('NSString.inc');
+    Add('NSTask.inc');
+    Add('NSThread.inc');
+    Add('NSTimer.inc');
+    Add('NSTimeZone.inc');
+    Add('NSUndoManager.inc');
+    Add('NSURL.inc');
+    Add('NSURLAuthenticationChallenge.inc');
+    Add('NSURLCache.inc');
+    Add('NSURLConnection.inc');
+    Add('NSURLCredential.inc');
+    Add('NSURLCredentialStorage.inc');
+    Add('NSURLDownload.inc');
+    Add('NSURLError.inc');
+    Add('NSURLHandle.inc');
+    Add('NSURLProtectionSpace.inc');
+    Add('NSURLProtocol.inc');
+    Add('NSURLRequest.inc');
+    Add('NSURLResponse.inc');
+    Add('NSUserDefaults.inc');
+    Add('NSValue.inc');
+    Add('NSValueTransformer.inc');
+    Add('NSXMLDocument.inc');
+    Add('NSXMLDTD.inc');
+    Add('NSXMLDTDNode.inc');
+    Add('NSXMLElement.inc');
+    Add('NSXMLNode.inc');
+    Add('NSXMLNodeOptions.inc');
+    Add('NSXMLParser.inc');
+    // temporary
+    Add('ApplicationServices.inc');
+    Add('IOLLEvent.inc');
+    Add('Limits.inc');
+    Add('AvailabilityMacros.inc');
+    Add('CCImage.inc');
+    Add('NSStringEncoding.inc');
+    Add('NSGlyph.inc');
+    Add('CFDate.inc');
+    Add('CFRunLoop.inc');
+    Add('gl.inc');
+    Add('UTF32Char.inc');
+    Add('CoreFoundation.inc');
+    Add('NSFetchRequest.inc');
+    Add('NSAttributeDescription.inc');
+  end;
+  with ConvertSettings do begin
+    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
+    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
+    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
+    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
+    DefineReplace['__LP64__'] := 'LP64';
+    TypeDefReplace['uint32_t'] := 'LongWord';
+    TypeDefReplace['uint8_t'] := 'byte';
+    TypeDefReplace['NSUInteger'] := 'LongWord';
+  end;
+//????
+//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
+//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
+//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
+//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
+end;
+
+{ TReplaceList }
+
+constructor TReplaceList.Create;
+begin
+  inherited Create;
+  fItems := TStringList.Create;
+end;
+
+destructor TReplaceList.Destroy;
+begin
+  fItems.Free;
+  inherited;
+end;
+
+function TReplaceList.GetCaseSense: Boolean;
+begin
+  Result := fItems.CaseSensitive;
+end;
+
+procedure TReplaceList.SetCaseSense(AValue: Boolean);
+begin
+  fITems.CaseSensitive := AValue;
+end;
+
+function TReplaceList.GetReplace(const ARepl: AnsiString): AnsiString;
+var
+  i : integer;
+begin
+  i := fItems.IndexOf(ARepl);
+  if i < 0 then Result := ''
+  else Result := TReplaceItem(fItems.Objects[i]).ReplaceStr;
+end;
+
+procedure TReplaceList.SetReplace(const ARepl, AValue: AnsiString);
+var
+  i   : integer;
+  it  : TReplaceItem;
+begin
+  i := fItems.IndexOf(ARepl);
+  if i < 0 then begin
+    it := TReplaceItem.Create;
+    it.ReplaceStr := AValue;
+    fItems.AddObject(Arepl, it);
+  end else
+    TReplaceItem(fItems.Objects[i]).ReplaceStr := AValue;
+end;
+
+initialization
+  ConvertSettings := TConvertSettings.Create;
+  InitConvertSettings;
+
+finalization
+  ConvertSettings.Free;
 
 end.
