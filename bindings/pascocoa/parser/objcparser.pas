@@ -185,6 +185,7 @@ begin
           writeln(' converted!');
         end else begin
           writeln('Error: ', err);
+          readln;
         end;
       until FindNext(srch) <> 0;
 
@@ -195,6 +196,77 @@ begin
   end;
 end;
 
+const
+  ParamKey = '-';
+
+function isParamValue(const s: AnsiString; var ParName, ParValue: AnsiString): Boolean;
+var
+  i   : Integer;
+begin
+  Result := false;
+  if s = '' then Exit;
+  Result := (s[1] = ParamKey);
+  if not Result then Exit;
+  i := 1;
+  ScanWhile(s, i, [ParamKey]);
+  ParName := ScanTo(s, i, [#32, #9, '=']);
+  ScanWhile(s, i, [#32, #9, '=']);
+  ParValue := Copy(s, i, length(s) - i + 1);
+end;
+
+procedure AddSpaceSeparated(const s: AnsiString; Strings: TStringList);
+var
+  i   : Integer;
+  ns  : AnsiString;
+begin
+  i := 1;
+  while i <= length(s) do begin
+    ScanTo(s, i, ['A'..'Z', 'a'..'z']);
+    ns := ScanTo(s, i, [#32, #9, '"']);
+    if ns <> '' then Strings.Add(ns);
+  end;
+end;
+
+function GetConvertSettings(Settings : TConvertSettings; var FileName: AnsiString): Boolean;
+var
+  i   : integer;
+  prm : AnsiString;
+  vlm : AnsiString;
+  Params  : TStringList;
+begin
+  Params := TStringList.Create;
+  Params.CaseSensitive := false;
+  try
+    for i := 1 to ParamCount do begin
+      if isParamValue(ParamStr(i), prm, vlm) then begin
+        prm := AnsiLowerCase(prm);
+        if prm = 'mu' then prm := 'mainunit'
+        else if prm = 'ii' then prm := 'ignoreinclude';
+        Params.Values[prm] := vlm;
+      end else
+        FileName := ParamStr(i);
+    end;
+
+    vlm := Params.Values['mainunit'];
+    if vlm <> '' then
+      Settings.ConvertPrefix.Add ('{%mainunit '+vlm+'}');
+
+    vlm := Params.Values['ignoreinclude'];
+    if vlm <> '' then begin
+      AddSpaceSeparated(vlm, Settings.IgnoreIncludes);
+      for i := 0 to Settings.IgnoreIncludes.Count - 1 do begin
+        vlm := Settings.IgnoreIncludes[i];
+        vlm := Copy(vlm, 1, length(vlm) - length(ExtractFileExt(vlm)));
+        vlm := vlm + '.inc';
+        Settings.IgnoreIncludes[i] := vlm;
+      end;
+    end;
+
+  finally
+    Params.Free;
+  end;
+  Result := true;
+end;
 
 var
   inpf  : AnsiString;
@@ -203,7 +275,7 @@ var
   err   : AnsiString;
 begin
   try
-    inpf := ParamStr(1);
+    GetConvertSettings(ConvertSettings, inpf);
     if not FileExists(inpf) then begin
       //ParseAll;
       Exit;
@@ -211,7 +283,7 @@ begin
 
     st := TStringList.Create;
     try
-      if not ReadAndParseFile(inpf, st, err) then
+      if not ReadAndParseFile(inpf, st, err) then 
         writeln('Error: ', err)
       else
         for i := 0 to st.Count - 1 do

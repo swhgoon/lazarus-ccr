@@ -45,6 +45,8 @@ type
     IgnoreIncludes  : TStringList;
     DefineReplace   : TReplaceList;
     TypeDefReplace  : TReplaceList; // replaces for C types
+
+    ConvertPrefix   : TStringList;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -425,6 +427,7 @@ end;
 
 procedure BeginSection(const SectionName: AnsiString; st: TStrings);
 begin
+  st.Add('');
   st.Add('{$ifdef '+SectionName+'}');
 end;
 
@@ -432,6 +435,7 @@ procedure BeginExcludeSection(const DefineName: AnsiString; st: TStrings);
 begin
   st.Add('{$ifndef '+DefineName+'}');
   st.Add('{$define '+DefineName+'}');
+  st.Add('');
 end;
 
 procedure EndSection(st: TStrings);
@@ -452,6 +456,11 @@ begin
   if isend then ClearEmptyPrecompile(subs);
 end;
 
+function GetClassConst(const ClassName, ConstName: AnsiString): AnsiString;
+begin
+  Result := Format('Str%s_%s', [ClassName, ConstName]);
+end;
+
 procedure WriteOutClassToHeader(cl : TClassDef; subs: TStrings; conststr: TStrings);
 var
   i   : Integer;
@@ -460,21 +469,26 @@ var
   ss  : AnsiString;
   mtd : TClassMethodDef;
   obj : TObject;
+  cs  : AnsiString;
 begin
-//  if conststr.IndexOf(cl._ClassName) < 0 then begin
-//    conststr.Add(cl._ClassName);
-    s := Format('  Str%s_%s = '#39'%s'#39';', [cl._ClassName, cl._ClassName, cl._ClassName]);
+  cs := GetClassConst(cl._ClassName, cl._ClassName);
+  if conststr.IndexOf(cs) < 0 then begin
+    conststr.Add(cs);
+    s := Format('  %s = ''%s'';', [cs, cl._ClassName]);
     subs.Add(s);
-//  end;
+  end;
+
   for i := 0 to cl.Items.Count - 1 do begin
     obj := TObject(cl.Items[i]);
     if obj is TClassMethodDef then begin
       mtd := TClassMethodDef(cl.Items[i]);
-//      if conststr.IndexOf(mtd._Name) < 0 then begin
-//        conststr.Add(mtd._Name);
-      ss := Format('  Str%s_%s = '#39'%s'#39';', [cl._ClassName, mtd._Name, mtd._Name]);
-      subs.add(ss);
-//      end;
+
+      cs := GetClassConst(cl._ClassName, mtd._Name);
+      if conststr.IndexOf(cs) < 0 then begin
+        conststr.Add(cs);
+        ss := Format('  %s = ''%s'';', [cs, mtd._Name]);
+        subs.add(ss);
+      end;
     end else if obj is TPrecompiler then begin
       WriteOutIfDefPrecompiler(TPrecompiler(obj), '  ', subs);
     end;
@@ -706,7 +720,7 @@ begin
   BeginExcludeSection( GetIfDefFileName(hdr._FileName, 'H'), st);
   subs := TStringList.Create;
   consts := TStringList.Create;
-  
+
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -749,6 +763,7 @@ begin
   finally
     EndSection(st);
     EndSection(st);
+    subs.Add('');
     subs.Free;
     consts.Free;
   end;
@@ -767,6 +782,7 @@ var
 const
   SpacePrefix = '    ';
 begin
+  subs.Add('');
   subs.Add('  { '+cl._ClassName +' }');
   subs.Add('');
   s := '  ' + cl._ClassName + ' = class';
@@ -1079,7 +1095,7 @@ begin
   for i := 0 to Items.Count - 1 do
     if TObject(Items[i]) is TClassDef then begin
       cl := TClassDef(Items[i]);
-      if cl._SuperClass <> '' then
+      if (cl._SuperClass <> '') and (cl._Category <> '') then
         for j := 0 to category.Items.Count - 1 do begin
           cl.Items.Add(category.Items[j]);
           TEntity(category.Items[j]).owner := cl;
@@ -1099,10 +1115,13 @@ begin
     if (obj is TTypeNameDef) and (AppleEnumType(ent.Items, i)) then begin
       ent.Items[i] := nil;
       obj.Free;
-    end else if (obj is TClassDef) and (TClassDef(obj)._SuperClass = '') then begin
+    end else if (obj is TClassDef) and ((TClassDef(obj)._SuperClass = '') and (TClassDef(obj)._Category <> ''))then begin
       FixAppleCategories(ent.Items, TClassDef(obj));
       ent.Items[i] := nil;
       obj.Free;
+    end else if (obj is TClassDef) and ((TClassDef(obj)._Category = '') and (TClassDef(obj)._ClassName = 'NSObject')) then begin
+      if TClassDef(obj)._SuperClass = '' then
+        TClassDef(obj)._SuperClass := 'TObject'
     end else if (obj is TParamDescr) then begin
       if IsPascalReserved(TParamDescr(obj)._Descr) then
         TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr;
@@ -1122,6 +1141,7 @@ begin
 
   for i := 0 to ent.Items.Count - 1 do
     AppleHeaderFix( TEntity(ent.Items[i]));
+
 end;
 
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
@@ -1130,6 +1150,8 @@ var
   cmt : TComment;
 begin
   try
+    st.AddStrings(ConvertSettings.ConvertPrefix);
+    
     if hdr.Items.Count <= 0 then Exit;
     AppleHeaderFix(hdr);
 
@@ -1163,6 +1185,7 @@ begin
   IgnoreIncludes.CaseSensitive := false;
   DefineReplace := TReplaceList.Create;
   TypeDefReplace := TReplaceList.Create; // replaces for default types
+  ConvertPrefix := TStringList.Create;
 end;
 
 destructor TConvertSettings.Destroy;
@@ -1170,6 +1193,7 @@ begin
   IgnoreIncludes.Free;
   TypeDefReplace.Free;
   DefineReplace.Free;
+  ConvertPrefix.Free;
   inherited Destroy;
 end;
 
@@ -1181,7 +1205,7 @@ begin
     Add('NSObject.inc');
     Add('Foundation.inc');
 
-    Add('NSZone.inc');
+(*    Add('NSZone.inc');
     Add('NSAppleEventDescriptor.inc');
     Add('NSAppleEventManager.inc');
     Add('NSAppleScript.inc');
@@ -1315,6 +1339,7 @@ begin
     Add('CoreFoundation.inc');
     Add('NSFetchRequest.inc');
     Add('NSAttributeDescription.inc');
+    *)
   end;
   with ConvertSettings do begin
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
@@ -1325,6 +1350,7 @@ begin
     TypeDefReplace['uint32_t'] := 'LongWord';
     TypeDefReplace['uint8_t'] := 'byte';
     TypeDefReplace['NSUInteger'] := 'LongWord';
+    TypeDefReplace['NSInteger'] := 'Integer';
   end;
 //????
 //    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';

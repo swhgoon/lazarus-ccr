@@ -750,6 +750,7 @@ begin
   Result := false;
   AParser.FindNextToken(s, tt);
   if s <> '@interface' then begin
+    AParser.SetError(ErrExpectStr('@interface', s));
     Exit;
   end;
 
@@ -763,7 +764,7 @@ begin
       AParser.FindNextToken(_Category, tt);
       AParser.FindNextToken(s, tt);
     end else
-      Exit;
+      AParser.Index := AParser.TokenPos;
   end;
 
   AParser.FindNextToken(s, tt); // parsing protocols
@@ -781,6 +782,7 @@ begin
   repeat
     if not AParser.FindNextToken(s, tt) then begin
       s := '';
+      AParser.SetError('error while parsing class declaration');
       exit;
     end;
 
@@ -838,7 +840,7 @@ begin
       AParser.Index := AParser.TokenPos;
       TSkip(ent)._Skip := SkipLine(AParser.Buf, AParser.Index);
     end;
-    if Assigned(ent) then Items.Add(ent);
+   if Assigned(ent) then Items.Add(ent);
   end;
   Result := true;
 end;
