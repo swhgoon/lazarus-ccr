@@ -913,15 +913,15 @@ type
     constructor Create(AOwner: TBaseVirtualTree);
     destructor Destroy; override;
 
-    function DragTo(P: TPoint; ForceRepaint: Boolean): Boolean;
+    function DragTo(const P: TPoint; ForceRepaint: Boolean): Boolean;
     procedure EndDrag;
     function GetDragImageRect: TRect;
     procedure HideDragImage;
-    procedure PrepareDrag(DragImage: TBitmap; ImagePosition, HotSpot: TPoint; const DataObject: IDataObject);
+    procedure PrepareDrag(DragImage: TBitmap; const ImagePosition, HotSpot: TPoint; const DataObject: IDataObject);
     procedure RecaptureBackground(Tree: TBaseVirtualTree; R: TRect; VisibleRegion: HRGN; CaptureNCArea,
       ReshowDragImage: Boolean);
     procedure ShowDragImage;
-    function WillMove(P: TPoint): Boolean;
+    function WillMove(const P: TPoint): Boolean;
 
     property ColorKey: TColor read FColorKey write FColorKey default clWindow;
     property Fade: Boolean read FFade write FFade default False;
@@ -1064,12 +1064,12 @@ type
   protected
     procedure AdjustAutoSize(CurrentIndex: TColumnIndex; Force: Boolean = False);
     function AdjustDownColumn(P: TPoint): TColumnIndex;
-    function AdjustHoverColumn(P: TPoint): Boolean;
+    function AdjustHoverColumn(const P: TPoint): Boolean;
     procedure AdjustPosition(Column: TVirtualTreeColumn; Position: Cardinal);
     procedure DrawButtonText(DC: HDC; Caption: WideString; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal);
-    procedure DrawXPButton(DC: HDC; ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
+    procedure DrawXPButton(DC: HDC; const ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
     procedure FixPositions;
-    function GetColumnAndBounds(P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
+    function GetColumnAndBounds(const P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
     function GetOwner: TPersistent; override;
     procedure HandleClick(P: TPoint; Button: TMouseButton; Force, DblClick: Boolean); virtual;
     procedure IndexChanged(OldIndex, NewIndex: Integer);
@@ -1088,7 +1088,7 @@ type
     procedure AnimatedResize(Column: TColumnIndex; NewWidth: Integer);
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
-    function ColumnFromPosition(P: TPoint; Relative: Boolean = True): TColumnIndex; overload; virtual;
+    function ColumnFromPosition(const P: TPoint; Relative: Boolean = True): TColumnIndex; overload; virtual;
     function ColumnFromPosition(PositionIndex: TColumnPosition): TColumnIndex; overload; virtual;
     function Equals(OtherColumns: TVirtualTreeColumns): Boolean;
     procedure GetColumnBounds(Column: TColumnIndex; var Left, Right: Integer);
@@ -1102,7 +1102,7 @@ type
     function GetVisibleFixedWidth: Integer;
     function IsValidColumn(Column: TColumnIndex): Boolean;
     procedure LoadFromStream(const Stream: TStream; Version: Integer);
-    procedure PaintHeader(DC: HDC; R: TRect; HOffset: Integer); virtual;
+    procedure PaintHeader(DC: HDC; const R: TRect; HOffset: Integer); virtual;
     procedure SaveToStream(const Stream: TStream);
     function TotalWidth: Integer;
 
@@ -1206,9 +1206,9 @@ type
   protected
     function CanWriteColumns: Boolean; virtual;
     procedure ChangeScale(M, D: Integer); virtual;
-    function DetermineSplitterIndex(P: TPoint): Boolean; virtual;
+    function DetermineSplitterIndex(const P: TPoint): Boolean; virtual;
     procedure DoSetSortColumn(Value: TColumnIndex); virtual;
-    procedure DragTo(P: TPoint);
+    procedure DragTo(const P: TPoint);
     function GetColumnsClass: TVirtualTreeColumnsClass; virtual;
     function GetOwner: TPersistent; override;
     function GetShiftState: TShiftState;
@@ -1227,7 +1227,7 @@ type
 
     procedure Assign(Source: TPersistent); override;
     procedure AutoFitColumns(Animated: Boolean = True);
-    function InHeader(P: TPoint): Boolean; virtual;
+    function InHeader(const P: TPoint): Boolean; virtual;
     procedure Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
     procedure LoadFromStream(const Stream: TStream); virtual;
     procedure RestoreColumns;
@@ -1638,8 +1638,8 @@ type
   TVTHeaderNotifyEvent = procedure(Sender: TVTHeader; Column: TColumnIndex) of object;
   TVTHeaderDraggingEvent = procedure(Sender: TVTHeader; Column: TColumnIndex; var Allowed: Boolean) of object;
   TVTHeaderDraggedEvent = procedure(Sender: TVTHeader; Column: TColumnIndex; OldPosition: Integer) of object;
-  TVTHeaderDraggedOutEvent = procedure(Sender: TVTHeader; Column: TColumnIndex; DropPosition: TPoint) of object;
-  TVTHeaderPaintEvent = procedure(Sender: TVTHeader; HeaderCanvas: TCanvas; Column: TVirtualTreeColumn; R: TRect; Hover,
+  TVTHeaderDraggedOutEvent = procedure(Sender: TVTHeader; Column: TColumnIndex; const DropPosition: TPoint) of object;
+  TVTHeaderPaintEvent = procedure(Sender: TVTHeader; HeaderCanvas: TCanvas; Column: TVirtualTreeColumn; const R: TRect; Hover,
     Pressed: Boolean; DropMark: TVTDropMarkMode) of object;
   TVTHeaderPaintQueryElementsEvent = procedure(Sender: TVTHeader; var PaintInfo: THeaderPaintInfo;
     var Elements: THeaderPaintElements) of object;
@@ -1663,28 +1663,28 @@ type
   TVTDragAllowedEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
     var Allowed: Boolean) of object;
   TVTDragOverEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; Shift: TShiftState; State: TDragState;
-    Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean) of object;
+    const Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean) of object;
   TVTDragDropEvent = procedure(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject;
-    Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode) of object;
+    Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint; var Effect: Integer; Mode: TDropMode) of object;
   TVTRenderOLEDataEvent = procedure(Sender: TBaseVirtualTree; const FormatEtcIn: TFormatEtc; out Medium: TStgMedium;
     ForClipboard: Boolean; var Result: HRESULT) of object;
   TVTGetUserClipboardFormatsEvent = procedure(Sender: TBaseVirtualTree; var Formats: TFormatEtcArray) of object;
 
   // paint events
-  TVTBeforeItemEraseEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; ItemRect: TRect;
+  TVTBeforeItemEraseEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect;
     var ItemColor: TColor; var EraseAction: TItemEraseAction) of object;
   TVTAfterItemEraseEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-    ItemRect: TRect) of object;
+    const ItemRect: TRect) of object;
   TVTBeforeItemPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-    ItemRect: TRect; var CustomDraw: Boolean) of object;
+    const ItemRect: TRect; var CustomDraw: Boolean) of object;
   TVTAfterItemPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-    ItemRect: TRect) of object;
+    const ItemRect: TRect) of object;
   TVTBeforeCellPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-    Column: TColumnIndex; CellRect: TRect) of object;
+    Column: TColumnIndex; const CellRect: TRect) of object;
   TVTAfterCellPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-    Column: TColumnIndex; CellRect: TRect) of object;
+    Column: TColumnIndex; const CellRect: TRect) of object;
   TVTPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas) of object;
-  TVTBackgroundPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; R: TRect;
+  TVTBackgroundPaintEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; const R: TRect;
     var Handled: Boolean) of object;
   TVTGetLineStyleEvent = procedure(Sender: TBaseVirtualTree; var Bits: Pointer) of object;
   TVTMeasureItemEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
@@ -1969,16 +1969,16 @@ TBaseVirtualTree = class(TCustomControl)
     procedure AdjustCoordinatesByIndent(var PaintInfo: TVTPaintInfo; Indent: Integer);
     procedure AdjustImageBorder(ImageWidth, ImageHeight: Integer; BidiMode: TBidiMode; VAlign: Integer; var R: TRect;
       var ImageInfo: TVTImageInfo);
-    procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
-    procedure AdjustTotalHeight(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
+    procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
+    procedure AdjustTotalHeight(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
     function CalculateCacheEntryCount: Integer;
     procedure CalculateVerticalAlignments(ShowImages, ShowStateImages: Boolean; Node: PVirtualNode; var VAlign,
       VButtonAlign: Integer);
     function ChangeCheckState(Node: PVirtualNode; Value: TCheckState): Boolean;
-    function CollectSelectedNodesLTR(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment; OldRect,
-      NewRect: TRect): Boolean;
-    function CollectSelectedNodesRTL(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment; OldRect,
-      NewRect: TRect): Boolean;
+    function CollectSelectedNodesLTR(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment; OldRect: TRect;
+      const NewRect: TRect): Boolean;
+    function CollectSelectedNodesRTL(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment; OldRect: TRect;
+      const NewRect: TRect): Boolean;
     procedure ClearNodeBackground(const PaintInfo: TVTPaintInfo; UseBackground, Floating: Boolean; R: TRect);
     function CompareNodePositions(Node1, Node2: PVirtualNode): Integer;
     procedure DrawLineImage(const PaintInfo: TVTPaintInfo; X, Y, H, VAlign: Integer; Style: TVTLineType; Reverse: Boolean);
@@ -2076,8 +2076,8 @@ TBaseVirtualTree = class(TCustomControl)
     procedure SetVerticalAlignment(Node: PVirtualNode; Value: Byte);
     procedure SetVisible(Node: PVirtualNode; Value: Boolean);
     procedure SetVisiblePath(Node: PVirtualNode; Value: Boolean);
-    procedure StaticBackground(Source: TBitmap; Target: TCanvas; Offset: TPoint; R: TRect);
-    procedure TileBackground(Source: TBitmap; Target: TCanvas; Offset: TPoint; R: TRect);
+    procedure StaticBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; const R: TRect);
+    procedure TileBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; R: TRect);
     function ToggleCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
 
     procedure CMColorChange(var Message: TLMessage); message CM_COLORCHANGED;
@@ -2171,17 +2171,17 @@ TBaseVirtualTree = class(TCustomControl)
     function DetermineNextCheckState(CheckType: TCheckType; CheckState: TCheckState): TCheckState; virtual;
     function DetermineScrollDirections(X, Y: Integer): TScrollDirections; virtual;
     procedure DoAdvancedHeaderDraw(var PaintInfo: THeaderPaintInfo; const Elements: THeaderPaintElements); virtual;
-    procedure DoAfterCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellRect: TRect); virtual;
-    procedure DoAfterItemErase(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect); virtual;
-    procedure DoAfterItemPaint(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect); virtual;
+    procedure DoAfterCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const CellRect: TRect); virtual;
+    procedure DoAfterItemErase(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect); virtual;
+    procedure DoAfterItemPaint(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect); virtual;
     procedure DoAfterPaint(Canvas: TCanvas); virtual;
     procedure DoAutoScroll(X, Y: Integer); virtual;
     procedure DoAutoSize; override;
     function DoBeforeDrag(Node: PVirtualNode; Column: TColumnIndex): Boolean; virtual;
-    procedure DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellRect: TRect); virtual;
-    procedure DoBeforeItemErase(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect; var Color: TColor;
+    procedure DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const CellRect: TRect); virtual;
+    procedure DoBeforeItemErase(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect; var Color: TColor;
       var EraseAction: TItemEraseAction); virtual;
-    function DoBeforeItemPaint(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect): Boolean; virtual;
+    function DoBeforeItemPaint(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect): Boolean; virtual;
     procedure DoBeforePaint(Canvas: TCanvas); virtual;
     function DoCancelEdit: Boolean; virtual;
     procedure DoCanEdit(Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean); virtual;
@@ -2202,9 +2202,9 @@ TBaseVirtualTree = class(TCustomControl)
     procedure DoDragExpand; virtual;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
       ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
-    function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint; Mode: TDropMode;
+    function DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord): Boolean; virtual;
-    procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint;
+    procedure DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; const Pt: TPoint;
       var Effect: LongWord; Mode: TDropMode); virtual;
     procedure DoEdit; virtual;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
@@ -2224,14 +2224,14 @@ TBaseVirtualTree = class(TCustomControl)
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): WideString; virtual;
     function DoGetNodeTooltip(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): WideString; virtual;
     function DoGetNodeWidth(Node: PVirtualNode; Column: TColumnIndex; Canvas: TCanvas = nil): Integer; virtual;
-    function DoGetPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position: TPoint): TPopupMenu; virtual;
+    function DoGetPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Position: TPoint): TPopupMenu; virtual;
     procedure DoGetUserClipboardFormats(var Formats: TFormatEtcArray); virtual;
     procedure DoHeaderClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure DoHeaderDblClick(Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure DoHeaderDragged(Column: TColumnIndex; OldPosition: TColumnPosition); virtual;
-    procedure DoHeaderDraggedOut(Column: TColumnIndex; DropPosition: TPoint); virtual;
+    procedure DoHeaderDraggedOut(Column: TColumnIndex; const DropPosition: TPoint); virtual;
     function DoHeaderDragging(Column: TColumnIndex): Boolean; virtual;
-    procedure DoHeaderDraw(Canvas: TCanvas; Column: TVirtualTreeColumn; R: TRect; Hover, Pressed: Boolean;
+    procedure DoHeaderDraw(Canvas: TCanvas; Column: TVirtualTreeColumn; const R: TRect; Hover, Pressed: Boolean;
       DropMark: TVTDropMarkMode); virtual;
     procedure DoHeaderDrawQueryElements(var PaintInfo: THeaderPaintInfo; var Elements: THeaderPaintElements); virtual;
     procedure DoHeaderMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
@@ -2248,10 +2248,10 @@ TBaseVirtualTree = class(TCustomControl)
     function DoNodeCopying(Node, NewParent: PVirtualNode): Boolean; virtual;
     procedure DoNodeMoved(Node: PVirtualNode); virtual;
     function DoNodeMoving(Node, NewParent: PVirtualNode): Boolean; virtual;
-    function DoPaintBackground(Canvas: TCanvas; R: TRect): Boolean; virtual;
-    procedure DoPaintDropMark(Canvas: TCanvas; Node: PVirtualNode; R: TRect); virtual;
+    function DoPaintBackground(Canvas: TCanvas; const R: TRect): Boolean; virtual;
+    procedure DoPaintDropMark(Canvas: TCanvas; Node: PVirtualNode; const R: TRect); virtual;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); virtual;
-    procedure DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position: TPoint); virtual;
+    procedure DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Position: TPoint); virtual;
     function DoRenderOLEData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium;
       ForClipboard: Boolean): HRESULT; virtual;
     procedure DoReset(Node: PVirtualNode); virtual;
@@ -2299,7 +2299,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure HandleMouseDown(var Message: TLMMouse; const HitInfo: THitInfo); virtual;
     procedure HandleMouseUp(var Message: TLMMouse; const HitInfo: THitInfo); virtual;
     function HasImage(Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex): Boolean; virtual;
-    function HasPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Pos: TPoint): Boolean; virtual;
+    function HasPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Pos: TPoint): Boolean; virtual;
     procedure InitChildren(Node: PVirtualNode); virtual;
     procedure InitNode(Node: PVirtualNode); virtual;
     procedure InternalAddFromStream(Stream: TStream; Version: Integer; Node: PVirtualNode); virtual;
@@ -2341,10 +2341,10 @@ TBaseVirtualTree = class(TCustomControl)
     procedure SelectNodes(StartNode, EndNode: PVirtualNode; AddOnly: Boolean); virtual;
     procedure SetFocusedNodeAndColumn(Node: PVirtualNode; Column: TColumnIndex); virtual;
     procedure SkipNode(Stream: TStream); virtual;
-    procedure StartWheelPanning(Position: TPoint); virtual;
+    procedure StartWheelPanning(const Position: TPoint); virtual;
     procedure StopWheelPanning; virtual;
     procedure StructureChange(Node: PVirtualNode; Reason: TChangeReason); virtual;
-    function SuggestDropEffect(Source: TObject; Shift: TShiftState; Pt: TPoint; AllowedEffects: Integer): Integer; virtual;
+    function SuggestDropEffect(Source: TObject; Shift: TShiftState; const Pt: TPoint; AllowedEffects: Integer): Integer; virtual;
     procedure ToggleSelection(StartNode, EndNode: PVirtualNode); virtual;
     procedure UnselectNodes(StartNode, EndNode: PVirtualNode); virtual;
     procedure UpdateDesigner; virtual;
@@ -2608,7 +2608,7 @@ TBaseVirtualTree = class(TCustomControl)
     procedure MoveTo(Source, Target: PVirtualNode; Mode: TVTNodeAttachMode; ChildrenOnly: Boolean); overload;
     procedure MoveTo(Node: PVirtualNode; Tree: TBaseVirtualTree; Mode: TVTNodeAttachMode;
       ChildrenOnly: Boolean); overload;
-    procedure PaintTree(TargetCanvas: TCanvas; Window: TRect; Target: TPoint; PaintOptions: TVTInternalPaintOptions;
+    procedure PaintTree(TargetCanvas: TCanvas; const Window: TRect; Target: TPoint; PaintOptions: TVTInternalPaintOptions;
       PixelFormat: TPixelFormat = pfDevice);
     function PasteFromClipboard: Boolean; virtual;
     procedure PrepareDragImage(HotSpot: TPoint; const DataObject: IDataObject);
@@ -2804,7 +2804,7 @@ type
     var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: WideString) of object;
   // New text can only be set for variable caption.
   TVSTNewTextEvent = procedure(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-    NewText: WideString) of object;
+    const NewText: WideString) of object;
   TVSTShortenStringEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
     Column: TColumnIndex; const S: WideString; TextSpace: Integer; var Result: WideString;
     var Done: Boolean) of object;
@@ -2839,7 +2839,7 @@ type
     procedure WMSetFont(var Msg: TLMNoParams{TWMSetFont}); message LM_SETFONT;
   protected
     procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; var NextNonEmpty: TColumnIndex); override;
-    function CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; Text: WideString): Integer; virtual;
+    function CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: WideString): Integer; virtual;
     function ColumnIsEmpty(Node: PVirtualNode; Column: TColumnIndex): Boolean; override;
     procedure DefineProperties(Filer: TFiler); override;
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; override;
@@ -2849,14 +2849,14 @@ type
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
       var Text: WideString); virtual;
     function DoIncrementalSearch(Node: PVirtualNode; const Text: WideString): Integer; override;
-    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; Text: WideString); virtual;
+    procedure DoNewText(Node: PVirtualNode; Column: TColumnIndex; const Text: WideString); virtual;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
     procedure DoPaintText(Node: PVirtualNode; const Canvas: TCanvas; Column: TColumnIndex;
       TextType: TVSTTextType); virtual;
     function DoShortenString(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const S: WideString; Width: Integer;
       EllipsisWidth: Integer = 0): WideString; virtual;
-    procedure DoTextDrawing(var PaintInfo: TVTPaintInfo; Text: WideString; CellRect: TRect; DrawFormat: Cardinal); virtual;
-    function DoTextMeasuring(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; Text: WideString): Integer; virtual;
+    procedure DoTextDrawing(var PaintInfo: TVTPaintInfo; const Text: WideString; CellRect: TRect; DrawFormat: Cardinal); virtual;
+    function DoTextMeasuring(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: WideString): Integer; virtual;
     function GetOptionsClass: TTreeOptionsClass; override;
     function InternalData(Node: PVirtualNode): Pointer;
     procedure MainColumnChanged; override;
@@ -2880,7 +2880,7 @@ type
 
     function ComputeNodeHeight(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; S: WideString = ''): Integer; virtual;
     function ContentToClipboard(Format: Word; Source: TVSTTextSourceType): HGLOBAL;
-    function ContentToHTML(Source: TVSTTextSourceType; Caption: WideString = ''): string;
+    function ContentToHTML(Source: TVSTTextSourceType; const Caption: WideString = ''): string;
     function ContentToRTF(Source: TVSTTextSourceType): string;
     function ContentToText(Source: TVSTTextSourceType; Separator: Char): string;
     function ContentToUnicode(Source: TVSTTextSourceType; Separator: WideChar): WideString;
@@ -3082,7 +3082,7 @@ type
     property OnUpdating;
   end;
 
-  TVTDrawHintEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode; R: TRect;
+  TVTDrawHintEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode; const R: TRect;
     Column: TColumnIndex) of object;
   TVTDrawNodeEvent = procedure(Sender: TBaseVirtualTree; const PaintInfo: TVTPaintInfo) of object;
   TVTGetNodeWidthEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode;
@@ -3098,7 +3098,7 @@ type
     FOnGetHintSize: TVTGetHintSizeEvent;
     FOnDrawHint: TVTDrawHintEvent;
   protected
-    procedure DoDrawHint(Canvas: TCanvas; Node: PVirtualNode; R: TRect; Column: TColumnIndex);
+    procedure DoDrawHint(Canvas: TCanvas; Node: PVirtualNode; const R: TRect; Column: TColumnIndex);
     procedure DoGetHintSize(Node: PVirtualNode; Column: TColumnIndex; var R: TRect); virtual;
     function DoGetNodeWidth(Node: PVirtualNode; Column: TColumnIndex; Canvas: TCanvas = nil): Integer; override;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
@@ -3310,7 +3310,7 @@ function RegisterVTClipboardFormat(Description: string; TreeClass: TVirtualTreeC
   lindex: Integer = -1): Word; overload;
 
 // utility routines
-procedure AlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
+procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 {$ifdef EnablePrint}
 procedure PrtStretchDrawDIB(Canvas: TCanvas; DestRect: TRect; ABitmap: TBitmap);
 {$endif}
@@ -4499,7 +4499,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure AlphaBlend(Source, Destination: HDC; R: TRect; Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
+procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 
 // Optimized alpha blend procedure using MMX instructions to perform as quick as possible.
 // For this procedure to work properly it is important that both source and target bitmap use the 32 bit color format.
@@ -5494,7 +5494,7 @@ procedure TVirtualTreeHintWindow.InternalPaint(Step, StepSize: Integer);
 
   //--------------- local functions -------------------------------------------
 
-  procedure DoShadowBlend(DC: HDC; R: TRect; Alpha: Integer);
+  procedure DoShadowBlend(DC: HDC; const R: TRect; Alpha: Integer);
 
   // Helper routine for shadow blending to shorten the parameter list in frequent calls.
 
@@ -6142,7 +6142,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDragImage.DragTo(P: TPoint; ForceRepaint: Boolean): Boolean;
+function TVTDragImage.DragTo(const P: TPoint; ForceRepaint: Boolean): Boolean;
 
 // Moves the drag image to a new position, which is determined from the passed point P and the previous
 // mouse position.
@@ -6334,7 +6334,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTDragImage.PrepareDrag(DragImage: TBitmap; ImagePosition, HotSpot: TPoint; const DataObject: IDataObject);
+procedure TVTDragImage.PrepareDrag(DragImage: TBitmap; const ImagePosition, HotSpot: TPoint; const DataObject: IDataObject);
 
 // Creates all necessary structures to do alpha blended dragging using the given image.
 // ImagePostion and Hotspot are given in screen coordinates. The first determines where to place the drag image while
@@ -6517,7 +6517,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDragImage.WillMove(P: TPoint): Boolean;
+function TVTDragImage.WillMove(const P: TPoint): Boolean;
 
 // This method determines whether the drag image would "physically" move when DragTo would be called with the same
 // target point.
@@ -7727,7 +7727,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualTreeColumns.AdjustHoverColumn(P: TPoint): Boolean;
+function TVirtualTreeColumns.AdjustHoverColumn(const P: TPoint): Boolean;
 
 // Determines the new hover column index and returns True if the index actually changed else False.
 
@@ -7815,7 +7815,7 @@ const
   XPDownMiddleLineColor = $B8C2C1;     // Down state border color.
   XPDownInnerLineColor = $C9D1D0;      // Down state border color.
 
-procedure TVirtualTreeColumns.DrawXPButton(DC: HDC; ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
+procedure TVirtualTreeColumns.DrawXPButton(DC: HDC; const ButtonR: TRect; DrawSplitter, Down, Hover: Boolean);
 
 // Helper procedure to draw an Windows XP like header button.
 
@@ -7976,7 +7976,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualTreeColumns.GetColumnAndBounds(P: TPoint; var ColumnLeft, ColumnRight: Integer;
+function TVirtualTreeColumns.GetColumnAndBounds(const P: TPoint; var ColumnLeft, ColumnRight: Integer;
   Relative: Boolean = True): Integer;
 
 // Returns the column where the mouse is currently in as well as the left and right bound of
@@ -8369,7 +8369,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualTreeColumns.ColumnFromPosition(P: TPoint; Relative: Boolean = True): TColumnIndex;
+function TVirtualTreeColumns.ColumnFromPosition(const P: TPoint; Relative: Boolean = True): TColumnIndex;
 
 // Determines the current column based on the position passed in P.
 
@@ -8661,7 +8661,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualTreeColumns.PaintHeader(DC: HDC; R: TRect; HOffset: Integer);
+procedure TVirtualTreeColumns.PaintHeader(DC: HDC; const R: TRect; HOffset: Integer);
 
 // Main paint method to draw the header.
 
@@ -9303,7 +9303,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTHeader.DetermineSplitterIndex(P: TPoint): Boolean;
+function TVTHeader.DetermineSplitterIndex(const P: TPoint): Boolean;
 
 // Tries to find the index of that column whose right border corresponds to P.
 // Result is True if column border was hit (with -3..+5 pixels tolerance).
@@ -9397,7 +9397,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTHeader.DragTo(P: TPoint);
+procedure TVTHeader.DragTo(const P: TPoint);
 
 // Moves the drag image to a new position, which is determined from the passed point P and the previous
 // mouse position.
@@ -10186,14 +10186,14 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTHeader.InHeader(P: TPoint): Boolean;
+function TVTHeader.InHeader(const P: TPoint): Boolean;
 
 // Determines whether the given point (client coordinates!) is within the header rectangle (non-client coordinates).
 
 begin
   //lclheader
   //todo: remove this function and use PtInRect directly
-  Result := PtInRect(TreeView.FHeaderRect,P);
+  Result := PtInRect(TreeView.FHeaderRect, P);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -10813,7 +10813,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.AdjustTotalCount(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
+procedure TBaseVirtualTree.AdjustTotalCount(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
 
 // Sets a node's total count to the given value and recursively adjusts the parent's total count
 // (actually, the adjustment is done iteratively to avoid function call overheads).
@@ -10823,7 +10823,7 @@ var
   Run: PVirtualNode;
 
 begin
-  if relative then
+  if Relative then
     Difference := Value
   else
     Difference := Integer(Value) - Integer(Node.TotalCount);
@@ -10841,7 +10841,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.AdjustTotalHeight(Node: PVirtualNode; Value: Integer; relative: Boolean = False);
+procedure TBaseVirtualTree.AdjustTotalHeight(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
 
 // Sets a node's total height to the given value and recursively adjusts the parent's total height.
 
@@ -10850,7 +10850,7 @@ var
   Run: PVirtualNode;
 
 begin
-  if relative then
+  if Relative then
     Difference := Value
   else
     Difference := Integer(Value) - Integer(Node.TotalHeight);
@@ -11076,7 +11076,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.CollectSelectedNodesLTR(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment;
-  OldRect, NewRect: TRect): Boolean;
+  OldRect: TRect; const NewRect: TRect): Boolean;
 
 // Helper routine used when a draw selection takes place. This version handles left-to-right directionality.
 // In the process of adding or removing nodes the current selection is modified which requires to pack it after
@@ -11270,7 +11270,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.CollectSelectedNodesRTL(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment;
-  OldRect, NewRect: TRect): Boolean;
+  OldRect: TRect; const NewRect: TRect): Boolean;
 
 // Helper routine used when a draw selection takes place. This version handles right-to-left directionality.
 // See also comments in CollectSelectedNodesLTR.
@@ -13767,6 +13767,7 @@ begin
       Run := Run.Parent;
     end;
     R := GetDisplayRect(Node, FHeader.MainColumn, True);
+    //lclheader
     if hoVisible in FHeader.Options then
       Dec(R.Top, FHeader.Height);
     SetOffsetY(FOffsetY - R.Top);
@@ -13882,7 +13883,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.StaticBackground(Source: TBitmap; Target: TCanvas; Offset: TPoint; R: TRect);
+procedure TBaseVirtualTree.StaticBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; const R: TRect);
 
 // Draws the given source graphic so that it stays static in the given rectangle which is relative to the target bitmap.
 // The graphic is aligned so that it always starts at the upper left corner of the target canvas.
@@ -13932,7 +13933,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.TileBackground(Source: TBitmap; Target: TCanvas; Offset: TPoint; R: TRect);
+procedure TBaseVirtualTree.TileBackground(Source: TBitmap; Target: TCanvas; const Offset: TPoint; R: TRect);
 
 // Draws the given source graphic so that it tiles into the given rectangle which is relative to the target bitmap.
 // The graphic is aligned so that it always starts at the upper left corner of the target canvas.
@@ -17387,7 +17388,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoAfterCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellRect: TRect);
+procedure TBaseVirtualTree.DoAfterCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const CellRect: TRect);
 
 begin
   if Assigned(FOnAfterCellPaint) then
@@ -17396,7 +17397,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoAfterItemErase(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect);
+procedure TBaseVirtualTree.DoAfterItemErase(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect);
 
 begin
   if Assigned(FOnAfterItemErase) then
@@ -17405,7 +17406,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoAfterItemPaint(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect);
+procedure TBaseVirtualTree.DoAfterItemPaint(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect);
 
 begin
   if Assigned(FOnAfterItemPaint) then
@@ -17469,7 +17470,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; CellRect: TRect);
+procedure TBaseVirtualTree.DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const CellRect: TRect);
 
 begin
   if Assigned(FOnBeforeCellPaint) then
@@ -17478,7 +17479,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoBeforeItemErase(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect; var Color: TColor;
+procedure TBaseVirtualTree.DoBeforeItemErase(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect; var Color: TColor;
   var EraseAction: TItemEraseAction);
 
 begin
@@ -17488,7 +17489,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DoBeforeItemPaint(Canvas: TCanvas; Node: PVirtualNode; ItemRect: TRect): Boolean;
+function TBaseVirtualTree.DoBeforeItemPaint(Canvas: TCanvas; Node: PVirtualNode; const ItemRect: TRect): Boolean;
 
 begin
   // By default custom draw will not be used, so the tree handles drawing the node.
@@ -17656,7 +17657,7 @@ begin
       R := ClientRect;
       //lclheader
       if hoVisible in FHeader.FOptions then
-        Inc(R.Bottom,FHeader.Height);
+        Inc(R.Bottom, FHeader.Height);
       if not (toAutoSpanColumns in FOptions.FAutoOptions) then
         if UseRightToLeftAlignment then
           R.Right := FHeader.Columns[Column].Left + FHeader.Columns[Column].Width + ComputeRTLOffset
@@ -17860,7 +17861,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint; Mode: TDropMode;
+function TBaseVirtualTree.DoDragOver(Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
   var Effect: LongWord): Boolean;
 
 begin
@@ -17872,7 +17873,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.DoDragDrop(Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
-  Shift: TShiftState; Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+  Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
 
 begin
   if Assigned(FOnDragDrop) then
@@ -18173,7 +18174,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DoGetPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position: TPoint): TPopupMenu;
+function TBaseVirtualTree.DoGetPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Position: TPoint): TPopupMenu;
 
 // Queries the application whether there is a node specific popup menu.
 
@@ -18238,7 +18239,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoHeaderDraggedOut(Column: TColumnIndex; DropPosition: TPoint);
+procedure TBaseVirtualTree.DoHeaderDraggedOut(Column: TColumnIndex; const DropPosition: TPoint);
 
 begin
   if Assigned(FOnHeaderDraggedOut) then
@@ -18257,7 +18258,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoHeaderDraw(Canvas: TCanvas; Column: TVirtualTreeColumn; R: TRect; Hover, Pressed: Boolean;
+procedure TBaseVirtualTree.DoHeaderDraw(Canvas: TCanvas; Column: TVirtualTreeColumn; const R: TRect; Hover, Pressed: Boolean;
   DropMark: TVTDropMarkMode);
 
 begin
@@ -18409,7 +18410,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DoPaintBackground(Canvas: TCanvas; R: TRect): Boolean;
+function TBaseVirtualTree.DoPaintBackground(Canvas: TCanvas; const R: TRect): Boolean;
 
 begin
   Result := False;
@@ -18419,7 +18420,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoPaintDropMark(Canvas: TCanvas; Node: PVirtualNode; R: TRect);
+procedure TBaseVirtualTree.DoPaintDropMark(Canvas: TCanvas; Node: PVirtualNode; const R: TRect);
 
 // draws the drop mark into the given rectangle
 // Note: Changed properties of the given canvas should be reset to their previous values.
@@ -18473,7 +18474,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Position: TPoint);
+procedure TBaseVirtualTree.DoPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Position: TPoint);
 
 // Support for node dependent popup menus.
 
@@ -18625,17 +18626,17 @@ begin
             //lclheader
             if ClipRect <> nil then
             begin
-              Logger.SendWarning([lcWarning],'DoSetOffsetXY called with a non nil ClipRect');
-              R:=ClipRect^;
+              Logger.SendWarning([lcWarning], 'DoSetOffsetXY called with a non nil ClipRect');
+              R := ClipRect^;
             end
             else
-              R:=ClientRect;
+              R := ClientRect;
             if hoVisible in FHeader.FOptions then
             begin
-              Inc(R.Top,FHeader.Height);
-              Inc(R.Bottom,FHeader.Height);
+              Inc(R.Top, FHeader.Height);
+              Inc(R.Bottom, FHeader.Height);
             end;
-            Logger.Send([lcScroll],'Rect to Scroll',R);
+            Logger.Send([lcScroll], 'Rect to Scroll', R);
             ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
             //todo: temporary hack to avoid some drawing problems. Will be removed when the header is properly implemented
             InvalidateRect(Handle, nil, True);
@@ -20460,7 +20461,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.HasPopupMenu(Node: PVirtualNode; Column: TColumnIndex; Pos: TPoint): Boolean;
+function TBaseVirtualTree.HasPopupMenu(Node: PVirtualNode; Column: TColumnIndex; const Pos: TPoint): Boolean;
 
 // Determines whether the tree got a popup menu, either in its PopupMenu property, via the OnGetPopupMenu event or
 // through inheritannce. The latter case must be checked by the descendant which must override this method.
@@ -22020,7 +22021,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
-procedure TBaseVirtualTree.StartWheelPanning(Position: TPoint);
+procedure TBaseVirtualTree.StartWheelPanning(const Position: TPoint);
 
 // Called when wheel panning should start. A little helper window is created to indicate the reference position,
 // which determines in which direction and how far wheel panning/scrolling will happen.
@@ -22156,7 +22157,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.SuggestDropEffect(Source: TObject; Shift: TShiftState; Pt: TPoint;
+function TBaseVirtualTree.SuggestDropEffect(Source: TObject; Shift: TShiftState; const Pt: TPoint;
   AllowedEffects: Integer): Integer;
 
 // determines the drop action to take if the drag'n drop operation ends on this tree
@@ -24073,8 +24074,8 @@ begin
   //lclheader
   if hoVisible in FHeader.FOptions then
   begin
-    inc(Result.Top,FHeader.Height);
-    inc(Result.Bottom,FHeader.Height);
+    inc(Result.Top, FHeader.Height);
+    inc(Result.Bottom, FHeader.Height);
   end;
   //Logger.Send([lcPaintHeader],'DisplayRect for Node '+IntToStr(Node^.Index),Result);
   //Logger.ExitMethod([lcPaintHeader],'GetDisplayRect');
@@ -26508,7 +26509,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.PaintTree(TargetCanvas: TCanvas; Window: TRect; Target: TPoint;
+procedure TBaseVirtualTree.PaintTree(TargetCanvas: TCanvas; const Window: TRect; Target: TPoint;
   PaintOptions: TVTInternalPaintOptions; PixelFormat: TPixelFormat);
 
 // This is the core paint routine of the tree. It is responsible for maintaining the paint cycles per node as well
@@ -26938,6 +26939,7 @@ begin
                 Logger.SendIf([lcPaintDetails],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 {$ifdef Gtk}
+                //lclheader
                 // This is a brute force fix AKA hack to prevent the header being cleared
                 // when the tree is scrolled (YOffset < 0) and the mouse is over the header
                 // Other widgetsets are not affected because excludecliprect works different (better?)
@@ -27663,9 +27665,7 @@ begin
     // 1) scroll vertically
     //lclheader
     if hoVisible in FHeader.FOptions then
-    begin
       Dec(R.Top,FHeader.Height);
-    end;
     if R.Top < 0 then
     begin
       if Center then
@@ -28318,9 +28318,7 @@ begin
   if FRoot.TotalHeight < FDefaultNodeHeight then
     FRoot.TotalHeight := FDefaultNodeHeight;
   FRangeY := FRoot.TotalHeight - FRoot.NodeHeight + FBottomSpace;
-  //lclheader
-  //if hoVisible in FHeader.FOptions then
-  //  Inc(FRangeY,FHeader.Height);
+
   if FScrollBarOptions.ScrollBars in [ssVertical, ssBoth] then
   begin
     //LCL automatically set cbSize field
@@ -29285,7 +29283,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TCustomVirtualStringTree.CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  Text: WideString): Integer;
+  const Text: WideString): Integer;
 
 // Determines the width of the given text.
 
@@ -29431,7 +29429,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomVirtualStringTree.DoNewText(Node: PVirtualNode; Column: TColumnIndex; Text: WideString);
+procedure TCustomVirtualStringTree.DoNewText(Node: PVirtualNode; Column: TColumnIndex; const Text: WideString);
 
 begin
   if Assigned(FOnNewText) then
@@ -29508,7 +29506,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomVirtualStringTree.DoTextDrawing(var PaintInfo: TVTPaintInfo; Text: WideString; CellRect: TRect;
+procedure TCustomVirtualStringTree.DoTextDrawing(var PaintInfo: TVTPaintInfo; const Text: WideString; CellRect: TRect;
   DrawFormat: Cardinal);
 
 begin
@@ -29518,7 +29516,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TCustomVirtualStringTree.DoTextMeasuring(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  Text: WideString): Integer;
+  const Text: WideString): Integer;
 
 var
   Size: TSize;
@@ -29761,7 +29759,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; Caption: WideString = ''): string;
+function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; const Caption: WideString = ''): string;
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
@@ -29903,7 +29901,7 @@ var
 
   //---------------------------------------------------------------------------
 
-  procedure WriteStyle(Name: string; Font: TFont);
+  procedure WriteStyle(const Name: string; Font: TFont);
 
   // Creates a CSS style entry with the given name for the given font.
   // If Name is empty then the entry is created as inline style.
@@ -30944,7 +30942,7 @@ end;
 
 //----------------- TCustomVirtualDrawTree -----------------------------------------------------------------------------
 
-procedure TCustomVirtualDrawTree.DoDrawHint(Canvas: TCanvas; Node: PVirtualNode; R: TRect; Column: TColumnIndex);
+procedure TCustomVirtualDrawTree.DoDrawHint(Canvas: TCanvas; Node: PVirtualNode; const R: TRect; Column: TColumnIndex);
 
 begin
   if Assigned(FOnDrawHint) then
