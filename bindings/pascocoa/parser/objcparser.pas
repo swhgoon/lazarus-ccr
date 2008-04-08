@@ -2,7 +2,7 @@
  Project1.pas
 
  Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
- 
+
  main parser unit
 }
 program Project1;
@@ -12,7 +12,6 @@ program Project1;
 {$else}
   {$APPTYPE CONSOLE}
 {$endif}
-
 uses
   Classes,
   SysUtils,
@@ -254,12 +253,12 @@ begin
     vlm := Params.Values['ignoreinclude'];
     if vlm <> '' then begin
       AddSpaceSeparated(vlm, Settings.IgnoreIncludes);
-      for i := 0 to Settings.IgnoreIncludes.Count - 1 do begin
+      {for i := 0 to Settings.IgnoreIncludes.Count - 1 do begin
         vlm := Settings.IgnoreIncludes[i];
         vlm := Copy(vlm, 1, length(vlm) - length(ExtractFileExt(vlm)));
         vlm := vlm + '.inc';
         Settings.IgnoreIncludes[i] := vlm;
-      end;
+      end;}
     end;
 
   finally

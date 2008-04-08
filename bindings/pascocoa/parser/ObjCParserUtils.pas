@@ -269,8 +269,36 @@ end;
 function GetIncludeFile(const s: AnsiString): AnsiString;
 var
   i   : Integer;
+  vs  : AnsiString;
+  pth : AnsiString;
 begin
-  //todo: don't like it...
+  //todo: still, i don't like it...
+  Result :='';
+  i := 1;
+  ScanWhile(s, i, [#32, #9]);
+  vs := Copy(s, i, length(s) - i + 1); 
+  if vs = '' then Exit;
+
+  
+  if (vs[1] = '<') or (vs[1] = '"') then vs := Copy(vs, 2, length(vs) - 1);
+  if vs = '' then Exit;
+  
+  i := length(vs);
+  if (vs[i] = '>') or (vs[i] = '"') then vs := Copy(vs, 1, length(vs) - 1);
+  if vs = '' then Exit;
+
+
+  pth := vs;
+  while (pth <> '') and (length(pth)>1) do begin
+    if ConvertSettings.IgnoreIncludes.IndexOf(pth) >= 0 then
+      Exit; // file must be excluded;
+    pth := ExtractFilePath(ExcludeTrailingPathDelimiter(pth));
+  end;
+  
+  Result := ExtractFileName(vs);
+  Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(vs))) + '.inc';
+  
+(*
   Result := '';
   if s = '' then Exit;
 //  i := length(s);
@@ -280,12 +308,7 @@ begin
   // dummy, but it works =)
   while (i > 0) and (s[i] in ['.', 'A'..'Z', 'a'..'z', '0'..'9']) do dec(i);
 
-  Result := Copy(s, i + 1, length(s) - i);
-  if Result <> '' then begin
-    if Result[length(Result)] in ['"', '>'] then Result :=
-      Copy(Result, 1, length(Result) - 1);
-    Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(Result))) + '.inc';
-  end;
+  Result := Copy(s, i + 1, length(s) - i);*)
 end;
 
 // returns pascal style of precomiler "if defined" section
@@ -341,7 +364,7 @@ begin
   if (dir = '#import') or (dir = '#include') then begin
 
     prm := GetIncludeFile(Prec._Params);
-    if (prm <> ' .inc') and (ConvertSettings.IgnoreIncludes.IndexOf(prm) < 0) then
+    if (prm <> '') and (prm <> ' .inc') and (ConvertSettings.IgnoreIncludes.IndexOf(prm) < 0) then
       Result := Format('{$include %s}', [prm]);
 
   end else if (dir = '#if') then begin
@@ -1201,146 +1224,13 @@ procedure InitConvertSettings;
 begin
   with ConvertSettings.IgnoreIncludes do begin
     // must not be $included, because they are used
-    Add('NSObjCRuntime.inc');
-    Add('NSObject.inc');
-    Add('Foundation.inc');
-
-(*    Add('NSZone.inc');
-    Add('NSAppleEventDescriptor.inc');
-    Add('NSAppleEventManager.inc');
-    Add('NSAppleScript.inc');
-    Add('NSArchiver.inc');
-    Add('NSArray.inc');
-    Add('NSAttributedString.inc');
-    Add('NSAutoreleasePool.inc');
-    Add('NSBundle.inc');
-    Add('NSByteOrder.inc');
-    Add('NSCalendar.inc');
-    Add('NSCalendarDate.inc');
-    Add('NSCharacterSet.inc');
-    Add('NSClassDescription.inc');
-    Add('NSCoder.inc');
-    Add('NSComparisonPredicate.inc');
-    Add('NSCompoundPredicate.inc');
-    Add('NSConnection.inc');
-    Add('NSData.inc');
-    Add('NSDate.inc');
-    Add('NSDateFormatter.inc');
-    Add('NSDebug.inc');
-    Add('NSDecimal.inc');
-    Add('NSDecimalNumber.inc');
-    Add('NSDictionary.inc');
-    Add('NSDistantObject.inc');
-    Add('NSDistributedLock.inc');
-    Add('NSDistributedNotificationCenter.inc');
-    Add('NSEnumerator.inc');
-    Add('NSError.inc');
-    Add('NSException.inc');
-    Add('NSExpression.inc');
-    Add('NSFileHandle.inc');
-    Add('NSFileManager.inc');
-    Add('NSFormatter.hinc');
-    Add('NSGarbageCollector.inc');
-    Add('NSGeometry.inc');
-    Add('NSHashTable.inc');
-    Add('NSHFSFileTypes.inc');
-    Add('NSHost.inc');
-    Add('NSHTTPCookie.inc');
-    Add('NSHTTPCookieStorage.inc');
-    Add('NSIndexPath.inc');
-    Add('NSIndexSet.inc');
-    Add('NSInvocation.inc');
-    Add('NSJavaSetup.inc');
-    Add('NSKeyedArchiver.inc');
-    Add('NSKeyValueCoding.inc');
-    Add('NSKeyValueObserving.inc');
-    Add('NSLocale.inc');
-    Add('NSLock.inc');
-    Add('NSMapTable.inc');
-    Add('NSMetadata.inc');
-    Add('NSMethodSignature.inc');
-    Add('NSNetServices.inc');
-    Add('NSNotification.inc');
-    Add('NSNotificationQueue.inc');
-    Add('NSNull.inc');
-    Add('NSNumberFormatter.inc');
-    Add('NSObjectScripting.inc');
-    Add('NSOperation.inc');
-    Add('NSPathUtilities.inc');
-    Add('NSPointerArray.inc');
-    Add('NSPointerFunctions.inc');
-    Add('NSPort.inc');
-    Add('NSPortCoder.inc');
-    Add('NSPortMessage.inc');
-    Add('NSPortNameServer.inc');
-    Add('NSPredicate.inc');
-    Add('NSProcessInfo.inc');
-    Add('NSPropertyList.inc');
-    Add('NSProtocolChecker.inc');
-    Add('NSProxy.inc');
-    Add('NSRange.inc');
-    Add('NSRunLoop.inc');
-    Add('NSScanner.inc');
-    Add('NSScriptClassDescription.inc');
-    Add('NSScriptCoercionHandler.inc');
-    Add('NSScriptCommand.inc');
-    Add('NSScriptCommandDescription.inc');
-    Add('NSScriptExecutionContext.inc');
-    Add('NSScriptKeyValueCoding.inc');
-    Add('NSScriptObjectSpecifiers.inc');
-    Add('NSScriptStandardSuiteCommands.inc');
-    Add('NSScriptSuiteRegistry.inc');
-    Add('NSScriptWhoseTests.inc');
-    Add('NSSet.inc');
-    Add('NSSortDescriptor.inc');
-    Add('NSSpellServer.inc');
-    Add('NSStream.inc');
-    Add('NSString.inc');
-    Add('NSTask.inc');
-    Add('NSThread.inc');
-    Add('NSTimer.inc');
-    Add('NSTimeZone.inc');
-    Add('NSUndoManager.inc');
-    Add('NSURL.inc');
-    Add('NSURLAuthenticationChallenge.inc');
-    Add('NSURLCache.inc');
-    Add('NSURLConnection.inc');
-    Add('NSURLCredential.inc');
-    Add('NSURLCredentialStorage.inc');
-    Add('NSURLDownload.inc');
-    Add('NSURLError.inc');
-    Add('NSURLHandle.inc');
-    Add('NSURLProtectionSpace.inc');
-    Add('NSURLProtocol.inc');
-    Add('NSURLRequest.inc');
-    Add('NSURLResponse.inc');
-    Add('NSUserDefaults.inc');
-    Add('NSValue.inc');
-    Add('NSValueTransformer.inc');
-    Add('NSXMLDocument.inc');
-    Add('NSXMLDTD.inc');
-    Add('NSXMLDTDNode.inc');
-    Add('NSXMLElement.inc');
-    Add('NSXMLNode.inc');
-    Add('NSXMLNodeOptions.inc');
-    Add('NSXMLParser.inc');
-    // temporary
-    Add('ApplicationServices.inc');
-    Add('IOLLEvent.inc');
-    Add('Limits.inc');
-    Add('AvailabilityMacros.inc');
-    Add('CCImage.inc');
-    Add('NSStringEncoding.inc');
-    Add('NSGlyph.inc');
-    Add('CFDate.inc');
-    Add('CFRunLoop.inc');
-    Add('gl.inc');
-    Add('UTF32Char.inc');
-    Add('CoreFoundation.inc');
-    Add('NSFetchRequest.inc');
-    Add('NSAttributeDescription.inc');
-    *)
+//    Add('Foundation/');
+//    Add('Foundation/NSObject.h');
+    // Add('NSObjCRuntime.h');
+    // Add('Foundation/NSObject.h');
+    // Add('Foundation/Foundation.h');
   end;
+  
   with ConvertSettings do begin
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
@@ -1352,11 +1242,6 @@ begin
     TypeDefReplace['NSUInteger'] := 'LongWord';
     TypeDefReplace['NSInteger'] := 'Integer';
   end;
-//????
-//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
-//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
-//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
-//    Values['MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
 end;
 
 { TReplaceList }
