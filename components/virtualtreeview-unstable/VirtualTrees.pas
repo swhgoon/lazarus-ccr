@@ -24080,11 +24080,10 @@ begin
         end;
   end;
   //lclheader
+  //todo: add a parameter to decide if the result must be returned as
+  //a tree offset or a control offset
   if hoVisible in FHeader.FOptions then
-  begin
-    inc(Result.Top, FHeader.Height);
-    inc(Result.Bottom, FHeader.Height);
-  end;
+    OffsetRect(Result, 0, FHeader.Height);
   //Logger.Send([lcPaintHeader],'DisplayRect for Node '+IntToStr(Node^.Index),Result);
   //Logger.ExitMethod([lcPaintHeader],'GetDisplayRect');
 end;
@@ -27654,6 +27653,7 @@ var
   NewOffset: Integer;
 
 begin
+  //todo: minimize calls to ClientHeight and ClientWidth
   Result := False;
   if Assigned(Node) and (Node <> FRoot) then
   begin
@@ -27675,7 +27675,8 @@ begin
     // 1) scroll vertically
     //lclheader
     if hoVisible in FHeader.FOptions then
-      Dec(R.Top,FHeader.Height);
+      OffsetRect(R, 0, -FHeader.Height);
+
     if R.Top < 0 then
     begin
       if Center then
