@@ -19,8 +19,8 @@ unit Main;
 interface
 
    uses
-      LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-      Dialogs, VirtualTrees, ImgList, ExtCtrls, StdCtrls, Buttons, LResources;
+      LCLIntf, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      Dialogs, VirtualTrees, ExtCtrls, StdCtrls, Buttons, LResources;
 
    type
 TfrmMain =

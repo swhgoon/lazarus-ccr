@@ -6,10 +6,13 @@ object frmViewCode: TfrmViewCode
   HorzScrollBar.Page = 552
   VertScrollBar.Page = 353
   Caption = 'Quick Code Viewer'
+  ClientHeight = 354
+  ClientWidth = 553
   Font.Height = -11
   Font.Name = 'Tahoma'
   OnActivate = FormActivate
   Position = poDefaultPosOnly
+  LCLVersion = '0.9.25'
   object SynEdit1: TSynEdit
     Height = 354
     Width = 553
@@ -18,8 +21,6 @@ object frmViewCode: TfrmViewCode
     Font.Name = 'courier'
     ParentColor = False
     TabOrder = 0
-    BookMarkOptions.OnChange = nil
-    Gutter.OnChange = nil
     Gutter.CodeFoldingWidth = 14
     Highlighter = SynPasSyn1
     Keystrokes = <    
@@ -346,7 +347,6 @@ object frmViewCode: TfrmViewCode
     Lines.Strings = (
       'SynEdit1'
     )
-    SelectedColor.OnChange = nil
   end
   object SynPasSyn1: TSynPasSyn
     Enabled = False

@@ -29,9 +29,11 @@ implementation
       r  : TRect;
    begin
       {get size of desktop}
+      {$ifdef Windows}
       SystemParametersInfo(SPI_GETWORKAREA, 0, @r, 0);
       Height := r.Bottom-Top;
       Width  := r.Right-Left;
+      {$endif}
    end;
 
 initialization

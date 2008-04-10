@@ -116,7 +116,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure MyTreeBeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-      CellRect: TRect);
+      const CellRect: TRect);
     procedure MyTreePaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
@@ -139,22 +139,8 @@ var
 
 implementation
 
-uses Math;
-
-//fpc 204 does not have comparevalue
-
-function CompareValue ( const A, B  : Integer) : Integer;
-
-begin
-  result:=1;
-  if a=b then
-    result:=0
-  else
-   if a<b then
-     result:=-1;
-end;
-
-
+uses
+  Math;
 
 procedure TForm1.MyTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
@@ -420,7 +406,7 @@ end;
 
 procedure TForm1.MyTreeBeforeCellPaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  CellRect: TRect);
+  const CellRect: TRect);
 begin
 
   // This is example how to conditionally

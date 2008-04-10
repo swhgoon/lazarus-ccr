@@ -8,12 +8,18 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, Main,vtlogger,ipcchannel, lclextensions_package;
+  { add your units here }, Main
+  {$ifdef DEBUG_VTV}
+  ,vtlogger, ipcchannel
+  {$endif}
+  ;
 
 begin
+  {$ifdef DEBUG_VTV}
   Logger.Channels.Add(TIPCChannel.Create);
   Logger.Clear;
-  Logger.ActiveClasses:=[lcScroll,lcWarning];
+  Logger.ActiveClasses := [lcScroll, lcWarning];
+  {$endif}
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;

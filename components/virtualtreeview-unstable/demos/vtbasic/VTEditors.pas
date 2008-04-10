@@ -93,8 +93,8 @@ interface
       
 implementation
 
-   uses
-      CommCtrl;
+   //uses
+   //   CommCtrl;
    (*
    uses
       PropertiesDemo, GridDemo;

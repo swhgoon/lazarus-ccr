@@ -22,8 +22,8 @@ unit VTDBExample;
 interface
 
    uses
-      delphicompat, LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-      VirtualTrees, StdCtrls, ExtCtrls, sqlite3ds, DB, Menus, VTreeData, ImgList, Buttons, LResources;
+      delphicompat, LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+      VirtualTrees, StdCtrls, ExtCtrls, sqlite3ds, Menus, VTreeData, Buttons, LResources;
 
    type
 
@@ -113,11 +113,15 @@ implementation
       r  : TRect;
    begin
       {get size of desktop}
+      //todo: not implemented under gtk
+      {$ifdef Windows}
       SystemParametersInfo(SPI_GETWORKAREA, 0, @r, 0);
       Height := r.Bottom-Top;
       Width  := r.Right-Left;
-      
       Application.ProcessMessages;
+      {$endif}
+
+
       LoadDataset;
    end;
 

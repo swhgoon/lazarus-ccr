@@ -19,8 +19,8 @@ unit VTNoData;
 interface
 
    uses
-      delphicompat, LCLIntf, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-      Dialogs, VirtualTrees, ImgList, ExtCtrls, StdCtrls, LResources;
+      delphicompat, LCLIntf, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+      Dialogs, VirtualTrees, ExtCtrls, StdCtrls, LResources;
 
    type
       TfrmVTNoData =
@@ -264,8 +264,10 @@ implementation
       r  : TRect;
    begin
       {get size of desktop}
+      {$ifdef Windows}
       SystemParametersInfo(SPI_GETWORKAREA, 0, @r, 0);
       Height := r.Bottom-Top;
+      {$endif}
    end;
 
 initialization
