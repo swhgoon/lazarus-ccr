@@ -77,13 +77,13 @@ unit VirtualTrees;
 // For full document history see help file.
 //
 // Credits for their valuable assistance and code donations go to:
-//   Freddy Ertl, Marian Aldenhövel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
-//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bedürftig (BCB)
+//   Freddy Ertl, Marian Aldenhï¿½vel, Thomas Bogenrieder, Jim Kuenemann, Werner Lehmann, Jens Treichler,
+//   Paul Gallagher (IBO tree), Ondrej Kelle, Ronaldo Melo Ferraz, Heri Bender, Roland Bedï¿½rftig (BCB)
 //   Anthony Mills, Alexander Egorushkin (BCB), Mathias Torell (BCB), Frank van den Bergh, Vadim Sedulin, Peter Evans,
 //   Milan Vandrovec (BCB), Steve Moss, Joe White, David Clark, Anders Thomsen, Igor Afanasyev, Eugene Programmer,
 //   Corbin Dunn, Richard Pringle, Uli Gerhardt, Azza, Igor Savkic
 // Beta testers:
-//   Freddy Ertl, Hans-Jürgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
+//   Freddy Ertl, Hans-Jï¿½rgen Schnorrenberg, Werner Lehmann, Jim Kueneman, Vadim Sedulin, Moritz Franckenstein,
 //   Wim van der Vegt, Franc v/d Westelaken
 // Indirect contribution (via publicly accessible work of those persons):
 //   Alex Denissov, Hiroyuki Hori (MMXAsm expert)
@@ -97,7 +97,7 @@ unit VirtualTrees;
 // Accessability implementation:
 //   Marco Zehe (with help from Sebastian Modersohn)
 // LCL Port (version 4.5.1):
-//   Luiz Américo Pereira Câmara
+//   Luiz Amï¿½rico Pereira Cï¿½mara
 //----------------------------------------------------------------------------------------------------------------------
 
 interface
@@ -3367,7 +3367,7 @@ const
 
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
   // in the compiled binary file.
-  Copyright: string = 'Virtual Treeview © 1999, 2003 Mike Lischke';
+  Copyright: string = 'Virtual Treeview ï¿½ 1999, 2003 Mike Lischke';
 
 var
   //Workaround to LCL bug 8553
@@ -21370,19 +21370,29 @@ begin
     if Temp = 0 then
     begin
       Window := FUpdateRect;
+      Logger.Send([lcHeaderOffset], 'FUpdateRect', FUpdateRect);
       Target := Window.TopLeft;
       //lclheader
       if hoVisible in FHeader.FOptions then
       begin
-        Inc(Target.Y,FHeader.Height);
-        Dec(Window.Bottom,FHeader.Height);
-        if  RectVisible(Canvas.Handle,FHeaderRect) then
+        if Target.Y < FHeader.Height then
+        begin
+          Window.Top := 0;
+          Target.Y := FHeader.Height;
+        end
+        else
+        begin
+          Dec(Window.Top, FHeader.Height);
+        end;
+        Dec(Window.Bottom, FHeader.Height);
+        
+        if RectVisible(Canvas.Handle, FHeaderRect) then
         begin
           Logger.Send([lcPaintHeader],'RectVisible = True');
           FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
         end;
         with FHeaderRect do
-          ExcludeClipRect(Canvas.Handle,Left,Top,Right,Bottom);
+          ExcludeClipRect(Canvas.Handle, Left, Top, Right, Bottom);
       end;
       // The clipping rectangle is given in client coordinates of the window. We have to convert it into
       // a sliding window of the tree image.
@@ -21403,11 +21413,12 @@ begin
       //lclheader
       if hoVisible in FHeader.FOptions then
       begin
-        Inc(Target.Y,FHeader.Height);
-        Dec(Window.Bottom,FHeader.Height);
-        if  RectVisible(Canvas.Handle,FHeaderRect) then
+        //Target is always (0,0) due to call to ClientRect, so no need set Top to 0
+        //also no need to decrease bottom because ClientRect already computes header
+        Inc(Target.Y, FHeader.Height);
+        if  RectVisible(Canvas.Handle, FHeaderRect) then
         begin
-          Logger.Send([lcPaintHeader],'RectVisible = True');
+          Logger.Send([lcPaintHeader], 'RectVisible = True');
           FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
         end;
         with FHeaderRect do
@@ -21431,10 +21442,7 @@ begin
 
       //lclheader
       if hoVisible in FHeader.FOptions then
-      begin
-        Inc(Target.Y,FHeader.Height);
-        Dec(Window.Bottom,FHeader.Height);
-      end;
+        Inc(Target.Y, FHeader.Height);
 
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       PaintTree(Canvas, Window, Target, Options);
@@ -26557,8 +26565,8 @@ var
 
 begin
   Logger.EnterMethod([lcPaint],'PaintTree');
-  Logger.Send([lcPaint],'Window',Window);
-  Logger.Send([lcPaint],'Target',Target);
+  Logger.Send([lcPaint, lcHeaderOffset],'Window',Window);
+  Logger.Send([lcPaint, lcHeaderOffset],'Target',Target);
   Logger.Send([lcPaintHeader],'ClientRect',ClientRect);
   Logger.Send([lcPaintHeader],'TreeRect',GetTreeRect);
   Logger.Send([lcPaintHeader],'OffsetX: %d  OffsetY: %d',[OffsetX,OffsetY]);
@@ -26629,7 +26637,7 @@ begin
         PaintInfo.Node := GetNodeAt(0, Window.Top, False, BaseOffset);
         if PaintInfo.Node = nil then
           BaseOffset := Window.Top;
-        Logger.Send([lcPaint],'BaseOffset',BaseOffset);
+        Logger.Send([lcPaint, lcHeaderOffset],'BaseOffset',BaseOffset);
         // Transform selection rectangle into node bitmap coordinates.
         if DrawSelectionRect then
           OffsetRect(SelectionRect, 0, -BaseOffset);
@@ -26639,7 +26647,7 @@ begin
         MaximumRight := Target.X + (Window.Right - Window.Left);
         MaximumBottom := Target.Y + (Window.Bottom - Window.Top);
 
-        Logger.Send([lcPaintHeader],'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);
+        Logger.Send([lcPaintHeader, lcHeaderOffset],'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);
         TargetRect := Rect(Target.X, Target.Y - (Window.Top - BaseOffset), MaximumRight, 0);
         TargetRect.Bottom := TargetRect.Top;
 
@@ -26677,6 +26685,8 @@ begin
             Inc(BaseOffset, PaintInfo.Node.NodeHeight);
 
             TargetRect.Bottom := TargetRect.Top + PaintInfo.Node.NodeHeight;
+
+            Logger.Send([lcHeaderOffset], 'TargetRect for Node ' + IntToStr(PaintInfo.Node.Index), TargetRect);
 
             // If poSelectedOnly is active then do the following stuff only for selected nodes or nodes
             // which are children of selected nodes.
@@ -26936,7 +26946,7 @@ begin
                     NodeBitmap.Height));
                 end;
                 Logger.SendBitmap([lcPaintBitmap],'NodeBitmap',NodeBitmap);
-                Logger.SendIf([lcPaintDetails],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
+                Logger.SendIf([lcPaintDetails, lcHeaderOffset],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 {$ifdef Gtk}
                 //lclheader
@@ -29763,7 +29773,7 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; cons
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½rstemeier.
 
 type
   UCS2 = Word;
@@ -30240,7 +30250,7 @@ end;
 function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): string;
 
 // Renders the current tree content (depending on Source) as RTF (rich text).
-// Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
+// Based on ideas and code from Frank van den Bergh and Andreas Hï¿½rstemeier.
 
 var
   Fonts: TStringList;
