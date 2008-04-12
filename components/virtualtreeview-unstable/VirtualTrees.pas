@@ -5229,7 +5229,10 @@ begin
       if not (csLoading in ComponentState) and HandleAllocated then
       begin
         if toCheckSupport in ToBeSet + ToBeCleared then
+        begin
+          GetCheckImageList;
           Invalidate;
+        end;
         if not (csDesigning in ComponentState) then
         begin
           if toFullRepaintOnResize in (TobeSet + ToBeCleared) then
@@ -19638,10 +19641,10 @@ end;
 
 function TBaseVirtualTree.GetClientRect: TRect;
 begin
-  Result:=Inherited;
+  Result := inherited;
   //lclheader
   if HandleAllocated and (hoVisible in FHeader.FOptions) then
-    Dec(Result.Bottom,FHeader.Height);
+    Dec(Result.Bottom, FHeader.Height);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
