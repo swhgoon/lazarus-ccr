@@ -18654,7 +18654,7 @@ begin
             Logger.Send([lcScroll], 'Rect to Scroll', R);
             ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
             //todo: temporary hack to avoid some drawing problems. Will be removed when the header is properly implemented
-            InvalidateRect(Handle, nil, True);
+            //InvalidateRect(Handle, nil, True);
           end;
         end;
       end;
@@ -28081,7 +28081,8 @@ begin
           begin
             Expand := False;
             R := GetDisplayRect(Node, NoColumn, False);
-            R.Bottom := ClientHeight;
+            //lclheader
+            R.Bottom := inherited GetClientRect.Bottom;
             Inc(R.Top, NodeHeight[Node]);
 
             // No animation necessary if the node is below the current client height.
@@ -28152,7 +28153,8 @@ begin
               with ToggleData do
               begin
                 Inc(R.Top, NodeHeight[Node]);
-                R.Bottom := ClientHeight;
+                //lclheader
+                R.Bottom := inherited GetClientRect.Bottom;
                 if R.Bottom > R.Top then
                 begin
                   Expand := True;
