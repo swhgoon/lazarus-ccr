@@ -11523,10 +11523,18 @@ begin
         end
         else
         begin
+          //clear the node background
+          //note there's a bug in original VTV that can lead to wrong node paint
+          //so, here the node is always cleared even if is selected
+          Brush.Color := Self.Color;
+          FillRect(R);
+          Logger.SendColor([lcPaintDetails],'Clearing a node background - Brush.Color', Brush.Color);
+          Logger.Send([lcPaintDetails],'Clearing Rectangle (R)', R);
+
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
             (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) then
           begin
-            Logger.Send([lcPaintDetails,lcDrag],'Setting the color of a selected node');
+            Logger.Send([lcPaintDetails, lcDrag], 'Draw the background of a selected node');
             if toShowHorzGridLines in FOptions.PaintOptions then
               Dec(R.Bottom);
             if Focused or (toPopupMode in FOptions.FPaintOptions) then
@@ -11542,13 +11550,6 @@ begin
 
             with R do
               RoundRect(Left, Top, Right, Bottom, FSelectionCurveRadius, FSelectionCurveRadius);
-          end
-          else
-          begin
-            Brush.Color := Self.Color;
-            Logger.SendColor([lcPaintDetails],'Setting the color of a NOT selected node - Brush.Color',Brush.Color);
-            Logger.Send([lcPaintDetails],'Clearing rectangle (R)',R);
-            FillRect(R);
           end;
         end;
       end;
