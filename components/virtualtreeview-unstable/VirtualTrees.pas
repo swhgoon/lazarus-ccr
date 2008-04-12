@@ -16568,6 +16568,9 @@ var
   MaxValue: Integer;
 
 begin
+  //lclheader
+  if hoVisible in FHeader.Options then
+    Dec(Y, FHeader.Height);
   if tsDrawSelecting in FStates then
     FLastSelRect := FNewSelRect;
   FNewSelRect.BottomRight := Point(X + FEffectiveOffsetX, Y - FOffsetY);
@@ -20321,6 +20324,11 @@ begin
       FDrawSelShiftState := ShiftState;
       FNewSelRect := Rect(Message.XPos + FEffectiveOffsetX, Message.YPos - FOffsetY, Message.XPos + FEffectiveOffsetX,
         Message.YPos - FOffsetY);
+      //lclheader
+      if hoVisible in FHeader.Options then
+        OffsetRect(FNewSelRect, 0, -FHeader.Height);
+      Logger.Send([lcSelection],'FNewSelRect', FNewSelRect);
+          
       FLastSelRect := Rect(0, 0, 0, 0);
       if not IsCellHit then
         Exit;
@@ -21171,7 +21179,11 @@ begin
   begin
     if CalculateSelectionRect(X, Y) then
     begin
-      InvalidateRect(Handle, @FNewSelRect, False);
+      //lclheader
+      R := FNewSelRect;
+      if hoVisible in FHeader.Options then
+        OffsetRect(R, 0, FHeader.Height);
+      InvalidateRect(Handle, @R, False);
       UpdateWindow(Handle);
       if (Abs(FNewSelRect.Right - FNewSelRect.Left) > DragManager.DragThreshold) or
          (Abs(FNewSelRect.Bottom - FNewSelRect.Top) > DragManager.DragThreshold) then
@@ -21230,6 +21242,8 @@ begin
           begin
             UnionRect(R, OrderRect(FNewSelRect), OrderRect(FLastSelRect));
             OffsetRect(R, -FEffectiveOffsetX, FOffsetY);
+            if hoVisible in FHeader.Options then
+              OffsetRect(R, 0, FHeader.Height);
             InvalidateRect(Handle, @R, False);
           end;
           UpdateWindow(Handle);
@@ -21705,6 +21719,7 @@ var
   BackColorBackup: COLORREF;   // used to restore forground and background colors when drawing a selection rectangle
 
 begin
+  Logger.Send([lcSelection], 'SelectionRect at PaintSelection', SelectionRect);
   if ((FDrawSelectionMode = smDottedRectangle) and not (tsUseThemes in FStates)) or
     not MMXAvailable then
   begin
@@ -26601,10 +26616,10 @@ begin
       PaintInfo.Canvas := NodeBitmap.Canvas;
       NodeBitmap.Canvas.Lock;
       try
-        Logger.Send([lcPaintDetails],'FNewSelRect',FNewSelRect);
+        Logger.Send([lcPaintDetails],'FNewSelRect', FNewSelRect);
         // Prepare the current selection rectangle once. The corner points are absolute tree coordinates.
         SelectionRect := OrderRect(FNewSelRect);
-        Logger.Send([lcPaintDetails],'SelectionRect',SelectionRect);
+        Logger.Send([lcPaintDetails, lcSelection],'SelectionRect', SelectionRect);
         DrawSelectionRect := IsMouseSelecting and not IsRectEmpty(SelectionRect);
         Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);
         // R represents an entire node (all columns), but is a bit unprecise when it comes to
@@ -26644,6 +26659,7 @@ begin
         if DrawSelectionRect then
           OffsetRect(SelectionRect, 0, -BaseOffset);
 
+        Logger.Send([lcSelection], 'SelectionRect fixed by BaseOffset', SelectionRect);
         // The target rectangle holds the coordinates of the exact area to blit in target canvas coordinates.
         // It is usually smaller than an entire node and wanders while the paint loop advances.
         MaximumRight := Target.X + (Window.Right - Window.Left);
@@ -26947,7 +26963,7 @@ begin
                   PaintSelectionRectangle(PaintInfo.Canvas, Window.Left, SelectionRect, Rect(0, 0, NodeBitmap.Width,
                     NodeBitmap.Height));
                 end;
-                Logger.SendBitmap([lcPaintBitmap],'NodeBitmap',NodeBitmap);
+                Logger.SendBitmap([lcPaintBitmap],'NodeBitmap ' + IntToStr(PaintInfo.Node^.Index), NodeBitmap);
                 Logger.SendIf([lcPaintDetails, lcHeaderOffset],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
                   +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
                 {$ifdef Gtk}

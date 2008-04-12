@@ -35,6 +35,7 @@ const
   lcOle = 20;
   lcPanning = 21;
   lcHeaderOffset = 22;
+  lcSelection = 23;
   
 var
   Logger: TLCLLogger;
