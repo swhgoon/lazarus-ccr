@@ -4491,8 +4491,11 @@ function CalculateScanline(Bits: Pointer; Width, Height, Row: Integer): Pointer;
 // Helper function to calculate the start address for the given row.
 
 begin
+  //todo: Height is always > 0 in LCL
+  {
   if Height > 0 then  // bottom-up DIB
     Row := Height - Row - 1;
+  }
   // Return DWORD aligned address of the requested scanline.
   PtrInt(Result) := PtrInt(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
 end;
