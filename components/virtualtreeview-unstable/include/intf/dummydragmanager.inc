@@ -603,9 +603,9 @@ constructor TVTDragManager.Create(AOwner: TBaseVirtualTree);
 
 begin
   inherited Create;
-  {
-  FOwner := AOwner;
 
+  FOwner := AOwner;
+  {
   // Create an instance  of the drop target helper interface. This will fail but not harm on systems which do
   // not support this interface (everything below Windows 2000);
   CoCreateInstance(CLSID_DragDropHelper, nil, CLSCTX_INPROC_SERVER, IID_IDropTargetHelper, FDropTargetHelper);
