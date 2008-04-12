@@ -18652,9 +18652,16 @@ begin
               Inc(R.Bottom, FHeader.Height);
             end;
             Logger.Send([lcScroll], 'Rect to Scroll', R);
+            //todo: temporary hack to avoid some drawing problems.
+            //Will be removed when scrollwindowex is properly implemented in all widgets
+            {$ifdef LCLQt}
+            DelphiCompat.ScrollWindow(Handle, DeltaX, DeltaY, @R, @R);
+            {$else}
             ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
-            //todo: temporary hack to avoid some drawing problems. Will be removed when the header is properly implemented
-            //InvalidateRect(Handle, nil, True);
+            {$endif}
+            {$ifdef Gtk}
+            InvalidateRect(Handle, nil, True);
+            {$endif}
           end;
         end;
       end;
