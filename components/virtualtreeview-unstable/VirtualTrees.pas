@@ -6201,7 +6201,7 @@ begin
             FBackImage.Canvas.Handle, 0, 0, SRCCOPY);
 
           if ForceRepaint then
-            UpdateWindow(FOwner.Handle);
+            DelphiCompat.UpdateWindow(FOwner.Handle);
 
           Inc(FImagePosition.X, -DeltaX);
           Inc(FImagePosition.Y, -DeltaY);
@@ -8835,8 +8835,11 @@ begin
             SelectClipRgn(Handle, ButtonRgn);
             DeleteObject(ButtonRgn);
 
+            //lclheader
+            //Under Delphi/VCL, unlike LCL, the hover index is not changed while dragging.
+            //Here we check if dragging and not draw as hover
             IsHoverIndex := (Integer(FPositionToIndex[I]) = FHoverIndex) and (hoHotTrack in FHeader.FOptions) and
-              (coEnabled in FOptions);
+              (coEnabled in FOptions) and not (hsDragging in FHeader.States);
             IsDownIndex := Integer(FPositionToIndex[I]) = FDownIndex;
             if (coShowDropMark in FOptions) and (Integer(FPositionToIndex[I]) = FDropTarget) and
               (Integer(FPositionToIndex[I]) <> FDragIndex) then
@@ -9989,8 +9992,10 @@ begin
       ImagePos := Treeview.ClientToScreen(Point(DragColumn.Left + Treeview.ComputeRTLOffset(True), 0))
     else
       ImagePos := Treeview.ClientToScreen(Point(DragColumn.Left, 0));
+    //lclheader
     // Column rectangles are given in local window coordinates not client coordinates.
-    Dec(ImagePos.Y, FHeight);
+    // The above statement is not valid under LCL
+    //Dec(ImagePos.Y, FHeight);
 
     if hoRestrictDrag in FOptions then
       FDragImage.MoveRestriction := dmrHorizontalOnly
