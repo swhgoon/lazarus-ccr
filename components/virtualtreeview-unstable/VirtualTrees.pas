@@ -10747,8 +10747,6 @@ begin
   FCustomCheckChangeLink.Free;
   FScrollBarOptions.Free;
   FOptions.Free;
-  if FCheckImages <> FCustomCheckImages then
-    FCheckImages.Free;
 
   // The window handle must be destroyed before the header is freed because it is needed in WM_NCDESTROY.
   //todo_lcl_check
@@ -10758,6 +10756,9 @@ begin
   }
   FHeader.Free;
   FHeader := nil;
+
+  if FCheckImages <> FCustomCheckImages then
+    FCheckImages.Free;
 
   FreeMem(FRoot);
 
