@@ -480,7 +480,7 @@ var
 begin
   S := GetDisplayText;
   if not PaintComboEdit(Self, S, FAlignment, FFocused {and not PopupVisible}, FCanvas, Message) then
-      inherited;
+      inherited WMPaint(Message);
 end;
 
 procedure TCustomNumEdit.WMPaste(var Message: TLMessage);

@@ -795,7 +795,7 @@ var
   S: string;
   F:TField;
 begin
-  if FValuesList.Count=0 then exit;
+  if (FValuesList.Count=0) or (not LookupSource.DataSet.Active) then exit;
   if ColorToRGB(Self.Color) <> ColorToRGB(clBtnFace) then
     ACanvas.Pen.Color := clBtnFace
   else
