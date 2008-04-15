@@ -54,10 +54,12 @@ type
     TokenTable    : TTokenTable;
     OnPrecompile  : TNotifyEvent;
     OnComment     : procedure (Sender: TObject; const Comment: AnsiString) of object;
+    OnIgnoreToken : procedure (Sender: TObject; const Ignored: AnsiString) of object;
     Line          : Integer;
 
     Stack         : TList;
     Errors        : TStringList;
+    IgnoreTokens  : TStringList;
 
     constructor Create;
     destructor Destroy; override;
@@ -70,6 +72,7 @@ type
     function FindNextToken(var Token: AnsiString; var TokenType: TTokenType): Boolean;
 
     procedure SetError(const ErrorCmt: AnsiString);
+
   end;
 
   { TEntity }
@@ -166,10 +169,19 @@ type
     _isPointer  : Boolean;
   end;
 
+  TUnionTypeDef = class(TStructTypeDef)
+  protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
+    _Name       : AnsiString;
+    //todo: remove
+    _isPointer  : Boolean;
+  end;
+
   { TTypeDef }
   //C token - any type, including unsigned short
 
-  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short);
+  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short, td_Char);
 
   {updated}
   TTypeDef = class(TEntity)
@@ -296,7 +308,19 @@ procedure FreeEntity(Item: TEntity);
 procedure ParseCNumeric(const S: AnsiString; var idx: integer; var NumStr: AnsiSTring);
 function CToPascalNumeric(const Cnum: AnsiString): AnsiString;
 
+function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
+
 implementation
+
+function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
+begin
+  Result := DefResult;
+  if not Assigned(AType) then Exit;
+  if AType is TTypeDef then
+    Result := TTypeDef(AType)._IsPointer
+  else if AType is TStructTypeDef then
+    Result := TStructTypeDef(AType)._isPointer;
+end;
 
 function ErrExpectStr(const Expected, Found: AnsiString): AnsiString;
 begin
@@ -348,6 +372,8 @@ begin
     Result := TEnumTypeDef.Create(Owner)
   else if s = 'struct' then
     Result := TStructTypeDef.Create(Owner)
+  else if s = 'union' then
+    Result := TUnionTypeDef.Create(Owner)
   else
     Result := TTypeDef.Create(Owner);
 
@@ -474,10 +500,12 @@ begin
   Line := 1;
   Stack := TList.Create;
   Errors := TStringList.Create;
+  IgnoreTokens := TStringList.Create;
 end;
 
 destructor TTextParser.Destroy;
 begin
+  IgnoreTokens.Free;
   Errors.Free;
   Stack.Free;
   inherited Destroy;
@@ -640,12 +668,21 @@ begin
           Result := Result and (Token <> '');
         end;
       end;
+
+      if Result and (IgnoreTokens.Count > 0) then begin
+        if IgnoreTokens.IndexOf(Token) >= 0 then begin
+          if Assigned(OnIgnoreToken) then
+            OnIgnoreToken(Self, Token);
+          Result := false;
+          TokenType := tt_None;
+          Token := '';
+        end;
+      end;
     end; {of while}
   finally
     if not Result
       then TokenType := tt_None
       else TokenPos := Index - length(Token);
-      
     //todo: make an event or something
     if TokenType = tt_Numeric then
       Token := CToPascalNumeric(Token);
@@ -1155,28 +1192,38 @@ begin
   brac := 0;
   ExpS := '';
   Result := false;
-  while AParser.FindNextToken(nm, tt) do begin
-    if (tt = tt_Numeric) or (tt = tt_Ident) then begin
-      ExpS := ExpS + nm;
-      i := AParser.Index;
-      if not ParseCOperator(AParser, nm) then begin
-        AParser.Index := i;
-        Break;
-      end else
-        ExpS := ExpS + ' ' + nm + ' ';
-    end else if (tt = tt_Symbol) then begin
-      if nm ='(' then inc(brac)
-      else if nm = ')' then dec(brac);
-    end else begin
-      //i := AParser.Index;
-      Exit;
+
+  try
+    while AParser.FindNextToken(nm, tt) do begin
+      if (nm = #39) then begin
+        ExpS := #39 + ScanTo(APArser.Buf, AParser.Index, [#39]) + #39;
+        inc(AParser.Index);
+        Result := true;
+        Exit;
+      end else if (tt = tt_Numeric) or (tt = tt_Ident) then begin
+        ExpS := ExpS + nm;
+        i := AParser.Index;
+        if not ParseCOperator(AParser, nm) then begin
+          AParser.Index := i;
+          Break;
+        end else
+          ExpS := ExpS + ' ' + nm + ' ';
+      end else if (tt = tt_Symbol) then begin
+        if nm ='(' then inc(brac)
+        else if nm = ')' then dec(brac);
+      end else begin
+        //i := AParser.Index;
+        Exit;
+      end;
     end;
+    Result := true;
+
+  finally
+    if brac > 0 then
+      while (brac > 0) and (AParser.FindNextToken(nm, tt)) do
+        if nm = ')' then
+          dec(brac);
   end;
-  if brac > 0 then
-    while (brac > 0) and (AParser.FindNextToken(nm, tt)) do
-      if nm = ')' then
-        dec(brac);
-  Result := true;
 end;
 
 { TEnumValue }
@@ -1274,6 +1321,8 @@ begin
   end;
 
   AParser.FindNextToken(s, tt);
+  if s <> '}' then
+    AParser.Index := AParser.TokenPos;
   prev := nil;
   while (s <> '}') do begin
     //i := AParser.TokenPos;
@@ -1294,13 +1343,12 @@ begin
     if s = ','
       then prev := st
       else prev := nil;
-      
+
     if s = ';' then begin
       AParser.FindNextToken(s, tt);
       if s <> '}' then AParser.Index := AParser.TokenPos;
     end else begin
-      AParser.SetError(ErrExpectStr('";"', st._Name));
-      Exit;
+      AParser.Index := AParser.TokenPos;
     end;
   end;
 
@@ -1326,7 +1374,7 @@ var
 begin
   Result := false;
   _Type := ParseTypeDef(Self, AParser);
-  if Assigned(_Type) then Exit;
+  if not Assigned(_Type) then Exit;
   
   _TypeName := GetTypeNameFromEntity(_Type);
 
@@ -1334,6 +1382,7 @@ begin
     AParser.SetError(ErrExpectStr('Identifier', s));
     Exit;
   end;
+  _Name := s;
 
   AParser.FindNextToken(s, tt);
   if (tt = tt_Symbol) and (s = ':') then begin
@@ -1344,7 +1393,8 @@ begin
     end;
     CVal(s, _BitSize);
     AParser.FindNextToken(s, tt);
-  end;
+  end else
+    AParser.Index := AParser.TokenPos;
   Result := true;
   //success: (tt = tt_Symbol) and (s = ';')
 end;
@@ -1368,10 +1418,13 @@ begin
     SpecMask := [td_Signed, td_Unsigned];
   end else if (s = 'long') then begin
     SpecVal := [td_Long];
-    SpecMask := [td_Long, td_Short];
+    SpecMask := [td_Long, td_Short, td_Char];
   end else if (s = 'short') then begin
     SpecVal := [td_Short];
-    SpecMask := [td_Long, td_Short];
+    SpecMask := [td_Long, td_Short, td_Char];
+  end else if (s = 'char') then begin
+    SpecVal := [td_Char];
+    SpecMask := [td_Long, td_Short, td_Char];
   end else
     Result := false;
 end;
@@ -1385,33 +1438,41 @@ var
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
-  while (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) do begin
-    if _Spec * msk <> [] then begin
-      AParser.SetError( ErrExpectStr('Type identifier', s));
-      Exit;
-    end;
-    _Spec := _Spec + vl;
+  if (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) then
+    while (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) do begin
+      if (_Spec * msk <> []) and (s <> 'long') then begin
+        AParser.SetError( ErrExpectStr('Type identifier', s));
+        Exit;
+      end;
+      _Spec := _Spec + vl;
+      if _Name = '' then _Name := s
+      else _Name := _Name + ' ' + s;
+      AParser.FindNextToken(s, tt);
+    end {of while}
+  else begin
+    _Name := s;
     AParser.FindNextToken(s, tt);
+    Result := true;
   end;
 
-  if tt <> tt_Ident then begin
+  if tt = tt_Ident then begin
     Result := true; // type name can be: usigned long!
     AParser.Index := AParser.TokenPos;
     Exit;
-  end;
-  _Name := s;
-  AParser.FindNextToken(s, tt);
-  if (tt = tt_Symbol) then begin
+  end else if tt = tt_Symbol then begin
     if (s = '*') then
       _isPointer := true
-    else begin
+    else if (s <> ';') or (s <>',') then begin
       AParser.Index := AParser.TokenPos;
       AParser.SetError( ErrExpectStr('identifier', 'symbol ' + s ));
       Exit;
-    end;
-  end else
-    AParser.Index := AParser.TokenPos;
-  Result := true;
+    end else
+      AParser.Index := AParser.TokenPos;
+    Result := true;
+  end else begin
+    AParser.SetError(ErrExpectStr( 'Identifier', s) );
+  end;
+
 end;
 
 { TSkip }
@@ -1419,6 +1480,75 @@ end;
 function TSkip.DoParse(AParser: TTextParser): Boolean;
 begin
   Result := true;
+end;
+
+{ TUnionTypeDef }
+
+function TUnionTypeDef.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+  i   : Integer;
+  st    : TStructField;
+  prev  : TStructField;
+begin
+  Result := false;
+  AParser.FindNextToken(s, tt);
+  if s <> 'union' then begin
+    AParser.SetError(ErrExpectStr('union', s));
+    Exit;
+  end;
+
+  AParser.FindNextToken(s, tt);
+  i := AParser.TokenPos;
+  if (tt = tt_Ident) then begin
+    _Name := s;
+    AParser.FindNextToken(s, tt);
+    i := AParser.TokenPos;
+  end;
+
+  if not ((tt = tt_Symbol) and (s = '{')) then begin
+    if (tt = tt_Symbol) and (s = '*')
+      then _isPointer := true
+      else AParser.Index := i;
+    Exit;
+  end;
+
+  AParser.FindNextToken(s, tt);
+  if s <> '}' then
+    AParser.Index := AParser.TokenPos;
+  prev := nil;
+  while (s <> '}') do begin
+    //i := AParser.TokenPos;
+    st := TStructField.Create(Self);
+    if not Assigned(prev) then begin
+      if not st.Parse(AParser) then Exit;
+    end else begin
+      AParser.FindNextToken(st._Name, tt);
+      if tt <> tt_Ident then begin
+        AParser.SetError(ErrExpectStr('field name', st._Name));
+        Exit;
+      end;
+      st._TypeName := prev._TypeName;
+    end;
+
+    Items.Add(st);
+    AParser.FindNextToken(s, tt);
+    if s = ','
+      then prev := st
+      else prev := nil;
+
+    if s = ';' then begin
+      AParser.FindNextToken(s, tt);
+      if s <> '}' then AParser.Index := AParser.TokenPos;
+    end else begin
+      AParser.Index := AParser.TokenPos;
+    end;
+  end;
+
+  Result := true;
+  //no skipping last ';', because after structure a variable can be defined
+  //ie: struct POINT {int x; int y} point;
 end;
 
 end.

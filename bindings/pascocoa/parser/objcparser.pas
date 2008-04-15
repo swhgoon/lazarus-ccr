@@ -24,7 +24,7 @@ type
   { TPrecompileHandler }
   TPrecompileHandler = class(TObject)
   public
-    hdr : TObjCHeader;
+    hdr   : TObjCHeader;
     procedure OnPrecompile(Sender: TObject);
     procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
@@ -97,7 +97,7 @@ begin
     Err :=  'File not found: ' + FileName;
     Exit;
   end;
-  
+
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
   prec := TPrecompileHandler.Create(hdr);
@@ -110,6 +110,8 @@ begin
       parser.TokenTable.Precompile := '#';
       parser.OnPrecompile := prec.OnPrecompile;
       parser.OnComment := prec.OnComment;
+      parser.IgnoreTokens.AddStrings(ConvertSettings.IgnoreTokens);
+
       hdr._FileName := ExtractFileName(FileName);
       Result := hdr.Parse(parser);
       if not Result then begin
@@ -276,7 +278,7 @@ begin
   try
     GetConvertSettings(ConvertSettings, inpf);
     if not FileExists(inpf) then begin
-      //ParseAll;
+      ParseAll;
       Exit;
     end;
 

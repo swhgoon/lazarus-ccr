@@ -7,6 +7,7 @@
 unit ObjCParserUtils;
 
 interface
+
 {$ifdef fpc}{$mode delphi}{$H+}{$endif}
 
 uses
@@ -45,6 +46,7 @@ type
     IgnoreIncludes  : TStringList;
     DefineReplace   : TReplaceList;
     TypeDefReplace  : TReplaceList; // replaces for C types
+    IgnoreTokens    : TStringList;
 
     ConvertPrefix   : TStringList;
     constructor Create;
@@ -69,6 +71,8 @@ function GetMethodResultType(const m: TClassMethodDef): AnsiString;
 function IsPascalReserved(const s: AnsiString): Boolean;
 
 implementation
+
+procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings); forward;
 
 function IsPascalReserved(const s: AnsiString): Boolean;
 var
@@ -103,6 +107,17 @@ begin
     'v': Result := (ls = 'var') or (ls = 'virtual');
     'w': Result := (ls = 'while') or (ls = 'with');
     'x': Result := (ls = 'xor');
+  end;
+end;
+
+function FixIfReserved(const AName: AnsiString; NotUse: TStrings = nil): AnsiString;
+begin
+  Result := AName;
+  if isPascalReserved(AName) then
+    Result := '_'+AName;
+  if Assigned(NotUse) then begin
+    while (NotUse.IndexOf(Result) >= 0) do
+      Result := '_' + Result;
   end;
 end;
 
@@ -289,11 +304,18 @@ begin
 
 
   pth := vs;
+
+  {$IFDEF MSWINDOWS}
+    
+  {$ENDIF}
+
   while (pth <> '') and (length(pth)>1) do begin
     if ConvertSettings.IgnoreIncludes.IndexOf(pth) >= 0 then
       Exit; // file must be excluded;
     pth := ExtractFilePath(ExcludeTrailingPathDelimiter(pth));
   end;
+
+
   
   Result := ExtractFileName(vs);
   Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(vs))) + '.inc';
@@ -708,6 +730,80 @@ begin
   end;
 end;
 
+procedure WriteOutUnion(AField: TUnionTypeDef; const Prefix: AnsiString; subs: TStrings);
+var
+  i   : integer;
+  n   : integer;
+  c   : Integer;
+  s   : AnsiString;
+begin
+  n := 0;
+  subs.Add(Prefix + 'case Integer of');
+  for i := 0 to AField.Items.Count  - 1 do begin
+    if TObject(AField.Items[i]) is TStructField then begin
+      subs.Add(Prefix + Format('%d: (', [n]));
+      c := subs.Count;
+      WriteOutRecordField(TStructField(AField.Items[i]), Prefix + '  ', subs);
+      subs[subs.Count-1] := subs[subs.Count-1] + ');';
+
+      if subs.Count - 1 = c then begin
+        s := subs[subs.Count - 1];
+        Delete(s, 1, length(Prefix + '  '));
+        subs.Delete(subs.Count - 1);
+        subs[subs.Count - 1] := subs[subs.Count - 1] + s;   
+      end;
+
+      inc(n); 
+    end;
+  end;
+end;
+
+procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings);
+var
+  pastype : AnsiString;
+begin
+  //todo:!
+  if Assigned(AField._Type) and (AField._Type is TUnionTypeDef)  then begin
+    WriteOutUnion(TUnionTypeDef(AField._Type), Prefix, subs);
+  end else begin
+    pastype := ObjCToDelphiType( AField._TypeName, IsTypePointer(AField._Type, false));
+    subs.Add(Prefix + Format('%s : %s; ', [FixIfReserved(AField._Name), pastype]));
+  end;
+end;
+
+procedure WriteOutRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings);
+var
+  i   : integer;
+begin
+  subs.Add(Prefix + Format('%s record ', [RecPrefix]));
+  for i := 0 to struct.Items.Count - 1 do
+    if TObject(struct.Items[i]) is TStructField then
+      WriteOutRecordField( TStructField(struct.Items[i]), Prefix + '  ', subs);
+  subs.Add(Prefix + 'end;');
+end;
+
+procedure WriteOutTypeDefRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings);
+var
+  i : integer;
+  s : AnsiString;
+begin
+  i := subs.Count;
+
+  WriteOutRecord(struct, Prefix, RecPrefix, subs);
+  s := subs[i];
+  Delete(s, 1, length(Prefix));
+  s := Prefix + struct._Name + ' = ' + s;
+  subs[i] := s;
+end;
+
+function WriteOutTypeDefName(const NewType, FromType: AnsiSTring; isPointer: Boolean): AnsiString;
+begin
+  if not isPointer then
+    Result := Format('%s = %s;', [NewType, FromType])
+  else
+    Result := Format('%s = ^%s;', [NewType, FromType]);
+end;
+
 procedure WriteOutTypeDefToHeader(typedef: TTypeNameDef; const Prefix: AnsiString; subs: TStrings);
 var
   vs    : AnsiString;
@@ -717,15 +813,23 @@ begin
   if vs = '' then vs := typedef._Inherited;
   if not Assigned(typedef._Type) or (typedef._Type is TTypeDef) then begin
     subs.Add('type');
-    subs.Add(Prefix + Format('%s = %s;', [typedef._TypeName, vs]))
-  end else begin
-    if typedef._Type is TEnumTypeDef then begin
-      tmp := TEnumTypeDef(typedef._Type)._Name;
-      TEnumTypeDef(typedef._Type)._Name := typedef._TypeName;
-      WriteOutEnumToHeader(TEnumTypeDef(typedef._Type), subs);
-      TEnumTypeDef(typedef._Type)._Name := tmp;
+    subs.Add(Prefix + WriteOutTypeDefName(typedef._TypeName, vs, IsTypePointer(typedef._Type, false)));
+  end else if typedef._Type is TEnumTypeDef then begin
+    tmp := TEnumTypeDef(typedef._Type)._Name;
+    TEnumTypeDef(typedef._Type)._Name := typedef._TypeName;
+    WriteOutEnumToHeader(TEnumTypeDef(typedef._Type), subs);
+    TEnumTypeDef(typedef._Type)._Name := tmp;
+  end else if typedef._Type is TStructTypeDef then begin
+    subs.Add('type');
+    if TStructTypeDef(typedef._Type)._Name <> '' then begin
+      WriteOutTypeDefRecord(typedef._Type as TStructTypeDef, '  ', 'packed ', subs);
+      subs.Add(Prefix + WriteOutTypeDefName(typedef._TypeName, TStructTypeDef(typedef._Type)._Name, IsTypePointer(typedef._Type, false)));
+    end else begin
+      TStructTypeDef(typedef._Type)._Name := typedef._TypeName;
+      WriteOutTypeDefRecord(typedef._Type as TStructTypeDef, '  ', 'packed ', subs);
     end;
   end;
+
   subs.Add('');
 end;
 
@@ -1081,8 +1185,11 @@ begin
 end;
 
 
+//Removed, must not be used, because enumerations must be converted to constants
 function AppleEnumType(items: TList; TypeDefIdx: Integer): Boolean;
-var
+begin
+  Result := false;
+{var
   EnumIdx : integer;
   typedef : TTypeNameDef;
   enumdef : TEnumTypeDef;
@@ -1104,7 +1211,7 @@ begin
     enumdef._Name := typedef._TypeName;
     Result := true;
   end;
-
+}
 end;
 
 
@@ -1204,6 +1311,7 @@ end;
 
 constructor TConvertSettings.Create;
 begin
+  IgnoreTokens := TStringList.Create;
   IgnoreIncludes := TStringList.Create;
   IgnoreIncludes.CaseSensitive := false;
   DefineReplace := TReplaceList.Create;
@@ -1213,6 +1321,7 @@ end;
 
 destructor TConvertSettings.Destroy;
 begin
+  IgnoreTokens.Free;
   IgnoreIncludes.Free;
   TypeDefReplace.Free;
   DefineReplace.Free;
@@ -1237,10 +1346,14 @@ begin
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
     DefineReplace['__LP64__'] := 'LP64';
+    
     TypeDefReplace['uint32_t'] := 'LongWord';
     TypeDefReplace['uint8_t'] := 'byte';
     TypeDefReplace['NSUInteger'] := 'LongWord';
     TypeDefReplace['NSInteger'] := 'Integer';
+    TypeDefReplace['long long'] := 'Int64';
+
+    IgnoreTokens.Add('DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER');
   end;
 end;
 
