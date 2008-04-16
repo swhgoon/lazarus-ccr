@@ -219,7 +219,9 @@ begin
     r := ConvertSettings.TypeDefReplace[objcType];
     if r <> '' then Result := r;
   end;
-
+  if isPointer then 
+    if ((objctype = 'char') or (objctype = 'const char')) then
+      Result := 'PChar'
 end;
 
 
@@ -305,9 +307,9 @@ begin
 
   pth := vs;
 
-  {$IFDEF MSWINDOWS}
-    
-  {$ENDIF}
+  {$ifdef MSWINDOWS}
+
+  {$endif}
 
   while (pth <> '') and (length(pth)>1) do begin
     if ConvertSettings.IgnoreIncludes.IndexOf(pth) >= 0 then
@@ -316,10 +318,10 @@ begin
   end;
 
 
-  
+
   Result := ExtractFileName(vs);
   Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(vs))) + '.inc';
-  
+
 (*
   Result := '';
   if s = '' then Exit;
@@ -1225,7 +1227,7 @@ begin
   for i := 0 to Items.Count - 1 do
     if TObject(Items[i]) is TClassDef then begin
       cl := TClassDef(Items[i]);
-      if (cl._SuperClass <> '') and (cl._Category <> '') then
+      if (cl._ClassName = category._ClassName) and (cl._Category = '') then 
         for j := 0 to category.Items.Count - 1 do begin
           cl.Items.Add(category.Items[j]);
           TEntity(category.Items[j]).owner := cl;
@@ -1339,19 +1341,27 @@ begin
     // Add('Foundation/NSObject.h');
     // Add('Foundation/Foundation.h');
   end;
-  
+
   with ConvertSettings do begin
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
     DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
     DefineReplace['__LP64__'] := 'LP64';
-    
+
     TypeDefReplace['uint32_t'] := 'LongWord';
     TypeDefReplace['uint8_t'] := 'byte';
     TypeDefReplace['NSUInteger'] := 'LongWord';
     TypeDefReplace['NSInteger'] := 'Integer';
     TypeDefReplace['long long'] := 'Int64';
+    TypeDefReplace['short'] := 'SmallInt';
+    TypeDefReplace['short int'] := 'SmallInt';
+    TypeDefReplace['unsigned short'] := 'Word';
+    TypeDefReplace['unsigned int'] := 'LongWord';
+    TypeDefReplace['int'] := 'Integer';
+    TypeDefReplace['unsigned long long'] := 'Int64';
+    TypeDefReplace['CGFloat'] := 'Single';
+    TypeDefReplace['short'] := 'smallInt';
 
     IgnoreTokens.Add('DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER');
   end;

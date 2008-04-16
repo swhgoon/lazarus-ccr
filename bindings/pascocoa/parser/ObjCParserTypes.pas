@@ -150,7 +150,9 @@ type
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    _Name     : AnsiString;
+    _Name       : AnsiString;
+    _IsArray    : Boolean;
+    _ArraySize  : AnsiSTring;
     _BitSize  : Integer;
     _Type     : TEntity;
     _TypeName : AnsiString;
@@ -181,7 +183,7 @@ type
   { TTypeDef }
   //C token - any type, including unsigned short
 
-  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short, td_Char);
+  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short, td_Char, td_Int);
 
   {updated}
   TTypeDef = class(TEntity)
@@ -205,7 +207,7 @@ type
     _Type       : TEntity;
     _TypeName   : AnsiString;
   end;
-  
+
   { TObjCParameterDef }
 
   TObjCResultTypeDef = class(TTypeDef)
@@ -302,6 +304,7 @@ function ScanWhile(const s: AnsiString; var index: Integer; const ch: TCharSet):
 function ScanTo(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
 
 function ParseTypeDef(Owner: TEntity; AParser: TTextParser): TEntity;
+function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; isArray: Boolean; var ArraySize:AnsiString): Boolean;
 
 procedure FreeEntity(Item: TEntity);
 
@@ -309,8 +312,39 @@ procedure ParseCNumeric(const S: AnsiString; var idx: integer; var NumStr: AnsiS
 function CToPascalNumeric(const Cnum: AnsiString): AnsiString;
 
 function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
+function ErrExpectStr(const Expected, Found: AnsiString): AnsiString;
 
 implementation
+
+function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; isArray: Boolean; var ArraySize:AnsiString): Boolean;
+var
+  tt    : TTokenType;
+  s     : AnsiString;
+begin
+  Result := AParser.FindNextToken(Name, tt);
+  if Result then Result := tt = tt_Ident;
+  if not Result then begin
+    AParser.SetError(ErrExpectStr('Identifier', Name) );
+    Exit;
+  end;
+  Result := true;
+
+  AParser.FindNextToken(s, tt);
+  if not ((tt = tt_Symbol) and (s = '[')) then begin
+    AParser.Index := AParser.TokenPos;
+    Exit;
+  end;
+
+  isArray := true;
+  ParseCExpression(APArser, ArraySize);
+  AParser.FindNextToken(s, tt);
+  if s <> ']' then begin
+    Result := false;
+    AParser.SetError( ErrExpectStr('[', ArraySize));
+    AParser.Index := AParser.TokenPos;
+  end;
+
+end;
 
 function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
 begin
@@ -832,7 +866,7 @@ begin
       // parsing methods
       if s[1] ='#' then SkipLine(AParser.buf, AParser.Index);
       if (s = '+') or (s = '-') then begin
-        dec(AParser.Index ); // roll back a single character
+        AParser.Index := AParser.TokenPos; // roll back to the start of method
         mtd := TClassMethodDef.Create(Self);
         mtd.Parse(AParser);
         Items.Add(mtd);
@@ -912,7 +946,7 @@ begin
     AParser.SetError( ErrExpectStr(' + or -, method descriptor ', s));
     Exit;
   end;
-  
+
   _CallChar := s[1];
   _IsClassMethod := _CallChar = '+';
 
@@ -926,11 +960,21 @@ begin
       Exit;
     end;
     Items.Add(res);
-  end;
+  end else if (tt = tt_Ident) then begin
+    // if type is not defined, that it's assumed to be obj-c 'id'
+    res := TObjCResultTypeDef.Create(Self);
+    res._Name := 'id';
+    Items.Add(res);
+    AParser.Index := AParser.TokenPos;
+  end else
+    APArser.SetError(ErrExpectStr('(', s));
+
   if not AParser.FindNextToken(_Name, tt) then begin
     AParser.SetError(ErrExpectStr('method name Identifier', s));
     Exit;
   end;
+  if _Name = 'defaultCStringEncoding' then
+    _Name := 'defaultCStringEncoding';
 
   while AParser.FindNextToken(s, tt) do begin
     if s = ';' then
@@ -1330,11 +1374,13 @@ begin
     if not Assigned(prev) then begin
       if not st.Parse(AParser) then Exit;
     end else begin
-      AParser.FindNextToken(st._Name, tt);
-      if tt <> tt_Ident then begin
+      Result := ParseCVarDef(APArser, st._Name, st._IsArray, st._ArraySize );
+      if not Result then
+        Exit;
+      {if tt <> tt_Ident then begin
         AParser.SetError(ErrExpectStr('field name', st._Name));
         Exit;
-      end;
+      end;}
       st._TypeName := prev._TypeName;
     end;
 
@@ -1346,10 +1392,11 @@ begin
 
     if s = ';' then begin
       AParser.FindNextToken(s, tt);
-      if s <> '}' then AParser.Index := AParser.TokenPos;
-    end else begin
+      if s <> '}' then
+        AParser.Index := AParser.TokenPos;
+    end;{ else begin
       AParser.Index := AParser.TokenPos;
-    end;
+    end;}
   end;
 
   Result := true;
@@ -1371,18 +1418,20 @@ function TStructField.DoParse(AParser: TTextParser): Boolean;
 var
   tt  : TTokenType;
   s   : AnsiString;
+  fld : TStructField;
 begin
   Result := false;
   _Type := ParseTypeDef(Self, AParser);
   if not Assigned(_Type) then Exit;
-  
+
   _TypeName := GetTypeNameFromEntity(_Type);
 
-  if not (AParser.FindNextToken(s, tt)) or (tt <> tt_Ident) then begin
+  {if not (AParser.FindNextToken(s, tt)) or (tt <> tt_Ident) then begin
     AParser.SetError(ErrExpectStr('Identifier', s));
     Exit;
-  end;
-  _Name := s;
+  end;}
+  Result := ParseCVarDef(AParser, _Name, _IsArray, _ArraySize );
+  if not Result then Exit;
 
   AParser.FindNextToken(s, tt);
   if (tt = tt_Symbol) and (s = ':') then begin
@@ -1392,7 +1441,6 @@ begin
       Exit;
     end;
     CVal(s, _BitSize);
-    AParser.FindNextToken(s, tt);
   end else
     AParser.Index := AParser.TokenPos;
   Result := true;
@@ -1425,6 +1473,9 @@ begin
   end else if (s = 'char') then begin
     SpecVal := [td_Char];
     SpecMask := [td_Long, td_Short, td_Char];
+  end else if (s = 'int') then begin
+    SpecVal := [td_Int];
+    SpecMask := [td_Int];
   end else
     Result := false;
 end;
@@ -1438,7 +1489,8 @@ var
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
-  if (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) then
+  if (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) then begin
+    // search all specifiers
     while (tt = tt_Ident) and (IsSpecifier(s, vl, msk)) do begin
       if (_Spec * msk <> []) and (s <> 'long') then begin
         AParser.SetError( ErrExpectStr('Type identifier', s));
@@ -1448,29 +1500,31 @@ begin
       if _Name = '' then _Name := s
       else _Name := _Name + ' ' + s;
       AParser.FindNextToken(s, tt);
-    end {of while}
-  else begin
+    end; {of while}
+
+    if ((_Spec * [td_Int, td_Short, td_Char, td_Long]) = [])  then begin
+      // if int, short long or char is not specified
+      // volatile or const are
+      Result := tt = tt_Ident;
+      if not Result then begin
+        AParser.SetError(ErrExpectStr('Identifier', s));
+        Exit;
+      end;
+      _Name := s;
+      AParser.FindNextToken(s, tt);
+    end else 
+      Result := true;
+
+  end else begin
     _Name := s;
     AParser.FindNextToken(s, tt);
     Result := true;
   end;
 
-  if tt = tt_Ident then begin
-    Result := true; // type name can be: usigned long!
-    AParser.Index := AParser.TokenPos;
-    Exit;
-  end else if tt = tt_Symbol then begin
-    if (s = '*') then
-      _isPointer := true
-    else if (s <> ';') or (s <>',') then begin
-      AParser.Index := AParser.TokenPos;
-      AParser.SetError( ErrExpectStr('identifier', 'symbol ' + s ));
-      Exit;
-    end else
-      AParser.Index := AParser.TokenPos;
-    Result := true;
-  end else begin
-    AParser.SetError(ErrExpectStr( 'Identifier', s) );
+  if Result then begin
+    if (tt = tt_Symbol) and (s = '*')
+      then _isPointer := true
+      else AParser.Index := AParser.TokenPos;
   end;
 
 end;

@@ -13,7 +13,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <UseAppBundle Value="False"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -35,7 +35,7 @@
         <Filename Value="objcparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Project1"/>
-        <CursorPos X="1" Y="17"/>
+        <CursorPos X="1" Y="10"/>
         <TopLine Value="3"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="71"/>
@@ -44,7 +44,7 @@
       <Unit1>
         <Filename Value="ObjCParserUtils.pas"/>
         <UnitName Value="ObjCParserUtils"/>
-        <CursorPos X="1" Y="11"/>
+        <CursorPos X="47" Y="8"/>
         <TopLine Value="1"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="33"/>
@@ -53,7 +53,7 @@
       <Unit2>
         <Filename Value="ObjCParserTypes.pas"/>
         <UnitName Value="ObjCParserTypes"/>
-        <CursorPos X="1" Y="1553"/>
+        <CursorPos X="1" Y="1539"/>
         <TopLine Value="1531"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="33"/>
@@ -249,17 +249,13 @@
         <Filename Value="/usr/local/share/fpcsrc/rtl/objpas/sysutils/finah.inc"/>
         <CursorPos X="10" Y="28"/>
         <TopLine Value="18"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit31>
       <Unit32>
         <Filename Value="/usr/local/share/fpcsrc/rtl/objpas/sysutils/fina.inc"/>
         <CursorPos X="1" Y="41"/>
         <TopLine Value="34"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="NSAlert.inc"/>
@@ -268,28 +264,7 @@
         <UsageCount Value="10"/>
       </Unit33>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
-      <Position1>
-        <Filename Value="ObjCParserTypes.pas"/>
-        <Caret Line="1439" Column="25" TopLine="1415"/>
-      </Position1>
-      <Position2>
-        <Filename Value="ObjCParserTypes.pas"/>
-        <Caret Line="11" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="objcparser.pas"/>
-        <Caret Line="18" Column="9" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="objcparser.pas"/>
-        <Caret Line="278" Column="1" TopLine="257"/>
-      </Position4>
-      <Position5>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1218" Column="19" TopLine="1210"/>
-      </Position5>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
