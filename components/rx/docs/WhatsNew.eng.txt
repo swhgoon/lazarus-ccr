@@ -35,6 +35,8 @@
   + In RxDBGrid property FixedHotColor now published
   - fix error with empty sring in TRxDateEdit.
   + In property  TRxDBLookupCombo.PopUpFormOptions add field  AutoFillColumns. Used in dropdown list.
+  - Cleanup code in  TRxDBLookupCombo.Paint
+
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

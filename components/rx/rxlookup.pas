@@ -10,6 +10,9 @@ uses
   DB, EditBtn, DBGrids, StdCtrls, Buttons, LMessages, DbCtrls, GraphType,
   dbutils, RxDbGrid, rxpopupunit;
 
+const
+  TextMargin = 5;
+  
 type
   TRxCustomDBLookupCombo = class;
 
@@ -1136,7 +1139,7 @@ procedure TRxCustomDBLookupCombo.Paint;
 var
   Selected:boolean;
   R, R1: TRect;
-  X, TextMargin: Integer;
+//  X: Integer;
   AText: string;
 begin
   Canvas.Font := Font;
@@ -1164,12 +1167,9 @@ begin
     RxFrame3D(Canvas, R, clBtnShadow, clBtnFace, 1);
   end;
   
-  TextMargin := 0;
   if ClientWidth > 6 then
   begin
     SetRect(R1, 3, 3, ClientWidth - 3, ClientHeight - 3);
-    if TextMargin > 0 then Inc(TextMargin);
-    X := 3 + TextMargin;
     Canvas.FillRect(R1);
     R.Right:=R.Right - GetButtonWidth;
     if FDisplayAll then
@@ -1187,7 +1187,7 @@ begin
         AText:=FValuesList[FLookupDisplayIndex]
       else
         AText:='';
-      Canvas.TextRect(R, X, Max(0, (HeightOf(R) - Canvas.TextHeight('Wg')) div 2), AText);
+      Canvas.TextRect(R, TextMargin, Max(0, (HeightOf(R) - Canvas.TextHeight('Wg')) div 2), AText);
     end
   end;
 end;
