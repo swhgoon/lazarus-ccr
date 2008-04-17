@@ -1502,7 +1502,7 @@ begin
       AParser.FindNextToken(s, tt);
     end; {of while}
 
-    if ((_Spec * [td_Int, td_Short, td_Char, td_Long]) = [])  then begin
+    if ((_Spec * [td_Unsigned, td_Int, td_Short, td_Char, td_Long]) = [])  then begin
       // if int, short long or char is not specified
       // volatile or const are
       Result := tt = tt_Ident;

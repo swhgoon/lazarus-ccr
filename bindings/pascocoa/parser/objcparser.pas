@@ -150,9 +150,8 @@ var
   st    : TStringList;
   f     : Text;
   err   : AnsiString;
-
-
 begin
+  err := '';
   writeln('would you like to parse all current directory files .h to inc?');
   readln(ch);
   if (ch <> 'Y') and (ch <> 'y') then begin
@@ -235,6 +234,8 @@ var
   vlm : AnsiString;
   Params  : TStringList;
 begin
+  prm := '';
+  vlm := '';
   Params := TStringList.Create;
   Params.CaseSensitive := false;
   try
@@ -270,10 +271,10 @@ begin
 end;
 
 var
-  inpf  : AnsiString;
-  st    : TStrings;
+  inpf  : AnsiString = '';
+  st    : TStrings = nil;
   i     : integer;
-  err   : AnsiString;
+  err   : AnsiString = '';
 begin
   try
     GetConvertSettings(ConvertSettings, inpf);
