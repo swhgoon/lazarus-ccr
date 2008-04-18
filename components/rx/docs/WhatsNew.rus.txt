@@ -43,6 +43,7 @@
   + В свойстве PopUpFormOptions компоненты TRxDBLookupCombo добавлено поле AutoFillColumns - аналог одноимённого поля
     из TDBGrid - используется в выпадающем списке
   - Улучшен код в отрисовке компоненты TRxDBLookupCombo
+  + В TRxDBLookupCombo работает свойство DropDownCount
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается

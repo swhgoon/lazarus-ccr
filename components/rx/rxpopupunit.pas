@@ -161,6 +161,7 @@ type
     FDataSource:TDataSource;
     FOnPopUpCloseEvent:TPopUpCloseEvent;
     FPopUpFormOptions:TPopUpFormOptions;
+    FRowCount:word;
     function GetDataSet: TDataSet;
     function GetLookupDisplayIndex: integer;
     procedure SetDataSet(const AValue: TDataSet);
@@ -174,6 +175,7 @@ type
     procedure GridClickEvent(Column: TColumn);
     procedure CloseOk;
     procedure Paint;override;
+    procedure CreateWnd;override;
     //
     procedure DoSetFieldsFromString(FL:string);
     procedure DoSetFieldsFromColList;
@@ -334,6 +336,12 @@ begin
   end;
 end;
 
+procedure TPopUpForm.CreateWnd;
+begin
+  inherited CreateWnd;
+  Height:=FGrid.DefaultRowHeight * FRowCount;
+end;
+
 procedure TPopUpForm.DoSetFieldsFromString(FL: string);
 var
   FieldName:string;
@@ -481,7 +489,10 @@ begin
   FGrid.BorderStyle:=FPopUpFormOptions.BorderStyle;
   FGrid.OnGetCellProps:=FPopUpFormOptions.OnGetCellProps;
   FGrid.AutoFillColumns:=FPopUpFormOptions.AutoFillColumns;
-  
+  if FPopUpFormOptions.DropDownCount < 1 then
+    FRowCount:=10 + ord(dgTitles in FGrid.Options)
+  else
+    FRowCount:=FPopUpFormOptions.DropDownCount + 2 + ord(dgTitles in FGrid.Options);
 end;
 
 { TPopUpFormOptions }
