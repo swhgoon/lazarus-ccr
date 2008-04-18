@@ -14,6 +14,7 @@ object GeneralForm: TGeneralForm
   KeyPreview = True
   OnCreate = FormCreate
   ShowHint = True
+  LCLVersion = '0.9.25'
   object Label18: TLabel
     Left = 505
     Height = 14
@@ -50,6 +51,7 @@ object GeneralForm: TGeneralForm
     Width = 474
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpandDelay = 300
+    BorderStyle = bsSingle
     ButtonFillMode = fmWindowColor
     CheckImageKind = ckDarkTick
     ClipboardFormats.Strings = (

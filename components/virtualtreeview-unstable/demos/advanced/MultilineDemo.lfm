@@ -12,6 +12,7 @@ object NodeForm: TNodeForm
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object Label8: TLabel
     Left = 12
     Height = 72

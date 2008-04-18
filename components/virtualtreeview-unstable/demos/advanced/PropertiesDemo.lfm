@@ -12,6 +12,7 @@ object PropertiesForm: TPropertiesForm
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object Label9: TLabel
     Left = 420
     Height = 81
@@ -40,6 +41,7 @@ object PropertiesForm: TPropertiesForm
     Top = 6
     Width = 399
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 20
