@@ -112,6 +112,7 @@ type
 
   TPopUpFormOptions = class(TPersistent)
   private
+    FAutoFillColumns: boolean;
     FAutoSort: boolean;
     FBorderStyle: TBorderStyle;
     FColumns: TPopUpFormColumns;
@@ -123,6 +124,7 @@ type
     FTitleButtons: boolean;
     FTitleStyle: TTitleStyle;
     function GetColumns: TPopUpFormColumns;
+    procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TPopUpFormColumns);
     procedure SetDropDownCount(const AValue: integer);
@@ -136,6 +138,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
+    property AutoFillColumns:boolean read FAutoFillColumns write SetAutoFillColumns default false;
     property AutoSort:boolean read FAutoSort write SetAutoSort default false;
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle default bsNone;
     property Columns:TPopUpFormColumns read GetColumns write SetColumns;
@@ -477,6 +480,7 @@ begin
   FGrid.TitleStyle:=FPopUpFormOptions.TitleStyle;
   FGrid.BorderStyle:=FPopUpFormOptions.BorderStyle;
   FGrid.OnGetCellProps:=FPopUpFormOptions.OnGetCellProps;
+  FGrid.AutoFillColumns:=FPopUpFormOptions.AutoFillColumns;
   
 end;
 
@@ -491,6 +495,12 @@ end;
 function TPopUpFormOptions.GetColumns: TPopUpFormColumns;
 begin
   Result:=FColumns;
+end;
+
+procedure TPopUpFormOptions.SetAutoFillColumns(const AValue: boolean);
+begin
+  if FAutoFillColumns=AValue then exit;
+  FAutoFillColumns:=AValue;
 end;
 
 procedure TPopUpFormOptions.SetColumns(const AValue: TPopUpFormColumns);
