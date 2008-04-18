@@ -15407,6 +15407,11 @@ begin
         // If a repaint is needed then paint the entire tree because of the ClearSelection call,
         if NeedInvalidate then
           Invalidate;
+        {$ifdef LCLGtk2}
+        //workaround for changing focus bug
+        if CharCode <> VK_TAB then
+          CharCode := 0;
+        {$endif}
       end
       else
       begin
