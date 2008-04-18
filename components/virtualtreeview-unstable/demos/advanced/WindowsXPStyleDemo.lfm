@@ -1,18 +1,19 @@
 object WindowsXPForm: TWindowsXPForm
-  Left = 339
-  Height = 581
-  Top = 275
+  Left = 61
+  Height = 487
+  Top = 185
   Width = 829
   HorzScrollBar.Page = 828
-  VertScrollBar.Page = 580
+  VertScrollBar.Page = 486
   ActiveControl = XPTree
   Caption = 'WindowsXPForm'
-  ClientHeight = 581
+  ClientHeight = 487
   ClientWidth = 829
   Font.CharSet = ANSI_CHARSET
   Font.Height = -13
   Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
+  LCLVersion = '0.9.25'
   object Label1: TLabel
     Left = 576
     Height = 80
@@ -26,7 +27,7 @@ object WindowsXPForm: TWindowsXPForm
   end
   object Label2: TLabel
     Left = 576
-    Height = 81
+    Height = 97
     Top = 144
     Width = 243
     Anchors = [akTop, akRight]
@@ -38,8 +39,8 @@ object WindowsXPForm: TWindowsXPForm
   object Label4: TLabel
     Cursor = crHandPoint
     Left = 577
-    Height = 117
-    Top = 248
+    Height = 136
+    Top = 256
     Width = 243
     Anchors = [akTop, akRight]
     AutoSize = False
@@ -53,8 +54,9 @@ object WindowsXPForm: TWindowsXPForm
     OnClick = Label4Click
   end
   object XPTree: TVirtualStringTree
+    Cursor = 63
     Left = 8
-    Height = 516
+    Height = 416
     Top = 40
     Width = 554
     AutoScrollDelay = 500

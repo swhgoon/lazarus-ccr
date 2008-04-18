@@ -1,51 +1,44 @@
 object MainForm: TMainForm
-  Left = 220
-  Height = 578
-  Top = 206
-  Width = 848
-  HorzScrollBar.Page = 847
-  VertScrollBar.Page = 577
+  Left = 17
+  Height = 566
+  Top = 86
+  Width = 980
+  HorzScrollBar.Page = 979
+  VertScrollBar.Page = 565
   Caption = 'Virtual Treeview features demo'
-  ClientHeight = 578
-  ClientWidth = 848
+  ClientHeight = 566
+  ClientWidth = 980
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  object Bevel1: TBevel
-    Height = 2
-    Top = 77
-    Width = 848
-    Align = alTop
-    Shape = bsTopLine
-  end
+  LCLVersion = '0.9.25'
   object PageScroller1: TPanel
     Height = 77
-    Width = 848
+    Width = 980
     Align = alTop
     ClientHeight = 77
-    ClientWidth = 848
+    ClientWidth = 980
     Color = clWhite
     ParentColor = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
     object MainPanel: TPanel
-      Height = 74
-      Width = 990
+      Height = 70
+      Width = 976
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 74
-      ClientWidth = 990
+      ClientHeight = 70
+      ClientWidth = 976
       Color = clWhite
       ParentColor = False
       TabOrder = 0
       object SpeedDemoButton: TSpeedButton
-        Left = 230
+        Left = 216
         Height = 70
         Hint = 'The speed breakthrough'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -162,10 +155,9 @@ object MainForm: TMainForm
       end
       object AbilitiesDemoButton: TSpeedButton
         Tag = 1
-        Left = 299
+        Left = 285
         Height = 70
         Hint = 'General abilities and features'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -282,10 +274,9 @@ object MainForm: TMainForm
       end
       object PropertiesDemoButton: TSpeedButton
         Tag = 2
-        Left = 368
+        Left = 354
         Height = 70
         Hint = 'Property tree simulation'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -458,10 +449,9 @@ object MainForm: TMainForm
       end
       object VisibilityDemoButton: TSpeedButton
         Tag = 3
-        Left = 437
+        Left = 423
         Height = 70
         Hint = 'Hide and show nodes, sync two trees'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -578,10 +568,9 @@ object MainForm: TMainForm
       end
       object GridDemoButton: TSpeedButton
         Tag = 5
-        Left = 506
+        Left = 492
         Height = 70
         Hint = 'Tree in grid simulation'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -698,10 +687,9 @@ object MainForm: TMainForm
       end
       object PaintTreeDemoButton: TSpeedButton
         Tag = 6
-        Left = 575
+        Left = 561
         Height = 70
         Hint = 'A paint tree as directory tree'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -818,10 +806,9 @@ object MainForm: TMainForm
       end
       object AlignDemoButton: TSpeedButton
         Tag = 7
-        Left = 644
+        Left = 630
         Height = 70
         Hint = 'Alignment, directionality and internationalization'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -992,23 +979,10 @@ object MainForm: TMainForm
         NumGlyphs = 0
         OnClick = DemoButtonClick
       end
-      object Bevel2: TBevel
-        Left = 887
-        Height = 70
-        Top = 4
-        Width = 10
-        Style = bsRaised
-      end
-      object Bevel3: TBevel
-        Height = 70
-        Width = 10
-        Style = bsRaised
-      end
       object Label1: TLabel
-        Left = 14
-        Height = 14
-        Top = 28
-        Width = 73
+        Height = 17
+        Top = 26
+        Width = 92
         Caption = 'Demo picker'
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
@@ -1016,19 +990,17 @@ object MainForm: TMainForm
         ParentColor = False
       end
       object Label2: TLabel
-        Left = 22
-        Height = 14
-        Top = 44
-        Width = 160
+        Height = 17
+        Top = 42
+        Width = 244
         Caption = 'Which demo do you want to see?'
         ParentColor = False
       end
       object SpeedButton1: TSpeedButton
         Tag = 8
-        Left = 713
+        Left = 699
         Height = 70
         Hint = 'Painting like in Windows XP'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1257,10 +1229,9 @@ object MainForm: TMainForm
       end
       object XPDemoButton: TSpeedButton
         Tag = 9
-        Left = 782
+        Left = 768
         Height = 70
         Hint = 'Multiline nodes'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1588,10 +1559,9 @@ object MainForm: TMainForm
       end
       object QuitButton: TSpeedButton
         Tag = -1
-        Left = 920
+        Left = 906
         Height = 70
         Hint = 'Exit'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1708,10 +1678,9 @@ object MainForm: TMainForm
       end
       object SpeedButton2: TSpeedButton
         Tag = 10
-        Left = 851
+        Left = 837
         Height = 70
         Hint = 'Custom header drawing in advanced mode'
-        Top = 2
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1973,15 +1942,15 @@ object MainForm: TMainForm
     end
   end
   object StatusBar: TStatusBar
-    Height = 20
-    Top = 558
-    Width = 848
+    Height = 24
+    Top = 542
+    Width = 980
     Panels = <>
   end
   object ContainerPanel: TPanel
-    Height = 479
-    Top = 79
-    Width = 848
+    Height = 465
+    Top = 77
+    Width = 980
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1

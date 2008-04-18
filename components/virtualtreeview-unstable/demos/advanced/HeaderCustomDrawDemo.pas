@@ -53,7 +53,7 @@ var
 implementation
 
 uses
-  States;
+  States, LclExt;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -236,9 +236,9 @@ procedure THeaderOwnerDrawForm.FormCreate(Sender: TObject);
 
 begin
   FBackBitmap1 := TBitmap.Create;
-  FBackBitmap1.PixelFormat := pf32Bit;
+  FBackBitmap1.PixelFormat := OptimalPixelFormat;
   FBackBitmap2 := TBitmap.Create;
-  FBackBitmap2.PixelFormat := pf32Bit;
+  FBackBitmap2.PixelFormat := OptimalPixelFormat;
   CreateCheckerBackground;
   FHeaderBitmap := TBitmap.Create;
   FHeaderBitmap.LoadFromLazarusResource('Transcriptions');

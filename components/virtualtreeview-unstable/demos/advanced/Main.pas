@@ -31,10 +31,7 @@ type
     AlignDemoButton: TSpeedButton;
     QuitButton: TSpeedButton;
     PaintTreeDemoButton: TSpeedButton;
-    Bevel1: TBevel;
     MainPanel: TPanel;
-    Bevel2: TBevel;
-    Bevel3: TBevel;
     StatusBar: TStatusBar;
     ContainerPanel: TPanel;
     Label1: TLabel;
