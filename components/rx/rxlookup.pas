@@ -78,6 +78,7 @@ type
       Shift: TShiftState);
   protected
     procedure DoButtonClick (Sender: TObject); override;
+    function GetDefaultGlyphName: String; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     //
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
@@ -482,6 +483,11 @@ begin
     HideList
   else
     ShowList;
+end;
+
+function TCustomDBLookupEdit.GetDefaultGlyphName: String;
+begin
+  Result:='rxbtn_downarrow';
 end;
 
 procedure TCustomDBLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);

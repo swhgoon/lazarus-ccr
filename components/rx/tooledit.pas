@@ -77,6 +77,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure DoButtonClick (Sender: TObject); override;
+    function GetDefaultGlyphName: String; override;
 
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
@@ -719,12 +720,17 @@ begin
   end;
 end;
 
+function TCustomRxDateEdit.GetDefaultGlyphName: String;
+begin
+  Result:='picDateEdit';
+end;
+
 constructor TCustomRxDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBlanksChar := ' ';
   FDialogTitle := sDateDlgTitle;
-  FPopupColor := clBtnFace;
+  FPopupColor := clWindow;
   FNotInThisMonthColor := clSilver;
   FPopupAlign := epaLeft;
   FStartOfWeek := Mon;
@@ -747,7 +753,7 @@ begin
   finally
     ControlState := ControlState - [csCreating];
   end;
-  Glyph:=LoadBitmapFromLazarusResource('picDateEdit');
+//  Glyph:=LoadBitmapFromLazarusResource('picDateEdit');
   NumGlyphs := 2;
 end;
 
