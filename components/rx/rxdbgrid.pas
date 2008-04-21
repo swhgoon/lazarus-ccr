@@ -27,8 +27,8 @@ type
 
   TOptionRx = (rdgAllowColumnsForm,
                rdgAllowDialogFind,
-               rdgHighlightFocusCol,          //TODO: необходимо реализовать подсветку выбранного столбца
-               rdgHighlightFocusRow,          //TODO: необходимо реализовать подсветку выбранной строки
+               rdgHighlightFocusCol,          //TODO:
+               rdgHighlightFocusRow,          //TODO:
                rdgDblClickOptimizeColWidth,
                rdgFooterRows,
                rdgXORColSizing,

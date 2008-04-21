@@ -665,8 +665,7 @@ begin
     C := CurrencyString[I];
     if C in [',', '.'] then
     begin
-      //Раскоментировать после исправления ошибки в FCL - функция FormatFloat
-//      CurrStr := CurrStr + '''' + C + ''''
+      CurrStr := CurrStr + '''' + C + ''''
     end
     else CurrStr := CurrStr + C;
   end;

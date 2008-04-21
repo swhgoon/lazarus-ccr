@@ -37,6 +37,7 @@
   + In property  TRxDBLookupCombo.PopUpFormOptions add field  AutoFillColumns. Used in dropdown list.
   - Cleanup code in  TRxDBLookupCombo.Paint
   + In TRxDBLookupCombo property DropDownCount now work
+  - fix error in TRxDBLookupCombo after set value for DataField and LookupSourse.Active=false
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    

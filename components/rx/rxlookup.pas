@@ -946,8 +946,11 @@ begin
   if FValue <> Value then
   begin
     FValue := Value;
-    FLocateObject.Locate(FLookupField, FValue, true, false);
-    KeyValueChanged;
+    if Assigned(FLookupDataLink.DataSet) and (FLookupDataLink.DataSet.Active) then
+    begin
+      FLocateObject.Locate(FLookupField, FValue, true, false);
+      KeyValueChanged;
+    end;
   end;
 end;
 
