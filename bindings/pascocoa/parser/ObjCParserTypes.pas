@@ -145,6 +145,7 @@ type
 
   { TStructField }
 
+
   TStructField = class(TEntity)
   {updated}
   protected
@@ -184,7 +185,7 @@ type
   { TTypeDef }
   //C token - any type, including unsigned short
 
-  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_Long, td_Short, td_Char, td_Int);
+  TTypeDefSpecs = set of (td_Unsigned, td_Signed, td_Volitale, td_Const, td_InOut, td_Long, td_Short, td_Char, td_Int);
 
   {updated}
   TTypeDef = class(TEntity)
@@ -206,8 +207,8 @@ type
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _Inherited  : AnsiString;
-    _Type       : TEntity;
     _TypeName   : AnsiString;
+    _Type       : TEntity;
   end;
 
   { TObjCParameterDef }
@@ -316,7 +317,58 @@ function CToPascalNumeric(const Cnum: AnsiString): AnsiString;
 function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
 function ErrExpectStr(const Expected, Found: AnsiString): AnsiString;
 
+function IsTypeOrTypeDef(const Token: AnsiString): Boolean;
+
+function ParseTypeOrTypeDef(AParser: TTextParser; Owner: TEntity; var Ent: TEntity): Boolean;
+
+function IsTypeDefEntity(Ent: TEntity): Boolean;
+function isEmptyStruct(AStruct: TStructTypeDef): Boolean;
+
 implementation
+
+function IsTypeDefEntity(Ent: TEntity): Boolean;
+begin
+  Result := (Ent is TTypeDef) or (Ent is TStructTypeDef)
+    or (Ent is TUnionTypeDef) or (Ent is TTypeNameDef) or (Ent is TEnumTypeDef); 
+end;
+
+function IsTypeOrTypeDef(const Token: AnsiString): Boolean;
+begin
+  Result := false;
+  if Token = '' then Exit;
+  case Token[1] of
+    't': Result := Token = 'typedef';
+    'e': Result := Token = 'enum';
+    's': Result := Token = 'struct';
+    'u': Result := Token = 'union';
+  end;
+end;
+
+function ParseTypeOrTypeDef(AParser: TTextParser; Owner: TEntity; var Ent: TEntity): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := (tt = tt_Ident) and IsTypeOrTypeDef(s);
+  if (not Result) then begin
+    AParser.Index := AParser.TokenPos;
+    Exit;
+  end;
+
+  if s = 'typedef' then begin
+    AParser.Index := AParser.TokenPos;
+    Ent := TTypeNameDef.Create(Owner);
+    Result := Ent.Parse(AParser);
+  end else begin
+    AParser.Index := AParser.TokenPos;  
+    Ent := ParseTypeDef(Owner, AParser);
+    Result := Assigned(ent);
+    AParser.FindNextToken(s, tt);
+    Result := (tt=tt_Symbol) and (s = ';');
+  end;
+
+end;
 
 // isPointer returned the * is declared
 // isPointerRef return the ** is declared
@@ -840,6 +892,7 @@ var
   tt  : TTokenType;
   cnt : Integer;
   mtd : TClassMethodDef;
+  ent : TEntity;
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
@@ -893,7 +946,13 @@ begin
         mtd := TClassMethodDef.Create(Self);
         mtd.Parse(AParser);
         Items.Add(mtd);
+      end else if IsTypeOrTypeDef(s) then begin
+        AParser.Index := AParser.TokenPos;
+        if ParseTypeOrTypeDef(AParser, Self, ent) then
+          Items.Add(ent);
+        //AParser.FindNextToken(s, tt);
       end;
+
     end;
   until (s = '@end') or (s = ''); // looking for declaration end
   Result := true;
@@ -1040,23 +1099,6 @@ begin
 end;
 
 { TResultTypeDef }
-
-const
-  TypeDefReserved : array [0..1] of AnsiString = (
-    'unsigned', 'const'
-  );
-
-function IsTypeDefReserved(const s: AnsiString): Boolean;
-var
-  i : integer;
-begin
-  Result := false;
-  for i := 0 to length(TypeDefReserved) - 1 do
-    if TypeDefReserved[i] = s then begin
-      Result := true;
-      Exit;
-    end;
-end;
 
 function TObjCResultTypeDef.DoParse(AParser: TTextParser): Boolean;
 var
@@ -1336,12 +1378,11 @@ begin
     AParser.SetError( ErrExpectStr('Type name identifier', _TypeName) );
     Exit;
   end;
-  _inherited := GetTypeNameFromEntity(_Type);
+  _inherited := GetTypeNameFromEntity( _Type );
   AParser.FindNextToken(s, tt); // skip last ';';
 
   Result := true;
 end;
-
 
 { TStructTypeDef }
 
@@ -1464,10 +1505,10 @@ begin
   Result := true;
   if (s = 'volitle') then begin
     SpecVal := [td_Volitale];
-    SpecMask := [td_Volitale, td_Const];
+    SpecMask := [td_Volitale];
   end else if (s = 'const') then begin
-    SpecVal := [td_Volitale];
-    SpecMask := [td_Volitale, td_Const];
+    SpecVal := [td_Const];
+    SpecMask := [td_InOut, td_Const];
   end else if (s = 'signed') then begin
     SpecVal := [td_Signed];
     SpecMask := [td_Signed, td_Unsigned];
@@ -1486,6 +1527,9 @@ begin
   end else if (s = 'int') then begin
     SpecVal := [td_Int];
     SpecMask := [td_Int];
+  end else if (s = 'inout') then begin
+    SpecVal := [td_inout];
+    SpecMask := [td_inout, td_const];
   end else
     Result := false;
 end;
@@ -1616,5 +1660,19 @@ begin
   //no skipping last ';', because after structure a variable can be defined
   //ie: struct POINT {int x; int y} point;
 end;
+
+function isEmptyStruct(AStruct: TStructTypeDef): Boolean;
+var
+  i   : integer;
+begin
+  for i := 0 to AStruct.Items.Count - 1 do
+    if TEntity(AStruct.Items[i]) is TStructField then begin
+      Result := false;
+      Exit;
+    end;
+  Result := true;
+end;
+
+
 
 end.

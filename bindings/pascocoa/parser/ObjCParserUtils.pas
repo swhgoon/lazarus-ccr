@@ -116,12 +116,14 @@ begin
   end;
 end;
 
+
+// 'result' is considered reserved word! 
 function IsPascalReserved(const s: AnsiString): Boolean;
 var
   ls  : AnsiString;
 begin
-  //todo: a hash table should be used?
-  Result := true;
+  //todo: a hash table should be used!
+  Result := false;
   if s = '' then Exit;
   ls := AnsiLowerCase(s);
   case ls[1] of
@@ -142,7 +144,7 @@ begin
     'p':
       Result := (ls = 'packed') or (ls = 'popstack') or (ls = 'private') or (ls = 'procedure') or (ls = 'program') or (ls = 'property')
         or (ls = 'protected') or (ls = 'public');
-    'r': Result := (ls = 'raise') or (ls = 'record') or (ls = 'reintroduce') or (ls = 'repeat');
+    'r': Result := (ls = 'raise') or (ls = 'record') or (ls = 'reintroduce') or (ls = 'repeat') or (ls = 'result');
     's': Result := (ls = 'self') or (ls = 'set') or (ls = 'shl') or (ls = 'shr') or (ls = 'stdcall') or (ls = 'string');
     't': Result := (ls = 'then') or (ls = 'to') or (ls = 'true') or (ls = 'try') or (ls = 'type');
     'u': Result := (ls = 'unimplemented') or (ls = 'unit') or (ls = 'until') or (ls = 'uses');
@@ -876,12 +878,15 @@ var
   s : AnsiString;
 begin
   i := subs.Count;
-
-  WriteOutRecord(struct, Prefix, RecPrefix, subs);
-  s := subs[i];
-  Delete(s, 1, length(Prefix));
-  s := Prefix + struct._Name + ' = ' + s;
-  subs[i] := s;
+  if not isEmptyStruct(struct) then begin
+    WriteOutRecord(struct, Prefix, RecPrefix, subs);
+    s := subs[i];
+    Delete(s, 1, length(Prefix));
+    s := Prefix + struct._Name + ' = ' + s;
+    subs[i] := s;
+  end else begin
+    subs.Add(Prefix + struct._Name + ' = Pointer;'); 
+  end;
 end;
 
 function WriteOutTypeDefName(const NewType, FromType: AnsiSTring; isPointer: Boolean): AnsiString;
@@ -1410,7 +1415,8 @@ begin
           if res._IsClassMethod then res._Name := res._Name + '_'
           else if mtd._IsClassMethod then mtd._Name := mtd._Name + '_';
         end;
-        if IsPascalReserved(mtd._Name) then mtd._Name := mtd._Name + '_';
+        if IsPascalReserved(mtd._Name) then
+          mtd._Name := mtd._Name + '_';
       end;
   finally
     mtdnames.Free;
@@ -1418,10 +1424,74 @@ begin
 //nothing todo...
 end;
 
-procedure AppleHeaderFix(ent : TEntity);
+procedure FastPack(Items: TList);
+var
+  i,  j : INteger;
+begin
+  j := 0;
+  for i := 0 to Items.Count - 1 do
+    if Assigned(Items[i]) then begin
+      Items[j] := Items[i];
+      inc(j);
+    end;
+  Items.Count := j;
+end;
+
+procedure FixObjCClassTypeDef(ent: TEntity);
 var
   i   : Integer;
   j   : Integer;
+  cl  : TClassDef;
+begin
+  for i := 0 to ent.Items.Count - 1 do begin
+    if not (TObject(ent.Items[i]) is TClassDef) then Continue;
+    cl := TClassDef(ent.Items[i]);
+    for j := 0 to cl.Items.Count - 1 do begin
+      if not IsTypeDefEntity(cl.Items[j]) then Continue;
+      ent.Items.Add(cl.Items[j]);
+      TEntity(cl.Items[j]).Owner := ent;
+      cl.Items[j] := nil;
+    end;
+  end;
+  FastPack(ent.Items);
+end;
+
+procedure FixEmptyStruct(var ent: TEntity);
+var
+  i   : Integer;
+  td  : TTypeDef;
+  dis : TEntity;
+begin
+(*
+  if not Assigned(ent) then Exit;
+
+  if (ent is TStructTypeDef) and isEmptyStruct(TStructTypeDef(ent) ) then begin
+    td := TTypeDef.Create(ent.Owner);
+    td._Name := TStructTypeDef(ent)._Name;
+    //td._IsPointer := true;
+    for i := 0 to ent.Items.Count - 1 do begin
+      td.Items.Add(ent.Items[i]);
+      TEntity(ent.Items[i]).Owner := td;
+    end;
+    dis := ent;
+    ent := td;
+    dis.Free;
+  end;
+
+  for i := 0 to ent.Items.Count - 1 do begin
+    dis := TEntity(ent.Items[i]);
+    FixEmptyStruct(dis);
+    ent.Items[i] := dis;
+  end;
+*)  
+  //hack and work-around :(
+  {if ent is TTypeNameDef then
+    FixEmptyStruct( TTypeNameDef(ent)._Type);}
+end;
+
+procedure AppleHeaderFix(ent : TEntity);
+var
+  i   : Integer;
   obj : TEntity;
 begin
 //  i := 0;
@@ -1447,17 +1517,12 @@ begin
   end;
 
   // packing list, removing nil references.
-  j := 0;
-  for i := 0 to ent.Items.Count - 1 do
-    if Assigned(ent.Items[i]) then begin
-      ent.Items[j] := ent.Items[i];
-      inc(j);
-    end;
-  ent.Items.Count := j;
+  FastPack(ent.Items);
+  FixObjCClassTypeDef(ent);
+  FixEmptyStruct(ent);
 
-  for i := 0 to ent.Items.Count - 1 do begin
+  for i := 0 to ent.Items.Count - 1 do 
     AppleHeaderFix( TEntity(ent.Items[i]));
-  end;
 
 end;
 

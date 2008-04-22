@@ -303,8 +303,9 @@ end;
 var
   inpf  : AnsiString = '';
   st    : TStrings = nil;
-  i     : integer;
   err   : AnsiString = '';
+  i     : integer;
+
 begin
   try
     GetConvertSettings(ConvertSettings, inpf);
