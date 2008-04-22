@@ -166,9 +166,10 @@ type
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    _Name       : AnsiString;
+    _Name         : AnsiString;
     //todo: remove
-    _isPointer  : Boolean;
+    _isPointer    : Boolean;
+    _isPointerRef : Boolean;
   end;
 
   TUnionTypeDef = class(TStructTypeDef)
@@ -190,9 +191,10 @@ type
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    _Name : AnsiString;
-    _Spec : TTypeDefSpecs;
-    _IsPointer  : Boolean;
+    _Name     : AnsiString;
+    _Spec     : TTypeDefSpecs;
+    _IsPointer    : Boolean;
+    _IsPointerRef : Boolean;
   end;
 
   { TTypeNameDef }
@@ -304,7 +306,7 @@ function ScanWhile(const s: AnsiString; var index: Integer; const ch: TCharSet):
 function ScanTo(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
 
 function ParseTypeDef(Owner: TEntity; AParser: TTextParser): TEntity;
-function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; isArray: Boolean; var ArraySize:AnsiString): Boolean;
+function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; var isArray: Boolean; var ArraySize:AnsiString): Boolean;
 
 procedure FreeEntity(Item: TEntity);
 
@@ -316,7 +318,28 @@ function ErrExpectStr(const Expected, Found: AnsiString): AnsiString;
 
 implementation
 
-function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; isArray: Boolean; var ArraySize:AnsiString): Boolean;
+// isPointer returned the * is declared
+// isPointerRef return the ** is declared
+procedure ParsePointerDef(AParser: TTextParser; var isPointer, isPointerRef: Boolean);
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  isPointer := false;
+  isPointerRef := false;
+  if not AParser.FindNextToken(s, tt) then Exit;
+  isPointer := (tt=tt_Symbol) and (s = '*');
+  if isPointer then begin
+    if not AParser.FindNextToken(s, tt) then Exit;
+    
+    if (tt=tt_Symbol) and (s = '*') then isPointerRef := true
+    else AParser.Index := AParser.TokenPos;
+  end else
+    AParser.Index := AParser.TokenPos;
+end;
+
+
+function ParseCVarDef(AParser: TTextParser; var Name: AnsiString; var isArray: Boolean; var ArraySize:AnsiString): Boolean;
 var
   tt    : TTokenType;
   s     : AnsiString;
@@ -440,7 +463,7 @@ end;
 
 procedure SetCSymbols(var ch: TCharSet);
 begin
-  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&']
+  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&','[',']']
 end;
 
 procedure SetCComments(Table: TTokenTable);
@@ -973,8 +996,6 @@ begin
     AParser.SetError(ErrExpectStr('method name Identifier', s));
     Exit;
   end;
-  if _Name = 'defaultCStringEncoding' then
-    _Name := 'defaultCStringEncoding';
 
   while AParser.FindNextToken(s, tt) do begin
     if s = ';' then
@@ -1048,30 +1069,20 @@ begin
     AParser.SetError(ErrExpectStr('"("', s));
     Exit;
   end;
-  inherited DoParse(AParser);
-(*  _prefix := '';
-  _TypeName := '';
-  repeat
+  Result := inherited DoParse(AParser);
+
+  if Result then begin
     AParser.FindNextToken(s, tt);
-    if isTypeDefReserved(s) then begin
-      _prefix := _prefix + s;
-      if s = 'unsigned' then _TypeName := _typeName + ' ' + s;
-      s := '';
+    if (tt=tt_Symbol) and (s='<') then begin // skip protocol
+      while (s <> '>') and AParser.FindNextToken(s, tt) do ;
+      AParser.FindNextToken(s, tt);
     end;
-  until s <> '';
-  _TypeName := _TypeName + s;
 
-  if tt <> tt_Ident then Exit; // an error
 
-  AParser.FindNextToken(s, tt);
-  if (tt = tt_Symbol) and (s = '*') then begin
-    _isRef := true;
-    AParser.FindNextToken(s, tt);
-  end;*)
-
-  AParser.FindNextToken(s, tt);
-  if s <> ')' then ; // an error
-  Result := true;
+    Result := s = ')';
+    if not Result then
+      AParser.SetError( ErrExpectStr(')', s));
+  end;
 
 end;
 
@@ -1358,9 +1369,8 @@ begin
   end;
 
   if not ((tt = tt_Symbol) and (s = '{')) then begin
-    if (tt = tt_Symbol) and (s = '*')
-      then _isPointer := true
-      else AParser.Index := i;
+    AParser.Index := i;
+    ParsePointerDef(AParser, _isPointer, _isPointerRef);
     Exit;
   end;
 
@@ -1418,7 +1428,7 @@ function TStructField.DoParse(AParser: TTextParser): Boolean;
 var
   tt  : TTokenType;
   s   : AnsiString;
-  fld : TStructField;
+//  fld : TStructField;
 begin
   Result := false;
   _Type := ParseTypeDef(Self, AParser);
@@ -1511,20 +1521,22 @@ begin
         Exit;
       end;
       _Name := s;
-      AParser.FindNextToken(s, tt);
-    end else 
       Result := true;
+      //AParser.FindNextToken(s, tt);
+    end else begin
+      AParser.Index := AParser.TokenPos;
+      Result := true;
+    end;
 
   end else begin
     _Name := s;
-    AParser.FindNextToken(s, tt);
+    //AParser.FindNextToken(s, tt);
     Result := true;
   end;
 
-  if Result then begin
-    if (tt = tt_Symbol) and (s = '*')
-      then _isPointer := true
-      else AParser.Index := AParser.TokenPos;
+  if (Result) {and (tt=tt_Symbol) and (s = '*') }then begin
+//    AParser.Index := AParser.TokenPos;
+    ParsePointerDef(AParser, _isPointer, _isPointerRef);
   end;
 
 end;

@@ -13,10 +13,12 @@ program Project1;
   {$APPTYPE CONSOLE}
 {$endif}
 uses
-  Classes,
+  Classes, IniFiles,
   SysUtils,
   ObjCParserUtils,
   ObjCParserTypes;
+
+// NSAffineTransform.inc
 
 type
   // this object is used only for precomile directives handling
@@ -29,7 +31,7 @@ type
     procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
   end;
-
+  
 procedure TPrecompileHandler.OnPrecompile(Sender: TObject);
 var
   parser    : TTextParser;
@@ -227,6 +229,30 @@ begin
   end;
 end;
 
+procedure ReadIniFile(Settings: TConvertSettings; const FileName: AnsiString);
+var
+  ini     : TIniFile;
+  values  : TStringList;
+  a, b    : AnsiString;
+  i       : Integer;
+begin
+  ini := TIniFile.Create(FileName);
+  values  := TStringList.Create;
+  try
+    ini.ReadSection('TypeReplace', values);
+
+    for i := 0 to values.Count - 1 do begin
+      a := values.ValueFromIndex[i];
+      b := values.Values[a];
+      Settings.TypeDefReplace[a] := b;
+    end;
+  finally
+    values.Free;
+    ini.Free;
+  end;
+end;
+
+
 function GetConvertSettings(Settings : TConvertSettings; var FileName: AnsiString): Boolean;
 var
   i   : integer;
@@ -248,6 +274,10 @@ begin
       end else
         FileName := ParamStr(i);
     end;
+
+    vlm := Params.Values['settings'];
+    if vlm <> '' then
+      ReadIniFile(Settings, vlm);
 
     vlm := Params.Values['mainunit'];
     if vlm <> '' then
