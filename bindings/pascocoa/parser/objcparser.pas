@@ -18,8 +18,6 @@ uses
   ObjCParserUtils,
   ObjCParserTypes;
 
-// NSAffineTransform.inc
-
 type
   // this object is used only for precomile directives handling
 

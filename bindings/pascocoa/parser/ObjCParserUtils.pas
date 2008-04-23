@@ -85,6 +85,7 @@ function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType; //): Bo
 implementation
 
 procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings); forward;
+procedure WriteOutRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings); forward;
 
 function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType;
 begin
@@ -302,7 +303,12 @@ begin
     if not Assigned(obj) then Continue;
     if obj is TParamDescr then
       Result := Result + TParamDescr(obj)._Descr
+    else if obj is TObjCParameterDef then
+      Result := Result + '_';
   end;
+  i := length(Result);
+  while (i > 0) and (Result[i] = '_') do dec(i);
+  Result := Copy(Result, 1, i);
 end;
 
 function GetMethodStr(cl: TClassDef; m: TClassMethodDef; ForImplementation: Boolean): AnsiString;
@@ -322,7 +328,11 @@ begin
   nm := m._Name;
   if ForImplementation
     then Result := GetProcFuncHead(nm, cl._ClassName, GetMethodParams(m), res, ft)
-    else Result := GetProcFuncHead(nm, '', GetMethodParams(m), res, ft)
+    else Result := GetProcFuncHead(nm, '', GetMethodParams(m), res, ft);
+
+  if ft = '' then
+    if m._IsClassMethod then
+      Result := 'class ' + Result;
 end;
 
 // returns define pas file name form Objective C name, like
@@ -584,7 +594,7 @@ begin
 end;
 
 
-procedure WriteOutClassToHeader(cl : TClassDef; subs: TStrings; conststr: TStrings);
+procedure WriteOutClassToConsts(cl : TClassDef; subs, conststr: TStrings);
 var
   i   : Integer;
 //  j   : Integer;
@@ -615,7 +625,7 @@ begin
         subs.add(ss);
       end;
       mtd._Name := nm;
-      
+
     end else if obj is TPrecompiler then begin
       WriteOutIfDefPrecompiler(TPrecompiler(obj), '  ', subs);
     end;
@@ -847,28 +857,81 @@ procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; su
 var
   pastype : AnsiString;
   nm      : AnsiString;
+  i       : Integer;
 begin
   //todo:!
-  if Assigned(AField._Type) and (AField._Type is TUnionTypeDef)  then begin
-    WriteOutUnion(TUnionTypeDef(AField._Type), Prefix, subs);
-  end else begin
-    pastype := ObjCToDelphiType( AField._TypeName, IsTypePointer(AField._Type, false));
-    nm := FixIfReserved(AField._Name);
-    if (AField._IsArray) and (AField._ArraySize <> '') then
-      subs.Add(Prefix + Format('%s : array [0..%s-1] of %s;', [nm, AField._ArraySize, pastype]))
-    else
-      subs.Add(Prefix + Format('%s : %s; ', [nm, pastype]));
+  if Assigned(AField._Type) then begin
+    if (AField._Type is TUnionTypeDef) then
+      WriteOutUnion(TUnionTypeDef(AField._Type), Prefix, subs)
+    else if AField._Type is TStructTypeDef then begin
+      i := subs.Count;
+      WriteOutRecord(TStructTypeDef(AField._Type), Prefix, 'packed', subs);
+      if i < subs.Count then begin
+        nm := subs[i];
+        Delete(nm, 1, length(Prefix));
+        nm := Prefix + Format('%s : %s', [AField._Name, nm]);
+        subs[i] := nm;
+      end;
+    end else begin
+      pastype := ObjCToDelphiType( AField._TypeName, IsTypePointer(AField._Type, false));
+      nm := FixIfReserved(AField._Name);
+      if (AField._IsArray) and (AField._ArraySize <> '') then
+        subs.Add(Prefix + Format('%s : array [0..%s-1] of %s;', [nm, AField._ArraySize, pastype]))
+      else
+        subs.Add(Prefix + Format('%s : %s; ', [nm, pastype]));
+    end;
+  end;
+end;
+
+procedure WriteOutBitFields(const prefix, fieldname: AnsiString; var Index: Integer; subs: TStrings; bitsize: Integer);
+var
+  ts  : AnsiString;
+begin
+  while bitsize > 0 do begin
+    if bitsize > 16 then begin
+      ts := 'LongWord';
+      dec(bitsize, 32);
+    end else if bitsize > 8 then begin
+      ts := 'Word';
+      dec(bitsize, 16);
+    end else begin
+      ts := 'Byte';
+      dec(bitsize, 8);
+    end;
+
+    subs.Add(Prefix + Format('%s : %s;', [fieldname + IntToStr(index), ts]));
+    inc(index);
   end;
 end;
 
 procedure WriteOutRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings);
 var
-  i   : integer;
+  i         : integer;
+  bits      : Integer;
+  sf        : TStructField;
+  bitfname  : AnsiString;
+  bitfx     : Integer;
 begin
+  bitfname := '_bitflags';
+  bitfx := 1;
+
   subs.Add(Prefix + Format('%s record ', [RecPrefix]));
+  bits := 0;
   for i := 0 to struct.Items.Count - 1 do
-    if TObject(struct.Items[i]) is TStructField then
-      WriteOutRecordField( TStructField(struct.Items[i]), Prefix + '  ', subs);
+    if Assigned(struct.ITems[i]) and (TObject(struct.Items[i]) is TStructField) then begin
+      sf := TStructField(struct.Items[i]);
+      if sf._BitSize <> 0 then
+        inc(bits, sf._BitSize)
+      else begin
+        if bits > 0 then begin
+          WriteOutBitFields(Prefix+'  ', bitfname, bitfx, subs, bits);
+          bits :=0;
+        end;
+        WriteOutRecordField(sf, Prefix + '  ', subs);
+      end;
+    end;
+  if bits > 0 then
+    WriteOutBitFields(Prefix+'  ', bitfname, bitfx, subs, bits);
   subs.Add(Prefix + 'end;');
 end;
 
@@ -937,7 +1000,6 @@ end;
 procedure WriteOutHeaderSection(hdr: TObjCHeader; st: TStrings);
 var
   i       : Integer;
-  cl      : TClassDef;
   subs    : TStringList;
 //  s       : AnsiString;
   consts  : TStringList;
@@ -950,13 +1012,9 @@ begin
   consts := TStringList.Create;
 
   try
-    for i := 0 to hdr.Items.Count - 1 do
+    (*for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
-
-        if (TObject(hdr.Items[i]) is TClassDef) then begin
-          cl := TClassDef(hdr.Items[i]);
-          WriteOutClassToHeader(cl, subs, consts);
-        end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
+        if (TObject(hdr.Items[i]) is TPrecompiler) then begin
           WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
           WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
           WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs);
@@ -967,7 +1025,7 @@ begin
       st.Add('const');
       st.AddStrings(subs);
       subs.Clear;
-    end;
+    end;*)
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -1113,14 +1171,12 @@ const
 
 procedure ObjCMethodToProcType(mtd: TClassMethodDef; var typeName: AnsiString; subs: TStrings);
 var
-//  i   : integer;
   s   : AnsiString;
   ms  : AnsiString;
   restype : AnsiString;
 begin
   typeName := MtdPrefix + mtd._Name + MtdPostFix;
   subs.Add('type');
-//    function GetProcFuncHead(const FuncName, OfClass, Params, ResType, FuncDest: AnsiString): AnsiString;
   ms := GetMethodParams(mtd);
   if ms = '' then ms := 'param1: objc.id; param2: SEL'
   else ms := 'param1: objc.id; param2: SEL' + ';' + ms;
@@ -1149,7 +1205,6 @@ begin
     end;
   end;
   Result := Result + vname;
-//  Result := Copy(Result, 1, length(Result) - 2);
 end;
 
 
@@ -1178,17 +1233,32 @@ begin
   ObjCMethodToProcType(mtd, typeName, subs);
   prms := GetParamsNames(mtd);
   if prms <> '' then prms := ', ' + prms;
-  subs.Add('var');
-  subs.Add(
-    Format('  vmethod: %s;', [typeName]));
-  subs.Add('begin');
-  subs.Add('  ClassID := getClass();');
-  subs.Add('  allocbuf := objc_msgSend(ClassID, sel_registerName(PChar(Str_alloc)), []);');
-  subs.Add(
-    Format('  vmethod := %s(@objc_msgSend);', [typeName]));
-  subs.Add(
-    Format('  Handle := vmethod(allocbuf, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, RefixName(mtd._Name), prms]));
-  subs.Add('end;');
+
+  if (Pos('init', mtd._Name) = 1) and (not mtd._IsClassMethod) then begin
+    //todo: check if object is allocated with 'alloc...' or 'init...' or else =)
+    subs.Add('var');
+    subs.Add(
+      Format('  vmethod: %s;', [typeName]));
+    subs.Add('begin');
+    subs.Add('  ClassID := getClass();');
+    subs.Add('  allocbuf := objc_msgSend(ClassID, sel_registerName(PChar(Str_alloc)), []);');
+    subs.Add(
+      Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+    subs.Add(
+      Format('  Handle := vmethod(allocbuf, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, RefixName(mtd._Name), prms]));
+    subs.Add('end;');
+  end else begin
+    subs.Add('var');
+    subs.Add(
+      Format('  vmethod: %s;', [typeName]));
+    subs.Add('begin');
+    subs.Add('  ClassID := getClass();');
+    subs.Add(
+      Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+    subs.Add(
+      Format('  Handle := vmethod(ClassID, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, RefixName(mtd._Name), prms]));
+    subs.Add('end;');
+  end;
 end;
 
 // writes out a method to implementation section
@@ -1197,14 +1267,14 @@ var
   s         : AnsiString;
   typeName  : AnsiString;
   cl        : TClassDef;
-  
+
   callobj   : AnsiString;
 begin
   cl := TClassDef(mtd.Owner);
-  if mtd._IsClassMethod then callobj := 'ClassID'
+  if mtd._IsClassMethod then callobj := 'getClass'
   else callobj := 'Handle';
   s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
-    
+
   if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
     s := 'Result := ' + s;
   ObjCMethodToProcType(mtd, typeName, subs);
@@ -1249,7 +1319,7 @@ begin
     subs.Add('    Result := nil;');
     subs.Add('end;');
   end else begin
-  
+
     mnm := RefixName(mtd._Name);
     case tp of
       vt_Int: s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
@@ -1320,13 +1390,19 @@ begin
   end;
 end;
 
-procedure WriteOutImplementationSection(hdr: TObjCHeader; st: TStrings);
+procedure WriteOutImplementationSection(hdr: TObjCHeader; st: TStrings; consts: TStringList);
 var
   i   : Integer;
   subs  : TStringList;
 begin
   subs := TStringList.Create;
   try
+
+    if consts.Count > 0 then begin
+      subs.add('const');
+      subs.AddStrings(consts);
+    end;
+
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then
         if (TObject(hdr.Items[i]) is TClassDef) then
@@ -1385,7 +1461,7 @@ begin
   for i := 0 to Items.Count - 1 do
     if TObject(Items[i]) is TClassDef then begin
       cl := TClassDef(Items[i]);
-      if (cl._ClassName = category._ClassName) and (cl._Category = '') then 
+      if (cl._ClassName = category._ClassName) and (cl._Category = '') then
         for j := 0 to category.Items.Count - 1 do begin
           cl.Items.Add(category.Items[j]);
           TEntity(category.Items[j]).owner := cl;
@@ -1457,36 +1533,7 @@ begin
 end;
 
 procedure FixEmptyStruct(var ent: TEntity);
-var
-  i   : Integer;
-  td  : TTypeDef;
-  dis : TEntity;
 begin
-(*
-  if not Assigned(ent) then Exit;
-
-  if (ent is TStructTypeDef) and isEmptyStruct(TStructTypeDef(ent) ) then begin
-    td := TTypeDef.Create(ent.Owner);
-    td._Name := TStructTypeDef(ent)._Name;
-    //td._IsPointer := true;
-    for i := 0 to ent.Items.Count - 1 do begin
-      td.Items.Add(ent.Items[i]);
-      TEntity(ent.Items[i]).Owner := td;
-    end;
-    dis := ent;
-    ent := td;
-    dis.Free;
-  end;
-
-  for i := 0 to ent.Items.Count - 1 do begin
-    dis := TEntity(ent.Items[i]);
-    FixEmptyStruct(dis);
-    ent.Items[i] := dis;
-  end;
-*)  
-  //hack and work-around :(
-  {if ent is TTypeNameDef then
-    FixEmptyStruct( TTypeNameDef(ent)._Type);}
 end;
 
 procedure AppleHeaderFix(ent : TEntity);
@@ -1553,12 +1600,17 @@ end;
 
 procedure WriteOutIncludeFile(hdr: TObjCHeader; st: TStrings);
 var
-  i   : integer;
-  cmt : TComment;
+  i       : integer;
+  cmt     : TComment;
+  cl      : TClassDef;
+  subs    : TStringList;
+  consts  : TStringList;
 begin
+  subs := TStringList.Create;
+  consts := TStringList.Create;
   try
     st.AddStrings(ConvertSettings.ConvertPrefix);
-    
+
     if hdr.Items.Count <= 0 then Exit;
     AppleHeaderFix(hdr);
 
@@ -1570,16 +1622,25 @@ begin
       hdr.Items.Delete(0);
     end;
 
+    for i := 0 to hdr.Items.Count - 1 do begin
+      if (TObject(hdr.Items[i]) is TClassDef) then begin
+        cl := TClassDef(hdr.Items[i]);
+        WriteOutClassToConsts(cl, subs, consts);
+      end;
+    end;
+
     WriteOutHeaderSection(hdr, st);
     WriteOutForwardSection(hdr, st);
-    
+
     for i := 0 to hdr.Items.Count - 1 do
       if TObject(hdr.Items[i]) is TClassDef then
         FixAppleClassDef(TClassDef(hdr.Items[i]));
-    
+
     WriteOutClassesSection(hdr, st);
-    WriteOutImplementationSection(hdr, st);
-  except
+    WriteOutImplementationSection(hdr, st, subs);
+  finally
+    subs.Free;
+    consts.Free;
   end;
 end;
 
@@ -1608,6 +1669,7 @@ begin
   StructTypes.CaseSensitive := false;
   
   ObjCTypes := TStringList.Create;
+
   ObjCTypes.CaseSensitive := false;
 end;
 
@@ -1673,10 +1735,11 @@ begin
     TypeDefReplace['CGFloat'] := 'Single';
 
     TypeDefReplace['Class'] := '_Class';
-    
+
     TypeDefReplace['SRefCon'] := 'Pointer';
     TypeDefReplace['va_list'] := 'array of const';
 
+    StructTypes.Add('Int64');
     StructTypes.Add('NSAffineTransformStruct');
     FloatTypes.Add('NSTimeInterval');
 
