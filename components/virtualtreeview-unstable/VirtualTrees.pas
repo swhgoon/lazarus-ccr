@@ -113,8 +113,12 @@ interface
   {$warn UNSAFE_CODE off}
 {$endif COMPILER_7_UP}
 
-{$if defined (LCLGtk) or defined(LCLGtk2)}
+{$if defined(LCLGtk) or defined(LCLGtk2)}
 {$define Gtk}
+{$endif}
+
+{$if defined(Gtk) or defined(LCLQt)}
+{$define ManualClipNeeded}
 {$endif}
 
 uses
@@ -26580,7 +26584,7 @@ var
   ShowCheckImages,
   UseColumns,
   IsMainColumn: Boolean;
-  {$ifdef Gtk}
+  {$ifdef ManualClipNeeded}
   YCorrect,
   {$endif}
   VAlign,
@@ -27002,11 +27006,18 @@ begin
                 end;
                 Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);
                 {$endif}
+                {$ifdef LCLQt}
+                //Workaround to LCL bug 11187
+                //Qt scales the bitmap when blitting out of control bounds
+                YCorrect := 0;
+                if TargetRect.Top < 0 then
+                  YCorrect := -TargetRect.Top;
+                {$endif}
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
                   BitBlt(TargetCanvas.Handle, Left,
-                    Top {$ifdef Gtk} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
-                    {$ifdef Gtk}YCorrect{$else}0{$endif}, SRCCOPY);
+                    Top {$ifdef ManualClipNeeded} + YCorrect{$endif}, Width, Height, Canvas.Handle, Window.Left,
+                    {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif}, SRCCOPY);
               end;
             end;
 
