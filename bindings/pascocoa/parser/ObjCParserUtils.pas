@@ -376,7 +376,6 @@ begin
   if (vs[i] = '>') or (vs[i] = '"') then vs := Copy(vs, 1, length(vs) - 1);
   if vs = '' then Exit;
 
-
   pth := vs;
 
   while (pth <> '') and (length(pth)>1) do begin
@@ -385,11 +384,8 @@ begin
     pth := ExtractFilePath(ExcludeTrailingPathDelimiter(pth));
   end;
 
-
-
   Result := ExtractFileName(vs);
   Result := Copy(Result, 1, length(Result) - length(ExtractFileExt(vs))) + '.inc';
-
 (*
   Result := '';
   if s = '' then Exit;
@@ -626,8 +622,6 @@ begin
       end;
       mtd._Name := nm;
 
-    end else if obj is TPrecompiler then begin
-      WriteOutIfDefPrecompiler(TPrecompiler(obj), '  ', subs);
     end;
   end; {of for}
   subs.Add('');
@@ -696,12 +690,12 @@ var
 begin
   Result := Vl;
   //todo: improve! check at h2pas
-  repeat ws := Result; Result := ReplaceStr('<<', 'shl', ws);  until Result = ws;
+  repeat ws := Result; Result := ReplaceStr('<<', 'shl', ws); until Result = ws;
   repeat ws := Result; Result := ReplaceStr('>>', 'shr', ws); until Result = ws;
-  repeat ws := Result; Result := ReplaceStr('||', 'or', ws); until Result = ws;
-  repeat ws := Result; Result := ReplaceStr('|', 'or', ws); until Result = ws;
+  repeat ws := Result; Result := ReplaceStr('||', 'or',  ws); until Result = ws;
+  repeat ws := Result; Result := ReplaceStr('|',  'or',  ws); until Result = ws;
   repeat ws := Result; Result := ReplaceStr('&&', 'and', ws); until Result = ws;
-  repeat ws := Result; Result := ReplaceStr('&', 'and', ws); until Result = ws;
+  repeat ws := Result; Result := ReplaceStr('&',  'and', ws); until Result = ws;
 end;
 
 procedure WriteOutEnumValues(enm: TEnumTypeDef; const Prefix: AnsiString; st: TStrings);
@@ -1012,20 +1006,19 @@ begin
   consts := TStringList.Create;
 
   try
-    (*for i := 0 to hdr.Items.Count - 1 do
-      if Assigned(hdr.Items[i]) then begin
+    for i := 0 to hdr.Items.Count - 1 do
+      if Assigned(hdr.Items[i]) then
         if (TObject(hdr.Items[i]) is TPrecompiler) then begin
           WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
           WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
           WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs);
         end;
-      end;
 
     if subs.Count > 0 then begin
       st.Add('const');
       st.AddStrings(subs);
       subs.Clear;
-    end;*)
+    end;
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -1261,6 +1254,11 @@ begin
   end;
 end;
 
+const
+  ClassMethodCaller : array [ Boolean] of AnsiString = (
+    'Handler', 'getClass'
+  );
+
 // writes out a method to implementation section
 procedure WriteOutMethod(mtd: TClassMethodDef; subs: TStrings);
 var
@@ -1271,8 +1269,7 @@ var
   callobj   : AnsiString;
 begin
   cl := TClassDef(mtd.Owner);
-  if mtd._IsClassMethod then callobj := 'getClass'
-  else callobj := 'Handle';
+  callobj := ClassMethodCaller[mtd._IsClassMethod];
   s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
 
   if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
@@ -1300,11 +1297,8 @@ var
   mnm     : AnsiString;
 begin
   cl := TClassDef(mtd.owner);
-  if mtd._IsClassMethod then callobj := 'ClassID'
-  else callobj := 'Handle';
-
+  callobj := ClassMethodCaller[mtd._IsClassMethod];
   res := GetMethodResultType(mtd);
-
   tp := GetObjCVarType(res);
 
   if tp = vt_Object then begin
