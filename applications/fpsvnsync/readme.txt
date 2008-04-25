@@ -1,1 +1,1 @@
-For more information about fpsnvsync see http://wiki.lazarus.freepascal.org/fpsvnsync.
+For more information about fpsnvsync see the lazarus wiki at http://wiki.lazarus.freepascal.org/fpsvnsync.
