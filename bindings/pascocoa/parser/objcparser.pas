@@ -5,13 +5,14 @@
 
  main parser unit
 }
-program Project1;
+program objcparser;
 
 {$ifdef fpc}
   {$mode delphi}{$H+}
 {$else}
   {$APPTYPE CONSOLE}
 {$endif}
+
 uses
   Classes, IniFiles,
   SysUtils,
@@ -29,7 +30,26 @@ type
     procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
   end;
-  
+
+var
+  updIni    : AnsiString = '';
+  noConvert : Boolean = false;
+
+function FindMax(const c: array of Integer; len: Integer): Integer;
+var
+  i   : integer;
+  mn  : Integer;
+begin
+  Result := -1;
+  if len = 0 then Exit;
+
+  mn := 0;
+  for i := 1 to len - 1 do begin
+    if c[i] < c[mn] then mn := i;
+  end;
+  Result := mn;
+end;
+
 procedure TPrecompileHandler.OnPrecompile(Sender: TObject);
 var
   parser    : TTextParser;
@@ -84,6 +104,29 @@ begin
   hdr := AHeader;
 end;
 
+procedure UpdateIniWithEntity(Sets: TConvertSettings; Ini: TIniFile; Entity: TEntity);
+var
+  cnv : AnsiString;
+  i   : Integer;
+begin
+  if Entity is TClassDef then begin
+    Ini.WriteString('TypeDefs', TClassDef(Entity)._ClassName, 'objcclass');
+  end else if Entity is TStructTypeDef then begin
+    Ini.WriteString('TypeDefs', TStructTypeDef(Entity)._Name, 'struct');
+  end else if Entity is TTypeNameDef then begin
+    if Assigned(Sets) then begin
+      cnv := AnsiLowerCase(ObjCToDelphiType(TTypeNameDef(Entity)._Inherited, false ));
+      if (cnv = 'float') or (cnv = 'double') then
+        Ini.WriteString('TypeDefs', TTypeNameDef(Entity)._TypeName, 'float')
+      else if (cnv = 'Int64') then
+        Ini.WriteString('TypeDefs', TTypeNameDef(Entity)._TypeName, 'struct')
+    end;
+  end;
+
+  for i := 0 to Entity.Items.Count - 1 do
+    UpdateIniWithEntity(Sets, Ini, Entity.Items[i]);
+end;
+
 function ReadAndParseFile(const FileName: AnsiString; outdata: TStrings; var Err: AnsiString): Boolean;
 var
   hdr     : TObjCHeader;
@@ -91,6 +134,7 @@ var
   prec    : TPrecompileHandler ;
   s       : AnsiString;
   i, cnt  : integer;
+  upini   : TIniFile;
 begin
   Result :=false;
   if not FileExists(FileName) then begin
@@ -129,6 +173,15 @@ begin
       end;
 
     except
+    end;
+
+    if updIni <> '' then begin
+      upIni := TIniFile.Create(updIni);
+      try
+        UpdateIniWithEntity(ConvertSettings, upIni, hdr);
+      finally
+        upIni.Free;
+      end;
     end;
     WriteOutIncludeFile(hdr, outdata);
   finally
@@ -185,7 +238,6 @@ begin
           writeln(' converted!');
         end else begin
           writeln('Error: ', err);
-          readln;
         end;
       until FindNext(srch) <> 0;
 
@@ -227,6 +279,14 @@ begin
   end;
 end;
 
+
+function isNameofPointer(const name: AnsiString): Boolean;
+begin
+  Result := false;
+  if name = '' then Exit;
+  Result := name[length(name)] = '*';
+end;
+
 procedure ReadIniFile(Settings: TConvertSettings; const FileName: AnsiString);
 var
   ini     : TIniFile;
@@ -234,16 +294,59 @@ var
   a, b    : AnsiString;
   i       : Integer;
 begin
+//  uikit.ini
+  if not FileExists(FileName) then begin
+    writeln('//ini file is not found');
+    Exit;
+  end;
   ini := TIniFile.Create(FileName);
   values  := TStringList.Create;
   try
-    ini.ReadSection('TypeReplace', values);
+      values.Clear;
 
+{    ini.ReadSection('TypeReplace', values);
     for i := 0 to values.Count - 1 do begin
       a := values.ValueFromIndex[i];
       b := values.Values[a];
+      if b <> '' then begin
+      ense
       Settings.TypeDefReplace[a] := b;
+    end;}
+
+    values.Clear;
+    //ini.ReadSectionValues('ReplaceToken', values);
+    ini.ReadSection('ReplaceToken', values);
+    for i := 0 to values.Count - 1 do begin
+      a := Values[i];
+      b := ini.ReadString('ReplaceToken', a, '');
+      if b ='' then
+        Settings.IgnoreTokens.Add(a);
     end;
+
+    values.Clear;
+    ini.ReadSection('TypeDefs', values);
+    for i := 0 to values.Count - 1 do begin
+      a := Values[i];
+      b := AnsiLowerCase(ini.ReadString('TypeDefs', a, ''));
+      if b = 'objcclass' then
+        Settings.ObjCTypes.Add(a)
+      else if b = 'struct' then
+        Settings.StructTypes.Add(a)
+      else if b = 'float' then
+        Settings.FloatTypes.Add(a);
+    end;
+
+    values.Clear;
+    ini.ReadSection('TypeReplace', values);
+    for i := 0 to values.Count - 1 do begin
+      a := Values[i];
+      b := ini.ReadString('TypeReplace', a, '');
+      if isNameofPointer(a) then
+        Settings.PtrTypeReplace[ Copy(a, 1, length(a) - 1)] := b
+      else
+        Settings.TypeDefReplace[a] := b
+    end;
+
   finally
     values.Free;
     ini.Free;
@@ -273,7 +376,7 @@ begin
         FileName := ParamStr(i);
     end;
 
-    vlm := Params.Values['settings'];
+    vlm := Params.Values['ini'];
     if vlm <> '' then
       ReadIniFile(Settings, vlm);
 
@@ -282,15 +385,12 @@ begin
       Settings.ConvertPrefix.Add ('{%mainunit '+vlm+'}');
 
     vlm := Params.Values['ignoreinclude'];
-    if vlm <> '' then begin
+    if vlm <> '' then
       AddSpaceSeparated(vlm, Settings.IgnoreIncludes);
-      {for i := 0 to Settings.IgnoreIncludes.Count - 1 do begin
-        vlm := Settings.IgnoreIncludes[i];
-        vlm := Copy(vlm, 1, length(vlm) - length(ExtractFileExt(vlm)));
-        vlm := vlm + '.inc';
-        Settings.IgnoreIncludes[i] := vlm;
-      end;}
-    end;
+
+    vlm := Params.Values['updini'];
+    if vlm <> '' then
+      updIni := vlm;
 
   finally
     Params.Free;
@@ -303,6 +403,7 @@ var
   st    : TStrings = nil;
   err   : AnsiString = '';
   i     : integer;
+
 
 begin
   try

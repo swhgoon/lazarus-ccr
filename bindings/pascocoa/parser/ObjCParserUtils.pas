@@ -46,6 +46,8 @@ type
     IgnoreIncludes  : TStringList;
     DefineReplace   : TReplaceList;
     TypeDefReplace  : TReplaceList; // replaces for C types
+    PtrTypeReplace  : TReplaceList; // replaces for C types pointers
+    
     IgnoreTokens    : TStringList;
 
     ConvertPrefix   : TStringList;
@@ -243,7 +245,10 @@ begin
     'v':
       if l = 'void' then begin
         if not isPointer then Result := ''
-        else Result := 'Pointer';
+        else begin
+          Result := 'Pointer';
+          Exit;
+        end;
       end;
     'i':
       if l = 'id' then Result := 'objc.id'
@@ -262,14 +267,19 @@ begin
     'f':
       if l = 'float' then Result := 'Single';
   end;
+
+  
   if Result = objcType then begin
-    r := ConvertSettings.TypeDefReplace[objcType];
-    if r <> '' then Result := r;
+    if isPointer then r := ConvertSettings.PtrTypeReplace[objcType]
+    else r := ConvertSettings.TypeDefReplace[objcType];
+    if r <> '' then
+      Result := r;
   end;
-  if isPointer then 
+  
+  if isPointer then begin
     if ((objctype = 'char') or (objctype = 'const char')) then
       Result := 'PChar'
-
+  end;
 end;
 
 function IsMethodConstructor(cl: TClassDef; m: TClassMethodDef): Boolean;
@@ -839,12 +849,58 @@ begin
         s := subs[subs.Count - 1];
         Delete(s, 1, length(Prefix + '  '));
         subs.Delete(subs.Count - 1);
-        subs[subs.Count - 1] := subs[subs.Count - 1] + s;   
+        subs[subs.Count - 1] := subs[subs.Count - 1] + s;
       end;
 
-      inc(n); 
+      inc(n);
     end;
   end;
+end;
+
+function CParamsListToPascalStr(Params: TFunctionParamsList): AnsiString;
+var
+  i   : integer;
+  num : Integer;
+  prm : TFunctionParam;
+  vs  : AnsiString;
+begin
+  Result := '';
+  num := 1;
+  for i := 0 to Params.Items.Count - 1 do
+    if TObject(Params.Items[i]) is TFunctionParam then begin
+      prm := TFunctionParam(Params.Items[i]);
+      if prm._IsAny then Continue;
+      vs := ObjCToDelphiType( GetTypeNameFromEntity(prm._Type), IsTypeDefIsPointer(prm._Type));
+      if prm._Name = ''
+        then vs := '_param'+IntToStr(num) + ': ' + vs
+        else vs := prm._Name + ': ' + vs;
+      if Result <> '' then
+        Result := Result + '; ' + vs
+      else
+        Result := vs;
+      inc(num);
+    end;
+end;
+
+function CToDelphiFuncType(AFuncType: TFunctionTypeDef): AnsiString;
+var
+  restype : AnsiString;
+  fntype  : AnsiString;
+  isptr   : Boolean;
+begin
+  if not Assigned(AFuncType._ResultType) then begin
+    isptr := false;
+    fntype := 'int';
+  end else if (AFuncType._ResultType is TTypeDef) then begin
+    isptr := TTypeDef(AFuncType._ResultType)._IsPointer;
+    fntype := TTypeDef(AFuncType._ResultType)._Name;
+  end else begin
+    isptr := false;
+    fntype := '{todo: not implemented... see .h file for type}';
+  end;
+  restype := ObjCToDelphiType(fntype, isptr);
+  Result := GetProcFuncHead('', '', CParamsListToPascalStr(AFuncType._ParamsList), restype);
+  Result := Copy(Result, 1, length(Result) - 1);
 end;
 
 procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings);
@@ -852,6 +908,7 @@ var
   pastype : AnsiString;
   nm      : AnsiString;
   i       : Integer;
+
 begin
   //todo:!
   if Assigned(AField._Type) then begin
@@ -866,8 +923,13 @@ begin
         nm := Prefix + Format('%s : %s', [AField._Name, nm]);
         subs[i] := nm;
       end;
-    end else begin
-      pastype := ObjCToDelphiType( AField._TypeName, IsTypePointer(AField._Type, false));
+    end else begin 
+
+      if (AField._Type is TFunctionTypeDef) then
+        pastype := CToDelphiFuncType(AField._Type as TFunctionTypeDef)
+      else
+        pastype := ObjCToDelphiType(AField._TypeName, IsTypePointer(AField._Type, false));
+
       nm := FixIfReserved(AField._Name);
       if (AField._IsArray) and (AField._ArraySize <> '') then
         subs.Add(Prefix + Format('%s : array [0..%s-1] of %s;', [nm, AField._ArraySize, pastype]))
@@ -947,11 +1009,13 @@ begin
 end;
 
 function WriteOutTypeDefName(const NewType, FromType: AnsiSTring; isPointer: Boolean): AnsiString;
+var
+  wrType: AnsiString;
 begin
-  if not isPointer then
-    Result := Format('%s = %s;', [NewType, FromType])
-  else
-    Result := Format('%s = ^%s;', [NewType, FromType]);
+  wrType := ObjCToDelphiType(fromType, isPointer);
+  Result := Format('%s = %s;', [NewType, wrType]);
+  {else
+    Result := Format('%s = ^%s;', [NewType, wrType]);}
     
   case GetObjCVarType(FromType) of
     vt_FloatPoint: ConvertSettings.FloatTypes.Add(NewType);
@@ -1069,7 +1133,7 @@ begin
   if cl._SuperClass <> '' then begin
     subs.Add(s + '('+cl._SuperClass+')');
     subs.Add('  public');
-    subs.Add('    function getClass: objc.id; override;');
+    subs.Add('    class function getClass: objc.id; override;');
   end else begin
     subs.Add(s + '{from category '+ cl._Category +'}');
     subs.Add('  public');
@@ -1256,7 +1320,7 @@ end;
 
 const
   ClassMethodCaller : array [ Boolean] of AnsiString = (
-    'Handler', 'getClass'
+    'Handle', 'getClass'
   );
 
 // writes out a method to implementation section
@@ -1265,20 +1329,34 @@ var
   s         : AnsiString;
   typeName  : AnsiString;
   cl        : TClassDef;
-
+  tp      : TObjcConvertVarType;
+  res       : AnsiString;
   callobj   : AnsiString;
+  mnm       : AnsiString;
 begin
   cl := TClassDef(mtd.Owner);
   callobj := ClassMethodCaller[mtd._IsClassMethod];
-  s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
 
-  if ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '' then
+  res := GetMethodResultType(mtd);
+  mnm := RefixName(mtd._Name);
+  //s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
+  tp := GetObjCVarType(res);
+  case tp of
+    vt_Int: s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+    vt_FloatPoint: s := Format('objc_msgSend_fpret(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+    vt_Struct: s := Format('objc_msgSend_stret(@Result, %s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+  end;
+
+  if (ObjCToDelphiType(mtd.GetResultType._Name, mtd.GetResultType._IsPointer) <> '') and (tp <> vt_Struct) then
     s := 'Result := ' + s;
   ObjCMethodToProcType(mtd, typeName, subs);
   subs.Add('var');
   subs.Add(
     Format('  vmethod: %s;', [typeName]));
   subs.Add('begin');
+
+
+
   subs.Add(
     Format('  vmethod := %s(@objc_msgSend);', [typeName]));
   subs.Add(
@@ -1368,7 +1446,7 @@ begin
   end;
   
   subs.Add('');
-  subs.Add(GetProcFuncHead('getClass', cl._ClassName, '', 'objc.id'));
+  subs.Add('class ' + GetProcFuncHead('getClass', cl._ClassName, '', 'objc.id'));
   subs.Add('begin');
   subs.Add(
     Format('  Result := objc_getClass(Str%s_%s);', [cl._ClassName, cl._ClassName]));
@@ -1526,14 +1604,11 @@ begin
   FastPack(ent.Items);
 end;
 
-procedure FixEmptyStruct(var ent: TEntity);
-begin
-end;
-
 procedure AppleHeaderFix(ent : TEntity);
 var
   i   : Integer;
   obj : TEntity;
+  prm : TObjCParameterDef;
 begin
 //  i := 0;
   for i := 0 to ent.Items.Count - 1 do begin
@@ -1552,15 +1627,20 @@ begin
       if IsPascalReserved(TParamDescr(obj)._Descr) then
         TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr;
     end else if (obj is TObjCParameterDef) then begin
-      if IsPascalReserved(TObjCParameterDef(obj)._Name) then
-        TObjCParameterDef(obj)._Name := '_' + TObjCParameterDef(obj)._Name;
+      prm := TObjCParameterDef(obj);
+      if ConvertSettings.ObjCTypes.IndexOf(prm._Res._Name) >= 0 then
+        prm._Res._Name := Format('objc.id {%s}', [prm._Res._Name] );
+      if IsPascalReserved(prm._Name) then 
+        prm._Name := '_' + prm._Name;
+        
+    end else if (obj is TStructField) then begin
+      if ConvertSettings.ObjCTypes.IndexOf(TStructField(obj)._TypeName) >= 0 then
+        prm._Res._Name := 'objc.id';
     end;
   end;
 
   // packing list, removing nil references.
   FastPack(ent.Items);
-  FixObjCClassTypeDef(ent);
-  FixEmptyStruct(ent);
 
   for i := 0 to ent.Items.Count - 1 do 
     AppleHeaderFix( TEntity(ent.Items[i]));
@@ -1608,6 +1688,8 @@ begin
     if hdr.Items.Count <= 0 then Exit;
     AppleHeaderFix(hdr);
 
+    FixObjCClassTypeDef(hdr);
+
     // .inc header-comment is the first comment entity in .h file , if any
     if TObject(hdr.Items[0]) is TComment then begin
       cmt := TComment(hdr.Items[0]);
@@ -1654,6 +1736,7 @@ begin
   IgnoreIncludes.CaseSensitive := false;
   DefineReplace := TReplaceList.Create;
   TypeDefReplace := TReplaceList.Create; // replaces for default types
+  PtrTypeReplace := TReplaceList.Create; // replaces for C types pointers
   ConvertPrefix := TStringList.Create;
   
   FloatTypes := TStringList.Create;
@@ -1676,6 +1759,7 @@ begin
   IgnoreTokens.Free;
   IgnoreIncludes.Free;
   TypeDefReplace.Free;
+  PtrTypeReplace.Free;
   DefineReplace.Free;
   ConvertPrefix.Free;
   inherited Destroy;
@@ -1701,6 +1785,7 @@ begin
 
     TypeDefReplace['unsigned char'] := 'byte';
     TypeDefReplace['uint8_t'] := 'byte';
+    PtrTypeReplace['uint8_t'] := 'PByte';
 
     TypeDefReplace['short'] := 'SmallInt';
     TypeDefReplace['short int'] := 'SmallInt';
@@ -1715,15 +1800,26 @@ begin
     TypeDefReplace['NSInteger'] := 'Integer';
 
     TypeDefReplace['unsigned'] := 'LongWord';
+    PtrTypeReplace['unsigned'] := 'PLongWord';
+    
     TypeDefReplace['unsigned int'] := 'LongWord';
     TypeDefReplace['uint32_t'] := 'LongWord';
     TypeDefReplace['NSUInteger'] := 'LongWord';
 
     TypeDefReplace['long long'] := 'Int64';
-    TypeDefReplace['singned long long'] := 'Int64';
+    PtrTypeReplace['long long'] := 'PInt64';
+
+    TypeDefReplace['signed long long'] := 'Int64';
+    PtrTypeReplace['signed long long'] := 'PInt64';
+
     TypeDefReplace['unsigned long long'] := 'Int64';
+    PtrTypeReplace['unsigned long long'] := 'PInt64';
+    
     TypeDefReplace['int64_t'] := 'Int64';
+    PtrTypeReplace['int64_t'] := 'PInt64';
+
     TypeDefReplace['uint64_t'] := 'Int64';
+    PtrTypeReplace['uint64_t'] := 'PInt64';
 
     TypeDefReplace['float'] := 'Single';
     TypeDefReplace['CGFloat'] := 'Single';
