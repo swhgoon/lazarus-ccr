@@ -117,7 +117,7 @@ interface
 {$define Gtk}
 {$endif}
 
-{$if defined(Gtk) or defined(LCLQt)}
+{$if defined(Gtk)}
 {$define ManualClipNeeded}
 {$endif}
 
@@ -27005,13 +27005,6 @@ begin
                     YCorrect := FHeader.Height - TargetRect.Top;
                 end;
                 Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);
-                {$endif}
-                {$ifdef LCLQt}
-                //Workaround to LCL bug 11187
-                //Qt scales the bitmap when blitting out of control bounds
-                YCorrect := 0;
-                if TargetRect.Top < 0 then
-                  YCorrect := -TargetRect.Top;
                 {$endif}
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
