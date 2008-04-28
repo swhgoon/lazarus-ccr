@@ -78,6 +78,13 @@ var
       Result := true;
     end;
   end;
+  
+  function GetOutput: string;
+  begin
+    SetLength(Result, Output.Size);
+    Output.Seek(0,soBeginning);
+    Output.Read(Result[1],Length(Result));
+  end;
 begin
   if SvnExecutable='' then InitializeSvnExecutable;
 
@@ -92,8 +99,11 @@ begin
     end;
     ReadOutput;
     Result := SvnProcess.ExitStatus;
-    if Result<>0 then
-      Raise Exception.Create('svn ' + Command + ' failed.');
+    if Result<>0 then begin
+      Raise Exception.CreateFmt(
+        'svn %s failed: Result %d' + LineEnding + '%s',
+        [Command, Result, GetOutput]);
+    end;
   finally
     SvnProcess.Free;
   end;
