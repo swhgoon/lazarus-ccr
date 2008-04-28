@@ -226,6 +226,10 @@ var
       // because of the mime style is non-text.
       for pass := 1 to 2 do begin
         for j:=0 to SourceProp.Properties.Count-1 do begin
+          // if there is no value, don't set the property
+          if (SourceProp.Properties.ValueFromIndex[j]='')
+            then continue;
+            
           IsSvnEolProp := SourceProp.Properties.Names[j]='svn:eol-style';
           if ((pass=1) and (IsSvnEolProp=true)) or
              ((pass=2) and (IsSvnEolProp=false)) then begin
