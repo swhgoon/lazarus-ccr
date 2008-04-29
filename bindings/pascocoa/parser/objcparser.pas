@@ -32,8 +32,16 @@ type
   end;
 
 var
-  updIni    : AnsiString = '';
-  noConvert : Boolean = false;
+  updIni      : AnsiString = '';
+  doOutput    : Boolean = false;
+  doparseAll  : Boolean = false;
+
+const
+  TokenReplaceSec = 'TokenReplace';
+  TypeDefsSec = 'TypeDefs';
+  TypeReplaceSec = 'TypeReplace';
+  IgnoreIncludesSec = 'IgnoreIncludes';
+  CommonSec = 'Common';
 
 function FindMax(const c: array of Integer; len: Integer): Integer;
 var
@@ -110,16 +118,16 @@ var
   i   : Integer;
 begin
   if Entity is TClassDef then begin
-    Ini.WriteString('TypeDefs', TClassDef(Entity)._ClassName, 'objcclass');
+    Ini.WriteString(TypeDefsSec, TClassDef(Entity)._ClassName, 'objcclass');
   end else if Entity is TStructTypeDef then begin
-    Ini.WriteString('TypeDefs', TStructTypeDef(Entity)._Name, 'struct');
+    Ini.WriteString(TypeDefsSec, TStructTypeDef(Entity)._Name, 'struct');
   end else if Entity is TTypeNameDef then begin
     if Assigned(Sets) then begin
       cnv := AnsiLowerCase(ObjCToDelphiType(TTypeNameDef(Entity)._Inherited, false ));
       if (cnv = 'float') or (cnv = 'double') then
-        Ini.WriteString('TypeDefs', TTypeNameDef(Entity)._TypeName, 'float')
+        Ini.WriteString(TypeDefsSec, TTypeNameDef(Entity)._TypeName, 'float')
       else if (cnv = 'Int64') then
-        Ini.WriteString('TypeDefs', TTypeNameDef(Entity)._TypeName, 'struct')
+        Ini.WriteString(TypeDefsSec, TTypeNameDef(Entity)._TypeName, 'struct')
     end;
   end;
 
@@ -204,13 +212,13 @@ var
   f     : Text;
   err   : AnsiString;
 begin
-  err := '';
+ { err := '';
   writeln('would you like to parse all current directory files .h to inc?');
   readln(ch);
   if (ch <> 'Y') and (ch <> 'y') then begin
     writeln('as you wish, bye!');
     Exit;
-  end;
+  end;}
 
   pth := IncludeTrailingPathDelimiter( GetCurrentDir);
   writeln('looking for .h files in ', pth);
@@ -227,13 +235,16 @@ begin
           incs := pth + Copy(srch.Name,1, length(srch.Name) - length(ExtractFileExt(srch.Name)));
           incs := incs + '.inc';
           //writeln(incs);
-          assignfile(f, incs); rewrite(f);
-          try
-            for i := 0 to st.Count - 1 do
-              writeln(f, st[i]);
-          finally
-            closefile(f);
+          if doOutput then begin
+            assignfile(f, incs); rewrite(f);
+            try
+              for i := 0 to st.Count - 1 do
+                writeln(f, st[i]);
+            finally
+              closefile(f);
+            end;
           end;
+
           st.Clear;
           writeln(' converted!');
         end else begin
@@ -293,17 +304,25 @@ var
   values  : TStringList;
   a, b    : AnsiString;
   i       : Integer;
+  IniName : AnsiString;
 begin
 //  uikit.ini
   if not FileExists(FileName) then begin
     writeln('//ini file is not found');
     Exit;
   end;
-  ini := TIniFile.Create(FileName);
+  {$ifndef fpc}
+  if ExtractFileName(FileName) = FileName then
+    IniName := IncludeTrailingPathDelimiter( GetCurrentDir) + FileName
+  else
+    IniName := FileName;
+  {$else}
+  IniName := FileName;
+  {$endif}
+  ini := TIniFile.Create(IniName);
   values  := TStringList.Create;
   try
-      values.Clear;
-
+    values.Clear;
 {    ini.ReadSection('TypeReplace', values);
     for i := 0 to values.Count - 1 do begin
       a := values.ValueFromIndex[i];
@@ -314,22 +333,49 @@ begin
     end;}
 
     values.Clear;
+    a := ini.ReadString(CommonSec, 'mainunit', '');
+    if a <> '' then begin
+      b := '{%mainunit '+ a + '}';
+      for i := 0 to ConvertSettings.ConvertPrefix.Count - 1 do
+        if Pos(ConvertSettings.ConvertPrefix[i], '{%mainunit') = 1 then begin
+          ConvertSettings.ConvertPrefix[i] := b;
+          a := '';
+          Break;
+        end;
+      if a <> '' then
+        ConvertSettings.ConvertPrefix.Add(b);
+    end;
+
+    a := ini.ReadString(CommonSec, 'ignoreincludes', '');
+    ini.ReadSection('Common', values);
+    for i := 0 to values.Count - 1 do begin
+      if Pos('ignoreincludes', values[i]) = 1 then begin
+        b := ini.ReadString(CommonSec,values[i], '');
+        AddSpaceSeparated(b, ConvertSettings.IgnoreIncludes);
+      end;
+    end;
+    {ini.ReadSectionValues(IgnoreIncludesSec, values);
+    for i := 0 to values.Count - 1 do begin
+      ConvertSettings.IgnoreIncludes.AddStrings(values);
+    end;}
+
     //ini.ReadSectionValues('ReplaceToken', values);
-    ini.ReadSection('ReplaceToken', values);
+    ini.ReadSection(TokenReplaceSec, values);
+    
     for i := 0 to values.Count - 1 do begin
       a := Values[i];
-      b := ini.ReadString('ReplaceToken', a, '');
+      b := ini.ReadString(TokenReplaceSec, a, '');
       if b ='' then
         Settings.IgnoreTokens.Add(a);
     end;
 
     values.Clear;
-    ini.ReadSection('TypeDefs', values);
+    ini.ReadSection(TypeDefsSec, values);
     for i := 0 to values.Count - 1 do begin
       a := Values[i];
-      b := AnsiLowerCase(ini.ReadString('TypeDefs', a, ''));
+      b := AnsiLowerCase(ini.ReadString(TypeDefsSec, a, ''));
       if b = 'objcclass' then
-        Settings.ObjCTypes.Add(a)
+        Settings.ObjCClassTypes.Add(a)
       else if b = 'struct' then
         Settings.StructTypes.Add(a)
       else if b = 'float' then
@@ -337,10 +383,10 @@ begin
     end;
 
     values.Clear;
-    ini.ReadSection('TypeReplace', values);
+    ini.ReadSection(TypeReplaceSec, values);
     for i := 0 to values.Count - 1 do begin
       a := Values[i];
-      b := ini.ReadString('TypeReplace', a, '');
+      b := ini.ReadString(TypeReplaceSec, a, '');
       if isNameofPointer(a) then
         Settings.PtrTypeReplace[ Copy(a, 1, length(a) - 1)] := b
       else
@@ -369,33 +415,38 @@ begin
     for i := 1 to ParamCount do begin
       if isParamValue(ParamStr(i), prm, vlm) then begin
         prm := AnsiLowerCase(prm);
-        if prm = 'mu' then prm := 'mainunit'
-        else if prm = 'ii' then prm := 'ignoreinclude';
-        Params.Values[prm] := vlm;
+        if prm = 'noout' then doOutput:=false
+        else if prm = 'all' then doparseAll:=true
+        else if prm = 'ini' then begin
+          ReadIniFile(Settings, vlm);
+        end else
+          Params.Values[prm] := vlm;
       end else
         FileName := ParamStr(i);
     end;
 
-    vlm := Params.Values['ini'];
-    if vlm <> '' then
-      ReadIniFile(Settings, vlm);
-
-    vlm := Params.Values['mainunit'];
-    if vlm <> '' then
-      Settings.ConvertPrefix.Add ('{%mainunit '+vlm+'}');
-
-    vlm := Params.Values['ignoreinclude'];
-    if vlm <> '' then
-      AddSpaceSeparated(vlm, Settings.IgnoreIncludes);
-
-    vlm := Params.Values['updini'];
+    vlm := Params.Values['uini'];
     if vlm <> '' then
       updIni := vlm;
+
 
   finally
     Params.Free;
   end;
   Result := true;
+end;
+
+procedure TypeHelp;
+begin
+  writeln('Obj-C parser usage:');
+  writeln('objcparser [switches] objcheaderfilename');
+  writeln('');
+  writeln('keys:');
+  writeln(' -ini=filename.ini  config file to use for pascal file generation');
+  writeln('                    multiple "-ini" switches are allowed');
+  writeln(' -uini=filename.ini config file to update the data');
+  writeln(' -noout             prevents from .inc files generated');
+  writeln(' -all               parses headers (*.h) in the current directory');
 end;
 
 var
@@ -406,10 +457,14 @@ var
 
 
 begin
+  doOutput := true;
   try
     GetConvertSettings(ConvertSettings, inpf);
-    if not FileExists(inpf) then begin
+    if doParseAll then begin
       ParseAll;
+      Exit;
+    end else if not FileExists(inpf) then begin
+      TypeHelp;
       Exit;
     end;
 
@@ -417,9 +472,11 @@ begin
     try
       if not ReadAndParseFile(inpf, st, err) then 
         writeln('Error: ', err)
-      else
-        for i := 0 to st.Count - 1 do
-          writeln(st[i]);
+      else begin
+        if doOutput then
+          for i := 0 to st.Count - 1 do
+            writeln(st[i]);
+      end;
     except
     end;
     st.Free;

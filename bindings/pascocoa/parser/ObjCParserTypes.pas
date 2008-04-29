@@ -82,6 +82,7 @@ type
   public
     owner : TEntity;
     Items : TList;
+    TagComment  : AnsiString;
     constructor Create(AOwner: TEntity);
     destructor Destroy; override;
     function Parse(AParser: TTextParser): Boolean; virtual;
@@ -238,11 +239,12 @@ type
 
   { TObjCParameterDef }
 
-  TObjCResultTypeDef = class(TTypeDef)
+  TObjCResultTypeDef = class(TEntity)
   {updating}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
+    _Type     : TEntity;
     _isRef    : Boolean;
     _isConst  : Boolean; // (const Sometype)
     _Prefix   : AnsiString; // reserved-word  type descriptors
@@ -253,7 +255,7 @@ type
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    _Res  : TObjCResultTypeDef;
+    _Type : TObjCResultTypeDef;
     _Name : AnsiString;
   end;
 
@@ -1100,7 +1102,9 @@ begin
   end else if (tt = tt_Ident) then begin
     // if type is not defined, that it's assumed to be obj-c 'id'
     res := TObjCResultTypeDef.Create(Self);
-    res._Name := 'id';
+    res._Type := TTypeDef.Create(res);
+    TTypeDef(res._Type)._Name := 'id';
+
     Items.Add(res);
     AParser.Index := AParser.TokenPos;
   end else
@@ -1141,10 +1145,10 @@ var
   tt  : TTokenType;
 begin
   Result := false;
-  _Res := TObjCResultTypeDef.Create(Self);
-  if not _Res.Parse(AParser) then Exit;
+  _Type := TObjCResultTypeDef.Create(Self);
+  if not _Type.Parse(AParser) then Exit;
 
-  Items.Add(_Res);
+  Items.Add(_Type);
   AParser.FindNextToken(_Name, tt);
   if tt <> tt_Ident then begin
     AParser.SetError(ErrExpectStr('Identifier', _Name));
@@ -1153,12 +1157,33 @@ begin
   Result := true;
 end;
 
+function isParamFuncPointer(AParser: TTextParser): Boolean;
+var
+  i   : Integer;
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  i := AParser.Index;
+  AParser.FindNextToken(s, tt);
+  Result := (tt = tt_Symbol) and (s = '(');
+  if not Result then Exit;
+
+  AParser.FindNextToken(s, tt);
+  Result := (tt = tt_Symbol) and (s = '*');
+  if not Result then Exit;
+
+  AParser.FindNextToken(s, tt);
+  Result := (tt = tt_Symbol) and (s = ')');
+  if not Result then Exit;
+end;
+
 { TResultTypeDef }
 
 function TObjCResultTypeDef.DoParse(AParser: TTextParser): Boolean;
 var
   s   : AnsiString;
   tt  : TTokenType;
+  fnt : TFunctionTypeDef;
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
@@ -1166,7 +1191,10 @@ begin
     AParser.SetError(ErrExpectStr('"("', s));
     Exit;
   end;
-  Result := inherited DoParse(AParser);
+
+  _Type := TTypeDef.Create(Self);
+  Result := _Type.Parse(AParser);
+  if not Result then Exit;
 
   if Result then begin
     AParser.FindNextToken(s, tt);
@@ -1175,8 +1203,23 @@ begin
       AParser.FindNextToken(s, tt);
     end;
 
-
+    if s = '(' then begin // ptr funciton (*)?
+      AParser.Index := AParser.TokenPos;
+      if not isParamFuncPointer(APArser) then begin
+        AParser.SetError(ErrExpectStr(')', s));
+        Result := false;
+        Exit;
+      end;
+      fnt := TFunctionTypeDef.Create(Self);
+      fnt._ResultType := _Type;
+      Result := fnt.Parse(AParser);
+      _Type := fnt;
+      if not Result then Exit;
+      AParser.FindNextToken(s, tt);
+    end;
     Result := s = ')';
+
+
     if not Result then
       AParser.SetError( ErrExpectStr(')', s));
   end;
@@ -1642,8 +1685,10 @@ begin
         Exit;
       end;
       _Spec := _Spec + vl;
-      if _Name = '' then _Name := s
-      else _Name := _Name + ' ' + s;
+      if (s <> 'const') and (s <> 'volatile') then begin
+        if _Name = '' then _Name := s
+        else _Name := _Name + ' ' + s;
+      end;
       AParser.FindNextToken(s, tt);
     end; {of while}
 
