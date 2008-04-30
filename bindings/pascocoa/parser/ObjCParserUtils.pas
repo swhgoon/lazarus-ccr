@@ -219,7 +219,7 @@ begin
         tp := TTypeDef(TObjCParameterDef(p)._Type._Type);
         vtype := ObjCToDelphiType(tp._Name, tp._IsPointer);
       end else begin
-        prc := 'TProc' + TObjCParameterDef(p)._Name + IntToStr(ConvertSettings.CustomTypes.Count);
+        prc := 'TProc' + TClassDef(m.Owner)._ClassName + TObjCParameterDef(p)._Name + IntToStr(ConvertSettings.CustomTypes.Count);
         ConvertSettings.AssignNewTypeName(prc, CToDelphiFuncType(TFunctionTypeDef(TObjCParameterDef(p)._Type._Type)), vtype);
         tp := TTypeDef.Create(TObjCParameterDef(p)._Type);
         tp._Name := vtype;
@@ -361,9 +361,9 @@ begin
   for i := 0 to mtd.Items.Count - 1 do begin
     obj := mtd.Items[i];
     if not Assigned(obj) then Continue;
-    if obj is TParamDescr then
-      Result := Result + TParamDescr(obj)._Descr
-    else if obj is TObjCParameterDef then
+    if obj is TParamDescr then begin
+      Result := Result + TParamDescr(obj)._Descr;
+    end else if obj is TObjCParameterDef then
       Result := Result + '_';
   end;
   i := length(Result);
@@ -1295,20 +1295,28 @@ const
   MtdPrefix = 'TMtd_';
   MtdPostfix = '';
 
-procedure ObjCMethodToProcType(mtd: TClassMethodDef; var typeName: AnsiString; subs: TStrings);
+procedure ObjCMethodToProcType(mtd: TClassMethodDef; var typeName: AnsiString; subs: TStrings; isResultStruct: Boolean);
 var
   s   : AnsiString;
   ms  : AnsiString;
   restype : AnsiString;
 begin
-  typeName := MtdPrefix + mtd._Name + MtdPostFix;
+  //typeName := MtdPrefix + mtd._Name + MtdPostFix;
+  typeName := 'TmsgSendWrapper';
+  
   subs.Add('type');
   ms := GetMethodParams(mtd, false);
   if ms = '' then ms := 'param1: objc.id; param2: SEL'
   else ms := 'param1: objc.id; param2: SEL' + ';' + ms;
-  restype := GetMethodResultType(mtd);
-  if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := 'objc.id';
-  
+
+  if isResultStruct then begin
+    restype := '';
+    ms := 'result_param: Pointer; ' + ms;
+  end else begin
+    restype := GetMethodResultType(mtd);
+    if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := 'objc.id';
+  end;
+
   s := Format('  %s = %s cdecl;',[typeName, GetProcFuncHead('', '', ms, restype, '' )]);
   subs.Add(s);
 end;
@@ -1356,7 +1364,7 @@ var
   prms  : AnsiString;
 begin
   cl  := TClassDef(mtd.Owner);
-  ObjCMethodToProcType(mtd, typeName, subs);
+  ObjCMethodToProcType(mtd, typeName, subs, false);
   prms := GetMethodParams(mtd, true);
   if prms <> '' then prms := ', ' + prms;
 
@@ -1402,6 +1410,7 @@ var
   res       : AnsiString;
   callobj   : AnsiString;
   mnm       : AnsiString;
+  prms      : AnsiString;
 begin
   cl := TClassDef(mtd.Owner);
   callobj := ClassMethodCaller[mtd._IsClassMethod];
@@ -1410,10 +1419,11 @@ begin
   mnm := RefixName(mtd._Name);
   //s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
   tp := GetObjCVarType(res);
+  prms := GetMethodParams(mtd, true);
   case tp of
-    vt_Int, vt_Object: s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
-    vt_FloatPoint: s := Format('objc_msgSend_fpret(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
-    vt_Struct: s := Format('objc_msgSend_stret(@Result, %s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+    vt_Int, vt_Object: s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, mnm, prms]);
+    vt_FloatPoint: s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, mnm, prms]);
+    vt_Struct: s := Format('vmethod(@Result, %s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, mnm, prms]);
   end;
 
   if (tp <> vt_Struct) and (ObjCResultToDelphiType(mtd.GetResultType) <> '') then begin
@@ -1425,13 +1435,17 @@ begin
   end;
   
 
-  ObjCMethodToProcType(mtd, typeName, subs);
+  ObjCMethodToProcType(mtd, typeName, subs, tp=vt_Struct);
   subs.Add('var');
   subs.Add(
     Format('  vmethod: %s;', [typeName]));
   subs.Add('begin');
-  subs.Add(
-    Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+  case tp of
+    vt_Struct:     subs.Add(Format('  vmethod := %s(@objc_msgSend_fpret);', [typeName]));
+    vt_FloatPoint: subs.Add(Format('  vmethod := %s(@objc_msgSend_stret);', [typeName]));
+  else
+    subs.Add( Format('  vmethod := %s(@objc_msgSend);', [typeName]));
+  end;
   subs.Add(
     Format('  %s;', [s]));
   subs.Add('end;');
@@ -1452,41 +1466,28 @@ begin
   res := GetMethodResultType(mtd);
   tp := GetObjCVarType(res);
 
-{  if tp = vt_Object then begin
-    subs.Add('var');
-    subs.Add('  hnd: objc.id;');
-    subs.Add('begin');
-    subs.Add('  hnd := ' + Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, RefixName(mtd._Name) ]));
-    subs.Add('  if Assigned(hnd) then begin ');
-    subs.Add('    Result := ' + Format('%s.Create; ', [res]) );
-    subs.Add('    Result.Handle := hnd;');
-    subs.Add('  end else');
-    subs.Add('    Result := nil;');
-    subs.Add('end;');
-  end else begin}
+  mnm := RefixName(mtd._Name);
+  case tp of
+    vt_Int, vt_Object:
+      s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+    vt_FloatPoint:
+      s := Format('objc_msgSend_fpret(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+    vt_Struct:
+      s := Format('objc_msgSend_stret(@Result, %s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
+  end;
+  
+  if (tp <> vt_Struct) and (res <> '') then begin
+    if tp <> vt_FloatPoint then
+      s := Format('Result := %s(%s)', [res, s])
+    else
+      s := Format('Result := %s', [s]);
+  end;
+  s := s + ';';
 
-    mnm := RefixName(mtd._Name);
-    case tp of
-      vt_Int, vt_Object: s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
-      vt_FloatPoint: s := Format('objc_msgSend_fpret(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
-      vt_Struct: s := Format('objc_msgSend_stret(@Result, %s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
-    end;
-    
-    if (tp <> vt_Struct) and (res <> '') then begin
-      if tp <> vt_FloatPoint then
-        s := Format('Result := %s(%s)', [res, s])
-      else
-        s := Format('Result := %s', [s]);
-      //s := 'Result := '+res+'('+s+')';
-      //if res = 'objc.id' then s := 'Result := ' +s
-      //else
-    end;
-    s := s + ';';
+  subs.Add('begin');
+  subs.Add('  ' + s);
+  subs.Add('end;');
 
-    subs.Add('begin');
-    subs.Add('  ' + s);
-    subs.Add('end;');
- // end;
 end;
 
 procedure WriteOutMethodToImplementation(mtd: TClassMethodDef; subs: TStrings);
@@ -1683,6 +1684,7 @@ end;
 procedure AppleHeaderFix(ent : TEntity);
 var
   i   : Integer;
+  j   : Integer;
   obj : TEntity;
   prm : TObjCParameterDef;
   res : TObjCResultTypeDef;
@@ -1701,9 +1703,9 @@ begin
     end else if (obj is TClassDef) and ((TClassDef(obj)._Category = '') and (TClassDef(obj)._ClassName = 'NSObject')) then begin
       if TClassDef(obj)._SuperClass = '' then
         TClassDef(obj)._SuperClass := 'TObject'
-    end else if (obj is TParamDescr) then begin
+    {end else if (obj is TParamDescr) then begin
       if IsPascalReserved(TParamDescr(obj)._Descr) then
-        TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr
+        TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr}
     end else if (obj is TClassMethodDef) and not IsMethodConstructor(TClassDef(obj.Owner ), TClassMethodDef(obj)) then begin
       res := TClassMethodDef(obj).GetResultType;
       if ConvertSettings.ObjCClassTypes.IndexOf( ObjCResultToDelphiType(res))>= 0 then
@@ -1721,7 +1723,7 @@ begin
         end;
       end;
         
-      if IsPascalReserved(prm._Name) then 
+      if IsPascalReserved(prm._Name) then
         prm._Name := '_' + prm._Name;
         
     end else if (obj is TStructField) then begin
@@ -1729,6 +1731,9 @@ begin
       if ConvertSettings.ObjCClassTypes.IndexOf(TStructField(obj)._TypeName) >= 0 then begin
         TStructField(obj)._TypeName := 'objc.id'
       end;
+    end else if (obj is TClassesForward) then begin
+      for j := 0 to TClassesForward(obj)._Classes.Count - 1 do
+        ConvertSettings.ObjCClassTypes.Add( TClassesForward(obj)._Classes[j]);
     end;
 
     
@@ -1774,11 +1779,30 @@ var
   cl      : TClassDef;
   subs    : TStringList;
   consts  : TStringList;
+  used    : TStringList;
 begin
   subs := TStringList.Create;
   consts := TStringList.Create;
   try
     st.AddStrings(ConvertSettings.ConvertPrefix);
+
+    used := TStringList.Create;
+    try
+      for i := 0 to hdr.Items.Count - 1 do begin
+        if (TObject(hdr.Items[i]) is TClassDef) then begin
+          cl := TClassDef(hdr.Items[i]);
+          if (cl._Category = '') then begin
+            WriteOutClassToConsts(cl, subs, consts);
+            used.Add(cl._ClassName);
+          end else if used.IndexOf(cl._Classname) >= 0 then begin
+            WriteOutClassToConsts(cl, subs, consts);
+          end;
+        end;
+      end;
+    finally
+      used.Free;
+      used := nil;
+    end;
 
     if hdr.Items.Count <= 0 then Exit;
     AppleHeaderFix(hdr);
@@ -1793,16 +1817,9 @@ begin
       hdr.Items.Delete(0);
     end;
 
-    for i := 0 to hdr.Items.Count - 1 do begin
-      if (TObject(hdr.Items[i]) is TClassDef) then begin
-        cl := TClassDef(hdr.Items[i]);
-        WriteOutClassToConsts(cl, subs, consts);
-      end;
-    end;
 
     WriteOutHeaderSection(hdr, st);
     WriteOutForwardSection(hdr, st);
-    
 
     for i := 0 to hdr.Items.Count - 1 do
       if TObject(hdr.Items[i]) is TClassDef then

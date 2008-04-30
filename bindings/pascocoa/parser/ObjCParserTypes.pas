@@ -293,6 +293,17 @@ type
   end;
 
   { TClassDef }
+  
+  { TClassesForward }
+
+  TClassesForward = class(TEntity)
+  protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
+    _Classes    : TStringList;
+    constructor Create(AOwner: TEntity);
+    destructor Destroy; override;
+  end;
 
   TClassDef = class(TEntity)
   protected
@@ -953,7 +964,7 @@ var
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
-  if s <> '@interface' then begin
+  if s <> '@interface'  then begin
     AParser.SetError(ErrExpectStr('@interface', s));
     Exit;
   end;
@@ -1040,9 +1051,19 @@ begin
       ent := TEnumTypeDef.Create(Self);
       if not ent.Parse(AParser) then Exit;
       AParser.FindNextToken(s, tt); // skipping last ';'
+    end else if s = 'struct' then begin
+      APArser.index := APArser.TokenPos;
+      ent := TStructTypeDef.Create(SElf);
+      if not ent.Parse(AParser) then Exit;
+      AParser.FindNextToken(s, tt); //? skipping last ';'?
+      if s <> ';' then AParser.Index := AParser.TokenPos;
     end else if s = '@interface' then begin
       AParser.Index := AParser.TokenPos;
       ent := TClassDef.Create(Self);
+      if not ent.Parse(AParser) then Exit;
+    end else if s = '@class' then begin
+      AParser.Index := AParser.TokenPos;
+      ent := TClassesForward.create(Self);
       if not ent.Parse(AParser) then Exit;
     end else begin
       // anything else is skipped, though should not!
@@ -1922,6 +1943,39 @@ begin
     AParser.SetError(ErrExpectStr('(', s));
     Result := false;
   end;
+end;
+
+{ TClassesForward }
+
+function TClassesForward.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  if s <> '@class' then begin
+    AParser.SetError( ErrExpectStr('@class', s));
+    Exit;
+  end;
+
+  while s <> ';' do begin
+    AParser.FindNextToken(s, tt);
+    if tt = tt_Ident then
+      _Classes.Add(s);
+  end;
+  Result := true;
+end;
+
+constructor TClassesForward.Create(AOwner: TEntity);
+begin
+  inherited Create(AOwner);
+  _Classes:=TStringList.Create;
+end;
+
+destructor TClassesForward.Destroy;
+begin
+  _Classes.Free;
+  inherited Destroy;
 end;
 
 end.
