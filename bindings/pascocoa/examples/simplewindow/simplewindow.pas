@@ -46,9 +46,9 @@ begin
   MainWindowRect.size.width := 300.0;
   MainWindowRect.size.height := 500.0;
 
-  MainWindow := NSWindow.initWithContentRect(MainWindowRect,
+  MainWindow := NSWindow.initWithContentRect_styleMask_backing_defer(MainWindowRect,
     NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask,
-    NSBackingStoreBuffered, NO);
+    NSBackingStoreBuffered, LongBool(NO));
 
   { Initializes the title of the window }
 

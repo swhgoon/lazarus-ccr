@@ -11,7 +11,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="simplewindow"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -28,13 +28,13 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="53">
+    <Units Count="54">
       <Unit0>
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="13" Y="67"/>
-        <TopLine Value="45"/>
+        <CursorPos X="38" Y="51"/>
+        <TopLine Value="36"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
@@ -382,14 +382,29 @@
         <TopLine Value="66"/>
         <UsageCount Value="10"/>
       </Unit52>
+      <Unit53>
+        <Filename Value="../../foundation/NSObjCRuntime.inc"/>
+        <CursorPos X="16" Y="11"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit53>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="67" Column="13" TopLine="45"/>
+      </Position1>
+      <Position2>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="49" Column="28" TopLine="36"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
-      <OtherUnitFiles Value="../../appkit/;../../../objc/;../../foundation/"/>
-      <SrcPath Value="../../appkit/;../../../objc/;../../foundation/"/>
+      <OtherUnitFiles Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
+      <SrcPath Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
