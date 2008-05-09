@@ -1,3 +1,4 @@
+{%mainunit appkit.pas}
 (*
 	NSWindow.h
 	Application Kit
@@ -9,11 +10,9 @@
 {$ifndef NSWINDOW_PAS_H}
 {$define NSWINDOW_PAS_H}
 
-{.$include NSGeometry.inc}
-{.$include NSResponder.inc}
+{$include NSResponder.inc}
 {$include NSGraphics.inc}
-{.$include AppKitDefines.inc}
-{.$include NSDate.inc}
+{$include AppKitDefines.inc}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -118,11 +117,9 @@ type
 {$ifndef NSWINDOW_PAS_C}
 {$define NSWINDOW_PAS_C}
 
-{.$include NSGeometry.inc}
-{.$include NSResponder.inc}
+{$include NSResponder.inc}
 {$include NSGraphics.inc}
-{.$include AppKitDefines.inc}
-{.$include NSDate.inc}
+{$include AppKitDefines.inc}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -172,7 +169,7 @@ type
     //  subclasses can override animationResizeTime: to control the total time for the frame
     // change.
     //  newFrame is the rect passed into setFrame:display:animate:
-//    function animationResizeTime(_newFrame: NSRect): NSTimeInterval;
+    function animationResizeTime(_newFrame: NSRect): NSTimeInterval;
     //  setFrame:display:animate: is equivalent to setFrame:display: if animateFlag is NO
     //  If animationFlag is YES, this method will perform a smooth resize of the window,
     // where the total time for the resize is specified by -animationResizeTime:
@@ -207,8 +204,8 @@ type
     procedure setPreservesContentDuringLiveResize(_flag: LongBool);
     {.$endif}
     procedure update;
-    function makeFirstResponder(_aResponder: NSResponder): LongBool;
-    function firstResponder: NSResponder;
+    function makeFirstResponder(_aResponder: objc.id {NSResponder}): LongBool;
+    function firstResponder: objc.id;{NSResponder}
     function resizeFlags: Integer;
     procedure keyDown(_theEvent: objc.id {NSEvent});
     procedure close;
@@ -344,21 +341,21 @@ type
     function deviceDescription: CFDictionaryRef;
     procedure sendEvent(_theEvent: objc.id {NSEvent});
     function mouseLocationOutsideOfEventStream: NSPoint;
-//    class procedure menuChanged(_menu: NSMenu);
+    class procedure menuChanged(_menu: objc.id {NSMenu});
     function windowController: objc.id;
     procedure setWindowController(_windowController: objc.id {NSWindowController});
     function isSheet: LongBool;
-    function attachedSheet: NSWindow;
+    function attachedSheet: objc.id;{NSWindow}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
     class function standardWindowButton_forStyleMask(_b: NSWindowButton; _styleMask: LongWord): objc.id;{NSButton}
     function standardWindowButton(_b: NSWindowButton): objc.id;{NSButton}
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-    procedure addChildWindow_ordered(_childWin: NSWindow; _place: NSWindowOrderingMode);
-    procedure removeChildWindow(_childWin: NSWindow);
+    procedure addChildWindow_ordered(_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode);
+    procedure removeChildWindow(_childWin: objc.id {NSWindow});
     function childWindows: CFArrayRef;
-    function parentWindow: NSWindow;
-    procedure setParentWindow(_window: NSWindow);
+    function parentWindow: objc.id;{NSWindow}
+    procedure setParentWindow(_window: objc.id {NSWindow});
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
     //  Returns NSGraphicsContext used to render the receiver's content on the screen for
@@ -900,7 +897,7 @@ begin
   objc_msgSend_stret(@Result, Handle, sel_registerName(PChar(StrNSWindow_frame)), []);
 end;
 
-{function NSWindow.animationResizeTime(_newFrame: NSRect): NSTimeInterval;
+function NSWindow.animationResizeTime(_newFrame: NSRect): NSTimeInterval;
 type
   TmsgSendWrapper = function (param1: objc.id; param2: SEL;_newFrame: NSRect): NSTimeInterval; cdecl;
 var
@@ -908,7 +905,7 @@ var
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend_stret);
   Result := vmethod(Handle, sel_registerName(PChar(StrNSWindow_animationResizeTime)), _newFrame);
-end;}
+end;
 
 procedure NSWindow.setFrame_display_animate(_frameRect: NSRect; _displayFlag: LongBool; _animateFlag: LongBool);
 type
@@ -1094,9 +1091,9 @@ begin
   objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_update)), []);
 end;
 
-function NSWindow.makeFirstResponder(_aResponder: NSResponder): LongBool;
+function NSWindow.makeFirstResponder(_aResponder: objc.id {NSResponder}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aResponder: NSResponder): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aResponder: objc.id {NSResponder}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -1104,9 +1101,9 @@ begin
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSWindow_makeFirstResponder)), _aResponder));
 end;
 
-function NSWindow.firstResponder: NSResponder;
+function NSWindow.firstResponder: objc.id;
 begin
-  Result := NSResponder(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_firstResponder)), []));
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_firstResponder)), []));
 end;
 
 function NSWindow.resizeFlags: Integer;
@@ -1981,15 +1978,15 @@ begin
   objc_msgSend_stret(@Result, Handle, sel_registerName(PChar(StrNSWindow_mouseLocationOutsideOfEventStream)), []);
 end;
 
-{class procedure NSWindow.menuChanged(_menu: NSMenu);
+class procedure NSWindow.menuChanged(_menu: objc.id {NSMenu});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: NSMenu); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_menu: objc.id {NSMenu}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
   vmethod(getClass, sel_registerName(PChar(StrNSWindow_menuChanged)), _menu);
-end;}
+end;
 
 function NSWindow.windowController: objc.id;
 begin
@@ -2011,9 +2008,9 @@ begin
   Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isSheet)), []));
 end;
 
-function NSWindow.attachedSheet: NSWindow;
+function NSWindow.attachedSheet: objc.id;
 begin
-  Result := NSWindow(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_attachedSheet)), []));
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_attachedSheet)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -2039,9 +2036,9 @@ end;
 
 {.$endif}
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
-procedure NSWindow.addChildWindow_ordered(_childWin: NSWindow; _place: NSWindowOrderingMode);
+procedure NSWindow.addChildWindow_ordered(_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode);
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: NSWindow; _place: NSWindowOrderingMode); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: objc.id {NSWindow}; _place: NSWindowOrderingMode); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2049,9 +2046,9 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSWindow_addChildWindow_ordered)), _childWin, _place);
 end;
 
-procedure NSWindow.removeChildWindow(_childWin: NSWindow);
+procedure NSWindow.removeChildWindow(_childWin: objc.id {NSWindow});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: NSWindow); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_childWin: objc.id {NSWindow}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -2064,14 +2061,14 @@ begin
   Result := CFArrayRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_childWindows)), []));
 end;
 
-function NSWindow.parentWindow: NSWindow;
+function NSWindow.parentWindow: objc.id;
 begin
-  Result := NSWindow(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_parentWindow)), []));
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_parentWindow)), []));
 end;
 
-procedure NSWindow.setParentWindow(_window: NSWindow);
+procedure NSWindow.setParentWindow(_window: objc.id {NSWindow});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_window: NSWindow); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_window: objc.id {NSWindow}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin

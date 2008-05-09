@@ -9,8 +9,8 @@
 #import <objc/objc.h>
 #import <objc/objc-auto.h>}
 
-{#import <Foundation/NSObjCRuntime.h>
-#import <Foundation/NSAffineTransform.h>
+{$include NSObjCRuntime.inc}
+{#import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSArchiver.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSAttributedString.h>   }
@@ -23,9 +23,9 @@
 #import <Foundation/NSClassDescription.h>
 #import <Foundation/NSCoder.h>
 #import <Foundation/NSConnection.h>
-#import <Foundation/NSData.h>
-#import <Foundation/NSDate.h>
-#import <Foundation/NSDateFormatter.h>
+#import <Foundation/NSData.h>}
+{$include NSDate.inc}
+{#import <Foundation/NSDateFormatter.h>
 #import <Foundation/NSDecimal.h>
 #import <Foundation/NSDecimalNumber.h>
 #import <Foundation/NSDictionary.h>

@@ -1,3 +1,4 @@
+{%mainunit appkit.pas}
 (*
 	NSButton.h
 	Application Kit
@@ -11,8 +12,6 @@
 
 {$include NSControl.inc}
 {$include NSButtonCell.inc}
-{$include NSImage.inc}
-
 {$endif}
 {$endif}
 
@@ -21,7 +20,6 @@
 {$define NSBUTTON_PAS__FORWARD}
 
   NSButton = class;
-
 {$endif}
 {$endif}
 
@@ -31,7 +29,6 @@
 
 {$include NSControl.inc}
 {$include NSButtonCell.inc}
-{$include NSImage.inc}
 
   { NSButton }
 
@@ -42,10 +39,10 @@
     procedure setTitle(_aString: CFStringRef);
     function alternateTitle: CFStringRef;
     procedure setAlternateTitle(_aString: CFStringRef);
-    function image: NSImage;
-    procedure setImage(_image: NSImage);
-    function alternateImage: NSImage;
-    procedure setAlternateImage(_image: NSImage);
+    function image: objc.id;{NSImage}
+    procedure setImage(_image: objc.id {NSImage});
+    function alternateImage: objc.id;{NSImage}
+    procedure setAlternateImage(_image: objc.id {NSImage});
     function imagePosition: NSCellImagePosition;
     procedure setImagePosition(_aPosition: NSCellImagePosition);
     procedure setButtonType(_aType: NSButtonType);
@@ -62,7 +59,7 @@
     function keyEquivalentModifierMask: LongWord;
     procedure setKeyEquivalentModifierMask(_mask: LongWord);
     procedure highlight(_flag: LongBool);
-//    function performKeyEquivalent(_key: NSEvent): LongBool;
+    function performKeyEquivalent(_key: objc.id {NSEvent}): LongBool;
     procedure setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
     function attributedTitle: objc.id;{NSAttributedString}
     procedure setAttributedTitle(_aString: objc.id {NSAttributedString});
@@ -168,14 +165,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setAlternateTitle)), _aString);
 end;
 
-function NSButton.image: NSImage;
+function NSButton.image: objc.id;
 begin
-  Result := NSImage(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_image)), []));
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_image)), []));
 end;
 
-procedure NSButton.setImage(_image: NSImage);
+procedure NSButton.setImage(_image: objc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: NSImage); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -183,14 +180,14 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_setImage)), _image);
 end;
 
-function NSButton.alternateImage: NSImage;
+function NSButton.alternateImage: objc.id;
 begin
-  Result := NSImage(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateImage)), []));
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateImage)), []));
 end;
 
-procedure NSButton.setAlternateImage(_image: NSImage);
+procedure NSButton.setAlternateImage(_image: objc.id {NSImage});
 type
-  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: NSImage); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
@@ -328,15 +325,15 @@ begin
   vmethod(Handle, sel_registerName(PChar(StrNSButton_highlight)), _flag);
 end;
 
-{function NSButton.performKeyEquivalent(_key: NSEvent): LongBool;
+function NSButton.performKeyEquivalent(_key: objc.id {NSEvent}): LongBool;
 type
-  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: NSEvent): LongBool; cdecl;
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: objc.id {NSEvent}): LongBool; cdecl;
 var
   vmethod: TmsgSendWrapper;
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
   Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSButton_performKeyEquivalent)), _key));
-end;}
+end;
 
 procedure NSButton.setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
 type

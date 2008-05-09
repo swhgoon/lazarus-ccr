@@ -1,3 +1,4 @@
+{%mainunit appkit.pas}
 (*
 	NSGraphics.h
 	Application Kit
@@ -9,8 +10,7 @@
 {$ifndef NSGRAPHICS_PAS_H}
 {$define NSGRAPHICS_PAS_H}
 
-{.$include NSGeometry.inc}
-{.$include AppKitDefines.inc}
+{$include AppKitDefines.inc}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -151,8 +151,7 @@ type
 {$ifndef NSGRAPHICS_PAS_C}
 {$define NSGRAPHICS_PAS_C}
 
-{.$include NSGeometry.inc}
-{.$include AppKitDefines.inc}
+{$include AppKitDefines.inc}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
