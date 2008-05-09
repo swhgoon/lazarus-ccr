@@ -1,3 +1,4 @@
+{%MainUnit Foundation.pas}
 {	NSObject.h
 	Copyright (c) 1994-2005, Apple, Inc. All rights reserved.
 }
@@ -58,7 +59,7 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
     constructor CreateWithHandle(aHandle: objc.id);
     destructor Destroy; override;
     { Extra binding functions }
-    function getClass: objc.id; virtual;
+    class function getClass: objc.id; virtual;
     procedure AddMethods; virtual;
     { Class creation methods }
     procedure AddMethod(aName, aParameters: string; aPointer: Pointer);
@@ -193,7 +194,7 @@ begin
   if Handle <> nil then release;
 end;
 
-function NSObject.getClass: objc.id;
+class function NSObject.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSObject);
 end;

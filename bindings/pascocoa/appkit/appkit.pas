@@ -15,13 +15,17 @@ unit appkit;
 
 interface
 
-uses ctypes, FPCMacOSAll, objc, foundation;
+uses ctypes, FPCMacOSAll, objc, foundation, coregraphics;
 
 {$define HEADER}
 {$include AppKit.inc}
 {$undef HEADER}
 
 type
+{$define FORWARD}
+{$include AppKit.inc}
+{$undef FORWARD}
+
 {$define CLASSES}
 {$include AppKit.inc}
 {$undef CLASSES}

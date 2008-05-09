@@ -53,7 +53,7 @@ const
   NSImage = class(NSObject) // <NSCopying, NSCoding>
   public
     { Extra binding functions }
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
   public
 {
 + (id)imageNamed:(NSString *)name;	/* If this finds & creates the image, only name is saved when archived */
@@ -167,7 +167,7 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-function NSImage.getClass: objc.id;
+class function NSImage.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSImage);
 end;

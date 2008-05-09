@@ -43,7 +43,7 @@ const
   NSStatusItem = class(NSObject)
   public
     { Extra binding functions }
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
   public
 
 {- (NSStatusBar*) statusBar;
@@ -112,7 +112,7 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-function NSStatusItem.getClass: objc.id;
+class function NSStatusItem.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSStatusItem);
 end;

@@ -1,3 +1,4 @@
+{%MainUnit Foundation.pas}
 {	NSAutoreleasePool.h
 	Copyright (c) 1994-2005, Apple, Inc. All rights reserved.
 }
@@ -22,7 +23,7 @@ const
   NSAutoreleasePool = class(NSObject)
   public
     { Extra binding functions }
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
   public
 
 //+ (void)addObject:(id)anObject;
@@ -39,7 +40,7 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-function NSAutoreleasePool.getClass: objc.id;
+class function NSAutoreleasePool.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSAutoreleasePool);
 end;

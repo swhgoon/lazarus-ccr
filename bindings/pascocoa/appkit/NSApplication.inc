@@ -106,15 +106,14 @@ const
 
 //@class NSDate, NSDictionary, NSError, NSException, NSNotification;
 //@class NSGraphicsContext, NSImage, NSPasteboard, NSWindow;
-  NSWindow = class;
-
+//  NSWindow = class;
 { The version of the AppKit framework }
 //APPKIT_EXTERN const double NSAppKitVersionNumber;
 
   NSApplication = class(NSResponder)
   public
     { Extra binding functions }
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
   public
     constructor sharedApplication;
 
@@ -363,7 +362,7 @@ If not specified, obtain from CFBundleShortVersionString key in infoDictionary. 
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-function NSApplication.getClass: objc.id;
+class function NSApplication.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSApplication);
 end;

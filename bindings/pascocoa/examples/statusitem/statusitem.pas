@@ -22,14 +22,7 @@ const
   Str_Window_Title = 'StatusItem example project';
   Str_Show_Button = 'Show StatusItem';
   Str_Hide_Button = 'Hide StatusItem';
-var
-  { classes }
-  pool: NSAutoreleasePool;
-  MainWindow: NSWindow;
-  MainWindowView: NSView;
-  { strings and sizes}
-  CFTitle: CFStringRef;
-  MainWindowRect: NSRect;
+  Str_Close_Button = 'Exit Program';
 begin
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool.Create;
@@ -44,9 +37,9 @@ begin
   MainWindowRect.size.width := 300.0;
   MainWindowRect.size.height := 500.0;
 
-  MainWindow := NSWindow.initWithContentRect(MainWindowRect,
+  MainWindow := NSWindow.initWithContentRect_styleMask_backing_defer(MainWindowRect,
     NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask,
-    NSBackingStoreBuffered, NO);
+    NSBackingStoreBuffered, LongBool(NO));
   MainWindowView := NSView.CreateWithHandle(MainWindow.contentView);
 
   CFTitle := CFStringCreateWithPascalString(nil, Str_Window_Title, kCFStringEncodingUTF8);
@@ -65,6 +58,10 @@ begin
   myController.CreateButton(MainWindowView, Str_Hide_Button,
    50.0, MainWindowRect.size.height - 100.0, 200.0, 25.0,
    Str_doHideStatusItem, myController);
+
+  myController.CreateButton(MainWindowView, Str_Close_Button,
+   50.0, MainWindowRect.size.height - 150.0, 200.0, 25.0,
+   Str_doClose, myController);
 
   { Enters main message loop }
 

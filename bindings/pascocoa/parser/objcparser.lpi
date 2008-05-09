@@ -61,52 +61,7 @@
         <Loaded Value="True"/>
       </Unit2>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
-      <Position1>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1772" Column="46" TopLine="1769"/>
-      </Position1>
-      <Position2>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position2>
-      <Position3>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="64" Column="85" TopLine="52"/>
-      </Position3>
-      <Position4>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="89" Column="42" TopLine="77"/>
-      </Position4>
-      <Position5>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="91" Column="39" TopLine="79"/>
-      </Position5>
-      <Position6>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="98" Column="39" TopLine="86"/>
-      </Position6>
-      <Position7>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="101" Column="32" TopLine="89"/>
-      </Position7>
-      <Position8>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="106" Column="49" TopLine="94"/>
-      </Position8>
-      <Position9>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1365" Column="15" TopLine="1361"/>
-      </Position10>
-      <Position11>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <Caret Line="1306" Column="3" TopLine="1295"/>
-      </Position11>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>

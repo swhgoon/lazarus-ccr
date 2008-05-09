@@ -22,11 +22,12 @@ type
   public
     { Extra binding functions }
     constructor Create; override;
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
     procedure AddMethods; override;
     { Objective-c Methods }
     class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
     class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
+    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
      _cmd: SEL; theApplication: objc.id): cbool; cdecl; static;
     { Other helper functions }
@@ -45,10 +46,19 @@ const
 
   Str_doShowStatusitem = 'doShowStatusitem:';
   Str_doHideStatusitem = 'doHideStatusitem:';
+  Str_doClose = 'doClose:';
   Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
 
 var
   myController: TMyController;
+
+  { classes }
+  pool: NSAutoreleasePool;
+  MainWindow: NSWindow;
+  MainWindowView: NSView;
+  { strings and sizes}
+  CFTitle: CFStringRef;
+  MainWindowRect: NSRect;
 
 implementation
 
@@ -67,6 +77,7 @@ procedure TMyController.AddMethods;
 begin
   AddMethod(Str_doShowStatusItem, 'v@:@', Pointer(doShowStatusitem));
   AddMethod(Str_doHideStatusitem, 'v@:@', Pointer(doHideStatusitem));
+  AddMethod(Str_doClose, 'v@:@', Pointer(doClose));
   AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'b@:@',
    Pointer(applicationShouldTerminateAfterLastWindowClosed));
 end;
@@ -88,7 +99,7 @@ begin
   image := NSImage.initWithContentsOfFile(fileName);
 end;
 
-function TMyController.getClass: objc.id;
+class function TMyController.getClass: objc.id;
 begin
   Result := objc_getClass(Str_TMyController);
 end;
@@ -110,6 +121,11 @@ begin
 
   myController.item.Free;
   myController.item := nil;
+end;
+
+class procedure TMyController.doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+begin
+  MainWindow.close;
 end;
 
 class function TMyController.applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;

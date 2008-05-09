@@ -1,3 +1,4 @@
+{%mainunit appkit.pas}
 {
         NSResponder.h
         Application Kit

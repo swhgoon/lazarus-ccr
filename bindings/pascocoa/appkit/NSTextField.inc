@@ -29,7 +29,7 @@ const
   NSTextField = class(NSControl)
   public
     { Extra binding functions }
-    function getClass: objc.id; override;
+    class function getClass: objc.id; override;
   public
 
 {- (void)setBackgroundColor:(NSColor *)color;
@@ -79,7 +79,7 @@ const
 {$endif}
 {$ifdef IMPLEMENTATION}
 
-function NSTextField.getClass: objc.id;
+class function NSTextField.getClass: objc.id;
 begin
   Result := objc_getClass(Str_NSTextField);
 end;

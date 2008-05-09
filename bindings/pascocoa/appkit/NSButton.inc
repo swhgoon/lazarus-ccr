@@ -1,129 +1,446 @@
-{%mainunit appkit.pas}
-{
+(*
 	NSButton.h
 	Application Kit
 	Copyright (c) 1994-2005, Apple Computer, Inc.
 	All rights reserved.
-}
+*)
 
 {$ifdef HEADER}
 {$ifndef NSBUTTON_PAS_H}
 {$define NSBUTTON_PAS_H}
 
-const
-  Str_NSButton = 'NSButton';
-
-  Str_setTitle = 'setTitle:';
-  Str_setBezelStyle = 'setBezelStyle:';
+{$include NSControl.inc}
+{$include NSButtonCell.inc}
+{$include NSImage.inc}
 
 {$endif}
 {$endif}
+
+{$ifdef FORWARD}
+{$ifndef NSBUTTON_PAS__FORWARD}
+{$define NSBUTTON_PAS__FORWARD}
+
+  NSButton = class;
+
+{$endif}
+{$endif}
+
 {$ifdef CLASSES}
 {$ifndef NSBUTTON_PAS_C}
 {$define NSBUTTON_PAS_C}
 
 {$include NSControl.inc}
 {$include NSButtonCell.inc}
+{$include NSImage.inc}
 
-//@class NSSound;
+  { NSButton }
 
   NSButton = class(NSControl)
   public
-    { Extra binding functions }
-    function getClass: objc.id; override;
-  public
-//- (NSString *)title;
-    procedure setTitle(aString: CFStringRef);
-{- (NSString *)alternateTitle;
-- (void)setAlternateTitle:(NSString *)aString;
-- (NSImage *)image;
-- (void)setImage:(NSImage *)image;
-- (NSImage *)alternateImage;
-- (void)setAlternateImage:(NSImage *)image;
-- (NSCellImagePosition)imagePosition;
-- (void)setImagePosition:(NSCellImagePosition)aPosition;
-- (void)setButtonType:(NSButtonType)aType;
-- (int)state;
-- (void)setState:(int)value;
-- (BOOL)isBordered;
-- (void)setBordered:(BOOL)flag;
-- (BOOL)isTransparent;
-- (void)setTransparent:(BOOL)flag;
-- (void)setPeriodicDelay:(float)delay interval:(float)interval;
-- (void)getPeriodicDelay:(float *)delay interval:(float *)interval;
-- (NSString *)keyEquivalent;
-- (void)setKeyEquivalent:(NSString *)charCode;
-- (unsigned int)keyEquivalentModifierMask;
-- (void)setKeyEquivalentModifierMask:(unsigned int)mask;
-- (void)highlight:(BOOL)flag;
-- (BOOL)performKeyEquivalent:(NSEvent *)key;
-
-@end
-
-@interface NSButton(NSKeyboardUI)
-- (void)setTitleWithMnemonic:(NSString *)stringWithAmpersand;
-@end
-
-@interface NSButton(NSButtonAttributedStringMethods)
-- (NSAttributedString *)attributedTitle;
-- (void)setAttributedTitle:(NSAttributedString *)aString;
-- (NSAttributedString *)attributedAlternateTitle;
-- (void)setAttributedAlternateTitle:(NSAttributedString *)obj;
-@end}
-
-//@interface NSButton(NSButtonBezelStyles)
-    procedure setBezelStyle(bezelStyle: NSBezelStyle);
-//- (NSBezelStyle)bezelStyle;
-//@end
-
-{@interface NSButton(NSButtonMixedState)
-- (void)setAllowsMixedState:(BOOL)flag;
-- (BOOL)allowsMixedState;
-- (void)setNextState;
-@end
-
-@interface NSButton(NSButtonBorder)
-- (void) setShowsBorderOnlyWhileMouseInside:(BOOL)show;
-- (BOOL) showsBorderOnlyWhileMouseInside;
-@end
-
-@interface NSButton (NSButtonSoundExtensions)
-- (void)setSound:(NSSound *)aSound;
-- (NSSound *)sound;
-@end}
-
+    class function getClass: objc.id; override;
+    function title: CFStringRef;
+    procedure setTitle(_aString: CFStringRef);
+    function alternateTitle: CFStringRef;
+    procedure setAlternateTitle(_aString: CFStringRef);
+    function image: NSImage;
+    procedure setImage(_image: NSImage);
+    function alternateImage: NSImage;
+    procedure setAlternateImage(_image: NSImage);
+    function imagePosition: NSCellImagePosition;
+    procedure setImagePosition(_aPosition: NSCellImagePosition);
+    procedure setButtonType(_aType: NSButtonType);
+    function state: Integer;
+    procedure setState(_value: Integer);
+    function isBordered: LongBool;
+    procedure setBordered(_flag: LongBool);
+    function isTransparent: LongBool;
+    procedure setTransparent(_flag: LongBool);
+    procedure setPeriodicDelay_interval(_delay: Single; _interval: Single);
+    procedure getPeriodicDelay_interval(_delay: Single; _interval: Single);
+    function keyEquivalent: CFStringRef;
+    procedure setKeyEquivalent(_charCode: CFStringRef);
+    function keyEquivalentModifierMask: LongWord;
+    procedure setKeyEquivalentModifierMask(_mask: LongWord);
+    procedure highlight(_flag: LongBool);
+//    function performKeyEquivalent(_key: NSEvent): LongBool;
+    procedure setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
+    function attributedTitle: objc.id;{NSAttributedString}
+    procedure setAttributedTitle(_aString: objc.id {NSAttributedString});
+    function attributedAlternateTitle: objc.id;{NSAttributedString}
+    procedure setAttributedAlternateTitle(_obj: objc.id {NSAttributedString});
+    procedure setBezelStyle(_bezelStyle: NSBezelStyle);
+    function bezelStyle: NSBezelStyle;
+    procedure setAllowsMixedState(_flag: LongBool);
+    function allowsMixedState: LongBool;
+    procedure setNextState;
+    procedure setShowsBorderOnlyWhileMouseInside(_show: LongBool);
+    function showsBorderOnlyWhileMouseInside: LongBool;
+    procedure setSound(_aSound: objc.id {NSSound});
+    function sound: objc.id;{NSSound}
   end;
 
 {$endif}
 {$endif}
+
 {$ifdef IMPLEMENTATION}
+const
+  StrNSButton_NSButton = 'NSButton';
+  StrNSButton_title = 'title';
+  StrNSButton_setTitle = 'setTitle:';
+  StrNSButton_alternateTitle = 'alternateTitle';
+  StrNSButton_setAlternateTitle = 'setAlternateTitle:';
+  StrNSButton_image = 'image';
+  StrNSButton_setImage = 'setImage:';
+  StrNSButton_alternateImage = 'alternateImage';
+  StrNSButton_setAlternateImage = 'setAlternateImage:';
+  StrNSButton_imagePosition = 'imagePosition';
+  StrNSButton_setImagePosition = 'setImagePosition:';
+  StrNSButton_setButtonType = 'setButtonType:';
+  StrNSButton_state = 'state';
+  StrNSButton_setState = 'setState:';
+  StrNSButton_isBordered = 'isBordered';
+  StrNSButton_setBordered = 'setBordered:';
+  StrNSButton_isTransparent = 'isTransparent';
+  StrNSButton_setTransparent = 'setTransparent:';
+  StrNSButton_setPeriodicDelay_interval = 'setPeriodicDelay:interval:';
+  StrNSButton_getPeriodicDelay_interval = 'getPeriodicDelay:interval:';
+  StrNSButton_keyEquivalent = 'keyEquivalent';
+  StrNSButton_setKeyEquivalent = 'setKeyEquivalent:';
+  StrNSButton_keyEquivalentModifierMask = 'keyEquivalentModifierMask';
+  StrNSButton_setKeyEquivalentModifierMask = 'setKeyEquivalentModifierMask:';
+  StrNSButton_highlight = 'highlight:';
+  StrNSButton_performKeyEquivalent = 'performKeyEquivalent:';
 
-function NSButton.getClass: objc.id;
+  StrNSButton_setTitleWithMnemonic = 'setTitleWithMnemonic:';
+
+  StrNSButton_attributedTitle = 'attributedTitle';
+  StrNSButton_setAttributedTitle = 'setAttributedTitle:';
+  StrNSButton_attributedAlternateTitle = 'attributedAlternateTitle';
+  StrNSButton_setAttributedAlternateTitle = 'setAttributedAlternateTitle:';
+
+  StrNSButton_setBezelStyle = 'setBezelStyle:';
+  StrNSButton_bezelStyle = 'bezelStyle';
+
+  StrNSButton_setAllowsMixedState = 'setAllowsMixedState:';
+  StrNSButton_allowsMixedState = 'allowsMixedState';
+  StrNSButton_setNextState = 'setNextState';
+
+  StrNSButton_setShowsBorderOnlyWhileMouseInside = 'setShowsBorderOnlyWhileMouseInside:';
+  StrNSButton_showsBorderOnlyWhileMouseInside = 'showsBorderOnlyWhileMouseInside';
+
+  StrNSButton_setSound = 'setSound:';
+  StrNSButton_sound = 'sound';
+
+{ NSButton }
+
+class function NSButton.getClass: objc.id;
 begin
-  Result := objc_getClass(Str_NSButton);
+  Result := objc_getClass(StrNSButton_NSButton);
 end;
 
-procedure NSButton.setTitle(aString: CFStringRef);
-type
-  setTitle_t = procedure (param1: objc.id; param2: SEL;
-   param3: CFStringRef); cdecl;
-var
-  vmethod: setTitle_t;
+function NSButton.title: CFStringRef;
 begin
-  vmethod := setTitle_t(@objc_msgSend);
-  vmethod(Handle, sel_registerName(PChar(Str_setTitle)), aString);
+  Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_title)), []));
 end;
 
-procedure NSButton.setBezelStyle(bezelStyle: NSBezelStyle);
+procedure NSButton.setTitle(_aString: CFStringRef);
 type
-  setBezelStyle_t = procedure (param1: objc.id; param2: SEL;
-   param3: NSBezelStyle); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
 var
-  vmethod: setBezelStyle_t;
+  vmethod: TmsgSendWrapper;
 begin
-  vmethod := setBezelStyle_t(@objc_msgSend);
-  vmethod(Handle, sel_registerName(PChar(Str_setBezelStyle)), bezelStyle);
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setTitle)), _aString);
+end;
+
+function NSButton.alternateTitle: CFStringRef;
+begin
+  Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateTitle)), []));
+end;
+
+procedure NSButton.setAlternateTitle(_aString: CFStringRef);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: CFStringRef); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setAlternateTitle)), _aString);
+end;
+
+function NSButton.image: NSImage;
+begin
+  Result := NSImage(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_image)), []));
+end;
+
+procedure NSButton.setImage(_image: NSImage);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: NSImage); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setImage)), _image);
+end;
+
+function NSButton.alternateImage: NSImage;
+begin
+  Result := NSImage(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_alternateImage)), []));
+end;
+
+procedure NSButton.setAlternateImage(_image: NSImage);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: NSImage); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setAlternateImage)), _image);
+end;
+
+function NSButton.imagePosition: NSCellImagePosition;
+begin
+  Result := NSCellImagePosition(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_imagePosition)), []));
+end;
+
+procedure NSButton.setImagePosition(_aPosition: NSCellImagePosition);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aPosition: NSCellImagePosition); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setImagePosition)), _aPosition);
+end;
+
+procedure NSButton.setButtonType(_aType: NSButtonType);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aType: NSButtonType); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setButtonType)), _aType);
+end;
+
+function NSButton.state: Integer;
+begin
+  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_state)), []));
+end;
+
+procedure NSButton.setState(_value: Integer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_value: Integer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setState)), _value);
+end;
+
+function NSButton.isBordered: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isBordered)), []));
+end;
+
+procedure NSButton.setBordered(_flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setBordered)), _flag);
+end;
+
+function NSButton.isTransparent: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isTransparent)), []));
+end;
+
+procedure NSButton.setTransparent(_flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setTransparent)), _flag);
+end;
+
+procedure NSButton.setPeriodicDelay_interval(_delay: Single; _interval: Single);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setPeriodicDelay_interval)), _delay, _interval);
+end;
+
+procedure NSButton.getPeriodicDelay_interval(_delay: Single; _interval: Single);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_delay: Single; _interval: Single); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_getPeriodicDelay_interval)), _delay, _interval);
+end;
+
+function NSButton.keyEquivalent: CFStringRef;
+begin
+  Result := CFStringRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_keyEquivalent)), []));
+end;
+
+procedure NSButton.setKeyEquivalent(_charCode: CFStringRef);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_charCode: CFStringRef); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setKeyEquivalent)), _charCode);
+end;
+
+function NSButton.keyEquivalentModifierMask: LongWord;
+begin
+  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_keyEquivalentModifierMask)), []));
+end;
+
+procedure NSButton.setKeyEquivalentModifierMask(_mask: LongWord);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: LongWord); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setKeyEquivalentModifierMask)), _mask);
+end;
+
+procedure NSButton.highlight(_flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_highlight)), _flag);
+end;
+
+{function NSButton.performKeyEquivalent(_key: NSEvent): LongBool;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_key: NSEvent): LongBool; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSButton_performKeyEquivalent)), _key));
+end;}
+
+procedure NSButton.setTitleWithMnemonic(_stringWithAmpersand: CFStringRef);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_stringWithAmpersand: CFStringRef); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setTitleWithMnemonic)), _stringWithAmpersand);
+end;
+
+function NSButton.attributedTitle: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedTitle)), []));
+end;
+
+procedure NSButton.setAttributedTitle(_aString: objc.id {NSAttributedString});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aString: objc.id {NSAttributedString}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setAttributedTitle)), _aString);
+end;
+
+function NSButton.attributedAlternateTitle: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_attributedAlternateTitle)), []));
+end;
+
+procedure NSButton.setAttributedAlternateTitle(_obj: objc.id {NSAttributedString});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_obj: objc.id {NSAttributedString}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setAttributedAlternateTitle)), _obj);
+end;
+
+procedure NSButton.setBezelStyle(_bezelStyle: NSBezelStyle);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_bezelStyle: NSBezelStyle); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setBezelStyle)), _bezelStyle);
+end;
+
+function NSButton.bezelStyle: NSBezelStyle;
+begin
+  Result := NSBezelStyle(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_bezelStyle)), []));
+end;
+
+procedure NSButton.setAllowsMixedState(_flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setAllowsMixedState)), _flag);
+end;
+
+function NSButton.allowsMixedState: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_allowsMixedState)), []));
+end;
+
+procedure NSButton.setNextState;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_setNextState)), []);
+end;
+
+procedure NSButton.setShowsBorderOnlyWhileMouseInside(_show: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_show: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setShowsBorderOnlyWhileMouseInside)), _show);
+end;
+
+function NSButton.showsBorderOnlyWhileMouseInside: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_showsBorderOnlyWhileMouseInside)), []));
+end;
+
+procedure NSButton.setSound(_aSound: objc.id {NSSound});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aSound: objc.id {NSSound}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSButton_setSound)), _aSound);
+end;
+
+function NSButton.sound: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_sound)), []));
 end;
 
 {$endif}
-
