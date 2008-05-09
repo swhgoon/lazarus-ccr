@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -46,9 +46,9 @@
       </Unit1>
       <Unit2>
         <Filename Value="../../appkit/NSButton.inc"/>
-        <CursorPos X="6" Y="339"/>
-        <TopLine Value="318"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="3" Y="109"/>
+        <TopLine Value="96"/>
+        <EditorIndex Value="8"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -170,7 +170,7 @@
         <Filename Value="../../appkit/NSWindow.inc"/>
         <CursorPos X="58" Y="1977"/>
         <TopLine Value="1971"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -228,7 +228,7 @@
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="7" Y="55"/>
         <TopLine Value="38"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -308,7 +308,7 @@
         <UnitName Value="foundation"/>
         <CursorPos X="16" Y="10"/>
         <TopLine Value="3"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit40>
@@ -390,124 +390,18 @@
       </Unit51>
       <Unit52>
         <Filename Value="../../appkit/NSGraphics.inc"/>
-        <CursorPos X="24" Y="138"/>
-        <TopLine Value="136"/>
+        <CursorPos X="117" Y="60"/>
+        <TopLine Value="52"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit52>
     </Units>
-    <JumpHistory Count="28" HistoryIndex="27">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
-        <Filename Value="../../appkit/NSApplication.inc"/>
-        <Caret Line="109" Column="1" TopLine="96"/>
+        <Filename Value="../../appkit/NSGraphics.inc"/>
+        <Caret Line="138" Column="24" TopLine="136"/>
       </Position1>
-      <Position2>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="140" Column="15" TopLine="122"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="178" Column="3" TopLine="162"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../appkit/NSStatusBar.inc"/>
-        <Caret Line="25" Column="58" TopLine="21"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../appkit/NSButton.inc"/>
-        <Caret Line="35" Column="73" TopLine="28"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="347" Column="3" TopLine="334"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="911" Column="6" TopLine="890"/>
-      </Position7>
-      <Position8>
-        <Filename Value="controller.pas"/>
-        <Caret Line="128" Column="3" TopLine="112"/>
-      </Position8>
-      <Position9>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="19" Column="60" TopLine="19"/>
-      </Position9>
-      <Position10>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="40" Column="21" TopLine="27"/>
-      </Position10>
-      <Position11>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="135" Column="3" TopLine="122"/>
-      </Position11>
-      <Position12>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="40" Column="42" TopLine="29"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="147" Column="21" TopLine="134"/>
-      </Position13>
-      <Position14>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="42" Column="41" TopLine="29"/>
-      </Position14>
-      <Position15>
-        <Filename Value="controller.pas"/>
-        <Caret Line="61" Column="22" TopLine="47"/>
-      </Position15>
-      <Position16>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="40" Column="55" TopLine="27"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="147" Column="41" TopLine="134"/>
-      </Position17>
-      <Position18>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="40" Column="76" TopLine="27"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position19>
-      <Position20>
-        <Filename Value="../../appkit/NSButton.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position20>
-      <Position21>
-        <Filename Value="../../appkit/NSButton.inc"/>
-        <Caret Line="35" Column="1" TopLine="14"/>
-      </Position21>
-      <Position22>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="16" Column="3" TopLine="1"/>
-      </Position22>
-      <Position23>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="125" Column="3" TopLine="108"/>
-      </Position23>
-      <Position24>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="175" Column="3" TopLine="162"/>
-      </Position24>
-      <Position25>
-        <Filename Value="../../appkit/NSButton.inc"/>
-        <Caret Line="65" Column="3" TopLine="52"/>
-      </Position25>
-      <Position26>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="347" Column="3" TopLine="334"/>
-      </Position26>
-      <Position27>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="911" Column="6" TopLine="890"/>
-      </Position27>
-      <Position28>
-        <Filename Value="../../applicationservices/coregraphics/CGWindowLevel.inc"/>
-        <Caret Line="1" Column="13" TopLine="1"/>
-      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
