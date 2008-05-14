@@ -745,6 +745,7 @@ procedure TRxCustomDBLookupCombo.SetLookupSource(const AValue: TDataSource);
 begin
   FLookupDataLink.DataSource:=AValue;
   FLocateObject.DataSet:=FLookupDataLink.DataSet;
+  FPopUpFormOptions.DataSource:=AValue;
 end;
 
 procedure TRxCustomDBLookupCombo.SetNumGlyphs(const AValue: Integer);

@@ -15,7 +15,7 @@ uses
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxceEditLookupFields;
+  rxceEditLookupFields, rxpopupunit;
 
 type
 
@@ -36,6 +36,27 @@ type
   public
     procedure FillValues(const Values: TStringList); override;
   end;
+
+  { TPopUpColumnFieldProperty }
+
+  TPopUpColumnFieldProperty = class(TFieldProperty)
+  public
+    procedure FillValues(const Values: TStringList); override;
+  end;
+
+{ TPopUpColumnFieldProperty }
+
+procedure TPopUpColumnFieldProperty.FillValues(const Values: TStringList);
+var
+  Column: TPopUpColumn;
+  DataSource: TDataSource;
+begin
+  Column:=TPopUpColumn(GetComponent(0));
+  if not (Column is TPopUpColumn) then exit;
+  DataSource := TPopUpFormColumns(Column.Collection).PopUpFormOptions.DataSource;
+  if Assigned(DataSource) and Assigned(DataSource.DataSet) then
+    DataSource.DataSet.GetFieldNames(Values);
+end;
 
 { TRxDBGridFieldProperty }
 
@@ -284,6 +305,8 @@ begin
   //
   RegisterPropertyEditor(TypeInfo(string), TRxColumn, 'FieldName', TRxDBGridFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TRxColumnFooter, 'FieldName', TRxDBGridFooterFieldProperty);
+
+  RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);
 
   RegisterCEEditLookupFields;
 end;

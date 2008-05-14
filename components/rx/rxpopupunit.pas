@@ -10,7 +10,8 @@ uses
 
 type
   TPopUpCloseEvent = procedure(AResult:boolean) of object;
-
+  TPopUpFormOptions = class;
+  
   { TPopUpGrid }
 
   TPopUpGrid = class(TRxDBGrid)
@@ -102,9 +103,11 @@ type
 
   TPopUpFormColumns = class(TCollection)
   private
+    FPopUpFormOptions: TPopUpFormOptions;
     function GetPopUpColumn(Index: Integer): TPopUpColumn;
     procedure SetPopUpColumn(Index: Integer; const AValue: TPopUpColumn);
   public
+    property PopUpFormOptions:TPopUpFormOptions read FPopUpFormOptions write FPopUpFormOptions;
     property Items[Index: Integer]: TPopUpColumn read GetPopUpColumn write SetPopUpColumn; default;
   end;
   
@@ -116,6 +119,7 @@ type
     FAutoSort: boolean;
     FBorderStyle: TBorderStyle;
     FColumns: TPopUpFormColumns;
+    FDataSource: TDataSource;
     FDropDownCount: integer;
     FDropDownWidth: integer;
     FOnGetCellProps: TGetCellPropsEvent;
@@ -137,6 +141,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    property DataSource:TDataSource read FDataSource write FDataSource;
   published
     property AutoFillColumns:boolean read FAutoFillColumns write SetAutoFillColumns default false;
     property AutoSort:boolean read FAutoSort write SetAutoSort default false;
@@ -567,6 +572,7 @@ begin
   FTitleStyle:=tsLazarus;
   FBorderStyle:=bsNone;
   FColumns:=TPopUpFormColumns.Create(TPopUpColumn);
+  FColumns.FPopUpFormOptions:=Self;
 end;
 
 destructor TPopUpFormOptions.Destroy;

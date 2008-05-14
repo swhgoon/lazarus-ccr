@@ -45,6 +45,8 @@
   - Улучшен код в отрисовке компоненты TRxDBLookupCombo
   + В TRxDBLookupCombo работает свойство DropDownCount
   - Исправлена ошибка TRxDBLookupCombo при LookupSourse.Active=false и установке значения для поля DataField
+  + В свойстве PopUpFormOptions компоненты TRxDBLookupCombo для элемента из списка Collumns добавлен редктор на FieldName
+
 29.08.2007 - версия 1.1.5.98 (svn revision 39)
   + В RxDBGrid После закрытия набора данных список помеченных строк (SelectedRows) 
     очищается
