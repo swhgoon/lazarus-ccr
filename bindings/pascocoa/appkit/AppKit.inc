@@ -8,9 +8,9 @@
 }
 
 {#import <AppKit/AppKitDefines.h>
-#import <AppKit/AppKitErrors.h>
-#import <AppKit/NSGraphicsContext.h>
-#import <AppKit/NSAccessibility.h>}
+#import <AppKit/AppKitErrors.h>}
+{$include NSGraphicsContext.inc}
+{#import <AppKit/NSAccessibility.h>}
 {$include NSActionCell.inc}
 {$include NSAlert.inc}
 //#import <AppKit/NSAppleScriptExtensions.h>
@@ -31,9 +31,9 @@
 #import <AppKit/NSMenu.h>
 #import <AppKit/NSMenuItem.h>
 #import <AppKit/NSColor.h>
-#import <AppKit/NSColorSpace.h>
-#import <AppKit/NSBitmapImageRep.h>
-#import <AppKit/NSBrowser.h>
+#import <AppKit/NSColorSpace.h>}
+{$include NSBitmapImageRep.inc}
+{#import <AppKit/NSBrowser.h>
 #import <AppKit/NSBrowserCell.h>
 #import <AppKit/NSCachedImageRep.h>
 #import <AppKit/NSCIImageRep.h>
@@ -54,9 +54,9 @@
 #import <AppKit/NSHelpManager.h>}
 {$include NSGraphics.inc}
 {$include NSImage.inc}
-{#import <AppKit/NSImageCell.h>
-#import <AppKit/NSImageRep.h>
-#import <AppKit/NSImageView.h>
+{#import <AppKit/NSImageCell.h>}
+{$include NSImageRep.inc}
+{#import <AppKit/NSImageView.h>
 #import <AppKit/NSNib.h>
 #import <AppKit/NSNibLoading.h>
 #import <AppKit/NSPrinter.h>

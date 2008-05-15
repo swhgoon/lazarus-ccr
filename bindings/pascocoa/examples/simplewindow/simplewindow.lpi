@@ -33,8 +33,8 @@
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="38" Y="51"/>
-        <TopLine Value="36"/>
+        <CursorPos X="63" Y="6"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
@@ -338,19 +338,17 @@
       </Unit45>
       <Unit46>
         <Filename Value="../../appkit/NSView.inc"/>
-        <CursorPos X="1" Y="136"/>
-        <TopLine Value="131"/>
-        <EditorIndex Value="7"/>
+        <CursorPos X="12" Y="4"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit46>
       <Unit47>
         <Filename Value="../../appkit/NSResponder.inc"/>
-        <CursorPos X="18" Y="12"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="6"/>
+        <CursorPos X="22" Y="228"/>
+        <TopLine Value="219"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit47>
       <Unit48>
         <Filename Value="../../appkit/NSActionCell.inc"/>
