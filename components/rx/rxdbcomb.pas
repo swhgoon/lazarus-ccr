@@ -86,6 +86,7 @@ type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property AutoSize;
     property BorderSpacing;
     property Style; { must be published before Items }
     property Color;

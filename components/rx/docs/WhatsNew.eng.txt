@@ -1,3 +1,4 @@
+22.05.2008 - version 2.0.0.136 (svn revision 100)
   + In TRxCustomDBLookupCombo add check for CircularDataLink
   + in TRxCustomDBLookupCombo accelerated drawing data
   - In TRxCustomDBLookupCombo fix select first record if DataField is emty
@@ -39,7 +40,7 @@
   + In TRxDBLookupCombo property DropDownCount now work
   - fix error in TRxDBLookupCombo after set value for DataField and LookupSourse.Active=false
   + In PopUpFormOptions add editor for property Collumns[x].FieldName
-29.08.2007 - версия 1.1.5.98 (svn revision 39)
+29.08.2007 - version 1.1.5.98 (svn revision 39)
   + In RxDBgrid - after close dataset  list of SelectedRows is cleared
   + fix resaizing find form for RxDbGrd    
   + compile in latest Lazarus

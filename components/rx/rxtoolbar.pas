@@ -627,6 +627,7 @@ end;
 procedure TToolbarButton.SetAutoSize(AValue: boolean);
 begin
   FAutoSize:=AValue;
+  if csLoading in ComponentState then exit;
   UpdateSize;
   Invalidate;
 end;
