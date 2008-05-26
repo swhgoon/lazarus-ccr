@@ -363,15 +363,17 @@ end;
 
 procedure TCustomDBComboBox.EditingDone;
 begin
-  if not(FDataLink.DataSet.State in [dsinsert,dsedit]) then exit;
-  try
-    FDataLink.UpdateRecord;
-  except
-    SelectAll;
-    if CanFocus then SetFocus;
-    raise;
+  if Assigned(FDataLink.DataSet) and (FDataLink.DataSet.State in [dsinsert,dsedit]) then
+  begin
+    try
+      FDataLink.UpdateRecord;
+    except
+      SelectAll;
+      if CanFocus then SetFocus;
+      raise;
+    end;
+    inherited EditingDone;
   end;
-  inherited EditingDone;
 end;
 
 
