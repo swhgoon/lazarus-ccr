@@ -245,7 +245,7 @@ type
   end;
 
 implementation
-uses Math, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst;
+uses Math, RxTBRSetup, LCLProc, vclutils, Dialogs, typinfo, rxdconst, GraphType;
 
 const
   BtnAl2Align:array [TToolButtonAllign] of TAlign = (alNone, alLeft, alRight);
@@ -423,7 +423,6 @@ begin
     if FToolbarButtonStyle = tbrDropDownExtra then
     begin
       Canvas.Draw(PaintRect.Right - 10, Height div 2, TToolbarItems(FOwnerItem.Collection).FToolPanel.FArrowBmp);
-//      FArrowBmp
       Dec(PaintRect.Right, DropDownExtraBtnWidth);
     end;
       
@@ -524,7 +523,8 @@ begin
     if ((FLastDrawFlagsA and DFCS_FLAT) <> 0) and ((FLastDrawFlagsA and DFCS_PUSHED) = 0)
       and (tpGlyphPopup in TToolbarItems(FOwnerItem.Collection).FToolPanel.Options) and FFullPush then
     begin
-//      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, false);
+      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, false);
+//      FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, gdeDisabled);
       Dec(Offset.X, 2);
       Dec(Offset.Y, 2);
     end;

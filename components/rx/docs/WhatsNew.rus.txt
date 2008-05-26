@@ -1,4 +1,5 @@
-﻿  - Исправлена ошибка в TDBComboBox.EditingDone; если не присвоен DataSet
+  + Доработана отрисовка тени у кнопки на TToolPanel
+  - Исправлена ошибка в TDBComboBox.EditingDone; если не присвоен DataSet
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных
