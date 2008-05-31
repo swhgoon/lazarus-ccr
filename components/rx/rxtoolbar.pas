@@ -1038,7 +1038,7 @@ var
   i, L:integer;
 begin
   inherited Loaded;
-  L:=0;
+{  L:=0;
   for i:=0 to FToolbarItems.Count - 1 do
   begin
     if ButtonAllign = tbaLeft then
@@ -1050,7 +1050,7 @@ begin
     else
       FToolbarItems[i].UpdateLeftAfterLoad;
   end;
-
+}
   for i:=0 to FToolbarItems.Count - 1 do
   begin
     FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
