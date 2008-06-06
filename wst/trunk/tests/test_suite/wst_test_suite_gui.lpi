@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="FPCUnitTestRunner"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="16">
+      <Unit0>
+        <Filename Value="wst_test_suite_gui.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wst_test_suite_gui"/>
+        <CursorPos X="81" Y="18"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="..\..\base_service_intf.pas"/>
+        <UnitName Value="base_service_intf"/>
+        <CursorPos X="30" Y="4939"/>
+        <TopLine Value="4925"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="test_support.pas"/>
+        <UnitName Value="test_support"/>
+        <CursorPos X="37" Y="94"/>
+        <TopLine Value="93"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="test_utilities.pas"/>
+        <UnitName Value="test_utilities"/>
+        <CursorPos X="3" Y="157"/>
+        <TopLine Value="152"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\semaphore.pas"/>
+        <UnitName Value="semaphore"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="E:\fpc_trunck\rtl\win32\windows.pp"/>
+        <UnitName Value="windows"/>
+        <CursorPos X="9" Y="66"/>
+        <TopLine Value="41"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="E:\fpc_trunck\rtl\win\wininc\redef.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1141"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="E:\fpc_trunck\rtl\objpas\objpas.pp"/>
+        <UnitName Value="objpas"/>
+        <CursorPos X="8" Y="28"/>
+        <TopLine Value="492"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="E:\fpc_trunck\rtl\inc\threadh.inc"/>
+        <CursorPos X="10" Y="101"/>
+        <TopLine Value="87"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="E:\fpc_trunck\rtl\inc\thread.inc"/>
+        <CursorPos X="44" Y="537"/>
+        <TopLine Value="526"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\fpc\2.2.1\source\rtl\win\wininc\redef.inc"/>
+        <CursorPos X="16" Y="21"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\fpc\2.2.1\source\rtl\win\wininc\base.inc"/>
+        <CursorPos X="8" Y="634"/>
+        <TopLine Value="623"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\fpc\2.2.1\source\rtl\win\sysosh.inc"/>
+        <CursorPos X="10" Y="22"/>
+        <TopLine Value="56"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\..\..\..\..\..\lazarus\components\fpcunit\fpcunittestrunner.pas"/>
+        <UnitName Value="FPCUnitTestRunner"/>
+        <CursorPos X="61" Y="14"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="E:\fpc_trunck\rtl\objpas\sysutils\osutilsh.inc"/>
+        <CursorPos X="11" Y="20"/>
+        <TopLine Value="6"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="E:\fpc_trunck\rtl\objpas\sysutils\sysutils.inc"/>
+        <CursorPos X="3" Y="329"/>
+        <TopLine Value="321"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+    </Units>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="..\..\semaphore.pas"/>
+        <Caret Line="78" Column="9" TopLine="68"/>
+      </Position1>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="wst_test_suite_gui.exe"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="..\..\"/>
+      <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Checks>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+      </Checks>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\fcl-xml\src\xmlread.pp"/>
+        <Line Value="1975"/>
+      </Item1>
+    </BreakPoints>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="FTM"/>
+      </Item1>
+      <Item2>
+        <Expression Value="i"/>
+      </Item2>
+    </Watches>
+  </Debugging>
+</CONFIG>
