@@ -529,7 +529,8 @@ uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_r
 {$ENDIF}
      , server_service_soap, soap_formatter,
      server_service_xmlrpc, xmlrpc_formatter,
-     binary_streamer, server_binary_formatter, binary_formatter;
+     binary_streamer, server_binary_formatter, binary_formatter,
+  test_suite_utils;
 
 function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;forward;
 
@@ -630,51 +631,6 @@ begin
     ok := False;
   end;
   Result := ok;
-end;
-
-function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
-var
-  ca, cb : TDOMNode;
-  i : PtrInt;
-begin
-  if ( A = nil ) and ( B = nil ) then begin
-    Result := True;
-  end else if ( A <> nil ) and ( B <> nil ) then begin
-    Result := False;
-    if ( A.NodeName = B.NodeName ) and
-       ( A.NodeValue = B.NodeValue )
-    then begin
-      if ( ( A.FirstChild = nil ) and ( B.FirstChild = nil ) ) or
-         ( ( A.FirstChild <> nil ) and ( B.FirstChild <> nil ) )
-      then begin
-        ca := a.FirstChild;
-        cb := b.FirstChild;
-        while ( ca <> nil ) do begin
-          if not CompareNodes(ca,cb) then
-            Exit;
-          ca := ca.NextSibling;
-          cb := cb.NextSibling;
-        end;
-        if ( ( A.Attributes = nil ) and ( B.Attributes = nil ) ) or
-           ( ( A.Attributes <> nil ) and ( B.Attributes <> nil ) )
-        then begin
-          if ( A.Attributes <> nil ) then begin
-            if ( A.Attributes.Length <> B.Attributes.Length ) then
-              Exit;
-            if ( A.Attributes.Length > 0 ) then begin
-              for i := 0 to Pred(A.Attributes.Length) do begin
-                if not CompareNodes(A.Attributes.Item[i],B.Attributes.Item[i]) then
-                  Exit;
-              end;
-            end;
-          end;
-          Result := True;
-        end;
-      end;
-    end;
-  end else begin
-    Result := False;
-  end;
 end;
 
 function RandomValue(const AMaxlen: Integer): ansistring;
