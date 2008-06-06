@@ -13,7 +13,14 @@ uses
   testformatter_unit in '..\testformatter_unit.pas',
   base_service_intf in '..\..\..\base_service_intf.pas',
   basex_encode in '..\..\..\basex_encode.pas',
-  test_basex_encode in '..\test_basex_encode.pas';
+  test_basex_encode in '..\test_basex_encode.pas',
+  xsd_parser in '..\..\..\ws_helper\xsd_parser.pas',
+  pascal_parser_intf in '..\..\..\ws_helper\pascal_parser_intf.pas',
+  ws_parser_imp in '..\..\..\ws_helper\ws_parser_imp.pas',
+  xsd_consts in '..\..\..\ws_helper\xsd_consts.pas',
+  xsd_generator in '..\..\..\ws_helper\xsd_generator.pas',
+  test_generators in '..\test_generators.pas',
+  test_suite_utils in '..\test_suite_utils.pas';
 
 {$R *.res}
 

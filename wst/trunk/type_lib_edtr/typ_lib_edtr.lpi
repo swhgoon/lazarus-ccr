@@ -25,13 +25,13 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="26">
+    <Units Count="24">
       <Unit0>
         <Filename Value="typ_lib_edtr.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -110,91 +110,81 @@
         <UnitName Value="pascal_parser_intf"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\ws_helper\pparser.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PParser"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\ws_helper\pastree.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PasTree"/>
-      </Unit13>
-      <Unit14>
         <Filename Value="..\ws_helper\generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="generator"/>
-      </Unit14>
-      <Unit15>
+      </Unit12>
+      <Unit13>
         <Filename Value="uprocedit.pas"/>
         <ComponentName Value="fProcEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uprocedit.lrs"/>
         <UnitName Value="uprocedit"/>
-      </Unit15>
-      <Unit16>
+      </Unit13>
+      <Unit14>
         <Filename Value="common_gui_utils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="common_gui_utils"/>
-      </Unit16>
-      <Unit17>
+      </Unit14>
+      <Unit15>
         <Filename Value="uargedit.pas"/>
         <ComponentName Value="fArgEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uargedit.lrs"/>
         <UnitName Value="uargedit"/>
-      </Unit17>
-      <Unit18>
+      </Unit15>
+      <Unit16>
         <Filename Value="umoduleedit.pas"/>
         <ComponentName Value="fModuleEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="umoduleedit.lrs"/>
         <UnitName Value="umoduleedit"/>
-      </Unit18>
-      <Unit19>
+      </Unit16>
+      <Unit17>
         <Filename Value="ubindingedit.pas"/>
         <ComponentName Value="fBindingEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ubindingedit.lrs"/>
         <UnitName Value="ubindingedit"/>
-      </Unit19>
-      <Unit20>
+      </Unit17>
+      <Unit18>
         <Filename Value="ufrmsaveoption.pas"/>
         <ComponentName Value="frmSaveOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufrmsaveoption.lrs"/>
         <UnitName Value="ufrmsaveoption"/>
-      </Unit20>
-      <Unit21>
+      </Unit18>
+      <Unit19>
         <Filename Value="ufarrayedit.pas"/>
         <ComponentName Value="fArrayEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufarrayedit.lrs"/>
         <UnitName Value="ufarrayedit"/>
-      </Unit21>
-      <Unit22>
+      </Unit19>
+      <Unit20>
         <Filename Value="uftypealiasedit.pas"/>
         <ComponentName Value="fTypeAliasEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="uftypealiasedit.lrs"/>
         <UnitName Value="uftypealiasedit"/>
-      </Unit22>
-      <Unit23>
+      </Unit20>
+      <Unit21>
         <Filename Value="ufrecordedit.pas"/>
         <ComponentName Value="fRecordEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="ufrecordedit.lrs"/>
         <UnitName Value="ufrecordedit"/>
-      </Unit23>
-      <Unit24>
+      </Unit21>
+      <Unit22>
         <Filename Value="..\ws_helper\wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
-      </Unit24>
-      <Unit25>
+      </Unit22>
+      <Unit23>
         <Filename Value="..\ws_helper\xsd_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_parser"/>
-      </Unit25>
+      </Unit23>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
