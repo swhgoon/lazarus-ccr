@@ -66,9 +66,11 @@
       </Unit4>
       <Unit5>
         <Filename Value="../../appkit/NSStatusItem.inc"/>
-        <CursorPos X="25" Y="109"/>
-        <TopLine Value="105"/>
+        <CursorPos X="15" Y="76"/>
+        <TopLine Value="63"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="../../appkit/AppKit.inc"/>
@@ -221,7 +223,7 @@
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="15" Y="73"/>
         <TopLine Value="69"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -247,9 +249,11 @@
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-        <CursorPos X="37" Y="103"/>
-        <TopLine Value="100"/>
+        <CursorPos X="16" Y="126"/>
+        <TopLine Value="113"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="46"/>
+        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSImage.h"/>
@@ -385,9 +389,9 @@
       </Unit52>
       <Unit53>
         <Filename Value="../../foundation/Foundation.inc"/>
-        <CursorPos X="11" Y="18"/>
+        <CursorPos X="12" Y="127"/>
         <TopLine Value="120"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit53>
@@ -426,9 +430,9 @@
       </Unit58>
       <Unit59>
         <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carbontrayicon.inc"/>
-        <CursorPos X="9" Y="75"/>
-        <TopLine Value="68"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="18" Y="96"/>
+        <TopLine Value="94"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit59>
@@ -437,7 +441,7 @@
         <UnitName Value="CarbonInt"/>
         <CursorPos X="53" Y="39"/>
         <TopLine Value="32"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="5"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit60>
@@ -499,15 +503,31 @@
         <SyntaxHighlighter Value="C++"/>
       </Unit69>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="6" HistoryIndex="5">
       <Position1>
-        <Filename Value="../../foundation/Foundation.inc"/>
-        <Caret Line="8" Column="31" TopLine="1"/>
+        <Filename Value="controller.pas"/>
+        <Caret Line="181" Column="5" TopLine="156"/>
       </Position1>
       <Position2>
-        <Filename Value="../../foundation/Foundation.inc"/>
-        <Caret Line="82" Column="31" TopLine="69"/>
+        <Filename Value="controller.pas"/>
+        <Caret Line="116" Column="24" TopLine="108"/>
       </Position2>
+      <Position3>
+        <Filename Value="controller.pas"/>
+        <Caret Line="43" Column="20" TopLine="32"/>
+      </Position3>
+      <Position4>
+        <Filename Value="controller.pas"/>
+        <Caret Line="117" Column="55" TopLine="104"/>
+      </Position4>
+      <Position5>
+        <Filename Value="controller.pas"/>
+        <Caret Line="119" Column="42" TopLine="99"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carbontrayicon.inc"/>
+        <Caret Line="75" Column="9" TopLine="68"/>
+      </Position6>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

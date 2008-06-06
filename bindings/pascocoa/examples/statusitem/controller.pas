@@ -35,10 +35,12 @@ type
     function CreateButton(AView: NSView; ATitle: shortstring;
      AX, AY, AWidth, AHeight: Double;
      ACallbackName: string; ACallbackClass: NSObject): NSButton;
+    function CreateMenu(): NSMenu;
     { Fields }
     bar: NSStatusBar;
     item: NSStatusItem;
     image: NSImage;
+    myMenu: NSMenu;
   end;
 
 const
@@ -112,13 +114,16 @@ begin
 
   myController.item := NSStatusItem.CreateWithHandle(myController.bar.statusItemWithLength(NSSquareStatusItemLength));
   myController.item.retain();
-  myController.item.setImage(myController.image);
+  myController.item.setImage(myController.image.Handle);
+  myController.myMenu := CreateMenu();
+  myController.item.setMenu(myController.myMenu.Handle);
 end;
 
 class procedure TMyController.doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
 begin
   if myController.item = nil then Exit;
 
+  myController.myMenu.Free;
   myController.item.Free;
   myController.item := nil;
 end;
@@ -172,6 +177,20 @@ begin
   Result.setAction(sel_registerName(PChar(ACallbackName)));
   Result.setTarget(ACallbackClass.Handle);
   AView.addSubview(Result);
+end;
+
+function TMyController.CreateMenu(): NSMenu;
+var
+  Item1: NSMenuItem;
+  EmptyCFString, Item1Text: CFStringRef;
+begin
+  EmptyCFString := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+  Item1Text := CFStringCreateWithPascalString(nil, 'Item 1', kCFStringEncodingUTF8);
+
+  Result := NSMenu.initWithTitle(EmptyCFString);
+  
+  Item1 := NSMenuItem.initWithTitle_action_keyEquivalent(Item1Text, nil, EmptyCFString);
+  Result.addItem(Item1.Handle);
 end;
 
 end.
