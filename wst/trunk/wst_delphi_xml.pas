@@ -18,21 +18,21 @@ type
 
   function FindNode(ANode : TDOMNode; const ANodeName : string):TDOMNode;
   function GetNodeItemsCount(const ANode : TDOMNode): Integer;
-  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;
-  function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;
-  procedure ReleaseDomNode(ADomNode : IInterface);overload;
-  procedure ReleaseDomNode(var ADomNode : TXMLDocument);overload;
+  function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure ReleaseDomNode(ADomNode : IInterface);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure ReleaseDomNode(var ADomNode : TXMLDocument);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
   function CreateDoc() : TXMLDocument ;
-  procedure WriteXML(Element: TDOMNode; const AFileName: String);overload;
-  procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
+  procedure WriteXML(Element: TDOMNode; const AFileName: String);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
-  procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);overload;
-  procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);overload;
+  procedure WriteXMLFile(ADoc : TXMLDocument; AStream : TStream);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure ReadXMLFile(out ADoc : TXMLDocument; AStream : TStream);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);overload;
   function NodeToBuffer(ANode : TDOMNode):string ;
 
-  function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
+  function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
 implementation
 uses XmlDoc;
