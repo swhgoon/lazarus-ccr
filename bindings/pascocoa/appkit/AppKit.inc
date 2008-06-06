@@ -27,10 +27,10 @@
 #import <AppKit/NSFontPanel.h>
 #import <AppKit/NSForm.h>
 #import <AppKit/NSFormCell.h>
-#import <AppKit/NSMatrix.h>
-#import <AppKit/NSMenu.h>
-#import <AppKit/NSMenuItem.h>
-#import <AppKit/NSColor.h>
+#import <AppKit/NSMatrix.h>}
+{$include NSMenu.inc}
+{$include NSMenuItem.inc}
+{#import <AppKit/NSColor.h>
 #import <AppKit/NSColorSpace.h>}
 {$include NSBitmapImageRep.inc}
 {#import <AppKit/NSBrowser.h>

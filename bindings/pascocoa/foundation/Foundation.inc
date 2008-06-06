@@ -93,10 +93,10 @@
 #import <Foundation/NSXMLElement.h>
 #import <Foundation/NSXMLNode.h>
 #import <Foundation/NSXMLNodeOptions.h>
-#import <Foundation/NSXMLParser.h>
-#import <Foundation/NSZone.h>
+#import <Foundation/NSXMLParser.h>}
+{$include NSZone.inc}
 
-#import <Foundation/NSExpression.h>
+{#import <Foundation/NSExpression.h>
 #import <Foundation/NSPredicate.h>
 #import <Foundation/NSComparisonPredicate.h>
 #import <Foundation/NSCompoundPredicate.h>

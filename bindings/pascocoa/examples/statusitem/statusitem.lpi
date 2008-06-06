@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -26,7 +26,7 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="66">
+    <Units Count="70">
       <Unit0>
         <Filename Value="statusitem.pas"/>
         <IsPartOfProject Value="True"/>
@@ -53,11 +53,9 @@
       </Unit2>
       <Unit3>
         <Filename Value="../../appkit/NSApplication.inc"/>
-        <CursorPos X="21" Y="79"/>
+        <CursorPos X="31" Y="75"/>
         <TopLine Value="69"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="18"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../appkit/NSAlert.inc"/>
@@ -74,11 +72,9 @@
       </Unit5>
       <Unit6>
         <Filename Value="../../appkit/AppKit.inc"/>
-        <CursorPos X="20" Y="11"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="47" Y="90"/>
+        <TopLine Value="84"/>
         <UsageCount Value="21"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSActionCell.h"/>
@@ -225,7 +221,7 @@
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="15" Y="73"/>
         <TopLine Value="69"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -251,11 +247,9 @@
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-        <CursorPos X="1" Y="110"/>
+        <CursorPos X="37" Y="103"/>
         <TopLine Value="100"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="46"/>
-        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSImage.h"/>
@@ -391,9 +385,11 @@
       </Unit52>
       <Unit53>
         <Filename Value="../../foundation/Foundation.inc"/>
-        <CursorPos X="57" Y="7"/>
-        <TopLine Value="1"/>
+        <CursorPos X="11" Y="18"/>
+        <TopLine Value="120"/>
+        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit53>
       <Unit54>
         <Filename Value="../../foundation/NSDate.inc"/>
@@ -432,7 +428,7 @@
         <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carbontrayicon.inc"/>
         <CursorPos X="9" Y="75"/>
         <TopLine Value="68"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit59>
@@ -441,7 +437,7 @@
         <UnitName Value="CarbonInt"/>
         <CursorPos X="53" Y="39"/>
         <TopLine Value="32"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit60>
@@ -460,50 +456,58 @@
       </Unit62>
       <Unit63>
         <Filename Value="../../appkit/NSBitmapImageRep.inc"/>
-        <CursorPos X="13" Y="9"/>
+        <CursorPos X="42" Y="5"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="8"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit63>
       <Unit64>
         <Filename Value="../../appkit/NSImageRep.inc"/>
-        <CursorPos X="3" Y="14"/>
+        <CursorPos X="38" Y="420"/>
         <TopLine Value="417"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit64>
       <Unit65>
         <Filename Value="../../foundation/NSGeometry.inc"/>
-        <CursorPos X="1" Y="14"/>
+        <CursorPos X="57" Y="14"/>
         <TopLine Value="12"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit65>
+      <Unit66>
+        <Filename Value="../../appkit/NSMenuItem.inc"/>
+        <CursorPos X="53" Y="7"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="../../appkit/NSMenu.inc"/>
+        <CursorPos X="36" Y="40"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="10"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSObject.h"/>
+        <CursorPos X="13" Y="21"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSZone.h"/>
+        <CursorPos X="20" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit69>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
-        <Filename Value="controller.pas"/>
-        <Caret Line="61" Column="22" TopLine="49"/>
+        <Filename Value="../../foundation/Foundation.inc"/>
+        <Caret Line="8" Column="31" TopLine="1"/>
       </Position1>
       <Position2>
-        <Filename Value="controller.pas"/>
-        <Caret Line="113" Column="39" TopLine="100"/>
+        <Filename Value="../../foundation/Foundation.inc"/>
+        <Caret Line="82" Column="31" TopLine="69"/>
       </Position2>
-      <Position3>
-        <Filename Value="controller.pas"/>
-        <Caret Line="39" Column="16" TopLine="26"/>
-      </Position3>
-      <Position4>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="15" Column="16" TopLine="40"/>
-      </Position4>
-      <Position5>
-        <Filename Value="statusitem.pas"/>
-        <Caret Line="70" Column="33" TopLine="52"/>
-      </Position5>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
