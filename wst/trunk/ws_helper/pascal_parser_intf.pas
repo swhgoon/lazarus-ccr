@@ -27,7 +27,7 @@ const
   sARRAY_STYLE = 'ARRAY_STYLE';
     sARRAY_STYLE_SCOPED = 'ARRAY_STYLE_SCOPED';
     sARRAY_STYLE_EMBEDDED = 'ARRAY_STYLE_EMBEDDED';
-  
+
   sXSD_NS = 'http://www.w3.org/2001/XMLSchema';
   
 type
@@ -325,7 +325,7 @@ function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPas
 
   function AddAlias(const AName, ABaseType : string; ATable : TPasModule) : TPasTypeAliasType;
   begin
-    Result := TPasTypeAliasType(AContainer.CreateElement(TPasAliasType,AName,ATable,visPublic,'',0));
+    Result := TPasTypeAliasType(AContainer.CreateElement(TPasAliasType,AName,ATable.InterfaceSection,visPublic,'',0));
     Result.DestType := AContainer.FindElementInModule(ABaseType,ATable) as TPasType;
     if Assigned(Result.DestType) then
       Result.DestType.AddRef();
@@ -446,7 +446,7 @@ function FindParameter(
 var
   i : Integer;
 begin
-  i := GetParameterIndex(AProcType,AParamName,i);
+  i := GetParameterIndex(AProcType,AParamName,AStartPos);
   if ( i >= 0 ) then begin
     Result := TPasArgument(AProcType.Args[i]);
   end else begin

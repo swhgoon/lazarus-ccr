@@ -451,7 +451,6 @@ function TWsdlParser.ParseOperation(
   
   function GetDataType(const AName, ATypeOrElement : string):TPasType;
   begin
-    Result := nil;
     try
       Result := ParseType(AName);
     except
@@ -694,7 +693,6 @@ var
   locMthd : TPasProcedure;
   mthdName : string;
 begin
-  Result := nil;
   locMthd := nil;
   if not ExtractOperationName(mthdName) then
     raise EXsdParserAssertException.CreateFmt('Operation Attribute not found : "%s"',[s_name]);
@@ -1019,7 +1017,6 @@ var
   ansiStrBuffer : ansistring;
   elt : TPasElement;
 begin
-  locIntf := nil;
   locAttCursor := CreateAttributesCursor(ANode,cetRttiNode);
   locCursor := CreateCursorOn(locAttCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
   locCursor.Reset();

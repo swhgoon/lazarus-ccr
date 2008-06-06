@@ -24,8 +24,8 @@ interface
 const
   s_address                    : WideString = 'address';
   s_all                        : WideString = 'all';
-  //s_any                        : WideString = 'any';
   s_annotation                 : WideString = 'annotation';
+  s_anyURI                                  = 'anyURI';
   s_appinfo                    : WideString = 'appinfo';
   s_array                      : WideString = 'array';
   s_arrayType                  : WideString = 'arrayType';
@@ -37,6 +37,7 @@ const
   s_complexType                : WideString = 'complexType';
   s_customAttributes           : WideString = 'customAttributes';
   s_definitions                             = 'definitions';
+  s_default                                 = 'default';
   s_document                   : WideString = 'document';
   s_element                    : WideString = 'element';
   s_enumeration                : WideString = 'enumeration';

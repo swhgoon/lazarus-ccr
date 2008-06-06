@@ -184,7 +184,7 @@ procedure TWsdlGenerator.GenerateServiceMessages(
           s := ASymTable.GetExternalName(typItm.Parent.Parent)
         else
           s := ASymTable.GetExternalName(AModule);
-        ns_shortName := GetNameSpaceShortName(s,Document);
+        ns_shortName := GetNameSpaceShortName(s,Document,nil);
         s := Format('%s:%s',[ns_shortName,ASymTable.GetExternalName(typItm)]);
         tmpNode.SetAttribute(s_type,s);
       end;
@@ -202,7 +202,7 @@ procedure TWsdlGenerator.GenerateServiceMessages(
           s := ASymTable.GetExternalName(typItm.Parent.Parent)
         else
           s := ASymTable.GetExternalName(AModule);
-        ns_shortName := GetNameSpaceShortName(s,Document);
+        ns_shortName := GetNameSpaceShortName(s,Document,nil);
         s := Format('%s:%s',[ns_shortName,ASymTable.GetExternalName(typItm)]);
         tmpNode.SetAttribute(s_type,s);
       end;

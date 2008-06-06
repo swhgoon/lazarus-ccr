@@ -22,6 +22,9 @@ uses
   
 type
 
+  TGeneratorOption = ( xgoIgnorembeddedArray );
+  TGeneratorOptions = set of TGeneratorOption;
+
   EXsdGeneratorException = class(Exception) end;
   TBaseTypeHandler = class;
   TBaseTypeHandlerClass = class of TBaseTypeHandler;
@@ -37,6 +40,8 @@ type
   IXsdGenerator = interface(IGenerator)
     ['{FBFF92BC-B72B-4B85-8D16-379F9E548DDB}']
     function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
+    procedure SetPreferedShortNames(const ALongName, AShortName : string);
+    function GetPreferedShortNames() : TStrings;
   end;
   
   IXsdTypeHandler = interface
@@ -69,8 +74,12 @@ type
   )
   private
     FDocument : TDOMDocument;
+    FOptions: TGeneratorOptions;
+    FShortNames : TStrings;
   protected
     function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;virtual;abstract;
+    procedure SetPreferedShortNames(const ALongName, AShortName : string);
+    function GetPreferedShortNames() : TStrings;
     procedure Execute(
       ASymTable   : TwstPasTreeContainer;
       AModuleName : string
@@ -81,8 +90,14 @@ type
       AModule   : TPasModule
     );virtual;
     property Document : TDOMDocument read FDocument;
+    property Options : TGeneratorOptions read FOptions;
   public
-    constructor Create(ADocument : TDOMDocument);
+    constructor Create(const ADocument : TDOMDocument);overload;
+    constructor Create(
+      const ADocument : TDOMDocument;
+      const AOptions : TGeneratorOptions
+    );overload;
+    destructor Destroy();override;
   end;
 
   { TXsdGenerator }
@@ -114,14 +129,16 @@ type
 
   function GetNameSpaceShortName(
     const ANameSpace    : string;
-          ADocument : TDOMDocument
+          ADocument : TDOMDocument;
+    const APreferedList : TStrings
   ):string;
 
   function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TDOMDocument):TDOMElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
 implementation
-uses xsd_consts, Contnrs, StrUtils;
+uses
+  xsd_consts, Contnrs, StrUtils, wst_types;
 
 type
 
@@ -277,8 +294,8 @@ begin
   if Assigned(ANode) and Assigned(ANode.Attributes) then begin
     b := ( Length(AStartingWith) = 0);
     c := Pred(ANode.Attributes.Length);
-    if ( AStartIndex >= 0 ) then
-      i := AStartIndex;
+//    if ( AStartIndex >= 0 ) then
+  //    i := AStartIndex;
     for i := AStartIndex to c do begin
       if AnsiSameText(AAttValue,ANode.Attributes.Item[i].NodeValue) and
          ( b or ( Pos(AStartingWith,ANode.Attributes.Item[i].NodeName) = 1 ))
@@ -294,13 +311,17 @@ end;
 
 function GetNameSpaceShortName(
   const ANameSpace    : string;
-        ADocument : TDOMDocument
+        ADocument : TDOMDocument;
+  const APreferedList : TStrings
 ):string;
 begin
   if FindAttributeByValueInNode(ANameSpace,ADocument.DocumentElement,Result,0, s_xmlns) then begin
     Result := Copy(Result,Length(s_xmlns+':')+1,MaxInt);
   end else begin
-    Result := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
+    if ( APreferedList <> nil ) then
+      Result := Trim(APreferedList.Values[ANameSpace]);
+    if ( Result = '' ) then
+      Result := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
     ADocument.DocumentElement.SetAttribute(Format('%s:%s',[s_xmlns,Result]),ANameSpace);
   end;
 end;
@@ -426,7 +447,7 @@ begin
     resNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
 
     baseUnitExternalName := GetTypeNameSpace(AContainer,typItm.DestType);
-    s := GetNameSpaceShortName(baseUnitExternalName,ADocument);
+    s := GetNameSpaceShortName(baseUnitExternalName,ADocument,GetOwner().GetPreferedShortNames());
     s := Format('%s:%s',[s,AContainer.GetExternalName(typItm.DestType)]);
     resNode.SetAttribute(s_type,s) ;
   end;
@@ -491,24 +512,131 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
   const ASymbol       : TPasElement;
         ADocument     : TDOMDocument
 );
+
+  function TypeHasSequence(const AClassType : TPasClassType; const ACategory : TTypeCategory) : Boolean;
+  var
+    k : PtrInt;
+    p : TPasProperty;
+  begin
+    Result := False;
+    if ( AClassType.Members.Count > 0 ) then begin
+      for k := 0 to Pred(AClassType.Members.Count) do begin
+        if TPasElement(AClassType.Members[k]).InheritsFrom(TPasProperty) then begin
+          p := TPasProperty(AClassType.Members[k]);
+          if not AContainer.IsAttributeProperty(p) then begin
+            if ( ACategory = tcSimpleContent ) then begin
+              raise EXsdGeneratorException.CreateFmt('Invalid type definition, a simple type cannot have "not attribute" properties : "%s"',[AContainer.GetExternalName(AClassType)]);
+            end;
+            Result := True;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  procedure ProcessPropertyExtendedMetadata(const AProp : TPasProperty; const APropNode : TDOMElement);
+  var
+    ls : TStrings;
+    line, ns, ns_short, localName, attName, attValue : string;
+    k, q : PtrInt;
+  begin
+    ls := AContainer.Properties.GetList(AProp);
+    if ( ls <> nil ) and ( ls.Count > 0 ) then begin
+      for k := 0 to Pred(ls.Count) do begin
+        line := ls.Names[k];
+        q := Pos('#',line);
+        if ( q > 0 ) then begin
+          ns := Copy(line,1,Pred(q));
+          localName := Copy(line,Succ(q),MaxInt);
+          ns_short := GetNameSpaceShortName(ns,ADocument,GetOwner().GetPreferedShortNames());
+          attName := Format('%s:%s',[ns_short,localName]);
+          line := ls.Values[line];
+          q := Pos('#',line);
+          if ( q > 0 ) then begin
+            ns := Copy(line,1,Pred(q));
+            localName := Copy(line,Succ(q),MaxInt);
+            ns_short := GetNameSpaceShortName(ns,ADocument,GetOwner().GetPreferedShortNames());
+            attValue := Format('%s:%s',[ns_short,localName]);
+          end else begin
+            attValue := line;
+          end;
+          APropNode.SetAttribute(attName,attValue);
+        end;
+      end;
+    end;
+  end;
+
 var
-  cplxNode : TDOMElement;
+  cplxNode, sqcNode, derivationNode : TDOMElement;
+
+  procedure ProcessProperty(const AProp : TPasProperty);
+  var
+    p : TPasProperty;
+    s : string;
+    propNode : TDOMElement;
+    propTypItm, propItmUltimeType : TPasType;
+    prop_ns_shortName : string;
+    isEmbeddedArray : Boolean;
+  begin
+    p := AProp;
+    if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) or AnsiSameText('True',p.StoredAccessorName) then begin
+      if AContainer.IsAttributeProperty(p) then begin
+        s := Format('%s:%s',[s_xs_short,s_attribute]);
+        if Assigned(derivationNode) then
+          propNode := CreateElement(s,derivationNode,ADocument)
+        else
+          propNode := CreateElement(s,cplxNode,ADocument);
+      end else begin
+        s := Format('%s:%s',[s_xs_short,s_element]);
+        propNode := CreateElement(s,sqcNode,ADocument);
+      end;
+      propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
+      propTypItm := p.VarType;
+      if Assigned(propTypItm) then begin
+        prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+        propItmUltimeType := GetUltimeType(propTypItm);
+        isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
+                           ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
+        if isEmbeddedArray then
+          s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType)
+        else
+          s := AContainer.GetExternalName(propTypItm);
+        propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
+        if ( Length(p.DefaultValue) > 0 ) then
+          propNode.SetAttribute(s_default,p.DefaultValue);
+        if AContainer.IsAttributeProperty(p) then begin
+          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
+            propNode.SetAttribute(s_use,'optional')
+          else
+            propNode.SetAttribute(s_use,'required');
+        end else begin
+          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
+            propNode.SetAttribute(s_minOccurs,'0');
+          {else
+            propNode.SetAttribute(s_minOccurs,'1');}
+          if isEmbeddedArray then
+            propNode.SetAttribute(s_maxOccurs,s_unbounded)
+          {else
+            propNode.SetAttribute(s_maxOccurs,'1');}
+        end;
+      end;
+      ProcessPropertyExtendedMetadata(p,propNode);
+    end;
+  end;
+
+var
   typItm : TPasClassType;
-  propTypItm : TPasType;
-  s, prop_ns_shortName : string;
-  defSchemaNode, sqcNode, propNode, derivationNode : TDOMElement;
+  s : string;
+  defSchemaNode : TDOMElement;
   i : Integer;
-  p : TPasProperty;
   typeCategory : TTypeCategory;
   hasSequence : Boolean;
   trueParent : TPasType;
-  isEmbeddedArray : Boolean;
-  propItmUltimeType : TPasType;
 begin
   inherited;
   typItm := ASymbol as TPasClassType;
   if Assigned(typItm) then begin
-    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument);
+    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument,GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_complexType]);
@@ -520,99 +648,40 @@ begin
     hasSequence := True;
     if Assigned(typItm.AncestorType) then begin
       trueParent := typItm.AncestorType;
-
       if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
         cplxNode.SetAttribute(s_WST_headerBlock,'true');
       end;
-
-      if trueParent.InheritsFrom(TPasAliasType) then begin
+      if trueParent.InheritsFrom(TPasAliasType) then
         trueParent := GetUltimeType(trueParent);
-      end;
       if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
          trueParent.InheritsFrom(TPasNativeSimpleType)
       then begin
         typeCategory := tcSimpleContent;
       end;
       derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
-      s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument));
-      if ( Length(s) > 0 ) then begin
+      s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
+      if ( Length(s) > 0 ) then
         s := s + ':';
-      end;
       s := s + AContainer.GetExternalName(trueParent);
       derivationNode.SetAttribute(s_base,s);
       hasSequence := False;
     end;
-    if ( typItm.Members.Count > 0 ) then begin
-      hasSequence := False;
-      for i := 0 to Pred(typItm.Members.Count) do begin
-        if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then begin
-          p := TPasProperty(typItm.Members[i]);
-          if not AContainer.IsAttributeProperty(p) then begin
-            if ( typeCategory = tcSimpleContent ) then begin
-              raise EXsdGeneratorException.CreateFmt('Invalid type definition, a simple type cannot have "not attribute" properties : "%s"',[AContainer.GetExternalName(ASymbol)]);
-            end;
-            hasSequence := True;
-          end;
-        end;
-      end;
-    end;
+    if ( typItm.Members.Count > 0 ) then
+      hasSequence := TypeHasSequence(typItm,typeCategory);
     if hasSequence then begin
       s := Format('%s:%s',[s_xs_short,s_sequence]);
-      if Assigned(derivationNode) then begin
-        sqcNode := CreateElement(s,derivationNode,ADocument);
-      end else begin
+      if Assigned(derivationNode) then
+        sqcNode := CreateElement(s,derivationNode,ADocument)
+      else
         sqcNode := CreateElement(s,cplxNode,ADocument);
-      end;
     end else begin
       sqcNode := nil;
     end;
 
-
-      for i := 0 to Pred(typItm.Members.Count) do begin
-        if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then begin
-          p := TPasProperty(typItm.Members[i]);
-          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) or AnsiSameText('True',p.StoredAccessorName) then begin
-            if AContainer.IsAttributeProperty(p) then begin
-              s := Format('%s:%s',[s_xs_short,s_attribute]);
-              if Assigned(derivationNode) then
-                propNode := CreateElement(s,derivationNode,ADocument)
-              else
-                propNode := CreateElement(s,cplxNode,ADocument);
-            end else begin
-              s := Format('%s:%s',[s_xs_short,s_element]);
-              propNode := CreateElement(s,sqcNode,ADocument);
-            end;
-            propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
-            propTypItm := p.VarType;
-            if Assigned(propTypItm) then begin
-              prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument);
-              propItmUltimeType := GetUltimeType(propTypItm);
-              isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
-                                 ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
-              if isEmbeddedArray then
-                s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType)
-              else
-                s := AContainer.GetExternalName(propTypItm);
-              propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
-              if AContainer.IsAttributeProperty(p) then begin
-                if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
-                  propNode.SetAttribute(s_use,'optional')
-                else
-                  propNode.SetAttribute(s_use,'required');
-              end else begin
-                if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
-                  propNode.SetAttribute(s_minOccurs,'0');
-                {else
-                  propNode.SetAttribute(s_minOccurs,'1');}
-                if isEmbeddedArray then
-                  propNode.SetAttribute(s_maxOccurs,s_unbounded)
-                {else
-                  propNode.SetAttribute(s_maxOccurs,'1');}
-              end;
-            end;
-          end;
-        end;
-      end;
+    for i := 0 to Pred(typItm.Members.Count) do begin
+      if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then
+        ProcessProperty(TPasProperty(typItm.Members[i]));
+    end;
   end;
 end;
 
@@ -643,7 +712,7 @@ begin
   inherited;
   typItm := ASymbol as TPasRecordType;
   if Assigned(typItm) then begin
-    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument);
+    GetNameSpaceShortName(AContainer.GetExternalName(AContainer.CurrentModule) ,ADocument,GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_complexType]);
@@ -683,7 +752,7 @@ begin
           propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
           propTypItm := p.VarType;
           if Assigned(propTypItm) then begin
-            prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument);
+            prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
             propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
             storeOption := Trim(AContainer.Properties.GetValue(p,s_WST_storeType));
             if AContainer.IsAttributeProperty(p) then begin
@@ -795,14 +864,30 @@ begin
   gr := GetXsdTypeHandlerRegistry();
   typeList := mdl.InterfaceSection.Declarations;
   k := typeList.Count;
-  for j := 0 to Pred(k) do begin
-    tri := TPasElement(typeList[j]);
-    if tri.InheritsFrom(TPasType) and
-       ( not tri.InheritsFrom(TPasNativeClassType) ) and
-       ( not tri.InheritsFrom(TPasNativeSimpleType) )
-    then begin
-      if gr.Find(tri,Self,g) then
-        g.Generate(ASymTable,tri,Self.Document);
+  if ( xgoIgnorembeddedArray in Options ) then begin
+    for j := 0 to Pred(k) do begin
+      tri := TPasElement(typeList[j]);
+      if tri.InheritsFrom(TPasType) and
+         ( not tri.InheritsFrom(TPasNativeClassType) ) and
+         ( not tri.InheritsFrom(TPasNativeSimpleType) ) and
+         ( ( not tri.InheritsFrom(TPasArrayType) ) or
+           ( ASymTable.GetArrayStyle(TPasArrayType(tri)) <> asEmbeded )
+         )
+      then begin
+        if gr.Find(tri,Self,g) then
+          g.Generate(ASymTable,tri,Self.Document);
+      end;
+    end;
+  end else begin
+    for j := 0 to Pred(k) do begin
+      tri := TPasElement(typeList[j]);
+      if tri.InheritsFrom(TPasType) and
+         ( not tri.InheritsFrom(TPasNativeClassType) ) and
+         ( not tri.InheritsFrom(TPasNativeSimpleType) )
+      then begin
+        if gr.Find(tri,Self,g) then
+          g.Generate(ASymTable,tri,Self.Document);
+      end;
     end;
   end;
 end;
@@ -812,11 +897,42 @@ begin
 
 end;
 
-constructor TCustomXsdGenerator.Create(ADocument : TDOMDocument);
+constructor TCustomXsdGenerator.Create(const ADocument : TDOMDocument);
+begin
+  Create(ADocument,[]);
+end;
+
+constructor TCustomXsdGenerator.Create(
+  const ADocument: TDOMDocument;
+  const AOptions: TGeneratorOptions
+);
+var
+  sl : TStringList;
 begin
   if ( ADocument = nil ) then
     raise EXsdGeneratorException.Create('Invalid document.');
   FDocument := ADocument;
+  FOptions := AOptions;
+  FShortNames := TStringList.Create();
+  sl := TStringList(FShortNames);
+  //sl.Sorted := True;
+  sl.Duplicates := dupIgnore;
+end;
+
+procedure TCustomXsdGenerator.SetPreferedShortNames(const ALongName, AShortName: string);
+begin
+  FShortNames.Values[ALongName] := AShortName;
+end;
+
+function TCustomXsdGenerator.GetPreferedShortNames() : TStrings;
+begin
+  Result := FShortNames;
+end;
+
+destructor TCustomXsdGenerator.Destroy();
+begin
+  FreeAndNil(FShortNames);
+  inherited;
 end;
 
 { TXsdGenerator }

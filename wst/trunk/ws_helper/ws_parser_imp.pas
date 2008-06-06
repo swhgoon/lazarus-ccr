@@ -16,7 +16,7 @@ unit ws_parser_imp;
 interface
 uses
   Classes, SysUtils,
-  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
+  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM, wst_fpc_xml{$ENDIF},
   cursor_intf, rtti_filters,
   pastree, pascal_parser_intf, logger_intf,
   xsd_parser;
@@ -463,7 +463,35 @@ var
   classDef : TPasClassType;
   isArrayDef : Boolean;
   arrayItems : TObjectList;
-  
+
+  procedure ExtractExtendedMetadata(const AItem : TPasElement; const ANode : TDOMNode);
+  var
+    ls : TDOMNamedNodeMap;
+    e : TDOMNode;
+    k, q : PtrInt;
+    ns_short, ns_long, localName, locBuffer, locBufferNS, locBufferNS_long, locBufferLocalName : string;
+  begin
+    if ( ANode.Attributes <> nil ) and ( GetNodeListCount(ANode.Attributes) > 0 ) then begin
+      ls := ANode.Attributes;
+      q := GetNodeListCount(ANode.Attributes);
+      for k := 0 to ( q - 1 ) do begin
+        e := ls.Item[k];
+        if ( Pos(':', e.NodeName) > 1 ) then begin
+          ExplodeQName(e.NodeName,localName,ns_short);
+          if FContext.FindNameSpace(ns_short, ns_long) then begin
+            locBuffer := e.NodeValue;
+            ExplodeQName(locBuffer,locBufferLocalName,locBufferNS);
+            if IsStrEmpty(locBufferNS) then
+              locBuffer := locBufferLocalName
+            else if FContext.FindNameSpace(locBufferNS, locBufferNS_long) then
+              locBuffer := Format('%s#%s',[locBufferNS_long,locBufferLocalName]);
+            FSymbols.Properties.SetValue(AItem,Format('%s#%s',[ns_long,localName]),locBuffer);
+          end;
+        end;
+      end;
+    end;
+  end;
+
   procedure ParseElement(AElement : TDOMNode);
   var
     locAttCursor, locPartCursor : IObjectCursor;
@@ -618,6 +646,11 @@ var
     if AnsiSameText(s_attribute,ExtractNameFromQName(AElement.NodeName)) then begin
       FSymbols.SetPropertyAsAttribute(locProp,True);
     end;
+    locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_default)]),TDOMNodeRttiExposer));
+    locPartCursor.Reset();
+    if locPartCursor.MoveNext() then
+      locProp.DefaultValue := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+    ExtractExtendedMetadata(locProp,AElement);
   end;
   
   procedure GenerateArrayTypes(
