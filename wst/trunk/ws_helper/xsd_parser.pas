@@ -80,7 +80,6 @@ type
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
     function FindNamedNode(AList : IObjectCursor; const AName : WideString; const AOrder : Integer = 0):TDOMNode;
-    function AddNameSpace(const AValue : string) : TStrings; {$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetParentContext() : IParserContext;{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure Prepare();
     function FindElement(const AName: String) : TPasElement; {$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -127,11 +126,6 @@ uses ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts
      ;
 
 { TCustomXsdSchemaParser }
-
-function TCustomXsdSchemaParser.AddNameSpace(const AValue: string): TStrings;
-begin
-  Result := parserutils.AddNameSpace(AValue,FNameSpaceList)
-end;
 
 constructor TCustomXsdSchemaParser.Create(
   ADoc           : TXMLDocument;
@@ -423,12 +417,11 @@ var
   shortNameSpace, longNameSpace : string;
   typeModule : TPasModule;
 begin
+  sct := nil;
   DoOnMessage(mtInfo, Format('Parsing "%s" ...',[AName]));
   try
     embededType := False;
     aliasType := nil;
-    Result := nil;
-    typeModule := nil;
     ExplodeQName(AName,localTypeName,shortNameSpace);
     if IsStrEmpty(shortNameSpace) then begin
       typeModule := FModule;
@@ -478,6 +471,8 @@ begin
   except
     on e : EXsdTypeNotFoundException do begin
       Result := CreateUnresolveType();
+      if ( sct = nil ) then
+        sct := FModule.InterfaceSection;
       sct.Declarations.Add(Result);
       sct.Types.Add(Result);
     end;
