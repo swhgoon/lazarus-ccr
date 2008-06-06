@@ -1,21 +1,22 @@
 {%mainunit appkit.pas}
-{
+(*
 	NSApplication.h
 	Application Kit
 	Copyright (c) 1994-2005, Apple Computer, Inc.
 	All rights reserved.
-}
+*)
 
 {$ifdef HEADER}
 {$ifndef NSAPPLICATION_PAS_H}
 {$define NSAPPLICATION_PAS_H}
 
 {$include NSResponder.inc}
-//#import <AppKit/AppKitDefines.h>
-
-{ The version of the AppKit framework }
-//APPKIT_EXTERN const double NSAppKitVersionNumber;
-
+{$include AppKitDefines.inc}
+  {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
+  {.$endif}
+  {.$endif}
+  {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
+  {.$endif}
 const
   NSAppKitVersionNumber10_0 = 577;
   NSAppKitVersionNumber10_1 = 620;
@@ -25,25 +26,50 @@ const
   NSAppKitVersionNumber10_3_2 = 743.14;
   NSAppKitVersionNumber10_3_3 = 743.2;
   NSAppKitVersionNumber10_3_5 = 743.24;
-
-{ Modes passed to NSRunLoop }
+  {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
+  {.$endif}
+  {.$endif}
+  {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
+  {.$endif}
+//APPKIT_EXTERN const double NSAppKitVersionNumber;
 //APPKIT_EXTERN NSString *NSModalPanelRunLoopMode;
 //APPKIT_EXTERN NSString *NSEventTrackingRunLoopMode;
-
-{ Pre-defined return values for runModalFor: and runModalSession:. The system also reserves all values below these. }
+  //  Pre-defined return values for runModalFor: and runModalSession:. The system also
+  // reserves all values below these.
 const
-    NSRunStoppedResponse			= (-1000);
-    NSRunAbortedResponse			= (-1001);
-    NSRunContinuesResponse     	        	= (-1002);
+  NSRunStoppedResponse = 1000;
+  NSRunAbortedResponse = 1001;
+  NSRunContinuesResponse = 1002;
 
-{ used with NSRunLoop's performSelector:target:argument:order:modes: }
+  //  used with NSRunLoop's performSelector:target:argument:order:modes:
 const
-    NSUpdateWindowsRunLoopOrdering		= 500000;
+  NSUpdateWindowsRunLoopOrdering = 500000;
 
-{ Information used by the system during modal sessions }
-//typedef struct _NSModalSession *NSModalSession;
-// threading information
-//typedef struct NSThreadPrivate _NSThreadPrivate;
+//APPKIT_EXTERN id NSApp;
+type
+  _NSModalSession = Pointer;
+  NSModalSession = _NSModalSession;
+
+type
+  NSThreadPrivate = Pointer;
+  _NSThreadPrivate = NSThreadPrivate;
+
+type
+  NSApplicationTerminateReply = (
+    NSTerminateCancel = 0, 
+    NSTerminateNow = 1, 
+    NSTerminateLater = 2
+  );
+
+
+type
+  NSApplicationPrintReply = (
+    NSPrintingCancelled = 0, 
+    NSPrintingSuccess = 1, 
+    NSPrintingFailure = 3, 
+    NSPrintingReplyLater = 2
+  );
+
 
 { An Application's startup function }
 
@@ -85,318 +111,943 @@ APPKIT_EXTERN NSString *NSApplicationWillUpdateNotification;
 APPKIT_EXTERN NSString *NSApplicationWillTerminateNotification;
 APPKIT_EXTERN NSString *NSApplicationDidChangeScreenParametersNotification;   }
 
-{ Class and method name strings }
-const
-  Str_NSApplication = 'NSApplication';
+type
+  NSRequestUserAttentionType = (
+    NSCriticalRequest = 0, 
+    NSInformationalRequest = 10
+  );
 
-  Str_sharedApplication = 'sharedApplication';
-  Str_setDelegate = 'setDelegate:';
-  Str_run = 'run';
-  Str_runModalForWindow = 'runModalForWindow:';
 
-  Str_orderFrontStandardAboutPanelWithOptions = 'orderFrontStandardAboutPanelWithOptions:';
+type
+  NSApplicationDelegateReply = (
+    NSApplicationDelegateReplySuccess = 0, 
+    NSApplicationDelegateReplyCancel = 1, 
+    NSApplicationDelegateReplyFailure = 2
+  );
+
 
 {$endif}
 {$endif}
+
+{$ifdef FORWARD}
+{$ifndef NSAPPLICATION_PAS__FORWARD}
+{$define NSAPPLICATION_PAS__FORWARD}
+
+  NSApplication = class;
+{$endif}
+{$endif}
+
 {$ifdef CLASSES}
 {$ifndef NSAPPLICATION_PAS_C}
 {$define NSAPPLICATION_PAS_C}
 
 {$include NSResponder.inc}
+{$include AppKitDefines.inc}
 
-//@class NSDate, NSDictionary, NSError, NSException, NSNotification;
-//@class NSGraphicsContext, NSImage, NSPasteboard, NSWindow;
-//  NSWindow = class;
-{ The version of the AppKit framework }
-//APPKIT_EXTERN const double NSAppKitVersionNumber;
+  { NSApplication }
 
   NSApplication = class(NSResponder)
   public
-    { Extra binding functions }
     class function getClass: objc.id; override;
-  public
+    // All instance variables are private
+    //  unused
     constructor sharedApplication;
-
-    procedure setDelegate(anObject: NSObject);
-{- (id)delegate;
-- (NSGraphicsContext*)context;
-- (void)hide:(id)sender;
-- (void)unhide:(id)sender;
-- (void)unhideWithoutActivation;
-- (NSWindow *)windowWithWindowNumber:(int)windowNum;
-- (NSWindow *)mainWindow;
-- (NSWindow *)keyWindow;
-- (BOOL)isActive;
-- (BOOL)isHidden;
-- (BOOL)isRunning;
-- (void)deactivate;
-- (void)activateIgnoringOtherApps:(BOOL)flag;
-
-- (void)hideOtherApplications:(id)sender;
-- (void)unhideAllApplications:(id)sender;
-
-- (void)finishLaunching;}
+    procedure setDelegate(_anObject: objc.id);
+    function delegate: objc.id;
+    function context: objc.id;{NSGraphicsContext}
+    procedure hide(_sender: objc.id);
+    procedure unhide(_sender: objc.id);
+    procedure unhideWithoutActivation;
+    function windowWithWindowNumber(_windowNum: Integer): objc.id;{NSWindow}
+    function mainWindow: objc.id;{NSWindow}
+    function keyWindow: objc.id;{NSWindow}
+    function isActive: LongBool;
+    function isHidden: LongBool;
+    function isRunning: LongBool;
+    procedure deactivate;
+    procedure activateIgnoringOtherApps(_flag: LongBool);
+    procedure hideOtherApplications(_sender: objc.id);
+    procedure unhideAllApplications(_sender: objc.id);
+    procedure finishLaunching;
     procedure run;
-    function runModalForWindow(theWindow: NSWindow): cint;
-{- (void)stop:(id)sender;
-- (void)stopModal;
-- (void)stopModalWithCode:(int)returnCode;
-- (void)abortModal;
-- (NSWindow *)modalWindow;
-- (NSModalSession)beginModalSessionForWindow:(NSWindow *)theWindow;
-- (int)runModalSession:(NSModalSession)session;
-- (void)endModalSession:(NSModalSession)session;
-- (void)terminate:(id)sender; }
-
-//typedef enum {
-//      NSCriticalRequest = 0,
-//      NSInformationalRequest = 10
-//} NSRequestUserAttentionType;
-
-// inform the user that this application needs attention - call this method only if your application is not already active
-{- (int)requestUserAttention:(NSRequestUserAttentionType)requestType;
-- (void)cancelUserAttentionRequest:(int)request;
-
-/*
-**  Present a sheet on the given window.  When the modal session is ended,
-** the didEndSelector will be invoked in the modalDelegate.  The didEndSelector
-** should have the following signature, and will be invoked when the modal session ends.
-** This method should dimiss the sheet using orderOut:
-** - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-**
-*/
-- (void)beginSheet:(NSWindow *)sheet modalForWindow:(NSWindow *)docWindow modalDelegate:(id)modalDelegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo;
-- (void)endSheet:(NSWindow *)sheet;
-- (void)endSheet:(NSWindow *)sheet returnCode:(int)returnCode;
-
-/*
-** runModalForWindow:relativeToWindow: is deprecated.
-** Please use beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:
-*/
-- (int)runModalForWindow:(NSWindow *)theWindow relativeToWindow:(NSWindow *)docWindow;
-
-/*
-** beginModalSessionForWindow:relativeToWindow: is deprecated.
-** Please use beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:
-*/
-- (NSModalSession)beginModalSessionForWindow:(NSWindow *)theWindow relativeToWindow:(NSWindow *)docWindow;
-- (NSEvent *)nextEventMatchingMask:(unsigned int)mask untilDate:(NSDate *)expiration inMode:(NSString *)mode dequeue:(BOOL)deqFlag;
-- (void)discardEventsMatchingMask:(unsigned int)mask beforeEvent:(NSEvent *)lastEvent;
-- (void)postEvent:(NSEvent *)event atStart:(BOOL)flag;
-- (NSEvent *)currentEvent;
-
-- (void)sendEvent:(NSEvent *)theEvent;
-- (void)preventWindowOrdering;
-- (NSWindow *)makeWindowsPerform:(SEL)aSelector inOrder:(BOOL)flag;
-- (NSArray *)windows;
-- (void)setWindowsNeedUpdate:(BOOL)needUpdate;
-- (void)updateWindows;
-
-- (void)setMainMenu:(NSMenu *)aMenu;
-- (NSMenu *)mainMenu;
-
-- (void)setApplicationIconImage:(NSImage *)image;
-- (NSImage *)applicationIconImage;
-
-- (BOOL)sendAction:(SEL)theAction to:(id)theTarget from:(id)sender;
-- (id)targetForAction:(SEL)theAction;
-- (id)targetForAction:(SEL)theAction to:(id)theTarget from:(id)sender;
-- (BOOL)tryToPerform:(SEL)anAction with:(id)anObject;
-- (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType;
-
-- (void)reportException:(NSException *)theException;
-+ (void)detachDrawingThread:(SEL)selector toTarget:(id)target withObject:(id)argument;
-
-/*  If an application delegate returns NSTerminateLater from -applicationShouldTerminate:, -replyToApplicationShouldTerminate: must be called with YES or NO once the application decides if it can terminate */
-- (void)replyToApplicationShouldTerminate:(BOOL)shouldTerminate; }
-//#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-
-//typedef enum NSApplicationDelegateReply {
-//    NSApplicationDelegateReplySuccess = 0,
-//    NSApplicationDelegateReplyCancel = 1,
-//    NSApplicationDelegateReplyFailure = 2
-//} NSApplicationDelegateReply;
-
-{ If an application delegate encounters an error while handling -application:openFiles: or -application:printFiles:, -replyToOpenOrPrint: should be called with NSApplicationDelegateReplyFailure.  If the user cancels the operation, NSApplicationDelegateReplyCancel should be used, and if the operation succeeds, NSApplicationDelegateReplySuccess should be used */
-- (void)replyToOpenOrPrint:(NSApplicationDelegateReply)reply;
-
-/* Opens the character palette
-*/
-- (void)orderFrontCharacterPalette:(id)sender;
-#endif}
-
-{@interface NSApplication(NSWindowsMenu)
-- (void)setWindowsMenu:(NSMenu *)aMenu;
-- (NSMenu *)windowsMenu;
-- (void)arrangeInFront:(id)sender;
-- (void)removeWindowsItem:(NSWindow *)win;
-- (void)addWindowsItem:(NSWindow *)win title:(NSString *)aString filename:(BOOL)isFilename;
-- (void)changeWindowsItem:(NSWindow *)win title:(NSString *)aString filename:(BOOL)isFilename;
-- (void)updateWindowsItem:(NSWindow *)win;
-- (void)miniaturizeAll:(id)sender;
-@end
-
-@interface NSObject(NSApplicationNotifications)
-- (void)applicationWillFinishLaunching:(NSNotification *)notification;
-- (void)applicationDidFinishLaunching:(NSNotification *)notification;
-- (void)applicationWillHide:(NSNotification *)notification;
-- (void)applicationDidHide:(NSNotification *)notification;
-- (void)applicationWillUnhide:(NSNotification *)notification;
-- (void)applicationDidUnhide:(NSNotification *)notification;
-- (void)applicationWillBecomeActive:(NSNotification *)notification;
-- (void)applicationDidBecomeActive:(NSNotification *)notification;
-- (void)applicationWillResignActive:(NSNotification *)notification;
-- (void)applicationDidResignActive:(NSNotification *)notification;
-- (void)applicationWillUpdate:(NSNotification *)notification;
-- (void)applicationDidUpdate:(NSNotification *)notification;
-- (void)applicationWillTerminate:(NSNotification *)notification;
-- (void)applicationDidChangeScreenParameters:(NSNotification *)notification;
-@end }
-
-// return values for -applicationShouldTerminate:
-//typedef enum NSApplicationTerminateReply {
-//        NSTerminateCancel = 0,
-//        NSTerminateNow = 1,
-//        NSTerminateLater = 2
-//} NSApplicationTerminateReply;
-
-//#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
-// return values for -application:printFiles:withSettings:showPrintPanels:.
-//typedef enum NSApplicationPrintReply {
-//    NSPrintingCancelled = 0,
-//    NSPrintingSuccess = 1,
-//    NSPrintingFailure = 3,
-//    NSPrintingReplyLater = 2
-//} NSApplicationPrintReply;
-//#endif
-
-{@interface NSObject(NSApplicationDelegate)
-/*
-    Allowable return values are:
-        NSTerminateNow - it is ok to proceed with termination
-        NSTerminateCancel - the application should not be terminated
-        NSTerminateLater - it may be ok to proceed with termination later.  The application must call -replyToApplicationShouldTerminate: with YES or NO once the answer is known
-            this return value is for delegates who need to provide document modal alerts (sheets) in order to decide whether to quit.
-*/
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
-- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename;
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames;
-#endif
-- (BOOL)application:(NSApplication *)sender openTempFile:(NSString *)filename;
-- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender;
-- (BOOL)applicationOpenUntitledFile:(NSApplication *)sender;
-- (BOOL)application:(id)sender openFileWithoutUI:(NSString *)filename;
-- (BOOL)application:(NSApplication *)sender printFile:(NSString *)filename;
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
-- (NSApplicationPrintReply)application:(NSApplication *)application printFiles:(NSArray *)fileNames withSettings:(NSDictionary *)printSettings showPrintPanels:(BOOL)showPrintPanels;
-#endif
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-// -application:printFiles: is now deprecated. Implement application:printFiles:withSettings:showPrintPanels: in your application delegate instead.
-- (void)application:(NSApplication *)sender printFiles:(NSArray *)filenames;
-#endif
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag;
-- (NSMenu *)applicationDockMenu:(NSApplication *)sender;
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
-- (NSError *)application:(NSApplication *)application willPresentError:(NSError *)error;
-#endif
-@end
-
-@interface NSApplication(NSServicesMenu)
-- (void)setServicesMenu:(NSMenu *)aMenu;
-- (NSMenu *)servicesMenu;
-- (void)registerServicesMenuSendTypes:(NSArray *)sendTypes returnTypes:(NSArray *)returnTypes;
-@end
-
-@interface NSObject(NSServicesRequests)
-- (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
-- (BOOL)readSelectionFromPasteboard:(NSPasteboard *)pboard;
-@end
-
-@interface NSApplication(NSServicesHandling)
-- (void)setServicesProvider:(id)provider;
-- (id)servicesProvider;
-@end}
-
-{@interface NSApplication(NSStandardAboutPanel)}
-//- (void)orderFrontStandardAboutPanel:(id)sender;
-    procedure orderFrontStandardAboutPanelWithOptions(optionsDictionary: Pointer); //:(NSDictionary *)optionsDictionary;
-
-{ Optional keys in optionsDictionary:
-
-@"Credits": NSAttributedString displayed in the info area of the panel. If
-not specified, contents obtained from "Credits.rtf" in [NSBundle mainBundle];
-if not available, blank.
-
-@"ApplicationName": NSString displayed in place of the default app name. If
-not specified, uses the value of CFBundleName (localizable). Fallback is [[NSProcessInfo processInfo] processName].
-
-@"ApplicationIcon": NSImage displayed in place of NSApplicationIcon. If not
-specified, use [NSImage imageNamed:@"NSApplicationIcon"]; if not available, generic icon.
-
-@"Copyright": NSString containing the copyright string. If not specified,
-obtain from the value of NSHumanReadableCopyright (localizable) in infoDictionary; if not available, leave blank.
-
-@"Version": NSString containing the build version number of the application
-("58.4", "1.2d3"); displayed as "Version 58.4" or "Version 1.0 (58.4) depending on the presence of ApplicationVersion.
-If not specified, obtain from the CFBundleVersion key in infoDictionary; if not specified or empty string, leave blank.
-
-@"ApplicationVersion": NSString displayed as the marketing version  ("1.0", "Mac OS X", "3", "WebObjects 3.5", ...), before the build version.
-If not specified, obtain from CFBundleShortVersionString key in infoDictionary. Prefixed with word "Version" if it looks like a number.
-}
-
-{@end}
-
-{#ifdef WIN32
-@interface NSApplication (NSWindowsExtensions)
-+ (void)setApplicationHandle:(void * /*HINSTANCE*/)hInstance previousHandle:(void * /*HINSTANCE*/)PrevInstance commandLine:(NSString *)cmdLine show:(int)cmdShow;
-+ (void)useRunningCopyOfApplication;
-- (void * /*HINSTANCE*/)applicationHandle;
-- (NSWindow *)windowWithWindowHandle:(void * /*HWND*/)hWnd; // does not create a new NSWindow
-@end
-#endif}
+    function runModalForWindow(_theWindow: objc.id {NSWindow}): Integer;
+    procedure stop(_sender: objc.id);
+    procedure stopModal;
+    procedure stopModalWithCode(_returnCode: Integer);
+    procedure abortModal;
+    function modalWindow: objc.id;{NSWindow}
+    function beginModalSessionForWindow(_theWindow: objc.id {NSWindow}): NSModalSession;
+    function runModalSession(_session: NSModalSession): Integer;
+    procedure endModalSession(_session: NSModalSession);
+    procedure terminate(_sender: objc.id);
+    //  inform the user that this application needs attention - call this method only if
+    // your application is not already active
+    function requestUserAttention(_requestType: NSRequestUserAttentionType): Integer;
+    procedure cancelUserAttentionRequest(_request: Integer);
+    // **  Present a sheet on the given window.  When the modal session is ended,
+    // ** the didEndSelector will be invoked in the modalDelegate.  The didEndSelector
+    // ** should have the following signature, and will be invoked when the modal session
+    // ends.
+    // ** This method should dimiss the sheet using orderOut:
+    // ** - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void
+    // *)contextInfo;
+    // **
+    procedure beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(_sheet: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}; _modalDelegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+    procedure endSheet(_sheet: objc.id {NSWindow});
+    procedure endSheet_returnCode(_sheet: objc.id {NSWindow}; _returnCode: Integer);
+    // ** runModalForWindow:relativeToWindow: is deprecated. 
+    // ** Please use beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:
+    function runModalForWindow_relativeToWindow(_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): Integer;
+    // 
+    // ** beginModalSessionForWindow:relativeToWindow: is deprecated.
+    // ** Please use beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:
+    function beginModalSessionForWindow_relativeToWindow(_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): NSModalSession;
+    function nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id;{NSEvent}
+    procedure discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: objc.id {NSEvent});
+    procedure postEvent_atStart(_event: objc.id {NSEvent}; _flag: LongBool);
+    function currentEvent: objc.id;{NSEvent}
+    procedure sendEvent(_theEvent: objc.id {NSEvent});
+    procedure preventWindowOrdering;
+    function makeWindowsPerform_inOrder(_aSelector: SEL; _flag: LongBool): objc.id;{NSWindow}
+    function windows: CFArrayRef;
+    procedure setWindowsNeedUpdate(_needUpdate: LongBool);
+    procedure updateWindows;
+    procedure setMainMenu(_aMenu: objc.id {NSMenu});
+    function mainMenu: objc.id;{NSMenu}
+    procedure setApplicationIconImage(_image: objc.id {NSImage});
+    function applicationIconImage: objc.id;{NSImage}
+    function sendAction_to_from(_theAction: SEL; _theTarget: objc.id; _sender: objc.id): LongBool;
+    function targetForAction(_theAction: SEL): objc.id;
+    function targetForAction_to_from(_theAction: SEL; _theTarget: objc.id; _sender: objc.id): objc.id;
+    function tryToPerform_with(_anAction: SEL; _anObject: objc.id): LongBool;
+    function validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): objc.id;
+    procedure reportException(_theException: objc.id {NSException});
+    class procedure detachDrawingThread_toTarget_withObject(_selector: SEL; _target: objc.id; _argument: objc.id);
+    //   If an application delegate returns NSTerminateLater from -applicationShouldTerminate:,
+    // -replyToApplicationShouldTerminate: must be called with YES or NO once the application
+    // decides if it can terminate
+    procedure replyToApplicationShouldTerminate(_shouldTerminate: LongBool);
+    {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
+    //  If an application delegate encounters an error while handling -application:openFiles:
+    // or -application:printFiles:, -replyToOpenOrPrint: should be called with NSApplicationDelegateReplyFailure.
+    //  If the user cancels the operation, NSApplicationDelegateReplyCancel should be used,
+    // and if the operation succeeds, NSApplicationDelegateReplySuccess should be used
+    procedure replyToOpenOrPrint(_reply: NSApplicationDelegateReply);
+    //  Opens the character palette
+    procedure orderFrontCharacterPalette(_sender: objc.id);
+    {.$endif}
+    procedure setWindowsMenu(_aMenu: objc.id {NSMenu});
+    function windowsMenu: objc.id;{NSMenu}
+    procedure arrangeInFront(_sender: objc.id);
+    procedure removeWindowsItem(_win: objc.id {NSWindow});
+    procedure addWindowsItem_title_filename(_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool);
+    procedure changeWindowsItem_title_filename(_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool);
+    procedure updateWindowsItem(_win: objc.id {NSWindow});
+    procedure miniaturizeAll(_sender: objc.id);
+    procedure setServicesMenu(_aMenu: objc.id {NSMenu});
+    function servicesMenu: objc.id;{NSMenu}
+    procedure registerServicesMenuSendTypes_returnTypes(_sendTypes: CFArrayRef; _returnTypes: CFArrayRef);
+    procedure setServicesProvider(_provider: objc.id);
+    function servicesProvider: objc.id;
+    procedure orderFrontStandardAboutPanel(_sender: objc.id);
+    procedure orderFrontStandardAboutPanelWithOptions(_optionsDictionary: CFDictionaryRef);
+    //  Optional keys in optionsDictionary:
+    // @"Credits": NSAttributedString displayed in the info area of the panel. If
+    // not specified, contents obtained from "Credits.rtf" in [NSBundle mainBundle];
+    // if not available, blank.
+    // @"ApplicationName": NSString displayed in place of the default app name. If
+    // not specified, uses the value of CFBundleName (localizable). Fallback is [[NSProcessInfo
+    // processInfo] processName].
+    // @"ApplicationIcon": NSImage displayed in place of NSApplicationIcon. If not
+    // specified, use [NSImage imageNamed:@"NSApplicationIcon"]; if not available, generic
+    // icon.
+    // @"Copyright": NSString containing the copyright string. If not specified,
+    // obtain from the value of NSHumanReadableCopyright (localizable) in infoDictionary;
+    // if not available, leave blank.
+    // @"Version": NSString containing the build version number of the application
+    // ("58.4", "1.2d3"); displayed as "Version 58.4" or "Version 1.0 (58.4) depending on
+    // the presence of ApplicationVersion.
+    // If not specified, obtain from the CFBundleVersion key in infoDictionary; if not specified
+    // or empty string, leave blank.
+    // @"ApplicationVersion": NSString displayed as the marketing version  ("1.0", "Mac
+    // OS X", "3", "WebObjects 3.5", ...), before the build version.
+    // If not specified, obtain from CFBundleShortVersionString key in infoDictionary. Prefixed
+    // with word "Version" if it looks like a number.
+    class procedure setApplicationHandle_previousHandle_commandLine_show(_hInstance: Pointer; _PrevInstance: Pointer; _cmdLine: CFStringRef; _cmdShow: Integer);
+    class procedure useRunningCopyOfApplication;
+    function applicationHandle: Pointer;
+    function windowWithWindowHandle(_hWnd: Pointer): objc.id;{NSWindow}
   end;
 
+    {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
+    {.$endif}
+    {.$endif}
+    {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
+    {.$endif}
 {$endif}
 {$endif}
+
 {$ifdef IMPLEMENTATION}
+const
+  StrNSApplication_NSApplication = 'NSApplication';
+  StrNSApplication_sharedApplication = 'sharedApplication';
+  StrNSApplication_setDelegate = 'setDelegate:';
+  StrNSApplication_delegate = 'delegate';
+  StrNSApplication_context = 'context';
+  StrNSApplication_hide = 'hide:';
+  StrNSApplication_unhide = 'unhide:';
+  StrNSApplication_unhideWithoutActivation = 'unhideWithoutActivation';
+  StrNSApplication_windowWithWindowNumber = 'windowWithWindowNumber:';
+  StrNSApplication_mainWindow = 'mainWindow';
+  StrNSApplication_keyWindow = 'keyWindow';
+  StrNSApplication_isActive = 'isActive';
+  StrNSApplication_isHidden = 'isHidden';
+  StrNSApplication_isRunning = 'isRunning';
+  StrNSApplication_deactivate = 'deactivate';
+  StrNSApplication_activateIgnoringOtherApps = 'activateIgnoringOtherApps:';
+  StrNSApplication_hideOtherApplications = 'hideOtherApplications:';
+  StrNSApplication_unhideAllApplications = 'unhideAllApplications:';
+  StrNSApplication_finishLaunching = 'finishLaunching';
+  StrNSApplication_run = 'run';
+  StrNSApplication_runModalForWindow = 'runModalForWindow:';
+  StrNSApplication_stop = 'stop:';
+  StrNSApplication_stopModal = 'stopModal';
+  StrNSApplication_stopModalWithCode = 'stopModalWithCode:';
+  StrNSApplication_abortModal = 'abortModal';
+  StrNSApplication_modalWindow = 'modalWindow';
+  StrNSApplication_beginModalSessionForWindow = 'beginModalSessionForWindow:';
+  StrNSApplication_runModalSession = 'runModalSession:';
+  StrNSApplication_endModalSession = 'endModalSession:';
+  StrNSApplication_terminate = 'terminate:';
+  StrNSApplication_requestUserAttention = 'requestUserAttention:';
+  StrNSApplication_cancelUserAttentionRequest = 'cancelUserAttentionRequest:';
+  StrNSApplication_beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo = 'beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo:';
+  StrNSApplication_endSheet = 'endSheet:';
+  StrNSApplication_endSheet_returnCode = 'endSheet:returnCode:';
+  StrNSApplication_runModalForWindow_relativeToWindow = 'runModalForWindow:relativeToWindow:';
+  StrNSApplication_beginModalSessionForWindow_relativeToWindow = 'beginModalSessionForWindow:relativeToWindow:';
+  StrNSApplication_nextEventMatchingMask_untilDate_inMode_dequeue = 'nextEventMatchingMask:untilDate:inMode:dequeue:';
+  StrNSApplication_discardEventsMatchingMask_beforeEvent = 'discardEventsMatchingMask:beforeEvent:';
+  StrNSApplication_postEvent_atStart = 'postEvent:atStart:';
+  StrNSApplication_currentEvent = 'currentEvent';
+  StrNSApplication_sendEvent = 'sendEvent:';
+  StrNSApplication_preventWindowOrdering = 'preventWindowOrdering';
+  StrNSApplication_makeWindowsPerform_inOrder = 'makeWindowsPerform:inOrder:';
+  StrNSApplication_windows = 'windows';
+  StrNSApplication_setWindowsNeedUpdate = 'setWindowsNeedUpdate:';
+  StrNSApplication_updateWindows = 'updateWindows';
+  StrNSApplication_setMainMenu = 'setMainMenu:';
+  StrNSApplication_mainMenu = 'mainMenu';
+  StrNSApplication_setApplicationIconImage = 'setApplicationIconImage:';
+  StrNSApplication_applicationIconImage = 'applicationIconImage';
+  StrNSApplication_sendAction_to_from = 'sendAction:to:from:';
+  StrNSApplication_targetForAction = 'targetForAction:';
+  StrNSApplication_targetForAction_to_from = 'targetForAction:to:from:';
+  StrNSApplication_tryToPerform_with = 'tryToPerform:with:';
+  StrNSApplication_validRequestorForSendType_returnType = 'validRequestorForSendType:returnType:';
+  StrNSApplication_reportException = 'reportException:';
+  StrNSApplication_detachDrawingThread_toTarget_withObject = 'detachDrawingThread:toTarget:withObject:';
+  StrNSApplication_replyToApplicationShouldTerminate = 'replyToApplicationShouldTerminate:';
+  StrNSApplication_replyToOpenOrPrint = 'replyToOpenOrPrint:';
+  StrNSApplication_orderFrontCharacterPalette = 'orderFrontCharacterPalette:';
+
+  StrNSApplication_setWindowsMenu = 'setWindowsMenu:';
+  StrNSApplication_windowsMenu = 'windowsMenu';
+  StrNSApplication_arrangeInFront = 'arrangeInFront:';
+  StrNSApplication_removeWindowsItem = 'removeWindowsItem:';
+  StrNSApplication_addWindowsItem_title_filename = 'addWindowsItem:title:filename:';
+  StrNSApplication_changeWindowsItem_title_filename = 'changeWindowsItem:title:filename:';
+  StrNSApplication_updateWindowsItem = 'updateWindowsItem:';
+  StrNSApplication_miniaturizeAll = 'miniaturizeAll:';
+
+  StrNSApplication_setServicesMenu = 'setServicesMenu:';
+  StrNSApplication_servicesMenu = 'servicesMenu';
+  StrNSApplication_registerServicesMenuSendTypes_returnTypes = 'registerServicesMenuSendTypes:returnTypes:';
+
+  StrNSApplication_setServicesProvider = 'setServicesProvider:';
+  StrNSApplication_servicesProvider = 'servicesProvider';
+
+  StrNSApplication_orderFrontStandardAboutPanel = 'orderFrontStandardAboutPanel:';
+  StrNSApplication_orderFrontStandardAboutPanelWithOptions = 'orderFrontStandardAboutPanelWithOptions:';
+
+  StrNSApplication_setApplicationHandle_previousHandle_commandLine_show = 'setApplicationHandle:previousHandle:commandLine:show:';
+  StrNSApplication_useRunningCopyOfApplication = 'useRunningCopyOfApplication';
+  StrNSApplication_applicationHandle = 'applicationHandle';
+  StrNSApplication_windowWithWindowHandle = 'windowWithWindowHandle:';
+
+{ NSApplication }
 
 class function NSApplication.getClass: objc.id;
 begin
-  Result := objc_getClass(Str_NSApplication);
+  Result := objc_getClass(StrNSApplication_NSApplication);
 end;
 
 constructor NSApplication.sharedApplication;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
 begin
-  ClassId := getClass;
-  Handle := objc_msgSend(ClassId, sel_registerName(PChar(Str_sharedApplication)), []);
+  ClassID := getClass();
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Handle := vmethod(ClassID, sel_registerName(PChar(StrNSApplication_sharedApplication)));
 end;
 
-procedure NSApplication.setDelegate(anObject: NSObject);
+procedure NSApplication.setDelegate(_anObject: objc.id);
 type
-  setDelegate_t = procedure (param1: objc.id; param2: SEL; param3: objc.id); cdecl;
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_anObject: objc.id); cdecl;
 var
-  vmethod: setDelegate_t;
+  vmethod: TmsgSendWrapper;
 begin
-  vmethod := setDelegate_t(@objc_msgSend);
-  vmethod(Handle, sel_registerName(PChar(Str_setDelegate)), anObject.Handle);
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setDelegate)), _anObject);
+end;
+
+function NSApplication.delegate: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_delegate)), []));
+end;
+
+function NSApplication.context: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_context)), []));
+end;
+
+procedure NSApplication.hide(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_hide)), _sender);
+end;
+
+procedure NSApplication.unhide(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_unhide)), _sender);
+end;
+
+procedure NSApplication.unhideWithoutActivation;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_unhideWithoutActivation)), []);
+end;
+
+function NSApplication.windowWithWindowNumber(_windowNum: Integer): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_windowNum: Integer): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_windowWithWindowNumber)), _windowNum));
+end;
+
+function NSApplication.mainWindow: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_mainWindow)), []));
+end;
+
+function NSApplication.keyWindow: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_keyWindow)), []));
+end;
+
+function NSApplication.isActive: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isActive)), []));
+end;
+
+function NSApplication.isHidden: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isHidden)), []));
+end;
+
+function NSApplication.isRunning: LongBool;
+begin
+  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isRunning)), []));
+end;
+
+procedure NSApplication.deactivate;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_deactivate)), []);
+end;
+
+procedure NSApplication.activateIgnoringOtherApps(_flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_activateIgnoringOtherApps)), _flag);
+end;
+
+procedure NSApplication.hideOtherApplications(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_hideOtherApplications)), _sender);
+end;
+
+procedure NSApplication.unhideAllApplications(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_unhideAllApplications)), _sender);
+end;
+
+procedure NSApplication.finishLaunching;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_finishLaunching)), []);
 end;
 
 procedure NSApplication.run;
 begin
-  objc_msgSend(Handle, sel_registerName(PChar(Str_run)), []);
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_run)), []);
 end;
 
-function NSApplication.runModalForWindow(theWindow: NSWindow): cint;
+function NSApplication.runModalForWindow(_theWindow: objc.id {NSWindow}): Integer;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theWindow: objc.id {NSWindow}): Integer; cdecl;
+var
+  vmethod: TmsgSendWrapper;
 begin
-  Result := cint(objc_msgSend(Handle, sel_registerName(PChar(Str_runModalForWindow)), [theWindow.Handle]));
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSApplication_runModalForWindow)), _theWindow));
 end;
 
-procedure NSApplication.orderFrontStandardAboutPanelWithOptions(optionsDictionary: Pointer);
+procedure NSApplication.stop(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
 begin
-  objc_msgSend(Handle, sel_registerName(PChar(Str_orderFrontStandardAboutPanelWithOptions)), [optionsDictionary]);
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_stop)), _sender);
+end;
+
+procedure NSApplication.stopModal;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_stopModal)), []);
+end;
+
+procedure NSApplication.stopModalWithCode(_returnCode: Integer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_returnCode: Integer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_stopModalWithCode)), _returnCode);
+end;
+
+procedure NSApplication.abortModal;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_abortModal)), []);
+end;
+
+function NSApplication.modalWindow: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_modalWindow)), []));
+end;
+
+function NSApplication.beginModalSessionForWindow(_theWindow: objc.id {NSWindow}): NSModalSession;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theWindow: objc.id {NSWindow}): NSModalSession; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := NSModalSession(vmethod(Handle, sel_registerName(PChar(StrNSApplication_beginModalSessionForWindow)), _theWindow));
+end;
+
+function NSApplication.runModalSession(_session: NSModalSession): Integer;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_session: NSModalSession): Integer; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSApplication_runModalSession)), _session));
+end;
+
+procedure NSApplication.endModalSession(_session: NSModalSession);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_session: NSModalSession); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_endModalSession)), _session);
+end;
+
+procedure NSApplication.terminate(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_terminate)), _sender);
+end;
+
+function NSApplication.requestUserAttention(_requestType: NSRequestUserAttentionType): Integer;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_requestType: NSRequestUserAttentionType): Integer; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSApplication_requestUserAttention)), _requestType));
+end;
+
+procedure NSApplication.cancelUserAttentionRequest(_request: Integer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_request: Integer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_cancelUserAttentionRequest)), _request);
+end;
+
+procedure NSApplication.beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo(_sheet: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}; _modalDelegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sheet: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}; _modalDelegate: objc.id; _didEndSelector: SEL; _contextInfo: Pointer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_beginSheet_modalForWindow_modalDelegate_didEndSelector_contextInfo)), _sheet, _docWindow, _modalDelegate, _didEndSelector, _contextInfo);
+end;
+
+procedure NSApplication.endSheet(_sheet: objc.id {NSWindow});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sheet: objc.id {NSWindow}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_endSheet)), _sheet);
+end;
+
+procedure NSApplication.endSheet_returnCode(_sheet: objc.id {NSWindow}; _returnCode: Integer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sheet: objc.id {NSWindow}; _returnCode: Integer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_endSheet_returnCode)), _sheet, _returnCode);
+end;
+
+function NSApplication.runModalForWindow_relativeToWindow(_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): Integer;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): Integer; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := Integer(vmethod(Handle, sel_registerName(PChar(StrNSApplication_runModalForWindow_relativeToWindow)), _theWindow, _docWindow));
+end;
+
+function NSApplication.beginModalSessionForWindow_relativeToWindow(_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): NSModalSession;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theWindow: objc.id {NSWindow}; _docWindow: objc.id {NSWindow}): NSModalSession; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := NSModalSession(vmethod(Handle, sel_registerName(PChar(StrNSApplication_beginModalSessionForWindow_relativeToWindow)), _theWindow, _docWindow));
+end;
+
+function NSApplication.nextEventMatchingMask_untilDate_inMode_dequeue(_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_mask: LongWord; _expiration: CFDateRef; _mode: CFStringRef; _deqFlag: LongBool): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_nextEventMatchingMask_untilDate_inMode_dequeue)), _mask, _expiration, _mode, _deqFlag));
+end;
+
+procedure NSApplication.discardEventsMatchingMask_beforeEvent(_mask: LongWord; _lastEvent: objc.id {NSEvent});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_mask: LongWord; _lastEvent: objc.id {NSEvent}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_discardEventsMatchingMask_beforeEvent)), _mask, _lastEvent);
+end;
+
+procedure NSApplication.postEvent_atStart(_event: objc.id {NSEvent}; _flag: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_event: objc.id {NSEvent}; _flag: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_postEvent_atStart)), _event, _flag);
+end;
+
+function NSApplication.currentEvent: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_currentEvent)), []));
+end;
+
+procedure NSApplication.sendEvent(_theEvent: objc.id {NSEvent});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_theEvent: objc.id {NSEvent}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_sendEvent)), _theEvent);
+end;
+
+procedure NSApplication.preventWindowOrdering;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_preventWindowOrdering)), []);
+end;
+
+function NSApplication.makeWindowsPerform_inOrder(_aSelector: SEL; _flag: LongBool): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_aSelector: SEL; _flag: LongBool): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_makeWindowsPerform_inOrder)), _aSelector, _flag));
+end;
+
+function NSApplication.windows: CFArrayRef;
+begin
+  Result := CFArrayRef(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_windows)), []));
+end;
+
+procedure NSApplication.setWindowsNeedUpdate(_needUpdate: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_needUpdate: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setWindowsNeedUpdate)), _needUpdate);
+end;
+
+procedure NSApplication.updateWindows;
+begin
+  objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_updateWindows)), []);
+end;
+
+procedure NSApplication.setMainMenu(_aMenu: objc.id {NSMenu});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aMenu: objc.id {NSMenu}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setMainMenu)), _aMenu);
+end;
+
+function NSApplication.mainMenu: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_mainMenu)), []));
+end;
+
+procedure NSApplication.setApplicationIconImage(_image: objc.id {NSImage});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_image: objc.id {NSImage}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setApplicationIconImage)), _image);
+end;
+
+function NSApplication.applicationIconImage: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_applicationIconImage)), []));
+end;
+
+function NSApplication.sendAction_to_from(_theAction: SEL; _theTarget: objc.id; _sender: objc.id): LongBool;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theAction: SEL; _theTarget: objc.id; _sender: objc.id): LongBool; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSApplication_sendAction_to_from)), _theAction, _theTarget, _sender));
+end;
+
+function NSApplication.targetForAction(_theAction: SEL): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theAction: SEL): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_targetForAction)), _theAction));
+end;
+
+function NSApplication.targetForAction_to_from(_theAction: SEL; _theTarget: objc.id; _sender: objc.id): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_theAction: SEL; _theTarget: objc.id; _sender: objc.id): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_targetForAction_to_from)), _theAction, _theTarget, _sender));
+end;
+
+function NSApplication.tryToPerform_with(_anAction: SEL; _anObject: objc.id): LongBool;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_anAction: SEL; _anObject: objc.id): LongBool; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := LongBool(vmethod(Handle, sel_registerName(PChar(StrNSApplication_tryToPerform_with)), _anAction, _anObject));
+end;
+
+function NSApplication.validRequestorForSendType_returnType(_sendType: CFStringRef; _returnType: CFStringRef): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_sendType: CFStringRef; _returnType: CFStringRef): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_validRequestorForSendType_returnType)), _sendType, _returnType));
+end;
+
+procedure NSApplication.reportException(_theException: objc.id {NSException});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_theException: objc.id {NSException}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_reportException)), _theException);
+end;
+
+class procedure NSApplication.detachDrawingThread_toTarget_withObject(_selector: SEL; _target: objc.id; _argument: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_selector: SEL; _target: objc.id; _argument: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(getClass, sel_registerName(PChar(StrNSApplication_detachDrawingThread_toTarget_withObject)), _selector, _target, _argument);
+end;
+
+procedure NSApplication.replyToApplicationShouldTerminate(_shouldTerminate: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_shouldTerminate: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_replyToApplicationShouldTerminate)), _shouldTerminate);
+end;
+
+{.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
+procedure NSApplication.replyToOpenOrPrint(_reply: NSApplicationDelegateReply);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_reply: NSApplicationDelegateReply); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_replyToOpenOrPrint)), _reply);
+end;
+
+procedure NSApplication.orderFrontCharacterPalette(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_orderFrontCharacterPalette)), _sender);
+end;
+
+{.$endif}
+procedure NSApplication.setWindowsMenu(_aMenu: objc.id {NSMenu});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aMenu: objc.id {NSMenu}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setWindowsMenu)), _aMenu);
+end;
+
+function NSApplication.windowsMenu: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_windowsMenu)), []));
+end;
+
+procedure NSApplication.arrangeInFront(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_arrangeInFront)), _sender);
+end;
+
+procedure NSApplication.removeWindowsItem(_win: objc.id {NSWindow});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_win: objc.id {NSWindow}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_removeWindowsItem)), _win);
+end;
+
+procedure NSApplication.addWindowsItem_title_filename(_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_addWindowsItem_title_filename)), _win, _aString, _isFilename);
+end;
+
+procedure NSApplication.changeWindowsItem_title_filename(_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_win: objc.id {NSWindow}; _aString: CFStringRef; _isFilename: LongBool); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_changeWindowsItem_title_filename)), _win, _aString, _isFilename);
+end;
+
+procedure NSApplication.updateWindowsItem(_win: objc.id {NSWindow});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_win: objc.id {NSWindow}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_updateWindowsItem)), _win);
+end;
+
+procedure NSApplication.miniaturizeAll(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_miniaturizeAll)), _sender);
+end;
+
+procedure NSApplication.setServicesMenu(_aMenu: objc.id {NSMenu});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_aMenu: objc.id {NSMenu}); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setServicesMenu)), _aMenu);
+end;
+
+function NSApplication.servicesMenu: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_servicesMenu)), []));
+end;
+
+procedure NSApplication.registerServicesMenuSendTypes_returnTypes(_sendTypes: CFArrayRef; _returnTypes: CFArrayRef);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sendTypes: CFArrayRef; _returnTypes: CFArrayRef); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_registerServicesMenuSendTypes_returnTypes)), _sendTypes, _returnTypes);
+end;
+
+procedure NSApplication.setServicesProvider(_provider: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_provider: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setServicesProvider)), _provider);
+end;
+
+function NSApplication.servicesProvider: objc.id;
+begin
+  Result := objc.id(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_servicesProvider)), []));
+end;
+
+procedure NSApplication.orderFrontStandardAboutPanel(_sender: objc.id);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_sender: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_orderFrontStandardAboutPanel)), _sender);
+end;
+
+procedure NSApplication.orderFrontStandardAboutPanelWithOptions(_optionsDictionary: CFDictionaryRef);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_optionsDictionary: CFDictionaryRef); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_orderFrontStandardAboutPanelWithOptions)), _optionsDictionary);
+end;
+
+class procedure NSApplication.setApplicationHandle_previousHandle_commandLine_show(_hInstance: Pointer; _PrevInstance: Pointer; _cmdLine: CFStringRef; _cmdShow: Integer);
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;_hInstance: Pointer; _PrevInstance: Pointer; _cmdLine: CFStringRef; _cmdShow: Integer); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(getClass, sel_registerName(PChar(StrNSApplication_setApplicationHandle_previousHandle_commandLine_show)), _hInstance, _PrevInstance, _cmdLine, _cmdShow);
+end;
+
+class procedure NSApplication.useRunningCopyOfApplication;
+begin
+  objc_msgSend(getClass, sel_registerName(PChar(StrNSApplication_useRunningCopyOfApplication)), []);
+end;
+
+function NSApplication.applicationHandle: Pointer;
+begin
+  Result := Pointer(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_applicationHandle)), []));
+end;
+
+function NSApplication.windowWithWindowHandle(_hWnd: Pointer): objc.id;
+type
+  TmsgSendWrapper = function (param1: objc.id; param2: SEL;_hWnd: Pointer): objc.id; cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_windowWithWindowHandle)), _hWnd));
 end;
 
 {$endif}
-

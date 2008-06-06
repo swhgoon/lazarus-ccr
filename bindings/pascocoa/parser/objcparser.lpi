@@ -9,15 +9,13 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
@@ -31,37 +29,13 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="3">
+    <Units Count="1">
       <Unit0>
         <Filename Value="objcparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="objcparser"/>
-        <CursorPos X="45" Y="11"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="26"/>
-        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="ObjCParserUtils.pas"/>
-        <UnitName Value="ObjCParserUtils"/>
-        <CursorPos X="13" Y="1305"/>
-        <TopLine Value="1293"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="13"/>
-        <Loaded Value="True"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="ObjCParserTypes.pas"/>
-        <UnitName Value="ObjCParserTypes"/>
-        <CursorPos X="18" Y="1966"/>
-        <TopLine Value="1950"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="13"/>
-        <Loaded Value="True"/>
-      </Unit2>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
@@ -72,14 +46,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

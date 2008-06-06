@@ -67,7 +67,7 @@ begin
 
   MainWindow.orderFrontRegardless;
 
-  NSApp.setDelegate(myController);
+  NSApp.setDelegate(myController.Handle);
 
   NSApp.run;
 

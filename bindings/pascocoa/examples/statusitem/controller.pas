@@ -110,7 +110,7 @@ class procedure TMyController.doShowStatusitem(_self: objc.id; _cmd: SEL; sender
 begin
   if myController.item <> nil then Exit;
 
-  myController.item := myController.bar.statusItemWithLength(NSSquareStatusItemLength);
+  myController.item := NSStatusItem.CreateWithHandle(myController.bar.statusItemWithLength(NSSquareStatusItemLength));
   myController.item.retain();
   myController.item.setImage(myController.image);
 end;
