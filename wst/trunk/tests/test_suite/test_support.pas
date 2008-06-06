@@ -1421,7 +1421,7 @@ begin
       SetLength(a,j);
       if ( j > 0  ) then begin
         for k := 0 to Pred(j) do begin
-          a[k] := Random(High(LongWord)-2);
+          a[k] := Random(High(Word)-2);
         end;
 
         localObj.SetLength(j);
@@ -1453,7 +1453,7 @@ begin
       SetLength(a,j);
       if ( j > 0  ) then begin
         for k := 0 to Pred(j) do begin
-          a[k] := Random(High(LongWord)-1);
+          a[k] := Random(High(Word)-1);
         end;
 
         localObj.SetLength(j);
