@@ -36,6 +36,8 @@ type
      AX, AY, AWidth, AHeight: Double;
      ACallbackName: string; ACallbackClass: NSObject): NSButton;
     function CreateMenu(): NSMenu;
+    function CreateMenuItem(ATitle: shortstring;
+     ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     { Fields }
     bar: NSStatusBar;
     item: NSStatusItem;
@@ -182,15 +184,30 @@ end;
 function TMyController.CreateMenu(): NSMenu;
 var
   Item1: NSMenuItem;
-  EmptyCFString, Item1Text: CFStringRef;
+  MenuTitle: CFStringRef;
 begin
-  EmptyCFString := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-  Item1Text := CFStringCreateWithPascalString(nil, 'Item 1', kCFStringEncodingUTF8);
-
-  Result := NSMenu.initWithTitle(EmptyCFString);
+  MenuTitle := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+  WriteLn('CreateMenu');
+  Result := NSMenu.initWithTitle(MenuTitle);
+  WriteLn('Menu Created');
   
-  Item1 := NSMenuItem.initWithTitle_action_keyEquivalent(Item1Text, nil, EmptyCFString);
+  Item1 := CreateMenuItem('Exit', Str_doClose, Self);
   Result.addItem(Item1.Handle);
+end;
+
+function TMyController.CreateMenuItem(ATitle: shortstring;
+  ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+var
+  ItemText: CFStringRef;
+  KeyText: CFStringRef;
+begin
+  KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
+  ItemText := CFStringCreateWithPascalString(nil, ATitle, kCFStringEncodingUTF8);
+  WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
+  
+  Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+  Result.setTarget(ACallbackClass.Handle);
+  Result.setAction(sel_registerName(PChar(ACallbackName)));
 end;
 
 end.

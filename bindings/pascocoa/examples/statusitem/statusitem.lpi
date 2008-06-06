@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="4"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -32,9 +32,9 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="statusitem"/>
         <CursorPos X="40" Y="70"/>
-        <TopLine Value="52"/>
+        <TopLine Value="47"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="62"/>
+        <UsageCount Value="66"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -48,7 +48,7 @@
         <Filename Value="../../appkit/NSButton.inc"/>
         <CursorPos X="3" Y="109"/>
         <TopLine Value="96"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -61,15 +61,15 @@
         <Filename Value="../../appkit/NSAlert.inc"/>
         <CursorPos X="1" Y="12"/>
         <TopLine Value="1"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../appkit/NSStatusItem.inc"/>
         <CursorPos X="15" Y="76"/>
         <TopLine Value="63"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="22"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -223,8 +223,8 @@
         <Filename Value="../../appkit/NSStatusBar.inc"/>
         <CursorPos X="15" Y="73"/>
         <TopLine Value="69"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="23"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -249,10 +249,10 @@
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-        <CursorPos X="16" Y="126"/>
-        <TopLine Value="113"/>
+        <CursorPos X="51" Y="204"/>
+        <TopLine Value="187"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="46"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -303,7 +303,7 @@
         <UnitName Value="foundation"/>
         <CursorPos X="16" Y="28"/>
         <TopLine Value="1"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -384,15 +384,15 @@
         <Filename Value="../../appkit/NSGraphics.inc"/>
         <CursorPos X="16" Y="28"/>
         <TopLine Value="1"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit52>
       <Unit53>
         <Filename Value="../../foundation/Foundation.inc"/>
         <CursorPos X="12" Y="127"/>
         <TopLine Value="120"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="10"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit53>
       <Unit54>
@@ -430,10 +430,10 @@
       </Unit58>
       <Unit59>
         <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carbontrayicon.inc"/>
-        <CursorPos X="18" Y="96"/>
+        <CursorPos X="21" Y="104"/>
         <TopLine Value="94"/>
-        <EditorIndex Value="4"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit59>
       <Unit60>
@@ -441,8 +441,8 @@
         <UnitName Value="CarbonInt"/>
         <CursorPos X="53" Y="39"/>
         <TopLine Value="32"/>
-        <EditorIndex Value="5"/>
-        <UsageCount Value="12"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit60>
       <Unit61>
@@ -484,9 +484,11 @@
       </Unit66>
       <Unit67>
         <Filename Value="../../appkit/NSMenu.inc"/>
-        <CursorPos X="36" Y="40"/>
-        <TopLine Value="31"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="24" Y="245"/>
+        <TopLine Value="235"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit67>
       <Unit68>
         <Filename Value="/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSObject.h"/>
@@ -503,31 +505,11 @@
         <SyntaxHighlighter Value="C++"/>
       </Unit69>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="1" HistoryIndex="0">
       <Position1>
         <Filename Value="controller.pas"/>
-        <Caret Line="181" Column="5" TopLine="156"/>
+        <Caret Line="211" Column="81" TopLine="190"/>
       </Position1>
-      <Position2>
-        <Filename Value="controller.pas"/>
-        <Caret Line="116" Column="24" TopLine="108"/>
-      </Position2>
-      <Position3>
-        <Filename Value="controller.pas"/>
-        <Caret Line="43" Column="20" TopLine="32"/>
-      </Position3>
-      <Position4>
-        <Filename Value="controller.pas"/>
-        <Caret Line="117" Column="55" TopLine="104"/>
-      </Position4>
-      <Position5>
-        <Filename Value="controller.pas"/>
-        <Caret Line="119" Column="42" TopLine="99"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carbontrayicon.inc"/>
-        <Caret Line="75" Column="9" TopLine="68"/>
-      </Position6>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -542,7 +524,7 @@
     <Linking>
       <Options>
         <PassLinkerOptions Value="True"/>
-        <LinkerOptions Value="-framework cocoa -lobjc"/>
+        <LinkerOptions Value="-framework Cocoa -lobjc"/>
       </Options>
     </Linking>
     <Other>
