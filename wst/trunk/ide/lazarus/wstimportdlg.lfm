@@ -1,7 +1,7 @@
 object formImport: TformImport
-  Left = 431
+  Left = 669
   Height = 538
-  Top = 153
+  Top = 142
   Width = 526
   HorzScrollBar.Page = 525
   VertScrollBar.Page = 537
@@ -10,6 +10,7 @@ object formImport: TformImport
   Caption = 'WSDL Importer'
   ClientHeight = 538
   ClientWidth = 526
+  LCLVersion = '0.9.25'
   object Panel2: TPanel
     Height = 490
     Width = 526
@@ -80,9 +81,9 @@ object formImport: TformImport
       end
       object edtAddToProject: TCheckBox
         Left = 9
-        Height = 13
+        Height = 19
         Top = 128
-        Width = 176
+        Width = 182
         Caption = 'Add the generated files to project'
         TabOrder = 4
       end
@@ -118,9 +119,9 @@ object formImport: TformImport
       TabOrder = 1
       object edtOptionIntf: TCheckBox
         Left = 9
-        Height = 13
+        Height = 19
         Top = 8
-        Width = 78
+        Width = 84
         Caption = 'Interface file'
         Checked = True
         OnClick = edtOptionIntfClick
@@ -129,9 +130,9 @@ object formImport: TformImport
       end
       object edtOptionProxy: TCheckBox
         Left = 9
-        Height = 13
+        Height = 19
         Top = 56
-        Width = 62
+        Width = 68
         Caption = 'Proxy file'
         Checked = True
         State = cbChecked
@@ -139,25 +140,25 @@ object formImport: TformImport
       end
       object edtOptionBinder: TCheckBox
         Left = 294
-        Height = 13
+        Height = 19
         Top = 8
-        Width = 105
+        Width = 111
         Caption = 'Service Binder file'
         TabOrder = 3
       end
       object edtOptionImp: TCheckBox
         Left = 294
-        Height = 13
+        Height = 19
         Top = 56
-        Width = 152
+        Width = 158
         Caption = 'Implementation Skeleton file'
         TabOrder = 4
       end
       object edtOptionIntfALL: TCheckBox
         Left = 30
-        Height = 13
+        Height = 19
         Top = 32
-        Width = 88
+        Width = 94
         Caption = 'Parse all types'
         OnClick = edtOptionIntfALLClick
         TabOrder = 1
@@ -217,7 +218,6 @@ object formImport: TformImport
     end
   end
   object OD: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     Filter = 'WSDL Files ( *.wsdl )|*.wsdl'
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
@@ -225,7 +225,6 @@ object formImport: TformImport
     top = 32
   end
   object SDD: TSelectDirectoryDialog
-    Title = 'Choisir un répertoire'
     FilterIndex = 0
     left = 224
     top = 176

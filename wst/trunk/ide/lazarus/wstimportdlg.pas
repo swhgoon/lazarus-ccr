@@ -66,7 +66,7 @@ var
   formImport: TformImport;
 
 implementation
-uses DOM, XMLRead, pastree, pascal_parser_intf, wsdl2pas_imp, source_utils,
+uses DOM, XMLRead, pastree, pascal_parser_intf, wsdl_parser, source_utils,
      generator, metadata_generator, binary_streamer, wst_resources_utils
      {$IFDEF WST_IDE},LazIDEIntf{$ENDIF};
 
@@ -80,7 +80,7 @@ function ParseWsdlFile(
 ):TwstPasTreeContainer;
 var
   locDoc : TXMLDocument;
-  prsr : TWsdlParser;
+  prsr : IParser;
   symName : string;
 begin
   Result := nil;
@@ -89,20 +89,17 @@ begin
     if ( symName[Length(symName)] = '.' ) then begin
       Delete(symName,Length(symName),1);
     end;
-    prsr := nil;
     ReadXMLFile(locDoc,AFileName);
     try
       Result := TwstPasTreeContainer.Create();
       try
-        prsr := TWsdlParser.Create(locDoc,Result);
-        prsr.OnMessage := ANotifier;
-        prsr.Parse(pmAllTypes,symName);
+        prsr := TWsdlParser.Create(locDoc,Result,ANotifier);
+        prsr.Execute(pmAllTypes,symName);
       except
         FreeAndNil(Result);
         raise;
       end;
     finally
-      FreeAndNil(prsr);
       FreeAndNil(locDoc);
     end;
   end;
