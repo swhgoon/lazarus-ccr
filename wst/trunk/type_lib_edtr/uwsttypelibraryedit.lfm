@@ -13,6 +13,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   OnClose = FormClose
   OnShow = FormShow
   Position = poDesktopCenter
+  LCLVersion = '0.9.25'
   object SB: TStatusBar
     Height = 23
     Top = 601
@@ -2024,7 +2025,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     end
   end
   object OD: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     Filter = 'WDSL files(*.WSDL)|*.WSDL|Pascal file (*.pas)|*.pas'
     FilterIndex = 0
     InitialDir = '.\'
@@ -2045,7 +2045,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     top = 104
   end
   object SD: TSaveDialog
-    Title = 'Enregistrer le fichier sous'
     DefaultExt = '.WSDL'
     Filter = 'WDSL files(*.WSDL)|*.WSDL'
     FilterIndex = 0

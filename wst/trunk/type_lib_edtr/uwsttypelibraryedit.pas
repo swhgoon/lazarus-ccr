@@ -795,7 +795,7 @@ begin
     if Assigned(FSymbolTable) then begin
       objPtr := FindPainter(FSymbolTable.Package);
       if Assigned(objPtr) then begin
-        objPtr.Paint(FSymbolTable,FSymbolTable.Package,trvSchema.TopItem);
+        objPtr.Paint(FSymbolTable,FSymbolTable.Package,nd);
       end;
       RenderSources();
       RenderWSDL();
