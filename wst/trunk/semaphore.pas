@@ -16,22 +16,42 @@ unit semaphore;
 interface
 
 uses
-  Classes, SysUtils, syncobjs{$IFNDEF FPC},Windows{$ENDIF};
+  Classes, SysUtils, SyncObjs, wst_types
+{$IFDEF WST_DELPHI}
+  ,Windows
+{$ENDIF}
+{$IFDEF FPC}
+  {$IFDEF WINDOWS}
+    ,Windows
+  {$ENDIF}
+{$ENDIF};
 
 type
 
   ESemaphoreException = class(Exception);
 
+{$UNDEF FPC_TM}
+{$IFDEF WST_DELPHI}
+  TSemaphoreHandle = THandle;
+{$ENDIF}
+{$IFDEF FPC}
+  {$IFDEF WINDOWS}
+    TSemaphoreHandle = THandle;
+  {$ELSE}
+    {$DEFINE FPC_TM}
+    TSemaphoreHandle = Pointer;
+  {$ENDIF}
+{$ENDIF}
+
   { TSemaphoreObject }
 
   TSemaphoreObject = class
   private
-    FHandle : {$IFNDEF FPC}THandle{$ELSE}PRTLEvent{$ENDIF};
+    FHandle : TSemaphoreHandle;
     FLimit: Integer;
-    {$IFDEF FPC}
-    FCurrentState : Integer;
-    FCriticalSection : TCriticalSection;
-    {$ENDIF}
+  {$IFDEF FPC_TM}
+    FTM : TThreadManager;
+  {$ENDIF}
   public
     constructor Create(const ALimit : Integer);
     destructor Destroy(); override;
@@ -45,32 +65,40 @@ implementation
 { TSemaphoreObject }
 
 constructor TSemaphoreObject.Create(const ALimit: Integer);
+var
+  i : PtrInt;
 begin
-  Assert(ALimit>0);
+  if ( ALimit < 1 ) then
+    raise ESemaphoreException.CreateFmt('Invalid semaphore maximum count : %d.',[ALimit]);
   FLimit := ALimit;
-{$IFNDEF FPC}
+{$IFNDEF FPC_TM}
   FHandle := CreateSemaphore(nil,ALimit,ALimit,'');
+  if ( FHandle = THandle(0) ) then
+    RaiseLastOSError();
 {$ELSE}
-  FHandle := RTLEventCreate();
-  FCriticalSection := TCriticalSection.Create();
-  FCurrentState := FLimit;
-  RTLeventSetEvent(FHandle);  
+  if not GetThreadManager(FTM) then
+    raise ESemaphoreException.Create('Unable to get the thread manager.');
+  FHandle := FTM.SemaphoreInit();
+  for i := 1 to FLimit do
+    FTM.SemaphorePost(FHandle);
 {$ENDIF}
 end;
 
 destructor TSemaphoreObject.Destroy();
 begin
-{$IFNDEF FPC}
-  CloseHandle(FHandle);
+{$IFNDEF FPC_TM}
+  if ( FHandle <> THandle(0) ) then
+    CloseHandle(FHandle);
 {$ELSE}
-  RTLeventdestroy(FHandle);
-  FreeAndNil(FCriticalSection);
+  if ( FHandle <> nil ) then
+    FTM.SemaphoreDestroy(FHandle);
+  FHandle := nil;
 {$ENDIF}
   inherited Destroy();
 end;
 
 function TSemaphoreObject.WaitFor(ATimeout: Cardinal): TWaitResult;
-{$IFNDEF FPC}
+{$IFNDEF FPC_TM}
 var
   intRes : DWORD;
 begin
@@ -84,55 +112,18 @@ begin
   end;
 end;
 {$ELSE}
-var
-  ok : Boolean;
 begin
-  Result := wrTimeout;
-  ok := False;
-  FCriticalSection.Acquire();
-  try
-    if ( FCurrentState > 0 ) then begin
-      Dec(FCurrentState);
-      ok := True;
-      if ( FCurrentState = 0 ) then
-        RTLeventResetEvent(FHandle);
-    end;
-  finally
-    FCriticalSection.Release();
-  end;
-  if not ok then begin
-    RTLeventWaitFor(FHandle,ATimeout);
-    FCriticalSection.Acquire();
-    try
-      if ( FCurrentState > 0 ) then begin
-        Dec(FCurrentState);
-        ok := True;
-      end;
-    finally
-      FCriticalSection.Release();
-    end;
-  end;
-  if ok then
-    Result := wrSignaled;
+  FTM.SemaphoreWait(FHandle);
+  Result := wrSignaled;
 end;
 {$ENDIF}
 
 procedure TSemaphoreObject.Release();
 begin
-{$IFNDEF FPC}
+{$IFNDEF FPC_TM}
   ReleaseSemaphore(FHandle,1,nil);
 {$ELSE}
-  FCriticalSection.Acquire();
-  try
-    if ( FCurrentState < Limit ) then begin
-      Inc(FCurrentState);
-    end else begin
-      raise ESemaphoreException.Create('Invalid semaphore operation.');
-    end;
-  finally
-    FCriticalSection.Release();
-  end;
-  RTLeventSetEvent(FHandle);
+  FTM.SemaphorePost(FHandle);
 {$ENDIF}
 end;
 
