@@ -62,6 +62,9 @@ type
   ):PTypeInfo ;
 {$ENDIF WST_RECORD_RTTI}
 
+  procedure initialize_record_rtti();
+  procedure finalize_record_rtti();
+  
 implementation
 uses Classes, imp_utils;
 
@@ -336,18 +339,31 @@ begin
     raise Exception.CreateFmt('"%s" is not a field of "%s".',[AFieldName,GetRecordTypeData()^.Name]);
 end;
 
-initialization
+procedure initialize_record_rtti();
+begin
 {$IFDEF WST_RECORD_RTTI}
-  RawTypeInfoList := TList.Create();
+  if ( RawTypeInfoList = nil ) then
+    RawTypeInfoList := TList.Create();
 {$ENDIF WST_RECORD_RTTI}
+end;
 
-finalization
+procedure finalize_record_rtti();
+begin
 {$IFDEF WST_RECORD_RTTI}
-  while ( RawTypeInfoList.Count > 0 ) do begin
-    FreeRawTypeInfo(PTypeInfo(RawTypeInfoList.Items[0]));
-    RawTypeInfoList.Delete(0);
+  if ( RawTypeInfoList = nil ) then begin
+    while ( RawTypeInfoList.Count > 0 ) do begin
+      FreeRawTypeInfo(PTypeInfo(RawTypeInfoList.Items[0]));
+      RawTypeInfoList.Delete(0);
+    end;
+    FreeAndNil(RawTypeInfoList);
   end;
-  FreeAndNil(RawTypeInfoList);
 {$ENDIF WST_RECORD_RTTI}
+end;
 
+initialization
+  initialize_record_rtti();
+  
+finalization
+  finalize_record_rtti();
+  
 end.

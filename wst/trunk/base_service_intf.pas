@@ -1308,6 +1308,9 @@ const
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
 
+  procedure initialize_base_service_intf();
+  procedure finalize_base_service_intf();
+  
 {$IFDEF HAS_FORMAT_SETTINGS}
 var
   wst_FormatSettings : TFormatSettings;
@@ -1315,6 +1318,7 @@ var
 
 implementation
 uses imp_utils, record_rtti, basex_encode;
+
 
 type
   PObject = ^TObject;
@@ -5389,7 +5393,8 @@ begin
   inherited;
 end;
 
-initialization
+procedure initialize_base_service_intf();
+begin
 {$IFDEF HAS_FORMAT_SETTINGS}
   {$IFDEF FPC}
     wst_FormatSettings := DefaultFormatSettings;
@@ -5400,10 +5405,24 @@ initialization
   {$ENDIF}
 {$ENDIF HAS_FORMAT_SETTINGS}
 
-  TypeRegistryInstance := TTypeRegistry.Create();
-  SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
+  if ( TypeRegistryInstance = nil ) then
+    TypeRegistryInstance := TTypeRegistry.Create();
+  if ( SerializeOptionsRegistryInstance = nil ) then
+    SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
+  RegisterStdTypes();
+end;
 
-finalization
+procedure finalize_base_service_intf();
+begin
   FreeAndNil(SerializeOptionsRegistryInstance);
   FreeAndNil(TypeRegistryInstance);
+end;
+
+
+initialization
+  initialize_base_service_intf();
+
+finalization
+  finalize_base_service_intf();
+
 end.

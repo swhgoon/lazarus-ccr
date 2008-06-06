@@ -101,7 +101,7 @@ end;
 
 function wst_GetConfigFileName():string;
 begin
-  Result := ChangeFileExt(GetAppConfigFile(True),'.' + sCONFIG_FILE_NAME);
+  Result := ChangeFileExt(GetAppConfigFile(False,True),'.' + sCONFIG_FILE_NAME);
 end;
 
 procedure wst_LoadConfigObject(AConfig: TWstConfigurationObject; AStream : TStream);overload;
@@ -132,29 +132,40 @@ begin
   end;
 end;
 
+function wst_CreateDefaultConfigObject() : TWstConfigurationObject;
+var
+  c, i : Integer;
+  servReg : IServerServiceRegistry;
+begin
+  Result := TWstConfigurationObject.Create();
+  try
+    servReg := GetServerServiceRegistry();
+    c := servReg.GetCount();
+    Result.Services.SetLength(0);
+    if ( c > 0 ) then begin
+      Result.Services.SetLength(c);
+      for i := 0 to Pred(c) do begin
+        Result.Services[i].Name := servReg.GetName(i);
+      end;
+    end;
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
 procedure wst_CreateDefaultFile(ADest : TStream; AConfigObj : TWstConfigurationObject);overload;
 var
   locObj : TWstConfigurationObject;
-  c, i : Integer;
-  servReg : IServerServiceRegistry;
   frmt : IFormatterBase;
   createdHere : Boolean;
 begin
   if ( AConfigObj <> nil ) then
     locObj := AConfigObj
   else
-    locObj := TWstConfigurationObject.Create();
+    locObj := wst_CreateDefaultConfigObject();
   try
     createdHere := ( AConfigObj = nil );
-    servReg := GetServerServiceRegistry();
-    c := servReg.GetCount();
-    locObj.Services.SetLength(0);
-    if ( c > 0 ) then begin
-      locObj.Services.SetLength(c);
-      for i := 0 to Pred(c) do begin
-        locObj.Services[i].Name := servReg.GetName(i);
-      end;
-    end;
     frmt := TSOAPBaseFormatter.Create();
     frmt.SetSerializationStyle(ssNodeSerialization);
     frmt.BeginObject(sAPPLICATION,TypeInfo(TWstConfigurationObject));
@@ -185,12 +196,12 @@ var
   locFileName : string;
 begin
   if ( ConfigurationObjectInstance = nil ) then begin
-    ConfigurationObjectInstance := TWstConfigurationObject.Create();
+    ConfigurationObjectInstance := wst_CreateDefaultConfigObject();
     locFileName := wst_GetConfigFileName();
     if FileExists(locFileName) then
       wst_LoadConfigObject(ConfigurationObjectInstance,locFileName)
-    else
-      wst_CreateDefaultFile(locFileName,ConfigurationObjectInstance);
+    {else
+      wst_CreateDefaultFile(locFileName,ConfigurationObjectInstance);}
   end;
   Result := ConfigurationObjectInstance;
 end;
@@ -259,19 +270,29 @@ begin
     Result := Result + 'False';
 end;
 
-initialization
+procedure initialize_config_objects();
+begin
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TwstConfigService),'Service');
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TwstConfigServiceArray),'Services');
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TWstConfigurationObject),'WST_Configuration');
   TwstConfigService.RegisterAttributeProperty('Name');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TwstConfigServiceArray)].RegisterExternalPropertyName('Item','service');
+end;
 
-finalization
-  if ( ConfigurationObjectInstance <> nil ) and
+procedure finalize_config_objects();
+begin
+  {if ( ConfigurationObjectInstance <> nil ) and
      ( GetServerServiceRegistry.GetCount() <> ConfigurationObjectInstance.Services.Length )
   then begin
     wst_CreateDefaultFile(wst_GetConfigFileName(),nil);
-  end;
+  end;}
   FreeAndNil(ConfigurationObjectInstance);
+end;
 
+initialization
+  initialize_config_objects();
+  
+finalization
+  finalize_config_objects();
+  
 end.

@@ -210,12 +210,16 @@ Type
   function GetServiceImplementationRegistry():IServiceImplementationRegistry ;
   function GetServiceExtensionRegistry():IServiceExtensionRegistry;
 
+  procedure initialize_server_services_intf();
+  procedure finalize_server_services_intf();
+  
 implementation
 Var
   FormatterRegistryInst : IFormatterRegistry = Nil;
   ServerServiceRegistryInst : IServerServiceRegistry = Nil;
   ServiceImplementationRegistryInst : IServiceImplementationRegistry = Nil;
   ServiceExtensionRegistryInst : IServiceExtensionRegistry = nil;
+
 
 procedure HandleServiceRequest(
   ARequestBuffer   : IRequestBuffer;
@@ -283,6 +287,7 @@ type
     function GetCount() : Integer;
     function GetName(const AIndex : Integer) : string;
   end;
+
 
 { TBaseFormatterRegistryItem }
 
@@ -778,15 +783,31 @@ begin
   Result := False;
 end;
 
-Initialization
-  FormatterRegistryInst := TFormatterRegistry.Create() as IFormatterRegistry;
-  ServerServiceRegistryInst := TServerServiceRegistry.Create() as IServerServiceRegistry;
-  ServiceImplementationRegistryInst := TServiceImplementationRegistry.Create() As IServiceImplementationRegistry;
-  ServiceExtensionRegistryInst := TServiceExtensionRegistry.Create() as IServiceExtensionRegistry;
+procedure initialize_server_services_intf();
+begin
+  if ( FormatterRegistryInst = nil ) then
+    FormatterRegistryInst := TFormatterRegistry.Create() as IFormatterRegistry;
+  if ( ServerServiceRegistryInst = nil ) then begin
+    ServerServiceRegistryInst := TServerServiceRegistry.Create() as IServerServiceRegistry;
+  end;
+  if ( ServiceImplementationRegistryInst = nil ) then
+    ServiceImplementationRegistryInst := TServiceImplementationRegistry.Create() As IServiceImplementationRegistry;
+  if ( ServiceExtensionRegistryInst = nil ) then
+    ServiceExtensionRegistryInst := TServiceExtensionRegistry.Create() as IServiceExtensionRegistry;
+end;
 
-Finalization
+procedure finalize_server_services_intf();
+begin
   ServiceExtensionRegistryInst := nil;
   ServiceImplementationRegistryInst := Nil;
   ServerServiceRegistryInst := Nil;
   FormatterRegistryInst := Nil;
+end;
+
+initialization
+  initialize_server_services_intf();
+  
+finalization
+  finalize_server_services_intf();
+  
 end.

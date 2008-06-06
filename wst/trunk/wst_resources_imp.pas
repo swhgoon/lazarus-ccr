@@ -27,6 +27,9 @@ type
   Function GetWSTResourceManager(Force : Boolean = True) : TWSTResourceManager;
   Function SetWSTResourceManager(AValue : TWSTResourceManager) : TWSTResourceManager;
   
+  procedure initialize_wst_resources();
+  procedure finalize_wst_resources();
+  
 implementation
 
 ResourceString
@@ -227,6 +230,7 @@ end;
 Function SetWSTResourceManager(AValue : TWSTResourceManager) : TWSTResourceManager;
 
 begin
+  Result := ResMGR;
   // Copy resources if needed.
   If Assigned(ResMGR) and Assigned(AValue) then
     AValue.Assign(ResMGR);
@@ -234,8 +238,20 @@ begin
   ResMGR:=AValue;
 end;
 
-initialization
-finalization
+procedure initialize_wst_resources();
+begin
+
+end;
+
+procedure finalize_wst_resources();
+begin
   FreeAndNil(ResMGR);
+end;
+
+initialization
+  initialize_wst_resources();
+
+finalization
+  finalize_wst_resources();
 
 end.
