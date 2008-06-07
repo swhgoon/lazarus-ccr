@@ -7,7 +7,7 @@
    
    CoreGraphics is located inside the ApplicationServices framework
 }
-unit CoreGraphics;
+unit CocoaCoreGraphics;
 
 interface
 

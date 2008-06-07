@@ -15,7 +15,7 @@ unit appkit;
 
 interface
 
-uses ctypes, FPCMacOSAll, objc, foundation, coregraphics;
+uses ctypes, FPCMacOSAll, objc, foundation, cocoacoregraphics;
 
 {$define HEADER}
 {$include AppKit.inc}
