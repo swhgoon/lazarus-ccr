@@ -517,6 +517,12 @@ type
     procedure Assign();
   end;
   
+  { TTest_SoapFormatterServerNameSpace }
+
+  TTest_SoapFormatterServerNameSpace = class(TTestCase)
+  published
+    procedure namespace_declared_env();
+  end;
   
 implementation
 uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_rtti,
@@ -4173,6 +4179,42 @@ begin
   end;
 end;
 
+{ TTest_SoapFormatterServerNameSpace }
+
+procedure TTest_SoapFormatterServerNameSpace.namespace_declared_env();
+const
+  XML_SOURCE =
+    '<soapenv:Envelope ' + sLineBreak +
+    'xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" ' + sLineBreak +
+    'xmlns:hfp="hfpax"> ' + sLineBreak +
+    '  <soapenv:Header/> ' + sLineBreak +
+    '  <soapenv:Body> ' + sLineBreak +
+    '     <hfp:GetVersion/> ' + sLineBreak +
+    '  </soapenv:Body> ' + sLineBreak +
+    '</soapenv:Envelope>';
+var
+  f : IFormatterResponse;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+begin
+  f := server_service_soap.TSOAPFormatter.Create() as IFormatterResponse;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      strBuffer := f.GetCallProcedureName();
+      CheckEquals('GetVersion',strBuffer, 'GetCallProcedureName()');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
 initialization
   RegisterStdTypes();
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
@@ -4237,5 +4279,5 @@ initialization
   RegisterTest('Serializer',TTest_XmlRpcFormatterExceptionBlock.Suite);
   RegisterTest('Serializer',TTest_BinaryFormatterExceptionBlock.Suite);
   RegisterTest('Serializer',TTest_TStringBufferRemotable.Suite);
-
+  RegisterTest('Serializer',TTest_SoapFormatterServerNameSpace.Suite);
 end.

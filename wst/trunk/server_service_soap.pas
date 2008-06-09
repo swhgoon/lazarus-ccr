@@ -147,10 +147,7 @@ begin
   FCallProcedureName := ExtractNamePart(s);
   If IsStrEmpty(FCallProcedureName) Then
     Error('No Method name.');
-  tmpNode := mthdNd.Attributes.GetNamedItem(sXML_NS + ':' + nsShortName);
-  If Not Assigned(tmpNode) Then
-    Error('Call target attribute not found.');
-  FCallTarget := tmpNode.NodeValue;
+  FCallTarget := FindAttributeByNameInScope(sXML_NS + ':' + nsShortName);
 end;
 
 function TSOAPFormatter.GetCallProcedureName(): String;
