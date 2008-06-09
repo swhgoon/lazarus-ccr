@@ -454,11 +454,11 @@ end;
 procedure TBaseServiceBinder.HandleRequest(ARequestBuffer: IRequestBuffer);
 Var
   f : IFormatterResponse;
-  s : string;
+  s, msgFormat : string;
   m : TServiceVerbMethod;
   strm : TStream;
   cllCtx : ICallContext;
-  i : Integer;
+  i, j: Integer;
   hdr : THeaderBlock;
   typRegItm : TTypeRegistryItem;
 begin
@@ -466,7 +466,16 @@ begin
   if ( Length(s) = 0 ) then begin
     s := ARequestBuffer.GetContentType();
   end;
-  f := GetFormatterRegistry().Find(s) as IFormatterResponse;
+  //Extract the base ContentType : type "/" subtype *( ";" parameter )
+  j := Length(s);
+  for i := 0 to Pred(Length(s)) do begin
+    if ( s[i] = ';' ) then begin
+      j := ( i - 1 );
+      Break;
+    end;
+  end;
+  msgFormat := Copy(s,1,j);
+  f := GetFormatterRegistry().Find(msgFormat) as IFormatterResponse;
   if not Assigned(f) then
     Error('No formatter for that content type : "%s"',[s]);
   try
