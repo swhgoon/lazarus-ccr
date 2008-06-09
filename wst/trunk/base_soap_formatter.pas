@@ -595,14 +595,17 @@ var
 begin
   AResAttValue := '';
   If Assigned(ANode) And Assigned(ANode.Attributes) Then Begin
-    c := Pred(ANode.Attributes.Length);
-    For i := 0 To c Do Begin
-      If AnsiSameText(AAttName,ANode.Attributes.Item[i].NodeName) Then Begin
-        AResAttValue := ANode.Attributes.Item[i].NodeValue;
-        Result := True;
-        Exit;
+    c := ANode.Attributes.Length;
+    if ( c > 0 ) then begin
+      Dec(c);
+      For i := 0 To c Do Begin
+        If AnsiSameText(AAttName,ANode.Attributes.Item[i].NodeName) Then Begin
+          AResAttValue := ANode.Attributes.Item[i].NodeValue;
+          Result := True;
+          Exit;
+        End;
       End;
-    End;
+    end;
   End;
   Result := False;
 end;
