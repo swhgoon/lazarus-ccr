@@ -1148,6 +1148,7 @@ begin
           subs.Add('//'+ TSkip(hdr.Items[i])._Skip);
       end; {of if}
 
+    st.add('');
     if subs.Count > 0 then begin
       //if subs[0] <> 'const' then st.Add('type');
       st.AddStrings(subs);
@@ -1759,11 +1760,12 @@ begin
         subs.Add(Format ('  %s = class;', [TClassDef(hdr.Items[i])._ClassName]));
     if subs.Count > 0 then begin
       BeginSection('FORWARD', st);
-      BeginExcludeSection( GetIfDefFileName(hdr._FileName, '_FORWARD'), st);
+      // BeginExcludeSection( GetIfDefFileName(hdr._FileName, '_FORWARD'), st);
       try
         st.AddStrings(subs);
+        st.Add('');
       finally
-        EndSection(st);
+        //EndSection(st);
         EndSection(st);
       end;
     end;
