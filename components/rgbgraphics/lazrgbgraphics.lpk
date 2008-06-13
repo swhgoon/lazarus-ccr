@@ -4,7 +4,6 @@
     <PathDelim Value="\"/>
     <Name Value="LazRGBGraphics"/>
     <Author Value="Tom Gregorovic (_tom_@centrum.cz)"/>
-    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="5"/>
       <PathDelim Value="\"/>
@@ -29,8 +28,8 @@
 "/>
     <License Value="Modified LGPL
 "/>
-    <Version Minor="2" Release="1"/>
-    <Files Count="7">
+    <Version Minor="2" Release="2"/>
+    <Files Count="8">
       <Item1>
         <Filename Value="rgbgraphics.pas"/>
         <UnitName Value="RGBGraphics"/>
@@ -62,6 +61,11 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="RGBCarbonRoutines"/>
       </Item7>
+      <Item8>
+        <Filename Value="rgbqtroutines.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="RGBQtRoutines"/>
+      </Item8>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

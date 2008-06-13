@@ -33,6 +33,9 @@ unit RGBTypes;
 {$ifdef LCLwin32}
  {$define RGB}
 {$endif}
+{$ifdef LCLqt}
+ {$define RGB}
+{$endif}
 
 interface
 

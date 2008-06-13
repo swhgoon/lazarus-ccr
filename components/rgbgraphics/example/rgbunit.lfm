@@ -12,11 +12,12 @@ object FormExample: TFormExample
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
+  LCLVersion = '0.9.25'
   object ButtonRedLine: TButton
     Left = 6
-    Height = 26
+    Height = 31
     Top = 8
-    Width = 89
+    Width = 96
     AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = 'Draw red line'
@@ -25,7 +26,7 @@ object FormExample: TFormExample
   end
   object ButtonRotate90: TButton
     Left = 6
-    Height = 26
+    Height = 31
     Top = 39
     Width = 131
     AutoSize = True
@@ -36,9 +37,9 @@ object FormExample: TFormExample
   end
   object ButtonInvert: TButton
     Left = 6
-    Height = 26
+    Height = 31
     Top = 72
-    Width = 83
+    Width = 92
     AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = 'Invert colors'
@@ -47,9 +48,9 @@ object FormExample: TFormExample
   end
   object ButtonReplace: TButton
     Left = 6
-    Height = 26
+    Height = 31
     Top = 106
-    Width = 136
+    Width = 137
     AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = 'Replace red with blue'

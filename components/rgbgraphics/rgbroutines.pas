@@ -39,6 +39,9 @@ uses
 {$IFDEF LCLwin32}
   RGBWinRoutines,
 {$ENDIF}
+{$IFDEF LCLqt}
+  RGBQtRoutines,
+{$ENDIF}
 {$IFDEF LCLgtk}
   {$DEFINE StretchRGB32}
   RGBGTKRoutines,

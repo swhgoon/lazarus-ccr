@@ -5,19 +5,19 @@ LazarusResources.Add('TFormExample','FORMDATA',[
   +#3#150#0#5'Width'#3#133#2#18'HorzScrollBar.Page'#3#132#2#18'VertScrollBar.Pa'
   +'ge'#3#1#2#13'ActiveControl'#7#13'ButtonRedLine'#7'Caption'#6#22'LazRGBGraph'
   +'ics Example'#12'ClientHeight'#3#2#2#11'ClientWidth'#3#133#2#8'OnCreate'#7#10
-  +'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#7'OnPaint'#7#9'FormPaint'#0#7'TB'
-  +'utton'#13'ButtonRedLine'#4'Left'#2#6#6'Height'#2#26#3'Top'#2#8#5'Width'#2'Y'
-  +#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'Draw red li'
-  +'ne'#7'OnClick'#7#18'ButtonRedLineClick'#8'TabOrder'#2#0#0#0#7'TButton'#14'B'
-  +'uttonRotate90'#4'Left'#2#6#6'Height'#2#26#3'Top'#2''''#5'Width'#3#131#0#8'A'
-  +'utoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#19'Rotate 90 cloc'
-  +'kwise'#7'OnClick'#7#19'ButtonRotate90Click'#8'TabOrder'#2#1#0#0#7'TButton'
-  +#12'ButtonInvert'#4'Left'#2#6#6'Height'#2#26#3'Top'#2'H'#5'Width'#2'S'#8'Aut'
-  +'oSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#13'Invert colors'#7
-  +'OnClick'#7#17'ButtonInvertClick'#8'TabOrder'#2#2#0#0#7'TButton'#13'ButtonRe'
-  +'place'#4'Left'#2#6#6'Height'#2#26#3'Top'#2'j'#5'Width'#3#136#0#8'AutoSize'#9
-  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#21'Replace red with blue'#7
-  +'OnClick'#7#18'ButtonReplaceClick'#8'TabOrder'#2#3#0#0#18'TOpenPictureDialog'
-  +#17'OpenPictureDialog'#5'Title'#6#12'Open picture'#4'left'#3#211#0#3'top'#2
-  +'Q'#0#0#0
+  +'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#7'OnPaint'#7#9'FormPaint'#10'LCL'
+  +'Version'#6#6'0.9.25'#0#7'TButton'#13'ButtonRedLine'#4'Left'#2#6#6'Height'#2
+  +#31#3'Top'#2#8#5'Width'#2'`'#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4
+  +#7'Caption'#6#13'Draw red line'#7'OnClick'#7#18'ButtonRedLineClick'#8'TabOrd'
+  +'er'#2#0#0#0#7'TButton'#14'ButtonRotate90'#4'Left'#2#6#6'Height'#2#31#3'Top'
+  +#2''''#5'Width'#3#131#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Ca'
+  +'ption'#6#19'Rotate 90 clockwise'#7'OnClick'#7#19'ButtonRotate90Click'#8'Tab'
+  +'Order'#2#1#0#0#7'TButton'#12'ButtonInvert'#4'Left'#2#6#6'Height'#2#31#3'Top'
+  +#2'H'#5'Width'#2'\'#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Captio'
+  +'n'#6#13'Invert colors'#7'OnClick'#7#17'ButtonInvertClick'#8'TabOrder'#2#2#0
+  +#0#7'TButton'#13'ButtonReplace'#4'Left'#2#6#6'Height'#2#31#3'Top'#2'j'#5'Wid'
+  +'th'#3#137#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#21
+  +'Replace red with blue'#7'OnClick'#7#18'ButtonReplaceClick'#8'TabOrder'#2#3#0
+  +#0#18'TOpenPictureDialog'#17'OpenPictureDialog'#5'Title'#6#12'Open picture'#4
+  +'left'#3#211#0#3'top'#2'Q'#0#0#0
 ]);
