@@ -2,7 +2,7 @@ program rvdemo;
 
 uses
   Interfaces,
-  Forms, OsPrinters,
+  Forms,
   Unit1 in 'unit1.pas' {Form1},
   BackStyl in 'backstyl.pas' {frmBackStyle},
   PrintFrm in 'printfrm.pas' {frmPrint}, lazrichview;

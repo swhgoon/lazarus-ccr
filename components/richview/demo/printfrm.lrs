@@ -1,5 +1,3 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TfrmPrint','FORMDATA',[
   'TPF0'#9'TfrmPrint'#8'frmPrint'#4'Left'#2#7#6'Height'#3#193#1#3'Top'#2#9#5'Wi'
   +'dth'#3'p'#2#18'HorzScrollBar.Page'#3'o'#2#18'VertScrollBar.Page'#3#192#1#7
