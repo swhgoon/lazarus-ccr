@@ -937,7 +937,7 @@ procedure TRGBMask.StretchDrawShapePortionTo(ACanvas: TCanvas; DstX, DstY,
 begin
   if ACanvas <> nil then
     StretchDrawRGBMaskShapePortion(ACanvas.Handle, DstX, DstY, DstWidth, DstHeight,
-      Self, DX, DY, DW, DH, FBGPen.Handle, FFGPen.Handle);
+      Self, DX, DY, DW, DH, FBGPen.Reference.Handle, FFGPen.Reference.Handle);
 end;
 
 procedure TRGBMask.DrawTo(ACanvas: TCanvas; X, Y: Integer);
