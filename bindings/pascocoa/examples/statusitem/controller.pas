@@ -95,8 +95,6 @@ begin
 
   inherited Create;
 
-  AddMethods();
-
   bar := NSStatusBar.systemStatusBar();
   
   fileName := CFStringCreateWithPascalString(nil, GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);

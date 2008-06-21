@@ -21,6 +21,7 @@
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
   {.$endif}
   {.$endif}
+
 type
   NSTIFFCompression = (
     NSTIFFCompressionNone = 1, 
@@ -81,11 +82,8 @@ type
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSBITMAPIMAGEREP_PAS__FORWARD}
-{$define NSBITMAPIMAGEREP_PAS__FORWARD}
-
   NSBitmapImageRep = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}
@@ -166,8 +164,8 @@ type
 const
   StrNSBitmapImageRep_NSBitmapImageRep = 'NSBitmapImageRep';
   StrNSBitmapImageRep_initWithFocusedViewRect = 'initWithFocusedViewRect:';
-//  StrNSBitmapImageRep_initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel = 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
-//  StrNSBitmapImageRep_initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel = 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
+  StrNSBitmapImageRep_initWithBitmapDataPlanes_1 = 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
+  StrNSBitmapImageRep_initWithBitmapDataPlanes_2 = 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
   StrNSBitmapImageRep_imageRepsWithData = 'imageRepsWithData:';
   StrNSBitmapImageRep_imageRepWithData = 'imageRepWithData:';
   StrNSBitmapImageRep_initWithData = 'initWithData:';
@@ -233,7 +231,7 @@ begin
   ClassID := getClass();
   allocbuf := objc_msgSend(ClassID, sel_registerName(PChar(Str_alloc)), []);
   vmethod := TmsgSendWrapper(@objc_msgSend);
-//  Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSBitmapImageRep_initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel)), _planes, _width, _height, _bps, _spp, _alpha, _isPlanar, _colorSpaceName, _rBytes, _pBits);
+  Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSBitmapImageRep_initWithBitmapDataPlanes_1)), _planes, _width, _height, _bps, _spp, _alpha, _isPlanar, _colorSpaceName, _rBytes, _pBits);
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -246,7 +244,7 @@ begin
   ClassID := getClass();
   allocbuf := objc_msgSend(ClassID, sel_registerName(PChar(Str_alloc)), []);
   vmethod := TmsgSendWrapper(@objc_msgSend);
-//  Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSBitmapImageRep_initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel)), _planes, _width, _height, _bps, _spp, _alpha, _isPlanar, _colorSpaceName, _bitmapFormat, _rBytes, _pBits);
+  Handle := vmethod(allocbuf, sel_registerName(PChar(StrNSBitmapImageRep_initWithBitmapDataPlanes_2)), _planes, _width, _height, _bps, _spp, _alpha, _isPlanar, _colorSpaceName, _bitmapFormat, _rBytes, _pBits);
 end;
 
 {.$endif}

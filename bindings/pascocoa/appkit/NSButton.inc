@@ -12,15 +12,13 @@
 
 {$include NSControl.inc}
 {$include NSButtonCell.inc}
+
 {$endif}
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSBUTTON_PAS__FORWARD}
-{$define NSBUTTON_PAS__FORWARD}
-
   NSButton = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

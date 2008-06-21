@@ -16,6 +16,7 @@
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
   {.$endif}
+
 //APPKIT_EXTERN NSString *NSGraphicsContextDestinationAttributeName; // Can be an instance of NSWindow, NSMutableData, NSBitmapImageRep, or NSURL.
 //APPKIT_EXTERN NSString *NSGraphicsContextRepresentationFormatAttributeName; // Specifies destination file format
 //APPKIT_EXTERN NSString *NSGraphicsContextPSFormat;
@@ -33,11 +34,8 @@ type
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSGRAPHICSCONTEXT_PAS__FORWARD}
-{$define NSGRAPHICSCONTEXT_PAS__FORWARD}
-
   NSGraphicsContext = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

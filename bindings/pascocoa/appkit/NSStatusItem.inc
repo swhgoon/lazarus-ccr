@@ -10,6 +10,7 @@
 {$ifndef NSSTATUSITEM_PAS_H}
 {$define NSSTATUSITEM_PAS_H}
 
+
 type
   _SBIFlags = packed  record 
     _bitflags1 : LongWord;
@@ -19,11 +20,8 @@ type
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSSTATUSITEM_PAS__FORWARD}
-{$define NSSTATUSITEM_PAS__FORWARD}
-
   NSStatusItem = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

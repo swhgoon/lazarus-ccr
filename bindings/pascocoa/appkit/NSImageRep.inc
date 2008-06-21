@@ -12,7 +12,8 @@
 
 {$include AppKitDefines.inc}
 //const
-//  NSImageRepRegistryChangedNotification = NSImageRepRegistryDidChangeNotification /* obsolete name */;
+//  NSImageRepRegistryChangedNotification = NSImageRepRegistryDidChangeNotification { obsolete name };
+
   //  NSImageRepMatchesDevice indicates the value is variable, depending on the output
   // device. It can be passed in (or received back) as the value of bitsPerSample, pixelsWide,
   // and pixelsHigh.
@@ -24,11 +25,8 @@ const
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSIMAGEREP_PAS__FORWARD}
-{$define NSIMAGEREP_PAS__FORWARD}
-
   NSImageRep = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

@@ -13,15 +13,13 @@
 const
   NSVariableStatusItemLength = (-1);
   NSSquareStatusItemLength = (-2);
+
 {$endif}
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSSTATUSBAR_PAS__FORWARD}
-{$define NSSTATUSBAR_PAS__FORWARD}
-
   NSStatusBar = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

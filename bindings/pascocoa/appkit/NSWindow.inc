@@ -41,6 +41,7 @@ const
   {.$endif}
   {.$else}
   {.$endif}
+
 const
   NSBorderlessWindowMask = 0;
   NSTitledWindowMask = 1 shl 0;
@@ -106,11 +107,8 @@ type
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSWINDOW_PAS__FORWARD}
-{$define NSWINDOW_PAS__FORWARD}
-
   NSWindow = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

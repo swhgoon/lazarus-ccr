@@ -16,6 +16,7 @@
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
   {.$endif}
+
 //APPKIT_EXTERN NSString *NSMenuWillSendActionNotification;
 //APPKIT_EXTERN NSString *NSMenuDidSendActionNotification;
 //APPKIT_EXTERN NSString *NSMenuDidAddItemNotification;
@@ -26,11 +27,8 @@
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSMENU_PAS__FORWARD}
-{$define NSMENU_PAS__FORWARD}
-
   NSMenu = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

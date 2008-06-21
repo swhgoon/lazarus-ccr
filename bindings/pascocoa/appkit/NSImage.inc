@@ -18,6 +18,7 @@
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
   {.$endif}
   {.$endif}
+
 type
   NSImageLoadStatus = (
     NSImageLoadStatusCompleted, 
@@ -41,11 +42,8 @@ type
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSIMAGE_PAS__FORWARD}
-{$define NSIMAGE_PAS__FORWARD}
-
   NSImage = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}

@@ -11,7 +11,7 @@
 {$define NSMENUITEM_PAS_H}
 
 {$include AppKitDefines.inc}
-{.$include NSUserInterfaceValidation.inc}
+{$include NSUserInterfaceValidation.inc}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -24,6 +24,7 @@
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
   {.$endif}
+
 //@protocol NSMenuItem <NSObject, NSCopying, NSCoding, NSValidatedUserInterfaceItem>
 //+ (void)setUsesUserKeyEquivalents:(BOOL)flag;
 //+ (BOOL)usesUserKeyEquivalents;
@@ -80,11 +81,8 @@
 {$endif}
 
 {$ifdef FORWARD}
-{$ifndef NSMENUITEM_PAS__FORWARD}
-{$define NSMENUITEM_PAS__FORWARD}
-
   NSMenuItem = class;
-{$endif}
+
 {$endif}
 
 {$ifdef CLASSES}
@@ -92,7 +90,7 @@
 {$define NSMENUITEM_PAS_C}
 
 {$include AppKitDefines.inc}
-{.$include NSUserInterfaceValidation.inc}
+{$include NSUserInterfaceValidation.inc}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
     {.$endif}
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
