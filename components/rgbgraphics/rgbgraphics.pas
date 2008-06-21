@@ -32,7 +32,7 @@ unit RGBGraphics;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf,
+  Classes, SysUtils, LCLIntf, FPWriteBMP,
   LCLType, LCLProc, FPImage, LResources, IntfGraphics,
   GraphType, Graphics, Forms, Math, Clipbrd,
   RGBTypes, RGBRoutines, RGBUtils;
@@ -283,15 +283,12 @@ end;
 constructor TRGB32Bitmap.CreateFromFile(const FileName: String);
 var
   Image: TLazIntfImage;
-  Reader: TFPCustomImageReader;
 begin
   Image := CreateDefaultLazIntfImage;
-  Reader := GetFPImageReaderForFileExtension(ExtractFileExt(FileName)).Create;
   try
-    Image.LoadFromFile(FileName, Reader);
+    Image.LoadFromFile(FileName);
     CreateFromLazIntfImage(Image);
   finally
-    Reader.Free;
     Image.Free;
   end;
 end;
@@ -341,7 +338,7 @@ end;
 
 procedure TRGB32Bitmap.SaveToStream(Stream: TStream);
 begin
-  SaveToStream(Stream, Bounds(0, 0, Width, Height), TPixmap.GetDefaultFPWriter);
+  SaveToStream(Stream, Bounds(0, 0, Width, Height), TLazWriterXPM);
 end;
 
 procedure TRGB32Bitmap.SaveToStream(Stream: TStream;
@@ -370,15 +367,12 @@ end;
 procedure TRGB32Bitmap.SaveToFile(const FileName: String);
 var
   Image: TLazIntfImage;
-  Writer: TFPCustomImageWriter;
 begin
   Image := CreateDefaultLazIntfImage;
-  Writer := GetFPImageWriterForFileExtension(ExtractFileExt(FileName)).Create;
   try
     inherited SaveToLazIntfImage(Image);
-    Image.SaveToFile(FileName, Writer);
+    Image.SaveToFile(FileName);
   finally
-    Writer.Free;
     Image.Free;
   end;
 end;
@@ -460,8 +454,8 @@ begin
   PixmapStream := TMemoryStream.Create;
   BitmapStream := TMemoryStream.Create;
   Image := CreateDefaultLazIntfImage;
-  PixmapWriter := TPixmap.GetDefaultFPWriter.Create;
-  BitmapWriter := TBitmap.GetDefaultFPWriter.Create;
+  PixmapWriter := TLazWriterXPM.Create;
+  BitmapWriter := TFPWriterBMP.Create;
   try
     R := Mask.GetMaskedRect;
     SaveToLazIntfImage(Image, R);

@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  RGBGraphics, ExtDlgs, ExtCtrls;
+  RGBGraphics, ExtDlgs;
 
 type
 
