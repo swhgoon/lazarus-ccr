@@ -5,6 +5,8 @@ unit foundation;
   {$packrecords c}
 {$endif}
 
+{$linkframework Cocoa}
+
 interface
 
 uses SysUtils, ctypes, objc, FPCMacOSAll;

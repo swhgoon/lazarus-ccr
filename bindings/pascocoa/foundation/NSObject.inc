@@ -195,8 +195,11 @@ begin
 end;
 
 class function NSObject.getClass: objc.id;
+var
+  Str: string;
 begin
-  Result := objc_getClass(Str_NSObject);
+  Str := ClassName();
+  Result := objc_getClass(PChar(Str));
 end;
 
 { Defines the appropriate place to register methods in the objective-c runtime }

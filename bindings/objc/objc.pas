@@ -15,6 +15,8 @@ unit objc;
 
 {$Packrecords c}
 
+{$linklib objc}
+
 interface
 
 uses ctypes, unix;

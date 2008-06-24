@@ -15,8 +15,11 @@ program statusitem;
 
 {$mode delphi}
 
+{$linkframework Cocoa}
+{$linklib objc}
+
 uses
-  objc, ctypes, FPCMacOSAll, AppKit, Foundation, controller;
+  objc, ctypes, FPCMacOSAll, AppKit, Foundation, controller, cocoa_pkg;
 
 const
   Str_Window_Title = 'StatusItem example project';

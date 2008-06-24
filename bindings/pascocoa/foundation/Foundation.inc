@@ -68,9 +68,9 @@
 #import <Foundation/NSProcessInfo.h>
 #import <Foundation/NSPropertyList.h>
 #import <Foundation/NSProtocolChecker.h>
-#import <Foundation/NSProxy.h>
-#import <Foundation/NSRange.h>
-#import <Foundation/NSRunLoop.h>
+#import <Foundation/NSProxy.h>}
+{$include NSRange.inc}
+{#import <Foundation/NSRunLoop.h>
 #import <Foundation/NSScanner.h>
 #import <Foundation/NSSet.h>
 #import <Foundation/NSSortDescriptor.h>
@@ -84,9 +84,9 @@
 #import <Foundation/NSUndoManager.h>
 #import <Foundation/NSURL.h>
 #import <Foundation/NSURLHandle.h>
-#import <Foundation/NSUserDefaults.h>
-#import <Foundation/NSValue.h>
-#import <Foundation/NSValueTransformer.h>
+#import <Foundation/NSUserDefaults.h>}
+{$include NSValue.inc}
+{#import <Foundation/NSValueTransformer.h>
 #import <Foundation/NSXMLDTD.h>
 #import <Foundation/NSXMLDTDNode.h>
 #import <Foundation/NSXMLDocument.h>

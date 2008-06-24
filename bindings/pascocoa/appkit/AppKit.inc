@@ -80,9 +80,9 @@
 #import <AppKit/NSSegmentedControl.h>
 #import <AppKit/NSSegmentedCell.h>
 #import <AppKit/NSSlider.h>
-#import <AppKit/NSSliderCell.h>
-#import <AppKit/NSSpellProtocol.h>
-#import <AppKit/NSText.h>}
+#import <AppKit/NSSliderCell.h>}
+{$include NSSpellProtocol.inc}
+{$include NSText.inc}
 {$include NSTextField.inc}
 {#import <AppKit/NSTextFieldCell.h>
 #import <AppKit/NSText.h>

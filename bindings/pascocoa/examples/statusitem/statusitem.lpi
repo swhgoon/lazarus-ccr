@@ -24,6 +24,11 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="cocoa_pkg"/>
+      </Item1>
+    </RequiredPackages>
     <Units Count="2">
       <Unit0>
         <Filename Value="statusitem.pas"/>
@@ -39,10 +44,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
-      <SrcPath Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>

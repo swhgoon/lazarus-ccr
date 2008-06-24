@@ -22,7 +22,6 @@ type
   public
     { Extra binding functions }
     constructor Create; override;
-    class function getClass: objc.id; override;
     procedure AddMethods; override;
     { Objective-c Methods }
     class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
@@ -46,8 +45,6 @@ type
   end;
 
 const
-  Str_TMyController = 'TMyController';
-
   Str_doShowStatusitem = 'doShowStatusitem:';
   Str_doHideStatusitem = 'doHideStatusitem:';
   Str_doClose = 'doClose:';
@@ -91,7 +88,7 @@ var
   fileName: CFStringRef;
 begin
   { The class is registered on the Objective-C runtime before the NSObject constructor is called }
-  if not CreateClassDefinition(Str_TMyController, Str_NSObject) then WriteLn('Failed to create objc class');
+  if not CreateClassDefinition(ClassName(), Str_NSObject) then WriteLn('Failed to create objc class');
 
   inherited Create;
 
@@ -99,11 +96,6 @@ begin
   
   fileName := CFStringCreateWithPascalString(nil, GetResourcesDir + 'icon.ico', kCFStringEncodingUTF8);
   image := NSImage.initWithContentsOfFile(fileName);
-end;
-
-class function TMyController.getClass: objc.id;
-begin
-  Result := objc_getClass(Str_TMyController);
 end;
 
 { Objective-c Methods }
