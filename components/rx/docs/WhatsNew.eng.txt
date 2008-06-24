@@ -1,3 +1,4 @@
+  + fix create resource from XPM image
   + draw shadow on button image in TToolPanel
   - Fix error in TDBComboBox.EditingDone if DataSet = nil
 22.05.2008 - version 2.0.0.136 (svn revision 100)

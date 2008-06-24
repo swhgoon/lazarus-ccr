@@ -1890,10 +1890,12 @@ begin
   Options:=Options - [dgCancelOnExit];
 {$ENDIF}
 
-  FMarkerUp := TBitmap.Create;
+  FMarkerUp := LoadLazResBitmapImage('rx_markerup');
+  FMarkerDown := LoadLazResBitmapImage('rx_markerdown');
+{  FMarkerUp := TBitmap.Create;
   FMarkerUp.LoadFromLazarusResource('rx_markerup');
   FMarkerDown := TBitmap.Create;
-  FMarkerDown.LoadFromLazarusResource('rx_markerdown');
+  FMarkerDown.LoadFromLazarusResource('rx_markerdown');}
 
   FPropertyStorageLink:=TPropertyStorageLink.Create;
   FPropertyStorageLink.OnSave:=@OnIniSave;

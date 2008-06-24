@@ -29,6 +29,8 @@ procedure OutTextXY90(Canvas:TCanvas; X,Y:integer; Text:string; Orientation:TTex
 function IsForegroundTask: Boolean;
 function ValidParentForm(Control: TControl): TCustomForm;
 function CreateArrowBitmap:TBitmap;
+function  LoadLazResBitmapImage(const ResName: string): TBitmap;
+
 {
 function AllocMemo(Size: Longint): Pointer;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
@@ -512,8 +514,25 @@ end;
 
 function CreateArrowBitmap:TBitmap;
 begin
-  Result:=Graphics.TBitmap.Create;
-  Result.LoadFromLazarusResource('rxbtn_downarrow');
+  Result:=LoadLazResBitmapImage('rxbtn_downarrow')
+{  Result:=Graphics.TBitmap.Create;
+  Result.LoadFromLazarusResource('rxbtn_downarrow');}
+end;
+
+//Code from DBGrid
+function LoadLazResBitmapImage(const ResName: string): TBitmap;
+var
+  C: TCustomBitmap;
+begin
+  C := CreateBitmapFromLazarusResource(ResName);
+  if C<>nil then
+  begin
+    Result := TBitmap.Create;
+    Result.Assign(C);
+    C.Free;
+  end
+  else
+    Result:=nil;
 end;
 
 initialization
