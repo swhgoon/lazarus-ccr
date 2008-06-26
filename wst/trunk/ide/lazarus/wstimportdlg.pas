@@ -2,7 +2,6 @@
 unit wstimportdlg;
 
 {$mode objfpc}{$H+}
-{$DEFINE WST_IDE}
 
 interface
 

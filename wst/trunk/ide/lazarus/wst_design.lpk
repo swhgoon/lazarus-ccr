@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="wst_design"/>
     <Author Value="Inoussa OUEDRAOGO"/>
@@ -21,6 +21,8 @@
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
+        <CustomOptions Value="-dWST_IDE
+"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

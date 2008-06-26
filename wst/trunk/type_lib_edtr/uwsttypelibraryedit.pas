@@ -12,7 +12,6 @@
 }
 unit uwsttypelibraryedit;
 
-//{$DEFINE WST_IDE}
 {$mode objfpc}{$H+}
 
 interface

@@ -10,7 +10,6 @@ object formImport: TformImport
   Caption = 'WSDL Importer'
   ClientHeight = 538
   ClientWidth = 526
-  LCLVersion = '0.9.25'
   object Panel2: TPanel
     Height = 490
     Width = 526
@@ -47,12 +46,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 31
-        Width = 404
+        Width = 400
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
       end
       object Button2: TButton
-        Left = 431
+        Left = 427
         Height = 25
         Top = 31
         Width = 40
@@ -65,12 +64,12 @@ object formImport: TformImport
         Left = 9
         Height = 23
         Top = 88
-        Width = 404
+        Width = 400
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 2
       end
       object Button3: TButton
-        Left = 431
+        Left = 427
         Height = 25
         Top = 88
         Width = 40
@@ -218,6 +217,7 @@ object formImport: TformImport
     end
   end
   object OD: TOpenDialog
+    Title = 'Ouvrir un fichier existant'
     Filter = 'WSDL Files ( *.wsdl )|*.wsdl'
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
@@ -225,6 +225,7 @@ object formImport: TformImport
     top = 32
   end
   object SDD: TSelectDirectoryDialog
+    Title = 'Choisir un répertoire'
     FilterIndex = 0
     left = 224
     top = 176

@@ -19,8 +19,6 @@
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
-      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -60,10 +58,9 @@
       <Filename Value="http_server"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="..\..\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Inc\"/>
-      <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Core\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Protocols\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\System\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Inc\"/>
+      <IncludeFiles Value="..\..\"/>
+      <OtherUnitFiles Value="..\;..\..\;..\..\wst_rtti_filter\"/>
       <UnitOutputDirectory Value="obj"/>
-      <SrcPath Value="$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Core\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Protocols\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\System\;$(LazarusDir)\others_package\indy\indy-10.2.0.1\fpc\Inc\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
