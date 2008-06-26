@@ -1855,9 +1855,11 @@ begin
             WriteLn(',%s',[itm.Name])
           else
             WriteLn('%s',[itm.Name]);
-          if not AnsiSameText(itm.Name,SymbolTable.GetExternalName(itm)) then begin
+          if SymbolTable.HasExternalName(itm) and
+             ( not AnsiSameText(itm.Name,SymbolTable.GetExternalName(itm,False)) )
+          then begin
             FImpTempStream.Indent();
-            FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(itm.Name),QuotedStr(SymbolTable.GetExternalName(itm))]);
+            FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(itm.Name),QuotedStr(SymbolTable.GetExternalName(itm,False))]);
           end;
         end;
       DecIndent();

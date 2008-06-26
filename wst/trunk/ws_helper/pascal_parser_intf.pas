@@ -74,6 +74,7 @@ type
     destructor Destroy();override;
     procedure SetValue(AOwner : TObject; const AName, AValue : string);
     function GetValue(AOwner : TObject; const AName : string) : string;
+    function HasValue(AOwner : TObject; const AName : string) : Boolean;
     function FindList(AOwner : TObject) : TStrings;
     function GetList(AOwner : TObject) : TStrings;
   end;
@@ -131,7 +132,9 @@ type
     procedure FreeProperties(AObject : TPasElement);
     procedure RegisterExternalAlias(AObject : TPasElement; const AExternalName : String);
     function SameName(AObject : TPasElement; const AName : string) : Boolean;
-    function GetExternalName(AObject : TPasElement) : string;
+    function HasExternalName(AObject : TPasElement) : Boolean;
+    function GetExternalName(AObject : TPasElement) : string;overload;
+    function GetExternalName(AObject : TPasElement; const AReturnNameIfEmpty : Boolean) : string;overload;
     function GetNameSpace(AType : TPasType) : string ;
     function IsAttributeProperty(AObject : TPasVariable) : Boolean;
     procedure SetPropertyAsAttribute(AObject : TPasVariable; const AValue : Boolean);
@@ -826,10 +829,23 @@ begin
   Result := AnsiSameText(AName,AObject.Name) or AnsiSameText(AName,GetExternalName(AObject)) ;
 end;
 
+function TwstPasTreeContainer.HasExternalName(AObject : TPasElement) : Boolean;
+begin
+  Result := Properties.HasValue(AObject,sEXTERNAL_NAME);
+end;
+
 function TwstPasTreeContainer.GetExternalName(AObject: TPasElement): string;
 begin
+  Result := GetExternalName(AObject,True);
+end;
+
+function TwstPasTreeContainer.GetExternalName(
+        AObject : TPasElement;
+  const AReturnNameIfEmpty : Boolean
+) : string;
+begin
   Result := Properties.GetValue(AObject,sEXTERNAL_NAME);
-  if IsStrEmpty(Result) then begin
+  if IsStrEmpty(Result) and AReturnNameIfEmpty then begin
     Result := AObject.Name;
   end;
 end;
@@ -959,6 +975,17 @@ begin
   end else begin
     Result := ls.Values[AName];
   end;
+end;
+
+function TPropertyHolder.HasValue(AOwner : TObject; const AName : string) : Boolean;
+var
+  ls : TStrings;
+begin
+  ls := FindList(AOwner);
+  if ( ls <> nil ) and ( ls.IndexOfName(AName) > -1 ) then
+    Result := True
+  else
+    Result := False;
 end;
 
 { TPasNativeSimpleTypeDefinition }

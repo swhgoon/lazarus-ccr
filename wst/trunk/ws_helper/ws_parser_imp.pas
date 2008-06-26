@@ -1232,10 +1232,13 @@ var
       raise EXsdInvalidDefinitionException.CreateFmt('Invalid "enum" item node : no value attribute, type = "%s".',[FTypeName]);
     tmpNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
     locItemName := tmpNode.NodeValue;
+    { (26-06-2008) empty string "" can be valid enum item!
     if IsStrEmpty(locItemName) then
       raise EXsdInvalidDefinitionException.CreateFmt('Invalid "enum" item node : the value attribute is empty, type = "%s".',[FTypeName]);
-
+    }
     locInternalItemName := ExtractIdentifier(locItemName);
+    if IsStrEmpty(locInternalItemName) then
+      locInternalItemName := 'EmptyItem';
     locHasInternalName := IsReservedKeyWord(locInternalItemName) or
                           ( not IsValidIdent(locInternalItemName) ) or
                           ( FSymbols.FindElementInModule(locInternalItemName,Self.Module) <> nil ) or
@@ -1252,7 +1255,6 @@ var
     locItem := TPasEnumValue(FSymbols.CreateElement(TPasEnumValue,locInternalItemName,locRes,visDefault,'',0));
     locItem.Value := locOrder;
     locRes.Values.Add(locItem);
-    //locItem := TEnumItemDefinition.Create(locInternalItemName,locRes,locOrder);
     if locHasInternalName then
       FSymbols.RegisterExternalAlias(locItem,locItemName);
     Inc(locOrder);
