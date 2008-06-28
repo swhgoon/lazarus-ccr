@@ -187,7 +187,7 @@ type
     constructor CreateFromLazIntfImage(AImage: TLazIntfImage); override;
     
     constructor CreateFromFile(const FileName: String); virtual;
-    constructor CreateFromBitmap(ABitmap: TBitmap); virtual;
+    constructor CreateFromBitmap(ABitmap: TRasterImage); virtual;
     destructor Destroy; override;
     
     procedure Assign(Source: TPersistent); override;
@@ -293,7 +293,7 @@ begin
   end;
 end;
 
-constructor TRGB32Bitmap.CreateFromBitmap(ABitmap: TBitmap);
+constructor TRGB32Bitmap.CreateFromBitmap(ABitmap: TRasterImage);
 var
   Image: TLazIntfImage;
 begin
