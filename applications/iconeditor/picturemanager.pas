@@ -48,7 +48,7 @@ type
     constructor Create(TheOwner: TComponent; AWidth, AHeight: Integer;
       APaperColor: TColor);
     constructor Create(TheOwner: TComponent; const AFilename: String);
-    constructor Create(TheOwner: TComponent; ABitmap: TBitmap);
+    constructor Create(TheOwner: TComponent; ABitmap: TRasterImage);
     procedure Save;
     procedure ExportAsLazarusResource(const AFileName, AName: String);
     
@@ -77,7 +77,7 @@ type
   protected
     function CreatePage(AWidth, AHeight: Integer; APaperColor: TColor): TPicturePage; dynamic;
     function CreatePage(const Filename: String): TPicturePage; dynamic;
-    function CreatePage(ABitmap: TBitmap): TPicturePage; dynamic;
+    function CreatePage(ABitmap: TRasterImage): TPicturePage; dynamic;
     procedure SaveAs; dynamic;
     procedure FileNameChange; dynamic;
     procedure PageClose; dynamic;
@@ -179,7 +179,7 @@ begin
   FileNameChange;
 end;
 
-function TPictureManager.CreatePage(ABitmap: TBitmap): TPicturePage;
+function TPictureManager.CreatePage(ABitmap: TRasterImage): TPicturePage;
 begin
   Result := TPicturePage.Create(Self, ABitmap);
   Result.PageControl := Self;
@@ -244,22 +244,17 @@ begin
     try
       // First image in std bitmap
       Icon.LoadFromFile(FileName);
-      NewPage := CreatePage(Icon as TBitmap);
-      NewPage.Parent := Self;
-      ActivePage := NewPage;
-      NewPage.Caption := FindNewUniqueName;
-      Change;
       
-      // other image in Bimaps if assigned
-      if Icon.Bitmaps <> nil then
-        for I := 0 to Pred(Icon.Bitmaps.Count) do
-        begin
-          NewPage := CreatePage(Icon.Bitmaps[I] as TBitmap);
-          NewPage.Parent := Self;
-          ActivePage := NewPage;
-          NewPage.Caption := FindNewUniqueName;
-          Change;
-        end;
+      // other images
+      for I := 0 to Pred(Icon.Count) do
+      begin
+        Icon.Current := I;
+        NewPage := CreatePage(Icon);
+        NewPage.Parent := Self;
+        ActivePage := NewPage;
+        NewPage.Caption := FindNewUniqueName;
+        Change;
+      end;
     finally
       Icon.Free;
     end;
@@ -370,7 +365,7 @@ begin
   FShowPreview := True;
 end;
 
-constructor TPicturePage.Create(TheOwner: TComponent; ABitmap: TBitmap);
+constructor TPicturePage.Create(TheOwner: TComponent; ABitmap: TRasterImage);
 begin
   inherited Create(TheOwner);
 

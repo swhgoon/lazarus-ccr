@@ -83,7 +83,7 @@ type
     function PictureToClient(const R: TRect): TRect;
 
     procedure LoadPicture(const FileName: String); virtual;
-    procedure LoadBitmap(ABitmap: TBitmap); virtual;
+    procedure LoadBitmap(ABitmap: TRasterImage); virtual;
     procedure SavePicture(const FileName: String); virtual;
     procedure ExportPictureAsLazarusResource(const AFileName, AName: String); virtual;
     
@@ -157,7 +157,7 @@ type
 
     procedure NewPicture(AWidth, AHeight: Integer; APaperColor: TColor);
     procedure LoadPicture(const FileName: String); override;
-    procedure LoadBitmap(ABitmap: TBitmap); override;
+    procedure LoadBitmap(ABitmap: TRasterImage); override;
     procedure SavePicture(const FileName: String); override;
     
     procedure ColorPick(X, Y: Integer; Shift: TShiftState = [ssLeft]);
@@ -510,7 +510,7 @@ begin
   Picture := TPictureBitmap.CreateFromFile(FileName);
 end;
 
-procedure TCustomPictureView.LoadBitmap(ABitmap: TBitmap);
+procedure TCustomPictureView.LoadBitmap(ABitmap: TRasterImage);
 begin
   Picture.Free;
   Picture := TPictureBitmap.CreateFromBitmap(ABitmap);
@@ -708,7 +708,7 @@ begin
   Change;
 end;
 
-procedure TCustomPictureEdit.LoadBitmap(ABitmap: TBitmap);
+procedure TCustomPictureEdit.LoadBitmap(ABitmap: TRasterImage);
 begin
   inherited LoadBitmap(ABitmap);
   FModified := False;

@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, main, Preview, PictureManager, PictureCtrls, Test, JPEGForLazarus,
+  { add your units here }, main, Preview, PictureManager, PictureCtrls, Test,
   NewDialog, ResizeDialog, ResizePaperDialog, PictureDialog, AboutDialog,
   LazRGBGraphics, LazColorPalette;
   

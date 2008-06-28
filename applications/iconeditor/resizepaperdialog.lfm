@@ -1,15 +1,13 @@
 inherited ResizePaperDialogForm: TResizePaperDialogForm
   Height = 507
   Width = 276
-  HorzScrollBar.Page = 275
-  VertScrollBar.Page = 506
-  ActiveControl = EditHeight
+  ActiveControl = GroupBoxProperties
   Caption = 'Resize paper'
   ClientHeight = 507
   ClientWidth = 276
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  object PanelPreview: TPanel
+  object PanelPreview: TPanel[0]
     Left = 6
     Height = 264
     Top = 6
@@ -21,10 +19,10 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
     ParentColor = False
     TabOrder = 0
   end
-  object GroupBoxProperties: TGroupBox
-    Left = 6
+  object GroupBoxProperties: TGroupBox[1]
+    Left = 12
     Height = 186
-    Top = 280
+    Top = 276
     Width = 264
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Properties'
@@ -94,6 +92,7 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
       Min = 1
       Max = 4096
       Position = 512
+      TabOrder = 4
       Thousands = False
     end
     object UpDownHeight: TUpDown
@@ -105,13 +104,14 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
       Min = 1
       Max = 4096
       Position = 512
+      TabOrder = 5
       Thousands = False
     end
     object CheckBoxAspectRatio: TCheckBox
       Left = 16
-      Height = 13
+      Height = 19
       Top = 110
-      Width = 120
+      Width = 126
       Caption = 'Preserve aspect ratio'
       Checked = True
       OnChange = CheckBoxAspectRatioChange
@@ -154,7 +154,7 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
       Text = '512'
     end
   end
-  object ButtonOK: TButton
+  object ButtonOK: TButton[2]
     Left = 112
     Height = 25
     Top = 474
@@ -166,7 +166,7 @@ inherited ResizePaperDialogForm: TResizePaperDialogForm
     ModalResult = 1
     TabOrder = 2
   end
-  object ButtonCancel: TButton
+  object ButtonCancel: TButton[3]
     Left = 193
     Height = 25
     Top = 474

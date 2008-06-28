@@ -31,9 +31,9 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls, LazJPEG,
+  ExtCtrls, ComCtrls, ActnList, StdActns, ExtDlgs, Buttons, StdCtrls,
   NewDialog, ResizeDialog, ResizePaperDialog, AboutDialog, Preview,
-  
+
   PictureManager, RGBGraphics, PictureCtrls, ColorPalette;
 
 type
@@ -42,8 +42,6 @@ type
 
   TMainForm = class(TForm)
     Palette: TColorPalette;
-    ImageListActionsDisabled: TImageList;
-    ImageListToolsDisabled: TImageList;
     MenuItemShowGrid: TMenuItem;
     MenuItemShowPreview: TMenuItem;
     ViewShowPreview: TAction;
