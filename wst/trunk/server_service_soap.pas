@@ -141,13 +141,16 @@ begin
   mthdNd := bdyNd.FirstChild;
   PushStack(mthdNd);
   s := mthdNd.NodeName;
-  nsShortName := ExtractNamespacePart(s);
-  If IsStrEmpty(nsShortName) Then
-    Error('Method Node must have a qualified name.');
   FCallProcedureName := ExtractNamePart(s);
   If IsStrEmpty(FCallProcedureName) Then
     Error('No Method name.');
-  FCallTarget := FindAttributeByNameInScope(sXML_NS + ':' + nsShortName);
+  nsShortName := ExtractNamespacePart(s);
+  if IsStrEmpty(nsShortName) then
+    FCallTarget := FindAttributeByNameInScope(sXML_NS)
+  else
+    FCallTarget := FindAttributeByNameInScope(sXML_NS + ':' + nsShortName);
+  If IsStrEmpty(FCallTarget) Then
+    Error('Method Node must have a qualified name.');
 end;
 
 function TSOAPFormatter.GetCallProcedureName(): String;
