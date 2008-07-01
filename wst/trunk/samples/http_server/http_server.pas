@@ -24,7 +24,7 @@ begin
 
   //wst_CreateDefaultFile(wst_GetConfigFileName(),nil);
   
-  AppObject := TwstIndyHttpListener.Create();
+  AppObject := TwstIndyHttpListener.Create('');
   try
     WriteLn('"Web Service Toolkit" HTTP Server sample listening at:');
     WriteLn('');
