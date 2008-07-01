@@ -357,9 +357,20 @@ type
 {$M-}
 
 
+  function BoolToSoapBool(const AValue : Boolean) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  
 implementation
 Uses {$IFDEF WST_DELPHI}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
      StrUtils, imp_utils;
+
+
+function BoolToSoapBool(const AValue : Boolean) : string;
+begin
+  if AValue then
+    Result := 'true'
+  else
+    Result := 'false';
+end;
 
 { TStackItem }
 
@@ -741,7 +752,7 @@ function TSOAPBaseFormatter.PutBool(
   const AData     : Boolean
 ): TDOMNode;
 begin
-  Result := InternalPutData(AName,ATypeInfo,LowerCase(BoolToStr(AData)));
+  Result := InternalPutData(AName,ATypeInfo,BoolToSoapBool(AData));
 end;
 
 function TSOAPBaseFormatter.PutInt64(
@@ -1519,7 +1530,7 @@ begin
     tkBool :
       begin
         boolData := Boolean(AData);
-        dataBuffer := BoolToStr(boolData);
+        dataBuffer := BoolToSoapBool(boolData);
       end;
     {$ENDIF}
     tkInteger :

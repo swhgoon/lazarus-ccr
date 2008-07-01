@@ -1085,7 +1085,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Bool.xml');
     intVal_1 := False;
     intVal_3 := True;
 
