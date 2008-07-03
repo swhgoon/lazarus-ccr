@@ -117,6 +117,7 @@ Var
   nsShortName,eltName, msgBuff : string;
   excpt_Obj : ESOAPException;
   doc : TXMLDocument;
+  oldStyle : TSOAPDocumentStyle;
 begin
   ClearStack();
   doc := GetXmlDoc();
@@ -166,26 +167,31 @@ begin
   end;
   eltName := nsShortName + 'Fault';
   If SameText(eltName,bdyNd.FirstChild.NodeName) Then Begin
+    oldStyle := Self.Style;
     Self.Style := RPC;
-    fltNd := bdyNd.FirstChild;
-    PushStack(fltNd);
-    excpt_Obj := ESOAPException.Create('');
-    Try
-      eltName := 'faultcode';
-      Get(TypeInfo(string),eltName,msgBuff);
-      excpt_Obj.FaultCode := msgBuff;
-      eltName := 'faultstring';
-      Get(TypeInfo(string),eltName,msgBuff);
-      excpt_Obj.FaultString := msgBuff;                   ;
-      excpt_Obj.Message := Format(
-        'Service exception :%s   Code = "%s"%s   Message = "%s"',
-        [LineEnding,excpt_Obj.FaultCode,LineEnding,excpt_Obj.FaultString]
-      );
-    Except
-      FreeAndNil(excpt_Obj);
-      Raise;
-    End;
-    Raise excpt_Obj;
+    try
+      fltNd := bdyNd.FirstChild;
+      PushStack(fltNd);
+      excpt_Obj := ESOAPException.Create('');
+      try
+        eltName := 'faultcode';
+        Get(TypeInfo(string),eltName,msgBuff);
+        excpt_Obj.FaultCode := msgBuff;
+        eltName := 'faultstring';
+        Get(TypeInfo(string),eltName,msgBuff);
+        excpt_Obj.FaultString := msgBuff;                   ;
+        excpt_Obj.Message := Format(
+          'Service exception :%s   Code = "%s"%s   Message = "%s"',
+          [LineEnding,excpt_Obj.FaultCode,LineEnding,excpt_Obj.FaultString]
+        );
+      except
+        FreeAndNil(excpt_Obj);
+        raise;
+      end;
+      raise excpt_Obj;
+    finally
+      Self.Style := oldStyle;
+    end;
   End;
 end;
 

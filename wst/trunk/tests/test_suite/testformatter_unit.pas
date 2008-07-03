@@ -484,6 +484,7 @@ type
   published
     procedure ExceptBlock_server();
     procedure ExceptBlock_client();
+    procedure client_keep_style();
   end;
 
   { TTest_XmlRpcFormatterExceptionBlock }
@@ -3796,6 +3797,71 @@ begin
     end;
     CheckEquals(VAL_CODE,excpt_code,'faultCode');
     CheckEquals(VAL_MSG,excpt_msg,'faultString');
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_SoapFormatterExceptionBlock.client_keep_style();
+const
+  VAL_CODE = 'Server.CustomCode.Test'; VAL_MSG = 'This is a sample exception message.';
+  VAL_STREAM =
+    '<?xml version="1.0"?> '+
+    ' <SOAP-ENV:Envelope ' +
+        ' xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
+        ' xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" ' +
+        ' xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"> ' +
+     ' <SOAP-ENV:Body> '+
+       ' <SOAP-ENV:Fault> '+
+         ' <faultcode>' + VAL_CODE + '</faultcode> '+
+         ' <faultstring>' + VAL_MSG +'</faultstring> '+
+       ' </SOAP-ENV:Fault> '+
+     ' </SOAP-ENV:Body> '+
+    ' </SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TStringStream;
+  excpt_code, excpt_msg : string;
+begin
+  excpt_code := '';
+  excpt_msg := '';
+  f := CreateFormatterClient();
+  f.GetPropertyManager().SetProperty('Style','Document');
+  CheckEquals('Document',f.GetPropertyManager().GetProperty('Style'),'Style');
+  strm := TStringStream.Create(VAL_STREAM);
+  try
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    try
+      f.BeginCallRead(nil);
+      Check(False,'BeginCallRead() should raise an exception.');
+    except
+      on e : ESOAPException do begin
+        excpt_code := e.FaultCode;
+        excpt_msg := e.FaultString;
+      end;
+    end;
+    CheckEquals(VAL_CODE,excpt_code,'faultCode');
+    CheckEquals(VAL_MSG,excpt_msg,'faultString');
+    CheckEquals('Document',f.GetPropertyManager().GetProperty('Style'),'Style');
+    
+    f := CreateFormatterClient();
+    f.GetPropertyManager().SetProperty('Style','RPC');
+    CheckEquals('RPC',f.GetPropertyManager().GetProperty('Style'),'Style');
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    try
+      f.BeginCallRead(nil);
+      Check(False,'BeginCallRead() should raise an exception.');
+    except
+      on e : ESOAPException do begin
+        excpt_code := e.FaultCode;
+        excpt_msg := e.FaultString;
+      end;
+    end;
+    CheckEquals(VAL_CODE,excpt_code,'faultCode');
+    CheckEquals(VAL_MSG,excpt_msg,'faultString');
+    CheckEquals('RPC',f.GetPropertyManager().GetProperty('Style'),'Style');
   finally
     FreeAndNil(strm);
   end;

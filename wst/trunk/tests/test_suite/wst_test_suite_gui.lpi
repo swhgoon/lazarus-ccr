@@ -34,12 +34,57 @@
         <PackageName Value="fpcunittestrunner"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="10">
       <Unit0>
         <Filename Value="wst_test_suite_gui.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_test_suite_gui"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="test_support.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_support"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="test_utilities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_utilities"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="testformatter_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testformatter_unit"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="test_generators.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="testmetadata_unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testmetadata_unit"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="test_parsers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_parsers"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="test_basex_encode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_basex_encode"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="test_json.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_json"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="test_suite_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_suite_utils"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
