@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions 
+      xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+      xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+      xmlns:tns="urn:calc-sample" 
+      xmlns:s="http://www.w3.org/2001/XMLSchema" 
+      targetNamespace="urn:calc-sample" 
+      xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="urn:calc-sample">
+      <s:element name="ComplexStruct">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fieldA" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fieldB" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fieldOperation" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element> 
+      <s:element name="ComplexResponseStruct">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fieldA" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fieldB" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="fieldResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>       
+      <s:element name="AddStruct">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="StructArg" type="tns:ComplexStruct" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddStructResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="res" type="tns:ComplexResponseStruct" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>      
+      
+      <s:element name="Add">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="A" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="B" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="result" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      
+      <s:element name="EmptyParamProc">
+        <s:complexType/>
+      </s:element>
+      <s:element name="EmptyParamProcResponse">
+        <s:complexType/>
+      </s:element>
+      
+    </s:schema>
+  </wsdl:types>
+
+  <wsdl:message name="AddStructSoapIn">
+    <wsdl:part name="parameters" element="tns:AddStruct" />
+  </wsdl:message>
+  <wsdl:message name="AddStructSoapOut">
+    <wsdl:part name="parameters" element="tns:AddStructResponse" />
+  </wsdl:message>
+  
+  <wsdl:message name="AddSoapIn">
+    <wsdl:part name="parameters" element="tns:Add" />
+  </wsdl:message>
+  <wsdl:message name="AddSoapOut">
+    <wsdl:part name="parameters" element="tns:AddResponse" />
+  </wsdl:message>  
+
+  <wsdl:message name="EmptyParamProcSoapIn">
+    <wsdl:part name="parameters" element="tns:EmptyParamProc" />
+  </wsdl:message>
+  <wsdl:message name="EmptyParamProcSoapOut">
+    <wsdl:part name="parameters" element="tns:EmptyParamProcResponse" />
+  </wsdl:message>
+  
+  <wsdl:portType name="ICalcServiceSoap">
+    <wsdl:operation name="AddStruct">
+      <wsdl:input message="tns:AddStructSoapIn" />
+      <wsdl:output message="tns:AddStructSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Add">
+      <wsdl:input message="tns:AddSoapIn" />
+      <wsdl:output message="tns:AddSoapOut" />
+    </wsdl:operation>
+        <wsdl:operation name="EmptyParamProc">
+      <wsdl:input message="tns:EmptyParamProcSoapIn" />
+      <wsdl:output message="tns:EmptyParamProcSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="ICalcServiceSoap" type="tns:ICalcServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AddStruct">
+      <soap:operation soapAction="urn:calc-sample/AddStruct" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add">
+      <soap:operation soapAction="urn:calc-sample/Add" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation> 
+    <wsdl:operation name="EmptyParamProc">
+      <soap:operation soapAction="urn:calc-sample/EmptyParamProc" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>    
+  </wsdl:binding>
+
+  <wsdl:service name="ICalcService">
+    <wsdl:port name="ICalcServiceSoap" binding="tns:ICalcServiceSoap">
+      <soap:address location="http://calc-sample.org/service" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -716,7 +716,9 @@ begin
         Include(saveOpts,cloImp);
       if f.edtProxy.Checked then
         Include(saveOpts,cloProxy);
-
+      if f.edtWrappedParams.Checked then
+        Include(saveOpts,cloHandleWrappedParameters);
+        
       curLok := SetCursorHourGlass();
       GenerateSource(
         FSymbolTable,

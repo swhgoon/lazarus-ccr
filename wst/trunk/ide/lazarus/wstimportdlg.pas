@@ -13,7 +13,8 @@ type
 
   TGenOption = (
     goInterface, goInterfaceALL,
-    goProxy, goImp, goBinder
+    goProxy, goImp, goBinder,
+    goWrappedParameter
   );
   TGenOptions = set of TGenOption;
   
@@ -38,6 +39,7 @@ type
     edtOptionImp: TCheckBox;
     edtInputFile: TEdit;
     edtOutputDir: TEdit;
+    edtOptionWrappedParams : TCheckBox;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
@@ -110,7 +112,8 @@ function GenerateSource(
         AOptions     : TSourceTypes;
   const AOutputType  : TOutputType;
   const AOutPath     : string;
-  const ANotifier    : TOnParserMessage
+  const ANotifier    : TOnParserMessage;
+  const AWrappedPrm  : Boolean
 ) : ISourceManager;
 
   procedure Notify(const AMsg : string);
@@ -125,7 +128,9 @@ var
   g : TBaseGenerator;
   mg : TMetadataGenerator;
   rsrcStrm : TMemoryStream;
+  wrappedParams : Boolean;
 begin
+  wrappedParams := AWrappedPrm;
   Result := CreateSourceManager();
   rsrcStrm := nil;
   mtdaFS := nil;
@@ -136,6 +141,8 @@ begin
     if ( ( [goInterface,goInterfaceALL] * AOptions ) <> [] ) then begin
       Notify('Interface file generation...');
       g := TInftGenerator.Create(ASymbolTable,Result);
+      if wrappedParams then
+        g.Options := g.Options + [goDocumentWrappedParameter];
       g.Execute();
       FreeAndNil(g);
     end;
@@ -143,6 +150,8 @@ begin
     if ( goProxy in AOptions ) then begin
       Notify('Proxy file generation...');
       g := TProxyGenerator.Create(ASymbolTable,Result);
+      if wrappedParams then
+        g.Options := g.Options + [goDocumentWrappedParameter];
       g.Execute();
       FreeAndNil(g);
     end;
@@ -150,6 +159,8 @@ begin
     if ( goBinder in AOptions ) then begin
       Notify('Binder file generation...');
       g := TBinderGenerator.Create(ASymbolTable,Result);
+      if wrappedParams then
+        g.Options := g.Options + [goDocumentWrappedParameter];
       g.Execute();
       FreeAndNil(g);
     end;
@@ -230,6 +241,8 @@ begin
     Include(Result,goBinder);
   if edtOptionImp.Checked then
     Include(Result,goImp);
+  if edtOptionWrappedParams.Checked then
+    Include(Result,goWrappedParameter);
 end;
 
 procedure TformImport.actOpenDirExecute(Sender: TObject);
@@ -245,7 +258,7 @@ procedure TformImport.actOKUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := FileExists(edtInputFile.Text) and
                              DirectoryExists(edtOutputDir.Text) and
-                             ( GetOptions() <> [] );
+                             ( ( GetOptions() - [goWrappedParameter] ) <> [] );
 end;
 
 procedure TformImport.actOKExecute(Sender: TObject);
@@ -254,6 +267,8 @@ var
   oldCursor : TCursor;
   srcMgnr : ISourceManager;
   i : Integer;
+  genOptions : TGenOptions;
+  fileSet : TSourceTypes;
   {$IFDEF WST_IDE}
   j, c : Integer;
   srcItm : ISourceStream;
@@ -266,7 +281,9 @@ begin
   try
     tree := ParseWsdlFile(edtInputFile.Text,@ShowStatusMessage);
     try
-      srcMgnr := GenerateSource(tree,GetOptions(),otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),@ShowStatusMessage);
+      genOptions := GetOptions();
+      fileSet := genOptions - [goWrappedParameter];
+      srcMgnr := GenerateSource(tree,fileSet,otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),@ShowStatusMessage,(goWrappedParameter in genOptions) );
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
       openFlags := [];

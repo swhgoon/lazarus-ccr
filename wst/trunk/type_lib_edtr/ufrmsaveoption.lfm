@@ -1,7 +1,7 @@
 object frmSaveOptions: TfrmSaveOptions
-  Left = 404
+  Left = 158
   Height = 322
-  Top = 208
+  Top = 379
   Width = 402
   HorzScrollBar.Page = 401
   VertScrollBar.Page = 321
@@ -60,12 +60,12 @@ object frmSaveOptions: TfrmSaveOptions
     end
     object GroupBox1: TGroupBox
       Left = 16
-      Height = 137
+      Height = 105
       Top = 80
       Width = 369
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = '  File type  '
-      ClientHeight = 119
+      ClientHeight = 87
       ClientWidth = 365
       TabOrder = 0
       object edtInterface: TCheckBox
@@ -79,14 +79,14 @@ object frmSaveOptions: TfrmSaveOptions
       object edtProxy: TCheckBox
         Left = 14
         Height = 19
-        Top = 73
+        Top = 38
         Width = 52
         Anchors = [akLeft, akBottom]
         Caption = 'Proxy'
         TabOrder = 1
       end
       object edtImplementation: TCheckBox
-        Left = 235
+        Left = 227
         Height = 19
         Top = 14
         Width = 97
@@ -95,9 +95,9 @@ object frmSaveOptions: TfrmSaveOptions
         TabOrder = 2
       end
       object edtBinder: TCheckBox
-        Left = 235
+        Left = 227
         Height = 19
-        Top = 73
+        Top = 38
         Width = 56
         Anchors = [akRight, akBottom]
         Caption = 'Binder'
@@ -142,6 +142,15 @@ object frmSaveOptions: TfrmSaveOptions
       Caption = 'Unselect All'
       OnClick = btnUnselectAllClick
       TabOrder = 4
+    end
+    object edtWrappedParams: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 200
+      Width = 290
+      Anchors = [akLeft, akBottom]
+      Caption = 'Generate easy access interface for wrapped parameters'
+      TabOrder = 5
     end
   end
   object AL: TActionList

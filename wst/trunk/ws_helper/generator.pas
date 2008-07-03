@@ -32,9 +32,13 @@ const
   
 type
 
+  TGeneratorOption = ( goDocumentWrappedParameter );
+  TGeneratorOptions = set of TGeneratorOption;
+  
   { TBaseGenerator }
 
   TBaseGenerator = class
+    FOptions : TGeneratorOptions;
   Private
     FSrcMngr  : ISourceManager;
     FCurrentStream : ISourceStream;
@@ -61,6 +65,7 @@ type
     procedure Execute();virtual;abstract;
     property SymbolTable : TwstPasTreeContainer Read FSymbolTable;
     property SrcMngr : ISourceManager Read FSrcMngr;
+    property Options : TGeneratorOptions read FOptions write FOptions;
   End;
 
   { TProxyGenerator }
@@ -77,8 +82,8 @@ type
     procedure GenerateUnitImplementationHeader();
     procedure GenerateUnitImplementationFooter();
 
-    procedure GenerateProxyIntf(AIntf : TPasClassType);
-    procedure GenerateProxyImp(AIntf : TPasClassType);
+    procedure GenerateProxyIntf(AIntf, AEasyIntf : TPasClassType; ABinding : TwstBinding);
+    procedure GenerateProxyImp(AIntf, AEasyIntf : TPasClassType; ABinding : TwstBinding);
     
     function GetDestUnitName():string;
   Public
@@ -185,9 +190,121 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sNAME_SPACE = 'sNAME_SPACE';
       sUNIT_NAME = 'sUNIT_NAME';
       sRECORD_RTTI_DEFINE = 'WST_RECORD_RTTI';
+      sEASY_ACCESS_INTERFACE_PREFIX = 'Easy';
 
       sPRM_NAME = 'strPrmName';
       sLOC_SERIALIZER = 'locSerializer';
+      sINPUT_PARAM = 'inputParam';
+      sOUTPUT_PARAM = 'outputParam';
+      sTEMP_OBJ = 'tmpObj';
+
+
+function DeduceEasyInterfaceForDocStyle(
+  const ARawInt : TPasClassType;
+  const AContainer : TwstPasTreeContainer
+): TPasClassType;
+
+  procedure HandleProc(const AIntf : TPasClassType; const AMethod : TPasProcedure);
+  var
+    locMethod : TPasProcedure;
+    locProcType : TPasProcedureType;
+    locElt : TPasElement;
+    locRawInParam, locRawOutParam : TPasClassType;
+    k, q : PtrInt;
+    locProp, locResProp : TPasProperty;
+    locArg : TPasArgument;
+    locIsFunction : Boolean;
+  begin
+    if ( AMethod.ProcType.Args.Count < 1 ) then
+      raise Exception.CreateFmt('Invalid "Document style" method, one parameter expected : %s.%s.',[AIntf.Name,AMethod.Name]);
+    locElt := TPasArgument(AMethod.ProcType.Args[0]).ArgType;
+    if locElt.InheritsFrom(TPasUnresolvedTypeRef) then
+      locElt := AContainer.FindElement(locElt.Name);
+    if ( locElt = nil ) then
+      raise Exception.CreateFmt('Invalid "Document style" method, class type parameter expected, nil founded : %s.%s.',[AIntf.Name,AMethod.Name]);
+    if ( not locElt.InheritsFrom(TPasClassType) ) then
+      raise Exception.CreateFmt('Invalid "Document style" method, class type parameter expected : %s.%s => %s',[AIntf.Name,AMethod.Name,locElt.ElementTypeName]);
+    locRawInParam := TPasClassType(locElt);
+    locIsFunction := False;
+    if AMethod.InheritsFrom(TPasFunction) then begin
+      locElt := TPasFunctionType(AMethod.ProcType).ResultEl.ResultType;
+      if locElt.InheritsFrom(TPasUnresolvedTypeRef) then
+        locElt := AContainer.FindElement(locElt.Name);
+      if ( locElt = nil ) or ( not locElt.InheritsFrom(TPasClassType) ) then
+        raise Exception.CreateFmt('Invalid "Document style" method, class type result expected : %s.%s.',[AIntf.Name,AMethod.Name]);
+      locRawOutParam := TPasClassType(locElt);
+      q := locRawOutParam.Members.Count;
+      if ( q > 0 ) then begin
+        for k := 0 to ( q - 1 ) do begin
+          if TPasElement(locRawOutParam.Members[k]).InheritsFrom(TPasProperty) then begin
+            locProp := TPasProperty(locRawOutParam.Members[k]);
+            if ( locProp.Visibility = visPublished ) then begin
+              locResProp := locProp;
+              locIsFunction := True;
+              Break;
+            end;
+          end;
+        end;
+      end;
+    end;
+    if locIsFunction then begin
+      locMethod := TPasFunction(AContainer.CreateElement(TPasFunction,AMethod.Name,AIntf,'',0));
+      locMethod.ProcType := TPasFunctionType(AContainer.CreateElement(TPasFunctionType,AMethod.ProcType.Name,locMethod,'',0));
+    end else begin
+      locMethod := TPasProcedure(AContainer.CreateElement(TPasProcedure,AMethod.Name,AIntf,'',0));
+      locMethod.ProcType := TPasProcedureType(AContainer.CreateElement(TPasProcedureType,AMethod.ProcType.Name,locMethod,'',0));
+    end;
+    AIntf.Members.Add(locMethod);
+    q := locRawInParam.Members.Count;
+    locProcType := locMethod.ProcType;
+    if ( q > 0 ) then begin
+      for k := 0 to ( q - 1 ) do begin
+        locElt := TPasElement(locRawInParam.Members[k]);
+        if locElt.InheritsFrom(TPasProperty) then begin
+          locProp := TPasProperty(locElt);
+          if ( locProp.Visibility = visPublished ) then begin
+            locArg := TPasArgument(AContainer.CreateElement(TPasArgument,locProp.Name,locProcType,'',0));
+            locArg.ArgType := locProp.VarType;
+            locArg.ArgType.AddRef();
+            locArg.Access := argConst;
+            locProcType.Args.Add(locArg);
+          end;
+        end;
+      end;
+    end;
+    if locIsFunction then begin
+      TPasFunctionType(locProcType).ResultEl := TPasResultElement(AContainer.CreateElement(TPasResultElement,'Result',locProcType,'',0));
+      TPasFunctionType(locProcType).ResultEl.ResultType := locResProp.VarType; locResProp.VarType.AddRef();
+    end;
+  end;
+  
+var
+  locRes : TPasClassType;
+  i, c : PtrInt;
+  g : TGuid;
+  e : TPasElement;
+begin
+  if ( ARawInt.ObjKind <> okInterface ) then
+    raise Exception.CreateFmt('Interface expected : "%s".',[ARawInt.Name]);
+  locRes := TPasClassType(AContainer.CreateElement(TPasClassType,Format('%s%s',[ARawInt.Name,sEASY_ACCESS_INTERFACE_PREFIX]),nil,'',0));
+  try
+    locRes.ObjKind := okInterface;
+    if ( CreateGUID(g) = 0 ) then
+      locRes.InterfaceGUID := GUIDToString(g);
+    c := ARawInt.Members.Count;
+    if ( c > 0 ) then begin
+      for i := 0 to ( c - 1 ) do begin
+        e := TPasElement(ARawInt.Members[i]);
+        if e.InheritsFrom(TPasProcedure) then
+          HandleProc(locRes,TPasProcedure(e));
+      end;
+    end;
+  except
+    FreeAndNil(locRes);
+    raise;
+  end;
+  Result := locRes;
+end;
 
 { TProxyGenerator }
 
@@ -258,17 +375,37 @@ Var
   intf : TPasClassType;
   elt : TPasElement;
   ls : TList;
+  binding : TwstBinding;
+  intfEasy : TPasClassType;
+  HandleEasyIntf : Boolean;
 begin
+  HandleEasyIntf := ( goDocumentWrappedParameter in Self.Options );
   GenerateUnitHeader();
   GenerateUnitImplementationHeader();
   ls := SymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := Pred(ls.Count);
-  for i := 0 to c do begin
-    elt := TPasElement(ls[i]);
-    if ( elt is TPasClassType ) and ( TPasClassType(elt).ObjKind = okInterface ) then begin
-      intf := elt as TPasClassType;
-      GenerateProxyIntf(intf);
-      GenerateProxyImp(intf);
+  if HandleEasyIntf then begin
+    for i := 0 to c do begin
+      elt := TPasElement(ls[i]);
+      if ( elt is TPasClassType ) and ( TPasClassType(elt).ObjKind = okInterface ) then begin
+        intf := elt as TPasClassType;
+        binding := SymbolTable.FindBinding(intf);
+        intfEasy := nil;
+        if ( binding.BindingStyle = bsDocument ) then begin
+          intfEasy := DeduceEasyInterfaceForDocStyle(intf,SymbolTable);
+        end;
+        GenerateProxyIntf(intf,intfEasy,binding);
+        GenerateProxyImp(intf,intfEasy,binding);
+      end;
+    end;
+  end else begin
+    for i := 0 to c do begin
+      elt := TPasElement(ls[i]);
+      if ( elt is TPasClassType ) and ( TPasClassType(elt).ObjKind = okInterface ) then begin
+        intf := elt as TPasClassType;
+        GenerateProxyIntf(intf,nil,binding);
+        GenerateProxyImp(intf,nil,binding);
+      end;
     end;
   end;
   GenerateUnitImplementationFooter();
@@ -282,17 +419,29 @@ begin
   Result := Format('%s_proxy',[SymbolTable.CurrentModule.Name]);
 end;
 
-procedure TProxyGenerator.GenerateProxyIntf(AIntf: TPasClassType);
-
+procedure TProxyGenerator.GenerateProxyIntf(AIntf, AEasyIntf : TPasClassType; ABinding : TwstBinding);
+var
+  HandleEasyIntf : boolean;
+  
   procedure WriteDec();
   begin
     Indent();
-    WriteLn('%s=class(%s,%s)',[GenerateClassName(AIntf),sPROXY_BASE_CLASS,AIntf.Name]);
+    Write('%s=class(%s,%s',[GenerateClassName(AIntf),sPROXY_BASE_CLASS,AIntf.Name]);
+    if HandleEasyIntf then
+      Write(',%s',[AEasyIntf.Name]);
+    WriteLn(')');
     FDecProcStream.IncIndent();
     try
       FDecProcStream.NewLine();
       FDecProcStream.Indent();
       FDecProcStream.WriteLn('Function wst_CreateInstance_%s(const AFormat : string = %s; const ATransport : string = %s):%s;',[AIntf.Name,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name]);
+      if HandleEasyIntf then begin
+        FDecProcStream.Indent();
+        FDecProcStream.WriteLn(
+          'Function wst_CreateInstance_%s%s(const AFormat : string = %s; const ATransport : string = %s):%s%s;',
+          [AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
+        );
+      end;
     finally
       FDecProcStream.DecIndent();
     end;
@@ -333,7 +482,10 @@ procedure TProxyGenerator.GenerateProxyIntf(AIntf: TPasClassType);
     if AMthd.InheritsFrom(TPasFunction) then begin
       Write(':%s',[TPasFunctionType(AMthd.ProcType).ResultEl.ResultType.Name]);
     end;
-    WriteLn(';');
+    Write(';');
+    if HandleEasyIntf then
+      Write('overload;');
+    WriteLn('');
   End;
   
   procedure WriteMethods();
@@ -344,23 +496,32 @@ procedure TProxyGenerator.GenerateProxyIntf(AIntf: TPasClassType);
   begin
     if ( GetElementCount(AIntf.Members,TPasProcedure) = 0 ) then
       Exit;
-    //IncIndent();
-      Indent();
-      WriteLn('Protected');
-      IncIndent();
-        Indent();WriteLn('class function GetServiceType() : PTypeInfo;override;');
-        mthds := AIntf.Members;
+    Indent();
+    WriteLn('Protected');
+    IncIndent();
+      Indent();WriteLn('class function GetServiceType() : PTypeInfo;override;');
+      mthds := AIntf.Members;
+      for k := 0 to Pred(mthds.Count) do begin
+        elt := TPasElement(mthds[k]);
+        if elt.InheritsFrom(TPasProcedure) then begin
+          WriteMethod(TPasProcedure(elt));
+        end;
+      end;
+      if HandleEasyIntf then begin
+        Indent(); WriteLn('// Easy acces methods');
+        mthds := AEasyIntf.Members;
         for k := 0 to Pred(mthds.Count) do begin
           elt := TPasElement(mthds[k]);
           if elt.InheritsFrom(TPasProcedure) then begin
             WriteMethod(TPasProcedure(elt));
           end;
         end;
-      DecIndent();
-    //DecIndent();
+      end;
+    DecIndent();
   end;
   
 begin
+  HandleEasyIntf := ( goDocumentWrappedParameter in Self.Options ) and ( AEasyIntf <> nil );
   SetCurrentStream(FDecStream);
   NewLine();
   IncIndent();
@@ -370,9 +531,10 @@ begin
   DecIndent();
 end;
 
-procedure TProxyGenerator.GenerateProxyImp(AIntf: TPasClassType);
+procedure TProxyGenerator.GenerateProxyImp(AIntf, AEasyIntf : TPasClassType; ABinding : TwstBinding);
 Var
   strClassName : String;
+  HandleEasyIntf : Boolean;
   
   procedure WriteDec();
   begin
@@ -380,7 +542,6 @@ Var
     WriteLn('Function wst_CreateInstance_%s(const AFormat : string; const ATransport : string):%s;',[AIntf.Name,AIntf.Name]);
     WriteLn('Begin');
       IncIndent();
-      try
         Indent();
         WriteLn(
           'Result := %s.Create(%s,AFormat+%s,ATransport + %s);',
@@ -389,11 +550,27 @@ Var
             QuotedStr('address=') + Format(' + GetServiceDefaultAddress(TypeInfo(%s))',[AIntf.Name])
           ]
         );
-      finally
-        DecIndent();
-      end;
+      DecIndent();
     WriteLn('End;');
     NewLine();
+
+    if HandleEasyIntf then begin
+      WriteLn(
+        'Function wst_CreateInstance_%s%s(const AFormat : string; const ATransport : string):%s%s;',
+        [AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX,AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
+      );
+      WriteLn('Begin');
+        IncIndent();
+          Indent();
+          WriteLn(
+            'Result := wst_CreateInstance_%s(AFormat,ATransport) as %s%s;',
+            [AIntf.Name,AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
+          );
+        DecIndent();
+      WriteLn('End;');
+      NewLine();
+    end;
+    
     if ( GetElementCount(AIntf.Members,TPasProcedure) > 0 ) then
       WriteLn('{ %s implementation }',[strClassName]);
   end;
@@ -435,6 +612,177 @@ Var
     WriteLn(';');
   End;
 
+  procedure WriteEasyMethodImp(AMthd : TPasProcedure);
+  var
+    prms : TList;
+    origineRes : TPasResultElement;
+    origineResProp : TPasProperty;
+
+    function HasObjectsArgs() : Boolean;
+    var
+      k : PtrInt;
+      prm : TPasArgument;
+      elt : TPasElement;
+    begin
+      Result := False;
+      for k := 0 to ( prms.Count - 1 ) do begin
+        prm := TPasArgument(prms[k]);
+        elt := prm.ArgType;
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then
+          elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) or SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+          Result := True;
+          Break;
+        end;
+      end;
+    end;
+    
+    procedure AssignArguments();
+    var
+      k : PtrInt;
+      prm : TPasArgument;
+      elt : TPasElement;
+    begin
+      for k := 0 to ( prms.Count - 1 ) do begin
+        prm := TPasArgument(prms[k]);
+        elt := prm.ArgType;
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then
+          elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
+          Indent(); WriteLn('if ( PTypeInfo(TypeInfo(%s))^.Kind = tkClass ) then begin',[elt.Name]);
+            IncIndent();
+              Indent(); WriteLn('%s := TObject(%s.%s);',[sTEMP_OBJ,sINPUT_PARAM,prm.Name]);
+              Indent(); WriteLn('%s.Free();',[sTEMP_OBJ]);
+              Indent(); WriteLn('TObject(%s.%s) := nil;',[sINPUT_PARAM,prm.Name]);
+            DecIndent();
+            Indent(); WriteLn('end;');
+        end else begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+            Indent(); WriteLn('%s := %s.%s;',[sTEMP_OBJ,sINPUT_PARAM,prm.Name]);
+            Indent(); WriteLn('%s.Free();',[sTEMP_OBJ]);
+          end;
+        end;
+        Indent(); WriteLn('%s.%s := %s;',[sINPUT_PARAM,prm.Name,prm.Name]);
+      end;
+    end;
+
+    procedure ClearArguments();
+    var
+      k : PtrInt;
+      prm : TPasArgument;
+      elt : TPasElement;
+    begin
+      for k := 0 to ( prms.Count - 1 ) do begin
+        prm := TPasArgument(prms[k]);
+        elt := prm.ArgType;
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then
+          elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
+          Indent(); WriteLn('if ( PTypeInfo(TypeInfo(%s))^.Kind = tkClass ) then',[elt.Name]);
+            IncIndent();
+              Indent(); WriteLn('TObject(%s.%s) := nil;',[sINPUT_PARAM,prm.Name]);
+            DecIndent();
+        end else begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+            Indent(); WriteLn('%s.%s := nil;',[sINPUT_PARAM,prm.Name]);
+          end;
+        end;
+      end;
+      if AMthd.ProcType.InheritsFrom(TPasFunctionType) then begin
+        elt := origineResProp.VarType;
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then
+          elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
+          Indent(); WriteLn('if ( PTypeInfo(TypeInfo(%s))^.Kind = tkClass ) then',[elt.Name]);
+            IncIndent();
+              Indent(); WriteLn('TObject(%s.%s) := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+            DecIndent();
+        end else begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+            Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+          end;
+        end;
+      end;
+    end;
+
+  var
+    origineMthd : TPasProcedure;
+    origineIsFunc : Boolean;
+    origineArgIN : TPasArgument;
+    prmCnt,k : Integer;
+    prm : TPasArgument;
+    resPrm : TPasResultElement;
+    elt : TPasElement;
+    objArgs : Boolean;
+    localIsFunc : boolean;
+  begin
+    origineMthd := FindMember(AIntf,AMthd.Name) as TPasProcedure;
+    Assert ( origineMthd <> nil );
+    origineArgIN := TPasArgument(origineMthd.ProcType.Args[0]);
+    origineIsFunc := origineMthd.InheritsFrom(TPasFunction);
+    origineResProp := nil;
+    localIsFunc := AMthd.InheritsFrom(TPasFunction);
+    if origineIsFunc then begin
+      origineRes := TPasFunctionType(origineMthd.ProcType).ResultEl;
+      for k := 0 to ( TPasClassType(origineRes.ResultType).Members.Count - 1 ) do begin
+        elt := TPasElement(TPasClassType(origineRes.ResultType).Members[k]);
+        if elt.InheritsFrom(TPasProperty) and ( TPasProperty(elt).Visibility = visPublished ) then begin
+          origineResProp := TPasProperty(elt);
+          Break;
+        end;
+      end;
+      Assert( localIsFunc or ( origineResProp = nil ) );
+    end else begin
+      origineRes := nil;
+    end;
+    prms := AMthd.ProcType.Args;
+    objArgs := HasObjectsArgs();
+    IncIndent();
+      WriteLn('var');
+        Indent(); WriteLn('%s : TObject;',[sTEMP_OBJ]);
+        Indent(); WriteLn('%s : %s;',[sINPUT_PARAM,origineArgIN.ArgType.Name]);
+        if origineIsFunc then begin
+          Indent(); WriteLn('%s : %s;',[sOUTPUT_PARAM,origineRes.ResultType.Name]);
+        end;
+      WriteLn('begin');
+        Indent(); WriteLn('%s := nil;',[sOUTPUT_PARAM]);
+        Indent(); WriteLn('%s := %s.Create();',[sINPUT_PARAM,origineArgIN.ArgType.Name]);
+        Indent(); WriteLn('try');
+          IncIndent();
+            prmCnt := prms.Count;
+            if ( prmCnt > 0 ) then
+              AssignArguments();
+            if objArgs then begin
+              Indent(); WriteLn('try');
+                 IncIndent();
+            end;
+            if origineIsFunc then begin
+              Indent(); WriteLn('%s := %s(%s);',[sOUTPUT_PARAM,origineMthd.Name,sINPUT_PARAM]);
+              if localIsFunc then begin
+                Indent(); WriteLn('Result := %s.%s;',[sOUTPUT_PARAM,origineResProp.Name]);
+              end;
+            end else begin
+              Indent(); WriteLn('%s(%s);',[origineMthd.Name,sINPUT_PARAM]);
+            end;
+            if objArgs then begin
+              DecIndent();
+              Indent(); WriteLn('finally');
+                IncIndent();
+                  ClearArguments();
+                DecIndent();
+              Indent(); WriteLn('end;');
+            end;
+          DecIndent();
+        Indent(); WriteLn('finally');
+          IncIndent();
+            Indent(); WriteLn('FreeAndNil(%s);',[sINPUT_PARAM]);
+            Indent(); WriteLn('FreeAndNil(%s);',[sOUTPUT_PARAM]);
+          DecIndent();
+        Indent(); WriteLn('end;');
+    DecIndent();
+    WriteLn('end;');
+  end;
+  
   procedure WriteMethodImp(AMthd : TPasProcedure);
   Var
     prmCnt,k : Integer;
@@ -560,9 +908,23 @@ Var
         WriteLn('');
       end;
     end;
+    if HandleEasyIntf then begin
+      mthds := AEasyIntf.Members;
+      if ( mthds.Count > 0 ) then begin
+        for k := 0 to Pred(mthds.Count) do begin
+          elt := TPasElement(mthds[k]);
+          if elt.InheritsFrom(TPasProcedure) then begin
+            WriteMethodDec(TPasProcedure(elt));
+            WriteEasyMethodImp(TPasProcedure(elt));
+            WriteLn('');
+          end;
+        end;
+      end;
+    end;
   end;
   
 begin
+  HandleEasyIntf := ( goDocumentWrappedParameter in Self.Options ) and ( AEasyIntf <> nil );
   SetCurrentStream(FImpStream);
   IncIndent();
   While ( DecIndent() > 0 ) Do
@@ -2377,6 +2739,7 @@ var
   classAncestor : TPasElement;
   tmpList : TList;
   intfCount : PtrInt;
+  locBinding : TwstBinding;
 begin
   intfCount := 0;
   objLst := nil;
@@ -2491,6 +2854,23 @@ begin
       end;
     end;
 
+    if ( goDocumentWrappedParameter in Self.Options ) then begin
+      c := FSymbolTable.BindingCount;
+      if ( c > 0 ) then begin
+        for i := 0 to ( c - 1 ) do begin
+          locBinding := FSymbolTable.Binding[i];
+          if ( locBinding.BindingStyle = bsDocument ) then begin
+            clssTyp := DeduceEasyInterfaceForDocStyle(locBinding.Intf,FSymbolTable);
+            try
+              GenerateIntf(clssTyp);
+            finally
+              clssTyp.Release();
+            end;
+          end;
+        end;
+      end;
+    end;
+    
     if ( intfCount > 0 ) then begin
       SetCurrentStream(FDecStream);
       NewLine();

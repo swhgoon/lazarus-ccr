@@ -79,6 +79,7 @@
     <Other>
       <CustomOptions Value="-dINDY_10
 -dUseCThreads
+-dWST_DBG
 "/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

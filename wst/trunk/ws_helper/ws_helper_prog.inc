@@ -9,8 +9,9 @@ resourcestring
            '  -o  PATH  Relative output directory' + sNEW_LINE +
            '  -a  PATH  Absolute output directory' + sNEW_LINE +
            '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE +
-           '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE;
-  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.5 Copyright (c) 2006, 2007 by Inoussa OUEDRAOGO';
+           '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE +
+           '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE;
+  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.5 Copyright (c) 2006, 2008 by Inoussa OUEDRAOGO';
 
 const
   sWST_META = 'wst_meta';
@@ -170,8 +171,10 @@ var
     mg : TMetadataGenerator;
     rsrcStrm : TMemoryStream;
     strStream : TStringStream;
+    wrappedParams : Boolean;
   begin
     Result := False;
+    wrappedParams := ( cloHandleWrappedParameters in AppOptions );
     strStream := nil;
     rsrcStrm := nil;
     mtdaFS := nil;
@@ -182,6 +185,8 @@ var
         if ( cloInterface in AppOptions ) then begin
           WriteLn('Interface file generation...');
           g := TInftGenerator.Create(symtable,srcMngr);
+          if wrappedParams then
+            g.Options := g.Options + [goDocumentWrappedParameter];
           g.Execute();
           FreeAndNil(g);
         end;
@@ -189,6 +194,8 @@ var
         If ( cloProxy in AppOptions ) Then Begin
           WriteLn('Proxy file generation...');
           g := TProxyGenerator.Create(symtable,srcMngr);
+          if wrappedParams then
+            g.Options := g.Options + [goDocumentWrappedParameter];
           g.Execute();
           FreeAndNil(g);
         End;
@@ -196,6 +203,8 @@ var
         If ( cloBinder in AppOptions ) Then Begin
           WriteLn('Binder file generation...');
           g := TBinderGenerator.Create(symtable,srcMngr);
+          if wrappedParams then
+            g.Options := g.Options + [goDocumentWrappedParameter];
           g.Execute();
           FreeAndNil(g);
         End;
@@ -203,6 +212,8 @@ var
         If ( cloImp in AppOptions ) Then Begin
           WriteLn('Implementation file generation...');
           g := TImplementationGenerator.Create(symtable,srcMngr);
+          if wrappedParams then
+            g.Options := g.Options + [goDocumentWrappedParameter];
           g.Execute();
           FreeAndNil(g);
         End;

@@ -25,6 +25,7 @@ type
     edtImplementation : TCheckBox;
     edtBinder : TCheckBox;
     edtOutputDir : TEdit;
+    edtWrappedParams : TCheckBox;
     GroupBox1 : TGroupBox;
     Label1 : TLabel;
     Panel1 : TPanel;
@@ -82,6 +83,7 @@ begin
   edtImplementation.Checked := edtBinder.Checked;
   edtInterface.Checked := edtBinder.Checked;
   edtProxy.Checked := edtBinder.Checked;
+  edtWrappedParams.Checked := edtBinder.Checked;
 end;
 
 

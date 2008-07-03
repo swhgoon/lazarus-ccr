@@ -22,7 +22,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="-uA -i -p -b -x -a&quot;C:\Programmes\lazarus\wst\trunk\tests\files&quot; &quot;C:\Programmes\lazarus\wst\trunk\type_lib_edtr\files\DataSource.xsd&quot;"/>
+        <CommandLineParams Value="-uA  -p C:\Programmes\D7\etatcivil\partages\wst\tests\test_suite\files\document_literal_wrapped_binding_style.wsdl -aE:\tmp\docstyle"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -148,10 +148,8 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <UseLineInfoUnit Value="False"/>
-        <StripSymbols Value="True"/>
+        <GenerateDebugInfo Value="True"/>
       </Debugging>
-      <LinkSmart Value="True"/>
     </Linking>
     <Other>
       <CustomOptions Value="-Xi
