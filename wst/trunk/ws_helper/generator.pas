@@ -695,11 +695,17 @@ Var
         if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
           Indent(); WriteLn('if ( PTypeInfo(TypeInfo(%s))^.Kind = tkClass ) then',[elt.Name]);
             IncIndent();
-              Indent(); WriteLn('TObject(%s.%s) := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+              Indent(); WriteLn('if ( %s <> nil ) then',[sOUTPUT_PARAM]);
+              IncIndent();
+                Indent(); WriteLn('TObject(%s.%s) := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+              DecIndent();
             DecIndent();
         end else begin
           if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
-            Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+            Indent(); WriteLn('if ( %s <> nil ) then',[sOUTPUT_PARAM]);
+            IncIndent();
+              Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
+            DecIndent();
           end;
         end;
       end;
