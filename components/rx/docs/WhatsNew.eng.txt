@@ -1,3 +1,4 @@
+  + if try edit closed TRxMemoryData in error message display TRxMemoryData.Name
   + fix create resource from XPM image
   + draw shadow on button image in TToolPanel
   - Fix error in TDBComboBox.EditingDone if DataSet = nil

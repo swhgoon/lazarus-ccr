@@ -774,7 +774,7 @@ var
   VarData: Variant;
   PBl:PBoolean;
 begin
-  if not (State in dsWriteModes) then Error(SNotEditing);
+  if not (State in dsWriteModes) then ErrorFmt(SNotEditing, [Name]);
   GetActiveRecBuf(RecBuf);
   with Field do
   begin
@@ -784,7 +784,7 @@ begin
     if Field.FieldNo > 0 then
 {$ENDIF}
     begin
-      if State in [dsCalcFields, dsFilter] then Error(SNotEditing);
+      if State in [dsCalcFields, dsFilter] then ErrorFmt(SNotEditing, [Name]);
       if ReadOnly and not (State in [dsSetKey, dsFilter]) then
         ErrorFmt(SFieldReadOnly, [DisplayName]);
       Validate(Buffer);
