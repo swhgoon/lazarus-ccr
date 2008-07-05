@@ -43,8 +43,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TEnumFormatEtc.Next(celt: LongWord; out elt: FormatEtc; out pceltFetched: LongWord): HResult;
-
+function TEnumFormatEtc.Next(celt: LongWord; out elt: FormatEtc; pceltFetched:pULong=nil): HResult;
 var
   CopyCount: LongWord;
 
@@ -62,8 +61,8 @@ begin
   //todo_lcl_check Delphi treats pceltFetched an PInteger. Implemented like in fpc.activex. What heappens with
   // a C Program call with a NULL in pCeltFetcjed??
   //Answer: Yes. Is necessary a check here
-  if @pceltFetched <> nil then
-    pceltFetched := CopyCount;
+  if pceltFetched <> nil then
+    pceltFetched^ := CopyCount;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -348,7 +347,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.EnumDAvise(Out enumAdvise : IEnumStatData):HResult;
+function TVTDataObject.EnumDAdvise(Out enumAdvise : IEnumStatData):HResult;
 
 begin
   if FAdviseHolder = nil then
@@ -380,7 +379,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Function TVTDataObject.GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult;
+Function TVTDataObject.GetCanonicalFormatEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult;
 
 begin
   Result := DATA_S_SAMEFORMATETC;

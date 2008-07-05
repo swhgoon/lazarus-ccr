@@ -159,7 +159,7 @@ type
 
    IEnumSTATDATA = Interface (IUnknown)
     ['{00000105-0000-0000-C000-000000000046}']
-    Function Next(Celt:ULong;Out Rgelt:statdata;Out pceltFetched:ULong):HResult; StdCall;
+    Function Next (Celt:ULong;Out xcelt;pceltfetched : PUlong):HResult; StdCall;
 //      Function RemoteNext(Celt:ULong;Out Rgelt:statdata;Out pceltFetched:ULong):HResult; StdCall;
     Function Skip(Celt:ULong):HResult;StdCall;
     Function Reset:HResult;StdCall;
@@ -168,7 +168,7 @@ type
 
    IEnumFORMATETC = Interface (IUnknown)
    ['{00000103-0000-0000-C000-000000000046}']
-   Function Next(Celt:ULong;Out Rgelt:FormatEtc;Out pceltFetched:ULong):HResult; StdCall;
+   Function Next(Celt:ULong;Out Rgelt:FormatEtc;pceltFetched:pULong=nil):HResult; StdCall;
 //     Function RemoteNext(Celt:ULong;Out Rgelt:FormatEtc;Out pceltFetched:ULong):HResult; StdCall;
    Function Skip(Celt:ULong):HResult;StdCall;
    Function Reset:HResult;StdCall;
@@ -260,12 +260,12 @@ type
    Function GetData(Const formatetcIn : FORMATETC;Out medium : STGMEDIUM):HRESULT; STDCALL;
    Function GetDataHere(CONST pformatetc : FormatETC; Out medium : STGMEDIUM):HRESULT; STDCALL;
    Function QueryGetData(const pformatetc : FORMATETC):HRESULT; STDCALL;
-   Function GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult; STDCALl;
+   Function GetCanonicalFormatEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult; STDCALl;
    Function SetData (Const pformatetc : FORMATETC;const medium:STGMEDIUM;FRelease : BOOL):HRESULT; StdCall;
    Function EnumFormatEtc(dwDirection : DWord; OUT enumformatetcpara : IENUMFORMATETC):HRESULT; StdCall;
    Function DAdvise(const formatetc : FORMATETC;advf :DWORD; CONST AdvSink : IAdviseSink;OUT dwConnection:DWORD):HRESULT;StdCall;
    Function DUnadvise(dwconnection :DWord) :HRESULT;StdCall;
-   Function EnumDAvise(Out enumAdvise : IEnumStatData):HResult;StdCall;
+   Function EnumDAdvise(Out enumAdvise : IEnumStatData):HResult;StdCall;
    End;
 
  IDropTarget = interface(IUnknown)

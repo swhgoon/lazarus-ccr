@@ -326,7 +326,7 @@ type
   );
   TVirtualNodeInitStates = set of TVirtualNodeInitState;
 
-  TScrollBarStyle = (
+  TVTScrollBarStyle = (
     sbmRegular,
     sbmFlat,
     sbm3D
@@ -711,7 +711,7 @@ type
     constructor Create(Tree: TBaseVirtualTree; AFormatEtcArray: TFormatEtcArray);
 
     function Clone(out Enum: IEnumFormatEtc): HResult; stdcall;
-    function Next(celt: LongWord; out elt: FormatEtc; out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out elt: FormatEtc;pceltFetched:pULong=nil): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
   end;
@@ -787,9 +787,9 @@ type
     function DAdvise(const FormatEtc: TFormatEtc; advf: DWord; const advSink: IAdviseSink; out dwConnection: DWord):
       HResult; virtual; stdcall;
     function DUnadvise(dwConnection: DWord): HResult; virtual; stdcall;
-    Function EnumDAvise(Out enumAdvise : IEnumStatData):HResult;virtual;StdCall;
+    Function EnumDAdvise(out enumAdvise : IEnumStatData):HResult;virtual;StdCall;
     function EnumFormatEtc(Direction: DWord; out EnumFormatEtc: IEnumFormatEtc): HResult; virtual; stdcall;
-    Function GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult; virtual; STDCALl;
+    function GetCanonicalFormatEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult; virtual; STDCALl;
     function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function GetDataHere(const FormatEtc: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function QueryGetData(const FormatEtc: TFormatEtc): HResult; virtual; stdcall;
@@ -1450,12 +1450,12 @@ type
     FAlwaysVisible: Boolean;
     FOwner: TBaseVirtualTree;
     FScrollBars: TScrollStyle;                   // used to hide or show vertical and/or horizontal scrollbar
-    FScrollBarStyle: TScrollBarStyle;            // kind of scrollbars to use
+    FScrollBarStyle: TVTScrollBarStyle;            // kind of scrollbars to use
     FIncrementX,
     FIncrementY: TVTScrollIncrement;             // number of pixels to scroll in one step (when auto scrolling)
     procedure SetAlwaysVisible(Value: Boolean);
     procedure SetScrollBars(Value: TScrollStyle);
-    procedure SetScrollBarStyle(Value: TScrollBarStyle);
+    procedure SetScrollBarStyle(Value: TVTScrollBarStyle);
   protected
     function GetOwner: TPersistent; override;
   public
@@ -1466,7 +1466,7 @@ type
     property AlwaysVisible: Boolean read FAlwaysVisible write SetAlwaysVisible default False;
     property HorizontalIncrement: TVTScrollIncrement read FIncrementX write FIncrementX default 20;
     property ScrollBars: TScrollStyle read FScrollbars write SetScrollBars default ssBoth;
-    property ScrollBarStyle: TScrollBarStyle read FScrollBarStyle write SetScrollBarStyle default sbmRegular;
+    property ScrollBarStyle: TVTScrollBarStyle read FScrollBarStyle write SetScrollBarStyle default sbmRegular;
     property VerticalIncrement: TVTScrollIncrement read FIncrementY write FIncrementY default 20;
   end;
 
@@ -10462,7 +10462,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TScrollBarOptions.SetScrollBarStyle(Value: TScrollBarStyle);
+procedure TScrollBarOptions.SetScrollBarStyle(Value: TVTScrollBarStyle);
 
 begin
   {$ifndef UseFlatScrollbars}
@@ -19073,7 +19073,7 @@ begin
         if Failed(Result) then
           Abort;
         // create a list of available formats
-        while EnumFormat.Next(1, OLEFormat, Fetched) = S_OK do
+        while EnumFormat.Next(1, OLEFormat, @Fetched) = S_OK do
         begin
           SetLength(Formats, Length(Formats) + 1);
           Formats[High(Formats)] := OLEFormat.cfFormat;
@@ -21551,9 +21551,6 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.PaintImage(var PaintInfo: TVTPaintInfo; ImageInfoIndex: TVTImageInfoIndex; DoOverlay: Boolean);
-
-const
-  Style: array[TImageType] of Cardinal = (0, ILD_MASK);
 
 var
   CutNode: Boolean;
@@ -26655,9 +26652,6 @@ begin
         // that the tree is fully displayed on screen.
         R := Rect(0, 0, Max(FRangeX, ClientWidth), 0);
         NodeBitmap.Width := Window.Right - Window.Left;
-        Logger.Send([lcPaintDetails],'NodeBitmap.Width',NodeBitmap.Width);
-        // Make sure the buffer bitmap and target bitmap use the same transformation mode.
-        SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
 
         // For quick checks some intermediate variables are used.
         UseBackground := (toShowBackground in FOptions.FPaintOptions) and (FBackground.Graphic is TBitmap) and
@@ -26681,6 +26675,7 @@ begin
         if PaintInfo.Node = nil then
           BaseOffset := Window.Top;
         Logger.Send([lcPaint, lcHeaderOffset],'BaseOffset',BaseOffset);
+
         // Transform selection rectangle into node bitmap coordinates.
         if DrawSelectionRect then
           OffsetRect(SelectionRect, 0, -BaseOffset);
@@ -26742,9 +26737,9 @@ begin
                 if Height <> PaintInfo.Node.NodeHeight then
                 begin
                   Logger.Send([lcPaintDetails],'Setting the Node Height');
-                  // Avoid that the VCL copies the bitmap while changing its height.
-                  Height := 0;
                   Height := PaintInfo.Node.NodeHeight;
+                  // Make sure the buffer bitmap and target bitmap use the same transformation mode.
+                  SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
                   //Workaround to LCL bug 8626
                   SetWindowOrgEx(Canvas.Handle, {$ifdef Gtk}-{$endif}Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
@@ -27096,6 +27091,8 @@ begin
           NodeBitmap.PixelFormat := pf32Bit;
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
+          // Make sure the buffer bitmap and target bitmap use the same transformation mode.
+          SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);
           Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
           Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
