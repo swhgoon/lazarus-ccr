@@ -48,7 +48,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TEnumFormatEtc.Next(celt: LongWord; out elt: FormatEtc; out pceltFetched: LongWord): HResult;
+function TEnumFormatEtc.Next(celt: LongWord; out elt: FormatEtc;pceltFetched:pULong=nil): HResult;
 {
 var
   CopyCount: LongWord;
@@ -384,7 +384,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.EnumDAvise(Out enumAdvise : IEnumStatData):HResult;
+function TVTDataObject.EnumDAdvise(Out enumAdvise : IEnumStatData):HResult;
 
 begin
   {
@@ -420,7 +420,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Function TVTDataObject.GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult;
+Function TVTDataObject.GetCanonicalFormatEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult;
 
 begin
   //Result := DATA_S_SAMEFORMATETC;

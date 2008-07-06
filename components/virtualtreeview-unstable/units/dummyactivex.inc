@@ -24,9 +24,10 @@ const
 type
   //types from win unit
   Long = LongInt;
-  WinBool= LongBool;
-  Bool= WinBool;
+  WinBool = LongBool;
+  Bool = WinBool;
   ULONG  = cardinal;
+  PULONG = ^ULONG;
   LONGLONG  = int64;
   LPDWORD = ^DWORD;
   LPVOID  = pointer;
