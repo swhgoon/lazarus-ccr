@@ -5,7 +5,7 @@ interface
 uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, o32editf, o32flxed;
+  Dialogs, StdCtrls, ovcdata, o32editf, o32flxed;
 
 type
   TForm1 = class(TForm)
@@ -15,10 +15,11 @@ type
     O32FlexEdit2: TO32FlexEdit;
     procedure O32FlexEdit1UserValidation(Sender: TObject;
       var ValidEntry: Boolean);
-    procedure O32FlexEditValidationError(Sender: TObject; ErrorCode: Word;
-      ErrorMsg: String);
     procedure O32FlexEdit2UserValidation(Sender: TObject;
       var ValidEntry: Boolean);
+    procedure O32FlexEditValidationError(Sender: TObject; ErrorCode: Word;
+      ErrorMsg: String);
+    procedure O32FlexEditExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -37,7 +38,19 @@ implementation
 procedure TForm1.O32FlexEdit1UserValidation(Sender: TObject;
   var ValidEntry: Boolean);
 begin
-  ValidEntry := StrToIntDef(TO32FlexEdit(Sender).Text, 0) > 0;
+  if TO32FlexEdit(Sender).Text = '' then
+    ValidEntry := True
+  else
+    ValidEntry := StrToIntDef(TO32FlexEdit(Sender).Text, 0) > 0;
+end;
+
+procedure TForm1.O32FlexEdit2UserValidation(Sender: TObject;
+  var ValidEntry: Boolean);
+begin
+  if TO32FlexEdit(Sender).Text = '' then
+    ValidEntry := True
+  else
+    ValidEntry := StrToFloatDef(TO32FlexEdit(Sender).Text, 0) > 0;
 end;
 
 procedure TForm1.O32FlexEditValidationError(Sender: TObject;
@@ -46,10 +59,13 @@ begin
   MessageDlg(ErrorMsg + #13#10 + 'Press Ctrl+Z to undo.', mtError, [mbOK], 0);
 end;
 
-procedure TForm1.O32FlexEdit2UserValidation(Sender: TObject;
-  var ValidEntry: Boolean);
+procedure TForm1.O32FlexEditExit(Sender: TObject);
 begin
-  ValidEntry := StrToFloatDef(TO32FlexEdit(Sender).Text, 0) > 0;
+{$IFNDEF MSWINDOWS}  
+   {TO32FlexEdit OnUserValidation doesn't work, so validate here
+     so user is notified if error, even though focus will change.}
+  SendMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0);
+{$ENDIF}
 end;
 
 initialization

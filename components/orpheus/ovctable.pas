@@ -807,8 +807,15 @@ constructor TOvcCustomTable.Create(AOwner : TComponent);
     FTopRow := tbDefLockedRows;
     FSelAnchorRow := tbDefLockedRows;
 
+{$IFNDEF LCL}
     tbColMoveCursor := LoadBaseCursor('ORCOLUMNMOVECURSOR');
     tbRowMoveCursor := LoadBaseCursor('ORROWMOVECURSOR');
+{$ELSE}
+ {$IFDEF MSWINDOWS}  //Has never worked, plus crashes Carbon, so leave out for now.
+    tbColMoveCursor := LoadCursorFromLazarusResource('ORCOLUMNMOVECURSOR');
+    tbRowMoveCursor := LoadCursorFromLazarusResource('ORROWMOVECURSOR');
+ {$ENDIF}   
+{$ENDIF}    
 
     tbSelList := TOvcSelectionList.Create(tbDefRowCount, tbDefColCount);
 
@@ -1806,12 +1813,16 @@ procedure TOvcCustomTable.tbSetScrollPos(SB : TOvcScrollBar);
     ColNum  : TColNum;
     ColCnt  : TColNum;
     Divisor : LongInt;
+{$IFNDEF MSWINDOWS}
+    SI : TScrollInfo;
+{$ENDIF}
   begin
     if (SB = otsbVertical) then
       begin
         if tbHasVSBar then
           if HandleAllocated and (tbLockCount = 0) then
             begin
+{$IFDEF MSWINDOWS}
               if (tbLastTopRow < 16*1024) then
                 SetScrollPos(Handle, SB_VERT, TopRow, true)
               else
@@ -1824,6 +1835,12 @@ procedure TOvcCustomTable.tbSetScrollPos(SB : TOvcScrollBar);
                                         TopRow div Divisor,
                                         True);
                 end
+{$ELSE}
+              SI.fMask := SIF_POS;
+              SI.nPos := TopRow;
+              SI.nTrackPos := SI.nPos;
+              SetScrollInfo(Handle, SB_Vert, SI, True);
+{$ENDIF}
             end
           else
             tbUpdateSBs := true;
@@ -1837,7 +1854,14 @@ procedure TOvcCustomTable.tbSetScrollPos(SB : TOvcScrollBar);
               for ColNum := LockedCols to pred(LeftCol) do
                 if not tbIsColHidden(ColNum) then
                   inc(ColCnt);
+{$IFDEF MSWINDOWS}
               SetScrollPos(Handle, SB_HORZ, ColCnt, true)
+{$ELSE}
+              SI.fMask := SIF_POS;
+              SI.nPos := ColCnt;
+              SI.nTrackPos := SI.nPos;
+              SetScrollInfo(Handle, SB_Horz, SI, True);
+{$ENDIF}
             end
           else
             tbUpdateSBs := true;
@@ -1848,6 +1872,9 @@ procedure TOvcCustomTable.tbSetScrollPos(SB : TOvcScrollBar);
 procedure TOvcCustomTable.tbSetScrollRange(SB : TOvcScrollBar);
   var
     Divisor : LongInt;
+{$IFNDEF MSWINDOWS}
+    SI : TScrollInfo;
+{$ENDIF}
   begin
     if (SB = otsbVertical) then
       begin
@@ -1855,6 +1882,7 @@ procedure TOvcCustomTable.tbSetScrollRange(SB : TOvcScrollBar);
           tbCalcRowsOnLastPage;
         if tbHasVSBar and HandleAllocated then
           begin
+{$IFDEF MSWINDOWS}
 //            tbCalcRowsOnLastPage;
             if (tbLastTopRow < 16*1024) then
               if tbCalcRequiresVSBar then
@@ -1871,6 +1899,15 @@ procedure TOvcCustomTable.tbSetScrollRange(SB : TOvcScrollBar);
                                      tbLastTopRow div Divisor,
                                      False)
             end;
+{$ELSE}
+            SI.fMask := SIF_RANGE or SIF_PAGE;
+            SI.nMin := LockedRows;
+            SI.nMax := Pred(RowLimit);
+            SI.nPage := (ClientHeight div Rows[LockedRows].Height) - LockedRows;
+            if SI.nPage < 1 then
+              SI.nPage := 1;
+            SetScrollInfo(Handle, SB_Vert, SI, True);
+{$ENDIF}
           end
       end
     else {SB = otsbHorizontal}
@@ -1878,8 +1915,18 @@ procedure TOvcCustomTable.tbSetScrollRange(SB : TOvcScrollBar);
         tbCalcColsOnLastPage;
         if tbHasHSBar and HandleAllocated then
           begin
+{$IFDEF MSWINDOWS}
             tbCalcHSBarPosCount;
             SetScrollRange(Handle, SB_HORZ, 0, pred(tbHSBarPosCount), false);
+{$ELSE}
+            SI.fMask := SIF_RANGE or SIF_PAGE;
+            SI.nMin := 0;
+            SI.nMax := Pred(ColCount) - LockedCols;
+            SI.nPage := ColCount div 3;
+            if SI.nPage < 1 then
+              SI.nPage := 1;
+            SetScrollInfo(Handle, SB_Horz, SI, True);
+{$ENDIF}
           end;
       end;
   end;
@@ -6205,7 +6252,11 @@ procedure TOvcCustomTable.WMSetCursor(var Msg : TWMSetCursor);
         tbState := tbState - [otsShowMove, otsShowSize, otsDoingRow, otsDoingCol]
                            + [otsNormal];
       end;
+{$IFNDEF LCL}
     SetCursor(NewCursor);
+{$ELSE}    
+    LclIntf.SetCursor(NewCursor);  {Don't call control's SetCursor!}
+{$ENDIF}    
 
     Msg.Result := 1;
   end;

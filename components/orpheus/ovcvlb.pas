@@ -63,7 +63,11 @@ const
   vlDefIntegralHeight  = True;
   vlDefItemIndex       = -1;
   vlDefMultiSelect     = False;
-  vlDefNumItems        = MaxLongInt;
+{$IFDEF MSWINDOWS}
+  vlDefNumItems        = MaxLongInt;  //2,147,483,647
+{$ELSE}
+  vlDefNumItems        = 126322582;  //Apparent max. scrollbar positions with Carbon.
+{$ENDIF}                             // GTK apparently allows 2,115,747,484.
   vlDefOwnerDraw       = False;
   vlDefParentColor     = False;
   vlDefParentCtl3D     = True;
@@ -1471,7 +1475,11 @@ var
 begin
   if Value <> FNumItems then begin
     if (Value < 0) then
+{$IFDEF MSWINDOWS}
       Value := MaxLongInt;
+{$ELSE}
+      Value := vlDefNumItems;
+{$ENDIF}
 
     OldNumItems := FNumItems;
     {set new item index}
@@ -1589,8 +1597,10 @@ begin
 
 {$IFNDEF LCL}
     if GetClipBox(Canvas.Handle, ClipBox) <> SIMPLEREGION then
-{$ELSE}
-    if GetClipBox(Canvas.Handle, @ClipBox) <> SIMPLEREGION then
+{$ELSE}  //Something about code below doesn't work so just always InvalidateRect
+         // for now as workaround. If bug is in ScrollCanvas, then InsertItemsAt 
+         // and DeleteItemsAt will probably also need a similar workaround.
+    if GetClipBox(Canvas.Handle, @ClipBox) <> Region_Error then
 {$ENDIF}
       InvalidateRect(Handle, @ClipArea, True)
     else begin
@@ -2027,12 +2037,17 @@ begin
   lDivisor := 1;
   if ItemRange < lRows then
     lVSHigh := 1
+{$IFDEF MSWINDOWS}
   else if ItemRange <= High(SmallInt) then
     lVSHigh := ItemRange
   else begin
     lDivisor := 2*(ItemRange div 32768);
     lVSHigh := ItemRange div lDivisor;
   end;
+{$ELSE}  //lDivisor not needed apparently (and causes clicks to scroll >1 item).
+  else
+    lVSHigh := ItemRange;
+{$ENDIF}
 
   if lHaveVS then
     if not ((FNumItems > lRows) or (csDesigning in ComponentState)) then
@@ -2450,6 +2465,12 @@ begin
     {integral font height adjustment}
     vlbCalcFontFields;
     vlbAdjustIntegralHeight;
+{$IFDEF LCL}  //Make sure calling code knows about any change in height.
+  if (csDesigning in ComponentState) and
+     not (csLoading in ComponentState) then
+    if FIntegralHeight then
+      Msg.Height := ClientHeight;
+{$ENDIF}
     vlbCalcFontFields;
     vlbInitScrollInfo;
 

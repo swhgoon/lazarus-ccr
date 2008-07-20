@@ -266,6 +266,7 @@ function GetSystemMetrics(nIndex: Integer): Integer;
 function MoveWindow(hWnd: HWND; X, Y, nWidth, nHeight: Integer; bRepaint: BOOL): BOOL;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
                       X, Y, cx, cy: Integer; uFlags: UINT): BOOL;
+function UpdateWindow(hWnd: HWND): BOOL;
 function ValidateRect(hWnd: HWND; lpRect: PRect): BOOL;
 function InvalidateRect(hWnd: HWND; lpRect: PRect; bErase: BOOL): BOOL;
 function InvalidateRgn(hWnd: HWND; hRgn: HRGN; bErase: BOOL): BOOL;
@@ -291,7 +292,7 @@ function SetTextAlign(DC: HDC; Flags: UINT): UINT;
 function GetMapMode(DC: HDC): Integer;
 function SetMapMode(DC: HDC; p2: Integer): Integer;
 //function LoadBitmap(hInstance: HINST; lpBitmapName: PAnsiChar): HBITMAP;
-function LoadCursor(hInstance: HINST; lpCursorName: PAnsiChar): HCURSOR;
+//function LoadCursor(hInstance: HINST; lpCursorName: PAnsiChar): HCURSOR;
 function EnumThreadWindows(dwThreadId: DWORD; lpfn: TFNWndEnumProc; lParam: LPARAM): BOOL;
 procedure OutputDebugString(lpOutputString: PChar);
 function SetViewportOrgEx(DC: HDC; X, Y: Integer; Point: PPoint): BOOL;
@@ -312,7 +313,7 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 //procedure DeallocateHWnd(Wnd: HWND);
 
  {This belongs in System unit}
-function FindClassHInstance(ClassType: TClass): LongWord;
+//function FindClassHInstance(ClassType: TClass): LongWord;
 
  {This belongs in ExtCtrls unit}
 procedure Frame3D(Canvas: TCanvas; var Rect: TRect;
@@ -501,6 +502,15 @@ begin
     FindControl(hWnd).Visible := True;
 {$ENDIF}
 end;                      
+
+function UpdateWindow(hWnd: HWND): BOOL;
+ {For some reason, implementing this function in win32 widgetset 
+   on 27-May-2008 broke TOvcTable when a manifest is used.
+   Since TOvcTable worked when this function was not implemented,
+   just intercept and ignore call for now.} 
+begin
+  Result := True;
+end;
 
 function ValidateRect(hWnd: HWND; lpRect: PRect): BOOL;
 // Since LCL InvalidateRect redraws window, shouldn't need this function,
@@ -696,17 +706,61 @@ begin
   Result := Windows.GetTabbedTextExtent(hDC, lpString, nCount, nTabPositions, 
                                         lpnTabStopPositions);
 {$ELSE}
+  Result := 0;  //Not implemented yet (see comment below).
 {$ENDIF}
 end;
 
 function TabbedTextOut(hDC: HDC; X, Y: Integer; lpString: PChar; 
                        nCount, nTabPositions: Integer;
                        var lpnTabStopPositions; nTabOrigin: Integer): Longint;
-begin
 {$IFDEF MSWINDOWS}
+begin
   Result := Windows.TabbedTextOut(hDC, X, Y, lpString, nCount, nTabPositions,
                                   lpnTabStopPositions, nTabOrigin);
 {$ELSE}
+// TODO: Not yet implemented since not needed by Orpheus:
+//  -Special case where nTabPositions is 0 and lpnTabStopPositions is nil.
+//  -Special case where nTabPositions is 1 and >1 tab in string.
+//  -Return value (height and width of string).   
+//  -Use of nTabOrigin. This is used in OvcVLB as a negative offset
+//    with horizontal scrolling, but value passed is determined by 
+//    GetTabbedTextExtent, which is not yet implemented (above). Shouldn't
+//    be needed if virtual list box doesn't have horizontal scrollbar.
+type
+  TTabArray = array[1..1000] of Integer;  {Assume no more than this many tabs}
+var
+  OutX      : Integer;
+  TabCnt    : Integer;
+  StartPos  : Integer;
+  CharPos   : Integer;
+  OutCnt    : Integer;
+  TextSize  : TSize;
+begin
+  OutX := X;
+  TabCnt := 0;
+  StartPos := 0;
+  for CharPos := 0 to Pred(nCount) do
+    begin
+    if (lpString[CharPos] = #9) or (CharPos = Pred(nCount)) then  {Output text?}
+      begin
+      OutCnt := CharPos - StartPos;
+      if CharPos = Pred(nCount) then  {Include last char?}
+        Inc(OutCnt);
+      if (TabCnt > 0) and (TTabArray(lpnTabStopPositions)[TabCnt] < 0) then
+        begin  {Negative tab position means following text is right-aligned to it}
+        GetTextExtentPoint(hDC, lpString+StartPos, OutCnt, TextSize);
+        OutX := X + Abs(TTabArray(lpnTabStopPositions)[TabCnt]) - TextSize.cx;
+        end;
+      LclIntf.TextOut(hDC, OutX, Y, lpString+StartPos, OutCnt);
+      StartPos := Succ(CharPos);
+      if (lpString[CharPos] = #9) and (TabCnt < nTabPositions) then
+        begin
+        Inc(TabCnt);
+        OutX := X + TTabArray(lpnTabStopPositions)[TabCnt];
+        end;
+      end;
+    end;
+  Result := 0;  //Just return this for now.
 {$ENDIF}
 end;
 

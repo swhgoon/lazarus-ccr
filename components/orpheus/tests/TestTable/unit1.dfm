@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 192
   Top = 114
-  Width = 776
+  Width = 816
   Height = 480
   Caption = 'Form1'
   Color = clBtnFace
@@ -11,17 +11,18 @@ object Form1: TForm1
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    768
+    808
     446)
   PixelsPerInch = 96
   TextHeight = 14
   object OvcTable1: TOvcTable
     Left = 16
     Top = 16
-    Width = 737
+    Width = 777
     Height = 409
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clWindow
@@ -53,11 +54,11 @@ object Form1: TForm1
     RowData = (
       35)
     ColData = (
-      110
+      120
       False
       True
       'Form1.OvcTCRowHead1'
-      90
+      100
       False
       True
       'Form1.OvcTCString1'
@@ -65,7 +66,7 @@ object Form1: TForm1
       False
       True
       'Form1.OvcTCMemo1'
-      110
+      120
       False
       True
       'Form1.OvcTCCheckBox1'
@@ -73,7 +74,7 @@ object Form1: TForm1
       False
       True
       'Form1.OvcTCComboBox1'
-      90
+      100
       False
       True
       'Form1.OvcTCBitMap1')

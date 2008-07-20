@@ -15,24 +15,26 @@ object Form1: TForm1
   TextHeight = 13
   object Label1: TLabel
     Left = 16
-    Top = 24
+    Top = 16
     Width = 385
-    Height = 33
+    Height = 41
     Alignment = taCenter
     AutoSize = False
-    Caption = 'Enter a positive integer, then move to next control to validate.'
+    Caption = 
+      'Enter a positive integer, then move to next control to validate ' +
+      'the number.'
     WordWrap = True
   end
   object Label2: TLabel
     Left = 16
-    Top = 104
+    Top = 120
     Width = 385
-    Height = 33
+    Height = 41
     Alignment = taCenter
     AutoSize = False
     Caption = 
       'Enter a positive real number, then move to next control to valid' +
-      'ate.'
+      'ate the number.'
     WordWrap = True
   end
   object O32FlexEdit1: TO32FlexEdit
@@ -53,12 +55,13 @@ object Form1: TForm1
     Validation.ValidatorType = 'None'
     Validation.ValidationType = vtUser
     Validation.InputRequired = False
+    OnExit = O32FlexEditExit
     OnUserValidation = O32FlexEdit1UserValidation
     OnValidationError = O32FlexEditValidationError
   end
   object O32FlexEdit2: TO32FlexEdit
     Left = 168
-    Top = 136
+    Top = 160
     Width = 81
     Height = 21
     EfColors.Disabled.BackColor = clWindow
@@ -74,6 +77,7 @@ object Form1: TForm1
     Validation.ValidatorType = 'None'
     Validation.ValidationType = vtUser
     Validation.InputRequired = False
+    OnExit = O32FlexEditExit
     OnUserValidation = O32FlexEdit2UserValidation
     OnValidationError = O32FlexEditValidationError
   end

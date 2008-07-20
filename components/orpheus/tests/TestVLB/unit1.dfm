@@ -11,12 +11,13 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
-    Left = 64
+    Left = 40
     Top = 304
-    Width = 425
+    Width = 473
     Height = 33
     AutoSize = False
     Caption = 'Double-click an item in list'
@@ -24,9 +25,9 @@ object Form1: TForm1
     ParentColor = False
   end
   object OvcVirtualListBox1: TOvcVirtualListBox
-    Left = 64
+    Left = 40
     Top = 40
-    Width = 425
+    Width = 473
     Height = 238
     Header = 'Header goes here'
     HeaderColor.BackColor = clBtnFace
@@ -37,6 +38,7 @@ object Form1: TForm1
     SelectColor.BackColor = clHighlight
     SelectColor.TextColor = clHighlightText
     ShowHeader = True
+    UseTabStops = True
     OnGetItem = OvcVirtualListBox1GetItem
     TabOrder = 0
     OnDblClick = OvcVirtualListBox1DblClick

@@ -11,6 +11,7 @@ type
   TForm1 = class(TForm)
     OvcVirtualListBox1: TOvcVirtualListBox;
     Label1: TLabel;
+    procedure FormCreate(Sender: TObject);
     procedure OvcVirtualListBox1GetItem(Sender: TObject; Index: Integer;
       var ItemString: String);
     procedure OvcVirtualListBox1DblClick(Sender: TObject);
@@ -29,10 +30,30 @@ implementation
 {$R *.dfm}
 {$ENDIF}
 
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  TabStops : array[0..1] of Integer;
+begin
+  TabStops[0] := 150;
+  TabStops[1] := 300;
+  OvcVirtualListBox1.SetTabStops(TabStops);
+
+  OvcVirtualListBox1.Header := 'Name column'#9'Address column'#9'City column';
+
+  if OvcVirtualListBox1.IntegralHeight then
+    OvcVirtualListBox1.ClientHeight := 
+     (OvcVirtualListBox1.ClientHeight div OvcVirtualListBox1.RowHeight) * 
+     OvcVirtualListBox1.RowHeight;
+      {Since RowHeight might have changed based on font used by current
+        platform, make sure height still integral.}
+end;
+
 procedure TForm1.OvcVirtualListBox1GetItem(Sender: TObject; Index: Integer;
   var ItemString: String);
 begin
-  ItemString := 'Item ' + IntToStr(Index);
+  ItemString := 'Item ' + IntToStr(Index) + ' name'#9 + 
+                'Item ' + IntToStr(Index) + ' address'#9 + 
+                'Item ' + IntToStr(Index) + ' city';
 end;
 
 procedure TForm1.OvcVirtualListBox1DblClick(Sender: TObject);

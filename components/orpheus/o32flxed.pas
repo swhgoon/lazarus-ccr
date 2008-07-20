@@ -858,7 +858,8 @@ begin
           result := false
         else
           result := true;
-      end else
+      end;  { else  }  //Commented out; otherwise our validation handler never 
+                       // gets called if Text is blank - TurboPower bug?.
         if Assigned(FOnUserValidation) then
           FOnUserValidation(Self, result);
 
@@ -1237,6 +1238,10 @@ procedure TO32CustomFlexEdit.SetAlignment(Value: TAlignment);
 var
   Str: string;
 begin
+{$IFDEF LCL}
+  if Value <> taLeftJustify then
+    Exit;  {taCenter and taRightJustify not supported and crash IDE, so ignore}
+{$ENDIF}
   if FAlignment <> Value then
   begin
     Str := Text;

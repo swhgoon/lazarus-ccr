@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<!--Copyright 2007 Phil Hess-->
+<!--Copyright 2008 Phil Hess-->
 <HTML>
 
 <HEAD>
@@ -33,6 +33,14 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20080720 release (0.2.0):
+  <UL>
+  <LI>Recent change in the Lazarus LCL broke Orpheus TOvcTable on Windows. This release 
+      works around that change.
+  <LI>Numerous bugs fixed and workarounds found. See To Do list.
+  <LI>Batch/script files are now included for compiling all test apps at once.<P>
+  </UL>
+
 <LI>20080316 release (0.1.9):
   <UL>
   <LI>Recent changes in the Lazarus LCL broke Orpheus compilation. This release 
@@ -205,7 +213,7 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>XP SP2</TD>
 <TD>&nbsp;</TD>
 <TD>win32</TD>
-<TD>20080229 snapshot of 0.9.25 with FPC 2.2.1</TD>
+<TD>20080714 snapshot of 0.9.25 with FPC 2.2.2rc2</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -213,7 +221,7 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>10.4.11 (Tiger) on PowerPC</TD>
 <TD>gtk: 1.2.0.9.1<BR>gtk2: 2.6.10<BR>qt: 4.3.0</TD>
 <TD>gtk, gtk2, carbon, qt</TD>
-<TD>20080229 snapshot of 0.9.25 with FPC 2.2.0</TD>
+<TD>20080714 snapshot of 0.9.25 with FPC 2.2.2rc2</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -408,12 +416,12 @@ widgetset.
 <TR VALIGN=TOP>
 <TD>TOvcVirtualListBox<BR><IMG SRC="TOVCVIRTUALLISTBOX.bmp"></TD>
 <TD>TCustomControl</TD>
-<TD>Tabs, header, huge number of rows</TD>
-<TD>Scrolling problems</TD>
+<TD>Header row, variable width tabs, huge number of rows</TD>
+<TD>&nbsp;</TD>
+<TD>Working</TD>
+<TD>Working</TD>
 <TD>Partial</TD>
-<TD>Partial</TD>
-<TD>Partial</TD>
-<TD>Partial</TD>
+<TD>Working</TD>
 <TD>Partial</TD>
 </TR>
 
@@ -433,7 +441,7 @@ widgetset.
 <TD>TO32FlexEdit<BR><IMG SRC="TO32FLEXEDIT.bmp"></TD>
 <TD>TCustomEdit</TD>
 <TD>Edit control with validation</TD>
-<TD>See "To Do" list</TD>
+<TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
@@ -542,7 +550,7 @@ widgetset.
 <TD>TComponent</TD>
 <TD>Table cell for displaying bitmap</TD>
 <TD>&nbsp;</TD>
-<TD>Crashes</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Not working</TD>
@@ -615,38 +623,44 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
 <LI>TOvcLabel
   <UL>
   <LI>Figure out why TOvcColorComboBox controls in Style Manager property editor
-  don't work.
+  don't work on Windows.
   <LI>Figure out why Color's default value (clNone) displays black 
   background with GTK. Workaround for now is to set TOvcLabel's 
   ParentColor to True in Object Inspector or select a different Color.
   </UL>
 <LI>TOvcVirtualListBox
   <UL>
-  <LI>Fix scrolling problems on Windows (not repainted right) and other platforms
-  (scrolls too many with each click of arrow).
-  <LI><strike>Figure out why double-click doesn't work on GTK.</strike> &lt;==Fixed.
+  <LI><strike>Fix scrolling problems on Windows (not repainted right) and other platforms
+  (scrolls too many with each click of arrow).</strike> &lt;==<I>Fixed in 0.2.0 release.</I>
+  <LI><strike>Figure out why double-click doesn't work on GTK.</strike> &lt;==<I>Fixed.</I>
   </UL>
 <LI>TO32FlexEdit
   <UL>
   <LI><strike>Figure out why, on Windows, presence of XP manifest prevents setting Text.</strike> 
-  &lt;==Appears to be fixed with 20070401 Lazarus.
-  <LI>Come up with workaround for LCL's lack of MakeObjectInstance for making
+  &lt;==<I>Appears to be fixed with 20070401 Lazarus.</I>
+  <LI><strike>Come up with workaround for LCL's lack of MakeObjectInstance for making
   callback function from method. Without this, control's validation is not
-  performed. &lt;==Workaround in 0.1.3 release fixes this on win32 widgetset. 
+  performed.</strike> &lt;==<I>Workaround in 0.1.3 release fixes this on win32 widgetset.</I>
+  &lt;==<I>Partial workaround in 0.2.0 release for other widgetsets is to call 
+  SendMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0); in OnExit handler. 
+  See TestFlexEdit example.</I> 
   <LI><strike>Can't tab out of control on Windows with win32 widgetset (tabbing works
-  with qt widgetset on Windows though).</strike> &lt;==Fixed in 0.1.3 release.
+  with qt widgetset on Windows though).</strike> &lt;==<I>Fixed in 0.1.3 release.</I>
   </UL>
 <LI>TOvcTable
   <UL>
   <LI><strike>Custom cursors not visible when sizing and moving columns and rows. 
-  Determine whether this is an LCL limitation.</strike> &lt;==Recently fixed in
-  Lazarus for Windows.
-  <LI>Sizing and moving columns and rows doesn't work at all with GTK. 
-  Determine whether this is a GTK limitation.
-  <LI>Table scroll bar "thumb" extends entire length of scrollbar with GTK 
-  (same problem with TScrollBar on GTK). Determine if this is a GTK limitation.
+  Determine whether this is an LCL limitation.</strike> &lt;==<I>Recently fixed in
+  Lazarus for Windows.</I>
+  <LI>Sizing and moving columns and rows doesn't work at all with GTK or Carbon. 
+  Determine whether this is a GTK/Carbon limitation.
+  <LI><strike>Table scroll bar "thumb" extends entire length of scrollbar with GTK.</strike>
+  &lt;==<I>Fixed in 0.2.0 release.</I>
   <LI>Figure out how to move edit cell to stay with its row when scrolling 
-  table (GTK only).  
+  table (non-Windows only). 
+  <LI>Figure out why scrolling table with keyboard doesn't repaint table with Carbon. 
+  Possibly related to TestTable issue with Carbon where selecting a .bmp in the 
+  combo box cell doesn't display the bitmap in the next column until form is resized.
   </UL>
 <LI>TOvcTCComboBox
   <UL>
@@ -655,20 +669,21 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
   </UL>
 <LI>TO32TCFlexEdit
   <UL>
-  <LI>Need a way of setting OnValidationError handler (an apparent omission 
-  since TO32FlexEdit has it). For now, you can display error message in
-  OnUserValidation handler.
+  <LI><strike>Need a way of setting OnValidationError handler (an apparent omission 
+  since TO32FlexEdit has it).</strike> &lt;==<I>Workaround in 0.2.0 release is to
+  set TO32TCFlexEditEditor(Sender).OnValidationError in UserValidation handler.</I>
   </UL>
 <LI>TOvcSimpleField and TOvcTCSimpleField
   <UL>
   <LI>Recent improvements in GTK and Carbon widgetsets mean these controls no
   longer crash programs when they're used. However, they don't yet work as edit 
   controls. Determine whether this means more improvement in widgetsets is needed.
+  (Use TO32FlexEdit and TO32TCFlexExit in the meantime.)
   </UL>
 <LI>TOvcTCBitMap
   <UL>
-  <LI>This previously worked, but changes to Lazarus LCL now cause it to crash
-  when cell gets focus (win32 only).
+  <LI><strike>This previously worked, but changes to Lazarus LCL now cause it to crash
+  when cell gets focus (win32 only).</strike> &lt;==<I>Fixed in 0.2.0 release.</I>
   </UL>
 <LI>TOvcController
   <UL>
@@ -691,7 +706,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: March 16, 2008
+Last updated: July 20, 2008
 <P>
 
 </BODY>

@@ -74,8 +74,16 @@ begin
   OvcTCMemo1.MaxLength := MaxMemoLen;
 
    {Populate cell combo box with names of Orpheus control bitmap files.
-     Assumes bitmap files are two levels up from program.}
-  BmpPath := ExtractFilePath(ParamStr(0)) + '..' + PathDelim + '..' + PathDelim; 
+     Assumes bitmap files are two levels up from program with Windows and GTK
+     or five levels up with OS X app bundle folder.}
+  BmpPath := ExtractFilePath(ParamStr(0)) + '..' + PathDelim + '..' + PathDelim;
+  if FindFirst(BmpPath + 'TO*.bmp', 0, SearchRec) <> 0 then
+    begin
+    BmpPath := '..' + PathDelim + '..' + PathDelim;
+    if FindFirst(BmpPath + 'TO*.bmp', 0, SearchRec) <> 0 then
+      BmpPath := ExtractFilePath(ParamStr(0)) + '..' + PathDelim + '..' + 
+                 PathDelim + '..' + PathDelim + '..' + PathDelim + '..' + PathDelim;
+    end;
   OvcTCComboBox1.Items.Add(' (None)');  {So we can "unselect"}
   try
     SearchResult := FindFirst(BmpPath + 'TO*.bmp', 0, SearchRec);

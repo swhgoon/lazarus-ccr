@@ -555,7 +555,10 @@ begin
         Result := ValidateEntry
       else begin
         FEdit.Restore;
-        result := false;
+//        result := false;  //TurboPower bug? Inconsistent with 
+                            //TOvcTCBaseEntryField.CanSaveEditedData and
+                            //p.928 of Orpheus.pdf. Prevents TOvcTable's
+                            //StopEditingState from completing if SaveValue=False. 
       end;
 end;
 {=====}
@@ -564,8 +567,22 @@ function TO32TCCustomFlexEdit.ValidateEntry: Boolean;
 begin
   if Assigned(FOnUserValidation) then begin
     FOnUserValidation(FEdit, FEdit.Text, result);
+
 //    if Validation.BeepOnError then MessageBeep(0);  <== TurboPower bug? not checking result
     if (not result) and Validation.BeepOnError then MessageBeep(0);  //Fixed
+
+// Another TurboPower omission? Since OnError not published the way
+//  OnUserValidation is, no way to display error if validation fails
+//  (and displaying error in OnUserValidation handler causes problems).
+//  Next two lines added to remedy this. In OnUserValidation handler,
+//  you can set TO32TCFlexEditEditor(Sender).OnValidationError to have
+//  your error method called here. Note that you can also call 
+//  TO32TCFlexEditEditor(Sender).Validation.SetLastErrorCode in your
+//  OnUserValidation handler to set the error passed in ErrorCode to
+//  your OnValidationError method.
+    if (not result) and Assigned(FEdit.FOnValidationError) then
+      FEdit.FOnValidationError(FEdit, FEdit.Validation.LastErrorCode, 'Invalid input');
+
     exit;
   end;
 
@@ -651,6 +668,7 @@ begin
     CellOwner := Self;
     Hint := Self.Hint;
     ShowHint := Self.ShowHint;
+    Tag := Self.Tag;  //TurboPower omission? Might be useful to know this too.
 
     {Str := PAnsiChar(Data);} {!!!}
     if (Data = nil) then

@@ -2048,7 +2048,11 @@ var
 
   procedure SetNewCursor(C : HCursor);
   begin
+{$IFNDEF LCL}
     SetCursor(C);
+{$ELSE}    
+    LclIntf.SetCursor(C);  {Don't call control's SetCursor!}
+{$ENDIF}    
     Msg.Result := Ord(True);
   end;
 

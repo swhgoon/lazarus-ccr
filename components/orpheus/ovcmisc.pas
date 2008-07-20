@@ -65,9 +65,9 @@ type
 {$IFNDEF LCL}
 function LoadBaseBitmap(lpBitmapName : PAnsiChar) : HBITMAP;
   {-load and return the handle to bitmap resource}
-{$ENDIF}
 function LoadBaseCursor(lpCursorName : PAnsiChar) : HCURSOR;
   {-load and return the handle to cursor resource}
+{$ENDIF}
 function CompStruct(const S1, S2; Size : Cardinal) : Integer;
   {-compare two fixed size structures}
 function DefaultEpoch : Integer;
@@ -161,12 +161,12 @@ function LoadBaseBitmap(lpBitmapName : PAnsiChar) : HBITMAP;
 begin
   Result := LoadBitmap(FindClassHInstance(TOvcCustomControlEx), lpBitmapName);
 end;
-{$ENDIF}
 
 function LoadBaseCursor(lpCursorName : PAnsiChar) : HCURSOR;
 begin
   Result := LoadCursor(FindClassHInstance(TOvcCustomControlEx), lpCursorName);
 end;
+{$ENDIF}
 
 {$IFDEF NoAsm}
 function CompStruct(const S1, S2; Size : Cardinal) : Integer;
