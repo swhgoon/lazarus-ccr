@@ -54,15 +54,15 @@ const
   HELP_CONTEXT  = 1;
   HELP_QUIT     = 2;
 
+{$IFDEF MSWINDOWS}  {LCL doesn't have TApplication.HelpCommand, so call Win API}
 function DoHelpCommand(Command : Word;
                        Data    : LongInt) : Boolean;
 begin
-{$IFDEF MSWINDOWS}  {LCL doesn't have TApplication.HelpCommand, so call Win API}
   Result := WinHelp(Application.MainForm.Handle, 
                     PChar(Application.HelpFile),
                     Command, Data);
-{$ENDIF}  
 end;  {DoHelpCommand}
+{$ENDIF}  
 
 
  {THelpUtilManager}

@@ -47,11 +47,13 @@ var
   FnStr       : string;
   FnPos       : Integer;
   FnRef       : string;
-  PrevInStr   : string;
   TopicStr    : string;
   TopicMapped : Boolean;
+  BuildStr    : string;
+  TopicPos    : Integer;
   FootIdx     : Integer;
   LinkPos     : Integer;
+  NextLinkPos : Integer;
   UnlinkPos   : Integer;
        
 begin
@@ -208,7 +210,8 @@ begin
       WriteLn(NewFileVar, '-->');
       end                                                
 
-    else if Pos('class=Topictitle', InStr) > 0 then  {Found a topic?}
+    else if (Pos('class=Topictitle', InStr) > 0) or
+            (Pos('class=Topic>', InStr) > 0) then  {Found a topic?}
       begin
        {Get footnote number _ftnXX}
       FnPos := Pos('#_', InStr) + 1;
@@ -233,12 +236,22 @@ begin
           Write(NewFileVar, '<a name="', TopicStr, '"></a>');
           end;
         end;
-      Write(NewFileVar, Copy(InStr, 1, 20));  {Save part of 1st topic line}
-      repeat  {Skip over rest of topic lines}
-        PrevInStr := InStr;
+       {Save part of 1st topic line}
+      if Pos('class=Topictitle', InStr) > 0 then
+        Write(NewFileVar, Copy(InStr, 1, Pos('class=Topictitle>', InStr)+16))
+      else
+        Write(NewFileVar, Copy(InStr, 1, Pos('class=Topic>', InStr)+11));
+      BuildStr := InStr;
+      repeat  {Get rest of topic lines}
         ReadLn(OldFileVar, InStr);
+        if InStr <> '' then
+          BuildStr := BuildStr + ' ' + InStr; 
       until InStr = '';
-      WriteLn(NewFileVar, Copy(PrevInStr, 36, MaxInt)); {Save part of last topic line}
+      TopicPos := Length(BuildStr);
+      repeat
+        Dec(TopicPos);
+      until (TopicPos = 0) or (BuildStr[TopicPos] = '>');
+      WriteLn(NewFileVar, Copy(BuildStr, TopicPos+2, MaxInt));
       end
 
     else if CompareText(InStr, '<div><br clear=all>') = 0 then {Found footnotes?}
@@ -254,26 +267,45 @@ begin
       LinkPos := Pos('<u>', InStr);
       if LinkPos > 0 then  {Line contains link?}
         begin
-        PrevInStr := InStr;
-        ReadLn(OldFileVar, InStr);  {Get next line too}
-        InStr := PrevInStr + ' ' + InStr;  {Combine}
-        for FootIdx := 0 to Footnotes.Count -1 do
+        BuildStr := InStr;
+        repeat  {Link may span lines, so get rest of paragraph}
+          ReadLn(OldFileVar, InStr);
+          if InStr <> '' then
+            BuildStr := BuildStr + ' ' + InStr;
+        until InStr = '';
+        InStr := BuildStr;
+        while LinkPos > 0 do
           begin
-          TopicStr := Footnotes.ValueFromIndex[FootIdx];
-          if Pos(TopicStr, InStr) > 0 then
+          NextLinkPos := Pos('<u>', Copy(InStr, LinkPos+1, MaxInt));
+          if NextLinkPos = 0 then
+            NextLinkPos := Length(InStr) + 1
+          else
+            Inc(NextLinkPos, LinkPos); 
+          BuildStr := '';
+          for FootIdx := 0 to Footnotes.Count - 1 do
             begin
-            UnlinkPos := Pos('</u>', InStr);
-            Write(NewFileVar, Copy(InStr, 1, LinkPos-1),
-                  '<a href="#');
-            if MapSection.Values[TopicStr] <> '' then
-              Write(NewFileVar, MapSection.Values[TopicStr])
-            else
-              Write(NewFileVar, TopicStr);
-            WriteLn(NewFileVar, '">',
-                    Copy(InStr, LinkPos+3, UnlinkPos-LinkPos-3), '</a>',
-                    Copy(InStr, UnlinkPos+4, MaxInt));
+            TopicStr := Footnotes.ValueFromIndex[FootIdx];
+            if (Pos(TopicStr, InStr) > LinkPos) and
+               (Pos(TopicStr, InStr) < NextLinkPos) then
+              begin
+              BuildStr := Copy(InStr, 1, LinkPos-1) + '<a href="#';
+              if MapSection.Values[TopicStr] <> '' then
+                BuildStr := BuildStr + MapSection.Values[TopicStr]
+              else
+                BuildStr := BuildStr + TopicStr;
+              UnlinkPos := Pos('</u>', InStr);
+              BuildStr := BuildStr + '">' +
+                          Copy(InStr, LinkPos+3, UnlinkPos-LinkPos-3) + '</a>' +
+                          Copy(InStr, UnlinkPos+4, MaxInt);  
+              InStr := BuildStr;
+              LinkPos := Pos('<u>', InStr);
+              Break;
+              end;
             end;
+          if BuildStr = '' then
+            Break;
           end;
+        WriteLn(NewFileVar, InStr);
         end
       else
         WriteLn(NewFileVar, InStr);
