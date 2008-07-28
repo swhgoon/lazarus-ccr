@@ -34,7 +34,9 @@ type
     ['{2B7756B1-E239-4B6F-A7A3-4B57B98FAD4F}']
     procedure Reset();
     function MoveNext() : Boolean;
+    //It is just the cursor that is cloned, the underliying datas are shared
     function Clone():ICursor;
+    function GetCount() : PtrInt;
   end;
   
   IObjectFilter = interface
@@ -81,6 +83,7 @@ type
     function MoveNext() : Boolean;
     function Clone():ICursor;
     function GetCurrent() : TObject;
+    function GetCount() : PtrInt;
     function GetFilter() : IObjectFilter;
     function SetFilter(const AFilter : IObjectFilter) : IObjectFilter;
   public
@@ -134,6 +137,22 @@ end;
 function TSimpleObjectFilterableCursor.GetCurrent(): TObject;
 begin
   Result := FBaseCursor.GetCurrent();
+end;
+
+function TSimpleObjectFilterableCursor.GetCount() : PtrInt;
+var
+  crs : ICursor;
+begin
+  if ( FFilter = nil ) then begin
+    Result := FBaseCursor.GetCount();
+  end else begin
+    crs := Self.Clone();
+    crs.Reset();
+    Result := 0;
+    while crs.MoveNext() do begin
+      Result := Result + 1;
+    end;
+  end;
 end;
 
 function TSimpleObjectFilterableCursor.GetFilter(): IObjectFilter;

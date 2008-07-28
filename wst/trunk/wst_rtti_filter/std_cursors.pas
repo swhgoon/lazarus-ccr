@@ -1,3 +1,15 @@
+{
+    This file is part of the Web Service Toolkit
+    Copyright (c) 2006, 2007, 2008 by Inoussa OUEDRAOGO
+
+    This file is provide under modified LGPL licence
+    ( the files COPYING.modifiedLGPL and COPYING.LGPL).
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+}
 {$INCLUDE wst_global.inc}
 unit std_cursors;
 
@@ -22,6 +34,7 @@ type
     procedure Reset();
     function MoveNext() : Boolean;virtual;
     function Clone():ICursor;
+    function GetCount() : PtrInt;
     function GetCurrent() : TObject;
   public
     constructor Create(ADataList : TObjectList);
@@ -57,7 +70,12 @@ end;
 
 function TObjectListCursor.Clone(): ICursor;
 begin
-  Result := TObjectListCursor.Create(FList);
+  Result := TObjectListCursor.Create(FList) as ICursor;
+end;
+
+function TObjectListCursor.GetCount() : PtrInt;
+begin
+  Result := FList.Count;
 end;
 
 function TObjectListCursor.GetCurrent(): TObject;

@@ -29,7 +29,10 @@ type
   
   TFilterConnector = ( fcNone, fcAnd, fcOr );
   
-  TNumericFilterOperator = ( nfoEqual, nfoGreater, nfoLesser, nfoNotEqual );
+  TNumericFilterOperator = (
+    nfoEqual, nfoGreater, nfoLesser, nfoNotEqual,
+    nfoGreaterOrEqual, nfoLesserOrEqual
+  );
   TStringFilterOperator = ( sfoEqualCaseSensitive, sfoEqualCaseInsensitive, sfoNotEqual );
 
   TRttiFilterCreatorTarget = TPersistent;
@@ -64,6 +67,13 @@ type
       const AValue        : Integer;
       const AConnector    : TFilterConnector
     ) : TRttiFilterCreator;overload;
+    function AddCondition(
+      const APropertyName : string;
+      const AOperator     : TNumericFilterOperator;
+      const AEnumValue    : string;
+      const AConnector    : TFilterConnector
+    ) : TRttiFilterCreator;overload;
+
     function AddCondition(
       const APropertyName : string;
       const AOperator     : TStringFilterOperator;
@@ -162,6 +172,17 @@ type
     property ComparedValue : Integer read FComparedValue;
   end;
 
+  { TRttiExpEnumNodeItem }
+
+  TRttiExpEnumNodeItem = class(TRttiExpIntegerNodeItem)
+  public
+    constructor Create(
+      const APropInfo      : PPropInfo;
+      const AOperation     : TNumericFilterOperator;
+      const AComparedValue : string
+    );
+  end;
+  
   { TRttiExpStringNodeItem }
 
   TRttiExpStringNodeItem = class(TRttiExpConcreteNodeItem)
@@ -269,8 +290,15 @@ var
       fltrOp := sfoEqualCaseInsensitive
     else if ( s = tkn_NotEqual ) then
       fltrOp := sfoNotEqual
-    else
+    else if ( s = tkn_Inf ) then begin
+      MoveNext();
+      if ( prsr.Token = tkn_Sup ) then
+        fltrOp := sfoNotEqual
+      else
+        raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+    end else begin
       raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+    end;
     MoveNext();
     prsr.CheckToken(toString);
     if ( propInfo^.PropType^.Kind = tkWString ) then begin
@@ -300,8 +328,60 @@ var
     else
       raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
     MoveNext();
+    if ( prsr.Token = tkn_Equal ) then begin
+      case fltrOp of
+        nfoGreater : fltrOp := nfoGreaterOrEqual;
+        nfoLesser  : fltrOp := nfoLesserOrEqual;
+        else
+          raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+      end;
+      MoveNext();
+    end else if ( prsr.Token = tkn_Sup ) then begin
+      if ( fltrOp = nfoLesser ) then
+        fltrOp := nfoNotEqual
+      else
+        raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+      MoveNext();
+    end;
     prsr.CheckToken(toInteger);
     AFltrCrtr.AddCondition(propName,fltrOp,prsr.TokenInt(),lastCntr);
+  end;
+
+  procedure Handle_Enum();
+  var
+    s : string;
+    fltrOp : TNumericFilterOperator;
+  begin
+    MoveNext();
+    s := prsr.TokenString();
+    if ( s = tkn_Equal ) then
+      fltrOp := nfoEqual
+    else if ( s = tkn_NotEqual ) then
+      fltrOp := nfoNotEqual
+    else if ( s = tkn_Inf ) then
+      fltrOp := nfoLesser
+    else if ( s = tkn_Sup ) then
+      fltrOp := nfoGreater
+    else
+      raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+    MoveNext();
+    if ( prsr.Token = tkn_Equal ) then begin
+      case fltrOp of
+        nfoGreater : fltrOp := nfoGreaterOrEqual;
+        nfoLesser  : fltrOp := nfoLesserOrEqual;
+        else
+          raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+      end;
+      MoveNext();
+    end else if ( prsr.Token = tkn_Sup ) then begin
+      if ( fltrOp = nfoLesser ) then
+        fltrOp := nfoNotEqual
+      else
+        raise ERttiFilterException.CreateFmt('Unexpected symbol : "%s".',[s]);
+      MoveNext();
+    end;
+    prsr.CheckToken(toSymbol);
+    AFltrCrtr.AddCondition(propName,fltrOp,prsr.TokenString(),lastCntr);
   end;
 
 var
@@ -330,8 +410,10 @@ begin
           raise ERttiFilterException.CreateFmt('Invalid property : "%s"',[propName]);
         if ( propInfo^.PropType^.Kind in [{$IFDEF FPC}tkSString,tkAString,{$ENDIF}tkLString,tkWString] ) then
           Handle_String()
-        else if ( propInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}] ) then
+        else if ( propInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF HAS_QWORD},tkQWord{$ENDIF}] ) then
           Handle_Integer()
+        else if ( propInfo^.PropType^.Kind in [tkEnumeration {$IFDEF HAS_TKBOOL},tkBool{$ENDIF}] ) then
+          Handle_Enum()
         else
           raise ERttiFilterException.CreateFmt('Type not handled : "%s"',[GetEnumName(TypeInfo(TTypeKind),Ord(propInfo^.PropType^.Kind))]);
       end;
@@ -423,7 +505,7 @@ constructor TRttiExpIntegerNodeItem.Create(
 );
 begin
   Assert(Assigned(APropInfo));
-  if not ( APropInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}] ) then
+  if not ( APropInfo^.PropType^.Kind in [tkInteger,tkInt64,tkEnumeration{$IFDEF HAS_QWORD},tkQWord{$ENDIF}{$IFDEF HAS_TKBOOL},tkBool{$ENDIF}] ) then
     raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['Integer']);
   inherited Create(APropInfo,AOperation);
   FComparedValue := AComparedValue;
@@ -509,6 +591,7 @@ begin
   for i := 0 to Pred(FCurrentStack.Count) do
     FCurrentStack.Pop();
   FRoot := nil;
+  FCurrent := nil;
 end;
 
 function TRttiFilterCreator.AddCondition(
@@ -520,6 +603,20 @@ function TRttiFilterCreator.AddCondition(
 begin
   AddNode(
     TRttiExpIntegerNodeItem.Create(GetPropInfo(TargetClass,APropertyName),AOperator,AValue),
+    AConnector
+  );
+  Result := Self;
+end;
+
+function TRttiFilterCreator.AddCondition(
+  const APropertyName : string;
+  const AOperator : TNumericFilterOperator;
+  const AEnumValue : string;
+  const AConnector : TFilterConnector
+) : TRttiFilterCreator;
+begin
+  AddNode(
+    TRttiExpEnumNodeItem.Create(GetPropInfo(TargetClass,APropertyName),AOperator,AEnumValue),
     AConnector
   );
   Result := Self;
@@ -557,8 +654,8 @@ function TRttiFilterCreator.BeginGroup(const AConnector: TFilterConnector):TRtti
 var
   gn : TRttiExpNode;
 begin
-  if not Assigned(FCurrent) then
-    AddNode(TRttiExpNode.Create(),fcNone);
+  {if not Assigned(FCurrent) then
+    AddNode(TRttiExpNode.Create(),fcNone);}
   gn := TRttiExpNode.Create();
   AddNode(gn,AConnector);
   PushCurrent(gn);
@@ -666,5 +763,45 @@ begin
     sfoNotEqual             :  Result := not AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
   end;
 end;
+
+{ TRttiExpEnumNodeItem }
+
+constructor TRttiExpEnumNodeItem.Create(
+  const APropInfo : PPropInfo;
+  const AOperation : TNumericFilterOperator;
+  const AComparedValue : string
+);
+{$IFDEF HAS_TKBOOL}
+var
+  locEnumOrder : Integer;
+  locBoolVal : Boolean;
+begin
+  Assert(Assigned(APropInfo));
+  if not ( APropInfo^.PropType^.Kind in [tkEnumeration,tkBool] ) then
+    raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['Enumeration']);
+  if ( APropInfo^.PropType^.Kind = tkBool ) then begin
+    if not TryStrToBool(AComparedValue,locBoolVal) then
+      raise ERttiFilterException.CreateFmt('Unknown boolean value : "%s", type : %s .',[AComparedValue,APropInfo^.PropType^.Name]);
+    locEnumOrder := Ord(locBoolVal);
+  end else begin
+    locEnumOrder := GetEnumValue(APropInfo^.PropType,AComparedValue);
+    if ( locEnumOrder < 0 ) then
+      raise ERttiFilterException.CreateFmt('Unknown enumeration value : "%s", type : %s .',[AComparedValue,APropInfo^.PropType^.Name]);
+  end;
+  inherited Create(APropInfo,AOperation,locEnumOrder);
+end;
+{$ELSE}
+var
+  locEnumOrder : Integer;
+begin
+  Assert(Assigned(APropInfo));
+  if not ( APropInfo^.PropType^.Kind = tkEnumeration ) then
+    raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['Enumeration']);
+  locEnumOrder := GetEnumValue(APropInfo^.PropType^,AComparedValue);
+  if ( locEnumOrder < 0 ) then
+    raise ERttiFilterException.CreateFmt('Unknown enumeration value : "%s", type : %s .',[AComparedValue,APropInfo^.PropType^.Name]);
+  inherited Create(APropInfo,AOperation,locEnumOrder);
+end;
+{$ENDIF}
 
 end.

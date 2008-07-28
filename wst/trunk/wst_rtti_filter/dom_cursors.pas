@@ -53,6 +53,7 @@ type
     procedure Reset();
     function MoveNext() : Boolean;
     function Clone():ICursor;
+    function GetCount() : PtrInt;
     function GetCurrent() : IDefaultItemType;virtual;
   public
     constructor Create(
@@ -77,6 +78,7 @@ type
     procedure Reset();
     function MoveNext() : Boolean;
     function Clone():ICursor;
+    function GetCount() : PtrInt;
     function GetCurrent() : IDefaultItemType;
   public
     constructor Create(
@@ -116,6 +118,7 @@ type
     procedure Reset();
     function MoveNext() : Boolean;
     function Clone():ICursor;
+    function GetCount() : PtrInt;
     function GetCurrent() : TObject;virtual;
   public
     constructor Create(ADataList : IDefaultTypedCursor);
@@ -213,6 +216,11 @@ begin
   Result := TDOMNodeListCursor.Create(FList,faNone);
 end;
 
+function TDOMNodeListCursor.GetCount() : PtrInt;
+begin
+  Result := GetNodeListCount(FList);
+end;
+
 function TDOMNodeListCursor.GetCurrent(): IDefaultItemType;
 begin
   Result := FCurrent;
@@ -287,6 +295,11 @@ begin
     Result := TDOMNodeRttiExposerCursor.Create(baseClone as IDefaultTypedCursor) ;
 end;
 
+function TDOMNodeRttiExposerCursor.GetCount() : PtrInt;
+begin
+  Result := FBaseCursor.GetCount();
+end;
+
 function TDOMNodeRttiExposerCursor.GetCurrent(): TObject;
 begin
   FCurrentExposer.InnerObject := FBaseCursor.GetCurrent() as TDOMNode;
@@ -326,6 +339,11 @@ end;
 function TDOMNamedNodeMapCursor.Clone(): ICursor;
 begin
   Result := TDOMNamedNodeMapCursor.Create(FList,faNone);
+end;
+
+function TDOMNamedNodeMapCursor.GetCount() : PtrInt;
+begin
+  Result := GetNodeListCount(FList);
 end;
 
 function TDOMNamedNodeMapCursor.GetCurrent(): IDefaultItemType;
