@@ -147,6 +147,7 @@ begin
     i := AResponse.Position;
     SetLength(s,AResponse.Size);
     AResponse.Read(s[1],AResponse.Size);
+    AResponse.Position := i;
     if IsConsole then
       WriteLn(s);
 {$ENDIF WST_DBG}
