@@ -3,6 +3,7 @@
   {$IFDEF FPC}
     {$mode objfpc}{$H+}
     {$DEFINE HAS_QWORD}
+    {$DEFINE HAS_TKBOOL}
     {$UNDEF WST_INTF_DOM}
     //{$DEFINE USE_INLINE}
     {$IF Defined(FPC_VERSION) and (FPC_VERSION = 2)  }
@@ -19,6 +20,7 @@
     {$DEFINE WST_DELPHI}
     {$DEFINE DELPHI}
     {$UNDEF HAS_QWORD}
+    {$UNDEF HAS_TKBOOL}
     {$UNDEF USE_INLINE}
     {$DEFINE WST_RECORD_RTTI}
     {$DEFINE WST_INTF_DOM}
