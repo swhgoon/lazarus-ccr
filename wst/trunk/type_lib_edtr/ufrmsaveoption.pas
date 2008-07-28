@@ -83,7 +83,7 @@ begin
   edtImplementation.Checked := edtBinder.Checked;
   edtInterface.Checked := edtBinder.Checked;
   edtProxy.Checked := edtBinder.Checked;
-  edtWrappedParams.Checked := edtBinder.Checked;
+  //edtWrappedParams.Checked := edtBinder.Checked;
 end;
 
 

@@ -1,7 +1,7 @@
 object frmSaveOptions: TfrmSaveOptions
   Left = 158
   Height = 322
-  Top = 379
+  Top = 380
   Width = 402
   HorzScrollBar.Page = 401
   VertScrollBar.Page = 321
@@ -11,6 +11,7 @@ object frmSaveOptions: TfrmSaveOptions
   ClientHeight = 322
   ClientWidth = 402
   Position = poMainFormCenter
+  LCLVersion = '0.9.25'
   object Panel1: TPanel
     Height = 50
     Top = 272
@@ -164,7 +165,6 @@ object frmSaveOptions: TfrmSaveOptions
     end
   end
   object SD: TSelectDirectoryDialog
-    Title = 'Choisir un répertoire'
     FilterIndex = 0
     left = 101
     top = 142
