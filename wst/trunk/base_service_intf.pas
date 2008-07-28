@@ -2833,7 +2833,6 @@ begin
     try
       if not Assigned(AObject) then
         AObject := Create();
-      nativObj := nil;
       nativObj := AObject as TBaseSimpleTypeArrayRemotable;
       if ( len >= 0 ) then begin
         nativObj.SetLength(len);
@@ -4619,7 +4618,6 @@ var
     s : shortstring;
   begin
     neg := False;
-    Result := 0;
 
     while ( bufferPos <= bufferLen ) and ( buffer[bufferPos] < #33 ) do begin
       Inc(bufferPos);

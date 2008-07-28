@@ -371,7 +371,6 @@ var
   ps : PService;
 begin
   ARepository := nil;
-  Result := 0;
   rdr := CreateBinaryReader(AStream);
   buf := rdr.ReadStr();
   if ( sWST_SIGNATURE <> buf ) then
@@ -393,11 +392,11 @@ begin
         Inc(ps);
       end;
     end;
-    Result := c;
   except
     ClearRepositoryData(ARepository);
     raise;
   end;
+  Result := c;
 end;
 
 

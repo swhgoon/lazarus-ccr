@@ -287,7 +287,7 @@ constructor TRecordRttiDataObject.Create(
 );
 var
   locData : PRecordTypeData;
-  i : PtrInt;
+  i : PtrUInt;
   ls, s : string;
 begin
   locData := AData;

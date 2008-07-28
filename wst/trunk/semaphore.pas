@@ -65,8 +65,10 @@ implementation
 { TSemaphoreObject }
 
 constructor TSemaphoreObject.Create(const ALimit: Integer);
+{$IFDEF FPC_TM}
 var
   i : PtrInt;
+{$ENDIF}  
 begin
   if ( ALimit < 1 ) then
     raise ESemaphoreException.CreateFmt('Invalid semaphore maximum count : %d.',[ALimit]);

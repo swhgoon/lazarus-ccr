@@ -392,7 +392,7 @@ Type
   private
     FList : TObjectList;
     function IndexOf(Const AName : string ):Integer;
-    procedure Clear();
+    //procedure Clear();
     function GetCount():Integer;
     function GetItem(const AIndex:Integer): TFormatterFactoryRegistryItem;
   protected
@@ -487,10 +487,10 @@ begin
   Result := -1;
 end;
 
-procedure TFormatterRegistry.Clear();
+{procedure TFormatterRegistry.Clear();
 begin
   FList.Clear();
-end;
+end;}
 
 function TFormatterRegistry.GetCount(): Integer;
 begin
