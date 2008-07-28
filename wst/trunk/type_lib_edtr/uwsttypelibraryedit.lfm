@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 276
+  Left = 199
   Height = 644
-  Top = 532
+  Top = 380
   Width = 833
   HorzScrollBar.Page = 832
   VertScrollBar.Page = 623
@@ -13,6 +13,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   OnClose = FormClose
   OnShow = FormShow
   Position = poDesktopCenter
+  LCLVersion = '0.9.25'
   object SB: TStatusBar
     Height = 23
     Top = 601
@@ -78,11 +79,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -407,7 +406,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
@@ -425,9 +423,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
-          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -752,7 +748,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
@@ -770,9 +765,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1097,6 +1094,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
@@ -1114,9 +1112,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1441,6 +1441,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
@@ -1458,10 +1459,12 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1786,6 +1789,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
@@ -1948,20 +1952,17 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object actEnumCreate: TAction
       Caption = 'Create Enumeration'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actEnumCreateExecute
     end
     object actUpdateObject: TAction
       Caption = 'Update'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actUpdateObjectExecute
       OnUpdate = actUpdateObjectUpdate
     end
     object actRefreshView: TAction
       Caption = '&Refresh Views'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actRefreshViewExecute
       ShortCut = 116
     end
@@ -1974,25 +1975,21 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object actCompoundCreate: TAction
       Caption = 'Create Class Type'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actCompoundCreateExecute
     end
     object actIntfCreate: TAction
       Caption = 'Create Interface'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actIntfCreateExecute
     end
     object actFullExpand: TAction
       Caption = 'Full expand'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actFullExpandExecute
     end
     object actFullCollapse: TAction
       Caption = 'Full Collapse'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actFullCollapseExecute
     end
     object actSave: TAction
@@ -2004,26 +2001,22 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object actDelete: TAction
       Caption = 'Delete'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actDeleteExecute
       OnUpdate = actUpdateObjectUpdate
     end
     object actArrayCreate: TAction
       Caption = 'Create Array'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actArrayCreateExecute
     end
     object actTypeALiasCreate: TAction
       Caption = 'Create Type ALias'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actTypeALiasCreateExecute
     end
     object actRecordCreate: TAction
       Caption = 'Create Record'
       DisableIfNoHandler = True
-      Enabled = False
       OnExecute = actRecordCreateExecute
     end
     object actSearch: TAction
@@ -2035,7 +2028,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     end
   end
   object OD: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     Filter = 'WDSL files(*.WSDL)|*.WSDL|Pascal file (*.pas)|*.pas'
     FilterIndex = 0
     InitialDir = '.\'
@@ -2056,7 +2048,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     top = 104
   end
   object SD: TSaveDialog
-    Title = 'Enregistrer le fichier sous'
     DefaultExt = '.WSDL'
     Filter = 'WDSL files(*.WSDL)|*.WSDL'
     FilterIndex = 0

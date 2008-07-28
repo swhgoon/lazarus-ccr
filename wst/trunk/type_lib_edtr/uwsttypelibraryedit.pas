@@ -671,11 +671,11 @@ var
   o : TPasElement;
   nd : TTreeNode;
 begin
-  if ( MessageDlg('Delete the select object ?',mtConfirmation,mbYesNo,0) = mrYes ) then begin
-    nd := trvSchema.Selected;
-    if Assigned(nd) and Assigned(nd.Data) then begin
-      o := TPasElement(nd.Data);
-      if HasEditor(o) then begin
+  nd := trvSchema.Selected;
+  if Assigned(nd) and Assigned(nd.Data) then begin
+    o := TPasElement(nd.Data);
+    if HasEditor(o) then begin
+      if ( MessageDlg(Format('Delete this object "%s" ?',[o.Name]),mtConfirmation,mbYesNo,0) = mrYes ) then begin
         DeleteObject(o,FSymbolTable);
         trvSchema.BeginUpdate();
         try
