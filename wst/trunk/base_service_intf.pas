@@ -1769,7 +1769,7 @@ begin
                   objData := GetObjectProp(AObject,p^.Name);
                   AStore.Put(prpName,pt,objData);
                 end;
-              {$IFDEF FPC}
+              {$IFDEF HAS_TKBOOL}
               tkBool :
                 begin
                   boolData := Boolean(GetOrdProp(AObject,p^.Name));
@@ -1934,7 +1934,7 @@ begin
                       AStore.Get(pt,propName,strData);
                       SetStrProp(AObject,p^.Name,strData);
                     End;
-                  {$IFDEF FPC}
+                  {$IFDEF HAS_TKBOOL}
                   tkBool :
                     Begin
                       AStore.Get(pt,propName,boolData);
@@ -3984,7 +3984,7 @@ begin
           case p^.PropType^.Kind of
             tkInt64{$IFDEF HAS_QWORD} ,tkQWord{$ENDIF} :
               SetInt64Prop(Self,p,GetInt64Prop(Source,p^.Name));
-            {$IFDEF FPC}tkBool,{$ENDIF} tkEnumeration, tkInteger :
+            {$IFDEF HAS_TKBOOL}tkBool,{$ENDIF} tkEnumeration, tkInteger :
               SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
             tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
               SetStrProp(Self,p,GetStrProp(Source,p^.Name));
@@ -4047,7 +4047,7 @@ begin
           case p^.PropType^.Kind of
             tkInt64{$IFDEF HAS_QWORD} ,tkQWord{$ENDIF} :
               ok := ( GetInt64Prop(Self,p^.Name) = GetInt64Prop(ACompareTo,p^.Name) );
-            {$IFDEF FPC}tkBool,{$ENDIF} tkEnumeration, tkInteger :
+            {$IFDEF HAS_TKBOOL}tkBool,{$ENDIF} tkEnumeration, tkInteger :
               ok := ( GetOrdProp(Self,p^.Name) = GetOrdProp(ACompareTo,p^.Name) );
             tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
               ok := ( GetStrProp(Self,p^.Name) = GetStrProp(ACompareTo,p^.Name) );
@@ -4132,7 +4132,7 @@ begin
                   objData := GetObjectProp(AObject,p^.Name);
                   AStore.Put(propName,pt,objData);
                 end;
-              {$IFDEF FPC}
+              {$IFDEF HAS_TKBOOL}
               tkBool :
                 begin
                   boolData := Boolean(GetOrdProp(AObject,p^.Name));
@@ -4247,7 +4247,7 @@ Var
   strData : String;
   objData : TObject;
     objDataCreateHere : Boolean;
-  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
+  {$IFDEF HAS_TKBOOL}boolData : Boolean;{$ENDIF}
   p : PPropInfo;
   enumData : TEnumBuffer;
   floatDt : TFloatExtendedType;
@@ -4290,7 +4290,7 @@ begin
                       AStore.Get(pt,propName,strData);
                       SetStrProp(AObject,p^.Name,strData);
                     End;
-                  {$IFDEF FPC}
+                  {$IFDEF HAS_TKBOOL}
                   tkBool :
                     Begin
                       AStore.Get(pt,propName,boolData);
@@ -5128,7 +5128,7 @@ begin
             tkLString{$IFDEF FPC},tkAString{$ENDIF} : AStore.Put(prpName,pt,PString(recFieldAddress)^);
             tkClass : AStore.Put(prpName,pt,PObject(recFieldAddress)^);
             tkRecord : AStore.Put(prpName,pt,Pointer(recFieldAddress)^);
-            {$IFDEF FPC}
+            {$IFDEF HAS_TKBOOL}
             tkBool : AStore.Put(prpName,pt,PBoolean(recFieldAddress)^);
             {$ENDIF}
             tkEnumeration,tkInteger :
@@ -5229,7 +5229,7 @@ begin
                 tkQWord : AStore.Get(pt,propName,PQWord(recFieldAddress)^);
                 {$ENDIF}
                 tkLString{$IFDEF FPC}, tkAString{$ENDIF} : AStore.Get(pt,propName,PString(recFieldAddress)^);
-                {$IFDEF FPC}
+                {$IFDEF HAS_TKBOOL}
                 tkBool : AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
                 {$ENDIF}
                 tkClass : AStore.Get(pt,propName,PObject(recFieldAddress)^);
