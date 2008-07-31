@@ -17,6 +17,8 @@ FRAMEWORK="/System/Library/Frameworks/AppKit.framework/Headers"
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSStatusBar.h > ../appkit/NSStatusBar.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSStatusItem.h > ../appkit/NSStatusItem.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSText.h > ../appkit/NSText.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSTextField.h > ../appkit/NSTextField.inc
+./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSTextFieldCell.h > ../appkit/NSTextFieldCell.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSUserInterfaceValidation.h > ../appkit/NSUserInterfaceValidation.inc
-./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSView.h > ../appkit/NSView.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSView.h > ../appkit/NSView.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSWindow.h > ../appkit/NSWindow.inc

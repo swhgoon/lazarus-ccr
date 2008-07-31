@@ -84,8 +84,8 @@
 {$include NSSpellProtocol.inc}
 {$include NSText.inc}
 {$include NSTextField.inc}
-{#import <AppKit/NSTextFieldCell.h>
-#import <AppKit/NSText.h>
+{$include NSTextFieldCell.inc}
+{#import <AppKit/NSText.h>
 #import <AppKit/NSTokenField.h>
 #import <AppKit/NSTokenFieldCell.h>}
 {$include NSView.inc}

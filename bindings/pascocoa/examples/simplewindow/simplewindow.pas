@@ -21,8 +21,8 @@ uses
   objc, ctypes, FPCMacOSAll, AppKit, Foundation;
 
 const
-  Str_Window_Title = 'This is the title';
-  Str_Window_Message = 'This is the message';
+  Str_Window_Title = 'Pascal Cocoa Example';
+  Str_Window_Message = 'NSTextField Control';
 var
   { classes }
   pool: NSAutoreleasePool;
@@ -44,7 +44,7 @@ begin
   MainWindowRect.origin.x := 300.0;
   MainWindowRect.origin.y := 300.0;
   MainWindowRect.size.width := 300.0;
-  MainWindowRect.size.height := 500.0;
+  MainWindowRect.size.height := 100.0;
 
   MainWindow := NSWindow.initWithContentRect_styleMask_backing_defer(MainWindowRect,
     NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask,
@@ -58,11 +58,13 @@ begin
   { Adds a NSTextField with a string }
   
   CFMessage := CFStringCreateWithPascalString(nil, Str_Window_Message, kCFStringEncodingUTF8);
-  TextFieldRect.origin.x := 0.0;
-  TextFieldRect.origin.y := 200.0;
-  TextFieldRect.size.width := 300.0;
-  TextFieldRect.size.height := 100.0;
+  TextFieldRect.origin.x := 50.0;
+  TextFieldRect.origin.y := 50.0;
+  TextFieldRect.size.width := 200.0;
+  TextFieldRect.size.height := 25.0;
   TextField := NSTextField.initWithFrame(TextFieldRect);
+  TextField.setBordered(LongBool(NO));
+  TextField.setDrawsBackground(LongBool(NO));
   TextField.setStringValue(CFMessage);
   MainWindowView := NSView.CreateWithHandle(MainWindow.contentView);
   MainWindowView.addSubview(TextField.Handle);
