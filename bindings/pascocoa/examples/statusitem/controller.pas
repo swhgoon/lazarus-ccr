@@ -168,7 +168,7 @@ begin
   Result.setBezelStyle(NSRoundedBezelStyle);
   Result.setAction(sel_registerName(PChar(ACallbackName)));
   Result.setTarget(ACallbackClass.Handle);
-  AView.addSubview(Result);
+  AView.addSubview(Result.Handle);
 end;
 
 function TMyController.CreateMenu(): NSMenu;

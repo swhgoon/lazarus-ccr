@@ -65,7 +65,7 @@ begin
   TextField := NSTextField.initWithFrame(TextFieldRect);
   TextField.setStringValue(CFMessage);
   MainWindowView := NSView.CreateWithHandle(MainWindow.contentView);
-  MainWindowView.addSubview(TextField);
+  MainWindowView.addSubview(TextField.Handle);
 
   { Put's the window on the front z-order }
 

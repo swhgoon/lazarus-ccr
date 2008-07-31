@@ -33,8 +33,8 @@
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="63" Y="6"/>
-        <TopLine Value="1"/>
+        <CursorPos X="45" Y="69"/>
+        <TopLine Value="55"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
@@ -387,7 +387,7 @@
         <UsageCount Value="10"/>
       </Unit53>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="simplewindow.pas"/>
         <Caret Line="67" Column="13" TopLine="45"/>
@@ -396,6 +396,10 @@
         <Filename Value="simplewindow.pas"/>
         <Caret Line="49" Column="28" TopLine="36"/>
       </Position2>
+      <Position3>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="6" Column="63" TopLine="1"/>
+      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

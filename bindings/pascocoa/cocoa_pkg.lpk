@@ -5,8 +5,8 @@
     <CompilerOptions>
       <Version Value="5"/>
       <SearchPaths>
-        <IncludeFiles Value="applicationservices/coregraphics/;foundation/;appkit/;/Users/felipe/Programas/lazarus-ccr/bindings/objc/"/>
-        <OtherUnitFiles Value="applicationservices/coregraphics/;foundation/;appkit/;/Users/felipe/Programas/lazarus-ccr/bindings/objc/"/>
+        <IncludeFiles Value="foundation/;appkit/;/Users/felipe/Programas/lazarus-ccr/bindings/objc/"/>
+        <OtherUnitFiles Value="foundation/;appkit/;/Users/felipe/Programas/lazarus-ccr/bindings/objc/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <CodeGeneration>
@@ -16,23 +16,19 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="appkit/appkit.pas"/>
         <UnitName Value="appkit"/>
       </Item1>
       <Item2>
-        <Filename Value="applicationservices/coregraphics/cocoacoregraphics.pas"/>
-        <UnitName Value="cocoacoregraphics"/>
-      </Item2>
-      <Item3>
         <Filename Value="foundation/foundation.pas"/>
         <UnitName Value="foundation"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="../objc/objc.pas"/>
         <UnitName Value="objc"/>
-      </Item4>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
