@@ -15,7 +15,7 @@ unit ws_parser_imp;
 
 interface
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Contnrs,
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM, wst_fpc_xml{$ENDIF},
   cursor_intf, rtti_filters,
   pastree, pascal_parser_intf, logger_intf,
@@ -69,6 +69,31 @@ type
   TDerivationMode = ( dmNone, dmExtension, dmRestriction );
   TSequenceType = ( stElement, stAll );
 
+  { TPropInfoReference }
+
+  TPropInfoReference = class
+  private
+    FIsCollection : Boolean;
+    FProp : TPasProperty;
+  public
+    property Prop : TPasProperty read FProp;
+    property IsCollection : Boolean read FIsCollection;
+  end;
+  
+  { TPropInfoReferenceList }
+
+  TPropInfoReferenceList = class
+  private
+    FList : TObjectList;
+  public
+    constructor Create();
+    destructor Destroy();override;
+    function Add(AProp : TPasProperty) : TPropInfoReference;
+    function GetItem(const AIndex : PtrInt) : TPropInfoReference;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function IndexOf(const AProp : TPasProperty) : PtrInt;
+    function GetCount() : PtrInt;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  end;
+  
   { TComplexTypeParser }
 
   TComplexTypeParser = class(TAbstractTypeParser)
@@ -81,6 +106,19 @@ type
     FDerivationMode : TDerivationMode;
     FDerivationNode : TDOMNode;
     FSequenceType : TSequenceType;
+  private
+    //helper routines
+    function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
+    procedure ExtractExtendedMetadata(const AItem : TPasElement; const ANode : TDOMNode);
+    procedure GenerateArrayTypes(
+      const AClassName : string;
+            AArrayPropList : TPropInfoReferenceList
+    );
+    function ExtractSoapArray(
+      const ATypeName : string;
+      const AInternalName : string;
+      const AHasInternalName : Boolean
+    ) : TPasArrayType;
   private
     procedure CreateNodeCursors();
     procedure ExtractTypeName();
@@ -119,7 +157,7 @@ type
     SResolveError = 'Unable to resolve this namespace : "%s".';
 
 implementation
-uses dom_cursors, parserutils, StrUtils, Contnrs, xsd_consts;
+uses dom_cursors, parserutils, StrUtils, xsd_consts;
 
 { TAbstractTypeParser }
 
@@ -273,6 +311,194 @@ end;
 
 { TComplexTypeParser }
 
+function TComplexTypeParser.ExtractElementCursor(out AAttCursor : IObjectCursor) : IObjectCursor;
+var
+  frstCrsr, tmpCursor : IObjectCursor;
+  parentNode, tmpNode : TDOMNode;
+begin
+  Result := nil;
+  AAttCursor := nil;
+  case FDerivationMode of
+    dmNone          : parentNode := FContentNode;
+    dmRestriction,
+    dmExtension     : parentNode := FDerivationNode;
+  end;
+  if parentNode.HasChildNodes() then begin;
+    AAttCursor := CreateCursorOn(
+                   CreateChildrenCursor(parentNode,cetRttiNode),
+                   ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                 );
+    frstCrsr := CreateChildrenCursor(parentNode,cetRttiNode);
+    tmpCursor := CreateCursorOn(
+                   frstCrsr.Clone() as IObjectCursor,
+                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                 );
+    tmpCursor.Reset();
+    if tmpCursor.MoveNext() then begin
+      FSequenceType := stElement;
+      tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if  tmpNode.HasChildNodes() then begin
+        tmpCursor := CreateCursorOn(
+                       CreateChildrenCursor(tmpNode,cetRttiNode),
+                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                     );
+        Result := tmpCursor;
+      end;
+    end else begin
+      tmpCursor := CreateCursorOn(
+                     frstCrsr.Clone() as IObjectCursor,
+                     ParseFilter(CreateQualifiedNameFilterStr(s_all,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                   );
+      tmpCursor.Reset();
+      if tmpCursor.MoveNext() then begin
+        FSequenceType := stElement;
+        tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+        if  tmpNode.HasChildNodes() then begin
+          tmpCursor := CreateCursorOn(
+                         CreateChildrenCursor(tmpNode,cetRttiNode),
+                         ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                       );
+          Result := tmpCursor;
+        end;
+      end;
+    end
+  end else begin
+    Result := nil;
+  end;
+end;
+
+procedure TComplexTypeParser.ExtractExtendedMetadata(
+  const AItem : TPasElement;
+  const ANode : TDOMNode
+);
+var
+  ls : TDOMNamedNodeMap;
+  e : TDOMNode;
+  k, q : PtrInt;
+  ns_short, ns_long, localName, locBuffer, locBufferNS, locBufferNS_long, locBufferLocalName : string;
+begin
+  if ( ANode.Attributes <> nil ) and ( GetNodeListCount(ANode.Attributes) > 0 ) then begin
+    ls := ANode.Attributes;
+    q := GetNodeListCount(ANode.Attributes);
+    for k := 0 to ( q - 1 ) do begin
+      e := ls.Item[k];
+      if ( Pos(':', e.NodeName) > 1 ) then begin
+        ExplodeQName(e.NodeName,localName,ns_short);
+        if FContext.FindNameSpace(ns_short, ns_long) then begin
+          locBuffer := e.NodeValue;
+          ExplodeQName(locBuffer,locBufferLocalName,locBufferNS);
+          if IsStrEmpty(locBufferNS) then
+            locBuffer := locBufferLocalName
+          else if FContext.FindNameSpace(locBufferNS, locBufferNS_long) then
+            locBuffer := Format('%s#%s',[locBufferNS_long,locBufferLocalName]);
+          FSymbols.Properties.SetValue(AItem,Format('%s#%s',[ns_long,localName]),locBuffer);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TComplexTypeParser.GenerateArrayTypes(
+  const AClassName : string;
+        AArrayPropList : TPropInfoReferenceList
+);
+var
+  propRef : TPropInfoReference;
+  locPropTyp : TPasProperty;
+  k : Integer;
+  locString : string;
+  locSym : TPasElement;
+begin
+  for k := 0 to Pred(AArrayPropList.GetCount()) do begin
+    propRef := AArrayPropList.GetItem(k);
+    locPropTyp := propRef.Prop;
+    locString := Format('%s_%sArray',[AClassName,locPropTyp.Name]);
+    locSym := FSymbols.FindElement(locString);
+    if ( locSym = nil ) then begin
+      locSym := FSymbols.CreateArray(
+        locString,
+        locPropTyp.VarType,
+        locPropTyp.Name,
+        FSymbols.GetExternalName(locPropTyp),
+        asEmbeded
+      );
+      Self.Module.InterfaceSection.Declarations.Add(locSym);
+      Self.Module.InterfaceSection.Types.Add(locSym);
+      if propRef.IsCollection then
+        FSymbols.SetCollectionFlag(TPasArrayType(locSym),True);
+    end;
+  end;
+end;
+
+function TComplexTypeParser.ExtractSoapArray(
+  const ATypeName : string;
+  const AInternalName : string;
+  const AHasInternalName : Boolean
+) : TPasArrayType;
+var
+  ls : TStringList;
+  crs, locCrs : IObjectCursor;
+  s : string;
+  i : Integer;
+  locSym : TPasElement;
+  ok : Boolean;
+  nd : TDOMNode;
+begin
+  if not FDerivationNode.HasChildNodes then begin
+    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, attributes not found : "%s".',[FTypeName]);
+  end;
+  crs := CreateCursorOn(
+           CreateChildrenCursor(FDerivationNode,cetRttiNode),
+           ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+         );
+  ls := TStringList.Create();
+  try
+    ok := False;
+    crs.Reset();
+    while crs.MoveNext() do begin
+      nd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
+        ls.Clear();
+        ExtractNameSpaceShortNamesNested(nd,ls,s_wsdl);
+        locCrs := CreateAttributesCursor(nd,cetRttiNode);
+        locCrs := CreateCursorOn(
+                    locCrs,
+                    ParseFilter(CreateQualifiedNameFilterStr(s_arrayType,ls),TDOMNodeRttiExposer)
+                  );
+        if Assigned(locCrs) then begin
+          locCrs.Reset();
+          if locCrs.MoveNext() then begin
+            ok := True;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(ls);
+  end;
+  if not ok then begin
+    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, unable to find the "%s" attribute : "%s".',[s_arrayType,FTypeName]);
+  end;
+  s := ExtractNameFromQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue);
+  i := Pos('[',s);
+  if ( i < 1 ) then begin
+    i := MaxInt;
+  end;
+  s := Copy(s,1,Pred(i));
+  locSym := FSymbols.FindElement(s);
+  if not Assigned(locSym) then begin
+    locSym := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,s,Self.Module.InterfaceSection,visDefault,'',0));
+    Self.Module.InterfaceSection.Declarations.Add(locSym);
+    Self.Module.InterfaceSection.Types.Add(locSym);
+  end;
+  if not locSym.InheritsFrom(TPasType) then
+    raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
+  Result := FSymbols.CreateArray(AInternalName,locSym as TPasType,s_item,s_item,asScoped);
+  if AHasInternalName then
+    FSymbols.RegisterExternalAlias(Result,ATypeName);
+end;
+
 procedure TComplexTypeParser.CreateNodeCursors();
 begin
   FAttCursor := CreateAttributesCursor(FTypeNode,cetRttiNode);
@@ -402,96 +628,18 @@ begin
 end;
 
 function TComplexTypeParser.ParseComplexContent(const ATypeName : string) : TPasType;
-
-  function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
-  var
-    frstCrsr, tmpCursor : IObjectCursor;
-    parentNode, tmpNode : TDOMNode;
-  begin
-    Result := nil;
-    AAttCursor := nil;
-    case FDerivationMode of
-      dmNone          : parentNode := FContentNode;
-      dmRestriction,
-      dmExtension     : parentNode := FDerivationNode;
-    end;
-    if parentNode.HasChildNodes() then begin;
-      AAttCursor := CreateCursorOn(
-                     CreateChildrenCursor(parentNode,cetRttiNode),
-                     ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                   );
-      frstCrsr := CreateChildrenCursor(parentNode,cetRttiNode);
-      tmpCursor := CreateCursorOn(
-                     frstCrsr.Clone() as IObjectCursor,
-                     ParseFilter(CreateQualifiedNameFilterStr(s_sequence,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                   );
-      tmpCursor.Reset();
-      if tmpCursor.MoveNext() then begin
-        FSequenceType := stElement;
-        tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        if  tmpNode.HasChildNodes() then begin
-          tmpCursor := CreateCursorOn(
-                         CreateChildrenCursor(tmpNode,cetRttiNode),
-                         ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                       );
-          Result := tmpCursor;
-        end;
-      end else begin
-        tmpCursor := CreateCursorOn(
-                       frstCrsr.Clone() as IObjectCursor,
-                       ParseFilter(CreateQualifiedNameFilterStr(s_all,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                     );
-        tmpCursor.Reset();
-        if tmpCursor.MoveNext() then begin
-          FSequenceType := stElement;
-          tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-          if  tmpNode.HasChildNodes() then begin
-            tmpCursor := CreateCursorOn(
-                           CreateChildrenCursor(tmpNode,cetRttiNode),
-                           ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                         );
-            Result := tmpCursor;
-          end;
-        end;
-      end
-    end else begin
-      Result := nil;
-    end;
-  end;
-  
 var
   classDef : TPasClassType;
   isArrayDef : Boolean;
-  arrayItems : TObjectList;
+  arrayItems : TPropInfoReferenceList;
 
-  procedure ExtractExtendedMetadata(const AItem : TPasElement; const ANode : TDOMNode);
+  function IsCollectionArray(AElement : TDOMNode) : Boolean;
   var
-    ls : TDOMNamedNodeMap;
-    e : TDOMNode;
-    k, q : PtrInt;
-    ns_short, ns_long, localName, locBuffer, locBufferNS, locBufferNS_long, locBufferLocalName : string;
+    strBuffer : string;
   begin
-    if ( ANode.Attributes <> nil ) and ( GetNodeListCount(ANode.Attributes) > 0 ) then begin
-      ls := ANode.Attributes;
-      q := GetNodeListCount(ANode.Attributes);
-      for k := 0 to ( q - 1 ) do begin
-        e := ls.Item[k];
-        if ( Pos(':', e.NodeName) > 1 ) then begin
-          ExplodeQName(e.NodeName,localName,ns_short);
-          if FContext.FindNameSpace(ns_short, ns_long) then begin
-            locBuffer := e.NodeValue;
-            ExplodeQName(locBuffer,locBufferLocalName,locBufferNS);
-            if IsStrEmpty(locBufferNS) then
-              locBuffer := locBufferLocalName
-            else if FContext.FindNameSpace(locBufferNS, locBufferNS_long) then
-              locBuffer := Format('%s#%s',[locBufferNS_long,locBufferLocalName]);
-            FSymbols.Properties.SetValue(AItem,Format('%s#%s',[ns_long,localName]),locBuffer);
-          end;
-        end;
-      end;
-    end;
+    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_collection,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
-
+  
   procedure ParseElement(AElement : TDOMNode);
   var
     locAttCursor, locPartCursor : IObjectCursor;
@@ -641,7 +789,7 @@ var
     end;
     isArrayDef := locMaxOccurUnbounded or ( locMaxOccur > 1 );
     if isArrayDef then begin
-      arrayItems.Add(locProp);
+      arrayItems.Add(locProp).FIsCollection := IsCollectionArray(AElement);
     end;
     if AnsiSameText(s_attribute,ExtractNameFromQName(AElement.NodeName)) then begin
       FSymbols.SetPropertyAsAttribute(locProp,True);
@@ -652,100 +800,7 @@ var
       locProp.DefaultValue := (locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
     ExtractExtendedMetadata(locProp,AElement);
   end;
-  
-  procedure GenerateArrayTypes(
-    const AClassName : string;
-          AArrayPropList : TObjectList
-  );
-  var
-    locPropTyp : TPasProperty;
-    k : Integer;
-    locString : string;
-    locSym : TPasElement;
-  begin
-    for k := 0 to Pred(AArrayPropList.Count) do begin
-      locPropTyp := AArrayPropList[k] as TPasProperty;
-      locString := Format('%s_%sArray',[AClassName,locPropTyp.Name]);
-      locSym := FSymbols.FindElement(locString);
-      if ( locSym = nil ) then begin
-        locSym := FSymbols.CreateArray(
-          locString,
-          locPropTyp.VarType,
-          locPropTyp.Name,
-          FSymbols.GetExternalName(locPropTyp),
-          asEmbeded
-        );
-        Self.Module.InterfaceSection.Declarations.Add(locSym);
-        Self.Module.InterfaceSection.Types.Add(locSym);
-      end;
-    end;
-  end;
-  
-  function ExtractSoapArray(const AInternalName : string; const AHasInternalName : Boolean) : TPasArrayType;
-  var
-    ls : TStringList;
-    crs, locCrs : IObjectCursor;
-    s : string;
-    i : Integer;
-    locSym : TPasElement;
-    ok : Boolean;
-    nd : TDOMNode;
-  begin
-    if not FDerivationNode.HasChildNodes then begin
-      raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, attributes not found : "%s".',[FTypeName]);
-    end;
-    crs := CreateCursorOn(
-             CreateChildrenCursor(FDerivationNode,cetRttiNode),
-             ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-           );
-    ls := TStringList.Create();
-    try
-      ok := False;
-      crs.Reset();
-      while crs.MoveNext() do begin
-        nd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        if Assigned(nd.Attributes) and ( nd.Attributes.Length > 0 ) then begin
-          ls.Clear();
-          ExtractNameSpaceShortNamesNested(nd,ls,s_wsdl);
-          locCrs := CreateAttributesCursor(nd,cetRttiNode);
-          locCrs := CreateCursorOn(
-                      locCrs,
-                      ParseFilter(CreateQualifiedNameFilterStr(s_arrayType,ls),TDOMNodeRttiExposer)
-                    );
-          if Assigned(locCrs) then begin
-            locCrs.Reset();
-            if locCrs.MoveNext() then begin
-              ok := True;
-              Break;
-            end;
-          end;
-        end;
-      end;
-    finally
-      FreeAndNil(ls);
-    end;
-    if not ok then begin
-      raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid type definition, unable to find the "%s" attribute : "%s".',[s_arrayType,FTypeName]);
-    end;
-    s := ExtractNameFromQName((locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject.NodeValue);
-    i := Pos('[',s);
-    if ( i < 1 ) then begin
-      i := MaxInt;
-    end;
-    s := Copy(s,1,Pred(i));
-    locSym := FSymbols.FindElement(s);
-    if not Assigned(locSym) then begin
-      locSym := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,s,Self.Module.InterfaceSection,visDefault,'',0));
-      Self.Module.InterfaceSection.Declarations.Add(locSym);
-      Self.Module.InterfaceSection.Types.Add(locSym);
-    end;
-    if not locSym.InheritsFrom(TPasType) then
-      raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid array type definition, invalid item type definition : "%s".',[FTypeName]);
-    Result := FSymbols.CreateArray(AInternalName,locSym as TPasType,s_item,s_item,asScoped);
-    if AHasInternalName then
-      FSymbols.RegisterExternalAlias(Result,ATypeName);
-  end;
-  
+
   function IsHeaderBlock() : Boolean;
   var
     strBuffer : string;
@@ -801,9 +856,9 @@ begin
   end;
 
   if ( FDerivationMode = dmRestriction ) and FSymbols.SameName(FBaseType,s_array) then begin
-    Result := ExtractSoapArray(internalName,hasInternalName);
+    Result := ExtractSoapArray(ATypeName,internalName,hasInternalName);
   end else begin
-    arrayItems := TObjectList.Create(False);
+    arrayItems := TPropInfoReferenceList.Create();
     try
       classDef := TPasClassType(FSymbols.CreateElement(TPasClassType,internalName,Self.Module.InterfaceSection,visDefault,'',0));
       try
@@ -824,16 +879,18 @@ begin
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
           ParseElementsAndAttributes(eltCrs,eltAttCrs);
-          if ( arrayItems.Count > 0 ) then begin
-            if ( arrayItems.Count = 1 ) and ( GetElementCount(classDef.Members,TPasProperty) = 1 ) then begin
+          if ( arrayItems.GetCount() > 0 ) then begin
+            if ( arrayItems.GetCount() = 1 ) and ( GetElementCount(classDef.Members,TPasProperty) = 1 ) then begin
               Result := nil;
-              propTyp := arrayItems[0] as TPasProperty;
+              propTyp := arrayItems.GetItem(0).Prop;
               arrayDef := FSymbols.CreateArray(internalName,propTyp.VarType,propTyp.Name,FSymbols.GetExternalName(propTyp),asScoped);
               FSymbols.FreeProperties(classDef);
               FreeAndNil(classDef);
               Result := arrayDef;
               if hasInternalName then
                 FSymbols.RegisterExternalAlias(arrayDef,ATypeName);
+              if arrayItems.GetItem(0).IsCollection then
+                FSymbols.SetCollectionFlag(arrayDef,True);
             end else begin
               GenerateArrayTypes(internalName,arrayItems);
               tmpClassDef := classDef;
@@ -1336,6 +1393,56 @@ begin
       Result := ParseOtherContent();
     end;
   end;
+end;
+
+{ TPropInfoReferenceList }
+
+constructor TPropInfoReferenceList.Create();
+begin
+  FList := TObjectList.Create(False);
+end;
+
+destructor TPropInfoReferenceList.Destroy();
+begin
+  FList.Free();
+  inherited Destroy();
+end;
+
+function TPropInfoReferenceList.Add(AProp : TPasProperty) : TPropInfoReference;
+var
+  i : PtrInt;
+begin
+  i := IndexOf(AProp);
+  if ( i = -1 ) then begin
+    Result := TPropInfoReference.Create();
+    Result.FProp := AProp;
+    FList.Add(Result);
+  end else begin
+    Result := TPropInfoReference(FList[i]);
+  end;
+end;
+
+function TPropInfoReferenceList.GetItem(const AIndex : PtrInt) : TPropInfoReference;
+begin
+  Result := TPropInfoReference(FList[AIndex]);
+end;
+
+function TPropInfoReferenceList.IndexOf(const AProp : TPasProperty) : PtrInt;
+var
+  i : PtrInt;
+begin
+  Result := -1;
+  for i := 0 to Pred(FList.Count) do begin
+    if ( TPropInfoReference(FList[i]).Prop = AProp ) then begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+function TPropInfoReferenceList.GetCount() : PtrInt;
+begin
+  Result := FList.Count;
 end;
 
 initialization

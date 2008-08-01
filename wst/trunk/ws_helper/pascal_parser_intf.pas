@@ -27,7 +27,8 @@ const
   sARRAY_STYLE = 'ARRAY_STYLE';
     sARRAY_STYLE_SCOPED = 'ARRAY_STYLE_SCOPED';
     sARRAY_STYLE_EMBEDDED = 'ARRAY_STYLE_EMBEDDED';
-
+  sARRAY_IS_COLLECTION = 'ARRAY_COLLECTION';
+  
   sXSD_NS = 'http://www.w3.org/2001/XMLSchema';
   
 type
@@ -112,6 +113,8 @@ type
     function GetArrayStyle(AArray : TPasArrayType) : TArrayStyle;
     procedure SetArrayStyle(AArray : TPasArrayType; const AStyle : TArrayStyle);
     procedure SetArrayItemExternalName(AArray : TPasArrayType; const AExternalName : string);
+    function IsCollection(AArray : TPasArrayType) : Boolean;
+    procedure SetCollectionFlag(AArray : TPasArrayType; const AFlag : Boolean);
     function FindElement(const AName: String): TPasElement; override;
     function FindElementNS(const AName, ANameSpace : string): TPasElement;
     function FindElementInModule(const AName: String; AModule: TPasModule): TPasElement;
@@ -603,6 +606,22 @@ procedure TwstPasTreeContainer.SetArrayItemExternalName(
 );
 begin
   Properties.SetValue(AArray,sARRAY_ITEM_EXT_NAME,AExternalName);
+end;
+
+function TwstPasTreeContainer.IsCollection(AArray : TPasArrayType) : Boolean;
+begin
+  Result := AnsiSameText('true',Properties.GetValue(AArray,sARRAY_IS_COLLECTION));
+end;
+
+procedure TwstPasTreeContainer.SetCollectionFlag(
+        AArray : TPasArrayType;
+  const AFlag : Boolean
+);
+begin
+  if AFlag then
+    Properties.SetValue(AArray,sARRAY_IS_COLLECTION,'true')
+  else
+    Properties.SetValue(AArray,sARRAY_IS_COLLECTION,'false');
 end;
 
 function TwstPasTreeContainer.FindElementInModule(const AName: String; AModule : TPasModule): TPasElement;

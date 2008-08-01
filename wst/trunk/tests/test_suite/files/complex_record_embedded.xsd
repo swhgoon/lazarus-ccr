@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <xsd:schema xmlns:n="urn:wst-test" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:wst="urn:wst_base"
   targetNamespace="urn:wst-test">
   
   <xsd:element name="TRecordSampleType">
-    <xsd:complexType wst_record="true">
+    <xsd:complexType wst:wst_record="true">
 	    <xsd:sequence>
 		    <xsd:element name="intField" type="xsd:int" />
         <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -19,7 +20,7 @@
   </xsd:element>
   
   <xsd:element name="TRecordSampleTypeAll">
-    <xsd:complexType wst_record="true">
+    <xsd:complexType wst:wst_record="true">
       <xsd:all>
 		    <xsd:element name="intField" type="xsd:int" />
         <xsd:element name="strField" type="xsd:string" minOccurs="1" maxOccurs="1"/>

@@ -11,6 +11,7 @@ object fClassEdit: TfClassEdit
   ClientHeight = 547
   ClientWidth = 518
   Position = poDesktopCenter
+  LCLVersion = '0.9.25'
   object Panel1: TPanel
     Height = 50
     Top = 497

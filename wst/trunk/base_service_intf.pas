@@ -627,6 +627,51 @@ type
     property mustUnderstand : Integer read FmustUnderstand write SetmustUnderstand stored HasmustUnderstand;
   end;
 
+  { TObjectCollectionRemotable
+      An implementation for array handling. The array items are "owned" by
+      this class instance, so one has not to free them.
+  }
+  TObjectCollectionRemotable = class(TAbstractComplexRemotable)
+  private
+    FList : TObjectList;
+  protected
+    function GetItem(AIndex : PtrInt) : TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    class function GetItemName():string;virtual;
+    class function GetStyle():TArrayStyle;virtual;
+    function GetLength : PtrInt;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class function GetItemClass():TBaseRemotableClass;virtual;abstract;
+    class function GetItemTypeInfo():PTypeInfo;{$IFDEF USE_INLINE}inline;{$ENDIF}
+
+    constructor Create();override;
+    destructor Destroy();override;
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+
+    function Add(): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function AddAt(const APosition : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function Extract(const AIndex : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Delete(const AIndex : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Exchange(const Index1,Index2 : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Clear();{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function IndexOf(AObject : TBaseRemotable) : PtrInt;{$IFDEF USE_INLINE}inline;{$ENDIF}
+
+    property Item[AIndex:PtrInt] : TBaseRemotable read GetItem;default;
+    property Length : PtrInt read GetLength;
+  end;
+  
   TBaseArrayRemotableClass = class of TBaseArrayRemotable;
 
   { TBaseArrayRemotable }
@@ -2938,6 +2983,254 @@ begin
       end;
     end;
   end;
+end;
+
+{ TObjectCollectionRemotable }
+
+function TObjectCollectionRemotable.GetItem(AIndex : PtrInt) : TBaseRemotable;
+begin
+  Result := TBaseRemotable(FList[AIndex]);
+end;
+
+function TObjectCollectionRemotable.GetLength : PtrInt;
+begin
+  Result := FList.Count;
+end;
+
+class function TObjectCollectionRemotable.GetItemName() : string;
+var
+  tri : TTypeRegistryItem;
+begin
+  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
+  if Assigned(tri) then
+    Result := Trim(tri.GetExternalPropertyName(sARRAY_ITEM));
+  if ( System.Length(Result) = 0 ) then
+    Result := sARRAY_ITEM;
+end;
+
+class function TObjectCollectionRemotable.GetStyle() : TArrayStyle;
+var
+  tri : TTypeRegistryItem;
+begin
+  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
+  if Assigned(tri) and AnsiSameText(sEmbedded,Trim(tri.GetExternalPropertyName(sARRAY_STYLE))) then begin
+    Result := asEmbeded;
+  end else begin
+    Result := asScoped;
+  end;
+end;
+
+class procedure TObjectCollectionRemotable.Save(
+  AObject : TBaseRemotable;
+  AStore : IFormatterBase;
+  const AName : string;
+  const ATypeInfo : PTypeInfo
+);
+Var
+  itmTypInfo : PTypeInfo;
+  i,j : Integer;
+  nativObj : TObjectCollectionRemotable;
+  itm : TObject;
+  itmName : string;
+  styl : TArrayStyle;
+begin
+  if Assigned(AObject) then begin
+    Assert(AObject.InheritsFrom(TObjectCollectionRemotable));
+    nativObj := AObject as TObjectCollectionRemotable;
+    j := nativObj.Length;
+  end else begin
+    j := 0;
+  end;
+  itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+  styl := GetStyle();
+  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)],styl);
+  try
+    if ( styl = asScoped ) then begin
+      itmName := GetItemName();
+    end else begin
+      itmName := AName;
+    end;
+    for i := 0 to Pred(j) do begin
+      itm := nativObj.Item[i];
+      AStore.Put(itmName,itmTypInfo,itm);
+    end;
+  finally
+    AStore.EndScope();
+  end;
+end;
+
+class procedure TObjectCollectionRemotable.Load(
+  var   AObject   : TObject;
+        AStore    : IFormatterBase;
+  var   AName     : String;
+  const ATypeInfo : PTypeInfo
+);
+Var
+  i, len : Integer;
+  nativObj : TObjectCollectionRemotable;
+  s : string;
+  itmTypInfo : PTypeInfo;
+  itm : TBaseRemotable;
+  itmName : string;
+  styl : TArrayStyle;
+begin
+  styl := GetStyle();
+  if ( styl = asScoped ) then begin
+    itmName := GetItemName();
+  end else begin
+    itmName := AName;
+  end;
+  len := AStore.BeginArrayRead(AName,ATypeInfo,styl,itmName);
+  if ( len >= 0 ) then begin
+    Try
+      If Not Assigned(AObject) Then
+        AObject := Create();
+      itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+      nativObj := AObject as TObjectCollectionRemotable;
+      If ( len > 0 ) Then Begin
+        s := '';
+        nativObj.Clear();
+        For i := 0 To Pred(len) Do Begin
+          itm := nativObj.Add();
+          AStore.Get(itmTypInfo,s,itm);
+        End;
+      End;
+    Finally
+      AStore.EndScopeRead();
+    End;
+  end;
+end;
+
+class function TObjectCollectionRemotable.GetItemTypeInfo() : PTypeInfo;
+begin
+  Result := PTypeInfo(GetItemClass().ClassInfo);
+end;
+
+constructor TObjectCollectionRemotable.Create();
+begin
+  inherited Create();
+  FList := TObjectList.Create(True);
+end;
+
+destructor TObjectCollectionRemotable.Destroy();
+begin
+  FList.Free();
+  inherited Destroy();
+end;
+
+procedure TObjectCollectionRemotable.Assign(Source : TPersistent);
+var
+  srcCol : TObjectCollectionRemotable;
+  src : TBaseObjectArrayRemotable;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) then begin
+    if Source.InheritsFrom(TObjectCollectionRemotable) then begin
+      srcCol := TObjectCollectionRemotable(Source);
+      c := srcCol.Length;
+      FList.Clear();
+      FList.Capacity := c;
+      for i := 0 to Pred(c) do begin
+        Add().Assign(srcCol.Item[i]);
+      end;
+    end else if Source.InheritsFrom(TBaseObjectArrayRemotable) then begin
+      src := TBaseObjectArrayRemotable(Source);
+      c := src.Length;
+      FList.Clear();
+      FList.Capacity := c;
+      for i := 0 to Pred(c) do begin
+        Add().Assign(src.Item[i]);
+      end;
+    end else begin
+      inherited Assign(Source);
+    end;
+  end else begin
+    FList.Clear();
+  end;
+end;
+
+function TObjectCollectionRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+var
+  i : PtrInt;
+  nativeCol : TObjectCollectionRemotable;
+  nativeArray : TBaseObjectArrayRemotable;
+  res : Boolean;
+begin
+  res := False;
+  if ( ACompareTo <> nil ) then begin
+    if ACompareTo.InheritsFrom(TObjectCollectionRemotable) then begin
+      nativeCol := TObjectCollectionRemotable(ACompareTo);
+      if ( nativeCol.Length = Length ) then begin
+        res := True;
+        for i := 0 to Pred(Length) do begin
+          if not Item[i].Equal(nativeCol[i]) then begin
+            res := False;
+            Break;
+          end;
+        end;
+      end;
+    end else if ACompareTo.InheritsFrom(TBaseObjectArrayRemotable) then begin
+      nativeArray := TBaseObjectArrayRemotable(ACompareTo);
+      if ( nativeArray.Length = Length ) then begin
+        res := True;
+        for i := 0 to Pred(Length) do begin
+          if not Item[i].Equal(nativeArray[i]) then begin
+            res := False;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  end;
+  Result := res;
+end;
+
+function TObjectCollectionRemotable.Add() : TBaseRemotable;
+begin
+  Result := GetItemClass().Create();
+  try
+    FList.Add(Result);
+  except
+    Result.Free();
+    raise;
+  end;
+end;
+
+function TObjectCollectionRemotable.AddAt(const APosition : PtrInt) : TBaseRemotable;
+begin
+  FList.Insert(APosition,nil);
+  try
+    Result := GetItemClass().Create();
+  except
+    FList.Delete(APosition);
+    raise;
+  end;
+  FList[APosition] := Result;
+end;
+
+function TObjectCollectionRemotable.Extract(const AIndex : PtrInt) : TBaseRemotable;
+begin
+  Result := TBaseRemotable(FList.Extract(FList[AIndex]));
+end;
+
+procedure TObjectCollectionRemotable.Delete(const AIndex : PtrInt);
+begin
+  FList.Delete(AIndex);
+end;
+
+procedure TObjectCollectionRemotable.Exchange(const Index1, Index2 : PtrInt);
+begin
+  FList.Exchange(Index1,Index2);
+end;
+
+procedure TObjectCollectionRemotable.Clear();
+begin
+  FList.Clear();
+end;
+
+function TObjectCollectionRemotable.IndexOf(AObject : TBaseRemotable) : PtrInt;
+begin
+  Result := FList.IndexOf(AObject);
 end;
 
 { TBaseArrayRemotable }

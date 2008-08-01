@@ -141,20 +141,21 @@ Item0=DUnit
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=13
+Count=14
 Item0=..\;..\..\;..\..\..\;..\..\..\fcl-units\fcl-passrc\src;..\..\..\ws_helper;..\..\..\wst_rtti_filter;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item1=..\;..\..\;..\..\..\;..\..\..\fcl-units\fcl-passrc\src;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;..\..\..\ws_helper
-Item2=..\;..\..\;..\..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;..\..\..\fcl-units\fcl-passrc\src
-Item3=..\;..\..\;..\..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item4=..\;..\..\;..\..\..\;C:\Programmes\lazarus\wst\trunk\ws_helper;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item5=..\;..\..\;..\..\..\;..\..\ws_helper;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item6=..\;..\..\;..\..\..\;..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item7=..\;..\..\;..\..\..\;..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;C:\Programmes\lazarus\wst\trunk\ws_helper
-Item8=..\;..\..\;..\..\..\;..\..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item9=..\;..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item10=..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item11=C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
-Item12=..\
+Item1=$(DELPHI)\Lib\Debug;C:\PROGRA~1\Borland\Delphi7\MyTools\JVCL\3.20\jcl\lib\d7\debug;..\;..\..\;..\..\..\;..\..\..\fcl-units\fcl-passrc\src;..\..\..\ws_helper;..\..\..\wst_rtti_filter;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item2=..\;..\..\;..\..\..\;..\..\..\fcl-units\fcl-passrc\src;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;..\..\..\ws_helper
+Item3=..\;..\..\;..\..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;..\..\..\fcl-units\fcl-passrc\src
+Item4=..\;..\..\;..\..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item5=..\;..\..\;..\..\..\;C:\Programmes\lazarus\wst\trunk\ws_helper;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item6=..\;..\..\;..\..\..\;..\..\ws_helper;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item7=..\;..\..\;..\..\..\;..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item8=..\;..\..\;..\..\..\;..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src;C:\Programmes\lazarus\wst\trunk\ws_helper
+Item9=..\;..\..\;..\..\..\;..\..\..\ws_helper\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item10=..\;..\..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item11=..\;C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item12=C:\Program Files\Borland\Delphi7\plate_forme\dunit\dunit-9.3.0\src
+Item13=..\
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=obj

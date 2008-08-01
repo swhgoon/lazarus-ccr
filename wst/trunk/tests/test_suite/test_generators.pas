@@ -26,6 +26,8 @@ type
 
   TPropertyType = ( ptField, ptAttribute );
 
+  { TTest_CustomXsdGenerator }
+
   TTest_CustomXsdGenerator = class(TTestCase)
   protected
     function CreateGenerator(const ADoc : TXMLDocument) : IXsdGenerator;virtual;abstract;
@@ -33,6 +35,7 @@ type
   published
     procedure class_properties_default();
     procedure class_properties_extended_metadata();
+    procedure class_extent_native_type();
   end;
 
   TTest_XsdGenerator = class(TTest_CustomXsdGenerator)
@@ -173,6 +176,76 @@ begin
     g.Execute(tr,mdl.Name);
     WriteXMLFile(locDoc,'.\class_properties_extended_metadata.xsd');
     locExistDoc := LoadXmlFromFilesList('class_properties_extended_metadata.xsd');
+    Check(CompareNodes(locExistDoc,locDoc),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.class_extent_native_type();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+
+  procedure AddProperty(
+    const AName,
+          ATypeName,
+          ADefault   : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,cltyp,visDefault,'',0));
+    cltyp.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.DefaultValue := ADefault;
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'class_extent_native_type',tr.Package,visDefault,'',0));
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TExtendString',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TComplexStringContentRemotable',sXSD_NS) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty('intAtt','integer','',ptAttribute);
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TExtendBase64String',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBase64StringExtRemotable',sXSD_NS) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty('strAtt','string','',ptAttribute);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    WriteXMLFile(locDoc,'.\class_extent_native_type.xsd');
+    locExistDoc := LoadXmlFromFilesList('class_extent_native_type.xsd');
     Check(CompareNodes(locExistDoc,locDoc),'generated document differs from the existent one.');
   finally
     ReleaseDomNode(locExistDoc);

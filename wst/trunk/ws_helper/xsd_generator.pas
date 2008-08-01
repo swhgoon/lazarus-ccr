@@ -123,6 +123,9 @@ type
     );virtual;abstract;
     function GetOwner() : IXsdGenerator;
     class function CanHandle(ASymbol : TObject) : Boolean;virtual;abstract;
+    function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
+    procedure DeclareNameSpaceOf_WST(ADocument : TDOMDocument);
+    procedure DeclareAttributeOf_WST(AElement : TDOMElement; const AAttName, AAttValue : DOMString);
   public
     constructor Create(AOwner : IGenerator);virtual;
   end;
@@ -171,7 +174,6 @@ type
             ADocument     : TDOMDocument
     );override;
     class function CanHandle(ASymbol : TObject) : Boolean;override;
-    function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
   end;
   
   { TTypeAliasDefinition_TypeHandler }
@@ -390,6 +392,29 @@ begin
   Result := IXsdGenerator(FOwner);
 end;
 
+function TBaseTypeHandler.GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
+begin
+  Result := GetOwner().GetSchemaNode(ADocument);
+end;
+
+procedure TBaseTypeHandler.DeclareNameSpaceOf_WST(ADocument : TDOMDocument);
+var
+  defSchemaNode : TDOMElement;
+  strBuffer : string;
+begin
+  defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
+  if not FindAttributeByValueInNode(s_WST_base_namespace,defSchemaNode,strBuffer) then
+    defSchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+end;
+
+procedure TBaseTypeHandler.DeclareAttributeOf_WST(
+        AElement : TDOMElement;
+  const AAttName, AAttValue : DOMString
+);
+begin
+  AElement.SetAttribute(Format('%s:%s',[s_WST,AAttName]),AAttvalue);
+end;
+
 constructor TBaseTypeHandler.Create(AOwner: IGenerator);
 begin
   Assert(Assigned(AOwner));
@@ -410,11 +435,6 @@ end;
 class function TTypeDefinition_TypeHandler.CanHandle(ASymbol: TObject): Boolean;
 begin
   Result := Assigned(ASymbol) and ASymbol.InheritsFrom(TPasType);
-end;
-
-function TTypeDefinition_TypeHandler.GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
-begin
-  Result := GetOwner().GetSchemaNode(ADocument);
 end;
 
 { TTypeAliasDefinition_TypeHandler }
@@ -612,12 +632,13 @@ var
         end else begin
           if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
             propNode.SetAttribute(s_minOccurs,'0');
-          {else
-            propNode.SetAttribute(s_minOccurs,'1');}
-          if isEmbeddedArray then
-            propNode.SetAttribute(s_maxOccurs,s_unbounded)
-          {else
-            propNode.SetAttribute(s_maxOccurs,'1');}
+          if isEmbeddedArray then begin
+            propNode.SetAttribute(s_maxOccurs,s_unbounded);
+            if AContainer.IsCollection(TPasArrayType(propItmUltimeType)) then begin
+              DeclareNameSpaceOf_WST(ADocument);
+              DeclareAttributeOf_WST(propNode,s_WST_collection,'true');
+            end;
+          end;
         end;
       end;
       ProcessPropertyExtendedMetadata(p,propNode);
@@ -649,7 +670,8 @@ begin
     if Assigned(typItm.AncestorType) then begin
       trueParent := typItm.AncestorType;
       if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
-        cplxNode.SetAttribute(s_WST_headerBlock,'true');
+        DeclareNameSpaceOf_WST(ADocument);
+        DeclareAttributeOf_WST(cplxNode,s_WST_headerBlock,'true');
       end;
       if trueParent.InheritsFrom(TPasAliasType) then
         trueParent := GetUltimeType(trueParent);
@@ -658,12 +680,21 @@ begin
       then begin
         typeCategory := tcSimpleContent;
       end;
-      derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
-      s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
-      if ( Length(s) > 0 ) then
-        s := s + ':';
-      s := s + AContainer.GetExternalName(trueParent);
-      derivationNode.SetAttribute(s_base,s);
+      if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or
+         ( not trueParent.InheritsFrom(TPasNativeClassType) )
+      then begin
+        if ( typeCategory = tcSimpleContent ) then begin
+          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_simpleContent]),cplxNode,ADocument);
+          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),derivationNode,ADocument);
+        end else begin
+          derivationNode := CreateElement(Format('%s:%s',[s_xs_short,s_extension]),cplxNode,ADocument);
+        end;
+        s := Trim(GetNameSpaceShortName(GetTypeNameSpace(AContainer,trueParent),ADocument,GetOwner().GetPreferedShortNames()));
+        if ( Length(s) > 0 ) then
+          s := s + ':';
+        s := s + AContainer.GetExternalName(trueParent);
+        derivationNode.SetAttribute(s_base,s);
+      end;
       hasSequence := False;
     end;
     if ( typItm.Members.Count > 0 ) then
@@ -719,7 +750,8 @@ begin
     cplxNode := CreateElement(s,defSchemaNode,ADocument);
     cplxNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
 
-    cplxNode.SetAttribute(s_WST_record,'true');
+    DeclareNameSpaceOf_WST(ADocument);
+    DeclareAttributeOf_WST(cplxNode,s_WST_record,'true');
 
     hasSequence := False;
     for i := 0 to Pred(typItm.Members.Count) do begin
@@ -791,7 +823,7 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
         ADocument : TDOMDocument
 );
 
-  function GetNameSpaceShortName(const ANameSpace : string):string;//inline;
+  function GetNameSpaceShortName(const ANameSpace : string):string;
   begin
     if FindAttributeByValueInNode(ANameSpace,ADocument.DocumentElement,Result,0,s_xmlns) then begin
       Result := Copy(Result,Length(s_xmlns+':')+1,MaxInt);
@@ -827,6 +859,10 @@ begin
       s := Format('%s:%s',[s_xs_short,s_element]);
       propNode := CreateElement(s,sqcNode,ADocument);
       propNode.SetAttribute(s_name,s_item);
+      if AContainer.IsCollection(typItm) then begin
+        DeclareNameSpaceOf_WST(ADocument);
+        DeclareAttributeOf_WST(propNode,s_WST_collection,'true');
+      end;
       if Assigned(propTypItm) then begin
         prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm));//  AContainer.GetExternalName(propTypItm.Parent.Parent));
         propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));

@@ -1,19 +1,24 @@
 object fBindingEdit: TfBindingEdit
   Left = 759
-  Height = 354
-  Top = 90
+  Height = 335
+  Top = 91
   Width = 400
   HorzScrollBar.Page = 399
-  VertScrollBar.Page = 353
+  VertScrollBar.Page = 334
   ActiveControl = edtName
   BorderStyle = bsSizeToolWin
   Caption = 'fBindingEdit'
+  ClientHeight = 335
+  ClientWidth = 400
   Position = poMainFormCenter
+  LCLVersion = '0.9.25'
   object Panel1: TPanel
     Height = 50
-    Top = 304
+    Top = 285
     Width = 400
     Align = alBottom
+    ClientHeight = 50
+    ClientWidth = 400
     TabOrder = 0
     object Button1: TButton
       Left = 224
@@ -40,7 +45,7 @@ object fBindingEdit: TfBindingEdit
     end
   end
   object PageControl1: TPageControl
-    Height = 304
+    Height = 285
     Width = 400
     ActivePage = TabSheet1
     Align = alClient
@@ -48,13 +53,14 @@ object fBindingEdit: TfBindingEdit
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Interface Binding'
+      ClientHeight = 259
+      ClientWidth = 392
       object Label1: TLabel
         Left = 12
         Height = 14
         Top = 26
         Width = 28
         Caption = 'Name'
-        Color = clNone
         ParentColor = False
       end
       object Label2: TLabel
@@ -63,14 +69,13 @@ object fBindingEdit: TfBindingEdit
         Top = 98
         Width = 40
         Caption = 'Address'
-        Color = clNone
         ParentColor = False
       end
       object edtName: TEdit
         Left = 12
         Height = 23
         Top = 50
-        Width = 356
+        Width = 348
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'edtName'
@@ -79,16 +84,17 @@ object fBindingEdit: TfBindingEdit
         Left = 12
         Height = 23
         Top = 114
-        Width = 356
+        Width = 348
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 1
         Text = 'edtAddress'
       end
       object edtStyle: TRadioGroup
         Left = 12
-        Height = 92
+        Height = 81
         Top = 165
-        Width = 360
+        Width = 352
+        Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFill = True
         Caption = '  Style  '
         ChildSizing.LeftRightSpacing = 6
@@ -99,6 +105,8 @@ object fBindingEdit: TfBindingEdit
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
+        ClientHeight = 63
+        ClientWidth = 348
         Columns = 2
         Items.Strings = (
           'Document'

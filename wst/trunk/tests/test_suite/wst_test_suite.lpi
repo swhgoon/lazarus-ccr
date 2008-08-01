@@ -26,7 +26,7 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="35">
+    <Units Count="38">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -202,6 +202,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_suite_utils"/>
       </Unit34>
+      <Unit35>
+        <Filename Value="test_std_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_std_cursors"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="test_rtti_filter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_rtti_filter"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="test_wst_cursors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_wst_cursors"/>
+      </Unit37>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

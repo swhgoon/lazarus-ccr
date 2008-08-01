@@ -298,7 +298,8 @@ begin
       trueParent := TPasNativeSimpleType(trueParent).ExtendableType;
     end;
   end else begin
-    trueParent := nil;
+    //trueParent := nil;
+    trueParent := FSymbolTable.FindElementNS('TBaseComplexRemotable',sXSD_NS) as TPasType;
   end;
   if ( trueParent <> FOldAncestor ) then begin
     if ( FOldAncestor <> nil ) then

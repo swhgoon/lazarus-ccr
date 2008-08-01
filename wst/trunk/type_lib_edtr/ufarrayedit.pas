@@ -18,6 +18,7 @@ type
     AL : TActionList;
     Button1 : TButton;
     Button2 : TButton;
+    edtCollection : TCheckBox;
     edtEmbedded : TCheckBox;
     edtElementName : TEdit;
     edtElementType : TComboBox;
@@ -67,8 +68,22 @@ begin
 end;
 
 procedure TfArrayEdit.actOKExecute(Sender : TObject);
+var
+  eltType : TPasType;
+  ok : Boolean;
 begin
-  ModalResult := mrOK;
+  ok := True;
+  if edtCollection.Checked then begin
+    eltType := edtElementType.Items.Objects[edtElementType.ItemIndex] as TPasType;
+    if eltType.InheritsFrom(TPasUnresolvedTypeRef) then
+      eltType := FSymbolTable.FindElement(FSymbolTable.GetExternalName(eltType)) as TPasType;
+    if eltType.InheritsFrom(TPasNativeSimpleType) or eltType.InheritsFrom(TPasNativeSimpleContentClassType) then begin
+      ok := False;
+      ShowMessage('Collections for simple types are not supported.');
+    end;
+  end;
+  if ok then
+    ModalResult := mrOK;
 end;
 
 procedure TfArrayEdit.LoadFromObject();
@@ -87,6 +102,7 @@ begin
     edtElementName.Text := FSymbolTable.GetArrayItemExternalName(FObject);
     edtElementType.ItemIndex := edtElementType.Items.IndexOf(FSymbolTable.GetExternalName(FObject.ElType));
     edtEmbedded.Checked := ( FSymbolTable.GetArrayStyle(FObject) = asEmbeded );
+    edtCollection.Checked:= FSymbolTable.IsCollection(FObject);
   end else begin
     Self.Caption := 'NewArray';
   end;
@@ -129,6 +145,8 @@ begin
     FSymbolTable.SetArrayStyle(locObj,arrStyle);
     FSymbolTable.SetArrayItemExternalName(locObj,eltExtName);
   end;
+  if ( edtCollection.Checked <> FSymbolTable.IsCollection(FObject) ) then
+    FSymbolTable.SetCollectionFlag(FObject,edtCollection.Checked);
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
 end;
 

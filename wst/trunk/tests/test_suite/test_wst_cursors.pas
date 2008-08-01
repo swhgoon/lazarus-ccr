@@ -34,6 +34,13 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
   end;
+
+  { TTClass_A_CollectionRemotable }
+
+  TTClass_A_CollectionRemotable = class(TObjectCollectionRemotable)
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+  end;
   
   { TClass_B }
 
@@ -69,12 +76,21 @@ type
     procedure All();
   end;
 
+  { TObjectCollectionRemotableCursor_Test }
+
+  TObjectCollectionRemotableCursor_Test = class(TTestCase)
+  published
+    procedure All();
+  end;
+  
   { TUtilsProcs_Test }
 
   TUtilsProcs_Test = class(TTestCase)
   published
-    procedure test_Find();
-    procedure test_Filter();
+    procedure test_Find_array();
+    procedure test_Find_collection();
+    procedure test_Filter_array();
+    procedure test_Filter_collection();
   end;
   
 implementation
@@ -277,7 +293,7 @@ end;
 
 { TUtilsProcs_Test }
 
-procedure TUtilsProcs_Test.test_Find();
+procedure TUtilsProcs_Test.test_Find_array();
 const O_COUNT : PtrInt = 10;
 var
   ls : TTClass_A_ArrayRemotable;
@@ -306,14 +322,43 @@ begin
   end;
 end;
 
-procedure TUtilsProcs_Test.test_Filter();
+procedure TUtilsProcs_Test.test_Find_collection();
+const O_COUNT : PtrInt = 10;
+var
+  ls : TTClass_A_CollectionRemotable;
+  i : PtrInt;
+begin
+  ls := TTClass_A_CollectionRemotable.Create();
+  try
+    CheckNull(Find(ls,''));
+    CheckNull(Find(ls,'IntProp = 12'));
+
+    ls.Add();
+      CheckSame(ls[0], Find(ls,''));
+      CheckSame(ls[0], Find(ls,'IntProp = 0'));
+      CheckNull(Find(ls,'IntProp = 12'));
+
+    ls.Clear();
+      for i := 0 to ( O_COUNT - 1 ) do
+        TClass_A(ls.Add()).FIntProp := i;
+      CheckSame(ls[0], Find(ls,''));
+      CheckSame(ls[0], Find(ls,'IntProp = 0'));
+      CheckNull(Find(ls,Format('IntProp = %d',[2*O_COUNT])));
+      for i := 0 to ( O_COUNT - 1 ) do
+        CheckSame(ls[i],Find(ls,Format('IntProp = %d',[i])));
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TUtilsProcs_Test.test_Filter_array();
 const O_COUNT : PtrInt = 10;
 var
   ls : TTClass_A_ArrayRemotable;
   i : PtrInt;
   crs : IObjectCursor;
 begin
-  CheckNull(Filter(nil,''), 'filter(nil) = nil');
+  CheckNull(Filter(TTClass_A_ArrayRemotable(nil),''), 'filter(nil) = nil');
   ls := TTClass_A_ArrayRemotable.Create();
   try
     crs := Filter(ls,'');
@@ -346,9 +391,120 @@ begin
   end;
 end;
 
+procedure TUtilsProcs_Test.test_Filter_collection();
+const O_COUNT : PtrInt = 10;
+var
+  ls : TTClass_A_CollectionRemotable;
+  i : PtrInt;
+  crs : IObjectCursor;
+begin
+  CheckNull(Filter(TTClass_A_CollectionRemotable(nil),''), 'filter(nil) = nil');
+  ls := TTClass_A_CollectionRemotable.Create();
+  try
+    crs := Filter(ls,'');
+    Check( ( crs <> nil ) );
+    crs.Reset();
+    Check(not crs.MoveNext());
+
+    ls.Clear();
+      for i := 0 to ( O_COUNT - 1 ) do
+        TClass_A(ls.Add()).FIntProp := i;
+      crs := Filter(ls,'');
+      Check( ( crs <> nil ) );
+      crs.Reset();
+      for i := 0 to ( O_COUNT - 1 ) do begin
+        Check(crs.MoveNext());
+        CheckSame(ls[i], crs.GetCurrent());
+      end;
+      Check(not crs.MoveNext());
+
+      for i := 0 to ( O_COUNT - 1 ) do begin
+        crs := Filter(ls,Format('IntProp = %d',[i]));
+        Check( ( crs <> nil ) );
+        crs.Reset();
+        Check(crs.MoveNext());
+        CheckSame(ls[i], crs.GetCurrent());
+        Check(not crs.MoveNext());
+      end;
+  finally
+    ls.Free();
+  end;
+end;
+
+{ TTClass_A_CollectionRemotable }
+
+class function TTClass_A_CollectionRemotable.GetItemClass() : TBaseRemotableClass;
+begin
+  Result := TClass_A;
+end;
+
+{ TObjectCollectionRemotableCursor_Test }
+
+procedure TObjectCollectionRemotableCursor_Test.All();
+const O_COUNT = 100;
+var
+  x : IObjectCursor;
+  ls : TObjectCollectionRemotable;
+  c, i : PtrInt;
+begin
+  ls := TTClass_A_CollectionRemotable.Create();
+  try
+    x := TObjectCollectionRemotableCursor.Create(ls);
+    x.Reset();
+    CheckEquals(False,x.MoveNext());
+    x.Reset();
+    CheckEquals(False,x.MoveNext());
+    CheckEquals(False,x.MoveNext());
+    try
+      x.GetCurrent();
+      Check(False);
+    except
+      on e : ECursorException do begin
+        // GOOD
+      end;
+    end;
+
+    ls.Add();
+    x.Reset();
+    CheckEquals(True,x.MoveNext());
+    CheckSame(ls[0],x.GetCurrent());
+    CheckEquals(False,x.MoveNext());
+    try
+      x.GetCurrent();
+      Check(False);
+    except
+      on e : ECursorException do begin
+        // GOOD
+      end;
+    end;
+    x.Reset();
+    CheckEquals(True,x.MoveNext());
+    CheckSame(ls[0],x.GetCurrent());
+    CheckEquals(False,x.MoveNext());
+
+    ls.Clear();
+    for i := 0 to Pred(O_COUNT) do
+      TClass_A(ls.Add()).FIntProp := i;
+    x.Reset();
+    for i := 0 to Pred(O_COUNT) do begin
+      CheckEquals(True,x.MoveNext());
+      CheckSame(ls[i],x.GetCurrent());
+    end;
+    CheckEquals(False,x.MoveNext());
+    x.Reset();
+    for i := 0 to Pred(O_COUNT) do begin
+      CheckEquals(True,x.MoveNext());
+      CheckSame(ls[i],x.GetCurrent());
+    end;
+  finally
+    ls.Free();
+  end;
+end;
+
 initialization
   RegisterTest('Cursors',TBaseObjectArrayRemotableCursor_Test.Suite);
   RegisterTest('Cursors',TBaseObjectArrayRemotableFilterableCursor_Test.Suite);
+  RegisterTest('Cursors',TObjectCollectionRemotableCursor_Test.Suite);
   RegisterTest('Cursors',TUtilsProcs_Test.Suite);
 
 end.

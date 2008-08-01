@@ -514,10 +514,14 @@ end;
 function TRttiExpIntegerNodeItem.Evaluate(AInstance: TRttiFilterCreatorTarget): Boolean;
 begin
   case Operation of
-    nfoEqual      :  Result := ( GetOrdProp(AInstance,PropInfo) =  ComparedValue );
-    nfoGreater    :  Result := ( GetOrdProp(AInstance,PropInfo) >  ComparedValue );
-    nfoLesser     :  Result := ( GetOrdProp(AInstance,PropInfo) <  ComparedValue );
-    nfoNotEqual   :  Result := ( GetOrdProp(AInstance,PropInfo) <> ComparedValue );
+    nfoEqual          :  Result := ( GetOrdProp(AInstance,PropInfo) =  ComparedValue );
+    nfoGreater        :  Result := ( GetOrdProp(AInstance,PropInfo) >  ComparedValue );
+    nfoLesser         :  Result := ( GetOrdProp(AInstance,PropInfo) <  ComparedValue );
+    nfoNotEqual       :  Result := ( GetOrdProp(AInstance,PropInfo) <> ComparedValue );
+    nfoGreaterOrEqual :  Result := ( GetOrdProp(AInstance,PropInfo) >=  ComparedValue );
+    nfoLesserOrEqual  :  Result := ( GetOrdProp(AInstance,PropInfo) <=  ComparedValue );
+    else
+      Assert(False);
   end;
 end;
 
@@ -737,6 +741,8 @@ begin
     sfoEqualCaseSensitive   :  Result := ( GetStrProp(AInstance,PropInfo) = ComparedValue );
     sfoEqualCaseInsensitive :  Result := AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
     sfoNotEqual             :  Result := ( GetStrProp(AInstance,PropInfo) <> ComparedValue);
+    else
+      Assert(False);
   end;
 end;
 
@@ -761,6 +767,8 @@ begin
     sfoEqualCaseSensitive   :  Result := AnsiSameStr(GetStrProp(AInstance,PropInfo),ComparedValue);
     sfoEqualCaseInsensitive :  Result := AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
     sfoNotEqual             :  Result := not AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
+    else
+      Assert(False);
   end;
 end;
 

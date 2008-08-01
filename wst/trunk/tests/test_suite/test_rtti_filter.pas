@@ -52,7 +52,7 @@ type
     property BoolProp : Boolean read FBoolProp write FBoolProp;
   end;
   TClass_AClass = class of TClass_A;
-  
+
   { TRttiExpIntegerNodeItem_Test }
 
   TRttiExpIntegerNodeItem_Test = class(TTestCase)
@@ -60,7 +60,9 @@ type
     procedure Create_Test();
     procedure Evaluate_Equal();
     procedure Evaluate_Lesser();
+    procedure Evaluate_LesserOrEqual();
     procedure Evaluate_Greater();
+    procedure Evaluate_GreaterOrEqual();
   end; 
 
   { TRttiExpEnumNodeItem_Test }
@@ -71,7 +73,9 @@ type
     procedure Evaluate_Equal();
     procedure Evaluate_Equal_bool();
     procedure Evaluate_Lesser();
+    procedure Evaluate_LesserOrEqual();
     procedure Evaluate_Greater();
+    procedure Evaluate_GreaterOrEqual();
   end;
 
   { TRttiExpAnsiStringNodeItem_Test }
@@ -203,6 +207,31 @@ begin
   end;
 end;
 
+procedure TRttiExpIntegerNodeItem_Test.Evaluate_LesserOrEqual();
+const VAL_1 : Integer = 1210;
+var
+  x : TRttiExpIntegerNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpIntegerNodeItem.Create(GetPropInfo(t,'IntProp'),nfoLesserOrEqual,VAL_1);
+
+    t.IntProp := 0;
+    Check( x.Evaluate(t) = True ,'True');
+
+    t.IntProp := -VAL_1;
+    Check( x.Evaluate(t) = True ,'True');
+
+    t.IntProp := VAL_1 + 1;
+    Check( x.Evaluate(t) = False, 'False' );
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+
 procedure TRttiExpIntegerNodeItem_Test.Evaluate_Greater();
 const VAL_1 : Integer = 1210;
 var
@@ -216,6 +245,31 @@ begin
 
     t.IntProp := 0;
     Check( x.Evaluate(t) = False, 'False' );
+
+    t.IntProp := VAL_1 + 1;
+    Check( x.Evaluate(t) = True ,'True');
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+
+procedure TRttiExpIntegerNodeItem_Test.Evaluate_GreaterOrEqual();
+const VAL_1 : Integer = 1210;
+var
+  x : TRttiExpIntegerNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpIntegerNodeItem.Create(GetPropInfo(t,'IntProp'),nfoGreaterOrEqual,VAL_1);
+
+    t.IntProp := 0;
+    Check( x.Evaluate(t) = False, 'False' );
+
+    t.IntProp := VAL_1;
+    Check( x.Evaluate(t) = True ,'True');
 
     t.IntProp := VAL_1 + 1;
     Check( x.Evaluate(t) = True ,'True');
@@ -1250,6 +1304,31 @@ begin
   end;
 end;
 
+procedure TRttiExpEnumNodeItem_Test.Evaluate_LesserOrEqual();
+const VAL_1 : TSampleEnum = SampleEnum_C;
+var
+  x : TRttiExpEnumNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpEnumNodeItem.Create(GetPropInfo(t,'EnumProp'),nfoLesserOrEqual,GetEnumName(TypeInfo(TSampleEnum),Ord(VAL_1)));
+
+    t.EnumProp := SampleEnum_D;
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.EnumProp := SampleEnum_B;
+    Check( x.Evaluate(t) = True, 'True' );
+    
+    t.EnumProp := VAL_1;
+    Check( x.Evaluate(t) = True, 'True' );
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+
 procedure TRttiExpEnumNodeItem_Test.Evaluate_Greater();
 const VAL_1 : TSampleEnum = SampleEnum_C;
 var
@@ -1265,6 +1344,31 @@ begin
     Check( x.Evaluate(t) = False ,'False');
 
     t.EnumProp := SampleEnum_D;
+    Check( x.Evaluate(t) = True, 'True' );
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+
+procedure TRttiExpEnumNodeItem_Test.Evaluate_GreaterOrEqual();
+const VAL_1 : TSampleEnum = SampleEnum_C;
+var
+  x : TRttiExpEnumNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpEnumNodeItem.Create(GetPropInfo(t,'EnumProp'),nfoGreaterOrEqual,GetEnumName(TypeInfo(TSampleEnum),Ord(VAL_1)));
+
+    t.EnumProp := SampleEnum_A;
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.EnumProp := SampleEnum_D;
+    Check( x.Evaluate(t) = True, 'True' );
+
+    t.EnumProp := VAL_1;
     Check( x.Evaluate(t) = True, 'True' );
   finally
     x.Free();

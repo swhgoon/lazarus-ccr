@@ -1,6 +1,5 @@
+{$INCLUDE wst_global.inc}
 program wst_test_suite;
-
-{$mode objfpc}{$H+}
 
 {$DEFINE UseCThreads}
 
@@ -19,7 +18,8 @@ uses
   server_service_xmlrpc, test_parsers, wsdl_generator, xsd_generator, 
 xsd_consts, base_json_formatter, wsdl_parser, test_support, basex_encode,
 test_basex_encode, json_formatter, server_service_json, test_json,
-test_suite_utils, test_generators;
+test_suite_utils, test_generators, test_std_cursors, test_rtti_filter,
+test_wst_cursors;
 
 Const
   ShortOpts = 'alh';

@@ -154,6 +154,11 @@ type
     FImpLastStream : ISourceStream;
     FRttiFunc : ISourceStream;
   private
+    // Array handling helper routines
+    procedure WriteObjectArray(ASymbol : TPasArrayType);
+    procedure WriteSimpleTypeArray(ASymbol : TPasArrayType);
+    procedure WriteObjectCollection(ASymbol : TPasArrayType);
+  private
     function GenerateIntfName(AIntf : TPasElement):string;
 
     procedure GenerateUnitHeader();
@@ -1756,6 +1761,230 @@ end;
 
 { TInftGenerator }
 
+procedure TInftGenerator.WriteObjectArray(ASymbol : TPasArrayType);
+begin
+  SetCurrentStream(FDecStream);
+  NewLine();
+  IncIndent();
+  BeginAutoIndent();
+  try
+    WriteLn('%s = class(TBaseObjectArrayRemotable)',[ASymbol.Name]);
+    WriteLn('private');
+      Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ElType.Name]);
+    WriteLn('public');
+      Indent();WriteLn('class function GetItemClass():TBaseRemotableClass;override;');
+      Indent();WriteLn('property Item[AIndex:Integer] : %s Read GetItem;Default;',[ASymbol.ElType.Name]);
+    WriteLn('end;');
+  finally
+    EndAutoIndent();
+    DecIndent();
+  end;
+
+  SetCurrentStream(FImpStream);
+  NewLine();
+  WriteLn('{ %s }',[ASymbol.Name]);
+
+  NewLine();
+  WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := %s(Inherited GetItem(AIndex));',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('class function %s.GetItemClass(): TBaseRemotableClass;',[ASymbol.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result:= %s;',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+end;
+
+procedure TInftGenerator.WriteSimpleTypeArray(ASymbol : TPasArrayType);
+begin
+  SetCurrentStream(FDecStream);
+  NewLine();
+  IncIndent();
+  BeginAutoIndent();
+  try
+    WriteLn('%s = class(TBaseSimpleTypeArrayRemotable)',[ASymbol.Name]);
+    WriteLn('private');
+      Indent();WriteLn('FData : array of %s;',[ASymbol.ElType.Name]);
+    WriteLn('private');
+      Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ElType.Name]);
+      Indent();WriteLn('procedure SetItem(AIndex: Integer; const AValue: %s);',[ASymbol.ElType.Name]);
+    WriteLn('protected');
+      Indent();WriteLn('function GetLength():Integer;override;');
+      Indent();WriteLn('procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;');
+      Indent();WriteLn('procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;');
+    WriteLn('public');
+      Indent();WriteLn('class function GetItemTypeInfo():PTypeInfo;override;');
+      Indent();WriteLn('procedure SetLength(const ANewSize : Integer);override;');
+      Indent();WriteLn('procedure Assign(Source: TPersistent); override;');
+      Indent();WriteLn('property Item[AIndex:Integer] : %s read GetItem write SetItem; default;',[ASymbol.ElType.Name]);
+    WriteLn('end;');
+  finally
+    EndAutoIndent();
+    DecIndent();
+  end;
+
+  SetCurrentStream(FImpStream);
+  NewLine();
+  WriteLn('{ %s }',[ASymbol.Name]);
+
+  NewLine();
+  WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('CheckIndex(AIndex);');
+    Indent();WriteLn('Result := FData[AIndex];');
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('procedure %s.SetItem(AIndex: Integer;const AValue: %S);',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('CheckIndex(AIndex);');
+    Indent();WriteLn('FData[AIndex] := AValue;');
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('function %s.GetLength(): Integer;',[ASymbol.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := System.Length(FData);');
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('procedure %s.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);',[ASymbol.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('AStore.Put(%s,TypeInfo(%s),FData[AIndex]);',[QuotedStr(SymbolTable.GetArrayItemName(ASymbol)),ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  IncIndent();
+  WriteLn('procedure %s.LoadItem(AStore: IFormatterBase;const AIndex: Integer);',[ASymbol.Name]);
+  WriteLn('var');
+  Indent();WriteLn('sName : string;');
+  WriteLn('begin');
+    Indent();WriteLn('sName := %s;',[QuotedStr(SymbolTable.GetArrayItemName(ASymbol))]);
+    Indent();WriteLn('AStore.Get(TypeInfo(%s),sName,FData[AIndex]);',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('class function %s.GetItemTypeInfo(): PTypeInfo;',[ASymbol.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := TypeInfo(%s);',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  IncIndent();
+  WriteLn('procedure %s.SetLength(const ANewSize: Integer);',[ASymbol.Name]);
+  WriteLn('var');
+  Indent();WriteLn('i : Integer;');
+  WriteLn('begin');
+    Indent();WriteLn('if ( ANewSize < 0 ) then');
+      Indent();Indent();WriteLn('i := 0');
+    Indent();WriteLn('else');
+      Indent();Indent();WriteLn('i := ANewSize;');
+    Indent();WriteLn('System.SetLength(FData,i);');
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  IncIndent();
+  WriteLn('procedure %s.Assign(Source: TPersistent);',[ASymbol.Name]);
+  WriteLn('var');
+  Indent();WriteLn('src : %s;',[ASymbol.Name]);
+  Indent();WriteLn('i, c : PtrInt;');
+  WriteLn('begin');
+    Indent();WriteLn('if Assigned(Source) and Source.InheritsFrom(%s) then begin',[ASymbol.Name]);
+    IncIndent();
+      Indent();WriteLn('src := %s(Source);',[ASymbol.Name]);
+      Indent();WriteLn('c := src.Length;');
+      Indent();WriteLn('Self.SetLength(c);');
+      Indent();WriteLn('if ( c > 0 ) then begin');
+      IncIndent();
+        Indent();WriteLn('for i := 0 to Pred(c) do begin');
+        IncIndent(); Indent(); WriteLn('Self[i] := src[i];'); DecIndent();
+        Indent();WriteLn('end;');
+      DecIndent();
+      Indent();WriteLn('end;');
+    DecIndent();
+    Indent();WriteLn('end else begin');
+      IncIndent(); Indent(); WriteLn('inherited Assign(Source);'); DecIndent();
+    Indent();WriteLn('end;');
+  DecIndent();
+  WriteLn('end;');
+end;
+
+procedure TInftGenerator.WriteObjectCollection(ASymbol : TPasArrayType);
+begin
+  SetCurrentStream(FDecStream);
+  NewLine();
+  IncIndent();
+  BeginAutoIndent();
+  try
+    WriteLn('%s = class(TObjectCollectionRemotable)',[ASymbol.Name]);
+    WriteLn('private');
+      Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ElType.Name]);
+    WriteLn('public');
+      Indent();WriteLn('class function GetItemClass():TBaseRemotableClass;override;');
+      Indent();WriteLn('function Add(): %s; {$IFDEF USE_INLINE}inline;{$ENDIF}',[ASymbol.ElType.Name]);
+      Indent();WriteLn('function AddAt(const APosition : Integer) : %s; {$IFDEF USE_INLINE}inline;{$ENDIF}',[ASymbol.ElType.Name]);
+      Indent();WriteLn('property Item[AIndex:Integer] : %s Read GetItem;Default;',[ASymbol.ElType.Name]);
+    WriteLn('end;');
+  finally
+    EndAutoIndent();
+    DecIndent();
+  end;
+
+  SetCurrentStream(FImpStream);
+  NewLine();
+  WriteLn('{ %s }',[ASymbol.Name]);
+
+  NewLine();
+  WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := %s(Inherited GetItem(AIndex));',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+
+  NewLine();
+  WriteLn('class function %s.GetItemClass(): TBaseRemotableClass;',[ASymbol.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result:= %s;',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+  
+  NewLine();
+  WriteLn('function %s.Add() : %s;',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := %s(inherited Add());',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+  
+  NewLine();
+  WriteLn('function %s.AddAt(const APosition : Integer) : %s;',[ASymbol.Name,ASymbol.ElType.Name]);
+  WriteLn('begin');
+  IncIndent();
+    Indent();WriteLn('Result := %s(inherited AddAt(APosition));',[ASymbol.ElType.Name]);
+  DecIndent();
+  WriteLn('end;');
+end;
+
 function TInftGenerator.GenerateIntfName(AIntf: TPasElement): string;
 begin
   Result := ExtractserviceName(AIntf);
@@ -2240,173 +2469,6 @@ begin
 end;
 
 procedure TInftGenerator.GenerateArray(ASymbol: TPasArrayType);
-
-  procedure WriteObjectArray();
-  begin
-    SetCurrentStream(FDecStream);
-    NewLine();
-    IncIndent();
-    BeginAutoIndent();
-    try
-      WriteLn('%s = class(TBaseObjectArrayRemotable)',[ASymbol.Name]);
-      WriteLn('private');
-        Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ElType.Name]);
-      WriteLn('public');
-        Indent();WriteLn('class function GetItemClass():TBaseRemotableClass;override;');
-        Indent();WriteLn('property Item[AIndex:Integer] : %s Read GetItem;Default;',[ASymbol.ElType.Name]);
-      WriteLn('end;');
-    finally
-      EndAutoIndent();
-      DecIndent();
-    end;
-    
-    SetCurrentStream(FImpStream);
-    NewLine();
-    WriteLn('{ %s }',[ASymbol.Name]);
-
-    NewLine();
-    WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ElType.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('Result := Inherited GetItem(AIndex) As %s;',[ASymbol.ElType.Name]);
-    DecIndent();
-    WriteLn('end;');
-
-    NewLine();
-    WriteLn('class function %s.GetItemClass(): TBaseRemotableClass;',[ASymbol.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('Result:= %s;',[ASymbol.ElType.Name]);
-    DecIndent();
-    WriteLn('end;');
-  end;
-
-  procedure WriteSimpleTypeArray();
-  begin
-    SetCurrentStream(FDecStream);
-    NewLine();
-    IncIndent();
-    BeginAutoIndent();
-    try
-      WriteLn('%s = class(TBaseSimpleTypeArrayRemotable)',[ASymbol.Name]);
-      WriteLn('private');
-        Indent();WriteLn('FData : array of %s;',[ASymbol.ElType.Name]);
-      WriteLn('private');
-        Indent();WriteLn('function GetItem(AIndex: Integer): %s;',[ASymbol.ElType.Name]);
-        Indent();WriteLn('procedure SetItem(AIndex: Integer; const AValue: %s);',[ASymbol.ElType.Name]);
-      WriteLn('protected');
-        Indent();WriteLn('function GetLength():Integer;override;');
-        Indent();WriteLn('procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;');
-        Indent();WriteLn('procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;');
-      WriteLn('public');
-        Indent();WriteLn('class function GetItemTypeInfo():PTypeInfo;override;');
-        Indent();WriteLn('procedure SetLength(const ANewSize : Integer);override;');
-        Indent();WriteLn('procedure Assign(Source: TPersistent); override;');
-        Indent();WriteLn('property Item[AIndex:Integer] : %s read GetItem write SetItem; default;',[ASymbol.ElType.Name]);
-      WriteLn('end;');
-    finally
-      EndAutoIndent();
-      DecIndent();
-    end;
-
-    SetCurrentStream(FImpStream);
-    NewLine();
-    WriteLn('{ %s }',[ASymbol.Name]);
-
-    NewLine();
-    WriteLn('function %s.GetItem(AIndex: Integer): %s;',[ASymbol.Name,ASymbol.ElType.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('CheckIndex(AIndex);');
-      Indent();WriteLn('Result := FData[AIndex];');
-    DecIndent();
-    WriteLn('end;');
-
-    NewLine();
-    WriteLn('procedure %s.SetItem(AIndex: Integer;const AValue: %S);',[ASymbol.Name,ASymbol.ElType.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('CheckIndex(AIndex);');
-      Indent();WriteLn('FData[AIndex] := AValue;');
-    DecIndent();
-    WriteLn('end;');
-
-    NewLine();
-    WriteLn('function %s.GetLength(): Integer;',[ASymbol.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('Result := System.Length(FData);');
-    DecIndent();
-    WriteLn('end;');
-    
-    NewLine();
-    WriteLn('procedure %s.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);',[ASymbol.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('AStore.Put(%s,TypeInfo(%s),FData[AIndex]);',[QuotedStr(SymbolTable.GetArrayItemName(ASymbol)),ASymbol.ElType.Name]);
-    DecIndent();
-    WriteLn('end;');
-
-    NewLine();
-    IncIndent();
-    WriteLn('procedure %s.LoadItem(AStore: IFormatterBase;const AIndex: Integer);',[ASymbol.Name]);
-    WriteLn('var');
-    Indent();WriteLn('sName : string;');
-    WriteLn('begin');
-      Indent();WriteLn('sName := %s;',[QuotedStr(SymbolTable.GetArrayItemName(ASymbol))]);
-      Indent();WriteLn('AStore.Get(TypeInfo(%s),sName,FData[AIndex]);',[ASymbol.ElType.Name]);
-    DecIndent();
-    WriteLn('end;');
-    
-    NewLine();
-    WriteLn('class function %s.GetItemTypeInfo(): PTypeInfo;',[ASymbol.Name]);
-    WriteLn('begin');
-    IncIndent();
-      Indent();WriteLn('Result := TypeInfo(%s);',[ASymbol.ElType.Name]);
-    DecIndent();
-    WriteLn('end;');
-
-    NewLine();
-    IncIndent();
-    WriteLn('procedure %s.SetLength(const ANewSize: Integer);',[ASymbol.Name]);
-    WriteLn('var');
-    Indent();WriteLn('i : Integer;');
-    WriteLn('begin');
-      Indent();WriteLn('if ( ANewSize < 0 ) then');
-        Indent();Indent();WriteLn('i := 0');
-      Indent();WriteLn('else');
-        Indent();Indent();WriteLn('i := ANewSize;');
-      Indent();WriteLn('System.SetLength(FData,i);');
-    DecIndent();
-    WriteLn('end;');
-    
-    NewLine();
-    IncIndent();
-    WriteLn('procedure %s.Assign(Source: TPersistent);',[ASymbol.Name]);
-    WriteLn('var');
-    Indent();WriteLn('src : %s;',[ASymbol.Name]);
-    Indent();WriteLn('i, c : PtrInt;');
-    WriteLn('begin');
-      Indent();WriteLn('if Assigned(Source) and Source.InheritsFrom(%s) then begin',[ASymbol.Name]);
-      IncIndent();
-        Indent();WriteLn('src := %s(Source);',[ASymbol.Name]);
-        Indent();WriteLn('c := src.Length;');
-        Indent();WriteLn('Self.SetLength(c);');
-        Indent();WriteLn('if ( c > 0 ) then begin');
-        IncIndent();
-          Indent();WriteLn('for i := 0 to Pred(c) do begin');
-          IncIndent(); Indent(); WriteLn('Self[i] := src[i];'); DecIndent();
-          Indent();WriteLn('end;');
-        DecIndent();
-        Indent();WriteLn('end;');
-      DecIndent();
-      Indent();WriteLn('end else begin');
-        IncIndent(); Indent(); WriteLn('inherited Assign(Source);'); DecIndent();
-      Indent();WriteLn('end;');
-    DecIndent();
-    WriteLn('end;');
-  end;
-
 var
   classItemArray : Boolean;
   eltType : TPasType;
@@ -2418,9 +2480,12 @@ begin
   classItemArray := SymbolTable.IsOfType(eltType,TPasClassType) or SymbolTable.IsOfType(eltType,TPasArrayType);
 
   if classItemArray then begin
-    WriteObjectArray();
+    if FSymbolTable.IsCollection(ASymbol) then
+      WriteObjectCollection(ASymbol)
+    else
+      WriteObjectArray(ASymbol);
   end else begin
-    WriteSimpleTypeArray();
+    WriteSimpleTypeArray(ASymbol);
   end;
 
   FImpTempStream.Indent();

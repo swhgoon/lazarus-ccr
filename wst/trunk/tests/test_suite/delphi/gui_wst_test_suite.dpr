@@ -20,7 +20,10 @@ uses
   xsd_consts in '..\..\..\ws_helper\xsd_consts.pas',
   xsd_generator in '..\..\..\ws_helper\xsd_generator.pas',
   test_generators in '..\test_generators.pas',
-  test_suite_utils in '..\test_suite_utils.pas';
+  test_suite_utils in '..\test_suite_utils.pas',
+  test_std_cursors in '..\test_std_cursors.pas',
+  test_rtti_filter in '..\test_rtti_filter.pas',
+  test_wst_cursors in '..\test_wst_cursors.pas';
 
 {$R *.res}
 

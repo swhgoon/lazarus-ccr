@@ -351,6 +351,31 @@ type
     procedure SetEncodedString();
   end;
   
+  { TClass_A_CollectionRemotable }
+
+  TClass_A_CollectionRemotable = class(TObjectCollectionRemotable)
+  private
+    function GetItem(AIndex : PtrInt) : TClass_A;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    function Add(): TClass_A;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function AddAt(const APosition : PtrInt): TClass_A;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    property Item[AIndex:PtrInt] : TClass_A read GetItem;default;
+  end;
+  
+  { TTest_TObjectCollectionRemotable }
+
+  TTest_TObjectCollectionRemotable = class(TTestCase)
+  published
+    procedure GetItemTypeInfo();
+    procedure Add();
+    procedure Delete();
+    procedure Equal();
+    procedure test_Assign();
+    procedure Exchange();
+    procedure IndexOf();
+  end;
+  
 implementation
 uses Math, basex_encode;
 
@@ -2541,7 +2566,235 @@ begin
   end;
 end;
 
+{ TClass_A_CollectionRemotable }
+
+function TClass_A_CollectionRemotable.GetItem(AIndex : PtrInt) : TClass_A;
+begin
+  Result := TClass_A(inherited Item[AIndex]);
+end;
+
+class function TClass_A_CollectionRemotable.GetItemClass() : TBaseRemotableClass;
+begin
+  Result := TClass_A;
+end;
+
+function TClass_A_CollectionRemotable.Add() : TClass_A;
+begin
+  Result := TClass_A(inherited Add());
+end;
+
+function TClass_A_CollectionRemotable.AddAt(const APosition : PtrInt) : TClass_A;
+begin
+  Result := TClass_A(inherited AddAt(APosition));
+end;
+
+{ TTest_TObjectCollectionRemotable }
+
+procedure TTest_TObjectCollectionRemotable.GetItemTypeInfo();
+begin
+  CheckEquals(
+    PtrUInt(TClass_A_CollectionRemotable.GetItemClass().ClassInfo),
+    PtrUInt(TClass_A_CollectionRemotable.GetItemTypeInfo())
+  );
+end;
+
+procedure TTest_TObjectCollectionRemotable.Add();
+var
+  ls : TClass_A_CollectionRemotable;
+  aa,ab : TClass_A;
+begin
+  ls := TClass_A_CollectionRemotable.Create();
+  try
+    aa := ls.Add();
+    CheckNotNull(aa);
+      CheckEquals(1,ls.Length);
+      CheckSame(aa, ls[0]);
+    ab := ls.Add();
+    CheckNotNull(ab);
+      CheckEquals(2,ls.Length);
+      CheckSame(ab, ls[1]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_TObjectCollectionRemotable.Delete();
+var
+  ls : TClass_A_CollectionRemotable;
+  aa,ab : TClass_A;
+  ok : Boolean;
+begin
+  ls := TClass_A_CollectionRemotable.Create();
+  try
+    ok := False;
+    try
+      ls.Delete(-112);
+    except
+      ok := True;
+    end;
+    Check(ok);
+
+    ok := False;
+    try
+      ls.Delete(0);
+    except
+      ok := True;
+    end;
+    Check(ok);
+
+    ok := False;
+    try
+      ls.Delete(112);
+    except
+      ok := True;
+    end;
+    Check(ok);
+
+    aa := ls.Add();
+    ls.Delete(0);
+      CheckEquals(0,ls.Length);
+
+    aa := ls.Add();
+    ab := ls.Add();
+    ls.Delete(0);
+      CheckEquals(1,ls.Length);
+      CheckSame(ab,ls[0]);
+
+    FreeAndNil(ls);
+    ls := TClass_A_CollectionRemotable.Create();
+    aa := ls.Add();
+    ab := ls.Add();
+    ls.Delete(1);
+      CheckEquals(1,ls.Length);
+      CheckSame(aa,ls[0]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_TObjectCollectionRemotable.Equal();
+var
+  a, b : TClass_A_CollectionRemotable;
+begin
+  b := nil;
+  a := TClass_A_CollectionRemotable.Create();
+  try
+    b := TClass_A_CollectionRemotable.Create();
+      Check(a.Equal(b));
+      Check(b.Equal(a));
+    a.Add().Val_16S := 1;
+    a.Add().Val_16S := 2;
+      Check(not a.Equal(nil));
+      Check(a.Equal(a));
+      Check(not a.Equal(b));
+      Check(not b.Equal(a));
+
+    b.Add().Val_16S := 1;
+      Check(not a.Equal(b));
+      Check(not b.Equal(a));
+    b.Add().Val_16S := 2;
+      Check(a.Equal(b));
+      Check(b.Equal(a));
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TObjectCollectionRemotable.test_Assign();
+
+  procedure Check_List(Aa, Ab : TClass_A_CollectionRemotable);
+  var
+    k : PtrInt;
+  begin
+    if ( Aa = nil ) then begin
+      CheckNull(Ab);
+    end else begin
+      CheckNotNull(Ab);
+      CheckEquals(Aa.Length,Ab.Length);
+      if ( Aa.Length > 0 ) then begin
+        for k := 0 to Pred(Aa.Length) do begin
+          Check(Aa[k].Equal(Ab[k]));
+        end;
+      end;
+    end;
+  end;
+  
+var
+  a, b : TClass_A_CollectionRemotable;
+begin
+  b := nil;
+  a := TClass_A_CollectionRemotable.Create();
+  try
+    b := TClass_A_CollectionRemotable.Create();
+      Check_List(a,b);
+    a.Add().Val_16S := 1;
+    a.Add().Val_16S := 2;
+    b.Assign(a);
+      Check_List(a,b);
+
+    b.Add().Val_16S := 3;
+    a.Assign(b);
+      Check_List(a,b);
+
+    a.Clear();
+    b.Assign(a);
+      Check_List(a,b);
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TObjectCollectionRemotable.Exchange();
+var
+  ls : TClass_A_CollectionRemotable;
+  a, b, c : TClass_A;
+begin
+  ls := TClass_A_CollectionRemotable.Create();
+  try
+    a := ls.Add();
+    ls.Exchange(0,0);
+      CheckSame(a,ls[0]);
+    b := ls.Add();
+    ls.Exchange(0,1);
+      CheckSame(a,ls[1]);
+      CheckSame(b,ls[0]);
+    c := ls.Add();
+    ls.Exchange(0,2);
+      CheckSame(c,ls[0]);
+      CheckSame(b,ls[2]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_TObjectCollectionRemotable.IndexOf();
+var
+  ls : TClass_A_CollectionRemotable;
+begin
+  ls := TClass_A_CollectionRemotable.Create();
+  try
+    CheckEquals(-1, ls.IndexOf(nil));
+    ls.Add();
+      CheckEquals(-1, ls.IndexOf(nil));
+      CheckEquals(0, ls.IndexOf(ls[0]));
+    ls.Add();
+      CheckEquals(-1, ls.IndexOf(nil));
+      CheckEquals(0, ls.IndexOf(ls[0]));
+      CheckEquals(1, ls.IndexOf(ls[1]));
+    ls.Add();
+      CheckEquals(-1, ls.IndexOf(nil));
+      CheckEquals(0, ls.IndexOf(ls[0]));
+      CheckEquals(1, ls.IndexOf(ls[1]));
+      CheckEquals(2, ls.IndexOf(ls[2]));
+  finally
+    ls.Free();
+  end;
+end;
+
 initialization
+  RegisterTest('Support',TTest_TObjectCollectionRemotable.Suite);
   RegisterTest('Support',TTest_TBaseComplexRemotable.Suite);
   RegisterTest('Support',TTest_TStringBufferRemotable.Suite);
   RegisterTest('Support-Date',TTest_TDateRemotable.Suite);

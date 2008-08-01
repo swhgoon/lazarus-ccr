@@ -50,16 +50,40 @@ type
     destructor Destroy();override;
   end;
   
+  { TObjectCollectionRemotableCursor }
+
+  TObjectCollectionRemotableCursor = class(TInterfacedObject,ICursor,IObjectCursor)
+  private
+    FList : TObjectCollectionRemotable;
+    FCurrentIndex : PtrInt;
+  protected
+    procedure Reset();
+    function MoveNext() : Boolean;virtual;
+    function Clone():ICursor;
+    function GetCount() : PtrInt;
+    function GetCurrent() : TObject;
+  public
+    constructor Create(ADataList : TObjectCollectionRemotable);
+  end;
+  
   function Find(
     const AList : TBaseObjectArrayRemotable;
     const AFilter : string
-  ) : TBaseRemotable;
-  
+  ) : TBaseRemotable;overload;
+  function Find(
+    const AList : TObjectCollectionRemotable;
+    const AFilter : string
+  ) : TBaseRemotable;overload;
+
   function Filter(
     const AList : TBaseObjectArrayRemotable;
     const AFilter : string
-  ) : IFilterableObjectCursor;
-  
+  ) : IFilterableObjectCursor;overload;
+  function Filter(
+    const AList : TObjectCollectionRemotable;
+    const AFilter : string
+  ) : IFilterableObjectCursor;overload;
+
 implementation
 uses
   imp_utils, rtti_filters;
@@ -88,6 +112,30 @@ begin
   Result := locRes;
 end;
 
+function Find(
+  const AList : TObjectCollectionRemotable;
+  const AFilter : string
+) : TBaseRemotable ;
+var
+  locRes : TBaseRemotable;
+  crs : IObjectCursor;
+  fltr : IObjectFilter;
+begin
+  locRes := nil;
+  if ( AList <> nil ) and ( AList.Length > 0 ) then begin
+    if IsStrEmpty(AFilter) then begin
+      locRes := AList[0];
+    end else begin
+      fltr := ParseFilter(AFilter,AList.GetItemClass());
+      crs := CreateCursorOn(TObjectCollectionRemotableCursor.Create(AList),fltr);
+      crs.Reset();
+      if crs.MoveNext() then
+        locRes := TBaseRemotable(crs.GetCurrent());
+    end;
+  end;
+  Result := locRes;
+end;
+
 function Filter(
   const AList : TBaseObjectArrayRemotable;
   const AFilter : string
@@ -103,6 +151,27 @@ begin
     end else begin
       fltr := ParseFilter(AFilter,AList.GetItemClass());
       crs := CreateCursorOn(TBaseObjectArrayRemotableCursor.Create(AList),fltr);
+      crs.Reset();
+    end;
+  end;
+  Result := crs;
+end;
+
+function Filter(
+  const AList : TObjectCollectionRemotable;
+  const AFilter : string
+) : IFilterableObjectCursor ;
+var
+  crs : IFilterableObjectCursor;
+  fltr : IObjectFilter;
+begin
+  crs := nil;
+  if ( AList <> nil ) then begin
+    if IsStrEmpty(AFilter) then begin
+      crs := CreateCursorOn(TObjectCollectionRemotableCursor.Create(AList),nil);
+    end else begin
+      fltr := ParseFilter(AFilter,AList.GetItemClass());
+      crs := CreateCursorOn(TObjectCollectionRemotableCursor.Create(AList),fltr);
       crs.Reset();
     end;
   end;
@@ -180,6 +249,43 @@ destructor TBaseObjectArrayRemotableFilterableCursor.Destroy();
 begin
   FFilter := nil;
   inherited Destroy();
+end;
+
+{ TObjectCollectionRemotableCursor }
+
+procedure TObjectCollectionRemotableCursor.Reset();
+begin
+  FCurrentIndex := -1;
+end;
+
+function TObjectCollectionRemotableCursor.MoveNext() : Boolean;
+begin
+  Inc(FCurrentIndex);
+  Result := ( FCurrentIndex < FList.Length );
+end;
+
+function TObjectCollectionRemotableCursor.Clone() : ICursor;
+begin
+  Result := TObjectCollectionRemotableCursor.Create(FList) as ICursor;
+end;
+
+function TObjectCollectionRemotableCursor.GetCount() : PtrInt;
+begin
+  Result := FList.Length;
+end;
+
+function TObjectCollectionRemotableCursor.GetCurrent() : TObject;
+begin
+  if ( FCurrentIndex < 0 ) or ( FCurrentIndex >= FList.Length ) then
+    raise ECursorException.Create('Invalid cursor state.');
+  Result := FList[FCurrentIndex];
+end;
+
+constructor TObjectCollectionRemotableCursor.Create(ADataList : TObjectCollectionRemotable);
+begin
+  Assert(Assigned(ADataList));
+  FList := ADataList;
+  Reset();
 end;
 
 end.

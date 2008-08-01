@@ -92,9 +92,13 @@ const
   s_xmlns                                   = 'xmlns';
 
   
+  s_WST                         = 'wst';
+  s_WST_base_namespace          = 'urn:wst_base';
+  s_WST_collection              = 'wst_collection';
   s_WST_headerBlock             = 'wst_headerBlock';
   s_WST_record                  = 'wst_record';
   s_WST_storeType               = 'StoreType';
+
   
 implementation
 

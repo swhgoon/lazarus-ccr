@@ -282,7 +282,7 @@ var
 begin
   Result := False;
   if Assigned(ANode) and ( ANode.Attributes <> nil ) then begin
-    nd := ANode.Attributes.GetNamedItem(AAttribute);
+    nd := ANode.Attributes.GetNamedItem(Format('%s:%s',[s_WST,AAttribute]));
     if Assigned(nd) then begin
       Result := True;
       AValue := nd.NodeValue;
