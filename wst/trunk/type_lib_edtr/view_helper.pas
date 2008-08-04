@@ -17,7 +17,7 @@ unit view_helper;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls,
+  Classes, SysUtils, ComCtrls, Contnrs,
   pastree, pascal_parser_intf;
 
 type
@@ -31,17 +31,59 @@ type
     ):TTreeNode;
   end;
   
+  TSearchDirection = ( sdForward, sdbackward );
+  TDependencyKind = ( dkProperty, dkAncestor, dkAliasedTo, dkArrayItem );
+
+  { TDependendyInfo }
+
+  TDependendyInfo = class
+  private
+    FKind : TDependencyKind;
+    FPropName : string;
+    FUsingType : TPasType;
+  public
+    property UsingType : TPasType read FUsingType;
+    property Kind : TDependencyKind read FKind;
+    property PropName : string read FPropName;
+  end;
+  
+  { The function takes ownership of the "AFoundItem" parameter }
+  TOnFindDependencyFunc = function (AFoundItem : TDependendyInfo) : Boolean of object;
+  
   function FindPainter(AObj : TPasElement) : ISymbolPainter ;
+  function SearchItem(
+    const AName : string;
+          AParentNode,
+          AStartFrom : TTreeNode;
+    const ADirection : TSearchDirection
+  ) : TTreeNode;
+  function XsdGenerateSourceForObject(
+    AObject : TPasElement;
+    ASymbolTable : TwstPasTreeContainer
+  ) : string;
+
+  procedure DrawDependencies(
+    AView : TTreeView;
+    ADependencyList : TObjectList
+  );
+  procedure FindDependencies(
+    AType : TPasType;
+    ATree : TwstPasTreeContainer;
+    ADestList : TObjectList
+  );
 
   function SetCursorHourGlass():IInterface;
 
 implementation
-uses Contnrs, Controls, Forms;
+uses
+  Controls, Forms
+  {$IFNDEF FPC}, xmldom, wst_delphi_xml{$ELSE}, DOM, wst_fpc_xml{$ENDIF}
+  , xsd_generator;
 
 const
   IMG_TABLE   = 0;
   IMG_TYPES   = 1;
-  IMG_CONST   = 2;
+  //IMG_CONST   = 2;
   IMG_TYPE_DEF    = 4;
   IMG_INTF_DEF    = 5;
   //IMG_PROP_DEF    = 6;
@@ -70,12 +112,271 @@ begin
   Application.ProcessMessages();
 end;
 
+type
+
+  { TXsdGenerator }
+
+  TXsdGeneratorX = class(TXsdGenerator)
+  public
+    constructor Create(
+      const ADocument : TDOMDocument;
+      const AOptions : TGeneratorOptions;
+            ASymbolTable : TwstPasTreeContainer
+    );
+  end;
+
+{ TXsdGeneratorX }
+
+constructor TXsdGeneratorX.Create(
+  const ADocument : TDOMDocument;
+  const AOptions : TGeneratorOptions;
+        ASymbolTable : TwstPasTreeContainer
+);
+begin
+  inherited Create(ADocument,AOptions);
+  Prepare(ASymbolTable,ASymbolTable.CurrentModule);
+end;
+
+function XsdGenerateSourceForObject(
+  AObject : TPasElement;
+  ASymbolTable : TwstPasTreeContainer
+) : string;
+var
+  xsdGenerator : IXsdGenerator;
+  typeGenerator : IXsdTypeHandler;
+  doc : TXMLDocument;
+  locRes : string;
+begin
+  if ( AObject = nil ) or ( Length(Trim(AObject.Name)) = 0 ) then begin
+    locRes := '';
+  end else begin
+    doc := CreateDoc();
+    try
+      xsdGenerator := TXsdGeneratorX.Create(doc,[],ASymbolTable);
+      if GetXsdTypeHandlerRegistry().Find(AObject,xsdGenerator,typeGenerator) then begin
+        typeGenerator.Generate(ASymbolTable,AObject,doc);
+        locRes := NodeToBuffer(doc);
+      end;
+    finally
+      ReleaseDomNode(doc);
+    end;
+  end;
+  Result := locRes;
+end;
+
+procedure DrawDependencies(
+  AView : TTreeView;
+  ADependencyList : TObjectList
+);
+
+  function FindNode(AType : TPasType) : TTreeNode;
+  var
+    k : PtrInt;
+    nl : TTreeNodes;
+  begin
+    Result := nil;
+    nl := AView.Items;
+    for k := 0 to Pred(nl.Count) do begin
+      if ( TPasType(nl[k].Data) = AType ) then begin
+        Result := nl[k];
+      end;
+    end;
+  end;
+
+var
+  i : PtrInt;
+  e : TDependendyInfo;
+  n : TTreeNode;
+  s : string;
+begin
+  AView.Items.BeginUpdate();
+  try
+    AView.Items.Clear();
+    if ( ADependencyList.Count > 0 ) then begin
+      for i := 0 to Pred(ADependencyList.Count) do begin
+        e := TDependendyInfo(ADependencyList[i]);
+        n := FindNode(e.UsingType);
+        if ( n = nil ) then begin
+          n := AView.Items.Add(nil,e.UsingType.Name);
+          n.Data := e.UsingType;
+        end;
+        case e.Kind of
+          dkAliasedTo : s := 'Alias';
+          dkAncestor  : s := 'Ancestor type';
+          dkArrayItem : s := 'Array Item type';
+          dkProperty  : s := Format('Property = %s',[e.PropName]);
+          else
+            s := e.UsingType.Name;
+        end;
+        AView.Items.AddChild(n,s).Data := e;
+      end;
+    end;
+  finally
+    AView.Items.EndUpdate();
+  end;
+end;
+
+procedure FindDependencies(
+  AType : TPasType;
+  ATree : TwstPasTreeContainer;
+  ADestList : TObjectList
+);
+var
+  depInfo : TDependendyInfo;
+  extName : string;
+  
+  function IsEqualTo(A : TPasType) : Boolean;
+  begin
+    Result := ( A <> nil ) and
+              ( ( A = AType ) or
+                ( A.InheritsFrom(TPasUnresolvedTypeRef) and
+                  ( ATree.GetExternalName(A) = extName )
+                )
+              );
+  end;
+  
+  procedure ScanAliasType(AItem : TPasAliasType);
+  begin
+    if IsEqualTo(AItem.DestType) then begin
+      depInfo := TDependendyInfo.Create();
+      depInfo.FUsingType := AItem;
+      depInfo.FKind := dkAliasedTo;
+      ADestList.Add(depInfo);
+    end;
+  end;
+
+  procedure ScanArrayType(AItem : TPasArrayType);{$IFDEF USE_INLINE}inline;{$ENDIF}
+  begin
+    if IsEqualTo(AItem.ElType) then begin
+      depInfo := TDependendyInfo.Create();
+      depInfo.FUsingType := AItem;
+      depInfo.FKind := dkArrayItem;
+      ADestList.Add(depInfo);
+    end;
+  end;
+  
+  procedure ScanClassType(AItem : TPasClassType);
+  var
+    b : Boolean;
+    k : PtrInt;
+    pl : TList;
+    m : TPasElement;
+    p : TPasProperty;
+  begin
+    if IsEqualTo(AItem.AncestorType) then begin
+      depInfo := TDependendyInfo.Create();
+      depInfo.FUsingType := AItem;
+      depInfo.FKind := dkAncestor;
+      ADestList.Add(depInfo);
+    end;
+    pl := AItem.Members;
+    if ( pl.Count > 0 ) then begin
+      for k := 0 to Pred(pl.Count) do begin
+        m := TPasElement(pl[k]);
+        if m.InheritsFrom(TPasProperty) then begin
+          p := TPasProperty(m);
+          if IsEqualTo(p.VarType) then begin
+            depInfo := TDependendyInfo.Create();
+            depInfo.FUsingType := AItem;
+            depInfo.FKind := dkProperty;
+            depInfo.FPropName := p.Name;
+            ADestList.Add(depInfo);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  procedure ScanRecordType(AItem : TPasRecordType);
+  var
+    b : Boolean;
+    k : PtrInt;
+    pl : TList;
+    m : TPasElement;
+    p : TPasVariable;
+  begin
+    pl := AItem.Members;
+    if ( pl.Count > 0 ) then begin
+      for k := 0 to Pred(pl.Count) do begin
+        m := TPasElement(pl[k]);
+        if m.InheritsFrom(TPasVariable) then begin
+          p := TPasVariable(m);
+          if IsEqualTo(p.VarType) then begin
+            depInfo := TDependendyInfo.Create();
+            depInfo.FUsingType := AItem;
+            depInfo.FKind := dkProperty;
+            depInfo.FPropName := p.Name;
+            ADestList.Add(depInfo);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+var
+  i, c : PtrInt;
+  list : TList;
+  e : TPasType;
+begin
+  list := ATree.CurrentModule.InterfaceSection.Types;
+  c := list.Count;
+  if ( c > 0 ) then begin
+    extName := ATree.GetExternalName(AType);
+    for i := 0 to Pred(c) do begin
+      depInfo := nil;
+      e := TPasType(list[i]);
+      if e.InheritsFrom(TPasAliasType) then begin
+        ScanAliasType(TPasAliasType(e));
+      end else if e.InheritsFrom(TPasAliasType) then begin
+        ScanArrayType(TPasArrayType(e));
+      end else if e.InheritsFrom(TPasClassType) then begin
+        ScanClassType(TPasClassType(e));
+      end else if e.InheritsFrom(TPasRecordType) then begin
+        ScanRecordType(TPasRecordType(e));
+      end;
+    end;
+  end;
+end;
+
 function AddChildNode(AParent: TTreeNode; const AText : string):TTreeNode ;
 begin
   Result := AParent.TreeNodes.AddChild(AParent,AText);
   Result.ImageIndex := -1;
   Result.StateIndex := -1;
   Result.SelectedIndex := -1;
+end;
+
+function SearchItem(
+  const AName : string;
+        AParentNode,
+        AStartFrom : TTreeNode;
+  const ADirection : TSearchDirection
+) : TTreeNode;
+var
+  e : TTreeNode;
+  ok : Boolean;
+  upperName : string;
+begin
+  ok := False;
+  upperName := UpperCase(AName);
+  if ( AStartFrom <> nil ) then
+    e := AStartFrom
+  else
+    e := AParentNode.GetFirstChild();
+  while ( e <> nil ) do begin
+    if ( e.Data <> nil ) and ( Pos(upperName,UpperCase(TPasElement(e.Data).Name)) = 1 ) then begin
+      ok := True;
+      Break;
+    end;
+    if ( ADirection = sdForward ) then
+      e := e.GetNext()
+    else
+      e := e.GetPrev();
+  end;
+  if ok then
+    Result := e
+  else
+    Result := nil;
 end;
 
 { TCursorHolder }
@@ -379,7 +680,7 @@ function TPasNativeSimpleTypePainter.Paint(
 ): TTreeNode;
 var
   locObj : TPasNativeSimpleType;
-  boxeNode : TTreeNode;
+  //boxeNode : TTreeNode;
 begin
   locObj := TPasNativeSimpleType(AObj);
   Result := inherited Paint(AContainer, locObj, AParent);

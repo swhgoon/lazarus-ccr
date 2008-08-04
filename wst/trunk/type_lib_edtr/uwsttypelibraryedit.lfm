@@ -1,7 +1,7 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 199
+  Left = 155
   Height = 644
-  Top = 380
+  Top = 166
   Width = 833
   HorzScrollBar.Page = 832
   VertScrollBar.Page = 623
@@ -79,9 +79,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -406,6 +408,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
@@ -423,7 +426,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
+          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
+          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -748,6 +753,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
@@ -765,11 +771,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1094,7 +1098,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
@@ -1112,11 +1115,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1441,7 +1442,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
@@ -1459,12 +1459,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
           Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
@@ -1789,7 +1787,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
@@ -1857,8 +1854,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
         OnClick = actRefreshViewExecute
       end
       object MenuItem50: TMenuItem
-        Action = actSearch
-        OnClick = actSearchExecute
+        Action = actEditSearch
+        OnClick = actEditSearchExecute
       end
       object MenuItem29: TMenuItem
         Caption = '-'
@@ -2019,12 +2016,18 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       DisableIfNoHandler = True
       OnExecute = actRecordCreateExecute
     end
-    object actSearch: TAction
+    object actEditSearch: TAction
       Caption = 'Search'
       DisableIfNoHandler = True
-      OnExecute = actSearchExecute
-      OnUpdate = actSearchUpdate
+      OnExecute = actEditSearchExecute
+      OnUpdate = actEditSearchUpdate
       ShortCut = 16454
+    end
+    object actTreeSearch: TAction
+      Caption = 'Search'
+      DisableIfNoHandler = True
+      OnExecute = actTreeSearchExecute
+      OnUpdate = actTreeSearchUpdate
     end
   end
   object OD: TOpenDialog
@@ -2073,6 +2076,13 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     object MenuItem26: TMenuItem
       Caption = '-'
     end
+    object MenuItem51: TMenuItem
+      Action = actTreeSearch
+      OnClick = actTreeSearchExecute
+    end
+    object MenuItem52: TMenuItem
+      Caption = '-'
+    end
     object MenuItem8: TMenuItem
       Action = actEnumCreate
       OnClick = actEnumCreateExecute
@@ -2117,8 +2127,8 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
       OnClick = actRefreshViewExecute
     end
     object MenuItem49: TMenuItem
-      Action = actSearch
-      OnClick = actSearchExecute
+      Action = actEditSearch
+      OnClick = actEditSearchExecute
     end
     object MenuItem19: TMenuItem
       Caption = '-'

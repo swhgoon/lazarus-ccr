@@ -6,39 +6,55 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, StdCtrls, Buttons,
-  pastree, pascal_parser_intf, edit_helper, ActnList;
+  ComCtrls, StdCtrls, Buttons, Contnrs,
+  pastree, pascal_parser_intf, edit_helper, ActnList, SynHighlighterXML,
+  SynEdit;
 
 type
 
   { TfTypeAliasEdit }
 
   TfTypeAliasEdit = class(TForm)
+    actApply : TAction;
     actOK : TAction;
     AL : TActionList;
     Button1 : TButton;
     Button2 : TButton;
+    Button3 : TButton;
     edtBaseType : TComboBox;
     edtName : TEdit;
+    edtSourceXSD : TSynEdit;
     Label1 : TLabel;
     Label2 : TLabel;
-    PageControl1 : TPageControl;
+    PC : TPageControl;
     Panel1 : TPanel;
+    SynXMLSyn1 : TSynXMLSyn;
     TabSheet1 : TTabSheet;
+    tsDependencies : TTabSheet;
+    tsSourceXSD : TTabSheet;
+    tvDependency : TTreeView;
+    procedure actApplyExecute(Sender : TObject);
     procedure actOKExecute(Sender : TObject);
     procedure actOKUpdate(Sender : TObject);
+    procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasAliasType;
     FSymbolTable : TwstPasTreeContainer;
     FOldBaseType : TPasType;
+    FApplied : Boolean;
+    FDependencyList : TObjectList;
   private
     property UpdateType : TEditType read FUpdateType;
   private
     procedure PrepareParentCombo();
     procedure LoadFromObject();
     procedure SaveToObject();
+    
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
   public
+    destructor Destroy();override;
     function UpdateObject(
       var   AObject     : TPasAliasType;
       const AUpdateType : TEditType;
@@ -51,7 +67,7 @@ var
   fTypeAliasEdit : TfTypeAliasEdit;
 
 implementation
-uses parserutils;
+uses parserutils, view_helper;
 
 { TfTypeAliasEdit }
 
@@ -60,9 +76,27 @@ begin
   TAction(actOK).Enabled := ( not IsStrEmpty(edtName.Text) ) and ( edtBaseType.ItemIndex >= 0 );
 end;
 
+procedure TfTypeAliasEdit.PCChange(Sender : TObject);
+begin
+  if ( PC.ActivePage = tsSourceXSD ) then begin
+    if actApply.Enabled then
+      actApply.Execute();
+    ShowSourceXSD();
+  end else if ( PC.ActivePage = tsDependencies ) then begin
+    ShowDependencies();
+  end;
+end;
+
 procedure TfTypeAliasEdit.actOKExecute(Sender : TObject);
 begin
   ModalResult := mrOK;
+end;
+
+procedure TfTypeAliasEdit.actApplyExecute(Sender : TObject);
+begin
+  SaveToObject();
+  if ( PC.ActivePage = tsSourceXSD ) then
+    ShowSourceXSD();
 end;
 
 procedure TfTypeAliasEdit.PrepareParentCombo();
@@ -120,6 +154,28 @@ begin
     locObj.DestType := baseType;
     locObj.DestType.AddRef();
   end;
+  FOldBaseType := locObj.DestType;
+  FApplied := True;
+end;
+
+procedure TfTypeAliasEdit.ShowSourceXSD();
+begin
+  edtSourceXSD.Lines.Text := XsdGenerateSourceForObject(FObject,FSymbolTable);
+end;
+
+procedure TfTypeAliasEdit.ShowDependencies();
+begin
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  FindDependencies(FObject,FSymbolTable,FDependencyList);
+  DrawDependencies(tvDependency,FDependencyList);
+end;
+
+destructor TfTypeAliasEdit.Destroy();
+begin
+  FDependencyList.Free();
+  inherited Destroy();
 end;
 
 function TfTypeAliasEdit.UpdateObject(
@@ -137,7 +193,7 @@ begin
   try
     PrepareParentCombo();
     LoadFromObject();
-    Result := ( ShowModal() = mrOK );
+    Result := FApplied or ( ShowModal() = mrOK );
     if Result then begin
       try
         SaveToObject();

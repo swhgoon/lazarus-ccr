@@ -6,41 +6,56 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, StdCtrls, ActnList, Buttons,
-  pastree, pascal_parser_intf, edit_helper;
+  ComCtrls, StdCtrls, ActnList, Buttons, Contnrs,
+  pastree, pascal_parser_intf, edit_helper, SynHighlighterXML, SynEdit;
 
 type
 
   { TfArrayEdit }
 
   TfArrayEdit = class(TForm)
+    actApply : TAction;
     actOK : TAction;
     AL : TActionList;
     Button1 : TButton;
     Button2 : TButton;
+    Button6 : TButton;
     edtCollection : TCheckBox;
     edtEmbedded : TCheckBox;
     edtElementName : TEdit;
     edtElementType : TComboBox;
     edtName : TEdit;
+    edtSourceXSD : TSynEdit;
     Label1 : TLabel;
     Label2 : TLabel;
     Label3 : TLabel;
-    PageControl1 : TPageControl;
+    PC : TPageControl;
     Panel1 : TPanel;
+    SynXMLSyn1 : TSynXMLSyn;
     TabSheet1 : TTabSheet;
+    tsDependencies : TTabSheet;
+    tsSourceXSD : TTabSheet;
+    tvDependency : TTreeView;
+    procedure actApplyExecute(Sender : TObject);
     procedure actOKExecute(Sender : TObject);
     procedure actOKUpdate(Sender : TObject);
+    procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasArrayType;
     FSymbolTable : TwstPasTreeContainer;
+    FApplied : Boolean;
+    FDependencyList : TObjectList;
   private
     property UpdateType : TEditType read FUpdateType;
   private
     procedure LoadFromObject();
     procedure SaveToObject();
+
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
   public
+    destructor Destroy();override;
     function UpdateObject(
       var   AObject      : TPasArrayType;
       const AUpdateType  : TEditType;
@@ -52,7 +67,8 @@ var
   fArrayEdit : TfArrayEdit;
 
 implementation
-uses parserutils;
+uses
+  parserutils, view_helper;
 
 { TfArrayEdit }
 
@@ -65,6 +81,17 @@ begin
     ( not IsStrEmpty(internalName) ) and
     ( not IsStrEmpty(ExtractIdentifier(edtElementName.Text)) ) and
     ( edtElementType.ItemIndex >= 0 ) ;
+end;
+
+procedure TfArrayEdit.PCChange(Sender : TObject);
+begin
+  if ( PC.ActivePage = tsSourceXSD ) then begin
+    if actApply.Enabled then
+      actApply.Execute();
+    ShowSourceXSD();
+  end else if ( PC.ActivePage = tsDependencies ) then begin
+    ShowDependencies();
+  end;
 end;
 
 procedure TfArrayEdit.actOKExecute(Sender : TObject);
@@ -84,6 +111,13 @@ begin
   end;
   if ok then
     ModalResult := mrOK;
+end;
+
+procedure TfArrayEdit.actApplyExecute(Sender : TObject);
+begin
+  SaveToObject();
+  if ( PC.ActivePage = tsSourceXSD ) then
+    ShowSourceXSD();
 end;
 
 procedure TfArrayEdit.LoadFromObject();
@@ -126,7 +160,7 @@ begin
   else
     arrStyle := asScoped;
   eltType := edtElementType.Items.Objects[edtElementType.ItemIndex] as TPasType;
-  if ( UpdateType = etCreate ) then begin
+  if ( UpdateType = etCreate ) and ( FObject = nil ) then begin
     locObj := FSymbolTable.CreateArray(typIntName,eltType,eltExtName,eltIntName,arrStyle);
     FSymbolTable.CurrentModule.InterfaceSection.Declarations.Add(locObj);
     FSymbolTable.CurrentModule.InterfaceSection.Types.Add(locObj);
@@ -148,6 +182,27 @@ begin
   if ( edtCollection.Checked <> FSymbolTable.IsCollection(FObject) ) then
     FSymbolTable.SetCollectionFlag(FObject,edtCollection.Checked);
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
+  FApplied := True;
+end;
+
+procedure TfArrayEdit.ShowSourceXSD();
+begin
+  edtSourceXSD.Lines.Text := XsdGenerateSourceForObject(FObject,FSymbolTable);
+end;
+
+procedure TfArrayEdit.ShowDependencies();
+begin
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  FindDependencies(FObject,FSymbolTable,FDependencyList);
+  DrawDependencies(tvDependency,FDependencyList);
+end;
+
+destructor TfArrayEdit.Destroy();
+begin
+  FDependencyList.Free();
+  inherited Destroy();
 end;
 
 function TfArrayEdit.UpdateObject(
@@ -161,7 +216,7 @@ begin
   FObject := AObject;
   LoadFromObject();
   Result := ( ShowModal() = mrOK );
-  if Result then begin
+  if Result or FApplied then begin
     SaveToObject();
     if ( AUpdateType = etCreate ) then begin
       AObject := FObject;

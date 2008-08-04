@@ -18,15 +18,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ActnList,
-  ExtCtrls, ComCtrls, Buttons, StdCtrls,
+  ExtCtrls, ComCtrls, Buttons, StdCtrls, Contnrs,
   pastree, pascal_parser_intf,
-  edit_helper, Menus;
+  edit_helper, Menus, SynEdit, SynHighlighterXML, view_helper;
 
 type
 
   { TfClassEdit }
 
   TfClassEdit = class(TForm)
+    actApply : TAction;
     actPropDelete: TAction;
     actPropEdit: TAction;
     actPropAdd: TAction;
@@ -38,6 +39,7 @@ type
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
+    Button6 : TButton;
     edtParent: TComboBox;
     edtName: TEdit;
     GroupBox1: TGroupBox;
@@ -50,7 +52,13 @@ type
     Panel1: TPanel;
     PC: TPageControl;
     PopupMenu1: TPopupMenu;
+    edtSourceXSD : TSynEdit;
+    SynXMLSyn1 : TSynXMLSyn;
     TabSheet1: TTabSheet;
+    tsDependencies : TTabSheet;
+    tvDependency : TTreeView;
+    tsSourceXSD : TTabSheet;
+    procedure actApplyExecute(Sender : TObject);
     procedure actOKExecute(Sender: TObject);
     procedure actOKUpdate(Sender: TObject);
     procedure actPropAddExecute(Sender: TObject);
@@ -58,11 +66,14 @@ type
     procedure actPropEditExecute(Sender: TObject);
     procedure actPropEditUpdate(Sender: TObject);
     procedure edtPropDblClick(Sender: TObject);
+    procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasClassType;
     FSymbolTable : TwstPasTreeContainer;
     FOldAncestor : TPasType;
+    FApplied : Boolean;
+    FDependencyList : TObjectList;
   private
     property UpdateType : TEditType read FUpdateType;
   private
@@ -70,7 +81,11 @@ type
     procedure LoadProperty(APropDef : TPasProperty);
     procedure LoadFromObject();
     procedure SaveToObject();
+
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
   public
+    destructor Destroy();override;
     function UpdateObject(
       var   AObject     : TPasClassType;
       const AUpdateType : TEditType;
@@ -82,7 +97,8 @@ var
   fClassEdit: TfClassEdit;
 
 implementation
-uses parserutils, ufpropedit, common_gui_utils;
+uses
+  parserutils, ufpropedit, common_gui_utils;
 
 
 { TfClassEdit }
@@ -105,6 +121,13 @@ end;
 procedure TfClassEdit.actOKExecute(Sender: TObject);
 begin
   ModalResult := mrOk;
+end;
+
+procedure TfClassEdit.actApplyExecute(Sender : TObject);
+begin
+  SaveToObject();
+  if ( PC.ActivePage = tsSourceXSD ) then
+    ShowSourceXSD();
 end;
 
 procedure TfClassEdit.actPropDeleteExecute(Sender: TObject);
@@ -143,6 +166,17 @@ begin
     actPropEdit.Execute();
   end else if actPropAdd.Enabled then begin
     actPropAdd.Execute();
+  end;
+end;
+
+procedure TfClassEdit.PCChange(Sender : TObject);
+begin
+  if ( PC.ActivePage = tsSourceXSD ) then begin
+    if actApply.Enabled then
+      actApply.Execute();
+    ShowSourceXSD();
+  end else if ( PC.ActivePage = tsDependencies ) then begin
+    ShowDependencies();
   end;
 end;
 
@@ -207,10 +241,15 @@ begin
 end;
 
 procedure TfClassEdit.PrepareParentCombo();
+var
+  i : PtrInt;
 begin
   edtParent.Items.BeginUpdate();
   try
     FillList(edtParent.Items,FSymbolTable);
+    i := edtParent.Items.IndexOfObject(FObject);
+    if ( i >= 0 ) then
+      edtParent.Items.Delete(i);
   finally
     edtParent.Items.EndUpdate();
   end;
@@ -308,6 +347,28 @@ begin
     if Assigned(locObj.AncestorType) then
       locObj.AncestorType.AddRef();
   end;
+  FOldAncestor := locObj.AncestorType;
+  FApplied := True;
+end;
+
+procedure TfClassEdit.ShowSourceXSD();
+begin
+  edtSourceXSD.Lines.Text := XsdGenerateSourceForObject(FObject,FSymbolTable);
+end;
+
+procedure TfClassEdit.ShowDependencies();
+begin
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  FindDependencies(FObject,FSymbolTable,FDependencyList);
+  DrawDependencies(tvDependency,FDependencyList);
+end;
+
+destructor TfClassEdit.Destroy();
+begin
+  FDependencyList.Free();
+  inherited Destroy();
 end;
 
 function TfClassEdit.UpdateObject(
@@ -331,7 +392,7 @@ begin
   try
     PrepareParentCombo();
     LoadFromObject();
-    Result := ( ShowModal() = mrOK );
+    Result := FApplied or ( ShowModal() = mrOK );
     if Result then begin
       try
         SaveToObject();

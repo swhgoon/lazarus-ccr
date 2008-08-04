@@ -18,15 +18,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, ActnList, Menus,
+  ExtCtrls, StdCtrls, ActnList, Menus, Contnrs,
   pastree, pascal_parser_intf,
-  edit_helper;
+  edit_helper, SynHighlighterXML, SynEdit;
 
 type
 
   { TfRecordEdit }
 
   TfRecordEdit = class(TForm)
+    actApply : TAction;
     actPropAdd : TAction;
     actPropEdit : TAction;
     actPropDelete : TAction;
@@ -37,34 +38,48 @@ type
     Button3 : TButton;
     Button4 : TButton;
     Button5 : TButton;
+    Button6 : TButton;
     edtName : TEdit;
+    edtSourceXSD : TSynEdit;
     GroupBox1 : TGroupBox;
     Label1 : TLabel;
     edtFields : TListView;
     MenuItem1 : TMenuItem;
     MenuItem2 : TMenuItem;
     MenuItem3 : TMenuItem;
-    PageControl1 : TPageControl;
+    PC : TPageControl;
     Panel1 : TPanel;
     PopupMenu1 : TPopupMenu;
+    SynXMLSyn1 : TSynXMLSyn;
     TabSheet1 : TTabSheet;
+    tsDependencies : TTabSheet;
+    tsSourceXSD : TTabSheet;
+    tvDependency : TTreeView;
+    procedure actApplyExecute(Sender : TObject);
     procedure actOKExecute(Sender : TObject);
     procedure actOKUpdate(Sender : TObject);
     procedure actPropAddExecute(Sender : TObject);
     procedure actPropDeleteExecute(Sender : TObject);
     procedure actPropEditExecute(Sender : TObject);
     procedure actPropEditUpdate(Sender : TObject);
+    procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasRecordType;
     FSymbolTable : TwstPasTreeContainer;
+    FApplied : Boolean;
+    FDependencyList : TObjectList;
   private
     property UpdateType : TEditType read FUpdateType;
   private
     procedure LoadField(AFieldDef : TPasVariable);
     procedure LoadFromObject();
     procedure SaveToObject();
+    
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
   public
+    destructor Destroy();override;
     function UpdateObject(
       var   AObject     : TPasRecordType;
       const AUpdateType : TEditType;
@@ -76,7 +91,7 @@ var
   fRecordEdit : TfRecordEdit;
 
 implementation
-uses common_gui_utils, parserutils, ufpropedit;
+uses common_gui_utils, parserutils, ufpropedit, view_helper;
 
 { TfRecordEdit }
 
@@ -125,9 +140,27 @@ begin
   TAction(Sender).Enabled := Assigned(edtFields.ItemFocused);
 end;
 
+procedure TfRecordEdit.PCChange(Sender : TObject);
+begin
+  if ( PC.ActivePage = tsSourceXSD ) then begin
+    if actApply.Enabled then
+      actApply.Execute();
+    ShowSourceXSD();
+  end else if ( PC.ActivePage = tsDependencies ) then begin
+    ShowDependencies();
+  end;
+end;
+
 procedure TfRecordEdit.actOKExecute(Sender : TObject);
 begin
   ModalResult := mrOk;
+end;
+
+procedure TfRecordEdit.actApplyExecute(Sender : TObject);
+begin
+  SaveToObject();
+  if ( PC.ActivePage = tsSourceXSD ) then
+    ShowSourceXSD();
 end;
 
 procedure TfRecordEdit.LoadField(AFieldDef : TPasVariable);
@@ -185,6 +218,27 @@ begin
   locObj := FObject;
   locObj.Name := typIntName;
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
+  FApplied := True;
+end;
+
+procedure TfRecordEdit.ShowSourceXSD();
+begin
+  edtSourceXSD.Lines.Text := XsdGenerateSourceForObject(FObject,FSymbolTable);
+end;
+
+procedure TfRecordEdit.ShowDependencies();
+begin
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  FindDependencies(FObject,FSymbolTable,FDependencyList);
+  DrawDependencies(tvDependency,FDependencyList);
+end;
+
+destructor TfRecordEdit.Destroy();
+begin
+  FDependencyList.Free();
+  inherited Destroy();
 end;
 
 function TfRecordEdit.UpdateObject(
@@ -204,7 +258,7 @@ begin
   end;
   try
     LoadFromObject();
-    Result := ( ShowModal() = mrOK );
+    Result := FApplied or ( ShowModal() = mrOK );
     if Result then begin
       try
         SaveToObject();

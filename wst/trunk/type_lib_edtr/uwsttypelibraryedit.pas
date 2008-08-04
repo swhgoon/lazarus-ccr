@@ -25,6 +25,8 @@ uses
 
 type
 
+  TSearchArea = ( saEditor, saTree );
+  
   { TfWstTypeLibraryEdit }
 
   TfWstTypeLibraryEdit = class(TForm)
@@ -38,7 +40,8 @@ type
     actFullCollapse: TAction;
     actDelete : TAction;
     actArrayCreate : TAction;
-    actSearch : TAction;
+    actEditSearch : TAction;
+    actTreeSearch : TAction;
     actRecordCreate : TAction;
     actTypeALiasCreate : TAction;
     actSave : TAction;
@@ -92,6 +95,8 @@ type
     MenuItem49 : TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem50 : TMenuItem;
+    MenuItem51 : TMenuItem;
+    MenuItem52 : TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
     MenuItem8: TMenuItem;
@@ -141,8 +146,10 @@ type
     procedure actRefreshViewExecute(Sender: TObject);
     procedure actSaveAsExecute(Sender: TObject);
     procedure actSaveExecute (Sender : TObject );
-    procedure actSearchExecute(Sender : TObject);
-    procedure actSearchUpdate(Sender : TObject);
+    procedure actEditSearchExecute(Sender : TObject);
+    procedure actEditSearchUpdate(Sender : TObject);
+    procedure actTreeSearchExecute(Sender : TObject);
+    procedure actTreeSearchUpdate(Sender : TObject);
     procedure actTypeALiasCreateExecute(Sender : TObject);
     procedure actUpdateObjectExecute(Sender: TObject);
     procedure actUpdateObjectUpdate(Sender: TObject);
@@ -155,9 +162,13 @@ type
     FStatusMessageTag : PtrInt;
     FCurrentFileName : string;
     {$IFDEF WST_IDE}FProjectLibrary : TLazProjectFile;{$ENDIF}
+    FSearchArea : TSearchArea;
+    FFoundNode : TTreeNode;
   private
     function FindCurrentEditor() : TSynEdit;
     function Search(const AText : string) : Boolean;
+    function SearchInTree(const AText : string) : Boolean;
+    function SearchInEditor(const AText : string) : Boolean;
   private
     function GetTypeNode() : TTreeNode;
     function GetInterfaceNode() : TTreeNode;
@@ -454,14 +465,26 @@ begin
     actSaveAs.Execute() ;
 end;
 
-procedure TfWstTypeLibraryEdit.actSearchExecute(Sender : TObject);
+procedure TfWstTypeLibraryEdit.actEditSearchExecute(Sender : TObject);
 begin
+  FSearchArea := saEditor;
   FD.Execute();
 end;
 
-procedure TfWstTypeLibraryEdit.actSearchUpdate(Sender : TObject);
+procedure TfWstTypeLibraryEdit.actEditSearchUpdate(Sender : TObject);
 begin
   TAction(Sender).Enabled := ( PC.ActivePageIndex in [0..4] );
+end;
+
+procedure TfWstTypeLibraryEdit.actTreeSearchExecute(Sender : TObject);
+begin
+  FSearchArea := saTree;
+  FD.Execute();
+end;
+
+procedure TfWstTypeLibraryEdit.actTreeSearchUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled := ( GetTypeNode().Count > 0 );
 end;
 
 procedure TfWstTypeLibraryEdit.actTypeALiasCreateExecute(Sender : TObject);
@@ -515,6 +538,7 @@ procedure TfWstTypeLibraryEdit.FDShow(Sender : TObject);
 var
   edt : TSynEdit;
 begin
+  FFoundNode := nil;
   edt := FindCurrentEditor();
   if Assigned(edt) and edt.SelAvail then
     FD.FindText := edt.SelText;
@@ -589,6 +613,35 @@ begin
 end;
 
 function TfWstTypeLibraryEdit.Search(const AText : string) : Boolean;
+begin
+  if ( FSearchArea = saEditor ) then
+    Result := SearchInEditor(AText)
+  else
+    Result := SearchInTree(AText);
+end;
+
+function TfWstTypeLibraryEdit.SearchInTree(const AText : string) : Boolean;
+var
+  curLock : IInterface;
+  searchDir : TSearchDirection;
+begin
+  curLock := SetCursorHourGlass();
+  if ( FFoundNode <> nil ) then
+    FFoundNode := FFoundNode.GetNext();
+  if ( frDown in FD.Options ) then
+    searchDir := sdForward
+  else
+    searchDir := sdbackward;
+  FFoundNode := SearchItem(AText,GetTypeNode(),FFoundNode,searchDir);
+  Result := ( FFoundNode <> nil );
+  if Result then begin
+    FFoundNode.Selected := True ;
+    FFoundNode.Focused := True ;
+  end;
+  curLock := nil;
+end;
+
+function TfWstTypeLibraryEdit.SearchInEditor(const AText : string) : Boolean;
 var
   edt : TSynEdit;
   opts : TSynSearchOptions;
@@ -610,7 +663,6 @@ end;
 function TfWstTypeLibraryEdit.GetTypeNode(): TTreeNode;
 begin
   Result := trvSchema.Items[0].GetFirstChild().Items[0];
-  //trvSchema.TopItem.GetFirstChild().Items[0];
 end;
 
 function TfWstTypeLibraryEdit.GetInterfaceNode(): TTreeNode;

@@ -18,37 +18,52 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, ActnList, Buttons,
-  pastree, pascal_parser_intf, edit_helper;
+  ComCtrls, ExtCtrls, ActnList, Buttons, Contnrs,
+  pastree, pascal_parser_intf, edit_helper, SynEdit, SynHighlighterXML;
 
 type
 
   { TfEnumEdit }
 
   TfEnumEdit = class(TForm)
+    actApply : TAction;
     actOK: TAction;
     ActionList1: TActionList;
     Button1: TButton;
     Button2: TButton;
+    Button3 : TButton;
     edtName: TEdit;
+    edtSourceXSD : TSynEdit;
     GroupBox1: TGroupBox;
     Label1: TLabel;
     edtItems: TMemo;
     PC: TPageControl;
     Panel1: TPanel;
+    SynXMLSyn1 : TSynXMLSyn;
     TabSheet1: TTabSheet;
+    tsDependencies : TTabSheet;
+    tsSourceXSD : TTabSheet;
+    tvDependency : TTreeView;
+    procedure actApplyExecute(Sender : TObject);
     procedure actOKExecute(Sender: TObject);
     procedure actOKUpdate(Sender: TObject);
+    procedure PCChange(Sender : TObject);
   private
     FUpdateType : TEditType;
     FObject : TPasEnumType;
     FSymbolTable : TwstPasTreeContainer;
+    FApplied : Boolean;
+    FDependencyList : TObjectList;
   private
     property UpdateType : TEditType read FUpdateType;
   private
     procedure LoadFromObject();
     procedure SaveToObject();
+    
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
   public
+    destructor Destroy();override;
     function UpdateObject(
       var   AObject     : TPasEnumType;
       const AUpdateType : TEditType;
@@ -60,7 +75,7 @@ var
   fEnumEdit: TfEnumEdit;
 
 implementation
-uses parserutils;
+uses parserutils, view_helper;
 
 function ParseEnum(
   const AName   : string;
@@ -117,9 +132,27 @@ begin
     ( not IsStrEmpty(edtItems.Lines.Text) );
 end;
 
+procedure TfEnumEdit.PCChange(Sender : TObject);
+begin
+  if ( PC.ActivePage = tsSourceXSD ) then begin
+    if actApply.Enabled then
+      actApply.Execute();
+    ShowSourceXSD();
+  end else if ( PC.ActivePage = tsDependencies ) then begin
+    ShowDependencies();
+  end;
+end;
+
 procedure TfEnumEdit.actOKExecute(Sender: TObject);
 begin
   ModalResult := mrOK;
+end;
+
+procedure TfEnumEdit.actApplyExecute(Sender : TObject);
+begin
+  SaveToObject();
+  if ( PC.ActivePage = tsSourceXSD ) then
+    ShowSourceXSD();
 end;
 
 procedure TfEnumEdit.LoadFromObject();
@@ -145,13 +178,34 @@ var
   locObj : TPasEnumType;
 begin
   locObj := nil;
-  if ( UpdateType = etCreate ) then begin
+  if ( UpdateType = etCreate ) and ( FObject = nil ) then begin
     locObj := ParseEnum(edtName.Text,edtItems.Lines,nil,FSymbolTable);
     //FreeAndNil(FObject);
     FObject := locObj;
   end else begin
     ParseEnum(edtName.Text,edtItems.Lines,FObject,FSymbolTable);
   end;
+  FApplied := True;
+end;
+
+procedure TfEnumEdit.ShowSourceXSD();
+begin
+  edtSourceXSD.Lines.Text := XsdGenerateSourceForObject(FObject,FSymbolTable);
+end;
+
+procedure TfEnumEdit.ShowDependencies();
+begin
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  FindDependencies(FObject,FSymbolTable,FDependencyList);
+  DrawDependencies(tvDependency,FDependencyList);
+end;
+
+destructor TfEnumEdit.Destroy();
+begin
+  FDependencyList.Free();
+  inherited Destroy();
 end;
 
 function TfEnumEdit.UpdateObject(
@@ -164,7 +218,7 @@ begin
   FUpdateType := AUpdateType;
   FObject := AObject;
   LoadFromObject();
-  Result := ( ShowModal() = mrOK );
+  Result := FApplied or ( ShowModal() = mrOK );
   if Result then begin
     SaveToObject();
     if ( AUpdateType = etCreate ) then begin

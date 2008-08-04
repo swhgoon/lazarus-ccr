@@ -1,11 +1,11 @@
 object fClassEdit: TfClassEdit
-  Left = 272
+  Left = 852
   Height = 547
-  Top = 42
+  Top = 77
   Width = 518
   HorzScrollBar.Page = 517
   VertScrollBar.Page = 546
-  ActiveControl = Button1
+  ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fClassEdit'
   ClientHeight = 547
@@ -21,7 +21,7 @@ object fClassEdit: TfClassEdit
     ClientWidth = 518
     TabOrder = 0
     object Button1: TButton
-      Left = 430
+      Left = 341
       Height = 25
       Top = 10
       Width = 75
@@ -30,10 +30,10 @@ object fClassEdit: TfClassEdit
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
-      TabOrder = 0
+      TabOrder = 1
     end
     object Button2: TButton
-      Left = 340
+      Left = 253
       Height = 25
       Top = 10
       Width = 75
@@ -41,7 +41,16 @@ object fClassEdit: TfClassEdit
       Anchors = [akTop, akRight]
       BorderSpacing.InnerBorder = 4
       Default = True
-      TabOrder = 1
+      TabOrder = 0
+    end
+    object Button6: TButton
+      Left = 429
+      Height = 25
+      Top = 10
+      Width = 75
+      Action = actApply
+      Anchors = [akTop, akRight]
+      TabOrder = 2
     end
   end
   object PC: TPageControl
@@ -51,6 +60,8 @@ object fClassEdit: TfClassEdit
     Align = alClient
     TabIndex = 0
     TabOrder = 1
+    OnChange = PCChange
+    OnPageChanged = PCChange
     object TabSheet1: TTabSheet
       Caption = 'Compound Object'
       ClientHeight = 471
@@ -88,7 +99,7 @@ object fClassEdit: TfClassEdit
         Caption = '  Properties  '
         ClientHeight = 294
         ClientWidth = 491
-        TabOrder = 1
+        TabOrder = 2
         object edtProp: TListView
           Height = 294
           Width = 491
@@ -123,7 +134,7 @@ object fClassEdit: TfClassEdit
         Action = actPropAdd
         Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
-        TabOrder = 2
+        TabOrder = 3
       end
       object Button4: TButton
         Left = 116
@@ -133,7 +144,7 @@ object fClassEdit: TfClassEdit
         Action = actPropEdit
         Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
-        TabOrder = 3
+        TabOrder = 4
       end
       object Button5: TButton
         Left = 228
@@ -143,7 +154,7 @@ object fClassEdit: TfClassEdit
         Action = actPropDelete
         Anchors = [akLeft, akBottom]
         BorderSpacing.InnerBorder = 4
-        TabOrder = 4
+        TabOrder = 5
       end
       object edtParent: TComboBox
         Left = 92
@@ -155,7 +166,372 @@ object fClassEdit: TfClassEdit
         ItemHeight = 13
         MaxLength = 0
         Style = csDropDownList
-        TabOrder = 5
+        TabOrder = 1
+      end
+    end
+    object tsSourceXSD: TTabSheet
+      Caption = 'XSD'
+      ClientHeight = 471
+      ClientWidth = 510
+      object edtSourceXSD: TSynEdit
+        Left = 12
+        Height = 432
+        Top = 18
+        Width = 480
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.Height = -20
+        Font.Name = 'courier'
+        ParentColor = False
+        TabOrder = 0
+        BookMarkOptions.Xoffset = 42
+        BookMarkOptions.OnChange = nil
+        Gutter.DigitCount = 2
+        Gutter.ShowLineNumbers = True
+        Gutter.ShowCodeFolding = True
+        Gutter.Width = 10
+        Gutter.OnChange = nil
+        Gutter.CodeFoldingWidth = 14
+        Highlighter = SynXMLSyn1
+        Keystrokes = <        
+          item
+            Command = 3
+            ShortCut = 38
+          end        
+          item
+            Command = 103
+            ShortCut = 8230
+          end        
+          item
+            Command = 211
+            ShortCut = 16422
+          end        
+          item
+            Command = 4
+            ShortCut = 40
+          end        
+          item
+            Command = 104
+            ShortCut = 8232
+          end        
+          item
+            Command = 212
+            ShortCut = 16424
+          end        
+          item
+            Command = 1
+            ShortCut = 37
+          end        
+          item
+            Command = 101
+            ShortCut = 8229
+          end        
+          item
+            Command = 5
+            ShortCut = 16421
+          end        
+          item
+            Command = 105
+            ShortCut = 24613
+          end        
+          item
+            Command = 2
+            ShortCut = 39
+          end        
+          item
+            Command = 102
+            ShortCut = 8231
+          end        
+          item
+            Command = 6
+            ShortCut = 16423
+          end        
+          item
+            Command = 106
+            ShortCut = 24615
+          end        
+          item
+            Command = 10
+            ShortCut = 34
+          end        
+          item
+            Command = 110
+            ShortCut = 8226
+          end        
+          item
+            Command = 14
+            ShortCut = 16418
+          end        
+          item
+            Command = 114
+            ShortCut = 24610
+          end        
+          item
+            Command = 9
+            ShortCut = 33
+          end        
+          item
+            Command = 109
+            ShortCut = 8225
+          end        
+          item
+            Command = 13
+            ShortCut = 16417
+          end        
+          item
+            Command = 113
+            ShortCut = 24609
+          end        
+          item
+            Command = 7
+            ShortCut = 36
+          end        
+          item
+            Command = 107
+            ShortCut = 8228
+          end        
+          item
+            Command = 15
+            ShortCut = 16420
+          end        
+          item
+            Command = 115
+            ShortCut = 24612
+          end        
+          item
+            Command = 8
+            ShortCut = 35
+          end        
+          item
+            Command = 108
+            ShortCut = 8227
+          end        
+          item
+            Command = 16
+            ShortCut = 16419
+          end        
+          item
+            Command = 116
+            ShortCut = 24611
+          end        
+          item
+            Command = 223
+            ShortCut = 45
+          end        
+          item
+            Command = 201
+            ShortCut = 16429
+          end        
+          item
+            Command = 604
+            ShortCut = 8237
+          end        
+          item
+            Command = 502
+            ShortCut = 46
+          end        
+          item
+            Command = 603
+            ShortCut = 8238
+          end        
+          item
+            Command = 501
+            ShortCut = 8
+          end        
+          item
+            Command = 501
+            ShortCut = 8200
+          end        
+          item
+            Command = 504
+            ShortCut = 16392
+          end        
+          item
+            Command = 601
+            ShortCut = 32776
+          end        
+          item
+            Command = 602
+            ShortCut = 40968
+          end        
+          item
+            Command = 509
+            ShortCut = 13
+          end        
+          item
+            Command = 199
+            ShortCut = 16449
+          end        
+          item
+            Command = 201
+            ShortCut = 16451
+          end        
+          item
+            Command = 610
+            ShortCut = 24649
+          end        
+          item
+            Command = 509
+            ShortCut = 16461
+          end        
+          item
+            Command = 510
+            ShortCut = 16462
+          end        
+          item
+            Command = 503
+            ShortCut = 16468
+          end        
+          item
+            Command = 611
+            ShortCut = 24661
+          end        
+          item
+            Command = 604
+            ShortCut = 16470
+          end        
+          item
+            Command = 603
+            ShortCut = 16472
+          end        
+          item
+            Command = 507
+            ShortCut = 16473
+          end        
+          item
+            Command = 506
+            ShortCut = 24665
+          end        
+          item
+            Command = 601
+            ShortCut = 16474
+          end        
+          item
+            Command = 602
+            ShortCut = 24666
+          end        
+          item
+            Command = 301
+            ShortCut = 16432
+          end        
+          item
+            Command = 302
+            ShortCut = 16433
+          end        
+          item
+            Command = 303
+            ShortCut = 16434
+          end        
+          item
+            Command = 304
+            ShortCut = 16435
+          end        
+          item
+            Command = 305
+            ShortCut = 16436
+          end        
+          item
+            Command = 306
+            ShortCut = 16437
+          end        
+          item
+            Command = 307
+            ShortCut = 16438
+          end        
+          item
+            Command = 308
+            ShortCut = 16439
+          end        
+          item
+            Command = 309
+            ShortCut = 16440
+          end        
+          item
+            Command = 310
+            ShortCut = 16441
+          end        
+          item
+            Command = 351
+            ShortCut = 24624
+          end        
+          item
+            Command = 352
+            ShortCut = 24625
+          end        
+          item
+            Command = 353
+            ShortCut = 24626
+          end        
+          item
+            Command = 354
+            ShortCut = 24627
+          end        
+          item
+            Command = 355
+            ShortCut = 24628
+          end        
+          item
+            Command = 356
+            ShortCut = 24629
+          end        
+          item
+            Command = 357
+            ShortCut = 24630
+          end        
+          item
+            Command = 358
+            ShortCut = 24631
+          end        
+          item
+            Command = 359
+            ShortCut = 24632
+          end        
+          item
+            Command = 360
+            ShortCut = 24633
+          end        
+          item
+            Command = 231
+            ShortCut = 24654
+          end        
+          item
+            Command = 232
+            ShortCut = 24643
+          end        
+          item
+            Command = 233
+            ShortCut = 24652
+          end        
+          item
+            Command = 612
+            ShortCut = 9
+          end        
+          item
+            Command = 613
+            ShortCut = 8201
+          end        
+          item
+            Command = 250
+            ShortCut = 24642
+          end>
+        ReadOnly = True
+        SelectedColor.OnChange = nil
+      end
+    end
+    object tsDependencies: TTabSheet
+      Caption = 'Used by'
+      ClientHeight = 471
+      ClientWidth = 510
+      object tvDependency: TTreeView
+        Left = 20
+        Height = 433
+        Top = 18
+        Width = 464
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        DefaultItemHeight = 15
+        ReadOnly = True
+        RightClickSelect = True
+        TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
     end
   end
@@ -185,6 +561,12 @@ object fClassEdit: TfClassEdit
       OnExecute = actPropDeleteExecute
       OnUpdate = actPropEditUpdate
     end
+    object actApply: TAction
+      Caption = 'Apply'
+      DisableIfNoHandler = True
+      OnExecute = actApplyExecute
+      OnUpdate = actOKUpdate
+    end
   end
   object PopupMenu1: TPopupMenu
     left = 105
@@ -201,5 +583,12 @@ object fClassEdit: TfClassEdit
       Action = actPropDelete
       OnClick = actPropDeleteExecute
     end
+  end
+  object SynXMLSyn1: TSynXMLSyn
+    DefaultFilter = 'Documents XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
+    Enabled = False
+    WantBracesParsed = False
+    left = 210
+    top = 171
   end
 end
