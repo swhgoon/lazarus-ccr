@@ -5599,7 +5599,7 @@ var
   buffer : string;
 begin
   if ( AObject <> nil ) then
-    buffer := TBase64StringRemotable(AObject).BinaryData
+    buffer := TBase64StringRemotable(AObject).EncodedString
   else
     buffer := '';
   AStore.Put(AName,TypeInfo(string),buffer);
