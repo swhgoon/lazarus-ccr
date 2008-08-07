@@ -100,7 +100,7 @@ type
             AVisibility         : TPasMemberVisibility;
       const ASourceFilename     : String;
             ASourceLinenumber   : Integer
-    ): TPasElement;override;
+    ): TPasElement;override;overload;
     function CreateArray(
       const AName              : string;
             AItemType          : TPasType;
