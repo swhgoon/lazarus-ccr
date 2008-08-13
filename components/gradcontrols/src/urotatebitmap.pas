@@ -126,7 +126,7 @@ end;
 
 procedure TRotatedGlyph.SetGlyph(Value: TBitmap);
 begin
-    FNormalGlyphBitmap := Value;
+    FNormalGlyphBitmap.Assign(Value);
     //FNormalGlyph.Glyph.TransparentMode:=tmFixed;
     //FNormalGlyph.Glyph.Transparent:=true;
     

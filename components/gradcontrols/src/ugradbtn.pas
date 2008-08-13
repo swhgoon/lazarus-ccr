@@ -66,6 +66,7 @@ FTextAlignment : TTextAlignment;
          FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
        procedure InvPaint(StateCheck:Boolean=false);
        procedure GetBackgroundRect(var TheRect : TRect);
+       function GetGlyph : TBitmap;
        procedure SetEnabled(Value: Boolean); override;
        procedure SetAutoWidth(const Value : Boolean); virtual;
        procedure SetText(const Value: TCaption); virtual;
@@ -147,7 +148,7 @@ FTextAlignment : TTextAlignment;
        property ShowFocusBorder : Boolean read FShowFocusBorder write SetShowFocusBorder;
        property RotateDirection : TRotateDirection read FRotateDirection write SetRotateDirection default rdNormal;
        property ButtonLayout : TButtonLayout read FButtonLayout write SetButtonLayout default blGlyphLeft;
-       property Glyph : TBitmap read FGlyph write SetGlyph;
+       property Glyph : TBitmap read GetGlyph write SetGlyph;
        property ShowGlyph : Boolean read FShowGlyph write SetShowGlyph;
        property GlyphBackgroundColor : TColor read FGlyphBackgroundColor write SetGlyphBackgroundColor;
        property TextAlignment : TTextAlignment read FTextAlignment write SetTextAlignment default taCenter;
@@ -203,7 +204,7 @@ begin
     //FGlyph.Assign(Value);
 
     FRotatedGlyph.Glyph := FGlyph;
-    FRotatedGlyph.Update;
+    //FRotatedGlyph.Update;
 
     //UpdateGlyph;
 end;
@@ -534,6 +535,10 @@ begin
    end;
 end;
 
+function TGradButton.GetGlyph : TBitmap;
+begin
+    Result := FRotatedGlyph.Glyph;
+end;
 
 procedure TGradButton.SetDisabledColor(const Value: TColor);
 begin

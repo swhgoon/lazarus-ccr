@@ -120,8 +120,8 @@ begin
   GradButton5.BaseColor:=clWhite;
   GradButton5.Caption:=ColorToString(clWhite);
   GradButton6.Caption:=ColorToString(GradButton6.BaseColor);
-  GradButton7.Caption:=ColorToString(b.NotEnabledColor);
-  GradButton7.BaseColor:=b.NotEnabledColor;
+  GradButton7.Caption:=ColorToString(b.DisabledColor);
+  GradButton7.BaseColor:=b.DisabledColor;
   
   b.ClickColor:=GradButton6.BaseColor;
   b.Caption:=LabeledEdit1.Text;
@@ -236,10 +236,10 @@ end;
 
 procedure TForm1.GradButton7Click(Sender: TObject);
 begin
-    ColorDialog1.Color:=b.NotEnabledColor;
+    ColorDialog1.Color:=b.DisabledColor;
     if ColorDialog1.Execute then
     begin
-        b.NotEnabledColor:=ColorDialog1.Color;
+        b.DisabledColor:=ColorDialog1.Color;
         GradButton7.BaseColor:=ColorDialog1.Color;
         GradButton7.Caption:=ColorToString(GradButton7.BaseColor);
     end;

@@ -399,6 +399,7 @@ begin
      FCurrentlyDestroying := true;
      Parent := nil;
 
+     FButton.Parent := nil;
      FButton.Free;
 
      inherited;
@@ -532,6 +533,14 @@ begin
       end;
 
     FButton.Visible:=FTabVisible;
+
+    if FTabVisible then
+       TGradTabControl(Parent).PagesBar.OrderButtons
+    else begin
+        FButton.Left:=-FButton.Width;
+        FButton.Top:=-FButton.Height;
+    end;
+
 
     //DoTabVisible; { TODO }
 end;
@@ -700,10 +709,14 @@ begin
    for i := 0 to FPageList.Count-1 do
    with TGradTabPage(FPageList.Items[i]).TabButton do
    begin
-       if Visible then
+       if Visible then begin
        if FActiveIndex=i
        then FocusButton(i)
        else UnFocusButton(i);
+       end else begin
+           Left := -Width;
+           Top := -Height;
+       end;
    end;
 
    DebugLn('OrderButton Start');
@@ -815,6 +828,7 @@ begin
     //FShowFromButton:=Index;
     if (Index < 0) or (Index >= FPageList.Count) then Exit;
     FActiveIndex:=Index;
+    FShowFromButton:=Index;
     {$IFDEF DEBUGTAB}
         DebugLn('TGradTabPagesBar.FocusButton Index: %d Assigned %s', [Index,BoolToStr(Assigned(TGradTabPage(FPageList.Items[Index]).TabButton),true)]);
     {$ENDIF}

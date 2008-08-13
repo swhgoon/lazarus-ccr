@@ -1,10 +1,10 @@
 object Form1: TForm1
-  Left = 121
-  Height = 500
-  Top = 184
+  Left = 194
+  Height = 506
+  Top = 169
   Width = 898
   Caption = 'Form1'
-  ClientHeight = 500
+  ClientHeight = 506
   ClientWidth = 898
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -36,65 +36,57 @@ object Form1: TForm1
     ClickColor = clBlue
   end
   object Panel1: TPanel
-    Height = 500
+    Height = 506
     Width = 759
     Align = alLeft
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Panel1'
-    ClientHeight = 500
+    ClientHeight = 506
     ClientWidth = 759
     TabOrder = 1
     object GradTabControl1: TGradTabControl
       Left = 248
-      Height = 498
+      Height = 504
       Top = 1
-      Width = 376
+      Width = 392
       Align = alClient
       ControlStyle = [csAcceptsControls, csDesignInteractive, csOpaque, csMenuEvents, csParentBackground, csOwnedChildsSelectable]
-      ActivePage = GradTabPage3
+      ActivePage = GradTabPage2
       OnTabButtonClick = GradTabControl1TabButtonClick
       OnTabButtonMouseUp = GradTabControl1TabButtonMouseUp
-      PageIndex = 2
+      PageIndex = 1
       TabHeight = 20
       object GradTabPage1: TGradTabPage
         Left = 2
-        Height = 567
+        Height = 480
         Top = 22
-        Width = 506
+        Width = 388
         ControlState = [csVisibleSetInLoading]
         ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
         Caption = 'GradTabPage1'
         ShowCloseButton = True
         object Edit1: TEdit
-          Height = 567
-          Width = 506
+          Height = 480
+          Width = 388
           Align = alClient
           TabOrder = 0
           Text = 'Edit1'
         end
       end
-      object GradTabPage2: TGradTabPage
-        Left = 2
-        Height = 567
-        Top = 22
-        Width = 506
-        ControlState = [csVisibleSetInLoading]
-        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
-        PageIndex = 1
-        Caption = 'GradTabPage2'
-      end
       object GradTabPage3: TGradTabPage
         Left = 2
-        Height = 474
+        Height = 480
         Top = 22
-        Width = 372
+        Width = 388
         ControlState = [csVisibleSetInLoading]
-        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csDesignFixedBounds]
+        ControlStyle = [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
         PageIndex = 2
         Caption = 'GradTabPage3'
         object Memo1: TMemo
-          Height = 474
-          Width = 372
+          Left = 38
+          Height = 362
+          Top = 49
+          Width = 326
           Align = alClient
           Lines.Strings = (
             'Memo1'
@@ -102,10 +94,20 @@ object Form1: TForm1
           TabOrder = 0
         end
       end
+      object GradTabPage2: TGradTabPage
+        Left = 2
+        Height = 480
+        Top = 22
+        Width = 388
+        ControlState = [csVisibleSetInLoading]
+        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csDesignFixedBounds]
+        PageIndex = 1
+        Caption = 'GradTabPage2'
+      end
     end
     object GradTabControl2: TGradTabControl
       Left = 1
-      Height = 498
+      Height = 504
       Top = 1
       Width = 247
       Align = alLeft
@@ -123,7 +125,7 @@ object Form1: TForm1
         ControlState = [csVisibleSetInLoading]
         ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
         TabVisible = False
-        Caption = 'GradTabPage4'
+        Caption = 'GradTabPage4wewwerwerwer'
         object SynEdit1: TSynEdit
           Height = 587
           Width = 218
@@ -133,6 +135,7 @@ object Form1: TForm1
           Font.Pitch = fpFixed
           ParentColor = False
           TabOrder = 0
+          BookMarkOptions.OnChange = nil
           Highlighter = SynPHPSyn1
           Keystrokes = <          
             item
@@ -462,11 +465,12 @@ object Form1: TForm1
             ''
             '?>'
           )
+          SelectedColor.OnChange = nil
         end
       end
       object GradTabPage5: TGradTabPage
         Left = 2
-        Height = 494
+        Height = 500
         Top = 2
         Width = 218
         ControlState = [csVisibleSetInLoading]
@@ -475,7 +479,7 @@ object Form1: TForm1
         Caption = 'GradTabPage5'
         ShowCloseButton = True
         object StringGrid1: TStringGrid
-          Height = 494
+          Height = 500
           Width = 218
           Align = alClient
           ColCount = 5
@@ -488,45 +492,44 @@ object Form1: TForm1
       end
     end
     object GradTabControl3: TGradTabControl
-      Left = 624
-      Height = 498
+      Left = 640
+      Height = 504
       Top = 1
-      Width = 134
+      Width = 118
       Align = alRight
       ControlStyle = [csAcceptsControls]
-      ActivePage = GradTabPage7
-      PageIndex = 1
+      ActivePage = GradTabPage6
       TabHeight = 30
       TabPosition = tpLeft
-      object GradTabPage6: TGradTabPage
-        Left = 32
-        Height = 587
-        Top = 2
-        Width = 100
-        ControlState = [csVisibleSetInLoading]
-        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
-        Caption = 'GradTabPage6'
-        ShowCloseButton = True
-      end
       object GradTabPage7: TGradTabPage
         Left = 32
-        Height = 494
+        Height = 500
         Top = 2
-        Width = 100
+        Width = 84
         ControlState = [csVisibleSetInLoading]
-        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csDesignFixedBounds]
+        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
         PageIndex = 1
         Caption = 'GradTabPage7'
+      end
+      object GradTabPage6: TGradTabPage
+        Left = 32
+        Height = 500
+        Top = 2
+        Width = 84
+        ControlState = [csVisibleSetInLoading]
+        ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csDesignFixedBounds]
+        Caption = 'GradTabPage6'
+        ShowCloseButton = True
       end
     end
   end
   object Panel2: TPanel
     Left = 764
-    Height = 500
+    Height = 506
     Width = 134
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 500
+    ClientHeight = 506
     ClientWidth = 134
     TabOrder = 2
     object ComboBox1: TComboBox
@@ -656,9 +659,9 @@ object Form1: TForm1
       Width = 10
     end
     object GradButton5: TGradButton
-      Left = 23
+      Left = 44
       Height = 24
-      Top = 344
+      Top = 336
       Width = 21
       Font.Name = 'System'
       Font.Style = [fsBold]
@@ -680,9 +683,9 @@ object Form1: TForm1
       ClickColor = clBtnFace
     end
     object ScrollBox1: TScrollBox
-      Left = -34
+      Left = -36
       Height = 150
-      Top = 400
+      Top = 320
       Width = 150
       HorzScrollBar.Page = 145
       VertScrollBar.Page = 145
@@ -692,7 +695,7 @@ object Form1: TForm1
   end
   object Splitter1: TSplitter
     Left = 759
-    Height = 500
+    Height = 506
     Width = 5
   end
   object PopupMenu1: TPopupMenu
