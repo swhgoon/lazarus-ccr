@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 194
+  Left = 81
   Height = 506
-  Top = 169
+  Top = 164
   Width = 898
   Caption = 'Form1'
   ClientHeight = 506
@@ -14,6 +14,7 @@ object Form1: TForm1
     Height = 104
     Top = 88
     Width = 176
+    Caption = 'GradButton1'
     OnClick = GradButton1Click
     OnMouseDown = GradButton1MouseDown
     OnMouseEnter = GradButton1MouseEnter
@@ -24,7 +25,6 @@ object Form1: TForm1
     TabStop = True
     NormalBlend = 0.5
     OverBlend = 0.653
-    Caption = 'GradButton1'
     BaseColor = clBlue
     Color = clBlue
     NormalBlendColor = clWhite
@@ -32,6 +32,10 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
+    Glyph.Data = {
+      3A000000424D3A00000000000000360000002800000001000000010000000100
+      18000000000004000000640000006400000000000000000000009451DC00
+    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -83,7 +87,7 @@ object Form1: TForm1
         PageIndex = 2
         Caption = 'GradTabPage3'
         object Memo1: TMemo
-          Left = 38
+          Left = 6
           Height = 362
           Top = 49
           Width = 326
@@ -499,6 +503,7 @@ object Form1: TForm1
       Align = alRight
       ControlStyle = [csAcceptsControls]
       ActivePage = GradTabPage6
+      PageIndex = 1
       TabHeight = 30
       TabPosition = tpLeft
       object GradTabPage7: TGradTabPage
@@ -508,7 +513,6 @@ object Form1: TForm1
         Width = 84
         ControlState = [csVisibleSetInLoading]
         ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csNoDesignVisible, csDesignFixedBounds, csNoDesignSelectable]
-        PageIndex = 1
         Caption = 'GradTabPage7'
       end
       object GradTabPage6: TGradTabPage
@@ -518,6 +522,7 @@ object Form1: TForm1
         Width = 84
         ControlState = [csVisibleSetInLoading]
         ControlStyle = [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks, csDesignFixedBounds]
+        PageIndex = 1
         Caption = 'GradTabPage6'
         ShowCloseButton = True
       end
@@ -548,12 +553,12 @@ object Form1: TForm1
       Height = 25
       Top = 48
       Width = 100
+      Caption = 'Add'
       OnClick = GradButton3Click
       TabOrder = 1
       TabStop = True
       NormalBlend = 0.5
       OverBlend = 0.653
-      Caption = 'Add'
       BaseColor = clBlue
       Color = clBlue
       NormalBlendColor = clWhite
@@ -561,6 +566,10 @@ object Form1: TForm1
       BackgroundColor = clBtnFace
       BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
       ShowFocusBorder = True
+      Glyph.Data = {
+        3A000000424D3A00000000000000360000002800000001000000010000000100
+        1800000000000400000064000000640000000000000000000000FC8FE500
+      }
       GlyphBackgroundColor = clWhite
       ClickColor = clBlue
     end
@@ -569,12 +578,12 @@ object Form1: TForm1
       Height = 25
       Top = 112
       Width = 100
+      Caption = 'Delete'
       OnClick = GradButton4Click
       TabOrder = 2
       TabStop = True
       NormalBlend = 0.5
       OverBlend = 0.653
-      Caption = 'Delete'
       BaseColor = clBlue
       Color = clBlue
       NormalBlendColor = clWhite
@@ -582,6 +591,10 @@ object Form1: TForm1
       BackgroundColor = clBtnFace
       BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
       ShowFocusBorder = True
+      Glyph.Data = {
+        3A000000424D3A00000000000000360000002800000001000000010000000100
+        1800000000000400000064000000640000000000000000000000ACA4E500
+      }
       GlyphBackgroundColor = clWhite
       ClickColor = clBlue
     end
@@ -590,12 +603,12 @@ object Form1: TForm1
       Height = 25
       Top = 80
       Width = 100
+      Caption = 'Add Custom Page'
       OnClick = GradButton2Click
       TabOrder = 3
       TabStop = True
       NormalBlend = 0.5
       OverBlend = 0.653
-      Caption = 'Add Custom Page'
       BaseColor = clBlue
       Color = clBlue
       NormalBlendColor = clWhite
@@ -603,6 +616,10 @@ object Form1: TForm1
       BackgroundColor = clBtnFace
       BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
       ShowFocusBorder = True
+      Glyph.Data = {
+        3A000000424D3A00000000000000360000002800000001000000010000000100
+        18000000000004000000640000006400000000000000000000008C440700
+      }
       GlyphBackgroundColor = clWhite
       ClickColor = clBlue
     end
@@ -662,14 +679,14 @@ object Form1: TForm1
       Left = 44
       Height = 24
       Top = 336
-      Width = 21
+      Width = 24
+      Caption = 'X'
       Font.Name = 'System'
       Font.Style = [fsBold]
       TabOrder = 8
       TabStop = True
       NormalBlend = 0.5
       OverBlend = 0.653
-      Caption = 'X'
       BaseColor = clBtnFace
       Color = clBtnFace
       NormalBlendColor = clBtnFace
@@ -679,13 +696,17 @@ object Form1: TForm1
       BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
       ShowFocusBorder = True
       RotateDirection = rdRight
+      Glyph.Data = {
+        3A000000424D3A00000000000000360000002800000001000000010000000100
+        1800000000000400000064000000640000000000000000000000FCCFE100
+      }
       GlyphBackgroundColor = clWhite
       ClickColor = clBtnFace
     end
     object ScrollBox1: TScrollBox
-      Left = -36
+      Left = -28
       Height = 150
-      Top = 320
+      Top = 336
       Width = 150
       HorzScrollBar.Page = 145
       VertScrollBar.Page = 145

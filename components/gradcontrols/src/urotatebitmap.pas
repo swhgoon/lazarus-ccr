@@ -66,7 +66,7 @@ type
     private
        FBitmap : TBitmap;
        FText : String;
-       procedure SetText(Value: String);
+       procedure SetText(const Value: String);
        function GetCanvas : TCanvas;
        procedure PaintText;
     public
@@ -240,7 +240,7 @@ begin
     PaintText;
 end;
 
-procedure TRotatedText.SetText(Value: String);
+procedure TRotatedText.SetText(const Value: String);
 begin
     if FText <> Value then
     begin
@@ -261,12 +261,24 @@ var
 begin
     TextSize := FBitmap.Canvas.TextExtent(FText);
 
-    FBitmap.Width:=TextSize.cx;
-    FBitmap.Height:=TextSize.cy;
+    {$ifdef LCLWin32}
+    //win32 does not comput correct text extent when Italic style is set.
+    //small workaround to this bug
+    //not sure if other widgetsets alsoa have this bug. Enable it only for win32 for now
+    if fsItalic in FBitmap.Canvas.Font.Style then
+      Inc(TextSize.cx, 4);
+    {$endif}
+    FBitmap.SetSize(TextSize.cx, TextSize.cy);
 
-    FBitmap.Canvas.FillRect(0,0,FBitmap.Width, FBitmap.Height);
+    //check to allow Text with Fuchsia color
+    if FBitmap.Canvas.Font.Color = clFuchsia then
+      FBitmap.Canvas.Brush.Color := clWhite
+    else
+      FBitmap.Canvas.Brush.Color := clFuchsia;
 
-    FBitmap.Canvas.TextOut(0,0,FText);
+    FBitmap.Canvas.FillRect(0,0, FBitmap.Width, FBitmap.Height);
+
+    FBitmap.Canvas.TextOut(0,0, FText);
 
     Inherited LoadBitmap(FBitmap);
 end;

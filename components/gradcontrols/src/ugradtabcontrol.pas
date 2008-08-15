@@ -32,7 +32,7 @@ type
        procedure SetShowCloseButton(AValue: Boolean);
   protected
        procedure SetRotateDirection(const Value: TRotateDirection); override;
-       procedure SetText(const Value: TCaption); override;
+       procedure RealSetText(const Value: TCaption); override;
   public
        constructor Create(AOwner: TComponent); override;
        procedure Resize; override;
@@ -350,7 +350,7 @@ end;
 {-------------------------------------------------------------------------------
   TGradTabPageButton.SetText(const Value: TCaption)
  ------------------------------------------------------------------------------}
-procedure TGradTabPageButton.SetText(const Value: TCaption);
+procedure TGradTabPageButton.RealSetText(const Value: TCaption);
 var
    NewCaption : TCaption;
 begin
@@ -359,7 +359,7 @@ begin
    {if FShowCloseButton then
       NewCaption := NewCaption+'    ';}
 
-   inherited SetText(NewCaption);
+   inherited RealSetText(NewCaption);
 
    AlignCloseButton;
 

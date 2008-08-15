@@ -298,7 +298,7 @@ begin
 
   ComboBox1.ItemIndex:=ComboBox1.Items.Add('Custom_'+IntToStr(GradTabControl1.Tabs.Count-1));
 
-  WriteLn('CustomIndex: ', IntToStr(C));
+  //WriteLn('CustomIndex: ', IntToStr(C));
   
   GradTabControl1.Pages[C].Color:=clRed;
   GradTabControl1.Pages[C].Caption:=ComboBox1.Text; //WICHTIG, eine Caption muss für

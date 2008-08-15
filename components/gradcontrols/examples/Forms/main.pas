@@ -14,17 +14,22 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    BoldCheckBox: TCheckBox;
+    ItalicCheckBox: TCheckBox;
+    Label12: TLabel;
+    TextColorButton: TGradButton;
+    UnderlineCheckBox: TCheckBox;
     CheckGroup1: TCheckGroup;
     CheckGroup2: TCheckGroup;
     ColorDialog1: TColorDialog;
     b: TGradButton;
-    GradButton1: TGradButton;
-    GradButton2: TGradButton;
-    GradButton3: TGradButton;
+    BaseColorButton: TGradButton;
+    NormalBlendColorButton: TGradButton;
+    OverBlendButton: TGradButton;
     GradButton4: TGradButton;
-    GradButton5: TGradButton;
-    GradButton6: TGradButton;
-    GradButton7: TGradButton;
+    GlyphBackgroundColorButton: TGradButton;
+    ClickColorButton: TGradButton;
+    DisabledColorButton: TGradButton;
     ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
@@ -46,13 +51,15 @@ type
     TrackBar1: TTrackBar;
     TrackBar2: TTrackBar;
     procedure bClick(Sender: TObject);
+    procedure BoldCheckBoxChange(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure CheckGroup2ItemClick(Sender: TObject; Index: integer);
     procedure BaseColorClick(Sender: TObject);
     procedure GradButton4Click(Sender: TObject);
-    procedure GradButton5Click(Sender: TObject);
-    procedure GradButton6Click(Sender: TObject);
-    procedure GradButton7Click(Sender: TObject);
+    procedure GlyphBackgroundColorButtonClick(Sender: TObject);
+    procedure ClickColorButtonClick(Sender: TObject);
+    procedure DisabledColorButtonClick(Sender: TObject);
+    procedure ItalicCheckBoxChange(Sender: TObject);
     procedure NormalBlendClick(Sender: TObject);
     procedure OverBlendClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -60,10 +67,12 @@ type
     procedure RadioGroup2Click(Sender: TObject);
     procedure RadioGroup3Click(Sender: TObject);
     procedure RadioGroup4Click(Sender: TObject);
+    procedure TextColorButtonClick(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
     procedure TrackBar2Change(Sender: TObject);
     procedure LabeledEdit1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+    procedure UnderlineCheckBoxChange(Sender: TObject);
   end;
 
 var
@@ -73,6 +82,12 @@ implementation
 
 uses
     GraphType, LazPNG;
+
+procedure UpdateButtonColor(Button: TGradButton; Color: TColor);
+begin
+  Button.BaseColor := Color;
+  Button.Caption := ColorToString(Color);
+end;
 
 { TForm1 }
 
@@ -84,23 +99,13 @@ begin
   TrackBar2.Position:= trunc(b.OverBlend * TrackBar2.Max);
   TrackBar2Change(TrackBar2);
 
-  with GradButton1 do
-  begin
-      BaseColor:=b.BaseColor;
-      Caption:=ColorToString(BaseColor);
-  end;
-  
-  with GradButton2 do
-  begin
-      BaseColor:=b.NormalBlendColor;
-      Caption:=ColorToString(BaseColor);
-  end;
-  
-  with GradButton3 do
-  begin
-      BaseColor:=b.OverBlendColor;
-      Caption:=ColorToString(BaseColor);
-  end;
+  UpdateButtonColor(BaseColorButton, b.BaseColor);
+  UpdateButtonColor(NormalBlendColorButton, b.NormalBlendColor);
+  UpdateButtonColor(OverBlendButton, b.OverBlendColor);
+  UpdateButtonColor(GlyphBackgroundColorButton, b.GlyphBackgroundColor);
+  UpdateButtonColor(ClickColorButton, b.ClickColor);
+  UpdateButtonColor(DisabledColorButton, b.DisabledColor);
+  UpdateButtonColor(TextColorButton, b.Font.Color);
 
   CheckGroup1.Checked[0]:=true;
   CheckGroup1.Checked[1]:=true;
@@ -116,14 +121,6 @@ begin
 
   //ImageList1.GetBitmap();
 
-  b.GlyphBackgroundColor:=clWhite;
-  GradButton5.BaseColor:=clWhite;
-  GradButton5.Caption:=ColorToString(clWhite);
-  GradButton6.Caption:=ColorToString(GradButton6.BaseColor);
-  GradButton7.Caption:=ColorToString(b.DisabledColor);
-  GradButton7.BaseColor:=b.DisabledColor;
-  
-  b.ClickColor:=GradButton6.BaseColor;
   b.Caption:=LabeledEdit1.Text;
 end;
 
@@ -165,14 +162,23 @@ begin
   end;
 end;
 
+procedure TForm1.TextColorButtonClick(Sender: TObject);
+begin
+  ColorDialog1.Color := b.Font.Color;
+  if ColorDialog1.Execute then
+  begin
+    b.Font.Color := ColorDialog1.Color;
+    UpdateButtonColor(TextColorButton, ColorDialog1.Color);
+  end;
+end;
+
 procedure TForm1.BaseColorClick(Sender: TObject);
 begin
-    ColorDialog1.Color:=GradButton1.BaseColor;
+    ColorDialog1.Color:=BaseColorButton.BaseColor;
     if ColorDialog1.Execute then
     begin
         b.BaseColor:=ColorDialog1.Color;
-        GradButton1.BaseColor:=ColorDialog1.Color;
-        GradButton1.Caption:=ColorToString(GradButton1.BaseColor);
+        UpdateButtonColor(BaseColorButton, ColorDialog1.Color);
     end;
 end;
 
@@ -212,37 +218,42 @@ begin
   end;
 end;
 
-procedure TForm1.GradButton5Click(Sender: TObject);
+procedure TForm1.GlyphBackgroundColorButtonClick(Sender: TObject);
 begin
    ColorDialog1.Color:=b.GlyphBackgroundColor;
    if ColorDialog1.Execute then
    begin
        b.GlyphBackgroundColor:=ColorDialog1.Color;
-       GradButton5.BaseColor:=ColorDialog1.Color;
-       GradButton5.Caption:=ColorToString(GradButton5.BaseColor);
+       UpdateButtonColor(GlyphBackgroundColorButton, ColorDialog1.Color);
    end;
 end;
 
-procedure TForm1.GradButton6Click(Sender: TObject);
+procedure TForm1.ClickColorButtonClick(Sender: TObject);
 begin
     ColorDialog1.Color:=b.ClickColor;
     if ColorDialog1.Execute then
     begin
         b.ClickColor:=ColorDialog1.Color;
-        GradButton6.BaseColor:=ColorDialog1.Color;
-        GradButton6.Caption:=ColorToString(GradButton6.BaseColor);
+        UpdateButtonColor(ClickColorButton, ColorDialog1.Color);
     end;
 end;
 
-procedure TForm1.GradButton7Click(Sender: TObject);
+procedure TForm1.DisabledColorButtonClick(Sender: TObject);
 begin
     ColorDialog1.Color:=b.DisabledColor;
     if ColorDialog1.Execute then
     begin
         b.DisabledColor:=ColorDialog1.Color;
-        GradButton7.BaseColor:=ColorDialog1.Color;
-        GradButton7.Caption:=ColorToString(GradButton7.BaseColor);
+        UpdateButtonColor(DisabledColorButton, ColorDialog1.Color);
     end;
+end;
+
+procedure TForm1.ItalicCheckBoxChange(Sender: TObject);
+begin
+  if ItalicCheckBox.Checked then
+    b.Font.Style := b.Font.Style + [fsItalic]
+  else
+    b.Font.Style := b.Font.Style - [fsItalic];
 end;
 
 procedure TForm1.LabeledEdit1KeyUp(Sender: TObject; var Key: Word;
@@ -251,14 +262,21 @@ begin
   b.Caption:=LabeledEdit1.Text;
 end;
 
+procedure TForm1.UnderlineCheckBoxChange(Sender: TObject);
+begin
+  if UnderlineCheckBox.Checked then
+    b.Font.Style := b.Font.Style + [fsUnderline]
+  else
+    b.Font.Style := b.Font.Style - [fsUnderline];
+end;
+
 procedure TForm1.NormalBlendClick(Sender: TObject);
 begin
     ColorDialog1.Color:=b.NormalBlendColor;
     if ColorDialog1.Execute then
     begin
         b.NormalBlendColor:=ColorDialog1.Color;
-        GradButton2.BaseColor:=ColorDialog1.Color;
-        GradButton2.Caption:=ColorToString(GradButton2.BaseColor);
+        UpdateButtonColor(NormalBlendColorButton, ColorDialog1.Color);
     end;
 end;
 
@@ -268,14 +286,21 @@ begin
     if ColorDialog1.Execute then
     begin
         b.OverBlendColor:=ColorDialog1.Color;
-        GradButton3.BaseColor:=ColorDialog1.Color;
-        GradButton3.Caption:=ColorToString(GradButton3.BaseColor);
+        UpdateButtonColor(OverBlendButton, ColorDialog1.Color);
     end;
 end;
 
 procedure TForm1.bClick(Sender: TObject);
 begin
 
+end;
+
+procedure TForm1.BoldCheckBoxChange(Sender: TObject);
+begin
+  if BoldCheckBox.Checked then
+    b.Font.Style := b.Font.Style + [fsBold]
+  else
+    b.Font.Style := b.Font.Style - [fsBold];
 end;
 
 procedure TForm1.CheckGroup1ItemClick(Sender: TObject; Index: integer);

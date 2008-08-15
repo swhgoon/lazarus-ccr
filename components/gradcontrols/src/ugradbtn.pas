@@ -35,9 +35,8 @@ type
 
     TGradButton = class(TCustomControl)
     private
-       FCaption : TCaption;
        FRotateDirection : TRotateDirection;
-FTextAlignment : TTextAlignment;
+       FTextAlignment : TTextAlignment;
        FButtonLayout: TButtonLayout;
        FTextPoint, FGlyphPoint : TPoint;
        FTextSize, FGlyphSize : TSize;
@@ -65,11 +64,11 @@ FTextAlignment : TTextAlignment;
        FBaseColor, FNormalBlendColor, FOverBlendColor, FDisabledColor,
          FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
        procedure InvPaint(StateCheck:Boolean=false);
+       procedure FontChanged(Sender: TObject); override;
        procedure GetBackgroundRect(var TheRect : TRect);
        function GetGlyph : TBitmap;
        procedure SetEnabled(Value: Boolean); override;
        procedure SetAutoWidth(const Value : Boolean); virtual;
-       procedure SetText(const Value: TCaption); virtual;
        procedure SetNormalBlend(const Value: Extended); virtual;
        procedure SetOverBlend(const Value: Extended); virtual;
        procedure SetBaseColor(const Value: TColor);  virtual;
@@ -90,6 +89,7 @@ FTextAlignment : TTextAlignment;
        procedure SetName(const Value: TComponentName); override;
        procedure SetShowFocusBorder(const Value: Boolean); virtual;
        procedure SetGlyph(const Value: TBitmap); virtual;
+       procedure TextChanged; override;
     public
        constructor Create(AOwner: TComponent); override;
        destructor Destroy; override;
@@ -116,6 +116,7 @@ FTextAlignment : TTextAlignment;
        property Action;
        property Anchors;
        property Align;
+       property Caption;
        property Enabled;
        property PopupMenu;
        property Font;
@@ -136,7 +137,6 @@ FTextAlignment : TTextAlignment;
        property TabStop;
        property NormalBlend : Extended read FNormalBlend write SetNormalBlend;
        property OverBlend : Extended read FOverBlend write SetOverBlend;
-       property Caption: TCaption read FCaption write SetText;
        property BaseColor: TColor read FBaseColor write SetBaseColor;
        property Color: TColor read FBaseColor write SetBaseColor;
        property NormalBlendColor: TColor read FNormalBlendColor write SetNormalBlendColor;
@@ -207,6 +207,19 @@ begin
     //FRotatedGlyph.Update;
 
     //UpdateGlyph;
+end;
+
+procedure TGradButton.TextChanged;
+begin
+  inherited TextChanged;
+  FRotatedText.Text := Caption;
+
+   if FAutoWidth then
+      UpdateButton
+   else
+      UpdatePositions;
+
+   InvPaint;
 end;
     
 procedure TGradButton.SetName(const Value: TComponentName);
@@ -950,17 +963,12 @@ begin
   end;
 end;
 
-procedure TGradButton.SetText(const Value: TCaption);
+procedure TGradButton.FontChanged(Sender: TObject);
 begin
-     FCaption:=Value;
-     FRotatedText.Text:=Value;
-     
-     if FAutoWidth then
-        UpdateButton
-     else
-        UpdatePositions;
-     
-     InvPaint;
+  inherited FontChanged(Sender);
+  FRotatedText.Canvas.Font := Font;
+  FRotatedText.Update;
+  UpdatePositions;
 end;
 
 procedure TGradButton.DoEnter;
@@ -1007,22 +1015,6 @@ begin
       
    with bm do
    begin
-   Canvas.Font.Color := Self.Font.Color;
-   Canvas.Font := Self.Font;
-
-   if FRotatedText.Canvas.Font.Color <> Self.Font.Color then
-   begin
-       FRotatedText.Canvas.Font.Color:=Self.Font.Color;
-       FRotatedText.Update;
-       UpdatePositions;
-   end;
-
-   if not FRotatedText.Canvas.Font.IsEqual(Self.Font) then
-   begin
-       FRotatedText.Canvas.Font := Self.Font;
-       FRotatedText.Update;
-       UpdatePositions;
-   end;
 
    Width := Self.Width;
    Height := Self.Height;
@@ -1044,13 +1036,9 @@ begin
      else Canvas.Draw(0,0,FDisabledBackgroundCache);
    end;
    
-   if (Caption <> '') then begin
+   if Caption <> '' then
       FRotatedText.Draw(FTextPoint.x+p, FTextPoint.y+p, bm);
-   end else if (csDesigning in ComponentState) then begin
-      FRotatedText.Text:=Name;
-      FRotatedText.Draw(FTextPoint.x+p, FTextPoint.y+p, bm);
-   end;
-   
+
    if FShowGlyph then
    begin
       if not FEnabled then

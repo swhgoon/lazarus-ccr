@@ -15,7 +15,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="498"/>
+      <CurrentBuildNr Value="508"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>
@@ -71,7 +71,7 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="Forms/\"/>
+      <OtherUnitFiles Value="Forms\"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
