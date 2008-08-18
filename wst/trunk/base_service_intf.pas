@@ -350,10 +350,46 @@ type
     property Second : Integer read FSecond;
   end;
   
-  TDurationRemotable = class(TBaseDateRemotable)
-  protected
-    //class function FormatDate(const ADate : TDateTime):string;override;
-    //class function ParseDate(const ABuffer : string):TDateTime;override;
+  { TDurationRemotable }
+
+  TDurationRemotable = class(TAbstractSimpleRemotable)
+  private
+    FDay : PtrUInt;
+    FFractionalSecond : PtrUInt;
+    FHour : PtrUInt;
+    FMinute : PtrUInt;
+    FMonth : PtrUInt;
+    FNegative : Boolean;
+    FSecond : PtrUInt;
+    FYear : PtrUInt;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    procedure Clear();
+    procedure Parse(const ABuffer : string);
+    function AsString() : string;
+    
+    property Negative : Boolean read FNegative write FNegative;
+    property Year : PtrUInt read FYear write FYear;
+    property Month : PtrUInt read FMonth write FMonth;
+    property Day : PtrUInt read FDay write FDay;
+    property Hour : PtrUInt read FHour write FHour;
+    property Minute : PtrUInt read FMinute write FMinute;
+    property Second : PtrUInt read FSecond write FSecond;
+    property FractionalSecond : PtrUInt read FFractionalSecond write FFractionalSecond;
   end;
 
   TTimeRemotable = class(TBaseDateRemotable)
@@ -5709,6 +5745,223 @@ begin
   FreeAndNil(TypeRegistryInstance);
 end;
 
+
+{ TDurationRemotable }
+
+class procedure TDurationRemotable.Save(
+        AObject   : TBaseRemotable;
+        AStore    : IFormatterBase;
+  const AName     : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  buffer := TDurationRemotable(AObject).AsString();
+  AStore.BeginObject(AName,ATypeInfo);
+  try
+    AStore.PutScopeInnerValue(TypeInfo(string),buffer);
+  finally
+    AStore.EndScope();
+  end;
+end;
+
+class procedure TDurationRemotable.Load(
+  var AObject     : TObject;
+      AStore      : IFormatterBase;
+  var AName       : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  strBuffer : string;
+begin
+  if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+    try
+      strBuffer := '';
+      AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
+      TDurationRemotable(AObject).Parse(strBuffer);
+    finally
+      AStore.EndScopeRead();
+    end;
+  end;
+end;
+
+procedure TDurationRemotable.Assign(Source : TPersistent);
+var
+  src : TDurationRemotable;
+begin
+  if ( Source <> nil ) and Source.InheritsFrom(TDurationRemotable) then begin
+    src := TDurationRemotable(Source);
+    Self.FYear := src.FYear;
+    Self.FMonth := src.FMonth;
+    Self.FDay := src.FDay;
+    Self.FHour := src.FHour;
+    Self.FMinute := src.FMinute;
+    Self.FSecond := src.FSecond;
+    Self.FFractionalSecond := src.FFractionalSecond;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+function TDurationRemotable.Equal(const ACompareTo : TBaseRemotable) : Boolean;
+var
+  src : TDurationRemotable;
+begin
+  if ( Self = ACompareTo ) then begin
+    Result := True;
+  end else begin
+    if ( ACompareTo <> nil ) and ACompareTo.InheritsFrom(TDurationRemotable) then begin
+      src := TDurationRemotable(ACompareTo);
+      Result := ( Self.FYear = src.FYear ) and
+                ( Self.FMonth = src.FMonth ) and
+                ( Self.FDay = src.FDay ) and
+                ( Self.FHour = src.FHour ) and
+                ( Self.FMinute = src.FMinute ) and
+                ( Self.FSecond = src.FSecond ) and
+                ( Self.FFractionalSecond = src.FFractionalSecond );
+    end else begin
+      Result := inherited Equal(ACompareTo);
+    end;
+  end;
+end;
+
+procedure TDurationRemotable.Clear();
+begin
+  FYear := 0;
+  FMonth := 0;
+  FDay := 0;
+  FHour := 0;
+  FMinute := 0;
+  FSecond := 0;
+  FFractionalSecond := 0;
+  FNegative := False;
+end;
+
+type TDatePart = ( dpNone, dpYear, dpMonth, dpDay, dpHour, dpMinute, dpSecond, dpFractionalSecond );
+procedure TDurationRemotable.Parse(const ABuffer : string);
+
+  procedure RaiseInvalidBuffer();{$IFDEF USE_INLINE}inline;{$ENDIF}
+  begin
+    raise EConvertError.CreateFmt('Invalid duration string : ',[ABuffer]);
+  end;
+  
+var
+  pc : PChar;
+  locIntBuffer : array[dpYear..dpFractionalSecond] of PtrUInt;
+  i, bufferLength, lastPos : PtrInt;
+  localBuffer : string;
+  part, oldPart : TDatePart;
+  inTimePart : Boolean;
+  isNeg : Boolean;
+begin
+  bufferLength := Length(ABuffer);
+  if ( bufferLength < 3 ) then
+    RaiseInvalidBuffer();
+  pc := PChar(ABuffer);
+  i := 1;
+  isNeg := False;
+  if ( pc^ = '-' ) then begin
+    Inc(pc); Inc(i);
+    isNeg := True;
+  end;
+  if ( pc^ <> 'P' ) then
+    RaiseInvalidBuffer();
+  Inc(pc); Inc(i); //eat 'P'
+  FillChar(locIntBuffer,SizeOf(locIntBuffer),#0);
+  part := dpNone;
+  inTimePart := False;
+
+  if ( pc^ = 'T' ) then begin
+    inTimePart := True;
+    Inc(pc); Inc(i);
+  end;
+  repeat
+    lastPos := i;
+    while ( i < bufferLength ) and ( pc^ in ['0'..'9'] ) do begin
+      Inc(pc); Inc(i);
+    end;
+    if ( ( lastPos = i ) and ( pc^ <> 'T' ) ) then
+      RaiseInvalidBuffer();
+    localBuffer := Copy(ABuffer,lastPos,( i - lastPos ));
+    oldPart := part;
+    case pc^ of
+      'Y' : part := dpYear;
+      'M' :
+        begin
+          if inTimePart then
+            part := dpMinute
+          else
+            part := dpMonth;
+        end;
+      'D' : part := dpDay;
+      'H' : part := dpHour;
+      'S', '.' :
+        begin
+          if ( part < dpSecond ) then
+            part := dpSecond
+          else
+            part := dpFractionalSecond;
+        end;
+      'T' :
+        begin
+          inTimePart := True;
+          oldPart := dpNone;
+          part := dpNone;
+        end;
+      else
+        RaiseInvalidBuffer();
+    end;
+    if inTimePart and ( part in [dpYear..dpDay] ) then
+      RaiseInvalidBuffer();
+    if ( part > dpNone ) then begin
+      if ( part < oldPart ) then
+        RaiseInvalidBuffer();
+      locIntBuffer[part] := StrToInt(localBuffer);
+    end;
+    Inc(pc); Inc(i);
+  until ( i >= bufferLength );
+  if ( i = bufferLength ) then
+    RaiseInvalidBuffer();
+  FNegative := isNeg;
+  FYear := locIntBuffer[dpYear];
+  FMonth := locIntBuffer[dpMonth];
+  FDay := locIntBuffer[dpDay];
+  FHour := locIntBuffer[dpHour];
+  FMinute := locIntBuffer[dpMinute];
+  FSecond := locIntBuffer[dpSecond];
+  FFractionalSecond := locIntBuffer[dpFractionalSecond];
+end;
+
+function TDurationRemotable.AsString() : string;
+var
+  strTime, strDate : string;
+begin
+  if ( FractionalSecond > 0 ) then begin
+    strTime := IntToStr(Second) + '.' + IntToStr(FractionalSecond) + 'S';
+  end else begin
+    if ( Second > 0 ) then
+      strTime := IntToStr(Second) + 'S';
+  end;
+  if ( Minute > 0 ) then
+    strTime := IntToStr(Minute) + 'M' + strTime;
+  if ( Hour > 0 ) then
+    strTime := IntToStr(Hour) + 'H' + strTime;
+  if ( Day > 0 ) then
+    strDate := IntToStr(Day) + 'D';
+  if ( Month > 0 ) then
+    strDate := IntToStr(Month) + 'M' + strDate;
+  if ( Year > 0 ) then
+    strDate := IntToStr(Year) + 'Y' + strDate;
+  if ( strTime <> '' ) then
+    Result := 'T' + strTime;
+  Result := strDate + Result;
+  if ( Result = '' ) then
+    Result := '0Y';
+  Result := 'P' + Result;
+  if Negative and ( ( strDate <> '' ) or ( strTime <> '' ) ) then
+    Result := '-' + Result;
+end;
 
 initialization
   initialize_base_service_intf();

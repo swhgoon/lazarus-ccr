@@ -311,8 +311,21 @@ type
 
   TTest_TDurationRemotable = class(TTestCase)
   published
-    procedure FormatDate();
-    procedure ParseDate();
+    procedure Clear();
+    procedure AsString_empty();
+    procedure AsString_not_empty();
+    procedure AsString_date_only();
+    procedure AsString_time_only();
+    procedure Parse_non_empty();
+    procedure Parse_time_only();
+    procedure Parse_zero();
+    procedure parse_negative();
+    procedure parse_invalid_1();
+    procedure parse_invalid_2();
+    procedure parse_invalid_3();
+    procedure parse_invalid_4();
+    procedure parse_invalid_5();
+    procedure parse_empty();
   end;
 
   { TTest_TTimeRemotable }
@@ -2258,14 +2271,451 @@ end;
 
 { TTest_TDurationRemotable }
 
-procedure TTest_TDurationRemotable.FormatDate();
+procedure TTest_TDurationRemotable.Clear();
+var
+  x : TDurationRemotable;
 begin
-  Fail('Write me!');
+  x := TDurationRemotable.Create();
+  try
+    x.Negative := True;
+    x.Year := 1;
+    x.Month := 2;
+    x.Day := 3;
+    x.Hour := 4;
+    x.Minute := 5;
+    x.Second := 6;
+    x.FractionalSecond := 7;
+    x.Clear();
+    CheckEquals(False,x.Negative);
+    CheckEquals(0,x.Year);
+    CheckEquals(0,x.Month);
+    CheckEquals(0,x.Day);
+    CheckEquals(0,x.Hour);
+    CheckEquals(0,x.Minute);
+    CheckEquals(0,x.Second);
+    CheckEquals(0,x.FractionalSecond);
+  finally
+    x.Free();
+  end;
 end;
 
-procedure TTest_TDurationRemotable.ParseDate();
+procedure TTest_TDurationRemotable.AsString_empty();
+var
+  x : TDurationRemotable;
 begin
-  Fail('Write me!');
+  x := TDurationRemotable.Create();
+  try
+    CheckEquals('P0Y', x.AsString());
+    x.Negative := True;
+    CheckEquals('P0Y', x.AsString());
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.AsString_not_empty();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Year := 1;
+    x.Month := 2;
+    x.Day := 3;
+    x.Hour := 4;
+    x.Minute := 5;
+    x.Second := 6;
+    CheckEquals('P1Y2M3DT4H5M6S',x.AsString());
+    x.FractionalSecond := 7;
+    CheckEquals('P1Y2M3DT4H5M6.7S',x.AsString());
+    x.Negative := True;
+    CheckEquals('-P1Y2M3DT4H5M6.7S',x.AsString());
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.AsString_date_only();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Year := 1;
+      CheckEquals('P1Y', x.AsString());
+      x.Month := 2;
+        CheckEquals('P1Y2M', x.AsString());
+        x.Day := 3;
+          CheckEquals('P1Y2M3D', x.AsString());
+        x.Negative := True;
+          CheckEquals('-P1Y2M3D', x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Month := 12;
+      CheckEquals('P12M',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Day := 34;
+      CheckEquals('P34D',x.AsString());
+      
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Month := 12;
+    x.Day := 3;
+      CheckEquals('P12M3D',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Year := 2;
+    x.Month := 34;
+      CheckEquals('P2Y34M',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Year := 12;
+    x.Day := 56;
+      CheckEquals('P12Y56D',x.AsString());
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.AsString_time_only();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Hour := 1;
+      CheckEquals('PT1H', x.AsString());
+      x.Minute := 2;
+        CheckEquals('PT1H2M', x.AsString());
+        x.Second := 3;
+          CheckEquals('PT1H2M3S', x.AsString());
+          x.FractionalSecond := 4;
+            CheckEquals('PT1H2M3.4S', x.AsString());
+            x.Negative := True;
+              CheckEquals('-PT1H2M3.4S', x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Minute := 12;
+      CheckEquals('PT12M',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Second := 34;
+      CheckEquals('PT34S',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Minute := 12;
+    x.Second := 3;
+      CheckEquals('PT12M3S',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Hour := 2;
+    x.Minute := 34;
+      CheckEquals('PT2H34M',x.AsString());
+
+    FreeAndNil(x);
+    x := TDurationRemotable.Create();
+    x.Hour := 12;
+    x.Second := 56;
+      CheckEquals('PT12H56S',x.AsString());
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.Parse_non_empty();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Parse('P1Y2M3DT4H5M6S');
+      CheckEquals(False,x.Negative);
+      CheckEquals(1,x.Year);
+      CheckEquals(2,x.Month);
+      CheckEquals(3,x.Day);
+      CheckEquals(4,x.Hour);
+      CheckEquals(5,x.Minute);
+      CheckEquals(6,x.Second);
+      CheckEquals(0,x.FractionalSecond);
+    FreeAndNil(x);
+
+    x := TDurationRemotable.Create();
+    x.Parse('-P1Y2M3DT4H5M6S');
+      CheckEquals(True,x.Negative);
+      CheckEquals(1,x.Year);
+      CheckEquals(2,x.Month);
+      CheckEquals(3,x.Day);
+      CheckEquals(4,x.Hour);
+      CheckEquals(5,x.Minute);
+      CheckEquals(6,x.Second);
+      CheckEquals(0,x.FractionalSecond);
+    FreeAndNil(x);
+
+    x := TDurationRemotable.Create();
+    x.Parse('P1Y2M3DT4H5M6.7S');
+      CheckEquals(False,x.Negative);
+      CheckEquals(1,x.Year);
+      CheckEquals(2,x.Month);
+      CheckEquals(3,x.Day);
+      CheckEquals(4,x.Hour);
+      CheckEquals(5,x.Minute);
+      CheckEquals(6,x.Second);
+      CheckEquals(7,x.FractionalSecond);
+
+    x := TDurationRemotable.Create();
+    x.Parse('-P1Y2M3DT4H5M6.7S');
+      CheckEquals(True,x.Negative);
+      CheckEquals(1,x.Year);
+      CheckEquals(2,x.Month);
+      CheckEquals(3,x.Day);
+      CheckEquals(4,x.Hour);
+      CheckEquals(5,x.Minute);
+      CheckEquals(6,x.Second);
+      CheckEquals(7,x.FractionalSecond);
+    FreeAndNil(x);
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.Parse_time_only();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Parse('PT1H2M3.4S');
+      CheckEquals(False,x.Negative);
+      CheckEquals(0,x.Year);
+      CheckEquals(0,x.Month);
+      CheckEquals(0,x.Day);
+      CheckEquals(1,x.Hour);
+      CheckEquals(2,x.Minute);
+      CheckEquals(3,x.Second);
+      CheckEquals(4,x.FractionalSecond);
+    FreeAndNil(x);
+    
+    x := TDurationRemotable.Create();
+    x.Parse('-PT1H2M3.4S');
+      CheckEquals(True,x.Negative);
+      CheckEquals(0,x.Year);
+      CheckEquals(0,x.Month);
+      CheckEquals(0,x.Day);
+      CheckEquals(1,x.Hour);
+      CheckEquals(2,x.Minute);
+      CheckEquals(3,x.Second);
+      CheckEquals(4,x.FractionalSecond);
+    FreeAndNil(x);
+
+    x := TDurationRemotable.Create();
+    x.Parse('PT1H');
+      CheckEquals(False,x.Negative);
+      CheckEquals(0,x.Year);
+      CheckEquals(0,x.Month);
+      CheckEquals(0,x.Day);
+      CheckEquals(1,x.Hour);
+      CheckEquals(0,x.Minute);
+      CheckEquals(0,x.Second);
+      CheckEquals(0,x.FractionalSecond);
+    FreeAndNil(x);
+
+    x := TDurationRemotable.Create();
+    x.Parse('PT1S');
+      CheckEquals(False,x.Negative);
+      CheckEquals(0,x.Year);
+      CheckEquals(0,x.Month);
+      CheckEquals(0,x.Day);
+      CheckEquals(0,x.Hour);
+      CheckEquals(0,x.Minute);
+      CheckEquals(1,x.Second);
+      CheckEquals(0,x.FractionalSecond);
+    FreeAndNil(x);
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.Parse_zero();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Negative := True;
+    x.Year := 1;
+    x.Month := 2;
+    x.Day := 3;
+    x.Hour := 4;
+    x.Minute := 5;
+    x.Second := 6;
+    x.FractionalSecond := 7;
+    x.Parse('P0Y');
+    CheckEquals(False,x.Negative);
+    CheckEquals(0,x.Year);
+    CheckEquals(0,x.Month);
+    CheckEquals(0,x.Day);
+    CheckEquals(0,x.Hour);
+    CheckEquals(0,x.Minute);
+    CheckEquals(0,x.Second);
+    CheckEquals(0,x.FractionalSecond);
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_negative();
+var
+  x : TDurationRemotable;
+begin
+  x := TDurationRemotable.Create();
+  try
+    x.Parse('-P3YT4S');
+    CheckEquals(True,x.Negative);
+    CheckEquals(3,x.Year);
+    CheckEquals(0,x.Month);
+    CheckEquals(0,x.Day);
+    CheckEquals(0,x.Hour);
+    CheckEquals(0,x.Minute);
+    CheckEquals(4,x.Second);
+    CheckEquals(0,x.FractionalSecond);
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_invalid_1();
+const S_EXPR = 'P-1347M';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_invalid_2();
+const S_EXPR = 'P1Y2MT';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_invalid_3();
+const S_EXPR = 'XOJDQJKJ';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_invalid_4();
+const S_EXPR = 'P';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_invalid_5();
+const S_EXPR = 'P45DH';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TTest_TDurationRemotable.parse_empty();
+const S_EXPR = '';
+var
+  x : TDurationRemotable;
+  ok : Boolean;
+begin
+  x := TDurationRemotable.Create();
+  try
+    ok := False;
+    try
+      x.Parse(S_EXPR);
+    except
+      on e : EConvertError do
+        ok := True;
+    end;
+    Check(ok, Format('Must fail with : "%s"',[S_EXPR]));
+  finally
+    x.Free();
+  end;
 end;
 
 { TTest_TTimeRemotable }
