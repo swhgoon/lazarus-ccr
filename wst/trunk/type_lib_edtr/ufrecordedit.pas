@@ -39,6 +39,7 @@ type
     Button4 : TButton;
     Button5 : TButton;
     Button6 : TButton;
+    edtDocumentation : TMemo;
     edtName : TEdit;
     edtSourceXSD : TSynEdit;
     GroupBox1 : TGroupBox;
@@ -52,6 +53,7 @@ type
     PopupMenu1 : TPopupMenu;
     SynXMLSyn1 : TSynXMLSyn;
     TabSheet1 : TTabSheet;
+    tsDocumentation : TTabSheet;
     tsDependencies : TTabSheet;
     tsSourceXSD : TTabSheet;
     tvDependency : TTreeView;
@@ -78,6 +80,7 @@ type
     
     procedure ShowSourceXSD();
     procedure ShowDependencies();
+    procedure ShowDocumentation();
   public
     destructor Destroy();override;
     function UpdateObject(
@@ -91,7 +94,7 @@ var
   fRecordEdit : TfRecordEdit;
 
 implementation
-uses common_gui_utils, parserutils, ufpropedit, view_helper;
+uses common_gui_utils, parserutils, ufpropedit, view_helper, xsd_consts;
 
 { TfRecordEdit }
 
@@ -148,6 +151,8 @@ begin
     ShowSourceXSD();
   end else if ( PC.ActivePage = tsDependencies ) then begin
     ShowDependencies();
+  end else if ( PC.ActivePage = tsDocumentation ) then begin
+    ShowDocumentation();
   end;
 end;
 
@@ -218,6 +223,8 @@ begin
   locObj := FObject;
   locObj.Name := typIntName;
   FSymbolTable.RegisterExternalAlias(locObj,typExtName);
+  FSymbolTable.Properties.GetList(FObject).Values[s_documentation] :=
+    EncodeLineBreak(StringReplace(edtDocumentation.Lines.Text,sLineBreak,#10,[rfReplaceAll]));
   FApplied := True;
 end;
 
@@ -233,6 +240,16 @@ begin
   FDependencyList.Clear();
   FindDependencies(FObject,FSymbolTable,FDependencyList);
   DrawDependencies(tvDependency,FDependencyList);
+end;
+
+procedure TfRecordEdit.ShowDocumentation();
+var
+  props : TStrings;
+begin
+  props := FSymbolTable.Properties.FindList(FObject);
+  if ( props <> nil ) then
+    edtDocumentation.Lines.Text :=
+      StringReplace(DecodeLineBreak(props.Values[s_documentation]),#10,sLineBreak,[rfReplaceAll]);
 end;
 
 destructor TfRecordEdit.Destroy();

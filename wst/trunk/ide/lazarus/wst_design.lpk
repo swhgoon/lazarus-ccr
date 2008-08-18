@@ -22,6 +22,7 @@
       </CodeGeneration>
       <Other>
         <CustomOptions Value="-dWST_IDE
+-dWST_HANDLE_DOC
 "/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>

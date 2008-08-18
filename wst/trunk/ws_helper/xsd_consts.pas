@@ -39,6 +39,7 @@ const
   s_definitions                             = 'definitions';
   s_default                                 = 'default';
   s_document                   : WideString = 'document';
+  s_documentation                           = 'documentation';
   s_element                    : WideString = 'element';
   s_enumeration                : WideString = 'enumeration';
   s_extension                  : WideString = 'extension';

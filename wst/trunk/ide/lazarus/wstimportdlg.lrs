@@ -25,43 +25,46 @@ LazarusResources.Add('TformImport','FORMDATA',[
   +'erSpacing.InnerBorder'#2#4#8'TabOrder'#2#3#0#0#9'TCheckBox'#15'edtAddToProj'
   +'ect'#4'Left'#2#9#6'Height'#2#19#3'Top'#3#128#0#5'Width'#3#182#0#7'Caption'#6
   +'"Add the generated files to project'#8'TabOrder'#2#4#0#0#0#9'TGroupBox'#9'G'
-  +'roupBox2'#4'Left'#2#8#6'Height'#3#161#0#3'Top'#3'P'#1#5'Width'#3#250#1#7'An'
+  +'roupBox2'#4'Left'#2#8#6'Height'#3#129#0#3'Top'#3'p'#1#5'Width'#3#250#1#7'An'
   +'chors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6#12'  Mes'
-  +'sages  '#12'ClientHeight'#3#143#0#11'ClientWidth'#3#246#1#8'TabOrder'#2#2#0
-  +#5'TMemo'#6'mmoLog'#6'Height'#3#143#0#5'Width'#3#246#1#5'Align'#7#8'alClient'
-  +#8'ReadOnly'#9#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'#2#0#0#0#0#9'TGroupBox'
-  +#9'GroupBox3'#4'Left'#2#8#6'Height'#3#136#0#3'Top'#3#184#0#5'Width'#3#250#1#7
+  +'sages  '#12'ClientHeight'#2'o'#11'ClientWidth'#3#246#1#8'TabOrder'#2#2#0#5
+  +'TMemo'#6'mmoLog'#6'Height'#2'o'#5'Width'#3#246#1#5'Align'#7#8'alClient'#8'R'
+  +'eadOnly'#9#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'#2#0#0#0#0#9'TGroupBox'#9
+  +'GroupBox3'#4'Left'#2#8#6'Height'#3#168#0#3'Top'#3#184#0#5'Width'#3#250#1#7
   +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#11'  Options  '#12
-  +'ClientHeight'#2'v'#11'ClientWidth'#3#246#1#8'TabOrder'#2#1#0#9'TCheckBox'#13
-  +'edtOptionIntf'#4'Left'#2#9#6'Height'#2#19#3'Top'#2#8#5'Width'#2'T'#7'Captio'
-  +'n'#6#14'Interface file'#7'Checked'#9#7'OnClick'#7#18'edtOptionIntfClick'#5
-  +'State'#7#9'cbChecked'#8'TabOrder'#2#0#0#0#9'TCheckBox'#14'edtOptionProxy'#4
-  +'Left'#2#9#6'Height'#2#19#3'Top'#2'8'#5'Width'#2'D'#7'Caption'#6#10'Proxy fi'
-  +'le'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#2#0#0#9'TCheckBox'#15
-  +'edtOptionBinder'#4'Left'#3'&'#1#6'Height'#2#19#3'Top'#2#8#5'Width'#2'o'#7'C'
-  +'aption'#6#19'Service Binder file'#8'TabOrder'#2#3#0#0#9'TCheckBox'#12'edtOp'
-  +'tionImp'#4'Left'#3'&'#1#6'Height'#2#19#3'Top'#2'8'#5'Width'#3#158#0#7'Capti'
-  +'on'#6#28'Implementation Skeleton file'#8'TabOrder'#2#4#0#0#9'TCheckBox'#16
+  +'ClientHeight'#3#150#0#11'ClientWidth'#3#246#1#8'TabOrder'#2#1#0#9'TCheckBox'
+  +#13'edtOptionIntf'#4'Left'#2#9#6'Height'#2#19#3'Top'#2#8#5'Width'#2'T'#7'Cap'
+  +'tion'#6#14'Interface file'#7'Checked'#9#7'OnClick'#7#18'edtOptionIntfClick'
+  +#5'State'#7#9'cbChecked'#8'TabOrder'#2#0#0#0#9'TCheckBox'#14'edtOptionProxy'
+  +#4'Left'#2#9#6'Height'#2#19#3'Top'#2'8'#5'Width'#2'D'#7'Caption'#6#10'Proxy '
+  +'file'#7'Checked'#9#5'State'#7#9'cbChecked'#8'TabOrder'#2#2#0#0#9'TCheckBox'
+  +#15'edtOptionBinder'#4'Left'#3'&'#1#6'Height'#2#19#3'Top'#2#8#5'Width'#2'o'#7
+  +'Caption'#6#19'Service Binder file'#8'TabOrder'#2#3#0#0#9'TCheckBox'#12'edtO'
+  +'ptionImp'#4'Left'#3'&'#1#6'Height'#2#19#3'Top'#2'8'#5'Width'#3#158#0#7'Capt'
+  +'ion'#6#28'Implementation Skeleton file'#8'TabOrder'#2#4#0#0#9'TCheckBox'#16
   +'edtOptionIntfALL'#4'Left'#2#30#6'Height'#2#19#3'Top'#2' '#5'Width'#2'^'#7'C'
   +'aption'#6#15'Parse all types'#7'OnClick'#7#21'edtOptionIntfALLClick'#8'TabO'
   +'rder'#2#1#0#0#9'TCheckBox'#22'edtOptionWrappedParams'#4'Left'#2#9#6'Height'
-  +#2#19#3'Top'#2'`'#5'Width'#3'"'#1#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Ca'
+  +#2#19#3'Top'#2'X'#5'Width'#3'"'#1#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Ca'
   +'ption'#6'5Generate easy access interface for wrapped parameters'#8'TabOrder'
-  +#2#5#0#0#0#0#6'TPanel'#6'Panel1'#6'Height'#2'0'#3'Top'#3#249#1#5'Width'#3#14
-  +#2#5'Align'#7#8'alBottom'#12'ClientHeight'#2'0'#11'ClientWidth'#3#14#2#8'Tab'
-  +'Order'#2#0#0#7'TButton'#7'Button1'#4'Left'#3'_'#1#6'Height'#2#25#3'Top'#2#8
-  +#5'Width'#2'K'#6'Action'#7#5'actOK'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'B'
-  +'orderSpacing.InnerBorder'#2#4#7'Default'#9#8'TabOrder'#2#0#0#0#7'TButton'#7
-  +'Button4'#4'Left'#3#183#1#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#7'Anchors'
-  +#11#5'akTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Ca'
-  +'ption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#0#0#0#11'TActionList'
-  +#2'AL'#4'left'#2'h'#3'top'#3'H'#1#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'#18
-  +'DisableIfNoHandler'#9#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actO'
-  +'KUpdate'#0#0#7'TAction'#11'actOpenFile'#7'Caption'#6#3'...'#18'DisableIfNoH'
-  +'andler'#9#9'OnExecute'#7#18'actOpenFileExecute'#0#0#7'TAction'#10'actOpenDi'
-  +'r'#7'Caption'#6#3'...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#17'actOpenDi'
-  +'rExecute'#0#0#0#11'TOpenDialog'#2'OD'#6'Filter'#6#28'WSDL Files ( *.wsdl )|'
-  +'*.wsdl'#11'FilterIndex'#2#0#7'Options'#11#15'ofFileMustExist'#14'ofEnableSi'
-  +'zing'#12'ofViewDetail'#0#4'left'#3#16#1#3'top'#2' '#0#0#22'TSelectDirectory'
-  +'Dialog'#3'SDD'#11'FilterIndex'#2#0#4'left'#3#224#0#3'top'#3#176#0#0#0#0
+  +#2#5#0#0#9'TCheckBox'#16'edtDocAsComments'#4'Left'#2#9#6'Height'#2#19#3'Top'
+  +#2'w'#5'Width'#3#208#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6'"G'
+  +'enerate documentation as comments'#8'TabOrder'#2#6#0#0#0#0#6'TPanel'#6'Pane'
+  +'l1'#6'Height'#2'0'#3'Top'#3#249#1#5'Width'#3#14#2#5'Align'#7#8'alBottom'#12
+  +'ClientHeight'#2'0'#11'ClientWidth'#3#14#2#8'TabOrder'#2#0#0#7'TButton'#7'Bu'
+  +'tton1'#4'Left'#3'_'#1#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#6'Action'#7#5
+  +'actOK'#7'Anchors'#11#5'akTop'#7'akRight'#0#25'BorderSpacing.InnerBorder'#2#4
+  +#7'Default'#9#8'TabOrder'#2#0#0#0#7'TButton'#7'Button4'#4'Left'#3#183#1#6'He'
+  +'ight'#2#25#3'Top'#2#8#5'Width'#2'K'#7'Anchors'#11#5'akTop'#7'akRight'#0#25
+  +'BorderSpacing.InnerBorder'#2#4#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalR'
+  +'esult'#2#2#8'TabOrder'#2#1#0#0#0#11'TActionList'#2'AL'#4'left'#2'h'#3'top'#3
+  +'H'#1#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'#18'DisableIfNoHandler'#9#9'On'
+  +'Execute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOKUpdate'#0#0#7'TAction'#11
+  +'actOpenFile'#7'Caption'#6#3'...'#18'DisableIfNoHandler'#9#9'OnExecute'#7#18
+  +'actOpenFileExecute'#0#0#7'TAction'#10'actOpenDir'#7'Caption'#6#3'...'#18'Di'
+  +'sableIfNoHandler'#9#9'OnExecute'#7#17'actOpenDirExecute'#0#0#0#11'TOpenDial'
+  +'og'#2'OD'#6'Filter'#6#28'WSDL Files ( *.wsdl )|*.wsdl'#11'FilterIndex'#2#0#7
+  +'Options'#11#15'ofFileMustExist'#14'ofEnableSizing'#12'ofViewDetail'#0#4'lef'
+  ,'t'#3#16#1#3'top'#2' '#0#0#22'TSelectDirectoryDialog'#3'SDD'#11'FilterIndex'
+  +#2#0#4'left'#3#224#0#3'top'#3#176#0#0#0#0
 ]);

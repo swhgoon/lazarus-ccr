@@ -1,7 +1,7 @@
 object fAbout: TfAbout
   Left = 481
   Height = 182
-  Top = 291
+  Top = 277
   Width = 299
   HorzScrollBar.Page = 298
   VertScrollBar.Page = 181
@@ -12,12 +12,13 @@ object fAbout: TfAbout
   ClientHeight = 182
   ClientWidth = 299
   Position = poDesktopCenter
+  LCLVersion = '0.9.25'
   object Label1: TLabel
-    Left = 44
+    Left = 21
     Height = 14
     Top = 24
-    Width = 211
-    Caption = 'Web Services Toolkit for FPC/Lazarus'
+    Width = 261
+    Caption = 'Web Services Toolkit for FPC/Lazarus && Delphi'
     Font.Style = [fsBold]
     ParentColor = False
   end
@@ -31,11 +32,11 @@ object fAbout: TfAbout
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 49
+    Left = 32
     Height = 14
     Top = 112
-    Width = 200
-    Caption = 'Copyright (c) 2007 Inoussa OUEDRAOGO'
+    Width = 235
+    Caption = 'Copyright (c) 2007, 2008 Inoussa OUEDRAOGO.'
     ParentColor = False
   end
   object Button1: TButton

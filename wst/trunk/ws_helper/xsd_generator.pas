@@ -141,7 +141,7 @@ type
 
 implementation
 uses
-  xsd_consts, Contnrs, StrUtils, wst_types;
+  xsd_consts, Contnrs, StrUtils, wst_types, parserutils;
 
 type
 
@@ -174,6 +174,13 @@ type
             ADocument     : TDOMDocument
     );override;
     class function CanHandle(ASymbol : TObject) : Boolean;override;
+{$IFDEF WST_HANDLE_DOC}
+    procedure GenerateDocumentation(
+            AContainerNode : TDOMElement;
+      const ADocString : string;
+            ADocument  : TDOMDocument
+    );
+{$ENDIF WST_HANDLE_DOC}
   end;
   
   { TTypeAliasDefinition_TypeHandler }
@@ -437,6 +444,23 @@ begin
   Result := Assigned(ASymbol) and ASymbol.InheritsFrom(TPasType);
 end;
 
+{$IFDEF WST_HANDLE_DOC}
+procedure TTypeDefinition_TypeHandler.GenerateDocumentation(
+        AContainerNode : TDOMElement;
+  const ADocString : string;
+        ADocument  : TDOMDocument
+);
+var
+  tmpNode : TDOMElement;
+begin
+  if ( Length(Trim(ADocString)) > 0 ) then begin
+    tmpNode := CreateElement(Format('%s:%s',[s_xs_short,s_annotation]),AContainerNode,ADocument);
+    tmpNode := CreateElement(Format('%s:%s',[s_xs_short,s_documentation]),tmpNode,ADocument);
+    tmpNode.AppendChild(ADocument.CreateTextNode(ADocString));
+  end;
+end;
+{$ENDIF WST_HANDLE_DOC}
+
 { TTypeAliasDefinition_TypeHandler }
 
 procedure TTypeAliasDefinition_TypeHandler.Generate(
@@ -449,6 +473,10 @@ var
   ns_shortName, s : string;
   defSchemaNode, resNode : TDOMElement;
   unitExternalName, baseUnitExternalName : string;
+{$IFDEF WST_HANDLE_DOC}
+  i : PtrInt;
+  ls : TStrings;
+{$ENDIF WST_HANDLE_DOC}
 begin
   inherited;
   typItm := ASymbol as TPasAliasType;
@@ -465,6 +493,15 @@ begin
     s := Format('%s:%s',[s_xs_short,s_element]);
     resNode := CreateElement(s,defSchemaNode,ADocument);
     resNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
+
+{$IFDEF WST_HANDLE_DOC}
+    ls := AContainer.Properties.FindList(typItm);
+    if ( ls <> nil ) then begin
+      i := ls.IndexOfName(s_documentation);
+      if ( i >= 0 ) then
+        GenerateDocumentation(resNode,DecodeLineBreak(ls.ValueFromIndex[i]),ADocument);
+    end;
+{$ENDIF WST_HANDLE_DOC}
 
     baseUnitExternalName := GetTypeNameSpace(AContainer,typItm.DestType);
     s := GetNameSpaceShortName(baseUnitExternalName,ADocument,GetOwner().GetPreferedShortNames());
@@ -491,6 +528,9 @@ var
   defSchemaNode, resNode, restrictNode : TDOMElement;
   i, c : Integer;
   unitExternalName : string;
+{$IFDEF WST_HANDLE_DOC}
+  ls : TStrings;
+{$ENDIF WST_HANDLE_DOC}
 begin
   typItm := ASymbol as TPasEnumType;
   if Assigned(typItm) then begin
@@ -506,6 +546,15 @@ begin
     s := Format('%s:%s',[s_xs_short,s_simpleType]);
     resNode := CreateElement(s,defSchemaNode,ADocument);
     resNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
+{$IFDEF WST_HANDLE_DOC}
+    ls := AContainer.Properties.FindList(typItm);
+    if ( ls <> nil ) then begin
+      i := ls.IndexOfName(s_documentation);
+      if ( i >= 0 ) then
+        GenerateDocumentation(resNode,DecodeLineBreak(ls.ValueFromIndex[i]),ADocument);
+    end;
+{$ENDIF WST_HANDLE_DOC}
+
       s := Format('%s:%s',[s_xs_short,s_restriction]);
       restrictNode := CreateElement(s,resNode,ADocument);
       restrictNode.SetAttribute(s_base,Format('%s:%s',[s_xs_short,'string'])) ;
@@ -653,6 +702,9 @@ var
   typeCategory : TTypeCategory;
   hasSequence : Boolean;
   trueParent : TPasType;
+{$IFDEF WST_HANDLE_DOC}
+  ls : TStrings;
+{$ENDIF WST_HANDLE_DOC}
 begin
   inherited;
   typItm := ASymbol as TPasClassType;
@@ -664,11 +716,22 @@ begin
     cplxNode := CreateElement(s,defSchemaNode,ADocument);
     cplxNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
 
+{$IFDEF WST_HANDLE_DOC}
+    ls := AContainer.Properties.FindList(typItm);
+    if ( ls <> nil ) then begin
+      i := ls.IndexOfName(s_documentation);
+      if ( i >= 0 ) then
+        GenerateDocumentation(cplxNode,DecodeLineBreak(ls.ValueFromIndex[i]),ADocument);
+    end;
+{$ENDIF WST_HANDLE_DOC}
+
     typeCategory := tcComplexContent;
     derivationNode := nil;
     hasSequence := True;
     if Assigned(typItm.AncestorType) then begin
       trueParent := typItm.AncestorType;
+      if trueParent.InheritsFrom(TPasUnresolvedTypeRef) then
+        trueParent := AContainer.FindElement(AContainer.GetExternalName(trueParent)) as TPasType;
       if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
         DeclareNameSpaceOf_WST(ADocument);
         DeclareAttributeOf_WST(cplxNode,s_WST_headerBlock,'true');
@@ -739,6 +802,9 @@ var
   p : TPasVariable;
   hasSequence : Boolean;
   storeOption : string;
+{$IFDEF WST_HANDLE_DOC}
+  ls : TStrings;
+{$ENDIF WST_HANDLE_DOC}
 begin
   inherited;
   typItm := ASymbol as TPasRecordType;
@@ -752,6 +818,14 @@ begin
 
     DeclareNameSpaceOf_WST(ADocument);
     DeclareAttributeOf_WST(cplxNode,s_WST_record,'true');
+{$IFDEF WST_HANDLE_DOC}
+    ls := AContainer.Properties.FindList(typItm);
+    if ( ls <> nil ) then begin
+      i := ls.IndexOfName(s_documentation);
+      if ( i >= 0 ) then
+        GenerateDocumentation(cplxNode,DecodeLineBreak(ls.ValueFromIndex[i]),ADocument);
+    end;
+{$ENDIF WST_HANDLE_DOC}
 
     hasSequence := False;
     for i := 0 to Pred(typItm.Members.Count) do begin
@@ -839,6 +913,10 @@ var
   s, prop_ns_shortName : string;
   defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
   unitExternalName : string;
+{$IFDEF WST_HANDLE_DOC}
+  i : PtrInt;
+  ls : TStrings;
+{$ENDIF WST_HANDLE_DOC}
 begin
   inherited;
   typItm := ASymbol as TPasArrayType;
@@ -852,6 +930,14 @@ begin
     s := Format('%s:%s',[s_xs_short,s_complexType]);
     cplxNode := CreateElement(s,defSchemaNode,ADocument);
     cplxNode.SetAttribute(s_name, AContainer.GetExternalName(typItm)) ;
+{$IFDEF WST_HANDLE_DOC}
+    ls := AContainer.Properties.FindList(typItm);
+    if ( ls <> nil ) then begin
+      i := ls.IndexOfName(s_documentation);
+      if ( i >= 0 ) then
+        GenerateDocumentation(cplxNode,DecodeLineBreak(ls.ValueFromIndex[i]),ADocument);
+    end;
+{$ENDIF WST_HANDLE_DOC}
 
       s := Format('%s:%s',[s_xs_short,s_sequence]);
       sqcNode := CreateElement(s,cplxNode,ADocument);

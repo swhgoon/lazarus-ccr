@@ -33,65 +33,68 @@ LazarusResources.Add('TfTypeAliasEdit','FORMDATA',[
   +#11'ClientWidth'#3#136#1#0#8'TSynEdit'#12'edtSourceXSD'#4'Left'#2#13#6'Heigh'
   +'t'#3#200#0#3'Top'#2#10#5'Width'#3'h'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
   +'kRight'#8'akBottom'#0#11'Font.Height'#2#236#9'Font.Name'#6#7'courier'#11'Pa'
-  +'rentColor'#8#8'TabOrder'#2#0#23'BookMarkOptions.Xoffset'#2'*'#24'BookMarkOp'
-  +'tions.OnChange'#13#17'Gutter.DigitCount'#2#2#22'Gutter.ShowLineNumbers'#9#22
-  +'Gutter.ShowCodeFolding'#9#12'Gutter.Width'#2#10#15'Gutter.OnChange'#13#23'G'
-  +'utter.CodeFoldingWidth'#2#14#11'Highlighter'#7#10'SynXMLSyn1'#10'Keystrokes'
-  +#14#1#7'Command'#2#3#8'ShortCut'#2'&'#0#1#7'Command'#2'g'#8'ShortCut'#3'& '#0
-  +#1#7'Command'#3#211#0#8'ShortCut'#3'&@'#0#1#7'Command'#2#4#8'ShortCut'#2'('#0
-  +#1#7'Command'#2'h'#8'ShortCut'#3'( '#0#1#7'Command'#3#212#0#8'ShortCut'#3'(@'
-  +#0#1#7'Command'#2#1#8'ShortCut'#2'%'#0#1#7'Command'#2'e'#8'ShortCut'#3'% '#0
-  +#1#7'Command'#2#5#8'ShortCut'#3'%@'#0#1#7'Command'#2'i'#8'ShortCut'#3'%`'#0#1
-  +#7'Command'#2#2#8'ShortCut'#2''''#0#1#7'Command'#2'f'#8'ShortCut'#3''' '#0#1
-  +#7'Command'#2#6#8'ShortCut'#3'''@'#0#1#7'Command'#2'j'#8'ShortCut'#3'''`'#0#1
-  +#7'Command'#2#10#8'ShortCut'#2'"'#0#1#7'Command'#2'n'#8'ShortCut'#3'" '#0#1#7
-  +'Command'#2#14#8'ShortCut'#3'"@'#0#1#7'Command'#2'r'#8'ShortCut'#3'"`'#0#1#7
-  +'Command'#2#9#8'ShortCut'#2'!'#0#1#7'Command'#2'm'#8'ShortCut'#3'! '#0#1#7'C'
-  +'ommand'#2#13#8'ShortCut'#3'!@'#0#1#7'Command'#2'q'#8'ShortCut'#3'!`'#0#1#7
-  +'Command'#2#7#8'ShortCut'#2'$'#0#1#7'Command'#2'k'#8'ShortCut'#3'$ '#0#1#7'C'
-  +'ommand'#2#15#8'ShortCut'#3'$@'#0#1#7'Command'#2's'#8'ShortCut'#3'$`'#0#1#7
-  +'Command'#2#8#8'ShortCut'#2'#'#0#1#7'Command'#2'l'#8'ShortCut'#3'# '#0#1#7'C'
-  +'ommand'#2#16#8'ShortCut'#3'#@'#0#1#7'Command'#2't'#8'ShortCut'#3'#`'#0#1#7
-  +'Command'#3#223#0#8'ShortCut'#2'-'#0#1#7'Command'#3#201#0#8'ShortCut'#3'-@'#0
-  +#1#7'Command'#3'\'#2#8'ShortCut'#3'- '#0#1#7'Command'#3#246#1#8'ShortCut'#2
-  +'.'#0#1#7'Command'#3'['#2#8'ShortCut'#3'. '#0#1#7'Command'#3#245#1#8'ShortCu'
-  +'t'#2#8#0#1#7'Command'#3#245#1#8'ShortCut'#3#8' '#0#1#7'Command'#3#248#1#8'S'
-  +'hortCut'#3#8'@'#0#1#7'Command'#3'Y'#2#8'ShortCut'#4#8#128#0#0#0#1#7'Command'
-  +#3'Z'#2#8'ShortCut'#4#8#160#0#0#0#1#7'Command'#3#253#1#8'ShortCut'#2#13#0#1#7
-  +'Command'#3#199#0#8'ShortCut'#3'A@'#0#1#7'Command'#3#201#0#8'ShortCut'#3'C@'
-  +#0#1#7'Command'#3'b'#2#8'ShortCut'#3'I`'#0#1#7'Command'#3#253#1#8'ShortCut'#3
-  +'M@'#0#1#7'Command'#3#254#1#8'ShortCut'#3'N@'#0#1#7'Command'#3#247#1#8'Short'
-  +'Cut'#3'T@'#0#1#7'Command'#3'c'#2#8'ShortCut'#3'U`'#0#1#7'Command'#3'\'#2#8
-  +'ShortCut'#3'V@'#0#1#7'Command'#3'['#2#8'ShortCut'#3'X@'#0#1#7'Command'#3#251
-  +#1#8'ShortCut'#3'Y@'#0#1#7'Command'#3#250#1#8'ShortCut'#3'Y`'#0#1#7'Command'
-  +#3'Y'#2#8'ShortCut'#3'Z@'#0#1#7'Command'#3'Z'#2#8'ShortCut'#3'Z`'#0#1#7'Comm'
-  ,'and'#3'-'#1#8'ShortCut'#3'0@'#0#1#7'Command'#3'.'#1#8'ShortCut'#3'1@'#0#1#7
-  +'Command'#3'/'#1#8'ShortCut'#3'2@'#0#1#7'Command'#3'0'#1#8'ShortCut'#3'3@'#0
-  +#1#7'Command'#3'1'#1#8'ShortCut'#3'4@'#0#1#7'Command'#3'2'#1#8'ShortCut'#3'5'
-  +'@'#0#1#7'Command'#3'3'#1#8'ShortCut'#3'6@'#0#1#7'Command'#3'4'#1#8'ShortCut'
-  +#3'7@'#0#1#7'Command'#3'5'#1#8'ShortCut'#3'8@'#0#1#7'Command'#3'6'#1#8'Short'
-  +'Cut'#3'9@'#0#1#7'Command'#3'_'#1#8'ShortCut'#3'0`'#0#1#7'Command'#3'`'#1#8
-  +'ShortCut'#3'1`'#0#1#7'Command'#3'a'#1#8'ShortCut'#3'2`'#0#1#7'Command'#3'b'
-  +#1#8'ShortCut'#3'3`'#0#1#7'Command'#3'c'#1#8'ShortCut'#3'4`'#0#1#7'Command'#3
-  +'d'#1#8'ShortCut'#3'5`'#0#1#7'Command'#3'e'#1#8'ShortCut'#3'6`'#0#1#7'Comman'
-  +'d'#3'f'#1#8'ShortCut'#3'7`'#0#1#7'Command'#3'g'#1#8'ShortCut'#3'8`'#0#1#7'C'
-  +'ommand'#3'h'#1#8'ShortCut'#3'9`'#0#1#7'Command'#3#231#0#8'ShortCut'#3'N`'#0
-  +#1#7'Command'#3#232#0#8'ShortCut'#3'C`'#0#1#7'Command'#3#233#0#8'ShortCut'#3
-  +'L`'#0#1#7'Command'#3'd'#2#8'ShortCut'#2#9#0#1#7'Command'#3'e'#2#8'ShortCut'
-  +#3#9' '#0#1#7'Command'#3#250#0#8'ShortCut'#3'B`'#0#0#8'ReadOnly'#9#22'Select'
-  +'edColor.OnChange'#13#0#0#0#9'TTabSheet'#14'tsDependencies'#7'Caption'#6#7'U'
-  +'sed by'#12'ClientHeight'#3#224#0#11'ClientWidth'#3#136#1#0#9'TTreeView'#12
-  +'tvDependency'#4'Left'#2#12#6'Height'#3#194#0#3'Top'#2#13#5'Width'#3'h'#1#7
-  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17'DefaultItemHeigh'
-  +'t'#2#15#8'ReadOnly'#9#16'RightClickSelect'#9#8'TabOrder'#2#0#7'Options'#11
-  +#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvo'
-  +'ReadOnly'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLines'#11'tv'
-  +'oShowRoot'#11'tvoToolTips'#0#0#0#0#0#11'TActionList'#2'AL'#4'left'#3#147#0#3
-  +'top'#2'x'#0#7'TAction'#5'actOK'#7'Caption'#6#2'OK'#18'DisableIfNoHandler'#9
-  +#9'OnExecute'#7#12'actOKExecute'#8'OnUpdate'#7#11'actOKUpdate'#0#0#7'TAction'
-  +#8'actApply'#7'Caption'#6#5'Apply'#18'DisableIfNoHandler'#9#9'OnExecute'#7#15
-  +'actApplyExecute'#8'OnUpdate'#7#11'actOKUpdate'#0#0#0#10'TSynXMLSyn'#10'SynX'
-  +'MLSyn1'#13'DefaultFilter'#6'MDocuments XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)'
-  +'|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'#7'Enabled'#8#16'WantBracesParsed'#8#4'left'
-  +#3#200#0#3'top'#3#168#0#0#0#0
+  +'rentColor'#8#8'TabOrder'#2#0#23'BookMarkOptions.Xoffset'#2'*'#17'Gutter.Dig'
+  +'itCount'#2#2#22'Gutter.ShowLineNumbers'#9#22'Gutter.ShowCodeFolding'#9#12'G'
+  +'utter.Width'#2#10#23'Gutter.CodeFoldingWidth'#2#14#11'Highlighter'#7#10'Syn'
+  +'XMLSyn1'#10'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'#2'&'#0#1#7'Command'
+  +#2'g'#8'ShortCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCut'#3'&@'#0#1#7'Comma'
+  +'nd'#2#4#8'ShortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'#3'( '#0#1#7'Comman'
+  +'d'#3#212#0#8'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCut'#2'%'#0#1#7'Comm'
+  +'and'#2'e'#8'ShortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'#3'%@'#0#1#7'Comm'
+  +'and'#2'i'#8'ShortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2''''#0#1#7'Comm'
+  +'and'#2'f'#8'ShortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3'''@'#0#1#7'Co'
+  +'mmand'#2'j'#8'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'#2'"'#0#1#7'C'
+  +'ommand'#2'n'#8'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3'"@'#0#1#7
+  +'Command'#2'r'#8'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2'!'#0#1#7'C'
+  +'ommand'#2'm'#8'ShortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3'!@'#0#1#7
+  +'Command'#2'q'#8'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2'$'#0#1#7'C'
+  +'ommand'#2'k'#8'ShortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3'$@'#0#1#7
+  +'Command'#2's'#8'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2'#'#0#1#7'C'
+  +'ommand'#2'l'#8'ShortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3'#@'#0#1#7
+  +'Command'#2't'#8'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'#2'-'#0#1
+  +#7'Command'#3#201#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'- '
+  +#0#1#7'Command'#3#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8'ShortCut'#3
+  +'. '#0#1#7'Command'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245#1#8'ShortCu'
+  +'t'#3#8' '#0#1#7'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Command'#3'Y'#2#8
+  +'ShortCut'#4#8#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160#0#0#0#1#7'C'
+  +'ommand'#3#253#1#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortCut'#3'A@'#0
+  +#1#7'Command'#3#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8'ShortCut'#3
+  +'I`'#0#1#7'Command'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3#254#1#8'Short'
+  +'Cut'#3'N@'#0#1#7'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Command'#3'c'#2#8
+  +'ShortCut'#3'U`'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7'Command'#3'['
+  +#2#8'ShortCut'#3'X@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0#1#7'Command'
+  +#3#250#1#8'ShortCut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3'Z@'#0#1#7'Com'
+  +'mand'#3'Z'#2#8'ShortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCut'#3'0@'#0#1#7
+  ,'Command'#3'.'#1#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'ShortCut'#3'2@'#0
+  +#1#7'Command'#3'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1#8'ShortCut'#3'4'
+  +'@'#0#1#7'Command'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3'3'#1#8'ShortCut'
+  +#3'6@'#0#1#7'Command'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Command'#3'5'#1#8'Short'
+  +'Cut'#3'8@'#0#1#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'Command'#3'_'#1#8
+  +'ShortCut'#3'0`'#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1#7'Command'#3'a'
+  +#1#8'ShortCut'#3'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'#0#1#7'Command'#3
+  +'c'#1#8'ShortCut'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3'5`'#0#1#7'Comman'
+  +'d'#3'e'#1#8'ShortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCut'#3'7`'#0#1#7'C'
+  +'ommand'#3'g'#1#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'ShortCut'#3'9`'#0#1
+  +#7'Command'#3#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232#0#8'ShortCut'#3'C'
+  +'`'#0#1#7'Command'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'#3'd'#2#8'ShortCu'
+  +'t'#2#9#0#1#7'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Command'#3#250#0#8'Sh'
+  +'ortCut'#3'B`'#0#0#8'ReadOnly'#9#0#0#0#9'TTabSheet'#14'tsDependencies'#7'Cap'
+  +'tion'#6#7'Used by'#12'ClientHeight'#3#224#0#11'ClientWidth'#3#136#1#0#9'TTr'
+  +'eeView'#12'tvDependency'#4'Left'#2#12#6'Height'#3#194#0#3'Top'#2#13#5'Width'
+  +#3'h'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17'Default'
+  +'ItemHeight'#2#15#8'ReadOnly'#9#16'RightClickSelect'#9#8'TabOrder'#2#0#7'Opt'
+  +'ions'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNode'
+  +'s'#11'tvoReadOnly'#19'tvoRightClickSelect'#14'tvoShowButtons'#12'tvoShowLin'
+  +'es'#11'tvoShowRoot'#11'tvoToolTips'#0#0#0#0#9'TTabSheet'#15'tsDocumentation'
+  +#7'Caption'#6#13'Documentation'#12'ClientHeight'#3#224#0#11'ClientWidth'#3
+  +#136#1#0#5'TMemo'#16'edtDocumentation'#4'Left'#2#13#6'Height'#3#200#0#3'Top'
+  +#2#10#5'Width'#3'h'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'
+  +#0#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#8'WordWrap'#8#0#0#0#0#11
+  +'TActionList'#2'AL'#4'left'#3#147#0#3'top'#2'x'#0#7'TAction'#5'actOK'#7'Capt'
+  +'ion'#6#2'OK'#18'DisableIfNoHandler'#9#9'OnExecute'#7#12'actOKExecute'#8'OnU'
+  +'pdate'#7#11'actOKUpdate'#0#0#7'TAction'#8'actApply'#7'Caption'#6#5'Apply'#18
+  +'DisableIfNoHandler'#9#9'OnExecute'#7#15'actApplyExecute'#8'OnUpdate'#7#11'a'
+  +'ctOKUpdate'#0#0#0#10'TSynXMLSyn'#10'SynXMLSyn1'#13'DefaultFilter'#6'MDocume'
+  +'nts XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'#7
+  +'Enabled'#8#16'WantBracesParsed'#8#4'left'#3#200#0#3'top'#3#168#0#0#0#0
 ]);

@@ -35,6 +35,10 @@ const
 
   function IsStrEmpty(Const AStr : String):Boolean;
   function ExtractIdentifier(const AValue : string) : string ;
+{$IFDEF WST_HANDLE_DOC}
+  function EncodeLineBreak(const AInStr : string) : string;
+  function DecodeLineBreak(const AInStr : string) : string;
+{$ENDIF}
 
   function IsReservedKeyWord(const AValue : string):Boolean ;
 
@@ -130,6 +134,78 @@ begin
     end;
   end;
 end;
+
+{$IFDEF WST_HANDLE_DOC}
+const
+  REPLACE_CHAR_A = '#';  TARGET_SEQUENCE_A = sLineBreak;
+  REPLACE_CHAR_B = '|';  TARGET_SEQUENCE_B = #10;
+
+function EncodeLineBreak(const AInStr : string) : string;
+begin
+  Result :=
+    StringReplace(
+      StringReplace(AInStr,REPLACE_CHAR_A,(REPLACE_CHAR_A + REPLACE_CHAR_A),[rfReplaceAll]),
+      TARGET_SEQUENCE_A,REPLACE_CHAR_A,[rfIgnoreCase,rfReplaceAll]
+    );
+  Result :=
+    StringReplace(
+      StringReplace(Result,REPLACE_CHAR_B,(REPLACE_CHAR_B + REPLACE_CHAR_B),[rfReplaceAll]),
+      TARGET_SEQUENCE_B,REPLACE_CHAR_B,[rfIgnoreCase,rfReplaceAll]
+    );
+end;
+
+function DecodeLineBreak(const AInStr : string) : string;
+var
+  i, c : PtrInt;
+  pc : PChar;
+  tmp, res : string;
+begin
+  res := '';
+  pc := PChar(AInStr);
+  i := 1;
+  c := Length(AInStr);
+  while ( i <= c ) do begin
+    if ( pc^ = REPLACE_CHAR_B ) then begin
+      if ( i < c ) then begin
+        Inc(pc); Inc(i);
+        if ( pc^ = REPLACE_CHAR_B ) then
+          res := res + REPLACE_CHAR_B
+        else
+          res := res + TARGET_SEQUENCE_B + pc^;
+      end else begin
+        res := res + TARGET_SEQUENCE_B;
+      end;
+    end else begin
+      res := res  + pc^;
+    end;
+    Inc(pc); Inc(i);
+  end;
+
+  tmp := res;
+  res := '';
+  pc := PChar(tmp);
+  i := 1;
+  c := Length(tmp);
+  while ( i <= c ) do begin
+    if ( pc^ = REPLACE_CHAR_A ) then begin
+      if ( i < c ) then begin
+        Inc(pc); Inc(i);
+        if ( pc^ = REPLACE_CHAR_A ) then
+          res := res + REPLACE_CHAR_A
+        else
+          res := res + TARGET_SEQUENCE_A + pc^;
+      end else begin
+        res := res + TARGET_SEQUENCE_A;
+      end;
+    end else begin
+      res := res  + pc^;
+    end;
+    Inc(pc); Inc(i);
+  end;
+
+  Result := res;
+end;
+{$ENDIF WST_HANDLE_DOC}
 
 function ExtractNameFromQName(const AQName : string):string ;
 var

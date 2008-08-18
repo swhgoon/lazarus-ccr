@@ -32,7 +32,10 @@ const
   
 type
 
-  TGeneratorOption = ( goDocumentWrappedParameter );
+  TGeneratorOption = (
+    goDocumentWrappedParameter { .Net style wrapped parameters },
+    goGenerateDocAsComments    { Documentation include in the XSD/WSDL schema will be generated as comments }
+  );
   TGeneratorOptions = set of TGeneratorOption;
   
   { TBaseGenerator }
@@ -154,6 +157,8 @@ type
     FImpLastStream : ISourceStream;
     FRttiFunc : ISourceStream;
   private
+    procedure WriteDocumetation(AElement : TPasElement);
+    procedure WriteDocIfEnabled(AElement : TPasElement);{$IFDEF USE_INLINE}inline;{$ENDIF}
     // Array handling helper routines
     procedure WriteObjectArray(ASymbol : TPasArrayType);
     procedure WriteSimpleTypeArray(ASymbol : TPasArrayType);
@@ -202,6 +207,7 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sINPUT_PARAM = 'inputParam';
       sOUTPUT_PARAM = 'outputParam';
       sTEMP_OBJ = 'tmpObj';
+      sDOCUMENTATION = 'documentation';
 
 
 function DeduceEasyInterfaceForDocStyle(
@@ -1761,10 +1767,37 @@ end;
 
 { TInftGenerator }
 
+procedure TInftGenerator.WriteDocumetation(AElement : TPasElement);
+var
+  pl : TStrings;
+  docString : string;
+  i : PtrInt;
+begin
+  pl := FSymbolTable.Properties.FindList(AElement);
+  if ( pl <> nil ) then begin
+    i := pl.IndexOfName(sDOCUMENTATION);
+    if ( i >= 0 ) then begin
+      docString:= StringReplace(DecodeLineBreak(pl.ValueFromIndex[i]),#10,sLineBreak,[rfReplaceAll]);
+      if not IsStrEmpty(docString) then begin
+        WriteLn('{ %s',[AElement.Name]);
+          WriteLn(docString);
+        WriteLn('}');
+      end;
+    end;
+  end;
+end;
+
+procedure TInftGenerator.WriteDocIfEnabled(AElement : TPasElement);
+begin
+  if ( goGenerateDocAsComments in Options ) then
+    WriteDocumetation(AElement);
+end;
+
 procedure TInftGenerator.WriteObjectArray(ASymbol : TPasArrayType);
 begin
   SetCurrentStream(FDecStream);
   NewLine();
+  WriteDocIfEnabled(ASymbol);
   IncIndent();
   BeginAutoIndent();
   try
@@ -1805,6 +1838,7 @@ procedure TInftGenerator.WriteSimpleTypeArray(ASymbol : TPasArrayType);
 begin
   SetCurrentStream(FDecStream);
   NewLine();
+  WriteDocIfEnabled(ASymbol);
   IncIndent();
   BeginAutoIndent();
   try
@@ -1931,6 +1965,7 @@ procedure TInftGenerator.WriteObjectCollection(ASymbol : TPasArrayType);
 begin
   SetCurrentStream(FDecStream);
   NewLine();
+  WriteDocIfEnabled(ASymbol);
   IncIndent();
   BeginAutoIndent();
   try
@@ -1987,7 +2022,7 @@ end;
 
 function TInftGenerator.GenerateIntfName(AIntf: TPasElement): string;
 begin
-  Result := ExtractserviceName(AIntf);
+  Result := AIntf.Name;//ExtractserviceName(AIntf);
 end;
 
 procedure TInftGenerator.GenerateUnitHeader();
@@ -2124,6 +2159,7 @@ var
 begin
   try
     SetCurrentStream(FDecStream);
+    WriteDocIfEnabled(ASymbol);
     if ASymbol.InheritsFrom(TPasTypeAliasType) then begin
       typeModifier := 'type ';
     end else begin
@@ -2408,6 +2444,7 @@ begin
     try
       SetCurrentStream(FDecStream);
       NewLine();
+      WriteDocIfEnabled(ASymbol);
       IncIndent();
         WriteDec();
         WriteProperties();
@@ -2438,6 +2475,7 @@ begin
   try
     SetCurrentStream(FDecStream);
     NewLine();
+    WriteDocIfEnabled(ASymbol);
     IncIndent();
       Indent();WriteLn('%s = ( ',[ASymbol.Name]);
 
@@ -2517,6 +2555,7 @@ var
   begin
     SetCurrentStream(FDecStream);
     NewLine();
+    WriteDocIfEnabled(ASymbol);
     IncIndent();
       Indent(); WriteLn('%s = record',[ASymbol.Name]);
       IncIndent();

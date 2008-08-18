@@ -45,6 +45,9 @@ type
       const ASpaceType : TNameSpaceValueType
     ) : TPasElement;
     function FindElement(const ALocalName : string) : TPasElement; {$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_HANDLE_DOC}
+    procedure ParseDocumentation(AType : TPasType);
+{$ENDIF WST_HANDLE_DOC}
   public
     constructor Create(
             AOwner       : IParserContext;
@@ -153,8 +156,8 @@ type
     function Parse():TPasType;override;
   end;
 
-  resourcestring
-    SResolveError = 'Unable to resolve this namespace : "%s".';
+resourcestring
+  SResolveError = 'Unable to resolve this namespace : "%s".';
 
 implementation
 uses dom_cursors, parserutils, StrUtils, xsd_consts;
@@ -308,6 +311,55 @@ function TAbstractTypeParser.FindElement(const ALocalName: string): TPasElement;
 begin
   Result := FSymbols.FindElementInModule(ALocalName,Module);
 end;
+
+{$IFDEF WST_HANDLE_DOC}
+procedure TAbstractTypeParser.ParseDocumentation(AType : TPasType);
+var
+  tmpCursor : IObjectCursor;
+  props : TStrings;
+  docString : string;
+  i : PtrInt;
+  tempNode : TDOMNode;
+begin
+  if FTypeNode.HasChildNodes() then begin
+    tmpCursor := CreateCursorOn(
+                   CreateChildrenCursor(FTypeNode,cetRttiNode),
+                   ParseFilter(CreateQualifiedNameFilterStr(s_annotation,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                 );
+    if ( tmpCursor <> nil ) then begin
+      tmpCursor.Reset();
+      if tmpCursor.MoveNext() then begin
+        tmpCursor := CreateCursorOn(
+                       CreateChildrenCursor(TDOMNodeRttiExposer(tmpCursor.GetCurrent()).InnerObject,cetRttiNode),
+                       ParseFilter(CreateQualifiedNameFilterStr(s_documentation,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                     );
+        if ( tmpCursor <> nil ) then begin
+          tmpCursor.Reset();
+          if tmpCursor.MoveNext() then begin
+            tempNode := TDOMNodeRttiExposer(tmpCursor.GetCurrent()).InnerObject.FirstChild;
+            if ( tempNode <> nil ) then
+              docString := tempNode.NodeValue
+            else
+              docString := '';
+            props := FSymbols.Properties.FindList(AType);
+            if IsStrEmpty(docString) then begin
+              if ( props <> nil ) then begin
+                i := props.IndexOfName(s_documentation);
+                if ( i >= 0 ) then
+                  props.Values[s_documentation] := '';
+              end
+            end else begin
+              if ( props = nil ) then
+                props := FSymbols.Properties.GetList(AType);
+              props.Values[s_documentation] := EncodeLineBreak(docString);
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+{$ENDIF WST_HANDLE_DOC}
 
 { TComplexTypeParser }
 
@@ -1174,6 +1226,10 @@ begin
       else
         Result := ParseSimpleContent(FTypeName);
     end;
+{$IFDEF WST_HANDLE_DOC}
+    if ( Result <> nil ) then
+      ParseDocumentation(Result);
+{$ENDIF WST_HANDLE_DOC}
   end;
 end;
 
@@ -1392,6 +1448,10 @@ begin
       FBaseNameSpace := s_xs;
       Result := ParseOtherContent();
     end;
+{$IFDEF WST_HANDLE_DOC}
+    if ( Result <> nil ) then
+      ParseDocumentation(Result);
+{$ENDIF WST_HANDLE_DOC}
   end;
 end;
 

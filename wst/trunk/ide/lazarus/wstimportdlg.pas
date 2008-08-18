@@ -14,7 +14,7 @@ type
   TGenOption = (
     goInterface, goInterfaceALL,
     goProxy, goImp, goBinder,
-    goWrappedParameter
+    goWrappedParameter, goDocAsComments
   );
   TGenOptions = set of TGenOption;
   
@@ -31,6 +31,7 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    edtDocAsComments : TCheckBox;
     edtAddToProject : TCheckBox;
     edtOptionIntfALL: TCheckBox;
     edtOptionIntf: TCheckBox;
@@ -113,7 +114,8 @@ function GenerateSource(
   const AOutputType  : TOutputType;
   const AOutPath     : string;
   const ANotifier    : TOnParserMessage;
-  const AWrappedPrm  : Boolean
+  const AWrappedPrm,
+        ADocAsComment: Boolean
 ) : ISourceManager;
 
   procedure Notify(const AMsg : string);
@@ -143,6 +145,8 @@ begin
       g := TInftGenerator.Create(ASymbolTable,Result);
       if wrappedParams then
         g.Options := g.Options + [goDocumentWrappedParameter];
+      if ADocAsComment then
+        g.Options := g.Options + [goGenerateDocAsComments];
       g.Execute();
       FreeAndNil(g);
     end;
@@ -177,7 +181,6 @@ begin
       mtdaFS := TMemoryStream.Create();
       mg := TMetadataGenerator.Create(ASymbolTable,CreateBinaryWriter(mtdaFS));
       mg.Execute();
-      mtdaFS.SaveToFile(AOutPath + Format('%s.%s',[ASymbolTable.CurrentModule.Name,sWST_META]));
       rsrcStrm := TMemoryStream.Create();
       mtdaFS.Position := 0;
       BinToWstRessource(UpperCase(ASymbolTable.CurrentModule.Name),mtdaFS,rsrcStrm);
@@ -243,6 +246,8 @@ begin
     Include(Result,goImp);
   if edtOptionWrappedParams.Checked then
     Include(Result,goWrappedParameter);
+  if edtDocAsComments.Checked then
+    Include(Result,goDocAsComments);
 end;
 
 procedure TformImport.actOpenDirExecute(Sender: TObject);
@@ -258,7 +263,7 @@ procedure TformImport.actOKUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := FileExists(edtInputFile.Text) and
                              DirectoryExists(edtOutputDir.Text) and
-                             ( ( GetOptions() - [goWrappedParameter] ) <> [] );
+                             ( ( GetOptions() - [goWrappedParameter,goDocAsComments] ) <> [] );
 end;
 
 procedure TformImport.actOKExecute(Sender: TObject);
@@ -282,8 +287,13 @@ begin
     tree := ParseWsdlFile(edtInputFile.Text,@ShowStatusMessage);
     try
       genOptions := GetOptions();
-      fileSet := genOptions - [goWrappedParameter];
-      srcMgnr := GenerateSource(tree,fileSet,otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),@ShowStatusMessage,(goWrappedParameter in genOptions) );
+      fileSet := genOptions - [goWrappedParameter,goDocAsComments];
+      srcMgnr := GenerateSource(
+                   tree,fileSet,otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),
+                   @ShowStatusMessage,
+                   (goWrappedParameter in genOptions),
+                   (goDocAsComments in genOptions)
+                 );
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
       openFlags := [];

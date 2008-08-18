@@ -1,21 +1,19 @@
 
 resourcestring
-  sUSAGE = 'ws_helper [-uMODE] [-p] [-b] [-i] [-oPATH] [-aPATH] [-w] inputFilename' + sNEW_LINE +
+  sUSAGE = 'ws_helper [-uMODE] [-p] [-b] [-i] [-w] [-x] [-y] [-d] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
            '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
            '       MODE value may be U for used types or A for all types' + sNEW_LINE +
            '  -p  Generate service proxy' + sNEW_LINE +
            '  -b  Generate service binder' + sNEW_LINE +
-           '  -i  Generate service minimal implementation' + sNEW_LINE +
+           '  -i  Generate service minimal implementation. This will erase any existing implementation file!' + sNEW_LINE +
            '  -o  PATH  Relative output directory' + sNEW_LINE +
            '  -a  PATH  Absolute output directory' + sNEW_LINE +
            '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE +
            '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE +
-           '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE;
-  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.5 Copyright (c) 2006, 2008 by Inoussa OUEDRAOGO';
+           '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE +
+           '  -d  Generate documentation as comment in the interface file.';
+  sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008 by Inoussa OUEDRAOGO';
 
-const
-  sWST_META = 'wst_meta';
-  
 type
   TSourceFileType = ( sftPascal, sftWSDL, sftXsd );
   
@@ -223,7 +221,7 @@ var
           mtdaFS := TMemoryStream.Create();
           mg := TMetadataGenerator.Create(symtable,CreateBinaryWriter(mtdaFS));
           mg.Execute();
-          mtdaFS.SaveToFile(ChangeFileExt(inFileName,'.' + sWST_META));
+          //mtdaFS.SaveToFile(ChangeFileExt(inFileName,'.' + sWST_META));
           rsrcStrm := TMemoryStream.Create();
           mtdaFS.Position := 0;
           BinToWstRessource(UpperCase(symtable.CurrentModule.Name),mtdaFS,rsrcStrm);

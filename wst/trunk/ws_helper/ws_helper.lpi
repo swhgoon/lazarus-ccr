@@ -155,7 +155,7 @@
     </Linking>
     <Other>
       <CustomOptions Value="-Xi
-
+-dWST_HANDLE_DOC
 "/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

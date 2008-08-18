@@ -333,6 +333,8 @@ begin
         ScanClassType(TPasClassType(e));
       end else if e.InheritsFrom(TPasRecordType) then begin
         ScanRecordType(TPasRecordType(e));
+      end else if e.InheritsFrom(TPasArrayType) then begin
+        ScanArrayType(TPasArrayType(e));
       end;
     end;
   end;

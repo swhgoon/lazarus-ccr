@@ -1,7 +1,7 @@
 object fArrayEdit: TfArrayEdit
-  Left = 327
+  Left = 772
   Height = 375
-  Top = 132
+  Top = 42
   Width = 392
   HorzScrollBar.Page = 391
   VertScrollBar.Page = 374
@@ -150,10 +150,12 @@ object fArrayEdit: TfArrayEdit
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
+        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
         Gutter.ShowCodeFolding = True
         Gutter.Width = 10
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynXMLSyn1
         Keystrokes = <        
@@ -478,6 +480,7 @@ object fArrayEdit: TfArrayEdit
             ShortCut = 24642
           end>
         ReadOnly = True
+        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet
@@ -495,6 +498,21 @@ object fArrayEdit: TfArrayEdit
         RightClickSelect = True
         TabOrder = 0
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      end
+    end
+    object tsDocumentation: TTabSheet
+      Caption = 'Documentation'
+      ClientHeight = 299
+      ClientWidth = 384
+      object edtDocumentation: TMemo
+        Left = 12
+        Height = 266
+        Top = 18
+        Width = 352
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
       end
     end
   end

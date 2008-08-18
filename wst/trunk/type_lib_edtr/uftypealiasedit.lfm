@@ -118,12 +118,10 @@ object fTypeAliasEdit: TfTypeAliasEdit
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
         Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynXMLSyn1
         Keystrokes = <        
@@ -448,7 +446,6 @@ object fTypeAliasEdit: TfTypeAliasEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet
@@ -466,6 +463,21 @@ object fTypeAliasEdit: TfTypeAliasEdit
         RightClickSelect = True
         TabOrder = 0
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      end
+    end
+    object tsDocumentation: TTabSheet
+      Caption = 'Documentation'
+      ClientHeight = 224
+      ClientWidth = 392
+      object edtDocumentation: TMemo
+        Left = 13
+        Height = 200
+        Top = 10
+        Width = 360
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
       end
     end
   end

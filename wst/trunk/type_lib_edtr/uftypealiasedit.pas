@@ -22,6 +22,7 @@ type
     Button2 : TButton;
     Button3 : TButton;
     edtBaseType : TComboBox;
+    edtDocumentation : TMemo;
     edtName : TEdit;
     edtSourceXSD : TSynEdit;
     Label1 : TLabel;
@@ -30,6 +31,7 @@ type
     Panel1 : TPanel;
     SynXMLSyn1 : TSynXMLSyn;
     TabSheet1 : TTabSheet;
+    tsDocumentation : TTabSheet;
     tsDependencies : TTabSheet;
     tsSourceXSD : TTabSheet;
     tvDependency : TTreeView;
@@ -53,6 +55,7 @@ type
     
     procedure ShowSourceXSD();
     procedure ShowDependencies();
+    procedure ShowDocumentation();
   public
     destructor Destroy();override;
     function UpdateObject(
@@ -67,7 +70,7 @@ var
   fTypeAliasEdit : TfTypeAliasEdit;
 
 implementation
-uses parserutils, view_helper;
+uses parserutils, view_helper, xsd_consts;
 
 { TfTypeAliasEdit }
 
@@ -84,6 +87,8 @@ begin
     ShowSourceXSD();
   end else if ( PC.ActivePage = tsDependencies ) then begin
     ShowDependencies();
+  end else if ( PC.ActivePage = tsDocumentation ) then begin
+    ShowDocumentation();
   end;
 end;
 
@@ -155,6 +160,8 @@ begin
     locObj.DestType.AddRef();
   end;
   FOldBaseType := locObj.DestType;
+  FSymbolTable.Properties.GetList(FObject).Values[s_documentation] :=
+    EncodeLineBreak(StringReplace(edtDocumentation.Lines.Text,sLineBreak,#10,[rfReplaceAll]));
   FApplied := True;
 end;
 
@@ -170,6 +177,16 @@ begin
   FDependencyList.Clear();
   FindDependencies(FObject,FSymbolTable,FDependencyList);
   DrawDependencies(tvDependency,FDependencyList);
+end;
+
+procedure TfTypeAliasEdit.ShowDocumentation();
+var
+  props : TStrings;
+begin
+  props := FSymbolTable.Properties.FindList(FObject);
+  if ( props <> nil ) then
+    edtDocumentation.Lines.Text :=
+      StringReplace(DecodeLineBreak(props.Values[s_documentation]),#10,sLineBreak,[rfReplaceAll]);
 end;
 
 destructor TfTypeAliasEdit.Destroy();

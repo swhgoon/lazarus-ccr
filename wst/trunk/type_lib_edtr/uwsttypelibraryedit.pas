@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Menus, ActnList,
+  ExtCtrls, Menus, ActnList, Contnrs,
   pastree, pascal_parser_intf, logger_intf,
   SynHighlighterPas, SynEdit, StdCtrls, SynHighlighterXML
   {$IFDEF WST_IDE},ProjectIntf{$ENDIF};
@@ -53,6 +53,7 @@ type
     AL: TActionList;
     FD : TFindDialog;
     MainMenu1: TMainMenu;
+    edtDocumentation : TMemo;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
@@ -107,6 +108,7 @@ type
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     OD: TOpenDialog;
+    PCInfos : TPageControl;
     PC: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -114,14 +116,20 @@ type
     PopupMenu2: TPopupMenu;
     SD: TSaveDialog;
     Splitter1: TSplitter;
+    Splitter2 : TSplitter;
     srcInterface: TSynEdit;
     SB: TStatusBar;
     srcImp: TSynEdit;
     srcBinder: TSynEdit;
     srcProxy: TSynEdit;
     srcWSDL: TSynEdit;
+    edtXSD : TSynEdit;
     SynPasSyn1: TSynPasSyn;
     SynXMLSyn1: TSynXMLSyn;
+    tvDependency : TTreeView;
+    tsDependencies : TTabSheet;
+    tsXSD : TTabSheet;
+    tsDocumentation : TTabSheet;
     tsWSDL: TTabSheet;
     tsLog: TTabSheet;
     tsImp: TTabSheet;
@@ -157,13 +165,17 @@ type
     procedure FDShow(Sender : TObject);
     procedure FormClose (Sender : TObject; var CloseAction : TCloseAction );
     procedure FormShow(Sender: TObject);
+    procedure trvSchemaSelectionChanged(Sender : TObject);
   private
     FSymbolTable : TwstPasTreeContainer;
     FStatusMessageTag : PtrInt;
     FCurrentFileName : string;
-    {$IFDEF WST_IDE}FProjectLibrary : TLazProjectFile;{$ENDIF}
+{$IFDEF WST_IDE}
+    FProjectLibrary : TLazProjectFile;
+{$ENDIF}
     FSearchArea : TSearchArea;
     FFoundNode : TTreeNode;
+    FDependencyList : TObjectList;
   private
     function FindCurrentEditor() : TSynEdit;
     function Search(const AText : string) : Boolean;
@@ -177,6 +189,9 @@ type
     procedure RenderSymbols();
     procedure RenderSources();
     procedure RenderWSDL();
+    procedure ShowDocumentation();
+    procedure ShowSourceXSD();
+    procedure ShowDependencies();
     procedure OpenFile(const AFileName : string; const AContent : TStream = nil);
     procedure SaveToFile(const AFileName : string);
   public
@@ -188,11 +203,13 @@ var
   fWstTypeLibraryEdit: TfWstTypeLibraryEdit;
 
 implementation
-uses view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
-     xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
-     binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
-     uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
-     {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF};
+uses
+  view_helper, DOM, XMLRead, XMLWrite, //HeapTrc,
+  xsd_parser, wsdl_parser, source_utils, command_line_parser, generator, metadata_generator,
+  binary_streamer, wst_resources_utils, xsd_generator, wsdl_generator,
+  uabout, edit_helper, udm, ufrmsaveoption, pparser, SynEditTypes
+  {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF}
+  , xsd_consts, parserutils;
 
 
 {$IFDEF WST_IDE}
@@ -213,11 +230,9 @@ end;
 
 const
   DEF_FILE_NAME = 'library1';
-  sWST_META = 'wst_meta';
-  
+
 type
-  TSourceType = cloInterface .. cloBinder;
-  TSourceTypes = set of TSourceType;
+  TSourceOptions = set of TComandLineOption;
 
 function ParsePascalFile(
   const AFileName : string;
@@ -317,7 +332,7 @@ end;
 type TOutputType = ( otMemory, otFileSystem );
 function GenerateSource(
         ASymbolTable : TwstPasTreeContainer;
-        AOptions     : TSourceTypes;
+        AOptions     : TSourceOptions;
   const AOutputType  : TOutputType;
   const AOutPath     : string;
   const ANotifier    : TOnParserMessage
@@ -346,6 +361,8 @@ begin
     if ( cloInterface in AOptions ) then begin
       Notify('Interface file generation...');
       g := TInftGenerator.Create(ASymbolTable,Result);
+      if ( cloGenerateDocAsComments in AOptions ) then
+        g.Options := g.Options + [goGenerateDocAsComments];
       g.Execute();
       FreeAndNil(g);
     end;
@@ -376,7 +393,7 @@ begin
       mtdaFS := TMemoryStream.Create();
       mg := TMetadataGenerator.Create(ASymbolTable,CreateBinaryWriter(mtdaFS));
       mg.Execute();
-      mtdaFS.SaveToFile(AOutPath + Format('%s.%s',[ASymbolTable.CurrentModule.Name,sWST_META]));
+      //mtdaFS.SaveToFile(AOutPath + Format('%s.%s',[ASymbolTable.CurrentModule.Name,sWST_META]));
       rsrcStrm := TMemoryStream.Create();
       mtdaFS.Position := 0;
       BinToWstRessource(UpperCase(ASymbolTable.CurrentModule.Name),mtdaFS,rsrcStrm);
@@ -596,6 +613,13 @@ begin
   RenderSymbols();
 end;
 
+procedure TfWstTypeLibraryEdit.trvSchemaSelectionChanged(Sender : TObject);
+begin
+  ShowDocumentation();
+  ShowSourceXSD();
+  ShowDependencies();
+end;
+
 function TfWstTypeLibraryEdit.FindCurrentEditor() : TSynEdit;
 var
   edt : TSynEdit;
@@ -770,7 +794,9 @@ begin
         Include(saveOpts,cloProxy);
       if f.edtWrappedParams.Checked then
         Include(saveOpts,cloHandleWrappedParameters);
-        
+      if f.edtDocAsComments.Checked then
+        Include(saveOpts,cloGenerateDocAsComments);
+
       curLok := SetCursorHourGlass();
       GenerateSource(
         FSymbolTable,
@@ -878,7 +904,7 @@ var
 begin
   if Assigned(FSymbolTable) then begin
     if ( FSymbolTable.CurrentModule.InterfaceSection.Declarations.Count > 0 ) then begin
-      srcMngr := GenerateSource(FSymbolTable,[cloInterface,cloProxy,cloBinder,cloImp],otMemory,'',@ShowStatusMessage);
+      srcMngr := GenerateSource(FSymbolTable,[cloInterface,cloProxy,cloBinder,cloImp,cloGenerateDocAsComments],otMemory,'',@ShowStatusMessage);
       if Assigned(srcMngr) and ( srcMngr.GetCount() > 0 ) then begin
         LoadText(srcInterface.Lines,srcMngr.GetItem(0));
         LoadText(srcProxy.Lines,srcMngr.GetItem(1));
@@ -907,6 +933,64 @@ begin
   finally
     FreeAndNil(mstrm);
   end;
+end;
+
+procedure TfWstTypeLibraryEdit.ShowDocumentation();
+var
+  docString : string;
+  props : TStrings;
+  elt : TPasElement;
+begin
+  docString := '';
+  if ( trvSchema.Selected <> nil ) and
+     ( trvSchema.Selected.Data <> nil ) and
+     TObject(trvSchema.Selected.Data).InheritsFrom(TPasElement)
+  then begin
+    elt := TPasElement(trvSchema.Selected.Data);
+    props := FSymbolTable.Properties.FindList(elt);
+    if ( props <> nil ) then
+      docString :=
+        StringReplace(DecodeLineBreak(props.Values[s_documentation]),#10,sLineBreak,[rfReplaceAll]);
+    if IsStrEmpty(docString) then
+      docString := '< No documentation available for this item. >';
+    docString := Format('%s : %s%s',[FSymbolTable.GetExternalName(elt),sLineBreak,docString]);
+  end;
+  edtDocumentation.Lines.Text := docString;
+end;
+
+procedure TfWstTypeLibraryEdit.ShowSourceXSD();
+var
+  docString : string;
+  elt : TPasElement;
+begin
+  docString := '';
+  if ( trvSchema.Selected <> nil ) and
+     ( trvSchema.Selected.Data <> nil ) and
+     TObject(trvSchema.Selected.Data).InheritsFrom(TPasType)
+  then begin
+    elt := TPasElement(trvSchema.Selected.Data);
+    docString := XsdGenerateSourceForObject(elt,FSymbolTable);
+  end;
+  edtXSD.Lines.Text := docString;
+end;
+
+procedure TfWstTypeLibraryEdit.ShowDependencies();
+var
+  elt : TPasType;
+begin
+  if ( csDestroying in Self.ComponentState ) then
+    Exit;
+  if ( FDependencyList = nil ) then
+    FDependencyList := TObjectList.Create(True);
+  FDependencyList.Clear();
+  if ( trvSchema.Selected <> nil ) and
+     ( trvSchema.Selected.Data <> nil ) and
+     TObject(trvSchema.Selected.Data).InheritsFrom(TPasType)
+  then begin
+    elt := TPasType(trvSchema.Selected.Data);
+    FindDependencies(elt,FSymbolTable,FDependencyList);
+  end;
+  DrawDependencies(tvDependency,FDependencyList);
 end;
 
 procedure TfWstTypeLibraryEdit.OpenFile (const AFileName : string; const AContent : TStream);
@@ -969,6 +1053,7 @@ end;
 
 destructor TfWstTypeLibraryEdit.Destroy();
 begin
+  FDependencyList.Free();
   trvSchema.Items.Clear();
   FreeAndNil(FSymbolTable);
   inherited Destroy();

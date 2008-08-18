@@ -1,7 +1,7 @@
 object fClassEdit: TfClassEdit
-  Left = 852
+  Left = 794
   Height = 547
-  Top = 77
+  Top = 101
   Width = 518
   HorzScrollBar.Page = 517
   VertScrollBar.Page = 546
@@ -532,6 +532,21 @@ object fClassEdit: TfClassEdit
         RightClickSelect = True
         TabOrder = 0
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      end
+    end
+    object tsDocumentation: TTabSheet
+      Caption = 'Documentation'
+      ClientHeight = 471
+      ClientWidth = 510
+      object edtDocumentation: TMemo
+        Left = 12
+        Height = 434
+        Top = 18
+        Width = 480
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
       end
     end
   end

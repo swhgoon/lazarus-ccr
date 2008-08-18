@@ -28,7 +28,8 @@ Type
 
   TComandLineOption = (
     cloInterface, cloProxy, cloImp, cloBinder, cloWsdl, cloXsd,
-    cloOutPutDirRelative, cloOutPutDirAbsolute, cloHandleWrappedParameters
+    cloOutPutDirRelative, cloOutPutDirAbsolute, cloHandleWrappedParameters,
+    cloGenerateDocAsComments
   );
   TComandLineOptions = set of TComandLineOption;
 
@@ -76,6 +77,7 @@ begin
       'w' : Include(AAppOptions,cloWsdl);
       'x' : Include(AAppOptions,cloXsd);
       'y' : Include(AAppOptions,cloHandleWrappedParameters);
+      'd' : Include(AAppOptions,cloGenerateDocAsComments);
     end;
   until ( c = EndOfOptions );
   Result := OptInd;

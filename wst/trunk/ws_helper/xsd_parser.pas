@@ -119,7 +119,7 @@ type
   end;
 
 implementation
-uses ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts
+uses ws_parser_imp, dom_cursors, parserutils, xsd_consts
 {$IFDEF FPC}
      ,wst_fpc_xml
 {$ENDIF}

@@ -20,6 +20,7 @@ type
     btnSelectDir : TButton;
     btnSelectAll: TButton;
     btnUnselectAll: TButton;
+    edtDocAsComments : TCheckBox;
     edtInterface : TCheckBox;
     edtProxy : TCheckBox;
     edtImplementation : TCheckBox;

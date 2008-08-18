@@ -425,6 +425,21 @@ object fEnumEdit: TfEnumEdit
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
     end
+    object tsDocumentation: TTabSheet
+      Caption = 'Documentation'
+      ClientHeight = 292
+      ClientWidth = 392
+      object edtDocumentation: TMemo
+        Left = 12
+        Height = 258
+        Top = 18
+        Width = 360
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
   end
   object Panel1: TPanel
     Height = 50

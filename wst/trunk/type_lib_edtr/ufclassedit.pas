@@ -46,6 +46,7 @@ type
     Label1: TLabel;
     edtProp: TListView;
     Label2: TLabel;
+    edtDocumentation : TMemo;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -55,6 +56,7 @@ type
     edtSourceXSD : TSynEdit;
     SynXMLSyn1 : TSynXMLSyn;
     TabSheet1: TTabSheet;
+    tsDocumentation : TTabSheet;
     tsDependencies : TTabSheet;
     tvDependency : TTreeView;
     tsSourceXSD : TTabSheet;
@@ -84,6 +86,7 @@ type
 
     procedure ShowSourceXSD();
     procedure ShowDependencies();
+    procedure ShowDocumentation();
   public
     destructor Destroy();override;
     function UpdateObject(
@@ -98,7 +101,7 @@ var
 
 implementation
 uses
-  parserutils, ufpropedit, common_gui_utils;
+  parserutils, ufpropedit, common_gui_utils, xsd_consts;
 
 
 { TfClassEdit }
@@ -177,6 +180,8 @@ begin
     ShowSourceXSD();
   end else if ( PC.ActivePage = tsDependencies ) then begin
     ShowDependencies();
+  end else if ( PC.ActivePage = tsDocumentation ) then begin
+    ShowDocumentation();
   end;
 end;
 
@@ -347,6 +352,8 @@ begin
     if Assigned(locObj.AncestorType) then
       locObj.AncestorType.AddRef();
   end;
+  FSymbolTable.Properties.GetList(FObject).Values[s_documentation] :=
+    EncodeLineBreak(StringReplace(edtDocumentation.Lines.Text,sLineBreak,#10,[rfReplaceAll]));
   FOldAncestor := locObj.AncestorType;
   FApplied := True;
 end;
@@ -363,6 +370,16 @@ begin
   FDependencyList.Clear();
   FindDependencies(FObject,FSymbolTable,FDependencyList);
   DrawDependencies(tvDependency,FDependencyList);
+end;
+
+procedure TfClassEdit.ShowDocumentation();
+var
+  props : TStrings;
+begin
+  props := FSymbolTable.Properties.FindList(FObject);
+  if ( props <> nil ) then
+    edtDocumentation.Lines.Text :=
+      StringReplace(DecodeLineBreak(props.Values[s_documentation]),#10,sLineBreak,[rfReplaceAll]);
 end;
 
 destructor TfClassEdit.Destroy();

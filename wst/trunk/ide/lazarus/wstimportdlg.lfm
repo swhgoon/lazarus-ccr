@@ -90,16 +90,16 @@ object formImport: TformImport
     end
     object GroupBox2: TGroupBox
       Left = 8
-      Height = 161
-      Top = 336
+      Height = 129
+      Top = 368
       Width = 506
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = '  Messages  '
-      ClientHeight = 143
+      ClientHeight = 111
       ClientWidth = 502
       TabOrder = 2
       object mmoLog: TMemo
-        Height = 143
+        Height = 111
         Width = 502
         Align = alClient
         ReadOnly = True
@@ -109,12 +109,12 @@ object formImport: TformImport
     end
     object GroupBox3: TGroupBox
       Left = 8
-      Height = 136
+      Height = 168
       Top = 184
       Width = 506
       Anchors = [akTop, akLeft, akRight]
       Caption = '  Options  '
-      ClientHeight = 118
+      ClientHeight = 150
       ClientWidth = 502
       TabOrder = 1
       object edtOptionIntf: TCheckBox
@@ -166,11 +166,20 @@ object formImport: TformImport
       object edtOptionWrappedParams: TCheckBox
         Left = 9
         Height = 19
-        Top = 96
+        Top = 88
         Width = 290
         Anchors = [akLeft, akBottom]
         Caption = 'Generate easy access interface for wrapped parameters'
         TabOrder = 5
+      end
+      object edtDocAsComments: TCheckBox
+        Left = 9
+        Height = 19
+        Top = 119
+        Width = 208
+        Anchors = [akLeft, akBottom]
+        Caption = 'Generate documentation as comments'
+        TabOrder = 6
       end
     end
   end
