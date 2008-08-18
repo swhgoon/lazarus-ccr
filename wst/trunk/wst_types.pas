@@ -20,6 +20,9 @@ interface
 
 type
 
+  { reprents an array of Byte }
+  TBinaryString = ansistring;
+  
   { TDataObject }
 
   TDataObject = class

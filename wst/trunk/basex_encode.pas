@@ -26,9 +26,9 @@ type
   TBaseXOptions = set of TBaseXOption;
 
   function Base64Encode(const ALength : PtrInt; const AInBuffer) : string;overload;
-  function Base64Encode(const AInBuffer : string) : string;overload;
+  function Base64Encode(const AInBuffer : TBinaryString) : string;overload;
 
-  function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]) : string;
+  function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]) : TBinaryString;
 
 resourcestring
   s_InvalidEncodedData = 'Invalid encoded data.';
@@ -111,7 +111,7 @@ begin
   end;
 end;
 
-function Base64Encode(const AInBuffer : string) : string;
+function Base64Encode(const AInBuffer : TBinaryString) : string;
 begin
   if ( Length(AInBuffer) = 0 ) then
     Result := ''
@@ -119,7 +119,7 @@ begin
     Result := Base64Encode(Length(AInBuffer),AInBuffer[1]);
 end;
 
-function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : string;
+function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TBinaryString;
 var
   locBuffer : PByte;
   locInLen, locInIndex, i, locPadded : PtrInt;

@@ -274,7 +274,7 @@ type
 
   TBase64StringRemotable = class(TAbstractSimpleRemotable)
   private
-    FBinaryData : string;
+    FBinaryData : TBinaryString;
   private
     function GetEncodedString : string;
     procedure SetEncodedString(const AValue : string);
@@ -294,7 +294,7 @@ type
 
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
-    property BinaryData : string read FBinaryData write FBinaryData;
+    property BinaryData : TBinaryString read FBinaryData write FBinaryData;
     property EncodedString : string read GetEncodedString write SetEncodedString;
   end;
   
@@ -619,7 +619,7 @@ type
 
   TBase64StringExtRemotable = class(TBaseComplexSimpleContentRemotable)
   private
-    FBinaryData : string;
+    FBinaryData : TBinaryString;
   private
     function GetEncodedString() : string;
     procedure SetEncodedString(const AValue : string);
@@ -629,7 +629,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
-    property BinaryData : string read FBinaryData write FBinaryData;
+    property BinaryData : TBinaryString read FBinaryData write FBinaryData;
     property EncodedString : string read GetEncodedString write SetEncodedString;
   end;
 
