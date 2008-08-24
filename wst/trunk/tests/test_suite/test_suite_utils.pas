@@ -57,7 +57,7 @@ begin
               Exit;
             if ( A.Attributes.Length > 0 ) then begin
               for i := 0 to Pred(A.Attributes.Length) do begin
-                if not CompareNodes(A.Attributes.Item[i],B.Attributes.Item[i]) then
+                if not CompareNodes(A.Attributes.Item[i],B.Attributes.GetNamedItem(A.Attributes.Item[i].NodeName)) then
                   Exit;
               end;
             end;

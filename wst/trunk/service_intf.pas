@@ -38,8 +38,6 @@ Type
   //The client formater interface, used to marshall parameters.
   IFormatterClient = Interface(IFormatterBase)
     ['{73746BC7-CA43-4C00-8789-71E23033C3B2}']
-    function GetPropertyManager():IPropertyManager;
-
     procedure BeginCall(
       const AProcName,
             ATarget      : string;

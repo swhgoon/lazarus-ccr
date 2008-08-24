@@ -91,14 +91,12 @@ const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
   sSOAP_NS       = 'http://schemas.xmlsoap.org/wsdl/soap/';
   sSOAP          = 'soap';
-  sSOAP_ENC_NS   = 'http://schemas.xmlsoap.org/soap/encoding/';
   sXMLNS         = 'xmlns';
   sXSD_NS        = 'http://www.w3.org/2001/XMLSchema';
   sXSD           = 'xsd';
   sTNS           = 'tns';
 
   sSOAP_ACTION      = 'soapAction';
-  sSOAP_ENCODED     = 'encoded';
   sSOAP_ENCODING_STYLE = 'encodingStyle';
   sSOAP_RPC         = 'rpc';
   sSOAP_TRANSPORT   = 'http://schemas.xmlsoap.org/soap/http';
@@ -127,7 +125,6 @@ const
   sTRANSPORT          = 'transport';
   sTYPE               = 'type';
   sUNBOUNDED          = 'unbounded';
-  sUSE                = 'use';
   sVALUE              = 'value';
 
   sWSDL_DEFINITIONS        = 'definitions';

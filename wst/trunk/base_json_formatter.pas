@@ -180,6 +180,7 @@ type
 
   TJsonRpcBaseFormatter = class(TSimpleFactoryItem,IFormatterBase)
   private
+    FPropMngr : IPropertyManager;
     FRootData : TJSONData;
     FSerializationStyle : TSerializationStyle;
     FStack : TObjectStack;
@@ -276,6 +277,7 @@ type
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
     function GetFormatName() : string;
+    function GetPropertyManager():IPropertyManager;
     procedure Clear();
 
     procedure BeginObject(
@@ -314,16 +316,28 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData
-    );
+    );overload;
+    procedure Put(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
     );
     procedure Get(
-      Const ATypeInfo : PTypeInfo;
-      Var   AName     : String;
-      Var   AData
-    );
+      const ATypeInfo : PTypeInfo;
+      var   AName     : string;
+      var   AData
+    );overload;
+    procedure Get(
+      const ATypeInfo  : PTypeInfo;
+      const ANameSpace : string;
+      var   AName      : string;
+      var   AData
+    );overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
@@ -344,7 +358,7 @@ type
   
   
 implementation
-uses jsonparser;
+uses jsonparser, imp_utils;
 
 
 { TJsonRpcBaseFormatter }
@@ -554,6 +568,13 @@ end;
 function TJsonRpcBaseFormatter.GetFormatName(): string;
 begin
   Result := s_json;
+end;
+
+function TJsonRpcBaseFormatter.GetPropertyManager() : IPropertyManager;
+begin
+  If Not Assigned(FPropMngr) Then
+    FPropMngr := TPublishedPropertyManager.Create(Self);
+  Result := FPropMngr;
 end;
 
 function TJsonRpcBaseFormatter.GetCurrentScope : string;
@@ -785,6 +806,16 @@ begin
   End;
 end;
 
+procedure TJsonRpcBaseFormatter.Put(
+  const ANameSpace : string;
+  const AName : String;
+  const ATypeInfo : PTypeInfo;
+  const AData
+);
+begin
+  Put(AName,ATypeInfo,AData);
+end;
+
 procedure TJsonRpcBaseFormatter.PutScopeInnerValue(const ATypeInfo : PTypeInfo; const AData);
 var
   locName : string;
@@ -949,6 +980,16 @@ begin
         End;
       End;
   End;
+end;
+
+procedure TJsonRpcBaseFormatter.Get(
+  const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
+  var AName : string;
+  var AData
+);
+begin
+  Get(ATypeInfo,AName,AData);
 end;
 
 procedure TJsonRpcBaseFormatter.GetScopeInnerValue(const ATypeInfo : PTypeInfo; var AData);

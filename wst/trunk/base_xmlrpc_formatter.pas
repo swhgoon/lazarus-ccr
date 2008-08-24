@@ -158,6 +158,7 @@ type
 
   TXmlRpcBaseFormatter = class(TSimpleFactoryItem,IFormatterBase)
   private
+    FPropMngr : IPropertyManager;
     FContentType: string;
     FDoc : TXMLDocument;
     FStack : TObjectStack;
@@ -301,6 +302,7 @@ type
     constructor Create();override;
     destructor Destroy();override;
     function GetFormatName() : string;
+    function GetPropertyManager():IPropertyManager;
     procedure Clear();
 
     procedure BeginObject(
@@ -339,16 +341,28 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData
-    );
+    );overload;
+    procedure Put(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
     );
     procedure Get(
-      Const ATypeInfo : PTypeInfo;
-      Var   AName     : String;
-      Var   AData
-    );
+      const ATypeInfo : PTypeInfo;
+      var   AName     : string;
+      var   AData
+    );overload;
+    procedure Get(
+      const ATypeInfo  : PTypeInfo;
+      const ANameSpace : string;
+      var   AName      : string;
+      var   AData
+    );overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
@@ -1183,6 +1197,15 @@ begin
   End;
 end;
 
+procedure TXmlRpcBaseFormatter.Put(
+  const ANameSpace : string;
+  const AName : String;
+  const ATypeInfo : PTypeInfo; const AData
+);
+begin
+  Put(AName,ATypeInfo,AData);
+end;
+
 procedure TXmlRpcBaseFormatter.PutScopeInnerValue(
   const ATypeInfo : PTypeInfo;
   const AData
@@ -1374,6 +1397,16 @@ begin
   End;
 end;
 
+procedure TXmlRpcBaseFormatter.Get(
+  const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
+  var AName : string;
+  var AData
+);
+begin
+  Get(ATypeInfo,AName,AData);
+end;
+
 procedure TXmlRpcBaseFormatter.GetScopeInnerValue(
   const ATypeInfo : PTypeInfo;
   var   AData
@@ -1491,6 +1524,13 @@ end;
 function TXmlRpcBaseFormatter.GetFormatName() : string;
 begin
   Result := sPROTOCOL_NAME;
+end;
+
+function TXmlRpcBaseFormatter.GetPropertyManager() : IPropertyManager;
+begin
+  If Not Assigned(FPropMngr) Then
+    FPropMngr := TPublishedPropertyManager.Create(Self);
+  Result := FPropMngr;
 end;
 
 procedure TXmlRpcBaseFormatter.WriteBuffer(const AValue: string);

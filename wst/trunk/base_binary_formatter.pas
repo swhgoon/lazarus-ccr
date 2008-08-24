@@ -175,6 +175,7 @@ type
     FRootData : PDataBuffer;
     FStack : TObjectStack;
     FSerializationStyle : TSerializationStyle;
+    FPropMngr : IPropertyManager;
     {$IFDEF wst_binary_header}
     FHeaderEnterCount : Integer;
     {$ENDIF}
@@ -278,6 +279,7 @@ type
     constructor Create();override;
     destructor Destroy();override;
     function GetFormatName() : string;
+    function GetPropertyManager():IPropertyManager;
     
     procedure Clear();
 
@@ -318,16 +320,28 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData
-    );
+    );overload;
+    procedure Put(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
     );
     procedure Get(
-      Const ATypeInfo : PTypeInfo;
-      Var   AName     : String;
-      Var   AData
-    );
+      const ATypeInfo : PTypeInfo;
+      var   AName     : string;
+      var   AData
+    );overload;
+    procedure Get(
+      const ATypeInfo  : PTypeInfo;
+      const ANameSpace : string;
+      var   AName      : string;
+      var   AData
+    );overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
@@ -361,7 +375,9 @@ type
   procedure PrintObj(const ARoot: PDataBuffer; const ALevel : Integer; const APrinterProc : TDBGPinterProc);
 
 implementation
-
+uses
+  imp_utils;
+  
 {$INCLUDE wst_rtl_imp.inc}
 
 procedure PrintObj(const ARoot: PDataBuffer; const ALevel : Integer; const APrinterProc : TDBGPinterProc);
@@ -1253,6 +1269,16 @@ begin
   End;
 end;
 
+procedure TBaseBinaryFormatter.Put(
+  const ANameSpace : string;
+  const AName : String;
+  const ATypeInfo : PTypeInfo;
+  const AData
+);
+begin
+  Put(AName,ATypeInfo,AData);
+end;
+
 procedure TBaseBinaryFormatter.PutScopeInnerValue(
   const ATypeInfo : PTypeInfo;
   const AData
@@ -1482,6 +1508,16 @@ begin
   End;
 end;
 
+procedure TBaseBinaryFormatter.Get(
+  const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
+  var AName : string;
+  var AData
+);
+begin
+  Get(ATypeInfo,AName,AData);
+end;
+
 procedure TBaseBinaryFormatter.GetScopeInnerValue(
   const ATypeInfo : PTypeInfo;
   var   AData
@@ -1625,6 +1661,13 @@ end;
 function TBaseBinaryFormatter.GetFormatName() : string;
 begin
   Result := sBINARY_FORMAT_NAME;
+end;
+
+function TBaseBinaryFormatter.GetPropertyManager() : IPropertyManager;
+begin
+  If Not Assigned(FPropMngr) Then
+    FPropMngr := TPublishedPropertyManager.Create(Self);
+  Result := FPropMngr;
 end;
 
 procedure TBaseBinaryFormatter.WriteBuffer(const AValue: string);

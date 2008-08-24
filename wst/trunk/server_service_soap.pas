@@ -80,6 +80,8 @@ end;
 
 procedure TSOAPFormatter.BeginCallResponse(Const AProcName,ATarget:string);
 begin
+  if ( FCallContext = nil ) then
+    FCallContext := TSimpleCallContext.Create();
   Clear();
   Prepare();
     WriteHeaders(FCallContext);
@@ -97,7 +99,7 @@ end;
 procedure TSOAPFormatter.BeginCallRead(ACallContext : ICallContext);
 Var
   envNd : TDOMElement;
-  hdrNd, bdyNd, mthdNd, tmpNode : TDOMNode;
+  hdrNd, bdyNd, mthdNd : TDOMNode;
   s,nsShortName,eltName : string;
   doc : TXMLDocument;
 begin

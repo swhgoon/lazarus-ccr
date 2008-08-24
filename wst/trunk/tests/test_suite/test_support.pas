@@ -22,7 +22,7 @@ uses
   TestFrameWork,
 {$ENDIF}
   TypInfo,
-  wst_types, base_service_intf;
+  wst_types, base_service_intf, imp_utils;
 
 type
 
@@ -352,6 +352,10 @@ type
     procedure Equal();
     procedure SetBinaryData();
     procedure SetEncodedString();
+    procedure LoadFromStream();
+    procedure LoadFromFile();
+    procedure SaveToStream();
+    procedure SaveToFile();
   end;
 
   { TTest_TBase64StringExtRemotable }
@@ -362,6 +366,10 @@ type
     procedure test_Assign();
     procedure SetBinaryData();
     procedure SetEncodedString();
+    procedure LoadFromStream();
+    procedure LoadFromFile();
+    procedure SaveToStream();
+    procedure SaveToFile();
   end;
   
   { TClass_A_CollectionRemotable }
@@ -387,6 +395,14 @@ type
     procedure test_Assign();
     procedure Exchange();
     procedure IndexOf();
+  end;
+  
+  { TTest_Procedures }
+
+  TTest_Procedures = class(TTestCase)
+  published
+    procedure test_LoadBufferFromStream();
+    procedure test_LoadBufferFromFile();
   end;
   
 implementation
@@ -2171,7 +2187,6 @@ begin
 end;
 
 procedure TTest_TDateRemotable.ParseDate();
-const sDATE = '1976-10-12T23:34:56';
 var
   s : string;
   objd : TDateRemotable;
@@ -2901,6 +2916,129 @@ begin
   end;
 end;
 
+procedure TTest_TBase64StringRemotable.LoadFromStream();
+var
+  locLoadedBuffer : TBase64StringRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locLoadedBuffer := TBase64StringRemotable.Create();
+    locLoadedBuffer.LoadFromStream(locStream);
+    Check( locLoadedBuffer.BinaryData = locBuffer );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.LoadFromFile();
+var
+  locLoadedBuffer : TBase64StringRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locFileName := 'test_LoadBufferFromFile.bin';
+    locStream.SaveToFile(locFileName);
+    locLoadedBuffer := TBase64StringRemotable.Create();
+    locLoadedBuffer.LoadFromFile(locFileName);
+    Check( locLoadedBuffer.BinaryData = locBuffer );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.SaveToStream();
+var
+  locObj : TBase64StringRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locObj := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locObj := TBase64StringRemotable.Create();
+    locObj.BinaryData := locBuffer;
+    locObj.SaveToStream(locStream);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[1],Length(locBuffer));
+    Check( locBuffer = locObj.BinaryData );
+  finally
+    locObj.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringRemotable.SaveToFile();
+var
+  locObj : TBase64StringRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TFileStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locStream := nil;
+  locObj := TBase64StringRemotable.Create();
+  try
+    locObj.BinaryData := locBuffer;
+    locFileName := 'test_LoadBufferFromFile.bin';
+    DeleteFile(locFileName);
+    locObj.SaveToFile(locFileName);
+    Check(FileExists(locFileName));
+    locStream := TFileStream.Create(locFileName,fmOpenRead);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[1],Length(locBuffer));
+    Check( locBuffer = locObj.BinaryData );
+  finally
+    locObj.Free();
+    locStream.Free();
+  end;
+end;
+
 { TTest_TBase64StringExtRemotable }
 
 procedure TTest_TBase64StringExtRemotable.Equal();
@@ -2991,6 +3129,129 @@ begin
     end;
   finally
     FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.LoadFromStream();
+var
+  locLoadedBuffer : TBase64StringExtRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locLoadedBuffer := TBase64StringExtRemotable.Create();
+    locLoadedBuffer.LoadFromStream(locStream);
+    Check( locLoadedBuffer.BinaryData = locBuffer );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.LoadFromFile();
+var
+  locLoadedBuffer : TBase64StringExtRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locFileName := 'test_LoadBufferFromFile.bin';
+    locStream.SaveToFile(locFileName);
+    locLoadedBuffer := TBase64StringExtRemotable.Create();
+    locLoadedBuffer.LoadFromFile(locFileName);
+    Check( locLoadedBuffer.BinaryData = locBuffer );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.SaveToStream();
+var
+  locObj : TBase64StringExtRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locObj := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locObj := TBase64StringExtRemotable.Create();
+    locObj.BinaryData := locBuffer;
+    locObj.SaveToStream(locStream);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[1],Length(locBuffer));
+    Check( locBuffer = locObj.BinaryData );
+  finally
+    locObj.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TBase64StringExtRemotable.SaveToFile();
+var
+  locObj : TBase64StringExtRemotable;
+  locBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TFileStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locStream := nil;
+  locObj := TBase64StringExtRemotable.Create();
+  try
+    locObj.BinaryData := locBuffer;
+    locFileName := 'test_LoadBufferFromFile.bin';
+    DeleteFile(locFileName);
+    locObj.SaveToFile(locFileName);
+    Check(FileExists(locFileName));
+    locStream := TFileStream.Create(locFileName,fmOpenRead);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[1],Length(locBuffer));
+    Check( locBuffer = locObj.BinaryData );
+  finally
+    locObj.Free();
+    locStream.Free();
   end;
 end;
 
@@ -3243,6 +3504,57 @@ begin
   end;
 end;
 
+{ TTest_Procedures }
+
+procedure TTest_Procedures.test_LoadBufferFromStream();
+var
+  locBuffer, locLoadedBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locLoadedBuffer := LoadBufferFromStream(locStream);
+    Check( locLoadedBuffer = locBuffer );
+  finally
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_Procedures.test_LoadBufferFromFile();
+var
+  locBuffer, locLoadedBuffer : TBinaryString;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[1]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[1],Length(locBuffer));
+    locFileName := 'test_LoadBufferFromFile.bin';
+    locStream.SaveToFile(locFileName);
+    locLoadedBuffer := LoadBufferFromFile(locFileName);
+    Check( locLoadedBuffer = locBuffer );
+  finally
+    locStream.Free();
+  end;
+end;
+
 initialization
   RegisterTest('Support',TTest_TObjectCollectionRemotable.Suite);
   RegisterTest('Support',TTest_TBaseComplexRemotable.Suite);
@@ -3272,6 +3584,8 @@ initialization
 
   RegisterTest('Support',TTest_TBase64StringRemotable.Suite);
   RegisterTest('Support',TTest_TBase64StringExtRemotable.Suite);
+  
+  RegisterTest('Support',TTest_Procedures.Suite);
   
 end.
 

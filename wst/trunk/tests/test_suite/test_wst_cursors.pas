@@ -4,7 +4,7 @@ unit test_wst_cursors;
 interface
 
 uses
-  Classes, SysUtils, Contnrs,
+  Classes, SysUtils,
 {$IFDEF FPC}
   fpcunit, testutils, testregistry,
 {$ELSE}
@@ -109,7 +109,7 @@ const O_COUNT = 100;
 var
   x : IObjectCursor;
   ls : TBaseObjectArrayRemotable;
-  c, i : Integer;
+  i : Integer;
 begin
   ls := TTClass_A_ArrayRemotable.Create();
   try
@@ -182,7 +182,7 @@ const O_COUNT = 100;
 var
   x : IFilterableObjectCursor;
   ls : TBaseObjectArrayRemotable;
-  c, i : Integer;
+  i : Integer;
   f : IObjectFilter;
   fcr : TRttiFilterCreator;
 begin
@@ -445,7 +445,7 @@ const O_COUNT = 100;
 var
   x : IObjectCursor;
   ls : TObjectCollectionRemotable;
-  c, i : PtrInt;
+  i : PtrInt;
 begin
   ls := TTClass_A_CollectionRemotable.Create();
   try

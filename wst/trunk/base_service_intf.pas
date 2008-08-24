@@ -132,6 +132,7 @@ type
   
   IFormatterBase = Interface
     ['{2AB3BF54-B7D6-4C46-8245-133C8775E9C1}']
+    function GetPropertyManager():IPropertyManager;
     function GetFormatName() : string;
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
@@ -174,16 +175,28 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData
-    );
+    );overload;
+    procedure Put(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
     );
     procedure Get(
-      Const ATypeInfo : PTypeInfo;
-      Var   AName     : String;
-      Var   AData
-    );
+      const ATypeInfo : PTypeInfo;
+      var   AName     : string;
+      var   AData
+    );overload;
+    procedure Get(
+      const ATypeInfo  : PTypeInfo;
+      const ANameSpace : string;
+      var   AName      : string;
+      var   AData
+    );overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
@@ -294,6 +307,10 @@ type
 
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    procedure LoadFromStream(AStream : TStream);
+    procedure LoadFromFile(const AFileName : string);
+    procedure SaveToStream(AStream : TStream);
+    procedure SaveToFile(const AFileName : string);
     property BinaryData : TBinaryString read FBinaryData write FBinaryData;
     property EncodedString : string read GetEncodedString write SetEncodedString;
   end;
@@ -621,7 +638,7 @@ type
   private
     FBinaryData : TBinaryString;
   private
-    function GetEncodedString() : string;
+    function GetEncodedString : string;
     procedure SetEncodedString(const AValue : string);
   protected
     class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
@@ -629,6 +646,10 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    procedure LoadFromStream(AStream : TStream);
+    procedure LoadFromFile(const AFileName : string);
+    procedure SaveToStream(AStream : TStream);
+    procedure SaveToFile(const AFileName : string);
     property BinaryData : TBinaryString read FBinaryData write FBinaryData;
     property EncodedString : string read GetEncodedString write SetEncodedString;
   end;
@@ -1277,11 +1298,31 @@ type
 
   TTypeRegistryItemOption = ( trioNonVisibleToMetadataService );
   TTypeRegistryItemOptions = set of TTypeRegistryItemOption;
+  TTypeRegistry = class;
+  TTypeRegistryItem = class;
+  TTypeRegistryItemClass = class of TTypeRegistryItem;
+  
+  TRemotableTypeInitializerClass = class of TRemotableTypeInitializer;
 
+  { TRemotableTypeInitializer }
+
+  TRemotableTypeInitializer = class
+  public
+    class function CanHandle(ATypeInfo : PTypeInfo) : Boolean;virtual;
+    class function GetItemClass(const ATypeInfo : PTypeInfo) : TTypeRegistryItemClass;virtual;
+{$IFDEF TRemotableTypeInitializer_Initialize}
+    class function Initialize(
+      ATypeInfo : PTypeInfo;
+      ARegistryItem : TTypeRegistryItem
+    ) : Boolean;virtual;abstract;
+{$ENDIF TRemotableTypeInitializer_Initialize}
+  end;
+  
   { TTypeRegistryItem }
 
   TTypeRegistryItem = class
   private
+    FOwner : TTypeRegistry;
     FDataType: PTypeInfo;
     FNameSpace: string;
     FDeclaredName : string;
@@ -1293,10 +1334,11 @@ type
     procedure CreateInternalObjects();{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
     constructor Create(
+            AOwner        : TTypeRegistry;
             ANameSpace    : string;
             ADataType     : PTypeInfo;
       Const ADeclaredName : string = ''
-    );
+    );virtual;
     destructor Destroy();override;
     function AddPascalSynonym(const ASynonym : string):TTypeRegistryItem;
     function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -1308,6 +1350,7 @@ type
     procedure RegisterObject(const APropName : string; const AObject : TObject);
     function GetObject(const APropName : string) : TObject;
 
+    property Owner : TTypeRegistry read FOwner;
     property DataType : PTypeInfo read FDataType;
     property NameSpace : string read FNameSpace;
     property DeclaredName : string read FDeclaredName;
@@ -1317,14 +1360,21 @@ type
   { TTypeRegistry }
 
   TTypeRegistry = class
-  Private
+  private
     FList : TObjectList;
+    FInitializerList : TClassList;
+  private
+    function GetItemClassFor(const ATypeInfo : PTypeInfo) : TTypeRegistryItemClass;
+{$IFDEF TRemotableTypeInitializer_Initialize}
+    procedure InitializeItem(AItem : TTypeRegistryItem);
+{$ENDIF TRemotableTypeInitializer_Initialize}
     function GetCount: Integer;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetItemByIndex(Index: Integer): TTypeRegistryItem;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetItemByTypeInfo(Index: PTypeInfo): TTypeRegistryItem;
-  Public
+  public
     constructor Create();
     destructor Destroy();override;
+    procedure RegisterInitializer(AInitializer : TRemotableTypeInitializerClass);
     function IndexOf(Const ATypeInfo : PTypeInfo):Integer;
     function Add(AItem:TTypeRegistryItem):Integer;
     function Register(
@@ -1338,7 +1388,7 @@ type
     Property Count : Integer Read GetCount;
     Property Item[Index:Integer] : TTypeRegistryItem Read GetItemByIndex;default;
     Property ItemByTypeInfo[Index:PTypeInfo] : TTypeRegistryItem Read GetItemByTypeInfo;
-  End;
+  end;
 
   TPropStoreType = ( pstNever, pstOptional, pstAlways );
   
@@ -1398,7 +1448,8 @@ var
 {$ENDIF HAS_FORMAT_SETTINGS}
 
 implementation
-uses imp_utils, record_rtti, basex_encode;
+uses
+  imp_utils, record_rtti, basex_encode, object_serializer;
 
 
 type
@@ -1730,8 +1781,10 @@ begin
     Result := FList[i] as TSerializeOptions;
     for j := 0 to Pred(c) do begin
       ri := FList[j] as TSerializeOptions;
-      for k := 0 to Pred(ri.AttributeFieldCount) do begin
-        Result.FAttributeFieldList.Add(ri.FAttributeFieldList[k]);
+      if AElementClass.InheritsFrom(ri.ElementClass) then begin
+        for k := 0 to Pred(ri.AttributeFieldCount) do begin
+          Result.FAttributeFieldList.Add(ri.FAttributeFieldList[k]);
+        end;
       end;
     end;
   end;
@@ -1792,6 +1845,17 @@ class procedure TBaseComplexRemotable.Save(
   const AName      : String;
   const ATypeInfo  : PTypeInfo
 );
+{$IFDEF USE_SERIALIZE}
+var
+  locSerializer : TObjectSerializer;
+begin
+  locSerializer := TBaseComplexTypeRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then
+    locSerializer.Save(AObject,AStore,AName,ATypeInfo)
+  else
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+end;
+{$ELSE USE_SERIALIZE}
 Var
   propList : PPropList;
   i, propCount, propListLen : Integer;
@@ -1949,6 +2013,7 @@ begin
     AStore.SetSerializationStyle(oldSS);
   end;
 end;
+{$ENDIF USE_SERIALIZE}
 
 Type
   TFloatExtendedType = Extended;
@@ -1958,6 +2023,17 @@ class procedure TBaseComplexRemotable.Load(
   var   AName      : String;
   const ATypeInfo  : PTypeInfo
 );
+{$IFDEF USE_SERIALIZE}
+var
+  locSerializer : TObjectSerializer;
+begin
+  locSerializer := TBaseComplexTypeRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then
+    locSerializer.Read(AObject,AStore,AName,ATypeInfo)
+  else
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+end;
+{$ELSE USE_SERIALIZE}
 Var
   propList : PPropList;
   i, propCount, propListLen : Integer;
@@ -2134,6 +2210,7 @@ begin
     end;
   end;
 end;
+{$ENDIF USE_SERIALIZE}
 
 { TBaseObjectArrayRemotable }
 
@@ -2633,11 +2710,13 @@ begin
 end;
 
 constructor TTypeRegistryItem.Create(
+        AOwner        : TTypeRegistry;
         ANameSpace    : String;
         ADataType     : PTypeInfo;
   Const ADeclaredName : String
 );
 begin
+  FOwner := AOwner;
   FNameSpace := ANameSpace;
   FDataType  := ADataType;
   FDeclaredName := Trim(ADeclaredName);
@@ -2646,10 +2725,26 @@ begin
 end;
 
 destructor TTypeRegistryItem.Destroy();
+
+  procedure FreeObjects();
+  var
+    j, k : PtrInt;
+    obj : TObject;
+  begin
+    j := FExternalNames.Count;
+    for k := 0 to Pred(j) do begin
+      obj := FExternalNames.Objects[k];
+      if ( obj <> nil ) then
+        obj.Free();
+    end;
+  end;
+  
 begin
-  FreeAndNil(FInternalNames);
-  FreeAndNil(FExternalNames);
-  FreeAndNil(FSynonymTable);
+  if ( FExternalNames <> nil ) and ( FExternalNames.Count > 0 ) then
+    FreeObjects();
+  FInternalNames.Free();
+  FExternalNames.Free();
+  FSynonymTable.Free();
   inherited Destroy();
 end;
 
@@ -2728,6 +2823,41 @@ end;
 
 { TTypeRegistry }
 
+function TTypeRegistry.GetItemClassFor(const ATypeInfo : PTypeInfo) : TTypeRegistryItemClass;
+var
+  i, c : PtrInt;
+  locInitializer : TRemotableTypeInitializerClass;
+begin
+  Result := TTypeRegistryItem;
+  c := FInitializerList.Count;
+  if ( c > 0 ) then begin
+    for i := Pred(c) downto 0 do begin
+      locInitializer := TRemotableTypeInitializerClass(FInitializerList[i]);
+      if locInitializer.CanHandle(ATypeInfo) then begin
+        Result := locInitializer.GetItemClass(ATypeInfo);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+{$IFDEF TRemotableTypeInitializer_Initialize}
+procedure TTypeRegistry.InitializeItem(AItem : TTypeRegistryItem);
+var
+  i, c : PtrInt;
+  locInitializer : TRemotableTypeInitializerClass;
+begin
+  c := FInitializerList.Count;
+  if ( c > 0 ) then begin
+    for i := Pred(c) downto 0 do begin
+      locInitializer := TRemotableTypeInitializerClass(FInitializerList[i]);
+      if locInitializer.CanHandle(AItem.DataType) and locInitializer.Initialize(AItem.DataType,AItem) then
+        Break;
+    end;
+  end;
+end;
+{$ENDIF TRemotableTypeInitializer_Initialize}
+
 function TTypeRegistry.GetCount: Integer;
 begin
   Result := FList.Count;
@@ -2754,12 +2884,20 @@ constructor TTypeRegistry.Create();
 begin
   Inherited Create();
   FList := TObjectList.Create(True);
+  FInitializerList := TClassList.Create();
 end;
 
 destructor TTypeRegistry.Destroy();
 begin
-  FreeAndNil(FList);
+  FInitializerList.Free();
+  FList.Free();
   inherited Destroy();
+end;
+
+procedure TTypeRegistry.RegisterInitializer(AInitializer : TRemotableTypeInitializerClass);
+begin
+  if ( FInitializerList.IndexOf(AInitializer) = -1 ) then
+    FInitializerList.Add(AInitializer);
 end;
 
 function TTypeRegistry.IndexOf(Const ATypeInfo: PTypeInfo): Integer;
@@ -2791,9 +2929,15 @@ var
   i : Integer;
 begin
   i := IndexOf(ADataType);
-  if ( i = -1 ) then
-    i := Add(TTypeRegistryItem.Create(ANameSpace,ADataType,ADeclaredName));
-  Result := Item[i];
+  if ( i = -1 ) then begin
+    Result := GetItemClassFor(ADataType).Create(Self,ANameSpace,ADataType,ADeclaredName);
+    i := Add(Result);
+{$IFDEF TRemotableTypeInitializer_Initialize}
+    InitializeItem(Result);
+{$ENDIF TRemotableTypeInitializer_Initialize}
+  end else begin
+    Result := Item[i];
+  end;
 end;
 
 function TTypeRegistry.Find(ATypeInfo : PTypeInfo; Const AExact : Boolean):TTypeRegistryItem;
@@ -4274,13 +4418,15 @@ class function TAbstractComplexRemotable.IsAttributeProperty(const AProperty: sh
 var
   ri : TSerializeOptions;
   pc : TClass;
+  sor : TSerializeOptionsRegistry;
 begin
   Result := False;
   if ( Self = TBaseComplexRemotable ) then
     Exit;
+  sor := GetSerializeOptionsRegistry();
   pc := Self;
   while Assigned(pc) and pc.InheritsFrom(TBaseComplexRemotable) do begin
-    ri := GetSerializeOptionsRegistry().Find(TBaseComplexRemotableClass(pc));
+    ri := sor.Find(TBaseComplexRemotableClass(pc));
     if Assigned(ri) then begin
       Result := ri.IsAttributeField(AProperty);
       Exit;
@@ -5615,7 +5761,7 @@ end;
 
 { TBase64StringRemotable }
 
-function TBase64StringRemotable.GetEncodedString() : string;
+function TBase64StringRemotable.GetEncodedString : string;
 begin
   Result := Base64Encode(BinaryData);
 end;
@@ -5676,9 +5822,37 @@ begin
             ( TBase64StringRemotable(ACompareTo).BinaryData = Self.BinaryData );
 end;
 
+procedure TBase64StringRemotable.LoadFromStream(AStream : TStream);
+begin
+  BinaryData := LoadBufferFromStream(AStream);
+end;
+
+procedure TBase64StringRemotable.LoadFromFile(const AFileName : string);
+begin
+  BinaryData := LoadBufferFromFile(AFileName);
+end;
+
+procedure TBase64StringRemotable.SaveToStream(AStream : TStream);
+begin
+  if ( Length(FBinaryData) > 0 ) then
+    AStream.Write(FBinaryData[1],Length(FBinaryData));
+end;
+
+procedure TBase64StringRemotable.SaveToFile(const AFileName : string);
+var
+  locStream : TFileStream;
+begin
+  locStream := TFileStream.Create(AFileName,fmCreate);
+  try
+    SaveToStream(locStream);
+  finally
+    locStream.Free();
+  end;
+end;
+
 { TBase64StringExtRemotable }
 
-function TBase64StringExtRemotable.GetEncodedString() : string;
+function TBase64StringExtRemotable.GetEncodedString : string;
 begin
   Result := Base64Encode(BinaryData);
 end;
@@ -5712,6 +5886,34 @@ begin
             ( TBase64StringExtRemotable(ACompareTo).BinaryData = Self.BinaryData );
 end;
 
+procedure TBase64StringExtRemotable.LoadFromStream(AStream : TStream);
+begin
+  BinaryData := LoadBufferFromStream(AStream);
+end;
+
+procedure TBase64StringExtRemotable.LoadFromFile(const AFileName : string);
+begin
+  BinaryData := LoadBufferFromFile(AFileName);
+end;
+
+procedure TBase64StringExtRemotable.SaveToStream(AStream : TStream);
+begin
+  if ( Length(FBinaryData) > 0 ) then
+    AStream.Write(FBinaryData[1],Length(FBinaryData));
+end;
+
+procedure TBase64StringExtRemotable.SaveToFile(const AFileName : string);
+var
+  locStream : TFileStream;
+begin
+  locStream := TFileStream.Create(AFileName,fmCreate);
+  try
+    SaveToStream(locStream);
+  finally
+    locStream.Free();
+  end;
+end;
+
 procedure TBase64StringExtRemotable.Assign(Source: TPersistent);
 begin
   if Assigned(Source) and Source.InheritsFrom(TBase64StringExtRemotable) then begin
@@ -5732,8 +5934,10 @@ begin
   {$ENDIF}
 {$ENDIF HAS_FORMAT_SETTINGS}
 
-  if ( TypeRegistryInstance = nil ) then
+  if ( TypeRegistryInstance = nil ) then begin
     TypeRegistryInstance := TTypeRegistry.Create();
+    TypeRegistryInstance.RegisterInitializer(TBaseComplexRemotableInitializer);
+  end;
   if ( SerializeOptionsRegistryInstance = nil ) then
     SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
   RegisterStdTypes();
@@ -5962,6 +6166,19 @@ begin
   if Negative and ( ( strDate <> '' ) or ( strTime <> '' ) ) then
     Result := '-' + Result;
 end;
+
+{ TRemotableTypeInitializer }
+
+class function TRemotableTypeInitializer.CanHandle(ATypeInfo : PTypeInfo) : Boolean;
+begin
+  Result := False;
+end;
+
+class function TRemotableTypeInitializer.GetItemClass(const ATypeInfo : PTypeInfo) : TTypeRegistryItemClass;
+begin
+  Result := TTypeRegistryItem;
+end;
+
 
 initialization
   initialize_base_service_intf();

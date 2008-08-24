@@ -30,13 +30,9 @@ type
 {$M+}
   TSOAPFormatter = class(TSOAPBaseFormatter,IFormatterClient)
   private
-    FPropMngr : IPropertyManager;
     FCallProcedureName : string;
     FCallTarget : String;
   public
-    destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-
     procedure BeginCall(
       const AProcName,
             ATarget      : string;
@@ -72,19 +68,6 @@ implementation
 
 
 { TSOAPFormatter }
-
-destructor TSOAPFormatter.Destroy();
-begin
-  FPropMngr := nil;
-  inherited Destroy();
-end;
-
-function TSOAPFormatter.GetPropertyManager(): IPropertyManager;
-begin
-  If Not Assigned(FPropMngr) Then
-    FPropMngr := TPublishedPropertyManager.Create(Self);
-  Result := FPropMngr;
-end;
 
 procedure TSOAPFormatter.BeginCall(
   const AProcName,

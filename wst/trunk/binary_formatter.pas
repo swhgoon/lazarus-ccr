@@ -32,13 +32,10 @@ Type
 {$M+}
   TBinaryFormatter = class(TBaseBinaryFormatter,IFormatterClient)
   private
-    FPropMngr : IPropertyManager;
     FCallProcedureName : string;
     FCallTarget : String;
   protected
   public
-    function GetPropertyManager():IPropertyManager;
-
     procedure BeginCall(
       const AProcName,
             ATarget      : string;
@@ -55,7 +52,7 @@ Type
   { TBinaryCallMaker }
 
   TBinaryCallMaker = class(TSimpleFactoryItem,ICallMaker)
-  Private
+  private
     FPropMngr : IPropertyManager;
   Public
     constructor Create();override;
@@ -68,13 +65,6 @@ Type
   End;
 
 implementation
-
-function TBinaryFormatter.GetPropertyManager(): IPropertyManager;
-begin
-  If Not Assigned(FPropMngr) Then
-    FPropMngr := TPublishedPropertyManager.Create(Self);
-  Result := FPropMngr;
-end;
 
 procedure TBinaryFormatter.BeginCall(
   const AProcName,

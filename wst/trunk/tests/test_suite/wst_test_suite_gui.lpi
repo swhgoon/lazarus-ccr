@@ -34,7 +34,7 @@
         <PackageName Value="fpcunittestrunner"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="wst_test_suite_gui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -111,10 +111,15 @@
         <UnitName Value="test_wst_cursors"/>
       </Unit14>
       <Unit15>
-        <Filename Value="wst_collections.pas"/>
+        <Filename Value="test_registry.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="wst_collections"/>
+        <UnitName Value="test_registry"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="test_soap_specific.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_soap_specific"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

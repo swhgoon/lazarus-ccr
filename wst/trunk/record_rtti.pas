@@ -45,13 +45,13 @@ type
   public
     constructor Create(const AData : PRecordTypeData; const AFieldList : string);
     destructor Destroy();override;
-    function GetRecordTypeData() : PRecordTypeData;
+    function GetRecordTypeData() : PRecordTypeData;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function FindField(const AFieldName : shortstring) : PRecordFieldInfo;
     function GetField(const AFieldName : shortstring) : PRecordFieldInfo;
   end;
 
   function MakeRecordTypeInfo(ARawTypeInfo : PTypeInfo) : PRecordTypeData;
-  procedure FreeRecordTypeInfo(ATypeInfo : PRecordTypeData);
+  procedure FreeRecordTypeInfo(ATypeInfo : PRecordTypeData);{$IFDEF USE_INLINE}inline;{$ENDIF}
 
 {$IFDEF WST_RECORD_RTTI}
   function MakeRawTypeInfo(

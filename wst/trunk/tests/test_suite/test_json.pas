@@ -101,7 +101,7 @@ var
   strm : TMemoryStream;
   locParser : TJSONParser;
   root, errorNodeObj : TJSONObject;
-  errorNode, tmpNode : TJSONData;
+  errorNode : TJSONData;
   excpt_code, excpt_msg : string;
 begin
   root := nil;

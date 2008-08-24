@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
-  base_service_intf;
+  wst_types, base_service_intf;
 
 Type
 
@@ -47,8 +47,11 @@ Type
   function ExtractOptionName(const ACompleteName : string):string;
   function TranslateDotToDecimalSeperator(const Value: string) : string;
   
+  function LoadBufferFromFile(const AFileName : string) : TBinaryString;
+  function LoadBufferFromStream(AStream : TStream) : TBinaryString;
+
+  
 implementation
-uses wst_types;
 
 function IsStrEmpty(Const AStr:String):Boolean;
 begin
@@ -95,6 +98,35 @@ begin
   for i := 1 to length(Result) do begin
     if ( Result[i] = '.' ) then
       Result[i] := DecimalSeparator;
+  end;
+end;
+
+function LoadBufferFromStream(AStream : TStream) : TBinaryString;
+var
+  len : Int64;
+begin
+  len := AStream.Size;
+  SetLength(Result,len);
+  if ( len > 0 ) then begin
+    try
+      AStream.Seek(0,soBeginning);
+      AStream.Read(Result[1],len);
+    except
+      SetLength(Result,0);
+      raise;
+    end;
+  end;
+end;
+
+function LoadBufferFromFile(const AFileName : string) : TBinaryString;
+var
+  locStream : TStream;
+begin
+  locStream := TFileStream.Create(AFileName,fmOpenRead);
+  try
+    Result := LoadBufferFromStream(locStream);
+  finally
+    locStream.Free();
   end;
 end;
 

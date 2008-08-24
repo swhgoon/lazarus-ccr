@@ -128,6 +128,7 @@ type
 
   TSOAPBaseFormatter = class(TSimpleFactoryItem,IFormatterBase)
   private
+    FPropMngr : IPropertyManager;
     FContentType: string;
     FEncodingStyle: TSOAPEncodingStyle;
     FStyle: TSOAPDocumentStyle;
@@ -148,31 +149,37 @@ type
 
     procedure CheckScope();{$IFDEF USE_INLINE}inline;{$ENDIF}
     function InternalPutData(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : string
     ):TDOMNode;
     function PutEnum(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutBool(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutInt64(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutStr(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutFloat(
+      const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Extended
@@ -188,36 +195,42 @@ type
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     
-    function GetNodeValue(var AName : String):DOMString;
+    function GetNodeValue(const ANameSpace : string; var AName : String):DOMString;
     procedure GetEnum(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : TEnumIntType
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : Boolean
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
     procedure GetInt(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : Integer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : Extended
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetStr(
       Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : String
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -289,6 +302,7 @@ type
     constructor Create();override;
     destructor Destroy();override;
     function GetFormatName() : string;
+    function GetPropertyManager():IPropertyManager;
     procedure Clear();
 
     procedure BeginObject(
@@ -324,10 +338,16 @@ type
     procedure EndHeader();
 
     procedure Put(
-      const AName     : string;
-      const ATypeInfo : PTypeInfo;
-      const AData
-    );
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
+    procedure Put(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData
+    );overload;
     procedure PutScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       const AData
@@ -336,7 +356,13 @@ type
       const ATypeInfo : PTypeInfo;
       var   AName     : string;
       var   AData
-    );
+    );overload;
+    procedure Get(
+      const ATypeInfo  : PTypeInfo;
+      const ANameSpace : string;
+      var   AName      : string;
+      var   AData
+    );overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
@@ -686,6 +712,7 @@ begin
 end;
 
 function TSOAPBaseFormatter.InternalPutData(
+  const ANameSpace : string;
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
   const AData      : string
@@ -696,9 +723,17 @@ Var
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
-    namespaceShortName := Copy(FindAttributeByValueInScope(StackTop().NameSpace),AnsiPos(':',namespaceShortName) + 1,MaxInt);
-    if not IsStrEmpty(namespaceShortName) then begin
-      s := ExtractNameSpaceShortName(namespaceShortName);
+    if ( ANameSpace = '' ) then
+      namespaceLongName := StackTop().NameSpace
+    else
+      namespaceLongName := ANameSpace;
+    s := FindAttributeByValueInScope(namespaceLongName);
+    if IsStrEmpty(s) then begin
+      namespaceShortName := 'ns' + IntToStr(NextNameSpaceCounter());
+      AddScopeAttribute('xmlns:'+namespaceShortName, namespaceLongName);
+      strNodeName := s + ':' + strNodeName;
+    end else begin
+      s := ExtractNameSpaceShortName(s);
       if not IsStrEmpty(s) then
         strNodeName := s + ':' + strNodeName;
     end;
@@ -734,12 +769,14 @@ begin
 end;
 
 function TSOAPBaseFormatter.PutEnum(
+  const ANameSpace : string;
   const AName: String;
   const ATypeInfo: PTypeInfo;
   const AData: TEnumIntType
 ): TDOMNode;
 begin
   Result := InternalPutData(
+              ANameSpace,
               AName,
               ATypeInfo,
               GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,AData))
@@ -747,30 +784,33 @@ begin
 end;
 
 function TSOAPBaseFormatter.PutBool(
+  const ANameSpace : string;
   const AName     : String;
   const ATypeInfo : PTypeInfo;
   const AData     : Boolean
 ): TDOMNode;
 begin
-  Result := InternalPutData(AName,ATypeInfo,BoolToSoapBool(AData));
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,BoolToSoapBool(AData));
 end;
 
 function TSOAPBaseFormatter.PutInt64(
+  const ANameSpace : string;
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
   const AData      : Int64
 ): TDOMNode;
 begin
-  Result := InternalPutData(AName,ATypeInfo,IntToStr(AData));
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,IntToStr(AData));
 end;
 
 function TSOAPBaseFormatter.PutStr(
+  const ANameSpace : string;
   const AName: String;
   const ATypeInfo: PTypeInfo;
   const AData: String
 ):TDOMNode;
 begin
-  Result := InternalPutData(AName,ATypeInfo,AData);
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
 end;
 
 procedure TSOAPBaseFormatter.PutObj(
@@ -792,6 +832,7 @@ begin
 end;
 
 function TSOAPBaseFormatter.PutFloat(
+  const ANameSpace : string;
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
   const AData      : Extended
@@ -819,17 +860,21 @@ begin
   if ( i > 0 ) then
     s[i] := '.';
 {$ENDIF HAS_FORMAT_SETTINGS}
-  Result := InternalPutData(AName,ATypeInfo,s);
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,s);
 end;
 
-function TSOAPBaseFormatter.GetNodeValue(var AName: String): DOMString;
-Var
+function TSOAPBaseFormatter.GetNodeValue(const ANameSpace : string; var AName: String): DOMString;
+var
   locElt : TDOMNode;
   namespaceShortName, strNodeName, s : string;
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
-    namespaceShortName := Copy(FindAttributeByValueInScope(StackTop().NameSpace),AnsiPos(':',namespaceShortName) + 1,MaxInt);
+    if ( ANameSpace = '' ) then
+      s := StackTop().NameSpace
+    else
+      s := ANameSpace;
+    namespaceShortName := FindAttributeByValueInScope(s);
     if not IsStrEmpty(namespaceShortName) then begin
       s := ExtractNameSpaceShortName(namespaceShortName);
       if not IsStrEmpty(s) then
@@ -855,13 +900,14 @@ end;
 
 procedure TSOAPBaseFormatter.GetEnum(
   const ATypeInfo: PTypeInfo;
+  const ANameSpace : string;
   var AName: String;
   var AData: TEnumIntType
 );
 Var
   locBuffer : String;
 begin
-  locBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(GetNodeValue(AName));
+  locBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(GetNodeValue(ANameSpace,AName));
   If IsStrEmpty(locBuffer) Then
     AData := 0
   Else
@@ -870,13 +916,14 @@ End;
 
 procedure TSOAPBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
+  const ANameSpace : string;
   var   AName      : String;
   var   AData      : Boolean
 );
 Var
   locBuffer : String;
 begin
-  locBuffer := LowerCase(Trim(GetNodeValue(AName)));
+  locBuffer := LowerCase(Trim(GetNodeValue(ANameSpace,AName)));
   If IsStrEmpty(locBuffer) Then
     AData := False
   Else
@@ -886,43 +933,47 @@ end;
 {$IFDEF FPC}
 procedure TSOAPBaseFormatter.GetInt(
   const ATypeInfo: PTypeInfo;
+  const ANameSpace : string;
   var   AName: String;
   var   AData: Integer
 );
 begin
-  AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
+  AData := StrToIntDef(Trim(GetNodeValue(ANameSpace,AName)),0);
 end;
 {$ENDIF}
 
 procedure TSOAPBaseFormatter.GetInt64(
   const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
   var   AName     : String;
   var   AData     : Int64
 );
 begin
-  AData := StrToInt64Def(Trim(GetNodeValue(AName)),0);
+  AData := StrToInt64Def(Trim(GetNodeValue(ANameSpace,AName)),0);
 end;
 
 procedure TSOAPBaseFormatter.GetFloat(
   const ATypeInfo  : PTypeInfo;
+  const ANameSpace : string;
   var AName        : String;
   var AData        : Extended
 );
 begin
 {$IFDEF HAS_FORMAT_SETTINGS}
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+  AData := StrToFloatDef(Trim(GetNodeValue(ANameSpace,AName)),0,wst_FormatSettings);
 {$ELSE}
-  AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(GetNodeValue(AName))),0);
+  AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(GetNodeValue(ANameSpace:=;,AName))),0);
 {$ENDIF HAS_FORMAT_SETTINGS}
 end;
 
 procedure TSOAPBaseFormatter.GetStr(
   const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
   var   AName     : String;
   var   AData     : String
 );
 begin
-  AData := GetNodeValue(AName);
+  AData := GetNodeValue(ANameSpace,AName);
 end;
 
 procedure TSOAPBaseFormatter.GetObj(
@@ -1319,7 +1370,8 @@ function TSOAPBaseFormatter.ReadHeaders(ACallContext: ICallContext): Integer;
       s := sXML_NS
     else
       s := sXML_NS + ':' + nsSN;
-    nsLN := FindAttributeByNameInScope(s);
+    if not FindAttributeByNameInNode(s,ANode,nsLN) then
+      nsLN := FindAttributeByNameInScope(s);
     Result := GetTypeRegistry().FindByDeclaredName(Copy(ndName,Succ(j),MaxInt),nsLN);
   end;
 
@@ -1402,6 +1454,7 @@ begin
 end;
 
 procedure TSOAPBaseFormatter.Put(
+  const ANameSpace : string;
   const AName: String;
   const ATypeInfo: PTypeInfo;
   const AData
@@ -1418,12 +1471,12 @@ begin
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
-        PutInt64(AName,ATypeInfo,int64Data);
+        PutInt64(ANameSpace,AName,ATypeInfo,int64Data);
       End;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
-        PutStr(AName,ATypeInfo,strData);
+        PutStr(ANameSpace,AName,ATypeInfo,strData);
       End;
     tkClass :
       Begin
@@ -1438,7 +1491,7 @@ begin
     tkBool :
       Begin
         boolData := Boolean(AData);
-        PutBool(AName,ATypeInfo,boolData);
+        PutBool(ANameSpace,AName,ATypeInfo,boolData);
       End;
     {$ENDIF}  
     tkInteger, tkEnumeration :
@@ -1448,7 +1501,7 @@ begin
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
           boolData := Boolean(AData);
-          PutBool(AName,ATypeInfo,boolData);
+          PutBool(ANameSpace,AName,ATypeInfo,boolData);
         end else begin
       {$ENDIF}
           enumData := 0;
@@ -1461,9 +1514,9 @@ begin
             otULong : enumData := LongInt(AData);
           End;
           If ( ATypeInfo^.Kind = tkInteger ) Then
-            PutInt64(AName,ATypeInfo,enumData)
+            PutInt64(ANameSpace,AName,ATypeInfo,enumData)
           Else
-            PutEnum(AName,ATypeInfo,enumData);
+            PutEnum(ANameSpace,AName,ATypeInfo,enumData);
       {$IFDEF WST_DELPHI}
         end;
       {$ENDIF}
@@ -1478,9 +1531,18 @@ begin
           ftCurr : floatDt := Currency(AData);
           ftComp : floatDt := Comp(AData);
         End;
-        PutFloat(AName,ATypeInfo,floatDt);
+        PutFloat(ANameSpace,AName,ATypeInfo,floatDt);
       End;
   End;
+end;
+
+procedure TSOAPBaseFormatter.Put(
+  const AName : String;
+  const ATypeInfo : PTypeInfo;
+  const AData
+);
+begin
+  Put('',AName,ATypeInfo,AData);
 end;
 
 procedure TSOAPBaseFormatter.PutScopeInnerValue(
@@ -1610,6 +1672,7 @@ end;
 
 procedure TSOAPBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
   var   AName     : String;
   var   AData
 );
@@ -1626,13 +1689,13 @@ begin
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
-        GetInt64(ATypeInfo,AName,int64Data);
+        GetInt64(ATypeInfo,ANameSpace,AName,int64Data);
         Int64(AData) := int64Data;
       End;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
-        GetStr(ATypeInfo,AName,strData);
+        GetStr(ATypeInfo,ANameSpace,AName,strData);
         String(AData) := strData;
       End;
     tkClass :
@@ -1650,7 +1713,7 @@ begin
     tkBool :
       Begin
         boolData := False;
-        GetBool(ATypeInfo,AName,boolData);
+        GetBool(ATypeInfo,ANameSpace,AName,boolData);
         Boolean(AData) := boolData;
       End;
     {$ENDIF}
@@ -1661,15 +1724,15 @@ begin
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
           boolData := False;
-          GetBool(ATypeInfo,AName,boolData);
+          GetBool(ATypeInfo,ANameSpace,AName,boolData);
           Boolean(AData) := boolData;
         end else begin
       {$ENDIF}
           enumData := 0;
           If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt64(ATypeInfo,AName,enumData)
+            GetInt64(ATypeInfo,ANameSpace,AName,enumData)
           Else
-            GetEnum(ATypeInfo,AName,enumData);
+            GetEnum(ATypeInfo,ANameSpace,AName,enumData);
           Case GetTypeData(ATypeInfo)^.OrdType Of
             otSByte : ShortInt(AData) := enumData;
             otUByte : Byte(AData) := enumData;
@@ -1685,7 +1748,7 @@ begin
     tkFloat :
       Begin
         floatDt := 0;
-        GetFloat(ATypeInfo,AName,floatDt);
+        GetFloat(ATypeInfo,ANameSpace,AName,floatDt);
         Case GetTypeData(ATypeInfo)^.FloatType Of
           ftSingle : Single(AData)    := floatDt;
           ftDouble : Double(AData)    := floatDt;
@@ -1697,6 +1760,15 @@ begin
         End;
       End;
   End;
+end;
+
+procedure TSOAPBaseFormatter.Get(
+  const ATypeInfo : PTypeInfo;
+  var AName : string;
+  var AData
+);
+begin
+  Get(ATypeInfo,'',AName,AData);
 end;
 
 procedure TSOAPBaseFormatter.GetScopeInnerValue(
@@ -1827,6 +1899,13 @@ end;
 function TSOAPBaseFormatter.GetFormatName() : string;
 begin
   Result := sPROTOCOL_NAME;
+end;
+
+function TSOAPBaseFormatter.GetPropertyManager() : IPropertyManager;
+begin
+  If Not Assigned(FPropMngr) Then
+    FPropMngr := TPublishedPropertyManager.Create(Self);
+  Result := FPropMngr;
 end;
 
 procedure TSOAPBaseFormatter.WriteBuffer(const AValue: string);

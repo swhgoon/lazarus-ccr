@@ -28,7 +28,6 @@ type
 
   TJsonRpcFormatter = class(TJsonRpcBaseFormatter,IFormatterClient)
   private
-    FPropMngr : IPropertyManager;
     FCallProcedureName : string;
     FCallTarget : string;
     FVersion : string;
@@ -37,7 +36,6 @@ type
     procedure SetVersion(const AValue : string);
   public
     constructor Create();override;
-    function GetPropertyManager():IPropertyManager;
 
     procedure BeginCall(
       const AProcName,
@@ -127,13 +125,6 @@ constructor TJsonRpcFormatter.Create();
 begin
   inherited Create();
   SetVersion(s_json_rpc_version_10);
-end;
-
-function TJsonRpcFormatter.GetPropertyManager() : IPropertyManager;
-begin
-  If Not Assigned(FPropMngr) Then
-    FPropMngr := TPublishedPropertyManager.Create(Self);
-  Result := FPropMngr;
 end;
 
 procedure TJsonRpcFormatter.BeginCall(

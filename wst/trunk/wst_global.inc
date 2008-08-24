@@ -1,3 +1,6 @@
+{$DEFINE USE_SERIALIZE}
+{$UNDEF TRemotableTypeInitializer_Initialize}
+
 {$WARNINGS OFF}
 
   {$IFDEF FPC}

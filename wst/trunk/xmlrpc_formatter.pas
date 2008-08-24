@@ -30,13 +30,9 @@ type
 {$M+}
   TXmlRpcFormatter = class(TXmlRpcBaseFormatter,IFormatterClient)
   private
-    FPropMngr : IPropertyManager;
     FCallProcedureName : string;
     FCallTarget : String;
   public
-    destructor Destroy();override;
-    function GetPropertyManager():IPropertyManager;
-
     procedure BeginCall(
       const AProcName,
             ATarget      : string;
@@ -72,19 +68,6 @@ implementation
 {$IFDEF FPC}uses wst_fpc_xml;{$ENDIF}
 
 { TXmlRpcFormatter }
-
-destructor TXmlRpcFormatter.Destroy();
-begin
-  FPropMngr := nil;
-  inherited Destroy();
-end;
-
-function TXmlRpcFormatter.GetPropertyManager(): IPropertyManager;
-begin
-  If Not Assigned(FPropMngr) Then
-    FPropMngr := TPublishedPropertyManager.Create(Self);
-  Result := FPropMngr;
-end;
 
 procedure TXmlRpcFormatter.BeginCall(
   const AProcName,

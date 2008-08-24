@@ -105,7 +105,7 @@ begin
     g.Execute(tr,mdl.Name);
     WriteXMLFile(locDoc,'.\class_properties_default.xsd');
     locExistDoc := LoadXmlFromFilesList('class_properties_default.xsd');
-    Check(CompareNodes(locExistDoc,locDoc),'generated document differs from the existent one.');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     ReleaseDomNode(locExistDoc);
     ReleaseDomNode(locDoc);
@@ -246,7 +246,7 @@ begin
     g.Execute(tr,mdl.Name);
     WriteXMLFile(locDoc,'.\class_extent_native_type.xsd');
     locExistDoc := LoadXmlFromFilesList('class_extent_native_type.xsd');
-    Check(CompareNodes(locExistDoc,locDoc),'generated document differs from the existent one.');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     ReleaseDomNode(locExistDoc);
     ReleaseDomNode(locDoc);
