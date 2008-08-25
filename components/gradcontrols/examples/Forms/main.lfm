@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 317
+  Left = 292
   Height = 440
-  Top = 126
+  Top = 151
   Width = 575
   ActiveControl = TrackBar1
   BorderIcons = [biSystemMenu, biMinimize]
@@ -312,8 +312,6 @@ object Form1: TForm1
     Width = 168
     Caption = 'Sample Text'
     Font.Height = -15
-    Font.Style = [fsItalic]
-    OnClick = bClick
     TabOrder = 9
     TabStop = True
     NormalBlend = 0.5
@@ -327,7 +325,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000E46CDC00
+      180000000000040000006400000064000000000000000000000054B60600
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -352,7 +350,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000B46CDC00
+      18000000000004000000640000006400000000000000000000008C5A2500
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -377,7 +375,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000BC330700
+      180000000000040000006400000064000000000000000000000044B32700
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -402,7 +400,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000FC8BE500
+      18000000000004000000640000006400000000000000000000003C842500
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -427,7 +425,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000BC03E200
+      18000000000004000000640000006400000000000000000000006C3A2500
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -452,7 +450,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000646BDC00
+      1800000000000400000064000000640000000000000000000000D4D42700
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -477,7 +475,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000002CFDDE00
+      18000000000004000000640000006400000000000000000000003C602500
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -502,7 +500,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000005454DC00
+      1800000000000400000064000000640000000000000000000000BC5B2500
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -545,7 +543,7 @@ object Form1: TForm1
     ShowFocusBorder = True
     Glyph.Data = {
       3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000ACF3E100
+      1800000000000400000064000000640000000000000000000000F4F82700
     }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
@@ -561,16 +559,12 @@ object Form1: TForm1
   end
   object ColorDialog1: TColorDialog
     Color = 11954481
-    left = 48
-    top = 176
-  end
-  object ImageList1: TImageList
     left = 8
     top = 176
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'Graphic (*.tga;*.jpg;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.tga;*.jpg;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp|TGA Image File (*.tga)|*.tga|Jpint Picture Expert Group (*.jpg)|*.jpg|Symbol (*.ico)|*.ico|Portable Pixmap (*.ppm)|*.ppm|Portable Graymap'
-    left = 88
+    left = 48
     top = 176
   end
 end

@@ -70,8 +70,8 @@ type
         property TabButton : TGradTabPageButton read FButton;
         function VisibleIndex: integer;
   published
-        property ControlState;
-        property ControlStyle;
+        //property ControlState;
+        //property ControlStyle;
         property TabVisible : Boolean read FTabVisible write SetTabVisible default true;
         property PageIndex : Integer read GetPageIndex write SetPageIndex;
         property Caption : TCaption read GetText write SetText;
@@ -1169,6 +1169,9 @@ begin
     FPagesBar.Top:=0;
     FPagesBar.Width:=FBar.Width;
     FPagesBar.Height:=FBar.Height;
+
+    Height:=200;
+    Width:=200;
 end;
 
 {------------------------------------------------------------------------------
@@ -1409,7 +1412,7 @@ begin
     if (Index<0) or (Index>=fPageList.Count) then Exit;
 
     FPagesBar.UnFocusButton(Index);
-    //UpdateDesignerFlags(Index);
+    UpdateDesignerFlags(Index);
 
      with TGradTabPage(FPageList.Items[Index]) do
        Visible:=false;

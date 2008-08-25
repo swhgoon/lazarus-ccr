@@ -57,15 +57,16 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <OtherUnitFiles Value="Forms\"/>
     </SearchPaths>
     <CodeGeneration>
-      <Generate Value="Faster"/>
+      <SmartLinkUnit Value="True"/>
     </CodeGeneration>
     <Linking>
+      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

@@ -21,8 +21,6 @@ uses
 type
     TGradButton = class;
 
-    TRotateDirection = urotatebitmap.TRotateDirection;
-
     TTextAlignment = (taLeftJustify, taRightJustify, taCenter);
     TBorderSide = (bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
     TBorderSides = set of TBorderSide;
@@ -40,7 +38,7 @@ type
        FButtonLayout: TButtonLayout;
        FTextPoint, FGlyphPoint : TPoint;
        FTextSize, FGlyphSize : TSize;
-       FBackground, bm, FGlyph,
+       FBackground, bm,
        FNormalBackgroundCache, FHotBackgroundCache,
        FDownBackgroundCache, FDisabledBackgroundCache : TBitmap;
        FRotatedGlyph : TRotatedGlyph;
@@ -55,7 +53,6 @@ type
        FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
        procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
        procedure UpdateText;
-       procedure UpdateGlyph;
        procedure UpdateBackground;
        procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
     protected
@@ -65,6 +62,7 @@ type
          FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
        procedure InvPaint(StateCheck:Boolean=false);
        procedure FontChanged(Sender: TObject); override;
+       procedure GlyphChanged(Sender: TObject);
        procedure GetBackgroundRect(var TheRect : TRect);
        function GetGlyph : TBitmap;
        procedure SetEnabled(Value: Boolean); override;
@@ -200,13 +198,7 @@ end;
 
 procedure TGradButton.SetGlyph(const Value: TBitmap);
 begin
-    //FGlyph.Clear;
-    //FGlyph.Assign(Value);
-
-    FRotatedGlyph.Glyph := FGlyph;
-    //FRotatedGlyph.Update;
-
-    //UpdateGlyph;
+  FRotatedGlyph.Bitmap := Value;
 end;
 
 procedure TGradButton.TextChanged;
@@ -240,11 +232,11 @@ end;
 
 procedure TGradButton.UpdateText;
 begin
-    UpdatePositions;
+    //UpdatePositions;
 
-    FRotatedText.Canvas.Font.Color := Canvas.Font.Color;
-    FRotatedText.Canvas.Font := Canvas.Font;
-    FRotatedText.Update;
+    //FRotatedText.Canvas.Font.Color := Canvas.Font.Color;
+    //FRotatedText.Canvas.Font := Canvas.Font;
+    //FRotatedText.Update;
 end;
 
 procedure TGradButton.SetAutoWidth(const Value : Boolean);
@@ -252,11 +244,6 @@ begin
     FAutoWidth:=true;
     
     UpdateButton;
-end;
-
-procedure TGradButton.UpdateGlyph;
-begin
-   //
 end;
 
 procedure TGradButton.Resize;
@@ -290,7 +277,7 @@ begin
     tempGS.cx:=0;
     tempGS.cy:=0;
 
-    if FShowGlyph then
+    if FShowGlyph and not FRotatedGlyph.Empty then
     begin
        tempGS.cx:=FRotatedGlyph.Width;
        tempGS.cy:=FRotatedGlyph.Height;
@@ -320,7 +307,7 @@ begin
            tempGS.cy := p;
        end;  }
 
-       if FShowGlyph then begin
+       if FShowGlyph and not FRotatedGlyph.Empty then begin
            case tempBL of
              blGlyphLeft:  begin
                FGlyphPoint.x := AlignItem(tempGS.cx+FTextGlyphSpacing+tempTS.cx,AreaWidth,4,FTextAlignment);
@@ -550,7 +537,7 @@ end;
 
 function TGradButton.GetGlyph : TBitmap;
 begin
-    Result := FRotatedGlyph.Glyph;
+    Result := FRotatedGlyph.Bitmap;
 end;
 
 procedure TGradButton.SetDisabledColor(const Value: TColor);
@@ -583,7 +570,8 @@ end;
 procedure TGradButton.SetGlyphBackgroundColor(const Value: TColor);
 begin
    FGlyphBackgroundColor:=Value;
-   FRotatedGlyph.TransparentColor:=Value;
+   //todo: see the desired behavior of GlyphBackgroundColor
+   //FRotatedGlyph.TransparentColor:=Value;
    
    InvPaint;
 end;
@@ -653,17 +641,15 @@ begin
 
    UpdateBackground;
    UpdateText;
-   UpdateGlyph;
    UpdatePositions;
 end;
     
 procedure TGradButton.SetShowGlyph(const Value: Boolean);
 begin
-    if FShowGlyph <> Value then
+    if (FShowGlyph <> Value) AND FRotatedGlyph.IsBitmapStored then
     begin
       FShowGlyph:=Value;
     
-      UpdateGlyph;
       UpdatePositions;
     
       InvPaint;
@@ -675,9 +661,8 @@ begin
     FRotateDirection:=Value;
 
     //Rotate and Cache
-    FRotatedText.RotateDirection:=FRotateDirection;
-    if FShowGlyph then
-       FRotatedGlyph.RotateDirection:=FRotateDirection;
+    FRotatedText.Direction:=FRotateDirection;
+    FRotatedGlyph.Direction:=FRotateDirection;
     
     UpdatePositions;
 
@@ -829,8 +814,9 @@ begin
          Height:=Self.Height;
     end;
 
-    //FGlyph := TBitmap.Create;
+
     FRotatedGlyph := TRotatedGlyph.Create;
+    FRotatedGlyph.OnChange := @GlyphChanged;
     FRotatedText := TRotatedText.Create;
     FButtonLayout:=blGlyphLeft;
     FGlyphBackgroundColor:=clWhite;
@@ -854,8 +840,6 @@ begin
    bm.Free;
    DebugLn('FRotatedGlyph.Free');
    FRotatedGlyph.Free;
-   //DebugLn('FGlyph.Free');
-   //if Assigned(FGlyph) then FGlyph.Free;
    DebugLn('FRotatedText.Free');
    FRotatedText.Free;
    DebugLn('FBackground.Free');
@@ -954,21 +938,22 @@ begin
   if doIt then
   begin
     FOldState:=FState;
-    if csDesigning in ComponentState then
-    begin
-       Invalidate;
-    end else begin
-       Paint;
-    end;
+    Invalidate;
   end;
 end;
 
 procedure TGradButton.FontChanged(Sender: TObject);
 begin
   inherited FontChanged(Sender);
-  FRotatedText.Canvas.Font := Font;
-  FRotatedText.Update;
+
+  FRotatedText.Font := Font;
   UpdatePositions;
+end;
+
+procedure TGradButton.GlyphChanged(Sender: TObject);
+begin
+  UpdatePositions;
+  Invalidate;
 end;
 
 procedure TGradButton.DoEnter;
@@ -1037,9 +1022,9 @@ begin
    end;
    
    if Caption <> '' then
-      FRotatedText.Draw(FTextPoint.x+p, FTextPoint.y+p, bm);
+      FRotatedText.Draw(bm.Canvas, FTextPoint.x+p, FTextPoint.y+p);
 
-   if FShowGlyph then
+   if FShowGlyph AND FRotatedGlyph.IsBitmapStored then
    begin
       if not FEnabled then
          tempState := bsDisabled
@@ -1047,7 +1032,7 @@ begin
          tempState := FState;
          
       FRotatedGlyph.State:=tempState;
-      FRotatedGlyph.Draw(FGlyphPoint.x+p, FGlyphPoint.y+p, bm, FGlyphBackgroundColor);
+      FRotatedGlyph.Draw(bm.Canvas, FGlyphPoint.x+p, FGlyphPoint.y+p);
    end;
    
    if not (csDesigning in ComponentState) then

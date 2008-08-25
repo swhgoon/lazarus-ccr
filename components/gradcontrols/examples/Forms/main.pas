@@ -30,7 +30,6 @@ type
     GlyphBackgroundColorButton: TGradButton;
     ClickColorButton: TGradButton;
     DisabledColorButton: TGradButton;
-    ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -50,7 +49,6 @@ type
     RadioGroup4: TRadioGroup;
     TrackBar1: TTrackBar;
     TrackBar2: TTrackBar;
-    procedure bClick(Sender: TObject);
     procedure BoldCheckBoxChange(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure CheckGroup2ItemClick(Sender: TObject; Index: integer);
@@ -81,8 +79,7 @@ var
 implementation
 
 uses
-    GraphType, LazPNG;
-
+    GraphType;
 procedure UpdateButtonColor(Button: TGradButton; Color: TColor);
 begin
   Button.BaseColor := Color;
@@ -115,13 +112,12 @@ begin
   CheckGroup2.Checked[0]:=b.ShowFocusBorder;
   CheckGroup2.Checked[2]:=true;
 
-  //ImageList1.AddLazarusResource('house');
-  
-  //ImageList1.GetBitmap(0,b.Glyph,gdeHighlighted);
-
-  //ImageList1.GetBitmap();
-
   b.Caption:=LabeledEdit1.Text;
+
+  //ImageList1.Add(LoadBitmapFromLazarusResource('script_go'),nil);
+  //b.Glyph := LoadBitmapFromLazarusResource('table_gear');
+
+  b.ShowGlyph:=true;
 end;
 
 procedure TForm1.RadioGroup1Click(Sender: TObject);
@@ -185,35 +181,20 @@ end;
 procedure TForm1.GradButton4Click(Sender: TObject);
 var
    tempPicture : TPicture;
-   png : TPNGImage;
 begin
   if OpenPictureDialog1.Execute then
   begin
-      ImageList1.Clear;
+      tempPicture := TPicture.Create;
       try
-          tempPicture := TPicture.Create;
           tempPicture.LoadFromFile(OpenPictureDialog1.FileName);
-          //png :=  TPNGImage.Create;
-          //png.LoadFromFile(OpenPictureDialog1.FileName);
 
-          GradButton4.Glyph.Assign(tempPicture.Graphic);
           b.Glyph.Assign(tempPicture.Graphic);
 
-          GradButton4.UpdateButton;
-          b.UpdateButton;
-          //ImageList1.;
-          //Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
-          //tempPicture.Picture.Bitmap.Canvas.Pixels[1,2]:=clRed;
-          //ImageList1.AddMasked(tempPicture.Picture.Bitmap,clNone);
-          //ImageList1.GetBitmap(0,b.Glyph);
-          //mageList1.GetBitmap(0,);
-          //GradButton4.Glyph := Image1.Picture.Bitmap;
-          //Image1.Picture.Bitmap := tempPicture.Picture.Bitmap;
-          GradButton4.ShowGlyph:=true;
-          GradButton4.Caption:='';
+          GradButton4.Glyph.Assign(tempPicture.Graphic);
+          GradButton4.ShowGlyph := true;
+          GradButton4.Caption := '';
       finally
           tempPicture.Free;
-          //png.Free;
       end;
   end;
 end;
@@ -290,11 +271,6 @@ begin
     end;
 end;
 
-procedure TForm1.bClick(Sender: TObject);
-begin
-
-end;
-
 procedure TForm1.BoldCheckBoxChange(Sender: TObject);
 begin
   if BoldCheckBox.Checked then
@@ -345,6 +321,5 @@ end;
 
 initialization
   {$I main.lrs}
-  
 end.
 
