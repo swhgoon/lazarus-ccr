@@ -13,7 +13,7 @@
 {$INCLUDE wst_global.inc}
 unit library_protocol;
 
-{$DEFINE WST_DBG}
+//{$DEFINE WST_DBG}
 
 interface
 

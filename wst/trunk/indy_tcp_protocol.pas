@@ -1,6 +1,6 @@
 {
     This file is part of the Web Service Toolkit
-    Copyright (c) 2006 by Inoussa OUEDRAOGO
+    Copyright (c) 2008 by Inoussa OUEDRAOGO
 
     This file is provide under modified LGPL licence
     ( the files COPYING.modifiedLGPL and COPYING.LGPL).
@@ -11,14 +11,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
 {$INCLUDE wst_global.inc}
-unit synapse_tcp_protocol;
+unit indy_tcp_protocol;
 
 interface
 
 uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf,
-  blcksock;
+  IdTCPClient;
 
 //{$DEFINE WST_DBG}
 
@@ -36,7 +36,7 @@ Type
   Private
     FFormat : string;
     FPropMngr : IPropertyManager;
-    FConnection : TTCPBlockSocket;
+    FConnection : TIdTCPClient;
     FContentType : string;
     FTarget: string;
     FAddress : string;
@@ -53,17 +53,17 @@ Type
     property Target : string Read FTarget Write FTarget;
     property ContentType : string Read FContentType Write FContentType;
     property Address : string Read FAddress Write FAddress;
-    property Port : string Read FPort Write FPort;
+    property Port : string read FPort write FPort;
     property DefaultTimeOut : Integer read FDefaultTimeOut write FDefaultTimeOut;
     property Format : string read FFormat write FFormat;
   End;
 {$M+}
 
-  procedure SYNAPSE_RegisterTCP_Transport();
+  procedure INDY_RegisterTCP_Transport();
 
 implementation
 uses
-  binary_streamer, Math, wst_types;
+  binary_streamer, wst_types;
 
 { TTCPTransport }
 
@@ -71,18 +71,20 @@ procedure TTCPTransport.Connect();
 var
   locReconnect : Boolean;
 begin
-  if ( FConnection.Socket = NOT(0) ) then begin
-    FConnection.Connect(Address,Port);
+  if not FConnection.Connected() then begin
+    FConnection.ReadTimeout := DefaultTimeOut;
+    FConnection.Connect(Address,StrToInt(Port));
   end else begin
     locReconnect := False;
     try
-      locReconnect := not FConnection.CanRead(0);
+      locReconnect := not FConnection.Socket.Binding.Readable(0);
     except
       locReconnect := True;
     end;
     if locReconnect then begin
-      FConnection.CloseSocket();
-      FConnection.Connect(Address,Port);
+      FConnection.Disconnect();
+      FConnection.ReadTimeout := DefaultTimeOut;
+      FConnection.Connect(Address,StrToInt(Port));
     end;
   end;
 end;
@@ -90,8 +92,8 @@ end;
 constructor TTCPTransport.Create();
 begin
   FPropMngr := TPublishedPropertyManager.Create(Self);
-  FConnection := TTCPBlockSocket.Create();
-  FConnection.RaiseExcept := True;
+  FConnection := TIdTCPClient.Create(nil);
+  //FConnection.ReadTimeout:=;
   FDefaultTimeOut := 90000;
 end;
 
@@ -108,15 +110,14 @@ begin
 end;
 
 procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
-Var
+var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
   strBuff : TBinaryString;
   bufferLen : LongInt;
-  i, j, c : PtrInt;
 begin
   buffStream := TMemoryStream.Create();
-  Try
+  try
     wrtr := CreateBinaryWriter(buffStream);
     wrtr.WriteInt32S(0);
     wrtr.WriteStr(Target);
@@ -128,41 +129,29 @@ begin
     wrtr.WriteStr(strBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
+    buffStream.Position := 0;
 
-    //if ( FConnection.Socket = NOT(0) ) then
-      //FConnection.Connect(Address,Port);
     Connect();
-    FConnection.SendBuffer(buffStream.Memory,buffStream.Size);
+    FConnection.IOHandler.Write(buffStream,buffStream.Size,False);
 
     bufferLen := 0;
-    FConnection.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
-    FConnection.ExceptCheck();
+    bufferLen := FConnection.IOHandler.ReadLongInt(False);
     bufferLen := Reverse_32(bufferLen);
     AResponse.Size := bufferLen;
     if ( bufferLen > 0 ) then begin
-      c := 0;
-      i := 1024;
-      if ( i > bufferLen ) then
-        i := bufferLen;
-      SetLength(strBuff,i);
-      repeat
-        j := FConnection.RecvBufferEx(@(strBuff[1]),i,DefaultTimeOut);
-        FConnection.ExceptCheck();
-        AResponse.Write(strBuff[1],j);
-        Inc(c,j);
-        i := Min(1024,(bufferLen-c));
-      until ( i =0 ) or ( j <= 0 );
+      AResponse.Position := 0;
+      FConnection.IOHandler.ReadStream(AResponse,bufferLen,False);
     end;
     AResponse.Position := 0;
     {$IFDEF WST_DBG}
     TMemoryStream(AResponse).SaveToFile('response.log');
     {$ENDIF WST_DBG}
-  Finally
+  finally
     buffStream.Free();
-  End;
+  end;
 end;
 
-procedure SYNAPSE_RegisterTCP_Transport();
+procedure INDY_RegisterTCP_Transport();
 begin
   GetTransportRegistry().Register(sTRANSPORT_NAME,TSimpleItemFactory.Create(TTCPTransport) as IItemFactory);
 end;

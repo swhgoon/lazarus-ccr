@@ -69,7 +69,9 @@ Type
   procedure INDY_RegisterHTTP_Transport();
   
 implementation
-
+uses
+  wst_types;
+  
 { THTTPTransport }
 
 function THTTPTransport.GetAddress: string;
@@ -143,7 +145,7 @@ end;
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
 {$IFDEF WST_DBG}
 var
-  s : string;
+  s : TBinaryString;
   i : Int64;
 {$ENDIF WST_DBG}
 begin

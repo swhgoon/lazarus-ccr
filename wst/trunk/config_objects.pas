@@ -73,11 +73,9 @@ type
 
 implementation
 uses
-  base_soap_formatter, server_service_intf,
+  base_soap_formatter, server_service_intf
 {$IFNDEF FPC}
-  xmldom, wst_delphi_xml
-{$ELSE}
-  DOM, XmlRead, XmlWrite
+  , xmldom, wst_delphi_xml
 {$ENDIF};
 
 const

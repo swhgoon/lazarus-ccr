@@ -205,10 +205,10 @@ Type
     ARequestBuffer   : IRequestBuffer;
     AServiceRegistry : IServerServiceRegistry = Nil
   );
-  function GetFormatterRegistry():IFormatterRegistry;
-  function GetServerServiceRegistry():IServerServiceRegistry;
-  function GetServiceImplementationRegistry():IServiceImplementationRegistry ;
-  function GetServiceExtensionRegistry():IServiceExtensionRegistry;
+  function GetFormatterRegistry():IFormatterRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetServerServiceRegistry():IServerServiceRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetServiceImplementationRegistry():IServiceImplementationRegistry ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetServiceExtensionRegistry():IServiceExtensionRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
   procedure initialize_server_services_intf();
   procedure finalize_server_services_intf();
