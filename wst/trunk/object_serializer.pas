@@ -16,7 +16,7 @@ unit object_serializer;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Contnrs,
+  Classes, SysUtils, TypInfo, Contnrs, SyncObjs,
   base_service_intf, wst_types;
 
 type
@@ -95,9 +95,10 @@ type
 
   TBaseComplexTypeRegistryItem = class(TTypeRegistryItem)
   private
-    FGetterLock : PtrInt;
+    FGetterLock : TCriticalSection;
     FSerializer : TObjectSerializer;
     FGetFunction : TGetSerializerFunction;
+    FFuncIsNotReady : Boolean;
   private
     function FirstGetter() : TObjectSerializer;
     function StaticGetter() : TObjectSerializer;
@@ -132,13 +133,6 @@ resourcestring
   SERR_SerializerInitializationException = 'Unable to initialize the serializer of that type : "%s".';
   
 implementation
-{$IFDEF WST_DELPHI}
-  {$IFDEF MSWINDOWS}
-uses
-  Windows;
-  {$ENDIF MSWINDOWS}
-{$ENDIF WST_DELPHI}
-
 
 procedure ErrorProc(
     AObject : TObject;
@@ -1175,26 +1169,17 @@ end;
 { TBaseComplexTypeRegistryItem }
 
 function TBaseComplexTypeRegistryItem.FirstGetter() : TObjectSerializer;
-var
-  oldValue : PtrInt;
 begin
-  if ( InterlockedCompareExchange(Pointer(FGetterLock),Pointer(1),Pointer(0)) = Pointer(0) ) then begin
-    try
+  FGetterLock.Acquire();
+  try
+    if ( FSerializer = nil ) then begin
       FSerializer := TObjectSerializer.Create(TBaseComplexRemotableClass(GetTypeData(DataType)^.ClassType),Owner);
-    except
-      InterLockedDecrement(FGetterLock);
-      raise;
+      FFuncIsNotReady := True;
+        FGetFunction := {$IFDEF FPC}@{$ENDIF}StaticGetter;
+      FFuncIsNotReady := False;
     end;
-    FGetFunction := {$IFDEF FPC}@{$ENDIF}StaticGetter;
-    InterLockedIncrement(FGetterLock);
-  end else begin
-    repeat
-      //this is a way t get the value of "FGetterLock" without altering it.
-      oldValue := PtrInt(InterlockedCompareExchange(Pointer(FGetterLock),Pointer(1),Pointer(12)));
-      //this is a busy wait!
-    until ( oldValue <> 1 );
-    if ( oldValue <> 2 ) then
-      raise ESerializerException.CreateFmt(SERR_SerializerInitializationException,[DataType^.Name]);
+  finally
+    FGetterLock.Release();
   end;
   Result := FSerializer;
 end;
@@ -1213,16 +1198,21 @@ constructor TBaseComplexTypeRegistryItem.Create(
 begin
   inherited Create(AOwner, ANameSpace, ADataType, ADeclaredName);
   FGetFunction := {$IFDEF FPC}@{$ENDIF}FirstGetter;
+  FGetterLock := TCriticalSection.Create();
 end;
 
 destructor TBaseComplexTypeRegistryItem.Destroy();
 begin
+  FGetterLock.Free();
   FSerializer.Free();
   inherited Destroy();
 end;
 
 function TBaseComplexTypeRegistryItem.GetSerializer() : TObjectSerializer;
 begin
+  while FFuncIsNotReady do begin
+    //busy wait
+  end;
   Result := FGetFunction();
 end;
 
