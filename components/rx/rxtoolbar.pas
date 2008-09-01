@@ -178,6 +178,7 @@ type
     procedure OnIniSave(Sender: TObject);
     procedure OnIniLoad(Sender: TObject);
     procedure SetToolBarStyle(const AValue: TToolBarStyle);
+    procedure ReAlignToolBtn;
   protected
     FCustomizer:TForm;
     procedure Notification(AComponent: TComponent;
@@ -186,7 +187,7 @@ type
     procedure DoAutoSize; Override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure Loaded; override;
+    procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -966,6 +967,19 @@ begin
   Invalidate;
 end;
 
+procedure TToolPanel.ReAlignToolBtn;
+var
+  i, L:integer;
+begin
+  L:=0;
+  for i:=0 to FToolbarItems.Count - 1 do
+  begin
+    FToolbarItems[i].FButton.Left:=L;
+    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
+    L:=L + FToolbarItems[i].FButton.Width;
+  end;
+end;
+
 procedure TToolPanel.Notification(AComponent: TComponent; Operation: TOperation);
 var
   i:integer;
@@ -1005,20 +1019,21 @@ var
   i, H:integer;
   
 begin
+
   if not AutoSizeCanStart then exit;
-{  if AutoSizeDelayed then
-  begin
-    Include(FControlFlags,cfAutoSizeNeeded);
-    exit;
-  end;}
+
   if Items.Count > 0 then
   begin
     H:=0;
     for i:=0 to Items.Count-1 do
-      if Assigned(Items[i].FButton) then
+      if Assigned(Items[i].FButton) and Items[i].FButton.HandleObjectShouldBeVisible then
         H:=Max(H, Items[i].Height);
-    H:=H +BorderWidth * 2;
-    SetBoundsKeepBase(Left,Top,Width,H,true);
+    if H>0 then
+    begin
+      H:=H +BorderWidth * 2;
+      SetBoundsKeepBase(Left,Top,Width,H,true);
+      ReAlignToolBtn;
+    end;
 //    Exclude(FControlFlags,cfAutoSizeNeeded);
   end
   else
@@ -1033,29 +1048,15 @@ begin
     Customize(HelpContext);
 end;
 
-procedure TToolPanel.Loaded;
+procedure TToolPanel.RequestAlign;
 var
   i, L:integer;
 begin
-  inherited Loaded;
-{  L:=0;
-  for i:=0 to FToolbarItems.Count - 1 do
-  begin
-    if ButtonAllign = tbaLeft then
-    begin
-      FToolbarItems[i].FSaveLeft:=L;
-      FToolbarItems[i].UpdateLeftAfterLoad;
-      Inc(L, FToolbarItems[i].Left + FToolbarItems[i].Width);
-    end
-    else
-      FToolbarItems[i].UpdateLeftAfterLoad;
-  end;
-}
-  for i:=0 to FToolbarItems.Count - 1 do
-  begin
-    FToolbarItems[i].FButton.Align:=BtnAl2Align[FButtonAllign];
-  end;
-
+  inherited RequestAlign;
+  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) or (not Parent.HandleAllocated) then
+    exit;
+  if not Parent.HandleAllocated then exit;
+  ReAlignToolBtn;
 end;
 
 constructor TToolPanel.Create(AOwner: TComponent);
@@ -1293,6 +1294,9 @@ var
 begin
   inherited Create(ACollection);
   FButton:=TToolbarButton.Create(TToolbarItems(ACollection).FToolPanel);
+
+  FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
+
   FButton.Parent:=TToolbarItems(ACollection).FToolPanel;
   FButton.FImageList:=TToolbarItems(ACollection).FToolPanel.ImageList;
   FButton.Flat:=tpFlatBtns in TToolbarItems(ACollection).FToolPanel.Options;
@@ -1301,8 +1305,8 @@ begin
   FButton.FAutoSize:=true;
   FButton.FOwnerItem:=Self;
   FButton.FFullPush:=true;
-  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
-    FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
+//  if not (csLoading in TToolbarItems(ACollection).FToolPanel.ComponentState) then
+//    FButton.Align:=BtnAl2Align[TToolbarItems(ACollection).FToolPanel.ButtonAllign];
 {  if TToolbarItems(ACollection).FToolPanel.ButtonAllign = tbaLeft then
   begin
     W:=0;

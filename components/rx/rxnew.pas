@@ -1,5 +1,7 @@
-{ Этот файл был автоматически создан Lazarus. Не редактировать!
-Исходный код используется только для компиляции и установки пакета.
+{ Р­С‚РѕС‚ С„Р°Р№Р» Р±С‹Р» Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё СЃРѕР·РґР°РЅ Lazarus. РќР
+  µ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ!
+  РСЃС…РѕРґРЅС‹Р№ РєРѕРґ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РґР»СЏ РєРѕРјРїР
+    ёР»СЏС†РёРё Рё СѓСЃС‚Р°РЅРѕРІРєРё РїР°РєРµС‚Р°.
  }
 
 unit rxnew; 
@@ -8,12 +10,12 @@ interface
 
 uses
   rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
-    dbdateedit, registerrx, curredit, folderlister, rxdbgrid, rxmemds, 
-    duallist, boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, 
-    rxtbrsetup, fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, 
-    rxlogin, rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, 
-    rxcustomchartpanel, rxsortmemds, AutoPanel, pickdate, rxiconv, 
-    rxceEditLookupFields, LazarusPackageIntf; 
+  dbdateedit, registerrx, curredit, folderlister, rxdbgrid, rxmemds, duallist, 
+  boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxtbrsetup, 
+  fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
+  rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
+  rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
+  LazarusPackageIntf;
 
 implementation
 
