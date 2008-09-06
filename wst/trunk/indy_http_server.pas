@@ -171,7 +171,7 @@ procedure TwstIndyHttpListener.ProcessServiceRequest(
 var
   trgt,ctntyp, frmt : string;
   rqst : IRequestBuffer;
-  inStream : {$IFDEF FPC}TMemoryStream{$ELSE}TStringStream{$ENDIF};
+  inStream : TMemoryStream;
 begin
   trgt := ExtractNextPathElement(APath);
   if AnsiSameText(sWSDL,trgt) then begin
@@ -181,13 +181,11 @@ begin
   inStream := nil;
   try
     try
-      inStream := {$IFDEF FPC}TMemoryStream.Create();{$ELSE}TStringStream.Create(ARequestInfo.FormParams);{$ENDIF}
+      inStream := TMemoryStream.Create();
       AResponseInfo.ContentStream := TMemoryStream.Create();
 
       ctntyp := ARequestInfo.ContentType;
-    {$IFDEF FPC}
       inStream.CopyFrom(ARequestInfo.PostStream,0);
-    {$ENDIF}
       inStream.Position := 0;
       AResponseInfo.ContentType := ctntyp;
       frmt := Trim(ARequestInfo.Params.Values['format']);
