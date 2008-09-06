@@ -109,7 +109,7 @@ type
             ADataType     : PTypeInfo;
       Const ADeclaredName : string = ''
     );override;
-    destructor Destroy();
+    destructor Destroy();override;
     function GetSerializer() : TObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   end;
   

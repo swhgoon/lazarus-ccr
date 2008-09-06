@@ -68,6 +68,8 @@ type
   function wst_GetConfigObject() : TWstConfigurationObject;
   function wst_GetServiceConfig(const AName : string) : TwstConfigService ;
   function wst_GetServiceConfigText(const AName : string) : string ;
+  procedure wst_CreateDefaultFile();overload;
+  procedure wst_CreateDefaultFile(const AFileName : string);overload;
   procedure wst_CreateDefaultFile(ADest : TStream; AConfigObj : TWstConfigurationObject);overload;
   procedure wst_CreateDefaultFile(const AFileName : string; AConfigObj : TWstConfigurationObject);overload;
 
@@ -99,7 +101,11 @@ end;
 
 function wst_GetConfigFileName():string;
 begin
+{$IFDEF WINDOWS}
+  Result := ChangeFileExt(ParamStr(0),'.' + sCONFIG_FILE_NAME);
+{$ELSE}
   Result := ChangeFileExt(GetAppConfigFile(False,True),'.' + sCONFIG_FILE_NAME);
+{$ENDIF WINDOWS}
 end;
 
 procedure wst_LoadConfigObject(AConfig: TWstConfigurationObject; AStream : TStream);overload;
@@ -150,6 +156,16 @@ begin
     FreeAndNil(Result);
     raise;
   end;
+end;
+
+procedure wst_CreateDefaultFile();
+begin
+  wst_CreateDefaultFile(wst_GetConfigFileName());
+end;
+
+procedure wst_CreateDefaultFile(const AFileName : string);
+begin
+  wst_CreateDefaultFile(AFileName,nil);
 end;
 
 procedure wst_CreateDefaultFile(ADest : TStream; AConfigObj : TWstConfigurationObject);overload;

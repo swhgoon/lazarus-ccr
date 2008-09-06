@@ -1425,7 +1425,8 @@ const
   FIELDS_STRING = '__FIELDS__';
 
   function GetTypeRegistry():TTypeRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  procedure RegisterStdTypes();
+  procedure RegisterStdTypes();overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure RegisterStdTypes(ARegistry : TTypeRegistry);overload;
   procedure RegisterAttributeProperty(
     const ATypeInfo : PTypeInfo; // must be tkClass or tkRecord
     const AProperty : shortstring
@@ -1466,11 +1467,16 @@ begin
 end;
 
 procedure RegisterStdTypes();
+begin
+  RegisterStdTypes(GetTypeRegistry());
+end;
+
+procedure RegisterStdTypes(ARegistry : TTypeRegistry);
 Var
   r : TTypeRegistry;
   ri : TTypeRegistryItem;
 begin
-  r := GetTypeRegistry();
+  r := ARegistry;
   r.Register(sXSD_NS,TypeInfo(Integer),'int').AddPascalSynonym('Integer');
     r.Register(sXSD_NS,TypeInfo(LongWord),'unsignedInt');
     r.Register(sXSD_NS,TypeInfo(positiveInteger),'positiveInteger');
@@ -2947,22 +2953,20 @@ Var
 begin
   Result := Nil;
   i := IndexOf(ATypeInfo);
-  If ( i > -1 ) Then
+  if ( i > -1 ) then begin
     Result := Item[i]
-  Else If ( Not AExact ) And
-          Assigned(ATypeInfo) And
-          ( ATypeInfo^.Kind = tkClass )
-  Then Begin
+  end else if ( not AExact ) and Assigned(ATypeInfo) and ( ATypeInfo^.Kind = tkClass ) then begin
     searchClass := GetTypeData(ATypeInfo)^.ClassType;
-    For i := 0 To Pred(Count) Do Begin
+    for i := Pred(Count) downto 0 do begin
       Result := Item[i];
-      If ( Result.DataType^.Kind = tkClass ) And
+      if ( Result.DataType^.Kind = tkClass ) and
          searchClass.InheritsFrom(GetTypeData(Result.DataType)^.ClassType)
-      Then
+      then begin
         Exit;
-    End;
+      end;
+    end;
     Result := Nil;
-  End;
+  end;
 end;
 
 function TTypeRegistry.Find(const APascalTypeName: string): TTypeRegistryItem;

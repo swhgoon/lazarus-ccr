@@ -66,7 +66,6 @@ Type
   ISavableSourceStream = Interface(ISourceStream)
     ['{B5F03006-FD33-4DA8-A2E7-168BDABE8832}']
     procedure SaveToStream(AStream : TStream);
-    procedure SaveToFile(const APath : string);
     function GetStream(): TStream;
   end;
   
