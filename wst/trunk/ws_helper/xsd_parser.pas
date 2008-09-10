@@ -114,7 +114,8 @@ type
     constructor Create(
             ADoc : TXMLDocument;
             ASymbols : TwstPasTreeContainer;
-      const AModuleName : string
+      const AModuleName : string;
+      const ANotifier : TOnParserMessage = nil
     );
   end;
 
@@ -568,12 +569,15 @@ end;
 constructor TXsdParser.Create(
         ADoc : TXMLDocument;
         ASymbols : TwstPasTreeContainer;
-  const AModuleName : string
+  const AModuleName : string;
+  const ANotifier : TOnParserMessage
 );
 var
   locName : string;
 begin
   inherited Create(ADoc,ADoc.DocumentElement,ASymbols,nil);
+  if Assigned(ANotifier) then
+    FOnMessage := ANotifier;
   if not IsStrEmpty(AModuleName) then begin
     locName := ExtractIdentifier(AModuleName);
     if not IsStrEmpty(locName) then begin

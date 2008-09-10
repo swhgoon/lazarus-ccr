@@ -76,6 +76,7 @@ const
   s_soap                       : WideString = 'http://schemas.xmlsoap.org/wsdl/soap/';
   s_soap_short_name                         = 'soap';
   s_soapAction                              = 'soapAction';
+  s_soapEncodingNameSpace                   = 'http://schemas.xmlsoap.org/soap/encoding/';
   s_soapInputEncoding                       = 'Input_EncodingStyle';
   s_soapOutputEncoding                      = 'OutputEncodingStyle';
   s_soapStyle                               = 'style';

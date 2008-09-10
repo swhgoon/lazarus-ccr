@@ -71,6 +71,8 @@ type
 
   TDerivationMode = ( dmNone, dmExtension, dmRestriction );
   TSequenceType = ( stElement, stAll );
+  TParserTypeHint = ( pthDeriveFromSoapArray );
+  TParserTypeHints = set of TParserTypeHint;
 
   { TPropInfoReference }
 
@@ -109,6 +111,7 @@ type
     FDerivationMode : TDerivationMode;
     FDerivationNode : TDOMNode;
     FSequenceType : TSequenceType;
+    FHints : TParserTypeHints;
   private
     //helper routines
     function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
@@ -614,6 +617,7 @@ var
   locContentChildCrs, locCrs : IObjectCursor;
   locSymbol : TPasElement;
   locBaseTypeLocalSpace, locBaseTypeLocalName, locBaseTypeInternalName, locFilterStr : string;
+  locBaseTypeLocalSpaceExpanded : string;
 begin
   locFilterStr := CreateQualifiedNameFilterStr(s_extension,FContext.GetXsShortNames());
   locContentChildCrs := CreateChildrenCursor(FContentNode,cetRttiNode);
@@ -667,14 +671,23 @@ begin
         raise EXsdParserException.CreateFmt('"%s" was expected to be a type definition.',[locSymbol.Name]);
       end;
     end else begin
-      locBaseTypeInternalName := ExtractIdentifier(locBaseTypeLocalName);
-      if IsReservedKeyWord(locBaseTypeInternalName) then
-        locBaseTypeInternalName := '_' + locBaseTypeInternalName ;
-      FBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,Self.Module.InterfaceSection,visDefault,'',0));
-      Self.Module.InterfaceSection.Declarations.Add(FBaseType);
-      Self.Module.InterfaceSection.Types.Add(FBaseType);
-      if not AnsiSameText(locBaseTypeInternalName,locBaseTypeLocalName) then
-        FSymbols.RegisterExternalAlias(FBaseType,locBaseTypeLocalName);
+      if ( FDerivationMode = dmRestriction ) and
+         ( locBaseTypeLocalName = 'Array' ) and
+         ( FContext.FindNameSpace(locBaseTypeLocalSpace,locBaseTypeLocalSpaceExpanded) and
+           ( locBaseTypeLocalSpaceExpanded = s_soapEncodingNameSpace )
+         )
+      then begin
+        FHints := FHints + [pthDeriveFromSoapArray];
+      end else begin
+        locBaseTypeInternalName := ExtractIdentifier(locBaseTypeLocalName);
+        if IsReservedKeyWord(locBaseTypeInternalName) then
+          locBaseTypeInternalName := '_' + locBaseTypeInternalName ;
+        FBaseType := TPasUnresolvedTypeRef(FSymbols.CreateElement(TPasUnresolvedTypeRef,locBaseTypeInternalName,Self.Module.InterfaceSection,visDefault,'',0));
+        Self.Module.InterfaceSection.Declarations.Add(FBaseType);
+        Self.Module.InterfaceSection.Types.Add(FBaseType);
+        if not AnsiSameText(locBaseTypeInternalName,locBaseTypeLocalName) then
+          FSymbols.RegisterExternalAlias(FBaseType,locBaseTypeLocalName);
+      end;
     end;
   end;
 end;
@@ -907,7 +920,9 @@ begin
     internalName := Format('_%s',[internalName]);
   end;
 
-  if ( FDerivationMode = dmRestriction ) and FSymbols.SameName(FBaseType,s_array) then begin
+  if ( pthDeriveFromSoapArray in FHints ) or
+     ( ( FDerivationMode = dmRestriction ) and FSymbols.SameName(FBaseType,s_array) )
+  then begin
     Result := ExtractSoapArray(ATypeName,internalName,hasInternalName);
   end else begin
     arrayItems := TPropInfoReferenceList.Create();

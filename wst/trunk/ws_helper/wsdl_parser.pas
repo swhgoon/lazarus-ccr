@@ -557,6 +557,35 @@ function TWsdlParser.ParseOperation(
     end;
 
     procedure ParseOutputMessage();
+    
+      function FindIndexOfResultArg(AArgList : TList) : PtrInt;
+      const RESULT_ARG_NAMES : array[0..5] of string = ( 'result', 'return', '_result', 'result_', '_return', 'return_' );
+      var
+        p, q : PtrInt;
+        idx_found : Boolean;
+        resItemName : string;
+        arg : TPasArgument;
+      begin
+        Result := -1;
+        idx_found := False;
+        p := Low(RESULT_ARG_NAMES);
+        while ( not idx_found ) and ( p <= High(RESULT_ARG_NAMES) ) do begin
+          resItemName := RESULT_ARG_NAMES[p];
+          for q := 0 to Pred(AArgList.Count) do begin
+            arg := TPasArgument(AArgList[q]);
+            if ( arg.Access = argOut ) and ( LowerCase(arg.Name) = resItemName ) then begin
+              idx_found := True;
+              Break;
+            end;
+          end;
+          Inc(p);
+        end;
+        if idx_found then
+          Result := q
+        else
+          Result := AArgList.Count - 1;
+      end;
+      
     var
       outMsg, strBuffer : string;
       outMsgNode, tmpNode : TDOMNode;
@@ -568,8 +597,9 @@ function TWsdlParser.ParseOperation(
       locProcType : TPasProcedureType;
       locFunc : TPasFunction;
       locFuncType : TPasFunctionType;
-      j : Integer;
+      j : PtrInt;
       arg_a, arg_b : TPasArgument;
+      resArgIndex : PtrInt;
     begin
       if ExtractMsgName(s_output,outMsg) then begin
         outMsgNode := FindMessageNode(outMsg);
@@ -653,16 +683,19 @@ function TWsdlParser.ParseOperation(
               locFunc := TPasFunction(SymbolTable.CreateElement(TPasFunction,tmpMthd.Name,AOwner,visDefault,'',0));
               locFuncType := SymbolTable.CreateFunctionType('','Result',locFunc,False,'',0);
               locFunc.ProcType := locFuncType;
-              for j := 0 to ( locProcType.Args.Count - 2 ) do begin
-                arg_a := TPasArgument(locProcType.Args[j]);
-                arg_b := TPasArgument(SymbolTable.CreateElement(TPasArgument,arg_a.Name,locFuncType,visDefault,'',0));
-                locFuncType.Args.Add(arg_b);
-                arg_b.Access := arg_a.Access;
-                arg_b.ArgType := arg_a.ArgType;
-                arg_b.ArgType.AddRef();
-                SymbolTable.RegisterExternalAlias(arg_b,SymbolTable.GetExternalName(arg_a));
+              resArgIndex := FindIndexOfResultArg(locProcType.Args);
+              for j := 0 to ( locProcType.Args.Count - 1 ) do begin
+                if ( j <> resArgIndex ) then begin
+                  arg_a := TPasArgument(locProcType.Args[j]);
+                  arg_b := TPasArgument(SymbolTable.CreateElement(TPasArgument,arg_a.Name,locFuncType,visDefault,'',0));
+                  locFuncType.Args.Add(arg_b);
+                  arg_b.Access := arg_a.Access;
+                  arg_b.ArgType := arg_a.ArgType;
+                  arg_b.ArgType.AddRef();
+                  SymbolTable.RegisterExternalAlias(arg_b,SymbolTable.GetExternalName(arg_a));
+                end;
               end;
-              j := locProcType.Args.Count - 1;
+              j := resArgIndex;
               arg_a := TPasArgument(locProcType.Args[j]);
               locFuncType.ResultEl.ResultType := arg_a.ArgType;
               SymbolTable.RegisterExternalAlias(locFuncType.ResultEl,SymbolTable.GetExternalName(arg_a));
