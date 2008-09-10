@@ -601,8 +601,6 @@ end;
 
 function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;
 var
-  ca, cb : PObjectBufferItem;
-  i : PtrInt;
   ok : Boolean;
 begin
   if ( A = nil ) and ( B = nil ) then begin
@@ -1842,6 +1840,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfStringRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -1893,6 +1892,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   b := nil;
   a := TArrayOfStringRemotable.Create();
   try
@@ -1966,6 +1966,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfStringRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2004,6 +2005,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfBooleanRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2054,6 +2056,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt8URemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2104,6 +2107,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt8SRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2154,6 +2158,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt16SRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2204,6 +2209,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt16URemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2254,6 +2260,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt32URemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2304,6 +2311,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt32SRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2354,6 +2362,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt64SRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2404,6 +2413,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfInt64URemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2454,6 +2464,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfFloatSingleRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2504,6 +2515,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfFloatDoubleRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2554,6 +2566,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfFloatExtendedRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -2604,6 +2617,7 @@ var
   s : TMemoryStream;
   x : string;
 begin
+  s := nil;
   a := TArrayOfFloatCurrencyRemotable.Create();
   try
     CheckEquals(0,a.Length);
@@ -3680,7 +3694,7 @@ var
   strm : TMemoryStream;
 
   envNd : TDOMElement;
-  bdyNd, fltNd, hdrNd, tmpNode : TDOMNode;
+  bdyNd, fltNd, tmpNode : TDOMNode;
   nsShortName,eltName, msgBuff : string;
   doc : TXMLDocument;
 begin
@@ -3982,8 +3996,6 @@ var
   callNode : TDOMElement;
   faultNode, faultStruct, tmpNode : TDOMNode;
   doc : TXMLDocument;
-  eltName : string;
-  excpt_Obj : EXmlRpcException;
   excpt_code, excpt_msg : string;
 begin
   f := CreateFormatter();
@@ -4165,7 +4177,7 @@ const
 var
   f : IFormatterClient;
   strm : TMemoryStream;
-  root, bodyNode, faultNode, tmpNode : PDataBuffer;
+  root, bodyNode, faultNode : PDataBuffer;
   excpt_code, excpt_msg : string;
   locStore : IDataStore;
 begin

@@ -26,7 +26,7 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="38">
+    <Units Count="39">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -217,6 +217,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_wst_cursors"/>
       </Unit37>
+      <Unit38>
+        <Filename Value="test_generators_runtime.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_generators_runtime"/>
+      </Unit38>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
