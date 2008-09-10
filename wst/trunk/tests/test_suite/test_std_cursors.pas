@@ -72,7 +72,7 @@ const O_COUNT = 100;
 var
   x : IObjectCursor;
   ls : TObjectList;
-  c, i : Integer;
+  i : Integer;
 begin
   ls := TObjectList.Create(True);
   try
@@ -133,7 +133,7 @@ const O_COUNT = 100;
 var
   x : IObjectCursor;
   ls : TObjectList;
-  c, i : Integer;
+  i : Integer;
 begin
   ls := TObjectList.Create(True);
   try
@@ -175,7 +175,7 @@ const O_COUNT = 100;
 var
   x : IFilterableObjectCursor;
   ls : TObjectList;
-  c, i : Integer;
+  i : Integer;
   f : IObjectFilter;
   fcr : TRttiFilterCreator;
 begin

@@ -1183,8 +1183,6 @@ const VAL_1 : Integer = 1210; VAL_2 : Integer = 1076; VAL_3 : Integer = 176;
       VAL_S = 'inoussa';
 var
   x, y : TRttiFilterCreator;
-  xin : TRttiExpIntegerNodeItem;
-  xn : TRttiExpNode;
   sfltr : string;
 begin
   y := nil;

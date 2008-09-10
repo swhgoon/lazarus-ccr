@@ -22,9 +22,18 @@ uses
 {$ENDIF}
   ,wst_types;
 
+const
+  TestFilesPath = {$IFDEF WST_DELPHI}'.' +{$ENDIF WST_DELPHI}'.' + PathDelim + 'files' + PathDelim;
+
   function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
+  function wstExpandLocalFileName(const AFileName : string) : string;
 
 implementation
+
+function wstExpandLocalFileName(const AFileName : string) : string;
+begin
+  Result := AFileName;
+end;
 
 function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
 var

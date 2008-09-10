@@ -116,8 +116,6 @@ uses
   object_serializer, server_service_soap, test_suite_utils;
 
 function GetFileFullName(const AFileName: string): string;
-var
-  locFileName : string;
 begin
 {$IFDEF FPC}
   Result := Format('.%sfiles%s%s',[PathDelim,PathDelim,AFileName]);

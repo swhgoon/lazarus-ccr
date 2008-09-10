@@ -40,7 +40,7 @@ type
     FPooled : Boolean;
   protected
     procedure SayHello();
-    function CanBePooled() : Boolean;
+    function CanBePooled() : Boolean;override;
     procedure DontPool();
   public
     constructor Create();override;
@@ -581,7 +581,6 @@ end;
 
 procedure TTest_TSimpleItemFactory.CreateProc();
 var
-  a : IItemFactory;
   b : TSimpleItemFactoryCrack;
   ok : Boolean;
 begin
