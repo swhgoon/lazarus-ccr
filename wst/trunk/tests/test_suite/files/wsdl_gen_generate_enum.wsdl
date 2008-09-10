@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<definitions name="runtime_generator" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:sample-namespace" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:sample-namespace">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:sample-namespace">
+      <xsd:simpleType name="TestEnum_Type">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="A"/>
+          <xsd:enumeration value="teB"/>
+          <xsd:enumeration value="The C Item"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+  </types>
+</definitions>
