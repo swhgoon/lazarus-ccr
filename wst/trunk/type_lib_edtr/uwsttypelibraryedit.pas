@@ -41,6 +41,7 @@ type
     actDelete : TAction;
     actArrayCreate : TAction;
     actEditSearch : TAction;
+    actSaveXSD : TAction;
     actTreeSearch : TAction;
     actRecordCreate : TAction;
     actTypeALiasCreate : TAction;
@@ -98,6 +99,7 @@ type
     MenuItem50 : TMenuItem;
     MenuItem51 : TMenuItem;
     MenuItem52 : TMenuItem;
+    MenuItem53 : TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7 : TMenuItem;
     MenuItem8: TMenuItem;
@@ -142,6 +144,7 @@ type
     procedure actCompoundCreateExecute(Sender: TObject);
     procedure actDeleteExecute (Sender : TObject );
     procedure actEnumCreateExecute(Sender: TObject);
+    procedure actEnumCreateUpdate(Sender : TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
     procedure actExportUpdate(Sender: TObject);
@@ -156,6 +159,7 @@ type
     procedure actSaveExecute (Sender : TObject );
     procedure actEditSearchExecute(Sender : TObject);
     procedure actEditSearchUpdate(Sender : TObject);
+    procedure actSaveXSDExecute(Sender : TObject);
     procedure actTreeSearchExecute(Sender : TObject);
     procedure actTreeSearchUpdate(Sender : TObject);
     procedure actTypeALiasCreateExecute(Sender : TObject);
@@ -329,6 +333,57 @@ begin
   end;
 end;
 
+function ParseXsdFile(
+  const AFileName : string;
+        AContent  : TStream;
+  const ANotifier : TOnParserMessage
+):TwstPasTreeContainer;overload;
+var
+  locDoc : TXMLDocument;
+  prsr : IXsdPaser;
+  symName : string;
+begin
+  Result := nil;
+  symName := ChangeFileExt(ExtractFileName(AFileName),'');
+  if ( symName[Length(symName)] = '.' ) then begin
+    Delete(symName,Length(symName),1);
+  end;
+  prsr := nil;
+  ReadXMLFile(locDoc,AContent);
+  try
+    Result := TwstPasTreeContainer.Create();
+    try
+      prsr := TXsdParser.Create(locDoc,Result,'',ANotifier);
+      prsr.ParseTypes();
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    FreeAndNil(locDoc);
+  end;
+end;
+
+function ParseXsdFile(
+  const AFileName : string;
+  const ANotifier : TOnParserMessage
+):TwstPasTreeContainer;overload;
+var
+  locContent : TMemoryStream;
+begin
+  Result := nil;
+  if FileExists(AFileName) then begin
+    locContent := TMemoryStream.Create();
+    try
+      locContent.LoadFromFile(AFileName);
+      locContent.Position := 0;
+      Result := ParseXsdFile(AFileName,locContent,ANotifier);
+    finally
+      FreeAndNil(locContent);
+    end;
+  end;
+end;
+
 type TOutputType = ( otMemory, otFileSystem );
 function GenerateSource(
         ASymbolTable : TwstPasTreeContainer;
@@ -426,6 +481,21 @@ begin
   end;
 end;
 
+procedure GenerateXSD_ToStream(ASymbol : TwstPasTreeContainer; ADest : TStream);
+var
+  g : IGenerator;
+  doc : TXMLDocument;
+begin
+  doc := TXMLDocument.Create();
+  try
+    g := TXsdGenerator.Create(doc);
+    g.Execute(ASymbol,ASymbol.CurrentModule.Name);
+    WriteXML(doc,ADest);
+  finally
+    FreeAndNil(doc);
+  end;
+end;
+
 function CreateSymbolTable(const AName : string):TwstPasTreeContainer ;
 var
   mdl : TPasModule;
@@ -491,6 +561,21 @@ end;
 procedure TfWstTypeLibraryEdit.actEditSearchUpdate(Sender : TObject);
 begin
   TAction(Sender).Enabled := ( PC.ActivePageIndex in [0..4] );
+end;
+
+procedure TfWstTypeLibraryEdit.actSaveXSDExecute(Sender : TObject);
+var
+  oldFilter : string;
+begin
+  oldFilter := SD.Filter;
+  SD.Filter := 'XSD files ( *.xsd )|*.xsd';
+  try
+    if SD.Execute() then begin
+      SaveToFile(ChangeFileExt(SD.FileName,'.xsd'));
+    end;
+  finally
+    SD.Filter := oldFilter;
+  end;
 end;
 
 procedure TfWstTypeLibraryEdit.actTreeSearchExecute(Sender : TObject);
@@ -568,21 +653,25 @@ var
   prjFile : TLazProjectFile;
   {$ENDIF}
 begin
-  dlgRes := MessageDlg(Self.Caption,'Save the file before exit ?',mtConfirmation,mbYesNo,0);
-  if ( dlgRes = mrYes ) then begin
-    actSave.Execute();
-  end;
-  {$IFDEF WST_IDE}
-  if ( FProjectLibrary = nil ) then begin
-    prjFile := GetCurrentProjectLibraryFile();
-    if ( prjFile = nil ) then begin
-      dlgRes := MessageDlg(Self.Caption,'Add this type library to the current project ?',mtConfirmation,mbYesNo,0);
-      if ( dlgRes = mrYes ) then begin
-        LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,[ofAddToProject]);
+  dlgRes := MessageDlg(Self.Caption,'Save the file before exit ?',mtConfirmation,mbYesNoCancel,0);
+  if ( dlgRes = mrCancel ) then begin
+    CloseAction := caNone;
+  end else begin
+    if ( dlgRes = mrYes ) then begin
+      actSave.Execute();
+    end;
+{$IFDEF WST_IDE}
+    if ( FProjectLibrary = nil ) then begin
+      prjFile := GetCurrentProjectLibraryFile();
+      if ( prjFile = nil ) then begin
+        dlgRes := MessageDlg(Self.Caption,'Add this type library to the current project ?',mtConfirmation,mbYesNo,0);
+        if ( dlgRes = mrYes ) then begin
+          LazarusIDE.DoOpenEditorFile(FCurrentFileName,-1,[ofAddToProject]);
+        end;
       end;
     end;
+{$ENDIF}
   end;
-  {$ENDIF}
 end;
 
 procedure TfWstTypeLibraryEdit.FormShow(Sender: TObject);
@@ -772,6 +861,11 @@ begin
   if Assigned(e) then begin
     FindPainter(e).Paint(FSymbolTable,e,GetTypeNode());
   end;
+end;
+
+procedure TfWstTypeLibraryEdit.actEnumCreateUpdate(Sender : TObject);
+begin
+  TAction(Sender).Enabled := ( FSymbolTable <> nil );
 end;
 
 procedure TfWstTypeLibraryEdit.actExportExecute(Sender: TObject);
@@ -1005,8 +1099,13 @@ begin
   mmoLog.Clear();
   PC.ActivePage := tsLog;
   curLok := SetCursorHourGlass();
-  if AnsiSameText('.pas',ExtractFileExt(AFileName)) then begin
+  if SameText('.pas',ExtractFileExt(AFileName)) then begin
     tmpTable := ParsePascalFile(AFileName,@ShowStatusMessage);
+  end else if SameText('.xsd',ExtractFileExt(AFileName)) then begin
+    if ( AContent = nil ) then
+      tmpTable := ParseXsdFile(AFileName,@ShowStatusMessage)
+    else
+      tmpTable := ParseXsdFile(AFileName,AContent,@ShowStatusMessage);
   end else begin
     if ( AContent = nil ) then
       tmpTable := ParseWsdlFile(AFileName,@ShowStatusMessage)
@@ -1034,7 +1133,10 @@ var
 begin
   mstrm := TMemoryStream.Create();
   try
-    GenerateWSDL_ToStream(FSymbolTable,mstrm);
+    if SameText('.xsd',ExtractFileExt(AFileName)) then
+      GenerateXSD_ToStream(FSymbolTable,mstrm)
+    else
+      GenerateWSDL_ToStream(FSymbolTable,mstrm);
     mstrm.SaveToFile(AFileName);
   finally
     FreeAndNil(mstrm);
