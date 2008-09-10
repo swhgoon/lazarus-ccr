@@ -45,6 +45,7 @@ type
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;virtual;abstract;
     
@@ -67,6 +68,7 @@ type
     
     procedure ComplexType_ArraySequence();
     procedure ComplexType_ArraySequence_Embedded();
+    procedure ComplexType_Array_soaparray();
     
     procedure ComplexType_CollectionSequence();
     procedure pascal_class_default_parent();
@@ -95,6 +97,7 @@ type
 
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;override;
     
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;override;
     
@@ -124,12 +127,16 @@ type
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;override;
     
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_pascal_class_parent() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
+    procedure signature_last();
+    procedure signature_result();
+    procedure signature_return();
   end;
   
 implementation
@@ -156,6 +163,7 @@ const
   x_complexType_array_sequence      = 'complex_array_sequence';
   x_complexType_array_sequence_embedded  = 'complex_array_sequence_embedded';
   x_complexType_array_sequence_collection      = 'complex_array_sequence_collection';
+  x_complexType_array_soaparray      = 'complex_array_soaparray';
   
   x_complexType_class               = 'complex_class';
   x_complexType_class_default       = 'complex_class_default';
@@ -271,7 +279,6 @@ var
   elt : TPasElement;
   enumType : TPasEnumType;
   enumVal : TPasEnumValue;
-  aliasType : TPasAliasType;
   i : Integer;
 begin
   tr := LoadSimpleType_Enum_Embedded_Schema();
@@ -308,7 +315,6 @@ var
   ls : TList;
   elt : TPasElement;
   aliasType : TPasAliasType;
-  i : Integer;
 begin
   tr := LoadSimpleType_AliasToNativeType_Schema();
 
@@ -476,7 +482,6 @@ var
 
   procedure CheckEmbeddedClassType();
   var
-    mdl : TPasModule;
     e : TPasElement;
     k : Integer;
     prpLst : TList;
@@ -537,7 +542,6 @@ var
   clsType : TPasClassType;
   ls : TList;
   elt : TPasElement;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
 begin
@@ -605,7 +609,6 @@ var
   mdl : TPasModule;
   ls : TList;
   elt : TPasElement;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
 begin
@@ -775,7 +778,6 @@ var
   mdl : TPasModule;
   ls : TList;
   elt : TPasElement;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
 begin
@@ -860,7 +862,6 @@ var
   ls : TList;
   elt : TPasElement;
   arrayType : TPasArrayType;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
   nestedClassName : string;
@@ -948,7 +949,6 @@ var
   ls : TList;
   elt : TPasElement;
   arrayType : TPasArrayType;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
   nestedClassName : string;
@@ -1013,6 +1013,39 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.ComplexType_Array_soaparray();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  arrayType : TPasArrayType;
+begin
+  tr := LoadComplexType_Array_soaparray();
+  try
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals(x_complexType_array_soaparray,mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(1,ls.Count);
+    elt := tr.FindElement(x_complexType_SampleArrayIntFieldType);
+      CheckNotNull(elt,x_complexType_SampleArrayIntFieldType);
+      CheckEquals(x_complexType_SampleArrayIntFieldType,elt.Name);
+      CheckEquals(x_complexType_SampleArrayIntFieldType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasArrayType);
+      arrayType := elt as TPasArrayType;
+      CheckNotNull(arrayType.ElType);
+      CheckEquals('int',tr.GetExternalName(arrayType.ElType));
+      CheckEquals('item',tr.GetArrayItemName(arrayType));
+      CheckEquals('item',tr.GetArrayItemExternalName(arrayType));
+
+    CheckNull(tr.FindElementNS('Array','http://schemas.xmlsoap.org/wsdl/'));
+  finally
+    tr.Free();
+  end;
+end;
+
 procedure TTest_CustomXsdParser.ComplexType_CollectionSequence();
 var
   tr : TwstPasTreeContainer;
@@ -1036,7 +1069,6 @@ var
   ls : TList;
   elt : TPasElement;
   arrayType : TPasArrayType;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
   nestedClassName : string;
@@ -1155,7 +1187,6 @@ var
   mdl : TPasModule;
   ls : TList;
   elt : TPasElement;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
 begin
@@ -1229,7 +1260,6 @@ var
   mdl : TPasModule;
   ls : TList;
   elt : TPasElement;
-  aliasType : TPasAliasType;
   i : Integer;
   prpLs : TList;
 begin
@@ -1343,6 +1373,11 @@ begin
   Result := ParseDoc(x_complexType_array_sequence_embedded);
 end;
 
+function TTest_XsdParser.LoadComplexType_Array_soaparray() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_complexType_array_soaparray);
+end;
+
 function TTest_XsdParser.LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_array_sequence_collection);
@@ -1441,6 +1476,11 @@ begin
   Result := ParseDoc(x_complexType_array_sequence_embedded);
 end;
 
+function TTest_WsdlParser.LoadComplexType_Array_soaparray() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc(x_complexType_array_soaparray);
+end;
+
 function TTest_WsdlParser.LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_array_sequence_collection);
@@ -1467,6 +1507,230 @@ begin
     CheckEquals(2,GetElementCount(intf.Members,TPasProcedure));
   finally
     symTable.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.signature_last();
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  i : Integer;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('signature_last');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := nil;
+    for i := 0 to (intf.Members.Count - 1) do begin
+      if TObject(intf.Members[i]).InheritsFrom(TPasProcedure) then begin
+        mth := TPasProcedure(intf.Members[i]);
+        Break;
+      end;
+    end;
+    CheckNotNull(mth,'test_proc not found');
+    CheckEquals('test_proc',mth.Name);
+    mthType := mth.ProcType;
+    CheckIs(mthType,TPasFunctionType);
+      res := TPasFunctionType(mthType).ResultEl;
+      CheckNotNull(res, 'Result');
+      CheckEquals('integer', LowerCase(res.ResultType.Name));
+    CheckEquals(2, mthType.Args.Count, 'Parameter count');
+    arg := TPasArgument(mthType.Args[0]);
+      CheckNotNull(arg);
+      CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+      CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+    arg := TPasArgument(mthType.Args[1]);
+      CheckNotNull(arg);
+      CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+      CheckEquals(LowerCase('boolean'), LowerCase(arg.ArgType.Name));
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.signature_result();
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+  
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('signature_result');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('test_proc',intf);
+      CheckNotNull(mth,'test_proc not found');
+      CheckEquals('test_proc',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('Boolean'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+        
+    mth := FindProc('test_proc2',intf);
+      CheckNotNull(mth,'test_proc2 not found');
+      CheckEquals('test_proc2',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('boolean'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+        
+    mth := FindProc('test_proc3',intf);
+      CheckNotNull(mth,'test_proc3 not found');
+      CheckEquals('test_proc3',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('Boolean'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.signature_return();
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('signature_return');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('test_proc',intf);
+      CheckNotNull(mth,'test_proc not found');
+      CheckEquals('test_proc',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('Boolean'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+
+    mth := FindProc('test_proc2',intf);
+      CheckNotNull(mth,'test_proc2 not found');
+      CheckEquals('test_proc2',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('string'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('boolean'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+
+    mth := FindProc('test_proc3',intf);
+      CheckNotNull(mth,'test_proc3 not found');
+      CheckEquals('test_proc3',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('Boolean'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AConstParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+  finally
+    tr.Free();
   end;
 end;
 

@@ -13,6 +13,8 @@
 {$INCLUDE wst_global.inc}
 unit metadata_wsdl;
 
+{$RANGECHECKS OFF}
+
 interface
 
 uses
@@ -26,7 +28,8 @@ type
     ['{DA9AF8B1-392B-49A8-91CC-6B5C5131E6FA}']
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TXMLDocument
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
     );
   end;
 
@@ -49,7 +52,8 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TXMLDocument
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
     );
   end;
 
@@ -59,7 +63,8 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TXMLDocument
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
     );
   end;
 
@@ -69,23 +74,46 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TXMLDocument
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
     );
   end;
 
+  { TRecord_TypeHandler }
+
+  TRecord_TypeHandler = class(TSimpleFactoryItem,IWsdlTypeHandler)
+  protected
+    procedure Generate(
+      const APascalTypeName : string;
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
+    );
+  end;
+  
+  
+  procedure GenerateWSDL(
+    AMdtdRep : PServiceRepository;
+    ADoc : TXMLDocument;
+    ATypeRegistry : TTypeRegistry;
+    AHandlerRegistry : IWsdlTypeHandlerRegistry
+  );overload;
   procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);overload;
   function GenerateWSDL(const ARepName, ARootAddress : string):string;overload;
 
   function GetWsdlTypeHandlerRegistry():IWsdlTypeHandlerRegistry;
+  function CreateWsdlTypeHandlerRegistry(ATypeRegistry : TTypeRegistry):IWsdlTypeHandlerRegistry;
+  procedure RegisterFondamentalTypesHandler(ARegistry : IWsdlTypeHandlerRegistry);
   
 implementation
 uses
   wst_types
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
   , wst_delphi_rtti_utils
-{$ELSE}
+{$ENDIF}
+{$IFDEF FPC}
   , wst_fpc_xml, XmlWrite
-{$ENDIF};
+{$ENDIF}
+  , record_rtti;
 
 const
   sWSDL_NS       = 'http://schemas.xmlsoap.org/wsdl/';
@@ -107,9 +135,11 @@ const
   sBASE               = 'base';
   sBINDING            = 'binding';
   sBODY               = 'body';
+  sCOMPLEX_CONTENT    = 'complexContent';
   sCOMPLEX_TYPE       = 'complexType';
   sELEMENT            = 'element';
   sENUMERATION        = 'enumeration';
+  sEXTENSION          = 'extension';
   sITEM               = 'item';
   sLOCATION           = 'location';
   sMIN_OCCURS         = 'minOccurs';
@@ -125,6 +155,7 @@ const
   sTRANSPORT          = 'transport';
   sTYPE               = 'type';
   sUNBOUNDED          = 'unbounded';
+  sUSE                = 'use';
   sVALUE              = 'value';
 
   sWSDL_DEFINITIONS        = 'definitions';
@@ -153,6 +184,7 @@ type
 
   TWsdlTypeHandlerRegistry = class(TBaseFactoryRegistry,IInterface,IWsdlTypeHandlerRegistry)
   private
+    FTypeRegistry : TTypeRegistry;
     FDefaultHandlerTable : Array[TTypeKind] of IItemFactory;
   private
     function FindNearestClass(const AClassType : TClass):IItemFactory;
@@ -163,6 +195,7 @@ type
             AFactory  : IItemFactory
     );
   public
+    constructor Create(ATypeRegistry : TTypeRegistry);
     destructor Destroy();override;
   End;
 
@@ -196,7 +229,7 @@ begin
   Result := nil;
   foundIndex := -1;
   score := MaxInt;
-  r := GetTypeRegistry();
+  r := FTypeRegistry;
   c := Count;
   for i := 0 to Pred(c) do begin
     itm := Item[i];
@@ -223,7 +256,7 @@ begin
   Result := nil;
   fct := FindFactory(APascalTypeName);
   if not Assigned(fct) then begin
-    ri := GetTypeRegistry().Find(APascalTypeName);
+    ri := FTypeRegistry.Find(APascalTypeName);
     if Assigned(ri) then begin
       if ( ri.DataType^.Kind = tkClass ) then
         fct := FindNearestClass(GetTypeData(ri.DataType)^.ClassType);
@@ -241,6 +274,13 @@ procedure TWsdlTypeHandlerRegistry.RegisterDefaultHandler(
 );
 begin
   FDefaultHandlerTable[ATypeKind] := AFactory;
+end;
+
+constructor TWsdlTypeHandlerRegistry.Create(ATypeRegistry : TTypeRegistry);
+begin
+  Assert(ATypeRegistry <> nil);
+  inherited Create();
+  FTypeRegistry := ATypeRegistry;
 end;
 
 destructor TWsdlTypeHandlerRegistry.Destroy();
@@ -292,13 +332,16 @@ end;
 
 function GetNameSpaceShortName(
   const ANameSpace    : string;
-        AWsdlDocument : TXMLDocument
+        AWsdlDocument : TXMLDocument;
+  const APreferedShortName : string = ''
 ):string;//inline;
 begin
   if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
     Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
   end else begin
-    Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
+    Result := Trim(APreferedShortName);
+    if ( Length(Result) = 0 ) then
+      Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
     AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
   end;
 end;
@@ -311,7 +354,16 @@ begin
 end;
 
 procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
+begin
+  GenerateWSDL(AMdtdRep,ADoc,GetTypeRegistry(),GetWsdlTypeHandlerRegistry());
+end;
 
+procedure GenerateWSDL(
+  AMdtdRep : PServiceRepository;
+  ADoc : TXMLDocument;
+  ATypeRegistry : TTypeRegistry;
+  AHandlerRegistry : IWsdlTypeHandlerRegistry
+);
   procedure GenerateServiceMessages(
           AService   : PService;
           ARootNode  : TDOMElement
@@ -327,7 +379,7 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
       begin
         tmpNode := CreateElement(sWSDL_PART,AMsgNode,ADoc);
         tmpNode.SetAttribute(sWSDL_NAME,APrm^.Name);
-        typItm := GetTypeRegistry().Find(APrm^.TypeName);
+        typItm := ATypeRegistry.Find(APrm^.TypeName);
         if not Assigned(typItm) then
           raise EMetadataException.CreateFmt('Type not registered : "%s".',[APrm^.TypeName]);
         //Assert(Assigned(typItm),APrm^.TypeName);
@@ -495,8 +547,8 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
     g : IWsdlTypeHandler;
     gr : IWsdlTypeHandlerRegistry;
   begin
-    tr := GetTypeRegistry();
-    gr := GetWsdlTypeHandlerRegistry();
+    tr := ATypeRegistry;
+    gr := AHandlerRegistry;
     k := tr.Count;
     for j := 0 to Pred(k) do begin
       tri := tr[j];
@@ -505,7 +557,7 @@ procedure GenerateWSDL(AMdtdRep : PServiceRepository; ADoc : TXMLDocument);
       then begin
         g := gr.Find(tri.DataType^.Name);
         if assigned(g) then
-          g.Generate(tri.DataType^.Name,ADoc);
+          g.Generate(tri.DataType^.Name,ADoc,tr);
       end;
     end;
   end;
@@ -617,7 +669,8 @@ type
   protected
     procedure Generate(
       const APascalTypeName : string;
-            AWsdlDocument   : TXMLDocument
+            AWsdlDocument   : TXMLDocument;
+            ATypeRegistry : TTypeRegistry
     );
   end;
 
@@ -625,12 +678,29 @@ type
 
 procedure TBaseComplexRemotable_TypeHandler.Generate(
   const APascalTypeName : string;
-        AWsdlDocument   : TXMLDocument
+        AWsdlDocument   : TXMLDocument;
+        ATypeRegistry : TTypeRegistry
 );
+
+  function FindHighestRegisteredParent(AClass : TClass) : TTypeRegistryItem;
+  var
+    locRes : TTypeRegistryItem;
+  begin
+    locRes := nil;
+    if ( AClass <> nil ) and ( AClass.ClassParent <> nil ) then begin
+      locRes := ATypeRegistry.Find(PTypeInfo(AClass.ClassParent.ClassInfo),False);
+    end;
+    if ( locRes <> nil ) then begin
+      if ( GetTypeData(locRes.DataType)^.ClassType = TBaseComplexRemotable ) then
+        locRes := nil;
+    end;
+    Result := locRes;
+  end;
+  
 var
   typItm, propTypItm : TTypeRegistryItem;
   s, prop_ns_shortName : string;
-  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
+  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode, cplxContentNode, extNode : TDOMElement;
   i : Integer;
   propList : PPropList;
   propCount, propListLen : Integer;
@@ -639,8 +709,10 @@ var
   objTypeData : PTypeData;
   clsTyp : TBaseComplexRemotableClass;
   attProp : Boolean;
+  parentRegItem : TTypeRegistryItem;
+  parentClss : TClass;
 begin
-  typItm := GetTypeRegistry().Find(APascalTypeName);
+  typItm := ATypeRegistry.Find(APascalTypeName);
   if Assigned(typItm) and
      ( typItm.DataType^.Kind = tkClass )
   then begin
@@ -649,46 +721,64 @@ begin
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
     
+    objTypeData := GetTypeData(typItm.DataType);
+    clsTyp := TBaseComplexRemotableClass(objTypeData^.ClassType);
+    parentRegItem := FindHighestRegisteredParent(clsTyp);
+    if ( parentRegItem <> nil ) then
+      parentClss := GetTypeData(parentRegItem.DataType)^.ClassType
+    else
+      parentClss := nil;
+
     s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
     cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
-    cplxNode.SetAttribute(sNAME, typItm.DeclaredName) ;
+    cplxNode.SetAttribute(sNAME, typItm.DeclaredName);
+    extNode := cplxNode;
+    if ( parentClss <> nil ) then begin
+      if ( parentRegItem.NameSpace = typItm.NameSpace ) then begin
+        s := Format('%s:%s',[sTNS,parentRegItem.DeclaredName]);
+      end else begin
+        s := Format('%s:%s',[GetNameSpaceShortName(parentRegItem.NameSpace,AWsdlDocument),parentRegItem.DeclaredName]);
+      end;
+      cplxContentNode := CreateElement(Format('%s:%s',[sXSD,sCOMPLEX_CONTENT]),cplxNode,AWsdlDocument);
+      extNode := CreateElement(Format('%s:%s',[sXSD,sEXTENSION]),cplxContentNode,AWsdlDocument);
+      extNode.SetAttribute(sBASE,s);
+    end;
 
-      s := Format('%s:%s',[sXSD,sSEQUENCE]);
-      sqcNode := CreateElement(s,cplxNode,AWsdlDocument);
-      objTypeData := GetTypeData(typItm.DataType);
-      clsTyp := TBaseComplexRemotableClass(objTypeData^.ClassType);
+      sqcNode := CreateElement(Format('%s:%s',[sXSD,sSEQUENCE]),extNode,AWsdlDocument);
       propCount := objTypeData^.PropCount;
       if ( propCount > 0 ) then begin
         propListLen := GetPropList(typItm.DataType,propList);
         try
           for i := 0 to Pred(propCount) do begin
             p := propList^[i];
-            persistType := IsStoredPropClass(objTypeData^.ClassType,p);
-            if ( persistType in [pstOptional,pstAlways] ) then begin
-              attProp := clsTyp.IsAttributeProperty(p^.Name);
-              if attProp then begin
-                s := Format('%s:%s',[sXSD,sATTRIBUTE]);
-                propNode := CreateElement(s,cplxNode,AWsdlDocument)
-              end else begin
-                s := Format('%s:%s',[sXSD,sELEMENT]);
-                propNode := CreateElement(s,sqcNode,AWsdlDocument);
-              end;
-              propNode.SetAttribute(sNAME,typItm.GetExternalPropertyName(p^.Name));
-              propTypItm := GetTypeRegistry().Find(p^.PropType^.Name);
-              if Assigned(propTypItm) then begin
-                prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace,AWsdlDocument);
-                propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,propTypItm.DeclaredName]));
+            if ( parentClss = nil ) or ( not IsPublishedProp(parentClss,p^.Name) ) then begin
+              persistType := IsStoredPropClass(objTypeData^.ClassType,p);
+              if ( persistType in [pstOptional,pstAlways] ) then begin
+                attProp := clsTyp.IsAttributeProperty(p^.Name);
                 if attProp then begin
-                  if ( persistType = pstOptional ) then
-                    propNode.SetAttribute(sATTRIBUTE,'optional')
-                  else
-                    propNode.SetAttribute(sATTRIBUTE,'required');
+                  s := Format('%s:%s',[sXSD,sATTRIBUTE]);
+                  propNode := CreateElement(s,extNode,AWsdlDocument)
                 end else begin
-                  if ( persistType = pstOptional ) then
-                    propNode.SetAttribute(sMIN_OCCURS,'0')
-                  else
-                    propNode.SetAttribute(sMIN_OCCURS,'1');
-                  propNode.SetAttribute(sMAX_OCCURS,'1');
+                  s := Format('%s:%s',[sXSD,sELEMENT]);
+                  propNode := CreateElement(s,sqcNode,AWsdlDocument);
+                end;
+                propNode.SetAttribute(sNAME,typItm.GetExternalPropertyName(p^.Name));
+                propTypItm := ATypeRegistry.Find(p^.PropType^.Name);
+                if Assigned(propTypItm) then begin
+                  prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace,AWsdlDocument);
+                  propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,propTypItm.DeclaredName]));
+                  if attProp then begin
+                    if ( persistType = pstOptional ) then
+                      propNode.SetAttribute(sUSE,'optional')
+                    else
+                      propNode.SetAttribute(sUSE,'required');
+                  end else begin
+                    if ( persistType = pstOptional ) then
+                      propNode.SetAttribute(sMIN_OCCURS,'0')
+                    else
+                      propNode.SetAttribute(sMIN_OCCURS,'1');
+                    propNode.SetAttribute(sMAX_OCCURS,'1');
+                  end;
                 end;
               end;
             end;
@@ -704,7 +794,8 @@ end;
 
 procedure TEnumTypeHandler.Generate(
   const APascalTypeName: string;
-        AWsdlDocument: TXMLDocument
+        AWsdlDocument: TXMLDocument;
+        ATypeRegistry : TTypeRegistry
 );
 var
   typItm : TTypeRegistryItem;
@@ -712,7 +803,7 @@ var
   defTypesNode, defSchemaNode, resNode, restrictNode : TDOMElement;
   i, c : Integer;
 begin
-  typItm := GetTypeRegistry().Find(APascalTypeName);
+  typItm := ATypeRegistry.Find(APascalTypeName);
   if Assigned(typItm) and
      ( typItm.DataType^.Kind = tkEnumeration )
   then begin
@@ -752,16 +843,22 @@ end;
 
 procedure TFakeTypeHandler.Generate(
   const APascalTypeName: string;
-  AWsdlDocument: TXMLDocument
+        AWsdlDocument: TXMLDocument;
+        ATypeRegistry : TTypeRegistry
 );
 begin
 end;
 
-procedure RegisterFondamentalTypes();
+function CreateWsdlTypeHandlerRegistry(ATypeRegistry : TTypeRegistry):IWsdlTypeHandlerRegistry;
+begin
+  Result := TWsdlTypeHandlerRegistry.Create(ATypeRegistry) as IWsdlTypeHandlerRegistry;
+end;
+
+procedure RegisterFondamentalTypesHandler(ARegistry : IWsdlTypeHandlerRegistry);
 var
   r : IWsdlTypeHandlerRegistry;
 begin
-  r := GetWsdlTypeHandlerRegistry();
+  r := ARegistry;
   r.RegisterDefaultHandler(tkInteger,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
   r.RegisterDefaultHandler(tkInt64,TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
 
@@ -782,6 +879,8 @@ begin
   r.RegisterDefaultHandler(tkClass,TSimpleItemFactory.Create(TBaseComplexRemotable_TypeHandler) as IItemFactory);
 
   r.Register('TBaseArrayRemotable',TSimpleItemFactory.Create(TBaseArrayRemotable_TypeHandler) as IItemFactory);
+  
+  r.RegisterDefaultHandler(tkRecord,TSimpleItemFactory.Create(TRecord_TypeHandler) as IItemFactory);
 
 {  r.Register('Integer',TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
   r.Register('LongWord',TSimpleItemFactory.Create(TFakeTypeHandler) as IItemFactory);
@@ -811,7 +910,8 @@ end;
 
 procedure TBaseArrayRemotable_TypeHandler.Generate(
   const APascalTypeName: string;
-        AWsdlDocument: TXMLDocument
+        AWsdlDocument: TXMLDocument;
+        ATypeRegistry : TTypeRegistry
 );
 
   function GetNameSpaceShortName(const ANameSpace : string):string;//inline;
@@ -831,7 +931,7 @@ var
   arrayTypeData : PTypeData;
   arrayTypeClass : TBaseArrayRemotableClass;
 begin
-  typItm := GetTypeRegistry().Find(APascalTypeName);
+  typItm := ATypeRegistry.Find(APascalTypeName);
   if not Assigned(typItm) then
     Exit;
   arrayTypeData := GetTypeData(typItm.DataType);
@@ -851,10 +951,13 @@ begin
       s := Format('%s:%s',[sXSD,sSEQUENCE]);
       sqcNode := CreateElement(s,cplxNode,AWsdlDocument);
       arrayTypeClass := TBaseArrayRemotableClass(arrayTypeData^.ClassType);
-      propTypItm := GetTypeRegistry().Find(arrayTypeClass.GetItemTypeInfo()^.Name);
+      propTypItm := ATypeRegistry.Find(arrayTypeClass.GetItemTypeInfo()^.Name);
       s := Format('%s:%s',[sXSD,sELEMENT]);
       propNode := CreateElement(s,sqcNode,AWsdlDocument);
-      propNode.SetAttribute(sNAME,sITEM);
+      s := Trim(typItm.GetExternalPropertyName(sARRAY_ITEM));
+      if ( s = '' ) then
+        s := sITEM;
+      propNode.SetAttribute(sNAME,s);
       if Assigned(propTypItm) then begin
         prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace);
         propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,propTypItm.DeclaredName]));
@@ -864,9 +967,78 @@ begin
   end;
 end;
 
+{ TRecord_TypeHandler }
+
+procedure TRecord_TypeHandler.Generate(
+  const APascalTypeName : string;
+        AWsdlDocument : TXMLDocument;
+        ATypeRegistry : TTypeRegistry
+);
+var
+  typItm, propTypItm : TTypeRegistryItem;
+  s, prop_ns_shortName : string;
+  defTypesNode, defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
+  i : Integer;
+  p : TRecordFieldInfo;
+  objTypeData : PRecordTypeData;
+  persistType : TPropStoreType;
+begin
+  typItm := ATypeRegistry.Find(APascalTypeName);
+  if Assigned(typItm) and
+     ( typItm.DataType^.Kind = tkRecord )
+  then begin
+    GetNameSpaceShortName(typItm.NameSpace,AWsdlDocument);
+    defTypesNode :=  FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
+    Assert(Assigned(defTypesNode));
+    defSchemaNode := defTypesNode.FirstChild as TDOMElement;
+
+    objTypeData := TRecordRttiDataObject(typItm.GetObject(FIELDS_STRING)).GetRecordTypeData();
+    persistType := pstOptional;
+
+    s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
+    cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
+    cplxNode.SetAttribute(sNAME, typItm.DeclaredName);
+    cplxNode.SetAttribute(Format('%s:wst_record',[GetNameSpaceShortName(sWST_BASE_NS,AWsdlDocument,'wst')]),'true');
+
+      sqcNode := CreateElement(Format('%s:%s',[sXSD,sSEQUENCE]),cplxNode,AWsdlDocument);
+      if ( objTypeData^.FieldCount > 0 ) then begin
+        for i := 0 to Pred(objTypeData^.FieldCount) do begin
+          p := objTypeData^.Fields[i];
+          if p.Visible then begin
+            if p.IsAttribute then begin
+              s := Format('%s:%s',[sXSD,sATTRIBUTE]);
+              propNode := CreateElement(s,cplxNode,AWsdlDocument)
+            end else begin
+              s := Format('%s:%s',[sXSD,sELEMENT]);
+              propNode := CreateElement(s,sqcNode,AWsdlDocument);
+            end;
+            propNode.SetAttribute(sNAME,typItm.GetExternalPropertyName(p.Name));
+            propTypItm := ATypeRegistry.Find(p.TypeInfo^^.Name);
+            if Assigned(propTypItm) then begin
+              prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace,AWsdlDocument);
+              propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,propTypItm.DeclaredName]));
+              if p.IsAttribute then begin
+                if ( persistType = pstOptional ) then
+                  propNode.SetAttribute(sUSE,'optional')
+                else
+                  propNode.SetAttribute(sUSE,'required');
+              end else begin
+                if ( persistType = pstOptional ) then
+                  propNode.SetAttribute(sMIN_OCCURS,'0')
+                else
+                  propNode.SetAttribute(sMIN_OCCURS,'1');
+                propNode.SetAttribute(sMAX_OCCURS,'1');
+              end;
+            end;
+          end;
+        end;
+      end;
+  end;
+end;
+
 initialization
-  WsdlTypeHandlerRegistryInst := TWsdlTypeHandlerRegistry.Create() as IWsdlTypeHandlerRegistry;
-  RegisterFondamentalTypes();
+  WsdlTypeHandlerRegistryInst := CreateWsdlTypeHandlerRegistry(GetTypeRegistry());
+  RegisterFondamentalTypesHandler(WsdlTypeHandlerRegistryInst);
 
 finalization
   WsdlTypeHandlerRegistryInst := nil;
