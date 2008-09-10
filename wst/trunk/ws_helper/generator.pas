@@ -202,12 +202,13 @@ Const sPROXY_BASE_CLASS = 'TBaseProxy';
       sRECORD_RTTI_DEFINE = 'WST_RECORD_RTTI';
       sEASY_ACCESS_INTERFACE_PREFIX = 'Easy';
 
-      sPRM_NAME = 'strPrmName';
+      sPRM_NAME = 'locStrPrmName';
       sLOC_SERIALIZER = 'locSerializer';
       sINPUT_PARAM = 'inputParam';
       sOUTPUT_PARAM = 'outputParam';
       sTEMP_OBJ = 'tmpObj';
       sDOCUMENTATION = 'documentation';
+      sLOC_CALL_CONTEXT = 'locCallContext';
 
 
 function DeduceEasyInterfaceForDocStyle(
@@ -813,16 +814,18 @@ Var
     WriteLn('Var');
 
       Indent();WriteLn('%s : %s;',[sLOC_SERIALIZER,sSERIALIZER_CLASS]);
+      Indent();WriteLn('%s : ICallContext;',[sLOC_CALL_CONTEXT]);
       if ( prmCnt > 0 ) or AMthd.InheritsFrom(TPasFunction) then begin
         Indent();WriteLn('%s : %s;',[sPRM_NAME,'string']);
       end;
 
     WriteLn('Begin');
     
+      Indent();WriteLn('%s := Self as ICallContext;',[sLOC_CALL_CONTEXT]);
       Indent();WriteLn('%s := GetSerializer();',[sLOC_SERIALIZER]);
       Indent();WriteLn('Try');IncIndent();
 
-      Indent();WriteLn('%s.BeginCall(''%s'', GetTarget(),(Self as ICallContext));',[sLOC_SERIALIZER,SymbolTable.GetExternalName(AMthd)]);
+      Indent();WriteLn('%s.BeginCall(''%s'', GetTarget(),%s);',[sLOC_SERIALIZER,SymbolTable.GetExternalName(AMthd),sLOC_CALL_CONTEXT]);
       IncIndent();
         for k := 0 To Pred(prmCnt) do begin
           prm := TPasArgument(prms[k]);
@@ -837,7 +840,7 @@ Var
       Indent();WriteLn('MakeCall();');
       WriteLn('');
       
-      Indent();WriteLn('%s.BeginCallRead((Self as ICallContext));',[sLOC_SERIALIZER]);
+      Indent();WriteLn('%s.BeginCallRead(%s);',[sLOC_SERIALIZER,sLOC_CALL_CONTEXT]);
       IncIndent();
         if AMthd.InheritsFrom(TPasFunction) then begin
           resPrm := TPasFunctionType(AMthd.ProcType).ResultEl;
