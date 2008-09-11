@@ -10,6 +10,8 @@
   <types>
     <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
     
+        <xsd:complexType name="TEmptyHeader" wst:wst_headerBlock="true" />
+        
         <xsd:complexType name="TSampleHeader" wst:wst_headerBlock="true">
           <xsd:sequence>
             <xsd:element name="intField" type="xsd:int"/>

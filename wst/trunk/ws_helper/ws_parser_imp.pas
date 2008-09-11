@@ -125,6 +125,8 @@ type
       const AInternalName : string;
       const AHasInternalName : Boolean
     ) : TPasArrayType;
+    function IsHeaderBlock() : Boolean;
+    function IsSimpleContentHeaderBlock() : Boolean;
   private
     procedure CreateNodeCursors();
     procedure ExtractTypeName();
@@ -554,6 +556,20 @@ begin
     FSymbols.RegisterExternalAlias(Result,ATypeName);
 end;
 
+function TComplexTypeParser.IsHeaderBlock() : Boolean;
+var
+  strBuffer : string;
+begin
+  Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+end;
+
+function TComplexTypeParser.IsSimpleContentHeaderBlock() : Boolean;
+var
+  strBuffer : string;
+begin
+  Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlockSimpleContent,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+end;
+
 procedure TComplexTypeParser.CreateNodeCursors();
 begin
   FAttCursor := CreateAttributesCursor(FTypeNode,cetRttiNode);
@@ -866,20 +882,6 @@ var
     ExtractExtendedMetadata(locProp,AElement);
   end;
 
-  function IsHeaderBlock() : Boolean;
-  var
-    strBuffer : string;
-  begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
-  end;
-
-  function IsSimpleContentHeaderBlock() : Boolean;
-  var
-    strBuffer : string;
-  begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlockSimpleContent,strBuffer) and AnsiSameText('true',Trim(strBuffer));
-  end;
-  
   function IsRecordType() : Boolean;
   var
     strBuffer : string;
@@ -1213,7 +1215,12 @@ begin
   TPasClassType(Result).ObjKind := okClass;
   if hasInternalName then
     FSymbols.RegisterExternalAlias(Result,ATypeName);
-  TPasClassType(Result).AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+  if IsHeaderBlock() then
+    TPasClassType(Result).AncestorType := FSymbols.FindElementInModule('THeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
+  else if IsSimpleContentHeaderBlock() then
+    TPasClassType(Result).AncestorType := FSymbols.FindElementInModule('TSimpleContentHeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
+  else
+    TPasClassType(Result).AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
   TPasClassType(Result).AncestorType.AddRef();
 end;
 

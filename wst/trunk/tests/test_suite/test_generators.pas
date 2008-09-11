@@ -300,6 +300,13 @@ begin
     mdl := TPasModule(tr.CreateElement(TPasModule,'class_headerblock_derived',tr.Package,visDefault,'',0));
     tr.Package.Modules.Add(mdl);
     mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TEmptyHeader',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('THeaderBlock',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+
     cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleHeader',mdl.InterfaceSection,visDefault,'',0));
       cltyp.ObjKind := okClass;
       cltyp.AncestorType := tr.FindElementNS('THeaderBlock',s_xs) as TPasType;

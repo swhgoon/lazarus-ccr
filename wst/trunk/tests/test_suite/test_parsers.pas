@@ -1172,7 +1172,7 @@ begin
 end;
 
 procedure TTest_CustomXsdParser.class_headerblock_derived();
-const s_class_name = 'TSampleHeader';
+const s_class_name = 'TSampleHeader'; s_emty_class_name = 'TEmptyHeader';
 var
   tr : TwstPasTreeContainer;
   mdl : TPasModule;
@@ -1183,6 +1183,14 @@ begin
   try
     mdl := tr.FindModule('class_headerblock_derived');
     CheckNotNull(mdl,'class_headerblock_derived');
+    elt := tr.FindElement(s_emty_class_name);
+      CheckNotNull(elt,s_emty_class_name);
+      CheckEquals(s_emty_class_name,elt.Name);
+      CheckEquals(s_emty_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckNotNull(clsType.AncestorType,'AncestorType is null');
+      CheckSame(tr.FindElementNS('THeaderBlock',sXSD_NS),clsType.AncestorType);
     elt := tr.FindElement(s_class_name);
       CheckNotNull(elt,s_class_name);
       CheckEquals(s_class_name,elt.Name);
@@ -1191,6 +1199,7 @@ begin
       clsType := elt as TPasClassType;
       CheckNotNull(clsType.AncestorType,'AncestorType is null');
       CheckSame(tr.FindElementNS('THeaderBlock',sXSD_NS),clsType.AncestorType);
+
   finally
     tr.Free();
   end;
