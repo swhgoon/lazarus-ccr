@@ -1490,7 +1490,7 @@ end;
 
 constructor TPropInfoReferenceList.Create();
 begin
-  FList := TObjectList.Create(False);
+  FList := TObjectList.Create(True);
 end;
 
 destructor TPropInfoReferenceList.Destroy();
