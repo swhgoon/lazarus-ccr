@@ -50,6 +50,9 @@ type
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_pascal_class_parent() : TwstPasTreeContainer;virtual;abstract;
+    
+    function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -72,6 +75,9 @@ type
     
     procedure ComplexType_CollectionSequence();
     procedure pascal_class_default_parent();
+    
+    procedure class_headerblock_derived();
+    procedure class_headerblock_simplecontent_derived();
   end;
 
   { TTest_XsdParser }
@@ -102,6 +108,9 @@ type
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_pascal_class_parent() : TwstPasTreeContainer;override;
+    
+    function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;override;
+    function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -132,6 +141,9 @@ type
     function LoadComplexType_CollectionSequence_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_pascal_class_parent() : TwstPasTreeContainer;override;
+    
+    function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;override;
+    function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -1159,6 +1171,56 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.class_headerblock_derived();
+const s_class_name = 'TSampleHeader';
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  clsType : TPasClassType;
+  elt : TPasElement;
+begin
+  tr := load_class_headerblock_derived_Schema();
+  try
+    mdl := tr.FindModule('class_headerblock_derived');
+    CheckNotNull(mdl,'class_headerblock_derived');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckEquals(s_class_name,elt.Name);
+      CheckEquals(s_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckNotNull(clsType.AncestorType,'AncestorType is null');
+      CheckSame(tr.FindElementNS('THeaderBlock',sXSD_NS),clsType.AncestorType);
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.class_headerblock_simplecontent_derived();
+const s_class_name = 'TSampleHeader';
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  clsType : TPasClassType;
+  elt : TPasElement;
+begin
+  tr := load_class_headerblock_simplecontent_derived_Schema();
+  try
+    mdl := tr.FindModule('class_headerblock_simplecontent_derived');
+    CheckNotNull(mdl,'class_headerblock_simplecontent_derived');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckEquals(s_class_name,elt.Name);
+      CheckEquals(s_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckNotNull(clsType.AncestorType,'AncestorType is null');
+      CheckSame(tr.FindElementNS('TSimpleContentHeaderBlock',sXSD_NS),clsType.AncestorType,'AncestorType');
+  finally
+    tr.Free();
+  end;
+end;
+
 procedure TTest_CustomXsdParser.ComplexType_Class_default_values();
 var
   tr : TwstPasTreeContainer;
@@ -1388,6 +1450,16 @@ begin
   Result := ParseDoc('pascal_class_parent');
 end;
 
+function TTest_XsdParser.load_class_headerblock_derived_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_headerblock_derived');
+end;
+
+function TTest_XsdParser.load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_headerblock_simplecontent_derived');
+end;
+
 function TTest_XsdParser.LoadComplexType_Class_default_values() : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_default);
@@ -1489,6 +1561,16 @@ end;
 function TTest_WsdlParser.LoadComplexType_pascal_class_parent() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('pascal_class_parent');
+end;
+
+function TTest_WsdlParser.load_class_headerblock_derived_Schema( ) : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_headerblock_derived');
+end;
+
+function TTest_WsdlParser.load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_headerblock_simplecontent_derived');
 end;
 
 procedure TTest_WsdlParser.no_binding_style();

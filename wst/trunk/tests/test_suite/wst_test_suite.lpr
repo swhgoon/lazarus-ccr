@@ -19,7 +19,7 @@ uses
 xsd_consts, base_json_formatter, wsdl_parser, test_support, basex_encode,
 test_basex_encode, json_formatter, server_service_json, test_json,
 test_suite_utils, test_generators, test_std_cursors, test_rtti_filter,
-test_wst_cursors, test_registry, test_generators_runtime;
+test_wst_cursors, test_registry, test_soap_specific, test_generators_runtime;
 
 Const
   ShortOpts = 'alh';

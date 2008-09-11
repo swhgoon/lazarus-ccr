@@ -101,6 +101,20 @@ type
     property Prop_B : TNameSpaceB_Class read FProp_B write FProp_B;
   end;
 
+  TSampleSimpleContentHeaderBlock_A = class(TSimpleContentHeaderBlock)
+  public
+    class function GetNameSpace() : string;
+  end;
+
+  { TSampleSimpleContentHeaderBlock_B }
+
+  TSampleSimpleContentHeaderBlock_B = class(TSampleSimpleContentHeaderBlock_A)
+  private
+    FintAtt : Integer;
+  published
+    property intAtt : Integer read FintAtt write FintAtt;
+  end;
+  
   { TTest_SoapFormatterServerNameSpace }
 
   TTest_SoapFormatterServerNameSpace = class(TTestCase)
@@ -111,9 +125,19 @@ type
     procedure multi_namespace_object_read();
   end;
   
+  { TTest_SoapFormatterHeader }
+
+  TTest_SoapFormatterHeader = class(TTestCase)
+  published
+    procedure write_header_simple_content_1();
+    procedure write_header_simple_content_2();
+    procedure read_header_simple_content_1();
+    procedure read_header_simple_content_2();
+  end;
+  
 implementation
 uses
-  object_serializer, server_service_soap, test_suite_utils;
+  object_serializer, server_service_soap, test_suite_utils, soap_formatter;
 
 function GetFileFullName(const AFileName: string): string;
 begin
@@ -412,7 +436,188 @@ begin
   Result := 'NameSpace.C';
 end;
 
+{ TSampleSimpleContentHeaderBlock_A }
+
+class function TSampleSimpleContentHeaderBlock_A.GetNameSpace() : string;
+begin
+  Result := 'urn:simple-content-header.sample';
+end;
+
+{ TTest_SoapFormatterHeader }
+
+procedure TTest_SoapFormatterHeader.write_header_simple_content_1();
+var
+  ser : IFormatterClient;
+  cc : ICallContext;
+  hdr : TSampleSimpleContentHeaderBlock_A;
+  locStream : TMemoryStream;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  cc := TSimpleCallContext.Create();
+  hdr := TSampleSimpleContentHeaderBlock_A.Create();
+  cc.AddHeader(hdr,True);
+  hdr.Direction := hdOut;
+  hdr.Value := 'sample header simple content value';
+  ser := soap_formatter.TSOAPFormatter.Create();
+  ser.BeginCall('test_proc','TestService',cc);
+  ser.EndScope();
+  locDoc := nil;
+  locExistDoc := nil;
+  locStream := TMemoryStream.Create();
+  try
+    ser.SaveToStream(locStream);
+    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_1.xml'));
+    locStream.Position := 0;
+    ReadXMLFile(locDoc,locStream);
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_1.xml'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locDoc);
+    ReleaseDomNode(locExistDoc);
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.write_header_simple_content_2();
+var
+  ser : IFormatterClient;
+  cc : ICallContext;
+  hdrA : TSampleSimpleContentHeaderBlock_A;
+  hdrB : TSampleSimpleContentHeaderBlock_B;
+  locStream : TMemoryStream;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  cc := TSimpleCallContext.Create();
+  hdrA := TSampleSimpleContentHeaderBlock_A.Create();
+  cc.AddHeader(hdrA,True);
+  hdrA.Direction := hdOut;
+  hdrA.Value := 'sample header simple content value';
+  hdrB := TSampleSimpleContentHeaderBlock_B.Create();
+  cc.AddHeader(hdrB,True);
+  hdrB.Direction := hdOut;
+  hdrB.Value := 'another content';
+  hdrB.intAtt := 1210;
+
+  ser := soap_formatter.TSOAPFormatter.Create();
+  ser.BeginCall('test_proc','TestService',cc);
+  ser.EndScope();
+  locDoc := nil;
+  locExistDoc := nil;
+  locStream := TMemoryStream.Create();
+  try
+    ser.SaveToStream(locStream);
+    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
+    locStream.Position := 0;
+    ReadXMLFile(locDoc,locStream);
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_2.xml'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locDoc);
+    ReleaseDomNode(locExistDoc);
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.read_header_simple_content_1();
+const
+  XML_SOURCE =
+         '<?xml version="1.0"?>'  + sLineBreak +
+         '<SOAP-ENV:Envelope '  + sLineBreak +
+         '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" '  + sLineBreak +
+         '  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" '  + sLineBreak +
+         '  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" '  + sLineBreak +
+         '  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'  + sLineBreak +
+         '  <SOAP-ENV:Header xmlns:ns1="urn:simple-content-header.sample">'  + sLineBreak +
+         '    <ns1:TSampleSimpleContentHeaderBlock_A SOAP-ENV:mustUnderstand="1">sample header simple content value</ns1:TSampleSimpleContentHeaderBlock_A>'  + sLineBreak +
+         '  </SOAP-ENV:Header>'  + sLineBreak +
+         '  <SOAP-ENV:Body>'  + sLineBreak +
+         '    <ns2:test_proc xmlns:ns2="TestService"/>'  + sLineBreak +
+         '  </SOAP-ENV:Body>'  + sLineBreak +
+         '</SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+  hdr : TSampleSimpleContentHeaderBlock_A;
+begin
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      CheckEquals(0,cctx.GetHeaderCount([hdOut]),'Ouput header count');
+      CheckEquals(1,cctx.GetHeaderCount([hdIn]),'Input header count');
+      CheckIs(cctx.GetHeader(0),TSampleSimpleContentHeaderBlock_A);
+      hdr := TSampleSimpleContentHeaderBlock_A(cctx.GetHeader(0));
+      CheckEquals(1,hdr.mustUnderstand,'mustUnderstand');
+      CheckEquals('sample header simple content value',hdr.Value,'Value');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.read_header_simple_content_2();
+const
+  XML_SOURCE =
+         '<?xml version="1.0"?>'  + sLineBreak +
+         '<SOAP-ENV:Envelope '  + sLineBreak +
+         '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" '  + sLineBreak +
+         '  xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" '  + sLineBreak +
+         '  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" '  + sLineBreak +
+         '  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'  + sLineBreak +
+         '  <SOAP-ENV:Header xmlns:ns1="urn:simple-content-header.sample">'  + sLineBreak +
+         '    <ns1:TSampleSimpleContentHeaderBlock_A SOAP-ENV:mustUnderstand="1">sample header simple content value</ns1:TSampleSimpleContentHeaderBlock_A>'  + sLineBreak +
+         '    <ns1:TSampleSimpleContentHeaderBlock_B ns1:intAtt="1210" SOAP-ENV:mustUnderstand="0">another content</ns1:TSampleSimpleContentHeaderBlock_B>'  + sLineBreak +
+         '  </SOAP-ENV:Header>'  + sLineBreak +
+         '  <SOAP-ENV:Body>'  + sLineBreak +
+         '    <ns2:test_proc xmlns:ns2="TestService"/>'  + sLineBreak +
+         '  </SOAP-ENV:Body>'  + sLineBreak +
+         '</SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+  hdrA : TSampleSimpleContentHeaderBlock_A;
+  hdrB : TSampleSimpleContentHeaderBlock_B;
+begin
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      CheckEquals(0,cctx.GetHeaderCount([hdOut]),'Ouput header count');
+      CheckEquals(2,cctx.GetHeaderCount([hdIn]),'Input header count');
+      CheckIs(cctx.GetHeader(0),TSampleSimpleContentHeaderBlock_A);
+        hdrA := TSampleSimpleContentHeaderBlock_A(cctx.GetHeader(0));
+        CheckEquals(1,hdrA.mustUnderstand,'mustUnderstand');
+        CheckEquals('sample header simple content value',hdrA.Value,'Value');
+      CheckIs(cctx.GetHeader(1),TSampleSimpleContentHeaderBlock_B);
+        hdrB := TSampleSimpleContentHeaderBlock_B(cctx.GetHeader(1));
+        CheckEquals(0,hdrB.mustUnderstand,'mustUnderstand');
+        CheckEquals('another content',hdrB.Value,'Value');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
 initialization
+
+  GetTypeRegistry().Register(TSampleSimpleContentHeaderBlock_A.GetNameSpace(),TypeInfo(TSampleSimpleContentHeaderBlock_A));
+  TSampleSimpleContentHeaderBlock_B.RegisterAttributeProperty('intAtt');
+  GetTypeRegistry().Register(TSampleSimpleContentHeaderBlock_B.GetNameSpace(),TypeInfo(TSampleSimpleContentHeaderBlock_B));
+  
   GetTypeRegistry().Register(NBHeader.GetNameSpace(),TypeInfo(NBHeader),'NBHeader');
   GetTypeRegistry().Register(TNameSpaceA_Class.GetNameSpace(),TypeInfo(TNameSpaceA_Class));
   GetTypeRegistry().Register(TNameSpaceB_Class.GetNameSpace(),TypeInfo(TNameSpaceB_Class));
@@ -420,6 +625,7 @@ initialization
   GetTypeRegistry().Register(ns_soap_test,TypeInfo(TSOAPTestEnum));
   
   RegisterTest('Serializer',TTest_SoapFormatterServerNameSpace.Suite);
+  RegisterTest('Serializer',TTest_SoapFormatterHeader.Suite);
   
 end.
 
