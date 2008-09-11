@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="library1" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   xmlns:wst="urn:wst_base"
+   targetNamespace="urn:wst-test">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:wst-test">
+    
+        <xsd:complexType name="TSampleHeader" wst:wst_headerBlockSimpleContent="true">
+          <xsd:attribute use="required" name="strAtt" type="xsd:string"/>
+          <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
+        </xsd:complexType>    
+    
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

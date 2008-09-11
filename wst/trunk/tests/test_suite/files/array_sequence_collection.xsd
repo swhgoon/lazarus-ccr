@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<schema 
+  xmlns:tns="urn:wst-test" 
+  xmlns:wst="urn:wst_base" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="urn:wst-test">
+  
+  <xsd:complexType name="TComplexType"/>
+  <xsd:complexType name="TCollectionComplexType">
+    <xsd:sequence>
+      <xsd:element name="item" type="tns:TComplexType" maxOccurs="unbounded" minOccurs="0" wst:wst_collection="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+</schema>

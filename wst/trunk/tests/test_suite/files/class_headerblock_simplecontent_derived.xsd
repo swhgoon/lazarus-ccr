@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<schema 
+    xmlns:tns="class_headerblock_simplecontent_derived" 
+    xmlns:wst="urn:wst_base" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="class_headerblock_simplecontent_derived">
+  <xsd:complexType name="TSampleHeader" wst:wst_headerBlockSimpleContent="true">
+    <xsd:attribute use="required" name="strAtt" type="xsd:string"/>
+    <xsd:attribute use="required" name="intAtt" type="xsd:int"/>
+  </xsd:complexType>
+</schema>
