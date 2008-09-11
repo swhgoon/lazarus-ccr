@@ -89,6 +89,16 @@ type
 
 implementation
 
+function GetDCClipRect(Dest: HDC): TRect;
+begin
+  if GetClipBox(Dest, @Result) = ERROR then
+  begin
+    Result.TopLeft := Point(0, 0);
+    if not GetDeviceSize(Dest, Result.BottomRight) then
+      Result.BottomRight := Point(8000, 8000);
+  end;
+end;
+
 procedure DrawRGB32Bitmap(Dst: TRGB32BitmapCore; X, Y: Integer; Src: TRGB32BitmapCore);
 var
   SrcX, SrcWidth, SrcY, SrcHeight: Integer;
@@ -524,7 +534,9 @@ begin
   if (Bitmap = nil) or (Bitmap.Pixels = nil) then Exit;
   if (Bitmap.Width <= 0) or (Bitmap.Height <= 0) then Exit;
   if (SrcWidth <= 0) or (SrcHeight <= 0) then Exit;
-  GetClipBox(Dest, @Clip);
+
+  Clip := GetDCClipRect(Dest);
+
   if (DstX >= Clip.Right) or (DstY >= Clip.Bottom) or
      (DstX + SrcWidth < Clip.Left) or (DstY + SrcHeight < Clip.Top) then Exit;
 
@@ -551,7 +563,9 @@ begin
   if (Bitmap.Width <= 0) or (Bitmap.Height <= 0) then Exit;
   if (SrcWidth <= 0) or (SrcHeight <= 0) then Exit;
   if (DstWidth <= 0) or (DstHeight <= 0) then Exit;
-  GetClipBox(Dest, @Clip);
+
+  Clip := GetDCClipRect(Dest);
+
   if (DstX >= Clip.Right) or (DstY >= Clip.Bottom) or
      (DstX + DstWidth < Clip.Left) or (DstY + DstHeight < Clip.Top) then Exit;
 
@@ -719,7 +733,8 @@ begin
   if (Bitmap = nil) or (Bitmap.Pixels = nil) then Exit;
   if (Bitmap.Width <= 0) or (Bitmap.Height <= 0) then Exit;
   if (DstWidth <= 0) or (DstHeight <= 0) then Exit;
-  GetClipBox(Dest, @Clip);
+
+  Clip := GetDCClipRect(Dest);
   
   ZoomX := DstWidth / Bitmap.Width;
   ZoomY := DstHeight / Bitmap.Height;
@@ -742,7 +757,9 @@ begin
   if (Bitmap = nil) or (Bitmap.Pixels = nil) then Exit;
   if (Bitmap.Width <= 0) or (Bitmap.Height <= 0) then Exit;
   if (SrcWidth <= 0) or (SrcHeight <= 0) then Exit;
-  GetClipBox(Dest, @Clip);
+
+  Clip := GetDCClipRect(Dest);
+
   if (DstX >= Clip.Right) or (DstY >= Clip.Bottom) or
      (DstX + SrcWidth < Clip.Left) or (DstY + SrcHeight < Clip.Top) then Exit;
 

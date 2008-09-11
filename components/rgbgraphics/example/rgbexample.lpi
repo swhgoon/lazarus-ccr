@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="2"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -38,7 +38,7 @@
         <Filename Value="rgbexample.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RGBExample"/>
-        <CursorPos X="1" Y="17"/>
+        <CursorPos X="74" Y="12"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="34"/>
@@ -48,6 +48,7 @@
         <Filename Value="rgbunit.pas"/>
         <ComponentName Value="FormExample"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="rgbunit.lrs"/>
         <UnitName Value="RGBUnit"/>
         <CursorPos X="23" Y="33"/>
@@ -59,9 +60,9 @@
       <Unit2>
         <Filename Value="..\rgbgraphics.pas"/>
         <UnitName Value="RGBGraphics"/>
-        <CursorPos X="42" Y="35"/>
+        <CursorPos X="21" Y="31"/>
         <TopLine Value="22"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -283,8 +284,8 @@
       <Unit35>
         <Filename Value="..\..\lazarus\lcl\interfaces\qt\qt4.pas"/>
         <UnitName Value="qt4"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1883"/>
+        <CursorPos X="11" Y="35"/>
+        <TopLine Value="22"/>
         <UsageCount Value="10"/>
       </Unit35>
       <Unit36>
@@ -326,18 +327,14 @@
         <UnitName Value="ExtCtrls"/>
         <CursorPos X="30" Y="584"/>
         <TopLine Value="572"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit41>
       <Unit42>
         <Filename Value="..\..\lazarus\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <CursorPos X="34" Y="1319"/>
         <TopLine Value="1308"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit42>
       <Unit43>
         <Filename Value="..\..\lazarus\lcl\include\picture.inc"/>
@@ -368,153 +365,142 @@
         <Filename Value="..\..\lazarus\lcl\include\bitmap.inc"/>
         <CursorPos X="25" Y="62"/>
         <TopLine Value="60"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit47>
       <Unit48>
         <Filename Value="..\..\lazarus\fpc\2.2.1\source\packages\fcl-image\src\fpwritebmp.pp"/>
         <UnitName Value="FPWriteBMP"/>
         <CursorPos X="3" Y="31"/>
         <TopLine Value="18"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit48>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="291" Column="16" TopLine="276"/>
+        <Caret Line="290" Column="15" TopLine="276"/>
       </Position1>
       <Position2>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="290" Column="15" TopLine="276"/>
+        <Caret Line="347" Column="49" TopLine="330"/>
       </Position2>
       <Position3>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="347" Column="49" TopLine="330"/>
+        <Caret Line="343" Column="59" TopLine="335"/>
       </Position3>
       <Position4>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="343" Column="59" TopLine="335"/>
+        <Caret Line="342" Column="55" TopLine="329"/>
       </Position4>
       <Position5>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="342" Column="55" TopLine="329"/>
+        <Caret Line="340" Column="36" TopLine="329"/>
       </Position5>
       <Position6>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="340" Column="36" TopLine="329"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position6>
       <Position7>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="197" Column="27" TopLine="184"/>
       </Position7>
       <Position8>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="197" Column="27" TopLine="184"/>
+        <Caret Line="198" Column="27" TopLine="185"/>
       </Position8>
       <Position9>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="198" Column="27" TopLine="185"/>
+        <Caret Line="199" Column="27" TopLine="186"/>
       </Position9>
       <Position10>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="199" Column="27" TopLine="186"/>
+        <Caret Line="340" Column="36" TopLine="327"/>
       </Position10>
       <Position11>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="340" Column="36" TopLine="327"/>
+        <Caret Line="342" Column="15" TopLine="329"/>
       </Position11>
       <Position12>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="342" Column="15" TopLine="329"/>
+        <Caret Line="345" Column="36" TopLine="332"/>
       </Position12>
       <Position13>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="345" Column="36" TopLine="332"/>
+        <Caret Line="348" Column="15" TopLine="335"/>
       </Position13>
       <Position14>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="348" Column="15" TopLine="335"/>
+        <Caret Line="371" Column="36" TopLine="347"/>
       </Position14>
       <Position15>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="371" Column="36" TopLine="347"/>
+        <Caret Line="390" Column="14" TopLine="374"/>
       </Position15>
       <Position16>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="390" Column="14" TopLine="374"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position16>
       <Position17>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="342" Column="61" TopLine="331"/>
       </Position17>
       <Position18>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="342" Column="61" TopLine="331"/>
+        <Caret Line="342" Column="59" TopLine="331"/>
       </Position18>
       <Position19>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="342" Column="59" TopLine="331"/>
+        <Caret Line="291" Column="10" TopLine="279"/>
       </Position19>
       <Position20>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="291" Column="10" TopLine="279"/>
+        <Caret Line="375" Column="10" TopLine="363"/>
       </Position20>
       <Position21>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="375" Column="10" TopLine="363"/>
+        <Caret Line="471" Column="37" TopLine="456"/>
       </Position21>
       <Position22>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="471" Column="37" TopLine="456"/>
+        <Caret Line="457" Column="28" TopLine="444"/>
       </Position22>
       <Position23>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="457" Column="28" TopLine="444"/>
+        <Caret Line="458" Column="28" TopLine="445"/>
       </Position23>
       <Position24>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="458" Column="28" TopLine="445"/>
+        <Caret Line="457" Column="28" TopLine="445"/>
       </Position24>
       <Position25>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="457" Column="28" TopLine="445"/>
+        <Caret Line="453" Column="30" TopLine="445"/>
       </Position25>
       <Position26>
         <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="453" Column="30" TopLine="445"/>
+        <Caret Line="458" Column="31" TopLine="445"/>
       </Position26>
       <Position27>
-        <Filename Value="..\..\lazarus\lcl\include\bitmap.inc"/>
-        <Caret Line="62" Column="21" TopLine="60"/>
-      </Position27>
-      <Position28>
-        <Filename Value="..\rgbgraphics.pas"/>
-        <Caret Line="458" Column="31" TopLine="445"/>
-      </Position28>
-      <Position29>
         <Filename Value="rgbexample.lpr"/>
         <Caret Line="17" Column="1" TopLine="1"/>
-      </Position29>
-      <Position30>
+      </Position27>
+      <Position28>
         <Filename Value="rgbunit.pas"/>
         <Caret Line="44" Column="16" TopLine="43"/>
-      </Position30>
+      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <LCLWidgetType Value="qt"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <LinkerOptions Value="-framework carbon"/>
