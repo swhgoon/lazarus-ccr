@@ -674,10 +674,11 @@ var
         if ( Length(p.DefaultValue) > 0 ) then
           propNode.SetAttribute(s_default,p.DefaultValue);
         if AContainer.IsAttributeProperty(p) then begin
-          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
-            propNode.SetAttribute(s_use,'optional')
-          else
+          if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then begin
+            {propNode.SetAttribute(s_use,'optional')}
+          end else begin
             propNode.SetAttribute(s_use,'required');
+          end;
         end else begin
           if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) then
             propNode.SetAttribute(s_minOccurs,'0');
@@ -735,7 +736,11 @@ begin
       if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('THeaderBlock',trueParent.Name) then begin
         DeclareNameSpaceOf_WST(ADocument);
         DeclareAttributeOf_WST(cplxNode,s_WST_headerBlock,'true');
+      end else if trueParent.InheritsFrom(TPasNativeClassType) and AnsiSameText('TSimpleContentHeaderBlock',trueParent.Name) then begin
+        DeclareNameSpaceOf_WST(ADocument);
+        DeclareAttributeOf_WST(cplxNode,s_WST_headerBlockSimpleContent,'true');
       end;
+
       if trueParent.InheritsFrom(TPasAliasType) then
         trueParent := GetUltimeType(trueParent);
       if trueParent.InheritsFrom(TPasNativeSimpleContentClassType) or

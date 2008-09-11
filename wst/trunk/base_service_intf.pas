@@ -78,6 +78,7 @@ type
 
   TBaseRemotable = class;
   THeaderBlock = class;
+  TSimpleContentHeaderBlock = class;
 
   //Utility interface used to configure its parent.
   IPropertyManager = Interface
@@ -684,6 +685,29 @@ type
     property mustUnderstand : Integer read FmustUnderstand write SetmustUnderstand stored HasmustUnderstand;
   end;
 
+  { TSimpleContentHeaderBlock
+      Make a derived class of TSimpleContentHeaderBlock to handle a simple content
+      header block.
+  }
+  TSimpleContentHeaderBlock = class(THeaderBlock)
+  private
+    FValue : string;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    property Value : string read FValue write FValue;
+  end;
+  
   { TObjectCollectionRemotable
       An implementation for array handling. The array items are "owned" by
       this class instance, so one has not to free them.
@@ -1511,6 +1535,8 @@ begin
 
   THeaderBlock.RegisterAttributeProperty('mustUnderstand');
   ri := r.Register(sSOAP_ENV,TypeInfo(THeaderBlock),'THeaderBlock');
+  ri.Options := ri.Options + [trioNonVisibleToMetadataService];
+  ri := r.Register(sSOAP_ENV,TypeInfo(TSimpleContentHeaderBlock));
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
 
 
@@ -4300,6 +4326,67 @@ begin
     FmustUnderstand := 1
   else
     FmustUnderstand := 0;
+end;
+
+{ TSimpleContentHeaderBlock }
+
+class procedure TSimpleContentHeaderBlock.Save(
+        AObject    : TBaseRemotable;
+        AStore     : IFormatterBase;
+  const AName      : String;
+  const ATypeInfo  : PTypeInfo
+);
+var
+  locSerializer : TObjectSerializer;
+begin
+  locSerializer := TBaseComplexTypeRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then begin
+    if not ( osoDontDoBeginWrite in locSerializer.Options ) then
+      locSerializer.Options := locSerializer.Options + [osoDontDoBeginWrite];
+    AStore.BeginObject(AName,ATypeInfo);
+    try
+      if ( AObject <> nil ) then
+        AStore.PutScopeInnerValue(TypeInfo(string),TSimpleContentHeaderBlock(AObject).Value);
+      locSerializer.Save(AObject,AStore,AName,ATypeInfo);
+    finally
+      AStore.EndScope();
+    end;
+  end else begin
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+  end;
+end;
+
+class procedure TSimpleContentHeaderBlock.Load(
+  Var   AObject    : TObject;
+        AStore     : IFormatterBase;
+  var   AName      : String;
+  const ATypeInfo  : PTypeInfo
+);
+var
+  locSerializer : TObjectSerializer;
+  locStrBuffer : string;
+begin
+  locSerializer := TBaseComplexTypeRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then begin
+    if not ( osoDontDoBeginRead in locSerializer.Options ) then
+      locSerializer.Options := locSerializer.Options + [osoDontDoBeginRead];
+    if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+      try
+        if AStore.IsCurrentScopeNil() then
+          Exit; // ???? FreeAndNil(AObject);
+        if not Assigned(AObject) then
+          AObject := locSerializer.Target.Create();
+        locStrBuffer := '';
+        AStore.GetScopeInnerValue(TypeInfo(string),locStrBuffer);
+        TSimpleContentHeaderBlock(AObject).Value := locStrBuffer;
+        locSerializer.Read(AObject,AStore,AName,ATypeInfo);
+     finally
+       AStore.EndScopeRead();
+     end;
+    end;
+  end else begin
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+  end;
 end;
 
 { TStoredPropertyManager }

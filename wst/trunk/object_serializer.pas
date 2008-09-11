@@ -21,6 +21,9 @@ uses
 
 type
 
+  TObjectSerializerOption = ( osoDontDoBeginRead, osoDontDoBeginWrite );
+  TObjectSerializerOptions = set of TObjectSerializerOption;
+  
   ESerializerException = class(EServiceException)
   end;
   
@@ -66,6 +69,7 @@ type
     FSerializationInfos : TObjectList;
     FTarget : TBaseComplexRemotableClass;
     FRawPropList : PPropList;
+    FOptions : TObjectSerializerOptions;
   private
     procedure Prepare(ATypeRegistry : TTypeRegistry);
   public
@@ -87,6 +91,7 @@ type
       const ATypeInfo : PTypeInfo
     );
     property Target : TBaseComplexRemotableClass read FTarget;
+    property Options : TObjectSerializerOptions read FOptions write FOptions;
   end;
   
   TGetSerializerFunction = function() : TObjectSerializer of object;
@@ -1079,7 +1084,7 @@ var
   locSerInfo : TPropSerializationInfo;
 begin
   oldSS := AStore.GetSerializationStyle();
-  if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+  if ( osoDontDoBeginRead in Options ) or ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
     try
       if AStore.IsCurrentScopeNil() then
         Exit; // ???? FreeAndNil(AObject);
@@ -1102,7 +1107,8 @@ begin
         end;
       end;
     finally
-      AStore.EndScopeRead();
+      if not ( osoDontDoBeginRead in Options ) then
+        AStore.EndScopeRead();
       AStore.SetSerializationStyle(oldSS);
     end;
   end;
@@ -1120,7 +1126,8 @@ var
   locSerInfo : TPropSerializationInfo;
 begin
   oldSS := AStore.GetSerializationStyle();
-  AStore.BeginObject(AName,ATypeInfo);
+  if not ( osoDontDoBeginWrite in Options ) then
+    AStore.BeginObject(AName,ATypeInfo);
   try
     if not Assigned(AObject) then begin
       AStore.NilCurrentScope();
@@ -1136,7 +1143,8 @@ begin
       end;
     end;
   finally
-    AStore.EndScope();
+    if not ( osoDontDoBeginWrite in Options ) then
+      AStore.EndScope();
     AStore.SetSerializationStyle(oldSS);
   end;
 end;

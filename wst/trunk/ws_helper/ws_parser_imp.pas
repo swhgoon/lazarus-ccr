@@ -873,6 +873,13 @@ var
     Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
 
+  function IsSimpleContentHeaderBlock() : Boolean;
+  var
+    strBuffer : string;
+  begin
+    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlockSimpleContent,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+  end;
+  
   function IsRecordType() : Boolean;
   var
     strBuffer : string;
@@ -939,6 +946,8 @@ begin
         if ( classDef.AncestorType = nil ) then begin
           if IsHeaderBlock() then
             classDef.AncestorType := FSymbols.FindElementInModule('THeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
+          else if IsSimpleContentHeaderBlock() then
+            classDef.AncestorType := FSymbols.FindElementInModule('TSimpleContentHeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
           else
             classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
         end;

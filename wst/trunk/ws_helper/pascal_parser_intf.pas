@@ -364,6 +364,7 @@ begin
 
         AddClassDef(Result,'TBaseComplexRemotable','TAbstractComplexRemotable',TPasNativeClassType);
           AddClassDef(Result,'THeaderBlock','TBaseComplexRemotable',TPasNativeClassType);
+            AddClassDef(Result,'TSimpleContentHeaderBlock','THeaderBlock',TPasNativeClassType);
         AddClassDef(Result,'TBaseArrayRemotable','TAbstractComplexRemotable',TPasNativeClassType);
           AddClassDef(Result,'TBaseObjectArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
           AddClassDef(Result,'TBaseSimpleTypeArrayRemotable','TBaseArrayRemotable',TPasNativeClassType);
