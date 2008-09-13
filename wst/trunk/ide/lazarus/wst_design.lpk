@@ -5,7 +5,7 @@
     <Name Value="wst_design"/>
     <Author Value="Inoussa OUEDRAOGO"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\type_lib_edtr\"/>
@@ -14,12 +14,10 @@
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
+          <CStyleOperator Value="False"/>
           <UseAnsiStrings Value="True"/>
         </SyntaxOptions>
       </Parsing>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CustomOptions Value="-dWST_IDE
 -dWST_HANDLE_DOC
@@ -27,7 +25,8 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Web Services Toolkit Lazarus IDE design time package"/>
+    <Description Value="Web Services Toolkit Lazarus IDE design time package
+"/>
     <Version Minor="1"/>
     <Files Count="10">
       <Item1>
@@ -73,20 +72,23 @@
       </Item10>
     </Files>
     <Type Value="DesignTime"/>
-    <RequiredPkgs Count="4">
+    <RequiredPkgs Count="5">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="wst_core"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item3>
       <Item4>
+        <PackageName Value="IDEIntf"/>
+      </Item4>
+      <Item5>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item4>
+      </Item5>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)\"/>
