@@ -119,13 +119,13 @@ begin
   Try
     wrtr := CreateBinaryWriter(buffStream);
     wrtr.WriteInt32S(0);
-    wrtr.WriteStr(Target);
-    wrtr.WriteStr(ContentType);
-    wrtr.WriteStr(Self.Format);
+    wrtr.WriteAnsiStr(Target);
+    wrtr.WriteAnsiStr(ContentType);
+    wrtr.WriteAnsiStr(Self.Format);
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));
-    wrtr.WriteStr(strBuff);
+    wrtr.WriteAnsiStr(strBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
 

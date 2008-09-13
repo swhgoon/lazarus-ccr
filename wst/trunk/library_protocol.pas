@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils,
   service_intf, imp_utils, base_service_intf, library_base_intf,
-  library_imp_utils;
+  library_imp_utils, wst_types;
 
 const
   sTRANSPORT_NAME = 'LIB';
@@ -105,11 +105,11 @@ procedure TLIBTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
-  strBuff : string;
+  strBuff : TBinaryString;
   intfBuffer : IwstStream;
   bl : LongInt;
 {$IFDEF WST_DBG}
-  s : string;
+  s : TBinaryString;
   i : Int64;
 {$ENDIF WST_DBG}
 begin
@@ -118,9 +118,9 @@ begin
   try
     wrtr := CreateBinaryWriter(buffStream);
     wrtr.WriteInt32S(0);
-    wrtr.WriteStr(Target);
-    wrtr.WriteStr(ContentType);
-    wrtr.WriteStr(Self.Format);
+    wrtr.WriteAnsiStr(Target);
+    wrtr.WriteAnsiStr(ContentType);
+    wrtr.WriteAnsiStr(Self.Format);
     SetLength(strBuff,ARequest.Size);
     ARequest.Position := 0;
     ARequest.Read(strBuff[1],Length(strBuff));
@@ -128,7 +128,7 @@ begin
     if IsConsole then
       WriteLn(strBuff);
 {$ENDIF WST_DBG}
-    wrtr.WriteStr(strBuff);
+    wrtr.WriteAnsiStr(strBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
 

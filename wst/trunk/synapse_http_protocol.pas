@@ -163,7 +163,7 @@ procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
   end;
   
 var
-  s : string;
+  s : TBinaryString;
 {$ENDIF}
 begin
   FConnection.Document.Size := 0;

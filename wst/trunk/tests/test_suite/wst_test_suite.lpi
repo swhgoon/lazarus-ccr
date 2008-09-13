@@ -21,11 +21,6 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
-      <Item1>
-        <PackageName Value="FPCUnitTestRunner"/>
-      </Item1>
-    </RequiredPackages>
     <Units Count="39">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
@@ -225,7 +220,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="wst_test_suite.exe"/>
@@ -246,7 +241,6 @@
         <RangeChecks Value="True"/>
         <OverflowChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>

@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   service_intf, imp_utils,
-  server_service_intf, server_service_imputils, base_service_intf;
+  server_service_intf, server_service_imputils, base_service_intf, wst_types;
 
 Const
   sTRANSPORT_NAME = 'SAME_PROCESS';
@@ -73,7 +73,7 @@ procedure TInProcessTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
   bffr : IRequestBuffer;
 {$IFDEF WST_DBG}
-  s : string;
+  s : TBinaryString;
   i : Int64;
 {$ENDIF WST_DBG}
 begin

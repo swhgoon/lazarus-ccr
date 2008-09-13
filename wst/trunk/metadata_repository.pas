@@ -320,8 +320,8 @@ var
 
       procedure LoadParam(APrm : POperationParam);
       begin
-        APrm^.Name := rdr.ReadStr();
-        APrm^.TypeName := rdr.ReadStr();
+        APrm^.Name := rdr.ReadAnsiStr();
+        APrm^.TypeName := rdr.ReadAnsiStr();
         APrm^.Modifier := TOperationParamFlag(rdr.ReadEnum());
       end;
 
@@ -329,7 +329,7 @@ var
       ii, cc : LongInt;
       pp : POperationParam;
     begin
-      AOperation^.Name := rdr.ReadStr();
+      AOperation^.Name := rdr.ReadAnsiStr();
       AOperation^.Properties := nil;
       cc := rdr.ReadInt8U();
       if ( cc > 0 ) then begin
@@ -349,7 +349,7 @@ var
     j, k : LongInt;
     po : PServiceOperation;
   begin
-    AService^.Name := rdr.ReadStr();
+    AService^.Name := rdr.ReadAnsiStr();
     AService^.Properties := nil;
     k := rdr.ReadInt8U();
     if ( k > 0 ) then begin
@@ -372,14 +372,14 @@ var
 begin
   ARepository := nil;
   rdr := CreateBinaryReader(AStream);
-  buf := rdr.ReadStr();
+  buf := rdr.ReadAnsiStr();
   if ( sWST_SIGNATURE <> buf ) then
     raise EMetadataException.CreateFmt('Invalid Metadata signature : "%s"',[buf]);
   c := SizeOf(TServiceRepository);
   ARepository := wst_GetMem(c);
   try
     FillChar(ARepository^,c,#0);
-    ARepository^.Name := rdr.ReadStr();
+    ARepository^.Name := rdr.ReadAnsiStr();
     c := rdr.ReadInt8U();
     if ( c > 0 ) then begin
       ARepository^.Services := wst_GetMem( c * SizeOf(TService) );

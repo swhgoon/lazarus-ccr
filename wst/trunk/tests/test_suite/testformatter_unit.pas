@@ -41,11 +41,19 @@ type
     FVal_Bool: Boolean;
     FVal_Enum: TTestEnum;
     FVal_String: string;
+{$IFDEF WST_UNICODESTRING}
+    FVal_UnicodeString: UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+    FVal_WideString: WideString;
   Published
     property Val_32S : LongInt Read FVal_32S Write FVal_32S;
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
     property Val_Bool : Boolean Read FVal_Bool Write FVal_Bool;
     property Val_String : string Read FVal_String Write FVal_String;
+    property Val_WideString : WideString Read FVal_WideString Write FVal_WideString;
+{$IFDEF WST_UNICODESTRING}
+    property Val_UnicodeString : UnicodeString Read FVal_UnicodeString Write FVal_UnicodeString;
+{$ENDIF WST_UNICODESTRING}
   End;
 
   { TClass_B }
@@ -58,6 +66,11 @@ type
     FVal_Bool: Boolean;
     FVal_Enum: TTestEnum;
     FVal_String: string;
+{$IFDEF WST_UNICODESTRING}
+    FVal_UnicodeString: UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+    FVal_WideString: WideString;
+  private
     procedure SetObjProp(const AValue: TClass_A);
   Public
     constructor Create();override;
@@ -67,6 +80,10 @@ type
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
     property Val_Bool : Boolean Read FVal_Bool Write FVal_Bool;
     property Val_String : string Read FVal_String Write FVal_String;
+    property Val_WideString : WideString Read FVal_WideString Write FVal_WideString;
+{$IFDEF WST_UNICODESTRING}
+    property Val_UnicodeString : UnicodeString Read FVal_UnicodeString Write FVal_UnicodeString;
+{$ENDIF WST_UNICODESTRING}
     property ObjProp : TClass_A Read FObjProp Write SetObjProp stored True;
     property NonStored : Integer Read FNonStored Write FNonStored stored false;
   End;
@@ -216,7 +233,31 @@ type
     property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
     property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
   end;
+
+  T_ComplexWideStringContent = class(TComplexWideStringContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
   
+{$IFDEF WST_UNICODESTRING}
+  T_ComplexUnicodeStringContent = class(TComplexUnicodeStringContentRemotable)
+  private
+    FBoolSimpleAtt_Exemple: Boolean;
+    FIntSimpleAtt_Exemple: Integer;
+    FStrSimpleAtt_Exemple: string;
+  published
+    property StrSimpleAtt_Exemple : string read FStrSimpleAtt_Exemple write FStrSimpleAtt_Exemple;
+    property IntSimpleAtt_Exemple : Integer read FIntSimpleAtt_Exemple write FIntSimpleAtt_Exemple;
+    property BoolSimpleAtt_Exemple : Boolean read FBoolSimpleAtt_Exemple write FBoolSimpleAtt_Exemple;
+  end;
+{$ENDIF WST_UNICODESTRING}
+
   { TClass_CplxSimpleContent }
 
   TClass_CplxSimpleContent = class(TBaseComplexRemotable)
@@ -233,6 +274,10 @@ type
     FVal_CplxInt8S: T_ComplexInt8SContent;
     FVal_CplxInt8U: T_ComplexInt8UContent;
     FVal_CplxString: T_ComplexStringContent;
+{$IFDEF WST_UNICODESTRING}
+    FVal_CplxUnicodeString: T_ComplexUnicodeStringContent;
+{$ENDIF WST_UNICODESTRING}
+    FVal_CplxWideString: T_ComplexWideStringContent;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -252,6 +297,10 @@ type
     property Val_CplxExtended : T_ComplexFloatExtendedContent read FVal_CplxExtended write FVal_CplxExtended;
     property Val_CplxDouble : T_ComplexFloatDoubleContent read FVal_CplxDouble write FVal_CplxDouble;
     property Val_CplxString : T_ComplexStringContent read FVal_CplxString write FVal_CplxString;
+    property Val_CplxWideString : T_ComplexWideStringContent read FVal_CplxWideString write FVal_CplxWideString;
+{$IFDEF WST_UNICODESTRING}
+    property Val_CplxUnicodeString : T_ComplexUnicodeStringContent read FVal_CplxUnicodeString write FVal_CplxUnicodeString;
+{$ENDIF WST_UNICODESTRING}
 
     property Elt_Exemple : string read FElt_Exemple write FElt_Exemple;
   end;
@@ -322,17 +371,32 @@ type
     procedure Test_Int_8;
     procedure Test_Int_8_ScopeData;
     procedure Test_Int_16;
+    procedure Test_Int_16_ScopeData;
     procedure Test_Int_32;
+    procedure Test_Int_32_ScopeData;
     procedure Test_Int_64;
+    procedure Test_Int_64_ScopeData;
 
     procedure Test_Single_4;
+    procedure Test_Single_4_ScopeData;
     procedure Test_Double_8;
+    procedure Test_Double_8_ScopeData;
     procedure Test_Currency_8;
+    procedure Test_Currency_8_ScopeData;
     procedure Test_Extended_10;
+    procedure Test_Extended_10_ScopeData;
 
-    procedure Test_String;
+    procedure Test_AnsiString;
+    procedure Test_AnsiString_ScopeData;
+{$IFDEF WST_UNICODESTRING}
+    procedure Test_UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+    procedure Test_WideString;
+    procedure Test_WideString_ScopeData;
     procedure Test_Bool;
+    procedure Test_Bool_ScopeData;
     procedure Test_Enum;
+    procedure Test_Enum_ScopeData;
   end;
   
   { TTestFormatter }
@@ -355,6 +419,10 @@ type
 
     procedure Test_CplxFloatExtendedSimpleContent_WithClass;
     procedure Test_CplxStringSimpleContent_WithClass;
+    procedure Test_CplxWideStringSimpleContent_WithClass;
+{$IFDEF WST_UNICODESTRING}
+    procedure Test_CplxUnicodeStringSimpleContent_WithClass;
+{$ENDIF WST_UNICODESTRING}
 
     procedure Test_Object();
     procedure Test_Object_Nil();
@@ -621,7 +689,7 @@ begin
         dtDouble          : ok := ( A^.DoubleData = A^.DoubleData );
         dtExtended        : ok := ( A^.ExtendedData = A^.ExtendedData );
         dtCurrency        : ok := ( A^.CurrencyData = A^.CurrencyData );
-        dtString          : ok := ( A^.StrData = A^.StrData );
+        dtAnsiString      : ok := ( A^.AnsiStrData = A^.AnsiStrData );
         dtObject          : ok := CompareObjectBuffers(A^.ObjectData,B^.ObjectData);
         dtArray           : ok := CompareObjectBuffers(A^.ArrayData,B^.ArrayData);
       end;
@@ -696,7 +764,7 @@ end;
 
 procedure TTestFormatterSimpleType.Test_Int_8_ScopeData;
 const VAL_1 = 12; VAL_2 = -10;
-Var
+var
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
@@ -788,6 +856,58 @@ begin
   End;
 end;
 
+procedure TTestFormatterSimpleType.Test_Int_16_ScopeData;
+const VAL_1 = 1210; VAL_2 : SmallInt = -1012;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_U : WOrd; intVal_S : SmallInt;
+begin
+  s := Nil;
+  Try
+    intVal_U := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(Word),intVal_U);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_U := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(Word),intVal_U);
+    f.EndScopeRead();
+    CheckEquals(VAL_1,intVal_U);
+    ///
+    intVal_S := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(SmallInt),intVal_S);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_S := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(SmallInt),intVal_S);
+    f.EndScopeRead();
+    CheckEquals(VAL_2,intVal_S);
+  Finally
+    s.Free();
+  End;
+end;
+
 procedure TTestFormatterSimpleType.Test_Int_32;
 const VAL_1 = 121076; VAL_2 : LongInt = -101276;
 Var
@@ -824,6 +944,58 @@ begin
     f.EndScopeRead();
 
     CheckEquals(VAL_1,intVal_U);
+    CheckEquals(VAL_2,intVal_S);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Int_32_ScopeData;
+const VAL_1 = 121076; VAL_2 : LongInt = -101276;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_U : LongWord; intVal_S : LongInt;
+begin
+  s := Nil;
+  Try
+    intVal_U := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(LongWord),intVal_U);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_U := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(LongWord),intVal_U);
+    f.EndScopeRead();
+    CheckEquals(VAL_1,intVal_U);
+    ///
+    intVal_S := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(LongInt),intVal_S);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_S := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(LongInt),intVal_S);
+    f.EndScopeRead();
     CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
@@ -872,9 +1044,61 @@ begin
   End;
 end;
 
+procedure TTestFormatterSimpleType.Test_Int_64_ScopeData;
+const VAL_1 = 121076; VAL_2 : Int64 = -101276;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_U : QWord; intVal_S : Int64;
+begin
+  s := Nil;
+  Try
+    intVal_U := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(QWord),intVal_U);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_U := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(QWord),intVal_U);
+    f.EndScopeRead();
+    CheckEquals(VAL_1,intVal_U);
+    ///
+    intVal_S := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(Int64),intVal_S);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_S := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(Int64),intVal_S);
+    f.EndScopeRead();
+    CheckEquals(VAL_2,intVal_S);
+  Finally
+    s.Free();
+  End;
+end;
+
 procedure TTestFormatterSimpleType.Test_Single_4;
 const VAL_1 : single = 12.10;
-Var
+var
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
@@ -900,6 +1124,42 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Single),x,tmpVal);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,tmpVal);//,0.00001);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Single_4_ScopeData;
+const VAL_1 : single = 12.10;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Single;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.PutScopeInnerValue(TypeInfo(Single),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Single_4.xml');
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
+      x := 'tmpVal';
+      f.GetScopeInnerValue(TypeInfo(Single),tmpVal);
     f.EndScopeRead();
 
     CheckEquals(VAL_1,tmpVal);//,0.00001);
@@ -944,6 +1204,42 @@ begin
   End;
 end;
 
+procedure TTestFormatterSimpleType.Test_Double_8_ScopeData;
+const VAL_1 : Double = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Double;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.PutScopeInnerValue(TypeInfo(Double),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Double_8.xml');
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
+      x := 'tmpVal';
+      f.GetScopeInnerValue(TypeInfo(Double),tmpVal);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
 procedure TTestFormatterSimpleType.Test_Currency_8;
 const VAL_1 : Currency = 12.10;
 Var
@@ -972,6 +1268,42 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Float));
       x := 'tmpVal';
       f.Get(TypeInfo(Currency),x,tmpVal);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Currency_8_ScopeData;
+const VAL_1 : Currency = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Currency;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.PutScopeInnerValue(TypeInfo(Currency),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Currency_8.xml');
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
+      x := 'tmpVal';
+      f.GetScopeInnerValue(TypeInfo(Currency),tmpVal);
     f.EndScopeRead();
 
     CheckEquals(VAL_1,tmpVal);
@@ -1016,29 +1348,65 @@ begin
   End;
 end;
 
-procedure TTestFormatterSimpleType.Test_String;
+procedure TTestFormatterSimpleType.Test_Extended_10_ScopeData;
+const VAL_1 : Extended = 12.10;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  tmpVal : Extended;
+begin
+  s := Nil;
+  Try
+    tmpVal := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Float));
+
+    f.BeginObject('Root',TypeInfo(TClass_Float));
+      f.PutScopeInnerValue(TypeInfo(Extended),tmpVal);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Extended_10.xml');
+    tmpVal := 0;
+
+    f := CreateFormatter(TypeInfo(TClass_Float));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Float));
+      x := 'tmpVal';
+      f.GetScopeInnerValue(TypeInfo(Extended),tmpVal);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,tmpVal);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_AnsiString;
 const VAL_1 = 'AzErTy'; VAL_2 = 'QwErTy';
 Var
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
-  intVal_1 : string; intVal_3 : string;
+  locVal_1 : ansistring; locVal_3 : ansistring;
 begin
   s := Nil;
   Try
-    intVal_1 := VAL_1;
-    intVal_3 := VAL_2;
+    locVal_1 := VAL_1;
+    locVal_3 := VAL_2;
     f := CreateFormatter(TypeInfo(TClass_Int));
 
     f.BeginObject('Root',TypeInfo(TClass_Int));
-      f.Put('intVal_1',TypeInfo(string),intVal_1);
-      f.Put('intVal_3',TypeInfo(string),intVal_3);
+      f.Put('intVal_1',TypeInfo(ansistring),locVal_1);
+      f.Put('intVal_3',TypeInfo(ansistring),locVal_3);
     f.EndScope();
 
     s := TMemoryStream.Create();
     f.SaveToStream(s);
-    intVal_1 := '';
-    intVal_3 := 'yyyyyyyy';
+    locVal_1 := '';
+    locVal_3 := 'yyyyyyyy';
 
     f := CreateFormatter(TypeInfo(TClass_Int));
     s.Position := 0;
@@ -1046,13 +1414,169 @@ begin
     x := 'Root';
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       x := 'intVal_1';
-      f.Get(TypeInfo(string),x,intVal_1);
+      f.Get(TypeInfo(ansistring),x,locVal_1);
       x := 'intVal_3';
-      f.Get(TypeInfo(string),x,intVal_3);
+      f.Get(TypeInfo(ansistring),x,locVal_3);
     f.EndScopeRead();
 
-    CheckEquals(VAL_1,intVal_1);
-    CheckEquals(VAL_2,intVal_3);
+    CheckEquals(VAL_1,locVal_1);
+    CheckEquals(VAL_2,locVal_3);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_AnsiString_ScopeData;
+const VAL_1 = 'AzErTy1234';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  locVal_1 : ansistring;
+begin
+  s := Nil;
+  Try
+    locVal_1 := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(ansistring),locVal_1);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    locVal_1 := '';
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(ansistring),locVal_1);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,locVal_1);
+  Finally
+    s.Free();
+  End;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TTestFormatterSimpleType.Test_UnicodeString;
+//var VAL_1 : UnicodeString = 'AzErTy123'; VAL_2 : UnicodeString = 'QwErTy85';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;         VAL_1, VAL_2 : UnicodeString;
+  locVal_1 : UnicodeString; locVal_3 : UnicodeString;
+begin
+  VAL_1 := WideString('AzErTy123'); VAL_2 := 'QwErTy85';
+  s := Nil;
+  Try
+    locVal_1 := VAL_1;
+    locVal_3 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('intVal_1',TypeInfo(UnicodeString),locVal_1);
+      f.Put('intVal_3',TypeInfo(UnicodeString),locVal_3);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(Self.ClassName + '.' + 'Test_UnicodeString.xml');
+    locVal_1 := '';
+    locVal_3 := 'yyyyyyyy';
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'intVal_1';
+      f.Get(TypeInfo(UnicodeString),x,locVal_1);
+      x := 'intVal_3';
+      f.Get(TypeInfo(UnicodeString),x,locVal_3);
+    f.EndScopeRead();
+    Check(VAL_1 = locVal_1, 'Expected : "'+VAL_1+'", actual : "'+locVal_1+'"');
+    Check(VAL_2 = locVal_3, Format('Expected : "%s", actual : "%s"',[VAL_2,locVal_3]));
+  Finally
+    s.Free();
+  End;
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure TTestFormatterSimpleType.Test_WideString;
+const VAL_1 : WideString = 'AzErTy123'; VAL_2 : WideString = 'QwErTy85';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  locVal_1 : WideString; locVal_3 : WideString;
+begin
+  s := Nil;
+  Try
+    locVal_1 := VAL_1;
+    locVal_3 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('intVal_1',TypeInfo(WideString),locVal_1);
+      f.Put('intVal_3',TypeInfo(WideString),locVal_3);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(Self.ClassName + '.' + 'Test_WideString.xml');
+    locVal_1 := '';
+    locVal_3 := 'yyyyyyyy';
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'intVal_1';
+      f.Get(TypeInfo(WideString),x,locVal_1);
+      x := 'intVal_3';
+      f.Get(TypeInfo(WideString),x,locVal_3);
+    f.EndScopeRead();
+
+    Check(VAL_1 = locVal_1);
+    Check(VAL_2 = locVal_3);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_WideString_ScopeData;
+const VAL_1 = 'AzErTy1234';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  locVal_1 : widestring;
+begin
+  s := Nil;
+  Try
+    locVal_1 := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.PutScopeInnerValue(TypeInfo(widestring),locVal_1);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    locVal_1 := '';
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(widestring),locVal_1);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,locVal_1);
   Finally
     s.Free();
   End;
@@ -1100,6 +1624,62 @@ begin
   End;
 end;
 
+procedure TTestFormatterSimpleType.Test_Bool_ScopeData;
+const VAL_1 = True; VAL_2 = False;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  locVal_1 : Boolean;
+begin
+  s := Nil;
+  Try
+    locVal_1 := VAL_1;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(Boolean),locVal_1);
+      f.EndScope();
+
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      locVal_1 := not locVal_1;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(Boolean),locVal_1);
+      f.EndScopeRead();
+
+      CheckEquals(VAL_1,locVal_1);
+    //-----------
+    locVal_1 := VAL_2;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(Boolean),locVal_1);
+      f.EndScope();
+
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      locVal_1 := not locVal_1;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(Boolean),locVal_1);
+      f.EndScopeRead();
+
+      CheckEquals(VAL_2,locVal_1);
+  Finally
+    s.Free();
+  End;
+end;
+
 procedure TTestFormatterSimpleType.Test_Enum;
 const VAL_1 = teTwo; VAL_2 = teFour;
 Var
@@ -1137,6 +1717,41 @@ begin
 
     CheckEquals(Ord(VAL_1),Ord(intVal_1));
     CheckEquals(Ord(VAL_2),Ord(intVal_3));
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_Enum_ScopeData;
+const VAL_1 = teTwo;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  intVal_1 : TTestEnum;
+begin
+  s := Nil;
+  Try
+    intVal_1 := VAL_1;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Enum));
+      f.PutScopeInnerValue(TypeInfo(TTestEnum),intVal_1);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    intVal_1 := teOne;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      f.GetScopeInnerValue(TypeInfo(TTestEnum),intVal_1);
+    f.EndScopeRead();
+
+    CheckEquals(Ord(VAL_1),Ord(intVal_1));
   Finally
     s.Free();
   End;
@@ -1736,6 +2351,134 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_CplxWideStringSimpleContent_WithClass;
+const VAL_S = 'web services toolkit';
+      VAL_STR_S = 'Test Attribute S';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexWideStringContentRemotable;
+  x : string;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  ns := TComplexWideStringContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxWideString := T_ComplexWideStringContent.Create();
+    a.Val_CplxWideString.Value := VAL_S;
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+
+    ns.Value := VAL_STR_S;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexWideStringContentRemotable),ns);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+    a.Val_CplxWideString := T_ComplexWideStringContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexWideStringContentRemotable),x,ns);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_S,a.Val_CplxWideString.Value,'VAL_S <> a.Val_CplxWideString.Value');
+    CheckEquals(VAL_STR_S,ns.Value,'VAL_STR_S <> ns.Value');
+  finally
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TTestFormatter.Test_CplxUnicodeStringSimpleContent_WithClass;
+const VAL_S = 'web services toolkit';
+      VAL_STR_S = 'Test Attribute S';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_CplxSimpleContent;
+  ns : TComplexUnicodeStringContentRemotable;
+  x : string;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  ns := TComplexUnicodeStringContentRemotable.Create();
+  a := TClass_CplxSimpleContent.Create();
+  try
+    a.Val_CplxUnicodeString := T_ComplexUnicodeStringContent.Create();
+    a.Val_CplxUnicodeString.Value := VAL_S;
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+
+    ns.Value := VAL_STR_S;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('o1',TypeInfo(TClass_CplxSimpleContent),a);
+      f.Put('ns',TypeInfo(TComplexUnicodeStringContentRemotable),ns);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    FreeAndNil(a);
+
+    a := TClass_CplxSimpleContent.Create();
+    a.Val_CplxInt32S.Free();
+    a.Val_CplxInt32S := nil;
+    a.Val_CplxInt32U.Free();
+    a.Val_CplxInt32U := nil;
+    a.Val_CplxUnicodeString := T_ComplexUnicodeStringContent.Create();
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'o1';
+      f.Get(TypeInfo(TClass_CplxSimpleContent),x,a);
+      x := 'ns';
+      f.Get(TypeInfo(TComplexUnicodeStringContentRemotable),x,ns);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_S,a.Val_CplxUnicodeString.Value,'VAL_S <> a.Val_CplxUnicodeString.Value');
+    CheckEquals(VAL_STR_S,ns.Value,'VAL_STR_S <> ns.Value');
+  finally
+    FreeAndNil(ns);
+    a.Free();
+    s.Free();
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
+
 procedure TTestFormatter.Test_Object();
 Var
   f : IFormatterBase;
@@ -1749,7 +2492,15 @@ begin
     a.Val_Bool := False;
     a.Val_Enum := teThree;
     a.Val_String := '123';
+    a.Val_WideString := 'wide123';
+{$IFDEF WST_UNICODESTRING}
+    a.Val_UnicodeString := 'unicode123';
+{$ENDIF WST_UNICODESTRING}
     a.ObjProp.Val_String := '456';
+    a.ObjProp.Val_WideString := 'wide456';
+{$IFDEF WST_UNICODESTRING}
+    a.ObjProp.Val_UnicodeString := 'unicode456';
+{$ENDIF WST_UNICODESTRING}
     a.ObjProp.Val_Enum := teFour;
     a.ObjProp.Val_Bool := True;
     a.ObjProp.Val_32S := 121076;
@@ -1778,10 +2529,18 @@ begin
     CheckEquals(False,a.Val_Bool);
     CheckEquals(Ord(teThree),Ord(a.Val_Enum));
     CheckEquals('123',a.Val_String);
+    CheckEquals('wide123',a.Val_WideString);
+{$IFDEF WST_UNICODESTRING}
+    CheckEquals('unicode123',a.Val_UnicodeString);
+{$ENDIF WST_UNICODESTRING}
     
     CheckEquals(True,a.ObjProp.Val_Bool);
     CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
     CheckEquals('456',a.ObjProp.Val_String);
+    CheckEquals('wide456',a.ObjProp.Val_WideString);
+{$IFDEF WST_UNICODESTRING}
+    CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
+{$ENDIF WST_UNICODESTRING}
     CheckEquals(121076,a.ObjProp.Val_32S);
     
     CheckEquals(0,a.NonStored);
@@ -2895,7 +3654,7 @@ begin
       Check( ls.IndexOf('intv') >= 0 );
       x := 'a';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(4, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
+        CheckEquals(5{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -2904,7 +3663,7 @@ begin
 
       x := 'b';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(4, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
+        CheckEquals(5{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -2952,11 +3711,11 @@ var
   locBuffer : string;
 begin
   a := CreateObjBuffer(dtObject,'a',nil);
-    CreateObjBuffer(dtString,'aa',a)^.StrData^.Data := 'val_aa';
+    CreateObjBuffer(dtAnsiString,'aa',a)^.AnsiStrData^.Data := 'val_aa';
     tmp := CreateObjBuffer(dtObject,'b',a);
       tmp := CreateObjBuffer(dtObject,'c',tmp);
         CreateObjBuffer(dtInt32U,'i',tmp)^.Int32S := 1210;
-        CreateObjBuffer(dtString,'s',tmp)^.StrData^.Data := 's string sample';
+        CreateObjBuffer(dtAnsiString,'s',tmp)^.AnsiStrData^.Data := 's string sample';
   b := nil;
   strm := TStringStream.Create('');
   try
@@ -4156,14 +4915,14 @@ begin
 
         tmpNode := loc_FindObj(faultNode,'faultcode');
         Check(Assigned(tmpNode),'faultcode');
-        CheckEquals(Ord(dtString), Ord(tmpNode^.DataType),'faultcode.DataType');
-        excpt_code := tmpNode^.StrData^.Data;
+        CheckEquals(Ord(dtAnsiString), Ord(tmpNode^.DataType),'faultcode.DataType');
+        excpt_code := tmpNode^.AnsiStrData^.Data;
         CheckEquals(VAL_CODE,excpt_code,'faultCode');
         
         tmpNode := loc_FindObj(faultNode,'faultstring');
         Check(Assigned(tmpNode),'faultstring');
-        CheckEquals(Ord(dtString), Ord(tmpNode^.DataType),'faultstring.DataType');
-        excpt_msg := tmpNode^.StrData^.Data;
+        CheckEquals(Ord(dtAnsiString), Ord(tmpNode^.DataType),'faultstring.DataType');
+        excpt_msg := tmpNode^.AnsiStrData^.Data;
         CheckEquals(VAL_MSG,excpt_msg,'faultString');
   finally
     FreeAndNil(strm);
@@ -4187,8 +4946,8 @@ begin
   try
       bodyNode := CreateObjBuffer(dtObject,'Body',root);
         faultNode := CreateObjBuffer(dtObject,'Fault',bodyNode);
-          CreateObjBuffer(dtString,'faultCode',faultNode)^.StrData^.Data := VAL_CODE;
-          CreateObjBuffer(dtString,'faultString',faultNode)^.StrData^.Data := VAL_MSG;
+          CreateObjBuffer(dtAnsiString,'faultCode',faultNode)^.AnsiStrData^.Data := VAL_CODE;
+          CreateObjBuffer(dtAnsiString,'faultString',faultNode)^.AnsiStrData^.Data := VAL_MSG;
     f := CreateFormatterClient();
     strm := TMemoryStream.Create();
     try

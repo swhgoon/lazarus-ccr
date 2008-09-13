@@ -346,6 +346,38 @@ begin
   SetStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
+{$IFDEF WST_UNICODESTRING}
+procedure UnicodeStringReader(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : UnicodeString;
+begin
+  locData := '';
+  locName := APropInfo.ExternalName;
+  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure WideStringReader(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : WideString;
+begin
+  locData := '';
+  locName := APropInfo.ExternalName;
+  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  SetWideStrProp(AObject,APropInfo.PropInfo,locData);
+end;
+
 // Qualified readers
 {$IFDEF HAS_TKBOOL}
 procedure BoolReaderQualifier(
@@ -524,6 +556,38 @@ begin
   SetStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
+{$IFDEF WST_UNICODESTRING}
+procedure UnicodeStringReaderQualified(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : UnicodeString;
+begin
+  locData := '';
+  locName := APropInfo.ExternalName;
+  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure WideStringReaderQualified(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : WideString;
+begin
+  locData := '';
+  locName := APropInfo.ExternalName;
+  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  SetWideStrProp(AObject,APropInfo.PropInfo,locData);
+end;
+
 //   Simple Writers
 {$IFDEF HAS_TKBOOL}
 procedure BoolWriter(
@@ -687,6 +751,35 @@ begin
   AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
+{$IFDEF WST_UNICODESTRING}
+procedure UnicodeStringWriter(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : UnicodeString;
+begin
+  locName := APropInfo.ExternalName;
+  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);
+  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure WideStringWriter(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : WideString;
+begin
+  locName := APropInfo.ExternalName;
+  locData := GetWideStrProp(AObject,APropInfo.PropInfo);
+  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+end;
 
 // Qualified writers
 {$IFDEF HAS_TKBOOL}
@@ -851,6 +944,35 @@ begin
   AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
+{$IFDEF WST_UNICODESTRING}
+procedure UnicodeStringWriterQualified(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : UnicodeString;
+begin
+  locName := APropInfo.ExternalName;
+  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);
+  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure WideStringWriterQualified(
+  AObject : TObject;
+  APropInfo : TPropSerializationInfo;
+  AStore : IFormatterBase
+);
+var
+  locName : string;
+  locData : WideString;
+begin
+  locName := APropInfo.ExternalName;
+  locData := GetWideStrProp(AObject,APropInfo.PropInfo);
+  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+end;
 
 
 type
@@ -863,54 +985,68 @@ var
 {$IFDEF FPC}
   ReaderWriterInfoMap : array[0..1] of array[TTypeKind] of TReaderWriterInfo = (
     ( // Readers
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkUnknown
-      ( Simple : {$IFDEF FPC}@{$ENDIF}IntEnumReader; Qualified : {$IFDEF FPC}@{$ENDIF}IntEnumReaderQualified ;) , //tkInteger
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkChar
-      ( Simple : {$IFDEF FPC}@{$ENDIF}IntEnumReader; Qualified : {$IFDEF FPC}@{$ENDIF}IntEnumReaderQualified ;) , //tkEnumeration
-      ( Simple : {$IFDEF FPC}@{$ENDIF}FloatReader; Qualified : {$IFDEF FPC}@{$ENDIF}FloatReaderQualified ;) , //tkFloat
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkSet
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkMethod
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringReader; Qualified : {$IFDEF FPC}@{$ENDIF}StringReaderQualified ;) , //tkSString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringReader; Qualified : {$IFDEF FPC}@{$ENDIF}StringReaderQualified ;) , //tkLString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringReader; Qualified : {$IFDEF FPC}@{$ENDIF}StringReaderQualified ;) , //tkAString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkWString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkVariant
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkArray
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkRecord
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkInterface
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ClassReader; Qualified : {$IFDEF FPC}@{$ENDIF}ClassReaderQualified ;) , //tkClass
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkObject
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkWChar
-      ( Simple : {$IFDEF FPC}@{$ENDIF}BoolReader; Qualified : {$IFDEF FPC}@{$ENDIF}BoolReaderQualifier ;) , //tkBool
-      ( Simple : {$IFDEF FPC}@{$ENDIF}Int64Reader; Qualified : {$IFDEF FPC}@{$ENDIF}Int64ReaderQualified ;) , //tkInt64
-      ( Simple : {$IFDEF FPC}@{$ENDIF}Int64Reader; Qualified : {$IFDEF FPC}@{$ENDIF}Int64ReaderQualified ;) , //tkQWord
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkDynArray
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;)   //tkInterfaceRaw
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkUnknown
+      ( Simple : @IntEnumReader; Qualified : @IntEnumReaderQualified ;) , //tkInteger
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkChar
+      ( Simple : @IntEnumReader; Qualified : @IntEnumReaderQualified ;) , //tkEnumeration
+      ( Simple : @FloatReader; Qualified : @FloatReaderQualified ;) , //tkFloat
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkSet
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkMethod
+      ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkSString
+      ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkLString
+      ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkAString
+      ( Simple : @WideStringReader; Qualified : @WideStringReaderQualified ;) , //tkWString
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkVariant
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkArray
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkRecord
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkInterface
+      ( Simple : @ClassReader; Qualified : @ClassReaderQualified ;) , //tkClass
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkObject
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkWChar
+      ( Simple : @BoolReader; Qualified : @BoolReaderQualifier ;) , //tkBool
+      ( Simple : @Int64Reader; Qualified : @Int64ReaderQualified ;) , //tkInt64
+      ( Simple : @Int64Reader; Qualified : @Int64ReaderQualified ;) , //tkQWord
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkDynArray
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;)   //tkInterfaceRaw
+{$IFDEF WST_TKPROCVAR}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkProcVar
+{$ENDIF WST_TKPROCVAR}
+{$IFDEF WST_UNICODESTRING}
+     ,( Simple : @UnicodeStringReader; Qualified : @UnicodeStringReaderQualified ;)  //tkUString
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkUChar
+{$ENDIF WST_UNICODESTRING}
     ),
     ( // Writers
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkUnknown
-      ( Simple : {$IFDEF FPC}@{$ENDIF}IntEnumWriter; Qualified : {$IFDEF FPC}@{$ENDIF}IntEnumWriterQualified ;) , //tkInteger
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkChar
-      ( Simple : {$IFDEF FPC}@{$ENDIF}IntEnumWriter; Qualified : {$IFDEF FPC}@{$ENDIF}IntEnumWriterQualified ;) , //tkEnumeration
-      ( Simple : {$IFDEF FPC}@{$ENDIF}FloatWriter; Qualified : {$IFDEF FPC}@{$ENDIF}FloatWriterQualified ;) , //tkFloat
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkSet
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkMethod
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringWriter; Qualified : {$IFDEF FPC}@{$ENDIF}StringWriterQualified ;) , //tkSString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringWriter; Qualified : {$IFDEF FPC}@{$ENDIF}StringWriterQualified ;) , //tkLString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}StringWriter; Qualified : {$IFDEF FPC}@{$ENDIF}StringWriterQualified ;) , //tkAString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkWString
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkVariant
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkArray
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkRecord
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkInterface
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ClassWriter; Qualified : {$IFDEF FPC}@{$ENDIF}ClassWriterQualified ;) , //tkClass
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkObject
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkWChar
-      ( Simple : {$IFDEF FPC}@{$ENDIF}BoolWriter; Qualified : {$IFDEF FPC}@{$ENDIF}BoolWriterQualified ;) , //tkBool
-      ( Simple : {$IFDEF FPC}@{$ENDIF}Int64Writer; Qualified : {$IFDEF FPC}@{$ENDIF}Int64WriterQualified ;) , //tkInt64
-      ( Simple : {$IFDEF FPC}@{$ENDIF}Int64Writer; Qualified : {$IFDEF FPC}@{$ENDIF}Int64WriterQualified ;) , //tkQWord
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;) , //tkDynArray
-      ( Simple : {$IFDEF FPC}@{$ENDIF}ErrorProc; Qualified : {$IFDEF FPC}@{$ENDIF}ErrorProc ;)   //tkInterfaceRaw
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkUnknown
+      ( Simple : @IntEnumWriter; Qualified : @IntEnumWriterQualified ;) , //tkInteger
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkChar
+      ( Simple : @IntEnumWriter; Qualified : @IntEnumWriterQualified ;) , //tkEnumeration
+      ( Simple : @FloatWriter; Qualified : @FloatWriterQualified ;) , //tkFloat
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkSet
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkMethod
+      ( Simple : @StringWriter; Qualified : @StringWriterQualified ;) , //tkSString
+      ( Simple : @StringWriter; Qualified : @StringWriterQualified ;) , //tkLString
+      ( Simple : @StringWriter; Qualified : @StringWriterQualified ;) , //tkAString
+      ( Simple : @WideStringWriter; Qualified : @WideStringWriterQualified ;) , //tkWString
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkVariant
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkArray
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkRecord
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkInterface
+      ( Simple : @ClassWriter; Qualified : @ClassWriterQualified ;) , //tkClass
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkObject
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkWChar
+      ( Simple : @BoolWriter; Qualified : @BoolWriterQualified ;) , //tkBool
+      ( Simple : @Int64Writer; Qualified : @Int64WriterQualified ;) , //tkInt64
+      ( Simple : @Int64Writer; Qualified : @Int64WriterQualified ;) , //tkQWord
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkDynArray
+      ( Simple : @ErrorProc; Qualified : @ErrorProc ;)   //tkInterfaceRaw
+{$IFDEF WST_TKPROCVAR}
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkProcVar
+{$ENDIF WST_TKPROCVAR}
+{$IFDEF WST_UNICODESTRING}
+     ,( Simple : @UnicodeStringWriter; Qualified : @UnicodeStringWriterQualified ;)  //tkUString
+     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkUChar
+{$ENDIF WST_UNICODESTRING}
     )
   );
 {$ENDIF FPC}
@@ -929,7 +1065,7 @@ var
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkMethod
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkWChar
       ( Simple : StringReader; Qualified : StringReaderQualified ;) , //tkLString
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkWString
+      ( Simple : WideStringReader; Qualified : WideStringReaderQualified ;) , //tkWString
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkVariant
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkArray
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkRecord
@@ -949,7 +1085,7 @@ var
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkMethod
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkWChar
       ( Simple : StringWriter; Qualified : StringWriterQualified ;) , //tkLString
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkWString
+      ( Simple : WideStringWriter; Qualified : WideStringWriterQualified ;) , //tkWString
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkVariant
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkArray
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkRecord

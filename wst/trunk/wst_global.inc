@@ -1,5 +1,7 @@
 {$DEFINE USE_SERIALIZE}
 {$UNDEF TRemotableTypeInitializer_Initialize}
+{$UNDEF WST_TKPROCVAR}
+{$UNDEF WST_UNICODESTRING}
 
 {$WARNINGS OFF}
 
@@ -10,8 +12,14 @@
     {$UNDEF WST_INTF_DOM}
     //{$DEFINE USE_INLINE}
     {$IF Defined(FPC_VERSION) and (FPC_VERSION = 2)  }
-      {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 0) }
-        {$define FPC_211}
+      {$IF Defined(FPC_RELEASE) }
+        {$IF Defined(FPC_VERSION) and (FPC_RELEASE > 0) }
+          {$define FPC_211}
+          {$IF Defined(FPC_VERSION) and (FPC_RELEASE > 2) }
+            {$DEFINE WST_TKPROCVAR}
+            {$DEFINE WST_UNICODESTRING}
+          {$IFEND}
+        {$IFEND}
       {$IFEND}
     {$IFEND}
     {$IF Defined(FPC_211)}

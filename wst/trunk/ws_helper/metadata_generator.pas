@@ -58,8 +58,8 @@ var
   typeList : TList;
   elt : TPasElement;
 begin
-  FStream.WriteStr(sWST_META);
-  FStream.WriteStr(FSymbolTable.CurrentModule.Name);
+  FStream.WriteAnsiStr(sWST_META);
+  FStream.WriteAnsiStr(FSymbolTable.CurrentModule.Name);
   k := 0;
   typeList := FSymbolTable.CurrentModule.InterfaceSection.Declarations;
   c := typeList.Count;
@@ -77,15 +77,15 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
 
     procedure WriteParam(APrm : TPasArgument);
     begin
-      FStream.WriteStr(APrm.Name);
-      FStream.WriteStr(APrm.ArgType.Name);
+      FStream.WriteAnsiStr(APrm.Name);
+      FStream.WriteAnsiStr(APrm.ArgType.Name);
       FStream.WriteEnum(Ord(APrm.Access));
     end;
 
     procedure WriteResult(ARes : TPasResultElement);
     begin
-      FStream.WriteStr(ARes.Name);
-      FStream.WriteStr(ARes.ResultType.Name);
+      FStream.WriteAnsiStr(ARes.Name);
+      FStream.WriteAnsiStr(ARes.ResultType.Name);
       FStream.WriteEnum(Ord(argOut));
     end;
 
@@ -95,7 +95,7 @@ procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
   begin
     argLst := AMeth.ProcType.Args;
     k := argLst.Count;
-    FStream.WriteStr(AMeth.Name);
+    FStream.WriteAnsiStr(AMeth.Name);
     if AMeth.InheritsFrom(TPasFunction) then begin
       FStream.WriteInt8U(k + 1);
     end else begin
@@ -114,7 +114,7 @@ var
   mbrs : TList;
   elt : TPasElement;
 begin
-  FStream.WriteStr(AIntf.Name);
+  FStream.WriteAnsiStr(AIntf.Name);
   c := GetElementCount(AIntf.Members,TPasProcedure);
   FStream.WriteInt8U(c);
   mbrs := AIntf.Members;

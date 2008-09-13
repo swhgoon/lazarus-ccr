@@ -17,10 +17,7 @@ interface
 
 uses
   Classes, SysUtils,
-  library_base_intf;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  library_base_intf, wst_types;
 
   function wstHandleRequest(
     ARequestBuffer : IwstStream;
@@ -42,7 +39,7 @@ function wstHandleRequest(
     j,m : Integer;
   begin
     m := AErrorBufferLen;
-    j := Length(AMsg);
+    j := Length(AMsg) * SizeOf(Char);
     if ( j > 0 ) then begin
       if ( j > m ) then
         j := m;
@@ -54,7 +51,7 @@ function wstHandleRequest(
   end;
   
 Var
-  buff, trgt,ctntyp, frmt : string;
+  buff, trgt,ctntyp, frmt : TBinaryString;
   rqst : IRequestBuffer;
   rdr : IDataStoreReader;
   inStream, bufStream : TMemoryStream;
@@ -82,10 +79,10 @@ begin
           rdr := CreateBinaryReader(bufStream);
           if ( rdr.ReadInt32S() <> ( bs - 4 ) ) then
             wstCheck(RET_FALSE,'Invalid buffer.');
-          trgt := rdr.ReadStr();
-          ctntyp := rdr.ReadStr();
-          frmt := rdr.ReadStr();
-          buff := rdr.ReadStr();
+          trgt := rdr.ReadAnsiStr();
+          ctntyp := rdr.ReadAnsiStr();
+          frmt := rdr.ReadAnsiStr();
+          buff := rdr.ReadAnsiStr();
           rdr := nil;
           bufStream.Size := 0;
           bufStream.Position := 0;

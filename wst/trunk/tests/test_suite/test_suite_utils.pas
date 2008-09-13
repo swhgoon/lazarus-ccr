@@ -27,12 +27,24 @@ const
 
   function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
   function wstExpandLocalFileName(const AFileName : string) : string;
+  function DumpMemory(AMem : Pointer; const ALength : PtrInt) : ansistring;
 
 implementation
 
 function wstExpandLocalFileName(const AFileName : string) : string;
 begin
   Result := AFileName;
+end;
+
+function DumpMemory(AMem : Pointer; const ALength : PtrInt) : ansistring;
+var
+  i : PtrInt;
+begin
+  Result := '';
+  for i := 0 to Pred(ALength) do begin
+    Result := Result + '[' + IntToStr(Ord(PAnsiChar(AMem)^)) + ']';
+    Inc(PAnsiChar(AMem));
+   end;
 end;
 
 function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
