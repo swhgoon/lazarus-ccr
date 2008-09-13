@@ -16,11 +16,8 @@ unit synapse_tcp_server;
 interface
 
 uses
-  Classes, SysUtils, blcksock, synsock, server_listener;
+  Classes, SysUtils, blcksock, synsock, server_listener, wst_types;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 const
   sSERVER_PORT = 1234;
   
@@ -102,7 +99,7 @@ end;
 
 function TClientHandlerThread.ReadInputBuffer(): Integer;
 var
-  strBuff : string;
+  strBuff : TBinaryString;
   bufferLen : LongInt;
   i, j, c, readBufferLen : PtrInt;
 begin
@@ -112,7 +109,7 @@ begin
   readBufferLen := FSocketObject.RecvBufferEx(@bufferLen,SizeOf(bufferLen),DefaultTimeOut);
   if ( readBufferLen = 0 ) and ( FSocketObject.LastError = WSAETIMEDOUT ) then begin
     Result := 0;
-    WriteLn('ReadInputBuffer() => TimeOut');
+    //WriteLn('ReadInputBuffer() => TimeOut');
   end else begin
     FSocketObject.ExceptCheck();
     bufferLen := Reverse_32(bufferLen);
@@ -176,7 +173,7 @@ procedure TClientHandlerThread.Execute();
 var
   wrtr : IDataStore;
   rdr : IDataStoreReader;
-  buff, trgt,ctntyp, frmt : string;
+  buff, trgt,ctntyp, frmt : TBinaryString;
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
@@ -196,10 +193,10 @@ begin
           FOutputStream.Size := 0;
           if ( ReadInputBuffer() >= SizeOf(LongInt) ) then begin
             rdr := CreateBinaryReader(FInputStream);
-            trgt := rdr.ReadStr();
-            ctntyp := rdr.ReadStr();
-            frmt := rdr.ReadStr();
-            buff := rdr.ReadStr();
+            trgt := rdr.ReadAnsiStr();
+            ctntyp := rdr.ReadAnsiStr();
+            frmt := rdr.ReadAnsiStr();
+            buff := rdr.ReadAnsiStr();
             rdr := nil;
             FInputStream.Size := 0;
             FInputStream.Write(buff[1],Length(buff));
@@ -212,7 +209,7 @@ begin
             FOutputStream.Read(buff[1],i);
             FOutputStream.Size := 0;
             wrtr := CreateBinaryWriter(FOutputStream);
-            wrtr.WriteStr(buff);
+            wrtr.WriteAnsiStr(buff);
             SendOutputBuffer();
             ClearBuffers();
           end;
