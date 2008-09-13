@@ -633,6 +633,32 @@ type
     property Value : string read FValue write FValue;
   end;
   
+  { TComplexWideStringContentRemotable }
+
+  TComplexWideStringContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Widestring;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Widestring read FValue write FValue;
+  end;
+
+{$IFDEF WST_UNICODESTRING}
+  { TComplexUnicodeStringContentRemotable }
+
+  TComplexUnicodeStringContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: UnicodeString;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : UnicodeString read FValue write FValue;
+  end;
+{$ENDIF WST_UNICODESTRING}
+
   { TBase64StringExtRemotable }
 
   TBase64StringExtRemotable = class(TBaseComplexSimpleContentRemotable)
@@ -1509,6 +1535,10 @@ begin
 
   r.Register(sXSD_NS,TypeInfo(string),'string').AddPascalSynonym('string');
   r.Register(sXSD_NS,TypeInfo(AnsiString),'ansistring').AddPascalSynonym('ansistring');
+  r.Register(sXSD_NS,TypeInfo(WideString),'widestring').AddPascalSynonym('widestring');
+{$IFDEF WST_UNICODESTRING}
+  r.Register(sXSD_NS,TypeInfo(UnicodeString),'UnicodeString').AddPascalSynonym('unicodestring');
+{$ENDIF WST_UNICODESTRING}
   r.Register(sXSD_NS,TypeInfo(anyURI),'anyURI').AddPascalSynonym('anyURI');
 
   r.Register(sXSD_NS,TypeInfo(boolean),'boolean').AddPascalSynonym('boolean');
@@ -1577,6 +1607,10 @@ begin
   r.Register(sXSD_NS,TypeInfo(TComplexFloatSingleContentRemotable),'Single').AddPascalSynonym('TComplexFloatSingleContentRemotable');
   
   r.Register(sXSD_NS,TypeInfo(TComplexStringContentRemotable),'string').AddPascalSynonym('TComplexStringContentRemotable');
+  r.Register(sXSD_NS,TypeInfo(TComplexWideStringContentRemotable),'widestring').AddPascalSynonym('TComplexWideStringContentRemotable');
+{$IFDEF WST_UNICODESTRING}
+  r.Register(sXSD_NS,TypeInfo(TComplexUnicodeStringContentRemotable),'unicodestring').AddPascalSynonym('TComplexUnicodeStringContentRemotable');
+{$ENDIF WST_UNICODESTRING}
   r.Register(sXSD_NS,TypeInfo(TComplexBooleanContentRemotable),'boolean').AddPascalSynonym('TComplexBooleanContentRemotable');
 end;
 
@@ -5119,6 +5153,52 @@ begin
   (AObject as TComplexStringContentRemotable).Value := i;
 end;
 
+{ TComplexWideStringContentRemotable }
+
+class procedure TComplexWideStringContentRemotable.SaveValue(
+  AObject: TBaseRemotable;
+  AStore: IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(WideString),(AObject as TComplexWideStringContentRemotable).Value);
+end;
+
+class procedure TComplexWideStringContentRemotable.LoadValue(
+  var AObject: TObject;
+      AStore: IFormatterBase
+);
+var
+  i : WideString;
+begin
+  i := '';
+  AStore.GetScopeInnerValue(TypeInfo(WideString),i);
+  (AObject as TComplexWideStringContentRemotable).Value := i;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+{ TComplexUnicodeStringContentRemotable }
+
+class procedure TComplexUnicodeStringContentRemotable.SaveValue(
+  AObject: TBaseRemotable;
+  AStore: IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(UnicodeString),(AObject as TComplexUnicodeStringContentRemotable).Value);
+end;
+
+class procedure TComplexUnicodeStringContentRemotable.LoadValue(
+  var AObject: TObject;
+      AStore: IFormatterBase
+);
+var
+  i : UnicodeString;
+begin
+  i := '';
+  AStore.GetScopeInnerValue(TypeInfo(UnicodeString),i);
+  (AObject as TComplexUnicodeStringContentRemotable).Value := i;
+end;
+{$ENDIF WST_UNICODESTRING}
+
 { TDateRemotable }
 
 procedure TDateRemotable.SetDate(const AValue: TDateTime);
@@ -6269,6 +6349,7 @@ class function TRemotableTypeInitializer.GetItemClass(const ATypeInfo : PTypeInf
 begin
   Result := TTypeRegistryItem;
 end;
+
 
 
 initialization

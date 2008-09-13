@@ -30,7 +30,11 @@ Type
   TInt64S = Int64; TInt64U = QWord;
   TBoolData = Boolean;
   TEnumData = Int64;
-  TStringData = AnsiString;
+  TAnsiStringData = AnsiString;
+  TWideStringData = WideString;
+{$IFDEF WST_UNICODESTRING}
+  TUnicodeStringData = UnicodeString;
+{$ENDIF WST_UNICODESTRING}
   
   TFloat_Single_4    = Single;
   TFloat_Double_8    = Double;
@@ -53,7 +57,11 @@ Type
     
     procedure WriteBool(Const AData : TBoolData);
     procedure WriteEnum(Const AData : TEnumData);
-    procedure WriteStr(Const AData : TStringData);
+    procedure WriteAnsiStr(Const AData : TAnsiStringData);
+    procedure WriteWideStr(Const AData : TWideStringData);
+{$IFDEF WST_UNICODESTRING}
+    procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
+{$ENDIF WST_UNICODESTRING}
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
     procedure WriteDouble(Const AData : TFloat_Double_8);
@@ -78,7 +86,11 @@ Type
     
     function ReadBool():TBoolData;
     function ReadEnum():TEnumData;
-    function ReadStr():TStringData;
+    function ReadAnsiStr():TAnsiStringData;
+    function ReadWideStr():TWideStringData;
+{$IFDEF WST_UNICODESTRING}
+    function ReadUnicodeStr():TUnicodeStringData;
+{$ENDIF WST_UNICODESTRING}
 
     function ReadSingle():TFloat_Single_4;
     function ReadDouble():TFloat_Double_8;
@@ -89,6 +101,7 @@ Type
   function CreateBinaryReader(AStream : TStream):IDataStoreReader;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function CreateBinaryWriter(AStream : TStream):IDataStore;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
+{These routines transform their argument to "Big Endian" alignment}
   procedure ReverseBytes(var AData; const ALength : Integer);{$IFDEF USE_INLINE}{$IFDEF ENDIAN_BIG}inline;{$ENDIF}{$ENDIF}
   function Reverse_16(const AValue:Word):Word;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function Reverse_32(const AValue:DWord):DWord;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -164,6 +177,26 @@ begin
   ReverseBytes(Result,8);
 end;
 
+{$IFDEF ENDIAN_BIG}
+procedure Reverse_Array(var AValue; const AArrayLength, AItemSize : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
+begin
+end;
+{$ELSE ENDIAN_BIG}
+procedure Reverse_Array(var AValue; const AArrayLength, AItemSize : PtrInt);
+var
+  p : PByte;
+  i : PtrInt;
+begin
+  if ( AArrayLength > 0 ) and ( AItemSize > 1 ) then begin
+    p := @AValue;
+    for i := 0 to Pred(AArrayLength) do begin
+      ReverseBytes(p^,AItemSize);
+      Inc(p,AItemSize);
+    end;
+  end;
+end;
+{$ENDIF ENDIAN_BIG}
+
 Type
   { TDataStore }
 
@@ -185,7 +218,11 @@ Type
     
     procedure WriteBool(Const AData : TBoolData);
     procedure WriteEnum(Const AData : TEnumData);
-    procedure WriteStr(Const AData : TStringData);
+    procedure WriteAnsiStr(Const AData : TAnsiStringData);
+    procedure WriteWideStr(Const AData : TWideStringData);
+{$IFDEF WST_UNICODESTRING}
+    procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
+{$ENDIF WST_UNICODESTRING}
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
     procedure WriteDouble(Const AData : TFloat_Double_8);
@@ -216,8 +253,12 @@ Type
     
     function ReadBool():TBoolData;
     function ReadEnum():TEnumData;
-    function ReadStr():TStringData;
-    
+    function ReadAnsiStr():TAnsiStringData;
+    function ReadWideStr():TWideStringData;
+{$IFDEF WST_UNICODESTRING}
+    function ReadUnicodeStr():TUnicodeStringData;
+{$ENDIF WST_UNICODESTRING}
+
     function ReadSingle():TFloat_Single_4;
     function ReadDouble():TFloat_Double_8;
     function ReadExtended():TFloat_Extended_10;
@@ -344,7 +385,7 @@ begin
   WriteInt64S(AData);
 end;
 
-procedure TDataStore.WriteStr(const AData: TStringData);
+procedure TDataStore.WriteAnsiStr(const AData: TAnsiStringData);
 Var
   i : TInt32S;
 begin
@@ -353,6 +394,52 @@ begin
   If ( i > 0 ) Then
     FStream.Write(AData[1],i);
 end;
+
+procedure TDataStore.WriteWideStr(const AData: TWideStringData);
+
+  procedure LocalWrite();
+  var
+    locData : TWideStringData;
+  begin
+    locData := AData;
+    UniqueString(locData);
+    Reverse_Array(Pointer(locData)^,Length(locData),SizeOf(WideChar));
+    FStream.Write(Pointer(locData)^, ( Length(locData) * SizeOf(WideChar) ) );
+  end;
+
+var
+  i : TInt32S;
+begin
+  i := Length(AData);
+  WriteInt32S(i);
+  if ( i > 0 ) then begin
+    LocalWrite();
+  end;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TDataStore.WriteUnicodeStr(const AData: TUnicodeStringData);
+
+  procedure LocalWrite();
+  var
+    locData : TUnicodeStringData;
+  begin
+    locData := AData;
+    UniqueString(locData);
+    Reverse_Array(Pointer(locData)^,Length(locData),SizeOf(UnicodeChar));
+    FStream.Write(Pointer(locData)^, ( Length(locData) * SizeOf(UnicodeChar) ) );
+  end;
+
+var
+  i : TInt32S;
+begin
+  i := Length(AData);
+  WriteInt32S(i);
+  if ( i > 0 ) then begin
+    LocalWrite();
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 {
 procedure TDataStore.WriteSingle(const AData: TFloat_Single_4);
@@ -476,7 +563,7 @@ begin
   Result := ReadInt64S();
 end;
 
-function TDataStoreReader.ReadStr(): TStringData;
+function TDataStoreReader.ReadAnsiStr(): TAnsiStringData;
 Var
   i : TInt32S;
 begin
@@ -485,6 +572,32 @@ begin
   If ( i > 0 ) Then
     FStream.ReadBuffer(Result[1],i);
 end;
+
+function TDataStoreReader.ReadWideStr(): TWideStringData;
+var
+  i : TInt32S;
+begin
+  i := ReadInt32S();
+  SetLength(Result,i);
+  if ( i > 0 ) then begin
+    FStream.ReadBuffer(Pointer(Result)^, ( i * SizeOf(WideChar) ) );
+    Reverse_Array(Pointer(Result)^,i,SizeOf(WideChar));
+  end;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+function TDataStoreReader.ReadUnicodeStr(): TUnicodeStringData;
+var
+  i : TInt32S;
+begin
+  i := ReadInt32S();
+  SetLength(Result,i);
+  if ( i > 0 ) then begin
+    FStream.ReadBuffer(Pointer(Result)^, ( i * SizeOf(UnicodeChar) ) );
+    Reverse_Array(Pointer(Result)^,i,SizeOf(UnicodeChar));
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 function TDataStoreReader.ReadSingle(): TFloat_Single_4;
 begin

@@ -152,7 +152,7 @@ type
       const ANameSpace : string;
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
-      Const AData     : string
+      Const AData     : DOMString
     ):TDOMNode;
     function PutEnum(
       const ANameSpace : string;
@@ -177,6 +177,20 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    function PutUnicodeStr(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : UnicodeString
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    function PutWideStr(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideString
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutFloat(
       const ANameSpace : string;
@@ -233,6 +247,20 @@ type
       const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : String
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure GetUnicodeStr(
+      Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
+      Var   AName     : String;
+      Var   AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    procedure GetWideStr(
+      Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
+      Var   AName     : String;
+      Var   AData     : WideString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
@@ -715,7 +743,7 @@ function TSOAPBaseFormatter.InternalPutData(
   const ANameSpace : string;
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
-  const AData      : string
+  const AData      : DOMString
 ): TDOMNode;
 Var
   namespaceLongName, namespaceShortName, strName, strNodeName, s : string;
@@ -809,6 +837,28 @@ function TSOAPBaseFormatter.PutStr(
   const ATypeInfo: PTypeInfo;
   const AData: String
 ):TDOMNode;
+begin
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
+end;
+
+{$IFDEF WST_UNICODESTRING}
+function TSOAPBaseFormatter.PutUnicodeStr(
+  const ANameSpace: string;
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: UnicodeString
+): TDOMNode;
+begin
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+function TSOAPBaseFormatter.PutWideStr(
+  const ANameSpace: string;
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideString
+) : TDOMNode;
 begin
   Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
 end;
@@ -971,6 +1021,28 @@ procedure TSOAPBaseFormatter.GetStr(
   const ANameSpace : string;
   var   AName     : String;
   var   AData     : String
+);
+begin
+  AData := GetNodeValue(ANameSpace,AName);
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TSOAPBaseFormatter.GetUnicodeStr(
+  const ATypeInfo: PTypeInfo;
+  const ANameSpace: string;
+  var   AName: String;
+  var   AData: UnicodeString
+);
+begin
+  AData := GetNodeValue(ANameSpace,AName);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure TSOAPBaseFormatter.GetWideStr(
+  const ATypeInfo: PTypeInfo;
+  const ANameSpace: string;
+  var   AName: String;
+  var   AData: WideString
 );
 begin
   AData := GetNodeValue(ANameSpace,AName);
@@ -1466,6 +1538,10 @@ Var
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  wideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1477,6 +1553,18 @@ begin
       Begin
         strData := String(AData);
         PutStr(ANameSpace,AName,ATypeInfo,strData);
+      End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      Begin
+        unicodeStrData := UnicodeString(AData);
+        PutUnicodeStr(ANameSpace,AName,ATypeInfo,unicodeStrData);
+      End;
+{$ENDIF WST_UNICODESTRING}
+    tkWString :
+      Begin
+        wideStrData := WideString(AData);
+        PutWideStr(ANameSpace,AName,ATypeInfo,wideStrData);
       End;
     tkClass :
       Begin
@@ -1561,6 +1649,10 @@ Var
   dataBuffer : string;
   frmt : string;
   prcsn,i : Integer;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
   {strm : TStringStream;
   locDoc : TwstXMLDocument;
   locNode : TDOMNode;}
@@ -1584,6 +1676,18 @@ begin
         strData := string(AData);
         dataBuffer := strData;
       end;
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        dataBuffer := wideStrData;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        dataBuffer := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
         raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
@@ -1684,6 +1788,10 @@ Var
   enumData : TEnumIntType;
   floatDt : Extended;
   recObject : Pointer;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  wideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1698,6 +1806,20 @@ begin
         GetStr(ATypeInfo,ANameSpace,AName,strData);
         String(AData) := strData;
       End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := '';
+        GetUnicodeStr(ATypeInfo,ANameSpace,AName,unicodeStrData);
+        UnicodeString(AData) := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
+    tkWString :
+      begin
+        wideStrData := '';
+        GetWideStr(ATypeInfo,ANameSpace,AName,wideStrData);
+        WideString(AData) := wideStrData;
+      end;
     tkClass :
       Begin
         objData := TObject(AData);
@@ -1793,6 +1915,10 @@ begin
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
     {$ENDIF}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
+    tkWString : WideString(AData) := dataBuffer;
+{$IFDEF WST_UNICODESTRING}
+    tkUString : UnicodeString(AData) := dataBuffer;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
         raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');

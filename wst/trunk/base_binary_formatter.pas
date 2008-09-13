@@ -44,11 +44,18 @@ type
     dtInt64U,   dtInt64S,
     dtBool, dtEnum,
     dtSingle, dtDouble, dtExtended, dtCurrency,
-    dtString,
+    dtAnsiString, dtWideString,
+{$IFDEF WST_UNICODESTRING}
+    dtUnicodeString,
+{$ENDIF WST_UNICODESTRING}
     dtObject, dtArray
   );
   
-  PStringBuffer = ^TStringBuffer;
+  PAnsiStringBuffer = ^TAnsiStringBuffer;
+  PWideStringBuffer = ^TWideStringBuffer;
+{$IFDEF WST_UNICODESTRING}
+  PUnicodeStringBuffer = ^TUnicodeStringBuffer;
+{$ENDIF WST_UNICODESTRING}
   PObjectBuffer = ^TObjectBuffer;
   PArrayBuffer = ^TArrayBuffer;
   PDataBuffer = ^TDataBuffer;
@@ -71,14 +78,30 @@ type
       dtExtended   : ( ExtendedData : TFloat_Extended_10 );
       dtCurrency   : ( CurrencyData : TFloat_Currency_8 );
       
-      dtString   : ( StrData : PStringBuffer );
+      dtAnsiString : ( AnsiStrData : PAnsiStringBuffer );
+      dtWideString : ( WideStrData : PWideStringBuffer );
+{$IFDEF WST_UNICODESTRING}
+      dtUnicodeString : ( UnicodeStrData : PUnicodeStringBuffer );
+{$ENDIF WST_UNICODESTRING}
       dtObject   : ( ObjectData : PObjectBuffer );
       dtArray    : ( ArrayData : PArrayBuffer );
   End;
 
-  TStringBuffer = Record
-    Data : String;
-  End;
+  TAnsiStringBuffer = record
+    Data : TAnsiStringData;
+  end;
+
+  TWideStringBuffer = record
+    Data : TWideStringData;
+  end;
+
+{$IFDEF WST_UNICODESTRING}
+  TUnicodeStringBuffer = record
+    Data : TUnicodeStringData;
+  end;
+{$ENDIF WST_UNICODESTRING}
+
+
 
   PObjectBufferItem = ^TObjectBufferItem;
   TObjectBufferItem = Record
@@ -203,11 +226,23 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TInt64S
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure PutStr(
+    procedure PutAnsiStr(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
-      Const AData     : String
+      Const AData     : AnsiString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PutWideStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure PutUnicodeStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
     procedure PutEnum(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -260,11 +295,23 @@ type
       Var   AName     : String;
       Var   AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetStr(
+    procedure GetAnsiStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
-      Var   AData     : String
+      Var   AData     : AnsiString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetWideStr(
+      const ATypeInfo : PTypeInfo;
+      var   AName     : String;
+      var   AData     : WideString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure GetUnicodeStr(
+      const ATypeInfo : PTypeInfo;
+      var   AName     : String;
+      var   AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -402,7 +449,11 @@ Begin
     dtExtended  : APrinterProc( s + ARoot^.Name + ' = ' + FloatToStr(ARoot^.ExtendedData) );
     dtCurrency  : APrinterProc( s + ARoot^.Name + ' = ' + FloatToStr(ARoot^.CurrencyData) );
     
-    dtString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.StrData^.Data );
+    dtAnsiString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.AnsiStrData^.Data );
+    dtWideString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.WideStrData^.Data );
+{$IFDEF WST_UNICODESTRING}
+    dtUnicodeString  : APrinterProc( s + ARoot^.Name + ' = ' + ARoot^.UnicodeStrData^.Data );
+{$ENDIF WST_UNICODESTRING}
     dtObject  :
       Begin
         APrinterProc( s + ARoot^.Name + ' = ');
@@ -494,13 +545,29 @@ begin
     Result^.Name := AName;
     Result^.DataType := ADataType;
     Case Result^.DataType Of
-      dtString :
+      dtAnsiString :
         Begin
-          i := SizeOf(TStringBuffer);
-          Result^.StrData := wst_GetMem(i);
-          FillChar(Result^.StrData^,i,#0);
-          Result^.StrData^.Data := '';
+          i := SizeOf(TAnsiStringBuffer);
+          Result^.AnsiStrData := wst_GetMem(i);
+          FillChar(Result^.AnsiStrData^,i,#0);
+          Result^.AnsiStrData^.Data := '';
         End;
+      dtWideString :
+        begin
+          i := SizeOf(TWideStringBuffer);
+          Result^.WideStrData := wst_GetMem(i);
+          FillChar(Result^.WideStrData^,i,#0);
+          Result^.WideStrData^.Data := '';
+        end;
+{$IFDEF WST_UNICODESTRING}
+      dtUnicodeString :
+        begin
+          i := SizeOf(TUnicodeStringBuffer);
+          Result^.UnicodeStrData := wst_GetMem(i);
+          FillChar(Result^.UnicodeStrData^,i,#0);
+          Result^.UnicodeStrData^.Data := '';
+        end;
+{$ENDIF WST_UNICODESTRING}
       dtObject :
         Begin
           Result^.ObjectData := wst_GetMem(SizeOf(TObjectBuffer));
@@ -559,7 +626,7 @@ Begin
     Exit;
   i := Ord(ARoot^.DataType);
   ADest.WriteInt32S(i);
-  ADest.WriteStr(ARoot^.Name);
+  ADest.WriteAnsiStr(ARoot^.Name);
   Case ARoot^.DataType Of
     dtInt8S  : ADest.WriteInt8S(ARoot^.Int8S);
       dtInt8U  : ADest.WriteInt8U(ARoot^.Int8U);
@@ -575,7 +642,11 @@ Begin
     dtExtended  : ADest.WriteExtended(ARoot^.ExtendedData);
     dtCurrency  : ADest.WriteCurrency(ARoot^.CurrencyData);
     
-    dtString  : ADest.WriteStr(ARoot^.StrData^.Data);
+    dtAnsiString  : ADest.WriteAnsiStr(ARoot^.AnsiStrData^.Data);
+    dtWideString  : ADest.WriteWideStr(ARoot^.WideStrData^.Data);
+{$IFDEF WST_UNICODESTRING}
+    dtUnicodeString  : ADest.WriteUnicodeStr(ARoot^.UnicodeStrData^.Data);
+{$ENDIF WST_UNICODESTRING}
     dtBool    : ADest.WriteBool(ARoot^.BoolData);
     dtEnum    : ADest.WriteEnum(ARoot^.EnumData);
     dtObject :
@@ -620,7 +691,7 @@ Begin
   If AStoreRdr.IsAtEof() Then
     Exit;
   i := AStoreRdr.ReadInt32S();
-  s := AStoreRdr.ReadStr();
+  s := AStoreRdr.ReadAnsiStr();
   If ( TDataType(i) < dtArray ) Then
     Result := CreateObjBuffer(TDataType(i),s);
   Case TDataType(i) Of
@@ -638,7 +709,11 @@ Begin
     dtExtended  : Result^.ExtendedData := AStoreRdr.ReadExtended();
     dtCurrency  : Result^.CurrencyData := AStoreRdr.ReadCurrency();
     
-    dtString  : Result^.StrData^.Data := AStoreRdr.ReadStr();
+    dtAnsiString  : Result^.AnsiStrData^.Data := AStoreRdr.ReadAnsiStr();
+    dtWideString  : Result^.WideStrData^.Data := AStoreRdr.ReadWideStr();
+{$IFDEF WST_UNICODESTRING}
+    dtUnicodeString  : Result^.UnicodeStrData^.Data := AStoreRdr.ReadUnicodeStr();
+{$ENDIF WST_UNICODESTRING}
     dtBool    : Result^.BoolData := AStoreRdr.ReadBool();
     dtEnum    : Result^.EnumData := AStoreRdr.ReadEnum();
     dtObject  :
@@ -698,12 +773,26 @@ Var
 Begin
   AOwner^.Name := '';
   Case AOwner^.DataType Of
-    dtString :
+    dtAnsiString :
       Begin
-        AOwner^.StrData^.Data := '';
-        Freemem(AOwner^.StrData);
-        AOwner^.StrData := Nil;
+        AOwner^.AnsiStrData^.Data := '';
+        Freemem(AOwner^.AnsiStrData);
+        AOwner^.AnsiStrData := Nil;
       End;
+    dtWideString :
+      begin
+        AOwner^.WideStrData^.Data := '';
+        Freemem(AOwner^.WideStrData);
+        AOwner^.WideStrData := Nil;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    dtUnicodeString :
+      begin
+        AOwner^.UnicodeStrData^.Data := '';
+        Freemem(AOwner^.UnicodeStrData);
+        AOwner^.UnicodeStrData := Nil;
+      end;
+{$ENDIF WST_UNICODESTRING}
     dtObject :
       Begin
         ClearObjectBuffer(AOwner^.ObjectData);
@@ -915,14 +1004,34 @@ begin
   End;
 end;
 
-procedure TBaseBinaryFormatter.PutStr(
+procedure TBaseBinaryFormatter.PutAnsiStr(
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
-  const AData      : String
+  const AData      : AnsiString
 );
 begin
-  StackTop().CreateBuffer(AName,dtString)^.StrData^.Data := AData;
+  StackTop().CreateBuffer(AName,dtAnsiString)^.AnsiStrData^.Data := AData;
 end;
+
+procedure TBaseBinaryFormatter.PutWideStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideString
+);
+begin
+  StackTop().CreateBuffer(AName,dtWideString)^.WideStrData^.Data := AData;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TBaseBinaryFormatter.PutUnicodeStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: UnicodeString
+);
+begin
+  StackTop().CreateBuffer(AName,dtUnicodeString)^.UnicodeStrData^.Data := AData;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 procedure TBaseBinaryFormatter.PutEnum(
   const AName: String;
@@ -1043,14 +1152,34 @@ begin
   AData := GetDataBuffer(AName)^.Int64S;
 end;
 
-procedure TBaseBinaryFormatter.GetStr(
+procedure TBaseBinaryFormatter.GetAnsiStr(
   const ATypeInfo: PTypeInfo;
   var AName: String;
-  var AData: String
+  var AData: AnsiString
 );
 begin
-  AData := GetDataBuffer(AName)^.StrData^.Data;
+  AData := GetDataBuffer(AName)^.AnsiStrData^.Data;
 end;
+
+procedure TBaseBinaryFormatter.GetWideStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideString
+);
+begin
+  AData := GetDataBuffer(AName)^.WideStrData^.Data;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TBaseBinaryFormatter.GetUnicodeStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: UnicodeString
+);
+begin
+  AData := GetDataBuffer(AName)^.UnicodeStrData^.Data;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 procedure TBaseBinaryFormatter.GetObj(
   const ATypeInfo: PTypeInfo;
@@ -1194,18 +1323,34 @@ end;
 procedure TBaseBinaryFormatter.Put(const AName: String; const ATypeInfo: PTypeInfo;const AData);
 Var
   int64Data : Int64;
-  strData : string;
+  ansiStrData : AnsiString;
   objData : TObject;
   boolData : Boolean;
   enumData : TEnumData;
   floatDt : TFloat_Extended_10;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   Case ATypeInfo^.Kind Of
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
-        strData := String(AData);
-        PutStr(AName,ATypeInfo,strData);
+        ansiStrData := String(AData);
+        PutAnsiStr(AName,ATypeInfo,ansiStrData);
       End;
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        PutWideStr(AName,ATypeInfo,wideStrData);
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        PutUnicodeStr(AName,ATypeInfo,unicodeStrData);
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
@@ -1290,14 +1435,30 @@ var
   boolData : Boolean;
   enumData : TEnumData;
   floatDt : TFloat_Extended_10;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   CheckScope();
   case ATypeInfo^.Kind of
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
-        StackTop().CreateInnerBuffer(dtString)^.StrData^.Data := strData;
+        StackTop().CreateInnerBuffer(dtAnsiString)^.AnsiStrData^.Data := strData;
       end;
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        StackTop().CreateInnerBuffer(dtWideString)^.WideStrData^.Data := wideStrData;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        StackTop().CreateInnerBuffer(dtUnicodeString)^.UnicodeStrData^.Data := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkInt64 :
       begin
         int64SData := Int64(AData);
@@ -1403,7 +1564,7 @@ begin
           ftCurr     :
             begin
               floatDt := Currency(AData);
-              StackTop().CreateInnerBuffer(dtExtended)^.ExtendedData := floatDt;
+              StackTop().CreateInnerBuffer(dtExtended)^.CurrencyData := floatDt;
             end;
           ftComp     :
             begin
@@ -1430,6 +1591,10 @@ Var
   enumData : TEnumData;
   floatDt : TFloat_Extended_10;
   recObject : Pointer;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1441,9 +1606,23 @@ begin
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
-        GetStr(ATypeInfo,AName,strData);
+        GetAnsiStr(ATypeInfo,AName,strData);
         String(AData) := strData;
       End;
+    tkWString :
+      begin
+        wideStrData := '';
+        GetWideStr(ATypeInfo,AName,wideStrData);
+        WideString(AData) := wideStrData;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := '';
+        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        UnicodeString(AData) := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       Begin
         objData := TObject(AData);
@@ -1536,7 +1715,11 @@ begin
     tkLString
     {$IFDEF FPC},
     tkAString
-    {$ENDIF}       : string(AData) := dataBuffer^.StrData^.Data;
+    {$ENDIF}       : string(AData) := dataBuffer^.AnsiStrData^.Data;
+    tkWString      : WideString(AData) := dataBuffer^.WideStrData^.Data;
+{$IFDEF WST_UNICODESTRING}
+    tkUString      : UnicodeString(AData) := dataBuffer^.UnicodeStrData^.Data;
+{$ENDIF WST_UNICODESTRING}
 
     tkClass, tkRecord : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
     {$IFDEF FPC}

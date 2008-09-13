@@ -166,7 +166,7 @@ end;
 procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
 {$IFDEF WST_DBG}
 Var
-  s : string;
+  s : TBinaryString;
   i : Int64;
 {$ENDIF WST_DBG}
 begin

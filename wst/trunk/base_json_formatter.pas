@@ -214,6 +214,18 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure PutUnicodeStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    procedure PutWideStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutFloat(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -262,6 +274,18 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure GetUnicodeStr(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    procedure GetWideStr(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : WideString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
@@ -449,6 +473,26 @@ begin
   StackTop().CreateStringBuffer(AName,AData);
 end;
 
+{$IFDEF WST_UNICODESTRING}
+procedure TJsonRpcBaseFormatter.PutUnicodeStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: UnicodeString
+);
+begin
+  StackTop().CreateStringBuffer(AName,AData);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure TJsonRpcBaseFormatter.PutWideStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideString
+);
+begin
+  StackTop().CreateStringBuffer(AName,AData);
+end;
+
 procedure TJsonRpcBaseFormatter.PutFloat(
   const AName : String;
   const ATypeInfo : PTypeInfo;
@@ -532,6 +576,26 @@ procedure TJsonRpcBaseFormatter.GetStr(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : String
+);
+begin
+  AData := GetDataBuffer(AName).AsString;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TJsonRpcBaseFormatter.GetUnicodeStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: UnicodeString
+);
+begin
+  AData := GetDataBuffer(AName).AsString;
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure TJsonRpcBaseFormatter.GetWideStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideString
 );
 begin
   AData := GetDataBuffer(AName).AsString;
@@ -736,6 +800,10 @@ Var
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  wideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
@@ -743,6 +811,18 @@ begin
         strData := String(AData);
         PutStr(AName,ATypeInfo,strData);
       End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        PutUnicodeStr(AName,ATypeInfo,unicodeStrData);
+      end;
+{$ENDIF WST_UNICODESTRING}
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        PutWideStr(AName,ATypeInfo,wideStrData);
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
@@ -825,6 +905,10 @@ var
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   locName := s_inner_value;
   Case ATypeInfo^.Kind Of
@@ -833,6 +917,18 @@ begin
         strData := String(AData);
         PutStr(locName,ATypeInfo,strData);
       End;
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        PutWideStr(locName,ATypeInfo,wideStrData);
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        PutUnicodeStr(locName,ATypeInfo,unicodeStrData);
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
@@ -904,6 +1000,10 @@ Var
   enumData : TEnumIntType;
   floatDt : Extended;
   recObject : Pointer;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  WideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -917,6 +1017,20 @@ begin
         strData := '';
         GetStr(ATypeInfo,AName,strData);
         String(AData) := strData;
+      End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      Begin
+        unicodeStrData := '';
+        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        UnicodeString(AData) := unicodeStrData;
+      End;
+{$ENDIF WST_UNICODESTRING}
+    tkWString :
+      Begin
+        WideStrData := '';
+        GetWideStr(ATypeInfo,AName,WideStrData);
+        WideString(AData) := WideStrData;
       End;
     tkClass :
       Begin
@@ -1002,6 +1116,10 @@ var
   enumData : TEnumIntType;
   floatDt : Extended;
   recObject : Pointer;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   locName := s_inner_value;
   Case ATypeInfo^.Kind Of
@@ -1017,6 +1135,20 @@ begin
         GetStr(ATypeInfo,locName,strData);
         String(AData) := strData;
       End;
+    tkWString :
+      begin
+        wideStrData := '';
+        GetWideStr(ATypeInfo,locName,wideStrData);
+        WideString(AData) := wideStrData;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := '';
+        GetUnicodeStr(ATypeInfo,locName,unicodeStrData);
+        UnicodeString(AData) := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkClass, tkRecord :
       Begin
         raise EJsonRpcException.Create('Inner Scope value must be a "simple type" value.');

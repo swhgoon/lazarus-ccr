@@ -26,10 +26,7 @@ uses
   //IdTCPServer,
 {$ENDIF}
   IdSocketHandle,
-  server_listener;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  server_listener, wst_types;
 
 const
   sSERVER_PORT = 1234;
@@ -139,7 +136,7 @@ var
   locInStream, locOutStream : TMemoryStream;
   wrtr : IDataStore;
   rdr : IDataStoreReader;
-  buff, trgt,ctntyp, frmt : string;
+  buff, trgt,ctntyp, frmt : TBinaryString;
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
@@ -157,10 +154,10 @@ begin
     {$ENDIF}
       if ( ReadInputBuffer(locInStream) >= SizeOf(LongInt) ) then begin
         rdr := CreateBinaryReader(locInStream);
-        trgt := rdr.ReadStr();
-        ctntyp := rdr.ReadStr();
-        frmt := rdr.ReadStr();
-        buff := rdr.ReadStr();
+        trgt := rdr.ReadAnsiStr();
+        ctntyp := rdr.ReadAnsiStr();
+        frmt := rdr.ReadAnsiStr();
+        buff := rdr.ReadAnsiStr();
 
 {$IFDEF WST_DBG}
         WriteLn(buff);
@@ -178,7 +175,7 @@ begin
         locOutStream.Read(buff[1],i);
         locOutStream.Size := 0;
         wrtr := CreateBinaryWriter(locOutStream);
-        wrtr.WriteStr(buff);
+        wrtr.WriteAnsiStr(buff);
         locOutStream.Position := 0;
       {$IFDEF INDY_10}
         AContext.Connection.IOHandler.Write(locOutStream,locOutStream.Size,False);

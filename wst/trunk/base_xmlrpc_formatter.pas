@@ -172,7 +172,7 @@ type
     function InternalPutData(
       const AName      : string;
       const AType      : TXmlRpcDataType;
-      const AData      : string
+      const AData      : DOMString
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutEnum(
       Const AName     : String;
@@ -195,6 +195,18 @@ type
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : String
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    function PutUnicodeStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : UnicodeString
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    function PutWideStr(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideString
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutFloat(
       Const AName     : String;
@@ -244,6 +256,18 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF WST_UNICODESTRING}
+    procedure GetUnicodeStr(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : UnicodeString
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF WST_UNICODESTRING}
+    procedure GetWideStr(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : WideString
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetObj(
       Const ATypeInfo : PTypeInfo;
@@ -751,7 +775,7 @@ end;
 function TXmlRpcBaseFormatter.InternalPutData(
   const AName      : string;
   const AType      : TXmlRpcDataType;
-  const AData      : string
+  const AData      : DOMString
 ): TDOMNode;
 begin
   Result := StackTop().CreateBuffer(AName,AType).AppendChild(FDoc.CreateTextNode(AData));
@@ -806,6 +830,34 @@ begin
               AName,
               xdtString,
               StringReplace(StringReplace(AData,'<','&lt;',[rfReplaceAll]),'&','&amp;',[rfReplaceAll])
+            );
+end;
+
+{$IFDEF WST_UNICODESTRING}
+function TXmlRpcBaseFormatter.PutUnicodeStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: UnicodeString
+) : TDOMNode;
+begin
+  Result := InternalPutData(
+              AName,
+              xdtString,
+              AData//StringReplace(StringReplace(AData,'<','&lt;',[rfReplaceAll]),'&','&amp;',[rfReplaceAll])
+            );
+end;
+{$ENDIF WST_UNICODESTRING}
+
+function TXmlRpcBaseFormatter.PutWideStr(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideString
+) : TDOMNode;
+begin
+  Result := InternalPutData(
+              AName,
+              xdtString,
+              AData//StringReplace(StringReplace(AData,'<','&lt;',[rfReplaceAll]),'&','&amp;',[rfReplaceAll])
             );
 end;
 
@@ -940,6 +992,26 @@ procedure TXmlRpcBaseFormatter.GetStr(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : String
+);
+begin
+  AData := GetNodeValue(AName);
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TXmlRpcBaseFormatter.GetUnicodeStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: UnicodeString
+);
+begin
+  AData := GetNodeValue(AName);
+end;
+{$ENDIF WST_UNICODESTRING}
+
+procedure TXmlRpcBaseFormatter.GetWideStr(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideString
 );
 begin
   AData := GetNodeValue(AName);
@@ -1138,6 +1210,10 @@ Var
   {$IFDEF FPC}boolData : Boolean;{$ENDIF}
   enumData : TEnumIntType;
   floatDt : Extended;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  wideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1150,6 +1226,18 @@ begin
         strData := String(AData);
         PutStr(AName,ATypeInfo,strData);
       End;
+    tkWString :
+      Begin
+        wideStrData := WideString(AData);
+        PutWideStr(AName,ATypeInfo,wideStrData);
+      End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      Begin
+        unicodeStrData := UnicodeString(AData);
+        PutUnicodeStr(AName,ATypeInfo,unicodeStrData);
+      End;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       Begin
         objData := TObject(AData);
@@ -1222,6 +1310,10 @@ Var
   dataBuffer : string;
   frmt : string;
   prcsn,i : Integer;
+  wideStrData : WideString;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
 begin
   CheckScope();
   Case ATypeInfo^.Kind Of
@@ -1242,6 +1334,18 @@ begin
         strData := string(AData);
         dataBuffer := strData;
       end;
+    tkWString :
+      begin
+        wideStrData := WideString(AData);
+        dataBuffer := wideStrData;
+      end;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := UnicodeString(AData);
+        dataBuffer := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
         raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
@@ -1331,6 +1435,10 @@ Var
   enumData : TEnumIntType;
   floatDt : Extended;
   recObject : Pointer;
+{$IFDEF WST_UNICODESTRING}
+  unicodeStrData : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
+  wideStrData : WideString;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1345,6 +1453,20 @@ begin
         GetStr(ATypeInfo,AName,strData);
         String(AData) := strData;
       End;
+{$IFDEF WST_UNICODESTRING}
+    tkUString :
+      begin
+        unicodeStrData := '';
+        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        UnicodeString(AData) := unicodeStrData;
+      end;
+{$ENDIF WST_UNICODESTRING}
+    tkWString :
+      begin
+        wideStrData := '';
+        GetWideStr(ATypeInfo,AName,wideStrData);
+        WideString(AData) := wideStrData;
+      end;
     tkClass :
       Begin
         objData := TObject(AData);
@@ -1429,6 +1551,10 @@ begin
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
     {$ENDIF}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
+    tkWString : WideString(AData) := dataBuffer;
+{$IFDEF WST_UNICODESTRING}
+    tkUString : UnicodeString(AData) := dataBuffer;
+{$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
         raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
