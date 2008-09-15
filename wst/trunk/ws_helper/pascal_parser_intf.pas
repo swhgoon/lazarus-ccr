@@ -200,9 +200,10 @@ implementation
 uses parserutils, wst_types;
 
 const
-    SIMPLE_TYPES_COUNT = 15;
+    SIMPLE_TYPES_COUNT = 16;
       SIMPLE_TYPES : Array[0..Pred(SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
           ('string', 'TComplexStringContentRemotable', 'string'),
+          ('WideString', 'TComplexWideStringContentRemotable', 'string'),
           ('integer', 'TComplexInt32SContentRemotable', 'int'),
           ('LongWord', 'TComplexInt32UContentRemotable', 'unsignedInt' ),
           ('SmallInt', 'TComplexInt16SContentRemotable', 'short'),

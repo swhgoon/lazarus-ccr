@@ -1,10 +1,8 @@
 object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
-  Left = 389
+  Left = 218
   Height = 644
-  Top = 188
+  Top = 177
   Width = 833
-  HorzScrollBar.Page = 832
-  VertScrollBar.Page = 623
   ActiveControl = trvSchema
   Caption = '[Web Services Toolkit ] Type Library Editor'
   ClientHeight = 624
@@ -80,12 +78,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.OnChange = nil
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
             item
@@ -409,7 +404,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
@@ -429,10 +423,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
-          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
-          Gutter.OnChange = nil
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
             item
@@ -756,7 +747,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
@@ -774,10 +764,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
             item
@@ -1101,6 +1091,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
@@ -1120,10 +1111,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
             item
@@ -1447,6 +1438,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
@@ -1464,11 +1456,11 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynPasSyn1
           Keystrokes = <          
             item
@@ -1792,6 +1784,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
@@ -1843,11 +1836,12 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Color = clSilver
           Font.Height = -16
           Font.Name = 'courier'
+          Font.Pitch = fpFixed
           ParentColor = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
+          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
-          Gutter.CodeFoldingWidth = 14
           Highlighter = SynXMLSyn1
           Keystrokes = <          
             item
@@ -2171,6 +2165,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsDependencies: TTabSheet
@@ -2461,6 +2456,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
     SymbolAttri.Style = [fsBold]
     DirectiveAttri.Foreground = clGreen
     DirectiveAttri.Style = [fsBold]
+    CompilerMode = pcmDelphi
     NestedComments = True
     left = 439
     top = 104

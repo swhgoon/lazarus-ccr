@@ -21,7 +21,7 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="39">
+    <Units Count="37">
       <Unit0>
         <Filename Value="wst_test_suite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -88,135 +88,125 @@
         <UnitName Value="metadata_generator"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\ws_helper\parserdefs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="parserdefs"/>
-      </Unit13>
-      <Unit14>
         <Filename Value="..\..\metadata_wsdl.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_wsdl"/>
-      </Unit14>
-      <Unit15>
+      </Unit13>
+      <Unit14>
         <Filename Value="..\..\server_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_intf"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="test_parserdef.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="test_parserdef"/>
-      </Unit16>
-      <Unit17>
+      </Unit14>
+      <Unit15>
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_xmlrpc_formatter"/>
-      </Unit17>
-      <Unit18>
+      </Unit15>
+      <Unit16>
         <Filename Value="..\..\wst_fpc_xml.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_fpc_xml"/>
-      </Unit18>
-      <Unit19>
+      </Unit16>
+      <Unit17>
         <Filename Value="test_utilities.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_utilities"/>
-      </Unit19>
-      <Unit20>
+      </Unit17>
+      <Unit18>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_xmlrpc"/>
-      </Unit20>
-      <Unit21>
+      </Unit18>
+      <Unit19>
         <Filename Value="test_parsers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_parsers"/>
-      </Unit21>
-      <Unit22>
+      </Unit19>
+      <Unit20>
         <Filename Value="..\..\ws_helper\wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
-      </Unit22>
-      <Unit23>
+      </Unit20>
+      <Unit21>
         <Filename Value="..\..\ws_helper\xsd_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_generator"/>
-      </Unit23>
-      <Unit24>
+      </Unit21>
+      <Unit22>
         <Filename Value="..\..\ws_helper\xsd_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_consts"/>
-      </Unit24>
-      <Unit25>
+      </Unit22>
+      <Unit23>
         <Filename Value="..\..\ws_helper\wsdl_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_parser"/>
-      </Unit25>
-      <Unit26>
+      </Unit23>
+      <Unit24>
         <Filename Value="..\..\base_json_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_json_formatter"/>
-      </Unit26>
-      <Unit27>
+      </Unit24>
+      <Unit25>
         <Filename Value="test_support.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_support"/>
-      </Unit27>
-      <Unit28>
+      </Unit25>
+      <Unit26>
         <Filename Value="..\..\basex_encode.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="basex_encode"/>
-      </Unit28>
-      <Unit29>
+      </Unit26>
+      <Unit27>
         <Filename Value="test_basex_encode.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_basex_encode"/>
-      </Unit29>
-      <Unit30>
+      </Unit27>
+      <Unit28>
         <Filename Value="..\..\json_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="json_formatter"/>
-      </Unit30>
-      <Unit31>
+      </Unit28>
+      <Unit29>
         <Filename Value="..\..\server_service_json.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_json"/>
-      </Unit31>
-      <Unit32>
+      </Unit29>
+      <Unit30>
         <Filename Value="test_json.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_json"/>
-      </Unit32>
-      <Unit33>
+      </Unit30>
+      <Unit31>
         <Filename Value="test_generators.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_generators"/>
-      </Unit33>
-      <Unit34>
+      </Unit31>
+      <Unit32>
         <Filename Value="test_suite_utils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_suite_utils"/>
-      </Unit34>
-      <Unit35>
+      </Unit32>
+      <Unit33>
         <Filename Value="test_std_cursors.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_std_cursors"/>
-      </Unit35>
-      <Unit36>
+      </Unit33>
+      <Unit34>
         <Filename Value="test_rtti_filter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_rtti_filter"/>
-      </Unit36>
-      <Unit37>
+      </Unit34>
+      <Unit35>
         <Filename Value="test_wst_cursors.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_wst_cursors"/>
-      </Unit37>
-      <Unit38>
+      </Unit35>
+      <Unit36>
         <Filename Value="test_generators_runtime.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_generators_runtime"/>
-      </Unit38>
+      </Unit36>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -473,6 +473,7 @@ var
   ns_shortName, s : string;
   defSchemaNode, resNode : TDOMElement;
   unitExternalName, baseUnitExternalName : string;
+  trueDestType : TPasType;
 {$IFDEF WST_HANDLE_DOC}
   i : PtrInt;
   ls : TStrings;
@@ -482,12 +483,7 @@ begin
   typItm := ASymbol as TPasAliasType;
   if Assigned(typItm) then begin
     unitExternalName := GetTypeNameSpace(AContainer,ASymbol);
-    if FindAttributeByValueInNode(unitExternalName,ADocument.DocumentElement,ns_shortName) then begin
-      ns_shortName := Copy(ns_shortName,Length(s_xmlns+':')+1,MaxInt);
-    end else begin
-      ns_shortName := Format('ns%d',[GetNodeListCount(ADocument.DocumentElement.Attributes)]) ;
-      ADocument.DocumentElement.SetAttribute(Format('%s:%s',[s_xmlns,ns_shortName]),unitExternalName);
-    end;
+    ns_shortName := GetNameSpaceShortName(unitExternalName,ADocument,GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_element]);
@@ -503,9 +499,12 @@ begin
     end;
 {$ENDIF WST_HANDLE_DOC}
 
-    baseUnitExternalName := GetTypeNameSpace(AContainer,typItm.DestType);
+    trueDestType := typItm.DestType;
+    if trueDestType.InheritsFrom(TPasUnresolvedTypeRef) then
+      trueDestType := AContainer.FindElement(AContainer.GetExternalName(typItm.DestType)) as TPasType;
+    baseUnitExternalName := GetTypeNameSpace(AContainer,trueDestType);
     s := GetNameSpaceShortName(baseUnitExternalName,ADocument,GetOwner().GetPreferedShortNames());
-    s := Format('%s:%s',[s,AContainer.GetExternalName(typItm.DestType)]);
+    s := Format('%s:%s',[s,AContainer.GetExternalName(trueDestType)]);
     resNode.SetAttribute(s_type,s) ;
   end;
 end;
@@ -662,6 +661,8 @@ var
       propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
       propTypItm := p.VarType;
       if Assigned(propTypItm) then begin
+        if propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
+          propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
         prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
         propItmUltimeType := GetUltimeType(propTypItm);
         isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
@@ -849,43 +850,44 @@ begin
       sqcNode := nil;
     end;
 
-
-      for i := 0 to Pred(typItm.Members.Count) do begin
-        if TPasElement(typItm.Members[i]).InheritsFrom(TPasVariable) then begin
-          p := TPasVariable(typItm.Members[i]);
+    for i := 0 to Pred(typItm.Members.Count) do begin
+      if TPasElement(typItm.Members[i]).InheritsFrom(TPasVariable) then begin
+        p := TPasVariable(typItm.Members[i]);
+        if AContainer.IsAttributeProperty(p) then begin
+          s := Format('%s:%s',[s_xs_short,s_attribute]);
+          propNode := CreateElement(s,cplxNode,ADocument);
+        end else begin
+          s := Format('%s:%s',[s_xs_short,s_element]);
+          propNode := CreateElement(s,sqcNode,ADocument);
+        end;
+        propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
+        propTypItm := p.VarType;
+        if Assigned(propTypItm) then begin
+          if propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
+            propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+          propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
+          storeOption := Trim(AContainer.Properties.GetValue(p,s_WST_storeType));
           if AContainer.IsAttributeProperty(p) then begin
-            s := Format('%s:%s',[s_xs_short,s_attribute]);
-            propNode := CreateElement(s,cplxNode,ADocument);
-          end else begin
-            s := Format('%s:%s',[s_xs_short,s_element]);
-            propNode := CreateElement(s,sqcNode,ADocument);
-          end;
-          propNode.SetAttribute(s_name,AContainer.GetExternalName(p));
-          propTypItm := p.VarType;
-          if Assigned(propTypItm) then begin
-            prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
-            propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
-            storeOption := Trim(AContainer.Properties.GetValue(p,s_WST_storeType));
-            if AContainer.IsAttributeProperty(p) then begin
-              if ( Length(storeOption) > 0 ) then begin
-                case AnsiIndexText(storeOption,[s_required,s_optional,s_prohibited]) of
-                  0 : propNode.SetAttribute(s_use,storeOption);
-                  1 : ;
-                  2 : propNode.SetAttribute(s_use,storeOption);
-                  else
-                    raise EXsdGeneratorException.CreateFmt('Invalid attribute "%s" value : "%s".',[s_use,storeOption]);
-                end;
-              end;
-            end else begin
+            if ( Length(storeOption) > 0 ) then begin
               case AnsiIndexText(storeOption,[s_required,s_optional,s_prohibited]) of
-                0 : ;//propNode.SetAttribute(s_minOccurs,'1');
-                1 : propNode.SetAttribute(s_minOccurs,'0');
+                0 : propNode.SetAttribute(s_use,storeOption);
+                1 : ;
+                2 : propNode.SetAttribute(s_use,storeOption);
+                else
+                  raise EXsdGeneratorException.CreateFmt('Invalid attribute "%s" value : "%s".',[s_use,storeOption]);
               end;
-              //propNode.SetAttribute(s_maxOccurs,'1');
             end;
+          end else begin
+            case AnsiIndexText(storeOption,[s_required,s_optional,s_prohibited]) of
+              0 : ;//propNode.SetAttribute(s_minOccurs,'1');
+              1 : propNode.SetAttribute(s_minOccurs,'0');
+            end;
+            //propNode.SetAttribute(s_maxOccurs,'1');
           end;
         end;
       end;
+    end;
   end;
 end;
 
