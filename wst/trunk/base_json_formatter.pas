@@ -204,6 +204,16 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PutAnsiChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PutWideChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -254,6 +264,16 @@ type
       Var   AData     : Boolean
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
+    procedure GetAnsiChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetWideChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : WideChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -455,6 +475,24 @@ begin
   StackTop().CreateBoolBuffer(AName,AData);
 end;
 
+procedure TJsonRpcBaseFormatter.PutAnsiChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: AnsiChar
+);
+begin
+  StackTop().CreateStringBuffer(AName,AData);
+end;
+
+procedure TJsonRpcBaseFormatter.PutWideChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideChar
+);
+begin
+  StackTop().CreateStringBuffer(AName,AData);
+end;
+
 procedure TJsonRpcBaseFormatter.PutInt64(
   const AName : String;
   const ATypeInfo : PTypeInfo;
@@ -543,6 +581,36 @@ procedure TJsonRpcBaseFormatter.GetBool(
 );
 begin
   AData := GetDataBuffer(AName).AsBoolean;
+end;
+
+procedure TJsonRpcBaseFormatter.GetAnsiChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: AnsiChar
+);
+var
+  tmpString : TJSONStringType;
+begin
+  tmpString := GetDataBuffer(AName).AsString;
+  if ( Length(tmpString) > 0 ) then
+    AData := tmpString[1]
+  else
+    AData := #0;
+end;
+
+procedure TJsonRpcBaseFormatter.GetWideChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideChar
+);
+var
+  tmpString : TJSONStringType;
+begin
+  tmpString := GetDataBuffer(AName).AsString;
+  if ( Length(tmpString) > 0 ) then
+    AData := tmpString[1]
+  else
+    AData := #0;
 end;
 
 procedure TJsonRpcBaseFormatter.GetInt(
@@ -804,8 +872,20 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   wideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        PutAnsiChar(AName,ATypeInfo,ansiCharData);
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        PutWideChar(AName,ATypeInfo,wideCharData);
+      end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
@@ -909,9 +989,21 @@ var
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   locName := s_inner_value;
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        PutAnsiChar(locName,ATypeInfo,ansiCharData);
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        PutWideChar(locName,ATypeInfo,wideCharData);
+      end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
@@ -1004,8 +1096,22 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   WideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := #0;
+        GetAnsiChar(ATypeInfo,AName,ansiCharData);
+        AnsiChar(AData) := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := #0;
+        GetWideChar(ATypeInfo,AName,wideCharData);
+        WideChar(AData) := wideCharData;
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
@@ -1120,9 +1226,23 @@ var
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   locName := s_inner_value;
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := #0;
+        GetAnsiChar(ATypeInfo,locName,ansiCharData);
+        AnsiChar(AData) := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := #0;
+        GetWideChar(ATypeInfo,locName,wideCharData);
+        WideChar(AData) := wideCharData;
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;

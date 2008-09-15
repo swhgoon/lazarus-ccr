@@ -186,6 +186,16 @@ type
       Const AData     : Boolean
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$ENDIF}
+    function PutAnsiChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : AnsiChar
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PutWideChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideChar
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -229,6 +239,16 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumIntType
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetAnsiChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetWideChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : WideChar
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
     procedure GetBool(
@@ -811,6 +831,24 @@ begin
 end;
 {$ENDIF}
 
+function TXmlRpcBaseFormatter.PutAnsiChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: AnsiChar
+) : TDOMNode;
+begin
+  Result := InternalPutData(AName,xdtString,AData);
+end;
+
+function TXmlRpcBaseFormatter.PutWideChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideChar
+) : TDOMNode;
+begin
+  Result := InternalPutData(AName,xdtString,AData);
+end;
+
 function TXmlRpcBaseFormatter.PutInt64(
   const AName      : String;
   const ATypeInfo  : PTypeInfo;
@@ -965,6 +1003,36 @@ begin
   AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
 end;
 {$ENDIF}
+
+procedure TXmlRpcBaseFormatter.GetAnsiChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: AnsiChar
+);
+var
+  locBuffer : DOMString;
+begin
+  locBuffer := GetNodeValue(AName);
+  if ( Length(locBuffer) = 0 ) then
+    AData := #0
+  else
+    AData := AnsiChar(locBuffer[1]);
+end;
+
+procedure TXmlRpcBaseFormatter.GetWideChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideChar
+);
+var
+  locBuffer : DOMString;
+begin
+  locBuffer := GetNodeValue(AName);
+  if ( Length(locBuffer) = 0 ) then
+    AData := #0
+  else
+    AData := locBuffer[1];
+end;
 
 procedure TXmlRpcBaseFormatter.GetInt64(
   const ATypeInfo : PTypeInfo;
@@ -1214,8 +1282,20 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   wideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        PutAnsiChar(AName,ATypeInfo,ansiCharData);
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        PutWideChar(AName,ATypeInfo,wideCharData);
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
@@ -1307,16 +1387,28 @@ Var
   strData : string;
   enumData : TEnumIntType;
   floatDt : Extended;
-  dataBuffer : string;
+  dataBuffer : DOMString;
   frmt : string;
   prcsn,i : Integer;
   wideStrData : WideString;
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   CheckScope();
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        dataBuffer := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        dataBuffer := wideCharData;
+      end;
     tkInt64 :
       begin
         int64SData := Int64(AData);
@@ -1439,8 +1531,22 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   wideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := #0;
+        GetAnsiChar(ATypeInfo,AName,ansiCharData);
+        AnsiChar(AData) := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := #0;
+        GetWideChar(ATypeInfo,AName,wideCharData);
+        WideChar(AData) := wideCharData;
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
@@ -1536,7 +1642,7 @@ procedure TXmlRpcBaseFormatter.GetScopeInnerValue(
 Var
   enumData : TEnumIntType;
   floatDt : Extended;
-  dataBuffer : string;
+  dataBuffer : DOMString;
   nd : TDOMNode;
 begin
   CheckScope();
@@ -1546,6 +1652,20 @@ begin
   else
     dataBuffer := StackTop().ScopeObject.NodeValue;
   Case ATypeInfo^.Kind Of
+    tkChar       :
+      begin
+        if ( Length(dataBuffer) > 0 ) then
+          AnsiChar(AData) := AnsiChar(dataBuffer[1])
+        else
+          AnsiChar(AData) := #0;
+      end;
+    tkWChar       :
+      begin
+        if ( Length(dataBuffer) > 0 ) then
+          WideChar(AData) :=dataBuffer[1]
+        else
+          WideChar(AData) := #0;
+      end;
     tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
     {$IFDEF FPC}
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);

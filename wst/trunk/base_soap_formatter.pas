@@ -166,6 +166,18 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PutAnsiChar(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : AnsiChar
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function PutWideChar(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideChar
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PutInt64(
       const ANameSpace : string;
       Const AName     : String;
@@ -221,6 +233,18 @@ type
       const ANameSpace : string;
       Var   AName     : String;
       Var   AData     : Boolean
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetAnsiChar(
+      Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
+      Var   AName     : String;
+      Var   AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetWideChar(
+      Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
+      Var   AName     : String;
+      Var   AData     : WideChar
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
     procedure GetInt(
@@ -821,6 +845,26 @@ begin
   Result := InternalPutData(ANameSpace,AName,ATypeInfo,BoolToSoapBool(AData));
 end;
 
+function TSOAPBaseFormatter.PutAnsiChar(
+  const ANameSpace: string;
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: AnsiChar
+) : TDOMNode;
+begin
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
+end;
+
+function TSOAPBaseFormatter.PutWideChar(
+  const ANameSpace: string;
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideChar
+): TDOMNode;
+begin
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,AData);
+end;
+
 function TSOAPBaseFormatter.PutInt64(
   const ANameSpace : string;
   const AName      : String;
@@ -978,6 +1022,38 @@ begin
     AData := False
   Else
     AData := StrToBool(locBuffer);
+end;
+
+procedure TSOAPBaseFormatter.GetAnsiChar(
+  const ATypeInfo: PTypeInfo;
+  const ANameSpace: string;
+  var   AName: String;
+  var   AData: AnsiChar
+);
+var
+  tmpString : DOMString;
+begin
+  tmpString := GetNodeValue(ANameSpace,AName);
+  if ( Length(tmpString) > 0 ) then
+    AData := AnsiChar(tmpString[1])
+  else
+    AData := #0;
+end;
+
+procedure TSOAPBaseFormatter.GetWideChar(
+  const ATypeInfo: PTypeInfo;
+  const ANameSpace: string;
+  var AName: String;
+  var AData: WideChar
+);
+var
+  tmpString : DOMString;
+begin
+  tmpString := GetNodeValue(ANameSpace,AName);
+  if ( Length(tmpString) > 0 ) then
+    AData := tmpString[1]
+  else
+    AData := #0;
 end;
 
 {$IFDEF FPC}
@@ -1542,8 +1618,20 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   wideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        PutAnsiChar(ANameSpace,AName,ATypeInfo,ansiCharData);
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        PutWideChar(ANameSpace,AName,ATypeInfo,wideCharData);
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := Int64(AData);
@@ -1646,19 +1734,28 @@ Var
   strData : string;
   enumData : TEnumIntType;
   floatDt : Extended;
-  dataBuffer : string;
+  dataBuffer : DOMString;
   frmt : string;
   prcsn,i : Integer;
   wideStrData : WideString;
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
-  {strm : TStringStream;
-  locDoc : TwstXMLDocument;
-  locNode : TDOMNode;}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   CheckScope();
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        dataBuffer := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        dataBuffer := wideCharData;
+      end;
     tkInt64 :
       begin
         int64SData := Int64(AData);
@@ -1761,16 +1858,6 @@ begin
           dataBuffer[i] := '.';
       end;
   end;
-  (*locDoc := nil;
-  strm := TStringStream.Create(dataBuffer);
-  try
-    ReadXMLFile(locDoc,strm);
-    locNode := locDoc.DocumentElement.CloneNode(True {$IFDEF FPC}, StackTop().ScopeObject.OwnerDocument{$ENDIF});
-    StackTop().ScopeObject.AppendChild(locNode);
-  finally
-    ReleaseDomNode(locDoc);
-    strm.Free();
-  end;*)
   StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
 end;
 
@@ -1792,8 +1879,22 @@ Var
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   wideStrData : WideString;
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := #0;
+        GetAnsiChar(ATypeInfo,ANameSpace,AName,ansiCharData);
+        AnsiChar(AData) := ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := #0;
+        GetWideChar(ATypeInfo,ANameSpace,AName,wideCharData);
+        WideChar(AData) := wideCharData;
+      end;
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
       Begin
         int64Data := 0;
@@ -1900,7 +2001,7 @@ procedure TSOAPBaseFormatter.GetScopeInnerValue(
 Var
   enumData : TEnumIntType;
   floatDt : Extended;
-  dataBuffer : string;
+  dataBuffer : DOMString;
   nd : TDOMNode;
 begin
   CheckScope();
@@ -1910,6 +2011,20 @@ begin
   else
     dataBuffer := StackTop().ScopeObject.NodeValue;
   Case ATypeInfo^.Kind Of
+    tkChar       :
+      begin
+        if ( Length(dataBuffer) > 0 ) then
+          AnsiChar(AData) := AnsiChar(dataBuffer[1])
+        else
+          AnsiChar(AData) := #0;
+      end;
+    tkWChar       :
+      begin
+        if ( Length(dataBuffer) > 0 ) then
+          WideChar(AData) := dataBuffer[1]
+        else
+          WideChar(AData) := #0;
+      end;
     tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
     {$IFDEF FPC}
     tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);

@@ -35,6 +35,8 @@ Type
 {$IFDEF WST_UNICODESTRING}
   TUnicodeStringData = UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  TAnsiCharacter = AnsiChar;
+  TWideCharacter = WideChar;
   
   TFloat_Single_4    = Single;
   TFloat_Double_8    = Double;
@@ -56,6 +58,8 @@ Type
     procedure WriteInt64S(Const AData : TInt64S);
     
     procedure WriteBool(Const AData : TBoolData);
+    procedure WriteAnsiChar(const AData : TAnsiCharacter);
+    procedure WriteWideChar(const AData : TWideCharacter);
     procedure WriteEnum(Const AData : TEnumData);
     procedure WriteAnsiStr(Const AData : TAnsiStringData);
     procedure WriteWideStr(Const AData : TWideStringData);
@@ -85,6 +89,8 @@ Type
     function ReadInt64S():TInt64S;
     
     function ReadBool():TBoolData;
+    function ReadAnsiChar() : TAnsiCharacter;
+    function ReadWideChar() : TWideCharacter;
     function ReadEnum():TEnumData;
     function ReadAnsiStr():TAnsiStringData;
     function ReadWideStr():TWideStringData;
@@ -217,6 +223,8 @@ Type
     procedure WriteInt64S(Const AData : TInt64S);
     
     procedure WriteBool(Const AData : TBoolData);
+    procedure WriteAnsiChar(const AData : TAnsiCharacter);
+    procedure WriteWideChar(const AData : TWideCharacter);
     procedure WriteEnum(Const AData : TEnumData);
     procedure WriteAnsiStr(Const AData : TAnsiStringData);
     procedure WriteWideStr(Const AData : TWideStringData);
@@ -252,6 +260,8 @@ Type
     function ReadInt64S():TInt64S;
     
     function ReadBool():TBoolData;
+    function ReadAnsiChar() : TAnsiCharacter;
+    function ReadWideChar() : TWideCharacter;
     function ReadEnum():TEnumData;
     function ReadAnsiStr():TAnsiStringData;
     function ReadWideStr():TWideStringData;
@@ -378,6 +388,16 @@ begin
   Else
     i := 0;
   WriteInt8U(i);
+end;
+
+procedure TDataStore.WriteAnsiChar(const AData: TAnsiCharacter);
+begin
+  WriteInt8U(Ord(AData));
+end;
+
+procedure TDataStore.WriteWideChar(const AData: TWideCharacter);
+begin
+  WriteInt16U(Ord(AData));
 end;
 
 procedure TDataStore.WriteEnum(const AData: TEnumData);
@@ -556,6 +576,16 @@ end;
 function TDataStoreReader.ReadBool(): TBoolData;
 begin
   Result := ( ReadInt8U() > 0 );
+end;
+
+function TDataStoreReader.ReadAnsiChar(): TAnsiCharacter;
+begin
+  Result := TAnsiCharacter(ReadInt8U());
+end;
+
+function TDataStoreReader.ReadWideChar(): TWideCharacter;
+begin
+  Result := TWideCharacter(ReadInt16U());
 end;
 
 function TDataStoreReader.ReadEnum(): TEnumData;

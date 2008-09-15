@@ -368,6 +368,10 @@ type
     function Support_ComplextType_with_SimpleContent():Boolean;virtual;
     function Support_nil():Boolean;virtual;
   published
+    procedure Test_AnsiChar;
+    procedure Test_AnsiChar_ScopeData;
+    procedure Test_WideChar;
+    procedure Test_WideChar_ScopeData;
     procedure Test_Int_8;
     procedure Test_Int_8_ScopeData;
     procedure Test_Int_16;
@@ -719,6 +723,189 @@ function TTestFormatterSimpleType.Support_nil(): Boolean;
 begin
   Result := True;
 end;
+
+procedure TTestFormatterSimpleType.Test_AnsiChar;
+const VAL_1 : AnsiChar = 'O'; VAL_2 : AnsiChar = 'i';
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1, xVal_2 : AnsiChar;
+begin
+  s := Nil;
+  Try
+    xVal_1 := VAL_1;
+    xVal_2 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('xVal_1',TypeInfo(AnsiChar),xVal_1);
+      f.Put('xVal_2',TypeInfo(AnsiChar),xVal_2);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_AnsiChar.xml');
+    xVal_1 := #0;
+    xVal_2 := #0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'xVal_1';
+      f.Get(TypeInfo(AnsiChar),x,xVal_1);
+      x := 'xVal_2';
+      f.Get(TypeInfo(AnsiChar),x,xVal_2);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,xVal_1);
+    CheckEquals(VAL_2,xVal_2);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_AnsiChar_ScopeData;
+const VAL_1 : AnsiChar = 'O'; VAL_2 : AnsiChar = 'i';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1 : AnsiChar;
+begin
+  s := Nil;
+  try
+    xVal_1 := VAL_1;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_1,xVal_1);
+
+    xVal_1 := VAL_2;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_2,xVal_1);
+  finally
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatterSimpleType.Test_WideChar;
+const VAL_1 : WideChar = WideChar(300); VAL_2 : WideChar = WideChar(400);
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1, xVal_2 : WideChar;
+begin
+  s := Nil;
+  Try
+    xVal_1 := VAL_1;
+    xVal_2 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('xVal_1',TypeInfo(WideChar),xVal_1);
+      f.Put('xVal_2',TypeInfo(WideChar),xVal_2);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_WideChar.xml');
+    xVal_1 := #0;
+    xVal_2 := #0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'xVal_1';
+      f.Get(TypeInfo(WideChar),x,xVal_1);
+      x := 'xVal_2';
+      f.Get(TypeInfo(WideChar),x,xVal_2);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,xVal_1);
+    CheckEquals(VAL_2,xVal_2);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_WideChar_ScopeData;
+const VAL_1 : WideChar = WideChar(300); VAL_2 : WideChar = WideChar(400);
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1 : WideChar;
+begin
+  s := Nil;
+  try
+    xVal_1 := VAL_1;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(WideChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(WideChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_1,xVal_1);
+
+    xVal_1 := VAL_2;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(WideChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(WideChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_2,xVal_1);
+  finally
+    s.Free();
+  end; end;
 
 procedure TTestFormatterSimpleType.Test_Int_8;
 const VAL_1 = 12; VAL_2 = -10;

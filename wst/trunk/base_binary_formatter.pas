@@ -42,7 +42,7 @@ type
     dtInt16U,   dtInt16S,
     dtInt32U,   dtInt32S,
     dtInt64U,   dtInt64S,
-    dtBool, dtEnum,
+    dtBool, dtAnsiChar, dtWideChar, dtEnum,
     dtSingle, dtDouble, dtExtended, dtCurrency,
     dtAnsiString, dtWideString,
 {$IFDEF WST_UNICODESTRING}
@@ -72,6 +72,8 @@ type
       dtInt64U   : ( Int64U : TInt64U );
       dtInt64S   : ( Int64S : TInt64S );
       dtBool     : ( BoolData : TBoolData );
+      dtAnsiChar : ( AnsiCharData : TAnsiCharacter; );
+      dtWideChar : ( WideCharData : TWideCharacter; );
       dtEnum     : ( EnumData : TEnumData );
       dtSingle   : ( SingleData : TFloat_Single_4 );
       dtDouble   : ( DoubleData : TFloat_Double_8 );
@@ -253,6 +255,16 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PutAnsiChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure PutWideChar(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : WideChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure PutInt64(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -279,6 +291,16 @@ type
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetAnsiChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : AnsiChar
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure GetWideChar(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : WideChar
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
@@ -648,6 +670,8 @@ Begin
     dtUnicodeString  : ADest.WriteUnicodeStr(ARoot^.UnicodeStrData^.Data);
 {$ENDIF WST_UNICODESTRING}
     dtBool    : ADest.WriteBool(ARoot^.BoolData);
+    dtAnsiChar    : ADest.WriteAnsiChar(ARoot^.AnsiCharData);
+    dtWideChar    : ADest.WriteWideChar(ARoot^.WideCharData);
     dtEnum    : ADest.WriteEnum(ARoot^.EnumData);
     dtObject :
       Begin
@@ -715,6 +739,8 @@ Begin
     dtUnicodeString  : Result^.UnicodeStrData^.Data := AStoreRdr.ReadUnicodeStr();
 {$ENDIF WST_UNICODESTRING}
     dtBool    : Result^.BoolData := AStoreRdr.ReadBool();
+    dtAnsiChar    : Result^.AnsiCharData := AStoreRdr.ReadAnsiChar();
+    dtWideChar    : Result^.WideCharData := AStoreRdr.ReadWideChar();
     dtEnum    : Result^.EnumData := AStoreRdr.ReadEnum();
     dtObject  :
       Begin
@@ -1051,6 +1077,24 @@ begin
   StackTop().CreateBuffer(AName,dtBool)^.BoolData := AData;
 end;
 
+procedure TBaseBinaryFormatter.PutAnsiChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: AnsiChar
+);
+begin
+  StackTop().CreateBuffer(AName,dtAnsiChar)^.AnsiCharData := AData;
+end;
+
+procedure TBaseBinaryFormatter.PutWideChar(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: WideChar
+);
+begin
+  StackTop().CreateBuffer(AName,dtWideChar)^.WideCharData := AData;
+end;
+
 procedure TBaseBinaryFormatter.PutInt64(
   const AName: String;
   const ATypeInfo: PTypeInfo;
@@ -1101,6 +1145,24 @@ procedure TBaseBinaryFormatter.GetBool(
 );
 begin
   AData := GetDataBuffer(AName)^.BoolData;
+end;
+
+procedure TBaseBinaryFormatter.GetAnsiChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: AnsiChar
+);
+begin
+  AData := GetDataBuffer(AName)^.AnsiCharData;
+end;
+
+procedure TBaseBinaryFormatter.GetWideChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideChar
+);
+begin
+  AData := GetDataBuffer(AName)^.WideCharData;
 end;
 
 procedure TBaseBinaryFormatter.GetFloat(
@@ -1239,7 +1301,10 @@ begin
   Result := StackTop().IsCurrentScopeNil();
 end;
 
-procedure TBaseBinaryFormatter.BeginObject(const AName: TDataName;const ATypeInfo: PTypeInfo);
+procedure TBaseBinaryFormatter.BeginObject(
+  const AName: string;
+  const ATypeInfo: PTypeInfo
+);
 begin
   PushStack(StackTop().CreateBuffer(AName,dtObject));
 end;
@@ -1332,8 +1397,20 @@ Var
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        PutAnsiChar(AName,ATypeInfo,ansiCharData);
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        PutWideChar(AName,ATypeInfo,wideCharData);
+      end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         ansiStrData := String(AData);
@@ -1439,9 +1516,21 @@ var
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   CheckScope();
   case ATypeInfo^.Kind of
+    tkChar :
+      begin
+        ansiCharData := AnsiChar(AData);
+        StackTop().CreateInnerBuffer(dtAnsiChar)^.AnsiCharData:= ansiCharData;
+      end;
+    tkWChar :
+      begin
+        wideCharData := WideChar(AData);
+        StackTop().CreateInnerBuffer(dtWideChar)^.WideCharData:= wideCharData;
+      end;
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
@@ -1595,6 +1684,8 @@ Var
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+  ansiCharData : AnsiChar;
+  wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
     tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
@@ -1642,6 +1733,18 @@ begin
         Boolean(AData) := boolData;
       End;
     {$ENDIF}
+     tkChar :
+       begin
+         ansiCharData := #0;
+         GetAnsiChar(ATypeInfo,AName,ansiCharData);
+         AnsiChar(AData) := ansiCharData;
+       end;
+     tkWChar :
+       begin
+         wideCharData := #0;
+         GetWideChar(ATypeInfo,AName,wideCharData);
+         WideChar(AData) := wideCharData;
+       end;
     tkInteger, tkEnumeration :
       Begin
       {$IFNDEF FPC}
@@ -1707,6 +1810,8 @@ begin
   CheckScope();
   dataBuffer := StackTop().GetInnerBuffer();
   Case ATypeInfo^.Kind Of
+    tkChar         : AnsiChar(AData) := dataBuffer^.AnsiCharData ;
+    tkWChar        : WideChar(AData) := dataBuffer^.WideCharData ;
     tkInt64        : Int64(AData) := dataBuffer^.Int64S;
     {$IFDEF FPC}
     tkQWord        : QWord(AData) := dataBuffer^.Int64U;
