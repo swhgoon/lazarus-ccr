@@ -58,6 +58,7 @@
         <ComponentName Value="fEnumEdit"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufenumedit.lrs"/>
         <UnitName Value="ufEnumedit"/>
       </Unit3>
@@ -81,6 +82,7 @@
         <ComponentName Value="fClassEdit"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufclassedit.lrs"/>
         <UnitName Value="ufclassedit"/>
       </Unit7>
@@ -88,6 +90,7 @@
         <Filename Value="ufpropedit.pas"/>
         <ComponentName Value="fPropEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufpropedit.lrs"/>
         <UnitName Value="ufpropedit"/>
       </Unit8>
@@ -159,6 +162,7 @@
         <Filename Value="ufarrayedit.pas"/>
         <ComponentName Value="fArrayEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufarrayedit.lrs"/>
         <UnitName Value="ufarrayedit"/>
       </Unit19>
@@ -166,6 +170,7 @@
         <Filename Value="uftypealiasedit.pas"/>
         <ComponentName Value="fTypeAliasEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="uftypealiasedit.lrs"/>
         <UnitName Value="uftypealiasedit"/>
       </Unit20>
@@ -173,6 +178,7 @@
         <Filename Value="ufrecordedit.pas"/>
         <ComponentName Value="fRecordEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufrecordedit.lrs"/>
         <UnitName Value="ufrecordedit"/>
       </Unit21>

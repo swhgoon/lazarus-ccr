@@ -1,10 +1,8 @@
 object fRecordEdit: TfRecordEdit
-  Left = 719
+  Left = 609
   Height = 542
-  Top = 233
+  Top = 181
   Width = 517
-  HorzScrollBar.Page = 516
-  VertScrollBar.Page = 541
   ActiveControl = PC
   Caption = 'fRecordEdit'
   ClientHeight = 542
@@ -115,16 +113,14 @@ object fRecordEdit: TfRecordEdit
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
-        Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
+        Gutter.ShowCodeFolding = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -448,7 +444,6 @@ object fRecordEdit: TfRecordEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet

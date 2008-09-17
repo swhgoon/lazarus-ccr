@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<definitions name="wst_test" 
+   xmlns="http://schemas.xmlsoap.org/wsdl/" 
+   xmlns:tns="class_widestring_property" 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   targetNamespace="class_widestring_property"
+   xmlns:wst="urn:wst_base">
+
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="class_widestring_property">
+      <xsd:complexType name="TSampleClass">
+        <xsd:sequence>
+          <xsd:element name="elementProp" type="xsd:string" wst:TypeHint="WideString"/>
+        </xsd:sequence>
+        <xsd:attribute use="required" name="elementAtt" type="xsd:string" wst:TypeHint="WideString"/>
+      </xsd:complexType>        
+    </xsd:schema>
+  </types>
+  
+
+</definitions>

@@ -1,10 +1,8 @@
 object fClassEdit: TfClassEdit
-  Left = 794
+  Left = 616
   Height = 547
-  Top = 101
+  Top = 120
   Width = 518
-  HorzScrollBar.Page = 517
-  VertScrollBar.Page = 546
   ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fClassEdit'
@@ -162,9 +160,8 @@ object fClassEdit: TfClassEdit
         Top = 58
         Width = 406
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
-        MaxLength = 0
+        MaxLength = -1
         Style = csDropDownList
         TabOrder = 1
       end
@@ -181,16 +178,15 @@ object fClassEdit: TfClassEdit
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
         BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
-        Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
+        Gutter.ShowCodeFolding = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item

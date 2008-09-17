@@ -24,6 +24,7 @@ uses
 type
 
   TNameSpaceValueType = ( nvtExpandValue, nvtShortSynonym );
+  TSearchSpace = ( ssCurrentModule, ssGlobal );
 
   TAbstractTypeParserClass = class of TAbstractTypeParser;
 
@@ -44,7 +45,12 @@ type
             ALocalName : string;
       const ASpaceType : TNameSpaceValueType
     ) : TPasElement;
-    function FindElement(const ALocalName : string) : TPasElement; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    function FindElement(
+      const ALocalName : string;
+      const ANameKinds : TElementNameKinds = [elkDeclaredName,elkName]
+    ) : TPasElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function FindElementWithHint(const AName, AHint : string; const ASpace : TSearchSpace) : TPasElement;
+    function ExtractTypeHint(AElement : TDOMNode) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF WST_HANDLE_DOC}
     procedure ParseDocumentation(AType : TPasType);
 {$ENDIF WST_HANDLE_DOC}
@@ -307,14 +313,43 @@ begin
   Result := FSymbols.FindElementNS(ALocalName,locNS);
 end;
 
-function TAbstractTypeParser.GetModule() : TPasModule;
+function TAbstractTypeParser.GetModule : TPasModule;
 begin
   Result := FContext.GetTargetModule();
 end;
 
-function TAbstractTypeParser.FindElement(const ALocalName: string): TPasElement;
+function TAbstractTypeParser.FindElement(
+  const ALocalName: string;
+  const ANameKinds : TElementNameKinds
+) : TPasElement;
 begin
-  Result := FSymbols.FindElementInModule(ALocalName,Module);
+  Result := FSymbols.FindElementInModule(ALocalName,Module,ANameKinds);
+end;
+
+function TAbstractTypeParser.FindElementWithHint(
+  const AName,
+        AHint      : string;
+  const ASpace : TSearchSpace
+) : TPasElement;
+begin
+  Result := nil;
+  if ( ASpace = ssCurrentModule ) then begin
+    if ( Length(AHint) > 0 ) then
+      Result := FindElement(AHint,[elkName]);
+    if ( Result = nil ) then
+      Result := FindElement(AName);
+  end else if ( ASpace = ssGlobal ) then begin
+    if ( Length(AHint) > 0 ) then
+      Result := FSymbols.FindElement(AHint,[elkName]);
+    if ( Result = nil ) then
+      Result := FSymbols.FindElement(AName);
+  end;
+end;
+
+function TAbstractTypeParser.ExtractTypeHint(AElement: TDOMNode): string;
+begin
+  if not wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_typeHint,Result) then
+    Result := '';
 end;
 
 {$IFDEF WST_HANDLE_DOC}
@@ -720,7 +755,7 @@ var
   begin
     Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_collection,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
-  
+
   procedure ParseElement(AElement : TDOMNode);
   var
     locAttCursor, locPartCursor : IObjectCursor;
@@ -733,9 +768,11 @@ var
     locMaxOccurUnbounded : Boolean;
     locStrBuffer : string;
     locIsRefElement : Boolean;
+    locTypeHint : string;
   begin
     locType := nil;
     locTypeName := '';
+    locTypeHint := '';
     locAttCursor := CreateAttributesCursor(AElement,cetRttiNode);
     locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
     locPartCursor.Reset();
@@ -760,7 +797,8 @@ var
       locPartCursor := CreateCursorOn(locAttCursor.Clone() as IObjectCursor,ParseFilter(Format('%s = %s',[s_NODE_NAME,QuotedStr(s_type)]),TDOMNodeRttiExposer));
       locPartCursor.Reset();
       if locPartCursor.MoveNext() then begin
-        locTypeName := ExtractNameFromQName((locPartCursor.GetCurrent() as TDOMNodeRttiExposer).NodeValue);
+        locTypeName := ExtractNameFromQName(TDOMNodeRttiExposer(locPartCursor.GetCurrent()).NodeValue);
+        locTypeHint := ExtractTypeHint(AElement);
       end else begin
         locTypeName := Format('%s_%s_Type',[FTypeName,locName]);
         locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(FContext,AElement,FSymbols,locTypeName);
@@ -776,7 +814,7 @@ var
     end;
     if IsStrEmpty(locTypeName) then
       raise EXsdInvalidElementDefinitionException.Create('Invalid <element> definition : empty "type".');
-    locType := FSymbols.FindElement(locTypeName);
+    locType := FindElementWithHint(locTypeName,locTypeHint,ssGlobal);
     if Assigned(locType) then begin
       if locIsRefElement then begin
         locTypeInternalName := locTypeName;

@@ -33,6 +33,9 @@ const
   
 type
 
+  TElementNameKind = ( elkDeclaredName, elkName );
+  TElementNameKinds = set of TElementNameKind;
+
   TBindingStyle = ( bsDocument, bsRPC, bsUnknown );
   
 const
@@ -115,9 +118,14 @@ type
     procedure SetArrayItemExternalName(AArray : TPasArrayType; const AExternalName : string);
     function IsCollection(AArray : TPasArrayType) : Boolean;
     procedure SetCollectionFlag(AArray : TPasArrayType; const AFlag : Boolean);
-    function FindElement(const AName: String): TPasElement; override;
+    function FindElement(const AName: String): TPasElement; overload; override;
+    function FindElement(const AName: String; const ANameKinds : TElementNameKinds): TPasElement; overload;
     function FindElementNS(const AName, ANameSpace : string): TPasElement;
-    function FindElementInModule(const AName: String; AModule: TPasModule): TPasElement;
+    function FindElementInModule(
+        const AName: String;
+            AModule: TPasModule;
+      const ANameKinds : TElementNameKinds = [elkDeclaredName, elkName]
+    ): TPasElement;
     function FindModule(const AName: String): TPasModule;override;
     function IsEnumItemNameUsed(const AName : string; AModule : TPasModule) : Boolean;overload;
     function IsEnumItemNameUsed(const AName : string) : Boolean;overload;
@@ -164,6 +172,7 @@ type
   end;
 
   TPasNativeSimpleContentClassType = class(TPasNativeClassType) end;
+  TPasNativeSpecialSimpleContentClassType = class(TPasNativeSimpleContentClassType) end;
 
   { TPasNativeSimpleType }
 
@@ -176,6 +185,8 @@ type
     property ExtendableType : TPasNativeSimpleContentClassType read FExtendableType;
   end;
   
+  TPasNativeSpecialSimpleType = class(TPasNativeSimpleType) end;
+
   function GetParameterIndex(
           AProcType  : TPasProcedureType;
     const AParamName : string;
@@ -200,10 +211,8 @@ implementation
 uses parserutils, wst_types;
 
 const
-    SIMPLE_TYPES_COUNT = 16;
+    SIMPLE_TYPES_COUNT = 14;
       SIMPLE_TYPES : Array[0..Pred(SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
-          ('string', 'TComplexStringContentRemotable', 'string'),
-          ('WideString', 'TComplexWideStringContentRemotable', 'string'),
           ('integer', 'TComplexInt32SContentRemotable', 'int'),
           ('LongWord', 'TComplexInt32UContentRemotable', 'unsignedInt' ),
           ('SmallInt', 'TComplexInt16SContentRemotable', 'short'),
@@ -223,12 +232,55 @@ const
      BOXED_TYPES : Array[0..Pred(BOXED_TYPES_COUNT)] Of array[0..2] of string = (
         ('TBase64StringRemotable', 'TBase64StringExtRemotable', 'base64Binary')
      );
-     
-     
+   SPECIAL_SIMPLE_TYPES_COUNT = 2 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+     SPECIAL_SIMPLE_TYPES : Array[0..Pred(SPECIAL_SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
+          ('string', 'TComplexStringContentRemotable', 'string'),
+          ('WideString', 'TComplexWideStringContentRemotable', 'string')
+{$IFDEF WST_UNICODESTRING}
+         ,('UnicodeString', 'TComplexUnicodeStringContentRemotable', 'string')
+{$ENDIF WST_UNICODESTRING}
+     );
+
 procedure AddSystemSymbol(
   ADest : TPasModule;
   AContainer : TwstPasTreeContainer
 );
+
+  procedure RegisterSpecialSimpleTypes();
+  var
+    i : Integer;
+    splTyp : TPasNativeSpecialSimpleType;
+    syb : TPasNativeSpecialSimpleContentClassType;
+    s : string;
+    typlst : array[0..Pred(SPECIAL_SIMPLE_TYPES_COUNT)] of TPasNativeSpecialSimpleType;
+  begin
+    for i := Low(SPECIAL_SIMPLE_TYPES) to High(SPECIAL_SIMPLE_TYPES) do begin
+      splTyp := TPasNativeSpecialSimpleType(AContainer.CreateElement(TPasNativeSpecialSimpleType,SPECIAL_SIMPLE_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
+      ADest.InterfaceSection.Declarations.Add(splTyp);
+      ADest.InterfaceSection.Types.Add(splTyp);
+      typlst[i] := splTyp;
+      s := SPECIAL_SIMPLE_TYPES[i][1];
+      if not IsStrEmpty(s) then begin
+        syb := AContainer.FindElementInModule(SPECIAL_SIMPLE_TYPES[i][1],ADest) as TPasNativeSpecialSimpleContentClassType;
+        if not Assigned(syb) then begin
+          syb := TPasNativeSpecialSimpleContentClassType(AContainer.CreateElement(TPasNativeSpecialSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
+          ADest.InterfaceSection.Declarations.Add(syb);
+          ADest.InterfaceSection.Types.Add(splTyp);
+        end;
+        splTyp.SetExtendableType(syb);
+      end;
+    end;
+    for i := Low(SPECIAL_SIMPLE_TYPES) to High(SPECIAL_SIMPLE_TYPES) do begin
+      splTyp := typlst[i];
+      if not IsStrEmpty(SPECIAL_SIMPLE_TYPES[i][2]) then begin
+        AContainer.RegisterExternalAlias(splTyp,SPECIAL_SIMPLE_TYPES[i][2]);
+        if ( splTyp.ExtendableType <> nil ) then begin
+          AContainer.RegisterExternalAlias(splTyp.ExtendableType,SPECIAL_SIMPLE_TYPES[i][2]);
+        end;
+      end;
+    end;
+  end;
+
   procedure RegisterSimpleTypes();
   var
     i : Integer;
@@ -301,6 +353,7 @@ procedure AddSystemSymbol(
 
 begin
   RegisterSimpleTypes();
+  RegisterSpecialSimpleTypes();
   RegisterBoxedTypes();
 end;
 
@@ -626,7 +679,11 @@ begin
     Properties.SetValue(AArray,sARRAY_IS_COLLECTION,'false');
 end;
 
-function TwstPasTreeContainer.FindElementInModule(const AName: String; AModule : TPasModule): TPasElement;
+function TwstPasTreeContainer.FindElementInModule(
+  const AName: String;
+        AModule : TPasModule;
+  const ANameKinds : TElementNameKinds
+): TPasElement;
 var
   decs : TList;
   i, c : Integer;
@@ -635,40 +692,46 @@ begin
   if Assigned(AModule) and Assigned(AModule.InterfaceSection.Declarations) then begin
     decs := AModule.InterfaceSection.Declarations;
     c := decs.Count;
-    {for i := 0 to Pred(c) do begin
-      if SameName(TPasElement(decs[i]),AName) then begin
-        Result := TPasElement(decs[i]);
-        Exit;
-      end;
-    end;}
-    for i := 0 to Pred(c) do begin
-      if AnsiSameText(AName, GetExternalName(TPasElement(decs[i]))) then begin
-        Result := TPasElement(decs[i]);
-        Exit;
+    if ( elkDeclaredName in ANameKinds ) then begin
+      for i := 0 to Pred(c) do begin
+        if AnsiSameText(AName, GetExternalName(TPasElement(decs[i]))) then begin
+          Result := TPasElement(decs[i]);
+          Exit;
+        end;
       end;
     end;
-    for i := 0 to Pred(c) do begin
-      if AnsiSameText(AName, TPasElement(decs[i]).Name) then begin
-        Result := TPasElement(decs[i]);
-        Exit;
+    if ( Result = nil ) and ( elkName in ANameKinds ) then begin
+      for i := 0 to Pred(c) do begin
+        if AnsiSameText(AName, TPasElement(decs[i]).Name) then begin
+          Result := TPasElement(decs[i]);
+          Exit;
+        end;
       end;
     end;
   end;
 end;
 
 function TwstPasTreeContainer.FindElement(const AName: String): TPasElement;
+begin
+  Result := FindElement(AName,[elkDeclaredName,elkName]);
+end;
+
+function TwstPasTreeContainer.FindElement(
+  const AName: String;
+  const ANameKinds: TElementNameKinds
+): TPasElement;
 var
   i : Integer;
   mls : TList;
   mdl : TPasModule;
 begin
-  Result := FindElementInModule(AName,CurrentModule);
+  Result := FindElementInModule(AName,CurrentModule,ANameKinds);
   if ( Result = nil ) then begin
     mls := Package.Modules;
     for i := 0 to Pred(mls.Count) do begin
       mdl := TPasModule(mls[i]);
       if ( CurrentModule <> mdl ) then begin
-        Result := FindElementInModule(AName,mdl);
+        Result := FindElementInModule(AName,mdl,ANameKinds);
         if ( Result <> nil ) then begin
           Break;
         end;

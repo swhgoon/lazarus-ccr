@@ -138,6 +138,11 @@
       <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <Checks>
         <RangeChecks Value="True"/>

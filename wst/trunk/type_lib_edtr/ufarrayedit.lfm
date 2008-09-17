@@ -1,10 +1,8 @@
 object fArrayEdit: TfArrayEdit
-  Left = 772
+  Left = 547
   Height = 375
-  Top = 42
+  Top = 113
   Width = 392
-  HorzScrollBar.Page = 391
-  VertScrollBar.Page = 374
   ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fArrayEdit'
@@ -103,9 +101,7 @@ object fArrayEdit: TfArrayEdit
         Top = 122
         Width = 337
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
-        MaxLength = 0
         Style = csDropDownList
         TabOrder = 1
       end
@@ -113,7 +109,7 @@ object fArrayEdit: TfArrayEdit
         Left = 20
         Height = 19
         Top = 226
-        Width = 337
+        Width = 344
         Caption = 'Embedded ( items are expanded directly in the enclosing element )'
         TabOrder = 3
       end
@@ -130,7 +126,7 @@ object fArrayEdit: TfArrayEdit
         Left = 20
         Height = 19
         Top = 258
-        Width = 352
+        Width = 357
         Caption = 'Collection ( Pascal type will derive from TObjectCollectionRemotable )'
         TabOrder = 4
       end
@@ -147,16 +143,14 @@ object fArrayEdit: TfArrayEdit
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
-        Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
+        Gutter.ShowCodeFolding = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -480,7 +474,6 @@ object fArrayEdit: TfArrayEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet

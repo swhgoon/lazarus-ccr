@@ -54,12 +54,24 @@ type
     function GetOwner() : IXsdGenerator;
   end;
 
+  IXsdSpecialTypeHelper = interface
+    ['{1F4115E8-2B82-4E63-844B-36EB5911172F}']
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );
+  end;
+
   IXsdTypeHandlerRegistry = interface
     ['{C5666646-3426-4696-93EE-AFA8EE7CAE53}']
     function Find(
           ASymbol  : TPasElement;
           Aowner   : IGenerator;
       out AHandler : IXsdTypeHandler
+    ) : Boolean;
+    function FindHelper(
+          ASymbol  : TPasElement;
+      out AHelper  : IXsdSpecialTypeHelper
     ) : Boolean;
     procedure Register(AFactory : TBaseTypeHandlerClass);
   end;
@@ -115,6 +127,7 @@ type
   TBaseTypeHandler = class(TInterfacedObject,IXsdTypeHandler)
   private
     FOwner : Pointer;
+    FRegistry : IXsdTypeHandlerRegistry;
   protected
     procedure Generate(
             AContainer    : TwstPasTreeContainer;
@@ -126,8 +139,12 @@ type
     function GetSchemaNode(ADocument : TDOMDocument) : TDOMNode;
     procedure DeclareNameSpaceOf_WST(ADocument : TDOMDocument);
     procedure DeclareAttributeOf_WST(AElement : TDOMElement; const AAttName, AAttValue : DOMString);
+    function GetRegistry() : IXsdTypeHandlerRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
-    constructor Create(AOwner : IGenerator);virtual;
+    constructor Create(
+      AOwner : IGenerator;
+      ARegistry : IXsdTypeHandlerRegistry
+    );virtual;
   end;
 
   function GetNameSpaceShortName(
@@ -145,6 +162,42 @@ uses
 
 type
 
+  { TAbstractSpecialTypeHelper }
+
+  TAbstractSpecialTypeHelper = class(TInterfacedObject,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );virtual;abstract;
+  public
+    constructor Create();virtual;
+  end;
+
+  TAbstractSpecialTypeHelperClass = class of TAbstractSpecialTypeHelper;
+
+  { TWideStringHelper }
+
+  TWideStringHelper = class(TAbstractSpecialTypeHelper,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );
+  end;
+
+{$IFDEF WST_UNICODESTRING}
+  { TUnicodeStringHelper }
+
+  TUnicodeStringHelper = class(TAbstractSpecialTypeHelper,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );
+  end;
+{$ENDIF WST_UNICODESTRING}
+
   { TXsdTypeHandlerRegistry }
 
   TXsdTypeHandlerRegistry = class(TInterfacedObject,IInterface,IXsdTypeHandlerRegistry)
@@ -157,6 +210,10 @@ type
           ASymbol  : TPasElement;
           Aowner   : IGenerator;
       out AHandler : IXsdTypeHandler
+    ) : Boolean;
+    function FindHelper(
+          ASymbol  : TPasElement;
+      out AHelper  : IXsdSpecialTypeHelper
     ) : Boolean;
     procedure Register(AFactory : TBaseTypeHandlerClass);
   public
@@ -243,24 +300,13 @@ type
     class function CanHandle(ASymbol : TObject) : Boolean;override;
   end;
 
-var
-  XsdTypeHandlerRegistryInst : IXsdTypeHandlerRegistry = nil;
-function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;
+{ TAbstractSpecialTypeHelper }
+
+constructor TAbstractSpecialTypeHelper.Create();
 begin
-  Result := XsdTypeHandlerRegistryInst;
+  inherited Create();
 end;
 
-procedure RegisterFondamentalTypes();
-var
-  r : IXsdTypeHandlerRegistry;
-begin
-  r := GetXsdTypeHandlerRegistry();
-  r.Register(TEnumTypeHandler);
-  r.Register(TClassTypeDefinition_TypeHandler);
-  r.Register(TPasRecordType_TypeHandler);
-  r.Register(TBaseArrayRemotable_TypeHandler);
-  r.Register(TTypeAliasDefinition_TypeHandler);
-end;
 
 function GetTypeNameSpace(
   AContainer : TwstPasTreeContainer;
@@ -341,6 +387,57 @@ begin
   AParent.AppendChild(Result);
 end;
 
+{ TWideStringHelper }
+
+procedure TWideStringHelper.HandleTypeUsage(
+  ATargetNode,
+  ASchemaNode  : TDOMElement
+);
+var
+  strBuffer : string;
+begin
+  if not FindAttributeByValueInNode(s_WST_base_namespace,ASchemaNode,strBuffer) then
+    ASchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+  ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'WideString');
+end;
+
+{$IFDEF WST_UNICODESTRING}
+{ TUnicodeStringHelper }
+
+procedure TUnicodeStringHelper.HandleTypeUsage(
+  ATargetNode,
+  ASchemaNode  : TDOMElement
+);
+var
+  strBuffer : string;
+begin
+  if not FindAttributeByValueInNode(s_WST_base_namespace,ASchemaNode,strBuffer) then
+    ASchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+  ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'UnicodeString');
+end;
+{$ENDIF WST_UNICODESTRING}
+
+var
+  XsdTypeHandlerRegistryInst : IXsdTypeHandlerRegistry = nil;
+function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;
+begin
+  Result := XsdTypeHandlerRegistryInst;
+end;
+
+procedure RegisterFondamentalTypes();
+var
+  r : IXsdTypeHandlerRegistry;
+begin
+  r := GetXsdTypeHandlerRegistry();
+  r.Register(TEnumTypeHandler);
+  r.Register(TClassTypeDefinition_TypeHandler);
+  r.Register(TPasRecordType_TypeHandler);
+  r.Register(TBaseArrayRemotable_TypeHandler);
+  r.Register(TTypeAliasDefinition_TypeHandler);
+end;
+
+
+
 { TWsdlTypeHandlerRegistry }
 
 function TXsdTypeHandlerRegistry.FindIndexOfHandler(ASymbol: TPasElement): Integer;
@@ -370,8 +467,42 @@ begin
   Result := ( i >= 0 );
   if Result then begin
     fct := TBaseTypeHandlerClass(FList[i]);
-    AHandler := fct.Create(Aowner) as IXsdTypeHandler;
+    AHandler := fct.Create(Aowner,Self) as IXsdTypeHandler;
   end;
+end;
+
+type
+  TSpecialTypeHelperRecord = record
+    Name : string;
+    HelperClass : TAbstractSpecialTypeHelperClass;
+  end;
+function TXsdTypeHandlerRegistry.FindHelper(
+      ASymbol : TPasElement;
+  out AHelper: IXsdSpecialTypeHelper
+) : Boolean;
+const
+   HELPER_COUNT = 1 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+   HELPER_MAP : array[0..Pred(HELPER_COUNT)] of TSpecialTypeHelperRecord = (
+     ( Name : 'widestring'; HelperClass : TWideStringHelper;)
+{$IFDEF WST_UNICODESTRING}
+    ,( Name : 'unicodestring'; HelperClass : TUnicodeStringHelper;)
+{$ENDIF WST_UNICODESTRING}
+   );
+var
+  i : PtrInt;
+  locName : string;
+begin
+  AHelper := nil;
+  if ( ASymbol <> nil ) and ASymbol.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+    locName := LowerCase(ASymbol.Name);
+    for i := Low(HELPER_MAP) to High(HELPER_MAP) do begin
+      if ( locName = HELPER_MAP[i].Name ) then begin
+        AHelper := HELPER_MAP[i].HelperClass.Create() as IXsdSpecialTypeHelper;
+        Break;
+      end;
+    end;
+  end;
+  Result := ( AHelper <> nil );
 end;
 
 procedure TXsdTypeHandlerRegistry.Register(AFactory: TBaseTypeHandlerClass);
@@ -422,10 +553,19 @@ begin
   AElement.SetAttribute(Format('%s:%s',[s_WST,AAttName]),AAttvalue);
 end;
 
-constructor TBaseTypeHandler.Create(AOwner: IGenerator);
+function TBaseTypeHandler.GetRegistry(): IXsdTypeHandlerRegistry;
+begin
+  Result := FRegistry;
+end;
+
+constructor TBaseTypeHandler.Create(
+  AOwner: IGenerator;
+  ARegistry : IXsdTypeHandlerRegistry
+);
 begin
   Assert(Assigned(AOwner));
   FOwner := Pointer(AOwner);
+  FRegistry := ARegistry;
 end;
 
 { TTypeDefinition_TypeHandler }
@@ -635,7 +775,7 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
   end;
 
 var
-  cplxNode, sqcNode, derivationNode : TDOMElement;
+  cplxNode, sqcNode, derivationNode, defSchemaNode : TDOMElement;
 
   procedure ProcessProperty(const AProp : TPasProperty);
   var
@@ -645,6 +785,7 @@ var
     propTypItm, propItmUltimeType : TPasType;
     prop_ns_shortName : string;
     isEmbeddedArray : Boolean;
+    typeHelper : IXsdSpecialTypeHelper;
   begin
     p := AProp;
     if AnsiSameText('Has',Copy(p.StoredAccessorName,1,3)) or AnsiSameText('True',p.StoredAccessorName) then begin
@@ -672,6 +813,10 @@ var
         else
           s := AContainer.GetExternalName(propTypItm);
         propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
+        if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+          if GetRegistry().FindHelper(propTypItm,typeHelper) then
+            typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+        end;
         if ( Length(p.DefaultValue) > 0 ) then
           propNode.SetAttribute(s_default,p.DefaultValue);
         if AContainer.IsAttributeProperty(p) then begin
@@ -699,7 +844,6 @@ var
 var
   typItm : TPasClassType;
   s : string;
-  defSchemaNode : TDOMElement;
   i : Integer;
   typeCategory : TTypeCategory;
   hasSequence : Boolean;

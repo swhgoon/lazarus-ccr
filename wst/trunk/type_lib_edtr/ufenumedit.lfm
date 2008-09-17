@@ -1,10 +1,8 @@
 object fEnumEdit: TfEnumEdit
-  Left = 233
+  Left = 473
   Height = 368
-  Top = 94
+  Top = 119
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 367
   ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fEnumEdit'
@@ -72,16 +70,14 @@ object fEnumEdit: TfEnumEdit
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
-        Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.OnChange = nil
-        Gutter.CodeFoldingWidth = 14
+        Gutter.ShowCodeFolding = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -405,7 +401,6 @@ object fEnumEdit: TfEnumEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet

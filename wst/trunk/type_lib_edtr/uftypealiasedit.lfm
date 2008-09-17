@@ -1,10 +1,8 @@
 object fTypeAliasEdit: TfTypeAliasEdit
-  Left = 682
+  Left = 475
   Height = 300
-  Top = 91
+  Top = 106
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
   ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fTypeAliasEdit'
@@ -96,9 +94,7 @@ object fTypeAliasEdit: TfTypeAliasEdit
         Top = 130
         Width = 344
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
-        MaxLength = 0
         Style = csDropDownList
         TabOrder = 1
       end
@@ -115,14 +111,15 @@ object fTypeAliasEdit: TfTypeAliasEdit
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
+        Font.Pitch = fpFixed
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
+        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
-        Gutter.ShowCodeFolding = True
         Gutter.Width = 10
-        Gutter.CodeFoldingWidth = 14
+        Gutter.ShowCodeFolding = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -446,6 +443,7 @@ object fTypeAliasEdit: TfTypeAliasEdit
             ShortCut = 24642
           end>
         ReadOnly = True
+        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet

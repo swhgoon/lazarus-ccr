@@ -101,6 +101,7 @@ const
   s_WST_headerBlockSimpleContent  = 'wst_headerBlockSimpleContent';
   s_WST_record                    = 'wst_record';
   s_WST_storeType                 = 'StoreType';
+  s_WST_typeHint                  = 'TypeHint';
 
   
 implementation

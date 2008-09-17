@@ -372,6 +372,10 @@ type
     procedure Test_AnsiChar_ScopeData;
     procedure Test_WideChar;
     procedure Test_WideChar_ScopeData;
+{$IFDEF WST_UNICODESTRING}
+    procedure Test_UnicodeChar;
+    procedure Test_UnicodeChar_ScopeData;
+{$ENDIF WST_UNICODESTRING}
     procedure Test_Int_8;
     procedure Test_Int_8_ScopeData;
     procedure Test_Int_16;
@@ -905,7 +909,102 @@ begin
       CheckEquals(VAL_2,xVal_1);
   finally
     s.Free();
-  end; end;
+  end;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+procedure TTestFormatterSimpleType.Test_UnicodeChar;
+const VAL_1 : UnicodeChar = UnicodeChar(300); VAL_2 : UnicodeChar = UnicodeChar(400);
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1, xVal_2 : UnicodeChar;
+begin
+  s := Nil;
+  Try
+    xVal_1 := VAL_1;
+    xVal_2 := VAL_2;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('xVal_1',TypeInfo(UnicodeChar),xVal_1);
+      f.Put('xVal_2',TypeInfo(UnicodeChar),xVal_2);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_UnicodeChar.xml');
+    xVal_1 := #0;
+    xVal_2 := #0;
+
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'xVal_1';
+      f.Get(TypeInfo(UnicodeChar),x,xVal_1);
+      x := 'xVal_2';
+      f.Get(TypeInfo(UnicodeChar),x,xVal_2);
+    f.EndScopeRead();
+
+    CheckEquals(VAL_1,xVal_1);
+    CheckEquals(VAL_2,xVal_2);
+  Finally
+    s.Free();
+  End;
+end;
+
+procedure TTestFormatterSimpleType.Test_UnicodeChar_ScopeData;
+const VAL_1 : UnicodeChar = UnicodeChar(300); VAL_2 : UnicodeChar = UnicodeChar(400);
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  xVal_1 : UnicodeChar;
+begin
+  s := Nil;
+  try
+    xVal_1 := VAL_1;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(UnicodeChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(UnicodeChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_1,xVal_1);
+
+    xVal_1 := VAL_2;
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      f.BeginObject('Root',TypeInfo(TClass_Int));
+        f.PutScopeInnerValue(TypeInfo(UnicodeChar),xVal_1);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+      xVal_1 := #0;
+
+      f := CreateFormatter(TypeInfo(TClass_Int));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_Int));
+        f.GetScopeInnerValue(TypeInfo(UnicodeChar),xVal_1);
+      f.EndScopeRead();
+      CheckEquals(VAL_2,xVal_1);
+  finally
+    s.Free();
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 procedure TTestFormatterSimpleType.Test_Int_8;
 const VAL_1 = 12; VAL_2 = -10;

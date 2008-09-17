@@ -729,7 +729,13 @@ begin
       sym := TPasElement(decList[j]);
       if sym.InheritsFrom(TPasType) and ( not sym.InheritsFrom(TPasNativeSimpleContentClassType) ) then begin
         if ( ALs.IndexOfObject(sym) = -1 ) then begin
-          ALs.AddObject(AContainer.GetExternalName(sym),sym);
+          if sym.InheritsFrom(TPasNativeSpecialSimpleType) or
+             sym.InheritsFrom(TPasNativeSpecialSimpleContentClassType)
+          then begin
+            ALs.AddObject(sym.Name,sym);
+          end else begin
+            ALs.AddObject(AContainer.GetExternalName(sym),sym);
+          end;
         end;
       end;
     end;
