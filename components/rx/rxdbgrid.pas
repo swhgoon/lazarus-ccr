@@ -396,6 +396,7 @@ type
     property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;
+    property OnUTF8KeyPress;
   end;
 
 procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
