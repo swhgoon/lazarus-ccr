@@ -2,6 +2,7 @@
 {$UNDEF TRemotableTypeInitializer_Initialize}
 {$UNDEF WST_TKPROCVAR}
 {$UNDEF WST_UNICODESTRING}
+{$UNDEF WST_SEMAPHORE_TIMEOUT}
 
 {$WARNINGS OFF}
 
@@ -25,6 +26,9 @@
     {$IF Defined(FPC_211)}
       {$DEFINE HAS_FORMAT_SETTINGS}                                              
     {$IFEND}
+    {$IFDEF WINDOWS}
+      {$DEFINE WST_SEMAPHORE_TIMEOUT}
+    {$ENDIF WINDOWS}
   {$ENDIF}
 
   {$IFNDEF FPC}
@@ -38,6 +42,7 @@
     {$IFDEF VER150}
       {$DEFINE HAS_FORMAT_SETTINGS}
     {$ENDIF}
+    {$DEFINE WST_SEMAPHORE_TIMEOUT}
   {$ENDIF}
 
   {$IFDEF CPU86}

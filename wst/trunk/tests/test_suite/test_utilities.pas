@@ -82,7 +82,9 @@ type
     procedure Create_ZEROS();
     procedure Create_NON_ZERO_MIN();
     procedure Release();
+{$IFDEF WST_SEMAPHORE_TIMEOUT}
     procedure Release_NON();
+{$ENDIF WST_SEMAPHORE_TIMEOUT}
     procedure Discard();
   end;
   
@@ -93,7 +95,9 @@ type
     procedure NOT_Pooled();
     procedure POOLED_Create_ZEROS();
     procedure POOLED_Release();
+{$IFDEF WST_SEMAPHORE_TIMEOUT}
     procedure POOLED_Release_NON();
+{$ENDIF WST_SEMAPHORE_TIMEOUT}
     procedure POOLED_Discard();
   end;
 
@@ -205,6 +209,7 @@ begin
   end;
 end;
 
+{$IFDEF WST_SEMAPHORE_TIMEOUT}
 procedure TTest_TIntfPool.Release_NON();
 const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
 var
@@ -242,6 +247,7 @@ begin
     obj.Release(elt);
   end;
 end;
+{$ENDIF WST_SEMAPHORE_TIMEOUT}
 
 procedure TTest_TIntfPool.Discard();
 const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
@@ -358,6 +364,7 @@ begin
   end;
 end;
 
+{$IFDEF WST_SEMAPHORE_TIMEOUT}
 procedure TTest_TSimpleItemFactoryEx.POOLED_Release_NON();
 const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
 var
@@ -394,6 +401,7 @@ begin
     obj.ReleaseInstance(elt);
   end;
 end;
+{$ENDIF WST_SEMAPHORE_TIMEOUT}
 
 procedure TTest_TSimpleItemFactoryEx.POOLED_Discard();
 const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);

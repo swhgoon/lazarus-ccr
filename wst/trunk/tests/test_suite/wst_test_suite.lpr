@@ -4,9 +4,9 @@ program wst_test_suite;
 {$DEFINE UseCThreads}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}{$ENDIF}
+  {$ENDIF}
 
   custapp, classes, sysutils, fpcunit, testreport, testregistry, 
   TestFormatter_unit, testmetadata_unit,
