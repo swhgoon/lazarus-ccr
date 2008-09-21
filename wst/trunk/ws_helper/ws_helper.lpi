@@ -124,7 +124,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="ws_helper.exe"/>
@@ -141,7 +141,6 @@
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
-      <Generate Value="Faster"/>
       <Optimizations>
         <OptimizationLevel Value="2"/>
       </Optimizations>

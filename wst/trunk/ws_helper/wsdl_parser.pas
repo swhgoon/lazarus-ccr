@@ -1231,6 +1231,15 @@ begin
                          ParseFilter(CreateQualifiedNameFilterStr(s_schema,FXSShortNames),TDOMNodeRttiExposer)
                        );
       FSchemaCursor.Reset();
+      if FSchemaCursor.MoveNext() then begin
+        FSchemaCursor.Reset();
+      end else begin
+        FSchemaCursor := CreateCursorOn(
+                           CreateChildrenCursor(locObj.InnerObject,cetRttiNode),
+                           ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_schema)]),TDOMNodeRttiExposer)
+                         );
+        FSchemaCursor.Reset();
+      end;
     end;
   end;
 
@@ -1248,7 +1257,7 @@ var
 begin
   i := FXsdParsers.IndexOf(ANamespace);
   if ( i < 0 ) then
-    raise EXsdParserAssertException.CreateFmt('Unable to find the parser of the parser, namespace : "%s".',[ANamespace]);
+    raise EXsdParserAssertException.CreateFmt('Unable to find the parser, namespace : "%s".',[ANamespace]);
   Result := (FXsdParsers.Objects[i] as TIntfObjectRef).Intf as IXsdPaser;
 end;
 
