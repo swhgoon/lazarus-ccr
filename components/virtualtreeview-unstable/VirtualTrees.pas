@@ -127,10 +127,11 @@ uses
   {$endif}
   ActiveX,
   OleUtils,
+  LCLIntf,
   DelphiCompat,
   LclExt,
   virtualpanningwindow,
-  vtlogger,  LCLType, LResources, LCLIntf,  LMessages, Types,
+  vtlogger,  LCLType, LResources, LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs  // Thread support
   //Clipbrd // Clipboard support
@@ -3375,7 +3376,7 @@ const
 
 var
   //Workaround to LCL bug 8553
-  {$ifndef Windows}
+  {$ifndef LCLWin32}
   pf32bit: TPixelFormat = pfDevice;
   {$endif}
   
