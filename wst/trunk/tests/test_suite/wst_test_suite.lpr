@@ -5,7 +5,7 @@ program wst_test_suite;
 
 uses
   {$IFDEF UNIX}
-  cthreads,
+  cthreads, cwstring,
   {$ENDIF}
 
   custapp, classes, sysutils, fpcunit, testreport, testregistry, 

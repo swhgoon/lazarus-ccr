@@ -44,10 +44,16 @@ type
     FIntProp: Integer;
     FStrProp: string;
     FWideStrProp: widestring;
+{$IFDEF WST_UNICODESTRING}
+    FUnicodeStrProp: UnicodeString;
+{$ENDIF WST_UNICODESTRING}
   published
     property IntProp : Integer read FIntProp write FIntProp;
     property StrProp : string read FStrProp write FStrProp;
     property WideStrProp : widestring read FWideStrProp write FWideStrProp;
+{$IFDEF WST_UNICODESTRING}
+    property UnicodeStrProp : UnicodeString read FUnicodeStrProp write FUnicodeStrProp;
+{$ENDIF WST_UNICODESTRING}
     property EnumProp : TSampleEnum read FEnumProp write FEnumProp;
     property BoolProp : Boolean read FBoolProp write FBoolProp;
   end;
@@ -95,6 +101,17 @@ type
     procedure Evaluate_EqualCaseSensitive();
     procedure Evaluate_EqualCaseInsensitive();
   end;
+
+{$IFDEF WST_UNICODESTRING}
+  { TRttiExpUnicodeStringNodeItem_Test }
+
+  TRttiExpUnicodeStringNodeItem_Test = class(TTestCase)
+  published
+    procedure Create_Test();
+    procedure Evaluate_EqualCaseSensitive();
+    procedure Evaluate_EqualCaseInsensitive();
+  end;
+{$ENDIF WST_UNICODESTRING}
 
   { TRttiExpNode_Test }
 
@@ -881,7 +898,7 @@ begin
 end;
 
 procedure TRttiExpwWideStringNodeItem_Test.Evaluate_EqualCaseSensitive();
-const VAL_1 = 'AzertY';
+const VAL_1 : WideString = 'AzertY';
 var
   x : TRttiExpWideStringNodeItem;
   t : TClass_A;
@@ -909,7 +926,7 @@ begin
 end;
 
 procedure TRttiExpwWideStringNodeItem_Test.Evaluate_EqualCaseInsensitive();
-const VAL_1 = 'AzertY';
+const VAL_1 : WideString = 'AzertY';
 var
   x : TRttiExpWideStringNodeItem;
   t : TClass_A;
@@ -923,12 +940,64 @@ begin
     Check( x.Evaluate(t) = False ,'False');
 
     t.WideStrProp := UpperCase(VAL_1);
-    Check( x.Evaluate(t) = True ,'True');
+    Check( x.Evaluate(t) = True ,'True 1');
 
     t.WideStrProp := LowerCase(VAL_1);
-    Check( x.Evaluate(t) = True ,'True');
+    Check( x.Evaluate(t) = True ,'True 2');
 
     t.WideStrProp := VAL_1;
+    Check( x.Evaluate(t) = True, 'True 3' );
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+
+{$IFDEF WST_UNICODESTRING}
+{ TRttiExpUnicodeStringNodeItem_Test }
+
+procedure TRttiExpUnicodeStringNodeItem_Test.Create_Test();
+var
+  x : TRttiExpUnicodeStringNodeItem;
+begin
+  x := nil;
+  try
+    try
+      x := TRttiExpUnicodeStringNodeItem.Create(GetPropInfo(TClass_A,'IntProp'),sfoEqualCaseInsensitive,'Azerty');
+      Check(False);
+    except
+      on e : EAssertionFailedError do
+        raise;
+      on e : ERttiFilterException do begin
+        // nothing!
+      end;
+    end;
+  finally
+    x.Free();
+  end;
+end;
+
+procedure TRttiExpUnicodeStringNodeItem_Test.Evaluate_EqualCaseSensitive();
+const VAL_1 : UnicodeString = 'AzertY';
+var
+  x : TRttiExpUnicodeStringNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpUnicodeStringNodeItem.Create(GetPropInfo(t,'UnicodeStrProp'),sfoEqualCaseSensitive,VAL_1);
+
+    t.UnicodeStrProp := 'aaadddd';
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.UnicodeStrProp := UpperCase(VAL_1);
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.UnicodeStrProp := LowerCase(VAL_1);
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.UnicodeStrProp := VAL_1;
     Check( x.Evaluate(t) = True, 'True' );
   finally
     x.Free();
@@ -936,6 +1005,34 @@ begin
   end;
 end;
 
+procedure TRttiExpUnicodeStringNodeItem_Test.Evaluate_EqualCaseInsensitive();
+const VAL_1 : UnicodeString = 'AzertY';
+var
+  x : TRttiExpUnicodeStringNodeItem;
+  t : TClass_A;
+begin
+  x := nil;
+  t := TClass_A.Create();
+  try
+    x := TRttiExpUnicodeStringNodeItem.Create(GetPropInfo(t,'UnicodeStrProp'),sfoEqualCaseInsensitive,VAL_1);
+
+    t.UnicodeStrProp := 'aaadddd';
+    Check( x.Evaluate(t) = False ,'False');
+
+    t.UnicodeStrProp := UpperCase(VAL_1);
+    Check( x.Evaluate(t) = True ,'True');
+
+    t.UnicodeStrProp := LowerCase(VAL_1);
+    Check( x.Evaluate(t) = True ,'True');
+
+    t.UnicodeStrProp := VAL_1;
+    Check( x.Evaluate(t) = True, 'True' );
+  finally
+    x.Free();
+    t.Free();
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 { TRttiParser_Test }
 
@@ -1374,11 +1471,15 @@ begin
   end;
 end;
 
+
 Initialization
   RegisterTest('Cursors',TRttiExpIntegerNodeItem_Test.Suite);
   RegisterTest('Cursors',TRttiExpEnumNodeItem_Test.Suite);
   RegisterTest('Cursors',TRttiExpAnsiStringNodeItem_Test.Suite);
   RegisterTest('Cursors',TRttiExpwWideStringNodeItem_Test.Suite);
+{$IFDEF WST_UNICODESTRING}
+  RegisterTest('Cursors',TRttiExpUnicodeStringNodeItem_Test.Suite);
+{$ENDIF WST_UNICODESTRING}
   RegisterTest('Cursors',TRttiExpNode_Test.Suite);
   RegisterTest('Cursors',TRttiFilterCreator_Test.Suite);
   RegisterTest('Cursors',TRttiParser_Test.Suite);

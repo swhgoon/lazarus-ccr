@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
@@ -96,12 +96,12 @@
         <UnitName Value="test_rtti_filter"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\..\wst_rtti_filter\rtti_filters.pas"/>
+        <Filename Value="../../wst_rtti_filter/rtti_filters.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="rtti_filters"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\wst_rtti_filter\wst_cursors.pas"/>
+        <Filename Value="../../wst_rtti_filter/wst_cursors.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_cursors"/>
       </Unit13>
@@ -129,13 +129,12 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <PathDelim Value="\"/>
     <Target>
       <Filename Value="wst_test_suite_gui.exe"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="..\..\"/>
-      <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
+      <IncludeFiles Value="../../"/>
+      <OtherUnitFiles Value="../../;../../ws_helper/;../../wst_rtti_filter/;../../fcl-json/src/"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>

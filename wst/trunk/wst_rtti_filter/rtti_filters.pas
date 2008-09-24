@@ -86,6 +86,14 @@ type
       const AValue        : WideString;
       const AConnector    : TFilterConnector
     ) : TRttiFilterCreator;overload;
+{$IFDEF WST_UNICODESTRING}
+    function AddCondition(
+      const APropertyName : string;
+      const AOperator     : TStringFilterOperator;
+      const AValue        : UnicodeString;
+      const AConnector    : TFilterConnector
+    ) : TRttiFilterCreator;overload;
+{$ENDIF WST_UNICODESTRING}
 
     function BeginGroup(const AConnector : TFilterConnector):TRttiFilterCreator;
     function EndGroup():TRttiFilterCreator;
@@ -226,6 +234,23 @@ type
     property ComparedValue : WideString read FComparedValue;
   end;
 
+{$IFDEF WST_UNICODESTRING}
+  { TRttiExpUnicodeStringNodeItem }
+
+  TRttiExpUnicodeStringNodeItem = class(TRttiExpStringNodeItem)
+  private
+    FComparedValue: UnicodeString;
+  public
+    constructor Create(
+      const APropInfo      : PPropInfo;
+      const AOperation     : TStringFilterOperator;
+      const AComparedValue : UnicodeString
+    );
+    function Evaluate(AInstance : TRttiFilterCreatorTarget):Boolean;override;
+    property ComparedValue : UnicodeString read FComparedValue;
+  end;
+{$ENDIF WST_UNICODESTRING}
+
   procedure ParseFilter(const AFilterText: string; AFltrCrtr : TRttiFilterCreator);overload;
   function ParseFilter(
     const AFilterText  : string;
@@ -282,6 +307,9 @@ var
   var
     s : string;
     ws : WideString;
+{$IFDEF WST_UNICODESTRING}
+    us : UnicodeString;
+{$ENDIF WST_UNICODESTRING}
     fltrOp : TStringFilterOperator;
   begin
     MoveNext();
@@ -301,12 +329,24 @@ var
     end;
     MoveNext();
     prsr.CheckToken(toString);
-    if ( propInfo^.PropType^.Kind = tkWString ) then begin
-      ws := prsr.TokenString();
-      AFltrCrtr.AddCondition(propName,fltrOp,ws,lastCntr);
-    end else begin
-      s := prsr.TokenString();
-      AFltrCrtr.AddCondition(propName,fltrOp,s,lastCntr);
+    case propInfo^.PropType^.Kind of
+      tkWString :
+        begin
+          ws := prsr.TokenString();
+          AFltrCrtr.AddCondition(propName,fltrOp,ws,lastCntr);
+        end;
+{$IFDEF WST_UNICODESTRING}
+      tkUString :
+        begin
+          us := prsr.TokenString();
+          AFltrCrtr.AddCondition(propName,fltrOp,us,lastCntr);
+        end;
+{$ENDIF WST_UNICODESTRING}
+      else
+        begin
+          s := prsr.TokenString();
+          AFltrCrtr.AddCondition(propName,fltrOp,s,lastCntr);
+        end;
     end;
   end;
 
@@ -408,7 +448,13 @@ begin
         propInfo := GetPropInfo(AFltrCrtr.TargetClass,propName);
         if ( propInfo = nil ) then
           raise ERttiFilterException.CreateFmt('Invalid property : "%s"',[propName]);
-        if ( propInfo^.PropType^.Kind in [{$IFDEF FPC}tkSString,tkAString,{$ENDIF}tkLString,tkWString] ) then
+        if ( propInfo^.PropType^.Kind in
+             [ {$IFDEF FPC}tkSString,tkAString,{$ENDIF}
+               {$IFDEF WST_UNICODESTRING}tkUString,{$ENDIF}
+               tkLString,tkWString
+             ]
+           )
+        then
           Handle_String()
         else if ( propInfo^.PropType^.Kind in [tkInteger,tkInt64{$IFDEF HAS_QWORD},tkQWord{$ENDIF}] ) then
           Handle_Integer()
@@ -654,6 +700,22 @@ begin
   Result := Self;
 end;
 
+{$IFDEF WST_UNICODESTRING}
+function TRttiFilterCreator.AddCondition(
+  const APropertyName: string;
+  const AOperator: TStringFilterOperator;
+  const AValue: UnicodeString;
+  const AConnector: TFilterConnector
+) : TRttiFilterCreator;
+begin
+  AddNode(
+    TRttiExpUnicodeStringNodeItem.Create(GetPropInfo(TargetClass,APropertyName),AOperator,AValue),
+    AConnector
+  );
+  Result := Self;
+end;
+{$ENDIF WST_UNICODESTRING}
+
 function TRttiFilterCreator.BeginGroup(const AConnector: TFilterConnector):TRttiFilterCreator;
 var
   gn : TRttiExpNode;
@@ -755,8 +817,8 @@ constructor TRttiExpWideStringNodeItem.Create(
 );
 begin
   Assert(Assigned(APropInfo));
-  if not ( APropInfo^.PropType^.Kind in [tkWString] ) then
-    raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted.',['WideString']);
+  if not ( APropInfo^.PropType^.Kind in [tkWString{$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}] ) then
+    raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted, got "%s".',['WideString',GetEnumName(TypeInfo(TTypeKind),Ord(APropInfo^.PropType^.Kind))]);
   inherited Create(APropInfo,AOperation);
   FComparedValue := AComparedValue;
 end;
@@ -764,13 +826,43 @@ end;
 function TRttiExpWideStringNodeItem.Evaluate(AInstance: TRttiFilterCreatorTarget): Boolean;
 begin
   case Operation of
-    sfoEqualCaseSensitive   :  Result := AnsiSameStr(GetStrProp(AInstance,PropInfo),ComparedValue);
-    sfoEqualCaseInsensitive :  Result := AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
-    sfoNotEqual             :  Result := not AnsiSameText(GetStrProp(AInstance,PropInfo),ComparedValue);
+    sfoEqualCaseSensitive   :  Result := ( GetWideStrProp(AInstance,PropInfo) = ComparedValue );
+    sfoEqualCaseInsensitive :  Result := ( LowerCase(GetWideStrProp(AInstance,PropInfo)) = LowerCase(ComparedValue) );
+    sfoNotEqual             :  Result := not SameText(GetWideStrProp(AInstance,PropInfo),ComparedValue);
     else
       Assert(False);
   end;
 end;
+
+{$IFDEF WST_UNICODESTRING}
+{ TRttiExpUnicodeStringNodeItem }
+
+constructor TRttiExpUnicodeStringNodeItem.Create(
+  const APropInfo: PPropInfo;
+  const AOperation: TStringFilterOperator;
+  const AComparedValue: UnicodeString
+);
+begin
+  Assert(Assigned(APropInfo));
+  if not ( APropInfo^.PropType^.Kind in [tkUString,tkWString] ) then
+    raise ERttiFilterException.CreateFmt('Invalid property data type. "%s" excpeted, got "%s".',['UnicodeString',GetEnumName(TypeInfo(TTypeKind),Ord(APropInfo^.PropType^.Kind))]);
+  inherited Create(APropInfo,AOperation);
+  FComparedValue := AComparedValue;
+end;
+
+function TRttiExpUnicodeStringNodeItem.Evaluate(
+  AInstance: TRttiFilterCreatorTarget
+): Boolean;
+begin
+  case Operation of
+    sfoEqualCaseSensitive   :  Result := ( GetUnicodeStrProp(AInstance,PropInfo) = ComparedValue );
+    sfoEqualCaseInsensitive :  Result := ( LowerCase(GetUnicodeStrProp(AInstance,PropInfo)) = LowerCase(ComparedValue));
+    sfoNotEqual             :  Result := not SameText(GetUnicodeStrProp(AInstance,PropInfo),ComparedValue);
+    else
+      Assert(False);
+  end;
+end;
+{$ENDIF WST_UNICODESTRING}
 
 { TRttiExpEnumNodeItem }
 

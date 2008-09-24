@@ -4,7 +4,7 @@ program wst_test_suite_gui;
 
 uses
   {$IFDEF UNIX}
-  cthreads,
+  cthreads, cwstring,
   {$ENDIF}
   Interfaces, Forms, GuiTestRunner,
   TestFormatter_unit, testmetadata_unit,
