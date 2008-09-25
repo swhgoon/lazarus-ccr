@@ -168,6 +168,8 @@ begin
         locInStream.Write(buff[1],Length(buff));
         locInStream.Position := 0;
         rqst := TRequestBuffer.Create(trgt,ctntyp,locInStream,locOutStream,frmt);
+        rqst.GetPropertyManager().SetProperty(sREMOTE_IP,AContext.Binding.PeerIP);
+        rqst.GetPropertyManager().SetProperty(sREMOTE_PORT,IntToStr(AContext.Binding.PeerPort));
         HandleServiceRequest(rqst);
         i := locOutStream.Size;
         SetLength(buff,i);

@@ -127,6 +127,7 @@ type
     function GetHeaderCount(const ADirections : THeaderDirections):Integer;
     function GetHeader(const AIndex : Integer) : THeaderBlock;
     procedure ClearHeaders(const ADirection : THeaderDirection);
+    function GetPropertyManager():IPropertyManager;
   End;
 
   TSerializationStyle = ( ssNodeSerialization, ssAttibuteSerialization );
@@ -220,6 +221,7 @@ type
   private
     FHeaderList : TObjectList;
     FFreeObjectList : TObjectList;
+    FPropertyManager : IPropertyManager;
   protected
     procedure AddObjectToFree(const AObject : TObject);
     procedure Clear();
@@ -231,10 +233,11 @@ type
     function GetHeader(const AIndex : Integer) : THeaderBlock;
     procedure ClearHeaders(const ADirection : THeaderDirection);
     procedure FreeHeader(AHeader : THeaderBlock);
-  Public
+    function GetPropertyManager():IPropertyManager;
+  public
     constructor Create();
     destructor Destroy();override;
-  End;
+  end;
 
   { TBaseRemotable }
   TBaseRemotableClass = class of TBaseRemotable;
@@ -2752,10 +2755,16 @@ begin
   end;
 end;
 
+function TSimpleCallContext.GetPropertyManager(): IPropertyManager;
+begin
+  Result := FPropertyManager;
+end;
+
 constructor TSimpleCallContext.Create();
 begin
   FHeaderList := TObjectList.Create(False);
   FFreeObjectList := TObjectList.Create(True);
+  FPropertyManager := TStoredPropertyManager.Create() as IPropertyManager;
 end;
 
 destructor TSimpleCallContext.Destroy();

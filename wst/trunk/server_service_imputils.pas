@@ -17,11 +17,8 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
-  server_service_intf;
+  base_service_intf, server_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 Type
 
   { TRequestBuffer }
@@ -33,6 +30,7 @@ Type
     FFormat        : string;
     FContent       : TStream;
     FResponse      : TStream;
+    FPropertyManager : IPropertyManager;
   protected
     function GetTargetService():string;
     function GetContentType():string;
@@ -40,6 +38,7 @@ Type
     function GetContent():TStream;
     function GetResponse():TStream;
     function GetFormat() : string;
+    function GetPropertyManager():IPropertyManager;
   public
     constructor Create(
       const ATargetService : string;
@@ -92,6 +91,11 @@ begin
   Result := FFormat;
 end;
 
+function TRequestBuffer.GetPropertyManager(): IPropertyManager;
+begin
+  Result := FPropertyManager;
+end;
+
 constructor TRequestBuffer.Create(
   const ATargetService : string;
   const AContentType   : string;
@@ -105,6 +109,7 @@ begin
   FFormat        := AFormat;
   FContent       := AContent;
   FResponse      := AResponse;
+  FPropertyManager := TStoredPropertyManager.Create() as IPropertyManager;
 end;
 
 

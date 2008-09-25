@@ -104,6 +104,7 @@ Type
         function GetHeader(const AIndex : Integer) : THeaderBlock;
         // ---- END >> ICallContext implementation ----
         procedure ClearHeaders(const ADirection : THeaderDirection);
+        function GetPropertyManager():IPropertyManager;
   public
     (* This is the primary constructor! *)
     constructor Create(
@@ -279,6 +280,11 @@ end;
 procedure TBaseProxy.ClearHeaders(const ADirection: THeaderDirection);
 begin
   FCallContext.ClearHeaders(ADirection);
+end;
+
+function TBaseProxy.GetPropertyManager(): IPropertyManager;
+begin
+  Result := FCallContext.GetPropertyManager();
 end;
 
 constructor TBaseProxy.Create(

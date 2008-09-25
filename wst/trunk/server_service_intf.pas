@@ -19,10 +19,11 @@ uses
   Classes, SysUtils, TypInfo, Contnrs,
   base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
-Type
+const
+  sREMOTE_IP = 'RemoteIP';
+  sREMOTE_PORT = 'RemotePort';
+
+type
 
   IRequestBuffer = interface;
   IServerService = interface;
@@ -49,6 +50,7 @@ Type
     function GetContent():TStream;
     function GetResponse():TStream;
     function GetFormat() : string;
+    function GetPropertyManager():IPropertyManager;
   end;
   
   IServerService = Interface
@@ -480,6 +482,7 @@ begin
     Error('No formatter for that content type : "%s"',[s]);
   try
     cllCtx := CreateCallContext();
+    cllCtx.GetPropertyManager().Copy(ARequestBuffer.GetPropertyManager(),False);
     DoProcessMessage(msBeforeDeserialize,cllCtx,ARequestBuffer);
     strm := ARequestBuffer.GetContent();
     f.LoadFromStream(strm);

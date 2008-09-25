@@ -37,9 +37,6 @@ uses
   IdSocketHandle,
   server_listener;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 type
 
   { TwstIndyHttpListener }
@@ -190,6 +187,7 @@ begin
       AResponseInfo.ContentType := ctntyp;
       frmt := Trim(ARequestInfo.Params.Values['format']);
       rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,AResponseInfo.ContentStream,frmt);
+      rqst.GetPropertyManager().SetProperty(sREMOTE_IP,ARequestInfo.RemoteIP);
       HandleServiceRequest(rqst);
     finally
       inStream.Free();

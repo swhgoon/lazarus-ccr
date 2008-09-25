@@ -202,6 +202,8 @@ begin
             FInputStream.Write(buff[1],Length(buff));
             FInputStream.Position := 0;
             rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,frmt);
+            rqst.GetPropertyManager().SetProperty(sREMOTE_IP,FSocketObject.GetRemoteSinIP());
+            rqst.GetPropertyManager().SetProperty(sREMOTE_PORT,IntToStr(FSocketObject.GetRemoteSinPort()));
             HandleServiceRequest(rqst);
             i := FOutputStream.Size;
             SetLength(buff,i);
