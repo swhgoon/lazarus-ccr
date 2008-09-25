@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -18,7 +19,7 @@
       <local>
         <FormatVersion Value="1"/>
         <CommandLineParams Value="--suite=TTest_XsdParser"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <Units Count="37">
@@ -33,47 +34,47 @@
         <UnitName Value="testformatter_unit"/>
       </Unit1>
       <Unit2>
-        <Filename Value="../../server_service_soap.pas"/>
+        <Filename Value="..\..\server_service_soap.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_soap"/>
       </Unit2>
       <Unit3>
-        <Filename Value="../../soap_formatter.pas"/>
+        <Filename Value="..\..\soap_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="soap_formatter"/>
       </Unit3>
       <Unit4>
-        <Filename Value="../../base_binary_formatter.pas"/>
+        <Filename Value="..\..\base_binary_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_binary_formatter"/>
       </Unit4>
       <Unit5>
-        <Filename Value="../../base_service_intf.pas"/>
+        <Filename Value="..\..\base_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_service_intf"/>
       </Unit5>
       <Unit6>
-        <Filename Value="../../base_soap_formatter.pas"/>
+        <Filename Value="..\..\base_soap_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_soap_formatter"/>
       </Unit6>
       <Unit7>
-        <Filename Value="../../binary_formatter.pas"/>
+        <Filename Value="..\..\binary_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="binary_formatter"/>
       </Unit7>
       <Unit8>
-        <Filename Value="../../binary_streamer.pas"/>
+        <Filename Value="..\..\binary_streamer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="binary_streamer"/>
       </Unit8>
       <Unit9>
-        <Filename Value="../../server_binary_formatter.pas"/>
+        <Filename Value="..\..\server_binary_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_binary_formatter"/>
       </Unit9>
       <Unit10>
-        <Filename Value="../../metadata_repository.pas"/>
+        <Filename Value="..\..\metadata_repository.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_repository"/>
       </Unit10>
@@ -83,27 +84,27 @@
         <UnitName Value="testmetadata_unit"/>
       </Unit11>
       <Unit12>
-        <Filename Value="../../ws_helper/metadata_generator.pas"/>
+        <Filename Value="..\..\ws_helper\metadata_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_generator"/>
       </Unit12>
       <Unit13>
-        <Filename Value="../../metadata_wsdl.pas"/>
+        <Filename Value="..\..\metadata_wsdl.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="metadata_wsdl"/>
       </Unit13>
       <Unit14>
-        <Filename Value="../../server_service_intf.pas"/>
+        <Filename Value="..\..\server_service_intf.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_intf"/>
       </Unit14>
       <Unit15>
-        <Filename Value="../../base_xmlrpc_formatter.pas"/>
+        <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_xmlrpc_formatter"/>
       </Unit15>
       <Unit16>
-        <Filename Value="../../wst_fpc_xml.pas"/>
+        <Filename Value="..\..\wst_fpc_xml.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_fpc_xml"/>
       </Unit16>
@@ -113,7 +114,7 @@
         <UnitName Value="test_utilities"/>
       </Unit17>
       <Unit18>
-        <Filename Value="../../server_service_xmlrpc.pas"/>
+        <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_xmlrpc"/>
       </Unit18>
@@ -123,27 +124,27 @@
         <UnitName Value="test_parsers"/>
       </Unit19>
       <Unit20>
-        <Filename Value="../../ws_helper/wsdl_generator.pas"/>
+        <Filename Value="..\..\ws_helper\wsdl_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_generator"/>
       </Unit20>
       <Unit21>
-        <Filename Value="../../ws_helper/xsd_generator.pas"/>
+        <Filename Value="..\..\ws_helper\xsd_generator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_generator"/>
       </Unit21>
       <Unit22>
-        <Filename Value="../../ws_helper/xsd_consts.pas"/>
+        <Filename Value="..\..\ws_helper\xsd_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="xsd_consts"/>
       </Unit22>
       <Unit23>
-        <Filename Value="../../ws_helper/wsdl_parser.pas"/>
+        <Filename Value="..\..\ws_helper\wsdl_parser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wsdl_parser"/>
       </Unit23>
       <Unit24>
-        <Filename Value="../../base_json_formatter.pas"/>
+        <Filename Value="..\..\base_json_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="base_json_formatter"/>
       </Unit24>
@@ -153,7 +154,7 @@
         <UnitName Value="test_support"/>
       </Unit25>
       <Unit26>
-        <Filename Value="../../basex_encode.pas"/>
+        <Filename Value="..\..\basex_encode.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="basex_encode"/>
       </Unit26>
@@ -163,12 +164,12 @@
         <UnitName Value="test_basex_encode"/>
       </Unit27>
       <Unit28>
-        <Filename Value="../../json_formatter.pas"/>
+        <Filename Value="..\..\json_formatter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="json_formatter"/>
       </Unit28>
       <Unit29>
-        <Filename Value="../../server_service_json.pas"/>
+        <Filename Value="..\..\server_service_json.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="server_service_json"/>
       </Unit29>
@@ -211,12 +212,13 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
+    <PathDelim Value="\"/>
     <Target>
       <Filename Value="wst_test_suite.exe"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="../../"/>
-      <OtherUnitFiles Value="../../;../../ws_helper/;../../wst_rtti_filter/;../../fcl-json/src/"/>
+      <IncludeFiles Value="..\..\"/>
+      <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>

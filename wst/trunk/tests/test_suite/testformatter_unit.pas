@@ -3594,7 +3594,7 @@ begin
     CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      Check(VAL_AR[i]=a[i]);
+      Check(IsZero(VAL_AR[i]-a[i]),Format('Expected : %s  got  %s',[FloatToStr(VAL_AR[i]),FloatToStr(a[i])]));
 
   finally
     a.Free();
@@ -3645,7 +3645,7 @@ begin
     CheckEquals(AR_LEN,a.Length);
 
     for i := 0 to Pred(AR_LEN) do
-      Check(VAL_AR[i]=a[i]);
+      Check(IsZero(VAL_AR[i]-a[i]),Format('Expected : %s  got  %s',[FloatToStr(VAL_AR[i]),FloatToStr(a[i])]));
 
   finally
     a.Free();
