@@ -46,6 +46,11 @@ Type
   function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
   function TranslateDotToDecimalSeperator(const Value: string) : string;
+  function wst_FormatFloat(
+    const ATypeInfo  : PTypeInfo;
+    const AData      : Extended
+  ) : string;
+
   
   function LoadBufferFromFile(const AFileName : string) : TBinaryString;
   function LoadBufferFromStream(AStream : TStream) : TBinaryString;
@@ -99,6 +104,43 @@ begin
     if ( Result[i] = '.' ) then
       Result[i] := DecimalSeparator;
   end;
+end;
+
+function wst_FormatFloat(
+  const ATypeInfo  : PTypeInfo;
+  const AData      : Extended
+) : string;
+var
+  s, frmt : string;
+  prcsn : Integer;
+{$IFNDEF HAS_FORMAT_SETTINGS}
+  i : PtrInt;
+{$ENDIF HAS_FORMAT_SETTINGS}
+begin
+  case GetTypeData(ATypeInfo)^.FloatType Of
+    ftSingle,
+    ftCurr,
+    ftComp      : prcsn := 7;
+    ftDouble,
+    ftExtended  :
+      begin
+{$IF Defined(FPC_HAS_TYPE_DOUBLE) OR Defined(FPC_HAS_TYPE_EXTENDED)}
+        prcsn := 14;
+{$ELSE}
+        prcsn := 7;
+{$IFEND}
+      end;
+  end;
+  frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
+{$IFDEF HAS_FORMAT_SETTINGS}
+  s := FormatFloat(frmt,AData,wst_FormatSettings);
+{$ELSE}
+  s := FormatFloat(frmt,AData);
+  i := Pos(',',s);
+  if ( i > 0 ) then
+    s[i] := '.';
+{$ENDIF HAS_FORMAT_SETTINGS}
+  Result := s
 end;
 
 function LoadBufferFromStream(AStream : TStream) : TBinaryString;

@@ -922,23 +922,8 @@ function TXmlRpcBaseFormatter.PutFloat(
   const ATypeInfo  : PTypeInfo;
   const AData      : Extended
 ):TDOMNode;
-Var
-  s, frmt : string;
-  prcsn,i : Integer;
 begin
-  Case GetTypeData(ATypeInfo)^.FloatType Of
-    ftSingle,
-    ftCurr,
-    ftComp      : prcsn := 7;
-    ftDouble,
-    ftExtended  : prcsn := 15;
-  End;
-  frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
-  s := FormatFloat(frmt,AData);
-  i := Pos(',',s);
-  If ( i > 0 ) Then
-    s[i] := '.';
-  Result := InternalPutData(AName,xdtdouble,s);
+  Result := InternalPutData(AName,xdtdouble,wst_FormatFloat(ATypeInfo,AData));
 end;
 
 function TXmlRpcBaseFormatter.GetNodeValue(var AName: string): DOMString;
@@ -1388,8 +1373,6 @@ Var
   enumData : TEnumIntType;
   floatDt : Extended;
   dataBuffer : DOMString;
-  frmt : string;
-  prcsn,i : Integer;
   wideStrData : WideString;
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
@@ -1478,37 +1461,13 @@ begin
       begin
         floatDt := 0;
         case GetTypeData(ATypeInfo)^.FloatType of
-          ftSingle :
-            begin
-              floatDt := Single(AData);
-              prcsn := 7;
-            end;
-          ftDouble :
-            begin
-              floatDt := Double(AData);
-              prcsn := 15;
-            end;
-          ftExtended :
-            begin
-              floatDt := Extended(AData);
-              prcsn := 15;
-            end;
-          ftCurr :
-            begin
-              floatDt := Currency(AData);
-              prcsn := 7;
-            end;
-          ftComp :
-            begin
-              floatDt := Comp(AData);
-              prcsn := 7;
-            end;
+          ftSingle   : floatDt := Single(AData);
+          ftDouble   : floatDt := Double(AData);
+          ftExtended : floatDt := Extended(AData);
+          ftCurr     : floatDt := Currency(AData);
+          ftComp     : floatDt := Comp(AData);
         end;
-        frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
-        dataBuffer := FormatFloat(frmt,floatDt);
-        i := Pos(',',dataBuffer);
-        if ( i > 0 ) then
-          dataBuffer[i] := '.';
+        dataBuffer := wst_FormatFloat(ATypeInfo,floatDt);
       end;
   end;
   StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
