@@ -446,11 +446,11 @@ var
     try
       FDecProcStream.NewLine();
       FDecProcStream.Indent();
-      FDecProcStream.WriteLn('Function wst_CreateInstance_%s(const AFormat : string = %s; const ATransport : string = %s):%s;',[AIntf.Name,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name]);
+      FDecProcStream.WriteLn('Function wst_CreateInstance_%s(const AFormat : string = %s; const ATransport : string = %s; const AAddress : string = ''''):%s;',[AIntf.Name,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name]);
       if HandleEasyIntf then begin
         FDecProcStream.Indent();
         FDecProcStream.WriteLn(
-          'Function wst_CreateInstance_%s%s(const AFormat : string = %s; const ATransport : string = %s):%s%s;',
+          'Function wst_CreateInstance_%s%s(const AFormat : string = %s; const ATransport : string = %s; const AAddress : string = ''''):%s%s;',
           [AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX,QuotedStr('SOAP:'),QuotedStr('HTTP:'),AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
         );
       end;
@@ -551,15 +551,23 @@ Var
   procedure WriteDec();
   begin
     NewLine();
-    WriteLn('Function wst_CreateInstance_%s(const AFormat : string; const ATransport : string):%s;',[AIntf.Name,AIntf.Name]);
+    WriteLn('Function wst_CreateInstance_%s(const AFormat : string; const ATransport : string; const AAddress : string):%s;',[AIntf.Name,AIntf.Name]);
+    WriteLn('Var');
+    IncIndent();
+      Indent(); WriteLn('locAdr : string;');
+    DecIndent();
     WriteLn('Begin');
       IncIndent();
+        Indent(); WriteLn('if ( locAdr = '''' ) then');
+          IncIndent();
+            Indent(); WriteLn('locAdr := GetServiceDefaultAddress(TypeInfo(%s));',[AIntf.Name]);
+          DecIndent();
         Indent();
         WriteLn(
           'Result := %s.Create(%s,AFormat+%s,ATransport + %s);',
           [ strClassName,QuotedStr(AIntf.Name),
             Format('GetServiceDefaultFormatProperties(TypeInfo(%s))',[AIntf.Name]),
-            QuotedStr('address=') + Format(' + GetServiceDefaultAddress(TypeInfo(%s))',[AIntf.Name])
+            QuotedStr('address=') + ' + locAdr'
           ]
         );
       DecIndent();
@@ -568,14 +576,14 @@ Var
 
     if HandleEasyIntf then begin
       WriteLn(
-        'Function wst_CreateInstance_%s%s(const AFormat : string; const ATransport : string):%s%s;',
+        'Function wst_CreateInstance_%s%s(const AFormat : string; const ATransport : string; const AAddress : string):%s%s;',
         [AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX,AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
       );
       WriteLn('Begin');
         IncIndent();
           Indent();
           WriteLn(
-            'Result := wst_CreateInstance_%s(AFormat,ATransport) as %s%s;',
+            'Result := wst_CreateInstance_%s(AFormat,ATransport,AAddress) as %s%s;',
             [AIntf.Name,AIntf.Name,sEASY_ACCESS_INTERFACE_PREFIX]
           );
         DecIndent();
