@@ -19,7 +19,7 @@ type
   TToolbarItem = class;
   TToolbarButtonStyle = (tbrButton, tbrCheck, tbrDropDown, tbrSeparator,
      tbrDivider, tbrDropDownExtra);
-  TToolBarStyle = (tbsStandart, tbsWindowsXP);
+  TToolBarStyle = (tbsStandart, tbsWindowsXP, tbsNative);
   TToolButtonAllign = (tbaNone, tbaLeft, tbaRignt);
 
   TToolPanelOption = (tpFlatBtns, tpTransparentBtns, tpStretchBitmap,
@@ -348,7 +348,9 @@ begin
   inherited Paint;
 
   UpdateState(false);
-  if not Assigned(Action) then exit;
+  if (not Assigned(Action)) or (TToolbarItems(FOwnerItem.Collection).FToolPanel.FToolBarStyle = tbsNative) then
+    exit;
+
   PaintRect:=ClientRect;
   if (Action is TCustomAction) and Assigned(FImageList) and
      (TCustomAction(Action).ImageIndex>-1) and
@@ -711,6 +713,9 @@ begin
         ImgW:=ImgW + DropDownExtraBtnWidth;
       end;
       
+      if aLeft < TToolPanel(Parent).BorderWidth then
+        aLeft:=TToolPanel(Parent).BorderWidth;
+
       if FShowCaption then
       begin
         TextSize:=Canvas.TextExtent(Caption);
@@ -735,6 +740,7 @@ begin
     end;
   //  if IsDesignMode then
     aTop:=TToolPanel(Parent).BorderWidth;
+
   end;
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
@@ -971,7 +977,7 @@ procedure TToolPanel.ReAlignToolBtn;
 var
   i, L:integer;
 begin
-  L:=0;
+  L:=BorderWidth;
   for i:=0 to FToolbarItems.Count - 1 do
   begin
     FToolbarItems[i].FButton.Left:=L;

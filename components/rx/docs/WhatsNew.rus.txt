@@ -4,7 +4,8 @@
   - Исправлена ошибка в TDBComboBox.EditingDone; если не присвоен DataSet
   - Переработан код выравнивания кнопок на TToolPanel
   + Опубликовано свойство OnUTF8KeyPress;
-       
+  + Свойство ToolPanel.ToolBarStyle теперь может принимать значение tbsNative - для отрисовки кнопок используется 
+    текущая тема
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных
