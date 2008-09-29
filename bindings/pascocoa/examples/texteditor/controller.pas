@@ -41,6 +41,8 @@ const
 
 var
   myController: TMyController;
+  OpenPanel: NSOpenPanel;
+  SavePanel: NSSavePanel;
 
 implementation
 
@@ -73,6 +75,9 @@ begin
   if not CreateClassDefinition(ClassName(), Str_NSObject) then WriteLn('Failed to create objc class ' + ClassName());
 
   inherited Create;
+
+  { Create objects }
+  OpenPanel := NSOpenPanel.openPanel;
 end;
 
 { Objective-c Methods }
@@ -84,13 +89,19 @@ end;
 
 class procedure TMyController.doOpenFile(_self: objc.id; _cmd: SEL;
   sender: objc.id); cdecl;
+var
+  FileContents: NSString;
 begin
   { Show dialog }
 
+  if OpenPanel.runModal = NSFileHandlingPanelOKButton then
+  begin
+    { Now move the contents of the file to the edit control }
 
+    FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
 
-  { Now move the contents of the file to the edit control }
-
+    myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
+  end;
 end;
 
 class procedure TMyController.doSaveFile(_self: objc.id; _cmd: SEL;

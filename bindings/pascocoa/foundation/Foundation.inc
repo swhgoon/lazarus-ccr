@@ -12,7 +12,7 @@
 {$include NSObjCRuntime.inc}
 {#import <Foundation/NSAffineTransform.h>
 #import <Foundation/NSArchiver.h>}
-{.$include NSArray.inc} // Use CFArrayRef
+{$include NSArray.inc}
 {#import <Foundation/NSAttributedString.h>   }
 {$include NSAutoreleasePool.inc}
 {#import <Foundation/NSBundle.h>
@@ -75,9 +75,9 @@
 #import <Foundation/NSSet.h>
 #import <Foundation/NSSortDescriptor.h>
 #import <Foundation/NSSpellServer.h>
-#import <Foundation/NSStream.h>
-#import <Foundation/NSString.h>
-#import <Foundation/NSTask.h>
+#import <Foundation/NSStream.h>}
+{$include NSString.inc}
+{#import <Foundation/NSTask.h>
 #import <Foundation/NSThread.h>
 #import <Foundation/NSTimeZone.h>
 #import <Foundation/NSTimer.h>
