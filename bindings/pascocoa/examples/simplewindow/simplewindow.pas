@@ -18,7 +18,12 @@ program simplewindow;
 {$ifdef fpc}{$mode delphi}{$endif}
 
 uses
-  objc, ctypes, FPCMacOSAll, AppKit, Foundation;
+{$ifdef ver2_2_0}
+  FPCMacOSAll,
+{$else}
+  MacOSAll,
+{$endif}
+  objc, ctypes, AppKit, Foundation, cocoa_pkg;
 
 const
   Str_Window_Title = 'Pascal Cocoa Example';

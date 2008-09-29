@@ -15,7 +15,7 @@
 {$include NSAlert.inc}
 //#import <AppKit/NSAppleScriptExtensions.h>
 {$include NSApplication.inc}
-//#import <AppKit/NSBox.h>
+{$include NSBox.inc}
 {$include NSButton.inc}
 {$include NSButtonCell.inc}
 {$include NSCell.inc}
@@ -63,18 +63,18 @@
 #import <AppKit/NSSpeechRecognizer.h>
 #import <AppKit/NSSpeechSynthesizer.h>
 #import <AppKit/NSSpellChecker.h>
-#import <AppKit/NSSplitView.h>
-#import <AppKit/NSOpenPanel.h>
-#import <AppKit/NSPageLayout.h>   }
+#import <AppKit/NSSplitView.h>}
+{$include NSOpenPanel.inc}
+{#import <AppKit/NSPageLayout.h>   }
 {$include NSPanel.inc}
 {#import <AppKit/NSPasteboard.h>
 #import <AppKit/NSPopUpButton.h>
 #import <AppKit/NSPrintInfo.h>
 #import <AppKit/NSPrintOperation.h>
 #import <AppKit/NSPrintPanel.h>
-#import <AppKit/NSResponder.h>
-#import <AppKit/NSSavePanel.h>
-#import <AppKit/NSScreen.h>
+#import <AppKit/NSResponder.h>}
+{$include NSSavePanel.inc}
+{#import <AppKit/NSScreen.h>
 #import <AppKit/NSScrollView.h>
 #import <AppKit/NSScroller.h>
 #import <AppKit/NSSegmentedControl.h>
@@ -112,9 +112,9 @@
 #import <AppKit/NSRulerMarker.h>
 #import <AppKit/NSRulerView.h>
 #import <AppKit/NSSecureTextField.h>
-#import <AppKit/NSInterfaceStyle.h>
-#import <AppKit/NSNibDeclarations.h>
-#import <AppKit/NSProgressIndicator.h>
+#import <AppKit/NSInterfaceStyle.h>}
+{$include NSNibDeclarations.inc}
+{#import <AppKit/NSProgressIndicator.h>
 #import <AppKit/NSTabView.h>
 #import <AppKit/NSTabViewItem.h>
 #import <AppKit/NSMenuView.h>
@@ -136,10 +136,10 @@
 #import <AppKit/NSOpenGLView.h>
 #import <AppKit/NSApplicationScripting.h>
 #import <AppKit/NSDocumentScripting.h>
-#import <AppKit/NSTextStorageScripting.h>
-#import <AppKit/NSToolbar.h>
-#import <AppKit/NSToolbarItem.h>
-#import <AppKit/NSWindowScripting.h>
+#import <AppKit/NSTextStorageScripting.h>}
+{$include NSToolbar.inc}
+{$include NSToolbarItem.inc}
+{#import <AppKit/NSWindowScripting.h>
 #import <AppKit/NSStepper.h>
 #import <AppKit/NSStepperCell.h>
 #import <AppKit/NSGlyphInfo.h>

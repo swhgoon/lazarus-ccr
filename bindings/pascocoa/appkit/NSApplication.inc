@@ -275,6 +275,7 @@ type
     class procedure useRunningCopyOfApplication;
     function applicationHandle: Pointer;
     function windowWithWindowHandle(_hWnd: Pointer): objc.id;{NSWindow}
+    procedure setAppleMenu(aMenu: objc.id {NSMenu});
   end;
 
     {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -372,6 +373,8 @@ const
   StrNSApplication_useRunningCopyOfApplication = 'useRunningCopyOfApplication';
   StrNSApplication_applicationHandle = 'applicationHandle';
   StrNSApplication_windowWithWindowHandle = 'windowWithWindowHandle:';
+
+  StrNSApplication_setAppleMenu = 'setAppleMenu:';
 
 { NSApplication }
 
@@ -1046,6 +1049,16 @@ var
 begin
   vmethod := TmsgSendWrapper(@objc_msgSend);
   Result := objc.id(vmethod(Handle, sel_registerName(PChar(StrNSApplication_windowWithWindowHandle)), _hWnd));
+end;
+
+procedure NSApplication.setAppleMenu(aMenu: objc.id {NSMenu});
+type
+  TmsgSendWrapper = procedure (param1: objc.id; param2: SEL;aMenu: objc.id); cdecl;
+var
+  vmethod: TmsgSendWrapper;
+begin
+  vmethod := TmsgSendWrapper(@objc_msgSend);
+  vmethod(Handle, sel_registerName(PChar(StrNSApplication_setAppleMenu)), aMenu);
 end;
 
 {$endif}

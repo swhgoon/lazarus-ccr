@@ -23,16 +23,16 @@
   {.$endif}
 const
   NSAppKitVersionNumberWithCustomSheetPosition = 686.0;
-  NSNormalWindowLevel = kCGNormalWindowLevel;
-  NSFloatingWindowLevel = kCGFloatingWindowLevel;
-  NSSubmenuWindowLevel = kCGTornOffMenuWindowLevel;
-  NSTornOffMenuWindowLevel = kCGTornOffMenuWindowLevel;
-  NSMainMenuWindowLevel = kCGMainMenuWindowLevel;
-  NSStatusWindowLevel = kCGStatusWindowLevel;
-  NSDockWindowLevel = kCGDockWindowLevel;
-  NSModalPanelWindowLevel = kCGModalPanelWindowLevel;
-  NSPopUpMenuWindowLevel = kCGPopUpMenuWindowLevel;
-  NSScreenSaverWindowLevel = kCGScreenSaverWindowLevel;
+  NSNormalWindowLevel = kCGNormalWindowLevelKey;
+  NSFloatingWindowLevel = kCGFloatingWindowLevelKey;
+  NSSubmenuWindowLevel = kCGTornOffMenuWindowLevelKey;
+  NSTornOffMenuWindowLevel = kCGTornOffMenuWindowLevelKey;
+  NSMainMenuWindowLevel = kCGMainMenuWindowLevelKey;
+  NSStatusWindowLevel = kCGStatusWindowLevelKey;
+  NSDockWindowLevel = kCGDockWindowLevelKey;
+  NSModalPanelWindowLevel = kCGModalPanelWindowLevelKey;
+  NSPopUpMenuWindowLevel = kCGPopUpMenuWindowLevelKey;
+  NSScreenSaverWindowLevel = kCGScreenSaverWindowLevelKey;
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
   {.$endif}
   {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}

@@ -11,7 +11,7 @@
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="simplewindow"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="4"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -28,13 +28,18 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="55">
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="cocoa_pkg"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="62">
       <Unit0>
         <Filename Value="simplewindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simplewindow"/>
-        <CursorPos X="34" Y="64"/>
-        <TopLine Value="43"/>
+        <CursorPos X="14" Y="35"/>
+        <TopLine Value="28"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="110"/>
         <Loaded Value="True"/>
@@ -42,11 +47,9 @@
       <Unit1>
         <Filename Value="../../appkit/appkit.pas"/>
         <UnitName Value="appkit"/>
-        <CursorPos X="16" Y="26"/>
+        <CursorPos X="77" Y="22"/>
         <TopLine Value="14"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="44"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../appkit/NSPanel.inc"/>
@@ -62,11 +65,9 @@
       </Unit3>
       <Unit4>
         <Filename Value="../../appkit/AppKit.inc"/>
-        <CursorPos X="7" Y="85"/>
+        <CursorPos X="88" Y="76"/>
         <TopLine Value="70"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="41"/>
-        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="../../../fpc/packages/extra/univint/FPCMacOSAll.pas"/>
@@ -128,11 +129,9 @@
       <Unit14>
         <Filename Value="../../foundation/foundation.pas"/>
         <UnitName Value="foundation"/>
-        <CursorPos X="15" Y="15"/>
+        <CursorPos X="60" Y="13"/>
         <TopLine Value="5"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="22"/>
-        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="/System/Library/Frameworks/Foundation.framework/Versions/C/Headers/NSObject.h"/>
@@ -143,11 +142,9 @@
       </Unit15>
       <Unit16>
         <Filename Value="../../foundation/NSObject.inc"/>
-        <CursorPos X="1" Y="53"/>
+        <CursorPos X="65" Y="61"/>
         <TopLine Value="53"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="50"/>
-        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="../../foundation/NSObject_impl.inc"/>
@@ -157,9 +154,8 @@
       </Unit17>
       <Unit18>
         <Filename Value="../../appkit/NSApplication.inc"/>
-        <CursorPos X="11" Y="152"/>
-        <TopLine Value="144"/>
-        <EditorIndex Value="10"/>
+        <CursorPos X="9" Y="1692"/>
+        <TopLine Value="1687"/>
         <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit18>
@@ -172,9 +168,8 @@
       </Unit19>
       <Unit20>
         <Filename Value="../../appkit/NSWindow.inc"/>
-        <CursorPos X="31" Y="113"/>
-        <TopLine Value="107"/>
-        <EditorIndex Value="9"/>
+        <CursorPos X="9" Y="1692"/>
+        <TopLine Value="1687"/>
         <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -288,11 +283,9 @@
       </Unit37>
       <Unit38>
         <Filename Value="../../appkit/NSStatusBar.inc"/>
-        <CursorPos X="4" Y="10"/>
+        <CursorPos X="96" Y="30"/>
         <TopLine Value="22"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="52"/>
-        <Loaded Value="True"/>
       </Unit38>
       <Unit39>
         <Filename Value="../../appkit/NSStatusItem.inc"/>
@@ -323,19 +316,15 @@
       </Unit42>
       <Unit43>
         <Filename Value="../../appkit/NSTextField.inc"/>
-        <CursorPos X="99" Y="5"/>
+        <CursorPos X="85" Y="5"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="50"/>
-        <Loaded Value="True"/>
       </Unit43>
       <Unit44>
         <Filename Value="../../appkit/NSControl.inc"/>
-        <CursorPos X="51" Y="62"/>
+        <CursorPos X="82" Y="62"/>
         <TopLine Value="57"/>
-        <EditorIndex Value="6"/>
         <UsageCount Value="29"/>
-        <Loaded Value="True"/>
       </Unit44>
       <Unit45>
         <Filename Value="/System/Library/Frameworks/AppKit.framework/Versions/C/Headers/NSView.h"/>
@@ -346,11 +335,9 @@
       </Unit45>
       <Unit46>
         <Filename Value="../../appkit/NSView.inc"/>
-        <CursorPos X="9" Y="1692"/>
+        <CursorPos X="89" Y="1692"/>
         <TopLine Value="1687"/>
-        <EditorIndex Value="11"/>
         <UsageCount Value="39"/>
-        <Loaded Value="True"/>
       </Unit46>
       <Unit47>
         <Filename Value="../../appkit/NSResponder.inc"/>
@@ -396,14 +383,66 @@
       </Unit53>
       <Unit54>
         <Filename Value="../../appkit/NSTextFieldCell.inc"/>
-        <CursorPos X="20" Y="44"/>
+        <CursorPos X="95" Y="39"/>
         <TopLine Value="33"/>
-        <EditorIndex Value="8"/>
+        <UsageCount Value="10"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="../../../../../lazarus/lcl/interfaces/carbon/carboncanvas.pp"/>
+        <UnitName Value="CarbonCanvas"/>
+        <CursorPos X="58" Y="29"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="10"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="../../../../../lazarus/lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="8" Y="3188"/>
+        <TopLine Value="3174"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-      </Unit54>
+      </Unit56>
+      <Unit57>
+        <Filename Value="../../../../../lazarus/lcl/interfaces/wince/wincelistsl.inc"/>
+        <CursorPos X="86" Y="183"/>
+        <TopLine Value="180"/>
+        <UsageCount Value="10"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="../../../../../lazarus/lcl/interfaces/wince/winceint.pp"/>
+        <UnitName Value="WinCEInt"/>
+        <CursorPos X="81" Y="47"/>
+        <TopLine Value="44"/>
+        <UsageCount Value="10"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="../../../../../lazarus/lcl/stdactns.pas"/>
+        <UnitName Value="StdActns"/>
+        <CursorPos X="25" Y="979"/>
+        <TopLine Value="967"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="/usr/local/share/fpcsrc/rtl/inc/wstringh.inc"/>
+        <CursorPos X="16" Y="81"/>
+        <TopLine Value="69"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="/usr/local/share/fpcsrc/rtl/inc/wstrings.inc"/>
+        <CursorPos X="19" Y="1508"/>
+        <TopLine Value="1510"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit61>
     </Units>
-    <JumpHistory Count="25" HistoryIndex="24">
+    <JumpHistory Count="12" HistoryIndex="11">
       <Position1>
         <Filename Value="simplewindow.pas"/>
         <Caret Line="67" Column="13" TopLine="45"/>
@@ -417,104 +456,49 @@
         <Caret Line="6" Column="63" TopLine="1"/>
       </Position3>
       <Position4>
-        <Filename Value="../../foundation/foundation.pas"/>
-        <Caret Line="15" Column="15" TopLine="5"/>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="22" Column="29" TopLine="9"/>
       </Position4>
       <Position5>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="64" Column="16" TopLine="49"/>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="66" Column="39" TopLine="46"/>
       </Position5>
       <Position6>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="67" Column="21" TopLine="59"/>
+        <Filename Value="simplewindow.pas"/>
+        <Caret Line="65" Column="23" TopLine="53"/>
       </Position6>
       <Position7>
-        <Filename Value="../../foundation/NSObject.inc"/>
+        <Filename Value="../../../../../lazarus/lcl/lclproc.pas"/>
         <Caret Line="1" Column="1" TopLine="1"/>
       </Position7>
       <Position8>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="306" Column="1" TopLine="281"/>
+        <Filename Value="../../../../../lazarus/lcl/stdactns.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position8>
       <Position9>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="55" Column="1" TopLine="53"/>
+        <Filename Value="../../../../../lazarus/lcl/stdactns.pas"/>
+        <Caret Line="979" Column="25" TopLine="967"/>
       </Position9>
       <Position10>
-        <Filename Value="../../foundation/NSObject.inc"/>
-        <Caret Line="306" Column="1" TopLine="281"/>
+        <Filename Value="/usr/local/share/fpcsrc/rtl/inc/wstrings.inc"/>
+        <Caret Line="1625" Column="14" TopLine="1612"/>
       </Position10>
       <Position11>
-        <Filename Value="../../appkit/appkit.pas"/>
-        <Caret Line="26" Column="16" TopLine="14"/>
+        <Filename Value="../../../../../lazarus/lcl/lclproc.pas"/>
+        <Caret Line="3216" Column="16" TopLine="3200"/>
       </Position11>
       <Position12>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="91" Column="13" TopLine="68"/>
+        <Filename Value="/usr/local/share/fpcsrc/rtl/inc/wstrings.inc"/>
+        <Caret Line="1625" Column="13" TopLine="1612"/>
       </Position12>
-      <Position13>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="85" Column="24" TopLine="66"/>
-      </Position13>
-      <Position14>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="78" Column="18" TopLine="65"/>
-      </Position14>
-      <Position15>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="285" Column="38" TopLine="272"/>
-      </Position15>
-      <Position16>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="456" Column="23" TopLine="443"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../../appkit/NSView.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position17>
-      <Position18>
-        <Filename Value="../../appkit/NSWindow.inc"/>
-        <Caret Line="112" Column="21" TopLine="106"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="86" Column="15" TopLine="62"/>
-      </Position19>
-      <Position20>
-        <Filename Value="../../appkit/AppKit.inc"/>
-        <Caret Line="17" Column="19" TopLine="1"/>
-      </Position20>
-      <Position21>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="22" Column="29" TopLine="9"/>
-      </Position21>
-      <Position22>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="66" Column="39" TopLine="46"/>
-      </Position22>
-      <Position23>
-        <Filename Value="simplewindow.pas"/>
-        <Caret Line="65" Column="23" TopLine="53"/>
-      </Position23>
-      <Position24>
-        <Filename Value="../../appkit/NSTextField.inc"/>
-        <Caret Line="71" Column="28" TopLine="63"/>
-      </Position24>
-      <Position25>
-        <Filename Value="../../appkit/NSTextFieldCell.inc"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position25>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <OtherUnitFiles Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
       <SrcPath Value="../../appkit/;../../../objc/;../../foundation/;../../applicationservices/coregraphics/"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <PassLinkerOptions Value="True"/>

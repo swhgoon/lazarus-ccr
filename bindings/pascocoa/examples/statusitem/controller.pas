@@ -12,7 +12,7 @@ unit controller;
 interface
 
 uses
-  Classes, SysUtils, foundation, objc, appkit, FPCMacOSAll;
+  Classes, SysUtils, foundation, objc, appkit, MacOSAll;
 
 type
 
@@ -24,8 +24,8 @@ type
     constructor Create; override;
     procedure AddMethods; override;
     { Objective-c Methods }
-    class procedure doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
-    class procedure doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
+    class procedure doShowStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; static;
+    class procedure doHideStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; static;
     class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
      _cmd: SEL; theApplication: objc.id): cbool; cdecl; static;
@@ -100,7 +100,7 @@ end;
 
 { Objective-c Methods }
 
-class procedure TMyController.doShowStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+class procedure TMyController.doShowStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl;
 begin
   if myController.item <> nil then Exit;
 
@@ -111,7 +111,7 @@ begin
   myController.item.setMenu(myController.myMenu.Handle);
 end;
 
-class procedure TMyController.doHideStatusitem(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+class procedure TMyController.doHideStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl;
 begin
   if myController.item = nil then Exit;
 
@@ -120,7 +120,7 @@ begin
   myController.item := nil;
 end;
 
-class procedure TMyController.doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl;
+class procedure TMyController.doClose(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl;
 begin
   MainWindow.close;
 end;

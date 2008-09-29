@@ -23,6 +23,7 @@ const
 
   Str_retain = 'retain';
   Str_release = 'release';
+  Str_autorelease = 'autorelease';
 
 {***********	Object Allocation / Deallocation		*******}
 
@@ -139,8 +140,8 @@ FOUNDATION_EXPORT unsigned NSExtraRefCount(id object);}
 
     function retain: objc.id;
     procedure release;
-{- (id)autorelease;
-- (unsigned)retainCount;
+    function autorelease: objc.id;
+{- (unsigned)retainCount;
 
 - (NSString *)description;
 
@@ -300,6 +301,11 @@ end;
 procedure NSObject.release;
 begin
   objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
+end;
+
+function NSObject.autorelease: objc.id;
+begin
+  Result := objc_msgSend(Handle, sel_registerName(PChar(Str_autorelease)), []);
 end;
 
 {$endif}

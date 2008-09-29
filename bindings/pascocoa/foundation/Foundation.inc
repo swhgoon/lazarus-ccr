@@ -11,9 +11,9 @@
 
 {$include NSObjCRuntime.inc}
 {#import <Foundation/NSAffineTransform.h>
-#import <Foundation/NSArchiver.h>
-#import <Foundation/NSArray.h>
-#import <Foundation/NSAttributedString.h>   }
+#import <Foundation/NSArchiver.h>}
+{.$include NSArray.inc} // Use CFArrayRef
+{#import <Foundation/NSAttributedString.h>   }
 {$include NSAutoreleasePool.inc}
 {#import <Foundation/NSBundle.h>
 #import <Foundation/NSByteOrder.h>

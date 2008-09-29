@@ -19,7 +19,7 @@ program statusitem;
 {$linklib objc}
 
 uses
-  objc, ctypes, FPCMacOSAll, AppKit, Foundation, controller, cocoa_pkg;
+  objc, ctypes, MacOSAll, AppKit, Foundation, controller, cocoa_pkg;
 
 const
   Str_Window_Title = 'StatusItem example project';

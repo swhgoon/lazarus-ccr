@@ -29,33 +29,37 @@
         <PackageName Value="cocoa_pkg"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="5">
       <Unit0>
-        <Filename Value="statusitem.pas"/>
+        <Filename Value="texteditor.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="statusitem"/>
+        <UnitName Value="texteditor"/>
       </Unit0>
       <Unit1>
+        <Filename Value="model.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="model"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="view.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="view"/>
+      </Unit2>
+      <Unit3>
         <Filename Value="controller.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="controller"/>
-      </Unit1>
+      </Unit3>
+      <Unit4>
+        <Filename Value="mytoolbar.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mytoolbar"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <Linking>
-      <Options>
-        <PassLinkerOptions Value="True"/>
-        <LinkerOptions Value="-framework Cocoa -lobjc"/>
-      </Options>
-    </Linking>
     <Other>
-      <Verbosity>
-        <ShowSummary Value="True"/>
-      </Verbosity>
-      <CustomOptions Value="-St
-"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
