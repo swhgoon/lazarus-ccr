@@ -21,9 +21,6 @@ uses
   base_service_intf, server_service_intf, server_service_imputils,
   base_soap_formatter;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 type
 
   { TSOAPFormatter }

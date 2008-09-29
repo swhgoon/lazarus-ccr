@@ -12,11 +12,7 @@ Interface
 Uses SysUtils, Classes, 
      base_service_intf, server_service_intf, server_service_imputils, metadata_service;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 Type
-
 
   TWSTMetadataService_ServiceImp=class(TSimpleFactoryItem,IWSTMetadataService)
   Protected

@@ -17,9 +17,6 @@ unit config_objects;
 interface
 uses SysUtils, Classes, base_service_intf;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 type
 
   TwstConfigItem = class(TBaseComplexRemotable);

@@ -19,8 +19,6 @@ uses
   Classes, SysUtils,
   base_service_intf, metadata_repository;
 
-{$INCLUDE wst.inc}
-
 type
 
   TWSTMtdOperationParam = class(TBaseComplexRemotable)

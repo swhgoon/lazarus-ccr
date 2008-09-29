@@ -21,9 +21,6 @@ uses
   base_service_intf, server_service_intf,
   base_xmlrpc_formatter;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 type
 
 {$M+}

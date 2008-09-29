@@ -18,9 +18,6 @@ interface
 uses
   Classes, SysUtils;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 const
   sSEPARATOR = '/';
   sSERVICES_PREFIXE = 'services';

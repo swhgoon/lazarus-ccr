@@ -11,11 +11,7 @@ interface
 
 uses SysUtils, Classes, base_service_intf, server_service_intf, metadata_service;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-
 type
-
 
   TWSTMetadataService_ServiceBinder=class(TBaseServiceBinder)
   Protected
