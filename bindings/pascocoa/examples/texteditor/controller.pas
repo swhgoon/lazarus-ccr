@@ -77,7 +77,9 @@ begin
   inherited Create;
 
   { Create objects }
+
   OpenPanel := NSOpenPanel.openPanel;
+  SavePanel := NSSavePanel.savePanel;
 end;
 
 { Objective-c Methods }
@@ -94,20 +96,31 @@ var
 begin
   { Show dialog }
 
-  if OpenPanel.runModal = NSFileHandlingPanelOKButton then
+  if SavePanel.runModal = NSFileHandlingPanelOKButton then
   begin
     { Now move the contents of the file to the edit control }
 
     FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
 
-    myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
+    FileContents.writeToFile_atomically(SavePanel.filename, False);
   end;
 end;
 
 class procedure TMyController.doSaveFile(_self: objc.id; _cmd: SEL;
   sender: objc.id); cdecl;
+var
+  FileContents: NSString;
 begin
+  { Show dialog }
 
+  if OpenPanel.runModal = NSFileHandlingPanelOKButton then
+  begin
+    { Now move the contents of the edit control to the file }
+
+    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
+
+    myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
+  end;
 end;
 
 class procedure TMyController.doSaveFileAs(_self: objc.id; _cmd: SEL;
