@@ -942,7 +942,16 @@ var
       end;
     end;
   end;
-  
+
+  procedure CopyExtendedMetaData(ASource,ADesc : TPasElement);
+  var
+    ls : TStrings;
+  begin
+    ls := FSymbols.Properties.FindList(ASource);
+    if ( ls <> nil ) then
+      FSymbols.Properties.GetList(ADesc).Assign(ls);
+  end;
+
 var
   eltCrs, eltAttCrs : IObjectCursor;
   internalName : string;
@@ -1029,6 +1038,7 @@ begin
                     tmpPropTyp.VarType.AddRef();
                     tmpPropTyp.StoredAccessorName := propTyp.StoredAccessorName;
                     FSymbols.RegisterExternalAlias(tmpPropTyp,FSymbols.GetExternalName(propTyp));
+                    CopyExtendedMetaData(propTyp,tmpPropTyp);
                     classDef.Members.Add(tmpPropTyp);
                   end else begin
                     tmpPropTyp := TPasProperty(FSymbols.CreateElement(TPasProperty,propTyp.Name,classDef,visPublished,'',0));
@@ -1036,6 +1046,7 @@ begin
                     tmpPropTyp.VarType := FSymbols.FindElement(Format('%s_%sArray',[internalName,propTyp.Name])) as TPasType;
                     tmpPropTyp.VarType.AddRef();
                     FSymbols.RegisterExternalAlias(tmpPropTyp,FSymbols.GetExternalName(propTyp));
+                    CopyExtendedMetaData(propTyp,tmpPropTyp);
                     classDef.Members.Add(tmpPropTyp);
                   end;
                 end;
