@@ -6,24 +6,22 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  rxtoolbar, StdCtrls, ComCtrls, ExtCtrls;
+  rxtoolbar, StdCtrls, ComCtrls, ExtCtrls, ButtonPanel;
 
 type
 
   { TToolPanelSetupForm }
 
   TToolPanelSetupForm = class(TForm)
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     BitBtn5: TBitBtn;
     BitBtn6: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     cbShowHint: TCheckBox;
     cbTransp: TCheckBox;
     cbFlatBtn: TCheckBox;
     cbShowCaption: TCheckBox;
-    cbsBarStyle: TCheckBox;
     Label1: TLabel;
     Label2: TLabel;
     ListBtnAvaliable: TListBox;
@@ -31,6 +29,7 @@ type
     PageControl1: TPageControl;
     Panel1: TPanel;
     RadioGroup1: TRadioGroup;
+    RadioGroup2: TRadioGroup;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     procedure BitBtn3Click(Sender: TObject);
@@ -168,6 +167,7 @@ begin
 
   BitBtn4.Enabled:=ListBtnAvaliable.Items.Count>0;
   BitBtn3.Enabled:=ListBtnAvaliable.Items.Count>0;
+  cbFlatBtn.Checked:=tpTransparentBtns in FToolPanel.Options;
 end;
 
 procedure TToolPanelSetupForm.FormClose(Sender: TObject;
@@ -187,13 +187,7 @@ begin
   else
     tpo:=tpo - [tpTransparentBtns];
 
-  if cbsBarStyle.Checked then
-  begin
-    FToolPanel.ToolBarStyle:=tbsWindowsXP;
-    cbFlatBtn.Checked:=true;
-  end
-  else
-    FToolPanel.ToolBarStyle:=tbsStandart;
+  FToolPanel.ToolBarStyle:=TToolBarStyle(RadioGroup2.ItemIndex);
 
   if cbFlatBtn.Checked then
     tpo:=tpo + [tpFlatBtns]
@@ -204,6 +198,7 @@ begin
   FToolPanel.Options:=tpo;
   
   FToolPanel.ButtonAllign:=TToolButtonAllign(RadioGroup1.ItemIndex);
+  cbFlatBtn.Checked:=tpTransparentBtns in FToolPanel.Options;
 end;
 
 procedure TToolPanelSetupForm.BitBtn4Click(Sender: TObject);
@@ -238,12 +233,13 @@ begin
   cbFlatBtn.Checked:=tpFlatBtns in FToolPanel.Options;
   cbTransp.Checked:=tpTransparentBtns in FToolPanel.Options;
   cbShowHint.Checked:=FToolPanel.ShowHint;
-  cbsBarStyle.Checked:=FToolPanel.ToolBarStyle=tbsWindowsXP;
   ListBtnAvaliable.ItemHeight:=FToolPanel.BtnHeight + 4;
   ListBtnVisible.ItemHeight:=FToolPanel.BtnHeight + 4;
   FillItems(ListBtnVisible.Items, true);
   FillItems(ListBtnAvaliable.Items, false);
   RadioGroup1.ItemIndex:=Ord(FToolPanel.ButtonAllign);
+  RadioGroup2.ItemIndex:=Ord(FToolPanel.ToolBarStyle);
+
   UpdateStates;
 end;
 
