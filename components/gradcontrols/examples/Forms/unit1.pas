@@ -41,13 +41,12 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Arrow1: TArrow;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Edit1: TEdit;
+    GradButton1: TGradButton;
     GradTabControl1: TGradTabControl;
-    GradTabPage1: TGradTabPage;
-    GradTabPage2: TGradTabPage;
+    Label1: TLabel;
     Memo1: TMemo;
     Memo2: TMemo;
     MenuItem1: TMenuItem;
@@ -56,8 +55,8 @@ type
     Panel3: TPanel;
     PopupMenu1: TPopupMenu;
     RadioGroup1: TRadioGroup;
-    ScrollBox1: TScrollBox;
     SpinEdit1: TSpinEdit;
+    SpinEdit2: TSpinEdit;
     Splitter1: TSplitter;
     StringGrid1: TStringGrid;
     SynEdit1: TSynEdit;
@@ -78,6 +77,7 @@ type
     procedure GradButton1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure GradButton2Click(Sender: TObject);
+    procedure BewegeBtn(Sender: TObject);
     procedure GradButton3Click(Sender: TObject);
     procedure GradButton4Click(Sender: TObject);
     procedure GradTabControl1TabButtonClick(GradTabControl: TGradTabControl;
@@ -86,8 +86,10 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y, AIndex: Integer);
     procedure GradTabControl2TabButtonClick(GradTabControl: TGradTabControl;
       AIndex: Integer);
+    procedure Panel2Click(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
     procedure SpinEdit1EditingDone(Sender: TObject);
+    procedure SpinEdit2Change(Sender: TObject);
     //procedure FormPaint(Sender: TObject);
   private
     { private declarations }
@@ -126,6 +128,8 @@ begin
 
   GradTabControl1.Align:=alClient;
   GradTabControl1.TabPosition:=tpTop;
+  GradTabControl1.MoveIncrement:=20;
+  SpinEdit2.Value:=20;
 
   { with TGradButton.Create(GradTabControl1) do
    begin
@@ -280,54 +284,47 @@ procedure TForm1.GradButton2Click(Sender: TObject);
 var
    C : Integer;
 begin
-  with TTryOutPage.Create(Self) do
-  begin
-      Parent := GradTabControl1;
-      C := PageIndex;
-  end;
-
-  ComboBox1.ItemIndex:=ComboBox1.Items.Add('Custom_'+IntToStr(GradTabControl1.Tabs.Count-1));
-
-  //WriteLn('CustomIndex: ', IntToStr(C));
-  
-  GradTabControl1.Pages[C].Color:=clRed;
-  GradTabControl1.Pages[C].Caption:=ComboBox1.Text; //WICHTIG, eine Caption muss für
-  //die Eigenschaft Tabs gesetzt werden!
-  
-  GradTabControl1.Pages[C].TabPopupMenu := PopupMenu1;
-  GradTabControl1.Pages[C].PopupMenu:= PopupMenu1;
+  GradTabControl1.PagesBar.MoveTo(SpinEdit2.Value);
 end;
 
-procedure TForm1.GradButton3Click(Sender: TObject);
+procedure TForm1.BewegeBtn(Sender: TObject);
 var
    C,R,G,B : Integer;
 begin
   C := GradTabControl1.Tabs.Count;
   GradTabControl1.Tabs.Add('tab_'+IntToStr(C));
-  
+
   Randomize;
-  
+
   R := Random(255)+1;
   G := Random(255)+1;
   B := Random(255)+1;
-  
+
   //WriteLn(R, ' ', G, ' ', B, ColorToString(RGBToColor(R,G,B)));
   GradTabControl1.CurrentPage.Caption:='tab_'+IntToStr(C);
   GradTabControl1.CurrentPage.Color:=RGBToColor(R, G, B);
   GradTabControl1.CurrentPage.TabPopupMenu := PopupMenu1;
   GradTabControl1.CurrentPage.PopupMenu:= PopupMenu1;
-  
+
   ComboBox1.ItemIndex:=ComboBox1.Items.Add('tab_'+IntToStr(C));
+end;
+
+procedure TForm1.GradButton3Click(Sender: TObject);
+var
+   C : Integer;
+begin
+  GradTabControl1.PagesBar.MoveTo(50);
+  for C := 50 downto -20 do
+   begin
+       GradTabControl1.PagesBar.MoveTo(-1);
+       Sleep(5);
+       Application.ProcessMessages;
+   end;
 end;
 
 procedure TForm1.GradButton4Click(Sender: TObject);
 begin
-  if GradTabControl1.Tabs.IndexOf(ComboBox1.Text) <> -1 then
-  begin
-     GradTabControl1.Tabs.Delete(GradTabControl1.Tabs.IndexOf(ComboBox1.Text));
-     ComboBox1.Items.Delete(ComboBox1.Items.IndexOf(ComboBox1.Text));
-     ComboBox1.ItemIndex:=GradTabControl1.CurrentPageNum;
-  end;
+  GradTabControl1.PagesBar.MoveToNorm;
 end;
 
 procedure TForm1.GradTabControl1TabButtonClick(GradTabControl: TGradTabControl;
@@ -365,6 +362,11 @@ begin
   end;
 end;
 
+procedure TForm1.Panel2Click(Sender: TObject);
+begin
+
+end;
+
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 begin
   case RadioGroup1.ItemIndex of
@@ -378,6 +380,11 @@ end;
 procedure TForm1.SpinEdit1EditingDone(Sender: TObject);
 begin
   GradTabControl1.LongWidth:=SpinEdit1.Value;
+end;
+
+procedure TForm1.SpinEdit2Change(Sender: TObject);
+begin
+  GradTabControl1.MoveIncrement:=SpinEdit2.Value;
 end;
 
 

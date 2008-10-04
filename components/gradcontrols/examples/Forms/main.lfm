@@ -1,14 +1,14 @@
 object Form1: TForm1
   Left = 292
-  Height = 440
+  Height = 443
   Top = 151
-  Width = 575
+  Width = 576
   ActiveControl = TrackBar1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'TGradButton-Demo'
-  ClientHeight = 440
-  ClientWidth = 575
+  ClientHeight = 443
+  ClientWidth = 576
   OnCreate = FormCreate
   LCLVersion = '0.9.25'
   object Label1: TLabel
@@ -76,7 +76,7 @@ object Form1: TForm1
   object Label9: TLabel
     Left = 461
     Height = 14
-    Top = 184
+    Top = 176
     Width = 87
     Caption = 'Glyph Background'
     ParentColor = False
@@ -323,10 +323,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      180000000000040000006400000064000000000000000000000054B60600
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -348,10 +344,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000008C5A2500
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -373,10 +365,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      180000000000040000006400000064000000000000000000000044B32700
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -398,20 +386,16 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000003C842500
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
-  object GradButton4: TGradButton
+  object LoadGlyphButton: TGradButton
     Left = 452
     Height = 25
-    Top = 149
+    Top = 144
     Width = 104
     Caption = 'Load Glyph'
-    OnClick = GradButton4Click
+    OnClick = LoadGlyphButtonClick
     TabOrder = 13
     TabStop = True
     NormalBlend = 0.5
@@ -423,17 +407,13 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000006C3A2500
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
   object GlyphBackgroundColorButton: TGradButton
     Left = 452
     Height = 25
-    Top = 200
+    Top = 192
     Width = 104
     Caption = 'GlyphBackgroundColorButton'
     OnClick = GlyphBackgroundColorButtonClick
@@ -448,10 +428,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000D4D42700
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -473,10 +449,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      18000000000004000000640000006400000000000000000000003C602500
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -498,10 +470,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000BC5B2500
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -541,10 +509,6 @@ object Form1: TForm1
     BackgroundColor = clBtnFace
     BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
-    Glyph.Data = {
-      3A000000424D3A00000000000000360000002800000001000000010000000100
-      1800000000000400000064000000640000000000000000000000F4F82700
-    }
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
   end
@@ -556,6 +520,15 @@ object Form1: TForm1
     Caption = 'Italic'
     OnChange = ItalicCheckBoxChange
     TabOrder = 20
+  end
+  object GlyphTransparentCheckBox: TCheckBox
+    Left = 448
+    Height = 19
+    Top = 220
+    Width = 115
+    Caption = 'Glyph Transparent'
+    OnChange = GlyphTransparentCheckBoxChange
+    TabOrder = 21
   end
   object ColorDialog1: TColorDialog
     Color = 11954481

@@ -33,6 +33,7 @@ type
 
     TGradButton = class(TCustomControl)
     private
+      FAutoWidthBorderSpacing: Integer;
        FRotateDirection : TRotateDirection;
        FTextAlignment : TTextAlignment;
        FButtonLayout: TButtonLayout;
@@ -52,6 +53,7 @@ type
        FOnNormalBackgroundPaint, FOnHotBackgroundPaint,
        FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
        procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
+       procedure SetAutoWidthBorderSpacing(const AValue: Integer);
        procedure UpdateText;
        procedure UpdateBackground;
        procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
@@ -154,6 +156,7 @@ type
        property ClickColor : TColor read FClickColor write SetClickColor;
        property DisabledColor : TColor read FDisabledColor write SetDisabledColor default clGray;
        property OwnerBackgroundDraw : Boolean read FOwnerBackgroundDraw write SetOwnerBackgroundDraw;
+       property AutoWidthBorderSpacing : Integer read FAutoWidthBorderSpacing write SetAutoWidthBorderSpacing;
 
        //property OnGetBackgroundRect { TODO }
 
@@ -241,7 +244,9 @@ end;
 
 procedure TGradButton.SetAutoWidth(const Value : Boolean);
 begin
-    FAutoWidth:=true;
+    if FAutoWidth = Value then
+      Exit;
+    FAutoWidth := Value;
     
     UpdateButton;
 end;
@@ -621,20 +626,20 @@ begin
        if FRotateDirection = rdNormal then begin
        if FShowGlyph then begin
        if FButtonLayout in [blGlyphLeft,blGlyphRight] then
-          Width := FRotatedText.Width+ FRotatedGlyph.Width+FTextGlyphSpacing+15
+          Width := FRotatedText.Width+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
        else
-          Width := Max(FRotatedText.Width,FRotatedGlyph.Width)+15;
+          Width := Max(FRotatedText.Width,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
        end else begin
-          Width:= FRotatedText.Width+15;
+          Width:= FRotatedText.Width+FAutoWidthBorderSpacing;
        end;
        end else begin
        if FShowGlyph then begin
        if FButtonLayout in [blGlyphTop,blGlyphBottom] then
-          Height := FRotatedText.Height+ FRotatedGlyph.Height+FTextGlyphSpacing+15
+          Height := FRotatedText.Height+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoWidthBorderSpacing
        else
-          Height := Max(FRotatedText.Height,FRotatedGlyph.Height)+15;
+          Height := Max(FRotatedText.Height,FRotatedGlyph.Height)+FAutoWidthBorderSpacing;
        end else begin
-          Height := FRotatedText.Height+15;
+          Height := FRotatedText.Height+FAutoWidthBorderSpacing;
        end;
        end;
    end;
@@ -658,6 +663,8 @@ end;
     
 procedure TGradButton.SetRotateDirection(const Value: TRotateDirection);
 begin
+    if FRotateDirection = Value then
+      Exit;
     FRotateDirection:=Value;
 
     //Rotate and Cache
@@ -682,6 +689,8 @@ end;
 
 procedure TGradButton.SetGradientType(const Value: TGradientType);
 begin
+   if FGradientType = Value then
+     Exit;
    FGradientType:=Value;
    
    UpdateBackground;
@@ -778,6 +787,14 @@ begin
    end;
 end;
 
+procedure TGradButton.SetAutoWidthBorderSpacing(const AValue: Integer);
+begin
+  if FAutoWidthBorderSpacing=AValue then exit;
+  FAutoWidthBorderSpacing:=AValue;
+
+  UpdateButton;
+end;
+
 constructor TGradButton.Create(AOwner: TComponent);
 begin
     inherited;
@@ -785,6 +802,7 @@ begin
     Width:=80;
     Height:=25;
     
+    FAutoWidthBorderSpacing:=15;
     FNormalBlend:=0.5;
     FOverBlend:=0.653;
     FBaseColor:=clBlue;
@@ -836,21 +854,21 @@ end;
 
 destructor TGradButton.Destroy;
 begin
-   DebugLn('bm.Free');
+   //DebugLn('bm.Free');
    bm.Free;
-   DebugLn('FRotatedGlyph.Free');
+   //DebugLn('FRotatedGlyph.Free');
    FRotatedGlyph.Free;
-   DebugLn('FRotatedText.Free');
+   //DebugLn('FRotatedText.Free');
    FRotatedText.Free;
-   DebugLn('FBackground.Free');
+   //DebugLn('FBackground.Free');
    FBackground.Free;
-   DebugLn('FNormalBackgroundCache.Free');
+   //DebugLn('FNormalBackgroundCache.Free');
    FNormalBackgroundCache.Free;
-   DebugLn('FHotBackgroundCache.Free');
+   //DebugLn('FHotBackgroundCache.Free');
    FHotBackgroundCache.Free;
-   DebugLn('FDownBackgroundCache.Free');
+   //DebugLn('FDownBackgroundCache.Free');
    FDownBackgroundCache.Free;
-   DebugLn('FDisabledBackgroundCache.Free');
+   //DebugLn('FDisabledBackgroundCache.Free');
    FDisabledBackgroundCache.Free;
 
    
@@ -862,6 +880,7 @@ begin
     FBorderSides:=Value;
 
     UpdateBackground;
+    UpdatePositions;
     
     InvPaint;
 end;

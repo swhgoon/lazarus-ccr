@@ -83,6 +83,8 @@ type
     procedure SetText(const Value: String);
     procedure UpdateText;
   protected
+    function GetWidth: Integer; override;
+    function GetHeight: Integer; override;
   public
     constructor Create; override;
     property Font: TFont write SetFont;
@@ -100,12 +102,17 @@ function CreateRotatedBitmap(SrcImage: TRasterImage; Direction: TRotateDirection
 var
   px, py, nx, ny : Integer;
   RotateImg, NormalImg: TLazIntfImage;
-  ImageHandle, MaskHandle: HBITMAP;
 begin
-  NormalImg := SrcImage.CreateIntfImage;
+  Result := TBitmap.Create;
+  if (SrcImage.Width = 0) or (SrcImage.Height = 0) then
+  begin
+    Exit;
+  end;
 
+  NormalImg := SrcImage.CreateIntfImage;
   RotateImg := TLazIntfImage.Create(NormalImg.Height, NormalImg.Width);
-  RotateImg.DataDescription := GetDescriptionFromDevice(0, NormalImg.Height, NormalImg.Width);
+  RotateImg.DataDescription := NormalImg.DataDescription;
+  RotateImg.SetSize(NormalImg.Height, NormalImg.Width);
 
   for px := 0 to NormalImg.Width - 1 do
     for py := 0 to NormalImg.Height - 1 do
@@ -119,22 +126,14 @@ begin
         ny := RotateImg.Height - 1 - px;
       end;
 
-      RotateImg.Colors[nx, ny] := NormalImg.Colors[px, py];
+      RotateImg.Colors[nx,ny] := NormalImg.Colors[px,py];
     end;
 
-  Result := TBitmap.Create;
+  Result.LoadFromIntfImage(RotateImg);
 
-  //todo: Set mask manually and than create the mask handle here
-  //LoadFromIntfImage always create a mask leading to wrong display
-  RotateImg.CreateBitmaps(ImageHandle, MaskHandle, True);
-  Result.SetHandles(ImageHandle, MaskHandle);
-  if SrcImage.MaskHandleAllocated then
-  begin
-    //Calling TransparentMode and than TransparentColor creates the mask twice
-    //Set TransparentColor and call Mask
+  if SrcImage.Masked then
     Result.TransparentColor := SrcImage.TransparentColor;
-    Result.Mask(SrcImage.TransparentColor);
-  end;
+  Result.Transparent := SrcImage.Transparent;
 
   RotateImg.Free;
   NormalImg.Free;
@@ -189,7 +188,6 @@ begin
     FRotatedBitmap := CreateRotatedBitmap(FNormalBitmap, FDirection);
     FActiveBitmap := FRotatedBitmap;
   end;
-  FActiveBitmap.Transparent := FTransparent;
   FActiveBitmapNeedsUpdate := False;
 end;
 
@@ -301,8 +299,8 @@ end;
 procedure TRotatedText.UpdateText;
 var
   TextSize : TSize;
+  TransColor: TColor;
 begin
-  //todo: handle font
   with FNormalBitmap, Canvas do
   begin
     TextSize := TextExtent(FText);
@@ -314,14 +312,30 @@ begin
     {$endif}
     SetSize(TextSize.cx, TextSize.cy);
     if Font.Color <> clFuchsia then
-      Brush.Color := clFuchsia
+      TransColor := clFuchsia
     else
-      Brush.Color := clWhite;
+      TransColor := clWhite;
+    Brush.Color := TransColor;
     FillRect(0, 0, FNormalBitmap.Width, FNormalBitmap.Height);
     TextOut(0, 0, FText);
-    Mask(Brush.Color);
+    Mask(TransColor);
   end;
-  //FActiveBitmapNeedsUpdate := True;
+end;
+
+function TRotatedText.GetWidth: Integer;
+begin
+  if FText <> '' then
+    Result := inherited GetWidth
+  else
+    Result := 0;
+end;
+
+function TRotatedText.GetHeight: Integer;
+begin
+  if FText <> '' then
+    Result := inherited GetHeight
+  else
+    Result := 0;
 end;
 
 constructor TRotatedText.Create;

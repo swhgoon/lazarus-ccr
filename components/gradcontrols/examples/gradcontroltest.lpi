@@ -15,7 +15,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="509"/>
+      <CurrentBuildNr Value="585"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>
@@ -50,7 +50,7 @@
         <PackageName Value="LCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="gradcontroltest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -65,6 +65,10 @@
         <ResourceFilename Value="Forms\unit1.lrs"/>
         <UnitName Value="Unit1"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\src\ugradtabcontrol.lrs"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -73,13 +77,11 @@
     <SearchPaths>
       <OtherUnitFiles Value="Forms\"/>
     </SearchPaths>
-    <Linking>
-      <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
-      </Options>
-    </Linking>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

@@ -15,6 +15,7 @@ type
 
   TForm1 = class(TForm)
     BoldCheckBox: TCheckBox;
+    GlyphTransparentCheckBox: TCheckBox;
     ItalicCheckBox: TCheckBox;
     Label12: TLabel;
     TextColorButton: TGradButton;
@@ -26,7 +27,7 @@ type
     BaseColorButton: TGradButton;
     NormalBlendColorButton: TGradButton;
     OverBlendButton: TGradButton;
-    GradButton4: TGradButton;
+    LoadGlyphButton: TGradButton;
     GlyphBackgroundColorButton: TGradButton;
     ClickColorButton: TGradButton;
     DisabledColorButton: TGradButton;
@@ -53,7 +54,8 @@ type
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure CheckGroup2ItemClick(Sender: TObject; Index: integer);
     procedure BaseColorClick(Sender: TObject);
-    procedure GradButton4Click(Sender: TObject);
+    procedure GlyphTransparentCheckBoxChange(Sender: TObject);
+    procedure LoadGlyphButtonClick(Sender: TObject);
     procedure GlyphBackgroundColorButtonClick(Sender: TObject);
     procedure ClickColorButtonClick(Sender: TObject);
     procedure DisabledColorButtonClick(Sender: TObject);
@@ -178,7 +180,13 @@ begin
     end;
 end;
 
-procedure TForm1.GradButton4Click(Sender: TObject);
+procedure TForm1.GlyphTransparentCheckBoxChange(Sender: TObject);
+begin
+  b.Glyph.Transparent := GlyphTransparentCheckBox.Checked;
+  LoadGlyphButton.Glyph.Transparent := GlyphTransparentCheckBox.Checked;
+end;
+
+procedure TForm1.LoadGlyphButtonClick(Sender: TObject);
 var
    tempPicture : TPicture;
 begin
@@ -187,12 +195,13 @@ begin
       tempPicture := TPicture.Create;
       try
           tempPicture.LoadFromFile(OpenPictureDialog1.FileName);
+          tempPicture.Graphic.Transparent := GlyphTransparentCheckBox.Checked;
 
           b.Glyph.Assign(tempPicture.Graphic);
 
-          GradButton4.Glyph.Assign(tempPicture.Graphic);
-          GradButton4.ShowGlyph := true;
-          GradButton4.Caption := '';
+          LoadGlyphButton.Glyph.Assign(tempPicture.Graphic);
+          LoadGlyphButton.ShowGlyph := true;
+          LoadGlyphButton.Caption := '';
       finally
           tempPicture.Free;
       end;
