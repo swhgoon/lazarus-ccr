@@ -302,7 +302,7 @@ begin
 
   //WriteLn(R, ' ', G, ' ', B, ColorToString(RGBToColor(R,G,B)));
   GradTabControl1.CurrentPage.Caption:='tab_'+IntToStr(C);
-  GradTabControl1.CurrentPage.Color:=RGBToColor(R, G, B);
+  //GradTabControl1.CurrentPage.Color:=RGBToColor(R, G, B);
   GradTabControl1.CurrentPage.TabPopupMenu := PopupMenu1;
   GradTabControl1.CurrentPage.PopupMenu:= PopupMenu1;
 

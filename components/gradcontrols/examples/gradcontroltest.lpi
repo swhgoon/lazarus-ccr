@@ -15,7 +15,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="585"/>
+      <CurrentBuildNr Value="607"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>

@@ -704,14 +704,14 @@ procedure TGradTabPagesBar.InsertButton(AButton: TGradTabPageButton; Index: Inte
 var
    LastLeft : Integer;
 begin
-     Left := 0;
+     LastLeft := 0;
 
      if (Index >= 1) AND (FPageList.Count>=1) then
         LastLeft := TGradTabPage(FPageList.Items[Index-1]).TabButton.Left;
 
      with AButton do
      begin
-        Left := -123;
+        Left := LastLeft;
         Parent := Self;
         ShowFocusBorder:=false;
         AutoWidth:=true;
@@ -805,15 +805,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabPagesBar.OrderButtons;
 var
-  LastLeft, LastTop, i: Integer;
+  LastLeft, LastTop, i, BarWidth, BarHeight: Integer;
   NewDirection: TRotateDirection;
   NewBorderSides: TBorderSides;
   NewGradientType: TGradientType;
+  B : TGradButton;
 begin
   DebugLn('OrderButton Start');
 
   LastLeft:= FMovedTo;
   LastTop := FMovedTo;
+
+ { if FTabPosition in [tpTop, tpBottom] then begin
+      BarWidth:= Width;
+      BarHeight:= 0;
+  end else begin   }
+  BarWidth := Width;
+  BarHeight:= Height;
+  //end;
 
   case FTabPosition of
     tpTop:
@@ -843,33 +852,105 @@ begin
   end;
 
   for i := 0 to FPageList.Count - 1 do
-  with TGradTabPage(FPageList.Items[i]).TabButton do
   begin
-    if Visible then
-    begin
-      DebugLn('I: %d W: %d H: %d L: %d T: %d',[i,Width,Height,Left,Top]);
+    B := TGradTabPage(FPageList.Items[i]).TabButton;
 
-      RotateDirection := NewDirection;
+    if B.Visible then
+    begin
+      B.RotateDirection := NewDirection;
+      B.BorderSides := NewBorderSides;
+      B.GradientType := NewGradientType;
+
+      DebugLn('Begin I: %d W: %d H: %d L: %d T: %d, BW: %d, BH: %d',[i,B.Width,B.Height,B.Left,B.Top,BarWidth,BarHeight]);
+
+      case FTabPosition of
+        tpTop:
+        begin
+           B.Left := LastLeft;
+           LastLeft := LastLeft + B.Width + 1;
+
+           if FActiveIndex = i then begin
+              B.Top := 0;
+              B.Height:= BarHeight;
+           end else begin
+              B.Top := 3;
+              B.Height:= BarHeight-3;
+           end;
+        end;
+        tpBottom:
+        begin
+           B.Left := LastLeft;
+           LastLeft := LastLeft + B.Width + 1;
+
+           B.Top := 0;
+
+           if FActiveIndex = i then
+              B.Height := BarHeight
+           else
+              B.Height := BarHeight-3;
+        end;
+        tpLeft:
+        begin
+           B.Top := LastTop;
+           LastTop := LastTop + B.Height + 1;
+
+           if FActiveIndex = i then begin
+              B.Left := 0;
+              B.Width:= BarWidth;
+           end else begin
+              B.Left := 3;
+              B.Width:= BarWidth-3;
+           end;
+        end;
+        tpRight:
+        begin
+           B.Top := LastTop;
+           LastTop := LastTop + B.Height + 1;
+
+           B.Left := 0;
+
+           if FActiveIndex = i then
+              B.Width := BarWidth
+           else
+              B.Width := BarWidth-3;
+        end;
+      end;
+
+
+
+
 
       {if FActiveIndex = i then
        FocusButton(i)
       else
        UnFocusButton(i);
       }
-      BorderSides := NewBorderSides;
-      GradientType := NewGradientType;
 
-      if FTabPosition in [tpTop, tpBottom] then
+
+      {if FTabPosition in [tpTop, tpBottom] then
       begin
-        Left := LastLeft;
-        LastLeft := LastLeft + Width + 1;
+        B.Left := LastLeft;
+        LastLeft := LastLeft + B.Width + 1;
 
+        if FTabPosition = tpBottom then begin
+
+
+
+
+        end else begin
+
+        end;
       end
       else
       begin
-        Top := LastTop;
-        LastTop := LastTop + Height + 1;
-      end;
+
+        if FTabPosition = tpRight then begin
+
+
+        end else
+      end; }
+
+      DebugLn('End I: %d W: %d H: %d L: %d T: %d, BW: %d, BH: %d',[i,B.Width,B.Height,B.Left,B.Top,BarWidth,BarHeight])
     end;
   end;
   DebugLn('OrderButton End');
@@ -946,7 +1027,20 @@ end;
   TGradTabPagesBar SetTabPosition(Value: TTabPosition)
  ------------------------------------------------------------------------------}
 procedure TGradTabPagesBar.SetTabPosition(Value: TTabPosition);
+
+   function DbgsTabPosition(V : TTabPosition) : String;
+   begin
+       case V of
+         tpTop : Result := 'tpTop';
+         tpBottom: Result := 'tpBottom';
+         tpRight: Result := 'tpRight';
+         tpLeft: Result := 'tpLeft';
+       end;
+   end;
+
 begin
+    if FTabPosition = Value then Exit;
+    DebugLn('Change TabPosition from %s to %s',[DbgsTabPosition(FTabPosition),DbgsTabPosition(Value)]);
     FTabPosition:=Value;
 
     OrderButtons;
@@ -1509,10 +1603,10 @@ begin
    if (Value<0) or (Value>=fPageList.Count) then Exit;
    if FPageIndex=Value then Exit;
 
-   if FPageIndex <> -1 then
-      UnShowPage(FPageIndex);
+   if FPageIndex <> -1 then UnShowPage(FPageIndex);
 
    ShowPage(Value);
+   FPagesBar.FocusButton(Value);
 
    FPageIndex := Value;
 
@@ -1800,8 +1894,7 @@ begin
       end;
     end;
 
-    FPagesBar.Align:=alClient;
-    FPagesBar.TabPosition:=Value;
+    //FPagesBar.Align:=alClient;
 
     case Value of
       tpTop: begin
@@ -1833,6 +1926,8 @@ begin
          //FBar.Align:=alRight;
       end;
     end;
+
+    FPagesBar.TabPosition:=Value;
 
     {$IFDEF DEBUGTAB}
          DebugLn('After');

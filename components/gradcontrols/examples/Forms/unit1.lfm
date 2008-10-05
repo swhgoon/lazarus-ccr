@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 165
+  Left = 270
   Height = 506
-  Top = 182
+  Top = 98
   Width = 898
   Caption = 'Form1'
   ClientHeight = 506
@@ -29,6 +29,8 @@ object Form1: TForm1
       ControlStyle = [csAcceptsControls]
       PageIndex = -1
       TabHeight = 30
+      TabPosition = tpLeft
+      MoveIncrement = 1
     end
   end
   object Panel2: TPanel
