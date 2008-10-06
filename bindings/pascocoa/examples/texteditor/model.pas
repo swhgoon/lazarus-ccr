@@ -1,3 +1,12 @@
+{
+ model.pas
+
+ Model class for the texteditor class. Holds and manages resource files and user data.
+
+ This example project is released under public domain
+
+ AUTHORS: Felipe Monteiro de Carvalho
+}
 unit model;
 
 {$mode objfpc}{$H+}

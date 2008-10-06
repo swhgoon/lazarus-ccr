@@ -1,3 +1,12 @@
+{
+ view.pas
+
+ View class of the texteditor example. Creates the user interface.
+
+ This example project is released under public domain
+
+ AUTHORS: Felipe Monteiro de Carvalho
+}
 unit view;
 
 {$mode objfpc}{$H+}
@@ -87,6 +96,8 @@ begin
   CreateMainMenu();
 end;
 
+{@@
+}
 procedure TMyView.AttachEventHandlers();
 begin
   OpenItem.setTarget(myController.Handle);
@@ -99,6 +110,8 @@ begin
   ExitItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
+{@@
+}
 function TMyView.CreateAppleMenu(): NSMenu;
 var
   AppleMenuTitle, ServicesMenuTitle: CFStringRef;
@@ -114,56 +127,10 @@ begin
 
   ServicesMenu := NSMenu.initWithTitle(ServicesMenuTitle);
   NSApp.setServicesMenu(ServicesMenu.Handle);
-
-{
-    NSMenuItem *menuitem;
-    // Create the application (Apple) menu.
-    NSMenu *menuApp = [[NSMenu alloc] initWithTitle: @""];
-
-    NSMenu *menuServices = [[NSMenu alloc] initWithTitle: @"Services"];
-    [NSApp setServicesMenu:menuServices];
-
-    menuitem = [[NSMenuItem alloc] initWithTitle:@"Preferences..." action:nil keyEquivalent:@","];
-    [menuApp addItem: menuitem];
-    SetPreferencesMenuItem(menuitem);
-    [menuApp addItem: [NSMenuItem separatorItem]];
-    menuitem = [[NSMenuItem alloc] initWithTitle: @"Services"
-        action:nil keyEquivalent:@""];
-    [menuitem setSubmenu:menuServices];
-    [menuApp addItem: menuitem];
-    [menuitem release];
-
-    [menuApp addItem: [NSMenuItem separatorItem]];
-    menuitem = [[NSMenuItem alloc] initWithTitle:@"Hide"
-        action:@selector(hide:) keyEquivalent:@""];
-    [menuitem setTarget: NSApp];
-    [menuApp addItem: menuitem];
-    [menuitem release];
-    menuitem = [[NSMenuItem alloc] initWithTitle:@"Hide Others"
-        action:@selector(hideOtherApplications:) keyEquivalent:@""];
-    [menuitem setTarget: NSApp];
-    [menuApp addItem: menuitem];
-    [menuitem release];
-    menuitem = [[NSMenuItem alloc] initWithTitle:@"Show All"
-        action:@selector(unhideAllApplications:) keyEquivalent:@""];
-    [menuitem setTarget: NSApp];
-    [menuApp addItem: menuitem];
-    [menuitem release];
-    [menuApp addItem: [NSMenuItem separatorItem]];
-    menuitem = [[NSMenuItem alloc] initWithTitle:@"Quit"
-        action:@selector(terminate:) keyEquivalent:@"q"];
-    [menuitem setTarget: NSApp];
-    [menuApp addItem: menuitem];
-    SetQuitMenuItem(menuitem);
-    [menuitem release];
-
-    [NSApp setAppleMenu:menuApp];
-    AddToMenubar(menuApp);
-    [menuApp release];
-    return PR_SUCCESS;
-}
 end;
 
+{@@
+}
 function TMyView.CreateFileMenu(): NSMenu;
 var
   MenuTitle: CFStringRef;
@@ -184,6 +151,8 @@ begin
   Result.addItem(ExitItem.Handle);
 end;
 
+{@@
+}
 procedure TMyView.AddToMenubar(menu: NSMenu);
 var
   dummyItem: NSMenuItem;
@@ -234,6 +203,9 @@ begin
   Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
 end;
 
+{@@
+  Creates an autosized NSTextField
+}
 function TMyView.CreateTextField(): NSTextField;
 var
   ClientRect: NSRect;
@@ -244,6 +216,7 @@ begin
   ClientRect.size.height := 500.0;
 
   Result := NSTextField.initWithFrame(ClientRect);
+  Result.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   MainWindowView.addSubview(Result.Handle);
 end;
 

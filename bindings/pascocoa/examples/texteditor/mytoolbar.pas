@@ -1,3 +1,12 @@
+{
+ mytoolbar.pas
+
+ Toolbar controller class. Creates and manages the toolbar.
+
+ This example project is released under public domain
+
+ AUTHORS: Felipe Monteiro de Carvalho
+}
 unit mytoolbar;
 
 {$mode delphi}{$STATIC ON}
@@ -17,14 +26,15 @@ type
     { Extra binding functions }
     constructor Create; override;
     procedure AddMethods; override;
+    { Public routines }
     procedure AttachEventHandlers;
     { Toolbar items }
     OpenToolbarItem, SaveToolbarItem, CloseToolbarItem: NSToolbarItem;
     { Objective-c Methods }
     class function toolbarAllowedItemIdentifiers(_self: objc.id;
-     _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl;// static;
+     _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl; {$ifndef VER2_2_2}static;{$endif}
     class function toolbarDefaultItemIdentifiers(_self: objc.id;
-     _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl;// static;
+     _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl; {$ifndef VER2_2_2}static;{$endif}
   end;
 
 const
@@ -38,7 +48,7 @@ var
 
 function toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar
       (_self: objc.id; _cmd: SEL; toolbar: objc.id;
-      itemIdentifier: CFStringRef; flag: OBJC_BOOL): objc.id; cdecl;// static;
+      itemIdentifier: CFStringRef; flag: objc.BOOL): objc.id; cdecl;// static;
 
 implementation
 
@@ -62,15 +72,15 @@ begin
 
   { Create toolbar items }
   OpenToolbarItem := NSToolbarItem.initWithItemIdentifier(OpenToolbarItemIdentifier);
-//    [toolbarItem setLabel:@"Save"];
-//   [toolbarItem setPaletteLabel:[toolbarItem label]];
-//    [toolbarItem setToolTip:@"Save Your Passwords"];}
+  OpenToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Open', kCFStringEncodingUTF8));
   OpenToolbarItem.setImage(myModel.imgOpen.Handle);
 
   SaveToolbarItem := NSToolbarItem.initWithItemIdentifier(SaveToolbarItemIdentifier);
+  SaveToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Save', kCFStringEncodingUTF8));
   SaveToolbarItem.setImage(myModel.imgSave.Handle);
 
   CloseToolbarItem := NSToolbarItem.initWithItemIdentifier(CloseToolbarItemIdentifier);
+  CloseToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Exit', kCFStringEncodingUTF8));
   CloseToolbarItem.setImage(myModel.imgClose.Handle);
 end;
 
@@ -94,15 +104,19 @@ begin
   CloseToolbarItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
+{@@
+  Lists all of the items in the toolbar by their identifiers.
+  This method is necessary to implement a toolbar.
+}
 class function TMyToolbarController.toolbarAllowedItemIdentifiers(_self: objc.id;
   _cmd: SEL; toolbar: objc.id): CFArrayRef; cdecl;
 var
   toolbarItems: array[0..4] of CFStringRef;
 begin
-  WriteLn('OpenToolbarItemIdentifier: ', IntToHex(Cardinal(OpenToolbarItemIdentifier), 8));
+{  WriteLn('OpenToolbarItemIdentifier: ', IntToHex(Cardinal(OpenToolbarItemIdentifier), 8));
   WriteLn('SaveToolbarItemIdentifier: ', IntToHex(Cardinal(SaveToolbarItemIdentifier), 8));
   WriteLn('NSToolbarSpaceItemIdentifier: ', IntToHex(Cardinal(NSToolbarSpaceItemIdentifier), 8));
-  WriteLn('CloseToolbarItemIdentifier: ', IntToHex(Cardinal(CloseToolbarItemIdentifier), 8));
+  WriteLn('CloseToolbarItemIdentifier: ', IntToHex(Cardinal(CloseToolbarItemIdentifier), 8));}
   toolbarItems[0] := OpenToolbarItemIdentifier;
   toolbarItems[1] := SaveToolbarItemIdentifier;
   toolbarItems[2] := NSToolbarSpaceItemIdentifier;
@@ -112,17 +126,27 @@ begin
   Result := CFArrayCreate(nil, @toolbarItems[0], 4, nil);
 end;
 
+{@@
+  Returns which items are available by default in the toolbar.
+  Other items exist in the toolbar but are optional.
+  We simply return the same items from toolbarAllowedItemIdentifiers.
+}
 class function TMyToolbarController.toolbarDefaultItemIdentifiers(_self: objc.id;
   _cmd: SEL; toolbar: objc.id): CFArrayRef; cdecl;
 begin
   Result := toolbarAllowedItemIdentifiers(_self, _cmd, toolbar);
 end;
 
+{@@
+  Returns the NSToolbarItem for each item.
+  Note that we should return an item in our cache instead of creating a new one
+  everytime this routine is called.
+}
 function toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar(_self: objc.id;
   _cmd: SEL; toolbar: objc.id {NSToolbar}; itemIdentifier: CFStringRef;
-  flag: OBJC_BOOL): objc.id {NSToolbarItem}; cdecl;
+  flag: objc.BOOL): objc.id {NSToolbarItem}; cdecl;
 begin
-  WriteLn('toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar: ', IntToHex(Cardinal(itemIdentifier), 8));
+//  WriteLn('toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar: ', IntToHex(Cardinal(itemIdentifier), 8));
 
   with myToolbarController do
   begin

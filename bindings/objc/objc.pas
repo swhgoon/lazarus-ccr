@@ -39,6 +39,8 @@ uses ctypes, unix;
 {$include malloc.inc}
 {.$include zone.inc}
 
+{ Extra declarations }
+
 implementation
 
 { Macros from error.h }

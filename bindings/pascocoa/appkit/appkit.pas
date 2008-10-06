@@ -9,7 +9,7 @@
 unit appkit;
 
 {$ifdef fpc}
-  {$mode delphi}
+  {$mode objfpc}
   {$packrecords c}
 {$endif}
 

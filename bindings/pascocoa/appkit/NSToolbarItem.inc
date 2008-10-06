@@ -14,13 +14,15 @@
 {$include NSText.inc}
 {$include NSToolbar.inc}
 
-//APPKIT_EXTERN NSString *NSToolbarSeparatorItemIdentifier;
-//APPKIT_EXTERN NSString *NSToolbarSpaceItemIdentifier;
-//APPKIT_EXTERN NSString *NSToolbarFlexibleSpaceItemIdentifier;
-//APPKIT_EXTERN NSString *NSToolbarShowColorsItemIdentifier;        // Shows the color panel.
-//APPKIT_EXTERN NSString *NSToolbarShowFontsItemIdentifier;         // Shows the font panel.
-//APPKIT_EXTERN NSString *NSToolbarCustomizeToolbarItemIdentifier;  // Puts the current toolbar into customize mode.
-//APPKIT_EXTERN NSString *NSToolbarPrintItemIdentifier;             // Sends printDocument: to firstResponder, but you can change this in toolbarWillAddItem: if you need to do so.
+var
+  NSToolbarSeparatorItemIdentifier: CFStringRef; cvar; external;
+  NSToolbarSpaceItemIdentifier: CFStringRef; cvar; external;
+  NSToolbarFlexibleSpaceItemIdentifier: CFStringRef; cvar; external;
+  NSToolbarShowColorsItemIdentifier: CFStringRef; cvar; external;        // Shows the color panel.
+  NSToolbarShowFontsItemIdentifier: CFStringRef; cvar; external;         // Shows the font panel.
+  NSToolbarCustomizeToolbarItemIdentifier: CFStringRef; cvar; external;  // Puts the current toolbar into customize mode.
+  NSToolbarPrintItemIdentifier: CFStringRef; cvar; external;             // Sends printDocument: to firstResponder, but you can change this in toolbarWillAddItem: if you need to do so.
+
 const
   NSToolbarItemVisibilityPriorityStandard = 0;
   NSToolbarItemVisibilityPriorityLow = 1000;

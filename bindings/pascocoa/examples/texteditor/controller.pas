@@ -1,6 +1,8 @@
 {
  controller.pas
 
+ Controller class for the texteditor example.
+
  This example project is released under public domain
 
  AUTHORS: Felipe Monteiro de Carvalho
@@ -24,11 +26,11 @@ type
     constructor Create; override;
     procedure AddMethods; override;
     { Objective-c Methods }
-    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
-    class procedure doOpenFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
-    class procedure doSaveFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
+    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
+    class procedure doOpenFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
+    class procedure doSaveFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
-     _cmd: SEL; theApplication: objc.id): cbool; cdecl; //static;
+     _cmd: SEL; theApplication: objc.id): cbool; cdecl; {$ifndef VER2_2_2}static;{$endif}
   end;
 
 const
@@ -93,13 +95,13 @@ var
 begin
   { Show dialog }
 
-  if SavePanel.runModal = NSFileHandlingPanelOKButton then
+  if OpenPanel.runModal = NSFileHandlingPanelOKButton then
   begin
-    { Now move the contents of the file to the edit control }
+    { Now move the contents of the edit control to the file }
 
-    FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
+    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
 
-    FileContents.writeToFile_atomically(SavePanel.filename, False);
+    myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
   end;
 end;
 
@@ -110,13 +112,13 @@ var
 begin
   { Show dialog }
 
-  if OpenPanel.runModal = NSFileHandlingPanelOKButton then
+  if SavePanel.runModal = NSFileHandlingPanelOKButton then
   begin
-    { Now move the contents of the edit control to the file }
+    { Now move the contents of the file to the edit control }
 
-    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
+    FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
 
-    myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
+    FileContents.writeToFile_atomically(SavePanel.filename, False);
   end;
 end;
 

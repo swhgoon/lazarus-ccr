@@ -49,7 +49,7 @@ begin
   myController := TMyController.Create();
 
   myView.AttachEventHandlers();
-  myToolbarController.AttachEventHandlers();
+  myToolbarController.AttachEventHandlers(); // Created in myView.CreateUserInterface
 
   { Enters main message loop }
 
