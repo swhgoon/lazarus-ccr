@@ -62,9 +62,9 @@ end;
 
 constructor TMyModel.Create;
 begin
-  LoadImages;
-
   ResourcesDir := GetResourcesDir;
+
+  LoadImages;
 end;
 
 end.

@@ -16,27 +16,29 @@ type
   TMyView = class
   private
     { Other helper functions }
+    procedure AddToMenubar(menu: NSMenu);
+
+    function CreateAppleMenu(): NSMenu;
+    function CreateFileMenu(): NSMenu;
+    procedure CreateMainMenu();
+    function CreateMenuItem(ATitle: shortstring): NSMenuItem;
+
     function CreateToolbar(AOwnerView: NSView; AX, AY, AWidth, AHeight: Double): NSToolbar;
-    function CreateMainMenu(): NSMenu;
-    function CreateMenuItem(ATitle: shortstring;
-     ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     function CreateTextField(): NSTextField;
   public
     { classes }
     MainWindow: NSWindow;
     MainWindowView: NSView;
     Toolbar: NSToolbar;
-    ToolbarController: TMyToolbarController;
-    MainMenu: NSMenu;
     TextField: NSTextField;
-    FileMenuItem, OpenItem, SaveItem, SaveAsItem, ExitItem: NSMenuItem;
-    FileMenu: NSMenu;
+    MainMenu, AppleMenu, ServicesMenu, FileMenu: NSMenu;
+    OpenItem, SaveItem, SaveAsItem, ExitItem: NSMenuItem;
     { strings and sizes}
     CFWindowTitle, CFEmptyString: CFStringRef;
     MainWindowRect: NSRect;
-    MenuTitle: CFStringRef;
     { methods }
     procedure CreateUserInterface();
+    procedure AttachEventHandlers();
   end;
 
 var
@@ -82,10 +84,114 @@ begin
 
   { Add the main menu }
 
-  MainMenu := CreateMainMenu();
+  CreateMainMenu();
+end;
 
-  NSApp.setAppleMenu(MainMenu.Handle);
-  NSApp.setMainMenu(MainMenu.Handle);
+procedure TMyView.AttachEventHandlers();
+begin
+  OpenItem.setTarget(myController.Handle);
+  OpenItem.setAction(sel_registerName(PChar('doOpenFile:')));
+
+  SaveItem.setTarget(myController.Handle);
+  SaveItem.setAction(sel_registerName(PChar('doSaveFile:')));
+
+  ExitItem.setTarget(myController.Handle);
+  ExitItem.setAction(sel_registerName(PChar('doClose:')));
+end;
+
+function TMyView.CreateAppleMenu(): NSMenu;
+var
+  AppleMenuTitle, ServicesMenuTitle: CFStringRef;
+begin
+  AppleMenuTitle := CFStringCreateWithPascalString(nil, 'Apple Menu', kCFStringEncodingUTF8);
+  ServicesMenuTitle := CFStringCreateWithPascalString(nil, 'Services', kCFStringEncodingUTF8);
+
+  { Creates the Apple menu }
+
+  Result := NSMenu.initWithTitle(AppleMenuTitle);
+
+  { Add the services submenu }
+
+  ServicesMenu := NSMenu.initWithTitle(ServicesMenuTitle);
+  NSApp.setServicesMenu(ServicesMenu.Handle);
+
+{
+    NSMenuItem *menuitem;
+    // Create the application (Apple) menu.
+    NSMenu *menuApp = [[NSMenu alloc] initWithTitle: @""];
+
+    NSMenu *menuServices = [[NSMenu alloc] initWithTitle: @"Services"];
+    [NSApp setServicesMenu:menuServices];
+
+    menuitem = [[NSMenuItem alloc] initWithTitle:@"Preferences..." action:nil keyEquivalent:@","];
+    [menuApp addItem: menuitem];
+    SetPreferencesMenuItem(menuitem);
+    [menuApp addItem: [NSMenuItem separatorItem]];
+    menuitem = [[NSMenuItem alloc] initWithTitle: @"Services"
+        action:nil keyEquivalent:@""];
+    [menuitem setSubmenu:menuServices];
+    [menuApp addItem: menuitem];
+    [menuitem release];
+
+    [menuApp addItem: [NSMenuItem separatorItem]];
+    menuitem = [[NSMenuItem alloc] initWithTitle:@"Hide"
+        action:@selector(hide:) keyEquivalent:@""];
+    [menuitem setTarget: NSApp];
+    [menuApp addItem: menuitem];
+    [menuitem release];
+    menuitem = [[NSMenuItem alloc] initWithTitle:@"Hide Others"
+        action:@selector(hideOtherApplications:) keyEquivalent:@""];
+    [menuitem setTarget: NSApp];
+    [menuApp addItem: menuitem];
+    [menuitem release];
+    menuitem = [[NSMenuItem alloc] initWithTitle:@"Show All"
+        action:@selector(unhideAllApplications:) keyEquivalent:@""];
+    [menuitem setTarget: NSApp];
+    [menuApp addItem: menuitem];
+    [menuitem release];
+    [menuApp addItem: [NSMenuItem separatorItem]];
+    menuitem = [[NSMenuItem alloc] initWithTitle:@"Quit"
+        action:@selector(terminate:) keyEquivalent:@"q"];
+    [menuitem setTarget: NSApp];
+    [menuApp addItem: menuitem];
+    SetQuitMenuItem(menuitem);
+    [menuitem release];
+
+    [NSApp setAppleMenu:menuApp];
+    AddToMenubar(menuApp);
+    [menuApp release];
+    return PR_SUCCESS;
+}
+end;
+
+function TMyView.CreateFileMenu(): NSMenu;
+var
+  MenuTitle: CFStringRef;
+begin
+  MenuTitle := CFStringCreateWithPascalString(nil, 'File', kCFStringEncodingUTF8);
+
+  { Creates the file menu }
+
+  Result := NSMenu.initWithTitle(MenuTitle);
+
+  { Adds items to it }
+
+  OpenItem := CreateMenuItem('Open');
+  Result.addItem(OpenItem.Handle);
+  SaveItem := CreateMenuItem('Save');
+  Result.addItem(SaveItem.Handle);
+  ExitItem := CreateMenuItem('Exit');
+  Result.addItem(ExitItem.Handle);
+end;
+
+procedure TMyView.AddToMenubar(menu: NSMenu);
+var
+  dummyItem: NSMenuItem;
+begin
+  dummyItem := NSMenuItem.initWithTitle_action_keyEquivalent(CFEmptyString, nil, CFEmptyString);
+  dummyItem.setSubmenu(menu.Handle);
+  MainMenu.addItem(dummyItem.Handle);
+  dummyItem.Free;
 end;
 
 {@@
@@ -94,42 +200,29 @@ function TMyView.CreateToolbar(AOwnerView: NSView; AX, AY, AWidth,
   AHeight: Double): NSToolbar;
 begin
   Result := NSToolbar.initWithIdentifier(CFEmptyString);
-  ToolbarController := TMyToolbarController.Create;
-  Result.setDelegate(ToolbarController.Handle);
+  myToolbarController := TMyToolbarController.Create;
+  Result.setDelegate(myToolbarController.Handle);
 end;
 
 {@@
 }
-function TMyView.CreateMainMenu(): NSMenu;
+procedure TMyView.CreateMainMenu();
 begin
-  MenuTitle := CFStringCreateWithPascalString(nil, 'Title', kCFStringEncodingUTF8);
-  WriteLn('CreateMenu');
-  Result := NSMenu.initWithTitle(CFEmptyString);
-  WriteLn('Menu Created');
+  MainMenu := NSMenu.initWithTitle(CFEmptyString);
 
-  { Creates the file menu }
+  NSApp.setMainMenu(MainMenu.Handle);
 
-  FileMenu := NSMenu.initWithTitle(MenuTitle);
-  FileMenuItem := NSMenuItem.initWithTitle_action_keyEquivalent(CFEmptyString, nil, CFEmptyString);
-  FileMenuItem.setSubmenu(FileMenu.Handle);
-  Result.addItem(FileMenuItem.Handle);
+  AppleMenu := CreateAppleMenu();
+  NSApp.setAppleMenu(AppleMenu.Handle);
+  AddToMenubar(AppleMenu);
 
-  { Adds items to it }
-
-  OpenItem := CreateMenuItem('Open', 'doOpenFile:', myController);
-  FileMenu.addItem(OpenItem.Handle);
-  OpenItem := CreateMenuItem('Save', 'doSaveFile:', myController);
-  FileMenu.addItem(OpenItem.Handle);
-  OpenItem := CreateMenuItem('Save As', 'doSaveFileAs:', myController);
-  FileMenu.addItem(OpenItem.Handle);
-  OpenItem := CreateMenuItem('Exit', 'doClose:', myController);
-  FileMenu.addItem(OpenItem.Handle);
+  FileMenu := CreateFileMenu();
+  AddToMenubar(FileMenu);
 end;
 
 {@@
 }
-function TMyView.CreateMenuItem(ATitle: shortstring;
-  ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+function TMyView.CreateMenuItem(ATitle: shortstring): NSMenuItem;
 var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
@@ -139,8 +232,6 @@ begin
   WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
 
   Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
-  Result.setTarget(ACallbackClass.Handle);
-  Result.setAction(sel_registerName(PChar(ACallbackName)));
 end;
 
 function TMyView.CreateTextField(): NSTextField;

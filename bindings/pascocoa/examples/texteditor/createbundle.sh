@@ -19,6 +19,7 @@ else
   mkdir $appfolder/Contents
   mkdir $appfolder/Contents/MacOS
   mkdir $appfolder/Contents/Resources
+  mkdir $appfolder/Contents/Resources/English.lproj
 #
 # Instead of copying executable into .app folder after each compile,
 # simply create a symbolic link to executable.
@@ -27,9 +28,10 @@ else
   cp imgOpen.png $appfolder/Contents/Resources/
   cp imgSave.png $appfolder/Contents/Resources/
   cp imgClose.png $appfolder/Contents/Resources/
+  cp -r applemenu.nib $appfolder/Contents/Resources/English.lproj/
 #
 # Create PkgInfo file.
-  echo "APPLMAG#" >$appfolder/Contents/PkgInfo
+  echo "TXTEDIT#" >$appfolder/Contents/PkgInfo
 #
 # Create information property list file (Info.plist).
   echo '<?xml version="1.0" encoding="UTF-8"?>' >$plistfile
@@ -47,11 +49,13 @@ else
   echo '  <key>CFBundleInfoDictionaryVersion</key>' >>$plistfile
   echo '  <string>6.0</string>' >>$plistfile
   echo '  <key>CFBundlePackageType</key>' >>$plistfile
-  echo '  <string>APPL</string>' >>$plistfile
+  echo '  <string>EDIT</string>' >>$plistfile
   echo '  <key>CFBundleSignature</key>' >>$plistfile
-  echo '  <string>MAG#</string>' >>$plistfile
+  echo '  <string>TXT#</string>' >>$plistfile
   echo '  <key>CFBundleVersion</key>' >>$plistfile
   echo '  <string>1.0</string>' >>$plistfile
+  echo '  <key>NSMainNibFile</key>' >>$plistfile
+  echo '  <string>applemenu</string>' >>$plistfile
   echo '</dict>' >>$plistfile
   echo '</plist>' >>$plistfile
 fi

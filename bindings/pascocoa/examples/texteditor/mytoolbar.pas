@@ -5,6 +5,7 @@ unit mytoolbar;
 interface
 
 uses
+  SysUtils,
   MacOSAll, objc, appkit, foundation;
 
 type
@@ -16,15 +17,14 @@ type
     { Extra binding functions }
     constructor Create; override;
     procedure AddMethods; override;
+    procedure AttachEventHandlers;
+    { Toolbar items }
+    OpenToolbarItem, SaveToolbarItem, CloseToolbarItem: NSToolbarItem;
     { Objective-c Methods }
-//    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
     class function toolbarAllowedItemIdentifiers(_self: objc.id;
      _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl;// static;
     class function toolbarDefaultItemIdentifiers(_self: objc.id;
      _cmd: SEL; toolbar: objc.id {NSToolbar}): CFArrayRef; cdecl;// static;
-    class function toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar
-      (_self: objc.id; _cmd: SEL; toolbar: objc.id;
-      itemIdentifier: CFStringRef; flag: CBOOL): objc.id; cdecl;// static;
   end;
 
 const
@@ -34,6 +34,11 @@ const
 
 var
   OpenToolbarItemIdentifier, SaveToolbarItemIdentifier, CloseToolbarItemIdentifier: CFStringRef;
+  myToolbarController: TMyToolbarController;
+
+function toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar
+      (_self: objc.id; _cmd: SEL; toolbar: objc.id;
+      itemIdentifier: CFStringRef; flag: OBJC_BOOL): objc.id; cdecl;// static;
 
 implementation
 
@@ -54,14 +59,39 @@ begin
   OpenToolbarItemIdentifier := CFStringCreateWithPascalString(nil, 'OpenID', kCFStringEncodingUTF8);
   SaveToolbarItemIdentifier := CFStringCreateWithPascalString(nil, 'SaveID', kCFStringEncodingUTF8);
   CloseToolbarItemIdentifier := CFStringCreateWithPascalString(nil, 'CloseID', kCFStringEncodingUTF8);
+
+  { Create toolbar items }
+  OpenToolbarItem := NSToolbarItem.initWithItemIdentifier(OpenToolbarItemIdentifier);
+//    [toolbarItem setLabel:@"Save"];
+//   [toolbarItem setPaletteLabel:[toolbarItem label]];
+//    [toolbarItem setToolTip:@"Save Your Passwords"];}
+  OpenToolbarItem.setImage(myModel.imgOpen.Handle);
+
+  SaveToolbarItem := NSToolbarItem.initWithItemIdentifier(SaveToolbarItemIdentifier);
+  SaveToolbarItem.setImage(myModel.imgSave.Handle);
+
+  CloseToolbarItem := NSToolbarItem.initWithItemIdentifier(CloseToolbarItemIdentifier);
+  CloseToolbarItem.setImage(myModel.imgClose.Handle);
 end;
 
 procedure TMyToolbarController.AddMethods;
 begin
   AddMethod(Str_toolbarAllowedItemIdentifiers, '@@:@', Pointer(toolbarAllowedItemIdentifiers));
   AddMethod(Str_toolbarDefaultItemIdentifiers, '@@:@', Pointer(toolbarDefaultItemIdentifiers));
-//  AddMethod(Str_toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar,
-//   '@@:@@L', Pointer(toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar));
+  AddMethod(Str_toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar,
+   '@@:@@c', @toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar);
+end;
+
+procedure TMyToolbarController.AttachEventHandlers;
+begin
+  OpenToolbarItem.setTarget(myController.Handle);
+  OpenToolbarItem.setAction(sel_registerName(PChar('doOpenFile:')));
+
+  SaveToolbarItem.setTarget(myController.Handle);
+  SaveToolbarItem.setAction(sel_registerName(PChar('doSaveFile:')));
+
+  CloseToolbarItem.setTarget(myController.Handle);
+  CloseToolbarItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
 class function TMyToolbarController.toolbarAllowedItemIdentifiers(_self: objc.id;
@@ -69,11 +99,14 @@ class function TMyToolbarController.toolbarAllowedItemIdentifiers(_self: objc.id
 var
   toolbarItems: array[0..4] of CFStringRef;
 begin
+  WriteLn('OpenToolbarItemIdentifier: ', IntToHex(Cardinal(OpenToolbarItemIdentifier), 8));
+  WriteLn('SaveToolbarItemIdentifier: ', IntToHex(Cardinal(SaveToolbarItemIdentifier), 8));
+  WriteLn('NSToolbarSpaceItemIdentifier: ', IntToHex(Cardinal(NSToolbarSpaceItemIdentifier), 8));
+  WriteLn('CloseToolbarItemIdentifier: ', IntToHex(Cardinal(CloseToolbarItemIdentifier), 8));
   toolbarItems[0] := OpenToolbarItemIdentifier;
   toolbarItems[1] := SaveToolbarItemIdentifier;
-//  toolbarItems[2] := NSToolbarSpaceItemIdentifier;
-  toolbarItems[2] := CloseToolbarItemIdentifier;
-  toolbarItems[3] := nil;
+  toolbarItems[2] := NSToolbarSpaceItemIdentifier;
+  toolbarItems[3] := CloseToolbarItemIdentifier;
   toolbarItems[4] := nil;
 
   Result := CFArrayCreate(nil, @toolbarItems[0], 4, nil);
@@ -85,48 +118,23 @@ begin
   Result := toolbarAllowedItemIdentifiers(_self, _cmd, toolbar);
 end;
 
-class function TMyToolbarController.toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar(_self: objc.id;
+function toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar(_self: objc.id;
   _cmd: SEL; toolbar: objc.id {NSToolbar}; itemIdentifier: CFStringRef;
-  flag: CBOOL): objc.id {NSToolbarItem}; cdecl;
-var
-  toolbarItem: NSToolbarItem;
+  flag: OBJC_BOOL): objc.id {NSToolbarItem}; cdecl;
 begin
+  WriteLn('toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar: ', IntToHex(Cardinal(itemIdentifier), 8));
+
+  with myToolbarController do
+  begin
   if CFStringCompare(itemIdentifier, OpenToolbarItemIdentifier, kCFCompareCaseInsensitive) = kCFCompareEqualTo then
-  begin
-    toolbarItem := NSToolbarItem.initWithItemIdentifier(itemIdentifier);
-//    [toolbarItem setLabel:@"Save"];
-//   [toolbarItem setPaletteLabel:[toolbarItem label]];
-//    [toolbarItem setToolTip:@"Save Your Passwords"];}
-    toolbarItem.setImage(myModel.imgOpen.Handle);
-    toolbarItem.setTarget(myController.Handle);
-    toolbarItem.setAction(sel_registerName(PChar('doOpenFile:')));
-  end
+    Result := OpenToolbarItem.autorelease
   else if CFStringCompare(itemIdentifier, SaveToolbarItemIdentifier, kCFCompareCaseInsensitive) = kCFCompareEqualTo then
-  begin
-    toolbarItem := NSToolbarItem.initWithItemIdentifier(itemIdentifier);
-
-    toolbarItem.setImage(myModel.imgSave.Handle);
-    toolbarItem.setTarget(myController.Handle);
-    toolbarItem.setAction(sel_registerName(PChar('doSaveFile:')));
-  end
+    Result := SaveToolbarItem.autorelease
   else if CFStringCompare(itemIdentifier, CloseToolbarItemIdentifier, kCFCompareCaseInsensitive) = kCFCompareEqualTo then
-  begin
-    toolbarItem := NSToolbarItem.initWithItemIdentifier(itemIdentifier);
-
-    toolbarItem.setImage(myModel.imgClose.Handle);
-    toolbarItem.setTarget(myController.Handle);
-    toolbarItem.setAction(sel_registerName(PChar('doCloseFile:')));
-  end
+    Result := CloseToolbarItem.autorelease
   else
-  begin
     Result := nil;
-    Exit
   end;
-
-  Result := ToolbarItem.autorelease;
-{  ToolbarItem.Handle := 0;
-  ToolbarItem.Free;}
-//    Result := Result. [toolbarItem autorelease];
 end;
 
 end.

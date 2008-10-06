@@ -24,11 +24,11 @@ type
     constructor Create; override;
     procedure AddMethods; override;
     { Objective-c Methods }
-    class procedure doShowStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; static;
-    class procedure doHideStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; static;
-    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; static;
+    class procedure doShowStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; //static;
+    class procedure doHideStatusitem(_self: objc.id; _cmd: objc.SEL; sender: objc.id); cdecl; //static;
+    class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
-     _cmd: SEL; theApplication: objc.id): cbool; cdecl; static;
+     _cmd: SEL; theApplication: objc.id): cbool; cdecl; //static;
     { Other helper functions }
     function GetResourcesDir: string;
     function CreateButton(AView: NSView; ATitle: shortstring;

@@ -27,7 +27,6 @@ type
     class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
     class procedure doOpenFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
     class procedure doSaveFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
-    class procedure doSaveFileAs(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; //static;
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
      _cmd: SEL; theApplication: objc.id): cbool; cdecl; //static;
   end;
@@ -36,7 +35,6 @@ const
   Str_doClose = 'doClose:';
   Str_doOpenFile = 'doOpenFile:';
   Str_doSaveFile = 'doSaveFile:';
-  Str_doSaveFileAs = 'doSaveFileAs:';
   Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
 
 var
@@ -64,8 +62,7 @@ begin
   AddMethod(Str_doClose, 'v@:@', Pointer(doClose));
   AddMethod(Str_doOpenFile, 'v@:@', Pointer(doOpenFile));
   AddMethod(Str_doSaveFile, 'v@:@', Pointer(doSaveFile));
-  AddMethod(Str_doSaveFileAs, 'v@:@', Pointer(doSaveFileAs));
-  AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'b@:@',
+  AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'B@:@',
    Pointer(applicationShouldTerminateAfterLastWindowClosed));
 end;
 
@@ -121,12 +118,6 @@ begin
 
     myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
   end;
-end;
-
-class procedure TMyController.doSaveFileAs(_self: objc.id; _cmd: SEL;
-  sender: objc.id); cdecl;
-begin
-
 end;
 
 class function TMyController.applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;

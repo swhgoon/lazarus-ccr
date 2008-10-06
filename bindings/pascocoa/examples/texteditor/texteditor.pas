@@ -17,8 +17,8 @@ program texteditor;
 uses
   Math,
   objc, ctypes, MacOSAll, AppKit, Foundation,
-  controller, model, view,
-  cocoa_pkg, mytoolbar;
+  {$ifndef WITHOUT_PKG}cocoa_pkg,{$endif}
+  controller, model, view, mytoolbar;
 
 var
   pool: NSAutoreleasePool;
@@ -33,19 +33,27 @@ begin
   { Creates the application NSApp object }
   NSApp := NSApplication.sharedApplication;
 
-  { Initializes the controller, view and model objects }
+  { Initializes the model object,
+    must be after the view so that the resources are loaded }
+
+  myModel := TMyModel.Create();
+
+  { Initializes the view object }
+
+  myView := TMyView.Create;
+  myView.CreateUserInterface;
+
+  { The controller needs to be the last to be creates for an unknown reason,
+    and we can only attach the events after the controller is created }
 
   myController := TMyController.Create();
-  myModel := TMyModel.Create();
-  myView := TMyView.Create();
 
-  { Creates the user interface }
-
-  myView.CreateUserInterface();
-
-  myView.MainWindow.orderFrontRegardless;
+  myView.AttachEventHandlers();
+  myToolbarController.AttachEventHandlers();
 
   { Enters main message loop }
+
+  myView.MainWindow.orderFrontRegardless;
 
   NSApp.setDelegate(myController.Handle);
 
