@@ -97,6 +97,7 @@ begin
 end;
 
 {@@
+  Attaches event handlers for the menu
 }
 procedure TMyView.AttachEventHandlers();
 begin
@@ -106,11 +107,15 @@ begin
   SaveItem.setTarget(myController.Handle);
   SaveItem.setAction(sel_registerName(PChar('doSaveFile:')));
 
+  SaveAsItem.setTarget(myController.Handle);
+  SaveAsItem.setAction(sel_registerName(PChar('doSaveAsFile:')));
+
   ExitItem.setTarget(myController.Handle);
   ExitItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
 {@@
+  Creates the Apple submenu
 }
 function TMyView.CreateAppleMenu(): NSMenu;
 var
@@ -130,6 +135,7 @@ begin
 end;
 
 {@@
+  Creates the File submenu
 }
 function TMyView.CreateFileMenu(): NSMenu;
 var
@@ -145,13 +151,21 @@ begin
 
   OpenItem := CreateMenuItem('Open');
   Result.addItem(OpenItem.Handle);
+
   SaveItem := CreateMenuItem('Save');
   Result.addItem(SaveItem.Handle);
+
+  SaveAsItem := CreateMenuItem('Save As');
+  Result.addItem(SaveAsItem.Handle);
+
+  Result.addItem(NSMenuItem.separatorItem.Handle);
+
   ExitItem := CreateMenuItem('Exit');
   Result.addItem(ExitItem.Handle);
 end;
 
 {@@
+  Adds a submenu to the main menu
 }
 procedure TMyView.AddToMenubar(menu: NSMenu);
 var
@@ -164,6 +178,7 @@ begin
 end;
 
 {@@
+  Creates the toolbar object. Setting the items is done in the controller.
 }
 function TMyView.CreateToolbar(AOwnerView: NSView; AX, AY, AWidth,
   AHeight: Double): NSToolbar;
@@ -174,6 +189,7 @@ begin
 end;
 
 {@@
+  Creates the main menu
 }
 procedure TMyView.CreateMainMenu();
 begin
@@ -190,6 +206,7 @@ begin
 end;
 
 {@@
+  Creates a new menu item from a title
 }
 function TMyView.CreateMenuItem(ATitle: shortstring): NSMenuItem;
 var

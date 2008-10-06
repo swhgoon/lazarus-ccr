@@ -29,8 +29,12 @@ type
     { Routines and variables for program resources }
     imgOpen, imgSave, imgClose: NSImage;
     ResourcesDir: string;
+    DocumentName: shortstring;
     constructor Create;
   end;
+
+const
+  Str_Untitled = 'Untitled /1';
 
 var
   myModel: TMyModel;
@@ -74,6 +78,8 @@ begin
   ResourcesDir := GetResourcesDir;
 
   LoadImages;
+
+  DocumentName := Str_Untitled;
 end;
 
 end.

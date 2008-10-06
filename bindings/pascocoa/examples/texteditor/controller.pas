@@ -29,6 +29,7 @@ type
     class procedure doClose(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
     class procedure doOpenFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
     class procedure doSaveFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
+    class procedure doSaveAsFile(_self: objc.id; _cmd: SEL; sender: objc.id); cdecl; {$ifndef VER2_2_2}static;{$endif}
     class function  applicationShouldTerminateAfterLastWindowClosed(_self: objc.id;
      _cmd: SEL; theApplication: objc.id): cbool; cdecl; {$ifndef VER2_2_2}static;{$endif}
   end;
@@ -37,6 +38,7 @@ const
   Str_doClose = 'doClose:';
   Str_doOpenFile = 'doOpenFile:';
   Str_doSaveFile = 'doSaveFile:';
+  Str_doSaveAsFile = 'doSaveAsFile:';
   Str_applicationShouldTerminateAfterLastWindowClosed = 'applicationShouldTerminateAfterLastWindowClosed:';
 
 var
@@ -46,7 +48,7 @@ var
 
 implementation
 
-uses view;
+uses view, model;
 
 { TMyController }
 
@@ -64,6 +66,7 @@ begin
   AddMethod(Str_doClose, 'v@:@', Pointer(doClose));
   AddMethod(Str_doOpenFile, 'v@:@', Pointer(doOpenFile));
   AddMethod(Str_doSaveFile, 'v@:@', Pointer(doSaveFile));
+  AddMethod(Str_doSaveAsFile, 'v@:@', Pointer(doSaveAsFile));
   AddMethod(Str_applicationShouldTerminateAfterLastWindowClosed, 'B@:@',
    Pointer(applicationShouldTerminateAfterLastWindowClosed));
 end;
@@ -97,9 +100,11 @@ begin
 
   if OpenPanel.runModal = NSFileHandlingPanelOKButton then
   begin
+    CFStringGetPascalString(OpenPanel.filename, @myModel.DocumentName, 255, kCFStringEncodingUTF8);
+
     { Now move the contents of the edit control to the file }
 
-    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
+    FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
 
     myView.TextField.setStringValue(CFStringRef(FileContents.Handle));
   end;
@@ -110,15 +115,33 @@ class procedure TMyController.doSaveFile(_self: objc.id; _cmd: SEL;
 var
   FileContents: NSString;
 begin
+  if myModel.DocumentName = Str_Untitled then doSaveAsFile(_self, _cmd, sender)
+  else
+  begin
+    { Now move the contents of the file to the edit control }
+
+    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
+
+    FileContents.writeToFile_atomically(CFStringCreateWithPascalString(nil, myModel.DocumentName, kCFStringEncodingUTF8), False);
+  end;
+end;
+
+class procedure TMyController.doSaveAsFile(_self: objc.id; _cmd: SEL;
+  sender: objc.id); cdecl;
+var
+  FileContents: NSString;
+begin
   { Show dialog }
 
   if SavePanel.runModal = NSFileHandlingPanelOKButton then
   begin
+    CFStringGetPascalString(SavePanel.filename, @myModel.DocumentName, 255, kCFStringEncodingUTF8);
+
     { Now move the contents of the file to the edit control }
 
-    FileContents := NSString.initWithContentsOfFile(OpenPanel.filename);
+    FileContents := NSString.CreateWithHandle(objc.id(myView.TextField.StringValue));
 
-    FileContents.writeToFile_atomically(SavePanel.filename, False);
+    FileContents.writeToFile_atomically(CFStringCreateWithPascalString(nil, myModel.DocumentName, kCFStringEncodingUTF8), False);
   end;
 end;
 
