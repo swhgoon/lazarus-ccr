@@ -1,0 +1,1 @@
+fpc -dWITHOUT_PKG -Fu../../appkit -Fu../../foundation -Fu../../../objc texteditor.pas

@@ -15,8 +15,9 @@ FRAMEWORK="/System/Library/Frameworks/AppKit.framework/Headers"
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSMenu.h > ../appkit/NSMenu.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSMenuItem.h > ../appkit/NSMenuItem.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSNibDeclarations.h > ../appkit/NSNibDeclarations.inc
+./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSNibLoading.h > ../appkit/NSNibLoading.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSOpenPanel.h > ../appkit/NSOpenPanel.inc
-./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSPanel.h > ../appkit/NSPanel.inc
+#./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSPanel.h > ../appkit/NSPanel.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSSavePanel.h > ../appkit/NSSavePanel.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSSpellProtocol.h > ../appkit/NSSpellProtocol.inc
 #./objcparser -ini=$DEFAULT_INI -ini=$APPKIT_INI $FRAMEWORK/NSStatusBar.h > ../appkit/NSStatusBar.inc

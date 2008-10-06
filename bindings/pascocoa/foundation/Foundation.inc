@@ -15,8 +15,8 @@
 {$include NSArray.inc}
 {#import <Foundation/NSAttributedString.h>   }
 {$include NSAutoreleasePool.inc}
-{#import <Foundation/NSBundle.h>
-#import <Foundation/NSByteOrder.h>
+{$include NSBundle.inc}
+{#import <Foundation/NSByteOrder.h>
 #import <Foundation/NSCalendar.h>
 #import <Foundation/NSCalendarDate.h>
 #import <Foundation/NSCharacterSet.h>

@@ -33,6 +33,8 @@ begin
   { Creates the application NSApp object }
   NSApp := NSApplication.sharedApplication;
 
+//  NSBundleNib.loadNibNamed_owner(CFStringCreateWithPascalString(nil, 'applemenu', kCFStringEncodingUTF8), NSApp.Handle);
+
   { Initializes the model object,
     must be after the view so that the resources are loaded }
 

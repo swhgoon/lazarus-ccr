@@ -57,9 +57,9 @@
 {#import <AppKit/NSImageCell.h>}
 {$include NSImageRep.inc}
 {#import <AppKit/NSImageView.h>
-#import <AppKit/NSNib.h>
-#import <AppKit/NSNibLoading.h>
-#import <AppKit/NSPrinter.h>
+#import <AppKit/NSNib.h>}
+{$include NSNibLoading.inc}
+{#import <AppKit/NSPrinter.h>
 #import <AppKit/NSSpeechRecognizer.h>
 #import <AppKit/NSSpeechSynthesizer.h>
 #import <AppKit/NSSpellChecker.h>
