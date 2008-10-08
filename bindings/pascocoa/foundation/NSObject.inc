@@ -246,6 +246,7 @@ begin
   // Allocate space for the class and its metaclass
   //
   new_class := CFAllocatorAllocate(kCFAllocatorMalloc, 2 * SizeOf(objc_class), 0);
+  FillChar(new_class^, 2 * SizeOf(objc_class), $0);
   meta_class := @new_class[1];
 
   // setup class

@@ -35,23 +35,16 @@ begin
 
 //  NSBundleNib.loadNibNamed_owner(CFStringCreateWithPascalString(nil, 'applemenu', kCFStringEncodingUTF8), NSApp.Handle);
 
-  { Initializes the model object,
-    must be after the view so that the resources are loaded }
+  { Initializes the controller and the model. Must be before the view to
+    attach the events (controller) and guarantee that resources are loaded (model) }
 
+  myController := TMyController.Create();
   myModel := TMyModel.Create();
 
   { Initializes the view object }
 
   myView := TMyView.Create;
   myView.CreateUserInterface;
-
-  { The controller needs to be the last to be creates for an unknown reason,
-    and we can only attach the events after the controller is created }
-
-  myController := TMyController.Create();
-
-  myView.AttachEventHandlers();
-  myToolbarController.AttachEventHandlers(); // Created in myView.CreateUserInterface
 
   { Enters main message loop }
 

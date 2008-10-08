@@ -26,8 +26,6 @@ type
     { Extra binding functions }
     constructor Create; override;
     procedure AddMethods; override;
-    { Public routines }
-    procedure AttachEventHandlers;
     { Toolbar items }
     OpenToolbarItem, SaveToolbarItem, CloseToolbarItem: NSToolbarItem;
     { Objective-c Methods }
@@ -74,14 +72,20 @@ begin
   OpenToolbarItem := NSToolbarItem.initWithItemIdentifier(OpenToolbarItemIdentifier);
   OpenToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Open', kCFStringEncodingUTF8));
   OpenToolbarItem.setImage(myModel.imgOpen.Handle);
+  OpenToolbarItem.setTarget(myController.Handle);
+  OpenToolbarItem.setAction(sel_registerName(PChar('doOpenFile:')));
 
   SaveToolbarItem := NSToolbarItem.initWithItemIdentifier(SaveToolbarItemIdentifier);
   SaveToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Save', kCFStringEncodingUTF8));
   SaveToolbarItem.setImage(myModel.imgSave.Handle);
+  SaveToolbarItem.setTarget(myController.Handle);
+  SaveToolbarItem.setAction(sel_registerName(PChar('doSaveFile:')));
 
   CloseToolbarItem := NSToolbarItem.initWithItemIdentifier(CloseToolbarItemIdentifier);
   CloseToolbarItem.setToolTip(CFStringCreateWithPascalString(nil, 'Exit', kCFStringEncodingUTF8));
   CloseToolbarItem.setImage(myModel.imgClose.Handle);
+  CloseToolbarItem.setTarget(myController.Handle);
+  CloseToolbarItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
 procedure TMyToolbarController.AddMethods;
@@ -90,18 +94,6 @@ begin
   AddMethod(Str_toolbarDefaultItemIdentifiers, '@@:@', Pointer(toolbarDefaultItemIdentifiers));
   AddMethod(Str_toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar,
    '@@:@@c', @toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar);
-end;
-
-procedure TMyToolbarController.AttachEventHandlers;
-begin
-  OpenToolbarItem.setTarget(myController.Handle);
-  OpenToolbarItem.setAction(sel_registerName(PChar('doOpenFile:')));
-
-  SaveToolbarItem.setTarget(myController.Handle);
-  SaveToolbarItem.setAction(sel_registerName(PChar('doSaveFile:')));
-
-  CloseToolbarItem.setTarget(myController.Handle);
-  CloseToolbarItem.setAction(sel_registerName(PChar('doClose:')));
 end;
 
 {@@

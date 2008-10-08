@@ -30,7 +30,7 @@ type
     function CreateAppleMenu(): NSMenu;
     function CreateFileMenu(): NSMenu;
     procedure CreateMainMenu();
-    function CreateMenuItem(ATitle: shortstring): NSMenuItem;
+    function CreateMenuItem(ATitle: shortstring; ACallback: string; ATarget: objc.id): NSMenuItem;
 
     function CreateToolbar(AOwnerView: NSView; AX, AY, AWidth, AHeight: Double): NSToolbar;
     function CreateTextField(): NSTextField;
@@ -47,7 +47,6 @@ type
     MainWindowRect: NSRect;
     { methods }
     procedure CreateUserInterface();
-    procedure AttachEventHandlers();
   end;
 
 var
@@ -97,24 +96,6 @@ begin
 end;
 
 {@@
-  Attaches event handlers for the menu
-}
-procedure TMyView.AttachEventHandlers();
-begin
-  OpenItem.setTarget(myController.Handle);
-  OpenItem.setAction(sel_registerName(PChar('doOpenFile:')));
-
-  SaveItem.setTarget(myController.Handle);
-  SaveItem.setAction(sel_registerName(PChar('doSaveFile:')));
-
-  SaveAsItem.setTarget(myController.Handle);
-  SaveAsItem.setAction(sel_registerName(PChar('doSaveAsFile:')));
-
-  ExitItem.setTarget(myController.Handle);
-  ExitItem.setAction(sel_registerName(PChar('doClose:')));
-end;
-
-{@@
   Creates the Apple submenu
 }
 function TMyView.CreateAppleMenu(): NSMenu;
@@ -149,18 +130,20 @@ begin
 
   { Adds items to it }
 
-  OpenItem := CreateMenuItem('Open');
+  OpenItem := CreateMenuItem('Open', 'doOpenFile:', myController.Handle);
   Result.addItem(OpenItem.Handle);
 
-  SaveItem := CreateMenuItem('Save');
+
+  SaveItem := CreateMenuItem('Save', 'doSaveFile:', myController.Handle);
   Result.addItem(SaveItem.Handle);
 
-  SaveAsItem := CreateMenuItem('Save As');
+
+  SaveAsItem := CreateMenuItem('Save As', 'doSaveAsFile:', myController.Handle);
   Result.addItem(SaveAsItem.Handle);
 
   Result.addItem(NSMenuItem.separatorItem.Handle);
 
-  ExitItem := CreateMenuItem('Exit');
+  ExitItem := CreateMenuItem('Exit', 'doClose:', myController.Handle);
   Result.addItem(ExitItem.Handle);
 end;
 
@@ -208,7 +191,7 @@ end;
 {@@
   Creates a new menu item from a title
 }
-function TMyView.CreateMenuItem(ATitle: shortstring): NSMenuItem;
+function TMyView.CreateMenuItem(ATitle: shortstring; ACallback: string; ATarget: objc.id): NSMenuItem;
 var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
@@ -218,6 +201,9 @@ begin
   WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
 
   Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+
+  Result.setTarget(ATarget);
+  Result.setAction(sel_registerName(PChar(ACallback)));
 end;
 
 {@@
