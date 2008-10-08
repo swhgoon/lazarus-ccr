@@ -33,7 +33,8 @@ type
 
     TGradButton = class(TCustomControl)
     private
-      FAutoWidthBorderSpacing: Integer;
+       FAutoWidthBorderSpacing: Integer;
+       FOnMouseMove: TMouseMoveEvent;
        FRotateDirection : TRotateDirection;
        FTextAlignment : TTextAlignment;
        FButtonLayout: TButtonLayout;
@@ -125,7 +126,7 @@ type
        property OnMouseDown;
        property OnMouseEnter;
        property OnMouseLeave;
-       property OnMouseMove;
+       property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
        property OnMouseUp;
        property OnPaint;
        property OnResize;
@@ -1081,16 +1082,23 @@ procedure TGradButton.MouseMove(Shift: TShiftState;
                  X, Y: Integer);
 begin
     //WriteLn('MouseMove');
-    if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
+    //if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
     begin
-      inherited;
-      
+      //
+
       if ssLeft in Shift then
          FState := bsDown
       else
          FState := bsHot;
          
       InvPaint(true);
+
+      if Assigned(FOnMouseMove) then begin
+         //DebugLn('X=%d Y=%d',[X,Y]);
+         FOnMouseMove(Self, Shift, X,Y);
+      end;
+
+      //inherited;
     end;
 end;
 

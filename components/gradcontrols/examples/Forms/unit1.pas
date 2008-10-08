@@ -9,13 +9,10 @@ unit Unit1;
   gelöscht werden ^^
 
   ToDo:
-  - TGradTabBar & TGradTabPagesBar mit sortieren von Tabs "ausstatten"
-  - TabPosition einbauen, sowie das zeichnen und anordnen der Tabs/Pages ändern
   - CurrentPage-Button ohne Abstand
   - IDE Testen hoffe es geht *g*
   
   Danach:
-  - Eigene Page Classen zu ordnen ( bräuchte ich zumindest ^^ ) - Feddich
   - Tabs disable-n
   - noch welche Wünsche? xD
   - Testen testen testen und voila wir haben eine neue komponente :D
@@ -26,11 +23,11 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ugradbtn, StdCtrls, ComCtrls, LCLType, LCLProc, Buttons, ugradtabcontrol,
+  windows, Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  ugradbtn, StdCtrls, ComCtrls, LCLType, LCLProc, LCLIntf, Buttons, ugradtabcontrol,
   Menus, Spin, ButtonPanel,
   MaskEdit, DBGrids, DbCtrls, EditBtn, Arrow,
-  SynHighlighterPHP, Grids, SynEdit;
+  SynHighlighterPHP, Grids, SynEdit, SynMemo;
 
 type
 
@@ -41,15 +38,20 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Edit1: TEdit;
-    GradButton1: TGradButton;
+    GradTabPage1: TGradTabPage;
+    GradTabPage2: TGradTabPage;
+    NewPageBtn: TGradButton;
+    DeleteBtn: TGradButton;
     GradTabControl1: TGradTabControl;
     Label1: TLabel;
-    Memo1: TMemo;
     Memo2: TMemo;
     MenuItem1: TMenuItem;
+    PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
@@ -59,14 +61,22 @@ type
     SpinEdit2: TSpinEdit;
     Splitter1: TSplitter;
     StringGrid1: TStringGrid;
-    SynEdit1: TSynEdit;
-    SynPHPSyn1: TSynPHPSyn;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    ToggleBox2: TToggleBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
     procedure GradButton1Click(Sender: TObject);
     procedure GradButton1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -76,16 +86,41 @@ type
       Y: Integer);
     procedure GradButton1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure GradButton2Click(Sender: TObject);
+    procedure DeleteBtnClick(Sender: TObject);
     procedure BewegeBtn(Sender: TObject);
     procedure GradButton3Click(Sender: TObject);
     procedure GradButton4Click(Sender: TObject);
+    procedure GradTabControl1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure GradTabControl1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure GradTabControl1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure GradTabControl1MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure GradTabControl1MouseWheelDown(Sender: TObject;
+      Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure GradTabControl1MouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure GradTabControl1PageChanged(Sender: TObject);
+    procedure GradTabControl1PagesBarDragOver(Sender, Source: TObject; X,
+      Y: Integer; State: TDragState; var Accept: Boolean);
     procedure GradTabControl1TabButtonClick(GradTabControl: TGradTabControl;
       AIndex: Integer);
+    procedure GradTabControl1TabButtonMouseDown(
+      GradTabControl: TGradTabControl; Button: TMouseButton;
+      Shift: TShiftState; X, Y, AIndex: Integer);
+    procedure GradTabControl1TabButtonMouseMove(
+      GradTabControl: TGradTabControl; Shift: TShiftState; X, Y, AIndex: Integer
+      );
     procedure GradTabControl1TabButtonMouseUp(GradTabControl: TGradTabControl;
       Button: TMouseButton; Shift: TShiftState; X, Y, AIndex: Integer);
     procedure GradTabControl2TabButtonClick(GradTabControl: TGradTabControl;
       AIndex: Integer);
+    procedure PageControl1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure PageControl1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure PageControl1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Panel2Click(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
     procedure SpinEdit1EditingDone(Sender: TObject);
@@ -104,7 +139,6 @@ var
   Form1: TForm1; 
 
 implementation
-
 
 { TForm1 }
 
@@ -194,7 +228,7 @@ begin
    
    WriteLn(BoolToStr(GradTabControl1.Pages[0] <> nil,true));
    
-   GradButton1.Parent := GradTabControl1.Pages[0];
+   NewPageBtn.Parent := GradTabControl1.Pages[0];
    BitBtn1.Parent := GradTabControl1.Pages[0];
    }
    //GradButton3Click(GradButton3);
@@ -247,6 +281,24 @@ begin
    GradTabControl1.Free;
 end;
 
+procedure TForm1.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+
+end;
+
+procedure TForm1.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+
+end;
+
+procedure TForm1.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+
+end;
+
 procedure TForm1.GradButton1Click(Sender: TObject);
 begin
 
@@ -280,19 +332,36 @@ begin
 
 end;
 
-procedure TForm1.GradButton2Click(Sender: TObject);
+procedure TForm1.DeleteBtnClick(Sender: TObject);
 var
    C : Integer;
+   T : String;
 begin
-  GradTabControl1.PagesBar.MoveTo(SpinEdit2.Value);
+  T := ComboBox1.Text;
+  C := GradTabControl1.Tabs.IndexOf(T);
+
+  DebugLn('Text=%s Index=%d',[T,ComboBox1.Items.IndexOf(T)]);
+
+  if (C < GradTabControl1.PageList.Count) AND (GradTabControl1.PageList.Count<>0) then
+  begin
+     ComboBox1.Items.Delete(ComboBox1.Items.IndexOf(T));
+     GradTabControl1.Tabs.Delete(C);
+
+  end;
 end;
 
 procedure TForm1.BewegeBtn(Sender: TObject);
 var
    C,R,G,B : Integer;
+   newName : String;
 begin
-  C := GradTabControl1.Tabs.Count;
-  GradTabControl1.Tabs.Add('tab_'+IntToStr(C));
+  C := -1;
+
+  repeat
+     Inc(C);
+     newName := 'tab_'+IntToStr(C);
+  until(GradTabControl1.Tabs.IndexOf(newName)=-1);
+  GradTabControl1.Tabs.Add(newName);
 
   Randomize;
 
@@ -301,10 +370,10 @@ begin
   B := Random(255)+1;
 
   //WriteLn(R, ' ', G, ' ', B, ColorToString(RGBToColor(R,G,B)));
-  GradTabControl1.CurrentPage.Caption:='tab_'+IntToStr(C);
+  GradTabControl1.ActivePage.Caption:='tab_'+IntToStr(C);
   //GradTabControl1.CurrentPage.Color:=RGBToColor(R, G, B);
-  GradTabControl1.CurrentPage.TabPopupMenu := PopupMenu1;
-  GradTabControl1.CurrentPage.PopupMenu:= PopupMenu1;
+  GradTabControl1.ActivePage.TabPopupMenu := PopupMenu1;
+  GradTabControl1.ActivePage.PopupMenu:= PopupMenu1;
 
   ComboBox1.ItemIndex:=ComboBox1.Items.Add('tab_'+IntToStr(C));
 end;
@@ -327,17 +396,92 @@ begin
   GradTabControl1.PagesBar.MoveToNorm;
 end;
 
+procedure TForm1.GradTabControl1DragDrop(Sender, Source: TObject; X, Y: Integer
+  );
+begin
+  DebugLn('DragDrop X=%d Y=%d',[X,Y]);
+end;
+
+procedure TForm1.GradTabControl1DragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  DebugLn('Name=%s',[Sender.ClassName]);
+  if (Sender is TGradTabControl) then Accept := True;
+end;
+
+procedure TForm1.GradTabControl1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  ShowMessage('Jep');
+end;
+
+procedure TForm1.GradTabControl1MouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  DebugLn('X=%d Y=%d',[X,Y]);
+end;
+
+procedure TForm1.GradTabControl1MouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+var
+   NewNum : Integer;
+begin
+   NewNum:= GradTabControl1.CurrentPageNum;
+   Inc(NewNum);
+   GradTabControl1.CurrentPageNum:=NewNum;
+end;
+
+procedure TForm1.GradTabControl1MouseWheelUp(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+var
+   NewNum : Integer;
+begin
+   NewNum:= GradTabControl1.CurrentPageNum;
+   Dec(NewNum);
+   GradTabControl1.CurrentPageNum:=NewNum;
+end;
+
+procedure TForm1.GradTabControl1PageChanged(Sender: TObject);
+begin
+  with GradTabControl1 do
+     ComboBox1.Text:=Tabs[CurrentPageNum];
+end;
+
+procedure TForm1.GradTabControl1PagesBarDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  DebugLn('Name=%s',[Sender.ClassName]);
+  if (Sender is TGradTabPagesBar) then Accept := True;
+end;
+
 procedure TForm1.GradTabControl1TabButtonClick(GradTabControl: TGradTabControl;
   AIndex: Integer);
 begin
-  ShowMessage('TabClicked: Index: '+IntToStr(AIndex)+' Caption: '+GradTabControl.Page[AIndex].Caption);
+  //ShowMessage('TabClicked: Index: '+IntToStr(AIndex)+' Caption: '+GradTabControl.Page[AIndex].Caption);
+end;
+
+procedure TForm1.GradTabControl1TabButtonMouseDown(
+  GradTabControl: TGradTabControl; Button: TMouseButton; Shift: TShiftState; X,
+  Y, AIndex: Integer);
+begin
+  if ssCtrl in Shift then
+  GradTabControl1.BeginDrag(False);
+end;
+
+procedure TForm1.GradTabControl1TabButtonMouseMove(
+  GradTabControl: TGradTabControl; Shift: TShiftState; X, Y, AIndex: Integer);
+var
+   TabRect : TRect;
+begin
+  //TabRect := GradTabControl.GetTabRect(Aindex);
+  //DebugLn('X=%d Y=%d AIndex=%d',[X+TabRect.Left,Y+TabRect.Top,AIndex]);
 end;
 
 procedure TForm1.GradTabControl1TabButtonMouseUp(
   GradTabControl: TGradTabControl; Button: TMouseButton; Shift: TShiftState; X,
   Y, AIndex: Integer);
 begin
-  ShowMessage('TabMouseUp: Index: '+IntToStr(AIndex)+' Caption: '+GradTabControl.Page[AIndex].Caption);
+  //ShowMessage('TabMouseUp: Index: '+IntToStr(AIndex)+' Caption: '+GradTabControl.Page[AIndex].Caption);
 
   if Button=mbMiddle then
   begin
@@ -360,6 +504,41 @@ begin
       GradTabControl.Width:=FControlWidth;
       FLastIndex:=AIndex;
   end;
+end;
+
+procedure TForm1.PageControl1DragDrop(Sender, Source: TObject; X, Y: Integer);
+const
+   TCM_GETITEMRECT = $130A;
+var
+   TabRect: TRect;
+   j: Integer;
+begin
+   if (Sender is TGradTabControl) then
+   for j := 0 to GradTabControl1.PageCount - 1 do
+   begin
+     //GradTabControl1.Perform(TCM_GETITEMRECT, j, LParam(@TabRect)) ;
+     TabRect := GradTabControl1.GetTabRect(j);
+     DebugLn('X=%d Y=%d T.L=%d T.T=%d T.R=%d T.B=%d',[X,Y,TabRect.Left, TabRect.Top, TabRect.Right, TabRect.Bottom]);
+     if PtInRect(TabRect, Point(X, Y)) then
+     begin
+       if GradTabControl1.ActivePage.PageIndex <> j then
+         GradTabControl1.ActivePage.PageIndex := j;
+       Exit;
+     end;
+   end;
+end;
+
+procedure TForm1.PageControl1DragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+   DebugLn('Name=%s',[Sender.ClassName]);
+   if (Sender is TGradTabControl) then Accept := True;
+end;
+
+procedure TForm1.PageControl1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  PageControl1.BeginDrag(False) ;
 end;
 
 procedure TForm1.Panel2Click(Sender: TObject);

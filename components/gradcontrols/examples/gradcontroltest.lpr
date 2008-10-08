@@ -14,6 +14,8 @@ uses
 
 {$IFDEF WINDOWS}{$R manifest.rc}{$ENDIF}
 
+{$IFDEF WINDOWS}{$R gradcontroltest.rc}{$ENDIF}
+
 begin
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
