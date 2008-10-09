@@ -140,7 +140,7 @@ begin
     RegisterFondamentalTypesHandler(handlerReg);
     locDoc := CreateDoc();
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
-    WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_complex_type_derivation.wsdl'));
+    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_complex_type_derivation.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_complex_type_derivation.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -173,7 +173,7 @@ begin
     RegisterFondamentalTypesHandler(handlerReg);
     locDoc := CreateDoc();
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
-    WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_enum.wsdl'));
+    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_enum.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_enum.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -207,7 +207,7 @@ begin
     RegisterFondamentalTypesHandler(handlerReg);
     locDoc := CreateDoc();
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
-    WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_array.wsdl'));
+    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_array.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_array.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -246,7 +246,7 @@ begin
     RegisterFondamentalTypesHandler(handlerReg);
     locDoc := CreateDoc();
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
-    WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_record.wsdl'));
+    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_record.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_record.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally

@@ -22,7 +22,7 @@ uses
   TestFrameWork,
 {$ENDIF}
   TypInfo,
-  wst_types, base_service_intf, imp_utils;
+  wst_types, base_service_intf, imp_utils, test_suite_utils;
 
 type
 
@@ -2962,7 +2962,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     locStream.Write(locBuffer[1],Length(locBuffer));
-    locFileName := 'test_LoadBufferFromFile.bin';
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     locStream.SaveToFile(locFileName);
     locLoadedBuffer := TBase64StringRemotable.Create();
     locLoadedBuffer.LoadFromFile(locFileName);
@@ -3023,7 +3023,7 @@ begin
   locObj := TBase64StringRemotable.Create();
   try
     locObj.BinaryData := locBuffer;
-    locFileName := 'test_LoadBufferFromFile.bin';
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     DeleteFile(locFileName);
     locObj.SaveToFile(locFileName);
     Check(FileExists(locFileName));
@@ -3178,7 +3178,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     locStream.Write(locBuffer[1],Length(locBuffer));
-    locFileName := 'test_LoadBufferFromFile.bin';
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     locStream.SaveToFile(locFileName);
     locLoadedBuffer := TBase64StringExtRemotable.Create();
     locLoadedBuffer.LoadFromFile(locFileName);
@@ -3239,7 +3239,7 @@ begin
   locObj := TBase64StringExtRemotable.Create();
   try
     locObj.BinaryData := locBuffer;
-    locFileName := 'test_LoadBufferFromFile.bin';
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     DeleteFile(locFileName);
     locObj.SaveToFile(locFileName);
     Check(FileExists(locFileName));
@@ -3546,7 +3546,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     locStream.Write(locBuffer[1],Length(locBuffer));
-    locFileName := 'test_LoadBufferFromFile.bin';
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     locStream.SaveToFile(locFileName);
     locLoadedBuffer := LoadBufferFromFile(locFileName);
     Check( locLoadedBuffer = locBuffer );

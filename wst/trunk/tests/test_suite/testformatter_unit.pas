@@ -748,7 +748,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_AnsiChar.xml');
+    f.SaveToStream(s);
     xVal_1 := #0;
     xVal_2 := #0;
 
@@ -840,7 +840,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_WideChar.xml');
+    f.SaveToStream(s);
     xVal_1 := #0;
     xVal_2 := #0;
 
@@ -933,7 +933,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_UnicodeChar.xml');
+    f.SaveToStream(s);
     xVal_1 := #0;
     xVal_2 := #0;
 
@@ -1026,7 +1026,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.xml');
+    f.SaveToStream(s);
     intVal_U := 0;
     intVal_S := 0;
 
@@ -1400,7 +1400,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Single_4.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1436,7 +1436,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Single_4.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1472,7 +1472,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Double_8.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1508,7 +1508,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Double_8.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1544,7 +1544,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Currency_8.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1580,7 +1580,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Currency_8.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1616,7 +1616,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Extended_10.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1652,7 +1652,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s);s.SaveToFile(ClassName + '.Test_Extended_10.xml');
+    f.SaveToStream(s);
     tmpVal := 0;
 
     f := CreateFormatter(TypeInfo(TClass_Float));
@@ -1769,7 +1769,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(Self.ClassName + '.' + 'Test_UnicodeString.xml');
+    f.SaveToStream(s);
     locVal_1 := '';
     locVal_3 := 'yyyyyyyy';
 
@@ -1811,7 +1811,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(Self.ClassName + '.' + 'Test_WideString.xml');
+    f.SaveToStream(s);
     locVal_1 := '';
     locVal_3 := 'yyyyyyyy';
 
@@ -1888,7 +1888,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Bool.xml');
+    f.SaveToStream(s);
     intVal_1 := False;
     intVal_3 := True;
 
@@ -2074,7 +2074,7 @@ begin
     f.EndScope();
     
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '_test_int_withclass.xml');
+    f.SaveToStream(s);
     FreeAndNil(a);
     
     a := TClass_Int.Create();
@@ -2233,7 +2233,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_CplxInt64SimpleContent_WithClass.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2309,7 +2309,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2385,7 +2385,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2461,7 +2461,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2537,7 +2537,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2608,7 +2608,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2671,7 +2671,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2735,7 +2735,7 @@ begin
     f.EndScope();
 
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.txt');
+    f.SaveToStream(s);
     FreeAndNil(a);
 
     a := TClass_CplxSimpleContent.Create();
@@ -2902,7 +2902,7 @@ begin
       f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
     f.EndScope();
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_StringArray.xml');
+    f.SaveToStream(s);
     FreeAndNil(a);
     a := TArrayOfStringRemotable.Create();
     a.SetLength(0);
@@ -2966,7 +2966,7 @@ begin
       f.Put('b',TypeInfo(TEmbeddedArrayOfStringRemotable),b);
     f.EndScope();
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.XML');
+    f.SaveToStream(s);
     FreeAndNil(a);
     FreeAndNil(b);
     intVal := 0;
@@ -3777,7 +3777,7 @@ begin
     a.fieldSmallint := 0;
     a.fieldString := '';
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Record_simple.xml');
+    f.SaveToStream(s);
 
     f := CreateFormatter(TypeInfo(TClass_Int));
     s.Position := 0;
@@ -3851,7 +3851,7 @@ begin
     f.EndScope();
     a := VAL_EMPTY_RECORD;
     s := TMemoryStream.Create();
-    f.SaveToStream(s); s.SaveToFile(ClassName + '.Test_Record_nested.xml');
+    f.SaveToStream(s);
 
     f := CreateFormatter(TypeInfo(TClass_Int));
     s.Position := 0;
@@ -3929,7 +3929,7 @@ begin
     FreeAndNil(intv);
 
     ls := TStringList.Create();
-    f := CreateFormatter(TypeInfo(TClass_A)); s.SaveToFile(ClassName + '.test_GetScopeItemNames.xml');
+    f := CreateFormatter(TypeInfo(TClass_A));
     s.Position := 0;
     f.LoadFromStream(s);
     x := 'Root';
@@ -4748,7 +4748,7 @@ begin
   f.EndExceptionList();
   strm := TMemoryStream.Create();
   try
-    f.SaveToStream(strm);strm.SaveToFile('TTest_SoapFormatterExceptionBlock.ExceptBlock.xml');
+    f.SaveToStream(strm);
     strm.Position := 0;
     ReadXMLFile(doc,strm);
     if FindAttributeByValueInNode(sSOAP_ENV,doc.DocumentElement,nsShortName) or
@@ -5048,7 +5048,7 @@ begin
   f.EndExceptionList();
   strm := TMemoryStream.Create();
   try
-    f.SaveToStream(strm);strm.SaveToFile('TTest_XmlRpcFormatterExceptionBlock.ExceptBlock.xml');
+    f.SaveToStream(strm);
     strm.Position := 0;
     ReadXMLFile(doc,strm);
     callNode := doc.DocumentElement;

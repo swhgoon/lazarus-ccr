@@ -202,7 +202,8 @@ begin
   if Assigned(FOnMessage) then begin
     FOnMessage(AMsgType,AMsg);
   end else if IsConsole then begin
-    GetLogger().Log(AMsgType, AMsg);
+    if HasLogger() then
+      GetLogger().Log(AMsgType, AMsg);
   end;
 end;
 

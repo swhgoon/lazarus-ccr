@@ -33,7 +33,7 @@ implementation
 
 function wstExpandLocalFileName(const AFileName : string) : string;
 begin
-  Result := AFileName;
+  Result := ExtractFilePath(ParamStr(0)) + AFileName;
 end;
 
 function DumpMemory(AMem : Pointer; const ALength : PtrInt) : ansistring;

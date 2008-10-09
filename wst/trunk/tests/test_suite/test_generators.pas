@@ -112,7 +112,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_properties_default.xsd');
+    //WriteXMLFile(locDoc,'.\class_properties_default.xsd');
     locExistDoc := LoadXmlFromFilesList('class_properties_default.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -183,7 +183,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_properties_extended_metadata.xsd');
+    //WriteXMLFile(locDoc,'.\class_properties_extended_metadata.xsd');
     locExistDoc := LoadXmlFromFilesList('class_properties_extended_metadata.xsd');
     Check(CompareNodes(locExistDoc,locDoc),'generated document differs from the existent one.');
   finally
@@ -253,7 +253,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_extent_native_type.xsd');
+    //WriteXMLFile(locDoc,'.\class_extent_native_type.xsd');
     locExistDoc := LoadXmlFromFilesList('class_extent_native_type.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -326,7 +326,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_headerblock_derived.xsd');
+    //WriteXMLFile(locDoc,'.\class_headerblock_derived.xsd');
     locExistDoc := LoadXmlFromFilesList('class_headerblock_derived.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -389,7 +389,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_headerblock_simplecontent_derived.xsd');
+    //WriteXMLFile(locDoc,'.\class_headerblock_simplecontent_derived.xsd');
     locExistDoc := LoadXmlFromFilesList('class_headerblock_simplecontent_derived.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -450,7 +450,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_widestring_property.xsd');
+    //WriteXMLFile(locDoc,'.\class_widestring_property.xsd');
     locExistDoc := LoadXmlFromFilesList('class_widestring_property.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -555,7 +555,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'array_sequence_collection.xsd');
+    //WriteXMLFile(locDoc,'array_sequence_collection.xsd');
     locExistDoc := LoadXmlFromFilesList('array_sequence_collection.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -566,16 +566,8 @@ begin
 end;
 
 function TTest_CustomXsdGenerator.LoadXmlFromFilesList(const AFileName: string): TXMLDocument;
-var
-  locFileName : string;
 begin
-{$IFDEF FPC}
-  locFileName := Format('.%sfiles%s%s',[PathDelim,PathDelim,AFileName]);
-{$ENDIF}
-{$IFDEF DELPHI}
-  locFileName := Format('..%sfiles%s%s',[PathDelim,PathDelim,AFileName]);
-{$ENDIF}
-  ReadXMLFile(Result,locFileName);
+  ReadXMLFile(Result,wstExpandLocalFileName(TestFilesPath + AFileName));
 end;
 
 { TTest_XsdGenerator }

@@ -21,7 +21,7 @@ uses
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
-  pastree, pascal_parser_intf, xsd_parser, wsdl_parser;
+  pastree, pascal_parser_intf, xsd_parser, wsdl_parser, test_suite_utils;
 
 type
 
@@ -1466,10 +1466,7 @@ var
   prs : IXsdPaser;
   fileName : string;
 begin
-  fileName := Format('.%sfiles%s%s.xsd',[PathDelim,PathDelim,ADoc]);
-{$IFNDEF FPC}
-  fileName := Format('..%s%s',[PathDelim,fileName]);
-{$ENDIF}
+  fileName := wstExpandLocalFileName(TestFilesPath + ADoc + '.xsd');
   locDoc := LoadXmlFile(fileName);
   try
     Result := TwstPasTreeContainer.Create();
@@ -1589,10 +1586,7 @@ var
   prs : IParser;
   fileName : string;
 begin
-  fileName := Format('.%sfiles%s%s.wsdl',[PathDelim,PathDelim,ADoc]);
-{$IFNDEF FPC}
-  fileName := Format('..%s%s',[PathDelim,fileName]);
-{$ENDIF}
+  fileName := wstExpandLocalFileName(TestFilesPath + ADoc + '.wsdl');
   locDoc := LoadXmlFile(fileName);
   try
     Result := TwstPasTreeContainer.Create();

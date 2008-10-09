@@ -111,7 +111,7 @@ begin
   locParser := nil;
   strm := TMemoryStream.Create();
   try
-    f.SaveToStream(strm); strm.SaveToFile('TTest_JsonRpcFormatterExceptionBlock.ExceptBlock_server.txt');
+    f.SaveToStream(strm);
     strm.Position := 0;
     locParser := TJSONParser.Create(strm);
     root := locParser.Parse() as TJSONObject;

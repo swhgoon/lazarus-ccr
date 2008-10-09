@@ -141,12 +141,7 @@ uses
 
 function GetFileFullName(const AFileName: string): string;
 begin
-{$IFDEF FPC}
-  Result := Format('.%sfiles%s%s',[PathDelim,PathDelim,AFileName]);
-{$ENDIF}
-{$IFDEF DELPHI}
-  Result := Format('..%sfiles%s%s',[PathDelim,PathDelim,AFileName]);
-{$ENDIF}
+  Result := wstExpandLocalFileName(TestFilesPath + AFileName);
 end;
 
 function LoadXmlFromFilesList(const AFileName: string): TXMLDocument;
@@ -313,7 +308,7 @@ begin
     f.EndCallResponse();
     strm := TMemoryStream.Create();
     f.SaveToStream(strm);
-    strm.SaveToFile('soap_multi_namespace_object.xml');
+    //strm.SaveToFile('soap_multi_namespace_object.xml');
     
     strm.Position := 0;
     ReadXMLFile(locDoc,strm);
@@ -466,7 +461,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_1.xml'));
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_1.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_1.xml'));
@@ -506,7 +501,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_2.xml'));
