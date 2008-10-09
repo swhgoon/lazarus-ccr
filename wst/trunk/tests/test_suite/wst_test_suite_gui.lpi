@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
@@ -14,14 +14,13 @@
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="3">
@@ -97,12 +96,12 @@
         <UnitName Value="test_rtti_filter"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\..\wst_rtti_filter\rtti_filters.pas"/>
+        <Filename Value="../../wst_rtti_filter/rtti_filters.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="rtti_filters"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\wst_rtti_filter\wst_cursors.pas"/>
+        <Filename Value="../../wst_rtti_filter/wst_cursors.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="wst_cursors"/>
       </Unit13>
@@ -130,10 +129,9 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="..\..\"/>
-      <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
+      <IncludeFiles Value="../../"/>
+      <OtherUnitFiles Value="../../;../../ws_helper/;../../wst_rtti_filter/;../../fcl-json/src/"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
     <Parsing>

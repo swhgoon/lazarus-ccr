@@ -211,9 +211,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <Target>
-      <Filename Value="wst_test_suite.exe"/>
-    </Target>
     <SearchPaths>
       <IncludeFiles Value="../../"/>
       <OtherUnitFiles Value="../../;../../ws_helper/;../../wst_rtti_filter/;../../fcl-json/src/"/>
@@ -237,7 +234,7 @@
       </Debugging>
     </Linking>
     <Other>
-      <CustomOptions Value="-Xi
+      <CustomOptions Value="-Xi -FE.
 "/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
