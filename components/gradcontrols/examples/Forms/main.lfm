@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 292
+  Left = 473
   Height = 443
-  Top = 151
+  Top = 192
   Width = 576
   ActiveControl = TrackBar1
   BorderIcons = [biSystemMenu, biMinimize]
@@ -10,7 +10,8 @@ object Form1: TForm1
   ClientHeight = 443
   ClientWidth = 576
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  ParentFont = False
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 8
     Height = 14
@@ -120,7 +121,7 @@ object Form1: TForm1
   object TrackBar2: TTrackBar
     Left = 8
     Height = 30
-    Top = 155
+    Top = 152
     Width = 440
     Max = 100000
     OnChange = TrackBar2Change
@@ -311,6 +312,7 @@ object Form1: TForm1
     Top = 200
     Width = 168
     Caption = 'Sample Text'
+    Font.Color = clWhite
     Font.Height = -15
     TabOrder = 9
     TabStop = True
@@ -321,10 +323,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object BaseColorButton: TGradButton
     Left = 8
@@ -332,6 +335,7 @@ object Form1: TForm1
     Top = 35
     Width = 104
     Caption = 'BaseColorButton'
+    Font.Color = clWhite
     OnClick = BaseColorClick
     TabOrder = 10
     TabStop = True
@@ -342,10 +346,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object NormalBlendColorButton: TGradButton
     Left = 120
@@ -353,6 +358,7 @@ object Form1: TForm1
     Top = 35
     Width = 104
     Caption = 'NormalBlendColorButton'
+    Font.Color = clWhite
     OnClick = NormalBlendClick
     TabOrder = 11
     TabStop = True
@@ -363,10 +369,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object OverBlendButton: TGradButton
     Left = 232
@@ -374,6 +381,7 @@ object Form1: TForm1
     Top = 35
     Width = 104
     Caption = 'OverBlendButton'
+    Font.Color = clWhite
     OnClick = OverBlendClick
     TabOrder = 12
     TabStop = True
@@ -384,10 +392,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object LoadGlyphButton: TGradButton
     Left = 452
@@ -395,6 +404,7 @@ object Form1: TForm1
     Top = 144
     Width = 104
     Caption = 'Load Glyph'
+    Font.Color = clWhite
     OnClick = LoadGlyphButtonClick
     TabOrder = 13
     TabStop = True
@@ -405,10 +415,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object GlyphBackgroundColorButton: TGradButton
     Left = 452
@@ -416,6 +427,7 @@ object Form1: TForm1
     Top = 192
     Width = 104
     Caption = 'GlyphBackgroundColorButton'
+    Font.Color = clWhite
     OnClick = GlyphBackgroundColorButtonClick
     TabOrder = 14
     TabStop = True
@@ -426,10 +438,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object ClickColorButton: TGradButton
     Left = 452
@@ -437,6 +450,7 @@ object Form1: TForm1
     Top = 35
     Width = 104
     Caption = 'ClickColorButton'
+    Font.Color = clWhite
     OnClick = ClickColorButtonClick
     TabOrder = 15
     TabStop = True
@@ -447,10 +461,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object DisabledColorButton: TGradButton
     Left = 452
@@ -458,6 +473,7 @@ object Form1: TForm1
     Top = 93
     Width = 104
     Caption = 'DisabledColorButton'
+    Font.Color = clWhite
     OnClick = DisabledColorButtonClick
     TabOrder = 16
     TabStop = True
@@ -468,10 +484,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object UnderlineCheckBox: TCheckBox
     Left = 327
@@ -497,6 +514,7 @@ object Form1: TForm1
     Top = 35
     Width = 104
     Caption = 'Text Color'
+    Font.Color = clWhite
     OnClick = TextColorButtonClick
     TabOrder = 19
     TabStop = True
@@ -507,10 +525,11 @@ object Form1: TForm1
     NormalBlendColor = clWhite
     OverBlendColor = clSilver
     BackgroundColor = clBtnFace
-    BorderSides = [bsTopLine, bsBottomLine, bsLeftLine, bsRightLine]
     ShowFocusBorder = True
     GlyphBackgroundColor = clWhite
     ClickColor = clBlue
+    AutoWidthBorderSpacing = 15
+    AutoHeightBorderSpacing = 15
   end
   object ItalicCheckBox: TCheckBox
     Left = 327

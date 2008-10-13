@@ -9,7 +9,6 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="TGradButton-Demo"/>
     </General>
@@ -62,16 +61,19 @@
     <SearchPaths>
       <OtherUnitFiles Value="Forms\"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
       <LinkSmart Value="True"/>
-      <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
-      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

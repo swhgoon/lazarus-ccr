@@ -33,6 +33,8 @@ type
 
     TGradButton = class(TCustomControl)
     private
+      FAutoHeight: Boolean;
+      FAutoHeightBorderSpacing: Integer;
        FAutoWidthBorderSpacing: Integer;
        FOnMouseMove: TMouseMoveEvent;
        FRotateDirection : TRotateDirection;
@@ -54,7 +56,6 @@ type
        FOnNormalBackgroundPaint, FOnHotBackgroundPaint,
        FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
        procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
-       procedure SetAutoWidthBorderSpacing(const AValue: Integer);
        procedure UpdateText;
        procedure UpdateBackground;
        procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
@@ -63,10 +64,13 @@ type
        FNormalBlend,FOverBlend : Extended;
        FBaseColor, FNormalBlendColor, FOverBlendColor, FDisabledColor,
          FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
+       procedure SetAutoHeight(const AValue: Boolean); virtual;
+       procedure SetAutoHeightBorderSpacing(const AValue: Integer); virtual;
+       procedure SetAutoWidthBorderSpacing(const AValue: Integer); virtual;
        procedure InvPaint(StateCheck:Boolean=false);
        procedure FontChanged(Sender: TObject); override;
-       procedure GlyphChanged(Sender: TObject);
-       procedure GetBackgroundRect(var TheRect : TRect);
+       procedure GlyphChanged(Sender: TObject); virtual;
+       procedure GetBackgroundRect(var TheRect : TRect); virtual;
        function GetGlyph : TBitmap;
        procedure SetEnabled(Value: Boolean); override;
        procedure SetAutoWidth(const Value : Boolean); virtual;
@@ -113,6 +117,8 @@ type
        function Focused: Boolean; override;
        procedure UpdateButton;
        procedure UpdatePositions;
+       function GetAutoWidth : Integer;
+       function GetAutoHeight : Integer;
     published
        property Action;
        property Anchors;
@@ -144,7 +150,8 @@ type
        property OverBlendColor: TColor read FOverBlendColor write SetOverBlendColor;
        property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
        property AutoWidth : Boolean read FAutoWidth write SetAutoWidth default false;
-       property BorderSides : TBorderSides read FBorderSides write SetBorderSides;
+       property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default false;
+       property BorderSides : TBorderSides read FBorderSides write SetBorderSides default [bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
        property GradientType : TGradientType read FGradientType write SetGradientType default gtHorizontal;
        property ShowFocusBorder : Boolean read FShowFocusBorder write SetShowFocusBorder;
        property RotateDirection : TRotateDirection read FRotateDirection write SetRotateDirection default rdNormal;
@@ -158,6 +165,7 @@ type
        property DisabledColor : TColor read FDisabledColor write SetDisabledColor default clGray;
        property OwnerBackgroundDraw : Boolean read FOwnerBackgroundDraw write SetOwnerBackgroundDraw;
        property AutoWidthBorderSpacing : Integer read FAutoWidthBorderSpacing write SetAutoWidthBorderSpacing;
+       property AutoHeightBorderSpacing : Integer read FAutoHeightBorderSpacing write SetAutoHeightBorderSpacing;
 
        //property OnGetBackgroundRect { TODO }
 
@@ -168,9 +176,11 @@ type
        property OnDisabledBackgroundPaint : TGBBackgroundPaintEvent read FOnDisabledBackgroundPaint write FOnDisabledBackgroundPaint;
     end;
 
+    function Max(a,b: Integer) : Integer;
     function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
     function ColorsBetween(colors:array of TColor; blend:Extended):TColor;
     function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
+    procedure DbgsGradButton(AButton : TGradButton);
 
     procedure Register;
 
@@ -178,6 +188,14 @@ implementation
 
 uses
     LCLProc;
+
+function Max(a,b: Integer) : Integer;
+begin
+  if a>b then
+     Result := a
+  else
+     Result := b;
+end;
 
 function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
 begin
@@ -190,6 +208,12 @@ begin
            Result := (AreaLength div 2)-(ItemLength div 2);
         end;
      end;
+end;
+
+procedure DbgsGradButton(AButton: TGradButton);
+begin
+  DebugLn('######GradButton#####');
+
 end;
 
 procedure TGradButton.SetShowFocusBorder(const Value: Boolean);
@@ -381,6 +405,30 @@ begin
        FTextSize:=tempTS;
        FGlyphSize:=tempGS;
 
+end;
+
+function TGradButton.GetAutoWidth: Integer;
+begin
+  if FShowGlyph then begin
+    if FButtonLayout in [blGlyphLeft,blGlyphRight] then
+       Result := FRotatedText.Width+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
+    else
+       Result := Max(FRotatedText.Width,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
+  end else begin
+    Result := FRotatedText.Width+FAutoWidthBorderSpacing;
+  end;
+end;
+
+function TGradButton.GetAutoHeight: Integer;
+begin
+  if FShowGlyph then begin
+    if FButtonLayout in [blGlyphTop,blGlyphBottom] then
+       Result := FRotatedText.Height+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoHeightBorderSpacing
+    else
+       Result := Max(FRotatedText.Height,FRotatedGlyph.Height)+FAutoHeightBorderSpacing;
+  end else begin
+    Result := FRotatedText.Height+FAutoHeightBorderSpacing;
+  end;
 end;
 
 procedure TGradButton.PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
@@ -610,40 +658,10 @@ begin
 end;
 
 procedure TGradButton.UpdateButton;
-    function Max(a,b: Integer) : Integer;
-    begin
-        if a>b then
-          Result := a
-        else
-          Result := b;
-    end;
-var
-   newWidth : Integer;
+
 begin
-   if FAutoWidth then
-   begin
-       //WriteLn(FRotatedText.Bitmap.Width);
-       //WriteLn(FRotatedGlyph.Bitmap.Width);
-       if FRotateDirection = rdNormal then begin
-       if FShowGlyph then begin
-       if FButtonLayout in [blGlyphLeft,blGlyphRight] then
-          Width := FRotatedText.Width+ FRotatedGlyph.Width+FTextGlyphSpacing+FAutoWidthBorderSpacing
-       else
-          Width := Max(FRotatedText.Width,FRotatedGlyph.Width)+FAutoWidthBorderSpacing;
-       end else begin
-          Width:= FRotatedText.Width+FAutoWidthBorderSpacing;
-       end;
-       end else begin
-       if FShowGlyph then begin
-       if FButtonLayout in [blGlyphTop,blGlyphBottom] then
-          Height := FRotatedText.Height+ FRotatedGlyph.Height+FTextGlyphSpacing+FAutoWidthBorderSpacing
-       else
-          Height := Max(FRotatedText.Height,FRotatedGlyph.Height)+FAutoWidthBorderSpacing;
-       end else begin
-          Height := FRotatedText.Height+FAutoWidthBorderSpacing;
-       end;
-       end;
-   end;
+   if FAutoWidth then Width := GetAutoWidth;
+   if FAutoHeight then Height := GetAutoHeight;
 
    UpdateBackground;
    UpdateText;
@@ -788,6 +806,22 @@ begin
    end;
 end;
 
+procedure TGradButton.SetAutoHeight(const AValue: Boolean);
+begin
+  if FAutoHeight=AValue then exit;
+  FAutoHeight:=AValue;
+
+  UpdateButton;
+end;
+
+procedure TGradButton.SetAutoHeightBorderSpacing(const AValue: Integer);
+begin
+  if FAutoHeightBorderSpacing=AValue then exit;
+  FAutoHeightBorderSpacing:=AValue;
+
+  UpdateButton;
+end;
+
 procedure TGradButton.SetAutoWidthBorderSpacing(const AValue: Integer);
 begin
   if FAutoWidthBorderSpacing=AValue then exit;
@@ -804,6 +838,7 @@ begin
     Height:=25;
     
     FAutoWidthBorderSpacing:=15;
+    FAutoHeightBorderSpacing:=15;
     FNormalBlend:=0.5;
     FOverBlend:=0.653;
     FBaseColor:=clBlue;
@@ -814,6 +849,7 @@ begin
     FDisabledColor:=clGray;
     FEnabled:=true;
     FAutoWidth:=false;
+    FAutoHeight:=false;
     
     FOnlyBackground:=false;
     FShowFocusBorder:=true;
@@ -851,6 +887,7 @@ begin
 
     UpdateBackground;
     
+    Font.Color:=clWhite;
 end;
 
 destructor TGradButton.Destroy;

@@ -9,12 +9,11 @@
       <TargetFileExt Value=".exe"/>
       <Title Value="gradcontroltest"/>
       <UseAppBundle Value="False"/>
-      <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="805"/>
+      <CurrentBuildNr Value="994"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>
@@ -29,25 +28,21 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="gradtabcontrol"/>
       </Item2>
       <Item3>
-        <PackageName Value="gradtabcontrol"/>
-      </Item3>
-      <Item4>
         <PackageName Value="gradbutton"/>
         <MinVersion Major="1" Minor="2" Valid="True"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <PackageName Value="LCL"/>
-      </Item5>
+      </Item4>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
@@ -81,6 +76,11 @@
         <CStyleOperator Value="False"/>
       </SyntaxOptions>
     </Parsing>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
