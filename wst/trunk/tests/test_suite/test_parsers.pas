@@ -157,6 +157,8 @@ type
     procedure signature_last();
     procedure signature_result();
     procedure signature_return();
+    procedure xsd_not_declared_at_top_node();
+    procedure xsd_not_declared_at_top_node_2();
   end;
   
 implementation
@@ -1573,7 +1575,7 @@ begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata);
 end;
 
-function TTest_XsdParser.LoadComplexType_Class_properties_extended_metadata2: TwstPasTreeContainer;
+function TTest_XsdParser.LoadComplexType_Class_properties_extended_metadata2(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata + '_2');
 end;
@@ -1926,6 +1928,16 @@ begin
   end;
 end;
 
+procedure TTest_WsdlParser.xsd_not_declared_at_top_node();
+begin
+  ParseDoc('xsd_not_declared_at_top_node').Free();
+end;
+
+procedure TTest_WsdlParser.xsd_not_declared_at_top_node_2();
+begin
+  ParseDoc('xsd_not_declared_at_top_node_2').Free();
+end;
+
 function TTest_WsdlParser.LoadComplexType_Class_default_values() : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_default);
@@ -1936,7 +1948,7 @@ begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata);
 end;
 
-function TTest_WsdlParser.LoadComplexType_Class_properties_extended_metadata2: TwstPasTreeContainer;
+function TTest_WsdlParser.LoadComplexType_Class_properties_extended_metadata2(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata + '_2');
 end;

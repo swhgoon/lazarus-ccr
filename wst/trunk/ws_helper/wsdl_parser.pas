@@ -1229,8 +1229,16 @@ begin
       FSchemaCursor.Reset();
       FSchemaCursor := CreateCursorOn(
                          FSchemaCursor,
-                         ParseFilter(CreateQualifiedNameFilterStr(s_schema,FXSShortNames),TDOMNodeRttiExposer)
+                         TAggregatedFilter.Create(
+                           ParseFilter(CreateQualifiedNameFilterStr(s_schema,FXSShortNames),TDOMNodeRttiExposer),
+                           TQualifiedNameObjectFilter.Create(s_schema,s_xs),
+                           fcOr
+                         )
                        );
+     { FSchemaCursor := CreateCursorOn(
+                         FSchemaCursor,
+                         ParseFilter(CreateQualifiedNameFilterStr(s_schema,FXSShortNames),TDOMNodeRttiExposer)
+                       );}
       FSchemaCursor.Reset();
       if FSchemaCursor.MoveNext() then begin
         FSchemaCursor.Reset();

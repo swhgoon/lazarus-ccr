@@ -33,6 +33,20 @@ type
 const
   sNEW_LINE = sLineBreak;
 
+type
+
+  { TQualifiedNameObjectFilter }
+
+  TQualifiedNameObjectFilter = class(TInterfacedObject,IObjectFilter)
+  private
+    FNameSpace : string;
+    FName : string;
+  protected
+    function Evaluate(const AObject : TObject) : Boolean;
+  public
+    constructor Create(const AName,ANameSpace : string);
+  end;
+
   function IsStrEmpty(Const AStr : String):Boolean;
   function ExtractIdentifier(const AValue : string) : string ;
 {$IFDEF WST_HANDLE_DOC}
@@ -429,5 +443,46 @@ begin
   end;
 end;
 
+
+{ TQualifiedNameObjectFilter }
+
+function TQualifiedNameObjectFilter.Evaluate(const AObject: TObject): Boolean;
+var
+  locObj : TDOMNodeRttiExposer;
+  startPos, i : PtrInt;
+  shortNameSpace : string;
+  locContinue : Boolean;
+  tmpNode : TDOMNode;
+begin
+  Result := False;
+  if ( AObject <> nil ) then begin
+    locObj := TDOMNodeRttiExposer(AObject);
+    i := Length(FName);
+    startPos := ( Length(locObj.NodeName) - i + 1 );
+    if ( startPos > 0 ) and ( FName = Copy(locObj.NodeName,startPos,i) ) then begin
+      if ( startPos = 1 ) then begin
+        shortNameSpace := 'xmlns';
+        locContinue := True;
+      end else begin
+        locContinue := ( startPos > 2 ) and ( locObj.NodeName[startPos-1] = ':' );
+        if locContinue then
+          shortNameSpace := 'xmlns:' + Copy(locObj.NodeName,1,( startPos - 2 ));
+      end;
+      if locContinue then begin
+        if ( locObj.InnerObject.Attributes <> nil ) then begin
+          tmpNode := locObj.InnerObject.Attributes.GetNamedItem(shortNameSpace);
+          if ( tmpNode <> nil ) and ( tmpNode.NodeValue = FNameSpace ) then
+            Result := True;
+        end;
+      end;
+    end;
+  end;
+end;
+
+constructor TQualifiedNameObjectFilter.Create(const AName, ANameSpace: string);
+begin
+  FName := AName;
+  FNameSpace := ANameSpace;;
+end;
 
 end.

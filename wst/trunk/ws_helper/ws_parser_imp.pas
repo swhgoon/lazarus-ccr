@@ -19,7 +19,7 @@ uses
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM, wst_fpc_xml{$ENDIF},
   cursor_intf, rtti_filters,
   pastree, pascal_parser_intf, logger_intf,
-  xsd_parser;
+  xsd_parser, wst_types;
 
 type
 
