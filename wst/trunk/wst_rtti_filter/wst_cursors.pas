@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils,
-  cursor_intf, base_service_intf;
+  wst_types, cursor_intf, base_service_intf;
   
 type
 

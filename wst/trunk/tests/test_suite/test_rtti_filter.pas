@@ -25,7 +25,7 @@ uses
 {$ELSE}
   TestFrameWork, 
 {$ENDIF}
-  rtti_filters;
+  cursor_intf, rtti_filters;
 
 type
 

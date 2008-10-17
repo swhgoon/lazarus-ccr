@@ -16,12 +16,12 @@ unit cursor_intf;
 interface
 
 uses
-  Classes, SysUtils; 
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  Classes, SysUtils, wst_types;
 
 type
+
+  TFilterConnector = ( fcNone, fcAnd, fcOr );
+
   IInterfaceCursor = interface;
   IObjectCursor  = interface;
   IDefaultTypedCursor = {$IFDEF WST_INTF_DOM}IInterfaceCursor{$ELSE}IObjectCursor{$ENDIF};
@@ -60,6 +60,22 @@ type
     function SetFilter(const AFilter : IObjectFilter) : IObjectFilter;
   end;
 
+  { TAggregatedFilter }
+
+  TAggregatedFilter = class(TInterfacedObject,IObjectFilter)
+  private
+    FLeft : IObjectFilter;
+    FRight : IObjectFilter;
+    FConnector : TFilterConnector;
+  protected
+    function Evaluate(const AObject : TObject) : Boolean;
+  public
+    constructor Create(
+      const ALeft, ARight : IObjectFilter;
+      const AConnector : TFilterConnector
+    );
+  end;
+
   function CreateCursorOn(
     AInputCursor : IObjectCursor;
     AFilter      : IObjectFilter
@@ -92,6 +108,29 @@ type
       AFilter      : IObjectFilter
     );
   end;
+
+{ TAggregatedFilter }
+
+function TAggregatedFilter.Evaluate(const AObject: TObject): Boolean;
+begin
+  Result := FLeft.Evaluate(AObject);
+  case FConnector of
+    fcAnd : Result := Result and FRight.Evaluate(AObject);
+    fcOr  : Result := Result or FRight.Evaluate(AObject);
+  end;
+end;
+
+constructor TAggregatedFilter.Create(
+  const ALeft, ARight: IObjectFilter;
+  const AConnector: TFilterConnector
+);
+begin
+  Assert(ALeft <> nil);
+  Assert( ( AConnector = fcNone ) or ( ARight <> nil ));
+  FLeft := ALeft;
+  FRight := ARight;
+  FConnector := AConnector;
+end;
 
 function CreateCursorOn(
   AInputCursor : IObjectCursor;

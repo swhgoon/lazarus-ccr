@@ -17,17 +17,12 @@ interface
 
 uses
   Classes, SysUtils, Contnrs, TypInfo,
-  cursor_intf;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}  
+  cursor_intf, wst_types;
 
 type
 
   ERttiFilterException = class(Exception)
   end;
-  
-  TFilterConnector = ( fcNone, fcAnd, fcOr );
   
   TNumericFilterOperator = (
     nfoEqual, nfoGreater, nfoLesser, nfoNotEqual,
