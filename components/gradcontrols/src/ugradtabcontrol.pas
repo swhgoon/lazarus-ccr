@@ -124,7 +124,7 @@ type
        property TabPopupMenu : TPopupMenu read GetTabPopupMenu write SetTabPopupMenu;
        property Color;
        property TabColor : TColor read GetTabColor write SetTabColor;
-       property TabTextAlignment : TTextAlignment read GetTabTextAlignment write SetTabTextAlignment;
+       property TabTextAlignment : TTextAlignment read GetTabTextAlignment write SetTabTextAlignment default taCenter;
        property TabGlyph : TBitmap read GetTabGlyph write SetTabGlyph;
        property TabShowGlyph : Boolean read GetTabShowGlyph write SetTabShowGlyph;
        property TabButtonLayout : TButtonLayout read GetTabButtonLayout write SetTabButtonLayout;
@@ -172,11 +172,14 @@ type
       function IsVisible(Index: Integer) : Boolean;
       procedure ChangeLeftTop(LastTabPosition : TTabPosition);
       function GetViewedTabs : TTabs;
+      function GetViewableTabs(FromIndex : Integer) : TTabs;
+      function GetTabsOfSide(FromIndex : Integer; FromLeftSide : Boolean) : TTabs;
       procedure ScrollToTab(PIndex : Integer);
   public
       constructor Create(AOwner: TComponent; var thePageList: TListWithEvent;
        TheTabControl : TGradTabControl);
       procedure Paint; override;
+      procedure Resize; override;
       procedure MoveToNext;
       procedure MoveToPrior;
       procedure MoveTo(Num: Integer);
@@ -382,7 +385,7 @@ type
         property LongWidth: Integer read FLongWidth write SetLongWidth;
         property MoveIncrement : Integer read FMoveIncrement write FMoveIncrement;
         property OnPageChanged: TNotifyEvent read FOnPageChanged write FOnPageChanged;
-        property AutoShowScrollButtons : Boolean read FAutoShowScrollButton write SetAutoShowScrollButtons;
+        property AutoShowScrollButtons : Boolean read FAutoShowScrollButton write SetAutoShowScrollButtons default true;
         property ShowLeftTopScrollButton : Boolean read FShowLeftTopScrollButton write SetShowLeftTopScrollButton;
         property ShowRightBottomScrollButton : Boolean read FShowRightBottomScrollButton write SetShowRightBottomScrollButton;
         property Images : TImageList read FImages write SetImages;
@@ -393,11 +396,12 @@ type
   procedure Register;
   function IsAssigned(var Obj : TObject) : String;
   function BoolStr(BV : Boolean) : String;
+  function IncAr(var Ar : TTabs) : Integer;
 
 implementation
 
 uses
-    gradtabcontroleditor, ComponentEditors;
+    gradtabcontroleditor, ComponentEditors, math;
 
 const
      FPageCount : Integer = 0;
@@ -437,6 +441,12 @@ begin
       Result := true;
       Exit;
    end;
+end;
+
+function IncAr(var Ar : TTabs) : Integer;
+begin
+   SetLength(Ar, Length(Ar)+1);
+   Result := Length(Ar)-1;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1024,6 +1034,13 @@ begin
      inherited;
 end;
 
+procedure TGradTabPagesBar.Resize;
+begin
+  inherited Resize;
+
+  OrderButtons;
+end;
+
 procedure TGradTabPagesBar.MoveToNext;
 var
    TheTabs : TTabs;
@@ -1386,7 +1403,11 @@ begin
   }
   if not FTabControl.AutoShowScrollButtons then Exit;
 
-  if ((BarWidth < (LastLeft-FMovedTo)) OR (BarHeight < (LastTop-FMovedTo))) AND ((BarHeight<>0) AND (BarWidth<>0)) then begin
+  if ((BarWidth < (LastLeft-FMovedTo))
+  OR (BarHeight < (LastTop-FMovedTo))
+  OR (FMovedTo <> 1))
+  AND ((BarHeight<>0)
+  AND (BarWidth<>0)) then begin
      FTabControl.FLeftButton.Visible:=true;
      FTabControl.FRightButton.Visible:=true;
   end else begin
@@ -1521,9 +1542,9 @@ begin
    TheButton := TGradTabPage(FPageList.Items[Index]).TabButton;
 
    if TabPosition in [tpTop, tpBottom] then
-      Result := TheButton.Visible AND (TheButton.Left >= 0) AND (TheButton.Left <= Width)
+      Result := TheButton.Visible AND (TheButton.Left >= 0) AND (TheButton.Left+TheButton.Width <= Width+5)
    else
-      Result := TheButton.Visible AND (TheButton.Top >= 0) AND (TheButton.Left <= Height);
+      Result := TheButton.Visible AND (TheButton.Top >= 0) AND (TheButton.Top+TheButton.Height <= Height+5);
 end;
 
 procedure TGradTabPagesBar.ChangeLeftTop(LastTabPosition: TTabPosition);
@@ -1532,13 +1553,6 @@ begin
 end;
 
 function TGradTabPagesBar.GetViewedTabs: TTabs;
-
-   function IncAr(var Ar : TTabs) : Integer;
-   begin
-       SetLength(Ar, Length(Ar)+1);
-       Result := Length(Ar)-1;
-   end;
-
 var
    i,l : Integer;
 begin
@@ -1561,21 +1575,89 @@ begin
    //DebugLn('GetViewedTabs End');
 end;
 
+function TGradTabPagesBar.GetViewableTabs(FromIndex: Integer): TTabs;
+var
+   i,l, Last : Integer;
+begin
+   Last := 1;
+   for i := FromIndex to FPageList.Count-1 do
+   begin
+      with TGradTabPage(FPageList.Items[i]).TabButton do
+      begin
+        case TabPosition of
+             tpTop..tpBottom : begin
+                 if Last + Width < Self.Width then
+                 begin
+                    l := IncAr(Result);
+                    Result[l] := i;
+                    Inc(Last, Width+1);
+                 end;
+             end;
+             tpLeft..tpRight : begin
+                 if Last + Height < Self.Height then
+                 begin
+                    l := IncAr(Result);
+                    Result[l] := i;
+                    Inc(Last, Height+1);
+                 end;
+             end;
+        end;
+      end;
+   end;
+
+end;
+
+function TGradTabPagesBar.GetTabsOfSide(FromIndex: Integer; FromLeftSide: Boolean
+  ): TTabs;
+var
+   i,l,fstart,fend : Integer;
+begin
+   if FromLeftSide then begin
+       fstart := 0;
+       fend:= FromIndex-1;
+   end else begin
+       fstart:= FromIndex+1;
+       fend:= FPageList.Count-1;
+   end;
+
+   for i := fstart to fend do
+   begin
+      l := IncAr(Result);
+      Result[l] := i;
+   end;
+end;
+
 procedure TGradTabPagesBar.ScrollToTab(PIndex: Integer);
 var
-   CurTabs : TTabs;
+   CurTabs, TabsLeft, TabsRight : TTabs;
    C : Integer;
    DoNext : Boolean;
+   IsInLeft, IsInRight : Boolean;
 begin
    C := 0;
 
    if (FPageList.Count=0) OR (PIndex>=FPageList.Count) then Exit;
+   if IsVisible(PIndex) then Exit;
+   CurTabs := GetViewedTabs;
+   TabsLeft:= GetTabsOfSide(CurTabs[0],true);
+   TabsRight:= GetTabsOfSide(CurTabs[High(CurTabs)],false);
+
+   IsInLeft:= ValueInArray(PIndex,TabsLeft);
+   IsInRight:= ValueInArray(PIndex,TabsRight);
+
+   DebugLn('TabInLeft=%s TabInRight=%s',[BoolStr(IsInLeft),BoolStr(IsInRight)]);
+
+   if IsInLeft then begin
+      FShowFromButton := TabsLeft[0];
+      OrderButtons;
+      if IsVisible(PIndex) then Exit;
+   end;
 
    {$IFDEF DEBUGTAB} DebugLn('ScrollToTab=%d',[PIndex]); {$ENDIF}
    repeat
        {$IFDEF DEBUGTAB} DebugLn('Run=%d',[C]); {$ENDIF}
-       CurTabs := GetViewedTabs;
-       SetLength(CurTabs, Length(CurTabs)-2);
+       //
+       //SetLength(CurTabs, Length(CurTabs)-1);
 
        with TGradTabPage(FPageList.Items[PIndex]).TabButton do
        case FTabPosition of
@@ -1587,11 +1669,12 @@ begin
 
        Inc(C);
 
-       {$IFDEF DEBUGTAB} DebugLn('ValInAr=%s',[BoolStr(ValueInArray(PIndex,CurTabs))]); {$ENDIF}
+       //{$IFDEF DEBUGTAB} DebugLn('ValInAr=%s',[BoolStr(ValueInArray(PIndex,CurTabs))]); {$ENDIF}
+       {$IFDEF DEBUGTAB} DebugLn('IsVisible(%d)=%s',[PIndex, BoolStr(IsVisible(PIndex))]); {$ENDIF}
 
-    until(ValueInArray(PIndex,CurTabs) OR (C=10));
+    until({ValueInArray(PIndex,CurTabs)} IsVisible(PIndex) {OR (C=10)});
 
-    if DoNext then MoveToNext else MoveToPrior;
+    //if DoNext then MoveToNext else MoveToPrior;
    {$IFDEF DEBUGTAB} DebugLn('ScrollToTab End'); {$ENDIF}
 end;
 
@@ -1781,7 +1864,7 @@ var
   NewOwner: TComponent;
 begin
   {$IFDEF DEBUGTAB}
-  DebugLn(['TGradTabPages.Insert A ',FNoteBook.Name,' Index=',Index,' S="',S,'"']);
+  DebugLn(['TGradTabPages.Insert A ',FGradTabControl.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
   NewOwner:=FGradTabControl.Owner;
   if NewOwner=nil then
@@ -1805,13 +1888,13 @@ begin
   end;
 
   {$IFDEF DEBUGTAB}
-  DebugLn(['TGradTabPages.Insert B ',FNotebook.Name,' Index=',Index,' S="',S,'"']);
+  DebugLn(['TGradTabPages.Insert B ',FGradTabControl.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
   {TODO}
   FGradTabControl.InsertPage(NewPage,Index);
   //FGradTabControl.PagesBar.InsertButton(NewButton, Index);
   {$IFDEF DEBUGTAB}
-  DebugLn(['TGradTabPages.Insert END ',FNotebook.Name,' Index=',Index,' S="',S,'"']);
+  DebugLn(['TGradTabPages.Insert END ',FGradTabControl.Name,' Index=',Index,' S="',S,'"']);
   {$ENDIF}
 end;
 
@@ -1867,6 +1950,7 @@ begin
     inherited;
 
     FTabPosition:=tpTop;
+    FAutoShowScrollButton:=true;
     fCompStyle := csNoteBook;
 
     ControlStyle := [{csAcceptsControls, }csDesignInteractive];
@@ -2632,6 +2716,8 @@ begin
          DebugLn('Control Left %d Top %d Height %d Width %d',[ Left, Top, Height, Width]);
     {$ENDIF}
     
+    FPagesBar.TabPosition:=Value;
+
     case Value of
       tpTop: begin
          FBar.Height:=FTabHeight;
@@ -2712,10 +2798,8 @@ begin
       end;
     end;
 
-    if FPagesBar.TabPosition=Value then
-       FPagesBar.OrderButtons
-    else
-       FPagesBar.TabPosition:=Value;
+    if not FPagesBar.IsVisible(FPageIndex) then
+       FPagesBar.FocusButton(FPageIndex);
 
     {$IFDEF DEBUGTAB}
          DebugLn('After');
@@ -2834,13 +2918,14 @@ end;
 procedure TGradTabControl.Paint;
 var
    i,j : Integer;
+   AClientRect : TRect;
 begin
    Canvas.Brush.Color:=Color;
    Canvas.FillRect(0,0,Width,Height);
 
    Canvas.Pen.Color:=clBlack;
 
-   case FTabPosition of
+   {case FTabPosition of
       tpTop: begin
          Canvas.Line(0,FTabHeight,0,Height);
          Canvas.Line(0,FTabHeight,Width,FTabHeight);
@@ -2865,7 +2950,12 @@ begin
          Canvas.Line(Width-1,0,Width-1,Height); //Right
          Canvas.Line(GetTabBarSize(tpLeft),Height-1,Width,Height-1);//Bottom
       end;
-   end;
+   end;}
+
+   AClientRect := GetClientRect;
+
+   Canvas.Rectangle(AClientRect.Left-2, AClientRect.Top-2,
+                    AClientRect.Right+2, AClientRect.Bottom+2);
    
 end;
 

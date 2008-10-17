@@ -36,7 +36,6 @@ type
       FAutoHeight: Boolean;
       FAutoHeightBorderSpacing: Integer;
        FAutoWidthBorderSpacing: Integer;
-       FOnMouseMove: TMouseMoveEvent;
        FRotateDirection : TRotateDirection;
        FTextAlignment : TTextAlignment;
        FButtonLayout: TButtonLayout;
@@ -132,7 +131,7 @@ type
        property OnMouseDown;
        property OnMouseEnter;
        property OnMouseLeave;
-       property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+       property OnMouseMove;
        property OnMouseUp;
        property OnPaint;
        property OnResize;
@@ -176,7 +175,6 @@ type
        property OnDisabledBackgroundPaint : TGBBackgroundPaintEvent read FOnDisabledBackgroundPaint write FOnDisabledBackgroundPaint;
     end;
 
-    function Max(a,b: Integer) : Integer;
     function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
     function ColorsBetween(colors:array of TColor; blend:Extended):TColor;
     function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
@@ -187,15 +185,7 @@ type
 implementation
 
 uses
-    LCLProc;
-
-function Max(a,b: Integer) : Integer;
-begin
-  if a>b then
-     Result := a
-  else
-     Result := b;
-end;
+    LCLProc, math;
 
 function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
 begin
@@ -1118,25 +1108,15 @@ end;
 procedure TGradButton.MouseMove(Shift: TShiftState;
                  X, Y: Integer);
 begin
-    //WriteLn('MouseMove');
-    //if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
-    begin
-      //
-
-      if ssLeft in Shift then
-         FState := bsDown
-      else
-         FState := bsHot;
+   if ssLeft in Shift then
+      FState := bsDown
+   else
+      FState := bsHot;
          
-      InvPaint(true);
+   InvPaint(true);
 
-      if Assigned(FOnMouseMove) then begin
-         //DebugLn('X=%d Y=%d',[X,Y]);
-         FOnMouseMove(Self, Shift, X,Y);
-      end;
-
-      //inherited;
-    end;
+   //inherited MouseMove calls OnMouseMove
+   inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TGradButton.MouseLeave;

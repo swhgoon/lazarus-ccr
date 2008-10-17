@@ -101,9 +101,9 @@ begin
   SpinEdit2.Value:=GradTabControl1.TabHeight;
 
   GradTabControl1.Images := ImageList1;
-  {GradTabControl1.Page[0].ImageIndex:=0;
+  GradTabControl1.Page[0].ImageIndex:=0;
   GradTabControl1.Page[0].TabButton.ShowGlyph:=true;
-  GradTabControl1.PagesBar.MoveToNext; }
+  //GradTabControl1.PagesBar.MoveToNext;
 
   ComboBox1.Items.Assign(GradTabControl1.Tabs);
 end;
