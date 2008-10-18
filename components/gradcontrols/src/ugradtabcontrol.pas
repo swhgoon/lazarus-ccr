@@ -282,6 +282,7 @@ type
         procedure PageButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
         procedure PageButtonMouseClick(Sender: TObject);
+        procedure PopupMouseClick(Sender: TObject);
         procedure PageButtonMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
         procedure SetAutoShowScrollButtons(const AValue: Boolean);
@@ -308,6 +309,7 @@ type
                X,Y: Integer; State: TDragState; var Accept: Boolean);
         procedure SubDragDrop(Sender, Source: TObject; X,Y: Integer);
         //End
+        procedure PopupTabs(Sender: TObject);
         procedure MoveLeftTopClick(Sender: TObject);
         procedure MoveRightBottomClick(Sender: TObject);
         procedure PageRemoved(Index: Integer);
@@ -1964,6 +1966,9 @@ begin
 
     FTabHeight:=20;
 
+    FPagesPopup := TPopupMenu.Create(Self);
+    FPagesPopup.OnPopup:=@PopupTabs;
+
     FBar := TGradTabBar.Create(Self);
     FBar.Height:=FTabHeight;
     FBar.Top:=0;
@@ -2010,7 +2015,10 @@ begin
     begin
         OnMouseUp:=nil;
         OnMouseDown:=nil;
+        PopupMenu:=FPagesPopup;
     end;
+
+    FRightButton.PopupMenu:=FPagesPopup;
 
     Height:=200;
     Width:=200;
@@ -2254,6 +2262,16 @@ begin
       FOnTabButtonClick(Self, FPageList.IndexOf(AButton.Owner));
 end;
 
+procedure TGradTabControl.PopupMouseClick(Sender: TObject);
+var
+   AButton : TGradTabPageButton;
+begin
+   //WriteLn('MouseClick: ', FTabList.IndexOf(Sender));
+
+   AButton := Page[(Sender as TMenuItem).Tag].TabButton;
+   PageButtonMouseClick(AButton);
+end;
+
 procedure TGradTabControl.PageButtonMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -2377,6 +2395,28 @@ procedure TGradTabControl.SubDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
   if Assigned(OnDragDrop) then
      OnDragDrop(Sender, Source, X, Y);
+end;
+
+procedure TGradTabControl.PopupTabs(Sender: TObject);
+var
+   tempMenu : TMenuItem;
+   i : Integer;
+begin
+  with FPagesPopup.Items do begin
+      Clear;
+
+      for i := 0 to PageCount-1 do begin
+          tempMenu := TMenuItem.Create(FPagesPopup);
+
+          tempMenu.Caption:=Page[i].Caption;
+          tempMenu.OnClick:=@PopupMouseClick;
+          tempMenu.Tag:=i;
+
+          //DebugLn('I=%d OnClick-Assigned=%s',[i,BoolStr(Assigned(Page[i].TabButton.OnClick))]);
+
+          Add(tempMenu);
+      end;
+  end;
 end;
 
 procedure TGradTabControl.MoveLeftTopClick(Sender: TObject);

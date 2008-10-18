@@ -34,7 +34,6 @@ object Form1: TForm1
       OnMouseDown = GradTabControl1MouseDown
       OnMouseWheelUp = GradTabControl1MouseWheelUp
       OnMouseWheelDown = GradTabControl1MouseWheelDown
-      OnPagesBarDragOver = nil
       PageIndex = 1
       TabHeight = 20
       MoveIncrement = 1
@@ -298,7 +297,6 @@ object Form1: TForm1
       Top = 16
       Width = 100
       ItemHeight = 13
-      MaxLength = -1
       OnChange = ComboBox1Change
       Style = csDropDownList
       TabOrder = 0
@@ -457,6 +455,7 @@ object Form1: TForm1
     left = 734
     top = 397
     object MenuItem1: TMenuItem
+      Tag = 1212312
       Caption = 'New Item1'
     end
   end
