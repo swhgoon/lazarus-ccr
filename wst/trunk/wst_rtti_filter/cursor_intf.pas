@@ -137,7 +137,10 @@ function CreateCursorOn(
   AFilter      : IObjectFilter
 ) : IFilterableObjectCursor ;
 begin
-  Result := TSimpleObjectFilterableCursor.Create(AInputCursor,AFilter);
+  if ( AInputCursor <> nil ) then
+    Result := TSimpleObjectFilterableCursor.Create(AInputCursor,AFilter)
+  else
+    Result := nil;
 end;
 
 
