@@ -44,6 +44,9 @@ type
 {$ENDIF WST_UNICODESTRING}
     
     procedure array_sequence_collection();
+    procedure class_sequence_open_type_any();
+    procedure class_sequence_open_type_any_attribute();
+    procedure class_sequence_open_type_any_any_attribute();
   end;
 
   TTest_XsdGenerator = class(TTest_CustomXsdGenerator)
@@ -557,6 +560,279 @@ begin
     g.Execute(tr,mdl.Name);
     //WriteXMLFile(locDoc,'array_sequence_collection.xsd');
     locExistDoc := LoadXmlFromFilesList('array_sequence_collection.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.class_sequence_open_type_any();
+var
+  tr : TwstPasTreeContainer;
+
+  procedure AddProperty(
+          AClassType : TPasClassType;
+    const AName,
+          ATypeName  : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,AClassType,visDefault,'',0));
+    AClassType.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
+    tr.RegisterExternalAlias(mdl,'urn:wst-test');
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=lax;minOccurs=0;maxOccurs=unbounded');
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType2',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=lax;minOccurs=0;maxOccurs=unbounded');
+      AddProperty(cltyp,'strField','string',ptField);
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeParent',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty(cltyp,'strFieldParent','string',ptField);
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeChild',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElement('TComplexTypeParent') as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=skip;minOccurs=2;maxOccurs=10');
+      AddProperty(cltyp,'strFieldChild','string',ptField);
+
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXML(locDoc,'gen_class_sequence_open_type_any.xsd');
+    locExistDoc := LoadXmlFromFilesList('gen_class_sequence_open_type_any.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.class_sequence_open_type_any_attribute();
+var
+  tr : TwstPasTreeContainer;
+
+  procedure AddProperty(
+          AClassType : TPasClassType;
+    const AName,
+          ATypeName  : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,AClassType,visDefault,'',0));
+    AClassType.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
+    tr.RegisterExternalAlias(mdl,'urn:wst-test');
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=lax');
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType2',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=strict');
+      AddProperty(cltyp,'strField','string',ptField);
+      AddProperty(cltyp,'strFieldAtt','string',ptField);
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeParent',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty(cltyp,'strFieldParent','string',ptField);
+      AddProperty(cltyp,'strFieldParentAtt','string',ptField);
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeChild',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElement('TComplexTypeParent') as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=skip');
+      AddProperty(cltyp,'strFieldChild','string',ptField);
+      AddProperty(cltyp,'strFieldChildAtt','string',ptField);
+
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXML(locDoc,'gen_class_sequence_open_type_any_attribute.xsd');
+    locExistDoc := LoadXmlFromFilesList('gen_class_sequence_open_type_any_attribute.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.class_sequence_open_type_any_any_attribute();
+var
+  tr : TwstPasTreeContainer;
+
+  procedure AddProperty(
+          AClassType : TPasClassType;
+    const AName,
+          ATypeName  : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,AClassType,visDefault,'',0));
+    AClassType.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'open_type_module',tr.Package,visDefault,'',0));
+    tr.RegisterExternalAlias(mdl,'urn:wst-test');
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=lax');
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=lax;minOccurs=0;maxOccurs=unbounded');
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexType2',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=strict');
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=lax;minOccurs=0;maxOccurs=unbounded');
+      AddProperty(cltyp,'strField','string',ptField);
+      AddProperty(cltyp,'strFieldAtt','string',ptField);
+
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeParent',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElementNS('TBaseComplexRemotable',s_xs) as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty(cltyp,'strFieldParent','string',ptField);
+      AddProperty(cltyp,'strFieldParentAtt','string',ptField);
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TComplexTypeChild',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      cltyp.AncestorType := tr.FindElement('TComplexTypeParent') as TPasType;
+      cltyp.AncestorType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_anyAttribute]),'processContents=skip');
+      tr.Properties.SetValue(cltyp,Format('%s#%s',[s_xs,s_any]),'processContents=skip;minOccurs=2;maxOccurs=10');
+      AddProperty(cltyp,'strFieldChild','string',ptField);
+      AddProperty(cltyp,'strFieldChildAtt','string',ptField);
+
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXML(locDoc,'gen_class_sequence_open_type_any_anyatt.xsd');
+    locExistDoc := LoadXmlFromFilesList('gen_class_sequence_open_type_any_anyatt.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     ReleaseDomNode(locExistDoc);

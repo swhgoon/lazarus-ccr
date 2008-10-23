@@ -120,7 +120,10 @@ type
     FHints : TParserTypeHints;
   private
     //helper routines
-    function ExtractElementCursor(out AAttCursor : IObjectCursor):IObjectCursor;
+    function ExtractElementCursor(
+      out AAttCursor : IObjectCursor;
+      out AAnyNode, AAnyAttNode : TDOMNode
+    ):IObjectCursor;
     procedure ExtractExtendedMetadata(const AItem : TPasElement; const ANode : TDOMNode);
     procedure GenerateArrayTypes(
       const AClassName : string;
@@ -403,13 +406,76 @@ end;
 
 { TComplexTypeParser }
 
-function TComplexTypeParser.ExtractElementCursor(out AAttCursor : IObjectCursor) : IObjectCursor;
+function TComplexTypeParser.ExtractElementCursor(
+  out AAttCursor : IObjectCursor;
+  out AAnyNode, AAnyAttNode : TDOMNode
+) : IObjectCursor;
 var
-  frstCrsr, tmpCursor : IObjectCursor;
-  parentNode, tmpNode : TDOMNode;
+  frstCrsr : IObjectCursor;
+
+  function ParseContent_ALL() : IObjectCursor;
+  var
+    locTmpCrs : IObjectCursor;
+    locTmpNode : TDOMNode;
+  begin
+    locTmpCrs := CreateCursorOn(
+                   frstCrsr.Clone() as IObjectCursor,
+                   ParseFilter(CreateQualifiedNameFilterStr(s_all,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                 );
+    locTmpCrs.Reset();
+    if locTmpCrs.MoveNext() then begin
+      FSequenceType := stElement;
+      locTmpNode := (locTmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if  locTmpNode.HasChildNodes() then begin
+        locTmpCrs := CreateCursorOn(
+                       CreateChildrenCursor(locTmpNode,cetRttiNode),
+                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                     );
+        Result := locTmpCrs;
+      end;
+    end;
+  end;
+
+  function ParseContent_SEQUENCE(out ARes : IObjectCursor) : Boolean;
+  var
+    tmpCursor : IObjectCursor;
+    tmpNode : TDOMNode;
+  begin
+    ARes := nil;
+    tmpCursor := CreateCursorOn(
+                   frstCrsr.Clone() as IObjectCursor,
+                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                 );
+    tmpCursor.Reset();
+    Result := tmpCursor.MoveNext();
+    if Result then begin
+      FSequenceType := stElement;
+      tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if  tmpNode.HasChildNodes() then begin
+        tmpCursor := CreateCursorOn(
+                       CreateChildrenCursor(tmpNode,cetRttiNode),
+                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                     );
+        ARes := tmpCursor;
+        tmpCursor := CreateCursorOn(
+                       CreateChildrenCursor(tmpNode,cetRttiNode),
+                       ParseFilter(CreateQualifiedNameFilterStr(s_any,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                     );
+        tmpCursor.Reset();
+        if tmpCursor.MoveNext() then
+          AAnyNode := TDOMNodeRttiExposer(tmpCursor.GetCurrent()).InnerObject;
+      end;
+    end
+  end;
+
+var
+  parentNode : TDOMNode;
+  crs : IObjectCursor;
 begin
   Result := nil;
   AAttCursor := nil;
+  AAnyNode := nil;
+  AAnyAttNode := nil;
   case FDerivationMode of
     dmNone          : parentNode := FContentNode;
     dmRestriction,
@@ -420,42 +486,21 @@ begin
                    CreateChildrenCursor(parentNode,cetRttiNode),
                    ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
                  );
+    crs := CreateChildrenCursor(parentNode,cetRttiNode);
+    if ( crs <> nil ) then begin
+      crs := CreateCursorOn(
+               crs,
+               ParseFilter(CreateQualifiedNameFilterStr(s_anyAttribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+             );
+      if ( crs <> nil ) then begin
+        crs.Reset();
+        if crs.MoveNext() then
+          AAnyAttNode := TDOMNodeRttiExposer(crs.GetCurrent()).InnerObject;
+      end;
+    end;
     frstCrsr := CreateChildrenCursor(parentNode,cetRttiNode);
-    tmpCursor := CreateCursorOn(
-                   frstCrsr.Clone() as IObjectCursor,
-                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                 );
-    tmpCursor.Reset();
-    if tmpCursor.MoveNext() then begin
-      FSequenceType := stElement;
-      tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-      if  tmpNode.HasChildNodes() then begin
-        tmpCursor := CreateCursorOn(
-                       CreateChildrenCursor(tmpNode,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                     );
-        Result := tmpCursor;
-      end;
-    end else begin
-      tmpCursor := CreateCursorOn(
-                     frstCrsr.Clone() as IObjectCursor,
-                     ParseFilter(CreateQualifiedNameFilterStr(s_all,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                   );
-      tmpCursor.Reset();
-      if tmpCursor.MoveNext() then begin
-        FSequenceType := stElement;
-        tmpNode := (tmpCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
-        if  tmpNode.HasChildNodes() then begin
-          tmpCursor := CreateCursorOn(
-                         CreateChildrenCursor(tmpNode,cetRttiNode),
-                         ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
-                       );
-          Result := tmpCursor;
-        end;
-      end;
-    end
-  end else begin
-    Result := nil;
+    if not ParseContent_SEQUENCE(Result) then
+      Result := ParseContent_ALL();
   end;
 end;
 
@@ -952,6 +997,40 @@ var
       FSymbols.Properties.GetList(ADesc).Assign(ls);
   end;
 
+  procedure ProcessXsdAnyDeclarations(AAnyNode, AAnyAttNode : TDOMNode; AType : TPasType);
+  var
+    anyElt : TDOMElement;
+    ls : TStringList;
+    anyDec : string;
+  begin
+    if ( AAnyNode <> nil ) then begin
+      anyElt := AAnyNode as TDOMElement;
+      ls := TStringList.Create();
+      try
+        if anyElt.hasAttribute(s_processContents) then
+          ls.Values[s_processContents] := anyElt.GetAttribute(s_processContents);
+        if anyElt.hasAttribute(s_minOccurs) then
+          ls.Values[s_minOccurs] := anyElt.GetAttribute(s_minOccurs);
+        if anyElt.hasAttribute(s_maxOccurs) then
+          ls.Values[s_maxOccurs] := anyElt.GetAttribute(s_maxOccurs);
+        if ( ls.Count > 0 ) then begin
+          ls.Delimiter := ';';
+          anyDec := ls.DelimitedText;
+        end;
+      finally
+        ls.Free();
+      end;
+      FSymbols.Properties.SetValue(AType,Format('%s#%s',[s_xs,s_any]),anyDec);
+    end;
+    if ( AAnyAttNode <> nil ) then begin
+      anyDec := '';
+      anyElt := AAnyAttNode as TDOMElement;
+      if anyElt.hasAttribute(s_processContents) then
+        anyDec := anyElt.GetAttribute(s_processContents);
+      FSymbols.Properties.SetValue(AType,Format('%s#%s',[s_xs,s_anyAttribute]),Format('%s=%s',[s_processContents,anyDec]));
+    end;
+  end;
+
 var
   eltCrs, eltAttCrs : IObjectCursor;
   internalName : string;
@@ -963,9 +1042,10 @@ var
   recordType : TPasRecordType;
   tmpRecVar : TPasVariable;
   locStrBuffer : string;
+  locAnyNode, locAnyAttNode : TDOMNode;
 begin
   ExtractBaseType();
-  eltCrs := ExtractElementCursor(eltAttCrs);
+  eltCrs := ExtractElementCursor(eltAttCrs,locAnyNode,locAnyAttNode);
 
   internalName := ExtractIdentifier(ATypeName);
   hasInternalName := IsReservedKeyWord(internalName) or
@@ -1091,6 +1171,9 @@ begin
           FSymbols.FreeProperties(tmpClassDef);
           FreeAndNil(tmpClassDef);
         end;
+
+        if ( locAnyNode <> nil ) or ( locAnyAttNode <> nil ) then
+          ProcessXsdAnyDeclarations(locAnyNode,locAnyAttNode,Result);
       except
         FSymbols.FreeProperties(Result);
         FreeAndNil(Result);

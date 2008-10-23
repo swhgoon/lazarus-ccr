@@ -40,6 +40,7 @@ type
     function LoadComplexType_Class_properties_extended_metadata2() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
@@ -68,6 +69,11 @@ type
     procedure ComplexType_Class_properties_extended_metadata2();
     procedure ComplexType_Class_Embedded();
     procedure ComplexType_Class_Extend_Simple_Schema();
+    procedure ComplexType_Class_open_type_any();
+    procedure ComplexType_Class_open_extension_type_any();
+    procedure ComplexType_Class_open_extension_type_anyAttribute();
+    procedure ComplexType_Class_sequence_open_type_anyAttribute();
+    procedure ComplexType_Class_all_open_type_anyAttribute();
     
     procedure ComplexType_Record();
     procedure ComplexType_Record_Embedded();
@@ -102,6 +108,7 @@ type
     function LoadComplexType_Class_properties_extended_metadata2() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -137,6 +144,7 @@ type
     function LoadComplexType_Class_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
@@ -162,7 +170,7 @@ type
   end;
   
 implementation
-uses parserutils;
+uses parserutils, xsd_consts;
 
 const
   x_complexType_SampleArrayIntFieldType     = 'TArrayIntFieldType';
@@ -682,6 +690,149 @@ begin
   finally
     tr.Free();
     FreeAndNil(prpLs);
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_open_type_any();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+  mdl : TPasModule;
+  elt : TPasElement;
+  strBuffer : string;
+  ls : TStringList;
+begin
+  tr := LoadComplexType_Class_OpenType();
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  elt := tr.FindElement('TClass_1');
+  CheckNotNull(elt,'TClass_1');
+  CheckIs(elt,TPasClassType);
+  clsType := elt as TPasClassType;
+  strBuffer := tr.Properties.GetValue(clsType,Format('%s#%s',[s_xs,s_any]));
+  Check(Length(strBuffer) > 0, s_any);
+  ls := TStringList.Create();
+  try
+    ls.Delimiter := ';';
+    ls.DelimitedText := strBuffer;
+    CheckEquals('lax',ls.Values[s_processContents]);
+    CheckEquals('0',ls.Values[s_minOccurs]);
+    CheckEquals(s_unbounded,ls.Values[s_maxOccurs]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_open_extension_type_any();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+  mdl : TPasModule;
+  elt : TPasElement;
+  strBuffer : string;
+  ls : TStringList;
+begin
+  tr := LoadComplexType_Class_OpenType();
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  elt := tr.FindElement('TClassSampleDerivedType');
+  CheckNotNull(elt,'TClassSampleDerivedType');
+  CheckIs(elt,TPasClassType);
+  clsType := elt as TPasClassType;
+  strBuffer := tr.Properties.GetValue(clsType,Format('%s#%s',[s_xs,s_any]));
+  Check(Length(strBuffer) > 0, s_any);
+  ls := TStringList.Create();
+  try
+    ls.Delimiter := ';';
+    ls.DelimitedText := strBuffer;
+    CheckEquals('skip',ls.Values[s_processContents]);
+    CheckEquals(s_unbounded,ls.Values[s_maxOccurs]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_open_extension_type_anyAttribute();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+  mdl : TPasModule;
+  elt : TPasElement;
+  strBuffer : string;
+  ls : TStringList;
+begin
+  tr := LoadComplexType_Class_OpenType();
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  elt := tr.FindElement('TClassSampleDerivedType');
+  CheckNotNull(elt,'TClassSampleDerivedType');
+  CheckIs(elt,TPasClassType);
+  clsType := elt as TPasClassType;
+  strBuffer := tr.Properties.GetValue(clsType,Format('%s#%s',[s_xs,s_anyAttribute]));
+  Check(Length(strBuffer) > 0, s_anyAttribute);
+  ls := TStringList.Create();
+  try
+    ls.Delimiter := ';';
+    ls.DelimitedText := strBuffer;
+    CheckEquals('lax',ls.Values[s_processContents]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_sequence_open_type_anyAttribute();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+  mdl : TPasModule;
+  elt : TPasElement;
+  strBuffer : string;
+  ls : TStringList;
+begin
+  tr := LoadComplexType_Class_OpenType();
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  elt := tr.FindElement('TClass_1');
+  CheckNotNull(elt,'TClass_1');
+  CheckIs(elt,TPasClassType);
+  clsType := elt as TPasClassType;
+  strBuffer := tr.Properties.GetValue(clsType,Format('%s#%s',[s_xs,s_anyAttribute]));
+  Check(Length(strBuffer) > 0, s_anyAttribute);
+  ls := TStringList.Create();
+  try
+    ls.Delimiter := ';';
+    ls.DelimitedText := strBuffer;
+    CheckEquals('strict',ls.Values[s_processContents]);
+  finally
+    ls.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_Class_all_open_type_anyAttribute();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+  mdl : TPasModule;
+  elt : TPasElement;
+  strBuffer : string;
+  ls : TStringList;
+begin
+  tr := LoadComplexType_Class_OpenType();
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  elt := tr.FindElement('TClassSampleTypeAll');
+  CheckNotNull(elt,'TClassSampleTypeAll');
+  CheckIs(elt,TPasClassType);
+  clsType := elt as TPasClassType;
+  strBuffer := tr.Properties.GetValue(clsType,Format('%s#%s',[s_xs,s_anyAttribute]));
+  Check(Length(strBuffer) > 0, s_anyAttribute);
+  ls := TStringList.Create();
+  try
+    ls.Delimiter := ';';
+    ls.DelimitedText := strBuffer;
+    CheckEquals('skip',ls.Values[s_processContents]);
+  finally
+    ls.Free();
   end;
 end;
 
@@ -1417,7 +1568,7 @@ begin
   end;
 end;
 
-procedure TTest_CustomXsdParser.ComplexType_Class_properties_extended_metadata2;
+procedure TTest_CustomXsdParser.ComplexType_Class_properties_extended_metadata2();
 const s_ProjectType = 'ProjectType';
 var
   tr : TwstPasTreeContainer;
@@ -1513,6 +1664,11 @@ end;
 function TTest_XsdParser.LoadComplexType_Class_Extend_Simple_Schema( ) : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_extend_simple);
+end;
+
+function TTest_XsdParser.LoadComplexType_Class_OpenType( ): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_open_type');
 end;
 
 function TTest_XsdParser.LoadComplexType_Record_Schema(): TwstPasTreeContainer;
@@ -1633,6 +1789,11 @@ end;
 function TTest_WsdlParser.LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_extend_simple);
+end;
+
+function TTest_WsdlParser.LoadComplexType_Class_OpenType(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_open_type');
 end;
 
 function TTest_WsdlParser.LoadComplexType_Record_Schema(): TwstPasTreeContainer;

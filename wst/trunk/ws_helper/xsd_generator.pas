@@ -774,6 +774,50 @@ procedure TClassTypeDefinition_TypeHandler.Generate(
     end;
   end;
 
+  procedure ProcessXsdAny(const AContentNode : TDOMElement; const AXsdInfo : string);
+  var
+    xsdAnyNode : TDOMElement;
+    ss : string;
+    locLS : TStringList;
+  begin
+    xsdAnyNode := CreateElement(Format('%s:%s',[s_xs_short,s_any]),AContentNode,ADocument);
+    locLS := TStringList.Create();
+    try
+      locLS.Delimiter := ';';
+      locLS.DelimitedText := AXsdInfo;
+      ss := locLS.Values[s_processContents];
+      if not IsStrEmpty(ss) then
+        xsdAnyNode.SetAttribute(s_processContents,ss);
+      ss := locLS.Values[s_minOccurs];
+      if not IsStrEmpty(ss) then
+        xsdAnyNode.SetAttribute(s_minOccurs,ss);
+      ss := locLS.Values[s_maxOccurs];
+      if not IsStrEmpty(ss) then
+        xsdAnyNode.SetAttribute(s_maxOccurs,ss);
+    finally
+      locLS.Free();
+    end;
+  end;
+
+  procedure ProcessXsdAnyAttribute(const AContentNode : TDOMElement; const AXsdInfo : string);
+  var
+    xsdAnyNode : TDOMElement;
+    ss : string;
+    locLS : TStringList;
+  begin
+    xsdAnyNode := CreateElement(Format('%s:%s',[s_xs_short,s_anyAttribute]),AContentNode,ADocument);
+    locLS := TStringList.Create();
+    try
+      locLS.Delimiter := ';';
+      locLS.DelimitedText := AXsdInfo;
+      ss := locLS.Values[s_processContents];
+      if not IsStrEmpty(ss) then
+        xsdAnyNode.SetAttribute(s_processContents,ss);
+    finally
+      locLS.Free();
+    end;
+  end;
+
 var
   cplxNode, sqcNode, derivationNode, defSchemaNode : TDOMElement;
 
@@ -848,9 +892,9 @@ var
   typeCategory : TTypeCategory;
   hasSequence : Boolean;
   trueParent : TPasType;
-{$IFDEF WST_HANDLE_DOC}
+  hasXsdAny, hasXsdAnyAtt : Boolean;
+  xsdAnyString, xsdAnyAttString : string;
   ls : TStrings;
-{$ENDIF WST_HANDLE_DOC}
 begin
   inherited;
   typItm := ASymbol as TPasClassType;
@@ -912,6 +956,22 @@ begin
     end;
     if ( typItm.Members.Count > 0 ) then
       hasSequence := TypeHasSequence(typItm,typeCategory);
+    hasXsdAny := False;
+    hasXsdAnyAtt := False;
+    if ( typeCategory = tcComplexContent ) then begin
+      ls := AContainer.Properties.FindList(typItm);
+      i := ls.IndexOfName(Format('%s#%s',[s_xs,s_any]));
+      hasXsdAny := ( i > 0 );
+      if hasXsdAny then begin
+        xsdAnyString := ls.ValueFromIndex[i];
+        if not hasSequence then
+          hasSequence := True;
+      end;
+      i := ls.IndexOfName(Format('%s#%s',[s_xs,s_anyAttribute]));
+      hasXsdAnyAtt := ( i > 0 );
+      if hasXsdAnyAtt then
+        xsdAnyAttString := ls.ValueFromIndex[i];
+    end;
     if hasSequence then begin
       s := Format('%s:%s',[s_xs_short,s_sequence]);
       if Assigned(derivationNode) then
@@ -926,6 +986,10 @@ begin
       if TPasElement(typItm.Members[i]).InheritsFrom(TPasProperty) then
         ProcessProperty(TPasProperty(typItm.Members[i]));
     end;
+    if hasXsdAny then
+      ProcessXsdAny(sqcNode,xsdAnyString);
+    if hasXsdAnyAtt then
+      ProcessXsdAnyAttribute(cplxNode,xsdAnyAttString);
   end;
 end;
 

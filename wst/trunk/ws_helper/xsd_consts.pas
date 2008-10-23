@@ -25,6 +25,8 @@ const
   s_address                    : WideString = 'address';
   s_all                        : WideString = 'all';
   s_annotation                 : WideString = 'annotation';
+  s_any                                     = 'any';
+  s_anyAttribute                            = 'anyAttribute';
   s_anyURI                                  = 'anyURI';
   s_appinfo                    : WideString = 'appinfo';
   s_array                      : WideString = 'array';
@@ -59,6 +61,7 @@ const
   s_part                       : WideString = 'part';
   s_port                       : WideString = 'port';
   s_portType                                = 'portType';
+  s_processContents                         = 'processContents';
   s_prohibited                              = 'prohibited';
 
   s_ref                        : WideString = 'ref';
