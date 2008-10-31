@@ -1,0 +1,46 @@
+{ To jest automatycznie wygenerowany plik zasobów lazarusa }
+
+LazarusResources.Add('TSNEntryDlg','FORMDATA',[
+  'TPF0'#11'TSNEntryDlg'#10'SNEntryDlg'#13'ActiveControl'#7#6'SNText'#7'Caption'
+  +#6#23'Serial Number w/Modifer'#12'ClientHeight'#3#195#0#11'ClientWidth'#3#247
+  +#0#10'Font.Color'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sa'
+  +'ns Serif'#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'S'#8'Position'#7
+  +#14'poScreenCenter'#10'TextHeight'#2#13#18'HorzScrollBar.Page'#3#246#0#18'Ve'
+  +'rtScrollBar.Page'#3#194#0#4'Left'#3#150#1#6'Height'#3#195#0#3'Top'#3'x'#1#5
+  +'Width'#3#247#0#0#6'TLabel'#6'Label1'#7'Caption'#6#2'SN'#5'Color'#7#6'clNone'
+  +#11'ParentColor'#8#4'Left'#2#8#6'Height'#2#13#3'Top'#2'@'#5'Width'#2#18#0#0#6
+  +'TLabel'#6'Label2'#7'Caption'#6#4'Code'#5'Color'#7#6'clNone'#11'ParentColor'
+  +#8#4'Left'#2#8#6'Height'#2#13#3'Top'#2'Z'#5'Width'#2#31#0#0#6'TLabel'#6'Labe'
+  +'l3'#7'Caption'#6'!Call your Vendor NOW to register!'#5'Color'#7#6'clNone'#11
+  +'ParentColor'#8#4'Left'#2'('#6'Height'#2#13#3'Top'#2#7#5'Width'#3#193#0#0#0#6
+  +'TLabel'#6'Label4'#7'Caption'#6#8'Modifier'#5'Color'#7#6'clNone'#11'ParentCo'
+  +'lor'#8#4'Left'#2#8#6'Height'#2#13#3'Top'#2'%'#5'Width'#2'.'#0#0#5'TEdit'#6
+  +'SNText'#8'TabOrder'#2#1#4'Left'#2'4'#6'Height'#2#20#3'Top'#2'<'#5'Width'#2
+  +'y'#0#0#5'TEdit'#8'CodeText'#8'TabOrder'#2#2#4'Left'#2'4'#6'Height'#2#20#3'T'
+  +'op'#2'V'#5'Width'#3#175#0#0#0#7'TBitBtn'#5'OKBtn'#4'Kind'#7#4'bkOK'#9'NumGl'
+  +'yphs'#2#0#8'TabOrder'#2#3#4'Left'#2#23#6'Height'#2'!'#3'Top'#2'v'#5'Width'#2
+  +'Y'#0#0#7'TBitBtn'#9'CancelBtn'#4'Kind'#7#8'bkCancel'#9'NumGlyphs'#2#0#7'OnC'
+  +'lick'#7#14'CancelBtnClick'#8'TabOrder'#2#4#4'Left'#2''#6'Height'#2'!'#3'To'
+  +'p'#2'v'#5'Width'#2'Y'#0#0#5'TEdit'#9'ModString'#8'ReadOnly'#9#7'TabStop'#8#8
+  +'TabOrder'#2#0#4'Left'#2'4'#6'Height'#2#20#3'Top'#2'!'#5'Width'#2'y'#0#0#0
+]);
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#13'ActiveControl'#7#5'Memo1'#7'Caption'#6#21'Serial'
+  +' Number Example'#12'ClientHeight'#3#186#0#11'ClientWidth'#3#240#0#10'Font.C'
+  +'olor'#7#7'clBlack'#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#10
+  +'OnActivate'#7#12'FormActivate'#13'PixelsPerInch'#2'S'#8'Position'#7#14'poSc'
+  +'reenCenter'#10'TextHeight'#2#13#18'HorzScrollBar.Page'#3#239#0#18'VertScrol'
+  +'lBar.Page'#3#185#0#4'Left'#3't'#1#6'Height'#3#186#0#3'Top'#3#223#0#5'Width'
+  +#3#240#0#0#6'TLabel'#6'Label1'#9'Alignment'#7#8'taCenter'#7'Caption'#6#10'Se'
+  +'rial #: '#5'Color'#7#6'clNone'#11'ParentColor'#8#4'Left'#2'&'#6'Height'#2#13
+  +#3'Top'#2'`'#5'Width'#2'3'#0#0#5'TMemo'#5'Memo1'#13'Lines.Strings'#1#6',If y'
+  +'ou can edit this, then your program was '#6#14'allowed to run'#0#10'ScrollB'
+  +'ars'#7#10'ssVertical'#8'TabOrder'#2#0#4'Left'#2#3#6'Height'#2'O'#3'Top'#2#4
+  +#5'Width'#3#223#0#0#0#7'TBitBtn'#8'CloseBtn'#4'Kind'#7#7'bkClose'#9'NumGlyph'
+  +'s'#2#0#8'TabOrder'#2#1#4'Left'#2'H'#6'Height'#2'!'#3'Top'#2'r'#5'Width'#2'Y'
+  +#0#0#19'TOgSerialNumberCode'#19'OgSerialNumberCode1'#9'OnChecked'#7#26'OgSer'
+  +'ialNumberCode1Checked'#8'OnGetKey'#7#25'OgSerialNumberCode1GetKey'#9'OnGetC'
+  +'ode'#7#26'OgSerialNumberCode1GetCode'#13'OnGetModifier'#7#30'OgSerialNumber'
+  +'Code1GetModifier'#4'left'#3#172#0#3'top'#2'X'#0#0#0
+]);

@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value=".\"/>
+      <TargetFileExt Value=".exe"/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="tponguard"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="13">
+      <Unit0>
+        <Filename Value="exdtp21.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <CursorPos X="9" Y="7"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="exdtp21u.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="exdtp21u.lrs"/>
+        <UnitName Value="Exdtp21u"/>
+        <CursorPos X="1" Y="75"/>
+        <TopLine Value="67"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\source\qogabout0.pas"/>
+        <ComponentName Value="OgAboutForm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qogabout0.lrs"/>
+        <UnitName Value="qogabout0"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\source\qonguard1.pas"/>
+        <ComponentName Value="KeyGenerateFrm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qonguard1.lrs"/>
+        <UnitName Value="qonguard1"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\source\qonguard2.pas"/>
+        <ComponentName Value="CodeGenerateFrm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qonguard2.lrs"/>
+        <UnitName Value="qonguard2"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\source\qonguard3.pas"/>
+        <ComponentName Value="KeyMaintFrm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qonguard3.lrs"/>
+        <UnitName Value="qonguard3"/>
+        <CursorPos X="4" Y="112"/>
+        <TopLine Value="108"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\..\source\qonguard4.pas"/>
+        <ComponentName Value="EditProductFrm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qonguard4.lrs"/>
+        <UnitName Value="qonguard4"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\..\source\qonguard5.pas"/>
+        <UnitName Value="qonguard5"/>
+        <CursorPos X="73" Y="79"/>
+        <TopLine Value="64"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\source\qonguard6.pas"/>
+        <ComponentName Value="ModifierFrm"/>
+        <HasResources Value="True"/>
+        <ResourceFilename Value="..\..\source\qonguard6.lrs"/>
+        <UnitName Value="qonguard6"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\source\qonguard7.pas"/>
+        <UnitName Value="qonguard7"/>
+        <CursorPos X="16" Y="35"/>
+        <TopLine Value="67"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\..\source\ogconst.pas"/>
+        <UnitName Value="ogconst"/>
+        <CursorPos X="16" Y="35"/>
+        <TopLine Value="18"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\source\onguard.pas"/>
+        <UnitName Value="onguard"/>
+        <CursorPos X="26" Y="1396"/>
+        <TopLine Value="1377"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\fpcfix\fpc\rtl\objpas\sysutils\sysinth.inc"/>
+        <CursorPos X="4" Y="48"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Parsing>
+      <SyntaxOptions>
+        <IncludeAssertionCode Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="8">
+      <Item1>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="135"/>
+      </Item1>
+      <Item2>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="143"/>
+      </Item2>
+      <Item3>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="159"/>
+      </Item3>
+      <Item4>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="186"/>
+      </Item4>
+      <Item5>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="212"/>
+      </Item5>
+      <Item6>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="235"/>
+      </Item6>
+      <Item7>
+        <Source Value="..\..\source\qonguard3.pas"/>
+        <Line Value="130"/>
+      </Item7>
+      <Item8>
+        <Source Value="exdtp21u.pas"/>
+        <Line Value="75"/>
+      </Item8>
+    </BreakPoints>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

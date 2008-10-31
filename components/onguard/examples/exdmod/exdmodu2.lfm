@@ -1,0 +1,97 @@
+object SNEntryDlg: TSNEntryDlg
+  ActiveControl = SNText
+  Caption = 'Serial Number w/Modifer'
+  ClientHeight = 195
+  ClientWidth = 247
+  Font.Color = clBlack
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  PixelsPerInch = 83
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 246
+  VertScrollBar.Page = 194
+  Left = 406
+  Height = 195
+  Top = 376
+  Width = 247
+  object Label1: TLabel
+    Caption = 'SN'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 13
+    Top = 64
+    Width = 18
+  end
+  object Label2: TLabel
+    Caption = 'Code'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 13
+    Top = 90
+    Width = 31
+  end
+  object Label3: TLabel
+    Caption = 'Call your Vendor NOW to register!'
+    Color = clNone
+    ParentColor = False
+    Left = 40
+    Height = 13
+    Top = 7
+    Width = 193
+  end
+  object Label4: TLabel
+    Caption = 'Modifier'
+    Color = clNone
+    ParentColor = False
+    Left = 8
+    Height = 13
+    Top = 37
+    Width = 46
+  end
+  object SNText: TEdit
+    TabOrder = 1
+    Left = 52
+    Height = 20
+    Top = 60
+    Width = 121
+  end
+  object CodeText: TEdit
+    TabOrder = 2
+    Left = 52
+    Height = 20
+    Top = 86
+    Width = 175
+  end
+  object OKBtn: TBitBtn
+    Kind = bkOK
+    NumGlyphs = 0
+    TabOrder = 3
+    Left = 23
+    Height = 33
+    Top = 118
+    Width = 89
+  end
+  object CancelBtn: TBitBtn
+    Kind = bkCancel
+    NumGlyphs = 0
+    OnClick = CancelBtnClick
+    TabOrder = 4
+    Left = 127
+    Height = 33
+    Top = 118
+    Width = 89
+  end
+  object ModString: TEdit
+    ReadOnly = True
+    TabStop = False
+    TabOrder = 0
+    Left = 52
+    Height = 20
+    Top = 33
+    Width = 121
+  end
+end

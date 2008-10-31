@@ -1,0 +1,58 @@
+object Form1: TForm1
+  ActiveControl = Memo1
+  Caption = 'Serial Number Example'
+  ClientHeight = 186
+  ClientWidth = 240
+  Font.Color = clBlack
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  PixelsPerInch = 83
+  Position = poScreenCenter
+  TextHeight = 13
+  HorzScrollBar.Page = 239
+  VertScrollBar.Page = 185
+  Left = 372
+  Height = 186
+  Top = 223
+  Width = 240
+  object Label1: TLabel
+    Alignment = taCenter
+    Caption = 'Serial #: '
+    Color = clNone
+    ParentColor = False
+    Left = 38
+    Height = 13
+    Top = 96
+    Width = 51
+  end
+  object Memo1: TMemo
+    Lines.Strings = (
+      'If you can edit this, then your program was '
+      'allowed to run'
+    )
+    ScrollBars = ssVertical
+    TabOrder = 0
+    Left = 3
+    Height = 79
+    Top = 4
+    Width = 223
+  end
+  object CloseBtn: TBitBtn
+    Kind = bkClose
+    NumGlyphs = 0
+    TabOrder = 1
+    Left = 72
+    Height = 33
+    Top = 114
+    Width = 89
+  end
+  object OgSerialNumberCode1: TOgSerialNumberCode
+    OnChecked = OgSerialNumberCode1Checked
+    OnGetKey = OgSerialNumberCode1GetKey
+    OnGetCode = OgSerialNumberCode1GetCode
+    OnGetModifier = OgSerialNumberCode1GetModifier
+    left = 172
+    top = 88
+  end
+end

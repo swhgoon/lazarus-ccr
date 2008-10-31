@@ -1,0 +1,25 @@
+{ To jest automatycznie wygenerowany plik zasobów lazarusa }
+
+LazarusResources.Add('TfrmExMachineID','FORMDATA',[
+  'TPF0'#15'TfrmExMachineID'#14'frmExMachineID'#13'ActiveControl'#7#7'chkUser'
+  +#11'BorderIcons'#11#12'biSystemMenu'#10'biMinimize'#0#7'Caption'#6#11'ExMach'
+  +'ineID'#12'ClientHeight'#3#174#0#11'ClientWidth'#3#240#0#10'Font.Color'#7#6
+  +'clText'#11'Font.Height'#2#11#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Pitch'
+  +#7#10'fpVariable'#13'PixelsPerInch'#2'`'#8'Position'#7#14'poScreenCenter'#10
+  +'TextHeight'#2#18#18'HorzScrollBar.Page'#3#239#0#19'HorzScrollBar.Range'#3
+  +#209#0#18'VertScrollBar.Page'#3#173#0#19'VertScrollBar.Range'#2'y'#4'Left'#3
+  +'l'#1#6'Height'#3#174#0#3'Top'#3#254#0#5'Width'#3#240#0#0#9'TGroupBox'#9'Gro'
+  +'upBox1'#7'Caption'#6#18' Machine Info Set '#12'ClientHeight'#2'w'#11'Client'
+  +'Width'#2'm'#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#3#137#0#3'Top'#2#8#5'Widt'
+  +'h'#2'q'#0#9'TCheckBox'#7'chkUser'#7'Caption'#6#4'User'#8'TabOrder'#2#0#4'Le'
+  +'ft'#2#24#6'Height'#2#17#3'Top'#2#16#5'Width'#2'A'#0#0#9'TCheckBox'#9'chkSys'
+  +'tem'#7'Caption'#6#6'System'#8'TabOrder'#2#1#4'Left'#2#24#6'Height'#2#17#3'T'
+  +'op'#2'('#5'Width'#2'A'#0#0#9'TCheckBox'#10'chkNetwork'#7'Caption'#6#7'Netwo'
+  +'rk'#8'TabOrder'#2#2#4'Left'#2#24#6'Height'#2#17#3'Top'#2'@'#5'Width'#2'I'#0
+  +#0#9'TCheckBox'#9'chkDrives'#7'Caption'#6#6'Drives'#8'TabOrder'#2#3#4'Left'#2
+  +#24#6'Height'#2#17#3'Top'#2'X'#5'Width'#2'9'#0#0#0#7'TButton'#11'btnGenerate'
+  +#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#8'Generate'#7'OnClick'#7#16
+  +'btnGenerateClick'#8'TabOrder'#2#1#4'Left'#3#131#0#6'Height'#2#25#3'Top'#2' '
+  +#5'Width'#2'K'#0#0#5'TEdit'#12'edtMachineID'#8'ReadOnly'#9#8'TabOrder'#2#2#4
+  +'Left'#3#128#0#6'Height'#2#26#3'Top'#2'H'#5'Width'#2'Q'#0#0#0
+]);
