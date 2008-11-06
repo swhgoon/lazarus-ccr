@@ -188,6 +188,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure RequestAlign; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1027,19 +1028,23 @@ var
 begin
 
   if not AutoSizeCanStart then exit;
+  if csDesigning in ComponentState then exit;
 
   if Items.Count > 0 then
   begin
-    H:=0;
-    for i:=0 to Items.Count-1 do
-      if Assigned(Items[i].FButton) and Items[i].FButton.HandleObjectShouldBeVisible then
-        H:=Max(H, Items[i].Height);
-    if H>0 then
-    begin
-      H:=H +BorderWidth * 2;
-      SetBoundsKeepBase(Left,Top,Width,H,true);
-      ReAlignToolBtn;
-    end;
+    try
+      H:=0;
+      for i:=0 to Items.Count-1 do
+        if Assigned(Items[i].FButton) and Items[i].FButton.HandleObjectShouldBeVisible then
+          H:=Max(H, Items[i].Height);
+      if H>0 then
+      begin
+        H:=H +BorderWidth * 2;
+        SetBoundsKeepBase(Left,Top,Width,H,true);
+        ReAlignToolBtn;
+      end;
+    finally
+    end
 //    Exclude(FControlFlags,cfAutoSizeNeeded);
   end
   else
@@ -1063,6 +1068,18 @@ begin
     exit;
   if not Parent.HandleAllocated then exit;
   ReAlignToolBtn;
+end;
+
+procedure TToolPanel.Loaded;
+var
+  i, L:integer;
+begin
+  if csDesigning in ComponentState then
+  begin
+     for i:=0 to FToolbarItems.Count - 1 do
+       FToolbarItems[i].UpdateLeftAfterLoad;
+  end;
+  inherited Loaded;
 end;
 
 constructor TToolPanel.Create(AOwner: TComponent);
