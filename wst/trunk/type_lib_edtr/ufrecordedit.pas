@@ -52,6 +52,9 @@ type
     MenuItem1 : TMenuItem;
     MenuItem2 : TMenuItem;
     MenuItem3 : TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
     PC : TPageControl;
     Panel1 : TPanel;
     PopupMenu1 : TPopupMenu;

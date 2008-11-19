@@ -163,6 +163,7 @@ object fClassEdit: TfClassEdit
         Width = 440
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 13
+        MaxLength = -1
         Style = csDropDownList
         TabOrder = 1
       end
@@ -204,6 +205,7 @@ object fClassEdit: TfClassEdit
         ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
+        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
         Gutter.Width = 10
@@ -531,6 +533,7 @@ object fClassEdit: TfClassEdit
             ShortCut = 24642
           end>
         ReadOnly = True
+        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet
@@ -625,6 +628,17 @@ object fClassEdit: TfClassEdit
     object MenuItem3: TMenuItem
       Action = actPropDelete
       OnClick = actPropDeleteExecute
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem5: TMenuItem
+      Action = actMoveUp
+      OnClick = actMoveUpExecute
+    end
+    object MenuItem6: TMenuItem
+      Action = actMoveDown
+      OnClick = actMoveDownExecute
     end
   end
   object SynXMLSyn1: TSynXMLSyn
