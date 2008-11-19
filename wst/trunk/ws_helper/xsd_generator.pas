@@ -183,7 +183,7 @@ type
     procedure HandleTypeUsage(
       ATargetNode,
       ASchemaNode  : TDOMElement
-    );
+    );override;
   end;
 
 {$IFDEF WST_UNICODESTRING}

@@ -58,7 +58,7 @@ type
       const AName : string;
             AIntf : TPasClassType;
             AParent: TPasElement
-    );
+    );reintroduce;
     destructor Destroy();override;
     property Intf : TPasClassType read FIntf;
     property Address : string read FAddress write FAddress;
