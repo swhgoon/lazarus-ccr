@@ -1,25 +1,26 @@
 object fClassEdit: TfClassEdit
-  Left = 616
+  Left = 536
   Height = 547
-  Top = 120
-  Width = 518
+  Top = 127
+  Width = 552
   ActiveControl = PC
   BorderStyle = bsSizeToolWin
   Caption = 'fClassEdit'
   ClientHeight = 547
-  ClientWidth = 518
+  ClientWidth = 552
+  ParentFont = False
   Position = poDesktopCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.26.1'
   object Panel1: TPanel
     Height = 50
     Top = 497
-    Width = 518
+    Width = 552
     Align = alBottom
     ClientHeight = 50
-    ClientWidth = 518
+    ClientWidth = 552
     TabOrder = 0
     object Button1: TButton
-      Left = 341
+      Left = 375
       Height = 25
       Top = 10
       Width = 75
@@ -31,7 +32,7 @@ object fClassEdit: TfClassEdit
       TabOrder = 1
     end
     object Button2: TButton
-      Left = 253
+      Left = 287
       Height = 25
       Top = 10
       Width = 75
@@ -42,7 +43,7 @@ object fClassEdit: TfClassEdit
       TabOrder = 0
     end
     object Button6: TButton
-      Left = 429
+      Left = 463
       Height = 25
       Top = 10
       Width = 75
@@ -53,7 +54,7 @@ object fClassEdit: TfClassEdit
   end
   object PC: TPageControl
     Height = 497
-    Width = 518
+    Width = 552
     ActivePage = TabSheet1
     Align = alClient
     TabIndex = 0
@@ -63,7 +64,7 @@ object fClassEdit: TfClassEdit
     object TabSheet1: TTabSheet
       Caption = 'Compound Object'
       ClientHeight = 471
-      ClientWidth = 510
+      ClientWidth = 544
       object Label1: TLabel
         Left = 4
         Height = 14
@@ -84,7 +85,7 @@ object fClassEdit: TfClassEdit
         Left = 92
         Height = 23
         Top = 18
-        Width = 406
+        Width = 440
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
       end
@@ -92,15 +93,15 @@ object fClassEdit: TfClassEdit
         Left = 4
         Height = 312
         Top = 98
-        Width = 495
+        Width = 529
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Properties  '
         ClientHeight = 294
-        ClientWidth = 491
+        ClientWidth = 525
         TabOrder = 2
         object edtProp: TListView
           Height = 294
-          Width = 491
+          Width = 525
           Align = alClient
           BorderWidth = 2
           Columns = <          
@@ -117,6 +118,7 @@ object fClassEdit: TfClassEdit
               Caption = 'Attribute'
               Width = 60
             end>
+          HideSelection = False
           PopupMenu = PopupMenu1
           RowSelect = True
           TabOrder = 0
@@ -158,31 +160,50 @@ object fClassEdit: TfClassEdit
         Left = 92
         Height = 21
         Top = 58
-        Width = 406
+        Width = 440
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 13
-        MaxLength = -1
         Style = csDropDownList
         TabOrder = 1
+      end
+      object Button7: TButton
+        Left = 372
+        Height = 25
+        Top = 421
+        Width = 70
+        Action = actMoveUp
+        Anchors = [akRight, akBottom]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 6
+      end
+      object Button8: TButton
+        Left = 452
+        Height = 25
+        Top = 421
+        Width = 70
+        Action = actMoveDown
+        Anchors = [akRight, akBottom]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 7
       end
     end
     object tsSourceXSD: TTabSheet
       Caption = 'XSD'
       ClientHeight = 471
-      ClientWidth = 510
+      ClientWidth = 544
       object edtSourceXSD: TSynEdit
         Left = 12
         Height = 432
         Top = 18
-        Width = 480
+        Width = 514
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
         Font.Pitch = fpFixed
         ParentColor = False
+        ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
         Gutter.DigitCount = 2
         Gutter.ShowLineNumbers = True
         Gutter.Width = 10
@@ -510,18 +531,17 @@ object fClassEdit: TfClassEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
       end
     end
     object tsDependencies: TTabSheet
       Caption = 'Used by'
       ClientHeight = 471
-      ClientWidth = 510
+      ClientWidth = 544
       object tvDependency: TTreeView
         Left = 20
         Height = 433
         Top = 18
-        Width = 464
+        Width = 498
         Anchors = [akTop, akLeft, akRight, akBottom]
         DefaultItemHeight = 15
         ReadOnly = True
@@ -533,12 +553,12 @@ object fClassEdit: TfClassEdit
     object tsDocumentation: TTabSheet
       Caption = 'Documentation'
       ClientHeight = 471
-      ClientWidth = 510
+      ClientWidth = 544
       object edtDocumentation: TMemo
         Left = 12
         Height = 434
         Top = 18
-        Width = 480
+        Width = 514
         Anchors = [akTop, akLeft, akRight, akBottom]
         ScrollBars = ssAutoBoth
         TabOrder = 0
@@ -577,6 +597,18 @@ object fClassEdit: TfClassEdit
       DisableIfNoHandler = True
       OnExecute = actApplyExecute
       OnUpdate = actOKUpdate
+    end
+    object actMoveUp: TAction
+      Caption = 'Move Up'
+      DisableIfNoHandler = True
+      OnExecute = actMoveUpExecute
+      OnUpdate = actMoveUpUpdate
+    end
+    object actMoveDown: TAction
+      Caption = 'Move Down'
+      DisableIfNoHandler = True
+      OnExecute = actMoveDownExecute
+      OnUpdate = actMoveDownUpdate
     end
   end
   object PopupMenu1: TPopupMenu

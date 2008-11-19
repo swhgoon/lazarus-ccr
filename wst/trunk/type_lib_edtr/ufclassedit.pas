@@ -28,6 +28,8 @@ type
 
   TfClassEdit = class(TForm)
     actApply : TAction;
+    actMoveDown: TAction;
+    actMoveUp: TAction;
     actPropDelete: TAction;
     actPropEdit: TAction;
     actPropAdd: TAction;
@@ -40,6 +42,8 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6 : TButton;
+    Button7: TButton;
+    Button8: TButton;
     edtParent: TComboBox;
     edtName: TEdit;
     GroupBox1: TGroupBox;
@@ -61,6 +65,10 @@ type
     tvDependency : TTreeView;
     tsSourceXSD : TTabSheet;
     procedure actApplyExecute(Sender : TObject);
+    procedure actMoveDownExecute(Sender: TObject);
+    procedure actMoveDownUpdate(Sender: TObject);
+    procedure actMoveUpExecute(Sender: TObject);
+    procedure actMoveUpUpdate(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
     procedure actOKUpdate(Sender: TObject);
     procedure actPropAddExecute(Sender: TObject);
@@ -79,8 +87,9 @@ type
   private
     property UpdateType : TEditType read FUpdateType;
   private
+    procedure MovePropertyItem(AItem : TPasProperty; const ANewIndex : Integer);
     procedure PrepareParentCombo();
-    procedure LoadProperty(APropDef : TPasProperty);
+    function LoadProperty(APropDef : TPasProperty; const AIndex : Integer) : TListItem;
     procedure LoadFromObject();
     procedure SaveToObject();
 
@@ -112,7 +121,7 @@ var
 begin
   prp := CreateProperty(FObject,FSymbolTable) as TPasProperty;
   if Assigned(prp) then begin
-    LoadProperty(prp);
+    LoadProperty(prp,-1);
   end;
 end;
 
@@ -133,6 +142,26 @@ begin
     ShowSourceXSD();
 end;
 
+procedure TfClassEdit.actMoveDownExecute(Sender: TObject);
+begin
+  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.ItemFocused.Index + 1));
+end;
+
+procedure TfClassEdit.actMoveDownUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := Assigned(edtProp.ItemFocused) and ( edtProp.ItemFocused.Index < Pred(edtProp.Items.Count) );
+end;
+
+procedure TfClassEdit.actMoveUpExecute(Sender: TObject);
+begin
+  MovePropertyItem(TPasProperty(edtProp.ItemFocused.Data),(edtProp.ItemFocused.Index - 1));
+end;
+
+procedure TfClassEdit.actMoveUpUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := Assigned(edtProp.ItemFocused) and ( edtProp.ItemFocused.Index > 0 );
+end;
+
 procedure TfClassEdit.actPropDeleteExecute(Sender: TObject);
 var
   prop : TPasProperty;
@@ -147,13 +176,15 @@ procedure TfClassEdit.actPropEditExecute(Sender: TObject);
 var
   prp : TPasProperty;
   itm : TListItem;
+  oldPos : Integer;
 begin
   itm := edtProp.ItemFocused;
   if Assigned(itm) then begin
     prp := TPasProperty(itm.Data);
     if UpdateProperty(prp,FSymbolTable) then begin
+      oldPos := itm.Index;
       itm.Free();
-      LoadProperty(prp);
+      LoadProperty(prp,oldPos);
     end;
   end;
 end;
@@ -182,6 +213,46 @@ begin
     ShowDependencies();
   end else if ( PC.ActivePage = tsDocumentation ) then begin
     ShowDocumentation();
+  end;
+end;
+
+procedure TfClassEdit.MovePropertyItem(AItem: TPasProperty; const ANewIndex: Integer);
+
+  function FindNewMemberPosition() : Integer;
+  var
+    k, kcounter : Integer;
+    mlist : TList;
+    pp : TPasProperty;
+  begin
+    Result := 0;
+    kcounter := 0;
+    mlist := FObject.Members;
+    for k := 0 to Pred(mlist.Count) do begin
+      if TPasElement(mlist[k]).InheritsFrom(TPasProperty) then begin
+        Inc(kcounter);
+        if ( kcounter = ANewIndex ) then begin
+          Result := k;
+          Break;
+        end;
+      end;
+    end;
+  end;
+
+var
+  locItem : TListItem;
+  i : Integer;
+begin
+  if ( AItem <> nil ) and
+     ( ( ANewIndex >= 0 ) and ( ANewIndex < edtProp.Items.Count ) )
+  then begin
+    locItem := FindItem(FSymbolTable.GetExternalName(AItem),edtProp.Items);
+    if ( locItem <> nil ) then
+      locItem.Free();
+    FObject.Members.Exchange(FObject.Members.IndexOf(AItem),FindNewMemberPosition());
+    locItem := LoadProperty(AItem,ANewIndex);
+    edtProp.ItemFocused := locItem;
+    edtProp.Selected := locItem;
+    FApplied := True;
   end;
 end;
 
@@ -266,7 +337,7 @@ begin
   end;
 end;
 
-procedure TfClassEdit.LoadProperty(APropDef: TPasProperty);
+function TfClassEdit.LoadProperty(APropDef: TPasProperty; const AIndex : Integer) : TListItem;
 var
   itm : TListItem;
   s, extName : string;
@@ -274,7 +345,10 @@ begin
   extName := FSymbolTable.GetExternalName(APropDef);
   itm := FindItem(extName,edtProp.Items);
   if ( itm = nil ) then begin
-    itm := edtProp.Items.Add();
+    if ( AIndex >= 0 ) and ( AIndex < edtProp.Items.Count ) then
+      itm := edtProp.Items.Insert(AIndex)
+    else
+      itm := edtProp.Items.Add();
   end;
   itm.Caption := extName;
   itm.SubItems.Add(FSymbolTable.GetExternalName(APropDef.VarType));
@@ -285,6 +359,7 @@ begin
   end;
   itm.SubItems.Add(s);
   itm.Data := APropDef;
+  Result := itm;
 end;
 
 procedure TfClassEdit.LoadFromObject();
@@ -303,7 +378,7 @@ begin
     for i := 0 to Pred(FObject.Members.Count) do begin
       if TPasElement(FObject.Members[i]).InheritsFrom(TPasProperty) then begin
         prp := TPasProperty(FObject.Members[i]);
-        LoadProperty(prp);
+        LoadProperty(prp,-1);
       end;
     end;
     if Assigned(FObject.AncestorType) then begin

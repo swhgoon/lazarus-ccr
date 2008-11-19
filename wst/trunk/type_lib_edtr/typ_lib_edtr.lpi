@@ -105,6 +105,7 @@
         <Filename Value="udm.pas"/>
         <ComponentName Value="DM"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
         <ResourceFilename Value="udm.lrs"/>
         <UnitName Value="udm"/>
       </Unit10>
@@ -213,7 +214,7 @@
     </Parsing>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
+        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>

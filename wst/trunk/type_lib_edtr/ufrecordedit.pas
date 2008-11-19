@@ -28,6 +28,8 @@ type
 
   TfRecordEdit = class(TForm)
     actApply : TAction;
+    actMoveUp: TAction;
+    actMoveDown: TAction;
     actPropAdd : TAction;
     actPropEdit : TAction;
     actPropDelete : TAction;
@@ -39,6 +41,8 @@ type
     Button4 : TButton;
     Button5 : TButton;
     Button6 : TButton;
+    Button7: TButton;
+    Button8: TButton;
     edtDocumentation : TMemo;
     edtName : TEdit;
     edtSourceXSD : TSynEdit;
@@ -58,6 +62,10 @@ type
     tsSourceXSD : TTabSheet;
     tvDependency : TTreeView;
     procedure actApplyExecute(Sender : TObject);
+    procedure actMoveDownExecute(Sender: TObject);
+    procedure actMoveDownUpdate(Sender: TObject);
+    procedure actMoveUpExecute(Sender: TObject);
+    procedure actMoveUpUpdate(Sender: TObject);
     procedure actOKExecute(Sender : TObject);
     procedure actOKUpdate(Sender : TObject);
     procedure actPropAddExecute(Sender : TObject);
@@ -74,7 +82,8 @@ type
   private
     property UpdateType : TEditType read FUpdateType;
   private
-    procedure LoadField(AFieldDef : TPasVariable);
+    procedure MovePropertyItem(AItem : TPasVariable; const ANewIndex : Integer);
+    function LoadField(AFieldDef : TPasVariable; const AIndex : Integer) : TListItem;
     procedure LoadFromObject();
     procedure SaveToObject();
     
@@ -109,7 +118,7 @@ var
 begin
   prp := CreateProperty(FObject,FSymbolTable);
   if Assigned(prp) then begin
-    LoadField(prp);
+    LoadField(prp,-1);
   end;
 end;
 
@@ -127,13 +136,15 @@ procedure TfRecordEdit.actPropEditExecute(Sender : TObject);
 var
   prp : TPasVariable;
   itm : TListItem;
+  oldPos : Integer;
 begin
   itm := edtFields.ItemFocused;
   if Assigned(itm) then begin
     prp := TPasVariable(itm.Data);
     if UpdateProperty(prp,FSymbolTable) then begin
+      oldPos := itm.Index;
       itm.Free();
-      LoadField(prp);
+      LoadField(prp,oldPos);
     end;
   end;
 end;
@@ -156,6 +167,46 @@ begin
   end;
 end;
 
+procedure TfRecordEdit.MovePropertyItem(AItem: TPasVariable; const ANewIndex: Integer);
+
+  function FindNewMemberPosition() : Integer;
+  var
+    k, kcounter : Integer;
+    mlist : TList;
+    pp : TPasVariable;
+  begin
+    Result := 0;
+    kcounter := 0;
+    mlist := FObject.Members;
+    for k := 0 to Pred(mlist.Count) do begin
+      if TPasElement(mlist[k]).InheritsFrom(TPasVariable) then begin
+        Inc(kcounter);
+        if ( kcounter = ANewIndex ) then begin
+          Result := k;
+          Break;
+        end;
+      end;
+    end;
+  end;
+
+var
+  locItem : TListItem;
+  i : Integer;
+begin
+  if ( AItem <> nil ) and
+     ( ( ANewIndex >= 0 ) and ( ANewIndex < edtFields.Items.Count ) )
+  then begin
+    locItem := FindItem(FSymbolTable.GetExternalName(AItem),edtFields.Items);
+    if ( locItem <> nil ) then
+      locItem.Free();
+    FObject.Members.Exchange(FObject.Members.IndexOf(AItem),FindNewMemberPosition());
+    locItem := LoadField(AItem,ANewIndex);
+    edtFields.ItemFocused := locItem;
+    edtFields.Selected := locItem;
+    FApplied := True;
+  end;
+end;
+
 procedure TfRecordEdit.actOKExecute(Sender : TObject);
 begin
   ModalResult := mrOk;
@@ -168,7 +219,27 @@ begin
     ShowSourceXSD();
 end;
 
-procedure TfRecordEdit.LoadField(AFieldDef : TPasVariable);
+procedure TfRecordEdit.actMoveDownExecute(Sender: TObject);
+begin
+  MovePropertyItem(TPasVariable(edtFields.ItemFocused.Data),(edtFields.ItemFocused.Index + 1));
+end;
+
+procedure TfRecordEdit.actMoveDownUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := Assigned(edtFields.ItemFocused) and ( edtFields.ItemFocused.Index < Pred(edtFields.Items.Count) );
+end;
+
+procedure TfRecordEdit.actMoveUpExecute(Sender: TObject);
+begin
+  MovePropertyItem(TPasVariable(edtFields.ItemFocused.Data),(edtFields.ItemFocused.Index - 1));
+end;
+
+procedure TfRecordEdit.actMoveUpUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := Assigned(edtFields.ItemFocused) and ( edtFields.ItemFocused.Index > 0 );
+end;
+
+function TfRecordEdit.LoadField(AFieldDef : TPasVariable; const AIndex : Integer) : TListItem;
 var
   itm : TListItem;
   s, extName : string;
@@ -176,7 +247,10 @@ begin
   extName := FSymbolTable.GetExternalName(AFieldDef);
   itm := FindItem(extName,edtFields.Items);
   if ( itm = nil ) then begin
-    itm := edtFields.Items.Add();
+    if ( AIndex >= 0 ) and ( AIndex < edtFields.Items.Count ) then
+      itm := edtFields.Items.Insert(AIndex)
+    else
+      itm := edtFields.Items.Add();
   end;
   itm.Caption := extName;
   itm.SubItems.Add(FSymbolTable.GetExternalName(AFieldDef.VarType));
@@ -187,6 +261,7 @@ begin
   end;
   itm.SubItems.Add(s);
   itm.Data := AFieldDef;
+  Result := itm;
 end;
 
 procedure TfRecordEdit.LoadFromObject();
@@ -204,7 +279,7 @@ begin
     for i := 0 to Pred(FObject.Members.Count) do begin
       if TPasElement(FObject.Members[i]).InheritsFrom(TPasVariable) then begin
         prp := TPasVariable(FObject.Members[i]);
-        LoadField(prp);
+        LoadField(prp,-1);
       end;
     end;
   end else begin

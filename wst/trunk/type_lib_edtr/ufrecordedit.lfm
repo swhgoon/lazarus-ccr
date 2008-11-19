@@ -2,16 +2,17 @@ object fRecordEdit: TfRecordEdit
   Left = 609
   Height = 542
   Top = 181
-  Width = 517
+  Width = 559
   ActiveControl = PC
   Caption = 'fRecordEdit'
   ClientHeight = 542
-  ClientWidth = 517
+  ClientWidth = 559
+  ParentFont = False
   Position = poDesktopCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.26.1'
   object PC: TPageControl
     Height = 492
-    Width = 517
+    Width = 559
     ActivePage = TabSheet1
     Align = alClient
     TabIndex = 0
@@ -21,7 +22,7 @@ object fRecordEdit: TfRecordEdit
     object TabSheet1: TTabSheet
       Caption = 'Record Type'
       ClientHeight = 466
-      ClientWidth = 509
+      ClientWidth = 551
       object Label1: TLabel
         Left = 20
         Height = 14
@@ -34,7 +35,7 @@ object fRecordEdit: TfRecordEdit
         Left = 76
         Height = 23
         Top = 34
-        Width = 409
+        Width = 451
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
       end
@@ -42,15 +43,15 @@ object fRecordEdit: TfRecordEdit
         Left = 20
         Height = 320
         Top = 82
-        Width = 465
+        Width = 507
         Anchors = [akTop, akLeft, akRight, akBottom]
         Caption = '  Fields  '
         ClientHeight = 302
-        ClientWidth = 461
+        ClientWidth = 503
         TabOrder = 1
         object edtFields: TListView
           Height = 302
-          Width = 461
+          Width = 503
           Align = alClient
           Columns = <          
             item
@@ -65,7 +66,9 @@ object fRecordEdit: TfRecordEdit
               Caption = 'Attribute'
               Width = 60
             end>
+          HideSelection = False
           PopupMenu = PopupMenu1
+          RowSelect = True
           TabOrder = 0
           ViewStyle = vsReport
         end
@@ -100,21 +103,42 @@ object fRecordEdit: TfRecordEdit
         BorderSpacing.InnerBorder = 4
         TabOrder = 4
       end
+      object Button7: TButton
+        Left = 383
+        Height = 25
+        Top = 418
+        Width = 70
+        Action = actMoveUp
+        Anchors = [akRight, akBottom]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 5
+      end
+      object Button8: TButton
+        Left = 458
+        Height = 25
+        Top = 418
+        Width = 70
+        Action = actMoveDown
+        Anchors = [akRight, akBottom]
+        BorderSpacing.InnerBorder = 4
+        TabOrder = 6
+      end
     end
     object tsSourceXSD: TTabSheet
       Caption = 'XSD'
       ClientHeight = 466
-      ClientWidth = 509
+      ClientWidth = 551
       object edtSourceXSD: TSynEdit
         Left = 12
         Height = 432
         Top = 18
-        Width = 480
+        Width = 522
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.Height = -20
         Font.Name = 'courier'
         Font.Pitch = fpFixed
         ParentColor = False
+        ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
         Gutter.DigitCount = 2
@@ -449,12 +473,12 @@ object fRecordEdit: TfRecordEdit
     object tsDependencies: TTabSheet
       Caption = 'Used by'
       ClientHeight = 466
-      ClientWidth = 509
+      ClientWidth = 551
       object tvDependency: TTreeView
         Left = 20
         Height = 433
         Top = 18
-        Width = 464
+        Width = 506
         Anchors = [akTop, akLeft, akRight, akBottom]
         DefaultItemHeight = 15
         ReadOnly = True
@@ -466,12 +490,12 @@ object fRecordEdit: TfRecordEdit
     object tsDocumentation: TTabSheet
       Caption = 'Documentation'
       ClientHeight = 466
-      ClientWidth = 509
+      ClientWidth = 551
       object edtDocumentation: TMemo
         Left = 12
         Height = 434
         Top = 18
-        Width = 480
+        Width = 522
         Anchors = [akTop, akLeft, akRight, akBottom]
         ScrollBars = ssAutoBoth
         TabOrder = 0
@@ -482,13 +506,13 @@ object fRecordEdit: TfRecordEdit
   object Panel1: TPanel
     Height = 50
     Top = 492
-    Width = 517
+    Width = 559
     Align = alBottom
     ClientHeight = 50
-    ClientWidth = 517
+    ClientWidth = 559
     TabOrder = 1
     object Button1: TButton
-      Left = 253
+      Left = 295
       Height = 25
       Top = 10
       Width = 75
@@ -498,7 +522,7 @@ object fRecordEdit: TfRecordEdit
       TabOrder = 0
     end
     object Button2: TButton
-      Left = 341
+      Left = 383
       Height = 25
       Top = 10
       Width = 75
@@ -510,7 +534,7 @@ object fRecordEdit: TfRecordEdit
       TabOrder = 1
     end
     object Button6: TButton
-      Left = 429
+      Left = 471
       Height = 25
       Top = 10
       Width = 75
@@ -550,6 +574,18 @@ object fRecordEdit: TfRecordEdit
       DisableIfNoHandler = True
       OnExecute = actApplyExecute
       OnUpdate = actOKUpdate
+    end
+    object actMoveDown: TAction
+      Caption = 'Move Down'
+      DisableIfNoHandler = True
+      OnExecute = actMoveDownExecute
+      OnUpdate = actMoveDownUpdate
+    end
+    object actMoveUp: TAction
+      Caption = 'Move Up'
+      DisableIfNoHandler = True
+      OnExecute = actMoveUpExecute
+      OnUpdate = actMoveUpUpdate
     end
   end
   object PopupMenu1: TPopupMenu
