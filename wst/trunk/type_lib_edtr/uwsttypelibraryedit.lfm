@@ -10,8 +10,9 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
   Menu = MainMenu1
   OnClose = FormClose
   OnShow = FormShow
+  ParentFont = False
   Position = poDesktopCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.26.1'
   object SB: TStatusBar
     Height = 23
     Top = 601
@@ -69,16 +70,15 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Height = 437
           Width = 501
           Align = alClient
-          Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
-          Font.Height = -20
-          Font.Name = 'Courier'
+          Font.Height = -13
+          Font.Name = 'Courier New'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           PopupMenu = PopupMenu2
           TabOrder = 0
-          BookMarkOptions.Xoffset = 81
-          BookMarkOptions.OnChange = nil
+          BookMarkOptions.Xoffset = 56
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
@@ -405,7 +405,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsWSDL: TTabSheet
@@ -418,14 +417,14 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Align = alClient
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
-          Font.Height = -23
-          Font.Name = 'Courier'
+          Font.Height = -13
+          Font.Name = 'Courier New'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 54
-          BookMarkOptions.OnChange = nil
           Gutter.ShowLineNumbers = True
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -750,7 +749,6 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
-          SelectedColor.OnChange = nil
         end
       end
       object tsProxy: TTabSheet
@@ -761,13 +759,15 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Align = alClient
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
-          Font.Height = -20
-          Font.Name = 'Courier'
+          Font.Height = -13
+          Font.Name = 'Courier New'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
@@ -1094,6 +1094,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsImp: TTabSheet
@@ -1106,13 +1107,15 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Align = alClient
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
-          Font.Height = -20
-          Font.Name = 'Courier'
+          Font.Height = -13
+          Font.Name = 'Courier New'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
           Gutter.ShowCodeFolding = True
@@ -1439,6 +1442,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsBinder: TTabSheet
@@ -1449,13 +1453,15 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Align = alClient
           Font.CharSet = ANSI_CHARSET
           Font.Color = clBlack
-          Font.Height = -20
-          Font.Name = 'Courier'
+          Font.Height = -13
+          Font.Name = 'Courier New'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           PopupMenu = PopupMenu2
           TabOrder = 0
           BookMarkOptions.Xoffset = 81
+          BookMarkOptions.OnChange = nil
           Gutter.AutoSize = True
           Gutter.DigitCount = 5
           Gutter.ShowLineNumbers = True
@@ -1783,6 +1789,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsLog: TTabSheet
@@ -1836,8 +1843,10 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
           Font.Name = 'courier'
           Font.Pitch = fpFixed
           ParentColor = False
+          ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
+          BookMarkOptions.OnChange = nil
           Gutter.Visible = False
           Highlighter = SynXMLSyn1
           Keystrokes = <          
@@ -2162,6 +2171,7 @@ object fWstTypeLibraryEdit: TfWstTypeLibraryEdit
               ShortCut = 24642
             end>
           ReadOnly = True
+          SelectedColor.OnChange = nil
         end
       end
       object tsDependencies: TTabSheet

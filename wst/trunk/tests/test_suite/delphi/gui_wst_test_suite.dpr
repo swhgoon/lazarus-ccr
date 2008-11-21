@@ -26,7 +26,9 @@ uses
   test_wst_cursors in '..\test_wst_cursors.pas',
   test_registry in '..\test_registry.pas',
   test_soap_specific in '..\test_soap_specific.pas',
-  test_generators_runtime in '..\test_generators_runtime.pas';
+  test_generators_runtime in '..\test_generators_runtime.pas',
+  date_utils in '..\..\..\date_utils.pas',
+  test_date_utils in '..\test_date_utils.pas';
 
 {$R *.res}
 
