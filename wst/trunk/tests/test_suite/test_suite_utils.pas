@@ -20,7 +20,7 @@ uses
 {$ELSE}
   ,TestFrameWork, xmldom, wst_delphi_xml
 {$ENDIF}
-  ,wst_types;
+  ,wst_types, dateutils;
 
 const
   TestFilesPath = {$IFDEF WST_DELPHI}'.' +{$ENDIF WST_DELPHI}'.' + PathDelim + 'files' + PathDelim;

@@ -22,7 +22,7 @@ uses
 {$IFDEF WST_DELPHI}
   ,Windows
 {$ENDIF}
-  ;
+  , date_utils;
 
 const
   stBase   = 0;
@@ -323,12 +323,14 @@ type
 
   TBaseDateRemotable = class(TAbstractSimpleRemotable)
   private
-    FDate : TDateTime;
-    FYear   : Integer;
-    FMonth  : Integer;
-    FDay    : Integer;
+    FDate : TDateTimeRec;
+  private
+    function GetOffset(const Index: Integer): Shortint;
+    procedure SetOffset(const Index: Integer; const Value: Shortint);
+    function GetDate(const AIndex : Integer) : TDateTime;
   protected
-    procedure SetDate(const AValue: TDateTime);virtual;
+    function GetDatepart(const AIndex : Integer) : Integer;virtual;
+    procedure SetDate(const AIndex : Integer; const AValue: TDateTime);virtual;
   public
     class procedure Save(
             AObject   : TBaseRemotable;
@@ -342,33 +344,33 @@ type
       var   AName     : string;
       const ATypeInfo : PTypeInfo
     );override;
-    class function FormatDate(const ADate : TDateTime):string;virtual;abstract;
+    class function FormatDate(const ADate : TDateTime):string;overload;
+    class function FormatDate(const ADate : TDateTimeRec):string;overload;virtual;abstract;
     class function ParseDate(const ABuffer : string):TDateTime;virtual;abstract;
 
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
 
-    property AsDate : TDateTime read FDate write SetDate;
-    property Year : Integer read FYear;
-    property Month : Integer read FMonth;
-    property Day : Integer read FDay;
+    property AsDate : TDateTime index 0 read GetDate write SetDate;
+    property AsUTCDate : TDateTime index 1 read GetDate write SetDate;
+    property Year : Integer index 0 read GetDatepart;
+    property Month : Integer index 1 read GetDatepart;
+    property Day : Integer index 2 read GetDatepart;
+    property HourOffset : Shortint index 0 read GetOffset write SetOffset;
+    property MinuteOffset : Shortint index 1 read GetOffset write SetOffset;
   end;
 
   { TDateRemotable }
 
   TDateRemotable = class(TBaseDateRemotable)
-  private
-    FHour: Integer;
-    FMinute: Integer;
-    FSecond: Integer;
   protected
-    procedure SetDate(const AValue: TDateTime);override;
+    function GetDatepart(const AIndex : Integer) : Integer;override;
   public
-    class function FormatDate(const ADate : TDateTime):string;override;
+    class function FormatDate(const ADate : TDateTimeRec):string;override;
     class function ParseDate(const ABuffer : string):TDateTime;override;
-    property Hour : Integer read FHour;
-    property Minute : Integer read FMinute;
-    property Second : Integer read FSecond;
+    property Hour : Integer index 3 read GetDatepart;
+    property Minute : Integer index 4 read GetDatepart;
+    property Second : Integer index 5 read GetDatepart;
   end;
   
   { TDurationRemotable }
@@ -1501,9 +1503,13 @@ var
   wst_FormatSettings : TFormatSettings;
 {$ENDIF HAS_FORMAT_SETTINGS}
 
+resourcestring
+  SERR_InvalidHourOffetValue = '"%d" is not a valid hour offset value.';
+  SERR_InvalidMinuteOffetValue = '"%d" is not a valid minute offset value.';
+
 implementation
 uses
-  imp_utils, record_rtti, basex_encode, object_serializer;
+  imp_utils, record_rtti, basex_encode, object_serializer, DateUtils;
 
 
 type
@@ -3006,7 +3012,7 @@ begin
   i := IndexOf(ADataType);
   if ( i = -1 ) then begin
     Result := GetItemClassFor(ADataType).Create(Self,ANameSpace,ADataType,ADeclaredName);
-    i := Add(Result);
+    Add(Result);
 {$IFDEF TRemotableTypeInitializer_Initialize}
     InitializeItem(Result);
 {$ENDIF TRemotableTypeInitializer_Initialize}
@@ -5210,56 +5216,9 @@ end;
 
 { TDateRemotable }
 
-procedure TDateRemotable.SetDate(const AValue: TDateTime);
-var
-  hh, mn, ss, ssss : Word;
+class function TDateRemotable.FormatDate(const ADate: TDateTimeRec): string;
 begin
-  inherited SetDate(AValue);
-  DecodeTime(AsDate,hh,mn,ss,ssss);
-  FHour := hh;
-  FMinute := mn;
-  FSecond := ss;
-end;
-
-class function TDateRemotable.FormatDate(const ADate: TDateTime): string;
-var
-  s, buffer : string;
-  d, m, y : Word;
-  hh, mn, ss, ssss : Word;
-begin
-  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-
-  DecodeDate(ADate,y,m,d);
-    s := IntToStr(y);
-    buffer := IntToStr(m);
-    if ( Length(s) < 4 ) then
-      s := StringOfChar('0', ( 4 - Length(s) ) ) + s;
-    if ( m < 10 ) then
-      buffer := '0' + buffer;
-    s := Format('%s-%s',[s,buffer]);
-
-    buffer := IntToStr(d);
-    if ( d < 10 ) then
-      buffer := '0' + buffer;
-    s := Format('%s-%s',[s,buffer]);
-
-  DecodeTime(ADate,hh,mn,ss,ssss);
-    buffer := IntToStr(hh);
-    if ( hh < 10 ) then
-      buffer := '0' + buffer;
-    s := Format('%sT%s',[s,buffer]);
-
-    buffer := IntToStr(mn);
-    if ( mn < 10 ) then
-      buffer := '0' + buffer;
-    s := Format('%s:%s',[s,buffer]);
-
-    buffer := IntToStr(ss);
-    if ( ss < 10 ) then
-      buffer := '0' + buffer;
-    s := Format('%s:%s',[s,buffer]);
-    
-  Result := s;
+  Result := xsd_DateTimeToStr(ADate);
 end;
 
 class function TDateRemotable.ParseDate(const ABuffer: string): TDateTime;
@@ -5333,17 +5292,28 @@ begin
   end;
 end;
 
+function TDateRemotable.GetDatepart(const AIndex: Integer): Integer;
+begin
+  case AIndex of
+    3 : Result := HourOf(AsDate);
+    4 : Result := MinuteOf(AsDate);
+    5 : Result := SecondOf(AsDate);
+    else
+        Result := inherited GetDatepart(AIndex);
+  end;
+end;
+
 { TBaseDateRemotable }
 
-procedure TBaseDateRemotable.SetDate(const AValue: TDateTime);
-var
-  y, m, d : Word;
+procedure TBaseDateRemotable.SetDate(const AIndex : Integer; const AValue: TDateTime);
 begin
-  DecodeDate(AValue,y,m,d);
-  FDate := AValue;
-  FYear := y;
-  FMonth := m;
-  FDay := d;
+  FDate.Date := AValue;
+  if ( AIndex = 1 ) then begin
+    if ( FDate.HourOffset <> 0 ) then
+      FDate.Date := date_utils.IncHour(FDate.Date,FDate.HourOffset);
+    if ( FDate.MinuteOffset <> 0 ) then
+      FDate.Date := IncMinute(FDate.Date,FDate.MinuteOffset);
+  end;
 end;
 
 class procedure TBaseDateRemotable.Save(
@@ -5387,7 +5357,7 @@ end;
 procedure TBaseDateRemotable.Assign(Source: TPersistent);
 begin
   if Source.InheritsFrom(TDateRemotable) then begin
-    FDate := TDateRemotable(Source).AsDate;
+    FDate := TDateRemotable(Source).FDate;
   end else begin
     inherited Assign(Source);
   end;
@@ -5400,6 +5370,61 @@ begin
               ACompareTo.InheritsFrom(TBaseDateRemotable) and
               ( Self.AsDate = TBaseDateRemotable(ACompareTo).AsDate )
             );
+end;
+
+function TBaseDateRemotable.GetDate(const AIndex : Integer) : TDateTime;
+begin
+  Result := FDate.Date;
+  if ( AIndex = 1 ) then begin
+    if ( FDate.HourOffset <> 0 ) then
+      Result := date_utils.IncHour(Result,-FDate.HourOffset);
+    if ( FDate.MinuteOffset <> 0 ) then
+      Result := date_utils.IncMinute(Result,-FDate.MinuteOffset);
+  end;
+end;
+
+function TBaseDateRemotable.GetDatepart(const AIndex: Integer): Integer;
+begin
+  case AIndex of
+    0 : Result := YearOf(AsDate);
+    1 : Result := MonthOf(AsDate);
+    2 : Result := DayOf(AsDate);
+    else
+      Result := 0;
+  end;
+end;
+
+function TBaseDateRemotable.GetOffset(const Index: Integer): Shortint;
+begin
+  if ( Index = 0 ) then
+    Result := FDate.HourOffset
+  else
+    Result := FDate.MinuteOffset;
+end;
+
+procedure TBaseDateRemotable.SetOffset(const Index: Integer; const Value: Shortint);
+begin
+  if ( Index = 0 ) then begin
+    if ( Value >= -14 ) and ( Value <= 14 ) then
+      FDate.HourOffset := Value
+    else
+      raise Exception.CreateFmt(SERR_InvalidHourOffetValue,[Value]);
+  end else begin
+    if ( Value >= -59 ) and ( Value <= 59 ) then
+      FDate.MinuteOffset := Value
+    else
+      raise Exception.CreateFmt(SERR_InvalidMinuteOffetValue,[Value]);
+  end;
+end;
+
+class function TBaseDateRemotable.FormatDate(const ADate: TDateTime): string;
+var
+  locTemp : TDateTimeRec;
+begin
+  locTemp.Date := ADate;
+  locTemp.HourOffset := 0;
+  locTemp.MinuteOffset := 0;
+  Result := FormatDate(locTemp);
 end;
 
 { TComplexInt8SContentRemotable }

@@ -305,6 +305,13 @@ type
     procedure ParseDate();
     procedure Assign();
     procedure Equal();
+    procedure AsDate();
+    procedure AsUTCDate();
+    procedure HourOffset();
+    procedure HourOffset_invalid_values();
+    procedure MinuteOffset();
+    procedure MinuteOffset_invalid_values();
+    procedure Year();
   end;
 
   { TTest_TDurationRemotable }
@@ -406,7 +413,7 @@ type
   end;
   
 implementation
-uses Math, basex_encode;
+uses Math, basex_encode, DateUtils, date_utils;
 
 function RandomValue(const AMaxlen: Integer): ansistring;
 var
@@ -2284,6 +2291,173 @@ begin
   CheckEquals(sDATE, Copy(TDateRemotable.FormatDate(d),1,Length(sDATE)));
 end;
 
+procedure TTest_TDateRemotable.AsDate();
+var
+  d : TDateTime;
+  locObj : TDateRemotable;
+begin
+  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  locObj := TDateRemotable.Create();
+  try
+    locObj.AsDate := d;
+    CheckEquals(d, locObj.AsDate);
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    CheckEquals(d, locObj.AsDate);
+
+    // test while (Hour|Minute)Offset is not null
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    locObj.AsDate := d;
+    CheckEquals(d, locObj.AsDate);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.AsUTCDate();
+var
+  d, dd : TDateTime;
+  locObj : TDateRemotable;
+begin
+  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  locObj := TDateRemotable.Create();
+  try
+    locObj.AsUTCDate := d;
+    CheckEquals(d, locObj.AsUTCDate);
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    dd := date_utils.IncHour(d,-locObj.HourOffset);
+    dd := date_utils.IncMinute(dd,-locObj.MinuteOffset);
+    CheckEquals(dd, locObj.AsUTCDate);
+
+    // test while (Hour|Minute)Offset is not null
+    locObj.AsUTCDate := dd;
+    CheckEquals(dd, locObj.AsUTCDate);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.HourOffset();
+var
+  locObj : TDateRemotable;
+begin
+  locObj := TDateRemotable.Create();
+  try
+    locObj.HourOffset := -5;
+      CheckEquals(-5, locObj.HourOffset);
+    locObj.HourOffset := 0;
+      CheckEquals(0, locObj.HourOffset);
+    locObj.HourOffset := 1;
+      CheckEquals(1, locObj.HourOffset);
+    locObj.HourOffset := 2;
+      CheckEquals(2, locObj.HourOffset);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.MinuteOffset();
+var
+  locObj : TDateRemotable;
+begin
+  locObj := TDateRemotable.Create();
+  try
+    locObj.MinuteOffset := -54;
+      CheckEquals(-54, locObj.MinuteOffset);
+    locObj.MinuteOffset := 0;
+      CheckEquals(0, locObj.MinuteOffset);
+    locObj.MinuteOffset := 20;
+      CheckEquals(20, locObj.MinuteOffset);
+    locObj.MinuteOffset := 56;
+      CheckEquals(56, locObj.MinuteOffset);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.HourOffset_invalid_values();
+var
+  locObj : TDateRemotable;
+
+  procedure check_invalid_value(const AValue : ShortInt);
+  var
+    ok : Boolean;
+  begin
+    try
+      locObj.HourOffset := AValue;
+      ok := False;
+    except
+      ok := True;
+    end;
+    Check(ok, Format('"%d" is not a valid hour offset',[AValue]));
+  end;
+
+begin
+  locObj := TDateRemotable.Create();
+  try
+    check_invalid_value(-50);
+    check_invalid_value(-24);
+    check_invalid_value(-15);
+    check_invalid_value(15);
+    check_invalid_value(24);
+    check_invalid_value(50);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.MinuteOffset_invalid_values();
+var
+  locObj : TDateRemotable;
+
+  procedure check_invalid_value(const AValue : ShortInt);
+  var
+    ok : Boolean;
+  begin
+    try
+      locObj.MinuteOffset := AValue;
+      ok := False;
+    except
+      ok := True;
+    end;
+    Check(ok, Format('"%d" is not a valid minute offset',[AValue]));
+  end;
+
+begin
+  locObj := TDateRemotable.Create();
+  try
+    check_invalid_value(-60);
+    check_invalid_value(-74);
+    check_invalid_value(-85);
+    check_invalid_value(65);
+    check_invalid_value(74);
+    check_invalid_value(80);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateRemotable.Year();
+var
+  locObj : TDateRemotable;
+begin
+  locObj := TDateRemotable.Create();
+  try
+    locObj.AsDate := EncodeDate(1976,10,12);
+      CheckEquals(1976, locObj.Year);
+    locObj.AsDate := EncodeDate(2000,10,12);
+      CheckEquals(2000, locObj.Year);
+    locObj.AsDate := EncodeDate(2,10,12);
+      CheckEquals(2, locObj.Year);
+    {locObj.AsDate := EncodeDate(-1976,10,12);
+      CheckEquals(-1976, locObj.Year);}
+  finally
+    locObj.Free();
+  end;
+end;
+
 { TTest_TDurationRemotable }
 
 procedure TTest_TDurationRemotable.Clear();
@@ -3361,11 +3535,11 @@ begin
     end;
     Check(ok);
 
-    aa := ls.Add();
+    ls.Add();
     ls.Delete(0);
       CheckEquals(0,ls.Length);
 
-    aa := ls.Add();
+    ls.Add();
     ab := ls.Add();
     ls.Delete(0);
       CheckEquals(1,ls.Length);
@@ -3374,7 +3548,7 @@ begin
     FreeAndNil(ls);
     ls := TClass_A_CollectionRemotable.Create();
     aa := ls.Add();
-    ab := ls.Add();
+    ls.Add();
     ls.Delete(1);
       CheckEquals(1,ls.Length);
       CheckSame(aa,ls[0]);

@@ -35,7 +35,7 @@
         <PackageName Value="fpcunittestrunner"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="19">
       <Unit0>
         <Filename Value="wst_test_suite_gui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -126,6 +126,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="test_generators_runtime"/>
       </Unit17>
+      <Unit18>
+        <Filename Value="test_date_utils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_date_utils"/>
+      </Unit18>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
