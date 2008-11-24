@@ -306,6 +306,12 @@ type
 implementation
 uses VCLUtils, Math, rxdconst;
 
+type
+  TDbGridAccess = class(TDbGrid)
+  end;
+  TPopUpFormAccess = class(TPopUpForm)
+  end;
+
 
 { TCustomDBLookupEdit }
 
@@ -470,7 +476,7 @@ begin
   case Key of
     vk_Return: HideList;
   else
-    FList.KeyDown(Key, Shift);
+    TDbGridAccess(FList).KeyDown(Key, Shift);
     exit;
   end;
   Key:=0;
@@ -496,7 +502,7 @@ begin
   begin
     if Key=VK_RETURN then HideList
     else
-      Flist.KeyDown(Key, Shift);
+      TDbGridAccess(Flist).KeyDown(Key, Shift);
     Key := 0;
   end
   else
@@ -1008,7 +1014,7 @@ procedure TRxCustomDBLookupCombo.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN, VK_RETURN, VK_HOME, VK_END]) and PopupVisible then
   begin
-    FRxPopUpForm.KeyDown(Key, Shift);
+    TPopUpFormAccess(FRxPopUpForm).KeyDown(Key, Shift);
 {    if Key=VK_RETURN then
       HideList
     else

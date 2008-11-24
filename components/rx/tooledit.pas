@@ -180,6 +180,10 @@ function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 implementation
 uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms;
 
+type
+  TPopupCalendarAccess = class(TPopupCalendar)
+  end;
+
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 var
   DC: HDC;
@@ -640,7 +644,7 @@ begin
     VK_ADD, VK_SUBTRACT]) and
     PopupVisible then
   begin
-    FPopup.KeyDown(Key, Shift);
+    TPopupCalendarAccess(FPopup).KeyDown(Key, Shift);
     Key := 0;
   end
   else
