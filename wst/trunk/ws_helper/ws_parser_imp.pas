@@ -256,7 +256,6 @@ begin
   if not AEltNode.HasChildNodes() then begin;
     raise EXsdParserException.Create('Invalid type definition, this element must have children.');
   end;
-  Result := nil;
   typName := ATypeName;
   if IsStrEmpty(typName) then begin
     typName := ExtractTypeName();

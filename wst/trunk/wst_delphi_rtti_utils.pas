@@ -12,7 +12,6 @@ function GetEnumNameCount(AEnumTypeInfo: PTypeInfo): Integer;
 var
   T: PTypeData;
 begin
-  Result := 0;
   T :=  GetTypeData(AEnumTypeInfo);
   Result := ( T^.MaxValue - T^.MinValue ) + 1;
 end;
