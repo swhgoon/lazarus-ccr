@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ActnList, Buttons;
+  StdCtrls, ActnList, Buttons, udm;
 
 type
 
@@ -66,9 +66,15 @@ end;
 
 procedure TfrmSaveOptions.btnSelectDirClick (Sender : TObject );
 begin
+{$IFNDEF WST_IDE}
+  SD.InitialDir := DM.Options.ReadString(ClassName(),sLAST_PATH,SD.InitialDir);
+{$ENDIF WST_IDE}
   SD.FileName := edtOutputDir.Text;
   if SD.Execute() then begin
     edtOutputDir.Text := SD.FileName;
+  {$IFNDEF WST_IDE}
+    DM.Options.WriteString(ClassName(),sLAST_PATH,edtOutputDir.Text);
+  {$ENDIF WST_IDE}
   end;
 end;
 

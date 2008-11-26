@@ -215,7 +215,6 @@ uses
   {$IFDEF WST_IDE},LazIDEIntf,IDEMsgIntf{$ENDIF}
   , xsd_consts, parserutils;
 
-
 {$IFDEF WST_IDE}
 function GetCurrentProjectLibraryFile():TLazProjectFile;
 var
@@ -516,6 +515,9 @@ end;
 
 procedure TfWstTypeLibraryEdit.actOpenFileExecute(Sender: TObject);
 begin
+{$IFNDEF WST_IDE}
+  OD.InitialDir := DM.Options.ReadString(ClassName(),sLAST_PATH,OD.InitialDir);
+{$ENDIF WST_IDE}
   if OD.Execute() then begin
     OpenFile(OD.FileName);
   end;
@@ -538,6 +540,9 @@ end;
 
 procedure TfWstTypeLibraryEdit.actSaveAsExecute(Sender: TObject);
 begin
+{$IFNDEF WST_IDE}
+  SD.InitialDir := DM.Options.ReadString(ClassName(),sLAST_PATH,SD.InitialDir);
+{$ENDIF WST_IDE}
   if SD.Execute() then begin
     SaveToFile(SD.FileName);
     FCurrentFileName := SD.FileName;
@@ -1125,6 +1130,9 @@ begin
   end;
   curLok := nil;
   SB.Panels[0].Text := FCurrentFileName;
+{$IFNDEF WST_IDE}
+  DM.Options.WriteString(ClassName(),sLAST_PATH,ExtractFilePath(FCurrentFileName));
+{$ENDIF WST_IDE}
 end;
 
 procedure TfWstTypeLibraryEdit.SaveToFile (const AFileName : string );
@@ -1141,6 +1149,9 @@ begin
   finally
     FreeAndNil(mstrm);
   end;
+{$IFNDEF WST_IDE}
+  DM.Options.WriteString(ClassName(),sLAST_PATH,ExtractFilePath(AFileName));
+{$ENDIF WST_IDE}
 end;
 
 constructor TfWstTypeLibraryEdit.Create(AOwner: TComponent);

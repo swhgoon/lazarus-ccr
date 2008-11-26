@@ -156,6 +156,7 @@
         <Filename Value="ufrmsaveoption.pas"/>
         <ComponentName Value="frmSaveOptions"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="ufrmsaveoption.lrs"/>
         <UnitName Value="ufrmsaveoption"/>
       </Unit18>
@@ -214,7 +215,7 @@
     </Parsing>
     <Linking>
       <Debugging>
-        <UseLineInfoUnit Value="False"/>
+        <GenerateDebugInfo Value="True"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
