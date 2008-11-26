@@ -558,6 +558,7 @@ Var
     DecIndent();
     WriteLn('Begin');
       IncIndent();
+        Indent(); WriteLn('locAdr := AAddress;');
         Indent(); WriteLn('if ( locAdr = '''' ) then');
           IncIndent();
             Indent(); WriteLn('locAdr := GetServiceDefaultAddress(TypeInfo(%s));',[AIntf.Name]);
