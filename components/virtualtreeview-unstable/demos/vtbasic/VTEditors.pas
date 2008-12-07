@@ -10,7 +10,7 @@ interface
 
    uses
       LCLIntf,LCLType, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-      StdCtrls, VirtualTrees, ExtDlgs, ImgList, Buttons, ExtCtrls, ComCtrls, MaskEdit, LResources, EditBtn;
+      StdCtrls, VirtualTrees, ExtDlgs, Buttons, ExtCtrls, ComCtrls, MaskEdit, LResources, EditBtn;
 
    type
       // Describes the type of value a property tree node stores in its data property.
@@ -36,7 +36,10 @@ interface
       PPropertyData = ^TPropertyData;
 
       // Our own edit link to implement several different node editors.
-      TPropertyEditLink = 
+
+      { TPropertyEditLink }
+
+      TPropertyEditLink =
       class(TInterfacedObject, IVTEditLink)
          private
          FEdit: TWinControl;        // One of the property editor classes.
@@ -50,7 +53,7 @@ interface
          protected
          procedure EditWindowProc(var Message: TMessage);
          procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-         
+
          public
          constructor Create;
          destructor Destroy; override;
@@ -163,6 +166,7 @@ implementation
 
    destructor TPropertyEditLink.Destroy;
    begin
+      FEdit.Parent := nil;
       FEdit.Free;
       FListItems.Free;
       inherited;
