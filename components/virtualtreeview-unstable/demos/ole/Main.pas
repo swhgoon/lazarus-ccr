@@ -167,7 +167,8 @@ begin
       if Succeeded(DataObject.EnumFormatEtc(DATADIR_GET, EnumFormat)) then
       begin
         EnumFormat.Reset;
-        while EnumFormat.Next(1, Format, Fetched) = S_OK do
+        SetLength(Formats, 0);
+        while EnumFormat.Next(1, Format, @Fetched) = S_OK do
         begin
           SetLength(Formats, Length(Formats) + 1);
           Formats[High(Formats)] := Format.cfFormat;
@@ -204,8 +205,10 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 
+{
 var
   Stream: TResourceStream;
+}
 
 begin
   Logger.Channels.Add(TIPCChannel.Create);

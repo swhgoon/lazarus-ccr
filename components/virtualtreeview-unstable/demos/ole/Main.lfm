@@ -3,8 +3,6 @@ object MainForm: TMainForm
   Height = 575
   Top = 261
   Width = 790
-  HorzScrollBar.Page = 789
-  VertScrollBar.Page = 574
   ActiveControl = Button1
   Caption = 'Demo for drag''n drop and clipboard transfers'
   ClientHeight = 575
@@ -13,6 +11,7 @@ object MainForm: TMainForm
   Font.Height = -12
   Font.Name = 'Arial'
   OnCreate = FormCreate
+  LCLVersion = '0.9.27'
   Visible = True
   object Label1: TLabel
     Left = 10
@@ -24,6 +23,7 @@ object MainForm: TMainForm
     Font.Height = -11
     Font.Name = 'Arial'
     ParentColor = False
+    ParentFont = False
   end
   object Label2: TLabel
     Left = 360
@@ -36,6 +36,7 @@ object MainForm: TMainForm
     Font.Height = -11
     Font.Name = 'Arial'
     ParentColor = False
+    ParentFont = False
     WordWrap = True
   end
   object Panel3: TPanel
@@ -59,6 +60,7 @@ object MainForm: TMainForm
       Font.Name = 'Arial'
       Font.Style = [fsBold]
       ParentColor = False
+      ParentFont = False
       WordWrap = True
     end
   end
@@ -90,6 +92,7 @@ object MainForm: TMainForm
     Height = 180
     Top = 116
     Width = 330
+    BorderStyle = bsSingle
     ClipboardFormats.Strings = (
       'Plain text'
       'Unicode text'
@@ -110,6 +113,7 @@ object MainForm: TMainForm
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
     HintMode = hmTooltip
+    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
@@ -131,6 +135,7 @@ object MainForm: TMainForm
     Height = 180
     Top = 116
     Width = 330
+    BorderStyle = bsSingle
     ClipboardFormats.Strings = (
       'CSV'
       'HTML Format'
@@ -154,6 +159,7 @@ object MainForm: TMainForm
     Header.Options = [hoColumnResize, hoDrag]
     HintMode = hmTooltip
     Images = TreeImages
+    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
@@ -268,7 +274,7 @@ object MainForm: TMainForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Tips'
-      ClientHeight = 219
+      ClientHeight = 217
       ClientWidth = 677
       ImageIndex = 2
       object Label8: TLabel
