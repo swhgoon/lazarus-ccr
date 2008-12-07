@@ -9,7 +9,6 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
@@ -48,6 +47,7 @@
         <ComponentName Value="WindowsXPForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="WindowsXPStyleDemo.lrs"/>
         <UnitName Value="WindowsXPStyleDemo"/>
       </Unit1>
@@ -56,6 +56,7 @@
         <ComponentName Value="AlignForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="AlignDemo.lrs"/>
         <UnitName Value="AlignDemo"/>
       </Unit2>
@@ -64,6 +65,7 @@
         <ComponentName Value="DrawTreeForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="DrawTreeDemo.lrs"/>
         <UnitName Value="DrawTreeDemo"/>
       </Unit3>
@@ -77,6 +79,7 @@
         <ComponentName Value="GeneralForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="GeneralAbilitiesDemo.lrs"/>
         <UnitName Value="GeneralAbilitiesDemo"/>
       </Unit5>
@@ -85,6 +88,7 @@
         <ComponentName Value="GridForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="GridDemo.lrs"/>
         <UnitName Value="GridDemo"/>
       </Unit6>
@@ -93,6 +97,7 @@
         <ComponentName Value="HeaderOwnerDrawForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="HeaderCustomDrawDemo.lrs"/>
         <UnitName Value="HeaderCustomDrawDemo"/>
       </Unit7>
@@ -101,6 +106,7 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="Main.lrs"/>
         <UnitName Value="Main"/>
       </Unit8>
@@ -109,6 +115,7 @@
         <ComponentName Value="NodeForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="MultilineDemo.lrs"/>
         <UnitName Value="MultilineDemo"/>
       </Unit9>
@@ -117,6 +124,7 @@
         <ComponentName Value="PropertiesForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="PropertiesDemo.lrs"/>
         <UnitName Value="PropertiesDemo"/>
       </Unit10>
@@ -125,6 +133,7 @@
         <ComponentName Value="SpeedForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="SpeedDemo.lrs"/>
         <UnitName Value="SpeedDemo"/>
       </Unit11>
@@ -141,6 +150,7 @@
         <ComponentName Value="VisibilityForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <ResourceFilename Value="VisibilityDemo.lrs"/>
         <UnitName Value="VisibilityDemo"/>
       </Unit13>
@@ -152,11 +162,8 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

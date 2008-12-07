@@ -3,8 +3,6 @@ object NodeForm: TNodeForm
   Height = 542
   Top = 332
   Width = 773
-  HorzScrollBar.Page = 772
-  VertScrollBar.Page = 541
   ActiveControl = MLTree
   Caption = 'NodeForm'
   ClientHeight = 542
@@ -12,7 +10,7 @@ object NodeForm: TNodeForm
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label8: TLabel
     Left = 12
     Height = 72
@@ -88,9 +86,9 @@ object NodeForm: TNodeForm
   end
   object AutoAdjustCheckBox: TCheckBox
     Left = 12
-    Height = 19
-    Top = 402
-    Width = 240
+    Height = 22
+    Top = 399
+    Width = 292
     Anchors = [akLeft, akBottom]
     Caption = 'Automatically adjust node height to node text.'
     OnClick = AutoAdjustCheckBoxClick

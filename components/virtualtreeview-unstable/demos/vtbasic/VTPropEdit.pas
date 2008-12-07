@@ -37,8 +37,8 @@ unit VTPropEdit;
 interface
 
    uses
-      LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-      StdCtrls, VirtualTrees, ImgList, ExtCtrls, Contnrs, Buttons, LResources;
+      LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+      StdCtrls, VirtualTrees, ExtCtrls, Contnrs, Buttons, LResources;
 
    type
       {-----------------------------------------------------------------------------------
