@@ -17,14 +17,18 @@ uses
   StdCtrls, VirtualTrees, LResources, LCLType, variants;
 
 type
+
+  { TGridForm }
+
   TGridForm = class(TForm)
     VST5: TVirtualStringTree;
     GridLineCheckBox: TCheckBox;
     Label15: TLabel;
     TreeImages: TImageList;
     Label1: TLabel;
-    procedure VST5BeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-      Column: TColumnIndex; CellRect: TRect);
+    procedure VST5BeforeCellPaint(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure VST5BeforeItemErase(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode; ItemRect: TRect;
       var Color: TColor; var EraseAction: TItemEraseAction);
     procedure VST5CreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
@@ -156,9 +160,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TGridForm.VST5BeforeCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
-  Column: TColumnIndex; CellRect: TRect);
-
+procedure TGridForm.VST5BeforeCellPaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 begin
   // Fill random cells with our own background, but don't touch the currently focused cell.
   if ((Column <> Sender.FocusedColumn) or (Node <> Sender.FocusedNode)) and

@@ -94,6 +94,8 @@ type
 
   end;
 
+  { TForm1 }
+
   TForm1 = class(TForm)
     Button1: TButton;
     btnDelete: TButton;
@@ -104,6 +106,9 @@ type
     Label2: TLabel;
     Label3: TLabel;
     MyTree: TVirtualStringTree;
+    procedure MyTreeBeforeCellPaint(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure MyTreeGetText(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
       var CellText: WideString);
@@ -114,9 +119,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure btnDeleteClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure MyTreeBeforeCellPaint(Sender: TBaseVirtualTree;
-      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-      const CellRect: TRect);
     procedure MyTreePaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
@@ -406,7 +408,7 @@ end;
 
 procedure TForm1.MyTreeBeforeCellPaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  const CellRect: TRect);
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 begin
 
   // This is example how to conditionally

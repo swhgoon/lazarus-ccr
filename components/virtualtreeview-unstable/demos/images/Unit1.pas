@@ -30,11 +30,17 @@ uses
   Dialogs, ImgList, VirtualTrees, LResources;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     VST1: TVirtualStringTree;
     ImageList1: TImageList;
     ImageList2: TImageList;
     procedure FormCreate(Sender: TObject);
+    procedure VST1BeforeCellPaint(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure VST1InitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -49,9 +55,6 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure VST1CompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
-    procedure VST1BeforeCellPaint(Sender: TBaseVirtualTree;
-      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-      CellRect: TRect);
   private
     { Private declarations }
   public
@@ -110,6 +113,62 @@ begin
   
   //Start random number generator
   Randomize
+end;
+
+procedure TForm1.VST1BeforeCellPaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
+var
+  I, PercentageSize, RndPercent: integer;
+  ColorStart: Word;
+  Data: PMyRec;
+  R,G,B: byte;
+begin
+  if (Column = 3) then
+  begin
+
+    Data := Sender.GetNodeData(Node);
+    RndPercent:=Data.Percent;
+
+    InflateRect(CellRect, -1, -1);
+    DrawEdge(TargetCanvas.Handle, CellRect, EDGE_SUNKEN, BF_ADJUST or
+BF_RECT);
+    PercentageSize := (CellRect.Right - CellRect.Left) * RndPercent div 100;
+
+    if True then
+    //Multy color approach
+    begin
+
+      ColorStart :=clYellow;
+
+      R:= GetRValue(ColorStart);
+      G:= GetGValue(ColorStart);
+      B:= GetBValue(ColorStart);
+
+
+      for I := CellRect.Right downto CellRect.Left do
+      begin
+        TargetCanvas.Brush.Color := RGB(R,G,B);
+
+        if CellRect.Right - CellRect.Left <= PercentageSize then
+          TargetCanvas.FillRect(CellRect);
+        Dec(CellRect.Right);
+
+        Dec(G);
+
+      end;
+    end else
+    //One color approach
+    begin
+      CellRect.Right := CellRect.Left + PercentageSize;
+      if RndPercent = 100 then
+        TargetCanvas.Brush.Color := clRed
+      else
+        TargetCanvas.Brush.Color := clLime;
+      TargetCanvas.FillRect(CellRect);
+    end;
+  end;
+
 end;
 
 procedure TForm1.VST1InitNode(Sender: TBaseVirtualTree; ParentNode,
@@ -269,62 +328,6 @@ begin
      3: Result:=CompareValue(Data1.Percent,Data2.Percent);
 
   end
-end;
-
-procedure TForm1.VST1BeforeCellPaint(Sender: TBaseVirtualTree;
-  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
-  CellRect: TRect);
-var
-  I, PercentageSize, RndPercent: integer;
-  ColorStart: Word;
-  Data: PMyRec;
-  R,G,B: byte;
-begin
-  if (Column = 3) then
-  begin
-
-    Data := Sender.GetNodeData(Node);
-    RndPercent:=Data.Percent;
-
-    InflateRect(CellRect, -1, -1);
-    DrawEdge(TargetCanvas.Handle, CellRect, EDGE_SUNKEN, BF_ADJUST or
-BF_RECT);
-    PercentageSize := (CellRect.Right - CellRect.Left) * RndPercent div 100;
-
-    if True then
-    //Multy color approach
-    begin
-
-      ColorStart :=clYellow;
-
-      R:= GetRValue(ColorStart);
-      G:= GetGValue(ColorStart);
-      B:= GetBValue(ColorStart);
-
-
-      for I := CellRect.Right downto CellRect.Left do
-      begin
-        TargetCanvas.Brush.Color := RGB(R,G,B);
-
-        if CellRect.Right - CellRect.Left <= PercentageSize then
-          TargetCanvas.FillRect(CellRect);
-        Dec(CellRect.Right);
-
-        Dec(G);
-
-      end;
-    end else
-    //One color approach
-    begin
-      CellRect.Right := CellRect.Left + PercentageSize;
-      if RndPercent = 100 then
-        TargetCanvas.Brush.Color := clRed
-      else
-        TargetCanvas.Brush.Color := clLime;
-      TargetCanvas.FillRect(CellRect);
-    end;
-  end;
-
 end;
 
 initialization

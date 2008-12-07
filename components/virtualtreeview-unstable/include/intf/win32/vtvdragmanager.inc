@@ -203,7 +203,7 @@ function TVTDataObject.HGlobalClone(HGlobal: THandle): THandle;
 var
   Size: Cardinal;
   Data,
-  NewData: PChar;
+  NewData: PByte;
 
 begin
   Size := GlobalSize(HGlobal);

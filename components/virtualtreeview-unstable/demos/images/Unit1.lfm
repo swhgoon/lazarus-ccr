@@ -3,8 +3,6 @@ object Form1: TForm1
   Height = 440
   Top = 162
   Width = 500
-  HorzScrollBar.Page = 499
-  VertScrollBar.Page = 439
   ActiveControl = VST1
   Caption = 'VT - Images'
   ClientHeight = 440
@@ -12,7 +10,7 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object VST1: TVirtualStringTree
     Cursor = 63
     Height = 440

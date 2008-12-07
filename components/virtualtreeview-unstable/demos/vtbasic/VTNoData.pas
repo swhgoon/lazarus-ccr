@@ -186,7 +186,9 @@ implementation
          'FullVertGridLines',                               // This option only has an effect if toShowVertGridLines is enabled too.
          'AlwaysHideSelection',     // Do not draw node selection, regardless of focused state.
          'UseBlendedSelection',     // Enable alpha blending for node selections.
-         'StaticBackground'
+         'StaticBackground',
+         'ChildrenAbove',
+         'FixedIndent'
       );
 
       aSelOpts : array[0..Ord(High(TVTSelectionOption))] of string[25] = 

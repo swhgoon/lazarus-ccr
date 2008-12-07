@@ -3,8 +3,6 @@ object Form1: TForm1
   Height = 437
   Top = 104
   Width = 612
-  HorzScrollBar.Page = 611
-  VertScrollBar.Page = 436
   ActiveControl = Button1
   Caption = 'Form1'
   ClientHeight = 437
@@ -13,30 +11,30 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label1: TLabel
-    Left = 129
-    Height = 17
-    Top = 348
-    Width = 227
+    Left = 207
+    Height = 14
+    Top = 351
+    Width = 149
     Anchors = [akRight, akBottom]
     Caption = 'Array data  of  the clicked node'
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 249
-    Height = 17
-    Top = 332
-    Width = 340
+    Left = 367
+    Height = 14
+    Top = 335
+    Width = 222
     Anchors = [akRight, akBottom]
     Caption = 'Find and show the node by specific array index'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 241
-    Height = 17
-    Top = 348
-    Width = 363
+    Left = 367
+    Height = 14
+    Top = 351
+    Width = 237
     Anchors = [akRight, akBottom]
     Caption = 'Type index to get related tree node on the screen:'
     ParentColor = False
