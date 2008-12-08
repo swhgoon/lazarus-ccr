@@ -28,22 +28,21 @@ type
   { TWindowsXPForm }
 
   TWindowsXPForm = class(TForm)
+    ToolBar2: TToolBar;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    ToolButton12: TToolButton;
+    ToolButton13: TToolButton;
+    ToolButton14: TToolButton;
+    ToolButton15: TToolButton;
+    ToolButton16: TToolButton;
+    ToolButton7: TToolButton;
     XPTree: TVirtualStringTree;
     LargeImages: TImageList;
     SmallImages: TImageList;
-    CoolBar1: TPanel;
-    ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
-    ToolButton6: TToolButton;
     Label1: TLabel;
     Label2: TLabel;
     Label4: TLabel;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
     PrintDialog: TPrintDialog;
     procedure XPTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
       Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer);

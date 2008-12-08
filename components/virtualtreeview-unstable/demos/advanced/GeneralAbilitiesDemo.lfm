@@ -3,8 +3,6 @@ object GeneralForm: TGeneralForm
   Height = 536
   Top = 185
   Width = 722
-  HorzScrollBar.Page = 721
-  VertScrollBar.Page = 535
   ActiveControl = VST2
   Caption = 'GeneralForm'
   ClientHeight = 536
@@ -14,21 +12,21 @@ object GeneralForm: TGeneralForm
   KeyPreview = True
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label18: TLabel
-    Left = 505
+    Left = 502
     Height = 14
     Top = 384
-    Width = 102
+    Width = 105
     Anchors = [akRight, akBottom]
     Caption = 'Switch check images:'
     ParentColor = False
   end
   object Label19: TLabel
-    Left = 507
+    Left = 506
     Height = 14
     Top = 432
-    Width = 97
+    Width = 98
     Anchors = [akRight, akBottom]
     Caption = 'Switch main column:'
     ParentColor = False
@@ -84,6 +82,7 @@ object GeneralForm: TGeneralForm
     HotCursor = crHandPoint
     Images = TreeImages
     ParentCtl3D = False
+    ParentFont = False
     RootNodeCount = 5
     ScrollBarOptions.VerticalIncrement = 19
     TabOrder = 0
@@ -108,7 +107,7 @@ object GeneralForm: TGeneralForm
     Columns = <    
       item
         ImageIndex = 10
-        Options = [coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible]
+        Position = 1
         Spacing = 20
         Width = 300
         WideText = 'Initial main column'
@@ -118,14 +117,13 @@ object GeneralForm: TGeneralForm
         Color = 14737632
         MaxWidth = 22
         Options = [coEnabled, coParentBidiMode, coVisible]
-        Position = 1
         Spacing = 0
         Width = 22
         WideHint = 'Image only column.'
       end    
       item
         ImageIndex = 4
-        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
+        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]
         Position = 2
         Spacing = 20
         Width = 300
@@ -139,7 +137,6 @@ object GeneralForm: TGeneralForm
     Top = 401
     Width = 200
     Anchors = [akRight, akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
     Items.Strings = (
       'Light check marks'
@@ -152,7 +149,6 @@ object GeneralForm: TGeneralForm
       'System check images'
       'System flat check images'
     )
-    MaxLength = 0
     OnChange = CheckMarkComboChange
     PopupMenu = PopupMenu1
     Style = csDropDownList
