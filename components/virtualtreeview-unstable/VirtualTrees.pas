@@ -10569,46 +10569,49 @@ var
 
 begin
   if (hoVisible in FOptions) and Treeview.HandleAllocated then
-    with Treeview do
+  with Treeview do
+  begin
+    if Column = nil then
+      R := FHeaderRect
+    else
     begin
-      if Column = nil then
-        R := FHeaderRect
-      else
+      R := Column.GetRect;
+      if not (coFixed in Column.Options) then
+        OffsetRect(R, -FEffectiveOffsetX, 0);
+      if UseRightToLeftAlignment then
+        OffsetRect(R, ComputeRTLOffset, 0);
+      if ExpandToBorder then
       begin
-        R := Column.GetRect;
-        if not (coFixed in Column.Options) then
-          OffsetRect(R, -FEffectiveOffsetX, 0);
-        if UseRightToLeftAlignment then
-          OffsetRect(R, ComputeRTLOffset, 0);
-        if ExpandToBorder then
+        if (hoFullRepaintOnResize in FHeader.FOptions) then
         begin
-          if (hoFullRepaintOnResize in FHeader.FOptions) then
-          begin
-            R.Left := FHeaderRect.Left;
-            R.Right := FHeaderRect.Right;
-          end else
-          begin
+          R.Left := FHeaderRect.Left;
+          R.Right := FHeaderRect.Right;
+        end else
+        begin
           if UseRightToLeftAlignment then
             R.Left := FHeaderRect.Left
           else
             R.Right := FHeaderRect.Right;
-      end;
         end;
       end;
-
-      {
-      // Current position of the owner in screen coordinates.
-      GetWindowRect(Handle, RW);
-
-      // Consider the header within this rectangle.
-      OffsetRect(R, RW.Left, RW.Top);
-
-      // Expressed in client coordinates (because RedrawWindow wants them so, they will actually become negative).
-      MapWindowPoints(0, Handle, R, 2);
-      RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
-        RDW_NOERASE or RDW_NOCHILDREN);
-      }
     end;
+    //lclheader
+    RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
+      RDW_NOERASE or RDW_NOCHILDREN);
+
+    {
+    // Current position of the owner in screen coordinates.
+    GetWindowRect(Handle, RW);
+
+    // Consider the header within this rectangle.
+    OffsetRect(R, RW.Left, RW.Top);
+
+    // Expressed in client coordinates (because RedrawWindow wants them so, they will actually become negative).
+    MapWindowPoints(0, Handle, R, 2);
+    RedrawWindow(Handle, @R, 0, RDW_FRAME or RDW_INVALIDATE or RDW_VALIDATE or RDW_NOINTERNALPAINT or
+      RDW_NOERASE or RDW_NOCHILDREN);
+    }
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -29223,7 +29226,8 @@ begin
               if toChildrenAbove in FOptions.FPaintOptions then
               begin
                 PosHoldable := (FOffsetY + (Integer(Node.TotalHeight - NodeHeight[Node]))) <= 0;
-                NodeInView  := Up.Top < ClientHeight;
+                //lclheader
+                NodeInView  := Up.Top < inherited GetClientRect.Bottom;
                 Steps := 0;
                 if NodeInView then
                 begin
@@ -29240,7 +29244,8 @@ begin
                       FOffsetY + (Up.Bottom - Integer(Node.TotalHeight)));
                     Up.Top := Max(Up.Bottom - Integer(Node.TotalHeight),
                       FOffsetY + (Up.Bottom - Integer(Node.TotalHeight)));
-                    Up.Bottom := ClientHeight;
+                    //lclheader
+                    Up.Bottom := inherited GetClientRect.Bottom;
                   end;
                 end;
               end
@@ -29248,12 +29253,15 @@ begin
               begin
                 Mode := tamScrollUp;
                 Inc(Up.Top, NodeHeight[Node]);
-                Up.Bottom := ClientHeight;
+                //lclheader
+                Up.Bottom := inherited GetClientRect.Bottom;
+
                 Steps := Min(Up.Bottom - Up.Top + 1, Node.TotalHeight - NodeHeight[Node]);
-              end;;
+              end;
 
             // No animation necessary if the node is below the current client height.
-              if Up.Top < ClientHeight then
+            //lclheader
+            if Up.Top < inherited GetClientRect.Bottom then
             begin
               Window := Handle;
               DC := GetDC(Handle);
@@ -29269,7 +29277,7 @@ begin
         end;
 
           // Remind old height to keep the nodes position if toChildrenAbove is set.
-          OldHeight := Node.TotalHeight;
+        OldHeight := Node.TotalHeight;
 
         // collapse the node
         AdjustTotalHeight(Node, NodeHeight[Node]);
@@ -29327,12 +29335,14 @@ begin
                 // is to keep the nodes visual position so the user does not get confused. As a result we need to
                 // scroll the view when the expanding is done. To determine what to do after expanding we need to check
                 // the cases below.
-                TotalFit := NewHeight + Integer(NodeHeight[Node]) <= ClientHeight;
-                PosHoldable := TotalFit and ((FOffsetY - NewHeight) >= -(Integer(FRangeY) - ClientHeight));
+                //lclheader
+                //todo: add a variable to hold the actual clientheight
+                TotalFit := NewHeight + Integer(NodeHeight[Node]) <= inherited GetClientRect.Bottom;
+                PosHoldable := TotalFit and ((FOffsetY - NewHeight) >= -(Integer(FRangeY) - inherited GetClientRect.Bottom));
                 ChildrenInView := (Down.Top - NewHeight) >= 0;
-                NodeInView := (PosHoldable or ((Down.Bottom + NewHeight) <= ClientHeight))
-                  and (Down.Bottom < ClientHeight - 1);
-                Down.Bottom := ClientHeight;
+                NodeInView := (PosHoldable or ((Down.Bottom + NewHeight) <= inherited GetClientRect.Bottom))
+                  and (Down.Bottom < inherited GetClientRect.Bottom - 1);
+                Down.Bottom := inherited GetClientRect.Bottom;
               end;
             end;
 
