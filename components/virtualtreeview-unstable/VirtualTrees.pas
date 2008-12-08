@@ -12776,7 +12776,7 @@ begin
   else
   begin
     ReallocMem(FRoot, NewSize);
-    ZeroMemory(PByte(FRoot) + OldSize, NewSize - OldSize);
+    FillChar(PAnsiChar(PAnsiChar(FRoot) + OldSize)^, NewSize - OldSize, 0);
   end;
 
   with FRoot^ do
