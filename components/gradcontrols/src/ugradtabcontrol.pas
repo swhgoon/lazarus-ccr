@@ -26,7 +26,7 @@ interface
 uses
   Classes,LResources, SysUtils, Menus, LCLType,
   LCLProc, ExtCtrls, Graphics, ugradbtn, Controls, uRotateBitmap,
-  Buttons;
+  Buttons, Forms, ImgList;
 
 type
   TGradTabControl = class;
@@ -75,78 +75,102 @@ type
   X, Y, AIndex: Integer) of object;
 
   //Properties of the Tab should be accessable from here
-  TGradTabPage = class(TCustomControl)
+   TGradTabPage = class(TCustomControl)
+   private
+      FActiveTabColor: TColor;
+      FButton : TGradTabPageButton;
+      FCaption: TCaption;
+      FGradTabControl : TGradTabControl; //Maybe needed ^.^
+      FFlags: TPageFlags;
+      FImageIndex: Integer;
+      FNormalTabColor: TColor;
+      FOwnerTabColor: Boolean;
+      FTabVisible,FCurrentlyDestroying,FShowCloseButton : Boolean;
+      function GetTabButtonLayout: TButtonLayout;
+      function GetTabColor: TColor;
+      function GetTabGlyph: TBitmap;
+      function GetTabShowGlyph: Boolean;
+      function GetTabTextAlignment: TTextAlignment;
+      function GetTabPopupMenu : TPopupMenu;
+      function GetText : TCaption;
+      procedure SetImageIndex(const AValue: Integer);
+      procedure SetTabButtonLayout(const AValue: TButtonLayout);
+      procedure SetTabColor(const AValue: TColor);
+      procedure SetTabGlyph(const AValue: TBitmap);
+      procedure SetTabPopupMenu(Value : TPopupMenu);
+      procedure SetTabShowGlyph(const AValue: Boolean);
+      procedure SetTabTextAlignment(const AValue: TTextAlignment);
+      procedure SetText(const Value: TCaption);
+      procedure SetEnabled(Value: Boolean); override;
+   protected
+      function GetPageIndex: integer;
+      procedure SetPageIndex(AValue: Integer);
+      procedure SetButton(Value : TGradTabPageButton); //Later dont needed
+      procedure SetParent(NewParent: TWinControl); override;
+      procedure SetShowCloseButton(Value: Boolean);
+      procedure SetTabVisible(Value: Boolean);
+   public
+      constructor Create(AOwner: TComponent); override;
+      destructor Destroy; override;
+      procedure DestroyHandle; override;
+      procedure Paint; override;
+      property TabButton : TGradTabPageButton read FButton;
+      function VisibleIndex: integer;
+      procedure UpdateImage;
+   published
+      //property ControlState;
+      //property ControlStyle;
+      property TabVisible : Boolean read FTabVisible write SetTabVisible default true;
+      property PageIndex : Integer read GetPageIndex write SetPageIndex;
+      property Caption : TCaption read GetText write SetText;
+      property ShowCloseButton : Boolean read FShowCloseButton write SetShowCloseButton default false;
+      property TabPopupMenu : TPopupMenu read GetTabPopupMenu write SetTabPopupMenu;
+      property Color;
+      property TabColor : TColor read GetTabColor write SetTabColor;
+      property TabTextAlignment : TTextAlignment read GetTabTextAlignment write SetTabTextAlignment default taCenter;
+      property TabGlyph : TBitmap read GetTabGlyph write SetTabGlyph;
+      property TabShowGlyph : Boolean read GetTabShowGlyph write SetTabShowGlyph;
+      property TabButtonLayout : TButtonLayout read GetTabButtonLayout write SetTabButtonLayout;
+      property ImageIndex : Integer read FImageIndex write SetImageIndex default 0;
+      property Enabled;
+      property PopupMenu;
+      property OnStartDock;
+      property OnStartDrag;
+      property OnDockDrop;
+      property OnDockOver;
+      property OnDragDrop;
+      property OnDragOver;
+      property OnEndDock;
+      property OnEndDrag;
+      property OnMouseDown;
+      property OnMouseUp;
+      property OnMouseMove;
+      property OnMouseWheel;
+      property OnMouseWheelUp;
+      property OnMouseWheelDown;
+      property ActiveTabColor : TColor read FActiveTabColor write FActiveTabColor default clGreen;
+      property NormalTabColor : TColor read FNormalTabColor write FNormalTabColor default clBlue;
+      property OwnerTabColor : Boolean read FOwnerTabColor write FOwnerTabColor default false;
+   end;
+  
+  { TFormPage }
+
+  TFormPage = class(TGradTabPage)
   private
-       FButton : TGradTabPageButton;
-       FCaption: TCaption;
-       FGradTabControl : TGradTabControl; //Maybe needed ^.^
-       FFlags: TPageFlags;
-       FImageIndex: Integer;
-       FTabVisible,FCurrentlyDestroying,FShowCloseButton : Boolean;
-       function GetTabButtonLayout: TButtonLayout;
-       function GetTabColor: TColor;
-       function GetTabGlyph: TBitmap;
-       function GetTabShowGlyph: Boolean;
-       function GetTabTextAlignment: TTextAlignment;
-       function GetTabPopupMenu : TPopupMenu;
-       function GetText : TCaption;
-       procedure SetImageIndex(const AValue: Integer);
-       procedure SetTabButtonLayout(const AValue: TButtonLayout);
-       procedure SetTabColor(const AValue: TColor);
-       procedure SetTabGlyph(const AValue: TBitmap);
-       procedure SetTabPopupMenu(Value : TPopupMenu);
-       procedure SetTabShowGlyph(const AValue: Boolean);
-       procedure SetTabTextAlignment(const AValue: TTextAlignment);
-       procedure SetText(const Value: TCaption);
-       procedure SetEnabled(Value: Boolean); override;
-  protected
-       function GetPageIndex: integer;
-       procedure SetPageIndex(AValue: Integer);
-       procedure SetButton(Value : TGradTabPageButton); //Later dont needed
-       procedure SetParent(NewParent: TWinControl); override;
-       procedure SetShowCloseButton(Value: Boolean);
-       procedure SetTabVisible(Value: Boolean);
+       FDestroyPageAtDestroy: Boolean;
+       FOldForm : TCustomForm;
+       FShowPageAtDestroy: Boolean;
   public
        constructor Create(AOwner: TComponent); override;
        destructor Destroy; override;
-       procedure DestroyHandle; override;
-       procedure Paint; override;
-       property TabButton : TGradTabPageButton read FButton;
-       function VisibleIndex: integer;
-       procedure UpdateImage;
+       procedure FormToPage(TheForm : TCustomForm);
+       procedure PageToForm(AShow : Boolean);
   published
-       //property ControlState;
-       //property ControlStyle;
-       property TabVisible : Boolean read FTabVisible write SetTabVisible default true;
-       property PageIndex : Integer read GetPageIndex write SetPageIndex;
-       property Caption : TCaption read GetText write SetText;
-       property ShowCloseButton : Boolean read FShowCloseButton write SetShowCloseButton default false;
-       property TabPopupMenu : TPopupMenu read GetTabPopupMenu write SetTabPopupMenu;
-       property Color;
-       property TabColor : TColor read GetTabColor write SetTabColor;
-       property TabTextAlignment : TTextAlignment read GetTabTextAlignment write SetTabTextAlignment default taCenter;
-       property TabGlyph : TBitmap read GetTabGlyph write SetTabGlyph;
-       property TabShowGlyph : Boolean read GetTabShowGlyph write SetTabShowGlyph;
-       property TabButtonLayout : TButtonLayout read GetTabButtonLayout write SetTabButtonLayout;
-       property ImageIndex : Integer read FImageIndex write SetImageIndex default 0;
-       property Enabled;
-       property PopupMenu;
-       property OnStartDock;
-       property OnStartDrag;
-       property OnDockDrop;
-       property OnDockOver;
-       property OnDragDrop;
-       property OnDragOver;
-       property OnEndDock;
-       property OnEndDrag;
-       property OnMouseDown;
-       property OnMouseUp;
-       property OnMouseMove;
-       property OnMouseWheel;
-       property OnMouseWheelUp;
-       property OnMouseWheelDown;
+       property TheForm : TCustomForm read FOldForm;
+       property ShowPageAtDestroy : Boolean read FShowPageAtDestroy write FShowPageAtDestroy default false;
+       property DestroyPageAtDestroy : Boolean read FDestroyPageAtDestroy write FDestroyPageAtDestroy default false;
   end;
-  
+
   { TGradTabPagesBar }
 
   TTabs = Array of Integer;
@@ -157,6 +181,8 @@ type
   }
   TGradTabPagesBar = class(TCustomControl)
   private
+      FActiveTabColor: TColor;
+      FNormalTabColor: TColor;
       FPageList : TListWithEvent;
       FTabControl : TGradTabControl;
       FShowFromButton, FMovedTo : Integer;
@@ -200,6 +226,8 @@ type
       property OnMouseWheel;
       property OnMouseWheelUp;
       property OnMouseWheelDown;
+      property ActiveTabColor : TColor read FActiveTabColor write FActiveTabColor default clGreen;
+      property NormalTabColor : TColor read FNormalTabColor write FNormalTabColor default clBlue;
       //destructor Destroy; override;
   end;
   
@@ -260,6 +288,7 @@ type
         FPageIndex, fPageIndexOnLastChange, fPageIndexOnLastShow,
         FTabHeight, FLongWidth : Integer;
         FBar : TGradTabBar;
+        FImageChangeLink : TChangeLink;
         FPagesBar: TGradTabPagesBar;
         FPagesPopup : TPopupMenu;
         FTabPosition : TTabPosition;
@@ -267,7 +296,11 @@ type
         procedure AssignEvents(TheControl : TCustomControl);
         procedure AlignPage(APage : TGradTabPage; ARect : TRect);
         procedure AlignPages;
+        function GetActiveTabColor: TColor;
+        function GetNormalTabColor: TColor;
         procedure ImageListChange(Sender: TObject);
+        procedure SetActiveTabColor(const AValue: TColor);
+        procedure SetNormalTabColor(const AValue: TColor);
         procedure UpdateTabImages;
         //procedure AddRemovePageHandle(APage: TGradTabPage);
         //procedure DoSendPageIndex;
@@ -377,7 +410,7 @@ type
         property OnMouseWheelUp;
         property OnMouseWheelDown;
         //On*- PagesBar Events
-        property OnPagesBarDragOver : TDragOverEvent read GetPagesBarDragOver write SetPagesBarDragOver;
+        //property OnPagesBarDragOver : TDragOverEvent read GetPagesBarDragOver write SetPagesBarDragOver;
         //End
 
         property PageIndex : Integer read FPageIndex write SetCurrentPageNum;
@@ -391,7 +424,8 @@ type
         property ShowLeftTopScrollButton : Boolean read FShowLeftTopScrollButton write SetShowLeftTopScrollButton;
         property ShowRightBottomScrollButton : Boolean read FShowRightBottomScrollButton write SetShowRightBottomScrollButton;
         property Images : TImageList read FImages write SetImages;
-
+        property NormalTabColor: TColor read GetNormalTabColor write SetNormalTabColor default clBlue;
+        property ActiveTabColor: TColor read GetActiveTabColor write SetActiveTabColor default clGreen;
         //property ShowTabs : Boolean; { TODO }
   end;
   
@@ -399,6 +433,7 @@ type
   function IsAssigned(var Obj : TObject) : String;
   function BoolStr(BV : Boolean) : String;
   function IncAr(var Ar : TTabs) : Integer;
+  function Form2Page(theTabControl : TGradTabControl; theForm : TCustomForm) : TFormPage;
 
 implementation
 
@@ -449,6 +484,15 @@ function IncAr(var Ar : TTabs) : Integer;
 begin
    SetLength(Ar, Length(Ar)+1);
    Result := Length(Ar)-1;
+end;
+
+function Form2Page(theTabControl: TGradTabControl; theForm: TCustomForm
+  ): TFormPage;
+begin
+   Result := TFormPage.Create(theTabControl);
+   Result.FormToPage(theForm);
+   Result.ShowPageAtDestroy:=false;
+   Result.Parent := theTabControl;
 end;
 
 {-------------------------------------------------------------------------------
@@ -667,6 +711,10 @@ begin
      FTabVisible:=true;
      FShowCloseButton:=false;
      FImageIndex:=0;
+
+     FActiveTabColor:=clGreen;
+     FNormalTabColor:=clBlue;
+     FOwnerTabColor:=false;
 end;
 
 {-------------------------------------------------------------------------------
@@ -885,10 +933,11 @@ end;
 
 procedure TGradTabPage.SetImageIndex(const AValue: Integer);
 begin
+  if FGradTabControl=nil then Exit;
   if FImageIndex=AValue then exit;
   FImageIndex:=AValue;
 
-  if FGradTabControl.Images <> nil then
+  if (FGradTabControl.Images <> nil) AND (FImageIndex<>-1) then
   begin
       UpdateImage;
   end;
@@ -991,8 +1040,10 @@ begin
 
   FButton.Glyph.Clear;
 
-  if Assigned(FGradTabControl.Images) AND (FGradTabControl.Images.Count<>0) then begin
+  if Assigned(FGradTabControl.Images) AND (FGradTabControl.Images.Count<>0)
+  AND (ImageIndex < FGradTabControl.Images.Count) AND (ImageIndex<>-1) then begin
      FGradTabControl.Images.GetBitmap(ImageIndex,FButton.Glyph);
+     FButton.ShowGlyph:=true;
   end;
 end;
 
@@ -1015,6 +1066,9 @@ begin
 
      FTabControl.FLeftButton.Visible:=false;
      FTabControl.FRightButton.Visible:=false;
+
+     FActiveTabColor:=clGreen;
+     FNormalTabColor:=clBlue;
 
      {Enabled:=false;
      NotEnabledColor:=Color;
@@ -1454,7 +1508,10 @@ begin
            end;
        end;
 
-       Color := clBlue;
+       if TGradTabPage(FPageList.Items[Index]).OwnerTabColor then
+          Color := TGradTabPage(FPageList.Items[Index]).NormalTabColor
+       else
+          Color := NormalTabColor;
 
        UpdatePositions;
    end;
@@ -1497,7 +1554,12 @@ begin
                 DoNext := ((Top+Height)>= Self.Height);
            end;
         end;
-        Color := clGreen;
+
+        if TGradTabPage(FPageList.Items[Index]).OwnerTabColor then
+            Color := TGradTabPage(FPageList.Items[Index]).ActiveTabColor
+        else
+            Color := ActiveTabColor;
+
     end;
 
     DebugLn('FR=%s FL=%s',[BoolStr(FTabControl.FRightButton.Visible),BoolStr(FTabControl.FLeftButton.Visible)]);
@@ -1951,6 +2013,9 @@ constructor TGradTabControl.Create(AOwner: TComponent);
 begin
     inherited;
 
+    FImageChangeLink := TChangeLink.Create;
+    FImageChangeLink.OnChange:=@ImageListChange;
+
     FTabPosition:=tpTop;
     FAutoShowScrollButton:=true;
     fCompStyle := csNoteBook;
@@ -2070,6 +2135,8 @@ begin
     DebugLn('TGradTabControl.Destroy End');
     {$ENDIF}
 
+    FImageChangeLink.Destroy;
+
     inherited;
 end;
 
@@ -2127,9 +2194,29 @@ begin
    UpdateAllDesignerFlags;
 end;
 
+function TGradTabControl.GetActiveTabColor: TColor;
+begin
+   Result := FPagesBar.ActiveTabColor;
+end;
+
+function TGradTabControl.GetNormalTabColor: TColor;
+begin
+   Result := FPagesBar.NormalTabColor;
+end;
+
 procedure TGradTabControl.ImageListChange(Sender: TObject);
 begin
    UpdateTabImages;
+end;
+
+procedure TGradTabControl.SetActiveTabColor(const AValue: TColor);
+begin
+   FPagesBar.ActiveTabColor:= AValue;
+end;
+
+procedure TGradTabControl.SetNormalTabColor(const AValue: TColor);
+begin
+   FPagesBar.NormalTabColor:=AValue;
 end;
 
 procedure TGradTabControl.UpdateTabImages;
@@ -2295,17 +2382,15 @@ end;
 
 procedure TGradTabControl.SetImages(const AValue: TImageList);
 begin
-  DebugLn('FImages: ', IsAssigned(FImages));
+  //DebugLn('FImages: ', IsAssigned(FImages));
   if FImages=AValue then exit;
+  if (AValue = nil) AND (FImages<>nil) then
+     FImages.UnRegisterChanges(FImageChangeLink);
+
   FImages:=AValue;
 
-  DebugLn('FImages: ', IsAssigned(FImages));
-  DebugLn('FImages: ', IsAssigned(Images));
-
-  //DebugLn('AValue: ', IsAssigned(AValue));
-
   if FImages <> nil then
-     FImages.OnChange := @ImageListChange;
+     FImages.RegisterChanges(FImageChangeLink);
 
   UpdateTabImages;
 end;
@@ -3105,6 +3190,61 @@ begin
       Page[FPageIndexOnLastChange].DoHide;
     end; }
   end;
+end;
+
+{ TFormPage }
+
+constructor TFormPage.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FShowPageAtDestroy:=false;
+  FDestroyPageAtDestroy:=false;
+end;
+
+destructor TFormPage.Destroy;
+var
+   FOld : TCustomForm;
+begin
+  if FDestroyPageAtDestroy AND (FOldForm <> nil) then begin
+     FOld := FOldForm;
+     PageToForm(false);
+     FOld.Free;
+     FOld := nil;
+  end else
+  PageToForm(FShowPageAtDestroy);
+
+  inherited Destroy;
+end;
+
+procedure TFormPage.FormToPage(TheForm: TCustomForm);
+var
+   i : Integer;
+begin
+   if FOldForm = TheForm then Exit;
+   FOldForm := TheForm;
+
+   for i := TheForm.ControlCount-1 downto 0 do begin
+       TheForm.Controls[i].Parent := Self;
+   end;
+
+   Caption:=TheForm.Caption;
+
+   if TheForm.Visible then
+      TheForm.Close;
+end;
+
+procedure TFormPage.PageToForm(AShow : Boolean);
+var
+   i : Integer;
+begin
+   for i := ControlCount-1 downto 0 do begin
+       Controls[i].Parent := FOldForm;
+   end;
+
+   if AShow then
+      FOldForm.Show;
+   FOldForm := nil;
 end;
 
 initialization
