@@ -42,14 +42,14 @@ type
     FBoolProp : Boolean;
     FEnumProp : TSampleEnum;
     FIntProp: Integer;
-    FStrProp: string;
+    FStrProp: AnsiString;
     FWideStrProp: widestring;
 {$IFDEF WST_UNICODESTRING}
     FUnicodeStrProp: UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   published
     property IntProp : Integer read FIntProp write FIntProp;
-    property StrProp : string read FStrProp write FStrProp;
+    property StrProp : AnsiString read FStrProp write FStrProp;
     property WideStrProp : widestring read FWideStrProp write FWideStrProp;
 {$IFDEF WST_UNICODESTRING}
     property UnicodeStrProp : UnicodeString read FUnicodeStrProp write FUnicodeStrProp;
@@ -1277,7 +1277,7 @@ end;
 procedure TRttiParser_Test.BeginEnd_Group();
 const VAL_1 : Integer = 1210; VAL_2 : Integer = 1076; VAL_3 : Integer = 176;
       VAL_4 : Integer = -176;
-      VAL_S = 'inoussa';
+      VAL_S : AnsiString = 'inoussa';
 var
   x, y : TRttiFilterCreator;
   sfltr : string;

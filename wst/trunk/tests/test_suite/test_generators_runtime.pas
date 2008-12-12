@@ -207,7 +207,7 @@ begin
     RegisterFondamentalTypesHandler(handlerReg);
     locDoc := CreateDoc();
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
-    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_array.wsdl'));
+    WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_array.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_array.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally

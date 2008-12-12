@@ -714,7 +714,7 @@ var
 begin
   SetLength(Result,AMaxlen);
   for k := 1 to AMaxlen do begin
-    Result[k] := Char((Random(Ord(High(Char)))));
+    Result[k] := AnsiChar((Random(Ord(High(AnsiChar)))));
   end;
 end;
 
@@ -763,8 +763,8 @@ begin
       f.Get(TypeInfo(AnsiChar),x,xVal_2);
     f.EndScopeRead();
 
-    CheckEquals(VAL_1,xVal_1);
-    CheckEquals(VAL_2,xVal_2);
+    CheckEquals(String(VAL_1),String(xVal_1));
+    CheckEquals(String(VAL_2),String(xVal_2));
   Finally
     s.Free();
   End;
@@ -796,7 +796,7 @@ begin
       f.BeginObjectRead(x,TypeInfo(TClass_Int));
         f.GetScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
       f.EndScopeRead();
-      CheckEquals(VAL_1,xVal_1);
+      CheckEquals(String(VAL_1),String(xVal_1));
 
     xVal_1 := VAL_2;
       f := CreateFormatter(TypeInfo(TClass_Int));
@@ -814,7 +814,7 @@ begin
       f.BeginObjectRead(x,TypeInfo(TClass_Int));
         f.GetScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
       f.EndScopeRead();
-      CheckEquals(VAL_2,xVal_1);
+      CheckEquals(String(VAL_2),String(xVal_1));
   finally
     s.Free();
   end;
@@ -1671,7 +1671,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_AnsiString;
-const VAL_1 = 'AzErTy'; VAL_2 = 'QwErTy';
+const VAL_1 : AnsiString = 'AzErTy'; VAL_2 = 'QwErTy';
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1834,7 +1834,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_WideString_ScopeData;
-const VAL_1 = 'AzErTy1234';
+const VAL_1 : WideString = 'AzErTy1234';
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2638,8 +2638,8 @@ begin
 end;
 
 procedure TTestFormatter.Test_CplxWideStringSimpleContent_WithClass;
-const VAL_S = 'web services toolkit';
-      VAL_STR_S = 'Test Attribute S';
+const VAL_S : WideString = 'web services toolkit';
+      VAL_STR_S : WideString = 'Test Attribute S';
 var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2815,7 +2815,7 @@ begin
     CheckEquals(False,a.Val_Bool);
     CheckEquals(Ord(teThree),Ord(a.Val_Enum));
     CheckEquals('123',a.Val_String);
-    CheckEquals('wide123',a.Val_WideString);
+    CheckEquals(WideString('wide123'),a.Val_WideString);
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode123',a.Val_UnicodeString);
 {$ENDIF WST_UNICODESTRING}
@@ -2823,7 +2823,7 @@ begin
     CheckEquals(True,a.ObjProp.Val_Bool);
     CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
     CheckEquals('456',a.ObjProp.Val_String);
-    CheckEquals('wide456',a.ObjProp.Val_WideString);
+    CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
 {$ENDIF WST_UNICODESTRING}
@@ -4047,7 +4047,7 @@ end;
 
 procedure TTestSOAPFormatter.test_WriteBuffer();
 const
-  s_XML_BUFFER =
+  s_XML_BUFFER : AnsiString =
     '<?xml version="1.0"?> ' +
     '<a aa="val_aa"> ' +
      ' <b> ' +
@@ -4654,7 +4654,7 @@ end;
 
 procedure TTestXmlRpcFormatter.test_WriteBuffer();
 const
-  s_XML_BUFFER =
+  s_XML_BUFFER : AnsiString =
     '<?xml version="1.0"?> ' +
     '<a aa="val_aa"> ' +
      ' <b> ' +
@@ -5201,14 +5201,22 @@ begin
 
         tmpNode := loc_FindObj(faultNode,'faultcode');
         Check(Assigned(tmpNode),'faultcode');
-        CheckEquals(Ord(dtAnsiString), Ord(tmpNode^.DataType),'faultcode.DataType');
+        CheckEquals(Ord(dtDefaultString), Ord(tmpNode^.DataType),'faultcode.DataType');
+{$IF dtDefaultString = dtAnsiString }
         excpt_code := tmpNode^.AnsiStrData^.Data;
+{$ELSE}
+        excpt_code := tmpNode^.UnicodeStrData^.Data;
+{$IFEND}
         CheckEquals(VAL_CODE,excpt_code,'faultCode');
         
         tmpNode := loc_FindObj(faultNode,'faultstring');
         Check(Assigned(tmpNode),'faultstring');
-        CheckEquals(Ord(dtAnsiString), Ord(tmpNode^.DataType),'faultstring.DataType');
+        CheckEquals(Ord(dtDefaultString), Ord(tmpNode^.DataType),'faultstring.DataType');
+{$IF dtDefaultString = dtAnsiString }
         excpt_msg := tmpNode^.AnsiStrData^.Data;
+{$ELSE}
+        excpt_msg := tmpNode^.UnicodeStrData^.Data;
+{$IFEND}
         CheckEquals(VAL_MSG,excpt_msg,'faultString');
   finally
     FreeAndNil(strm);

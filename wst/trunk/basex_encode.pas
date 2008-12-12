@@ -79,7 +79,7 @@ begin
       locOutQuantom[1] := Base64_CHAR_TABLE[( ( locInQuantom[0] and 3 ) shl 4 ) or ( locInQuantom[1] shr 4 )];
       locOutQuantom[2] := Base64_CHAR_TABLE[( ( locInQuantom[1] and 15 ) shl 2 ) or ( locInQuantom[2] shr 6 )];
       locOutQuantom[3] := Base64_CHAR_TABLE[( locInQuantom[2] and 63 )];
-      Move(locOutQuantom[0],Result[locAtualLen + 1],4);
+      Move(locOutQuantom[0],Result[locAtualLen + 1],( 4 * SizeOf(Char) ));
       Inc(locAtualLen,4);
     end;
     locCopied := ALength mod 3;
@@ -104,7 +104,7 @@ begin
             locOutQuantom[3] := '=';
           end;
       end;
-      Move(locOutQuantom[0],Result[locAtualLen + 1],4);
+      Move(locOutQuantom[0],Result[locAtualLen + 1],( 4 * SizeOf(Char) ));
       Inc(locAtualLen,4);
     end;
     SetLength(Result,locAtualLen);
@@ -121,7 +121,7 @@ end;
 
 function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TBinaryString;
 var
-  locBuffer : PByte;
+  locBuffer : PChar;
   locInLen, locInIndex, i, locPadded : PtrInt;
   locOutQuantom : array[0..2] of Byte;
   locInQuantom : array[0..3] of Byte;
@@ -144,12 +144,19 @@ begin
       for i := 0 to 3 do begin
         ok := False;
         while ( locInIndex <= locInLen ) do begin
-          locInValue := Base64_CHAR_INDEX_TABLE[locBuffer^];
+{$IF SizeOf(Char) > SizeOf(Byte) }
+          if ( Ord(locBuffer^) > High(Byte) ) then
+            locInValue := INVALID_MARKER
+          else
+            locInValue := Base64_CHAR_INDEX_TABLE[Ord(locBuffer^)];
+{$ELSE}
+          locInValue := Base64_CHAR_INDEX_TABLE[Ord(locBuffer^)];
+{$IFEND}
           Inc(locBuffer);
           Inc(locInIndex);          
           if ( locInValue <> INVALID_MARKER ) then begin
             locInQuantom[i] := locInValue;
-            if ( locBuffer^ = Byte('=') ) then begin
+            if ( locBuffer^ = '=' ) then begin
               Inc(locPadded);
             end;
             ok := True;

@@ -21,8 +21,11 @@ interface
 type
 
   { reprents an array of Byte }
+{$IFDEF WST_UNICODESTRING}
+  TBinaryString = {$IFDEF FPC}ansistring{$ELSE}RawByteString{$ENDIF};
+{$ELSE WST_UNICODESTRING}
   TBinaryString = ansistring;
-  
+{$ENDIF}
   { TDataObject }
 
   TDataObject = class

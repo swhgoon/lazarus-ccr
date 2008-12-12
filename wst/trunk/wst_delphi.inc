@@ -7,4 +7,5 @@
     ByteArray = array[0..$effffff] of Byte;
     PtrUInt = Cardinal;
     SizeInt = Longint;
+    UnicodeChar = WideChar;
 {$ENDIF}

@@ -4603,6 +4603,10 @@ begin
               SetOrdProp(Self,p,GetOrdProp(Source,p^.Name));
             tkLString{$IFDEF FPC}, tkAString{$ENDIF} :
               SetStrProp(Self,p,GetStrProp(Source,p^.Name));
+{$IFDEF WST_UNICODESTRING}
+            tkUString :
+              SetUnicodeStrProp(Self,p,GetUnicodeStrProp(Source,p^.Name));
+{$ENDIF WST_UNICODESTRING}
             tkClass :
               begin
                 srcObj := GetObjectProp(Source,p^.Name);
@@ -4737,7 +4741,9 @@ begin
                   int64Data := GetOrdProp(AObject,p^.Name);
                   AStore.Put(propName,pt,int64Data);
                 end;
-              tkLString{$IFDEF FPC},tkAString{$ENDIF} :
+              tkLString
+              {$IFDEF FPC},tkAString{$ENDIF}
+              {$IFDEF WST_UNICODESTRING}, tkUString{$ENDIF}:
                 begin
                   strData := GetStrProp(AObject,p^.Name);
                   AStore.Put(propName,pt,strData);
@@ -4900,7 +4906,9 @@ begin
                       AStore.Get(pt,propName,int64Data);
                       SetOrdProp(AObject,p^.Name,int64Data);
                     End;
-                  tkLString{$IFDEF FPC},tkAString{$ENDIF} :
+                  tkLString
+                  {$IFDEF FPC},tkAString{$ENDIF}
+                  {$IFDEF WST_UNICODESTRING}, tkUString{$ENDIF}:
                     Begin
                       AStore.Get(pt,propName,strData);
                       SetStrProp(AObject,p^.Name,strData);
@@ -5805,7 +5813,9 @@ begin
             {$IFDEF HAS_QWORD}
             tkQWord : AStore.Put(prpName,pt,PQWord(recFieldAddress)^);
             {$ENDIF}
-            tkLString{$IFDEF FPC},tkAString{$ENDIF} : AStore.Put(prpName,pt,PString(recFieldAddress)^);
+            tkLString
+            {$IFDEF FPC},tkAString{$ENDIF}
+            {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF} : AStore.Put(prpName,pt,Pointer(recFieldAddress)^);
             tkClass : AStore.Put(prpName,pt,PObject(recFieldAddress)^);
             tkRecord : AStore.Put(prpName,pt,Pointer(recFieldAddress)^);
             {$IFDEF HAS_TKBOOL}
@@ -5908,7 +5918,9 @@ begin
                 {$IFDEF HAS_QWORD}
                 tkQWord : AStore.Get(pt,propName,PQWord(recFieldAddress)^);
                 {$ENDIF}
-                tkLString{$IFDEF FPC}, tkAString{$ENDIF} : AStore.Get(pt,propName,PString(recFieldAddress)^);
+                tkLString
+                {$IFDEF FPC},tkAString{$ENDIF}
+                {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF} : AStore.Get(pt,propName,PPointer(recFieldAddress)^);
                 {$IFDEF HAS_TKBOOL}
                 tkBool : AStore.Get(pt,propName,PBoolean(recFieldAddress)^);
                 {$ENDIF}

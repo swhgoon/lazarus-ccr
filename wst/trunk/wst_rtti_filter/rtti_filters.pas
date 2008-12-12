@@ -325,6 +325,10 @@ var
     MoveNext();
     prsr.CheckToken(toString);
     case propInfo^.PropType^.Kind of
+      tkString, tkLString :
+        begin
+          AFltrCrtr.AddCondition(propName,fltrOp,AnsiString(prsr.TokenString()),lastCntr);
+        end;
       tkWString :
         begin
           ws := prsr.TokenString();

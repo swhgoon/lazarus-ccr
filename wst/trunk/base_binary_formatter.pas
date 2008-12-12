@@ -36,7 +36,7 @@ type
   EBinaryException = class(EBaseRemoteException)
   end;
   
-  TDataName = AnsiString;
+  TDataName = String;
   TDataType = (
     dtInt8U,    dtInt8S,
     dtInt16U,   dtInt16S,
@@ -50,7 +50,22 @@ type
 {$ENDIF WST_UNICODESTRING}
     dtObject, dtArray
   );
-  
+const
+  dtDefaultString =
+    {$IFDEF WST_UNICODESTRING}
+      {$IFDEF WST_DELPHI}
+        dtUnicodeString
+      {$ENDIF WST_DELPHI}
+      {$IFDEF FPC}
+        dtAnsiString
+      {$ENDIF FPC}
+    {$ELSE WST_UNICODESTRING}
+      dtAnsiString
+    {$ENDIF WST_UNICODESTRING}
+    ;
+
+type
+
   PAnsiStringBuffer = ^TAnsiStringBuffer;
   PWideStringBuffer = ^TWideStringBuffer;
 {$IFDEF WST_UNICODESTRING}
@@ -1674,7 +1689,7 @@ procedure TBaseBinaryFormatter.Get(
 );
 Var
   int64Data : Int64;
-  strData : string;
+  strData : AnsiString;
   objData : TObject;
   boolData : Boolean;
   enumData : TEnumData;

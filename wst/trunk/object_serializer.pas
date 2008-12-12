@@ -1072,6 +1072,9 @@ var
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkInterface
       ( Simple : Int64Reader; Qualified : Int64ReaderQualified ;) , //tkInt64
       ( Simple : ErrorProc; Qualified : ErrorProc ;) //tkDynArray
+{$IFDEF WST_UNICODESTRING}
+     ,( Simple : UnicodeStringReader; Qualified : UnicodeStringReaderQualified ;)  //tkUString
+{$ENDIF WST_UNICODESTRING}
     ),
     ( // Writers
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkUnknown
@@ -1092,6 +1095,9 @@ var
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkInterface
       ( Simple : Int64Writer; Qualified : Int64WriterQualified ;) , //tkInt64
       ( Simple : ErrorProc; Qualified : ErrorProc ;) //tkDynArray
+{$IFDEF WST_UNICODESTRING}
+     ,( Simple : UnicodeStringWriter; Qualified : UnicodeStringWriterQualified ;)  //tkUString
+{$ENDIF WST_UNICODESTRING}
     )
   );
 {$ENDIF WST_DELPHI}

@@ -421,7 +421,7 @@ var
 begin
   SetLength(Result,AMaxlen);
   for k := 1 to AMaxlen do begin
-    Result[k] := Char((Random(Ord(High(Char)))));
+    Result[k] := AnsiChar((Random(Ord(High(AnsiChar)))));
   end;
 end;
 
