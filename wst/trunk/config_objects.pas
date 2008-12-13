@@ -15,7 +15,7 @@
 unit config_objects;
 
 interface
-uses SysUtils, Classes, base_service_intf;
+uses SysUtils, Classes, base_service_intf, wst_types;
 
 type
 

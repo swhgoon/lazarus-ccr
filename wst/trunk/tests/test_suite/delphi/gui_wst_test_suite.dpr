@@ -28,7 +28,8 @@ uses
   test_soap_specific in '..\test_soap_specific.pas',
   test_generators_runtime in '..\test_generators_runtime.pas',
   date_utils in '..\..\..\date_utils.pas',
-  test_date_utils in '..\test_date_utils.pas';
+  test_date_utils in '..\test_date_utils.pas',
+  config_objects in '..\..\..\config_objects.pas';
 
 {$R *.res}
 
