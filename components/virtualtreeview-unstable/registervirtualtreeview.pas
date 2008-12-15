@@ -15,19 +15,19 @@ implementation
 
 procedure RegisterUnitVirtualTrees;
 begin
-  RegisterComponents('Virtual Treeview', [TVirtualDrawTree,TVirtualStringTree]);
+  RegisterComponents('Virtual Controls', [TVirtualDrawTree, TVirtualStringTree]);
 end;  
 
 procedure RegisterUnitVTHeaderPopup;
 begin
-  RegisterComponents('Virtual Treeview', [TVTHeaderPopupMenu]);
+  RegisterComponents('Virtual Controls', [TVTHeaderPopupMenu]);
 end;
 
 procedure Register;
 
 begin
-  RegisterUnit('VirtualTrees',@RegisterUnitVirtualTrees);
-  RegisterUnit('VTHeaderPopup',@RegisterUnitVTHeaderPopup);
+  RegisterUnit('VirtualTrees', @RegisterUnitVirtualTrees);
+  RegisterUnit('VTHeaderPopup', @RegisterUnitVTHeaderPopup);
 end; 
 
 initialization
