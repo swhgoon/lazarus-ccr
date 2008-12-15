@@ -3093,7 +3093,6 @@ type
     property Color;
     property Colors;
     property Constraints;
-    property Ctl3D;
     //todo: see a way to set CustomCheckImages at design time
     //property CustomCheckImages;
     property DefaultNodeHeight;
@@ -3128,7 +3127,6 @@ type
     property NodeDataSize;
     property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
