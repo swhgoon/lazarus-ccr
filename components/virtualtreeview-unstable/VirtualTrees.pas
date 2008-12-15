@@ -17454,8 +17454,9 @@ begin
 
   // Because of the special recursion and update stopper when creating the window (or resizing it)
   // we have to manually trigger the auto size calculation here.
+  //lcl: Call with Force argument to true since AdjustAutoSize is not called in Loaded
   if hoAutoResize in FHeader.FOptions then
-    FHeader.FColumns.AdjustAutoSize(InvalidColumn);
+    FHeader.FColumns.AdjustAutoSize(InvalidColumn, True);
 
   // Initialize flat scroll bar library if required.
   {$ifdef UseFlatScrollbars}
@@ -21756,10 +21757,13 @@ begin
     FHeader.UpdateMainColumn;
     FHeader.FColumns.FixPositions;
     if toAutoBidiColumnOrdering in FOptions.FAutoOptions then
-      FHeader.FColumns.ReorderColumns(UseRightToLeftAlignment);  
+      FHeader.FColumns.ReorderColumns(UseRightToLeftAlignment);
     FHeader.RecalculateHeader;
-    if hoAutoResize in FHeader.FOptions then
-      FHeader.FColumns.AdjustAutoSize(InvalidColumn, True);
+    //lclheader
+    //AdjustAutoSize is called inside CreateWnd. Don't call here
+    //Keep the commented code until we get sure of not being necessary
+    //if hoAutoResize in FHeader.FOptions then
+    //  FHeader.FColumns.AdjustAutoSize(InvalidColumn, True);
   finally
     Updated;
   end;                             
