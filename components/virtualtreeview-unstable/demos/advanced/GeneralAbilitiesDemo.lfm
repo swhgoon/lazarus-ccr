@@ -62,7 +62,6 @@ object GeneralForm: TGeneralForm
     Colors.DropTargetBorderColor = clActiveCaption
     Colors.HotColor = clBlack
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
-    Ctl3D = True
     DefaultNodeHeight = 24
     DragCursor = crHelp
     DrawSelectionMode = smBlendedRectangle
@@ -81,7 +80,6 @@ object GeneralForm: TGeneralForm
     HintMode = hmTooltip
     HotCursor = crHandPoint
     Images = TreeImages
-    ParentCtl3D = False
     ParentFont = False
     RootNodeCount = 5
     ScrollBarOptions.VerticalIncrement = 19

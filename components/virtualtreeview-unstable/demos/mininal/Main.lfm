@@ -28,7 +28,6 @@ object MainForm: TMainForm
     BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
-    Ctl3D = True
     Header.AutoSizeIndex = -1
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
