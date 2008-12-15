@@ -8386,6 +8386,10 @@ end;
 procedure TVirtualTreeColumns.Update(Item: TCollectionItem);
 
 begin
+  //lcl
+  // Skip while Destroying
+  if csDestroying in FHeader.TreeView.ComponentState then
+    Exit;
   // This is the only place which gets notified when a new column has been added or removed
   // and we need this event to adjust the column position array.
   InitializePositionArray;
