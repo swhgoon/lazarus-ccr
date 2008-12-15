@@ -50,7 +50,7 @@ begin
   then begin
     Result := 0;
     for i := 0 to 31 do begin
-      Mask := 1 shl i;
+      Mask := DWord(1) shl i;
       if (ProcessAffinityMask and Mask)<>0 then
         inc(Result);
     end;
