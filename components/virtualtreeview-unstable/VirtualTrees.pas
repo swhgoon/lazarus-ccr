@@ -10333,8 +10333,10 @@ begin
   if Treeview.HandleAllocated then
   begin
     Treeview.UpdateHeaderRect;
-    SetWindowPos(Treeview.Handle, 0, 0, 0, 0, 0, SWP_FRAMECHANGED or SWP_NOMOVE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or
-      SWP_NOSENDCHANGING or SWP_NOSIZE or SWP_NOZORDER);
+    //lclheader
+    //not necessary since header is draw inside client area
+    //SetWindowPos(Treeview.Handle, 0, 0, 0, 0, 0, SWP_FRAMECHANGED or SWP_NOMOVE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or
+    //  SWP_NOSENDCHANGING or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
 
