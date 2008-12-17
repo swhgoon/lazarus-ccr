@@ -4,10 +4,8 @@ unit wst_resources_imp;
 interface
 
 uses
-  Classes, SysUtils;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  Classes, SysUtils,
+  wst_types;
 
 type
 
@@ -18,9 +16,9 @@ type
   Public
     Procedure Assign(Source : TPersistent); override;
     Function  HasResource(Const AName : String) : Boolean; virtual; abstract;
-    Function  ResourceAsString(Const AName : String) : String; virtual; abstract;
-    Procedure AddResource(Const AName,AValue : String); overload;virtual; Abstract;
-    Procedure AddResource(const Name: AnsiString; Values: array of string);overload;
+    Function  ResourceAsString(Const AName : String) : TBinaryString; virtual; abstract;
+    Procedure AddResource(Const AName : string; const AValue : TBinaryString); overload;virtual; Abstract;
+    Procedure AddResource(const Name: AnsiString; Values: array of TBinaryString);overload;
     Procedure GetResourceList(List : TStrings); virtual; abstract;
   end;
   
@@ -41,10 +39,10 @@ Type
   TWSTResourceItem = Class(TCollectionItem)
   Private
     FName : String;
-    FValue : String;
+    FValue : TBinaryString;
   Public
     Property Name : String Read FName Write FName;
-    Property Value : String Read FValue Write FValue;
+    Property Value : TBinaryString Read FValue Write FValue;
   end;
 
   TWSTResourceItems = Class(TCollection)
@@ -64,8 +62,8 @@ Type
     Constructor Create;
     Destructor Destroy; override;
     Function  HasResource(Const AName : String) : Boolean; override;
-    Function  ResourceAsString(Const AName : String) : String; override;
-    Procedure AddResource(Const AName,AValue : String); override;
+    Function  ResourceAsString(Const AName : String) : TBinaryString; override;
+    Procedure AddResource(Const AName : string; const AValue : TBinaryString); override;
     Procedure GetResourceList(List : TStrings); override;
   end;
 
@@ -116,7 +114,7 @@ Procedure TWSTResourceManager.Assign(Source : TPersistent);
 Var
   I : integer;
   L : TStringList;
-  S : String;
+  S : TBinaryString;
   R : TWSTResourceManager;
 
 begin
@@ -137,11 +135,11 @@ begin
     end;
 end;
 
-procedure TWSTResourceManager.AddResource(const Name: AnsiString; Values: array of string);
+procedure TWSTResourceManager.AddResource(const Name: AnsiString; Values: array of TBinaryString);
 
 var
   i,L,TLen, p: integer;
-  S : String;
+  S : TBinaryString;
 
 begin
   L:=High(Values)-Low(Values)+1;
@@ -175,13 +173,13 @@ begin
   Result:=FResources.IndexOfResource(AName)<>-1;
 end;
 
-Function  TCollectionResourceManager.ResourceAsString(Const AName : String) : String;
+Function  TCollectionResourceManager.ResourceAsString(Const AName : String) : TBinaryString;
 
 begin
   Result:=FResources.ResourceByName(AName).Value;
 end;
 
-Procedure TCollectionResourceManager.AddResource(Const AName,AValue : String);
+Procedure TCollectionResourceManager.AddResource(Const AName : string; const AValue : TBinaryString);
 
 Var
   R : TWSTResourceItem;

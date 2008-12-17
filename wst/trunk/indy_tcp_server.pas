@@ -66,10 +66,13 @@ type
 
 implementation
 uses
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
      ActiveX,
   {$IFDEF INDY_9}
      wst_indy9_utils,
+  {$ENDIF INDY_9}
+  {$IFDEF INDY_10}
+     wst_indy10_utils, IdSchedulerOfThread, IdSchedulerOfThreadDefault,
   {$ENDIF}
 {$ENDIF}
   IdGlobal, binary_streamer, server_service_intf, server_service_imputils;
@@ -140,7 +143,7 @@ var
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
   //CoInitialize(nil);
   //try
 {$ENDIF}
@@ -190,7 +193,7 @@ begin
       FreeAndNil(locOutStream);
       FreeAndNil(locInStream);
     end;
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
   //finally
     //CoUninitialize();
   //end;
@@ -209,7 +212,11 @@ begin
   FTCPServerObject := TIdTCPServer.Create({$IFNDEF INDY_10}nil{$ENDIF});
 {$IFDEF INDY_9}
   FTCPServerObject.ThreadClass := TwstIndy9Thread;
-{$ENDIF}
+{$ENDIF INDY_9}
+{$IFDEF INDY_10}
+  FTCPServerObject.Scheduler := TIdSchedulerOfThreadDefault.Create(FTCPServerObject);
+  TIdSchedulerOfThread(FTCPServerObject.Scheduler).ThreadClass := TwstIndy10Thread;
+{$ENDIF INDY_10}
   b := FTCPServerObject.Bindings.Add();
   b.IP := AServerIpAddress;
   b.port := AListningPort;

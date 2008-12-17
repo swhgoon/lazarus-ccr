@@ -19,7 +19,8 @@ uses
   user_service_intf in '..\..\user_service_intf.pas',
   user_service_intf_binder in '..\..\user_service_intf_binder.pas',
   user_service_intf_imp in '..\..\user_service_intf_imp.pas',
-  server_service_intf in '..\..\..\server_service_intf.pas';
+  server_service_intf in '..\..\..\server_service_intf.pas',
+  wst_indy10_utils in '..\..\..\wst_indy10_utils.pas';
 
 var
   AppObject : TwstListener; AppObject2 : TwstListener;

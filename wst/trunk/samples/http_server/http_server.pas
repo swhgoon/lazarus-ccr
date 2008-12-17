@@ -9,7 +9,7 @@ uses
   Classes, SysUtils,
   indy_http_server, metadata_service, logger_extension, server_listener,
   server_service_soap, server_binary_formatter, server_service_xmlrpc, config_objects,
-  user_service_intf, user_service_intf_binder, user_service_intf_imp;
+  user_service_intf, user_service_intf_binder, user_service_intf_imp, server_service_intf;
 
 
 var
@@ -22,6 +22,7 @@ begin
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();
 
+  GetServiceImplementationRegistry().FindFactory('UserService').RegisterExtension(['TLoggerServiceExtension']);
   //wst_CreateDefaultFile(wst_GetConfigFileName(),nil);
   
   AppObject := TwstIndyHttpListener.Create('');

@@ -328,7 +328,7 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
                     FModule.InterfaceSection.Declarations.Extract(sym);
                     FModule.InterfaceSection.Types.Extract(sym);
                     symNew.Name := sym.Name;
-                    DoOnMessage(mtInfo,Format('forward type paring %s;  %d  %d',[symNew.Name,c, typeList.Count]));
+                    DoOnMessage(mtInfo,Format('forward type paring %s.',[symNew.Name]));
                     //sym.Release();
                   end;
                   i := 0; //Dec(i);

@@ -165,6 +165,7 @@ begin
   Move(TMemoryStream(AResponse).Memory^,s[1],i);
   WriteLn('--------------------------------------------');
   WriteLn(s);
+  TMemoryStream(AResponse).SaveToFile('response.log');
   {$ENDIF WST_DBG}
 end;
 

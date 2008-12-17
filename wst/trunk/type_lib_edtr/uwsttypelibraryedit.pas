@@ -991,10 +991,12 @@ procedure TfWstTypeLibraryEdit.RenderSources();
   procedure LoadText(const AList : TStrings; ASrc : ISourceStream);
   var
     srcItemSV : ISavableSourceStream;
+    strm : TStream;
   begin
     if Supports(ASrc,ISavableSourceStream,srcItemSV) then begin
-      srcItemSV.GetStream().Position := 0;
-      AList.LoadFromStream(srcItemSV.GetStream());
+      strm := srcItemSV.GetStream();
+      strm.Position := 0;
+      AList.LoadFromStream(strm);
     end;
   end;
 

@@ -114,7 +114,7 @@ type
   function GetServiceDefaultFormatProperties(AServiceTyp : PTypeInfo):string;
 
 implementation
-uses wst_resources_imp, binary_streamer, imp_utils;
+uses wst_resources_imp, binary_streamer, imp_utils, wst_types;
 
 {$INCLUDE wst_rtl_imp.inc}
 
@@ -594,7 +594,7 @@ end;
 function TModuleMetadataMngr.InternalLoadRepository(const ARepName: shortstring): Integer;
 var
   tmpStrm : TMemoryStream;
-  strBuffer : string;
+  strBuffer : TBinaryString;
   i : Integer;
   tmpRes : PServiceRepository;
 

@@ -35,7 +35,7 @@ uses
   IdTCPServer,
 {$ENDIF}
   IdSocketHandle,
-  server_listener;
+  server_listener, wst_types;
 
 type
 
@@ -89,12 +89,15 @@ type
 
 implementation
 uses
-{$IFNDEF FPC}
+{$IFDEF WST_DELPHI}
      ActiveX,
   {$IFDEF INDY_9}
      wst_indy9_utils,
+  {$ENDIF INDY_9}
+  {$IFDEF INDY_10}
+     wst_indy10_utils, IdSchedulerOfThread, IdSchedulerOfThreadDefault,
   {$ENDIF}
-{$ENDIF}
+{$ENDIF WST_DELPHI}
      base_service_intf,
      server_service_intf, server_service_imputils,
      metadata_wsdl;
@@ -259,7 +262,11 @@ begin
   FHTTPServerObject := TIdHTTPServer.Create({$IFDEF INDY_9}nil{$ENDIF});
 {$IFDEF INDY_9}
   FHTTPServerObject.ThreadClass := TwstIndy9Thread;
-{$ENDIF}
+{$ENDIF INDY_9}
+{$IFDEF INDY_10}
+  FHTTPServerObject.Scheduler := TIdSchedulerOfThreadDefault.Create(FHTTPServerObject);
+  TIdSchedulerOfThread(FHTTPServerObject.Scheduler).ThreadClass := TwstIndy10Thread;
+{$ENDIF INDY_10}
   b := FHTTPServerObject.Bindings.Add();
   b.IP := AServerIpAddress;
   b.port := AListningPort;

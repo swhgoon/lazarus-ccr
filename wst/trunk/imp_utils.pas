@@ -192,7 +192,11 @@ begin
   pinf := GetPropInfo(FParent,AName);
   If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
     Case pinf^.PropType^.Kind of
-      tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString:
+      tkLString
+      {$IFDEF WST_DELPHI},tkString{$ENDIF}
+      {$IFDEF FPC},tkSString,tkAString{$ENDIF}
+      {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+      ,tkWString :
         SetStrProp(FParent,pinf,AValue);
       tkEnumeration :
         SetEnumProp(FParent,pinf,AValue);
@@ -236,7 +240,11 @@ begin
   pinf := GetPropInfo(FParent,AName);
   If Assigned(pinf) And Assigned(pinf^.SetProc) Then Begin
     Case pinf^.PropType^.Kind of
-      tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString:
+      tkLString
+      {$IFDEF WST_DELPHI},tkString{$ENDIF}
+      {$IFDEF FPC},tkSString,tkAString{$ENDIF}
+      {$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+      ,tkWString :
         Result := GetStrProp(FParent,pinf);
       tkEnumeration :
         Result := GetEnumProp(FParent,pinf);
@@ -256,8 +264,8 @@ begin
   Try
     For i := 0 To Pred(propListLen) Do Begin
       If ( propList^[i]^.PropType^.Kind in
-           [ tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF},tkWString,
-             tkEnumeration,
+           [ tkLString{$IFDEF FPC},tkSString,tkAString{$ENDIF}{$IFDEF WST_UNICODESTRING},tkUString{$ENDIF}
+             ,tkWString, tkEnumeration,
              tkInteger,tkInt64{$IFDEF FPC},tkQWord{$ENDIF}
            ]
          )

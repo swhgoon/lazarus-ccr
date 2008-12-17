@@ -22,7 +22,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="-uA  -p C:\Programmes\D7\etatcivil\partages\wst\tests\test_suite\files\document_literal_wrapped_binding_style.wsdl -aE:\tmp\docstyle"/>
+        <CommandLineParams Value="-i E:\tmp\amz2\AWSECommerceService.wsdl -aE:\tmp\amz2"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -147,7 +147,6 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>

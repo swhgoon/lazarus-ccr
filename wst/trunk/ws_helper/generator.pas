@@ -2437,6 +2437,8 @@ var
                        )
             then begin
               WriteLn('Result := ( F%s <> 0 );',[p.Name]);
+            end else if pt.InheritsFrom(TPasClassType) then begin
+              WriteLn('Result := ( F%s <> nil );',[p.Name]);
             end else begin
               WriteLn('Result := ( F%s <> %s(0) );',[p.Name,p.VarType.Name]);
             end;
@@ -3008,6 +3010,8 @@ begin
     FDecStream := nil;
     FImpStream := nil;
     FImpTempStream := nil;
+    FRttiFunc := nil;
+    FImpLastStream := nil;
   finally
     FreeAndNil(tmpList);
     FreeAndNil(objLst);

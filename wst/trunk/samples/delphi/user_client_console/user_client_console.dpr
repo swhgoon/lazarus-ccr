@@ -1,15 +1,28 @@
+{$INCLUDE wst_global.inc}
+
+{$IFDEF WST_DELPHI}
+  {$IFDEF VER200}
+    {$DEFINE WST_USE_INDY}
+  {$ENDIF VER200}
+{$ENDIF WST_DELPHI}
+
 program user_client_console;
 
 {$APPTYPE CONSOLE}
 
 uses
-  FastMM4,
+  //FastMM4,
   Classes,
   SysUtils,
   TypInfo,  ActiveX,
   user_service_intf_proxy,
+{$IFDEF WST_USE_INDY}
+  indy_tcp_protocol,
+  indy_http_protocol,
+{$ELSE WST_USE_INDY}
   synapse_tcp_protocol,
   synapse_http_protocol,
+{$ENDIF WST_USE_INDY}
   library_protocol,
   binary_formatter,
   base_soap_formatter, soap_formatter,
@@ -17,7 +30,6 @@ uses
   user_service_intf,
   wst_delphi_xml in '..\..\..\wst_delphi_xml.pas';
 
-{$INCLUDE wst.inc}
 
 var
   UserServiceInst : UserService = nil;
@@ -218,8 +230,13 @@ var
 begin
   CoInitialize(nil);
   try
+{$IFDEF WST_USE_INDY}
+    INDY_RegisterTCP_Transport();
+    INDY_RegisterHTTP_Transport();
+{$ELSE WST_USE_INDY}
     SYNAPSE_RegisterTCP_Transport();
     SYNAPSE_RegisterHTTP_Transport();
+{$ENDIF WST_USE_INDY}
     LIB_Register_Transport();
     WriteLn('Sample Application using Web Services Toolkit');
     ReadFormatType();

@@ -32,7 +32,7 @@ var
   i, j, k : Integer;
   itm : Item_Type;
 begin
-  SYNAPSE_RegisterHTTP_Transport();
+  INDY_RegisterHTTP_Transport();
   WriteLn('Web Services Toolkit Amazon sample');
   WriteLn('This sample demonstrates the "ItemSearch" method of the Amazon web service');
   WriteLn;
@@ -47,6 +47,8 @@ begin
       rqst.Request[0].Count := 10;
       rqst.Request[0].MerchantId := 'Amazon';
       rqst.Request[0].ItemPage := 1;
+      rqst.Request[0].TagPage := 1;
+      rqst.Request[0].TagsPerPage := 20;
       rqst.Request[0].Keywords := ReadEntry('Enter the Keywords : ');
       rsps := locService.ItemSearch(rqst);
       if ( rsps.OperationRequest.Errors.Length > 0 ) then begin

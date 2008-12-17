@@ -54,7 +54,7 @@ begin
   AAppOptions := [];
   c := #0;
   repeat
-    c := GetOpt('u:pibo:a:wxy');
+    c := GetOpt('u:pibo:a:wxyd');
     case c of
       'u' :
         begin

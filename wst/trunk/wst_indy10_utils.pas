@@ -12,34 +12,36 @@
 }
 
 {$INCLUDE wst_global.inc}
-unit wst_indy9_utils;
+unit wst_indy10_utils;
 
 interface
-uses SysUtils, IdTCPServer;
+uses
+   SysUtils, IdThread;
 
 type
 
-  TwstIndy9Thread = class(TIdPeerThread)
+  TwstIndy10Thread = class(TIdThreadWithTask)
   protected
-    procedure AfterExecute; override;
-    procedure BeforeExecute; override;
+    procedure AfterExecute(); override;
+    procedure BeforeExecute(); override;
   end;
 
 implementation
 uses ActiveX;
 
-{ TwstIndy9Thread }
+{ TwstIndy10Thread }
 
-procedure TwstIndy9Thread.AfterExecute;
+procedure TwstIndy10Thread.AfterExecute();
 begin
   CoUninitialize();
   inherited;
 end;
 
-procedure TwstIndy9Thread.BeforeExecute;
+procedure TwstIndy10Thread.BeforeExecute();
 begin
   inherited;
   CoInitialize(nil);
 end;
+
 
 end.

@@ -14,10 +14,7 @@
 unit library_base_intf;
 
 interface
-uses SysUtils, Classes, base_service_intf;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+uses SysUtils, Classes, base_service_intf, wst_types;
 
 const
   RET_OK = 0;

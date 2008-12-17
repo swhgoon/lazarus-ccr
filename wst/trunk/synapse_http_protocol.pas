@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils,{$IFDEF WST_DBG}Dialogs,{$ENDIF}
-  service_intf, imp_utils, base_service_intf,
+  wst_types, service_intf, imp_utils, base_service_intf,
   httpsend;
 
 Const

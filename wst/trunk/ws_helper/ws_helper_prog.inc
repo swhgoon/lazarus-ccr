@@ -262,6 +262,11 @@ var
     end;
   end;
 
+  procedure Error(const AMsg : string);
+  begin
+    raise Exception.Create(AMsg);
+  end;
+
 begin
 {$IFDEF FPC}
   {$IF Declared(SetHeapTraceOutput) }
@@ -283,20 +288,17 @@ begin
       End;
 
       if not ProcessCmdLine() then begin
-        WriteLn(errStr);
-        Exit;
+        Error(errStr);
       end;
       symtable := TwstPasTreeContainer.Create();
       srcMngr := CreateSourceManager();
 
       if not GenerateSymbolTable() then begin
-        WriteLn(errStr);
-        Exit;
+        Error(errStr);
       end;
 
       If Not ProcessFile() Then Begin
-        WriteLn(errStr);
-        Exit;
+        Error(errStr);
       End;
 
       srcMngr.SaveToFile(outPath);
