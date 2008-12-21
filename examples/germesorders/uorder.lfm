@@ -1,0 +1,302 @@
+inherited frmOrder: TfrmOrder
+  Left = 435
+  Height = 302
+  Top = 244
+  Width = 214
+  ActiveControl = btnSave
+  Caption = 'Данные заказа'
+  ClientHeight = 302
+  ClientWidth = 214
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object Panel1: TPanel[0]
+    Height = 31
+    Width = 214
+    Align = alTop
+    ClientHeight = 31
+    ClientWidth = 214
+    TabOrder = 0
+    object btnSave: TBitBtn
+      Left = 7
+      Height = 26
+      Hint = 'Сохранить заказ'
+      Top = 1
+      Width = 45
+      AutoSize = True
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        200000000000000400006400000064000000000000000000000051514BFF3E3D
+        37FF3D3C36FF3D3C36FF3D3C36FF3D3C36FF3C3B34FF3D3C36FF3D3C36FF3D3C
+        36FF3D3C36FF3D3C36FF40403BFF42423DFF3E3D37FF565651FF3E3D37FF4B4D
+        4AFF4B4D4AFF4C4E4BFF4D504DFF4E514FFF4F5250FF505351FF525553FF5053
+        51FF4F524FFF4E504EFF4E514FFF4B4D4AFF4A4C49FF3D3C36FF3C3B34FF4B4D
+        4AFF3B3A34FF3D3D38FF434440FF484A45FF4B4D4AFF4F5250FF515553FF4F52
+        4FFF4B4C4AFF454642FF40403CFF3B3A34FF4A4C49FF3C3B35FF51524CFF8E93
+        91FF8E9491FF8E9491FF999E9BFF898F8CFF919493FF8E9491FF8E9491FF9398
+        95FF9CA09DFF8E9491FF8E9491FF999E9BFF8E9391FF51524CFF6F726EFFFFFF
+        FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+        FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF676964FF737672FFFDFD
+        FDFF858A87FFBCC3C0FFC5CAC9FFE2E5E4FFF5F6F6FFB1E0C8FF26A966FFBDE0
+        CEFFE0E3E2FFC0C6C4FFB6BDBAFF808583FFF8F8F8FF737672FF858A88FFF5F6
+        F5FFC6CCCAFFE0E3E1FFFCFCFCFFE4E7E6FF6FB993FF2AAB69FF90E2B9FF1AA4
+        5EFFAFD3C1FFFBFCFBFFD7DBD9FFB8BEBCFFECEEEDFF858A88FF858A88FFEFF1
+        F0FFE1E3E3FFEEEFEFFFCBD4D0FF48AE7AFF42B97CFFC4F5DCFFA8F3CDFFACED
+        CCFF1AA45EFF9CC3AEFFE9EAEAFFD3D7D6FFE5E7E7FF858A88FF858A88FFEDEF
+        EFFFEBEDECFFC6D6CFFF2EA96AFF60CA94FFC6F6DEFF5DE8A1FF34E28AFF8FEF
+        BEFFACEDCCFF1AA45EFF9EC5B1FFE1E4E3FFE2E5E4FF858A88FF858A88FFF1F3
+        F2FFBCD8CBFF1CA45EFF81DBADFFD6F9E8FF98F0C3FF34E28AFF34E28AFF7FED
+        B5FFD6F9E7FFADEDCDFF1CA45EFFA6CCB9FFE8EAEAFF858A88FF858A88FFF4F6
+        F5FF4CB57FFF069A4EFF069A4EFF1EA761FFD1F8E4FF37E28CFF34E28AFFCCF8
+        E2FF2AAE6AFF069A4EFF069A4EFF42B078FFEAECECFF858A88FF858A88FFF3F5
+        F5FFEBEDEDFFFBFCFCFFEBEDEDFF0A9C51FFD1F8E4FF39E38DFF34E28AFFD2F9
+        E5FF109E55FFDFE6E3FFD1D4D4FFE3E6E5FFEEF0EFFF858A88FF868B89FFEFF1
+        F1FFF3F5F5FFFDFDFDFFF3F5F5FF0A9C51FFD1F8E4FF39E38DFF34E28AFFD2F9
+        E5FF109E55FFECF2F0FFDFE1E1FFF3F5F5FFEFF1F1FF868B89FF828785FF888D
+        8BFF858A88FF858A88FF858A88FF089B50FFD1F8E4FF39E38DFF34E28AFFD2F9
+        E5FF0E9D54FF818B86FF858A88FF858A88FF868B89FF838685FF08000000FFFF
+        FF00FFFFFF006FA2AF0047676D000B9D52FFD1F8E4FFD6F9E8FFD6F9E8FFD6F9
+        E8FF0F9D54FF00000000000000000000000000000000FFFFFF009003DE009003
+        DE008E011700BB0241008E014100179B57FF069A4EFF069A4EFF069A4EFF069A
+        4EFF109953FF000000000000000020E2DB000000000000000000
+      }
+      NumGlyphs = 0
+      OnClick = btnSaveClick
+      TabOrder = 0
+    end
+    object btnCancel: TBitBtn
+      Left = 159
+      Height = 26
+      Hint = 'Сохранить заказ'
+      Top = 1
+      Width = 45
+      Anchors = [akRight]
+      AutoSize = True
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000FF00FFFFFF00110000005001DE00B85EDE00FFFF0000FFFF
+        0000FD59000000FF00000480E00036342EFF36342EFF36342EFF36342EFF3634
+        2EFF36342EFF36342EFF36342EFF36342EFF36342EFF00000000002FB400FDE2
+        460000099D00F19B0800002DDE0036342EFFE0E2E2FF7A7976FF36342EFF1F6E
+        43FF227A4BFF257E4EFF2A7E50FF2B7F50FF36342EFFBD6800000000FF000000
+        0000FF2B45000000A4FF0000A4FF36342EFFDEE0E0FFE0E2E2FFE0E2E2FF7A79
+        76FF36342EFF1E643EFF237446FF1F7E4BFF36342EFF24B70000FFAF0000FFFF
+        0000E4FF09000000A4FF2929EFFF0000A4FFE0E2E2FFD1D4D4FFBEC1C1FFE0E2
+        E2FFE0E2E2FF36342EFF18653BFF197544FF36342EFF0522BE000000A4FF0000
+        A4FF0000A4FF0000A4FF2929EFFF2929EFFF0000A4FFD1D4D4FFBEC1C1FFB7B9
+        B9FFE0E2E2FF36342EFF17623AFF196E41FF36342EFFE90000000000A4FF2929
+        EFFF2929EFFF2929EFFF2929EFFF0000B4FF2929EFFF0000A4FFBEC1C1FFB7B9
+        B9FFE0E2E2FF36342EFF195E39FF15703FFF36342EFFFFFF00000000A4FF2929
+        EFFF0000B4FF0000B4FF0000B4FF0000B4FF0000B4FF2929EFFF0000A4FF6A6C
+        6CFFE0E2E2FF36342EFF185B36FF136C3CFF36342EFF000000000000A4FF8282
+        FBFF0000CCFF0000CCFF0000CCFF0000CCFF0000CCFF8282FBFF0000A4FF7779
+        79FF5A5B5BFF36342EFF105932FF0E6638FF36342EFF000000000000A4FF8282
+        FBFF8282FBFF8282FBFF8282FBFF0000CCFF8282FBFF0000A4FFBBBDBDFFA2A4
+        A4FFE0E2E2FF36342EFF0D4E2BFF0D562FFF36342EFFFFFF00000000A4FF0000
+        A4FF0000A4FF0000A4FF8282FBFF8282FBFF0000A4FFCDD0D0FFBEC1C1FFB7B9
+        B9FFE0E2E2FF36342EFF083E22FF074F2AFF36342EFF62FF0000000000000000
+        0000000000000000A4FF8282FBFF0000A4FFDCDEDEFFD0D3D3FFBEC1C1FFB7B9
+        B9FFE0E2E2FF36342EFF062D18FF064121FF36342EFFF29D0900000000000000
+        0000000000000000A4FF0000A4FF36342EFFE0E2E2FFD0D3D3FFBDC0C0FFB5B7
+        B7FFE0E2E2FF36342EFF001C0DFF003318FF36342EFF00000000002BAF00FCE3
+        500000000000000000000000000036342EFFE0E2E2FFD0D3D3FFBDC0C0FFABAD
+        ADFFE0E2E2FF36342EFF000F07FF002813FF36342EFF00000000080000000000
+        1C00FFFF39001C555500FFFFFF0036342EFF36342EFF36342EFF36342EFF3634
+        2EFF36342EFF36342EFF36342EFF36342EFF36342EFF000000008803DE00A0F4
+        DD000000000056000A00808220009CEE0900000000005800000090B8E1003CB8
+        E10000000000000000000000000050B8E1000000000000000000
+      }
+      NumGlyphs = 0
+      OnClick = btnCancelClick
+      TabOrder = 1
+    end
+  end
+  object Panel2: TPanel[1]
+    Height = 271
+    Top = 31
+    Width = 214
+    Align = alClient
+    ClientHeight = 271
+    ClientWidth = 214
+    TabOrder = 1
+    object GroupBox1: TGroupBox
+      Left = 1
+      Height = 97
+      Top = 1
+      Width = 212
+      Align = alTop
+      Caption = 'Заказ'
+      ClientHeight = 79
+      ClientWidth = 208
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 4
+        Height = 20
+        Top = 19
+        Width = 42
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Орг-я:'
+        Font.Color = clBlack
+        Font.Height = -12
+        Font.Name = 'Sans'
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Left = 4
+        Height = 20
+        Top = 51
+        Width = 42
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Дата:'
+        Font.Color = clBlack
+        Font.Height = -12
+        Font.Name = 'Sans'
+        ParentColor = False
+        ParentFont = False
+      end
+      object chkCache: TDBCheckBox
+        Left = 53
+        Height = 19
+        Top = -3
+        Width = 61
+        Caption = 'Безнал'
+        DataField = 'CacheLess'
+        DataSource = dsrcOrder
+        TabOrder = 0
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object cbxOrg: TRxDBLookupCombo
+        Left = 49
+        Height = 23
+        Top = 19
+        Width = 153
+        Anchors = [akTop, akLeft, akRight]
+        ButtonWidth = 15
+        Ctl3D = True
+        DataField = 'Org'
+        DataSource = dsrcOrder
+        PopUpFormOptions.Columns = <>
+        Font.Height = -12
+        Font.Name = 'Sans'
+        Glyph.Data = {
+          72000000424D7200000000000000360000002800000005000000030000000100
+          2000000000003C00000064000000640000000000000000000000000000000000
+          0000000000FF000000000000000000000000000000FF000000FF000000FF0000
+          0000000000FF000000FF000000FF000000FF000000FF
+        }
+        NumGlyphs = 1
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 2
+        TabStop = True
+        LookupDisplay = 'Name'
+        LookupField = 'ID'
+        LookupSource = dsrcOrgs
+      end
+      object DBEdit1: TDBEdit
+        Left = 49
+        Height = 23
+        Top = 51
+        Width = 155
+        DataField = 'DateCreate'
+        DataSource = dsrcOrder
+        Anchors = [akTop, akLeft, akRight]
+        ParentColor = False
+        TabOrder = 1
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 1
+      Height = 138
+      Top = 98
+      Width = 212
+      Align = alClient
+      Caption = 'Текущая группа/подгруппа'
+      ClientHeight = 120
+      ClientWidth = 208
+      TabOrder = 1
+      object cbxGroup: TComboBox
+        Left = 4
+        Height = 21
+        Top = 3
+        Width = 200
+        Anchors = [akTop, akLeft, akRight]
+        ItemHeight = 13
+        MaxLength = -1
+        OnChange = cbxGroupChange
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object lbxSubGroups: TListBox
+        Left = 4
+        Height = 84
+        Top = 32
+        Width = 200
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        TabOrder = 1
+      end
+    end
+    object Panel3: TPanel
+      Left = 1
+      Height = 34
+      Top = 236
+      Width = 212
+      Align = alBottom
+      ClientHeight = 34
+      ClientWidth = 212
+      TabOrder = 2
+      object btnOrderList: TButton
+        Tag = 1
+        Left = 102
+        Height = 25
+        Top = 4
+        Width = 103
+        Anchors = [akRight, akBottom]
+        Caption = 'Список товаров'
+        Font.Height = -10
+        Font.Name = 'Sans'
+        OnClick = btnOrderListClick
+        ParentFont = False
+        TabOrder = 0
+      end
+      object btnOrderList1: TButton
+        Tag = 2
+        Left = 7
+        Height = 25
+        Top = 4
+        Width = 87
+        Caption = 'Выбранные'
+        Font.Height = -10
+        Font.Name = 'Sans'
+        OnClick = btnOrderListClick
+        ParentFont = False
+        TabOrder = 1
+      end
+    end
+  end
+  object dsrcOrder: TDatasource[2]
+    DataSet = dsOrder
+    left = 160
+    top = 40
+  end
+  object dsOrder: TSqlite3Dataset[3]
+    SaveOnRefetch = True
+    left = 128
+    top = 40
+  end
+  object dsOrgs: TSqlite3Dataset[4]
+    left = 104
+    top = 72
+  end
+  object dsrcOrgs: TDatasource[5]
+    DataSet = dsOrgs
+    left = 143
+    top = 72
+  end
+end

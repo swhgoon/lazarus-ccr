@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pcp ":/My Documents/GermesOrders/debug.log"

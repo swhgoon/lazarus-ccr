@@ -1,0 +1,7 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TfrmParent','FORMDATA',[
+  'TPF0'#10'TfrmParent'#9'frmParent'#4'Left'#3'#'#1#6'Height'#3#249#0#3'Top'#3
+  +#190#0#5'Width'#3#19#1#18'HorzScrollBar.Page'#3#18#1#18'VertScrollBar.Page'#3
+  +#248#0#7'Caption'#6#9'frmParent'#10'LCLVersion'#6#6'0.9.25'#0#0
+]);

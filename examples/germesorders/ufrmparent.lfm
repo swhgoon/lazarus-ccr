@@ -1,0 +1,10 @@
+object frmParent: TfrmParent
+  Left = 291
+  Height = 249
+  Top = 190
+  Width = 275
+  HorzScrollBar.Page = 274
+  VertScrollBar.Page = 248
+  Caption = 'frmParent'
+  LCLVersion = '0.9.25'
+end

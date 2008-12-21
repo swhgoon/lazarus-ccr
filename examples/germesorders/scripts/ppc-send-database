@@ -1,0 +1,6 @@
+#!/bin/bash
+
+BASE=base/germesorders.db3
+
+prm ":/My Documents/GermesOrders/$BASE"
+pcp $BASE ":/My Documents/GermesOrders/$BASE"

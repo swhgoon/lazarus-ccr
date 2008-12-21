@@ -1,0 +1,20 @@
+object frmTestForm: TfrmTestForm
+  Left = 290
+  Height = 232
+  Top = 175
+  Width = 184
+  HorzScrollBar.Page = 183
+  VertScrollBar.Page = 231
+  Caption = 'frmTestForm'
+  ClientHeight = 232
+  ClientWidth = 184
+  object Button1: TButton
+    Left = 30
+    Height = 30
+    Top = 50
+    Width = 123
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+end

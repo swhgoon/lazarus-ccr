@@ -1,0 +1,14 @@
+#!/bin/bash
+
+EXE=germesorders.exe
+
+#pmkdir ":/My Documents/GermesOrders"
+./ppc-build
+
+#arm-wince-strip --only-keep-debug $EXE
+#arm-wince-strip $EXE
+prm ":/My Documents/GermesOrders/$EXE"
+pcp $EXE ":/My Documents/GermesOrders/$EXE"
+
+#prm ":/My Documents/GermesOrders/germesorders.dbg"
+#pcp germesorders.dbg ":/My Documents/GermesOrders/germesorders.dbg"

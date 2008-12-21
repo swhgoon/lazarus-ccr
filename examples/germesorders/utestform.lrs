@@ -1,0 +1,11 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+
+LazarusResources.Add('TfrmTestForm','FORMDATA',[
+  'TPF0'#12'TfrmTestForm'#11'frmTestForm'#4'Left'#3'"'#1#6'Height'#3#232#0#3'To'
+  +'p'#3#175#0#5'Width'#3#184#0#18'HorzScrollBar.Page'#3#183#0#18'VertScrollBar'
+  +'.Page'#3#231#0#7'Caption'#6#11'frmTestForm'#12'ClientHeight'#3#232#0#11'Cli'
+  +'entWidth'#3#184#0#0#7'TButton'#7'Button1'#4'Left'#2#30#6'Height'#2#30#3'Top'
+  +#2'2'#5'Width'#2'{'#7'Caption'#6#7'Button1'#7'OnClick'#7#12'Button1Click'#8
+  +'TabOrder'#2#0#0#0#0
+]);
