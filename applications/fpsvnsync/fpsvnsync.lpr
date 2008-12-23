@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, CustApp,
   FileUtil,
   SvnClasses, SvnCommand;
-  
+
 type
 
   { TSvnMirrorApp }
@@ -78,7 +78,7 @@ var
   SvnLog: TSvnLog;
   SubPath: string;
   DestRoot: string;
-  
+
   procedure GetLog;
   var
     Command: string;
@@ -90,7 +90,7 @@ var
     SubPath := SvnLog.LogEntry[0].CommonPath;
     writeln('Finding common path from log messages: ', SubPath);
   end;
-  
+
   procedure UpdateWC(const WorkingDir, SubPath: string; Revision: integer);
   var
     Command: string;
@@ -130,7 +130,7 @@ var
     end;
     Diff.Free;
   end;
-  
+
   procedure DeleteFiles;
   var
     LogEntry: TLogEntry;
@@ -163,9 +163,15 @@ var
       if LogPath.Action in [caModify, caAdd] then begin
         SourceFile := FSourceWC + LogPath.Path;
         if LogPath.CopyFromPath<>'' then begin
-          Command := format('copy "%1:s%2:s@%0:d" "%3:s"',
-            [LogPath.CopyFromRevision,
-             DestRoot, LogPath.CopyFromPath, DestFile]);
+          if ExtractFileName(LogPath.CopyFromPath)=ExtractFileName(DestFile) then
+            // to prevent that svn complains that the target is not a directory
+            Command := format('copy "%1:s%2:s@%0:d" "%3:s"',
+              [LogPath.CopyFromRevision, DestRoot, LogPath.CopyFromPath,
+                ExtractFileDir(DestFile)])
+          else
+            Command := format('copy "%1:s%2:s@%0:d" "%3:s"',
+              [LogPath.CopyFromRevision, DestRoot,
+                LogPath.CopyFromPath, DestFile]);
           writeln('svn '+ Command);
           ExecuteSvnCommand(Command);
         end;
@@ -182,7 +188,7 @@ var
       end;
     end;
   end;
-  
+
   procedure ApplyPropChanges;
   var
     Files: TStrings;
@@ -201,7 +207,7 @@ var
       Result.LoadForFiles(Files);
       Files.Free;
     end;
-    
+
     procedure CopyFileProp(SourceProp, DestProp: TSvnFileProp);
     var
       j, pass: integer;
@@ -209,7 +215,7 @@ var
       Command: string;
     begin
       if SourceProp.Properties.Text=DestProp.Properties.Text then exit;
-      
+
       writeln('Properties changed for ', DestProp.FileName);
       writeln('Source properties');
       writeln(SourceProp.Properties.Text);
@@ -229,7 +235,7 @@ var
           // if there is no value, don't set the property
           if (SourceProp.Properties.ValueFromIndex[j]='')
             then continue;
-            
+
           IsSvnEolProp := SourceProp.Properties.Names[j]='svn:eol-style';
           if ((pass=1) and (IsSvnEolProp=true)) or
              ((pass=2) and (IsSvnEolProp=false)) then begin
@@ -243,7 +249,7 @@ var
         end;
       end;
     end;
-    
+
   begin
     SourcePropInfo := CreatePropInfo(FSourceWC);
     DestPropInfo := CreatePropInfo(FDestWC);
@@ -268,7 +274,7 @@ var
     for i := 0 to Files.Count-1 do begin
       SourceFileName := FSourceWC + Files[i];
       DestFileName := FDestWC + Files[i];
-      SourceFileProp := SourcePropInfo.GetFileItem(SourceFileName); 
+      SourceFileProp := SourcePropInfo.GetFileItem(SourceFileName);
       DestFileProp := DestPropInfo.GetFileItem(DestFileName);
 
       if SourceFileProp=nil then begin
@@ -283,12 +289,12 @@ var
 
       CopyFileProp(SourceFileProp, DestFileProp);
     end;
-    
+
     Files.Free;
     SourcePropInfo.Free;
     DestPropInfo.Free;
   end;
-  
+
   procedure CommitChanges;
   var
     Command: string;
@@ -311,7 +317,7 @@ var
     writeln('svn commit result: ', ExecuteSvnCommand(Command));
     DeleteFile(MessageFile);
   end;
-  
+
 begin
   try
     SourceHead := GetRevision('-rHEAD '+FSourceWC);
@@ -333,9 +339,9 @@ begin
   SvnLog := TSvnLog.Create;
   while (Revision<SourceHead) do begin
     inc(Revision);
-    
+
     GetLog;
-    
+
     UpdateWC(FDestWC, SvnLog.LogEntry[0].CommonPath, Revision-1);
     UpdateWC(FSourceWC, SvnLog.LogEntry[0].CommonPath, Revision);
 
