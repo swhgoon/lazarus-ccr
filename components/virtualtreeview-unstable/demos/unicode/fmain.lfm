@@ -26,20 +26,21 @@ object MainForm: TMainForm
         Align = alClient
         BorderSpacing.Around = 3
         BorderStyle = bsSingle
+        DefaultText = 'Node'
+        Header.Columns = <        
+          item
+            Text = 'Language'
+            Width = 200
+          end        
+          item
+            Position = 1
+            Text = 'Translation'
+            Width = 200
+          end>
         Header.Options = [hoColumnResize, hoDrag, hoVisible]
         TabOrder = 0
         OnFreeNode = WelcomeTreeFreeNode
         OnGetText = WelcomeTreeGetText
-        Columns = <        
-          item
-            Width = 200
-            WideText = 'Language'
-          end        
-          item
-            Position = 1
-            Width = 200
-            WideText = 'Translation'
-          end>
       end
       object WelcomeTopPanel: TPanel
         Height = 28
@@ -73,6 +74,8 @@ object MainForm: TMainForm
         Width = 272
         BorderSpacing.Around = 3
         BorderStyle = bsSingle
+        DefaultText = 'Node'
+        Header.Columns = <>
         Header.MainColumn = -1
         Header.Options = [hoColumnResize, hoDrag]
         TabOrder = 0
@@ -80,7 +83,6 @@ object MainForm: TMainForm
         OnFreeNode = LCLTextTreeFreeNode
         OnGetText = LCLTextTreeGetText
         OnNewText = LCLTextTreeNewText
-        Columns = <>
       end
       object AddEditTextButton: TButton
         Left = 476

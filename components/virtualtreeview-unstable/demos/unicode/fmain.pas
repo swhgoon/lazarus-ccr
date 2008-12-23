@@ -39,12 +39,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LCLTextTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure LCLTextTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
     procedure LCLTextTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; const NewText: WideString);
+      Column: TColumnIndex; const NewText: UTF8String);
     procedure WelcomeTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure WelcomeTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
   private
     procedure AddLCLText(const AText: String);
     { private declarations }
@@ -106,16 +106,16 @@ end;
 
 procedure TMainForm.LCLTextTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: UTF8String);
 var
   Data: PLCLTextData;
 begin
   Data := Sender.GetNodeData(Node);
-  CellText := UTF8Decode(Data^.Text);
+  CellText := Data^.Text;
 end;
 
 procedure TMainForm.LCLTextTreeNewText(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Column: TColumnIndex; const NewText: WideString);
+  Node: PVirtualNode; Column: TColumnIndex; const NewText: UTF8String);
 var
   Data: PLCLTextData;
 begin
@@ -170,14 +170,14 @@ end;
 
 procedure TMainForm.WelcomeTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: UTF8String);
 var
   Data: PWelcomeData;
 begin
   Data := Sender.GetNodeData(Node);
   case Column of
-    0: CellText := UTF8Decode(Data^.Language);
-    1: CellText := UTF8Decode(Data^.Translation);
+    0: CellText := Data^.Language;
+    1: CellText := Data^.Translation;
   end;
 end;
 
