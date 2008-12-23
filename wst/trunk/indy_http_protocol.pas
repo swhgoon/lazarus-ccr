@@ -19,11 +19,8 @@ interface
 
 uses
   Classes, SysUtils,
-  service_intf, imp_utils, base_service_intf,
+  service_intf, imp_utils, base_service_intf, wst_types,
   IdHTTP;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
 
 Const
   sTRANSPORT_NAME = 'HTTP';
@@ -69,8 +66,6 @@ Type
   procedure INDY_RegisterHTTP_Transport();
   
 implementation
-uses
-  wst_types;
   
 { THTTPTransport }
 

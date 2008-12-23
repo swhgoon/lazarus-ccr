@@ -18,10 +18,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
-  base_service_intf, service_intf, imp_utils, base_soap_formatter;
-
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
+  wst_types, base_service_intf, service_intf, imp_utils, base_soap_formatter;
 
 type
 
