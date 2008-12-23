@@ -163,7 +163,7 @@ var
       if LogPath.Action in [caModify, caAdd] then begin
         SourceFile := FSourceWC + LogPath.Path;
         if LogPath.CopyFromPath<>'' then begin
-          Command := format('copy -r%d "%s%s" "%s"',
+          Command := format('copy "%1:s%2:s"@%0:d "%3:s"',
             [LogPath.CopyFromRevision,
              DestRoot, LogPath.CopyFromPath, DestFile]);
           writeln('svn '+ Command);
