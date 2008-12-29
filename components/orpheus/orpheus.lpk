@@ -31,7 +31,7 @@
 "/>
     <License Value="MPL 1.1
 "/>
-    <Version Minor="2" Release="0"/>
+    <Version Minor="2" Release="1"/>
     <Files Count="1">
       <Item1>
         <Filename Value="myovcreg.pas"/>

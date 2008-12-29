@@ -49,7 +49,7 @@ interface
 
 uses 
   {$IFDEF MSWINDOWS} Windows, {$ELSE} Types, {$ENDIF}
-   LclIntf, LMessages, LclType, 
+   LclIntf, LMessages, LclType, InterfaceBase,
   {$IFDEF LINUX} FileUtil, {$ENDIF}
    GraphType, Graphics, Controls, SysUtils;
 
@@ -970,9 +970,15 @@ begin
   ARect := Client;
    {The way LCL TCustomSpeedButton draws a button}
   if IsDown then
-    Canvas.Frame3D(ARect, BevelWidth, bvLowered)
+    begin
+    if WidgetSet.LCLPlatform <> lpCarbon then
+      Canvas.Frame3D(ARect, BevelWidth, bvLowered)
+    else  //bvLowered currently not supported on Carbon.
+      Canvas.Frame3D(ARect, BevelWidth, bvRaised)
+    end
   else
     Canvas.Frame3D(ARect, BevelWidth, bvRaised);
+  Result := Client;  //Should reduce dimensions by edges and bevels.
 end;
 
 

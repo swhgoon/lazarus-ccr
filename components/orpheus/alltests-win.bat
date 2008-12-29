@@ -1,3 +1,4 @@
+setlocal
 set lazpath="c:\tools\lazarus"
 if not exist %lazpath% (set lazpath="c:\lazarus")
 "%lazpath%\lazbuild" -d tests/TestFlexEdit/project1.lpi
@@ -9,3 +10,4 @@ if not exist %lazpath% (set lazpath="c:\lazarus")
 "%lazpath%\lazbuild" -d tests/TestTblEdits/project1.lpi
 "%lazpath%\lazbuild" -d tests/TestURL/project1.lpi
 "%lazpath%\lazbuild" -d tests/TestVLB/project1.lpi
+"%lazpath%\lazbuild" -d tests/TestCalendar/project1.lpi

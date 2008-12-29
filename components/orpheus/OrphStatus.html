@@ -33,6 +33,12 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20081229 release (0.2.1):
+  <UL>
+  <LI>Adds TOvcCalendar.
+  <LI>Updated results of testing for Lazarus 0.9.26. GTK2 widgetset now working better.<P>
+  </UL>
+
 <LI>20080720 release (0.2.0):
   <UL>
   <LI>Recent change in the Lazarus LCL broke Orpheus TOvcTable on Windows. This release 
@@ -213,23 +219,23 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>XP SP2</TD>
 <TD>&nbsp;</TD>
 <TD>win32</TD>
-<TD>20080714 snapshot of 0.9.25 with FPC 2.2.2rc2</TD>
+<TD>Stable 0.9.26 with FPC 2.2.2</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>OS X</TD>
 <TD>10.4.11 (Tiger) on PowerPC</TD>
-<TD>gtk: 1.2.0.9.1<BR>gtk2: 2.6.10<BR>qt: 4.3.0</TD>
-<TD>gtk, gtk2, carbon, qt</TD>
-<TD>20080714 snapshot of 0.9.25 with FPC 2.2.2rc2</TD>
+<TD>gtk: 1.2.0.9.1<BR>gtk2: 2.12.9</TD>
+<TD>gtk, gtk2, carbon</TD>
+<TD>Stable 0.9.26 with FPC 2.2.2</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>Linux</TD>
-<TD>SUSE 10.1</TD>
-<TD>gtk: 1.2.10-907</TD>
-<TD>gtk</TD>
-<TD>Stable 0.9.20 with FPC 2.0.4</TD>
+<TD>--not tested--</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
 </TR>
 
 </TABLE><BR>
@@ -253,6 +259,7 @@ headers, row labels, string, memo, check box, combo box, bitmap).
 <LI>TestSimpField - demos TOvcSimpleField validation (Windows only for now)
 <LI>TestTblEdits - demos TOvcTCString, TOvcTCSimpleField validation and TO32TCFlexEdit
 validation (Windows only for now)
+<LI>TestCalendar - demos TOvcCalendar
 </UL>
 
 To see the TOvcSpinner control in action, try out the table's Rows and Columns
@@ -345,7 +352,24 @@ descending from an existing edit control such as TCustomEdit. Currently
 TOvcSimpleField and TOvcTCSimpleField do not work on non-Windows widgetsets.<P>
 <LI>The GTK widgetset does not support TOvcRotatedLabel, apparently
 because the GetTextMetrics function is not fully implemented on that
-widgetset. 
+widgetset.<P>
+<LI>The Carbon widgetset has a few minor limitations as of Lazarus 0.9.26 that
+affect some of the Orpheus controls. Setting the BorderStyle property does
+nothing with Carbon in custom controls such as TOvcVirtualListBox, TOvcCalendar
+and TOvcTable. Also, since the Carbon widgetset does not implement the bvLowered
+bevel style, changing the focus of a TOvcCalendar control does not change
+the look of the currently selected date as it should (the date remains bvRaised,
+which actually looks lowered with the Carbon widgetset).<P>
+<LI>Differences between Delphi VCL and Lazarus LCL affect some Orpheus controls.
+For example, VCL messages like CM_ENTER and CM_EXIT are not supported in the 
+LCL. In a couple places, the ported code uses LM_SETFOCUS and LM_KILLFOCUS
+messages to obtain some functionality. Similarly, the lack of LCL support for the
+CM_CTL3DCHANGED message means that changing the Ctl3D property in Lazarus for
+controls such as TOvcCalendar may not update the control's design (reloading the 
+form will show the correct design). Finally, some properties like Ctl3D are True
+by default in Delphi but False in Lazarus, meaning forms converted from Delphi
+may not look quite the same for properties with default values until you
+explicitly set the properties in Lazarus or in your code.
 </OL>
 
 <HR>
@@ -372,7 +396,7 @@ widgetset.
 <TD>gtk widgetset doesn't support</TD>
 <TD>Working</TD>
 <TD>Not working</TD>
-<TD>Crashes</TD>
+<TD>Partial</TD>
 <TD>Working</TD>
 <TD>Working</TD>
 </TR>
@@ -408,7 +432,7 @@ widgetset.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Working</TD>
+<TD>Partial</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
 </TR>
@@ -426,14 +450,26 @@ widgetset.
 </TR>
 
 <TR VALIGN=TOP>
+<TD>TOvcCalendar<BR><IMG SRC="TOVCCALENDAR.bmp"></TD>
+<TD>TCustomControl</TD>
+<TD>Calendar control</TD>
+<TD>&nbsp;</TD>
+<TD>Working</TD>
+<TD>Working</TD>
+<TD>Working</TD>
+<TD>Working</TD>
+<TD>?</TD>
+</TR>
+
+<TR VALIGN=TOP>
 <TD>TOvcSimpleField<BR><IMG SRC="TOVCSIMPLEFIELD.bmp"></TD>
 <TD>TCustomControl</TD>
 <TD>Edit control with validation</TD>
 <TD>&nbsp;</TD>
 <TD>Working</TD>
-<TD>Not working</TD>
-<TD>Not working</TD>
-<TD>Not working</TD>
+<TD>Partial</TD>
+<TD>Partial</TD>
+<TD>Partial</TD>
 <TD>Crashes</TD>
 </TR>
 
@@ -503,9 +539,9 @@ widgetset.
 <TD>Table cell for editing strings, with validation</TD>
 <TD>&nbsp;</TD>
 <TD>Working</TD>
-<TD>Not working</TD>
-<TD>Not working</TD>
-<TD>Not working</TD>
+<TD>Partial</TD>
+<TD>Partial</TD>
+<TD>Crashes</TD>
 <TD>Crashes</TD>
 </TR>
 
@@ -695,18 +731,15 @@ However, TO32FlexEdit doesn't need TOvcController.<P>
 <HR>
 <A name="Other_Resources"></A><H3>Other Resources</H3>
 
-Qt widgetset status:<P>
-<A HREF="http://wiki.lazarus.freepascal.org/Qt_Interface">http://wiki.lazarus.freepascal.org/Qt_Interface</A><P>
-
-Carbon widgetset status:<P>
-<A HREF="http://wiki.lazarus.freepascal.org/Carbon_Interface">http://wiki.lazarus.freepascal.org/Carbon_Interface</A><P>
+Status of Lazarus widgetsets:<P>
+<A HREF="http://wiki.lazarus.freepascal.org/Roadmap">http://wiki.lazarus.freepascal.org/Roadmap</A><P>
 
 OS X tips for Lazarus:<P>
 <A HREF="http://wiki.lazarus.freepascal.org/OS_X_Programming_Tips">http://wiki.lazarus.freepascal.org/OS_X_Programming_Tips</A><P>
 
 <P>
 <HR>
-Last updated: July 20, 2008
+Last updated: December 29, 2008
 <P>
 
 </BODY>

@@ -64,6 +64,8 @@ uses
   ovcsf,
   o32flxed,
   o32tcflx,
+  ovccal,
+//  ovcedcal,
 //  ovccalc,
 //  ovcclrcb,
   ovcsc,
@@ -208,6 +210,8 @@ begin
   RegisterComponents('Orpheus', [TOvcSimpleField]);
 {$ENDIF}
   RegisterComponents('Orpheus', [TO32FlexEdit]);
+  RegisterComponents('Orpheus', [TOvcCalendar]);
+//  RegisterComponents('Orpheus', [TOvcDateEdit]);  //Needs ButtonOkay fixes like TO32FlexEdit
 //  RegisterComponents('Orpheus', [TOvcCalculator]);
 //  RegisterComponents('Orpheus', [TOvcColorComboBox]);
   RegisterComponents('Orpheus', [TOvcTable]); 

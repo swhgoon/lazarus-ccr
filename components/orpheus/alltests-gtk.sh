@@ -13,3 +13,4 @@ $lazdir/lazbuild -d --ws=gtk tests/TestTable/project1.lpi
 $lazdir/lazbuild -d --ws=gtk tests/TestTblEdits/project1.lpi
 $lazdir/lazbuild -d --ws=gtk tests/TestURL/project1.lpi
 $lazdir/lazbuild -d --ws=gtk tests/TestVLB/project1.lpi
+$lazdir/lazbuild -d --ws=gtk tests/TestCalendar/project1.lpi

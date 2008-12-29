@@ -13,3 +13,4 @@ $lazdir/lazbuild -d --ws=carbon tests/TestTable/project1.lpi
 $lazdir/lazbuild -d --ws=carbon tests/TestTblEdits/project1.lpi
 $lazdir/lazbuild -d --ws=carbon tests/TestURL/project1.lpi
 $lazdir/lazbuild -d --ws=carbon tests/TestVLB/project1.lpi
+$lazdir/lazbuild -d --ws=carbon tests/TestCalendar/project1.lpi

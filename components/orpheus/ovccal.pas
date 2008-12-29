@@ -221,7 +221,9 @@ type
     procedure CMCtl3DChanged(var Msg : TMessage);
       message CM_CTL3DCHANGED;
     procedure CMEnter(var Msg : TMessage);
-      message CM_ENTER;
+      message {$IFNDEF LCL} CM_ENTER; {$ELSE} LM_SETFOCUS; {$ENDIF}
+       //CM_ messages not supported in LCL, so use something similar
+       // so clRevertDate is initialized properly.
     procedure CMExit(var Msg : TMessage);
       message CM_EXIT;
     procedure CMFontChanged(var Msg : TMessage);
@@ -815,8 +817,13 @@ begin
   Height        := 140;
   TabStop       := True;
   Width         := 200;
+{$IFDEF MSWINDOWS}
   Font.Name     := 'MS Sans Serif';
   Font.Size     := 8;
+{$ELSE}  //Size 8 doesn't convert in LCL to Height -11 as it should.
+  Font.Name     := 'Arial';
+  Font.Height   := -11;
+{$ENDIF}
 
   FBorderStyle  := bsNone;
   FDayNameWidth := 3;
@@ -921,6 +928,10 @@ begin
       Params.Style := Params.Style and not WS_BORDER;
     Params.ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;
   end;
+
+{$IFDEF LCL}
+  inherited SetBorderStyle(FBorderStyle);
+{$ENDIF}
 
   {set style to reflect desire for double clicks}
   if FWantDblClicks then
