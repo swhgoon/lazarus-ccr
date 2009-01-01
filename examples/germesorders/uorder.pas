@@ -121,6 +121,9 @@ begin
   dsOrder.TableName:='Orders';
   dsOrder.PrimaryKey:='ID';
 
+  //workaround to prevent mask exception :(
+  DBEdit1.EditMask:='';
+
   BaseConnect.ConnectToBase(dsOrgs);
   dsOrgs.SQL:='select ID, Name from Orgs order by Name';
   dsOrgs.Open;
