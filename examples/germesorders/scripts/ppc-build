@@ -1,61 +1,56 @@
 #!/bin/bash
 
-#RELEASE
-#fpc -CX -B -Xs -XX -S2cgi -OG1 -TWinCE -Parm -WG -WN -vewnhi -l -Fu/home/denis/projects/lazarus/components/rxfpc/lib/arm-wince/ -Fu/home/denis/.lazarus/lib/rx/arm-wince/ -Fu/usr/local/share/lazarus/ideintf/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/wince -Fu/usr/local/share/lazarus/lcl/units/arm-wince/gtk2/ -Fu/usr/local/share/lazarus/packager/units/arm-wince/ -Fu/home/denis/projects/lazarus/GermesOrders/ -Fu. -o/home/denis/projects/lazarus/GermesOrders/germesorders.exe -dLCL -dLCLwince germesorders.lpr
-
-#DEBUG
-#fpc -CX -B -g -XX -TWinCE -Parm -WG -WN -vewnhi -l -Fu/home/denis/projects/lazarus/components/rxfpc/lib/arm-wince/ -Fu/home/denis/.lazarus/lib/rx/arm-wince/ -Fu/usr/local/share/lazarus/ideintf/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/wince -Fu/usr/local/share/lazarus/lcl/units/arm-wince/gtk2/ -Fu/usr/local/share/lazarus/packager/units/arm-wince/ -Fu/home/denis/projects/lazarus/GermesOrders/ -Fu. -o/home/denis/projects/lazarus/GermesOrders/germesorders.exe -dLCL -dLCLwince germesorders.lpr
-#fpc -CX -B -g -XX -TWinCE -Parm -WG -WR -vewnhi -l -Fu/home/denis/projects/lazarus/components/rxfpc/lib/arm-wince/ -Fu/home/denis/.lazarus/lib/rx/arm-wince/ -Fu/usr/local/share/lazarus/ideintf/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/wince -Fu/usr/local/share/lazarus/lcl/units/arm-wince/gtk2/ -Fu/usr/local/share/lazarus/packager/units/arm-wince/ -Fu/home/denis/projects/lazarus/GermesOrders/ -Fu/home/denis/projects/lazarus/components/rxfpc -Fu/usr/local/share/lazarus/components/rx -Fu. -o/home/denis/projects/lazarus/GermesOrders/germesorders.exe -FU./units -dLCL -dLCLwince germesorders.lpr
-
-#fpc -CX -B -XX -gl -TWinCE -Parm -WG -WN -Os -Ur -vewnhi -l -Fu/usr/local/share/lazarus/ideintf/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/wince -Fu/usr/local/share/lazarus/packager/units/arm-wince/ -Fu/home/denis/projects/lazarus/GermesOrders/ -Fu/home/denis/projects/lazarus/components/rxfpc -Fu/usr/local/share/lazarus/components/rx -Fu. -o/home/denis/projects/lazarus/GermesOrders/germesorders.exe -FU./units -dLCL -dLCLwince germesorders.lpr
-#fpc -CX -B -XX -g -gl -TWinCE -Parm -WG -WN -vewnhi -l -Fu. -Fu/usr/local/share/lazarus/ideintf/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/ -Fu/usr/local/share/lazarus/lcl/units/arm-wince/wince -Fu/usr/local/share/lazarus/packager/units/arm-wince/ -Fu/home/denis/projects/lazarus/GermesOrders/ -Fu/home/denis/projects/lazarus/components/rxfpc -Fu/usr/local/share/lazarus/components/rx  -o/home/denis/projects/lazarus/GermesOrders/germesorders.exe -FU./units/arm-wince -dLCL -dLCLwince germesorders.lpr
-
 date +\'%d-%m-%Y\' > build-date 
 
-PROJECT_PATH=$('pwd')
+PROJECT_PATH=$('pwd')/..
 LAZARUS_PATH=/usr/local/share/lazarus
 
-COMPONENTS_ROOT=~/projects/lazarus/lazarus-components/trunk
-COMPONENTS_PATH="$COMPONENTS_ROOT/rxfpc;$COMPONENTS_ROOT/foreign"
-COMPONENTS_DEBUG_PATH="$COMPONENTS_ROOT/foreign"
+COMPONENTS_ROOT=../..
 
-UNITS_OUTPUT=./units/arm-wince
+RX_ROOT=$COMPONENTS_ROOT/rx
+COMPONENTS_PATH="$RX_ROOT;$COMPONENTS_ROOT/foreign"
+COMPONENTS_DEBUG_PATH="$COMPONENTS_ROOT/foreign;$PROJECT_PATH/patches"
 
-PRECOMPILED_COMPONENTS="-Fu$LAZARUS_PATH/ideintf/units/arm-wince/ \
-                       -Fu$LAZARUS_PATH/lcl/units/arm-wince/ \
-                       -Fu$LAZARUS_PATH/lcl/units/arm-wince/wince \
-                       -Fu$LAZARUS_PATH/packager/units/arm-wince/"
+#ARM arch
+#Arch dependent dirs
+UNITS_OUTPUT_ARM=../units/arm-wince
+PRECOMPILED_COMPONENTS_ARM="-Fu$LAZARUS_PATH/ideintf/units/arm-wince/ \
+                            -Fu$LAZARUS_PATH/lcl/units/arm-wince/ \
+                            -Fu$LAZARUS_PATH/lcl/units/arm-wince/wince \
+                            -Fu$LAZARUS_PATH/packager/units/arm-wince/"
+PPC_ARM="fpc -TWinCE -Parm -dLCLwince $PRECOMPILED_COMPONENTS_ARM -FU$UNITS_OUTPUT_ARM"
 
-#echo $PRECOMPILED_COMPONENTS
-#echo $PROJECT_PATH
+#native GTK2 build
+UNITS_OUTPUT_NATIVE=../units/i386-linux
+PRECOMPILED_COMPONENTS_NATIVE="-Fu$LAZARUS_PATH/ideintf/units/i386-linux/ \
+                            -Fu$LAZARUS_PATH/lcl/units/i386-linux/ \
+                            -Fu$LAZARUS_PATH/lcl/units/i386-linux/gtk2 \
+                            -Fu$LAZARUS_PATH/packager/units/i386-linux/"
+PPC_NATIVE="fpc $PRECOMPILED_COMPONENTS_NATIVE -FU$UNITS_OUTPUT_NATIVE"
+
+#no crosscompiling (default)
+PPC=$PPC_NATIVE
 
 #Rx No debug info
-fpc -CX -B -XX -TWinCE -Parm -WG -WN -vewnhi -l \
-  -Fu. \
-  $PRECOMPILED_COMPONENTS \
+$PPC -CX -B -XX  -WG -WN -vewnhi -l \
+  -Fu$PROJECT_PATH \
   -Fu$COMPONENTS_PATH \
   -Fu$LAZARUS_PATH/components/rx \
-  -FU$UNITS_OUTPUT \
-  -dLCL -dLCLwince $COMPONENTS_ROOT/rxfpc/rxnew.pas 
+  -dLCL $RX_ROOT/rxnew.pas 
   
-fpc -CX -B -XX -TWinCE -Parm -WG -WN -vewnhi -l \
-  -Fu. \
-  $PRECOMPILED_COMPONENTS \
+$PPC -CX -B -XX -WG -WN -vewnhi -l \
+  -Fu$PROJECT_PATH \
   -Fu$COMPONENTS_PATH \
   -Fu$LAZARUS_PATH/components/rx \
-  -FU$UNITS_OUTPUT \
-  -dLCL -dLCLwince $LAZARUS_PATH/components/rx/rx.pas
+  -dLCL $LAZARUS_PATH/components/rx/rx.pas
 
 #Main Germes Orders Debug Info on 
-fpc -CX -B -XX -gl -TWinCE -Parm -WG -WN -vewnhi -l \
-  -Fu. \
-  $PRECOMPILED_COMPONENTS \
+$PPC -CX -B -XX -gl -WG -WN -vewnhi -l \
+  -Fu$PROJECT_PATH \
   -Fu$COMPONENTS_DEBUG_PATH \
   -Fu$PROJECT_PATH \
-  -Fu$UNITS_OUTPUT \
   -o$PROJECT_PATH/germesorders.exe \
-  -FU$UNITS_OUTPUT \
-  -dLCL -dLCLwince germesorders.lpr
+  -dLCL $PROJECT_PATH/germesorders.lpr
 
 #arm-wince-strip --only-keep-debug germesorders.exe
 #arm-wince-strip germesorders.exe
