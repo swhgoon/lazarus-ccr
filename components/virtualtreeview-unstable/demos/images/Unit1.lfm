@@ -18,9 +18,34 @@ object Form1: TForm1
     Align = alClient
     CheckImageKind = ckXP
     DefaultNodeHeight = 20
+    DefaultText = 'Node'
     DragMode = dmAutomatic
     DragOperations = [doCopy, doMove, doLink]
     DrawSelectionMode = smBlendedRectangle
+    Header.Columns = <    
+      item
+        Hint = 'Glavna kolona'
+        ImageIndex = 0
+        Text = 'Main'
+        Width = 200
+      end    
+      item
+        ImageIndex = 1
+        Position = 1
+        Text = 'One'
+        Width = 70
+      end    
+      item
+        ImageIndex = 2
+        Position = 2
+        Text = 'Two'
+        Width = 70
+      end    
+      item
+        Position = 3
+        Text = 'Percent'
+        Width = 150
+      end>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.Height = 24
@@ -39,30 +64,6 @@ object Form1: TForm1
     OnGetImageIndex = VST1GetImageIndex
     OnHeaderClick = VST1HeaderClick
     OnInitNode = VST1InitNode
-    Columns = <    
-      item
-        ImageIndex = 0
-        Width = 200
-        WideText = 'Main'
-        WideHint = 'Glavna kolona'
-      end    
-      item
-        ImageIndex = 1
-        Position = 1
-        Width = 70
-        WideText = 'One'
-      end    
-      item
-        ImageIndex = 2
-        Position = 2
-        Width = 70
-        WideText = 'Two'
-      end    
-      item
-        Position = 3
-        Width = 150
-        WideText = 'Percent'
-      end>
   end
   object ImageList1: TImageList
     Height = 24

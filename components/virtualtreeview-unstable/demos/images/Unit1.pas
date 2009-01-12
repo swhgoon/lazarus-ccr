@@ -26,8 +26,8 @@ unit Unit1;
 interface
 
 uses
-  DelphiCompat, LCLIntf, Messages, LCLType, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, VirtualTrees, LResources;
+  DelphiCompat, LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, VirtualTrees, LResources;
 
 type
 
@@ -45,7 +45,7 @@ type
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
     procedure VST1GetImageIndex(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var ImageIndex: Integer);
@@ -63,7 +63,7 @@ type
 
   PMyRec = ^TMyRec;
   TMyRec = record
-    Main: WideString;
+    Main: UTF8String;
     One, Two: integer;
     Percent : integer;
     Index: Integer;
@@ -75,21 +75,6 @@ var
 implementation
 
 uses Math;
-
-//fpc 204 does not have comparevalue
-
-function CompareValue ( const A, B  : Integer) : Integer;
-
-begin
-  result:=1;
-  if a=b then
-    result:=0
-  else
-   if a<b then
-     result:=-1;
-end;
-
-
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -131,20 +116,17 @@ begin
     RndPercent:=Data.Percent;
 
     InflateRect(CellRect, -1, -1);
-    DrawEdge(TargetCanvas.Handle, CellRect, EDGE_SUNKEN, BF_ADJUST or
-BF_RECT);
+    DrawEdge(TargetCanvas.Handle, CellRect, EDGE_SUNKEN, BF_ADJUST or BF_RECT);
     PercentageSize := (CellRect.Right - CellRect.Left) * RndPercent div 100;
 
     if True then
-    //Multy color approach
+    //Multi color approach
     begin
-
       ColorStart :=clYellow;
 
       R:= GetRValue(ColorStart);
       G:= GetGValue(ColorStart);
       B:= GetBValue(ColorStart);
-
 
       for I := CellRect.Right downto CellRect.Left do
       begin
@@ -155,7 +137,6 @@ BF_RECT);
         Dec(CellRect.Right);
 
         Dec(G);
-
       end;
     end else
     //One color approach
@@ -168,7 +149,6 @@ BF_RECT);
       TargetCanvas.FillRect(CellRect);
     end;
   end;
-
 end;
 
 procedure TForm1.VST1InitNode(Sender: TBaseVirtualTree; ParentNode,
@@ -218,7 +198,7 @@ begin
 end;
 
 procedure TForm1.VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-  Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
 var
   Data: PMyRec;
 begin
