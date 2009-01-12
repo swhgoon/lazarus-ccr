@@ -1,10 +1,8 @@
 object frmMain: TfrmMain
-  Left = 354
+  Left = 220
   Height = 254
-  Top = 441
+  Top = 220
   Width = 401
-  HorzScrollBar.Page = 400
-  VertScrollBar.Page = 253
   ActiveControl = VT
   Caption = 'Virtual Treeview Examples'
   ClientHeight = 254
@@ -14,7 +12,7 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object panMain: TPanel
     Height = 254
     Width = 401
@@ -38,6 +36,7 @@ object frmMain: TfrmMain
       Font.Height = -11
       Font.Name = 'Tahoma'
       ParentColor = False
+      ParentFont = False
     end
     object VT: TVirtualStringTree
       Left = 7
@@ -46,6 +45,8 @@ object frmMain: TfrmMain
       Width = 387
       Align = alClient
       BorderStyle = bsSingle
+      DefaultText = 'Node'
+      Header.Columns = <>
       Header.Font.Height = -11
       Header.Font.Name = 'MS Shell Dlg 2'
       Header.MainColumn = -1
@@ -61,7 +62,6 @@ object frmMain: TfrmMain
       OnGetImageIndex = VTGetImageIndex
       OnGetNodeDataSize = VTGetNodeDataSize
       OnInitNode = VTInitNode
-      Columns = <>
     end
     object panBase: TPanel
       Left = 7
@@ -85,27 +85,27 @@ object frmMain: TfrmMain
       end
       object chkRadioButtons: TCheckBox
         Left = 85
-        Height = 24
+        Height = 17
         Top = 8
-        Width = 127
+        Width = 87
         Caption = 'Radio Buttons'
         OnClick = chkRadioButtonsClick
         TabOrder = 0
       end
       object chkChangeHeight: TCheckBox
         Left = 184
-        Height = 24
+        Height = 17
         Top = 8
-        Width = 109
+        Width = 76
         Caption = 'Vary Height'
         OnClick = chkChangeHeightClick
         TabOrder = 1
       end
       object chkHotTrack: TCheckBox
         Left = 11
-        Height = 24
+        Height = 17
         Top = 8
-        Width = 95
+        Width = 66
         Caption = 'Hot Track'
         OnClick = chkHotTrackClick
         TabOrder = 2

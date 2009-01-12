@@ -41,7 +41,6 @@ object frmVTCheckList: TfrmVTCheckList
       OnGetText = VTGetText
       OnGetNodeDataSize = VTGetNodeDataSize
       OnInitNode = VTInitNode
-      Columns = <>
     end
     object panBase: TPanel
       Left = 7

@@ -1,10 +1,8 @@
 object frmVTDBExample: TfrmVTDBExample
-  Left = 448
+  Left = 132
   Height = 482
-  Top = 124
+  Top = 132
   Width = 553
-  HorzScrollBar.Page = 552
-  VertScrollBar.Page = 481
   ActiveControl = VT
   Caption = 'Database Test'
   ClientHeight = 482
@@ -15,12 +13,12 @@ object frmVTDBExample: TfrmVTDBExample
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 12
-    Height = 17
+    Height = 14
     Top = 12
-    Width = 171
+    Width = 117
     Caption = 'Last operation duration:'
     ParentColor = False
   end
@@ -44,8 +42,28 @@ object frmVTDBExample: TfrmVTDBExample
       Colors.FocusedSelectionColor = 16756912
       Colors.HotColor = clBlue
       DefaultNodeHeight = 22
+      DefaultText = 'Node'
       Font.Height = -11
       Font.Name = 'Tahoma'
+      Header.Columns = <      
+        item
+          ImageIndex = 3
+          Layout = blGlyphRight
+          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
+          Position = 1
+          Text = 'Company'
+          Width = 200
+        end      
+        item
+          Position = 2
+          Text = 'Contact'
+          Width = 150
+        end      
+        item
+          Alignment = taCenter
+          Text = 'Status'
+          Width = 42
+        end>
       Header.Font.Height = -11
       Header.Font.Name = 'MS Sans Serif'
       Header.Images = imgMaster
@@ -55,6 +73,7 @@ object frmVTDBExample: TfrmVTDBExample
       Images = imgMaster
       IncrementalSearch = isAll
       LineMode = lmBands
+      ParentFont = False
       TabOrder = 0
       TextMargin = 3
       TreeOptions.AnimationOptions = [toAnimatedToggle]
@@ -76,25 +95,6 @@ object frmVTDBExample: TfrmVTDBExample
       OnInitChildren = VTInitChildren
       OnInitNode = VTInitNode
       OnNewText = VTNewText
-      Columns = <      
-        item
-          ImageIndex = 3
-          Layout = blGlyphRight
-          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
-          Position = 1
-          Width = 200
-          WideText = 'Company'
-        end      
-        item
-          Position = 2
-          Width = 150
-          WideText = 'Contact'
-        end      
-        item
-          Alignment = taCenter
-          Width = 42
-          WideText = 'Status'
-        end>
     end
     object Panel2: TPanel
       Left = 7
@@ -108,36 +108,39 @@ object frmVTDBExample: TfrmVTDBExample
       TabOrder = 1
       object Label2: TLabel
         Left = 16
-        Height = 17
+        Height = 14
         Top = 12
-        Width = 98
+        Width = 65
         Caption = 'Add Node(s):'
         Font.Color = clBlue
         Font.Height = -11
         Font.Name = 'Tahoma'
         ParentColor = False
+        ParentFont = False
       end
       object Label3: TLabel
         Left = 168
-        Height = 17
+        Height = 14
         Top = 5
-        Width = 50
+        Width = 33
         Caption = 'Toggle'
         Font.Color = clBlue
         Font.Height = -11
         Font.Name = 'Tahoma'
         ParentColor = False
+        ParentFont = False
       end
       object Label4: TLabel
         Left = 239
-        Height = 17
+        Height = 14
         Top = 5
-        Width = 57
+        Width = 38
         Caption = 'Options'
         Font.Color = clBlue
         Font.Height = -11
         Font.Name = 'Tahoma'
         ParentColor = False
+        ParentFont = False
       end
       object Bevel1: TBevel
         Left = 228
@@ -147,15 +150,16 @@ object frmVTDBExample: TfrmVTDBExample
       end
       object Label5: TLabel
         Left = 307
-        Height = 17
+        Height = 14
         Top = 6
-        Width = 292
+        Width = 197
         Alignment = taCenter
         Caption = '(Tip: Start typing for incremental search)'
         Font.Color = clRed
         Font.Height = -11
         Font.Name = 'Tahoma'
         ParentColor = False
+        ParentFont = False
       end
       object ed: TEdit
         Left = 16
@@ -198,9 +202,9 @@ object frmVTDBExample: TfrmVTDBExample
       end
       object chkShowIDs: TCheckBox
         Left = 244
-        Height = 24
+        Height = 17
         Top = 35
-        Width = 86
+        Width = 60
         Caption = 'Show ID'
         OnClick = chkShowIDsClick
         TabOrder = 4
@@ -217,18 +221,18 @@ object frmVTDBExample: TfrmVTDBExample
       end
       object chkAllVisible: TCheckBox
         Left = 429
-        Height = 24
+        Height = 17
         Top = 35
-        Width = 92
+        Width = 63
         Caption = 'All Visible'
         OnClick = chkAllVisibleClick
         TabOrder = 6
       end
       object chkDynHt: TCheckBox
         Left = 324
-        Height = 24
+        Height = 17
         Top = 35
-        Width = 139
+        Width = 94
         Caption = 'Dynamic Height'
         OnClick = chkDynHtClick
         TabOrder = 7

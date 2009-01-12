@@ -1,7 +1,7 @@
 object frmVTPropEdit: TfrmVTPropEdit
-  Left = 198
+  Left = 176
   Height = 601
-  Top = 198
+  Top = 176
   Width = 458
   ActiveControl = VT
   Caption = 'Property Editor'
@@ -34,7 +34,20 @@ object frmVTPropEdit: TfrmVTPropEdit
       Color = 15921906
       Colors.BorderColor = clWindowText
       Colors.HotColor = clBlack
+      DefaultText = 'Node'
       Header.AutoSizeIndex = 1
+      Header.Columns = <      
+        item
+          Text = 'Properties'
+          Width = 186
+        end      
+        item
+          Color = clWhite
+          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
+          Position = 1
+          Text = 'Values'
+          Width = 258
+        end>
       Header.Font.Height = -11
       Header.Font.Name = 'MS Sans Serif'
       Header.Height = 18
@@ -64,18 +77,6 @@ object frmVTPropEdit: TfrmVTPropEdit
       OnGetNodeDataSize = VTGetNodeDataSize
       OnInitChildren = VTInitChildren
       OnInitNode = VTInitNode
-      Columns = <      
-        item
-          Width = 186
-          WideText = 'Properties'
-        end      
-        item
-          Color = clWhite
-          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
-          Position = 1
-          Width = 258
-          WideText = 'Values'
-        end>
     end
     object cmb: TComboBox
       Left = 7
@@ -118,9 +119,9 @@ object frmVTPropEdit: TfrmVTPropEdit
       TabOrder = 2
       object chkTriangleButtons: TCheckBox
         Left = 321
-        Height = 19
+        Height = 17
         Top = 8
-        Width = 104
+        Width = 98
         Caption = 'Triangle Buttons'
         OnClick = chkTriangleButtonsClick
         TabOrder = 0

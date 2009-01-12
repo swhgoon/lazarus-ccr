@@ -2,10 +2,11 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <AlwaysBuild Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
@@ -52,7 +53,7 @@
         <ComponentName Value="frmMain"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="Main.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
       <Unit2>
@@ -66,7 +67,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="VTNoData.lrs"/>
         <UnitName Value="VTNoData"/>
       </Unit3>
       <Unit4>
@@ -75,7 +75,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="VTPropEdit.lrs"/>
         <UnitName Value="VTPropEdit"/>
       </Unit4>
       <Unit5>
@@ -88,7 +87,6 @@
         <ComponentName Value="frmViewCode"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="ViewCode.lrs"/>
         <UnitName Value="ViewCode"/>
       </Unit6>
       <Unit7>
@@ -96,7 +94,6 @@
         <ComponentName Value="frmVTCheckList"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="VTCheckList.lrs"/>
         <UnitName Value="VTCheckList"/>
       </Unit7>
       <Unit8>
@@ -105,7 +102,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="VTDBExample.lrs"/>
         <UnitName Value="VTDBExample"/>
       </Unit8>
     </Units>

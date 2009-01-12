@@ -1,7 +1,7 @@
 object frmVTNoData: TfrmVTNoData
-  Left = 220
+  Left = 154
   Height = 346
-  Top = 220
+  Top = 154
   Width = 401
   ActiveControl = VT
   Caption = 'Basic VT as a Tree    (no node data used)'
@@ -32,6 +32,8 @@ object frmVTNoData: TfrmVTNoData
       Width = 387
       Align = alClient
       BorderStyle = bsSingle
+      DefaultText = 'Node'
+      Header.Columns = <>
       Header.Font.Height = -11
       Header.Font.Name = 'MS Shell Dlg 2'
       Header.MainColumn = -1
@@ -48,7 +50,6 @@ object frmVTNoData: TfrmVTNoData
       OnGetNodeDataSize = VTGetNodeDataSize
       OnInitChildren = VTInitChildren
       OnInitNode = VTInitNode
-      Columns = <>
     end
     object panBase: TPanel
       Left = 7
@@ -75,27 +76,27 @@ object frmVTNoData: TfrmVTNoData
       end
       object chkCheckBoxes: TCheckBox
         Left = 180
-        Height = 19
+        Height = 17
         Top = 7
-        Width = 87
+        Width = 81
         Caption = 'Check Boxes'
         OnClick = chkCheckBoxesClick
         TabOrder = 0
       end
       object chkFullExpand: TCheckBox
         Left = 100
-        Height = 19
+        Height = 17
         Top = 7
-        Width = 81
+        Width = 75
         Caption = 'Full Expand'
         OnClick = chkFullExpandClick
         TabOrder = 1
       end
       object chkShowLevel: TCheckBox
         Left = 271
-        Height = 19
+        Height = 17
         Top = 7
-        Width = 80
+        Width = 74
         Caption = 'Show Level'
         OnClick = chkShowLevelClick
         TabOrder = 2
