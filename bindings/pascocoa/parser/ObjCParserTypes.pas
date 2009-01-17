@@ -2676,6 +2676,11 @@ var
   proc  :  TCustomEntityProc;
   index : Integer;
 begin
+  if not Assigned(CustomList) then begin
+    Result := nil;
+    Exit;
+  end;
+  
   index := Parser.TokenPos;
   for i := 0 to CustomList.Count - 1 do begin
     proc := TCustomEntityProc(CustomList[i]);

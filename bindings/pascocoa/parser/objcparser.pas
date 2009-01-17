@@ -21,7 +21,7 @@ uses
   SysUtils,
   ObjCParserUtils,
   ObjCParserTypes,
-  CToPasWriter;
+  CToPasWriter, gnuccFeatures;
 
 type
   // this object is used only for precomile directives handling
