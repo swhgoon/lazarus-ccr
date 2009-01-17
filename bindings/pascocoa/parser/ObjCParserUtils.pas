@@ -1,14 +1,20 @@
-{
- ObjCParserUtils.pas
- Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
- converting obj-c header to pascal (delphi compatible) unit
+{ * This file is part of ObjCParser tool 
+  * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
+  * license version 2.0 or 2.1.  You should have received a copy of the
+  * LGPL license along with at http://www.gnu.org/                                              
 }
 
 unit ObjCParserUtils;
 
 interface
 
-{$ifdef fpc}{$mode delphi}{$H+}{$endif}
+{$ifdef fpc}
+  {$mode delphi}{$H+}
+{$else}
+  {$warn unsafe_code off}
+  {$warn unsafe_type off}
+  {$warn unsafe_cast off}
+{$endif}
 
 uses
   Classes, SysUtils, ObjCParserTypes;
@@ -93,7 +99,7 @@ function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType; //): Bo
 implementation
 
 procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings); forward;
-procedure WriteOutRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings); forward;
+procedure WriteOutRecord(struct: TEntityStruct; const Prefix, RecPrefix : AnsiString; subs: TStrings); forward;
 
 function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType;
 begin
@@ -965,9 +971,9 @@ begin
   if Assigned(AField._Type) then begin
     if (AField._Type is TUnionTypeDef) then
       WriteOutUnion(TUnionTypeDef(AField._Type), Prefix, subs)
-    else if AField._Type is TStructTypeDef then begin
+    else if AField._Type is TEntityStruct then begin
       i := subs.Count;
-      WriteOutRecord(TStructTypeDef(AField._Type), Prefix, 'packed', subs);
+      WriteOutRecord(TEntityStruct(AField._Type), Prefix, 'packed', subs);
       if i < subs.Count then begin
         nm := subs[i];
         Delete(nm, 1, length(Prefix));
@@ -1011,7 +1017,7 @@ begin
   end;
 end;
 
-procedure WriteOutRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings);
+procedure WriteOutRecord(struct: TEntityStruct; const Prefix, RecPrefix : AnsiString; subs: TStrings);
 var
   i         : integer;
   bits      : Integer;
@@ -1042,7 +1048,7 @@ begin
   subs.Add(Prefix + 'end;');
 end;
 
-procedure WriteOutTypeDefRecord(struct: TStructTypeDef; const Prefix, RecPrefix : AnsiString; subs: TStrings);
+procedure WriteOutTypeDefRecord(struct: TEntityStruct; const Prefix, RecPrefix : AnsiString; subs: TStrings);
 var
   i : integer;
   s : AnsiString;
@@ -1090,15 +1096,15 @@ begin
     TEnumTypeDef(typedef._Type)._Name := typedef._TypeName;
     WriteOutEnumToHeader(TEnumTypeDef(typedef._Type), subs);
     TEnumTypeDef(typedef._Type)._Name := tmp;
-  end else if typedef._Type is TStructTypeDef then begin
+  end else if typedef._Type is TEntityStruct then begin
     subs.Add('type');
-    if TStructTypeDef(typedef._Type)._Name <> '' then begin
-      WriteOutTypeDefRecord(typedef._Type as TStructTypeDef, '  ', 'packed ', subs);
-      subs.Add(Prefix + WriteOutTypeDefName(typedef._TypeName, TStructTypeDef(typedef._Type)._Name, IsTypePointer(typedef._Type, false)));
-      ConvertSettings.StructTypes.Add(TStructTypeDef(typedef._Type)._Name);
+    if TEntityStruct(typedef._Type)._Name <> '' then begin
+      WriteOutTypeDefRecord(typedef._Type as TEntityStruct, '  ', 'packed ', subs);
+      subs.Add(Prefix + WriteOutTypeDefName(typedef._TypeName, TEntityStruct(typedef._Type)._Name, IsTypePointer(typedef._Type, false)));
+      ConvertSettings.StructTypes.Add(TEntityStruct(typedef._Type)._Name);
     end else begin
-      TStructTypeDef(typedef._Type)._Name := typedef._TypeName;
-      WriteOutTypeDefRecord(typedef._Type as TStructTypeDef, '  ', 'packed ', subs);
+      TEntityStruct(typedef._Type)._Name := typedef._TypeName;
+      WriteOutTypeDefRecord(typedef._Type as TEntityStruct, '  ', 'packed ', subs);
       ConvertSettings.StructTypes.Add(typedef._TypeName);
     end;
   end;
@@ -1173,8 +1179,9 @@ var
   cmt : AnsiString;
   j   : Integer;
   obj : TObject; // or TEntity
-  
+
   mtds   : TStringList; // name of methods
+  restype: TObjCResultTypeDef;
 //  over   : TStringList; // overloaded names
 const
   SpacePrefix = '    ';
@@ -1214,8 +1221,10 @@ begin
         nm := TClassMethodDef(cl.Items[j])._Name;
         i := mtds.IndexOf(nm);
         if Integer(mtds.Objects[i]) > 0 then s := s + ' overload;';
-        
-        if Assigned(TClassMethodDef(cl.Items[j]).GetResultType) then begin
+
+
+        restype := TClassMethodDef(cl.Items[j]).GetResultType;
+        if Assigned(restype) then begin
           cmt := TClassMethodDef(cl.Items[j]).GetResultType.TagComment;
           if cmt <> '' then
             s := s + '{'+cmt+'}';
@@ -1742,7 +1751,7 @@ begin
 
   // packing list, removing nil references.
   FastPack(ent.Items);
-
+  
   for i := 0 to ent.Items.Count - 1 do 
     AppleHeaderFix( TEntity(ent.Items[i]));
 

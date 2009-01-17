@@ -1,23 +1,27 @@
-{
- Project1.pas
-
- Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
-
- main parser unit
+{ * This file is part of ObjCParser tool 
+  * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
+  * license version 2.0 or 2.1.  You should have received a copy of the
+  * LGPL license along with at http://www.gnu.org/                                              
 }
+
 program objcparser;
 
 {$ifdef fpc}
   {$mode delphi}{$H+}
 {$else}
   {$APPTYPE CONSOLE}
+  {$warn unsafe_code off}
+  {$warn unsafe_type off}
+  {$warn unsafe_cast off}
 {$endif}
 
 uses
-  Classes, IniFiles,
+  Classes,
+  IniFiles,
   SysUtils,
   ObjCParserUtils,
-  ObjCParserTypes;
+  ObjCParserTypes,
+  CToPasWriter;
 
 type
   // this object is used only for precomile directives handling
@@ -26,7 +30,7 @@ type
   TPrecompileHandler = class(TObject)
   public
     hdr   : TObjCHeader;
-    procedure OnPrecompile(Sender: TObject);
+    procedure OnPrecompile(Sender: TObject; Precomp: TObject);
     procedure OnComment(Sender: TObject; const Comment: AnsiString);
     constructor Create(AHeader: TObjCHeader);
   end;
@@ -58,12 +62,12 @@ begin
   Result := mn;
 end;
 
-procedure TPrecompileHandler.OnPrecompile(Sender: TObject);
+procedure TPrecompileHandler.OnPrecompile(Sender: TObject; Precomp: TObject);
 var
   parser    : TTextParser;
   preEntity : TPrecompiler;
   lst       : TEntity;
-  prc       : TNotifyEvent;
+  prc       : TPrecompilerEvent;
 begin
   parser := Sender as TTextParser;
   //todo: change for something nicier =)
@@ -119,8 +123,8 @@ var
 begin
   if Entity is TClassDef then begin
     Ini.WriteString(TypeDefsSec, TClassDef(Entity)._ClassName, 'objcclass');
-  end else if Entity is TStructTypeDef then begin
-    Ini.WriteString(TypeDefsSec, TStructTypeDef(Entity)._Name, 'struct');
+  end else if Entity is TEntityStruct then begin
+    Ini.WriteString(TypeDefsSec, TEntityStruct(Entity)._Name, 'struct');
   end else if Entity is TTypeNameDef then begin
     if Assigned(Sets) then begin
       cnv := AnsiLowerCase(ObjCToDelphiType(TTypeNameDef(Entity)._Inherited, false ));
@@ -153,13 +157,10 @@ begin
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
   prec := TPrecompileHandler.Create(hdr);
-  parser := TTextParser.Create;
-  parser.TokenTable := CreateObjCTokenTable;
-
+  parser := CreateCParser(s);
   try
     parser.Buf := s;
     try
-      parser.TokenTable.Precompile := '#';
       parser.OnPrecompile := prec.OnPrecompile;
       parser.OnComment := prec.OnComment;
       parser.IgnoreTokens.AddStrings(ConvertSettings.IgnoreTokens);
@@ -202,7 +203,7 @@ end;
 
 procedure ParseAll;
 var
-  ch    : char;
+//  ch    : char;
   srch  : TSearchRec;
   res   : Integer;
   i     : Integer;
@@ -221,7 +222,6 @@ begin
   end;}
 
   pth := IncludeTrailingPathDelimiter( GetCurrentDir);
-  writeln('looking for .h files in ', pth);
   res := FindFirst(pth + '*.h', -1, srch);
   if res = 0 then begin
     st := TStringList.Create;
@@ -246,9 +246,7 @@ begin
           end;
 
           st.Clear;
-          writeln(' converted!');
         end else begin
-          writeln('Error: ', err);
         end;
       until FindNext(srch) <> 0;
 
@@ -308,7 +306,6 @@ var
 begin
 //  uikit.ini
   if not FileExists(FileName) then begin
-    writeln('//ini file is not found');
     Exit;
   end;
   {$ifndef fpc}
@@ -456,6 +453,56 @@ var
   i     : integer;
 
 
+function FileToString(const FileName: WideString): AnsiString;
+var
+  fs  : TFileStream; 
+begin                 
+  Result := '';
+  try 
+    fs := TfileStream.Create(FileName, fmOpenRead or fmShareDenyNone); 
+    try
+      SetLength(Result, fs.Size);
+      fs.Read(Result[1], fs.Size) 
+    finally
+      fs.Free; 
+    end; 
+  except
+  end;
+end; 
+
+procedure DoTest(const InputFile: AnsiString);
+var
+  hdr   : TObjCHeader;
+
+  wrt   : TStringsWriter;
+  cnv   : TDefaultConverter;
+  i     : Integer;
+  names : TPascalNames;
+begin
+  hdr := TObjCHeader.Create;
+  wrt := TStringsWriter.Create;
+  wrt.Strings := TStringList.Create;
+  try
+    if not ParserCHeader( FileToString(InputFile), hdr) then Exit;
+
+    cnv := TDefaultConverter.Create;
+    names :=  CreateDefaultPascalNames;
+    try
+      cnv.WriteCHeader(hdr, wrt, names);
+    finally
+      cnv.Free;
+    end;
+
+    for i := 0 to wrt.Strings.Count - 1 do
+      writeln(wrt.Strings[i]);
+
+  finally
+    wrt.Strings.Free;
+    wrt.Free;
+    hdr.Free;
+  end;
+end;
+
 begin
   doOutput := true;
   try
@@ -467,6 +514,9 @@ begin
       TypeHelp;
       Exit;
     end;
+   
+    DoTest(inpf); 
+    Exit; 
 
     st := TStringList.Create;
     try

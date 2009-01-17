@@ -1,26 +1,32 @@
-{
- ObjCParserTypes.pas
-
- Copyright (C) 2008 Dmitry 'Skalogryz' Boyarintsev
-
- parsing objc header unit
+{ * This file is part of ObjCParser tool 
+  * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
+  * license version 2.0 or 2.1.  You should have received a copy of the
+  * LGPL license along with at http://www.gnu.org/                                              
 }
+
+
 unit ObjCParserTypes;
 
 interface
 
-{$ifdef fpc}{$mode delphi}{$endif fpc}
+{$ifdef fpc}{$mode delphi}{$h+}
+{$else}
+{$warn unsafe_code off}
+{$warn unsafe_type off}
+{$warn unsafe_cast off}
+{$endif}
 
 uses
   Classes, SysUtils;
 
 const
   Err_Ident   = 'Identifier';
-  Err_Expect  = '%s, excepted, but %s found';
+  Err_Expect  = '%s, excepted, but "%s" found';
   Err_BadPrecompile   = 'Bad precompile directive';
 
 type
   TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric);
+
 
   TCharSet = set of Char;
 
@@ -40,18 +46,52 @@ type
     destructor Destroy; override;
   end;
 
+  TPrecompilerEvent = procedure (Sender: TObject; PrecompEntity: TObject) of object;
+
+  TTextParser = class;
+
+  TMacroHandler = class(TObject)
+  public
+    function ParseMacro(const Parser: TTextParser; var MacroStr, ReplaceStr: AnsiString): Boolean; virtual; abstract;
+    function MacroDefined(const Macro: AnsisTring): Boolean; virtual; abstract;
+  end;
+
+  TCMacroStruct = class(TObject)
+    MacroName   : AnsiString;
+    MacroParams : TStringList;
+    ReplaceText : AnsiString;
+
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TCMacroHandler = class(TMacroHandler)
+  public
+    MacrosNames : TStringList;
+    constructor Create;
+    destructor Destroy; override;
+    function ParseMacro(const Parser: TTextParser; var MacroStr, ReplaceStr: AnsiString): Boolean; override;
+    function MacroDefined(const Macro: AnsisTring): Boolean; override;
+
+    procedure AddSimpleMacro(const MacroStr, ReplaceStr: AnsiString);
+
+    procedure Clear;
+  end;
+
+
   { TTextParser }
 
   TTextParser = class(TObject)
   protected
+    ProcessingMacro : Boolean;
     function HandlePrecomiler: Boolean; virtual;
-
+    function HandleMacro(var MacroStr: AnsiString; var ReplaceStr: AnsiString): Boolean;
   public
     Buf           : AnsiString;
-    Index         : Integer;
-    TokenPos      : Integer;
+    Index         : Integer;  // current index where text parsing goes on
+    TokenPos      : Integer;  // position of currently found token by (FindTextToken)
     TokenTable    : TTokenTable;
-    OnPrecompile  : TNotifyEvent;
+    OnPrecompile  : TPrecompilerEvent;
     OnComment     : procedure (Sender: TObject; const Comment: AnsiString) of object;
     OnIgnoreToken : procedure (Sender: TObject; const Ignored: AnsiString) of object;
     Line          : Integer;
@@ -59,6 +99,7 @@ type
     Stack         : TList;
     Errors        : TStringList;
     IgnoreTokens  : TStringList;
+    MacroHandler  : TMacroHandler;
 
     constructor Create;
     destructor Destroy; override;
@@ -71,8 +112,9 @@ type
     function FindNextToken(var Token: AnsiString; var TokenType: TTokenType): Boolean;
 
     procedure SetError(const ErrorCmt: AnsiString);
-
   end;
+
+  TCallingConv = (ccRegister {FastCall}, ccCdecl, ccStdcall, ccSafecall, ccMwPascal);
 
   { TEntity }
 
@@ -90,12 +132,51 @@ type
 
   { TComment }
 
+  TCPrepocessor = class(TEntity);
+
+  TCPrepDefine = class(TCPrepocessor)
+  protected
+    Params    : TStringList;
+    _Name     : AnsiString;
+    SubsText  : AnsiString;
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+  TCPrepInclude = class(TCPrepocessor)
+  protected
+    Params    : TStringList;
+    Included  : AnsiString;
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+  TCPrepElse = class(TCPrepocessor)
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+  TCPrepEndif = class(TCPrepocessor)
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+  TCPrepIf = class(TCPrepocessor)
+    _Cond : AnsiString;
+    _isElIf : Boolean;
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+  TCPrepElIf = TCPrepIf;
+  
+  TCPrepPragma = class(TCPrepocessor)
+    _Text : AnsiString;
+    function DoParse(AParser: TTextParser): Boolean; override;
+  end;
+
+
   //C tokens: /*, //
   TComment = class(TEntity)
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-     _Comment : WideString;
+     _Comment : WideString; // in case sources are UTF8 or Unicode
   end;
 
   TSkip = class(TEntity)
@@ -116,6 +197,17 @@ type
     _Directive : AnsiString;
     _Params    : AnsiString;
   end;
+
+  { TVariable }
+
+  TVariable = class(TEntity) 
+  protected
+    function DoParse(AParser: TTextParser): Boolean; override; 
+    function ParseAfterTypeName(AParser: TTextParser): Boolean; 
+  public
+    _Type : TEntity;
+    _Name : AnsiString; 
+  end; 
 
   { TFunctionParam }
   TFunctionParam = class(TEntity)
@@ -145,6 +237,23 @@ type
     _isPointerRef : Boolean;
   end;
 
+  { TFunctionDef }
+
+  TFunctionDef = class(TEntity)
+  protected
+    function DoParse(APArser: TTextParser): Boolean; override;
+    function ParseParams(AParser: TTextParser): Boolean; 
+  public    
+    _ResultType   : TEntity;
+    _ParamsList   : TFunctionParamsList;
+    _Name         : AnsiString;
+    _isPointer    : Boolean;
+    _isPointerRef : Boolean;
+    _isExternal   : Boolean; 
+    _CallConv     : TCallingConv; 
+  end; 
+
+
   { TEnumValue }
 
   TEnumValue = class(TEntity)
@@ -172,7 +281,6 @@ type
 
   { TStructField }
 
-
   TStructField = class(TEntity)
   {updated}
   protected
@@ -189,23 +297,25 @@ type
   { TStructTypeDef }
 
   //C token: struct
-  TStructTypeDef = class(TEntity)
+  TEntityStruct = class(TEntity)
   {update}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _Name         : AnsiString;
-    //todo: remove
+    //todo: remove???
     _isPointer    : Boolean;
     _isPointerRef : Boolean;
   end;
 
-  TUnionTypeDef = class(TStructTypeDef)
+  TUnionTypeDef = class(TEntity)
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _Name       : AnsiString;
-    //todo: remove
+    //todo: remove??/
+    _isPointer    : Boolean;
+    _isPointerRef : Boolean;
   end;
 
   { TTypeDef }
@@ -240,7 +350,6 @@ type
   { TObjCParameterDef }
 
   TObjCResultTypeDef = class(TEntity)
-  {updating}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
@@ -251,7 +360,6 @@ type
   end;
 
   TObjCParameterDef = class(TEntity)
-  {updated}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
@@ -262,7 +370,6 @@ type
   { TParamDescr }
 
   TParamDescr = class(TEntity)
-  {updated}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
@@ -301,8 +408,21 @@ type
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _Classes    : TStringList;
+    _isClasses  : Boolean; // classes or protocols
     constructor Create(AOwner: TEntity);
     destructor Destroy; override;
+  end;
+
+  TObjCPropertyAttributes = set of (pa_readwrite, pa_readonly, pa_assign, pa_retain, pa_copy, pa_nonatomic);
+
+  TObjCClassProperty = class(TEntity)
+  protected
+    _Attribs  : TObjCPropertyAttributes;
+    _Getter   : AnsiString;
+    _Setter   : AnsiString;
+    _Type     : TEntity;
+    _Name     : AnsiString;
+    function DoParse(AParser: TTextParser): Boolean; override;
   end;
 
   TClassDef = class(TEntity)
@@ -317,26 +437,34 @@ type
     destructor Destroy; override;
   end;
 
+
+
+  TCHeader = class(TEntity);
+
   { TObjCHeader }
 
-  TObjCHeader = class(TEntity)
+  TObjCHeader = class(TCHeader)
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _FileName     : AnsiString;
-    constructor Create;
+    constructor Create(AOwner: TEntity = nil);
   end;
 
 const
   EoLnChars : TCharSet = [#10,#13];
   InvsChars : TCharSet = [#32,#9];
+  WhiteSpaceChars : TCharSet = [#10,#13,#32,#9];
+
+// utility functions
+
+function ParseSeq(Parser: TTextParser; const OpenSeq, CloseSeq: AnsiString): AnsiString;
+
 
 function IsSubStr(const sbs, s: AnsiString; index: Integer): Boolean;
 function SkipLine(const s: AnsiString; var index: Integer): AnsiString;
 procedure SetCComments(Table: TTokenTable);
 procedure SetCSymbols(var ch: TCharSet);
-
-function CreateObjCTokenTable: TTokenTable;
 
 function LastEntity(ent: TEntity): TEntity;
 function ParseCExpression(AParser: TTextParser; var ExpS: AnsiString): Boolean;
@@ -363,13 +491,94 @@ function IsTypeOrTypeDef(const Token: AnsiString): Boolean;
 function ParseTypeOrTypeDef(AParser: TTextParser; Owner: TEntity; var Ent: TEntity): Boolean;
 
 function IsTypeDefEntity(Ent: TEntity): Boolean;
-function isEmptyStruct(AStruct: TStructTypeDef): Boolean;
+function isEmptyStruct(AStruct: TEntityStruct): Boolean;
+
+// general functions
+function CreateObjCTokenTable: TTokenTable;
+
+// high-level functions
+function CreateCParser(const CHeaderText: AnsiString;
+  WithCMacroHandler: Boolean = false): TTextParser;
+
+// custom entities
+
+
+type
+  TCustomEntityProc = function (Parent: TEntity; Parser: TTextParser): TEntity;
+
+//todo: Entitiy location
+// TEntityLocation = set of [el_Anywher];
+
+procedure RegisterEntity( CheckProc: TCustomEntityProc); {Location: TEntityLocation}
+function ParseCustomEntity(Parent: TEntity; Parser: TTextParser): TEntity;
 
 implementation
 
+var
+  CustomList : TList = nil;
+
+function ParseSeq(Parser: TTextParser; const OpenSeq, CloseSeq: AnsiString): AnsiString;
+var
+  i     : integer;
+  s     : AnsiString;
+  tt    : TTokenType;
+  count : integer;
+begin
+  count := 0;
+  i := Parser.Index;
+  repeat
+    if not Parser.FindNextToken(s, tt) then
+      Count := 0
+    else if tt = tt_Symbol then begin
+      if s = OpenSeq then inc(count)
+      else if s = CloseSeq then dec(count);
+    end else
+  until count = 0;
+  Result := Copy(Parser.Buf, i, Parser.Index - i);
+end;
+
+
+function ParseObjCProtocol(AParent: TEntity; Parser: TTextParser): TEntity;
+var
+  idx : integer;
+  s  : string;
+  tt : TTokenType;
+begin
+  Result := nil;
+  idx := Parser.TokenPos;
+  try
+    Parser.FindNextToken(s, tt);
+    if s <> '@protocol' then Exit;
+
+    // find out if it's just a forward declaration or not.
+    Parser.FindNextToken(s, tt);
+    Parser.FindNextToken(s, tt);
+    if (tt = tt_Symbol) and ((s = ';') or (s = ',')) then begin // is forward declaration
+      Parser.Index := idx;
+      Result := TClassesForward.Create(AParent);
+    end else begin
+      Parser.Index := idx;
+      Result := TClassDef.Create(AParent);
+    end;
+    
+  finally
+    if not Assigned(Result) then Parser.Index := idx;
+  end;
+  
+end;
+
+function CreateCParser(const CHeaderText: AnsiString; WithCMacroHandler: Boolean): TTextParser;
+begin
+  Result := TTextParser.Create;
+  Result.TokenTable := CreateObjCTokenTable;
+  if WithCMacroHandler then
+    Result.MacroHandler := TCMacroHandler.Create;
+  Result.Buf := CHeaderText;
+end;
+
 function IsTypeDefEntity(Ent: TEntity): Boolean;
 begin
-  Result := (Ent is TTypeDef) or (Ent is TStructTypeDef)
+  Result := (Ent is TTypeDef) or (Ent is TEntityStruct)
     or (Ent is TUnionTypeDef) or (Ent is TTypeNameDef) or (Ent is TEnumTypeDef); 
 end;
 
@@ -425,7 +634,7 @@ begin
   isPointer := (tt=tt_Symbol) and (s = '*');
   if isPointer then begin
     if not AParser.FindNextToken(s, tt) then Exit;
-    
+
     if (tt=tt_Symbol) and (s = '*') then isPointerRef := true
     else AParser.Index := AParser.TokenPos;
   end else
@@ -469,8 +678,8 @@ begin
   if not Assigned(AType) then Exit;
   if AType is TTypeDef then
     Result := TTypeDef(AType)._IsPointer
-  else if AType is TStructTypeDef then
-    Result := TStructTypeDef(AType)._isPointer;
+  else if AType is TEntityStruct then
+    Result := TEntityStruct(AType)._isPointer;
 end;
 
 function ErrExpectStr(const Expected, Found: AnsiString): AnsiString;
@@ -491,8 +700,8 @@ function GetTypeNameFromEntity(Entity: TEntity): AnsiString;
 begin
   Result := '';
   if Assigned(Entity) then begin
-    if Entity is TStructTypeDef then // hmm... a common ancsessotor should be used?
-      Result := TStructTypeDef(Entity)._Name
+    if Entity is TEntityStruct then // hmm... a common ancsessotor should be used?
+      Result := TEntityStruct(Entity)._Name
     else if Entity is TEnumTypeDef then
       Result := TEnumTypeDef(Entity)._Name
     else if Entity is TTypeDef then begin
@@ -505,8 +714,8 @@ function IsTypeDefIsPointer(Entity: TEntity): Boolean;
 begin
   Result := false;
   if Assigned(Entity) then begin
-    if Entity is TStructTypeDef then // hmm... a common ancsessotor should be used?
-      Result := TStructTypeDef(Entity)._isPointer
+    if Entity is TEntityStruct then // hmm... a common ancsessotor should be used?
+      Result := TEntityStruct(Entity)._isPointer
     else if Entity is TTypeDef then begin
       Result := TTypeDef(Entity)._isPointer;
     end;
@@ -530,28 +739,28 @@ begin
   Result := nil;
   res := AParser.FindNextToken(s, tt);
   if not Res or (tt <> tt_Ident) then Exit;
-  
+
   i := AParser.TokenPos;
   s := AnsiLowerCase(s);
   if (s = 'const') {or (s = 'volatile')}  then begin
-    res := AParser.FindNextToken(s, tt);
+    AParser.FindNextToken(s, tt);
     if s <> 'struct' then begin
       AParser.TokenPos := i;
       AParser.Index := i;
     end;
   end;
-  
+
   if s = 'enum' then
     Result := TEnumTypeDef.Create(Owner)
   else if s = 'struct' then
-    Result := TStructTypeDef.Create(Owner)
+    Result := TEntityStruct.Create(Owner)
   else if s = 'union' then
     Result := TUnionTypeDef.Create(Owner)
   else
     Result := TTypeDef.Create(Owner);
 
   AParser.Index := AParser.TokenPos;
-  if Assigned(Result) then 
+  if Assigned(Result) then
     if not Result.Parse(AParser) then begin
       Result.Free;
       Result := nil;
@@ -579,11 +788,12 @@ begin
   SetCComments(Result);
   SetCSymbols(Result.Symbols);
   Result.SpaceChars := EoLnChars + InvsChars;
+  Result.Precompile := '#';
 end;
 
 procedure SetCSymbols(var ch: TCharSet);
 begin
-  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&','[',']']
+  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&','[',']', #39 {,'"'} ]
 end;
 
 procedure SetCComments(Table: TTokenTable);
@@ -701,11 +911,35 @@ end;
 function TTextParser.HandlePrecomiler: Boolean;
 var
   idx : Integer;
+  s   : AnsiString;
+  df  : TCPrepocessor;
+  i   : integer;
 begin
-  idx := Index;
-  if Assigned(OnPrecompile) then
-    OnPrecompile(Self);
-  Result := Index <> idx;
+  Result := false;
+  if ProcessingMacro then Exit;
+
+  ProcessingMacro := true;
+  try
+    idx := Index;
+    i := idx;
+
+    s := ScanTo(Buf, i, WhiteSpaceChars);
+    if s = '#define' then df := TCPrepDefine.Create(nil)
+    else if s = '#include' then df := TCPrepInclude.Create(nil)
+    else if s = '#else' then df := TCPrepInclude.Create(nil)
+    else if s = '#endif' then df := TCPrepEndif.Create(nil)
+    else if (s = '#if') or (s = '#elif') or (s = '#ifdef') then df := TCPrepIf.Create(nil)
+    else if s = '#pragma' then df := TCPrepPragma.Create(nil)
+    else df := nil;
+
+    if Assigned(df) then df.Parse(Self);
+
+    if Assigned(OnPrecompile) then
+      OnPrecompile(Self, df);
+    Result := Index <> idx;
+  finally
+    ProcessingMacro := false;
+  end;
 end;
 
 function ParseHexNumber(const S:AnsiString; var idx: Integer): AnsiString;
@@ -784,6 +1018,7 @@ var
   i     : Integer;
   t     : AnsiString;
   spaces  : TCharSet;
+  Repl    : AnsiString;
 begin
   Result := Index <= length(Buf);
   if not Result then Exit;
@@ -846,7 +1081,7 @@ begin
         end;
       end;
 
-      if Result and (IgnoreTokens.Count > 0) then begin
+      if Result and (IgnoreTokens.Count > 0) then
         if IgnoreTokens.IndexOf(Token) >= 0 then begin
           if Assigned(OnIgnoreToken) then
             OnIgnoreToken(Self, Token);
@@ -854,7 +1089,19 @@ begin
           TokenType := tt_None;
           Token := '';
         end;
+
+      if (Token <> '') and (TokenType = tt_Ident) and Result then begin
+        TokenPos := Index - length(Token);
+        if HandleMacro(Token, Repl) then begin
+          Delete(buf, TokenPos, length(Token));
+          Insert(Repl, Buf, TokenPos);
+          Index := TokenPos;
+          Result := false;
+          TokenType := tt_None;
+          Token := '';
+        end;
       end;
+      
     end; {of while}
   finally
     if not Result
@@ -898,6 +1145,28 @@ procedure TTextParser.SetError(const ErrorCmt: AnsiString);
 begin
   Errors.Add(ErrorCmt);
 end;
+
+function TTextParser.HandleMacro(var MacroStr: AnsiString; var ReplaceStr: AnsiString): Boolean;
+var
+  m : AnsiString;
+begin
+  Result := false;
+  if ProcessingMacro or not assigned(MacroHandleR) then Exit;
+
+  ProcessingMacro := true;
+  try
+    Result := MacroHandler.MacroDefined(MacroStr);
+    if not Result then Exit;
+
+    m := MacroStr;
+    Index := TokenPos;
+    Result := MacroHandler.ParseMacro(Self, MacroStr, ReplaceStr);
+  finally
+    ProcessingMacro := false;
+  end;
+end;
+
+
 
 { TTokenTable }
 
@@ -960,11 +1229,12 @@ var
   tt  : TTokenType;
   cnt : Integer;
   mtd : TClassMethodDef;
-  ent : TEntity;
+  prop  : TObjCClassProperty;
+  ent   : TEntity;
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
-  if s <> '@interface'  then begin
+  if (s <> '@interface') and (s <> '@protocol')  then begin
     AParser.SetError(ErrExpectStr('@interface', s));
     Exit;
   end;
@@ -1002,10 +1272,16 @@ begin
     end;
 
     //work around for not using preprocessor! #if @interface #else @interface #endif
-    if s = '@interface' then SkipLine(AParser.buf, AParser.index)
+    if s = '@interface' then
+      SkipLine(AParser.buf, AParser.index)
     else if s = '{' then inc(cnt)
     else if s = '}' then dec(cnt)
-    else if (cnt = 0) then begin
+    else if s = '@property' then begin
+      AParser.Index := AParser.TokenPos; // roll back to the start of method
+      prop  := TObjCClassProperty.Create(Self);
+      if not prop.Parse(AParser) then Exit;
+      Items.Add(prop);
+    end else if (cnt = 0) then begin
       //todo: better parsing
       // parsing methods
       if s[1] ='#' then SkipLine(AParser.buf, AParser.Index);
@@ -1026,12 +1302,77 @@ begin
   Result := true;
 end;
 
+function ParseFunctionOrVar(Owner: TEntity; AParser: TTextParser): Boolean;
+var
+  ctype : TTypeDef; 
+  _name : AnsiString;
+  isfunc  : Boolean; 
+  tt    : TTokenType;
+  s     : AnsiString;
+//  rep   : integer; 
+  v     : TVariable;    
+  fn    : TFunctionDef; 
+  isext : Boolean;
+
+  idx   : Integer;
+begin
+  Result := false;
+  idx := AParser.TokenPos;
+  try
+    AParser.FindNextToken(s, tt);
+    isext := false;
+    if s = 'extern' then begin
+      isext := true;
+    end else
+      AParser.Index := AParser.TokenPos;
+
+    ctype := TTypeDef.Create(nil);
+    Result := ctype.Parse(AParser);
+    if not Result then begin
+      ctype.Free;
+      Exit;
+    end;
+
+    // expecting name of Variable or Function name
+    AParser.FindNextToken(_name, tt);
+    if tt <> tt_Ident then begin
+
+      Result := false;
+      Exit;
+    end;
+
+    //rep := AParser.TokenPos;
+
+    AParser.FindNextToken(s, tt);
+    isfunc := (tt = tt_Symbol) and (s = '(');
+    if isfunc then begin // is function
+      AParser.Index := AParser.TokenPos;
+      fn := TFunctionDef.Create(Owner);
+      fn._ResultType := ctype;
+      fn._Name := _name;
+      fn._IsExternal := isext;
+      fn.ParseParams(AParser);
+      owner.Items.Add(fn);
+    end else begin
+      v := TVariable.Create(Owner);
+      v._Type := ctype;
+      v._Name := _name;
+      owner.Items.add(v);
+    end;
+    AParser.FindNextToken(s, tt);
+    Result := (tt = tt_Symbol) and (s = ';');
+  finally
+    if not Result then
+      AParser.Index := idx;
+  end;
+end;
+
 { TObjCHeader }
 
-constructor TObjCHeader.Create;
+constructor TObjCHeader.Create(AOwner: TEntity);
 begin
   //obj-c header does not have any entity owners
-  inherited Create(nil);
+  inherited Create(AOwner);
 end;
 
 function TObjCHeader.DoParse(AParser: TTextParser): Boolean;
@@ -1051,13 +1392,14 @@ begin
       ent := TEnumTypeDef.Create(Self);
       if not ent.Parse(AParser) then Exit;
       AParser.FindNextToken(s, tt); // skipping last ';'
+      if s <> ';' then AParser.Index := AParser.TokenPos;
     end else if s = 'struct' then begin
       APArser.index := APArser.TokenPos;
-      ent := TStructTypeDef.Create(SElf);
+      ent := TEntityStruct.Create(SElf);
       if not ent.Parse(AParser) then Exit;
       AParser.FindNextToken(s, tt); //? skipping last ';'?
       if s <> ';' then AParser.Index := AParser.TokenPos;
-    end else if s = '@interface' then begin
+    end else if (s = '@interface') then begin
       AParser.Index := AParser.TokenPos;
       ent := TClassDef.Create(Self);
       if not ent.Parse(AParser) then Exit;
@@ -1065,11 +1407,23 @@ begin
       AParser.Index := AParser.TokenPos;
       ent := TClassesForward.create(Self);
       if not ent.Parse(AParser) then Exit;
-    end else begin
-      // anything else is skipped, though should not!
-      ent := TSkip.Create(Self);
+    end else if s = '@protocol' then begin
       AParser.Index := AParser.TokenPos;
-      TSkip(ent)._Skip := SkipLine(AParser.Buf, AParser.Index);
+      ent := ParseObjCProtocol(Self, AParser);
+      if not Assigned(ent) or not ent.Parse(AParser) then
+        Exit;
+    end else begin
+      AParser.Index := AParser.TokenPos;
+      ent := nil;
+      if not ParseFunctionOrVar(Self, AParser) then begin
+        ent := ParseCustomEntity(Self, AParser);
+        if not Assigned(ent) then begin
+          // anything else is skipped, though should not!
+          ent := TSkip.Create(Self);
+          AParser.Index := AParser.TokenPos;
+          TSkip(ent)._Skip := SkipLine(AParser.Buf, AParser.Index);
+        end;
+      end; 
     end;
    if Assigned(ent) then Items.Add(ent);
   end;
@@ -1180,11 +1534,12 @@ end;
 
 function isParamFuncPointer(AParser: TTextParser): Boolean;
 var
-  i   : Integer;
+  //i   : Integer;
   s   : AnsiString;
   tt  : TTokenType;
 begin
-  i := AParser.Index;
+  //i := AParser.Index;
+
   AParser.FindNextToken(s, tt);
   Result := (tt = tt_Symbol) and (s = '(');
   if not Result then Exit;
@@ -1205,12 +1560,17 @@ var
   s   : AnsiString;
   tt  : TTokenType;
   fnt : TFunctionTypeDef;
+
+  openbracket : Boolean; // introduced to support property type parsing,
+                         // that might be without brackets
+
 begin
-  Result := false;
   AParser.FindNextToken(s, tt);
-  if (tt <> tt_Symbol) and (s <> '(') then begin
-    AParser.SetError(ErrExpectStr('"("', s));
-    Exit;
+  openbracket := (tt = tt_Symbol) and (s = '(');
+  if not openbracket  then begin
+    //AParser.SetError(ErrExpectStr('"("', s));
+    AParser.Index := AParser.TokenPos;
+    //Exit;
   end;
 
   _Type := TTypeDef.Create(Self);
@@ -1238,7 +1598,9 @@ begin
       if not Result then Exit;
       AParser.FindNextToken(s, tt);
     end;
-    Result := s = ')';
+    Result := (not openbracket) or (s = ')');
+    if Result and not openbracket then
+      AParser.Index := AParser.TokenPos;
 
 
     if not Result then
@@ -1411,8 +1773,8 @@ begin
 
   try
     while AParser.FindNextToken(nm, tt) do begin
-      if (nm = #39) then begin
-        ExpS := #39 + ScanTo(APArser.Buf, AParser.Index, [#39]) + #39;
+      if (nm = #39) then begin   
+        ExpS := #39 + ScanTo(AParser.Buf, AParser.Index, [#39]) + #39;
         inc(AParser.Index);
         Result := true;
         Exit;
@@ -1503,9 +1865,9 @@ begin
   Result := true;
 end;
 
-{ TStructTypeDef }
+{ TEntityStruct }
 
-function TStructTypeDef.DoParse(AParser: TTextParser): Boolean;
+function TEntityStruct.DoParse(AParser: TTextParser): Boolean;
 var
   s   : AnsiString;
   tt  : TTokenType;
@@ -1595,7 +1957,7 @@ begin
   Result := false;
   _Type := ParseTypeDef(Self, AParser);
   if not Assigned(_Type) then Exit;
-
+  
   _TypeName := GetTypeNameFromEntity(_Type);
 
   {if not (AParser.FindNextToken(s, tt)) or (tt <> tt_Ident) then begin
@@ -1818,7 +2180,7 @@ begin
   //ie: struct POINT {int x; int y} point;
 end;
 
-function isEmptyStruct(AStruct: TStructTypeDef): Boolean;
+function isEmptyStruct(AStruct: TEntityStruct): Boolean;
 var
   i   : integer;
 begin
@@ -1953,10 +2315,12 @@ var
   tt  : TTokenType;
 begin
   AParser.FindNextToken(s, tt);
-  if s <> '@class' then begin
+  if (s <> '@class') and (s <> '@protocol') then begin
     AParser.SetError( ErrExpectStr('@class', s));
+    Result := false;
     Exit;
   end;
+  _isClasses := s = '@class';
 
   while s <> ';' do begin
     AParser.FindNextToken(s, tt);
@@ -1977,5 +2341,418 @@ begin
   _Classes.Free;
   inherited Destroy;
 end;
+
+{ TVariable }
+
+function TVariable.DoParse(AParser: TTextParser): Boolean;  
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+  _isAny  : Boolean; 
+begin
+  _IsAny := isAnyParam(AParser);
+  if _IsAny then begin
+    Result := true;
+    Exit;
+  end;
+
+  _Type := ParseTypeDef(Self, AParser);
+  if not Assigned(_Type) then begin
+    AParser.SetError( ErrExpectStr('type identifier', '' ));
+    Result := false;
+    Exit;
+  end;
+  AParser.FindNextToken(s, tt);
+
+  if tt <> tt_Ident then
+    AParser.Index := AParser.TokenPos
+  else
+    _Name := s;
+  Result:=true;
+end;
+
+function TVariable.ParseAfterTypeName(AParser: TTextParser): Boolean;  
+begin
+  Result := true; 
+end;
+
+{ TFunctionDef }
+
+function TFunctionDef.DoParse(APArser: TTextParser): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+begin
+//  Result := false;
+  Items.Add(_ParamsList);
+
+  AParser.FindNextToken(s, tt);
+  if (tt = tt_Symbol) and (s = '(') then begin
+    AParser.Index := AParser.TokenPos;
+    ParseParams(APArser) 
+  end else if (tt = tt_Symbol) and (s = ';') then begin
+    AParser.Index := AParser.TokenPos;
+  end else begin
+    AParser.SetError(ErrExpectStr('(', s));
+    Result := false;
+    Exit;
+  end;
+  if not Assigned(_ParamsList) then
+    _ParamsList := TFunctionParamsList.Create(Self);
+  Result := true;
+end;
+
+function TFunctionDef.ParseParams(AParser: TTextParser): Boolean;
+begin
+  if not Assigned(_ParamsList) then
+    _ParamsList := TFunctionParamsList.Create(Self);
+  Result := _ParamsList.Parse(AParser);
+end;
+
+// detects if line ends + '\' symbol
+// that means that macros is multilined
+// Fix - returns the fixed string, with last '\' removed
+function IsEofDefine(const macro: AnsiString): Boolean;
+var
+  i : integer;
+begin
+  for i := length(macro) downto 1 do
+    if not (macro[i] in WhiteSpaceChars) then begin
+      Result := macro[i] <> '\';
+      Exit;
+    end;
+  Result := true;
+end;
+
+function RemoveMacroSlash(const macro: AnsiString): AnsiString;
+var
+  i : integer;
+begin
+  for i := length(macro) downto 1 do
+    if not (macro[i] in WhiteSpaceChars) then begin
+      if macro[i] = '\' then Result := Copy(macro, 1, i-1);
+      Exit;
+    end;
+  Result := macro;
+end;
+
+{ TCPrepDefine }
+
+function TCPrepDefine.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+  //i   : Integer;
+  prs : AnsiString;
+  //fix : AnsiString;
+  //macroparse : TTextParser;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := s = '#define';
+  if not Result then exit;
+  //i := AParser.TokenPos;
+
+  AParser.FindNextToken(_name, tt);
+  Result := tt = tt_Ident;
+  if not Result then Exit;
+
+  prs := SkipLine(AParser.buf, AParser.Index);
+  while not IsEofDefine(prs) do begin
+    SubsText := SubsText + RemoveMacroSlash(prs);
+    prs := SkipLine(AParser.buf, AParser.Index);
+  end;
+  SubsText := SubsText + prs;
+end;
+
+{ TCPrepInclude }
+
+function TCPrepInclude.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : AnsiString;
+  tt  : TTokenType;
+  //i   : Integer;
+  //prs : AnsiString;
+  //fix : AnsiString;
+  //macroparse : TTextParser;
+  exp : AnsiString;
+  chars  :  TCharSet;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := s = '#include';
+  if not Result then exit;
+
+  chars := AParser.TokenTable.Symbols;
+  try
+    AParser.TokenTable.Symbols := AParser.TokenTable.Symbols + ['"'];
+
+    //i := AParser.TokenPos;
+
+    AParser.FindNextToken(s, tt);
+    Result := (s = '"') or (s = '<');
+    if not Result then Exit;
+
+    if s = '"' then exp := '"'
+    else if s = '<' then exp := '>';
+
+    repeat
+      AParser.FindNextToken(s, tt);
+      if (s = '/') or (s = '\') or (tt = tt_Ident) then
+        Included := Included + s;
+    until (tt =tt_Symbol) and ((s <> '\') or (s <> '/'));
+
+    Result := s = exp;
+    SkipLine(AParser.buf, AParser.Index);
+  finally
+    AParser.TokenTable.Symbols := chars ;
+  end;
+
+
+end;
+
+{ TCPrepElse }
+
+function TCPrepElse.DoParse(AParser: TTextParser): Boolean;
+var
+  s : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := s = '#else';
+  SkipLine(AParser.buf, AParser.Index);
+end;
+
+{ TCPrepEndif }
+
+function TCPrepEndif.DoParse(AParser: TTextParser): Boolean;
+var
+  s : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := s = '#endif';
+  SkipLine(AParser.buf, AParser.Index);
+end;
+
+{ TCPrepIf }
+
+function TCPrepIf.DoParse(AParser: TTextParser): Boolean;
+var
+  s : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := (s = '#if') or (s = '#ifdef') or (s = '#elif');
+  _Cond := SkipLine(AParser.buf, AParser.Index);
+end;
+
+{ TCPrepPragma }
+
+function TCPrepPragma.DoParse(AParser: TTextParser): Boolean;
+var
+  s : AnsiString;
+  tt  : TTokenType;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := (s = '#pragma');
+  _Text := SkipLine(AParser.buf, AParser.Index);
+end;
+
+{ TCMacroHandler }
+
+procedure TCMacroHandler.AddSimpleMacro(const MacroStr,
+  ReplaceStr: AnsiString);
+var
+  cm  : TCMacroStruct;
+  i   : Integer;
+begin
+  cm := TCMacroStruct.Create;
+  cm.MacroName := MacroStr;
+  cm.ReplaceText := ReplaceStr;
+
+  i := MacrosNames.IndexOf(MacroStr);
+  if i >= 0 then begin
+    MacrosNames.Objects[i].Free;
+    MacrosNames.Delete(i);
+  end;
+  MacrosNames.AddObject(MacroStr, cm);
+end;
+
+procedure TCMacroHandler.Clear;
+var
+  i : Integer;
+begin
+  for i := 0 to MacrosNames.Count - 1 do MacrosNames.Objects[i].Free;
+  MacrosNames.Clear;
+end;
+
+constructor TCMacroHandler.Create;
+begin
+  MacrosNames := TStringList.Create;
+end;
+
+destructor TCMacroHandler.Destroy;
+begin
+  Clear;
+  MacrosNames.Free;
+  inherited;
+end;
+
+function TCMacroHandler.MacroDefined(const Macro: AnsisTring): Boolean;
+begin
+  Result := MacrosNames.IndexOf(Macro) >= 0;
+end;
+
+function TCMacroHandler.ParseMacro(const Parser: TTextParser; var MacroStr,
+  ReplaceStr: AnsiString): Boolean;
+var
+  s   : String;
+  tt  : TTokenType;
+  i   : Integer;
+  //j   : Integer;
+  cm  : TCMacroStruct;
+  ReplaceValues : TStringList;
+  cnt : Integer;
+begin
+  Parser.FindNextToken(s, tt);
+  i := MacrosNames.IndexOf(s);
+  Result := (i >= 0);
+  if not Result then begin
+    Parser.Index := Parser.TokenPos;
+    Exit;
+  end;
+
+  cm := TCMacroStruct(MacrosNames.Objects[i]);
+  if Assigned(cm.MacroParams) and (cm.MacroParams.Count > 0) then begin
+    //j := Parser.TokenPos;
+    Parser.FindNextToken(s, tt);
+    if s <> '(' then begin
+      Result := false;
+      Parser.SetError('error while parsing macros usage');
+      Exit;
+    end;
+    ReplaceValues := TStringList.Create;
+    try
+      cnt := 1;
+      while (s <> ')') and (cnt > 0) do begin
+      end;
+    finally
+      ReplaceValues.Free;
+    end;
+
+  end else begin
+    MacroStr := cm.MacroName;
+    ReplaceStr := cm.ReplaceText;
+  end;
+
+
+
+end;
+
+{ TCMacroStruct }
+
+constructor TCMacroStruct.Create;
+begin
+  MacroParams := TStringList.Create;
+end;
+
+destructor TCMacroStruct.Destroy;
+begin
+  MacroParams.Free;
+  inherited;
+end;
+
+// custom entities
+
+procedure RegisterEntity( CheckProc: TCustomEntityProc {; Location: TEntityLocation});
+begin
+  if not Assigned(CustomList) then
+    CustomList := TList.Create;
+  CustomList.Add(@CheckProc);
+end;
+
+function ParseCustomEntity(Parent: TEntity; Parser: TTextParser): TEntity;
+var
+  i     : integer;
+  proc  :  TCustomEntityProc;
+  index : Integer;
+begin
+  index := Parser.TokenPos;
+  for i := 0 to CustomList.Count - 1 do begin
+    proc := TCustomEntityProc(CustomList[i]);
+    Parser.TokenPos := index;
+    if Assigned(@proc) then begin
+      Result := proc(Parent, Parser);
+      if Assigned(Result) then Exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+procedure ReleaseCustomEntities;
+begin
+  if Assigned(CustomList) then CustomList.Free;
+end;
+
+{ TObjCClassProperty }
+
+function ParseGetterSetterName(AParser: TTextParser): AnsiString;
+var
+  tt: TTokenType;
+  s : string;
+begin
+  Result := '';
+  AParser.FindNextToken(s, tt);
+  if (tt <> tt_Symbol) and (s <> '=') then Exit;
+  AParser.FindNextToken(Result, tt);
+end;
+
+function TObjCClassProperty.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : string;
+  tt  : TTokenType;
+begin
+  Result := AParser.FindNextToken(s, tt);
+  if not Result then begin
+    AParser.SetError(ErrExpectStr('@property', s));
+    Exit;
+  end;
+
+  AParser.FindNextToken(s, tt);
+  if (tt = tt_Symbol) and (s = '(') then begin
+    while s <> ')' do begin
+      if (tt = tt_Symbol) and (s = ',') then
+        AParser.FindNextToken(s, tt);
+
+      if tt = tt_Ident then begin
+        if s = 'setter' then _Setter := ParseGetterSetterName(AParser)
+        else if s = 'getter' then _Getter  := ParseGetterSetterName(AParser)
+
+        else if s = 'readwrite' then Include(_Attribs, pa_readwrite)
+        else if s = 'readonly' then Include(_Attribs, pa_readonly)
+
+        else if s = 'assign' then Include(_Attribs, pa_assign)
+        else if s = 'retain' then Include(_Attribs, pa_retain)
+        else if s = 'copy' then Include(_Attribs, pa_copy)
+
+        else if s = 'nonatomic' then Include(_Attribs, pa_nonatomic);
+      end;
+      AParser.FindNextToken(s, tt);
+    end;
+  end;
+
+  _Type := TObjCResultTypeDef.Create(Self);
+  Result := _Type.Parse(AParser);
+  if not Result then Exit;
+
+  AParser.FindNextToken(_Name, tt);
+  AParser.FindNextToken(s, tt); // skipping last ';';  
+  Result := true;
+end;
+
+initialization
+
+finalization
+  ReleaseCustomEntities;
+
 
 end.
