@@ -101,6 +101,7 @@ object MainForm: TMainForm
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 24
+    DefaultText = 'Node'
     DragOperations = [doCopy, doMove, doLink]
     DragType = dtVCL
     DragWidth = 350
@@ -108,6 +109,7 @@ object MainForm: TMainForm
     Font.CharSet = ANSI_CHARSET
     Font.Height = -11
     Font.Name = 'Lucida Sans Unicode'
+    Header.Columns = <>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -125,10 +127,10 @@ object MainForm: TMainForm
     OnDragAllowed = Tree2DragAllowed
     OnDragOver = TreeDragOver
     OnDragDrop = TreeDragDrop
+    OnFreeNode = TreeFreeNode
     OnGetText = Tree1GetText
     OnInitNode = TreeInitNode
     OnNewText = Tree1NewText
-    Columns = <>
   end
   object Tree1: TVirtualStringTree
     Left = 8
@@ -147,12 +149,14 @@ object MainForm: TMainForm
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 24
+    DefaultText = 'Node'
     DragMode = dmAutomatic
     DragWidth = 350
     EditDelay = 500
     Font.CharSet = ANSI_CHARSET
     Font.Height = -11
     Font.Name = 'Verdana'
+    Header.Columns = <>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -169,10 +173,10 @@ object MainForm: TMainForm
     TreeOptions.SelectionOptions = [toMultiSelect]
     OnDragOver = TreeDragOver
     OnDragDrop = TreeDragDrop
+    OnFreeNode = TreeFreeNode
     OnGetText = Tree1GetText
     OnInitNode = TreeInitNode
     OnNewText = Tree1NewText
-    Columns = <>
   end
   object PageControl1: TPageControl
     Left = 12
@@ -185,7 +189,7 @@ object MainForm: TMainForm
     TabOrder = 5
     object RichTextTabSheet: TTabSheet
       Caption = 'Rich text'
-      ClientHeight = 219
+      ClientHeight = 217
       ClientWidth = 677
       ImageIndex = 1
       object Label3: TLabel
@@ -199,7 +203,7 @@ object MainForm: TMainForm
     end
     object LogTabSheet: TTabSheet
       Caption = 'Drag''n drop operation log'
-      ClientHeight = 219
+      ClientHeight = 217
       ClientWidth = 677
       object Label7: TLabel
         Left = 6
@@ -213,13 +217,12 @@ object MainForm: TMainForm
       end
       object LogListBox: TListBox
         Left = 4
-        Height = 145
+        Height = 143
         Hint = 'Use the list box to initiate a VCL drag''n drop.'
         Top = 56
         Width = 661
         Anchors = [akTop, akLeft, akRight, akBottom]
         DragMode = dmAutomatic
-        ItemHeight = 15
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
@@ -238,7 +241,7 @@ object MainForm: TMainForm
     end
     object TabSheet2: TTabSheet
       Caption = 'More info'
-      ClientHeight = 219
+      ClientHeight = 217
       ClientWidth = 677
       ImageIndex = 3
       object Label4: TLabel
