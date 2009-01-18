@@ -1,4 +1,4 @@
-{ * This file is part of ObjCParser tool 
+{ * This file is part of ObjCParser tool
   * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
   * license version 2.0 or 2.1.  You should have received a copy of the
   * LGPL license along with at http://www.gnu.org/                                              
@@ -25,7 +25,7 @@ const
   Err_BadPrecompile   = 'Bad precompile directive';
 
 type
-  TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric);
+  TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric, tt_String);
 
 
   TCharSet = set of Char;
@@ -40,8 +40,10 @@ type
     CmtBlock    : array of TTokenPair;
     CmtCount    : Integer;
     CmtLine     : TStrings;
+    StringStart : TCharSet;
     Symbols     : TCharSet;
     Precompile  : AnsiString;
+    MultiLine   : AnsiChar; 
     constructor Create;
     destructor Destroy; override;
   end;
@@ -86,10 +88,15 @@ type
     ProcessingMacro : Boolean;
     function HandlePrecomiler: Boolean; virtual;
     function HandleMacro(var MacroStr: AnsiString; var ReplaceStr: AnsiString): Boolean;
+
+    function IsMultiLine: Boolean;
+    procedure SkipSingleEoLnChars;
+
+    function AddChildToStackEntity(ent: TObject): Boolean;
   public
     Buf           : AnsiString;
-    Index         : Integer;  // current index where text parsing goes on
-    TokenPos      : Integer;  // position of currently found token by (FindTextToken)
+    Index         : Integer;      // current index where text parsing goes on
+    TokenPos      : Integer;      // position of currently found token by (FindTextToken)
     TokenTable    : TTokenTable;
     OnPrecompile  : TPrecompilerEvent;
     OnComment     : procedure (Sender: TObject; const Comment: AnsiString) of object;
@@ -101,11 +108,18 @@ type
     IgnoreTokens  : TStringList;
     MacroHandler  : TMacroHandler;
 
+    UseCommentEntities     : Boolean;
+    UsePrecompileEntities  : Boolean;
+
+    Comments      : TList;
+
     constructor Create;
     destructor Destroy; override;
 
     procedure BeginParse(AObject: TObject);
     procedure EndParse;
+
+    function GetBufWideStr(const Cmd: AnsiString): WideString;
 
     function SkipComments: Boolean;
 
@@ -130,16 +144,15 @@ type
     function Parse(AParser: TTextParser): Boolean; virtual;
   end;
 
-  { TComment }
-
   TCPrepocessor = class(TEntity);
 
   TCPrepDefine = class(TCPrepocessor)
   protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
     Params    : TStringList;
     _Name     : AnsiString;
     SubsText  : AnsiString;
-    function DoParse(AParser: TTextParser): Boolean; override;
   end;
 
   TCPrepInclude = class(TCPrepocessor)
@@ -172,12 +185,17 @@ type
 
 
   //C tokens: /*, //
+
+  { TComment }
+
   TComment = class(TEntity)
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
      _Comment : WideString; // in case sources are UTF8 or Unicode
   end;
+
+  { TSkip }
 
   TSkip = class(TEntity)
   protected
@@ -338,7 +356,6 @@ type
 
   //C token: typdef
   TTypeNameDef = class(TEntity)
-  {updated}
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
@@ -467,7 +484,6 @@ procedure SetCComments(Table: TTokenTable);
 procedure SetCSymbols(var ch: TCharSet);
 
 function LastEntity(ent: TEntity): TEntity;
-function ParseCExpression(AParser: TTextParser; var ExpS: AnsiString): Boolean;
 
 function ScanWhile(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
 function ScanTo(const s: AnsiString; var index: Integer; const ch: TCharSet): AnsiString;
@@ -480,7 +496,10 @@ function IsTypeDefIsPointer(Entity: TEntity): Boolean;
 
 procedure FreeEntity(Item: TEntity);
 
+function ParseCExpression(AParser: TTextParser; var ExpS: AnsiString): Boolean;
 procedure ParseCNumeric(const S: AnsiString; var idx: integer; var NumStr: AnsiSTring);
+function ParseCString(const S: AnsiString; var idx: Integer; var CStr: AnsiString): Boolean;
+
 function CToPascalNumeric(const Cnum: AnsiString): AnsiString;
 
 function IsTypePointer(AType: TEntity; DefResult: Boolean ): Boolean;
@@ -789,11 +808,13 @@ begin
   SetCSymbols(Result.Symbols);
   Result.SpaceChars := EoLnChars + InvsChars;
   Result.Precompile := '#';
+  Result.MultiLine := '\';
+  Result.StringStart := ['"', #39];
 end;
 
 procedure SetCSymbols(var ch: TCharSet);
 begin
-  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&','[',']', #39 {,'"'} ]
+  ch := ['(',')', '{','}', ':', '-','+','<','>','*',';', ',','|','&','[',']'{, #39 ,'"'} ]
 end;
 
 procedure SetCComments(Table: TTokenTable);
@@ -888,10 +909,13 @@ begin
   Stack := TList.Create;
   Errors := TStringList.Create;
   IgnoreTokens := TStringList.Create;
+  UsePrecompileEntities := true;
+  Comments := TList.Create;
 end;
 
 destructor TTextParser.Destroy;
 begin
+  Comments.Free;
   IgnoreTokens.Free;
   Errors.Free;
   Stack.Free;
@@ -928,15 +952,24 @@ begin
     else if s = '#include' then df := TCPrepInclude.Create(nil)
     else if s = '#else' then df := TCPrepInclude.Create(nil)
     else if s = '#endif' then df := TCPrepEndif.Create(nil)
-    else if (s = '#if') or (s = '#elif') or (s = '#ifdef') then df := TCPrepIf.Create(nil)
+    else if (s = '#if') or (s = '#elif') or (s = '#ifdef') or (s = '#ifndef') then df := TCPrepIf.Create(nil)
     else if s = '#pragma' then df := TCPrepPragma.Create(nil)
     else df := nil;
 
-    if Assigned(df) then df.Parse(Self);
+    Result := Assigned(df);
+    if Result  then begin
+      Result := df.Parse(Self);
+      if UsePrecompileEntities then AddChildToStackEntity(df);
+      if Assigned(OnPrecompile) then
+        OnPrecompile(Self, df);
+    end;
 
-    if Assigned(OnPrecompile) then
-      OnPrecompile(Self, df);
-    Result := Index <> idx;
+    if not Result then begin
+      SetError('cannot handle preprocessor');
+      Exit;
+    end;
+
+    //Result := Index <> idx;
   finally
     ProcessingMacro := false;
   end;
@@ -972,6 +1005,38 @@ begin
   end;
 
   ScanWhile(s, idx, ['U','L','u','l']);
+end;
+
+function ParseCString(const S: AnsiString; var idx: Integer; var CStr: AnsiString): Boolean;
+var
+  quit  : Boolean;
+  i     : Integer;
+  ch    : AnsiChar;
+begin
+  Result := false;
+  CStr := '';
+  if not (S[idx] in ['"', #39]) then Exit;
+  
+  quit := false;
+  i := idx+1;
+  ch := S[idx];
+
+  while (not quit) and (i <= length(s)) do begin
+    ScanTo(s, i, [ch, #10, #13] );
+    quit := (i > length(s)) or (s[i] in [ch, #10, #13]);
+    if quit and (i <= length(s)) and ((s[i] ='"')) then
+      if ((s[i] = ch) and (s[i-1] = '\')) then begin
+        inc(i);
+        quit := false;
+      end;
+  end;
+
+  Result := (i <= length(s)) and (s[i] = ch);
+  if Result then begin
+    inc(i);
+    CStr := Copy(s, idx, i-idx);
+    idx := i;
+  end;
 end;
 
 function isFloatNum(const num: AnsiString): Boolean;
@@ -1043,7 +1108,11 @@ begin
   try
     while (not Result) and (index <= length(Buf)) do begin
       ScanWhile(Buf, index, spaces);
-      if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin // 1. check is Compiler directive is found
+      if isMultiline then begin
+        ScanTo(Buf, index, EoLnChars);
+        SkipSingleEoLnChars;
+
+      end else if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin // 1. check is Compiler directive is found
         if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
           if (not (Buf[index] in blck)) or (not SkipComments) then begin //   2.1 check if comment is found (comment prefixes match to the symbols)
             Result := true;                                              //   2.2 check if symbol is found
@@ -1066,8 +1135,13 @@ begin
           TokenType := tt_Numeric;
           Result := true;
           Exit;
+        end else if (Buf[index] in TokenTable.StringStart) then begin
+          ParseCString(Buf, index, Token);
+          TokenType := tt_String;
+          Result := true;
+          Exit;
         end else begin
-          Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols); // scanning for token
+          Token := Token + ScanTo(Buf, index, srch+TokenTable.Symbols+[TokenTable.MultiLine]); // scanning for token
           if (Buf[index] in blck)  then begin
             Result := SkipComments;
             Result := Result or (Buf[index] in TokenTable.SpaceChars);
@@ -1115,8 +1189,9 @@ end;
 
 function TTextParser.SkipComments: Boolean;
 var
-  i : Integer;
-  cmt : AnsiSTring;
+  i   : Integer;
+  cmt : AnsiString;
+  comment : TComment;
 begin
   try
     cmt := '';
@@ -1136,6 +1211,12 @@ begin
         Exit;
       end;
   finally
+
+    if UseCommentEntities then begin
+      comment := TComment.Create(nil);
+      comment._Comment := GetBufWideStr(cmt);
+      Comments.Add(Comment);
+    end;
     if (Assigned(OnComment)) and (cmt <> '') then
       OnComment(Self, cmt);
   end;
@@ -1166,7 +1247,48 @@ begin
   end;
 end;
 
+function TTextParser.GetBufWideStr(const Cmd: AnsiString): WideString;
+begin
+  Result := Cmd;
+end;
 
+function TTextParser.AddChildToStackEntity(ent: TObject): Boolean;
+var
+  parent : TEntity;
+begin
+  Result := Assigned(stack) and (stack.Count>0);
+  if not Result then Exit;
+
+  parent := stack[stack.Count-1];
+  if Assigned(parent) and (parent is TEntity) then
+    (parent as TEntity).Items.Add(ent);
+end;
+
+function TTextParser.IsMultiLine: Boolean;
+begin
+  Result := TokenTable.MultiLine <> #0;
+  if not Result then Exit;
+  Result := (Buf[index] = TokenTable.MultiLine);
+end;
+
+procedure TTextParser.SkipSingleEoLnChars;
+var
+  next  : integer;
+begin
+  next := index + 1;
+  if next > length(Buf) then next := -1;
+
+  if next < 0 then
+    inc(index)
+  else begin
+    if (Buf[index] = #10) and (Buf[next] = #13) then
+      Index := next+1
+    else if (Buf[index] = #13) and (Buf[next] = #10) then
+      Index := next + 1
+    else
+      inc(Index);
+  end;
+end;
 
 { TTokenTable }
 
@@ -1563,7 +1685,6 @@ var
 
   openbracket : Boolean; // introduced to support property type parsing,
                          // that might be without brackets
-
 begin
   AParser.FindNextToken(s, tt);
   openbracket := (tt = tt_Symbol) and (s = '(');
@@ -1773,7 +1894,7 @@ begin
 
   try
     while AParser.FindNextToken(nm, tt) do begin
-      if (nm = #39) then begin   
+      if (nm = #39) then begin
         ExpS := #39 + ScanTo(AParser.Buf, AParser.Index, [#39]) + #39;
         inc(AParser.Index);
         Result := true;
@@ -1853,6 +1974,7 @@ begin
   
   _Type := ParseTypeDef(Self, AParser);
   if not Assigned(_Type) then Exit;
+  Items.Add(_Type);
 
   Result := AParser.FindNextToken(_TypeName, tt);
   if not Result then begin
@@ -2442,40 +2564,55 @@ function TCPrepDefine.DoParse(AParser: TTextParser): Boolean;
 var
   s   : AnsiString;
   tt  : TTokenType;
-  //i   : Integer;
   prs : AnsiString;
-  //fix : AnsiString;
-  //macroparse : TTextParser;
+
+  SpaceChars : TCharSet;
+  SymChars   : TCharSet;
+//  idx : integer;
 begin
   AParser.FindNextToken(s, tt);
   Result := s = '#define';
   if not Result then exit;
-  //i := AParser.TokenPos;
 
   AParser.FindNextToken(_name, tt);
   Result := tt = tt_Ident;
   if not Result then Exit;
 
-  prs := SkipLine(AParser.buf, AParser.Index);
-  while not IsEofDefine(prs) do begin
-    SubsText := SubsText + RemoveMacroSlash(prs);
-    prs := SkipLine(AParser.buf, AParser.Index);
+  SpaceChars := AParser.TokenTable.SpaceChars;
+  SymChars := AParser.TokenTable.Symbols;
+  with AParser.TokenTable do SpaceChars := SpaceChars - [#10,#13];
+  with AParser.TokenTable do Symbols := [#10, #13];
+  try
+//    idx := AParser.Index;
+    AParser.FindNextToken(prs, tt);
+    while (prs <> '') and (not (prs[1] in [#10, #13])) do begin
+      SubsText := SubsText + ' ' + prs;
+      AParser.FindNextToken(prs, tt);
+    end;
+    RemoveMacroSlash(SubsText);
+    if prs <> '' then
+      AParser.Index := AParser.TokenPos;
+
+    {prs := SkipLine(AParser.buf, AParser.Index);
+    while not IsEofDefine(prs) do begin
+      SubsText := SubsText + RemoveMacroSlash(prs);
+      prs := SkipLine(AParser.buf, AParser.Index);
+    end;
+    SubsText := SubsText + prs;}
+  finally
+    AParser.TokenTable.SpaceChars := SpaceChars;
+    AParser.TokenTable.Symbols := SymChars;
   end;
-  SubsText := SubsText + prs;
 end;
 
 { TCPrepInclude }
 
 function TCPrepInclude.DoParse(AParser: TTextParser): Boolean;
 var
-  s   : AnsiString;
-  tt  : TTokenType;
-  //i   : Integer;
-  //prs : AnsiString;
-  //fix : AnsiString;
-  //macroparse : TTextParser;
-  exp : AnsiString;
-  chars  :  TCharSet;
+  s     : AnsiString;
+  tt    : TTokenType;
+  exp   : AnsiString;
+  chars : TCharSet;
 begin
   AParser.FindNextToken(s, tt);
   Result := s = '#include';

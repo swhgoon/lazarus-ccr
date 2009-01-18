@@ -1812,7 +1812,7 @@ begin
       end;
     finally
       used.Free;
-      used := nil;
+      //used := nil;
     end;
 
     if hdr.Items.Count <= 0 then Exit;

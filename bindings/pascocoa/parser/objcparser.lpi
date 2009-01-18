@@ -12,7 +12,7 @@
       </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -54,7 +54,7 @@
       <Unit2>
         <Filename Value="ObjCParserTypes.pas"/>
         <UnitName Value="ObjCParserTypes"/>
-        <CursorPos X="10" Y="513"/>
+        <CursorPos X="18" Y="503"/>
         <TopLine Value="503"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="13"/>
@@ -63,8 +63,8 @@
       <Unit3>
         <Filename Value="gnuccFeatures.pas"/>
         <UnitName Value="gnuccFeatures"/>
-        <CursorPos X="1" Y="11"/>
-        <TopLine Value="11"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
