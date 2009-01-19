@@ -20,6 +20,7 @@ uses
 type
 
   EBaseXException = class(Exception);
+  EBase16Exception = class(EBaseXException);
   EBase64Exception = class(EBaseXException);
 
   TBaseXOption = ( xoDecodeIgnoreIllegalChar );
@@ -27,12 +28,23 @@ type
 
   function Base64Encode(const ALength : PtrInt; const AInBuffer) : string;overload;
   function Base64Encode(const AInBuffer : TBinaryString) : string;overload;
+  function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TByteDynArray;overload;
 
-  function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]) : TBinaryString;
+  procedure Base16Encode(const ABin; const ALen : Integer; AOutBuffer : PChar); overload;
+  function Base16Encode(const ABin; const ALen : Integer) : string; overload;
+  function Base16Encode(const AInBuffer : TBinaryString) : string;overload;
+  function Base16Decode(
+    const AHex    : PChar;
+    var   ABin;
+    const ABinLen : Integer;
+    const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]
+  ) : Integer;overload;
+  function Base16Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TByteDynArray;overload;
 
 resourcestring
   s_InvalidEncodedData = 'Invalid encoded data.';
   s_IllegalChar = 'Illegal character for that encoding : %s.';
+  s_UnexpectedEndOfData = 'Unexpected end of data.';
 
 implementation
 
@@ -119,7 +131,7 @@ begin
     Result := Base64Encode(Length(AInBuffer),AInBuffer[1]);
 end;
 
-function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TBinaryString;
+function Base64Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TByteDynArray;
 var
   locBuffer : PChar;
   locInLen, locInIndex, i, locPadded : PtrInt;
@@ -131,7 +143,7 @@ var
   locFailOnIllegalChar : Boolean;
 begin
   if ( AInBuffer = '' ) then begin
-    Result := '';
+    Result := nil;
   end else begin
     locInIndex := 0;
     locAtualLen := 0;
@@ -172,10 +184,154 @@ begin
       locOutQuantom[0] := ( locInQuantom[0] shl 2 ) or ( locInQuantom[1] shr 4 );
       locOutQuantom[1] := ( locInQuantom[1] shl 4 ) or ( locInQuantom[2] shr 2 );
       locOutQuantom[2] := ( locInQuantom[2] shl 6 ) or ( locInQuantom[3] );
-      Move(locOutQuantom[0],Result[locAtualLen + 1],3 - locPadded);
+      Move(locOutQuantom[0],Result[locAtualLen],3 - locPadded);
       Inc(locAtualLen,3 - locPadded);
     end;
     SetLength(Result,locAtualLen);
+  end;
+end;
+
+function Base64DecodeStr(const AInBuffer : string; const AOptions : TBaseXOptions) : TBinaryString;
+var
+  locRes : TByteDynArray;
+begin
+  locRes := Base64Decode(AInBuffer,AOptions);
+  SetLength(Result,Length(locRes));
+  if ( Length(Result) > 0 ) then
+    Move(locRes[0],Result[1],Length(Result));
+end;
+
+procedure Base16Encode(const ABin; const ALen : Integer; AOutBuffer : PChar); 
+const
+  HEX_MAP : array[0..15] of Char = '0123456789ABCDEF';
+var
+  p : PByte;
+  pres : PChar;
+  i : Integer;
+begin
+  if ( ALen > 0 ) then begin
+    pres := AOutBuffer;
+    p := PByte(@Abin);
+    for i := 1 to ALen do begin
+      pres^ := HEX_MAP[p^ shr 4];
+      PChar(PtrUInt(pres) + SizeOf(Char))^ := HEX_MAP[p^ and $F];
+      Inc(pres,2);
+      Inc(p);
+    end;
+  end;
+end;
+
+function Base16Encode(const ABin; const ALen : Integer) : string;
+begin
+  if ( ALen > 0 ) then begin
+    SetLength(Result,(2 * ALen));
+    Base16Encode(ABin,ALen,@Result[1]);
+  end;
+end;
+
+function Base16Encode(const AInBuffer : TBinaryString) : string;
+begin
+  Result := Base16Encode(AInBuffer[1],Length(AInBuffer));
+end;
+
+// Returns the actual bytes count.
+function Base16Decode(
+  const AHex    : PChar;
+  var   ABin;
+  const ABinLen : Integer;
+  const AOptions : TBaseXOptions = [xoDecodeIgnoreIllegalChar]
+) : Integer;
+const
+  DIGIT_MAP : array['0'..'9'] of Byte = ( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  ALPHA_UP_MAP : array['A'..'F'] of Byte = ( 10, 11, 12, 13, 14, 15 );
+  ALPHA_LOW_MAP : array['a'..'f'] of Byte = ( 10, 11, 12, 13, 14, 15 );
+var
+  i : Integer;
+  hp : PChar;
+  bp : PByte;
+  binVal : Byte;
+  locFailOnIllegalChar : Boolean;
+begin
+  Result := 0;
+  if ( ABinLen > 0 ) then begin
+    binVal := 0;
+    bp := PByte(@Abin);
+    hp := AHex;
+    locFailOnIllegalChar := not ( xoDecodeIgnoreIllegalChar in AOptions );
+    for i := 0 to Pred(ABinLen) do begin
+      if ( hp^ = #0 ) then
+        Break;
+      while ( hp^ <> #0 ) do begin
+        case hp^ of
+          '0'..'9' :
+            begin
+              binVal := ( DIGIT_MAP[hp^] shl 4);
+              Break;
+            end;
+          'A'..'Z' :
+            begin
+              binVal := ( ALPHA_UP_MAP[hp^] shl 4);
+              Break;
+            end;
+          'a'..'z' :
+            begin
+              binVal := ( ALPHA_LOW_MAP[hp^] shl 4);
+              Break;
+            end;
+          else
+            begin
+              if locFailOnIllegalChar then
+                raise EBase16Exception.Create(s_IllegalChar);
+            end;
+        end;
+        Inc(hp);
+      end;
+      if ( hp^ = #0 ) then
+        raise EBase16Exception.Create(s_UnexpectedEndOfData);
+      Inc(hp);
+      while ( hp^ <> #0 ) do begin
+        case hp^ of
+          '0'..'9' :
+            begin
+              bp^ := binVal or DIGIT_MAP[hp^];
+              Break;
+            end;
+          'A'..'Z' :
+            begin
+              bp^ := binVal or ALPHA_UP_MAP[hp^];
+              Break;
+            end;
+          'a'..'z' :
+            begin
+              bp^ := binVal or ALPHA_LOW_MAP[hp^];
+              Break;
+            end;
+          else
+            begin
+              if locFailOnIllegalChar then
+                raise EBase16Exception.Create(s_IllegalChar);
+            end;
+        end;
+        Inc(hp);
+      end;
+      if ( hp^ = #0 ) then
+        raise EBase16Exception.Create(s_UnexpectedEndOfData);
+      Inc(hp);
+      Inc(bp);
+    end;
+    Result := PtrUInt(bp) - PtrUInt(@Abin);
+  end;
+end;
+
+function Base16Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TByteDynArray;
+var
+  i : Integer;
+begin
+  if ( Length(AInBuffer) > 0 ) then begin
+    SetLength(Result,Length(AInBuffer) div 2);
+    i := Base16Decode(PChar(AInBuffer),Result[0],Length(Result),AOptions);
+    if ( i <> Length(Result) ) then
+      SetLength(Result,i);
   end;
 end;
 

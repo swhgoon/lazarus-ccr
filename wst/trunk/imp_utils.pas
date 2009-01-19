@@ -51,9 +51,9 @@ Type
     const AData      : Extended
   ) : string;
 
-  
-  function LoadBufferFromFile(const AFileName : string) : TBinaryString;
-  function LoadBufferFromStream(AStream : TStream) : TBinaryString;
+
+  function LoadBufferFromFile(const AFileName : string) : TByteDynArray;
+  function LoadBufferFromStream(AStream : TStream) : TByteDynArray;
 
   
 implementation
@@ -143,7 +143,7 @@ begin
   Result := s
 end;
 
-function LoadBufferFromStream(AStream : TStream) : TBinaryString;
+function LoadBufferFromStream(AStream : TStream) : TByteDynArray;
 var
   len : Int64;
 begin
@@ -152,7 +152,7 @@ begin
   if ( len > 0 ) then begin
     try
       AStream.Seek(0,soBeginning);
-      AStream.Read(Result[1],len);
+      AStream.Read(Result[0],len);
     except
       SetLength(Result,0);
       raise;
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-function LoadBufferFromFile(const AFileName : string) : TBinaryString;
+function LoadBufferFromFile(const AFileName : string) : TByteDynArray;
 var
   locStream : TStream;
 begin

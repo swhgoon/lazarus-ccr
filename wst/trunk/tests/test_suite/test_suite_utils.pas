@@ -25,11 +25,60 @@ uses
 const
   TestFilesPath = {$IFDEF WST_DELPHI}'.' +{$ENDIF WST_DELPHI}'.' + PathDelim + 'files' + PathDelim;
 
+type
+
+  { TWstBaseTest }
+
+  TWstBaseTest = class(TTestCase)
+  protected
+    procedure CheckEquals(expected, actual: TByteDynArray; msg: string = ''; const AStrict : Boolean = True); overload;
+{$IFDEF FPC}
+    procedure CheckEquals(expected, actual: Int64; msg: string = ''; const AStrict : Boolean = True); overload;
+    procedure CheckEquals(expected, actual: QWord; msg: string = ''; const AStrict : Boolean = True); overload;
+{$ENDIF FPC}
+  end;
+
   function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
   function wstExpandLocalFileName(const AFileName : string) : string;
   function DumpMemory(AMem : Pointer; const ALength : PtrInt) : ansistring;
+  function StringToByteArray(const AValue : string) : TByteDynArray;
+
+  function RandomRange(const AFrom, ATo : Integer) : Integer ;overload;
+  function RandomRange(const AFrom, ATo : Int64) : Int64 ; overload;
 
 implementation
+
+//{$IFDEF FPC}
+ // {$IF not Defined(RandomRange)}
+    function RandomRange(const AFrom, ATo : Integer) : Integer ;
+    var
+      a : Integer;
+    begin
+      if ( AFrom <= ATo ) then
+        a := AFrom
+      else
+        a := ATo;
+      Result := a + Random(Abs(ATo - AFrom));
+    end;
+//  {$IFEND}
+//{$ENDIF}
+
+function RandomRange(const AFrom, ATo : Int64) : Int64 ;
+var
+  a : Int64;
+begin
+  if ( AFrom <= ATo ) then
+    a := AFrom
+  else
+    a := ATo;
+  Result := a + Random(Abs(ATo - AFrom));
+end;
+
+function StringToByteArray(const AValue : string) : TByteDynArray;
+begin
+  SetLength(Result,Length(AValue));
+  Move(Pointer(AValue)^,Pointer(Result)^,Length(Result));
+end;
 
 function wstExpandLocalFileName(const AFileName : string) : string;
 begin
@@ -89,6 +138,37 @@ begin
     end;
   end else begin
     Result := False;
+  end;
+end;
+
+{ TWstBaseTest }
+
+{$IFDEF FPC}
+procedure TWstBaseTest.CheckEquals(expected, actual: Int64; msg: string;
+  const AStrict: Boolean);
+begin
+  if (expected <> actual) then
+    FailNotEquals(IntToStr(expected), IntToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
+end;
+
+procedure TWstBaseTest.CheckEquals(expected, actual: QWord; msg: string;
+  const AStrict: Boolean);
+begin
+  if (expected <> actual) then
+    FailNotEquals(IntToStr(expected), IntToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
+end;
+{$ENDIF FPC}
+
+procedure TWstBaseTest.CheckEquals(expected, actual: TByteDynArray;
+  msg: string; const AStrict: Boolean
+);
+begin
+  if ( expected = nil ) then begin
+    Check(actual = nil, msg);
+  end else begin
+    CheckEquals(Length(expected),Length(actual),msg);
+    if ( Length(expected) > 0 ) then
+      Check(CompareMem(Pointer(expected), Pointer(actual),Length(expected)),msg);
   end;
 end;
 

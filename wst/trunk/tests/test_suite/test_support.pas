@@ -351,9 +351,13 @@ type
     procedure Equal();
   end;
   
-  { TTest_TBase64StringRemotable }
+  { TTest_TAbstractEncodedStringRemotable }
 
-  TTest_TBase64StringRemotable = class(TTestCase)
+  TTest_TAbstractEncodedStringRemotable = class(TWstBaseTest)
+  protected
+    class function CreateObject() : TAbstractEncodedStringRemotable; virtual; abstract;
+    class function EncodeData(const AValue : TByteDynArray) : string; overload; virtual; abstract; 
+    class function EncodeData(const AValue : TBinaryString) : string; overload;
   published
     procedure test_Assign();
     procedure Equal();
@@ -365,9 +369,31 @@ type
     procedure SaveToFile();
   end;
 
+  { TTest_TBase64StringRemotable }
+
+  TTest_TBase64StringRemotable = class(TTest_TAbstractEncodedStringRemotable)
+  protected
+    class function CreateObject() : TAbstractEncodedStringRemotable; override;
+    class function EncodeData(const AValue : TByteDynArray) : string; override;
+  end;
+
+  { TTest_TBase16StringRemotable }
+
+  TTest_TBase16StringRemotable = class(TTest_TAbstractEncodedStringRemotable)
+  protected
+    class function CreateObject() : TAbstractEncodedStringRemotable; override;
+    class function EncodeData(const AValue : TByteDynArray) : string; override;
+  end;
+
   { TTest_TBase64StringExtRemotable }
 
-  TTest_TBase64StringExtRemotable = class(TTestCase)
+  { TTest_TAbstractEncodedStringExtRemotable }
+
+  TTest_TAbstractEncodedStringExtRemotable = class(TWstBaseTest)
+  protected
+    class function CreateObject() : TAbstractEncodedStringExtRemotable; virtual; abstract;
+    class function EncodeData(const AValue : TByteDynArray) : string; overload; virtual; abstract;
+    class function EncodeData(const AValue : TBinaryString) : string; overload;
   published
     procedure Equal();
     procedure test_Assign();
@@ -379,6 +405,20 @@ type
     procedure SaveToFile();
   end;
   
+  TTest_TBase64StringExtRemotable = class(TTest_TAbstractEncodedStringExtRemotable)
+  protected
+    class function CreateObject() : TAbstractEncodedStringExtRemotable; override;
+    class function EncodeData(const AValue : TByteDynArray) : string; override;
+  end;
+
+  { TTest_TBase16StringExtRemotable }
+
+  TTest_TBase16StringExtRemotable = class(TTest_TAbstractEncodedStringExtRemotable)
+  protected
+    class function CreateObject() : TAbstractEncodedStringExtRemotable; override;
+    class function EncodeData(const AValue : TByteDynArray) : string; override;
+  end;
+
   { TClass_A_CollectionRemotable }
 
   TClass_A_CollectionRemotable = class(TObjectCollectionRemotable)
@@ -406,7 +446,7 @@ type
   
   { TTest_Procedures }
 
-  TTest_Procedures = class(TTestCase)
+  TTest_Procedures = class(TWstBaseTest)
   published
     procedure test_LoadBufferFromStream();
     procedure test_LoadBufferFromFile();
@@ -422,6 +462,16 @@ begin
   SetLength(Result,AMaxlen);
   for k := 1 to AMaxlen do begin
     Result[k] := AnsiChar((Random(Ord(High(AnsiChar)))));
+  end;
+end;
+
+function RandomBytesValue(const AMaxlen: Integer): TByteDynArray;
+var
+  k : Integer;
+begin
+  SetLength(Result,AMaxlen);
+  for k := 0 to ( AMaxlen - 1 ) do begin
+    Result[k] := RandomRange(Low(Byte),High(Byte));
   end;
 end;
 
@@ -2975,20 +3025,25 @@ begin
   end;
 end;
 
-{ TTest_TBase64StringRemotable }
+{ TTest_TAbstractEncodedStringRemotable }
 
-procedure TTest_TBase64StringRemotable.test_Assign();
+class function TTest_TAbstractEncodedStringRemotable.EncodeData(const AValue: TBinaryString): string;
+begin
+  Result := EncodeData(StringToByteArray(AValue));
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.test_Assign();
 const ITER = 100;
 var
   i : Integer;
-  a, b : TBase64StringRemotable;
+  a, b : TAbstractEncodedStringRemotable;
 begin
   b := nil;
-  a := TBase64StringRemotable.Create();
+  a := CreateObject();
   try
-    b := TBase64StringRemotable.Create();
+    b := CreateObject();
     for i := 1 to ITER do begin
-      a.BinaryData := RandomValue(Random(500));
+      a.BinaryData := RandomBytesValue(Random(500));
       b.Assign(a);
       CheckEquals(a.BinaryData, b.BinaryData);
       CheckEquals(a.EncodedString, b.EncodedString);
@@ -2999,28 +3054,249 @@ begin
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.Equal();
+procedure TTest_TAbstractEncodedStringRemotable.Equal();
 const ITER = 100;
 var
   i : Integer;
-  a, b : TBase64StringRemotable;
+  a, b : TAbstractEncodedStringRemotable;
   c : TClass_A;
 begin
   c := nil;
   b := nil;
-  a := TBase64StringRemotable.Create();
+  a := CreateObject();
   try
-    b := TBase64StringRemotable.Create();
+    b := CreateObject();
     CheckEquals(False, a.Equal(nil));
     c := TClass_A.Create();
     CheckEquals(False, a.Equal(c));
-    a.BinaryData := 'wst';
-    b.BinaryData := 'azerty';
+    a.BinaryData := StringToByteArray('wst');
+    b.BinaryData := StringToByteArray('azerty');
     CheckEquals(False, a.Equal(b));
     CheckEquals(False, b.Equal(a));
 
     for i := 1 to ITER do begin
-      a.BinaryData := RandomValue(Random(500));
+      a.BinaryData := RandomBytesValue(Random(500));
+      b.BinaryData := Copy(a.BinaryData);
+      CheckEquals(True, a.Equal(b));
+      CheckEquals(True, b.Equal(a));
+    end;
+  finally
+    FreeAndNil(c);
+    FreeAndNil(b);
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.SetBinaryData();
+const ITER = 100;
+var
+  i : Integer;
+  a : TAbstractEncodedStringRemotable;
+  s, es : string;
+begin
+  a := CreateObject();
+  try
+    s := ''; es := EncodeData(s);
+    a.BinaryData := StringToByteArray(s);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := EncodeData(s);
+      a.BinaryData := StringToByteArray(s);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.SetEncodedString();
+const ITER = 100;
+var
+  i : Integer;
+  a : TAbstractEncodedStringRemotable;
+  s, es : TBinaryString;
+begin
+  a := CreateObject();
+  try
+    s := ''; es := EncodeData(s);
+    a.EncodedString := es;
+    CheckEquals(StringToByteArray(s),a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
+    CheckEquals(es,a.EncodedString);
+
+    for i := 1 to ITER do begin
+      s := RandomValue(Random(500)); es := EncodeData(s);
+      a.EncodedString := es;
+      CheckEquals(StringToByteArray(s),a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
+      CheckEquals(es,a.EncodedString);
+    end;
+  finally
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.LoadFromStream();
+var
+  locLoadedBuffer : TAbstractEncodedStringRemotable;
+  locBuffer : TByteDynArray;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[0]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[0],Length(locBuffer));
+    locLoadedBuffer := CreateObject();
+    locLoadedBuffer.LoadFromStream(locStream);
+    CheckEquals( locBuffer, locLoadedBuffer.BinaryData );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.LoadFromFile();
+var
+  locLoadedBuffer : TAbstractEncodedStringRemotable;
+  locBuffer : TByteDynArray;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[0]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locLoadedBuffer := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locStream.Write(locBuffer[0],Length(locBuffer));
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
+    locStream.SaveToFile(locFileName);
+    locLoadedBuffer := CreateObject();
+    locLoadedBuffer.LoadFromFile(locFileName);
+    CheckEquals( locBuffer, locLoadedBuffer.BinaryData );
+  finally
+    locLoadedBuffer.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.SaveToStream();
+var
+  locObj : TAbstractEncodedStringRemotable;
+  locBuffer : TByteDynArray;
+  pBytePtr : PByte;
+  locStream : TMemoryStream;
+  i : PtrInt;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[0]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locObj := nil;
+  locStream := TMemoryStream.Create();
+  try
+    locObj := CreateObject();
+    locObj.BinaryData := Copy(locBuffer);
+    locObj.SaveToStream(locStream);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[0],Length(locBuffer));
+    CheckEquals( locObj.BinaryData, locBuffer );
+  finally
+    locObj.Free();
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_TAbstractEncodedStringRemotable.SaveToFile();
+var
+  locObj : TAbstractEncodedStringRemotable;
+  locBuffer : TByteDynArray;
+  pBytePtr : PByte;
+  locStream : TFileStream;
+  i : PtrInt;
+  locFileName : string;
+begin
+  SetLength(locBuffer,255);
+  pBytePtr := PByte(@(locBuffer[0]));
+  for i := 0 to 255 do begin
+    pBytePtr^ := i;
+    Inc(pBytePtr);
+  end;
+  locStream := nil;
+  locObj := CreateObject();
+  try
+    locObj.BinaryData := Copy(locBuffer);
+    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
+    DeleteFile(locFileName);
+    locObj.SaveToFile(locFileName);
+    Check(FileExists(locFileName));
+    locStream := TFileStream.Create(locFileName,fmOpenRead);
+    Check( locStream.Size = Length(locObj.BinaryData) );
+    SetLength(locBuffer,locStream.Size);
+    locStream.Position := 0;
+    locStream.Read(locBuffer[0],Length(locBuffer));
+    CheckEquals( locObj.BinaryData, locBuffer );
+  finally
+    locObj.Free();
+    locStream.Free();
+  end;
+end;
+
+{ TTest_TAbstractEncodedStringExtRemotable }
+
+class function TTest_TAbstractEncodedStringExtRemotable.EncodeData(const AValue: TBinaryString): string;
+begin
+  Result := EncodeData(StringToByteArray(AValue));
+end;
+
+procedure TTest_TAbstractEncodedStringExtRemotable.Equal();
+const ITER = 100;
+var
+  i : Integer;
+  a, b : TAbstractEncodedStringExtRemotable;
+  c : TClass_A;
+begin
+  c := nil;
+  b := nil;
+  a := CreateObject();
+  try
+    b := CreateObject();
+    CheckEquals(False, a.Equal(nil));
+    c := TClass_A.Create();
+    CheckEquals(False, a.Equal(c));
+    a.BinaryData := StringToByteArray('wst');
+    b.BinaryData := StringToByteArray('azerty');
+    CheckEquals(False, a.Equal(b));
+    CheckEquals(False, b.Equal(a));
+
+    for i := 1 to ITER do begin
+      a.BinaryData := RandomBytesValue(Random(500));
       b.BinaryData := a.BinaryData;
       CheckEquals(True, a.Equal(b));
       CheckEquals(True, b.Equal(a));
@@ -3032,28 +3308,28 @@ begin
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.SetBinaryData();
+procedure TTest_TAbstractEncodedStringExtRemotable.SetBinaryData();
 const ITER = 100;
 var
   i : Integer;
-  a : TBase64StringRemotable;
+  a : TAbstractEncodedStringExtRemotable;
   s, es : string;
 begin
-  a := TBase64StringRemotable.Create();
+  a := CreateObject();
   try
-    s := ''; es := Base64Encode(s);
-    a.BinaryData := s;
-    CheckEquals(s,a.BinaryData);
+    s := ''; es := EncodeData(s);
+    a.BinaryData := StringToByteArray(s);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
     CheckEquals(es,a.EncodedString);
-    CheckEquals(s,a.BinaryData);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
     CheckEquals(es,a.EncodedString);
 
     for i := 1 to ITER do begin
-      s := RandomValue(Random(500)); es := Base64Encode(s);
-      a.BinaryData := s;
-      CheckEquals(s,a.BinaryData);
+      s := RandomValue(Random(500)); es := EncodeData(s);
+      a.BinaryData := StringToByteArray(s);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
       CheckEquals(es,a.EncodedString);
-      CheckEquals(s,a.BinaryData);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
       CheckEquals(es,a.EncodedString);
     end;
   finally
@@ -3061,28 +3337,28 @@ begin
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.SetEncodedString();
+procedure TTest_TAbstractEncodedStringExtRemotable.SetEncodedString();
 const ITER = 100;
 var
   i : Integer;
-  a : TBase64StringRemotable;
+  a : TAbstractEncodedStringExtRemotable;
   s, es : string;
 begin
-  a := TBase64StringRemotable.Create();
+  a := CreateObject();
   try
     s := ''; es := Base64Encode(s);
     a.EncodedString := es;
-    CheckEquals(s,a.BinaryData);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
     CheckEquals(es,a.EncodedString);
-    CheckEquals(s,a.BinaryData);
+    CheckEquals(StringToByteArray(s),a.BinaryData);
     CheckEquals(es,a.EncodedString);
 
     for i := 1 to ITER do begin
-      s := RandomValue(Random(500)); es := Base64Encode(s);
+      s := RandomValue(Random(500)); es := EncodeData(s);
       a.EncodedString := es;
-      CheckEquals(s,a.BinaryData);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
       CheckEquals(es,a.EncodedString);
-      CheckEquals(s,a.BinaryData);
+      CheckEquals(StringToByteArray(s),a.BinaryData);
       CheckEquals(es,a.EncodedString);
     end;
   finally
@@ -3090,16 +3366,16 @@ begin
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.LoadFromStream();
+procedure TTest_TAbstractEncodedStringExtRemotable.LoadFromStream();
 var
-  locLoadedBuffer : TBase64StringRemotable;
-  locBuffer : TBinaryString;
+  locLoadedBuffer : TAbstractEncodedStringExtRemotable;
+  locBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TMemoryStream;
   i : PtrInt;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
@@ -3107,27 +3383,27 @@ begin
   locLoadedBuffer := nil;
   locStream := TMemoryStream.Create();
   try
-    locStream.Write(locBuffer[1],Length(locBuffer));
-    locLoadedBuffer := TBase64StringRemotable.Create();
+    locStream.Write(locBuffer[0],Length(locBuffer));
+    locLoadedBuffer := CreateObject();
     locLoadedBuffer.LoadFromStream(locStream);
-    Check( locLoadedBuffer.BinaryData = locBuffer );
+    CheckEquals( locBuffer, locLoadedBuffer.BinaryData );
   finally
     locLoadedBuffer.Free();
     locStream.Free();
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.LoadFromFile();
+procedure TTest_TAbstractEncodedStringExtRemotable.LoadFromFile();
 var
-  locLoadedBuffer : TBase64StringRemotable;
-  locBuffer : TBinaryString;
+  locLoadedBuffer : TAbstractEncodedStringExtRemotable;
+  locBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TMemoryStream;
   i : PtrInt;
   locFileName : string;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
@@ -3135,28 +3411,28 @@ begin
   locLoadedBuffer := nil;
   locStream := TMemoryStream.Create();
   try
-    locStream.Write(locBuffer[1],Length(locBuffer));
+    locStream.Write(locBuffer[0],Length(locBuffer));
     locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     locStream.SaveToFile(locFileName);
-    locLoadedBuffer := TBase64StringRemotable.Create();
+    locLoadedBuffer := CreateObject();
     locLoadedBuffer.LoadFromFile(locFileName);
-    Check( locLoadedBuffer.BinaryData = locBuffer );
+    CheckEquals( locBuffer, locLoadedBuffer.BinaryData );
   finally
     locLoadedBuffer.Free();
     locStream.Free();
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.SaveToStream();
+procedure TTest_TAbstractEncodedStringExtRemotable.SaveToStream();
 var
-  locObj : TBase64StringRemotable;
-  locBuffer : TBinaryString;
+  locObj : TAbstractEncodedStringExtRemotable;
+  locBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TMemoryStream;
   i : PtrInt;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
@@ -3164,39 +3440,39 @@ begin
   locObj := nil;
   locStream := TMemoryStream.Create();
   try
-    locObj := TBase64StringRemotable.Create();
+    locObj := CreateObject();
     locObj.BinaryData := locBuffer;
     locObj.SaveToStream(locStream);
     Check( locStream.Size = Length(locObj.BinaryData) );
     SetLength(locBuffer,locStream.Size);
     locStream.Position := 0;
-    locStream.Read(locBuffer[1],Length(locBuffer));
-    Check( locBuffer = locObj.BinaryData );
+    locStream.Read(locBuffer[0],Length(locBuffer));
+    CheckEquals( locObj.BinaryData, locBuffer );
   finally
     locObj.Free();
     locStream.Free();
   end;
 end;
 
-procedure TTest_TBase64StringRemotable.SaveToFile();
+procedure TTest_TAbstractEncodedStringExtRemotable.SaveToFile();
 var
-  locObj : TBase64StringRemotable;
-  locBuffer : TBinaryString;
+  locObj : TAbstractEncodedStringExtRemotable;
+  locBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TFileStream;
   i : PtrInt;
   locFileName : string;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
   locStream := nil;
-  locObj := TBase64StringRemotable.Create();
+  locObj := CreateObject();
   try
-    locObj.BinaryData := locBuffer;
+    locObj.BinaryData := Copy(locBuffer);
     locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     DeleteFile(locFileName);
     locObj.SaveToFile(locFileName);
@@ -3205,242 +3481,26 @@ begin
     Check( locStream.Size = Length(locObj.BinaryData) );
     SetLength(locBuffer,locStream.Size);
     locStream.Position := 0;
-    locStream.Read(locBuffer[1],Length(locBuffer));
-    Check( locBuffer = locObj.BinaryData );
+    locStream.Read(locBuffer[0],Length(locBuffer));
+    CheckEquals( locObj.BinaryData, locBuffer );
   finally
     locObj.Free();
     locStream.Free();
   end;
 end;
 
-{ TTest_TBase64StringExtRemotable }
-
-procedure TTest_TBase64StringExtRemotable.Equal();
+procedure TTest_TAbstractEncodedStringExtRemotable.test_Assign();
 const ITER = 100;
 var
   i : Integer;
-  a, b : TBase64StringExtRemotable;
-  c : TClass_A;
-begin
-  c := nil;
-  b := nil;
-  a := TBase64StringExtRemotable.Create();
-  try
-    b := TBase64StringExtRemotable.Create();
-    CheckEquals(False, a.Equal(nil));
-    c := TClass_A.Create();
-    CheckEquals(False, a.Equal(c));
-    a.BinaryData := 'wst';
-    b.BinaryData := 'azerty';
-    CheckEquals(False, a.Equal(b));
-    CheckEquals(False, b.Equal(a));
-
-    for i := 1 to ITER do begin
-      a.BinaryData := RandomValue(Random(500));
-      b.BinaryData := a.BinaryData;
-      CheckEquals(True, a.Equal(b));
-      CheckEquals(True, b.Equal(a));
-    end;
-  finally
-    FreeAndNil(c);
-    FreeAndNil(b);
-    FreeAndNil(a);
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.SetBinaryData();
-const ITER = 100;
-var
-  i : Integer;
-  a : TBase64StringExtRemotable;
-  s, es : string;
-begin
-  a := TBase64StringExtRemotable.Create();
-  try
-    s := ''; es := Base64Encode(s);
-    a.BinaryData := s;
-    CheckEquals(s,a.BinaryData);
-    CheckEquals(es,a.EncodedString);
-    CheckEquals(s,a.BinaryData);
-    CheckEquals(es,a.EncodedString);
-
-    for i := 1 to ITER do begin
-      s := RandomValue(Random(500)); es := Base64Encode(s);
-      a.BinaryData := s;
-      CheckEquals(s,a.BinaryData);
-      CheckEquals(es,a.EncodedString);
-      CheckEquals(s,a.BinaryData);
-      CheckEquals(es,a.EncodedString);
-    end;
-  finally
-    FreeAndNil(a);
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.SetEncodedString();
-const ITER = 100;
-var
-  i : Integer;
-  a : TBase64StringExtRemotable;
-  s, es : string;
-begin
-  a := TBase64StringExtRemotable.Create();
-  try
-    s := ''; es := Base64Encode(s);
-    a.EncodedString := es;
-    CheckEquals(s,a.BinaryData);
-    CheckEquals(es,a.EncodedString);
-    CheckEquals(s,a.BinaryData);
-    CheckEquals(es,a.EncodedString);
-
-    for i := 1 to ITER do begin
-      s := RandomValue(Random(500)); es := Base64Encode(s);
-      a.EncodedString := es;
-      CheckEquals(s,a.BinaryData);
-      CheckEquals(es,a.EncodedString);
-      CheckEquals(s,a.BinaryData);
-      CheckEquals(es,a.EncodedString);
-    end;
-  finally
-    FreeAndNil(a);
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.LoadFromStream();
-var
-  locLoadedBuffer : TBase64StringExtRemotable;
-  locBuffer : TBinaryString;
-  pBytePtr : PByte;
-  locStream : TMemoryStream;
-  i : PtrInt;
-begin
-  SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
-  for i := 0 to 255 do begin
-    pBytePtr^ := i;
-    Inc(pBytePtr);
-  end;
-  locLoadedBuffer := nil;
-  locStream := TMemoryStream.Create();
-  try
-    locStream.Write(locBuffer[1],Length(locBuffer));
-    locLoadedBuffer := TBase64StringExtRemotable.Create();
-    locLoadedBuffer.LoadFromStream(locStream);
-    Check( locLoadedBuffer.BinaryData = locBuffer );
-  finally
-    locLoadedBuffer.Free();
-    locStream.Free();
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.LoadFromFile();
-var
-  locLoadedBuffer : TBase64StringExtRemotable;
-  locBuffer : TBinaryString;
-  pBytePtr : PByte;
-  locStream : TMemoryStream;
-  i : PtrInt;
-  locFileName : string;
-begin
-  SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
-  for i := 0 to 255 do begin
-    pBytePtr^ := i;
-    Inc(pBytePtr);
-  end;
-  locLoadedBuffer := nil;
-  locStream := TMemoryStream.Create();
-  try
-    locStream.Write(locBuffer[1],Length(locBuffer));
-    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
-    locStream.SaveToFile(locFileName);
-    locLoadedBuffer := TBase64StringExtRemotable.Create();
-    locLoadedBuffer.LoadFromFile(locFileName);
-    Check( locLoadedBuffer.BinaryData = locBuffer );
-  finally
-    locLoadedBuffer.Free();
-    locStream.Free();
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.SaveToStream();
-var
-  locObj : TBase64StringExtRemotable;
-  locBuffer : TBinaryString;
-  pBytePtr : PByte;
-  locStream : TMemoryStream;
-  i : PtrInt;
-begin
-  SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
-  for i := 0 to 255 do begin
-    pBytePtr^ := i;
-    Inc(pBytePtr);
-  end;
-  locObj := nil;
-  locStream := TMemoryStream.Create();
-  try
-    locObj := TBase64StringExtRemotable.Create();
-    locObj.BinaryData := locBuffer;
-    locObj.SaveToStream(locStream);
-    Check( locStream.Size = Length(locObj.BinaryData) );
-    SetLength(locBuffer,locStream.Size);
-    locStream.Position := 0;
-    locStream.Read(locBuffer[1],Length(locBuffer));
-    Check( locBuffer = locObj.BinaryData );
-  finally
-    locObj.Free();
-    locStream.Free();
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.SaveToFile();
-var
-  locObj : TBase64StringExtRemotable;
-  locBuffer : TBinaryString;
-  pBytePtr : PByte;
-  locStream : TFileStream;
-  i : PtrInt;
-  locFileName : string;
-begin
-  SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
-  for i := 0 to 255 do begin
-    pBytePtr^ := i;
-    Inc(pBytePtr);
-  end;
-  locStream := nil;
-  locObj := TBase64StringExtRemotable.Create();
-  try
-    locObj.BinaryData := locBuffer;
-    locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
-    DeleteFile(locFileName);
-    locObj.SaveToFile(locFileName);
-    Check(FileExists(locFileName));
-    locStream := TFileStream.Create(locFileName,fmOpenRead);
-    Check( locStream.Size = Length(locObj.BinaryData) );
-    SetLength(locBuffer,locStream.Size);
-    locStream.Position := 0;
-    locStream.Read(locBuffer[1],Length(locBuffer));
-    Check( locBuffer = locObj.BinaryData );
-  finally
-    locObj.Free();
-    locStream.Free();
-  end;
-end;
-
-procedure TTest_TBase64StringExtRemotable.test_Assign();
-const ITER = 100;
-var
-  i : Integer;
-  a, b : TBase64StringExtRemotable;
+  a, b : TAbstractEncodedStringExtRemotable;
 begin
   b := nil;
-  a := TBase64StringExtRemotable.Create();
+  a := CreateObject();
   try
-    b := TBase64StringExtRemotable.Create();
+    b := CreateObject();
     for i := 1 to ITER do begin
-      a.BinaryData := RandomValue(Random(500));
+      a.BinaryData := RandomBytesValue(Random(500));
       b.Assign(a);
       CheckEquals(a.BinaryData, b.BinaryData);
       CheckEquals(a.EncodedString, b.EncodedString);
@@ -3682,22 +3742,22 @@ end;
 
 procedure TTest_Procedures.test_LoadBufferFromStream();
 var
-  locBuffer, locLoadedBuffer : TBinaryString;
+  locBuffer, locLoadedBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TMemoryStream;
   i : PtrInt;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
   locStream := TMemoryStream.Create();
   try
-    locStream.Write(locBuffer[1],Length(locBuffer));
+    locStream.Write(locBuffer[0],Length(locBuffer));
     locLoadedBuffer := LoadBufferFromStream(locStream);
-    Check( locLoadedBuffer = locBuffer );
+    CheckEquals( locBuffer, locLoadedBuffer );
   finally
     locStream.Free();
   end;
@@ -3705,28 +3765,89 @@ end;
 
 procedure TTest_Procedures.test_LoadBufferFromFile();
 var
-  locBuffer, locLoadedBuffer : TBinaryString;
+  locBuffer, locLoadedBuffer : TByteDynArray;
   pBytePtr : PByte;
   locStream : TMemoryStream;
   i : PtrInt;
   locFileName : string;
 begin
   SetLength(locBuffer,255);
-  pBytePtr := PByte(@(locBuffer[1]));
+  pBytePtr := PByte(@(locBuffer[0]));
   for i := 0 to 255 do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
   locStream := TMemoryStream.Create();
   try
-    locStream.Write(locBuffer[1],Length(locBuffer));
+    locStream.Write(locBuffer[0],Length(locBuffer));
     locFileName := wstExpandLocalFileName('test_LoadBufferFromFile.bin');
     locStream.SaveToFile(locFileName);
     locLoadedBuffer := LoadBufferFromFile(locFileName);
-    Check( locLoadedBuffer = locBuffer );
+    CheckEquals(locBuffer, locLoadedBuffer);
   finally
     locStream.Free();
   end;
+end;
+
+{ TTest_TBase64StringRemotable }
+
+class function TTest_TBase64StringRemotable.CreateObject( ): TAbstractEncodedStringRemotable;
+begin
+  Result := TBase64StringRemotable.Create();
+end;
+
+class function TTest_TBase64StringRemotable.EncodeData(const AValue: TByteDynArray): string;
+begin
+  if ( Length(AValue) > 0 ) then
+    Result := Base64Encode(Length(AValue),AValue[0])
+  else
+    Result := '';
+end;
+
+{ TTest_TBase16StringRemotable }
+
+class function TTest_TBase16StringRemotable.CreateObject( ): TAbstractEncodedStringRemotable;
+begin
+  Result := TBase16StringRemotable.Create();
+end;
+
+class function TTest_TBase16StringRemotable.EncodeData(const AValue: TByteDynArray): string;
+begin
+  if ( Length(AValue) > 0 ) then
+    Result := Base16Encode(AValue[0],Length(AValue))
+  else
+    Result := '';
+end;
+
+{ TTest_TBase64StringExtRemotable }
+
+class function TTest_TBase64StringExtRemotable.CreateObject( ): TAbstractEncodedStringExtRemotable;
+begin
+  Result := TBase64StringExtRemotable.Create();
+end;
+
+class function TTest_TBase64StringExtRemotable.EncodeData(const AValue: TByteDynArray): string;
+begin
+  if ( Length(AValue) > 0 ) then
+    Result := Base64Encode(Length(AValue),AValue[0])
+  else
+    Result := '';
+end;
+
+
+{ TTest_TBase16StringExtRemotable }
+
+class function TTest_TBase16StringExtRemotable.CreateObject( ): TAbstractEncodedStringExtRemotable;
+begin
+  Result := TBase16StringExtRemotable.Create();
+end;
+
+class function TTest_TBase16StringExtRemotable.EncodeData(const AValue: TByteDynArray): string;
+begin
+  if ( Length(AValue) > 0 ) then
+    Result := Base16Encode(AValue[0],Length(AValue))
+  else
+    Result := '';
 end;
 
 initialization
@@ -3758,6 +3879,8 @@ initialization
 
   RegisterTest('Support',TTest_TBase64StringRemotable.Suite);
   RegisterTest('Support',TTest_TBase64StringExtRemotable.Suite);
+  RegisterTest('Support',TTest_TBase16StringRemotable.Suite);
+  RegisterTest('Support',TTest_TBase16StringExtRemotable.Suite);
   
   RegisterTest('Support',TTest_Procedures.Suite);
   

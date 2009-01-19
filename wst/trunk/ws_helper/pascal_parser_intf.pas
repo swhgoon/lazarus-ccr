@@ -228,14 +228,17 @@ const
           ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
           ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
         );
-   BOXED_TYPES_COUNT = 1;
+   BOXED_TYPES_COUNT = 2;
      BOXED_TYPES : Array[0..Pred(BOXED_TYPES_COUNT)] Of array[0..2] of string = (
-        ('TBase64StringRemotable', 'TBase64StringExtRemotable', 'base64Binary')
+        ('TBase64StringRemotable', 'TBase64StringExtRemotable', 'base64Binary'),
+        ('TBase16StringRemotable', 'TBase16StringExtRemotable', 'hexBinary')
      );
-   SPECIAL_SIMPLE_TYPES_COUNT = 2 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+   SPECIAL_SIMPLE_TYPES_COUNT = 4 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
      SPECIAL_SIMPLE_TYPES : Array[0..Pred(SPECIAL_SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
           ('string', 'TComplexStringContentRemotable', 'string'),
-          ('WideString', 'TComplexWideStringContentRemotable', 'string')
+          ('WideString', 'TComplexWideStringContentRemotable', 'string'),
+          ('AnsiChar', 'TComplexAnsiCharContentRemotable', 'string'),
+          ('WideChar', 'TComplexWideCharContentRemotable', 'string')
 {$IFDEF WST_UNICODESTRING}
          ,('UnicodeString', 'TComplexUnicodeStringContentRemotable', 'string')
 {$ENDIF WST_UNICODESTRING}
@@ -319,13 +322,13 @@ procedure AddSystemSymbol(
   procedure RegisterBoxedTypes();
   var
     i : Integer;
-    nativeType : TPasNativeClassType;
+    nativeType : TPasNativeSimpleContentClassType;
     syb : TPasNativeSimpleContentClassType;
     s : string;
-    typlst : array[0..Pred(BOXED_TYPES_COUNT)] of TPasNativeClassType;
+    typlst : array[0..Pred(BOXED_TYPES_COUNT)] of TPasNativeSimpleContentClassType;
   begin
     for i := Low(BOXED_TYPES) to High(BOXED_TYPES) do begin
-      nativeType := TPasNativeClassType(AContainer.CreateElement(TPasNativeClassType,BOXED_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
+      nativeType := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,BOXED_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
       ADest.InterfaceSection.Declarations.Add(nativeType);
       ADest.InterfaceSection.Types.Add(nativeType);
       typlst[i] := nativeType;

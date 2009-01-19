@@ -42,6 +42,8 @@ type
 {$IFDEF WST_UNICODESTRING}
     procedure class_unicodestring_property();
 {$ENDIF WST_UNICODESTRING}
+    procedure class_ansichar_property();
+    procedure class_widechar_property();
     
     procedure array_sequence_collection();
     procedure class_sequence_open_type_any();
@@ -844,6 +846,128 @@ end;
 function TTest_CustomXsdGenerator.LoadXmlFromFilesList(const AFileName: string): TXMLDocument;
 begin
   ReadXMLFile(Result,wstExpandLocalFileName(TestFilesPath + AFileName));
+end;
+
+procedure TTest_CustomXsdGenerator.class_ansichar_property();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+
+  procedure AddProperty(
+    const AName,
+          ATypeName,
+          ADefault   : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,cltyp,visDefault,'',0));
+    cltyp.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.DefaultValue := ADefault;
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'class_ansichar_property',tr.Package,visDefault,'',0));
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty('elementProp','AnsiChar','',ptField);
+      AddProperty('elementAtt','AnsiChar','',ptAttribute);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    WriteXMLFile(locDoc,'.\class_ansichar_property.xsd');
+    locExistDoc := LoadXmlFromFilesList('class_ansichar_property.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.class_widechar_property();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+
+  procedure AddProperty(
+    const AName,
+          ATypeName,
+          ADefault   : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasProperty;
+  begin
+    p := TPasProperty(tr.CreateElement(TPasProperty,AName,cltyp,visDefault,'',0));
+    cltyp.Members.Add(p);
+    p.ReadAccessorName := 'F' + AName;
+    p.WriteAccessorName := 'F' + AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    p.DefaultValue := ADefault;
+    p.Visibility := visPublished;
+    p.StoredAccessorName := 'True';
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'class_widechar_property',tr.Package,visDefault,'',0));
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'TSampleClass',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okClass;
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty('elementProp','WideChar','',ptField);
+      AddProperty('elementAtt','WideChar','',ptAttribute);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    WriteXMLFile(locDoc,'.\class_widechar_property.xsd');
+    locExistDoc := LoadXmlFromFilesList('class_widechar_property.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
 end;
 
 { TTest_XsdGenerator }

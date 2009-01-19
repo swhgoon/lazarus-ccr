@@ -56,6 +56,8 @@ type
     function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;virtual;abstract;
     function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;virtual;abstract;
     function load_class_widestring_property() : TwstPasTreeContainer;virtual;abstract;
+    function load_class_ansichar_property() : TwstPasTreeContainer;virtual;abstract;
+    function load_class_widechar_property() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -88,6 +90,8 @@ type
     procedure class_headerblock_derived();
     procedure class_headerblock_simplecontent_derived();
     procedure class_widestring_property();
+    procedure class_ansichar_property();
+    procedure class_widechar_property();
   end;
 
   { TTest_XsdParser }
@@ -124,6 +128,8 @@ type
     function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;override;
     function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;override;
     function load_class_widestring_property() : TwstPasTreeContainer;override;
+    function load_class_ansichar_property() : TwstPasTreeContainer;override;
+    function load_class_widechar_property() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -160,6 +166,8 @@ type
     function load_class_headerblock_derived_Schema() : TwstPasTreeContainer;override;
     function load_class_headerblock_simplecontent_derived_Schema() : TwstPasTreeContainer;override;
     function load_class_widestring_property() : TwstPasTreeContainer;override;
+    function load_class_ansichar_property() : TwstPasTreeContainer;override;
+    function load_class_widechar_property() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -1611,6 +1619,88 @@ begin
 
 end;
 
+procedure TTest_CustomXsdParser.class_ansichar_property();
+const s_class_name = 'TSampleClass';
+var
+  clsType : TPasClassType;
+  tr : TwstPasTreeContainer;
+
+  procedure CheckProperty(const AName,ATypeName,ADeclaredTypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,prp.VarType.Name,'TypeName');
+      CheckEquals(ADeclaredTypeName,tr.GetExternalName(prp.VarType),'DeclaredTypeName');
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  elt : TPasElement;
+begin
+  tr := load_class_ansichar_property();
+  try
+    mdl := tr.FindModule('class_ansichar_property');
+    CheckNotNull(mdl,'class_ansichar_property');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckEquals(s_class_name,elt.Name);
+      CheckEquals(s_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckProperty('elementProp','AnsiChar','string',ptField);
+      CheckProperty('elementAtt','AnsiChar','string',ptAttribute);
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_CustomXsdParser.class_widechar_property();
+const s_class_name = 'TSampleClass';
+var
+  clsType : TPasClassType;
+  tr : TwstPasTreeContainer;
+
+  procedure CheckProperty(const AName,ATypeName,ADeclaredTypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,prp.VarType.Name,'TypeName');
+      CheckEquals(ADeclaredTypeName,tr.GetExternalName(prp.VarType),'DeclaredTypeName');
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  elt : TPasElement;
+begin
+  tr := load_class_widechar_property();
+  try
+    mdl := tr.FindModule('class_widechar_property');
+    CheckNotNull(mdl,'class_widechar_property');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckEquals(s_class_name,elt.Name);
+      CheckEquals(s_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckProperty('elementProp','WideChar','string',ptField);
+      CheckProperty('elementAtt','WideChar','string',ptAttribute);
+  finally
+    tr.Free();
+  end;
+end;
+
 { TTest_XsdParser }
 
 function TTest_XsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
@@ -1734,6 +1824,16 @@ end;
 function TTest_XsdParser.LoadComplexType_Class_properties_extended_metadata2(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata + '_2');
+end;
+
+function TTest_XsdParser.load_class_ansichar_property(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_ansichar_property');
+end;
+
+function TTest_XsdParser.load_class_widechar_property: TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_widechar_property');
 end;
 
 { TTest_WsdlParser }
@@ -2112,6 +2212,16 @@ end;
 function TTest_WsdlParser.LoadComplexType_Class_properties_extended_metadata2(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_class_properties_extended_metadata + '_2');
+end;
+
+function TTest_WsdlParser.load_class_ansichar_property() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_ansichar_property');
+end;
+
+function TTest_WsdlParser.load_class_widechar_property() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('class_widechar_property');
 end;
 
 initialization

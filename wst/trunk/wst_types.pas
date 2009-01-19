@@ -26,6 +26,9 @@ type
 {$ELSE WST_UNICODESTRING}
   TBinaryString = ansistring;
 {$ENDIF}
+
+  TByteDynArray = array of Byte;
+
   { TDataObject }
 
   TDataObject = class

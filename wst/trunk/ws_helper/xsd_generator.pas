@@ -186,6 +186,22 @@ type
     );override;
   end;
 
+  TAnsiCharHelper = class(TAbstractSpecialTypeHelper,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );override;
+  end;
+
+  TWideCharHelper = class(TAbstractSpecialTypeHelper,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );override;
+  end;
+
 {$IFDEF WST_UNICODESTRING}
   { TUnicodeStringHelper }
 
@@ -401,6 +417,28 @@ begin
   ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'WideString');
 end;
 
+{ TAnsiCharHelper }
+
+procedure TAnsiCharHelper.HandleTypeUsage(ATargetNode, ASchemaNode: TDOMElement);
+var
+  strBuffer : string;
+begin
+  if not FindAttributeByValueInNode(s_WST_base_namespace,ASchemaNode,strBuffer) then
+    ASchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+  ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'AnsiChar');
+end;
+
+{ TWideCharHelper }
+
+procedure TWideCharHelper.HandleTypeUsage(ATargetNode, ASchemaNode: TDOMElement);
+var
+  strBuffer : string;
+begin
+  if not FindAttributeByValueInNode(s_WST_base_namespace,ASchemaNode,strBuffer) then
+    ASchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+  ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'WideChar');
+end;
+
 {$IFDEF WST_UNICODESTRING}
 { TUnicodeStringHelper }
 
@@ -481,9 +519,11 @@ function TXsdTypeHandlerRegistry.FindHelper(
   out AHelper: IXsdSpecialTypeHelper
 ) : Boolean;
 const
-   HELPER_COUNT = 1 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+   HELPER_COUNT = 3 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
    HELPER_MAP : array[0..Pred(HELPER_COUNT)] of TSpecialTypeHelperRecord = (
-     ( Name : 'widestring'; HelperClass : TWideStringHelper;)
+     ( Name : 'widestring'; HelperClass : TWideStringHelper;),
+     ( Name : 'ansichar'; HelperClass : TAnsiCharHelper;),
+     ( Name : 'widechar'; HelperClass : TWideCharHelper;)
 {$IFDEF WST_UNICODESTRING}
     ,( Name : 'unicodestring'; HelperClass : TUnicodeStringHelper;)
 {$ENDIF WST_UNICODESTRING}
@@ -848,14 +888,17 @@ var
       if Assigned(propTypItm) then begin
         if propTypItm.InheritsFrom(TPasUnresolvedTypeRef) then
           propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
-        prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+        //prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
         propItmUltimeType := GetUltimeType(propTypItm);
         isEmbeddedArray := propItmUltimeType.InheritsFrom(TPasArrayType) and
                            ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
-        if isEmbeddedArray then
-          s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType)
-        else
+        if isEmbeddedArray then begin
+          s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType);
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,TPasArrayType(propItmUltimeType).ElType),ADocument,GetOwner().GetPreferedShortNames());
+        end else begin
           s := AContainer.GetExternalName(propTypItm);
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+        end;
         propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
         if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
           if GetRegistry().FindHelper(propTypItm,typeHelper) then
@@ -1290,6 +1333,7 @@ begin
   FSchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_xs_short]),s_xs);
   FSchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_tns]),unitExternalName);
 end;
+
 
 initialization
   XsdTypeHandlerRegistryInst := TXsdTypeHandlerRegistry.Create() as IXsdTypeHandlerRegistry;
