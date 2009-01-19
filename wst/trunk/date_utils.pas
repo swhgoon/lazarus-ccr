@@ -24,6 +24,9 @@ type
     MinuteOffset : Shortint;
   end;
 
+const
+  ZERO_DATE : TDateTimeRec = ( Date : 0; HourOffset : 0; MinuteOffset : 0; );
+
   function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
   function xsd_StrToDate(const AStr : string) : TDateTimeRec;
 
@@ -32,6 +35,9 @@ type
 
   function IncHour(const AValue: TDateTime; const ANumberOfHours: Int64): TDateTime;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function IncMinute(const AValue: TDateTime; const ANumberOfMinutes: Int64): TDateTime;{$IFDEF USE_INLINE}inline;{$ENDIF}
+
+  function NormalizeToUTC(const ADate : TDateTimeRec) : TDateTime;
+  function DateEquals(const AA,AB: TDateTimeRec) : Boolean;
 
 resourcestring
   SERR_InvalidDate = '"%s" is not a valid date.';
@@ -48,6 +54,29 @@ end;
 function IncMinute(const AValue: TDateTime; const ANumberOfMinutes: Int64): TDateTime;
 begin
   Result := DateOf(AValue) + DateUtils.IncMinute(TimeOf(AValue),ANumberOfMinutes);
+end;
+
+function NormalizeToUTC(const ADate : TDateTimeRec) : TDateTime;
+begin
+  Result := ADate.Date;
+  if ( ADate.HourOffset <> 0 ) then
+    Result := IncHour(Result,-ADate.HourOffset);
+  if ( ADate.MinuteOffset <> 0 ) then
+    Result := IncMinute(Result,-ADate.MinuteOffset);
+end;
+
+function DateEquals(const AA,AB: TDateTimeRec) : Boolean;
+var
+  e, a : TDateTime;
+  e_y, e_m, e_d, e_h, e_mn, e_ss, e_ms : Word;
+  a_y, a_m, a_d, a_h, a_mn, a_ss, a_ms : Word;
+begin
+  e := NormalizeToUTC(AA);
+  a := NormalizeToUTC(AB);
+  DecodeDateTime(e, e_y, e_m, e_d, e_h, e_mn, e_ss, e_ms);
+  DecodeDateTime(a, a_y, a_m, a_d, a_h, a_mn, a_ss, a_ms);
+  Result := ( e_y = a_y ) and ( e_m = a_m ) and ( e_d = a_d ) and
+            (e_h = a_h ) and ( e_mn = a_mn ) and ( e_ss = a_ss ) and ( e_ms = a_ms );
 end;
 
 function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
@@ -79,10 +108,37 @@ var
     if Result then
       Result := TryStrToInt(Copy(buffer,locStartPos,(bufferPos-locStartPos)),AValue);
   end;
-  
+
+  function ReadMiliSeconds(out AValue : Integer; const ASeparatorAtEnd : Char) : Boolean;
+  var
+    locDigitCount, locRes, itemp, locErcode : Integer;
+  begin
+    while ( bufferPos <= bufferLen ) and ( buffer[bufferPos] < #33 ) do begin
+      Inc(bufferPos);
+    end;
+    locRes := 0;
+    locDigitCount := 0;
+    while ( locDigitCount < 3 ) and ( bufferPos <= bufferLen ) and ( buffer[bufferPos] in ['0'..'9'] ) do begin
+      Val(buffer[bufferPos],itemp,locErcode);
+      locRes := ( locRes * 10 ) + itemp;
+      Inc(bufferPos);
+      Inc(locDigitCount);
+    end;
+    Result := ( locDigitCount > 0 );
+    if Result then begin
+      if ( locDigitCount < 3 ) and ( locRes > 0 ) then begin
+        while ( locDigitCount < 3 ) do begin
+          locRes := locRes * 10;
+          Inc(locDigitCount);
+        end;
+      end;
+      AValue := locRes;
+    end;
+  end;
+
 var
   d, m, y : Integer;
-  hh, mn, ss : Integer;
+  hh, mn, ss, ssss : Integer;
   tz_hh, tz_mn : Integer;
   tz_negative : Boolean;
   ok : Boolean;
@@ -108,6 +164,7 @@ begin
             hh := 0;
             mn := 0;
             ss := 0;
+            ssss := 0;
             ok := True;
           end else begin
             ok := ( buffer[bufferPos -1] = TIME_MARKER_CHAR ) and ReadInt(hh,TIME_SEP_CHAR);
@@ -117,6 +174,12 @@ begin
               if ok then begin
                 Inc(bufferPos);
                 ok := ReadInt(ss,#0);
+                if ok and ( bufferPos < bufferLen ) and ( buffer[bufferPos] = '.' ) then begin
+                  Inc(bufferPos);
+                  ok := ReadMiliSeconds(ssss,#0);
+                end else begin
+                  ssss := 0;
+                end;
                 if ok and ( bufferPos < bufferLen ) then begin
                   tz_negative := ( buffer[bufferPos] = '-' );
                   Inc(bufferPos);
@@ -134,10 +197,10 @@ begin
             end;
           end;
           if ok then begin
-            if ( ( y + m + d + hh + mn + ss ) = 0 ) then
+            if ( ( y + m + d + hh + mn + ss + ssss ) = 0 ) then
               ADate.Date := 0
             else
-              ADate.Date := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,0);
+              ADate.Date := EncodeDate(y,m,d) + EncodeTime(hh,mn,ss,ssss);
             ADate.HourOffset := tz_hh;
             ADate.MinuteOffset := tz_mn;
             Result := True;
@@ -199,6 +262,15 @@ begin
     if ( ss < 10 ) then
       buffer := '0' + buffer;
     s := Format('%s:%s',[s,buffer]);
+
+    if ( ssss > 0 ) then begin
+      buffer := IntToStr(ssss);
+      case ssss of
+        0..9   : buffer := '00' + buffer;
+        10..99 : buffer := '0' + buffer;
+      end;
+      s := Format('%s.%s',[s,buffer]);
+    end;
 
   Result := s + 'Z';
 end;

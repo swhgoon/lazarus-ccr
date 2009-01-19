@@ -28,6 +28,7 @@ type
   published
     procedure xsd_TryStrToDate_date_only();
     procedure xsd_TryStrToDate_date_time();
+    procedure xsd_TryStrToDate_date_time_fractional_second();
     procedure xsd_TryStrToDate_date_bad_separator();
     procedure xsd_TryStrToDate_date_time_bad_separator();
     procedure xsd_TryStrToDate_date_time_timezone_z();
@@ -37,6 +38,8 @@ type
 
     procedure xsd_DateTimeToStr_1();
     procedure xsd_DateTimeToStr_2();
+    procedure xsd_DateTimeToStr_fractional_second_1();
+    procedure xsd_DateTimeToStr_fractional_second_2();
     procedure xsd_DateTimeToStr_timezone_1();
   end;
 
@@ -73,6 +76,48 @@ begin
 
   d := EncodeDate(987,06,12) - EncodeTime(20,34,56,0);
   CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+end;
+
+procedure TTest_DateUtils.xsd_DateTimeToStr_fractional_second_1();
+const
+  sDATE_1 = '1976-10-12T23:34:56.007Z';
+  sDATE_2 = '1976-10-12T23:34:56.078Z';
+  sDATE_3 = '1976-10-12T23:34:56.789Z';
+var
+  d : TDateTimeRec;
+begin
+  FillChar(d,SizeOf(d),#0);
+  d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,7);
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+
+  FillChar(d,SizeOf(d),#0);
+  d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,78);
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+
+  FillChar(d,SizeOf(d),#0);
+  d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,789);
+  CheckEquals(sDATE_3, xsd_DateTimeToStr(d));
+end;
+
+procedure TTest_DateUtils.xsd_DateTimeToStr_fractional_second_2();
+const
+  sDATE_1 = '1976-10-12T23:34:56.007Z';
+  sDATE_2 = '1976-10-12T23:34:56.078Z';
+  sDATE_3 = '1976-10-12T23:34:56.789Z';
+var
+  d : TDateTime;
+begin
+  FillChar(d,SizeOf(d),#0);
+  d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,7);
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+
+  FillChar(d,SizeOf(d),#0);
+  d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,78);
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+
+  FillChar(d,SizeOf(d),#0);
+  d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,789);
+  CheckEquals(sDATE_3, xsd_DateTimeToStr(d));
 end;
 
 procedure TTest_DateUtils.xsd_DateTimeToStr_timezone_1();
@@ -147,6 +192,42 @@ var
   d : TDateTimeRec;
 begin
   CheckEquals(False,xsd_TryStrToDate(DATE_STR,d),Format('"%s" is not a valid date.',[DATE_STR]));
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToDate_date_time_fractional_second();
+
+  procedure do_check(
+    const AString : string;
+    const AY, AM, ADY : Word;
+    const AHH, AMN, ASS, ASSSS : Word
+  );
+  var
+    d : TDateTimeRec;
+    y,m,dy : Word;
+    hh,mn,ss, ssss : Word;
+  begin
+    d := xsd_StrToDate(AString);
+      DecodeDate(d.Date,y,m,dy);
+        CheckEquals(AY,y,'Year');
+        CheckEquals(AM,m,'Month');
+        CheckEquals(ADY,dy,'Day');
+      DecodeTime(d.Date,hh,mn,ss,ssss);
+        CheckEquals(AHH,hh,'Hour');
+        CheckEquals(AMN,mn,'Minute');
+        CheckEquals(ASS,ss,'Second');
+        CheckEquals(ASSSS,ssss,'MiliSecond');
+      CheckEquals(0,d.HourOffset,'HourOffset');
+      CheckEquals(0,d.MinuteOffset,'MinuteOffset');
+  end;
+
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  do_check('1976-10-12T23:34:56.7', 1976,10,12,  23,34,56,700);
+  do_check('1976-10-12T23:34:56.07', 1976,10,12,  23,34,56,70);
+  do_check('1976-10-12T23:34:56.007', 1976,10,12,  23,34,56,7);
+  do_check('1976-10-12T23:34:56.789', 1976,10,12,  23,34,56,789);
+  do_check('1976-10-12T23:34:56.78', 1976,10,12,  23,34,56,780);
+  do_check('1976-10-12T23:34:56.078', 1976,10,12,  23,34,56,78);
 end;
 
 procedure TTest_DateUtils.xsd_TryStrToDate_date_time_timezone_1();
