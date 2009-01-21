@@ -3,8 +3,6 @@ object MainForm: TMainForm
   Height = 486
   Top = 147
   Width = 427
-  HorzScrollBar.Page = 426
-  VertScrollBar.Page = 485
   ActiveControl = VST
   Caption = 'Simple Virtual Treeview demo'
   ClientHeight = 486
@@ -12,11 +10,12 @@ object MainForm: TMainForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 10
-    Height = 17
+    Height = 14
     Top = 8
-    Width = 171
+    Width = 112
     Caption = 'Last operation duration:'
     ParentColor = False
   end
@@ -28,7 +27,9 @@ object MainForm: TMainForm
     BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
+    DefaultText = 'Node'
     Header.AutoSizeIndex = -1
+    Header.Columns = <>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -45,7 +46,6 @@ object MainForm: TMainForm
     OnFreeNode = VSTFreeNode
     OnGetText = VSTGetText
     OnInitNode = VSTInitNode
-    Columns = <>
   end
   object ClearButton: TButton
     Left = 97
