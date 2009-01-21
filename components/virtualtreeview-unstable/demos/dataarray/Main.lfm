@@ -94,9 +94,27 @@ object Form1: TForm1
     Left = 3
     Height = 321
     Top = 8
-    Width = 581
+    Width = 605
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoScrollDelay = 1
+    BorderStyle = bsSingle
+    DefaultText = 'Node'
+    Header.Columns = <    
+      item
+        Text = 'Text'
+        Width = 150
+      end    
+      item
+        Options = [coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible]
+        Position = 1
+        Text = 'Pointers'
+        Width = 300
+      end    
+      item
+        Position = 2
+        Text = 'Random'
+        Width = 100
+      end>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
@@ -113,21 +131,5 @@ object Form1: TForm1
     OnGetText = MyTreeGetText
     OnPaintText = MyTreePaintText
     OnHeaderClick = MyTreeHeaderClick
-    Columns = <    
-      item
-        Width = 150
-        WideText = 'Text'
-      end    
-      item
-        Options = [coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible]
-        Position = 1
-        Width = 300
-        WideText = 'Pointers'
-      end    
-      item
-        Position = 2
-        Width = 100
-        WideText = 'Random'
-      end>
   end
 end
