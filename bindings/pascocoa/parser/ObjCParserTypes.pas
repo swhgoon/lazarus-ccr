@@ -135,14 +135,19 @@ type
   TEntity = class(TObject)
   protected
     function DoParse(AParser: TTextParser): Boolean; virtual; abstract;
+
   public
-    owner : TEntity;
-    Items : TList;
+    Owner       : TEntity;
+    Items       : TList;
+
     TagComment  : AnsiString;
-    constructor Create(AOwner: TEntity);
+    
+    constructor Create(AOwner: TEntity); virtual;
     destructor Destroy; override;
     function Parse(AParser: TTextParser): Boolean; virtual;
+    procedure Assign(AEntity: TEntity); virtual;
   end;
+  TEntityClass = class of TEntity;
 
   TCPrepocessor = class(TEntity);
 
@@ -426,7 +431,7 @@ type
   public
     _Classes    : TStringList;
     _isClasses  : Boolean; // classes or protocols
-    constructor Create(AOwner: TEntity);
+    constructor Create(AOwner: TEntity); override;
     destructor Destroy; override;
   end;
 
@@ -450,7 +455,7 @@ type
     _SuperClass   : AnsiString;
     _Category     : AnsiString;
     _Protocols    : TStringList;
-    constructor Create(AOwner : TEntity);
+    constructor Create(AOwner : TEntity); override;
     destructor Destroy; override;
   end;
 
@@ -465,7 +470,7 @@ type
     function DoParse(AParser: TTextParser): Boolean; override;
   public
     _FileName     : AnsiString;
-    constructor Create(AOwner: TEntity = nil);
+    constructor Create(AOwner: TEntity = nil); override;
   end;
 
 const
@@ -1304,6 +1309,11 @@ begin
 end;
 
 { TEntity }
+
+procedure TEntity.Assign(AEntity: TEntity);
+begin
+  TagComment := AEntity.TagComment;
+end;
 
 constructor TEntity.Create(AOwner: TEntity);
 begin

@@ -1,7 +1,7 @@
-{ * This file is part of ObjCParser tool 
+{ * This file is part of ObjCParser tool
   * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
   * license version 2.0 or 2.1.  You should have received a copy of the
-  * LGPL license along with at http://www.gnu.org/                                              
+  * LGPL license along with at http://www.gnu.org/
 }
 
 program objcparser;
@@ -21,7 +21,7 @@ uses
   SysUtils,
   ObjCParserUtils,
   ObjCParserTypes,
-  CToPasWriter, gnuccFeatures;
+  gnuccFeatures;
 
 type
   // this object is used only for precomile directives handling
@@ -470,7 +470,7 @@ begin
   end;
 end; 
 
-procedure DoTest(const InputFile: AnsiString);
+{procedure DoTest(const InputFile: AnsiString);
 var
   hdr   : TObjCHeader;
 
@@ -501,7 +501,7 @@ begin
     wrt.Free;
     hdr.Free;
   end;
-end;
+end;}
 
 begin
   doOutput := true;
@@ -515,9 +515,6 @@ begin
       Exit;
     end;
    
-    DoTest(inpf); 
-    Exit; 
-
     st := TStringList.Create;
     try
       if not ReadAndParseFile(inpf, st, err) then 
