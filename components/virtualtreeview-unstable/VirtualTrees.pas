@@ -4160,9 +4160,13 @@ var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
-
+  WideStr: WideString;
 begin
-  Len := Length(S);
+  //todo: this need to be adjusted to work with UTF8 strings since the current algorithm
+  //  when direct ported to use UTF8 functions leads to invalid UTF8 strings.
+  //  for now use a WideString as a bridge
+  WideStr := UTF8Decode(S);
+  Len := Length(WideStr);
   if (Len = 0) or (Width <= 0) then
     Result := ''
   else
@@ -4184,14 +4188,14 @@ begin
       while L < H do
       begin
         N := (L + H + 1) shr 1;
-        GetTextExtentPoint32(DC, PChar(S), N, Size);
+        GetTextExtentPoint32W(DC, PWideChar(WideStr), N, Size);
         W := Size.cx + EllipsisWidth;
         if W <= Width then
           L := N
         else
           H := N - 1;
       end;
-      Result := Copy(S, 1, L) + '...'
+      Result := UTF8Encode(Copy(WideStr, 1, L) + '...');
     end;
   end;
 end;
