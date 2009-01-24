@@ -3,8 +3,6 @@ object AlignForm: TAlignForm
   Height = 497
   Top = 299
   Width = 785
-  HorzScrollBar.Page = 784
-  VertScrollBar.Page = 496
   ActiveControl = AlignTree
   Caption = 'AlignForm'
   ClientHeight = 497
@@ -14,7 +12,7 @@ object AlignForm: TAlignForm
   Font.Name = 'Arial'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label8: TLabel
     Left = 8
     Height = 111
@@ -39,36 +37,36 @@ object AlignForm: TAlignForm
   end
   object Label2: TLabel
     Left = 220
-    Height = 14
-    Top = 349
-    Width = 93
+    Height = 17
+    Top = 346
+    Width = 116
     Anchors = [akLeft, akBottom]
     Caption = 'English text column'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 348
-    Height = 14
-    Top = 349
-    Width = 88
+    Left = 338
+    Height = 17
+    Top = 346
+    Width = 108
     Anchors = [akBottom]
     Caption = 'Greek text column'
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 644
-    Height = 14
-    Top = 349
-    Width = 130
+    Left = 619
+    Height = 17
+    Top = 346
+    Width = 155
     Anchors = [akRight, akBottom]
     Caption = 'Hebrew/arabic text column'
     ParentColor = False
   end
   object Label5: TLabel
     Left = 8
-    Height = 14
-    Top = 281
-    Width = 104
+    Height = 17
+    Top = 278
+    Width = 121
     Anchors = [akLeft, akBottom]
     Caption = 'Header button layout'
     ParentColor = False
@@ -96,8 +94,38 @@ object AlignForm: TAlignForm
     Colors.HotColor = clBlack
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
     DefaultNodeHeight = 34
+    DefaultText = 'Node'
     EditDelay = 100
     Header.Background = clBtnShadow
+    Header.Columns = <    
+      item
+        Alignment = taCenter
+        Hint = 'Text is initially centered and has a left-to-right directionality.'
+        ImageIndex = 20
+        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Spacing = 10
+        Text = 'English text column'
+        Width = 185
+      end    
+      item
+        Hint = 'Text is initially left aligned and has a left-to-right directionality.'
+        ImageIndex = 35
+        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Position = 1
+        Spacing = 10
+        Text = 'Greek text column'
+        Width = 155
+      end    
+      item
+        BiDiMode = bdRightToLeft
+        Hint = 'Text is initially left aligned and has a right-to-left directionality.'
+        ImageIndex = 32
+        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Position = 2
+        Spacing = 10
+        Text = 'Hebrew/arabic text column'
+        Width = 209
+      end>
     Header.Font.Height = -12
     Header.Font.Name = 'Arial'
     Header.Font.Style = [fsBold]
@@ -128,50 +156,19 @@ object AlignForm: TAlignForm
     OnInitChildren = AlignTreeInitChildren
     OnInitNode = AlignTreeInitNode
     OnStateChange = AlignTreeStateChange
-    Columns = <    
-      item
-        Alignment = taCenter
-        ImageIndex = 20
-        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
-        Spacing = 10
-        Width = 185
-        WideText = 'English text column'
-        WideHint = 'Text is initially centered and has a left-to-right directionality.'
-      end    
-      item
-        ImageIndex = 35
-        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
-        Position = 1
-        Spacing = 10
-        Width = 155
-        WideText = 'Greek text column'
-        WideHint = 'Text is initially left aligned and has a left-to-right directionality.'
-      end    
-      item
-        BiDiMode = bdRightToLeft
-        ImageIndex = 32
-        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible, coAutoSpring]
-        Position = 2
-        Spacing = 10
-        Width = 209
-        WideText = 'Hebrew/arabic text column'
-        WideHint = 'Text is initially left aligned and has a right-to-left directionality.'
-      end>
   end
   object AlignCombo0: TComboBox
     Left = 220
-    Height = 21
-    Top = 371
+    Height = 24
+    Top = 368
     Width = 130
     Anchors = [akLeft, akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    ItemHeight = 16
     Items.Strings = (
       'Left'
       'Right'
       'Center'
     )
-    MaxLength = 0
     OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 1
@@ -179,18 +176,16 @@ object AlignForm: TAlignForm
   object AlignCombo1: TComboBox
     Tag = 1
     Left = 327
-    Height = 21
-    Top = 371
+    Height = 24
+    Top = 368
     Width = 130
     Anchors = [akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    ItemHeight = 16
     Items.Strings = (
       'Left'
       'Right'
       'Center'
     )
-    MaxLength = 0
     OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 2
@@ -198,18 +193,16 @@ object AlignForm: TAlignForm
   object AlignCombo2: TComboBox
     Tag = 2
     Left = 640
-    Height = 21
-    Top = 371
+    Height = 24
+    Top = 368
     Width = 130
     Anchors = [akRight, akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    ItemHeight = 16
     Items.Strings = (
       'Left'
       'Right'
       'Center'
     )
-    MaxLength = 0
     OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 3
@@ -303,9 +296,9 @@ object AlignForm: TAlignForm
     TabOrder = 7
     object ShowGlyphsOptionBox: TCheckBox
       Left = 12
-      Height = 19
+      Height = 20
       Top = 4
-      Width = 86
+      Width = 94
       Caption = 'Show glyphs'
       OnClick = OptionBoxClick
       TabOrder = 0
@@ -313,9 +306,9 @@ object AlignForm: TAlignForm
     object HotTrackOptionBox: TCheckBox
       Tag = 1
       Left = 12
-      Height = 19
+      Height = 20
       Top = 25
-      Width = 70
+      Width = 73
       Caption = 'Hot track'
       OnClick = OptionBoxClick
       TabOrder = 1
@@ -323,9 +316,9 @@ object AlignForm: TAlignForm
     object ShowTextOptionBox: TCheckBox
       Tag = 2
       Left = 12
-      Height = 19
+      Height = 20
       Top = 46
-      Width = 73
+      Width = 78
       Caption = 'Show text'
       OnClick = OptionBoxClick
       TabOrder = 2
@@ -333,9 +326,9 @@ object AlignForm: TAlignForm
     object VisibleOptionBox: TCheckBox
       Tag = 3
       Left = 12
-      Height = 19
+      Height = 20
       Top = 67
-      Width = 56
+      Width = 59
       Caption = 'Visible'
       OnClick = OptionBoxClick
       TabOrder = 3
@@ -343,9 +336,9 @@ object AlignForm: TAlignForm
     object EnabledOptionBox: TCheckBox
       Tag = 4
       Left = 12
-      Height = 19
+      Height = 20
       Top = 88
-      Width = 65
+      Width = 67
       Caption = 'Enabled'
       OnClick = OptionBoxClick
       TabOrder = 4
@@ -353,19 +346,17 @@ object AlignForm: TAlignForm
   end
   object LayoutCombo: TComboBox
     Left = 8
-    Height = 21
-    Top = 303
+    Height = 24
+    Top = 300
     Width = 130
     Anchors = [akLeft, akBottom]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    ItemHeight = 16
     Items.Strings = (
       'Glyph left'
       'Glyph right'
       'Glyph top'
       'Glyph bottom'
     )
-    MaxLength = 0
     OnChange = LayoutComboChange
     Style = csDropDownList
     TabOrder = 8

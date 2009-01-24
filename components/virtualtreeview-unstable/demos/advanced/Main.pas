@@ -48,7 +48,7 @@ type
 var
   MainForm: TMainForm;
 
-procedure LoadUnicodeStrings(Name: string; var Strings: array of WideString);
+procedure LoadUnicodeStrings(Name: string; var Strings: array of UTF8String);
 procedure SetStatusbarText(const S: string);
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -63,29 +63,25 @@ uses
 //----------------------------------------------------------------------------------------------------------------------
 
 
-procedure LoadUnicodeStrings(Name: string; var Strings: array of WideString);
+procedure LoadUnicodeStrings(Name: string; var Strings: array of UTF8String);
 
 // Loads the Unicode strings from the resource.
 
 var
   Res: TLResource;
-  Head, Tail: PWideChar;
+  Head, Tail: PChar;
   I: Integer;
 
 begin
-  //Stream := TResourceStream.Create(0, Name, 'Unicode');
   Res := LazarusResources.Find(Name);
   if (Res <> nil) and (Res.Value <> '') then
   begin
-    //Head := Stream.Memory;
-    Head := PWideChar(Res.Value);
-    // Skip byte order mark.
-    Inc(Head);
+    Head := PChar(Res.Value);
     Tail := Head;
     for I := 0 to High(Strings) do
     begin
       Head := Tail;
-      while not (Tail^ in [WideChar(#0), WideChar(#13)]) do
+      while not (Tail^ in [#0, #13]) do
         Inc(Tail);
       SetString(Strings[I], Head, Tail - Head);
       // Skip carriage return and linefeed.

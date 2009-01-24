@@ -58,9 +58,9 @@ type
     procedure VST2InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure VST2InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
-    procedure VST2NewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; Text: WideString);
+    procedure VST2NewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; Text: UTF8String);
     procedure VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
     procedure VST2PaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
     procedure VST2GetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
@@ -110,7 +110,7 @@ type
   TNodeData2 = record
     Caption,
     StaticText,
-    ForeignText: WideString;
+    ForeignText: UTF8String;
     ImageIndex,
     Level: Integer;
   end;
@@ -189,7 +189,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TGeneralForm.VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: WideString);
+  TextType: TVSTTextType; var CellText: UTF8String);
 
 // Returns the text as it is stored in the nodes data record.
 
@@ -227,7 +227,7 @@ const
 
 var
   Data: PNodeData2;
-
+  WideStr: WideString;
 begin
   Data := Sender.GetNodeData(Node);
   with Data^ do
@@ -248,25 +248,29 @@ begin
     case Data.Level of
       1:
         begin
-          ForeignText := WideChar($2200);
-          ForeignText := ForeignText + WideChar($2202) + WideChar($221C) + WideChar($221E) + WideChar($2230) +
+          WideStr := WideChar($2200);
+          WideStr := WideStr + WideChar($2202) + WideChar($221C) + WideChar($221E) + WideChar($2230) +
             WideChar($2233) + WideChar($2257) + WideChar($225D) + WideChar($22B6) + WideChar($22BF);
+          ForeignText := UTF8Encode(WideStr);
         end;
       2:
         begin
-          ForeignText := WideChar($32E5);
-          ForeignText := ForeignText + WideChar($32E6) + WideChar($32E7) + WideChar($32E8) + WideChar($32E9);
+          WideStr := WideChar($32E5);
+          WideStr := WideStr + WideChar($32E6) + WideChar($32E7) + WideChar($32E8) + WideChar($32E9);
+          ForeignText := UTF8Encode(WideStr);
         end;
       3:
         begin
-          ForeignText := WideChar($03B1);
-          ForeignText := ForeignText + WideChar($03B2) + WideChar($03B3) + WideChar($03B4) + WideChar($03B5) +
+          WideStr := WideChar($03B1);
+          WideStr := WideStr + WideChar($03B2) + WideChar($03B3) + WideChar($03B4) + WideChar($03B5) +
             WideChar($03B6) + WideChar($03B7) + WideChar($03B8) + WideChar($03B9);
+          ForeignText := UTF8Encode(WideStr);
         end;
       4:
         begin
-          ForeignText := WideChar($20AC);
-          ForeignText := 'nichts ist unmöglich ' + ForeignText;
+          WideStr := WideChar($20AC);
+          WideStr := 'nichts ist unmöglich ' + WideStr;
+          ForeignText := UTF8Encode(WideStr);
         end;
       5:
         begin
@@ -332,7 +336,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TGeneralForm.VST2NewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  Text: WideString);
+  Text: UTF8String);
 
 // The caption of a node has been changed, keep this in the node record.
 
@@ -485,7 +489,7 @@ const
 
 var
   S: string;
-  WS: WideString;
+  WS: UTF8String;
   Data: Pointer;
   DataSize: Cardinal;
   TargetName: string;

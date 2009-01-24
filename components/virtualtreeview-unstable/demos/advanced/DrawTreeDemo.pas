@@ -67,7 +67,7 @@ type
     FDriveStrings: string;
     function CanDisplay(const Name: String): Boolean;
     function GetDriveString(Index: Integer): string;
-    function ReadAttributes(const Name: WideString): Cardinal;
+    function ReadAttributes(const Name: UTF8String): Cardinal;
     procedure RescaleImage(Source, Target: TBitmap);
   end;
 
@@ -89,12 +89,12 @@ type
   PShellObjectData = ^TShellObjectData;
   TShellObjectData = record
     FullPath,
-    Display: WideString;
+    Display: UTF8String;
     Attributes: Cardinal;
     OpenIndex,
     CloseIndex: Integer;      // image indices into the system image list
     Image: TBitmap;
-    Properties: WideString;   // some image properties, preformatted
+    Properties: UTF8String;   // some image properties, preformatted
   end;
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -262,7 +262,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TDrawTreeForm.ReadAttributes(const Name: WideString): Cardinal;
+function TDrawTreeForm.ReadAttributes(const Name: UTF8String): Cardinal;
 
 // Determines the attributes of the given shell object (file, folder).
 
@@ -432,7 +432,7 @@ procedure TDrawTreeForm.VDT1DrawNode(Sender: TBaseVirtualTree; const PaintInfo: 
 var
   Data: PShellObjectData;
   X: Integer;
-  S: WideString;
+  S: UTF8String;
   R: TRect;
 
 begin   
@@ -471,7 +471,7 @@ begin
               if (NodeWidth - 2 * Margin) > (Right - Left) then
                 S := ShortenString(Canvas.Handle, S, Right - Left);
             end;
-            DrawTextW(Canvas.Handle, PWideChar(S), Length(S), R, DT_TOP or DT_LEFT or DT_VCENTER or DT_SINGLELINE);
+            DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_TOP or DT_LEFT or DT_VCENTER or DT_SINGLELINE);
           end;
         end;
       1:

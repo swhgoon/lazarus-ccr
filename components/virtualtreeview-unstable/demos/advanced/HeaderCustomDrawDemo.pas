@@ -11,7 +11,7 @@ interface
 
 uses
   LCLIntf, Types, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, VirtualTrees, StdCtrls, ExtCtrls, LResources, LCLType;
+  Dialogs, VirtualTrees, StdCtrls, ExtCtrls, LResources, LCLType, LCLProc;
 
 type
   THeaderOwnerDrawForm = class(TForm)
@@ -33,7 +33,7 @@ type
     procedure HeaderCustomDrawTreeStateChange(Sender: TBaseVirtualTree; Enter, Leave: TVirtualTreeStates);
     procedure HeaderCustomDrawTreeGetText(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
   private
     FBackBitmap1,
     FBackBitmap2,
@@ -297,7 +297,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure THeaderOwnerDrawForm.HeaderCustomDrawTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-  Column: TColumnIndex; TextType: TVSTTextType; var CellText: WideString);
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
 
 begin
   CellText := 'Some simple text.';

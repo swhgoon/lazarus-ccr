@@ -51,6 +51,14 @@ object NodeForm: TNodeForm
       )
       Colors.SelectionRectangleBlendColor = 10539203
       DefaultNodeHeight = 130
+      DefaultText = 'Node'
+      Header.Columns = <      
+        item
+          Position = 1
+          Width = 483
+        end      
+        item
+        end>
       Header.Font.Height = -11
       Header.Font.Name = 'MS Sans Serif'
       Header.Options = [hoAutoResize, hoColumnResize, hoDrag]
@@ -75,20 +83,13 @@ object NodeForm: TNodeForm
       OnInitNode = MLTreeInitNode
       OnMeasureItem = MLTreeMeasureItem
       OnStateChange = MLTreeStateChange
-      Columns = <      
-        item
-          Position = 1
-          Width = 483
-        end      
-        item
-        end>
     end
   end
   object AutoAdjustCheckBox: TCheckBox
     Left = 12
-    Height = 22
-    Top = 399
-    Width = 292
+    Height = 20
+    Top = 401
+    Width = 286
     Anchors = [akLeft, akBottom]
     Caption = 'Automatically adjust node height to node text.'
     OnClick = AutoAdjustCheckBoxClick

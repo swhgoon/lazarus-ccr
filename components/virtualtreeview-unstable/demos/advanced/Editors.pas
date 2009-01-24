@@ -34,7 +34,7 @@ type
   PPropertyData = ^TPropertyData;
   TPropertyData = record
     ValueType: TValueType;
-    Value: WideString;      // This value can actually be a date or a number too.
+    Value: UTF8String;      // This value can actually be a date or a number too.
     Changed: Boolean;
   end;
 
@@ -275,7 +275,7 @@ function TPropertyEditLink.EndEdit: Boolean;
 var
   Data: PPropertyData;
   Buffer: array[0..1024] of Char;
-  S: WideString;
+  S: UTF8String;
 
 begin
   Result := True;

@@ -3,8 +3,6 @@ object PropertiesForm: TPropertiesForm
   Height = 419
   Top = 294
   Width = 637
-  HorzScrollBar.Page = 636
-  VertScrollBar.Page = 418
   ActiveControl = VST3
   Caption = 'PropertiesForm'
   ClientHeight = 419
@@ -12,7 +10,7 @@ object PropertiesForm: TPropertiesForm
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label9: TLabel
     Left = 420
     Height = 81
@@ -45,7 +43,20 @@ object PropertiesForm: TPropertiesForm
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 20
+    DefaultText = 'Node'
     Header.AutoSizeIndex = 1
+    Header.Columns = <    
+      item
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Text = 'Properties'
+        Width = 203
+      end    
+      item
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
+        Position = 1
+        Text = 'Values'
+        Width = 196
+      end>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.Height = 18
@@ -76,18 +87,6 @@ object PropertiesForm: TPropertiesForm
     OnInitChildren = VST3InitChildren
     OnInitNode = VST3InitNode
     OnStateChange = VST3StateChange
-    Columns = <    
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
-        Width = 203
-        WideText = 'Properties'
-      end    
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
-        Position = 1
-        Width = 196
-        WideText = 'Values'
-      end>
   end
   object RadioGroup1: TRadioGroup
     Left = 416

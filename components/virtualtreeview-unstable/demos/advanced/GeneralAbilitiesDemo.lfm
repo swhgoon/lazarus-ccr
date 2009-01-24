@@ -63,6 +63,7 @@ object GeneralForm: TGeneralForm
     Colors.HotColor = clBlack
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
     DefaultNodeHeight = 24
+    DefaultText = 'Node'
     DragCursor = crHelp
     DrawSelectionMode = smBlendedRectangle
     EditDelay = 200
@@ -70,6 +71,32 @@ object GeneralForm: TGeneralForm
     Font.Name = 'Lucida Sans Unicode'
     Header.AutoSizeIndex = -1
     Header.Background = clBtnShadow
+    Header.Columns = <    
+      item
+        Hint = 'Column which initially contains the tree.'
+        ImageIndex = 10
+        Position = 1
+        Spacing = 20
+        Text = 'Initial main column'
+        Width = 300
+      end    
+      item
+        Color = 14737632
+        Hint = 'Image only column.'
+        MaxWidth = 22
+        Options = [coEnabled, coParentBidiMode, coVisible]
+        Spacing = 0
+        Width = 22
+      end    
+      item
+        Hint = 'Column with mathematic, greek, japanese and german (nonsense) text.'
+        ImageIndex = 4
+        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]
+        Position = 2
+        Spacing = 20
+        Text = 'Language column'
+        Width = 300
+      end>
     Header.Font.Height = -11
     Header.Font.Name = 'Lucida Sans Unicode'
     Header.Height = 20
@@ -102,32 +129,6 @@ object GeneralForm: TGeneralForm
     OnKeyDown = VST2KeyDown
     OnNewText = VST2NewText
     OnStateChange = VST2StateChange
-    Columns = <    
-      item
-        ImageIndex = 10
-        Position = 1
-        Spacing = 20
-        Width = 300
-        WideText = 'Initial main column'
-        WideHint = 'Column which initially contains the tree.'
-      end    
-      item
-        Color = 14737632
-        MaxWidth = 22
-        Options = [coEnabled, coParentBidiMode, coVisible]
-        Spacing = 0
-        Width = 22
-        WideHint = 'Image only column.'
-      end    
-      item
-        ImageIndex = 4
-        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]
-        Position = 2
-        Spacing = 20
-        Width = 300
-        WideText = 'Language column'
-        WideHint = 'Column with mathematic, greek, japanese and german (nonsense) text.'
-      end>
   end
   object CheckMarkCombo: TComboBox
     Left = 503

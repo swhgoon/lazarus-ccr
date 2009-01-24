@@ -23,7 +23,7 @@ type
       var InitialStates: TVirtualNodeInitStates);
     procedure FormCreate(Sender: TObject);
     procedure MLTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-      TextType: TVSTTextType; var CellText: WideString);
+      TextType: TVSTTextType; var CellText: UTF8String);
     procedure MLTreePaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
     procedure MLTreeEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
@@ -42,7 +42,7 @@ uses
 
 
 var
-  DemoText: array[0..29] of WideString;
+  DemoText: array[0..29] of UTF8String;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TNodeForm.MLTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: WideString);
+  TextType: TVSTTextType; var CellText: UTF8String);
 
 // Returns the text for the given node. This text was loaded at form creation time from the application resource.
 

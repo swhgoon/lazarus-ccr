@@ -4125,9 +4125,15 @@ object VisibilityForm: TVisibilityForm
       Colors.UnfocusedSelectionColor = clHighlight
       Colors.UnfocusedSelectionBorderColor = clHighlight
       DefaultNodeHeight = 24
+      DefaultText = 'Node'
       Font.Color = clNavy
       Font.Height = -11
       Font.Name = 'Verdana'
+      Header.Columns = <      
+        item
+          Text = 'Main column'
+          Width = 204
+        end>
       Header.Font.Color = clNavy
       Header.Font.Height = -13
       Header.Font.Name = 'Verdana'
@@ -4157,12 +4163,6 @@ object VisibilityForm: TVisibilityForm
       OnInitChildren = VST2InitChildren
       OnInitNode = VST1InitNode
       OnScroll = VST2Scroll
-      Columns = <      
-        item
-          Width = 204
-          WideText = 'Main column'
-        end>
-      WideDefaultText = ''
     end
     object VST3: TVirtualStringTree
       Left = 207
@@ -8174,14 +8174,17 @@ object VisibilityForm: TVisibilityForm
       Colors.UnfocusedSelectionColor = clHighlight
       Colors.UnfocusedSelectionBorderColor = clHighlight
       DefaultNodeHeight = 24
+      DefaultText = 'Node'
       Font.Color = clNavy
       Font.Height = -11
       Font.Name = 'Verdana'
+      Header.Columns = <>
       Header.Font.Color = clNavy
       Header.Font.Height = -13
       Header.Font.Name = 'Verdana'
       Header.Font.Style = [fsBold]
       Header.Height = 24
+      Header.MainColumn = -1
       Header.Options = [hoColumnResize, hoDrag, hoVisible]
       Header.Style = hsFlatButtons
       HintAnimation = hatNone
@@ -8205,33 +8208,6 @@ object VisibilityForm: TVisibilityForm
       OnInitChildren = VST2InitChildren
       OnInitNode = VST1InitNode
       OnScroll = VST3Scroll
-      Columns = <      
-        item
-          Options = [coAllowClick, coEnabled, coParentBidiMode, coResizable, coShowDropMark]
-          Width = 100
-          WideText = 'Column 0'
-        end      
-        item
-          Position = 1
-          Width = 100
-          WideText = 'Column 1'
-        end      
-        item
-          Position = 2
-          Width = 100
-          WideText = 'Column 2'
-        end      
-        item
-          Position = 3
-          Width = 100
-          WideText = 'Column 3'
-        end      
-        item
-          Position = 4
-          Width = 100
-          WideText = 'Column 4'
-        end>
-      WideDefaultText = ''
     end
   end
   object VST1: TVirtualStringTree
@@ -8244,6 +8220,8 @@ object VisibilityForm: TVisibilityForm
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 24
+    DefaultText = 'Node'
+    Header.Columns = <>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -8260,7 +8238,5 @@ object VisibilityForm: TVisibilityForm
     OnGetText = VST1GetText
     OnInitChildren = VST1InitChildren
     OnInitNode = VST1InitNode
-    Columns = <>
-    WideDefaultText = ''
   end
 end

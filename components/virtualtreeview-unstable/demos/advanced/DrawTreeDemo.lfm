@@ -3,8 +3,6 @@ object DrawTreeForm: TDrawTreeForm
   Height = 477
   Top = 339
   Width = 710
-  HorzScrollBar.Page = 709
-  VertScrollBar.Page = 476
   ActiveControl = VDT1
   Caption = 'DrawTreeForm'
   ClientHeight = 477
@@ -12,7 +10,7 @@ object DrawTreeForm: TDrawTreeForm
   Font.Height = -13
   Font.Name = 'Trebuchet MS'
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label7: TLabel
     Height = 61
     Width = 710
@@ -24,18 +22,18 @@ object DrawTreeForm: TDrawTreeForm
   end
   object Label1: TLabel
     Left = 4
-    Height = 14
-    Top = 385
-    Width = 199
+    Height = 19
+    Top = 380
+    Width = 248
     Anchors = [akLeft, akBottom]
     Caption = 'Adjust vertical image alignment of nodes:'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 424
-    Height = 14
-    Top = 385
-    Width = 24
+    Height = 19
+    Top = 380
+    Width = 23
     Anchors = [akLeft, akBottom]
     Caption = '50%'
     ParentColor = False
@@ -58,6 +56,22 @@ object DrawTreeForm: TDrawTreeForm
     DefaultNodeHeight = 32
     Header.AutoSizeIndex = -1
     Header.Background = clBtnHighlight
+    Header.Columns = <    
+      item
+        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
+        Text = 'Image file name'
+        Width = 217
+      end    
+      item
+        Position = 1
+        Text = 'Thumbnail'
+        Width = 200
+      end    
+      item
+        Position = 2
+        Text = 'Properties'
+        Width = 160
+      end>
     Header.Height = 22
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoRestrictDrag, hoShowSortGlyphs, hoVisible]
     Header.ParentFont = True
@@ -88,22 +102,6 @@ object DrawTreeForm: TDrawTreeForm
     OnInitChildren = VDT1InitChildren
     OnInitNode = VDT1InitNode
     OnStateChange = VDT1StateChange
-    Columns = <    
-      item
-        Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
-        Width = 217
-        WideText = 'Image file name'
-      end    
-      item
-        Position = 1
-        Width = 200
-        WideText = 'Thumbnail'
-      end    
-      item
-        Position = 2
-        Width = 160
-        WideText = 'Properties'
-      end>
   end
   object TrackBar1: TTrackBar
     Left = 264
@@ -113,7 +111,6 @@ object DrawTreeForm: TDrawTreeForm
     Max = 100
     OnChange = TrackBar1Change
     Position = 50
-    ScalePos = trTop
     TickStyle = tsNone
     Anchors = [akLeft, akBottom]
     TabOrder = 1

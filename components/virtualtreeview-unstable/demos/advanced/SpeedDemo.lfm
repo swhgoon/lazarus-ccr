@@ -1544,7 +1544,9 @@ object SpeedForm: TSpeedForm
     BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
+    DefaultText = 'Node'
     Header.AutoSizeIndex = -1
+    Header.Columns = <>
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -1562,7 +1564,6 @@ object SpeedForm: TSpeedForm
     OnGetText = VST1GetText
     OnStateChange = VST1StateChange
     OnStructureChange = VST1StructureChange
-    Columns = <>
   end
   object GroupBox2: TGroupBox
     Left = 268
@@ -1577,9 +1578,9 @@ object SpeedForm: TSpeedForm
     TabOrder = 1
     object SBCheckBox: TCheckBox
       Left = 24
-      Height = 22
+      Height = 20
       Top = 10
-      Width = 132
+      Width = 126
       Caption = 'show background'
       OnClick = SBCheckBoxClick
       TabOrder = 0

@@ -72,9 +72,28 @@ object WindowsXPForm: TWindowsXPForm
     Colors.GridLineColor = clBtnShadow
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
     DefaultNodeHeight = 34
+    DefaultText = 'Node'
     DragMode = dmAutomatic
     DrawSelectionMode = smBlendedRectangle
     Header.AutoSizeIndex = -1
+    Header.Columns = <    
+      item
+        Color = 16250871
+        Options = [coAllowClick, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
+        Text = 'Name'
+        Width = 200
+      end    
+      item
+        Alignment = taRightJustify
+        Position = 1
+        Text = 'Size'
+        Width = 100
+      end    
+      item
+        Position = 2
+        Text = 'Type'
+        Width = 100
+      end>
     Header.Font.CharSet = ANSI_CHARSET
     Header.Font.Height = -12
     Header.Font.Name = 'Microsoft Sans Serif'
@@ -102,24 +121,6 @@ object WindowsXPForm: TWindowsXPForm
     OnInitChildren = XPTreeInitChildren
     OnInitNode = XPTreeInitNode
     OnStateChange = XPTreeStateChange
-    Columns = <    
-      item
-        Color = 16250871
-        Options = [coAllowClick, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
-        Width = 200
-        WideText = 'Name'
-      end    
-      item
-        Alignment = taRightJustify
-        Position = 1
-        Width = 100
-        WideText = 'Size'
-      end    
-      item
-        Position = 2
-        Width = 100
-        WideText = 'Type'
-      end>
   end
   object ToolBar2: TToolBar
     Height = 34

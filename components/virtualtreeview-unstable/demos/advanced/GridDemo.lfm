@@ -52,12 +52,42 @@ object GridForm: TGridForm
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 19
+    DefaultText = 'Node'
     DragMode = dmAutomatic
     EditDelay = 300
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Header.AutoSizeIndex = 2
     Header.Background = clBtnShadow
+    Header.Columns = <    
+      item
+        Options = [coParentBidiMode, coVisible, coFixed]
+        Width = 20
+      end    
+      item
+        Margin = 0
+        Position = 1
+        Text = 'Customer ID'
+        Width = 100
+      end    
+      item
+        Margin = 0
+        Position = 2
+        Text = 'First Name'
+        Width = 120
+      end    
+      item
+        Margin = 0
+        Position = 3
+        Text = 'Last Name'
+        Width = 120
+      end    
+      item
+        Margin = 0
+        Position = 4
+        Text = 'Order date'
+        Width = 100
+      end>
     Header.Font.Height = -12
     Header.Font.Name = 'Microsoft Sans Serif'
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowImages, hoVisible]
@@ -84,41 +114,12 @@ object GridForm: TGridForm
     OnPaintText = VST5PaintText
     OnInitNode = VST5InitNode
     OnStateChange = VST5StateChange
-    Columns = <    
-      item
-        Options = [coParentBidiMode, coVisible, coFixed]
-        Width = 20
-      end    
-      item
-        Margin = 0
-        Position = 1
-        Width = 100
-        WideText = 'Customer ID'
-      end    
-      item
-        Margin = 0
-        Position = 2
-        Width = 120
-        WideText = 'First Name'
-      end    
-      item
-        Margin = 0
-        Position = 3
-        Width = 120
-        WideText = 'Last Name'
-      end    
-      item
-        Margin = 0
-        Position = 4
-        Width = 100
-        WideText = 'Order date'
-      end>
   end
   object GridLineCheckBox: TCheckBox
-    Left = 556
-    Height = 22
-    Top = 364
-    Width = 127
+    Left = 562
+    Height = 20
+    Top = 366
+    Width = 121
     Anchors = [akRight, akBottom]
     Caption = 'Toggle grid lines'
     Checked = True

@@ -3,8 +3,6 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   Height = 440
   Top = 275
   Width = 776
-  HorzScrollBar.Page = 775
-  VertScrollBar.Page = 439
   ActiveControl = HeaderCustomDrawTree
   Caption = 'HeaderOwnerDrawForm'
   ClientHeight = 440
@@ -13,7 +11,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label8: TLabel
     Left = 12
     Height = 83
@@ -25,6 +23,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
     ParentColor = False
+    ParentFont = False
     ShowAccelChar = False
     WordWrap = True
   end
@@ -51,8 +50,41 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Colors.HotColor = clBlack
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
     DefaultNodeHeight = 24
+    DefaultText = 'Node'
     EditDelay = 100
     Header.Background = clBtnShadow
+    Header.Columns = <    
+      item
+        Hint = 'This column is drawn entirely by the tree.'
+        ImageIndex = 1
+        Options = [coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
+        Spacing = -1
+        Text = 'Default drawing'
+        Width = 200
+      end    
+      item
+        Alignment = taCenter
+        Hint = 'Only the background is customized.'
+        ImageIndex = 2
+        Layout = blGlyphTop
+        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
+        Position = 1
+        Spacing = -10
+        Style = vsOwnerDraw
+        Text = 'Custom background'
+        Width = 230
+      end    
+      item
+        Alignment = taCenter
+        Color = clInfoBk
+        Hint = 'Background and text in this column are customized.'
+        ImageIndex = 0
+        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
+        Position = 2
+        Spacing = -1
+        Style = vsOwnerDraw
+        Width = 350
+      end>
     Header.Font.Height = -12
     Header.Font.Name = 'Arial'
     Header.Font.Style = [fsBold]
@@ -82,38 +114,6 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     OnHeaderMouseDown = HeaderCustomDrawTreeHeaderMouseDown
     OnHeaderMouseUp = HeaderCustomDrawTreeHeaderMouseUp
     OnStateChange = HeaderCustomDrawTreeStateChange
-    Columns = <    
-      item
-        ImageIndex = 1
-        Options = [coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
-        Spacing = -1
-        Width = 200
-        WideText = 'Default drawing'
-        WideHint = 'This column is drawn entirely by the tree.'
-      end    
-      item
-        Alignment = taCenter
-        ImageIndex = 2
-        Layout = blGlyphTop
-        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
-        Position = 1
-        Spacing = -10
-        Style = vsOwnerDraw
-        Width = 230
-        WideText = 'Custom background'
-        WideHint = 'Only the background is customized.'
-      end    
-      item
-        Alignment = taCenter
-        Color = clInfoBk
-        ImageIndex = 0
-        Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
-        Position = 2
-        Spacing = -1
-        Style = vsOwnerDraw
-        Width = 350
-        WideHint = 'Background and text in this column are customized.'
-      end>
   end
   object HeaderImages: TImageList
     Height = 90

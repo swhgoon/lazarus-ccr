@@ -35,7 +35,7 @@ type
     procedure VST5FocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn,
       NewColumn: TColumnIndex; var Allowed: Boolean);
     procedure VST5GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
     procedure VST5InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure VST5PaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
@@ -129,7 +129,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TGridForm.VST5GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: WideString);
+  TextType: TVSTTextType; var CellText: UTF8String);
 
 var
   Data: PGridData;
@@ -138,7 +138,7 @@ begin
   if Column > 0 then
   begin
     Data := Sender.GetNodeData(Node);
-    CellText := Data.Value[Column - 1];
+    CellText := String(Data.Value[Column - 1]);
   end
   else
     CellText := '';

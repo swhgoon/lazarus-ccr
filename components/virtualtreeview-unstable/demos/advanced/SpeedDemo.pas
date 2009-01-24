@@ -39,7 +39,7 @@ type
     procedure ClearButtonClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
     procedure VST1Change(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST1StructureChange(Sender: TBaseVirtualTree; Node: PVirtualNode; Reason: TChangeReason);
     procedure DeleteSelectionButtonClick(Sender: TObject);
@@ -143,7 +143,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TSpeedForm.VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: WideString);
+  var CellText: UTF8String);
 
 begin
   CellText := Format('Level %d, Index %d', [Sender.GetNodeLevel(Node), Node.Index]);

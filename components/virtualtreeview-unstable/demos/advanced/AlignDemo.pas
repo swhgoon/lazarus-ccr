@@ -49,7 +49,7 @@ type
     procedure AlignTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var Index: Integer);
     procedure AlignTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: WideString);
+      var CellText: UTF8String);
     procedure AlignTreePaintText(Sender: TBaseVirtualTree; const Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
     procedure AlignTreeGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
@@ -83,7 +83,7 @@ var
 implementation
 
 uses
-  Main, States;
+  Main, States, vtlogger, ipcchannel;
   
 {.$R *.DFM}
 
@@ -100,7 +100,7 @@ type
   TAlignData = record
     MainColumnText,
     GreekText,
-    RTLText: WideString;
+    RTLText: UTF8String;
     ImageIndex: Integer;
   end;
 
@@ -109,9 +109,9 @@ type
 // Additionally, some greek text for another column is stored here too just because I like how it looks (the text,
 // not the storage ;-)).
 var
-  GreekStrings: array[0..8] of WideString;
-  ArabicStrings: array[0..3] of WideString;
-  HebrewStrings: array[0..2] of WideString;
+  GreekStrings: array[0..8] of UTF8String;
+  ArabicStrings: array[0..3] of UTF8String;
+  HebrewStrings: array[0..2] of UTF8String;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -172,7 +172,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TAlignForm.AlignTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: WideString);
+  TextType: TVSTTextType; var CellText: UTF8String);
 
 var
   Data: PAlignData;
@@ -277,6 +277,8 @@ var
  NewItem: TMenuItem;
 
 begin
+  Logger.Channels.Add(TIPCChannel.Create);
+  Logger.ActiveClasses := [lcWarning];
   // To display the various texts in a nice manner we use some specialized fonts of the system.
   // We could directly assign the font names used here in the OnPaintText event, but since this
   // would then be the only reference for the font it would cause the font to be recreated every
