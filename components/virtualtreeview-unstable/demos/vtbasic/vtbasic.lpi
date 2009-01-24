@@ -94,6 +94,7 @@
         <ComponentName Value="frmVTCheckList"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="VTCheckList"/>
       </Unit7>
       <Unit8>

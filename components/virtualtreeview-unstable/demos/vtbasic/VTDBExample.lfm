@@ -1,7 +1,7 @@
 object frmVTDBExample: TfrmVTDBExample
-  Left = 132
+  Left = 154
   Height = 482
-  Top = 132
+  Top = 154
   Width = 553
   ActiveControl = VT
   Caption = 'Database Test'
@@ -49,7 +49,7 @@ object frmVTDBExample: TfrmVTDBExample
         item
           ImageIndex = 3
           Layout = blGlyphRight
-          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
+          Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible, coAllowFocus]
           Position = 1
           Text = 'Company'
           Width = 200
