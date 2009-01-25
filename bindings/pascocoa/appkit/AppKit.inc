@@ -30,7 +30,7 @@
 #import <AppKit/NSMatrix.h>}
 {$include NSMenu.inc}
 {$include NSMenuItem.inc}
-{#import <AppKit/NSColor.h>
+{$include NSColor.inc>
 #import <AppKit/NSColorSpace.h>}
 {$include NSBitmapImageRep.inc}
 {#import <AppKit/NSBrowser.h>
@@ -103,7 +103,7 @@
 #import <AppKit/NSLayoutManager.h>
 #import <AppKit/NSParagraphStyle.h>
 #import <AppKit/NSTextStorage.h>}
-//{$include NSTextView.inc}
+{$include NSTextView.inc}
 {#import <AppKit/NSTextContainer.h>
 #import <AppKit/NSTextAttachment.h>
 #import <AppKit/NSInputManager.h>

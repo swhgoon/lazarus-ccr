@@ -49,15 +49,16 @@ type
     procedure CreateUserInterface();
   end;
 
-var
-  myView: TMyView;
-
 const
   Str_Window_Title = 'Text Editor';
+
+var
+  MyView: TMyView = nil;
 
 implementation
 
 uses controller, model;
+
 
 {@@
 }
@@ -191,16 +192,21 @@ end;
 {@@
   Creates a new menu item from a title
 }
-function TMyView.CreateMenuItem(ATitle: shortstring; ACallback: string; ATarget: objc.id): NSMenuItem;
+function TMyView.CreateMenuItem(ATitle: shortstring;
+  ACallback: string; ATarget: objc.id): NSMenuItem;
 var
   ItemText: CFStringRef;
   KeyText: CFStringRef;
 begin
-  KeyText := CFStringCreateWithPascalString(nil, '', kCFStringEncodingUTF8);
-  ItemText := CFStringCreateWithPascalString(nil, ATitle, kCFStringEncodingUTF8);
-  WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8), ' ATitle: ', ATitle);
+  KeyText := CFStringCreateWithPascalString(nil, '',
+                kCFStringEncodingUTF8);
+  ItemText := CFStringCreateWithPascalString(nil, ATitle,
+                kCFStringEncodingUTF8);
+  WriteLn(' ItemText: ', IntToHex(Int64(ItemText), 8),
+                ' ATitle: ', ATitle);
 
-  Result := NSMenuItem.initWithTitle_action_keyEquivalent(ItemText, nil, KeyText);
+  Result := NSMenuItem.initWithTitle_action_keyEquivalent(
+                ItemText, nil, KeyText);
 
   Result.setTarget(ATarget);
   Result.setAction(sel_registerName(PChar(ACallback)));
