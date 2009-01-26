@@ -565,7 +565,7 @@ var
   j   : integer;
 begin
   if (Index < 0) or (Index >= Items.Count) then Exit;
-  
+
   j := Index;
   while (j >= 0) and (TObject(Items[j]) is TComment) do dec(j);
   inc(j);
@@ -1143,15 +1143,17 @@ begin
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
-        if (TObject(hdr.Items[i]) is TEnumTypeDef) then begin
-          WriteOutIfComment(hdr.Items, i - 1, SpacePrefix, subs);
-          WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), subs);
-        end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
-          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
-        end else if (TObject(hdr.Items[i]) is TTypeNameDef) then begin
-          WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, subs);
-        end else if (TObject(hdr.Items[i]) is TSkip) then
-          subs.Add('//'+ TSkip(hdr.Items[i])._Skip);
+        if (TObject(hdr.Items[i]) is TEnumTypeDef) then
+          WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), subs)
+        else if (TObject(hdr.Items[i]) is TPrecompiler) then
+          WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st)
+        else if (TObject(hdr.Items[i]) is TTypeNameDef) then
+          WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, subs)
+        else if (TObject(hdr.Items[i]) is TSkip) then
+          subs.Add('//'+ TSkip(hdr.Items[i])._Skip)
+        else if (TObject(hdr.Items[i]) is TComment) then
+          //WriteOutIfComment(hdr.Items, i, SpacePrefix, subs);
+          WriteOutCommentStr( TComment(hdr.Items[i])._Comment, SpacePrefix, Subs);
       end; {of if}
 
     st.add('');
