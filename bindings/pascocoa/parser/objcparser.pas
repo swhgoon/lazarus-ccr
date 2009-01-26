@@ -161,6 +161,8 @@ begin
   try
     parser.Buf := s;
     try
+      parser.UsePrecompileEntities := false;
+      parser.UseCommentEntities := false;
       parser.OnPrecompile := prec.OnPrecompile;
       parser.OnComment := prec.OnComment;
       parser.IgnoreTokens.AddStrings(ConvertSettings.IgnoreTokens);

@@ -956,7 +956,8 @@ begin
     if s = '#define' then df := TCPrepDefine.Create(nil)
     else if s = '#include' then df := TCPrepInclude.Create(nil)
     else if s = '#else' then df := TCPrepInclude.Create(nil)
-    else if s = '#endif' then df := TCPrepEndif.Create(nil)
+    else if s = '#endif' then
+      df := TCPrepEndif.Create(nil)
     else if (s = '#if') or (s = '#elif') or (s = '#ifdef') or (s = '#ifndef') then df := TCPrepIf.Create(nil)
     else if s = '#pragma' then df := TCPrepPragma.Create(nil)
     else df := nil;
@@ -1773,7 +1774,6 @@ var
 begin
   Result := false;
   if not AParser.FindNextToken(_Directive, tt) then begin
-    AParser.Index := AParser.TokenPos;
     AParser.SetError('precompiler directive not found');
     Exit;
   end;
