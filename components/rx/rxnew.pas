@@ -9,13 +9,13 @@ unit rxnew;
 interface
 
 uses
-  rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
+    rxlookup, vclutils, dateutil, dbutils, rxapputils, rxdconst, rxstrutils, 
   dbdateedit, registerrx, curredit, folderlister, rxdbgrid, rxmemds, duallist, 
   boxprocs, tooledit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxtbrsetup, 
   fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
   rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
-  LazarusPackageIntf;
+  rxspin, LazarusPackageIntf;
 
 implementation
 
