@@ -1064,10 +1064,10 @@ var
   i, L:integer;
 begin
   inherited RequestAlign;
-  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) or (not Parent.HandleAllocated) then
+{  if (Parent = nil) or (csDestroying in ComponentState) or (csLoading in ComponentState) or (not Parent.HandleAllocated) then
     exit;
   if not Parent.HandleAllocated then exit;
-  ReAlignToolBtn;
+  ReAlignToolBtn;}
 end;
 
 procedure TToolPanel.Loaded;

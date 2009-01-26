@@ -49,6 +49,7 @@ type
     function GetDate: TDateTime;
     function GetPopupColor: TColor;
     function GetPopupVisible: Boolean;
+    function GetValidDate: boolean;
     function IsStoreTitle: boolean;
     procedure SetBlanksChar(const AValue: Char);
     procedure SetCalendarStyle(const AValue: TCalendarStyle);
@@ -105,6 +106,7 @@ type
     procedure UpdateMask; virtual;
     property Date: TDateTime read GetDate write SetDate;
     property Formatting: Boolean read FFormatting;
+    property ValidDate:boolean read GetValidDate;
   end;
   
 type
@@ -372,6 +374,16 @@ end;
 function TCustomRxDateEdit.GetPopupVisible: Boolean;
 begin
   Result := (FPopup <> nil) and FPopupVisible;
+end;
+
+function TCustomRxDateEdit.GetValidDate: boolean;
+begin
+  try
+    StrToDateFmt(FDateFormat, Text);
+    Result:=true;
+  except
+    Result:=false;
+  end;
 end;
 
 procedure TCustomRxDateEdit.SetCalendarStyle(const AValue: TCalendarStyle);

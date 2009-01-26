@@ -5,14 +5,11 @@
     <Name Value="rxnew"/>
     <Author Value="Lagunov Aleksey"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -24,7 +21,7 @@ translate to Lazarus by alexs in 2005 - 2007
     <License Value="free ware
 "/>
     <Version Major="1" Minor="1" Release="5" Build="98"/>
-    <Files Count="45">
+    <Files Count="46">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -204,8 +201,12 @@ translate to Lazarus by alexs in 2005 - 2007
       </Item44>
       <Item45>
         <Filename Value="rxclock.pas"/>
-        <UnitName Value="RXClock"/>
+        <UnitName Value="rxclock"/>
       </Item45>
+      <Item46>
+        <Filename Value="rxspin.pas"/>
+        <UnitName Value="rxspin"/>
+      </Item46>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">

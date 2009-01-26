@@ -4,7 +4,9 @@
   - Fix error in TDBComboBox.EditingDone if DataSet = nil
   - new code for align button on TToolPanel
   + property OnUTF8KeyPress now published
-  
+  + New value for ToolPanel.ToolBarStyle - tbsNative - for draw buttons used standart theme from OS
+  + fix options dialog for TToolPanel
+  + In TRxDateEdit add new property - ValidDate. Check valid input.
 22.05.2008 - version 2.0.0.136 (svn revision 100)
   + In TRxCustomDBLookupCombo add check for CircularDataLink
   + in TRxCustomDBLookupCombo accelerated drawing data
