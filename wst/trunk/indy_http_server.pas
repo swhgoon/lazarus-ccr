@@ -91,13 +91,13 @@ implementation
 uses
 {$IFDEF WST_DELPHI}
      ActiveX,
-  {$IFDEF INDY_9}
-     wst_indy9_utils,
-  {$ENDIF INDY_9}
-  {$IFDEF INDY_10}
-     wst_indy10_utils, IdSchedulerOfThread, IdSchedulerOfThreadDefault,
-  {$ENDIF}
 {$ENDIF WST_DELPHI}
+{$IFDEF INDY_9}
+     wst_indy9_utils,
+{$ENDIF INDY_9}
+{$IFDEF INDY_10}
+     wst_indy10_utils, IdSchedulerOfThread, IdSchedulerOfThreadDefault,
+{$ENDIF}
      base_service_intf,
      server_service_intf, server_service_imputils,
      metadata_wsdl;

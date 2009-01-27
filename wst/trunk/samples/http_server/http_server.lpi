@@ -52,7 +52,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="http_server"/>
@@ -67,9 +67,6 @@
         <IncludeAssertionCode Value="True"/>
       </SyntaxOptions>
     </Parsing>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Debugging>
         <UseLineInfoUnit Value="False"/>

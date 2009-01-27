@@ -26,20 +26,27 @@ type
   end;
 
 implementation
-uses ActiveX;
+{$IFDEF WST_DELPHI}
+uses 
+  ActiveX;
+{$ENDIF WST_DELPHI}
 
 { TwstIndy9Thread }
 
 procedure TwstIndy9Thread.AfterExecute;
 begin
+{$IFDEF WST_DELPHI}
   CoUninitialize();
+{$ENDIF WST_DELPHI}
   inherited;
 end;
 
 procedure TwstIndy9Thread.BeforeExecute;
 begin
   inherited;
+{$IFDEF WST_DELPHI}
   CoInitialize(nil);
+{$ENDIF WST_DELPHI}
 end;
 
 end.
