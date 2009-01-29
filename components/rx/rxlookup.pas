@@ -923,7 +923,7 @@ begin
       begin
         F:=FLookupDataLink.DataSet.FieldByName(FFieldList[i]);
         k:=FValuesList.Add(F.DisplayText);
-        FValuesList.Objects[k]:=TObject(F.DisplayWidth);
+        FValuesList.Objects[k]:=TObject(PtrInt(F.DisplayWidth));
       end;
   end;
 end;
