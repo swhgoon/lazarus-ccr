@@ -30,8 +30,8 @@
 #import <AppKit/NSMatrix.h>}
 {$include NSMenu.inc}
 {$include NSMenuItem.inc}
-{$include NSColor.inc>
-#import <AppKit/NSColorSpace.h>}
+{$include NSColor.inc}
+{#import <AppKit/NSColorSpace.h>}
 {$include NSBitmapImageRep.inc}
 {#import <AppKit/NSBrowser.h>
 #import <AppKit/NSBrowserCell.h>

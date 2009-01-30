@@ -18,8 +18,8 @@ type
     y: cfloat;
   end;
 
-//typedef NSPoint *NSPointPointer;
-//typedef NSPoint *NSPointArray;
+  NSPointPointer = ^NSPoint;
+  NSPointArray = ^NSPoint;
 
   NSSize = record
     width: cfloat;		{ should never be negative }
