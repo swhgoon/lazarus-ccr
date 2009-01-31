@@ -90,7 +90,6 @@ type
     property BorderSpacing;
     property Style; { must be published before Items }
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragMode;
@@ -106,7 +105,6 @@ type
     property ItemWidth;
     property MaxLength default -1;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

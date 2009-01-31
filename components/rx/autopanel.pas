@@ -52,11 +52,9 @@ type
     property Enabled;
     property Caption;
     property Color;
-    property Ctl3D;
     property Font;
     //property Locked;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

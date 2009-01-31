@@ -704,7 +704,6 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
   ControlStyle := ControlStyle + [csReplicatable];
-  Ctl3D := False;
 //  Enabled := False;
   BorderStyle := bsNone;
   ParentColor := True;

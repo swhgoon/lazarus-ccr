@@ -131,7 +131,7 @@ type
     procedure CMExit(var Message: TLMExit); message CM_EXIT;
     procedure WMPaste(var Message: TLMessage); message LM_PASTE;
     procedure WMCut(var Message: TLMessage); message LM_CUT;
-    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
+//    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CheckButtonVisible;
@@ -171,7 +171,7 @@ type
     property AutoSize;
     property BorderStyle;
     property Color;
-    property Ctl3D;
+//    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -185,7 +185,7 @@ type
 //{$ENDIF}
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
+//    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -834,11 +834,11 @@ begin
   inherited;
 end;
 
-procedure TRxSpinEdit.CMCtl3DChanged(var Message: TLMessage);
+{procedure TRxSpinEdit.CMCtl3DChanged(var Message: TLMessage);
 begin
   inherited;
   ResizeButton;
-end;
+end;}
 
 procedure TRxSpinEdit.CMEnabledChanged(var Message: TLMessage);
 begin

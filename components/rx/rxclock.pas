@@ -68,7 +68,7 @@ type
     procedure ResetAlarm;
     procedure CheckAlarm;
     function FormatSettingsChange(var Message: TLMessage): Boolean;
-    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
+//    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     {$IFDEF windows}
@@ -117,14 +117,12 @@ type
     property FullRepaint;
 {$ENDIF}
     property Color;
-    property Ctl3D;
     property Cursor;
     property DragMode;
     property DragCursor;
     property Enabled;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -373,12 +371,13 @@ begin
   inherited DestroyWindowHandle;
 end;
 }
+{
 procedure TRxClock.CMCtl3DChanged(var Message: TMessage);
 begin
   inherited;
   if ShowMode = scAnalog then Invalidate;
 end;
-
+}
 procedure TRxClock.CMTextChanged(var Message: TMessage);
 begin
   { Skip this message, no repaint }
@@ -673,7 +672,7 @@ begin
       begin
         if MinDots then
         begin
-          if Ctl3D then
+//          if Ctl3D then
           begin
             Canvas.Brush.Color := clBtnShadow;
             OffsetRect(R, -1, -1);
@@ -694,7 +693,7 @@ begin
         R.Right := R.Left + DotWidth;
         R.Bottom := R.Top + DotHeight;
         OffsetRect(R, -DotCenter.X, -DotCenter.Y);
-        if Ctl3D and MinDots then
+        if {Ctl3D and} MinDots then
           with Canvas do
           begin
             Brush.Color := FDotsColor;
@@ -703,7 +702,7 @@ begin
             RxFrame3D(Canvas, R, LightColor(FDotsColor), clWindowFrame, 1);
           end;
         Canvas.Brush.Color := Canvas.Pen.Color;
-        if not (Ctl3D and MinDots) then Canvas.FillRect(R);
+        if not ({Ctl3D and} MinDots) then Canvas.FillRect(R);
       end;
     end;
   finally

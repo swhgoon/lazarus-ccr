@@ -43,7 +43,6 @@ type
     property Align;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -67,7 +66,6 @@ type
     property Items;
     property MultiSelect;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -170,7 +168,7 @@ type
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
 {$IFDEF WIN32}
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+//    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
 {$ENDIF}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -315,7 +313,6 @@ type
     property BorderStyle;
     property Color;
     property Columns;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -340,7 +337,6 @@ type
     property Items stored False;
     property MultiSelect;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -621,10 +617,8 @@ type
     property DragCursor;
     property DragMode;
     property Color;
-    property Ctl3D;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

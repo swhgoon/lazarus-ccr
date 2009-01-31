@@ -249,7 +249,6 @@ type
     property ButtonOnlyWhenFocused;
     Property ButtonWidth;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     Property DirectInput;
@@ -282,7 +281,6 @@ type
     property OnStartDrag;
     property OnGetGridCellProps;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1278,7 +1276,6 @@ begin
   FEmptyItemColor:=clWindow;
   Glyph:=CreateArrowBitmap;
   ButtonWidth:=15;
-  Ctl3D:=true;
   TabStop:=true;
   
 end;
