@@ -293,6 +293,8 @@ end;
 procedure TRotatedText.SetFont(const AValue: TFont);
 begin
   FNormalBitmap.Canvas.Font := AValue;
+  FNormalBitmap.Canvas.Font.Quality := fqNonAntialiased;
+
   UpdateText;
 end;
 
@@ -301,6 +303,8 @@ var
   TextSize : TSize;
   TransColor: TColor;
 begin
+  FNormalBitmap.Canvas.Font.Quality := fqNonAntialiased;
+
   with FNormalBitmap, Canvas do
   begin
     TextSize := TextExtent(FText);
