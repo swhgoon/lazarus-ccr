@@ -141,8 +141,8 @@ begin
   // For example: BlockCnt = 5  => Index in 0..4
   //   fBlockCntPowOf2Offset = 3  (=8-5)
   //   NormIndex = Index + 3  => NormIndex in 3..7
-  i:=0;
   NormIndex:=Index+fBlockCntPowOf2Offset;
+  i:=0;
   repeat
     Range:=1 shl i;
     if NormIndex and Range=0 then break;
@@ -150,18 +150,18 @@ begin
     MergeIndex:=NormIndex-Range-fBlockCntPowOf2Offset;
     if (MergeIndex+Range-1>=0) then begin
       // wait until left blocks have finished
-      WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' wait for block ',MergeIndex);
+      //WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' wait for block ',MergeIndex);
       if (MergeIndex>=0) and (not Item.WaitForIndex(MergeIndex)) then exit;
       // compute left and right block bounds
       M:=L;
       L:=(MergeIndex-Range+1)*fBlockSize;
       if L<0 then L:=0;
-      WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' merge blocks ',L,' ',M,' ',R);
+      //WriteLn('TParallelSortPointerList.LWTSort Index=',Index,' merge blocks ',L,' ',M,' ',R);
       MergeSort(L,M,R,false);
     end;
     inc(i);
   until false;
-  WriteLn('TParallelSortPointerList.LWTSort END Index='+IntToStr(Index));
+  //WriteLn('TParallelSortPointerList.LWTSort END Index='+IntToStr(Index));
 end;
 
 constructor TParallelSortPointerList.Create(aList: PPointer; aCount: PtrInt;

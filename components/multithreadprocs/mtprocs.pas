@@ -32,6 +32,7 @@ uses
 type
   TProcThreadGroup = class;
   TProcThreadPool = class;
+  TProcThread = class;
 
   { TMultiThreadProcItem }
 
@@ -48,6 +49,7 @@ type
   private
     FGroup: TProcThreadGroup;
     FIndex: PtrInt;
+    FThread: TProcThread;
     FWaitingForIndexEnd: PtrInt;
     FWaitingForIndexStart: PtrInt;
     fWaitForPool: PRTLEvent;
@@ -60,6 +62,7 @@ type
     property Group: TProcThreadGroup read FGroup;
     property WaitingForIndexStart: PtrInt read FWaitingForIndexStart;
     property WaitingForIndexEnd: PtrInt read FWaitingForIndexEnd;
+    property Thread: TProcThread read FThread;
   end;
 
   { TProcThread }
@@ -292,6 +295,7 @@ begin
   inherited Create(true);
   fItem:=TMultiThreadProcItem.Create;
   fItem.fWaitForPool:=RTLEventCreate;
+  fItem.FThread:=Self;
 end;
 
 destructor TProcThread.Destroy;
