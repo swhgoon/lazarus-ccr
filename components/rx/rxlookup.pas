@@ -5,16 +5,16 @@ unit rxlookup;
 interface
 
 uses
-  LCLType, LCLProc, LCLIntf,
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  DB, EditBtn, DBGrids, StdCtrls, Buttons, LMessages, DbCtrls, GraphType,
-  dbutils, RxDbGrid, rxpopupunit;
+  LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms,
+  Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, StdCtrls, Buttons,
+  LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit;
 
 const
   TextMargin = 5;
   
 type
   TRxCustomDBLookupCombo = class;
+  TRxCustomDBLookupEdit = class;
 
   { TLookupSourceLink }
   TDataSourceLink = class(TDataLink)
@@ -32,68 +32,70 @@ type
 
   TLookupSourceLink = class(TDataLink)
   private
-    FDataControl: TRxCustomDBLookupCombo;
+    FOnActiveChanged:TNotifyEvent;
+    FOnLayoutChanged:TNotifyEvent;
+    FOnDataSetChanged:TNotifyEvent;
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
     procedure DataSetChanged; override;
   end;
 
-  { TPopupWindow }
+  { TRxCustomDBLookupEdit }
 
-  TPopupWindow = class(TForm)
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;
-  { TCustomDBLookupEdit }
-
-  TCustomDBLookupEdit = class(TEditButton)
+  TRxCustomDBLookupEdit = class(TEditButton)
   private
-    FDropDownCount: Integer;
-    FDropDownWidth: Integer;
     FLookupDisplayIndex: Integer;
     FLookupField: string;
     FLookupDisplay: string;
-    FLookupSource:TDataSource;
+    FKeyField:TField;
     //
-    FPopupWindow:TPopupWindow;
-    FList:TDBGrid;
-    FPopupVisible:boolean;
-    FSaveAfterScroll:TDataSetNotifyEvent;
+    FLookupDataLink:TLookupSourceLink;
+    FLocateObject:TLocateObject;
+    //
+    FRxPopUpForm:TPopUpForm;
+
     FFieldList:TStringList;
+    FPopUpFormOptions:TPopUpFormOptions;
+    function GetDropDownCount: Integer;
+    function GetDropDownWidth: Integer;
     function GetLookupSource: TDataSource;
+    function GetPopupVisible: boolean;
     procedure SetDropDownCount(const AValue: Integer);
+    procedure SetDropDownWidth(const AValue: Integer);
     procedure SetLookupDisplay(const AValue: string);
     procedure SetLookupDisplayIndex(const AValue: Integer);
     procedure SetLookupField(const AValue: string);
     procedure SetLookupSource(AValue: TDataSource);
+    procedure SetPopUpFormOptions(const AValue: TPopUpFormOptions);
     //
     procedure ShowList;
     procedure HideList;
     procedure ShowPopUp;
-    procedure DoMouseUp(Sender: TOBject; AButton: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure DoAfterScroll(DataSet: TDataSet);
-    procedure DoPopupWindowDeactivate(Sender: TObject);
-    procedure DoPopupWindowKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure UpdateKeyValue;
   protected
+    property PopUpFormOptions:TPopUpFormOptions read FPopUpFormOptions write SetPopUpFormOptions;
     procedure DoButtonClick (Sender: TObject); override;
     function GetDefaultGlyphName: String; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure OnClosePopup(AResult:boolean);virtual;
     //
-    property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
-    property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
+    procedure LookupDataSetChanged(Sender: TObject);  virtual;
+    procedure ListLinkActiveChanged(Sender: TObject); virtual;
+    //
+    property DropDownCount: Integer read GetDropDownCount write SetDropDownCount default 8;
+    property DropDownWidth: Integer read GetDropDownWidth write SetDropDownWidth default 0;
     property LookupDisplay: string read FLookupDisplay write SetLookupDisplay;
     property LookupDisplayIndex: Integer read FLookupDisplayIndex write SetLookupDisplayIndex default 0;
     property LookupField: string read FLookupField write SetLookupField;
-    property LookupSource: TDataSource read FLookupSource write SetLookupSource;
-    property PopupVisible:boolean read FPopupVisible;
+    property LookupSource: TDataSource read GetLookupSource write SetLookupSource;
+    property PopupVisible:boolean read GetPopupVisible;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
-  TRxLookupEdit = class(TCustomDBLookupEdit)
+  TRxLookupEdit = class(TRxCustomDBLookupEdit)
   published
     property DropDownCount;
     property DropDownWidth;
@@ -101,6 +103,7 @@ type
     property LookupDisplayIndex;
     property LookupField;
     property LookupSource;
+    property PopUpFormOptions;
   end;
 
   { TRxCustomDBLookupCombo }
@@ -202,8 +205,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure Paint; override;
 
-    procedure LookupDataSetChanged; virtual;
-    procedure ListLinkActiveChanged; virtual;
+    procedure LookupDataSetChanged(Sender: TObject);  virtual;
+    procedure ListLinkActiveChanged(Sender: TObject); virtual;
 
     //
     property Button: TSpeedButton read FButton;
@@ -311,26 +314,39 @@ type
   end;
 
 
-{ TCustomDBLookupEdit }
+{ TRxCustomDBLookupEdit }
 
-function TCustomDBLookupEdit.GetLookupSource: TDataSource;
+function TRxCustomDBLookupEdit.GetLookupSource: TDataSource;
 begin
-  Result:=FLookupSource;
+  Result:=FLookupDataLink.DataSource;
 end;
 
-procedure TCustomDBLookupEdit.SetDropDownCount(const AValue: Integer);
+function TRxCustomDBLookupEdit.GetPopupVisible: boolean;
 begin
-  if FDropDownCount=AValue then exit;
-  if AValue>50 then
-    FDropDownCount:=50
-  else
-  if AValue<0 then
-    FDropDownCount:=8
-  else
-    FDropDownCount:=AValue;
+  Result:=Assigned(FRxPopUpForm);
 end;
 
-procedure TCustomDBLookupEdit.SetLookupDisplay(const AValue: string);
+function TRxCustomDBLookupEdit.GetDropDownCount: Integer;
+begin
+  Result:=FPopUpFormOptions.DropDownCount;
+end;
+
+function TRxCustomDBLookupEdit.GetDropDownWidth: Integer;
+begin
+  Result:=FPopUpFormOptions.DropDownWidth;
+end;
+
+procedure TRxCustomDBLookupEdit.SetDropDownCount(const AValue: Integer);
+begin
+  FPopUpFormOptions.DropDownCount:=AValue;
+end;
+
+procedure TRxCustomDBLookupEdit.SetDropDownWidth(const AValue: Integer);
+begin
+  FPopUpFormOptions.DropDownWidth:=AValue;
+end;
+
+procedure TRxCustomDBLookupEdit.SetLookupDisplay(const AValue: string);
 var
   S1, S2:string;
   K:integer;
@@ -356,131 +372,76 @@ begin
   end;
 end;
 
-procedure TCustomDBLookupEdit.SetLookupDisplayIndex(const AValue: Integer);
+procedure TRxCustomDBLookupEdit.SetLookupDisplayIndex(const AValue: Integer);
 begin
   if FLookupDisplayIndex=AValue then exit;
   FLookupDisplayIndex:=AValue;
 end;
 
-procedure TCustomDBLookupEdit.SetLookupField(const AValue: string);
+procedure TRxCustomDBLookupEdit.SetLookupField(const AValue: string);
 begin
   if FLookupField = AValue then exit;
   FLookupField:=AValue;
 end;
 
-procedure TCustomDBLookupEdit.SetLookupSource(AValue: TDataSource);
+procedure TRxCustomDBLookupEdit.SetLookupSource(AValue: TDataSource);
 begin
-  if LookupSource = AValue then exit;
-  FLookupSource:=AValue;
+  FLookupDataLink.DataSource:=AValue;
 end;
 
-procedure TCustomDBLookupEdit.ShowList;
+procedure TRxCustomDBLookupEdit.SetPopUpFormOptions(
+  const AValue: TPopUpFormOptions);
+begin
+  FPopUpFormOptions.Assign(AValue);
+end;
+
+procedure TRxCustomDBLookupEdit.ShowList;
 var
   i,W:integer;
   GC:TColumn;
 begin
-  if Assigned(FLookupSource) and
-     Assigned(FLookupSource.DataSet) and
-     FLookupSource.DataSet.Active then
-  if not FPopupVisible then
+  if FLookupDataLink.Active and not PopupVisible then
   begin
     ShowPopUp;
-{    FList.Columns.Clear;
-    W:=16;
-    for I:=0 to FFieldList.Count-1 do
-    begin;
-      GC:=TDbGridColumns(FList.Columns).Add;
-      GC.Field:=FLookupSource.DataSet.FieldByName(FFieldList[i]);
-      if (W+GC.Field.DisplayWidth * FList.Canvas.TextWidth('W')) > FList.Width then
-        GC.Width:=FList.Width - W
-      else
-        GC.Width:=GC.Field.DisplayWidth * FList.Canvas.TextWidth('W');
-      W:=W+GC.Width + 4;
-    end;
-    FPopupVisible:=true;}
   end;
 end;
 
-procedure TCustomDBLookupEdit.HideList;
+procedure TRxCustomDBLookupEdit.HideList;
 begin
-  if Assigned(FPopupWindow) then
-  begin
-    FList.Parent:=nil;
-    FPopupWindow.Close;
-    FPopupVisible:=false;
-    FLookupSource.DataSet.AfterScroll:=FSaveAfterScroll;
-    FList.DataSource:=nil;
-    FPopupWindow:=nil;
-  end;
+
 end;
 
-procedure TCustomDBLookupEdit.ShowPopUp;
+procedure TRxCustomDBLookupEdit.ShowPopUp;
 var
   R:TPoint;
+  FValue:string;
 begin
-  if not Assigned(FList) then
-      FList:=TDBGrid.Create(Owner);
-  FPopupWindow:=TPopupWindow.Create(Application);
-  FList.Parent:=FPopupWindow;
 
-  FList.Align:=alClient;
-  FList.OnMouseUp:=@DoMouseUp;
-  FList.DataSource:=FLookupSource;
-  FList.Options:=FList.Options -
-      [dgTabs, dgEditing, dgTitles, dgIndicator, dgColumnResize, dgRowLines] + [dgRowSelect];
-  FSaveAfterScroll:=FLookupSource.DataSet.AfterScroll;
-  FLookupSource.DataSet.AfterScroll:=@DoAfterScroll;
+  if FLookupDataLink.Active then
+    if not PopupVisible then
+    begin
 
-  R.X:=Left;
-  R.Y:=Top+Height;
-  R:=Parent.ClientToScreen(R);
-  FPopupWindow.Top:=R.Y;
-  FPopupWindow.Left:=R.X;
-  FPopupWindow.Width:=Width+Button.Width;
-  FPopupWindow.OnDeactivate:=@DoPopupWindowDeactivate;
-  FPopupWindow.OnKeyDown:=@DoPopupWindowKeyDown;
-  if FDropDownCount>0 then
-    FPopupWindow.Height:=FList.Canvas.TextHeight('W')*FDropDownCount
-  else
-    FPopupWindow.Height:=FList.Canvas.TextHeight('W')*8;
-  FPopupWindow.ShowModal;
+      FValue := Text;
+
+      FLocateObject.Locate(FLookupField, FValue, true, false);
+
+      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
+        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
+    end
+
 end;
 
-procedure TCustomDBLookupEdit.DoMouseUp(Sender: TOBject; AButton: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if (X>0) and (Y>0) and (X<FList.ClientWidth) and (Y<Flist.ClientHeight) then
-    HideList;
-end;
 
-procedure TCustomDBLookupEdit.DoAfterScroll(DataSet: TDataSet);
+procedure TRxCustomDBLookupEdit.UpdateKeyValue;
 var
   S:string;
 begin
   S:=FFieldList[FLookupDisplayIndex];
-  Text:=FLookupSource.DataSet.FieldByName(S).AsString;
-  if Assigned(FSaveAfterScroll) then
-     FSaveAfterScroll(DataSet);
+  if FLookupDataLink.Active then
+    Text:=FLookupDataLink.DataSet.FieldByName(S).AsString;
 end;
 
-procedure TCustomDBLookupEdit.DoPopupWindowDeactivate(Sender: TObject);
-begin
-  HideList;
-end;
-
-procedure TCustomDBLookupEdit.DoPopupWindowKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  case Key of
-    vk_Return: HideList;
-  else
-    TDbGridAccess(FList).KeyDown(Key, Shift);
-    exit;
-  end;
-  Key:=0;
-end;
-
-procedure TCustomDBLookupEdit.DoButtonClick(Sender: TObject);
+procedure TRxCustomDBLookupEdit.DoButtonClick(Sender: TObject);
 begin
   inherited DoButtonClick(Sender);
   if PopupVisible then
@@ -489,19 +450,19 @@ begin
     ShowList;
 end;
 
-function TCustomDBLookupEdit.GetDefaultGlyphName: String;
+function TRxCustomDBLookupEdit.GetDefaultGlyphName: String;
 begin
   Result:='rxbtn_downarrow';
 end;
 
-procedure TCustomDBLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TRxCustomDBLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN, VK_RETURN]) and PopupVisible then
   begin
-    if Key=VK_RETURN then HideList
+{    if Key=VK_RETURN then HideList
     else
       TDbGridAccess(Flist).KeyDown(Key, Shift);
-    Key := 0;
+    Key := 0;}
   end
   else
   if (Key = VK_DOWN) and ((ssAlt in Shift) or (ssCtrl in Shift)) then
@@ -514,37 +475,70 @@ begin
   if not (PopupVisible or ReadOnly) and (Key in [VK_UP, VK_DOWN]) and (Shift = []) then
   begin
     case Key of
-      VK_UP: if not FLookupSource.DataSet.BOF then FLookupSource.DataSet.Prior;
-      VK_DOWN: if not FLookupSource.DataSet.EOF then FLookupSource.DataSet.Next;
+      VK_UP: if not FLookupDataLink.DataSet.BOF then FLookupDataLink.DataSet.Prior;
+      VK_DOWN: if not FLookupDataLink.DataSet.EOF then FLookupDataLink.DataSet.Next;
     end;
-    Text:=FLookupSource.DataSet.FieldByName(FFieldList[FLookupDisplayIndex]).AsString;
+    Text:=FLookupDataLink.DataSet.FieldByName(FFieldList[FLookupDisplayIndex]).AsString;
     Key:=0;
   end;
 end;
 
-constructor TCustomDBLookupEdit.Create(AOwner: TComponent);
+procedure TRxCustomDBLookupEdit.OnClosePopup(AResult: boolean);
+begin
+
+end;
+
+procedure TRxCustomDBLookupEdit.LookupDataSetChanged(Sender: TObject);
+begin
+  UpdateKeyValue;
+  Invalidate;
+end;
+
+procedure TRxCustomDBLookupEdit.ListLinkActiveChanged(Sender: TObject);
+var
+  DataSet: TDataSet;
+begin
+  FKeyField := nil;
+  DataSet:=nil;
+  if FLookupDataLink.Active and (FLookupField <> '') then
+  begin
+    DataSet := FLookupDataLink.DataSet;
+    FKeyField := DataSet.FieldByName(FLookupField);
+  end;
+  FLocateObject.DataSet := DataSet;
+
+
+  UpdateKeyValue
+end;
+
+constructor TRxCustomDBLookupEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDropDownCount:=8;
+  FLocateObject:=CreateLocate(nil);
+
+  //Lookup
+  FLookupDataLink:=TLookupSourceLink.Create;
+  FLookupDataLink.FOnActiveChanged:=@ListLinkActiveChanged;
+  FLookupDataLink.FOnLayoutChanged:=@ListLinkActiveChanged;
+  FLookupDataLink.FOnDataSetChanged:=@LookupDataSetChanged;
+
+
+//  FDropDownCount:=8;
   FFieldList:=TStringList.Create;
   Glyph:=CreateArrowBitmap;
   ButtonWidth:=15;
+  FPopUpFormOptions:=TPopUpFormOptions.Create;
 end;
 
-destructor TCustomDBLookupEdit.Destroy;
+destructor TRxCustomDBLookupEdit.Destroy;
 begin
+  FreeAndNil(FLocateObject);
+  FreeAndNil(FPopUpFormOptions);
   FFieldList.Clear;
   FreeAndNil(FFieldList);
   inherited Destroy;
 end;
 
-{ TPopupWindow }
-
-constructor TPopupWindow.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  BorderStyle:=bsNone;
-end;
 
 { TRxCustomDBLookupCombo }
 
@@ -1206,7 +1200,7 @@ begin
   end;
 end;
 
-procedure TRxCustomDBLookupCombo.LookupDataSetChanged;
+procedure TRxCustomDBLookupCombo.LookupDataSetChanged(Sender: TObject);
 begin
   if PopupVisible then
   begin
@@ -1215,7 +1209,7 @@ begin
   end;
 end;
 
-procedure TRxCustomDBLookupCombo.ListLinkActiveChanged;
+procedure TRxCustomDBLookupCombo.ListLinkActiveChanged(Sender: TObject);
 var
   DataSet: TDataSet;
 begin
@@ -1246,10 +1240,12 @@ begin
   FValuesList:= TStringList.Create;
   FLocateObject:=CreateLocate(nil);
   FPopUpFormOptions:=TPopUpFormOptions.Create;
-  
   //Lookup
   FLookupDataLink:=TLookupSourceLink.Create;
-  FLookupDataLink.FDataControl:=Self;
+//  FLookupDataLink.FDataControl:=Self;
+  FLookupDataLink.FOnActiveChanged:=@ListLinkActiveChanged;
+  FLookupDataLink.FOnLayoutChanged:=@ListLinkActiveChanged;
+  FLookupDataLink.FOnDataSetChanged:=@LookupDataSetChanged;
 
   //Data
   FDataLink:=TDataSourceLink.Create;
@@ -1328,20 +1324,26 @@ end;
 
 procedure TLookupSourceLink.ActiveChanged;
 begin
-  if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+{  if FDataControl <> nil then
+    FDataControl.ListLinkActiveChanged;}
+  if Assigned(FOnActiveChanged) then
+    FOnActiveChanged(DataSet);
 end;
 
 procedure TLookupSourceLink.LayoutChanged;
 begin
-  if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+{  if FDataControl <> nil then
+    FDataControl.ListLinkActiveChanged;}
+  if Assigned(FOnLayoutChanged) then
+    FOnLayoutChanged(DataSet);
 end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
-  if FDataControl <> nil then
-    FDataControl.LookupDataSetChanged;
+{  if FDataControl <> nil then
+    FDataControl.LookupDataSetChanged;}
+  if Assigned(FOnDataSetChanged) then
+    FOnDataSetChanged(DataSet);
 end;
 
 { TRxDBLookupCombo }
@@ -1357,3 +1359,4 @@ begin
 end;
 
 end.
+
