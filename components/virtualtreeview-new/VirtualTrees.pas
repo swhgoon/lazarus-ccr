@@ -2357,7 +2357,6 @@ type
     function ToggleCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
 
     procedure CMColorChange(var Message: TLMessage); message CM_COLORCHANGED;
-    procedure CMCtl3DChanged(var Message: TLMessage); message CM_CTL3DCHANGED;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMDenySubclassing(var Message: TLMessage); message CM_DENYSUBCLASSING;
     //procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
@@ -3478,7 +3477,6 @@ type
     property Color;
     property Colors;
     property Constraints;
-    property Ctl3D;
     property CustomCheckImages;
     property DefaultNodeHeight;
     property DefaultPasteMode;
@@ -3511,7 +3509,6 @@ type
     property NodeDataSize;
     property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -10417,7 +10414,7 @@ begin
             SetHeight(FMinHeight);
           Result := True;
         end
-        else if HSplitterHit and ((Message.Msg = WM_NCLBUTTONDBLCLK) or (Message.Msg = WM_LBUTTONDBLCLK)) and
+        else if HSplitterHit and (Message.Msg = LM_LBUTTONDBLCLK) and
           (hoDblClickResize in FOptions) and (FColumns.FTrackIndex > NoColumn) then
         begin
           // If the click was on a splitter then resize column to smallest width.
@@ -15425,17 +15422,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.CMCtl3DChanged(var Message: TLMessage);
-
-begin
-  //todo: check what this message is supposed todo. Probably will be removed
-  inherited;
-  if BorderStyle = bsSingle then
-    RecreateWnd(Self);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TBaseVirtualTree.CMBiDiModeChanged(var Message: TLMessage);
 
 begin
@@ -18865,20 +18851,24 @@ var
 begin
   if Assigned(FOnBeforeCellPaint) then
   begin
+    {$ifdef LCLWin32}
     if CellPaintMode = cpmGetContentMargin then
     begin
       // Prevent drawing if we are only about to get the margin. As this also clears the update rect we need to save it.
       GetUpdateRect(Handle, UpdateRect, False);
       SetUpdateState(True);
     end;
+    {$endif}
 
     FOnBeforeCellPaint(Self, Canvas, Node, Column, CellPaintMode, CellRect, ContentRect);
 
+    {$ifdef LCLWin32}
     if CellPaintMode = cpmGetContentMargin then
     begin
       SetUpdateState(False);
       InvalidateRect(Handle, @UpdateRect, False);
     end;
+    {$endif}
   end;
 end;
 
@@ -24562,7 +24552,6 @@ begin
       Self.Color := Color;
       Self.Colors.Assign(Colors);
       Self.Constraints.Assign(Constraints);
-      Self.Ctl3D := Ctl3D;
       Self.DefaultNodeHeight := DefaultNodeHeight;
       Self.DefaultPasteMode := DefaultPasteMode;
       Self.DragCursor := DragCursor;
@@ -24585,7 +24574,6 @@ begin
       Self.TreeOptions := TreeOptions;
       //Self.ParentBiDiMode := ParentBiDiMode;
       Self.ParentColor := ParentColor;
-      Self.ParentCtl3D := ParentCtl3D;
       Self.ParentFont := ParentFont;
       Self.ParentShowHint := ParentShowHint;
       Self.PopupMenu := PopupMenu;
