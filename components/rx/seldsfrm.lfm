@@ -1,67 +1,64 @@
 object SelectDataSetForm: TSelectDataSetForm
+  Left = 445
+  Height = 315
+  Top = 197
+  Width = 400
+  ActiveControl = CheckBox1
   Caption = 'Select dataset to copy to'
   ClientHeight = 315
   ClientWidth = 400
-  PixelsPerInch = 96
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 314
-  Left = 501
-  Height = 315
-  Top = 189
-  Width = 400
+  Position = poDesktopCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CheckBox1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 34
+    Width = 99
+    BorderSpacing.Around = 6
     Caption = 'Sourse dataset'
-    Color = clNone
     FocusControl = DataSetList
-    Left = 8
-    Height = 13
-    Top = 32
-    Width = 73
+    ParentColor = False
   end
   object CheckBox1: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 22
+    Top = 6
+    Width = 153
+    BorderSpacing.Around = 6
     Caption = 'Copy only metadata'
     OnChange = CheckBox1Change
     TabOrder = 0
-    UseOnChange = True
-    Left = 8
-    Height = 13
-    Top = 8
-    Width = 116
   end
   object DataSetList: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 195
+    Top = 58
+    Width = 388
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
     OnDblClick = ListBox1DblClick
     OnKeyPress = ListBox1KeyPress
     TabOrder = 1
-    Left = 8
-    Height = 224
-    Top = 48
+    TopIndex = -1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 50
+    Top = 259
     Width = 388
-  end
-  object OkBtn: TBitBtn
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Caption = '&Œ '
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
     TabOrder = 2
-    Left = 240
-    Height = 30
-    Top = 280
-    Width = 75
-  end
-  object BitBtn2: TBitBtn
-    Anchors = [akRight, akBottom]
-    BorderSpacing.InnerBorder = 2
-    Cancel = True
-    Caption = 'Cancel'
-    Kind = bkCancel
-    ModalResult = 2
-    TabOrder = 3
-    Left = 320
-    Height = 30
-    Top = 280
-    Width = 75
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

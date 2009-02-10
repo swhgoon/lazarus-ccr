@@ -6,15 +6,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComponentEditors, DB;
+  Buttons, ComponentEditors, DB, ButtonPanel;
 
 type
 
   { TSelectDataSetForm }
 
   TSelectDataSetForm = class(TForm)
-    OkBtn: TBitBtn;
-    BitBtn2: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     CheckBox1: TCheckBox;
     Label1: TLabel;
     DataSetList: TListBox;
@@ -115,7 +114,7 @@ begin
     begin
       if Items.Count > 0 then ItemIndex := 0;
       Enabled := Items.Count > 0;
-      OkBtn.Enabled := (ItemIndex >= 0);
+      ButtonPanel1.OKButton.Enabled:= (ItemIndex >= 0);
     end;
   finally
     DataSetList.Items.EndUpdate;
