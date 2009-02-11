@@ -15,7 +15,7 @@ uses
   curredit, rxswitch, rxdice, rxdbcomb, rxtoolbar, rxxpman, PageMngr, RxAppIcon,
   Dialogs, ComponentEditors, seldsfrm, DBPropEdits, DB, rxctrls, RxLogin,
   RxCustomChartPanel, AutoPanel, pickdate, rxconst, tooledit, rxclock,
-  rxceEditLookupFields, rxpopupunit, rxspin;
+  rxceEditLookupFields, rxpopupunit, rxspin, RxTimeEdit;
 
 type
 
@@ -276,6 +276,11 @@ begin
   RegisterComponents('RX',[TRxSpinButton, TRxSpinEdit]);
 end;
 
+procedure RegisterRxTimeEdit;
+begin
+  RegisterComponents('RX',[TRxTimeEdit]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -296,6 +301,7 @@ begin
   RegisterUnit('tooledit', @RegisterToolEdit);
   RegisterUnit('rxclock', @RegisterRxClock);
   RegisterUnit('rxspin', @RegisterRxSpin);
+  RegisterUnit('RxTimeEdit', @RegisterRxTimeEdit);
 
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);

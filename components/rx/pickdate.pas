@@ -19,8 +19,16 @@ uses
 
 { TRxCalendar }
 
-{ TRxCalendar implementation copied from Borland CALENDAR.PAS sample unit
-  and modified }
+{ TRxCalendar implementation copied from Borland CALENDAR.PAS sample
+  unit and modified }
+
+const
+  //TRxShortDaysWeek: array[0..6] of string = ('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+  TRxShortDaysOfWeek: array[0..6] of string =
+    ('Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa');
+  TRxLongMonthNames: array[0..11] of string =
+    ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December');
 
 type
   TDayOfWeek = 0..6;
@@ -48,11 +56,14 @@ type
     FWeekends: TDaysOfWeek;
     FWeekendColor: TColor;
     FDaysArray:TDaysArray;
+    FShortDaysOfWeek: TStrings;
     function GetDateElement(Index: Integer): Integer;
     procedure FillDaysArray;
+    function GetShortDaysOfWeek: TStrings;
     procedure SetCalendarDate(Value: TDateTime);
     procedure SetDateElement(Index: Integer; Value: Integer);
     procedure SetNotInThisMonthColor(const AValue: TColor);
+    procedure SetShortDaysOfWeek(const AValue: TStrings);
     procedure SetStartOfWeek(Value: TDayOfWeekName);
     procedure SetUseCurrentDate(Value: Boolean);
     procedure SetWeekendColor(Value: TColor);
@@ -60,6 +71,8 @@ type
     function IsWeekend(ACol, ARow: Integer): Boolean;
     procedure CalendarUpdate(DayOnly: Boolean);
     function StoreCalendarDate: Boolean;
+    procedure AddWeek;
+    procedure DecWeek;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Change; dynamic;
@@ -70,6 +83,9 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure LMSize(var Message: TLMSize); message LM_SIZE;
+    procedure RxCalendarMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure RxCalendarMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure UpdateShortDaysOfWeek; virtual;
 
     property CalendarDate: TDateTime read FDate write SetCalendarDate
       stored StoreCalendarDate;
@@ -85,11 +101,13 @@ type
     property NotInThisMonthColor:TColor read FNotInThisMonthColor write SetNotInThisMonthColor default clSilver;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure NextMonth;
     procedure NextYear;
     procedure PrevMonth;
     procedure PrevYear;
     procedure UpdateCalendar; virtual;
+    property ShortDaysOfWeek: TStrings read GetShortDaysOfWeek write SetShortDaysOfWeek;
   end;
 
   { TRxCalendar1 }
@@ -112,6 +130,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property SelectedColor;
+    property ShortDaysOfWeek; //
     property StartOfWeek;
     property TabStop;
     property UseCurrentDate;
@@ -149,6 +168,7 @@ type
     FFourDigitYear: Boolean;
     FBtns: array[0..3] of TSpeedButton;
     FMonthMenu:TPopupMenu;
+    FMonthNames: TStrings;
     procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     function GetDate: TDateTime;
@@ -158,6 +178,7 @@ type
     procedure NextYearBtnClick(Sender: TObject);
     procedure CalendarChange(Sender: TObject);
     procedure SetDate(const AValue: TDateTime);
+    procedure SetMonthNames(const AValue: TStrings);
     procedure TopPanelDblClick(Sender: TObject);
     procedure MonthMenuClick(Sender: TObject);
     procedure CalendarDblClick(Sender: TObject);
@@ -170,10 +191,12 @@ type
     procedure Deactivate; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure AutoSizeForm;
     property Date:TDateTime read GetDate write SetDate;
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
     property Calendar: TCustomRxCalendar read FCalendar;
+    property MonthNames: TStrings read FMonthNames write SetMonthNames;
   end;
 
 { TSelectDateDlg }
@@ -267,7 +290,11 @@ begin
   for i:=1 to 12 do
   begin
     MI:=TMenuItem.Create(Result);
-    MI.Caption:=LongMonthNames[i];
+    (*
+    // Old variant
+    // MI.Caption:=LongMonthNames[i];
+    *)
+    MI.Caption := TRxLongMonthNames[i - 1];
     MI.OnClick:=AOnClick;
     MI.Tag:=i;
     Result.Items.Add(MI);
@@ -311,6 +338,7 @@ var
   ADefaultTextStyle: TTextStyle;
 begin
   inherited Create(AOwner);
+  FShortDaysOfWeek := TStringList.Create;
   FUseCurrentDate := True;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
@@ -328,9 +356,18 @@ begin
   ADefaultTextStyle.Alignment:=taCenter;
   ADefaultTextStyle.Layout:=tlCenter;
   DefaultTextStyle:=ADefaultTextStyle;
-
+  FocusRectVisible := False;
+  OnMouseWheelUp := @RxCalendarMouseWheelUp;
+  OnMouseWheelDown := @RxCalendarMouseWheelDown;
+  UpdateShortDaysOfWeek;
   UpdateCalendar;
   TitleStyle:=tsNative;
+end;
+
+destructor TCustomRxCalendar.Destroy;
+begin
+  FShortDaysOfWeek.Free;
+  inherited Destroy;
 end;
 
 procedure TCustomRxCalendar.CreateParams(var Params: TCreateParams);
@@ -370,6 +407,7 @@ procedure TCustomRxCalendar.DrawCell(ACol, ARow: Longint; ARect: TRect;
   AState: TGridDrawState);
 var
   DayNum:integer;
+  R: TRect;
 begin
   PrepareCanvas(aCol, aRow, aState);
 
@@ -381,17 +419,34 @@ begin
 
   if ARow>0 then
   begin
-    if not ((gdSelected in aState) and (gdFocused in aState)) then
-      Canvas.Font.Color:=FDaysArray[ACol, ARow].DayColor
+    if not ((gdSelected in aState) and (gdFocused in aState)) then begin
+      if (FDaysArray[ACol, ARow].DayDate = Date) and (FDaysArray[ACol, ARow].DayColor <> FNotInThisMonthColor) then begin
+        R := ARect;
+        // Variant 1
+        //Dec(R.Bottom, 1);
+        //Dec(R.Right, 1);
+        //Canvas.Frame3d(R, 1, bvLowered);
+
+        // Variant 2
+        RxFrame3D(Canvas, R, clWindowFrame, clBtnHighlight, 1);
+        RxFrame3D(Canvas, R, clBtnShadow, clBtnFace, 1);
+      end;
+      Canvas.Font.Color:=FDaysArray[ACol, ARow].DayColor;
+    end
     else
-      Canvas.Font.Color:=clWindow
+      Canvas.Font.Color := clHighlightText  // clWindow
     ;
     DrawCellText(ACol, ARow, ARect, AState, IntToStr(FDaysArray[ACol, ARow].DayNum));
+
   end
   else
   begin
     Canvas.Font.Color:=clText;
-    DrawCellText(ACol, ARow, ARect, AState, ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]);
+    //DrawCellText(ACol, ARow, ARect, AState, ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]);
+    if FShortDaysOfWeek <> nil then begin
+      if ACol <= FShortDaysOfWeek.Count - 1 then
+        DrawCellText(ACol, ARow, ARect, AState, FShortDaysOfWeek.Strings[(Ord(StartOfWeek) + ACol) mod 7]);
+    end;
   end;
 end;
 
@@ -419,6 +474,16 @@ procedure TCustomRxCalendar.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Shift = [] then
     case Key of
+      VK_UP:
+        begin
+          DecWeek;
+          Exit;
+        end;
+      VK_DOWN:
+        begin
+          AddWeek;
+          Exit;
+        end;
       VK_LEFT, VK_SUBTRACT:
         begin
           if (Day > 1) then Day := Day - 1
@@ -456,6 +521,20 @@ begin
   DefaultRowHeight := (Message.Height - GridLinesH) div 7;
 end;
 
+procedure TCustomRxCalendar.RxCalendarMouseWheelUp(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  DecWeek;
+  Handled := True;
+end;
+
+procedure TCustomRxCalendar.RxCalendarMouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  AddWeek;
+  Handled := True;
+end;
+
 procedure TCustomRxCalendar.SetCalendarDate(Value: TDateTime);
 begin
   if FDate <> Value then
@@ -469,6 +548,22 @@ end;
 function TCustomRxCalendar.StoreCalendarDate: Boolean;
 begin
   Result := not FUseCurrentDate;
+end;
+
+procedure TCustomRxCalendar.AddWeek;
+begin
+  if (Day + 7 <= DaysThisMonth) then
+    Day := Day + 7
+  else
+    CalendarDate := CalendarDate + 7;
+end;
+
+procedure TCustomRxCalendar.DecWeek;
+begin
+  if (Day - 7 >= 1) then
+    Day := Day - 7
+  else
+    CalendarDate := CalendarDate - 7;
 end;
 
 function TCustomRxCalendar.GetDateElement(Index: Integer): Integer;
@@ -526,6 +621,25 @@ begin
   end;
 end;
 
+procedure TCustomRxCalendar.UpdateShortDaysOfWeek;
+var
+  Ind: Integer;
+  //OldNotify: TNotifyEvent;
+begin
+  if (FShortDaysOfWeek <> nil) and (FShortDaysOfWeek.Count = 0) then begin
+    //OldNotify := FDaysOfWeek.OnChange;
+    //TStringList(FShortDays).OnChange := nil;
+    for Ind := Low(TRxShortDaysOfWeek) to High(TRxShortDaysOfWeek) do
+      FShortDaysOfWeek.Add(TRxShortDaysOfWeek[Ind]);
+    //FShortDaysOfWeek.OnChange := OldNotify;
+  end;
+end;
+
+function TCustomRxCalendar.GetShortDaysOfWeek: TStrings;
+begin
+  Result := FShortDaysOfWeek;
+end;
+
 procedure TCustomRxCalendar.SetDateElement(Index: Integer; Value: Integer);
 var
   AYear, AMonth, ADay: Word;
@@ -558,6 +672,14 @@ begin
     FNotInThisMonthColor:=AValue;
     FillDaysArray;
     Invalidate;
+  end;
+end;
+
+procedure TCustomRxCalendar.SetShortDaysOfWeek(const AValue: TStrings);
+begin
+  if AValue.Text <> FShortDaysOfWeek.Text then begin
+    FShortDaysOfWeek.Assign(AValue);
+    Invalidate; //
   end;
 end;
 
@@ -822,6 +944,12 @@ begin
   
   if (csDesigning in ComponentState) then Exit;
 
+  FMonthNames := TStringList.Create;
+  if FMonthNames.Count = 0 then begin
+    for i := Low(TRxLongMonthNames) to High(TRxLongMonthNames) do
+      FMonthNames.Add(TRxLongMonthNames[i]);
+  end;
+
   BackPanel := TPanel.Create(Self);
   BackPanel.Anchors:=[akLeft, akRight, akTop, akBottom];
 
@@ -934,6 +1062,12 @@ begin
   CalendarChange(nil);
 end;
 
+destructor TPopupCalendar.Destroy;
+begin
+  FMonthNames.Free;
+  inherited Destroy;
+end;
+
 procedure TPopupCalendar.AutoSizeForm;
 begin
   FControlPanel.Height:=FCalendar.Canvas.TextHeight('Wg')+4;
@@ -996,8 +1130,6 @@ begin
           else FCalendar.PrevMonth;
         end;
       VK_ESCAPE:ModalResult:=mrCancel;
-      else
-        TLocCalendar(FCalendar).KeyDown(Key, Shift);
     end;
   inherited KeyDown(Key, Shift);
 end;
@@ -1056,13 +1188,27 @@ begin
 end;
 
 procedure TPopupCalendar.CalendarChange(Sender: TObject);
+var
+  s: string; //
+  AYear, AMonth, ADay: Word;
 begin
-  FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
+  DecodeDate(FCalendar.CalendarDate, AYear, AMonth, ADay);
+  s := Format('%s, %d', [TRxLongMonthNames[AMonth - 1], AYear]);
+  FTitleLabel.Caption := s; //
+  // FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
 end;
 
 procedure TPopupCalendar.SetDate(const AValue: TDateTime);
 begin
   FCalendar.CalendarDate:=AValue;
+end;
+
+procedure TPopupCalendar.SetMonthNames(const AValue: TStrings);
+begin
+  if AValue.Text <> FMonthNames.Text then begin
+    FMonthNames.Assign(AValue);
+    CalendarChange(Self);
+  end;
 end;
 
   { TSelectDateDlg }
@@ -1262,14 +1408,14 @@ begin
     VK_ESCAPE: ModalResult := mrCancel;
     VK_NEXT:
       begin
-        if ssCtrl in Shift then Calendar.NextYear
-        else Calendar.NextMonth;
+        if ssCtrl in Shift then Calendar.NextYear;
+        //else Calendar.NextMonth;
         TitleLabel.Update;
       end;
     VK_PRIOR:
       begin
-        if ssCtrl in Shift then Calendar.PrevYear
-        else Calendar.PrevMonth;
+        if ssCtrl in Shift then Calendar.PrevYear;
+        //else Calendar.PrevMonth;
         TitleLabel.Update;
       end;
     VK_TAB:

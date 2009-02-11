@@ -15,13 +15,15 @@ uses
   fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
   rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
-  rxspin, LazarusPackageIntf;
+  rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('registerrx', @registerrx.Register); 
+  RegisterUnit('RegisterRxDB', @RegisterRxDB.Register); 
 end; 
 
 initialization
