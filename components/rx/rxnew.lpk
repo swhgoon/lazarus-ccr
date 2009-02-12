@@ -21,7 +21,7 @@ translate to Lazarus by alexs in 2005 - 2009
     <License Value="free ware
 "/>
     <Version Major="1" Minor="2" Release="1" Build="98"/>
-    <Files Count="50">
+    <Files Count="51">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -224,6 +224,10 @@ translate to Lazarus by alexs in 2005 - 2009
         <Filename Value="rxdbtimeedit.pas"/>
         <UnitName Value="RxDBTimeEdit"/>
       </Item50>
+      <Item51>
+        <Filename Value="rxdbctrls.pas"/>
+        <UnitName Value="rxdbctrls"/>
+      </Item51>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">

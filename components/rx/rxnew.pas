@@ -15,7 +15,7 @@ uses
   fduallst, rxxpman, pagemngr, rxappicon, seldsfrm, rxctrls, rxlogin, 
   rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
-  rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, 
+  rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
   LazarusPackageIntf;
 
 implementation

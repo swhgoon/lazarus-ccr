@@ -16,6 +16,15 @@ interface
 uses
   LCLType, LCLProc, LCLIntf, Registry, Classes, SysUtils, DB, IniFiles;
 
+const
+  IntegerDataTypes = [ftSmallint, ftInteger, ftWord, ftLargeint];
+
+  NumericDataTypes = IntegerDataTypes + [ftFloat, ftCurrency, ftBCD];
+
+const
+  TimeDataTypes = [ftTime, ftDateTime, ftTimeStamp];
+
+
 type
 
 { TLocateObject }

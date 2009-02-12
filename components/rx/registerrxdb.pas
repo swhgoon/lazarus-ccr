@@ -9,7 +9,7 @@ uses
 
 procedure Register;
 implementation
-uses RxDBSpinEdit, RxDBTimeEdit;
+uses RxDBSpinEdit, RxDBTimeEdit, RxDBCtrls;
 
 procedure RegisterRxDBSpinEdit;
 begin
@@ -21,10 +21,16 @@ begin
   RegisterComponents('RX DBAware',[TRxDBTimeEdit]);
 end;
 
+procedure RegisterRxDBCtrls;
+begin
+  RegisterComponents('RX DBAware',[TRxDBProgressBar, TRxDBTrackBar]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('RxDBTimeEdit', @RegisterRxDBTimeEdit);
   RegisterUnit('RxDBSpinEdit', @RegisterRxDBSpinEdit);
+  RegisterUnit('RxDBCtrls', @RegisterRxDBCtrls);
 end;
 
 end.

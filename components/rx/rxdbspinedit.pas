@@ -8,11 +8,6 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Spin,
   DbCtrls, DB, LMessages, LCLType;
 
-const
-  IntegerDataTypes = [ftSmallint, ftInteger, ftWord, ftLargeint];
-
-  NumericDataTypes = IntegerDataTypes + [ftFloat, ftCurrency, ftBCD];
-
 
 type
 
@@ -100,6 +95,7 @@ type
   end;
 
 implementation
+uses dbutils;
 
 type
   TFieldDataLinkHack = class(TFieldDataLink)
@@ -280,8 +276,7 @@ end;
 
 destructor TCustomRxDBSpinEdit.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FreeAndNil(FDataLink);
   inherited Destroy;
 end;
 

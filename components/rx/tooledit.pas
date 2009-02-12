@@ -283,9 +283,11 @@ begin
       ACanvas := TControlCanvas.Create;
       ACanvas.Control := Editor;
     end;
+
     DC := Message.DC;
     if DC = 0 then DC := BeginPaint(Handle, PS);
     ACanvas.Handle := DC;
+
     try
       ACanvas.Font := Font;
       if not Enabled and NewStyleControls and not
@@ -295,12 +297,14 @@ begin
       with ACanvas do
       begin
         R := ClientRect;
-        if not (NewStyleControls {and Ctl3D}) and (BorderStyle = bsSingle) then
+{
+        if not (NewStyleControls ) and (BorderStyle = bsSingle) then
         begin
           Brush.Color := clWindowFrame;
-{          FrameRect(R);
-          InflateRect(R, -1, -1);}
+          FrameRect(R);
+          InflateRect(R, -1, -1);
         end;
+}
         Brush.Color := Color;
         S := AText;
         AWidth := TextWidth(S);

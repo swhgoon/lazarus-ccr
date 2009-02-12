@@ -140,7 +140,7 @@ end;
 procedure TCustomRxTimeEdit.DoChangeValue(AValue: integer);
 var
   S:ShortString;
-  H1, M2, S3:byte;
+  H1, M2, S3:Integer;
   i,p:integer;
 
 procedure IncHour;

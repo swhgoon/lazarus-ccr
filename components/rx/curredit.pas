@@ -477,6 +477,8 @@ var
   S: string;
 begin
   S := GetDisplayText;
+//  if not FFocused then
+//  else
   if not PaintComboEdit(Self, S, FAlignment, FFocused {and not PopupVisible}, FCanvas, Message) then
       inherited WMPaint(Message);
 end;
