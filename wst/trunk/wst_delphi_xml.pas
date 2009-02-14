@@ -32,7 +32,8 @@ type
   procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);overload;
   function NodeToBuffer(ANode : TDOMNode):string ;
 
-  function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function FilterList(const ALIst : IDOMNodeList; const ANodeName : DOMString):IDOMNodeList;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function FilterList(const ANode : TDOMNode; const ANodeName : DOMString):IDOMNodeList;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
 implementation
 uses XmlDoc;
@@ -170,6 +171,11 @@ type
 function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
 begin
   Result := TDOMNodeSelectListImp.Create(ALIst,ANodeName);
+end;
+
+function FilterList(const ANode : TDOMNode; const ANodeName : DOMString):IDOMNodeList;
+begin
+  Result := FilterList(ANode.ChildNodes,ANodeName);
 end;
 
 { TDOMNodeSelectListImp }

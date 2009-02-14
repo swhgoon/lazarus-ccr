@@ -2136,11 +2136,7 @@ end;
 function TEmbeddedArrayStackItem.CreateList(const ANodeName: string): TDOMNodeList;
 begin
   if ScopeObject.HasChildNodes() then begin
-{$IFDEF WST_DELPHI}
-    Result := FilterList(ScopeObject.ChildNodes,ANodeName);
-{$ELSE}
     Result := FilterList(ScopeObject,ANodeName);
-{$ENDIF WST_DELPHI}
   end else begin
     Result := nil;
   end;
