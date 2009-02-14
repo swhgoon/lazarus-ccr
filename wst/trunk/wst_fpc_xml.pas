@@ -9,6 +9,22 @@ uses
 {$INCLUDE wst.inc}
 {$INCLUDE wst_delphi.inc}
 
+type
+
+  { TDOMNodeSelectListImp }
+
+  TDOMNodeSelectListImp = class(TDOMNodeList)
+  private
+    FFilter: DOMString;
+    FUseFilter: Boolean;
+  protected
+    procedure BuildList(); override;
+  public
+    constructor Create(ANode: TDOMNode; const AFilter: DOMString);
+  end;
+
+  function FilterList(const ANode : TDOMNode; const ANodeName : DOMString) : TDOMNodeList ;
+
   function GetNodeItemsCount(const ANode : TDOMNode): Integer;
   function GetNodeListCount(ANodeList : TDOMNodeList) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function GetNodeListCount(ANodeList : TDOMNamedNodeMap) : Integer ;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -86,6 +102,40 @@ begin
   finally
     locStream.Free();
   end;
+end;
+
+function FilterList(const ANode : TDOMNode; const ANodeName : DOMString) : TDOMNodeList ;
+begin
+  Result := TDOMNodeSelectListImp.Create(ANode,ANodeName);
+end;
+
+{ TDOMNodeSelectListImp }
+
+type
+  TDOMNodeCracked = class(TDOMNode);
+procedure TDOMNodeSelectListImp.BuildList();
+var
+  Child: TDOMNode;
+begin
+  FList.Clear;
+  FRevision := TDOMNodeCracked(FNode).GetRevision();
+
+  Child := FNode.FirstChild;
+  while ( Child <> nil ) do begin
+    if ( Child.NodeType = ELEMENT_NODE ) and
+       ( ( not FUseFilter ) or ( TDOMElement(Child).TagName = FFilter ) )
+    then begin
+      FList.Add(Child);
+    end;
+    Child := Child.NextSibling
+  end;
+end;
+
+constructor TDOMNodeSelectListImp.Create(ANode: TDOMNode; const AFilter: DOMString);
+begin
+  inherited Create(ANode);
+  FFilter := AFilter;
+  FUseFilter := ( FFilter <> '*' );
 end;
 
 end.
