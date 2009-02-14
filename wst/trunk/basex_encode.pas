@@ -69,7 +69,7 @@ const
     IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,
     IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM,IM
   );
-  Base64_CHAR_SET = ['A'..'Z','a'..'z','0'..'9','+','/'];
+  //Base64_CHAR_SET = ['A'..'Z','a'..'z','0'..'9','+','/'];
 
 function Base64Encode(const ALength : PtrInt; const AInBuffer) : string;
 var
@@ -139,7 +139,7 @@ var
   locInQuantom : array[0..3] of Byte;
   ok : Boolean;
   locAtualLen : PtrInt;
-  locInValue : Byte;
+  locInValue, locReadedValidChars : Byte;
   locFailOnIllegalChar : Boolean;
 begin
   if ( AInBuffer = '' ) then begin
@@ -153,6 +153,7 @@ begin
     locBuffer := @(AInBuffer[1]);
     locFailOnIllegalChar := not ( xoDecodeIgnoreIllegalChar in AOptions );
     while ( locInIndex < locInLen ) do begin
+      locReadedValidChars := 0;
       for i := 0 to 3 do begin
         ok := False;
         while ( locInIndex <= locInLen ) do begin
@@ -172,20 +173,23 @@ begin
               Inc(locPadded);
             end;
             ok := True;
+            Inc(locReadedValidChars);
             Break;
           end else begin
             if locFailOnIllegalChar then
               raise EBase64Exception.Create(s_InvalidEncodedData);
           end;
         end;
-        if not ok then
+        if ( not ok ) and locFailOnIllegalChar then
           raise EBase64Exception.CreateFmt(s_IllegalChar,[Char(locBuffer^)]);
       end;
-      locOutQuantom[0] := ( locInQuantom[0] shl 2 ) or ( locInQuantom[1] shr 4 );
-      locOutQuantom[1] := ( locInQuantom[1] shl 4 ) or ( locInQuantom[2] shr 2 );
-      locOutQuantom[2] := ( locInQuantom[2] shl 6 ) or ( locInQuantom[3] );
-      Move(locOutQuantom[0],Result[locAtualLen],3 - locPadded);
-      Inc(locAtualLen,3 - locPadded);
+      if ( locReadedValidChars > 0 ) then begin
+        locOutQuantom[0] := ( locInQuantom[0] shl 2 ) or ( locInQuantom[1] shr 4 );
+        locOutQuantom[1] := ( locInQuantom[1] shl 4 ) or ( locInQuantom[2] shr 2 );
+        locOutQuantom[2] := ( locInQuantom[2] shl 6 ) or ( locInQuantom[3] );
+        Move(locOutQuantom[0],Result[locAtualLen],3 - locPadded);
+        Inc(locAtualLen,3 - locPadded);
+      end;
     end;
     SetLength(Result,locAtualLen);
   end;

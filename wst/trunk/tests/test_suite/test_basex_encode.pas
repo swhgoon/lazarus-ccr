@@ -25,6 +25,8 @@ uses
 
 type
 
+  { TTest_Base64 }
+
   TTest_Base64 = class(TWstBaseTest)
   protected
     procedure Check_Encode(const AIn, AExpect : string);
@@ -45,6 +47,7 @@ type
     procedure Decode_fooba();
     procedure Decode_foobar();
     procedure Decode_illegal_char();
+    procedure Decode_empty();
   end;
 
   TTest_Base16 = class(TWstBaseTest)
@@ -133,6 +136,28 @@ begin
   CheckEquals(True,ok);
 
   Check_Decode('Zm9'#200'vY' + sLineBreak + 'm'#0'Fy','foobar',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode('Zm9'#200'vY' + sLineBreak + 'm'#0'Fy' + sLineBreak,'foobar',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode('Zm9'#200'vY' + sLineBreak + 'm'#0'Fy' + sLineBreak + sLineBreak,'foobar',[xoDecodeIgnoreIllegalChar]);
+end;
+
+procedure TTest_Base64.Decode_empty();
+var
+  ok : Boolean;
+begin
+  ok := False;
+  try
+    Check_Decode(sLineBreak,'',[]);
+  except
+    on e : EBase64Exception do
+      ok := True;
+  end;
+  CheckEquals(True,ok);
+
+  Check_Decode('','',[]);
+  Check_Decode(#0,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak + sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
+  Check_Decode(sLineBreak + sLineBreak + sLineBreak,'',[xoDecodeIgnoreIllegalChar]);
 end;
 
 procedure TTest_Base64.Encode_empty();
