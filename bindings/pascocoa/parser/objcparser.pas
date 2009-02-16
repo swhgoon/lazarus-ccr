@@ -20,9 +20,8 @@ uses
   IniFiles,
   SysUtils,
   ObjCParserUtils,
-  ObjCParserTypes,
-  gnuccFeatures,
-  ObjCToPas in 'ObjCToPas.pas';
+  ObjCParserTypes, 
+  gnuccFeatures;
 
 type
   // this object is used only for precomile directives handling

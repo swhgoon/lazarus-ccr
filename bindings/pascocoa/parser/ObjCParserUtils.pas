@@ -98,6 +98,16 @@ function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType; //): Bo
 
 implementation
 
+function GetterSetterName(const PropName: AnsiString; etterName: AnsiString; isSetter: Boolean): AnsiString;
+begin
+  if etterName = '' then begin
+    if isSetter then  Result := 'set'+PropName
+    else Result := 'get'+PropName;
+  end else
+    Result := etterName;
+end;
+
+
 procedure WriteOutRecordField(AField: TStructField; const Prefix: AnsiString; subs: TStrings); forward;
 procedure WriteOutRecord(struct: TEntityStruct; const Prefix, RecPrefix : AnsiString; subs: TStrings); forward;
 
@@ -1165,20 +1175,29 @@ var
 
   mtds   : TStringList; // name of methods
   restype: TObjCResultTypeDef;
+
 //  over   : TStringList; // overloaded names
+
+  isProtEmpty  : Boolean;
+  protidx  : Integer;
+  pr       : TObjCClassProperty;
 const
   SpacePrefix = '    ';
 begin
+  isProtEmpty := true;
+  
   subs.Add('');
   subs.Add('  { '+cl._ClassName +' }');
   subs.Add('');
   s := '  ' + cl._ClassName + ' = class';
   if cl._SuperClass <> '' then begin
     subs.Add(s + '('+cl._SuperClass+')');
+    protidx := subs.Count;
     subs.Add('  public');
     subs.Add('    class function getClass: objc.id; override;');
   end else begin
     subs.Add(s + '{from category '+ cl._Category +'}');
+    protidx := subs.Count;
     subs.Add('  public');
   end;
 
@@ -1212,16 +1231,34 @@ begin
           if cmt <> '' then
             s := s + '{'+cmt+'}';
         end;
-        
+
         subs.Add(SpacePrefix + s);
       end else if obj is TPrecompiler then begin
         WriteOutIfDefPrecompiler(TPrecompiler(obj), SpacePrefix, subs);
       end;
     end;
+
+    for j := 0 to cl.Items.Count - 1 do begin
+      obj := TObject(cl.Items[j]);
+      if obj is TObjCClassProperty then begin
+        pr := obj as TObjCClassProperty;
+        subs.Add('    property ' + pr._Name+';');
+
+        if isProtEmpty then begin
+          subs.Insert(protidx, '  protected'); inc(protidx);
+          isProtEmpty := false;
+        end;
+        subs.Insert(protidx, '    function  '+GetterSetterName(pr._Name, pr._Getter, false)+';');
+        inc(protidx);
+        subs.Insert(protidx, '    procedure '+GetterSetterName(pr._Name, pr._Setter, true) +';');
+        inc(protidx);
+      end;
+    end;
+
   finally
     mtds.Free;
   end;
-  
+
   subs.Add('  end;');
   subs.Add('');
 end;

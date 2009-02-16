@@ -439,12 +439,13 @@ type
 
   TObjCClassProperty = class(TEntity)
   protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
     _Attribs  : TObjCPropertyAttributes;
     _Getter   : AnsiString;
     _Setter   : AnsiString;
     _Type     : TEntity;
     _Name     : AnsiString;
-    function DoParse(AParser: TTextParser): Boolean; override;
   end;
 
   TClassDef = class(TEntity)
@@ -2900,6 +2901,7 @@ begin
   AParser.FindNextToken(s, tt); // skipping last ';';  
   Result := true;
 end;
+
 
 initialization
 
