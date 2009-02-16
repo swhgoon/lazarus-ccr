@@ -21,7 +21,8 @@ uses
   SysUtils,
   ObjCParserUtils,
   ObjCParserTypes,
-  gnuccFeatures;
+  gnuccFeatures,
+  ObjCToPas in 'ObjCToPas.pas';
 
 type
   // this object is used only for precomile directives handling

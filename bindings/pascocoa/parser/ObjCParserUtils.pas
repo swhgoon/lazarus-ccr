@@ -17,7 +17,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, ObjCParserTypes;
+  Classes, SysUtils, ObjCParserTypes, ObjCToPas;
 
 type
   { TConvertSettings }
@@ -358,25 +358,6 @@ begin
   Result := (l = 'id') or (l = cl._ClassName);
 end;
 
-function GetMethodPascalName(mtd: TClassMethodDef): AnsiString;
-var
-  i   : Integer;
-  obj : TObject;
-begin
-  Result := mtd._Name;
-  for i := 0 to mtd.Items.Count - 1 do begin
-    obj := mtd.Items[i];
-    if not Assigned(obj) then Continue;
-    if obj is TParamDescr then begin
-      Result := Result + TParamDescr(obj)._Descr;
-    end else if obj is TObjCParameterDef then
-      Result := Result + '_';
-  end;
-  i := length(Result);
-  while (i > 0) and (Result[i] = '_') do dec(i);
-  Result := Copy(Result, 1, i);
-end;
-
 function GetMethodStr(cl: TClassDef; m: TClassMethodDef; ForImplementation: Boolean): AnsiString;
 var
 //  i     : integer;
@@ -665,7 +646,7 @@ var
   mtd : TClassMethodDef;
   obj : TObject;
   cs  : AnsiString;
-  nm  : AnsiString;
+  objcname  : AnsiString;
 begin
   cs := GetClassConst(cl._ClassName, cl._ClassName);
   if conststr.IndexOf(cs) < 0 then begin
@@ -679,14 +660,14 @@ begin
     if obj is TClassMethodDef then begin
       mtd := TClassMethodDef(cl.Items[i]);
 
-      nm := GetMethodPascalName(mtd);
-      cs := GetClassConst(cl._ClassName, nm);
+      objcName := GetMethodConstName(mtd);
+      mtd._Name := ObjCToPasMethodName(mtd);
+      cs := GetClassConst(cl._ClassName, mtd._Name);
       if conststr.IndexOf(cs) < 0 then begin
         conststr.Add(cs);
-        ss := Format('  %s = ''%s'';', [cs, GetMethodConstName(mtd)]);
+        ss := Format('  %s = ''%s'';', [cs, objcname]);
         subs.add(ss);
       end;
-      mtd._Name := nm;
 
     end;
   end; {of for}
@@ -1361,13 +1342,13 @@ end;*)
 // adds procedure type and variable of objC init??? method, to wrap obj_SendMsg
 // initialize ObjC object structure calling init??? method
 
-function RefixName(const mtdName: AnsiString): AnsiString;
+{function RefixName(const mtdName: AnsiString): AnsiString;
 begin
   Result := mtdName;
   if mtdName = '' then Exit;
   if mtdName[length(mtdName)] = '_' then
     Result := Copy(mtdName, 1, length(mtdName) - 1);
-end;
+end;}
 
 procedure WriteOutConstructorMethod(mtd: TClassMethodDef; subs: TStrings);
 var
@@ -1391,7 +1372,7 @@ begin
     subs.Add(
       Format('  vmethod := %s(@objc_msgSend);', [typeName]));
     subs.Add(
-      Format('  Handle := vmethod(allocbuf, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, RefixName(mtd._Name), prms]));
+      Format('  Handle := vmethod(allocbuf, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, mtd._Name, prms]));
     subs.Add('end;');
   end else begin
     subs.Add('var');
@@ -1402,7 +1383,7 @@ begin
     subs.Add(
       Format('  vmethod := %s(@objc_msgSend);', [typeName]));
     subs.Add(
-      Format('  Handle := vmethod(ClassID, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, RefixName(mtd._Name), prms]));
+      Format('  Handle := vmethod(ClassID, sel_registerName(PChar(Str%s_%s))%s);', [cl._ClassName, mtd._Name, prms]));
     subs.Add('end;');
   end;
 end;
@@ -1428,7 +1409,7 @@ begin
   callobj := ClassMethodCaller[mtd._IsClassMethod];
 
   res := GetMethodResultType(mtd);
-  mnm := RefixName(mtd._Name);
+  mnm :=mtd._Name; //RefixName(mtd._Name);
   //s := Format('vmethod(%s, sel_registerName(PChar(Str%s_%s)), %s)', [callobj, cl._ClassName, RefixName(mtd._Name), GetParamsNames(mtd)]);
   tp := GetObjCVarType(res);
   prms := GetMethodParams(mtd, true);
@@ -1478,7 +1459,8 @@ begin
   res := GetMethodResultType(mtd);
   tp := GetObjCVarType(res);
 
-  mnm := RefixName(mtd._Name);
+  //mnm := RefixName(mtd._Name);
+  mnm := mtd._Name;               
   case tp of
     vt_Int, vt_Object:
       s := Format('objc_msgSend(%s, sel_registerName(PChar(Str%s_%s)), [])', [callobj, cl._ClassName, mnm ]);
