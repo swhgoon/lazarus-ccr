@@ -1,92 +1,109 @@
 object MainForm: TMainForm
-  Caption = 'Main form'
-  ClientHeight = 281
-  ClientWidth = 391
-  Menu = MainMenu1
-  PixelsPerInch = 96
-  ShowHint = True
-  HorzScrollBar.Page = 390
-  VertScrollBar.Page = 280
-  Left = 251
+  Left = 427
   Height = 300
-  Top = 138
-  Width = 391
+  Top = 245
+  Width = 460
+  ActiveControl = Edit1
+  Caption = 'Main form'
+  ClientHeight = 275
+  ClientWidth = 460
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  Position = poDesktopCenter
+  ShowHint = True
+  LCLVersion = '0.9.27'
   object Label1: TLabel
-    AutoSize = True
-    BorderSpacing.OnChange = nil
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 63
+    Width = 95
+    BorderSpacing.Around = 6
     Caption = 'Folder for scan'
-    Color = clNone
-    Left = 8
-    Height = 13
-    Top = 56
-    Width = 72
+    ParentColor = False
   end
   object Label2: TLabel
-    AutoSize = True
-    BorderSpacing.OnChange = nil
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 71
+    BorderSpacing.Around = 6
     Caption = 'Default ext'
-    Color = clNone
-    Left = 8
-    Height = 13
-    Top = 8
-    Width = 54
+    ParentColor = False
   end
   object Button1: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DirectoryEdit1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 29
+    Top = 120
+    Width = 44
     Action = sysScan
-    BorderSpacing.OnChange = nil
+    AutoSize = True
+    BorderSpacing.Around = 6
     TabOrder = 0
-    Left = 8
-    Height = 25
-    Hint = 'Scan folder'
-    Top = 112
-    Width = 75
   end
   object DirectoryEdit1: TDirectoryEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 27
+    Top = 87
+    Width = 417
     Directory = 'C:\lazarus\components\'
+    ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     TabOrder = 1
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 1
-    Text = 'C:\lazarus\components\'
-    Left = 16
-    Height = 23
-    Top = 80
-    Width = 344
   end
   object Edit1: TEdit
-    BorderSpacing.OnChange = nil
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 27
+    Top = 30
+    Width = 80
+    AutoSize = True
+    BorderSpacing.Around = 6
     TabOrder = 2
     Text = '.pas'
-    Left = 16
-    Height = 23
-    Top = 24
-    Width = 80
   end
   object ActionList1: TActionList
     left = 144
     top = 112
     object sysExit: TAction
+      Category = 'System'
       Caption = 'Exit'
+      DisableIfNoHandler = True
       Enabled = False
       Hint = 'Exit form demo app'
+      OnExecute = sysExitExecute
       ShortCut = 32856
-      Category = 'System'
     end
     object hlpAbout: TAction
+      Category = 'Help'
       Caption = 'About'
+      DisableIfNoHandler = True
       Hint = 'Information of app'
       OnExecute = hlpAboutExecute
-      Category = 'Help'
     end
     object sysScan: TAction
+      Category = 'System'
       Caption = 'Scan'
+      DisableIfNoHandler = True
       Hint = 'Scan folder'
       OnExecute = sysRescanExecute
-      Category = 'System'
     end
   end
   object MainMenu1: TMainMenu
@@ -109,7 +126,7 @@ object MainForm: TMainForm
       Caption = 'Folder'
     end
     object HelpItems: TMenuItem
-      Caption = 'Помощь'
+      Caption = 'Help'
       object MenuItem1: TMenuItem
         Action = hlpAbout
         OnClick = hlpAboutExecute

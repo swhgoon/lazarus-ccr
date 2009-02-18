@@ -20,7 +20,7 @@ translate to Lazarus by alexs in 2005 - 2009
 "/>
     <License Value="free ware
 "/>
-    <Version Major="1" Minor="2" Release="1" Build="98"/>
+    <Version Major="1" Minor="2" Release="2" Build="103"/>
     <Files Count="51">
       <Item1>
         <Filename Value="rxlookup.pas"/>
@@ -226,7 +226,7 @@ translate to Lazarus by alexs in 2005 - 2009
       </Item50>
       <Item51>
         <Filename Value="rxdbctrls.pas"/>
-        <UnitName Value="rxdbctrls"/>
+        <UnitName Value="RxDBCtrls"/>
       </Item51>
     </Files>
     <Type Value="RunAndDesignTime"/>

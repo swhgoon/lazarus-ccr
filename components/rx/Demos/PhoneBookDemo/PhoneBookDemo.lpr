@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, pbMainUnit, rxnew, DBFLaz;
+  Forms,
+  pbMainUnit;
 
 begin
   Application.Initialize;

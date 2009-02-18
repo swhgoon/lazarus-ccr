@@ -12,6 +12,7 @@
   - исправлены глифы у TRxClock, TRxDateEdit, TAutoPanel (Edward Ivanov)
   - Исправления в TRxDatePicker (Edward Ivanov)
   + Добавлены компоненты TRxDBSpinEdit, TRxTimeEdit, TRxDBTimeEdit
+  + TRxLoginDialo теперь работает. По сравнению с оригинальным функционал сильно расширен. Изменён дизайн формы
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных

@@ -121,6 +121,8 @@ resourcestring
   SHintLabel = 'Введите Ваше пользовательское имя и пароль';
   SUserNameLabel = '&Имя пользователя:';
   SPasswordLabel = '&Пароль:';
+  SMore1         = '&Больше >>';
+  SMore2         = '&Меньше <<';
   SInvalidUserName = 'Неверное имя пользователя или пароль';
   SChangePassword = 'Смена пароля';
   SOldPasswordLabel = '&Старый пароль:';

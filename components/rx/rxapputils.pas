@@ -30,11 +30,21 @@ type
 const
   OnGetDefaultIniName: TOnGetDefaultIniName = nil;
 
+//Save to IniFile or TRegIniFile string value
 procedure IniWriteString(IniFile: TObject; const Section, Ident,
   Value: string);
+function IniReadString(IniFile: TObject; const Section, Ident,
+  Value: string):string;
+
+//Save to IniFile or TRegIniFile integer value
+procedure IniWriteInteger(IniFile: TObject; const Section, Ident:string;
+  const Value: integer);
+function IniReadInteger(IniFile: TObject; const Section, Ident:string;
+  const Value: integer):integer;
+
 function GetDefaultIniRegKey: string;
 implementation
-uses Registry, Forms;
+uses Registry, Forms, FileUtil;
 
 function GetDefaultSection(Component: TComponent): string;
 var
@@ -64,11 +74,21 @@ begin
 end;
 
 function GetDefaultIniName: string;
+var
+  S:string;
 begin
   if Assigned(OnGetDefaultIniName) then
     Result:= OnGetDefaultIniName()
   else
-    Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.INI'));
+  begin
+    Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
+{$IFNDEF WIN32}
+    S:=UTF8ToSys(GetAppConfigDir(false));
+    if not DirectoryExists(S) then
+      mkdir(S);
+    Result:=S+Result;
+{$ENDIF}
+  end;
 end;
 
 procedure GetDefaultIniData(Control: TControl; var IniFileName,
@@ -99,7 +119,29 @@ var
 begin
   if IniFile is TRegIniFile then
     TRegIniFile(IniFile).WriteString(Section, Ident, Value)
-  else begin
+  else
+  begin
+    S := Value;
+    if S <> '' then
+    begin
+      if ((S[1] = '"') and (S[Length(S)] = '"')) or
+        ((S[1] = '''') and (S[Length(S)] = '''')) then
+        S := '"' + S + '"';
+    end;
+    if IniFile is TIniFile then
+      TIniFile(IniFile).WriteString(Section, Ident, S);
+  end;
+end;
+
+function IniReadString(IniFile: TObject; const Section, Ident, Value: string
+  ): string;
+var
+  S: string;
+begin
+  if IniFile is TRegIniFile then
+    Result:=TRegIniFile(IniFile).ReadString(Section, Ident, Value)
+  else
+  begin
     S := Value;
     if S <> '' then begin
       if ((S[1] = '"') and (S[Length(S)] = '"')) or
@@ -107,7 +149,31 @@ begin
         S := '"' + S + '"';
     end;
     if IniFile is TIniFile then
-      TIniFile(IniFile).WriteString(Section, Ident, S);
+      Result:=TIniFile(IniFile).ReadString(Section, Ident, S);
+  end;
+end;
+
+procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
+  const Value: integer);
+begin
+  if IniFile is TRegIniFile then
+    TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
+  else
+  begin
+    if IniFile is TIniFile then
+      TIniFile(IniFile).WriteInteger(Section, Ident, Value);
+  end;
+end;
+
+function IniReadInteger(IniFile: TObject; const Section, Ident: string;
+  const Value: integer): integer;
+begin
+  if IniFile is TRegIniFile then
+    Result:=TRegIniFile(IniFile).ReadInteger(Section, Ident, Value)
+  else
+  begin
+    if IniFile is TIniFile then
+      Result:=TIniFile(IniFile).ReadInteger(Section, Ident, Value);
   end;
 end;
 
@@ -121,22 +187,6 @@ begin
   Result := 'Software\' + Result;
 end;
 
-{
-procedure IniWriteString(IniFile: TIniFile; const Section, Ident,
-  Value: string);
-var
-  S: string;
-begin
-    S := Value;
-    if S <> '' then
-    begin
-      if ((S[1] = '"') and (S[Length(S)] = '"')) or
-        ((S[1] = '''') and (S[Length(S)] = ''''))  then
-        S := '"' + S + '"';
-    end;
-    if IniFile is TIniFile then
-      TIniFile(IniFile).WriteString(Section, Ident, S);
-end;
-}
+
 end.
 

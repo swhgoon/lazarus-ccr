@@ -18,6 +18,15 @@ uses LResources, LCLType, LCLIntf, SysUtils, LMessages, Classes, Graphics,
 
 type
   TUpdateCaption = (ucNoChange, ucAppTitle, ucFormCaption);
+
+  TRxLoginOption = (rloCustomSelect, rloMoreBtn, rloHelpBtn);
+
+  TRxLoginOptions = set of TRxLoginOption;
+
+  TRxLoginStorageParam = (rlsUserName, rlsTop, rlsLeft, rlsDetailStatus,
+    rlsDetailItem);
+  TRxLoginStorageParams = set of TRxLoginStorageParam;
+
   TRxLoginEvent = procedure(Sender: TObject; const UserName, Password: string;
     var AllowLogin: Boolean) of object;
   TCheckUnlockEvent = function(const Password: string): Boolean of object;
@@ -32,11 +41,16 @@ type
   private
     FActive: Boolean;
     FAttemptNumber: Integer;
-    FLoggedUser: {$IFDEF RX_D3}String{$ELSE}PString{$ENDIF};
+    FDetailItem: integer;
+    FDetailItems: TStrings;
+    FLoggedUser: string;
     FMaxPasswordLen: Integer;
     FAllowEmpty: Boolean;
+    FLoginOptions: TRxLoginOptions;
+    FShowDetails: boolean;
+    FStorageParams: TRxLoginStorageParams;
     FUpdateCaption: TUpdateCaption;
-    FIniFileName: {$IFDEF RX_D3}String{$ELSE}PString{$ENDIF};
+    FIniFileName: string;
     FUseRegistry: Boolean;
     FLocked: Boolean;
     FUnlockDlgShowing: Boolean;
@@ -46,11 +60,10 @@ type
     FOnUnlock: TCheckUnlockEvent;
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
-{$IFNDEF RX_D3}
-    function GetLoggedUser: string;
-    procedure SetIniFileName(const Value: string);
-{$ENDIF}
     function GetIniFileName: string;
+    procedure SetDetailItems(const AValue: TStrings);
+    procedure SetLoginOptions(const AValue: TRxLoginOptions);
+    procedure SetShowDetails(const AValue: boolean);
     function UnlockHook(var Message: TLMessage): Boolean;
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
@@ -66,10 +79,16 @@ type
     property Active: Boolean read FActive write FActive default True;
     property AllowEmptyPassword: Boolean read FAllowEmpty write FAllowEmpty default True;
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
-    property IniFileName: string read GetIniFileName write {$IFDEF RX_D3}FIniFileName{$ELSE}SetIniFileName{$ENDIF};
+    property IniFileName: string read GetIniFileName write FIniFileName;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
+    property ShowDetails: boolean read FShowDetails write SetShowDetails;
+    property StorageParams:TRxLoginStorageParams read FStorageParams write FStorageParams default [rlsUserName];
+    property DetailItems:TStrings read FDetailItems write SetDetailItems;
+    property DetailItem:integer read FDetailItem write FDetailItem;
+    property LoginOptions:TRxLoginOptions read FLoginOptions write SetLoginOptions default [rloCustomSelect, rloMoreBtn, rloHelpBtn];
+
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
@@ -81,7 +100,7 @@ type
     function Login: Boolean; virtual;
     procedure TerminateApplication;
     procedure Lock;
-    property LoggedUser: string read {$IFDEF RX_D3}FLoggedUser{$ELSE}GetLoggedUser{$ENDIF};
+    property LoggedUser: string read FLoggedUser;
   end;
 
 { TRxLoginDialog }
@@ -89,9 +108,12 @@ type
   TRxLoginDialog = class(TRxCustomLogin)
   private
     FOnCheckUser: TRxLoginEvent;
+    FUserName:string;
+    FFormTop:integer;
+    FFormLeft:integer;
     procedure OkButtonClick(Sender: TObject);
-    procedure WriteUserName(const UserName: string);
-    function ReadUserName(const UserName: string): string;
+    procedure WriteParams;
+    procedure LoadParams;
   protected
     function DoCheckUser(const UserName, Password: string): Boolean; dynamic;
     function DoLogin(var UserName: string): Boolean; override;
@@ -100,9 +122,14 @@ type
     property Active;
     property AttemptNumber;
     property IniFileName;
+    property DetailItems;
+    property DetailItem;
     property MaxPasswordLen;
     property UpdateCaption;
     property UseRegistry;
+    property ShowDetails;
+    property LoginOptions;
+    property StorageParams;
     property OnCheckUser: TRxLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
     property BeforeLogin;
@@ -114,27 +141,32 @@ type
 
   TRxLoginForm = class(TForm)
     AppIcon: TImage;
+    btnHelp: TBitBtn;
+    btnMore: TBitBtn;
+    btnCancel: TBitBtn;
     KeyImage: TImage;
     HintLabel: TLabel;
+    btnOK: TBitBtn;
     UserNameLabel: TLabel;
     PasswordLabel: TLabel;
     UserNameEdit: TEdit;
     PasswordEdit: TEdit;
     AppTitleLabel: TLabel;
-    OkBtn: TButton;
-    CancelBtn: TButton;
-    CustomLabel: TLabel;
+    DataBaseLabel: TLabel;
     CustomCombo: TComboBox;
+    procedure btnMoreClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure OkBtnClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
     FSelectDatabase: Boolean;
     FUnlockMode: Boolean;
     FAttempt: Integer;
     FOnFormShow: TNotifyEvent;
     FOnOkClick: TNotifyEvent;
+    function GetShowDetailParams: boolean;
+    procedure SetLoginOptions(const AValue: TRxLoginOptions);
+    procedure SetShowDetailParams(const AValue: boolean);
   public
     { Public declarations }
     AttemptNumber: Integer;
@@ -142,6 +174,8 @@ type
     property SelectDatabase: Boolean read FSelectDatabase write FSelectDatabase;
     property OnFormShow: TNotifyEvent read FOnFormShow write FOnFormShow;
     property OnOkClick: TNotifyEvent read FOnOkClick write FOnOkClick;
+    property ShowDetailParams:boolean read GetShowDetailParams write SetShowDetailParams;
+    property LoginOptions:TRxLoginOptions write SetLoginOptions;
   end;
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
@@ -149,25 +183,33 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 
 implementation
 
-uses {$IFDEF WIN32} Registry, {$ENDIF} IniFiles, RxAppUtils, RxDConst,
-  VclUtils, RxConst;
+uses
+  Registry, IniFiles, RxAppUtils, RxDConst, VclUtils, RxConst;
 
 const
-  keyLoginSection  = 'Login Dialog';
-  keyLastLoginUserName = 'Last Logged User';
+  keyLoginSection                = 'Login Dialog';
+  keyLastLoginUserName           = 'Last Logged User';
+  keyLastLoginFormTop            = 'Last Logged Form Top';
+  keyLastLoginFormLeft           = 'Last Logged Form Left';
+  keyLastLoginFormDetailStatus   = 'Last Logged Detail Status';
+  keyLastLoginFormDetailSelected = 'Last Logged Selected Detail';
+
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TRxLoginForm;
 begin
   Result := TRxLoginForm.Create(Application);
-  with Result do begin
+  with Result do
+  begin
     FSelectDatabase := ASelectDatabase;
     FUnlockMode := UnlockMode;
-    if FUnlockMode then begin
+    if FUnlockMode then
+    begin
       FormStyle := fsNormal;
       FSelectDatabase := False;
     end
-    else begin
+    else
+    begin
       FormStyle := fsStayOnTop;
     end;
     OnFormShow := FormShowEvent;
@@ -180,14 +222,13 @@ end;
 constructor TRxCustomLogin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFNDEF RX_D3}
-  FIniFileName := NullStr;
-  FLoggedUser := NullStr;
-{$ENDIF}
+  FDetailItems:=TStringList.Create;
   FActive := True;
   FAttemptNumber := 3;
   FAllowEmpty := True;
   FUseRegistry := False;
+  FStorageParams:=[rlsUserName];
+  FLoginOptions:=[rloCustomSelect, rloMoreBtn, rloHelpBtn];
 end;
 
 destructor TRxCustomLogin.Destroy;
@@ -197,45 +238,43 @@ begin
 //    Application.UnhookMainWindow(UnlockHook);
     FLocked := False;
   end;
-{$IFNDEF RX_D3}
-  DisposeStr(FLoggedUser);
-  DisposeStr(FIniFileName);
-{$ENDIF}
+  FreeAndNil(FDetailItems);
   inherited Destroy;
 end;
 
 function TRxCustomLogin.GetIniFileName: string;
 begin
-  Result := FIniFileName{$IFNDEF RX_D3}^{$ENDIF};
-  if (Result = '') and not (csDesigning in ComponentState) then begin
-{$IFDEF WIN32}
-    if UseRegistry then Result := GetDefaultIniRegKey
-    else Result := GetDefaultIniName;
-{$ELSE}
-    Result := GetDefaultIniName;
-{$ENDIF}
+  Result := FIniFileName;
+  if (Result = '') and not (csDesigning in ComponentState) then
+  begin
+    if UseRegistry then
+      Result := GetDefaultIniRegKey
+    else
+      Result := GetDefaultIniName;
   end;
 end;
 
-{$IFNDEF RX_D3}
-procedure TRxCustomLogin.SetIniFileName(const Value: string);
+procedure TRxCustomLogin.SetDetailItems(const AValue: TStrings);
 begin
-  AssignStr(FIniFileName, Value);
+  if Assigned(AValue) then
+    FDetailItems.Assign(AValue);
 end;
 
-function TRxCustomLogin.GetLoggedUser: string;
+procedure TRxCustomLogin.SetLoginOptions(const AValue: TRxLoginOptions);
 begin
-  Result := FLoggedUser^;
+  if FLoginOptions=AValue then exit;
+  FLoginOptions:=AValue;
 end;
-{$ENDIF}
+
+procedure TRxCustomLogin.SetShowDetails(const AValue: boolean);
+begin
+  if FShowDetails=AValue then exit;
+  FShowDetails:=AValue;
+end;
 
 procedure TRxCustomLogin.SetLoggedUser(const Value: string);
 begin
-{$IFDEF RX_D3}
   FLoggedUser := Value;
-{$ELSE}
-  AssignStr(FLoggedUser, Value);
-{$ENDIF}
 end;
 
 procedure TRxCustomLogin.DoAfterLogin;
@@ -278,7 +317,8 @@ begin
   LoginName := EmptyStr;
   DoBeforeLogin;
   Result := DoLogin(LoginName);
-  if Result then begin
+  if Result then
+  begin
     SetLoggedUser(LoginName);
     DoUpdateCaption;
     DoAfterLogin;
@@ -334,14 +374,18 @@ end;
 function TRxCustomLogin.CreateLoginForm(UnlockMode: Boolean): TRxLoginForm;
 begin
   Result := TRxLoginForm.Create(Application);
-  with Result do begin
+  with Result do
+  begin
     FUnlockMode := UnlockMode;
-    if FUnlockMode then begin
+    if FUnlockMode then
+    begin
       FormStyle := fsNormal;
       FSelectDatabase := False;
     end
-    else FormStyle := fsStayOnTop;
-    if Assigned(Self.FOnIconDblClick) then begin
+    else
+      FormStyle := fsStayOnTop;
+    if Assigned(Self.FOnIconDblClick) then
+    begin
       with AppIcon do
       begin
         OnDblClick := @DoIconDblClick;
@@ -399,7 +443,7 @@ function TRxCustomLogin.UnlockHook(var Message: TLMessage): Boolean;
 {$ELSE}
         BringWindowToTop(Popup);
 {$ENDIF}
-      end;  *)
+      end;  //*)
       Result := False;
 (*      Exit;
     end;
@@ -429,8 +473,8 @@ begin
           UnlockHook := not DoUnlock;
         end;
       LM_SYSCOMMAND:
-        if (WParam and $FFF0 = SC_RESTORE) {or
-          (WParam and $FFF0 = SC_ZOOM) }then
+        if (WParam and $FFF0 = SC_RESTORE)
+{          or (WParam and $FFF0 = SC_ZOOM) }then
         begin
           UnlockHook := not DoUnlock;
         end;
@@ -446,7 +490,8 @@ var
 begin
   FLoading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) and FLoading then begin
+  if not (csDesigning in ComponentState) and FLoading then
+  begin
     if Active and not Login then
       TerminateApplication;
   end;
@@ -464,7 +509,8 @@ begin
     SC := True;
 {$ENDIF}
     try
-      if SC then Screen.Cursor := crHourGlass;
+      if SC then
+        Screen.Cursor := crHourGlass;
       try
         if DoCheckUser(UserNameEdit.Text, PasswordEdit.Text) then
           ModalResult := mrOk
@@ -486,19 +532,24 @@ begin
     FOnCheckUser(Self, UserName, Password, Result);
 end;
 
-procedure TRxLoginDialog.WriteUserName(const UserName: string);
+procedure TRxLoginDialog.WriteParams;
 var
   Ini: TObject;
 begin
   try
-{$IFDEF WIN32}
     if UseRegistry then Ini := TRegIniFile.Create(IniFileName)
     else Ini := TIniFile.Create(IniFileName);
-{$ELSE}
-    Ini := TIniFile.Create(IniFileName);
-{$ENDIF}
     try
-      IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, UserName);
+      if rlsUserName in FStorageParams then
+        IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, FUserName);
+      if rlsTop in FStorageParams then
+        IniWriteInteger(Ini, keyLoginSection, keyLastLoginFormTop, FFormTop);
+      if rlsLeft in FStorageParams then
+        IniWriteInteger(Ini, keyLoginSection, keyLastLoginFormLeft, FFormLeft);
+      if rlsDetailStatus in FStorageParams then
+        IniWriteInteger(Ini, keyLoginSection, keyLastLoginFormDetailStatus, ord(FShowDetails));
+      if rlsDetailItem in FStorageParams then
+        IniWriteInteger(Ini, keyLoginSection, keyLastLoginFormDetailSelected, FDetailItem);
     finally
       Ini.Free;
     end;
@@ -506,50 +557,83 @@ begin
   end;
 end;
 
-function TRxLoginDialog.ReadUserName(const UserName: string): string;
+procedure TRxLoginDialog.LoadParams;
 var
   Ini: TObject;
 begin
   try
-{$IFDEF WIN32}
-    if UseRegistry then begin
+    if UseRegistry then
+    begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF RX_D5}
       TRegIniFile(Ini).Access := KEY_READ;
-{$ENDIF}
     end
-    else 
+    else
       Ini := TIniFile.Create(IniFileName);
-{$ELSE}
-    Ini := TIniFile.Create(IniFileName);
-{$ENDIF}
     try
-{      Result := IniReadString(Ini, keyLoginSection, keyLastLoginUserName,
-        UserName);}
+      if rlsUserName in FStorageParams then
+        FUserName:=IniReadString(Ini, keyLoginSection, keyLastLoginUserName, FUserName);
+      if rlsTop in FStorageParams then
+        FFormTop:=IniReadInteger(Ini, keyLoginSection, keyLastLoginFormTop, FFormTop);
+      if rlsLeft in FStorageParams then
+        FFormLeft:=IniReadInteger(Ini, keyLoginSection, keyLastLoginFormLeft, FFormLeft);
+      if rlsDetailStatus in FStorageParams then
+        FShowDetails:=IniReadInteger(Ini, keyLoginSection, keyLastLoginFormDetailStatus, ord(FShowDetails))=1;
+      if rlsDetailItem in FStorageParams then
+        FDetailItem:=IniReadInteger(Ini, keyLoginSection, keyLastLoginFormDetailSelected, FDetailItem);
     finally
       Ini.Free;
     end;
   except
-    Result := UserName;
   end;
 end;
 
 function TRxLoginDialog.DoLogin(var UserName: string): Boolean;
+var
+  LoginForm:TRxLoginForm;
 begin
   try
-{    with CreateLoginForm(False) do
+    LoginForm:=CreateLoginForm(False);
     try
-      OnOkClick := Self.OkButtonClick;
-      UserName := ReadUserName(UserName);
-      UserNameEdit.Text := UserName;
-      Result := (ShowModal = mrOk);
-      if Result then begin
-        UserName := UserNameEdit.Text;
-        WriteUserName(UserName);
+      FUserName:=UserName;
+      LoginForm.OnOkClick := @Self.OkButtonClick;
+      LoadParams;
+      LoginForm.LoginOptions:=FLoginOptions;
+
+      if rlsUserName in StorageParams then
+        LoginForm.UserNameEdit.Text := FUserName;
+      if rlsTop in StorageParams then
+        LoginForm.Top:=FFormTop;
+      if rlsLeft in StorageParams then
+        LoginForm.Left:=FFormLeft;
+
+      if rloCustomSelect in LoginOptions then
+      begin
+        LoginForm.CustomCombo.Items.Assign(DetailItems);
+        if (FDetailItem>=0) and (FDetailItem<DetailItems.Count) then
+          LoginForm.CustomCombo.ItemIndex:=FDetailItem;
+      end;
+
+      LoginForm.ShowDetailParams:=ShowDetails;
+
+      Result := (LoginForm.ShowModal = mrOk);
+      if Result then
+      begin
+        if rlsTop in StorageParams then
+          FFormTop:=LoginForm.Top;
+        if rlsLeft in StorageParams then
+          FFormLeft:=LoginForm.Left;
+
+        if rloCustomSelect in LoginOptions then
+          FDetailItem:=LoginForm.CustomCombo.ItemIndex;
+
+        ShowDetails:=LoginForm.ShowDetailParams;
+        UserName := LoginForm.UserNameEdit.Text;
+        FUserName:=UserName;
+        WriteParams;
       end;
     finally
-      Free;
-    end;}
+      LoginForm.Free;
+    end;
   except
     Application.HandleException(Self);
     Result := False;
@@ -560,17 +644,20 @@ end;
 
 procedure TRxLoginForm.FormCreate(Sender: TObject);
 begin
-{  Icon := Application.Icon;
-  if Icon.Empty then Icon.Handle := LoadIcon(0, IDI_APPLICATION);
+  Icon.Assign(Application.Icon);
+//  if Icon.Empty then Icon.Handle := LoadIcon(0, IDI_APPLICATION);
   AppIcon.Picture.Assign(Icon);
-  AppTitleLabel.Caption := FmtLoadStr(SAppTitleLabel, [Application.Title]);
-  PasswordLabel.Caption := LoadStr(SPasswordLabel);
-  UserNameLabel.Caption := LoadStr(SUserNameLabel);
-  OkBtn.Caption := ResStr(SOKButton);
-  CancelBtn.Caption := ResStr(SCancelButton);}
+  AppTitleLabel.Caption := Format(SAppTitleLabel, [Application.Title]);
+  PasswordLabel.Caption := SPasswordLabel;
+  UserNameLabel.Caption := SUserNameLabel;
 end;
 
-procedure TRxLoginForm.OkBtnClick(Sender: TObject);
+procedure TRxLoginForm.btnMoreClick(Sender: TObject);
+begin
+  ShowDetailParams:=not ShowDetailParams;
+end;
+
+procedure TRxLoginForm.btnOKClick(Sender: TObject);
 begin
   Inc(FAttempt);
   if Assigned(FOnOkClick) then FOnOkClick(Self)
@@ -584,33 +671,76 @@ var
   I: Integer;
   S: string;
 begin
-{  if FSelectDatabase then
+  if FSelectDatabase then
   begin
     ClientHeight := CustomCombo.Top + PasswordEdit.Top - UserNameEdit.Top;
-    S := LoadStr(SDatabaseName);
+    S := SDatabaseName;
     I := Pos(':', S);
     if I = 0 then I := Length(S);
-    CustomLabel.Caption := '&' + Copy(S, 1, I);
+    DataBaseLabel.Caption := '&' + Copy(S, 1, I);
   end
-  else begin
-    ClientHeight := PasswordEdit.Top + PasswordEdit.Top - UserNameEdit.Top;
-    CustomLabel.Visible := False;
+  else
+  begin
+    DataBaseLabel.Visible := False;
     CustomCombo.Visible := False;
+    btnMore.Visible := False;
   end;
-  if not FUnlockMode then begin
-    HintLabel.Caption := LoadStr(SHintLabel);
-    Caption := LoadStr(SRegistration);
+
+  SetShowDetailParams(ShowDetailParams);
+
+  if not FUnlockMode then
+  begin
+    HintLabel.Caption := SHintLabel;
+    Caption := SRegistration;
   end
-  else begin
-    HintLabel.Caption := LoadStr(SUnlockHint);
-    Caption := LoadStr(SUnlockCaption);
+  else
+  begin
+    HintLabel.Caption := SUnlockHint;
+    Caption := SUnlockCaption;
   end;
+
   if (UserNameEdit.Text = EmptyStr) and not FUnlockMode then
     ActiveControl := UserNameEdit
   else 
     ActiveControl := PasswordEdit;
   if Assigned(FOnFormShow) then FOnFormShow(Self);
-  FAttempt := 0;}
+  FAttempt := 0;
+end;
+
+procedure TRxLoginForm.SetShowDetailParams(const AValue: boolean);
+begin
+  DataBaseLabel.Visible:=AValue;
+  CustomCombo.Visible:=AValue;
+  if AValue then
+  begin
+    btnMore.Caption:=SMore2;
+    btnCancel.AnchorSideTop.Control:=CustomCombo;
+    Height := CustomCombo.Top + CustomCombo.Height + btnCancel.Height + 12;
+  end
+  else
+  begin
+    btnMore.Caption:=SMore1;
+    btnCancel.AnchorSideTop.Control:=PasswordEdit;
+    Height := PasswordEdit.Top + PasswordEdit.Height + btnCancel.Height + 12;
+  end;
+end;
+
+function TRxLoginForm.GetShowDetailParams: boolean;
+begin
+  Result:=CustomCombo.Visible;
+end;
+
+procedure TRxLoginForm.SetLoginOptions(const AValue: TRxLoginOptions);
+begin
+  btnHelp.Visible:=rloHelpBtn in AValue;
+  if not btnHelp.Visible then
+  begin
+    btnCancel.AnchorSideLeft.Side:=asrBottom;
+    btnCancel.AnchorSideLeft.Control:=Self;
+  end;
+
+  btnMore.Visible:=rloMoreBtn in AValue;
+  FSelectDatabase:=rloCustomSelect in AValue;
 end;
 
 initialization

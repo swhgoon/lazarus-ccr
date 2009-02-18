@@ -1,60 +1,55 @@
 object AboutForm: TAboutForm
-  BorderStyle = bsDialog
-  Caption = 'About...'
-  ClientHeight = 143
-  ClientWidth = 249
-  PixelsPerInch = 96
-  Position = poDesktopCenter
-  HorzScrollBar.Page = 248
-  VertScrollBar.Page = 142
   Left = 393
-  Height = 143
+  Height = 163
   Top = 386
-  Width = 249
+  Width = 274
+  ActiveControl = BitBtn1
+  Caption = 'About...'
+  ClientHeight = 163
+  ClientWidth = 274
+  Position = poDesktopCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
+    Left = 8
+    Height = 18
+    Top = 16
+    Width = 262
     Alignment = taCenter
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     Caption = 'FolderLister component demo'
-    Color = clNone
-    Left = 8
-    Height = 17
-    Top = 16
-    Width = 237
+    ParentColor = False
   end
   object Label2: TLabel
+    Left = 8
+    Height = 18
+    Top = 56
+    Width = 261
     Alignment = taCenter
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    Caption = '(c) 2005 by Alexs'
-    Color = clNone
-    Left = 8
-    Height = 13
-    Top = 56
-    Width = 236
+    Caption = '(c) 2005-2009 by Alexs'
+    ParentColor = False
   end
   object Label3: TLabel
+    Left = 8
+    Height = 18
+    Top = 84
+    Width = 262
     Alignment = taCenter
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
     Caption = 'alexs75@hotbox.ru'
-    Color = clNone
-    Left = 8
-    Height = 17
-    Top = 84
-    Width = 237
+    ParentColor = False
   end
   object BitBtn1: TBitBtn
+    Left = 96
+    Height = 34
+    Top = 123
+    Width = 56
     Anchors = [akLeft, akBottom]
-    BorderSpacing.OnChange = nil
-    Caption = '&Œ '
+    AutoSize = True
+    Caption = '&'
     Default = True
     Kind = bkOK
     ModalResult = 1
     TabOrder = 0
-    Left = 96
-    Height = 25
-    Top = 112
-    Width = 75
   end
 end

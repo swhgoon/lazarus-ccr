@@ -1,48 +1,57 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 301
+  Left = 299
   Height = 582
   Top = 161
   Width = 969
-  HorzScrollBar.Page = 968
-  VertScrollBar.Page = 581
-  ActiveControl = RxDBGrid1
+  ActiveControl = Panel1
   Caption = 'RxDBGrid Demo (ver 3)  ...'
   ClientHeight = 582
   ClientWidth = 969
   OnCreate = FormCreate
+  LCLVersion = '0.9.27'
   object RxDBGrid1: TRxDBGrid
-    Height = 532
-    Top = 50
+    Left = 0
+    Height = 533
+    Top = 49
     Width = 969
+    TitleButtons = False
+    AutoSort = False
     Columns = <    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Code'
+        Title.Orientation = toHorizontal
         FieldName = 'ID'
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = 'Count: %d'
         Footer.ValueType = fvtCount
+        Filter.DropDownRows = 0
         Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Software Name'
+        Title.Orientation = toHorizontal
         Width = 350
         FieldName = 'NAME'
+        Filter.DropDownRows = 0
         Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
+        Title.Orientation = toHorizontal
         Width = 150
         FieldName = 'Developer'
+        Filter.DropDownRows = 0
         Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Cost'
+        Title.Orientation = toHorizontal
         Width = 90
         FieldName = 'PRICE'
         DisplayFormat = '#,##0.00'
@@ -50,20 +59,25 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Footer.DisplayFormat = '#,##0.00'
         Footer.FieldName = 'PRICE'
         Footer.ValueType = fvtSum
+        Filter.DropDownRows = 0
         Filter.Color = clLime
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Date Present'
+        Title.Orientation = toHorizontal
         Width = 100
         FieldName = 'Date_Present'
+        Filter.DropDownRows = 0
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
+        Title.Orientation = toHorizontal
         Width = 150
         FieldName = 'DEVELOPER_ID'
+        Filter.DropDownRows = 0
         Filter.ItemIndex = -1
       end>
     OptionsRx = [rdgFooterRows]
@@ -73,52 +87,67 @@ object RxDBGridMainForm: TRxDBGridMainForm
     Align = alClient
     FocusColor = clRed
     SelectedColor = clHighlight
+    GridLineStyle = psSolid
     DataSource = Datasource1
-    FixedColor = clBtnFace
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect]
-    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
     ParentColor = False
     PopupMenu = PopupMenu1
     TabOrder = 0
-    TabStop = True
   end
   object Panel1: TPanel
-    Height = 50
+    Left = 0
+    Height = 49
+    Top = 0
     Width = 969
     Align = alTop
-    ClientHeight = 50
+    AutoSize = True
+    ClientHeight = 49
     ClientWidth = 969
     TabOrder = 1
     object Button1: TButton
-      Left = 8
-      Height = 25
-      Top = 8
-      Width = 75
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 6
+      Height = 37
+      Top = 6
+      Width = 92
       Action = actCalcTotal
+      AutoSize = True
+      BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       TabOrder = 0
     end
     object Button2: TButton
-      Left = 88
-      Height = 25
-      Top = 8
-      Width = 136
+      AnchorSideLeft.Control = Button1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 104
+      Height = 37
+      Top = 6
+      Width = 165
       Action = actOptimizeColumnsWidthAll
+      AutoSize = True
+      BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 4
       TabOrder = 1
     end
     object CheckBox1: TCheckBox
-      Left = 241
-      Height = 20
-      Top = 8
-      Width = 75
+      AnchorSideLeft.Control = Button2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Button1
+      AnchorSideTop.Side = asrCenter
+      Left = 275
+      Height = 22
+      Top = 13
+      Width = 81
+      BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
       TabOrder = 2
-      UseOnChange = True
     end
   end
   object RxMemoryData1: TRxMemoryData
+    AutoCalcFields = False
     FieldDefs = <    
       item
         Name = 'ID'
@@ -147,59 +176,87 @@ object RxDBGridMainForm: TRxDBGridMainForm
       item
         Name = 'Date_Present'
         DataType = ftDate
+        Precision = 0
+        Size = 0
       end    
       item
         Name = 'DEVELOPER_ID'
         DataType = ftInteger
+        Precision = 0
+        Size = 0
       end>
     OnFilterRecordEx = RxMemoryData1FilterRecordEx
     left = 152
     top = 264
     object RxMemoryData1ID1: TLongintField
-      AlignMent = taRightJustify
       DisplayWidth = 10
+      FieldKind = fkData
       FieldName = 'ID'
+      Index = 0
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
     end
     object RxMemoryData1NAME1: TStringField
       DisplayWidth = 150
+      FieldKind = fkData
       FieldName = 'NAME'
       Index = 1
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
       Size = 150
     end
     object RxMemoryData1PRICE1: TFloatField
-      AlignMent = taRightJustify
       DisplayWidth = 10
+      FieldKind = fkData
       FieldName = 'PRICE'
       Index = 2
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
       DisplayFormat = '#,##0.00'
+      MaxValue = 0
+      MinValue = 0
       Precision = 2
     end
     object RxMemoryData1Developer1: TStringField
       DisplayWidth = 150
+      FieldKind = fkData
       FieldName = 'Developer'
       Index = 3
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
       Size = 150
     end
     object RxMemoryData1Date_Present1: TDateField
       DisplayWidth = 10
+      FieldKind = fkData
       FieldName = 'Date_Present'
       Index = 4
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
     end
     object RxMemoryData1DEVELOPER_ID1: TLongintField
-      AlignMent = taRightJustify
       DisplayWidth = 10
+      FieldKind = fkData
       FieldName = 'DEVELOPER_ID'
       Index = 5
+      KeyFields = 'DEVELOPER_ID'
+      LookupCache = False
       LookupDataSet = RxMemoryData2
       LookupKeyFields = 'DEVELOPER_ID'
       LookupResultField = 'DEVELOPER_NAME'
-      KeyFields = 'DEVELOPER_ID'
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
     end
   end
   object Datasource1: TDatasource
@@ -251,29 +308,41 @@ object RxDBGridMainForm: TRxDBGridMainForm
     top = 264
   end
   object RxMemoryData2: TRxMemoryData
+    AutoCalcFields = False
     FieldDefs = <    
       item
         Name = 'DEVELOPER_ID'
         DataType = ftInteger
+        Precision = 0
+        Size = 0
       end    
       item
         Name = 'DEVELOPER_NAME'
         DataType = ftString
+        Precision = 0
         Size = 130
       end>
     left = 240
     top = 264
     object RxMemoryData2DEVELOPER_ID1: TLongintField
-      AlignMent = taRightJustify
       DisplayWidth = 10
+      FieldKind = fkData
       FieldName = 'DEVELOPER_ID'
+      Index = 0
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
     end
     object RxMemoryData2DEVELOPER_NAME1: TStringField
       DisplayWidth = 130
+      FieldKind = fkData
       FieldName = 'DEVELOPER_NAME'
       Index = 1
+      LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
       Size = 130
     end
   end

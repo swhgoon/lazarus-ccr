@@ -2,8 +2,11 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="0"/>
@@ -22,7 +25,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
@@ -47,20 +50,18 @@
         <Filename Value="PhoneBookDemo.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PhoneBookDemo"/>
-        <CursorPos X="53" Y="11"/>
+        <CursorPos X="13" Y="11"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="pbmainunit.pas"/>
         <ComponentName Value="pbMainForm"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="pbmainunit.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="pbMainUnit"/>
         <CursorPos X="12" Y="49"/>
-        <TopLine Value="17"/>
+        <TopLine Value="23"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
@@ -130,11 +131,8 @@
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <Win32>
