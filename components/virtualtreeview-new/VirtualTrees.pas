@@ -3674,7 +3674,8 @@ uses
   MMSystem,                // for animation timer (does not include further resources)
   TypInfo,                 // for migration stuff
   ActnList,
-  StdActns                // for standard action support
+  StdActns,                // for standard action support
+  GraphType
   {$ifdef EnableAccessible}
   ,VTAccessibilityFactory
   {$endif};  // accessibility helper class
@@ -23114,7 +23115,7 @@ procedure TBaseVirtualTree.PaintImage(var PaintInfo: TVTPaintInfo; ImageInfoInde
 var
   CutNode: Boolean;
   PaintFocused: Boolean;
-  DrawEnabled: Boolean;
+  DrawEffect: TGraphicsDrawEffect;
 
 begin
   with PaintInfo do
@@ -23129,7 +23130,6 @@ begin
     else
       PaintInfo.ImageInfo[iiOverlay].Index := -1;
 
-    DrawEnabled := not (vsDisabled in Node.States) and Enabled;
     with ImageInfo[ImageInfoIndex] do
     begin
       if (vsSelected in Node.States) and not (Ghosted or CutNode) then
@@ -23142,6 +23142,9 @@ begin
       else
         Images.BlendColor := Color;
 
+      if (vsDisabled in Node.States) or not Enabled then
+        DrawEffect := gdeDisabled
+      else
       // Blend image if enabled and the tree has the focus (or ghosted images must be drawn also if unfocused) ...
       if (toUseBlendedImages in FOptions.FPaintOptions) and PaintFocused
         // ... and the image is ghosted...
@@ -23152,14 +23155,14 @@ begin
         not (toGridExtensions in FOptions.FMiscOptions)) or
         // ... or the node must be shown in cut mode.
         CutNode) then
-          Images.DrawingStyle := dsSelected
+          DrawEffect := gdeShadowed
         else
-          Images.DrawingStyle := dsNormal;
+          DrawEffect := gdeNormal;
 
       if (vsSelected in Node.States) and not Ghosted then
         Images.BlendColor := clDefault;
 
-      Images.Draw(Canvas, XPos, YPos, Index);
+      Images.Draw(Canvas, XPos, YPos, Index, DrawEffect);
 
       // Now, draw the overlay.
       // Delphi version has the ability to use the built in overlay indices of windows system image lists
