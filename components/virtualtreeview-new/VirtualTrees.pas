@@ -9737,9 +9737,11 @@ begin
   begin
     FHeight := Value;
     if not (csLoading in Treeview.ComponentState) then
+    begin
       RecalculateHeader;
-    Treeview.Invalidate;
-    UpdateWindow(Treeview.Handle);
+      Treeview.Invalidate;
+      UpdateWindow(Treeview.Handle);
+    end;
   end;
 end;
 
