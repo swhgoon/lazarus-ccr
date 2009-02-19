@@ -131,7 +131,8 @@ implementation
      Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
    const     
       aAnimOpts : array[0..Ord(High(TVTAnimationOption ))] of string[25] = 
-      (  'Animated Toggle' );
+      (  'Animated Toggle',
+         'Advanced Animated Toggle' );
 
       aAutoOpts : array[0..Ord(High(TVTAutoOption ))] of string[25] = 
       ( 
@@ -164,7 +165,9 @@ implementation
          'WheelPanning'                                                                            ,
          'ReadOnly'                                                                                ,
          'VariableNodeHeight',
-         'FullRowDrag'
+         'FullRowDrag',
+         'NodeHeightResize',
+         'NodeHeightDblClickResize'
       );
 
       aPaintOpts : array[0..Ord(High(TVTPaintOption ))] of string[25] = 
