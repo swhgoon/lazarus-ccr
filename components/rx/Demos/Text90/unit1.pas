@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, rxdbgrid, vclutils, rxmemds, db;
+  Buttons, StdCtrls, rxdbgrid, vclutils, rxmemds, db, IniPropStorage;
 
 type
 
@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     Datasource1: TDatasource;
     Edit1: TEdit;
+    IniPropStorage1: TIniPropStorage;
     PaintBox1: TPaintBox;
     RadioGroup1: TRadioGroup;
     RxDBGrid1: TRxDBGrid;
@@ -43,7 +44,7 @@ var
   FOri:TTextOrientation;
 begin
 
-  PaintBox1.Canvas.TextOut(1,1, 'Привет');
+  PaintBox1.Canvas.TextOut(1,1, 'Text for test');
   case RadioGroup1.ItemIndex of
     0:FOri:=toHorizontal;
     1:FOri:=toVertical90;

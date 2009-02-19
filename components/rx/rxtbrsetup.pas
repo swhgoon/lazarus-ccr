@@ -198,7 +198,7 @@ begin
   FToolPanel.Options:=tpo;
   
   FToolPanel.ButtonAllign:=TToolButtonAllign(RadioGroup1.ItemIndex);
-  cbFlatBtn.Checked:=tpTransparentBtns in FToolPanel.Options;
+  cbFlatBtn.Checked:=tpFlatBtns in FToolPanel.Options;
 end;
 
 procedure TToolPanelSetupForm.BitBtn4Click(Sender: TObject);
@@ -230,6 +230,8 @@ begin
   inherited Create(AToolPanel);
   FormResize(nil);
   FToolPanel:=AToolPanel;
+
+
   cbFlatBtn.Checked:=tpFlatBtns in FToolPanel.Options;
   cbTransp.Checked:=tpTransparentBtns in FToolPanel.Options;
   cbShowHint.Checked:=FToolPanel.ShowHint;
@@ -241,6 +243,15 @@ begin
   RadioGroup2.ItemIndex:=Ord(FToolPanel.ToolBarStyle);
 
   UpdateStates;
+
+  cbFlatBtn.OnChange:=@CheckBox1Change;
+  cbTransp.OnChange:=@CheckBox1Change;
+  cbShowHint.OnChange:=@CheckBox1Change;
+  RadioGroup1.OnClick:=@CheckBox1Change;
+  RadioGroup2.OnClick:=@CheckBox1Change;
+
+  ListBtnAvaliable.ItemHeight:=FToolPanel.BtnHeight + 4;
+  ListBtnVisible.ItemHeight:=FToolPanel.BtnHeight + 4;
 end;
 
 initialization

@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, DBGrids, rxtoolbar, ActnList, XMLPropStorage,
-  IniPropStorage, Menus, RxAppIcon;
+  Buttons, StdCtrls, rxtoolbar, ActnList, XMLPropStorage, Menus;
 
 
 type
@@ -38,7 +37,6 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     PopupMenu1: TPopupMenu;
-    RxAppIcon1: TRxAppIcon;
     SpeedButton2: TSpeedButton;
     ToolPanel1: TToolPanel;
     XMLPropStorage1: TXMLPropStorage;

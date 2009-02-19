@@ -24,6 +24,8 @@ function DrawButtonFrame(Canvas: TCanvas; const Client: TRect;
 function DrawButtonFrameXP(Canvas: TCanvas; const Client: TRect;
   IsDown, IsFlat: Boolean): TRect;
 
+//Code from TAChartUtils
+procedure RotateLabel(Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
 procedure OutTextXY90(Canvas:TCanvas; X,Y:integer; Text:string; Orientation:TTextOrientation);
 
 function IsForegroundTask: Boolean;
@@ -63,9 +65,7 @@ procedure OutOfResources;
 {$ENDIF}
 
 implementation
-{$IFNDEF WIN32}
-uses LCLProc, LCLIntf;
-{$ENDIF}
+uses LCLProc, LCLIntf, LCLType;
 
 function WidthOf(R: TRect): Integer;
 begin
@@ -180,7 +180,30 @@ begin
     raise EInvalidOperation.CreateFmt('ParentRequired %s', [Control.Name]);
 end;
 
+procedure RotateLabel(Canvas: TCanvas; x, y: Integer; const St: String; RotDegree: Integer);
+var
+  OldFont, NewFont: HFONT;
+  LogRec: TLOGFONT;
+  DC: HDC;
+begin
+  with Canvas do
+  begin
+    Brush.Style := bsClear;
+    GetObject(Font.Handle, SizeOf(LogRec), @LogRec);
+    LogRec.lfEscapement   := RotDegree * 10;
+    LogRec.lfOrientation  := 0;
+    LogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
+    NewFont := CreateFontIndirect(LogRec);
+    DC := Handle;
+  end;
+  OldFont := SelectObject(DC, NewFont);
+  TextOut(DC, X, Y, @St[1], Length(St));
+  DeleteObject(SelectObject(DC, OldFont));
+end;
+
+
 procedure OutTextXY90(Canvas:TCanvas; X,Y:integer; Text:string; Orientation:TTextOrientation);
+{$IFDEF OLD_STYLE_TEXT_ROTATE}
 var
   W,H, i,j:integer;
   Bmp:TBitmap;
@@ -200,6 +223,7 @@ begin
       Bmp.Canvas.FillRect(Rect(0,0,W,H));
       Bmp.Canvas.Font:=Canvas.Font;
       Bmp.Canvas.TextOut(0, 0, Text);
+      Canvas.Lock;
       if Orientation = toVertical90 then
       begin
         for i:=0 to W-1 do
@@ -231,11 +255,40 @@ begin
             if Bmp.Canvas.Pixels[i,j]<>clWhite then
               Canvas.Pixels[(W-i)+X,j+Y]:=Bmp.Canvas.Pixels[i,j];
       end;
+      Canvas.Unlock;
     finally
       Bmp.Free;
     end;
   end;
 end;
+{$ELSE}
+const
+  TextAngle: array [TTextOrientation] of integer =
+      (0 {toHorizontal}, 90 {toVertical90},
+       180 {toHorizontal180}, 270 {toVertical270}, 0 {toHorizontal360});
+var
+  W, H:integer;
+begin
+  W:=0;
+  H:=0;
+  case Orientation of
+    toVertical90:
+       begin
+         H:=Canvas.TextWidth(Text);
+       end;
+    toVertical270:
+       begin
+         W:=Canvas.TextHeight(Text);
+       end;
+    toHorizontal180:
+       begin
+         H:=Canvas.TextHeight(Text);
+         W:=Canvas.TextWidth(Text);
+       end;
+  end;
+  RotateLabel(Canvas, X+W, Y+H, Text, TextAngle[Orientation]);
+end;
+{$ENDIF}
 
 {
 function AllocMemo(Size: Longint): Pointer;

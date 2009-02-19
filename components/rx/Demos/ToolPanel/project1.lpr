@@ -4,10 +4,14 @@ program project1;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, Unit1, RxNew, AboutUnit;
+  Forms,
+  Unit1,
+  AboutUnit, LResources;
+
+{$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
 
 begin
+  {$I project1.lrs}
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TAboutForm, AboutForm);
