@@ -1055,14 +1055,19 @@ const
 var
   i, j: integer;
   flg: boolean;
+  S: string;
 begin
   //  If text contains chars to need escape, replace text using "\".
+  //
+  // TODO: implement UNICODE support in powerpdf. Currently we can't do
+  // any better than converting utf-8 strings to unicode.
+  S := UTF8ToAnsi(Value);
   result := '';
-  for i := 1 to Length(Value) do
+  for i := 1 to Length(S) do
   begin
     flg := false;
     for j := 1 to Length(EscapeChars) do
-      if Value[i] = EscapeChars[j] then
+      if S[i] = EscapeChars[j] then
       begin
         result := result + '\' + ReplaceChars[j];
         flg := true;
@@ -1070,7 +1075,7 @@ begin
       end;
 
     if not flg then
-       result := result + Value[i];
+       result := result + S[i];
   end;
 end;
 
