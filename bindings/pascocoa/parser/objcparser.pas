@@ -16,11 +16,12 @@ program objcparser;
 {$endif}
 
 uses
-  Classes,
+  Classes, 
   IniFiles,
   SysUtils,
   ObjCParserUtils,
-  ObjCParserTypes, 
+  ObjCParserTypes,
+  ObjCTemplate,
   gnuccFeatures;
 
 type
@@ -505,7 +506,49 @@ begin
   end;
 end;}
 
+
+procedure TestTemplate;
+var
+  fn  : TFileStream;
+  tmp : AnsiString;
+
+  tp  : TTemplateProc;
+  s   : string;
+  pv  : TPascalValues;
+  root: TTemplateList;
+  cl  : TTemplateList;
 begin
+  root:=TTemplateList.Create(nil);
+  cl:=TTemplateList.Create(root);
+  cl.Name :='class';
+  cl.Params.Values['class_objcname'] := 'NSNotebook';
+  cl.Params.Values['class_objcsupername'] := 'NSObject';
+
+  root.SubLists.Add(cl);
+
+  fn := TFileStream.Create('templatesample.txt', fmOpenRead or fmShareDenyNone);
+  tp := TTemplateProc.Create;
+  pv := TPascalValues.Create;
+  try
+    SetLength(tmp, fn.Size);
+    fn.Read(tmp[1], fn.Size);
+
+
+    s := tp.Parse(tmp, root, pv);
+    writeln(s);
+    readln;
+  finally
+    pv.Free;
+    tp.Free;
+    fn.Free;
+  end;
+end;
+
+begin
+//  TestTemplate;
+//  Exit;
+
+
   doOutput := true;
   try
     GetConvertSettings(ConvertSettings, inpf);

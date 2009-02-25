@@ -1,8 +1,8 @@
 unit ObjCToPas;
-{ * This file is part of ObjCParser tool 
+{ * This file is part of ObjCParser tool
   * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
   * license version 2.0 or 2.1.  You should have received a copy of the
-  * LGPL license along with at http://www.gnu.org/                                              
+  * LGPL license along with at http://www.gnu.org/
 }
 // the unit contains (should contain) ObjC to Pascal convertion utility routines
 // todo: move all ObjCParserUtils functions here.
@@ -42,5 +42,9 @@ begin
     Result := Copy(Result, 1, i);
   end;
 end;
+
+
+
+
 
 end.

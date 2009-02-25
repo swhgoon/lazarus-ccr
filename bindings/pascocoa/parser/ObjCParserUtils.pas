@@ -1,7 +1,7 @@
-{ * This file is part of ObjCParser tool 
+{ * This file is part of ObjCParser tool
   * Copyright (C) 2008-2009 by Dmitry Boyarintsev under the GNU LGPL
   * license version 2.0 or 2.1.  You should have received a copy of the
-  * LGPL license along with at http://www.gnu.org/                                              
+  * LGPL license along with at http://www.gnu.org/
 }
 
 unit ObjCParserUtils;
@@ -323,14 +323,14 @@ begin
       if l = 'float' then Result := 'Single';
   end;
 
-  
+
   if Result = objcType then begin
     if isPointer then r := ConvertSettings.PtrTypeReplace[objcType]
     else r := ConvertSettings.TypeDefReplace[objcType];
     if r <> '' then
       Result := r;
   end;
-  
+
   if isPointer then begin
     if ((objctype = 'char') or (objctype = 'const char')) then
       Result := 'PChar'
@@ -340,7 +340,7 @@ end;
 function ObjCResultToDelphiType(Res: TObjCResultTypeDef) : AnsiString;
 begin
   if Res._Type is TTypeDef then
-    Result := ObjCToDelphiType( TTypeDef(Res._Type)._Name, TTypeDef(Res._Type)._IsPointer) 
+    Result := ObjCToDelphiType( TTypeDef(Res._Type)._Name, TTypeDef(Res._Type)._IsPointer)
   else begin
   end;
 end;
@@ -829,6 +829,66 @@ begin
   else Result := prefix + postfix;
 end;
 
+procedure WriteOutVariableToHeader(v: TVariable; const SpacePrefix: String;  Vars: TStringList);
+var
+  tp  : TTypeDef;
+  s   : AnsiString;
+begin
+  tp := TTypeDef(v._Type);
+  s := Format('%s : %s; // external name ''%s''; ', [v._Name, ObjCToDelphiType(tp._Name, tp._IsPointer), v._Name] );
+  Vars.Add(SpacePrefix + s);
+end;
+
+function CParamsListToPascalStr(Params: TFunctionParamsList): AnsiString;
+var
+  i   : integer;
+  num : Integer;
+  prm : TFunctionParam;
+  vs  : AnsiString;
+begin
+  Result := '';
+  num := 1;
+  for i := 0 to Params.Items.Count - 1 do
+    if TObject(Params.Items[i]) is TFunctionParam then begin
+      prm := TFunctionParam(Params.Items[i]);
+      if prm._IsAny then Continue;
+      vs := ObjCToDelphiType( GetTypeNameFromEntity(prm._Type), IsTypeDefIsPointer(prm._Type));
+      if prm._Name = ''
+        then vs := '_param'+IntToStr(num) + ': ' + vs
+        else vs := prm._Name + ': ' + vs;
+      if Result <> '' then
+        Result := Result + '; ' + vs
+      else
+        Result := vs;
+      inc(num);
+    end;
+end;
+
+procedure WriteOutFunctionToHeader(f: TFunctionDef; st: TStringList);
+var
+  restype : AnsiString;
+  fntype  : AnsiString;
+  isptr   : Boolean;
+  s       : AnsiString;
+begin
+  if not Assigned(f._ResultType) then begin
+    isptr := false;
+    fntype := 'int';
+  end else if (f._ResultType is TTypeDef) then begin
+    isptr := TTypeDef(f._ResultType)._IsPointer;
+    fntype := TTypeDef(f._ResultType)._Name;
+  end else begin
+    isptr := false;
+    fntype := '{todo: not implemented... see .h file for type}';
+  end;
+
+  restype := ObjCToDelphiType(fntype, isptr);
+  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' cdecl';
+  st.Add( s);
+  s := Format('  external name ''_%s'';', [f._Name]);
+  st.Add(s);
+end;
+
 procedure WriteOutEnumToHeader(enm: TEnumTypeDef; st: TStrings);
 var
   i   : Integer;
@@ -902,31 +962,6 @@ begin
       inc(n);
     end;
   end;
-end;
-
-function CParamsListToPascalStr(Params: TFunctionParamsList): AnsiString;
-var
-  i   : integer;
-  num : Integer;
-  prm : TFunctionParam;
-  vs  : AnsiString;
-begin
-  Result := '';
-  num := 1;
-  for i := 0 to Params.Items.Count - 1 do
-    if TObject(Params.Items[i]) is TFunctionParam then begin
-      prm := TFunctionParam(Params.Items[i]);
-      if prm._IsAny then Continue;
-      vs := ObjCToDelphiType( GetTypeNameFromEntity(prm._Type), IsTypeDefIsPointer(prm._Type));
-      if prm._Name = ''
-        then vs := '_param'+IntToStr(num) + ': ' + vs
-        else vs := prm._Name + ': ' + vs;
-      if Result <> '' then
-        Result := Result + '; ' + vs
-      else
-        Result := vs;
-      inc(num);
-    end;
 end;
 
 function CToDelphiFuncType(AFuncType: TFunctionTypeDef): AnsiString;
@@ -1109,6 +1144,8 @@ var
   subs    : TStringList;
 //  s       : AnsiString;
   consts  : TStringList;
+  vars    : TStringList;
+  functs  : TStringList;
 const
   SpacePrefix = '  ';
 begin
@@ -1116,7 +1153,8 @@ begin
   BeginExcludeSection( GetIfDefFileName(hdr._FileName, 'H'), st);
   subs := TStringList.Create;
   consts := TStringList.Create;
-
+  vars := TStringList.Create;
+  functs := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then
@@ -1144,7 +1182,11 @@ begin
           subs.Add('//'+ TSkip(hdr.Items[i])._Skip)
         else if (TObject(hdr.Items[i]) is TComment) then
           //WriteOutIfComment(hdr.Items, i, SpacePrefix, subs);
-          WriteOutCommentStr( TComment(hdr.Items[i])._Comment, SpacePrefix, Subs);
+          WriteOutCommentStr( TComment(hdr.Items[i])._Comment, SpacePrefix, Subs)
+        else if (TObject(hdr.Items[i]) is TVariable) then
+          WriteOutVariableToHeader(TVariable(hdr.Items[i]), SpacePrefix, Vars)
+        else if (TObject(hdr.Items[i]) is TFunctionDef) then
+          WriteOutFunctionToHeader(TFunctionDef(hdr.Items[i]), Functs);
       end; {of if}
 
     st.add('');
@@ -1154,12 +1196,27 @@ begin
       subs.Clear;
     end;
 
+    if vars.Count > 0 then begin
+      st.Add('');
+      st.Add('var');
+      st.AddStrings(vars);
+    end;
+
+
+    if functs.Count > 0 then begin
+      st.Add('');
+      st.AddStrings(functs);
+    end;
+
+
   finally
     EndSection(st);
     EndSection(st);
     subs.Add('');
     subs.Free;
     consts.Free;
+    vars.Free;
+    functs.Free;
   end;
 end;
 
@@ -2071,6 +2128,7 @@ begin
   end else
     TReplaceItem(fItems.Objects[i]).ReplaceStr := AValue;
 end;
+
 
 initialization
   ConvertSettings := TConvertSettings.Create;

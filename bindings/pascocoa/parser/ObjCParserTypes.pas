@@ -228,8 +228,9 @@ type
     function DoParse(AParser: TTextParser): Boolean; override; 
     function ParseAfterTypeName(AParser: TTextParser): Boolean; 
   public
-    _Type : TEntity;
-    _Name : AnsiString; 
+    _Type    : TEntity;
+    _Name    : AnsiString;
+    _isConst : Boolean;
   end; 
 
   { TFunctionParam }
@@ -237,9 +238,10 @@ type
   protected
     function DoParse(AParser: TTextParser): Boolean; override;
   public
-    _Type   : TEntity;
-    _Name   : AnsiString;
-    _IsAny  : Boolean;
+    _Type     : TEntity;
+    _Name     : AnsiString;
+    _IsAny    : Boolean;
+    _IsArray  : Boolean;
   end;
 
   { TFunctionParamsList }
@@ -541,6 +543,23 @@ implementation
 
 var
   CustomList : TList = nil;
+
+function IsCReserved(const Token: AnsiString): Boolean;
+begin
+  if Token = '' then begin
+    Result := false;
+    Exit;
+  end;
+  
+  Result := true;
+  case Token[1] of
+    'c': begin
+      if Token = 'const' then Exit;
+    end;
+  end;
+  
+  Result := false;
+end;
 
 function ParseSeq(Parser: TTextParser; const OpenSeq, CloseSeq: AnsiString): AnsiString;
 var
@@ -1449,7 +1468,11 @@ var
   isext : Boolean;
 
   idx   : Integer;
+
+  Modifiers : TStringList;
+
 begin
+  Modifiers := TStringList.Create;
   Result := false;
   idx := AParser.TokenPos;
   try
@@ -1468,7 +1491,13 @@ begin
     end;
 
     // expecting name of Variable or Function name
-    AParser.FindNextToken(_name, tt);
+    repeat
+      AParser.FindNextToken(_name, tt);
+      if isCReserved (_name) then begin
+        Modifiers.Add(_name);
+        _name := '';
+      end;
+    until _name <> '';
     if tt <> tt_Ident then begin
 
       Result := false;
@@ -1498,6 +1527,7 @@ begin
   finally
     if not Result then
       AParser.Index := idx;
+    Modifiers.Free;
   end;
 end;
 
@@ -2414,6 +2444,19 @@ begin
     AParser.Index := AParser.TokenPos
   else
     _Name := s;
+
+  AParser.FindNextToken(s, tt);
+  if (tt = tt_Symbol) and (s = '[') then begin
+    _IsArray := true;
+    AParser.FindNextToken(s, tt);
+    if s <> ']' then begin
+      AParser.SetError( ErrExpectStr(']', s));
+      Result := false;
+      Exit;
+    end;
+      
+  end else
+    AParser.Index := AParser.TokenPos; 
   Result:=true;
 end;
 
