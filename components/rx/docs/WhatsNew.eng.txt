@@ -1,3 +1,4 @@
+  + Keys PgUp/PgDn correctly go through previous/next month in TRxCalendarGrid and TRxDateEdit
   + if try edit closed TRxMemoryData in error message display TRxMemoryData.Name
   + fix create resource from XPM image
   + draw shadow on button image in TToolPanel

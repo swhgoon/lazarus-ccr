@@ -495,7 +495,17 @@ begin
           if (Day < DaysThisMonth) then Day := Day + 1
           else CalendarDate := CalendarDate + 1;
           Exit;
-        end
+        end;
+      VK_PRIOR:
+        begin
+          ChangeMonth(-1);
+          Exit;
+        end;
+      VK_NEXT:
+        begin
+          ChangeMonth(+1);
+          Exit;
+        end;
     end;
   inherited KeyDown(Key, Shift);
 end;
@@ -1121,13 +1131,11 @@ begin
     case Key of
       VK_NEXT:
         begin
-          if ssCtrl in Shift then FCalendar.NextYear
-          else FCalendar.NextMonth;
+          if ssCtrl in Shift then FCalendar.NextYear;
         end;
       VK_PRIOR:
         begin
-          if ssCtrl in Shift then FCalendar.PrevYear
-          else FCalendar.PrevMonth;
+          if ssCtrl in Shift then FCalendar.PrevYear;
         end;
       VK_ESCAPE:ModalResult:=mrCancel;
     end;
