@@ -69,7 +69,23 @@ type
     property Date: string read  FDate write FDate;
     property Revision: integer read FRevision write FRevision;
   end;
-  
+
+  { TLock }
+
+  TLock = class
+  private
+    FOwner    : string;
+    FToken    : string;
+    FComment  : string;
+    FCreated  : string;
+    procedure LoadFromNode(ANode: TDomNode);
+  public
+    property Owner: string read FOwner write FOwner;
+    property Token: string read FToken write FToken;
+    property Comment: string read FComment write FComment;
+    property Created: string read FCreated write FCreated;
+  end;
+
   { TRepository }
 
   TRepository = class
@@ -211,6 +227,58 @@ type
     function GetFileItem(const s: string): TSvnFileProp;
     property FileItem[index: integer]: TSvnFileProp read GetFile; default;
     property FileCount: integer read GetFileCount;
+  end;
+
+  { TStatusEntry }
+
+  TStatusEntry = class
+  private
+    FCommit     : TCommit;
+    FPath       : String;
+
+    FWorkLock     : TLock;
+    FWorkProps    : String;
+    FWorkStatus   : String;
+    FWorkRevision : Integer;
+
+    FRepoLock     : TLock;
+    FRepoProps    : String;
+    FRepoStatus   : String;
+    procedure LoadFromNode(ANode: TDOMElement);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Commit : TCommit read FCommit;
+    property Path: String read FPath write FPath;
+
+    property WorkLock: TLock read FWorkLock;
+    property WorkProps: String read FWorkProps write FWorkProps;
+    property WorkStatus: String read FWorkStatus write FWorkStatus;
+    property WorkRevision: Integer read FWorkRevision write FWorkRevision;
+
+    property RepoLock: TLock read FRepoLock;
+    property RepoProps: String read FRepoProps write FRepoProps;
+    property RepoStatus: String read FRepoStatus write FRepoStatus;
+  end;
+
+  { TSvnStatusList }
+
+  TSvnStatusList = class(TSvnBase)
+  private
+    FTargetPath       : String;
+    FAgainstRevision  : Integer;
+    FStatusEntries    : TFPObjectList;
+    function GetStatusEntry(index: integer): TStatusEntry;
+    function GetStatusEntryCount: integer;
+    procedure LoadFromXml(ADoc: TXMLDocument); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property StatusEntry[index: integer] :TStatusEntry read GetStatusEntry;
+    property StatusEntryCount: integer read GetStatusEntryCount;
+    property TargetPath: String read FTargetPath;
+    property AgainstRevision: Integer read FAgainstRevision;
   end;
 
 implementation
@@ -698,6 +766,141 @@ end;
 function TSvnPropInfo.GetFileItem(const s: string): TSvnFileProp;
 begin
   Result := TSvnFileProp(FFiles.Find(s));
+end;
+
+{ TSvnStatusList }
+
+function TSvnStatusList.GetStatusEntry(index: integer): TStatusEntry;
+begin
+  Result := TStatusEntry(FStatusEntries[index]);
+end;
+
+function TSvnStatusList.GetStatusEntryCount: integer;
+begin
+  Result := FStatusEntries.Count;
+end;
+
+procedure TSvnStatusList.LoadFromXml(ADoc: TXMLDocument);
+var
+  EntryNode : TDOMNode;
+  StatEntry : TStatusEntry;
+begin
+  Clear;
+  FAgainstRevision := 0;
+  FTargetPath := '';
+
+  EntryNode := ADoc.FindNode('status').FirstChild;
+  while Assigned(EntryNode) do begin
+    if (EntryNode.NodeType=ELEMENT_NODE)
+      and (EntryNode.NodeName='target') then begin
+      FTargetPath := (EntryNode as TDOMElement).GetAttribute('path');
+      Break; // only single target path is processed?
+    end;
+    EntryNode := EntryNode.NextSibling;
+  end;
+
+  if Assigned(EntryNode) then begin
+    EntryNode := EntryNode.FirstChild;
+    while assigned(EntryNode) do begin
+      if (EntryNode.NodeType=ELEMENT_NODE)
+        and (EntryNode.NodeName='entry') then
+      begin
+        StatEntry := TStatusEntry.Create;
+        StatEntry.LoadFromNode(TDomElement(EntryNode));
+        FStatusEntries.Add(StatEntry);
+      end else if (EntryNode.NodeName='against') then
+      begin
+        FAgainstRevision := StrToIntDef(TDOMElement(EntryNode).GetAttribute('revision'), 0);
+      end;
+      EntryNode := EntryNode.NextSibling;
+    end;
+  end;
+end;
+
+constructor TSvnStatusList.Create;
+begin
+  inherited Create;
+  FStatusEntries:=TFPObjectList.Create(true);
+end;
+
+destructor TSvnStatusList.Destroy;
+begin
+  FStatusEntries.Free;
+  inherited Destroy;
+end;
+
+procedure TSvnStatusList.Clear;
+begin
+  FStatusEntries.Clear;
+end;
+
+{ TStatusEntry }
+
+procedure TStatusEntry.LoadFromNode(ANode: TDOMElement);
+var
+  StatusNode: TDOMNode;
+  SubNode   : TDOMNode;
+begin
+  if not Assigned(ANode) then Exit;
+
+  FPath := ANode.GetAttribute('path');
+
+  StatusNode := ANode.FindNode('wc-status');
+  if Assigned(StatusNode) and (StatusNode is TDOMElement) then begin
+    FWorkProps := TDomElement(StatusNode).GetAttribute('props');
+    FWorkStatus := TDomElement(StatusNode).GetAttribute('item');
+    FWorkRevision := StrToIntDef(TDomElement(StatusNode).GetAttribute('revision'),0);
+
+    SubNode := StatusNode.FindNode('commit');
+    if Assigned(subNode) then FCommit.LoadFromNode(subNode);
+
+    SubNode := StatusNode.FindNode('lock');
+    if Assigned(SubNode) then begin
+      if not Assigned(FWorkLock) then FWorkLock := TLock.Create;
+      FWorkLock.LoadFromNode(SubNode);
+    end;
+  end;
+
+  StatusNode := ANode.FindNode('repos-status');
+  if Assigned(StatusNode) and (StatusNode is TDOMElement) then begin
+    FRepoProps := TDomElement(StatusNode).GetAttribute('props');
+    FRepoStatus := TDomElement(StatusNode).GetAttribute('item');
+
+    SubNode := StatusNode.FindNode('lock');
+    if Assigned(SubNode) then begin
+      if not Assigned(FRepoLock) then FRepoLock := TLock.Create;
+      FRepoLock.LoadFromNode(SubNode);
+    end;
+  end;
+
+end;
+
+constructor TStatusEntry.Create;
+begin
+  FCommit := TCommit.Create;
+end;
+
+destructor TStatusEntry.Destroy;
+begin
+  FCommit.Free;
+  FRepoLock.Free;
+  FWorkLock.Free;
+  inherited Destroy;
+end;
+
+{ TLock }
+
+procedure TLock.LoadFromNode(ANode: TDomNode);
+begin
+  if ANode=nil then exit;
+
+  if ANode.NodeType = ELEMENT_NODE then begin
+    FToken := GetChildTextContent(ANode, 'token');
+    FOwner := GetChildTextContent(ANode, 'owner');
+    fComment := GetChildTextContent(ANode, 'comment');
+    fCreated := GetChildTextContent(ANode, 'created');
+  end;
+
 end;
 
 end.
