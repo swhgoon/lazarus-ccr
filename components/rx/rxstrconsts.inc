@@ -21,8 +21,7 @@ Copyright (c) 1997 Master-Bank
   sLoadLibError    = 'Could not load ''%s'' library';
   sDetails         = 'Details';
   sWindowsIcoFiles = 'Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*';
-  sLoadIcon        = 'Load icon';
   sToCurDate       = 'Set current date';
-  
+
   
   

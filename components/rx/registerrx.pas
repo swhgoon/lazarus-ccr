@@ -19,18 +19,6 @@ uses
 
 type
 
-  { TRxAppIcon }
-
-  TRxAppIconEditor = class(TComponentEditor)
-  public
-    DefaultEditor: TBaseComponentEditor;
-    constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
-    destructor Destroy; override;
-    function GetVerbCount:integer;override;
-    function GetVerb(Index:integer):string;override;
-    procedure ExecuteVerb(Index:integer);override;
-  end;
-
 { TRxDBGridFieldProperty }
   TRxDBGridFieldProperty = class(TFieldProperty)
   public
@@ -98,72 +86,6 @@ begin
     DataSource.DataSet.GetFieldNames(Values);
 end;
 
-{ TRxAppIcon }
-
-type
-  PClass = ^TClass;
-
-constructor TRxAppIconEditor.Create(AComponent: TComponent;
-  ADesigner: TComponentEditorDesigner);
-var
-  CompClass: TClass;
-begin
-  inherited Create(AComponent, ADesigner);
-  CompClass := PClass(Acomponent)^;
-  try
-    PClass(AComponent)^ := TComponent;
-    DefaultEditor := GetComponentEditor(AComponent, ADesigner);
-  finally
-    PClass(AComponent)^ := CompClass;
-  end;
-end;
-
-destructor TRxAppIconEditor.Destroy;
-begin
-  DefaultEditor.Free;
-  inherited Destroy;
-end;
-
-function TRxAppIconEditor.GetVerbCount: integer;
-begin
-  Result:=DefaultEditor.GetVerbCount + 1;
-end;
-
-function TRxAppIconEditor.GetVerb(Index: integer): string;
-begin
-  if Index < DefaultEditor.GetVerbCount then
-    Result := DefaultEditor.GetVerb(Index)
-  else
-  begin
-    case Index - DefaultEditor.GetVerbCount of
-      0:Result:=sLoadIcon;
-    end;
-  end;
-end;
-
-procedure TRxAppIconEditor.ExecuteVerb(Index: integer);
-var
-  OpenDialog1: TOpenDialog;
-begin
-  if Index < DefaultEditor.GetVerbCount then
-    DefaultEditor.ExecuteVerb(Index)
-  else
-  begin
-    case Index - DefaultEditor.GetVerbCount of
-      0:begin
-          OpenDialog1:=TOpenDialog.Create(nil);
-          OpenDialog1.Filter:=sWindowsIcoFiles;
-          try
-            if OpenDialog1.Execute then
-              (Component as TRxAppIcon).LoadFromFile(OpenDialog1.FileName);
-          finally
-            OpenDialog1.Free;
-          end;
-          Modified;
-        end;
-    end;
-  end;
-end;
 
 
 procedure RegisterRxAppIcon;
@@ -241,10 +163,6 @@ begin
   RegisterComponents('RX',[TRxLabel, TSecretPanel, TRxSpeedButton]);
 end;
 
-procedure RegisterRxLogin;
-begin
-  RegisterComponents('RX',[TRxLoginDialog]);
-end;
 
 procedure RegisterChartPanel;
 begin
@@ -281,6 +199,11 @@ begin
   RegisterComponents('RX',[TRxTimeEdit]);
 end;
 
+procedure RegisterRxLogin;
+begin
+  RegisterComponents('RX',[TRxLoginDialog]);
+end;
+
 procedure Register;
 begin
   //RX
@@ -294,7 +217,6 @@ begin
   RegisterUnit('rxtoolbar', @RegisterRxToolBar);
   RegisterUnit('rxappicon', @RegisterRxAppIcon);
   RegisterUnit('rxctrls', @RegisterRxCtrls);
-  RegisterUnit('RxLogin', @RegisterRxLogin);
   RegisterUnit('RxCustomChartPanel', @RegisterChartPanel);
   RegisterUnit('AutoPanel', @RegisterAutoPanel);
   RegisterUnit('pickdate', @RegisterPickDate);
@@ -302,6 +224,7 @@ begin
   RegisterUnit('rxclock', @RegisterRxClock);
   RegisterUnit('rxspin', @RegisterRxSpin);
   RegisterUnit('RxTimeEdit', @RegisterRxTimeEdit);
+  RegisterUnit('RxLogin', @RegisterRxLogin);
 
   //RX DBAware
   RegisterUnit('dbdateedit', @RegisterUnitDBDateEdit);
@@ -310,16 +233,13 @@ begin
   RegisterUnit('rxmemds', @RegisterRxMemDS);
   RegisterUnit('rxdbcomb', @RegisterRxDBComb);
 
-
   //Component Editors
-  RegisterComponentEditor(TRxAppIcon, TRxAppIconEditor);
   RegisterComponentEditor(TRxMemoryData, TMemDataSetEditor);
   //
   RegisterPropertyEditor(TypeInfo(string), TRxColumn, 'FieldName', TRxDBGridFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TRxColumnFooter, 'FieldName', TRxDBGridFooterFieldProperty);
 
   RegisterPropertyEditor(TypeInfo(string), TPopUpColumn, 'FieldName', TPopUpColumnFieldProperty);
-
   RegisterCEEditLookupFields;
 end;
 

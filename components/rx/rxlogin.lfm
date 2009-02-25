@@ -263,7 +263,6 @@ object RxLoginForm: TRxLoginForm
     BorderSpacing.Left = 12
     BorderSpacing.Around = 6
     TabOrder = 0
-    Text = '1'
   end
   object PasswordEdit: TEdit
     AnchorSideLeft.Control = UserNameEdit
@@ -282,7 +281,6 @@ object RxLoginForm: TRxLoginForm
     EchoMode = emPassword
     PasswordChar = '*'
     TabOrder = 1
-    Text = '1'
   end
   object CustomCombo: TComboBox
     AnchorSideLeft.Control = UserNameEdit
