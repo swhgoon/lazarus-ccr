@@ -835,7 +835,7 @@ var
   s   : AnsiString;
 begin
   tp := TTypeDef(v._Type);
-  s := Format('%s : %s; // external name ''%s''; ', [v._Name, ObjCToDelphiType(tp._Name, tp._IsPointer), v._Name] );
+  s := Format('%s : %s; external name ''%s''; ', [v._Name, ObjCToDelphiType(tp._Name, tp._IsPointer), v._Name] );
   Vars.Add(SpacePrefix + s);
 end;
 
@@ -885,7 +885,7 @@ begin
   restype := ObjCToDelphiType(fntype, isptr);
   s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' cdecl';
   st.Add( s);
-  s := Format('  external name ''_%s'';', [f._Name]);
+  s := Format(' external name ''_%s'';', [f._Name]);
   st.Add(s);
 end;
 
