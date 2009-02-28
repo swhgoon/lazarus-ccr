@@ -829,7 +829,7 @@ begin
   else Result := prefix + postfix;
 end;
 
-procedure WriteOutVariableToHeader(v: TVariable; const SpacePrefix: String;  Vars: TStringList);
+procedure WriteOutVariableToHeader(v: TVariable; const SpacePrefix: String; Vars: TStrings);
 var
   tp  : TTypeDef;
   s   : AnsiString;
@@ -864,7 +864,7 @@ begin
     end;
 end;
 
-procedure WriteOutFunctionToHeader(f: TFunctionDef; st: TStringList);
+procedure WriteOutFunctionToHeader(f: TFunctionDef; st: TStrings);
 var
   restype : AnsiString;
   fntype  : AnsiString;
@@ -1142,19 +1142,29 @@ procedure WriteOutHeaderSection(hdr: TObjCHeader; st: TStrings);
 var
   i       : Integer;
   subs    : TStringList;
-//  s       : AnsiString;
   consts  : TStringList;
-  vars    : TStringList;
-  functs  : TStringList;
+  cmt     : TStringList;
+
+  PasSection  : String;
+
+  procedure StartSection(NewSection: String);
+  begin
+    if NewSection = PasSection then Exit;
+    st.Add('');
+    if NewSection <> '' then st.Add(NewSection);
+    PasSection := NewSection;
+  end;
+
 const
   SpacePrefix = '  ';
 begin
+  PasSection := '';
+
   BeginSection('HEADER', st);
   BeginExcludeSection( GetIfDefFileName(hdr._FileName, 'H'), st);
   subs := TStringList.Create;
   consts := TStringList.Create;
-  vars := TStringList.Create;
-  functs := TStringList.Create;
+  cmt := TStringList.Create;
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then
@@ -1172,41 +1182,36 @@ begin
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
-        if (TObject(hdr.Items[i]) is TEnumTypeDef) then
-          WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), subs)
-        else if (TObject(hdr.Items[i]) is TPrecompiler) then
+
+        if (TObject(hdr.Items[i]) is TEnumTypeDef) then begin
+          WriteOutEnumToHeader(TEnumTypeDef(hdr.Items[i]), st);
+          PasSection := 'const';
+        end else if (TObject(hdr.Items[i]) is TPrecompiler) then begin
           WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st)
-        else if (TObject(hdr.Items[i]) is TTypeNameDef) then
-          WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, subs)
-        else if (TObject(hdr.Items[i]) is TSkip) then
-          subs.Add('//'+ TSkip(hdr.Items[i])._Skip)
-        else if (TObject(hdr.Items[i]) is TComment) then
+        end else if (TObject(hdr.Items[i]) is TTypeNameDef) then begin
+          WriteOutTypeDefToHeader(TTypeNameDef(hdr.Items[i]), SpacePrefix, st);
+          //hack. MUST CHANGE CODE
+          PasSection := 'type';
+        end else if (TObject(hdr.Items[i]) is TSkip) then
+          st.Add('//'+ TSkip(hdr.Items[i])._Skip)
+        else if (TObject(hdr.Items[i]) is TComment) then begin
           //WriteOutIfComment(hdr.Items, i, SpacePrefix, subs);
-          WriteOutCommentStr( TComment(hdr.Items[i])._Comment, SpacePrefix, Subs)
-        else if (TObject(hdr.Items[i]) is TVariable) then
-          WriteOutVariableToHeader(TVariable(hdr.Items[i]), SpacePrefix, Vars)
-        else if (TObject(hdr.Items[i]) is TFunctionDef) then
-          WriteOutFunctionToHeader(TFunctionDef(hdr.Items[i]), Functs);
+          WriteOutCommentStr( TComment(hdr.Items[i])._Comment, SpacePrefix, st);
+        end else if (TObject(hdr.Items[i]) is TVariable) then begin
+          StartSection('var');
+          WriteOutVariableToHeader(TVariable(hdr.Items[i]), SpacePrefix, st)
+        end else if (TObject(hdr.Items[i]) is TFunctionDef) then begin
+          StartSection('');
+          WriteOutFunctionToHeader(TFunctionDef(hdr.Items[i]), st);
+        end;
       end; {of if}
 
     st.add('');
-    if subs.Count > 0 then begin
+{    if subs.Count > 0 then begin
       //if subs[0] <> 'const' then st.Add('type');
       st.AddStrings(subs);
       subs.Clear;
-    end;
-
-    if vars.Count > 0 then begin
-      st.Add('');
-      st.Add('var');
-      st.AddStrings(vars);
-    end;
-
-
-    if functs.Count > 0 then begin
-      st.Add('');
-      st.AddStrings(functs);
-    end;
+    end;}
 
 
   finally
@@ -1215,8 +1220,7 @@ begin
     subs.Add('');
     subs.Free;
     consts.Free;
-    vars.Free;
-    functs.Free;
+    cmt.Free;
   end;
 end;
 

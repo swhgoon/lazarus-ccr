@@ -1521,6 +1521,7 @@ begin
       v._Type := ctype;
       v._Name := _name;
       owner.Items.add(v);
+      AParser.Index := AParser.TokenPos;
     end;
     AParser.FindNextToken(s, tt);
     Result := (tt = tt_Symbol) and (s = ';');
