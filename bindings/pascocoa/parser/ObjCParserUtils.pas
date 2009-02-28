@@ -72,14 +72,22 @@ type
     ObjcIDReplace    : AnsiString; // = 'objc.id';
     fExternVarPrefix : AnsiString; // always '_'?
 
+    UseRefClassType  : Boolean;
+    RefClassPostfix  : AnsiString;
+
+
     constructor Create;
     destructor Destroy; override;
 
     procedure AssignNewTypeName(const AName, TypeDefStr: AnsiString; var NewTypeName: AnsiString);
     function GetCallConv(withSemiColon: Boolean = true): AnsiString;
+
+    function GetObjCClassReplaceName(const ObjCName: AnsiString): AnsiString;
+
     property CallConv: AnsiString read fCallConv write SetCallConv;
     property ExternFuncPrefix: AnsiString read fExternPrefix; // external function name prefix
     property ExternVarPrefix: AnsiString read fExternVarPrefix; // external function var prefix
+
   end;
 
 var
@@ -1158,6 +1166,8 @@ var
   subs    : TStringList;
   consts  : TStringList;
   cmt     : TStringList;
+  cl      : TClassDef;
+  clName  : String;
 
   PasSection  : String;
 
@@ -1193,6 +1203,18 @@ begin
       st.AddStrings(subs);
       subs.Clear;
     end;
+
+    if ConvertSettings.UseRefClassType then 
+      for i := 0 to hdr.Items.Count - 1 do
+        if (TObject(hdr.Items[i]) is TClassDef) then begin
+          cl := TClassDef(TObject(hdr.Items[i]));
+          if cl._Category = '' then begin
+            StartSection('type');
+            clName := ConvertSettings.GetObjCClassReplaceName( TClassDef(hdr.Items[i])._ClassName);          
+            st.Add(Format('  %s = %s;', [clName, ConvertSettings.ObjcIDReplace]) );
+          end;
+        end;
+
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -1303,8 +1325,8 @@ begin
         restype := TClassMethodDef(cl.Items[j]).GetResultType;
         if Assigned(restype) then begin
           cmt := TClassMethodDef(cl.Items[j]).GetResultType.TagComment;
-          if cmt <> '' then
-            s := s + '{'+cmt+'}';
+          (*if cmt <> '' then
+            s := s + '{'+cmt+'}';*)
         end;
 
         subs.Add(SpacePrefix + s);
@@ -1799,6 +1821,7 @@ var
   prm : TObjCParameterDef;
   res : TObjCResultTypeDef;
   td  : TTypeDef;
+  nm  : AnsiString;
 begin
 //  i := 0;
   for i := 0 to ent.Items.Count - 1 do begin
@@ -1818,18 +1841,20 @@ begin
         TParamDescr(obj)._Descr := '_'+TParamDescr(obj)._Descr}
     end else if (obj is TClassMethodDef) and not IsMethodConstructor(TClassDef(obj.Owner ), TClassMethodDef(obj)) then begin
       res := TClassMethodDef(obj).GetResultType;
-      if ConvertSettings.ObjCClassTypes.IndexOf( ObjCResultToDelphiType(res))>= 0 then
+      nm := ObjCResultToDelphiType(res);
+      if ConvertSettings.ObjCClassTypes.IndexOf(nm)>= 0 then
         if res._Type is TTypeDef then begin
           td := TTypeDef(res._Type);
           res.tagComment := td._Name;
-          td._Name := ConvertSettings.ObjcIDReplace; //Format('objc.id', [td._Name] );
+          td._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('objc.id', [td._Name] );
         end;
     end else if (obj is TObjCParameterDef) then begin
       prm := TObjCParameterDef(obj);
 
-      if ConvertSettings.ObjCClassTypes.IndexOf( ObjCResultToDelphiType(prm._Type) ) >= 0 then begin
+      nm := ObjCResultToDelphiType(prm._Type);
+      if ConvertSettings.ObjCClassTypes.IndexOf(nm) >= 0 then begin
         if prm._Type._Type is TTypeDef then begin
-          TTypeDef(prm._Type._Type)._Name := ConvertSettings.ObjCIDReplace; //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
+          TTypeDef(prm._Type._Type)._Name := ConvertSettings.GetObjCClassReplaceName(nm); //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
         end;
       end;
 
@@ -1838,8 +1863,9 @@ begin
 
     end else if (obj is TStructField) then begin
       // should _TypeName to be removed?
-      if ConvertSettings.ObjCClassTypes.IndexOf(TStructField(obj)._TypeName) >= 0 then begin
-        TStructField(obj)._TypeName := ConvertSettings.ObjCIDReplace
+      nm := TStructField(obj)._TypeName;
+      if ConvertSettings.ObjCClassTypes.IndexOf(nm) >= 0 then begin
+        TStructField(obj)._TypeName := ConvertSettings.GetObjCClassReplaceName(nm);
       end;
     end else if (obj is TClassesForward) then begin
       for j := 0 to TClassesForward(obj)._Classes.Count - 1 do
@@ -1989,6 +2015,7 @@ begin
   ObjcIDReplace := 'objc.id';
   CallConv := 'cdecl';
   fExternVarPrefix := '_';
+  RefClassPostfix := 'Ref';
 end;
 
 destructor TConvertSettings.Destroy;
@@ -2092,6 +2119,12 @@ begin
   Result := CallConv;
   if (Result <> '') and withSemiColon then
     Result := Result + ';';
+end;
+
+function TConvertSettings.GetObjCClassReplaceName(const ObjCName: AnsiString): AnsiString;
+begin
+  if UseRefClassType then Result := ObjCName + RefClassPostfix
+  else Result := ObjcIDReplace;
 end;
 
 procedure TConvertSettings.SetCallConv(const ACallConv: String);

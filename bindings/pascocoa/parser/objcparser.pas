@@ -419,6 +419,8 @@ begin
         else if prm = 'all' then doparseAll:=true
         else if (prm = 'id') and (vlm <> '') then ConvertSettings.ObjcIDReplace:=vlm
         else if (prm = 'call') then ConvertSettings.CallConv:=vlm
+        else if (prm = 'userefs') then ConvertSettings.UseRefClassType := true
+        else if (prm = 'refpostfix') and (vlm <> '') then ConvertSettings.RefClassPostfix := vlm
         else if prm = 'ini' then begin
           ReadIniFile(Settings, vlm);
         end else
@@ -457,7 +459,9 @@ begin
   writeln('                    default is cdecl. Please note, that calling convention');
   writeln('                    also effect external functions name. Thus, using ');
   writeln('                    if calling convention is not cdecl, the external name');
-  writeln('                    will be prefixed with underscore');
+  writeln(' -useRefs           enables additional types to be created, for objc.id  ');
+  writeln('                    replacements at the parameter and result types');
+  writeln(' -refPostFix        post-fix for each ref type. The default postfix is ''Ref''');
 end;
 
 var
