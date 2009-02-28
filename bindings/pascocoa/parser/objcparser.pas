@@ -417,7 +417,8 @@ begin
         prm := AnsiLowerCase(prm);
         if prm = 'noout' then doOutput:=false
         else if prm = 'all' then doparseAll:=true
-        else if (prm = 'id') and (vlm <> '') then ObjcIDReplace:=vlm
+        else if (prm = 'id') and (vlm <> '') then ConvertSettings.ObjcIDReplace:=vlm
+        else if (prm = 'call') then ConvertSettings.CallConv:=vlm
         else if prm = 'ini' then begin
           ReadIniFile(Settings, vlm);
         end else
@@ -451,7 +452,12 @@ begin
   writeln('');
   writeln(' hidden keys (they''re temporary, and will be removed in future versions)');
   writeln(' -id=IDENTIFIER     the identifier to replace objective-c id type name');
-  writeln('                    default = objc.id')
+  writeln('                    default = objc.id');
+  writeln(' -call=IDENTIFIER   specifies the function''s calling convention.');
+  writeln('                    default is cdecl. Please note, that calling convention');
+  writeln('                    also effect external functions name. Thus, using ');
+  writeln('                    if calling convention is not cdecl, the external name');
+  writeln('                    will be prefixed with underscore');
 end;
 
 var

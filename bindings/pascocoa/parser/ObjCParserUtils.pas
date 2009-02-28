@@ -48,6 +48,11 @@ type
   end;
 
   TConvertSettings = class(TObject)
+  private
+    fCallConv     : AnsiString;
+    fExternPrefix : AnsiString;
+  protected
+    procedure SetCallConv(const ACallConv: String);
   public
     IgnoreIncludes  : TStringList;
     DefineReplace   : TReplaceList;
@@ -64,10 +69,17 @@ type
 
     CustomTypes     : TStringList;
 
+    ObjcIDReplace    : AnsiString; // = 'objc.id';
+    fExternVarPrefix : AnsiString; // always '_'?
+
     constructor Create;
     destructor Destroy; override;
 
     procedure AssignNewTypeName(const AName, TypeDefStr: AnsiString; var NewTypeName: AnsiString);
+    function GetCallConv(withSemiColon: Boolean = true): AnsiString;
+    property CallConv: AnsiString read fCallConv write SetCallConv;
+    property ExternFuncPrefix: AnsiString read fExternPrefix; // external function name prefix
+    property ExternVarPrefix: AnsiString read fExternVarPrefix; // external function var prefix
   end;
 
 var
@@ -97,9 +109,6 @@ function IsPascalFloatType(const TypeName: AnsiString): Boolean;
 function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType; //): Boolean; = (vt_Int, vt_FloatPoint, vt_Struct, vt_Object);
 
 implementation
-
-var
-  ObjcIDReplace : AnsiString = 'objc.id';
 
 function GetterSetterName(const PropName: AnsiString; etterName: AnsiString; isSetter: Boolean): AnsiString;
 begin
@@ -309,7 +318,7 @@ begin
         end;
       end;
     'i':
-      if l = 'id' then Result := ObjCIDReplace
+      if l = 'id' then Result := ConvertSettings.ObjCIDReplace
       else if l = 'int' then Result := 'Integer';
     'b':
       if l = 'bool' then Result := 'LongBool';
@@ -836,9 +845,11 @@ procedure WriteOutVariableToHeader(v: TVariable; const SpacePrefix: String; Vars
 var
   tp  : TTypeDef;
   s   : AnsiString;
+  vartype : AnsiString;
 begin
   tp := TTypeDef(v._Type);
-  s := Format('%s : %s; external name ''%s''; ', [v._Name, ObjCToDelphiType(tp._Name, tp._IsPointer), v._Name] );
+  vartype := ObjCToDelphiType(tp._Name, tp._IsPointer);
+  s := Format('%s : %s; external name ''%s%s''; ', [v._Name, vartype, ConvertSettings.ExternVarPrefix, v._Name] );
   Vars.Add(SpacePrefix + s);
 end;
 
@@ -886,9 +897,9 @@ begin
   end;
 
   restype := ObjCToDelphiType(fntype, isptr);
-  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' cdecl';
-  st.Add( s);
-  s := Format(' external name ''_%s'';', [f._Name]);
+  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' ' + ConvertSettings.GetCallConv(true);
+  st.Add(s);
+  s := Format('  external name ''%s%s'';', [ConvertSettings.ExternFuncPrefix, f._Name]);
   st.Add(s);
 end;
 
@@ -984,7 +995,7 @@ begin
     fntype := '{todo: not implemented... see .h file for type}';
   end;
   restype := ObjCToDelphiType(fntype, isptr);
-  Result := GetProcFuncHead('', '', CParamsListToPascalStr(AFuncType._ParamsList), restype) + ' cdecl';
+  Result := GetProcFuncHead('', '', CParamsListToPascalStr(AFuncType._ParamsList), restype) + ' '+ConvertSettings.GetCallConv(true);
   //Result := Copy(Result, 1, length(Result) - 1);
   //Result := Result + '; cdecl';
 end;
@@ -1258,7 +1269,7 @@ begin
     subs.Add(s + '('+cl._SuperClass+')');
     protidx := subs.Count;
     subs.Add('  public');
-    subs.Add('    class function getClass: '+ObjCIDReplace+'; override;');
+    subs.Add('    class function getClass: '+ConvertSettings.ObjCIDReplace+'; override;');
   end else begin
     subs.Add(s + '{from category '+ cl._Category +'}');
     protidx := subs.Count;
@@ -1394,24 +1405,28 @@ var
   s   : AnsiString;
   ms  : AnsiString;
   restype : AnsiString;
+  funchdr : AnsiString;
+  callcnv : AnsiString;
 begin
   //typeName := MtdPrefix + mtd._Name + MtdPostFix;
   typeName := 'TmsgSendWrapper';
-  
+
   subs.Add('type');
   ms := GetMethodParams(mtd, false);
-  if ms = '' then ms := 'param1: '+ObjCIDReplace+'; param2: SEL'
-  else ms := 'param1: '+ObjCIDReplace+'; param2: SEL' + ';' + ms;
+  if ms = '' then ms := 'param1: '+ConvertSettings.ObjCIDReplace+'; param2: SEL'
+  else ms := 'param1: '+ConvertSettings.ObjCIDReplace+'; param2: SEL' + ';' + ms;
 
   if isResultStruct then begin
     restype := '';
     ms := 'result_param: Pointer; ' + ms;
   end else begin
     restype := GetMethodResultType(mtd);
-    if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := ObjCIDReplace;
+    if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := ConvertSettings.ObjCIDReplace;
   end;
 
-  s := Format('  %s = %s cdecl;',[typeName, GetProcFuncHead('', '', ms, restype, '' )]);
+  funchdr := GetProcFuncHead('', '', ms, restype, '' );
+  callcnv := ConvertSettings.GetCallConv(false);
+  s := Format('  %s = %s%s;',[typeName, funchdr, callcnv]);
   subs.Add(s);
 end;
 
@@ -1618,7 +1633,7 @@ begin
   end;
   
   subs.Add('');
-  subs.Add('class ' + GetProcFuncHead('getClass', cl._ClassName, '', ObjCIdReplace));
+  subs.Add('class ' + GetProcFuncHead('getClass', cl._ClassName, '', ConvertSettings.ObjCIdReplace));
   subs.Add('begin');
   subs.Add(
     Format('  Result := objc_getClass(Str%s_%s);', [cl._ClassName, cl._ClassName]));
@@ -1807,14 +1822,14 @@ begin
         if res._Type is TTypeDef then begin
           td := TTypeDef(res._Type);
           res.tagComment := td._Name;
-          td._Name := ObjcIDReplace; //Format('objc.id', [td._Name] );
+          td._Name := ConvertSettings.ObjcIDReplace; //Format('objc.id', [td._Name] );
         end;
     end else if (obj is TObjCParameterDef) then begin
       prm := TObjCParameterDef(obj);
 
       if ConvertSettings.ObjCClassTypes.IndexOf( ObjCResultToDelphiType(prm._Type) ) >= 0 then begin
         if prm._Type._Type is TTypeDef then begin
-          TTypeDef(prm._Type._Type)._Name := ObjCIDReplace; //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
+          TTypeDef(prm._Type._Type)._Name := ConvertSettings.ObjCIDReplace; //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
         end;
       end;
 
@@ -1824,7 +1839,7 @@ begin
     end else if (obj is TStructField) then begin
       // should _TypeName to be removed?
       if ConvertSettings.ObjCClassTypes.IndexOf(TStructField(obj)._TypeName) >= 0 then begin
-        TStructField(obj)._TypeName := ObjCIDReplace
+        TStructField(obj)._TypeName := ConvertSettings.ObjCIDReplace
       end;
     end else if (obj is TClassesForward) then begin
       for j := 0 to TClassesForward(obj)._Classes.Count - 1 do
@@ -1959,17 +1974,21 @@ begin
   TypeDefReplace := TReplaceList.Create; // replaces for default types
   PtrTypeReplace := TReplaceList.Create; // replaces for C types pointers
   ConvertPrefix := TStringList.Create;
-  
+
   FloatTypes := TStringList.Create;
   FloatTypes.CaseSensitive := false;
-  
+
   StructTypes := TStringList.Create;
   StructTypes.CaseSensitive := false;
-  
+
   ObjCClassTypes := TStringList.Create;
   ObjCClassTypes.CaseSensitive := false;
 
   CustomTypes := TStringList.Create;
+
+  ObjcIDReplace := 'objc.id';
+  CallConv := 'cdecl';
+  fExternVarPrefix := '_';
 end;
 
 destructor TConvertSettings.Destroy;
@@ -1992,20 +2011,9 @@ procedure InitConvertSettings;
 begin
   with ConvertSettings.IgnoreIncludes do begin
     // must not be $included, because they are used
-//    Add('Foundation/');
-//    Add('Foundation/NSObject.h');
-    // Add('NSObjCRuntime.h');
-    // Add('Foundation/NSObject.h');
-    // Add('Foundation/Foundation.h');
   end;
 
   with ConvertSettings do begin
-    {DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2'] := 'MAC_OS_X_VERSION_10_2';
-    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3'] := 'MAC_OS_X_VERSION_10_3';
-    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4'] := 'MAC_OS_X_VERSION_10_4';
-    DefineReplace['MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5'] := 'MAC_OS_X_VERSION_10_5';
-    DefineReplace['__LP64__'] := 'LP64';}
-
     TypeDefReplace['unsigned char'] := 'byte';
     TypeDefReplace['uint8_t'] := 'byte';
     PtrTypeReplace['uint8_t'] := 'PByte';
@@ -2046,7 +2054,7 @@ begin
     TypeDefReplace['unsigned long long'] := 'Int64';
     TypeDefReplace['int64_t'] := 'Int64';
     TypeDefReplace['uint64_t'] := 'Int64';
-    
+
     PtrTypeReplace['long long'] := 'PInt64';
     PtrTypeReplace['singned long long'] := 'PInt64';
     PtrTypeReplace['unsigned long long'] := 'PInt64';
@@ -2076,17 +2084,23 @@ begin
     PtrTypeReplace['unsigned']:='PLongWord';
 
     StructTypes.Add('Int64');
-{    StructTypes.Add('NSAffineTransformStruct');
-    FloatTypes.Add('NSTimeInterval');
-    FloatTypes.Add('CFFloat');}
-
-    {IgnoreTokens.Add('DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER');
-    IgnoreTokens.Add('DEPRECATED_IN_MAC_OS_X_VERSION_10_4_AND_LATER');
-    IgnoreTokens.Add('AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER');
-    IgnoreTokens.Add('AVAILABLE_MAC_OS_X_VERSION_10_4_AND_LATER');
-    IgnoreTokens.Add('AVAILABLE_MAC_OS_X_VERSION_10_3_AND_LATER');
-    IgnoreTokens.Add('AVAILABLE_MAC_OS_X_VERSION_10_2_AND_LATER');}
   end;
+end;
+
+function TConvertSettings.GetCallConv(withSemiColon: Boolean): AnsiString;
+begin
+  Result := CallConv;
+  if (Result <> '') and withSemiColon then
+    Result := Result + ';';
+end;
+
+procedure TConvertSettings.SetCallConv(const ACallConv: String);
+begin
+  fCallConv := ACallConv;
+  if AnsiLowerCase(fCallConv) = 'cdecl' then
+    fExternPrefix := ''
+  else
+    fExternPrefix := '_';
 end;
 
 { TReplaceList }
