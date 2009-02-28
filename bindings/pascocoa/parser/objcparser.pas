@@ -417,6 +417,7 @@ begin
         prm := AnsiLowerCase(prm);
         if prm = 'noout' then doOutput:=false
         else if prm = 'all' then doparseAll:=true
+        else if (prm = 'id') and (vlm <> '') then ObjcIDReplace:=vlm
         else if prm = 'ini' then begin
           ReadIniFile(Settings, vlm);
         end else
@@ -447,6 +448,10 @@ begin
   writeln(' -uini=filename.ini config file to update the data');
   writeln(' -noout             prevents from .inc files generated');
   writeln(' -all               parses headers (*.h) in the current directory');
+  writeln('');
+  writeln(' hidden keys (they''re temporary, and will be removed in future versions)');
+  writeln(' -id=IDENTIFIER     the identifier to replace objective-c id type name');
+  writeln('                    default = objc.id')
 end;
 
 var

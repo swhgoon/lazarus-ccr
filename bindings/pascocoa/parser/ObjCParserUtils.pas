@@ -98,6 +98,9 @@ function GetObjCVarType(const TypeName: AnsiString):TObjcConvertVarType; //): Bo
 
 implementation
 
+var
+  ObjcIDReplace : AnsiString = 'objc.id';
+
 function GetterSetterName(const PropName: AnsiString; etterName: AnsiString; isSetter: Boolean): AnsiString;
 begin
   if etterName = '' then begin
@@ -306,7 +309,7 @@ begin
         end;
       end;
     'i':
-      if l = 'id' then Result := 'objc.id'
+      if l = 'id' then Result := ObjCIDReplace
       else if l = 'int' then Result := 'Integer';
     'b':
       if l = 'bool' then Result := 'LongBool';
@@ -1255,7 +1258,7 @@ begin
     subs.Add(s + '('+cl._SuperClass+')');
     protidx := subs.Count;
     subs.Add('  public');
-    subs.Add('    class function getClass: objc.id; override;');
+    subs.Add('    class function getClass: '+ObjCIDReplace+'; override;');
   end else begin
     subs.Add(s + '{from category '+ cl._Category +'}');
     protidx := subs.Count;
@@ -1397,15 +1400,15 @@ begin
   
   subs.Add('type');
   ms := GetMethodParams(mtd, false);
-  if ms = '' then ms := 'param1: objc.id; param2: SEL'
-  else ms := 'param1: objc.id; param2: SEL' + ';' + ms;
+  if ms = '' then ms := 'param1: '+ObjCIDReplace+'; param2: SEL'
+  else ms := 'param1: '+ObjCIDReplace+'; param2: SEL' + ';' + ms;
 
   if isResultStruct then begin
     restype := '';
     ms := 'result_param: Pointer; ' + ms;
   end else begin
     restype := GetMethodResultType(mtd);
-    if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := 'objc.id';
+    if IsMethodConstructor(mtd.Owner as TClassDef, mtd) then restype := ObjCIDReplace;
   end;
 
   s := Format('  %s = %s cdecl;',[typeName, GetProcFuncHead('', '', ms, restype, '' )]);
@@ -1615,7 +1618,7 @@ begin
   end;
   
   subs.Add('');
-  subs.Add('class ' + GetProcFuncHead('getClass', cl._ClassName, '', 'objc.id'));
+  subs.Add('class ' + GetProcFuncHead('getClass', cl._ClassName, '', ObjCIdReplace));
   subs.Add('begin');
   subs.Add(
     Format('  Result := objc_getClass(Str%s_%s);', [cl._ClassName, cl._ClassName]));
@@ -1804,24 +1807,24 @@ begin
         if res._Type is TTypeDef then begin
           td := TTypeDef(res._Type);
           res.tagComment := td._Name;
-          td._Name := Format('objc.id', [td._Name] );
+          td._Name := ObjcIDReplace; //Format('objc.id', [td._Name] );
         end;
     end else if (obj is TObjCParameterDef) then begin
       prm := TObjCParameterDef(obj);
 
       if ConvertSettings.ObjCClassTypes.IndexOf( ObjCResultToDelphiType(prm._Type) ) >= 0 then begin
         if prm._Type._Type is TTypeDef then begin
-          TTypeDef(prm._Type._Type)._Name := Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
+          TTypeDef(prm._Type._Type)._Name := ObjCIDReplace; //Format('objc.id {%s}', [TTypeDef(prm._Type._Type)._Name] );
         end;
       end;
-        
+
       if IsPascalReserved(prm._Name) then
         prm._Name := '_' + prm._Name;
-        
+
     end else if (obj is TStructField) then begin
       // should _TypeName to be removed?
       if ConvertSettings.ObjCClassTypes.IndexOf(TStructField(obj)._TypeName) >= 0 then begin
-        TStructField(obj)._TypeName := 'objc.id'
+        TStructField(obj)._TypeName := ObjCIDReplace
       end;
     end else if (obj is TClassesForward) then begin
       for j := 0 to TClassesForward(obj)._Classes.Count - 1 do
