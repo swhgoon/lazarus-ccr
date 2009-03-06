@@ -39,6 +39,7 @@ const
 
   sHEADER   = 'Header';
   sENVELOPE = 'Envelope';
+  sHREF     = 'href';
 
 type
 
@@ -60,7 +61,8 @@ type
     FScopeObject: TDOMNode;
     FScopeType: TScopeType;
   protected
-    function GetItemsCount() : Integer;virtual;
+    function GetItemsCount : Integer;virtual;
+    function GetActualNodeIfIsHRef(const ANode : TDOMNode) : TDOMNode;
   Public
     constructor Create(AScopeObject : TDOMNode;AScopeType : TScopeType);
     function FindNode(var ANodeName : string):TDOMNode;virtual;abstract;
@@ -437,6 +439,9 @@ type
 
   function BoolToSoapBool(const AValue : Boolean) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
   
+resourcestring
+  SERR_NodeNotFoundByID = 'Node not found with this ID in the document : %s.';
+
 implementation
 Uses {$IFDEF WST_DELPHI}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
      StrUtils, imp_utils;
@@ -455,6 +460,41 @@ end;
 function TStackItem.GetItemsCount: Integer;
 begin
   Result := GetNodeItemsCount(ScopeObject);
+end;
+
+function TStackItem.GetActualNodeIfIsHRef(const ANode: TDOMNode): TDOMNode;
+var
+  locAttrs : TDOMNamedNodeMap;
+
+  function FollowIfNeeded() : TDOMNode;
+  var
+    locNode : TDOMNode;
+    locHRefValue : DOMString;
+  begin
+    locNode := locAttrs.GetNamedItem(sHREF);
+    if ( locNode = nil ) or ( Length(locNode.NodeValue) = 0 ) then begin
+      Result := ANode;
+    end else begin
+      locHRefValue := locNode.NodeValue;
+      if ( locHRefValue[1] = '#' ) then
+        locHRefValue := Copy(locHRefValue,2,Length(locHRefValue));
+      Result := SelectSingleNode(Format('//*[@id=%s]',[locHRefValue]),locNode.OwnerDocument,True);
+      //ANode.OwnerDocument.GetElementById(locHRefValue);
+      if ( Result = nil ) then
+        raise ESOAPException.CreateFmt(SERR_NodeNotFoundByID,[locHRefValue]);
+    end;
+  end;
+
+begin
+  if ( ANode = nil ) then begin
+    Result := nil;
+  end else begin
+    locAttrs := ANode.Attributes;
+    if ( locAttrs <> nil ) and ( locAttrs.Length > 0 ) then
+      Result := FollowIfNeeded()
+    else
+      Result := ANode;
+  end;
 end;
 
 constructor TStackItem.Create(AScopeObject: TDOMNode; AScopeType: TScopeType);
@@ -503,6 +543,7 @@ begin
 {$ELSE}
   Result := ScopeObject.FindNode(ANodeName);
 {$ENDIF}
+  Result := GetActualNodeIfIsHRef(Result);
 end;
 
 { TAbstractArrayStackItem }
@@ -549,6 +590,7 @@ begin
   Result:= FItemList.Item[FIndex];
   Inc(FIndex);
   ANodeName := Result.NodeName;
+  Result := GetActualNodeIfIsHRef(Result);
 end;
 
 { TSOAPBaseFormatter }

@@ -135,6 +135,22 @@ type
     procedure read_header_simple_content_2();
   end;
   
+  THRefTestSession = class(TBaseComplexRemotable)
+  private
+    FSessionID : string;
+    FPartnerID : integer;
+  published
+    property SessionID : string read FSessionID write FSessionID;
+    property PartnerID : integer read FPartnerID write FPartnerID;
+  end;
+
+  { TTest_SoapFormatterClient }
+
+  TTest_SoapFormatterClient = class(TTestCase)
+  published
+    procedure test_soap_href_id();
+  end;
+
 implementation
 uses
   object_serializer, server_service_soap, test_suite_utils, soap_formatter;
@@ -607,6 +623,57 @@ begin
   end;
 end;
 
+{ TTest_SoapFormatterClient }
+
+procedure TTest_SoapFormatterClient.test_soap_href_id();
+const
+  XML_SOURCE =
+         '<?xml version="1.0"?>'  + sLineBreak +
+         '<SOAP-ENV:Envelope '  + sLineBreak +
+         '  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" '  + sLineBreak +
+         '  xmlns:xsd="http://www.w3.org/2001/XMLSchema" '  + sLineBreak +
+         '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '  + sLineBreak +
+         '  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">'  + sLineBreak +
+         '  '  + sLineBreak +
+         '  <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'  + sLineBreak +
+         '    <NS1:GetSessionResponse xmlns:NS1="urn:WS_PlotjetIntfU-IWS_Plotjet" xmlns:NS2="urn:WS_PlotjetIntfU">'  + sLineBreak +
+         '      <NS2:TSession id="1" xsi:type="NS2:TSession">'  + sLineBreak +
+         '        <SessionID xsi:type="xsd:string">Some GID</SessionID>'  + sLineBreak +
+         '        <PartnerID xsi:type="xsd:int">12</PartnerID>'  + sLineBreak +
+         '      </NS2:TSession>'  + sLineBreak +
+         '      <return href="#1"/>'  + sLineBreak +
+         '    </NS1:GetSessionResponse>'  + sLineBreak +
+         '  </SOAP-ENV:Body>'  + sLineBreak +
+         '</SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+  locReturn : THRefTestSession;
+  locStrPrmName : string;
+begin
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      locReturn := nil;
+      locStrPrmName := 'return';
+      f.Get(TypeInfo(THRefTestSession),locStrPrmName,locReturn);
+      CheckNotNull(locReturn,'return');
+      CheckEquals('Some GID',locReturn.SessionID,'SessionID');
+      CheckEquals(12,locReturn.PartnerID,'PartnerID');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
 initialization
 
   GetTypeRegistry().Register(TSampleSimpleContentHeaderBlock_A.GetNameSpace(),TypeInfo(TSampleSimpleContentHeaderBlock_A));
@@ -618,9 +685,11 @@ initialization
   GetTypeRegistry().Register(TNameSpaceB_Class.GetNameSpace(),TypeInfo(TNameSpaceB_Class));
   GetTypeRegistry().Register(TNameSpaceC_Class.GetNameSpace(),TypeInfo(TNameSpaceC_Class));
   GetTypeRegistry().Register(ns_soap_test,TypeInfo(TSOAPTestEnum));
+  GetTypeRegistry().Register('urn:WS_PlotjetIntfU',TypeInfo(THRefTestSession),'TSession');
   
   RegisterTest('Serializer',TTest_SoapFormatterServerNameSpace.Suite);
   RegisterTest('Serializer',TTest_SoapFormatterHeader.Suite);
+  RegisterTest('Serializer',TTest_SoapFormatterClient.Suite);
   
 end.
 

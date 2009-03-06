@@ -34,7 +34,15 @@ type
 
   function FilterList(const ALIst : IDOMNodeList; const ANodeName : DOMString):IDOMNodeList;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function FilterList(const ANode : TDOMNode; const ANodeName : DOMString):IDOMNodeList;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  
+  function SelectSingleNode(
+    const AXPathExpression : DOMString;
+    const AContextNode     : TDOMNode;
+    const AErrorIfMore     : Boolean
+  ) : TDOMNode;
+
+resourcestring
+  SERR_XpathExpectingOneNode = 'Xpath expression expecting a single node while got %d node : %s.';
+
 implementation
 uses XmlDoc;
 
@@ -168,7 +176,7 @@ type
     );
   end;
 
-function FilterList(const ALIst : IDOMNodeList; const ANodeName : widestring):IDOMNodeList ;
+function FilterList(const ALIst : IDOMNodeList; const ANodeName : DOMString):IDOMNodeList ;
 begin
   Result := TDOMNodeSelectListImp.Create(ALIst,ANodeName);
 end;
@@ -176,6 +184,25 @@ end;
 function FilterList(const ANode : TDOMNode; const ANodeName : DOMString):IDOMNodeList;
 begin
   Result := FilterList(ANode.ChildNodes,ANodeName);
+end;
+
+function SelectSingleNode(
+  const AXPathExpression : DOMString;
+  const AContextNode     : TDOMNode;
+  const AErrorIfMore     : Boolean
+) : TDOMNode;
+var
+  locSelect : IDOMNodeSelect;
+  ns : TDOMNodeList;
+begin
+  Result := nil;
+  locSelect := AContextNode as IDOMNodeSelect;
+  ns := locSelect.selectNodes(AXPathExpression);
+  if ( ns <> nil ) and ( ns.length > 0 ) then begin
+    if AErrorIfMore and ( ns.length > 1 ) then
+      raise Exception.CreateFmt(SERR_XpathExpectingOneNode,[ns.length,AXPathExpression]);
+    Result := ns[0];
+  end;
 end;
 
 { TDOMNodeSelectListImp }
