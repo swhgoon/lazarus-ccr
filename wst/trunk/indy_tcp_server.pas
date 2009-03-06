@@ -210,13 +210,15 @@ var
 begin
   inherited Create();
   FTCPServerObject := TIdTCPServer.Create({$IFNDEF INDY_10}nil{$ENDIF});
-{$IFDEF INDY_9}
+{$IFDEF WST_DELPHI}
+  {$IFDEF INDY_9}
   FTCPServerObject.ThreadClass := TwstIndy9Thread;
-{$ENDIF INDY_9}
-{$IFDEF INDY_10}
+  {$ENDIF INDY_9}
+  {$IFDEF INDY_10}
   FTCPServerObject.Scheduler := TIdSchedulerOfThreadDefault.Create(FTCPServerObject);
   TIdSchedulerOfThread(FTCPServerObject.Scheduler).ThreadClass := TwstIndy10Thread;
-{$ENDIF INDY_10}
+  {$ENDIF INDY_10}
+{$ENDIF WST_DELPHI}
   b := FTCPServerObject.Bindings.Add();
   b.IP := AServerIpAddress;
   b.port := AListningPort;
