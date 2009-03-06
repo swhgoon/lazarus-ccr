@@ -302,6 +302,7 @@ end;
 procedure NSObject.release;
 begin
   objc_msgSend(Handle, sel_registerName(PChar(Str_release)), []);
+  Handle:=nil;
 end;
 
 function NSObject.autorelease: objc.id;
