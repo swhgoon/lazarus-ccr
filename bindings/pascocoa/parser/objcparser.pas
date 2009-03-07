@@ -420,7 +420,7 @@ begin
         else if (prm = 'id') and (vlm <> '') then ConvertSettings.ObjcIDReplace:=vlm
         else if (prm = 'call') then ConvertSettings.CallConv:=vlm
         else if (prm = 'userefs') then ConvertSettings.UseRefClassType := true
-        else if (prm = 'refpostfix') and (vlm <> '') then ConvertSettings.RefClassPostfix := vlm
+        else if (prm = 'refpostfix') then ConvertSettings.RefClassPostfix := vlm
         else if prm = 'ini' then begin
           ReadIniFile(Settings, vlm);
         end else
