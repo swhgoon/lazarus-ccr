@@ -872,12 +872,11 @@ begin
 
   if f._isInLine then s := s + ' inline; '
   else s:=s+ConvertSettings.GetCallConv(true);
-  
-  st.Add(s);
-  if f._isExternal then
-    s := Format('  external name ''%s%s'';', [ConvertSettings.ExternFuncPrefix, f._Name]);
 
+  if f._isExternal then
+    s := s + Format(' external name ''%s%s'';', [ConvertSettings.ExternFuncPrefix, f._Name]);
   st.Add(s);
+  //st.Add(s);
 end;
 
 procedure WriteOutEnumToHeader(enm: TEnumTypeDef; st: TStrings);
