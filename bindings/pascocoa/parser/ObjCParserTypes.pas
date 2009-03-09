@@ -105,7 +105,7 @@ type
 
     Stack         : TList;
     Errors        : TStringList;
-    IgnoreTokens  : TStringList;
+    //IgnoreTokens  : TStringList;
     MacroHandler  : TMacroHandler;
 
     UseCommentEntities     : Boolean;
@@ -182,7 +182,7 @@ type
   end;
 
   TCPrepElIf = TCPrepIf;
-  
+
   TCPrepPragma = class(TCPrepocessor)
     _Text : AnsiString;
     function DoParse(AParser: TTextParser): Boolean; override;
@@ -228,9 +228,10 @@ type
     function DoParse(AParser: TTextParser): Boolean; override; 
     function ParseAfterTypeName(AParser: TTextParser): Boolean; 
   public
-    _Type    : TEntity;
-    _Name    : AnsiString;
-    _isConst : Boolean;
+    _Type     : TEntity;
+    _Name     : AnsiString;
+    _isConst  : Boolean;
+    _isExtern : Boolean;
   end; 
 
   { TFunctionParam }
@@ -254,13 +255,22 @@ type
   TFunctionTypeDef = class(TEntity)
   protected
     function DoParse(APArser: TTextParser): Boolean; override;
-  public    
+  public
     _ResultType   : TEntity;
     _ParamsList   : TFunctionParamsList;
     
     _isPointer    : Boolean;
     _isPointerRef : Boolean;
   end;
+
+  TCCodeSection = class(TEntity)
+  protected
+    function DoParse(AParser: TTextParser): Boolean; override;
+  public
+    _RawText  : AnsiSTring;
+  end;
+
+  TFunctionBody = class(TCCodeSection);
 
   { TFunctionDef }
 
@@ -274,9 +284,11 @@ type
     _Name         : AnsiString;
     _isPointer    : Boolean;
     _isPointerRef : Boolean;
-    _isExternal   : Boolean; 
-    _CallConv     : TCallingConv; 
-  end; 
+    _isExternal   : Boolean;
+    _isInLine     : Boolean; 
+    _CallConv     : TCallingConv;
+    _Body         : TFunctionBody; // can be nil!
+  end;
 
 
   { TEnumValue }
@@ -462,9 +474,7 @@ type
     destructor Destroy; override;
   end;
 
-
-
-  TCHeader = class(TEntity);
+  TCHeader = class(TEntity); // it's CCodeSection ??
 
   { TObjCHeader }
 
@@ -482,6 +492,7 @@ const
   WhiteSpaceChars : TCharSet = [#10,#13,#32,#9];
 
 // utility functions
+function SkipEndOfLineChars(const Src: AnsiString; idx: integer): Integer;
 
 function ParseSeq(Parser: TTextParser; const OpenSeq, CloseSeq: AnsiString): AnsiString;
 
@@ -544,18 +555,29 @@ implementation
 var
   CustomList : TList = nil;
 
+function SkipEndOfLineChars(const Src: AnsiString; idx: integer): Integer;
+begin
+  if idx < length(Src) then begin
+    if (Src[idx] = #10) and (Src[idx+1]=#13) then inc(idx)
+    else if (Src[idx] = #13) and (Src[idx+1]=#10) then inc(idx);
+  end;
+  Result := idx+1;
+end;
+
 function IsCReserved(const Token: AnsiString): Boolean;
 begin
   if Token = '' then begin
     Result := false;
     Exit;
   end;
-  
   Result := true;
   case Token[1] of
-    'c': begin
+    'c':
       if Token = 'const' then Exit;
-    end;
+    'e':
+      if Token = 'extern' then Exit;
+    'i':
+      if Token = 'inline' then Exit;
   end;
   
   Result := false;
@@ -933,7 +955,7 @@ begin
   Line := 1;
   Stack := TList.Create;
   Errors := TStringList.Create;
-  IgnoreTokens := TStringList.Create;
+  //IgnoreTokens := TStringList.Create;
   UsePrecompileEntities := true;
   Comments := TList.Create;
 end;
@@ -941,7 +963,7 @@ end;
 destructor TTextParser.Destroy;
 begin
   Comments.Free;
-  IgnoreTokens.Free;
+  //IgnoreTokens.Free;
   Errors.Free;
   Stack.Free;
   inherited Destroy;
@@ -1138,8 +1160,10 @@ begin
         ScanTo(Buf, index, EoLnChars);
         SkipSingleEoLnChars;
 
-      end else if not (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then begin // 1. check is Compiler directive is found
-        if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
+      end else begin
+        if (IsSubStr(TokenTable.Precompile, Buf, Index) and HandlePrecomiler) then
+           // 1. check is Preprocessor directive is found
+        else if (Buf[index] in TokenTable.Symbols) then begin                 // 2. symbol has been found, so it's not an ident
           if (not (Buf[index] in blck)) or (not SkipComments) then begin //   2.1 check if comment is found (comment prefixes match to the symbols)
             Result := true;                                              //   2.2 check if symbol is found
             if (Buf[index] = '.') and (index < length(Buf)) and (Buf[index+1] in ['0'..'9']) then begin
@@ -1181,14 +1205,14 @@ begin
         end;
       end;
 
-      if Result and (IgnoreTokens.Count > 0) then
+      {if Result and (IgnoreTokens.Count > 0) then
         if IgnoreTokens.IndexOf(Token) >= 0 then begin
           if Assigned(OnIgnoreToken) then
             OnIgnoreToken(Self, Token);
           Result := false;
           TokenType := tt_None;
           Token := '';
-        end;
+        end;}
 
       if (Token <> '') and (TokenType = tt_Ident) and Result then begin
         TokenPos := Index - length(Token);
@@ -1258,7 +1282,7 @@ var
   m : AnsiString;
 begin
   Result := false;
-  if ProcessingMacro or not assigned(MacroHandleR) then Exit;
+  if ProcessingMacro or not Assigned(MacroHandler) then Exit;
 
   ProcessingMacro := true;
   try
@@ -1462,48 +1486,42 @@ var
   isfunc  : Boolean; 
   tt    : TTokenType;
   s     : AnsiString;
-//  rep   : integer; 
-  v     : TVariable;    
-  fn    : TFunctionDef; 
-  isext : Boolean;
-
+  v     : TVariable;
+  fn    : TFunctionDef;
   idx   : Integer;
 
   Modifiers : TStringList;
+  ent : TEntity;
 
 begin
-  Modifiers := TStringList.Create;
-  Result := false;
   idx := AParser.TokenPos;
+  Result := false;
+  Modifiers := TStringList.Create;
+  ctype:=nil;
+  fn := nil;
   try
-    AParser.FindNextToken(s, tt);
-    isext := false;
-    if s = 'extern' then begin
-      isext := true;
-    end else
-      AParser.Index := AParser.TokenPos;
+    repeat
+      if not AParser.FindNextToken(s, tt) or (tt <> tt_Ident) then begin
+        Result := false;
+        Exit;
+      end;
+      if isCReserved (s) then begin
+        Modifiers.Add(s); // C reserved tokens cannot be name of a function
+        s := '';
+      end;
+    until s <> '';
+
+    AParser.Index := AParser.TokenPos;
 
     ctype := TTypeDef.Create(nil);
     Result := ctype.Parse(AParser);
-    if not Result then begin
-      ctype.Free;
-      Exit;
-    end;
+    if not Result then Exit;
 
     // expecting name of Variable or Function name
-    repeat
-      AParser.FindNextToken(_name, tt);
-      if isCReserved (_name) then begin
-        Modifiers.Add(_name);
-        _name := '';
-      end;
-    until _name <> '';
-    if tt <> tt_Ident then begin
-
+    if not AParser.FindNextToken(_name, tt) or (tt <> tt_Ident) then begin
       Result := false;
       Exit;
     end;
-
     //rep := AParser.TokenPos;
 
     AParser.FindNextToken(s, tt);
@@ -1513,21 +1531,35 @@ begin
       fn := TFunctionDef.Create(Owner);
       fn._ResultType := ctype;
       fn._Name := _name;
-      fn._IsExternal := isext;
+      fn._IsExternal := Modifiers.IndexOf('extern')>=0;
+      fn._isInline := Modifiers.IndexOf('inline')>=0;
       fn.ParseParams(AParser);
-      owner.Items.Add(fn);
+      ent := fn;
     end else begin
       v := TVariable.Create(Owner);
       v._Type := ctype;
       v._Name := _name;
-      owner.Items.add(v);
+      v._isExtern := Modifiers.IndexOf('extern')>=0;
+      ent := v;
       AParser.Index := AParser.TokenPos;
     end;
     AParser.FindNextToken(s, tt);
+
     Result := (tt = tt_Symbol) and (s = ';');
+    if isfunc and not Result and Assigned(fn) then begin
+      AParser.Index := AParser.TokenPos;
+      fn._Body := TFunctionBody.Create(fn);
+      Result := fn._Body.Parse(AParser);
+    end;
+
+    if Result then owner.Items.Add(ent)
+      else ent.Free;
+
   finally
-    if not Result then
+    if not Result then begin
+      ctype.Free;
       AParser.Index := idx;
+    end;
     Modifiers.Free;
   end;
 end;
@@ -1588,7 +1620,7 @@ begin
           AParser.Index := AParser.TokenPos;
           TSkip(ent)._Skip := SkipLine(AParser.Buf, AParser.Index);
         end;
-      end; 
+      end;
     end;
    if Assigned(ent) then Items.Add(ent);
   end;
@@ -2555,7 +2587,7 @@ end;
 
 { TFunctionDef }
 
-function TFunctionDef.DoParse(APArser: TTextParser): Boolean;
+function TFunctionDef.DoParse(AParser: TTextParser): Boolean;
 var
   s   : AnsiString;
   tt  : TTokenType;
@@ -2575,8 +2607,17 @@ begin
     Exit;
   end;
   if not Assigned(_ParamsList) then
-    _ParamsList := TFunctionParamsList.Create(Self);
+    _ParamsList := TFunctionParamsList.Create(Self); // an empty param list
   Result := true;
+
+  AParser.FindNextToken(s, tt);
+  if (tt = tt_Symbol) and (s = '{') then begin
+    AParser.Index := AParser.TokenPos;
+    _Body := TFunctionBody.Create(Self);
+    _Body.Parse(AParser);
+  end else
+    AParser.Index := AParser.TokenPos;
+
 end;
 
 function TFunctionDef.ParseParams(AParser: TTextParser): Boolean;
@@ -2733,7 +2774,7 @@ var
   tt  : TTokenType;
 begin
   AParser.FindNextToken(s, tt);
-  Result := (s = '#if') or (s = '#ifdef') or (s = '#elif');
+  Result := (s = '#if') or (s = '#ifdef') or (s = '#elif') or (s = '#ifndef');
   _Cond := SkipLine(AParser.buf, AParser.Index);
 end;
 
@@ -2945,6 +2986,34 @@ begin
   AParser.FindNextToken(s, tt); // skipping last ';';  
   Result := true;
 end;
+
+
+function TCCodeSection.DoParse(AParser: TTextParser): Boolean;
+var
+  s   : String;
+  tt  : TTokenType;
+  braces : Integer;
+  idx   : Integer;
+begin
+  AParser.FindNextToken(s, tt);
+  Result := (tt = tt_Symbol) and (s = '{');
+  if not Result then begin
+    AParser.SetError(ErrExpectStr('{', s));
+    Exit;
+  end;
+  idx := AParser.TokenPos;
+
+  braces := 1; // brace opened
+  while braces > 0 do begin
+    AParser.FindNextToken(s, tt);
+    // todo: c expressions and declarations parsing
+    if s = '{' then inc(braces) // another brace opened
+    else if s = '}' then dec(braces); // brace closed 
+  end;
+  Result := true;
+  _RawText := Copy(APArser.Buf, idx, AParser.Index - idx);
+end;
+
 
 
 initialization

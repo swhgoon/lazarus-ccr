@@ -43,6 +43,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure GetReplaces(strings: TStrings);
     property Replace[const s: AnsiString]: AnsiString read GetReplace write SetReplace; default;
     property CaseSensetive: Boolean read GetCaseSense write SetCaseSense;
   end;
@@ -58,8 +59,9 @@ type
     DefineReplace   : TReplaceList;
     TypeDefReplace  : TReplaceList; // replaces for C types
     PtrTypeReplace  : TReplaceList; // replaces for C types pointers
+    TokenReplace    : TReplaceList;
 
-    IgnoreTokens    : TStringList;
+    //IgnoreTokens    : TStringList; //todo: Remote. Use TokenReplace instead
 
     ConvertPrefix   : TStringList;
 
@@ -110,7 +112,6 @@ function GetMethodStr(cl: TClassDef; m: TClassMethodDef; ForImplementation: Bool
 function GetProcFuncHead(const FuncName, OfClass, Params, ResType: AnsiString; const FuncDest: AnsiString = ''): AnsiString;
 function GetMethodParams(const m: TClassMethodDef; NamesOnly: Boolean): AnsiString;
 function GetMethodResultType(const m: TClassMethodDef): AnsiString;
-function IsPascalReserved(const s: AnsiString): Boolean;
 
 function IsPascalFloatType(const TypeName: AnsiString): Boolean;
 
@@ -161,43 +162,6 @@ begin
   end;
 end;
 
-
-// 'result' is considered reserved word! 
-function IsPascalReserved(const s: AnsiString): Boolean;
-var
-  ls  : AnsiString;
-begin
-  //todo: a hash table should be used!
-  Result := false;
-  if s = '' then Exit;
-  ls := AnsiLowerCase(s);
-  case ls[1] of
-    'a': Result := (ls = 'absolute') or (ls = 'abstract') or (ls = 'and') or (ls = 'array') or (ls = 'as') or (ls= 'asm') or (ls = 'assembler');
-    'b': Result := (ls = 'begin') or (ls = 'break');
-    'c': Result := (ls = 'cdecl') or (ls = 'class') or (ls = 'const') or (ls = 'constructor') or (ls = 'continue') or (ls = 'cppclass');
-    'd': Result := (ls = 'deprecated') or (ls = 'destructor') or (ls = 'div') or (ls = 'do') or (ls = 'downto');
-    'e': Result := (ls = 'else') or (ls = 'end') or (ls = 'except') or (ls = 'exit') or (ls = 'export') or (ls = 'exports') or (ls = 'external');
-    'f': Result := (ls = 'fail') or (ls = 'false') or (ls = 'far') or (ls = 'file') or (ls = 'finally') or (ls = 'for') or (ls = 'forward') or (ls = 'function');
-    'g': Result := (ls = 'goto');
-    'i':
-      Result := (ls = 'if') or (ls = 'implementation') or (ls = 'in') or (ls = 'index') or (ls = 'inherited') or (ls = 'initialization') or (ls = 'inline')
-        or  (ls = 'interface') or (ls = 'interrupt') or (ls = 'is');
-    'l': Result := (ls = 'label') or (ls = 'library');
-    'm': Result := (ls = 'mod');  
-    'n': Result := {(ls = 'name') or} (ls = 'near') or (ls = 'nil') or (ls = 'not');
-    'o': Result := (ls = 'object') or (ls = 'of') or (ls = 'on') or (ls = 'operator') or (ls = 'or') or (ls = 'otherwise');
-    'p':
-      Result := (ls = 'packed') or (ls = 'popstack') or (ls = 'private') or (ls = 'procedure') or (ls = 'program') or (ls = 'property')
-        or (ls = 'protected') or (ls = 'public');
-    'r': Result := (ls = 'raise') or (ls = 'record') or (ls = 'reintroduce') or (ls = 'repeat') or (ls = 'result');
-    's': Result := (ls = 'self') or (ls = 'set') or (ls = 'shl') or (ls = 'shr') or (ls = 'stdcall') or (ls = 'string');
-    't': Result := (ls = 'then') or (ls = 'to') or (ls = 'true') or (ls = 'try') or (ls = 'type');
-    'u': Result := (ls = 'unimplemented') or (ls = 'unit') or (ls = 'until') or (ls = 'uses');
-    'v': Result := (ls = 'var') or (ls = 'virtual');
-    'w': Result := (ls = 'while') or (ls = 'with');
-    'x': Result := (ls = 'xor');
-  end;
-end;
 
 function FixIfReserved(const AName: AnsiString; NotUse: TStrings = nil): AnsiString;
 begin
@@ -441,7 +405,7 @@ begin
   //todo: still, i don't like it...
   Result :='';
   i := 1;
-  ScanWhile(s, i, [#32, #9]);
+  ScanWhile(s, i, InvsChars);
   vs := Copy(s, i, length(s) - i + 1); 
   if vs = '' then Exit;
 
@@ -487,11 +451,11 @@ var
   vs  : AnsiString;
 begin
   i := 1;
-  ScanWhile(prm, i, [#32, #9]);
+  ScanWhile(prm, i, InvsChars);
   if prm[i] = '!' then begin
     isDef := false;
     inc(i);
-    ScanWhile(prm, i, [#32, #9]);
+    ScanWhile(prm, i, InvsChars);
   end else
     isDef :=true;
   vs := Copy(prm, i, length(prm) - i + 1);
@@ -551,12 +515,8 @@ begin
   i := 1;
   while i <= length(AComment) do begin
     // scan for multylined comments
-    cmtln := ScanTo(AComment, i, [#10, #13]);
-    if i < length(AComment) then begin
-      if (AComment[i] = #10) and (AComment[i+1] = #13) then inc(i)
-      else if (AComment[i] = #13) and (AComment[i+1] = #10) then inc(i);
-    end;
-    inc(i);
+    cmtln := ScanTo(AComment, i, EoLnChars);
+    i := SkipEndOfLineChars(AComment, i);
 
     // break long comments into lines
     j := 1;
@@ -564,7 +524,7 @@ begin
       k := j;
       inc(j, 80);
       if j > length(cmtln) then j := length(cmtln);
-      ScanTo(cmtln, j, [#32, #10, #13, #9]);
+      ScanTo(cmtln, j, WhiteSpaceChars);
       subs.Add(Prefix + '// ' + Copy(cmtln, k, j - k));
       inc(j);
     end;
@@ -709,24 +669,27 @@ var
   i   : Integer;
 begin
   i := 1;
-  ScanWhile(s, i, [#9, #32, #10, #13]);
+  ScanWhile(s, i, WhiteSpaceChars);
   if i < length(s) then begin
-    DefWhat := ScanTo(s, i, [#9, #32, #10, #13]);
-    ScanWhile(s, i, [#9, #32]);
+    DefWhat := ScanTo(s, i, WhiteSpaceChars);
+    ScanWhile(s, i, InvsChars);
     DefTo := Copy(s, i, length(s) - i + 1);
   end else
     DefTo := '';
 end;
 
-procedure WriteOutPrecompDefine(const Prec: TPrecompiler; Prefix: AnsiString; st: TStrings);
+procedure WriteOutPrecompDefine(const Prec: TPrecompiler; Prefix: AnsiString; st: TStrings; var IsConstant: Boolean);
 var
   a, b: AnsiString;
 begin
+   IsConstant:=false;
   if Prec._Directive = '#define' then begin
     ParseDefine(Prec._Params, a, b);
-    if b <> ''
-      then st.Add(Prefix + Format('%s = %s;', [a, b]))
-      else st.Add(Prefix + Format('{$define %s}', [a])); 
+    if b <> ''  then begin
+      st.Add(Prefix + Format('%s = %s;', [a, b]));
+      IsConstant:=True;
+    end else 
+      st.Add(Prefix + Format('{$define %s}', [a]));
   end;
 end;
 
@@ -905,9 +868,15 @@ begin
   end;
 
   restype := ObjCToDelphiType(fntype, isptr);
-  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' ' + ConvertSettings.GetCallConv(true);
+  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' ';
+
+  if f._isInLine then s := s + ' inline; '
+  else s:=s+ConvertSettings.GetCallConv(true);
+  
   st.Add(s);
-  s := Format('  external name ''%s%s'';', [ConvertSettings.ExternFuncPrefix, f._Name]);
+  if f._isExternal then
+    s := Format('  external name ''%s%s'';', [ConvertSettings.ExternFuncPrefix, f._Name]);
+
   st.Add(s);
 end;
 
@@ -1168,6 +1137,8 @@ var
   cmt     : TStringList;
   cl      : TClassDef;
   clName  : String;
+  isConstant  : Boolean;
+  b : Boolean;
 
   PasSection  : String;
 
@@ -1189,17 +1160,19 @@ begin
   subs := TStringList.Create;
   consts := TStringList.Create;
   cmt := TStringList.Create;
+  isConstant := false;
   try
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then
         if (TObject(hdr.Items[i]) is TPrecompiler) then begin
           WriteOutIfDefPrecompiler(TPrecompiler(hdr.Items[i]), SpacePrefix, st);
           WriteOutPrecompInclude(TPrecompiler(hdr.Items[i]), st);
-          WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs);
+          WriteOutPrecompDefine(TPrecompiler(hdr.Items[i]), '  ', subs, b);
+          isConstant := isConstant or b; 
         end;
 
     if subs.Count > 0 then begin
-      st.Add('const');
+      if isConstant then StartSection('const');
       st.AddStrings(subs);
       subs.Clear;
     end;
@@ -1214,7 +1187,6 @@ begin
             st.Add(Format('  %s = %s;', [clName, ConvertSettings.ObjcIDReplace]) );
           end;
         end;
-
 
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then begin
@@ -1671,9 +1643,54 @@ begin
   end;
 end;
 
+procedure WriteOutFuncitionToImplemenation(f: TFunctionDef; st: TStrings);
+var
+  restype : AnsiString;
+  fntype  : AnsiString;
+  isptr   : Boolean;
+  s       : AnsiString;
+  txt     : AnsiString;
+  line    : AnsiString;
+  idx     : Integer;
+begin
+  if not Assigned(f) or (f._isExternal) then Exit; // external functions does not have a body
+
+  if not Assigned(f._ResultType) then begin
+    isptr := false;
+    fntype := 'int';
+  end else if (f._ResultType is TTypeDef) then begin
+    isptr := TTypeDef(f._ResultType)._IsPointer;
+    fntype := TTypeDef(f._ResultType)._Name;
+  end else begin
+    isptr := false;
+    fntype := '{todo: not implemented... see .h file for type}';
+  end;
+
+  restype := ObjCToDelphiType(fntype, isptr);
+  s:= GetProcFuncHead(f._Name, '', CParamsListToPascalStr(f._ParamsList), restype) + ' ';
+  if f._isInline then s := s + 'inline; '
+  else s:=s+ConvertSettings.GetCallConv(true);
+  st.Add(s);
+  st.Add('begin ');
+  if not Assigned(f._Body) then
+    st.Add('  //body is missing... Probably declared somethere in .c (.cpp, .cxx) file? or the parser bug?')
+  else begin
+    txt := TFunctionBody(f._Body)._RawText;
+    idx := 1;
+    st.Add('  // Sorry, but the parser cannot convert the function''s body. ');
+    while idx <= length(txt) do begin
+      line := ScanTo(txt, idx, EoLnChars);
+      idx := SkipEndOfLineChars(txt, idx);
+      st.Add('  //'+Line); 
+    end;
+  end;
+  st.Add('end;');
+  st.Add('');
+end;
+
 procedure WriteOutImplementationSection(hdr: TObjCHeader; st: TStrings; consts: TStringList);
 var
-  i   : Integer;
+  i     : Integer;
   subs  : TStringList;
 begin
   subs := TStringList.Create;
@@ -1687,7 +1704,10 @@ begin
     for i := 0 to hdr.Items.Count - 1 do
       if Assigned(hdr.Items[i]) then
         if (TObject(hdr.Items[i]) is TClassDef) then
-          WriteOutClassToImplementation(TClassDef(hdr.Items[i]), subs);
+          WriteOutClassToImplementation(TClassDef(hdr.Items[i]), subs)
+        else if (TObject(hdr.Items[i]) is TFunctionDef) then begin
+          WriteOutFuncitionToImplemenation(TFunctionDef(hdr.Items[i]), subs);
+        end;
 
     if subs.Count = 0 then Exit;
     
@@ -1993,7 +2013,8 @@ end;
 
 constructor TConvertSettings.Create;
 begin
-  IgnoreTokens := TStringList.Create;
+  TokenReplace := TReplaceList.Create;
+  //IgnoreTokens := TStringList.Create;
   IgnoreIncludes := TStringList.Create;
   IgnoreIncludes.CaseSensitive := false;
   DefineReplace := TReplaceList.Create;
@@ -2020,11 +2041,12 @@ end;
 
 destructor TConvertSettings.Destroy;
 begin
+  TokenReplace.Free;
   FloatTypes.Free;
   StructTypes.Free;
   ObjCClassTypes.Free;
 
-  IgnoreTokens.Free;
+  //IgnoreTokens.Free;
   IgnoreIncludes.Free;
   TypeDefReplace.Free;
   PtrTypeReplace.Free;
@@ -2167,6 +2189,20 @@ begin
   i := fItems.IndexOf(ARepl);
   if i < 0 then Result := ''
   else Result := TReplaceItem(fItems.Objects[i]).ReplaceStr;
+end;
+
+procedure TReplaceList.GetReplaces(strings: TStrings);
+var
+  i  : Integer;
+  s  : AnsiString;
+const
+  EmptyString = ' ';
+begin
+  for i := 0 to fItems.Count - 1 do begin
+    s := TReplaceItem(fItems.Objects[i]).ReplaceStr;
+    if s = '' then s := EmptyString; // otherwise it's lost
+    strings.Values[ fitems[i]] := s;
+  end;
 end;
 
 procedure TReplaceList.SetReplace(const ARepl, AValue: AnsiString);

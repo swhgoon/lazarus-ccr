@@ -148,6 +148,8 @@ var
   s       : AnsiString;
   i, cnt  : integer;
   upini   : TIniFile;
+
+  repl    : TStringList;
 begin
   Result :=false;
   if not FileExists(FileName) then begin
@@ -158,15 +160,25 @@ begin
   s := StrFromFile(FileName);
   hdr := TObjCHeader.Create;
   prec := TPrecompileHandler.Create(hdr);
-  parser := CreateCParser(s);
+  parser := CreateCParser(s, true);
   try
+    repl := TStringList.Create;
+    ConvertSettings.TokenReplace.GetReplaces(repl);
+    for i := 0 to repl.Count - 1 do begin
+      TCMacroHandler(parser.MacroHandler).AddSimpleMacro(repl.Names[i], repl.ValueFromIndex[i]);
+    end;
     parser.Buf := s;
     try
       parser.UsePrecompileEntities := false;
       parser.UseCommentEntities := false;
       parser.OnPrecompile := prec.OnPrecompile;
       parser.OnComment := prec.OnComment;
-      parser.IgnoreTokens.AddStrings(ConvertSettings.IgnoreTokens);
+
+      {for i := 0 to repl.Count - 1 do begin
+        TCMacroHandler(parser.MacroHandler).AddSimpleMacro(
+          ConvertSettings.IgnoreTokens[i], '');
+      //parser.IgnoreTokens.AddStrings(ConvertSettings.IgnoreTokens);
+      end;}
 
       hdr._FileName := ExtractFileName(FileName);
       Result := hdr.Parse(parser);
@@ -332,6 +344,7 @@ begin
       Settings.TypeDefReplace[a] := b;
     end;}
 
+    //[Common]
     values.Clear;
     a := ini.ReadString(CommonSec, 'mainunit', '');
     if a <> '' then begin
@@ -359,16 +372,19 @@ begin
       ConvertSettings.IgnoreIncludes.AddStrings(values);
     end;}
 
-    //ini.ReadSectionValues('ReplaceToken', values);
+    // [TokenReplace]
+    Values.Clear;
     ini.ReadSection(TokenReplaceSec, values);
-    
     for i := 0 to values.Count - 1 do begin
       a := Values[i];
       b := ini.ReadString(TokenReplaceSec, a, '');
-      if b ='' then
-        Settings.IgnoreTokens.Add(a);
+      {if b ='' then
+        Settings.IgnoreTokens.Add(a)
+      else}
+      Settings.TokenReplace[a] := b;
     end;
 
+    // [TypeReplace]
     values.Clear;
     ini.ReadSection(TypeDefsSec, values);
     for i := 0 to values.Count - 1 do begin
@@ -390,7 +406,7 @@ begin
       if isNameofPointer(a) then
         Settings.PtrTypeReplace[ Copy(a, 1, length(a) - 1)] := b
       else
-        Settings.TypeDefReplace[a] := b
+        Settings.TypeDefReplace[a] := b;
     end;
 
   finally
@@ -563,7 +579,6 @@ begin
 //  TestTemplate;
 //  Exit;
 
-
   doOutput := true;
   try
     GetConvertSettings(ConvertSettings, inpf);
@@ -592,4 +607,5 @@ begin
       writeln(e.Message);
   end;
 end.
+
 
