@@ -72,6 +72,10 @@ changed mail adress
 
 unit acs_mixer;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

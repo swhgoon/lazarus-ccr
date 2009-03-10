@@ -37,6 +37,10 @@ changed mail adress
 
 unit libao;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

@@ -27,6 +27,10 @@ changed mail adress
 
 unit flac;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

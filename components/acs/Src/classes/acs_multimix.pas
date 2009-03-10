@@ -54,6 +54,10 @@ TMultiMixer by Ross Levis added
 {$hints off}
 unit acs_multimix;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

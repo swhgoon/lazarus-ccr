@@ -60,6 +60,10 @@ changed mail adress
 
 unit acs_wave;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

@@ -1,5 +1,9 @@
 unit acs_mpeg; 
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

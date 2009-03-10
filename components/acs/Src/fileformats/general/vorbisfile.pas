@@ -43,6 +43,9 @@ changed mail adress
 
 unit vorbisfile;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
 
 interface
 

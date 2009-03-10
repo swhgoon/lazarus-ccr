@@ -29,6 +29,10 @@ make TAudioIn workable
 
 unit acs_volumequery;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

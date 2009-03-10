@@ -31,6 +31,10 @@ changed mail adress
 
 unit lame;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

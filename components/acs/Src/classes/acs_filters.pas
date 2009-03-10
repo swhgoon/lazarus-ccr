@@ -34,6 +34,10 @@ changed mail adress
 
 unit acs_filters;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

@@ -50,6 +50,10 @@ changed mail adress
 
 unit acs_misc;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

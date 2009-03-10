@@ -50,6 +50,10 @@ changed mail adress
 
 unit smpeg;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

@@ -36,6 +36,10 @@ changed mail adress
 
 unit vorbiscodec;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

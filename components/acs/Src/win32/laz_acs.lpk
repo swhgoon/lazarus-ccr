@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="LAZ_ACS"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\classes\windows\;..\fileformats\windows\;..\drivers\windows\;..\dsp\"/>
@@ -13,11 +13,11 @@
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
-          <DelphiCompat Value="True"/>
+          <SyntaxMode Value="Delphi"/>
+          <CStyleOperator Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <CodeGeneration>
-        <Generate Value="Faster"/>
         <Optimizations>
           <OptimizationLevel Value="2"/>
         </Optimizations>

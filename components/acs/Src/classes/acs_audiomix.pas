@@ -40,6 +40,10 @@ changed mail adress
 {$hints off}
 unit acs_audiomix;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

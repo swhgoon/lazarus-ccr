@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="laz_acs"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <IncludeFiles Value="../classes/linux/;../fileformats/linux/;../drivers/linux/"/>
         <OtherUnitFiles Value="../classes/;../classes/linux/;../fileformats/;../fileformats/linux/;../fileformats/general/;../drivers/;../drivers/linux/"/>
@@ -11,12 +11,10 @@
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
-          <DelphiCompat Value="True"/>
+          <SyntaxMode Value="Delphi"/>
+          <CStyleOperator Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>

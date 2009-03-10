@@ -30,6 +30,10 @@ changed mail adress
 
 unit mad;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

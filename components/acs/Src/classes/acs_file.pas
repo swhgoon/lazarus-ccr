@@ -63,7 +63,11 @@ only TFileIn and TFileOut are Visible
 this unit introduces basic fileformat support
 }
 
-unit acs_file; 
+unit acs_file;
+
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
 
 interface
 

@@ -100,6 +100,10 @@ changed mail adress
 
 unit acs_classes;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

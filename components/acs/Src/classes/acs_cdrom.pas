@@ -79,6 +79,10 @@ changed mail adress
 
 unit acs_cdrom;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

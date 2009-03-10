@@ -54,6 +54,10 @@ changed mail adress
 
 unit acs_vorbis;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 {$DEFINE USE_VORBIS_11}
 
 interface

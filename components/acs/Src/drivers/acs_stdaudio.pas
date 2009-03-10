@@ -75,6 +75,10 @@ changed mail adress
 
 unit acs_stdaudio;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

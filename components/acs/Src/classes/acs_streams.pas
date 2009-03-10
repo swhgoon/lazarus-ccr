@@ -41,6 +41,9 @@ changed mail adress
 
 unit acs_streams;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
 
 interface
 

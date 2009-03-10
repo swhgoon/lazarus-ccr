@@ -77,6 +77,10 @@ driver handling classes (basic audio class)
 
 unit acs_audio;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

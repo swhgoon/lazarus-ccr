@@ -28,6 +28,10 @@ changed mail adress
 
 unit acs_procs;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses

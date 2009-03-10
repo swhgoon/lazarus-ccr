@@ -43,6 +43,10 @@ changed mail adress
 
 unit acs_flac;
 
+{$ifdef fpc}
+{$mode delphi}
+{$endif}
+
 interface
 
 uses
