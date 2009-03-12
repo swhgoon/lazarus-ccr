@@ -601,7 +601,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-  AStore.Put(locName,APropInfo.PropInfo^.PropType,locData);
+  //if ( locData <> False ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(locName,APropInfo.PropInfo^.PropType,locData);
 end;
 {$ENDIF HAS_TKBOOL}
 
@@ -616,7 +617,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetObjectProp(AObject,APropInfo.PropInfo);
-  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> nil ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 procedure FloatWriter(
@@ -635,28 +637,33 @@ begin
     ftSingle :
       begin
         floatDt.SingleData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(prpName,pt,floatDt.SingleData);
+        if ( floatDt.SingleData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(prpName,pt,floatDt.SingleData);
       end;
     ftDouble :
       begin
         floatDt.DoubleData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(prpName,pt,floatDt.DoubleData);
+        if ( floatDt.DoubleData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(prpName,pt,floatDt.DoubleData);
       end;
     ftExtended :
       begin
         floatDt.ExtendedData := Extended(GetFloatProp(AObject,APropInfo.PropInfo));
-        AStore.Put(prpName,pt,floatDt.ExtendedData);
+        if ( floatDt.ExtendedData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(prpName,pt,floatDt.ExtendedData);
       end;
     ftCurr :
       begin
         floatDt.CurrencyData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(prpName,pt,floatDt.CurrencyData);
+        if ( floatDt.CurrencyData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(prpName,pt,floatDt.CurrencyData);
       end;
 {$IFDEF HAS_COMP}
     ftComp :
       begin
         floatDt.CompData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(prpName,pt,floatDt.CompData);
+        if ( floatDt.CurrencyData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(prpName,pt,floatDt.CompData);
       end;
 {$ENDIF}
   end;
@@ -682,7 +689,8 @@ begin
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
     boolData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-    AStore.Put(prpName,pt,boolData);
+    if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+      AStore.Put(prpName,pt,boolData);
   end else begin
 {$ENDIF WST_DELPHI}
     FillChar(enumData,SizeOf(enumData),#0);
@@ -690,32 +698,38 @@ begin
       otSByte :
         begin
           enumData.ShortIntData := ShortInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.ShortIntData);
+          if ( enumData.ShortIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.ShortIntData);
         end;
       otUByte :
         begin
           enumData.ByteData := Byte(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.ByteData);
+          if ( enumData.ByteData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.ByteData);
         end;
       otSWord :
         begin
           enumData.SmallIntData := SmallInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.SmallIntData);
+          if ( enumData.SmallIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.SmallIntData);
         end;
       otUWord :
         begin
           enumData.WordData := Word(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.WordData);
+          if ( enumData.WordData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.WordData);
         end;
       otSLong :
         begin
           enumData.SLongIntData := LongInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.SLongIntData);
+          if ( enumData.SLongIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.SLongIntData);
         end;
       otULong :
         begin
           enumData.ULongIntData := LongWord(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(prpName,pt,enumData.ULongIntData);
+          if ( enumData.ULongIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(prpName,pt,enumData.ULongIntData);
         end;
     end;
 {$IFDEF WST_DELPHI}
@@ -734,7 +748,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetInt64Prop(AObject,APropInfo.PropInfo);
-  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 procedure StringWriter(
@@ -748,7 +763,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 {$IFDEF WST_UNICODESTRING}
@@ -762,8 +778,9 @@ var
   locData : UnicodeString;
 begin
   locName := APropInfo.ExternalName;
-  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);A
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    Store.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 {$ENDIF WST_UNICODESTRING}
 
@@ -778,7 +795,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetWideStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 // Qualified writers
@@ -794,7 +812,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType,locData);
+  //if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType,locData);
 end;
 {$ENDIF HAS_TKBOOL}
 
@@ -809,7 +828,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetObjectProp(AObject,APropInfo.PropInfo);
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> nil ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 procedure FloatWriterQualified(
@@ -828,28 +848,33 @@ begin
     ftSingle :
       begin
         floatDt.SingleData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.SingleData);
+        if ( floatDt.SingleData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.SingleData);
       end;
     ftDouble :
       begin
         floatDt.DoubleData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.DoubleData);
+        if ( floatDt.DoubleData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.DoubleData);
       end;
     ftExtended :
       begin
         floatDt.ExtendedData := Extended(GetFloatProp(AObject,APropInfo.PropInfo));
-        AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.ExtendedData);
+        if ( floatDt.ExtendedData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.ExtendedData);
       end;
     ftCurr :
       begin
         floatDt.CurrencyData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.CurrencyData);
+        if ( floatDt.CurrencyData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.CurrencyData);
       end;
 {$IFDEF HAS_COMP}
     ftComp :
       begin
         floatDt.CompData := GetFloatProp(AObject,APropInfo.PropInfo);
-        AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.CompData);
+        if ( floatDt.CompData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+          AStore.Put(APropInfo.NameSpace,prpName,pt,floatDt.CompData);
       end;
 {$ENDIF}
   end;
@@ -875,7 +900,8 @@ begin
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
     boolData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-    AStore.Put(APropInfo.NameSpace,prpName,pt,boolData);
+    if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+      AStore.Put(APropInfo.NameSpace,prpName,pt,boolData);
   end else begin
 {$ENDIF WST_DELPHI}
     FillChar(enumData,SizeOf(enumData),#0);
@@ -883,32 +909,38 @@ begin
       otSByte :
         begin
           enumData.ShortIntData := ShortInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ShortIntData);
+          if ( enumData.ShortIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ShortIntData);
         end;
       otUByte :
         begin
           enumData.ByteData := Byte(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ByteData);
+          if ( enumData.ByteData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ByteData);
         end;
       otSWord :
         begin
           enumData.SmallIntData := SmallInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.SmallIntData);
+          if ( enumData.SmallIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.SmallIntData);
         end;
       otUWord :
         begin
           enumData.WordData := Word(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.WordData);
+          if ( enumData.WordData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.WordData);
         end;
       otSLong :
         begin
           enumData.SLongIntData := LongInt(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.SLongIntData);
+          if ( enumData.SLongIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.SLongIntData);
         end;
       otULong :
         begin
           enumData.ULongIntData := LongWord(GetOrdProp(AObject,APropInfo.PropInfo));
-          AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ULongIntData);
+          if ( enumData.ULongIntData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+            AStore.Put(APropInfo.NameSpace,prpName,pt,enumData.ULongIntData);
         end;
     end;
 {$IFDEF WST_DELPHI}
@@ -927,7 +959,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetInt64Prop(AObject,APropInfo.PropInfo);
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> 0 ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 procedure StringWriterQualified(
@@ -941,7 +974,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 {$IFDEF WST_UNICODESTRING}
@@ -956,7 +990,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 {$ENDIF WST_UNICODESTRING}
 
@@ -971,7 +1006,8 @@ var
 begin
   locName := APropInfo.ExternalName;
   locData := GetWideStrProp(AObject,APropInfo.PropInfo);
-  AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+  if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    AStore.Put(APropInfo.NameSpace,locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 
 
