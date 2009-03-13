@@ -41,7 +41,7 @@ type
   function CompareNodes(const A,B : TDOMNode) : Boolean;overload;
   function wstExpandLocalFileName(const AFileName : string) : string;
   function DumpMemory(AMem : Pointer; const ALength : PtrInt) : ansistring;
-  function StringToByteArray(const AValue : string) : TByteDynArray;
+  function StringToByteArray(const AValue : TBinaryString) : TByteDynArray;
 
   function RandomRange(const AFrom, ATo : Integer) : Integer ;overload;
   function RandomRange(const AFrom, ATo : Int64) : Int64 ; overload;
@@ -74,7 +74,7 @@ begin
   Result := a + Random(Abs(ATo - AFrom));
 end;
 
-function StringToByteArray(const AValue : string) : TByteDynArray;
+function StringToByteArray(const AValue : TBinaryString) : TByteDynArray;
 begin
   SetLength(Result,Length(AValue));
   Move(Pointer(AValue)^,Pointer(Result)^,Length(Result));

@@ -146,8 +146,8 @@ Type
     );
   End;
 
-  function GetFormaterRegistry():IFormaterQueryRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  function GetTransportRegistry():ITransportRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetFormaterRegistry():IFormaterQueryRegistry;
+  function GetTransportRegistry():ITransportRegistry;
 
 implementation
 uses imp_utils, metadata_repository;

@@ -104,8 +104,8 @@ Type
     function ReadCurrency():TFloat_Currency_8;
   End;
 
-  function CreateBinaryReader(AStream : TStream):IDataStoreReader;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  function CreateBinaryWriter(AStream : TStream):IDataStore;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function CreateBinaryReader(AStream : TStream):IDataStoreReader;
+  function CreateBinaryWriter(AStream : TStream):IDataStore;
   
 {These routines transform their argument to "Big Endian" alignment}
   procedure ReverseBytes(var AData; const ALength : Integer);{$IFDEF USE_INLINE}{$IFDEF ENDIAN_BIG}inline;{$ENDIF}{$ENDIF}

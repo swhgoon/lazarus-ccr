@@ -30,7 +30,7 @@ Type
   Private
     FParent : TObject;
     procedure Error(Const AMsg:string);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Error(Const AMsg:string; Const AArgs : array of const);overload;
   Protected
     procedure SetProperty(Const AName,AValue:string);
     procedure SetProperties(Const APropsStr:string);
@@ -42,7 +42,8 @@ Type
     constructor Create(AParent : TObject);
   End;
 
-  function IsStrEmpty(Const AStr:String):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function IsStrEmpty(Const AStr:String):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}overload;
+  function IsStrEmpty(Const AStr:ShortString):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}overload;
   function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
   function TranslateDotToDecimalSeperator(const Value: string) : string;
@@ -59,6 +60,11 @@ Type
 implementation
 
 function IsStrEmpty(Const AStr:String):Boolean;
+begin
+  Result := ( Length(Trim(AStr)) = 0 );
+end;
+
+function IsStrEmpty(Const AStr : ShortString) : Boolean;
 begin
   Result := ( Length(Trim(AStr)) = 0 );
 end;

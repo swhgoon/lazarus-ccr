@@ -921,12 +921,12 @@ type
   end;
 
   { TArrayOfStringRemotable }
-  //  --------- AnsiString !!!! ----------
+  //  --------- Compiler Native String type !!!! ----------
   TArrayOfStringRemotable = class(TBaseSimpleTypeArrayRemotable)
   private
-    FData : array of ansistring;
-    function GetItem(AIndex: Integer): ansistring;
-    procedure SetItem(AIndex: Integer; const AValue: ansistring);
+    FData : array of String;
+    function GetItem(AIndex: Integer): String;
+    procedure SetItem(AIndex: Integer; const AValue: String);
   protected
     function GetLength():Integer;override;
     procedure SaveItem(
@@ -943,7 +943,7 @@ type
     procedure SetLength(const ANewSize : Integer);override;
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
-    property Item[AIndex:Integer] : ansistring read GetItem write SetItem; default;
+    property Item[AIndex:Integer] : String read GetItem write SetItem; default;
   end;
 
   { TArrayOfBooleanRemotable }
@@ -1531,7 +1531,7 @@ const
   PROP_LIST_DELIMITER = ';';
   FIELDS_STRING = '__FIELDS__';
 
-  function GetTypeRegistry():TTypeRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetTypeRegistry():TTypeRegistry;
   procedure RegisterStdTypes();overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
   procedure RegisterStdTypes(ARegistry : TTypeRegistry);overload;
   procedure RegisterAttributeProperty(
@@ -3212,13 +3212,13 @@ end;
 
 { TArrayOfStringRemotable }
 
-function TArrayOfStringRemotable.GetItem(AIndex: Integer): ansistring;
+function TArrayOfStringRemotable.GetItem(AIndex: Integer): String;
 begin
   CheckIndex(AIndex);
   Result := FData[AIndex];
 end;
 
-procedure TArrayOfStringRemotable.SetItem(AIndex: Integer;const AValue: ansistring);
+procedure TArrayOfStringRemotable.SetItem(AIndex: Integer;const AValue: String);
 begin
   CheckIndex(AIndex);
   FData[AIndex] := AValue;
@@ -3235,7 +3235,7 @@ procedure TArrayOfStringRemotable.SaveItem(
   const AIndex : Integer
 );
 begin
-  AStore.Put(AName,TypeInfo(ansistring),FData[AIndex]);
+  AStore.Put(AName,TypeInfo(String),FData[AIndex]);
 end;
 
 procedure TArrayOfStringRemotable.LoadItem(
@@ -3246,12 +3246,12 @@ var
   sName : string;
 begin
   sName := GetItemName();
-  AStore.Get(TypeInfo(ansistring),sName,FData[AIndex]);
+  AStore.Get(TypeInfo(String),sName,FData[AIndex]);
 end;
 
 class function TArrayOfStringRemotable.GetItemTypeInfo(): PTypeInfo;
 begin
-  Result := TypeInfo(ansistring);
+  Result := TypeInfo(String);
 end;
 
 procedure TArrayOfStringRemotable.SetLength(const ANewSize: Integer);
@@ -6184,7 +6184,7 @@ end;
 type TDatePart = ( dpNone, dpYear, dpMonth, dpDay, dpHour, dpMinute, dpSecond, dpFractionalSecond );
 procedure TDurationRemotable.Parse(const ABuffer : string);
 
-  procedure RaiseInvalidBuffer();{$IFDEF USE_INLINE}inline;{$ENDIF}
+  procedure RaiseInvalidBuffer();
   begin
     raise EConvertError.CreateFmt('Invalid duration string : ',[ABuffer]);
   end;

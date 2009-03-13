@@ -4116,8 +4116,8 @@ var
 begin
   a := TArrayOfStringRemotable.Create();
   try
-    CheckEquals(PTypeInfo(TypeInfo(ansistring))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
-    CheckEquals(Ord(PTypeInfo(TypeInfo(ansistring))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
+    CheckEquals(PTypeInfo(TypeInfo(String))^.Name,a.GetItemTypeInfo()^.Name,'TypeInfo');
+    CheckEquals(Ord(PTypeInfo(TypeInfo(String))^.Kind),Ord(a.GetItemTypeInfo()^.Kind),'TypeInfo');
     
     CheckEquals(0,a.Length);
     a.SetLength(0);

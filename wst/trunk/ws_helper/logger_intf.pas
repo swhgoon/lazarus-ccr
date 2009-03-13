@@ -46,9 +46,9 @@ type
   end;
 
 
-  function HasLogger() : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  function SetLogger(ALogger : ILogger) : ILogger;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  function GetLogger() : ILogger;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function HasLogger() : Boolean;
+  function SetLogger(ALogger : ILogger) : ILogger;
+  function GetLogger() : ILogger;
   
 implementation
 

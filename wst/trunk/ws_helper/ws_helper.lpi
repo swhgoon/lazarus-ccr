@@ -142,11 +142,12 @@
     </Parsing>
     <CodeGeneration>
       <Optimizations>
-        <OptimizationLevel Value="2"/>
+        <OptimizationLevel Value="3"/>
       </Optimizations>
     </CodeGeneration>
     <Linking>
       <Debugging>
+        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>

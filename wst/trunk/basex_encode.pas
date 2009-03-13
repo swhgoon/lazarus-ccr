@@ -230,6 +230,8 @@ begin
   if ( ALen > 0 ) then begin
     SetLength(Result,(2 * ALen));
     Base16Encode(ABin,ALen,@Result[1]);
+  end else begin
+    Result := '';
   end;
 end;
 

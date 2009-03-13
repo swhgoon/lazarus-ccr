@@ -689,7 +689,7 @@ begin
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
     boolData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-    if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    //if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
       AStore.Put(prpName,pt,boolData);
   end else begin
 {$ENDIF WST_DELPHI}
@@ -778,9 +778,9 @@ var
   locData : UnicodeString;
 begin
   locName := APropInfo.ExternalName;
-  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);A
+  locData := GetUnicodeStrProp(AObject,APropInfo.PropInfo);
   if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
-    Store.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
+    AStore.Put(locName,APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locData);
 end;
 {$ENDIF WST_UNICODESTRING}
 
@@ -900,7 +900,7 @@ begin
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
     boolData := Boolean(GetOrdProp(AObject,APropInfo.PropInfo));
-    if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
+    //if ( locData <> '' ) or ( APropInfo.PersisteType = pstAlways ) then
       AStore.Put(APropInfo.NameSpace,prpName,pt,boolData);
   end else begin
 {$ENDIF WST_DELPHI}

@@ -350,13 +350,13 @@ type
     procedure test_Assign();
     procedure Equal();
   end;
-  
+
   { TTest_TAbstractEncodedStringRemotable }
 
   TTest_TAbstractEncodedStringRemotable = class(TWstBaseTest)
   protected
     class function CreateObject() : TAbstractEncodedStringRemotable; virtual; abstract;
-    class function EncodeData(const AValue : TByteDynArray) : string; overload; virtual; abstract; 
+    class function EncodeData(const AValue : TByteDynArray) : string; overload; virtual; abstract;
     class function EncodeData(const AValue : TBinaryString) : string; overload;
   published
     procedure test_Assign();
@@ -455,7 +455,7 @@ type
 implementation
 uses Math, basex_encode, DateUtils, date_utils;
 
-function RandomValue(const AMaxlen: Integer): ansistring;
+function RandomValue(const AMaxlen: Integer): TBinaryString;
 var
   k : Integer;
 begin
@@ -550,7 +550,7 @@ end;
 
 class function TTest_TArrayOfStringRemotable.GetTypeInfo(): PTypeInfo;
 begin
-  Result := TypeInfo(ansistring);
+  Result := TypeInfo(String);
 end;
 
 procedure TTest_TArrayOfStringRemotable.test_Assign();
@@ -564,7 +564,7 @@ begin
   try
     b := TArrayOfStringRemotable.Create();
     a.Assign(nil);
-    
+
     for i := 1 to ITER do begin
       j := Random(ITER);
       a.SetLength(j);
@@ -580,7 +580,7 @@ begin
           CheckEquals(a[k],b[k]);
         end;
       end;
-      
+
       a.SetLength(0);
       a.Assign(b);
       CheckEquals(b.Length,a.Length, 'Length');
@@ -601,7 +601,7 @@ const ITER : Integer = 100;
 var
   localObj : TArrayOfStringRemotable;
   i, j, k : Integer;
-  a : array of ansistring;
+  a : array of string;
 begin
   localObj := TArrayOfStringRemotable.Create() ;
   try
@@ -3092,24 +3092,25 @@ const ITER = 100;
 var
   i : Integer;
   a : TAbstractEncodedStringRemotable;
-  s, es : string;
+  s : TBinaryString;
+  es : string;
 begin
   a := CreateObject();
   try
     s := ''; es := EncodeData(s);
     a.BinaryData := StringToByteArray(s);
-    CheckEquals(StringToByteArray(s),a.BinaryData);
-    CheckEquals(es,a.EncodedString);
-    CheckEquals(StringToByteArray(s),a.BinaryData);
-    CheckEquals(es,a.EncodedString);
+    CheckEquals(StringToByteArray(s),a.BinaryData, 'BinaryData 0');
+    CheckEquals(es,a.EncodedString, 'EncodedString 0');
+    CheckEquals(StringToByteArray(s),a.BinaryData, 'BinaryData 0.1');
+    CheckEquals(es,a.EncodedString, 'EncodedString 0.1');
 
     for i := 1 to ITER do begin
       s := RandomValue(Random(500)); es := EncodeData(s);
       a.BinaryData := StringToByteArray(s);
-      CheckEquals(StringToByteArray(s),a.BinaryData);
-      CheckEquals(es,a.EncodedString);
-      CheckEquals(StringToByteArray(s),a.BinaryData);
-      CheckEquals(es,a.EncodedString);
+      CheckEquals(StringToByteArray(s),a.BinaryData, 'BinaryData 1');
+      CheckEquals(es,a.EncodedString, 'EncodedString 1');
+      CheckEquals(StringToByteArray(s),a.BinaryData, 'BinaryData 2');
+      CheckEquals(es,a.EncodedString, 'EncodedString 2');
     end;
   finally
     FreeAndNil(a);
@@ -3121,7 +3122,8 @@ const ITER = 100;
 var
   i : Integer;
   a : TAbstractEncodedStringRemotable;
-  s, es : TBinaryString;
+  s : TBinaryString;
+  es : string;
 begin
   a := CreateObject();
   try
@@ -3313,7 +3315,8 @@ const ITER = 100;
 var
   i : Integer;
   a : TAbstractEncodedStringExtRemotable;
-  s, es : string;
+  s : TBinaryString;
+  es : string;
 begin
   a := CreateObject();
   try
@@ -3342,7 +3345,8 @@ const ITER = 100;
 var
   i : Integer;
   a : TAbstractEncodedStringExtRemotable;
-  s, es : string;
+  s : TBinaryString;
+  es : string;
 begin
   a := CreateObject();
   try

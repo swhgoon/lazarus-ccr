@@ -153,7 +153,7 @@ type
     const APreferedList : TStrings
   ):string;
 
-  function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  function GetXsdTypeHandlerRegistry():IXsdTypeHandlerRegistry;
   function CreateElement(const ANodeName : DOMString; AParent : TDOMNode; ADoc : TDOMDocument):TDOMElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
 implementation
