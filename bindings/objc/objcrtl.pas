@@ -17,7 +17,7 @@ uses
   dynlibs;
 
 const
-  OSXObjCLibName : AnsiString = 'libobjc.A.dylib';
+  DefaultObjCLibName : AnsiString = 'libobjc.A.dylib';
 
 
 { Overview
@@ -222,12 +222,13 @@ var
   objc_setEnumerationMutationHandler : procedure (handler:TMutationHandlerProc); cdecl = nil;
   objc_setForwardHandler: procedure (fwd:pointer; fwd_stret:pointer); cdecl = nil;
 
-  objc_msgSend : function (self: id; op: SEL{; ...}): id; cdecl = nil;
-  objc_msgSendSuper  : function (const super: objc_super; op: SEL{; ...}): id = nil;
-  objc_msgSend_stret : procedure (self: id; op: SEL{; ...}); cdecl= nil;
-  objc_msgSendSuper_stret : procedure (const super: objc_super; op: SEL{, ...})= nil;
-
-  objc_msgSend_fpret : function (self: id; op: SEL{ , ...}): double= nil;
+  {$WARNINGS OFF} // warning: cdecl'ared funtions have no high parameter
+  objc_msgSend       : function  (self: id; op: SEL; param3: array of const): id; cdecl = nil;
+  objc_msgSendSuper  : function  (const super: objc_super; op: SEL; param3: array of const): id; cdecl = nil;
+  objc_msgSend_stret : procedure (self: id; op: SEL; param3: array of const); cdecl= nil;
+  objc_msgSendSuper_stret : procedure (const super: objc_super; op: SEL; param3: array of const); cdecl = nil;
+  objc_msgSend_fpret : function  (self: id; op: SEL; param3: array of const): double; cdecl = nil;
+  {$WARNINGS ON}
 
   method_invoke : function (receiver: id; m: Method {, ...}): id= nil;
   method_invoke_stret : procedure (receiver: id; m: Method{ , ...})= nil;
