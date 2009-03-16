@@ -1352,10 +1352,10 @@ procedure TRxDBLookupCombo.OnClosePopup(AResult: boolean);
 begin
   inherited OnClosePopup(AResult);
   SetFocus;
-  if (Owner is TWinControl) then
+{  if (Owner is TWinControl) then
     TWinControl(Owner).Repaint
   else
-    Parent.Repaint;
+    Parent.Repaint;}
 end;
 
 end.
