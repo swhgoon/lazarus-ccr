@@ -200,7 +200,7 @@ function object_getClass10(obj:id): _Class; cdecl;
 var
   name  : PChar;
 begin
-  if obj = 0 then Result := nil
+  if obj = nil then Result := nil
   else begin
     Result := _Class(Pobjc_object1(obj)^.isa);
   end;
@@ -215,7 +215,7 @@ end;
 
 function object_getIvar10(obj:id; ivar:Ivar):id; cdecl;
 begin
-  Result := 0;
+  Result := nil ;
 end;
 
 procedure object_setIvar10(obj:id; ivar:Ivar; value:id); cdecl;

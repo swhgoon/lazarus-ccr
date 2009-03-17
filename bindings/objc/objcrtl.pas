@@ -86,7 +86,7 @@ type
   //todo: types MUST BE declared properly as 2.0 opaques
   SEL = Pointer;
   IMP = Pointer;
-  id  = PtrInt;
+  id  = Pointer; //??
   size_t = LongWord;
   _Class = Pointer;
   Ivar = Pointer;
