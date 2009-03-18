@@ -123,7 +123,12 @@ type
     function AddHeader(
       const AHeader        : THeaderBlock;
       const AKeepOwnership : Boolean
-    ):Integer;
+    ):Integer;overload;
+    function AddHeader(
+      const AHeader        : TBaseRemotable;
+      const AKeepOwnership : Boolean;
+      const AName          : string = ''
+    ):Integer;overload;
     function GetHeaderCount(const ADirections : THeaderDirections):Integer;
     function GetHeader(const AIndex : Integer) : THeaderBlock;
     procedure ClearHeaders(const ADirection : THeaderDirection);
@@ -228,7 +233,12 @@ type
     function AddHeader(
       const AHeader        : THeaderBlock;
       const AKeepOwnership : Boolean
-    ):Integer;
+    ):Integer;overload;
+    function AddHeader(
+      const AHeader        : TBaseRemotable;
+      const AKeepOwnership : Boolean;
+      const AName          : string = ''
+    ):Integer;overload;
     function GetHeaderCount(const ADirections : THeaderDirections):Integer;
     function GetHeader(const AIndex : Integer) : THeaderBlock;
     procedure ClearHeaders(const ADirection : THeaderDirection);
@@ -758,12 +768,18 @@ type
   private
     FDirection: THeaderDirection;
     FmustUnderstand: Integer;
+    FName: string;
     FUnderstood: Boolean;
+  private
     function HasmustUnderstand: boolean;
     procedure SetmustUnderstand(const AValue: Integer);
+  protected
+    function GetName: string; virtual;
+    procedure SetName(const AValue: string); virtual;
   public
     property Direction : THeaderDirection read FDirection write FDirection;
     property Understood : Boolean read FUnderstood write FUnderstood;
+    property Name : string read GetName write SetName;
   published
     property mustUnderstand : Integer read FmustUnderstand write SetmustUnderstand stored HasmustUnderstand;
   end;
@@ -790,7 +806,40 @@ type
     );override;
     property Value : string read FValue write FValue;
   end;
-  
+
+  { THeaderBlockProxy
+      This class is used as a wrapper to allow a TBaseRemotable instance to be
+      sent and received as a header block.
+  }
+  THeaderBlockProxy = class(THeaderBlock)
+  private
+    FActualObject: TBaseRemotable;
+    FOwnObject: Boolean;
+    FNameSet : Boolean;
+  private
+    procedure SetActualObject(const AValue: TBaseRemotable);
+  protected
+    function GetName : string; override;
+    procedure SetName(const AValue: string); override;
+  public
+    destructor Destroy(); override;
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+
+    property ActualObject : TBaseRemotable read FActualObject write SetActualObject;
+    property OwnObject : Boolean read FOwnObject write FOwnObject;
+  end;
+
   { TObjectCollectionRemotable
       An implementation for array handling. The array items are "owned" by
       this class instance, so one has not to free them.
@@ -1434,7 +1483,8 @@ type
     FNameSpace: string;
     FDeclaredName : string;
     FOptions: TTypeRegistryItemOptions;
-    FSynonymTable : TStrings;
+    FPascalSynonyms : TStrings;
+    FExternalSynonyms : TStrings;
     FExternalNames : TStrings;
     FInternalNames : TStrings;
   private
@@ -1448,7 +1498,9 @@ type
     );virtual;
     destructor Destroy();override;
     function AddPascalSynonym(const ASynonym : string):TTypeRegistryItem;
+    function AddExternalSynonym(const ASynonym : string):TTypeRegistryItem;
     function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function IsExternalSynonym(const AExternalName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     
     procedure RegisterExternalPropertyName(const APropName, AExtPropName : string);
     function GetExternalPropertyName(const APropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -1463,6 +1515,9 @@ type
     property DeclaredName : string read FDeclaredName;
     property Options : TTypeRegistryItemOptions read FOptions write FOptions;
   end;
+
+  TTypeRegistrySearchOption = ( trsoIncludeExternalSynonyms );
+  TTypeRegistrySearchOptions = set of TTypeRegistrySearchOption;
 
   { TTypeRegistry }
 
@@ -1491,7 +1546,11 @@ type
     ):TTypeRegistryItem;
     function Find(ATypeInfo : PTypeInfo; Const AExact : Boolean):TTypeRegistryItem;overload;
     function Find(const APascalTypeName : string):TTypeRegistryItem;overload;
-    function FindByDeclaredName(const ATypeName,ANameSpace : string):TTypeRegistryItem;
+    function FindByDeclaredName(
+      const ATypeName,
+            ANameSpace : string;
+      const AOptions   : TTypeRegistrySearchOptions = []
+    ) : TTypeRegistryItem;
     Property Count : Integer Read GetCount;
     Property Item[Index:Integer] : TTypeRegistryItem Read GetItemByIndex;default;
     Property ItemByTypeInfo[Index:PTypeInfo] : TTypeRegistryItem Read GetItemByTypeInfo;
@@ -1543,6 +1602,10 @@ const
     const AField      : shortstring;
     const AVisibility : Boolean
   );
+  function GetExternalName(
+    const ATypeInfo : PTypeInfo;
+    const ARegistry : TTypeRegistry = nil
+  ) : string;
 
 
   function IsStoredPropClass(AClass : TClass;PropInfo : PPropInfo) : TPropStoreType;
@@ -1629,6 +1692,8 @@ begin
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
   ri := r.Register(sSOAP_ENV,TypeInfo(TSimpleContentHeaderBlock));
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
+  ri := r.Register(sSOAP_ENV,TypeInfo(THeaderBlockProxy));
+  ri.Options := ri.Options + [trioNonVisibleToMetadataService];
 
 
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfStringRemotable),'TArrayOfStringRemotable').AddPascalSynonym('TArrayOfStringRemotable');
@@ -1681,6 +1746,25 @@ begin
   r.Register(sXSD_NS,TypeInfo(TBase64StringExtRemotable),'base64Binary').AddPascalSynonym('TBase64StringExtRemotable');
   r.Register(sXSD_NS,TypeInfo(TBase16StringRemotable),'hexBinary').AddPascalSynonym('TBase16StringRemotable');
   r.Register(sXSD_NS,TypeInfo(TBase16StringExtRemotable),'hexBinary').AddPascalSynonym('TBase16StringExtRemotable');
+end;
+
+function GetExternalName(
+  const ATypeInfo : PTypeInfo;
+  const ARegistry : TTypeRegistry
+) : string;
+var
+  locReg : TTypeRegistry;
+  locRegItem : TTypeRegistryItem;
+begin
+  if ( ARegistry = nil ) then
+    locReg := GetTypeRegistry()
+  else
+    locReg := ARegistry;
+  locRegItem := locReg.Find(ATypeInfo,False);
+  if ( locRegItem <> nil ) then
+    Result := locRegItem.DeclaredName
+  else
+    Result := ATypeInfo^.Name;
 end;
 
 procedure SetFieldSerializationVisibility(
@@ -2766,6 +2850,35 @@ begin
     AddObjectToFree(AHeader);
 end;
 
+function TSimpleCallContext.AddHeader(
+  const AHeader        : TBaseRemotable;
+  const AKeepOwnership : Boolean;
+  const AName          : string = ''
+) : Integer;
+var
+  locProxy : THeaderBlockProxy;
+begin
+  if ( AHeader <> nil ) then begin
+    if AHeader.InheritsFrom(THeaderBlock) then begin
+      if not IsStrEmpty(AName) then
+        THeaderBlock(AHeader).Name := AName;
+      Result := AddHeader(THeaderBlock(AHeader),AKeepOwnership);
+    end else begin
+      locProxy := THeaderBlockProxy.Create();
+      locProxy.ActualObject := AHeader;
+      locProxy.OwnObject := AKeepOwnership;
+      if not IsStrEmpty(AName) then
+        locProxy.Name := AName;
+      Result := AddHeader(locProxy,True);
+    end;
+  end else begin
+    locProxy := THeaderBlockProxy.Create();
+    if not IsStrEmpty(AName) then
+      locProxy.Name := AName;
+    Result := AddHeader(locProxy,True);
+  end;
+end;
+
 function TSimpleCallContext.GetHeaderCount(const ADirections : THeaderDirections):Integer;
 var
   i : Integer;
@@ -2885,7 +2998,8 @@ begin
     FreeObjects();
   FInternalNames.Free();
   FExternalNames.Free();
-  FSynonymTable.Free();
+  FPascalSynonyms.Free();
+  FExternalSynonyms.Free();
   inherited Destroy();
 end;
 
@@ -2894,19 +3008,39 @@ begin
   Result := Self;
   if AnsiSameText(ASynonym,DataType^.Name) then
     Exit;
-  if not Assigned(FSynonymTable) then begin
-    FSynonymTable := TStringList.Create();
-    FSynonymTable.Add(FDataType^.Name);
+  if not Assigned(FPascalSynonyms) then begin
+    FPascalSynonyms := TStringList.Create();
+    FPascalSynonyms.Add(FDataType^.Name);
   end;
-  if ( FSynonymTable.IndexOf(ASynonym) = -1 ) then
-    FSynonymTable.Add(AnsiLowerCase(ASynonym));
+  if ( FPascalSynonyms.IndexOf(ASynonym) = -1 ) then
+    FPascalSynonyms.Add(AnsiLowerCase(ASynonym));
+end;
+
+function TTypeRegistryItem.AddExternalSynonym(const ASynonym: string): TTypeRegistryItem;
+begin
+  Result := Self;
+  if AnsiSameText(ASynonym,DataType^.Name) then
+    Exit;
+  if not Assigned(FExternalSynonyms) then begin
+    FExternalSynonyms := TStringList.Create();
+    FExternalSynonyms.Add(Self.DeclaredName);
+  end;
+  if ( FExternalSynonyms.IndexOf(ASynonym) = -1 ) then
+    FExternalSynonyms.Add(AnsiLowerCase(ASynonym));
 end;
 
 function TTypeRegistryItem.IsSynonym(const APascalTypeName: string): Boolean;
 begin
   Result := AnsiSameText(APascalTypeName,DataType^.Name);
-  if ( not Result ) and Assigned(FSynonymTable) then
-    Result := ( FSynonymTable.IndexOf(APascalTypeName) >= 0 ) ;
+  if ( not Result ) and Assigned(FPascalSynonyms) then
+    Result := ( FPascalSynonyms.IndexOf(APascalTypeName) >= 0 ) ;
+end;
+
+function TTypeRegistryItem.IsExternalSynonym(const AExternalName: string): Boolean;
+begin
+  Result := AnsiSameText(AExternalName,Self.DeclaredName);
+  if ( not Result ) and Assigned(FExternalSynonyms) then
+    Result := ( FExternalSynonyms.IndexOf(AExternalName) >= 0 ) ;
 end;
 
 procedure TTypeRegistryItem.RegisterExternalPropertyName(const APropName,AExtPropName: string);
@@ -3119,18 +3253,33 @@ end;
 
 function TTypeRegistry.FindByDeclaredName(
   const ATypeName,
-        ANameSpace : string
+        ANameSpace : string;
+  const AOptions   : TTypeRegistrySearchOptions
 ): TTypeRegistryItem;
 var
   i, c : Integer;
 begin
+{ The external synonym is not tested in the first loop so that the declared
+  names are _first_ search for.
+}
   c := Count;
-  for i := 0 to Pred(c) do begin
-    Result := Item[i];
-    if AnsiSameText(ANameSpace,Result.NameSpace) and
-       AnsiSameText(ATypeName,Result.DeclaredName)
-    then
-      Exit;
+  if ( c > 0 ) then begin
+    for i := 0 to Pred(c) do begin
+      Result := Item[i];
+      if AnsiSameText(ANameSpace,Result.NameSpace) and
+         AnsiSameText(ATypeName,Result.DeclaredName)
+      then
+        Exit;
+    end;
+    if ( trsoIncludeExternalSynonyms in AOptions ) then begin
+      for i := 0 to Pred(c) do begin
+        Result := Item[i];
+        if AnsiSameText(ANameSpace,Result.NameSpace) and
+           Result.IsExternalSynonym(ATypeName)
+        then
+          Exit;
+      end;
+    end;
   end;
   Result := nil;
 end;
@@ -4429,12 +4578,24 @@ begin
   Result := ( FmustUnderstand <> 0 );
 end;
 
+function THeaderBlock.GetName : string;
+begin
+  if IsStrEmpty(FName) then
+    FName := GetExternalName(PTypeInfo(Self.ClassInfo));
+  Result := FName;
+end;
+
 procedure THeaderBlock.SetmustUnderstand(const AValue: Integer);
 begin
   if ( AValue <> 0 ) then
     FmustUnderstand := 1
   else
     FmustUnderstand := 0;
+end;
+
+procedure THeaderBlock.SetName(const AValue: string);
+begin
+  FName := AValue;
 end;
 
 { TSimpleContentHeaderBlock }
@@ -4495,6 +4656,91 @@ begin
     end;
   end else begin
     raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+  end;
+end;
+
+{ THeaderBlockProxy }
+
+procedure THeaderBlockProxy.SetActualObject(const AValue: TBaseRemotable);
+var
+  locObj : TObject;
+begin
+  if ( FActualObject <> AValue ) then begin
+    if OwnObject and ( FActualObject <> nil ) then begin
+      locObj := FActualObject;
+      FActualObject := nil;
+      locObj.Free();
+    end;
+    FActualObject := AValue;
+  end;
+end;
+
+function THeaderBlockProxy.GetName : string;
+begin
+  if FNameSet then
+    Result :=  inherited GetName()
+  else if ( ActualObject <> nil ) then
+    Result := GetExternalName(PTypeInfo(ActualObject.ClassInfo))
+  else
+    Result := Self.ClassName();
+end;
+
+procedure THeaderBlockProxy.SetName(const AValue: string);
+begin
+  inherited SetName(AValue);
+  FNameSet := not IsStrEmpty(AValue);
+end;
+
+destructor THeaderBlockProxy.Destroy();
+begin
+  if OwnObject then
+    ActualObject.Free();
+  inherited Destroy();
+end;
+
+class procedure THeaderBlockProxy.Save(
+        AObject   : TBaseRemotable;
+        AStore    : IFormatterBase;
+  const AName     : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  locObj : THeaderBlockProxy;
+begin
+  if ( AObject <> nil ) and AObject.InheritsFrom(THeaderBlockProxy) then begin
+    locObj := THeaderBlockProxy(AObject);
+    if ( locObj.ActualObject <> nil ) then
+      locObj.ActualObject.Save(
+        locObj.ActualObject,
+        AStore,
+        AName,
+        PTypeInfo(locObj.ActualObject.ClassInfo)
+      );
+  end;
+end;
+
+class procedure THeaderBlockProxy.Load(
+  var AObject     : TObject;
+      AStore      : IFormatterBase;
+  var AName       : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  locObj : THeaderBlockProxy;
+  locActualObj : TObject;
+begin
+  if ( AObject <> nil ) and AObject.InheritsFrom(THeaderBlockProxy) then begin
+    locObj := THeaderBlockProxy(AObject);
+    if ( locObj.ActualObject <> nil ) then
+      locActualObj := locObj.ActualObject;
+      locObj.ActualObject.Load(
+        locActualObj,
+        AStore,
+        AName,
+        PTypeInfo(locObj.ActualObject.ClassInfo)
+      );
+      if ( locObj.ActualObject <> locActualObj ) then
+        locObj.ActualObject := TBaseRemotable(locActualObj);
   end;
 end;
 

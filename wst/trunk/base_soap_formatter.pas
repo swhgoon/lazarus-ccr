@@ -441,6 +441,7 @@ type
   
 resourcestring
   SERR_NodeNotFoundByID = 'Node not found with this ID in the document : %s.';
+  SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found %s.';
 
 implementation
 Uses {$IFDEF WST_DELPHI}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
@@ -1540,16 +1541,22 @@ function TSOAPBaseFormatter.ReadHeaders(ACallContext: ICallContext): Integer;
       s := sXML_NS + ':' + nsSN;
     if not FindAttributeByNameInNode(s,ANode,nsLN) then
       nsLN := FindAttributeByNameInScope(s);
-    Result := GetTypeRegistry().FindByDeclaredName(Copy(ndName,Succ(j),MaxInt),nsLN);
+    Result := GetTypeRegistry().FindByDeclaredName(
+                Copy(ndName,Succ(j),MaxInt),
+                nsLN,
+                [trsoIncludeExternalSynonyms]
+              );
   end;
 
 var
   i : Integer;
   nd : TDOMElement;
   typItm : TTypeRegistryItem;
-  tmpObj : THeaderBlock;
+  tmpHeader : THeaderBlock;
   locName : string;
   chdLst : TDOMNodeList;
+  typData : PTypeData;
+  tmpObj : TBaseRemotable;
 begin
   SetStyleAndEncoding(Document,Literal);
   try
@@ -1562,12 +1569,29 @@ begin
           typItm := ExtractTypeInfo(nd);
           if Assigned(typItm) then begin
             if ( typItm.DataType^.Kind = tkClass ) then begin
-              tmpObj := nil;
+              tmpHeader := nil;
               locName := nd.NodeName;
-              Get(typItm.DataType,locName,tmpObj);
-              if Assigned(tmpObj) then begin
-                tmpObj.Direction := hdIn;
-                ACallContext.AddHeader(tmpObj,True);
+              typData := GetTypeData(typItm.DataType);
+              if typData^.ClassType.InheritsFrom(THeaderBlock) then begin
+                Get(typItm.DataType,locName,tmpHeader);
+                if Assigned(tmpHeader) then begin
+                  tmpHeader.Direction := hdIn;
+                  ACallContext.AddHeader(tmpHeader,True);
+                  tmpHeader.Name := ExtractNameFromQualifiedName(locName);
+                end;
+              end else if typData^.ClassType.InheritsFrom(TBaseRemotable) then begin
+                tmpObj := nil;
+                Get(typItm.DataType,locName,tmpObj);
+                if Assigned(tmpObj) then begin
+                  tmpHeader := THeaderBlockProxy.Create();
+                  THeaderBlockProxy(tmpHeader).ActualObject := tmpObj;
+                  THeaderBlockProxy(tmpHeader).OwnObject := True;
+                  tmpHeader.Direction := hdIn;
+                  ACallContext.AddHeader(tmpHeader,True);
+                  tmpHeader.Name := ExtractNameFromQualifiedName(locName);
+                end;
+              end else begin
+                Error(SERR_ExpectingRemotableObjectClass,[typItm.DataType^.Name]);
               end;
             end;
           end;
@@ -1596,7 +1620,8 @@ begin
         h := ACallContext.GetHeader(i);
         if ( h.Direction = hdOut ) then begin
           ptyp := PTypeInfo(h.ClassInfo);
-          Put(GetTypeRegistry().ItemByTypeInfo[ptyp].DeclaredName,ptyp,h);
+          //Put(GetTypeRegistry().ItemByTypeInfo[ptyp].DeclaredName,ptyp,h);
+          Put(h.Name,ptyp,h);
         end;
       end;
     finally

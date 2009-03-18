@@ -103,7 +103,7 @@ type
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : TClass_A Read GetItem;Default;
   end;
-  
+
   { TTest_TBaseComplexRemotable }
 
   TTest_TBaseComplexRemotable = class(TTestCase)

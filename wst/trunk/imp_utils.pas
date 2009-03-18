@@ -46,6 +46,7 @@ Type
   function IsStrEmpty(Const AStr:ShortString):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}overload;
   function GetToken(var ABuffer : string; const ADelimiter : string): string;
   function ExtractOptionName(const ACompleteName : string):string;
+  function ExtractNameFromQualifiedName(const AQualifiedName : string; const ASeparator : Char = ':') : string;
   function TranslateDotToDecimalSeperator(const Value: string) : string;
   function wst_FormatFloat(
     const ATypeInfo  : PTypeInfo;
@@ -99,6 +100,16 @@ begin
     Result := ACompleteName[i] + Result;
   end;
   Result := Trim(Result);
+end;
+
+function ExtractNameFromQualifiedName(const AQualifiedName : string; const ASeparator : Char) : string;
+var
+  sepPos : Integer;
+begin
+  sepPos := Pos(ASeparator,AQualifiedName);
+  if ( sepPos <= 0 ) then
+    sepPos := 0;
+  Result := Copy(AQualifiedName,(sepPos + 1),Length(AQualifiedName));
 end;
 
 function TranslateDotToDecimalSeperator(const Value: string) : string;

@@ -19,11 +19,8 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs,
-  base_service_intf;
+  base_service_intf, wst_types;
 
-{$INCLUDE wst.inc}
-{$INCLUDE wst_delphi.inc}
-  
 Const
   sTARGET = 'target';
   
@@ -99,7 +96,12 @@ Type
         function AddHeader(
           const AHeader        : THeaderBlock;
           const AKeepOwnership : Boolean
-        ):Integer;
+        ):Integer;overload;
+        function AddHeader(
+          const AHeader        : TBaseRemotable;
+          const AKeepOwnership : Boolean;
+          const AName          : string = ''
+        ):Integer;overload;
         function GetHeaderCount(const ADirections : THeaderDirections):Integer;
         function GetHeader(const AIndex : Integer) : THeaderBlock;
         // ---- END >> ICallContext implementation ----
@@ -265,6 +267,15 @@ function TBaseProxy.AddHeader(
 ): Integer;
 begin
   Result := FCallContext.AddHeader(AHeader,AKeepOwnership);
+end;
+
+function TBaseProxy.AddHeader(
+  const AHeader        : TBaseRemotable;
+  const AKeepOwnership : Boolean;
+  const AName          : string = ''
+): Integer;
+begin
+  Result := FCallContext.AddHeader(AHeader,AKeepOwnership,AName);
 end;
 
 function TBaseProxy.GetHeaderCount(const ADirections : THeaderDirections):Integer;

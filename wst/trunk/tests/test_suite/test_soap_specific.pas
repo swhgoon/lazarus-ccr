@@ -33,6 +33,28 @@ type
 
   TSOAPTestEnum = ( steOne, steTwo, steThree, steFour );
 
+  { TLoginInfos }
+
+  TLoginInfos = class(TBaseComplexRemotable)
+  private
+    FPassword: string;
+    FUserName: string;
+  published
+    property UserName : string read FUserName write FUserName;
+    property Password : string read FPassword write FPassword;
+  end;
+
+  { THeaderProxyTestObject }
+
+  THeaderProxyTestObject = class(TBaseComplexRemotable)
+  private
+    FDestructionCount: PInteger;
+    procedure SetDestructionCount(const AValue: PInteger);
+  public
+    destructor Destroy(); override;
+    property DestructionCount : PInteger read FDestructionCount write SetDestructionCount;
+  end;
+
   { NBHeader }
 
   NBHeader = class(THeaderBlock)
@@ -130,9 +152,15 @@ type
   TTest_SoapFormatterHeader = class(TTestCase)
   published
     procedure write_header_simple_content_1();
+    procedure write_header_simple_content_1_b();
     procedure write_header_simple_content_2();
     procedure read_header_simple_content_1();
     procedure read_header_simple_content_2();
+
+    procedure write_header_proxy_header_block();
+    procedure write_header_proxy_header_block_name();
+    procedure read_header_proxy_header_block();
+    procedure read_header_proxy_header_block_name();
   end;
   
   THRefTestSession = class(TBaseComplexRemotable)
@@ -149,6 +177,15 @@ type
   TTest_SoapFormatterClient = class(TTestCase)
   published
     procedure test_soap_href_id();
+  end;
+
+  { TTest_THeaderBlockProxy }
+
+  TTest_THeaderBlockProxy = class(TTestCase)
+  published
+    procedure ActualObject;
+    procedure OwnObject_Destroy;
+    procedure OwnObject_SetActualObject;
   end;
 
 implementation
@@ -489,6 +526,39 @@ begin
   end;
 end;
 
+procedure TTest_SoapFormatterHeader.write_header_simple_content_1_b();
+var
+  ser : IFormatterClient;
+  cc : ICallContext;
+  hdr : TSampleSimpleContentHeaderBlock_A;
+  locStream : TMemoryStream;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  cc := TSimpleCallContext.Create();
+  hdr := TSampleSimpleContentHeaderBlock_A.Create();
+  cc.AddHeader(TBaseRemotable(hdr),True);
+  hdr.Direction := hdOut;
+  hdr.Value := 'sample header simple content value';
+  ser := soap_formatter.TSOAPFormatter.Create();
+  ser.BeginCall('test_proc','TestService',cc);
+  ser.EndScope();
+  locDoc := nil;
+  locExistDoc := nil;
+  locStream := TMemoryStream.Create();
+  try
+    ser.SaveToStream(locStream);
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_1.xml'));
+    locStream.Position := 0;
+    ReadXMLFile(locDoc,locStream);
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_1.xml'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locDoc);
+    ReleaseDomNode(locExistDoc);
+    locStream.Free();
+  end;
+end;
+
 procedure TTest_SoapFormatterHeader.write_header_simple_content_2();
 var
   ser : IFormatterClient;
@@ -623,6 +693,175 @@ begin
   end;
 end;
 
+procedure TTest_SoapFormatterHeader.write_header_proxy_header_block();
+var
+  ser : IFormatterClient;
+  cc : ICallContext;
+  locLoginInfo : TLoginInfos;
+  locStream : TMemoryStream;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  cc := TSimpleCallContext.Create();
+  locLoginInfo := TLoginInfos.Create();
+  locLoginInfo.UserName := 'Inoussa-wst';
+  locLoginInfo.Password := 'sample password';
+  cc.AddHeader(locLoginInfo,True);
+  ser := soap_formatter.TSOAPFormatter.Create();
+  ser.BeginCall('test_proc','TestService',cc);
+  ser.EndScope();
+  locDoc := nil;
+  locExistDoc := nil;
+  locStream := TMemoryStream.Create();
+  try
+    ser.SaveToStream(locStream);
+    locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block.xml'));
+    locStream.Position := 0;
+    ReadXMLFile(locDoc,locStream);
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_proxy_header_block.xml'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locDoc);
+    ReleaseDomNode(locExistDoc);
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.write_header_proxy_header_block_name();
+var
+  ser : IFormatterClient;
+  cc : ICallContext;
+  locLoginInfo : TLoginInfos;
+  locStream : TMemoryStream;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  cc := TSimpleCallContext.Create();
+  locLoginInfo := TLoginInfos.Create();
+  locLoginInfo.UserName := 'Inoussa-wst';
+  locLoginInfo.Password := 'sample password';
+  cc.AddHeader(locLoginInfo,True,'NamedLoginInfos');
+  ser := soap_formatter.TSOAPFormatter.Create();
+  ser.BeginCall('test_proc','TestService',cc);
+  ser.EndScope();
+  locDoc := nil;
+  locExistDoc := nil;
+  locStream := TMemoryStream.Create();
+  try
+    ser.SaveToStream(locStream);
+    locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block_name.xml'));
+    locStream.Position := 0;
+    ReadXMLFile(locDoc,locStream);
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_proxy_header_block_name.xml'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locDoc);
+    ReleaseDomNode(locExistDoc);
+    locStream.Free();
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.read_header_proxy_header_block();
+const
+  XML_SOURCE =
+         '<?xml version="1.0"?>'  + sLineBreak +
+         '<SOAP-ENV:Envelope '  + sLineBreak +
+         '      xmlns:xsd="http://www.w3.org/2001/XMLSchema" '  + sLineBreak +
+         '      xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" '  + sLineBreak +
+         '      xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" '  + sLineBreak +
+         '      xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'  + sLineBreak +
+         '  <SOAP-ENV:Header xmlns:ns1="soap.test.namespace">'  + sLineBreak +
+         '    <ns1:LoginInfos >'  + sLineBreak +
+         '      <ns1:UserName>Inoussa-wst</ns1:UserName>'  + sLineBreak +
+         '      <ns1:Password>sample password</ns1:Password>'  + sLineBreak +
+         '    </ns1:LoginInfos>'  + sLineBreak +
+         '  </SOAP-ENV:Header>'  + sLineBreak +
+         '  <SOAP-ENV:Body>'  + sLineBreak +
+         '    <ns2:test_proc xmlns:ns2="TestService"/>'  + sLineBreak +
+         '  </SOAP-ENV:Body>'  + sLineBreak +
+         '</SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+  hdr : THeaderBlockProxy;
+  actualHeader : TLoginInfos;
+begin
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      CheckEquals(0,cctx.GetHeaderCount([hdOut]),'Ouput header count');
+      CheckEquals(1,cctx.GetHeaderCount([hdIn]),'Input header count');
+      CheckIs(cctx.GetHeader(0),THeaderBlockProxy);
+      hdr := THeaderBlockProxy(cctx.GetHeader(0));
+      CheckIs(hdr.ActualObject,TLoginInfos);
+      actualHeader := TLoginInfos(hdr.ActualObject);
+      //CheckEquals(1,hdr.mustUnderstand,'mustUnderstand');
+      CheckEquals('LoginInfos',hdr.Name,'Name');
+      CheckEquals('Inoussa-wst',actualHeader.UserName,'UserName');
+      CheckEquals('sample password',actualHeader.Password,'Password');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
+procedure TTest_SoapFormatterHeader.read_header_proxy_header_block_name();
+const
+  XML_SOURCE =
+         '<?xml version="1.0"?>'  + sLineBreak +
+         '<SOAP-ENV:Envelope '  + sLineBreak +
+         '      xmlns:xsd="http://www.w3.org/2001/XMLSchema" '  + sLineBreak +
+         '      xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" '  + sLineBreak +
+         '      xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" '  + sLineBreak +
+         '      xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'  + sLineBreak +
+         '  <SOAP-ENV:Header xmlns:ns1="soap.test.namespace">'  + sLineBreak +
+         '    <ns1:NamedLoginInfos >'  + sLineBreak +
+         '      <ns1:UserName>Inoussa-wst</ns1:UserName>'  + sLineBreak +
+         '      <ns1:Password>sample password</ns1:Password>'  + sLineBreak +
+         '    </ns1:NamedLoginInfos>'  + sLineBreak +
+         '  </SOAP-ENV:Header>'  + sLineBreak +
+         '  <SOAP-ENV:Body>'  + sLineBreak +
+         '    <ns2:test_proc xmlns:ns2="TestService"/>'  + sLineBreak +
+         '  </SOAP-ENV:Body>'  + sLineBreak +
+         '</SOAP-ENV:Envelope>';
+var
+  f : IFormatterClient;
+  strm : TMemoryStream;
+  strBuffer : ansistring;
+  cctx : ICallContext;
+  hdr : THeaderBlockProxy;
+  actualHeader : TLoginInfos;
+begin
+  f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
+  strm := TMemoryStream.Create();
+  try
+    strBuffer := XML_SOURCE;
+    strm.Write(strBuffer[1],Length(strBuffer));
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    cctx := TSimpleCallContext.Create() as ICallContext;
+    f.BeginCallRead(cctx);
+      CheckEquals(0,cctx.GetHeaderCount([hdOut]),'Ouput header count');
+      CheckEquals(1,cctx.GetHeaderCount([hdIn]),'Input header count');
+      CheckIs(cctx.GetHeader(0),THeaderBlockProxy);
+      hdr := THeaderBlockProxy(cctx.GetHeader(0));
+      CheckIs(hdr.ActualObject,TLoginInfos);
+      actualHeader := TLoginInfos(hdr.ActualObject);
+      CheckEquals('NamedLoginInfos',hdr.Name,'Name');
+      CheckEquals('Inoussa-wst',actualHeader.UserName,'UserName');
+      CheckEquals('sample password',actualHeader.Password,'Password');
+    f.EndScopeRead();
+  finally
+    FreeAndNil(strm);
+  end;
+end;
+
 { TTest_SoapFormatterClient }
 
 procedure TTest_SoapFormatterClient.test_soap_href_id();
@@ -674,6 +913,92 @@ begin
   end;
 end;
 
+{ THeaderProxyTestObject }
+
+procedure THeaderProxyTestObject.SetDestructionCount(const AValue: PInteger);
+begin
+  if ( FDestructionCount = AValue ) then
+    Exit;
+  FDestructionCount := AValue;
+end;
+
+destructor THeaderProxyTestObject.Destroy();
+begin
+  if ( FDestructionCount <> nil ) then
+    Inc(FDestructionCount^);
+  inherited Destroy();
+end;
+
+{ TTest_THeaderBlockProxy }
+
+procedure TTest_THeaderBlockProxy.ActualObject;
+var
+  locObj : THeaderBlockProxy;
+  ao1, ao2 : THeaderProxyTestObject;
+begin
+  ao1 := nil;
+  ao2 := nil;
+  locObj := THeaderBlockProxy.Create();
+  try
+    CheckNull(locObj.ActualObject);
+    CheckEquals(False, locObj.OwnObject);
+    ao1 := THeaderProxyTestObject.Create();
+    ao2 := THeaderProxyTestObject.Create();
+
+    locObj.ActualObject := ao1;
+      CheckSame(ao1, locObj.ActualObject);
+    locObj.ActualObject := ao2;
+      CheckSame(ao2,locObj.ActualObject);
+    locObj.ActualObject := nil;
+      CheckNull(locObj.ActualObject);
+  finally
+    locObj.Free();
+    ao1.Free();
+    ao2.Free();
+  end;
+end;
+
+procedure TTest_THeaderBlockProxy.OwnObject_Destroy;
+var
+  locObj : THeaderBlockProxy;
+  ao1 : THeaderProxyTestObject;
+  locDestructionCount : Integer;
+begin
+  locDestructionCount := 0;
+  ao1 := nil;
+  locObj := THeaderBlockProxy.Create();
+    ao1 := THeaderProxyTestObject.Create();
+    locObj.ActualObject := ao1;
+    locObj.OwnObject := True;
+    ao1.DestructionCount := @locDestructionCount;
+    locObj.Free();
+    CheckEquals(1,locDestructionCount);
+end;
+
+procedure TTest_THeaderBlockProxy.OwnObject_SetActualObject;
+var
+  locObj : THeaderBlockProxy;
+  ao1, ao2 : THeaderProxyTestObject;
+  locDestructionCount : Integer;
+begin
+  locDestructionCount := 0;
+  ao1 := nil;
+  locObj := THeaderBlockProxy.Create();
+    ao1 := THeaderProxyTestObject.Create();
+      ao1.DestructionCount := @locDestructionCount;
+    ao2 := THeaderProxyTestObject.Create();
+      ao2.DestructionCount := @locDestructionCount;
+    locObj.OwnObject := True;
+
+    locObj.ActualObject := ao1;
+    locObj.ActualObject := ao2;
+      CheckEquals(1,locDestructionCount);
+    locObj.ActualObject := ao2;
+      CheckEquals(1,locDestructionCount,'Setting the same value should not free the object.');
+    locObj.Free();
+      CheckEquals(2,locDestructionCount);
+end;
+
 initialization
 
   GetTypeRegistry().Register(TSampleSimpleContentHeaderBlock_A.GetNameSpace(),TypeInfo(TSampleSimpleContentHeaderBlock_A));
@@ -686,10 +1011,14 @@ initialization
   GetTypeRegistry().Register(TNameSpaceC_Class.GetNameSpace(),TypeInfo(TNameSpaceC_Class));
   GetTypeRegistry().Register(ns_soap_test,TypeInfo(TSOAPTestEnum));
   GetTypeRegistry().Register('urn:WS_PlotjetIntfU',TypeInfo(THRefTestSession),'TSession');
+  GetTypeRegistry().Register(ns_soap_test,TypeInfo(TLoginInfos),'LoginInfos').AddExternalSynonym('NamedLoginInfos');
+  GetTypeRegistry().Register(ns_soap_test,TypeInfo(THeaderProxyTestObject));
+
   
   RegisterTest('Serializer',TTest_SoapFormatterServerNameSpace.Suite);
   RegisterTest('Serializer',TTest_SoapFormatterHeader.Suite);
   RegisterTest('Serializer',TTest_SoapFormatterClient.Suite);
   
+  RegisterTest('Support',TTest_THeaderBlockProxy.Suite);
 end.
 
