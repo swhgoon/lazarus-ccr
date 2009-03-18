@@ -6,7 +6,7 @@ uses
   delphi_init_com,
   Classes, SysUtils,
   soap_formatter,
-  synapse_http_protocol,
+  indy_http_protocol,
   metadata_repository,
   AWSECommerceService, AWSECommerceService_proxy;
 
