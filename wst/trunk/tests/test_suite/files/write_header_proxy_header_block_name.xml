@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<SOAP-ENV:Envelope 
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+      xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" 
+      xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+      xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header xmlns:ns1="soap.test.namespace">
+    <ns1:NamedLoginInfos>
+      <ns1:UserName>Inoussa-wst</ns1:UserName>
+      <ns1:Password>sample password</ns1:Password>
+    </ns1:NamedLoginInfos>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <ns2:test_proc xmlns:ns2="TestService"/>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
