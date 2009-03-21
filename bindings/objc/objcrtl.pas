@@ -225,8 +225,8 @@ var
   {$WARNINGS OFF} // warning: cdecl'ared funtions have no high parameter
   objc_msgSend       : function  (self: id; op: SEL; param3: array of const): id; cdecl = nil;
   objc_msgSendSuper  : function  (const super: objc_super; op: SEL; param3: array of const): id; cdecl = nil;
-  objc_msgSend_stret : procedure (self: id; op: SEL; param3: array of const); cdecl= nil;
-  objc_msgSendSuper_stret : procedure (const super: objc_super; op: SEL; param3: array of const); cdecl = nil;
+  objc_msgSend_stret : procedure (stret: Pointer; self: id; op: SEL; param3: array of const); cdecl= nil;
+  objc_msgSendSuper_stret : procedure (stret: Pointer; const super: objc_super; op: SEL; param3: array of const); cdecl = nil;
   objc_msgSend_fpret : function  (self: id; op: SEL; param3: array of const): double; cdecl = nil;
   {$WARNINGS ON}
 
