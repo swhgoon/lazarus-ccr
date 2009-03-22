@@ -146,7 +146,7 @@ unit VirtualTrees;
 //                  view)
 //   - Improvement: new parameters for TVTHeader.AutoFitColumns added: SmartAutoFitType, RangeStartCol and
 //                  RangeEndCol
-//   - Improvement: new parameters for events FOnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth
+//   - Improvement: new parameters for events FOUnknownnAfterAutoFitColumns, FOnBeforeAutoFitColumns, FOnAfterGetMaxColumnWidth
 //                  and FOnBeforeGetMaxColumnWidth added
 //   - Version is now 4.6.0
 // May 2008
@@ -199,7 +199,7 @@ unit VirtualTrees;
 //   - Improvement: avoid potential reentrancy problems in paint code by checking for the paint state there.
 // January 2006
 //   - Bug fix: disabled images are now drawn like enabled ones (with respect to position, indices etc.).
-//   - Improvement: New property BottomSpace, allows to specify an additional area below the last node in the tree.
+//   - Improvement: New property BottomSpaceUnknown, allows to specify an additional area below the last node in the tree.
 //   - Bug fix: VT.EndUpdate did not invalidate the cache so the cache was never used again after that.
 //   - Improvement: tree states for double clicks (left, middle, right).
 // December 2005
@@ -1401,7 +1401,6 @@ type
     procedure SetSortDirection(const Value: TSortDirection);
     procedure SetStyle(Value: TVTHeaderStyle);
   protected
-    function CanWriteColumns: Boolean; virtual;
     procedure ChangeScale(M, D: Integer); virtual;
     function DetermineSplitterIndex(const P: TPoint): Boolean; virtual;
     procedure DoAfterColumnWidthTracking(Column: TColumnIndex); virtual;
@@ -1423,12 +1422,10 @@ type
     function HandleMessage(var Message: TLMessage): Boolean; virtual;
     procedure ImageListChange(Sender: TObject);
     procedure PrepareDrag(P, Start: TPoint);
-    procedure ReadColumns(Reader: TReader);
     procedure RecalculateHeader; virtual;
     procedure RescaleFixedArea;
     procedure UpdateMainColumn;
     procedure UpdateSpringColumns;
-    procedure WriteColumns(Writer: TWriter);
   public
     constructor Create(AOwner: TBaseVirtualTree); virtual;
     destructor Destroy; override;
@@ -2301,7 +2298,6 @@ type
     function PackArray(TheArray: TNodeArray; Count: Integer): Integer;
     procedure PrepareBitmaps(NeedButtons, NeedLines: Boolean);
     procedure PrepareCell(var PaintInfo: TVTPaintInfo; WindowOrgX, MaxWidth: Integer);
-    procedure ReadOldOptions(Reader: TReader);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetAnimationDuration(const Value: Cardinal);
     procedure SetBackground(const Value: TPicture);
@@ -3170,7 +3166,6 @@ type
     procedure MainColumnChanged; override;
     function ReadChunk(Stream: TStream; Version: Integer; Node: PVirtualNode; ChunkType,
       ChunkSize: Integer): Boolean; override;
-    procedure ReadOldStringOptions(Reader: TReader);
     function RenderOLEData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium; ForClipboard: Boolean): HResult; override;
     procedure WriteChunks(Stream: TStream; Node: PVirtualNode); override;
 
@@ -9908,16 +9903,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTHeader.CanWriteColumns: Boolean;
-
-// descendants may override this to optionally prevent column writing (e.g. if they are build dynamically).
-
-begin
-  Result := True;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVTHeader.ChangeScale(M, D: Integer);
 
 begin
@@ -10849,18 +10834,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVTHeader.ReadColumns(Reader: TReader);
-
-begin
-  Include(FStates, hsLoading);
-  Columns.Clear;
-  Reader.ReadValue;
-  Reader.ReadCollection(Columns);
-  Exclude(FStates, hsLoading);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVTHeader.RecalculateHeader;
 
 // Initiate a recalculation of the non-client area of the owner tree.
@@ -11009,48 +10982,6 @@ begin
   end;
   with TreeView do
     FLastWidth := FHeaderRect.Right - FHeaderRect.Left;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-type
-  // --- HACK WARNING!
-  // This type cast is a partial rewrite of the private section of TWriter. The purpose is to have access to
-  // the FPropPath member, which is otherwise not accessible. The reason why this access is needed is that
-  // with nested components this member contains unneeded property path information. These information prevent
-  // successful load of the stored properties later.
-  // In Classes.pas you can see that FPropPath is reset several times to '' to prevent this case for certain properies.
-  // Unfortunately, there is no clean way for us here to do the same.
-  {$hints off}
-  TWriterHack = class(TFiler)
-  private
-    FDriver: TAbstractObjectWriter;
-    FDestroyDriver: Boolean;
-    FRootAncestor: TComponent;
-    FPropPath: String;
-  end;
-  {$hints on}
-
-procedure TVTHeader.WriteColumns(Writer: TWriter);
-
-// Write out the columns but take care for the case VT is a nested component.
-
-var
-  LastPropPath: String;
-
-begin
-  // Save last property path for restoration.
-  LastPropPath := TWriterHack(Writer).FPropPath;
-  try
-    // If VT is a nested component then this path contains the name of the parent component at this time
-    // (otherwise it is already empty). This path is then combined with the property name under which the tree
-    // is defined in the parent component. Unfortunately, the load code in Classes.pas does not consider this case
-    // is then unable to load this property.
-    TWriterHack(Writer).FPropPath := '';
-    Writer.WriteCollection(Columns);
-  finally
-    TWriterHack(Writer).FPropPath := LastPropPath;
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14166,76 +14097,6 @@ begin
 
         SetTextColor(Handle, TextColorBackup);
         SetBkColor(Handle, BackColorBackup);
-      end;
-    end;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-type
-  TOldVTOption = (voAcceptOLEDrop, voAnimatedToggle, voAutoDropExpand, voAutoExpand, voAutoScroll,
-    voAutoSort, voAutoSpanColumns, voAutoTristateTracking, voCheckSupport, voDisableDrawSelection, voEditable,
-    voExtendedFocus, voFullRowSelect, voGridExtensions, voHideFocusRect, voHideSelection, voHotTrack, voInitOnSave,
-    voLevelSelectConstraint, voMiddleClickSelect, voMultiSelect, voRightClickSelect, voPopupMode, voShowBackground,
-    voShowButtons, voShowDropmark, voShowHorzGridLines, voShowRoot, voShowTreeLines, voShowVertGridLines,
-    voSiblingSelectConstraint, voToggleOnDblClick);
-
-const
-  OptionMap: array[TOldVTOption] of Integer = (
-    Ord(toAcceptOLEDrop), Ord(toAnimatedToggle), Ord(toAutoDropExpand), Ord(toAutoExpand), Ord(toAutoScroll),
-    Ord(toAutoSort), Ord(toAutoSpanColumns), Ord(toAutoTristateTracking), Ord(toCheckSupport), Ord(toDisableDrawSelection),
-    Ord(toEditable), Ord(toExtendedFocus), Ord(toFullRowSelect), Ord(toGridExtensions), Ord(toHideFocusRect),
-    Ord(toHideSelection), Ord(toHotTrack), Ord(toInitOnSave), Ord(toLevelSelectConstraint), Ord(toMiddleClickSelect),
-    Ord(toMultiSelect), Ord(toRightClickSelect), Ord(toPopupMode), Ord(toShowBackground),
-    Ord(toShowButtons), Ord(toShowDropmark), Ord(toShowHorzGridLines), Ord(toShowRoot), Ord(toShowTreeLines),
-    Ord(toShowVertGridLines), Ord(toSiblingSelectConstraint), Ord(toToggleOnDblClick)
-  );
-
-procedure TBaseVirtualTree.ReadOldOptions(Reader: TReader);
-
-// Migration helper routine to silently convert forms containing the old tree options member into the new
-// sub-options structure.
-
-var
-  OldOption: TOldVTOption;
-  EnumName: string;
-
-begin
-  // If we are at design time currently then let the designer know we changed something.
-  UpdateDesigner;
-
-  // It should never happen at this place that there is something different than the old set.
-  if Reader.ReadValue = vaSet then
-  begin
-    // Remove all default values set by the constructor.
-    FOptions.AnimationOptions := [];
-    FOptions.AutoOptions := [];
-    FOptions.MiscOptions := [];
-    FOptions.PaintOptions := [];
-    FOptions.SelectionOptions := [];
-
-    while True do
-    begin
-      // Sets are stored with their members as simple strings. Read them one by one and map them to the new option
-      // in the correct sub-option set.
-      EnumName := Reader.ReadString;
-      if EnumName = '' then
-        Break;
-      OldOption := TOldVTOption(GetEnumValue(TypeInfo(TOldVTOption), EnumName));
-      case OldOption of
-        voAcceptOLEDrop, voCheckSupport, voEditable, voGridExtensions, voInitOnSave, voToggleOnDblClick:
-          FOptions.MiscOptions := FOptions.FMiscOptions + [TVTMiscOption(OptionMap[OldOption])];
-        voAnimatedToggle:
-          FOptions.AnimationOptions := FOptions.FAnimationOptions + [TVTAnimationOption(OptionMap[OldOption])];
-        voAutoDropExpand, voAutoExpand, voAutoScroll, voAutoSort, voAutoSpanColumns, voAutoTristateTracking:
-          FOptions.AutoOptions := FOptions.FAutoOptions + [TVTAutoOption(OptionMap[OldOption])];
-        voDisableDrawSelection, voExtendedFocus, voFullRowSelect, voLevelSelectConstraint,
-        voMiddleClickSelect, voMultiSelect, voRightClickSelect, voSiblingSelectConstraint:
-          FOptions.SelectionOptions := FOptions.FSelectionOptions + [TVTSelectionOption(OptionMap[OldOption])];
-        voHideFocusRect, voHideSelection, voHotTrack, voPopupMode, voShowBackground, voShowButtons,
-        voShowDropmark, voShowHorzGridLines, voShowRoot, voShowTreeLines, voShowVertGridLines:
-          FOptions.PaintOptions := FOptions.FPaintOptions + [TVTPaintOption(OptionMap[OldOption])];
       end;
     end;
   end;
@@ -31961,49 +31822,6 @@ begin
   else
     Result := inherited ReadChunk(Stream, Version, Node, ChunkType, ChunkSize);
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-type
-  TOldVTStringOption = (soSaveCaptions, soShowStaticText);
-
-procedure TCustomVirtualStringTree.ReadOldStringOptions(Reader: TReader);
-
-// Migration helper routine to silently convert forms containing the old tree options member into the new
-// sub-options structure.
-
-var
-  OldOption: TOldVTStringOption;
-  EnumName: string;
-
-begin
-  // If we are at design time currently then let the designer know we changed something.
-  UpdateDesigner;
-
-  // It should never happen at this place that there is something different than the old set.
-  if Reader.ReadValue = vaSet then
-    with TreeOptions do
-    begin
-      // Remove all default values set by the constructor.
-      StringOptions := [];
-
-      while True do
-      begin
-        // Sets are stored with their members as simple strings. Read them one by one and map them to the new option
-        // in the correct sub-option set.
-        EnumName := Reader.ReadString;
-        if EnumName = '' then
-          Break;
-        OldOption := TOldVTStringOption(GetEnumValue(TypeInfo(TOldVTStringOption), EnumName));
-        case OldOption of
-          soSaveCaptions:
-            StringOptions := FStringOptions + [toSaveCaptions];
-          soShowStaticText:
-            StringOptions := FStringOptions + [toShowStaticText];
-        end;
-      end;
-    end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
