@@ -263,22 +263,38 @@ type
 
   { TSvnStatusList }
 
-  TSvnStatusList = class(TSvnBase)
+  TSvnStatusList = class
   private
     FTargetPath       : String;
+    FChangeListName   : String;
     FAgainstRevision  : Integer;
     FStatusEntries    : TFPObjectList;
     function GetStatusEntry(index: integer): TStatusEntry;
     function GetStatusEntryCount: integer;
-    procedure LoadFromXml(ADoc: TXMLDocument); override;
+    procedure LoadFromNode(ANode: TDOMElement);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    property StatusEntry[index: integer] :TStatusEntry read GetStatusEntry;
+    property StatusEntry[index: integer] :TStatusEntry read GetStatusEntry; default;
     property StatusEntryCount: integer read GetStatusEntryCount;
     property TargetPath: String read FTargetPath;
     property AgainstRevision: Integer read FAgainstRevision;
+    property ChangeListName: String read FChangeListName;
+  end;
+
+  TSvnStatus = class(TSVNBase)
+  private
+    FLists  : TFPObjectList;
+  protected
+    function GetStatusList(index: Integer): TSVNStatusList;
+    function GetListsCount: Integer;
+    procedure LoadFromXml(ADoc: TXMLDocument); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Lists[index: Integer]: TSVNStatusList read GetStatusList;
+    property ListsCount: Integer read GetListsCount;
   end;
 
 implementation
@@ -780,7 +796,7 @@ begin
   Result := FStatusEntries.Count;
 end;
 
-procedure TSvnStatusList.LoadFromXml(ADoc: TXMLDocument);
+procedure TSvnStatusList.LoadFromNode(ANode: TDOMElement);
 var
   EntryNode : TDOMNode;
   StatEntry : TStatusEntry;
@@ -788,33 +804,30 @@ begin
   Clear;
   FAgainstRevision := 0;
   FTargetPath := '';
+  if not Assigned(ANode) then Exit;
 
-  EntryNode := ADoc.FindNode('status').FirstChild;
-  while Assigned(EntryNode) do begin
+  EntryNode := ANode as TDOMNode;
+
+  if EntryNode.NodeName = 'target' then
+    FTargetPath := (EntryNode as TDOMElement).GetAttribute('path')
+  else if EntryNode.NodeName = 'changelist' then
+    FChangeListName := (EntryNode as TDOMElement).GetAttribute('name');
+
+  EntryNode := ANode.FirstChild;
+  while assigned(EntryNode) do begin
     if (EntryNode.NodeType=ELEMENT_NODE)
-      and (EntryNode.NodeName='target') then begin
-      FTargetPath := (EntryNode as TDOMElement).GetAttribute('path');
-      Break; // only single target path is processed?
+      and (EntryNode.NodeName='entry') then
+    begin
+      StatEntry := TStatusEntry.Create;
+      StatEntry.LoadFromNode(TDomElement(EntryNode));
+      FStatusEntries.Add(StatEntry);
+    end else if (EntryNode.NodeName='against') then
+    begin
+      FAgainstRevision := StrToIntDef(TDOMElement(EntryNode).GetAttribute('revision'), 0);
     end;
     EntryNode := EntryNode.NextSibling;
   end;
 
-  if Assigned(EntryNode) then begin
-    EntryNode := EntryNode.FirstChild;
-    while assigned(EntryNode) do begin
-      if (EntryNode.NodeType=ELEMENT_NODE)
-        and (EntryNode.NodeName='entry') then
-      begin
-        StatEntry := TStatusEntry.Create;
-        StatEntry.LoadFromNode(TDomElement(EntryNode));
-        FStatusEntries.Add(StatEntry);
-      end else if (EntryNode.NodeName='against') then
-      begin
-        FAgainstRevision := StrToIntDef(TDOMElement(EntryNode).GetAttribute('revision'), 0);
-      end;
-      EntryNode := EntryNode.NextSibling;
-    end;
-  end;
 end;
 
 constructor TSvnStatusList.Create;
@@ -901,6 +914,49 @@ begin
     fCreated := GetChildTextContent(ANode, 'created');
   end;
 
+end;
+
+{ TSvnStatus }
+
+function TSvnStatus.GetStatusList(index: Integer): TSVNStatusList;
+begin
+  Result := FLists[Index] as TSVNStatusList;
+end;
+
+function TSvnStatus.GetListsCount: Integer;
+begin
+  Result := FLists.Count;
+end;
+
+procedure TSvnStatus.LoadFromXml(ADoc: TXMLDocument);
+var
+  ListNode  : TDOMNode;
+  NodeName  : String;
+  StatList  : TSvnStatusList;
+begin
+  ListNode := ADoc.FindNode('status').FirstChild;
+  while Assigned(ListNode) do begin
+    NodeName := ListNode.NodeName;
+    if (ListNode.NodeType=ELEMENT_NODE) and
+     ((NodeName='target') or (NodeName='changelist')) then begin
+      StatList := TSvnStatusList.Create;
+      FLists.Add(StatList);
+      StatList.LoadFromNode(ListNode as TDomElement);
+    end;
+    ListNode := ListNode.NextSibling;
+  end;
+end;
+
+constructor TSvnStatus.Create;
+begin
+  inherited Create;
+  FLists := TFPObjectList.Create(true);
+end;
+
+destructor TSvnStatus.Destroy;
+begin
+  FLists.Free;
+  inherited Destroy;
 end;
 
 end.
