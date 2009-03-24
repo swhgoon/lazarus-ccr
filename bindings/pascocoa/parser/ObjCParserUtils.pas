@@ -864,7 +864,13 @@ begin
     fntype := TTypeDef(f._ResultType)._Name;
   end else begin
     isptr := false;
-    fntype := '{todo: not implemented... see .h file for type}';
+    s := 'see .h file for proper type';
+    if f._ResultType is TEntityStruct then begin
+      s := 'struct ' + TEntityStruct(f._ResultType)._Name;
+      if  TEntityStruct(f._ResultType)._isPointer then s := s + '*'
+      else s := s + '{...}';
+    end;
+    fntype := '? {'+s+'}';
   end;
 
   restype := ObjCToDelphiType(fntype, isptr);
@@ -1123,6 +1129,10 @@ begin
       WriteOutTypeDefRecord(typedef._Type as TEntityStruct, '  ', 'packed ', subs);
       ConvertSettings.StructTypes.Add(typedef._TypeName);
     end;
+  end else if typedef._Type is TFunctionTypeDef then begin
+    subs.Add('type');
+    tmp := Format('  %s = %s', [typedef._TypeName, CToDelphiFuncType(TFunctionTypeDef(typedef._Type))]);
+    Subs.Add(tmp);
   end;
 
   subs.Add('');
@@ -1971,7 +1981,7 @@ begin
       st.Add('(*' + cmt._Comment + '*)');
       cmt.Free;
       hdr.Items.Delete(0);
-    end;
+    end;                        
 
 
     WriteOutHeaderSection(hdr, st);

@@ -252,7 +252,7 @@ type
     function DoParse(AParser: TTextParser): Boolean; override;
   end;
 
-  TFunctionTypeDef = class(TEntity)
+  TFunctionTypeDef = class(TEntity) // Parses only Parameters list (starting with Bracket "(")
   protected
     function DoParse(APArser: TTextParser): Boolean; override;
   public
@@ -330,8 +330,6 @@ type
     _Type       : TEntity;
     _TypeName   : AnsiString;
   end;
-
-  { TStructTypeDef }
 
   //C token: struct
   TEntityStruct = class(TEntity)
@@ -1481,7 +1479,7 @@ end;
 
 function ParseFunctionOrVar(Owner: TEntity; AParser: TTextParser): Boolean;
 var
-  ctype : TTypeDef; 
+  ctype : TEntity; 
   _name : AnsiString;
   isfunc  : Boolean; 
   tt    : TTokenType;
@@ -1513,9 +1511,15 @@ begin
 
     AParser.Index := AParser.TokenPos;
 
-    ctype := TTypeDef.Create(nil);
+{    if s = 'struct' then
+      TTy
+      ctype :=}
+
+
+    ctype := ParseTypeDef(nil, AParser);
+    {   TTypeDef.Create(nil);
     Result := ctype.Parse(AParser);
-    if not Result then Exit;
+    if not Result then Exit;}
 
     // expecting name of Variable or Function name
     if not AParser.FindNextToken(_name, tt) or (tt <> tt_Ident) then begin
@@ -2038,6 +2042,7 @@ function TTypeNameDef.DoParse(AParser: TTextParser): Boolean;
 var
   s   : AnsiString;
   tt  : TTokenType;
+  fntype : TFunctionTypeDef;
 begin
   Result := false;
   AParser.FindNextToken(s, tt);
@@ -2045,19 +2050,38 @@ begin
     AParser.SetError( ErrExpectStr('typedef', s));
     Exit;
   end;
-  
+
   _Type := ParseTypeDef(Self, AParser);
   if not Assigned(_Type) then Exit;
-  Items.Add(_Type);
 
   Result := AParser.FindNextToken(_TypeName, tt);
-  if not Result then begin
-    AParser.SetError( ErrExpectStr('Type name identifier', _TypeName) );
-    Exit;
-  end;
-  _inherited := GetTypeNameFromEntity( _Type );
-  AParser.FindNextToken(s, tt); // skip last ';';
+  if (tt = tt_Symbol) and (_TypeName = '(') then begin
+    fntype := TFunctionTypeDef.Create(Self);
+    fnType._ResultType := _Type;
+    _Type.Owner := fntype;
+    _Type:=fntype;
 
+    // function-type
+    Result := AParser.FindNextToken(s, tt);
+    if (tt<>tt_Symbol) and (s <>'*') then AParser.SetError( ErrExpectStr('*', s) );
+    AParser.FindNextToken(_TypeName, tt);
+    AParser.FindNextToken(s, tt);
+    if not Result then Exit;
+    if (tt<>tt_Symbol)and (s <> ')') then AParser.SetError( ErrExpectStr(')', s) );
+    
+    Result := fnType.Parse(AParser);
+    if not Result then Exit;
+    AParser.FindNextToken(s, tt); // skip last ';';
+
+  end else begin
+    if not Result then begin
+      AParser.SetError( ErrExpectStr('Type name identifier', _TypeName) );
+      Exit;
+    end;
+    _inherited := GetTypeNameFromEntity( _Type );
+    AParser.FindNextToken(s, tt); // skip last ';';
+  end;
+  if Assigned(_Type) then Items.Add(_Type);
   Result := true;
 end;
 
@@ -3013,8 +3037,6 @@ begin
   Result := true;
   _RawText := Copy(APArser.Buf, idx, AParser.Index - idx);
 end;
-
-
 
 initialization
 
