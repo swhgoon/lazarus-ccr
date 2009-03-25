@@ -15482,15 +15482,7 @@ begin
     else
       WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
     if FBorderStyle = bsSingle then
-    begin
-      if Ctl3D then
-      begin
-        ExStyle := ExStyle or WS_EX_CLIENTEDGE;
-        Style := Style and not WS_BORDER;
-      end
-      else
-        Style := Style or WS_BORDER;
-    end
+      Style := Style or WS_BORDER
     else
       Style := Style and not WS_BORDER;
 
@@ -19026,7 +19018,7 @@ begin
     if True{todoBevelKind <> bkNone} then
     begin
       DrawEdge(DC, RC, BDR_RAISEDINNER{InnerStyles[BevelInner]} or 0{OuterStyles[BevelOuter]}, 15{Byte(BevelEdges)} or 0{EdgeStyles[BevelKind]} or
-        Ctl3DStyles[Ctl3D]);
+        Ctl3DStyles[False]);
 
       EdgeSize := 0;
 //      if BevelInner <> bvNone then
@@ -20650,7 +20642,6 @@ begin
       Self.Color := Color;
       Self.Colors.Assign(Colors);
       Self.Constraints.Assign(Constraints);
-      Self.Ctl3D := Ctl3D;
       Self.DefaultNodeHeight := DefaultNodeHeight;
       Self.DefaultPasteMode := DefaultPasteMode;
       Self.DragCursor := DragCursor;
@@ -20670,7 +20661,6 @@ begin
       Self.TreeOptions := TreeOptions;
 //b      Self.ParentBiDiMode := ParentBiDiMode;
       Self.ParentColor := ParentColor;
-      Self.ParentCtl3D := ParentCtl3D;
       Self.ParentFont := ParentFont;
       Self.ParentShowHint := ParentShowHint;
       Self.PopupMenu := PopupMenu;            

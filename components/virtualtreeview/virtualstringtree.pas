@@ -248,7 +248,6 @@ type
     property Color;
     property Colors;
     property Constraints;
-    property Ctl3D;
     property CustomCheckImages;
     property DefaultNodeHeight;
     property DefaultPasteMode;
@@ -278,7 +277,6 @@ type
       property ParentBackground;
     {$endif COMPILER_7_UP}
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
