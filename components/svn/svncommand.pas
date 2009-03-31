@@ -92,6 +92,7 @@ begin
   try
     SvnProcess.CommandLine := SvnExecutable + ' ' + Command;
     SvnProcess.Options := [poUsePipes];
+    SvnProcess.ShowWindow := swoHIDE;
     SvnProcess.Execute;
     while SvnProcess.Running do begin
       if not ReadOutput then
