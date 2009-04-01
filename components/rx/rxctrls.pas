@@ -492,6 +492,7 @@ type
     property BiDiMode;
     property ParentBiDiMode;
 {$ENDIF}
+    property BorderSpacing;
     property Layout;
     property ParentColor;
     property ParentFont;

@@ -16,6 +16,7 @@
   + TRxLoginDialo теперь работает. По сравнению с оригинальным функционал сильно расширен. 
     Изменён дизайн формы
   + Улучшена отриосвка вертикальных заголовков в гриде. Код из TAChart 
+  + Опубликова BorderSpacing в TRxLabel
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных
