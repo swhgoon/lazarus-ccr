@@ -104,7 +104,12 @@ type
   ptrdiff_t = Pointer;
   objc_method_description = Pointer;
   TMutationHandlerProc = Pointer;
-  objc_super = Pointer;
+
+  pobjc_super = ^objc_super;
+  objc_super = packed record
+    reciever : id;
+    class_   : _class;
+  end;
 
 var
   sel_getName : function (sel: SEL): PChar; cdecl = nil;
@@ -224,9 +229,9 @@ var
 
   {$WARNINGS OFF} // warning: cdecl'ared funtions have no high parameter
   objc_msgSend       : function  (self: id; op: SEL; param3: array of const): id; cdecl = nil;
-  objc_msgSendSuper  : function  (const super: objc_super; op: SEL; param3: array of const): id; cdecl = nil;
+  objc_msgSendSuper  : function  (super: pobjc_super; op: SEL; param3: array of const): id; cdecl = nil;
   objc_msgSend_stret : procedure (stret: Pointer; self: id; op: SEL; param3: array of const); cdecl= nil;
-  objc_msgSendSuper_stret : procedure (stret: Pointer; const super: objc_super; op: SEL; param3: array of const); cdecl = nil;
+  objc_msgSendSuper_stret : procedure (stret: Pointer; super: pobjc_super; op: SEL; param3: array of const); cdecl = nil;
   objc_msgSend_fpret : function  (self: id; op: SEL; param3: array of const): double; cdecl = nil;
   {$WARNINGS ON}
 
@@ -254,6 +259,7 @@ var
   objc_exception_match     : Tobjc_exception_match = nil;
 
 type
+  pobjc_exception_functions_t = ^objc_exception_functions_t;
   objc_exception_functions_t = packed record
     version   : Integer;
     throw_exc : Tobjc_exception_throw;      // version 0
@@ -266,7 +272,7 @@ type
 // get table; version tells how many
 var
   objc_exception_get_functions : procedure (var table: objc_exception_functions_t); cdecl = nil;
-  objc_exception_set_functions : procedure (const table: objc_exception_functions_t); cdecl = nil;
+  objc_exception_set_functions : procedure (table: pobjc_exception_functions_t); cdecl = nil;
 
 
 // __LP64__  // 64-bit only functions
