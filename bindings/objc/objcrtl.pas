@@ -231,6 +231,7 @@ var
   objc_msgSend       : function  (self: id; op: SEL; param3: array of const): id; cdecl = nil;
   objc_msgSendSuper  : function  (super: pobjc_super; op: SEL; param3: array of const): id; cdecl = nil;
   objc_msgSend_stret : procedure (stret: Pointer; self: id; op: SEL; param3: array of const); cdecl= nil;
+  objc_msgSend_stretreg : function (self: id; op: SEL; param3: array of const): id; cdecl= nil;
   objc_msgSendSuper_stret : procedure (stret: Pointer; super: pobjc_super; op: SEL; param3: array of const); cdecl = nil;
   objc_msgSend_fpret : function  (self: id; op: SEL; param3: array of const): double; cdecl = nil;
   {$WARNINGS ON}
@@ -239,6 +240,34 @@ var
   method_invoke_stret : procedure (receiver: id; m: Method{ , ...})= nil;
   objc_collect : procedure (options: LongWord); cdecl= nil;
   objc_collectingEnabled : function : BOOL; cdecl= nil;
+
+const
+  _C_ID	      = '@';
+  _C_CLASS    = '#';
+  _C_SEL 	    = ':';
+  _C_CHR 	    = 'c';
+  _C_UCHR     = 'C';
+  _C_SHT 	    = 's';
+  _C_USHT     = 'S';
+  _C_INT 	    = 'i';
+  _C_UINT     = 'I';
+  _C_LNG 	    = 'l';
+  _C_ULNG     = 'L';
+  _C_FLT 	    = 'f';
+  _C_DBL 	    = 'd';
+  _C_BFLD     = 'b';
+  _C_VOID     = 'v';
+  _C_UNDEF    = '?';
+  _C_PTR	    = '^';
+  _C_CHARPTR  = '*';
+  _C_ARY_B    = '[';
+  _C_ARY_E    = ']';
+  _C_UNION_B  = '(';
+  _C_UNION_E  = ')';
+  _C_STRUCT_B = '{';
+  _C_STRUCT_E = '}';
+  _C_PASOBJ   = _C_PTR + _C_VOID;
+  _C_SELF_AND_SEL = '@:';
 
 // objc-exception.h
 
@@ -296,10 +325,6 @@ OBJC_EXPORT objc_uncaught_exception_handler objc_setUncaughtExceptionHandler(obj
 }
 
 
-// since exception handling does not change from version to version
-// it's nice to make a common RTL loading function for exception functions.
-// this proc, MUST BE called by run-time initialization proc!
-function LoadDefaultObjCExepction(hnd: TLibHandle): Boolean;
 
 // objc-sync.h
 
@@ -307,7 +332,7 @@ var
   // Begin synchronizing on 'obj'.
   // Allocates recursive pthread_mutex associated with 'obj' if needed.
   // Returns OBJC_SYNC_SUCCESS once lock is acquired.
-  objc_sync_enter: function (obj: id ): Integer; cdecl = nil;
+  objc_sync_enter: function (obj: id): Integer; cdecl = nil;
   // End synchronizing on 'obj'.
   // Returns OBJC_SYNC_SUCCESS or OBJC_SYNC_NOT_OWNING_THREAD_ERROR
   objc_sync_exit : function (obj: id) : Integer; cdecl = nil;
@@ -327,7 +352,12 @@ const
 	OBJC_SYNC_TIMED_OUT               = -2;
 	OBJC_SYNC_NOT_INITIALIZED         = -3;
 
+// since exception handling does not change from version to version
+// it's nice to make a common RTL loading function for exception functions.
+// this proc, MUST BE called by run-time initialization proc!
+function LoadDefaultObjCExepction(hnd: TLibHandle): Boolean;
 function LoadDefaultObjCSync(hnd: TLibHandle): Boolean;
+function LoadDefaultObjCMessaging(hnd: TLibHandle): Boolean;
 
 implementation
 
@@ -336,8 +366,8 @@ begin
   Result := hnd <> 0;
   if not Result then Exit;
 
-  objc_exception_throw     := Tobjc_exception_throw( GetProcedureAddress(hnd, 'objc_exception_throw'));
-  objc_exception_try_enter := Tobjc_exception_try_enter( GetProcedureAddress(hnd, 'objc_exception_try_enter'));
+  objc_exception_throw     := Tobjc_exception_throw(GetProcedureAddress(hnd, 'objc_exception_throw'));
+  objc_exception_try_enter := Tobjc_exception_try_enter(GetProcedureAddress(hnd, 'objc_exception_try_enter'));
   objc_exception_try_exit  := Tobjc_exception_try_exit(GetProcedureAddress(hnd, 'objc_exception_try_exit'));
   objc_exception_extract   := Tobjc_exception_extract(GetProcedureAddress(hnd, 'objc_exception_extract'));
   objc_exception_match     := Tobjc_exception_match(GetProcedureAddress(hnd, 'objc_exception_match'));
@@ -352,6 +382,22 @@ begin
   Pointer(objc_sync_wait) := GetProcedureAddress(hnd, 'objc_sync_wait');
   Pointer(objc_sync_notify) := GetProcedureAddress(hnd, 'objc_sync_notify');
   Pointer(objc_sync_notifyAll) := GetProcedureAddress(hnd, 'objc_sync_notifyAll');
+end;
+
+function LoadDefaultObjCMessaging(hnd: TLibHandle): Boolean;
+begin
+  Pointer(objc_msgSend) := GetProcedureAddress(hnd, 'objc_msgSend');
+  Pointer(objc_msgSendSuper) := GetProcedureAddress(hnd, 'objc_msgSendSuper');
+  Pointer(objc_msgSend_stret) := GetProcedureAddress(hnd, 'objc_msgSend_stret');
+  Pointer(objc_msgSendSuper_stret) := GetProcedureAddress(hnd, 'objc_msgSendSuper_stret');
+
+  {$ifndef CPUPOWERPC} // arm also uses objc_msgSend_fpret?
+  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend_fpret');
+  Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSend');
+  {$else}
+  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend');
+  Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSend_streg');
+  {$endif}
 end;
 
 initialization

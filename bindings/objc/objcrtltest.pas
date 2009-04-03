@@ -27,7 +27,8 @@ type
   PSmallRecord = ^TSmallRecord;
   TSmallRecord = packed record
     a,b,c: byte;
-    //d: byte;
+    //d : Integer;
+    d: byte;
   end;
 
 const
@@ -50,6 +51,7 @@ const
   newMethod5 = 'getSmallRecord';
   newMethod5Enc = '{TSmallRecord=ccc}@:';
 
+  varName  = 'myvar';
 
 function imp_init(self: id; _cmd: SEL): id; cdecl;
 var
@@ -79,12 +81,12 @@ begin
   Result := 3.125;
 end;
 
-procedure imp_getSmallRec(Result: PSmallRecord; seld: id; _cmd: SEL); cdecl;
+function imp_getSmallRec(seld: id; _cmd: SEL): TSmallRecord; cdecl;
 begin
-  Result^.a := 121;
-  Result^.b := 68;
-  Result^.c := 22;
-  //Result.d := 5;
+  Result.a := 121;
+  Result.b := 68;
+  Result.c := 22;
+  Result.d := 5;
 end;
 
 
@@ -101,13 +103,23 @@ begin
        class_addMethod(cl, selector(newMethod4), @imp_newMethod4, newMethod4Enc);
        class_addMethod(cl, selector(newMethod5), @imp_getSmallRec, newMethod5Enc);
   if not b then writeln('failed to add/override some method(s)');
+
+  class_addIvar(cl, varName, sizeof(TObject), 1, _C_PASOBJ);
+
   objc_registerClassPair(cl);
 end;
 
 var
-  obj   : id;
-  stret : TSmallRecord;
-  buf   : array [0..255] of byte;
+  obj     : id;
+  objvar  : Ivar;
+
+  stret   : TSmallRecord;
+  varobj  : TObject;
+  p     : Pointer;
+
+type
+  TgetSmallRecord = function (obj: id; cmd: Sel; arg: array of const): TSmallRecord; cdecl;
+
 begin
   //  if InitializeObjcRtl20(DefaultObjCLibName) then // should be used of OSX 10.5 and iPhoneOS
 
@@ -119,27 +131,32 @@ begin
   end;
 
   RegisterSubclass(newClassName);
+  writeln('registered');
 
   obj := AllocAndInit(newClassName);
   {obj := alloc(newClassName);
   objc_msgSend(obj, selector(overrideMethod), []);}
+
+  writeln('sizeof(TSmallRecord) = ', sizeof(TSmallRecord));
+  stret := TgetSmallRecord(objc_msgSend_stretreg)(obj, selector(newMethod5), []);
+  //writeln('p = ', Integer(p));
+
+  //stret :=
+  writeln('stret.a = ', stret.a);
+  writeln('stret.b = ', stret.b);
+  writeln('stret.c = ', stret.c);
+  writeln('stret.d = ', stret.d);
+
+  //PInteger(@stret)^ := Integer(objc_msgSend(obj, selector(newMethod5), []));
 
   objc_msgSend(obj, selector(newMethod1), []);
   objc_msgSend(obj, selector(newMethod2), [5, 4]);
 
   writeln('get double = ', objc_msgSend_fpret(obj, selector(newMethod3), []));
   writeln('get float  = ', objc_msgSend_fpret(obj, selector(newMethod4), []));
-
-  writeln('sizeof(TSmallRecord) = ', sizeof(TSmallRecord));
-  objc_msgSend_stret(@stret, obj, selector(newMethod5), []);
-  writeln('stret.a = ', stret.a);
-  writeln('stret.b = ', stret.b);
-  writeln('stret.c = ', stret.c);
-
   release( obj );
 
   writeln('test successfully complete');
-
 end.
 
 

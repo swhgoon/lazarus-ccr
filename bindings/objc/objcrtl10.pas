@@ -31,10 +31,34 @@ uses
   http://developer.apple.com/documentation/Cocoa/Reference/ObjCRuntimeRef/Articles/ocr10_5delta.html#//apple_ref/doc/uid/TP40002981-TPXREF101
 }
 
-
 function InitializeObjCRtl10(const ObjCLibName: AnsiString): Boolean;
 
 implementation
+
+{$HINTS OFF} {.Parameter not used.}
+
+function ObjCAllocMem(size: Integer): Pointer;
+begin
+  //todo: store the mem pointers
+  //      and release them at finalization section
+  //      this must be thread safe, so allocating additional NsObject
+  //      that can be used with objc_sync is recommended
+  Result := AllocMem(size);
+end;
+
+procedure ObjCFreeMem(p: Pointer);
+begin
+  //todo:
+  Freemem(p);
+end;
+
+
+function allocstr(const src: String): Pchar;
+begin
+  Result := ObjCAllocMem(length(src)+1);
+  if src <> '' then System.Move(src[1], Result^, length(src));
+end;
+
 
 const
   CLS_CLASS	 	      = $1;
@@ -198,53 +222,102 @@ var
   //class_addMethods : procedure (myClass: _Class1; methodList : Pobjc_method_list1); cdecl;
 
 type
-  TClassMethod1Reg = record
-    listpointer : Pobjc_method_list1;
-    itemscount  : Integer;
+
+  { TClassMethod1Reg }
+
+  TClassMethod1Reg = class(TObject)
+  private
+    methods : array of objc_method1;
+    count   : Integer;
+  public
+    procedure AddMethod(name:SEL; imp:IMP; types:pchar);
+    function AllocMethodList: Pobjc_method_list1;
   end;
-  PClassMethod1Reg = ^TClassMethod1Reg;
+  //PClassMethod1Reg = ^TClassMethod1Reg;
 
-function AllocMethodReg: PClassMethod1Reg;
-begin
-  Result := GetMem(sizeof (TClassMethod1Reg));
-  Result^.itemscount := 0;
-  Result^.listpointer := Pointer(-1);
-end;
+  TIVar1Reg = record
+    size      : Integer;
+    types     : String;
+    name      : String;
+    alignment : Uint8_t;
+  end;
 
-function ReleaseMethodReg(p : PClassMethod1Reg): PPobjc_method_list1;
-begin
-  Result := GetMem(sizeof(Pobjc_method_list1));
-  if p^.itemscount = 0
-    then Result^ := Pointer(-1)
-    else Result^ := p^.listpointer;
-  Freemem(p);
-end;
+  { TClassIVar1Reg }
 
-procedure AddMethodToList(var list: TClassMethod1Reg; name:SEL; imp:IMP; types:pchar);
-var
-  n : Integer;
-  sz : Integer;
-  nlist : Pobjc_method_list1;
+  TClassIVar1Reg = class(TObject)
+  private
+    ivarscount  : Integer;
+    ivars       : array of TIVar1Reg;
+  public
+    procedure AddIVar(name:pchar; size:size_t; alignment:uint8_t; types:pchar);
+    function AllocIVarsList(ivarOffset: Integer; out ivarssize: Integer): Pobjc_ivar_list1;
+  end;
+
+{ TClassMethod1Reg }
+
+procedure TClassMethod1Reg.AddMethod(name: SEL; imp: IMP; types: pchar);
 begin
-  if list.itemscount = 0 then begin
-    list.listpointer := GetMem(sizeof(objc_method_list1));
-    list.listpointer^.method_count := 1;
-    list.itemscount := 1;
-    n := 0;
-  end else begin
-    if list.listpointer^.method_count = list.itemscount then begin
-      list.itemscount := list.itemscount * 2;
-      sz := sizeof(objc_method_list1) + ((list.itemscount) - 1) * sizeof(objc_method1);
-      nlist := GetMem(sz);
-      sz := sizeof(objc_method_list1) + ((list.listpointer^.method_count) - 1) * sizeof(objc_method1);
-      System.Move(list.listpointer^, nlist^, sizeof(objc_method_list1) + ((list.itemscount) - 1) * sizeof(objc_method1));
+  if length(methods) = count then begin
+    if count = 0 then SetLength(methods, 4)
+    else begin
+      SetLength(methods, count * 2);
     end;
-    n := list.listpointer^.method_count;
-    inc(list.listpointer^.method_count);
   end;
-  list.listpointer^.method_list1[n].method_types := types;
-  list.listpointer^.method_list1[n].method_imp := IMP1(imp);
-  list.listpointer^.method_list1[n].method_name := SEL1(name);
+  methods[count].method_imp := IMP1(imp);
+  methods[count].method_types := allocstr(types);
+  methods[count].method_name := name;
+  inc(count);
+end;
+
+function TClassMethod1Reg.AllocMethodList: Pobjc_method_list1;
+var
+  i : Integer;
+begin
+  if count = 0 then Result := nil
+  else begin
+    Result := ObjCAllocMem( sizeof(objc_method_list1) + (count-1)*sizeof(objc_method1) );
+    Pobjc_method_list1(Result)^.method_count := count;
+    for i := 0 to count - 1 do begin
+      Pobjc_method_list1(Result)^.method_list1[i].method_name := methods[i].method_name;
+      Pobjc_method_list1(Result)^.method_list1[i].method_types := methods[i].method_types;
+      Pobjc_method_list1(Result)^.method_list1[i].method_imp := methods[i].method_imp;
+    end;
+  end;
+end;
+
+procedure TClassIVar1Reg.AddIVar(name: pchar; size: size_t; alignment: uint8_t;
+  types: pchar);
+begin
+  if ivarscount = length(ivars) then begin
+    if ivarscount = 0 then SetLength(ivars, 4)
+    else setLength(ivars, ivarscount * 2);
+  end;
+  ivars[ivarscount].name := name;
+  ivars[ivarscount].size := size;
+  ivars[ivarscount].types := types;
+  ivars[ivarscount].alignment := alignment;
+  inc(ivarscount);
+end;
+
+function TClassIVar1Reg.AllocIVarsList(ivarOffset: Integer; out ivarssize: Integer): Pobjc_ivar_list1;
+var
+  i   : Integer;
+
+begin
+  if ivarscount = 0 then begin
+    Result := nil;
+    ivarssize := 0;
+  end else begin
+    ivarssize := 0;
+    Result := ObjCAllocMem( sizeof(objc_ivar_list1) + (ivarscount-1)*sizeof(objc_ivar1) );
+    Result^.ivar_count := ivarscount;
+    for i := 0 to ivarscount - 1 do begin
+      Result^.ivar_list[i].ivar_name := allocstr(ivars[i].name);
+      Result^.ivar_list[i].ivar_offset := ivarOffset + ivarssize;
+      Result^.ivar_list[i].ivar_type := allocstr(ivars[i].name);
+      inc(ivarssize, ivars[i].size);
+    end;
+  end;
 end;
 
 function object_getClass10(obj:id): _Class; cdecl;
@@ -341,7 +414,7 @@ begin
     root_class := root_class^.super_class;
 
   // Allocate space for the class and its metaclass
-  new_class := AllocMem(2 * SizeOf(objc_class1));
+  new_class := ObjCAllocMem(2 * SizeOf(objc_class1));
   meta_class := @new_class[1];
 
   // setup class
@@ -354,14 +427,14 @@ begin
   // to share this copy of the name, but this is not a requirement
   // imposed by the runtime.
   namelen := strlen(name);
-  new_class^.name := AllocMem(namelen + 1);
+  new_class^.name := ObjCAllocMem(namelen + 1);
   Move(name^, new_class^.name^, namelen);
   meta_class^.name := new_class^.name;
 
   // Allocate empty method lists.
   // We can add methods later.
-  new_class^.methodLists := PPObjc_method_list1(AllocMethodReg); //AllocMem ( SizeOf(TClassMethod1Reg)) ;// SizeOf(Pobjc_method_list1));
-  meta_class^.methodLists := PPObjc_method_list1(AllocMethodReg);
+  new_class^.methodLists := Pointer(TClassMethod1Reg.Create); // PPObjc_method_list1(AllocMethodReg); //AllocMem ( SizeOf(TClassMethod1Reg)) ;// SizeOf(Pobjc_method_list1));
+  meta_class^.methodLists := Pointer(TClassMethod1Reg.Create); //PPObjc_method_list1(AllocMethodReg);
 
   // Connect the class definition to the class hierarchy:
   // Connect the class to the superclass.
@@ -374,6 +447,7 @@ begin
   // Set the sizes of the class and the metaclass.
   new_class^.instance_size := super^.instance_size;
   meta_class^.instance_size := meta_class^.super_class^.instance_size;
+  new_class^.ivars := Pointer(TClassIVar1Reg.Create);
 
   Result := new_class;
 end;
@@ -382,15 +456,46 @@ procedure objc_registerClassPair10(aClass:_Class); cdecl;
 var
   meta_class : _Class1;
   new_class  : _Class1;
+
+  MethodReg : TClassMethod1Reg;
+
+  iVarReg   : TClassIVar1Reg;
+  ivarslist : Pobjc_ivar_list1;
+  sz        : Integer;
+
+  procedure RegisterMethodList(reg: TClassMethod1Reg; cls1: _Class1);
+  var
+    mtdlist   : Pobjc_method_list1;
+  begin
+    if not Assigned(reg) then Exit;
+    cls1^.methodLists := ObjCAllocMem(sizeof(Pobjc_method_list1));
+    mtdList := reg.AllocMethodList;
+    if not Assigned(mtdlist)
+      then cls1^.methodLists^ := Pointer(-1)
+      else cls1^.methodLists^ := mtdlist;
+  end;
+
 begin
   new_class := _Class1(aClass);
-  // Finally, register the class with the runtime.
-  new_class^.methodLists := ReleaseMethodReg(PClassMethod1Reg(new_class^.methodLists));
   meta_class := _Class1(new_Class)^.isa;
-  meta_class^.methodLists := ReleaseMethodReg(PClassMethod1Reg(meta_class^.methodLists));
+  // Finally, register the class with the runtime.
 
-  if new_class <> nil then
-    objc_addClass(new_class);
+  MethodReg := TClassMethod1Reg(new_class^.methodLists);
+  RegisterMethodList(MethodReg, new_class);
+  MethodReg.Free;
+
+  MethodReg := TClassMethod1Reg(meta_class^.methodLists);
+  RegisterMethodList(MethodReg, meta_class);
+  MethodReg.Free;
+
+  iVarReg := TClassIVar1Reg(new_class^.ivars);
+  ivarslist := iVarReg.AllocIVarsList(new_class^.instance_size, sz);
+  new_class^.ivars := ivarslist;
+  inc(new_class^.instance_size, sz);
+  iVarReg.Free;
+
+
+  if new_class <> nil then objc_addClass(new_class);
 end;
 
 function objc_duplicateClass10(original:_Class; name:pchar; extraBytes:size_t):_Class; cdecl;
@@ -403,26 +508,27 @@ begin
 
 end;
 
-function class_addMethod10(cls:_Class; name:SEL; imp:IMP; types:pchar):BOOL; cdecl;
-var
-  //list  : Pobjc_method_list1;
-  reg   : PClassMethod1Reg;
+function class_addMethod10(cls:_Class; name:SEL; _imp:IMP; types:pchar):BOOL; cdecl;
 begin
-  reg := PClassMethod1Reg(_Class1(cls)^.methodLists);
-  AddMethodToList( reg^,  name, imp, types);
-
-{  list := GetMem(sizeof(objc_method_list1));
-  list^.method_count := 1;
-  list^.method_list1[0].method_imp := IMP1(imp);
-  list^.method_list1[0].method_name := SEL1(name);
-  list^.method_list1[0].method_types := types;
-  class_addMethods(cls, @list);}
+  if not Assigned(cls) or not Assigned(name) or not Assigned(_imp) or not Assigned(types) then begin
+    Result := false;
+    Exit;
+  end;
+  TClassMethod1Reg(_Class1(cls)^.methodLists).AddMethod(name, _imp, types);
   Result := true;
 end;
 
 function class_addIvar10(cls:_Class; name:pchar; size:size_t; alignment:uint8_t; types:pchar):BOOL; cdecl;
+var
+  cls1 : _Class1;
 begin
-  Result := false;
+  if (alignment <> 1) or (class_isMetaClass10(cls)) then begin
+    Result := false;
+    Exit;
+  end;
+  cls1 := _Class1(cls);
+  TClassIVar1Reg(cls1^.ivars).AddIVar(name, size, alignment, types);
+  Result := true;
 end;
 
 function class_addProtocol10(cls:_Class; protocol:pProtocol):BOOL; cdecl;
@@ -670,17 +776,8 @@ begin
 
 
   //Messaging
-  //The following functions are unchanged:
-  Pointer(objc_msgSend) := GetProcedureAddress(hnd, 'objc_msgSend');
-  Pointer(objc_msgSend_stret) := GetProcedureAddress(hnd, 'objc_msgSend_stret');
-  Pointer(objc_msgSendSuper) := GetProcedureAddress(hnd, 'objc_msgSendSuper');
-  Pointer(objc_msgSendSuper_stret) := GetProcedureAddress(hnd, 'objc_msgSendSuper_stret');
+  LoadDefaultObjCMessaging(hnd);
 
-  {$ifndef CPUPOWERPC} // arm also uses objc_msgSend_fpret ?
-  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend_fpret');
-  {$else}
-  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend');
-  {$endif}
 
   //The following functions are removed:objc_msgSendv	Given an argument list, send a message with a simple return value.
   //objc_msgSendv_stret	Given an argument list, send a message with a data-structure return value.

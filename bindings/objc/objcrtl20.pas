@@ -145,16 +145,8 @@ begin
   Pointer(objc_setEnumerationMutationHandler) := GetProcedureAddress(hnd, 'objc_setEnumerationMutationHandler');
   Pointer(objc_setForwardHandler) := GetProcedureAddress(hnd, 'objc_setForwardHandler');
 
-  Pointer(objc_msgSend) := GetProcedureAddress(hnd, 'objc_msgSend');
-  Pointer(objc_msgSendSuper) := GetProcedureAddress(hnd, 'objc_msgSendSuper');
-  Pointer(objc_msgSend_stret) := GetProcedureAddress(hnd, 'objc_msgSend_stret');
-  Pointer(objc_msgSendSuper_stret) := GetProcedureAddress(hnd, 'objc_msgSendSuper_stret');
-
-  {$ifndef CPUPOWERPC} // arm also uses objc_msgSend_fpret?
-  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend_fpret');
-  {$else}
-  Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend');
-  {$endif}
+  //Messaging
+  LoadDefaultObjCMessaging(hnd);
 
   Pointer(method_invoke) := GetProcedureAddress(hnd, 'method_invoke');
   Pointer(method_invoke_stret) := GetProcedureAddress(hnd, 'method_invoke_stret');
