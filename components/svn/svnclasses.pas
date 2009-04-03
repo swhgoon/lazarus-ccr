@@ -34,7 +34,7 @@ unit SvnClasses;
 interface
 
 uses
-  Classes, SysUtils, strutils,
+  Classes, SysUtils, strutils, dateutils,
   contnrs,
   DOM, XMLRead,
   SvnCommand;
@@ -162,6 +162,7 @@ type
     FMessage: string;
     FRevision: integer;
     function GetCommonPath: string;
+    function GetDateTime: TDateTime;
     function GetDisplayDate: string;
     function GetLogPath(index: integer): TLogPath;
     function GetLogPathCount: integer;
@@ -174,6 +175,7 @@ type
     property Author: string read FAuthor write FAuthor;
     property CommonPath: string read GetCommonPath;
     property Date: string read  FDate write FDate;
+    property DateTime: TDateTime read GetDateTime;
     property DisplayDate: string read GetDisplayDate;
     property Message: string read FMessage write FMessage;
     property Path[index: integer] :TLogPath read GetLogPath;
@@ -548,6 +550,11 @@ begin
   end;
 end;
 
+function TLogEntry.GetDateTime: TDateTime;
+begin
+  Result := ScanDateTime('yyyy-mm-dd"T"hh:nn:ss.zzz',FDate);
+end;
+
 function TLogEntry.GetDisplayDate: string;
 begin
   Result := Copy(FDate, 1, 10) + ' ' + Copy(FDate,12,8);
@@ -696,7 +703,6 @@ begin
   Lines := TStringList.Create;
   try
     Lines.LoadFromStream(s);
-    //writeln(Lines.Text);
     i := 0;
     while (i<Lines.Count) do begin
       Line := Lines[i];

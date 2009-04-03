@@ -5,7 +5,7 @@ unit TestSvnClasses;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry,
+  Classes, SysUtils, dateutils, fpcunit, testregistry,
   svnclasses;
 
 type
@@ -116,6 +116,8 @@ begin
       '2007-02-20T10:57:42.928052Z', LogEntry.Date);
     AssertEquals('Wrong log display date',
       '2007-02-20 10:57:42', LogEntry.DisplayDate);
+    AssertEquals('Wrong log datetime',
+      EncodeDateTime(2007,2,20,10,57,42,928), LogEntry.DateTime);
     AssertEquals('Wrong log message',
       'TAChart: added icon, added to make bigide', LogEntry.Message);
   finally
