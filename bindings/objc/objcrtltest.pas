@@ -23,6 +23,13 @@ uses
 {.$linkframework AppKit}
 {.$linkframework Foundation}
 
+type
+  PSmallRecord = ^TSmallRecord;
+  TSmallRecord = packed record
+    a,b,c: byte;
+    //d: byte;
+  end;
+
 const
   newClassName   = 'NSMyObject';
   overrideMethod = 'init';
@@ -39,6 +46,9 @@ const
 
   newMethod4 = 'getFloat';
   newMethod4Enc = 'f@:';
+
+  newMethod5 = 'getSmallRecord';
+  newMethod5Enc = '{TSmallRecord=ccc}@:';
 
 
 function imp_init(self: id; _cmd: SEL): id; cdecl;
@@ -69,6 +79,14 @@ begin
   Result := 3.125;
 end;
 
+procedure imp_getSmallRec(Result: PSmallRecord; seld: id; _cmd: SEL); cdecl;
+begin
+  Result^.a := 121;
+  Result^.b := 68;
+  Result^.c := 22;
+  //Result.d := 5;
+end;
+
 
 procedure RegisterSubclass(NewClassName: PChar);
 var
@@ -81,12 +99,15 @@ begin
        class_addMethod(cl, selector(newMethod2), @imp_newMethod2, newMethod2Enc) and
        class_addMethod(cl, selector(newMethod3), @imp_newMethod3, newMethod3Enc) and
        class_addMethod(cl, selector(newMethod4), @imp_newMethod4, newMethod4Enc);
+       class_addMethod(cl, selector(newMethod5), @imp_getSmallRec, newMethod5Enc);
   if not b then writeln('failed to add/override some method(s)');
   objc_registerClassPair(cl);
 end;
 
 var
-  obj    : id;
+  obj   : id;
+  stret : TSmallRecord;
+  buf   : array [0..255] of byte;
 begin
   //  if InitializeObjcRtl20(DefaultObjCLibName) then // should be used of OSX 10.5 and iPhoneOS
 
@@ -109,8 +130,16 @@ begin
   writeln('get double = ', objc_msgSend_fpret(obj, selector(newMethod3), []));
   writeln('get float  = ', objc_msgSend_fpret(obj, selector(newMethod4), []));
 
+  writeln('sizeof(TSmallRecord) = ', sizeof(TSmallRecord));
+  objc_msgSend_stret(@stret, obj, selector(newMethod5), []);
+  writeln('stret.a = ', stret.a);
+  writeln('stret.b = ', stret.b);
+  writeln('stret.c = ', stret.c);
+
   release( obj );
+
   writeln('test successfully complete');
+
 end.
 
 
