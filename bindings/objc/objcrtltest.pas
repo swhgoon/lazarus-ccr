@@ -117,13 +117,15 @@ var
   varobj  : TObject;
   p     : Pointer;
 
+{$WARNINGS OFF} // cdecl'ared functions have no high parameter
 type
   TgetSmallRecord = function (obj: id; cmd: Sel; arg: array of const): TSmallRecord; cdecl;
+{$WARNINGS ON}
 
 begin
   //  if InitializeObjcRtl20(DefaultObjCLibName) then // should be used of OSX 10.5 and iPhoneOS
 
-  if InitializeObjcRtl20(DefaultObjCLibName) then // should be used of OSX 10.4 and lower
+  if InitializeObjcRtl10(DefaultObjCLibName) then // should be used of OSX 10.4 and lower
     writeln('Objective-C runtime initialized successfuly')
   else begin
     writeln('failed to initialize Objective-C runtime');
@@ -138,7 +140,15 @@ begin
   objc_msgSend(obj, selector(overrideMethod), []);}
 
   writeln('sizeof(TSmallRecord) = ', sizeof(TSmallRecord));
-  stret := TgetSmallRecord(objc_msgSend_stretreg)(obj, selector(newMethod5), []);
+
+  // this must be resolved at code-time (or compiler-time), not run-time
+  {$WARNINGS OFF} // unreachable code
+  if sizeof(TSmallRecord) in [1,2,4,8] then
+    stret := TgetSmallRecord(objc_msgSend_stretreg)(obj, selector(newMethod5), [])
+  else
+    stret := TgetSmallRecord(objc_msgSend_stret)(obj, selector(newMethod5), []);
+  {$WARNINGS ON}
+
   //writeln('p = ', Integer(p));
 
   //stret :=
@@ -146,8 +156,6 @@ begin
   writeln('stret.b = ', stret.b);
   writeln('stret.c = ', stret.c);
   writeln('stret.d = ', stret.d);
-
-  //PInteger(@stret)^ := Integer(objc_msgSend(obj, selector(newMethod5), []));
 
   objc_msgSend(obj, selector(newMethod1), []);
   objc_msgSend(obj, selector(newMethod2), [5, 4]);
