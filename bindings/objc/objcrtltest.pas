@@ -24,11 +24,16 @@ uses
 {.$linkframework Foundation}
 
 type
+  TSubStructure = packed record
+    a,b,c,d: byte;
+  end;
+
   PSmallRecord = ^TSmallRecord;
   TSmallRecord = packed record
     a,b,c: byte;
     //d : Integer;
     d: byte;
+    sub: TSubStructure;
   end;
 
 const
@@ -115,7 +120,6 @@ var
 
   stret   : TSmallRecord;
   varobj  : TObject;
-  p     : Pointer;
 
 {$WARNINGS OFF} // cdecl'ared functions have no high parameter
 type
@@ -162,7 +166,22 @@ begin
 
   writeln('get double = ', objc_msgSend_fpret(obj, selector(newMethod3), []));
   writeln('get float  = ', objc_msgSend_fpret(obj, selector(newMethod4), []));
-  release( obj );
+
+  objvar := class_getInstanceVariable( object_getClass(obj), varName);
+  varobj := TObject.Create;
+
+  writeln('var Value = ', Integer(object_getIvar(obj, objvar)));
+  writeln('setting new Value = ', Integer(varobj));
+  object_setIvar(obj, objvar, varobj);
+  writeln('var Value = ', Integer(object_getIvar(obj, objvar)));
+
+  writeln('var offset = ', Integer(ivar_getOffset(objvar)));
+  writeln('var name   = ', ivar_getName(objvar));
+  writeln('var type   = ', ivar_getTypeEncoding(objvar));
+
+  release(obj);
+
+  varobj.Free;
 
   writeln('test successfully complete');
 end.

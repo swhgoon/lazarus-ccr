@@ -398,6 +398,7 @@ begin
   Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend');
   Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSend_streg');
   {$endif}
+  Result := true;
 end;
 
 initialization

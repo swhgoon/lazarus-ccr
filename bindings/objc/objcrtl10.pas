@@ -100,7 +100,7 @@ type
   	isa: _Class1;
   end;
 
-  // Pid1 = ^id1;
+  Pid1 = ^id;
   // id1 = Pobjc_object1;
 
   Pobjc_selector1 = Pointer;
@@ -151,9 +151,9 @@ type
   //end;
 
   {* Instance Variable Template}
-  //Pobjc_ivar1 = ^objc_ivar1;
+  Pobjc_ivar1 = ^objc_ivar1;
 
-  // Ivar1 = Pobjc_ivar1;
+  Ivar1 = Pobjc_ivar1;
 
   objc_ivar1 = packed record
   	ivar_name   : PChar;
@@ -302,7 +302,6 @@ end;
 function TClassIVar1Reg.AllocIVarsList(ivarOffset: Integer; out ivarssize: Integer): Pobjc_ivar_list1;
 var
   i   : Integer;
-
 begin
   if ivarscount = 0 then begin
     Result := nil;
@@ -314,7 +313,7 @@ begin
     for i := 0 to ivarscount - 1 do begin
       Result^.ivar_list[i].ivar_name := allocstr(ivars[i].name);
       Result^.ivar_list[i].ivar_offset := ivarOffset + ivarssize;
-      Result^.ivar_list[i].ivar_type := allocstr(ivars[i].name);
+      Result^.ivar_list[i].ivar_type := allocstr(ivars[i].types);
       inc(ivarssize, ivars[i].size);
     end;
   end;
@@ -335,14 +334,17 @@ begin
   Pobjc_object1(obj)^.isa := _Class1(cls);
 end;
 
-function object_getIvar10(obj:id; ivar:Ivar):id; cdecl;
+function object_getIvar10(obj:id; _ivar:Ivar):id; cdecl;
 begin
-  Result := nil ;
+  Result := nil;
+  if not Assigned(obj) or not Assigned(_ivar) then Exit;
+  Result := Pid1(PtrUInt(obj) + ivar_getOffset(_ivar))^;
 end;
 
-procedure object_setIvar10(obj:id; ivar:Ivar; value:id); cdecl;
+procedure object_setIvar10(obj:id; _ivar:Ivar; value:id); cdecl;
 begin
- //???
+  if not Assigned(obj) or not Assigned(_ivar) then Exit;
+  Pid1(PtrUInt(obj) + ivar_getOffset(_ivar))^ := value;
 end;
 
 function class_getName10(cls:_Class):PChar; cdecl;
@@ -362,36 +364,43 @@ end;
 
 function class_copyMethodList10(cls:_Class; outCount: pdword):PMethod; cdecl;
 begin
+  //todo:
   Result := nil; //todo: ??
 end;
 
 function class_getMethodImplementation10(cls:_Class; name:SEL):IMP; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 function class_respondsToSelector10(cls:_Class; sel:SEL):BOOL; cdecl;
 begin
+  //todo:
   Result := false;
 end;
 
 function class_conformsToProtocol10(cls:_Class; var protocol: Protocol):BOOL; cdecl;
 begin
+  //todo:
   Result := false;
 end;
 
 function class_copyProtocolList10(cls:_Class; var outCount: dword):PArrayPProtocol; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 function class_copyIvarList10(cls:_Class; outCount:pdword):PIvar; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 function class_getMethodImplementation_stret10(cls:_Class; name:SEL):IMP; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
@@ -500,12 +509,13 @@ end;
 
 function objc_duplicateClass10(original:_Class; name:pchar; extraBytes:size_t):_Class; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 procedure objc_disposeClassPair10(cls:_Class); cdecl;
 begin
-
+  //todo:
 end;
 
 function class_addMethod10(cls:_Class; name:SEL; _imp:IMP; types:pchar):BOOL; cdecl;
@@ -533,82 +543,74 @@ end;
 
 function class_addProtocol10(cls:_Class; protocol:pProtocol):BOOL; cdecl;
 begin
+  //todo:
   Result := false;
 end;
 
 
 function method_getName10(m:Method):SEL; cdecl;
 begin
-  Result := nil;
+  Result := Method1(m)^.method_name;
 end;
 
 function method_getImplementation10(m:Method):IMP; cdecl;
 begin
-  Result := nil;
+  Result := IMP(Method1(m)^.method_imp);
 end;
 
 function method_getTypeEncoding10(m:Method):Pchar; cdecl;
 begin
-  Result := nil;
+  Result := IMP(Method1(m)^.method_types);
 end;
 
 function method_copyReturnType10(m:Method):Pchar; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 function method_copyArgumentType10(m:Method; index:dword):Pchar; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
-function method_setImplementation10(m:Method; imp:IMP):IMP; cdecl;
+function method_setImplementation10(m:Method; _imp:IMP):IMP; cdecl;
 begin
-  Result := nil;
-end;
-
-function sel_getName10(sel: SEL ): PChar; cdecl;
-begin
-  Result := nil;
-end;
-
-function sel_registerName10(str: PChar): SEL; cdecl;
-begin
-  Result := nil;
-end;
-
-function sel_getUid10(const str: PChar): SEL; cdecl;
-begin
-  Result := nil;
+  //todo:! ???? check!
+  Result := IMP(Method1(m)^.method_imp);
+  Method1(m)^.method_imp := IMP1(_imp);
 end;
 
 function ivar_getName10(v:Ivar):Pchar; cdecl;
 begin
-  Result := nil;
+  Result := IVar1(v)^.ivar_name;
 end;
 
 function ivar_getTypeEncoding10(v:Ivar):Pchar; cdecl;
 begin
-  Result := nil;
+  Result := IVar1(v)^.ivar_type;
 end;
 
 function ivar_getOffset10(v:Ivar):ptrdiff_t; cdecl;
 begin
-  Result := nil;
+  Result := ptrdiff_t(IVar1(v)^.ivar_offset);
 end;
 
 function sel_isEqual10(lhs:SEL; rhs:SEL):BOOL; cdecl;
 begin
-  Result := false;
+  Result := lhs = rhs; //???
 end;
 
 function objc_getProtocol10(name:pchar): PProtocol; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
 function objc_copyProtocolList10(outCount:pdword):PArrayPProtocol; cdecl;
 begin
+  //todo:
   Result := nil;
 end;
 
