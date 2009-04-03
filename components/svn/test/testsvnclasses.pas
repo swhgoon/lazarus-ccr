@@ -17,6 +17,7 @@ type
     function GetInfoFileName: string;
     function GetLogFileName: string;
     function GetPropFileName: string;
+    function GetStatusFileName: string;
   published
     procedure TestHookUp;
     procedure TestLoadInfo;
@@ -29,9 +30,15 @@ type
     procedure TestLogFiles;
     procedure TestPropList;
     procedure TestPropListLoadForFiles;
+    procedure TestStatus;
   end;
 
 implementation
+
+function TTestSvnClasses.GetStatusFileName: string;
+begin
+  Result := ExtractFilePath(ParamStr(0)) + 'status.xml';
+end;
 
 function TTestSvnClasses.GetInfoFileName: string;
 begin
@@ -292,6 +299,31 @@ begin
     FileNames.Free;
     SvnPropInfo.Free;
   end;
+end;
+
+procedure TTestSvnClasses.TestStatus;
+var
+  SvnStatus: TSvnStatus;
+
+  procedure AssertTargetPath(i: integer; const ATargetPath: string; AItemsCount: Integer);
+  var
+    List: TSvnStatusList;
+  begin
+    List := SvnStatus.Lists[i];
+    AssertEquals('Wrong target path', ATargetPath, List.TargetPath);
+    AssertEquals('Wrong number of list items', AItemsCount, AItemsCount);
+  end;
+begin
+  SvnStatus := TSvnStatus.Create;
+  try
+    SvnStatus.LoadFromFile(GetStatusFileName);
+    AssertEquals('Wrong number of status lists', 2, SvnStatus.ListsCount);
+    AssertTargetPath(0, 'DevWork', 25);
+    AssertTargetPath(1, 'VersionControl', 4);
+  finally
+    SvnStatus.Free;
+  end;
+
 end;
 
 initialization
