@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="..\..\"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
@@ -17,7 +17,8 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
-        <CustomOptions Value="-dINDY_10"/>
+        <CustomOptions Value="-dINDY_10
+"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

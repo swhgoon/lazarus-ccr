@@ -2,11 +2,13 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
@@ -141,6 +143,9 @@
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="wst_test_suite_gui"/>
+    </Target>
     <SearchPaths>
       <IncludeFiles Value="..\..\"/>
       <OtherUnitFiles Value="..\..\;..\..\ws_helper\;..\..\wst_rtti_filter\;..\..\fcl-json\src\"/>
@@ -169,7 +174,7 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-FE./
+      <CustomOptions Value="
 "/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

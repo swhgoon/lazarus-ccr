@@ -176,6 +176,7 @@ procedure TWsdlGenerator.GenerateServiceMessages(
         tmpNode : TDOMElement;
         ns_shortName, s : string;
         typItm : TPasType;
+        typeHelper : IXsdSpecialTypeHelper;
       begin
         tmpNode := CreateElement(s_part,AMsgNode,Document);
         tmpNode.SetAttribute(s_name,ASymTable.GetExternalName(APrm));
@@ -187,6 +188,10 @@ procedure TWsdlGenerator.GenerateServiceMessages(
         ns_shortName := GetNameSpaceShortName(s,Document,nil);
         s := Format('%s:%s',[ns_shortName,ASymTable.GetExternalName(typItm)]);
         tmpNode.SetAttribute(s_type,s);
+        if typItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+          if GetXsdTypeHandlerRegistry().FindHelper(typItm,typeHelper) then
+            typeHelper.HandleTypeUsage(tmpNode,ARootNode);
+        end;
       end;
 
       procedure GenerateResultParam(APrm : TPasResultElement; AMsgNode : TDOMElement);
@@ -194,6 +199,7 @@ procedure TWsdlGenerator.GenerateServiceMessages(
         tmpNode : TDOMElement;
         ns_shortName, s : string;
         typItm : TPasType;
+        typeHelper : IXsdSpecialTypeHelper;
       begin
         tmpNode := CreateElement(s_part,AMsgNode,Document);
         tmpNode.SetAttribute(s_name,ASymTable.GetExternalName(APrm));
@@ -205,6 +211,10 @@ procedure TWsdlGenerator.GenerateServiceMessages(
         ns_shortName := GetNameSpaceShortName(s,Document,nil);
         s := Format('%s:%s',[ns_shortName,ASymTable.GetExternalName(typItm)]);
         tmpNode.SetAttribute(s_type,s);
+        if typItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+          if GetXsdTypeHandlerRegistry().FindHelper(typItm,typeHelper) then
+            typeHelper.HandleTypeUsage(tmpNode,ARootNode);
+        end;
       end;
 
     var

@@ -175,6 +175,7 @@ type
     procedure signature_return();
     procedure xsd_not_declared_at_top_node();
     procedure xsd_not_declared_at_top_node_2();
+    procedure message_parts_type_hint();
   end;
   
 implementation
@@ -2197,6 +2198,55 @@ end;
 procedure TTest_WsdlParser.xsd_not_declared_at_top_node_2();
 begin
   ParseDoc('xsd_not_declared_at_top_node_2').Free();
+end;
+
+procedure TTest_WsdlParser.message_parts_type_hint();
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('echo_service');
+  try
+    elt := tr.FindElement('IEchoService');
+    CheckNotNull(elt,'IEchoService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('EchoWideString',intf);
+      CheckNotNull(mth,'EchoWideString not found');
+      CheckEquals('EchoWideString',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('WideString'), LowerCase(res.ResultType.Name),'Result');
+      CheckEquals(1, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AValue'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('WideString'), LowerCase(arg.ArgType.Name),'Parameter');
+  finally
+    tr.Free();
+  end;
 end;
 
 function TTest_WsdlParser.LoadComplexType_Class_default_values() : TwstPasTreeContainer;

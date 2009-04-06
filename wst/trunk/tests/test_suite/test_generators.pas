@@ -20,7 +20,7 @@ uses
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
-  pastree, pascal_parser_intf, xsd_generator;
+  pastree, pascal_parser_intf, xsd_generator, wsdl_generator;
 
 type
 
@@ -54,6 +54,16 @@ type
   TTest_XsdGenerator = class(TTest_CustomXsdGenerator)
   protected
     function CreateGenerator(const ADoc : TXMLDocument) : IXsdGenerator;override;
+  end;
+
+  { TTest_WsdlGenerator }
+
+  TTest_WsdlGenerator = class(TTestCase)
+  protected
+    function CreateGenerator(const ADoc : TXMLDocument) : IGenerator;
+    function LoadXmlFromFilesList(const AFileName : string) : TXMLDocument;
+  published
+    procedure message_parts_type_hint();
   end;
 
 implementation
@@ -517,7 +527,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_unicodestring_property.xsd');
+    //WriteXMLFile(locDoc,'.\class_unicodestring_property.xsd');
     locExistDoc := LoadXmlFromFilesList('class_unicodestring_property.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -899,7 +909,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_ansichar_property.xsd');
+    //WriteXMLFile(locDoc,'.\class_ansichar_property.xsd');
     locExistDoc := LoadXmlFromFilesList('class_ansichar_property.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -960,7 +970,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,'.\class_widechar_property.xsd');
+    //WriteXMLFile(locDoc,'.\class_widechar_property.xsd');
     locExistDoc := LoadXmlFromFilesList('class_widechar_property.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
@@ -977,7 +987,82 @@ begin
   Result := TXsdGenerator.Create(ADoc) as IXsdGenerator;
 end;
 
+{ TTest_WsdlGenerator }
+
+function TTest_WsdlGenerator.CreateGenerator(const ADoc : TXMLDocument) : IGenerator;
+begin
+  Result := TWsdlGenerator.Create(ADoc) as IGenerator;
+end;
+
+function TTest_WsdlGenerator.LoadXmlFromFilesList(const AFileName : string) : TXMLDocument;
+begin
+  ReadXMLFile(Result,wstExpandLocalFileName(TestFilesPath + AFileName));
+end;
+
+procedure TTest_WsdlGenerator.message_parts_type_hint();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  cltyp : TPasClassType;
+
+  procedure AddMethod_EchoWideString();
+  var
+    p : TPasFunction;
+    pt : TPasFunctionType;
+    prmDef : TPasArgument;
+    prmTypeDef : TPasType;
+  begin
+    p := TPasFunction(tr.CreateElement(TPasFunction,'EchoWideString',cltyp,visDefault,'',0));
+    pt := tr.CreateFunctionType('','result',p,False,'',0);
+      pt.ResultEl.ResultType := tr.FindElementNS('WideString',s_xs) as TPasType;
+      pt.ResultEl.ResultType.AddRef();
+    p.ProcType := pt;
+
+    cltyp.Members.Add(p);
+    prmTypeDef := tr.FindElementNS('WideString',s_xs) as TPasType;
+    prmDef := TPasArgument(tr.CreateElement(TPasArgument,'AValue',pt,visDefault,'',0));
+    pt.Args.Add(prmDef);
+    prmDef.ArgType := prmTypeDef;
+    prmTypeDef.AddRef();
+    prmDef.Access := argConst;
+  end;
+
+var
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'echo_service',tr.Package,visDefault,'',0));
+    tr.Package.Modules.Add(mdl);
+    tr.RegisterExternalAlias(mdl,'uri:echo-service');
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasClassType(tr.CreateElement(TPasClassType,'IEchoService',mdl.InterfaceSection,visDefault,'',0));
+      cltyp.ObjKind := okInterface;
+      cltyp.InterfaceGUID := '{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}';
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      tr.AddBinding('IEchoServiceBinding',cltyp);
+      AddMethod_EchoWideString();
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXMLFile(locDoc,wstExpandLocalFileName('echo_service.wsdl'));
+    locExistDoc := LoadXmlFromFilesList('echo_service.wsdl');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
 initialization
-  RegisterTest('XSD generator',TTest_XsdGenerator.Suite);
+  RegisterTest('XSD-WSDL generator',TTest_XsdGenerator.Suite);
+  RegisterTest('XSD-WSDL generator',TTest_WsdlGenerator.Suite);
 
 end.

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<definitions name="uri:echo-service" 
+      xmlns="http://schemas.xmlsoap.org/wsdl/" 
+      xmlns:tns="uri:echo-service" 
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+      xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+      targetNamespace="uri:echo-service"
+      xmlns:wst="urn:wst_base">
+  <types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" 
+                xmlns:tns="uri:echo-service" 
+                targetNamespace="uri:echo-service"/>
+  </types>
+  <message name="EchoWideString">
+    <part name="AValue" type="xsd:string" wst:TypeHint="WideString"/>
+  </message>
+  <message name="EchoWideStringResponse">
+    <part name="result" type="xsd:string" wst:TypeHint="WideString"/>
+  </message>
+  <portType name="IEchoService">
+    <document>
+      <GUID value="{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}"/>
+    </document>
+    <operation name="EchoWideString">
+      <input message="tns:EchoWideString"/>
+      <output message="tns:EchoWideStringResponse"/>
+    </operation>
+  </portType>
+  <binding name="IEchoServiceBinding" type="tns:IEchoService">
+    <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="EchoWideString">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="uri:echo-service"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="uri:echo-service"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="IEchoService">
+    <port name="IEchoServicePort" binding="tns:IEchoServiceBinding">
+      <soap:address location=""/>
+    </port>
+  </service>
+</definitions>

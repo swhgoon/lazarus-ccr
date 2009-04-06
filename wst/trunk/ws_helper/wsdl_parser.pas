@@ -75,7 +75,7 @@ type
       const ASoapBindingStyle : string
     ) : TPasProcedure;
     function GetParser(const ANamespace : string) : IXsdPaser;
-    function ParseType(const AName : string) : TPasType;
+    function ParseType(const AName : string; const AHint : string = '') : TPasType;
     procedure ParseTypes();
   protected
     function GetXsShortNames() : TStrings;
@@ -449,11 +449,17 @@ function TWsdlParser.ParseOperation(
     if Assigned(Result) then
       Result := CreateCursorOn(Result,CreateWsdlNameFilter(s_part));
   end;
+
+  function ExtractTypeHint(AElement : TDOMNode) : string;
+  begin
+    if not wst_findCustomAttributeXsd(FXSShortNames,AElement,s_WST_typeHint,Result) then
+      Result := '';
+  end;
   
-  function GetDataType(const AName, ATypeOrElement : string):TPasType;
+  function GetDataType(const AName, ATypeOrElement : string; const ATypeHint : string = ''):TPasType;
   begin
     try
-      Result := ParseType(AName);
+      Result := ParseType(AName,ATypeHint);
     except
       on e : Exception do begin
         DoOnMessage(mtError, e.Message + ' ' + AName + ' ' + ATypeOrElement);
@@ -490,7 +496,7 @@ function TWsdlParser.ParseOperation(
           if ( crs <> nil ) then begin
             crs.Reset();
             while crs.MoveNext() do begin
-              tmpNode := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+              tmpNode := TDOMNodeRttiExposer(crs.GetCurrent()).InnerObject;
               if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then begin
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               end;
@@ -503,7 +509,7 @@ function TWsdlParser.ParseOperation(
               if not tmpCrs.MoveNext() then begin
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               end;
-              prmName := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
+              prmName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
               strBuffer := s_NODE_NAME + '=' + QuotedStr(s_element) + ' or ' + s_NODE_NAME + ' = ' + QuotedStr(s_type);
               tmpCrs := CreateCursorOn(
                           CreateAttributesCursor(tmpNode,cetRttiNode),
@@ -513,8 +519,8 @@ function TWsdlParser.ParseOperation(
               if not tmpCrs.MoveNext() then begin
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               end;
-              prmTypeName := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
-              prmTypeType := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeName;
+              prmTypeName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
+              prmTypeType := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeName;
               if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then begin
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               end;
@@ -534,7 +540,7 @@ function TWsdlParser.ParseOperation(
                 prmInternameName := '_' + prmInternameName;
               end;
               prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
-              prmTypeDef := GetDataType(prmTypeName,prmTypeType);
+              prmTypeDef := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
               prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
               tmpMthdType.Args.Add(prmDef);
               prmDef.ArgType := prmTypeDef;
@@ -610,7 +616,7 @@ function TWsdlParser.ParseOperation(
             prmDef := nil;
             crs.Reset();
             while crs.MoveNext() do begin
-              tmpNode := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+              tmpNode := TDOMNodeRttiExposer(crs.GetCurrent()).InnerObject;
               if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               strBuffer := s_NODE_NAME + '=' + QuotedStr(s_name);
@@ -627,8 +633,8 @@ function TWsdlParser.ParseOperation(
               tmpCrs.Reset();
               if not tmpCrs.MoveNext() then
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
-              prmTypeName := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue;
-              prmTypeType := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeName;
+              prmTypeName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
+              prmTypeType := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeName;
               if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then
                 raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
               if SameText(s_document,ASoapBindingStyle) and
@@ -650,7 +656,7 @@ function TWsdlParser.ParseOperation(
               if ( prmDef = nil ) then begin
                 prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
                 tmpMthdType.Args.Add(prmDef);
-                prmDef.ArgType := GetDataType(prmTypeName,prmTypeType);
+                prmDef.ArgType := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
                 prmDef.ArgType.AddRef();
                 prmDef.Access := argOut;
                 if prmHasInternameName then begin
@@ -662,7 +668,7 @@ function TWsdlParser.ParseOperation(
                 end else begin
                   prmInternameName := '_' + prmInternameName;
                   prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
-                  prmDef.ArgType := GetDataType(prmTypeName,prmTypeType);
+                  prmDef.ArgType := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
                   prmDef.ArgType.AddRef();
                   prmDef.Access := argOut;
                   tmpMthdType.Args.Add(prmDef);
@@ -1110,7 +1116,7 @@ begin
   end;
 end;
 
-function TWsdlParser.ParseType(const AName : string) : TPasType;
+function TWsdlParser.ParseType(const AName : string; const AHint : string) : TPasType;
 var
   localName, spaceShort, spaceLong : string;
   locPrs : IXsdPaser;
@@ -1119,7 +1125,11 @@ begin
   ExplodeQName(AName,localName,spaceShort);
   if ( FXSShortNames.IndexOf(spaceShort) >= 0 ) then begin
     xsdModule := SymbolTable.FindModule(s_xs);
-    Result := SymbolTable.FindElementInModule(localName,xsdModule) as TPasType;
+    Result := nil;
+    if not IsStrEmpty(AHint) then
+      Result := SymbolTable.FindElementInModule(AHint,xsdModule,[elkName]) as TPasType;
+    if ( Result = nil ) then
+      Result := SymbolTable.FindElementInModule(localName,xsdModule) as TPasType;
     if ( Result = nil ) then
       raise EXsdTypeNotFoundException.CreateFmt('Type not found : "%s".',[AName]);
   end else begin

@@ -2,11 +2,13 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
@@ -42,7 +44,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="uwsttypelibraryedit.lrs"/>
         <UnitName Value="uwsttypelibraryedit"/>
       </Unit1>
       <Unit2>
@@ -50,7 +51,6 @@
         <ComponentName Value="fAbout"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="uabout.lrs"/>
         <UnitName Value="uabout"/>
       </Unit2>
       <Unit3>
@@ -59,7 +59,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufenumedit.lrs"/>
         <UnitName Value="ufEnumedit"/>
       </Unit3>
       <Unit4>
@@ -83,7 +82,6 @@
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufclassedit.lrs"/>
         <UnitName Value="ufclassedit"/>
       </Unit7>
       <Unit8>
@@ -91,14 +89,12 @@
         <ComponentName Value="fPropEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufpropedit.lrs"/>
         <UnitName Value="ufpropedit"/>
       </Unit8>
       <Unit9>
         <Filename Value="uinterfaceedit.pas"/>
         <ComponentName Value="fInterfaceEdit"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="uinterfaceedit.lrs"/>
         <UnitName Value="uinterfaceedit"/>
       </Unit9>
       <Unit10>
@@ -106,7 +102,6 @@
         <ComponentName Value="DM"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <ResourceFilename Value="udm.lrs"/>
         <UnitName Value="udm"/>
       </Unit10>
       <Unit11>
@@ -123,7 +118,6 @@
         <Filename Value="uprocedit.pas"/>
         <ComponentName Value="fProcEdit"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="uprocedit.lrs"/>
         <UnitName Value="uprocedit"/>
       </Unit13>
       <Unit14>
@@ -135,21 +129,18 @@
         <Filename Value="uargedit.pas"/>
         <ComponentName Value="fArgEdit"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="uargedit.lrs"/>
         <UnitName Value="uargedit"/>
       </Unit15>
       <Unit16>
         <Filename Value="umoduleedit.pas"/>
         <ComponentName Value="fModuleEdit"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="umoduleedit.lrs"/>
         <UnitName Value="umoduleedit"/>
       </Unit16>
       <Unit17>
         <Filename Value="ubindingedit.pas"/>
         <ComponentName Value="fBindingEdit"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="ubindingedit.lrs"/>
         <UnitName Value="ubindingedit"/>
       </Unit17>
       <Unit18>
@@ -157,7 +148,6 @@
         <ComponentName Value="frmSaveOptions"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufrmsaveoption.lrs"/>
         <UnitName Value="ufrmsaveoption"/>
       </Unit18>
       <Unit19>
@@ -165,7 +155,6 @@
         <ComponentName Value="fArrayEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufarrayedit.lrs"/>
         <UnitName Value="ufarrayedit"/>
       </Unit19>
       <Unit20>
@@ -173,7 +162,6 @@
         <ComponentName Value="fTypeAliasEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="uftypealiasedit.lrs"/>
         <UnitName Value="uftypealiasedit"/>
       </Unit20>
       <Unit21>
@@ -181,7 +169,6 @@
         <ComponentName Value="fRecordEdit"/>
         <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="ufrecordedit.lrs"/>
         <UnitName Value="ufrecordedit"/>
       </Unit21>
       <Unit22>
