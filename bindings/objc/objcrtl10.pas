@@ -415,7 +415,19 @@ var
   namelen     : Integer;
 begin
   Result := nil;
-  if (superclass = nil) or (_Class1(objc_lookUpClass(name)) <> nil) then Exit;
+  if (superclass = nil) or (_Class1(objc_lookUpClass(name)) <> nil) then begin
+    {$ifdef DEBUG}
+    if not Assigned(superclass) then
+      writeln('no super class!')
+    else begin
+      if Assigned(objc_lookUpClass(name)) then
+        writeln('the class ', name, ' already exists')
+      else
+        writeln('this situation is impossible!');
+    end;
+    {$endif}
+    Exit;
+  end;
   super := _Class1(superclass);
 
   // Find the root class
