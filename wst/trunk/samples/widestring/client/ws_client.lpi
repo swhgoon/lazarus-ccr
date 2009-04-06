@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=".exe"/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="wst_synapse"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="wst_core"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="10">
+      <Unit0>
+        <Filename Value="ws_client.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ws_client"/>
+        <CursorPos X="13" Y="8"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="echo_service_proxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="echo_service_proxy"/>
+        <CursorPos X="3" Y="35"/>
+        <TopLine Value="31"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="echo_service.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="echo_service"/>
+        <CursorPos X="3" Y="25"/>
+        <TopLine Value="14"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <UnitName Value="synapse_tcp_protocol"/>
+        <CursorPos X="1" Y="74"/>
+        <TopLine Value="69"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\..\soap_formatter.pas"/>
+        <UnitName Value="soap_formatter"/>
+        <CursorPos X="1" Y="235"/>
+        <TopLine Value="224"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <UnitName Value="service_intf"/>
+        <CursorPos X="1" Y="221"/>
+        <TopLine Value="210"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="E:\lazarus26r2.2.2.2\fpc\2.2.2\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <CursorPos X="4" Y="210"/>
+        <TopLine Value="198"/>
+        <UsageCount Value="9"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="E:\lazarus26r2.2.2.2\fpc\2.2.2\source\rtl\win32\system.pp"/>
+        <UnitName Value="System"/>
+        <CursorPos X="25" Y="41"/>
+        <TopLine Value="32"/>
+        <UsageCount Value="9"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="E:\lazarus26r2.2.2.2\fpc\2.2.2\source\rtl\inc\wstringh.inc"/>
+        <CursorPos X="20" Y="87"/>
+        <TopLine Value="74"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="E:\lazarus26r2.2.2.2\fpc\2.2.2\source\rtl\inc\systemh.inc"/>
+        <CursorPos X="3" Y="234"/>
+        <TopLine Value="223"/>
+        <UsageCount Value="9"/>
+      </Unit9>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <Caret Line="220" Column="1" TopLine="209"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <Caret Line="436" Column="1" TopLine="425"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <Caret Line="437" Column="1" TopLine="426"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <Caret Line="438" Column="1" TopLine="427"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\..\..\service_intf.pas"/>
+        <Caret Line="221" Column="1" TopLine="210"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\..\..\soap_formatter.pas"/>
+        <Caret Line="225" Column="13" TopLine="206"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\..\..\soap_formatter.pas"/>
+        <Caret Line="220" Column="1" TopLine="209"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <Caret Line="106" Column="1" TopLine="95"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <Caret Line="107" Column="1" TopLine="96"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <Caret Line="108" Column="1" TopLine="97"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\..\..\soap_formatter.pas"/>
+        <Caret Line="235" Column="1" TopLine="224"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <Caret Line="134" Column="1" TopLine="123"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\..\synapse_tcp_protocol.pas"/>
+        <Caret Line="74" Column="1" TopLine="63"/>
+      </Position13>
+      <Position14>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="18" Column="72" TopLine="6"/>
+      </Position14>
+      <Position15>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="27" Column="44" TopLine="8"/>
+      </Position15>
+      <Position16>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="30" Column="26" TopLine="15"/>
+      </Position16>
+      <Position17>
+        <Filename Value="E:\lazarus26r2.2.2.2\fpc\2.2.2\source\rtl\inc\wstringh.inc"/>
+        <Caret Line="85" Column="52" TopLine="74"/>
+      </Position17>
+      <Position18>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="27" Column="19" TopLine="6"/>
+      </Position18>
+      <Position19>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="24" Column="25" TopLine="14"/>
+      </Position19>
+      <Position20>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="23" Column="5" TopLine="15"/>
+      </Position20>
+      <Position21>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="32" Column="41" TopLine="22"/>
+      </Position21>
+      <Position22>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="33" Column="1" TopLine="22"/>
+      </Position22>
+      <Position23>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="16" Column="1" TopLine="11"/>
+      </Position23>
+      <Position24>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="32" Column="1" TopLine="21"/>
+      </Position24>
+      <Position25>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="33" Column="39" TopLine="22"/>
+      </Position25>
+      <Position26>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="37" Column="9" TopLine="22"/>
+      </Position26>
+      <Position27>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="33" Column="1" TopLine="22"/>
+      </Position27>
+      <Position28>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="13" Column="30" TopLine="2"/>
+      </Position28>
+      <Position29>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="15" Column="3" TopLine="1"/>
+      </Position29>
+      <Position30>
+        <Filename Value="ws_client.pas"/>
+        <Caret Line="11" Column="4" TopLine="11"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="ws_client"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <UnitOutputDirectory Value="obj"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="FPort"/>
+      </Item1>
+    </Watches>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
