@@ -7,6 +7,7 @@
  headers included with XCode 3.1.2
  The original copyright note of is kept on each include file
 }
+{$DEFINE DEBUG}
 
 unit objcrtl10;
 
@@ -521,10 +522,31 @@ end;
 function class_addMethod10(cls:_Class; name:SEL; _imp:IMP; types:pchar):BOOL; cdecl;
 begin
   if not Assigned(cls) or not Assigned(name) or not Assigned(_imp) or not Assigned(types) then begin
+    {$IFDEF DEBUG}
+    write('* Bad params?: cls  = ', Integer(cls));
+    write(' name = ', PChar(name));
+    write(' imp  = ', Integer(_imp));
+    writeln(' type = ', types);
+    {$ENDIF}
     Result := false;
     Exit;
   end;
+
+  {$IFDEF DEBUG}
+  write('* method list = ', Integer(_Class1(cls)^.methodLists));
+  if Assigned (TClassMethod1Reg(_Class1(cls)^.methodLists)) then
+    writeln(', ', TClassMethod1Reg(_Class1(cls)^.methodLists).ClassName)
+  else
+    writeln;
+  try
+  {$ENDIF}
   TClassMethod1Reg(_Class1(cls)^.methodLists).AddMethod(name, _imp, types);
+  {$IFDEF DEBUG}
+    writeln('"',PChar(name), '" added successfully');
+  except
+    writeln('* exception while adding method');
+  end;
+  {$ENDIF}
   Result := true;
 end;
 

@@ -54,7 +54,7 @@ const
   newMethod4Enc = 'f@:';
 
   newMethod5 = 'getSmallRecord';
-  newMethod5Enc = '{TSmallRecord=ccc}@:';
+  newMethod5Enc = '{TSmallRecord=cccc{TSubStructure=cccc}}@:';
 
   varName  = 'myvar';
 
@@ -105,11 +105,13 @@ begin
        class_addMethod(cl, selector(newMethod1), @imp_newMethod1, newMethod1Enc) and
        class_addMethod(cl, selector(newMethod2), @imp_newMethod2, newMethod2Enc) and
        class_addMethod(cl, selector(newMethod3), @imp_newMethod3, newMethod3Enc) and
-       class_addMethod(cl, selector(newMethod4), @imp_newMethod4, newMethod4Enc);
+       class_addMethod(cl, selector(newMethod4), @imp_newMethod4, newMethod4Enc) and
        class_addMethod(cl, selector(newMethod5), @imp_getSmallRec, newMethod5Enc);
-  if not b then writeln('failed to add/override some method(s)');
+  if not b then
+    writeln('failed to add/override some method(s)');
 
-  class_addIvar(cl, varName, sizeof(TObject), 1, _C_PASOBJ);
+  if not class_addIvar(cl, varName, sizeof(TObject), 1, _C_PASOBJ) then
+    writeln('failed to add variable ', varName);
 
   objc_registerClassPair(cl);
 end;
