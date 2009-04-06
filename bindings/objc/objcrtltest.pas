@@ -21,7 +21,7 @@ uses
   objcrtl20, objcrtl10, objcrtl, objcrtlutils;
 
 {.$linkframework AppKit}
-{.$linkframework Foundation}
+{$linkframework Foundation}
 
 type
   TSubStructure = packed record
@@ -100,7 +100,7 @@ var
   cl  : _Class;
   b   : Boolean;
 begin
-  cl := objc_allocateClassPair(objcclass('NSObject'), NewClassName, 0);
+  cl := objc_allocateClassPair(objc_getClass('NSObject'), NewClassName, 0);
   b := class_addMethod(cl, selector(OverrideMethod), @imp_init, overrideMethodEnc) and
        class_addMethod(cl, selector(newMethod1), @imp_newMethod1, newMethod1Enc) and
        class_addMethod(cl, selector(newMethod2), @imp_newMethod2, newMethod2Enc) and
