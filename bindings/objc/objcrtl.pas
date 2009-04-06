@@ -396,7 +396,7 @@ begin
   Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSend');
   {$else}
   Pointer(objc_msgSend_fpret) := GetProcedureAddress(hnd, 'objc_msgSend');
-  Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSends_stret');
+  Pointer(objc_msgSend_stretreg) := GetProcedureAddress(hnd, 'objc_msgSend_stret');
   {$endif}
   Result := true;
 end;

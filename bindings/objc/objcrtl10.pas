@@ -7,7 +7,7 @@
  headers included with XCode 3.1.2
  The original copyright note of is kept on each include file
 }
-{$DEFINE DEBUG}
+{.$DEFINE DEBUG}
 
 unit objcrtl10;
 
@@ -17,8 +17,6 @@ interface
 
 uses
   ctypes, objcrtl, dynlibs;
-
-//todo: *10 WRAPPERS!
 
 {
   Mac OS X Version 10.5 Delta
