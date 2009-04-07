@@ -654,6 +654,7 @@ var
   defSchemaNode, resNode : TDOMElement;
   unitExternalName, baseUnitExternalName : string;
   trueDestType : TPasType;
+  typeHelper : IXsdSpecialTypeHelper;
 {$IFDEF WST_HANDLE_DOC}
   i : PtrInt;
   ls : TStrings;
@@ -686,6 +687,10 @@ begin
     s := GetNameSpaceShortName(baseUnitExternalName,ADocument,GetOwner().GetPreferedShortNames());
     s := Format('%s:%s',[s,AContainer.GetExternalName(trueDestType)]);
     resNode.SetAttribute(s_type,s) ;
+    if trueDestType.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+      if GetRegistry().FindHelper(trueDestType,typeHelper) then
+        typeHelper.HandleTypeUsage(resNode,defSchemaNode);
+    end;
   end;
 end;
 
@@ -1059,6 +1064,7 @@ var
   p : TPasVariable;
   hasSequence : Boolean;
   storeOption : string;
+  typeHelper : IXsdSpecialTypeHelper;
 {$IFDEF WST_HANDLE_DOC}
   ls : TStrings;
 {$ENDIF WST_HANDLE_DOC}
@@ -1118,6 +1124,10 @@ begin
             propTypItm := AContainer.FindElement(AContainer.GetExternalName(propTypItm)) as TPasType;
           prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
           propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
+          if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+            if GetRegistry().FindHelper(propTypItm,typeHelper) then
+              typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+          end;
           storeOption := Trim(AContainer.Properties.GetValue(p,s_WST_storeType));
           if AContainer.IsAttributeProperty(p) then begin
             if ( Length(storeOption) > 0 ) then begin
@@ -1171,6 +1181,7 @@ var
   s, prop_ns_shortName : string;
   defSchemaNode, cplxNode, sqcNode, propNode : TDOMElement;
   unitExternalName : string;
+  typeHelper : IXsdSpecialTypeHelper;
 {$IFDEF WST_HANDLE_DOC}
   i : PtrInt;
   ls : TStrings;
@@ -1210,6 +1221,10 @@ begin
       if Assigned(propTypItm) then begin
         prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm));//  AContainer.GetExternalName(propTypItm.Parent.Parent));
         propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,AContainer.GetExternalName(propTypItm)]));
+        if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+          if GetRegistry().FindHelper(propTypItm,typeHelper) then
+            typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+        end;
         propNode.SetAttribute(s_minOccurs,'0');
         propNode.SetAttribute(s_maxOccurs,s_unbounded);
       end;

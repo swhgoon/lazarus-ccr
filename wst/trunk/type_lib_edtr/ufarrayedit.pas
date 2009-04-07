@@ -139,7 +139,10 @@ begin
     Self.Caption := FSymbolTable.GetExternalName(FObject);
     edtName.Text := FSymbolTable.GetExternalName(FObject);
     edtElementName.Text := FSymbolTable.GetArrayItemExternalName(FObject);
-    edtElementType.ItemIndex := edtElementType.Items.IndexOf(FSymbolTable.GetExternalName(FObject.ElType));
+    if ( FObject.ElType <> nil ) and ( not FObject.ElType.InheritsFrom(TPasUnresolvedTypeRef) ) then
+      edtElementType.ItemIndex := edtElementType.Items.IndexOfObject(FObject.ElType);
+    if ( edtElementType.ItemIndex < 0 ) then
+      edtElementType.ItemIndex := edtElementType.Items.IndexOf(FSymbolTable.GetExternalName(FObject.ElType));
     edtEmbedded.Checked := ( FSymbolTable.GetArrayStyle(FObject) = asEmbeded );
     edtCollection.Checked:= FSymbolTable.IsCollection(FObject);
   end else begin

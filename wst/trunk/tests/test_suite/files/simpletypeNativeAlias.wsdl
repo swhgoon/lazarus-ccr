@@ -3,7 +3,8 @@
    xmlns="http://schemas.xmlsoap.org/wsdl/" 
    xmlns:tns="library1" 
    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:wst="urn:wst_base"   
    targetNamespace="urn:wst-test">
 
   <types>
@@ -13,6 +14,7 @@
       
         <xsd:element name="AliasString" type="xsd:string"/>
         <xsd:element name="AliasInt" type="xsd:int"/>
+        <xsd:element name="AliasWideString" type="xsd:string" wst:TypeHint="WideString"/>
       
      </xsd:schema>
   </types>

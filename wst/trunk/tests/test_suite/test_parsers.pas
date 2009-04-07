@@ -220,6 +220,7 @@ const
     x_enumSampleLIST      : array[0..( x_enumSampleLIST_COUNT - 1 )] of string = ( 'esOne', 'esTwo', 'esThree', 'begin', 'finally', 'True', 'False' );
   x_simpleTypeAliasString = 'AliasString';
   x_simpleTypeAliasInt    = 'AliasInt';
+  x_simpleTypeAliasWideString = 'AliasWideString';
   x_simpleType            = 'simpletype';
   x_simpleTypeEmbedded    = 'simpletype_embedded';
   x_simpletypeNativeAlias = 'simpletypeNativeAlias';
@@ -362,7 +363,7 @@ begin
   CheckEquals(x_simpletypeNativeAlias,mdl.Name);
   CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
   ls := mdl.InterfaceSection.Declarations;
-  CheckEquals(2,ls.Count);
+  CheckEquals(3,ls.Count);
   elt := tr.FindElement(x_simpleTypeAliasString);
     CheckNotNull(elt,x_simpleTypeAliasString);
     CheckEquals(x_simpleTypeAliasString,elt.Name);
@@ -380,6 +381,16 @@ begin
     aliasType := elt as TPasAliasType;
     CheckNotNull(aliasType.DestType);
     Check(tr.SameName(aliasType.DestType,'int'));
+
+  elt := tr.FindElement(x_simpleTypeAliasWideString);
+    CheckNotNull(elt,x_simpleTypeAliasWideString);
+    CheckEquals(x_simpleTypeAliasWideString,elt.Name);
+    CheckEquals(x_simpleTypeAliasWideString,tr.GetExternalName(elt));
+    CheckIs(elt,TPasAliasType);
+    aliasType := elt as TPasAliasType;
+    CheckNotNull(aliasType.DestType);
+    CheckIs(aliasType.DestType,TPasNativeSimpleType);
+    CheckEquals('WideString',aliasType.DestType.Name);
 end;
 
 type

@@ -309,11 +309,18 @@ var
     crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
   end;
 
+  function ExtractTypeHint(AElement: TDOMNode): string;
+  begin
+    if not wst_findCustomAttributeXsd(FXSShortNames,AElement,s_WST_typeHint,Result) then
+      Result := '';
+  end;
+
   function FindTypeNode(out ASimpleTypeAlias : TPasType) : Boolean;
   var
     nd, oldTypeNode : TDOMNode;
     crs : IObjectCursor;
-    locStrFilter : string;
+    locStrFilter, locTypeHint : string;
+    locHintedType : TPasType;
   begin
     ASimpleTypeAlias := nil;
     Result := True;
@@ -327,6 +334,14 @@ var
         nd := (crs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
         ASimpleTypeAlias := FindElement(ExtractNameFromQName(nd.NodeValue)) as TPasType;
         if Assigned(ASimpleTypeAlias) then begin
+          if ASimpleTypeAlias.InheritsFrom(TPasNativeSimpleType) then begin
+            locTypeHint := ExtractTypeHint(typNd);
+            if not IsStrEmpty(locTypeHint) then begin
+              locHintedType := FindElement(locTypeHint) as TPasType;
+              if ( locHintedType <> nil ) then
+                ASimpleTypeAlias := locHintedType;
+            end;
+          end;
           Result := False;
         end else begin
           oldTypeNode := typNd;

@@ -49,6 +49,10 @@ type
     procedure class_sequence_open_type_any();
     procedure class_sequence_open_type_any_attribute();
     procedure class_sequence_open_type_any_any_attribute();
+
+    procedure type_alias_widestring();
+    procedure type_hint_array_item();
+    procedure type_hint_record_item();
   end;
 
   TTest_XsdGenerator = class(TTest_CustomXsdGenerator)
@@ -845,6 +849,136 @@ begin
     g.Execute(tr,mdl.Name);
     //WriteXML(locDoc,'gen_class_sequence_open_type_any_anyatt.xsd');
     locExistDoc := LoadXmlFromFilesList('gen_class_sequence_open_type_any_anyatt.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.type_alias_widestring();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  aliasType : TPasAliasType;
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+  arrayTyp : TPasArrayType;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'type_alias_widestring',tr.Package,visDefault,'',0));
+    tr.RegisterExternalAlias(mdl,'urn:wst-test');
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    aliasType := TPasAliasType(tr.CreateElement(TPasAliasType,'AliasedType',mdl.InterfaceSection,visDefault,'',0));
+      aliasType.DestType := tr.FindElementNS('WideString',s_xs) as TPasType;
+      aliasType.DestType.AddRef();
+      mdl.InterfaceSection.Declarations.Add(aliasType);
+      mdl.InterfaceSection.Types.Add(aliasType);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXMLFile(locDoc,wstExpandLocalFileName('type_alias_widestring.xsd'));
+    locExistDoc := LoadXmlFromFilesList('type_alias_widestring.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.type_hint_array_item();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  aliasType : TPasArrayType;
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+  arrayTyp : TPasArrayType;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'type_hint_array_item',tr.Package,visDefault,'',0));
+    tr.RegisterExternalAlias(mdl,'urn:wst-test');
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    aliasType := tr.CreateArray('AliasedType',tr.FindElementNS('WideString',s_xs) as TPasType,'Item','Item',asScoped);
+      mdl.InterfaceSection.Declarations.Add(aliasType);
+      mdl.InterfaceSection.Types.Add(aliasType);
+    aliasType := tr.CreateArray('EmbeddedAliasedType',tr.FindElementNS('WideString',s_xs) as TPasType,'EmbeddedItem','EmbeddedItem',asScoped);
+      mdl.InterfaceSection.Declarations.Add(aliasType);
+      mdl.InterfaceSection.Types.Add(aliasType);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    //WriteXMLFile(locDoc,wstExpandLocalFileName('type_hint_array_item.xsd'));
+    locExistDoc := LoadXmlFromFilesList('type_hint_array_item.xsd');
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    FreeAndNil(tr);
+  end;
+end;
+
+procedure TTest_CustomXsdGenerator.type_hint_record_item();
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  cltyp : TPasRecordType;
+
+  procedure AddProperty(
+    const AName,
+          ATypeName  : string;
+    const AKind      : TPropertyType
+  );
+  var
+    p : TPasVariable;
+  begin
+    p := TPasVariable(tr.CreateElement(TPasVariable,AName,cltyp,visDefault,'',0));
+    cltyp.Members.Add(p);
+    p.Name := AName;
+    p.VarType := tr.FindElement(ATypeName) as TPasType;
+    Check( (p.VarType <> nil), Format('Type not found : "%s".',[ATypeName]));
+    p.VarType.AddRef();
+    if ( AKind = ptAttribute ) then
+      tr.SetPropertyAsAttribute(p,True);
+  end;
+
+var
+  g : IGenerator;
+  locDoc, locExistDoc : TXMLDocument;
+begin
+  locDoc := nil;
+  locExistDoc := nil;
+  tr := TwstPasTreeContainer.Create();
+  try
+    CreateWstInterfaceSymbolTable(tr);
+    mdl := TPasModule(tr.CreateElement(TPasModule,'type_hint_record_item',tr.Package,visDefault,'',0));
+    tr.Package.Modules.Add(mdl);
+    mdl.InterfaceSection := TPasSection(tr.CreateElement(TPasSection,'',mdl,visDefault,'',0));
+    cltyp := TPasRecordType(tr.CreateElement(TPasRecordType,'TSampleRecord',mdl.InterfaceSection,visDefault,'',0));
+      mdl.InterfaceSection.Declarations.Add(cltyp);
+      mdl.InterfaceSection.Types.Add(cltyp);
+      AddProperty('elementProp','WideString',ptField);
+      AddProperty('elementAtt','WideString',ptAttribute);
+
+    locDoc := CreateDoc();
+    g := CreateGenerator(locDoc);
+    g.Execute(tr,mdl.Name);
+    WriteXMLFile(locDoc,wstExpandLocalFileName('type_hint_record_item.xsd'));
+    locExistDoc := LoadXmlFromFilesList('type_hint_record_item.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     ReleaseDomNode(locExistDoc);

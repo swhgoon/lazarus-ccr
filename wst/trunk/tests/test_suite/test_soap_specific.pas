@@ -714,7 +714,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block.xml'));
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_proxy_header_block.xml'));
@@ -747,7 +747,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block_name.xml'));
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_proxy_header_block_name.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_proxy_header_block_name.xml'));
