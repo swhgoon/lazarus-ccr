@@ -113,7 +113,7 @@ procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
 var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
-  strBuff : TBinaryString;
+  binBuff : TByteDynArray;
   bufferLen : LongInt;
 begin
   buffStream := TMemoryStream.Create();
@@ -123,10 +123,10 @@ begin
     wrtr.WriteAnsiStr(Target);
     wrtr.WriteAnsiStr(ContentType);
     wrtr.WriteAnsiStr(Self.Format);
-    SetLength(strBuff,ARequest.Size);
+    SetLength(binBuff,ARequest.Size);
     ARequest.Position := 0;
-    ARequest.Read(strBuff[1],Length(strBuff));
-    wrtr.WriteAnsiStr(strBuff);
+    ARequest.Read(binBuff[1],Length(binBuff));
+    wrtr.WriteBinary(binBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
     buffStream.Position := 0;

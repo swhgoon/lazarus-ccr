@@ -111,7 +111,7 @@ procedure TTCPTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
-  strBuff : TBinaryString;
+  binBuff : TByteDynArray;
   bufferLen : LongInt;
   i, j, c : PtrInt;
 begin
@@ -122,10 +122,10 @@ begin
     wrtr.WriteAnsiStr(Target);
     wrtr.WriteAnsiStr(ContentType);
     wrtr.WriteAnsiStr(Self.Format);
-    SetLength(strBuff,ARequest.Size);
+    SetLength(binBuff,ARequest.Size);
     ARequest.Position := 0;
-    ARequest.Read(strBuff[1],Length(strBuff));
-    wrtr.WriteAnsiStr(strBuff);
+    ARequest.Read(binBuff[1],Length(binBuff));
+    wrtr.WriteBinary(binBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
 
@@ -144,11 +144,11 @@ begin
       i := 1024;
       if ( i > bufferLen ) then
         i := bufferLen;
-      SetLength(strBuff,i);
+      SetLength(binBuff,i);
       repeat
-        j := FConnection.RecvBufferEx(@(strBuff[1]),i,DefaultTimeOut);
+        j := FConnection.RecvBufferEx(@(binBuff[1]),i,DefaultTimeOut);
         FConnection.ExceptCheck();
-        AResponse.Write(strBuff[1],j);
+        AResponse.Write(binBuff[1],j);
         Inc(c,j);
         i := Min(1024,(bufferLen-c));
       until ( i =0 ) or ( j <= 0 );

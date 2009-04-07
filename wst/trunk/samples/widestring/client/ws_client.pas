@@ -7,7 +7,7 @@ uses
   cthreads, cwstring,
   {$ENDIF}
   Classes, SysUtils,
-  service_intf, soap_formatter, synapse_http_protocol,
+  service_intf, soap_formatter, synapse_http_protocol, //synapse_tcp_protocol,
   echo_service, echo_service_proxy;
 
 const
@@ -21,8 +21,10 @@ var
   c : Integer;
 begin
   SYNAPSE_RegisterHTTP_Transport();
+  //SYNAPSE_RegisterTCP_Transport();
 
   locService := wst_CreateInstance_IEchoService('SOAP:','HTTP:','http://127.0.0.1:8000/services/IEchoService');
+  //locService := wst_CreateInstance_IEchoService('SOAP:','TCP:Port=1234;Target=IEchoService;','127.0.0.1');
 
   WriteLn('WST WideString Sample - Client');
 

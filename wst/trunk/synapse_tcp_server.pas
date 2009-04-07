@@ -99,7 +99,7 @@ end;
 
 function TClientHandlerThread.ReadInputBuffer(): Integer;
 var
-  strBuff : TBinaryString;
+  binBuff : TByteDynArray;
   bufferLen : LongInt;
   i, j, c, readBufferLen : PtrInt;
 begin
@@ -119,11 +119,11 @@ begin
       i := 1024;
       if ( i > bufferLen ) then
         i := bufferLen;
-      SetLength(strBuff,i);
+      SetLength(binBuff,i);
       repeat
-        j := FSocketObject.RecvBufferEx(@(strBuff[1]),i,DefaultTimeOut);
+        j := FSocketObject.RecvBufferEx(@(binBuff[1]),i,DefaultTimeOut);
         FSocketObject.ExceptCheck();
-        FInputStream.Write(strBuff[1],j);
+        FInputStream.Write(binBuff[1],j);
         Inc(c,j);
         if ( ( bufferLen - c ) > 1024 ) then
           i := 1024
@@ -173,7 +173,8 @@ procedure TClientHandlerThread.Execute();
 var
   wrtr : IDataStore;
   rdr : IDataStoreReader;
-  buff, trgt,ctntyp, frmt : TBinaryString;
+  trgt,ctntyp, frmt : TBinaryString;
+  buff : TByteDynArray;
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
@@ -196,10 +197,11 @@ begin
             trgt := rdr.ReadAnsiStr();
             ctntyp := rdr.ReadAnsiStr();
             frmt := rdr.ReadAnsiStr();
-            buff := rdr.ReadAnsiStr();
+            buff := rdr.ReadBinary();
             rdr := nil;
             FInputStream.Size := 0;
             FInputStream.Write(buff[1],Length(buff));
+            SetLength(buff,0);
             FInputStream.Position := 0;
             rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,frmt);
             rqst.GetPropertyManager().SetProperty(sREMOTE_IP,FSocketObject.GetRemoteSinIP());
@@ -211,7 +213,8 @@ begin
             FOutputStream.Read(buff[1],i);
             FOutputStream.Size := 0;
             wrtr := CreateBinaryWriter(FOutputStream);
-            wrtr.WriteAnsiStr(buff);
+            wrtr.WriteBinary(buff);
+            SetLength(buff,0);
             SendOutputBuffer();
             ClearBuffers();
           end;

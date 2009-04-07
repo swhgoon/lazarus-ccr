@@ -139,7 +139,8 @@ var
   locInStream, locOutStream : TMemoryStream;
   wrtr : IDataStore;
   rdr : IDataStoreReader;
-  buff, trgt,ctntyp, frmt : TBinaryString;
+  trgt,ctntyp, frmt : TBinaryString;
+  buff : TByteDynArray;
   rqst : IRequestBuffer;
   i : PtrUInt;
 begin
@@ -160,7 +161,7 @@ begin
         trgt := rdr.ReadAnsiStr();
         ctntyp := rdr.ReadAnsiStr();
         frmt := rdr.ReadAnsiStr();
-        buff := rdr.ReadAnsiStr();
+        buff := rdr.ReadBinary();
 
 {$IFDEF WST_DBG}
         WriteLn(buff);
@@ -169,6 +170,7 @@ begin
         rdr := nil;
         locInStream.Size := 0;
         locInStream.Write(buff[1],Length(buff));
+        SetLength(buff,0);
         locInStream.Position := 0;
         rqst := TRequestBuffer.Create(trgt,ctntyp,locInStream,locOutStream,frmt);
         rqst.GetPropertyManager().SetProperty(sREMOTE_IP,AContext.Binding.PeerIP);
@@ -180,7 +182,7 @@ begin
         locOutStream.Read(buff[1],i);
         locOutStream.Size := 0;
         wrtr := CreateBinaryWriter(locOutStream);
-        wrtr.WriteAnsiStr(buff);
+        wrtr.WriteBinary(buff);
         locOutStream.Position := 0;
       {$IFDEF INDY_10}
         AContext.Connection.IOHandler.Write(locOutStream,locOutStream.Size,False);

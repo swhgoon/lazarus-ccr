@@ -30,13 +30,14 @@ Type
   TInt64S = Int64; TInt64U = QWord;
   TBoolData = Boolean;
   TEnumData = Int64;
-  TAnsiStringData = AnsiString;
+  TAnsiStringData = TBinaryString;
   TWideStringData = WideString;
 {$IFDEF WST_UNICODESTRING}
   TUnicodeStringData = UnicodeString;
 {$ENDIF WST_UNICODESTRING}
   TAnsiCharacter = AnsiChar;
   TWideCharacter = WideChar;
+  TByteDynArray = wst_types.TByteDynArray;
   
   TFloat_Single_4    = Single;
   TFloat_Double_8    = Double;
@@ -66,6 +67,7 @@ Type
 {$IFDEF WST_UNICODESTRING}
     procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
 {$ENDIF WST_UNICODESTRING}
+    procedure WriteBinary(const AData : TByteDynArray);
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
     procedure WriteDouble(Const AData : TFloat_Double_8);
@@ -97,6 +99,7 @@ Type
 {$IFDEF WST_UNICODESTRING}
     function ReadUnicodeStr():TUnicodeStringData;
 {$ENDIF WST_UNICODESTRING}
+    function ReadBinary() : TByteDynArray;
 
     function ReadSingle():TFloat_Single_4;
     function ReadDouble():TFloat_Double_8;
@@ -231,6 +234,7 @@ Type
 {$IFDEF WST_UNICODESTRING}
     procedure WriteUnicodeStr(Const AData : TUnicodeStringData);
 {$ENDIF WST_UNICODESTRING}
+    procedure WriteBinary(const AData : TByteDynArray);
     
     procedure WriteSingle(Const AData : TFloat_Single_4);
     procedure WriteDouble(Const AData : TFloat_Double_8);
@@ -268,6 +272,7 @@ Type
 {$IFDEF WST_UNICODESTRING}
     function ReadUnicodeStr():TUnicodeStringData;
 {$ENDIF WST_UNICODESTRING}
+    function ReadBinary() : TByteDynArray;
 
     function ReadSingle():TFloat_Single_4;
     function ReadDouble():TFloat_Double_8;
@@ -435,6 +440,16 @@ begin
   if ( i > 0 ) then begin
     LocalWrite();
   end;
+end;
+
+procedure TDataStore.WriteBinary(const AData : TByteDynArray);
+var
+  i : TInt32S;
+begin
+  i := Length(AData);
+  WriteInt32S(i);
+  if ( i > 0 ) then
+    FStream.Write(AData[1],i);
 end;
 
 {$IFDEF WST_UNICODESTRING}
@@ -613,6 +628,16 @@ begin
     FStream.ReadBuffer(Pointer(Result)^, ( i * SizeOf(WideChar) ) );
     Reverse_Array(Pointer(Result)^,i,SizeOf(WideChar));
   end;
+end;
+
+function TDataStoreReader.ReadBinary() : TByteDynArray;
+var
+  i : TInt32S;
+begin
+  i := ReadInt32S();
+  SetLength(Result,i);
+  if ( i > 0 ) then
+    FStream.ReadBuffer(Result[1],i);
 end;
 
 {$IFDEF WST_UNICODESTRING}
