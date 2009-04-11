@@ -2,7 +2,7 @@ unit VirtualTrees;
 
 {$mode delphi}{$H+}
 
-// Version 4.8.3
+// Version 4.8.5
 //
 // The contents of this file are subject to the Mozilla Public License
 // Version 1.1 (the "License"); you may not use this file except in compliance
@@ -27,6 +27,12 @@ unit VirtualTrees;
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  March 2009
+//   - Bug fix: fixed an issue in TVirtualTreeColumns.HandleClick that could lead to a case where no header click event
+//              is triggered
+//   - Bug fix: fixed an issue in TBaseVirtualTree.HandleHotTrack that could lead to an endless loop under certain
+//              conditions
+//   - Improvement: removed unused variables in TVirtualTreeColumn.ComputeHeaderLayout
+//   - Bug fix: corrected TBaseVirtualTree.GetVisibleParent
 //   - Improvement: extended hot node tracking to track the hot column too
 //   - Improvement: new THitPosition hiOnItemButtonExact used to draw hot buttons when using Windows Vista's Explorer
 //                  theme
@@ -315,7 +321,7 @@ uses
 const
   {$I lclconstants.inc}
 
-  VTVersion = '4.8.3';
+  VTVersion = '4.8.5';
   VTTreeStreamVersion = 2;
   VTHeaderStreamVersion = 6;    // The header needs an own stream version to indicate changes only relevant to the header.
 
@@ -7802,9 +7808,6 @@ var
   TextSpacing: Integer;
   UseText: Boolean;
   R: TRect;
-  CaptionText: UTF8String;
-  H1,
-  H2: Integer;
 
 begin
   UseText := Length(FText) > 0;
@@ -8934,17 +8937,18 @@ begin
     Shift := FHeader.GetShiftState;
     if DblClick then
       Shift := Shift + [ssDouble];
-    if not Items[NewClickIndex].FHasImage then // If there is no image for this column, perform normal HeaderClick.
-      FHeader.Treeview.DoHeaderClick(NewClickIndex, Button, Shift, P.X, P.Y)
+    if Items[NewClickIndex].FHasImage and PtInRect(Items[NewClickIndex].FImageRect, P) then
+    begin
+      if Items[NewClickIndex].CheckBox then
+      begin
+        FHeader.Treeview.UpdateColumnCheckState(Items[NewClickIndex]);
+        FHeader.Treeview.DoHeaderCheckBoxClick(NewClickIndex, Button, Shift, P.X, P.Y);
+      end
+      else
+        FHeader.Treeview.DoHeaderImageClick(NewClickIndex, Button, Shift, P.X, P.Y)
+    end
     else
-      if PtInRect(Items[NewClickIndex].FImageRect, P) then
-        if not Items[NewClickIndex].CheckBox then
-          FHeader.Treeview.DoHeaderImageClick(NewClickIndex, Button, Shift, P.X, P.Y)
-        else
-        begin
-          FHeader.Treeview.UpdateColumnCheckState(Items[NewClickIndex]);
-          FHeader.Treeview.DoHeaderCheckBoxClick(NewClickIndex, Button, Shift, P.X, P.Y);
-        end;
+      FHeader.Treeview.DoHeaderClick(NewClickIndex, Button, Shift, P.X, P.Y);
     FHeader.Invalidate(Items[NewClickIndex]);
   end
   else
@@ -20294,7 +20298,9 @@ procedure TBaseVirtualTree.DoHeaderImageClick(Column: TColumnIndex; Button: TMou
 
 begin
   if Assigned(FOnHeaderImageClick) then
-    FOnHeaderImageClick(FHeader, Column, Button, Shift, X, Y);
+    FOnHeaderImageClick(FHeader, Column, Button, Shift, X, Y)
+  else if Assigned(FOnHeaderClick) then
+    FOnHeaderClick(FHeader, Column, Button, Shift, X, Y)
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21943,7 +21949,7 @@ begin
     FCurrentHotColumn := HitInfo.HitColumn;
   end;
 
-  ButtonIsHit := hiOnItemButtonExact in HitInfo.HitPositions;
+  ButtonIsHit := (hiOnItemButtonExact in HitInfo.HitPositions) and (toHotTrack in FOptions.FPaintOptions);
   if Assigned(FCurrentHotNode) and ((FHotNodeButtonHit <> ButtonIsHit) or DoInvalidate) then
   begin
     FHotNodeButtonHit := ButtonIsHit and (toHotTrack in FOptions.FPaintOptions);
@@ -28662,20 +28668,8 @@ begin
   Assert(Assigned(Node), 'Node must not be nil.');
 
   Result := Node;
-  while Result <> FRoot do
-  begin
-    // FRoot is always expanded hence the loop will safely stop there if no other node is expanded
-    repeat
-      Result := Result.Parent;
-    until vsExpanded in Result.States;
-
-    if (Result = FRoot) or FullyVisible[Result] then
-      Break;
-
-    // if there is still a collapsed parent node then advance to it and repeat the entire loop
-    while (Result <> FRoot) and (vsExpanded in Result.Parent.States) do
-      Result := Result.Parent;
-  end;
+  while (Result <> FRoot) and not FullyVisible[Result] do
+    Result := Result.Parent;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
