@@ -118,6 +118,7 @@
         <Filename Value="uprocedit.pas"/>
         <ComponentName Value="fProcEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uprocedit"/>
       </Unit13>
       <Unit14>

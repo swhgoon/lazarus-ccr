@@ -3,14 +3,13 @@ object fProcEdit: TfProcEdit
   Height = 543
   Top = 118
   Width = 522
-  HorzScrollBar.Page = 521
-  VertScrollBar.Page = 542
   ActiveControl = edtName
   BorderStyle = bsSizeToolWin
   Caption = 'fProcEdit'
   ClientHeight = 543
   ClientWidth = 522
   Position = poMainFormCenter
+  LCLVersion = '0.9.26.2'
   object PageControl1: TPageControl
     Height = 493
     Width = 522
@@ -75,9 +74,9 @@ object fProcEdit: TfProcEdit
       end
       object edtFunction: TCheckBox
         Left = 12
-        Height = 13
+        Height = 17
         Top = 74
-        Width = 96
+        Width = 94
         Caption = 'Function returns'
         OnClick = edtFunctionClick
         OnEditingDone = edtFunctionEditingDone
@@ -89,9 +88,7 @@ object fProcEdit: TfProcEdit
         Top = 74
         Width = 388
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
-        MaxLength = 0
         Style = csDropDownList
         TabOrder = 2
       end

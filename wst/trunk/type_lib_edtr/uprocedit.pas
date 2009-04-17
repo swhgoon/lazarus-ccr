@@ -117,8 +117,10 @@ var
   i : Integer;
   locProc : TPasProcedure;
   memberList : TList;
+  locName : string;
 begin
-  b := ( not IsStrEmpty(edtName.Text) ) and
+  locName := edtName.Text;
+  b := ( not IsStrEmpty(locName) ) and
        ( ( not edtFunction.Checked ) or ( edtResultType.ItemIndex > -1 ) );
   if b then begin
     memberList := TPasClassType(FObject.Parent).Members;
@@ -126,8 +128,10 @@ begin
       if TPasElement(memberList[i]).InheritsFrom(TPasProcedure) then begin
         locProc := TPasProcedure(memberList[i]);
         if ( locProc <> FObject ) and
-           ( AnsiSameText(locProc.Name,FObject.Name) or
-             AnsiSameText(FSymbolTable.GetExternalName(locProc),FSymbolTable.GetExternalName(FObject))
+           ( AnsiSameText(locProc.Name,locName) or
+             ( ( Self.UpdateType = etUpdate ) and
+               AnsiSameText(FSymbolTable.GetExternalName(locProc),FSymbolTable.GetExternalName(FObject))
+             )
            )
         then begin
           b := False;
