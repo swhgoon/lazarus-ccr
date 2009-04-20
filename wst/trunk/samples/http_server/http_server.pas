@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Classes, SysUtils,
   indy_http_server, metadata_service, logger_extension, server_listener,
-  server_service_soap, server_binary_formatter, server_service_xmlrpc, config_objects,
+  server_service_soap, server_binary_formatter, server_service_xmlrpc, server_service_json, config_objects,
   user_service_intf, user_service_intf_binder, user_service_intf_imp, server_service_intf;
 
 
@@ -18,6 +18,7 @@ begin
   Server_service_RegisterBinaryFormat();
   Server_service_RegisterSoapFormat();
   Server_service_RegisterXmlRpcFormat();
+  Server_service_RegisterJsonFormat();
 
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();
