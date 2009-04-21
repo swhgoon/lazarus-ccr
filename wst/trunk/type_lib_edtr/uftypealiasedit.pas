@@ -223,7 +223,7 @@ begin
       end;
     end;
   finally
-    if ( not Result ) and ( UpdateType = etCreate ) and ( AObject = nil ) then begin
+    if ( not Result ) and ( UpdateType = etCreate ) and ( AObject = nil ) and ( FObject <> nil ) then begin
       FSymbolTable.CurrentModule.InterfaceSection.Declarations.Extract(FObject);
       FSymbolTable.CurrentModule.InterfaceSection.Types.Extract(FObject);
       FSymbolTable.CurrentModule.InterfaceSection.Classes.Extract(FObject);
