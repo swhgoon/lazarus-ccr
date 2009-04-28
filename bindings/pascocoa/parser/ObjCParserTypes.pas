@@ -25,7 +25,7 @@ const
   Err_BadPrecompile   = 'Bad precompile directive';
 
 type
-  TTokenType = (tt_Ident, tt_Symbol, tt_None, tt_Numeric, tt_String);
+  TTokenType = (tt_Ident, tt_Symbol, tt_Numeric, tt_String);
 
 
   TCharSet = set of Char;
@@ -1219,7 +1219,7 @@ begin
           Insert(Repl, Buf, TokenPos);
           Index := TokenPos;
           Result := false;
-          TokenType := tt_None;
+          TokenType := tt_Ident;
           Token := '';
         end;
       end;
@@ -1227,7 +1227,7 @@ begin
     end; {of while}
   finally
     if not Result
-      then TokenType := tt_None
+      then TokenType := tt_Ident
       else TokenPos := Index - length(Token);
     //todo: make an event or something
     if TokenType = tt_Numeric then
