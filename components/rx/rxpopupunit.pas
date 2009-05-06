@@ -201,7 +201,6 @@ procedure FillPopupWidth(APopUpFormOptions:TPopUpFormOptions; ARxPopUpForm:TPopU
 implementation
 uses dbutils, math;
 
-{.$DEFINE LINUX}
 function ShowRxDBPopUpForm(AControl:TWinControl; ADataSet:TDataSet;
   AOnPopUpCloseEvent:TPopUpCloseEvent; APopUpFormOptions:TPopUpFormOptions;
   AFieldList:string; ALookupDisplayIndex, BtnWidtn: integer; const Font:TFont):TPopUpForm;
@@ -242,7 +241,6 @@ begin
 end;
 
 { TPopUpForm }
-
 procedure TPopUpForm.SetDataSet(const AValue: TDataSet);
 begin
   if FDataSource.DataSet=AValue then exit;
@@ -287,7 +285,10 @@ procedure TPopUpForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_ESCAPE:Deactivate;
-    VK_RETURN:CloseOk;
+    VK_RETURN:begin
+                CloseOk;
+                exit;{In that case we need to exit away.}
+              end;
   else
     inherited KeyDown(Key, Shift);
   end;
@@ -466,7 +467,6 @@ begin
 {$ENDIF}
     FGrid.Anchors:=[akLeft, akRight, akTop, akBottom];
   end;
-  
   //Set options
   if not (pfgIndicator in FPopUpFormOptions.FOptions) then
     FGrid.Options:=FGrid.Options - [dgIndicator];
