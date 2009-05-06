@@ -18,7 +18,8 @@ uses
   test_basex_encode, json_formatter, server_service_json, test_json,
   test_suite_utils, test_generators, fpcunittestrunner, test_std_cursors,
   test_rtti_filter, rtti_filters, wst_cursors, test_wst_cursors, test_registry, test_soap_specific,
-  test_generators_runtime, test_date_utils, config_objects;
+  test_generators_runtime, test_date_utils, config_objects, test_support_client,
+  wst_consts;
 
 begin
   Application.Initialize;

@@ -152,7 +152,7 @@ Type
   function GetTransportRegistry():ITransportRegistry;
 
 implementation
-uses imp_utils, metadata_repository;
+uses wst_consts,imp_utils, metadata_repository;
 
 { TBaseProxy }
 
@@ -303,10 +303,15 @@ constructor TBaseProxy.Create(
   const AProtocol : IServiceProtocol
 );
 begin
-  Assert(Assigned(AProtocol));
-  Assert(Assigned(AProtocol.GetCallHandler()));
-  Assert(Assigned(AProtocol.GetSerializer()));
-  Assert(Assigned(AProtocol.GetTransport()));
+  if ( AProtocol = nil ) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['AProtocol']);
+  if ( AProtocol.GetCallHandler() = nil ) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['AProtocol.GetCallHandler()']);
+  if ( AProtocol.GetSerializer() = nil ) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['AProtocol.GetSerializer()']);
+  if ( AProtocol.GetTransport() = nil ) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['AProtocol.GetTransport()']);
+
   FCallContext := TSimpleCallContext.Create() as ICallContext;
   FTarget := ATarget;
   FProtocol := AProtocol;
@@ -315,21 +320,21 @@ begin
 end;
 
 constructor TBaseProxy.Create(
-  const ATarget: String;
+  const ATarget: string;
   const AProtocolData: string;
   const ATransportData: string
 );
-Var
+var
   ptcl : IServiceProtocol;
   tmpTrprt : ITransport;
 begin
-  ptcl := Nil;
-  If GetFormaterRegistry().Find(AProtocolData,ptcl) And
-     GetTransportRegistry().Find(ATransportData,tmpTrprt)
-  Then Begin
-    ptcl.SetTransport(tmpTrprt);
-    Create(ATarget,ptcl);
-  End;
+  if not GetFormaterRegistry().Find(AProtocolData,ptcl) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['AProtocolData']);
+  if not GetTransportRegistry().Find(ATransportData,tmpTrprt) then
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameter,['ATransportData']);
+
+  ptcl.SetTransport(tmpTrprt);
+  Create(ATarget,ptcl);
 end;
 
 destructor TBaseProxy.Destroy();
