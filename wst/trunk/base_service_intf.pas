@@ -1618,13 +1618,9 @@ var
   wst_FormatSettings : TFormatSettings;
 {$ENDIF HAS_FORMAT_SETTINGS}
 
-resourcestring
-  SERR_InvalidHourOffetValue = '"%d" is not a valid hour offset value.';
-  SERR_InvalidMinuteOffetValue = '"%d" is not a valid minute offset value.';
-
 implementation
 uses
-  imp_utils, record_rtti, basex_encode, object_serializer, DateUtils;
+  wst_consts, imp_utils, record_rtti, basex_encode, object_serializer, DateUtils;
 
 
 type
