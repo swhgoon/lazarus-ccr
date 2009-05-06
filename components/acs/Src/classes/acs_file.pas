@@ -97,8 +97,12 @@ type
      so the user must only add your unit to the uses clausle to have support for
      your fileformat.
    }
+
+   { tacsfileformatslist }
+
    tacsfileformatslist = class (tlist)
    public
+     destructor Destroy; override;
      procedure Add(const Ext, Desc: String; AClass: TACSFormatClass);
      function FindExt(ext : string;Typs : TACSFileCapTyps) : TACSFormatClass;
      function FindFromFileName(const fileName : String;Typs : TACSFileCapTyps) : TACSFormatClass;
@@ -564,6 +568,15 @@ begin
 end;
 
 { TACSFileFormatsList }
+
+destructor tacsfileformatslist.Destroy;
+var
+  i: integer;
+begin
+   for i:= 0 to Count-1 do
+     TACSFileFormat(Items[i]).Free;
+  inherited Destroy;
+end;
 
 procedure TACSFileFormatsList.Add(const Ext, Desc: String;AClass: TACSFormatClass);
 var
