@@ -16,9 +16,6 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
-        <Verbosity>
-          <ShowDebugInfo Value="True"/>
-        </Verbosity>
         <CustomOptions Value="-dLAZ_POWERPDF
 "/>
         <CompilerPath Value="$(CompPath)"/>
