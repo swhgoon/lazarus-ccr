@@ -34,7 +34,7 @@ interface
 
 // if use "FlateDecode" compression, comment out the next line.
 // (this unit and PdfDoc.pas)
-{$DEFINE NOZLIB}
+//{$DEFINE NOZLIB}
 
 uses
   SysUtils, Classes
@@ -42,6 +42,7 @@ uses
   , Windows
 {$ENDIF}
 {$IFNDEF NOZLIB}
+  ,ZStream
   ,Zlib;
 {$ELSE}
   ;
