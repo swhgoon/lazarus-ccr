@@ -2105,16 +2105,14 @@ end;
 function TSOAPBaseFormatter.ReadBuffer (const AName : string ) : string;
 Var
   locElt : TDOMNode;
-  namespaceShortName, strNodeName, s : string;
+  namespaceShortName, strNodeName : string;
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
-    namespaceShortName := Copy(FindAttributeByValueInScope(StackTop().NameSpace),AnsiPos(':',namespaceShortName) + 1,MaxInt);
-    if not IsStrEmpty(namespaceShortName) then begin
-      s := ExtractNameSpaceShortName(namespaceShortName);
-      if not IsStrEmpty(s) then
-        strNodeName := s + ':' + strNodeName;
-    end;
+    namespaceShortName := FindAttributeByValueInScope(StackTop().NameSpace);
+    namespaceShortName := Copy(namespaceShortName,AnsiPos(':',namespaceShortName) + 1,MaxInt);
+    if not IsStrEmpty(namespaceShortName) then
+      strNodeName := namespaceShortName + ':' + strNodeName;
   end;
 
   if ( FSerializationStyle = ssNodeSerialization ) then begin

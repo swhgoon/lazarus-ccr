@@ -359,7 +359,31 @@ type
     fieldString : string;
     fieldRecord : TTestSmallRecord;
   end;
-  
+
+  { TTestSmallClass }
+
+  TTestSmallClass = class(TBaseComplexRemotable)
+  private
+    FfieldSmallint : Smallint;
+    FfieldString : string;
+    FfieldWord : Word;
+  published
+    property fieldSmallint : Smallint read FfieldSmallint write FfieldSmallint;
+    property fieldWord : Word read FfieldWord write FfieldWord;
+    property fieldString : string read FfieldString write FfieldString;
+  end;
+
+  { TTestSmallClass2 }
+
+  TTestSmallClass2 = class(TBaseComplexRemotable)
+  private
+    FfieldString : string;
+    FObjProperty : TTestSmallClass;
+  published
+    property fieldString : string read FfieldString write FfieldString;
+    property ObjProperty : TTestSmallClass read FObjProperty write FObjProperty;
+  end;
+
   { TTestFormatterSimpleType }
 
   TTestFormatterSimpleType= class(TTestCase)
@@ -491,6 +515,7 @@ type
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
   published
     procedure test_WriteBuffer();
+    procedure test_ReadBuffer();
   end;
 
   { TTestSOAPFormatterAttributes }
@@ -4087,6 +4112,84 @@ begin
   end;
 end;
 
+procedure TTestSOAPFormatter.test_ReadBuffer();
+
+  function SpecialTrim(const AInStr : string) : string;
+  var
+    k : Integer;
+  begin
+    Result := '';
+    if ( Length(AInStr) > 0 ) then begin
+      for k := 1 to Length(AInStr) do begin
+        if ( AnsiChar(AInStr[k]) in ['a'..'z','A'..'Z','0'..'9',':','<','>'] ) then
+          Result := Result + AInStr[k];
+      end;
+    end;
+  end;
+
+const
+{$IFDEF FPC}
+  s_XML_BUFFER : AnsiString =
+    '<ns2:ObjProperty> ' +
+     ' <ns2:fieldSmallint>1</ns2:fieldSmallint> ' +
+     ' <ns2:fieldWord>0</ns2:fieldWord> ' +
+     ' <ns2:fieldString>SampleStringContent</ns2:fieldString> ' +
+    '</ns2:ObjProperty>';
+{$ENDIF FPC}
+{$IFDEF DELPHI}
+  s_XML_BUFFER : AnsiString =
+    '<ns2:ObjProperty xmlns:ns2uri:testnamespace> ' +
+     ' <ns2:fieldSmallint>1</ns2:fieldSmallint> ' +
+     ' <ns2:fieldWord>0</ns2:fieldWord> ' +
+     ' <ns2:fieldString>SampleStringContent</ns2:fieldString> ' +
+    '</ns2:ObjProperty>';
+{$ENDIF DELPHI}
+
+var
+  f : IFormatterBase;
+  strm : TMemoryStream;
+  da, db : TXMLDocument;
+  obj2 : TTestSmallClass2;
+  obj : TTestSmallClass;
+  strName, strBuffer : string;
+begin
+  strm := nil;
+  obj := nil;
+  obj := TTestSmallClass.Create();
+  try
+    obj2 := TTestSmallClass2.Create();
+    obj2.fieldString := 'wst 123';
+    obj2.ObjProperty := obj;
+    obj.fieldSmallint := 1;
+    obj.fieldString := 'fpc';
+    obj.fieldString := 'SampleStringContent';
+    f := TSOAPBaseFormatter.Create() as IFormatterBase;
+    f.GetPropertyManager().SetProperty('Style','Document');
+    f.BeginObject('Root',TypeInfo(TClass_A));
+      f.Put('inst',TypeInfo(TTestSmallClass2),obj2);
+    f.EndScope();
+    strm := TMemoryStream.Create();
+    f.SaveToStream(strm);
+
+    f := TSOAPBaseFormatter.Create() as IFormatterBase;
+    f.GetPropertyManager().SetProperty('Style','Document');
+    strm.Position := 0;
+    f.LoadFromStream(strm);
+    strName := 'Root';
+    f.BeginObjectRead(strName,TypeInfo(TClass_A));
+      strName := 'inst';
+      f.BeginObjectRead(strName,TypeInfo(TTestSmallClass2));
+        strBuffer := f.ReadBuffer('ObjProperty');
+      f.EndScopeRead();
+    f.EndScopeRead();
+    CheckEquals(SpecialTrim(s_XML_BUFFER),SpecialTrim(strBuffer));
+  finally
+    FreeAndNil(obj2);
+    FreeAndNil(obj);
+    FreeAndNil(strm);
+  end;
+end;
+
 { TClass_B }
 
 procedure TClass_B.SetObjProp(const AValue: TClass_A);
@@ -5339,6 +5442,9 @@ initialization
     RegisterExternalPropertyName(sARRAY_ITEM,'OI');
     RegisterExternalPropertyName(sARRAY_STYLE,sScoped);
   end;
+
+  GetTypeRegistry.Register('uri:test-namespace',TypeInfo(TTestSmallClass2),'TTestSmallClass2');
+  GetTypeRegistry.Register('uri:test-namespace',TypeInfo(TTestSmallClass),'TTestSmallClass');
 
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TTestSmallRecord),'TTestSmallRecord').RegisterExternalPropertyName('__FIELDS__','fieldSmallint;fieldWord;fieldString');
 {$IFNDEF WST_RECORD_RTTI}
