@@ -52,17 +52,14 @@ uses
 
 function GetNodeItemsCount(const ANode : TDOMNode): Integer;
 var
-  chdLst : TDOMNodeList;
+  n: TDOMNode;
 begin
-  if ANode.HasChildNodes then begin
-    chdLst := ANode.ChildNodes;
-    try
-      Result := chdLst.Count;
-    finally
-      chdLst.Release();
-    end;
-  end else begin
-    Result := 0;
+  n := ANode.FirstChild;
+  Result := 0;
+  while Assigned(n) do
+  begin
+    Inc(Result);
+    n := n.NextSibling;
   end;
 end;
 
@@ -83,7 +80,7 @@ end;
 
 procedure ReleaseDomNode(ADomNode : TDOMNodeList);overload;
 begin
-  ADomNode.Release();
+  ADomNode.Free();
 end;
 
 procedure ReleaseDomNode(ADomNode : TDOMNamedNodeMap);overload;
