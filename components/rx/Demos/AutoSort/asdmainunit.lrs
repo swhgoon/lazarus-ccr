@@ -1,0 +1,46 @@
+{ Это - файл ресурсов, автоматически созданный lazarus }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'n'#1#6'Height'#3#12#2#3'Top'#3#217#0#5'Wi'
+  +'dth'#3#12#3#7'Caption'#6#14'Auto sort demo'#12'ClientHeight'#3#12#2#11'Clie'
+  +'ntWidth'#3#12#3#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.27'#0#9
+  +'TRxDBGrid'#9'RxDBGrid1'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSide'
+  +'Top.Control'#7#9'CheckBox1'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'Anchor'
+  +'SideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'An'
+  +'chorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'
+  +#4'Left'#2#6#6'Height'#3#200#1#3'Top'#2'>'#5'Width'#3#0#3#12'TitleButtons'#9
+  +#8'AutoSort'#9#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'#17'Title.Or'
+  +'ientation'#7#12'toHorizontal'#5'Width'#2'X'#9'FieldName'#6#2'ID'#19'Filter.'
+  +'DropDownRows'#2#0#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'ta'
+  +'Center'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#3'^'#1#9'FieldNam'
+  +'e'#6#4'NAME'#19'Filter.DropDownRows'#2#0#16'Filter.ItemIndex'#2#255#0#1#15
+  +'Title.Alignment'#7#8'taCenter'#17'Title.Orientation'#7#12'toHorizontal'#5'W'
+  +'idth'#2'd'#9'FieldName'#6#10'DATE_ENTER'#19'Filter.DropDownRows'#2#0#16'Fil'
+  +'ter.ItemIndex'#2#255#0#0#9'OptionsRx'#11#0#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#10'FocusColor'#7#5'cl'
+  +'Red'#13'SelectedColor'#7#11'clHighlight'#13'GridLineStyle'#7#7'psSolid'#10
+  +'DataSource'#7#11'Datasource1'#11'ParentColor'#8#8'TabOrder'#2#0#10'TitleSty'
+  +'le'#7#8'tsNative'#0#0#9'TCheckBox'#9'CheckBox1'#22'AnchorSideLeft.Control'#7
+  +#5'Owner'#21'AnchorSideTop.Control'#7#9'CheckBox2'#18'AnchorSideTop.Side'#7#9
+  +'asrBottom'#4'Left'#2#6#6'Height'#2#22#3'Top'#2'"'#5'Width'#2'h'#20'BorderSp'
+  +'acing.Around'#2#6#7'Caption'#6#13'Title buttons'#8'OnChange'#7#15'CheckBox2'
+  +'Change'#8'TabOrder'#2#1#0#0#9'TCheckBox'#9'CheckBox2'#22'AnchorSideLeft.Con'
+  +'trol'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4'Left'#2#6#6'Height'
+  +#2#22#3'Top'#2#6#5'Width'#2'T'#20'BorderSpacing.Around'#2#6#7'Caption'#6#9'A'
+  +'uto sort'#8'OnChange'#7#15'CheckBox2Change'#8'TabOrder'#2#2#0#0#13'TRxMemor'
+  +'yData'#13'RxMemoryData1'#14'AutoCalcFields'#8#9'FieldDefs'#14#1#4'Name'#6#2
+  +'ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2#255#4'Size'#2#0#0#1#4'Name'#6
+  +#4'NAME'#8'DataType'#7#8'ftString'#9'Precision'#2#255#4'Size'#2'd'#0#1#4'Nam'
+  +'e'#6#10'DATE_ENTER'#8'DataType'#7#6'ftDate'#9'Precision'#2#255#4'Size'#2#0#0
+  +#0#4'left'#3#192#0#3'top'#2#16#0#13'TLongintField'#15'RxMemoryData1ID'#12'Di'
+  +'splayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#2'ID'#5'Index'#2#0
+  +#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'Read'
+  +'Only'#8#8'Required'#8#0#0#12'TStringField'#17'RxMemoryData1NAME'#12'Display'
+  +'Width'#2'd'#9'FieldKind'#7#6'fkData'#9'FieldName'#6#4'NAME'#5'Index'#2#1#11
+  +'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnl'
+  +'y'#8#8'Required'#8#4'Size'#2'd'#0#0#10'TDateField'#23'RxMemoryData1DATE_ENT'
+  +'ER'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#10'DATE_E'
+  +'NTER'#5'Index'#2#2#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9
+  +'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#0#0#0#11'TDatasource'#11'Datasourc'
+  +'e1'#7'DataSet'#7#13'RxMemoryData1'#4'left'#3#152#0#3'top'#2#16#0#0#0
+]);
