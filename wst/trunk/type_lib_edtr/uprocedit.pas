@@ -130,7 +130,7 @@ begin
         if ( locProc <> FObject ) and
            ( AnsiSameText(locProc.Name,locName) or
              ( ( Self.UpdateType = etUpdate ) and
-               AnsiSameText(FSymbolTable.GetExternalName(locProc),FSymbolTable.GetExternalName(FObject))
+               AnsiSameText(FSymbolTable.GetExternalName(locProc),locName)
              )
            )
         then begin

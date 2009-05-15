@@ -772,9 +772,9 @@ begin
   for j := 0 to Pred(memberList.Count) do begin
     pmr := TPasArgument(memberList[j]);
     ss := AccessNames[pmr.Access];
-    if ( Length(ss) > 0 ) then begin
-      ss := ss + ' ' + AContainer.GetExternalName(pmr);
-    end;
+    if ( Length(ss) > 0 ) then
+      ss := ss + ' ';
+    ss := ss + AContainer.GetExternalName(pmr);
     AddChildNode(Result,ss);
   end;
   if locMthd.InheritsFrom(TPasFunction) then begin

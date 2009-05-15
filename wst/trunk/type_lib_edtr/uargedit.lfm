@@ -3,14 +3,13 @@ object fArgEdit: TfArgEdit
   Height = 393
   Top = 180
   Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 392
   ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'fArgEdit'
   ClientHeight = 393
   ClientWidth = 400
   Position = poMainFormCenter
+  LCLVersion = '0.9.26.2'
   object Panel1: TPanel
     Height = 50
     Top = 343
@@ -85,9 +84,7 @@ object fArgEdit: TfArgEdit
         Top = 114
         Width = 352
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
         ItemHeight = 13
-        MaxLength = 0
         Style = csDropDownList
         TabOrder = 1
       end

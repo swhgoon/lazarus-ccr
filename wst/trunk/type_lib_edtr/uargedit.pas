@@ -71,16 +71,18 @@ var
   i : Integer;
   locArg : TPasArgument;
   argList : TList;
+  locName : string;
 begin
-  b := ( not IsStrEmpty(edtName.Text) ) and
+  locName := edtName.Text;
+  b := ( not IsStrEmpty(locName) ) and
        ( edtType.ItemIndex > -1 );
   if b then begin
     argList := TPasProcedureType(FObject.Parent).Args;
     for i := 0 to Pred(argList.Count) do begin
       locArg := TPasArgument(argList[i]);
       if ( locArg <> FObject ) and
-         ( AnsiSameText(locArg.Name,FObject.Name) or
-           AnsiSameText(FSymbolTable.GetExternalName(locArg),FSymbolTable.GetExternalName(FObject))
+         ( AnsiSameText(locArg.Name,locName) or
+           AnsiSameText(FSymbolTable.GetExternalName(locArg),locName)
          )
       then begin
         b := False;

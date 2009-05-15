@@ -95,6 +95,7 @@
         <Filename Value="uinterfaceedit.pas"/>
         <ComponentName Value="fInterfaceEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uinterfaceedit"/>
       </Unit9>
       <Unit10>
@@ -130,6 +131,7 @@
         <Filename Value="uargedit.pas"/>
         <ComponentName Value="fArgEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uargedit"/>
       </Unit15>
       <Unit16>
