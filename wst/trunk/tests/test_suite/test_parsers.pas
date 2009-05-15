@@ -176,10 +176,11 @@ type
     procedure xsd_not_declared_at_top_node();
     procedure xsd_not_declared_at_top_node_2();
     procedure message_parts_type_hint();
+    procedure var_parameter();
   end;
   
 implementation
-uses parserutils, xsd_consts;
+uses parserutils, xsd_consts, typinfo;
 
 const
   x_complexType_SampleArrayIntFieldType     = 'TArrayIntFieldType';
@@ -2255,6 +2256,76 @@ begin
         CheckNotNull(arg);
         CheckEquals(LowerCase('AValue'), LowerCase(arg.Name));
         CheckEquals(LowerCase('WideString'), LowerCase(arg.ArgType.Name),'Parameter');
+  finally
+    tr.Free();
+  end;
+end;
+
+procedure TTest_WsdlParser.var_parameter();
+
+  function FindProc(const AName : string; AIntf : TPasClassType) : TPasProcedure;
+  var
+    k : Integer;
+  begin
+    Result := nil;
+    for k := 0 to (AIntf.Members.Count - 1) do begin
+      if TObject(AIntf.Members[k]).InheritsFrom(TPasProcedure) and ( TPasProcedure(AIntf.Members[k]).Name = AName ) then begin
+        Result := TPasProcedure(AIntf.Members[k]);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  tr : TwstPasTreeContainer;
+  elt : TPasElement;
+  intf : TPasClassType;
+  mth : TPasProcedure;
+  mthType : TPasProcedureType;
+  res : TPasResultElement;
+  arg : TPasArgument;
+begin
+  tr := ParseDoc('var_parameter');
+  try
+    elt := tr.FindElement('TestService');
+    CheckNotNull(elt,'TestService');
+    CheckIs(elt,TPasClassType);
+    intf := elt as TPasClassType;
+    CheckEquals(Ord(okInterface),Ord(intf.ObjKind));
+    mth := FindProc('sampleProc',intf);
+      CheckNotNull(mth,'sampleProc not found');
+      CheckEquals('sampleProc',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasProcedureType);
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AInParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AInOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+        CheckEquals('argVar',GetEnumName(TypeInfo(TArgumentAccess),Ord(arg.Access)),'arg.Access');
+
+    mth := FindProc('sampleProc2',intf);
+      CheckNotNull(mth,'sampleProc2 not found');
+      CheckEquals('sampleProc2',mth.Name);
+      mthType := mth.ProcType;
+      CheckIs(mthType,TPasFunctionType);
+        res := TPasFunctionType(mthType).ResultEl;
+        CheckNotNull(res, 'Result');
+        CheckEquals(LowerCase('ShortInt'), LowerCase(res.ResultType.Name));
+      CheckEquals(2, mthType.Args.Count, 'Parameter count');
+      arg := TPasArgument(mthType.Args[0]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AInParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('string'), LowerCase(arg.ArgType.Name));
+      arg := TPasArgument(mthType.Args[1]);
+        CheckNotNull(arg);
+        CheckEquals(LowerCase('AInOutParam'), LowerCase(arg.Name));
+        CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
+        CheckEquals('argConst',GetEnumName(TypeInfo(TArgumentAccess),Ord(arg.Access)),'arg.Access');
   finally
     tr.Free();
   end;

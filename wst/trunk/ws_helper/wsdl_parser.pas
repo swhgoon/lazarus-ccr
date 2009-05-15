@@ -607,6 +607,8 @@ function TWsdlParser.ParseOperation(
       j : PtrInt;
       arg_a, arg_b : TPasArgument;
       resArgIndex : PtrInt;
+      prmNameColisionWithInputParam : Boolean;
+      prmTypeEntity : TPasType;
     begin
       if ExtractMsgName(s_output,outMsg) then begin
         outMsgNode := FindMessageNode(outMsg);
@@ -647,28 +649,29 @@ function TWsdlParser.ParseOperation(
                 prmInternameName := prmInternameName + 'Param';
               end;
               prmHasInternameName := IsReservedKeyWord(prmInternameName) or
-                                     ( not IsValidIdent(prmInternameName) ) or
-                                     ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
+                                     ( not IsValidIdent(prmInternameName) );
               if prmHasInternameName then
                 prmInternameName := '_' + prmInternameName;
+              prmNameColisionWithInputParam := ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
+              prmTypeEntity := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
               prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
               prmDef := FindParameter(tmpMthdType,prmInternameName);
               if ( prmDef = nil ) then begin
                 prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
                 tmpMthdType.Args.Add(prmDef);
-                prmDef.ArgType := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
+                prmDef.ArgType := prmTypeEntity;
                 prmDef.ArgType.AddRef();
                 prmDef.Access := argOut;
                 if prmHasInternameName then begin
                   SymbolTable.RegisterExternalAlias(prmDef,prmName);
                 end;
               end else begin
-                if SymbolTable.SameName(prmDef.ArgType,prmTypeName) then begin
+                if prmNameColisionWithInputParam and ( prmDef.ArgType = prmTypeEntity ) then begin
                   prmDef.Access := argVar;
                 end else begin
                   prmInternameName := '_' + prmInternameName;
                   prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
-                  prmDef.ArgType := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
+                  prmDef.ArgType := prmTypeEntity;
                   prmDef.ArgType.AddRef();
                   prmDef.Access := argOut;
                   tmpMthdType.Args.Add(prmDef);
