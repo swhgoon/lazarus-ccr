@@ -28817,6 +28817,9 @@ begin
   if (FUpdateCount = 0) and FHeader.FColumns.IsValidColumn(Column) then
   begin
     R := ClientRect;
+    //lclheader
+    if hoVisible in FHeader.FOptions then
+      OffsetRect(R, 0, FHeader.Height);
     FHeader.Columns.GetColumnBounds(Column, R.Left, R.Right);
     InvalidateRect(Handle, @R, False);
   end;
@@ -28862,7 +28865,7 @@ begin
           R.Bottom := ClientHeight;
           //lclheader
           if hoVisible in FHeader.FOptions then
-            Inc(R.Bottom,FHeader.Height);
+            Inc(R.Bottom, FHeader.Height);
           InvalidateRect(Handle, @R, False);
         end;
       end;
