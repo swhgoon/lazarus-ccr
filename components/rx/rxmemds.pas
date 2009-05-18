@@ -226,6 +226,14 @@ const
 
 { Utility routines }
 
+procedure FinalizeBlobFields(BlobArray:PMemBlobArray; BlobFieldCount:integer);
+var
+  i:integer;
+begin
+  for i:=0 to BlobFieldCount-1 do
+    BlobArray^[i]:='';
+end;
+
 function CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
   CaseInsensitive: Boolean): Integer;
 begin
@@ -378,9 +386,17 @@ begin
     if FMemoryData <> nil then
     begin
       FMemoryData.FRecords.Remove(Self);
-      if FMemoryData.BlobFieldCount > 0 then
+{      if FMemoryData.BlobFieldCount > 0 then
         Finalize(PMemBlobArray(FBlobs)^[0], FMemoryData.BlobFieldCount);
-      ReallocMem(FBlobs, 0);
+      ReallocMem(FBlobs, 0);}
+      if FMemoryData.BlobFieldCount > 0 then
+      begin
+        FinalizeBlobFields(FBlobs, Value.BlobFieldCount);
+        Freemem(FBlobs, Value.BlobFieldCount * SizeOf(TMemBlobData));
+        //Finalize(PMemBlobArray(FBlobs)^[0], FMemoryData.BlobFieldCount);
+//         ReallocMem(FBlobs, 0);
+      end;
+      FBlobs:=nil;
       ReallocMem(FData, 0);
       FMemoryData := nil;
     end;
@@ -395,8 +411,12 @@ begin
       FMemoryData := Value;
       if Value.BlobFieldCount > 0 then
       begin
-        ReallocMem(FBlobs, Value.BlobFieldCount * SizeOf(Pointer));
-        Initialize(PMemBlobArray(FBlobs)^[0]);//, Value.BlobFieldCount);
+//        ReallocMem(FBlobs, Value.BlobFieldCount * SizeOf(Pointer));
+//        Initialize(PMemBlobArray(FBlobs)^[0]);//, Value.BlobFieldCount);
+        GetMem(FBlobs, Value.BlobFieldCount * SizeOf(TMemBlobData));
+        FinalizeBlobFields(FBlobs, Value.BlobFieldCount);
+//        FillChar(FBlobs^, Value.BlobFieldCount * SizeOf(Pointer), 0);
+//        Initialize(PMemBlobArray(FBlobs)^[0]);//, Value.BlobFieldCount);
       end;
       DataSize := 0;
       for I := 0 to Value.FieldDefs.Count - 1 do
@@ -569,7 +589,7 @@ begin
   if GetProps then FRecordSize := CalcRecordSize;
   FBookmarkOfs := FRecordSize + CalcFieldsSize;
   FBlobOfs := FBookmarkOfs + SizeOf(TMemBookmarkInfo);
-  FRecBufSize := FBlobOfs + BlobFieldCount * SizeOf(Pointer);
+  FRecBufSize := FBlobOfs + BlobFieldCount * SizeOf(TMemBlobData);//Pointer);
 end;
 
 procedure TRxMemoryData.ClearRecords;
@@ -582,14 +602,21 @@ end;
 function TRxMemoryData.AllocRecordBuffer: PChar;
 begin
   Result := StrAlloc(FRecBufSize);
+  FillChar(Result^, FRecBufSize, 0);
   if BlobFieldCount > 0 then
-    Initialize(PMemBlobArray(Result + FBlobOfs)^[0]);//, BlobFieldCount);
+  begin
+//    Initialize(PMemBlobArray(Result + FBlobOfs)^[0]);//, BlobFieldCount);
+//    FillChar(PMemBlobArray(Result + FBlobOfs)^, BlobFieldCount * SizeOf(Pointer),0);//, BlobFieldCount);
+    FinalizeBlobFields(PMemBlobArray(Result + FBlobOfs), BlobFieldCount);
+
+  end;
 end;
 
 procedure TRxMemoryData.FreeRecordBuffer(var Buffer: PChar);
 begin
-  if BlobFieldCount > 0 then
-    Finalize(PMemBlobArray(Buffer + FBlobOfs)^[0]);//, BlobFieldCount);
+ if BlobFieldCount > 0 then
+    FinalizeBlobFields(PMemBlobArray(Buffer + FBlobOfs), BlobFieldCount);
+//    Finalize(PMemBlobArray(Buffer + FBlobOfs)^[0]);//, BlobFieldCount)
   StrDispose(Buffer);
   Buffer := nil;
 end;
@@ -643,7 +670,7 @@ begin
     BookmarkFlag := bfCurrent;
   end;
   for I := 0 to BlobFieldCount - 1 do
-    PMemBlobArray(Buffer + FBlobOfs)[I] := PMemBlobArray(Rec.FBlobs)[I];
+    PMemBlobArray(Buffer + FBlobOfs)^[I] := PMemBlobArray(Rec.FBlobs)^[I];
   GetCalcFields(Buffer);
 end;
 
@@ -903,8 +930,8 @@ procedure TRxMemoryData.CloseBlob(Field: TField);
 begin
   if (FRecordPos >= 0) and (FRecordPos < FRecords.Count) and
     (State = dsEdit) then
-    PMemBlobArray(ActiveBuffer + FBlobOfs)[Field.Offset] := 
-      PMemBlobArray(Records[FRecordPos].FBlobs)[Field.Offset]
+    PMemBlobArray(ActiveBuffer + FBlobOfs)^[Field.Offset] :=
+      PMemBlobArray(Records[FRecordPos].FBlobs)^[Field.Offset]
   else PMemBlobArray(ActiveBuffer + FBlobOfs)^[Field.Offset] := '';
 end;
 
@@ -1000,7 +1027,7 @@ var
 begin
   Move(Buffer^, Rec.Data^, FRecordSize);
   for I := 0 to BlobFieldCount - 1 do
-    PMemBlobArray(Rec.FBlobs)[I] := PMemBlobArray(Buffer + FBlobOfs)[I];
+    PMemBlobArray(Rec.FBlobs)^[I] := PMemBlobArray(Buffer + FBlobOfs)^[I];
 end;
 
 procedure TRxMemoryData.SetMemoryRecordData(Buffer: PChar; Pos: Integer);
