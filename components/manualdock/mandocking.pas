@@ -83,6 +83,8 @@ begin
 end;
 
 procedure TManualDocker.ChangeDocking(DockingEnabled: Boolean);
+var
+  i  : Integer;
 begin
   if DockingEnabled then begin
     if not Assigned(SourceEditorWindow) or not Assigned(IDEMessagesWindow) then Exit;
@@ -98,6 +100,9 @@ begin
     IDEMessagesWindow.Align := alClient;
     IDEMessagesWindow.BorderStyle := bsNone;
     IDEMessagesWindow.TabStop := false;
+    for i := 0 to IDEMessagesWindow.ControlCount - 1 do 
+      if IDEMessagesWindow.Controls[i] is TWinControl then 
+        TWinControl(IDEMessagesWindow.Controls[i]).TabStop := false;
     panel.Height := MsgWnd.DockSize.cy;
   end else begin
     if Assigned(panel) then begin
