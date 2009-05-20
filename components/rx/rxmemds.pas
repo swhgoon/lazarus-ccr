@@ -186,7 +186,7 @@ type
     FMemoryData: TRxMemoryData;
     FID: Integer;
     FData: Pointer;
-    FBlobs: Pointer;
+    FBlobs: PMemBlobArray;
     function GetIndex: Integer;
     procedure SetMemoryData(Value: TRxMemoryData; UpdateParent: Boolean);
   protected
@@ -386,15 +386,10 @@ begin
     if FMemoryData <> nil then
     begin
       FMemoryData.FRecords.Remove(Self);
-{      if FMemoryData.BlobFieldCount > 0 then
-        Finalize(PMemBlobArray(FBlobs)^[0], FMemoryData.BlobFieldCount);
-      ReallocMem(FBlobs, 0);}
       if FMemoryData.BlobFieldCount > 0 then
       begin
-        FinalizeBlobFields(FBlobs, Value.BlobFieldCount);
-        Freemem(FBlobs, Value.BlobFieldCount * SizeOf(TMemBlobData));
-        //Finalize(PMemBlobArray(FBlobs)^[0], FMemoryData.BlobFieldCount);
-//         ReallocMem(FBlobs, 0);
+        FinalizeBlobFields(FBlobs, FMemoryData.BlobFieldCount);
+        Freemem(FBlobs, FMemoryData.BlobFieldCount * SizeOf(TMemBlobData));
       end;
       FBlobs:=nil;
       ReallocMem(FData, 0);
@@ -411,8 +406,6 @@ begin
       FMemoryData := Value;
       if Value.BlobFieldCount > 0 then
       begin
-//        ReallocMem(FBlobs, Value.BlobFieldCount * SizeOf(Pointer));
-//        Initialize(PMemBlobArray(FBlobs)^[0]);//, Value.BlobFieldCount);
         GetMem(FBlobs, Value.BlobFieldCount * SizeOf(TMemBlobData));
         FinalizeBlobFields(FBlobs, Value.BlobFieldCount);
 //        FillChar(FBlobs^, Value.BlobFieldCount * SizeOf(Pointer), 0);
