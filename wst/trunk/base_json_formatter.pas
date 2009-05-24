@@ -43,7 +43,7 @@ type
 
   TJonRPCVersion = ( jsonRPC_10, jsonRPC_11 );
   TJsonInteger = Integer;
-  TEnumIntType = Integer;
+  TEnumIntType = Int64;
 
   EJsonRpcException = class(EBaseRemoteException)
   end;
@@ -67,6 +67,10 @@ type
       Const AName  : string;
       const AValue : TJsonInteger
     ) : TJSONData;virtual;abstract;
+    function CreateInt64Buffer(
+      Const AName  : string;
+      const AValue : Int64
+    ) : TJSONData;virtual;
     function CreateFloatBuffer(
       Const AName  : string;
       const AValue : TJSONFloat
@@ -499,7 +503,7 @@ procedure TJsonRpcBaseFormatter.PutInt64(
   const AData : Int64
 );
 begin
-  StackTop().CreateIntBuffer(AName,AData);
+  StackTop().CreateInt64Buffer(AName,AData);
 end;
 
 procedure TJsonRpcBaseFormatter.PutStr(
@@ -627,8 +631,14 @@ procedure TJsonRpcBaseFormatter.GetInt64(
   var AName : String;
   var AData : Int64
 );
+var
+  locBuffer : TJSONData;
 begin
-  AData := GetDataBuffer(AName).AsInteger;
+  locBuffer := GetDataBuffer(AName);
+  if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then
+    AData := locBuffer.AsInteger
+  else
+    AData := Round(locBuffer.AsFloat);
 end;
 
 procedure TJsonRpcBaseFormatter.GetFloat(
@@ -1170,7 +1180,7 @@ begin
       {$ENDIF}
           enumData := 0;
           If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt(ATypeInfo,AName,enumData)
+            GetInt64(ATypeInfo,AName,enumData)
           Else
             GetEnum(ATypeInfo,AName,enumData);
           Case GetTypeData(ATypeInfo)^.OrdType Of
@@ -1294,7 +1304,7 @@ begin
       {$ENDIF}
           enumData := 0;
           If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt(ATypeInfo,locName,enumData)
+            GetInt64(ATypeInfo,locName,enumData)
           Else
             GetEnum(ATypeInfo,locName,enumData);
           Case GetTypeData(ATypeInfo)^.OrdType Of
@@ -1432,6 +1442,14 @@ constructor TStackItem.Create(AScopeObject : TJSONData; AScopeType : TScopeType)
 begin
   FScopeObject := AScopeObject;
   FScopeType := AScopeType;
+end;
+
+function TStackItem.CreateInt64Buffer(
+  const AName  : string;
+  const AValue : Int64
+) : TJSONData;
+begin
+  Result := CreateFloatBuffer(AName,AValue);
 end;
 
 { TObjectStackItem }

@@ -24,7 +24,7 @@ uses
   TestFrameWork, ActiveX,
 {$ENDIF}
   TypInfo,
-  base_service_intf, wst_types, server_service_intf, service_intf;
+  test_suite_utils, base_service_intf, wst_types, server_service_intf, service_intf;
 
 type
 
@@ -386,7 +386,7 @@ type
 
   { TTestFormatterSimpleType }
 
-  TTestFormatterSimpleType= class(TTestCase)
+  TTestFormatterSimpleType= class(TWstBaseTest)
   protected
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;virtual;abstract;
     function Support_ComplextType_with_SimpleContent():Boolean;virtual;
@@ -632,7 +632,7 @@ uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_r
      , server_service_soap, soap_formatter,
      server_service_xmlrpc, xmlrpc_formatter,
      binary_streamer, server_binary_formatter, binary_formatter,
-  test_suite_utils, object_serializer;
+     object_serializer;
 
 function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;forward;
 
@@ -1220,7 +1220,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_32;
-const VAL_1 = 121076; VAL_2 : LongInt = -101276;
+const VAL_1 = 3294967295; VAL_2 : LongInt = -101276;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1254,7 +1254,7 @@ begin
       f.Get(TypeInfo(LongInt),x,intVal_S);
     f.EndScopeRead();
 
-    CheckEquals(VAL_1,intVal_U);
+    Check( ( VAL_1 = intVal_U ) );
     CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
@@ -1314,7 +1314,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_64;
-const VAL_1 = 121076; VAL_2 : Int64 = -101276;
+const VAL_1 = $FFFFFFFFFF; VAL_2 : Int64 = -$FFFFFFFFF0;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2074,6 +2074,15 @@ begin
 end;
 
 procedure TTestFormatter.Test_Int_WithClass;
+const
+  CONST_Val_8U  = $FE;
+  CONST_Val_8S  = -$7F;
+  CONST_Val_16U = $FFFE;
+  CONST_Val_16S = -$7FFF;
+  CONST_Val_32U = $FFFFFFFE;
+  CONST_Val_32S = -$7FFFFFFF;
+  CONST_Val_64U = $FFFFFFFFFFFFF;
+  CONST_Val_64S = -$FFFFFFFFFFFFF;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2083,14 +2092,14 @@ begin
   s := Nil;
   a := TClass_Int.Create();
   Try
-    a.Val_8U := 8;
-      a.Val_8S := -8;
-    a.Val_16U := 16;
-      a.Val_16S := -16;
-    a.Val_32U := 32;
-      a.Val_32S := -32;
-    a.Val_64U := 64;
-      a.Val_64S := -64;
+    a.Val_8U := CONST_Val_8U;
+      a.Val_8S := CONST_Val_8S;
+    a.Val_16U := CONST_Val_16U;
+      a.Val_16S := CONST_Val_16S;
+    a.Val_32U := CONST_Val_32U;
+      a.Val_32S := CONST_Val_32S;
+    a.Val_64U := CONST_Val_64U;
+      a.Val_64S := CONST_Val_64S;
 
     f := CreateFormatter(TypeInfo(TClass_Int));
 
@@ -2112,14 +2121,14 @@ begin
       f.Get(TypeInfo(TClass_Int),x,a);
     f.EndScopeRead();
     
-    CheckEquals(8,a.Val_8U);
-      CheckEquals(-8,a.Val_8S);
-    CheckEquals(16,a.Val_16U);
-      CheckEquals(-16,a.Val_16S);
-    CheckEquals(32,a.Val_32U);
-      CheckEquals(-32,a.Val_32S);
-    CheckEquals(64,a.Val_64U);
-      CheckEquals(-64,a.Val_64S);
+    CheckEquals(CONST_Val_8U,a.Val_8U);
+      CheckEquals(CONST_Val_8S,a.Val_8S);
+    CheckEquals(CONST_Val_16U,a.Val_16U);
+      CheckEquals(CONST_Val_16S,a.Val_16S);
+    CheckEquals(CONST_Val_32U,a.Val_32U);
+      CheckEquals(CONST_Val_32S,a.Val_32S);
+    CheckEquals(CONST_Val_64U,a.Val_64U);
+      CheckEquals(CONST_Val_64S,a.Val_64S);
   Finally
     a.Free();
     s.Free();
@@ -2218,7 +2227,7 @@ begin
 end;
 
 procedure TTestFormatter.Test_CplxInt64SimpleContent_WithClass;
-const VAL_S = -12; VAL_U = 10; VAL_X = 121;
+const VAL_S = -$FFFFFFFFFF; VAL_U = $FFFFFFFFFFFF; VAL_X = 121;
       VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
 var
   f : IFormatterBase;
@@ -3424,7 +3433,9 @@ begin
 end;
 
 procedure TTestFormatter.Test_Int64SArray();
-const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of Int64 = (-12,-34,100,200,180);
+const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of Int64 =
+  ( -$FFFFFFFFFF,-$FFFF123FFF,$FFFFFFFFFF2,$FFFFFFFFFF2F,$FFFFFFFFFF24
+  );
 var
   a : TArrayOfInt64SRemotable;
   i : Integer;
