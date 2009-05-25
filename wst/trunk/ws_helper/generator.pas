@@ -153,6 +153,7 @@ type
   private
     FDecStream : ISourceStream;
     FImpStream : ISourceStream;
+    FImpFirstStream : ISourceStream;
     FImpTempStream : ISourceStream;
     FImpLastStream : ISourceStream;
     FRttiFunc : ISourceStream;
@@ -191,7 +192,8 @@ type
 implementation
 uses parserutils, Contnrs, logger_intf;
 
-Const sPROXY_BASE_CLASS = 'TBaseProxy';
+const sLOCAL_TYPE_REGISTER_REFERENCE = 'typeRegistryIntance';
+      sPROXY_BASE_CLASS = 'TBaseProxy';
       sBINDER_BASE_CLASS = 'TBaseServiceBinder';
       sIMP_BASE_CLASS = 'TBaseServiceImplementation';
       sSERIALIZER_CLASS  = 'IFormatterClient';
@@ -2076,7 +2078,12 @@ begin
   WriteLn('');
   WriteLn('Implementation');
   WriteLn('uses metadata_repository, record_rtti, wst_types;');
-  FImpTempStream.WriteLn('initialization');
+  FImpFirstStream.WriteLn('var');
+  FImpFirstStream.Indent();
+    FImpFirstStream.WriteLn('%s : TTypeRegistry = nil;',[sLOCAL_TYPE_REGISTER_REFERENCE]);
+  FImpFirstStream.WriteLn('initialization');
+  FImpFirstStream.Indent();
+    FImpFirstStream.WriteLn('%s := GetTypeRegistry();',[sLOCAL_TYPE_REGISTER_REFERENCE]);
 end;
 
 procedure TInftGenerator.GenerateUnitImplementationFooter();
@@ -2276,11 +2283,14 @@ var
     WriteLn('property %s : %s read F%s write F%s%s;',[propName,AProp.VarType.Name,propName,propName,locStore]);
     if not AnsiSameText(AProp.Name,SymbolTable.GetExternalName(AProp)) then begin
       FImpLastStream.Indent();
-      FImpLastStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(AProp.Name),QuotedStr(SymbolTable.GetExternalName(AProp))]);
+      FImpLastStream.WriteLn(
+        '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',
+        [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(AProp.Name),QuotedStr(SymbolTable.GetExternalName(AProp))]
+      );
     end;
     if SymbolTable.IsAttributeProperty(AProp) then begin
-      FImpLastStream.Indent();
-      FImpLastStream.WriteLn('%s.RegisterAttributeProperty(%s);',[ASymbol.Name,QuotedStr(AProp.Name)]);
+      FImpFirstStream.Indent();
+      FImpFirstStream.WriteLn('%s.RegisterAttributeProperty(%s);',[ASymbol.Name,QuotedStr(AProp.Name)]);
     end;
   end;
 
@@ -2466,7 +2476,10 @@ begin
       DecIndent();
 
       FImpTempStream.Indent();
-      FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]);
+      FImpTempStream.WriteLn(
+        '%s.Register(%s,TypeInfo(%s),%s);',
+        [sLOCAL_TYPE_REGISTER_REFERENCE,sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]
+      );
 
       SetCurrentStream(FImpStream);
         WriteImp();
@@ -2494,7 +2507,10 @@ begin
       Indent();WriteLn('%s = ( ',[ASymbol.Name]);
 
       FImpTempStream.Indent();
-      FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]);
+      FImpTempStream.WriteLn(
+        '%s.Register(%s,TypeInfo(%s),%s);',
+        [sLOCAL_TYPE_REGISTER_REFERENCE,sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]
+      );
 
       IncIndent();
         for i := 0 to Pred(ASymbol.Values.Count) do begin
@@ -2508,7 +2524,10 @@ begin
              ( not AnsiSameText(itm.Name,SymbolTable.GetExternalName(itm,False)) )
           then begin
             FImpTempStream.Indent();
-            FImpTempStream.WriteLn('GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',[ASymbol.Name,QuotedStr(itm.Name),QuotedStr(SymbolTable.GetExternalName(itm,False))]);
+            FImpTempStream.WriteLn(
+              '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(%s,%s);',
+              [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(itm.Name),QuotedStr(SymbolTable.GetExternalName(itm,False))]
+            );
           end;
         end;
       DecIndent();
@@ -2541,19 +2560,22 @@ begin
   end;
 
   FImpTempStream.Indent();
-  FImpTempStream.WriteLn('GetTypeRegistry().Register(%s,TypeInfo(%s),%s);',[sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]);
+  FImpTempStream.WriteLn(
+    '%s.Register(%s,TypeInfo(%s),%s);',
+    [sLOCAL_TYPE_REGISTER_REFERENCE,sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]
+  );
   if ( SymbolTable.GetArrayItemName(ASymbol) <> SymbolTable.GetArrayItemExternalName(ASymbol) ) then begin
     FImpTempStream.Indent();
     FImpTempStream.WriteLn(
-      'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_ITEM,%s);',
-      [ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
+      '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_ITEM,%s);',
+      [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
     );
   end;
   if ( SymbolTable.GetArrayStyle(ASymbol) = asEmbeded ) then begin
     FImpTempStream.Indent();
     FImpTempStream.WriteLn(
-      'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);',
-      [ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
+      '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);',
+      [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
     );
   end;
 end;
@@ -2645,8 +2667,8 @@ var
     for k := 0 to Pred(c) do begin
       itm := TPasVariable(ASymbol.Members[k]);
       if SymbolTable.IsAttributeProperty(itm) then begin
-        Indent();
-        WriteLn('RegisterAttributeProperty(TypeInfo(%s),%s);',[ASymbol.Name,QuotedStr(itm.Name)]);
+        FImpFirstStream.Indent();
+        FImpFirstStream.WriteLn('RegisterAttributeProperty(TypeInfo(%s),%s);',[ASymbol.Name,QuotedStr(itm.Name)]);
       end;
     end;
   end;
@@ -2663,12 +2685,12 @@ begin
 
       Indent();
       WriteLn(
-        'GetTypeRegistry().Register(%s,TypeInfo(%s),%s).RegisterExternalPropertyName(%s,%s);',
-        [ sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol)),
+        '%s.Register(%s,TypeInfo(%s),%s).RegisterExternalPropertyName(%s,%s);',
+        [ sLOCAL_TYPE_REGISTER_REFERENCE,sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol)),
           QuotedStr(Format('__FIELDS__',[ASymbol.Name])),QuotedStr(strFieldList)
         ]
       );
-      s := 'GetTypeRegistry().ItemByTypeInfo[TypeInfo(%s)]' +
+      s := '%s.ItemByTypeInfo[TypeInfo(%s)]' +
              '.RegisterObject(' +
                'FIELDS_STRING,' +
                'TRecordRttiDataObject.Create(' +
@@ -2677,11 +2699,11 @@ begin
                ')' +
              ');';
       WriteLn('{$IFNDEF %s}',[sRECORD_RTTI_DEFINE]);
-        Indent(); WriteLn(s,[ASymbol.Name,Format('TypeInfo(%s)',[ASymbol.Name]),ASymbol.Name]);
+        Indent(); WriteLn(s,[sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,Format('TypeInfo(%s)',[ASymbol.Name]),ASymbol.Name]);
       WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
 
       WriteLn('{$IFDEF %s}',[sRECORD_RTTI_DEFINE]);
-        Indent(); WriteLn(s,[ASymbol.Name,Format('__%s_TYPEINFO_FUNC__()',[ASymbol.Name]),ASymbol.Name]);
+        Indent(); WriteLn(s,[sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,Format('__%s_TYPEINFO_FUNC__()',[ASymbol.Name]),ASymbol.Name]);
       WriteLn('{$ENDIF %s}',[sRECORD_RTTI_DEFINE]);
       WriteAttributeProperties();
     SetCurrentStream(FDecStream);
@@ -3004,9 +3026,13 @@ begin
       GenerateCustomMetadatas();
     end;
 
+    FImpFirstStream.NewLine();
     FImpLastStream.NewLine();
     GenerateUnitImplementationFooter();
-    FSrcMngr.Merge(GetDestUnitName() + '.pas',[FDecStream,FImpStream,FRttiFunc,FImpTempStream,FImpLastStream]);
+    FSrcMngr.Merge(
+      GetDestUnitName() + '.pas',
+      [FDecStream,FImpStream,FRttiFunc,FImpFirstStream,FImpTempStream,FImpLastStream]
+    );
     FDecStream := nil;
     FImpStream := nil;
     FImpTempStream := nil;
@@ -3024,8 +3050,10 @@ begin
   FDecStream := SrcMngr.CreateItem(GetDestUnitName() + '.dec');
   FImpStream := SrcMngr.CreateItem(GetDestUnitName() + '.imp');
   FImpTempStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp');
+  FImpFirstStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_first');
   FImpLastStream := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_imp_last');
   FRttiFunc := SrcMngr.CreateItem(GetDestUnitName() + '.tmp_rtti_func');
+  FImpFirstStream.IncIndent();
   FImpTempStream.IncIndent();
   FImpLastStream.IncIndent();
 end;

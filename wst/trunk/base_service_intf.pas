@@ -1489,6 +1489,8 @@ type
     FInternalNames : TStrings;
   private
     procedure CreateInternalObjects();{$IFDEF USE_INLINE}inline;{$ENDIF}
+  protected
+    procedure Init(); virtual;
   public
     constructor Create(
             AOwner        : TTypeRegistry;
@@ -2959,6 +2961,11 @@ begin
   end;
 end;
 
+procedure TTypeRegistryItem.Init();
+begin
+
+end;
+
 constructor TTypeRegistryItem.Create(
         AOwner        : TTypeRegistry;
         ANameSpace    : String;
@@ -3203,6 +3210,7 @@ begin
   if ( i = -1 ) then begin
     Result := GetItemClassFor(ADataType).Create(Self,ANameSpace,ADataType,ADeclaredName);
     Add(Result);
+    Result.Init();
 {$IFDEF TRemotableTypeInitializer_Initialize}
     InitializeItem(Result);
 {$ENDIF TRemotableTypeInitializer_Initialize}

@@ -283,10 +283,10 @@ end;
 
 procedure initialize_config_objects();
 begin
+  TwstConfigService.RegisterAttributeProperty('Name');
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TwstConfigService),'Service');
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TwstConfigServiceArray),'Services');
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TWstConfigurationObject),'WST_Configuration');
-  TwstConfigService.RegisterAttributeProperty('Name');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TwstConfigServiceArray)].RegisterExternalPropertyName('Item','service');
 end;
 

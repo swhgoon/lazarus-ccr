@@ -100,20 +100,10 @@ type
 
   TBaseComplexTypeRegistryItem = class(TTypeRegistryItem)
   private
-    FGetterLock : TCriticalSection;
     FSerializer : TObjectSerializer;
-    FGetFunction : TGetSerializerFunction;
-    FFuncIsNotReady : Boolean;
-  private
-    function FirstGetter() : TObjectSerializer;
-    function StaticGetter() : TObjectSerializer;
+  protected
+    procedure Init(); override;
   public
-    constructor Create(
-            AOwner        : TTypeRegistry;
-            ANameSpace    : string;
-            ADataType     : PTypeInfo;
-      Const ADeclaredName : string = ''
-    );override;
     destructor Destroy();override;
     function GetSerializer() : TObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   end;
@@ -1354,52 +1344,21 @@ end;
 
 { TBaseComplexTypeRegistryItem }
 
-function TBaseComplexTypeRegistryItem.FirstGetter() : TObjectSerializer;
+procedure TBaseComplexTypeRegistryItem.Init();
 begin
-  FGetterLock.Acquire();
-  try
-    if ( FSerializer = nil ) then begin
-      FSerializer := TObjectSerializer.Create(TBaseComplexRemotableClass(GetTypeData(DataType)^.ClassType),Owner);
-      FFuncIsNotReady := True;
-        FGetFunction := {$IFDEF FPC}@{$ENDIF}StaticGetter;
-      FFuncIsNotReady := False;
-    end;
-  finally
-    FGetterLock.Release();
-  end;
-  Result := FSerializer;
-end;
-
-function TBaseComplexTypeRegistryItem.StaticGetter() : TObjectSerializer;
-begin
-  Result := FSerializer;
-end;
-
-constructor TBaseComplexTypeRegistryItem.Create(
-        AOwner : TTypeRegistry;
-        ANameSpace : string;
-        ADataType : PTypeInfo;
-  const ADeclaredName : string
-);
-begin
-  inherited Create(AOwner, ANameSpace, ADataType, ADeclaredName);
-  FGetFunction := {$IFDEF FPC}@{$ENDIF}FirstGetter;
-  FGetterLock := TCriticalSection.Create();
+  inherited Init();
+  FSerializer := TObjectSerializer.Create(TBaseComplexRemotableClass(GetTypeData(DataType)^.ClassType),Owner);
 end;
 
 destructor TBaseComplexTypeRegistryItem.Destroy();
 begin
-  FGetterLock.Free();
   FSerializer.Free();
   inherited Destroy();
 end;
 
 function TBaseComplexTypeRegistryItem.GetSerializer() : TObjectSerializer;
 begin
-  while FFuncIsNotReady do begin
-    //busy wait
-  end;
-  Result := FGetFunction();
+  Result := FSerializer;
 end;
 
 end.
