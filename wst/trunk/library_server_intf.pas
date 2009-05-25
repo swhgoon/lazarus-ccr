@@ -51,7 +51,8 @@ function wstHandleRequest(
   end;
   
 Var
-  buff, trgt,ctntyp, frmt : TBinaryString;
+  trgt,ctntyp, frmt : TBinaryString;
+  binBuff : TByteDynArray;
   rqst : IRequestBuffer;
   rdr : IDataStoreReader;
   inStream, bufStream : TMemoryStream;
@@ -82,12 +83,12 @@ begin
           trgt := rdr.ReadAnsiStr();
           ctntyp := rdr.ReadAnsiStr();
           frmt := rdr.ReadAnsiStr();
-          buff := rdr.ReadAnsiStr();
+          binBuff := rdr.ReadBinary();
           rdr := nil;
           bufStream.Size := 0;
           bufStream.Position := 0;
-          inStream.Write(buff[1],Length(buff));
-          SetLength(buff,0);
+          inStream.Write(binBuff[0],Length(binBuff));
+          SetLength(binBuff,0);
           inStream.Position := 0;
           rqst := TRequestBuffer.Create(trgt,ctntyp,inStream,bufStream,frmt);
           HandleServiceRequest(rqst);

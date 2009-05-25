@@ -125,7 +125,7 @@ begin
     wrtr.WriteAnsiStr(Self.Format);
     SetLength(binBuff,ARequest.Size);
     ARequest.Position := 0;
-    ARequest.Read(binBuff[1],Length(binBuff));
+    ARequest.Read(binBuff[0],Length(binBuff));
     wrtr.WriteBinary(binBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);

@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_proxy".
-  Date            : "29/12/2007 00:43:35".
+  Date            : "25/05/2009 01:53:09".
 }
 
 Unit user_service_intf_proxy;
@@ -32,15 +32,20 @@ Type
     ):boolean;
   End;
 
-  Function wst_CreateInstance_UserService(const AFormat : string = 'SOAP:'; const ATransport : string = 'HTTP:'):UserService;
+  Function wst_CreateInstance_UserService(const AFormat : string = 'SOAP:'; const ATransport : string = 'HTTP:'; const AAddress : string = ''):UserService;
 
 Implementation
 uses wst_resources_imp, metadata_repository;
 
 
-Function wst_CreateInstance_UserService(const AFormat : string; const ATransport : string):UserService;
+Function wst_CreateInstance_UserService(const AFormat : string; const ATransport : string; const AAddress : string):UserService;
+Var
+  locAdr : string;
 Begin
-  Result := TUserService_Proxy.Create('UserService',AFormat+GetServiceDefaultFormatProperties(TypeInfo(UserService)),ATransport + 'address=' + GetServiceDefaultAddress(TypeInfo(UserService)));
+  locAdr := AAddress;
+  if ( locAdr = '' ) then
+    locAdr := GetServiceDefaultAddress(TypeInfo(UserService));
+  Result := TUserService_Proxy.Create('UserService',AFormat+GetServiceDefaultFormatProperties(TypeInfo(UserService)),ATransport + 'address=' + locAdr);
 End;
 
 { TUserService_Proxy implementation }
@@ -53,19 +58,21 @@ end;
 function TUserService_Proxy.GetList():TUserArray;
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('GetList', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('GetList', GetTarget(),locCallContext);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
+    locSerializer.BeginCallRead(locCallContext);
       TObject(Result) := Nil;
-      strPrmName := 'result';
-      locSerializer.Get(TypeInfo(TUserArray), strPrmName, Result);
+      locStrPrmName := 'result';
+      locSerializer.Get(TypeInfo(TUserArray), locStrPrmName, Result);
 
   Finally
     locSerializer.Clear();
@@ -77,17 +84,19 @@ procedure TUserService_Proxy.Add(
 );
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('Add', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('Add', GetTarget(),locCallContext);
       locSerializer.Put('AUser', TypeInfo(TUser), AUser);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
+    locSerializer.BeginCallRead(locCallContext);
 
   Finally
     locSerializer.Clear();
@@ -99,17 +108,19 @@ procedure TUserService_Proxy.Update(
 );
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('Update', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('Update', GetTarget(),locCallContext);
       locSerializer.Put('AUser', TypeInfo(TUser), AUser);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
+    locSerializer.BeginCallRead(locCallContext);
 
   Finally
     locSerializer.Clear();
@@ -121,20 +132,22 @@ function TUserService_Proxy.Find(
 ):TUser;
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('Find', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('Find', GetTarget(),locCallContext);
       locSerializer.Put('AName', TypeInfo(string), AName);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
+    locSerializer.BeginCallRead(locCallContext);
       TObject(Result) := Nil;
-      strPrmName := 'result';
-      locSerializer.Get(TypeInfo(TUser), strPrmName, Result);
+      locStrPrmName := 'result';
+      locSerializer.Get(TypeInfo(TUser), locStrPrmName, Result);
 
   Finally
     locSerializer.Clear();
@@ -146,19 +159,21 @@ function TUserService_Proxy.Delete(
 ):boolean;
 Var
   locSerializer : IFormatterClient;
-  strPrmName : string;
+  locCallContext : ICallContext;
+  locStrPrmName : string;
 Begin
+  locCallContext := Self as ICallContext;
   locSerializer := GetSerializer();
   Try
-    locSerializer.BeginCall('Delete', GetTarget(),(Self as ICallContext));
+    locSerializer.BeginCall('Delete', GetTarget(),locCallContext);
       locSerializer.Put('AName', TypeInfo(string), AName);
     locSerializer.EndCall();
 
     MakeCall();
 
-    locSerializer.BeginCallRead((Self as ICallContext));
-      strPrmName := 'result';
-      locSerializer.Get(TypeInfo(boolean), strPrmName, Result);
+    locSerializer.BeginCallRead(locCallContext);
+      locStrPrmName := 'result';
+      locSerializer.Get(TypeInfo(boolean), locStrPrmName, Result);
 
   Finally
     locSerializer.Clear();

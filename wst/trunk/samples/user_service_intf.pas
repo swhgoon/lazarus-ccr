@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "29/12/2007 00:43:35".
+  Date            : "25/05/2009 01:53:09".
 }
 unit user_service_intf;
 {$IFDEF FPC}
@@ -108,7 +108,7 @@ end;
 
 function TUserArray.GetItem(AIndex: Integer): TUser;
 begin
-  Result := Inherited GetItem(AIndex) As TUser;
+  Result := TUser(Inherited GetItem(AIndex));
 end;
 
 class function TUserArray.GetItemClass(): TBaseRemotableClass;
@@ -278,12 +278,16 @@ begin
 end;
 
 
+var
+  typeRegistryIntance : TTypeRegistry = nil;
 initialization
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TNote),'TNote');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
+  typeRegistryIntance := GetTypeRegistry();
+
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TNote),'TNote');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
 
 
 

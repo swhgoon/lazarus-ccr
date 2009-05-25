@@ -2,16 +2,16 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
     </General>
     <VersionInfo>
@@ -28,6 +28,11 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="wst_indy"/>
+      </Item1>
+    </RequiredPackages>
     <Units Count="4">
       <Unit0>
         <Filename Value="tcp_server.pas"/>
@@ -52,7 +57,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="tcp_server.exe"/>
@@ -69,10 +74,8 @@
         <UseAnsiStrings Value="True"/>
       </SyntaxOptions>
     </Parsing>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
+      <CustomOptions Value="-dINDY_10"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

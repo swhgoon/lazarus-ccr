@@ -28,6 +28,14 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="wst_synapse"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="wst_core"/>
+      </Item2>
+    </RequiredPackages>
     <Units Count="2">
       <Unit0>
         <Filename Value="user_client_console.pas"/>
@@ -48,9 +56,14 @@
       <Filename Value="user_client_console.exe"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="..\;..\..\;$(LazarusDir)\others_package\synapse\;$(LazarusDir)\others_package\ics\latest_distr\Delphi\Vc32\;..\..\fcl-units\fcl-json\src\"/>
+      <OtherUnitFiles Value="..\;..\..\;..\..\fcl-units\fcl-json\src\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="True"/>

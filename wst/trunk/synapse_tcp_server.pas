@@ -121,9 +121,9 @@ begin
         i := bufferLen;
       SetLength(binBuff,i);
       repeat
-        j := FSocketObject.RecvBufferEx(@(binBuff[1]),i,DefaultTimeOut);
+        j := FSocketObject.RecvBufferEx(@(binBuff[0]),i,DefaultTimeOut);
         FSocketObject.ExceptCheck();
-        FInputStream.Write(binBuff[1],j);
+        FInputStream.Write(binBuff[0],j);
         Inc(c,j);
         if ( ( bufferLen - c ) > 1024 ) then
           i := 1024
@@ -200,7 +200,7 @@ begin
             buff := rdr.ReadBinary();
             rdr := nil;
             FInputStream.Size := 0;
-            FInputStream.Write(buff[1],Length(buff));
+            FInputStream.Write(buff[0],Length(buff));
             SetLength(buff,0);
             FInputStream.Position := 0;
             rqst := TRequestBuffer.Create(trgt,ctntyp,FInputStream,FOutputStream,frmt);
@@ -210,7 +210,7 @@ begin
             i := FOutputStream.Size;
             SetLength(buff,i);
             FOutputStream.Position := 0;
-            FOutputStream.Read(buff[1],i);
+            FOutputStream.Read(buff[0],i);
             FOutputStream.Size := 0;
             wrtr := CreateBinaryWriter(FOutputStream);
             wrtr.WriteBinary(buff);

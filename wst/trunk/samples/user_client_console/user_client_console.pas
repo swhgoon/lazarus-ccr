@@ -6,6 +6,8 @@ uses
   Classes, SysUtils, TypInfo, {$IFDEF WINDOWS}ActiveX,{$ENDIF}
   user_service_intf_proxy,
   same_process_protocol, synapse_tcp_protocol, synapse_http_protocol, library_protocol,
+//  same_process_protocol, indy_tcp_protocol, indy_http_protocol, library_protocol,
+//  same_process_protocol, ics_tcp_protocol, ics_http_protocol, library_protocol,
   soap_formatter, binary_formatter, json_formatter,
   user_service_intf, xmlrpc_formatter, service_intf;
 
@@ -89,8 +91,8 @@ begin
         usr.Category:= Normal;
       usr.eMail := ReadItem('Enter user e-mail : ',False);
       usr.Preferences := ReadItem('Enter user Preferences : ',False);
-      buff := UpperCase(ReadItem('Do you want to add some notes : ',True));
-      if ( buff[1] = 'O' ) then begin
+      buff := UpperCase(ReadItem('Do you want to add some notes : ',False));
+      if ( Length(buff) > 0 ) and ( buff[1] = 'Y' ) then begin
         usr.Note.Header := ReadItem('Enter user Note.Header : ',False);
         usr.Note.Author := ReadItem('Enter user Note.Author : ',False);
         usr.Note.Date := ReadItem('Enter user Note.Date : ',False);
@@ -234,6 +236,10 @@ begin
 {$IFEND}
     SYNAPSE_RegisterTCP_Transport();
     SYNAPSE_RegisterHTTP_Transport();
+//    INDY_RegisterTCP_Transport();
+//    INDY_RegisterHTTP_Transport();
+//    ICS_RegisterTCP_Transport();
+//    ICS_RegisterHTTP_Transport();
     LIB_Register_Transport();
     WriteLn('Sample Application using Web Services Toolkit');
     ReadFormatType();

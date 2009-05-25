@@ -45,7 +45,7 @@ type
     Modifier : TOperationParamFlag;
   end;
   
-  PServiceOperation = ^TServiceOperation;
+  PServiceOperation = ^TServiceOperation;                                                              
   TServiceOperation = record
     Name         : ShortString;
     ParamsCount  : Byte;
@@ -279,6 +279,8 @@ begin
     end;
     Freemem(AService^.Operations, k * SizeOf(TServiceOperation) );
     AService^.Operations := nil;
+  end;
+  if ( AService^.Properties <> nil ) then begin
     ClearProperties(AService^.Properties);
     AService^.Properties := nil;
   end;

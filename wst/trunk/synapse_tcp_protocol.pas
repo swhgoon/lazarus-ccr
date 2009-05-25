@@ -12,7 +12,7 @@
 }
 {$INCLUDE wst_global.inc}
 unit synapse_tcp_protocol;
-
+                                                   
 interface
 
 uses
@@ -124,7 +124,7 @@ begin
     wrtr.WriteAnsiStr(Self.Format);
     SetLength(binBuff,ARequest.Size);
     ARequest.Position := 0;
-    ARequest.Read(binBuff[1],Length(binBuff));
+    ARequest.Read(binBuff[0],Length(binBuff));
     wrtr.WriteBinary(binBuff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
@@ -146,9 +146,9 @@ begin
         i := bufferLen;
       SetLength(binBuff,i);
       repeat
-        j := FConnection.RecvBufferEx(@(binBuff[1]),i,DefaultTimeOut);
+        j := FConnection.RecvBufferEx(@(binBuff[0]),i,DefaultTimeOut);
         FConnection.ExceptCheck();
-        AResponse.Write(binBuff[1],j);
+        AResponse.Write(binBuff[0],j);
         Inc(c,j);
         i := Min(1024,(bufferLen-c));
       until ( i =0 ) or ( j <= 0 );

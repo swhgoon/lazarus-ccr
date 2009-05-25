@@ -105,9 +105,10 @@ procedure TLIBTransport.SendAndReceive(ARequest, AResponse: TStream);
 Var
   wrtr : IDataStore;
   buffStream : TMemoryStream;
-  strBuff : TBinaryString;
+  buff : TByteDynArray;
   intfBuffer : IwstStream;
   bl : LongInt;
+  errorStrBuffer : ansistring;
 {$IFDEF WST_DBG}
   s : TBinaryString;
   i : Int64;
@@ -121,23 +122,19 @@ begin
     wrtr.WriteAnsiStr(Target);
     wrtr.WriteAnsiStr(ContentType);
     wrtr.WriteAnsiStr(Self.Format);
-    SetLength(strBuff,ARequest.Size);
+    SetLength(buff,ARequest.Size);
     ARequest.Position := 0;
-    ARequest.Read(strBuff[1],Length(strBuff));
-{$IFDEF WST_DBG}
-    if IsConsole then
-      WriteLn(strBuff);
-{$ENDIF WST_DBG}
-    wrtr.WriteAnsiStr(strBuff);
+    ARequest.Read(buff[0],Length(buff));
+    wrtr.WriteBinary(buff);
     buffStream.Position := 0;
     wrtr.WriteInt32S(buffStream.Size-4);
 
     buffStream.Position := 0;
     intfBuffer := TwstStream.Create(buffStream);
     bl := MAX_ERR_LEN;
-    strBuff := StringOfChar(#0,bl);
-    if ( FHandler(intfBuffer,Pointer(strBuff),bl) <> RET_OK ) then
-      raise Exception.Create(strBuff);
+    errorStrBuffer := StringOfChar(#0,bl);
+    if ( FHandler(intfBuffer,Pointer(errorStrBuffer),bl) <> RET_OK ) then
+      raise Exception.Create(errorStrBuffer);
 
     buffStream.Position := 0;
     AResponse.Size := 0;

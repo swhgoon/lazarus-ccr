@@ -163,13 +163,9 @@ begin
         frmt := rdr.ReadAnsiStr();
         buff := rdr.ReadBinary();
 
-{$IFDEF WST_DBG}
-        WriteLn(buff);
-{$ENDIF}
-
         rdr := nil;
         locInStream.Size := 0;
-        locInStream.Write(buff[1],Length(buff));
+        locInStream.Write(buff[0],Length(buff));
         SetLength(buff,0);
         locInStream.Position := 0;
         rqst := TRequestBuffer.Create(trgt,ctntyp,locInStream,locOutStream,frmt);
@@ -179,7 +175,7 @@ begin
         i := locOutStream.Size;
         SetLength(buff,i);
         locOutStream.Position := 0;
-        locOutStream.Read(buff[1],i);
+        locOutStream.Read(buff[0],i);
         locOutStream.Size := 0;
         wrtr := CreateBinaryWriter(locOutStream);
         wrtr.WriteBinary(buff);

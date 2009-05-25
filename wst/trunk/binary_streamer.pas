@@ -449,7 +449,7 @@ begin
   i := Length(AData);
   WriteInt32S(i);
   if ( i > 0 ) then
-    FStream.Write(AData[1],i);
+    FStream.Write(AData[0],i);
 end;
 
 {$IFDEF WST_UNICODESTRING}
@@ -637,7 +637,7 @@ begin
   i := ReadInt32S();
   SetLength(Result,i);
   if ( i > 0 ) then
-    FStream.ReadBuffer(Result[1],i);
+    FStream.ReadBuffer(Result[0],i);
 end;
 
 {$IFDEF WST_UNICODESTRING}
