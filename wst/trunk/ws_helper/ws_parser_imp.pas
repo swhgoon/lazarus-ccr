@@ -1042,6 +1042,7 @@ var
   tmpRecVar : TPasVariable;
   locStrBuffer : string;
   locAnyNode, locAnyAttNode : TDOMNode;
+  locDefaultAncestorUsed : Boolean;
 begin
   ExtractBaseType();
   eltCrs := ExtractElementCursor(eltAttCrs,locAnyNode,locAnyAttNode);
@@ -1071,20 +1072,25 @@ begin
         if ( FDerivationMode in [dmExtension, dmRestriction] ) then begin
           classDef.AncestorType := FBaseType;
         end;
+        locDefaultAncestorUsed := False;
         if ( classDef.AncestorType = nil ) then begin
-          if IsHeaderBlock() then
+          if IsHeaderBlock() then begin
             classDef.AncestorType := FSymbols.FindElementInModule('THeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
-          else if IsSimpleContentHeaderBlock() then
+          end else if IsSimpleContentHeaderBlock() then begin
             classDef.AncestorType := FSymbols.FindElementInModule('TSimpleContentHeaderBlock',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType
-          else
+          end else begin
+            locDefaultAncestorUsed := True;
             classDef.AncestorType := FSymbols.FindElementInModule('TBaseComplexRemotable',FSymbols.FindModule('base_service_intf') as TPasModule) as TPasType;
+          end;
         end;
         classDef.AncestorType.AddRef();
         if Assigned(eltCrs) or Assigned(eltAttCrs) then begin
           isArrayDef := False;
           ParseElementsAndAttributes(eltCrs,eltAttCrs);
           if ( arrayItems.GetCount() > 0 ) then begin
-            if ( arrayItems.GetCount() = 1 ) and ( GetElementCount(classDef.Members,TPasProperty) = 1 ) then begin
+            if ( arrayItems.GetCount() = 1 ) and locDefaultAncestorUsed and
+               ( GetElementCount(classDef.Members,TPasProperty) = 1 )
+            then begin
               Result := nil;
               propTyp := arrayItems.GetItem(0).Prop;
               arrayDef := FSymbols.CreateArray(internalName,propTyp.VarType,propTyp.Name,FSymbols.GetExternalName(propTyp),asScoped);

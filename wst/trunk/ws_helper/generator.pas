@@ -203,6 +203,7 @@ const sLOCAL_TYPE_REGISTER_REFERENCE = 'typeRegistryIntance';
       sUNIT_NAME = 'sUNIT_NAME';
       sRECORD_RTTI_DEFINE = 'WST_RECORD_RTTI';
       sEASY_ACCESS_INTERFACE_PREFIX = 'Easy';
+      sARRAY_ITEM_DEFAULT_EXTERNAL_NAME = 'item';
 
       sPRM_NAME = 'locStrPrmName';
       sLOC_SERIALIZER = 'locSerializer';
@@ -739,8 +740,6 @@ Var
     origineIsFunc : Boolean;
     origineArgIN : TPasArgument;
     prmCnt,k : Integer;
-    prm : TPasArgument;
-    resPrm : TPasResultElement;
     elt : TPasElement;
     objArgs : Boolean;
     localIsFunc : boolean;
@@ -2564,19 +2563,20 @@ begin
     '%s.Register(%s,TypeInfo(%s),%s);',
     [sLOCAL_TYPE_REGISTER_REFERENCE,sNAME_SPACE,ASymbol.Name,QuotedStr(SymbolTable.GetExternalName(ASymbol))]
   );
-  if ( SymbolTable.GetArrayItemName(ASymbol) <> SymbolTable.GetArrayItemExternalName(ASymbol) ) then begin
-    FImpTempStream.Indent();
-    FImpTempStream.WriteLn(
-      '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_ITEM,%s);',
-      [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
-    );
-  end;
   if ( SymbolTable.GetArrayStyle(ASymbol) = asEmbeded ) then begin
     FImpTempStream.Indent();
     FImpTempStream.WriteLn(
       '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);',
       [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
     );
+  end else begin
+    if ( SymbolTable.GetArrayItemExternalName(ASymbol) <> sARRAY_ITEM_DEFAULT_EXTERNAL_NAME ) then begin
+      FImpTempStream.Indent();
+      FImpTempStream.WriteLn(
+        '%s.ItemByTypeInfo[TypeInfo(%s)].RegisterExternalPropertyName(sARRAY_ITEM,%s);',
+        [sLOCAL_TYPE_REGISTER_REFERENCE,ASymbol.Name,QuotedStr(SymbolTable.GetArrayItemExternalName(ASymbol))]
+      );
+  end;
   end;
 end;
 
