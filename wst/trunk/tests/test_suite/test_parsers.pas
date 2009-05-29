@@ -41,11 +41,13 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;virtual;abstract;
+    function LoadComplexType_ArraySequence_ItemName_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;virtual;abstract;
     function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;virtual;abstract;
     
@@ -76,11 +78,13 @@ type
     procedure ComplexType_Class_open_extension_type_anyAttribute();
     procedure ComplexType_Class_sequence_open_type_anyAttribute();
     procedure ComplexType_Class_all_open_type_anyAttribute();
+    procedure ComplexType_Class_FalseArray();
     
     procedure ComplexType_Record();
     procedure ComplexType_Record_Embedded();
     
     procedure ComplexType_ArraySequence();
+    procedure ComplexType_ArraySequence_ItemName_Schema();
     procedure ComplexType_ArraySequence_Embedded();
     procedure ComplexType_Array_soaparray();
     
@@ -113,11 +117,13 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
 
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_ArraySequence_ItemName_Schema() : TwstPasTreeContainer; override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;override;
     
@@ -151,11 +157,13 @@ type
     function LoadComplexType_Class_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_Extend_Simple_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Class_OpenType() : TwstPasTreeContainer;override;
+    function LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;override;
 
     function LoadComplexType_Record_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Record_Embedded_Schema() : TwstPasTreeContainer;override;
     
     function LoadComplexType_ArraySequence_Schema() : TwstPasTreeContainer;override;
+    function LoadComplexType_ArraySequence_ItemName_Schema() : TwstPasTreeContainer; override;
     function LoadComplexType_ArraySequence_Embedded_Schema() : TwstPasTreeContainer;override;
     function LoadComplexType_Array_soaparray() : TwstPasTreeContainer;override;
     
@@ -857,6 +865,79 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.ComplexType_Class_FalseArray();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  i : Integer;
+  prpLs : TList;
+  prp : TPasProperty;
+begin
+  prpLs := TList.Create();
+  try
+    tr := LoadComplexType_Class_FalseArray();
+
+    mdl := tr.FindModule(x_targetNamespace);
+    CheckNotNull(mdl);
+    CheckEquals('complex_class_false_array',mdl.Name);
+    CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+    ls := mdl.InterfaceSection.Declarations;
+    CheckEquals(3,ls.Count);
+    elt := tr.FindElement(x_complexType_SampleClassType);
+      CheckNotNull(elt,x_complexType_SampleClassType);
+      CheckEquals(x_complexType_SampleClassType,elt.Name);
+      CheckEquals(x_complexType_SampleClassType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(2,prpLs.Count);
+        CheckProperty(x_intField,'int',ptField);
+        CheckProperty(x_strField,'string',ptField);
+
+    elt := tr.FindElement(x_complexType_SampleDerivedType);
+      CheckNotNull(elt,x_complexType_SampleDerivedType);
+      CheckEquals(x_complexType_SampleDerivedType,elt.Name);
+      CheckEquals(x_complexType_SampleDerivedType,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckNotNull(clsType.AncestorType);
+      CheckEquals(x_complexType_SampleClassType,tr.GetExternalName(clsType.AncestorType));
+        prpLs.Clear();
+        for i := 0 to Pred(clsType.Members.Count) do begin
+          if TPasElement(clsType.Members[i]).InheritsFrom(TPasProperty) then
+            prpLs.Add(clsType.Members[i]);
+        end;
+      CheckEquals(1,prpLs.Count);
+        prp := TPasProperty(prpLs[0]);
+        CheckIs(prp.VarType,TPasArrayType);
+        CheckEquals(x_intField + 'Ex', tr.GetArrayItemExternalName(TPasArrayType(prp.VarType)));
+  finally
+    FreeAndNil(prpLs);
+  end;
+end;
+
 procedure TTest_CustomXsdParser.ComplexType_Record();
 var
   tr : TwstPasTreeContainer;
@@ -1118,6 +1199,50 @@ begin
   finally
     FreeAndNil(prpLs);
   end;
+end;
+
+procedure TTest_CustomXsdParser.ComplexType_ArraySequence_ItemName_Schema();
+var
+  tr : TwstPasTreeContainer;
+  clsType : TPasClassType;
+
+  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  ls : TList;
+  elt : TPasElement;
+  arrayType : TPasArrayType;
+begin
+  tr := LoadComplexType_ArraySequence_ItemName_Schema();
+
+  mdl := tr.FindModule(x_targetNamespace);
+  CheckNotNull(mdl);
+  CheckEquals('array_sequence_item_name',mdl.Name);
+  CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
+  ls := mdl.InterfaceSection.Declarations;
+  CheckEquals(2,ls.Count);
+  elt := tr.FindElement('ArrayOfEmailAddress');
+    CheckNotNull(elt,'ArrayOfEmailAddress');
+    CheckEquals('ArrayOfEmailAddress',elt.Name);
+    CheckEquals('ArrayOfEmailAddress',tr.GetExternalName(elt));
+    CheckIs(elt,TPasArrayType);
+    arrayType := elt as TPasArrayType;
+    CheckNotNull(arrayType.ElType);
+    CheckEquals('EmailAddress',tr.GetExternalName(arrayType.ElType));
+    CheckEquals('EmailAddress',tr.GetArrayItemName(arrayType));
+    CheckEquals('EmailAddress',tr.GetArrayItemExternalName(arrayType));
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_ArraySequence_Embedded();
@@ -1849,6 +1974,16 @@ begin
   Result := ParseDoc('class_widechar_property');
 end;
 
+function TTest_XsdParser.LoadComplexType_ArraySequence_ItemName_Schema() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('array_sequence_item_name');
+end;
+
+function TTest_XsdParser.LoadComplexType_Class_FalseArray( ) : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_false_array');
+end;
+
 { TTest_WsdlParser }
 
 function TTest_WsdlParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
@@ -1909,6 +2044,11 @@ begin
   Result := ParseDoc('complex_class_open_type');
 end;
 
+function TTest_WsdlParser.LoadComplexType_Class_FalseArray() : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('complex_class_false_array');
+end;
+
 function TTest_WsdlParser.LoadComplexType_Record_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_record);
@@ -1922,6 +2062,11 @@ end;
 function TTest_WsdlParser.LoadComplexType_ArraySequence_Schema(): TwstPasTreeContainer;
 begin
   Result := ParseDoc(x_complexType_array_sequence);
+end;
+
+function TTest_WsdlParser.LoadComplexType_ArraySequence_ItemName_Schema( ) : TwstPasTreeContainer;
+begin
+  Result := ParseDoc('array_sequence_item_name');
 end;
 
 function TTest_WsdlParser.LoadComplexType_ArraySequence_Embedded_Schema(): TwstPasTreeContainer;
