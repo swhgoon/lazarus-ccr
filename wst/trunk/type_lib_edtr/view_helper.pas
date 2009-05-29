@@ -257,7 +257,6 @@ var
   
   procedure ScanClassType(AItem : TPasClassType);
   var
-    b : Boolean;
     k : PtrInt;
     pl : TList;
     m : TPasElement;
@@ -289,7 +288,6 @@ var
 
   procedure ScanRecordType(AItem : TPasRecordType);
   var
-    b : Boolean;
     k : PtrInt;
     pl : TList;
     m : TPasElement;

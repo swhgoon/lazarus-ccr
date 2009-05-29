@@ -176,7 +176,6 @@ procedure TfRecordEdit.MovePropertyItem(AItem: TPasVariable; const ANewIndex: In
   var
     k, kcounter : Integer;
     mlist : TList;
-    pp : TPasVariable;
   begin
     Result := 0;
     kcounter := 0;
@@ -194,7 +193,6 @@ procedure TfRecordEdit.MovePropertyItem(AItem: TPasVariable; const ANewIndex: In
 
 var
   locItem : TListItem;
-  i : Integer;
 begin
   if ( AItem <> nil ) and
      ( ( ANewIndex >= 0 ) and ( ANewIndex < edtFields.Items.Count ) )
