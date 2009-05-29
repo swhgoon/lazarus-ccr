@@ -225,7 +225,6 @@ procedure TfClassEdit.MovePropertyItem(AItem: TPasProperty; const ANewIndex: Int
   var
     k, kcounter : Integer;
     mlist : TList;
-    pp : TPasProperty;
   begin
     Result := 0;
     kcounter := 0;
@@ -243,7 +242,6 @@ procedure TfClassEdit.MovePropertyItem(AItem: TPasProperty; const ANewIndex: Int
 
 var
   locItem : TListItem;
-  i : Integer;
 begin
   if ( AItem <> nil ) and
      ( ( ANewIndex >= 0 ) and ( ANewIndex < edtProp.Items.Count ) )

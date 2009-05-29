@@ -8,9 +8,8 @@ object fClassEdit: TfClassEdit
   Caption = 'fClassEdit'
   ClientHeight = 547
   ClientWidth = 552
-  ParentFont = False
   Position = poDesktopCenter
-  LCLVersion = '0.9.26.1'
+  LCLVersion = '0.9.26.2'
   object Panel1: TPanel
     Height = 50
     Top = 497
@@ -163,7 +162,6 @@ object fClassEdit: TfClassEdit
         Width = 440
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 13
-        MaxLength = -1
         Style = csDropDownList
         TabOrder = 1
       end
@@ -201,15 +199,18 @@ object fClassEdit: TfClassEdit
         Font.Height = -20
         Font.Name = 'courier'
         Font.Pitch = fpFixed
+        Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
-        Gutter.DigitCount = 2
-        Gutter.ShowLineNumbers = True
+        Gutter.RightOffset = 0
         Gutter.Width = 10
+        Gutter.LeftOffset = 0
         Gutter.ShowCodeFolding = True
+        Gutter.CodeFoldingWidth = 10
+        Gutter.ShowChanges = True
+        Gutter.ShowLineNumbers = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -533,7 +534,7 @@ object fClassEdit: TfClassEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
+        BracketHighlightStyle = sbhsBoth
       end
     end
     object tsDependencies: TTabSheet
@@ -644,6 +645,19 @@ object fClassEdit: TfClassEdit
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'Documents XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
     Enabled = False
+    ElementAttri.FrameColor = clNone
+    AttributeAttri.FrameColor = clNone
+    NamespaceAttributeAttri.FrameColor = clNone
+    AttributeValueAttri.FrameColor = clNone
+    NamespaceAttributeValueAttri.FrameColor = clNone
+    TextAttri.FrameColor = clNone
+    CDATAAttri.FrameColor = clNone
+    EntityRefAttri.FrameColor = clNone
+    ProcessingInstructionAttri.FrameColor = clNone
+    CommentAttri.FrameColor = clNone
+    DocTypeAttri.FrameColor = clNone
+    SpaceAttri.FrameColor = clNone
+    SymbolAttri.FrameColor = clNone
     WantBracesParsed = False
     left = 210
     top = 171

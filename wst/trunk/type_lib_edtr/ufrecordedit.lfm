@@ -7,9 +7,8 @@ object fRecordEdit: TfRecordEdit
   Caption = 'fRecordEdit'
   ClientHeight = 542
   ClientWidth = 559
-  ParentFont = False
   Position = poDesktopCenter
-  LCLVersion = '0.9.26.1'
+  LCLVersion = '0.9.26.2'
   object PC: TPageControl
     Height = 492
     Width = 559
@@ -137,15 +136,18 @@ object fRecordEdit: TfRecordEdit
         Font.Height = -20
         Font.Name = 'courier'
         Font.Pitch = fpFixed
+        Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
         TabOrder = 0
         BookMarkOptions.Xoffset = 42
-        BookMarkOptions.OnChange = nil
-        Gutter.DigitCount = 2
-        Gutter.ShowLineNumbers = True
+        Gutter.RightOffset = 0
         Gutter.Width = 10
+        Gutter.LeftOffset = 0
         Gutter.ShowCodeFolding = True
+        Gutter.CodeFoldingWidth = 10
+        Gutter.ShowChanges = True
+        Gutter.ShowLineNumbers = True
         Highlighter = SynXMLSyn1
         Keystrokes = <        
           item
@@ -469,7 +471,7 @@ object fRecordEdit: TfRecordEdit
             ShortCut = 24642
           end>
         ReadOnly = True
-        SelectedColor.OnChange = nil
+        BracketHighlightStyle = sbhsBoth
       end
     end
     object tsDependencies: TTabSheet
@@ -620,6 +622,19 @@ object fRecordEdit: TfRecordEdit
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'Documents XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
     Enabled = False
+    ElementAttri.FrameColor = clNone
+    AttributeAttri.FrameColor = clNone
+    NamespaceAttributeAttri.FrameColor = clNone
+    AttributeValueAttri.FrameColor = clNone
+    NamespaceAttributeValueAttri.FrameColor = clNone
+    TextAttri.FrameColor = clNone
+    CDATAAttri.FrameColor = clNone
+    EntityRefAttri.FrameColor = clNone
+    ProcessingInstructionAttri.FrameColor = clNone
+    CommentAttri.FrameColor = clNone
+    DocTypeAttri.FrameColor = clNone
+    SpaceAttri.FrameColor = clNone
+    SymbolAttri.FrameColor = clNone
     WantBracesParsed = False
     left = 238
     top = 199
