@@ -72,6 +72,8 @@ type
     FOptions : TObjectSerializerOptions;
   private
     procedure Prepare(ATypeRegistry : TTypeRegistry);
+    function FindInfo(const APropName : string) : TPropSerializationInfo;
+    procedure UpdateExternalName(const APropName, AExtPropName : string);
   public
     constructor Create(
       ATargetClass : TBaseComplexRemotableClass;
@@ -105,6 +107,7 @@ type
     procedure Init(); override;
   public
     destructor Destroy();override;
+    procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); override;
     function GetSerializer() : TObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   end;
   
@@ -1220,6 +1223,33 @@ begin
   end;
 end;
 
+function TObjectSerializer.FindInfo(const APropName: string): TPropSerializationInfo;
+var
+  i : Integer;
+begin
+  Result := nil;
+  if ( FSerializationInfos.Count > 0 ) then begin
+    for i := 0 to Pred(FSerializationInfos.Count) do begin
+      if SameText(APropName,TPropSerializationInfo(FSerializationInfos[i]).ExternalName) then begin
+        Result := TPropSerializationInfo(FSerializationInfos[i]);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+procedure TObjectSerializer.UpdateExternalName(
+  const APropName,
+        AExtPropName : string
+);
+var
+  itm : TPropSerializationInfo;
+begin
+  itm := FindInfo(APropName);
+  if ( itm <> nil ) then
+    itm.FExternalName := AExtPropName;
+end;
+
 constructor TObjectSerializer.Create(
   ATargetClass : TBaseComplexRemotableClass;
   ATypeRegistry : TTypeRegistry
@@ -1354,6 +1384,15 @@ destructor TBaseComplexTypeRegistryItem.Destroy();
 begin
   FSerializer.Free();
   inherited Destroy();
+end;
+
+procedure TBaseComplexTypeRegistryItem.RegisterExternalPropertyName(
+  const APropName,
+        AExtPropName : string
+);
+begin
+  inherited RegisterExternalPropertyName(APropName, AExtPropName);
+  GetSerializer().UpdateExternalName(APropName,AExtPropName);
 end;
 
 function TBaseComplexTypeRegistryItem.GetSerializer() : TObjectSerializer;

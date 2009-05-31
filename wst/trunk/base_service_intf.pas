@@ -1504,7 +1504,7 @@ type
     function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function IsExternalSynonym(const AExternalName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     
-    procedure RegisterExternalPropertyName(const APropName, AExtPropName : string);
+    procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); virtual;
     function GetExternalPropertyName(const APropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetInternalPropertyName(const AExtPropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
     
@@ -2450,7 +2450,7 @@ class procedure TBaseObjectArrayRemotable.Save(
 );
 Var
   itmTypInfo : PTypeInfo;
-  i,j : Integer;
+  i, arrayLen : Integer;
   nativObj : TBaseObjectArrayRemotable;
   itm : TObject;
   itmName : string;
@@ -2459,25 +2459,27 @@ begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TBaseObjectArrayRemotable));
     nativObj := AObject as TBaseObjectArrayRemotable;
-    j := nativObj.Length;
+    arrayLen := nativObj.Length;
   end else begin
-    j := 0;
+    arrayLen := 0;
   end;
-  itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
-  styl := GetStyle();
-  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)],styl);
-  try
-    if ( styl = asScoped ) then begin
-      itmName := GetItemName();
-    end else begin
-      itmName := AName;
+  if ( arrayLen > 0 ) then begin
+    itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+    styl := GetStyle();
+    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
+    try
+      if ( styl = asScoped ) then begin
+        itmName := GetItemName();
+      end else begin
+        itmName := AName;
+      end;
+      for i := 0 to Pred(arrayLen) do begin
+        itm := nativObj.Item[i];
+        AStore.Put(itmName,itmTypInfo,itm);
+      end;
+    finally
+      AStore.EndScope();
     end;
-    for i := 0 to Pred(j) do begin
-      itm := nativObj.Item[i];
-      AStore.Put(itmName,itmTypInfo,itm);
-    end;
-  finally
-    AStore.EndScope();
   end;
 end;
 
@@ -2520,6 +2522,9 @@ begin
     Finally
       AStore.EndScopeRead();
     End;
+  end else begin
+    if ( AObject <> nil ) then
+      (AObject as TBaseObjectArrayRemotable).SetLength(0);
   end;
 end;
 

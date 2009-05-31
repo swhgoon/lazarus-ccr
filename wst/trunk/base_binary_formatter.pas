@@ -1362,11 +1362,12 @@ var
 begin
   stk := StackTop();
   locNode := stk.Find(AScopeName);
-  if not Assigned(locNode) then begin
-    Error('Scope not found : "%s"',[AScopeName]);
+  if ( locNode <> nil ) then begin
+    PushStack(locNode,stArray);
+    Result := StackTop().GetItemCount();
+  end else begin
+    Result := -1;
   end;
-  PushStack(locNode,stArray);
-  Result := StackTop().GetItemCount();
 end;
 
 function TBaseBinaryFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;

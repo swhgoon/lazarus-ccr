@@ -833,16 +833,17 @@ var
 begin
   stk := StackTop();
   locNode := stk.FindNode(AScopeName);
-  if not Assigned(locNode) then begin
-    Error('Scope not found : "%s"',[AScopeName]);
+  if ( locNode <> nil ) then begin
+    case locNode.JSONType() of
+      jtArray : PushStack(locNode,stArray);
+      jtNull   : PushStack(locNode,stNilScope);
+      else
+        Error('array or Nil expected, name : %s.',[AScopeName]);
+    end;
+    Result := StackTop().GetItemCount();
+  end else begin
+    Result := -1;
   end;
-  case locNode.JSONType() of
-    jtArray : PushStack(locNode,stArray);
-    jtNull   : PushStack(locNode,stNilScope);
-    else
-      Error('array or Nil expected, name : %s.',[AScopeName]);
-  end;
-  Result := StackTop().GetItemCount();
 end;
 
 function TJsonRpcBaseFormatter.GetScopeItemNames(const AReturnList : TStrings) : Integer;

@@ -56,6 +56,14 @@ type
 {$ENDIF WST_UNICODESTRING}
   End;
 
+  TClass_A_Array = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TClass_A;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TClass_A Read GetItem;Default;
+  end;
+
   { TClass_B }
 
   TClass_B = class(TBaseComplexRemotable)
@@ -384,6 +392,17 @@ type
     property ObjProperty : TTestSmallClass read FObjProperty write FObjProperty;
   end;
 
+  { TClassWithPropExtName }
+
+  TClassWithPropExtName = class(TBaseComplexRemotable)
+  private
+    FPropWithExtName: Integer;
+    FStrProp: string;
+  published
+    property StrProp : string read FStrProp write FStrProp;
+    property PropWithExtName : Integer read FPropWithExtName write FPropWithExtName;
+  end;
+
   { TTestFormatterSimpleType }
 
   TTestFormatterSimpleType= class(TWstBaseTest)
@@ -458,6 +477,7 @@ type
 
     procedure Test_Object();
     procedure Test_Object_Nil();
+    procedure Test_Object_ExternalPropertyName();
     procedure Test_StringArray();
     procedure Test_StringArray_Embedded();
     procedure Test_StringArrayZeroLength();
@@ -479,6 +499,9 @@ type
     procedure Test_FloatDoubleArray();
     procedure Test_FloatExtendedArray();
     procedure Test_FloatCurrencyArray();
+
+    procedure Test_ObjectArray();
+    procedure Test_ObjectArray_ReadEmptyArray();
 
     procedure  Test_ComplexInt32S();
 
@@ -1348,7 +1371,7 @@ begin
       f.Get(TypeInfo(Int64),x,intVal_S);
     f.EndScopeRead();
 
-    CheckEquals(VAL_1,intVal_U);
+    CheckEquals(QWord(VAL_1),intVal_U);
     CheckEquals(VAL_2,intVal_S);
   Finally
     s.Free();
@@ -2127,7 +2150,7 @@ begin
       CheckEquals(CONST_Val_16S,a.Val_16S);
     CheckEquals(CONST_Val_32U,a.Val_32U);
       CheckEquals(CONST_Val_32S,a.Val_32S);
-    CheckEquals(CONST_Val_64U,a.Val_64U);
+    CheckEquals(QWord(CONST_Val_64U),a.Val_64U);
       CheckEquals(CONST_Val_64S,a.Val_64S);
   Finally
     a.Free();
@@ -2290,7 +2313,7 @@ begin
     CheckEquals(True,a.Val_CplxInt64S.BoolSimpleAtt_Exemple);
     CheckEquals(VAL_STR_X,a.Elt_Exemple);
 
-    CheckEquals(VAL_U,a.Val_CplxInt64U.Value);
+    CheckEquals(QWord(VAL_U),a.Val_CplxInt64U.Value);
     CheckEquals(VAL_X,a.Val_CplxInt64U.IntSimpleAtt_Exemple);
     CheckEquals(VAL_STR_U,a.Val_CplxInt64U.StrSimpleAtt_Exemple);
     CheckEquals(False,a.Val_CplxInt64U.BoolSimpleAtt_Exemple);
@@ -2906,6 +2929,62 @@ begin
     CheckNull(a);
   finally
     a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_Object_ExternalPropertyName();
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a, areaded : TClassWithPropExtName;
+  x : string;
+  ls : TStringList;
+begin
+  ls := nil;
+  s := nil;
+  a := TClassWithPropExtName.Create();
+  try
+    a.StrProp := 'wst string';
+    a.PropWithExtName := 123;
+
+    f := CreateFormatter(TypeInfo(TClass_B));
+
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('o1',TypeInfo(TClassWithPropExtName),a);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName(ClassName + '.Test_Object_ExternalPropertyName.' + f.GetFormatName()));
+
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'o1';
+      f.BeginObjectRead(x,TypeInfo(TClassWithPropExtName));
+      ls := TStringList.Create();
+      CheckEquals(2, f.GetScopeItemNames(ls), 'Scope item names');
+      Check(ls.IndexOf('ExternalProperty') >= 0, '"ExternalProperty" not found');
+    f.EndScopeRead();
+
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    areaded := TClassWithPropExtName.Create();
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'o1';
+      f.Get(TypeInfo(TClassWithPropExtName),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(a.StrProp, areaded.StrProp, 'StrProp');
+    CheckEquals(a.PropWithExtName, areaded.PropWithExtName, 'PropWithExtName');
+  finally
+    ls.Free();
+    a.Free();
+    areaded.Free();
     s.Free();
   end;
 end;
@@ -3740,6 +3819,121 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_ObjectArray();
+const AR_LEN = 5;
+
+  procedure FillObject(AObject : TClass_A; const AIndex : Integer);
+  begin
+    AObject.Val_32S := AIndex * AR_LEN;
+    if ( ( AObject.Val_32S mod 3 ) = 0 ) then
+      AObject.Val_32S := -AObject.Val_32S;
+    AObject.Val_Bool := ( AObject.Val_32S < 0 );
+    AObject.Val_Enum := TTestEnum( ( AIndex * AR_LEN) mod ( 1 + Ord(High(TTestEnum)) ) );
+    AObject.FVal_String := Format('Sample string %d',[AIndex]);
+  end;
+
+  procedure CompareObject(AExpected, AActual : TClass_A; const AMsg : string);
+  begin
+    Check(
+      ( ( AExpected = nil ) and ( AActual = nil ) ) or
+      ( ( AExpected <> nil ) and ( AActual <> nil ) ),
+      AMsg
+    );
+    if ( AExpected <> nil ) then begin
+      CheckEquals(Ord(AExpected.Val_Enum), Ord(AActual.Val_Enum));
+      CheckEquals(AExpected.Val_Bool, AActual.Val_Bool);
+      CheckEquals(AExpected.Val_32S, AActual.Val_32S);
+      CheckEquals(AExpected.Val_String, AActual.Val_String);
+      CheckEquals(AExpected.Val_WideString, AActual.Val_WideString);
+    end;
+  end;
+var
+  a, areaded : TClass_A_Array;
+  aitem : TClass_A;
+  i : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+begin
+  s := nil;
+  areaded := nil;
+  a := TClass_A_Array.Create();
+  try
+    a.SetLength(AR_LEN);
+    CheckEquals(AR_LEN,a.Length);
+
+    for i := 0 to Pred(AR_LEN) do begin
+      FillObject(a[i],i);
+    end;
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TClass_A_Array),a);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName('TTestFormatter.Test_ObjectArray.' + f.GetFormatName()));
+
+    areaded := TClass_A_Array.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TClass_A_Array),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(AR_LEN,areaded.Length);
+
+    for i := 0 to Pred(AR_LEN) do
+      CompareObject(a[i],areaded[i], Format('Object at %d index',[i]));
+
+  finally
+    areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_ObjectArray_ReadEmptyArray();
+var
+  a, areaded : TClass_A_Array;
+  aitem : TClass_A;
+  i : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+begin
+  s := nil;
+  areaded := nil;
+  a := TClass_A_Array.Create();
+  try
+    a.SetLength(0);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TClass_A_Array),a);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName('TTestFormatter.Test_ObjectArray.' + f.GetFormatName()));
+
+    areaded := TClass_A_Array.Create();
+    areaded.SetLength(12);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TClass_A_Array),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
+  finally
+    areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
 procedure TTestFormatter.Test_ComplexInt32S();
 const VAL_1 = 121076; VAL_2 : LongInt = -101276;
 var
@@ -4199,6 +4393,18 @@ begin
     FreeAndNil(obj);
     FreeAndNil(strm);
   end;
+end;
+
+{ TClass_A_Array }
+
+function TClass_A_Array.GetItem(AIndex: Integer): TClass_A;
+begin
+  Result := TClass_A(Inherited GetItem(AIndex));
+end;
+
+class function TClass_A_Array.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TClass_A;
 end;
 
 { TClass_B }
@@ -5430,6 +5636,9 @@ initialization
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Int),'TClass_Int').RegisterExternalPropertyName('Val_8U','U8');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Enum),'TClass_Enum');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A),'TClass_A');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A_Array),'TClass_A_Array');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TClass_A_Array)].RegisterExternalPropertyName(sARRAY_ITEM,'ArrayItem');
+
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_B),'TClass_B');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Float),'TClass_Float');
 
@@ -5456,6 +5665,8 @@ initialization
 
   GetTypeRegistry.Register('uri:test-namespace',TypeInfo(TTestSmallClass2),'TTestSmallClass2');
   GetTypeRegistry.Register('uri:test-namespace',TypeInfo(TTestSmallClass),'TTestSmallClass');
+  GetTypeRegistry.Register('uri:test-namespace',TypeInfo(TClassWithPropExtName),'TClassWithPropExtName');
+  GetTypeRegistry.ItemByTypeInfo[TypeInfo(TClassWithPropExtName)].RegisterExternalPropertyName('PropWithExtName','ExternalProperty');
 
   GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TTestSmallRecord),'TTestSmallRecord').RegisterExternalPropertyName('__FIELDS__','fieldSmallint;fieldWord;fieldString');
 {$IFNDEF WST_RECORD_RTTI}
