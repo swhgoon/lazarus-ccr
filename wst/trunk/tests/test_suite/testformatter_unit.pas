@@ -64,6 +64,16 @@ type
     property Item[AIndex:Integer] : TClass_A Read GetItem;Default;
   end;
 
+  TClass_A_Collection = class(TObjectCollectionRemotable)
+  private
+    function GetItem(AIndex: Integer): TClass_A;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    function Add(): TClass_A; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    function AddAt(const APosition : Integer) : TClass_A; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    property Item[AIndex:Integer] : TClass_A Read GetItem;Default;
+  end;
+
   { TClass_B }
 
   TClass_B = class(TBaseComplexRemotable)
@@ -502,6 +512,10 @@ type
 
     procedure Test_ObjectArray();
     procedure Test_ObjectArray_ReadEmptyArray();
+    procedure Test_ObjectCollection();
+    procedure Test_ObjectCollection_ReadEmptyCollection();
+
+    procedure Test_SimpleTypeArray_ReadEmptyArray();
 
     procedure  Test_ComplexInt32S();
 
@@ -3135,8 +3149,20 @@ begin
     f.EndScope();
     s := TMemoryStream.Create();
     f.SaveToStream(s);
-    FreeAndNil(a);
 
+
+    FreeAndNil(a);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TArrayOfStringRemotable),x,a);
+    f.EndScopeRead();
+    CheckNull(a);
+
+    a := TArrayOfStringRemotable.Create();
     f := CreateFormatter(TypeInfo(TClass_B));
     s.Position := 0;
     f.LoadFromStream(s);
@@ -3902,7 +3928,9 @@ var
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
+  ls : TStringList;
 begin
+  ls := nil;
   s := nil;
   areaded := nil;
   a := TClass_A_Array.Create();
@@ -3927,7 +3955,204 @@ begin
       f.Get(TypeInfo(TClass_A_Array),x,areaded);
     f.EndScopeRead();
     CheckEquals(0,areaded.Length);
+
+    ls := TStringList.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      f.GetScopeItemNames(ls);
+      CheckEquals(-1, ls.IndexOf('a'), 'empty array should not be streamed');
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
   finally
+    ls.Free();
+    areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_ObjectCollection();
+const AR_LEN = 5;
+
+  procedure FillObject(AObject : TClass_A; const AIndex : Integer);
+  begin
+    AObject.Val_32S := AIndex * AR_LEN;
+    if ( ( AObject.Val_32S mod 3 ) = 0 ) then
+      AObject.Val_32S := -AObject.Val_32S;
+    AObject.Val_Bool := ( AObject.Val_32S < 0 );
+    AObject.Val_Enum := TTestEnum( ( AIndex * AR_LEN) mod ( 1 + Ord(High(TTestEnum)) ) );
+    AObject.FVal_String := Format('Sample string %d',[AIndex]);
+  end;
+
+  procedure CompareObject(AExpected, AActual : TClass_A; const AMsg : string);
+  begin
+    Check(
+      ( ( AExpected = nil ) and ( AActual = nil ) ) or
+      ( ( AExpected <> nil ) and ( AActual <> nil ) ),
+      AMsg
+    );
+    if ( AExpected <> nil ) then begin
+      CheckEquals(Ord(AExpected.Val_Enum), Ord(AActual.Val_Enum));
+      CheckEquals(AExpected.Val_Bool, AActual.Val_Bool);
+      CheckEquals(AExpected.Val_32S, AActual.Val_32S);
+      CheckEquals(AExpected.Val_String, AActual.Val_String);
+      CheckEquals(AExpected.Val_WideString, AActual.Val_WideString);
+    end;
+  end;
+var
+  a, areaded : TClass_A_Collection;
+  aitem : TClass_A;
+  i : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+begin
+  s := nil;
+  areaded := nil;
+  a := TClass_A_Collection.Create();
+  try
+    for i := 1 to AR_LEN do
+      a.Add();
+    CheckEquals(AR_LEN,a.Length);
+
+    for i := 0 to Pred(AR_LEN) do begin
+      FillObject(a[i],i);
+    end;
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TClass_A_Collection),a);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName('TTestFormatter.Test_ObjectCollection.' + f.GetFormatName()));
+
+    areaded := TClass_A_Collection.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TClass_A_Collection),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(AR_LEN,areaded.Length);
+
+    for i := 0 to Pred(AR_LEN) do
+      CompareObject(a[i],areaded[i], Format('Object at %d index',[i]));
+
+  finally
+    areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_ObjectCollection_ReadEmptyCollection();
+var
+  a, areaded : TClass_A_Collection;
+  aitem : TClass_A;
+  i : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  ls : TStringList;
+begin
+  ls := nil;
+  s := nil;
+  areaded := nil;
+  a := TClass_A_Collection.Create();
+  try
+    a.Clear();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TClass_A_Collection),a);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName('TTestFormatter.Test_ObjectCollection_ReadEmptyCollection.' + f.GetFormatName()));
+
+    areaded := TClass_A_Collection.Create();
+    areaded.Add();
+    areaded.Add();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TClass_A_Collection),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
+
+    ls := TStringList.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      f.GetScopeItemNames(ls);
+      CheckEquals(-1, ls.IndexOf('a'), 'empty array should not be streamed');
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
+  finally
+    ls.Free();
+    areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_SimpleTypeArray_ReadEmptyArray();
+var
+  a, areaded : TArrayOfStringRemotable;
+  aitem : TClass_A;
+  i : Integer;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  ls : TStringList;
+begin
+  ls := nil;
+  s := nil;
+  areaded := nil;
+  a := TArrayOfStringRemotable.Create();
+  try
+    a.SetLength(0);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
+    f.EndScope();
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    //s.SaveToFile(wstExpandLocalFileName('TTestFormatter.Test_SimpleTypeArray_ReadEmptyArray.' + f.GetFormatName()));
+
+    areaded := TArrayOfStringRemotable.Create();
+    areaded.SetLength(12);
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'a';
+      f.Get(TypeInfo(TArrayOfStringRemotable),x,areaded);
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
+
+    ls := TStringList.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      f.GetScopeItemNames(ls);
+      CheckEquals(-1, ls.IndexOf('a'), 'empty array should not be streamed');
+    f.EndScopeRead();
+    CheckEquals(0,areaded.Length);
+  finally
+    ls.Free();
     areaded.Free();
     a.Free();
     s.Free();
@@ -4405,6 +4630,28 @@ end;
 class function TClass_A_Array.GetItemClass(): TBaseRemotableClass;
 begin
   Result:= TClass_A;
+end;
+
+{ TClass_A_Collection }
+
+function TClass_A_Collection.GetItem(AIndex: Integer): TClass_A;
+begin
+  Result := TClass_A(Inherited GetItem(AIndex));
+end;
+
+class function TClass_A_Collection.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TClass_A;
+end;
+
+function TClass_A_Collection.Add() : TClass_A;
+begin
+  Result := TClass_A(inherited Add());
+end;
+
+function TClass_A_Collection.AddAt(const APosition : Integer) : TClass_A;
+begin
+  Result := TClass_A(inherited AddAt(APosition));
 end;
 
 { TClass_B }
@@ -5638,6 +5885,8 @@ initialization
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A),'TClass_A');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A_Array),'TClass_A_Array');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TClass_A_Array)].RegisterExternalPropertyName(sARRAY_ITEM,'ArrayItem');
+  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A_Collection),'TClass_A_Collection');
+  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TClass_A_Collection)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
 
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_B),'TClass_B');
   GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Float),'TClass_Float');

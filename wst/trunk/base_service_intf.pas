@@ -3304,7 +3304,7 @@ class procedure TBaseSimpleTypeArrayRemotable.Save(
   const ATypeInfo  : PTypeInfo
 );
 var
-  i,j : Integer;
+  i, arrayLen : Integer;
   nativObj : TBaseSimpleTypeArrayRemotable;
   itmName : string;
   styl : TArrayStyle;
@@ -3312,23 +3312,25 @@ begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TBaseSimpleTypeArrayRemotable));
     nativObj := AObject as TBaseSimpleTypeArrayRemotable;
-    j := nativObj.Length;
+    arrayLen := nativObj.Length;
   end else begin
-    j := 0;
+    arrayLen := 0;
   end;
-  styl := GetStyle();
-  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(j)],styl);
-  try
-    if ( styl = asScoped ) then begin
-      itmName := GetItemName();
-    end else begin
-      itmName := AName;
+  if ( arrayLen > 0 ) then begin
+    styl := GetStyle();
+    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(arrayLen)],styl);
+    try
+      if ( styl = asScoped ) then begin
+        itmName := GetItemName();
+      end else begin
+        itmName := AName;
+      end;
+      for i := 0 to Pred(arrayLen) do begin
+        nativObj.SaveItem(AStore,itmName,i);
+      end;
+    finally
+      AStore.EndScope();
     end;
-    for i := 0 to Pred(j) do begin
-      nativObj.SaveItem(AStore,itmName,i);
-    end;
-  finally
-    AStore.EndScope();
   end;
 end;
 
@@ -3351,7 +3353,7 @@ begin
     itmName := AName;
   end;
   len := AStore.BeginArrayRead(AName,ATypeInfo, GetStyle(),itmName);
-  if ( len >= 0 ) then begin
+  if ( len > 0 ) then begin
     try
       if not Assigned(AObject) then
         AObject := Create();
@@ -3365,6 +3367,9 @@ begin
     finally
       AStore.EndScopeRead();
     end;
+  end else begin
+    if ( AObject <> nil ) then
+      TBaseSimpleTypeArrayRemotable(AObject).SetLength(0);
   end;
 end;
 
@@ -3505,7 +3510,7 @@ class procedure TObjectCollectionRemotable.Save(
 );
 Var
   itmTypInfo : PTypeInfo;
-  i,j : Integer;
+  i, arrayLen : Integer;
   nativObj : TObjectCollectionRemotable;
   itm : TObject;
   itmName : string;
@@ -3514,25 +3519,27 @@ begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TObjectCollectionRemotable));
     nativObj := AObject as TObjectCollectionRemotable;
-    j := nativObj.Length;
+    arrayLen := nativObj.Length;
   end else begin
-    j := 0;
+    arrayLen := 0;
   end;
-  itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
-  styl := GetStyle();
-  AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(j)],styl);
-  try
-    if ( styl = asScoped ) then begin
-      itmName := GetItemName();
-    end else begin
-      itmName := AName;
+  if ( arrayLen > 0 ) then begin
+    itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+    styl := GetStyle();
+    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
+    try
+      if ( styl = asScoped ) then begin
+        itmName := GetItemName();
+      end else begin
+        itmName := AName;
+      end;
+      for i := 0 to Pred(arrayLen) do begin
+        itm := nativObj.Item[i];
+        AStore.Put(itmName,itmTypInfo,itm);
+      end;
+    finally
+      AStore.EndScope();
     end;
-    for i := 0 to Pred(j) do begin
-      itm := nativObj.Item[i];
-      AStore.Put(itmName,itmTypInfo,itm);
-    end;
-  finally
-    AStore.EndScope();
   end;
 end;
 
@@ -3575,6 +3582,9 @@ begin
     Finally
       AStore.EndScopeRead();
     End;
+  end else begin
+    if ( AObject <> nil ) then
+      TObjectCollectionRemotable(AObject).Clear();
   end;
 end;
 
