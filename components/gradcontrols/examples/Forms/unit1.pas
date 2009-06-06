@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   ugradbtn, StdCtrls, ComCtrls, LCLType, LCLProc, LCLIntf, Buttons, ugradtabcontrol,
-  Menus, Spin, EditBtn;
+  Menus, Spin, EditBtn, types;
 
 type
 
@@ -18,8 +18,6 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button2: TButton;
-    Button3: TButton;
     CheckBox1: TCheckBox;
     CheckGroup1: TCheckGroup;
     ComboBox1: TComboBox;
@@ -28,25 +26,20 @@ type
     GradTabPage1: TGradTabPage;
     GradTabPage2: TGradTabPage;
     GradTabPage3: TGradTabPage;
-    GradTabPage4: TGradTabPage;
     ImageList1: TImageList;
     Label1: TLabel;
+    Memo1: TMemo;
     NewPageBtn: TGradButton;
     DeleteBtn: TGradButton;
     GradTabControl1: TGradTabControl;
     Memo2: TMemo;
     MenuItem1: TMenuItem;
-    PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
-    Panel3: TPanel;
     PopupMenu1: TPopupMenu;
     RadioGroup1: TRadioGroup;
+    RadioGroup2: TRadioGroup;
     SpinEdit2: TSpinEdit;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    TabSheet3: TTabSheet;
-    ToggleBox2: TToggleBox;
     procedure CheckBox1Click(Sender: TObject);
     procedure CheckGroup1Click(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
@@ -73,12 +66,11 @@ type
       );
     procedure GradTabControl1TabButtonMouseUp(GradTabControl: TGradTabControl;
       Button: TMouseButton; Shift: TShiftState; X, Y, AIndex: Integer);
-    procedure ImageList1Change(Sender: TObject);
+    procedure GradTabControl1TabCloseButtonClick(
+      GradTabControl: TGradTabControl; AIndex: Integer);
     procedure NewPageBtnClick(Sender: TObject);
-    procedure PageControl1DragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure PageControl1DragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
     procedure RadioGroup1Click(Sender: TObject);
+    procedure RadioGroup2Click(Sender: TObject);
     procedure SpinEdit2EditingDone(Sender: TObject);
   private
     { private declarations }
@@ -216,12 +208,19 @@ begin
   B := Random(255)+1;
 
   //WriteLn(R, ' ', G, ' ', B, ColorToString(RGBToColor(R,G,B)));
-  GradTabControl1.ActivePage.Caption:='tab_'+IntToStr(C);
-  //GradTabControl1.CurrentPage.Color:=RGBToColor(R, G, B);
-  GradTabControl1.ActivePage.TabPopupMenu := PopupMenu1;
-  GradTabControl1.ActivePage.PopupMenu:= PopupMenu1;
+  with GradTabControl1.ActivePage do
+  begin
+    Caption:='tab_'+IntToStr(C);
+    TabPopupMenu := PopupMenu1;
+    PopupMenu:= PopupMenu1;
+    ImageIndex:=0;
+    TabShowGlyph:=true;
+    ShowCloseButton:=true;
+    ShowCloseButtonOnMouseOver:=true;
+  end;
 
   ComboBox1.ItemIndex:=ComboBox1.Items.Add('tab_'+IntToStr(C));
+  RadioGroup2Click(nil);
 end;
 
 procedure TForm1.GradTabControl1DragOver(Sender, Source: TObject; X,
@@ -232,13 +231,13 @@ var
 begin
    //DebugLn('Name=%s',[Sender.ClassName]);
    Accept := false;
-   if (Sender is TGradTabPageButton) then Accept := True;
+   if (Sender is TGradTabPageButton) OR (Sender is TGradTabPagesBar) then Accept := True;
 end;
 
 procedure TForm1.GradTabControl1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn('MouseDown on %s',[Sender.ClassName]);
+  //DebugLn('MouseDown on %s',[Sender.ClassName]);
 end;
 
 procedure TForm1.GradTabControl1MouseWheelDown(Sender: TObject;
@@ -293,51 +292,39 @@ begin
   if Button=mbMiddle then
   begin
       //GradTabControl.Tabs.Delete(AIndex);
+      ComboBox1.Items.Delete(ComboBox1.Items.IndexOf(GradTabControl.Page[AIndex].Caption));
       GradTabControl.Page[AIndex].Free;
   end;
 end;
 
-procedure TForm1.ImageList1Change(Sender: TObject);
+procedure TForm1.GradTabControl1TabCloseButtonClick(
+  GradTabControl: TGradTabControl; AIndex: Integer);
 begin
-
-end;
-
-procedure TForm1.PageControl1DragDrop(Sender, Source: TObject; X, Y: Integer);
-const
-   TCM_GETITEMRECT = $130A;
-var
-   TabRect: TRect;
-   j: Integer;
-begin
-   if (Sender is TGradTabControl) then
-   for j := 0 to GradTabControl1.PageCount - 1 do
-   begin
-     //GradTabControl1.Perform(TCM_GETITEMRECT, j, LParam(@TabRect)) ;
-     TabRect := GradTabControl1.GetTabRect(j);
-     DebugLn('X=%d Y=%d T.L=%d T.T=%d T.R=%d T.B=%d',[X,Y,TabRect.Left, TabRect.Top, TabRect.Right, TabRect.Bottom]);
-     if PtInRect(TabRect, Point(X, Y)) then
-     begin
-       if GradTabControl1.ActivePage.PageIndex <> j then
-         GradTabControl1.ActivePage.PageIndex := j;
-       Exit;
-     end;
-   end;
-end;
-
-procedure TForm1.PageControl1DragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
-begin
-   DebugLn('Name=%s',[Sender.ClassName]);
-   if (Sender is TGradTabControl) then Accept := True;
+  ComboBox1.Items.Delete(ComboBox1.Items.IndexOf(GradTabControl.Page[AIndex].Caption));
+  GradTabControl.Page[AIndex].Free;
 end;
 
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 begin
   case RadioGroup1.ItemIndex of
-       0: GradTabControl1.TabPosition := tpTop;
-       1: GradTabControl1.TabPosition := tpBottom;
-       2: GradTabControl1.TabPosition := tpLeft;
-       3: GradTabControl1.TabPosition := tpRight;
+    0: GradTabControl1.TabPosition := tpTop;
+    1: GradTabControl1.TabPosition := tpBottom;
+    2: GradTabControl1.TabPosition := tpLeft;
+    3: GradTabControl1.TabPosition := tpRight;
+  end;
+end;
+
+procedure TForm1.RadioGroup2Click(Sender: TObject);
+var
+  i : Integer;
+begin
+  for i := 0 to GradTabControl1.PageCount - 1 do
+  with GradTabControl1.Page[i] do
+  case RadioGroup2.ItemIndex of
+    0: TabButtonLayout := blGlyphLeft;
+    1: TabButtonLayout := blGlyphBottom;
+    2: TabButtonLayout := blGlyphRight;
+    3: TabButtonLayout := blGlyphTop;
   end;
 end;
 

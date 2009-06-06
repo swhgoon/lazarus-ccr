@@ -113,6 +113,7 @@ begin
   RotateImg := TLazIntfImage.Create(NormalImg.Height, NormalImg.Width);
   RotateImg.DataDescription := NormalImg.DataDescription;
   RotateImg.SetSize(NormalImg.Height, NormalImg.Width);
+  RotateImg.FillPixels(TColorToFPColor(clBlack));
 
   for px := 0 to NormalImg.Width - 1 do
     for py := 0 to NormalImg.Height - 1 do
@@ -277,6 +278,9 @@ begin
     UpdateActiveBitmap;
   R := Rect(0, 0, FActiveBitmap.Width, FActiveBitmap.Height);
   P := Point(X, Y);
+  //DebugLn(DbgS(R));
+  //DebugLn(DbgS(P));
+  //DebugLn('Transparent: '+BoolToStr(Transparent, true));
   FGlyph.Draw(Canvas, R, P, FButtonState, Transparent, 0);
 end;
 

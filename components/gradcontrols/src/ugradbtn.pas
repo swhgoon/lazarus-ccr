@@ -19,168 +19,165 @@ uses
   LCLIntf ,Buttons, urotatebitmap, types;
 
 type
-    TGradButton = class;
+  TGradButton = class;
 
-    TTextAlignment = (taLeftJustify, taRightJustify, taCenter);
-    TBorderSide = (bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
-    TBorderSides = set of TBorderSide;
-    TGradientType = (gtHorizontal,gtVertical);
+  TTextAlignment = (taLeftJustify, taRightJustify, taCenter);
+  TBorderSide = (bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
+  TBorderSides = set of TBorderSide;
+  TGradientType = (gtHorizontal,gtVertical);
 
-    TGBBackgroundPaintEvent = procedure(Sender: TGradButton;
-       TargetCanvas: TCanvas; R: TRect; BState : TButtonState) of object;
+  TGBBackgroundPaintEvent = procedure(Sender: TGradButton;
+    TargetCanvas: TCanvas; R: TRect; BState : TButtonState) of object;
 
-    { TGradButton }
+  { TGradButton }
 
-    TGradButton = class(TCustomControl)
-    private
-      FAutoHeight: Boolean;
-      FAutoHeightBorderSpacing: Integer;
-       FAutoWidthBorderSpacing: Integer;
-       FRotateDirection : TRotateDirection;
-       FTextAlignment : TTextAlignment;
-       FButtonLayout: TButtonLayout;
-       FTextPoint, FGlyphPoint : TPoint;
-       FTextSize, FGlyphSize : TSize;
-       FBackground, bm,
-       FNormalBackgroundCache, FHotBackgroundCache,
-       FDownBackgroundCache, FDisabledBackgroundCache : TBitmap;
-       FRotatedGlyph : TRotatedGlyph;
-       FRotatedText : TRotatedText;
-       FTextGlyphSpacing: Integer;
-       FGradientType : TGradientType;
-       FShowFocusBorder, FOnlyBackground, FOwnerBackgroundDraw,
-       FAutoWidth, FShowGlyph, FEnabled, FFocused : Boolean;
-       FBackgroundRect: TRect;
-       FBorderSides: TBorderSides;
-       FOnNormalBackgroundPaint, FOnHotBackgroundPaint,
-       FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
-       procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
-       procedure UpdateText;
-       procedure UpdateBackground;
-       procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
-    protected
-       FState, FOldState: TButtonState;
-       FNormalBlend,FOverBlend : Extended;
-       FBaseColor, FNormalBlendColor, FOverBlendColor, FDisabledColor,
-         FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
-       procedure SetAutoHeight(const AValue: Boolean); virtual;
-       procedure SetAutoHeightBorderSpacing(const AValue: Integer); virtual;
-       procedure SetAutoWidthBorderSpacing(const AValue: Integer); virtual;
-       procedure InvPaint(StateCheck:Boolean=false);
-       procedure FontChanged(Sender: TObject); override;
-       procedure GlyphChanged(Sender: TObject); virtual;
-       procedure GetBackgroundRect(var TheRect : TRect); virtual;
-       function GetGlyph : TBitmap;
-       procedure SetEnabled(Value: Boolean); override;
-       procedure SetAutoWidth(const Value : Boolean); virtual;
-       procedure SetNormalBlend(const Value: Extended); virtual;
-       procedure SetOverBlend(const Value: Extended); virtual;
-       procedure SetBaseColor(const Value: TColor);  virtual;
-       procedure SetNormalBlendColor(const Value: TColor); virtual;
-       procedure SetOverBlendColor(const Value: TColor); virtual;
-       procedure SetBackgroundColor(const Value: TColor); virtual;
-       procedure SetBorderSides(const Value: TBorderSides); virtual;
-       procedure SetOwnerBackgroundDraw(const Value: Boolean); virtual;
-       procedure SetGradientType(const Value: TGradientType); virtual;
-       procedure SetRotateDirection(const Value: TRotateDirection); virtual;
-       procedure SetShowGlyph(const Value: Boolean); virtual;
-       procedure SetGlyphBackgroundColor(const Value: TColor); virtual;
-       procedure SetTextAlignment(const Value: TTextAlignment); virtual;
-       procedure SetTextGlyphSpacing(const Value: Integer); virtual;
-       procedure SetButtonLayout(const Value: TButtonLayout); virtual;
-       procedure SetClickColor(const Value: TColor); virtual;
-       procedure SetDisabledColor(const Value: TColor); virtual;
-       procedure SetName(const Value: TComponentName); override;
-       procedure SetShowFocusBorder(const Value: Boolean); virtual;
-       procedure SetGlyph(const Value: TBitmap); virtual;
-       procedure TextChanged; override;
-    public
-       constructor Create(AOwner: TComponent); override;
-       destructor Destroy; override;
-       //procedure CreateParams(var Params: TCreateParams); override;
-       procedure Paint; override;
-       procedure MouseEnter; override;
-       procedure MouseLeave; override;
-       procedure MouseDown(Button: TMouseButton;
-                 Shift: TShiftState; X, Y: Integer); override;
-       procedure MouseUp(Button: TMouseButton;
-                 Shift: TShiftState; X, Y: Integer); override;
-       procedure MouseMove(Shift: TShiftState;
-                 X, Y: Integer); override;
-       procedure DoEnter; override;
-       procedure DoExit; override;
-       procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-       function  GetBackground : TCanvas;
-       procedure Click; override;
-       procedure Resize; override;
-       function Focused: Boolean; override;
-       procedure UpdateButton;
-       procedure UpdatePositions;
-       function GetAutoWidth : Integer;
-       function GetAutoHeight : Integer;
-    published
-       property Action;
-       property Anchors;
-       property Align;
-       property Caption;
-       property Enabled;
-       property PopupMenu;
-       property Font;
-       property Visible;
-       property OnClick;
-       property OnMouseDown;
-       property OnMouseEnter;
-       property OnMouseLeave;
-       property OnMouseMove;
-       property OnMouseUp;
-       property OnPaint;
-       property OnResize;
-       property OnStartDrag;
-       property DragMode;
-       property DragKind;
-       property DragCursor;
-       property TabOrder;
-       property TabStop;
-       property NormalBlend : Extended read FNormalBlend write SetNormalBlend;
-       property OverBlend : Extended read FOverBlend write SetOverBlend;
-       property BaseColor: TColor read FBaseColor write SetBaseColor;
-       property Color: TColor read FBaseColor write SetBaseColor;
-       property NormalBlendColor: TColor read FNormalBlendColor write SetNormalBlendColor;
-       property OverBlendColor: TColor read FOverBlendColor write SetOverBlendColor;
-       property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
-       property AutoWidth : Boolean read FAutoWidth write SetAutoWidth default false;
-       property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default false;
-       property BorderSides : TBorderSides read FBorderSides write SetBorderSides default [bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
-       property GradientType : TGradientType read FGradientType write SetGradientType default gtHorizontal;
-       property ShowFocusBorder : Boolean read FShowFocusBorder write SetShowFocusBorder;
-       property RotateDirection : TRotateDirection read FRotateDirection write SetRotateDirection default rdNormal;
-       property ButtonLayout : TButtonLayout read FButtonLayout write SetButtonLayout default blGlyphLeft;
-       property Glyph : TBitmap read GetGlyph write SetGlyph;
-       property ShowGlyph : Boolean read FShowGlyph write SetShowGlyph;
-       property GlyphBackgroundColor : TColor read FGlyphBackgroundColor write SetGlyphBackgroundColor;
-       property TextAlignment : TTextAlignment read FTextAlignment write SetTextAlignment default taCenter;
-       property TextGlyphSpacing : Integer read FTextGlyphSpacing write SetTextGlyphSpacing default 2;
-       property ClickColor : TColor read FClickColor write SetClickColor;
-       property DisabledColor : TColor read FDisabledColor write SetDisabledColor default clGray;
-       property OwnerBackgroundDraw : Boolean read FOwnerBackgroundDraw write SetOwnerBackgroundDraw;
-       property AutoWidthBorderSpacing : Integer read FAutoWidthBorderSpacing write SetAutoWidthBorderSpacing;
-       property AutoHeightBorderSpacing : Integer read FAutoHeightBorderSpacing write SetAutoHeightBorderSpacing;
+  TGradButton = class(TCustomControl)
+  private
+    FAutoHeight: Boolean;
+    FAutoHeightBorderSpacing: Integer;
+    FAutoWidthBorderSpacing: Integer;
+    FRotateDirection : TRotateDirection;
+    FTextAlignment : TTextAlignment;
+    FButtonLayout: TButtonLayout;
+    FTextPoint, FGlyphPoint : TPoint;
+    FTextSize, FGlyphSize : TSize;
+    FBackground, bm,
+    FNormalBackgroundCache, FHotBackgroundCache,
+    FDownBackgroundCache, FDisabledBackgroundCache : TBitmap;
+    FRotatedGlyph : TRotatedGlyph;
+    FRotatedText : TRotatedText;
+    FTextGlyphSpacing: Integer;
+    FGradientType : TGradientType;
+    FShowFocusBorder, FOnlyBackground,
+    FAutoWidth, FShowGlyph, FEnabled, FFocused : Boolean;
+    FBackgroundRect: TRect;
+    FBorderSides: TBorderSides;
+    FOnNormalBackgroundPaint, FOnHotBackgroundPaint,
+    FOnDownBackgroundPaint, FOnDisabledBackgroundPaint : TGBBackgroundPaintEvent;
+    procedure PaintGradient(TrgCanvas: TCanvas; pr : TRect);
+    procedure UpdateBackground;
+    procedure PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
+  protected
+    FState, FOldState: TButtonState;
+    FNormalBlend,FOverBlend : Extended;
+    FBaseColor, FNormalBlendColor, FOverBlendColor, FDisabledColor,
+    FBackgroundColor, FGlyphBackgroundColor, FClickColor: TColor;
+    FOwnerBackgroundDraw : Boolean;
+    procedure SetAutoHeight(const AValue: Boolean); virtual;
+    procedure SetAutoHeightBorderSpacing(const AValue: Integer); virtual;
+    procedure SetAutoWidthBorderSpacing(const AValue: Integer); virtual;
+    procedure InvPaint(StateCheck:Boolean=false);
+    procedure FontChanged(Sender: TObject); override;
+    procedure GlyphChanged(Sender: TObject); virtual;
+    procedure GetBackgroundRect(var TheRect : TRect); virtual;
+    procedure GetContentRect(var TheRect: TRect); virtual;
+    function GetGlyph : TBitmap;
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetAutoWidth(const Value : Boolean); virtual;
+    procedure SetNormalBlend(const Value: Extended); virtual;
+    procedure SetOverBlend(const Value: Extended); virtual;
+    procedure SetBaseColor(const Value: TColor);  virtual;
+    procedure SetNormalBlendColor(const Value: TColor); virtual;
+    procedure SetOverBlendColor(const Value: TColor); virtual;
+    procedure SetBackgroundColor(const Value: TColor); virtual;
+    procedure SetBorderSides(const Value: TBorderSides); virtual;
+    procedure SetOwnerBackgroundDraw(const Value: Boolean); virtual;
+    procedure SetGradientType(const Value: TGradientType); virtual;
+    procedure SetRotateDirection(const Value: TRotateDirection); virtual;
+    procedure SetShowGlyph(const Value: Boolean); virtual;
+    procedure SetGlyphBackgroundColor(const Value: TColor); virtual;
+    procedure SetTextAlignment(const Value: TTextAlignment); virtual;
+    procedure SetTextGlyphSpacing(const Value: Integer); virtual;
+    procedure SetButtonLayout(const Value: TButtonLayout); virtual;
+    procedure SetClickColor(const Value: TColor); virtual;
+    procedure SetDisabledColor(const Value: TColor); virtual;
+    procedure SetName(const Value: TComponentName); override;
+    procedure SetShowFocusBorder(const Value: Boolean); virtual;
+    procedure SetGlyph(const Value: TBitmap); virtual;
+    procedure TextChanged; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    //procedure CreateParams(var Params: TCreateParams); override;
+    procedure Paint; override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+    procedure MouseDown(Button: TMouseButton;
+           Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton;
+           Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState;
+           X, Y: Integer); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    function  GetBackground : TCanvas;
+    procedure Click; override;
+    procedure Resize; override;
+    function Focused: Boolean; override;
+    procedure UpdateButton;
+    procedure UpdatePositions;
+    function GetAutoWidth : Integer;
+    function GetAutoHeight : Integer;
+  published
+    property Action;
+    property Anchors;
+    property Align;
+    property Caption;
+    property Enabled;
+    property PopupMenu;
+    property Font;
+    property Visible;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    property OnStartDrag;
+    property DragMode;
+    property DragKind;
+    property DragCursor;
+    property TabOrder;
+    property TabStop;
+    property NormalBlend : Extended read FNormalBlend write SetNormalBlend;
+    property OverBlend : Extended read FOverBlend write SetOverBlend;
+    property BaseColor: TColor read FBaseColor write SetBaseColor;
+    property Color: TColor read FBaseColor write SetBaseColor;
+    property NormalBlendColor: TColor read FNormalBlendColor write SetNormalBlendColor;
+    property OverBlendColor: TColor read FOverBlendColor write SetOverBlendColor;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
+    property AutoWidth : Boolean read FAutoWidth write SetAutoWidth default false;
+    property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default false;
+    property BorderSides : TBorderSides read FBorderSides write SetBorderSides default [bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
+    property GradientType : TGradientType read FGradientType write SetGradientType default gtHorizontal;
+    property ShowFocusBorder : Boolean read FShowFocusBorder write SetShowFocusBorder;
+    property RotateDirection : TRotateDirection read FRotateDirection write SetRotateDirection default rdNormal;
+    property ButtonLayout : TButtonLayout read FButtonLayout write SetButtonLayout default blGlyphLeft;
+    property Glyph : TBitmap read GetGlyph write SetGlyph;
+    property ShowGlyph : Boolean read FShowGlyph write SetShowGlyph;
+    property GlyphBackgroundColor : TColor read FGlyphBackgroundColor write SetGlyphBackgroundColor;
+    property TextAlignment : TTextAlignment read FTextAlignment write SetTextAlignment default taCenter;
+    property TextGlyphSpacing : Integer read FTextGlyphSpacing write SetTextGlyphSpacing default 2;
+    property ClickColor : TColor read FClickColor write SetClickColor;
+    property DisabledColor : TColor read FDisabledColor write SetDisabledColor default clGray;
+    property OwnerBackgroundDraw : Boolean read FOwnerBackgroundDraw write SetOwnerBackgroundDraw;
+    property AutoWidthBorderSpacing : Integer read FAutoWidthBorderSpacing write SetAutoWidthBorderSpacing;
+    property AutoHeightBorderSpacing : Integer read FAutoHeightBorderSpacing write SetAutoHeightBorderSpacing;
 
-       //property OnGetBackgroundRect { TODO }
+    property OnNormalBackgroundPaint : TGBBackgroundPaintEvent read FOnNormalBackgroundPaint write FOnNormalBackgroundPaint;
+    property OnHotBackgroundPaint : TGBBackgroundPaintEvent read FOnHotBackgroundPaint write FOnHotBackgroundPaint;
+    property OnDownBackgroundPaint : TGBBackgroundPaintEvent read FOnDownBackgroundPaint write FOnDownBackgroundPaint;
+    property OnDisabledBackgroundPaint : TGBBackgroundPaintEvent read FOnDisabledBackgroundPaint write FOnDisabledBackgroundPaint;
+  end;
 
-       //BackgroundPaintEvents
-       property OnNormalBackgroundPaint : TGBBackgroundPaintEvent read FOnNormalBackgroundPaint write FOnNormalBackgroundPaint;
-       property OnHotBackgroundPaint : TGBBackgroundPaintEvent read FOnHotBackgroundPaint write FOnHotBackgroundPaint;
-       property OnDownBackgroundPaint : TGBBackgroundPaintEvent read FOnDownBackgroundPaint write FOnDownBackgroundPaint;
-       property OnDisabledBackgroundPaint : TGBBackgroundPaintEvent read FOnDisabledBackgroundPaint write FOnDisabledBackgroundPaint;
-    end;
+  function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
+  function ColorsBetween(colors:array of TColor; blend:Extended):TColor;
+  function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
 
-    function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
-    function ColorsBetween(colors:array of TColor; blend:Extended):TColor;
-    function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
-    procedure DbgsGradButton(AButton : TGradButton);
-
-    procedure Register;
+  procedure Register;
 
 implementation
 
@@ -189,21 +186,15 @@ uses
 
 function AlignItem(ItemLength, AreaLength,Spacing: Integer; ATextAlignment: TTextAlignment):Integer;
 begin
-     case ATextAlignment of
-        taLeftJustify : Result := Spacing;
-        taRightJustify: begin
-           Result := AreaLength-ItemLength-Spacing;
-        end;
-        taCenter      : begin
-           Result := (AreaLength div 2)-(ItemLength div 2);
-        end;
-     end;
-end;
-
-procedure DbgsGradButton(AButton: TGradButton);
-begin
-  DebugLn('######GradButton#####');
-
+  case ATextAlignment of
+    taLeftJustify : Result := Spacing;
+    taRightJustify: begin
+      Result := AreaLength-ItemLength-Spacing;
+    end;
+    taCenter      : begin
+      Result := (AreaLength div 2)-(ItemLength div 2);
+    end;
+  end;
 end;
 
 procedure TGradButton.SetShowFocusBorder(const Value: Boolean);
@@ -224,37 +215,28 @@ begin
   inherited TextChanged;
   FRotatedText.Text := Caption;
 
-   if FAutoWidth then
-      UpdateButton
-   else
-      UpdatePositions;
+  if FAutoWidth then
+    UpdateButton
+  else
+    UpdatePositions;
 
-   InvPaint;
+  InvPaint;
 end;
     
 procedure TGradButton.SetName(const Value: TComponentName);
 begin
-    if (Caption='') OR (Caption=Name) then
-    begin
-        Caption:=Value;
-    end;
+  if (Caption='') OR (Caption=Name) then
+  begin
+    Caption:=Value;
+  end;
     
-    inherited;
+  inherited;
 end;
 
 function TGradButton.Focused: Boolean;
 begin
-     FFocused:=FFocused OR (Inherited Focused);
-     Result := FFocused;
-end;
-
-procedure TGradButton.UpdateText;
-begin
-    //UpdatePositions;
-
-    //FRotatedText.Canvas.Font.Color := Canvas.Font.Color;
-    //FRotatedText.Canvas.Font := Canvas.Font;
-    //FRotatedText.Update;
+  FFocused:=FFocused OR (Inherited Focused);
+  Result := FFocused;
 end;
 
 procedure TGradButton.SetAutoWidth(const Value : Boolean);
@@ -283,91 +265,72 @@ end;
 
 procedure TGradButton.UpdatePositions;
 var
-    tempTS,tempGS : TSize;
-    p,t,midx, midy, textmidx, textmidy,
-    groupwidth, groupheight, AreaWidth, AreaHeight :Integer;
-    tempBL : TButtonLayout;
+  tempTS,tempGS : TSize;
+  p,t,midx, midy, textmidx, textmidy,
+  groupwidth, groupheight, AreaWidth, AreaHeight :Integer;
+  tempBL : TButtonLayout;
 begin
+  GetContentRect(FBackgroundRect);
 
-    GetBackgroundRect(FBackgroundRect);
+  AreaWidth := FBackgroundRect.Right-FBackgroundRect.Left;
+  AreaHeight := FBackgroundRect.Bottom-FBackgroundRect.Top;
 
-    AreaWidth := FBackgroundRect.Right-FBackgroundRect.Left;
-    AreaHeight := FBackgroundRect.Bottom-FBackgroundRect.Top;
+  tempGS.cx:=0;
+  tempGS.cy:=0;
 
-    tempGS.cx:=0;
-    tempGS.cy:=0;
+  if FShowGlyph and not FRotatedGlyph.Empty then
+  begin
+  tempGS.cx:=FRotatedGlyph.Width;
+  tempGS.cy:=FRotatedGlyph.Height;
+  end;
 
-    if FShowGlyph and not FRotatedGlyph.Empty then
-    begin
-       tempGS.cx:=FRotatedGlyph.Width;
-       tempGS.cy:=FRotatedGlyph.Height;
+  //tempTS := Canvas.TextExtent(Caption);
+  tempTS.cx:= FRotatedText.Width;
+  tempTS.cy:= FRotatedText.Height;
+
+  tempBL := FButtonLayout;
+
+  if FShowGlyph and not FRotatedGlyph.Empty then begin
+    case tempBL of
+      blGlyphLeft:  begin
+        FGlyphPoint.x := AlignItem(tempGS.cx+FTextGlyphSpacing+tempTS.cx,AreaWidth,4,FTextAlignment);
+        FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
+
+        FTextPoint.x := FGlyphPoint.x+tempGS.cx+FTextGlyphSpacing;
+        FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+      end;
+      blGlyphRight: begin
+        //Glyph Right, Text Left
+        FTextPoint.x := AlignItem(tempTS.cx+FTextGlyphSpacing+tempGS.cx,AreaWidth,4, FTextAlignment);
+        FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+
+        FGlyphPoint.x := FTextPoint.x+tempTS.cx+FTextGlyphSpacing;
+        FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
+      end;
+      blGlyphTop:  begin
+        //Glyph Top, Text Bottom
+        FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
+        FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
+
+        FGlyphPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
+        FTextPoint.y := FGlyphPoint.y+tempGS.cy+FTextGlyphSpacing;
+      end;
+      blGlyphBottom: begin
+        //Glyph Bottom, Text Top
+        FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
+        FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
+
+        FTextPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
+        FGlyphPoint.y := FTextPoint.y+tempTS.cy+FTextGlyphSpacing;
+      end;
     end;
+  end else begin
+    FGlyphPoint.x := 0;
+    FGlyphPoint.y := 0;
 
-       //tempTS := Canvas.TextExtent(Caption);
-       tempTS.cx:= FRotatedText.Width;
-       tempTS.cy:= FRotatedText.Height;
-       
-       tempBL := FButtonLayout;
-
-       {if FRotateDirection=rdRight then
-       begin
-           case FButtonLayout of
-              blGlyphTop : tempBL := blGlyphBottom;
-              blGlyphBottom: tempBL := blGlyphTop;
-           end;
-       end;}
-
-{if FRotateDirection in [rdRight,rdLeft] then
-       begin
-           p := tempTS.cx;
-           tempTS.cx := tempTS.cy;
-           tempTS.cy := p;
-           p := tempGS.cx;
-           tempGS.cx:=tempGS.cy;
-           tempGS.cy := p;
-       end;  }
-
-       if FShowGlyph and not FRotatedGlyph.Empty then begin
-           case tempBL of
-             blGlyphLeft:  begin
-               FGlyphPoint.x := AlignItem(tempGS.cx+FTextGlyphSpacing+tempTS.cx,AreaWidth,4,FTextAlignment);
-               FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
-
-               FTextPoint.x := FGlyphPoint.x+tempGS.cx+FTextGlyphSpacing;
-               FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
-             end;
-             blGlyphRight: begin
-               //Glyph Right, Text Left
-               FTextPoint.x := AlignItem(tempTS.cx+FTextGlyphSpacing+tempGS.cx,AreaWidth,4, FTextAlignment);
-               FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
-
-               FGlyphPoint.x := FTextPoint.x+tempTS.cx+FTextGlyphSpacing;
-               FGlyphPoint.y := AlignItem(tempGS.cy,AreaHeight,0, taCenter);
-             end;
-             blGlyphTop:  begin
-               //Glyph Top, Text Bottom
-               FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
-               FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
-
-               FGlyphPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
-               FTextPoint.y := FGlyphPoint.y+tempGS.cy+FTextGlyphSpacing;
-             end;
-             blGlyphBottom: begin
-               //Glyph Bottom, Text Top
-               FGlyphPoint.x := AlignItem(tempGS.cx,AreaWidth, 0, FTextAlignment);
-               FTextPoint.x := AlignItem(tempTS.cx, AreaWidth, 0, FTextAlignment);
-
-               FTextPoint.y := AlignItem(tempGS.cy+FTextGlyphSpacing+tempTS.cy, AreaHeight, 4, taCenter);
-               FGlyphPoint.y := FTextPoint.y+tempTS.cy+FTextGlyphSpacing;
-             end;
-           end;
-       end else begin
-           FGlyphPoint.x := 0;
-           FGlyphPoint.y := 0;
-
-           FTextPoint.x := AlignItem(tempTS.cx,AreaWidth,4, FTextAlignment);
-           FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
-       end;
+    FTextPoint.x := AlignItem(tempTS.cx,AreaWidth,4, FTextAlignment);
+    FTextPoint.y := AlignItem(tempTS.cy,AreaHeight,0, taCenter);
+  end;
        //WritePoints([TP^, GP^]);
 
        {TP^.x := TP^.x + p;
@@ -376,25 +339,24 @@ begin
        GP^.x := GP^.x + p;
        GP^.y := GP^.y + p; }
 
-       FTextPoint.x := FTextPoint.x+FBackgroundRect.Left;
-       FTextPoint.y := FTextPoint.y+FBackgroundRect.Top;
+  FTextPoint.x := FTextPoint.x+FBackgroundRect.Left;
+  FTextPoint.y := FTextPoint.y+FBackgroundRect.Top;
 
-       FGlyphPoint.x := FGlyphPoint.x+FBackgroundRect.Left;
-       FGlyphPoint.y := FGlyphPoint.y+FBackgroundRect.Top;
+  FGlyphPoint.x := FGlyphPoint.x+FBackgroundRect.Left;
+  FGlyphPoint.y := FGlyphPoint.y+FBackgroundRect.Top;
 
 
-       {$IFDEF DEBUGGRADBUTTON}
-       WriteLn('Text');
-       WritePoint(FTextPoint);
-       WriteLn('Glyph');
-       WritePoint(FGlyphPoint);
-       {$ENDIF}
+  {$IFDEF DEBUGGRADBUTTON}
+  WriteLn('Text');
+  WritePoint(FTextPoint);
+  WriteLn('Glyph');
+  WritePoint(FGlyphPoint);
+  {$ENDIF}
 
-       //tempTS := Canvas.TextExtent(Caption);
+  //tempTS := Canvas.TextExtent(Caption);
 
-       FTextSize:=tempTS;
-       FGlyphSize:=tempGS;
-
+  FTextSize:=tempTS;
+  FGlyphSize:=tempGS;
 end;
 
 function TGradButton.GetAutoWidth: Integer;
@@ -579,6 +541,37 @@ begin
    end;
 end;
 
+procedure TGradButton.GetContentRect(var TheRect: TRect);
+begin
+   TheRect := Rect(0,0,Width,Height);
+
+   //Top
+   if (bsTopLine in BorderSides) then
+   begin
+        TheRect.Top := 2;
+   end else
+        TheRect.Top := 0;
+
+   //Left
+   if (bsLeftLine in BorderSides) then
+   begin
+      TheRect.Left := 2;
+   end else
+      TheRect.Left := 0;
+
+   //Right
+   if (bsRightLine in BorderSides) then
+   begin
+      TheRect.Right := TheRect.Right-{$IFDEF windows}2{$ELSE}3{$ENDIF};
+   end;
+
+   //Bottom
+   if (bsBottomLine in BorderSides) then
+   begin
+       TheRect.Bottom := TheRect.Bottom - 2;
+   end;
+end;
+
 function TGradButton.GetGlyph : TBitmap;
 begin
     Result := FRotatedGlyph.Bitmap;
@@ -654,7 +647,6 @@ begin
    if FAutoHeight then Height := GetAutoHeight;
 
    UpdateBackground;
-   UpdateText;
    UpdatePositions;
 end;
     
@@ -915,13 +907,13 @@ end;
 
 procedure TGradButton.SetOwnerBackgroundDraw(const Value: Boolean);
 begin
-    FOwnerBackgroundDraw:=Value;
+  FOwnerBackgroundDraw:=Value;
 
-    if Value then
-    begin
-       UpdateBackground;
-       InvPaint;
-    end;
+  if Value then
+  begin
+    UpdateBackground;
+    InvPaint;
+  end;
 end;
 
 procedure TGradButton.SetNormalBlend(const Value: Extended);
@@ -1047,45 +1039,47 @@ begin
       
    with bm do
    begin
+     Width := Self.Width;
+     Height := Self.Height;
 
-   Width := Self.Width;
-   Height := Self.Height;
+     FBackground.Width:=Width;
+     FBackground.Height:=Height;
 
-   FBackground.Width:=Width;
-   FBackground.Height:=Height;
+     Canvas.Brush.Color:=clBlack;
+     Canvas.FillRect(0,0,Width, Height);
 
-   p := 0;
+     p := 0;
 
-   if tempState = bsDown then
-      p := 1;
-   
-   if not FEnabled then tempState := bsDisabled;
-   
-   case tempState of
-     bsUp  : Canvas.Draw(0,0,FNormalBackgroundCache);
-     bsDown: Canvas.Draw(0,0,FDownBackgroundCache);
-     bsHot : Canvas.Draw(0,0,FHotBackgroundCache);
-     else Canvas.Draw(0,0,FDisabledBackgroundCache);
-   end;
-   
-   if Caption <> '' then
-      FRotatedText.Draw(bm.Canvas, FTextPoint.x+p, FTextPoint.y+p);
+     if tempState = bsDown then
+        p := 1;
 
-   if FShowGlyph AND FRotatedGlyph.IsBitmapStored then
-   begin
-      if not FEnabled then
-         tempState := bsDisabled
-      else
-         tempState := FState;
-         
-      FRotatedGlyph.State:=tempState;
-      FRotatedGlyph.Draw(bm.Canvas, FGlyphPoint.x+p, FGlyphPoint.y+p);
-   end;
-   
-   if not (csDesigning in ComponentState) then
-     if FFocused AND FShowFocusBorder then
-        Canvas.DrawFocusRect(RECT(FBackgroundRect.Left+2, FBackgroundRect.Top+2,
-          FBackgroundRect.Right-2, FBackgroundRect.Bottom-2));
+     if not FEnabled then tempState := bsDisabled;
+
+     case tempState of
+       bsUp  : Canvas.Draw(0,0,FNormalBackgroundCache);
+       bsDown: Canvas.Draw(0,0,FDownBackgroundCache);
+       bsHot : Canvas.Draw(0,0,FHotBackgroundCache);
+       else Canvas.Draw(0,0,FDisabledBackgroundCache);
+     end;
+
+     if Caption <> '' then
+        FRotatedText.Draw(bm.Canvas, FTextPoint.x+p, FTextPoint.y+p);
+
+     if FShowGlyph AND FRotatedGlyph.IsBitmapStored then
+     begin
+        if not FEnabled then
+           tempState := bsDisabled
+        else
+           tempState := FState;
+
+        FRotatedGlyph.State:=tempState;
+        FRotatedGlyph.Draw(bm.Canvas, FGlyphPoint.x+p, FGlyphPoint.y+p);
+     end;
+
+     if not (csDesigning in ComponentState) then
+       if FFocused AND FShowFocusBorder then
+          Canvas.DrawFocusRect(RECT(FBackgroundRect.Left+2, FBackgroundRect.Top+2,
+            FBackgroundRect.Right-2, FBackgroundRect.Bottom-2));
    end;
    
    Canvas.Draw(0,0,bm);
