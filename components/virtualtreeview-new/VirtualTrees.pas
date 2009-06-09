@@ -24091,7 +24091,8 @@ begin
           end
           else
           begin
-            Brush.Style := bsClear;
+            //lcl: Is not necessary to set the style here
+            //Brush.Style := bsClear;
           end;
         end
         else
@@ -24171,7 +24172,7 @@ begin
             InflateRect(FocusRect, -1, -1);
         {$endif ThemeSupport}
 
-        Windows.DrawFocusRect(Handle, FocusRect);
+        LCLIntf.DrawFocusRect(Handle, FocusRect);
         SetTextColor(Handle, TextColorBackup);
         SetBkColor(Handle, BackColorBackup);
       end;
