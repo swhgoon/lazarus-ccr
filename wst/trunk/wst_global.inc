@@ -16,9 +16,12 @@
       {$IF Defined(FPC_RELEASE) }
         {$IF Defined(FPC_VERSION) and (FPC_RELEASE > 0) }
           {$define FPC_211}
-          {$IF Defined(FPC_VERSION) and (FPC_RELEASE > 2) }
+          {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 2) }
             {$DEFINE WST_TKPROCVAR}
             {$DEFINE WST_UNICODESTRING}
+          {$IFEND}
+          {$IF Defined(FPC_RELEASE) and ( (FPC_RELEASE > 2) or ( ( FPC_RELEASE = 2 ) and ( FPC_PATCH > 4 ) ) ) }
+            {$DEFINE TDOMNodeList_RELEASE_NOT_FREE}
           {$IFEND}
         {$IFEND}
       {$IFEND}
