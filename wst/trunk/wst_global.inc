@@ -20,7 +20,7 @@
             {$DEFINE WST_TKPROCVAR}
             {$DEFINE WST_UNICODESTRING}
           {$IFEND}
-          {$IF Defined(FPC_RELEASE) and ( (FPC_RELEASE > 2) or ( ( FPC_RELEASE = 2 ) and ( FPC_PATCH > 4 ) ) ) }
+          {$IF Defined(FPC_RELEASE) and (FPC_RELEASE > 2) }
             {$DEFINE TDOMNodeList_RELEASE_NOT_FREE}
           {$IFEND}
         {$IFEND}
