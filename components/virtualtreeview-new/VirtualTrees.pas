@@ -3622,6 +3622,7 @@ type
     property OnStateChange;
     property OnStructureChange;
     property OnUpdating;
+    property OnUTF8KeyPress;
   end;
 
   TVTDrawHintEvent = procedure(Sender: TBaseVirtualTree; HintCanvas: TCanvas; Node: PVirtualNode; const R: TRect;
@@ -3863,6 +3864,7 @@ type
     property OnStateChange;
     property OnStructureChange;
     property OnUpdating;
+    property OnUTF8KeyPress;
   end;
 
 type
