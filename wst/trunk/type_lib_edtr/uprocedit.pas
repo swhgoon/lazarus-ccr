@@ -291,12 +291,17 @@ procedure TfProcEdit.SaveToObject();
   end;
   
   procedure CheckObjectType();
+  var
+    newRetType : TPasType;
   begin
     if FObject.InheritsFrom(TPasFunction) then begin
+      newRetType := edtResultType.Items.Objects[edtResultType.ItemIndex] as TPasType;
       if ( FOldReturnType <> nil ) and
-         ( FOldReturnType <> TPasFunctionType(FObject.ProcType).ResultEl.ResultType )
+         ( FOldReturnType <> newRetType )
       then begin
         FOldReturnType.Release();
+        TPasFunctionType(FObject.ProcType).ResultEl.ResultType := newRetType;
+        newRetType.AddRef();
       end;
     end;
     if edtFunction.Checked and ( not FObject.InheritsFrom(TPasFunction) ) then begin
