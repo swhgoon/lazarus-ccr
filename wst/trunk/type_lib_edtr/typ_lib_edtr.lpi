@@ -138,12 +138,14 @@
         <Filename Value="umoduleedit.pas"/>
         <ComponentName Value="fModuleEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="umoduleedit"/>
       </Unit16>
       <Unit17>
         <Filename Value="ubindingedit.pas"/>
         <ComponentName Value="fBindingEdit"/>
         <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="ubindingedit"/>
       </Unit17>
       <Unit18>

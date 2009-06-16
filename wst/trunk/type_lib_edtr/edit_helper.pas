@@ -30,7 +30,7 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;virtual;
     class function UpdateObject(
-      AObject : TPasElement;
+      var AObject : TPasElement;
       ASymbolTable : TwstPasTreeContainer
     ):Boolean;virtual;abstract;
     class procedure DeleteObject(
@@ -59,8 +59,8 @@ type
 
   function HasEditor(AObject : TPasElement):Boolean;
   function UpdateObject(
-    AObject : TPasElement;
-    ASymbolTable : TwstPasTreeContainer
+    var AObject : TPasElement;
+        ASymbolTable : TwstPasTreeContainer
   ):Boolean;
   procedure DeleteObject(
     AObject : TPasElement;
@@ -118,8 +118,8 @@ begin
 end;
 
 function UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ):Boolean;
 var
   h : TObjectUpdaterClass;
@@ -150,8 +150,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -161,8 +161,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -172,8 +172,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
   
@@ -183,8 +183,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
   
@@ -194,8 +194,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
   
@@ -205,8 +205,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -216,8 +216,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -227,8 +227,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -238,8 +238,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -249,8 +249,8 @@ type
   public
     class function CanHandle(AObject : TObject):Boolean;override;
     class function UpdateObject(
-      AObject : TPasElement;
-      ASymbolTable : TwstPasTreeContainer
+      var AObject : TPasElement;
+          ASymbolTable : TwstPasTreeContainer
     ):Boolean;override;
   end;
 
@@ -262,8 +262,8 @@ begin
 end;
 
 class function TRecordUpdater.UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ) : Boolean;
 var
   f : TfRecordEdit;
@@ -273,6 +273,7 @@ begin
   f := TfRecordEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -286,8 +287,8 @@ begin
 end;
 
 class function TTypeAliasUpdater.UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ): Boolean;
 var
   f : TfTypeAliasEdit;
@@ -297,6 +298,7 @@ begin
   f := TfTypeAliasEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -310,8 +312,8 @@ begin
 end;
 
 class function TArrayUpdater.UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ): Boolean;
 var
   f : TfArrayEdit;
@@ -321,6 +323,7 @@ begin
   f := TfArrayEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -334,8 +337,8 @@ begin
 end;
 
 class function TBindingUpdater.UpdateObject(
-  AObject: TPasElement;
-  ASymbolTable: TwstPasTreeContainer
+  var AObject: TPasElement;
+      ASymbolTable: TwstPasTreeContainer
 ): Boolean;
 var
   f : TfBindingEdit;
@@ -345,6 +348,7 @@ begin
   f := TfBindingEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -358,8 +362,8 @@ begin
 end;
 
 class function TModuleUpdater.UpdateObject(
-  AObject: TPasElement;
-  ASymbolTable: TwstPasTreeContainer
+  var AObject: TPasElement;
+      ASymbolTable: TwstPasTreeContainer
 ): Boolean;
 var
   f : TfModuleEdit;
@@ -369,6 +373,7 @@ begin
   f := TfModuleEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -382,8 +387,8 @@ begin
 end;
 
 class function TArgumentUpdater.UpdateObject(
-  AObject      : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject      : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ): Boolean;
 var
   f : TfArgEdit;
@@ -393,6 +398,7 @@ begin
   f := TfArgEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -406,8 +412,8 @@ begin
 end;
 
 class function TMethodUpdater.UpdateObject(
-  AObject: TPasElement;
-  ASymbolTable: TwstPasTreeContainer
+  var AObject: TPasElement;
+      ASymbolTable: TwstPasTreeContainer
 ): Boolean;
 var
   f : TfProcEdit;
@@ -417,6 +423,7 @@ begin
   f := TfProcEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -430,7 +437,10 @@ begin
             ( AObject.InheritsFrom(TPasClassType) and ( TPasClassType(AObject).ObjKind = okInterface ) );
 end;
 
-class function TInterfaceUpdater.UpdateObject(AObject: TPasElement; ASymbolTable: TwstPasTreeContainer): Boolean;
+class function TInterfaceUpdater.UpdateObject(
+  var AObject: TPasElement;
+      ASymbolTable: TwstPasTreeContainer
+) : Boolean;
 var
   f : TfInterfaceEdit;
   e : TPasClassType;
@@ -439,6 +449,7 @@ begin
   f := TfInterfaceEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -453,8 +464,8 @@ begin
 end;
 
 class function TClassUpdater.UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ): Boolean;
 var
   f : TfClassEdit;
@@ -464,6 +475,7 @@ begin
   f := TfClassEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
@@ -525,8 +537,8 @@ begin
 end;
 
 class function TEnumUpdater.UpdateObject(
-  AObject : TPasElement;
-  ASymbolTable : TwstPasTreeContainer
+  var AObject : TPasElement;
+      ASymbolTable : TwstPasTreeContainer
 ): Boolean;
 var
   f : TfEnumEdit;
@@ -536,6 +548,7 @@ begin
   f := TfEnumEdit.Create(Application);
   try
     Result := f.UpdateObject(e,etUpdate,ASymbolTable);
+    AObject := e;
   finally
     f.Release();
   end;
