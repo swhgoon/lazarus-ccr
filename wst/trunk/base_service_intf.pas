@@ -6331,11 +6331,11 @@ begin
 {$IFDEF HAS_FORMAT_SETTINGS}
   {$IFDEF FPC}
     wst_FormatSettings := DefaultFormatSettings;
-    wst_FormatSettings.DecimalSeparator := '.';
   {$ELSE}
     GetLocaleFormatSettings(GetThreadLocale(),wst_FormatSettings);
-    wst_FormatSettings.DecimalSeparator := '.';
   {$ENDIF}
+  wst_FormatSettings.DecimalSeparator := '.';
+  wst_FormatSettings.ThousandSeparator := #0;
 {$ENDIF HAS_FORMAT_SETTINGS}
 
   if ( TypeRegistryInstance = nil ) then begin
