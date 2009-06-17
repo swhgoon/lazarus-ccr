@@ -186,6 +186,14 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    function PutUInt64(
+      const ANameSpace : string;
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : QWord
+    ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF HAS_QWORD}
     function PutStr(
       const ANameSpace : string;
       Const AName     : String;
@@ -262,6 +270,14 @@ type
       Var   AName     : String;
       Var   AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    procedure GetUInt64(
+      Const ATypeInfo : PTypeInfo;
+      const ANameSpace : string;
+      Var   AName     : String;
+      Var   AData     : QWord
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF HAS_QWORD}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
       const ANameSpace : string;
@@ -918,6 +934,18 @@ begin
   Result := InternalPutData(ANameSpace,AName,ATypeInfo,IntToStr(AData));
 end;
 
+{$IFDEF HAS_QWORD}
+function TSOAPBaseFormatter.PutUInt64(
+  const ANameSpace : string;
+  const AName      : String;
+  const ATypeInfo  : PTypeInfo;
+  const AData      : QWord
+): TDOMNode;
+begin
+  Result := InternalPutData(ANameSpace,AName,ATypeInfo,IntToStr(AData));
+end;
+{$ENDIF HAS_QWORD}
+
 function TSOAPBaseFormatter.PutStr(
   const ANameSpace : string;
   const AName: String;
@@ -1098,6 +1126,18 @@ procedure TSOAPBaseFormatter.GetInt64(
 begin
   AData := StrToInt64Def(Trim(GetNodeValue(ANameSpace,AName)),0);
 end;
+
+{$IFDEF HAS_QWORD}
+procedure TSOAPBaseFormatter.GetUInt64(
+  const ATypeInfo : PTypeInfo;
+  const ANameSpace : string;
+  var   AName     : String;
+  var   AData     : QWord
+);
+begin
+  AData := StrToQWordDef(Trim(GetNodeValue(ANameSpace,AName)),0);
+end;
+{$ENDIF HAS_QWORD}
 
 procedure TSOAPBaseFormatter.GetFloat(
   const ATypeInfo  : PTypeInfo;
@@ -1654,6 +1694,9 @@ procedure TSOAPBaseFormatter.Put(
 );
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -1677,11 +1720,18 @@ begin
         wideCharData := WideChar(AData);
         PutWideChar(ANameSpace,AName,ATypeInfo,wideCharData);
       end;
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := Int64(AData);
         PutInt64(ANameSpace,AName,ATypeInfo,int64Data);
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := QWord(AData);
+        PutUInt64(ANameSpace,AName,ATypeInfo,uint64Data);
+      End;
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := String(AData);
@@ -1731,8 +1781,8 @@ begin
             otUByte : enumData := Byte(AData);
             otSWord : enumData := SmallInt(AData);
             otUWord : enumData := Word(AData);
-            otSLong,
-            otULong : enumData := LongInt(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
           End;
           If ( ATypeInfo^.Kind = tkInteger ) Then
             PutInt64(ANameSpace,AName,ATypeInfo,enumData)
@@ -1772,10 +1822,12 @@ procedure TSOAPBaseFormatter.PutScopeInnerValue(
 );
 Var
   int64SData : Int64;
-  {$IFDEF FPC}
-    int64UData : QWord;
-    boolData : Boolean;
-  {$ENDIF}
+{$IFDEF FPC}
+  boolData : Boolean;
+{$ENDIF FPC}
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   enumData : TEnumIntType;
   floatDt : Extended;
@@ -1804,13 +1856,13 @@ begin
         int64SData := Int64(AData);
         dataBuffer := IntToStr(int64SData);
       end;
-    {$IFDEF FPC}
+{$IFDEF HAS_QWORD}
     tkQWord :
       begin
-        int64UData := QWord(AData);
-        dataBuffer := IntToStr(int64UData);
+        uint64Data := QWord(AData);
+        dataBuffer := IntToStr(uint64Data);
       end;
-    {$ENDIF}
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       begin
         strData := string(AData);
@@ -1846,8 +1898,8 @@ begin
           otUByte : enumData := Byte(AData);
           otSWord : enumData := SmallInt(AData);
           otUWord : enumData := Word(AData);
-          otSLong,
-          otULong : enumData := LongInt(AData);
+          otSLong : enumData := LongInt(AData);
+          otULong : enumData := LongWord(AData);
         end;
         dataBuffer := IntToStr(enumData);
       end;
@@ -1859,8 +1911,8 @@ begin
           otUByte : enumData := Byte(AData);
           otSWord : enumData := SmallInt(AData);
           otUWord : enumData := Word(AData);
-          otSLong,
-          otULong : enumData := LongInt(AData);
+          otSLong : enumData := LongInt(AData);
+          otULong : enumData := LongWord(AData);
         end;
         dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
       end;
@@ -1888,6 +1940,9 @@ procedure TSOAPBaseFormatter.Get(
 );
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -1914,12 +1969,20 @@ begin
         GetWideChar(ATypeInfo,ANameSpace,AName,wideCharData);
         WideChar(AData) := wideCharData;
       end;
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,ANameSpace,AName,int64Data);
         Int64(AData) := int64Data;
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := 0;
+        GetUInt64(ATypeInfo,ANameSpace,AName,uint64Data);
+        QWord(AData) := uint64Data;
+      End;
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
@@ -1980,8 +2043,8 @@ begin
             otUByte : Byte(AData) := enumData;
             otSWord : SmallInt(AData) := enumData;
             otUWord : Word(AData) := enumData;
-            otSLong,
-            otULong : LongInt(AData) := enumData;
+            otSLong : LongInt(AData) := enumData;
+            otULong : LongWord(AData) := enumData;
           End;
       {$IFDEF WST_DELPHI}
         end;
@@ -2045,9 +2108,9 @@ begin
           WideChar(AData) := #0;
       end;
     tkInt64      : Int64(AData) := StrToInt64Def(Trim(dataBuffer),0);
-    {$IFDEF FPC}
-    tkQWord      : QWord(AData) := StrToInt64Def(Trim(dataBuffer),0);
-    {$ENDIF}
+{$IFDEF HAS_QWORD}
+    tkQWord      : QWord(AData) := StrToQWordDef(Trim(dataBuffer),0);
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} : string(AData) := dataBuffer;
     tkWString : WideString(AData) := dataBuffer;
 {$IFDEF WST_UNICODESTRING}
@@ -2070,7 +2133,7 @@ begin
     tkInteger, tkEnumeration :
       begin
         if ( ATypeInfo^.Kind = tkInteger ) then
-          enumData := StrToIntDef(Trim(dataBuffer),0)
+          enumData := StrToInt64Def(Trim(dataBuffer),0)
         else
           enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
         case GetTypeData(ATypeInfo)^.OrdType of
@@ -2078,8 +2141,8 @@ begin
           otUByte : Byte(AData)     := enumData;
           otSWord : SmallInt(AData) := enumData;
           otUWord : Word(AData)     := enumData;
-          otSLong,
-          otULong : LongInt(AData)  := enumData;
+          otSLong : LongInt(AData)  := enumData;
+          otULong : LongWord(AData)  := enumData;
         end;
       end;
     tkFloat :

@@ -285,6 +285,13 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    procedure PutUInt64(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : QWord
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF HAS_QWORD}
     procedure PutObj(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -332,6 +339,13 @@ type
       Var   AName     : String;
       Var   AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    procedure GetUInt64(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : QWord
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF}
     procedure GetAnsiStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -1119,6 +1133,17 @@ begin
   StackTop().CreateBuffer(AName,dtInt64S)^.Int64S := AData;
 end;
 
+{$IFDEF HAS_QWORD}
+procedure TBaseBinaryFormatter.PutUInt64(
+  const AName: String;
+  const ATypeInfo: PTypeInfo;
+  const AData: QWord
+);
+begin
+  StackTop().CreateBuffer(AName,dtInt64U)^.Int64U := AData;
+end;
+{$ENDIF HAS_QWORD}
+
 procedure TBaseBinaryFormatter.PutObj(
   const AName: String;
   const ATypeInfo: PTypeInfo;
@@ -1228,6 +1253,17 @@ procedure TBaseBinaryFormatter.GetInt64(
 begin
   AData := GetDataBuffer(AName)^.Int64S;
 end;
+
+{$IFDEF HAS_QWORD}
+procedure TBaseBinaryFormatter.GetUInt64(
+  const ATypeInfo: PTypeInfo;
+  var AName: String;
+  var AData: QWord
+);
+begin
+  AData := GetDataBuffer(AName)^.Int64U;
+end;
+{$ENDIF HAS_QWORD}
 
 procedure TBaseBinaryFormatter.GetAnsiStr(
   const ATypeInfo: PTypeInfo;
@@ -1404,6 +1440,9 @@ end;
 procedure TBaseBinaryFormatter.Put(const AName: String; const ATypeInfo: PTypeInfo;const AData);
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWOrd;
+{$ENDIF HAS_QWORD}
   ansiStrData : AnsiString;
   objData : TObject;
   boolData : Boolean;
@@ -1444,11 +1483,18 @@ begin
         PutUnicodeStr(AName,ATypeInfo,unicodeStrData);
       end;
 {$ENDIF WST_UNICODESTRING}
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := Int64(AData);
         PutInt64(AName,ATypeInfo,int64Data);
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := QWord(AData);
+        PutUInt64(AName,ATypeInfo,uint64Data);
+      End;
+{$ENDIF HAS_QWORD}
     tkClass :
       Begin
         objData := TObject(AData);
@@ -1523,7 +1569,9 @@ procedure TBaseBinaryFormatter.PutScopeInnerValue(
 );
 var
   int64SData : Int64;
-  {$IFDEF FPC}int64UData : QWord;{$ENDIF}
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   boolData : Boolean;
   enumData : TEnumData;
@@ -1569,13 +1617,13 @@ begin
         int64SData := Int64(AData);
         StackTop().CreateInnerBuffer(dtInt64S)^.Int64S := int64SData;
       end;
-    {$IFDEF FPC}
+{$IFDEF HAS_QWORD}
     tkQWord :
       begin
-        int64UData := QWord(AData);
-        StackTop().CreateInnerBuffer(dtInt64U)^.Int64U := int64UData;
+        uint64Data := QWord(AData);
+        StackTop().CreateInnerBuffer(dtInt64U)^.Int64U := uint64Data;
       end;
-    {$ENDIF}
+{$ENDIF HAS_QWORD}
     tkClass, tkRecord :
       begin
         raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
@@ -1690,6 +1738,9 @@ procedure TBaseBinaryFormatter.Get(
 );
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWOrd;
+{$ENDIF HAS_QWORD}
   strData : AnsiString;
   objData : TObject;
   boolData : Boolean;
@@ -1704,12 +1755,20 @@ Var
   wideCharData : WideChar;
 begin
   Case ATypeInfo^.Kind Of
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,AName,int64Data);
         Int64(AData) := int64Data;
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := 0;
+        GetUInt64(ATypeInfo,AName,uint64Data);
+        QWord(AData) := uint64Data;
+      End;
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
@@ -1829,9 +1888,9 @@ begin
     tkChar         : AnsiChar(AData) := dataBuffer^.AnsiCharData ;
     tkWChar        : WideChar(AData) := dataBuffer^.WideCharData ;
     tkInt64        : Int64(AData) := dataBuffer^.Int64S;
-    {$IFDEF FPC}
+{$IFDEF HAS_QWORD}
     tkQWord        : QWord(AData) := dataBuffer^.Int64U;
-    {$ENDIF}
+{$ENDIF HAS_QWORD}
 
     tkLString
     {$IFDEF FPC},

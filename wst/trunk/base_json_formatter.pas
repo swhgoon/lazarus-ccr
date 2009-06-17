@@ -71,6 +71,12 @@ type
       Const AName  : string;
       const AValue : Int64
     ) : TJSONData;virtual;
+{$IFDEF HAS_QWORD}
+    function CreateUInt64Buffer(
+      Const AName  : string;
+      const AValue : QWord
+    ) : TJSONData;virtual;
+{$ENDIF HAS_QWORD}
     function CreateFloatBuffer(
       Const AName  : string;
       const AValue : TJSONFloat
@@ -223,6 +229,13 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    procedure PutUInt64(
+      Const AName     : String;
+      Const ATypeInfo : PTypeInfo;
+      Const AData     : QWord
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF HAS_QWORD}
     procedure PutStr(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -289,6 +302,13 @@ type
       Var   AName     : String;
       Var   AData     : Int64
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$IFDEF HAS_QWORD}
+    procedure GetUInt64(
+      Const ATypeInfo : PTypeInfo;
+      Var   AName     : String;
+      Var   AData     : QWord
+    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+{$ENDIF HAS_QWORD}
     procedure GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -506,6 +526,17 @@ begin
   StackTop().CreateInt64Buffer(AName,AData);
 end;
 
+{$IFDEF HAS_QWORD}
+procedure TJsonRpcBaseFormatter.PutUInt64(
+  const AName : String;
+  const ATypeInfo : PTypeInfo;
+  const AData : QWord
+);
+begin
+  StackTop().CreateUInt64Buffer(AName,AData);
+end;
+{$ENDIF HAS_QWORD}
+
 procedure TJsonRpcBaseFormatter.PutStr(
   const AName : String;
   const ATypeInfo : PTypeInfo;
@@ -640,6 +671,34 @@ begin
   else
     AData := Round(locBuffer.AsFloat);
 end;
+
+{$IFDEF HAS_QWORD}
+procedure TJsonRpcBaseFormatter.GetUInt64(
+  const ATypeInfo : PTypeInfo;
+  var AName : String;
+  var AData : QWord
+);
+var
+  locBuffer : TJSONData;
+  locExtData : TJSONFloat;
+  tmp : QWord;
+begin
+  locBuffer := GetDataBuffer(AName);
+  if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then begin
+    AData := locBuffer.AsInteger
+  end else begin
+    locExtData := locBuffer.AsFloat;
+    if ( locExtData > High(Int64) ) then begin
+      locExtData := locExtData - High(Int64);
+      AData := High(Int64);
+      tmp := Round(locExtData);
+      AData := AData + tmp;
+    end else begin
+      AData := Round(locExtData);
+    end;
+  end;
+end;
+{$ENDIF HAS_QWORD}
 
 procedure TJsonRpcBaseFormatter.GetFloat(
   const ATypeInfo : PTypeInfo;
@@ -874,6 +933,9 @@ procedure TJsonRpcBaseFormatter.Put(
 );
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -914,11 +976,18 @@ begin
         wideStrData := WideString(AData);
         PutWideStr(AName,ATypeInfo,wideStrData);
       end;
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := Int64(AData);
         PutInt64(AName,ATypeInfo,int64Data);
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := QWord(AData);
+        PutUInt64(AName,ATypeInfo,uint64Data);
+      End;
+{$ENDIF HAS_QWORD}
     tkClass :
       Begin
         objData := TObject(AData);
@@ -991,6 +1060,9 @@ procedure TJsonRpcBaseFormatter.PutScopeInnerValue(const ATypeInfo : PTypeInfo; 
 var
   locName : string;
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -1032,11 +1104,18 @@ begin
         PutUnicodeStr(locName,ATypeInfo,unicodeStrData);
       end;
 {$ENDIF WST_UNICODESTRING}
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := Int64(AData);
         PutInt64(locName,ATypeInfo,int64Data);
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := QWord(AData);
+        PutUInt64(locName,ATypeInfo,uint64Data);
+      End;
+{$ENDIF HAS_QWORD}
     tkClass, tkRecord :
       begin
         raise EJsonRpcException.Create('Inner Scope value must be a "simple type" value.');
@@ -1097,6 +1176,9 @@ procedure TJsonRpcBaseFormatter.Get(
 );
 Var
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -1123,12 +1205,20 @@ begin
         GetWideChar(ATypeInfo,AName,wideCharData);
         WideChar(AData) := wideCharData;
       end;
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,AName,int64Data);
         Int64(AData) := int64Data;
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := 0;
+        GetUInt64(ATypeInfo,AName,uint64Data);
+        QWord(AData) := uint64Data;
+      End;
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
@@ -1227,6 +1317,9 @@ procedure TJsonRpcBaseFormatter.GetScopeInnerValue(const ATypeInfo : PTypeInfo; 
 var
   locName : string;
   int64Data : Int64;
+{$IFDEF HAS_QWORD}
+  uint64Data : QWord;
+{$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
   boolData : Boolean;
@@ -1254,12 +1347,20 @@ begin
         GetWideChar(ATypeInfo,locName,wideCharData);
         WideChar(AData) := wideCharData;
       end;
-    tkInt64{$IFDEF FPC},tkQWord{$ENDIF} :
+    tkInt64 :
       Begin
         int64Data := 0;
         GetInt64(ATypeInfo,locName,int64Data);
         Int64(AData) := int64Data;
       End;
+{$IFDEF HAS_QWORD}
+    tkQWord :
+      Begin
+        uint64Data := 0;
+        GetUInt64(ATypeInfo,locName,uint64Data);
+        QWord(AData) := uint64Data;
+      End;
+{$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
@@ -1452,6 +1553,16 @@ function TStackItem.CreateInt64Buffer(
 begin
   Result := CreateFloatBuffer(AName,AValue);
 end;
+
+{$IFDEF HAS_QWORD}
+function TStackItem.CreateUInt64Buffer(
+  const AName  : string;
+  const AValue : QWord
+) : TJSONData;
+begin
+  Result := CreateFloatBuffer(AName,AValue);
+end;
+{$ENDIF HAS_QWORD}
 
 { TObjectStackItem }
 

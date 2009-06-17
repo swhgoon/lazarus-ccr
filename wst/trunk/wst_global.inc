@@ -9,6 +9,7 @@
   {$IFDEF FPC}
     {$mode objfpc}{$H+}
     {$DEFINE HAS_QWORD}
+    {$DEFINE HAS_BUILT_IN_64UINT}
     {$DEFINE HAS_TKBOOL}
     {$UNDEF WST_INTF_DOM}
     //{$DEFINE USE_INLINE}
@@ -46,6 +47,7 @@
       {$DEFINE HAS_FORMAT_SETTINGS}
     {$ENDIF}
     {$IFDEF VER200} // Delphi 2009
+      {$DEFINE HAS_BUILT_IN_64UINT}
       {$DEFINE WST_UNICODESTRING}
       {$DEFINE USE_INLINE}
     {$ENDIF}

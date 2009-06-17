@@ -1299,7 +1299,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_32_ScopeData;
-const VAL_1 = 121076; VAL_2 : LongInt = -101276;
+const VAL_1 = 3294967295; VAL_2 : LongInt = -101276;
 var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1351,7 +1351,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_64;
-const VAL_1 = $FFFFFFFFFF; VAL_2 : Int64 = -$FFFFFFFFF0;
+const VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -$FFFFFFFFF0;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1393,7 +1393,7 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_64_ScopeData;
-const VAL_1 = 121076; VAL_2 : Int64 = -101276;
+const VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -101276;
 var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2118,7 +2118,11 @@ const
   CONST_Val_16S = -$7FFF;
   CONST_Val_32U = $FFFFFFFE;
   CONST_Val_32S = -$7FFFFFFF;
+{$IFDEF HAS_BUILT_IN_64UINT}
+  CONST_Val_64U = 18446744073709551604{ = $FFFFFFFFFFFFFFF4};
+{$ELSE HAS_BUILT_IN_64UINT}
   CONST_Val_64U = $FFFFFFFFFFFFF;
+{$ENDIF HAS_BUILT_IN_64UINT}
   CONST_Val_64S = -$FFFFFFFFFFFFF;
 Var
   f : IFormatterBase;
@@ -5157,8 +5161,8 @@ end;
 
 function TTestBinaryFormatterAttributes.CreateFormatter(ARootType: PTypeInfo): IFormatterBase;
 begin
-  Result := TSOAPBaseFormatter.Create() as IFormatterBase;
-  Result.BeginObject('Env',ARootType);
+  Result := TBaseBinaryFormatter.Create() as IFormatterBase;
+  //Result.BeginObject('Root',ARootType);
   Result.SetSerializationStyle(ssAttibuteSerialization);
 end;
 
