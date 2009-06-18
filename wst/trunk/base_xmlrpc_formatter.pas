@@ -41,6 +41,9 @@ const
   sPARAMS = 'params';
   sVALUE = 'value';
 
+  XML_RPC_FALSE = '0';
+  XML_RPC_TRUE  = '1';
+
 type
 
   TwstXMLDocument = {$IFNDEF FPC}wst_delphi_xml.TXMLDocument{$ELSE}TXMLDocument{$ENDIF};
@@ -179,13 +182,11 @@ type
       Const ATypeInfo : PTypeInfo;
       Const AData     : TEnumIntType
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    {$IFDEF FPC}
     function PutBool(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
       Const AData     : Boolean
     ):TDOMNode;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    {$ENDIF}
     function PutAnsiChar(
       Const AName     : String;
       Const ATypeInfo : PTypeInfo;
@@ -257,7 +258,6 @@ type
       Var   AName     : String;
       Var   AData     : WideChar
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    {$IFDEF FPC}
     procedure GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -268,7 +268,6 @@ type
       Var   AName     : String;
       Var   AData     : Integer
     );
-    {$ENDIF}
     procedure GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -828,7 +827,6 @@ begin
             );
 end;
 
-{$IFDEF FPC}
 function TXmlRpcBaseFormatter.PutBool(
   const AName     : String;
   const ATypeInfo : PTypeInfo;
@@ -838,12 +836,11 @@ var
   v : Char;
 begin
   if AData then
-    v := '1'
+    v := XML_RPC_TRUE
   else
-    v := '0';
+    v := XML_RPC_FALSE;
   Result := InternalPutData(AName,xdtBoolean,v);
 end;
-{$ENDIF}
 
 function TXmlRpcBaseFormatter.PutAnsiChar(
   const AName: String;
@@ -988,20 +985,13 @@ begin
     AData := GetEnumValue(ATypeInfo,locBuffer)
 End;
 
-{$IFDEF FPC}
 procedure TXmlRpcBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
   var   AName      : String;
   var   AData      : Boolean
 );
-Var
-  locBuffer : String;
 begin
-  locBuffer := LowerCase(Trim(GetNodeValue(AName)));
-  If IsStrEmpty(locBuffer) Then
-    AData := False
-  Else
-    AData := StrToBool(locBuffer);
+  AData := ( GetNodeValue(AName) = XML_RPC_TRUE );
 end;
 
 procedure TXmlRpcBaseFormatter.GetInt(
@@ -1012,7 +1002,6 @@ procedure TXmlRpcBaseFormatter.GetInt(
 begin
   AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
 end;
-{$ENDIF}
 
 procedure TXmlRpcBaseFormatter.GetAnsiChar(
   const ATypeInfo: PTypeInfo;
@@ -1299,7 +1288,7 @@ Var
 {$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
-  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
+  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
 {$IFDEF WST_UNICODESTRING}
@@ -1367,19 +1356,30 @@ begin
     {$ENDIF}
     tkInteger, tkEnumeration :
       Begin
-        enumData := 0;
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong : enumData := LongInt(AData);
-          otULong : enumData := LongWord(AData);
-        End;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          PutInt64(AName,ATypeInfo,enumData)
-        Else
-          PutEnum(AName,ATypeInfo,enumData);
+      {$IFDEF WST_DELPHI}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          boolData := Boolean(AData);
+          PutBool(AName,ATypeInfo,boolData);
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
+          End;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            PutInt64(AName,ATypeInfo,enumData)
+          Else
+            PutEnum(AName,ATypeInfo,enumData);
+      {$IFDEF WST_DELPHI}
+        end;
+      {$ENDIF}
       End;
     tkFloat :
       Begin
@@ -1414,9 +1414,7 @@ Var
 {$IFDEF HAS_QWORD}
   uint64Data : QWord;
 {$ENDIF HAS_QWORD}
-{$IFDEF FPC}
   boolData : Boolean;
-{$ENDIF}
   strData : string;
   enumData : TEnumIntType;
   floatDt : Extended;
@@ -1477,7 +1475,10 @@ begin
     tkBool :
       begin
         boolData := Boolean(AData);
-        dataBuffer := BoolToStr(boolData);
+        if boolData then
+          dataBuffer := XML_RPC_TRUE
+        else
+          dataBuffer := XML_RPC_FALSE;
       end;
     {$ENDIF}  
     tkInteger :
@@ -1494,16 +1495,28 @@ begin
       end;
     tkEnumeration :
       begin
-        enumData := 0;
-        case GetTypeData(ATypeInfo)^.OrdType of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong : enumData := LongInt(AData);
-          otULong : enumData := LongWord(AData);
+      {$IFDEF WST_DELPHI}
+        if ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) ) then begin
+          boolData := Boolean(AData);
+          if boolData then
+            dataBuffer := XML_RPC_TRUE
+          else
+            dataBuffer := XML_RPC_FALSE;
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          case GetTypeData(ATypeInfo)^.OrdType of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
+          end;
+          dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
+      {$IFDEF WST_DELPHI}
         end;
-        dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
+      {$ENDIF}        
       end;
     tkFloat :
       begin
@@ -1533,7 +1546,7 @@ Var
 {$ENDIF HAS_QWORD}
   strData : string;
   objData : TObject;
-  {$IFDEF FPC}boolData : Boolean;{$ENDIF}
+  boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
   recObject : Pointer;
@@ -1612,19 +1625,31 @@ begin
     {$ENDIF}  
     tkInteger, tkEnumeration :
       Begin
-        enumData := 0;
-        If ( ATypeInfo^.Kind = tkInteger ) Then
-          GetInt64(ATypeInfo,AName,enumData)
-        Else
-          GetEnum(ATypeInfo,AName,enumData);
-        Case GetTypeData(ATypeInfo)^.OrdType Of
-          otSByte : ShortInt(AData) := enumData;
-          otUByte : Byte(AData) := enumData;
-          otSWord : SmallInt(AData) := enumData;
-          otUWord : Word(AData) := enumData;
-          otSLong : LongInt(AData) := enumData;
-          otULong : LongWord(AData) := enumData;
-        End;
+      {$IFDEF WST_DELPHI}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          boolData := False;
+          GetBool(ATypeInfo,AName,boolData);
+          Boolean(AData) := boolData;
+        end else begin
+      {$ENDIF}      
+          enumData := 0;
+          If ( ATypeInfo^.Kind = tkInteger ) Then
+            GetInt64(ATypeInfo,AName,enumData)
+          Else
+            GetEnum(ATypeInfo,AName,enumData);
+          Case GetTypeData(ATypeInfo)^.OrdType Of
+            otSByte : ShortInt(AData) := enumData;
+            otUByte : Byte(AData) := enumData;
+            otSWord : SmallInt(AData) := enumData;
+            otUWord : Word(AData) := enumData;
+            otSLong : LongInt(AData) := enumData;
+            otULong : LongWord(AData) := enumData;
+          End;
+      {$IFDEF WST_DELPHI}
+        end;
+      {$ENDIF}        
       End;
     tkFloat :
       Begin
@@ -1700,27 +1725,33 @@ begin
     {$IFDEF FPC}
     tkBool :
       begin
-        dataBuffer := LowerCase(Trim(dataBuffer));
-        if IsStrEmpty(dataBuffer) then
-          Boolean(AData) := False
-        else
-          Boolean(AData) := StrToBool(dataBuffer);
+        Boolean(AData) := ( dataBuffer = XML_RPC_TRUE );
       end;
     {$ENDIF}
     tkInteger, tkEnumeration :
       begin
-        if ( ATypeInfo^.Kind = tkInteger ) then
-          enumData := StrToInt64Def(Trim(dataBuffer),0)
-        else
-          enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
-        case GetTypeData(ATypeInfo)^.OrdType of
-          otSByte : ShortInt(AData) := enumData;
-          otUByte : Byte(AData)     := enumData;
-          otSWord : SmallInt(AData) := enumData;
-          otUWord : Word(AData)     := enumData;
-          otSLong : LongInt(AData)  := enumData;
-          otULong : LongWord(AData) := enumData;
+      {$IFDEF WST_DELPHI}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          Boolean(AData) := ( dataBuffer = XML_RPC_TRUE );
+        end else begin
+      {$ENDIF}      
+          if ( ATypeInfo^.Kind = tkInteger ) then
+            enumData := StrToInt64Def(Trim(dataBuffer),0)
+          else
+            enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
+          case GetTypeData(ATypeInfo)^.OrdType of
+            otSByte : ShortInt(AData) := enumData;
+            otUByte : Byte(AData)     := enumData;
+            otSWord : SmallInt(AData) := enumData;
+            otUWord : Word(AData)     := enumData;
+            otSLong : LongInt(AData)  := enumData;
+            otULong : LongWord(AData) := enumData;
+          end;
+      {$IFDEF WST_DELPHI}
         end;
+      {$ENDIF}          
       end;
     tkFloat :
       begin

@@ -16,7 +16,7 @@ unit object_serializer;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Contnrs, SyncObjs,
+  Classes, SysUtils, TypInfo, Contnrs,
   base_service_intf, wst_types;
 
 type

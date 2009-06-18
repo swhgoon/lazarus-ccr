@@ -2261,6 +2261,37 @@ begin
     CheckEquals(True,a.Val_Bool);
     CheckEquals(Ord(teThree),Ord(a.Val_Enum));
     CheckEquals('atou',a.Val_String);
+
+    //------------------------------------
+    FreeAndNil(a);
+    a := TClass_Enum.Create();
+    a.Val_Bool := False;
+    a.Val_Enum := teTwo;
+    a.Val_String := 'atoukws';
+    f := CreateFormatter(TypeInfo(TClass_Enum));
+
+    f.BeginObject('Root',TypeInfo(TClass_Enum));
+      f.Put('o1',TypeInfo(TClass_Enum),a);
+    f.EndScope();
+
+    s.Clear();
+    f.SaveToStream(s);
+    FreeAndNil(a);
+
+    a := TClass_Enum.Create();
+    f := CreateFormatter(TypeInfo(TClass_Enum));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Enum));
+      x := 'o1';
+      f.Get(TypeInfo(TClass_Enum),x,a);
+    f.EndScopeRead();
+
+    CheckEquals(False,a.Val_Bool);
+    CheckEquals(Ord(teTwo),Ord(a.Val_Enum));
+    CheckEquals('atoukws',a.Val_String);
+
   Finally
     a.Free();
     s.Free();

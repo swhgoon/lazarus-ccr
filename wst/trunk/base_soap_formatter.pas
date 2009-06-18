@@ -1822,9 +1822,7 @@ procedure TSOAPBaseFormatter.PutScopeInnerValue(
 );
 Var
   int64SData : Int64;
-{$IFDEF FPC}
   boolData : Boolean;
-{$ENDIF FPC}
 {$IFDEF HAS_QWORD}
   uint64Data : QWord;
 {$ENDIF HAS_QWORD}
@@ -1905,16 +1903,25 @@ begin
       end;
     tkEnumeration :
       begin
-        enumData := 0;
-        case GetTypeData(ATypeInfo)^.OrdType of
-          otSByte : enumData := ShortInt(AData);
-          otUByte : enumData := Byte(AData);
-          otSWord : enumData := SmallInt(AData);
-          otUWord : enumData := Word(AData);
-          otSLong : enumData := LongInt(AData);
-          otULong : enumData := LongWord(AData);
+      {$IFDEF WST_DELPHI}
+        if ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) ) then begin
+          boolData := Boolean(AData);
+          dataBuffer := BoolToSoapBool(boolData);
+        end else begin
+      {$ENDIF}
+          enumData := 0;
+          case GetTypeData(ATypeInfo)^.OrdType of
+            otSByte : enumData := ShortInt(AData);
+            otUByte : enumData := Byte(AData);
+            otSWord : enumData := SmallInt(AData);
+            otUWord : enumData := Word(AData);
+            otSLong : enumData := LongInt(AData);
+            otULong : enumData := LongWord(AData);
+          end;
+          dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
+      {$IFDEF WST_DELPHI}
         end;
-        dataBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetExternalPropertyName(GetEnumName(ATypeInfo,enumData))
+      {$ENDIF}
       end;
     tkFloat :
       begin
@@ -2132,18 +2139,32 @@ begin
     {$ENDIF}
     tkInteger, tkEnumeration :
       begin
-        if ( ATypeInfo^.Kind = tkInteger ) then
-          enumData := StrToInt64Def(Trim(dataBuffer),0)
-        else
-          enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
-        case GetTypeData(ATypeInfo)^.OrdType of
-          otSByte : ShortInt(AData) := enumData;
-          otUByte : Byte(AData)     := enumData;
-          otSWord : SmallInt(AData) := enumData;
-          otUWord : Word(AData)     := enumData;
-          otSLong : LongInt(AData)  := enumData;
-          otULong : LongWord(AData)  := enumData;
+      {$IFDEF WST_DELPHI}
+        if ( ATypeInfo^.Kind = tkEnumeration ) and
+           ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
+        then begin
+          dataBuffer := LowerCase(Trim(dataBuffer));
+          if IsStrEmpty(dataBuffer) then
+            Boolean(AData) := False
+          else
+            Boolean(AData) := StrToBool(dataBuffer);
+        end else begin
+      {$ENDIF}
+          if ( ATypeInfo^.Kind = tkInteger ) then
+            enumData := StrToInt64Def(Trim(dataBuffer),0)
+          else
+            enumData := GetEnumValue(ATypeInfo,GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(dataBuffer));
+          case GetTypeData(ATypeInfo)^.OrdType of
+            otSByte : ShortInt(AData) := enumData;
+            otUByte : Byte(AData)     := enumData;
+            otSWord : SmallInt(AData) := enumData;
+            otUWord : Word(AData)     := enumData;
+            otSLong : LongInt(AData)  := enumData;
+            otULong : LongWord(AData)  := enumData;
+          end;
+      {$IFDEF WST_DELPHI}
         end;
+      {$ENDIF}
       end;
     tkFloat :
       begin
