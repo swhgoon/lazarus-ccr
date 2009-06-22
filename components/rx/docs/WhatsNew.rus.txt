@@ -19,6 +19,7 @@
   + Опубликова BorderSpacing в TRxLabel
   + Добавлен пример для использования автоматической сортировки в RxDBGrid
   - Исправлена сортировка при использовании TRxMemDataSet
+  - Исправлена отрисова кнопки в ToolPanel при отрисовке с использованием текущей темы
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных

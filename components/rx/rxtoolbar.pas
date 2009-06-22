@@ -48,7 +48,7 @@ type
     FImageList:TImageList;
     FImageListSelected:TImageList;
     FDropDownMenu:TPopupMenu;
-    FShowCaption:boolean;
+//    FShowCaption:boolean;
     FToolbarButtonStyle:TToolbarButtonStyle;
     FLastDrawFlagsA:integer;
     FAutoSize:boolean;
@@ -436,7 +436,7 @@ begin
     ClientSize.cx:= PaintRect.Right - PaintRect.Left;
     ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
 
-    if (Caption <> '') and FShowCaption then
+    if (Caption <> '') and ShowCaption then
     begin
       TMP := Caption;
       SIndex := DeleteAmpersands(TMP);
@@ -539,7 +539,7 @@ begin
     else
       FImageList.Draw(Canvas, Offset.X, Offset.Y, TCustomAction(Action).ImageIndex, TCustomAction(Action).Enabled);
   end;
-  if (Caption <> '') and FShowCaption then
+  if (Caption <> '') and ShowCaption then
   begin
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
@@ -717,7 +717,7 @@ begin
       if aLeft < TToolPanel(Parent).BorderWidth then
         aLeft:=TToolPanel(Parent).BorderWidth;
 
-      if FShowCaption then
+      if ShowCaption then
       begin
         TextSize:=Canvas.TextExtent(Caption);
         if (Layout in [blGlyphLeft, blGlyphRight]) and Assigned(FImageList) then
@@ -1191,9 +1191,9 @@ end;
 
 procedure TToolbarItem.SetShowCaption(const AValue: boolean);
 begin
-  if FButton.FShowCaption<>AValue then
+  if FButton.ShowCaption<>AValue then
   begin
-    FButton.FShowCaption:=AValue;
+    FButton.ShowCaption:=AValue;
     FButton.UpdateSize;
     FButton.Invalidate;
   end;
@@ -1251,7 +1251,7 @@ end;
 
 function TToolbarItem.GetShowCaption: boolean;
 begin
-  Result:=FButton.FShowCaption;
+  Result:=FButton.ShowCaption;
 end;
 
 function TToolbarItem.GetTag: Longint;
@@ -1324,7 +1324,7 @@ begin
   FButton.FImageList:=TToolbarItems(ACollection).FToolPanel.ImageList;
   FButton.Flat:=tpFlatBtns in TToolbarItems(ACollection).FToolPanel.Options;
   FButton.Transparent:=tpTransparentBtns in TToolbarItems(ACollection).FToolPanel.Options;
-  FButton.FShowCaption:=false;
+  FButton.ShowCaption:=false;
   FButton.FAutoSize:=true;
   FButton.FOwnerItem:=Self;
   FButton.FFullPush:=true;

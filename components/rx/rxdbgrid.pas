@@ -2103,7 +2103,7 @@ begin
     if S<>'' then
       FMultiLines.Add(S);
   end;
-  if not (csLoading in Column.Grid.ComponentState) then
+  if not (csLoading in Column.Grid.ComponentState) and Column.Grid.HandleAllocated then
     TRxDBGrid(Column.Grid).CalcTitle;
 end;
 
