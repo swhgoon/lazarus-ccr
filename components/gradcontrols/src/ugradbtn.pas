@@ -36,6 +36,7 @@ type
     FAutoHeight: Boolean;
     FAutoHeightBorderSpacing: Integer;
     FAutoWidthBorderSpacing: Integer;
+    FOnBorderBackgroundPaint: TGBBackgroundPaintEvent;
     FRotateDirection : TRotateDirection;
     FTextAlignment : TTextAlignment;
     FButtonLayout: TButtonLayout;
@@ -171,6 +172,7 @@ type
     property OnHotBackgroundPaint : TGBBackgroundPaintEvent read FOnHotBackgroundPaint write FOnHotBackgroundPaint;
     property OnDownBackgroundPaint : TGBBackgroundPaintEvent read FOnDownBackgroundPaint write FOnDownBackgroundPaint;
     property OnDisabledBackgroundPaint : TGBBackgroundPaintEvent read FOnDisabledBackgroundPaint write FOnDisabledBackgroundPaint;
+    property OnBorderBackgroundPaint : TGBBackgroundPaintEvent read FOnBorderBackgroundPaint write FOnBorderBackgroundPaint;
   end;
 
   function ColorBetween(C1, C2 : TColor; blend:Extended):TColor;
@@ -250,17 +252,17 @@ end;
 
 procedure TGradButton.Resize;
 begin
-    if (HasParent) then
-    begin
-      if FAutoWidth then
-         UpdateButton
-      else begin
-         UpdatePositions;
-         UpdateBackground;
-      end;
+  inherited;
+
+  if (HasParent) then
+  begin
+    if FAutoWidth then
+      UpdateButton
+    else begin
+      UpdatePositions;
+      UpdateBackground;
     end;
-    
-    inherited;
+  end;
 end;
 
 procedure TGradButton.UpdatePositions;
@@ -385,160 +387,164 @@ end;
 
 procedure TGradButton.PaintBackground(AState: TButtonState; TrgBitmap: TBitmap);
 var
-   FTempState : TButtonState;
+  FTempState : TButtonState;
+  FOnTemp : TGBBackgroundPaintEvent;
 begin
-   FTempState:=FState;
+  FTempState:=FState;
 
-   GetBackgroundRect(FBackgroundRect);
+  GetBackgroundRect(FBackgroundRect);
 
-   with TrgBitmap do
-   begin
-   Canvas.Font.Color := Self.Font.Color;
-   Canvas.Font := Self.Font;
-   Width := Self.Width;
-   Height := Self.Height;
+  with TrgBitmap do
+  begin
+    Canvas.Font.Color := Self.Font.Color;
+    Canvas.Font := Self.Font;
+    Width := Self.Width;
+    Height := Self.Height;
 
-   Canvas.Brush.Color:=clWhite;
-   Canvas.FillRect(0, 0, Width, Height);
+    Canvas.Brush.Color:=clWhite;
+    Canvas.FillRect(0, 0, Width, Height);
 
-   if Self.Parent is TGradButton then
-   begin
-       bm.Canvas.CopyRect(Rect(0, 0, Width, Height), (Self.Parent as TGradButton).GetBackground,
-          Rect(Left,Top,Left+Width,Top+Height));
-   end else begin
-       Canvas.Brush.Color:=FBackgroundColor;
+    if Self.Parent is TGradButton then
+    begin
+      bm.Canvas.CopyRect(Rect(0, 0, Width, Height), (Self.Parent as TGradButton).GetBackground,
+        Rect(Left,Top,Left+Width,Top+Height));
+    end else begin
+      Canvas.Brush.Color:=FBackgroundColor;
 
-       Canvas.FillRect(0 , 0, Width, Height);
-   end;
+      Canvas.FillRect(0 , 0, Width, Height);
+    end;
 
-   //Top
-   if (bsTopLine in BorderSides) then
-   begin
+    if FOwnerBackgroundDraw AND (FOnBorderBackgroundPaint<>nil) then
+    begin
+      FOnBorderBackgroundPaint(Self, Canvas, FBackgroundRect, AState);
+    end else begin
+      //Top
+      if (bsTopLine in BorderSides) then
+      begin
         Canvas.Pen.Color:=clBlack;
         Canvas.Line(FBackgroundRect.Left,0,FBackgroundRect.Right,0);
         Canvas.Pen.Color:=clWhite;
         Canvas.Line(FBackgroundRect.Left,1,FBackgroundRect.Right,1);
-   end;
+      end;
 
-   //Left
-   if (bsLeftLine in BorderSides) then
-   begin
-      Canvas.Pen.Color:=clBlack;
-      Canvas.Line(0,FBackgroundRect.Top,0,FBackgroundRect.Bottom);
-      Canvas.Pen.Color:=clWhite;
-      Canvas.Line(1,FBackgroundRect.Top,1,FBackgroundRect.Bottom);
-   end;
+      //Left
+      if (bsLeftLine in BorderSides) then
+      begin
+        Canvas.Pen.Color:=clBlack;
+        Canvas.Line(0,FBackgroundRect.Top,0,FBackgroundRect.Bottom);
+        Canvas.Pen.Color:=clWhite;
+        Canvas.Line(1,FBackgroundRect.Top,1,FBackgroundRect.Bottom);
+      end;
 
-   //Right
-   if (bsRightLine in BorderSides) then
-   begin
-      Canvas.Pen.Color:=clBlack;
-      Canvas.Line(Width-1,FBackgroundRect.Top,Width-1,FBackgroundRect.Bottom);
-      Canvas.Pen.Color:=clWhite;
-      Canvas.Line(Width-2,FBackgroundRect.Top,Width-2,FBackgroundRect.Bottom);
-   end;
+      //Right
+      if (bsRightLine in BorderSides) then
+      begin
+        Canvas.Pen.Color:=clBlack;
+        Canvas.Line(Width-1,FBackgroundRect.Top,Width-1,FBackgroundRect.Bottom);
+        Canvas.Pen.Color:=clWhite;
+        Canvas.Line(Width-2,FBackgroundRect.Top,Width-2,FBackgroundRect.Bottom);
+      end;
 
-   //Bottom
-   if (bsBottomLine in BorderSides) then
-   begin
-      Canvas.Pen.Color:=clBlack;
-      Canvas.Line(FBackgroundRect.Left,Height-1,FBackgroundRect.Right,Height-1);
-      Canvas.Pen.Color:=clWhite;
-      Canvas.Line(FBackgroundRect.Left,Height-2,FBackgroundRect.Right,Height-2);
-   end;
+      //Bottom
+      if (bsBottomLine in BorderSides) then
+      begin
+        Canvas.Pen.Color:=clBlack;
+        Canvas.Line(FBackgroundRect.Left,Height-1,FBackgroundRect.Right,Height-1);
+        Canvas.Pen.Color:=clWhite;
+        Canvas.Line(FBackgroundRect.Left,Height-2,FBackgroundRect.Right,Height-2);
+      end;
 
-   //Todo
-   //TopLeft
-   if (bsTopLine in BorderSides) AND (bsLeftLine in BorderSides) then
-      Canvas.Pixels[1,1]:=clBlack;
+      //TopLeft
+      if (bsTopLine in BorderSides) AND (bsLeftLine in BorderSides) then
+        Canvas.Pixels[1,1]:=clBlack;
 
-   //TopRight
-   if (bsTopLine in BorderSides) AND (bsRightLine in BorderSides) then
-      Canvas.Pixels[Width-2,1] := clBlack;
+      //TopRight
+      if (bsTopLine in BorderSides) AND (bsRightLine in BorderSides) then
+        Canvas.Pixels[Width-2,1] := clBlack;
 
-   //BottomLeft
-   if (bsBottomLine in BorderSides) AND (bsLeftLine in BorderSides) then
-      Canvas.Pixels[1, Height-2]:=clBlack;
+      //BottomLeft
+      if (bsBottomLine in BorderSides) AND (bsLeftLine in BorderSides) then
+        Canvas.Pixels[1, Height-2]:=clBlack;
 
-   //BottomRight
-   if (bsBottomLine in BorderSides) AND (bsRightLine in BorderSides) then
-      Canvas.Pixels[Width-2,Height-2]:=clBlack;
+      //BottomRight
+      if (bsBottomLine in BorderSides) AND (bsRightLine in BorderSides) then
+        Canvas.Pixels[Width-2,Height-2]:=clBlack;
+    end;
 
-   FState:=AState;
+    FState:=AState;
 
-   PaintGradient(Canvas, FBackgroundRect);
+    if FOwnerBackgroundDraw then
+    begin
+      if not FEnabled then
+        FState := bsDisabled;
 
-   end;
+      case FState of
+        bsUp: FOnTemp := FOnNormalBackgroundPaint;
+        bsHot:FOnTemp := FOnHotBackgroundPaint;
+        bsDown: FOnTemp := FOnDownBackgroundPaint;
+        bsDisabled: FOnTemp := FOnDisabledBackgroundPaint;
+      end;
 
-   FState:=FTempState;
+      if FOnTemp <> nil then
+      begin
+        FOnTemp(Self, Canvas, FBackgroundRect, FState);
+      end;
+    end else begin
+      PaintGradient(Canvas, FBackgroundRect);
+    end;
+  end;
+
+  FState:=FTempState;
 end;
 
 procedure TGradButton.UpdateBackground;
 var
-   FTempState : TButtonState;
-   R : TRect;
+  FTempState : TButtonState;
 begin
-   FTempState:= FState;
+  FTempState:= FState;
 
-   GetBackgroundRect(R);
+  FEnabled:=true;
+  PaintBackground(bsUp,FNormalBackgroundCache);
+  PaintBackground(bsHot, FHotBackgroundCache);
+  PaintBackground(bsDown, FDownBackgroundCache);
+  FEnabled:=false;
+  PaintBackground(bsUp, FDisabledBackgroundCache);
+  FEnabled:=Enabled;
 
-   if FOwnerBackgroundDraw then
-   begin
-      if FOnNormalBackgroundPaint<>nil then
-         FOnNormalBackgroundPaint(Self, FNormalBackgroundCache.Canvas, R, bsUp);
+  FState:=FTempState;
 
-      if FOnHotBackgroundPaint<>nil then
-         FOnHotBackgroundPaint(Self, FHotBackgroundCache.Canvas, R, bsHot);
-
-      if FOnDownBackgroundPaint<>nil then
-         FOnDownBackgroundPaint(Self, FDownBackgroundCache.Canvas, R, bsDown);
-
-      if FOnDisabledBackgroundPaint<>nil then
-         FOnDisabledBackgroundPaint(Self, FDisabledBackgroundCache.Canvas, R, bsDisabled);
-   end else begin
-
-   FEnabled:=true;
-   PaintBackground(bsUp,FNormalBackgroundCache);
-   PaintBackground(bsHot, FHotBackgroundCache);
-   PaintBackground(bsDown, FDownBackgroundCache);
-   FEnabled:=false;
-   PaintBackground(bsUp, FDisabledBackgroundCache);
-   FEnabled:=Enabled;
-   
-   end;
-
-   FState:=FTempState;
+  InvPaint;
 end;
 
 procedure TGradButton.GetBackgroundRect(var TheRect: TRect);
 begin
-   TheRect := Rect(0,0,Width,Height);
+  TheRect := Rect(0,0,Width,Height);
 
-   //Top
-   if (bsTopLine in BorderSides) then
-   begin
-        TheRect.Top := 2;
-   end else
-        TheRect.Top := 0;
+  //Top
+  if (bsTopLine in BorderSides) then
+  begin
+    TheRect.Top := 2;
+  end else
+    TheRect.Top := 0;
 
-   //Left
-   if (bsLeftLine in BorderSides) then
-   begin
-      TheRect.Left := 2;
-   end else
-      TheRect.Left := 0;
+  //Left
+  if (bsLeftLine in BorderSides) then
+  begin
+    TheRect.Left := 2;
+  end else
+    TheRect.Left := 0;
 
-   //Right
-   if (bsRightLine in BorderSides) then
-   begin
-      TheRect.Right := TheRect.Right-{$IFDEF windows}2{$ELSE}3{$ENDIF};
-   end;
+  //Right
+  if (bsRightLine in BorderSides) then
+  begin
+    TheRect.Right := TheRect.Right-{$IFDEF windows}2{$ELSE}3{$ENDIF};
+  end;
 
-   //Bottom
-   if (bsBottomLine in BorderSides) then
-   begin
-       TheRect.Bottom := TheRect.Bottom - 2;
-   end;
+  //Bottom
+  if (bsBottomLine in BorderSides) then
+  begin
+    TheRect.Bottom := TheRect.Bottom - 2;
+  end;
 end;
 
 procedure TGradButton.GetContentRect(var TheRect: TRect);
@@ -707,59 +713,58 @@ begin
     Result := FBackground.Canvas;
 end;
 
+
+
 procedure TGradButton.PaintGradient(TrgCanvas: TCanvas; pr : TRect);
 var
-   r : Integer;
-   t1,t2,t3 : TColor;
+  r : Integer;
+  t1,t2,t3 : TColor;
 begin
-
-   case FState of
-       bsHot,bsDown : begin
-               t3 := FOverBlendColor;
-               end;
-       else    begin
-               t3 := FNormalBlendColor;
-               end;
+  case FState of
+    bsHot,bsDown : begin
+      t3 := FOverBlendColor;
+    end;
+    else begin
+      t3 := FNormalBlendColor;
+    end;
    end;
 
-   if FState = bsDown then begin
-       t1 := FClickColor;
-   end else if FEnabled then begin
-        t1 := FBaseColor;
-   end else begin
-        t1 := FDisabledColor;
-        t3 := FNormalBlendColor;
-   end;
+  if FState = bsDown then begin
+    t1 := FClickColor;
+  end else if FEnabled then begin
+    t1 := FBaseColor;
+  end else begin
+    t1 := FDisabledColor;
+    t3 := FNormalBlendColor;
+  end;
 
-   t2 := ColorBetween(t1, t3, FNormalBlend);
+  t2 := ColorBetween(t1, t3, FNormalBlend);
 
-
-   if GradientType = gtHorizontal then
-   begin
-   if FState = bsDown then
-   begin
+  if GradientType = gtHorizontal then
+  begin
+    if FState = bsDown then
+    begin
+      for r := (pr.Bottom)-1 downto pr.Top do
+      begin
+        if (r > (pr.Bottom/2)) then
+        begin
+          TrgCanvas.Pen.Color:= ColorBetween(t1,t2,FOverBlend);
+        end else begin
+          TrgCanvas.Pen.Color := ColorsBetween([t1,t2], 1.0-(r / pr.Bottom));
+        end;
+        TrgCanvas.Line(pr.Left,r,pr.Right,r);
+      end;
+     end else
        for r := (pr.Bottom)-1 downto pr.Top do
        begin
-          if (r > (pr.Bottom/2)) then
-          begin
-
-             TrgCanvas.Pen.Color:= ColorBetween(t1,t2,FOverBlend);
-          end else begin
-             TrgCanvas.Pen.Color := ColorsBetween([t1,t2], 1.0-(r / pr.Bottom));
-          end;
-          TrgCanvas.Line(pr.Left,r,pr.Right,r);
-       end;
-   end else
-       for r := (pr.Bottom)-1 downto pr.Top do
-       begin
-          if (r <= (pr.Bottom/2)) then
-          begin
-             //WriteLn('R: ', r, ' M: ', Trunc(pr.Bottom/2));
-             TrgCanvas.Pen.Color:= ColorBetween(t1,t2,FOverBlend);
-          end else begin
-             TrgCanvas.Pen.Color := ColorsBetween([t1,t2], r / pr.Bottom);
-          end;
-          TrgCanvas.Line(pr.Left,r,pr.Right,r);
+         if (r <= (pr.Bottom/2)) then
+         begin
+           //WriteLn('R: ', r, ' M: ', Trunc(pr.Bottom/2));
+           TrgCanvas.Pen.Color:= ColorBetween(t1,t2,FOverBlend);
+         end else begin
+           TrgCanvas.Pen.Color := ColorsBetween([t1,t2], r / pr.Bottom);
+         end;
+         TrgCanvas.Line(pr.Left,r,pr.Right,r);
        end;
    end else begin
    if FState = bsDown then
@@ -814,62 +819,63 @@ end;
 
 constructor TGradButton.Create(AOwner: TComponent);
 begin
-    inherited;
+  inherited;
     
-    Width:=80;
-    Height:=25;
+  Width:=80;
+  Height:=25;
     
-    FAutoWidthBorderSpacing:=15;
-    FAutoHeightBorderSpacing:=15;
-    FNormalBlend:=0.5;
-    FOverBlend:=0.653;
-    FBaseColor:=clBlue;
-    FNormalBlendColor:=clWhite;
-    FOverBlendColor:=clSilver;
-    FBackgroundColor:=clBtnFace;
-    FClickColor:=clBlue;
-    FDisabledColor:=clGray;
-    FEnabled:=true;
-    FAutoWidth:=false;
-    FAutoHeight:=false;
+  FAutoWidthBorderSpacing:=15;
+  FAutoHeightBorderSpacing:=15;
+  FNormalBlend:=0.5;
+  FOverBlend:=0.653;
+  FBaseColor:=clBlue;
+  FNormalBlendColor:=clWhite;
+  FOverBlendColor:=clSilver;
+  FBackgroundColor:=clBtnFace;
+  FClickColor:=clBlue;
+  FDisabledColor:=clGray;
+  FEnabled:=true;
+  FAutoWidth:=false;
+  FAutoHeight:=false;
+  FOwnerBackgroundDraw := false;
     
-    FOnlyBackground:=false;
-    FShowFocusBorder:=true;
-    FRotateDirection:=rdNormal;
-    FTextAlignment:=taCenter;
-    FTextGlyphSpacing := 2;
-    TabStop:=true;
+  FOnlyBackground:=false;
+  FShowFocusBorder:=true;
+  FRotateDirection:=rdNormal;
+  FTextAlignment:=taCenter;
+  FTextGlyphSpacing := 2;
+  TabStop:=true;
     
-    ControlStyle := ControlStyle + [csAcceptsControls];
+  ControlStyle := ControlStyle + [csAcceptsControls];
     
-    DoubleBuffered:=true;
+  DoubleBuffered:=true;
 
-    FBackground := TBitmap.Create;
-    with FBackground do
-    begin
-         Width:=Self.Width;
-         Height:=Self.Height;
-    end;
+  FBackground := TBitmap.Create;
+  with FBackground do
+  begin
+    Width:=Self.Width;
+    Height:=Self.Height;
+  end;
 
 
-    FRotatedGlyph := TRotatedGlyph.Create;
-    FRotatedGlyph.OnChange := @GlyphChanged;
-    FRotatedText := TRotatedText.Create;
-    FButtonLayout:=blGlyphLeft;
-    FGlyphBackgroundColor:=clWhite;
+  FRotatedGlyph := TRotatedGlyph.Create;
+  FRotatedGlyph.OnChange := @GlyphChanged;
+  FRotatedText := TRotatedText.Create;
+  FButtonLayout:=blGlyphLeft;
+  FGlyphBackgroundColor:=clWhite;
     
-    FNormalBackgroundCache := TBitmap.Create;
-    FHotBackgroundCache := TBitmap.Create;
-    FDownBackgroundCache := TBitmap.Create;
-    FDisabledBackgroundCache := TBitmap.Create;
-    
-    FBorderSides:=[bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
+  FNormalBackgroundCache := TBitmap.Create;
+  FHotBackgroundCache := TBitmap.Create;
+  FDownBackgroundCache := TBitmap.Create;
+  FDisabledBackgroundCache := TBitmap.Create;
 
-    bm := TBitmap.Create;
+  FBorderSides:=[bsTopLine,bsBottomLine,bsLeftLine,bsRightLine];
 
-    UpdateBackground;
+  bm := TBitmap.Create;
+
+  UpdateBackground;
     
-    Font.Color:=clWhite;
+  Font.Color:=clWhite;
 end;
 
 destructor TGradButton.Destroy;
@@ -918,20 +924,20 @@ end;
 
 procedure TGradButton.SetNormalBlend(const Value: Extended);
 begin
-    FNormalBlend:=Value;
+  FNormalBlend:=Value;
     
-    UpdateBackground;
-    
-    InvPaint;
+  UpdateBackground;
+
+  InvPaint;
 end;
 
 procedure TGradButton.SetOverBlend(const Value: Extended);
 begin
-    FOverBlend:=Value;
+  FOverBlend:=Value;
 
-    UpdateBackground;
-    
-    InvPaint;
+  UpdateBackground;
+
+  InvPaint;
 end;
 
 procedure TGradButton.SetBaseColor(const Value: TColor);
@@ -1089,7 +1095,6 @@ end;
 
 procedure TGradButton.MouseEnter;
 begin
-    //WriteLn('MouseEnter');
     inherited;
     
     if FState<>bsDown then

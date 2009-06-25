@@ -50,6 +50,7 @@ type
     RadioGroup4: TRadioGroup;
     TrackBar1: TTrackBar;
     TrackBar2: TTrackBar;
+    procedure bClick(Sender: TObject);
     procedure BoldCheckBoxChange(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure CheckGroup2ItemClick(Sender: TObject; Index: integer);
@@ -286,6 +287,11 @@ begin
     b.Font.Style := b.Font.Style + [fsBold]
   else
     b.Font.Style := b.Font.Style - [fsBold];
+end;
+
+procedure TForm1.bClick(Sender: TObject);
+begin
+
 end;
 
 procedure TForm1.CheckGroup1ItemClick(Sender: TObject; Index: integer);
