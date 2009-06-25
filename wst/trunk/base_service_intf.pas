@@ -1594,6 +1594,7 @@ const
   sXSD = 'xsd';
   sSOAP_ENV = 'http://schemas.xmlsoap.org/soap/envelope/';
   sSOAP_ENV_ABR = 'SOAP-ENV';
+  sWST_BASE_NS_ABR = 'wst';
   sWST_BASE_NS = 'urn:wst_base';
 
   PROP_LIST_DELIMITER = ';';

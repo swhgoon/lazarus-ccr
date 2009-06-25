@@ -171,6 +171,8 @@ const
   sWSDL_TARGET_NS          = 'targetNamespace';
   sWSDL_TYPE               = sTYPE;
   sWSDL_TYPES              = 'types';
+
+  sWST_HEADER_BLOCK        = 'wst_headerBlock';
   
   sFORMAT_Input_EncodingStyle = 'FORMAT_Input_EncodingStyle';
   sFORMAT_Input_EncodingStyleURI = 'FORMAT_Input_EncodingStyleURI';
@@ -332,18 +334,27 @@ end;
 
 function GetNameSpaceShortName(
   const ANameSpace    : string;
-        AWsdlDocument : TXMLDocument;
+        ANode : TDOMElement;
   const APreferedShortName : string = ''
-):string;//inline;
+) : string; overload;
 begin
-  if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
+  if FindAttributeByValueInNode(ANameSpace,ANode,Result,0,sXMLNS) then begin
     Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
   end else begin
     Result := Trim(APreferedShortName);
     if ( Length(Result) = 0 ) then
-      Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
-    AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
+      Result := Format('ns%d',[GetNodeListCount(ANode.Attributes)]) ;
+    ANode.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
   end;
+end;
+
+function GetNameSpaceShortName(
+  const ANameSpace    : string;
+        AWsdlDocument : TXMLDocument;
+  const APreferedShortName : string = ''
+) : string; overload;
+begin
+  Result := GetNameSpaceShortName(ANameSpace,AWsdlDocument.DocumentElement,APreferedShortName);
 end;
 
 type TServiceElementType = ( setPortType, setBinding, setPort, setService,setAddress );
@@ -690,13 +701,34 @@ procedure TBaseComplexRemotable_TypeHandler.Generate(
     if ( AClass <> nil ) and ( AClass.ClassParent <> nil ) then begin
       locRes := ATypeRegistry.Find(PTypeInfo(AClass.ClassParent.ClassInfo),False);
     end;
-    if ( locRes <> nil ) then begin
-      if ( GetTypeData(locRes.DataType)^.ClassType = TBaseComplexRemotable ) then
+    {if ( locRes <> nil ) then begin
+      if ( locRes.NameSpace = sSOAP_ENV ) or
+         ( GetTypeData(locRes.DataType)^.ClassType = TBaseComplexRemotable )
+      then
         locRes := nil;
-    end;
+    end;}
     Result := locRes;
   end;
-  
+
+  function IsParentVisible(const AParentRegItem : TTypeRegistryItem) : Boolean;
+  begin
+    Result :=
+      ( AParentRegItem <> nil ) and
+      ( ( AParentRegItem.NameSpace <> sSOAP_ENV ) and
+        ( GetTypeData(AParentRegItem.DataType)^.ClassType <> TBaseComplexRemotable )
+      )
+  end;
+
+  function IsInheritedPropertyAlreadyPublished(
+    const AProperty    : PPropInfo;
+    const AParentClass : TClass
+  ) : Boolean;
+  begin
+    Result :=
+      ( AParentClass = THeaderBlock ) and
+      ( SameText('mustUnderstand',AProperty^.Name) );
+  end;
+
 var
   typItm, propTypItm : TTypeRegistryItem;
   s, prop_ns_shortName : string;
@@ -734,14 +766,20 @@ begin
     cplxNode.SetAttribute(sNAME, typItm.DeclaredName);
     extNode := cplxNode;
     if ( parentClss <> nil ) then begin
-      if ( parentRegItem.NameSpace = typItm.NameSpace ) then begin
-        s := Format('%s:%s',[sTNS,parentRegItem.DeclaredName]);
-      end else begin
-        s := Format('%s:%s',[GetNameSpaceShortName(parentRegItem.NameSpace,AWsdlDocument),parentRegItem.DeclaredName]);
+      if ( parentClss = THeaderBlock ) then begin
+        s := Format('%s:%s',[GetNameSpaceShortName(sWST_BASE_NS,defSchemaNode,sWST_BASE_NS_ABR),sWST_HEADER_BLOCK]);
+        cplxNode.SetAttribute(s, 'true');
       end;
-      cplxContentNode := CreateElement(Format('%s:%s',[sXSD,sCOMPLEX_CONTENT]),cplxNode,AWsdlDocument);
-      extNode := CreateElement(Format('%s:%s',[sXSD,sEXTENSION]),cplxContentNode,AWsdlDocument);
-      extNode.SetAttribute(sBASE,s);
+      if IsParentVisible(parentRegItem) then begin
+        if ( parentRegItem.NameSpace = typItm.NameSpace ) then begin
+          s := Format('%s:%s',[sTNS,parentRegItem.DeclaredName]);
+        end else begin
+          s := Format('%s:%s',[GetNameSpaceShortName(parentRegItem.NameSpace,AWsdlDocument),parentRegItem.DeclaredName]);
+        end;
+        cplxContentNode := CreateElement(Format('%s:%s',[sXSD,sCOMPLEX_CONTENT]),cplxNode,AWsdlDocument);
+        extNode := CreateElement(Format('%s:%s',[sXSD,sEXTENSION]),cplxContentNode,AWsdlDocument);
+        extNode.SetAttribute(sBASE,s);
+      end;
     end;
 
       sqcNode := CreateElement(Format('%s:%s',[sXSD,sSEQUENCE]),extNode,AWsdlDocument);
@@ -751,7 +789,11 @@ begin
         try
           for i := 0 to Pred(propCount) do begin
             p := propList^[i];
-            if ( parentClss = nil ) or ( not IsPublishedProp(parentClss,p^.Name) ) then begin
+            if ( parentClss = nil ) or
+               ( not ( IsPublishedProp(parentClss,p^.Name) or IsInheritedPropertyAlreadyPublished(p,parentClss) )
+
+               )
+            then begin
               persistType := IsStoredPropClass(objTypeData^.ClassType,p);
               if ( persistType in [pstOptional,pstAlways] ) then begin
                 attProp := clsTyp.IsAttributeProperty(p^.Name);

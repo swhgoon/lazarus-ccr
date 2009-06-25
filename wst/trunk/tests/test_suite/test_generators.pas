@@ -977,7 +977,7 @@ begin
     locDoc := CreateDoc();
     g := CreateGenerator(locDoc);
     g.Execute(tr,mdl.Name);
-    WriteXMLFile(locDoc,wstExpandLocalFileName('type_hint_record_item.xsd'));
+    //WriteXMLFile(locDoc,wstExpandLocalFileName('type_hint_record_item.xsd'));
     locExistDoc := LoadXmlFromFilesList('type_hint_record_item.xsd');
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally

@@ -70,7 +70,16 @@ type
     fieldWord : Word;
     fieldString : string;
   end;
-  
+
+  TLoginHeader = class(THeaderBlock)
+  private
+    FLogin: string;
+    FPassword: string;
+  published
+    property Login : string read FLogin write FLogin;
+    property Password : string read FPassword write FPassword;
+  end;
+
   { TTestWSDLGenerator }
 
   TTestWSDLGenerator= class(TTestCase)
@@ -81,6 +90,7 @@ type
     procedure generate_enum();
     procedure generate_array();
     procedure generate_record();
+    procedure generate_soap_headerblock();
   end;
 
 implementation
@@ -248,6 +258,36 @@ begin
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
     //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_record.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_record.wsdl'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    typeReg.Free();
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    Dispose(locRep);
+  end;
+end;
+
+procedure TTestWSDLGenerator.generate_soap_headerblock();
+var
+  locRep : PServiceRepository;
+  locDoc, locExistDoc : TXMLDocument;
+  typeReg : TTypeRegistry;
+  handlerReg : IWsdlTypeHandlerRegistry;
+begin
+  locExistDoc := nil;
+  typeReg := nil;
+  locDoc := nil;
+  locRep := CreateRepository();
+  try
+    typeReg := TTypeRegistry.Create();
+    RegisterStdTypes(typeReg);
+    typeReg.Register(sNAMESPACE_SAMPLE,TypeInfo(TLoginHeader));
+    handlerReg := CreateWsdlTypeHandlerRegistry(typeReg);
+    RegisterFondamentalTypesHandler(handlerReg);
+    locDoc := CreateDoc();
+    GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
+    //WriteXML(locDoc,wstExpandLocalFileName('generate_soap_headerblock.wsdl'));
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_soap_headerblock.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     typeReg.Free();
