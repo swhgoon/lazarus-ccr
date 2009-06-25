@@ -47,6 +47,8 @@ type
   
   TScopeType = Integer;
   TArrayStyle = ( asScoped, asEmbeded, asNone );
+  TInstanceOption = ( ioAlwaysSerialize );
+  TInstanceOptions = set of TInstanceOption;
   THeaderDirection = ( hdOut, hdIn );
   THeaderDirections = set of THeaderDirection;
 const
@@ -847,6 +849,7 @@ type
   TObjectCollectionRemotable = class(TAbstractComplexRemotable)
   private
     FList : TObjectList;
+    FOptions : TInstanceOptions;
   protected
     function GetItem(AIndex : PtrInt) : TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
     class function GetItemName():string;virtual;
@@ -883,6 +886,7 @@ type
 
     property Item[AIndex:PtrInt] : TBaseRemotable read GetItem;default;
     property Length : PtrInt read GetLength;
+    property Options : TInstanceOptions read FOptions write FOptions;
   end;
   
   TBaseArrayRemotableClass = class of TBaseArrayRemotable;
@@ -890,6 +894,8 @@ type
   { TBaseArrayRemotable }
 
   TBaseArrayRemotable = class(TAbstractComplexRemotable)
+  private
+    FOptions : TInstanceOptions;
   protected
     class function GetItemName():string;virtual;
     class function GetStyle():TArrayStyle;virtual;
@@ -901,6 +907,7 @@ type
 
     procedure SetLength(const ANewSize : Integer);virtual;abstract;
     property Length : Integer Read GetLength;
+    property Options : TInstanceOptions read FOptions write FOptions;
   end;
 
   { TBaseObjectArrayRemotable
@@ -2456,29 +2463,37 @@ Var
   itmName : string;
   styl : TArrayStyle;
 begin
-  if Assigned(AObject) then begin
+  if ( AObject <> nil ) then begin
     Assert(AObject.InheritsFrom(TBaseObjectArrayRemotable));
     nativObj := AObject as TBaseObjectArrayRemotable;
     arrayLen := nativObj.Length;
-  end else begin
-    arrayLen := 0;
-  end;
-  if ( arrayLen > 0 ) then begin
-    itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
     styl := GetStyle();
-    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
-    try
-      if ( styl = asScoped ) then begin
-        itmName := GetItemName();
-      end else begin
-        itmName := AName;
+    if ( arrayLen > 0 ) then begin
+      itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+      AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
+      try
+        if ( styl = asScoped ) then begin
+          itmName := GetItemName();
+        end else begin
+          itmName := AName;
+        end;
+        for i := 0 to Pred(arrayLen) do begin
+          itm := nativObj.Item[i];
+          AStore.Put(itmName,itmTypInfo,itm);
+        end;
+      finally
+        AStore.EndScope();
       end;
-      for i := 0 to Pred(arrayLen) do begin
-        itm := nativObj.Item[i];
-        AStore.Put(itmName,itmTypInfo,itm);
+    end else if ( styl = asScoped ) and ( ioAlwaysSerialize in nativObj.Options ) then begin
+      AStore.BeginArray(
+        AName, PTypeInfo(Self.ClassInfo),
+        PTypeInfo(GetItemClass().ClassInfo),[0,-1],styl
+      );
+      try
+        AStore.NilCurrentScope();
+      finally
+        AStore.EndScope();
       end;
-    finally
-      AStore.EndScope();
     end;
   end;
 end;
@@ -3313,23 +3328,28 @@ begin
     Assert(AObject.InheritsFrom(TBaseSimpleTypeArrayRemotable));
     nativObj := AObject as TBaseSimpleTypeArrayRemotable;
     arrayLen := nativObj.Length;
-  end else begin
-    arrayLen := 0;
-  end;
-  if ( arrayLen > 0 ) then begin
     styl := GetStyle();
-    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(arrayLen)],styl);
-    try
-      if ( styl = asScoped ) then begin
-        itmName := GetItemName();
-      end else begin
-        itmName := AName;
+    if ( arrayLen > 0 ) then begin
+      AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,Pred(arrayLen)],styl);
+      try
+        if ( styl = asScoped ) then begin
+          itmName := GetItemName();
+        end else begin
+          itmName := AName;
+        end;
+        for i := 0 to Pred(arrayLen) do begin
+          nativObj.SaveItem(AStore,itmName,i);
+        end;
+      finally
+        AStore.EndScope();
       end;
-      for i := 0 to Pred(arrayLen) do begin
-        nativObj.SaveItem(AStore,itmName,i);
+    end else if ( styl = asScoped ) and ( ioAlwaysSerialize in nativObj.Options ) then begin
+      AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),GetItemTypeInfo(),[0,-1],styl);
+      try
+        AStore.NilCurrentScope();
+      finally
+        AStore.EndScope();
       end;
-    finally
-      AStore.EndScope();
     end;
   end;
 end;
@@ -3519,26 +3539,31 @@ begin
   if Assigned(AObject) then begin
     Assert(AObject.InheritsFrom(TObjectCollectionRemotable));
     nativObj := AObject as TObjectCollectionRemotable;
-    arrayLen := nativObj.Length;
-  end else begin
-    arrayLen := 0;
-  end;
-  if ( arrayLen > 0 ) then begin
-    itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
     styl := GetStyle();
-    AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
-    try
-      if ( styl = asScoped ) then begin
-        itmName := GetItemName();
-      end else begin
-        itmName := AName;
+    arrayLen := nativObj.Length;
+    if ( arrayLen > 0 ) then begin
+      itmTypInfo := PTypeInfo(GetItemClass().ClassInfo);
+      AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,Pred(arrayLen)],styl);
+      try
+        if ( styl = asScoped ) then begin
+          itmName := GetItemName();
+        end else begin
+          itmName := AName;
+        end;
+        for i := 0 to Pred(arrayLen) do begin
+          itm := nativObj.Item[i];
+          AStore.Put(itmName,itmTypInfo,itm);
+        end;
+      finally
+        AStore.EndScope();
       end;
-      for i := 0 to Pred(arrayLen) do begin
-        itm := nativObj.Item[i];
-        AStore.Put(itmName,itmTypInfo,itm);
+    end else if ( styl = asScoped ) and ( ioAlwaysSerialize in nativObj.Options ) then begin
+      AStore.BeginArray(AName,PTypeInfo(Self.ClassInfo),itmTypInfo,[0,-1],styl);
+      try
+        AStore.NilCurrentScope();
+      finally
+        AStore.EndScope();
       end;
-    finally
-      AStore.EndScope();
     end;
   end;
 end;

@@ -491,6 +491,7 @@ type
     procedure Test_StringArray();
     procedure Test_StringArray_Embedded();
     procedure Test_StringArrayZeroLength();
+    procedure Test_StringArrayZeroLength_serializeOption();
     procedure Test_BooleanArray();
 
     procedure Test_Int8UArray();
@@ -512,7 +513,9 @@ type
 
     procedure Test_ObjectArray();
     procedure Test_ObjectArray_ReadEmptyArray();
+    procedure Test_ObjectArrayZeroLength_serializeOption();
     procedure Test_ObjectCollection();
+    procedure Test_ObjectCollectionZeroLength_serializeOption();
     procedure Test_ObjectCollection_ReadEmptyCollection();
 
     procedure Test_SimpleTypeArray_ReadEmptyArray();
@@ -3215,6 +3218,61 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_StringArrayZeroLength_serializeOption();
+var
+  a : TArrayOfStringRemotable;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  ls : TStringList;
+begin
+  a := nil;
+  s := nil;
+  ls := TStringList.Create();
+  try
+    a := TArrayOfStringRemotable.Create();
+    CheckEquals(0,a.Length);
+
+    a.Options := [];
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
+      f.EndScope();
+      s := TMemoryStream.Create();
+      f.SaveToStream(s);
+
+      f := CreateFormatter(TypeInfo(TClass_B));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(0,f.GetScopeItemNames(ls));
+      f.EndScopeRead();
+
+    a.Options := [ioAlwaysSerialize];
+      s.Clear();
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TArrayOfStringRemotable),a);
+      f.EndScope();
+      f.SaveToStream(s);
+
+      f := CreateFormatter(TypeInfo(TClass_B));
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(1,f.GetScopeItemNames(ls));
+        CheckEquals('a',ls[0]);
+      f.EndScopeRead();
+
+  finally
+    ls.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
 procedure TTestFormatter.Test_BooleanArray();
 const AR_LEN = 5; VAL_AR : array[0..(AR_LEN-1)] of Boolean = (True,True,False,True,False);
 var
@@ -4009,6 +4067,57 @@ begin
   end;
 end;
 
+procedure TTestFormatter.Test_ObjectArrayZeroLength_serializeOption();
+var
+  a : TClass_A_Array;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  ls : TStringList;
+begin
+  a := nil;
+  s := nil;
+  ls := TStringList.Create();
+  try
+    s := TMemoryStream.Create();
+    a := TClass_A_Array.Create();
+    a.SetLength(0);
+    a.Options := [];
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TClass_A_Array),a);
+      f.EndScope();
+      f.SaveToStream(s);
+
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(0, f.GetScopeItemNames(ls));
+      f.EndScopeRead();
+
+    a.Options := [ioAlwaysSerialize];
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TClass_A_Array),a);
+      f.EndScope();
+      s.Clear();
+      f.SaveToStream(s);
+
+      s.Position := 0;
+      f.LoadFromStream(s);
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(1, f.GetScopeItemNames(ls));
+      f.EndScopeRead();
+      CheckEquals('a', ls[0]);
+
+  finally
+    ls.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
 procedure TTestFormatter.Test_ObjectCollection();
 const AR_LEN = 5;
 
@@ -4080,6 +4189,57 @@ begin
 
   finally
     areaded.Free();
+    a.Free();
+    s.Free();
+  end;
+end;
+
+procedure TTestFormatter.Test_ObjectCollectionZeroLength_serializeOption();
+var
+  a : TClass_A_Collection;
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  ls : TStringList;
+begin
+  a := nil;
+  s := nil;
+  ls := TStringList.Create();
+  try
+    s := TMemoryStream.Create();
+    a := TClass_A_Collection.Create();
+    a.Clear();
+    a.Options := [];
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TClass_A_Collection),a);
+      f.EndScope();
+      f.SaveToStream(s);
+
+      s.Position := 0;
+      f.LoadFromStream(s);
+      x := 'Root';
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(0, f.GetScopeItemNames(ls));
+      f.EndScopeRead();
+
+    a.Options := [ioAlwaysSerialize];
+      f := CreateFormatter(TypeInfo(TClass_B));
+      f.BeginObject('Root',TypeInfo(TClass_B));
+        f.Put('a',TypeInfo(TClass_A_Collection),a);
+      f.EndScope();
+      s.Clear();
+      f.SaveToStream(s);
+
+      s.Position := 0;
+      f.LoadFromStream(s);
+      f.BeginObjectRead(x,TypeInfo(TClass_B));
+        CheckEquals(1, f.GetScopeItemNames(ls));
+      f.EndScopeRead();
+      CheckEquals('a', ls[0]);
+
+  finally
+    ls.Free();
     a.Free();
     s.Free();
   end;
