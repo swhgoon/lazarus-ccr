@@ -18,7 +18,7 @@ interface
 uses
   Classes,LResources, SysUtils, Menus, LCLType,
   LCLProc, LCLIntf,ExtCtrls, Graphics, ugradbtn, Controls, uRotateBitmap,
-  Buttons, Forms, ImgList;
+  Buttons, Forms, ImgList, gradtabstyle;
 
 type
   TGradTabControl = class;
@@ -211,6 +211,8 @@ type
     function GetViewableTabs(FromIndex : Integer) : TTabs;
     function GetTabsOfSide(FromIndex : Integer; FromLeftSide : Boolean) : TTabs;
     procedure ScrollToTab(PIndex : Integer);
+    procedure UpdateAllButtons;
+    procedure NewStyle;
   public
     constructor Create(AOwner: TComponent; var thePageList: TListWithEvent;
      TheTabControl : TGradTabControl);
@@ -271,18 +273,24 @@ type
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
+  TGradTabControlPaintEvent = procedure(Sender: TCustomControl;
+    TargetCanvas: TCanvas) of object;
+
   { TGradTabControl }
 
   TGradTabControl = class(TCustomControl)
   private
     FAutoShowScrollButton: Boolean;
+    FCustomDraw: Boolean;
     FImages: TImageList;
     FMoveIncrement: Integer;
     FLeftButton, FRightButton : TGradButton;
+    FOnCustomDraw: TGradTabControlPaintEvent;
     FOnTabCloseButtonClick: TGradTabPageButtonClickEvent;
     FOnPageChanged: TNotifyEvent;
     FShowLeftTopScrollButton: Boolean;
     FShowRightBottomScrollButton: Boolean;
+    FStyle: TGradTabStyleBase;
     FTabStrings : TStrings; //TGradTabPages
     FPageList: TList; //Is Managed by TGradTabPages
     FOnTabButtonClick : TGradTabPageButtonClickEvent;
@@ -305,7 +313,9 @@ type
     function GetTabPopupMenu: TPopupMenu;
     procedure ImageListChange(Sender: TObject);
     procedure SetActiveTabColor(const AValue: TColor);
+    procedure SetCustomDraw(const AValue: Boolean);
     procedure SetNormalTabColor(const AValue: TColor);
+    procedure SetStyle(const AValue: TGradTabStyleBase);
     procedure SetTabPopupMenu(const AValue: TPopupMenu);
     procedure UpdateTabImages;
     function GetCurrentPage : TGradTabPage;
@@ -349,6 +359,16 @@ type
            X,Y: Integer; State: TDragState; var Accept: Boolean);
     procedure SubDragDrop(Sender, Source: TObject; X,Y: Integer);
     //End
+
+    // Style Event Wrapper
+    procedure StyleTabButton(Sender: TGradButton;
+      TargetCanvas: TCanvas; R: TRect; BState : TButtonState);
+    procedure StyleTabCloseButton(Sender: TGradButton;
+      TargetCanvas: TCanvas; R: TRect; BState : TButtonState);
+    procedure StyleTabButtonBorder(Sender: TGradButton;
+      TargetCanvas: TCanvas; R: TRect; BState : TButtonState);
+
+    // End
 
     procedure PopupTabs(Sender: TObject);
     procedure MoveLeftTopClick(Sender: TObject);
@@ -416,7 +436,7 @@ type
     property OnClick;
     property OnDblClick;
     property TabPopupMenu : TPopupMenu read GetTabPopupMenu write SetTabPopupMenu;
-
+    property PopupMenu;
     property PageIndex : Integer read FPageIndex write SetCurrentPageNum;
     property TabHeight : Integer read FTabHeight write SetTabHeight;
     property TabPosition : TTabPosition read FTabPosition write SetTabPosition default tpTop;
@@ -430,6 +450,9 @@ type
     property Images : TImageList read FImages write SetImages;
     property NormalTabColor: TColor read GetNormalTabColor write SetNormalTabColor default clBlue;
     property ActiveTabColor: TColor read GetActiveTabColor write SetActiveTabColor default clGreen;
+    property CustomDraw : Boolean read FCustomDraw write SetCustomDraw;
+    property OnCustomDraw : TGradTabControlPaintEvent read FOnCustomDraw write FOnCustomDraw;
+    property Style : TGradTabStyleBase read FStyle write SetStyle;
   end;
   
   procedure Register;
@@ -503,7 +526,7 @@ begin
   inherited Create(AOwner);
 
   ControlStyle := ControlStyle+[csNoDesignSelectable,csDesignInteractive]-[csCaptureMouse];
-  FCloseButton := TGradTabCloseButton.Create(Self);
+  FCloseButton := TGradTabCloseButton.Create(AOwner);
   FCloseButton.Width:=14;
   FCloseButton.Height:=14;
   TextAlignment:=taCenter;
@@ -557,6 +580,8 @@ begin
 
   FCloseButton.Top:=NewTop+TheRect.Top;
   FCloseButton.Left:=NewLeft+TheRect.Left;
+
+  FCloseButton.UpdateButton;
 end;
 
 {-------------------------------------------------------------------------------
@@ -687,7 +712,7 @@ procedure TGradTabPageButton.GetContentRect(var TheRect: TRect);
 begin
   inherited GetContentRect(TheRect);
 
-  if ShowGlyph then
+  if ShowCloseButton then
   begin
     case RotateDirection of
       rdNormal: begin
@@ -1205,16 +1230,43 @@ begin
 
   with AButton do
   begin
-    Left:=-123;
-    Parent := Self;
-    ShowFocusBorder:=false;
-    TextAlignment:=taCenter;
-    BorderSides:=[bsTopLine,bsRightLine,bsLeftLine];
-    OnMouseDown:=@FTabControl.PageButtonMouseDown;
-    OnMouseUp:=@FTabControl.PageButtonMouseUp;
-    OnClick:=@FTabControl.PageButtonMouseClick;
-    OnMouseMove:=@FTabControl.PageButtonMouseMove;
-    FCloseButton.OnMouseUp:=@FTabControl.PageCloseButtonMouseUp;
+    Left                   := -123;
+    Parent                 := Self;
+    ShowFocusBorder        := false;
+    TextAlignment          := taCenter;
+    BorderSides            := [bsTopLine,bsRightLine,bsLeftLine];
+    OnMouseDown            := @FTabControl.PageButtonMouseDown;
+    OnMouseUp              := @FTabControl.PageButtonMouseUp;
+    OnClick                := @FTabControl.PageButtonMouseClick;
+    OnMouseMove            := @FTabControl.PageButtonMouseMove;
+    FCloseButton.OnMouseUp := @FTabControl.PageCloseButtonMouseUp;
+
+    FTabControl.Style.PrepareButton(AButton);
+
+    if FTabControl.Style.HasTabButtonPaint then
+    begin
+      OnNormalBackgroundPaint   := @FTabControl.StyleTabButton;
+      OnDisabledBackgroundPaint := @FTabControl.StyleTabButton;
+      OnDownBackgroundPaint     := @FTabControl.StyleTabButton;
+      OnHotBackgroundPaint      := @FTabControl.StyleTabButton;
+
+      if FTabControl.Style.HasBorderButtonPaint then
+        OnBorderBackgroundPaint := @FTabControl.StyleTabButtonBorder;
+
+      OwnerBackgroundDraw := true;
+
+      if FTabControl.Style.HasCloseButtonPaint then
+      begin
+        FCloseButton.OnNormalBackgroundPaint   := @FTabControl.StyleTabCloseButton;
+        FCloseButton.OnDisabledBackgroundPaint := @FTabControl.StyleTabCloseButton;
+        FCloseButton.OnDownBackgroundPaint     := @FTabControl.StyleTabCloseButton;
+        FCloseButton.OnHotBackgroundPaint      := @FTabControl.StyleTabCloseButton;
+
+        FCloseButton.OwnerBackgroundDraw := true;
+      end;
+    end else begin
+      OwnerBackgroundDraw := false;
+    end;
   end;
 
   if Assigned(PopupMenu) then
@@ -1379,85 +1431,85 @@ begin
       case FTabPosition of
         tpTop:
         begin
-           //if B.Width < B.GetAutoWidth then
-              B.Width := B.GetAutoWidth;
+          //if B.Width < B.GetAutoWidth then
+          B.Width := B.GetAutoWidth;
 
-           B.Left := LastLeft;
-           LastLeft := LastLeft + B.Width + 1;
+          B.Left := LastLeft;
+          LastLeft := LastLeft + B.Width + 1;
 
-           if FActiveIndex = i then begin
-              B.Top := 0;
-              B.Height:= BarHeight;
-           end else begin
-              B.Top := 3;
-              B.Height:= BarHeight-3;
-           end;
+          if FActiveIndex = i then begin
+            B.Top := 0;
+            B.Height:= BarHeight;
+          end else begin
+            B.Top := 3;
+            B.Height:= BarHeight-3;
+          end;
         end;
         tpBottom:
         begin
-           //if B.Width < B.GetAutoWidth then
-              B.Width := B.GetAutoWidth;
+          //if B.Width < B.GetAutoWidth then
+          B.Width := B.GetAutoWidth;
 
-           B.Left := LastLeft;
-           LastLeft := LastLeft + B.Width + 1;
+          B.Left := LastLeft;
+          LastLeft := LastLeft + B.Width + 1;
 
-           B.Top := 0;
+          B.Top := 0;
 
-           if FActiveIndex = i then
-              B.Height := BarHeight
-           else
-              B.Height := BarHeight-3;
+          if FActiveIndex = i then
+            B.Height := BarHeight
+          else
+            B.Height := BarHeight-3;
         end;
         tpLeft:
         begin
-           if FTabControl.LongTabs then begin
-              if (B.GetAutoWidth > FTabControl.LongWidth) then
-              begin
-                  FTabControl.LongWidth:=B.GetAutoWidth;
-                  Exit;
-              end;
+          if FTabControl.LongTabs then begin
+            if (B.GetAutoWidth > FTabControl.LongWidth) then
+            begin
+              FTabControl.LongWidth:=B.GetAutoWidth;
+              Exit;
+            end;
 
+          end;
 
-           end;
+          B.Height:= B.GetAutoHeight;
 
-           B.Height:= B.GetAutoHeight;
+          B.Top := LastTop;
+          LastTop := LastTop + B.Height + 1;
 
-           B.Top := LastTop;
-           LastTop := LastTop + B.Height + 1;
-
-           if FActiveIndex = i then begin
-              B.Left := 0;
-              B.Width:= FTabControl.GetTabBarSize(tpLeft);
-           end else begin
-              B.Left := 3;
-              B.Width:= FTabControl.GetTabBarSize(tpLeft)-3;
-           end;
+          if FActiveIndex = i then begin
+            B.Left := 0;
+            B.Width:= FTabControl.GetTabBarSize(tpLeft);
+          end else begin
+            B.Left := 3;
+            B.Width:= FTabControl.GetTabBarSize(tpLeft)-3;
+          end;
         end;
         tpRight:
         begin
-           if FTabControl.LongTabs then begin
-              if (B.GetAutoWidth > FTabControl.LongWidth) then
-              begin
-                  FTabControl.LongWidth:=B.GetAutoWidth;
-                  Exit;
-              end;
-           end;
+          if FTabControl.LongTabs then begin
+            if (B.GetAutoWidth > FTabControl.LongWidth) then
+            begin
+              FTabControl.LongWidth:=B.GetAutoWidth;
+              Exit;
+            end;
+          end;
 
-           B.Height:= B.GetAutoHeight;
+          B.Height:= B.GetAutoHeight;
 
-           B.Top := LastTop;
-           LastTop := LastTop + B.Height + 1;
+          B.Top := LastTop;
+          LastTop := LastTop + B.Height + 1;
 
-           B.Left := 0;
+          B.Left := 0;
 
-           if FActiveIndex = i then
-              B.Width := FTabControl.GetTabBarSize(tpRight)
-           else begin
-              B.Width := FTabControl.GetTabBarSize(tpRight)-3;
-           end;
-           {$IFDEF DEBUGTAB}
+          if FActiveIndex = i then
+            B.Width := FTabControl.GetTabBarSize(tpRight)
+          else begin
+            B.Width := FTabControl.GetTabBarSize(tpRight)-3;
+          end;
+
+          {$IFDEF DEBUGTAB}
             DebugLn('B.Width=%d TabBarSize(tpRight)=%d FActive=%d',[B.Width, FTabControl.GetTabBarSize(tpRight), FActiveIndex]);
-           {$ENDIF}
+          {$ENDIF}
         end;
       end;
 
@@ -1468,10 +1520,10 @@ begin
   end;
 
   {$IFDEF DEBUGTAB}
-   DebugLn('BarWidth=%d LastLeft=%d FMovedTo=%d BarHeight=%d LastTop=%d',[BarWidth,
+    DebugLn('BarWidth=%d LastLeft=%d FMovedTo=%d BarHeight=%d LastTop=%d',[BarWidth,
       LastLeft, FMovedTo, BarHeight, LastTop]);
 
-   DebugLn('BarWidth < LastLeft-FMovedTo = %s BarHeight < LastTop-FMovedTo=%s',[
+    DebugLn('BarWidth < LastLeft-FMovedTo = %s BarHeight < LastTop-FMovedTo=%s',[
       BoolStr(BarWidth < (LastLeft-FMovedTo)), BoolStr(BarHeight < (LastTop-FMovedTo))]);
   {$ENDIF}
 
@@ -1482,17 +1534,17 @@ begin
   OR (FMovedTo <> 1))
   AND ((BarHeight<>0)
   AND (BarWidth<>0)) then begin
-     FTabControl.FLeftButton.Visible:=true;
-     FTabControl.FRightButton.Visible:=true;
+    FTabControl.FLeftButton.Visible:=true;
+    FTabControl.FRightButton.Visible:=true;
   end else begin
-     FTabControl.FLeftButton.Visible:=false;
-     FTabControl.FRightButton.Visible:=false;
+    FTabControl.FLeftButton.Visible:=false;
+    FTabControl.FRightButton.Visible:=false;
   end;
 
   {$IFDEF DEBUGTAB}
-   DebugLn('FR=%s FL=%s',[BoolStr(FTabControl.FRightButton.Visible),BoolStr(FTabControl.FLeftButton.Visible)]);
+    DebugLn('FR=%s FL=%s',[BoolStr(FTabControl.FRightButton.Visible),BoolStr(FTabControl.FLeftButton.Visible)]);
 
-   DebugLn('OrderButton End');
+    DebugLn('OrderButton End');
   {$ENDIF}
 end;
 
@@ -1542,63 +1594,63 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabPagesBar.FocusButton(Index: Integer);
 var
-   CurTabs : TTabs;
-   DoNext : Boolean;
-   c : Integer;
+  CurTabs : TTabs;
+  DoNext : Boolean;
+  c : Integer;
 begin
-    if csDestroying in FTabControl.ComponentState then Exit;
-    if (Index < 0) or (Index >= FPageList.Count) then Exit;
+  if csDestroying in FTabControl.ComponentState then Exit;
+  if (Index < 0) or (Index >= FPageList.Count) then Exit;
 
-    {$IFDEF DEBUGTAB}
-        DebugLn('TGradTabPagesBar.FocusButton Index: %d Assigned %s', [Index,BoolToStr(Assigned(TGradTabPage(FPageList.Items[Index]).TabButton),true)]);
-    {$ENDIF}
+  {$IFDEF DEBUGTAB}
+    DebugLn('TGradTabPagesBar.FocusButton Index: %d Assigned %s', [Index,BoolToStr(Assigned(TGradTabPage(FPageList.Items[Index]).TabButton),true)]);
+  {$ENDIF}
     
-    with TGradTabPage(FPageList.Items[Index]).TabButton do
-    begin
-        case FTabPosition of
-           tpTop, tpBottom : begin
-                Top:=0;
-                Height:=Self.Height;
+  with TGradTabPage(FPageList.Items[Index]).TabButton do
+  begin
+    case FTabPosition of
+      tpTop, tpBottom : begin
+        Top:=0;
+        Height:=Self.Height;
 
-                DoNext := ((Left+Width)>= Self.Width);
-           end;
-           tpRight, tpLeft: begin
-                Left := 0;
-                Width:= Self.Width;
+        DoNext := ((Left+Width)>= Self.Width);
+      end;
+      tpRight, tpLeft: begin
+        Left := 0;
+        Width:= Self.Width;
 
-                if FTabControl.LongTabs then
-                   Height := FTabControl.TabHeight;
+        if FTabControl.LongTabs then
+          Height := FTabControl.TabHeight;
 
-                DoNext := ((Top+Height)>= Self.Height);
-           end;
-        end;
-
-        if TGradTabPage(FPageList.Items[Index]).OwnerTabColor then
-            Color := TGradTabPage(FPageList.Items[Index]).ActiveTabColor
-        else
-            Color := ActiveTabColor;
-
+        DoNext := ((Top+Height)>= Self.Height);
+      end;
     end;
 
-    {$IFDEF DEBUGTAB}
-      DebugLn('FR=%s FL=%s',[BoolStr(FTabControl.FRightButton.Visible),BoolStr(FTabControl.FLeftButton.Visible)]);
-    {$ENDIF}
+    if TGradTabPage(FPageList.Items[Index]).OwnerTabColor then
+      Color := TGradTabPage(FPageList.Items[Index]).ActiveTabColor
+    else
+      Color := ActiveTabColor;
 
-    if not (FTabControl.FRightButton.Visible AND FTabControl.FLeftButton.Visible) then Exit;
+  end;
+
+  {$IFDEF DEBUGTAB}
+    DebugLn('FR=%s FL=%s',[BoolStr(FTabControl.FRightButton.Visible),BoolStr(FTabControl.FLeftButton.Visible)]);
+  {$ENDIF}
+
+  if not (FTabControl.FRightButton.Visible AND FTabControl.FLeftButton.Visible) then Exit;
     C := 0;
 
-    {$IFDEF DEBUGTAB}
-      DebugLn('Left=%d Width=%d Width=%d',[TGradTabPage(FPageList.Items[Index]).TabButton.Left,
-       TGradTabPage(FPageList.Items[Index]).TabButton.Width, Width]);
+  {$IFDEF DEBUGTAB}
+    DebugLn('Left=%d Width=%d Width=%d',[TGradTabPage(FPageList.Items[Index]).TabButton.Left,
+      TGradTabPage(FPageList.Items[Index]).TabButton.Width, Width]);
 
-      DebugLn('FocusButton Before ScrollToTab');
-    {$ENDIF}
+    DebugLn('FocusButton Before ScrollToTab');
+  {$ENDIF}
 
-    ScrollToTab(Index);
+  ScrollToTab(Index);
 
-    {$IFDEF DEBUGTAB}
-      DebugLn('FocusButton After ScrollToTab');
-    {$ENDIF}
+  {$IFDEF DEBUGTAB}
+    DebugLn('FocusButton After ScrollToTab');
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1606,26 +1658,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabPagesBar.SetTabPosition(Value: TTabPosition);
 
-   function DbgsTabPosition(V : TTabPosition) : String;
-   begin
-       case V of
-         tpTop : Result := 'tpTop';
-         tpBottom: Result := 'tpBottom';
-         tpRight: Result := 'tpRight';
-         tpLeft: Result := 'tpLeft';
-       end;
-   end;
+  function DbgsTabPosition(V : TTabPosition) : String;
+  begin
+    case V of
+      tpTop : Result := 'tpTop';
+      tpBottom: Result := 'tpBottom';
+      tpRight: Result := 'tpRight';
+      tpLeft: Result := 'tpLeft';
+    end;
+  end;
 
 begin
-    if FTabPosition = Value then Exit;
+  if FTabPosition = Value then Exit;
 
-    {$IFDEF DEBUGTAB}
+  {$IFDEF DEBUGTAB}
     DebugLn('Change TabPosition from %s to %s',[DbgsTabPosition(FTabPosition),DbgsTabPosition(Value)]);
-    {$ENDIF}
+  {$ENDIF}
 
-    FTabPosition:=Value;
+  FTabPosition:=Value;
 
-    OrderButtons;
+  OrderButtons;
 end;
 
 function TGradTabPagesBar.IsVisible(Index: Integer): Boolean;
@@ -1777,6 +1829,53 @@ begin
 
     //if DoNext then MoveToNext else MoveToPrior;
    {$IFDEF DEBUGTAB} DebugLn('ScrollToTab End'); {$ENDIF}
+end;
+
+procedure TGradTabPagesBar.UpdateAllButtons;
+var
+  i : Integer;
+begin
+  for i:= 0 to FPageList.Count-1 do
+  begin
+    TGradTabPage(FPageList[i]).TabButton.UpdateButton;
+  end;
+end;
+
+procedure TGradTabPagesBar.NewStyle;
+var
+  i : Integer;
+begin
+  for i:= 0 to FPageList.Count-1 do
+  begin
+    with TGradTabPage(FPageList[i]).TabButton do
+    begin
+      FTabControl.Style.PrepareButton(TGradTabPage(FPageList[i]).TabButton);
+      if FTabControl.Style.HasTabButtonPaint then
+      begin
+        OnNormalBackgroundPaint:=@FTabControl.StyleTabButton;
+        OnDisabledBackgroundPaint:=@FTabControl.StyleTabButton;
+        OnDownBackgroundPaint:=@FTabControl.StyleTabButton;
+        OnHotBackgroundPaint:=@FTabControl.StyleTabButton;
+
+        if FTabControl.Style.HasBorderButtonPaint then
+          OnBorderBackgroundPaint := @FTabControl.StyleTabButtonBorder;
+
+        OwnerBackgroundDraw:=true;
+
+        if FTabControl.Style.HasCloseButtonPaint then
+        begin
+          FCloseButton.OnNormalBackgroundPaint   := @FTabControl.StyleTabCloseButton;
+          FCloseButton.OnDisabledBackgroundPaint := @FTabControl.StyleTabCloseButton;
+          FCloseButton.OnDownBackgroundPaint     := @FTabControl.StyleTabCloseButton;
+          FCloseButton.OnHotBackgroundPaint      := @FTabControl.StyleTabCloseButton;
+
+          FCloseButton.OwnerBackgroundDraw := true;
+        end;
+      end else begin
+        OwnerBackgroundDraw:=false;
+      end;
+    end;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2000,80 +2099,82 @@ end;
  ------------------------------------------------------------------------------}
 constructor TGradTabControl.Create(AOwner: TComponent);
 begin
-    inherited;
+  inherited;
 
-    FImageChangeLink := TChangeLink.Create;
-    FImageChangeLink.OnChange:=@ImageListChange;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange:=@ImageListChange;
 
-    FTabPosition:=tpTop;
-    FAutoShowScrollButton:=true;
-    fCompStyle := csNoteBook;
+  FTabPosition:=tpTop;
+  FAutoShowScrollButton:=true;
+  fCompStyle := csNoteBook;
 
-    ControlStyle := [{csAcceptsControls, }csDesignInteractive];
-    TabStop:=true;
+  ControlStyle := [{csAcceptsControls, }csDesignInteractive];
+  TabStop:=true;
 
-    FPageList := TListWithEvent.Create;
-    FTabStrings := TGradTabPages.Create(TListWithEvent(FPageList), Self);
-    FPageIndex:=-1;
+  FPageList := TListWithEvent.Create;
+  FTabStrings := TGradTabPages.Create(TListWithEvent(FPageList), Self);
+  FPageIndex:=-1;
 
-    FTabHeight:=20;
+  FTabHeight:=20;
 
-    FPagesPopup := TPopupMenu.Create(Self);
-    FPagesPopup.OnPopup:=@PopupTabs;
+  FPagesPopup := TPopupMenu.Create(Self);
+  FPagesPopup.OnPopup:=@PopupTabs;
 
-    FBar := TGradTabBar.Create(Self);
-    FBar.Height:=FTabHeight;
-    FBar.Top:=0;
-    FBar.Left:=0;
-    FBar.Width:=Width;
-    FBar.Parent := Self;
-    //FBar.Align:=alTop;
+  FBar := TGradTabBar.Create(Self);
+  FBar.Height:=FTabHeight;
+  FBar.Top:=0;
+  FBar.Left:=0;
+  FBar.Width:=Width;
+  FBar.Parent := Self;
+  //FBar.Align:=alTop;
 
-    FMoveIncrement:=1;
+  FMoveIncrement:=1;
 
-    FLeftButton := TGradButton.Create(Self);
-    FLeftButton.Parent := FBar;
-    FLeftButton.Align:= alLeft;
-    FLeftButton.Caption:='<';
-    FLeftButton.AutoWidth:=true;
-    FLeftButton.Visible := false;
-    FLeftButton.SetSubComponent(true);
+  FLeftButton := TGradButton.Create(Self);
+  FLeftButton.Parent := FBar;
+  FLeftButton.Align:= alLeft;
+  FLeftButton.Caption:='<';
+  FLeftButton.AutoWidth:=true;
+  FLeftButton.Visible := false;
+  FLeftButton.SetSubComponent(true);
 
-    FRightButton := TGradButton.Create(Self);
-    FRightButton.Parent := FBar;
-    FRightButton.Align:= alRight;
-    FRightButton.Caption:='>';
-    FRightButton.AutoWidth:=true;
-    FRightButton.Visible:= false;
-    FRightButton.SetSubComponent(true);
+  FRightButton := TGradButton.Create(Self);
+  FRightButton.Parent := FBar;
+  FRightButton.Align:= alRight;
+  FRightButton.Caption:='>';
+  FRightButton.AutoWidth:=true;
+  FRightButton.Visible:= false;
+  FRightButton.SetSubComponent(true);
 
-    FPagesBar := TGradTabPagesBar.Create(Self,TListWithEvent(FPageList), Self);
-    FPagesBar.Parent:=FBar;
-    FPagesBar.Align:=alClient;
-    FPagesBar.Left:=0;
-    FPagesBar.Top:=0;
-    FPagesBar.Width:=FBar.Width;
-    FPagesBar.Height:=FBar.Height;
+  FPagesBar := TGradTabPagesBar.Create(Self,TListWithEvent(FPageList), Self);
+  FPagesBar.Parent:=FBar;
+  FPagesBar.Align:=alClient;
+  FPagesBar.Left:=0;
+  FPagesBar.Top:=0;
+  FPagesBar.Width:=FBar.Width;
+  FPagesBar.Height:=FBar.Height;
 
-    AssignEvents(FBar);
-    AssignEvents(FPagesBar);
-    //AssignEvents(FRightButton);
-    //AssignEvents(FLeftButton);
+  AssignEvents(FBar);
+  AssignEvents(FPagesBar);
+  //AssignEvents(FRightButton);
+  //AssignEvents(FLeftButton);
 
-    FLeftButton.OnClick:=@MoveLeftTopClick;
-    FRightButton.OnClick:=@MoveRightBottomClick;
+  FLeftButton.OnClick:=@MoveLeftTopClick;
+  FRightButton.OnClick:=@MoveRightBottomClick;
 
-    with FRightButton, FLeftButton do
-    begin
-        OnMouseUp:=nil;
-        OnMouseDown:=nil;
-        PopupMenu:=FPagesPopup;
-    end;
+  with FRightButton, FLeftButton do
+  begin
+    OnMouseUp:=nil;
+    OnMouseDown:=nil;
+    PopupMenu:=FPagesPopup;
+  end;
 
-    FRightButton.PopupMenu:=FPagesPopup;
+  FRightButton.PopupMenu:=FPagesPopup;
 
-    Height:=200;
-    Width:=200;
+  Height:=200;
+  Width:=200;
+
+  FStyle := TGradTabStandardStyle.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -2190,9 +2291,39 @@ begin
    FPagesBar.ActiveTabColor:= AValue;
 end;
 
+procedure TGradTabControl.SetCustomDraw(const AValue: Boolean);
+begin
+  if FCustomDraw=AValue then exit;
+  FCustomDraw:=AValue;
+
+  Invalidate;
+end;
+
 procedure TGradTabControl.SetNormalTabColor(const AValue: TColor);
 begin
    FPagesBar.NormalTabColor:=AValue;
+end;
+
+procedure TGradTabControl.SetStyle(const AValue: TGradTabStyleBase);
+begin
+  if FStyle = AValue then Exit;
+  if FStyle <> nil then
+  begin
+    FStyle.Free;
+    FStyle := nil;
+  end;
+
+  FStyle := AValue;
+
+  if FStyle = nil then
+  begin
+    FStyle := TGradTabStandardStyle.Create;
+  end;
+
+  // Update all Tab Paintings
+  InvPaint;
+  PagesBar.NewStyle;
+  PagesBar.UpdateAllButtons;
 end;
 
 procedure TGradTabControl.SetTabPopupMenu(const AValue: TPopupMenu);
@@ -2439,13 +2570,13 @@ end;
 procedure TGradTabControl.SubMouseClick(Sender: TObject);
 begin
   if Assigned(OnClick) then
-     OnClick(Sender);
+    OnClick(Sender);
 end;
 
 procedure TGradTabControl.SubMouseDblClick(Sender: TObject);
 begin
-   if Assigned(OnDblClick) then
-      OnDblClick(Sender);
+  if Assigned(OnDblClick) then
+    OnDblClick(Sender);
 end;
 
 procedure TGradTabControl.SubMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -2466,6 +2597,30 @@ procedure TGradTabControl.SubDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
   if Assigned(OnDragDrop) then
      OnDragDrop(Sender, Source, X, Y);
+end;
+
+procedure TGradTabControl.StyleTabButton(Sender: TGradButton;
+  TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
+begin
+  if FStyle.HasTabButtonPaint then
+  FStyle.TabButton(Self, FPageList.IndexOf(Sender.Owner), Sender,
+    TargetCanvas, R, BState);
+end;
+
+procedure TGradTabControl.StyleTabCloseButton(Sender: TGradButton;
+  TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
+begin
+  if FStyle.HasCloseButtonPaint then
+  FStyle.TabCloseButton(Self, FPageList.IndexOf(Sender.Owner), Sender,
+    TargetCanvas, R, BState);
+end;
+
+procedure TGradTabControl.StyleTabButtonBorder(Sender: TGradButton;
+  TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
+begin
+  if FStyle.HasBorderButtonPaint then
+  FStyle.TabButtonBorder(Self, FPageList.IndexOf(Sender.Owner), Sender,
+    TargetCanvas, R, BState);
 end;
 
 procedure TGradTabControl.PopupTabs(Sender: TObject);
@@ -2492,12 +2647,12 @@ end;
 
 procedure TGradTabControl.MoveLeftTopClick(Sender: TObject);
 begin
-    PagesBar.MoveToPrior;
+  PagesBar.MoveToPrior;
 end;
 
 procedure TGradTabControl.MoveRightBottomClick(Sender: TObject);
 begin
-    PagesBar.MoveToNext;
+  PagesBar.MoveToNext;
 end;
 
 {------------------------------------------------------------------------------
@@ -2738,10 +2893,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabControl.InvPaint;
 begin
-    if csDesigning in ComponentState then
-       Invalidate
-    else
-       Paint;
+  if csDesigning in ComponentState then
+    Invalidate
+  else
+    Paint;
 end;
 
 {------------------------------------------------------------------------------
@@ -2769,114 +2924,115 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabControl.SetTabPosition(Value : TTabPosition);
 var
-   tempSize : Integer;
+  tempSize : Integer;
 begin
-    FTabPosition:=Value;
+  FTabPosition:=Value;
 
-    tempSize:=FTabHeight;
+  tempSize:=FTabHeight;
 
-    {$IFDEF DEBUGTAB}
-         DebugLn('TGradTabControl.SetTabPosition Before');
-         DebugLn('FBar Left %d Top %d Height %d Width %d',[ FBar.Left, Fbar.Top, FBar.Height, FBar.Width]);
-         DebugLn('FPagesBar Left %d Top %d Height %d Width %d',[ FPagesBar.Left, FPagesbar.Top, FPagesBar.Height, FPagesBar.Width]);
-         DebugLn('Control Left %d Top %d Height %d Width %d',[ Left, Top, Height, Width]);
-    {$ENDIF}
+  {$IFDEF DEBUGTAB}
+    DebugLn('TGradTabControl.SetTabPosition Before');
+    DebugLn('FBar Left %d Top %d Height %d Width %d',[ FBar.Left, Fbar.Top, FBar.Height, FBar.Width]);
+    DebugLn('FPagesBar Left %d Top %d Height %d Width %d',[ FPagesBar.Left, FPagesbar.Top, FPagesBar.Height, FPagesBar.Width]);
+    DebugLn('Control Left %d Top %d Height %d Width %d',[ Left, Top, Height, Width]);
+  {$ENDIF}
     
-    FPagesBar.TabPosition:=Value;
+  FPagesBar.TabPosition:=Value;
 
-    case Value of
-      tpTop: begin
-         FBar.Height:=FTabHeight;
-         FBar.Top:=0;
-         FBar.Left:=0;
-         FBar.Width:=Width;
-         //FBar.Align:=alTop;
-      end;
-      tpLeft:begin
-         FBar.Height:=Height;
-         FBar.Top:=0;
-         FBar.Left:=0;
-         FBar.Width:=GetTabBarSize(tpLeft);
-         //FBar.Align:=alLeft;
-      end;
-      tpBottom:begin
-         FBar.Height:=tempSize;
-         FBar.Top:=Height-tempSize;
-         FBar.Left:=0;
-         FBar.Width:=Width;
-         //FBar.Align := alBottom;
-      end;
-      tpRight:begin
-         FBar.Left:=Width-GetTabBarSize(tpRight);
-         FBar.Top:=0;
-         FBar.Height:=Height;
-         FBar.Width:=GetTabBarSize(tpRight);
-         //FBar.Align:=alRight;
-      end;
+  case Value of
+    tpTop: begin
+      FBar.Height:=FTabHeight;
+      FBar.Top:=0;
+      FBar.Left:=0;
+      FBar.Width:=Width;
+      //FBar.Align:=alTop;
     end;
-
-    //FPagesBar.Align:=alClient;
-
-    case Value of
-      tpTop: begin
-         FLeftButton.Align:=alLeft;
-         FLeftButton.RotateDirection:=rdNormal;
-         FLeftButton.AutoWidth:=true;
-         FLeftButton.AutoHeight:=false;
-         FRightButton.Align:=alRight;
-         FRightButton.RotateDirection:=rdNormal;
-         FRightButton.AutoWidth:=true;
-         FRightButton.AutoHeight:=false;
-         //FBar.Align:=alTop;
-      end;
-      tpLeft:begin
-         FLeftButton.Align:=alTop;
-         FLeftButton.RotateDirection:=rdRight;
-         FLeftButton.AutoWidth:=false;
-         FLeftButton.AutoHeight:=true;
-         FRightButton.Align:=alBottom;
-         FRightButton.RotateDirection:=rdRight;
-         FRightButton.AutoWidth:=false;
-         FRightButton.AutoHeight:=true;
-         //FBar.Align:=alLeft;
-      end;
-      tpBottom:begin
-         FLeftButton.Align:=alLeft;
-         FLeftButton.RotateDirection:=rdNormal;
-         FLeftButton.AutoWidth:=true;
-         FLeftButton.AutoHeight:=false;
-         FRightButton.Align:=alRight;
-         FRightButton.RotateDirection:=rdNormal;
-         FRightButton.AutoWidth:=true;
-         FRightButton.AutoHeight:=false;
-         //FBar.Align := alBottom;
-      end;
-      tpRight:begin
-         FLeftButton.Align:=alTop;
-         FLeftButton.RotateDirection:=rdRight;
-         FLeftButton.AutoWidth:=false;
-         FLeftButton.AutoHeight:=true;
-         FRightButton.Align:=alBottom;
-         FRightButton.RotateDirection:=rdRight;
-         FRightButton.AutoWidth:=false;
-         FRightButton.AutoHeight:=true;
-         //FBar.Align:=alRight;
-      end;
+    tpLeft:begin
+      FBar.Height:=Height;
+      FBar.Top:=0;
+      FBar.Left:=0;
+      FBar.Width:=GetTabBarSize(tpLeft);
+      //FBar.Align:=alLeft;
     end;
+    tpBottom:begin
+      FBar.Height:=tempSize;
+      FBar.Top:=Height-tempSize;
+      FBar.Left:=0;
+      FBar.Width:=Width;
+      //FBar.Align := alBottom;
+    end;
+    tpRight:begin
+      FBar.Left:=Width-GetTabBarSize(tpRight);
+      FBar.Top:=0;
+      FBar.Height:=Height;
+      FBar.Width:=GetTabBarSize(tpRight);
+      //FBar.Align:=alRight;
+    end;
+  end;
 
-    if not FPagesBar.IsVisible(FPageIndex) then
-       FPagesBar.FocusButton(FPageIndex);
+  //FPagesBar.Align:=alClient;
 
-    {$IFDEF DEBUGTAB}
-         DebugLn('TGradTabControl.SetTabPosition After');
-         DebugLn('FBar Left %d Top %d Height %d Width %d',[ FBar.Left, Fbar.Top, FBar.Height, FBar.Width]);
-         DebugLn('FPagesBar Left %d Top %d Height %d Width %d',[ FPagesBar.Left, FPagesbar.Top, FPagesBar.Height, FPagesBar.Width]);
-         DebugLn('Control Left %d Top %d Height %d Width %d',[ Left, Top, Height, Width]);
-    {$ENDIF}
+  case Value of
+    tpTop: begin
+      FLeftButton.Align:=alLeft;
+      FLeftButton.RotateDirection:=rdNormal;
+      FLeftButton.AutoWidth:=true;
+      FLeftButton.AutoHeight:=false;
+      FRightButton.Align:=alRight;
+      FRightButton.RotateDirection:=rdNormal;
+      FRightButton.AutoWidth:=true;
+      FRightButton.AutoHeight:=false;
+      //FBar.Align:=alTop;
+    end;
+    tpLeft:begin
+      FLeftButton.Align:=alTop;
+      FLeftButton.RotateDirection:=rdRight;
+      FLeftButton.AutoWidth:=false;
+      FLeftButton.AutoHeight:=true;
+      FRightButton.Align:=alBottom;
+      FRightButton.RotateDirection:=rdRight;
+      FRightButton.AutoWidth:=false;
+      FRightButton.AutoHeight:=true;
+      //FBar.Align:=alLeft;
+    end;
+    tpBottom:begin
+      FLeftButton.Align:=alLeft;
+      FLeftButton.RotateDirection:=rdNormal;
+      FLeftButton.AutoWidth:=true;
+      FLeftButton.AutoHeight:=false;
+      FRightButton.Align:=alRight;
+      FRightButton.RotateDirection:=rdNormal;
+      FRightButton.AutoWidth:=true;
+      FRightButton.AutoHeight:=false;
+      //FBar.Align := alBottom;
+    end;
+    tpRight:begin
+      FLeftButton.Align:=alTop;
+      FLeftButton.RotateDirection:=rdRight;
+      FLeftButton.AutoWidth:=false;
+      FLeftButton.AutoHeight:=true;
+      FRightButton.Align:=alBottom;
+      FRightButton.RotateDirection:=rdRight;
+      FRightButton.AutoWidth:=false;
+      FRightButton.AutoHeight:=true;
+    //FBar.Align:=alRight;
+    end;
+  end;
 
-    AlignPages;
+  if not FPagesBar.IsVisible(FPageIndex) then
+    FPagesBar.FocusButton(FPageIndex);
 
-    InvPaint;
+  {$IFDEF DEBUGTAB}
+    DebugLn('TGradTabControl.SetTabPosition After');
+    DebugLn('FBar Left %d Top %d Height %d Width %d',[ FBar.Left, Fbar.Top, FBar.Height, FBar.Width]);
+    DebugLn('FPagesBar Left %d Top %d Height %d Width %d',[ FPagesBar.Left, FPagesbar.Top, FPagesBar.Height, FPagesBar.Width]);
+    DebugLn('Control Left %d Top %d Height %d Width %d',[ Left, Top, Height, Width]);
+  {$ENDIF}
+
+  AlignPages;
+
+  FPagesBar.UpdateAllButtons;
+  InvPaint;
 end;
 
 {------------------------------------------------------------------------------
@@ -2884,10 +3040,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabControl.SetLongTabs(Value : Boolean);
 begin
-   if FLongTabs=Value then Exit;
-   FLongTabs:=Value;
+  if FLongTabs=Value then Exit;
+  FLongTabs:=Value;
 
-   SetTabPosition(TabPosition);
+  SetTabPosition(TabPosition);
 end;
 
 {------------------------------------------------------------------------------
@@ -2978,46 +3134,8 @@ end;
   TGradTabControl Paint
  ------------------------------------------------------------------------------}
 procedure TGradTabControl.Paint;
-var
-   AClientRect : TRect;
 begin
-   Canvas.Brush.Color:=Color;
-   Canvas.FillRect(0,0,Width,Height);
-
-   Canvas.Pen.Color:=clBlack;
-
-   {case FTabPosition of
-      tpTop: begin
-         Canvas.Line(0,FTabHeight,0,Height);
-         Canvas.Line(0,FTabHeight,Width,FTabHeight);
-         Canvas.Line(Width-1,FTabHeight,Width-1,Height);
-         Canvas.Line(0,Height-1,Width,Height-1);
-      end;
-      tpBottom: begin
-         Canvas.Line(0,0,0,Height-FTabHeight);
-         Canvas.Line(0,0,Width,0); //Top
-         Canvas.Line(Width-1,0,Width-1,Height-FTabHeight);
-         Canvas.Line(0,Height-FTabHeight-1,Width,Height-FTabHeight-1);
-      end;
-      tpRight: begin
-         Canvas.Line(0,0,0,Height); //Left
-         Canvas.Line(0,0,Width-GetTabBarSize(tpRight),0); //Top
-         Canvas.Line(Width-1-GetTabBarSize(tpRight),0,Width-1-GetTabBarSize(tpRight),Height); //Right
-         Canvas.Line(0,Height-1,Width-GetTabBarSize(tpRight),Height-1);//Bottom
-      end;
-      tpLeft: begin
-         Canvas.Line(GetTabBarSize(tpLeft),0,GetTabBarSize(tpLeft),Height); //Left
-         Canvas.Line(GetTabBarSize(tpLeft),0,Width,0); //Top
-         Canvas.Line(Width-1,0,Width-1,Height); //Right
-         Canvas.Line(GetTabBarSize(tpLeft),Height-1,Width,Height-1);//Bottom
-      end;
-   end;}
-
-   AClientRect := GetClientRect;
-
-   Canvas.Rectangle(AClientRect.Left-2, AClientRect.Top-2,
-                    AClientRect.Right+2, AClientRect.Bottom+2);
-   
+  FStyle.TabControl(Self, Self.Canvas);
 end;
 
 {------------------------------------------------------------------------------
@@ -3025,17 +3143,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGradTabControl.Resize;
 begin
-     inherited;
+  inherited;
 
-     {$IFDEF DEBUGTAB}
-        DebugLn('TGradTabControl.Resize HasParent %s FPageList.Count %d',[BoolToStr(HasParent,true), FPageList.Count]);
-     {$ENDIF}
+  {$IFDEF DEBUGTAB}
+    DebugLn('TGradTabControl.Resize HasParent %s FPageList.Count %d',[BoolToStr(HasParent,true), FPageList.Count]);
+  {$ENDIF}
      
-     if HasParent and (FPageList.Count<>0) then
-        AlignPage(GetCurrentPage, GetClientRect);
+  if HasParent and (FPageList.Count<>0) then
+    AlignPage(GetCurrentPage, GetClientRect);
 
         
-     case FTabPosition of
+  case FTabPosition of
         tpTop: begin
             FBar.Width:=Width;
             FBar.Top:=0;

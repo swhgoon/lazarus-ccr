@@ -8,7 +8,7 @@ unit gradtabcontrol;
 interface
 
 uses
-ugradtabcontrol, gradtabcontroleditor, LazarusPackageIntf;
+  ugradtabcontrol, gradtabcontroleditor, gradtabstyle, LazarusPackageIntf;
 
 implementation
 

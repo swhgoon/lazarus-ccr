@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 243
+  Left = 253
   Height = 492
-  Top = 105
+  Top = 145
   Width = 884
   Caption = 'TGradTabControl-Testsuite'
   ClientHeight = 492
@@ -43,12 +43,13 @@ object Form1: TForm1
       ShowLeftTopScrollButton = False
       ShowRightBottomScrollButton = False
       Images = ImageList1
+      CustomDraw = False
       object GradTabPage3: TGradTabPage
         Left = 2
         Height = 466
         Top = 22
         Width = 640
-        PageIndex = 2
+        PageIndex = 1
         Caption = 'GradTabPage3'
         TabColor = clBlue
         TabTextAlignment = taLeftJustify
@@ -93,10 +94,10 @@ object Form1: TForm1
       end
       object GradTabPage2: TGradTabPage
         Left = 2
-        Height = 466
+        Height = 488
         Top = 22
-        Width = 640
-        PageIndex = 1
+        Width = 642
+        PageIndex = 2
         Caption = 'GradTabPage2'
         ShowCloseButton = True
         TabColor = clBlue

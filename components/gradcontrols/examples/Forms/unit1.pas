@@ -84,10 +84,14 @@ var
 
 implementation
 
+uses
+  gradtabstyle;
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  GradTabControl1.Style :=TGradTabVistaStyle.Create;
   GradTabControl1.Align:=alClient;
   GradTabControl1.TabPosition:=tpTop;
   SpinEdit2.Value:=GradTabControl1.TabHeight;
