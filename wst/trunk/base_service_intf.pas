@@ -842,55 +842,6 @@ type
     property OwnObject : Boolean read FOwnObject write FOwnObject;
   end;
 
-  { TObjectCollectionRemotable
-      An implementation for array handling. The array items are "owned" by
-      this class instance, so one has not to free them.
-  }
-  TObjectCollectionRemotable = class(TAbstractComplexRemotable)
-  private
-    FList : TObjectList;
-    FOptions : TInstanceOptions;
-  protected
-    function GetItem(AIndex : PtrInt) : TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    class function GetItemName():string;virtual;
-    class function GetStyle():TArrayStyle;virtual;
-    function GetLength : PtrInt;
-  public
-    class procedure Save(
-            AObject   : TBaseRemotable;
-            AStore    : IFormatterBase;
-      const AName     : string;
-      const ATypeInfo : PTypeInfo
-    );override;
-    class procedure Load(
-      var   AObject   : TObject;
-            AStore    : IFormatterBase;
-      var   AName     : string;
-      const ATypeInfo : PTypeInfo
-    );override;
-    class function GetItemClass():TBaseRemotableClass;virtual;abstract;
-    class function GetItemTypeInfo():PTypeInfo;{$IFDEF USE_INLINE}inline;{$ENDIF}
-
-    constructor Create();override;
-    destructor Destroy();override;
-    procedure Assign(Source: TPersistent); override;
-    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
-
-    function Add(): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function AddAt(const APosition : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function Extract(const AIndex : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure Delete(const AIndex : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure Exchange(const Index1,Index2 : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure Clear();{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function IndexOf(AObject : TBaseRemotable) : PtrInt;{$IFDEF USE_INLINE}inline;{$ENDIF}
-
-    property Item[AIndex:PtrInt] : TBaseRemotable read GetItem;default;
-    property Length : PtrInt read GetLength;
-    property Options : TInstanceOptions read FOptions write FOptions;
-  end;
-  
-  TBaseArrayRemotableClass = class of TBaseArrayRemotable;
-
   { TBaseArrayRemotable }
 
   TBaseArrayRemotable = class(TAbstractComplexRemotable)
@@ -909,6 +860,8 @@ type
     property Length : Integer Read GetLength;
     property Options : TInstanceOptions read FOptions write FOptions;
   end;
+
+  TBaseArrayRemotableClass = class of TBaseArrayRemotable;
 
   { TBaseObjectArrayRemotable
       An implementation for array handling. The array items are "owned" by
@@ -947,6 +900,49 @@ type
   End;
 
   TBaseObjectArrayRemotableClass = class of TBaseObjectArrayRemotable;
+
+  { TObjectCollectionRemotable
+      An implementation for array handling. The array items are "owned" by
+      this class instance, so one has not to free them.
+  }
+  TObjectCollectionRemotable = class(TBaseArrayRemotable)
+  private
+    FList : TObjectList;
+  protected
+    function GetItem(AIndex : PtrInt) : TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetLength : PtrInt; override;
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class function GetItemClass():TBaseRemotableClass;virtual;abstract;
+    class function GetItemTypeInfo():PTypeInfo;override;
+
+    constructor Create();override;
+    destructor Destroy();override;
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+
+    function Add(): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function AddAt(const APosition : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function Extract(const AIndex : PtrInt): TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Delete(const AIndex : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Exchange(const Index1,Index2 : PtrInt);{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure Clear();{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function IndexOf(AObject : TBaseRemotable) : PtrInt;{$IFDEF USE_INLINE}inline;{$ENDIF}
+
+    procedure SetLength(Const ANewSize : Integer);override;
+    property Item[AIndex:PtrInt] : TBaseRemotable read GetItem;default;
+  end;
 
   { TBaseSimpleTypeArrayRemotable }
 
@@ -2611,7 +2607,7 @@ begin
     Exit;
 
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
 
   if ( oldLen > ANewSize ) then begin
     for i := ANewSize to Pred(oldLen) do
@@ -3500,29 +3496,6 @@ begin
   Result := FList.Count;
 end;
 
-class function TObjectCollectionRemotable.GetItemName() : string;
-var
-  tri : TTypeRegistryItem;
-begin
-  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
-  if Assigned(tri) then
-    Result := Trim(tri.GetExternalPropertyName(sARRAY_ITEM));
-  if ( System.Length(Result) = 0 ) then
-    Result := sARRAY_ITEM;
-end;
-
-class function TObjectCollectionRemotable.GetStyle() : TArrayStyle;
-var
-  tri : TTypeRegistryItem;
-begin
-  tri := GetTypeRegistry().Find(PTypeInfo(Self.ClassInfo),False);
-  if Assigned(tri) and AnsiSameText(sEmbedded,Trim(tri.GetExternalPropertyName(sARRAY_STYLE))) then begin
-    Result := asEmbeded;
-  end else begin
-    Result := asScoped;
-  end;
-end;
-
 class procedure TObjectCollectionRemotable.Save(
   AObject : TBaseRemotable;
   AStore : IFormatterBase;
@@ -3627,7 +3600,7 @@ end;
 
 destructor TObjectCollectionRemotable.Destroy();
 begin
-  FList.Free();
+  FreeAndNil(FList);
   inherited Destroy();
 end;
 
@@ -3696,6 +3669,30 @@ begin
     end;
   end;
   Result := res;
+end;
+
+procedure TObjectCollectionRemotable.SetLength(const ANewSize: Integer);
+var
+  i,oldLen : Integer;
+begin
+  if ( FList = nil ) then
+    Exit;
+  oldLen := FList.Count;
+  if ( oldLen = ANewSize ) then
+    Exit;
+
+  if ( ANewSize < 0 ) then
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidCollectionLength,[ANewSize]);
+
+  if ( oldLen > ANewSize ) then begin
+    for i := ANewSize to Pred(oldLen) do
+      FList.Delete(FList.Count - 1);
+  end else begin
+    if ( FList.Capacity < ANewSize ) then
+      FList.Capacity := ANewSize;
+    for i := oldLen to Pred(ANewSize) do
+      Add();
+  end;
 end;
 
 function TObjectCollectionRemotable.Add() : TBaseRemotable;
