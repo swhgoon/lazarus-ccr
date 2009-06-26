@@ -153,6 +153,7 @@ const
   sSIMPLE_TYPE        = 'simpleType';
   sSTYLE              = 'style';
   sTRANSPORT          = 'transport';
+  sTRUE_LOWERCASE     = 'true';
   sTYPE               = 'type';
   sUNBOUNDED          = 'unbounded';
   sUSE                = 'use';
@@ -768,7 +769,7 @@ begin
     if ( parentClss <> nil ) then begin
       if ( parentClss = THeaderBlock ) then begin
         s := Format('%s:%s',[GetNameSpaceShortName(sWST_BASE_NS,defSchemaNode,sWST_BASE_NS_ABR),sWST_HEADER_BLOCK]);
-        cplxNode.SetAttribute(s, 'true');
+        cplxNode.SetAttribute(s, sTRUE_LOWERCASE);
       end;
       if IsParentVisible(parentRegItem) then begin
         if ( parentRegItem.NameSpace = typItm.NameSpace ) then begin
@@ -955,17 +956,6 @@ procedure TBaseArrayRemotable_TypeHandler.Generate(
         AWsdlDocument: TXMLDocument;
         ATypeRegistry : TTypeRegistry
 );
-
-  function GetNameSpaceShortName(const ANameSpace : string):string;//inline;
-  begin
-    if FindAttributeByValueInNode(ANameSpace,AWsdlDocument.DocumentElement,Result,0,sXMLNS) then begin
-      Result := Copy(Result,Length(sXMLNS+':')+1,MaxInt);
-    end else begin
-      Result := Format('ns%d',[GetNodeListCount(AWsdlDocument.DocumentElement.Attributes)]) ;
-      AWsdlDocument.DocumentElement.SetAttribute(Format('%s:%s',[sXMLNS,Result]),ANameSpace);
-    end;
-  end;
-
 var
   typItm, propTypItm : TTypeRegistryItem;
   s, prop_ns_shortName : string;
@@ -981,7 +971,7 @@ begin
      ( typItm.DataType^.Kind = tkClass ) and
      ( arrayTypeData^.ClassType.InheritsFrom(TBaseArrayRemotable) )
   then begin
-    GetNameSpaceShortName(typItm.NameSpace);
+    GetNameSpaceShortName(typItm.NameSpace,AWsdlDocument);
     defTypesNode := FindNode(AWsdlDocument.DocumentElement,sWSDL_TYPES) as TDOMElement;
     Assert(Assigned(defTypesNode));
     defSchemaNode := defTypesNode.FirstChild as TDOMElement;
@@ -1001,10 +991,16 @@ begin
         s := sITEM;
       propNode.SetAttribute(sNAME,s);
       if Assigned(propTypItm) then begin
-        prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace);
+        prop_ns_shortName := GetNameSpaceShortName(propTypItm.NameSpace,AWsdlDocument);
         propNode.SetAttribute(sTYPE,Format('%s:%s',[prop_ns_shortName,propTypItm.DeclaredName]));
         propNode.SetAttribute(sMIN_OCCURS,'0');
         propNode.SetAttribute(sMAX_OCCURS,sUNBOUNDED);
+        if arrayTypeClass.InheritsFrom(TObjectCollectionRemotable) then begin
+          propNode.SetAttribute(
+            Format('%s:wst_collection',[GetNameSpaceShortName(sWST_BASE_NS,defSchemaNode,sWST_BASE_NS_ABR)]),
+            sTRUE_LOWERCASE
+          );
+        end;
       end;
   end;
 end;
@@ -1040,7 +1036,7 @@ begin
     s := Format('%s:%s',[sXSD,sCOMPLEX_TYPE]);
     cplxNode := CreateElement(s,defSchemaNode,AWsdlDocument);
     cplxNode.SetAttribute(sNAME, typItm.DeclaredName);
-    cplxNode.SetAttribute(Format('%s:wst_record',[GetNameSpaceShortName(sWST_BASE_NS,AWsdlDocument,'wst')]),'true');
+    cplxNode.SetAttribute(Format('%s:wst_record',[GetNameSpaceShortName(sWST_BASE_NS,defSchemaNode,'wst')]),sTRUE_LOWERCASE);
 
       sqcNode := CreateElement(Format('%s:%s',[sXSD,sSEQUENCE]),cplxNode,AWsdlDocument);
       if ( objTypeData^.FieldCount > 0 ) then begin

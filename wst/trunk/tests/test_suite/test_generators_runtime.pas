@@ -80,6 +80,16 @@ type
     property Password : string read FPassword write FPassword;
   end;
 
+  TClass_A_Collection = class(TObjectCollectionRemotable)
+  private
+    function GetItem(AIndex: Integer): TClass_A;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    function Add(): TClass_A; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    function AddAt(const APosition : Integer) : TClass_A; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    property Item[AIndex:Integer] : TClass_A Read GetItem;Default;
+  end;
+
   { TTestWSDLGenerator }
 
   TTestWSDLGenerator= class(TTestCase)
@@ -89,6 +99,7 @@ type
     procedure generate_complex_type_derivation();
     procedure generate_enum();
     procedure generate_array();
+    procedure generate_collection();
     procedure generate_record();
     procedure generate_soap_headerblock();
   end;
@@ -112,6 +123,28 @@ begin
   );
 end;
 {$ENDIF WST_RECORD_RTTI}
+
+{ TClass_A_Collection }
+
+function TClass_A_Collection.GetItem(AIndex: Integer): TClass_A;
+begin
+  Result := TClass_A(Inherited GetItem(AIndex));
+end;
+
+class function TClass_A_Collection.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TClass_A;
+end;
+
+function TClass_A_Collection.Add() : TClass_A;
+begin
+  Result := TClass_A(inherited Add());
+end;
+
+function TClass_A_Collection.AddAt(const APosition : Integer) : TClass_A;
+begin
+  Result := TClass_A(inherited AddAt(APosition));
+end;
 
 { TTestWSDLGenerator }
 
@@ -219,6 +252,37 @@ begin
     GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
     //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_array.wsdl'));
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_array.wsdl'));
+    Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
+  finally
+    typeReg.Free();
+    ReleaseDomNode(locExistDoc);
+    ReleaseDomNode(locDoc);
+    Dispose(locRep);
+  end;
+end;
+
+procedure TTestWSDLGenerator.generate_collection();
+var
+  locRep : PServiceRepository;
+  locDoc, locExistDoc : TXMLDocument;
+  typeReg : TTypeRegistry;
+  handlerReg : IWsdlTypeHandlerRegistry;
+begin
+  locExistDoc := nil;
+  typeReg := nil;
+  locDoc := nil;
+  locRep := CreateRepository();
+  try
+    typeReg := TTypeRegistry.Create();
+    RegisterStdTypes(typeReg);
+    typeReg.Register(sNAMESPACE_SAMPLE,TypeInfo(TClass_A));
+    typeReg.Register(sNAMESPACE_SAMPLE,TypeInfo(TClass_A_Collection));
+    handlerReg := CreateWsdlTypeHandlerRegistry(typeReg);
+    RegisterFondamentalTypesHandler(handlerReg);
+    locDoc := CreateDoc();
+    GenerateWSDL(locRep,locDoc,typeReg,handlerReg);
+    //WriteXML(locDoc,wstExpandLocalFileName('wsdl_gen_generate_collection.wsdl'));
+    ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'wsdl_gen_generate_collection.wsdl'));
     Check(CompareNodes(locExistDoc.DocumentElement,locDoc.DocumentElement),'generated document differs from the existent one.');
   finally
     typeReg.Free();
