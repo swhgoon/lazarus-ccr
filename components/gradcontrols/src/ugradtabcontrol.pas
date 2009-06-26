@@ -3,7 +3,7 @@ unit ugradtabcontrol;
 {-------------------------------------------------------------------------------
  @name GradTabControl
  @author Eugen Bolz
- @lastchange 07.10.2008
+ @lastchange 26.06.2009 (DD.MM.YYYY)
  @version 0.1
  @comments TGradTabControl is based on TNotebook/TPageControl/TTabControl
  @license http://creativecommons.org/licenses/LGPL/2.1/
@@ -11,14 +11,15 @@ unit ugradtabcontrol;
 
 {$mode objfpc}{$H+}
 
-{.$DEFINE DEBUGTAB}
-
 interface
 
 uses
   Classes,LResources, SysUtils, Menus, LCLType,
   LCLProc, LCLIntf,ExtCtrls, Graphics, ugradbtn, Controls, uRotateBitmap,
-  Buttons, Forms, ImgList, gradtabstyle;
+  Buttons, Forms, ImgList, gradtabstyle
+  {$IFDEF DEBUGTAB}
+  , sharedloggerlcl
+  {$ENDIF};
 
 type
   TGradTabControl = class;
@@ -1231,7 +1232,6 @@ begin
   with AButton do
   begin
     Left                   := -123;
-    Parent                 := Self;
     ShowFocusBorder        := false;
     TextAlignment          := taCenter;
     BorderSides            := [bsTopLine,bsRightLine,bsLeftLine];
@@ -1272,12 +1272,12 @@ begin
   if Assigned(PopupMenu) then
     AButton.PopupMenu := PopupMenu;
 
-  if (Index >= 1) AND (FPageList.Count>=1) then
+  {if (Index >= 1) AND (FPageList.Count>=1) then
     UnFocusButton(Index-1);
 
   FocusButton(Index);
 
-  OrderButtons;
+  OrderButtons;}
 
   {$IFDEF DEBUGTAB}WriteLn('TGradTabPagesBar.InsertButton');{$ENDIF}
 end;
@@ -1414,6 +1414,7 @@ begin
 
   FActiveIndex:=FTabControl.PageIndex;
 
+
   for i := 0 to FPageList.Count - 1 do
   begin
     B := TGradTabPage(FPageList.Items[i]).TabButton;
@@ -1517,6 +1518,9 @@ begin
          DebugLn('End I: %d W: %d H: %d L: %d T: %d, BW: %d, BH: %d',[i,B.Width,B.Height,B.Left,B.Top,BarWidth,BarHeight]);
       {$ENDIF}
     end;
+
+    if B.Parent <> Self then
+      B.Parent := Self;
   end;
 
   {$IFDEF DEBUGTAB}
@@ -1701,31 +1705,31 @@ end;
 
 function TGradTabPagesBar.GetViewedTabs: TTabs;
 var
-   i,l : Integer;
+  i,l : Integer;
 begin
-   {$IFDEF DEBUGTAB}
-   DebugLn('GetViewedTabs');
-   DebugLn('Width=%d Height=%d',[Width,Height]);
-   {$ENDIF}
-   for i := 0 to FPageList.Count-1 do
-   begin
-      with TGradTabPage(FPageList.Items[i]).TabButton do
+  {$IFDEF DEBUGTAB}
+    DebugLn('GetViewedTabs');
+    DebugLn('Width=%d Height=%d',[Width,Height]);
+  {$ENDIF}
+  for i := 0 to FPageList.Count-1 do
+  begin
+    with TGradTabPage(FPageList.Items[i]).TabButton do
+    begin
+      if ((TabPosition in [tpTop, tpBottom]) AND (Left >= 0) {AND (Left <=(Self.Width-10))} AND (Left+Width < Self.Width)) OR
+        ((TabPosition in [tpLeft, tpRight]) AND (Top >= 0) {AND (Top <=(Self.Height-10))} AND (Top+Height < Self.Height)) then
       begin
-        if ((TabPosition in [tpTop, tpBottom]) AND (Left >= 0) {AND (Left <=(Self.Width-10))} AND (Left+Width < Self.Width)) OR
-           ((TabPosition in [tpLeft, tpRight]) AND (Top >= 0) {AND (Top <=(Self.Height-10))} AND (Top+Height < Self.Height)) then
-        begin
-           l := IncAr(Result);
-           {$IFDEF DEBUGTAB}
-           DebugLn('L=%d T=%d W=%d H=%d Caption=%s',[Left, Top, Width, Height, Caption]);
-           DebugLn('%d. Value: %d',[l,i]);
-           {$ENDIF}
-           Result[l] := i;
-        end;
+        l := IncAr(Result);
+        {$IFDEF DEBUGTAB}
+          DebugLn('L=%d T=%d W=%d H=%d Caption=%s',[Left, Top, Width, Height, Caption]);
+          DebugLn('%d. Value: %d',[l,i]);
+        {$ENDIF}
+        Result[l] := i;
       end;
-   end;
-   {$IFDEF DEBUGTAB}
-      DebugLn('GetViewedTabs End');
-   {$ENDIF}
+    end;
+  end;
+  {$IFDEF DEBUGTAB}
+    DebugLn('GetViewedTabs End');
+  {$ENDIF}
 end;
 
 function TGradTabPagesBar.GetViewableTabs(FromIndex: Integer): TTabs;
@@ -1876,6 +1880,8 @@ begin
       end;
     end;
   end;
+
+
 end;
 
 {-------------------------------------------------------------------------------
@@ -2323,6 +2329,23 @@ begin
   // Update all Tab Paintings
   InvPaint;
   PagesBar.NewStyle;
+
+  if FStyle.HasLeftRightButtonPaint then
+  begin
+    FLeftButton.OnNormalBackgroundPaint  := @FStyle.TabLeftRightButton;
+    FLeftButton.OnDownBackgroundPaint    := @FStyle.TabLeftRightButton;
+    FLeftButton.OnHotBackgroundPaint     := @FStyle.TabLeftRightButton;
+    FLeftButton.OnBorderBackgroundPaint  := @FStyle.TabLeftRightBorderButton;
+
+    FLeftButton.OwnerBackgroundDraw      := true;
+
+    FRightButton.OnNormalBackgroundPaint := @FStyle.TabLeftRightButton;
+    FRightButton.OnDownBackgroundPaint   := @FStyle.TabLeftRightButton;
+    FRightButton.OnHotBackgroundPaint    := @FStyle.TabLeftRightButton;
+    FRightButton.OnBorderBackgroundPaint := @FStyle.TabLeftRightBorderButton;
+
+    FRightButton.OwnerBackgroundDraw     := true;
+  end;
   PagesBar.UpdateAllButtons;
 end;
 
@@ -2704,7 +2727,6 @@ begin
    if FPageIndex <> -1 then UnShowPage(FPageIndex);
 
    ShowPage(Value);
-   FPagesBar.FocusButton(Value);
 
    FPageIndex := Value;
 
@@ -2750,14 +2772,13 @@ begin
 
     if (Index<0) or (Index>=fPageList.Count) then Exit;
 
-    // Focus the TabButton
+    // Unfocus the TabButton
     FPagesBar.UnFocusButton(Index);
 
     UpdateDesignerFlags(Index);
 
      with TGradTabPage(FPageList.Items[Index]) do
        Visible:=false;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -2806,9 +2827,10 @@ begin
     Exclude(APage.FFlags,pfInserting);
     APage.Parent := Self;
 
-    FPagesBar.InsertButton(APage.TabButton, Index);
     if APage.Caption = '' then
        APage.Caption:=APage.Name;
+
+    FPagesBar.InsertButton(APage.TabButton, Index);
 
     if NewZPosition>=0 then
       SetControlIndex(APage,NewZPosition);

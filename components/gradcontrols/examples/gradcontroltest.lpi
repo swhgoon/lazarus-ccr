@@ -16,7 +16,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="1135"/>
+      <CurrentBuildNr Value="1161"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>
@@ -31,21 +31,24 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="gradtabcontrol_with_multilog"/>
       </Item1>
       <Item2>
-        <PackageName Value="gradtabcontrol"/>
+        <PackageName Value="multiloglaz"/>
       </Item2>
       <Item3>
-        <PackageName Value="gradbutton"/>
-        <MinVersion Major="1" Minor="2" Valid="True"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="gradbutton"/>
+        <MinVersion Major="1" Minor="2" Valid="True"/>
       </Item4>
+      <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>

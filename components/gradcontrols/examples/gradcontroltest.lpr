@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { you can add units after this }, unit1;
+  Forms, multiloglaz
+  { you can add units after this }, unit1, gradtabcontrol_with_multilog;
 
 {$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
 

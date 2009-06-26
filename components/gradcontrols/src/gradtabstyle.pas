@@ -40,6 +40,7 @@ type
     procedure TabButtonBorder(Sender: TCustomControl; AIndex: Integer;
       Button: TGradButton; TargetCanvas: TCanvas; R: TRect; BState : TButtonState); virtual; abstract;
     procedure TabLeftRightButton(Sender: TGradButton; TargetCanvas: TCanvas; R: TRect; BState : TButtonState); virtual; abstract;
+    procedure TabLeftRightBorderButton(Sender: TGradButton; TargetCanvas: TCanvas; R: TRect; BState : TButtonState); virtual; abstract;
     procedure PrepareButton(Button: TGradButton); virtual;
     property TheTabControl : TCustomControl read FTheTabControl write FTheTabControl;
     property HasTabButtonPaint : Boolean read GetHasTabButtonPaint;
@@ -82,6 +83,10 @@ type
       Button: TGradButton; TargetCanvas: TCanvas; R: TRect; BState: TButtonState); override;
     procedure TabButtonBorder(Sender: TCustomControl; AIndex: Integer;
       Button: TGradButton; TargetCanvas: TCanvas; R: TRect; BState : TButtonState); override;
+    procedure TabLeftRightButton(Sender: TGradButton; TargetCanvas: TCanvas;
+      R: TRect; BState: TButtonState); override;
+    procedure TabLeftRightBorderButton(Sender: TGradButton; TargetCanvas: TCanvas;
+      R: TRect; BState: TButtonState); override;
     procedure PrepareButton(Button: TGradButton); override;
   end;
 
@@ -146,7 +151,7 @@ constructor TGradTabVistaStyle.Create;
 begin
   inherited Create;
 
-  FOptions:=[sbTabButton, sbBorderButton, sbCloseButton];
+  FOptions:=[sbTabButton, sbBorderButton, sbCloseButton, sbLeftRightButton];
 
   with Normal do
   begin
@@ -203,8 +208,13 @@ var
   FGradTabControl : TGradTabControl;
   FGradientDirection : TGradientDirection;
 begin
-  FGradTabControl := Sender as TGradTabControl;
-  if AIndex = FGradTabControl.PageIndex then
+  FGradTabControl := nil;
+
+  if Sender <> nil then
+    FGradTabControl := Sender as TGradTabControl;
+
+  if (FGradTabControl <> nil)
+  and (AIndex = FGradTabControl.PageIndex) then
     BState := bsDown;
 
   case BState of
@@ -311,6 +321,24 @@ begin
     if (bsBottomLine in BorderSides) AND (bsRightLine in BorderSides) then
       TargetCanvas.Pixels[Width-2,Height-2]:=ColorSet.BorderColor;
   end;
+end;
+
+procedure TGradTabVistaStyle.TabLeftRightButton(Sender: TGradButton;
+  TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
+begin
+  if BState = bsDown then
+     BState := bsHot;
+
+  TabButton(Sender.Owner as TCustomControl, 0, Sender, TargetCanvas, R, BState);
+end;
+
+procedure TGradTabVistaStyle.TabLeftRightBorderButton(Sender: TGradButton;
+  TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
+begin
+  if BState = bsDown then
+     BState := bsHot;
+
+  TabButtonBorder(Sender.Owner as TCustomControl, 0, Sender, TargetCanvas, R, BState);
 end;
 
 procedure TGradTabVistaStyle.PrepareButton(Button: TGradButton);
