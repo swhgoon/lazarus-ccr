@@ -65,11 +65,9 @@ end;
 procedure TTest_TBaseProxy.test_CreateWithInvalidParameters_AProtocolData();
 var
   ok : Boolean;
-  sp : IServiceProtocol;
 begin
   ok := False;
   try
-    sp := nil;
     TBaseProxy.Create(s_target_service,'NILPROTOCOL:nil_prop=nilvalue','SAME_PROCESS:');
   except
     ok := True;

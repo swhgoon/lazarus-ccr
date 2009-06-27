@@ -119,10 +119,10 @@ type
 
   TTest_TwstModuleManager = class(TTestCase)
   published
-    function Get(const AFileName : string):IwstModule;
+    procedure Get(const AFileName : string);
     procedure Clear();
-    function GetCount() : PtrInt;
-    function GetItem(const AIndex : PtrInt) : IwstModule;
+    procedure GetCount();
+    procedure GetItem(const AIndex : PtrInt);
   end;
   
 implementation
@@ -211,7 +211,7 @@ end;
 
 {$IFDEF WST_SEMAPHORE_TIMEOUT}
 procedure TTest_TIntfPool.Release_NON();
-const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
+const MIN_A = Integer(1); MAX_A = Integer(5);
 var
   obj : TIntfPool;
   elt : ITest;
@@ -302,7 +302,6 @@ end;
 { TTest_TSimpleItemFactoryEx }
 
 procedure TTest_TSimpleItemFactoryEx.NOT_Pooled();
-const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
 var
   obj : IItemFactoryEx;
   elt : ITest;
@@ -366,7 +365,7 @@ end;
 
 {$IFDEF WST_SEMAPHORE_TIMEOUT}
 procedure TTest_TSimpleItemFactoryEx.POOLED_Release_NON();
-const MIN_A = Integer(1); MAX_A = Integer(5); MIN_B = Integer(0);
+const MIN_A = Integer(1); MAX_A = Integer(5);
 var
   obj : IItemFactoryEx;
   elt : ITest;
@@ -619,7 +618,7 @@ end;
 
 { TTest_TwstModuleManager }
 
-function TTest_TwstModuleManager.Get(const AFileName: string): IwstModule;
+procedure TTest_TwstModuleManager.Get(const AFileName: string);
 const C = 10;
 var
   locObj : IwstModuleManager;
@@ -672,7 +671,7 @@ begin
   CheckEquals(0,locObj.GetCount());
 end;
 
-function TTest_TwstModuleManager.GetCount(): PtrInt;
+procedure TTest_TwstModuleManager.GetCount();
 const C = 10;
 var
   locObj : IwstModuleManager;
@@ -689,7 +688,7 @@ begin
   CheckEquals(C,locObj.GetCount());
 end;
 
-function TTest_TwstModuleManager.GetItem(const AIndex: PtrInt): IwstModule;
+procedure TTest_TwstModuleManager.GetItem(const AIndex: PtrInt);
 const C = 10;
 var
   locObj : IwstModuleManager;

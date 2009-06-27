@@ -1275,7 +1275,7 @@ begin
 end;
 
 procedure TRttiParser_Test.BeginEnd_Group();
-const VAL_1 : Integer = 1210; VAL_2 : Integer = 1076; VAL_3 : Integer = 176;
+const VAL_1 : Integer = 1210; VAL_2 : Integer = 1076;
       VAL_4 : Integer = -176;
       VAL_S : AnsiString = 'inoussa';
 var
