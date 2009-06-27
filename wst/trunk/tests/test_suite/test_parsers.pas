@@ -1204,22 +1204,6 @@ end;
 procedure TTest_CustomXsdParser.ComplexType_ArraySequence_ItemName_Schema();
 var
   tr : TwstPasTreeContainer;
-  clsType : TPasClassType;
-
-  procedure CheckProperty(const AName,ATypeName : string; const AFieldType : TPropertyType);
-  var
-    prp : TPasProperty;
-  begin
-    prp := FindMember(clsType,AName) as TPasProperty;
-      CheckNotNull(prp);
-      CheckEquals(AName,prp.Name);
-      CheckEquals(AName,tr.GetExternalName(prp));
-      CheckNotNull(prp.VarType);
-      CheckEquals(ATypeName,tr.GetExternalName(prp.VarType));
-      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
-  end;
-
-var
   mdl : TPasModule;
   ls : TList;
   elt : TPasElement;

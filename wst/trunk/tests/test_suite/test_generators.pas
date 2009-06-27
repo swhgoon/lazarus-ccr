@@ -864,7 +864,6 @@ var
   aliasType : TPasAliasType;
   g : IGenerator;
   locDoc, locExistDoc : TXMLDocument;
-  arrayTyp : TPasArrayType;
 begin
   locDoc := nil;
   locExistDoc := nil;
@@ -901,7 +900,6 @@ var
   aliasType : TPasArrayType;
   g : IGenerator;
   locDoc, locExistDoc : TXMLDocument;
-  arrayTyp : TPasArrayType;
 begin
   locDoc := nil;
   locExistDoc := nil;
