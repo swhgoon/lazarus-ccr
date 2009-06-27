@@ -1064,7 +1064,6 @@ var
   uint64Data : QWord;
 {$ENDIF HAS_QWORD}
   strData : string;
-  objData : TObject;
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
@@ -1321,11 +1320,9 @@ var
   uint64Data : QWord;
 {$ENDIF HAS_QWORD}
   strData : string;
-  objData : TObject;
   boolData : Boolean;
   enumData : TEnumIntType;
   floatDt : Extended;
-  recObject : Pointer;
   wideStrData : WideString;
 {$IFDEF WST_UNICODESTRING}
   unicodeStrData : UnicodeString;
@@ -1812,6 +1809,7 @@ begin
   Result := nil;
 end;
 
+{$WARNINGS OFF}
 function TNullStackItem.CreateStringBuffer(const AName : string; const AValue : TJSONStringType) : TJSONData;
 begin
   RaiseNotApplicable();
@@ -1846,6 +1844,7 @@ function TNullStackItem.NilItem(AItem : TJSONData) : TJSONData;
 begin
   RaiseNotApplicable();
 end;
+{$WARNINGS ON}
 
 function TNullStackItem.GetScopeItemNames(const AReturnList : TStrings) : Integer;
 begin

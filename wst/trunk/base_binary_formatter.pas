@@ -2094,6 +2094,7 @@ begin
   Inc(FIndex);
 end;
 
+{$WARNINGS OFF}
 function TArrayStackItem.CreateInnerBuffer(const ADataType: TDataType): PDataBuffer;
 begin
   raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
@@ -2103,6 +2104,7 @@ function TArrayStackItem.GetInnerBuffer(): PDataBuffer;
 begin
   raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
 end;
+{$WARNINGS ON}
 
 procedure TArrayStackItem.NilCurrentScope();
 begin

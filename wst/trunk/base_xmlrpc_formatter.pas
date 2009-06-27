@@ -642,6 +642,7 @@ begin
     raise EXmlRpcException.Create('TArrayStackItem.PopIndex() >> No saved index.');
   FIndex := FIndexStack[FIndexStackIDX];
   Dec(FIndexStackIDX);
+  Result := FIndex;
 end;
 
 { TXmlRpcBaseFormatter }
