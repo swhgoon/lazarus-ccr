@@ -4,7 +4,7 @@
 
     This file is provide under modified LGPL licence
     ( the files COPYING.modifiedLGPL and COPYING.LGPL).
-    
+
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -51,7 +51,7 @@ type
 
   ESOAPException = class(EBaseRemoteException)
   End;
-  
+
   { TStackItem }
 
   TStackItem = class
@@ -123,7 +123,7 @@ type
 
   TSOAPEncodingStyle = ( Literal, Encoded );
   TSOAPDocumentStyle = ( RPC, Document );
-  
+
 {$M+}
 
   { TSOAPBaseFormatter }
@@ -135,7 +135,7 @@ type
     FEncodingStyle: TSOAPEncodingStyle;
     FStyle: TSOAPDocumentStyle;
     FHeaderEnterCount : Integer;
-    
+
     FNameSpaceCounter : Integer;
     FDoc : TwstXMLDocument;
     FStack : TObjectStack;
@@ -145,7 +145,7 @@ type
     FSerializationStyle : TSerializationStyle;
 
     procedure InternalClear(const ACreateDoc : Boolean);{$IFDEF USE_INLINE}inline;{$ENDIF}
-    
+
     function NextNameSpaceCounter():Integer;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function HasScope():Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
@@ -230,7 +230,7 @@ type
       const ATypeInfo : PTypeInfo;
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    
+
     function GetNodeValue(const ANameSpace : string; var AName : String):DOMString;
     procedure GetEnum(
       Const ATypeInfo : PTypeInfo;
@@ -454,7 +454,7 @@ type
 
 
   function BoolToSoapBool(const AValue : Boolean) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
-  
+
 resourcestring
   SERR_NodeNotFoundByID = 'Node not found with this ID in the document : %s.';
   SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found %s.';
@@ -1266,7 +1266,13 @@ begin
   If Not Assigned(typData) Then
     Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
   mustAddAtt := False;
-  nmspc := typData.NameSpace;
+  if ( ATypeInfo^.Kind = tkClass ) and
+     GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TAbstractSimpleRemotable) and
+     HasScope()
+  then
+    nmspc := StackTop().NameSpace
+  else
+    nmspc := typData.NameSpace;
   If IsStrEmpty(nmspc) Then
     nmspcSH := 'tns'
   Else Begin
@@ -1296,7 +1302,7 @@ begin
     xsiNmspcSH := GetNameSpaceShortName(sXSI_NS,True);
     if not IsStrEmpty(xsiNmspcSH) then
       xsiNmspcSH := xsiNmspcSH + ':';
-    AddScopeAttribute(xsiNmspcSH + sTYPE,Format('%s:%s',[nmspcSH,typData.DeclaredName]));
+    AddScopeAttribute(xsiNmspcSH + sTYPE,Format('%s:%s',[GetNameSpaceShortName(typData.NameSpace,True),typData.DeclaredName]));
   end;
   StackTop().SetNameSpace(nmspc);
 end;
@@ -1470,7 +1476,13 @@ begin
     if not Assigned(typData) then begin
       Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
     end;
-    nmspc := typData.NameSpace;
+    if ( ATypeInfo^.Kind = tkClass ) and
+       GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TAbstractSimpleRemotable) and
+       HasScope()
+    then
+      nmspc := StackTop().NameSpace
+    else
+      nmspc := typData.NameSpace;
     if IsStrEmpty(nmspc) then begin
       nmspcSH := ''
     end else begin
@@ -1501,7 +1513,7 @@ begin
   end else begin
     locNode := stk.ScopeObject;
   end;
-  
+
   if ( locNode = nil ) then begin
     Result := -1;
   end else begin
@@ -1514,6 +1526,10 @@ begin
       StackTop().SetNameSpace(nmspc);
     end;
     Result := StackTop().GetItemsCount();
+    if ( Result = 0 ) and ( AScopeType = stArray ) then begin
+      PopStack().Free();
+      Result := -1;
+    end;
   end;
 end;
 
@@ -1764,7 +1780,7 @@ begin
         boolData := Boolean(AData);
         PutBool(ANameSpace,AName,ATypeInfo,boolData);
       End;
-    {$ENDIF}  
+    {$ENDIF}
     tkInteger, tkEnumeration :
       begin
       {$IFDEF WST_DELPHI}
