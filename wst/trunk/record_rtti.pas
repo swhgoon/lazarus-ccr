@@ -222,7 +222,7 @@ var
   count,
   offset,
   i : longint;
-  info : pointer;
+  //info : pointer;
 
   resBuffer : PRecordTypeData;
   typName : shortstring;
@@ -261,9 +261,9 @@ begin
   { Process elements }
   for i := 1 to Count do begin
     fieldInfo := @(resBuffer^.Fields[(i - 1)]);
-    Info := PPointer(Temp)^;
+    //Info := PPointer(Temp)^;
     fieldInfo^.TypeInfo := PPTypeInfo(Temp);
-    Inc(Temp,sizeof(Info));
+    Inc(Temp,sizeof(Pointer));
     Offset := PLongint(Temp)^;
     fieldInfo^.Offset := Offset;
     fieldInfo^.Visible := True;
