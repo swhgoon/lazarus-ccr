@@ -542,6 +542,7 @@ begin
   Result := ( FStream.Position >= FStream.Size );
 end;
 
+{$HINTS OFF}
 function TDataStoreReader.ReadInt8U(): TInt8U;
 begin
   FStream.Read(Result,SizeOf(Result));
@@ -587,6 +588,7 @@ begin
   FStream.Read(Result,SizeOf(Result));
   Result := Reverse_64(Result);
 end;
+{$HINTS ON}
 
 function TDataStoreReader.ReadBool(): TBoolData;
 begin
@@ -654,6 +656,7 @@ begin
 end;
 {$ENDIF WST_UNICODESTRING}
 
+{$HINTS OFF}
 function TDataStoreReader.ReadSingle(): TFloat_Single_4;
 begin
   FStream.Read(Result,SizeOf(Result));
@@ -677,6 +680,7 @@ begin
   FStream.Read(Result,SizeOf(Result));
   Result := Reverse_Currency(Result);
 end;
+{$HINTS ON}
 
 constructor TDataStoreReader.Create(AStream: TStream);
 begin

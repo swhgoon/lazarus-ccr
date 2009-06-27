@@ -65,6 +65,7 @@ begin
     Result := IncMinute(Result,-ADate.MinuteOffset);
 end;
 
+{$HINTS OFF}
 function DateEquals(const AA,AB: TDateTimeRec) : Boolean;
 var
   e, a : TDateTime;
@@ -78,6 +79,7 @@ begin
   Result := ( e_y = a_y ) and ( e_m = a_m ) and ( e_d = a_d ) and
             (e_h = a_h ) and ( e_mn = a_mn ) and ( e_ss = a_ss ) and ( e_ms = a_ms );
 end;
+{$HINTS ON}
 
 function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
 const
