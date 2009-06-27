@@ -650,7 +650,7 @@ procedure TTypeAliasDefinition_TypeHandler.Generate(
 );
 var
   typItm : TPasAliasType;
-  ns_shortName, s : string;
+  s : string;
   defSchemaNode, resNode : TDOMElement;
   unitExternalName, baseUnitExternalName : string;
   trueDestType : TPasType;
@@ -664,7 +664,7 @@ begin
   typItm := ASymbol as TPasAliasType;
   if Assigned(typItm) then begin
     unitExternalName := GetTypeNameSpace(AContainer,ASymbol);
-    ns_shortName := GetNameSpaceShortName(unitExternalName,ADocument,GetOwner().GetPreferedShortNames());
+    GetNameSpaceShortName(unitExternalName,ADocument,GetOwner().GetPreferedShortNames());
     defSchemaNode := GetSchemaNode(ADocument) as TDOMElement;
 
     s := Format('%s:%s',[s_xs_short,s_element]);
