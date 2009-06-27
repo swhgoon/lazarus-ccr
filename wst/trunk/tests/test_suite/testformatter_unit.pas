@@ -26,6 +26,9 @@ uses
   TypInfo,
   test_suite_utils, base_service_intf, wst_types, server_service_intf, service_intf;
 
+const
+  TEST_NAME_SPACE = 'uri:test-namespace';
+
 type
 
   TTestEnum = ( teOne, teTwo, teThree, teFour );
@@ -39,12 +42,16 @@ type
   private
     FVal_32S: LongInt;
     FVal_Bool: Boolean;
+    FVal_Date: TDateRemotable;
     FVal_Enum: TTestEnum;
     FVal_String: string;
 {$IFDEF WST_UNICODESTRING}
     FVal_UnicodeString: UnicodeString;
 {$ENDIF WST_UNICODESTRING}
     FVal_WideString: WideString;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
   Published
     property Val_32S : LongInt Read FVal_32S Write FVal_32S;
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
@@ -54,6 +61,7 @@ type
 {$IFDEF WST_UNICODESTRING}
     property Val_UnicodeString : UnicodeString Read FVal_UnicodeString Write FVal_UnicodeString;
 {$ENDIF WST_UNICODESTRING}
+    property Val_Date : TDateRemotable read FVal_Date write FVal_Date;
   End;
 
   TClass_A_Array = class(TBaseObjectArrayRemotable)
@@ -553,9 +561,15 @@ type
     class function GetFormaterName() : string;override;
     class function SupportNamedArrayItem() : Boolean;override;
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
+    procedure do_test_Object(const AProps, AFileName : string);
   published
     procedure test_WriteBuffer();
     procedure test_ReadBuffer();
+
+    procedure test_Object_DocumentLiteral();
+    procedure test_Object_DocumentEncoded();
+    procedure test_Object_RPCLiteral();
+    procedure test_Object_RPCEncoded();
   end;
 
   { TTestSOAPFormatterAttributes }
@@ -671,8 +685,7 @@ uses base_binary_formatter, base_soap_formatter, base_xmlrpc_formatter, record_r
 {$ENDIF}
      , server_service_soap, soap_formatter,
      server_service_xmlrpc, xmlrpc_formatter,
-     binary_streamer, server_binary_formatter, binary_formatter,
-     object_serializer;
+     binary_streamer, server_binary_formatter, binary_formatter;
 
 function CompareNodes(const A,B : PDataBuffer) : Boolean;overload;forward;
 
@@ -717,7 +730,7 @@ var
   ok : Boolean;
 begin
   if ( A = nil ) and ( B = nil ) then begin
-    Result := ok
+    Result := True
   end else if ( A <> nil ) and ( B <> nil ) then begin
     if ( A^.Count = B^.Count ) then begin
       ok := True;
@@ -2606,8 +2619,7 @@ begin
 end;
 
 procedure TTestFormatter.Test_CplxFloatExtendedSimpleContent_WithClass;
-const VAL_S : Extended = -12.10; VAL_U : Double = 10.76; VAL_X = 1210.76;
-      VAL_STR_S = 'Test Attribute S'; VAL_STR_U = 'Test Attribute U'; VAL_STR_X = 'test it';
+const VAL_S : Extended = -12.10; VAL_U : Double = 10.76;
 var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2875,6 +2887,8 @@ end;
 {$ENDIF WST_UNICODESTRING}
 
 procedure TTestFormatter.Test_Object();
+const
+  DATE_VALUE = 39000;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2893,6 +2907,7 @@ begin
 {$ENDIF WST_UNICODESTRING}
     a.ObjProp.Val_String := '456';
     a.ObjProp.Val_WideString := 'wide456';
+    a.ObjProp.Val_Date.AsDate := DATE_VALUE;
 {$IFDEF WST_UNICODESTRING}
     a.ObjProp.Val_UnicodeString := 'unicode456';
 {$ENDIF WST_UNICODESTRING}
@@ -2933,6 +2948,7 @@ begin
     CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
     CheckEquals('456',a.ObjProp.Val_String);
     CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
+    CheckEquals(TDateRemotable.FormatDate(DATE_VALUE),TDateRemotable.FormatDate(a.ObjProp.Val_Date.AsDate));
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
 {$ENDIF WST_UNICODESTRING}
@@ -3968,7 +3984,6 @@ const AR_LEN = 5;
   end;
 var
   a, areaded : TClass_A_Array;
-  aitem : TClass_A;
   i : Integer;
   f : IFormatterBase;
   s : TMemoryStream;
@@ -4016,8 +4031,6 @@ end;
 procedure TTestFormatter.Test_ObjectArray_ReadEmptyArray();
 var
   a, areaded : TClass_A_Array;
-  aitem : TClass_A;
-  i : Integer;
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
@@ -4148,7 +4161,6 @@ const AR_LEN = 5;
   end;
 var
   a, areaded : TClass_A_Collection;
-  aitem : TClass_A;
   i : Integer;
   f : IFormatterBase;
   s : TMemoryStream;
@@ -4248,8 +4260,6 @@ end;
 procedure TTestFormatter.Test_ObjectCollection_ReadEmptyCollection();
 var
   a, areaded : TClass_A_Collection;
-  aitem : TClass_A;
-  i : Integer;
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
@@ -4303,8 +4313,6 @@ end;
 procedure TTestFormatter.Test_SimpleTypeArray_ReadEmptyArray();
 var
   a, areaded : TArrayOfStringRemotable;
-  aitem : TClass_A;
-  i : Integer;
   f : IFormatterBase;
   s : TMemoryStream;
   x : string;
@@ -4590,7 +4598,7 @@ begin
       Check( ls.IndexOf('intv') >= 0 );
       x := 'a';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(5{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
+        CheckEquals(6{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -4599,7 +4607,7 @@ begin
 
       x := 'b';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(5{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
+        CheckEquals(6{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -4685,6 +4693,85 @@ begin
   Result.BeginObject('Env',ARootType)
 end;
 
+procedure TTestSOAPFormatter.do_test_Object(const AProps, AFilename: string);
+const
+  DATE_VALUE = 39000;
+Var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TClass_B;
+  x : string;
+begin
+  s := Nil;
+  a := TClass_B.Create();
+  Try
+    a.Val_Bool := False;
+    a.Val_Enum := teThree;
+    a.Val_String := '123';
+    a.Val_WideString := 'wide123';
+{$IFDEF WST_UNICODESTRING}
+    a.Val_UnicodeString := 'unicode123';
+{$ENDIF WST_UNICODESTRING}
+    a.ObjProp.Val_String := '456';
+    a.ObjProp.Val_WideString := 'wide456';
+    a.ObjProp.Val_Date.AsDate := DATE_VALUE;
+{$IFDEF WST_UNICODESTRING}
+    a.ObjProp.Val_UnicodeString := 'unicode456';
+{$ENDIF WST_UNICODESTRING}
+    a.ObjProp.Val_Enum := teFour;
+    a.ObjProp.Val_Bool := True;
+    a.ObjProp.Val_32S := 121076;
+    a.NonStored := 121076;
+
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.GetPropertyManager().SetProperties(AProps);
+
+    f.BeginObject('Root',TypeInfo(TClass_B));
+      f.Put('o1',TypeInfo(TClass_B),a);
+    f.EndScope();
+
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+    FreeAndNil(a);
+    //if not IsStrEmpty(AFilename) then
+      //s.SaveToFile(wstExpandLocalFileName(AFilename));
+
+    a := TClass_B.Create();
+    f := CreateFormatter(TypeInfo(TClass_B));
+    f.GetPropertyManager().SetProperties(AProps);
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'o1';
+      f.Get(TypeInfo(TClass_B),x,a);
+    f.EndScopeRead();
+
+    CheckEquals(False,a.Val_Bool);
+    CheckEquals(Ord(teThree),Ord(a.Val_Enum));
+    CheckEquals('123',a.Val_String);
+    CheckEquals(WideString('wide123'),a.Val_WideString);
+{$IFDEF WST_UNICODESTRING}
+    CheckEquals('unicode123',a.Val_UnicodeString);
+{$ENDIF WST_UNICODESTRING}
+
+    CheckEquals(True,a.ObjProp.Val_Bool);
+    CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
+    CheckEquals('456',a.ObjProp.Val_String);
+    CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
+    CheckEquals(TDateRemotable.FormatDate(DATE_VALUE),TDateRemotable.FormatDate(a.ObjProp.Val_Date.AsDate));
+{$IFDEF WST_UNICODESTRING}
+    CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
+{$ENDIF WST_UNICODESTRING}
+    CheckEquals(121076,a.ObjProp.Val_32S);
+
+    CheckEquals(0,a.NonStored);
+  Finally
+    a.Free();
+    s.Free();
+  End;
+end;
+
 class function TTestSOAPFormatter.GetFormaterName(): string;
 begin
   Result := 'SOAP';
@@ -4755,25 +4842,24 @@ procedure TTestSOAPFormatter.test_ReadBuffer();
 const
 {$IFDEF FPC}
   s_XML_BUFFER : AnsiString =
-    '<ns2:ObjProperty> ' +
-     ' <ns2:fieldSmallint>1</ns2:fieldSmallint> ' +
-     ' <ns2:fieldWord>0</ns2:fieldWord> ' +
-     ' <ns2:fieldString>SampleStringContent</ns2:fieldString> ' +
-    '</ns2:ObjProperty>';
+    '<ns1:ObjProperty> ' +
+     ' <ns1:fieldSmallint>1</ns1:fieldSmallint> ' +
+     ' <ns1:fieldWord>0</ns1:fieldWord> ' +
+     ' <ns1:fieldString>SampleStringContent</ns1:fieldString> ' +
+    '</ns1:ObjProperty>';
 {$ENDIF FPC}
 {$IFDEF DELPHI}
   s_XML_BUFFER : AnsiString =
-    '<ns2:ObjProperty xmlns:ns2uri:testnamespace> ' +
-     ' <ns2:fieldSmallint>1</ns2:fieldSmallint> ' +
-     ' <ns2:fieldWord>0</ns2:fieldWord> ' +
-     ' <ns2:fieldString>SampleStringContent</ns2:fieldString> ' +
-    '</ns2:ObjProperty>';
+    '<ns1:ObjProperty xmlns:ns2uri:testnamespace> ' +
+     ' <ns1:fieldSmallint>1</ns1:fieldSmallint> ' +
+     ' <ns1:fieldWord>0</ns1:fieldWord> ' +
+     ' <ns1:fieldString>SampleStringContent</ns1:fieldString> ' +
+    '</ns1:ObjProperty>';
 {$ENDIF DELPHI}
 
 var
   f : IFormatterBase;
   strm : TMemoryStream;
-  da, db : TXMLDocument;
   obj2 : TTestSmallClass2;
   obj : TTestSmallClass;
   strName, strBuffer : string;
@@ -4813,6 +4899,26 @@ begin
     FreeAndNil(obj);
     FreeAndNil(strm);
   end;
+end;
+
+procedure TTestSOAPFormatter.test_Object_DocumentLiteral();
+begin
+  do_test_Object('Style=Document;EncodingStyle=Literal','test_Object_DocumentLiteral.xml');
+end;
+
+procedure TTestSOAPFormatter.test_Object_DocumentEncoded();
+begin
+  do_test_Object('Style=Document;EncodingStyle=Encoded','test_Object_DocumentEncoded.xml');
+end;
+
+procedure TTestSOAPFormatter.test_Object_RPCLiteral();
+begin
+  do_test_Object('Style=RPC;EncodingStyle=Literal','test_Object_RPCLiteral.xml');
+end;
+
+procedure TTestSOAPFormatter.test_Object_RPCEncoded();
+begin
+  do_test_Object('Style=RPC;EncodingStyle=Encoded','test_Object_RPCEncoded.xml');
 end;
 
 { TClass_A_Array }
@@ -6070,33 +6176,47 @@ end;
 
 
 
+{ TClass_A }
+
+constructor TClass_A.Create();
+begin
+  inherited Create();
+  FVal_Date := TDateRemotable.Create();
+end;
+
+destructor TClass_A.Destroy();
+begin
+  FreeAndNil(FVal_Date);
+  inherited Destroy();
+end;
+
 initialization
   RegisterStdTypes();
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TTestEnum),'TTestEnum').RegisterExternalPropertyName('teOne', '1');
     GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestEnum)].RegisterExternalPropertyName('teThree', 'Three-external-name');
     
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Int),'TClass_Int').RegisterExternalPropertyName('Val_8U','U8');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Enum),'TClass_Enum');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A),'TClass_A');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A_Array),'TClass_A_Array');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_Int),'TClass_Int').RegisterExternalPropertyName('Val_8U','U8');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_Enum),'TClass_Enum');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_A),'TClass_A');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_A_Array),'TClass_A_Array');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TClass_A_Array)].RegisterExternalPropertyName(sARRAY_ITEM,'ArrayItem');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_A_Collection),'TClass_A_Collection');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_A_Collection),'TClass_A_Collection');
   GetTypeRegistry().ItemByTypeInfo[TypeInfo(TClass_A_Collection)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
 
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_B),'TClass_B');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_Float),'TClass_Float');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_B),'TClass_B');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_Float),'TClass_Float');
 
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt32SContent),'T_ComplexInt32SContent');
-    GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt32UContent),'T_ComplexInt32UContent');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt32SContent),'T_ComplexInt32SContent');
+    GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt32UContent),'T_ComplexInt32UContent');
 
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16SContent),'T_ComplexInt16SContent');
-    GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexInt16UContent),'T_ComplexInt16UContent');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt16SContent),'T_ComplexInt16SContent');
+    GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt16UContent),'T_ComplexInt16UContent');
 
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
 
   TClass_CplxSimpleContent.RegisterAttributeProperty('Elt_Exemple');
-  GetTypeRegistry().Register(sXSD_NS,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');
 
   with GetTypeRegistry().Register(sWST_BASE_NS,TypeInfo(TEmbeddedArrayOfStringRemotable),'TEmbeddedArrayOfStringRemotable') do begin
     RegisterExternalPropertyName(sARRAY_ITEM,'abc');
