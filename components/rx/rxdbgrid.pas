@@ -51,21 +51,31 @@ type
   end;
   TExDBGridSortEngineClass = class of TExDBGridSortEngine;
 
+  TMLCaptionItem = class
+    Caption:string;
+    Width:integer;
+    Hegth:integer;
+    Next:TMLCaptionItem;
+    Prior:TMLCaptionItem;
+  end;
+
   { TRxColumnTitle }
   TRxColumnTitle = class(TColumnTitle)
   private
     FHint: string;
     FOrientation: TTextOrientation;
     FShowHint: boolean;
-    FMultiLines:TStringList;
+    FCaptionLines:TFPList;
+    function GetCaptionLinesCount: integer;
     procedure SetOrientation(const AValue: TTextOrientation);
-    function MCountLines:integer;
-    function MGetLine(ALine:integer):string;
+    procedure ClearCaptionML;
   protected
     procedure SetCaption(const AValue: TCaption); override;
   public
     constructor Create(TheColumn: TGridColumn); override;
     destructor Destroy; override;
+    property CaptionLinesCount:integer read GetCaptionLinesCount;
+    function CaptionLine(ALine:integer):TMLCaptionItem;
   published
     property Orientation:TTextOrientation read FOrientation write SetOrientation;
     property Hint: string read FHint write FHint;
@@ -206,12 +216,11 @@ type
     FFooterRowCount: integer;
     FOnGetCellProps: TGetCellPropsEvent;
     FOptionsRx: TOptionsRx;
-    FTitleLines: Integer;
+//    FTitleLines: Integer;
     FAutoSort: boolean;
     FMarkerUp, FMarkerDown: TBitmap;
     FOnGetBtnParams: TGetBtnParamsEvent;
     FOnFiltred : TNotifyEvent;
-    FTitleButtons: boolean;
     //auto sort support
     FSortField:TField;
     FSortOrder:TSortMarker;
@@ -234,6 +243,7 @@ type
 
     function GetColumns: TRxDbGridColumns;
     function GetPropertyStorage: TCustomPropertyStorage;
+    function GetTitleButtons: boolean;
     function IsColumnsStored: boolean;
     procedure SetAutoSort(const AValue: boolean);
     procedure SetColumns(const AValue: TRxDbGridColumns);
@@ -245,16 +255,19 @@ type
     procedure TrackButton(X, Y: Integer);
     procedure StopTracking;
     procedure CalcTitle;
+    procedure ClearMLCaptionPointers;
     function getFilterRect(bRect : TRect):TRect;
     function getTitleRect(bRect : TRect):TRect;
+    procedure OutCaptionCellText(aCol,aRow: Integer;const aRect: TRect; aState: TGridDrawState;const ACaption:string);
+    procedure OutCaptionCellText90(aCol,aRow: Integer;const  aRect: TRect; aState: TGridDrawState;const ACaption:string;const TextOrient:TTextOrientation);
+    procedure OutCaptionSortMarker(const  aRect: TRect; ASortMarker: TSortMarker);
+    procedure OutCaptionMLCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; MLI:TMLCaptionItem);
 
     //storage
     procedure OnIniSave(Sender: TObject);
     procedure OnIniLoad(Sender: TObject);
   protected
-  {$IFDEF Win32}
-    procedure CreateWnd; override;
-  {$ENDIF}
+//    procedure CreateWnd; override;
     function DatalinkActive:boolean;
     procedure DefaultDrawCellA(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DefaultDrawTitle(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
@@ -273,6 +286,7 @@ type
     procedure DrawCellBitmap(RxColumn:TRxColumn; aRect: TRect; aState: TGridDrawState; AImageIndex:integer); virtual;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure CheckNewCachedSizes(var AGCache:TGridDataCache); override;
+    procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     procedure Paint;override;
     procedure UpdateActive;override;
     procedure UpdateData;override;
@@ -282,10 +296,11 @@ type
     procedure FFilterListEditorOnCloseUp(Sender: TObject);
     procedure InternalOptimizeColumnsWidth(AColList:TList);
     function IsDefaultRowHeightStored:boolean;
-    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
+    procedure VisualChange; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure LayoutChanged; override;
     procedure ShowFindDialog;
     procedure ShowColumnsDialog;
@@ -304,7 +319,7 @@ type
     procedure UpdateTitleHight;
   published
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
-    property TitleButtons: boolean read FTitleButtons write SetTitleButtons;
+    property TitleButtons: boolean read GetTitleButtons write SetTitleButtons;
     property AutoSort:boolean read FAutoSort write SetAutoSort;
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps
       write FOnGetCellProps;
@@ -462,8 +477,8 @@ type
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
 
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
   public
+//    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure EditingDone; override;
   end;
 
@@ -591,11 +606,13 @@ begin
   SelectAll;
 end;
 
-procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+{procedure TRxDBGridDateEditor.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
+  BeginUpdateBounds;
   Dec(aWidth, 25);
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
-end;
+  EndUpdateBounds;
+end;}
 
 procedure TRxDBGridDateEditor.EditingDone;
 begin
@@ -693,11 +710,11 @@ const
     DT_RIGHT or {DT_EXPANDTABS or }DT_NOPREFIX,
     DT_CENTER or {DT_EXPANDTABS or }DT_NOPREFIX);
 
-  TITLE_SUBHEADER = 2;
+{  TITLE_SUBHEADER = 2;
   TITLE_DEFAULT = 1;
 
 const
-  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);}
 
 procedure WriteTextHeader(ACanvas: TCanvas; ARect: TRect; const Text: string;
   Alignment: TAlignment);
@@ -723,8 +740,10 @@ end;
 
 procedure TRxDBGrid.SetTitleButtons(const AValue: boolean);
 begin
-  if FTitleButtons=AValue then exit;
-  FTitleButtons:=AValue;
+  if AValue then
+    Options:=Options + [dgHeaderPushedLook]
+  else
+    Options:=Options - [dgHeaderPushedLook];
 end;
 
 procedure TRxDBGrid.SetAutoSort(const AValue: boolean);
@@ -754,6 +773,11 @@ end;
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
 begin
   Result:=FPropertyStorageLink.Storage;
+end;
+
+function TRxDBGrid.GetTitleButtons: boolean;
+begin
+  Result:=dgHeaderPushedLook in Options;
 end;
 
 function TRxDBGrid.IsColumnsStored: boolean;
@@ -838,52 +862,90 @@ end;
 procedure TRxDBGrid.CalcTitle;
 var
   i, j:integer;
-  H, H1, W, H2, W1:integer;
-  rxCol:TRxColumn;
-  rxTit:TRxColumnTitle;
-  sCapt:string;
+  H, H1, W, H2:integer;
+  rxCol, rxColNext:TRxColumn;
+  rxTit, rxTitleNext:TRxColumnTitle;
+  MLRec1:TMLCaptionItem;
+  MLRec2:TMLCaptionItem;
 begin
   H:=1;
+  ClearMLCaptionPointers;
   for i:=0 to Columns.Count-1 do
   begin
     rxCol:=TRxColumn(Columns[i]);
-    if rxCol.Visible then
+    if Assigned(rxCol) and rxCol.Visible then
     begin
       rxTit:=TRxColumnTitle(rxCol.Title);
-      if rxTit.Orientation in [toVertical270, toVertical90] then
-        H:=Max((Canvas.TextWidth(Columns[i].Title.Caption)+ Canvas.TextWidth('W')) div DefaultRowHeight, H)
-      else
+      if Assigned(rxTit) then
       begin
-        W:=Max(rxCol.Width-2, 1);
-        if rxTit.MCountLines > 0 then
-        begin
-          H2:=0;
-          H1:=0;
-          for j:=0 to rxTit.MCountLines-1 do
-          begin
-            sCapt:=rxTit.MGetLine(j);
-            W1:=Canvas.TextWidth(sCapt)+2;
-
-            if W>W1 then
-              H2:=1
-            else
-              H2:=W1 div W + 1;
-
-            if H2>WordCount(sCapt, [' ']) then
-              H2:=WordCount(sCapt, [' ']);
-
-            H1:=H1+H2;
-          end
-        end
+        if rxTit.Orientation in [toVertical270, toVertical90] then
+          H:=Max((Canvas.TextWidth(Columns[i].Title.Caption)+ Canvas.TextWidth('W')) div DefaultRowHeight, H)
         else
         begin
-          sCapt:=rxTit.Caption;
+          rxColNext:=nil;
+          rxTitleNext:=nil;
+          if i < Columns.Count-1  then
+          begin
+            rxColNext:=TRxColumn(Columns[i+1]);
+            rxTitleNext:=TRxColumnTitle(rxColNext.Title);
+          end;
+  { TODO -oalexs : Тут необходимо также обработать скрытые столбцы }
+  {
+          j:=i;
+   while j < Columns.Count-1  then
+          begin
+            if
+            inc(j);
+          end;
+          }
 
-          H1:=Max((Canvas.TextWidth(sCapt)+2) div W + 1, H);
-          if H1>WordCount(sCapt, [' ']) then
-            H1:=WordCount(sCapt, [' ']);
+          W:=Max(rxCol.Width-2, 1);
+          if rxTit.CaptionLinesCount > 0 then
+          begin
+            H2:=0;
+            H1:=0;
+            for j:=0 to rxTit.CaptionLinesCount-1 do
+            begin
+              MLRec1:=rxTit.CaptionLine(j);
+              if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount>j) then
+              begin
+                MLRec2:=rxTitleNext.CaptionLine(j);
+                if MLRec1.Caption = MLRec2.Caption then
+                begin
+                  MLRec1.Next:=MLRec2;
+                  MLRec2.Prior:=MLRec1;
+                end;
+              end;
+
+              MLRec1.Width:=Canvas.TextWidth(MLRec1.Caption)+2;
+
+              if W > MLRec1.Width then
+                H2:=1
+              else
+                H2:=MLRec1.Width div W + 1;
+
+              if H2>WordCount(MLRec1.Caption, [' ']) then
+                H2:=WordCount(MLRec1.Caption, [' ']);
+
+              H1:=H1+H2;
+            end
+          end
+          else
+          begin
+            H1:=Max((Canvas.TextWidth(rxTit.Caption)+2) div W + 1, H);
+            if H1>WordCount(rxTit.Caption, [' ']) then
+              H1:=WordCount(rxTit.Caption, [' ']);
+          end;
+          H:=Max(H1, H);
         end;
-        H:=Max(H1, H);
+
+        for j:=0 to rxTit.CaptionLinesCount-1 do
+        begin
+          MLRec1:=rxTit.CaptionLine(j);
+          if MLRec1.Width < rxTit.Column.Width then
+            MLRec1.Width:=rxTit.Column.Width;
+        end;
+
       end;
     end;
   end;
@@ -897,6 +959,30 @@ begin
   end;
 end;
 
+procedure TRxDBGrid.ClearMLCaptionPointers;
+var
+  i, j:integer;
+  rxCol:TRxColumn;
+  rxTit:TRxColumnTitle;
+begin
+  for i:=0 to Columns.Count-1 do
+  begin
+    rxCol:=TRxColumn(Columns[i]);
+    if Assigned(rxCol) then
+    begin
+      rxTit:= TRxColumnTitle(rxCol.Title);
+      if Assigned(rxTit) then
+      begin
+        for j:=0 to rxTit.CaptionLinesCount - 1 do
+        begin
+          rxTit.CaptionLine(j).Next:=nil;
+          rxTit.CaptionLine(j).Prior:=nil;
+        end;
+      end
+    end
+  end;
+end;
+
 function TRxDBGrid.getFilterRect(bRect: TRect): TRect;
 begin
   Result := bRect;
@@ -907,6 +993,67 @@ function TRxDBGrid.getTitleRect(bRect: TRect): TRect;
 begin
   Result := bRect;
   Result.Bottom := bRect.Bottom - DefaultRowHeight;
+end;
+
+procedure TRxDBGrid.OutCaptionCellText(aCol, aRow: Integer;const aRect: TRect;
+  aState: TGridDrawState; const ACaption: string);
+begin
+  Canvas.FillRect(aRect);
+  DrawCellGrid(aCol, aRow, aRect, aState);
+  if ACaption <> '' then
+    WriteTextHeader(Canvas, aRect, ACaption, GetColumnAlignment(aCol, true))
+end;
+
+procedure TRxDBGrid.OutCaptionCellText90(aCol,aRow: Integer;const  aRect: TRect;
+  aState: TGridDrawState;const ACaption:string; const TextOrient:TTextOrientation);
+var
+  dW:integer;
+begin
+  Canvas.FillRect(aRect);
+  DrawCellGrid(aCol,aRow,aRect,aState);
+
+  if TextOrient in [toVertical90, toVertical270] then
+    dW:=((aRect.Bottom - aRect.Top) - Canvas.TextWidth(ACaption)) div 2
+  else
+    dW:=0;
+  OutTextXY90(Canvas, aRect.Left, aRect.Top+dw, ACaption, TextOrient);
+end;
+
+procedure TRxDBGrid.OutCaptionSortMarker(const aRect: TRect;
+  ASortMarker: TSortMarker);
+var
+  X,Y:integer;
+begin
+  if (dgHeaderPushedLook in Options) then
+  begin
+    if ASortMarker = smDown then
+    begin
+      X:=aRect.Right - FMarkerDown.Width - 6;
+      Y:=Trunc((aRect.Top+aRect.Bottom-FMarkerDown.Height)/2);
+      Canvas.Draw(X, Y, FMarkerDown);
+    end
+    else
+    if ASortMarker = smUp then
+    begin
+      X:=aRect.Right - FMarkerUp.Width - 6;
+      Y:=Trunc((aRect.Top+aRect.Bottom-FMarkerUp.Height)/2);
+      Canvas.Draw(X, Y, FMarkerUp);
+    end;
+  end;
+end;
+
+procedure TRxDBGrid.OutCaptionMLCellText(aCol, aRow: Integer;
+  aRect: TRect; aState: TGridDrawState; MLI: TMLCaptionItem);
+var
+  MLINext: TMLCaptionItem;
+begin
+  MLINext:=MLI.Next;
+  while Assigned(MLINext) do
+  begin
+    aRect.Right:=aRect.Right + MLINext.Width;
+    MLINext:=MLINext.Next;
+  end;
+  OutCaptionCellText(aCol, aRow, aRect, aState, MLI.Caption);
 end;
 
 procedure TRxDBGrid.OnIniSave(Sender: TObject);
@@ -945,7 +1092,7 @@ end;
 
 var
   i, ACount:integer;
-  S, S1, ColumName{, S2}:string;
+  S, S1, ColumName:string;
   C:TRxColumn;
 
 begin
@@ -969,18 +1116,16 @@ begin
   end;
 end;
 
-{$IFDEF Win32}
-procedure TRxDBGrid.CreateWnd;
+{procedure TRxDBGrid.CreateWnd;
 begin
   BeginUpdate;
   try
     inherited CreateWnd;
-    CalcTitle;
+//    CalcTitle;
   finally
     EndUpdate;
   end;
-end;
-{$ENDIF}
+end;}
 
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
@@ -998,7 +1143,7 @@ end;
 procedure TRxDBGrid.DefaultDrawTitle(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 
-  procedure FixRectangle;
+ { procedure FixRectangle;
   begin
     case Canvas.TextStyle.Alignment of
       Classes.taLeftJustify: Inc(aRect.Left, 3);
@@ -1008,29 +1153,18 @@ procedure TRxDBGrid.DefaultDrawTitle(aCol, aRow: Integer; aRect: TRect;
       tlTop: Inc(aRect.Top, 3);
       tlBottom: Dec(aRect.Bottom, 3);
     end;
-  end;
-  
+  end;}
+
 var
   ASortMarker: TSortMarker;
   Background: TColor;
-  X1,Y1, dW, i, dww:integer;
+  i:integer;
   Down:boolean;
-  aRect1,
   aRect2: TRect;
-  FTit:TRxColumnTitle;
-  FCap:string;
-  TextOrient:TTextOrientation;
+  FTitle :TRxColumnTitle;
   GrdCol:TGridColumn;
+  MLI, MLINext:TMLCaptionItem;
 
-  function ATextWidth(S:string):integer;
-  var
-    wc:integer;
-  begin
-    Result:=(Canvas.TextWidth(S)+4) div GrdCol.Width + 1;
-    wc:=WordCount(s, [' ']);
-    if Result>wc then
-      Result:=wc;
-  end;
 
 begin
   if (dgIndicator in Options) and (aCol=0) then
@@ -1040,11 +1174,12 @@ begin
      exit;
   end;
 
-  Down := FPressed and FTitleButtons and (FPressedCol = TColumn(ColumnFromGridColumn(aCol)));
-  PrepareCanvas(aCol, aRow, aState);
+  Down := FPressed and (dgHeaderPushedLook in Options) and (FPressedCol = TColumn(ColumnFromGridColumn(aCol)));
 
   ASortMarker := smNone;
+
   if (FSortField = GetFieldFromGridColumn(aCol)) then ASortMarker := FSortOrder;
+
   if Assigned(FOnGetBtnParams) and Assigned(GetFieldFromGridColumn(aCol)) then
   begin
     Background:=Canvas.Brush.Color;
@@ -1053,102 +1188,89 @@ begin
     Canvas.Brush.Color:=Background;
   end;
 
-  Canvas.FillRect(aRect);
-  DrawCellGrid(aCol,aRow,aRect,aState);
-
   if (gdFixed in aState) and (aRow=0) and (ACol>=FixedCols) then
   begin
-    aRect1:=aRect;
-    FixRectangle;
-    TextOrient:=toHorizontal;
+
     GrdCol:=ColumnFromGridColumn(aCol);
     if Assigned(GrdCol) then
-      FTit:=TRxColumnTitle(GrdCol.Title)
+      FTitle:=TRxColumnTitle(GrdCol.Title)
     else
-      FTit:=nil;
-      
-    if not Assigned(FTit) then
-      FCap:=GetDefaultColumnTitle(aCol)
-    else
-    begin
-      FCap:=FTit.Caption;
-      TextOrient:=FTit.Orientation;
-    end;
+      FTitle:=nil;
 
-    if TextOrient = toHorizontal then
+    if Assigned(FTitle) then
     begin
-      aRect2:=aRect;
-//      aRect2.Left:=aRect2.Left - 2;
-      Inc(aRect2.Left, 2);
-      Dec(aRect2.Right, 2);
-      if ASortMarker <> smNone then
-        aRect2.Right := aRect2.Right - FMarkerDown.Width;
-
-      if Assigned(FTit) and (FTit.MCountLines>0) then
+      if FTitle.Orientation <>  toHorizontal then
       begin
-        dW:=Canvas.TextHeight('W') + 4;
-        for i:=0 to FTit.MCountLines-1 do
+        OutCaptionCellText90(aCol, aRow, aRect, aState, FTitle.Caption, FTitle.Orientation);
+        if Down then
+          aState:= aState + [gdPushed];
+      end
+      else
+      if (FTitle.CaptionLinesCount>0) then
+      begin
+        aRect2.Left:=aRect.Left;
+        aRect2.Right:=aRect.Right;
+        aRect2.Top:=aRect.Top;
+        for i:=0 to FTitle.CaptionLinesCount - 1 do
         begin
-          FCap:=FTit.MGetLine(i);
-          dww:=ATextWidth(FCap)  * dW;
-          aRect2.Bottom:=aRect2.Top +  dww;
+          MLI:=FTitle.CaptionLine(i);
+          aRect2.Right:=aRect.Right;
 
-
-          WriteTextHeader(Canvas, aRect2, FCap, GetColumnAlignment(aCol, true));
-          aRect2.Top:=aRect2.Top + dww;
-          
-          if (rdgMultiTitleLines in OptionsRx) and (i < FTit.MCountLines-1) then
+          if i = FTitle.CaptionLinesCount - 1 then
           begin
-            Canvas.Pen.Style := psSolid;
-            Canvas.Pen.Color := cl3DShadow;
-            Canvas.Line(aRect2.Right - 4, aRect2.Top, aRect2.Left, aRect2.Top);
-            Canvas.Pen.Color := cl3DHilight;
-            Canvas.Line(aRect2.Right - 4, aRect2.Top+1, aRect2.Left, aRect2.Top+1);
+            aRect2.Bottom:=aRect.Bottom;
+            aRect.Top:=ARect2.Top;
+            if Down then
+              aState:= aState + [gdPushed];
+          end
+          else
+          begin
+            aRect2.Bottom:=aRect2.Top + DefaultRowHeight;
           end;
-          aRect2.Top:=aRect2.Top + 1;
+
+
+          if Assigned(MLI.Next) then
+          begin
+            if Assigned(MLI.Prior) then
+            begin
+              if aCol = LeftCol then
+                OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+            end
+            else
+              OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+          end
+          else
+          begin
+            if not Assigned(MLI.Prior) then
+            begin
+              OutCaptionCellText(aCol, aRow, aRect2, aState, MLI.Caption);
+            end
+            else
+            if aCol = LeftCol then
+              OutCaptionMLCellText(aCol, aRow, aRect2, aState, MLI);
+          end;
+          aRect2.Top:=aRect2.Bottom;
         end;
       end
       else
       begin
-        WriteTextHeader(Canvas, aRect2, FCap, GetColumnAlignment(aCol, true))
+        if Down then
+          aState:= aState + [gdPushed];
+        OutCaptionCellText(aCol, aRow, aRect, aState, FTitle.Caption);
       end;
     end
     else
     begin
-      if TextOrient in [toVertical90, toVertical270] then
-        dW:=((aRect.Bottom - aRect.Top) - Canvas.TextWidth(FCap)) div 2
-      else
-        dw:=0;
-      OutTextXY90(Canvas, aRect.Left, aRect.Top+dw, FCap, FTit.Orientation);
+      OutCaptionCellText(aCol, aRow, aRect, aState, GetDefaultColumnTitle(aCol));
     end;
-
-//    aRect1:=aRect;
-    if FTitleButtons then
-    begin
-      if ASortMarker = smDown then
-      begin
-        X1:=aRect.Right - FMarkerDown.Width - 6;
-        Y1:=Trunc((aRect.Top+aRect.Bottom-FMarkerDown.Height)/2);
-        Canvas.Draw(X1, Y1, FMarkerDown);
-      end
-      else
-      if ASortMarker = smUp then
-      begin
-        X1:=aRect.Right - FMarkerUp.Width - 6;
-        Y1:=Trunc((aRect.Top+aRect.Bottom-FMarkerUp.Height)/2);
-        Canvas.Draw(X1, Y1, FMarkerUp);
-      end;
-    end;
-
-    if (FTitleButtons or ([dgRowLines, dgColLines] * Options =
-          [dgRowLines, dgColLines])) and Down then
-    begin
-      DrawEdge(Canvas.Handle, ARect1, EdgeFlag[Down], BF_BOTTOMRIGHT);
-      DrawEdge(Canvas.Handle, ARect1, EdgeFlag[Down], BF_TOPLEFT);
-    end
+    OutCaptionSortMarker(aRect, ASortMarker);
   end
   else
-    DefaultDrawCell(aCol, aRow, aRect, aState);
+  begin
+    if Down then
+      aState:= aState + [gdPushed];
+    OutCaptionCellText(aCol, aRow, aRect, aState, '');
+  end;
 end;
 
 procedure TRxDBGrid.DefaultDrawFilter(aCol, aRow: Integer; aRect: TRect;
@@ -1274,7 +1396,7 @@ var
   AImageIndex:integer;
   FBackground: TColor;
 begin
-  if {FTitleButtons and }(gdFixed in aState) and (aRow=0){ and (ACol>=FixedCols)} then
+  if (gdFixed in aState) and (aRow=0) then
     DefaultDrawCellA(aCol, aRow, aRect, aState)
   else
   if  not ((gdFixed in aState) or (aCol=0) or (aRow=0)) then
@@ -1355,12 +1477,9 @@ begin
   R.Bottom:=TotalYOffs + DefaultRowHeight * FooterRowCount + 2;
 
   Canvas.Brush.Color := FFooterColor;
-//  Writeln('[]Name ='+Owner.Name+'.'+Name);
   if (Columns.Count > 0) then
   begin
     TxS:=Canvas.TextStyle;
-//    writeln('GCache.VisibleGrid.Left =',GCache.VisibleGrid.Left,'   GCache.VisibleGrid.Right=', GCache.VisibleGrid.Right);
-//    writeln('Columns.Count=',Columns.Count);
     for i := GCache.VisibleGrid.Left to GCache.VisibleGrid.Right do
     begin
       ColRowToOffset(True, True, i, R.Left, R.Right);
@@ -1368,8 +1487,6 @@ begin
       DrawCellGrid(i, 0, R, []);
 
       C := ColumnFromGridColumn(i) as TRxColumn;
-//       if C = nil then
-//         Writeln('i=',i,';', ' C = nil = ',C=nil);
       if Assigned(C) then
       begin
         TxS.Alignment:=C.Footer.Alignment;
@@ -1393,7 +1510,7 @@ end;
 
 procedure TRxDBGrid.DoTitleClick(ACol: Longint; AField: TField);
 begin
-  if FAutoSort and (FSortEngine<>nil) then
+  if FAutoSort and (FSortEngine<>nil) and (AField<>nil) then
   begin
     if AField=FSortField then
     begin
@@ -1545,7 +1662,7 @@ var
 begin
   FColumnResizing := false;
 
-  if FTitleButtons and FTracking and (FPressedCol <> nil) then
+  if (dgHeaderPushedLook in Options) and FTracking and (FPressedCol <> nil) then
   begin
     Cell := MouseCoord(X, Y);
     DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y))
@@ -1663,6 +1780,14 @@ begin
     Dec(GCache.ClientHeight, DefaultRowHeight * FooterRowCount + 2);
 end;
 
+procedure TRxDBGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer
+  );
+begin
+  inherited ColRowMoved(IsColumn, FromIndex, ToIndex);
+  if IsColumn then
+    CalcTitle;
+end;
+
 procedure TRxDBGrid.Paint;
 begin
   inherited Paint;
@@ -1739,7 +1864,6 @@ var
   WA:PIntegerArray;
 begin
   GetMem(WA, SizeOf(Integer) * AColList.Count);
-//  FillChar(WA^, SizeOf(Integer) * AColList.Count, 0);
 
   for I := 0 to AColList.Count-1 do
     WA^[i]:=20;
@@ -1779,6 +1903,13 @@ begin
   Result:=DefaultRowHeight = Canvas.TextHeight('W');
 end;
 
+procedure TRxDBGrid.VisualChange;
+begin
+  inherited VisualChange;
+  if Canvas.HandleAllocated then
+    CalcTitle;
+end;
+
 function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 var
   F:TField;
@@ -1809,7 +1940,7 @@ var
   P:TBookmark;
   DS:TDataSet;
   i:integer;
-  J:integer;
+//  J:integer;
 begin
   if (not ((rdgFooterRows in OptionsRx) and DatalinkActive)) or (Columns.Count = 0) then
     Exit;
@@ -1893,16 +2024,12 @@ begin
 
   FMarkerUp := LoadLazResBitmapImage('rx_markerup');
   FMarkerDown := LoadLazResBitmapImage('rx_markerdown');
-{  FMarkerUp := TBitmap.Create;
-  FMarkerUp.LoadFromLazarusResource('rx_markerup');
-  FMarkerDown := TBitmap.Create;
-  FMarkerDown.LoadFromLazarusResource('rx_markerdown');}
 
   FPropertyStorageLink:=TPropertyStorageLink.Create;
   FPropertyStorageLink.OnSave:=@OnIniSave;
   FPropertyStorageLink.OnLoad:=@OnIniLoad;
 
-  FTitleLines := TITLE_DEFAULT;
+//  FTitleLines := TITLE_DEFAULT;
   FAllowedOperations:=[aoInsert, aoUpdate, aoDelete, aoAppend];
   
   FFooterColor:=clWindow;
@@ -2070,38 +2197,64 @@ begin
   TRxColumn(Column).ColumnChanged;
 end;
 
-function TRxColumnTitle.MCountLines: integer;
+function TRxColumnTitle.GetCaptionLinesCount: integer;
 begin
-  Result:=FMultiLines.Count;
+  if Assigned(FCaptionLines) then
+    Result:=FCaptionLines.Count
+  else
+    Result:=0;
 end;
 
-function TRxColumnTitle.MGetLine(ALine: integer): string;
+function TRxColumnTitle.CaptionLine(ALine:integer):TMLCaptionItem;
 begin
-  if (FMultiLines.Count>0) and (ALine>=0) and (FMultiLines.Count>ALine) then
-    Result:=FMultiLines[ALine]
+  if Assigned(FCaptionLines) and (FCaptionLines.Count>0) and (ALine>=0) and (FCaptionLines.Count>ALine) then
+    Result:=TMLCaptionItem(FCaptionLines[ALine])
   else
-    Result:='';
+    Result:=nil;
+end;
+
+procedure TRxColumnTitle.ClearCaptionML;
+var
+  i:integer;
+  R:TMLCaptionItem;
+begin
+  for i:=0 to FCaptionLines.Count - 1 do
+  begin
+    R:=TMLCaptionItem(FCaptionLines[i]);
+    R.Free;
+  end;
+  FCaptionLines.Clear;
 end;
 
 procedure TRxColumnTitle.SetCaption(const AValue: TCaption);
 var
   c:integer;
   s:string;
+
+procedure AddMLStr(AStr:string);
+var
+  R:TMLCaptionItem;
+begin
+  R:=TMLCaptionItem.Create;
+  R.Caption:=AStr;
+  FCaptionLines.Add(R);
+end;
+
 begin
   inherited SetCaption(AValue);
-  FMultiLines.Clear;
+  ClearCaptionML;
   c:=Pos('|', AValue);
   if C>0 then
   begin
     S:=AValue;
     while C>0 do
     begin
-      FMultiLines.Add(Copy(S, 1, C-1));
+      AddMLStr(Copy(S, 1, C-1));
       System.Delete(S, 1, C);
       c:=Pos('|', S);
     end;
     if S<>'' then
-      FMultiLines.Add(S);
+      AddMLStr(S);
   end;
   if not (csLoading in Column.Grid.ComponentState) and Column.Grid.HandleAllocated then
     TRxDBGrid(Column.Grid).CalcTitle;
@@ -2110,15 +2263,16 @@ end;
 constructor TRxColumnTitle.Create(TheColumn: TGridColumn);
 begin
   inherited Create(TheColumn);
-  FMultiLines:=TStringList.Create;
 {$IFDEF NEW_STYLE_TITLE_ALIGNMENT_RXDBGRID}
   Alignment:=taCenter;
 {$ENDIF}
+  FCaptionLines:=TFPList.Create;
 end;
 
 destructor TRxColumnTitle.Destroy;
 begin
-  FreeAndNil(FMultiLines);
+  ClearCaptionML;
+  FreeAndNil(FCaptionLines);
   inherited Destroy;
 end;
 

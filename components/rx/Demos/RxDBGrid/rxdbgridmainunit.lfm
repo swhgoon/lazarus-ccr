@@ -1,7 +1,7 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 299
+  Left = 263
   Height = 582
-  Top = 161
+  Top = 219
   Width = 969
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo (ver 3)  ...'
@@ -14,8 +14,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
     Height = 533
     Top = 49
     Width = 969
-    TitleButtons = False
-    AutoSort = False
+    TitleButtons = True
+    AutoSort = True
     Columns = <    
       item
         Title.Alignment = taCenter
@@ -31,16 +31,6 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Software Name'
-        Title.Orientation = toHorizontal
-        Width = 350
-        FieldName = 'NAME'
-        Filter.DropDownRows = 0
-        Filter.Color = clLime
-        Filter.ItemIndex = -1
-      end    
-      item
-        Title.Alignment = taCenter
         Title.Orientation = toHorizontal
         Width = 150
         FieldName = 'Developer'
@@ -50,7 +40,17 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Cost'
+        Title.Caption = 'Software|Name'
+        Title.Orientation = toHorizontal
+        Width = 350
+        FieldName = 'NAME'
+        Filter.DropDownRows = 0
+        Filter.Color = clLime
+        Filter.ItemIndex = -1
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Software|Cost'
         Title.Orientation = toHorizontal
         Width = 90
         FieldName = 'PRICE'
@@ -65,7 +65,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Date Present'
+        Title.Caption = 'Software|Date Present'
         Title.Orientation = toHorizontal
         Width = 100
         FieldName = 'Date_Present'
@@ -89,10 +89,11 @@ object RxDBGridMainForm: TRxDBGridMainForm
     SelectedColor = clHighlight
     GridLineStyle = psSolid
     DataSource = Datasource1
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgMultiselect, dgHeaderPushedLook]
     ParentColor = False
     PopupMenu = PopupMenu1
     TabOrder = 0
+    TitleStyle = tsNative
   end
   object Panel1: TPanel
     Left = 0
@@ -137,9 +138,9 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideTop.Control = Button1
       AnchorSideTop.Side = asrCenter
       Left = 275
-      Height = 22
-      Top = 13
-      Width = 81
+      Height = 21
+      Top = 14
+      Width = 80
       BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
@@ -288,17 +289,14 @@ object RxDBGridMainForm: TRxDBGridMainForm
     top = 197
     object actCalcTotal: TAction
       Caption = 'Calc total...'
-      DisableIfNoHandler = True
       OnExecute = actCalcTotalExecute
     end
     object actOptimizeColumnsWidthAll: TAction
       Caption = 'Optimize width for all...'
-      DisableIfNoHandler = True
       OnExecute = actOptimizeColumnsWidthAllExecute
     end
     object actOptimizeWidthCol1: TAction
       Caption = 'Optimize width...'
-      DisableIfNoHandler = True
       OnExecute = actOptimizeWidthCol1Execute
     end
   end

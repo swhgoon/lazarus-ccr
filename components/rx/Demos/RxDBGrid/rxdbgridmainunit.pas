@@ -57,6 +57,7 @@ var
   RxDBGridMainForm: TRxDBGridMainForm;
 
 implementation
+uses rxsortmemds;
 
 { TRxDBGridMainForm }
 
