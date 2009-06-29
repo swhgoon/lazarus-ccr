@@ -195,22 +195,22 @@ type
       const ATypeInfo : PTypeInfo;
       const AData
     );
-    procedure Get(
+    function Get(
       const ATypeInfo : PTypeInfo;
       var   AName     : string;
       var   AData
-    );overload;
-    procedure Get(
+    ) : Boolean; overload;
+    function Get(
       const ATypeInfo  : PTypeInfo;
       const ANameSpace : string;
       var   AName      : string;
       var   AData
-    );overload;
+    ) : Boolean; overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
     );
-    function ReadBuffer(const AName : string) : string;
+    function ReadBuffer(const AName : string; out AResBuffer : string) : Boolean;
     //Please use this method if and _only_ if you do not have another way achieve your aim!
     procedure WriteBuffer(const AValue : string);
     
@@ -6078,7 +6078,7 @@ var
   buffer : string;
   locObj : TStringBufferRemotable;
 begin
-  buffer := AStore.ReadBuffer(AName);
+  AStore.ReadBuffer(AName,buffer);
   if ( AObject = nil ) then
     AObject := Create();
   locObj := AObject as TStringBufferRemotable;;

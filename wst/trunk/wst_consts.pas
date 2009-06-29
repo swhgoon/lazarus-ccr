@@ -21,7 +21,11 @@ resourcestring
   SERR_InvalidCollectionLength     = 'Invalid collection length : %d.';
   SERR_InvalidHourOffetValue       = '"%d" is not a valid hour offset value.';
   SERR_InvalidMinuteOffetValue     = '"%d" is not a valid minute offset value.';
-  SERR_InvalidParameter            =  'Invalid parameter : "%s".';
+  SERR_InvalidParameter            = 'Invalid parameter : "%s".';
+  SERR_NoReaderProc                = 'No reader proc for that type, Prop : "(%s : %s)".';
+  SERR_NoSerializerFoThisType      = 'No serializer for this type : "%s".';
+  SERR_ParamaterNotFound           = 'Parameter non found : "%s".';
+  SERR_SerializerInitializationException = 'Unable to initialize the serializer of that type : "%s".';
 
 implementation
 

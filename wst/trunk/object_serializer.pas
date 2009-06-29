@@ -29,12 +29,16 @@ type
   
   TPropSerializationInfo = class;
   
-  TPropertyReadProc = procedure(
+  TPropertyReadProc = function(
+    AObject : TObject;
+    APropInfo : TPropSerializationInfo;
+    AStore : IFormatterBase
+  ) : Boolean;
+  TPropertyWriteProc = procedure(
     AObject : TObject;
     APropInfo : TPropSerializationInfo;
     AStore : IFormatterBase
   );
-  TPropertyWriteProc = TPropertyReadProc;
   
   { TPropSerializationInfo }
 
@@ -125,12 +129,18 @@ type
 {$ENDIF TRemotableTypeInitializer_Initialize}
   end;
   
-resourcestring
-  SERR_NoReaderProc = 'No reader proc for that type, Prop : "(%s : %s)".';
-  SERR_NoSerializerFoThisType = 'No serializer for this type : %s.';
-  SERR_SerializerInitializationException = 'Unable to initialize the serializer of that type : "%s".';
-  
 implementation
+uses
+  wst_consts;
+
+function ErrorFunc(
+    AObject : TObject;
+    APropInfo : TPropSerializationInfo;
+    AStore : IFormatterBase
+) : Boolean;
+begin
+  raise Exception.CreateFmt(SERR_NoReaderProc,[APropInfo.Name,APropInfo.PropInfo^.Name]);
+end;
 
 procedure ErrorProc(
     AObject : TObject;
@@ -138,7 +148,7 @@ procedure ErrorProc(
     AStore : IFormatterBase
 );
 begin
-  raise Exception.CreateFmt(SERR_NoReaderProc,[APropInfo.Name,APropInfo.FPropInfo^.Name]);
+  raise Exception.CreateFmt(SERR_NoReaderProc,[APropInfo.Name,APropInfo.PropInfo^.Name]);
 end;
 
 type
@@ -163,27 +173,28 @@ type
   
 //   Simple readers
 {$IFDEF HAS_TKBOOL}
-procedure BoolReader(
+function BoolReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : Boolean;
 begin
   locData := False;
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType,locName,locData);
-  SetOrdProp(AObject,APropInfo.PropInfo,Ord(locData));
+  Result := AStore.Get(APropInfo.PropInfo^.PropType,locName,locData);
+  if Result then
+    SetOrdProp(AObject,APropInfo.PropInfo,Ord(locData));
 end;
 {$ENDIF HAS_TKBOOL}
 
-procedure ClassReader(
+function ClassReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   objData : TObject;
@@ -193,8 +204,8 @@ begin
   objData := GetObjectProp(AObject,APropInfo.PropInfo);
   objDataCreateHere := not Assigned(objData);
   try
-    AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,objData);
-    if objDataCreateHere then
+    Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,objData);
+    if Result and objDataCreateHere then
       SetObjectProp(AObject,APropInfo.PropInfo,objData);
   finally
     if objDataCreateHere and ( objData <> GetObjectProp(AObject,APropInfo.PropInfo) ) then
@@ -202,11 +213,11 @@ begin
   end;
 end;
 
-procedure FloatReader(
+function FloatReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   propName : string;
   floatBuffer : TFloatBuffer;
@@ -219,38 +230,46 @@ begin
   case GetTypeData(pt)^.FloatType of
     ftSingle :
       begin
-        AStore.Get(pt,propName,floatBuffer.SingleData);
-        floatDt := floatBuffer.SingleData;
+        Result := AStore.Get(pt,propName,floatBuffer.SingleData);
+        if Result then
+          floatDt := floatBuffer.SingleData;
       end;
     ftDouble :
       begin
-        AStore.Get(pt,propName,floatBuffer.DoubleData);
-        floatDt := floatBuffer.DoubleData;
+        Result := AStore.Get(pt,propName,floatBuffer.DoubleData);
+        if Result then
+          floatDt := floatBuffer.DoubleData;
       end;
     ftExtended :
       begin
-        AStore.Get(pt,propName,floatBuffer.ExtendedData);
-        floatDt := floatBuffer.ExtendedData;
+        Result := AStore.Get(pt,propName,floatBuffer.ExtendedData);
+        if Result then
+          floatDt := floatBuffer.ExtendedData;
       end;
     ftCurr :
       begin
-        AStore.Get(pt,propName,floatBuffer.CurrencyData);
-        floatDt := floatBuffer.CurrencyData;
+        Result := AStore.Get(pt,propName,floatBuffer.CurrencyData);
+        if Result then
+          floatDt := floatBuffer.CurrencyData;
       end;
     ftComp :
       begin
-        AStore.Get(pt,propName,floatBuffer.CompData);
-        floatDt := floatBuffer.CompData;
+        Result := AStore.Get(pt,propName,floatBuffer.CompData);
+        if Result then
+          floatDt := floatBuffer.CompData;
       end;
+    else
+      Result := False;
   end;
-  SetFloatProp(AObject,APropInfo.PropInfo,floatDt);
+  if Result then
+    SetFloatProp(AObject,APropInfo.PropInfo,floatDt);
 end;
 
-procedure IntEnumReader(
+function IntEnumReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   propName : string;
   int64Data : Int64;
@@ -266,134 +285,149 @@ begin
   if ( pt^.Kind = tkEnumeration ) and
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
-    AStore.Get(pt,propName,boolData);
-    SetPropValue(AObject,propName,boolData);
+    Result := AStore.Get(pt,propName,boolData);
+    if Result then
+      SetPropValue(AObject,propName,boolData);
   end else begin
 {$ENDIF}
     enumData.ULongIntData := 0;
     Case GetTypeData(pt)^.OrdType Of
       otSByte :
         Begin
-          AStore.Get(pt,propName,enumData.ShortIntData);
-          int64Data := enumData.ShortIntData;
+          Result := AStore.Get(pt,propName,enumData.ShortIntData);
+          if Result then
+            int64Data := enumData.ShortIntData;
         End;
       otUByte :
         Begin
-          AStore.Get(pt,propName,enumData.ByteData);
-          int64Data := enumData.ByteData;
+          Result := AStore.Get(pt,propName,enumData.ByteData);
+          if Result then
+            int64Data := enumData.ByteData;
         End;
       otSWord :
         Begin
-          AStore.Get(pt,propName,enumData.SmallIntData);
-          int64Data := enumData.SmallIntData;
+          Result := AStore.Get(pt,propName,enumData.SmallIntData);
+          if Result then
+            int64Data := enumData.SmallIntData;
         End;
       otUWord :
         Begin
-          AStore.Get(pt,propName,enumData.WordData);
-          int64Data := enumData.WordData;
+          Result := AStore.Get(pt,propName,enumData.WordData);
+          if Result then
+            int64Data := enumData.WordData;
         End;
       otSLong:
         Begin
-          AStore.Get(pt,propName,enumData.SLongIntData);
-          int64Data := enumData.SLongIntData;
+          Result := AStore.Get(pt,propName,enumData.SLongIntData);
+          if Result then
+            int64Data := enumData.SLongIntData;
         End;
       otULong :
         Begin
-          AStore.Get(pt,propName,enumData.ULongIntData);
-          int64Data := enumData.ULongIntData;
+          Result := AStore.Get(pt,propName,enumData.ULongIntData);
+          if Result then
+            int64Data := enumData.ULongIntData;
         End;
+      else
+        Result := False;
     End;
-    SetOrdProp(AObject,APropInfo.PropInfo,int64Data);
+    if Result then
+      SetOrdProp(AObject,APropInfo.PropInfo,int64Data);
 {$IFDEF WST_DELPHI}
   end;
 {$ENDIF}
 end;
 
-procedure Int64Reader(
+function Int64Reader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : Int64;
 begin
   locData := 0;
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
-  SetInt64Prop(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  if Result then
+    SetInt64Prop(AObject,APropInfo.PropInfo,locData);
 end;
 
-procedure StringReader(
+function StringReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : string;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
-  SetStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  if Result then
+    SetStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
 {$IFDEF WST_UNICODESTRING}
-procedure UnicodeStringReader(
+function UnicodeStringReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : UnicodeString;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
-  SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  if Result then
+    SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 {$ENDIF WST_UNICODESTRING}
 
-procedure WideStringReader(
+function WideStringReader(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : WideString;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
-  SetWideStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},locName,locData);
+  if Result then
+    SetWideStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
 // Qualified readers
 {$IFDEF HAS_TKBOOL}
-procedure BoolReaderQualifier(
+function BoolReaderQualifier(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : Boolean;
 begin
   locData := False;
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType,APropInfo.NameSpace,locName,locData);
-  SetOrdProp(AObject,APropInfo.PropInfo,Ord(locData));
+  Result := AStore.Get(APropInfo.PropInfo^.PropType,APropInfo.NameSpace,locName,locData);
+  if Result then
+    SetOrdProp(AObject,APropInfo.PropInfo,Ord(locData));
 end;
 {$ENDIF HAS_TKBOOL}
 
-procedure ClassReaderQualified(
+function ClassReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   objData : TObject;
@@ -403,8 +437,8 @@ begin
   objData := GetObjectProp(AObject,APropInfo.PropInfo);
   objDataCreateHere := not Assigned(objData);
   try
-    AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,objData);
-    if objDataCreateHere then
+    Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,objData);
+    if objDataCreateHere and Result then
       SetObjectProp(AObject,APropInfo.PropInfo,objData);
   finally
     if objDataCreateHere and ( objData <> GetObjectProp(AObject,APropInfo.PropInfo) ) then
@@ -412,11 +446,11 @@ begin
   end;
 end;
 
-procedure FloatReaderQualified(
+function FloatReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   propName : string;
   floatBuffer : TFloatBuffer;
@@ -429,53 +463,62 @@ begin
   case GetTypeData(pt)^.FloatType of
     ftSingle :
       begin
-        AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.SingleData);
-        floatDt := floatBuffer.SingleData;
+        Result := AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.SingleData);
+        if Result then
+          floatDt := floatBuffer.SingleData;
       end;
     ftDouble :
       begin
-        AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.DoubleData);
-        floatDt := floatBuffer.DoubleData;
+        Result := AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.DoubleData);
+        if Result then
+          floatDt := floatBuffer.DoubleData;
       end;
     ftExtended :
       begin
-        AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.ExtendedData);
-        floatDt := floatBuffer.ExtendedData;
+        Result := AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.ExtendedData);
+        if Result then
+          floatDt := floatBuffer.ExtendedData;
       end;
     ftCurr :
       begin
-        AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.CurrencyData);
-        floatDt := floatBuffer.CurrencyData;
+        Result := AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.CurrencyData);
+        if Result then
+          floatDt := floatBuffer.CurrencyData;
       end;
     ftComp :
       begin
-        AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.CompData);
-        floatDt := floatBuffer.CompData;
+        Result := AStore.Get(pt,APropInfo.NameSpace,propName,floatBuffer.CompData);
+        if Result then
+          floatDt := floatBuffer.CompData;
       end;
+    else
+      Result := False;
   end;
-  SetFloatProp(AObject,APropInfo.PropInfo,floatDt);
+  if Result then
+    SetFloatProp(AObject,APropInfo.PropInfo,floatDt);
 end;
 
-procedure Int64ReaderQualified(
+function Int64ReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : Int64;
 begin
   locData := 0;
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
-  SetInt64Prop(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  if Result then
+    SetInt64Prop(AObject,APropInfo.PropInfo,locData);
 end;
 
-procedure IntEnumReaderQualified(
+function IntEnumReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   propName : string;
   int64Data : Int64;
@@ -491,94 +534,107 @@ begin
   if ( pt^.Kind = tkEnumeration ) and
      ( GetTypeData(pt)^.BaseType^ = TypeInfo(Boolean) )
   then begin
-    AStore.Get(pt,APropInfo.NameSpace,propName,boolData);
-    SetPropValue(AObject,propName,boolData);
+    Result := AStore.Get(pt,APropInfo.NameSpace,propName,boolData);
+    if Result then
+      SetPropValue(AObject,propName,boolData);
   end else begin
 {$ENDIF}
     enumData.ULongIntData := 0;
     Case GetTypeData(pt)^.OrdType Of
       otSByte :
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ShortIntData);
-          int64Data := enumData.ShortIntData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ShortIntData);
+          if Result then
+            int64Data := enumData.ShortIntData;
         End;
       otUByte :
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ByteData);
-          int64Data := enumData.ByteData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ByteData);
+          if Result then
+            int64Data := enumData.ByteData;
         End;
       otSWord :
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.SmallIntData);
-          int64Data := enumData.SmallIntData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.SmallIntData);
+          if Result then
+            int64Data := enumData.SmallIntData;
         End;
       otUWord :
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.WordData);
-          int64Data := enumData.WordData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.WordData);
+          if Result then
+            int64Data := enumData.WordData;
         End;
       otSLong:
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.SLongIntData);
-          int64Data := enumData.SLongIntData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.SLongIntData);
+          if Result then
+            int64Data := enumData.SLongIntData;
         End;
       otULong :
         Begin
-          AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ULongIntData);
-          int64Data := enumData.ULongIntData;
+          Result := AStore.Get(pt,APropInfo.NameSpace,propName,enumData.ULongIntData);
+          if Result then
+            int64Data := enumData.ULongIntData;
         End;
+      else
+        Result := False;
     End;
-    SetOrdProp(AObject,APropInfo.PropInfo,int64Data);
+    if Result then
+      SetOrdProp(AObject,APropInfo.PropInfo,int64Data);
 {$IFDEF WST_DELPHI}
   end;
 {$ENDIF}
 end;
 
-procedure StringReaderQualified(
+function StringReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : string;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
-  SetStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  if Result then
+    SetStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
 {$IFDEF WST_UNICODESTRING}
-procedure UnicodeStringReaderQualified(
+function UnicodeStringReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : UnicodeString;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
-  SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  if Result then
+    SetUnicodeStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 {$ENDIF WST_UNICODESTRING}
 
-procedure WideStringReaderQualified(
+function WideStringReaderQualified(
   AObject : TObject;
   APropInfo : TPropSerializationInfo;
   AStore : IFormatterBase
-);
+) : Boolean;
 var
   locName : string;
   locData : WideString;
 begin
   locData := '';
   locName := APropInfo.ExternalName;
-  AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
-  SetWideStrProp(AObject,APropInfo.PropInfo,locData);
+  Result := AStore.Get(APropInfo.PropInfo^.PropType{$IFDEF WST_DELPHI}^{$ENDIF},APropInfo.NameSpace,locName,locData);
+  if Result then
+    SetWideStrProp(AObject,APropInfo.PropInfo,locData);
 end;
 
 //   Simple Writers
@@ -1005,47 +1061,55 @@ end;
 
 
 type
-  TReaderWriterInfo = record
+  TReaderInfo = record
     Simple : TPropertyReadProc;
     Qualified : TPropertyReadProc;
   end;
 
+  TWriterInfo = record
+    Simple : TPropertyWriteProc;
+    Qualified : TPropertyWriteProc;
+  end;
+
 var
 {$IFDEF FPC}
-  ReaderWriterInfoMap : array[0..1] of array[TTypeKind] of TReaderWriterInfo = (
-    ( // Readers
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkUnknown
+  //ReaderWriterInfoMap : array[0..1] of array[TTypeKind] of TReaderWriterInfo = (
+  ReaderInfoMap : array[TTypeKind] of TReaderInfo = (
+     // Readers
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkUnknown
       ( Simple : @IntEnumReader; Qualified : @IntEnumReaderQualified ;) , //tkInteger
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkChar
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkChar
       ( Simple : @IntEnumReader; Qualified : @IntEnumReaderQualified ;) , //tkEnumeration
       ( Simple : @FloatReader; Qualified : @FloatReaderQualified ;) , //tkFloat
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkSet
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkMethod
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkSet
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkMethod
       ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkSString
       ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkLString
       ( Simple : @StringReader; Qualified : @StringReaderQualified ;) , //tkAString
       ( Simple : @WideStringReader; Qualified : @WideStringReaderQualified ;) , //tkWString
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkVariant
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkArray
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkRecord
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkInterface
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkVariant
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkArray
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkRecord
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkInterface
       ( Simple : @ClassReader; Qualified : @ClassReaderQualified ;) , //tkClass
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkObject
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkWChar
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkObject
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkWChar
       ( Simple : @BoolReader; Qualified : @BoolReaderQualifier ;) , //tkBool
       ( Simple : @Int64Reader; Qualified : @Int64ReaderQualified ;) , //tkInt64
       ( Simple : @Int64Reader; Qualified : @Int64ReaderQualified ;) , //tkQWord
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkDynArray
-      ( Simple : @ErrorProc; Qualified : @ErrorProc ;)   //tkInterfaceRaw
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;) , //tkDynArray
+      ( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)   //tkInterfaceRaw
 {$IFDEF WST_TKPROCVAR}
-     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkProcVar
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkProcVar
 {$ENDIF WST_TKPROCVAR}
 {$IFDEF WST_UNICODESTRING}
      ,( Simple : @UnicodeStringReader; Qualified : @UnicodeStringReaderQualified ;)  //tkUString
-     ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkUChar
+     ,( Simple : @ErrorFunc; Qualified : @ErrorFunc ;)  //tkUChar
 {$ENDIF WST_UNICODESTRING}
-    ),
-    ( // Writers
+  );
+
+  WriterInfoMap : array[TTypeKind] of TWriterInfo = (
+     // Writers
       ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkUnknown
       ( Simple : @IntEnumWriter; Qualified : @IntEnumWriterQualified ;) , //tkInteger
       ( Simple : @ErrorProc; Qualified : @ErrorProc ;) , //tkChar
@@ -1076,36 +1140,38 @@ var
      ,( Simple : @UnicodeStringWriter; Qualified : @UnicodeStringWriterQualified ;)  //tkUString
      ,( Simple : @ErrorProc; Qualified : @ErrorProc ;)  //tkUChar
 {$ENDIF WST_UNICODESTRING}
-    )
+
   );
 {$ENDIF FPC}
 
 {$IFDEF WST_DELPHI}
-  ReaderWriterInfoMap : array[0..1] of array[TTypeKind] of TReaderWriterInfo = (
-    ( // Readers
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkUnknown
+  ReaderInfoMap : array[TTypeKind] of TReaderInfo = (
+     // Readers
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkUnknown
       ( Simple : IntEnumReader; Qualified : IntEnumReaderQualified ;) , //tkInteger
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkChar
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkChar
       ( Simple : IntEnumReader; Qualified : IntEnumReaderQualified ;) , //tkEnumeration
       ( Simple : FloatReader; Qualified : FloatReaderQualified ;) , //tkFloat
       ( Simple : StringReader; Qualified : StringReaderQualified ;) , //tkString
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkSet
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkSet
       ( Simple : ClassReader; Qualified : ClassReaderQualified ;) , //tkClass
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkMethod
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkWChar
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkMethod
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkWChar
       ( Simple : StringReader; Qualified : StringReaderQualified ;) , //tkLString
       ( Simple : WideStringReader; Qualified : WideStringReaderQualified ;) , //tkWString
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkVariant
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkArray
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkRecord
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkInterface
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkVariant
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkArray
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkRecord
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) , //tkInterface
       ( Simple : Int64Reader; Qualified : Int64ReaderQualified ;) , //tkInt64
-      ( Simple : ErrorProc; Qualified : ErrorProc ;) //tkDynArray
+      ( Simple : ErrorFunc; Qualified : ErrorFunc ;) //tkDynArray
 {$IFDEF WST_UNICODESTRING}
      ,( Simple : UnicodeStringReader; Qualified : UnicodeStringReaderQualified ;)  //tkUString
 {$ENDIF WST_UNICODESTRING}
-    ),
-    ( // Writers
+    );
+
+    WriterInfoMap : array[TTypeKind] of TWriterInfo = (
+     // Writers
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkUnknown
       ( Simple : IntEnumWriter; Qualified : IntEnumWriterQualified ;) , //tkInteger
       ( Simple : ErrorProc; Qualified : ErrorProc ;) , //tkChar
@@ -1127,8 +1193,7 @@ var
 {$IFDEF WST_UNICODESTRING}
      ,( Simple : UnicodeStringWriter; Qualified : UnicodeStringWriterQualified ;)  //tkUString
 {$ENDIF WST_UNICODESTRING}
-    )
-  );
+    );
 {$ENDIF WST_DELPHI}
 
 { TObjectSerializer }
@@ -1170,8 +1235,8 @@ begin
             serInfo.FName := ppi^.Name;
             serInfo.FPersisteType := st;
             serInfo.FPropInfo := ppi;
-            serInfo.FReaderProc := ReaderWriterInfoMap[0][ppi^.PropType^.Kind].Simple;
-            serInfo.FWriterProc := ReaderWriterInfoMap[1][ppi^.PropType^.Kind].Simple;
+            serInfo.FReaderProc := ReaderInfoMap[ppi^.PropType^.Kind].Simple;
+            serInfo.FWriterProc := WriterInfoMap[ppi^.PropType^.Kind].Simple;
             if Target.IsAttributeProperty(ppi^.Name) then
               serInfo.FStyle := ssAttibuteSerialization
             else
@@ -1194,8 +1259,8 @@ begin
                   if ( thisRegItem.NameSpace <> regItem.NameSpace ) then begin
                     serInfo.FNameSpace := regItem.NameSpace;
                     serInfo.FQualifiedName := True;
-                    serInfo.FReaderProc := ReaderWriterInfoMap[0][ppi^.PropType^.Kind].Qualified;
-                    serInfo.FWriterProc := ReaderWriterInfoMap[1][ppi^.PropType^.Kind].Qualified;
+                    serInfo.FReaderProc := ReaderInfoMap[ppi^.PropType^.Kind].Qualified;
+                    serInfo.FWriterProc := WriterInfoMap[ppi^.PropType^.Kind].Qualified;
                   end;
                 end;
               end;
@@ -1294,13 +1359,10 @@ begin
           locSerInfo := TPropSerializationInfo(FSerializationInfos[i]);
           if ( locSerInfo.Style <> AStore.GetSerializationStyle() ) then
             AStore.SetSerializationStyle(locSerInfo.Style);
-          try
-            locSerInfo.ReaderProc(AObject,locSerInfo,AStore);
-          except
-            on e : EBaseRemoteException do begin
-              if ( locSerInfo.PersisteType = pstAlways ) then
-                raise;
-            end;
+          if ( not locSerInfo.ReaderProc(AObject,locSerInfo,AStore) ) and
+             ( locSerInfo.PersisteType = pstAlways )
+          then begin
+            AStore.Error(SERR_ParamaterNotFound,[locSerInfo.ExternalName]);
           end;
         end;
       end;

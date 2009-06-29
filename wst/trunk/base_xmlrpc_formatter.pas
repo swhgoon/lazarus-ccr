@@ -242,76 +242,76 @@ type
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-    function GetNodeValue(var AName : String):DOMString;
-    procedure GetEnum(
+    function GetNodeValue(var AName : string; out AResBuffer : DOMString) : Boolean;
+    function GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumIntType
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetAnsiChar(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetAnsiChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : AnsiChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetWideChar(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetWideChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : WideChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetBool(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetInt(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Integer
-    );
-    procedure GetInt64(
+    ) : Boolean;
+    function GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Int64
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF HAS_QWORD}
-    procedure GetUInt64(
+    function GetUInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : QWord
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF HAS_QWORD}
-    procedure GetFloat(
+    function GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Extended
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetStr(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF WST_UNICODESTRING}
-    procedure GetUnicodeStr(
+    function GetUnicodeStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : UnicodeString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF WST_UNICODESTRING}
-    procedure GetWideStr(
+    function GetWideStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : WideString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetObj(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetRecord(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetRecord(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : Pointer
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
   protected
     function GetXmlDoc():TXMLDocument;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function PushStack(AScopeObject : TDOMNode):TStackItem;overload;{$IFDEF USE_INLINE}inline;{$ENDIF}
@@ -409,22 +409,22 @@ type
       const ATypeInfo : PTypeInfo;
       const AData
     );
-    procedure Get(
+    function Get(
       const ATypeInfo : PTypeInfo;
       var   AName     : string;
       var   AData
-    );overload;
-    procedure Get(
+    ) : Boolean;overload;
+    function Get(
       const ATypeInfo  : PTypeInfo;
       const ANameSpace : string;
       var   AName      : string;
       var   AData
-    );overload;
+    ) : Boolean;overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
     );
-    function ReadBuffer(const AName : string) : string;
+    function ReadBuffer(const AName : string; out AResBuffer : string) : Boolean;
     procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
@@ -949,7 +949,10 @@ begin
   Result := InternalPutData(AName,xdtdouble,wst_FormatFloat(ATypeInfo,AData));
 end;
 
-function TXmlRpcBaseFormatter.GetNodeValue(var AName: string): DOMString;
+function TXmlRpcBaseFormatter.GetNodeValue(
+  var AName: string;
+  out AResBuffer : DOMString
+) : Boolean;
 var
   locElt : TDOMNode;
   stkTop : TStackItem;
@@ -957,161 +960,205 @@ begin
   stkTop := StackTop();
   locElt := stkTop.FindNode(AName) as TDOMElement;
 
-  if Assigned(locElt) then begin
+  Result := ( locElt <> nil );
+  if Result then begin
     if locElt.HasChildNodes then begin
-      Result := locElt.FirstChild.NodeValue
+      AResBuffer := locElt.FirstChild.NodeValue
     end else begin
       if ( stkTop.FoundState = fsFoundNil ) then
-        Result := ''
+        AResBuffer := ''
       else
-        Result := locElt.NodeValue;
+        AResBuffer := locElt.NodeValue;
     end;
-  end else begin
-    Error('Param or Attribute not found : "%s"',[AName]);
   end;
 end;
 
-procedure TXmlRpcBaseFormatter.GetEnum(
+function TXmlRpcBaseFormatter.GetEnum(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: TEnumIntType
-);
-Var
-  locBuffer : String;
+) : Boolean;
+var
+  locBuffer : DOMString;
+  locStr : string;
 begin
-  locBuffer := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(GetNodeValue(AName));
-  If IsStrEmpty(locBuffer) Then
-    AData := 0
-  Else
-    AData := GetEnumValue(ATypeInfo,locBuffer)
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then begin
+    locStr := GetTypeRegistry().ItemByTypeInfo[ATypeInfo].GetInternalPropertyName(locBuffer);
+    If IsStrEmpty(locStr) Then
+      AData := 0
+    Else
+      AData := GetEnumValue(ATypeInfo,locStr)
+  end;
 End;
 
-procedure TXmlRpcBaseFormatter.GetBool(
+function TXmlRpcBaseFormatter.GetBool(
   const ATypeInfo  : PTypeInfo;
   var   AName      : String;
   var   AData      : Boolean
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := ( GetNodeValue(AName) = XML_RPC_TRUE );
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := ( locBuffer = XML_RPC_TRUE );
 end;
 
-procedure TXmlRpcBaseFormatter.GetInt(
+function TXmlRpcBaseFormatter.GetInt(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: Integer
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := StrToIntDef(Trim(GetNodeValue(AName)),0);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := StrToIntDef(Trim(locBuffer),0);
 end;
 
-procedure TXmlRpcBaseFormatter.GetAnsiChar(
+function TXmlRpcBaseFormatter.GetAnsiChar(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: AnsiChar
-);
+) : Boolean;
 var
   locBuffer : DOMString;
 begin
-  locBuffer := GetNodeValue(AName);
-  if ( Length(locBuffer) = 0 ) then
-    AData := #0
-  else
-    AData := AnsiChar(locBuffer[1]);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then begin
+    if ( Length(locBuffer) = 0 ) then
+      AData := #0
+    else
+      AData := AnsiChar(locBuffer[1]);
+  end;
 end;
 
-procedure TXmlRpcBaseFormatter.GetWideChar(
+function TXmlRpcBaseFormatter.GetWideChar(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: WideChar
-);
+) : Boolean;
 var
   locBuffer : DOMString;
 begin
-  locBuffer := GetNodeValue(AName);
-  if ( Length(locBuffer) = 0 ) then
-    AData := #0
-  else
-    AData := locBuffer[1];
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then begin
+    if ( Length(locBuffer) = 0 ) then
+      AData := #0
+    else
+      AData := locBuffer[1];
+  end;
 end;
 
-procedure TXmlRpcBaseFormatter.GetInt64(
+function TXmlRpcBaseFormatter.GetInt64(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : Int64
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := StrToInt64Def(Trim(GetNodeValue(AName)),0);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := StrToInt64Def(Trim(locBuffer),0);
 end;
 
 {$IFDEF HAS_QWORD}
-procedure TXmlRpcBaseFormatter.GetUInt64(
+function TXmlRpcBaseFormatter.GetUInt64(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : QWord
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := StrToQWordDef(Trim(GetNodeValue(AName)),0);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := StrToQWordDef(Trim(locBuffer),0);
 end;
 {$ENDIF HAS_QWORD}
 
-procedure TXmlRpcBaseFormatter.GetFloat(
+function TXmlRpcBaseFormatter.GetFloat(
   const ATypeInfo  : PTypeInfo;
   var AName        : String;
   var AData        : Extended
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then begin
 {$IFDEF HAS_FORMAT_SETTINGS}
-  AData := StrToFloatDef(Trim(GetNodeValue(AName)),0,wst_FormatSettings);
+    AData := StrToFloatDef(Trim(locBuffer),0,wst_FormatSettings);
 {$ELSE}
-  AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(GetNodeValue(AName))),0);
+    AData := StrToFloatDef(TranslateDotToDecimalSeperator(Trim(locBuffer)),0);
 {$ENDIF HAS_FORMAT_SETTINGS}
+  end;
 end;
 
-procedure TXmlRpcBaseFormatter.GetStr(
+function TXmlRpcBaseFormatter.GetStr(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : String
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := GetNodeValue(AName);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := locBuffer;
 end;
 
 {$IFDEF WST_UNICODESTRING}
-procedure TXmlRpcBaseFormatter.GetUnicodeStr(
+function TXmlRpcBaseFormatter.GetUnicodeStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: UnicodeString
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := GetNodeValue(AName);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := locBuffer;
 end;
 {$ENDIF WST_UNICODESTRING}
 
-procedure TXmlRpcBaseFormatter.GetWideStr(
+function TXmlRpcBaseFormatter.GetWideStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: WideString
-);
+) : Boolean;
+var
+  locBuffer : DOMString;
 begin
-  AData := GetNodeValue(AName);
+  Result := GetNodeValue(AName,locBuffer);
+  if Result then
+    AData := locBuffer;
 end;
 
-procedure TXmlRpcBaseFormatter.GetObj(
+function TXmlRpcBaseFormatter.GetObj(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : TObject
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
-procedure TXmlRpcBaseFormatter.GetRecord(
+function TXmlRpcBaseFormatter.GetRecord(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : Pointer
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
 function TXmlRpcBaseFormatter.GetXmlDoc(): TwstXMLDocument;
@@ -1535,11 +1582,11 @@ begin
   StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
 end;
 
-procedure TXmlRpcBaseFormatter.Get(
+function TXmlRpcBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData
-);
+) : Boolean;
 Var
   int64Data : Int64;
 {$IFDEF HAS_QWORD}
@@ -1562,66 +1609,75 @@ begin
     tkChar :
       begin
         ansiCharData := #0;
-        GetAnsiChar(ATypeInfo,AName,ansiCharData);
-        AnsiChar(AData) := ansiCharData;
+        Result := GetAnsiChar(ATypeInfo,AName,ansiCharData);
+        if Result then
+          AnsiChar(AData) := ansiCharData;
       end;
     tkWChar :
       begin
         wideCharData := #0;
-        GetWideChar(ATypeInfo,AName,wideCharData);
-        WideChar(AData) := wideCharData;
+        Result := GetWideChar(ATypeInfo,AName,wideCharData);
+        if Result then
+          WideChar(AData) := wideCharData;
       end;
     tkInt64 :
       Begin
         int64Data := 0;
-        GetInt64(ATypeInfo,AName,int64Data);
-        Int64(AData) := int64Data;
+        Result := GetInt64(ATypeInfo,AName,int64Data);
+        if Result then
+          Int64(AData) := int64Data;
       End;
 {$IFDEF HAS_QWORD}
     tkQWord :
       Begin
         uint64Data := 0;
-        GetUInt64(ATypeInfo,AName,uint64Data);
-        QWord(AData) := uint64Data;
+        Result := GetUInt64(ATypeInfo,AName,uint64Data);
+        if Result then
+          QWord(AData) := uint64Data;
       End;
 {$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
-        GetStr(ATypeInfo,AName,strData);
-        String(AData) := strData;
+        Result := GetStr(ATypeInfo,AName,strData);
+        if Result then
+          String(AData) := strData;
       End;
 {$IFDEF WST_UNICODESTRING}
     tkUString :
       begin
         unicodeStrData := '';
-        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
-        UnicodeString(AData) := unicodeStrData;
+        Result := GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        if Result then
+          UnicodeString(AData) := unicodeStrData;
       end;
 {$ENDIF WST_UNICODESTRING}
     tkWString :
       begin
         wideStrData := '';
-        GetWideStr(ATypeInfo,AName,wideStrData);
-        WideString(AData) := wideStrData;
+        Result := GetWideStr(ATypeInfo,AName,wideStrData);
+        if Result then
+          WideString(AData) := wideStrData;
       end;
     tkClass :
       Begin
         objData := TObject(AData);
-        GetObj(ATypeInfo,AName,objData);
-        TObject(AData) := objData;
+        Result := GetObj(ATypeInfo,AName,objData);
+        if Result then
+          TObject(AData) := objData;
       End;
     tkRecord :
       begin
         recObject := Pointer(@AData);
-        GetRecord(ATypeInfo,AName,recObject);
+        Result := GetRecord(ATypeInfo,AName,recObject);
       end;
     {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
-        GetBool(ATypeInfo,AName,boolData);
-        Boolean(AData) := boolData;
+        Result := GetBool(ATypeInfo,AName,boolData);
+        if Result then
+          Boolean(AData) := boolData;
       End;
     {$ENDIF}  
     tkInteger, tkEnumeration :
@@ -1631,52 +1687,59 @@ begin
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
           boolData := False;
-          GetBool(ATypeInfo,AName,boolData);
-          Boolean(AData) := boolData;
+          Result := GetBool(ATypeInfo,AName,boolData);
+          if Result then
+            Boolean(AData) := boolData;
         end else begin
       {$ENDIF}      
           enumData := 0;
-          If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt64(ATypeInfo,AName,enumData)
-          Else
-            GetEnum(ATypeInfo,AName,enumData);
-          Case GetTypeData(ATypeInfo)^.OrdType Of
-            otSByte : ShortInt(AData) := enumData;
-            otUByte : Byte(AData) := enumData;
-            otSWord : SmallInt(AData) := enumData;
-            otUWord : Word(AData) := enumData;
-            otSLong : LongInt(AData) := enumData;
-            otULong : LongWord(AData) := enumData;
-          End;
+          if ( ATypeInfo^.Kind = tkInteger ) then
+            Result := GetInt64(ATypeInfo,AName,enumData)
+          else
+            Result := GetEnum(ATypeInfo,AName,enumData);
+          if Result then begin
+            case GetTypeData(ATypeInfo)^.OrdType Of
+              otSByte : ShortInt(AData) := enumData;
+              otUByte : Byte(AData) := enumData;
+              otSWord : SmallInt(AData) := enumData;
+              otUWord : Word(AData) := enumData;
+              otSLong : LongInt(AData) := enumData;
+              otULong : LongWord(AData) := enumData;
+            end;
+          end;
       {$IFDEF WST_DELPHI}
         end;
       {$ENDIF}        
       End;
     tkFloat :
-      Begin
+      begin
         floatDt := 0;
-        GetFloat(ATypeInfo,AName,floatDt);
-        Case GetTypeData(ATypeInfo)^.FloatType Of
-          ftSingle : Single(AData)    := floatDt;
-          ftDouble : Double(AData)    := floatDt;
-          ftExtended : Extended(AData)    := floatDt;
-          ftCurr : Currency(AData)    := floatDt;
+        Result := GetFloat(ATypeInfo,AName,floatDt);
+        if Result then begin
+          case GetTypeData(ATypeInfo)^.FloatType of
+            ftSingle : Single(AData)    := floatDt;
+            ftDouble : Double(AData)    := floatDt;
+            ftExtended : Extended(AData)    := floatDt;
+            ftCurr : Currency(AData)    := floatDt;
 {$IFDEF HAS_COMP}
-          ftComp : Comp(AData)    := floatDt;
+            ftComp : Comp(AData)    := floatDt;
 {$ENDIF}
-        End;
-      End;
-  End;
+          end;
+        end;
+      end;
+    else
+      Result := False;
+  end;
 end;
 
-procedure TXmlRpcBaseFormatter.Get(
+function TXmlRpcBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
   const ANameSpace : string;
   var AName : string;
   var AData
-);
+) : Boolean;
 begin
-  Get(ATypeInfo,AName,AData);
+  Result := Get(ATypeInfo,AName,AData);
 end;
 
 procedure TXmlRpcBaseFormatter.GetScopeInnerValue(
@@ -1774,7 +1837,10 @@ begin
   end;
 end;
 
-function TXmlRpcBaseFormatter.ReadBuffer (const AName : string ) : string;
+function TXmlRpcBaseFormatter.ReadBuffer(
+  const AName : string;
+  out AResBuffer : string
+) : Boolean;
 var
   locElt : TDOMNode;
   stkTop : TStackItem;
@@ -1784,11 +1850,9 @@ begin
   locName := AName;
   locElt := stkTop.FindNode(locName);
 
-  if Assigned(locElt) then begin
-    Result := NodeToBuffer(locElt);
-  end else begin
-    Error('Param or Attribute not found : "%s"',[AName]);
-  end;
+  Result := ( locElt <> nil );
+  if Result then
+    AResBuffer := NodeToBuffer(locElt);
 end;
 
 procedure TXmlRpcBaseFormatter.SaveToStream(AStream: TStream);

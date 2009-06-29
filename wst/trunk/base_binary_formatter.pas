@@ -303,76 +303,79 @@ type
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-    function GetDataBuffer(var AName : String):PDataBuffer;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetEnum(
+    function GetDataBuffer(
+      var AName : string;
+      out AResultBuffer : PDataBuffer
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumData
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetBool(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetAnsiChar(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetAnsiChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : AnsiChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetWideChar(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetWideChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : WideChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetFloat(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TFloat_Extended_10
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetInt(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TInt64S
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetInt64(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Int64
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF HAS_QWORD}
-    procedure GetUInt64(
+    function GetUInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : QWord
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF}
-    procedure GetAnsiStr(
+    function GetAnsiStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : AnsiString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetWideStr(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetWideStr(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : WideString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF WST_UNICODESTRING}
-    procedure GetUnicodeStr(
+    function GetUnicodeStr(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : UnicodeString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF WST_UNICODESTRING}
-    procedure GetObj(
+    function GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetRecord(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetRecord(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : Pointer
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -429,22 +432,22 @@ type
       const ATypeInfo : PTypeInfo;
       const AData
     );
-    procedure Get(
+    function Get(
       const ATypeInfo : PTypeInfo;
       var   AName     : string;
       var   AData
-    );overload;
-    procedure Get(
+    ) : Boolean;overload;
+    function Get(
       const ATypeInfo  : PTypeInfo;
       const ANameSpace : string;
       var   AName      : string;
       var   AData
-    );overload;
+    ) : Boolean; overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
     );
-    function ReadBuffer(const AName : string) : string;
+    function ReadBuffer(const AName : string; out AResBuffer : string) : Boolean;
     procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
@@ -1162,154 +1165,200 @@ begin
   TRemotableRecordEncoder.Save(AData,Self,AName,ATypeInfo);
 end;
 
-function TBaseBinaryFormatter.GetDataBuffer(var AName: String): PDataBuffer;
+function TBaseBinaryFormatter.GetDataBuffer(
+  var AName: string;
+  out AResultBuffer : PDataBuffer
+) : Boolean;
 begin
-  Result := StackTop().Find(AName);
-  If Not Assigned(Result) Then
-    Error('Param not found : "%s"',[AName]);
+  AResultBuffer := StackTop().Find(AName);
+  Result := ( AResultBuffer <> nil );
 end;
 
-procedure TBaseBinaryFormatter.GetEnum(
+function TBaseBinaryFormatter.GetEnum(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: TEnumData
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.EnumData;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.EnumData;
 end;
 
-procedure TBaseBinaryFormatter.GetBool(
+function TBaseBinaryFormatter.GetBool(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: Boolean
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.BoolData;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.BoolData;
 end;
 
-procedure TBaseBinaryFormatter.GetAnsiChar(
+function TBaseBinaryFormatter.GetAnsiChar(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: AnsiChar
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.AnsiCharData;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.AnsiCharData;
 end;
 
-procedure TBaseBinaryFormatter.GetWideChar(
+function TBaseBinaryFormatter.GetWideChar(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: WideChar
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.WideCharData;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.WideCharData;
 end;
 
-procedure TBaseBinaryFormatter.GetFloat(
+function TBaseBinaryFormatter.GetFloat(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : TFloat_Extended_10
-);
-Var
-  t : PDataBuffer;
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  t := GetDataBuffer(AName);
-  Case GetTypeData(ATypeInfo)^.FloatType Of
-    ftSingle     : AData := t^.SingleData;
-    ftDouble     : AData := t^.DoubleData;
-    ftExtended   : AData := t^.ExtendedData;
-    ftCurr       : AData := t^.CurrencyData;
-    Else
-      AData := t^.ExtendedData;
-  End;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then begin
+    case GetTypeData(ATypeInfo)^.FloatType Of
+      ftSingle     : AData := locBuffer^.SingleData;
+      ftDouble     : AData := locBuffer^.DoubleData;
+      ftExtended   : AData := locBuffer^.ExtendedData;
+      ftCurr       : AData := locBuffer^.CurrencyData;
+      else
+        AData := locBuffer^.ExtendedData;
+    end;
+  end;
 end;
 
-procedure TBaseBinaryFormatter.GetInt(
+function TBaseBinaryFormatter.GetInt(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: TInt64S
-);
-Var
-  t : PDataBuffer;
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  t := GetDataBuffer(AName);
-  Case GetTypeData(ATypeInfo)^.OrdType Of
-    otSByte : AData := t^.Int8S;
-    otUByte : AData := t^.Int8U;
-    otSWord : AData := t^.Int16S;
-    otUWord : AData := t^.Int16U;
-    otSLong : AData := t^.Int32S;
-    otULong : AData := t^.Int32U;
-    Else
-      Assert(False);
-  End;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then begin
+    case GetTypeData(ATypeInfo)^.OrdType of
+      otSByte : AData := locBuffer^.Int8S;
+      otUByte : AData := locBuffer^.Int8U;
+      otSWord : AData := locBuffer^.Int16S;
+      otUWord : AData := locBuffer^.Int16U;
+      otSLong : AData := locBuffer^.Int32S;
+      otULong : AData := locBuffer^.Int32U;
+      Else
+        Assert(False);
+    end;
+  end;
 end;
 
-procedure TBaseBinaryFormatter.GetInt64(
+function TBaseBinaryFormatter.GetInt64(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: Int64
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.Int64S;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.Int64S;
 end;
 
 {$IFDEF HAS_QWORD}
-procedure TBaseBinaryFormatter.GetUInt64(
+function TBaseBinaryFormatter.GetUInt64(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: QWord
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.Int64U;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.Int64U;
 end;
 {$ENDIF HAS_QWORD}
 
-procedure TBaseBinaryFormatter.GetAnsiStr(
+function TBaseBinaryFormatter.GetAnsiStr(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: AnsiString
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.AnsiStrData^.Data;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.AnsiStrData^.Data;
 end;
 
-procedure TBaseBinaryFormatter.GetWideStr(
+function TBaseBinaryFormatter.GetWideStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: WideString
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.WideStrData^.Data;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.WideStrData^.Data;
 end;
 
 {$IFDEF WST_UNICODESTRING}
-procedure TBaseBinaryFormatter.GetUnicodeStr(
+function TBaseBinaryFormatter.GetUnicodeStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: UnicodeString
-);
+) : Boolean;
+var
+  locBuffer : PDataBuffer;
 begin
-  AData := GetDataBuffer(AName)^.UnicodeStrData^.Data;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer^.UnicodeStrData^.Data;
 end;
 {$ENDIF WST_UNICODESTRING}
 
-procedure TBaseBinaryFormatter.GetObj(
+function TBaseBinaryFormatter.GetObj(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData: TObject
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
-procedure TBaseBinaryFormatter.GetRecord(
+function TBaseBinaryFormatter.GetRecord(
   const ATypeInfo : PTypeInfo;
   var   AName     : String;
   var   AData     : Pointer
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
 procedure TBaseBinaryFormatter.Clear();
@@ -1731,11 +1780,11 @@ begin
   end;
 end;
 
-procedure TBaseBinaryFormatter.Get(
+function TBaseBinaryFormatter.Get(
   const ATypeInfo: PTypeInfo;
   var AName: String;
   var AData
-);
+) : Boolean;
 Var
   int64Data : Int64;
 {$IFDEF HAS_QWORD}
@@ -1758,67 +1807,76 @@ begin
     tkInt64 :
       Begin
         int64Data := 0;
-        GetInt64(ATypeInfo,AName,int64Data);
-        Int64(AData) := int64Data;
+        Result := GetInt64(ATypeInfo,AName,int64Data);
+        if Result then
+          Int64(AData) := int64Data;
       End;
 {$IFDEF HAS_QWORD}
     tkQWord :
       Begin
         uint64Data := 0;
-        GetUInt64(ATypeInfo,AName,uint64Data);
-        QWord(AData) := uint64Data;
+        Result := GetUInt64(ATypeInfo,AName,uint64Data);
+        if Result then
+          QWord(AData) := uint64Data;
       End;
 {$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
-        GetAnsiStr(ATypeInfo,AName,strData);
-        String(AData) := strData;
+        Result := GetAnsiStr(ATypeInfo,AName,strData);
+        if Result then
+          String(AData) := strData;
       End;
     tkWString :
       begin
         wideStrData := '';
-        GetWideStr(ATypeInfo,AName,wideStrData);
-        WideString(AData) := wideStrData;
+        Result := GetWideStr(ATypeInfo,AName,wideStrData);
+        if Result then
+          WideString(AData) := wideStrData;
       end;
 {$IFDEF WST_UNICODESTRING}
     tkUString :
       begin
         unicodeStrData := '';
-        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
-        UnicodeString(AData) := unicodeStrData;
+        Result := GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        if Result then
+          UnicodeString(AData) := unicodeStrData;
       end;
 {$ENDIF WST_UNICODESTRING}
     tkClass :
       Begin
         objData := TObject(AData);
-        GetObj(ATypeInfo,AName,objData);
-        TObject(AData) := objData;
+        Result := GetObj(ATypeInfo,AName,objData);
+        if Result then
+          TObject(AData) := objData;
       End;
     tkRecord :
       begin
         recObject := Pointer(@AData);
-        GetRecord(ATypeInfo,AName,recObject);
+        Result := GetRecord(ATypeInfo,AName,recObject);
       end;
     {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
-        GetBool(ATypeInfo,AName,boolData);
-        Boolean(AData) := boolData;
+        Result := GetBool(ATypeInfo,AName,boolData);
+        if Result then
+          Boolean(AData) := boolData;
       End;
     {$ENDIF}
      tkChar :
        begin
          ansiCharData := #0;
-         GetAnsiChar(ATypeInfo,AName,ansiCharData);
-         AnsiChar(AData) := ansiCharData;
+         Result := GetAnsiChar(ATypeInfo,AName,ansiCharData);
+         if Result then
+           AnsiChar(AData) := ansiCharData;
        end;
      tkWChar :
        begin
          wideCharData := #0;
-         GetWideChar(ATypeInfo,AName,wideCharData);
-         WideChar(AData) := wideCharData;
+         Result := GetWideChar(ATypeInfo,AName,wideCharData);
+         if Result then
+           WideChar(AData) := wideCharData;
        end;
     tkInteger, tkEnumeration :
       Begin
@@ -1827,23 +1885,26 @@ begin
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
           boolData := False;
-          GetBool(ATypeInfo,AName,boolData);
-          Boolean(AData) := boolData;
+          Result := GetBool(ATypeInfo,AName,boolData);
+          if Result then
+            Boolean(AData) := boolData;
         end else begin
       {$ENDIF}
           enumData := 0;
           If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt(ATypeInfo,AName,enumData)
+            Result := GetInt(ATypeInfo,AName,enumData)
           Else
-            GetEnum(ATypeInfo,AName,enumData);
-          Case GetTypeData(ATypeInfo)^.OrdType Of
-            otSByte : ShortInt(AData)    := enumData;
-            otUByte : Byte(AData)        := enumData;
-            otSWord : SmallInt(AData)    := enumData;
-            otUWord : Word(AData)        := enumData;
-            otSLong : LongInt(AData)     := enumData;
-            otULong : LongWord(AData)    := enumData;
-          End;
+            Result := GetEnum(ATypeInfo,AName,enumData);
+          if Result then begin
+            Case GetTypeData(ATypeInfo)^.OrdType Of
+              otSByte : ShortInt(AData)    := enumData;
+              otUByte : Byte(AData)        := enumData;
+              otSWord : SmallInt(AData)    := enumData;
+              otUWord : Word(AData)        := enumData;
+              otSLong : LongInt(AData)     := enumData;
+              otULong : LongWord(AData)    := enumData;
+            End;
+          end;
       {$IFNDEF FPC}
         end;
       {$ENDIF}
@@ -1851,28 +1912,32 @@ begin
     tkFloat :
       Begin
         floatDt := 0;
-        GetFloat(ATypeInfo,AName,floatDt);
-        Case GetTypeData(ATypeInfo)^.FloatType Of
-          ftSingle : Single(AData)    := floatDt;
-          ftDouble : Double(AData)    := floatDt;
-          ftExtended : Extended(AData)    := floatDt;
-          ftCurr : Currency(AData)    := floatDt;
+        Result := GetFloat(ATypeInfo,AName,floatDt);
+        if Result then begin
+          Case GetTypeData(ATypeInfo)^.FloatType Of
+            ftSingle : Single(AData)    := floatDt;
+            ftDouble : Double(AData)    := floatDt;
+            ftExtended : Extended(AData)    := floatDt;
+            ftCurr : Currency(AData)    := floatDt;
 {$IFDEF HAS_COMP}
-          ftComp : Comp(AData)    := floatDt;
+            ftComp : Comp(AData)    := floatDt;
 {$ENDIF}
-        End;
-      End;
-  End;
+          End;
+        end
+      end;
+    else
+      Result := False;
+  end;
 end;
 
-procedure TBaseBinaryFormatter.Get(
+function TBaseBinaryFormatter.Get(
   const ATypeInfo : PTypeInfo;
   const ANameSpace : string;
   var AName : string;
   var AData
-);
+) : Boolean;
 begin
-  Get(ATypeInfo,AName,AData);
+  Result := Get(ATypeInfo,AName,AData);
 end;
 
 procedure TBaseBinaryFormatter.GetScopeInnerValue(
@@ -1953,7 +2018,7 @@ begin
   end;
 end;
 
-function TBaseBinaryFormatter.ReadBuffer (const AName : string ) : string;
+function TBaseBinaryFormatter.ReadBuffer (const AName : string; out AResBuffer : string) : Boolean;
 Var
   locStore : IDataStore;
   bffr : PDataBuffer;
@@ -1961,14 +2026,16 @@ Var
   locStream : TStringStream;
 begin
   locName := AName;
-  bffr := GetDataBuffer(locName);
-  locStream := TStringStream.Create('');
-  try
-    locStore := CreateBinaryWriter(locStream);
-    SaveObjectToStream(bffr,locStore);
-    Result := locStream.DataString;
-  finally
-    locStream.Free();
+  Result := GetDataBuffer(locName,bffr);
+  if Result then begin
+    locStream := TStringStream.Create('');
+    try
+      locStore := CreateBinaryWriter(locStream);
+      SaveObjectToStream(bffr,locStore);
+      AResBuffer := locStream.DataString;
+    finally
+      locStream.Free();
+    end;
   end;
 end;
 

@@ -269,78 +269,81 @@ type
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
     
-    function GetDataBuffer(var AName : String):TJSONData;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetEnum(
+    function GetDataBuffer(
+      var AName : string;
+      out AResBuffer : TJSONData
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TEnumIntType
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetBool(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetBool(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Boolean
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$IFDEF FPC}
-    procedure GetAnsiChar(
+    function GetAnsiChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : AnsiChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetWideChar(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetWideChar(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : WideChar
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetInt(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetInt(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Integer
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     {$ENDIF}
-    procedure GetInt64(
+    function GetInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Int64
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF HAS_QWORD}
-    procedure GetUInt64(
+    function GetUInt64(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : QWord
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF HAS_QWORD}
-    procedure GetFloat(
+    function GetFloat(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : Extended
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetStr(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : String
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$IFDEF WST_UNICODESTRING}
-    procedure GetUnicodeStr(
+    function GetUnicodeStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : UnicodeString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 {$ENDIF WST_UNICODESTRING}
-    procedure GetWideStr(
+    function GetWideStr(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : WideString
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetObj(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetObj(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
       Var   AData     : TObject
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure GetRecord(
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    function GetRecord(
       const ATypeInfo : PTypeInfo;
       var   AName     : String;
       var   AData     : Pointer
-    );{$IFDEF USE_INLINE}inline;{$ENDIF}
+    ) : Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
   public
     procedure SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
     function GetSerializationStyle():TSerializationStyle;
@@ -395,22 +398,22 @@ type
       const ATypeInfo : PTypeInfo;
       const AData
     );
-    procedure Get(
+    function Get(
       const ATypeInfo : PTypeInfo;
       var   AName     : string;
       var   AData
-    );overload;
-    procedure Get(
+    ) : Boolean;overload;
+    function Get(
       const ATypeInfo  : PTypeInfo;
       const ANameSpace : string;
       var   AName      : string;
       var   AData
-    );overload;
+    ) : Boolean;overload;
     procedure GetScopeInnerValue(
       const ATypeInfo : PTypeInfo;
       var   AData
     );
-    function ReadBuffer(const AName : string) : string;
+    function ReadBuffer(const AName : string; out AResBuffer : string) : Boolean;
     procedure WriteBuffer(const AValue : string);
 
     procedure SaveToStream(AStream : TStream);
@@ -593,167 +596,213 @@ begin
   TRemotableRecordEncoder.Save(AData,Self,AName,ATypeInfo);
 end;
 
-function TJsonRpcBaseFormatter.GetDataBuffer(var AName : String) : TJSONData;
+function TJsonRpcBaseFormatter.GetDataBuffer(
+  var AName : string;
+  out AResBuffer : TJSONData
+) : Boolean;
 begin
-  Result := StackTop().FindNode(AName);
-  if not Assigned(Result) then
-    Error('Param not found : "%s"',[AName]);
+  AResBuffer := StackTop().FindNode(AName);
+  Result := ( AResBuffer <> nil );
 end;
 
-procedure TJsonRpcBaseFormatter.GetEnum(
+function TJsonRpcBaseFormatter.GetEnum(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : TEnumIntType
-);
-begin
-  AData := GetDataBuffer(AName).AsInteger;
-end;
-
-procedure TJsonRpcBaseFormatter.GetBool(
-  const ATypeInfo : PTypeInfo;
-  var AName : String;
-  var AData : Boolean
-);
-begin
-  AData := GetDataBuffer(AName).AsBoolean;
-end;
-
-procedure TJsonRpcBaseFormatter.GetAnsiChar(
-  const ATypeInfo: PTypeInfo;
-  var   AName: String;
-  var   AData: AnsiChar
-);
-var
-  tmpString : TJSONStringType;
-begin
-  tmpString := GetDataBuffer(AName).AsString;
-  if ( Length(tmpString) > 0 ) then
-    AData := tmpString[1]
-  else
-    AData := #0;
-end;
-
-procedure TJsonRpcBaseFormatter.GetWideChar(
-  const ATypeInfo: PTypeInfo;
-  var   AName: String;
-  var   AData: WideChar
-);
-var
-  tmpString : TJSONStringType;
-begin
-  tmpString := GetDataBuffer(AName).AsString;
-  if ( Length(tmpString) > 0 ) then
-    AData := tmpString[1]
-  else
-    AData := #0;
-end;
-
-procedure TJsonRpcBaseFormatter.GetInt(
-  const ATypeInfo : PTypeInfo;
-  var AName : String;
-  var AData : Integer
-);
-begin
-  AData := GetDataBuffer(AName).AsInteger;
-end;
-
-procedure TJsonRpcBaseFormatter.GetInt64(
-  const ATypeInfo : PTypeInfo;
-  var AName : String;
-  var AData : Int64
-);
+) : Boolean;
 var
   locBuffer : TJSONData;
 begin
-  locBuffer := GetDataBuffer(AName);
-  if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then
-    AData := locBuffer.AsInteger
-  else
-    AData := Round(locBuffer.AsFloat);
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsInteger;
+end;
+
+function TJsonRpcBaseFormatter.GetBool(
+  const ATypeInfo : PTypeInfo;
+  var AName : String;
+  var AData : Boolean
+) : Boolean;
+var
+  locBuffer : TJSONData;
+begin
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsBoolean;
+end;
+
+function TJsonRpcBaseFormatter.GetAnsiChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: AnsiChar
+) : Boolean;
+var
+  tmpString : TJSONStringType;
+  locBuffer : TJSONData;
+begin
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then begin
+    tmpString := locBuffer.AsString;
+    if ( Length(tmpString) > 0 ) then
+      AData := tmpString[1]
+    else
+      AData := #0;
+  end;
+end;
+
+function TJsonRpcBaseFormatter.GetWideChar(
+  const ATypeInfo: PTypeInfo;
+  var   AName: String;
+  var   AData: WideChar
+) : Boolean;
+var
+  tmpString : TJSONStringType;
+  locBuffer : TJSONData;
+begin
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result  then begin
+    tmpString := locBuffer.AsString;
+    if ( Length(tmpString) > 0 ) then
+      AData := tmpString[1]
+    else
+      AData := #0;
+  end;
+end;
+
+function TJsonRpcBaseFormatter.GetInt(
+  const ATypeInfo : PTypeInfo;
+  var AName : String;
+  var AData : Integer
+) : Boolean;
+var
+  locBuffer : TJSONData;
+begin
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsInteger;
+end;
+
+function TJsonRpcBaseFormatter.GetInt64(
+  const ATypeInfo : PTypeInfo;
+  var AName : String;
+  var AData : Int64
+) : Boolean;
+var
+  locBuffer : TJSONData;
+begin
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then begin
+    if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then
+      AData := locBuffer.AsInteger
+    else
+      AData := Round(locBuffer.AsFloat);
+  end;
 end;
 
 {$IFDEF HAS_QWORD}
-procedure TJsonRpcBaseFormatter.GetUInt64(
+function TJsonRpcBaseFormatter.GetUInt64(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : QWord
-);
+) : Boolean;
 var
   locBuffer : TJSONData;
   locExtData : TJSONFloat;
   tmp : QWord;
 begin
-  locBuffer := GetDataBuffer(AName);
-  if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then begin
-    AData := locBuffer.AsInteger
-  end else begin
-    locExtData := locBuffer.AsFloat;
-    if ( locExtData > High(Int64) ) then begin
-      locExtData := locExtData - High(Int64);
-      AData := High(Int64);
-      tmp := Round(locExtData);
-      AData := AData + tmp;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then begin
+    if ( locBuffer.JSONType = jtNumber ) and ( TJSONNumber(locBuffer).NumberType = ntInteger ) then begin
+      AData := locBuffer.AsInteger
     end else begin
-      AData := Round(locExtData);
+      locExtData := locBuffer.AsFloat;
+      if ( locExtData > High(Int64) ) then begin
+        locExtData := locExtData - High(Int64);
+        AData := High(Int64);
+        tmp := Round(locExtData);
+        AData := AData + tmp;
+      end else begin
+        AData := Round(locExtData);
+      end;
     end;
   end;
 end;
 {$ENDIF HAS_QWORD}
 
-procedure TJsonRpcBaseFormatter.GetFloat(
+function TJsonRpcBaseFormatter.GetFloat(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : Extended
-);
+) : Boolean;
+var
+  locBuffer : TJSONData;
 begin
-  AData := GetDataBuffer(AName).AsFloat;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsFloat;
 end;
 
-procedure TJsonRpcBaseFormatter.GetStr(
+function TJsonRpcBaseFormatter.GetStr(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : String
-);
+) : Boolean;
+var
+  locBuffer : TJSONData;
 begin
-  AData := GetDataBuffer(AName).AsString;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsString;
 end;
 
 {$IFDEF WST_UNICODESTRING}
-procedure TJsonRpcBaseFormatter.GetUnicodeStr(
+function TJsonRpcBaseFormatter.GetUnicodeStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: UnicodeString
-);
+) : Boolean;
+var
+  locBuffer : TJSONData;
 begin
-  AData := GetDataBuffer(AName).AsString;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsString;
 end;
 {$ENDIF WST_UNICODESTRING}
 
-procedure TJsonRpcBaseFormatter.GetWideStr(
+function TJsonRpcBaseFormatter.GetWideStr(
   const ATypeInfo: PTypeInfo;
   var   AName: String;
   var   AData: WideString
-);
+) : Boolean;
+var
+  locBuffer : TJSONData;
 begin
-  AData := GetDataBuffer(AName).AsString;
+  Result := GetDataBuffer(AName,locBuffer);
+  if Result then
+    AData := locBuffer.AsString;
 end;
 
-procedure TJsonRpcBaseFormatter.GetObj(
+function TJsonRpcBaseFormatter.GetObj(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : TObject
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TBaseRemotableClass(GetTypeData(ATypeInfo)^.ClassType).Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
-procedure TJsonRpcBaseFormatter.GetRecord(
+function TJsonRpcBaseFormatter.GetRecord(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData : Pointer
-);
+) : Boolean;
 begin
+  { TODO -cEXCEPTION_SAFE : Load() should be a function ! }
   TRemotableRecordEncoder.Load(AData, Self,AName,ATypeInfo);
+  Result := True;
 end;
 
 procedure TJsonRpcBaseFormatter.SetSerializationStyle(const ASerializationStyle : TSerializationStyle);
@@ -1168,11 +1217,11 @@ begin
   End;
 end;
 
-procedure TJsonRpcBaseFormatter.Get(
+function TJsonRpcBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
   var AName : String;
   var AData
-);
+) : Boolean;
 Var
   int64Data : Int64;
 {$IFDEF HAS_QWORD}
@@ -1195,66 +1244,75 @@ begin
     tkChar :
       begin
         ansiCharData := #0;
-        GetAnsiChar(ATypeInfo,AName,ansiCharData);
-        AnsiChar(AData) := ansiCharData;
+        Result := GetAnsiChar(ATypeInfo,AName,ansiCharData);
+        if Result then
+          AnsiChar(AData) := ansiCharData;
       end;
     tkWChar :
       begin
         wideCharData := #0;
-        GetWideChar(ATypeInfo,AName,wideCharData);
-        WideChar(AData) := wideCharData;
+        Result := GetWideChar(ATypeInfo,AName,wideCharData);
+        if Result then
+          WideChar(AData) := wideCharData;
       end;
     tkInt64 :
       Begin
         int64Data := 0;
-        GetInt64(ATypeInfo,AName,int64Data);
-        Int64(AData) := int64Data;
+        Result := GetInt64(ATypeInfo,AName,int64Data);
+        if Result then
+          Int64(AData) := int64Data;
       End;
 {$IFDEF HAS_QWORD}
     tkQWord :
       Begin
         uint64Data := 0;
-        GetUInt64(ATypeInfo,AName,uint64Data);
-        QWord(AData) := uint64Data;
+        Result := GetUInt64(ATypeInfo,AName,uint64Data);
+        if Result then
+          QWord(AData) := uint64Data;
       End;
 {$ENDIF HAS_QWORD}
     tkLString{$IFDEF FPC},tkAString{$ENDIF} :
       Begin
         strData := '';
-        GetStr(ATypeInfo,AName,strData);
-        String(AData) := strData;
+        Result := GetStr(ATypeInfo,AName,strData);
+        if Result then
+          String(AData) := strData;
       End;
 {$IFDEF WST_UNICODESTRING}
     tkUString :
       Begin
         unicodeStrData := '';
-        GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
-        UnicodeString(AData) := unicodeStrData;
+        Result := GetUnicodeStr(ATypeInfo,AName,unicodeStrData);
+        if Result then
+          UnicodeString(AData) := unicodeStrData;
       End;
 {$ENDIF WST_UNICODESTRING}
     tkWString :
       Begin
         WideStrData := '';
-        GetWideStr(ATypeInfo,AName,WideStrData);
-        WideString(AData) := WideStrData;
+        Result := GetWideStr(ATypeInfo,AName,WideStrData);
+        if Result then
+          WideString(AData) := WideStrData;
       End;
     tkClass :
       Begin
         objData := TObject(AData);
-        GetObj(ATypeInfo,AName,objData);
-        TObject(AData) := objData;
+        Result := GetObj(ATypeInfo,AName,objData);
+        if Result then
+          TObject(AData) := objData;
       End;
     tkRecord :
       begin
         recObject := Pointer(@AData);
-        GetRecord(ATypeInfo,AName,recObject);
+        Result := GetRecord(ATypeInfo,AName,recObject);
       end;
     {$IFDEF FPC}
     tkBool :
       Begin
         boolData := False;
-        GetBool(ATypeInfo,AName,boolData);
-        Boolean(AData) := boolData;
+        Result := GetBool(ATypeInfo,AName,boolData);
+        if Result then
+          Boolean(AData) := boolData;
       End;
     {$ENDIF}
     tkInteger, tkEnumeration :
@@ -1264,23 +1322,26 @@ begin
            ( GetTypeData(ATypeInfo)^.BaseType^ = TypeInfo(Boolean) )
         then begin
           boolData := False;
-          GetBool(ATypeInfo,AName,boolData);
-          Boolean(AData) := boolData;
+          Result := GetBool(ATypeInfo,AName,boolData);
+          if Result then
+            Boolean(AData) := boolData;
         end else begin
       {$ENDIF}
           enumData := 0;
-          If ( ATypeInfo^.Kind = tkInteger ) Then
-            GetInt64(ATypeInfo,AName,enumData)
-          Else
-            GetEnum(ATypeInfo,AName,enumData);
-          Case GetTypeData(ATypeInfo)^.OrdType Of
-            otSByte : ShortInt(AData)    := enumData;
-            otUByte : Byte(AData)        := enumData;
-            otSWord : SmallInt(AData)    := enumData;
-            otUWord : Word(AData)        := enumData;
-            otSLong : LongInt(AData)     := enumData;
-            otULong : LongWord(AData)    := enumData;
-          End;
+          if ( ATypeInfo^.Kind = tkInteger ) then
+            Result := GetInt64(ATypeInfo,AName,enumData)
+          else
+            Result := GetEnum(ATypeInfo,AName,enumData);
+          if Result then begin
+            case GetTypeData(ATypeInfo)^.OrdType of
+              otSByte : ShortInt(AData)    := enumData;
+              otUByte : Byte(AData)        := enumData;
+              otSWord : SmallInt(AData)    := enumData;
+              otUWord : Word(AData)        := enumData;
+              otSLong : LongInt(AData)     := enumData;
+              otULong : LongWord(AData)    := enumData;
+            end;
+          end;
       {$IFDEF WST_DELPHI}
         end;
       {$ENDIF}
@@ -1288,28 +1349,30 @@ begin
     tkFloat :
       Begin
         floatDt := 0;
-        GetFloat(ATypeInfo,AName,floatDt);
-        Case GetTypeData(ATypeInfo)^.FloatType Of
-          ftSingle : Single(AData)    := floatDt;
-          ftDouble : Double(AData)    := floatDt;
-          ftExtended : Extended(AData)    := floatDt;
-          ftCurr : Currency(AData)    := floatDt;
+        Result := GetFloat(ATypeInfo,AName,floatDt);
+        if Result then begin
+          case GetTypeData(ATypeInfo)^.FloatType of
+            ftSingle : Single(AData)    := floatDt;
+            ftDouble : Double(AData)    := floatDt;
+            ftExtended : Extended(AData)    := floatDt;
+            ftCurr : Currency(AData)    := floatDt;
 {$IFDEF HAS_COMP}
-          ftComp : Comp(AData)    := floatDt;
+            ftComp : Comp(AData)    := floatDt;
 {$ENDIF}
-        End;
+          end;
+        end;
       End;
   End;
 end;
 
-procedure TJsonRpcBaseFormatter.Get(
+function TJsonRpcBaseFormatter.Get(
   const ATypeInfo : PTypeInfo;
   const ANameSpace : string;
   var AName : string;
   var AData
-);
+) : Boolean;
 begin
-  Get(ATypeInfo,AName,AData);
+  Result := Get(ATypeInfo,AName,AData);
 end;
 
 procedure TJsonRpcBaseFormatter.GetScopeInnerValue(const ATypeInfo : PTypeInfo; var AData);
@@ -1435,12 +1498,18 @@ begin
   End;
 end;
 
-function TJsonRpcBaseFormatter.ReadBuffer(const AName : string) : string;
+function TJsonRpcBaseFormatter.ReadBuffer(
+  const AName : string;
+  out AResBuffer : string
+) : Boolean;
 var
   locName : string;
+  locBuffer : TJSONData;
 begin
   locName := AName;
-  Result := GetDataBuffer(locName).AsJSON;
+  Result := GetDataBuffer(locName,locBuffer);
+  if Result then
+    AResBuffer := locBuffer.AsJSON;
 end;
 
 procedure TJsonRpcBaseFormatter.WriteBuffer(const AValue: string);

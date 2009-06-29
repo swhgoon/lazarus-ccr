@@ -697,6 +697,7 @@ begin
   if ( A = nil ) and ( B = nil ) then begin
     Result := True
   end else if ( A <> nil ) and ( B <> nil ) then begin
+    Result := False;
     if ( A^.NilObject = B^.NilObject ) and
        ( A^.Count = B^.Count ) and
        ( CompareNodes(A^.InnerData,B^.InnerData) )
@@ -730,7 +731,7 @@ var
   ok : Boolean;
 begin
   if ( A = nil ) and ( B = nil ) then begin
-    Result := True
+    ok := True
   end else if ( A <> nil ) and ( B <> nil ) then begin
     if ( A^.Count = B^.Count ) then begin
       ok := True;
@@ -748,7 +749,7 @@ begin
       ok := False;
     end;
   end else begin
-    Result := ok;
+    ok := False;
   end;
   Result := ok;
 end;
@@ -4850,7 +4851,7 @@ const
 {$ENDIF FPC}
 {$IFDEF DELPHI}
   s_XML_BUFFER : AnsiString =
-    '<ns1:ObjProperty xmlns:ns2uri:testnamespace> ' +
+    '<ns1:ObjProperty xmlns:ns1uri:testnamespace> ' +
      ' <ns1:fieldSmallint>1</ns1:fieldSmallint> ' +
      ' <ns1:fieldWord>0</ns1:fieldWord> ' +
      ' <ns1:fieldString>SampleStringContent</ns1:fieldString> ' +
@@ -4890,7 +4891,7 @@ begin
     f.BeginObjectRead(strName,TypeInfo(TClass_A));
       strName := 'inst';
       f.BeginObjectRead(strName,TypeInfo(TTestSmallClass2));
-        strBuffer := f.ReadBuffer('ObjProperty');
+        Check(f.ReadBuffer('ObjProperty',strBuffer));
       f.EndScopeRead();
     f.EndScopeRead();
     CheckEquals(SpecialTrim(s_XML_BUFFER),SpecialTrim(strBuffer));
