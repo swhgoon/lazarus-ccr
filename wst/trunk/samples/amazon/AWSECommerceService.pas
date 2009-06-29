@@ -2,16 +2,21 @@
 This unit has been produced by ws_helper.
   Input unit name : "AWSECommerceService".
   This unit name  : "AWSECommerceService".
-  Date            : "12/08/2007 22:38:54".
+  Date            : "28/06/2009 21:23:42".
 }
 unit AWSECommerceService;
-{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
+{$IFDEF FPC}
+  {$mode objfpc} {$H+}
+{$ENDIF}
+{$IFNDEF FPC}
+  {$DEFINE WST_RECORD_RTTI}
+{$ENDIF}
 interface
 
 uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;
 
 const
-  sNAME_SPACE = 'http://webservices.amazon.com/AWSECommerceService/2007-07-16';
+  sNAME_SPACE = 'http://webservices.amazon.com/AWSECommerceService/2008-10-06';
   sUNIT_NAME = 'AWSECommerceService';
 
 type
@@ -92,6 +97,18 @@ type
   TagLookup_Type = class;
   TagLookupResponse_TagsArray = class;
   TagLookupResponse_Type = class;
+  VehicleSearch_RequestArray = class;
+  VehicleSearch_Type = class;
+  VehicleSearchResponse_VehicleYearsArray = class;
+  VehicleSearchResponse_Type = class;
+  VehiclePartSearch_RequestArray = class;
+  VehiclePartSearch_Type = class;
+  VehiclePartSearchResponse_VehiclePartsArray = class;
+  VehiclePartSearchResponse_Type = class;
+  VehiclePartLookup_RequestArray = class;
+  VehiclePartLookup_Type = class;
+  VehiclePartLookupResponse_VehiclePartsArray = class;
+  VehiclePartLookupResponse_Type = class;
   MultiOperation_Type = class;
   MultiOperationResponse = class;
   Bin_BinParameter_Type = class;
@@ -101,60 +118,67 @@ type
   SearchBinSet_Type = class;
   SearchBinSets_Type = class;
   HelpRequest_ResponseGroupArray = class;
-  HelpRequest_Type = class;
+  HelpRequest = class;
   ItemSearchRequest_AudienceRatingArray = class;
   ItemSearchRequest_ResponseGroupArray = class;
-  ItemSearchRequest_Type = class;
+  ItemSearchRequest = class;
   ItemLookupRequest_ItemIdArray = class;
   ItemLookupRequest_ResponseGroupArray = class;
-  ItemLookupRequest_Type = class;
+  ItemLookupRequest_RelationshipTypeArray = class;
+  ItemLookupRequest = class;
   ListSearchRequest_ResponseGroupArray = class;
-  ListSearchRequest_Type = class;
+  ListSearchRequest = class;
   ListLookupRequest_ResponseGroupArray = class;
-  ListLookupRequest_Type = class;
+  ListLookupRequest = class;
   CustomerContentSearchRequest_ResponseGroupArray = class;
-  CustomerContentSearchRequest_Type = class;
+  CustomerContentSearchRequest = class;
   CustomerContentLookupRequest_ResponseGroupArray = class;
-  CustomerContentLookupRequest_Type = class;
+  CustomerContentLookupRequest = class;
   SimilarityLookupRequest_ItemIdArray = class;
   SimilarityLookupRequest_ResponseGroupArray = class;
-  SimilarityLookupRequest_Type = class;
+  SimilarityLookupRequest = class;
   SellerLookupRequest_ResponseGroupArray = class;
   SellerLookupRequest_SellerIdArray = class;
-  SellerLookupRequest_Type = class;
+  SellerLookupRequest = class;
   CartGetRequest_ResponseGroupArray = class;
-  CartGetRequest_Type = class;
+  CartGetRequest = class;
   CartAddRequest_Items_Type_Item_Type_MetaData_Type = class;
   CartAddRequest_Items_Type_Item_Type_MetaDataArray = class;
   CartAddRequest_Items_Type_Item_Type = class;
   CartAddRequest_Items_Type = class;
   CartAddRequest_ResponseGroupArray = class;
-  CartAddRequest_Type = class;
+  CartAddRequest = class;
   CartCreateRequest_Items_Type_Item_Type_MetaData_Type = class;
   CartCreateRequest_Items_Type_Item_Type_MetaDataArray = class;
   CartCreateRequest_Items_Type_Item_Type = class;
   CartCreateRequest_Items_Type = class;
   CartCreateRequest_ResponseGroupArray = class;
-  CartCreateRequest_Type = class;
+  CartCreateRequest = class;
   CartModifyRequest_Items_Type_Item_Type = class;
   CartModifyRequest_Items_Type = class;
   CartModifyRequest_ResponseGroupArray = class;
-  CartModifyRequest_Type = class;
+  CartModifyRequest = class;
   CartClearRequest_ResponseGroupArray = class;
-  CartClearRequest_Type = class;
+  CartClearRequest = class;
   TransactionLookupRequest_ResponseGroupArray = class;
   TransactionLookupRequest_TransactionIdArray = class;
-  TransactionLookupRequest_Type = class;
+  TransactionLookupRequest = class;
   SellerListingSearchRequest_ResponseGroupArray = class;
-  SellerListingSearchRequest_Type = class;
+  SellerListingSearchRequest = class;
   SellerListingLookupRequest_ResponseGroupArray = class;
-  SellerListingLookupRequest_Type = class;
+  SellerListingLookupRequest = class;
   TagLookupRequest_TagNameArray = class;
   TagLookupRequest_ResponseGroupArray = class;
-  TagLookupRequest_Type = class;
+  TagLookupRequest = class;
   BrowseNodeLookupRequest_BrowseNodeIdArray = class;
   BrowseNodeLookupRequest_ResponseGroupArray = class;
-  BrowseNodeLookupRequest_Type = class;
+  BrowseNodeLookupRequest = class;
+  VehicleSearchRequest_ResponseGroupArray = class;
+  VehicleSearchRequest = class;
+  VehiclePartSearchRequest_ResponseGroupArray = class;
+  VehiclePartSearchRequest = class;
+  VehiclePartLookupRequest_ResponseGroupArray = class;
+  VehiclePartLookupRequest = class;
   OperationRequest_Type = class;
   Request_Type = class;
   Arguments_Argument_Type = class;
@@ -203,7 +227,13 @@ type
   Item_AlternateVersions_Type_AlternateVersion_Type = class;
   Item_AlternateVersions_Type = class;
   _Item_ImageSetsArray = class;
+  _Item_RelatedItemsArray = class;
   Item_Type = class;
+  ItemLinks_Type = class;
+  ItemLink_Type = class;
+  RelatedItems_RelatedItemArray = class;
+  RelatedItems_Type = class;
+  RelatedItem_Type = class;
   Tags_TagArray = class;
   Tags_Type = class;
   Tag_TaggedItemsArray = class;
@@ -214,7 +244,7 @@ type
   TaggedListmaniaLists_Type = class;
   TaggedGuides_Type = class;
   Guide_Type = class;
-  Tagging_Type = class;
+  Tagging = class;
   OfferSummary_Type = class;
   Offers_OfferArray = class;
   Offers_Type = class;
@@ -253,6 +283,12 @@ type
   TopSellers_Type = class;
   NewReleases_NewRelease_Type = class;
   NewReleases_Type = class;
+  TopItemSet_TopItem_Type_AuthorArray = class;
+  TopItemSet_TopItem_Type_ArtistArray = class;
+  TopItemSet_TopItem_Type_ActorArray = class;
+  TopItemSet_TopItem_Type = class;
+  TopItemSet_TopItemArray = class;
+  TopItemSet_Type = class;
   SimilarViewedProducts_SimilarViewedProduct_Type = class;
   SimilarViewedProducts_Type = class;
   OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type = class;
@@ -263,17 +299,61 @@ type
   Promotion_Summary_Type = class;
   Promotion_Details_Type = class;
   Promotion_Type = class;
-  PromotionEligibilityRequirements_Type = class;
-  PromotionBenefits_Type = class;
-  PromotionBenefit_Type = class;
-  PromotionEligibilityRequirement_Type = class;
-  PromotionItemApplicability_Type = class;
+  PromotionEligibilityRequirements = class;
+  PromotionBenefits = class;
+  PromotionBenefit = class;
+  PromotionEligibilityRequirement = class;
+  PromotionItemApplicability = class;
+  VehicleYears_VehicleYearArray = class;
+  VehicleYears_Type = class;
+  VehicleYear_Type = class;
+  VehicleMakes_Type = class;
+  VehicleMake_Type = class;
+  VehicleModels_Type = class;
+  VehicleModel_Type = class;
+  VehicleTrims_Type = class;
+  VehicleTrim_Type = class;
+  VehicleOptions_Type = class;
+  VehicleBedOptions_Type = class;
+  VehicleBed_Type = class;
+  VehicleBodyStyleOptions_Type = class;
+  VehicleBodyStyle_Type = class;
+  VehicleBrakesOptions_Type = class;
+  VehicleBrakes_Type = class;
+  VehicleDriveTypeOptions_Type = class;
+  VehicleDriveType_Type = class;
+  VehicleEngineOptions_Type = class;
+  VehicleEngine_Type = class;
+  VehicleMfrBodyCodeOptions_Type = class;
+  VehicleMfrBodyCode_Type = class;
+  VehicleSpringTypesOptions_Type = class;
+  VehicleSpringTypes_Type = class;
+  VehicleSteeringOptions_Type = class;
+  VehicleSteering_Type = class;
+  VehicleTransmissionOptions_Type = class;
+  VehicleTransmission_Type = class;
+  VehicleWheelbaseOptions_Type = class;
+  VehicleWheelbase_Type = class;
+  VehicleParts_IsNextArray = class;
+  VehicleParts_IsPreviousArray = class;
+  VehicleParts_PartArray = class;
+  VehicleParts_Type = class;
+  MissingVehicleAttributes_Type = class;
+  PartBrowseNodeBins_Type = class;
+  PartBrandBins_Type = class;
+  Part_Type = class;
+  VehiclePartFit_Type = class;
+  Fitments_FitmentArray = class;
+  Fitments_Type = class;
+  FitmentAttributes = class;
+  Fitment_Type = class;
   BrowseNodes_BrowseNodeArray = class;
   BrowseNodes_Type = class;
   Property_Type = class;
   BrowseNode_Properties_Type = class;
   BrowseNode_Children_Type = class;
   BrowseNode_Ancestors_Type = class;
+  BrowseNode_TopItemSetArray = class;
   BrowseNode_Type = class;
   ListmaniaLists_ListmaniaList_Type = class;
   ListmaniaLists_Type = class;
@@ -285,7 +365,7 @@ type
   SavedForLaterItems_Type = class;
   CartItem_MetaData_Type_KeyValuePair_Type = class;
   CartItem_MetaData_Type = class;
-  CartItem_Type = class;
+  CartItem = class;
   Transaction_Totals_Type = class;
   Transaction_TransactionItems_Type = class;
   Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type = class;
@@ -304,11 +384,11 @@ type
   Seller_Type = class;
   SellerFeedback_Feedback_Type = class;
   SellerFeedback_Type = class;
-  Address_Type = class;
+  Address = class;
   SellerListing_Type = class;
-  Price_Type = class;
+  Price = class;
   ImageSet_Type = class;
-  Image_Type = class;
+  Image = class;
   ItemAttributes_Creator_Type = class;
   ItemAttributes_ItemDimensions_Type = class;
   ItemAttributes_Languages_Type_Language_Type = class;
@@ -365,6 +445,7 @@ type
   MerchantItemAttributes_DirectorArray = class;
   MerchantItemAttributes_FeatureArray = class;
   MerchantItemAttributes_FormatArray = class;
+  MerchantItemAttributes_IngredientsSetElementArray = class;
   MerchantItemAttributes_PhotoFlashTypeArray = class;
   MerchantItemAttributes_PictureFormatArray = class;
   MerchantItemAttributes_PlatformArray = class;
@@ -373,9 +454,9 @@ type
   MerchantItemAttributes_SpecialFeaturesArray = class;
   MerchantItemAttributes_SupportedImageTypeArray = class;
   MerchantItemAttributes_Type = class;
-  NonNegativeIntegerWithUnits_Type = class;
-  DecimalWithUnits_Type = class;
-  StringWithUnits_Type = class;
+  NonNegativeIntegerWithUnits = class;
+  DecimalWithUnits = class;
+  StringWithUnits = class;
 
   HelpRequest_HelpType_Type = ( 
     Operation
@@ -463,13 +544,18 @@ type
     ,List_ListType_Type_Listmania
   );
 
+  RelatedItems_Relationship_Type = ( 
+    Parents
+    ,Children
+  );
+
   Tag_TagType_Type = ( 
     Tag_TagType_Type_Item
     ,ListmaniaList
     ,Guide
   );
 
-  positiveIntegerOrAll_Type = type string;
+  positiveIntegerOrAll = type string;
 
   Help_Type = class(TBaseComplexRemotable)
   private
@@ -478,7 +564,7 @@ type
     FSubscriptionId : string;
     FAssociateTag : string;
     FValidate : string;
-    FShared : HelpRequest_Type;
+    FShared : HelpRequest;
     FRequest : Help_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -497,7 +583,7 @@ type
     property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
-    property Shared : HelpRequest_Type read FShared write FShared stored HasShared;
+    property Shared : HelpRequest read FShared write FShared stored HasShared;
     property Request : Help_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -524,7 +610,7 @@ type
     FAssociateTag : string;
     FXMLEscaping : string;
     FValidate : string;
-    FShared : ItemSearchRequest_Type;
+    FShared : ItemSearchRequest;
     FRequest : ItemSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -545,7 +631,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
     property Validate : string read FValidate write FValidate stored HasValidate;
-    property Shared : ItemSearchRequest_Type read FShared write FShared stored HasShared;
+    property Shared : ItemSearchRequest read FShared write FShared stored HasShared;
     property Request : ItemSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -572,7 +658,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ItemLookupRequest_Type;
+    FShared : ItemLookupRequest;
     FRequest : ItemLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -593,7 +679,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ItemLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : ItemLookupRequest read FShared write FShared stored HasShared;
     property Request : ItemLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -620,7 +706,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : BrowseNodeLookupRequest_Type;
+    FShared : BrowseNodeLookupRequest;
     FRequest : BrowseNodeLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -641,7 +727,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : BrowseNodeLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : BrowseNodeLookupRequest read FShared write FShared stored HasShared;
     property Request : BrowseNodeLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -668,7 +754,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ListSearchRequest_Type;
+    FShared : ListSearchRequest;
     FRequest : ListSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -689,7 +775,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ListSearchRequest_Type read FShared write FShared stored HasShared;
+    property Shared : ListSearchRequest read FShared write FShared stored HasShared;
     property Request : ListSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -716,7 +802,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : ListLookupRequest_Type;
+    FShared : ListLookupRequest;
     FRequest : ListLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -737,7 +823,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : ListLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : ListLookupRequest read FShared write FShared stored HasShared;
     property Request : ListLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -764,7 +850,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CustomerContentSearchRequest_Type;
+    FShared : CustomerContentSearchRequest;
     FRequest : CustomerContentSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -785,7 +871,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CustomerContentSearchRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CustomerContentSearchRequest read FShared write FShared stored HasShared;
     property Request : CustomerContentSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -812,7 +898,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CustomerContentLookupRequest_Type;
+    FShared : CustomerContentLookupRequest;
     FRequest : CustomerContentLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -833,7 +919,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CustomerContentLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CustomerContentLookupRequest read FShared write FShared stored HasShared;
     property Request : CustomerContentLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -860,7 +946,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SimilarityLookupRequest_Type;
+    FShared : SimilarityLookupRequest;
     FRequest : SimilarityLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -881,7 +967,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SimilarityLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : SimilarityLookupRequest read FShared write FShared stored HasShared;
     property Request : SimilarityLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -908,7 +994,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerLookupRequest_Type;
+    FShared : SellerLookupRequest;
     FRequest : SellerLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -929,7 +1015,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : SellerLookupRequest read FShared write FShared stored HasShared;
     property Request : SellerLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -956,7 +1042,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartGetRequest_Type;
+    FShared : CartGetRequest;
     FRequest : CartGet_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -977,7 +1063,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartGetRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CartGetRequest read FShared write FShared stored HasShared;
     property Request : CartGet_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1004,7 +1090,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartAddRequest_Type;
+    FShared : CartAddRequest;
     FRequest : CartAdd_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1025,7 +1111,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartAddRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CartAddRequest read FShared write FShared stored HasShared;
     property Request : CartAdd_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1052,7 +1138,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartCreateRequest_Type;
+    FShared : CartCreateRequest;
     FRequest : CartCreate_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1073,7 +1159,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartCreateRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CartCreateRequest read FShared write FShared stored HasShared;
     property Request : CartCreate_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1100,7 +1186,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartModifyRequest_Type;
+    FShared : CartModifyRequest;
     FRequest : CartModify_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1121,7 +1207,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartModifyRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CartModifyRequest read FShared write FShared stored HasShared;
     property Request : CartModify_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1148,7 +1234,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : CartClearRequest_Type;
+    FShared : CartClearRequest;
     FRequest : CartClear_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1169,7 +1255,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : CartClearRequest_Type read FShared write FShared stored HasShared;
+    property Shared : CartClearRequest read FShared write FShared stored HasShared;
     property Request : CartClear_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1196,7 +1282,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : TransactionLookupRequest_Type;
+    FShared : TransactionLookupRequest;
     FRequest : TransactionLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1217,7 +1303,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : TransactionLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : TransactionLookupRequest read FShared write FShared stored HasShared;
     property Request : TransactionLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1244,7 +1330,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerListingSearchRequest_Type;
+    FShared : SellerListingSearchRequest;
     FRequest : SellerListingSearch_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1265,7 +1351,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerListingSearchRequest_Type read FShared write FShared stored HasShared;
+    property Shared : SellerListingSearchRequest read FShared write FShared stored HasShared;
     property Request : SellerListingSearch_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1292,7 +1378,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : SellerListingLookupRequest_Type;
+    FShared : SellerListingLookupRequest;
     FRequest : SellerListingLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1313,7 +1399,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : SellerListingLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : SellerListingLookupRequest read FShared write FShared stored HasShared;
     property Request : SellerListingLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1340,7 +1426,7 @@ type
     FAssociateTag : string;
     FValidate : string;
     FXMLEscaping : string;
-    FShared : TagLookupRequest_Type;
+    FShared : TagLookupRequest;
     FRequest : TagLookup_RequestArray;
   private
     function HasMarketplaceDomain() : Boolean;
@@ -1361,7 +1447,7 @@ type
     property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
     property Validate : string read FValidate write FValidate stored HasValidate;
     property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
-    property Shared : TagLookupRequest_Type read FShared write FShared stored HasShared;
+    property Shared : TagLookupRequest read FShared write FShared stored HasShared;
     property Request : TagLookup_RequestArray read FRequest write FRequest stored HasRequest;
   end;
 
@@ -1378,6 +1464,150 @@ type
   published
     property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
     property Tags : TagLookupResponse_TagsArray read FTags write FTags stored HasTags;
+  end;
+
+  VehicleSearch_Type = class(TBaseComplexRemotable)
+  private
+    FMarketplaceDomain : string;
+    FAWSAccessKeyId : string;
+    FSubscriptionId : string;
+    FAssociateTag : string;
+    FValidate : string;
+    FXMLEscaping : string;
+    FShared : VehicleSearchRequest;
+    FRequest : VehicleSearch_RequestArray;
+  private
+    function HasMarketplaceDomain() : Boolean;
+    function HasAWSAccessKeyId() : Boolean;
+    function HasSubscriptionId() : Boolean;
+    function HasAssociateTag() : Boolean;
+    function HasValidate() : Boolean;
+    function HasXMLEscaping() : Boolean;
+    function HasShared() : Boolean;
+    function HasRequest() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MarketplaceDomain : string read FMarketplaceDomain write FMarketplaceDomain stored HasMarketplaceDomain;
+    property AWSAccessKeyId : string read FAWSAccessKeyId write FAWSAccessKeyId stored HasAWSAccessKeyId;
+    property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
+    property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
+    property Validate : string read FValidate write FValidate stored HasValidate;
+    property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
+    property Shared : VehicleSearchRequest read FShared write FShared stored HasShared;
+    property Request : VehicleSearch_RequestArray read FRequest write FRequest stored HasRequest;
+  end;
+
+  VehicleSearchResponse_Type = class(TBaseComplexRemotable)
+  private
+    FOperationRequest : OperationRequest_Type;
+    FVehicleYears : VehicleSearchResponse_VehicleYearsArray;
+  private
+    function HasOperationRequest() : Boolean;
+    function HasVehicleYears() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
+    property VehicleYears : VehicleSearchResponse_VehicleYearsArray read FVehicleYears write FVehicleYears stored HasVehicleYears;
+  end;
+
+  VehiclePartSearch_Type = class(TBaseComplexRemotable)
+  private
+    FMarketplaceDomain : string;
+    FAWSAccessKeyId : string;
+    FSubscriptionId : string;
+    FAssociateTag : string;
+    FValidate : string;
+    FXMLEscaping : string;
+    FShared : VehiclePartSearchRequest;
+    FRequest : VehiclePartSearch_RequestArray;
+  private
+    function HasMarketplaceDomain() : Boolean;
+    function HasAWSAccessKeyId() : Boolean;
+    function HasSubscriptionId() : Boolean;
+    function HasAssociateTag() : Boolean;
+    function HasValidate() : Boolean;
+    function HasXMLEscaping() : Boolean;
+    function HasShared() : Boolean;
+    function HasRequest() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MarketplaceDomain : string read FMarketplaceDomain write FMarketplaceDomain stored HasMarketplaceDomain;
+    property AWSAccessKeyId : string read FAWSAccessKeyId write FAWSAccessKeyId stored HasAWSAccessKeyId;
+    property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
+    property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
+    property Validate : string read FValidate write FValidate stored HasValidate;
+    property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
+    property Shared : VehiclePartSearchRequest read FShared write FShared stored HasShared;
+    property Request : VehiclePartSearch_RequestArray read FRequest write FRequest stored HasRequest;
+  end;
+
+  VehiclePartSearchResponse_Type = class(TBaseComplexRemotable)
+  private
+    FOperationRequest : OperationRequest_Type;
+    FVehicleParts : VehiclePartSearchResponse_VehiclePartsArray;
+  private
+    function HasOperationRequest() : Boolean;
+    function HasVehicleParts() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
+    property VehicleParts : VehiclePartSearchResponse_VehiclePartsArray read FVehicleParts write FVehicleParts stored HasVehicleParts;
+  end;
+
+  VehiclePartLookup_Type = class(TBaseComplexRemotable)
+  private
+    FMarketplaceDomain : string;
+    FAWSAccessKeyId : string;
+    FSubscriptionId : string;
+    FAssociateTag : string;
+    FValidate : string;
+    FXMLEscaping : string;
+    FShared : VehiclePartLookupRequest;
+    FRequest : VehiclePartLookup_RequestArray;
+  private
+    function HasMarketplaceDomain() : Boolean;
+    function HasAWSAccessKeyId() : Boolean;
+    function HasSubscriptionId() : Boolean;
+    function HasAssociateTag() : Boolean;
+    function HasValidate() : Boolean;
+    function HasXMLEscaping() : Boolean;
+    function HasShared() : Boolean;
+    function HasRequest() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MarketplaceDomain : string read FMarketplaceDomain write FMarketplaceDomain stored HasMarketplaceDomain;
+    property AWSAccessKeyId : string read FAWSAccessKeyId write FAWSAccessKeyId stored HasAWSAccessKeyId;
+    property SubscriptionId : string read FSubscriptionId write FSubscriptionId stored HasSubscriptionId;
+    property AssociateTag : string read FAssociateTag write FAssociateTag stored HasAssociateTag;
+    property Validate : string read FValidate write FValidate stored HasValidate;
+    property XMLEscaping : string read FXMLEscaping write FXMLEscaping stored HasXMLEscaping;
+    property Shared : VehiclePartLookupRequest read FShared write FShared stored HasShared;
+    property Request : VehiclePartLookup_RequestArray read FRequest write FRequest stored HasRequest;
+  end;
+
+  VehiclePartLookupResponse_Type = class(TBaseComplexRemotable)
+  private
+    FOperationRequest : OperationRequest_Type;
+    FVehicleParts : VehiclePartLookupResponse_VehiclePartsArray;
+  private
+    function HasOperationRequest() : Boolean;
+    function HasVehicleParts() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property OperationRequest : OperationRequest_Type read FOperationRequest write FOperationRequest stored HasOperationRequest;
+    property VehicleParts : VehiclePartLookupResponse_VehiclePartsArray read FVehicleParts write FVehicleParts stored HasVehicleParts;
   end;
 
   MultiOperation_Type = class(TBaseComplexRemotable)
@@ -1401,6 +1631,9 @@ type
     FSellerListingLookup : SellerListingLookup_Type;
     FTagLookup : TagLookup_Type;
     FBrowseNodeLookup : BrowseNodeLookup_Type;
+    FVehicleSearch : VehicleSearch_Type;
+    FVehiclePartSearch : VehiclePartSearch_Type;
+    FVehiclePartLookup : VehiclePartLookup_Type;
   private
     function HasHelp() : Boolean;
     function HasItemSearch() : Boolean;
@@ -1421,6 +1654,9 @@ type
     function HasSellerListingLookup() : Boolean;
     function HasTagLookup() : Boolean;
     function HasBrowseNodeLookup() : Boolean;
+    function HasVehicleSearch() : Boolean;
+    function HasVehiclePartSearch() : Boolean;
+    function HasVehiclePartLookup() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1444,6 +1680,9 @@ type
     property SellerListingLookup : SellerListingLookup_Type read FSellerListingLookup write FSellerListingLookup stored HasSellerListingLookup;
     property TagLookup : TagLookup_Type read FTagLookup write FTagLookup stored HasTagLookup;
     property BrowseNodeLookup : BrowseNodeLookup_Type read FBrowseNodeLookup write FBrowseNodeLookup stored HasBrowseNodeLookup;
+    property VehicleSearch : VehicleSearch_Type read FVehicleSearch write FVehicleSearch stored HasVehicleSearch;
+    property VehiclePartSearch : VehiclePartSearch_Type read FVehiclePartSearch write FVehiclePartSearch stored HasVehiclePartSearch;
+    property VehiclePartLookup : VehiclePartLookup_Type read FVehiclePartLookup write FVehiclePartLookup stored HasVehiclePartLookup;
   end;
 
   MultiOperationResponse = class(TBaseComplexRemotable)
@@ -1468,6 +1707,9 @@ type
     FSellerListingLookupResponse : SellerListingLookupResponse_Type;
     FTagLookupResponse : TagLookupResponse_Type;
     FBrowseNodeLookupResponse : BrowseNodeLookupResponse_Type;
+    FVehicleSearchResponse : VehicleSearchResponse_Type;
+    FVehiclePartSearchResponse : VehiclePartSearchResponse_Type;
+    FVehiclePartLookupResponse : VehiclePartLookupResponse_Type;
   private
     function HasOperationRequest() : Boolean;
     function HasHelpResponse() : Boolean;
@@ -1489,6 +1731,9 @@ type
     function HasSellerListingLookupResponse() : Boolean;
     function HasTagLookupResponse() : Boolean;
     function HasBrowseNodeLookupResponse() : Boolean;
+    function HasVehicleSearchResponse() : Boolean;
+    function HasVehiclePartSearchResponse() : Boolean;
+    function HasVehiclePartLookupResponse() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1513,6 +1758,9 @@ type
     property SellerListingLookupResponse : SellerListingLookupResponse_Type read FSellerListingLookupResponse write FSellerListingLookupResponse stored HasSellerListingLookupResponse;
     property TagLookupResponse : TagLookupResponse_Type read FTagLookupResponse write FTagLookupResponse stored HasTagLookupResponse;
     property BrowseNodeLookupResponse : BrowseNodeLookupResponse_Type read FBrowseNodeLookupResponse write FBrowseNodeLookupResponse stored HasBrowseNodeLookupResponse;
+    property VehicleSearchResponse : VehicleSearchResponse_Type read FVehicleSearchResponse write FVehicleSearchResponse stored HasVehicleSearchResponse;
+    property VehiclePartSearchResponse : VehiclePartSearchResponse_Type read FVehiclePartSearchResponse write FVehiclePartSearchResponse stored HasVehiclePartSearchResponse;
+    property VehiclePartLookupResponse : VehiclePartLookupResponse_Type read FVehiclePartLookupResponse write FVehiclePartLookupResponse stored HasVehiclePartLookupResponse;
   end;
 
   Bin_BinParameter_Type = class(TBaseComplexRemotable)
@@ -1554,7 +1802,7 @@ type
     property NarrowBy : string read FNarrowBy write FNarrowBy;
   end;
 
-  HelpRequest_Type = class(TBaseComplexRemotable)
+  HelpRequest = class(TBaseComplexRemotable)
   private
     FAbout : string;
     FHelpType : HelpRequest_HelpType_Type;
@@ -1572,7 +1820,7 @@ type
     property ResponseGroup : HelpRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  ItemSearchRequest_Type = class(TBaseComplexRemotable)
+  ItemSearchRequest = class(TBaseComplexRemotable)
   private
     FActor : string;
     FArtist : string;
@@ -1701,7 +1949,7 @@ type
     property ReleaseDate : string read FReleaseDate write FReleaseDate stored HasReleaseDate;
   end;
 
-  ItemLookupRequest_Type = class(TBaseComplexRemotable)
+  ItemLookupRequest = class(TBaseComplexRemotable)
   private
     FCondition : Condition_Type;
     FDeliveryMethod : DeliveryMethod_Type;
@@ -1719,7 +1967,9 @@ type
     FTagPage : positiveInteger;
     FTagsPerPage : positiveInteger;
     FTagSort : string;
-    FVariationPage : positiveIntegerOrAll_Type;
+    FVariationPage : positiveIntegerOrAll;
+    FRelatedItemPage : positiveIntegerOrAll;
+    FRelationshipType : ItemLookupRequest_RelationshipTypeArray;
   private
     function HasCondition() : Boolean;
     function HasDeliveryMethod() : Boolean;
@@ -1738,6 +1988,8 @@ type
     function HasTagsPerPage() : Boolean;
     function HasTagSort() : Boolean;
     function HasVariationPage() : Boolean;
+    function HasRelatedItemPage() : Boolean;
+    function HasRelationshipType() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1758,10 +2010,12 @@ type
     property TagPage : positiveInteger read FTagPage write FTagPage stored HasTagPage;
     property TagsPerPage : positiveInteger read FTagsPerPage write FTagsPerPage stored HasTagsPerPage;
     property TagSort : string read FTagSort write FTagSort stored HasTagSort;
-    property VariationPage : positiveIntegerOrAll_Type read FVariationPage write FVariationPage stored HasVariationPage;
+    property VariationPage : positiveIntegerOrAll read FVariationPage write FVariationPage stored HasVariationPage;
+    property RelatedItemPage : positiveIntegerOrAll read FRelatedItemPage write FRelatedItemPage stored HasRelatedItemPage;
+    property RelationshipType : ItemLookupRequest_RelationshipTypeArray read FRelationshipType write FRelationshipType stored HasRelationshipType;
   end;
 
-  ListSearchRequest_Type = class(TBaseComplexRemotable)
+  ListSearchRequest = class(TBaseComplexRemotable)
   private
     FCity : string;
     FEmail : string;
@@ -1796,7 +2050,7 @@ type
     property State : string read FState write FState stored HasState;
   end;
 
-  ListLookupRequest_Type = class(TBaseComplexRemotable)
+  ListLookupRequest = class(TBaseComplexRemotable)
   private
     FCondition : Condition_Type;
     FDeliveryMethod : DeliveryMethod_Type;
@@ -1809,6 +2063,7 @@ type
     FResponseGroup : ListLookupRequest_ResponseGroupArray;
     FReviewSort : string;
     FSort : string;
+    FIsOmitPurchasedItems : boolean;
   private
     function HasCondition() : Boolean;
     function HasDeliveryMethod() : Boolean;
@@ -1821,6 +2076,7 @@ type
     function HasResponseGroup() : Boolean;
     function HasReviewSort() : Boolean;
     function HasSort() : Boolean;
+    function HasIsOmitPurchasedItems() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -1836,9 +2092,10 @@ type
     property ResponseGroup : ListLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
     property ReviewSort : string read FReviewSort write FReviewSort stored HasReviewSort;
     property Sort : string read FSort write FSort stored HasSort;
+    property IsOmitPurchasedItems : boolean read FIsOmitPurchasedItems write FIsOmitPurchasedItems stored HasIsOmitPurchasedItems;
   end;
 
-  CustomerContentSearchRequest_Type = class(TBaseComplexRemotable)
+  CustomerContentSearchRequest = class(TBaseComplexRemotable)
   private
     FCustomerPage : positiveInteger;
     FEmail : string;
@@ -1859,7 +2116,7 @@ type
     property ResponseGroup : CustomerContentSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  CustomerContentLookupRequest_Type = class(TBaseComplexRemotable)
+  CustomerContentLookupRequest = class(TBaseComplexRemotable)
   private
     FCustomerId : string;
     FResponseGroup : CustomerContentLookupRequest_ResponseGroupArray;
@@ -1886,7 +2143,7 @@ type
     property TagSort : string read FTagSort write FTagSort stored HasTagSort;
   end;
 
-  SimilarityLookupRequest_Type = class(TBaseComplexRemotable)
+  SimilarityLookupRequest = class(TBaseComplexRemotable)
   private
     FCondition : Condition_Type;
     FDeliveryMethod : DeliveryMethod_Type;
@@ -1919,7 +2176,7 @@ type
     property SimilarityType : SimilarityLookupRequest_SimilarityType_Type read FSimilarityType write FSimilarityType stored HasSimilarityType;
   end;
 
-  SellerLookupRequest_Type = class(TBaseComplexRemotable)
+  SellerLookupRequest = class(TBaseComplexRemotable)
   private
     FResponseGroup : SellerLookupRequest_ResponseGroupArray;
     FSellerId : SellerLookupRequest_SellerIdArray;
@@ -1937,7 +2194,7 @@ type
     property FeedbackPage : positiveInteger read FFeedbackPage write FFeedbackPage stored HasFeedbackPage;
   end;
 
-  CartGetRequest_Type = class(TBaseComplexRemotable)
+  CartGetRequest = class(TBaseComplexRemotable)
   private
     FCartId : string;
     FHMAC : string;
@@ -1997,7 +2254,7 @@ type
     property MetaData : CartAddRequest_Items_Type_Item_Type_MetaDataArray read FMetaData write FMetaData stored HasMetaData;
   end;
 
-  CartAddRequest_Type = class(TBaseComplexRemotable)
+  CartAddRequest = class(TBaseComplexRemotable)
   private
     FCartId : string;
     FHMAC : string;
@@ -2060,7 +2317,7 @@ type
     property MetaData : CartCreateRequest_Items_Type_Item_Type_MetaDataArray read FMetaData write FMetaData stored HasMetaData;
   end;
 
-  CartCreateRequest_Type = class(TBaseComplexRemotable)
+  CartCreateRequest = class(TBaseComplexRemotable)
   private
     FMergeCart : string;
     FItems : CartCreateRequest_Items_Type;
@@ -2093,7 +2350,7 @@ type
     property Quantity : nonNegativeInteger read FQuantity write FQuantity stored HasQuantity;
   end;
 
-  CartModifyRequest_Type = class(TBaseComplexRemotable)
+  CartModifyRequest = class(TBaseComplexRemotable)
   private
     FCartId : string;
     FHMAC : string;
@@ -2117,7 +2374,7 @@ type
     property ResponseGroup : CartModifyRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  CartClearRequest_Type = class(TBaseComplexRemotable)
+  CartClearRequest = class(TBaseComplexRemotable)
   private
     FCartId : string;
     FHMAC : string;
@@ -2138,7 +2395,7 @@ type
     property ResponseGroup : CartClearRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  TransactionLookupRequest_Type = class(TBaseComplexRemotable)
+  TransactionLookupRequest = class(TBaseComplexRemotable)
   private
     FResponseGroup : TransactionLookupRequest_ResponseGroupArray;
     FTransactionId : TransactionLookupRequest_TransactionIdArray;
@@ -2153,7 +2410,7 @@ type
     property TransactionId : TransactionLookupRequest_TransactionIdArray read FTransactionId write FTransactionId stored HasTransactionId;
   end;
 
-  SellerListingSearchRequest_Type = class(TBaseComplexRemotable)
+  SellerListingSearchRequest = class(TBaseComplexRemotable)
   private
     FKeywords : string;
     FListingPage : positiveInteger;
@@ -2182,7 +2439,7 @@ type
     property Title : string read FTitle write FTitle stored HasTitle;
   end;
 
-  SellerListingLookupRequest_Type = class(TBaseComplexRemotable)
+  SellerListingLookupRequest = class(TBaseComplexRemotable)
   private
     FId : string;
     FSellerId : string;
@@ -2201,7 +2458,7 @@ type
     property ResponseGroup : SellerListingLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  TagLookupRequest_Type = class(TBaseComplexRemotable)
+  TagLookupRequest = class(TBaseComplexRemotable)
   private
     FTagName : TagLookupRequest_TagNameArray;
     FCustomerId : string;
@@ -2228,7 +2485,7 @@ type
     property ResponseGroup : TagLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
-  BrowseNodeLookupRequest_Type = class(TBaseComplexRemotable)
+  BrowseNodeLookupRequest = class(TBaseComplexRemotable)
   private
     FBrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray;
     FResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray;
@@ -2241,6 +2498,168 @@ type
   published
     property BrowseNodeId : BrowseNodeLookupRequest_BrowseNodeIdArray read FBrowseNodeId write FBrowseNodeId stored HasBrowseNodeId;
     property ResponseGroup : BrowseNodeLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  VehicleSearchRequest = class(TBaseComplexRemotable)
+  private
+    FYear : nonNegativeInteger;
+    FMakeId : nonNegativeInteger;
+    FModelId : nonNegativeInteger;
+    FTrimId : nonNegativeInteger;
+    FResponseGroup : VehicleSearchRequest_ResponseGroupArray;
+  private
+    function HasYear() : Boolean;
+    function HasMakeId() : Boolean;
+    function HasModelId() : Boolean;
+    function HasTrimId() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Year : nonNegativeInteger read FYear write FYear stored HasYear;
+    property MakeId : nonNegativeInteger read FMakeId write FMakeId stored HasMakeId;
+    property ModelId : nonNegativeInteger read FModelId write FModelId stored HasModelId;
+    property TrimId : nonNegativeInteger read FTrimId write FTrimId stored HasTrimId;
+    property ResponseGroup : VehicleSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  VehiclePartSearchRequest = class(TBaseComplexRemotable)
+  private
+    FYear : nonNegativeInteger;
+    FMakeId : nonNegativeInteger;
+    FModelId : nonNegativeInteger;
+    FTrimId : nonNegativeInteger;
+    FBedId : nonNegativeInteger;
+    FBodyStyleId : nonNegativeInteger;
+    FBrakesId : nonNegativeInteger;
+    FDriveTypeId : nonNegativeInteger;
+    FEngineId : nonNegativeInteger;
+    FMfrBodyCodeId : nonNegativeInteger;
+    FSpringTypesId : nonNegativeInteger;
+    FSteeringId : nonNegativeInteger;
+    FTransmissionId : nonNegativeInteger;
+    FWheelbaseId : nonNegativeInteger;
+    FBrowseNodeId : nonNegativeInteger;
+    FBrand : string;
+    FCount : nonNegativeInteger;
+    FFromItemId : string;
+    FPartPageDirection : string;
+    FResponseGroup : VehiclePartSearchRequest_ResponseGroupArray;
+  private
+    function HasYear() : Boolean;
+    function HasMakeId() : Boolean;
+    function HasModelId() : Boolean;
+    function HasTrimId() : Boolean;
+    function HasBedId() : Boolean;
+    function HasBodyStyleId() : Boolean;
+    function HasBrakesId() : Boolean;
+    function HasDriveTypeId() : Boolean;
+    function HasEngineId() : Boolean;
+    function HasMfrBodyCodeId() : Boolean;
+    function HasSpringTypesId() : Boolean;
+    function HasSteeringId() : Boolean;
+    function HasTransmissionId() : Boolean;
+    function HasWheelbaseId() : Boolean;
+    function HasBrowseNodeId() : Boolean;
+    function HasBrand() : Boolean;
+    function HasCount() : Boolean;
+    function HasFromItemId() : Boolean;
+    function HasPartPageDirection() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Year : nonNegativeInteger read FYear write FYear stored HasYear;
+    property MakeId : nonNegativeInteger read FMakeId write FMakeId stored HasMakeId;
+    property ModelId : nonNegativeInteger read FModelId write FModelId stored HasModelId;
+    property TrimId : nonNegativeInteger read FTrimId write FTrimId stored HasTrimId;
+    property BedId : nonNegativeInteger read FBedId write FBedId stored HasBedId;
+    property BodyStyleId : nonNegativeInteger read FBodyStyleId write FBodyStyleId stored HasBodyStyleId;
+    property BrakesId : nonNegativeInteger read FBrakesId write FBrakesId stored HasBrakesId;
+    property DriveTypeId : nonNegativeInteger read FDriveTypeId write FDriveTypeId stored HasDriveTypeId;
+    property EngineId : nonNegativeInteger read FEngineId write FEngineId stored HasEngineId;
+    property MfrBodyCodeId : nonNegativeInteger read FMfrBodyCodeId write FMfrBodyCodeId stored HasMfrBodyCodeId;
+    property SpringTypesId : nonNegativeInteger read FSpringTypesId write FSpringTypesId stored HasSpringTypesId;
+    property SteeringId : nonNegativeInteger read FSteeringId write FSteeringId stored HasSteeringId;
+    property TransmissionId : nonNegativeInteger read FTransmissionId write FTransmissionId stored HasTransmissionId;
+    property WheelbaseId : nonNegativeInteger read FWheelbaseId write FWheelbaseId stored HasWheelbaseId;
+    property BrowseNodeId : nonNegativeInteger read FBrowseNodeId write FBrowseNodeId stored HasBrowseNodeId;
+    property Brand : string read FBrand write FBrand stored HasBrand;
+    property Count : nonNegativeInteger read FCount write FCount stored HasCount;
+    property FromItemId : string read FFromItemId write FFromItemId stored HasFromItemId;
+    property PartPageDirection : string read FPartPageDirection write FPartPageDirection stored HasPartPageDirection;
+    property ResponseGroup : VehiclePartSearchRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
+  end;
+
+  VehiclePartLookupRequest = class(TBaseComplexRemotable)
+  private
+    FItemId : string;
+    FIdType : string;
+    FYear : nonNegativeInteger;
+    FMakeId : nonNegativeInteger;
+    FModelId : nonNegativeInteger;
+    FTrimId : nonNegativeInteger;
+    FBedId : nonNegativeInteger;
+    FBodyStyleId : nonNegativeInteger;
+    FBrakesId : nonNegativeInteger;
+    FDriveTypeId : nonNegativeInteger;
+    FEngineId : nonNegativeInteger;
+    FMfrBodyCodeId : nonNegativeInteger;
+    FSpringTypesId : nonNegativeInteger;
+    FSteeringId : nonNegativeInteger;
+    FTransmissionId : nonNegativeInteger;
+    FWheelbaseId : nonNegativeInteger;
+    FBrowseNodeId : nonNegativeInteger;
+    FFitmentPage : nonNegativeInteger;
+    FFitmentCount : nonNegativeInteger;
+    FResponseGroup : VehiclePartLookupRequest_ResponseGroupArray;
+  private
+    function HasItemId() : Boolean;
+    function HasIdType() : Boolean;
+    function HasYear() : Boolean;
+    function HasMakeId() : Boolean;
+    function HasModelId() : Boolean;
+    function HasTrimId() : Boolean;
+    function HasBedId() : Boolean;
+    function HasBodyStyleId() : Boolean;
+    function HasBrakesId() : Boolean;
+    function HasDriveTypeId() : Boolean;
+    function HasEngineId() : Boolean;
+    function HasMfrBodyCodeId() : Boolean;
+    function HasSpringTypesId() : Boolean;
+    function HasSteeringId() : Boolean;
+    function HasTransmissionId() : Boolean;
+    function HasWheelbaseId() : Boolean;
+    function HasBrowseNodeId() : Boolean;
+    function HasFitmentPage() : Boolean;
+    function HasFitmentCount() : Boolean;
+    function HasResponseGroup() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ItemId : string read FItemId write FItemId stored HasItemId;
+    property IdType : string read FIdType write FIdType stored HasIdType;
+    property Year : nonNegativeInteger read FYear write FYear stored HasYear;
+    property MakeId : nonNegativeInteger read FMakeId write FMakeId stored HasMakeId;
+    property ModelId : nonNegativeInteger read FModelId write FModelId stored HasModelId;
+    property TrimId : nonNegativeInteger read FTrimId write FTrimId stored HasTrimId;
+    property BedId : nonNegativeInteger read FBedId write FBedId stored HasBedId;
+    property BodyStyleId : nonNegativeInteger read FBodyStyleId write FBodyStyleId stored HasBodyStyleId;
+    property BrakesId : nonNegativeInteger read FBrakesId write FBrakesId stored HasBrakesId;
+    property DriveTypeId : nonNegativeInteger read FDriveTypeId write FDriveTypeId stored HasDriveTypeId;
+    property EngineId : nonNegativeInteger read FEngineId write FEngineId stored HasEngineId;
+    property MfrBodyCodeId : nonNegativeInteger read FMfrBodyCodeId write FMfrBodyCodeId stored HasMfrBodyCodeId;
+    property SpringTypesId : nonNegativeInteger read FSpringTypesId write FSpringTypesId stored HasSpringTypesId;
+    property SteeringId : nonNegativeInteger read FSteeringId write FSteeringId stored HasSteeringId;
+    property TransmissionId : nonNegativeInteger read FTransmissionId write FTransmissionId stored HasTransmissionId;
+    property WheelbaseId : nonNegativeInteger read FWheelbaseId write FWheelbaseId stored HasWheelbaseId;
+    property BrowseNodeId : nonNegativeInteger read FBrowseNodeId write FBrowseNodeId stored HasBrowseNodeId;
+    property FitmentPage : nonNegativeInteger read FFitmentPage write FFitmentPage stored HasFitmentPage;
+    property FitmentCount : nonNegativeInteger read FFitmentCount write FFitmentCount stored HasFitmentCount;
+    property ResponseGroup : VehiclePartLookupRequest_ResponseGroupArray read FResponseGroup write FResponseGroup stored HasResponseGroup;
   end;
 
   OperationRequest_Type = class(TBaseComplexRemotable)
@@ -2270,25 +2689,28 @@ type
   Request_Type = class(TBaseComplexRemotable)
   private
     FIsValid : string;
-    FHelpRequest : HelpRequest_Type;
-    FBrowseNodeLookupRequest : BrowseNodeLookupRequest_Type;
-    FItemSearchRequest : ItemSearchRequest_Type;
-    FItemLookupRequest : ItemLookupRequest_Type;
-    FListSearchRequest : ListSearchRequest_Type;
-    FListLookupRequest : ListLookupRequest_Type;
-    FCustomerContentSearchRequest : CustomerContentSearchRequest_Type;
-    FCustomerContentLookupRequest : CustomerContentLookupRequest_Type;
-    FSimilarityLookupRequest : SimilarityLookupRequest_Type;
-    FCartGetRequest : CartGetRequest_Type;
-    FCartAddRequest : CartAddRequest_Type;
-    FCartCreateRequest : CartCreateRequest_Type;
-    FCartModifyRequest : CartModifyRequest_Type;
-    FCartClearRequest : CartClearRequest_Type;
-    FTransactionLookupRequest : TransactionLookupRequest_Type;
-    FSellerListingSearchRequest : SellerListingSearchRequest_Type;
-    FSellerListingLookupRequest : SellerListingLookupRequest_Type;
-    FSellerLookupRequest : SellerLookupRequest_Type;
-    FTagLookupRequest : TagLookupRequest_Type;
+    FHelpRequest : HelpRequest;
+    FBrowseNodeLookupRequest : BrowseNodeLookupRequest;
+    FItemSearchRequest : ItemSearchRequest;
+    FItemLookupRequest : ItemLookupRequest;
+    FListSearchRequest : ListSearchRequest;
+    FListLookupRequest : ListLookupRequest;
+    FCustomerContentSearchRequest : CustomerContentSearchRequest;
+    FCustomerContentLookupRequest : CustomerContentLookupRequest;
+    FSimilarityLookupRequest : SimilarityLookupRequest;
+    FCartGetRequest : CartGetRequest;
+    FCartAddRequest : CartAddRequest;
+    FCartCreateRequest : CartCreateRequest;
+    FCartModifyRequest : CartModifyRequest;
+    FCartClearRequest : CartClearRequest;
+    FTransactionLookupRequest : TransactionLookupRequest;
+    FSellerListingSearchRequest : SellerListingSearchRequest;
+    FSellerListingLookupRequest : SellerListingLookupRequest;
+    FSellerLookupRequest : SellerLookupRequest;
+    FTagLookupRequest : TagLookupRequest;
+    FVehicleSearchRequest : VehicleSearchRequest;
+    FVehiclePartSearchRequest : VehiclePartSearchRequest;
+    FVehiclePartLookupRequest : VehiclePartLookupRequest;
     FErrors : Errors_Type;
   private
     function HasIsValid() : Boolean;
@@ -2311,31 +2733,37 @@ type
     function HasSellerListingLookupRequest() : Boolean;
     function HasSellerLookupRequest() : Boolean;
     function HasTagLookupRequest() : Boolean;
+    function HasVehicleSearchRequest() : Boolean;
+    function HasVehiclePartSearchRequest() : Boolean;
+    function HasVehiclePartLookupRequest() : Boolean;
     function HasErrors() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property IsValid : string read FIsValid write FIsValid stored HasIsValid;
-    property HelpRequest : HelpRequest_Type read FHelpRequest write FHelpRequest stored HasHelpRequest;
-    property BrowseNodeLookupRequest : BrowseNodeLookupRequest_Type read FBrowseNodeLookupRequest write FBrowseNodeLookupRequest stored HasBrowseNodeLookupRequest;
-    property ItemSearchRequest : ItemSearchRequest_Type read FItemSearchRequest write FItemSearchRequest stored HasItemSearchRequest;
-    property ItemLookupRequest : ItemLookupRequest_Type read FItemLookupRequest write FItemLookupRequest stored HasItemLookupRequest;
-    property ListSearchRequest : ListSearchRequest_Type read FListSearchRequest write FListSearchRequest stored HasListSearchRequest;
-    property ListLookupRequest : ListLookupRequest_Type read FListLookupRequest write FListLookupRequest stored HasListLookupRequest;
-    property CustomerContentSearchRequest : CustomerContentSearchRequest_Type read FCustomerContentSearchRequest write FCustomerContentSearchRequest stored HasCustomerContentSearchRequest;
-    property CustomerContentLookupRequest : CustomerContentLookupRequest_Type read FCustomerContentLookupRequest write FCustomerContentLookupRequest stored HasCustomerContentLookupRequest;
-    property SimilarityLookupRequest : SimilarityLookupRequest_Type read FSimilarityLookupRequest write FSimilarityLookupRequest stored HasSimilarityLookupRequest;
-    property CartGetRequest : CartGetRequest_Type read FCartGetRequest write FCartGetRequest stored HasCartGetRequest;
-    property CartAddRequest : CartAddRequest_Type read FCartAddRequest write FCartAddRequest stored HasCartAddRequest;
-    property CartCreateRequest : CartCreateRequest_Type read FCartCreateRequest write FCartCreateRequest stored HasCartCreateRequest;
-    property CartModifyRequest : CartModifyRequest_Type read FCartModifyRequest write FCartModifyRequest stored HasCartModifyRequest;
-    property CartClearRequest : CartClearRequest_Type read FCartClearRequest write FCartClearRequest stored HasCartClearRequest;
-    property TransactionLookupRequest : TransactionLookupRequest_Type read FTransactionLookupRequest write FTransactionLookupRequest stored HasTransactionLookupRequest;
-    property SellerListingSearchRequest : SellerListingSearchRequest_Type read FSellerListingSearchRequest write FSellerListingSearchRequest stored HasSellerListingSearchRequest;
-    property SellerListingLookupRequest : SellerListingLookupRequest_Type read FSellerListingLookupRequest write FSellerListingLookupRequest stored HasSellerListingLookupRequest;
-    property SellerLookupRequest : SellerLookupRequest_Type read FSellerLookupRequest write FSellerLookupRequest stored HasSellerLookupRequest;
-    property TagLookupRequest : TagLookupRequest_Type read FTagLookupRequest write FTagLookupRequest stored HasTagLookupRequest;
+    property HelpRequest : HelpRequest read FHelpRequest write FHelpRequest stored HasHelpRequest;
+    property BrowseNodeLookupRequest : BrowseNodeLookupRequest read FBrowseNodeLookupRequest write FBrowseNodeLookupRequest stored HasBrowseNodeLookupRequest;
+    property ItemSearchRequest : ItemSearchRequest read FItemSearchRequest write FItemSearchRequest stored HasItemSearchRequest;
+    property ItemLookupRequest : ItemLookupRequest read FItemLookupRequest write FItemLookupRequest stored HasItemLookupRequest;
+    property ListSearchRequest : ListSearchRequest read FListSearchRequest write FListSearchRequest stored HasListSearchRequest;
+    property ListLookupRequest : ListLookupRequest read FListLookupRequest write FListLookupRequest stored HasListLookupRequest;
+    property CustomerContentSearchRequest : CustomerContentSearchRequest read FCustomerContentSearchRequest write FCustomerContentSearchRequest stored HasCustomerContentSearchRequest;
+    property CustomerContentLookupRequest : CustomerContentLookupRequest read FCustomerContentLookupRequest write FCustomerContentLookupRequest stored HasCustomerContentLookupRequest;
+    property SimilarityLookupRequest : SimilarityLookupRequest read FSimilarityLookupRequest write FSimilarityLookupRequest stored HasSimilarityLookupRequest;
+    property CartGetRequest : CartGetRequest read FCartGetRequest write FCartGetRequest stored HasCartGetRequest;
+    property CartAddRequest : CartAddRequest read FCartAddRequest write FCartAddRequest stored HasCartAddRequest;
+    property CartCreateRequest : CartCreateRequest read FCartCreateRequest write FCartCreateRequest stored HasCartCreateRequest;
+    property CartModifyRequest : CartModifyRequest read FCartModifyRequest write FCartModifyRequest stored HasCartModifyRequest;
+    property CartClearRequest : CartClearRequest read FCartClearRequest write FCartClearRequest stored HasCartClearRequest;
+    property TransactionLookupRequest : TransactionLookupRequest read FTransactionLookupRequest write FTransactionLookupRequest stored HasTransactionLookupRequest;
+    property SellerListingSearchRequest : SellerListingSearchRequest read FSellerListingSearchRequest write FSellerListingSearchRequest stored HasSellerListingSearchRequest;
+    property SellerListingLookupRequest : SellerListingLookupRequest read FSellerListingLookupRequest write FSellerListingLookupRequest stored HasSellerListingLookupRequest;
+    property SellerLookupRequest : SellerLookupRequest read FSellerLookupRequest write FSellerLookupRequest stored HasSellerLookupRequest;
+    property TagLookupRequest : TagLookupRequest read FTagLookupRequest write FTagLookupRequest stored HasTagLookupRequest;
+    property VehicleSearchRequest : VehicleSearchRequest read FVehicleSearchRequest write FVehicleSearchRequest stored HasVehicleSearchRequest;
+    property VehiclePartSearchRequest : VehiclePartSearchRequest read FVehiclePartSearchRequest write FVehiclePartSearchRequest stored HasVehiclePartSearchRequest;
+    property VehiclePartLookupRequest : VehiclePartLookupRequest read FVehiclePartLookupRequest write FVehiclePartLookupRequest stored HasVehiclePartLookupRequest;
     property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
   end;
 
@@ -2343,9 +2771,11 @@ type
   private
     FName : string;
     FValue : string;
+  private
+    function HasValue() : Boolean;
   published
     property Name : string read FName write FName;
-    property Value : string read FValue write FValue;
+    property Value : string read FValue write FValue stored HasValue;
   end;
 
   HTTPHeaders_Header_Type = class(TBaseComplexRemotable)
@@ -2481,7 +2911,7 @@ type
     FHMAC : string;
     FURLEncodedHMAC : string;
     FPurchaseURL : string;
-    FSubTotal : Price_Type;
+    FSubTotal : Price;
     FCartItems : CartItems_Type;
     FSavedForLaterItems : SavedForLaterItems_Type;
     FSimilarProducts : SimilarProducts_Type;
@@ -2509,7 +2939,7 @@ type
     property HMAC : string read FHMAC write FHMAC;
     property URLEncodedHMAC : string read FURLEncodedHMAC write FURLEncodedHMAC;
     property PurchaseURL : string read FPurchaseURL write FPurchaseURL stored HasPurchaseURL;
-    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
     property CartItems : CartItems_Type read FCartItems write FCartItems stored HasCartItems;
     property SavedForLaterItems : SavedForLaterItems_Type read FSavedForLaterItems write FSavedForLaterItems stored HasSavedForLaterItems;
     property SimilarProducts : SimilarProducts_Type read FSimilarProducts write FSimilarProducts stored HasSimilarProducts;
@@ -2639,12 +3069,13 @@ type
     FTotalItems : nonNegativeInteger;
     FTotalPages : nonNegativeInteger;
     FDateCreated : string;
+    FLastModified : string;
     FOccasionDate : string;
     FCustomerName : string;
     FPartnerName : string;
     FAdditionalName : string;
     FComment : string;
-    FImage : Image_Type;
+    FImage : Image;
     FAverageRating : Extended;
     FTotalVotes : nonNegativeInteger;
     FTotalTimesRead : nonNegativeInteger;
@@ -2658,6 +3089,7 @@ type
     function HasTotalItems() : Boolean;
     function HasTotalPages() : Boolean;
     function HasDateCreated() : Boolean;
+    function HasLastModified() : Boolean;
     function HasOccasionDate() : Boolean;
     function HasCustomerName() : Boolean;
     function HasPartnerName() : Boolean;
@@ -2681,12 +3113,13 @@ type
     property TotalItems : nonNegativeInteger read FTotalItems write FTotalItems stored HasTotalItems;
     property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages stored HasTotalPages;
     property DateCreated : string read FDateCreated write FDateCreated stored HasDateCreated;
+    property LastModified : string read FLastModified write FLastModified stored HasLastModified;
     property OccasionDate : string read FOccasionDate write FOccasionDate stored HasOccasionDate;
     property CustomerName : string read FCustomerName write FCustomerName stored HasCustomerName;
     property PartnerName : string read FPartnerName write FPartnerName stored HasPartnerName;
     property AdditionalName : string read FAdditionalName write FAdditionalName stored HasAdditionalName;
     property Comment : string read FComment write FComment stored HasComment;
-    property Image : Image_Type read FImage write FImage stored HasImage;
+    property Image : Image read FImage write FImage stored HasImage;
     property AverageRating : Extended read FAverageRating write FAverageRating stored HasAverageRating;
     property TotalVotes : nonNegativeInteger read FTotalVotes write FTotalVotes stored HasTotalVotes;
     property TotalTimesRead : nonNegativeInteger read FTotalTimesRead write FTotalTimesRead stored HasTotalTimesRead;
@@ -2701,6 +3134,7 @@ type
     FComment : string;
     FQuantityDesired : string;
     FQuantityReceived : string;
+    FPriority : string;
     F_Item : Item_Type;
   private
     function HasListItemId() : Boolean;
@@ -2708,6 +3142,7 @@ type
     function HasComment() : Boolean;
     function HasQuantityDesired() : Boolean;
     function HasQuantityReceived() : Boolean;
+    function HasPriority() : Boolean;
     function Has_Item() : Boolean;
   public
     constructor Create();override;
@@ -2718,6 +3153,7 @@ type
     property Comment : string read FComment write FComment stored HasComment;
     property QuantityDesired : string read FQuantityDesired write FQuantityDesired stored HasQuantityDesired;
     property QuantityReceived : string read FQuantityReceived write FQuantityReceived stored HasQuantityReceived;
+    property Priority : string read FPriority write FPriority stored HasPriority;
     property _Item : Item_Type read F_Item write F_Item stored Has_Item;
   end;
 
@@ -2827,13 +3263,15 @@ type
     FParentASIN : string;
     FErrors : Errors_Type;
     FDetailPageURL : string;
+    FItemLinks : ItemLinks_Type;
     FSalesRank : string;
-    FSmallImage : Image_Type;
-    FMediumImage : Image_Type;
-    FLargeImage : Image_Type;
+    FSmallImage : Image;
+    FMediumImage : Image;
+    FLargeImage : Image;
     FImageSets : _Item_ImageSetsArray;
     FItemAttributes : ItemAttributes_Type;
     FMerchantItemAttributes : MerchantItemAttributes_Type;
+    FRelatedItems : _Item_RelatedItemsArray;
     FCollections : Collections_Type;
     FSubjects : Item_Subjects_Type;
     FOfferSummary : OfferSummary_Type;
@@ -2854,6 +3292,7 @@ type
     function HasParentASIN() : Boolean;
     function HasErrors() : Boolean;
     function HasDetailPageURL() : Boolean;
+    function HasItemLinks() : Boolean;
     function HasSalesRank() : Boolean;
     function HasSmallImage() : Boolean;
     function HasMediumImage() : Boolean;
@@ -2861,6 +3300,7 @@ type
     function HasImageSets() : Boolean;
     function HasItemAttributes() : Boolean;
     function HasMerchantItemAttributes() : Boolean;
+    function HasRelatedItems() : Boolean;
     function HasCollections() : Boolean;
     function HasSubjects() : Boolean;
     function HasOfferSummary() : Boolean;
@@ -2885,13 +3325,15 @@ type
     property ParentASIN : string read FParentASIN write FParentASIN stored HasParentASIN;
     property Errors : Errors_Type read FErrors write FErrors stored HasErrors;
     property DetailPageURL : string read FDetailPageURL write FDetailPageURL stored HasDetailPageURL;
+    property ItemLinks : ItemLinks_Type read FItemLinks write FItemLinks stored HasItemLinks;
     property SalesRank : string read FSalesRank write FSalesRank stored HasSalesRank;
-    property SmallImage : Image_Type read FSmallImage write FSmallImage stored HasSmallImage;
-    property MediumImage : Image_Type read FMediumImage write FMediumImage stored HasMediumImage;
-    property LargeImage : Image_Type read FLargeImage write FLargeImage stored HasLargeImage;
+    property SmallImage : Image read FSmallImage write FSmallImage stored HasSmallImage;
+    property MediumImage : Image read FMediumImage write FMediumImage stored HasMediumImage;
+    property LargeImage : Image read FLargeImage write FLargeImage stored HasLargeImage;
     property ImageSets : _Item_ImageSetsArray read FImageSets write FImageSets stored HasImageSets;
     property ItemAttributes : ItemAttributes_Type read FItemAttributes write FItemAttributes stored HasItemAttributes;
     property MerchantItemAttributes : MerchantItemAttributes_Type read FMerchantItemAttributes write FMerchantItemAttributes stored HasMerchantItemAttributes;
+    property RelatedItems : _Item_RelatedItemsArray read FRelatedItems write FRelatedItems stored HasRelatedItems;
     property Collections : Collections_Type read FCollections write FCollections stored HasCollections;
     property Subjects : Item_Subjects_Type read FSubjects write FSubjects stored HasSubjects;
     property OfferSummary : OfferSummary_Type read FOfferSummary write FOfferSummary stored HasOfferSummary;
@@ -2910,6 +3352,57 @@ type
     property AlternateVersions : Item_AlternateVersions_Type read FAlternateVersions write FAlternateVersions stored HasAlternateVersions;
   end;
 
+  ItemLink_Type = class(TBaseComplexRemotable)
+  private
+    FDescription : string;
+    FURL : string;
+  private
+    function HasDescription() : Boolean;
+    function HasURL() : Boolean;
+  published
+    property Description : string read FDescription write FDescription stored HasDescription;
+    property URL : string read FURL write FURL stored HasURL;
+  end;
+
+  RelatedItems_Type = class(TBaseComplexRemotable)
+  private
+    FRelationship : RelatedItems_Relationship_Type;
+    FRelationshipType : string;
+    FRelatedItemCount : nonNegativeInteger;
+    FRelatedItemPageCount : nonNegativeInteger;
+    FRelatedItemPage : nonNegativeInteger;
+    FRelatedItem : RelatedItems_RelatedItemArray;
+  private
+    function HasRelationship() : Boolean;
+    function HasRelationshipType() : Boolean;
+    function HasRelatedItemCount() : Boolean;
+    function HasRelatedItemPageCount() : Boolean;
+    function HasRelatedItemPage() : Boolean;
+    function HasRelatedItem() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Relationship : RelatedItems_Relationship_Type read FRelationship write FRelationship stored HasRelationship;
+    property RelationshipType : string read FRelationshipType write FRelationshipType stored HasRelationshipType;
+    property RelatedItemCount : nonNegativeInteger read FRelatedItemCount write FRelatedItemCount stored HasRelatedItemCount;
+    property RelatedItemPageCount : nonNegativeInteger read FRelatedItemPageCount write FRelatedItemPageCount stored HasRelatedItemPageCount;
+    property RelatedItemPage : nonNegativeInteger read FRelatedItemPage write FRelatedItemPage stored HasRelatedItemPage;
+    property RelatedItem : RelatedItems_RelatedItemArray read FRelatedItem write FRelatedItem stored HasRelatedItem;
+  end;
+
+  RelatedItem_Type = class(TBaseComplexRemotable)
+  private
+    F_Item : Item_Type;
+  private
+    function Has_Item() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property _Item : Item_Type read F_Item write F_Item stored Has_Item;
+  end;
+
   Tags_Type = class(TBaseComplexRemotable)
   private
     FRequest : Request_Type;
@@ -2917,8 +3410,8 @@ type
     FDistinctItems : string;
     FDistinctUsers : string;
     FTotalUsages : string;
-    FFirstTagging : Tagging_Type;
-    FLastTagging : Tagging_Type;
+    FFirstTagging : Tagging;
+    FLastTagging : Tagging;
     FTag : Tags_TagArray;
   private
     function HasRequest() : Boolean;
@@ -2938,8 +3431,8 @@ type
     property DistinctItems : string read FDistinctItems write FDistinctItems stored HasDistinctItems;
     property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
     property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
-    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
-    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property FirstTagging : Tagging read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging read FLastTagging write FLastTagging stored HasLastTagging;
     property Tag : Tags_TagArray read FTag write FTag stored HasTag;
   end;
 
@@ -2950,8 +3443,8 @@ type
     FDistinctItems : string;
     FDistinctUsers : string;
     FTotalUsages : string;
-    FFirstTagging : Tagging_Type;
-    FLastTagging : Tagging_Type;
+    FFirstTagging : Tagging;
+    FLastTagging : Tagging;
     FTaggedItems : Tag_TaggedItemsArray;
     FTaggedListmaniaLists : Tag_TaggedListmaniaListsArray;
     FTaggedGuides : Tag_TaggedGuidesArray;
@@ -2975,8 +3468,8 @@ type
     property DistinctItems : string read FDistinctItems write FDistinctItems stored HasDistinctItems;
     property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
     property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
-    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
-    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property FirstTagging : Tagging read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging read FLastTagging write FLastTagging stored HasLastTagging;
     property TaggedItems : Tag_TaggedItemsArray read FTaggedItems write FTaggedItems stored HasTaggedItems;
     property TaggedListmaniaLists : Tag_TaggedListmaniaListsArray read FTaggedListmaniaLists write FTaggedListmaniaLists stored HasTaggedListmaniaLists;
     property TaggedGuides : Tag_TaggedGuidesArray read FTaggedGuides write FTaggedGuides stored HasTaggedGuides;
@@ -2987,8 +3480,8 @@ type
     F_Item : Item_Type;
     FDistinctUsers : string;
     FTotalUsages : string;
-    FFirstTagging : Tagging_Type;
-    FLastTagging : Tagging_Type;
+    FFirstTagging : Tagging;
+    FLastTagging : Tagging;
   private
     function Has_Item() : Boolean;
     function HasDistinctUsers() : Boolean;
@@ -3002,8 +3495,8 @@ type
     property _Item : Item_Type read F_Item write F_Item stored Has_Item;
     property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
     property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
-    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
-    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property FirstTagging : Tagging read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging read FLastTagging write FLastTagging stored HasLastTagging;
   end;
 
   TaggedListmaniaLists_Type = class(TBaseComplexRemotable)
@@ -3011,8 +3504,8 @@ type
     FList : List_Type;
     FDistinctUsers : string;
     FTotalUsages : string;
-    FFirstTagging : Tagging_Type;
-    FLastTagging : Tagging_Type;
+    FFirstTagging : Tagging;
+    FLastTagging : Tagging;
   private
     function HasList() : Boolean;
     function HasDistinctUsers() : Boolean;
@@ -3026,8 +3519,8 @@ type
     property List : List_Type read FList write FList stored HasList;
     property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
     property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
-    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
-    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property FirstTagging : Tagging read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging read FLastTagging write FLastTagging stored HasLastTagging;
   end;
 
   TaggedGuides_Type = class(TBaseComplexRemotable)
@@ -3035,8 +3528,8 @@ type
     FGuide : Guide_Type;
     FDistinctUsers : string;
     FTotalUsages : string;
-    FFirstTagging : Tagging_Type;
-    FLastTagging : Tagging_Type;
+    FFirstTagging : Tagging;
+    FLastTagging : Tagging;
   private
     function HasGuide() : Boolean;
     function HasDistinctUsers() : Boolean;
@@ -3050,8 +3543,8 @@ type
     property Guide : Guide_Type read FGuide write FGuide stored HasGuide;
     property DistinctUsers : string read FDistinctUsers write FDistinctUsers stored HasDistinctUsers;
     property TotalUsages : string read FTotalUsages write FTotalUsages stored HasTotalUsages;
-    property FirstTagging : Tagging_Type read FFirstTagging write FFirstTagging stored HasFirstTagging;
-    property LastTagging : Tagging_Type read FLastTagging write FLastTagging stored HasLastTagging;
+    property FirstTagging : Tagging read FFirstTagging write FFirstTagging stored HasFirstTagging;
+    property LastTagging : Tagging read FLastTagging write FLastTagging stored HasLastTagging;
   end;
 
   Guide_Type = class(TBaseComplexRemotable)
@@ -3063,7 +3556,7 @@ type
     property GuideId : string read FGuideId write FGuideId stored HasGuideId;
   end;
 
-  Tagging_Type = class(TBaseComplexRemotable)
+  Tagging = class(TBaseComplexRemotable)
   private
     FName : string;
     FEntityId : string;
@@ -3083,10 +3576,10 @@ type
 
   OfferSummary_Type = class(TBaseComplexRemotable)
   private
-    FLowestNewPrice : Price_Type;
-    FLowestUsedPrice : Price_Type;
-    FLowestCollectiblePrice : Price_Type;
-    FLowestRefurbishedPrice : Price_Type;
+    FLowestNewPrice : Price;
+    FLowestUsedPrice : Price;
+    FLowestCollectiblePrice : Price;
+    FLowestRefurbishedPrice : Price;
     FTotalNew : string;
     FTotalUsed : string;
     FTotalCollectible : string;
@@ -3104,10 +3597,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property LowestNewPrice : Price_Type read FLowestNewPrice write FLowestNewPrice stored HasLowestNewPrice;
-    property LowestUsedPrice : Price_Type read FLowestUsedPrice write FLowestUsedPrice stored HasLowestUsedPrice;
-    property LowestCollectiblePrice : Price_Type read FLowestCollectiblePrice write FLowestCollectiblePrice stored HasLowestCollectiblePrice;
-    property LowestRefurbishedPrice : Price_Type read FLowestRefurbishedPrice write FLowestRefurbishedPrice stored HasLowestRefurbishedPrice;
+    property LowestNewPrice : Price read FLowestNewPrice write FLowestNewPrice stored HasLowestNewPrice;
+    property LowestUsedPrice : Price read FLowestUsedPrice write FLowestUsedPrice stored HasLowestUsedPrice;
+    property LowestCollectiblePrice : Price read FLowestCollectiblePrice write FLowestCollectiblePrice stored HasLowestCollectiblePrice;
+    property LowestRefurbishedPrice : Price read FLowestRefurbishedPrice write FLowestRefurbishedPrice stored HasLowestRefurbishedPrice;
     property TotalNew : string read FTotalNew write FTotalNew stored HasTotalNew;
     property TotalUsed : string read FTotalUsed write FTotalUsed stored HasTotalUsed;
     property TotalCollectible : string read FTotalCollectible write FTotalCollectible stored HasTotalCollectible;
@@ -3224,29 +3717,33 @@ type
   OfferListing_ShippingCharge_Type = class(TBaseComplexRemotable)
   private
     FShippingType : string;
-    FShippingPrice : Price_Type;
+    FIsRateTaxInclusive : boolean;
+    FShippingPrice : Price;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property ShippingType : string read FShippingType write FShippingType;
-    property ShippingPrice : Price_Type read FShippingPrice write FShippingPrice;
+    property IsRateTaxInclusive : boolean read FIsRateTaxInclusive write FIsRateTaxInclusive;
+    property ShippingPrice : Price read FShippingPrice write FShippingPrice;
   end;
 
   OfferListing_Type = class(TBaseComplexRemotable)
   private
     FOfferListingId : string;
     FExchangeId : string;
-    FPrice : Price_Type;
-    FSalePrice : Price_Type;
-    FAmountSaved : Price_Type;
+    FPrice : Price;
+    FSalePrice : Price;
+    FAmountSaved : Price;
     FPercentageSaved : nonNegativeInteger;
     FAvailability : string;
     FAvailabilityAttributes : OfferListing_AvailabilityAttributes_Type;
     FQuantity : integer;
-    FISPUStoreAddress : Address_Type;
+    FISPUStoreAddress : Address;
     FISPUStoreHours : string;
     FIsEligibleForSuperSaverShipping : boolean;
+    FIsEligibleForPrime : boolean;
+    FIsMapViolated : boolean;
     FSalesRestriction : string;
     FShippingCharge : OfferListing_ShippingChargeArray;
   private
@@ -3262,6 +3759,8 @@ type
     function HasISPUStoreAddress() : Boolean;
     function HasISPUStoreHours() : Boolean;
     function HasIsEligibleForSuperSaverShipping() : Boolean;
+    function HasIsEligibleForPrime() : Boolean;
+    function HasIsMapViolated() : Boolean;
     function HasSalesRestriction() : Boolean;
     function HasShippingCharge() : Boolean;
   public
@@ -3270,16 +3769,18 @@ type
   published
     property OfferListingId : string read FOfferListingId write FOfferListingId stored HasOfferListingId;
     property ExchangeId : string read FExchangeId write FExchangeId stored HasExchangeId;
-    property Price : Price_Type read FPrice write FPrice stored HasPrice;
-    property SalePrice : Price_Type read FSalePrice write FSalePrice stored HasSalePrice;
-    property AmountSaved : Price_Type read FAmountSaved write FAmountSaved stored HasAmountSaved;
+    property Price : Price read FPrice write FPrice stored HasPrice;
+    property SalePrice : Price read FSalePrice write FSalePrice stored HasSalePrice;
+    property AmountSaved : Price read FAmountSaved write FAmountSaved stored HasAmountSaved;
     property PercentageSaved : nonNegativeInteger read FPercentageSaved write FPercentageSaved stored HasPercentageSaved;
     property Availability : string read FAvailability write FAvailability stored HasAvailability;
     property AvailabilityAttributes : OfferListing_AvailabilityAttributes_Type read FAvailabilityAttributes write FAvailabilityAttributes stored HasAvailabilityAttributes;
     property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
-    property ISPUStoreAddress : Address_Type read FISPUStoreAddress write FISPUStoreAddress stored HasISPUStoreAddress;
+    property ISPUStoreAddress : Address read FISPUStoreAddress write FISPUStoreAddress stored HasISPUStoreAddress;
     property ISPUStoreHours : string read FISPUStoreHours write FISPUStoreHours stored HasISPUStoreHours;
     property IsEligibleForSuperSaverShipping : boolean read FIsEligibleForSuperSaverShipping write FIsEligibleForSuperSaverShipping stored HasIsEligibleForSuperSaverShipping;
+    property IsEligibleForPrime : boolean read FIsEligibleForPrime write FIsEligibleForPrime stored HasIsEligibleForPrime;
+    property IsMapViolated : boolean read FIsMapViolated write FIsMapViolated stored HasIsMapViolated;
     property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
     property ShippingCharge : OfferListing_ShippingChargeArray read FShippingCharge write FShippingCharge stored HasShippingCharge;
   end;
@@ -3287,7 +3788,7 @@ type
   LoyaltyPoints_Type = class(TBaseComplexRemotable)
   private
     FPoints : nonNegativeInteger;
-    FTypicalRedemptionValue : Price_Type;
+    FTypicalRedemptionValue : Price;
   private
     function HasPoints() : Boolean;
     function HasTypicalRedemptionValue() : Boolean;
@@ -3296,15 +3797,15 @@ type
     destructor Destroy();override;
   published
     property Points : nonNegativeInteger read FPoints write FPoints stored HasPoints;
-    property TypicalRedemptionValue : Price_Type read FTypicalRedemptionValue write FTypicalRedemptionValue stored HasTypicalRedemptionValue;
+    property TypicalRedemptionValue : Price read FTypicalRedemptionValue write FTypicalRedemptionValue stored HasTypicalRedemptionValue;
   end;
 
   VariationSummary_Type = class(TBaseComplexRemotable)
   private
-    FLowestPrice : Price_Type;
-    FHighestPrice : Price_Type;
-    FLowestSalePrice : Price_Type;
-    FHighestSalePrice : Price_Type;
+    FLowestPrice : Price;
+    FHighestPrice : Price;
+    FLowestSalePrice : Price;
+    FHighestSalePrice : Price;
     FSingleMerchantId : string;
   private
     function HasLowestPrice() : Boolean;
@@ -3316,10 +3817,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property LowestPrice : Price_Type read FLowestPrice write FLowestPrice stored HasLowestPrice;
-    property HighestPrice : Price_Type read FHighestPrice write FHighestPrice stored HasHighestPrice;
-    property LowestSalePrice : Price_Type read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
-    property HighestSalePrice : Price_Type read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
+    property LowestPrice : Price read FLowestPrice write FLowestPrice stored HasLowestPrice;
+    property HighestPrice : Price read FHighestPrice write FHighestPrice stored HasHighestPrice;
+    property LowestSalePrice : Price read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
+    property HighestSalePrice : Price read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
     property SingleMerchantId : string read FSingleMerchantId write FSingleMerchantId stored HasSingleMerchantId;
   end;
 
@@ -3346,10 +3847,10 @@ type
 
   Collections_Collection_Type_CollectionSummary_Type = class(TBaseComplexRemotable)
   private
-    FLowestListPrice : Price_Type;
-    FHighestListPrice : Price_Type;
-    FLowestSalePrice : Price_Type;
-    FHighestSalePrice : Price_Type;
+    FLowestListPrice : Price;
+    FHighestListPrice : Price;
+    FLowestSalePrice : Price;
+    FHighestSalePrice : Price;
   private
     function HasLowestListPrice() : Boolean;
     function HasHighestListPrice() : Boolean;
@@ -3359,10 +3860,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property LowestListPrice : Price_Type read FLowestListPrice write FLowestListPrice stored HasLowestListPrice;
-    property HighestListPrice : Price_Type read FHighestListPrice write FHighestListPrice stored HasHighestListPrice;
-    property LowestSalePrice : Price_Type read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
-    property HighestSalePrice : Price_Type read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
+    property LowestListPrice : Price read FLowestListPrice write FLowestListPrice stored HasLowestListPrice;
+    property HighestListPrice : Price read FHighestListPrice write FHighestListPrice stored HasHighestListPrice;
+    property LowestSalePrice : Price read FLowestSalePrice write FLowestSalePrice stored HasLowestSalePrice;
+    property HighestSalePrice : Price read FHighestSalePrice write FHighestSalePrice stored HasHighestSalePrice;
   end;
 
   Collections_Collection_Type_CollectionParent_Type = class(TBaseComplexRemotable)
@@ -3552,6 +4053,50 @@ type
     property Title : string read FTitle write FTitle stored HasTitle;
   end;
 
+  TopItemSet_TopItem_Type = class(TBaseComplexRemotable)
+  private
+    FASIN : string;
+    FTitle : string;
+    FDetailPageURL : string;
+    FProductGroup : string;
+    FAuthor : TopItemSet_TopItem_Type_AuthorArray;
+    FArtist : TopItemSet_TopItem_Type_ArtistArray;
+    FActor : TopItemSet_TopItem_Type_ActorArray;
+  private
+    function HasASIN() : Boolean;
+    function HasTitle() : Boolean;
+    function HasDetailPageURL() : Boolean;
+    function HasProductGroup() : Boolean;
+    function HasAuthor() : Boolean;
+    function HasArtist() : Boolean;
+    function HasActor() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ASIN : string read FASIN write FASIN stored HasASIN;
+    property Title : string read FTitle write FTitle stored HasTitle;
+    property DetailPageURL : string read FDetailPageURL write FDetailPageURL stored HasDetailPageURL;
+    property ProductGroup : string read FProductGroup write FProductGroup stored HasProductGroup;
+    property Author : TopItemSet_TopItem_Type_AuthorArray read FAuthor write FAuthor stored HasAuthor;
+    property Artist : TopItemSet_TopItem_Type_ArtistArray read FArtist write FArtist stored HasArtist;
+    property Actor : TopItemSet_TopItem_Type_ActorArray read FActor write FActor stored HasActor;
+  end;
+
+  TopItemSet_Type = class(TBaseComplexRemotable)
+  private
+    F_Type : string;
+    FTopItem : TopItemSet_TopItemArray;
+  private
+    function Has_Type() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property _Type : string read F_Type write F_Type stored Has_Type;
+    property TopItem : TopItemSet_TopItemArray read FTopItem write FTopItem;
+  end;
+
   SimilarViewedProducts_SimilarViewedProduct_Type = class(TBaseComplexRemotable)
   private
     FASIN : string;
@@ -3626,10 +4171,12 @@ type
     FStartDate : string;
     FEndDate : string;
     FTermsAndConditions : string;
-    FEligibilityRequirements : PromotionEligibilityRequirements_Type;
-    FBenefits : PromotionBenefits_Type;
-    FItemApplicability : PromotionItemApplicability_Type;
+    FEligibilityRequirements : PromotionEligibilityRequirements;
+    FBenefits : PromotionBenefits;
+    FItemApplicability : PromotionItemApplicability;
     FMerchandisingMessage : string;
+    FIconMediaId : string;
+    FIsIconMediaIdCustom : boolean;
   private
     function HasMerchantPromotionId() : Boolean;
     function HasGroupClaimCode() : Boolean;
@@ -3641,6 +4188,8 @@ type
     function HasBenefits() : Boolean;
     function HasItemApplicability() : Boolean;
     function HasMerchandisingMessage() : Boolean;
+    function HasIconMediaId() : Boolean;
+    function HasIsIconMediaIdCustom() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -3655,10 +4204,12 @@ type
     property StartDate : string read FStartDate write FStartDate stored HasStartDate;
     property EndDate : string read FEndDate write FEndDate stored HasEndDate;
     property TermsAndConditions : string read FTermsAndConditions write FTermsAndConditions stored HasTermsAndConditions;
-    property EligibilityRequirements : PromotionEligibilityRequirements_Type read FEligibilityRequirements write FEligibilityRequirements stored HasEligibilityRequirements;
-    property Benefits : PromotionBenefits_Type read FBenefits write FBenefits stored HasBenefits;
-    property ItemApplicability : PromotionItemApplicability_Type read FItemApplicability write FItemApplicability stored HasItemApplicability;
+    property EligibilityRequirements : PromotionEligibilityRequirements read FEligibilityRequirements write FEligibilityRequirements stored HasEligibilityRequirements;
+    property Benefits : PromotionBenefits read FBenefits write FBenefits stored HasBenefits;
+    property ItemApplicability : PromotionItemApplicability read FItemApplicability write FItemApplicability stored HasItemApplicability;
     property MerchandisingMessage : string read FMerchandisingMessage write FMerchandisingMessage stored HasMerchandisingMessage;
+    property IconMediaId : string read FIconMediaId write FIconMediaId stored HasIconMediaId;
+    property IsIconMediaIdCustom : boolean read FIsIconMediaIdCustom write FIsIconMediaIdCustom stored HasIsIconMediaIdCustom;
   end;
 
   Promotion_Type = class(TBaseComplexRemotable)
@@ -3676,14 +4227,14 @@ type
     property Details : Promotion_Details_Type read FDetails write FDetails stored HasDetails;
   end;
 
-  PromotionBenefit_Type = class(TBaseComplexRemotable)
+  PromotionBenefit = class(TBaseComplexRemotable)
   private
     FBenefitType : string;
     FComponentType : string;
     FQuantity : integer;
     FPercentOff : Double;
-    FFixedAmount : Price_Type;
-    FCeiling : Price_Type;
+    FFixedAmount : Price;
+    FCeiling : Price;
   private
     function HasQuantity() : Boolean;
     function HasPercentOff() : Boolean;
@@ -3697,15 +4248,15 @@ type
     property ComponentType : string read FComponentType write FComponentType;
     property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
     property PercentOff : Double read FPercentOff write FPercentOff stored HasPercentOff;
-    property FixedAmount : Price_Type read FFixedAmount write FFixedAmount stored HasFixedAmount;
-    property Ceiling : Price_Type read FCeiling write FCeiling stored HasCeiling;
+    property FixedAmount : Price read FFixedAmount write FFixedAmount stored HasFixedAmount;
+    property Ceiling : Price read FCeiling write FCeiling stored HasCeiling;
   end;
 
-  PromotionEligibilityRequirement_Type = class(TBaseComplexRemotable)
+  PromotionEligibilityRequirement = class(TBaseComplexRemotable)
   private
     FEligibilityRequirementType : string;
     FQuantity : integer;
-    FCurrencyAmount : Price_Type;
+    FCurrencyAmount : Price;
   private
     function HasQuantity() : Boolean;
     function HasCurrencyAmount() : Boolean;
@@ -3715,10 +4266,10 @@ type
   published
     property EligibilityRequirementType : string read FEligibilityRequirementType write FEligibilityRequirementType;
     property Quantity : integer read FQuantity write FQuantity stored HasQuantity;
-    property CurrencyAmount : Price_Type read FCurrencyAmount write FCurrencyAmount stored HasCurrencyAmount;
+    property CurrencyAmount : Price read FCurrencyAmount write FCurrencyAmount stored HasCurrencyAmount;
   end;
 
-  PromotionItemApplicability_Type = class(TBaseComplexRemotable)
+  PromotionItemApplicability = class(TBaseComplexRemotable)
   private
     FASIN : string;
     FIsInBenefitSet : boolean;
@@ -3727,6 +4278,382 @@ type
     property ASIN : string read FASIN write FASIN;
     property IsInBenefitSet : boolean read FIsInBenefitSet write FIsInBenefitSet;
     property IsInEligibilityRequirementSet : boolean read FIsInEligibilityRequirementSet write FIsInEligibilityRequirementSet;
+  end;
+
+  VehicleYears_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FVehicleYear : VehicleYears_VehicleYearArray;
+  private
+    function HasRequest() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property VehicleYear : VehicleYears_VehicleYearArray read FVehicleYear write FVehicleYear;
+  end;
+
+  VehicleYear_Type = class(TBaseComplexRemotable)
+  private
+    FYear : nonNegativeInteger;
+    FIsValid : string;
+    FVehicleMakes : VehicleMakes_Type;
+  private
+    function HasIsValid() : Boolean;
+    function HasVehicleMakes() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Year : nonNegativeInteger read FYear write FYear;
+    property IsValid : string read FIsValid write FIsValid stored HasIsValid;
+    property VehicleMakes : VehicleMakes_Type read FVehicleMakes write FVehicleMakes stored HasVehicleMakes;
+  end;
+
+  VehicleMake_Type = class(TBaseComplexRemotable)
+  private
+    FMakeName : string;
+    FMakeId : nonNegativeInteger;
+    FIsValid : string;
+    FVehicleModels : VehicleModels_Type;
+  private
+    function HasMakeName() : Boolean;
+    function HasIsValid() : Boolean;
+    function HasVehicleModels() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property MakeName : string read FMakeName write FMakeName stored HasMakeName;
+    property MakeId : nonNegativeInteger read FMakeId write FMakeId;
+    property IsValid : string read FIsValid write FIsValid stored HasIsValid;
+    property VehicleModels : VehicleModels_Type read FVehicleModels write FVehicleModels stored HasVehicleModels;
+  end;
+
+  VehicleModel_Type = class(TBaseComplexRemotable)
+  private
+    FModelName : string;
+    FModelId : nonNegativeInteger;
+    FIsValid : string;
+    FVehicleTrims : VehicleTrims_Type;
+  private
+    function HasModelName() : Boolean;
+    function HasIsValid() : Boolean;
+    function HasVehicleTrims() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property ModelName : string read FModelName write FModelName stored HasModelName;
+    property ModelId : nonNegativeInteger read FModelId write FModelId;
+    property IsValid : string read FIsValid write FIsValid stored HasIsValid;
+    property VehicleTrims : VehicleTrims_Type read FVehicleTrims write FVehicleTrims stored HasVehicleTrims;
+  end;
+
+  VehicleTrim_Type = class(TBaseComplexRemotable)
+  private
+    FTrimName : string;
+    FTrimId : nonNegativeInteger;
+    FIsValid : string;
+    FVehicleOptions : VehicleOptions_Type;
+  private
+    function HasTrimName() : Boolean;
+    function HasIsValid() : Boolean;
+    function HasVehicleOptions() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TrimName : string read FTrimName write FTrimName stored HasTrimName;
+    property TrimId : nonNegativeInteger read FTrimId write FTrimId;
+    property IsValid : string read FIsValid write FIsValid stored HasIsValid;
+    property VehicleOptions : VehicleOptions_Type read FVehicleOptions write FVehicleOptions stored HasVehicleOptions;
+  end;
+
+  VehicleOptions_Type = class(TBaseComplexRemotable)
+  private
+    FVehicleBedOptions : VehicleBedOptions_Type;
+    FVehicleBodyStyleOptions : VehicleBodyStyleOptions_Type;
+    FVehicleBrakesOptions : VehicleBrakesOptions_Type;
+    FVehicleDriveTypeOptions : VehicleDriveTypeOptions_Type;
+    FVehicleEngineOptions : VehicleEngineOptions_Type;
+    FVehicleMfrBodyCodeOptions : VehicleMfrBodyCodeOptions_Type;
+    FVehicleSpringTypesOptions : VehicleSpringTypesOptions_Type;
+    FVehicleSteeringOptions : VehicleSteeringOptions_Type;
+    FVehicleTransmissionOptions : VehicleTransmissionOptions_Type;
+    FVehicleWheelbaseOptions : VehicleWheelbaseOptions_Type;
+  private
+    function HasVehicleBedOptions() : Boolean;
+    function HasVehicleBodyStyleOptions() : Boolean;
+    function HasVehicleBrakesOptions() : Boolean;
+    function HasVehicleDriveTypeOptions() : Boolean;
+    function HasVehicleEngineOptions() : Boolean;
+    function HasVehicleMfrBodyCodeOptions() : Boolean;
+    function HasVehicleSpringTypesOptions() : Boolean;
+    function HasVehicleSteeringOptions() : Boolean;
+    function HasVehicleTransmissionOptions() : Boolean;
+    function HasVehicleWheelbaseOptions() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property VehicleBedOptions : VehicleBedOptions_Type read FVehicleBedOptions write FVehicleBedOptions stored HasVehicleBedOptions;
+    property VehicleBodyStyleOptions : VehicleBodyStyleOptions_Type read FVehicleBodyStyleOptions write FVehicleBodyStyleOptions stored HasVehicleBodyStyleOptions;
+    property VehicleBrakesOptions : VehicleBrakesOptions_Type read FVehicleBrakesOptions write FVehicleBrakesOptions stored HasVehicleBrakesOptions;
+    property VehicleDriveTypeOptions : VehicleDriveTypeOptions_Type read FVehicleDriveTypeOptions write FVehicleDriveTypeOptions stored HasVehicleDriveTypeOptions;
+    property VehicleEngineOptions : VehicleEngineOptions_Type read FVehicleEngineOptions write FVehicleEngineOptions stored HasVehicleEngineOptions;
+    property VehicleMfrBodyCodeOptions : VehicleMfrBodyCodeOptions_Type read FVehicleMfrBodyCodeOptions write FVehicleMfrBodyCodeOptions stored HasVehicleMfrBodyCodeOptions;
+    property VehicleSpringTypesOptions : VehicleSpringTypesOptions_Type read FVehicleSpringTypesOptions write FVehicleSpringTypesOptions stored HasVehicleSpringTypesOptions;
+    property VehicleSteeringOptions : VehicleSteeringOptions_Type read FVehicleSteeringOptions write FVehicleSteeringOptions stored HasVehicleSteeringOptions;
+    property VehicleTransmissionOptions : VehicleTransmissionOptions_Type read FVehicleTransmissionOptions write FVehicleTransmissionOptions stored HasVehicleTransmissionOptions;
+    property VehicleWheelbaseOptions : VehicleWheelbaseOptions_Type read FVehicleWheelbaseOptions write FVehicleWheelbaseOptions stored HasVehicleWheelbaseOptions;
+  end;
+
+  VehicleBed_Type = class(TBaseComplexRemotable)
+  private
+    FBedName : string;
+    FBedId : nonNegativeInteger;
+  private
+    function HasBedName() : Boolean;
+  published
+    property BedName : string read FBedName write FBedName stored HasBedName;
+    property BedId : nonNegativeInteger read FBedId write FBedId;
+  end;
+
+  VehicleBodyStyle_Type = class(TBaseComplexRemotable)
+  private
+    FBodyStyleName : string;
+    FBodyStyleId : nonNegativeInteger;
+  private
+    function HasBodyStyleName() : Boolean;
+  published
+    property BodyStyleName : string read FBodyStyleName write FBodyStyleName stored HasBodyStyleName;
+    property BodyStyleId : nonNegativeInteger read FBodyStyleId write FBodyStyleId;
+  end;
+
+  VehicleBrakes_Type = class(TBaseComplexRemotable)
+  private
+    FBrakesName : string;
+    FBrakesId : nonNegativeInteger;
+  private
+    function HasBrakesName() : Boolean;
+  published
+    property BrakesName : string read FBrakesName write FBrakesName stored HasBrakesName;
+    property BrakesId : nonNegativeInteger read FBrakesId write FBrakesId;
+  end;
+
+  VehicleDriveType_Type = class(TBaseComplexRemotable)
+  private
+    FDriveTypeName : string;
+    FDriveTypeId : nonNegativeInteger;
+  private
+    function HasDriveTypeName() : Boolean;
+  published
+    property DriveTypeName : string read FDriveTypeName write FDriveTypeName stored HasDriveTypeName;
+    property DriveTypeId : nonNegativeInteger read FDriveTypeId write FDriveTypeId;
+  end;
+
+  VehicleEngine_Type = class(TBaseComplexRemotable)
+  private
+    FEngineName : string;
+    FEngineId : nonNegativeInteger;
+  private
+    function HasEngineName() : Boolean;
+  published
+    property EngineName : string read FEngineName write FEngineName stored HasEngineName;
+    property EngineId : nonNegativeInteger read FEngineId write FEngineId;
+  end;
+
+  VehicleMfrBodyCode_Type = class(TBaseComplexRemotable)
+  private
+    FMfrBodyCodeName : string;
+    FMfrBodyCodeId : nonNegativeInteger;
+  published
+    property MfrBodyCodeName : string read FMfrBodyCodeName write FMfrBodyCodeName;
+    property MfrBodyCodeId : nonNegativeInteger read FMfrBodyCodeId write FMfrBodyCodeId;
+  end;
+
+  VehicleSpringTypes_Type = class(TBaseComplexRemotable)
+  private
+    FSpringTypesName : string;
+    FSpringTypesId : nonNegativeInteger;
+  private
+    function HasSpringTypesName() : Boolean;
+  published
+    property SpringTypesName : string read FSpringTypesName write FSpringTypesName stored HasSpringTypesName;
+    property SpringTypesId : nonNegativeInteger read FSpringTypesId write FSpringTypesId;
+  end;
+
+  VehicleSteering_Type = class(TBaseComplexRemotable)
+  private
+    FSteeringName : string;
+    FSteeringId : nonNegativeInteger;
+  private
+    function HasSteeringName() : Boolean;
+  published
+    property SteeringName : string read FSteeringName write FSteeringName stored HasSteeringName;
+    property SteeringId : nonNegativeInteger read FSteeringId write FSteeringId;
+  end;
+
+  VehicleTransmission_Type = class(TBaseComplexRemotable)
+  private
+    FTransmissionName : string;
+    FTransmissionId : nonNegativeInteger;
+  private
+    function HasTransmissionName() : Boolean;
+  published
+    property TransmissionName : string read FTransmissionName write FTransmissionName stored HasTransmissionName;
+    property TransmissionId : nonNegativeInteger read FTransmissionId write FTransmissionId;
+  end;
+
+  VehicleWheelbase_Type = class(TBaseComplexRemotable)
+  private
+    FWheelbaseName : string;
+    FWheelbaseId : nonNegativeInteger;
+  private
+    function HasWheelbaseName() : Boolean;
+  published
+    property WheelbaseName : string read FWheelbaseName write FWheelbaseName stored HasWheelbaseName;
+    property WheelbaseId : nonNegativeInteger read FWheelbaseId write FWheelbaseId;
+  end;
+
+  VehicleParts_Type = class(TBaseComplexRemotable)
+  private
+    FRequest : Request_Type;
+    FIsNext : VehicleParts_IsNextArray;
+    FIsPrevious : VehicleParts_IsPreviousArray;
+    FPart : VehicleParts_PartArray;
+    FMissingVehicleAttributes : MissingVehicleAttributes_Type;
+    FPartBrowseNodeBins : PartBrowseNodeBins_Type;
+    FPartBrandBins : PartBrandBins_Type;
+  private
+    function HasRequest() : Boolean;
+    function HasIsNext() : Boolean;
+    function HasIsPrevious() : Boolean;
+    function HasPart() : Boolean;
+    function HasMissingVehicleAttributes() : Boolean;
+    function HasPartBrowseNodeBins() : Boolean;
+    function HasPartBrandBins() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property Request : Request_Type read FRequest write FRequest stored HasRequest;
+    property IsNext : VehicleParts_IsNextArray read FIsNext write FIsNext stored HasIsNext;
+    property IsPrevious : VehicleParts_IsPreviousArray read FIsPrevious write FIsPrevious stored HasIsPrevious;
+    property Part : VehicleParts_PartArray read FPart write FPart stored HasPart;
+    property MissingVehicleAttributes : MissingVehicleAttributes_Type read FMissingVehicleAttributes write FMissingVehicleAttributes stored HasMissingVehicleAttributes;
+    property PartBrowseNodeBins : PartBrowseNodeBins_Type read FPartBrowseNodeBins write FPartBrowseNodeBins stored HasPartBrowseNodeBins;
+    property PartBrandBins : PartBrandBins_Type read FPartBrandBins write FPartBrandBins stored HasPartBrandBins;
+  end;
+
+  Part_Type = class(TBaseComplexRemotable)
+  private
+    F_Item : Item_Type;
+    FHasPartCompatibility : boolean;
+    FVehiclePartFit : VehiclePartFit_Type;
+    FFitments : Fitments_Type;
+  private
+    function Has_Item() : Boolean;
+    function HasHasPartCompatibility() : Boolean;
+    function HasVehiclePartFit() : Boolean;
+    function HasFitments() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property _Item : Item_Type read F_Item write F_Item stored Has_Item;
+    property HasPartCompatibility : boolean read FHasPartCompatibility write FHasPartCompatibility stored HasHasPartCompatibility;
+    property VehiclePartFit : VehiclePartFit_Type read FVehiclePartFit write FVehiclePartFit stored HasVehiclePartFit;
+    property Fitments : Fitments_Type read FFitments write FFitments stored HasFitments;
+  end;
+
+  VehiclePartFit_Type = class(TBaseComplexRemotable)
+  private
+    FIsFit : string;
+    FMissingVehicleAttributes : MissingVehicleAttributes_Type;
+  private
+    function HasMissingVehicleAttributes() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property IsFit : string read FIsFit write FIsFit;
+    property MissingVehicleAttributes : MissingVehicleAttributes_Type read FMissingVehicleAttributes write FMissingVehicleAttributes stored HasMissingVehicleAttributes;
+  end;
+
+  Fitments_Type = class(TBaseComplexRemotable)
+  private
+    FTotalFitments : nonNegativeInteger;
+    FTotalPages : nonNegativeInteger;
+    FFitmentAttributes : string;
+    FFitment : Fitments_FitmentArray;
+  private
+    function HasFitmentAttributes() : Boolean;
+    function HasFitment() : Boolean;
+  public
+    constructor Create();override;
+    destructor Destroy();override;
+  published
+    property TotalFitments : nonNegativeInteger read FTotalFitments write FTotalFitments;
+    property TotalPages : nonNegativeInteger read FTotalPages write FTotalPages;
+    property FitmentAttributes : string read FFitmentAttributes write FFitmentAttributes stored HasFitmentAttributes;
+    property Fitment : Fitments_FitmentArray read FFitment write FFitment stored HasFitment;
+  end;
+
+  Fitment_Type = class(TBaseComplexRemotable)
+  private
+    FYear : string;
+    FMake : string;
+    FModel : string;
+    FTrim : string;
+    FBed : string;
+    FBodyStyle : string;
+    FBrakes : string;
+    FDriveType : string;
+    FEngine : string;
+    FMfrBodyCode : string;
+    FSpringTypes : string;
+    FSteering : string;
+    FTransmission : string;
+    FWheelbase : string;
+    FPosition : string;
+    FNotes : string;
+  private
+    function HasYear() : Boolean;
+    function HasMake() : Boolean;
+    function HasModel() : Boolean;
+    function HasTrim() : Boolean;
+    function HasBed() : Boolean;
+    function HasBodyStyle() : Boolean;
+    function HasBrakes() : Boolean;
+    function HasDriveType() : Boolean;
+    function HasEngine() : Boolean;
+    function HasMfrBodyCode() : Boolean;
+    function HasSpringTypes() : Boolean;
+    function HasSteering() : Boolean;
+    function HasTransmission() : Boolean;
+    function HasWheelbase() : Boolean;
+    function HasPosition() : Boolean;
+    function HasNotes() : Boolean;
+  published
+    property Year : string read FYear write FYear stored HasYear;
+    property Make : string read FMake write FMake stored HasMake;
+    property Model : string read FModel write FModel stored HasModel;
+    property Trim : string read FTrim write FTrim stored HasTrim;
+    property Bed : string read FBed write FBed stored HasBed;
+    property BodyStyle : string read FBodyStyle write FBodyStyle stored HasBodyStyle;
+    property Brakes : string read FBrakes write FBrakes stored HasBrakes;
+    property DriveType : string read FDriveType write FDriveType stored HasDriveType;
+    property Engine : string read FEngine write FEngine stored HasEngine;
+    property MfrBodyCode : string read FMfrBodyCode write FMfrBodyCode stored HasMfrBodyCode;
+    property SpringTypes : string read FSpringTypes write FSpringTypes stored HasSpringTypes;
+    property Steering : string read FSteering write FSteering stored HasSteering;
+    property Transmission : string read FTransmission write FTransmission stored HasTransmission;
+    property Wheelbase : string read FWheelbase write FWheelbase stored HasWheelbase;
+    property Position : string read FPosition write FPosition stored HasPosition;
+    property Notes : string read FNotes write FNotes stored HasNotes;
   end;
 
   BrowseNodes_Type = class(TBaseComplexRemotable)
@@ -3766,6 +4693,7 @@ type
     FAncestors : BrowseNode_Ancestors_Type;
     FTopSellers : TopSellers_Type;
     FNewReleases : NewReleases_Type;
+    FTopItemSet : BrowseNode_TopItemSetArray;
   private
     function HasBrowseNodeId() : Boolean;
     function HasName() : Boolean;
@@ -3775,6 +4703,7 @@ type
     function HasAncestors() : Boolean;
     function HasTopSellers() : Boolean;
     function HasNewReleases() : Boolean;
+    function HasTopItemSet() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
@@ -3787,6 +4716,7 @@ type
     property Ancestors : BrowseNode_Ancestors_Type read FAncestors write FAncestors stored HasAncestors;
     property TopSellers : TopSellers_Type read FTopSellers write FTopSellers stored HasTopSellers;
     property NewReleases : NewReleases_Type read FNewReleases write FNewReleases stored HasNewReleases;
+    property TopItemSet : BrowseNode_TopItemSetArray read FTopItemSet write FTopItemSet stored HasTopItemSet;
   end;
 
   ListmaniaLists_ListmaniaList_Type = class(TBaseComplexRemotable)
@@ -3838,7 +4768,7 @@ type
 
   CartItems_Type = class(TBaseComplexRemotable)
   private
-    FSubTotal : Price_Type;
+    FSubTotal : Price;
     FCartItem : CartItems_CartItemArray;
   private
     function HasSubTotal() : Boolean;
@@ -3846,13 +4776,13 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
     property CartItem : CartItems_CartItemArray read FCartItem write FCartItem;
   end;
 
   SavedForLaterItems_Type = class(TBaseComplexRemotable)
   private
-    FSubTotal : Price_Type;
+    FSubTotal : Price;
     FSavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray;
   private
     function HasSubTotal() : Boolean;
@@ -3860,7 +4790,7 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property SubTotal : Price_Type read FSubTotal write FSubTotal stored HasSubTotal;
+    property SubTotal : Price read FSubTotal write FSubTotal stored HasSubTotal;
     property SavedForLaterItem : SavedForLaterItems_SavedForLaterItemArray read FSavedForLaterItem write FSavedForLaterItem;
   end;
 
@@ -3873,7 +4803,7 @@ type
     property Value : string read FValue write FValue;
   end;
 
-  CartItem_Type = class(TBaseComplexRemotable)
+  CartItem = class(TBaseComplexRemotable)
   private
     FCartItemId : string;
     FASIN : string;
@@ -3887,8 +4817,8 @@ type
     FListOwner : string;
     FListType : string;
     FMetaData : CartItem_MetaData_Type;
-    FPrice : Price_Type;
-    FItemTotal : Price_Type;
+    FPrice : Price;
+    FItemTotal : Price;
   private
     function HasASIN() : Boolean;
     function HasExchangeId() : Boolean;
@@ -3918,26 +4848,26 @@ type
     property ListOwner : string read FListOwner write FListOwner stored HasListOwner;
     property ListType : string read FListType write FListType stored HasListType;
     property MetaData : CartItem_MetaData_Type read FMetaData write FMetaData stored HasMetaData;
-    property Price : Price_Type read FPrice write FPrice stored HasPrice;
-    property ItemTotal : Price_Type read FItemTotal write FItemTotal stored HasItemTotal;
+    property Price : Price read FPrice write FPrice stored HasPrice;
+    property ItemTotal : Price read FItemTotal write FItemTotal stored HasItemTotal;
   end;
 
   Transaction_Totals_Type = class(TBaseComplexRemotable)
   private
-    FTotal : Price_Type;
-    FSubtotal : Price_Type;
-    FTax : Price_Type;
-    FShippingCharge : Price_Type;
-    FPromotion : Price_Type;
+    FTotal : Price;
+    FSubtotal : Price;
+    FTax : Price;
+    FShippingCharge : Price;
+    FPromotion : Price;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Total : Price_Type read FTotal write FTotal;
-    property Subtotal : Price_Type read FSubtotal write FSubtotal;
-    property Tax : Price_Type read FTax write FTax;
-    property ShippingCharge : Price_Type read FShippingCharge write FShippingCharge;
-    property Promotion : Price_Type read FPromotion write FPromotion;
+    property Total : Price read FTotal write FTotal;
+    property Subtotal : Price read FSubtotal write FSubtotal;
+    property Tax : Price read FTax write FTax;
+    property ShippingCharge : Price read FShippingCharge write FShippingCharge;
+    property Promotion : Price read FPromotion write FPromotion;
   end;
 
   Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type = class(TBaseComplexRemotable)
@@ -4009,12 +4939,16 @@ type
   private
     FTransactionItemId : string;
     FQuantity : string;
-    FUnitPrice : Price_Type;
-    FTotalPrice : Price_Type;
+    FUnitPrice : Price;
+    FTotalPrice : Price;
     FASIN : string;
+    FSKU : string;
+    FTitle : string;
     FChildTransactionItems : TransactionItem_ChildTransactionItems_Type;
   private
     function HasASIN() : Boolean;
+    function HasSKU() : Boolean;
+    function HasTitle() : Boolean;
     function HasChildTransactionItems() : Boolean;
   public
     constructor Create();override;
@@ -4022,9 +4956,11 @@ type
   published
     property TransactionItemId : string read FTransactionItemId write FTransactionItemId;
     property Quantity : string read FQuantity write FQuantity;
-    property UnitPrice : Price_Type read FUnitPrice write FUnitPrice;
-    property TotalPrice : Price_Type read FTotalPrice write FTotalPrice;
+    property UnitPrice : Price read FUnitPrice write FUnitPrice;
+    property TotalPrice : Price read FTotalPrice write FTotalPrice;
     property ASIN : string read FASIN write FASIN stored HasASIN;
+    property SKU : string read FSKU write FSKU stored HasSKU;
+    property Title : string read FTitle write FTitle stored HasTitle;
     property ChildTransactionItems : TransactionItem_ChildTransactionItems_Type read FChildTransactionItems write FChildTransactionItems stored HasChildTransactionItems;
   end;
 
@@ -4054,10 +4990,11 @@ type
   private
     function HasCount() : Boolean;
     function HasPercentage() : Boolean;
+    function Has_Type() : Boolean;
   published
     property Count : nonNegativeInteger read FCount write FCount stored HasCount;
     property Percentage : nonNegativeInteger read FPercentage write FPercentage stored HasPercentage;
-    property _Type : string read F_Type write F_Type;
+    property _Type : string read F_Type write F_Type stored Has_Type;
   end;
 
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type = class(TBaseComplexRemotable)
@@ -4066,12 +5003,13 @@ type
     FPeriod : string;
   private
     function HasSellerFeedbackRating() : Boolean;
+    function HasPeriod() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
     property SellerFeedbackRating : Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray read FSellerFeedbackRating write FSellerFeedbackRating stored HasSellerFeedbackRating;
-    property Period : string read FPeriod write FPeriod;
+    property Period : string read FPeriod write FPeriod stored HasPeriod;
   end;
 
   Seller_Type = class(TBaseComplexRemotable)
@@ -4139,7 +5077,7 @@ type
     property RatedBy : string read FRatedBy write FRatedBy stored HasRatedBy;
   end;
 
-  Address_Type = class(TBaseComplexRemotable)
+  Address = class(TBaseComplexRemotable)
   private
     FName : string;
     FAddress1 : string;
@@ -4180,7 +5118,7 @@ type
     FWillShipExpedited : boolean;
     FWillShipInternational : boolean;
     FTitle : string;
-    FPrice : Price_Type;
+    FPrice : Price;
     FStartDate : string;
     FEndDate : string;
     FStatus : string;
@@ -4219,7 +5157,7 @@ type
     property WillShipExpedited : boolean read FWillShipExpedited write FWillShipExpedited stored HasWillShipExpedited;
     property WillShipInternational : boolean read FWillShipInternational write FWillShipInternational stored HasWillShipInternational;
     property Title : string read FTitle write FTitle stored HasTitle;
-    property Price : Price_Type read FPrice write FPrice stored HasPrice;
+    property Price : Price read FPrice write FPrice stored HasPrice;
     property StartDate : string read FStartDate write FStartDate stored HasStartDate;
     property EndDate : string read FEndDate write FEndDate stored HasEndDate;
     property Status : string read FStatus write FStatus stored HasStatus;
@@ -4229,7 +5167,7 @@ type
     property Seller : Seller_Type read FSeller write FSeller stored HasSeller;
   end;
 
-  Price_Type = class(TBaseComplexRemotable)
+  Price = class(TBaseComplexRemotable)
   private
     FAmount : integer;
     FCurrencyCode : string;
@@ -4245,12 +5183,12 @@ type
 
   ImageSet_Type = class(TBaseComplexRemotable)
   private
-    FSwatchImage : Image_Type;
-    FSmallImage : Image_Type;
-    FThumbnailImage : Image_Type;
-    FTinyImage : Image_Type;
-    FMediumImage : Image_Type;
-    FLargeImage : Image_Type;
+    FSwatchImage : Image;
+    FSmallImage : Image;
+    FThumbnailImage : Image;
+    FTinyImage : Image;
+    FMediumImage : Image;
+    FLargeImage : Image;
     FCategory : string;
   private
     function HasSwatchImage() : Boolean;
@@ -4259,24 +5197,25 @@ type
     function HasTinyImage() : Boolean;
     function HasMediumImage() : Boolean;
     function HasLargeImage() : Boolean;
+    function HasCategory() : Boolean;
   public
     constructor Create();override;
     destructor Destroy();override;
   published
-    property SwatchImage : Image_Type read FSwatchImage write FSwatchImage stored HasSwatchImage;
-    property SmallImage : Image_Type read FSmallImage write FSmallImage stored HasSmallImage;
-    property ThumbnailImage : Image_Type read FThumbnailImage write FThumbnailImage stored HasThumbnailImage;
-    property TinyImage : Image_Type read FTinyImage write FTinyImage stored HasTinyImage;
-    property MediumImage : Image_Type read FMediumImage write FMediumImage stored HasMediumImage;
-    property LargeImage : Image_Type read FLargeImage write FLargeImage stored HasLargeImage;
-    property Category : string read FCategory write FCategory;
+    property SwatchImage : Image read FSwatchImage write FSwatchImage stored HasSwatchImage;
+    property SmallImage : Image read FSmallImage write FSmallImage stored HasSmallImage;
+    property ThumbnailImage : Image read FThumbnailImage write FThumbnailImage stored HasThumbnailImage;
+    property TinyImage : Image read FTinyImage write FTinyImage stored HasTinyImage;
+    property MediumImage : Image read FMediumImage write FMediumImage stored HasMediumImage;
+    property LargeImage : Image read FLargeImage write FLargeImage stored HasLargeImage;
+    property Category : string read FCategory write FCategory stored HasCategory;
   end;
 
-  Image_Type = class(TBaseComplexRemotable)
+  Image = class(TBaseComplexRemotable)
   private
     FURL : string;
-    FHeight : DecimalWithUnits_Type;
-    FWidth : DecimalWithUnits_Type;
+    FHeight : DecimalWithUnits;
+    FWidth : DecimalWithUnits;
     FIsVerified : string;
   private
     function HasIsVerified() : Boolean;
@@ -4285,8 +5224,8 @@ type
     destructor Destroy();override;
   published
     property URL : string read FURL write FURL;
-    property Height : DecimalWithUnits_Type read FHeight write FHeight;
-    property Width : DecimalWithUnits_Type read FWidth write FWidth;
+    property Height : DecimalWithUnits read FHeight write FHeight;
+    property Width : DecimalWithUnits read FWidth write FWidth;
     property IsVerified : string read FIsVerified write FIsVerified stored HasIsVerified;
   end;
 
@@ -4299,10 +5238,10 @@ type
 
   ItemAttributes_ItemDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits_Type;
-    FLength : DecimalWithUnits_Type;
-    FWeight : DecimalWithUnits_Type;
-    FWidth : DecimalWithUnits_Type;
+    FHeight : DecimalWithUnits;
+    FLength : DecimalWithUnits;
+    FWeight : DecimalWithUnits;
+    FWidth : DecimalWithUnits;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
@@ -4312,10 +5251,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
   end;
 
   ItemAttributes_Languages_Type_Language_Type = class(TBaseComplexRemotable)
@@ -4334,10 +5273,10 @@ type
 
   ItemAttributes_PackageDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits_Type;
-    FLength : DecimalWithUnits_Type;
-    FWeight : DecimalWithUnits_Type;
-    FWidth : DecimalWithUnits_Type;
+    FHeight : DecimalWithUnits;
+    FLength : DecimalWithUnits;
+    FWeight : DecimalWithUnits;
+    FWidth : DecimalWithUnits;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
@@ -4347,19 +5286,19 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
   end;
 
   ItemAttributes_Type = class(TBaseComplexRemotable)
   private
     FActor : ItemAttributes_ActorArray;
-    FAddress : Address_Type;
+    FAddress : Address;
     FAge : ItemAttributes_AgeArray;
-    FAmazonMaximumAge : DecimalWithUnits_Type;
-    FAmazonMinimumAge : DecimalWithUnits_Type;
+    FAmazonMaximumAge : DecimalWithUnits;
+    FAmazonMinimumAge : DecimalWithUnits;
     FAnalogVideoFormat : string;
     FApertureModes : string;
     FArtist : ItemAttributes_ArtistArray;
@@ -4373,7 +5312,7 @@ type
     FBandMaterialType : string;
     FBatteriesIncluded : string;
     FBatteriesRequired : string;
-    FBatteries : NonNegativeIntegerWithUnits_Type;
+    FBatteries : NonNegativeIntegerWithUnits;
     FBatteryDescription : string;
     FBatteryType : string;
     FBezelMaterialType : string;
@@ -4381,9 +5320,9 @@ type
     FBrand : string;
     FCalendarType : string;
     FCameraManualFeatures : ItemAttributes_CameraManualFeaturesArray;
-    FCaseDiameter : DecimalWithUnits_Type;
+    FCaseDiameter : DecimalWithUnits;
     FCaseMaterialType : string;
-    FCaseThickness : DecimalWithUnits_Type;
+    FCaseThickness : DecimalWithUnits;
     FCaseType : string;
     FCatalogNumber : string;
     FCategory : ItemAttributes_CategoryArray;
@@ -4401,24 +5340,24 @@ type
     FComputerHardwareType : string;
     FComputerPlatform : string;
     FConnectivity : string;
-    FContinuousShootingSpeed : DecimalWithUnits_Type;
+    FContinuousShootingSpeed : DecimalWithUnits;
     FCountry : string;
     FCPUManufacturer : string;
-    FCPUSpeed : DecimalWithUnits_Type;
+    FCPUSpeed : DecimalWithUnits;
     FCPUType : string;
     FCreator : ItemAttributes_CreatorArray;
     FCuisine : string;
     FDataLinkProtocol : ItemAttributes_DataLinkProtocolArray;
     FDeliveryOption : string;
-    FDelayBetweenShots : DecimalWithUnits_Type;
+    FDelayBetweenShots : DecimalWithUnits;
     FDepartment : string;
     FDeweyDecimalNumber : string;
     FDialColor : string;
     FDialWindowMaterialType : string;
-    FDigitalZoom : DecimalWithUnits_Type;
+    FDigitalZoom : DecimalWithUnits;
     FDirector : ItemAttributes_DirectorArray;
     FDisplayColorSupport : string;
-    FDisplaySize : DecimalWithUnits_Type;
+    FDisplaySize : DecimalWithUnits;
     FDrumSetPieceQuantity : nonNegativeInteger;
     FDVDLayers : nonNegativeInteger;
     FDVDRWDescription : string;
@@ -4427,6 +5366,7 @@ type
     FEAN : string;
     FEdition : string;
     FEducationalFocus : ItemAttributes_EducationalFocusArray;
+    FEpisodeSequence : string;
     FEthnicity : ItemAttributes_EthnicityArray;
     FESRBAgeRating : string;
     FExternalDisplaySupportDescription : string;
@@ -4434,7 +5374,7 @@ type
     FFaxNumber : string;
     FFeature : ItemAttributes_FeatureArray;
     FFilmColorType : string;
-    FFirstIssueLeadTime : StringWithUnits_Type;
+    FFirstIssueLeadTime : StringWithUnits;
     FFlavorName : string;
     FFloppyDiskDriveDescription : string;
     FFormat : ItemAttributes_FormatArray;
@@ -4448,14 +5388,14 @@ type
     FGolfClubLoft : string;
     FGraphicsCardInterface : string;
     FGraphicsDescription : string;
-    FGraphicsMemorySize : DecimalWithUnits_Type;
+    FGraphicsMemorySize : DecimalWithUnits;
     FGuitarAttribute : string;
     FGuitarBridgeSystem : string;
     FGuitarPickThickness : string;
     FGuitarPickupConfiguration : string;
     FHandOrientation : string;
     FHardDiskCount : nonNegativeInteger;
-    FHardDiskSize : DecimalWithUnits_Type;
+    FHardDiskSize : DecimalWithUnits;
     FHardDiskInterface : string;
     FHardwarePlatform : string;
     FHasAutoFocus : boolean;
@@ -4480,7 +5420,7 @@ type
     FIsFragile : boolean;
     FIsLabCreated : boolean;
     FIsMemorabilia : boolean;
-    FISOEquivalent : NonNegativeIntegerWithUnits_Type;
+    FISOEquivalent : NonNegativeIntegerWithUnits;
     FIsPreannounce : boolean;
     FIssuesPerYear : string;
     FItemDimensions : ItemAttributes_ItemDimensions_Type;
@@ -4491,39 +5431,40 @@ type
     FLegalDisclaimer : string;
     FLensType : string;
     FLineVoltage : string;
-    FListPrice : Price_Type;
+    FListPrice : Price;
+    FLongSynopsis : string;
     FMacroFocusRange : string;
     FMagazineType : string;
     FMalletHardness : string;
     FManufacturer : string;
     FManufacturerLaborWarrantyDescription : string;
-    FManufacturerMaximumAge : DecimalWithUnits_Type;
-    FManufacturerMinimumAge : DecimalWithUnits_Type;
+    FManufacturerMaximumAge : DecimalWithUnits;
+    FManufacturerMinimumAge : DecimalWithUnits;
     FManufacturerPartsWarrantyDescription : string;
     FMaterialType : string;
     FMaterialTypeSetElement : ItemAttributes_MaterialTypeSetElementArray;
-    FMaximumAperture : DecimalWithUnits_Type;
+    FMaximumAperture : DecimalWithUnits;
     FMaximumColorDepth : string;
-    FMaximumFocalLength : DecimalWithUnits_Type;
-    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type;
-    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumFocalLength : DecimalWithUnits;
+    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits;
+    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits;
     FMaximumLowResolutionImages : string;
-    FMaximumResolution : DecimalWithUnits_Type;
-    FMaximumShutterSpeed : DecimalWithUnits_Type;
-    FMaximumVerticalResolution : NonNegativeIntegerWithUnits_Type;
-    FMaximumWeightRecommendation : DecimalWithUnits_Type;
+    FMaximumResolution : DecimalWithUnits;
+    FMaximumShutterSpeed : DecimalWithUnits;
+    FMaximumVerticalResolution : NonNegativeIntegerWithUnits;
+    FMaximumWeightRecommendation : DecimalWithUnits;
     FMediaType : string;
     FMemorySlotsAvailable : string;
     FMetalStamp : string;
     FMetalType : string;
     FMiniMovieDescription : string;
-    FMinimumFocalLength : DecimalWithUnits_Type;
-    FMinimumShutterSpeed : DecimalWithUnits_Type;
+    FMinimumFocalLength : DecimalWithUnits;
+    FMinimumShutterSpeed : DecimalWithUnits;
     FModel : string;
     FModelYear : nonNegativeInteger;
     FModemDescription : string;
-    FMonitorSize : DecimalWithUnits_Type;
-    FMonitorViewableDiagonalSize : DecimalWithUnits_Type;
+    FMonitorSize : DecimalWithUnits;
+    FMonitorViewableDiagonalSize : DecimalWithUnits;
     FMouseDescription : string;
     FMPN : string;
     FMusicalStyle : string;
@@ -4543,9 +5484,10 @@ type
     FNumberOfStrings : nonNegativeInteger;
     FNumberOfTracks : nonNegativeInteger;
     FOperatingSystem : string;
-    FOpticalSensorResolution : DecimalWithUnits_Type;
-    FOpticalZoom : DecimalWithUnits_Type;
+    FOpticalSensorResolution : DecimalWithUnits;
+    FOpticalZoom : DecimalWithUnits;
     FOriginalReleaseDate : string;
+    FOriginalAirDate : string;
     FOutputWattage : nonNegativeInteger;
     FPackageDimensions : ItemAttributes_PackageDimensions_Type;
     FPackageQuantity : nonNegativeInteger;
@@ -4585,12 +5527,14 @@ type
     FRequiredVoltageRange : string;
     FResolutionModes : string;
     FRingSize : string;
-    FRunningTime : DecimalWithUnits_Type;
+    FRunningTime : DecimalWithUnits;
     FScentName : string;
-    FSecondaryCacheSize : NonNegativeIntegerWithUnits_Type;
+    FSeasonSequence : string;
+    FSecondaryCacheSize : NonNegativeIntegerWithUnits;
     FSettingType : string;
     FShaftMaterialType : string;
     FShoeSize : ItemAttributes_ShoeSizeArray;
+    FShortSynopsis : string;
     FSize : string;
     FSizePerPearl : string;
     FSkillLevel : string;
@@ -4600,30 +5544,31 @@ type
     FSpeakerCount : nonNegativeInteger;
     FSpeakerDescription : string;
     FSpecialFeatures : ItemAttributes_SpecialFeaturesArray;
+    FStartYear : string;
     FStoneClarity : string;
     FStoneColor : string;
     FStoneCut : string;
     FStoneShape : string;
-    FStoneWeight : DecimalWithUnits_Type;
+    FStoneWeight : DecimalWithUnits;
     FStudio : string;
     FStyle : string;
-    FSubscriptionLength : NonNegativeIntegerWithUnits_Type;
+    FSubscriptionLength : NonNegativeIntegerWithUnits;
     FSupportedImageType : ItemAttributes_SupportedImageTypeArray;
     FSupportedMediaSize : string;
-    FSystemBusSpeed : DecimalWithUnits_Type;
-    FSystemMemorySizeMax : DecimalWithUnits_Type;
-    FSystemMemorySize : DecimalWithUnits_Type;
+    FSystemBusSpeed : DecimalWithUnits;
+    FSystemMemorySizeMax : DecimalWithUnits;
+    FSystemMemorySize : DecimalWithUnits;
     FSystemMemoryType : string;
     FTargetBrand : ItemAttributes_TargetBrandArray;
     FTellingPageIndicator : string;
     FTheatricalReleaseDate : string;
     FTitle : string;
-    FTotalDiamondWeight : DecimalWithUnits_Type;
+    FTotalDiamondWeight : DecimalWithUnits;
     FTotalExternalBaysFree : nonNegativeInteger;
     FTotalFirewirePorts : nonNegativeInteger;
-    FTotalGemWeight : DecimalWithUnits_Type;
+    FTotalGemWeight : DecimalWithUnits;
     FTotalInternalBaysFree : nonNegativeInteger;
-    FTotalMetalWeight : DecimalWithUnits_Type;
+    FTotalMetalWeight : DecimalWithUnits;
     FTotalNTSCPALPorts : nonNegativeInteger;
     FTotalParallelPorts : nonNegativeInteger;
     FTotalPCCardSlots : nonNegativeInteger;
@@ -4633,13 +5578,14 @@ type
     FTotalUSB2Ports : nonNegativeInteger;
     FTotalUSBPorts : nonNegativeInteger;
     FTotalVGAOutPorts : nonNegativeInteger;
+    FTrackSequence : string;
     FUPC : string;
     FVariationDenomination : string;
     FVariationDescription : string;
     FWarranty : string;
     FWatchMovementType : string;
-    FWaterResistanceDepth : DecimalWithUnits_Type;
-    FWEEETaxValue : Price_Type;
+    FWaterResistanceDepth : DecimalWithUnits;
+    FWEEETaxValue : Price;
     FWirelessMicrophoneFrequency : nonNegativeInteger;
   private
     function HasActor() : Boolean;
@@ -4714,6 +5660,7 @@ type
     function HasEAN() : Boolean;
     function HasEdition() : Boolean;
     function HasEducationalFocus() : Boolean;
+    function HasEpisodeSequence() : Boolean;
     function HasEthnicity() : Boolean;
     function HasESRBAgeRating() : Boolean;
     function HasExternalDisplaySupportDescription() : Boolean;
@@ -4779,6 +5726,7 @@ type
     function HasLensType() : Boolean;
     function HasLineVoltage() : Boolean;
     function HasListPrice() : Boolean;
+    function HasLongSynopsis() : Boolean;
     function HasMacroFocusRange() : Boolean;
     function HasMagazineType() : Boolean;
     function HasMalletHardness() : Boolean;
@@ -4833,6 +5781,7 @@ type
     function HasOpticalSensorResolution() : Boolean;
     function HasOpticalZoom() : Boolean;
     function HasOriginalReleaseDate() : Boolean;
+    function HasOriginalAirDate() : Boolean;
     function HasOutputWattage() : Boolean;
     function HasPackageDimensions() : Boolean;
     function HasPackageQuantity() : Boolean;
@@ -4874,10 +5823,12 @@ type
     function HasRingSize() : Boolean;
     function HasRunningTime() : Boolean;
     function HasScentName() : Boolean;
+    function HasSeasonSequence() : Boolean;
     function HasSecondaryCacheSize() : Boolean;
     function HasSettingType() : Boolean;
     function HasShaftMaterialType() : Boolean;
     function HasShoeSize() : Boolean;
+    function HasShortSynopsis() : Boolean;
     function HasSize() : Boolean;
     function HasSizePerPearl() : Boolean;
     function HasSkillLevel() : Boolean;
@@ -4887,6 +5838,7 @@ type
     function HasSpeakerCount() : Boolean;
     function HasSpeakerDescription() : Boolean;
     function HasSpecialFeatures() : Boolean;
+    function HasStartYear() : Boolean;
     function HasStoneClarity() : Boolean;
     function HasStoneColor() : Boolean;
     function HasStoneCut() : Boolean;
@@ -4920,6 +5872,7 @@ type
     function HasTotalUSB2Ports() : Boolean;
     function HasTotalUSBPorts() : Boolean;
     function HasTotalVGAOutPorts() : Boolean;
+    function HasTrackSequence() : Boolean;
     function HasUPC() : Boolean;
     function HasVariationDenomination() : Boolean;
     function HasVariationDescription() : Boolean;
@@ -4933,10 +5886,10 @@ type
     destructor Destroy();override;
   published
     property Actor : ItemAttributes_ActorArray read FActor write FActor stored HasActor;
-    property Address : Address_Type read FAddress write FAddress stored HasAddress;
+    property Address : Address read FAddress write FAddress stored HasAddress;
     property Age : ItemAttributes_AgeArray read FAge write FAge stored HasAge;
-    property AmazonMaximumAge : DecimalWithUnits_Type read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
-    property AmazonMinimumAge : DecimalWithUnits_Type read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
+    property AmazonMaximumAge : DecimalWithUnits read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
+    property AmazonMinimumAge : DecimalWithUnits read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
     property AnalogVideoFormat : string read FAnalogVideoFormat write FAnalogVideoFormat stored HasAnalogVideoFormat;
     property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
     property Artist : ItemAttributes_ArtistArray read FArtist write FArtist stored HasArtist;
@@ -4950,7 +5903,7 @@ type
     property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
     property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
     property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
-    property Batteries : NonNegativeIntegerWithUnits_Type read FBatteries write FBatteries stored HasBatteries;
+    property Batteries : NonNegativeIntegerWithUnits read FBatteries write FBatteries stored HasBatteries;
     property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
     property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
     property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
@@ -4958,9 +5911,9 @@ type
     property Brand : string read FBrand write FBrand stored HasBrand;
     property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
     property CameraManualFeatures : ItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures stored HasCameraManualFeatures;
-    property CaseDiameter : DecimalWithUnits_Type read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
+    property CaseDiameter : DecimalWithUnits read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
     property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
-    property CaseThickness : DecimalWithUnits_Type read FCaseThickness write FCaseThickness stored HasCaseThickness;
+    property CaseThickness : DecimalWithUnits read FCaseThickness write FCaseThickness stored HasCaseThickness;
     property CaseType : string read FCaseType write FCaseType stored HasCaseType;
     property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
     property Category : ItemAttributes_CategoryArray read FCategory write FCategory stored HasCategory;
@@ -4978,24 +5931,24 @@ type
     property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
     property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
     property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
-    property ContinuousShootingSpeed : DecimalWithUnits_Type read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
+    property ContinuousShootingSpeed : DecimalWithUnits read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
     property Country : string read FCountry write FCountry stored HasCountry;
     property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
-    property CPUSpeed : DecimalWithUnits_Type read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
+    property CPUSpeed : DecimalWithUnits read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
     property CPUType : string read FCPUType write FCPUType stored HasCPUType;
     property Creator : ItemAttributes_CreatorArray read FCreator write FCreator stored HasCreator;
     property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
     property DataLinkProtocol : ItemAttributes_DataLinkProtocolArray read FDataLinkProtocol write FDataLinkProtocol stored HasDataLinkProtocol;
     property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
-    property DelayBetweenShots : DecimalWithUnits_Type read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
+    property DelayBetweenShots : DecimalWithUnits read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
     property Department : string read FDepartment write FDepartment stored HasDepartment;
     property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
     property DialColor : string read FDialColor write FDialColor stored HasDialColor;
     property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
-    property DigitalZoom : DecimalWithUnits_Type read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
+    property DigitalZoom : DecimalWithUnits read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
     property Director : ItemAttributes_DirectorArray read FDirector write FDirector stored HasDirector;
     property DisplayColorSupport : string read FDisplayColorSupport write FDisplayColorSupport stored HasDisplayColorSupport;
-    property DisplaySize : DecimalWithUnits_Type read FDisplaySize write FDisplaySize stored HasDisplaySize;
+    property DisplaySize : DecimalWithUnits read FDisplaySize write FDisplaySize stored HasDisplaySize;
     property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
     property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
     property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
@@ -5004,6 +5957,7 @@ type
     property EAN : string read FEAN write FEAN stored HasEAN;
     property Edition : string read FEdition write FEdition stored HasEdition;
     property EducationalFocus : ItemAttributes_EducationalFocusArray read FEducationalFocus write FEducationalFocus stored HasEducationalFocus;
+    property EpisodeSequence : string read FEpisodeSequence write FEpisodeSequence stored HasEpisodeSequence;
     property Ethnicity : ItemAttributes_EthnicityArray read FEthnicity write FEthnicity stored HasEthnicity;
     property ESRBAgeRating : string read FESRBAgeRating write FESRBAgeRating stored HasESRBAgeRating;
     property ExternalDisplaySupportDescription : string read FExternalDisplaySupportDescription write FExternalDisplaySupportDescription stored HasExternalDisplaySupportDescription;
@@ -5011,7 +5965,7 @@ type
     property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
     property Feature : ItemAttributes_FeatureArray read FFeature write FFeature stored HasFeature;
     property FilmColorType : string read FFilmColorType write FFilmColorType stored HasFilmColorType;
-    property FirstIssueLeadTime : StringWithUnits_Type read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
+    property FirstIssueLeadTime : StringWithUnits read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
     property FlavorName : string read FFlavorName write FFlavorName stored HasFlavorName;
     property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
     property Format : ItemAttributes_FormatArray read FFormat write FFormat stored HasFormat;
@@ -5025,14 +5979,14 @@ type
     property GolfClubLoft : string read FGolfClubLoft write FGolfClubLoft stored HasGolfClubLoft;
     property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
     property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
-    property GraphicsMemorySize : DecimalWithUnits_Type read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
+    property GraphicsMemorySize : DecimalWithUnits read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
     property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
     property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
     property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
     property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
     property HandOrientation : string read FHandOrientation write FHandOrientation stored HasHandOrientation;
     property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
-    property HardDiskSize : DecimalWithUnits_Type read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
+    property HardDiskSize : DecimalWithUnits read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
     property HardDiskInterface : string read FHardDiskInterface write FHardDiskInterface stored HasHardDiskInterface;
     property HardwarePlatform : string read FHardwarePlatform write FHardwarePlatform stored HasHardwarePlatform;
     property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
@@ -5057,7 +6011,7 @@ type
     property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
     property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
     property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
-    property ISOEquivalent : NonNegativeIntegerWithUnits_Type read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
+    property ISOEquivalent : NonNegativeIntegerWithUnits read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
     property IsPreannounce : boolean read FIsPreannounce write FIsPreannounce stored HasIsPreannounce;
     property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
     property ItemDimensions : ItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
@@ -5068,39 +6022,40 @@ type
     property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
     property LensType : string read FLensType write FLensType stored HasLensType;
     property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
-    property ListPrice : Price_Type read FListPrice write FListPrice stored HasListPrice;
+    property ListPrice : Price read FListPrice write FListPrice stored HasListPrice;
+    property LongSynopsis : string read FLongSynopsis write FLongSynopsis stored HasLongSynopsis;
     property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
     property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
     property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
     property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
     property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
-    property ManufacturerMaximumAge : DecimalWithUnits_Type read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
-    property ManufacturerMinimumAge : DecimalWithUnits_Type read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
+    property ManufacturerMaximumAge : DecimalWithUnits read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
+    property ManufacturerMinimumAge : DecimalWithUnits read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
     property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
     property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
     property MaterialTypeSetElement : ItemAttributes_MaterialTypeSetElementArray read FMaterialTypeSetElement write FMaterialTypeSetElement stored HasMaterialTypeSetElement;
-    property MaximumAperture : DecimalWithUnits_Type read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
+    property MaximumAperture : DecimalWithUnits read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
     property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
-    property MaximumFocalLength : DecimalWithUnits_Type read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
-    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
-    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
+    property MaximumFocalLength : DecimalWithUnits read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
+    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
+    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
     property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
-    property MaximumResolution : DecimalWithUnits_Type read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
-    property MaximumShutterSpeed : DecimalWithUnits_Type read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
-    property MaximumVerticalResolution : NonNegativeIntegerWithUnits_Type read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
-    property MaximumWeightRecommendation : DecimalWithUnits_Type read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
+    property MaximumResolution : DecimalWithUnits read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
+    property MaximumShutterSpeed : DecimalWithUnits read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
+    property MaximumVerticalResolution : NonNegativeIntegerWithUnits read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
+    property MaximumWeightRecommendation : DecimalWithUnits read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
     property MediaType : string read FMediaType write FMediaType stored HasMediaType;
     property MemorySlotsAvailable : string read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
     property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
     property MetalType : string read FMetalType write FMetalType stored HasMetalType;
     property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
-    property MinimumFocalLength : DecimalWithUnits_Type read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
-    property MinimumShutterSpeed : DecimalWithUnits_Type read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
+    property MinimumFocalLength : DecimalWithUnits read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
+    property MinimumShutterSpeed : DecimalWithUnits read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
     property Model : string read FModel write FModel stored HasModel;
     property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
     property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
-    property MonitorSize : DecimalWithUnits_Type read FMonitorSize write FMonitorSize stored HasMonitorSize;
-    property MonitorViewableDiagonalSize : DecimalWithUnits_Type read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
+    property MonitorSize : DecimalWithUnits read FMonitorSize write FMonitorSize stored HasMonitorSize;
+    property MonitorViewableDiagonalSize : DecimalWithUnits read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
     property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
     property MPN : string read FMPN write FMPN stored HasMPN;
     property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
@@ -5120,9 +6075,10 @@ type
     property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
     property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
     property OperatingSystem : string read FOperatingSystem write FOperatingSystem stored HasOperatingSystem;
-    property OpticalSensorResolution : DecimalWithUnits_Type read FOpticalSensorResolution write FOpticalSensorResolution stored HasOpticalSensorResolution;
-    property OpticalZoom : DecimalWithUnits_Type read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
+    property OpticalSensorResolution : DecimalWithUnits read FOpticalSensorResolution write FOpticalSensorResolution stored HasOpticalSensorResolution;
+    property OpticalZoom : DecimalWithUnits read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
     property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
+    property OriginalAirDate : string read FOriginalAirDate write FOriginalAirDate stored HasOriginalAirDate;
     property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
     property PackageDimensions : ItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
     property PackageQuantity : nonNegativeInteger read FPackageQuantity write FPackageQuantity stored HasPackageQuantity;
@@ -5162,12 +6118,14 @@ type
     property RequiredVoltageRange : string read FRequiredVoltageRange write FRequiredVoltageRange stored HasRequiredVoltageRange;
     property ResolutionModes : string read FResolutionModes write FResolutionModes stored HasResolutionModes;
     property RingSize : string read FRingSize write FRingSize stored HasRingSize;
-    property RunningTime : DecimalWithUnits_Type read FRunningTime write FRunningTime stored HasRunningTime;
+    property RunningTime : DecimalWithUnits read FRunningTime write FRunningTime stored HasRunningTime;
     property ScentName : string read FScentName write FScentName stored HasScentName;
-    property SecondaryCacheSize : NonNegativeIntegerWithUnits_Type read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
+    property SeasonSequence : string read FSeasonSequence write FSeasonSequence stored HasSeasonSequence;
+    property SecondaryCacheSize : NonNegativeIntegerWithUnits read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
     property SettingType : string read FSettingType write FSettingType stored HasSettingType;
     property ShaftMaterialType : string read FShaftMaterialType write FShaftMaterialType stored HasShaftMaterialType;
     property ShoeSize : ItemAttributes_ShoeSizeArray read FShoeSize write FShoeSize stored HasShoeSize;
+    property ShortSynopsis : string read FShortSynopsis write FShortSynopsis stored HasShortSynopsis;
     property Size : string read FSize write FSize stored HasSize;
     property SizePerPearl : string read FSizePerPearl write FSizePerPearl stored HasSizePerPearl;
     property SkillLevel : string read FSkillLevel write FSkillLevel stored HasSkillLevel;
@@ -5177,30 +6135,31 @@ type
     property SpeakerCount : nonNegativeInteger read FSpeakerCount write FSpeakerCount stored HasSpeakerCount;
     property SpeakerDescription : string read FSpeakerDescription write FSpeakerDescription stored HasSpeakerDescription;
     property SpecialFeatures : ItemAttributes_SpecialFeaturesArray read FSpecialFeatures write FSpecialFeatures stored HasSpecialFeatures;
+    property StartYear : string read FStartYear write FStartYear stored HasStartYear;
     property StoneClarity : string read FStoneClarity write FStoneClarity stored HasStoneClarity;
     property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
     property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
     property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
-    property StoneWeight : DecimalWithUnits_Type read FStoneWeight write FStoneWeight stored HasStoneWeight;
+    property StoneWeight : DecimalWithUnits read FStoneWeight write FStoneWeight stored HasStoneWeight;
     property Studio : string read FStudio write FStudio stored HasStudio;
     property Style : string read FStyle write FStyle stored HasStyle;
-    property SubscriptionLength : NonNegativeIntegerWithUnits_Type read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
+    property SubscriptionLength : NonNegativeIntegerWithUnits read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
     property SupportedImageType : ItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType stored HasSupportedImageType;
     property SupportedMediaSize : string read FSupportedMediaSize write FSupportedMediaSize stored HasSupportedMediaSize;
-    property SystemBusSpeed : DecimalWithUnits_Type read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
-    property SystemMemorySizeMax : DecimalWithUnits_Type read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
-    property SystemMemorySize : DecimalWithUnits_Type read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
+    property SystemBusSpeed : DecimalWithUnits read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
+    property SystemMemorySizeMax : DecimalWithUnits read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
+    property SystemMemorySize : DecimalWithUnits read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
     property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
     property TargetBrand : ItemAttributes_TargetBrandArray read FTargetBrand write FTargetBrand stored HasTargetBrand;
     property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
     property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
     property Title : string read FTitle write FTitle stored HasTitle;
-    property TotalDiamondWeight : DecimalWithUnits_Type read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
+    property TotalDiamondWeight : DecimalWithUnits read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
     property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
     property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
-    property TotalGemWeight : DecimalWithUnits_Type read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
+    property TotalGemWeight : DecimalWithUnits read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
     property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
-    property TotalMetalWeight : DecimalWithUnits_Type read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
+    property TotalMetalWeight : DecimalWithUnits read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
     property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
     property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
     property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
@@ -5210,13 +6169,14 @@ type
     property TotalUSB2Ports : nonNegativeInteger read FTotalUSB2Ports write FTotalUSB2Ports stored HasTotalUSB2Ports;
     property TotalUSBPorts : nonNegativeInteger read FTotalUSBPorts write FTotalUSBPorts stored HasTotalUSBPorts;
     property TotalVGAOutPorts : nonNegativeInteger read FTotalVGAOutPorts write FTotalVGAOutPorts stored HasTotalVGAOutPorts;
+    property TrackSequence : string read FTrackSequence write FTrackSequence stored HasTrackSequence;
     property UPC : string read FUPC write FUPC stored HasUPC;
     property VariationDenomination : string read FVariationDenomination write FVariationDenomination stored HasVariationDenomination;
     property VariationDescription : string read FVariationDescription write FVariationDescription stored HasVariationDescription;
     property Warranty : string read FWarranty write FWarranty stored HasWarranty;
     property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
-    property WaterResistanceDepth : DecimalWithUnits_Type read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
-    property WEEETaxValue : Price_Type read FWEEETaxValue write FWEEETaxValue stored HasWEEETaxValue;
+    property WaterResistanceDepth : DecimalWithUnits read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
+    property WEEETaxValue : Price read FWEEETaxValue write FWEEETaxValue stored HasWEEETaxValue;
     property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
   end;
 
@@ -5229,10 +6189,10 @@ type
 
   MerchantItemAttributes_ItemDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits_Type;
-    FLength : DecimalWithUnits_Type;
-    FWeight : DecimalWithUnits_Type;
-    FWidth : DecimalWithUnits_Type;
+    FHeight : DecimalWithUnits;
+    FLength : DecimalWithUnits;
+    FWeight : DecimalWithUnits;
+    FWidth : DecimalWithUnits;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
@@ -5242,10 +6202,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
   end;
 
   MerchantItemAttributes_Languages_Type_Language_Type = class(TBaseComplexRemotable)
@@ -5263,10 +6223,10 @@ type
 
   MerchantItemAttributes_PackageDimensions_Type = class(TBaseComplexRemotable)
   private
-    FHeight : DecimalWithUnits_Type;
-    FLength : DecimalWithUnits_Type;
-    FWeight : DecimalWithUnits_Type;
-    FWidth : DecimalWithUnits_Type;
+    FHeight : DecimalWithUnits;
+    FLength : DecimalWithUnits;
+    FWeight : DecimalWithUnits;
+    FWidth : DecimalWithUnits;
   private
     function HasHeight() : Boolean;
     function HasLength() : Boolean;
@@ -5276,10 +6236,10 @@ type
     constructor Create();override;
     destructor Destroy();override;
   published
-    property Height : DecimalWithUnits_Type read FHeight write FHeight stored HasHeight;
-    property Length : DecimalWithUnits_Type read FLength write FLength stored HasLength;
-    property Weight : DecimalWithUnits_Type read FWeight write FWeight stored HasWeight;
-    property Width : DecimalWithUnits_Type read FWidth write FWidth stored HasWidth;
+    property Height : DecimalWithUnits read FHeight write FHeight stored HasHeight;
+    property Length : DecimalWithUnits read FLength write FLength stored HasLength;
+    property Weight : DecimalWithUnits read FWeight write FWeight stored HasWeight;
+    property Width : DecimalWithUnits read FWidth write FWidth stored HasWidth;
   end;
 
   MerchantItemAttributes_VendorRebate_Type = class(TBaseComplexRemotable)
@@ -5300,9 +6260,9 @@ type
   MerchantItemAttributes_Type = class(TBaseComplexRemotable)
   private
     FActor : MerchantItemAttributes_ActorArray;
-    FAddress : Address_Type;
-    FAmazonMaximumAge : DecimalWithUnits_Type;
-    FAmazonMinimumAge : DecimalWithUnits_Type;
+    FAddress : Address;
+    FAmazonMaximumAge : DecimalWithUnits;
+    FAmazonMinimumAge : DecimalWithUnits;
     FApertureModes : string;
     FArtist : MerchantItemAttributes_ArtistArray;
     FAspectRatio : string;
@@ -5315,7 +6275,7 @@ type
     FBandMaterialType : string;
     FBatteriesIncluded : string;
     FBatteriesRequired : string;
-    FBatteries : NonNegativeIntegerWithUnits_Type;
+    FBatteries : NonNegativeIntegerWithUnits;
     FBatteryDescription : string;
     FBatteryType : string;
     FBezelMaterialType : string;
@@ -5323,9 +6283,9 @@ type
     FBrand : string;
     FCalendarType : string;
     FCameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray;
-    FCaseDiameter : DecimalWithUnits_Type;
+    FCaseDiameter : DecimalWithUnits;
     FCaseMaterialType : string;
-    FCaseThickness : DecimalWithUnits_Type;
+    FCaseThickness : DecimalWithUnits;
     FCaseType : string;
     FCatalogNumber : string;
     FCDRWDescription : string;
@@ -5337,25 +6297,25 @@ type
     FComputerHardwareType : string;
     FComputerPlatform : string;
     FConnectivity : string;
-    FContinuousShootingSpeed : DecimalWithUnits_Type;
+    FContinuousShootingSpeed : DecimalWithUnits;
     FCountry : string;
     FCountryOfOrigin : string;
     FCPUManufacturer : string;
-    FCPUSpeed : DecimalWithUnits_Type;
+    FCPUSpeed : DecimalWithUnits;
     FCPUType : string;
     FCreator : MerchantItemAttributes_CreatorArray;
     FCuisine : string;
     FCustomizable : string;
-    FDelayBetweenShots : DecimalWithUnits_Type;
+    FDelayBetweenShots : DecimalWithUnits;
     FDeliveryOption : string;
     FDepartment : string;
     FDescription : string;
     FDeweyDecimalNumber : string;
     FDialColor : string;
     FDialWindowMaterialType : string;
-    FDigitalZoom : DecimalWithUnits_Type;
+    FDigitalZoom : DecimalWithUnits;
     FDirector : MerchantItemAttributes_DirectorArray;
-    FDisplaySize : DecimalWithUnits_Type;
+    FDisplaySize : DecimalWithUnits;
     FDrumSetPieceQuantity : nonNegativeInteger;
     FDVDLayers : nonNegativeInteger;
     FDVDRWDescription : string;
@@ -5368,20 +6328,20 @@ type
     FFabricType : string;
     FFaxNumber : string;
     FFeature : MerchantItemAttributes_FeatureArray;
-    FFirstIssueLeadTime : StringWithUnits_Type;
+    FFirstIssueLeadTime : StringWithUnits;
     FFloppyDiskDriveDescription : string;
     FFormat : MerchantItemAttributes_FormatArray;
-    FFixedShippingCharge : Price_Type;
+    FFixedShippingCharge : Price;
     FGemType : string;
     FGraphicsCardInterface : string;
     FGraphicsDescription : string;
-    FGraphicsMemorySize : DecimalWithUnits_Type;
+    FGraphicsMemorySize : DecimalWithUnits;
     FGuitarAttribute : string;
     FGuitarBridgeSystem : string;
     FGuitarPickThickness : string;
     FGuitarPickupConfiguration : string;
     FHardDiskCount : nonNegativeInteger;
-    FHardDiskSize : NonNegativeIntegerWithUnits_Type;
+    FHardDiskSize : NonNegativeIntegerWithUnits;
     FHasAutoFocus : boolean;
     FHasBurstMode : boolean;
     FHasInCameraEditing : boolean;
@@ -5396,13 +6356,15 @@ type
     FIncludesMp3Player : boolean;
     FIndications : string;
     FIngredients : string;
+    FIngredientsSetElement : MerchantItemAttributes_IngredientsSetElementArray;
     FInstrumentKey : string;
     FIsAutographed : boolean;
     FISBN : string;
+    FIsEmailNotifyAvailable : boolean;
     FIsFragile : boolean;
     FIsLabCreated : boolean;
     FIsMemorabilia : boolean;
-    FISOEquivalent : NonNegativeIntegerWithUnits_Type;
+    FISOEquivalent : NonNegativeIntegerWithUnits;
     FIssuesPerYear : string;
     FItemDimensions : MerchantItemAttributes_ItemDimensions_Type;
     FKeyboardDescription : string;
@@ -5410,37 +6372,38 @@ type
     FLanguages : MerchantItemAttributes_Languages_Type;
     FLegalDisclaimer : string;
     FLineVoltage : string;
-    FListPrice : Price_Type;
+    FListPrice : Price;
     FMacroFocusRange : string;
     FMagazineType : string;
     FMalletHardness : string;
     FManufacturer : string;
     FManufacturerLaborWarrantyDescription : string;
-    FManufacturerMaximumAge : DecimalWithUnits_Type;
-    FManufacturerMinimumAge : DecimalWithUnits_Type;
+    FManufacturerMaximumAge : DecimalWithUnits;
+    FManufacturerMinimumAge : DecimalWithUnits;
     FManufacturerPartsWarrantyDescription : string;
     FMaterialType : string;
-    FMaximumAperture : DecimalWithUnits_Type;
+    FMaximumAperture : DecimalWithUnits;
     FMaximumColorDepth : string;
-    FMaximumFocalLength : DecimalWithUnits_Type;
-    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type;
-    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type;
+    FMaximumFocalLength : DecimalWithUnits;
+    FMaximumHighResolutionImages : NonNegativeIntegerWithUnits;
+    FMaximumHorizontalResolution : NonNegativeIntegerWithUnits;
     FMaximumLowResolutionImages : string;
-    FMaximumResolution : DecimalWithUnits_Type;
-    FMaximumShutterSpeed : DecimalWithUnits_Type;
-    FMaximumVerticalResolution : NonNegativeIntegerWithUnits_Type;
-    FMaximumWeightRecommendation : DecimalWithUnits_Type;
+    FMaximumResolution : DecimalWithUnits;
+    FMaximumShutterSpeed : DecimalWithUnits;
+    FMaximumVerticalResolution : NonNegativeIntegerWithUnits;
+    FMaximumWeightRecommendation : DecimalWithUnits;
     FMemorySlotsAvailable : nonNegativeInteger;
     FMetalStamp : string;
     FMetalType : string;
     FMiniMovieDescription : string;
-    FMinimumFocalLength : DecimalWithUnits_Type;
-    FMinimumShutterSpeed : DecimalWithUnits_Type;
+    FMinimumAdvertisedPrice : Price;
+    FMinimumFocalLength : DecimalWithUnits;
+    FMinimumShutterSpeed : DecimalWithUnits;
     FModel : string;
     FModelYear : nonNegativeInteger;
     FModemDescription : string;
-    FMonitorSize : DecimalWithUnits_Type;
-    FMonitorViewableDiagonalSize : DecimalWithUnits_Type;
+    FMonitorSize : DecimalWithUnits;
+    FMonitorViewableDiagonalSize : DecimalWithUnits;
     FMouseDescription : string;
     FMPN : string;
     FMusicalStyle : string;
@@ -5459,7 +6422,7 @@ type
     FNumberOfStones : nonNegativeInteger;
     FNumberOfStrings : nonNegativeInteger;
     FNumberOfTracks : nonNegativeInteger;
-    FOpticalZoom : DecimalWithUnits_Type;
+    FOpticalZoom : DecimalWithUnits;
     FOriginalReleaseDate : string;
     FOutputWattage : nonNegativeInteger;
     FPackageDimensions : MerchantItemAttributes_PackageDimensions_Type;
@@ -5494,7 +6457,7 @@ type
     FRingSize : string;
     FSafetyWarning : string;
     FSalesRestriction : string;
-    FSecondaryCacheSize : NonNegativeIntegerWithUnits_Type;
+    FSecondaryCacheSize : NonNegativeIntegerWithUnits;
     FSettingType : string;
     FSize : string;
     FSKU : string;
@@ -5509,23 +6472,23 @@ type
     FStoneColor : string;
     FStoneCut : string;
     FStoneShape : string;
-    FStoneWeight : DecimalWithUnits_Type;
+    FStoneWeight : DecimalWithUnits;
     FStudio : string;
-    FSubscriptionLength : NonNegativeIntegerWithUnits_Type;
+    FSubscriptionLength : NonNegativeIntegerWithUnits;
     FSupportedImageType : MerchantItemAttributes_SupportedImageTypeArray;
-    FSystemBusSpeed : DecimalWithUnits_Type;
-    FSystemMemorySizeMax : DecimalWithUnits_Type;
-    FSystemMemorySize : DecimalWithUnits_Type;
+    FSystemBusSpeed : DecimalWithUnits;
+    FSystemMemorySizeMax : DecimalWithUnits;
+    FSystemMemorySize : DecimalWithUnits;
     FSystemMemoryType : string;
     FTellingPageIndicator : string;
     FTheatricalReleaseDate : string;
     FTitle : string;
-    FTotalDiamondWeight : DecimalWithUnits_Type;
+    FTotalDiamondWeight : DecimalWithUnits;
     FTotalExternalBaysFree : nonNegativeInteger;
     FTotalFirewirePorts : nonNegativeInteger;
-    FTotalGemWeight : DecimalWithUnits_Type;
+    FTotalGemWeight : DecimalWithUnits;
     FTotalInternalBaysFree : nonNegativeInteger;
-    FTotalMetalWeight : DecimalWithUnits_Type;
+    FTotalMetalWeight : DecimalWithUnits;
     FTotalNTSCPALPorts : nonNegativeInteger;
     FTotalParallelPorts : nonNegativeInteger;
     FTotalPCCardSlots : nonNegativeInteger;
@@ -5542,7 +6505,7 @@ type
     FWarranty : string;
     FWatchMovementType : string;
     FWebsiteBuyability : string;
-    FWaterResistanceDepth : DecimalWithUnits_Type;
+    FWaterResistanceDepth : DecimalWithUnits;
     FWirelessMicrophoneFrequency : nonNegativeInteger;
   private
     function HasActor() : Boolean;
@@ -5642,9 +6605,11 @@ type
     function HasIncludesMp3Player() : Boolean;
     function HasIndications() : Boolean;
     function HasIngredients() : Boolean;
+    function HasIngredientsSetElement() : Boolean;
     function HasInstrumentKey() : Boolean;
     function HasIsAutographed() : Boolean;
     function HasISBN() : Boolean;
+    function HasIsEmailNotifyAvailable() : Boolean;
     function HasIsFragile() : Boolean;
     function HasIsLabCreated() : Boolean;
     function HasIsMemorabilia() : Boolean;
@@ -5680,6 +6645,7 @@ type
     function HasMetalStamp() : Boolean;
     function HasMetalType() : Boolean;
     function HasMiniMovieDescription() : Boolean;
+    function HasMinimumAdvertisedPrice() : Boolean;
     function HasMinimumFocalLength() : Boolean;
     function HasMinimumShutterSpeed() : Boolean;
     function HasModel() : Boolean;
@@ -5795,9 +6761,9 @@ type
     destructor Destroy();override;
   published
     property Actor : MerchantItemAttributes_ActorArray read FActor write FActor stored HasActor;
-    property Address : Address_Type read FAddress write FAddress stored HasAddress;
-    property AmazonMaximumAge : DecimalWithUnits_Type read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
-    property AmazonMinimumAge : DecimalWithUnits_Type read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
+    property Address : Address read FAddress write FAddress stored HasAddress;
+    property AmazonMaximumAge : DecimalWithUnits read FAmazonMaximumAge write FAmazonMaximumAge stored HasAmazonMaximumAge;
+    property AmazonMinimumAge : DecimalWithUnits read FAmazonMinimumAge write FAmazonMinimumAge stored HasAmazonMinimumAge;
     property ApertureModes : string read FApertureModes write FApertureModes stored HasApertureModes;
     property Artist : MerchantItemAttributes_ArtistArray read FArtist write FArtist stored HasArtist;
     property AspectRatio : string read FAspectRatio write FAspectRatio stored HasAspectRatio;
@@ -5810,7 +6776,7 @@ type
     property BandMaterialType : string read FBandMaterialType write FBandMaterialType stored HasBandMaterialType;
     property BatteriesIncluded : string read FBatteriesIncluded write FBatteriesIncluded stored HasBatteriesIncluded;
     property BatteriesRequired : string read FBatteriesRequired write FBatteriesRequired stored HasBatteriesRequired;
-    property Batteries : NonNegativeIntegerWithUnits_Type read FBatteries write FBatteries stored HasBatteries;
+    property Batteries : NonNegativeIntegerWithUnits read FBatteries write FBatteries stored HasBatteries;
     property BatteryDescription : string read FBatteryDescription write FBatteryDescription stored HasBatteryDescription;
     property BatteryType : string read FBatteryType write FBatteryType stored HasBatteryType;
     property BezelMaterialType : string read FBezelMaterialType write FBezelMaterialType stored HasBezelMaterialType;
@@ -5818,9 +6784,9 @@ type
     property Brand : string read FBrand write FBrand stored HasBrand;
     property CalendarType : string read FCalendarType write FCalendarType stored HasCalendarType;
     property CameraManualFeatures : MerchantItemAttributes_CameraManualFeaturesArray read FCameraManualFeatures write FCameraManualFeatures stored HasCameraManualFeatures;
-    property CaseDiameter : DecimalWithUnits_Type read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
+    property CaseDiameter : DecimalWithUnits read FCaseDiameter write FCaseDiameter stored HasCaseDiameter;
     property CaseMaterialType : string read FCaseMaterialType write FCaseMaterialType stored HasCaseMaterialType;
-    property CaseThickness : DecimalWithUnits_Type read FCaseThickness write FCaseThickness stored HasCaseThickness;
+    property CaseThickness : DecimalWithUnits read FCaseThickness write FCaseThickness stored HasCaseThickness;
     property CaseType : string read FCaseType write FCaseType stored HasCaseType;
     property CatalogNumber : string read FCatalogNumber write FCatalogNumber stored HasCatalogNumber;
     property CDRWDescription : string read FCDRWDescription write FCDRWDescription stored HasCDRWDescription;
@@ -5832,25 +6798,25 @@ type
     property ComputerHardwareType : string read FComputerHardwareType write FComputerHardwareType stored HasComputerHardwareType;
     property ComputerPlatform : string read FComputerPlatform write FComputerPlatform stored HasComputerPlatform;
     property Connectivity : string read FConnectivity write FConnectivity stored HasConnectivity;
-    property ContinuousShootingSpeed : DecimalWithUnits_Type read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
+    property ContinuousShootingSpeed : DecimalWithUnits read FContinuousShootingSpeed write FContinuousShootingSpeed stored HasContinuousShootingSpeed;
     property Country : string read FCountry write FCountry stored HasCountry;
     property CountryOfOrigin : string read FCountryOfOrigin write FCountryOfOrigin stored HasCountryOfOrigin;
     property CPUManufacturer : string read FCPUManufacturer write FCPUManufacturer stored HasCPUManufacturer;
-    property CPUSpeed : DecimalWithUnits_Type read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
+    property CPUSpeed : DecimalWithUnits read FCPUSpeed write FCPUSpeed stored HasCPUSpeed;
     property CPUType : string read FCPUType write FCPUType stored HasCPUType;
     property Creator : MerchantItemAttributes_CreatorArray read FCreator write FCreator stored HasCreator;
     property Cuisine : string read FCuisine write FCuisine stored HasCuisine;
     property Customizable : string read FCustomizable write FCustomizable stored HasCustomizable;
-    property DelayBetweenShots : DecimalWithUnits_Type read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
+    property DelayBetweenShots : DecimalWithUnits read FDelayBetweenShots write FDelayBetweenShots stored HasDelayBetweenShots;
     property DeliveryOption : string read FDeliveryOption write FDeliveryOption stored HasDeliveryOption;
     property Department : string read FDepartment write FDepartment stored HasDepartment;
     property Description : string read FDescription write FDescription stored HasDescription;
     property DeweyDecimalNumber : string read FDeweyDecimalNumber write FDeweyDecimalNumber stored HasDeweyDecimalNumber;
     property DialColor : string read FDialColor write FDialColor stored HasDialColor;
     property DialWindowMaterialType : string read FDialWindowMaterialType write FDialWindowMaterialType stored HasDialWindowMaterialType;
-    property DigitalZoom : DecimalWithUnits_Type read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
+    property DigitalZoom : DecimalWithUnits read FDigitalZoom write FDigitalZoom stored HasDigitalZoom;
     property Director : MerchantItemAttributes_DirectorArray read FDirector write FDirector stored HasDirector;
-    property DisplaySize : DecimalWithUnits_Type read FDisplaySize write FDisplaySize stored HasDisplaySize;
+    property DisplaySize : DecimalWithUnits read FDisplaySize write FDisplaySize stored HasDisplaySize;
     property DrumSetPieceQuantity : nonNegativeInteger read FDrumSetPieceQuantity write FDrumSetPieceQuantity stored HasDrumSetPieceQuantity;
     property DVDLayers : nonNegativeInteger read FDVDLayers write FDVDLayers stored HasDVDLayers;
     property DVDRWDescription : string read FDVDRWDescription write FDVDRWDescription stored HasDVDRWDescription;
@@ -5863,20 +6829,20 @@ type
     property FabricType : string read FFabricType write FFabricType stored HasFabricType;
     property FaxNumber : string read FFaxNumber write FFaxNumber stored HasFaxNumber;
     property Feature : MerchantItemAttributes_FeatureArray read FFeature write FFeature stored HasFeature;
-    property FirstIssueLeadTime : StringWithUnits_Type read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
+    property FirstIssueLeadTime : StringWithUnits read FFirstIssueLeadTime write FFirstIssueLeadTime stored HasFirstIssueLeadTime;
     property FloppyDiskDriveDescription : string read FFloppyDiskDriveDescription write FFloppyDiskDriveDescription stored HasFloppyDiskDriveDescription;
     property Format : MerchantItemAttributes_FormatArray read FFormat write FFormat stored HasFormat;
-    property FixedShippingCharge : Price_Type read FFixedShippingCharge write FFixedShippingCharge stored HasFixedShippingCharge;
+    property FixedShippingCharge : Price read FFixedShippingCharge write FFixedShippingCharge stored HasFixedShippingCharge;
     property GemType : string read FGemType write FGemType stored HasGemType;
     property GraphicsCardInterface : string read FGraphicsCardInterface write FGraphicsCardInterface stored HasGraphicsCardInterface;
     property GraphicsDescription : string read FGraphicsDescription write FGraphicsDescription stored HasGraphicsDescription;
-    property GraphicsMemorySize : DecimalWithUnits_Type read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
+    property GraphicsMemorySize : DecimalWithUnits read FGraphicsMemorySize write FGraphicsMemorySize stored HasGraphicsMemorySize;
     property GuitarAttribute : string read FGuitarAttribute write FGuitarAttribute stored HasGuitarAttribute;
     property GuitarBridgeSystem : string read FGuitarBridgeSystem write FGuitarBridgeSystem stored HasGuitarBridgeSystem;
     property GuitarPickThickness : string read FGuitarPickThickness write FGuitarPickThickness stored HasGuitarPickThickness;
     property GuitarPickupConfiguration : string read FGuitarPickupConfiguration write FGuitarPickupConfiguration stored HasGuitarPickupConfiguration;
     property HardDiskCount : nonNegativeInteger read FHardDiskCount write FHardDiskCount stored HasHardDiskCount;
-    property HardDiskSize : NonNegativeIntegerWithUnits_Type read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
+    property HardDiskSize : NonNegativeIntegerWithUnits read FHardDiskSize write FHardDiskSize stored HasHardDiskSize;
     property HasAutoFocus : boolean read FHasAutoFocus write FHasAutoFocus stored HasHasAutoFocus;
     property HasBurstMode : boolean read FHasBurstMode write FHasBurstMode stored HasHasBurstMode;
     property HasInCameraEditing : boolean read FHasInCameraEditing write FHasInCameraEditing stored HasHasInCameraEditing;
@@ -5891,13 +6857,15 @@ type
     property IncludesMp3Player : boolean read FIncludesMp3Player write FIncludesMp3Player stored HasIncludesMp3Player;
     property Indications : string read FIndications write FIndications stored HasIndications;
     property Ingredients : string read FIngredients write FIngredients stored HasIngredients;
+    property IngredientsSetElement : MerchantItemAttributes_IngredientsSetElementArray read FIngredientsSetElement write FIngredientsSetElement stored HasIngredientsSetElement;
     property InstrumentKey : string read FInstrumentKey write FInstrumentKey stored HasInstrumentKey;
     property IsAutographed : boolean read FIsAutographed write FIsAutographed stored HasIsAutographed;
     property ISBN : string read FISBN write FISBN stored HasISBN;
+    property IsEmailNotifyAvailable : boolean read FIsEmailNotifyAvailable write FIsEmailNotifyAvailable stored HasIsEmailNotifyAvailable;
     property IsFragile : boolean read FIsFragile write FIsFragile stored HasIsFragile;
     property IsLabCreated : boolean read FIsLabCreated write FIsLabCreated stored HasIsLabCreated;
     property IsMemorabilia : boolean read FIsMemorabilia write FIsMemorabilia stored HasIsMemorabilia;
-    property ISOEquivalent : NonNegativeIntegerWithUnits_Type read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
+    property ISOEquivalent : NonNegativeIntegerWithUnits read FISOEquivalent write FISOEquivalent stored HasISOEquivalent;
     property IssuesPerYear : string read FIssuesPerYear write FIssuesPerYear stored HasIssuesPerYear;
     property ItemDimensions : MerchantItemAttributes_ItemDimensions_Type read FItemDimensions write FItemDimensions stored HasItemDimensions;
     property KeyboardDescription : string read FKeyboardDescription write FKeyboardDescription stored HasKeyboardDescription;
@@ -5905,37 +6873,38 @@ type
     property Languages : MerchantItemAttributes_Languages_Type read FLanguages write FLanguages stored HasLanguages;
     property LegalDisclaimer : string read FLegalDisclaimer write FLegalDisclaimer stored HasLegalDisclaimer;
     property LineVoltage : string read FLineVoltage write FLineVoltage stored HasLineVoltage;
-    property ListPrice : Price_Type read FListPrice write FListPrice stored HasListPrice;
+    property ListPrice : Price read FListPrice write FListPrice stored HasListPrice;
     property MacroFocusRange : string read FMacroFocusRange write FMacroFocusRange stored HasMacroFocusRange;
     property MagazineType : string read FMagazineType write FMagazineType stored HasMagazineType;
     property MalletHardness : string read FMalletHardness write FMalletHardness stored HasMalletHardness;
     property Manufacturer : string read FManufacturer write FManufacturer stored HasManufacturer;
     property ManufacturerLaborWarrantyDescription : string read FManufacturerLaborWarrantyDescription write FManufacturerLaborWarrantyDescription stored HasManufacturerLaborWarrantyDescription;
-    property ManufacturerMaximumAge : DecimalWithUnits_Type read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
-    property ManufacturerMinimumAge : DecimalWithUnits_Type read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
+    property ManufacturerMaximumAge : DecimalWithUnits read FManufacturerMaximumAge write FManufacturerMaximumAge stored HasManufacturerMaximumAge;
+    property ManufacturerMinimumAge : DecimalWithUnits read FManufacturerMinimumAge write FManufacturerMinimumAge stored HasManufacturerMinimumAge;
     property ManufacturerPartsWarrantyDescription : string read FManufacturerPartsWarrantyDescription write FManufacturerPartsWarrantyDescription stored HasManufacturerPartsWarrantyDescription;
     property MaterialType : string read FMaterialType write FMaterialType stored HasMaterialType;
-    property MaximumAperture : DecimalWithUnits_Type read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
+    property MaximumAperture : DecimalWithUnits read FMaximumAperture write FMaximumAperture stored HasMaximumAperture;
     property MaximumColorDepth : string read FMaximumColorDepth write FMaximumColorDepth stored HasMaximumColorDepth;
-    property MaximumFocalLength : DecimalWithUnits_Type read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
-    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits_Type read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
-    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits_Type read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
+    property MaximumFocalLength : DecimalWithUnits read FMaximumFocalLength write FMaximumFocalLength stored HasMaximumFocalLength;
+    property MaximumHighResolutionImages : NonNegativeIntegerWithUnits read FMaximumHighResolutionImages write FMaximumHighResolutionImages stored HasMaximumHighResolutionImages;
+    property MaximumHorizontalResolution : NonNegativeIntegerWithUnits read FMaximumHorizontalResolution write FMaximumHorizontalResolution stored HasMaximumHorizontalResolution;
     property MaximumLowResolutionImages : string read FMaximumLowResolutionImages write FMaximumLowResolutionImages stored HasMaximumLowResolutionImages;
-    property MaximumResolution : DecimalWithUnits_Type read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
-    property MaximumShutterSpeed : DecimalWithUnits_Type read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
-    property MaximumVerticalResolution : NonNegativeIntegerWithUnits_Type read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
-    property MaximumWeightRecommendation : DecimalWithUnits_Type read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
+    property MaximumResolution : DecimalWithUnits read FMaximumResolution write FMaximumResolution stored HasMaximumResolution;
+    property MaximumShutterSpeed : DecimalWithUnits read FMaximumShutterSpeed write FMaximumShutterSpeed stored HasMaximumShutterSpeed;
+    property MaximumVerticalResolution : NonNegativeIntegerWithUnits read FMaximumVerticalResolution write FMaximumVerticalResolution stored HasMaximumVerticalResolution;
+    property MaximumWeightRecommendation : DecimalWithUnits read FMaximumWeightRecommendation write FMaximumWeightRecommendation stored HasMaximumWeightRecommendation;
     property MemorySlotsAvailable : nonNegativeInteger read FMemorySlotsAvailable write FMemorySlotsAvailable stored HasMemorySlotsAvailable;
     property MetalStamp : string read FMetalStamp write FMetalStamp stored HasMetalStamp;
     property MetalType : string read FMetalType write FMetalType stored HasMetalType;
     property MiniMovieDescription : string read FMiniMovieDescription write FMiniMovieDescription stored HasMiniMovieDescription;
-    property MinimumFocalLength : DecimalWithUnits_Type read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
-    property MinimumShutterSpeed : DecimalWithUnits_Type read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
+    property MinimumAdvertisedPrice : Price read FMinimumAdvertisedPrice write FMinimumAdvertisedPrice stored HasMinimumAdvertisedPrice;
+    property MinimumFocalLength : DecimalWithUnits read FMinimumFocalLength write FMinimumFocalLength stored HasMinimumFocalLength;
+    property MinimumShutterSpeed : DecimalWithUnits read FMinimumShutterSpeed write FMinimumShutterSpeed stored HasMinimumShutterSpeed;
     property Model : string read FModel write FModel stored HasModel;
     property ModelYear : nonNegativeInteger read FModelYear write FModelYear stored HasModelYear;
     property ModemDescription : string read FModemDescription write FModemDescription stored HasModemDescription;
-    property MonitorSize : DecimalWithUnits_Type read FMonitorSize write FMonitorSize stored HasMonitorSize;
-    property MonitorViewableDiagonalSize : DecimalWithUnits_Type read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
+    property MonitorSize : DecimalWithUnits read FMonitorSize write FMonitorSize stored HasMonitorSize;
+    property MonitorViewableDiagonalSize : DecimalWithUnits read FMonitorViewableDiagonalSize write FMonitorViewableDiagonalSize stored HasMonitorViewableDiagonalSize;
     property MouseDescription : string read FMouseDescription write FMouseDescription stored HasMouseDescription;
     property MPN : string read FMPN write FMPN stored HasMPN;
     property MusicalStyle : string read FMusicalStyle write FMusicalStyle stored HasMusicalStyle;
@@ -5954,7 +6923,7 @@ type
     property NumberOfStones : nonNegativeInteger read FNumberOfStones write FNumberOfStones stored HasNumberOfStones;
     property NumberOfStrings : nonNegativeInteger read FNumberOfStrings write FNumberOfStrings stored HasNumberOfStrings;
     property NumberOfTracks : nonNegativeInteger read FNumberOfTracks write FNumberOfTracks stored HasNumberOfTracks;
-    property OpticalZoom : DecimalWithUnits_Type read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
+    property OpticalZoom : DecimalWithUnits read FOpticalZoom write FOpticalZoom stored HasOpticalZoom;
     property OriginalReleaseDate : string read FOriginalReleaseDate write FOriginalReleaseDate stored HasOriginalReleaseDate;
     property OutputWattage : nonNegativeInteger read FOutputWattage write FOutputWattage stored HasOutputWattage;
     property PackageDimensions : MerchantItemAttributes_PackageDimensions_Type read FPackageDimensions write FPackageDimensions stored HasPackageDimensions;
@@ -5989,7 +6958,7 @@ type
     property RingSize : string read FRingSize write FRingSize stored HasRingSize;
     property SafetyWarning : string read FSafetyWarning write FSafetyWarning stored HasSafetyWarning;
     property SalesRestriction : string read FSalesRestriction write FSalesRestriction stored HasSalesRestriction;
-    property SecondaryCacheSize : NonNegativeIntegerWithUnits_Type read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
+    property SecondaryCacheSize : NonNegativeIntegerWithUnits read FSecondaryCacheSize write FSecondaryCacheSize stored HasSecondaryCacheSize;
     property SettingType : string read FSettingType write FSettingType stored HasSettingType;
     property Size : string read FSize write FSize stored HasSize;
     property SKU : string read FSKU write FSKU stored HasSKU;
@@ -6004,23 +6973,23 @@ type
     property StoneColor : string read FStoneColor write FStoneColor stored HasStoneColor;
     property StoneCut : string read FStoneCut write FStoneCut stored HasStoneCut;
     property StoneShape : string read FStoneShape write FStoneShape stored HasStoneShape;
-    property StoneWeight : DecimalWithUnits_Type read FStoneWeight write FStoneWeight stored HasStoneWeight;
+    property StoneWeight : DecimalWithUnits read FStoneWeight write FStoneWeight stored HasStoneWeight;
     property Studio : string read FStudio write FStudio stored HasStudio;
-    property SubscriptionLength : NonNegativeIntegerWithUnits_Type read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
+    property SubscriptionLength : NonNegativeIntegerWithUnits read FSubscriptionLength write FSubscriptionLength stored HasSubscriptionLength;
     property SupportedImageType : MerchantItemAttributes_SupportedImageTypeArray read FSupportedImageType write FSupportedImageType stored HasSupportedImageType;
-    property SystemBusSpeed : DecimalWithUnits_Type read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
-    property SystemMemorySizeMax : DecimalWithUnits_Type read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
-    property SystemMemorySize : DecimalWithUnits_Type read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
+    property SystemBusSpeed : DecimalWithUnits read FSystemBusSpeed write FSystemBusSpeed stored HasSystemBusSpeed;
+    property SystemMemorySizeMax : DecimalWithUnits read FSystemMemorySizeMax write FSystemMemorySizeMax stored HasSystemMemorySizeMax;
+    property SystemMemorySize : DecimalWithUnits read FSystemMemorySize write FSystemMemorySize stored HasSystemMemorySize;
     property SystemMemoryType : string read FSystemMemoryType write FSystemMemoryType stored HasSystemMemoryType;
     property TellingPageIndicator : string read FTellingPageIndicator write FTellingPageIndicator stored HasTellingPageIndicator;
     property TheatricalReleaseDate : string read FTheatricalReleaseDate write FTheatricalReleaseDate stored HasTheatricalReleaseDate;
     property Title : string read FTitle write FTitle stored HasTitle;
-    property TotalDiamondWeight : DecimalWithUnits_Type read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
+    property TotalDiamondWeight : DecimalWithUnits read FTotalDiamondWeight write FTotalDiamondWeight stored HasTotalDiamondWeight;
     property TotalExternalBaysFree : nonNegativeInteger read FTotalExternalBaysFree write FTotalExternalBaysFree stored HasTotalExternalBaysFree;
     property TotalFirewirePorts : nonNegativeInteger read FTotalFirewirePorts write FTotalFirewirePorts stored HasTotalFirewirePorts;
-    property TotalGemWeight : DecimalWithUnits_Type read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
+    property TotalGemWeight : DecimalWithUnits read FTotalGemWeight write FTotalGemWeight stored HasTotalGemWeight;
     property TotalInternalBaysFree : nonNegativeInteger read FTotalInternalBaysFree write FTotalInternalBaysFree stored HasTotalInternalBaysFree;
-    property TotalMetalWeight : DecimalWithUnits_Type read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
+    property TotalMetalWeight : DecimalWithUnits read FTotalMetalWeight write FTotalMetalWeight stored HasTotalMetalWeight;
     property TotalNTSCPALPorts : nonNegativeInteger read FTotalNTSCPALPorts write FTotalNTSCPALPorts stored HasTotalNTSCPALPorts;
     property TotalParallelPorts : nonNegativeInteger read FTotalParallelPorts write FTotalParallelPorts stored HasTotalParallelPorts;
     property TotalPCCardSlots : nonNegativeInteger read FTotalPCCardSlots write FTotalPCCardSlots stored HasTotalPCCardSlots;
@@ -6037,25 +7006,25 @@ type
     property Warranty : string read FWarranty write FWarranty stored HasWarranty;
     property WatchMovementType : string read FWatchMovementType write FWatchMovementType stored HasWatchMovementType;
     property WebsiteBuyability : string read FWebsiteBuyability write FWebsiteBuyability stored HasWebsiteBuyability;
-    property WaterResistanceDepth : DecimalWithUnits_Type read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
+    property WaterResistanceDepth : DecimalWithUnits read FWaterResistanceDepth write FWaterResistanceDepth stored HasWaterResistanceDepth;
     property WirelessMicrophoneFrequency : nonNegativeInteger read FWirelessMicrophoneFrequency write FWirelessMicrophoneFrequency stored HasWirelessMicrophoneFrequency;
   end;
 
-  NonNegativeIntegerWithUnits_Type = class(TComplexInt32UContentRemotable)
+  NonNegativeIntegerWithUnits = class(TComplexInt32UContentRemotable)
   private
     FUnits : string;
   published
     property Units : string read FUnits write FUnits;
   end;
 
-  DecimalWithUnits_Type = class(TComplexFloatExtendedContentRemotable)
+  DecimalWithUnits = class(TComplexFloatExtendedContentRemotable)
   private
     FUnits : string;
   published
     property Units : string read FUnits write FUnits;
   end;
 
-  StringWithUnits_Type = class(TComplexStringContentRemotable)
+  StringWithUnits = class(TComplexStringContentRemotable)
   private
     FUnits : string;
   published
@@ -6064,10 +7033,10 @@ type
 
   Help_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): HelpRequest_Type;
+    function GetItem(AIndex: Integer): HelpRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : HelpRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : HelpRequest Read GetItem;Default;
   end;
 
   HelpResponse_InformationArray = class(TBaseObjectArrayRemotable)
@@ -6080,10 +7049,10 @@ type
 
   ItemSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ItemSearchRequest_Type;
+    function GetItem(AIndex: Integer): ItemSearchRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ItemSearchRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : ItemSearchRequest Read GetItem;Default;
   end;
 
   ItemSearchResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -6096,10 +7065,10 @@ type
 
   ItemLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ItemLookupRequest_Type;
+    function GetItem(AIndex: Integer): ItemLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ItemLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : ItemLookupRequest Read GetItem;Default;
   end;
 
   ItemLookupResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -6112,10 +7081,10 @@ type
 
   BrowseNodeLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): BrowseNodeLookupRequest_Type;
+    function GetItem(AIndex: Integer): BrowseNodeLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : BrowseNodeLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : BrowseNodeLookupRequest Read GetItem;Default;
   end;
 
   BrowseNodeLookupResponse_BrowseNodesArray = class(TBaseObjectArrayRemotable)
@@ -6128,10 +7097,10 @@ type
 
   ListSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ListSearchRequest_Type;
+    function GetItem(AIndex: Integer): ListSearchRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ListSearchRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : ListSearchRequest Read GetItem;Default;
   end;
 
   ListSearchResponse_ListsArray = class(TBaseObjectArrayRemotable)
@@ -6144,10 +7113,10 @@ type
 
   ListLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): ListLookupRequest_Type;
+    function GetItem(AIndex: Integer): ListLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : ListLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : ListLookupRequest Read GetItem;Default;
   end;
 
   ListLookupResponse_ListsArray = class(TBaseObjectArrayRemotable)
@@ -6160,10 +7129,10 @@ type
 
   CustomerContentSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CustomerContentSearchRequest_Type;
+    function GetItem(AIndex: Integer): CustomerContentSearchRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CustomerContentSearchRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CustomerContentSearchRequest Read GetItem;Default;
   end;
 
   CustomerContentSearchResponse_CustomersArray = class(TBaseObjectArrayRemotable)
@@ -6176,10 +7145,10 @@ type
 
   CustomerContentLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CustomerContentLookupRequest_Type;
+    function GetItem(AIndex: Integer): CustomerContentLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CustomerContentLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CustomerContentLookupRequest Read GetItem;Default;
   end;
 
   CustomerContentLookupResponse_CustomersArray = class(TBaseObjectArrayRemotable)
@@ -6192,10 +7161,10 @@ type
 
   SimilarityLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SimilarityLookupRequest_Type;
+    function GetItem(AIndex: Integer): SimilarityLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SimilarityLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : SimilarityLookupRequest Read GetItem;Default;
   end;
 
   SimilarityLookupResponse_ItemsArray = class(TBaseObjectArrayRemotable)
@@ -6208,10 +7177,10 @@ type
 
   SellerLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerLookupRequest_Type;
+    function GetItem(AIndex: Integer): SellerLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerLookupRequest Read GetItem;Default;
   end;
 
   SellerLookupResponse_SellersArray = class(TBaseObjectArrayRemotable)
@@ -6224,10 +7193,10 @@ type
 
   CartGet_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartGetRequest_Type;
+    function GetItem(AIndex: Integer): CartGetRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartGetRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartGetRequest Read GetItem;Default;
   end;
 
   CartGetResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -6240,10 +7209,10 @@ type
 
   CartAdd_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartAddRequest_Type;
+    function GetItem(AIndex: Integer): CartAddRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartAddRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartAddRequest Read GetItem;Default;
   end;
 
   CartAddResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -6256,10 +7225,10 @@ type
 
   CartCreate_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartCreateRequest_Type;
+    function GetItem(AIndex: Integer): CartCreateRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartCreateRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartCreateRequest Read GetItem;Default;
   end;
 
   CartCreateResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -6272,10 +7241,10 @@ type
 
   CartModify_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartModifyRequest_Type;
+    function GetItem(AIndex: Integer): CartModifyRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartModifyRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartModifyRequest Read GetItem;Default;
   end;
 
   CartModifyResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -6288,10 +7257,10 @@ type
 
   CartClear_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartClearRequest_Type;
+    function GetItem(AIndex: Integer): CartClearRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartClearRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartClearRequest Read GetItem;Default;
   end;
 
   CartClearResponse_CartArray = class(TBaseObjectArrayRemotable)
@@ -6304,10 +7273,10 @@ type
 
   TransactionLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): TransactionLookupRequest_Type;
+    function GetItem(AIndex: Integer): TransactionLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TransactionLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : TransactionLookupRequest Read GetItem;Default;
   end;
 
   TransactionLookupResponse_TransactionsArray = class(TBaseObjectArrayRemotable)
@@ -6320,10 +7289,10 @@ type
 
   SellerListingSearch_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerListingSearchRequest_Type;
+    function GetItem(AIndex: Integer): SellerListingSearchRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerListingSearchRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerListingSearchRequest Read GetItem;Default;
   end;
 
   SellerListingSearchResponse_SellerListingsArray = class(TBaseObjectArrayRemotable)
@@ -6336,10 +7305,10 @@ type
 
   SellerListingLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): SellerListingLookupRequest_Type;
+    function GetItem(AIndex: Integer): SellerListingLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : SellerListingLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : SellerListingLookupRequest Read GetItem;Default;
   end;
 
   SellerListingLookupResponse_SellerListingsArray = class(TBaseObjectArrayRemotable)
@@ -6352,10 +7321,10 @@ type
 
   TagLookup_RequestArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): TagLookupRequest_Type;
+    function GetItem(AIndex: Integer): TagLookupRequest;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : TagLookupRequest_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : TagLookupRequest Read GetItem;Default;
   end;
 
   TagLookupResponse_TagsArray = class(TBaseObjectArrayRemotable)
@@ -6364,6 +7333,54 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : Tags_Type Read GetItem;Default;
+  end;
+
+  VehicleSearch_RequestArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleSearchRequest;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleSearchRequest Read GetItem;Default;
+  end;
+
+  VehicleSearchResponse_VehicleYearsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleYears_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleYears_Type Read GetItem;Default;
+  end;
+
+  VehiclePartSearch_RequestArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehiclePartSearchRequest;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehiclePartSearchRequest Read GetItem;Default;
+  end;
+
+  VehiclePartSearchResponse_VehiclePartsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleParts_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleParts_Type Read GetItem;Default;
+  end;
+
+  VehiclePartLookup_RequestArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehiclePartLookupRequest;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehiclePartLookupRequest Read GetItem;Default;
+  end;
+
+  VehiclePartLookupResponse_VehiclePartsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleParts_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleParts_Type Read GetItem;Default;
   end;
 
   Bin_BinParameterArray = class(TBaseObjectArrayRemotable)
@@ -6403,6 +7420,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6419,6 +7437,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : AudienceRating_Type read GetItem write SetItem; default;
   end;
 
@@ -6435,6 +7454,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6451,6 +7471,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6467,6 +7488,24 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  ItemLookupRequest_RelationshipTypeArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6483,6 +7522,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6499,6 +7539,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6515,6 +7556,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6531,6 +7573,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6547,6 +7590,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6563,6 +7607,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6579,6 +7624,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6595,6 +7641,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6611,6 +7658,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6643,6 +7691,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6675,6 +7724,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6699,6 +7749,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6715,6 +7766,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6731,6 +7783,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6747,6 +7800,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6763,6 +7817,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6779,6 +7834,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6795,6 +7851,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6811,6 +7868,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6827,6 +7885,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6843,6 +7902,58 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  VehicleSearchRequest_ResponseGroupArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  VehiclePartSearchRequest_ResponseGroupArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  VehiclePartLookupRequest_ResponseGroupArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6947,6 +8058,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6963,6 +8075,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6979,6 +8092,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -6995,6 +8109,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7011,6 +8126,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7027,6 +8143,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7059,6 +8176,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7091,6 +8209,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7108,6 +8227,30 @@ type
   public
     class function GetItemClass():TBaseRemotableClass;override;
     property Item[AIndex:Integer] : Item_ImageSets_Type Read GetItem;Default;
+  end;
+
+  _Item_RelatedItemsArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): RelatedItems_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : RelatedItems_Type Read GetItem;Default;
+  end;
+
+  ItemLinks_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): ItemLink_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : ItemLink_Type Read GetItem;Default;
+  end;
+
+  RelatedItems_RelatedItemArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): RelatedItem_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : RelatedItem_Type Read GetItem;Default;
   end;
 
   Tags_TagArray = class(TBaseObjectArrayRemotable)
@@ -7187,6 +8330,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7262,6 +8406,65 @@ type
     property Item[AIndex:Integer] : NewReleases_NewRelease_Type Read GetItem;Default;
   end;
 
+  TopItemSet_TopItem_Type_AuthorArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  TopItemSet_TopItem_Type_ArtistArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  TopItemSet_TopItem_Type_ActorArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  TopItemSet_TopItemArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TopItemSet_TopItem_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TopItemSet_TopItem_Type Read GetItem;Default;
+  end;
+
   SimilarViewedProducts_Type = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
@@ -7294,20 +8497,232 @@ type
     property Item[AIndex:Integer] : Promotion_Type Read GetItem;Default;
   end;
 
-  PromotionEligibilityRequirements_Type = class(TBaseObjectArrayRemotable)
+  PromotionEligibilityRequirements = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): PromotionEligibilityRequirement_Type;
+    function GetItem(AIndex: Integer): PromotionEligibilityRequirement;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : PromotionEligibilityRequirement_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : PromotionEligibilityRequirement Read GetItem;Default;
   end;
 
-  PromotionBenefits_Type = class(TBaseObjectArrayRemotable)
+  PromotionBenefits = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): PromotionBenefit_Type;
+    function GetItem(AIndex: Integer): PromotionBenefit;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : PromotionBenefit_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : PromotionBenefit Read GetItem;Default;
+  end;
+
+  VehicleYears_VehicleYearArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleYear_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleYear_Type Read GetItem;Default;
+  end;
+
+  VehicleMakes_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleMake_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleMake_Type Read GetItem;Default;
+  end;
+
+  VehicleModels_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleModel_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleModel_Type Read GetItem;Default;
+  end;
+
+  VehicleTrims_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleTrim_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleTrim_Type Read GetItem;Default;
+  end;
+
+  VehicleBedOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleBed_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleBed_Type Read GetItem;Default;
+  end;
+
+  VehicleBodyStyleOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleBodyStyle_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleBodyStyle_Type Read GetItem;Default;
+  end;
+
+  VehicleBrakesOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleBrakes_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleBrakes_Type Read GetItem;Default;
+  end;
+
+  VehicleDriveTypeOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleDriveType_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleDriveType_Type Read GetItem;Default;
+  end;
+
+  VehicleEngineOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleEngine_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleEngine_Type Read GetItem;Default;
+  end;
+
+  VehicleMfrBodyCodeOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleMfrBodyCode_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleMfrBodyCode_Type Read GetItem;Default;
+  end;
+
+  VehicleSpringTypesOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleSpringTypes_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleSpringTypes_Type Read GetItem;Default;
+  end;
+
+  VehicleSteeringOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleSteering_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleSteering_Type Read GetItem;Default;
+  end;
+
+  VehicleTransmissionOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleTransmission_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleTransmission_Type Read GetItem;Default;
+  end;
+
+  VehicleWheelbaseOptions_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): VehicleWheelbase_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : VehicleWheelbase_Type Read GetItem;Default;
+  end;
+
+  VehicleParts_IsNextArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of boolean;
+  private
+    function GetItem(AIndex: Integer): boolean;
+    procedure SetItem(AIndex: Integer; const AValue: boolean);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : boolean read GetItem write SetItem; default;
+  end;
+
+  VehicleParts_IsPreviousArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of boolean;
+  private
+    function GetItem(AIndex: Integer): boolean;
+    procedure SetItem(AIndex: Integer; const AValue: boolean);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : boolean read GetItem write SetItem; default;
+  end;
+
+  VehicleParts_PartArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Part_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Part_Type Read GetItem;Default;
+  end;
+
+  MissingVehicleAttributes_Type = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  PartBrowseNodeBins_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Bin_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Bin_Type Read GetItem;Default;
+  end;
+
+  PartBrandBins_Type = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Bin_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Bin_Type Read GetItem;Default;
+  end;
+
+  Fitments_FitmentArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): Fitment_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : Fitment_Type Read GetItem;Default;
+  end;
+
+  FitmentAttributes = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
   BrowseNodes_BrowseNodeArray = class(TBaseObjectArrayRemotable)
@@ -7342,6 +8757,14 @@ type
     property Item[AIndex:Integer] : BrowseNode_Type Read GetItem;Default;
   end;
 
+  BrowseNode_TopItemSetArray = class(TBaseObjectArrayRemotable)
+  private
+    function GetItem(AIndex: Integer): TopItemSet_Type;
+  public
+    class function GetItemClass():TBaseRemotableClass;override;
+    property Item[AIndex:Integer] : TopItemSet_Type Read GetItem;Default;
+  end;
+
   ListmaniaLists_Type = class(TBaseObjectArrayRemotable)
   private
     function GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
@@ -7352,18 +8775,18 @@ type
 
   CartItems_CartItemArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartItem_Type;
+    function GetItem(AIndex: Integer): CartItem;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartItem_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartItem Read GetItem;Default;
   end;
 
   SavedForLaterItems_SavedForLaterItemArray = class(TBaseObjectArrayRemotable)
   private
-    function GetItem(AIndex: Integer): CartItem_Type;
+    function GetItem(AIndex: Integer): CartItem;
   public
     class function GetItemClass():TBaseRemotableClass;override;
-    property Item[AIndex:Integer] : CartItem_Type Read GetItem;Default;
+    property Item[AIndex:Integer] : CartItem Read GetItem;Default;
   end;
 
   CartItem_MetaData_Type = class(TBaseObjectArrayRemotable)
@@ -7395,6 +8818,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7467,6 +8891,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7483,6 +8908,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7499,6 +8925,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7515,6 +8942,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7531,6 +8959,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7547,6 +8976,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7563,6 +8993,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7579,6 +9010,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7595,6 +9027,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7611,6 +9044,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7635,6 +9069,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7651,6 +9086,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7667,6 +9103,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7683,6 +9120,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7699,6 +9137,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7715,6 +9154,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7731,6 +9171,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7747,6 +9188,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7763,6 +9205,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7779,6 +9222,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7795,6 +9239,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7811,6 +9256,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7827,6 +9273,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7843,6 +9290,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7859,6 +9307,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7875,6 +9324,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7891,6 +9341,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7907,6 +9358,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7923,6 +9375,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7939,6 +9392,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7955,6 +9409,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7971,6 +9426,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -7987,6 +9443,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8003,6 +9460,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8027,6 +9485,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8043,6 +9502,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8059,6 +9519,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8075,6 +9536,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8091,6 +9553,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8115,6 +9578,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8131,6 +9595,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8147,6 +9612,24 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
+    property Item[AIndex:Integer] : string read GetItem write SetItem; default;
+  end;
+
+  MerchantItemAttributes_IngredientsSetElementArray = class(TBaseSimpleTypeArrayRemotable)
+  private
+    FData : array of string;
+  private
+    function GetItem(AIndex: Integer): string;
+    procedure SetItem(AIndex: Integer; const AValue: string);
+  protected
+    function GetLength():Integer;override;
+    procedure SaveItem(AStore : IFormatterBase;const AName : String;const AIndex : Integer);override;
+    procedure LoadItem(AStore : IFormatterBase;const AIndex : Integer);override;
+  public
+    class function GetItemTypeInfo():PTypeInfo;override;
+    procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8163,6 +9646,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8179,6 +9663,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8195,6 +9680,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8211,6 +9697,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8227,6 +9714,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8243,6 +9731,7 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
@@ -8259,11 +9748,12 @@ type
   public
     class function GetItemTypeInfo():PTypeInfo;override;
     procedure SetLength(const ANewSize : Integer);override;
+    procedure Assign(Source: TPersistent); override;
     property Item[AIndex:Integer] : string read GetItem write SetItem; default;
   end;
 
   AWSECommerceServicePortType = interface(IInvokable)
-    ['{CBBBC8FF-F0BE-40D0-89A9-471498383C10}']
+    ['{C5A26FB3-BA0B-4AA7-A4C9-C39293FF4A19}']
     function Help(
       const  HelpParam : Help_Type
     ):HelpResponse_Type;
@@ -8321,6 +9811,15 @@ type
     function TagLookup(
       const  TagLookupParam : TagLookup_Type
     ):TagLookupResponse_Type;
+    function VehicleSearch(
+      const  VehicleSearchParam : VehicleSearch_Type
+    ):VehicleSearchResponse_Type;
+    function VehiclePartSearch(
+      const  VehiclePartSearchParam : VehiclePartSearch_Type
+    ):VehiclePartSearchResponse_Type;
+    function VehiclePartLookup(
+      const  VehiclePartLookupParam : VehiclePartLookup_Type
+    ):VehiclePartLookupResponse_Type;
     function MultiOperation(
       const  MultiOperationParam : MultiOperation_Type
     ):MultiOperationResponse;
@@ -8329,14 +9828,14 @@ type
   procedure Register_AWSECommerceService_ServiceMetadata();
 
 Implementation
-uses metadata_repository;
+uses metadata_repository, record_rtti, wst_types;
 
 { Help_Type }
 
 constructor Help_Type.Create();
 begin
   inherited Create();
-  FShared := HelpRequest_Type.Create();
+  FShared := HelpRequest.Create();
   FRequest := Help_RequestArray.Create();
 end;
 
@@ -8376,7 +9875,7 @@ end;
 
 function Help_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> HelpRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function Help_Type.HasRequest() : Boolean;
@@ -8404,7 +9903,7 @@ end;
 
 function HelpResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function HelpResponse_Type.HasInformation() : Boolean;
@@ -8417,7 +9916,7 @@ end;
 constructor ItemSearch_Type.Create();
 begin
   inherited Create();
-  FShared := ItemSearchRequest_Type.Create();
+  FShared := ItemSearchRequest.Create();
   FRequest := ItemSearch_RequestArray.Create();
 end;
 
@@ -8462,7 +9961,7 @@ end;
 
 function ItemSearch_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> ItemSearchRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function ItemSearch_Type.HasRequest() : Boolean;
@@ -8490,7 +9989,7 @@ end;
 
 function ItemSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function ItemSearchResponse_Type.HasItems() : Boolean;
@@ -8503,7 +10002,7 @@ end;
 constructor ItemLookup_Type.Create();
 begin
   inherited Create();
-  FShared := ItemLookupRequest_Type.Create();
+  FShared := ItemLookupRequest.Create();
   FRequest := ItemLookup_RequestArray.Create();
 end;
 
@@ -8548,7 +10047,7 @@ end;
 
 function ItemLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> ItemLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function ItemLookup_Type.HasRequest() : Boolean;
@@ -8576,7 +10075,7 @@ end;
 
 function ItemLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function ItemLookupResponse_Type.HasItems() : Boolean;
@@ -8589,7 +10088,7 @@ end;
 constructor BrowseNodeLookup_Type.Create();
 begin
   inherited Create();
-  FShared := BrowseNodeLookupRequest_Type.Create();
+  FShared := BrowseNodeLookupRequest.Create();
   FRequest := BrowseNodeLookup_RequestArray.Create();
 end;
 
@@ -8634,7 +10133,7 @@ end;
 
 function BrowseNodeLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> BrowseNodeLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function BrowseNodeLookup_Type.HasRequest() : Boolean;
@@ -8662,7 +10161,7 @@ end;
 
 function BrowseNodeLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function BrowseNodeLookupResponse_Type.HasBrowseNodes() : Boolean;
@@ -8675,7 +10174,7 @@ end;
 constructor ListSearch_Type.Create();
 begin
   inherited Create();
-  FShared := ListSearchRequest_Type.Create();
+  FShared := ListSearchRequest.Create();
   FRequest := ListSearch_RequestArray.Create();
 end;
 
@@ -8720,7 +10219,7 @@ end;
 
 function ListSearch_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> ListSearchRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function ListSearch_Type.HasRequest() : Boolean;
@@ -8748,7 +10247,7 @@ end;
 
 function ListSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function ListSearchResponse_Type.HasLists() : Boolean;
@@ -8761,7 +10260,7 @@ end;
 constructor ListLookup_Type.Create();
 begin
   inherited Create();
-  FShared := ListLookupRequest_Type.Create();
+  FShared := ListLookupRequest.Create();
   FRequest := ListLookup_RequestArray.Create();
 end;
 
@@ -8806,7 +10305,7 @@ end;
 
 function ListLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> ListLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function ListLookup_Type.HasRequest() : Boolean;
@@ -8834,7 +10333,7 @@ end;
 
 function ListLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function ListLookupResponse_Type.HasLists() : Boolean;
@@ -8847,7 +10346,7 @@ end;
 constructor CustomerContentSearch_Type.Create();
 begin
   inherited Create();
-  FShared := CustomerContentSearchRequest_Type.Create();
+  FShared := CustomerContentSearchRequest.Create();
   FRequest := CustomerContentSearch_RequestArray.Create();
 end;
 
@@ -8892,7 +10391,7 @@ end;
 
 function CustomerContentSearch_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CustomerContentSearchRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CustomerContentSearch_Type.HasRequest() : Boolean;
@@ -8920,7 +10419,7 @@ end;
 
 function CustomerContentSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CustomerContentSearchResponse_Type.HasCustomers() : Boolean;
@@ -8933,7 +10432,7 @@ end;
 constructor CustomerContentLookup_Type.Create();
 begin
   inherited Create();
-  FShared := CustomerContentLookupRequest_Type.Create();
+  FShared := CustomerContentLookupRequest.Create();
   FRequest := CustomerContentLookup_RequestArray.Create();
 end;
 
@@ -8978,7 +10477,7 @@ end;
 
 function CustomerContentLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CustomerContentLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CustomerContentLookup_Type.HasRequest() : Boolean;
@@ -9006,7 +10505,7 @@ end;
 
 function CustomerContentLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CustomerContentLookupResponse_Type.HasCustomers() : Boolean;
@@ -9019,7 +10518,7 @@ end;
 constructor SimilarityLookup_Type.Create();
 begin
   inherited Create();
-  FShared := SimilarityLookupRequest_Type.Create();
+  FShared := SimilarityLookupRequest.Create();
   FRequest := SimilarityLookup_RequestArray.Create();
 end;
 
@@ -9064,7 +10563,7 @@ end;
 
 function SimilarityLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> SimilarityLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function SimilarityLookup_Type.HasRequest() : Boolean;
@@ -9092,7 +10591,7 @@ end;
 
 function SimilarityLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function SimilarityLookupResponse_Type.HasItems() : Boolean;
@@ -9105,7 +10604,7 @@ end;
 constructor SellerLookup_Type.Create();
 begin
   inherited Create();
-  FShared := SellerLookupRequest_Type.Create();
+  FShared := SellerLookupRequest.Create();
   FRequest := SellerLookup_RequestArray.Create();
 end;
 
@@ -9150,7 +10649,7 @@ end;
 
 function SellerLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> SellerLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function SellerLookup_Type.HasRequest() : Boolean;
@@ -9178,7 +10677,7 @@ end;
 
 function SellerLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function SellerLookupResponse_Type.HasSellers() : Boolean;
@@ -9191,7 +10690,7 @@ end;
 constructor CartGet_Type.Create();
 begin
   inherited Create();
-  FShared := CartGetRequest_Type.Create();
+  FShared := CartGetRequest.Create();
   FRequest := CartGet_RequestArray.Create();
 end;
 
@@ -9236,7 +10735,7 @@ end;
 
 function CartGet_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CartGetRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CartGet_Type.HasRequest() : Boolean;
@@ -9264,7 +10763,7 @@ end;
 
 function CartGetResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CartGetResponse_Type.HasCart() : Boolean;
@@ -9277,7 +10776,7 @@ end;
 constructor CartAdd_Type.Create();
 begin
   inherited Create();
-  FShared := CartAddRequest_Type.Create();
+  FShared := CartAddRequest.Create();
   FRequest := CartAdd_RequestArray.Create();
 end;
 
@@ -9322,7 +10821,7 @@ end;
 
 function CartAdd_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CartAddRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CartAdd_Type.HasRequest() : Boolean;
@@ -9350,7 +10849,7 @@ end;
 
 function CartAddResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CartAddResponse_Type.HasCart() : Boolean;
@@ -9363,7 +10862,7 @@ end;
 constructor CartCreate_Type.Create();
 begin
   inherited Create();
-  FShared := CartCreateRequest_Type.Create();
+  FShared := CartCreateRequest.Create();
   FRequest := CartCreate_RequestArray.Create();
 end;
 
@@ -9408,7 +10907,7 @@ end;
 
 function CartCreate_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CartCreateRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CartCreate_Type.HasRequest() : Boolean;
@@ -9436,7 +10935,7 @@ end;
 
 function CartCreateResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CartCreateResponse_Type.HasCart() : Boolean;
@@ -9449,7 +10948,7 @@ end;
 constructor CartModify_Type.Create();
 begin
   inherited Create();
-  FShared := CartModifyRequest_Type.Create();
+  FShared := CartModifyRequest.Create();
   FRequest := CartModify_RequestArray.Create();
 end;
 
@@ -9494,7 +10993,7 @@ end;
 
 function CartModify_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CartModifyRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CartModify_Type.HasRequest() : Boolean;
@@ -9522,7 +11021,7 @@ end;
 
 function CartModifyResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CartModifyResponse_Type.HasCart() : Boolean;
@@ -9535,7 +11034,7 @@ end;
 constructor CartClear_Type.Create();
 begin
   inherited Create();
-  FShared := CartClearRequest_Type.Create();
+  FShared := CartClearRequest.Create();
   FRequest := CartClear_RequestArray.Create();
 end;
 
@@ -9580,7 +11079,7 @@ end;
 
 function CartClear_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> CartClearRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function CartClear_Type.HasRequest() : Boolean;
@@ -9608,7 +11107,7 @@ end;
 
 function CartClearResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function CartClearResponse_Type.HasCart() : Boolean;
@@ -9621,7 +11120,7 @@ end;
 constructor TransactionLookup_Type.Create();
 begin
   inherited Create();
-  FShared := TransactionLookupRequest_Type.Create();
+  FShared := TransactionLookupRequest.Create();
   FRequest := TransactionLookup_RequestArray.Create();
 end;
 
@@ -9666,7 +11165,7 @@ end;
 
 function TransactionLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> TransactionLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function TransactionLookup_Type.HasRequest() : Boolean;
@@ -9694,7 +11193,7 @@ end;
 
 function TransactionLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function TransactionLookupResponse_Type.HasTransactions() : Boolean;
@@ -9707,7 +11206,7 @@ end;
 constructor SellerListingSearch_Type.Create();
 begin
   inherited Create();
-  FShared := SellerListingSearchRequest_Type.Create();
+  FShared := SellerListingSearchRequest.Create();
   FRequest := SellerListingSearch_RequestArray.Create();
 end;
 
@@ -9752,7 +11251,7 @@ end;
 
 function SellerListingSearch_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> SellerListingSearchRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function SellerListingSearch_Type.HasRequest() : Boolean;
@@ -9780,7 +11279,7 @@ end;
 
 function SellerListingSearchResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function SellerListingSearchResponse_Type.HasSellerListings() : Boolean;
@@ -9793,7 +11292,7 @@ end;
 constructor SellerListingLookup_Type.Create();
 begin
   inherited Create();
-  FShared := SellerListingLookupRequest_Type.Create();
+  FShared := SellerListingLookupRequest.Create();
   FRequest := SellerListingLookup_RequestArray.Create();
 end;
 
@@ -9838,7 +11337,7 @@ end;
 
 function SellerListingLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> SellerListingLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function SellerListingLookup_Type.HasRequest() : Boolean;
@@ -9866,7 +11365,7 @@ end;
 
 function SellerListingLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function SellerListingLookupResponse_Type.HasSellerListings() : Boolean;
@@ -9879,7 +11378,7 @@ end;
 constructor TagLookup_Type.Create();
 begin
   inherited Create();
-  FShared := TagLookupRequest_Type.Create();
+  FShared := TagLookupRequest.Create();
   FRequest := TagLookup_RequestArray.Create();
 end;
 
@@ -9924,7 +11423,7 @@ end;
 
 function TagLookup_Type.HasShared() : Boolean;
 begin
-  Result := ( FShared <> TagLookupRequest_Type(0) );
+  Result := ( FShared <> nil );
 end;
 
 function TagLookup_Type.HasRequest() : Boolean;
@@ -9952,12 +11451,270 @@ end;
 
 function TagLookupResponse_Type.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function TagLookupResponse_Type.HasTags() : Boolean;
 begin
   Result := ( FTags <> TagLookupResponse_TagsArray(0) );
+end;
+
+{ VehicleSearch_Type }
+
+constructor VehicleSearch_Type.Create();
+begin
+  inherited Create();
+  FShared := VehicleSearchRequest.Create();
+  FRequest := VehicleSearch_RequestArray.Create();
+end;
+
+destructor VehicleSearch_Type.Destroy();
+begin
+  if Assigned(FShared) then
+    FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  inherited Destroy();
+end;
+
+function VehicleSearch_Type.HasMarketplaceDomain() : Boolean;
+begin
+  Result := ( FMarketplaceDomain <> '' );
+end;
+
+function VehicleSearch_Type.HasAWSAccessKeyId() : Boolean;
+begin
+  Result := ( FAWSAccessKeyId <> '' );
+end;
+
+function VehicleSearch_Type.HasSubscriptionId() : Boolean;
+begin
+  Result := ( FSubscriptionId <> '' );
+end;
+
+function VehicleSearch_Type.HasAssociateTag() : Boolean;
+begin
+  Result := ( FAssociateTag <> '' );
+end;
+
+function VehicleSearch_Type.HasValidate() : Boolean;
+begin
+  Result := ( FValidate <> '' );
+end;
+
+function VehicleSearch_Type.HasXMLEscaping() : Boolean;
+begin
+  Result := ( FXMLEscaping <> '' );
+end;
+
+function VehicleSearch_Type.HasShared() : Boolean;
+begin
+  Result := ( FShared <> nil );
+end;
+
+function VehicleSearch_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> VehicleSearch_RequestArray(0) );
+end;
+
+{ VehicleSearchResponse_Type }
+
+constructor VehicleSearchResponse_Type.Create();
+begin
+  inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
+  FVehicleYears := VehicleSearchResponse_VehicleYearsArray.Create();
+end;
+
+destructor VehicleSearchResponse_Type.Destroy();
+begin
+  if Assigned(FOperationRequest) then
+    FreeAndNil(FOperationRequest);
+  if Assigned(FVehicleYears) then
+    FreeAndNil(FVehicleYears);
+  inherited Destroy();
+end;
+
+function VehicleSearchResponse_Type.HasOperationRequest() : Boolean;
+begin
+  Result := ( FOperationRequest <> nil );
+end;
+
+function VehicleSearchResponse_Type.HasVehicleYears() : Boolean;
+begin
+  Result := ( FVehicleYears <> VehicleSearchResponse_VehicleYearsArray(0) );
+end;
+
+{ VehiclePartSearch_Type }
+
+constructor VehiclePartSearch_Type.Create();
+begin
+  inherited Create();
+  FShared := VehiclePartSearchRequest.Create();
+  FRequest := VehiclePartSearch_RequestArray.Create();
+end;
+
+destructor VehiclePartSearch_Type.Destroy();
+begin
+  if Assigned(FShared) then
+    FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  inherited Destroy();
+end;
+
+function VehiclePartSearch_Type.HasMarketplaceDomain() : Boolean;
+begin
+  Result := ( FMarketplaceDomain <> '' );
+end;
+
+function VehiclePartSearch_Type.HasAWSAccessKeyId() : Boolean;
+begin
+  Result := ( FAWSAccessKeyId <> '' );
+end;
+
+function VehiclePartSearch_Type.HasSubscriptionId() : Boolean;
+begin
+  Result := ( FSubscriptionId <> '' );
+end;
+
+function VehiclePartSearch_Type.HasAssociateTag() : Boolean;
+begin
+  Result := ( FAssociateTag <> '' );
+end;
+
+function VehiclePartSearch_Type.HasValidate() : Boolean;
+begin
+  Result := ( FValidate <> '' );
+end;
+
+function VehiclePartSearch_Type.HasXMLEscaping() : Boolean;
+begin
+  Result := ( FXMLEscaping <> '' );
+end;
+
+function VehiclePartSearch_Type.HasShared() : Boolean;
+begin
+  Result := ( FShared <> nil );
+end;
+
+function VehiclePartSearch_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> VehiclePartSearch_RequestArray(0) );
+end;
+
+{ VehiclePartSearchResponse_Type }
+
+constructor VehiclePartSearchResponse_Type.Create();
+begin
+  inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
+  FVehicleParts := VehiclePartSearchResponse_VehiclePartsArray.Create();
+end;
+
+destructor VehiclePartSearchResponse_Type.Destroy();
+begin
+  if Assigned(FOperationRequest) then
+    FreeAndNil(FOperationRequest);
+  if Assigned(FVehicleParts) then
+    FreeAndNil(FVehicleParts);
+  inherited Destroy();
+end;
+
+function VehiclePartSearchResponse_Type.HasOperationRequest() : Boolean;
+begin
+  Result := ( FOperationRequest <> nil );
+end;
+
+function VehiclePartSearchResponse_Type.HasVehicleParts() : Boolean;
+begin
+  Result := ( FVehicleParts <> VehiclePartSearchResponse_VehiclePartsArray(0) );
+end;
+
+{ VehiclePartLookup_Type }
+
+constructor VehiclePartLookup_Type.Create();
+begin
+  inherited Create();
+  FShared := VehiclePartLookupRequest.Create();
+  FRequest := VehiclePartLookup_RequestArray.Create();
+end;
+
+destructor VehiclePartLookup_Type.Destroy();
+begin
+  if Assigned(FShared) then
+    FreeAndNil(FShared);
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  inherited Destroy();
+end;
+
+function VehiclePartLookup_Type.HasMarketplaceDomain() : Boolean;
+begin
+  Result := ( FMarketplaceDomain <> '' );
+end;
+
+function VehiclePartLookup_Type.HasAWSAccessKeyId() : Boolean;
+begin
+  Result := ( FAWSAccessKeyId <> '' );
+end;
+
+function VehiclePartLookup_Type.HasSubscriptionId() : Boolean;
+begin
+  Result := ( FSubscriptionId <> '' );
+end;
+
+function VehiclePartLookup_Type.HasAssociateTag() : Boolean;
+begin
+  Result := ( FAssociateTag <> '' );
+end;
+
+function VehiclePartLookup_Type.HasValidate() : Boolean;
+begin
+  Result := ( FValidate <> '' );
+end;
+
+function VehiclePartLookup_Type.HasXMLEscaping() : Boolean;
+begin
+  Result := ( FXMLEscaping <> '' );
+end;
+
+function VehiclePartLookup_Type.HasShared() : Boolean;
+begin
+  Result := ( FShared <> nil );
+end;
+
+function VehiclePartLookup_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> VehiclePartLookup_RequestArray(0) );
+end;
+
+{ VehiclePartLookupResponse_Type }
+
+constructor VehiclePartLookupResponse_Type.Create();
+begin
+  inherited Create();
+  FOperationRequest := OperationRequest_Type.Create();
+  FVehicleParts := VehiclePartLookupResponse_VehiclePartsArray.Create();
+end;
+
+destructor VehiclePartLookupResponse_Type.Destroy();
+begin
+  if Assigned(FOperationRequest) then
+    FreeAndNil(FOperationRequest);
+  if Assigned(FVehicleParts) then
+    FreeAndNil(FVehicleParts);
+  inherited Destroy();
+end;
+
+function VehiclePartLookupResponse_Type.HasOperationRequest() : Boolean;
+begin
+  Result := ( FOperationRequest <> nil );
+end;
+
+function VehiclePartLookupResponse_Type.HasVehicleParts() : Boolean;
+begin
+  Result := ( FVehicleParts <> VehiclePartLookupResponse_VehiclePartsArray(0) );
 end;
 
 { MultiOperation_Type }
@@ -9984,6 +11741,9 @@ begin
   FSellerListingLookup := SellerListingLookup_Type.Create();
   FTagLookup := TagLookup_Type.Create();
   FBrowseNodeLookup := BrowseNodeLookup_Type.Create();
+  FVehicleSearch := VehicleSearch_Type.Create();
+  FVehiclePartSearch := VehiclePartSearch_Type.Create();
+  FVehiclePartLookup := VehiclePartLookup_Type.Create();
 end;
 
 destructor MultiOperation_Type.Destroy();
@@ -10026,102 +11786,123 @@ begin
     FreeAndNil(FTagLookup);
   if Assigned(FBrowseNodeLookup) then
     FreeAndNil(FBrowseNodeLookup);
+  if Assigned(FVehicleSearch) then
+    FreeAndNil(FVehicleSearch);
+  if Assigned(FVehiclePartSearch) then
+    FreeAndNil(FVehiclePartSearch);
+  if Assigned(FVehiclePartLookup) then
+    FreeAndNil(FVehiclePartLookup);
   inherited Destroy();
 end;
 
 function MultiOperation_Type.HasHelp() : Boolean;
 begin
-  Result := ( FHelp <> Help_Type(0) );
+  Result := ( FHelp <> nil );
 end;
 
 function MultiOperation_Type.HasItemSearch() : Boolean;
 begin
-  Result := ( FItemSearch <> ItemSearch_Type(0) );
+  Result := ( FItemSearch <> nil );
 end;
 
 function MultiOperation_Type.HasItemLookup() : Boolean;
 begin
-  Result := ( FItemLookup <> ItemLookup_Type(0) );
+  Result := ( FItemLookup <> nil );
 end;
 
 function MultiOperation_Type.HasListSearch() : Boolean;
 begin
-  Result := ( FListSearch <> ListSearch_Type(0) );
+  Result := ( FListSearch <> nil );
 end;
 
 function MultiOperation_Type.HasListLookup() : Boolean;
 begin
-  Result := ( FListLookup <> ListLookup_Type(0) );
+  Result := ( FListLookup <> nil );
 end;
 
 function MultiOperation_Type.HasCustomerContentSearch() : Boolean;
 begin
-  Result := ( FCustomerContentSearch <> CustomerContentSearch_Type(0) );
+  Result := ( FCustomerContentSearch <> nil );
 end;
 
 function MultiOperation_Type.HasCustomerContentLookup() : Boolean;
 begin
-  Result := ( FCustomerContentLookup <> CustomerContentLookup_Type(0) );
+  Result := ( FCustomerContentLookup <> nil );
 end;
 
 function MultiOperation_Type.HasSimilarityLookup() : Boolean;
 begin
-  Result := ( FSimilarityLookup <> SimilarityLookup_Type(0) );
+  Result := ( FSimilarityLookup <> nil );
 end;
 
 function MultiOperation_Type.HasSellerLookup() : Boolean;
 begin
-  Result := ( FSellerLookup <> SellerLookup_Type(0) );
+  Result := ( FSellerLookup <> nil );
 end;
 
 function MultiOperation_Type.HasCartGet() : Boolean;
 begin
-  Result := ( FCartGet <> CartGet_Type(0) );
+  Result := ( FCartGet <> nil );
 end;
 
 function MultiOperation_Type.HasCartAdd() : Boolean;
 begin
-  Result := ( FCartAdd <> CartAdd_Type(0) );
+  Result := ( FCartAdd <> nil );
 end;
 
 function MultiOperation_Type.HasCartCreate() : Boolean;
 begin
-  Result := ( FCartCreate <> CartCreate_Type(0) );
+  Result := ( FCartCreate <> nil );
 end;
 
 function MultiOperation_Type.HasCartModify() : Boolean;
 begin
-  Result := ( FCartModify <> CartModify_Type(0) );
+  Result := ( FCartModify <> nil );
 end;
 
 function MultiOperation_Type.HasCartClear() : Boolean;
 begin
-  Result := ( FCartClear <> CartClear_Type(0) );
+  Result := ( FCartClear <> nil );
 end;
 
 function MultiOperation_Type.HasTransactionLookup() : Boolean;
 begin
-  Result := ( FTransactionLookup <> TransactionLookup_Type(0) );
+  Result := ( FTransactionLookup <> nil );
 end;
 
 function MultiOperation_Type.HasSellerListingSearch() : Boolean;
 begin
-  Result := ( FSellerListingSearch <> SellerListingSearch_Type(0) );
+  Result := ( FSellerListingSearch <> nil );
 end;
 
 function MultiOperation_Type.HasSellerListingLookup() : Boolean;
 begin
-  Result := ( FSellerListingLookup <> SellerListingLookup_Type(0) );
+  Result := ( FSellerListingLookup <> nil );
 end;
 
 function MultiOperation_Type.HasTagLookup() : Boolean;
 begin
-  Result := ( FTagLookup <> TagLookup_Type(0) );
+  Result := ( FTagLookup <> nil );
 end;
 
 function MultiOperation_Type.HasBrowseNodeLookup() : Boolean;
 begin
-  Result := ( FBrowseNodeLookup <> BrowseNodeLookup_Type(0) );
+  Result := ( FBrowseNodeLookup <> nil );
+end;
+
+function MultiOperation_Type.HasVehicleSearch() : Boolean;
+begin
+  Result := ( FVehicleSearch <> nil );
+end;
+
+function MultiOperation_Type.HasVehiclePartSearch() : Boolean;
+begin
+  Result := ( FVehiclePartSearch <> nil );
+end;
+
+function MultiOperation_Type.HasVehiclePartLookup() : Boolean;
+begin
+  Result := ( FVehiclePartLookup <> nil );
 end;
 
 { MultiOperationResponse }
@@ -10149,6 +11930,9 @@ begin
   FSellerListingLookupResponse := SellerListingLookupResponse_Type.Create();
   FTagLookupResponse := TagLookupResponse_Type.Create();
   FBrowseNodeLookupResponse := BrowseNodeLookupResponse_Type.Create();
+  FVehicleSearchResponse := VehicleSearchResponse_Type.Create();
+  FVehiclePartSearchResponse := VehiclePartSearchResponse_Type.Create();
+  FVehiclePartLookupResponse := VehiclePartLookupResponse_Type.Create();
 end;
 
 destructor MultiOperationResponse.Destroy();
@@ -10193,107 +11977,128 @@ begin
     FreeAndNil(FTagLookupResponse);
   if Assigned(FBrowseNodeLookupResponse) then
     FreeAndNil(FBrowseNodeLookupResponse);
+  if Assigned(FVehicleSearchResponse) then
+    FreeAndNil(FVehicleSearchResponse);
+  if Assigned(FVehiclePartSearchResponse) then
+    FreeAndNil(FVehiclePartSearchResponse);
+  if Assigned(FVehiclePartLookupResponse) then
+    FreeAndNil(FVehiclePartLookupResponse);
   inherited Destroy();
 end;
 
 function MultiOperationResponse.HasOperationRequest() : Boolean;
 begin
-  Result := ( FOperationRequest <> OperationRequest_Type(0) );
+  Result := ( FOperationRequest <> nil );
 end;
 
 function MultiOperationResponse.HasHelpResponse() : Boolean;
 begin
-  Result := ( FHelpResponse <> HelpResponse_Type(0) );
+  Result := ( FHelpResponse <> nil );
 end;
 
 function MultiOperationResponse.HasItemSearchResponse() : Boolean;
 begin
-  Result := ( FItemSearchResponse <> ItemSearchResponse_Type(0) );
+  Result := ( FItemSearchResponse <> nil );
 end;
 
 function MultiOperationResponse.HasItemLookupResponse() : Boolean;
 begin
-  Result := ( FItemLookupResponse <> ItemLookupResponse_Type(0) );
+  Result := ( FItemLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasListSearchResponse() : Boolean;
 begin
-  Result := ( FListSearchResponse <> ListSearchResponse_Type(0) );
+  Result := ( FListSearchResponse <> nil );
 end;
 
 function MultiOperationResponse.HasListLookupResponse() : Boolean;
 begin
-  Result := ( FListLookupResponse <> ListLookupResponse_Type(0) );
+  Result := ( FListLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCustomerContentSearchResponse() : Boolean;
 begin
-  Result := ( FCustomerContentSearchResponse <> CustomerContentSearchResponse_Type(0) );
+  Result := ( FCustomerContentSearchResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCustomerContentLookupResponse() : Boolean;
 begin
-  Result := ( FCustomerContentLookupResponse <> CustomerContentLookupResponse_Type(0) );
+  Result := ( FCustomerContentLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasSimilarityLookupResponse() : Boolean;
 begin
-  Result := ( FSimilarityLookupResponse <> SimilarityLookupResponse_Type(0) );
+  Result := ( FSimilarityLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasSellerLookupResponse() : Boolean;
 begin
-  Result := ( FSellerLookupResponse <> SellerLookupResponse_Type(0) );
+  Result := ( FSellerLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCartGetResponse() : Boolean;
 begin
-  Result := ( FCartGetResponse <> CartGetResponse_Type(0) );
+  Result := ( FCartGetResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCartAddResponse() : Boolean;
 begin
-  Result := ( FCartAddResponse <> CartAddResponse_Type(0) );
+  Result := ( FCartAddResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCartCreateResponse() : Boolean;
 begin
-  Result := ( FCartCreateResponse <> CartCreateResponse_Type(0) );
+  Result := ( FCartCreateResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCartModifyResponse() : Boolean;
 begin
-  Result := ( FCartModifyResponse <> CartModifyResponse_Type(0) );
+  Result := ( FCartModifyResponse <> nil );
 end;
 
 function MultiOperationResponse.HasCartClearResponse() : Boolean;
 begin
-  Result := ( FCartClearResponse <> CartClearResponse_Type(0) );
+  Result := ( FCartClearResponse <> nil );
 end;
 
 function MultiOperationResponse.HasTransactionLookupResponse() : Boolean;
 begin
-  Result := ( FTransactionLookupResponse <> TransactionLookupResponse_Type(0) );
+  Result := ( FTransactionLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasSellerListingSearchResponse() : Boolean;
 begin
-  Result := ( FSellerListingSearchResponse <> SellerListingSearchResponse_Type(0) );
+  Result := ( FSellerListingSearchResponse <> nil );
 end;
 
 function MultiOperationResponse.HasSellerListingLookupResponse() : Boolean;
 begin
-  Result := ( FSellerListingLookupResponse <> SellerListingLookupResponse_Type(0) );
+  Result := ( FSellerListingLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasTagLookupResponse() : Boolean;
 begin
-  Result := ( FTagLookupResponse <> TagLookupResponse_Type(0) );
+  Result := ( FTagLookupResponse <> nil );
 end;
 
 function MultiOperationResponse.HasBrowseNodeLookupResponse() : Boolean;
 begin
-  Result := ( FBrowseNodeLookupResponse <> BrowseNodeLookupResponse_Type(0) );
+  Result := ( FBrowseNodeLookupResponse <> nil );
+end;
+
+function MultiOperationResponse.HasVehicleSearchResponse() : Boolean;
+begin
+  Result := ( FVehicleSearchResponse <> nil );
+end;
+
+function MultiOperationResponse.HasVehiclePartSearchResponse() : Boolean;
+begin
+  Result := ( FVehiclePartSearchResponse <> nil );
+end;
+
+function MultiOperationResponse.HasVehiclePartLookupResponse() : Boolean;
+begin
+  Result := ( FVehiclePartLookupResponse <> nil );
 end;
 
 { Bin_Type }
@@ -10336,46 +12141,46 @@ begin
   Result := ( FBin <> SearchBinSet_BinArray(0) );
 end;
 
-{ HelpRequest_Type }
+{ HelpRequest }
 
-constructor HelpRequest_Type.Create();
+constructor HelpRequest.Create();
 begin
   inherited Create();
   FResponseGroup := HelpRequest_ResponseGroupArray.Create();
 end;
 
-destructor HelpRequest_Type.Destroy();
+destructor HelpRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function HelpRequest_Type.HasAbout() : Boolean;
+function HelpRequest.HasAbout() : Boolean;
 begin
   Result := ( FAbout <> '' );
 end;
 
-function HelpRequest_Type.HasHelpType() : Boolean;
+function HelpRequest.HasHelpType() : Boolean;
 begin
   Result := True;
 end;
 
-function HelpRequest_Type.HasResponseGroup() : Boolean;
+function HelpRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> HelpRequest_ResponseGroupArray(0) );
 end;
 
-{ ItemSearchRequest_Type }
+{ ItemSearchRequest }
 
-constructor ItemSearchRequest_Type.Create();
+constructor ItemSearchRequest.Create();
 begin
   inherited Create();
   FAudienceRating := ItemSearchRequest_AudienceRatingArray.Create();
   FResponseGroup := ItemSearchRequest_ResponseGroupArray.Create();
 end;
 
-destructor ItemSearchRequest_Type.Destroy();
+destructor ItemSearchRequest.Destroy();
 begin
   if Assigned(FAudienceRating) then
     FreeAndNil(FAudienceRating);
@@ -10384,524 +12189,542 @@ begin
   inherited Destroy();
 end;
 
-function ItemSearchRequest_Type.HasActor() : Boolean;
+function ItemSearchRequest.HasActor() : Boolean;
 begin
   Result := ( FActor <> '' );
 end;
 
-function ItemSearchRequest_Type.HasArtist() : Boolean;
+function ItemSearchRequest.HasArtist() : Boolean;
 begin
   Result := ( FArtist <> '' );
 end;
 
-function ItemSearchRequest_Type.HasAvailability() : Boolean;
+function ItemSearchRequest.HasAvailability() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemSearchRequest_Type.HasAudienceRating() : Boolean;
+function ItemSearchRequest.HasAudienceRating() : Boolean;
 begin
   Result := ( FAudienceRating <> ItemSearchRequest_AudienceRatingArray(0) );
 end;
 
-function ItemSearchRequest_Type.HasAuthor() : Boolean;
+function ItemSearchRequest.HasAuthor() : Boolean;
 begin
   Result := ( FAuthor <> '' );
 end;
 
-function ItemSearchRequest_Type.HasBrand() : Boolean;
+function ItemSearchRequest.HasBrand() : Boolean;
 begin
   Result := ( FBrand <> '' );
 end;
 
-function ItemSearchRequest_Type.HasBrowseNode() : Boolean;
+function ItemSearchRequest.HasBrowseNode() : Boolean;
 begin
   Result := ( FBrowseNode <> '' );
 end;
 
-function ItemSearchRequest_Type.HasCity() : Boolean;
+function ItemSearchRequest.HasCity() : Boolean;
 begin
   Result := ( FCity <> '' );
 end;
 
-function ItemSearchRequest_Type.HasComposer() : Boolean;
+function ItemSearchRequest.HasComposer() : Boolean;
 begin
   Result := ( FComposer <> '' );
 end;
 
-function ItemSearchRequest_Type.HasCondition() : Boolean;
+function ItemSearchRequest.HasCondition() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemSearchRequest_Type.HasConductor() : Boolean;
+function ItemSearchRequest.HasConductor() : Boolean;
 begin
   Result := ( FConductor <> '' );
 end;
 
-function ItemSearchRequest_Type.HasCount() : Boolean;
+function ItemSearchRequest.HasCount() : Boolean;
 begin
   Result := ( FCount <> positiveInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasCuisine() : Boolean;
+function ItemSearchRequest.HasCuisine() : Boolean;
 begin
   Result := ( FCuisine <> '' );
 end;
 
-function ItemSearchRequest_Type.HasDeliveryMethod() : Boolean;
+function ItemSearchRequest.HasDeliveryMethod() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemSearchRequest_Type.HasDirector() : Boolean;
+function ItemSearchRequest.HasDirector() : Boolean;
 begin
   Result := ( FDirector <> '' );
 end;
 
-function ItemSearchRequest_Type.HasFutureLaunchDate() : Boolean;
+function ItemSearchRequest.HasFutureLaunchDate() : Boolean;
 begin
   Result := ( FFutureLaunchDate <> '' );
 end;
 
-function ItemSearchRequest_Type.HasISPUPostalCode() : Boolean;
+function ItemSearchRequest.HasISPUPostalCode() : Boolean;
 begin
   Result := ( FISPUPostalCode <> '' );
 end;
 
-function ItemSearchRequest_Type.HasItemPage() : Boolean;
+function ItemSearchRequest.HasItemPage() : Boolean;
 begin
   Result := ( FItemPage <> positiveInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasKeywords() : Boolean;
+function ItemSearchRequest.HasKeywords() : Boolean;
 begin
   Result := ( FKeywords <> '' );
 end;
 
-function ItemSearchRequest_Type.HasManufacturer() : Boolean;
+function ItemSearchRequest.HasManufacturer() : Boolean;
 begin
   Result := ( FManufacturer <> '' );
 end;
 
-function ItemSearchRequest_Type.HasMaximumPrice() : Boolean;
+function ItemSearchRequest.HasMaximumPrice() : Boolean;
 begin
   Result := ( FMaximumPrice <> nonNegativeInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasMerchantId() : Boolean;
+function ItemSearchRequest.HasMerchantId() : Boolean;
 begin
   Result := ( FMerchantId <> '' );
 end;
 
-function ItemSearchRequest_Type.HasMinimumPrice() : Boolean;
+function ItemSearchRequest.HasMinimumPrice() : Boolean;
 begin
   Result := ( FMinimumPrice <> nonNegativeInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasMusicLabel() : Boolean;
+function ItemSearchRequest.HasMusicLabel() : Boolean;
 begin
   Result := ( FMusicLabel <> '' );
 end;
 
-function ItemSearchRequest_Type.HasNeighborhood() : Boolean;
+function ItemSearchRequest.HasNeighborhood() : Boolean;
 begin
   Result := ( FNeighborhood <> '' );
 end;
 
-function ItemSearchRequest_Type.HasOrchestra() : Boolean;
+function ItemSearchRequest.HasOrchestra() : Boolean;
 begin
   Result := ( FOrchestra <> '' );
 end;
 
-function ItemSearchRequest_Type.HasPostalCode() : Boolean;
+function ItemSearchRequest.HasPostalCode() : Boolean;
 begin
   Result := ( FPostalCode <> '' );
 end;
 
-function ItemSearchRequest_Type.HasPower() : Boolean;
+function ItemSearchRequest.HasPower() : Boolean;
 begin
   Result := ( FPower <> '' );
 end;
 
-function ItemSearchRequest_Type.HasPublisher() : Boolean;
+function ItemSearchRequest.HasPublisher() : Boolean;
 begin
   Result := ( FPublisher <> '' );
 end;
 
-function ItemSearchRequest_Type.HasResponseGroup() : Boolean;
+function ItemSearchRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> ItemSearchRequest_ResponseGroupArray(0) );
 end;
 
-function ItemSearchRequest_Type.HasReviewSort() : Boolean;
+function ItemSearchRequest.HasReviewSort() : Boolean;
 begin
   Result := ( FReviewSort <> '' );
 end;
 
-function ItemSearchRequest_Type.HasSearchIndex() : Boolean;
+function ItemSearchRequest.HasSearchIndex() : Boolean;
 begin
   Result := ( FSearchIndex <> '' );
 end;
 
-function ItemSearchRequest_Type.HasSort() : Boolean;
+function ItemSearchRequest.HasSort() : Boolean;
 begin
   Result := ( FSort <> '' );
 end;
 
-function ItemSearchRequest_Type.HasState() : Boolean;
+function ItemSearchRequest.HasState() : Boolean;
 begin
   Result := ( FState <> '' );
 end;
 
-function ItemSearchRequest_Type.HasTagPage() : Boolean;
+function ItemSearchRequest.HasTagPage() : Boolean;
 begin
   Result := ( FTagPage <> positiveInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasTagsPerPage() : Boolean;
+function ItemSearchRequest.HasTagsPerPage() : Boolean;
 begin
   Result := ( FTagsPerPage <> positiveInteger(0) );
 end;
 
-function ItemSearchRequest_Type.HasTagSort() : Boolean;
+function ItemSearchRequest.HasTagSort() : Boolean;
 begin
   Result := ( FTagSort <> '' );
 end;
 
-function ItemSearchRequest_Type.HasTextStream() : Boolean;
+function ItemSearchRequest.HasTextStream() : Boolean;
 begin
   Result := ( FTextStream <> '' );
 end;
 
-function ItemSearchRequest_Type.HasTitle() : Boolean;
+function ItemSearchRequest.HasTitle() : Boolean;
 begin
   Result := ( FTitle <> '' );
 end;
 
-function ItemSearchRequest_Type.HasReleaseDate() : Boolean;
+function ItemSearchRequest.HasReleaseDate() : Boolean;
 begin
   Result := ( FReleaseDate <> '' );
 end;
 
-{ ItemLookupRequest_Type }
+{ ItemLookupRequest }
 
-constructor ItemLookupRequest_Type.Create();
+constructor ItemLookupRequest.Create();
 begin
   inherited Create();
   FItemId := ItemLookupRequest_ItemIdArray.Create();
   FResponseGroup := ItemLookupRequest_ResponseGroupArray.Create();
+  FRelationshipType := ItemLookupRequest_RelationshipTypeArray.Create();
 end;
 
-destructor ItemLookupRequest_Type.Destroy();
+destructor ItemLookupRequest.Destroy();
 begin
   if Assigned(FItemId) then
     FreeAndNil(FItemId);
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
+  if Assigned(FRelationshipType) then
+    FreeAndNil(FRelationshipType);
   inherited Destroy();
 end;
 
-function ItemLookupRequest_Type.HasCondition() : Boolean;
+function ItemLookupRequest.HasCondition() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemLookupRequest_Type.HasDeliveryMethod() : Boolean;
+function ItemLookupRequest.HasDeliveryMethod() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemLookupRequest_Type.HasFutureLaunchDate() : Boolean;
+function ItemLookupRequest.HasFutureLaunchDate() : Boolean;
 begin
   Result := ( FFutureLaunchDate <> '' );
 end;
 
-function ItemLookupRequest_Type.HasIdType() : Boolean;
+function ItemLookupRequest.HasIdType() : Boolean;
 begin
   Result := True;
 end;
 
-function ItemLookupRequest_Type.HasISPUPostalCode() : Boolean;
+function ItemLookupRequest.HasISPUPostalCode() : Boolean;
 begin
   Result := ( FISPUPostalCode <> '' );
 end;
 
-function ItemLookupRequest_Type.HasMerchantId() : Boolean;
+function ItemLookupRequest.HasMerchantId() : Boolean;
 begin
   Result := ( FMerchantId <> '' );
 end;
 
-function ItemLookupRequest_Type.HasOfferPage() : Boolean;
+function ItemLookupRequest.HasOfferPage() : Boolean;
 begin
   Result := ( FOfferPage <> positiveInteger(0) );
 end;
 
-function ItemLookupRequest_Type.HasItemId() : Boolean;
+function ItemLookupRequest.HasItemId() : Boolean;
 begin
   Result := ( FItemId <> ItemLookupRequest_ItemIdArray(0) );
 end;
 
-function ItemLookupRequest_Type.HasResponseGroup() : Boolean;
+function ItemLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> ItemLookupRequest_ResponseGroupArray(0) );
 end;
 
-function ItemLookupRequest_Type.HasReviewPage() : Boolean;
+function ItemLookupRequest.HasReviewPage() : Boolean;
 begin
   Result := ( FReviewPage <> positiveInteger(0) );
 end;
 
-function ItemLookupRequest_Type.HasReviewSort() : Boolean;
+function ItemLookupRequest.HasReviewSort() : Boolean;
 begin
   Result := ( FReviewSort <> '' );
 end;
 
-function ItemLookupRequest_Type.HasSearchIndex() : Boolean;
+function ItemLookupRequest.HasSearchIndex() : Boolean;
 begin
   Result := ( FSearchIndex <> '' );
 end;
 
-function ItemLookupRequest_Type.HasSearchInsideKeywords() : Boolean;
+function ItemLookupRequest.HasSearchInsideKeywords() : Boolean;
 begin
   Result := ( FSearchInsideKeywords <> '' );
 end;
 
-function ItemLookupRequest_Type.HasTagPage() : Boolean;
+function ItemLookupRequest.HasTagPage() : Boolean;
 begin
   Result := ( FTagPage <> positiveInteger(0) );
 end;
 
-function ItemLookupRequest_Type.HasTagsPerPage() : Boolean;
+function ItemLookupRequest.HasTagsPerPage() : Boolean;
 begin
   Result := ( FTagsPerPage <> positiveInteger(0) );
 end;
 
-function ItemLookupRequest_Type.HasTagSort() : Boolean;
+function ItemLookupRequest.HasTagSort() : Boolean;
 begin
   Result := ( FTagSort <> '' );
 end;
 
-function ItemLookupRequest_Type.HasVariationPage() : Boolean;
+function ItemLookupRequest.HasVariationPage() : Boolean;
 begin
   Result := ( FVariationPage <> '' );
 end;
 
-{ ListSearchRequest_Type }
+function ItemLookupRequest.HasRelatedItemPage() : Boolean;
+begin
+  Result := ( FRelatedItemPage <> '' );
+end;
 
-constructor ListSearchRequest_Type.Create();
+function ItemLookupRequest.HasRelationshipType() : Boolean;
+begin
+  Result := ( FRelationshipType <> ItemLookupRequest_RelationshipTypeArray(0) );
+end;
+
+{ ListSearchRequest }
+
+constructor ListSearchRequest.Create();
 begin
   inherited Create();
   FResponseGroup := ListSearchRequest_ResponseGroupArray.Create();
 end;
 
-destructor ListSearchRequest_Type.Destroy();
+destructor ListSearchRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function ListSearchRequest_Type.HasCity() : Boolean;
+function ListSearchRequest.HasCity() : Boolean;
 begin
   Result := ( FCity <> '' );
 end;
 
-function ListSearchRequest_Type.HasEmail() : Boolean;
+function ListSearchRequest.HasEmail() : Boolean;
 begin
   Result := ( FEmail <> '' );
 end;
 
-function ListSearchRequest_Type.HasFirstName() : Boolean;
+function ListSearchRequest.HasFirstName() : Boolean;
 begin
   Result := ( FFirstName <> '' );
 end;
 
-function ListSearchRequest_Type.HasLastName() : Boolean;
+function ListSearchRequest.HasLastName() : Boolean;
 begin
   Result := ( FLastName <> '' );
 end;
 
-function ListSearchRequest_Type.HasListPage() : Boolean;
+function ListSearchRequest.HasListPage() : Boolean;
 begin
   Result := ( FListPage <> positiveInteger(0) );
 end;
 
-function ListSearchRequest_Type.HasName() : Boolean;
+function ListSearchRequest.HasName() : Boolean;
 begin
   Result := ( FName <> '' );
 end;
 
-function ListSearchRequest_Type.HasResponseGroup() : Boolean;
+function ListSearchRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> ListSearchRequest_ResponseGroupArray(0) );
 end;
 
-function ListSearchRequest_Type.HasState() : Boolean;
+function ListSearchRequest.HasState() : Boolean;
 begin
   Result := ( FState <> '' );
 end;
 
-{ ListLookupRequest_Type }
+{ ListLookupRequest }
 
-constructor ListLookupRequest_Type.Create();
+constructor ListLookupRequest.Create();
 begin
   inherited Create();
   FResponseGroup := ListLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor ListLookupRequest_Type.Destroy();
+destructor ListLookupRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function ListLookupRequest_Type.HasCondition() : Boolean;
+function ListLookupRequest.HasCondition() : Boolean;
 begin
   Result := True;
 end;
 
-function ListLookupRequest_Type.HasDeliveryMethod() : Boolean;
+function ListLookupRequest.HasDeliveryMethod() : Boolean;
 begin
   Result := True;
 end;
 
-function ListLookupRequest_Type.HasISPUPostalCode() : Boolean;
+function ListLookupRequest.HasISPUPostalCode() : Boolean;
 begin
   Result := ( FISPUPostalCode <> '' );
 end;
 
-function ListLookupRequest_Type.HasListId() : Boolean;
+function ListLookupRequest.HasListId() : Boolean;
 begin
   Result := ( FListId <> '' );
 end;
 
-function ListLookupRequest_Type.HasListType() : Boolean;
+function ListLookupRequest.HasListType() : Boolean;
 begin
   Result := True;
 end;
 
-function ListLookupRequest_Type.HasMerchantId() : Boolean;
+function ListLookupRequest.HasMerchantId() : Boolean;
 begin
   Result := ( FMerchantId <> '' );
 end;
 
-function ListLookupRequest_Type.HasProductGroup() : Boolean;
+function ListLookupRequest.HasProductGroup() : Boolean;
 begin
   Result := ( FProductGroup <> '' );
 end;
 
-function ListLookupRequest_Type.HasProductPage() : Boolean;
+function ListLookupRequest.HasProductPage() : Boolean;
 begin
   Result := ( FProductPage <> positiveInteger(0) );
 end;
 
-function ListLookupRequest_Type.HasResponseGroup() : Boolean;
+function ListLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> ListLookupRequest_ResponseGroupArray(0) );
 end;
 
-function ListLookupRequest_Type.HasReviewSort() : Boolean;
+function ListLookupRequest.HasReviewSort() : Boolean;
 begin
   Result := ( FReviewSort <> '' );
 end;
 
-function ListLookupRequest_Type.HasSort() : Boolean;
+function ListLookupRequest.HasSort() : Boolean;
 begin
   Result := ( FSort <> '' );
 end;
 
-{ CustomerContentSearchRequest_Type }
+function ListLookupRequest.HasIsOmitPurchasedItems() : Boolean;
+begin
+  Result := ( FIsOmitPurchasedItems <> boolean(0) );
+end;
 
-constructor CustomerContentSearchRequest_Type.Create();
+{ CustomerContentSearchRequest }
+
+constructor CustomerContentSearchRequest.Create();
 begin
   inherited Create();
   FResponseGroup := CustomerContentSearchRequest_ResponseGroupArray.Create();
 end;
 
-destructor CustomerContentSearchRequest_Type.Destroy();
+destructor CustomerContentSearchRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function CustomerContentSearchRequest_Type.HasCustomerPage() : Boolean;
+function CustomerContentSearchRequest.HasCustomerPage() : Boolean;
 begin
   Result := ( FCustomerPage <> positiveInteger(0) );
 end;
 
-function CustomerContentSearchRequest_Type.HasEmail() : Boolean;
+function CustomerContentSearchRequest.HasEmail() : Boolean;
 begin
   Result := ( FEmail <> '' );
 end;
 
-function CustomerContentSearchRequest_Type.HasName() : Boolean;
+function CustomerContentSearchRequest.HasName() : Boolean;
 begin
   Result := ( FName <> '' );
 end;
 
-function CustomerContentSearchRequest_Type.HasResponseGroup() : Boolean;
+function CustomerContentSearchRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CustomerContentSearchRequest_ResponseGroupArray(0) );
 end;
 
-{ CustomerContentLookupRequest_Type }
+{ CustomerContentLookupRequest }
 
-constructor CustomerContentLookupRequest_Type.Create();
+constructor CustomerContentLookupRequest.Create();
 begin
   inherited Create();
   FResponseGroup := CustomerContentLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor CustomerContentLookupRequest_Type.Destroy();
+destructor CustomerContentLookupRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function CustomerContentLookupRequest_Type.HasCustomerId() : Boolean;
+function CustomerContentLookupRequest.HasCustomerId() : Boolean;
 begin
   Result := ( FCustomerId <> '' );
 end;
 
-function CustomerContentLookupRequest_Type.HasResponseGroup() : Boolean;
+function CustomerContentLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CustomerContentLookupRequest_ResponseGroupArray(0) );
 end;
 
-function CustomerContentLookupRequest_Type.HasReviewPage() : Boolean;
+function CustomerContentLookupRequest.HasReviewPage() : Boolean;
 begin
   Result := ( FReviewPage <> positiveInteger(0) );
 end;
 
-function CustomerContentLookupRequest_Type.HasTagPage() : Boolean;
+function CustomerContentLookupRequest.HasTagPage() : Boolean;
 begin
   Result := ( FTagPage <> positiveInteger(0) );
 end;
 
-function CustomerContentLookupRequest_Type.HasTagsPerPage() : Boolean;
+function CustomerContentLookupRequest.HasTagsPerPage() : Boolean;
 begin
   Result := ( FTagsPerPage <> positiveInteger(0) );
 end;
 
-function CustomerContentLookupRequest_Type.HasTagSort() : Boolean;
+function CustomerContentLookupRequest.HasTagSort() : Boolean;
 begin
   Result := ( FTagSort <> '' );
 end;
 
-{ SimilarityLookupRequest_Type }
+{ SimilarityLookupRequest }
 
-constructor SimilarityLookupRequest_Type.Create();
+constructor SimilarityLookupRequest.Create();
 begin
   inherited Create();
   FItemId := SimilarityLookupRequest_ItemIdArray.Create();
   FResponseGroup := SimilarityLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor SimilarityLookupRequest_Type.Destroy();
+destructor SimilarityLookupRequest.Destroy();
 begin
   if Assigned(FItemId) then
     FreeAndNil(FItemId);
@@ -10910,56 +12733,56 @@ begin
   inherited Destroy();
 end;
 
-function SimilarityLookupRequest_Type.HasCondition() : Boolean;
+function SimilarityLookupRequest.HasCondition() : Boolean;
 begin
   Result := True;
 end;
 
-function SimilarityLookupRequest_Type.HasDeliveryMethod() : Boolean;
+function SimilarityLookupRequest.HasDeliveryMethod() : Boolean;
 begin
   Result := True;
 end;
 
-function SimilarityLookupRequest_Type.HasItemId() : Boolean;
+function SimilarityLookupRequest.HasItemId() : Boolean;
 begin
   Result := ( FItemId <> SimilarityLookupRequest_ItemIdArray(0) );
 end;
 
-function SimilarityLookupRequest_Type.HasISPUPostalCode() : Boolean;
+function SimilarityLookupRequest.HasISPUPostalCode() : Boolean;
 begin
   Result := ( FISPUPostalCode <> '' );
 end;
 
-function SimilarityLookupRequest_Type.HasMerchantId() : Boolean;
+function SimilarityLookupRequest.HasMerchantId() : Boolean;
 begin
   Result := ( FMerchantId <> '' );
 end;
 
-function SimilarityLookupRequest_Type.HasResponseGroup() : Boolean;
+function SimilarityLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> SimilarityLookupRequest_ResponseGroupArray(0) );
 end;
 
-function SimilarityLookupRequest_Type.HasReviewSort() : Boolean;
+function SimilarityLookupRequest.HasReviewSort() : Boolean;
 begin
   Result := ( FReviewSort <> '' );
 end;
 
-function SimilarityLookupRequest_Type.HasSimilarityType() : Boolean;
+function SimilarityLookupRequest.HasSimilarityType() : Boolean;
 begin
   Result := True;
 end;
 
-{ SellerLookupRequest_Type }
+{ SellerLookupRequest }
 
-constructor SellerLookupRequest_Type.Create();
+constructor SellerLookupRequest.Create();
 begin
   inherited Create();
   FResponseGroup := SellerLookupRequest_ResponseGroupArray.Create();
   FSellerId := SellerLookupRequest_SellerIdArray.Create();
 end;
 
-destructor SellerLookupRequest_Type.Destroy();
+destructor SellerLookupRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
@@ -10968,52 +12791,52 @@ begin
   inherited Destroy();
 end;
 
-function SellerLookupRequest_Type.HasResponseGroup() : Boolean;
+function SellerLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> SellerLookupRequest_ResponseGroupArray(0) );
 end;
 
-function SellerLookupRequest_Type.HasSellerId() : Boolean;
+function SellerLookupRequest.HasSellerId() : Boolean;
 begin
   Result := ( FSellerId <> SellerLookupRequest_SellerIdArray(0) );
 end;
 
-function SellerLookupRequest_Type.HasFeedbackPage() : Boolean;
+function SellerLookupRequest.HasFeedbackPage() : Boolean;
 begin
   Result := ( FFeedbackPage <> positiveInteger(0) );
 end;
 
-{ CartGetRequest_Type }
+{ CartGetRequest }
 
-constructor CartGetRequest_Type.Create();
+constructor CartGetRequest.Create();
 begin
   inherited Create();
   FResponseGroup := CartGetRequest_ResponseGroupArray.Create();
 end;
 
-destructor CartGetRequest_Type.Destroy();
+destructor CartGetRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function CartGetRequest_Type.HasCartId() : Boolean;
+function CartGetRequest.HasCartId() : Boolean;
 begin
   Result := ( FCartId <> '' );
 end;
 
-function CartGetRequest_Type.HasHMAC() : Boolean;
+function CartGetRequest.HasHMAC() : Boolean;
 begin
   Result := ( FHMAC <> '' );
 end;
 
-function CartGetRequest_Type.HasMergeCart() : Boolean;
+function CartGetRequest.HasMergeCart() : Boolean;
 begin
   Result := ( FMergeCart <> '' );
 end;
 
-function CartGetRequest_Type.HasResponseGroup() : Boolean;
+function CartGetRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CartGetRequest_ResponseGroupArray(0) );
 end;
@@ -11073,16 +12896,16 @@ begin
   Result := ( FMetaData <> CartAddRequest_Items_Type_Item_Type_MetaDataArray(0) );
 end;
 
-{ CartAddRequest_Type }
+{ CartAddRequest }
 
-constructor CartAddRequest_Type.Create();
+constructor CartAddRequest.Create();
 begin
   inherited Create();
   FItems := CartAddRequest_Items_Type.Create();
   FResponseGroup := CartAddRequest_ResponseGroupArray.Create();
 end;
 
-destructor CartAddRequest_Type.Destroy();
+destructor CartAddRequest.Destroy();
 begin
   if Assigned(FItems) then
     FreeAndNil(FItems);
@@ -11091,27 +12914,27 @@ begin
   inherited Destroy();
 end;
 
-function CartAddRequest_Type.HasCartId() : Boolean;
+function CartAddRequest.HasCartId() : Boolean;
 begin
   Result := ( FCartId <> '' );
 end;
 
-function CartAddRequest_Type.HasHMAC() : Boolean;
+function CartAddRequest.HasHMAC() : Boolean;
 begin
   Result := ( FHMAC <> '' );
 end;
 
-function CartAddRequest_Type.HasMergeCart() : Boolean;
+function CartAddRequest.HasMergeCart() : Boolean;
 begin
   Result := ( FMergeCart <> '' );
 end;
 
-function CartAddRequest_Type.HasItems() : Boolean;
+function CartAddRequest.HasItems() : Boolean;
 begin
   Result := ( FItems <> CartAddRequest_Items_Type(0) );
 end;
 
-function CartAddRequest_Type.HasResponseGroup() : Boolean;
+function CartAddRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CartAddRequest_ResponseGroupArray(0) );
 end;
@@ -11171,16 +12994,16 @@ begin
   Result := ( FMetaData <> CartCreateRequest_Items_Type_Item_Type_MetaDataArray(0) );
 end;
 
-{ CartCreateRequest_Type }
+{ CartCreateRequest }
 
-constructor CartCreateRequest_Type.Create();
+constructor CartCreateRequest.Create();
 begin
   inherited Create();
   FItems := CartCreateRequest_Items_Type.Create();
   FResponseGroup := CartCreateRequest_ResponseGroupArray.Create();
 end;
 
-destructor CartCreateRequest_Type.Destroy();
+destructor CartCreateRequest.Destroy();
 begin
   if Assigned(FItems) then
     FreeAndNil(FItems);
@@ -11189,17 +13012,17 @@ begin
   inherited Destroy();
 end;
 
-function CartCreateRequest_Type.HasMergeCart() : Boolean;
+function CartCreateRequest.HasMergeCart() : Boolean;
 begin
   Result := ( FMergeCart <> '' );
 end;
 
-function CartCreateRequest_Type.HasItems() : Boolean;
+function CartCreateRequest.HasItems() : Boolean;
 begin
   Result := ( FItems <> CartCreateRequest_Items_Type(0) );
 end;
 
-function CartCreateRequest_Type.HasResponseGroup() : Boolean;
+function CartCreateRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CartCreateRequest_ResponseGroupArray(0) );
 end;
@@ -11219,16 +13042,16 @@ begin
   Result := ( FQuantity <> nonNegativeInteger(0) );
 end;
 
-{ CartModifyRequest_Type }
+{ CartModifyRequest }
 
-constructor CartModifyRequest_Type.Create();
+constructor CartModifyRequest.Create();
 begin
   inherited Create();
   FItems := CartModifyRequest_Items_Type.Create();
   FResponseGroup := CartModifyRequest_ResponseGroupArray.Create();
 end;
 
-destructor CartModifyRequest_Type.Destroy();
+destructor CartModifyRequest.Destroy();
 begin
   if Assigned(FItems) then
     FreeAndNil(FItems);
@@ -11237,76 +13060,76 @@ begin
   inherited Destroy();
 end;
 
-function CartModifyRequest_Type.HasCartId() : Boolean;
+function CartModifyRequest.HasCartId() : Boolean;
 begin
   Result := ( FCartId <> '' );
 end;
 
-function CartModifyRequest_Type.HasHMAC() : Boolean;
+function CartModifyRequest.HasHMAC() : Boolean;
 begin
   Result := ( FHMAC <> '' );
 end;
 
-function CartModifyRequest_Type.HasMergeCart() : Boolean;
+function CartModifyRequest.HasMergeCart() : Boolean;
 begin
   Result := ( FMergeCart <> '' );
 end;
 
-function CartModifyRequest_Type.HasItems() : Boolean;
+function CartModifyRequest.HasItems() : Boolean;
 begin
   Result := ( FItems <> CartModifyRequest_Items_Type(0) );
 end;
 
-function CartModifyRequest_Type.HasResponseGroup() : Boolean;
+function CartModifyRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CartModifyRequest_ResponseGroupArray(0) );
 end;
 
-{ CartClearRequest_Type }
+{ CartClearRequest }
 
-constructor CartClearRequest_Type.Create();
+constructor CartClearRequest.Create();
 begin
   inherited Create();
   FResponseGroup := CartClearRequest_ResponseGroupArray.Create();
 end;
 
-destructor CartClearRequest_Type.Destroy();
+destructor CartClearRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function CartClearRequest_Type.HasCartId() : Boolean;
+function CartClearRequest.HasCartId() : Boolean;
 begin
   Result := ( FCartId <> '' );
 end;
 
-function CartClearRequest_Type.HasHMAC() : Boolean;
+function CartClearRequest.HasHMAC() : Boolean;
 begin
   Result := ( FHMAC <> '' );
 end;
 
-function CartClearRequest_Type.HasMergeCart() : Boolean;
+function CartClearRequest.HasMergeCart() : Boolean;
 begin
   Result := ( FMergeCart <> '' );
 end;
 
-function CartClearRequest_Type.HasResponseGroup() : Boolean;
+function CartClearRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> CartClearRequest_ResponseGroupArray(0) );
 end;
 
-{ TransactionLookupRequest_Type }
+{ TransactionLookupRequest }
 
-constructor TransactionLookupRequest_Type.Create();
+constructor TransactionLookupRequest.Create();
 begin
   inherited Create();
   FResponseGroup := TransactionLookupRequest_ResponseGroupArray.Create();
   FTransactionId := TransactionLookupRequest_TransactionIdArray.Create();
 end;
 
-destructor TransactionLookupRequest_Type.Destroy();
+destructor TransactionLookupRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
@@ -11315,96 +13138,96 @@ begin
   inherited Destroy();
 end;
 
-function TransactionLookupRequest_Type.HasResponseGroup() : Boolean;
+function TransactionLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> TransactionLookupRequest_ResponseGroupArray(0) );
 end;
 
-function TransactionLookupRequest_Type.HasTransactionId() : Boolean;
+function TransactionLookupRequest.HasTransactionId() : Boolean;
 begin
   Result := ( FTransactionId <> TransactionLookupRequest_TransactionIdArray(0) );
 end;
 
-{ SellerListingSearchRequest_Type }
+{ SellerListingSearchRequest }
 
-constructor SellerListingSearchRequest_Type.Create();
+constructor SellerListingSearchRequest.Create();
 begin
   inherited Create();
   FResponseGroup := SellerListingSearchRequest_ResponseGroupArray.Create();
 end;
 
-destructor SellerListingSearchRequest_Type.Destroy();
+destructor SellerListingSearchRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function SellerListingSearchRequest_Type.HasKeywords() : Boolean;
+function SellerListingSearchRequest.HasKeywords() : Boolean;
 begin
   Result := ( FKeywords <> '' );
 end;
 
-function SellerListingSearchRequest_Type.HasListingPage() : Boolean;
+function SellerListingSearchRequest.HasListingPage() : Boolean;
 begin
   Result := ( FListingPage <> positiveInteger(0) );
 end;
 
-function SellerListingSearchRequest_Type.HasOfferStatus() : Boolean;
+function SellerListingSearchRequest.HasOfferStatus() : Boolean;
 begin
   Result := True;
 end;
 
-function SellerListingSearchRequest_Type.HasResponseGroup() : Boolean;
+function SellerListingSearchRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> SellerListingSearchRequest_ResponseGroupArray(0) );
 end;
 
-function SellerListingSearchRequest_Type.HasSort() : Boolean;
+function SellerListingSearchRequest.HasSort() : Boolean;
 begin
   Result := ( FSort <> '' );
 end;
 
-function SellerListingSearchRequest_Type.HasTitle() : Boolean;
+function SellerListingSearchRequest.HasTitle() : Boolean;
 begin
   Result := ( FTitle <> '' );
 end;
 
-{ SellerListingLookupRequest_Type }
+{ SellerListingLookupRequest }
 
-constructor SellerListingLookupRequest_Type.Create();
+constructor SellerListingLookupRequest.Create();
 begin
   inherited Create();
   FResponseGroup := SellerListingLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor SellerListingLookupRequest_Type.Destroy();
+destructor SellerListingLookupRequest.Destroy();
 begin
   if Assigned(FResponseGroup) then
     FreeAndNil(FResponseGroup);
   inherited Destroy();
 end;
 
-function SellerListingLookupRequest_Type.HasSellerId() : Boolean;
+function SellerListingLookupRequest.HasSellerId() : Boolean;
 begin
   Result := ( FSellerId <> '' );
 end;
 
-function SellerListingLookupRequest_Type.HasResponseGroup() : Boolean;
+function SellerListingLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> SellerListingLookupRequest_ResponseGroupArray(0) );
 end;
 
-{ TagLookupRequest_Type }
+{ TagLookupRequest }
 
-constructor TagLookupRequest_Type.Create();
+constructor TagLookupRequest.Create();
 begin
   inherited Create();
   FTagName := TagLookupRequest_TagNameArray.Create();
   FResponseGroup := TagLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor TagLookupRequest_Type.Destroy();
+destructor TagLookupRequest.Destroy();
 begin
   if Assigned(FTagName) then
     FreeAndNil(FTagName);
@@ -11413,46 +13236,46 @@ begin
   inherited Destroy();
 end;
 
-function TagLookupRequest_Type.HasTagName() : Boolean;
+function TagLookupRequest.HasTagName() : Boolean;
 begin
   Result := ( FTagName <> TagLookupRequest_TagNameArray(0) );
 end;
 
-function TagLookupRequest_Type.HasCustomerId() : Boolean;
+function TagLookupRequest.HasCustomerId() : Boolean;
 begin
   Result := ( FCustomerId <> '' );
 end;
 
-function TagLookupRequest_Type.HasTagPage() : Boolean;
+function TagLookupRequest.HasTagPage() : Boolean;
 begin
   Result := ( FTagPage <> positiveInteger(0) );
 end;
 
-function TagLookupRequest_Type.HasCount() : Boolean;
+function TagLookupRequest.HasCount() : Boolean;
 begin
   Result := ( FCount <> positiveInteger(0) );
 end;
 
-function TagLookupRequest_Type.HasTagSort() : Boolean;
+function TagLookupRequest.HasTagSort() : Boolean;
 begin
   Result := ( FTagSort <> '' );
 end;
 
-function TagLookupRequest_Type.HasResponseGroup() : Boolean;
+function TagLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> TagLookupRequest_ResponseGroupArray(0) );
 end;
 
-{ BrowseNodeLookupRequest_Type }
+{ BrowseNodeLookupRequest }
 
-constructor BrowseNodeLookupRequest_Type.Create();
+constructor BrowseNodeLookupRequest.Create();
 begin
   inherited Create();
   FBrowseNodeId := BrowseNodeLookupRequest_BrowseNodeIdArray.Create();
   FResponseGroup := BrowseNodeLookupRequest_ResponseGroupArray.Create();
 end;
 
-destructor BrowseNodeLookupRequest_Type.Destroy();
+destructor BrowseNodeLookupRequest.Destroy();
 begin
   if Assigned(FBrowseNodeId) then
     FreeAndNil(FBrowseNodeId);
@@ -11461,14 +13284,284 @@ begin
   inherited Destroy();
 end;
 
-function BrowseNodeLookupRequest_Type.HasBrowseNodeId() : Boolean;
+function BrowseNodeLookupRequest.HasBrowseNodeId() : Boolean;
 begin
   Result := ( FBrowseNodeId <> BrowseNodeLookupRequest_BrowseNodeIdArray(0) );
 end;
 
-function BrowseNodeLookupRequest_Type.HasResponseGroup() : Boolean;
+function BrowseNodeLookupRequest.HasResponseGroup() : Boolean;
 begin
   Result := ( FResponseGroup <> BrowseNodeLookupRequest_ResponseGroupArray(0) );
+end;
+
+{ VehicleSearchRequest }
+
+constructor VehicleSearchRequest.Create();
+begin
+  inherited Create();
+  FResponseGroup := VehicleSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor VehicleSearchRequest.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function VehicleSearchRequest.HasYear() : Boolean;
+begin
+  Result := ( FYear <> nonNegativeInteger(0) );
+end;
+
+function VehicleSearchRequest.HasMakeId() : Boolean;
+begin
+  Result := ( FMakeId <> nonNegativeInteger(0) );
+end;
+
+function VehicleSearchRequest.HasModelId() : Boolean;
+begin
+  Result := ( FModelId <> nonNegativeInteger(0) );
+end;
+
+function VehicleSearchRequest.HasTrimId() : Boolean;
+begin
+  Result := ( FTrimId <> nonNegativeInteger(0) );
+end;
+
+function VehicleSearchRequest.HasResponseGroup() : Boolean;
+begin
+  Result := ( FResponseGroup <> VehicleSearchRequest_ResponseGroupArray(0) );
+end;
+
+{ VehiclePartSearchRequest }
+
+constructor VehiclePartSearchRequest.Create();
+begin
+  inherited Create();
+  FResponseGroup := VehiclePartSearchRequest_ResponseGroupArray.Create();
+end;
+
+destructor VehiclePartSearchRequest.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function VehiclePartSearchRequest.HasYear() : Boolean;
+begin
+  Result := ( FYear <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasMakeId() : Boolean;
+begin
+  Result := ( FMakeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasModelId() : Boolean;
+begin
+  Result := ( FModelId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasTrimId() : Boolean;
+begin
+  Result := ( FTrimId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasBedId() : Boolean;
+begin
+  Result := ( FBedId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasBodyStyleId() : Boolean;
+begin
+  Result := ( FBodyStyleId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasBrakesId() : Boolean;
+begin
+  Result := ( FBrakesId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasDriveTypeId() : Boolean;
+begin
+  Result := ( FDriveTypeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasEngineId() : Boolean;
+begin
+  Result := ( FEngineId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasMfrBodyCodeId() : Boolean;
+begin
+  Result := ( FMfrBodyCodeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasSpringTypesId() : Boolean;
+begin
+  Result := ( FSpringTypesId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasSteeringId() : Boolean;
+begin
+  Result := ( FSteeringId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasTransmissionId() : Boolean;
+begin
+  Result := ( FTransmissionId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasWheelbaseId() : Boolean;
+begin
+  Result := ( FWheelbaseId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasBrowseNodeId() : Boolean;
+begin
+  Result := ( FBrowseNodeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasBrand() : Boolean;
+begin
+  Result := ( FBrand <> '' );
+end;
+
+function VehiclePartSearchRequest.HasCount() : Boolean;
+begin
+  Result := ( FCount <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartSearchRequest.HasFromItemId() : Boolean;
+begin
+  Result := ( FFromItemId <> '' );
+end;
+
+function VehiclePartSearchRequest.HasPartPageDirection() : Boolean;
+begin
+  Result := ( FPartPageDirection <> '' );
+end;
+
+function VehiclePartSearchRequest.HasResponseGroup() : Boolean;
+begin
+  Result := ( FResponseGroup <> VehiclePartSearchRequest_ResponseGroupArray(0) );
+end;
+
+{ VehiclePartLookupRequest }
+
+constructor VehiclePartLookupRequest.Create();
+begin
+  inherited Create();
+  FResponseGroup := VehiclePartLookupRequest_ResponseGroupArray.Create();
+end;
+
+destructor VehiclePartLookupRequest.Destroy();
+begin
+  if Assigned(FResponseGroup) then
+    FreeAndNil(FResponseGroup);
+  inherited Destroy();
+end;
+
+function VehiclePartLookupRequest.HasItemId() : Boolean;
+begin
+  Result := ( FItemId <> '' );
+end;
+
+function VehiclePartLookupRequest.HasIdType() : Boolean;
+begin
+  Result := ( FIdType <> '' );
+end;
+
+function VehiclePartLookupRequest.HasYear() : Boolean;
+begin
+  Result := ( FYear <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasMakeId() : Boolean;
+begin
+  Result := ( FMakeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasModelId() : Boolean;
+begin
+  Result := ( FModelId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasTrimId() : Boolean;
+begin
+  Result := ( FTrimId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasBedId() : Boolean;
+begin
+  Result := ( FBedId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasBodyStyleId() : Boolean;
+begin
+  Result := ( FBodyStyleId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasBrakesId() : Boolean;
+begin
+  Result := ( FBrakesId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasDriveTypeId() : Boolean;
+begin
+  Result := ( FDriveTypeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasEngineId() : Boolean;
+begin
+  Result := ( FEngineId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasMfrBodyCodeId() : Boolean;
+begin
+  Result := ( FMfrBodyCodeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasSpringTypesId() : Boolean;
+begin
+  Result := ( FSpringTypesId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasSteeringId() : Boolean;
+begin
+  Result := ( FSteeringId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasTransmissionId() : Boolean;
+begin
+  Result := ( FTransmissionId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasWheelbaseId() : Boolean;
+begin
+  Result := ( FWheelbaseId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasBrowseNodeId() : Boolean;
+begin
+  Result := ( FBrowseNodeId <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasFitmentPage() : Boolean;
+begin
+  Result := ( FFitmentPage <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasFitmentCount() : Boolean;
+begin
+  Result := ( FFitmentCount <> nonNegativeInteger(0) );
+end;
+
+function VehiclePartLookupRequest.HasResponseGroup() : Boolean;
+begin
+  Result := ( FResponseGroup <> VehiclePartLookupRequest_ResponseGroupArray(0) );
 end;
 
 { OperationRequest_Type }
@@ -11522,25 +13615,28 @@ end;
 constructor Request_Type.Create();
 begin
   inherited Create();
-  FHelpRequest := HelpRequest_Type.Create();
-  FBrowseNodeLookupRequest := BrowseNodeLookupRequest_Type.Create();
-  FItemSearchRequest := ItemSearchRequest_Type.Create();
-  FItemLookupRequest := ItemLookupRequest_Type.Create();
-  FListSearchRequest := ListSearchRequest_Type.Create();
-  FListLookupRequest := ListLookupRequest_Type.Create();
-  FCustomerContentSearchRequest := CustomerContentSearchRequest_Type.Create();
-  FCustomerContentLookupRequest := CustomerContentLookupRequest_Type.Create();
-  FSimilarityLookupRequest := SimilarityLookupRequest_Type.Create();
-  FCartGetRequest := CartGetRequest_Type.Create();
-  FCartAddRequest := CartAddRequest_Type.Create();
-  FCartCreateRequest := CartCreateRequest_Type.Create();
-  FCartModifyRequest := CartModifyRequest_Type.Create();
-  FCartClearRequest := CartClearRequest_Type.Create();
-  FTransactionLookupRequest := TransactionLookupRequest_Type.Create();
-  FSellerListingSearchRequest := SellerListingSearchRequest_Type.Create();
-  FSellerListingLookupRequest := SellerListingLookupRequest_Type.Create();
-  FSellerLookupRequest := SellerLookupRequest_Type.Create();
-  FTagLookupRequest := TagLookupRequest_Type.Create();
+  FHelpRequest := AWSECommerceService.HelpRequest.Create();
+  FBrowseNodeLookupRequest := AWSECommerceService.BrowseNodeLookupRequest.Create();
+  FItemSearchRequest := AWSECommerceService.ItemSearchRequest.Create();
+  FItemLookupRequest := AWSECommerceService.ItemLookupRequest.Create();
+  FListSearchRequest := AWSECommerceService.ListSearchRequest.Create();
+  FListLookupRequest := AWSECommerceService.ListLookupRequest.Create();
+  FCustomerContentSearchRequest := AWSECommerceService.CustomerContentSearchRequest.Create();
+  FCustomerContentLookupRequest := AWSECommerceService.CustomerContentLookupRequest.Create();
+  FSimilarityLookupRequest := AWSECommerceService.SimilarityLookupRequest.Create();
+  FCartGetRequest := AWSECommerceService.CartGetRequest.Create();
+  FCartAddRequest := AWSECommerceService.CartAddRequest.Create();
+  FCartCreateRequest := AWSECommerceService.CartCreateRequest.Create();
+  FCartModifyRequest := AWSECommerceService.CartModifyRequest.Create();
+  FCartClearRequest := AWSECommerceService.CartClearRequest.Create();
+  FTransactionLookupRequest := AWSECommerceService.TransactionLookupRequest.Create();
+  FSellerListingSearchRequest := AWSECommerceService.SellerListingSearchRequest.Create();
+  FSellerListingLookupRequest := AWSECommerceService.SellerListingLookupRequest.Create();
+  FSellerLookupRequest := AWSECommerceService.SellerLookupRequest.Create();
+  FTagLookupRequest := AWSECommerceService.TagLookupRequest.Create();
+  FVehicleSearchRequest := AWSECommerceService.VehicleSearchRequest.Create();
+  FVehiclePartSearchRequest := AWSECommerceService.VehiclePartSearchRequest.Create();
+  FVehiclePartLookupRequest := AWSECommerceService.VehiclePartLookupRequest.Create();
   FErrors := Errors_Type.Create();
 end;
 
@@ -11584,6 +13680,12 @@ begin
     FreeAndNil(FSellerLookupRequest);
   if Assigned(FTagLookupRequest) then
     FreeAndNil(FTagLookupRequest);
+  if Assigned(FVehicleSearchRequest) then
+    FreeAndNil(FVehicleSearchRequest);
+  if Assigned(FVehiclePartSearchRequest) then
+    FreeAndNil(FVehiclePartSearchRequest);
+  if Assigned(FVehiclePartLookupRequest) then
+    FreeAndNil(FVehiclePartLookupRequest);
   if Assigned(FErrors) then
     FreeAndNil(FErrors);
   inherited Destroy();
@@ -11596,102 +13698,122 @@ end;
 
 function Request_Type.HasHelpRequest() : Boolean;
 begin
-  Result := ( FHelpRequest <> HelpRequest_Type(0) );
+  Result := ( FHelpRequest <> nil );
 end;
 
 function Request_Type.HasBrowseNodeLookupRequest() : Boolean;
 begin
-  Result := ( FBrowseNodeLookupRequest <> BrowseNodeLookupRequest_Type(0) );
+  Result := ( FBrowseNodeLookupRequest <> nil );
 end;
 
 function Request_Type.HasItemSearchRequest() : Boolean;
 begin
-  Result := ( FItemSearchRequest <> ItemSearchRequest_Type(0) );
+  Result := ( FItemSearchRequest <> nil );
 end;
 
 function Request_Type.HasItemLookupRequest() : Boolean;
 begin
-  Result := ( FItemLookupRequest <> ItemLookupRequest_Type(0) );
+  Result := ( FItemLookupRequest <> nil );
 end;
 
 function Request_Type.HasListSearchRequest() : Boolean;
 begin
-  Result := ( FListSearchRequest <> ListSearchRequest_Type(0) );
+  Result := ( FListSearchRequest <> nil );
 end;
 
 function Request_Type.HasListLookupRequest() : Boolean;
 begin
-  Result := ( FListLookupRequest <> ListLookupRequest_Type(0) );
+  Result := ( FListLookupRequest <> nil );
 end;
 
 function Request_Type.HasCustomerContentSearchRequest() : Boolean;
 begin
-  Result := ( FCustomerContentSearchRequest <> CustomerContentSearchRequest_Type(0) );
+  Result := ( FCustomerContentSearchRequest <> nil );
 end;
 
 function Request_Type.HasCustomerContentLookupRequest() : Boolean;
 begin
-  Result := ( FCustomerContentLookupRequest <> CustomerContentLookupRequest_Type(0) );
+  Result := ( FCustomerContentLookupRequest <> nil );
 end;
 
 function Request_Type.HasSimilarityLookupRequest() : Boolean;
 begin
-  Result := ( FSimilarityLookupRequest <> SimilarityLookupRequest_Type(0) );
+  Result := ( FSimilarityLookupRequest <> nil );
 end;
 
 function Request_Type.HasCartGetRequest() : Boolean;
 begin
-  Result := ( FCartGetRequest <> CartGetRequest_Type(0) );
+  Result := ( FCartGetRequest <> nil );
 end;
 
 function Request_Type.HasCartAddRequest() : Boolean;
 begin
-  Result := ( FCartAddRequest <> CartAddRequest_Type(0) );
+  Result := ( FCartAddRequest <> nil );
 end;
 
 function Request_Type.HasCartCreateRequest() : Boolean;
 begin
-  Result := ( FCartCreateRequest <> CartCreateRequest_Type(0) );
+  Result := ( FCartCreateRequest <> nil );
 end;
 
 function Request_Type.HasCartModifyRequest() : Boolean;
 begin
-  Result := ( FCartModifyRequest <> CartModifyRequest_Type(0) );
+  Result := ( FCartModifyRequest <> nil );
 end;
 
 function Request_Type.HasCartClearRequest() : Boolean;
 begin
-  Result := ( FCartClearRequest <> CartClearRequest_Type(0) );
+  Result := ( FCartClearRequest <> nil );
 end;
 
 function Request_Type.HasTransactionLookupRequest() : Boolean;
 begin
-  Result := ( FTransactionLookupRequest <> TransactionLookupRequest_Type(0) );
+  Result := ( FTransactionLookupRequest <> nil );
 end;
 
 function Request_Type.HasSellerListingSearchRequest() : Boolean;
 begin
-  Result := ( FSellerListingSearchRequest <> SellerListingSearchRequest_Type(0) );
+  Result := ( FSellerListingSearchRequest <> nil );
 end;
 
 function Request_Type.HasSellerListingLookupRequest() : Boolean;
 begin
-  Result := ( FSellerListingLookupRequest <> SellerListingLookupRequest_Type(0) );
+  Result := ( FSellerListingLookupRequest <> nil );
 end;
 
 function Request_Type.HasSellerLookupRequest() : Boolean;
 begin
-  Result := ( FSellerLookupRequest <> SellerLookupRequest_Type(0) );
+  Result := ( FSellerLookupRequest <> nil );
 end;
 
 function Request_Type.HasTagLookupRequest() : Boolean;
 begin
-  Result := ( FTagLookupRequest <> TagLookupRequest_Type(0) );
+  Result := ( FTagLookupRequest <> nil );
+end;
+
+function Request_Type.HasVehicleSearchRequest() : Boolean;
+begin
+  Result := ( FVehicleSearchRequest <> nil );
+end;
+
+function Request_Type.HasVehiclePartSearchRequest() : Boolean;
+begin
+  Result := ( FVehiclePartSearchRequest <> nil );
+end;
+
+function Request_Type.HasVehiclePartLookupRequest() : Boolean;
+begin
+  Result := ( FVehiclePartLookupRequest <> nil );
 end;
 
 function Request_Type.HasErrors() : Boolean;
 begin
   Result := ( FErrors <> Errors_Type(0) );
+end;
+
+function Arguments_Argument_Type.HasValue() : Boolean;
+begin
+  Result := ( FValue <> '' );
 end;
 
 { Information_Type }
@@ -11717,7 +13839,7 @@ end;
 
 function Information_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Information_Type.HasOperationInformation() : Boolean;
@@ -11759,12 +13881,12 @@ end;
 
 function Items_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Items_Type.HasCorrectedQuery() : Boolean;
 begin
-  Result := ( FCorrectedQuery <> CorrectedQuery_Type(0) );
+  Result := ( FCorrectedQuery <> nil );
 end;
 
 function Items_Type.HasQid() : Boolean;
@@ -11832,7 +13954,7 @@ end;
 
 function Lists_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Lists_Type.HasTotalResults() : Boolean;
@@ -11870,7 +13992,7 @@ end;
 
 function Customers_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Customers_Type.HasTotalResults() : Boolean;
@@ -11894,7 +14016,7 @@ constructor Cart_Type.Create();
 begin
   inherited Create();
   FRequest := Request_Type.Create();
-  FSubTotal := Price_Type.Create();
+  FSubTotal := Price.Create();
   FCartItems := CartItems_Type.Create();
   FSavedForLaterItems := SavedForLaterItems_Type.Create();
   FSimilarProducts := SimilarProducts_Type.Create();
@@ -11929,7 +14051,7 @@ end;
 
 function Cart_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Cart_Type.HasPurchaseURL() : Boolean;
@@ -11939,17 +14061,17 @@ end;
 
 function Cart_Type.HasSubTotal() : Boolean;
 begin
-  Result := ( FSubTotal <> Price_Type(0) );
+  Result := ( FSubTotal <> nil );
 end;
 
 function Cart_Type.HasCartItems() : Boolean;
 begin
-  Result := ( FCartItems <> CartItems_Type(0) );
+  Result := ( FCartItems <> nil );
 end;
 
 function Cart_Type.HasSavedForLaterItems() : Boolean;
 begin
-  Result := ( FSavedForLaterItems <> SavedForLaterItems_Type(0) );
+  Result := ( FSavedForLaterItems <> nil );
 end;
 
 function Cart_Type.HasSimilarProducts() : Boolean;
@@ -11997,7 +14119,7 @@ end;
 
 function Transactions_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Transactions_Type.HasTotalResults() : Boolean;
@@ -12030,7 +14152,7 @@ end;
 
 function Sellers_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Sellers_Type.HasTotalResults() : Boolean;
@@ -12068,7 +14190,7 @@ end;
 
 function SellerListings_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function SellerListings_Type.HasTotalResults() : Boolean;
@@ -12183,7 +14305,7 @@ end;
 constructor List_Type.Create();
 begin
   inherited Create();
-  FImage := Image_Type.Create();
+  FImage := AWSECommerceService.Image.Create();
   FTags := Tags_Type.Create();
   FListItem := List_ListItemArray.Create();
 end;
@@ -12234,6 +14356,11 @@ begin
   Result := ( FDateCreated <> '' );
 end;
 
+function List_Type.HasLastModified() : Boolean;
+begin
+  Result := ( FLastModified <> '' );
+end;
+
 function List_Type.HasOccasionDate() : Boolean;
 begin
   Result := ( FOccasionDate <> '' );
@@ -12261,7 +14388,7 @@ end;
 
 function List_Type.HasImage() : Boolean;
 begin
-  Result := ( FImage <> Image_Type(0) );
+  Result := ( FImage <> nil );
 end;
 
 function List_Type.HasAverageRating() : Boolean;
@@ -12281,7 +14408,7 @@ end;
 
 function List_Type.HasTags() : Boolean;
 begin
-  Result := ( FTags <> Tags_Type(0) );
+  Result := ( FTags <> nil );
 end;
 
 function List_Type.HasListItem() : Boolean;
@@ -12329,9 +14456,14 @@ begin
   Result := ( FQuantityReceived <> '' );
 end;
 
+function ListItem_Type.HasPriority() : Boolean;
+begin
+  Result := ( FPriority <> '' );
+end;
+
 function ListItem_Type.Has_Item() : Boolean;
 begin
-  Result := ( F_Item <> Item_Type(0) );
+  Result := ( F_Item <> nil );
 end;
 
 function Customer_Location_Type.HasUserDefinedLocation() : Boolean;
@@ -12392,7 +14524,7 @@ end;
 
 function Customer_Type.HasLocation() : Boolean;
 begin
-  Result := ( FLocation <> Customer_Location_Type(0) );
+  Result := ( FLocation <> nil );
 end;
 
 function Customer_Type.HasCustomerReviews() : Boolean;
@@ -12402,7 +14534,7 @@ end;
 
 function Customer_Type.HasTags() : Boolean;
 begin
-  Result := ( FTags <> Tags_Type(0) );
+  Result := ( FTags <> nil );
 end;
 
 { SearchResultsMap_SearchIndex_Type }
@@ -12435,7 +14567,7 @@ end;
 
 function SearchResultsMap_SearchIndex_Type.HasCorrectedQuery() : Boolean;
 begin
-  Result := ( FCorrectedQuery <> CorrectedQuery_Type(0) );
+  Result := ( FCorrectedQuery <> nil );
 end;
 
 { Item_ImageSets_Type }
@@ -12479,12 +14611,14 @@ constructor Item_Type.Create();
 begin
   inherited Create();
   FErrors := Errors_Type.Create();
-  FSmallImage := Image_Type.Create();
-  FMediumImage := Image_Type.Create();
-  FLargeImage := Image_Type.Create();
+  FItemLinks := ItemLinks_Type.Create();
+  FSmallImage := Image.Create();
+  FMediumImage := Image.Create();
+  FLargeImage := Image.Create();
   FImageSets := _Item_ImageSetsArray.Create();
   FItemAttributes := ItemAttributes_Type.Create();
   FMerchantItemAttributes := MerchantItemAttributes_Type.Create();
+  FRelatedItems := _Item_RelatedItemsArray.Create();
   FCollections := Collections_Type.Create();
   FSubjects := Item_Subjects_Type.Create();
   FOfferSummary := OfferSummary_Type.Create();
@@ -12507,6 +14641,8 @@ destructor Item_Type.Destroy();
 begin
   if Assigned(FErrors) then
     FreeAndNil(FErrors);
+  if Assigned(FItemLinks) then
+    FreeAndNil(FItemLinks);
   if Assigned(FSmallImage) then
     FreeAndNil(FSmallImage);
   if Assigned(FMediumImage) then
@@ -12519,6 +14655,8 @@ begin
     FreeAndNil(FItemAttributes);
   if Assigned(FMerchantItemAttributes) then
     FreeAndNil(FMerchantItemAttributes);
+  if Assigned(FRelatedItems) then
+    FreeAndNil(FRelatedItems);
   if Assigned(FCollections) then
     FreeAndNil(FCollections);
   if Assigned(FSubjects) then
@@ -12569,6 +14707,11 @@ begin
   Result := ( FDetailPageURL <> '' );
 end;
 
+function Item_Type.HasItemLinks() : Boolean;
+begin
+  Result := ( FItemLinks <> ItemLinks_Type(0) );
+end;
+
 function Item_Type.HasSalesRank() : Boolean;
 begin
   Result := ( FSalesRank <> '' );
@@ -12576,17 +14719,17 @@ end;
 
 function Item_Type.HasSmallImage() : Boolean;
 begin
-  Result := ( FSmallImage <> Image_Type(0) );
+  Result := ( FSmallImage <> nil );
 end;
 
 function Item_Type.HasMediumImage() : Boolean;
 begin
-  Result := ( FMediumImage <> Image_Type(0) );
+  Result := ( FMediumImage <> nil );
 end;
 
 function Item_Type.HasLargeImage() : Boolean;
 begin
-  Result := ( FLargeImage <> Image_Type(0) );
+  Result := ( FLargeImage <> nil );
 end;
 
 function Item_Type.HasImageSets() : Boolean;
@@ -12596,12 +14739,17 @@ end;
 
 function Item_Type.HasItemAttributes() : Boolean;
 begin
-  Result := ( FItemAttributes <> ItemAttributes_Type(0) );
+  Result := ( FItemAttributes <> nil );
 end;
 
 function Item_Type.HasMerchantItemAttributes() : Boolean;
 begin
-  Result := ( FMerchantItemAttributes <> MerchantItemAttributes_Type(0) );
+  Result := ( FMerchantItemAttributes <> nil );
+end;
+
+function Item_Type.HasRelatedItems() : Boolean;
+begin
+  Result := ( FRelatedItems <> _Item_RelatedItemsArray(0) );
 end;
 
 function Item_Type.HasCollections() : Boolean;
@@ -12616,27 +14764,27 @@ end;
 
 function Item_Type.HasOfferSummary() : Boolean;
 begin
-  Result := ( FOfferSummary <> OfferSummary_Type(0) );
+  Result := ( FOfferSummary <> nil );
 end;
 
 function Item_Type.HasOffers() : Boolean;
 begin
-  Result := ( FOffers <> Offers_Type(0) );
+  Result := ( FOffers <> nil );
 end;
 
 function Item_Type.HasVariationSummary() : Boolean;
 begin
-  Result := ( FVariationSummary <> VariationSummary_Type(0) );
+  Result := ( FVariationSummary <> nil );
 end;
 
 function Item_Type.HasVariations() : Boolean;
 begin
-  Result := ( FVariations <> Variations_Type(0) );
+  Result := ( FVariations <> nil );
 end;
 
 function Item_Type.HasCustomerReviews() : Boolean;
 begin
-  Result := ( FCustomerReviews <> CustomerReviews_Type(0) );
+  Result := ( FCustomerReviews <> nil );
 end;
 
 function Item_Type.HasEditorialReviews() : Boolean;
@@ -12661,12 +14809,12 @@ end;
 
 function Item_Type.HasBrowseNodes() : Boolean;
 begin
-  Result := ( FBrowseNodes <> BrowseNodes_Type(0) );
+  Result := ( FBrowseNodes <> nil );
 end;
 
 function Item_Type.HasTags() : Boolean;
 begin
-  Result := ( FTags <> Tags_Type(0) );
+  Result := ( FTags <> nil );
 end;
 
 function Item_Type.HasListmaniaLists() : Boolean;
@@ -12676,12 +14824,87 @@ end;
 
 function Item_Type.HasSearchInside() : Boolean;
 begin
-  Result := ( FSearchInside <> SearchInside_Type(0) );
+  Result := ( FSearchInside <> nil );
 end;
 
 function Item_Type.HasAlternateVersions() : Boolean;
 begin
   Result := ( FAlternateVersions <> Item_AlternateVersions_Type(0) );
+end;
+
+function ItemLink_Type.HasDescription() : Boolean;
+begin
+  Result := ( FDescription <> '' );
+end;
+
+function ItemLink_Type.HasURL() : Boolean;
+begin
+  Result := ( FURL <> '' );
+end;
+
+{ RelatedItems_Type }
+
+constructor RelatedItems_Type.Create();
+begin
+  inherited Create();
+  FRelatedItem := RelatedItems_RelatedItemArray.Create();
+end;
+
+destructor RelatedItems_Type.Destroy();
+begin
+  if Assigned(FRelatedItem) then
+    FreeAndNil(FRelatedItem);
+  inherited Destroy();
+end;
+
+function RelatedItems_Type.HasRelationship() : Boolean;
+begin
+  Result := True;
+end;
+
+function RelatedItems_Type.HasRelationshipType() : Boolean;
+begin
+  Result := ( FRelationshipType <> '' );
+end;
+
+function RelatedItems_Type.HasRelatedItemCount() : Boolean;
+begin
+  Result := ( FRelatedItemCount <> nonNegativeInteger(0) );
+end;
+
+function RelatedItems_Type.HasRelatedItemPageCount() : Boolean;
+begin
+  Result := ( FRelatedItemPageCount <> nonNegativeInteger(0) );
+end;
+
+function RelatedItems_Type.HasRelatedItemPage() : Boolean;
+begin
+  Result := ( FRelatedItemPage <> nonNegativeInteger(0) );
+end;
+
+function RelatedItems_Type.HasRelatedItem() : Boolean;
+begin
+  Result := ( FRelatedItem <> RelatedItems_RelatedItemArray(0) );
+end;
+
+{ RelatedItem_Type }
+
+constructor RelatedItem_Type.Create();
+begin
+  inherited Create();
+  F_Item := Item_Type.Create();
+end;
+
+destructor RelatedItem_Type.Destroy();
+begin
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  inherited Destroy();
+end;
+
+function RelatedItem_Type.Has_Item() : Boolean;
+begin
+  Result := ( F_Item <> nil );
 end;
 
 { Tags_Type }
@@ -12690,8 +14913,8 @@ constructor Tags_Type.Create();
 begin
   inherited Create();
   FRequest := Request_Type.Create();
-  FFirstTagging := Tagging_Type.Create();
-  FLastTagging := Tagging_Type.Create();
+  FFirstTagging := Tagging.Create();
+  FLastTagging := Tagging.Create();
   FTag := Tags_TagArray.Create();
 end;
 
@@ -12710,7 +14933,7 @@ end;
 
 function Tags_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function Tags_Type.HasDistinctTags() : Boolean;
@@ -12735,12 +14958,12 @@ end;
 
 function Tags_Type.HasFirstTagging() : Boolean;
 begin
-  Result := ( FFirstTagging <> Tagging_Type(0) );
+  Result := ( FFirstTagging <> nil );
 end;
 
 function Tags_Type.HasLastTagging() : Boolean;
 begin
-  Result := ( FLastTagging <> Tagging_Type(0) );
+  Result := ( FLastTagging <> nil );
 end;
 
 function Tags_Type.HasTag() : Boolean;
@@ -12753,8 +14976,8 @@ end;
 constructor Tag_Type.Create();
 begin
   inherited Create();
-  FFirstTagging := Tagging_Type.Create();
-  FLastTagging := Tagging_Type.Create();
+  FFirstTagging := Tagging.Create();
+  FLastTagging := Tagging.Create();
   FTaggedItems := Tag_TaggedItemsArray.Create();
   FTaggedListmaniaLists := Tag_TaggedListmaniaListsArray.Create();
   FTaggedGuides := Tag_TaggedGuidesArray.Create();
@@ -12802,12 +15025,12 @@ end;
 
 function Tag_Type.HasFirstTagging() : Boolean;
 begin
-  Result := ( FFirstTagging <> Tagging_Type(0) );
+  Result := ( FFirstTagging <> nil );
 end;
 
 function Tag_Type.HasLastTagging() : Boolean;
 begin
-  Result := ( FLastTagging <> Tagging_Type(0) );
+  Result := ( FLastTagging <> nil );
 end;
 
 function Tag_Type.HasTaggedItems() : Boolean;
@@ -12831,8 +15054,8 @@ constructor TaggedItems_Type.Create();
 begin
   inherited Create();
   F_Item := Item_Type.Create();
-  FFirstTagging := Tagging_Type.Create();
-  FLastTagging := Tagging_Type.Create();
+  FFirstTagging := Tagging.Create();
+  FLastTagging := Tagging.Create();
 end;
 
 destructor TaggedItems_Type.Destroy();
@@ -12848,7 +15071,7 @@ end;
 
 function TaggedItems_Type.Has_Item() : Boolean;
 begin
-  Result := ( F_Item <> Item_Type(0) );
+  Result := ( F_Item <> nil );
 end;
 
 function TaggedItems_Type.HasDistinctUsers() : Boolean;
@@ -12863,12 +15086,12 @@ end;
 
 function TaggedItems_Type.HasFirstTagging() : Boolean;
 begin
-  Result := ( FFirstTagging <> Tagging_Type(0) );
+  Result := ( FFirstTagging <> nil );
 end;
 
 function TaggedItems_Type.HasLastTagging() : Boolean;
 begin
-  Result := ( FLastTagging <> Tagging_Type(0) );
+  Result := ( FLastTagging <> nil );
 end;
 
 { TaggedListmaniaLists_Type }
@@ -12877,8 +15100,8 @@ constructor TaggedListmaniaLists_Type.Create();
 begin
   inherited Create();
   FList := List_Type.Create();
-  FFirstTagging := Tagging_Type.Create();
-  FLastTagging := Tagging_Type.Create();
+  FFirstTagging := Tagging.Create();
+  FLastTagging := Tagging.Create();
 end;
 
 destructor TaggedListmaniaLists_Type.Destroy();
@@ -12894,7 +15117,7 @@ end;
 
 function TaggedListmaniaLists_Type.HasList() : Boolean;
 begin
-  Result := ( FList <> List_Type(0) );
+  Result := ( FList <> nil );
 end;
 
 function TaggedListmaniaLists_Type.HasDistinctUsers() : Boolean;
@@ -12909,12 +15132,12 @@ end;
 
 function TaggedListmaniaLists_Type.HasFirstTagging() : Boolean;
 begin
-  Result := ( FFirstTagging <> Tagging_Type(0) );
+  Result := ( FFirstTagging <> nil );
 end;
 
 function TaggedListmaniaLists_Type.HasLastTagging() : Boolean;
 begin
-  Result := ( FLastTagging <> Tagging_Type(0) );
+  Result := ( FLastTagging <> nil );
 end;
 
 { TaggedGuides_Type }
@@ -12923,8 +15146,8 @@ constructor TaggedGuides_Type.Create();
 begin
   inherited Create();
   FGuide := Guide_Type.Create();
-  FFirstTagging := Tagging_Type.Create();
-  FLastTagging := Tagging_Type.Create();
+  FFirstTagging := Tagging.Create();
+  FLastTagging := Tagging.Create();
 end;
 
 destructor TaggedGuides_Type.Destroy();
@@ -12940,7 +15163,7 @@ end;
 
 function TaggedGuides_Type.HasGuide() : Boolean;
 begin
-  Result := ( FGuide <> Guide_Type(0) );
+  Result := ( FGuide <> nil );
 end;
 
 function TaggedGuides_Type.HasDistinctUsers() : Boolean;
@@ -12955,12 +15178,12 @@ end;
 
 function TaggedGuides_Type.HasFirstTagging() : Boolean;
 begin
-  Result := ( FFirstTagging <> Tagging_Type(0) );
+  Result := ( FFirstTagging <> nil );
 end;
 
 function TaggedGuides_Type.HasLastTagging() : Boolean;
 begin
-  Result := ( FLastTagging <> Tagging_Type(0) );
+  Result := ( FLastTagging <> nil );
 end;
 
 function Guide_Type.HasGuideId() : Boolean;
@@ -12968,22 +15191,22 @@ begin
   Result := ( FGuideId <> '' );
 end;
 
-function Tagging_Type.HasName() : Boolean;
+function Tagging.HasName() : Boolean;
 begin
   Result := ( FName <> '' );
 end;
 
-function Tagging_Type.HasEntityId() : Boolean;
+function Tagging.HasEntityId() : Boolean;
 begin
   Result := ( FEntityId <> '' );
 end;
 
-function Tagging_Type.HasUserId() : Boolean;
+function Tagging.HasUserId() : Boolean;
 begin
   Result := ( FUserId <> '' );
 end;
 
-function Tagging_Type.HasTime() : Boolean;
+function Tagging.HasTime() : Boolean;
 begin
   Result := ( FTime <> '' );
 end;
@@ -12993,10 +15216,10 @@ end;
 constructor OfferSummary_Type.Create();
 begin
   inherited Create();
-  FLowestNewPrice := Price_Type.Create();
-  FLowestUsedPrice := Price_Type.Create();
-  FLowestCollectiblePrice := Price_Type.Create();
-  FLowestRefurbishedPrice := Price_Type.Create();
+  FLowestNewPrice := Price.Create();
+  FLowestUsedPrice := Price.Create();
+  FLowestCollectiblePrice := Price.Create();
+  FLowestRefurbishedPrice := Price.Create();
 end;
 
 destructor OfferSummary_Type.Destroy();
@@ -13014,22 +15237,22 @@ end;
 
 function OfferSummary_Type.HasLowestNewPrice() : Boolean;
 begin
-  Result := ( FLowestNewPrice <> Price_Type(0) );
+  Result := ( FLowestNewPrice <> nil );
 end;
 
 function OfferSummary_Type.HasLowestUsedPrice() : Boolean;
 begin
-  Result := ( FLowestUsedPrice <> Price_Type(0) );
+  Result := ( FLowestUsedPrice <> nil );
 end;
 
 function OfferSummary_Type.HasLowestCollectiblePrice() : Boolean;
 begin
-  Result := ( FLowestCollectiblePrice <> Price_Type(0) );
+  Result := ( FLowestCollectiblePrice <> nil );
 end;
 
 function OfferSummary_Type.HasLowestRefurbishedPrice() : Boolean;
 begin
-  Result := ( FLowestRefurbishedPrice <> Price_Type(0) );
+  Result := ( FLowestRefurbishedPrice <> nil );
 end;
 
 function OfferSummary_Type.HasTotalNew() : Boolean;
@@ -13114,17 +15337,17 @@ end;
 
 function Offer_Type.HasMerchant() : Boolean;
 begin
-  Result := ( FMerchant <> Merchant_Type(0) );
+  Result := ( FMerchant <> nil );
 end;
 
 function Offer_Type.HasSeller() : Boolean;
 begin
-  Result := ( FSeller <> Seller_Type(0) );
+  Result := ( FSeller <> nil );
 end;
 
 function Offer_Type.HasOfferAttributes() : Boolean;
 begin
-  Result := ( FOfferAttributes <> OfferAttributes_Type(0) );
+  Result := ( FOfferAttributes <> nil );
 end;
 
 function Offer_Type.HasOfferListing() : Boolean;
@@ -13134,7 +15357,7 @@ end;
 
 function Offer_Type.HasLoyaltyPoints() : Boolean;
 begin
-  Result := ( FLoyaltyPoints <> LoyaltyPoints_Type(0) );
+  Result := ( FLoyaltyPoints <> nil );
 end;
 
 function Offer_Type.HasPromotions() : Boolean;
@@ -13217,7 +15440,7 @@ end;
 constructor OfferListing_ShippingCharge_Type.Create();
 begin
   inherited Create();
-  FShippingPrice := Price_Type.Create();
+  FShippingPrice := Price.Create();
 end;
 
 destructor OfferListing_ShippingCharge_Type.Destroy();
@@ -13232,11 +15455,11 @@ end;
 constructor OfferListing_Type.Create();
 begin
   inherited Create();
-  FPrice := Price_Type.Create();
-  FSalePrice := Price_Type.Create();
-  FAmountSaved := Price_Type.Create();
+  FPrice := AWSECommerceService.Price.Create();
+  FSalePrice := AWSECommerceService.Price.Create();
+  FAmountSaved := AWSECommerceService.Price.Create();
   FAvailabilityAttributes := OfferListing_AvailabilityAttributes_Type.Create();
-  FISPUStoreAddress := Address_Type.Create();
+  FISPUStoreAddress := Address.Create();
   FShippingCharge := OfferListing_ShippingChargeArray.Create();
 end;
 
@@ -13269,17 +15492,17 @@ end;
 
 function OfferListing_Type.HasPrice() : Boolean;
 begin
-  Result := ( FPrice <> Price_Type(0) );
+  Result := ( FPrice <> nil );
 end;
 
 function OfferListing_Type.HasSalePrice() : Boolean;
 begin
-  Result := ( FSalePrice <> Price_Type(0) );
+  Result := ( FSalePrice <> nil );
 end;
 
 function OfferListing_Type.HasAmountSaved() : Boolean;
 begin
-  Result := ( FAmountSaved <> Price_Type(0) );
+  Result := ( FAmountSaved <> nil );
 end;
 
 function OfferListing_Type.HasPercentageSaved() : Boolean;
@@ -13294,7 +15517,7 @@ end;
 
 function OfferListing_Type.HasAvailabilityAttributes() : Boolean;
 begin
-  Result := ( FAvailabilityAttributes <> OfferListing_AvailabilityAttributes_Type(0) );
+  Result := ( FAvailabilityAttributes <> nil );
 end;
 
 function OfferListing_Type.HasQuantity() : Boolean;
@@ -13304,7 +15527,7 @@ end;
 
 function OfferListing_Type.HasISPUStoreAddress() : Boolean;
 begin
-  Result := ( FISPUStoreAddress <> Address_Type(0) );
+  Result := ( FISPUStoreAddress <> nil );
 end;
 
 function OfferListing_Type.HasISPUStoreHours() : Boolean;
@@ -13315,6 +15538,16 @@ end;
 function OfferListing_Type.HasIsEligibleForSuperSaverShipping() : Boolean;
 begin
   Result := ( FIsEligibleForSuperSaverShipping <> boolean(0) );
+end;
+
+function OfferListing_Type.HasIsEligibleForPrime() : Boolean;
+begin
+  Result := ( FIsEligibleForPrime <> boolean(0) );
+end;
+
+function OfferListing_Type.HasIsMapViolated() : Boolean;
+begin
+  Result := ( FIsMapViolated <> boolean(0) );
 end;
 
 function OfferListing_Type.HasSalesRestriction() : Boolean;
@@ -13332,7 +15565,7 @@ end;
 constructor LoyaltyPoints_Type.Create();
 begin
   inherited Create();
-  FTypicalRedemptionValue := Price_Type.Create();
+  FTypicalRedemptionValue := Price.Create();
 end;
 
 destructor LoyaltyPoints_Type.Destroy();
@@ -13349,7 +15582,7 @@ end;
 
 function LoyaltyPoints_Type.HasTypicalRedemptionValue() : Boolean;
 begin
-  Result := ( FTypicalRedemptionValue <> Price_Type(0) );
+  Result := ( FTypicalRedemptionValue <> nil );
 end;
 
 { VariationSummary_Type }
@@ -13357,10 +15590,10 @@ end;
 constructor VariationSummary_Type.Create();
 begin
   inherited Create();
-  FLowestPrice := Price_Type.Create();
-  FHighestPrice := Price_Type.Create();
-  FLowestSalePrice := Price_Type.Create();
-  FHighestSalePrice := Price_Type.Create();
+  FLowestPrice := Price.Create();
+  FHighestPrice := Price.Create();
+  FLowestSalePrice := Price.Create();
+  FHighestSalePrice := Price.Create();
 end;
 
 destructor VariationSummary_Type.Destroy();
@@ -13378,22 +15611,22 @@ end;
 
 function VariationSummary_Type.HasLowestPrice() : Boolean;
 begin
-  Result := ( FLowestPrice <> Price_Type(0) );
+  Result := ( FLowestPrice <> nil );
 end;
 
 function VariationSummary_Type.HasHighestPrice() : Boolean;
 begin
-  Result := ( FHighestPrice <> Price_Type(0) );
+  Result := ( FHighestPrice <> nil );
 end;
 
 function VariationSummary_Type.HasLowestSalePrice() : Boolean;
 begin
-  Result := ( FLowestSalePrice <> Price_Type(0) );
+  Result := ( FLowestSalePrice <> nil );
 end;
 
 function VariationSummary_Type.HasHighestSalePrice() : Boolean;
 begin
-  Result := ( FHighestSalePrice <> Price_Type(0) );
+  Result := ( FHighestSalePrice <> nil );
 end;
 
 function VariationSummary_Type.HasSingleMerchantId() : Boolean;
@@ -13444,10 +15677,10 @@ end;
 constructor Collections_Collection_Type_CollectionSummary_Type.Create();
 begin
   inherited Create();
-  FLowestListPrice := Price_Type.Create();
-  FHighestListPrice := Price_Type.Create();
-  FLowestSalePrice := Price_Type.Create();
-  FHighestSalePrice := Price_Type.Create();
+  FLowestListPrice := Price.Create();
+  FHighestListPrice := Price.Create();
+  FLowestSalePrice := Price.Create();
+  FHighestSalePrice := Price.Create();
 end;
 
 destructor Collections_Collection_Type_CollectionSummary_Type.Destroy();
@@ -13465,22 +15698,22 @@ end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasLowestListPrice() : Boolean;
 begin
-  Result := ( FLowestListPrice <> Price_Type(0) );
+  Result := ( FLowestListPrice <> nil );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasHighestListPrice() : Boolean;
 begin
-  Result := ( FHighestListPrice <> Price_Type(0) );
+  Result := ( FHighestListPrice <> nil );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasLowestSalePrice() : Boolean;
 begin
-  Result := ( FLowestSalePrice <> Price_Type(0) );
+  Result := ( FLowestSalePrice <> nil );
 end;
 
 function Collections_Collection_Type_CollectionSummary_Type.HasHighestSalePrice() : Boolean;
 begin
-  Result := ( FHighestSalePrice <> Price_Type(0) );
+  Result := ( FHighestSalePrice <> nil );
 end;
 
 function Collections_Collection_Type_CollectionParent_Type.HasASIN() : Boolean;
@@ -13526,12 +15759,12 @@ end;
 
 function Collections_Collection_Type.HasCollectionSummary() : Boolean;
 begin
-  Result := ( FCollectionSummary <> Collections_Collection_Type_CollectionSummary_Type(0) );
+  Result := ( FCollectionSummary <> nil );
 end;
 
 function Collections_Collection_Type.HasCollectionParent() : Boolean;
 begin
-  Result := ( FCollectionParent <> Collections_Collection_Type_CollectionParent_Type(0) );
+  Result := ( FCollectionParent <> nil );
 end;
 
 function Collections_Collection_Type.HasCollectionItem() : Boolean;
@@ -13626,7 +15859,7 @@ end;
 
 function Review_Type.HasReviewer() : Boolean;
 begin
-  Result := ( FReviewer <> Reviewer_Type(0) );
+  Result := ( FReviewer <> nil );
 end;
 
 function Review_Type.HasTotalVotes() : Boolean;
@@ -13714,6 +15947,82 @@ begin
   Result := ( FTitle <> '' );
 end;
 
+{ TopItemSet_TopItem_Type }
+
+constructor TopItemSet_TopItem_Type.Create();
+begin
+  inherited Create();
+  FAuthor := TopItemSet_TopItem_Type_AuthorArray.Create();
+  FArtist := TopItemSet_TopItem_Type_ArtistArray.Create();
+  FActor := TopItemSet_TopItem_Type_ActorArray.Create();
+end;
+
+destructor TopItemSet_TopItem_Type.Destroy();
+begin
+  if Assigned(FAuthor) then
+    FreeAndNil(FAuthor);
+  if Assigned(FArtist) then
+    FreeAndNil(FArtist);
+  if Assigned(FActor) then
+    FreeAndNil(FActor);
+  inherited Destroy();
+end;
+
+function TopItemSet_TopItem_Type.HasASIN() : Boolean;
+begin
+  Result := ( FASIN <> '' );
+end;
+
+function TopItemSet_TopItem_Type.HasTitle() : Boolean;
+begin
+  Result := ( FTitle <> '' );
+end;
+
+function TopItemSet_TopItem_Type.HasDetailPageURL() : Boolean;
+begin
+  Result := ( FDetailPageURL <> '' );
+end;
+
+function TopItemSet_TopItem_Type.HasProductGroup() : Boolean;
+begin
+  Result := ( FProductGroup <> '' );
+end;
+
+function TopItemSet_TopItem_Type.HasAuthor() : Boolean;
+begin
+  Result := ( FAuthor <> TopItemSet_TopItem_Type_AuthorArray(0) );
+end;
+
+function TopItemSet_TopItem_Type.HasArtist() : Boolean;
+begin
+  Result := ( FArtist <> TopItemSet_TopItem_Type_ArtistArray(0) );
+end;
+
+function TopItemSet_TopItem_Type.HasActor() : Boolean;
+begin
+  Result := ( FActor <> TopItemSet_TopItem_Type_ActorArray(0) );
+end;
+
+{ TopItemSet_Type }
+
+constructor TopItemSet_Type.Create();
+begin
+  inherited Create();
+  FTopItem := TopItemSet_TopItemArray.Create();
+end;
+
+destructor TopItemSet_Type.Destroy();
+begin
+  if Assigned(FTopItem) then
+    FreeAndNil(FTopItem);
+  inherited Destroy();
+end;
+
+function TopItemSet_Type.Has_Type() : Boolean;
+begin
+  Result := ( F_Type <> '' );
+end;
+
 function SimilarViewedProducts_SimilarViewedProduct_Type.HasASIN() : Boolean;
 begin
   Result := ( FASIN <> '' );
@@ -13779,9 +16088,9 @@ end;
 constructor Promotion_Details_Type.Create();
 begin
   inherited Create();
-  FEligibilityRequirements := PromotionEligibilityRequirements_Type.Create();
-  FBenefits := PromotionBenefits_Type.Create();
-  FItemApplicability := PromotionItemApplicability_Type.Create();
+  FEligibilityRequirements := PromotionEligibilityRequirements.Create();
+  FBenefits := PromotionBenefits.Create();
+  FItemApplicability := PromotionItemApplicability.Create();
 end;
 
 destructor Promotion_Details_Type.Destroy();
@@ -13827,22 +16136,32 @@ end;
 
 function Promotion_Details_Type.HasEligibilityRequirements() : Boolean;
 begin
-  Result := ( FEligibilityRequirements <> PromotionEligibilityRequirements_Type(0) );
+  Result := ( FEligibilityRequirements <> PromotionEligibilityRequirements(0) );
 end;
 
 function Promotion_Details_Type.HasBenefits() : Boolean;
 begin
-  Result := ( FBenefits <> PromotionBenefits_Type(0) );
+  Result := ( FBenefits <> PromotionBenefits(0) );
 end;
 
 function Promotion_Details_Type.HasItemApplicability() : Boolean;
 begin
-  Result := ( FItemApplicability <> PromotionItemApplicability_Type(0) );
+  Result := ( FItemApplicability <> nil );
 end;
 
 function Promotion_Details_Type.HasMerchandisingMessage() : Boolean;
 begin
   Result := ( FMerchandisingMessage <> '' );
+end;
+
+function Promotion_Details_Type.HasIconMediaId() : Boolean;
+begin
+  Result := ( FIconMediaId <> '' );
+end;
+
+function Promotion_Details_Type.HasIsIconMediaIdCustom() : Boolean;
+begin
+  Result := ( FIsIconMediaIdCustom <> boolean(0) );
 end;
 
 { Promotion_Type }
@@ -13865,24 +16184,24 @@ end;
 
 function Promotion_Type.HasSummary() : Boolean;
 begin
-  Result := ( FSummary <> Promotion_Summary_Type(0) );
+  Result := ( FSummary <> nil );
 end;
 
 function Promotion_Type.HasDetails() : Boolean;
 begin
-  Result := ( FDetails <> Promotion_Details_Type(0) );
+  Result := ( FDetails <> nil );
 end;
 
-{ PromotionBenefit_Type }
+{ PromotionBenefit }
 
-constructor PromotionBenefit_Type.Create();
+constructor PromotionBenefit.Create();
 begin
   inherited Create();
-  FFixedAmount := Price_Type.Create();
-  FCeiling := Price_Type.Create();
+  FFixedAmount := Price.Create();
+  FCeiling := Price.Create();
 end;
 
-destructor PromotionBenefit_Type.Destroy();
+destructor PromotionBenefit.Destroy();
 begin
   if Assigned(FFixedAmount) then
     FreeAndNil(FFixedAmount);
@@ -13891,49 +16210,558 @@ begin
   inherited Destroy();
 end;
 
-function PromotionBenefit_Type.HasQuantity() : Boolean;
+function PromotionBenefit.HasQuantity() : Boolean;
 begin
   Result := ( FQuantity <> integer(0) );
 end;
 
-function PromotionBenefit_Type.HasPercentOff() : Boolean;
+function PromotionBenefit.HasPercentOff() : Boolean;
 begin
   Result := ( FPercentOff <> 0 );
 end;
 
-function PromotionBenefit_Type.HasFixedAmount() : Boolean;
+function PromotionBenefit.HasFixedAmount() : Boolean;
 begin
-  Result := ( FFixedAmount <> Price_Type(0) );
+  Result := ( FFixedAmount <> nil );
 end;
 
-function PromotionBenefit_Type.HasCeiling() : Boolean;
+function PromotionBenefit.HasCeiling() : Boolean;
 begin
-  Result := ( FCeiling <> Price_Type(0) );
+  Result := ( FCeiling <> nil );
 end;
 
-{ PromotionEligibilityRequirement_Type }
+{ PromotionEligibilityRequirement }
 
-constructor PromotionEligibilityRequirement_Type.Create();
+constructor PromotionEligibilityRequirement.Create();
 begin
   inherited Create();
-  FCurrencyAmount := Price_Type.Create();
+  FCurrencyAmount := Price.Create();
 end;
 
-destructor PromotionEligibilityRequirement_Type.Destroy();
+destructor PromotionEligibilityRequirement.Destroy();
 begin
   if Assigned(FCurrencyAmount) then
     FreeAndNil(FCurrencyAmount);
   inherited Destroy();
 end;
 
-function PromotionEligibilityRequirement_Type.HasQuantity() : Boolean;
+function PromotionEligibilityRequirement.HasQuantity() : Boolean;
 begin
   Result := ( FQuantity <> integer(0) );
 end;
 
-function PromotionEligibilityRequirement_Type.HasCurrencyAmount() : Boolean;
+function PromotionEligibilityRequirement.HasCurrencyAmount() : Boolean;
 begin
-  Result := ( FCurrencyAmount <> Price_Type(0) );
+  Result := ( FCurrencyAmount <> nil );
+end;
+
+{ VehicleYears_Type }
+
+constructor VehicleYears_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FVehicleYear := VehicleYears_VehicleYearArray.Create();
+end;
+
+destructor VehicleYears_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FVehicleYear) then
+    FreeAndNil(FVehicleYear);
+  inherited Destroy();
+end;
+
+function VehicleYears_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> nil );
+end;
+
+{ VehicleYear_Type }
+
+constructor VehicleYear_Type.Create();
+begin
+  inherited Create();
+  FVehicleMakes := VehicleMakes_Type.Create();
+end;
+
+destructor VehicleYear_Type.Destroy();
+begin
+  if Assigned(FVehicleMakes) then
+    FreeAndNil(FVehicleMakes);
+  inherited Destroy();
+end;
+
+function VehicleYear_Type.HasIsValid() : Boolean;
+begin
+  Result := ( FIsValid <> '' );
+end;
+
+function VehicleYear_Type.HasVehicleMakes() : Boolean;
+begin
+  Result := ( FVehicleMakes <> VehicleMakes_Type(0) );
+end;
+
+{ VehicleMake_Type }
+
+constructor VehicleMake_Type.Create();
+begin
+  inherited Create();
+  FVehicleModels := VehicleModels_Type.Create();
+end;
+
+destructor VehicleMake_Type.Destroy();
+begin
+  if Assigned(FVehicleModels) then
+    FreeAndNil(FVehicleModels);
+  inherited Destroy();
+end;
+
+function VehicleMake_Type.HasMakeName() : Boolean;
+begin
+  Result := ( FMakeName <> '' );
+end;
+
+function VehicleMake_Type.HasIsValid() : Boolean;
+begin
+  Result := ( FIsValid <> '' );
+end;
+
+function VehicleMake_Type.HasVehicleModels() : Boolean;
+begin
+  Result := ( FVehicleModels <> VehicleModels_Type(0) );
+end;
+
+{ VehicleModel_Type }
+
+constructor VehicleModel_Type.Create();
+begin
+  inherited Create();
+  FVehicleTrims := VehicleTrims_Type.Create();
+end;
+
+destructor VehicleModel_Type.Destroy();
+begin
+  if Assigned(FVehicleTrims) then
+    FreeAndNil(FVehicleTrims);
+  inherited Destroy();
+end;
+
+function VehicleModel_Type.HasModelName() : Boolean;
+begin
+  Result := ( FModelName <> '' );
+end;
+
+function VehicleModel_Type.HasIsValid() : Boolean;
+begin
+  Result := ( FIsValid <> '' );
+end;
+
+function VehicleModel_Type.HasVehicleTrims() : Boolean;
+begin
+  Result := ( FVehicleTrims <> VehicleTrims_Type(0) );
+end;
+
+{ VehicleTrim_Type }
+
+constructor VehicleTrim_Type.Create();
+begin
+  inherited Create();
+  FVehicleOptions := VehicleOptions_Type.Create();
+end;
+
+destructor VehicleTrim_Type.Destroy();
+begin
+  if Assigned(FVehicleOptions) then
+    FreeAndNil(FVehicleOptions);
+  inherited Destroy();
+end;
+
+function VehicleTrim_Type.HasTrimName() : Boolean;
+begin
+  Result := ( FTrimName <> '' );
+end;
+
+function VehicleTrim_Type.HasIsValid() : Boolean;
+begin
+  Result := ( FIsValid <> '' );
+end;
+
+function VehicleTrim_Type.HasVehicleOptions() : Boolean;
+begin
+  Result := ( FVehicleOptions <> nil );
+end;
+
+{ VehicleOptions_Type }
+
+constructor VehicleOptions_Type.Create();
+begin
+  inherited Create();
+  FVehicleBedOptions := VehicleBedOptions_Type.Create();
+  FVehicleBodyStyleOptions := VehicleBodyStyleOptions_Type.Create();
+  FVehicleBrakesOptions := VehicleBrakesOptions_Type.Create();
+  FVehicleDriveTypeOptions := VehicleDriveTypeOptions_Type.Create();
+  FVehicleEngineOptions := VehicleEngineOptions_Type.Create();
+  FVehicleMfrBodyCodeOptions := VehicleMfrBodyCodeOptions_Type.Create();
+  FVehicleSpringTypesOptions := VehicleSpringTypesOptions_Type.Create();
+  FVehicleSteeringOptions := VehicleSteeringOptions_Type.Create();
+  FVehicleTransmissionOptions := VehicleTransmissionOptions_Type.Create();
+  FVehicleWheelbaseOptions := VehicleWheelbaseOptions_Type.Create();
+end;
+
+destructor VehicleOptions_Type.Destroy();
+begin
+  if Assigned(FVehicleBedOptions) then
+    FreeAndNil(FVehicleBedOptions);
+  if Assigned(FVehicleBodyStyleOptions) then
+    FreeAndNil(FVehicleBodyStyleOptions);
+  if Assigned(FVehicleBrakesOptions) then
+    FreeAndNil(FVehicleBrakesOptions);
+  if Assigned(FVehicleDriveTypeOptions) then
+    FreeAndNil(FVehicleDriveTypeOptions);
+  if Assigned(FVehicleEngineOptions) then
+    FreeAndNil(FVehicleEngineOptions);
+  if Assigned(FVehicleMfrBodyCodeOptions) then
+    FreeAndNil(FVehicleMfrBodyCodeOptions);
+  if Assigned(FVehicleSpringTypesOptions) then
+    FreeAndNil(FVehicleSpringTypesOptions);
+  if Assigned(FVehicleSteeringOptions) then
+    FreeAndNil(FVehicleSteeringOptions);
+  if Assigned(FVehicleTransmissionOptions) then
+    FreeAndNil(FVehicleTransmissionOptions);
+  if Assigned(FVehicleWheelbaseOptions) then
+    FreeAndNil(FVehicleWheelbaseOptions);
+  inherited Destroy();
+end;
+
+function VehicleOptions_Type.HasVehicleBedOptions() : Boolean;
+begin
+  Result := ( FVehicleBedOptions <> VehicleBedOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleBodyStyleOptions() : Boolean;
+begin
+  Result := ( FVehicleBodyStyleOptions <> VehicleBodyStyleOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleBrakesOptions() : Boolean;
+begin
+  Result := ( FVehicleBrakesOptions <> VehicleBrakesOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleDriveTypeOptions() : Boolean;
+begin
+  Result := ( FVehicleDriveTypeOptions <> VehicleDriveTypeOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleEngineOptions() : Boolean;
+begin
+  Result := ( FVehicleEngineOptions <> VehicleEngineOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleMfrBodyCodeOptions() : Boolean;
+begin
+  Result := ( FVehicleMfrBodyCodeOptions <> VehicleMfrBodyCodeOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleSpringTypesOptions() : Boolean;
+begin
+  Result := ( FVehicleSpringTypesOptions <> VehicleSpringTypesOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleSteeringOptions() : Boolean;
+begin
+  Result := ( FVehicleSteeringOptions <> VehicleSteeringOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleTransmissionOptions() : Boolean;
+begin
+  Result := ( FVehicleTransmissionOptions <> VehicleTransmissionOptions_Type(0) );
+end;
+
+function VehicleOptions_Type.HasVehicleWheelbaseOptions() : Boolean;
+begin
+  Result := ( FVehicleWheelbaseOptions <> VehicleWheelbaseOptions_Type(0) );
+end;
+
+function VehicleBed_Type.HasBedName() : Boolean;
+begin
+  Result := ( FBedName <> '' );
+end;
+
+function VehicleBodyStyle_Type.HasBodyStyleName() : Boolean;
+begin
+  Result := ( FBodyStyleName <> '' );
+end;
+
+function VehicleBrakes_Type.HasBrakesName() : Boolean;
+begin
+  Result := ( FBrakesName <> '' );
+end;
+
+function VehicleDriveType_Type.HasDriveTypeName() : Boolean;
+begin
+  Result := ( FDriveTypeName <> '' );
+end;
+
+function VehicleEngine_Type.HasEngineName() : Boolean;
+begin
+  Result := ( FEngineName <> '' );
+end;
+
+function VehicleSpringTypes_Type.HasSpringTypesName() : Boolean;
+begin
+  Result := ( FSpringTypesName <> '' );
+end;
+
+function VehicleSteering_Type.HasSteeringName() : Boolean;
+begin
+  Result := ( FSteeringName <> '' );
+end;
+
+function VehicleTransmission_Type.HasTransmissionName() : Boolean;
+begin
+  Result := ( FTransmissionName <> '' );
+end;
+
+function VehicleWheelbase_Type.HasWheelbaseName() : Boolean;
+begin
+  Result := ( FWheelbaseName <> '' );
+end;
+
+{ VehicleParts_Type }
+
+constructor VehicleParts_Type.Create();
+begin
+  inherited Create();
+  FRequest := Request_Type.Create();
+  FIsNext := VehicleParts_IsNextArray.Create();
+  FIsPrevious := VehicleParts_IsPreviousArray.Create();
+  FPart := VehicleParts_PartArray.Create();
+  FMissingVehicleAttributes := MissingVehicleAttributes_Type.Create();
+  FPartBrowseNodeBins := PartBrowseNodeBins_Type.Create();
+  FPartBrandBins := PartBrandBins_Type.Create();
+end;
+
+destructor VehicleParts_Type.Destroy();
+begin
+  if Assigned(FRequest) then
+    FreeAndNil(FRequest);
+  if Assigned(FIsNext) then
+    FreeAndNil(FIsNext);
+  if Assigned(FIsPrevious) then
+    FreeAndNil(FIsPrevious);
+  if Assigned(FPart) then
+    FreeAndNil(FPart);
+  if Assigned(FMissingVehicleAttributes) then
+    FreeAndNil(FMissingVehicleAttributes);
+  if Assigned(FPartBrowseNodeBins) then
+    FreeAndNil(FPartBrowseNodeBins);
+  if Assigned(FPartBrandBins) then
+    FreeAndNil(FPartBrandBins);
+  inherited Destroy();
+end;
+
+function VehicleParts_Type.HasRequest() : Boolean;
+begin
+  Result := ( FRequest <> nil );
+end;
+
+function VehicleParts_Type.HasIsNext() : Boolean;
+begin
+  Result := ( FIsNext <> VehicleParts_IsNextArray(0) );
+end;
+
+function VehicleParts_Type.HasIsPrevious() : Boolean;
+begin
+  Result := ( FIsPrevious <> VehicleParts_IsPreviousArray(0) );
+end;
+
+function VehicleParts_Type.HasPart() : Boolean;
+begin
+  Result := ( FPart <> VehicleParts_PartArray(0) );
+end;
+
+function VehicleParts_Type.HasMissingVehicleAttributes() : Boolean;
+begin
+  Result := ( FMissingVehicleAttributes <> MissingVehicleAttributes_Type(0) );
+end;
+
+function VehicleParts_Type.HasPartBrowseNodeBins() : Boolean;
+begin
+  Result := ( FPartBrowseNodeBins <> PartBrowseNodeBins_Type(0) );
+end;
+
+function VehicleParts_Type.HasPartBrandBins() : Boolean;
+begin
+  Result := ( FPartBrandBins <> PartBrandBins_Type(0) );
+end;
+
+{ Part_Type }
+
+constructor Part_Type.Create();
+begin
+  inherited Create();
+  F_Item := Item_Type.Create();
+  FVehiclePartFit := VehiclePartFit_Type.Create();
+  FFitments := Fitments_Type.Create();
+end;
+
+destructor Part_Type.Destroy();
+begin
+  if Assigned(F_Item) then
+    FreeAndNil(F_Item);
+  if Assigned(FVehiclePartFit) then
+    FreeAndNil(FVehiclePartFit);
+  if Assigned(FFitments) then
+    FreeAndNil(FFitments);
+  inherited Destroy();
+end;
+
+function Part_Type.Has_Item() : Boolean;
+begin
+  Result := ( F_Item <> nil );
+end;
+
+function Part_Type.HasHasPartCompatibility() : Boolean;
+begin
+  Result := ( FHasPartCompatibility <> boolean(0) );
+end;
+
+function Part_Type.HasVehiclePartFit() : Boolean;
+begin
+  Result := ( FVehiclePartFit <> nil );
+end;
+
+function Part_Type.HasFitments() : Boolean;
+begin
+  Result := ( FFitments <> nil );
+end;
+
+{ VehiclePartFit_Type }
+
+constructor VehiclePartFit_Type.Create();
+begin
+  inherited Create();
+  FMissingVehicleAttributes := MissingVehicleAttributes_Type.Create();
+end;
+
+destructor VehiclePartFit_Type.Destroy();
+begin
+  if Assigned(FMissingVehicleAttributes) then
+    FreeAndNil(FMissingVehicleAttributes);
+  inherited Destroy();
+end;
+
+function VehiclePartFit_Type.HasMissingVehicleAttributes() : Boolean;
+begin
+  Result := ( FMissingVehicleAttributes <> MissingVehicleAttributes_Type(0) );
+end;
+
+{ Fitments_Type }
+
+constructor Fitments_Type.Create();
+begin
+  inherited Create();
+  FFitment := Fitments_FitmentArray.Create();
+end;
+
+destructor Fitments_Type.Destroy();
+begin
+  if Assigned(FFitment) then
+    FreeAndNil(FFitment);
+  inherited Destroy();
+end;
+
+function Fitments_Type.HasFitmentAttributes() : Boolean;
+begin
+  Result := ( FFitmentAttributes <> '' );
+end;
+
+function Fitments_Type.HasFitment() : Boolean;
+begin
+  Result := ( FFitment <> Fitments_FitmentArray(0) );
+end;
+
+function Fitment_Type.HasYear() : Boolean;
+begin
+  Result := ( FYear <> '' );
+end;
+
+function Fitment_Type.HasMake() : Boolean;
+begin
+  Result := ( FMake <> '' );
+end;
+
+function Fitment_Type.HasModel() : Boolean;
+begin
+  Result := ( FModel <> '' );
+end;
+
+function Fitment_Type.HasTrim() : Boolean;
+begin
+  Result := ( FTrim <> '' );
+end;
+
+function Fitment_Type.HasBed() : Boolean;
+begin
+  Result := ( FBed <> '' );
+end;
+
+function Fitment_Type.HasBodyStyle() : Boolean;
+begin
+  Result := ( FBodyStyle <> '' );
+end;
+
+function Fitment_Type.HasBrakes() : Boolean;
+begin
+  Result := ( FBrakes <> '' );
+end;
+
+function Fitment_Type.HasDriveType() : Boolean;
+begin
+  Result := ( FDriveType <> '' );
+end;
+
+function Fitment_Type.HasEngine() : Boolean;
+begin
+  Result := ( FEngine <> '' );
+end;
+
+function Fitment_Type.HasMfrBodyCode() : Boolean;
+begin
+  Result := ( FMfrBodyCode <> '' );
+end;
+
+function Fitment_Type.HasSpringTypes() : Boolean;
+begin
+  Result := ( FSpringTypes <> '' );
+end;
+
+function Fitment_Type.HasSteering() : Boolean;
+begin
+  Result := ( FSteering <> '' );
+end;
+
+function Fitment_Type.HasTransmission() : Boolean;
+begin
+  Result := ( FTransmission <> '' );
+end;
+
+function Fitment_Type.HasWheelbase() : Boolean;
+begin
+  Result := ( FWheelbase <> '' );
+end;
+
+function Fitment_Type.HasPosition() : Boolean;
+begin
+  Result := ( FPosition <> '' );
+end;
+
+function Fitment_Type.HasNotes() : Boolean;
+begin
+  Result := ( FNotes <> '' );
 end;
 
 { BrowseNodes_Type }
@@ -13956,7 +16784,7 @@ end;
 
 function BrowseNodes_Type.HasRequest() : Boolean;
 begin
-  Result := ( FRequest <> Request_Type(0) );
+  Result := ( FRequest <> nil );
 end;
 
 function BrowseNodes_Type.HasBrowseNode() : Boolean;
@@ -13984,6 +16812,7 @@ begin
   FAncestors := BrowseNode_Ancestors_Type.Create();
   FTopSellers := TopSellers_Type.Create();
   FNewReleases := NewReleases_Type.Create();
+  FTopItemSet := BrowseNode_TopItemSetArray.Create();
 end;
 
 destructor BrowseNode_Type.Destroy();
@@ -13998,6 +16827,8 @@ begin
     FreeAndNil(FTopSellers);
   if Assigned(FNewReleases) then
     FreeAndNil(FNewReleases);
+  if Assigned(FTopItemSet) then
+    FreeAndNil(FTopItemSet);
   inherited Destroy();
 end;
 
@@ -14039,6 +16870,11 @@ end;
 function BrowseNode_Type.HasNewReleases() : Boolean;
 begin
   Result := ( FNewReleases <> NewReleases_Type(0) );
+end;
+
+function BrowseNode_Type.HasTopItemSet() : Boolean;
+begin
+  Result := ( FTopItemSet <> BrowseNode_TopItemSetArray(0) );
 end;
 
 function ListmaniaLists_ListmaniaList_Type.HasListName() : Boolean;
@@ -14093,7 +16929,7 @@ end;
 
 function SearchInside_Type.HasExcerpt() : Boolean;
 begin
-  Result := ( FExcerpt <> SearchInside_Excerpt_Type(0) );
+  Result := ( FExcerpt <> nil );
 end;
 
 { CartItems_Type }
@@ -14101,7 +16937,7 @@ end;
 constructor CartItems_Type.Create();
 begin
   inherited Create();
-  FSubTotal := Price_Type.Create();
+  FSubTotal := Price.Create();
   FCartItem := CartItems_CartItemArray.Create();
 end;
 
@@ -14116,7 +16952,7 @@ end;
 
 function CartItems_Type.HasSubTotal() : Boolean;
 begin
-  Result := ( FSubTotal <> Price_Type(0) );
+  Result := ( FSubTotal <> nil );
 end;
 
 { SavedForLaterItems_Type }
@@ -14124,7 +16960,7 @@ end;
 constructor SavedForLaterItems_Type.Create();
 begin
   inherited Create();
-  FSubTotal := Price_Type.Create();
+  FSubTotal := Price.Create();
   FSavedForLaterItem := SavedForLaterItems_SavedForLaterItemArray.Create();
 end;
 
@@ -14139,20 +16975,20 @@ end;
 
 function SavedForLaterItems_Type.HasSubTotal() : Boolean;
 begin
-  Result := ( FSubTotal <> Price_Type(0) );
+  Result := ( FSubTotal <> nil );
 end;
 
-{ CartItem_Type }
+{ CartItem }
 
-constructor CartItem_Type.Create();
+constructor CartItem.Create();
 begin
   inherited Create();
   FMetaData := CartItem_MetaData_Type.Create();
-  FPrice := Price_Type.Create();
-  FItemTotal := Price_Type.Create();
+  FPrice := AWSECommerceService.Price.Create();
+  FItemTotal := AWSECommerceService.Price.Create();
 end;
 
-destructor CartItem_Type.Destroy();
+destructor CartItem.Destroy();
 begin
   if Assigned(FMetaData) then
     FreeAndNil(FMetaData);
@@ -14163,64 +16999,64 @@ begin
   inherited Destroy();
 end;
 
-function CartItem_Type.HasASIN() : Boolean;
+function CartItem.HasASIN() : Boolean;
 begin
   Result := ( FASIN <> '' );
 end;
 
-function CartItem_Type.HasExchangeId() : Boolean;
+function CartItem.HasExchangeId() : Boolean;
 begin
   Result := ( FExchangeId <> '' );
 end;
 
-function CartItem_Type.HasMerchantId() : Boolean;
+function CartItem.HasMerchantId() : Boolean;
 begin
   Result := ( FMerchantId <> '' );
 end;
 
-function CartItem_Type.HasSellerId() : Boolean;
+function CartItem.HasSellerId() : Boolean;
 begin
   Result := ( FSellerId <> '' );
 end;
 
-function CartItem_Type.HasSellerNickname() : Boolean;
+function CartItem.HasSellerNickname() : Boolean;
 begin
   Result := ( FSellerNickname <> '' );
 end;
 
-function CartItem_Type.HasTitle() : Boolean;
+function CartItem.HasTitle() : Boolean;
 begin
   Result := ( FTitle <> '' );
 end;
 
-function CartItem_Type.HasProductGroup() : Boolean;
+function CartItem.HasProductGroup() : Boolean;
 begin
   Result := ( FProductGroup <> '' );
 end;
 
-function CartItem_Type.HasListOwner() : Boolean;
+function CartItem.HasListOwner() : Boolean;
 begin
   Result := ( FListOwner <> '' );
 end;
 
-function CartItem_Type.HasListType() : Boolean;
+function CartItem.HasListType() : Boolean;
 begin
   Result := ( FListType <> '' );
 end;
 
-function CartItem_Type.HasMetaData() : Boolean;
+function CartItem.HasMetaData() : Boolean;
 begin
   Result := ( FMetaData <> CartItem_MetaData_Type(0) );
 end;
 
-function CartItem_Type.HasPrice() : Boolean;
+function CartItem.HasPrice() : Boolean;
 begin
-  Result := ( FPrice <> Price_Type(0) );
+  Result := ( FPrice <> nil );
 end;
 
-function CartItem_Type.HasItemTotal() : Boolean;
+function CartItem.HasItemTotal() : Boolean;
 begin
-  Result := ( FItemTotal <> Price_Type(0) );
+  Result := ( FItemTotal <> nil );
 end;
 
 { Transaction_Totals_Type }
@@ -14228,11 +17064,11 @@ end;
 constructor Transaction_Totals_Type.Create();
 begin
   inherited Create();
-  FTotal := Price_Type.Create();
-  FSubtotal := Price_Type.Create();
-  FTax := Price_Type.Create();
-  FShippingCharge := Price_Type.Create();
-  FPromotion := Price_Type.Create();
+  FTotal := Price.Create();
+  FSubtotal := Price.Create();
+  FTax := Price.Create();
+  FShippingCharge := Price.Create();
+  FPromotion := Price.Create();
 end;
 
 destructor Transaction_Totals_Type.Destroy();
@@ -14316,7 +17152,7 @@ end;
 
 function Transaction_Type.HasTotals() : Boolean;
 begin
-  Result := ( FTotals <> Transaction_Totals_Type(0) );
+  Result := ( FTotals <> nil );
 end;
 
 function Transaction_Type.HasTransactionItems() : Boolean;
@@ -14334,8 +17170,8 @@ end;
 constructor TransactionItem_Type.Create();
 begin
   inherited Create();
-  FUnitPrice := Price_Type.Create();
-  FTotalPrice := Price_Type.Create();
+  FUnitPrice := Price.Create();
+  FTotalPrice := Price.Create();
   FChildTransactionItems := TransactionItem_ChildTransactionItems_Type.Create();
 end;
 
@@ -14353,6 +17189,16 @@ end;
 function TransactionItem_Type.HasASIN() : Boolean;
 begin
   Result := ( FASIN <> '' );
+end;
+
+function TransactionItem_Type.HasSKU() : Boolean;
+begin
+  Result := ( FSKU <> '' );
+end;
+
+function TransactionItem_Type.HasTitle() : Boolean;
+begin
+  Result := ( FTitle <> '' );
 end;
 
 function TransactionItem_Type.HasChildTransactionItems() : Boolean;
@@ -14390,6 +17236,11 @@ begin
   Result := ( FPercentage <> nonNegativeInteger(0) );
 end;
 
+function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.Has_Type() : Boolean;
+begin
+  Result := ( F_Type <> '' );
+end;
+
 { Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type }
 
 constructor Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.Create();
@@ -14408,6 +17259,11 @@ end;
 function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.HasSellerFeedbackRating() : Boolean;
 begin
   Result := ( FSellerFeedbackRating <> Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray(0) );
+end;
+
+function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.HasPeriod() : Boolean;
+begin
+  Result := ( FPeriod <> '' );
 end;
 
 { Seller_Type }
@@ -14463,7 +17319,7 @@ end;
 
 function Seller_Type.HasLocation() : Boolean;
 begin
-  Result := ( FLocation <> Seller_Location_Type(0) );
+  Result := ( FLocation <> nil );
 end;
 
 function Seller_Type.HasAverageFeedbackRating() : Boolean;
@@ -14511,42 +17367,42 @@ begin
   Result := ( FRatedBy <> '' );
 end;
 
-function Address_Type.HasName() : Boolean;
+function Address.HasName() : Boolean;
 begin
   Result := ( FName <> '' );
 end;
 
-function Address_Type.HasAddress1() : Boolean;
+function Address.HasAddress1() : Boolean;
 begin
   Result := ( FAddress1 <> '' );
 end;
 
-function Address_Type.HasAddress2() : Boolean;
+function Address.HasAddress2() : Boolean;
 begin
   Result := ( FAddress2 <> '' );
 end;
 
-function Address_Type.HasAddress3() : Boolean;
+function Address.HasAddress3() : Boolean;
 begin
   Result := ( FAddress3 <> '' );
 end;
 
-function Address_Type.HasCity() : Boolean;
+function Address.HasCity() : Boolean;
 begin
   Result := ( FCity <> '' );
 end;
 
-function Address_Type.HasState() : Boolean;
+function Address.HasState() : Boolean;
 begin
   Result := ( FState <> '' );
 end;
 
-function Address_Type.HasPostalCode() : Boolean;
+function Address.HasPostalCode() : Boolean;
 begin
   Result := ( FPostalCode <> '' );
 end;
 
-function Address_Type.HasCountry() : Boolean;
+function Address.HasCountry() : Boolean;
 begin
   Result := ( FCountry <> '' );
 end;
@@ -14556,7 +17412,7 @@ end;
 constructor SellerListing_Type.Create();
 begin
   inherited Create();
-  FPrice := Price_Type.Create();
+  FPrice := AWSECommerceService.Price.Create();
   FSeller := Seller_Type.Create();
 end;
 
@@ -14616,7 +17472,7 @@ end;
 
 function SellerListing_Type.HasPrice() : Boolean;
 begin
-  Result := ( FPrice <> Price_Type(0) );
+  Result := ( FPrice <> nil );
 end;
 
 function SellerListing_Type.HasStartDate() : Boolean;
@@ -14651,15 +17507,15 @@ end;
 
 function SellerListing_Type.HasSeller() : Boolean;
 begin
-  Result := ( FSeller <> Seller_Type(0) );
+  Result := ( FSeller <> nil );
 end;
 
-function Price_Type.HasAmount() : Boolean;
+function Price.HasAmount() : Boolean;
 begin
   Result := ( FAmount <> integer(0) );
 end;
 
-function Price_Type.HasCurrencyCode() : Boolean;
+function Price.HasCurrencyCode() : Boolean;
 begin
   Result := ( FCurrencyCode <> '' );
 end;
@@ -14669,12 +17525,12 @@ end;
 constructor ImageSet_Type.Create();
 begin
   inherited Create();
-  FSwatchImage := Image_Type.Create();
-  FSmallImage := Image_Type.Create();
-  FThumbnailImage := Image_Type.Create();
-  FTinyImage := Image_Type.Create();
-  FMediumImage := Image_Type.Create();
-  FLargeImage := Image_Type.Create();
+  FSwatchImage := Image.Create();
+  FSmallImage := Image.Create();
+  FThumbnailImage := Image.Create();
+  FTinyImage := Image.Create();
+  FMediumImage := Image.Create();
+  FLargeImage := Image.Create();
 end;
 
 destructor ImageSet_Type.Destroy();
@@ -14696,44 +17552,49 @@ end;
 
 function ImageSet_Type.HasSwatchImage() : Boolean;
 begin
-  Result := ( FSwatchImage <> Image_Type(0) );
+  Result := ( FSwatchImage <> nil );
 end;
 
 function ImageSet_Type.HasSmallImage() : Boolean;
 begin
-  Result := ( FSmallImage <> Image_Type(0) );
+  Result := ( FSmallImage <> nil );
 end;
 
 function ImageSet_Type.HasThumbnailImage() : Boolean;
 begin
-  Result := ( FThumbnailImage <> Image_Type(0) );
+  Result := ( FThumbnailImage <> nil );
 end;
 
 function ImageSet_Type.HasTinyImage() : Boolean;
 begin
-  Result := ( FTinyImage <> Image_Type(0) );
+  Result := ( FTinyImage <> nil );
 end;
 
 function ImageSet_Type.HasMediumImage() : Boolean;
 begin
-  Result := ( FMediumImage <> Image_Type(0) );
+  Result := ( FMediumImage <> nil );
 end;
 
 function ImageSet_Type.HasLargeImage() : Boolean;
 begin
-  Result := ( FLargeImage <> Image_Type(0) );
+  Result := ( FLargeImage <> nil );
 end;
 
-{ Image_Type }
+function ImageSet_Type.HasCategory() : Boolean;
+begin
+  Result := ( FCategory <> '' );
+end;
 
-constructor Image_Type.Create();
+{ Image }
+
+constructor Image.Create();
 begin
   inherited Create();
-  FHeight := DecimalWithUnits_Type.Create();
-  FWidth := DecimalWithUnits_Type.Create();
+  FHeight := DecimalWithUnits.Create();
+  FWidth := DecimalWithUnits.Create();
 end;
 
-destructor Image_Type.Destroy();
+destructor Image.Destroy();
 begin
   if Assigned(FHeight) then
     FreeAndNil(FHeight);
@@ -14742,7 +17603,7 @@ begin
   inherited Destroy();
 end;
 
-function Image_Type.HasIsVerified() : Boolean;
+function Image.HasIsVerified() : Boolean;
 begin
   Result := ( FIsVerified <> '' );
 end;
@@ -14752,10 +17613,10 @@ end;
 constructor ItemAttributes_ItemDimensions_Type.Create();
 begin
   inherited Create();
-  FHeight := DecimalWithUnits_Type.Create();
-  FLength := DecimalWithUnits_Type.Create();
-  FWeight := DecimalWithUnits_Type.Create();
-  FWidth := DecimalWithUnits_Type.Create();
+  FHeight := DecimalWithUnits.Create();
+  FLength := DecimalWithUnits.Create();
+  FWeight := DecimalWithUnits.Create();
+  FWidth := DecimalWithUnits.Create();
 end;
 
 destructor ItemAttributes_ItemDimensions_Type.Destroy();
@@ -14773,22 +17634,22 @@ end;
 
 function ItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := ( FHeight <> DecimalWithUnits_Type(0) );
+  Result := ( FHeight <> nil );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
 begin
-  Result := ( FLength <> DecimalWithUnits_Type(0) );
+  Result := ( FLength <> nil );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := ( FWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FWeight <> nil );
 end;
 
 function ItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := ( FWidth <> DecimalWithUnits_Type(0) );
+  Result := ( FWidth <> nil );
 end;
 
 function ItemAttributes_Languages_Type_Language_Type.Has_Type() : Boolean;
@@ -14806,10 +17667,10 @@ end;
 constructor ItemAttributes_PackageDimensions_Type.Create();
 begin
   inherited Create();
-  FHeight := DecimalWithUnits_Type.Create();
-  FLength := DecimalWithUnits_Type.Create();
-  FWeight := DecimalWithUnits_Type.Create();
-  FWidth := DecimalWithUnits_Type.Create();
+  FHeight := DecimalWithUnits.Create();
+  FLength := DecimalWithUnits.Create();
+  FWeight := DecimalWithUnits.Create();
+  FWidth := DecimalWithUnits.Create();
 end;
 
 destructor ItemAttributes_PackageDimensions_Type.Destroy();
@@ -14827,22 +17688,22 @@ end;
 
 function ItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := ( FHeight <> DecimalWithUnits_Type(0) );
+  Result := ( FHeight <> nil );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
 begin
-  Result := ( FLength <> DecimalWithUnits_Type(0) );
+  Result := ( FLength <> nil );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := ( FWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FWeight <> nil );
 end;
 
 function ItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := ( FWidth <> DecimalWithUnits_Type(0) );
+  Result := ( FWidth <> nil );
 end;
 
 { ItemAttributes_Type }
@@ -14851,63 +17712,63 @@ constructor ItemAttributes_Type.Create();
 begin
   inherited Create();
   FActor := ItemAttributes_ActorArray.Create();
-  FAddress := Address_Type.Create();
+  FAddress := AWSECommerceService.Address.Create();
   FAge := ItemAttributes_AgeArray.Create();
-  FAmazonMaximumAge := DecimalWithUnits_Type.Create();
-  FAmazonMinimumAge := DecimalWithUnits_Type.Create();
+  FAmazonMaximumAge := DecimalWithUnits.Create();
+  FAmazonMinimumAge := DecimalWithUnits.Create();
   FArtist := ItemAttributes_ArtistArray.Create();
   FAudioFormat := ItemAttributes_AudioFormatArray.Create();
   FAuthor := ItemAttributes_AuthorArray.Create();
-  FBatteries := NonNegativeIntegerWithUnits_Type.Create();
+  FBatteries := NonNegativeIntegerWithUnits.Create();
   FCameraManualFeatures := ItemAttributes_CameraManualFeaturesArray.Create();
-  FCaseDiameter := DecimalWithUnits_Type.Create();
-  FCaseThickness := DecimalWithUnits_Type.Create();
+  FCaseDiameter := DecimalWithUnits.Create();
+  FCaseThickness := DecimalWithUnits.Create();
   FCategory := ItemAttributes_CategoryArray.Create();
   FCategoryBin := ItemAttributes_CategoryBinArray.Create();
   FCharacter := ItemAttributes_CharacterArray.Create();
   FCompatibleDevices := ItemAttributes_CompatibleDevicesArray.Create();
-  FContinuousShootingSpeed := DecimalWithUnits_Type.Create();
-  FCPUSpeed := DecimalWithUnits_Type.Create();
+  FContinuousShootingSpeed := DecimalWithUnits.Create();
+  FCPUSpeed := DecimalWithUnits.Create();
   FCreator := ItemAttributes_CreatorArray.Create();
   FDataLinkProtocol := ItemAttributes_DataLinkProtocolArray.Create();
-  FDelayBetweenShots := DecimalWithUnits_Type.Create();
-  FDigitalZoom := DecimalWithUnits_Type.Create();
+  FDelayBetweenShots := DecimalWithUnits.Create();
+  FDigitalZoom := DecimalWithUnits.Create();
   FDirector := ItemAttributes_DirectorArray.Create();
-  FDisplaySize := DecimalWithUnits_Type.Create();
+  FDisplaySize := DecimalWithUnits.Create();
   FEducationalFocus := ItemAttributes_EducationalFocusArray.Create();
   FEthnicity := ItemAttributes_EthnicityArray.Create();
   FFeature := ItemAttributes_FeatureArray.Create();
-  FFirstIssueLeadTime := StringWithUnits_Type.Create();
+  FFirstIssueLeadTime := StringWithUnits.Create();
   FFormat := ItemAttributes_FormatArray.Create();
   FFormFactor := ItemAttributes_FormFactorArray.Create();
   FGemTypeSetElement := ItemAttributes_GemTypeSetElementArray.Create();
   FGender := ItemAttributes_GenderArray.Create();
-  FGraphicsMemorySize := DecimalWithUnits_Type.Create();
-  FHardDiskSize := DecimalWithUnits_Type.Create();
+  FGraphicsMemorySize := DecimalWithUnits.Create();
+  FHardDiskSize := DecimalWithUnits.Create();
   FIngredientsSetElement := ItemAttributes_IngredientsSetElementArray.Create();
   FInterest := ItemAttributes_InterestArray.Create();
-  FISOEquivalent := NonNegativeIntegerWithUnits_Type.Create();
+  FISOEquivalent := NonNegativeIntegerWithUnits.Create();
   FItemDimensions := ItemAttributes_ItemDimensions_Type.Create();
   FLanguageName := ItemAttributes_LanguageNameArray.Create();
   FLanguages := ItemAttributes_Languages_Type.Create();
-  FListPrice := Price_Type.Create();
-  FManufacturerMaximumAge := DecimalWithUnits_Type.Create();
-  FManufacturerMinimumAge := DecimalWithUnits_Type.Create();
+  FListPrice := Price.Create();
+  FManufacturerMaximumAge := DecimalWithUnits.Create();
+  FManufacturerMinimumAge := DecimalWithUnits.Create();
   FMaterialTypeSetElement := ItemAttributes_MaterialTypeSetElementArray.Create();
-  FMaximumAperture := DecimalWithUnits_Type.Create();
-  FMaximumFocalLength := DecimalWithUnits_Type.Create();
-  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumResolution := DecimalWithUnits_Type.Create();
-  FMaximumShutterSpeed := DecimalWithUnits_Type.Create();
-  FMaximumVerticalResolution := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumWeightRecommendation := DecimalWithUnits_Type.Create();
-  FMinimumFocalLength := DecimalWithUnits_Type.Create();
-  FMinimumShutterSpeed := DecimalWithUnits_Type.Create();
-  FMonitorSize := DecimalWithUnits_Type.Create();
-  FMonitorViewableDiagonalSize := DecimalWithUnits_Type.Create();
-  FOpticalSensorResolution := DecimalWithUnits_Type.Create();
-  FOpticalZoom := DecimalWithUnits_Type.Create();
+  FMaximumAperture := DecimalWithUnits.Create();
+  FMaximumFocalLength := DecimalWithUnits.Create();
+  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits.Create();
+  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits.Create();
+  FMaximumResolution := DecimalWithUnits.Create();
+  FMaximumShutterSpeed := DecimalWithUnits.Create();
+  FMaximumVerticalResolution := NonNegativeIntegerWithUnits.Create();
+  FMaximumWeightRecommendation := DecimalWithUnits.Create();
+  FMinimumFocalLength := DecimalWithUnits.Create();
+  FMinimumShutterSpeed := DecimalWithUnits.Create();
+  FMonitorSize := DecimalWithUnits.Create();
+  FMonitorViewableDiagonalSize := DecimalWithUnits.Create();
+  FOpticalSensorResolution := DecimalWithUnits.Create();
+  FOpticalZoom := DecimalWithUnits.Create();
   FPackageDimensions := ItemAttributes_PackageDimensions_Type.Create();
   FPantLength := ItemAttributes_PantLengthArray.Create();
   FPantSize := ItemAttributes_PantSizeArray.Create();
@@ -14916,22 +17777,22 @@ begin
   FPlatform := ItemAttributes_PlatformArray.Create();
   FPrimaryColor := ItemAttributes_PrimaryColorArray.Create();
   FReturnMethod := ItemAttributes_ReturnMethodArray.Create();
-  FRunningTime := DecimalWithUnits_Type.Create();
-  FSecondaryCacheSize := NonNegativeIntegerWithUnits_Type.Create();
+  FRunningTime := DecimalWithUnits.Create();
+  FSecondaryCacheSize := NonNegativeIntegerWithUnits.Create();
   FShoeSize := ItemAttributes_ShoeSizeArray.Create();
   FSpecialFeatures := ItemAttributes_SpecialFeaturesArray.Create();
-  FStoneWeight := DecimalWithUnits_Type.Create();
-  FSubscriptionLength := NonNegativeIntegerWithUnits_Type.Create();
+  FStoneWeight := DecimalWithUnits.Create();
+  FSubscriptionLength := NonNegativeIntegerWithUnits.Create();
   FSupportedImageType := ItemAttributes_SupportedImageTypeArray.Create();
-  FSystemBusSpeed := DecimalWithUnits_Type.Create();
-  FSystemMemorySizeMax := DecimalWithUnits_Type.Create();
-  FSystemMemorySize := DecimalWithUnits_Type.Create();
+  FSystemBusSpeed := DecimalWithUnits.Create();
+  FSystemMemorySizeMax := DecimalWithUnits.Create();
+  FSystemMemorySize := DecimalWithUnits.Create();
   FTargetBrand := ItemAttributes_TargetBrandArray.Create();
-  FTotalDiamondWeight := DecimalWithUnits_Type.Create();
-  FTotalGemWeight := DecimalWithUnits_Type.Create();
-  FTotalMetalWeight := DecimalWithUnits_Type.Create();
-  FWaterResistanceDepth := DecimalWithUnits_Type.Create();
-  FWEEETaxValue := Price_Type.Create();
+  FTotalDiamondWeight := DecimalWithUnits.Create();
+  FTotalGemWeight := DecimalWithUnits.Create();
+  FTotalMetalWeight := DecimalWithUnits.Create();
+  FWaterResistanceDepth := DecimalWithUnits.Create();
+  FWEEETaxValue := Price.Create();
 end;
 
 destructor ItemAttributes_Type.Destroy();
@@ -15110,7 +17971,7 @@ end;
 
 function ItemAttributes_Type.HasAddress() : Boolean;
 begin
-  Result := ( FAddress <> Address_Type(0) );
+  Result := ( FAddress <> nil );
 end;
 
 function ItemAttributes_Type.HasAge() : Boolean;
@@ -15120,12 +17981,12 @@ end;
 
 function ItemAttributes_Type.HasAmazonMaximumAge() : Boolean;
 begin
-  Result := ( FAmazonMaximumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FAmazonMaximumAge <> nil );
 end;
 
 function ItemAttributes_Type.HasAmazonMinimumAge() : Boolean;
 begin
-  Result := ( FAmazonMinimumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FAmazonMinimumAge <> nil );
 end;
 
 function ItemAttributes_Type.HasAnalogVideoFormat() : Boolean;
@@ -15195,7 +18056,7 @@ end;
 
 function ItemAttributes_Type.HasBatteries() : Boolean;
 begin
-  Result := ( FBatteries <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FBatteries <> nil );
 end;
 
 function ItemAttributes_Type.HasBatteryDescription() : Boolean;
@@ -15235,7 +18096,7 @@ end;
 
 function ItemAttributes_Type.HasCaseDiameter() : Boolean;
 begin
-  Result := ( FCaseDiameter <> DecimalWithUnits_Type(0) );
+  Result := ( FCaseDiameter <> nil );
 end;
 
 function ItemAttributes_Type.HasCaseMaterialType() : Boolean;
@@ -15245,7 +18106,7 @@ end;
 
 function ItemAttributes_Type.HasCaseThickness() : Boolean;
 begin
-  Result := ( FCaseThickness <> DecimalWithUnits_Type(0) );
+  Result := ( FCaseThickness <> nil );
 end;
 
 function ItemAttributes_Type.HasCaseType() : Boolean;
@@ -15335,7 +18196,7 @@ end;
 
 function ItemAttributes_Type.HasContinuousShootingSpeed() : Boolean;
 begin
-  Result := ( FContinuousShootingSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FContinuousShootingSpeed <> nil );
 end;
 
 function ItemAttributes_Type.HasCountry() : Boolean;
@@ -15350,7 +18211,7 @@ end;
 
 function ItemAttributes_Type.HasCPUSpeed() : Boolean;
 begin
-  Result := ( FCPUSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FCPUSpeed <> nil );
 end;
 
 function ItemAttributes_Type.HasCPUType() : Boolean;
@@ -15380,7 +18241,7 @@ end;
 
 function ItemAttributes_Type.HasDelayBetweenShots() : Boolean;
 begin
-  Result := ( FDelayBetweenShots <> DecimalWithUnits_Type(0) );
+  Result := ( FDelayBetweenShots <> nil );
 end;
 
 function ItemAttributes_Type.HasDepartment() : Boolean;
@@ -15405,7 +18266,7 @@ end;
 
 function ItemAttributes_Type.HasDigitalZoom() : Boolean;
 begin
-  Result := ( FDigitalZoom <> DecimalWithUnits_Type(0) );
+  Result := ( FDigitalZoom <> nil );
 end;
 
 function ItemAttributes_Type.HasDirector() : Boolean;
@@ -15420,7 +18281,7 @@ end;
 
 function ItemAttributes_Type.HasDisplaySize() : Boolean;
 begin
-  Result := ( FDisplaySize <> DecimalWithUnits_Type(0) );
+  Result := ( FDisplaySize <> nil );
 end;
 
 function ItemAttributes_Type.HasDrumSetPieceQuantity() : Boolean;
@@ -15463,6 +18324,11 @@ begin
   Result := ( FEducationalFocus <> ItemAttributes_EducationalFocusArray(0) );
 end;
 
+function ItemAttributes_Type.HasEpisodeSequence() : Boolean;
+begin
+  Result := ( FEpisodeSequence <> '' );
+end;
+
 function ItemAttributes_Type.HasEthnicity() : Boolean;
 begin
   Result := ( FEthnicity <> ItemAttributes_EthnicityArray(0) );
@@ -15500,7 +18366,7 @@ end;
 
 function ItemAttributes_Type.HasFirstIssueLeadTime() : Boolean;
 begin
-  Result := ( FFirstIssueLeadTime <> StringWithUnits_Type(0) );
+  Result := ( FFirstIssueLeadTime <> nil );
 end;
 
 function ItemAttributes_Type.HasFlavorName() : Boolean;
@@ -15570,7 +18436,7 @@ end;
 
 function ItemAttributes_Type.HasGraphicsMemorySize() : Boolean;
 begin
-  Result := ( FGraphicsMemorySize <> DecimalWithUnits_Type(0) );
+  Result := ( FGraphicsMemorySize <> nil );
 end;
 
 function ItemAttributes_Type.HasGuitarAttribute() : Boolean;
@@ -15605,7 +18471,7 @@ end;
 
 function ItemAttributes_Type.HasHardDiskSize() : Boolean;
 begin
-  Result := ( FHardDiskSize <> DecimalWithUnits_Type(0) );
+  Result := ( FHardDiskSize <> nil );
 end;
 
 function ItemAttributes_Type.HasHardDiskInterface() : Boolean;
@@ -15730,7 +18596,7 @@ end;
 
 function ItemAttributes_Type.HasISOEquivalent() : Boolean;
 begin
-  Result := ( FISOEquivalent <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FISOEquivalent <> nil );
 end;
 
 function ItemAttributes_Type.HasIsPreannounce() : Boolean;
@@ -15745,7 +18611,7 @@ end;
 
 function ItemAttributes_Type.HasItemDimensions() : Boolean;
 begin
-  Result := ( FItemDimensions <> ItemAttributes_ItemDimensions_Type(0) );
+  Result := ( FItemDimensions <> nil );
 end;
 
 function ItemAttributes_Type.HasKeyboardDescription() : Boolean;
@@ -15785,7 +18651,12 @@ end;
 
 function ItemAttributes_Type.HasListPrice() : Boolean;
 begin
-  Result := ( FListPrice <> Price_Type(0) );
+  Result := ( FListPrice <> nil );
+end;
+
+function ItemAttributes_Type.HasLongSynopsis() : Boolean;
+begin
+  Result := ( FLongSynopsis <> '' );
 end;
 
 function ItemAttributes_Type.HasMacroFocusRange() : Boolean;
@@ -15815,12 +18686,12 @@ end;
 
 function ItemAttributes_Type.HasManufacturerMaximumAge() : Boolean;
 begin
-  Result := ( FManufacturerMaximumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FManufacturerMaximumAge <> nil );
 end;
 
 function ItemAttributes_Type.HasManufacturerMinimumAge() : Boolean;
 begin
-  Result := ( FManufacturerMinimumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FManufacturerMinimumAge <> nil );
 end;
 
 function ItemAttributes_Type.HasManufacturerPartsWarrantyDescription() : Boolean;
@@ -15840,7 +18711,7 @@ end;
 
 function ItemAttributes_Type.HasMaximumAperture() : Boolean;
 begin
-  Result := ( FMaximumAperture <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumAperture <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumColorDepth() : Boolean;
@@ -15850,17 +18721,17 @@ end;
 
 function ItemAttributes_Type.HasMaximumFocalLength() : Boolean;
 begin
-  Result := ( FMaximumFocalLength <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumFocalLength <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumHighResolutionImages() : Boolean;
 begin
-  Result := ( FMaximumHighResolutionImages <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumHighResolutionImages <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumHorizontalResolution() : Boolean;
 begin
-  Result := ( FMaximumHorizontalResolution <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumHorizontalResolution <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumLowResolutionImages() : Boolean;
@@ -15870,22 +18741,22 @@ end;
 
 function ItemAttributes_Type.HasMaximumResolution() : Boolean;
 begin
-  Result := ( FMaximumResolution <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumResolution <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumShutterSpeed() : Boolean;
 begin
-  Result := ( FMaximumShutterSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumShutterSpeed <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumVerticalResolution() : Boolean;
 begin
-  Result := ( FMaximumVerticalResolution <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumVerticalResolution <> nil );
 end;
 
 function ItemAttributes_Type.HasMaximumWeightRecommendation() : Boolean;
 begin
-  Result := ( FMaximumWeightRecommendation <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumWeightRecommendation <> nil );
 end;
 
 function ItemAttributes_Type.HasMediaType() : Boolean;
@@ -15915,12 +18786,12 @@ end;
 
 function ItemAttributes_Type.HasMinimumFocalLength() : Boolean;
 begin
-  Result := ( FMinimumFocalLength <> DecimalWithUnits_Type(0) );
+  Result := ( FMinimumFocalLength <> nil );
 end;
 
 function ItemAttributes_Type.HasMinimumShutterSpeed() : Boolean;
 begin
-  Result := ( FMinimumShutterSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FMinimumShutterSpeed <> nil );
 end;
 
 function ItemAttributes_Type.HasModel() : Boolean;
@@ -15940,12 +18811,12 @@ end;
 
 function ItemAttributes_Type.HasMonitorSize() : Boolean;
 begin
-  Result := ( FMonitorSize <> DecimalWithUnits_Type(0) );
+  Result := ( FMonitorSize <> nil );
 end;
 
 function ItemAttributes_Type.HasMonitorViewableDiagonalSize() : Boolean;
 begin
-  Result := ( FMonitorViewableDiagonalSize <> DecimalWithUnits_Type(0) );
+  Result := ( FMonitorViewableDiagonalSize <> nil );
 end;
 
 function ItemAttributes_Type.HasMouseDescription() : Boolean;
@@ -16045,17 +18916,22 @@ end;
 
 function ItemAttributes_Type.HasOpticalSensorResolution() : Boolean;
 begin
-  Result := ( FOpticalSensorResolution <> DecimalWithUnits_Type(0) );
+  Result := ( FOpticalSensorResolution <> nil );
 end;
 
 function ItemAttributes_Type.HasOpticalZoom() : Boolean;
 begin
-  Result := ( FOpticalZoom <> DecimalWithUnits_Type(0) );
+  Result := ( FOpticalZoom <> nil );
 end;
 
 function ItemAttributes_Type.HasOriginalReleaseDate() : Boolean;
 begin
   Result := ( FOriginalReleaseDate <> '' );
+end;
+
+function ItemAttributes_Type.HasOriginalAirDate() : Boolean;
+begin
+  Result := ( FOriginalAirDate <> '' );
 end;
 
 function ItemAttributes_Type.HasOutputWattage() : Boolean;
@@ -16065,7 +18941,7 @@ end;
 
 function ItemAttributes_Type.HasPackageDimensions() : Boolean;
 begin
-  Result := ( FPackageDimensions <> ItemAttributes_PackageDimensions_Type(0) );
+  Result := ( FPackageDimensions <> nil );
 end;
 
 function ItemAttributes_Type.HasPackageQuantity() : Boolean;
@@ -16255,7 +19131,7 @@ end;
 
 function ItemAttributes_Type.HasRunningTime() : Boolean;
 begin
-  Result := ( FRunningTime <> DecimalWithUnits_Type(0) );
+  Result := ( FRunningTime <> nil );
 end;
 
 function ItemAttributes_Type.HasScentName() : Boolean;
@@ -16263,9 +19139,14 @@ begin
   Result := ( FScentName <> '' );
 end;
 
+function ItemAttributes_Type.HasSeasonSequence() : Boolean;
+begin
+  Result := ( FSeasonSequence <> '' );
+end;
+
 function ItemAttributes_Type.HasSecondaryCacheSize() : Boolean;
 begin
-  Result := ( FSecondaryCacheSize <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FSecondaryCacheSize <> nil );
 end;
 
 function ItemAttributes_Type.HasSettingType() : Boolean;
@@ -16281,6 +19162,11 @@ end;
 function ItemAttributes_Type.HasShoeSize() : Boolean;
 begin
   Result := ( FShoeSize <> ItemAttributes_ShoeSizeArray(0) );
+end;
+
+function ItemAttributes_Type.HasShortSynopsis() : Boolean;
+begin
+  Result := ( FShortSynopsis <> '' );
 end;
 
 function ItemAttributes_Type.HasSize() : Boolean;
@@ -16328,6 +19214,11 @@ begin
   Result := ( FSpecialFeatures <> ItemAttributes_SpecialFeaturesArray(0) );
 end;
 
+function ItemAttributes_Type.HasStartYear() : Boolean;
+begin
+  Result := ( FStartYear <> '' );
+end;
+
 function ItemAttributes_Type.HasStoneClarity() : Boolean;
 begin
   Result := ( FStoneClarity <> '' );
@@ -16350,7 +19241,7 @@ end;
 
 function ItemAttributes_Type.HasStoneWeight() : Boolean;
 begin
-  Result := ( FStoneWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FStoneWeight <> nil );
 end;
 
 function ItemAttributes_Type.HasStudio() : Boolean;
@@ -16365,7 +19256,7 @@ end;
 
 function ItemAttributes_Type.HasSubscriptionLength() : Boolean;
 begin
-  Result := ( FSubscriptionLength <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FSubscriptionLength <> nil );
 end;
 
 function ItemAttributes_Type.HasSupportedImageType() : Boolean;
@@ -16380,17 +19271,17 @@ end;
 
 function ItemAttributes_Type.HasSystemBusSpeed() : Boolean;
 begin
-  Result := ( FSystemBusSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemBusSpeed <> nil );
 end;
 
 function ItemAttributes_Type.HasSystemMemorySizeMax() : Boolean;
 begin
-  Result := ( FSystemMemorySizeMax <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemMemorySizeMax <> nil );
 end;
 
 function ItemAttributes_Type.HasSystemMemorySize() : Boolean;
 begin
-  Result := ( FSystemMemorySize <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemMemorySize <> nil );
 end;
 
 function ItemAttributes_Type.HasSystemMemoryType() : Boolean;
@@ -16420,7 +19311,7 @@ end;
 
 function ItemAttributes_Type.HasTotalDiamondWeight() : Boolean;
 begin
-  Result := ( FTotalDiamondWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalDiamondWeight <> nil );
 end;
 
 function ItemAttributes_Type.HasTotalExternalBaysFree() : Boolean;
@@ -16435,7 +19326,7 @@ end;
 
 function ItemAttributes_Type.HasTotalGemWeight() : Boolean;
 begin
-  Result := ( FTotalGemWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalGemWeight <> nil );
 end;
 
 function ItemAttributes_Type.HasTotalInternalBaysFree() : Boolean;
@@ -16445,7 +19336,7 @@ end;
 
 function ItemAttributes_Type.HasTotalMetalWeight() : Boolean;
 begin
-  Result := ( FTotalMetalWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalMetalWeight <> nil );
 end;
 
 function ItemAttributes_Type.HasTotalNTSCPALPorts() : Boolean;
@@ -16493,6 +19384,11 @@ begin
   Result := ( FTotalVGAOutPorts <> nonNegativeInteger(0) );
 end;
 
+function ItemAttributes_Type.HasTrackSequence() : Boolean;
+begin
+  Result := ( FTrackSequence <> '' );
+end;
+
 function ItemAttributes_Type.HasUPC() : Boolean;
 begin
   Result := ( FUPC <> '' );
@@ -16520,12 +19416,12 @@ end;
 
 function ItemAttributes_Type.HasWaterResistanceDepth() : Boolean;
 begin
-  Result := ( FWaterResistanceDepth <> DecimalWithUnits_Type(0) );
+  Result := ( FWaterResistanceDepth <> nil );
 end;
 
 function ItemAttributes_Type.HasWEEETaxValue() : Boolean;
 begin
-  Result := ( FWEEETaxValue <> Price_Type(0) );
+  Result := ( FWEEETaxValue <> nil );
 end;
 
 function ItemAttributes_Type.HasWirelessMicrophoneFrequency() : Boolean;
@@ -16538,10 +19434,10 @@ end;
 constructor MerchantItemAttributes_ItemDimensions_Type.Create();
 begin
   inherited Create();
-  FHeight := DecimalWithUnits_Type.Create();
-  FLength := DecimalWithUnits_Type.Create();
-  FWeight := DecimalWithUnits_Type.Create();
-  FWidth := DecimalWithUnits_Type.Create();
+  FHeight := DecimalWithUnits.Create();
+  FLength := DecimalWithUnits.Create();
+  FWeight := DecimalWithUnits.Create();
+  FWidth := DecimalWithUnits.Create();
 end;
 
 destructor MerchantItemAttributes_ItemDimensions_Type.Destroy();
@@ -16559,22 +19455,22 @@ end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := ( FHeight <> DecimalWithUnits_Type(0) );
+  Result := ( FHeight <> nil );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasLength() : Boolean;
 begin
-  Result := ( FLength <> DecimalWithUnits_Type(0) );
+  Result := ( FLength <> nil );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := ( FWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FWeight <> nil );
 end;
 
 function MerchantItemAttributes_ItemDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := ( FWidth <> DecimalWithUnits_Type(0) );
+  Result := ( FWidth <> nil );
 end;
 
 function MerchantItemAttributes_Languages_Type_Language_Type.HasAudioFormat() : Boolean;
@@ -16587,10 +19483,10 @@ end;
 constructor MerchantItemAttributes_PackageDimensions_Type.Create();
 begin
   inherited Create();
-  FHeight := DecimalWithUnits_Type.Create();
-  FLength := DecimalWithUnits_Type.Create();
-  FWeight := DecimalWithUnits_Type.Create();
-  FWidth := DecimalWithUnits_Type.Create();
+  FHeight := DecimalWithUnits.Create();
+  FLength := DecimalWithUnits.Create();
+  FWeight := DecimalWithUnits.Create();
+  FWidth := DecimalWithUnits.Create();
 end;
 
 destructor MerchantItemAttributes_PackageDimensions_Type.Destroy();
@@ -16608,22 +19504,22 @@ end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasHeight() : Boolean;
 begin
-  Result := ( FHeight <> DecimalWithUnits_Type(0) );
+  Result := ( FHeight <> nil );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasLength() : Boolean;
 begin
-  Result := ( FLength <> DecimalWithUnits_Type(0) );
+  Result := ( FLength <> nil );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasWeight() : Boolean;
 begin
-  Result := ( FWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FWeight <> nil );
 end;
 
 function MerchantItemAttributes_PackageDimensions_Type.HasWidth() : Boolean;
 begin
-  Result := ( FWidth <> DecimalWithUnits_Type(0) );
+  Result := ( FWidth <> nil );
 end;
 
 function MerchantItemAttributes_VendorRebate_Type.Has_Type() : Boolean;
@@ -16647,67 +19543,69 @@ constructor MerchantItemAttributes_Type.Create();
 begin
   inherited Create();
   FActor := MerchantItemAttributes_ActorArray.Create();
-  FAddress := Address_Type.Create();
-  FAmazonMaximumAge := DecimalWithUnits_Type.Create();
-  FAmazonMinimumAge := DecimalWithUnits_Type.Create();
+  FAddress := AWSECommerceService.Address.Create();
+  FAmazonMaximumAge := DecimalWithUnits.Create();
+  FAmazonMinimumAge := DecimalWithUnits.Create();
   FArtist := MerchantItemAttributes_ArtistArray.Create();
   FAudioFormat := MerchantItemAttributes_AudioFormatArray.Create();
   FAuthor := MerchantItemAttributes_AuthorArray.Create();
-  FBatteries := NonNegativeIntegerWithUnits_Type.Create();
+  FBatteries := NonNegativeIntegerWithUnits.Create();
   FCameraManualFeatures := MerchantItemAttributes_CameraManualFeaturesArray.Create();
-  FCaseDiameter := DecimalWithUnits_Type.Create();
-  FCaseThickness := DecimalWithUnits_Type.Create();
-  FContinuousShootingSpeed := DecimalWithUnits_Type.Create();
-  FCPUSpeed := DecimalWithUnits_Type.Create();
+  FCaseDiameter := DecimalWithUnits.Create();
+  FCaseThickness := DecimalWithUnits.Create();
+  FContinuousShootingSpeed := DecimalWithUnits.Create();
+  FCPUSpeed := DecimalWithUnits.Create();
   FCreator := MerchantItemAttributes_CreatorArray.Create();
-  FDelayBetweenShots := DecimalWithUnits_Type.Create();
-  FDigitalZoom := DecimalWithUnits_Type.Create();
+  FDelayBetweenShots := DecimalWithUnits.Create();
+  FDigitalZoom := DecimalWithUnits.Create();
   FDirector := MerchantItemAttributes_DirectorArray.Create();
-  FDisplaySize := DecimalWithUnits_Type.Create();
+  FDisplaySize := DecimalWithUnits.Create();
   FFeature := MerchantItemAttributes_FeatureArray.Create();
-  FFirstIssueLeadTime := StringWithUnits_Type.Create();
+  FFirstIssueLeadTime := StringWithUnits.Create();
   FFormat := MerchantItemAttributes_FormatArray.Create();
-  FFixedShippingCharge := Price_Type.Create();
-  FGraphicsMemorySize := DecimalWithUnits_Type.Create();
-  FHardDiskSize := NonNegativeIntegerWithUnits_Type.Create();
-  FISOEquivalent := NonNegativeIntegerWithUnits_Type.Create();
+  FFixedShippingCharge := Price.Create();
+  FGraphicsMemorySize := DecimalWithUnits.Create();
+  FHardDiskSize := NonNegativeIntegerWithUnits.Create();
+  FIngredientsSetElement := MerchantItemAttributes_IngredientsSetElementArray.Create();
+  FISOEquivalent := NonNegativeIntegerWithUnits.Create();
   FItemDimensions := MerchantItemAttributes_ItemDimensions_Type.Create();
   FLanguages := MerchantItemAttributes_Languages_Type.Create();
-  FListPrice := Price_Type.Create();
-  FManufacturerMaximumAge := DecimalWithUnits_Type.Create();
-  FManufacturerMinimumAge := DecimalWithUnits_Type.Create();
-  FMaximumAperture := DecimalWithUnits_Type.Create();
-  FMaximumFocalLength := DecimalWithUnits_Type.Create();
-  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumResolution := DecimalWithUnits_Type.Create();
-  FMaximumShutterSpeed := DecimalWithUnits_Type.Create();
-  FMaximumVerticalResolution := NonNegativeIntegerWithUnits_Type.Create();
-  FMaximumWeightRecommendation := DecimalWithUnits_Type.Create();
-  FMinimumFocalLength := DecimalWithUnits_Type.Create();
-  FMinimumShutterSpeed := DecimalWithUnits_Type.Create();
-  FMonitorSize := DecimalWithUnits_Type.Create();
-  FMonitorViewableDiagonalSize := DecimalWithUnits_Type.Create();
-  FOpticalZoom := DecimalWithUnits_Type.Create();
+  FListPrice := Price.Create();
+  FManufacturerMaximumAge := DecimalWithUnits.Create();
+  FManufacturerMinimumAge := DecimalWithUnits.Create();
+  FMaximumAperture := DecimalWithUnits.Create();
+  FMaximumFocalLength := DecimalWithUnits.Create();
+  FMaximumHighResolutionImages := NonNegativeIntegerWithUnits.Create();
+  FMaximumHorizontalResolution := NonNegativeIntegerWithUnits.Create();
+  FMaximumResolution := DecimalWithUnits.Create();
+  FMaximumShutterSpeed := DecimalWithUnits.Create();
+  FMaximumVerticalResolution := NonNegativeIntegerWithUnits.Create();
+  FMaximumWeightRecommendation := DecimalWithUnits.Create();
+  FMinimumAdvertisedPrice := Price.Create();
+  FMinimumFocalLength := DecimalWithUnits.Create();
+  FMinimumShutterSpeed := DecimalWithUnits.Create();
+  FMonitorSize := DecimalWithUnits.Create();
+  FMonitorViewableDiagonalSize := DecimalWithUnits.Create();
+  FOpticalZoom := DecimalWithUnits.Create();
   FPackageDimensions := MerchantItemAttributes_PackageDimensions_Type.Create();
   FPhotoFlashType := MerchantItemAttributes_PhotoFlashTypeArray.Create();
   FPictureFormat := MerchantItemAttributes_PictureFormatArray.Create();
   FPlatform := MerchantItemAttributes_PlatformArray.Create();
   FPurchasingChannel := MerchantItemAttributes_PurchasingChannelArray.Create();
   FReturnMethod := MerchantItemAttributes_ReturnMethodArray.Create();
-  FSecondaryCacheSize := NonNegativeIntegerWithUnits_Type.Create();
+  FSecondaryCacheSize := NonNegativeIntegerWithUnits.Create();
   FSpecialFeatures := MerchantItemAttributes_SpecialFeaturesArray.Create();
-  FStoneWeight := DecimalWithUnits_Type.Create();
-  FSubscriptionLength := NonNegativeIntegerWithUnits_Type.Create();
+  FStoneWeight := DecimalWithUnits.Create();
+  FSubscriptionLength := NonNegativeIntegerWithUnits.Create();
   FSupportedImageType := MerchantItemAttributes_SupportedImageTypeArray.Create();
-  FSystemBusSpeed := DecimalWithUnits_Type.Create();
-  FSystemMemorySizeMax := DecimalWithUnits_Type.Create();
-  FSystemMemorySize := DecimalWithUnits_Type.Create();
-  FTotalDiamondWeight := DecimalWithUnits_Type.Create();
-  FTotalGemWeight := DecimalWithUnits_Type.Create();
-  FTotalMetalWeight := DecimalWithUnits_Type.Create();
+  FSystemBusSpeed := DecimalWithUnits.Create();
+  FSystemMemorySizeMax := DecimalWithUnits.Create();
+  FSystemMemorySize := DecimalWithUnits.Create();
+  FTotalDiamondWeight := DecimalWithUnits.Create();
+  FTotalGemWeight := DecimalWithUnits.Create();
+  FTotalMetalWeight := DecimalWithUnits.Create();
   FVendorRebate := MerchantItemAttributes_VendorRebate_Type.Create();
-  FWaterResistanceDepth := DecimalWithUnits_Type.Create();
+  FWaterResistanceDepth := DecimalWithUnits.Create();
 end;
 
 destructor MerchantItemAttributes_Type.Destroy();
@@ -16760,6 +19658,8 @@ begin
     FreeAndNil(FGraphicsMemorySize);
   if Assigned(FHardDiskSize) then
     FreeAndNil(FHardDiskSize);
+  if Assigned(FIngredientsSetElement) then
+    FreeAndNil(FIngredientsSetElement);
   if Assigned(FISOEquivalent) then
     FreeAndNil(FISOEquivalent);
   if Assigned(FItemDimensions) then
@@ -16788,6 +19688,8 @@ begin
     FreeAndNil(FMaximumVerticalResolution);
   if Assigned(FMaximumWeightRecommendation) then
     FreeAndNil(FMaximumWeightRecommendation);
+  if Assigned(FMinimumAdvertisedPrice) then
+    FreeAndNil(FMinimumAdvertisedPrice);
   if Assigned(FMinimumFocalLength) then
     FreeAndNil(FMinimumFocalLength);
   if Assigned(FMinimumShutterSpeed) then
@@ -16846,17 +19748,17 @@ end;
 
 function MerchantItemAttributes_Type.HasAddress() : Boolean;
 begin
-  Result := ( FAddress <> Address_Type(0) );
+  Result := ( FAddress <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasAmazonMaximumAge() : Boolean;
 begin
-  Result := ( FAmazonMaximumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FAmazonMaximumAge <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasAmazonMinimumAge() : Boolean;
 begin
-  Result := ( FAmazonMinimumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FAmazonMinimumAge <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasApertureModes() : Boolean;
@@ -16921,7 +19823,7 @@ end;
 
 function MerchantItemAttributes_Type.HasBatteries() : Boolean;
 begin
-  Result := ( FBatteries <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FBatteries <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasBatteryDescription() : Boolean;
@@ -16961,7 +19863,7 @@ end;
 
 function MerchantItemAttributes_Type.HasCaseDiameter() : Boolean;
 begin
-  Result := ( FCaseDiameter <> DecimalWithUnits_Type(0) );
+  Result := ( FCaseDiameter <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasCaseMaterialType() : Boolean;
@@ -16971,7 +19873,7 @@ end;
 
 function MerchantItemAttributes_Type.HasCaseThickness() : Boolean;
 begin
-  Result := ( FCaseThickness <> DecimalWithUnits_Type(0) );
+  Result := ( FCaseThickness <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasCaseType() : Boolean;
@@ -17031,7 +19933,7 @@ end;
 
 function MerchantItemAttributes_Type.HasContinuousShootingSpeed() : Boolean;
 begin
-  Result := ( FContinuousShootingSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FContinuousShootingSpeed <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasCountry() : Boolean;
@@ -17051,7 +19953,7 @@ end;
 
 function MerchantItemAttributes_Type.HasCPUSpeed() : Boolean;
 begin
-  Result := ( FCPUSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FCPUSpeed <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasCPUType() : Boolean;
@@ -17076,7 +19978,7 @@ end;
 
 function MerchantItemAttributes_Type.HasDelayBetweenShots() : Boolean;
 begin
-  Result := ( FDelayBetweenShots <> DecimalWithUnits_Type(0) );
+  Result := ( FDelayBetweenShots <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasDeliveryOption() : Boolean;
@@ -17111,7 +20013,7 @@ end;
 
 function MerchantItemAttributes_Type.HasDigitalZoom() : Boolean;
 begin
-  Result := ( FDigitalZoom <> DecimalWithUnits_Type(0) );
+  Result := ( FDigitalZoom <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasDirector() : Boolean;
@@ -17121,7 +20023,7 @@ end;
 
 function MerchantItemAttributes_Type.HasDisplaySize() : Boolean;
 begin
-  Result := ( FDisplaySize <> DecimalWithUnits_Type(0) );
+  Result := ( FDisplaySize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasDrumSetPieceQuantity() : Boolean;
@@ -17186,7 +20088,7 @@ end;
 
 function MerchantItemAttributes_Type.HasFirstIssueLeadTime() : Boolean;
 begin
-  Result := ( FFirstIssueLeadTime <> StringWithUnits_Type(0) );
+  Result := ( FFirstIssueLeadTime <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasFloppyDiskDriveDescription() : Boolean;
@@ -17201,7 +20103,7 @@ end;
 
 function MerchantItemAttributes_Type.HasFixedShippingCharge() : Boolean;
 begin
-  Result := ( FFixedShippingCharge <> Price_Type(0) );
+  Result := ( FFixedShippingCharge <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasGemType() : Boolean;
@@ -17221,7 +20123,7 @@ end;
 
 function MerchantItemAttributes_Type.HasGraphicsMemorySize() : Boolean;
 begin
-  Result := ( FGraphicsMemorySize <> DecimalWithUnits_Type(0) );
+  Result := ( FGraphicsMemorySize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasGuitarAttribute() : Boolean;
@@ -17251,7 +20153,7 @@ end;
 
 function MerchantItemAttributes_Type.HasHardDiskSize() : Boolean;
 begin
-  Result := ( FHardDiskSize <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FHardDiskSize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasHasAutoFocus() : Boolean;
@@ -17324,6 +20226,11 @@ begin
   Result := ( FIngredients <> '' );
 end;
 
+function MerchantItemAttributes_Type.HasIngredientsSetElement() : Boolean;
+begin
+  Result := ( FIngredientsSetElement <> MerchantItemAttributes_IngredientsSetElementArray(0) );
+end;
+
 function MerchantItemAttributes_Type.HasInstrumentKey() : Boolean;
 begin
   Result := ( FInstrumentKey <> '' );
@@ -17337,6 +20244,11 @@ end;
 function MerchantItemAttributes_Type.HasISBN() : Boolean;
 begin
   Result := ( FISBN <> '' );
+end;
+
+function MerchantItemAttributes_Type.HasIsEmailNotifyAvailable() : Boolean;
+begin
+  Result := ( FIsEmailNotifyAvailable <> boolean(0) );
 end;
 
 function MerchantItemAttributes_Type.HasIsFragile() : Boolean;
@@ -17356,7 +20268,7 @@ end;
 
 function MerchantItemAttributes_Type.HasISOEquivalent() : Boolean;
 begin
-  Result := ( FISOEquivalent <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FISOEquivalent <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasIssuesPerYear() : Boolean;
@@ -17366,7 +20278,7 @@ end;
 
 function MerchantItemAttributes_Type.HasItemDimensions() : Boolean;
 begin
-  Result := ( FItemDimensions <> MerchantItemAttributes_ItemDimensions_Type(0) );
+  Result := ( FItemDimensions <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasKeyboardDescription() : Boolean;
@@ -17396,7 +20308,7 @@ end;
 
 function MerchantItemAttributes_Type.HasListPrice() : Boolean;
 begin
-  Result := ( FListPrice <> Price_Type(0) );
+  Result := ( FListPrice <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMacroFocusRange() : Boolean;
@@ -17426,12 +20338,12 @@ end;
 
 function MerchantItemAttributes_Type.HasManufacturerMaximumAge() : Boolean;
 begin
-  Result := ( FManufacturerMaximumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FManufacturerMaximumAge <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerMinimumAge() : Boolean;
 begin
-  Result := ( FManufacturerMinimumAge <> DecimalWithUnits_Type(0) );
+  Result := ( FManufacturerMinimumAge <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasManufacturerPartsWarrantyDescription() : Boolean;
@@ -17446,7 +20358,7 @@ end;
 
 function MerchantItemAttributes_Type.HasMaximumAperture() : Boolean;
 begin
-  Result := ( FMaximumAperture <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumAperture <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumColorDepth() : Boolean;
@@ -17456,17 +20368,17 @@ end;
 
 function MerchantItemAttributes_Type.HasMaximumFocalLength() : Boolean;
 begin
-  Result := ( FMaximumFocalLength <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumFocalLength <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumHighResolutionImages() : Boolean;
 begin
-  Result := ( FMaximumHighResolutionImages <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumHighResolutionImages <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumHorizontalResolution() : Boolean;
 begin
-  Result := ( FMaximumHorizontalResolution <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumHorizontalResolution <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumLowResolutionImages() : Boolean;
@@ -17476,22 +20388,22 @@ end;
 
 function MerchantItemAttributes_Type.HasMaximumResolution() : Boolean;
 begin
-  Result := ( FMaximumResolution <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumResolution <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumShutterSpeed() : Boolean;
 begin
-  Result := ( FMaximumShutterSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumShutterSpeed <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumVerticalResolution() : Boolean;
 begin
-  Result := ( FMaximumVerticalResolution <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FMaximumVerticalResolution <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMaximumWeightRecommendation() : Boolean;
 begin
-  Result := ( FMaximumWeightRecommendation <> DecimalWithUnits_Type(0) );
+  Result := ( FMaximumWeightRecommendation <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMemorySlotsAvailable() : Boolean;
@@ -17514,14 +20426,19 @@ begin
   Result := ( FMiniMovieDescription <> '' );
 end;
 
+function MerchantItemAttributes_Type.HasMinimumAdvertisedPrice() : Boolean;
+begin
+  Result := ( FMinimumAdvertisedPrice <> nil );
+end;
+
 function MerchantItemAttributes_Type.HasMinimumFocalLength() : Boolean;
 begin
-  Result := ( FMinimumFocalLength <> DecimalWithUnits_Type(0) );
+  Result := ( FMinimumFocalLength <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMinimumShutterSpeed() : Boolean;
 begin
-  Result := ( FMinimumShutterSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FMinimumShutterSpeed <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasModel() : Boolean;
@@ -17541,12 +20458,12 @@ end;
 
 function MerchantItemAttributes_Type.HasMonitorSize() : Boolean;
 begin
-  Result := ( FMonitorSize <> DecimalWithUnits_Type(0) );
+  Result := ( FMonitorSize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMonitorViewableDiagonalSize() : Boolean;
 begin
-  Result := ( FMonitorViewableDiagonalSize <> DecimalWithUnits_Type(0) );
+  Result := ( FMonitorViewableDiagonalSize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasMouseDescription() : Boolean;
@@ -17641,7 +20558,7 @@ end;
 
 function MerchantItemAttributes_Type.HasOpticalZoom() : Boolean;
 begin
-  Result := ( FOpticalZoom <> DecimalWithUnits_Type(0) );
+  Result := ( FOpticalZoom <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasOriginalReleaseDate() : Boolean;
@@ -17656,7 +20573,7 @@ end;
 
 function MerchantItemAttributes_Type.HasPackageDimensions() : Boolean;
 begin
-  Result := ( FPackageDimensions <> MerchantItemAttributes_PackageDimensions_Type(0) );
+  Result := ( FPackageDimensions <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasPearlLustre() : Boolean;
@@ -17816,7 +20733,7 @@ end;
 
 function MerchantItemAttributes_Type.HasSecondaryCacheSize() : Boolean;
 begin
-  Result := ( FSecondaryCacheSize <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FSecondaryCacheSize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasSettingType() : Boolean;
@@ -17891,7 +20808,7 @@ end;
 
 function MerchantItemAttributes_Type.HasStoneWeight() : Boolean;
 begin
-  Result := ( FStoneWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FStoneWeight <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasStudio() : Boolean;
@@ -17901,7 +20818,7 @@ end;
 
 function MerchantItemAttributes_Type.HasSubscriptionLength() : Boolean;
 begin
-  Result := ( FSubscriptionLength <> NonNegativeIntegerWithUnits_Type(0) );
+  Result := ( FSubscriptionLength <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasSupportedImageType() : Boolean;
@@ -17911,17 +20828,17 @@ end;
 
 function MerchantItemAttributes_Type.HasSystemBusSpeed() : Boolean;
 begin
-  Result := ( FSystemBusSpeed <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemBusSpeed <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemorySizeMax() : Boolean;
 begin
-  Result := ( FSystemMemorySizeMax <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemMemorySizeMax <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemorySize() : Boolean;
 begin
-  Result := ( FSystemMemorySize <> DecimalWithUnits_Type(0) );
+  Result := ( FSystemMemorySize <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasSystemMemoryType() : Boolean;
@@ -17946,7 +20863,7 @@ end;
 
 function MerchantItemAttributes_Type.HasTotalDiamondWeight() : Boolean;
 begin
-  Result := ( FTotalDiamondWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalDiamondWeight <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasTotalExternalBaysFree() : Boolean;
@@ -17961,7 +20878,7 @@ end;
 
 function MerchantItemAttributes_Type.HasTotalGemWeight() : Boolean;
 begin
-  Result := ( FTotalGemWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalGemWeight <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasTotalInternalBaysFree() : Boolean;
@@ -17971,7 +20888,7 @@ end;
 
 function MerchantItemAttributes_Type.HasTotalMetalWeight() : Boolean;
 begin
-  Result := ( FTotalMetalWeight <> DecimalWithUnits_Type(0) );
+  Result := ( FTotalMetalWeight <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasTotalNTSCPALPorts() : Boolean;
@@ -18036,7 +20953,7 @@ end;
 
 function MerchantItemAttributes_Type.HasVendorRebate() : Boolean;
 begin
-  Result := ( FVendorRebate <> MerchantItemAttributes_VendorRebate_Type(0) );
+  Result := ( FVendorRebate <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasWarranty() : Boolean;
@@ -18056,7 +20973,7 @@ end;
 
 function MerchantItemAttributes_Type.HasWaterResistanceDepth() : Boolean;
 begin
-  Result := ( FWaterResistanceDepth <> DecimalWithUnits_Type(0) );
+  Result := ( FWaterResistanceDepth <> nil );
 end;
 
 function MerchantItemAttributes_Type.HasWirelessMicrophoneFrequency() : Boolean;
@@ -18066,21 +20983,21 @@ end;
 
 { Help_RequestArray }
 
-function Help_RequestArray.GetItem(AIndex: Integer): HelpRequest_Type;
+function Help_RequestArray.GetItem(AIndex: Integer): HelpRequest;
 begin
-  Result := Inherited GetItem(AIndex) As HelpRequest_Type;
+  Result := HelpRequest(Inherited GetItem(AIndex));
 end;
 
 class function Help_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= HelpRequest_Type;
+  Result:= HelpRequest;
 end;
 
 { HelpResponse_InformationArray }
 
 function HelpResponse_InformationArray.GetItem(AIndex: Integer): Information_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Information_Type;
+  Result := Information_Type(Inherited GetItem(AIndex));
 end;
 
 class function HelpResponse_InformationArray.GetItemClass(): TBaseRemotableClass;
@@ -18090,21 +21007,21 @@ end;
 
 { ItemSearch_RequestArray }
 
-function ItemSearch_RequestArray.GetItem(AIndex: Integer): ItemSearchRequest_Type;
+function ItemSearch_RequestArray.GetItem(AIndex: Integer): ItemSearchRequest;
 begin
-  Result := Inherited GetItem(AIndex) As ItemSearchRequest_Type;
+  Result := ItemSearchRequest(Inherited GetItem(AIndex));
 end;
 
 class function ItemSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ItemSearchRequest_Type;
+  Result:= ItemSearchRequest;
 end;
 
 { ItemSearchResponse_ItemsArray }
 
 function ItemSearchResponse_ItemsArray.GetItem(AIndex: Integer): Items_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Items_Type;
+  Result := Items_Type(Inherited GetItem(AIndex));
 end;
 
 class function ItemSearchResponse_ItemsArray.GetItemClass(): TBaseRemotableClass;
@@ -18114,21 +21031,21 @@ end;
 
 { ItemLookup_RequestArray }
 
-function ItemLookup_RequestArray.GetItem(AIndex: Integer): ItemLookupRequest_Type;
+function ItemLookup_RequestArray.GetItem(AIndex: Integer): ItemLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As ItemLookupRequest_Type;
+  Result := ItemLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function ItemLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ItemLookupRequest_Type;
+  Result:= ItemLookupRequest;
 end;
 
 { ItemLookupResponse_ItemsArray }
 
 function ItemLookupResponse_ItemsArray.GetItem(AIndex: Integer): Items_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Items_Type;
+  Result := Items_Type(Inherited GetItem(AIndex));
 end;
 
 class function ItemLookupResponse_ItemsArray.GetItemClass(): TBaseRemotableClass;
@@ -18138,21 +21055,21 @@ end;
 
 { BrowseNodeLookup_RequestArray }
 
-function BrowseNodeLookup_RequestArray.GetItem(AIndex: Integer): BrowseNodeLookupRequest_Type;
+function BrowseNodeLookup_RequestArray.GetItem(AIndex: Integer): BrowseNodeLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNodeLookupRequest_Type;
+  Result := BrowseNodeLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNodeLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= BrowseNodeLookupRequest_Type;
+  Result:= BrowseNodeLookupRequest;
 end;
 
 { BrowseNodeLookupResponse_BrowseNodesArray }
 
 function BrowseNodeLookupResponse_BrowseNodesArray.GetItem(AIndex: Integer): BrowseNodes_Type;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNodes_Type;
+  Result := BrowseNodes_Type(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNodeLookupResponse_BrowseNodesArray.GetItemClass(): TBaseRemotableClass;
@@ -18162,21 +21079,21 @@ end;
 
 { ListSearch_RequestArray }
 
-function ListSearch_RequestArray.GetItem(AIndex: Integer): ListSearchRequest_Type;
+function ListSearch_RequestArray.GetItem(AIndex: Integer): ListSearchRequest;
 begin
-  Result := Inherited GetItem(AIndex) As ListSearchRequest_Type;
+  Result := ListSearchRequest(Inherited GetItem(AIndex));
 end;
 
 class function ListSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ListSearchRequest_Type;
+  Result:= ListSearchRequest;
 end;
 
 { ListSearchResponse_ListsArray }
 
 function ListSearchResponse_ListsArray.GetItem(AIndex: Integer): Lists_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Lists_Type;
+  Result := Lists_Type(Inherited GetItem(AIndex));
 end;
 
 class function ListSearchResponse_ListsArray.GetItemClass(): TBaseRemotableClass;
@@ -18186,21 +21103,21 @@ end;
 
 { ListLookup_RequestArray }
 
-function ListLookup_RequestArray.GetItem(AIndex: Integer): ListLookupRequest_Type;
+function ListLookup_RequestArray.GetItem(AIndex: Integer): ListLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As ListLookupRequest_Type;
+  Result := ListLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function ListLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= ListLookupRequest_Type;
+  Result:= ListLookupRequest;
 end;
 
 { ListLookupResponse_ListsArray }
 
 function ListLookupResponse_ListsArray.GetItem(AIndex: Integer): Lists_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Lists_Type;
+  Result := Lists_Type(Inherited GetItem(AIndex));
 end;
 
 class function ListLookupResponse_ListsArray.GetItemClass(): TBaseRemotableClass;
@@ -18210,21 +21127,21 @@ end;
 
 { CustomerContentSearch_RequestArray }
 
-function CustomerContentSearch_RequestArray.GetItem(AIndex: Integer): CustomerContentSearchRequest_Type;
+function CustomerContentSearch_RequestArray.GetItem(AIndex: Integer): CustomerContentSearchRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CustomerContentSearchRequest_Type;
+  Result := CustomerContentSearchRequest(Inherited GetItem(AIndex));
 end;
 
 class function CustomerContentSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CustomerContentSearchRequest_Type;
+  Result:= CustomerContentSearchRequest;
 end;
 
 { CustomerContentSearchResponse_CustomersArray }
 
 function CustomerContentSearchResponse_CustomersArray.GetItem(AIndex: Integer): Customers_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Customers_Type;
+  Result := Customers_Type(Inherited GetItem(AIndex));
 end;
 
 class function CustomerContentSearchResponse_CustomersArray.GetItemClass(): TBaseRemotableClass;
@@ -18234,21 +21151,21 @@ end;
 
 { CustomerContentLookup_RequestArray }
 
-function CustomerContentLookup_RequestArray.GetItem(AIndex: Integer): CustomerContentLookupRequest_Type;
+function CustomerContentLookup_RequestArray.GetItem(AIndex: Integer): CustomerContentLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CustomerContentLookupRequest_Type;
+  Result := CustomerContentLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function CustomerContentLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CustomerContentLookupRequest_Type;
+  Result:= CustomerContentLookupRequest;
 end;
 
 { CustomerContentLookupResponse_CustomersArray }
 
 function CustomerContentLookupResponse_CustomersArray.GetItem(AIndex: Integer): Customers_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Customers_Type;
+  Result := Customers_Type(Inherited GetItem(AIndex));
 end;
 
 class function CustomerContentLookupResponse_CustomersArray.GetItemClass(): TBaseRemotableClass;
@@ -18258,21 +21175,21 @@ end;
 
 { SimilarityLookup_RequestArray }
 
-function SimilarityLookup_RequestArray.GetItem(AIndex: Integer): SimilarityLookupRequest_Type;
+function SimilarityLookup_RequestArray.GetItem(AIndex: Integer): SimilarityLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As SimilarityLookupRequest_Type;
+  Result := SimilarityLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function SimilarityLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SimilarityLookupRequest_Type;
+  Result:= SimilarityLookupRequest;
 end;
 
 { SimilarityLookupResponse_ItemsArray }
 
 function SimilarityLookupResponse_ItemsArray.GetItem(AIndex: Integer): Items_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Items_Type;
+  Result := Items_Type(Inherited GetItem(AIndex));
 end;
 
 class function SimilarityLookupResponse_ItemsArray.GetItemClass(): TBaseRemotableClass;
@@ -18282,21 +21199,21 @@ end;
 
 { SellerLookup_RequestArray }
 
-function SellerLookup_RequestArray.GetItem(AIndex: Integer): SellerLookupRequest_Type;
+function SellerLookup_RequestArray.GetItem(AIndex: Integer): SellerLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As SellerLookupRequest_Type;
+  Result := SellerLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function SellerLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerLookupRequest_Type;
+  Result:= SellerLookupRequest;
 end;
 
 { SellerLookupResponse_SellersArray }
 
 function SellerLookupResponse_SellersArray.GetItem(AIndex: Integer): Sellers_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Sellers_Type;
+  Result := Sellers_Type(Inherited GetItem(AIndex));
 end;
 
 class function SellerLookupResponse_SellersArray.GetItemClass(): TBaseRemotableClass;
@@ -18306,21 +21223,21 @@ end;
 
 { CartGet_RequestArray }
 
-function CartGet_RequestArray.GetItem(AIndex: Integer): CartGetRequest_Type;
+function CartGet_RequestArray.GetItem(AIndex: Integer): CartGetRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CartGetRequest_Type;
+  Result := CartGetRequest(Inherited GetItem(AIndex));
 end;
 
 class function CartGet_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartGetRequest_Type;
+  Result:= CartGetRequest;
 end;
 
 { CartGetResponse_CartArray }
 
 function CartGetResponse_CartArray.GetItem(AIndex: Integer): Cart_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Cart_Type;
+  Result := Cart_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartGetResponse_CartArray.GetItemClass(): TBaseRemotableClass;
@@ -18330,21 +21247,21 @@ end;
 
 { CartAdd_RequestArray }
 
-function CartAdd_RequestArray.GetItem(AIndex: Integer): CartAddRequest_Type;
+function CartAdd_RequestArray.GetItem(AIndex: Integer): CartAddRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CartAddRequest_Type;
+  Result := CartAddRequest(Inherited GetItem(AIndex));
 end;
 
 class function CartAdd_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartAddRequest_Type;
+  Result:= CartAddRequest;
 end;
 
 { CartAddResponse_CartArray }
 
 function CartAddResponse_CartArray.GetItem(AIndex: Integer): Cart_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Cart_Type;
+  Result := Cart_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartAddResponse_CartArray.GetItemClass(): TBaseRemotableClass;
@@ -18354,21 +21271,21 @@ end;
 
 { CartCreate_RequestArray }
 
-function CartCreate_RequestArray.GetItem(AIndex: Integer): CartCreateRequest_Type;
+function CartCreate_RequestArray.GetItem(AIndex: Integer): CartCreateRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CartCreateRequest_Type;
+  Result := CartCreateRequest(Inherited GetItem(AIndex));
 end;
 
 class function CartCreate_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartCreateRequest_Type;
+  Result:= CartCreateRequest;
 end;
 
 { CartCreateResponse_CartArray }
 
 function CartCreateResponse_CartArray.GetItem(AIndex: Integer): Cart_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Cart_Type;
+  Result := Cart_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartCreateResponse_CartArray.GetItemClass(): TBaseRemotableClass;
@@ -18378,21 +21295,21 @@ end;
 
 { CartModify_RequestArray }
 
-function CartModify_RequestArray.GetItem(AIndex: Integer): CartModifyRequest_Type;
+function CartModify_RequestArray.GetItem(AIndex: Integer): CartModifyRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CartModifyRequest_Type;
+  Result := CartModifyRequest(Inherited GetItem(AIndex));
 end;
 
 class function CartModify_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartModifyRequest_Type;
+  Result:= CartModifyRequest;
 end;
 
 { CartModifyResponse_CartArray }
 
 function CartModifyResponse_CartArray.GetItem(AIndex: Integer): Cart_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Cart_Type;
+  Result := Cart_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartModifyResponse_CartArray.GetItemClass(): TBaseRemotableClass;
@@ -18402,21 +21319,21 @@ end;
 
 { CartClear_RequestArray }
 
-function CartClear_RequestArray.GetItem(AIndex: Integer): CartClearRequest_Type;
+function CartClear_RequestArray.GetItem(AIndex: Integer): CartClearRequest;
 begin
-  Result := Inherited GetItem(AIndex) As CartClearRequest_Type;
+  Result := CartClearRequest(Inherited GetItem(AIndex));
 end;
 
 class function CartClear_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartClearRequest_Type;
+  Result:= CartClearRequest;
 end;
 
 { CartClearResponse_CartArray }
 
 function CartClearResponse_CartArray.GetItem(AIndex: Integer): Cart_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Cart_Type;
+  Result := Cart_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartClearResponse_CartArray.GetItemClass(): TBaseRemotableClass;
@@ -18426,21 +21343,21 @@ end;
 
 { TransactionLookup_RequestArray }
 
-function TransactionLookup_RequestArray.GetItem(AIndex: Integer): TransactionLookupRequest_Type;
+function TransactionLookup_RequestArray.GetItem(AIndex: Integer): TransactionLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As TransactionLookupRequest_Type;
+  Result := TransactionLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function TransactionLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= TransactionLookupRequest_Type;
+  Result:= TransactionLookupRequest;
 end;
 
 { TransactionLookupResponse_TransactionsArray }
 
 function TransactionLookupResponse_TransactionsArray.GetItem(AIndex: Integer): Transactions_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Transactions_Type;
+  Result := Transactions_Type(Inherited GetItem(AIndex));
 end;
 
 class function TransactionLookupResponse_TransactionsArray.GetItemClass(): TBaseRemotableClass;
@@ -18450,21 +21367,21 @@ end;
 
 { SellerListingSearch_RequestArray }
 
-function SellerListingSearch_RequestArray.GetItem(AIndex: Integer): SellerListingSearchRequest_Type;
+function SellerListingSearch_RequestArray.GetItem(AIndex: Integer): SellerListingSearchRequest;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListingSearchRequest_Type;
+  Result := SellerListingSearchRequest(Inherited GetItem(AIndex));
 end;
 
 class function SellerListingSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerListingSearchRequest_Type;
+  Result:= SellerListingSearchRequest;
 end;
 
 { SellerListingSearchResponse_SellerListingsArray }
 
 function SellerListingSearchResponse_SellerListingsArray.GetItem(AIndex: Integer): SellerListings_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListings_Type;
+  Result := SellerListings_Type(Inherited GetItem(AIndex));
 end;
 
 class function SellerListingSearchResponse_SellerListingsArray.GetItemClass(): TBaseRemotableClass;
@@ -18474,21 +21391,21 @@ end;
 
 { SellerListingLookup_RequestArray }
 
-function SellerListingLookup_RequestArray.GetItem(AIndex: Integer): SellerListingLookupRequest_Type;
+function SellerListingLookup_RequestArray.GetItem(AIndex: Integer): SellerListingLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListingLookupRequest_Type;
+  Result := SellerListingLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function SellerListingLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= SellerListingLookupRequest_Type;
+  Result:= SellerListingLookupRequest;
 end;
 
 { SellerListingLookupResponse_SellerListingsArray }
 
 function SellerListingLookupResponse_SellerListingsArray.GetItem(AIndex: Integer): SellerListings_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListings_Type;
+  Result := SellerListings_Type(Inherited GetItem(AIndex));
 end;
 
 class function SellerListingLookupResponse_SellerListingsArray.GetItemClass(): TBaseRemotableClass;
@@ -18498,21 +21415,21 @@ end;
 
 { TagLookup_RequestArray }
 
-function TagLookup_RequestArray.GetItem(AIndex: Integer): TagLookupRequest_Type;
+function TagLookup_RequestArray.GetItem(AIndex: Integer): TagLookupRequest;
 begin
-  Result := Inherited GetItem(AIndex) As TagLookupRequest_Type;
+  Result := TagLookupRequest(Inherited GetItem(AIndex));
 end;
 
 class function TagLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= TagLookupRequest_Type;
+  Result:= TagLookupRequest;
 end;
 
 { TagLookupResponse_TagsArray }
 
 function TagLookupResponse_TagsArray.GetItem(AIndex: Integer): Tags_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Tags_Type;
+  Result := Tags_Type(Inherited GetItem(AIndex));
 end;
 
 class function TagLookupResponse_TagsArray.GetItemClass(): TBaseRemotableClass;
@@ -18520,11 +21437,83 @@ begin
   Result:= Tags_Type;
 end;
 
+{ VehicleSearch_RequestArray }
+
+function VehicleSearch_RequestArray.GetItem(AIndex: Integer): VehicleSearchRequest;
+begin
+  Result := VehicleSearchRequest(Inherited GetItem(AIndex));
+end;
+
+class function VehicleSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleSearchRequest;
+end;
+
+{ VehicleSearchResponse_VehicleYearsArray }
+
+function VehicleSearchResponse_VehicleYearsArray.GetItem(AIndex: Integer): VehicleYears_Type;
+begin
+  Result := VehicleYears_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleSearchResponse_VehicleYearsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleYears_Type;
+end;
+
+{ VehiclePartSearch_RequestArray }
+
+function VehiclePartSearch_RequestArray.GetItem(AIndex: Integer): VehiclePartSearchRequest;
+begin
+  Result := VehiclePartSearchRequest(Inherited GetItem(AIndex));
+end;
+
+class function VehiclePartSearch_RequestArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehiclePartSearchRequest;
+end;
+
+{ VehiclePartSearchResponse_VehiclePartsArray }
+
+function VehiclePartSearchResponse_VehiclePartsArray.GetItem(AIndex: Integer): VehicleParts_Type;
+begin
+  Result := VehicleParts_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehiclePartSearchResponse_VehiclePartsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleParts_Type;
+end;
+
+{ VehiclePartLookup_RequestArray }
+
+function VehiclePartLookup_RequestArray.GetItem(AIndex: Integer): VehiclePartLookupRequest;
+begin
+  Result := VehiclePartLookupRequest(Inherited GetItem(AIndex));
+end;
+
+class function VehiclePartLookup_RequestArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehiclePartLookupRequest;
+end;
+
+{ VehiclePartLookupResponse_VehiclePartsArray }
+
+function VehiclePartLookupResponse_VehiclePartsArray.GetItem(AIndex: Integer): VehicleParts_Type;
+begin
+  Result := VehicleParts_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehiclePartLookupResponse_VehiclePartsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleParts_Type;
+end;
+
 { Bin_BinParameterArray }
 
 function Bin_BinParameterArray.GetItem(AIndex: Integer): Bin_BinParameter_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Bin_BinParameter_Type;
+  Result := Bin_BinParameter_Type(Inherited GetItem(AIndex));
 end;
 
 class function Bin_BinParameterArray.GetItemClass(): TBaseRemotableClass;
@@ -18536,7 +21525,7 @@ end;
 
 function SearchBinSet_BinArray.GetItem(AIndex: Integer): Bin_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Bin_Type;
+  Result := Bin_Type(Inherited GetItem(AIndex));
 end;
 
 class function SearchBinSet_BinArray.GetItemClass(): TBaseRemotableClass;
@@ -18548,7 +21537,7 @@ end;
 
 function SearchBinSets_Type.GetItem(AIndex: Integer): SearchBinSet_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SearchBinSet_Type;
+  Result := SearchBinSet_Type(Inherited GetItem(AIndex));
 end;
 
 class function SearchBinSets_Type.GetItemClass(): TBaseRemotableClass;
@@ -18604,6 +21593,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure HelpRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : HelpRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(HelpRequest_ResponseGroupArray) then begin
+    src := HelpRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemSearchRequest_AudienceRatingArray }
 
 function ItemSearchRequest_AudienceRatingArray.GetItem(AIndex: Integer): AudienceRating_Type;
@@ -18650,6 +21658,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemSearchRequest_AudienceRatingArray.Assign(Source: TPersistent);
+var
+  src : ItemSearchRequest_AudienceRatingArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemSearchRequest_AudienceRatingArray) then begin
+    src := ItemSearchRequest_AudienceRatingArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemSearchRequest_ResponseGroupArray }
@@ -18700,6 +21727,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : ItemSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemSearchRequest_ResponseGroupArray) then begin
+    src := ItemSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemLookupRequest_ItemIdArray }
 
 function ItemLookupRequest_ItemIdArray.GetItem(AIndex: Integer): string;
@@ -18746,6 +21792,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemLookupRequest_ItemIdArray.Assign(Source: TPersistent);
+var
+  src : ItemLookupRequest_ItemIdArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemLookupRequest_ItemIdArray) then begin
+    src := ItemLookupRequest_ItemIdArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemLookupRequest_ResponseGroupArray }
@@ -18796,6 +21861,92 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : ItemLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemLookupRequest_ResponseGroupArray) then begin
+    src := ItemLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ ItemLookupRequest_RelationshipTypeArray }
+
+function ItemLookupRequest_RelationshipTypeArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure ItemLookupRequest_RelationshipTypeArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function ItemLookupRequest_RelationshipTypeArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure ItemLookupRequest_RelationshipTypeArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('RelationshipType',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure ItemLookupRequest_RelationshipTypeArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'RelationshipType';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function ItemLookupRequest_RelationshipTypeArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure ItemLookupRequest_RelationshipTypeArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure ItemLookupRequest_RelationshipTypeArray.Assign(Source: TPersistent);
+var
+  src : ItemLookupRequest_RelationshipTypeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemLookupRequest_RelationshipTypeArray) then begin
+    src := ItemLookupRequest_RelationshipTypeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ListSearchRequest_ResponseGroupArray }
 
 function ListSearchRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -18842,6 +21993,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ListSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : ListSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ListSearchRequest_ResponseGroupArray) then begin
+    src := ListSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ListLookupRequest_ResponseGroupArray }
@@ -18892,6 +22062,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ListLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : ListLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ListLookupRequest_ResponseGroupArray) then begin
+    src := ListLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CustomerContentSearchRequest_ResponseGroupArray }
 
 function CustomerContentSearchRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -18938,6 +22127,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure CustomerContentSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CustomerContentSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CustomerContentSearchRequest_ResponseGroupArray) then begin
+    src := CustomerContentSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { CustomerContentLookupRequest_ResponseGroupArray }
@@ -18988,6 +22196,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure CustomerContentLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CustomerContentLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CustomerContentLookupRequest_ResponseGroupArray) then begin
+    src := CustomerContentLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { SimilarityLookupRequest_ItemIdArray }
 
 function SimilarityLookupRequest_ItemIdArray.GetItem(AIndex: Integer): string;
@@ -19034,6 +22261,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure SimilarityLookupRequest_ItemIdArray.Assign(Source: TPersistent);
+var
+  src : SimilarityLookupRequest_ItemIdArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SimilarityLookupRequest_ItemIdArray) then begin
+    src := SimilarityLookupRequest_ItemIdArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { SimilarityLookupRequest_ResponseGroupArray }
@@ -19084,6 +22330,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure SimilarityLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : SimilarityLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SimilarityLookupRequest_ResponseGroupArray) then begin
+    src := SimilarityLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { SellerLookupRequest_ResponseGroupArray }
 
 function SellerLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19130,6 +22395,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure SellerLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : SellerLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SellerLookupRequest_ResponseGroupArray) then begin
+    src := SellerLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { SellerLookupRequest_SellerIdArray }
@@ -19180,6 +22464,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure SellerLookupRequest_SellerIdArray.Assign(Source: TPersistent);
+var
+  src : SellerLookupRequest_SellerIdArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SellerLookupRequest_SellerIdArray) then begin
+    src := SellerLookupRequest_SellerIdArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CartGetRequest_ResponseGroupArray }
 
 function CartGetRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19228,11 +22531,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure CartGetRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CartGetRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CartGetRequest_ResponseGroupArray) then begin
+    src := CartGetRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CartAddRequest_Items_Type_Item_Type_MetaDataArray }
 
 function CartAddRequest_Items_Type_Item_Type_MetaDataArray.GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type_MetaData_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartAddRequest_Items_Type_Item_Type_MetaData_Type;
+  Result := CartAddRequest_Items_Type_Item_Type_MetaData_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartAddRequest_Items_Type_Item_Type_MetaDataArray.GetItemClass(): TBaseRemotableClass;
@@ -19244,7 +22566,7 @@ end;
 
 function CartAddRequest_Items_Type.GetItem(AIndex: Integer): CartAddRequest_Items_Type_Item_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartAddRequest_Items_Type_Item_Type;
+  Result := CartAddRequest_Items_Type_Item_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartAddRequest_Items_Type.GetItemClass(): TBaseRemotableClass;
@@ -19300,11 +22622,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure CartAddRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CartAddRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CartAddRequest_ResponseGroupArray) then begin
+    src := CartAddRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CartCreateRequest_Items_Type_Item_Type_MetaDataArray }
 
 function CartCreateRequest_Items_Type_Item_Type_MetaDataArray.GetItem(AIndex: Integer): CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartCreateRequest_Items_Type_Item_Type_MetaData_Type;
+  Result := CartCreateRequest_Items_Type_Item_Type_MetaData_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartCreateRequest_Items_Type_Item_Type_MetaDataArray.GetItemClass(): TBaseRemotableClass;
@@ -19316,7 +22657,7 @@ end;
 
 function CartCreateRequest_Items_Type.GetItem(AIndex: Integer): CartCreateRequest_Items_Type_Item_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartCreateRequest_Items_Type_Item_Type;
+  Result := CartCreateRequest_Items_Type_Item_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartCreateRequest_Items_Type.GetItemClass(): TBaseRemotableClass;
@@ -19372,11 +22713,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure CartCreateRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CartCreateRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CartCreateRequest_ResponseGroupArray) then begin
+    src := CartCreateRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CartModifyRequest_Items_Type }
 
 function CartModifyRequest_Items_Type.GetItem(AIndex: Integer): CartModifyRequest_Items_Type_Item_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartModifyRequest_Items_Type_Item_Type;
+  Result := CartModifyRequest_Items_Type_Item_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartModifyRequest_Items_Type.GetItemClass(): TBaseRemotableClass;
@@ -19432,6 +22792,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure CartModifyRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CartModifyRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CartModifyRequest_ResponseGroupArray) then begin
+    src := CartModifyRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { CartClearRequest_ResponseGroupArray }
 
 function CartClearRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19478,6 +22857,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure CartClearRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : CartClearRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(CartClearRequest_ResponseGroupArray) then begin
+    src := CartClearRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TransactionLookupRequest_ResponseGroupArray }
@@ -19528,6 +22926,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure TransactionLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : TransactionLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TransactionLookupRequest_ResponseGroupArray) then begin
+    src := TransactionLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { TransactionLookupRequest_TransactionIdArray }
 
 function TransactionLookupRequest_TransactionIdArray.GetItem(AIndex: Integer): string;
@@ -19574,6 +22991,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure TransactionLookupRequest_TransactionIdArray.Assign(Source: TPersistent);
+var
+  src : TransactionLookupRequest_TransactionIdArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TransactionLookupRequest_TransactionIdArray) then begin
+    src := TransactionLookupRequest_TransactionIdArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { SellerListingSearchRequest_ResponseGroupArray }
@@ -19624,6 +23060,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure SellerListingSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : SellerListingSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SellerListingSearchRequest_ResponseGroupArray) then begin
+    src := SellerListingSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { SellerListingLookupRequest_ResponseGroupArray }
 
 function SellerListingLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19670,6 +23125,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure SellerListingLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : SellerListingLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SellerListingLookupRequest_ResponseGroupArray) then begin
+    src := SellerListingLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { TagLookupRequest_TagNameArray }
@@ -19720,6 +23194,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure TagLookupRequest_TagNameArray.Assign(Source: TPersistent);
+var
+  src : TagLookupRequest_TagNameArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TagLookupRequest_TagNameArray) then begin
+    src := TagLookupRequest_TagNameArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { TagLookupRequest_ResponseGroupArray }
 
 function TagLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19766,6 +23259,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure TagLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : TagLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TagLookupRequest_ResponseGroupArray) then begin
+    src := TagLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { BrowseNodeLookupRequest_BrowseNodeIdArray }
@@ -19816,6 +23328,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure BrowseNodeLookupRequest_BrowseNodeIdArray.Assign(Source: TPersistent);
+var
+  src : BrowseNodeLookupRequest_BrowseNodeIdArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(BrowseNodeLookupRequest_BrowseNodeIdArray) then begin
+    src := BrowseNodeLookupRequest_BrowseNodeIdArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { BrowseNodeLookupRequest_ResponseGroupArray }
 
 function BrowseNodeLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
@@ -19864,11 +23395,231 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure BrowseNodeLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : BrowseNodeLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(BrowseNodeLookupRequest_ResponseGroupArray) then begin
+    src := BrowseNodeLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ VehicleSearchRequest_ResponseGroupArray }
+
+function VehicleSearchRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure VehicleSearchRequest_ResponseGroupArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function VehicleSearchRequest_ResponseGroupArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure VehicleSearchRequest_ResponseGroupArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ResponseGroup',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure VehicleSearchRequest_ResponseGroupArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ResponseGroup';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function VehicleSearchRequest_ResponseGroupArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure VehicleSearchRequest_ResponseGroupArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure VehicleSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : VehicleSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VehicleSearchRequest_ResponseGroupArray) then begin
+    src := VehicleSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ VehiclePartSearchRequest_ResponseGroupArray }
+
+function VehiclePartSearchRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure VehiclePartSearchRequest_ResponseGroupArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function VehiclePartSearchRequest_ResponseGroupArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure VehiclePartSearchRequest_ResponseGroupArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ResponseGroup',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure VehiclePartSearchRequest_ResponseGroupArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ResponseGroup';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function VehiclePartSearchRequest_ResponseGroupArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure VehiclePartSearchRequest_ResponseGroupArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure VehiclePartSearchRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : VehiclePartSearchRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VehiclePartSearchRequest_ResponseGroupArray) then begin
+    src := VehiclePartSearchRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ VehiclePartLookupRequest_ResponseGroupArray }
+
+function VehiclePartLookupRequest_ResponseGroupArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure VehiclePartLookupRequest_ResponseGroupArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function VehiclePartLookupRequest_ResponseGroupArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure VehiclePartLookupRequest_ResponseGroupArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ResponseGroup',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure VehiclePartLookupRequest_ResponseGroupArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ResponseGroup';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function VehiclePartLookupRequest_ResponseGroupArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure VehiclePartLookupRequest_ResponseGroupArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure VehiclePartLookupRequest_ResponseGroupArray.Assign(Source: TPersistent);
+var
+  src : VehiclePartLookupRequest_ResponseGroupArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VehiclePartLookupRequest_ResponseGroupArray) then begin
+    src := VehiclePartLookupRequest_ResponseGroupArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { Arguments_Type }
 
 function Arguments_Type.GetItem(AIndex: Integer): Arguments_Argument_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Arguments_Argument_Type;
+  Result := Arguments_Argument_Type(Inherited GetItem(AIndex));
 end;
 
 class function Arguments_Type.GetItemClass(): TBaseRemotableClass;
@@ -19880,7 +23631,7 @@ end;
 
 function HTTPHeaders_Type.GetItem(AIndex: Integer): HTTPHeaders_Header_Type;
 begin
-  Result := Inherited GetItem(AIndex) As HTTPHeaders_Header_Type;
+  Result := HTTPHeaders_Header_Type(Inherited GetItem(AIndex));
 end;
 
 class function HTTPHeaders_Type.GetItemClass(): TBaseRemotableClass;
@@ -19892,7 +23643,7 @@ end;
 
 function Errors_Type.GetItem(AIndex: Integer): Errors_Error_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Errors_Error_Type;
+  Result := Errors_Error_Type(Inherited GetItem(AIndex));
 end;
 
 class function Errors_Type.GetItemClass(): TBaseRemotableClass;
@@ -19904,7 +23655,7 @@ end;
 
 function Information_OperationInformationArray.GetItem(AIndex: Integer): OperationInformation_Type;
 begin
-  Result := Inherited GetItem(AIndex) As OperationInformation_Type;
+  Result := OperationInformation_Type(Inherited GetItem(AIndex));
 end;
 
 class function Information_OperationInformationArray.GetItemClass(): TBaseRemotableClass;
@@ -19916,7 +23667,7 @@ end;
 
 function Information_ResponseGroupInformationArray.GetItem(AIndex: Integer): ResponseGroupInformation_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ResponseGroupInformation_Type;
+  Result := ResponseGroupInformation_Type(Inherited GetItem(AIndex));
 end;
 
 class function Information_ResponseGroupInformationArray.GetItemClass(): TBaseRemotableClass;
@@ -19928,7 +23679,7 @@ end;
 
 function Items__ItemArray.GetItem(AIndex: Integer): Item_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Item_Type;
+  Result := Item_Type(Inherited GetItem(AIndex));
 end;
 
 class function Items__ItemArray.GetItemClass(): TBaseRemotableClass;
@@ -19940,7 +23691,7 @@ end;
 
 function Lists_ListArray.GetItem(AIndex: Integer): List_Type;
 begin
-  Result := Inherited GetItem(AIndex) As List_Type;
+  Result := List_Type(Inherited GetItem(AIndex));
 end;
 
 class function Lists_ListArray.GetItemClass(): TBaseRemotableClass;
@@ -19952,7 +23703,7 @@ end;
 
 function Customers_CustomerArray.GetItem(AIndex: Integer): Customer_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Customer_Type;
+  Result := Customer_Type(Inherited GetItem(AIndex));
 end;
 
 class function Customers_CustomerArray.GetItemClass(): TBaseRemotableClass;
@@ -19964,7 +23715,7 @@ end;
 
 function Transactions_TransactionArray.GetItem(AIndex: Integer): Transaction_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Transaction_Type;
+  Result := Transaction_Type(Inherited GetItem(AIndex));
 end;
 
 class function Transactions_TransactionArray.GetItemClass(): TBaseRemotableClass;
@@ -19976,7 +23727,7 @@ end;
 
 function Sellers_SellerArray.GetItem(AIndex: Integer): Seller_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Seller_Type;
+  Result := Seller_Type(Inherited GetItem(AIndex));
 end;
 
 class function Sellers_SellerArray.GetItemClass(): TBaseRemotableClass;
@@ -19988,7 +23739,7 @@ end;
 
 function SellerListings_SellerListingArray.GetItem(AIndex: Integer): SellerListing_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerListing_Type;
+  Result := SellerListing_Type(Inherited GetItem(AIndex));
 end;
 
 class function SellerListings_SellerListingArray.GetItemClass(): TBaseRemotableClass;
@@ -20044,6 +23795,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure OperationInformation_RequiredParameters_Type.Assign(Source: TPersistent);
+var
+  src : OperationInformation_RequiredParameters_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(OperationInformation_RequiredParameters_Type) then begin
+    src := OperationInformation_RequiredParameters_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { OperationInformation_AvailableParameters_Type }
 
 function OperationInformation_AvailableParameters_Type.GetItem(AIndex: Integer): string;
@@ -20090,6 +23860,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure OperationInformation_AvailableParameters_Type.Assign(Source: TPersistent);
+var
+  src : OperationInformation_AvailableParameters_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(OperationInformation_AvailableParameters_Type) then begin
+    src := OperationInformation_AvailableParameters_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { OperationInformation_DefaultResponseGroups_Type }
@@ -20140,6 +23929,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure OperationInformation_DefaultResponseGroups_Type.Assign(Source: TPersistent);
+var
+  src : OperationInformation_DefaultResponseGroups_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(OperationInformation_DefaultResponseGroups_Type) then begin
+    src := OperationInformation_DefaultResponseGroups_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { OperationInformation_AvailableResponseGroups_Type }
 
 function OperationInformation_AvailableResponseGroups_Type.GetItem(AIndex: Integer): string;
@@ -20186,6 +23994,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure OperationInformation_AvailableResponseGroups_Type.Assign(Source: TPersistent);
+var
+  src : OperationInformation_AvailableResponseGroups_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(OperationInformation_AvailableResponseGroups_Type) then begin
+    src := OperationInformation_AvailableResponseGroups_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ResponseGroupInformation_ValidOperations_Type }
@@ -20236,6 +24063,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ResponseGroupInformation_ValidOperations_Type.Assign(Source: TPersistent);
+var
+  src : ResponseGroupInformation_ValidOperations_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ResponseGroupInformation_ValidOperations_Type) then begin
+    src := ResponseGroupInformation_ValidOperations_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ResponseGroupInformation_Elements_Type }
 
 function ResponseGroupInformation_Elements_Type.GetItem(AIndex: Integer): string;
@@ -20284,11 +24130,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ResponseGroupInformation_Elements_Type.Assign(Source: TPersistent);
+var
+  src : ResponseGroupInformation_Elements_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ResponseGroupInformation_Elements_Type) then begin
+    src := ResponseGroupInformation_Elements_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { List_ListItemArray }
 
 function List_ListItemArray.GetItem(AIndex: Integer): ListItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ListItem_Type;
+  Result := ListItem_Type(Inherited GetItem(AIndex));
 end;
 
 class function List_ListItemArray.GetItemClass(): TBaseRemotableClass;
@@ -20300,7 +24165,7 @@ end;
 
 function Customer_CustomerReviewsArray.GetItem(AIndex: Integer): CustomerReviews_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CustomerReviews_Type;
+  Result := CustomerReviews_Type(Inherited GetItem(AIndex));
 end;
 
 class function Customer_CustomerReviewsArray.GetItemClass(): TBaseRemotableClass;
@@ -20356,11 +24221,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure SearchResultsMap_SearchIndex_Type_ASINArray.Assign(Source: TPersistent);
+var
+  src : SearchResultsMap_SearchIndex_Type_ASINArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(SearchResultsMap_SearchIndex_Type_ASINArray) then begin
+    src := SearchResultsMap_SearchIndex_Type_ASINArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { SearchResultsMap_Type }
 
 function SearchResultsMap_Type.GetItem(AIndex: Integer): SearchResultsMap_SearchIndex_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SearchResultsMap_SearchIndex_Type;
+  Result := SearchResultsMap_SearchIndex_Type(Inherited GetItem(AIndex));
 end;
 
 class function SearchResultsMap_Type.GetItemClass(): TBaseRemotableClass;
@@ -20372,7 +24256,7 @@ end;
 
 function Item_ImageSets_Type_ImageSetArray.GetItem(AIndex: Integer): ImageSet_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ImageSet_Type;
+  Result := ImageSet_Type(Inherited GetItem(AIndex));
 end;
 
 class function Item_ImageSets_Type_ImageSetArray.GetItemClass(): TBaseRemotableClass;
@@ -20428,11 +24312,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure Item_Subjects_Type.Assign(Source: TPersistent);
+var
+  src : Item_Subjects_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(Item_Subjects_Type) then begin
+    src := Item_Subjects_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { Item_AlternateVersions_Type }
 
 function Item_AlternateVersions_Type.GetItem(AIndex: Integer): Item_AlternateVersions_Type_AlternateVersion_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Item_AlternateVersions_Type_AlternateVersion_Type;
+  Result := Item_AlternateVersions_Type_AlternateVersion_Type(Inherited GetItem(AIndex));
 end;
 
 class function Item_AlternateVersions_Type.GetItemClass(): TBaseRemotableClass;
@@ -20444,7 +24347,7 @@ end;
 
 function _Item_ImageSetsArray.GetItem(AIndex: Integer): Item_ImageSets_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Item_ImageSets_Type;
+  Result := Item_ImageSets_Type(Inherited GetItem(AIndex));
 end;
 
 class function _Item_ImageSetsArray.GetItemClass(): TBaseRemotableClass;
@@ -20452,11 +24355,47 @@ begin
   Result:= Item_ImageSets_Type;
 end;
 
+{ _Item_RelatedItemsArray }
+
+function _Item_RelatedItemsArray.GetItem(AIndex: Integer): RelatedItems_Type;
+begin
+  Result := RelatedItems_Type(Inherited GetItem(AIndex));
+end;
+
+class function _Item_RelatedItemsArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= RelatedItems_Type;
+end;
+
+{ ItemLinks_Type }
+
+function ItemLinks_Type.GetItem(AIndex: Integer): ItemLink_Type;
+begin
+  Result := ItemLink_Type(Inherited GetItem(AIndex));
+end;
+
+class function ItemLinks_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= ItemLink_Type;
+end;
+
+{ RelatedItems_RelatedItemArray }
+
+function RelatedItems_RelatedItemArray.GetItem(AIndex: Integer): RelatedItem_Type;
+begin
+  Result := RelatedItem_Type(Inherited GetItem(AIndex));
+end;
+
+class function RelatedItems_RelatedItemArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= RelatedItem_Type;
+end;
+
 { Tags_TagArray }
 
 function Tags_TagArray.GetItem(AIndex: Integer): Tag_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Tag_Type;
+  Result := Tag_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tags_TagArray.GetItemClass(): TBaseRemotableClass;
@@ -20468,7 +24407,7 @@ end;
 
 function Tag_TaggedItemsArray.GetItem(AIndex: Integer): TaggedItems_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TaggedItems_Type;
+  Result := TaggedItems_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tag_TaggedItemsArray.GetItemClass(): TBaseRemotableClass;
@@ -20480,7 +24419,7 @@ end;
 
 function Tag_TaggedListmaniaListsArray.GetItem(AIndex: Integer): TaggedListmaniaLists_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TaggedListmaniaLists_Type;
+  Result := TaggedListmaniaLists_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tag_TaggedListmaniaListsArray.GetItemClass(): TBaseRemotableClass;
@@ -20492,7 +24431,7 @@ end;
 
 function Tag_TaggedGuidesArray.GetItem(AIndex: Integer): TaggedGuides_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TaggedGuides_Type;
+  Result := TaggedGuides_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tag_TaggedGuidesArray.GetItemClass(): TBaseRemotableClass;
@@ -20504,7 +24443,7 @@ end;
 
 function Offers_OfferArray.GetItem(AIndex: Integer): Offer_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Offer_Type;
+  Result := Offer_Type(Inherited GetItem(AIndex));
 end;
 
 class function Offers_OfferArray.GetItemClass(): TBaseRemotableClass;
@@ -20516,7 +24455,7 @@ end;
 
 function Offer_OfferListingArray.GetItem(AIndex: Integer): OfferListing_Type;
 begin
-  Result := Inherited GetItem(AIndex) As OfferListing_Type;
+  Result := OfferListing_Type(Inherited GetItem(AIndex));
 end;
 
 class function Offer_OfferListingArray.GetItemClass(): TBaseRemotableClass;
@@ -20528,7 +24467,7 @@ end;
 
 function OfferListing_ShippingChargeArray.GetItem(AIndex: Integer): OfferListing_ShippingCharge_Type;
 begin
-  Result := Inherited GetItem(AIndex) As OfferListing_ShippingCharge_Type;
+  Result := OfferListing_ShippingCharge_Type(Inherited GetItem(AIndex));
 end;
 
 class function OfferListing_ShippingChargeArray.GetItemClass(): TBaseRemotableClass;
@@ -20540,7 +24479,7 @@ end;
 
 function Variations__ItemArray.GetItem(AIndex: Integer): Item_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Item_Type;
+  Result := Item_Type(Inherited GetItem(AIndex));
 end;
 
 class function Variations__ItemArray.GetItemClass(): TBaseRemotableClass;
@@ -20596,11 +24535,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure VariationDimensions_Type.Assign(Source: TPersistent);
+var
+  src : VariationDimensions_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VariationDimensions_Type) then begin
+    src := VariationDimensions_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { EditorialReviews_Type }
 
 function EditorialReviews_Type.GetItem(AIndex: Integer): EditorialReview_Type;
 begin
-  Result := Inherited GetItem(AIndex) As EditorialReview_Type;
+  Result := EditorialReview_Type(Inherited GetItem(AIndex));
 end;
 
 class function EditorialReviews_Type.GetItemClass(): TBaseRemotableClass;
@@ -20612,7 +24570,7 @@ end;
 
 function Collections_Collection_Type_CollectionItemArray.GetItem(AIndex: Integer): Collections_Collection_Type_CollectionItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Collections_Collection_Type_CollectionItem_Type;
+  Result := Collections_Collection_Type_CollectionItem_Type(Inherited GetItem(AIndex));
 end;
 
 class function Collections_Collection_Type_CollectionItemArray.GetItemClass(): TBaseRemotableClass;
@@ -20624,7 +24582,7 @@ end;
 
 function Collections_Type.GetItem(AIndex: Integer): Collections_Collection_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Collections_Collection_Type;
+  Result := Collections_Collection_Type(Inherited GetItem(AIndex));
 end;
 
 class function Collections_Type.GetItemClass(): TBaseRemotableClass;
@@ -20636,7 +24594,7 @@ end;
 
 function CustomerReviews_ReviewArray.GetItem(AIndex: Integer): Review_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Review_Type;
+  Result := Review_Type(Inherited GetItem(AIndex));
 end;
 
 class function CustomerReviews_ReviewArray.GetItemClass(): TBaseRemotableClass;
@@ -20648,7 +24606,7 @@ end;
 
 function Tracks_Disc_Type_TrackArray.GetItem(AIndex: Integer): Tracks_Disc_Type_Track_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Tracks_Disc_Type_Track_Type;
+  Result := Tracks_Disc_Type_Track_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tracks_Disc_Type_TrackArray.GetItemClass(): TBaseRemotableClass;
@@ -20660,7 +24618,7 @@ end;
 
 function Tracks_Type.GetItem(AIndex: Integer): Tracks_Disc_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Tracks_Disc_Type;
+  Result := Tracks_Disc_Type(Inherited GetItem(AIndex));
 end;
 
 class function Tracks_Type.GetItemClass(): TBaseRemotableClass;
@@ -20672,7 +24630,7 @@ end;
 
 function SimilarProducts_Type.GetItem(AIndex: Integer): SimilarProducts_SimilarProduct_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SimilarProducts_SimilarProduct_Type;
+  Result := SimilarProducts_SimilarProduct_Type(Inherited GetItem(AIndex));
 end;
 
 class function SimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
@@ -20684,7 +24642,7 @@ end;
 
 function TopSellers_Type.GetItem(AIndex: Integer): TopSellers_TopSeller_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TopSellers_TopSeller_Type;
+  Result := TopSellers_TopSeller_Type(Inherited GetItem(AIndex));
 end;
 
 class function TopSellers_Type.GetItemClass(): TBaseRemotableClass;
@@ -20696,7 +24654,7 @@ end;
 
 function NewReleases_Type.GetItem(AIndex: Integer): NewReleases_NewRelease_Type;
 begin
-  Result := Inherited GetItem(AIndex) As NewReleases_NewRelease_Type;
+  Result := NewReleases_NewRelease_Type(Inherited GetItem(AIndex));
 end;
 
 class function NewReleases_Type.GetItemClass(): TBaseRemotableClass;
@@ -20704,11 +24662,224 @@ begin
   Result:= NewReleases_NewRelease_Type;
 end;
 
+{ TopItemSet_TopItem_Type_AuthorArray }
+
+function TopItemSet_TopItem_Type_AuthorArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure TopItemSet_TopItem_Type_AuthorArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function TopItemSet_TopItem_Type_AuthorArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure TopItemSet_TopItem_Type_AuthorArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Author',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure TopItemSet_TopItem_Type_AuthorArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Author';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function TopItemSet_TopItem_Type_AuthorArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure TopItemSet_TopItem_Type_AuthorArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure TopItemSet_TopItem_Type_AuthorArray.Assign(Source: TPersistent);
+var
+  src : TopItemSet_TopItem_Type_AuthorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TopItemSet_TopItem_Type_AuthorArray) then begin
+    src := TopItemSet_TopItem_Type_AuthorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ TopItemSet_TopItem_Type_ArtistArray }
+
+function TopItemSet_TopItem_Type_ArtistArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure TopItemSet_TopItem_Type_ArtistArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function TopItemSet_TopItem_Type_ArtistArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure TopItemSet_TopItem_Type_ArtistArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Artist',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure TopItemSet_TopItem_Type_ArtistArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Artist';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function TopItemSet_TopItem_Type_ArtistArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure TopItemSet_TopItem_Type_ArtistArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure TopItemSet_TopItem_Type_ArtistArray.Assign(Source: TPersistent);
+var
+  src : TopItemSet_TopItem_Type_ArtistArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TopItemSet_TopItem_Type_ArtistArray) then begin
+    src := TopItemSet_TopItem_Type_ArtistArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ TopItemSet_TopItem_Type_ActorArray }
+
+function TopItemSet_TopItem_Type_ActorArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure TopItemSet_TopItem_Type_ActorArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function TopItemSet_TopItem_Type_ActorArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure TopItemSet_TopItem_Type_ActorArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('Actor',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure TopItemSet_TopItem_Type_ActorArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'Actor';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function TopItemSet_TopItem_Type_ActorArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure TopItemSet_TopItem_Type_ActorArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure TopItemSet_TopItem_Type_ActorArray.Assign(Source: TPersistent);
+var
+  src : TopItemSet_TopItem_Type_ActorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(TopItemSet_TopItem_Type_ActorArray) then begin
+    src := TopItemSet_TopItem_Type_ActorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ TopItemSet_TopItemArray }
+
+function TopItemSet_TopItemArray.GetItem(AIndex: Integer): TopItemSet_TopItem_Type;
+begin
+  Result := TopItemSet_TopItem_Type(Inherited GetItem(AIndex));
+end;
+
+class function TopItemSet_TopItemArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TopItemSet_TopItem_Type;
+end;
+
 { SimilarViewedProducts_Type }
 
 function SimilarViewedProducts_Type.GetItem(AIndex: Integer): SimilarViewedProducts_SimilarViewedProduct_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SimilarViewedProducts_SimilarViewedProduct_Type;
+  Result := SimilarViewedProducts_SimilarViewedProduct_Type(Inherited GetItem(AIndex));
 end;
 
 class function SimilarViewedProducts_Type.GetItemClass(): TBaseRemotableClass;
@@ -20720,7 +24891,7 @@ end;
 
 function OtherCategoriesSimilarProducts_Type.GetItem(AIndex: Integer): OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
 begin
-  Result := Inherited GetItem(AIndex) As OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type;
+  Result := OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type(Inherited GetItem(AIndex));
 end;
 
 class function OtherCategoriesSimilarProducts_Type.GetItemClass(): TBaseRemotableClass;
@@ -20732,7 +24903,7 @@ end;
 
 function Accessories_Type.GetItem(AIndex: Integer): Accessories_Accessory_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Accessories_Accessory_Type;
+  Result := Accessories_Accessory_Type(Inherited GetItem(AIndex));
 end;
 
 class function Accessories_Type.GetItemClass(): TBaseRemotableClass;
@@ -20744,7 +24915,7 @@ end;
 
 function Promotions_Type.GetItem(AIndex: Integer): Promotion_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Promotion_Type;
+  Result := Promotion_Type(Inherited GetItem(AIndex));
 end;
 
 class function Promotions_Type.GetItemClass(): TBaseRemotableClass;
@@ -20752,35 +24923,519 @@ begin
   Result:= Promotion_Type;
 end;
 
-{ PromotionEligibilityRequirements_Type }
+{ PromotionEligibilityRequirements }
 
-function PromotionEligibilityRequirements_Type.GetItem(AIndex: Integer): PromotionEligibilityRequirement_Type;
+function PromotionEligibilityRequirements.GetItem(AIndex: Integer): PromotionEligibilityRequirement;
 begin
-  Result := Inherited GetItem(AIndex) As PromotionEligibilityRequirement_Type;
+  Result := PromotionEligibilityRequirement(Inherited GetItem(AIndex));
 end;
 
-class function PromotionEligibilityRequirements_Type.GetItemClass(): TBaseRemotableClass;
+class function PromotionEligibilityRequirements.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= PromotionEligibilityRequirement_Type;
+  Result:= PromotionEligibilityRequirement;
 end;
 
-{ PromotionBenefits_Type }
+{ PromotionBenefits }
 
-function PromotionBenefits_Type.GetItem(AIndex: Integer): PromotionBenefit_Type;
+function PromotionBenefits.GetItem(AIndex: Integer): PromotionBenefit;
 begin
-  Result := Inherited GetItem(AIndex) As PromotionBenefit_Type;
+  Result := PromotionBenefit(Inherited GetItem(AIndex));
 end;
 
-class function PromotionBenefits_Type.GetItemClass(): TBaseRemotableClass;
+class function PromotionBenefits.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= PromotionBenefit_Type;
+  Result:= PromotionBenefit;
+end;
+
+{ VehicleYears_VehicleYearArray }
+
+function VehicleYears_VehicleYearArray.GetItem(AIndex: Integer): VehicleYear_Type;
+begin
+  Result := VehicleYear_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleYears_VehicleYearArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleYear_Type;
+end;
+
+{ VehicleMakes_Type }
+
+function VehicleMakes_Type.GetItem(AIndex: Integer): VehicleMake_Type;
+begin
+  Result := VehicleMake_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleMakes_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleMake_Type;
+end;
+
+{ VehicleModels_Type }
+
+function VehicleModels_Type.GetItem(AIndex: Integer): VehicleModel_Type;
+begin
+  Result := VehicleModel_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleModels_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleModel_Type;
+end;
+
+{ VehicleTrims_Type }
+
+function VehicleTrims_Type.GetItem(AIndex: Integer): VehicleTrim_Type;
+begin
+  Result := VehicleTrim_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleTrims_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleTrim_Type;
+end;
+
+{ VehicleBedOptions_Type }
+
+function VehicleBedOptions_Type.GetItem(AIndex: Integer): VehicleBed_Type;
+begin
+  Result := VehicleBed_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleBedOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleBed_Type;
+end;
+
+{ VehicleBodyStyleOptions_Type }
+
+function VehicleBodyStyleOptions_Type.GetItem(AIndex: Integer): VehicleBodyStyle_Type;
+begin
+  Result := VehicleBodyStyle_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleBodyStyleOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleBodyStyle_Type;
+end;
+
+{ VehicleBrakesOptions_Type }
+
+function VehicleBrakesOptions_Type.GetItem(AIndex: Integer): VehicleBrakes_Type;
+begin
+  Result := VehicleBrakes_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleBrakesOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleBrakes_Type;
+end;
+
+{ VehicleDriveTypeOptions_Type }
+
+function VehicleDriveTypeOptions_Type.GetItem(AIndex: Integer): VehicleDriveType_Type;
+begin
+  Result := VehicleDriveType_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleDriveTypeOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleDriveType_Type;
+end;
+
+{ VehicleEngineOptions_Type }
+
+function VehicleEngineOptions_Type.GetItem(AIndex: Integer): VehicleEngine_Type;
+begin
+  Result := VehicleEngine_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleEngineOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleEngine_Type;
+end;
+
+{ VehicleMfrBodyCodeOptions_Type }
+
+function VehicleMfrBodyCodeOptions_Type.GetItem(AIndex: Integer): VehicleMfrBodyCode_Type;
+begin
+  Result := VehicleMfrBodyCode_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleMfrBodyCodeOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleMfrBodyCode_Type;
+end;
+
+{ VehicleSpringTypesOptions_Type }
+
+function VehicleSpringTypesOptions_Type.GetItem(AIndex: Integer): VehicleSpringTypes_Type;
+begin
+  Result := VehicleSpringTypes_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleSpringTypesOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleSpringTypes_Type;
+end;
+
+{ VehicleSteeringOptions_Type }
+
+function VehicleSteeringOptions_Type.GetItem(AIndex: Integer): VehicleSteering_Type;
+begin
+  Result := VehicleSteering_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleSteeringOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleSteering_Type;
+end;
+
+{ VehicleTransmissionOptions_Type }
+
+function VehicleTransmissionOptions_Type.GetItem(AIndex: Integer): VehicleTransmission_Type;
+begin
+  Result := VehicleTransmission_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleTransmissionOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleTransmission_Type;
+end;
+
+{ VehicleWheelbaseOptions_Type }
+
+function VehicleWheelbaseOptions_Type.GetItem(AIndex: Integer): VehicleWheelbase_Type;
+begin
+  Result := VehicleWheelbase_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleWheelbaseOptions_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= VehicleWheelbase_Type;
+end;
+
+{ VehicleParts_IsNextArray }
+
+function VehicleParts_IsNextArray.GetItem(AIndex: Integer): boolean;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure VehicleParts_IsNextArray.SetItem(AIndex: Integer;const AValue: boolean);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function VehicleParts_IsNextArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure VehicleParts_IsNextArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('IsNext',TypeInfo(boolean),FData[AIndex]);
+end;
+
+procedure VehicleParts_IsNextArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'IsNext';
+  AStore.Get(TypeInfo(boolean),sName,FData[AIndex]);
+end;
+
+class function VehicleParts_IsNextArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(boolean);
+end;
+
+procedure VehicleParts_IsNextArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure VehicleParts_IsNextArray.Assign(Source: TPersistent);
+var
+  src : VehicleParts_IsNextArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VehicleParts_IsNextArray) then begin
+    src := VehicleParts_IsNextArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ VehicleParts_IsPreviousArray }
+
+function VehicleParts_IsPreviousArray.GetItem(AIndex: Integer): boolean;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure VehicleParts_IsPreviousArray.SetItem(AIndex: Integer;const AValue: boolean);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function VehicleParts_IsPreviousArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure VehicleParts_IsPreviousArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('IsPrevious',TypeInfo(boolean),FData[AIndex]);
+end;
+
+procedure VehicleParts_IsPreviousArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'IsPrevious';
+  AStore.Get(TypeInfo(boolean),sName,FData[AIndex]);
+end;
+
+class function VehicleParts_IsPreviousArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(boolean);
+end;
+
+procedure VehicleParts_IsPreviousArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure VehicleParts_IsPreviousArray.Assign(Source: TPersistent);
+var
+  src : VehicleParts_IsPreviousArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(VehicleParts_IsPreviousArray) then begin
+    src := VehicleParts_IsPreviousArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ VehicleParts_PartArray }
+
+function VehicleParts_PartArray.GetItem(AIndex: Integer): Part_Type;
+begin
+  Result := Part_Type(Inherited GetItem(AIndex));
+end;
+
+class function VehicleParts_PartArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Part_Type;
+end;
+
+{ MissingVehicleAttributes_Type }
+
+function MissingVehicleAttributes_Type.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure MissingVehicleAttributes_Type.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function MissingVehicleAttributes_Type.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure MissingVehicleAttributes_Type.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('ParameterName',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure MissingVehicleAttributes_Type.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'ParameterName';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function MissingVehicleAttributes_Type.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure MissingVehicleAttributes_Type.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure MissingVehicleAttributes_Type.Assign(Source: TPersistent);
+var
+  src : MissingVehicleAttributes_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MissingVehicleAttributes_Type) then begin
+    src := MissingVehicleAttributes_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ PartBrowseNodeBins_Type }
+
+function PartBrowseNodeBins_Type.GetItem(AIndex: Integer): Bin_Type;
+begin
+  Result := Bin_Type(Inherited GetItem(AIndex));
+end;
+
+class function PartBrowseNodeBins_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Bin_Type;
+end;
+
+{ PartBrandBins_Type }
+
+function PartBrandBins_Type.GetItem(AIndex: Integer): Bin_Type;
+begin
+  Result := Bin_Type(Inherited GetItem(AIndex));
+end;
+
+class function PartBrandBins_Type.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Bin_Type;
+end;
+
+{ Fitments_FitmentArray }
+
+function Fitments_FitmentArray.GetItem(AIndex: Integer): Fitment_Type;
+begin
+  Result := Fitment_Type(Inherited GetItem(AIndex));
+end;
+
+class function Fitments_FitmentArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= Fitment_Type;
+end;
+
+{ FitmentAttributes }
+
+function FitmentAttributes.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure FitmentAttributes.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function FitmentAttributes.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure FitmentAttributes.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('FitmentAttribute',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure FitmentAttributes.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'FitmentAttribute';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function FitmentAttributes.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure FitmentAttributes.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure FitmentAttributes.Assign(Source: TPersistent);
+var
+  src : FitmentAttributes;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(FitmentAttributes) then begin
+    src := FitmentAttributes(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { BrowseNodes_BrowseNodeArray }
 
 function BrowseNodes_BrowseNodeArray.GetItem(AIndex: Integer): BrowseNode_Type;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNode_Type;
+  Result := BrowseNode_Type(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNodes_BrowseNodeArray.GetItemClass(): TBaseRemotableClass;
@@ -20792,7 +25447,7 @@ end;
 
 function BrowseNode_Properties_Type.GetItem(AIndex: Integer): Property_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Property_Type;
+  Result := Property_Type(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNode_Properties_Type.GetItemClass(): TBaseRemotableClass;
@@ -20804,7 +25459,7 @@ end;
 
 function BrowseNode_Children_Type.GetItem(AIndex: Integer): BrowseNode_Type;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNode_Type;
+  Result := BrowseNode_Type(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNode_Children_Type.GetItemClass(): TBaseRemotableClass;
@@ -20816,7 +25471,7 @@ end;
 
 function BrowseNode_Ancestors_Type.GetItem(AIndex: Integer): BrowseNode_Type;
 begin
-  Result := Inherited GetItem(AIndex) As BrowseNode_Type;
+  Result := BrowseNode_Type(Inherited GetItem(AIndex));
 end;
 
 class function BrowseNode_Ancestors_Type.GetItemClass(): TBaseRemotableClass;
@@ -20824,11 +25479,23 @@ begin
   Result:= BrowseNode_Type;
 end;
 
+{ BrowseNode_TopItemSetArray }
+
+function BrowseNode_TopItemSetArray.GetItem(AIndex: Integer): TopItemSet_Type;
+begin
+  Result := TopItemSet_Type(Inherited GetItem(AIndex));
+end;
+
+class function BrowseNode_TopItemSetArray.GetItemClass(): TBaseRemotableClass;
+begin
+  Result:= TopItemSet_Type;
+end;
+
 { ListmaniaLists_Type }
 
 function ListmaniaLists_Type.GetItem(AIndex: Integer): ListmaniaLists_ListmaniaList_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ListmaniaLists_ListmaniaList_Type;
+  Result := ListmaniaLists_ListmaniaList_Type(Inherited GetItem(AIndex));
 end;
 
 class function ListmaniaLists_Type.GetItemClass(): TBaseRemotableClass;
@@ -20838,33 +25505,33 @@ end;
 
 { CartItems_CartItemArray }
 
-function CartItems_CartItemArray.GetItem(AIndex: Integer): CartItem_Type;
+function CartItems_CartItemArray.GetItem(AIndex: Integer): CartItem;
 begin
-  Result := Inherited GetItem(AIndex) As CartItem_Type;
+  Result := CartItem(Inherited GetItem(AIndex));
 end;
 
 class function CartItems_CartItemArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartItem_Type;
+  Result:= CartItem;
 end;
 
 { SavedForLaterItems_SavedForLaterItemArray }
 
-function SavedForLaterItems_SavedForLaterItemArray.GetItem(AIndex: Integer): CartItem_Type;
+function SavedForLaterItems_SavedForLaterItemArray.GetItem(AIndex: Integer): CartItem;
 begin
-  Result := Inherited GetItem(AIndex) As CartItem_Type;
+  Result := CartItem(Inherited GetItem(AIndex));
 end;
 
 class function SavedForLaterItems_SavedForLaterItemArray.GetItemClass(): TBaseRemotableClass;
 begin
-  Result:= CartItem_Type;
+  Result:= CartItem;
 end;
 
 { CartItem_MetaData_Type }
 
 function CartItem_MetaData_Type.GetItem(AIndex: Integer): CartItem_MetaData_Type_KeyValuePair_Type;
 begin
-  Result := Inherited GetItem(AIndex) As CartItem_MetaData_Type_KeyValuePair_Type;
+  Result := CartItem_MetaData_Type_KeyValuePair_Type(Inherited GetItem(AIndex));
 end;
 
 class function CartItem_MetaData_Type.GetItemClass(): TBaseRemotableClass;
@@ -20876,7 +25543,7 @@ end;
 
 function Transaction_TransactionItems_Type.GetItem(AIndex: Integer): TransactionItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TransactionItem_Type;
+  Result := TransactionItem_Type(Inherited GetItem(AIndex));
 end;
 
 class function Transaction_TransactionItems_Type.GetItemClass(): TBaseRemotableClass;
@@ -20932,11 +25599,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type.Assign(Source: TPersistent);
+var
+  src : Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type) then begin
+    src := Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { Transaction_Shipments_Type_Shipment_Type_Packages_Type }
 
 function Transaction_Shipments_Type_Shipment_Type_Packages_Type.GetItem(AIndex: Integer): Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type;
+  Result := Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type(Inherited GetItem(AIndex));
 end;
 
 class function Transaction_Shipments_Type_Shipment_Type_Packages_Type.GetItemClass(): TBaseRemotableClass;
@@ -20948,7 +25634,7 @@ end;
 
 function Transaction_Shipments_Type.GetItem(AIndex: Integer): Transaction_Shipments_Type_Shipment_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Transaction_Shipments_Type_Shipment_Type;
+  Result := Transaction_Shipments_Type_Shipment_Type(Inherited GetItem(AIndex));
 end;
 
 class function Transaction_Shipments_Type.GetItemClass(): TBaseRemotableClass;
@@ -20960,7 +25646,7 @@ end;
 
 function TransactionItem_ChildTransactionItems_Type.GetItem(AIndex: Integer): TransactionItem_Type;
 begin
-  Result := Inherited GetItem(AIndex) As TransactionItem_Type;
+  Result := TransactionItem_Type(Inherited GetItem(AIndex));
 end;
 
 class function TransactionItem_ChildTransactionItems_Type.GetItemClass(): TBaseRemotableClass;
@@ -20972,7 +25658,7 @@ end;
 
 function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray.GetItem(AIndex: Integer): Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type;
+  Result := Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type(Inherited GetItem(AIndex));
 end;
 
 class function Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray.GetItemClass(): TBaseRemotableClass;
@@ -20984,7 +25670,7 @@ end;
 
 function Seller_SellerFeedbackSummary_Type.GetItem(AIndex: Integer): Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type;
 begin
-  Result := Inherited GetItem(AIndex) As Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type;
+  Result := Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type(Inherited GetItem(AIndex));
 end;
 
 class function Seller_SellerFeedbackSummary_Type.GetItemClass(): TBaseRemotableClass;
@@ -20996,7 +25682,7 @@ end;
 
 function SellerFeedback_Type.GetItem(AIndex: Integer): SellerFeedback_Feedback_Type;
 begin
-  Result := Inherited GetItem(AIndex) As SellerFeedback_Feedback_Type;
+  Result := SellerFeedback_Feedback_Type(Inherited GetItem(AIndex));
 end;
 
 class function SellerFeedback_Type.GetItemClass(): TBaseRemotableClass;
@@ -21008,7 +25694,7 @@ end;
 
 function ItemAttributes_Languages_Type.GetItem(AIndex: Integer): ItemAttributes_Languages_Type_Language_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ItemAttributes_Languages_Type_Language_Type;
+  Result := ItemAttributes_Languages_Type_Language_Type(Inherited GetItem(AIndex));
 end;
 
 class function ItemAttributes_Languages_Type.GetItemClass(): TBaseRemotableClass;
@@ -21064,6 +25750,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_ActorArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_ActorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_ActorArray) then begin
+    src := ItemAttributes_ActorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_AgeArray }
 
 function ItemAttributes_AgeArray.GetItem(AIndex: Integer): string;
@@ -21110,6 +25815,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_AgeArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_AgeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_AgeArray) then begin
+    src := ItemAttributes_AgeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_ArtistArray }
@@ -21160,6 +25884,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_ArtistArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_ArtistArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_ArtistArray) then begin
+    src := ItemAttributes_ArtistArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_AudioFormatArray }
 
 function ItemAttributes_AudioFormatArray.GetItem(AIndex: Integer): string;
@@ -21206,6 +25949,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_AudioFormatArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_AudioFormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_AudioFormatArray) then begin
+    src := ItemAttributes_AudioFormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_AuthorArray }
@@ -21256,6 +26018,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_AuthorArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_AuthorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_AuthorArray) then begin
+    src := ItemAttributes_AuthorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_CameraManualFeaturesArray }
 
 function ItemAttributes_CameraManualFeaturesArray.GetItem(AIndex: Integer): string;
@@ -21302,6 +26083,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_CameraManualFeaturesArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_CameraManualFeaturesArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_CameraManualFeaturesArray) then begin
+    src := ItemAttributes_CameraManualFeaturesArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_CategoryArray }
@@ -21352,6 +26152,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_CategoryArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_CategoryArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_CategoryArray) then begin
+    src := ItemAttributes_CategoryArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_CategoryBinArray }
 
 function ItemAttributes_CategoryBinArray.GetItem(AIndex: Integer): string;
@@ -21398,6 +26217,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_CategoryBinArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_CategoryBinArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_CategoryBinArray) then begin
+    src := ItemAttributes_CategoryBinArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_CharacterArray }
@@ -21448,6 +26286,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_CharacterArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_CharacterArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_CharacterArray) then begin
+    src := ItemAttributes_CharacterArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_CompatibleDevicesArray }
 
 function ItemAttributes_CompatibleDevicesArray.GetItem(AIndex: Integer): string;
@@ -21496,11 +26353,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_CompatibleDevicesArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_CompatibleDevicesArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_CompatibleDevicesArray) then begin
+    src := ItemAttributes_CompatibleDevicesArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_CreatorArray }
 
 function ItemAttributes_CreatorArray.GetItem(AIndex: Integer): ItemAttributes_Creator_Type;
 begin
-  Result := Inherited GetItem(AIndex) As ItemAttributes_Creator_Type;
+  Result := ItemAttributes_Creator_Type(Inherited GetItem(AIndex));
 end;
 
 class function ItemAttributes_CreatorArray.GetItemClass(): TBaseRemotableClass;
@@ -21556,6 +26432,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_DataLinkProtocolArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_DataLinkProtocolArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_DataLinkProtocolArray) then begin
+    src := ItemAttributes_DataLinkProtocolArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_DirectorArray }
 
 function ItemAttributes_DirectorArray.GetItem(AIndex: Integer): string;
@@ -21602,6 +26497,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_DirectorArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_DirectorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_DirectorArray) then begin
+    src := ItemAttributes_DirectorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_EducationalFocusArray }
@@ -21652,6 +26566,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_EducationalFocusArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_EducationalFocusArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_EducationalFocusArray) then begin
+    src := ItemAttributes_EducationalFocusArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_EthnicityArray }
 
 function ItemAttributes_EthnicityArray.GetItem(AIndex: Integer): string;
@@ -21698,6 +26631,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_EthnicityArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_EthnicityArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_EthnicityArray) then begin
+    src := ItemAttributes_EthnicityArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_FeatureArray }
@@ -21748,6 +26700,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_FeatureArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_FeatureArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_FeatureArray) then begin
+    src := ItemAttributes_FeatureArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_FormatArray }
 
 function ItemAttributes_FormatArray.GetItem(AIndex: Integer): string;
@@ -21794,6 +26765,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_FormatArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_FormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_FormatArray) then begin
+    src := ItemAttributes_FormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_FormFactorArray }
@@ -21844,6 +26834,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_FormFactorArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_FormFactorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_FormFactorArray) then begin
+    src := ItemAttributes_FormFactorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_GemTypeSetElementArray }
 
 function ItemAttributes_GemTypeSetElementArray.GetItem(AIndex: Integer): string;
@@ -21890,6 +26899,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_GemTypeSetElementArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_GemTypeSetElementArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_GemTypeSetElementArray) then begin
+    src := ItemAttributes_GemTypeSetElementArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_GenderArray }
@@ -21940,6 +26968,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_GenderArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_GenderArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_GenderArray) then begin
+    src := ItemAttributes_GenderArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_IngredientsSetElementArray }
 
 function ItemAttributes_IngredientsSetElementArray.GetItem(AIndex: Integer): string;
@@ -21986,6 +27033,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_IngredientsSetElementArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_IngredientsSetElementArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_IngredientsSetElementArray) then begin
+    src := ItemAttributes_IngredientsSetElementArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_InterestArray }
@@ -22036,6 +27102,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_InterestArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_InterestArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_InterestArray) then begin
+    src := ItemAttributes_InterestArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_LanguageNameArray }
 
 function ItemAttributes_LanguageNameArray.GetItem(AIndex: Integer): string;
@@ -22082,6 +27167,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_LanguageNameArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_LanguageNameArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_LanguageNameArray) then begin
+    src := ItemAttributes_LanguageNameArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_MaterialTypeSetElementArray }
@@ -22132,6 +27236,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_MaterialTypeSetElementArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_MaterialTypeSetElementArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_MaterialTypeSetElementArray) then begin
+    src := ItemAttributes_MaterialTypeSetElementArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_PantLengthArray }
 
 function ItemAttributes_PantLengthArray.GetItem(AIndex: Integer): string;
@@ -22178,6 +27301,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_PantLengthArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PantLengthArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PantLengthArray) then begin
+    src := ItemAttributes_PantLengthArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_PantSizeArray }
@@ -22228,6 +27370,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_PantSizeArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PantSizeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PantSizeArray) then begin
+    src := ItemAttributes_PantSizeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_PhotoFlashTypeArray }
 
 function ItemAttributes_PhotoFlashTypeArray.GetItem(AIndex: Integer): string;
@@ -22274,6 +27435,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_PhotoFlashTypeArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PhotoFlashTypeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PhotoFlashTypeArray) then begin
+    src := ItemAttributes_PhotoFlashTypeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_PictureFormatArray }
@@ -22324,6 +27504,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_PictureFormatArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PictureFormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PictureFormatArray) then begin
+    src := ItemAttributes_PictureFormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_PlatformArray }
 
 function ItemAttributes_PlatformArray.GetItem(AIndex: Integer): string;
@@ -22370,6 +27569,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_PlatformArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PlatformArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PlatformArray) then begin
+    src := ItemAttributes_PlatformArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_PrimaryColorArray }
@@ -22420,6 +27638,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_PrimaryColorArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_PrimaryColorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_PrimaryColorArray) then begin
+    src := ItemAttributes_PrimaryColorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_ReturnMethodArray }
 
 function ItemAttributes_ReturnMethodArray.GetItem(AIndex: Integer): string;
@@ -22466,6 +27703,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_ReturnMethodArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_ReturnMethodArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_ReturnMethodArray) then begin
+    src := ItemAttributes_ReturnMethodArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_ShoeSizeArray }
@@ -22516,6 +27772,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_ShoeSizeArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_ShoeSizeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_ShoeSizeArray) then begin
+    src := ItemAttributes_ShoeSizeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_SpecialFeaturesArray }
 
 function ItemAttributes_SpecialFeaturesArray.GetItem(AIndex: Integer): string;
@@ -22562,6 +27837,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure ItemAttributes_SpecialFeaturesArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_SpecialFeaturesArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_SpecialFeaturesArray) then begin
+    src := ItemAttributes_SpecialFeaturesArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { ItemAttributes_SupportedImageTypeArray }
@@ -22612,6 +27906,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_SupportedImageTypeArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_SupportedImageTypeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_SupportedImageTypeArray) then begin
+    src := ItemAttributes_SupportedImageTypeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { ItemAttributes_TargetBrandArray }
 
 function ItemAttributes_TargetBrandArray.GetItem(AIndex: Integer): string;
@@ -22660,11 +27973,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure ItemAttributes_TargetBrandArray.Assign(Source: TPersistent);
+var
+  src : ItemAttributes_TargetBrandArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(ItemAttributes_TargetBrandArray) then begin
+    src := ItemAttributes_TargetBrandArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_Languages_Type }
 
 function MerchantItemAttributes_Languages_Type.GetItem(AIndex: Integer): MerchantItemAttributes_Languages_Type_Language_Type;
 begin
-  Result := Inherited GetItem(AIndex) As MerchantItemAttributes_Languages_Type_Language_Type;
+  Result := MerchantItemAttributes_Languages_Type_Language_Type(Inherited GetItem(AIndex));
 end;
 
 class function MerchantItemAttributes_Languages_Type.GetItemClass(): TBaseRemotableClass;
@@ -22720,6 +28052,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_ActorArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_ActorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_ActorArray) then begin
+    src := MerchantItemAttributes_ActorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_ArtistArray }
 
 function MerchantItemAttributes_ArtistArray.GetItem(AIndex: Integer): string;
@@ -22766,6 +28117,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_ArtistArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_ArtistArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_ArtistArray) then begin
+    src := MerchantItemAttributes_ArtistArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_AudioFormatArray }
@@ -22816,6 +28186,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_AudioFormatArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_AudioFormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_AudioFormatArray) then begin
+    src := MerchantItemAttributes_AudioFormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_AuthorArray }
 
 function MerchantItemAttributes_AuthorArray.GetItem(AIndex: Integer): string;
@@ -22862,6 +28251,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_AuthorArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_AuthorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_AuthorArray) then begin
+    src := MerchantItemAttributes_AuthorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_CameraManualFeaturesArray }
@@ -22912,11 +28320,30 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_CameraManualFeaturesArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_CameraManualFeaturesArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_CameraManualFeaturesArray) then begin
+    src := MerchantItemAttributes_CameraManualFeaturesArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_CreatorArray }
 
 function MerchantItemAttributes_CreatorArray.GetItem(AIndex: Integer): MerchantItemAttributes_Creator_Type;
 begin
-  Result := Inherited GetItem(AIndex) As MerchantItemAttributes_Creator_Type;
+  Result := MerchantItemAttributes_Creator_Type(Inherited GetItem(AIndex));
 end;
 
 class function MerchantItemAttributes_CreatorArray.GetItemClass(): TBaseRemotableClass;
@@ -22972,6 +28399,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_DirectorArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_DirectorArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_DirectorArray) then begin
+    src := MerchantItemAttributes_DirectorArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_FeatureArray }
 
 function MerchantItemAttributes_FeatureArray.GetItem(AIndex: Integer): string;
@@ -23018,6 +28464,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_FeatureArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_FeatureArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_FeatureArray) then begin
+    src := MerchantItemAttributes_FeatureArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_FormatArray }
@@ -23068,6 +28533,92 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_FormatArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_FormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_FormatArray) then begin
+    src := MerchantItemAttributes_FormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
+{ MerchantItemAttributes_IngredientsSetElementArray }
+
+function MerchantItemAttributes_IngredientsSetElementArray.GetItem(AIndex: Integer): string;
+begin
+  CheckIndex(AIndex);
+  Result := FData[AIndex];
+end;
+
+procedure MerchantItemAttributes_IngredientsSetElementArray.SetItem(AIndex: Integer;const AValue: string);
+begin
+  CheckIndex(AIndex);
+  FData[AIndex] := AValue;
+end;
+
+function MerchantItemAttributes_IngredientsSetElementArray.GetLength(): Integer;
+begin
+  Result := System.Length(FData);
+end;
+
+procedure MerchantItemAttributes_IngredientsSetElementArray.SaveItem(AStore: IFormatterBase;const AName: String; const AIndex: Integer);
+begin
+  AStore.Put('IngredientsSetElement',TypeInfo(string),FData[AIndex]);
+end;
+
+procedure MerchantItemAttributes_IngredientsSetElementArray.LoadItem(AStore: IFormatterBase;const AIndex: Integer);
+var
+  sName : string;
+begin
+  sName := 'IngredientsSetElement';
+  AStore.Get(TypeInfo(string),sName,FData[AIndex]);
+end;
+
+class function MerchantItemAttributes_IngredientsSetElementArray.GetItemTypeInfo(): PTypeInfo;
+begin
+  Result := TypeInfo(string);
+end;
+
+procedure MerchantItemAttributes_IngredientsSetElementArray.SetLength(const ANewSize: Integer);
+var
+  i : Integer;
+begin
+  if ( ANewSize < 0 ) then
+    i := 0
+  else
+    i := ANewSize;
+  System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_IngredientsSetElementArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_IngredientsSetElementArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_IngredientsSetElementArray) then begin
+    src := MerchantItemAttributes_IngredientsSetElementArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_PhotoFlashTypeArray }
 
 function MerchantItemAttributes_PhotoFlashTypeArray.GetItem(AIndex: Integer): string;
@@ -23114,6 +28665,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_PhotoFlashTypeArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_PhotoFlashTypeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_PhotoFlashTypeArray) then begin
+    src := MerchantItemAttributes_PhotoFlashTypeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_PictureFormatArray }
@@ -23164,6 +28734,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_PictureFormatArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_PictureFormatArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_PictureFormatArray) then begin
+    src := MerchantItemAttributes_PictureFormatArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_PlatformArray }
 
 function MerchantItemAttributes_PlatformArray.GetItem(AIndex: Integer): string;
@@ -23210,6 +28799,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_PlatformArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_PlatformArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_PlatformArray) then begin
+    src := MerchantItemAttributes_PlatformArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_PurchasingChannelArray }
@@ -23260,6 +28868,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_PurchasingChannelArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_PurchasingChannelArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_PurchasingChannelArray) then begin
+    src := MerchantItemAttributes_PurchasingChannelArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_ReturnMethodArray }
 
 function MerchantItemAttributes_ReturnMethodArray.GetItem(AIndex: Integer): string;
@@ -23306,6 +28933,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_ReturnMethodArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_ReturnMethodArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_ReturnMethodArray) then begin
+    src := MerchantItemAttributes_ReturnMethodArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 { MerchantItemAttributes_SpecialFeaturesArray }
@@ -23356,6 +29002,25 @@ begin
   System.SetLength(FData,i);
 end;
 
+procedure MerchantItemAttributes_SpecialFeaturesArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_SpecialFeaturesArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_SpecialFeaturesArray) then begin
+    src := MerchantItemAttributes_SpecialFeaturesArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
+end;
+
 { MerchantItemAttributes_SupportedImageTypeArray }
 
 function MerchantItemAttributes_SupportedImageTypeArray.GetItem(AIndex: Integer): string;
@@ -23402,6 +29067,25 @@ begin
   else
     i := ANewSize;
   System.SetLength(FData,i);
+end;
+
+procedure MerchantItemAttributes_SupportedImageTypeArray.Assign(Source: TPersistent);
+var
+  src : MerchantItemAttributes_SupportedImageTypeArray;
+  i, c : PtrInt;
+begin
+  if Assigned(Source) and Source.InheritsFrom(MerchantItemAttributes_SupportedImageTypeArray) then begin
+    src := MerchantItemAttributes_SupportedImageTypeArray(Source);
+    c := src.Length;
+    Self.SetLength(c);
+    if ( c > 0 ) then begin
+      for i := 0 to Pred(c) do begin
+        Self[i] := src[i];
+      end;
+    end;
+  end else begin
+    inherited Assign(Source);
+  end;
 end;
 
 
@@ -23958,6 +29642,90 @@ begin
   mm.SetOperationCustomData(
     sUNIT_NAME,
     'AWSECommerceServicePortType',
+    'VehicleSearch',
+    '_E_N_',
+    'VehicleSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehicleSearch',
+    'TRANSPORT_soapAction',
+    'http://soap.amazon.com'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehicleSearch',
+    'FORMAT_Input_EncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehicleSearch',
+    'FORMAT_OutputEncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartSearch',
+    '_E_N_',
+    'VehiclePartSearch'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartSearch',
+    'TRANSPORT_soapAction',
+    'http://soap.amazon.com'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartSearch',
+    'FORMAT_Input_EncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartSearch',
+    'FORMAT_OutputEncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartLookup',
+    '_E_N_',
+    'VehiclePartLookup'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartLookup',
+    'TRANSPORT_soapAction',
+    'http://soap.amazon.com'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartLookup',
+    'FORMAT_Input_EncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
+    'VehiclePartLookup',
+    'FORMAT_OutputEncodingStyle',
+    'literal'
+  );
+  mm.SetOperationCustomData(
+    sUNIT_NAME,
+    'AWSECommerceServicePortType',
     'MultiOperation',
     '_E_N_',
     'MultiOperation'
@@ -23986,578 +29754,737 @@ begin
 end;
 
 
+var
+  typeRegistryIntance : TTypeRegistry = nil;
 initialization
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest_HelpType_Type),'HelpRequest_HelpType_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_Availability_Type),'ItemSearchRequest_Availability_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_IdType_Type),'ItemLookupRequest_IdType_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest_ListType_Type),'ListSearchRequest_ListType_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest_ListType_Type),'ListLookupRequest_ListType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WishList','WishList');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WeddingRegistry','WeddingRegistry');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_SimilarityType_Type),'SimilarityLookupRequest_SimilarityType_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type_Action_Type),'CartModifyRequest_Items_Type_Item_Type_Action_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_OfferStatus_Type),'SellerListingSearchRequest_OfferStatus_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_IdType_Type),'SellerListingLookupRequest_IdType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_ASIN','ASIN');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_SKU','SKU');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Condition_Type),'Condition');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DeliveryMethod_Type),'DeliveryMethod');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(AudienceRating_Type),'AudienceRating');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_PG_13','PG-13');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_NC_17','NC-17');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__6','6');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__12','12');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__16','16');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__18','18');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(List_ListType_Type),'List_ListType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WishList','WishList');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WeddingRegistry','WeddingRegistry');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_BabyRegistry','BabyRegistry');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_Listmania','Listmania');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TagType_Type),'Tag_TagType_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TagType_Type)].RegisterExternalPropertyName('Tag_TagType_Type_Item','Item');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Help_Type),'Help');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpResponse_Type),'HelpResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearch_Type),'ItemSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchResponse_Type),'ItemSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookup_Type),'ItemLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupResponse_Type),'ItemLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookup_Type),'BrowseNodeLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupResponse_Type),'BrowseNodeLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearch_Type),'ListSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchResponse_Type),'ListSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookup_Type),'ListLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupResponse_Type),'ListLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearch_Type),'CustomerContentSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchResponse_Type),'CustomerContentSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookup_Type),'CustomerContentLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupResponse_Type),'CustomerContentLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookup_Type),'SimilarityLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupResponse_Type),'SimilarityLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookup_Type),'SellerLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupResponse_Type),'SellerLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGet_Type),'CartGet');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetResponse_Type),'CartGetResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAdd_Type),'CartAdd');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddResponse_Type),'CartAddResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreate_Type),'CartCreate');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateResponse_Type),'CartCreateResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModify_Type),'CartModify');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyResponse_Type),'CartModifyResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClear_Type),'CartClear');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearResponse_Type),'CartClearResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookup_Type),'TransactionLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupResponse_Type),'TransactionLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearch_Type),'SellerListingSearch');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_Type),'SellerListingSearchResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookup_Type),'SellerListingLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_Type),'SellerListingLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookup_Type),'TagLookup');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupResponse_Type),'TagLookupResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperation_Type),'MultiOperation');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MultiOperationResponse),'MultiOperationResponse');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_BinParameter_Type),'Bin_BinParameter_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_Type),'Bin');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchBinSet_Type),'SearchBinSet');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest_Type),'HelpRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_Type),'ItemSearchRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_Type),'ItemLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest_Type),'ListSearchRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest_Type),'ListLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest_Type),'CustomerContentSearchRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest_Type),'CustomerContentLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_Type),'SimilarityLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_Type),'SellerLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest_Type),'CartGetRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaData_Type),'CartAddRequest_Items_Type_Item_Type_MetaData_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type),'CartAddRequest_Items_Type_Item_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Type),'CartAddRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaData_Type),'CartCreateRequest_Items_Type_Item_Type_MetaData_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type),'CartCreateRequest_Items_Type_Item_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Type),'CartCreateRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type),'CartModifyRequest_Items_Type_Item_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Type),'CartModifyRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest_Type),'CartClearRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_Type),'TransactionLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_Type),'SellerListingSearchRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_Type),'SellerListingLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_Type),'TagLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_Type),'BrowseNodeLookupRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationRequest_Type),'OperationRequest');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Request_Type),'Request');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Arguments_Argument_Type),'Arguments_Argument_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Header_Type),'HTTPHeaders_Header_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Errors_Error_Type),'Errors_Error_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_Type),'Information');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Items_Type),'Items');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CorrectedQuery_Type),'CorrectedQuery');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Lists_Type),'Lists');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customers_Type),'Customers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Cart_Type),'Cart');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transactions_Type),'Transactions');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Sellers_Type),'Sellers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListings_Type),'SellerListings');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_Type),'OperationInformation');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_Type),'ResponseGroupInformation');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(List_Type),'List');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListItem_Type),'ListItem');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_Location_Type),'Customer_Location_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_Type),'Customer');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type),'SearchResultsMap_SearchIndex_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type),'Item_ImageSets_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type_AlternateVersion_Type),'Item_AlternateVersions_Type_AlternateVersion_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Type),'Item');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tags_Type),'Tags');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_Type),'Tag');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedItems_Type),'TaggedItems');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedListmaniaLists_Type),'TaggedListmaniaLists');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TaggedGuides_Type),'TaggedGuides');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Guide_Type),'Guide');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tagging_Type),'Tagging');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferSummary_Type),'OfferSummary');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_Type),'Offers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_Type),'Offer');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferAttributes_Type),'OfferAttributes');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Merchant_Type),'Merchant');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_AvailabilityAttributes_Type),'OfferListing_AvailabilityAttributes_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingCharge_Type),'OfferListing_ShippingCharge_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_Type),'OfferListing');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(LoyaltyPoints_Type),'LoyaltyPoints');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationSummary_Type),'VariationSummary');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Variations_Type),'Variations');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionSummary_Type),'Collections_Collection_Type_CollectionSummary_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionParent_Type),'Collections_Collection_Type_CollectionParent_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItem_Type),'Collections_Collection_Type_CollectionItem_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type),'Collections_Collection_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReview_Type),'EditorialReview');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerReviews_Type),'CustomerReviews');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Review_Type),'Review');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Reviewer_Type),'Reviewer');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_Track_Type),'Tracks_Disc_Type_Track_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type),'Tracks_Disc_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarProducts_SimilarProduct_Type),'SimilarProducts_SimilarProduct_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TopSellers_TopSeller_Type),'TopSellers_TopSeller_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NewReleases_NewRelease_Type),'NewReleases_NewRelease_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_SimilarViewedProduct_Type),'SimilarViewedProducts_SimilarViewedProduct_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type),'OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Accessories_Accessory_Type),'Accessories_Accessory_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Summary_Type),'Promotion_Summary_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Details_Type),'Promotion_Details_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotion_Type),'Promotion');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefit_Type),'PromotionBenefit');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirement_Type),'PromotionEligibilityRequirement');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionItemApplicability_Type),'PromotionItemApplicability');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_Type),'BrowseNodes');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Property_Type),'Property');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Type),'BrowseNode');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_ListmaniaList_Type),'ListmaniaLists_ListmaniaList_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Excerpt_Type),'SearchInside_Excerpt_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchInside_Type),'SearchInside');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_Type),'CartItems');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_Type),'SavedForLaterItems');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type_KeyValuePair_Type),'CartItem_MetaData_Type_KeyValuePair_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_Type),'CartItem');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Totals_Type),'Transaction_Totals_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type),'Transaction_Shipments_Type_Shipment_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Type),'Transaction');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionItem_Type),'TransactionItem');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_Location_Type),'Seller_Location_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_Type),'Seller');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerFeedback_Feedback_Type),'SellerFeedback_Feedback_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Address_Type),'Address');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListing_Type),'SellerListing');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Price_Type),'Price');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ImageSet_Type),'ImageSet');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Image_Type),'Image');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Creator_Type),'ItemAttributes_Creator_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ItemDimensions_Type),'ItemAttributes_ItemDimensions_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type_Language_Type),'ItemAttributes_Languages_Type_Language_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PackageDimensions_Type),'ItemAttributes_PackageDimensions_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Type),'ItemAttributes');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Creator_Type),'MerchantItemAttributes_Creator_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ItemDimensions_Type),'MerchantItemAttributes_ItemDimensions_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type),'MerchantItemAttributes_Languages_Type_Language_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PackageDimensions_Type),'MerchantItemAttributes_PackageDimensions_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_VendorRebate_Type),'MerchantItemAttributes_VendorRebate_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Type),'MerchantItemAttributes');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NonNegativeIntegerWithUnits_Type),'NonNegativeIntegerWithUnits');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(DecimalWithUnits_Type),'DecimalWithUnits');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(StringWithUnits_Type),'StringWithUnits');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Help_RequestArray),'Help_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Help_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpResponse_InformationArray),'HelpResponse_InformationArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(HelpResponse_InformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearch_RequestArray),'ItemSearch_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchResponse_ItemsArray),'ItemSearchResponse_ItemsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemSearchResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookup_RequestArray),'ItemLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupResponse_ItemsArray),'ItemLookupResponse_ItemsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemLookupResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookup_RequestArray),'BrowseNodeLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupResponse_BrowseNodesArray),'BrowseNodeLookupResponse_BrowseNodesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupResponse_BrowseNodesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearch_RequestArray),'ListSearch_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchResponse_ListsArray),'ListSearchResponse_ListsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListSearchResponse_ListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookup_RequestArray),'ListLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupResponse_ListsArray),'ListLookupResponse_ListsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupResponse_ListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearch_RequestArray),'CustomerContentSearch_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchResponse_CustomersArray),'CustomerContentSearchResponse_CustomersArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentSearchResponse_CustomersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookup_RequestArray),'CustomerContentLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupResponse_CustomersArray),'CustomerContentLookupResponse_CustomersArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentLookupResponse_CustomersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookup_RequestArray),'SimilarityLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SimilarityLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupResponse_ItemsArray),'SimilarityLookupResponse_ItemsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SimilarityLookupResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookup_RequestArray),'SellerLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupResponse_SellersArray),'SellerLookupResponse_SellersArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerLookupResponse_SellersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGet_RequestArray),'CartGet_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartGet_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetResponse_CartArray),'CartGetResponse_CartArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartGetResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAdd_RequestArray),'CartAdd_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAdd_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddResponse_CartArray),'CartAddResponse_CartArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreate_RequestArray),'CartCreate_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreate_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateResponse_CartArray),'CartCreateResponse_CartArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModify_RequestArray),'CartModify_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModify_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyResponse_CartArray),'CartModifyResponse_CartArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClear_RequestArray),'CartClear_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClear_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearResponse_CartArray),'CartClearResponse_CartArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookup_RequestArray),'TransactionLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupResponse_TransactionsArray),'TransactionLookupResponse_TransactionsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupResponse_TransactionsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearch_RequestArray),'SellerListingSearch_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_SellerListingsArray),'SellerListingSearchResponse_SellerListingsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearchResponse_SellerListingsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookup_RequestArray),'SellerListingLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_SellerListingsArray),'SellerListingLookupResponse_SellerListingsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupResponse_SellerListingsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookup_RequestArray),'TagLookup_RequestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupResponse_TagsArray),'TagLookupResponse_TagsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupResponse_TagsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Bin_BinParameterArray),'Bin_BinParameterArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Bin_BinParameterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchBinSet_BinArray),'SearchBinSet_BinArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SearchBinSet_BinArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchBinSets_Type),'SearchBinSets');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HelpRequest_ResponseGroupArray),'HelpRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(HelpRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_AudienceRatingArray),'ItemSearchRequest_AudienceRatingArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemSearchRequest_AudienceRatingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_ResponseGroupArray),'ItemSearchRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_ItemIdArray),'ItemLookupRequest_ItemIdArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemLookupRequest_ItemIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_ResponseGroupArray),'ItemLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListSearchRequest_ResponseGroupArray),'ListSearchRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListLookupRequest_ResponseGroupArray),'ListLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest_ResponseGroupArray),'CustomerContentSearchRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest_ResponseGroupArray),'CustomerContentLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerContentLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_ItemIdArray),'SimilarityLookupRequest_ItemIdArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SimilarityLookupRequest_ItemIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_ResponseGroupArray),'SimilarityLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SimilarityLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_ResponseGroupArray),'SellerLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_SellerIdArray),'SellerLookupRequest_SellerIdArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerLookupRequest_SellerIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartGetRequest_ResponseGroupArray),'CartGetRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartGetRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray),'CartAddRequest_Items_Type_Item_Type_MetaDataArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type),'CartAddRequest_Items_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartAddRequest_ResponseGroupArray),'CartAddRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartAddRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray),'CartCreateRequest_Items_Type_Item_Type_MetaDataArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type),'CartCreateRequest_Items_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartCreateRequest_ResponseGroupArray),'CartCreateRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartCreateRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type),'CartModifyRequest_Items_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartModifyRequest_ResponseGroupArray),'CartModifyRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartModifyRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartClearRequest_ResponseGroupArray),'CartClearRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_ResponseGroupArray),'TransactionLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_TransactionIdArray),'TransactionLookupRequest_TransactionIdArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TransactionLookupRequest_TransactionIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_ResponseGroupArray),'SellerListingSearchRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_ResponseGroupArray),'SellerListingLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_TagNameArray),'TagLookupRequest_TagNameArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupRequest_TagNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TagLookupRequest_ResponseGroupArray),'TagLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TagLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray),'BrowseNodeLookupRequest_BrowseNodeIdArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray),'BrowseNodeLookupRequest_ResponseGroupArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Arguments_Type),'Arguments');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Type),'HTTPHeaders');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Errors_Type),'Errors');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_OperationInformationArray),'Information_OperationInformationArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Information_OperationInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Information_ResponseGroupInformationArray),'Information_ResponseGroupInformationArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Information_ResponseGroupInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Items__ItemArray),'Items__ItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items__ItemArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Lists_ListArray),'Lists_ListArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Lists_ListArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customers_CustomerArray),'Customers_CustomerArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Customers_CustomerArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transactions_TransactionArray),'Transactions_TransactionArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Transactions_TransactionArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Sellers_SellerArray),'Sellers_SellerArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Sellers_SellerArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerListings_SellerListingArray),'SellerListings_SellerListingArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SellerListings_SellerListingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_RequiredParameters_Type),'OperationInformation_RequiredParameters_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_AvailableParameters_Type),'OperationInformation_AvailableParameters_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_DefaultResponseGroups_Type),'OperationInformation_DefaultResponseGroups_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OperationInformation_AvailableResponseGroups_Type),'OperationInformation_AvailableResponseGroups_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_ValidOperations_Type),'ResponseGroupInformation_ValidOperations_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_Elements_Type),'ResponseGroupInformation_Elements_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(List_ListItemArray),'List_ListItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(List_ListItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Customer_CustomerReviewsArray),'Customer_CustomerReviewsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Customer_CustomerReviewsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray),'SearchResultsMap_SearchIndex_Type_ASINArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SearchResultsMap_Type),'SearchResultsMap');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type_ImageSetArray),'Item_ImageSets_Type_ImageSetArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Item_ImageSets_Type_ImageSetArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_Subjects_Type),'Item_Subjects_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type),'Item_AlternateVersions_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(_Item_ImageSetsArray),'_Item_ImageSetsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(_Item_ImageSetsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tags_TagArray),'Tags_TagArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tags_TagArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedItemsArray),'Tag_TaggedItemsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedListmaniaListsArray),'Tag_TaggedListmaniaListsArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedListmaniaListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tag_TaggedGuidesArray),'Tag_TaggedGuidesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tag_TaggedGuidesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offers_OfferArray),'Offers_OfferArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Offers_OfferArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Offer_OfferListingArray),'Offer_OfferListingArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Offer_OfferListingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingChargeArray),'OfferListing_ShippingChargeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(OfferListing_ShippingChargeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Variations__ItemArray),'Variations__ItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(VariationDimensions_Type),'VariationDimensions');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(EditorialReviews_Type),'EditorialReviews');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItemArray),'Collections_Collection_Type_CollectionItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Collections_Type),'Collections');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CustomerReviews_ReviewArray),'CustomerReviews_ReviewArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CustomerReviews_ReviewArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_TrackArray),'Tracks_Disc_Type_TrackArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Tracks_Disc_Type_TrackArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Tracks_Type),'Tracks');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarProducts_Type),'SimilarProducts');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TopSellers_Type),'TopSellers');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(NewReleases_Type),'NewReleases');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_Type),'SimilarViewedProducts');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_Type),'OtherCategoriesSimilarProducts');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Accessories_Type),'Accessories');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Promotions_Type),'Promotions');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirements_Type),'PromotionEligibilityRequirements');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(PromotionBenefits_Type),'PromotionBenefits');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNodes_BrowseNodeArray),'BrowseNodes_BrowseNodeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(BrowseNodes_BrowseNodeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Properties_Type),'BrowseNode_Properties_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Children_Type),'BrowseNode_Children_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(BrowseNode_Ancestors_Type),'BrowseNode_Ancestors_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ListmaniaLists_Type),'ListmaniaLists');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItems_CartItemArray),'CartItems_CartItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(CartItems_CartItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_SavedForLaterItemArray),'SavedForLaterItems_SavedForLaterItemArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(SavedForLaterItems_SavedForLaterItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type),'CartItem_MetaData_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_TransactionItems_Type),'Transaction_TransactionItems_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type),'Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Package');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type),'Transaction_Shipments_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(TransactionItem_ChildTransactionItems_Type),'TransactionItem_ChildTransactionItems_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type),'Seller_SellerFeedbackSummary_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(SellerFeedback_Type),'SellerFeedback');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type),'ItemAttributes_Languages_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ActorArray),'ItemAttributes_ActorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_AgeArray),'ItemAttributes_AgeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_AgeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ArtistArray),'ItemAttributes_ArtistArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_AudioFormatArray),'ItemAttributes_AudioFormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_AudioFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_AuthorArray),'ItemAttributes_AuthorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CameraManualFeaturesArray),'ItemAttributes_CameraManualFeaturesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CameraManualFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryArray),'ItemAttributes_CategoryArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryBinArray),'ItemAttributes_CategoryBinArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryBinArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CharacterArray),'ItemAttributes_CharacterArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CharacterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CompatibleDevicesArray),'ItemAttributes_CompatibleDevicesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CompatibleDevicesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_CreatorArray),'ItemAttributes_CreatorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_CreatorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_DataLinkProtocolArray),'ItemAttributes_DataLinkProtocolArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_DataLinkProtocolArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_DirectorArray),'ItemAttributes_DirectorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_DirectorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_EducationalFocusArray),'ItemAttributes_EducationalFocusArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_EducationalFocusArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_EthnicityArray),'ItemAttributes_EthnicityArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_EthnicityArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FeatureArray),'ItemAttributes_FeatureArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FeatureArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormatArray),'ItemAttributes_FormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormFactorArray),'ItemAttributes_FormFactorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_FormFactorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_GemTypeSetElementArray),'ItemAttributes_GemTypeSetElementArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_GemTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_GenderArray),'ItemAttributes_GenderArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_GenderArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_IngredientsSetElementArray),'ItemAttributes_IngredientsSetElementArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_IngredientsSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_InterestArray),'ItemAttributes_InterestArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_InterestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_LanguageNameArray),'ItemAttributes_LanguageNameArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_LanguageNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_MaterialTypeSetElementArray),'ItemAttributes_MaterialTypeSetElementArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_MaterialTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantLengthArray),'ItemAttributes_PantLengthArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PantLengthArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantSizeArray),'ItemAttributes_PantSizeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PantSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PhotoFlashTypeArray),'ItemAttributes_PhotoFlashTypeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PhotoFlashTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PictureFormatArray),'ItemAttributes_PictureFormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PictureFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PlatformArray),'ItemAttributes_PlatformArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PlatformArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_PrimaryColorArray),'ItemAttributes_PrimaryColorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_PrimaryColorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ReturnMethodArray),'ItemAttributes_ReturnMethodArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ReturnMethodArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_ShoeSizeArray),'ItemAttributes_ShoeSizeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_ShoeSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_SpecialFeaturesArray),'ItemAttributes_SpecialFeaturesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_SpecialFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_SupportedImageTypeArray),'ItemAttributes_SupportedImageTypeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(ItemAttributes_TargetBrandArray),'ItemAttributes_TargetBrandArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_TargetBrandArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type),'MerchantItemAttributes_Languages_Type');
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ActorArray),'MerchantItemAttributes_ActorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ArtistArray),'MerchantItemAttributes_ArtistArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_AudioFormatArray),'MerchantItemAttributes_AudioFormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_AudioFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_AuthorArray),'MerchantItemAttributes_AuthorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_CameraManualFeaturesArray),'MerchantItemAttributes_CameraManualFeaturesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_CameraManualFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_CreatorArray),'MerchantItemAttributes_CreatorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_CreatorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_DirectorArray),'MerchantItemAttributes_DirectorArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_DirectorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_FeatureArray),'MerchantItemAttributes_FeatureArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_FeatureArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_FormatArray),'MerchantItemAttributes_FormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_FormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PhotoFlashTypeArray),'MerchantItemAttributes_PhotoFlashTypeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PhotoFlashTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PictureFormatArray),'MerchantItemAttributes_PictureFormatArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PictureFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PlatformArray),'MerchantItemAttributes_PlatformArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PlatformArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PurchasingChannelArray),'MerchantItemAttributes_PurchasingChannelArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PurchasingChannelArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ReturnMethodArray),'MerchantItemAttributes_ReturnMethodArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ReturnMethodArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_SpecialFeaturesArray),'MerchantItemAttributes_SpecialFeaturesArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_SpecialFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-  GetTypeRegistry().Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_SupportedImageTypeArray),'MerchantItemAttributes_SupportedImageTypeArray');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
-
+  typeRegistryIntance := GetTypeRegistry();
   SearchBinSet_Type.RegisterAttributeProperty('NarrowBy');
-  HelpRequest_Type.RegisterAttributeProperty('About');
-  ItemLookupRequest_Type.RegisterAttributeProperty('VariationPage');
   Arguments_Argument_Type.RegisterAttributeProperty('Name');
   Arguments_Argument_Type.RegisterAttributeProperty('Value');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Name');
   HTTPHeaders_Header_Type.RegisterAttributeProperty('Value');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Items_Type)].RegisterExternalPropertyName('_Item','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ListItem_Type)].RegisterExternalPropertyName('_Item','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(TaggedItems_Type)].RegisterExternalPropertyName('_Item','Item');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Variations_Type)].RegisterExternalPropertyName('_Item','Item');
   Tracks_Disc_Type_Track_Type.RegisterAttributeProperty('Number');
   Tracks_Disc_Type.RegisterAttributeProperty('Number');
-  NewReleases_NewRelease_Type.RegisterAttributeProperty('Title');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type)].RegisterExternalPropertyName('_Type','Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type.RegisterAttributeProperty('_Type');
   Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type.RegisterAttributeProperty('Period');
-  Seller_Type.RegisterAttributeProperty('SellerFeedbackSummary');
   ImageSet_Type.RegisterAttributeProperty('Category');
   ItemAttributes_Creator_Type.RegisterAttributeProperty('Role');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(ItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
   MerchantItemAttributes_Creator_Type.RegisterAttributeProperty('Role');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_VendorRebate_Type)].RegisterExternalPropertyName('_Type','Type');
-  GetTypeRegistry().ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
-  NonNegativeIntegerWithUnits_Type.RegisterAttributeProperty('Units');
-  DecimalWithUnits_Type.RegisterAttributeProperty('Units');
-  StringWithUnits_Type.RegisterAttributeProperty('Units');
+  NonNegativeIntegerWithUnits.RegisterAttributeProperty('Units');
+  DecimalWithUnits.RegisterAttributeProperty('Units');
+  StringWithUnits.RegisterAttributeProperty('Units');
+
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HelpRequest_HelpType_Type),'HelpRequest_HelpType_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_Availability_Type),'ItemSearchRequest_Availability_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_IdType_Type),'ItemLookupRequest_IdType_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearchRequest_ListType_Type),'ListSearchRequest_ListType_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookupRequest_ListType_Type),'ListLookupRequest_ListType_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WishList','WishList');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListLookupRequest_ListType_Type)].RegisterExternalPropertyName('ListLookupRequest_ListType_Type_WeddingRegistry','WeddingRegistry');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_SimilarityType_Type),'SimilarityLookupRequest_SimilarityType_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type_Action_Type),'CartModifyRequest_Items_Type_Item_Type_Action_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_OfferStatus_Type),'SellerListingSearchRequest_OfferStatus_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_IdType_Type),'SellerListingLookupRequest_IdType_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_ASIN','ASIN');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_IdType_Type)].RegisterExternalPropertyName('SellerListingLookupRequest_IdType_Type_SKU','SKU');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Condition_Type),'Condition');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(DeliveryMethod_Type),'DeliveryMethod');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(AudienceRating_Type),'AudienceRating');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_PG_13','PG-13');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating_NC_17','NC-17');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__6','6');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__12','12');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__16','16');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(AudienceRating_Type)].RegisterExternalPropertyName('AudienceRating__18','18');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(List_ListType_Type),'List_ListType_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WishList','WishList');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_WeddingRegistry','WeddingRegistry');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_BabyRegistry','BabyRegistry');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(List_ListType_Type)].RegisterExternalPropertyName('List_ListType_Type_Listmania','Listmania');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(RelatedItems_Relationship_Type),'RelatedItems_Relationship_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tag_TagType_Type),'Tag_TagType_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tag_TagType_Type)].RegisterExternalPropertyName('Tag_TagType_Type_Item','Item');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Help_Type),'Help');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HelpResponse_Type),'HelpResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearch_Type),'ItemSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchResponse_Type),'ItemSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookup_Type),'ItemLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupResponse_Type),'ItemLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookup_Type),'BrowseNodeLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupResponse_Type),'BrowseNodeLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearch_Type),'ListSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearchResponse_Type),'ListSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookup_Type),'ListLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookupResponse_Type),'ListLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearch_Type),'CustomerContentSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearchResponse_Type),'CustomerContentSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookup_Type),'CustomerContentLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookupResponse_Type),'CustomerContentLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookup_Type),'SimilarityLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupResponse_Type),'SimilarityLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookup_Type),'SellerLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookupResponse_Type),'SellerLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGet_Type),'CartGet');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGetResponse_Type),'CartGetResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAdd_Type),'CartAdd');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddResponse_Type),'CartAddResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreate_Type),'CartCreate');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateResponse_Type),'CartCreateResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModify_Type),'CartModify');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyResponse_Type),'CartModifyResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClear_Type),'CartClear');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClearResponse_Type),'CartClearResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookup_Type),'TransactionLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookupResponse_Type),'TransactionLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearch_Type),'SellerListingSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_Type),'SellerListingSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookup_Type),'SellerListingLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_Type),'SellerListingLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookup_Type),'TagLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookupResponse_Type),'TagLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearch_Type),'VehicleSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearchResponse_Type),'VehicleSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearch_Type),'VehiclePartSearch');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearchResponse_Type),'VehiclePartSearchResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookup_Type),'VehiclePartLookup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookupResponse_Type),'VehiclePartLookupResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MultiOperation_Type),'MultiOperation');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MultiOperationResponse),'MultiOperationResponse');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Bin_BinParameter_Type),'Bin_BinParameter_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Bin_Type),'Bin');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchBinSet_Type),'SearchBinSet');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HelpRequest),'HelpRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchRequest),'ItemSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupRequest),'ItemLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearchRequest),'ListSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookupRequest),'ListLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest),'CustomerContentSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest),'CustomerContentLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest),'SimilarityLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookupRequest),'SellerLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGetRequest),'CartGetRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaData_Type),'CartAddRequest_Items_Type_Item_Type_MetaData_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type),'CartAddRequest_Items_Type_Item_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest),'CartAddRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaData_Type),'CartCreateRequest_Items_Type_Item_Type_MetaData_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type),'CartCreateRequest_Items_Type_Item_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest),'CartCreateRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type_Item_Type),'CartModifyRequest_Items_Type_Item_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyRequest),'CartModifyRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClearRequest),'CartClearRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest),'TransactionLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest),'SellerListingSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest),'SellerListingLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookupRequest),'TagLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest),'BrowseNodeLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearchRequest),'VehicleSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearchRequest),'VehiclePartSearchRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookupRequest),'VehiclePartLookupRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationRequest_Type),'OperationRequest');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Request_Type),'Request');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Arguments_Argument_Type),'Arguments_Argument_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Header_Type),'HTTPHeaders_Header_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Errors_Error_Type),'Errors_Error_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Information_Type),'Information');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Items_Type),'Items');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CorrectedQuery_Type),'CorrectedQuery');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Lists_Type),'Lists');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Customers_Type),'Customers');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Cart_Type),'Cart');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transactions_Type),'Transactions');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Sellers_Type),'Sellers');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListings_Type),'SellerListings');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationInformation_Type),'OperationInformation');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_Type),'ResponseGroupInformation');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(List_Type),'List');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListItem_Type),'ListItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Customer_Location_Type),'Customer_Location_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Customer_Type),'Customer');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type),'SearchResultsMap_SearchIndex_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type),'Item_ImageSets_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type_AlternateVersion_Type),'Item_AlternateVersions_Type_AlternateVersion_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_Type),'Item');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLink_Type),'ItemLink');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(RelatedItems_Type),'RelatedItems');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(RelatedItem_Type),'RelatedItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tags_Type),'Tags');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tag_Type),'Tag');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TaggedItems_Type),'TaggedItems');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TaggedListmaniaLists_Type),'TaggedListmaniaLists');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TaggedGuides_Type),'TaggedGuides');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Guide_Type),'Guide');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tagging),'Tagging');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferSummary_Type),'OfferSummary');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Offers_Type),'Offers');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Offer_Type),'Offer');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferAttributes_Type),'OfferAttributes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Merchant_Type),'Merchant');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferListing_AvailabilityAttributes_Type),'OfferListing_AvailabilityAttributes_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingCharge_Type),'OfferListing_ShippingCharge_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferListing_Type),'OfferListing');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(LoyaltyPoints_Type),'LoyaltyPoints');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VariationSummary_Type),'VariationSummary');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Variations_Type),'Variations');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionSummary_Type),'Collections_Collection_Type_CollectionSummary_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionParent_Type),'Collections_Collection_Type_CollectionParent_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItem_Type),'Collections_Collection_Type_CollectionItem_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type),'Collections_Collection_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(EditorialReview_Type),'EditorialReview');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerReviews_Type),'CustomerReviews');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Review_Type),'Review');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Reviewer_Type),'Reviewer');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_Track_Type),'Tracks_Disc_Type_Track_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type),'Tracks_Disc_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarProducts_SimilarProduct_Type),'SimilarProducts_SimilarProduct_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopSellers_TopSeller_Type),'TopSellers_TopSeller_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(NewReleases_NewRelease_Type),'NewReleases_NewRelease_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_TopItem_Type),'TopItemSet_TopItem_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_Type),'TopItemSet');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_SimilarViewedProduct_Type),'SimilarViewedProducts_SimilarViewedProduct_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type),'OtherCategoriesSimilarProducts_OtherCategoriesSimilarProduct_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Accessories_Accessory_Type),'Accessories_Accessory_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Promotion_Summary_Type),'Promotion_Summary_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Promotion_Details_Type),'Promotion_Details_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Promotion_Type),'Promotion');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PromotionBenefit),'PromotionBenefit');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirement),'PromotionEligibilityRequirement');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PromotionItemApplicability),'PromotionItemApplicability');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleYears_Type),'VehicleYears');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleYear_Type),'VehicleYear');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleMake_Type),'VehicleMake');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleModel_Type),'VehicleModel');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleTrim_Type),'VehicleTrim');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleOptions_Type),'VehicleOptions');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBed_Type),'VehicleBed');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBodyStyle_Type),'VehicleBodyStyle');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBrakes_Type),'VehicleBrakes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleDriveType_Type),'VehicleDriveType');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleEngine_Type),'VehicleEngine');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleMfrBodyCode_Type),'VehicleMfrBodyCode');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSpringTypes_Type),'VehicleSpringTypes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSteering_Type),'VehicleSteering');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleTransmission_Type),'VehicleTransmission');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleWheelbase_Type),'VehicleWheelbase');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleParts_Type),'VehicleParts');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Part_Type),'Part');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartFit_Type),'VehiclePartFit');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Fitments_Type),'Fitments');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Fitment_Type),'Fitment');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodes_Type),'BrowseNodes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Property_Type),'Property');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNode_Type),'BrowseNode');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListmaniaLists_ListmaniaList_Type),'ListmaniaLists_ListmaniaList_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchInside_Excerpt_Type),'SearchInside_Excerpt_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchInside_Type),'SearchInside');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartItems_Type),'CartItems');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_Type),'SavedForLaterItems');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type_KeyValuePair_Type),'CartItem_MetaData_Type_KeyValuePair_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartItem),'CartItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Totals_Type),'Transaction_Totals_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type_Package_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type),'Transaction_Shipments_Type_Shipment_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Type),'Transaction');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionItem_Type),'TransactionItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_Location_Type),'Seller_Location_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_Type),'Seller');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerFeedback_Feedback_Type),'SellerFeedback_Feedback_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Address),'Address');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListing_Type),'SellerListing');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Price),'Price');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ImageSet_Type),'ImageSet');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Image),'Image');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_Creator_Type),'ItemAttributes_Creator_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_ItemDimensions_Type),'ItemAttributes_ItemDimensions_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type_Language_Type),'ItemAttributes_Languages_Type_Language_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PackageDimensions_Type),'ItemAttributes_PackageDimensions_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_Type),'ItemAttributes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Creator_Type),'MerchantItemAttributes_Creator_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ItemDimensions_Type),'MerchantItemAttributes_ItemDimensions_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type),'MerchantItemAttributes_Languages_Type_Language_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PackageDimensions_Type),'MerchantItemAttributes_PackageDimensions_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_VendorRebate_Type),'MerchantItemAttributes_VendorRebate_Type');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Type),'MerchantItemAttributes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(NonNegativeIntegerWithUnits),'NonNegativeIntegerWithUnits');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(DecimalWithUnits),'DecimalWithUnits');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(StringWithUnits),'StringWithUnits');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Help_RequestArray),'Help_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Help_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HelpResponse_InformationArray),'HelpResponse_InformationArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(HelpResponse_InformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearch_RequestArray),'ItemSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchResponse_ItemsArray),'ItemSearchResponse_ItemsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemSearchResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookup_RequestArray),'ItemLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupResponse_ItemsArray),'ItemLookupResponse_ItemsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLookupResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookup_RequestArray),'BrowseNodeLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNodeLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupResponse_BrowseNodesArray),'BrowseNodeLookupResponse_BrowseNodesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNodeLookupResponse_BrowseNodesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearch_RequestArray),'ListSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearchResponse_ListsArray),'ListSearchResponse_ListsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListSearchResponse_ListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookup_RequestArray),'ListLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookupResponse_ListsArray),'ListLookupResponse_ListsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListLookupResponse_ListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearch_RequestArray),'CustomerContentSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearchResponse_CustomersArray),'CustomerContentSearchResponse_CustomersArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentSearchResponse_CustomersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookup_RequestArray),'CustomerContentLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookupResponse_CustomersArray),'CustomerContentLookupResponse_CustomersArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentLookupResponse_CustomersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookup_RequestArray),'SimilarityLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarityLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupResponse_ItemsArray),'SimilarityLookupResponse_ItemsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarityLookupResponse_ItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookup_RequestArray),'SellerLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookupResponse_SellersArray),'SellerLookupResponse_SellersArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerLookupResponse_SellersArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGet_RequestArray),'CartGet_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartGet_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGetResponse_CartArray),'CartGetResponse_CartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartGetResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAdd_RequestArray),'CartAdd_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartAdd_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddResponse_CartArray),'CartAddResponse_CartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartAddResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreate_RequestArray),'CartCreate_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartCreate_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateResponse_CartArray),'CartCreateResponse_CartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartCreateResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModify_RequestArray),'CartModify_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartModify_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyResponse_CartArray),'CartModifyResponse_CartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartModifyResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClear_RequestArray),'CartClear_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartClear_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClearResponse_CartArray),'CartClearResponse_CartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartClearResponse_CartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookup_RequestArray),'TransactionLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TransactionLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookupResponse_TransactionsArray),'TransactionLookupResponse_TransactionsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TransactionLookupResponse_TransactionsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearch_RequestArray),'SellerListingSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearchResponse_SellerListingsArray),'SellerListingSearchResponse_SellerListingsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingSearchResponse_SellerListingsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookup_RequestArray),'SellerListingLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookupResponse_SellerListingsArray),'SellerListingLookupResponse_SellerListingsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingLookupResponse_SellerListingsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookup_RequestArray),'TagLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TagLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookupResponse_TagsArray),'TagLookupResponse_TagsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TagLookupResponse_TagsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearch_RequestArray),'VehicleSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearchResponse_VehicleYearsArray),'VehicleSearchResponse_VehicleYearsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleSearchResponse_VehicleYearsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearch_RequestArray),'VehiclePartSearch_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartSearch_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearchResponse_VehiclePartsArray),'VehiclePartSearchResponse_VehiclePartsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartSearchResponse_VehiclePartsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookup_RequestArray),'VehiclePartLookup_RequestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartLookup_RequestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookupResponse_VehiclePartsArray),'VehiclePartLookupResponse_VehiclePartsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartLookupResponse_VehiclePartsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Bin_BinParameterArray),'Bin_BinParameterArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Bin_BinParameterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchBinSet_BinArray),'SearchBinSet_BinArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SearchBinSet_BinArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchBinSets_Type),'SearchBinSets');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SearchBinSets_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'SearchBinSet');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HelpRequest_ResponseGroupArray),'HelpRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(HelpRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_AudienceRatingArray),'ItemSearchRequest_AudienceRatingArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemSearchRequest_AudienceRatingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemSearchRequest_ResponseGroupArray),'ItemSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_ItemIdArray),'ItemLookupRequest_ItemIdArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLookupRequest_ItemIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_ResponseGroupArray),'ItemLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLookupRequest_RelationshipTypeArray),'ItemLookupRequest_RelationshipTypeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLookupRequest_RelationshipTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListSearchRequest_ResponseGroupArray),'ListSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListLookupRequest_ResponseGroupArray),'ListLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentSearchRequest_ResponseGroupArray),'CustomerContentSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerContentLookupRequest_ResponseGroupArray),'CustomerContentLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerContentLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_ItemIdArray),'SimilarityLookupRequest_ItemIdArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarityLookupRequest_ItemIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarityLookupRequest_ResponseGroupArray),'SimilarityLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarityLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_ResponseGroupArray),'SellerLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerLookupRequest_SellerIdArray),'SellerLookupRequest_SellerIdArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerLookupRequest_SellerIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartGetRequest_ResponseGroupArray),'CartGetRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartGetRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray),'CartAddRequest_Items_Type_Item_Type_MetaDataArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest_Items_Type),'CartAddRequest_Items_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartAddRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartAddRequest_ResponseGroupArray),'CartAddRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartAddRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray),'CartCreateRequest_Items_Type_Item_Type_MetaDataArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type_Item_Type_MetaDataArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest_Items_Type),'CartCreateRequest_Items_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartCreateRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartCreateRequest_ResponseGroupArray),'CartCreateRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartCreateRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyRequest_Items_Type),'CartModifyRequest_Items_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartModifyRequest_Items_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Item');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartModifyRequest_ResponseGroupArray),'CartModifyRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartModifyRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartClearRequest_ResponseGroupArray),'CartClearRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartClearRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_ResponseGroupArray),'TransactionLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TransactionLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionLookupRequest_TransactionIdArray),'TransactionLookupRequest_TransactionIdArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TransactionLookupRequest_TransactionIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingSearchRequest_ResponseGroupArray),'SellerListingSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListingLookupRequest_ResponseGroupArray),'SellerListingLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListingLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookupRequest_TagNameArray),'TagLookupRequest_TagNameArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TagLookupRequest_TagNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TagLookupRequest_ResponseGroupArray),'TagLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TagLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray),'BrowseNodeLookupRequest_BrowseNodeIdArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_BrowseNodeIdArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray),'BrowseNodeLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNodeLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSearchRequest_ResponseGroupArray),'VehicleSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartSearchRequest_ResponseGroupArray),'VehiclePartSearchRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartSearchRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehiclePartLookupRequest_ResponseGroupArray),'VehiclePartLookupRequest_ResponseGroupArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehiclePartLookupRequest_ResponseGroupArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Arguments_Type),'Arguments');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Arguments_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Argument');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(HTTPHeaders_Type),'HTTPHeaders');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(HTTPHeaders_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Header');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Errors_Type),'Errors');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Errors_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Error');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Information_OperationInformationArray),'Information_OperationInformationArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Information_OperationInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Information_ResponseGroupInformationArray),'Information_ResponseGroupInformationArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Information_ResponseGroupInformationArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Items__ItemArray),'Items__ItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Items__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Lists_ListArray),'Lists_ListArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Lists_ListArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Customers_CustomerArray),'Customers_CustomerArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Customers_CustomerArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transactions_TransactionArray),'Transactions_TransactionArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Transactions_TransactionArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Sellers_SellerArray),'Sellers_SellerArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Sellers_SellerArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerListings_SellerListingArray),'SellerListings_SellerListingArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerListings_SellerListingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationInformation_RequiredParameters_Type),'OperationInformation_RequiredParameters_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OperationInformation_RequiredParameters_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Parameter');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationInformation_AvailableParameters_Type),'OperationInformation_AvailableParameters_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OperationInformation_AvailableParameters_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Parameter');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationInformation_DefaultResponseGroups_Type),'OperationInformation_DefaultResponseGroups_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OperationInformation_DefaultResponseGroups_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'ResponseGroup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OperationInformation_AvailableResponseGroups_Type),'OperationInformation_AvailableResponseGroups_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OperationInformation_AvailableResponseGroups_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'ResponseGroup');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_ValidOperations_Type),'ResponseGroupInformation_ValidOperations_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ResponseGroupInformation_ValidOperations_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Operation');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ResponseGroupInformation_Elements_Type),'ResponseGroupInformation_Elements_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ResponseGroupInformation_Elements_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Element');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(List_ListItemArray),'List_ListItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(List_ListItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Customer_CustomerReviewsArray),'Customer_CustomerReviewsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Customer_CustomerReviewsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray),'SearchResultsMap_SearchIndex_Type_ASINArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SearchResultsMap_SearchIndex_Type_ASINArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SearchResultsMap_Type),'SearchResultsMap');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SearchResultsMap_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'SearchIndex');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_ImageSets_Type_ImageSetArray),'Item_ImageSets_Type_ImageSetArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Item_ImageSets_Type_ImageSetArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_Subjects_Type),'Item_Subjects_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Item_Subjects_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Subject');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Item_AlternateVersions_Type),'Item_AlternateVersions_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Item_AlternateVersions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'AlternateVersion');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(_Item_ImageSetsArray),'_Item_ImageSetsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(_Item_ImageSetsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(_Item_RelatedItemsArray),'_Item_RelatedItemsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(_Item_RelatedItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemLinks_Type),'ItemLinks');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemLinks_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'ItemLink');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(RelatedItems_RelatedItemArray),'RelatedItems_RelatedItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(RelatedItems_RelatedItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tags_TagArray),'Tags_TagArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tags_TagArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tag_TaggedItemsArray),'Tag_TaggedItemsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tag_TaggedItemsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tag_TaggedListmaniaListsArray),'Tag_TaggedListmaniaListsArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tag_TaggedListmaniaListsArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tag_TaggedGuidesArray),'Tag_TaggedGuidesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tag_TaggedGuidesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Offers_OfferArray),'Offers_OfferArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Offers_OfferArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Offer_OfferListingArray),'Offer_OfferListingArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Offer_OfferListingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OfferListing_ShippingChargeArray),'OfferListing_ShippingChargeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OfferListing_ShippingChargeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Variations__ItemArray),'Variations__ItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Variations__ItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VariationDimensions_Type),'VariationDimensions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VariationDimensions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VariationDimension');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(EditorialReviews_Type),'EditorialReviews');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(EditorialReviews_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'EditorialReview');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Collection_Type_CollectionItemArray),'Collections_Collection_Type_CollectionItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Collections_Collection_Type_CollectionItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Collections_Type),'Collections');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Collections_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Collection');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CustomerReviews_ReviewArray),'CustomerReviews_ReviewArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CustomerReviews_ReviewArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tracks_Disc_Type_TrackArray),'Tracks_Disc_Type_TrackArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tracks_Disc_Type_TrackArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Tracks_Type),'Tracks');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Tracks_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Disc');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarProducts_Type),'SimilarProducts');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarProducts_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'SimilarProduct');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopSellers_Type),'TopSellers');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopSellers_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'TopSeller');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(NewReleases_Type),'NewReleases');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(NewReleases_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'NewRelease');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_TopItem_Type_AuthorArray),'TopItemSet_TopItem_Type_AuthorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopItemSet_TopItem_Type_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_TopItem_Type_ArtistArray),'TopItemSet_TopItem_Type_ArtistArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopItemSet_TopItem_Type_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_TopItem_Type_ActorArray),'TopItemSet_TopItem_Type_ActorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopItemSet_TopItem_Type_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TopItemSet_TopItemArray),'TopItemSet_TopItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopItemSet_TopItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SimilarViewedProducts_Type),'SimilarViewedProducts');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SimilarViewedProducts_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'SimilarViewedProduct');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(OtherCategoriesSimilarProducts_Type),'OtherCategoriesSimilarProducts');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(OtherCategoriesSimilarProducts_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'OtherCategoriesSimilarProduct');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Accessories_Type),'Accessories');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Accessories_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Accessory');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Promotions_Type),'Promotions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Promotions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Promotion');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PromotionEligibilityRequirements),'PromotionEligibilityRequirements');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(PromotionEligibilityRequirements)].RegisterExternalPropertyName(sARRAY_ITEM,'EligibilityRequirement');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PromotionBenefits),'PromotionBenefits');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(PromotionBenefits)].RegisterExternalPropertyName(sARRAY_ITEM,'Benefit');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleYears_VehicleYearArray),'VehicleYears_VehicleYearArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleYears_VehicleYearArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleMakes_Type),'VehicleMakes');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleMakes_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleMake');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleModels_Type),'VehicleModels');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleModels_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleModel');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleTrims_Type),'VehicleTrims');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleTrims_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleTrim');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBedOptions_Type),'VehicleBedOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleBedOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleBed');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBodyStyleOptions_Type),'VehicleBodyStyleOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleBodyStyleOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleBodyStyle');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleBrakesOptions_Type),'VehicleBrakesOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleBrakesOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleBrakes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleDriveTypeOptions_Type),'VehicleDriveTypeOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleDriveTypeOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleDriveType');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleEngineOptions_Type),'VehicleEngineOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleEngineOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleEngine');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleMfrBodyCodeOptions_Type),'VehicleMfrBodyCodeOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleMfrBodyCodeOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleMfrBodyCode');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSpringTypesOptions_Type),'VehicleSpringTypesOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleSpringTypesOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleSpringTypes');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleSteeringOptions_Type),'VehicleSteeringOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleSteeringOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleSteering');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleTransmissionOptions_Type),'VehicleTransmissionOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleTransmissionOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleTransmission');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleWheelbaseOptions_Type),'VehicleWheelbaseOptions');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleWheelbaseOptions_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'VehicleWheelbase');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleParts_IsNextArray),'VehicleParts_IsNextArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleParts_IsNextArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleParts_IsPreviousArray),'VehicleParts_IsPreviousArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleParts_IsPreviousArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(VehicleParts_PartArray),'VehicleParts_PartArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(VehicleParts_PartArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MissingVehicleAttributes_Type),'MissingVehicleAttributes');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MissingVehicleAttributes_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'ParameterName');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PartBrowseNodeBins_Type),'PartBrowseNodeBins');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(PartBrowseNodeBins_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Bin');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(PartBrandBins_Type),'PartBrandBins');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(PartBrandBins_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Bin');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Fitments_FitmentArray),'Fitments_FitmentArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Fitments_FitmentArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(FitmentAttributes),'FitmentAttributes');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(FitmentAttributes)].RegisterExternalPropertyName(sARRAY_ITEM,'FitmentAttribute');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNodes_BrowseNodeArray),'BrowseNodes_BrowseNodeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNodes_BrowseNodeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNode_Properties_Type),'BrowseNode_Properties_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNode_Properties_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Property');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNode_Children_Type),'BrowseNode_Children_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNode_Children_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'BrowseNode');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNode_Ancestors_Type),'BrowseNode_Ancestors_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNode_Ancestors_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'BrowseNode');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(BrowseNode_TopItemSetArray),'BrowseNode_TopItemSetArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(BrowseNode_TopItemSetArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ListmaniaLists_Type),'ListmaniaLists');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListmaniaLists_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'ListmaniaList');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartItems_CartItemArray),'CartItems_CartItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartItems_CartItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SavedForLaterItems_SavedForLaterItemArray),'SavedForLaterItems_SavedForLaterItemArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SavedForLaterItems_SavedForLaterItemArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(CartItem_MetaData_Type),'CartItem_MetaData_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(CartItem_MetaData_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'KeyValuePair');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_TransactionItems_Type),'Transaction_TransactionItems_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Transaction_TransactionItems_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'TransactionItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type),'Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type_Shipment_Type_ShipmentItems_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'TransactionItemId');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type),'Transaction_Shipments_Type_Shipment_Type_Packages_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type_Shipment_Type_Packages_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Package');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Transaction_Shipments_Type),'Transaction_Shipments_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Transaction_Shipments_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Shipment');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TransactionItem_ChildTransactionItems_Type),'TransactionItem_ChildTransactionItems_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TransactionItem_ChildTransactionItems_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'TransactionItem');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray),'Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRatingArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(Seller_SellerFeedbackSummary_Type),'Seller_SellerFeedbackSummary_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'FeedbackDateRange');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(SellerFeedback_Type),'SellerFeedback');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(SellerFeedback_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Feedback');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_Languages_Type),'ItemAttributes_Languages_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_Languages_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Language');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_ActorArray),'ItemAttributes_ActorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_AgeArray),'ItemAttributes_AgeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_AgeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_ArtistArray),'ItemAttributes_ArtistArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_AudioFormatArray),'ItemAttributes_AudioFormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_AudioFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_AuthorArray),'ItemAttributes_AuthorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CameraManualFeaturesArray),'ItemAttributes_CameraManualFeaturesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CameraManualFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryArray),'ItemAttributes_CategoryArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CategoryBinArray),'ItemAttributes_CategoryBinArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CategoryBinArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CharacterArray),'ItemAttributes_CharacterArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CharacterArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CompatibleDevicesArray),'ItemAttributes_CompatibleDevicesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CompatibleDevicesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_CreatorArray),'ItemAttributes_CreatorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_CreatorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_DataLinkProtocolArray),'ItemAttributes_DataLinkProtocolArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_DataLinkProtocolArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_DirectorArray),'ItemAttributes_DirectorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_DirectorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_EducationalFocusArray),'ItemAttributes_EducationalFocusArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_EducationalFocusArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_EthnicityArray),'ItemAttributes_EthnicityArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_EthnicityArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_FeatureArray),'ItemAttributes_FeatureArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_FeatureArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormatArray),'ItemAttributes_FormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_FormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_FormFactorArray),'ItemAttributes_FormFactorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_FormFactorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_GemTypeSetElementArray),'ItemAttributes_GemTypeSetElementArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_GemTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_GenderArray),'ItemAttributes_GenderArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_GenderArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_IngredientsSetElementArray),'ItemAttributes_IngredientsSetElementArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_IngredientsSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_InterestArray),'ItemAttributes_InterestArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_InterestArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_LanguageNameArray),'ItemAttributes_LanguageNameArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_LanguageNameArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_MaterialTypeSetElementArray),'ItemAttributes_MaterialTypeSetElementArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_MaterialTypeSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantLengthArray),'ItemAttributes_PantLengthArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PantLengthArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PantSizeArray),'ItemAttributes_PantSizeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PantSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PhotoFlashTypeArray),'ItemAttributes_PhotoFlashTypeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PhotoFlashTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PictureFormatArray),'ItemAttributes_PictureFormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PictureFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PlatformArray),'ItemAttributes_PlatformArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PlatformArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_PrimaryColorArray),'ItemAttributes_PrimaryColorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_PrimaryColorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_ReturnMethodArray),'ItemAttributes_ReturnMethodArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_ReturnMethodArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_ShoeSizeArray),'ItemAttributes_ShoeSizeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_ShoeSizeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_SpecialFeaturesArray),'ItemAttributes_SpecialFeaturesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_SpecialFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_SupportedImageTypeArray),'ItemAttributes_SupportedImageTypeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(ItemAttributes_TargetBrandArray),'ItemAttributes_TargetBrandArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_TargetBrandArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_Languages_Type),'MerchantItemAttributes_Languages_Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Languages_Type)].RegisterExternalPropertyName(sARRAY_ITEM,'Language');
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ActorArray),'MerchantItemAttributes_ActorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ActorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ArtistArray),'MerchantItemAttributes_ArtistArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ArtistArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_AudioFormatArray),'MerchantItemAttributes_AudioFormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_AudioFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_AuthorArray),'MerchantItemAttributes_AuthorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_AuthorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_CameraManualFeaturesArray),'MerchantItemAttributes_CameraManualFeaturesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_CameraManualFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_CreatorArray),'MerchantItemAttributes_CreatorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_CreatorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_DirectorArray),'MerchantItemAttributes_DirectorArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_DirectorArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_FeatureArray),'MerchantItemAttributes_FeatureArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_FeatureArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_FormatArray),'MerchantItemAttributes_FormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_FormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_IngredientsSetElementArray),'MerchantItemAttributes_IngredientsSetElementArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_IngredientsSetElementArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PhotoFlashTypeArray),'MerchantItemAttributes_PhotoFlashTypeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PhotoFlashTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PictureFormatArray),'MerchantItemAttributes_PictureFormatArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PictureFormatArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PlatformArray),'MerchantItemAttributes_PlatformArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PlatformArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_PurchasingChannelArray),'MerchantItemAttributes_PurchasingChannelArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_PurchasingChannelArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_ReturnMethodArray),'MerchantItemAttributes_ReturnMethodArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_ReturnMethodArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_SpecialFeaturesArray),'MerchantItemAttributes_SpecialFeaturesArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_SpecialFeaturesArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(MerchantItemAttributes_SupportedImageTypeArray),'MerchantItemAttributes_SupportedImageTypeArray');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_SupportedImageTypeArray)].RegisterExternalPropertyName(sARRAY_STYLE,sEmbedded);
+
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Items_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ListItem_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(RelatedItem_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TaggedItems_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Variations_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TopItemSet_Type)].RegisterExternalPropertyName('_Type','Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Part_Type)].RegisterExternalPropertyName('_Item','Item');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(Seller_SellerFeedbackSummary_Type_FeedbackDateRange_Type_SellerFeedbackRating_Type)].RegisterExternalPropertyName('_Type','Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(ItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Languages_Type_Language_Type)].RegisterExternalPropertyName('_Type','Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_VendorRebate_Type)].RegisterExternalPropertyName('_Type','Type');
+  typeRegistryIntance.ItemByTypeInfo[TypeInfo(MerchantItemAttributes_Type)].RegisterExternalPropertyName('_Label','Label');
+
 
 End.
