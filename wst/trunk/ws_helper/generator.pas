@@ -1712,17 +1712,27 @@ var
   end;
 
   procedure GenerateRegistrationProc();
-  Var
-    strBuff : string;
+  var
+    strBuff, locClassName, locInterfName : string;
   Begin
     NewLine();
     BeginAutoIndent();
       strBuff := ExtractserviceName(AIntf);
+      locClassName := strClassName;
+      locInterfName := QuotedStr(AIntf.Name);
       NewLine();
       WriteLn('procedure Register%sImplementationFactory();',[strBuff]);
       WriteLn('Begin');
         IncIndent();
-          WriteLn('GetServiceImplementationRegistry().Register(%s,TImplementationFactory.Create(%s,wst_GetServiceConfigText(%s)) as IServiceImplementationFactory);',[QuotedStr(AIntf.Name),strClassName,QuotedStr(AIntf.Name)]);
+          strBuff := Format(
+            'GetServiceImplementationRegistry().Register(' +
+               '%s,' +
+               'TImplementationFactory.Create(' +
+                 '%s,wst_GetServiceConfigText(%s)' +
+               ') as IServiceImplementationFactory);',
+            [locInterfName,locClassName,locInterfName]
+          );
+          WriteLn(strBuff);
         DecIndent();
       WriteLn('End;');
     EndAutoIndent();
