@@ -37,7 +37,7 @@ begin
   WriteLn();
   rqst := ItemSearch_Type.Create();
   try
-    locService := wst_CreateInstance_AWSECommerceServicePortType();
+    locService := wst_CreateInstance_AWSECommerceServicePortType('SOAP:','HTTP:ProxyServer=192.168.0.100;ProxyPort=8910;');
     rqst.AWSAccessKeyId := sACCES_ID;
     while True do begin
       rqst.Request.SetLength(1);

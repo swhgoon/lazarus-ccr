@@ -2,15 +2,15 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
@@ -35,8 +35,8 @@
         <Filename Value="amazon_sample.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="amazon_sample"/>
-        <CursorPos X="24" Y="12"/>
-        <TopLine Value="1"/>
+        <CursorPos X="121" Y="40"/>
+        <TopLine Value="33"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="25"/>
         <Loaded Value="True"/>
@@ -44,8 +44,8 @@
       <Unit1>
         <Filename Value="..\..\synapse_http_protocol.pas"/>
         <UnitName Value="synapse_http_protocol"/>
-        <CursorPos X="1" Y="13"/>
-        <TopLine Value="1"/>
+        <CursorPos X="25" Y="60"/>
+        <TopLine Value="43"/>
         <EditorIndex Value="5"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
@@ -53,8 +53,8 @@
       <Unit2>
         <Filename Value="AWSECommerceService.pas"/>
         <UnitName Value="AWSECommerceService"/>
-        <CursorPos X="72" Y="20731"/>
-        <TopLine Value="20710"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="3"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
@@ -62,8 +62,8 @@
       <Unit3>
         <Filename Value="AWSECommerceService_proxy.pas"/>
         <UnitName Value="AWSECommerceService_proxy"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="12" Y="91"/>
+        <TopLine Value="81"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
@@ -79,7 +79,7 @@
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
         <CursorPos X="1" Y="4148"/>
-        <TopLine Value="4118"/>
+        <TopLine Value="4123"/>
         <EditorIndex Value="4"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
@@ -87,22 +87,46 @@
       <Unit6>
         <Filename Value="..\..\semaphore.pas"/>
         <UnitName Value="semaphore"/>
-        <CursorPos X="1" Y="140"/>
-        <TopLine Value="114"/>
+        <CursorPos X="1" Y="134"/>
+        <TopLine Value="109"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit6>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
+    <JumpHistory Count="7" HistoryIndex="6">
       <Position1>
         <Filename Value="amazon_sample.pas"/>
         <Caret Line="14" Column="1" TopLine="11"/>
       </Position1>
+      <Position2>
+        <Filename Value="AWSECommerceService.pas"/>
+        <Caret Line="20731" Column="72" TopLine="20710"/>
+      </Position2>
+      <Position3>
+        <Filename Value="AWSECommerceService.pas"/>
+        <Caret Line="10045" Column="123" TopLine="10020"/>
+      </Position3>
+      <Position4>
+        <Filename Value="AWSECommerceService.pas"/>
+        <Caret Line="10050" Column="14" TopLine="9810"/>
+      </Position4>
+      <Position5>
+        <Filename Value="amazon_sample.pas"/>
+        <Caret Line="12" Column="42" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="amazon_sample.pas"/>
+        <Caret Line="13" Column="28" TopLine="43"/>
+      </Position6>
+      <Position7>
+        <Filename Value="amazon_sample.pas"/>
+        <Caret Line="40" Column="41" TopLine="33"/>
+      </Position7>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="amazon_sample"/>
@@ -111,9 +135,6 @@
       <OtherUnitFiles Value="..\..\;$(LazarusDir)\others_package\synapse\"/>
       <UnitOutputDirectory Value="obj"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
