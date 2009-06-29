@@ -594,6 +594,7 @@ type
     function Support_nil():Boolean;override;
   published
     procedure test_WriteBuffer();
+    procedure test_default_data_type();
   end;
   
   { TTestArray }
@@ -5560,6 +5561,61 @@ begin
     ReleaseDomNode(da);
     ReleaseDomNode(db);
     strm.Free();
+  end;
+end;
+
+procedure TTestXmlRpcFormatter.test_default_data_type();
+const
+  s_XML_BUFFER : ansistring =
+         //'<?xml version="1.0"?>'  + sLineBreak +
+         '<struct>'  + sLineBreak +
+         '  <member>'  + sLineBreak +
+         '    <name>o1</name>'  + sLineBreak +
+         '    <value>'  + sLineBreak +
+         '      <struct>'  + sLineBreak +
+         '        <member>'  + sLineBreak +
+         '          <name>fieldSmallint</name>'  + sLineBreak +
+         '          <value><int>123</int></value>'  + sLineBreak +
+         '        </member>'  + sLineBreak +
+         '        <member>'  + sLineBreak +
+         '          <name>fieldWord</name>'  + sLineBreak +
+         '          <value><int>456</int></value>'  + sLineBreak +
+         '        </member>'  + sLineBreak +
+         '        <member>'  + sLineBreak +
+         '          <name>fieldString</name>'  + sLineBreak +
+         '          <value>fpc-wst</value>'  + sLineBreak +
+         '        </member>'  + sLineBreak +
+         '      </struct>'  + sLineBreak +
+         '    </value>'  + sLineBreak +
+         '  </member>'  + sLineBreak +
+         '</struct>';
+
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  a : TTestSmallClass;
+  x : string;
+begin
+  s := Nil;
+  a := TTestSmallClass.Create();
+  try
+    f := CreateFormatter(TypeInfo(TClass_B));
+    s := TMemoryStream.Create();
+    s.Write(s_XML_BUFFER[1],Length(s_XML_BUFFER));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_B));
+      x := 'o1';
+      f.Get(TypeInfo(TTestSmallClass),x,a);
+    f.EndScopeRead();
+
+    CheckEquals(123,a.fieldSmallint);
+    CheckEquals(456,a.fieldWord);
+    CheckEquals('fpc-wst',a.fieldString);
+  finally
+    a.Free();
+    s.Free();
   end;
 end;
 

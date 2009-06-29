@@ -242,7 +242,11 @@ type
       const AData     : Pointer
     );{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-    function GetNodeValue(var AName : string; out AResBuffer : DOMString) : Boolean;
+    function GetNodeValue(
+      var   AName      : string;
+      out   AResBuffer : DOMString;
+      const AHandleDefaultType : Boolean = False
+    ) : Boolean;
     function GetEnum(
       Const ATypeInfo : PTypeInfo;
       Var   AName     : String;
@@ -950,25 +954,30 @@ begin
 end;
 
 function TXmlRpcBaseFormatter.GetNodeValue(
-  var AName: string;
-  out AResBuffer : DOMString
+  var   AName: string;
+  out   AResBuffer : DOMString;
+  const AHandleDefaultType : Boolean
 ) : Boolean;
 var
   locElt : TDOMNode;
   stkTop : TStackItem;
 begin
   stkTop := StackTop();
-  locElt := stkTop.FindNode(AName) as TDOMElement;
+  locElt := stkTop.FindNode(AName);
 
   Result := ( locElt <> nil );
   if Result then begin
     if locElt.HasChildNodes then begin
       AResBuffer := locElt.FirstChild.NodeValue
     end else begin
-      if ( stkTop.FoundState = fsFoundNil ) then
-        AResBuffer := ''
-      else
+      if ( stkTop.FoundState = fsFoundNil ) then begin
+        if AHandleDefaultType then
+          AResBuffer := locElt.NodeValue
+        else
+          AResBuffer := '';
+      end else begin
         AResBuffer := locElt.NodeValue;
+      end;
     end;
   end;
 end;
@@ -1106,7 +1115,7 @@ function TXmlRpcBaseFormatter.GetStr(
 var
   locBuffer : DOMString;
 begin
-  Result := GetNodeValue(AName,locBuffer);
+  Result := GetNodeValue(AName,locBuffer,True);
   if Result then
     AData := locBuffer;
 end;
