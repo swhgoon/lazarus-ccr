@@ -18,9 +18,9 @@
     <part name="result" type="xsd:string" wst:TypeHint="WideString"/>
   </message>
   <portType name="IEchoService">
-    <document>
+    <documentation>
       <GUID value="{FCD0F68F-3023-46C6-AD09-1DDA4A2989EB}"/>
-    </document>
+    </documentation>
     <operation name="EchoWideString">
       <input message="tns:EchoWideString"/>
       <output message="tns:EchoWideStringResponse"/>

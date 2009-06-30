@@ -23,7 +23,7 @@ uses
 {$ENDIF}
   TypInfo,
   base_service_intf, server_service_intf,
-  library_imp_utils;
+  library_imp_utils, parserutils;
 
 type
 
@@ -124,7 +124,14 @@ type
     procedure GetCount();
     procedure GetItem(const AIndex : PtrInt);
   end;
-  
+
+  { TTest_Procs }
+
+  TTest_Procs = class(TTestCase)
+  published
+    procedure test_GetToken();
+  end;
+
 implementation
 
 { TTestClass }
@@ -737,6 +744,47 @@ begin
   Check(ok);
 end;
 
+{ TTest_Procs }
+
+procedure TTest_Procs.test_GetToken();
+
+  procedure do_tests(const ADelimiter : string);
+  var
+    strBuffer : string;
+  begin
+    strBuffer := '';
+      CheckEquals('', GetToken(strBuffer,ADelimiter));
+      CheckEquals('',strBuffer);
+    strBuffer := ADelimiter;
+      CheckEquals('', GetToken(strBuffer,ADelimiter));
+      CheckEquals('',strBuffer);
+    strBuffer := Format('%s123',[ADelimiter]);
+      CheckEquals('', GetToken(strBuffer,ADelimiter));
+      CheckEquals('123',strBuffer);
+    strBuffer := Format('%s123%s45',[ADelimiter,ADelimiter]);
+      CheckEquals('', GetToken(strBuffer,ADelimiter));
+      CheckEquals(Format('123%s45',[ADelimiter]),strBuffer);
+      CheckEquals('123', GetToken(strBuffer,ADelimiter));
+      CheckEquals('45',strBuffer);
+      CheckEquals('45', GetToken(strBuffer,ADelimiter));
+      CheckEquals('',strBuffer);
+
+    strBuffer := Format('123',[ADelimiter,ADelimiter]);
+      CheckEquals('123', GetToken(strBuffer,ADelimiter));
+      CheckEquals('',strBuffer);
+    strBuffer := Format('123%s45',[ADelimiter,ADelimiter]);
+      CheckEquals('123', GetToken(strBuffer,ADelimiter));
+      CheckEquals(Format('45',[ADelimiter]),strBuffer);
+      CheckEquals('45', GetToken(strBuffer,ADelimiter));
+      CheckEquals('',strBuffer);
+  end;
+
+begin
+  do_tests(';');
+  do_tests('##');
+  do_tests('#<#');
+end;
+
 initialization
   RegisterTest('Utilities',TTest_TIntfPool.Suite);
   RegisterTest('Utilities',TTest_TSimpleItemFactoryEx.Suite);
@@ -744,5 +792,6 @@ initialization
   RegisterTest('Utilities',TTest_TIntfPoolItem.Suite);
   RegisterTest('Utilities',TTest_TImplementationFactory.Suite);
   RegisterTest('Utilities',TTest_TwstModuleManager.Suite);
+  RegisterTest('Utilities',TTest_Procs.Suite);
 
 end.
