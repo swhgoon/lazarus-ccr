@@ -1035,7 +1035,7 @@ function TXmlRpcBaseFormatter.GetAnsiChar(
 var
   locBuffer : DOMString;
 begin
-  Result := GetNodeValue(AName,locBuffer);
+  Result := GetNodeValue(AName,locBuffer,True);
   if Result then begin
     if ( Length(locBuffer) = 0 ) then
       AData := #0
@@ -1052,7 +1052,7 @@ function TXmlRpcBaseFormatter.GetWideChar(
 var
   locBuffer : DOMString;
 begin
-  Result := GetNodeValue(AName,locBuffer);
+  Result := GetNodeValue(AName,locBuffer,True);
   if Result then begin
     if ( Length(locBuffer) = 0 ) then
       AData := #0
@@ -1129,7 +1129,7 @@ function TXmlRpcBaseFormatter.GetUnicodeStr(
 var
   locBuffer : DOMString;
 begin
-  Result := GetNodeValue(AName,locBuffer);
+  Result := GetNodeValue(AName,locBuffer,True);
   if Result then
     AData := locBuffer;
 end;
@@ -1143,7 +1143,7 @@ function TXmlRpcBaseFormatter.GetWideStr(
 var
   locBuffer : DOMString;
 begin
-  Result := GetNodeValue(AName,locBuffer);
+  Result := GetNodeValue(AName,locBuffer,True);
   if Result then
     AData := locBuffer;
 end;
