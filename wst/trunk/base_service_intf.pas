@@ -1666,6 +1666,7 @@ begin
   r.Register(sXSD_NS,TypeInfo(UnicodeString),'UnicodeString').AddPascalSynonym('unicodestring');
 {$ENDIF WST_UNICODESTRING}
   r.Register(sXSD_NS,TypeInfo(anyURI),'anyURI').AddPascalSynonym('anyURI');
+  r.Register(sXSD_NS,TypeInfo(token),'token').AddPascalSynonym('token');
 
   r.Register(sXSD_NS,TypeInfo(boolean),'boolean').AddPascalSynonym('boolean');
 
