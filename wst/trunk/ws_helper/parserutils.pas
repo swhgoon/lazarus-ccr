@@ -49,6 +49,7 @@ type
 
   function IsStrEmpty(Const AStr : String):Boolean;
   function ExtractIdentifier(const AValue : string) : string ;
+  function GetToken(var ABuffer : string; const ADelimiter : string) : string;
 {$IFDEF WST_HANDLE_DOC}
   function EncodeLineBreak(const AInStr : string) : string;
   function DecodeLineBreak(const AInStr : string) : string;
@@ -144,6 +145,33 @@ begin
         if ( Length(Result) > 0 ) and ( Result[Length(Result)] <> '_' ) then begin
           Result := Result + '_';
         end;
+      end;
+    end;
+  end;
+end;
+
+function GetToken(
+  var   ABuffer    : string;
+  const ADelimiter : string
+) : string;
+var
+  locDelPos, locDelLength : Integer;
+begin
+  Result := '';
+  if IsStrEmpty(ABuffer) then begin
+    ABuffer := '';
+  end else begin
+    locDelPos := Pos(ADelimiter,ABuffer);
+    if ( locDelPos < 1 ) then begin
+      Result := ABuffer;
+      ABuffer := '';
+    end else begin
+      locDelLength := Length(ADelimiter);
+      if ( locDelPos = 1 ) then begin
+        ABuffer := Copy(ABuffer,(locDelLength + 1),(Length(ABuffer) - locDelLength));
+      end else begin
+        Result := Copy(ABuffer,1,(locDelPos - 1));
+        ABuffer := Copy(ABuffer,(locDelPos + locDelLength),(Length(ABuffer) - locDelLength));
       end;
     end;
   end;

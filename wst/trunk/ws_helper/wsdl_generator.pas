@@ -221,21 +221,47 @@ procedure TWsdlGenerator.GenerateServiceMessages(
       qryNode, rspNode : TDOMElement;
       ii, cc : Integer;
       pp : TPasArgument;
+      prmAccessList : TStringList;
+      prmAccessStr : string;
+      docNode : TDOMNode;
     begin
-      qryNode := CreateElement(s_message,ARootNode,Document);
-      qryNode.SetAttribute(s_name,Format('%s',[ASymTable.GetExternalName(AOperation)]));
-      rspNode := CreateElement(s_message,ARootNode,Document);
-      rspNode.SetAttribute(s_name,Format('%sResponse',[ASymTable.GetExternalName(AOperation)]));
-      cc := AOperation.ProcType.Args.Count;
-      for ii := 0 to Pred(cc) do begin
-        pp := TPasArgument(AOperation.ProcType.Args[ii]);
-        if ( pp.Access in [argDefault, argConst] ) then
-          GenerateParam(pp,qryNode)
-        else if ( pp.Access in [argVar, argOut] ) then
-          GenerateParam(pp,rspNode);
-      end;
-      if AOperation.InheritsFrom(TPasFunction) then begin
-        GenerateResultParam(TPasFunctionType(AOperation.ProcType).ResultEl,rspNode);
+      prmAccessList := TStringList.Create();
+      try
+        qryNode := CreateElement(s_message,ARootNode,Document);
+        qryNode.SetAttribute(s_name,Format('%s',[ASymTable.GetExternalName(AOperation)]));
+        rspNode := CreateElement(s_message,ARootNode,Document);
+        rspNode.SetAttribute(s_name,Format('%sResponse',[ASymTable.GetExternalName(AOperation)]));
+        cc := AOperation.ProcType.Args.Count;
+        for ii := 0 to Pred(cc) do begin
+          pp := TPasArgument(AOperation.ProcType.Args[ii]);
+          if ( pp.Access in [argDefault, argConst, argVar] ) then begin
+            GenerateParam(pp,qryNode);
+            if ( pp.Access = argDefault ) then
+              prmAccessList.Add(Format('%s=%s',[ASymTable.GetExternalName(pp),GetEnumName(TypeInfo(TArgumentAccess),Ord(pp.Access))]));
+          end;
+          if ( pp.Access in [argVar, argOut] ) then begin
+            GenerateParam(pp,rspNode);
+          end;
+        end;
+        if AOperation.InheritsFrom(TPasFunction) then begin
+          GenerateResultParam(TPasFunctionType(AOperation.ProcType).ResultEl,rspNode);
+        end;
+        if ( prmAccessList.Count > 0 ) then begin
+          docNode := Document.CreateElement(s_documentation);
+          if qryNode.HasChildNodes() then
+            qryNode.InsertBefore(docNode,qryNode.FirstChild)
+          else
+            qryNode.AppendChild(docNode);
+          prmAccessStr := '';
+          for ii := 0 to Pred(prmAccessList.Count) do begin
+            prmAccessStr := prmAccessStr + ';' +
+                            prmAccessList.Names[ii] + '=' + prmAccessList.ValueFromIndex[ii];
+          end;
+          Delete(prmAccessStr,1,1);
+          CreateElement(s_paramAccess,docNode,Document).SetAttribute(s_value,prmAccessStr);
+        end;
+      finally
+        prmAccessList.Free();
       end;
     end;
 
@@ -280,7 +306,7 @@ var
 begin
   prtTypeNode := CreateElement(s_portType,ARootNode,Document);
   if ( Length(AContract.InterfaceGUID) > 0 ) then begin
-    docNode := CreateElement(s_document,prtTypeNode,Document);
+    docNode := CreateElement(s_documentation,prtTypeNode,Document);
     CreateElement(s_guid,docNode,Document).SetAttribute(s_value,AContract.InterfaceGUID);
   end else begin
     docNode := nil;

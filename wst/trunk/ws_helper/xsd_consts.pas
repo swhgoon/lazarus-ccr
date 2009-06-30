@@ -58,6 +58,7 @@ const
   s_operation                               = 'operation';
   s_optional                   : WideString = 'optional';
   s_output                     : WideString = 'output';
+  s_paramAccess                             = 'ParamAccess';
   s_part                       : WideString = 'part';
   s_port                       : WideString = 'port';
   s_portType                                = 'portType';

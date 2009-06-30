@@ -98,7 +98,8 @@ type
   end;
 
 implementation
-uses ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts;
+uses
+  ws_parser_imp, dom_cursors, parserutils, StrUtils, xsd_consts, TypInfo;
 
 type
 
@@ -468,6 +469,48 @@ function TWsdlParser.ParseOperation(
     end;
   end;
   
+  procedure ParseParamAccess(AMessageNode : TDOMNode; AAccessList : TStrings);
+  var
+    nd : TDOMNode;
+    tmpCrs : IObjectCursor;
+    strBuffer, strToken : string;
+  begin
+    AAccessList.Clear();
+    tmpCrs := CreateCursorOn(
+                CreateChildrenCursor(AMessageNode,cetRttiNode),
+                ParseFilter(CreateQualifiedNameFilterStr(s_documentation,FWsdlShortNames),TDOMNodeRttiExposer)
+              );
+    tmpCrs.Reset();
+    if tmpCrs.MoveNext() then begin
+      nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+      if nd.HasChildNodes() then begin
+        tmpCrs := CreateCursorOn(
+                    CreateChildrenCursor(nd,cetRttiNode),
+                    ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_paramAccess)]),TDOMNodeRttiExposer)
+                  );
+        tmpCrs.Reset();
+        if tmpCrs.MoveNext() then begin
+          nd := (tmpCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
+          if ( nd.Attributes <> nil ) then begin
+            nd := nd.Attributes.GetNamedItem(s_value);
+            if Assigned(nd) then
+              strBuffer := Trim(nd.NodeValue);
+          end;
+        end;
+      end;
+    end;
+    if ( Length(strBuffer) > 0 ) then begin
+      while True do begin
+        strToken := Trim(GetToken(strBuffer,';'));
+        if ( Length(strToken) = 0 ) then
+          Break;
+        if ( Pos('=',strToken) < 1 ) then
+          Break;
+        AAccessList.Add(strToken);
+      end;
+    end;
+  end;
+
   procedure ExtractMethod(
     const AMthdName : string;
     out   AMthd     : TPasProcedure
@@ -475,7 +518,7 @@ function TWsdlParser.ParseOperation(
   var
     tmpMthd : TPasProcedure;
     tmpMthdType : TPasProcedureType;
-    
+
     procedure ParseInputMessage();
     var
       inMsg, strBuffer : string;
@@ -486,6 +529,8 @@ function TWsdlParser.ParseOperation(
       prmHasInternameName : Boolean;
       prmDef : TPasArgument;
       prmTypeDef : TPasType;
+      prmAccess : TStringList;
+      intBuffer : Integer;
     begin
       tmpMthdType := TPasProcedureType(SymbolTable.CreateElement(TPasProcedureType,'',tmpMthd,visDefault,'',0));
       tmpMthd.ProcType := tmpMthdType;
@@ -495,68 +540,80 @@ function TWsdlParser.ParseOperation(
           crs := CreatePartCursor(inMsgNode);
           if ( crs <> nil ) then begin
             crs.Reset();
-            while crs.MoveNext() do begin
-              tmpNode := TDOMNodeRttiExposer(crs.GetCurrent()).InnerObject;
-              if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then begin
-                raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
-              end;
-              strBuffer := s_NODE_NAME + '=' + QuotedStr(s_name);
-              tmpCrs := CreateCursorOn(
-                          CreateAttributesCursor(tmpNode,cetRttiNode),
-                          ParseFilter(strBuffer,TDOMNodeRttiExposer)
-                        );
-              tmpCrs.Reset();
-              if not tmpCrs.MoveNext() then begin
-                raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
-              end;
-              prmName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
-              strBuffer := s_NODE_NAME + '=' + QuotedStr(s_element) + ' or ' + s_NODE_NAME + ' = ' + QuotedStr(s_type);
-              tmpCrs := CreateCursorOn(
-                          CreateAttributesCursor(tmpNode,cetRttiNode),
-                          ParseFilter(strBuffer,TDOMNodeRttiExposer)
-                        );
-              tmpCrs.Reset();
-              if not tmpCrs.MoveNext() then begin
-                raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
-              end;
-              prmTypeName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
-              prmTypeType := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeName;
-              if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then begin
-                raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
-              end;
-              if SameText(s_document,ASoapBindingStyle) and
-                 AnsiSameText(prmTypeType,s_element)
-              then begin
-                prmName := ExtractNameFromQName(prmTypeName);
-              end;
-              prmInternameName := Trim(prmName);
-              if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
-                prmInternameName := prmInternameName + 'Param';
-              end;
-              prmHasInternameName := IsReservedKeyWord(prmInternameName) or
-                                     ( not IsValidIdent(prmInternameName) ) or
-                                     ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
-              if prmHasInternameName then begin
-                prmInternameName := '_' + prmInternameName;
-              end;
-              prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
-              prmTypeDef := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
-              prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
-              tmpMthdType.Args.Add(prmDef);
-              prmDef.ArgType := prmTypeDef;
-              prmTypeDef.AddRef();
-              prmDef.Access := argConst;
-              if prmHasInternameName or ( not AnsiSameText(prmName,prmInternameName) ) then begin
-                SymbolTable.RegisterExternalAlias(prmDef,prmName);
-              end;
-              if AnsiSameText(tmpMthd.Name,prmTypeDef.Name) then begin
-                prmTypeInternalName := prmTypeDef.Name + '_Type';
-                while Assigned(FSymbols.FindElement(prmTypeInternalName)) do begin
-                  prmTypeInternalName := '_' + prmTypeInternalName;
+            prmAccess := TStringList.Create();
+            try
+              ParseParamAccess(inMsgNode,prmAccess);
+              while crs.MoveNext() do begin
+                tmpNode := TDOMNodeRttiExposer(crs.GetCurrent()).InnerObject;
+                if ( tmpNode.Attributes = nil ) or ( tmpNode.Attributes.Length < 1 ) then begin
+                  raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
                 end;
-                SymbolTable.RegisterExternalAlias(prmTypeDef,SymbolTable.GetExternalName(prmTypeDef));
-                prmTypeDef.Name := prmTypeInternalName;
+                strBuffer := s_NODE_NAME + '=' + QuotedStr(s_name);
+                tmpCrs := CreateCursorOn(
+                            CreateAttributesCursor(tmpNode,cetRttiNode),
+                            ParseFilter(strBuffer,TDOMNodeRttiExposer)
+                          );
+                tmpCrs.Reset();
+                if not tmpCrs.MoveNext() then begin
+                  raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+                end;
+                prmName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
+                strBuffer := s_NODE_NAME + '=' + QuotedStr(s_element) + ' or ' + s_NODE_NAME + ' = ' + QuotedStr(s_type);
+                tmpCrs := CreateCursorOn(
+                            CreateAttributesCursor(tmpNode,cetRttiNode),
+                            ParseFilter(strBuffer,TDOMNodeRttiExposer)
+                          );
+                tmpCrs.Reset();
+                if not tmpCrs.MoveNext() then begin
+                  raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+                end;
+                prmTypeName := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeValue;
+                prmTypeType := TDOMNodeRttiExposer(tmpCrs.GetCurrent()).NodeName;
+                if IsStrEmpty(prmName) or IsStrEmpty(prmTypeName) or IsStrEmpty(prmTypeType) then begin
+                  raise EXsdInvalidDefinitionException.CreateFmt('Invalid message part : "%s"',[tmpNode.NodeName]);
+                end;
+                if SameText(s_document,ASoapBindingStyle) and
+                   AnsiSameText(prmTypeType,s_element)
+                then begin
+                  prmName := ExtractNameFromQName(prmTypeName);
+                end;
+                prmInternameName := Trim(prmName);
+                if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
+                  prmInternameName := prmInternameName + 'Param';
+                end;
+                prmHasInternameName := IsReservedKeyWord(prmInternameName) or
+                                       ( not IsValidIdent(prmInternameName) ) or
+                                       ( GetParameterIndex(tmpMthdType,prmInternameName) >= 0 );
+                if prmHasInternameName then begin
+                  prmInternameName := '_' + prmInternameName;
+                end;
+                prmHasInternameName := not AnsiSameText(prmInternameName,prmName);
+                prmTypeDef := GetDataType(prmTypeName,prmTypeType,ExtractTypeHint(tmpNode));
+                prmDef := TPasArgument(SymbolTable.CreateElement(TPasArgument,prmInternameName,tmpMthdType,visDefault,'',0));
+                tmpMthdType.Args.Add(prmDef);
+                prmDef.ArgType := prmTypeDef;
+                prmTypeDef.AddRef();
+                prmDef.Access := argConst;
+                strBuffer := Trim(prmAccess.Values[prmName]);
+                if ( Length(strBuffer) > 0 ) then begin
+                  intBuffer := GetEnumValue(TypeInfo(TArgumentAccess),strBuffer);
+                  if ( intBuffer > -1 ) then
+                    prmDef.Access := TArgumentAccess(intBuffer);
+                end;
+                if prmHasInternameName or ( not AnsiSameText(prmName,prmInternameName) ) then begin
+                  SymbolTable.RegisterExternalAlias(prmDef,prmName);
+                end;
+                if AnsiSameText(tmpMthd.Name,prmTypeDef.Name) then begin
+                  prmTypeInternalName := prmTypeDef.Name + '_Type';
+                  while Assigned(FSymbols.FindElement(prmTypeInternalName)) do begin
+                    prmTypeInternalName := '_' + prmTypeInternalName;
+                  end;
+                  SymbolTable.RegisterExternalAlias(prmTypeDef,SymbolTable.GetExternalName(prmTypeDef));
+                  prmTypeDef.Name := prmTypeInternalName;
+                end;
               end;
+            finally
+              prmAccess.Free();
             end;
           end;
         end;
@@ -1027,7 +1084,7 @@ var
     Result := '';
     tmpCrs := CreateCursorOn(
                 CreateChildrenCursor(ANode,cetRttiNode),
-                ParseFilter(CreateQualifiedNameFilterStr(s_document,FWsdlShortNames),TDOMNodeRttiExposer)
+                ParseFilter(CreateQualifiedNameFilterStr(s_documentation,FWsdlShortNames),TDOMNodeRttiExposer)
               );
     tmpCrs.Reset();
     if tmpCrs.MoveNext() then begin
