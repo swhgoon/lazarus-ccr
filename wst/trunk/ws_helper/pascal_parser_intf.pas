@@ -409,7 +409,9 @@ begin
     AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
       AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'dateTime');
+{$IFDEF WST_HAS_TDURATIONREMOTABLE}
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable'),'duration');
+{$ENDIF WST_HAS_TDURATIONREMOTABLE}
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TTimeRemotable','TAbstractSimpleRemotable'),'time');
 
       AddClassDef(Result,'TAbstractComplexRemotable','TBaseRemotable',TPasNativeClassType);
@@ -446,7 +448,12 @@ begin
     AddAlias('float','Single',Result);
     AddAlias('nonNegativeInteger','LongWord',Result);
     AddAlias('positiveInteger','nonNegativeInteger',Result);
-    //AddAlias('base64Binary','string',Result);
+{$IFNDEF WST_HAS_TDURATIONREMOTABLE}
+    AddAlias('duration','string',Result);
+{$ENDIF WST_HAS_TDURATIONREMOTABLE}
+{$IFNDEF WST_HAS_TTIMEREMOTABLE}
+    AddAlias('time','string',Result);
+{$ENDIF WST_HAS_TTIMEREMOTABLE}
   except
     FreeAndNil(Result);
     raise;

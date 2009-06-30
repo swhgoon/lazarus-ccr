@@ -44,6 +44,12 @@ type
   nonNegativeInteger = type LongWord;
   positiveInteger = type nonNegativeInteger;
   float = Single;
+{$IFNDEF WST_HAS_TDURATIONREMOTABLE}
+  duration = type string;
+{$ENDIF WST_HAS_TDURATIONREMOTABLE}
+{$IFNDEF WST_HAS_TTIMEREMOTABLE}
+  time = type string;
+{$ENDIF WST_HAS_TTIMEREMOTABLE}
   
   TScopeType = Integer;
   TArrayStyle = ( asScoped, asEmbeded, asNone );
@@ -1684,8 +1690,16 @@ begin
   r.Register(sXSD_NS,TypeInfo(Extended),'decimal').AddPascalSynonym('Extended');
 
   r.Register(sXSD_NS,TypeInfo(TDateRemotable),'dateTime').AddPascalSynonym('TDateRemotable');
+{$IFDEF WST_HAS_TDURATIONREMOTABLE}
   r.Register(sXSD_NS,TypeInfo(TDurationRemotable),'duration').AddPascalSynonym('TDurationRemotable');
+{$ELSE WST_HAS_TDURATIONREMOTABLE}
+  r.Register(sXSD_NS,TypeInfo(duration),'duration').AddPascalSynonym('duration');
+{$ENDIF WST_HAS_TDURATIONREMOTABLE}
+{$IFDEF WST_HAS_TTIMEREMOTABLE}
   r.Register(sXSD_NS,TypeInfo(TTimeRemotable),'time').AddPascalSynonym('TTimeRemotable');
+{$ELSE WST_HAS_TTIMEREMOTABLE}
+  r.Register(sXSD_NS,TypeInfo(time),'time').AddPascalSynonym('time');
+{$ENDIF WST_HAS_TTIMEREMOTABLE}
 
   ri := r.Register(sWST_BASE_NS,TypeInfo(TBaseArrayRemotable),'TBaseArrayRemotable');
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
