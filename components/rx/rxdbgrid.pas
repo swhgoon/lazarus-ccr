@@ -867,95 +867,103 @@ var
   rxTit, rxTitleNext:TRxColumnTitle;
   MLRec1:TMLCaptionItem;
   MLRec2:TMLCaptionItem;
+  tmpCanvas: TCanvas;
 begin
-  H:=1;
-  ClearMLCaptionPointers;
-  for i:=0 to Columns.Count-1 do
-  begin
-    rxCol:=TRxColumn(Columns[i]);
-    if Assigned(rxCol) and rxCol.Visible then
+  if RowCount = 0 then exit;
+  tmpCanvas := GetWorkingCanvas(Canvas);
+  try
+    H:=1;
+    ClearMLCaptionPointers;
+    for i:=0 to Columns.Count-1 do
     begin
-      rxTit:=TRxColumnTitle(rxCol.Title);
-      if Assigned(rxTit) then
+      rxCol:=TRxColumn(Columns[i]);
+      if Assigned(rxCol) and rxCol.Visible then
       begin
-        if rxTit.Orientation in [toVertical270, toVertical90] then
-          H:=Max((Canvas.TextWidth(Columns[i].Title.Caption)+ Canvas.TextWidth('W')) div DefaultRowHeight, H)
-        else
+        rxTit:=TRxColumnTitle(rxCol.Title);
+        if Assigned(rxTit) then
         begin
-          rxColNext:=nil;
-          rxTitleNext:=nil;
-          if i < Columns.Count-1  then
-          begin
-            rxColNext:=TRxColumn(Columns[i+1]);
-            rxTitleNext:=TRxColumnTitle(rxColNext.Title);
-          end;
-  { TODO -oalexs : Тут необходимо также обработать скрытые столбцы }
-  {
-          j:=i;
-   while j < Columns.Count-1  then
-          begin
-            if
-            inc(j);
-          end;
-          }
-
-          W:=Max(rxCol.Width-2, 1);
-          if rxTit.CaptionLinesCount > 0 then
-          begin
-            H2:=0;
-            H1:=0;
-            for j:=0 to rxTit.CaptionLinesCount-1 do
-            begin
-              MLRec1:=rxTit.CaptionLine(j);
-              if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount>j) then
-              begin
-                MLRec2:=rxTitleNext.CaptionLine(j);
-                if MLRec1.Caption = MLRec2.Caption then
-                begin
-                  MLRec1.Next:=MLRec2;
-                  MLRec2.Prior:=MLRec1;
-                end;
-              end;
-
-              MLRec1.Width:=Canvas.TextWidth(MLRec1.Caption)+2;
-
-              if W > MLRec1.Width then
-                H2:=1
-              else
-                H2:=MLRec1.Width div W + 1;
-
-              if H2>WordCount(MLRec1.Caption, [' ']) then
-                H2:=WordCount(MLRec1.Caption, [' ']);
-
-              H1:=H1+H2;
-            end
-          end
+          if rxTit.Orientation in [toVertical270, toVertical90] then
+            H:=Max((tmpCanvas.TextWidth(Columns[i].Title.Caption)+ tmpCanvas.TextWidth('W')) div DefaultRowHeight, H)
           else
           begin
-            H1:=Max((Canvas.TextWidth(rxTit.Caption)+2) div W + 1, H);
-            if H1>WordCount(rxTit.Caption, [' ']) then
-              H1:=WordCount(rxTit.Caption, [' ']);
+            rxColNext:=nil;
+            rxTitleNext:=nil;
+            if i < Columns.Count-1  then
+            begin
+              rxColNext:=TRxColumn(Columns[i+1]);
+              rxTitleNext:=TRxColumnTitle(rxColNext.Title);
+            end;
+    { TODO -oalexs : Тут необходимо также обработать скрытые столбцы }
+    {
+            j:=i;
+     while j < Columns.Count-1  then
+            begin
+              if
+              inc(j);
+            end;
+            }
+
+            W:=Max(rxCol.Width-2, 1);
+            if rxTit.CaptionLinesCount > 0 then
+            begin
+              H2:=0;
+              H1:=0;
+              for j:=0 to rxTit.CaptionLinesCount-1 do
+              begin
+                MLRec1:=rxTit.CaptionLine(j);
+                if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount>j) then
+                begin
+                  MLRec2:=rxTitleNext.CaptionLine(j);
+                  if MLRec1.Caption = MLRec2.Caption then
+                  begin
+                    MLRec1.Next:=MLRec2;
+                    MLRec2.Prior:=MLRec1;
+                  end;
+                end;
+
+                MLRec1.Width:=tmpCanvas.TextWidth(MLRec1.Caption)+2;
+
+                if W > MLRec1.Width then
+                  H2:=1
+                else
+                  H2:=MLRec1.Width div W + 1;
+
+                if H2>WordCount(MLRec1.Caption, [' ']) then
+                  H2:=WordCount(MLRec1.Caption, [' ']);
+
+                H1:=H1+H2;
+              end
+            end
+            else
+            begin
+              H1:=Max((tmpCanvas.TextWidth(rxTit.Caption)+2) div W + 1, H);
+              if H1>WordCount(rxTit.Caption, [' ']) then
+                H1:=WordCount(rxTit.Caption, [' ']);
+            end;
+            H:=Max(H1, H);
           end;
-          H:=Max(H1, H);
-        end;
 
-        for j:=0 to rxTit.CaptionLinesCount-1 do
-        begin
-          MLRec1:=rxTit.CaptionLine(j);
-          if MLRec1.Width < rxTit.Column.Width then
-            MLRec1.Width:=rxTit.Column.Width;
-        end;
+          for j:=0 to rxTit.CaptionLinesCount-1 do
+          begin
+            MLRec1:=rxTit.CaptionLine(j);
+            if MLRec1.Width < rxTit.Column.Width then
+              MLRec1.Width:=rxTit.Column.Width;
+          end;
 
+        end;
       end;
     end;
-  end;
 
+    RowHeights[0] := DefaultRowHeight * ({FTitleLines+}H);
 
-  RowHeights[0] := DefaultRowHeight * ({FTitleLines+}H);
-  
-  if rdgFilter in OptionsRx then
-  begin
-    RowHeights[0] := RowHeights[0] + DefaultRowHeight;
+    if rdgFilter in OptionsRx then
+    begin
+      RowHeights[0] := RowHeights[0] + DefaultRowHeight;
+    end;
+
+  finally
+    if TmpCanvas<>Canvas then
+      FreeWorkingCanvas(tmpCanvas);
   end;
 end;
 
@@ -1121,11 +1129,11 @@ begin
   BeginUpdate;
   try
     inherited CreateWnd;
-//    CalcTitle;
+    CalcTitle;
   finally
     EndUpdate;
   end;
-end;}
+end;     }
 
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
@@ -1906,8 +1914,8 @@ end;
 procedure TRxDBGrid.VisualChange;
 begin
   inherited VisualChange;
-  if Canvas.HandleAllocated then
-    CalcTitle;
+//  if Canvas.HandleAllocated then
+  CalcTitle;
 end;
 
 function TRxDBGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;

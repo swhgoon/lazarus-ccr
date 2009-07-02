@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="dcl_rx_fpc"/>
+  <package name="rxfpc">
+    <module name="rxdbgrid"/>
+    <module name="rxctrls">
+      <topic name="TRxLabel">
+        <descr>Unit
+RxCtrls
+Description
+Компонента TRxLabel аналогична стандартной компоненте VCL TLabel, однако дополнительно позволяет придать тексту статического элемента управления (Label) 3-мерный вид, либо отобразить "тень" текста. 
+С помощью свойст ShadowPos, ShadowColor и ShadowSize вы можете задать расположение, цвет и толщину "тени" букв текста. Значения, заданные для этих свойств по умолчанию, создают "трехмерный" эффект изображения текс</descr>
+      </topic>
+      <element name="Align"/>
+      <element name="Alignment"/>
+      <element name="Alignment"/>
+      <element name="Alignment"/>
+      <element name="Color"/>
+      <element name="DragCursor"/>
+      <element name="DragMode"/>
+      <element name="Enabled"/>
+      <element name="TRxLabelENodeName"/>
+      <element name="Constraints"/>
+      <topic name="Constraints">
+        <element name="TRxLabelENodeNameENodeName"/>
+      </topic>
+      <element name="TRxLabelENodeNameENodeName">
+      <element name="TRxLabelENodeNameENodeNameENodeName"/>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

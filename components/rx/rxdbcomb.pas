@@ -191,7 +191,6 @@ end;
 
 procedure TCustomDBComboBox.UpdateData(Sender: TObject);
 begin
-  FDataLink.Field.Text := ComboText;
   FDataLink.Field.AsString := ComboText;
 end;
 
@@ -238,6 +237,7 @@ procedure TCustomDBComboBox.Change;
 begin
   FDataLink.Edit;
   inherited Change;
+  FDataLink.UpdateRecord;
   FDataLink.Modified;
 end;
 
