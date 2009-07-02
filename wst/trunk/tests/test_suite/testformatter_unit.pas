@@ -428,6 +428,7 @@ type
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;virtual;abstract;
     function Support_ComplextType_with_SimpleContent():Boolean;virtual;
     function Support_nil():Boolean;virtual;
+    class function SupportInt64() : Boolean;virtual;
   published
     procedure Test_AnsiChar;
     procedure Test_AnsiChar_ScopeData;
@@ -804,6 +805,11 @@ begin
 end;
 
 function TTestFormatterSimpleType.Support_nil(): Boolean;
+begin
+  Result := True;
+end;
+
+class function TTestFormatterSimpleType.SupportInt64(): Boolean;
 begin
   Result := True;
 end;
@@ -1369,7 +1375,9 @@ begin
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_64;
-const VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -$FFFFFFFFF0;
+const
+  VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -$FFFFFFFFF0;
+  VAL_32_1 = High(DWord) -1000; VAL_32_2 : Int64 = -$FFFFFF0;
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1378,8 +1386,13 @@ Var
 begin
   s := Nil;
   Try
-    intVal_U := VAL_1;
-    intVal_S := VAL_2;
+    if SupportInt64() then begin
+      intVal_U := VAL_1;
+      intVal_S := VAL_2;
+    end else begin
+      intVal_U := VAL_32_1;
+      intVal_S := VAL_32_2;
+    end;
     f := CreateFormatter(TypeInfo(TClass_Int));
 
     f.BeginObject('Root',TypeInfo(TClass_Int));
@@ -1403,15 +1416,22 @@ begin
       f.Get(TypeInfo(Int64),x,intVal_S);
     f.EndScopeRead();
 
-    CheckEquals(QWord(VAL_1),intVal_U);
-    CheckEquals(VAL_2,intVal_S);
+    if SupportInt64() then begin
+      CheckEquals(QWord(VAL_1),intVal_U);
+      CheckEquals(VAL_2,intVal_S);
+    end else begin
+      CheckEquals(QWord(VAL_32_1),intVal_U);
+      CheckEquals(VAL_32_2,intVal_S);
+    end;
   Finally
     s.Free();
   End;
 end;
 
 procedure TTestFormatterSimpleType.Test_Int_64_ScopeData;
-const VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -101276;
+const
+  VAL_1 = High(QWord) -1000; VAL_2 : Int64 = -$FFFFFFFFF0;
+  VAL_32_1 = High(DWord) -1000; VAL_32_2 : Int64 = -$FFFFFF0;
 var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -1420,7 +1440,10 @@ var
 begin
   s := Nil;
   Try
-    intVal_U := VAL_1;
+    if SupportInt64() then
+      intVal_U := VAL_1
+    else
+      intVal_U := VAL_32_1;
     f := CreateFormatter(TypeInfo(TClass_Int));
     f.BeginObject('Root',TypeInfo(TClass_Int));
       f.PutScopeInnerValue(TypeInfo(QWord),intVal_U);
@@ -1437,9 +1460,15 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(QWord),intVal_U);
     f.EndScopeRead();
-    CheckEquals(VAL_1,intVal_U);
+    if SupportInt64() then
+      CheckEquals(VAL_1,intVal_U)
+    else
+      CheckEquals(VAL_32_1,intVal_U);
     ///
-    intVal_S := VAL_2;
+    if SupportInt64() then
+      intVal_S := VAL_2
+    else
+      intVal_S := VAL_32_2;
     f := CreateFormatter(TypeInfo(TClass_Int));
     f.BeginObject('Root',TypeInfo(TClass_Int));
       f.PutScopeInnerValue(TypeInfo(Int64),intVal_S);
@@ -1456,7 +1485,10 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(Int64),intVal_S);
     f.EndScopeRead();
-    CheckEquals(VAL_2,intVal_S);
+    if SupportInt64() then
+      CheckEquals(VAL_2,intVal_S)
+    else
+      CheckEquals(VAL_32_2,intVal_S);
   Finally
     s.Free();
   End;
@@ -2157,8 +2189,13 @@ begin
       a.Val_16S := CONST_Val_16S;
     a.Val_32U := CONST_Val_32U;
       a.Val_32S := CONST_Val_32S;
-    a.Val_64U := CONST_Val_64U;
-      a.Val_64S := CONST_Val_64S;
+    if SupportInt64() then begin
+      a.Val_64U := CONST_Val_64U;
+        a.Val_64S := CONST_Val_64S;
+    end else begin
+      a.Val_64U := CONST_Val_32U;
+        a.Val_64S := CONST_Val_32S;
+    end;
 
     f := CreateFormatter(TypeInfo(TClass_Int));
 
@@ -2186,8 +2223,13 @@ begin
       CheckEquals(CONST_Val_16S,a.Val_16S);
     CheckEquals(CONST_Val_32U,a.Val_32U);
       CheckEquals(CONST_Val_32S,a.Val_32S);
-    CheckEquals(QWord(CONST_Val_64U),a.Val_64U);
-      CheckEquals(CONST_Val_64S,a.Val_64S);
+    if SupportInt64() then begin
+      CheckEquals(QWord(CONST_Val_64U),a.Val_64U);
+        CheckEquals(CONST_Val_64S,a.Val_64S);
+    end else begin
+      CheckEquals(QWord(CONST_Val_32U),a.Val_64U);
+        CheckEquals(CONST_Val_32S,a.Val_64S);
+    end;
   Finally
     a.Free();
     s.Free();

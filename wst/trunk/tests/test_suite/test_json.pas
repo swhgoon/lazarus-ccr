@@ -38,6 +38,7 @@ type
     function CreateFormatter(ARootType : PTypeInfo):IFormatterBase;override;
     function Support_ComplextType_with_SimpleContent():Boolean;override;
     function Support_nil():Boolean;override;
+    class function SupportInt64() : Boolean;override;
   published
     //procedure test_WriteBuffer();
   end;
@@ -76,6 +77,11 @@ begin
 end;
 
 function TTestJsonRpcFormatter.Support_nil() : Boolean;
+begin
+  Result := False;
+end;
+
+class function TTestJsonRpcFormatter.SupportInt64(): Boolean;
 begin
   Result := False;
 end;
