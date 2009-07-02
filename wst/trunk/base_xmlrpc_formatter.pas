@@ -17,7 +17,12 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Contnrs,
-  {$IFNDEF FPC}xmldom, wst_delphi_xml{$ELSE}DOM{$ENDIF},
+{$IFDEF WST_DELPHI}
+  xmldom, wst_delphi_xml, 
+{$ENDIF WST_DELPHI}
+{$IFDEF FPC}
+  DOM, XMLWrite, XMLRead,wst_fpc_xml,
+{$ENDIF FPC}
   base_service_intf;
 
 const
@@ -43,6 +48,9 @@ const
 
   XML_RPC_FALSE = '0';
   XML_RPC_TRUE  = '1';
+
+  stXmlRpcDate    = stBase + 3;
+  stSimpleContent = stXmlRpcDate + 1;
 
 type
 
@@ -92,6 +100,10 @@ type
     property FoundState : TFoundState read FFoundState;
 
     function GetScopeItemNames(const AReturnList : TStrings) : Integer;virtual;abstract;
+    procedure CreateInnerBuffer(
+      const AText : DOMString;
+      const ADoc  : TXMLDocument
+    ); virtual;
   end;
 
   { TObjectStackItem }
@@ -154,7 +166,19 @@ type
       const ADataType : TXmlRpcDataType
     ):TDOMNode;override;
   end;
-  
+
+  { TSimpleTypeStackItem }
+
+  TSimpleTypeStackItem = class(TStackItem)
+  public
+    function FindNode(var ANodeName : string):TDOMNode; override;
+    function CreateBuffer(
+      Const AName     : string;
+      const ADataType : TXmlRpcDataType
+    ):TDOMNode; override;
+    function GetScopeItemNames(const AReturnList : TStrings) : Integer; override;
+  end;
+
 {$M+}
 
   { TXmlRpcBaseFormatter }
@@ -442,8 +466,8 @@ type
 {$M-}
 
 implementation
-Uses {$IFNDEF FPC}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
-     imp_utils;
+uses
+  Imp_utils, wst_consts;
 
 { TStackItem }
 
@@ -461,6 +485,14 @@ constructor TStackItem.Create(AScopeObject: TDOMNode; AScopeType: TScopeType);
 begin
   FScopeObject := AScopeObject;
   FScopeType := AScopeType;
+end;
+
+procedure TStackItem.CreateInnerBuffer(
+  const AText : DOMString;
+  const ADoc  : TXMLDocument
+);
+begin
+  ScopeObject.AppendChild(ADoc.CreateTextNode(AText));
 end;
 
 { TObjectStackItem }
@@ -1223,8 +1255,16 @@ procedure TXmlRpcBaseFormatter.BeginObject(
   const AName      : string;
   const ATypeInfo  : PTypeInfo
 );
+var
+  locScopeType : TScopeType;
 begin
-  BeginScope(AName,'','',stObject,asNone);
+  if ( ATypeInfo^.Kind = tkClass ) and
+     ( GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TDateRemotable) )
+  then
+    locScopeType := stXmlRpcDate
+  else
+    locScopeType := stObject;
+  BeginScope(AName,'','',locScopeType,asNone);
 end;
 
 procedure TXmlRpcBaseFormatter.BeginArray(
@@ -1269,10 +1309,13 @@ Var
   e : TDOMNode;
   dtType : TXmlRpcDataType;
 begin
-  if ( AScopeType = stArray ) then
-    dtType := xdtArray
-  else
-    dtType := xdtStruct;
+  case AScopeType of
+    stXmlRpcDate      : dtType := xdtDateTime;
+    stSimpleContent   : dtType := xdtString;
+    stArray           : dtType := xdtArray;
+    else
+                        dtType := xdtStruct;
+  end;
   if HasScope() then begin
     e := StackTop().CreateBuffer(AScopeName,dtType);
   end else begin
@@ -1281,8 +1324,10 @@ begin
   end;
   if ( AScopeType = stObject ) then begin
     PushStack(e);
-  end else begin
+  end else if ( AScopeType = stArray ) then begin
     PushStack(e,AStyle,'');
+  end else begin
+    FStack.Push(TSimpleTypeStackItem.Create(e,AScopeType));
   end;
 end;
 
@@ -1588,7 +1633,8 @@ begin
         dataBuffer := wst_FormatFloat(ATypeInfo,floatDt);
       end;
   end;
-  StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
+  StackTop().CreateInnerBuffer(dataBuffer,FDoc);
+  //StackTop().ScopeObject.AppendChild(FDoc.CreateTextNode(dataBuffer));
 end;
 
 function TXmlRpcBaseFormatter.Get(
@@ -2033,5 +2079,28 @@ begin
   FIndex := AValue;
   FIndexStack[FIndexStackIDX] := Result;
 end;
+
+{ TSimpleTypeStackItem }
+
+{$WARNINGS OFF}
+function TSimpleTypeStackItem.FindNode(var ANodeName: string): TDOMNode;
+begin
+  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['FindNode']);
+end;
+
+function TSimpleTypeStackItem.CreateBuffer(
+  const AName: string;
+  const ADataType: TXmlRpcDataType
+) : TDOMNode;
+begin
+  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['CreateBuffer']);
+end;
+
+function TSimpleTypeStackItem.GetScopeItemNames(const AReturnList: TStrings): Integer;
+begin
+  raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['GetScopeItemNames']);
+end;
+{$WARNINGS ON}
+
 
 end.

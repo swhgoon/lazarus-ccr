@@ -17,6 +17,7 @@ unit wst_consts;
 interface
 
 resourcestring
+  SERR_InsupportedOperation        = 'Insupported operation : "%s".';
   SERR_InvalidArrayLength          = 'Invalid array length : %d.';
   SERR_InvalidCollectionLength     = 'Invalid collection length : %d.';
   SERR_InvalidHourOffetValue       = '"%d" is not a valid hour offset value.';
