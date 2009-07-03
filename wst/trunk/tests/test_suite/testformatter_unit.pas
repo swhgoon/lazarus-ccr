@@ -429,6 +429,7 @@ type
     function Support_ComplextType_with_SimpleContent():Boolean;virtual;
     function Support_nil():Boolean;virtual;
     class function SupportInt64() : Boolean;virtual;
+    class function SupportUInt64() : Boolean;virtual;
   published
     procedure Test_AnsiChar;
     procedure Test_AnsiChar_ScopeData;
@@ -810,6 +811,11 @@ begin
 end;
 
 class function TTestFormatterSimpleType.SupportInt64(): Boolean;
+begin
+  Result := True;
+end;
+
+class function TTestFormatterSimpleType.SupportUInt64(): Boolean;
 begin
   Result := True;
 end;
@@ -1386,13 +1392,14 @@ Var
 begin
   s := Nil;
   Try
-    if SupportInt64() then begin
-      intVal_U := VAL_1;
-      intVal_S := VAL_2;
-    end else begin
-      intVal_U := VAL_32_1;
+    if SupportInt64() then
+      intVal_S := VAL_2
+    else
       intVal_S := VAL_32_2;
-    end;
+    if SupportUInt64() then
+      intVal_U := VAL_1
+    else
+      intVal_U := VAL_32_1;
     f := CreateFormatter(TypeInfo(TClass_Int));
 
     f.BeginObject('Root',TypeInfo(TClass_Int));
@@ -1416,13 +1423,14 @@ begin
       f.Get(TypeInfo(Int64),x,intVal_S);
     f.EndScopeRead();
 
-    if SupportInt64() then begin
-      CheckEquals(QWord(VAL_1),intVal_U);
-      CheckEquals(VAL_2,intVal_S);
-    end else begin
-      CheckEquals(QWord(VAL_32_1),intVal_U);
+    if SupportInt64() then
+      CheckEquals(VAL_2,intVal_S)
+    else
       CheckEquals(VAL_32_2,intVal_S);
-    end;
+    if SupportUInt64() then
+      CheckEquals(QWord(VAL_1),intVal_U)
+    else
+      CheckEquals(QWord(VAL_32_1),intVal_U);
   Finally
     s.Free();
   End;
@@ -1440,7 +1448,7 @@ var
 begin
   s := Nil;
   Try
-    if SupportInt64() then
+    if SupportUInt64() then
       intVal_U := VAL_1
     else
       intVal_U := VAL_32_1;
@@ -1460,7 +1468,7 @@ begin
     f.BeginObjectRead(x,TypeInfo(TClass_Int));
       f.GetScopeInnerValue(TypeInfo(QWord),intVal_U);
     f.EndScopeRead();
-    if SupportInt64() then
+    if SupportUInt64() then
       CheckEquals(VAL_1,intVal_U)
     else
       CheckEquals(VAL_32_1,intVal_U);
@@ -2189,13 +2197,14 @@ begin
       a.Val_16S := CONST_Val_16S;
     a.Val_32U := CONST_Val_32U;
       a.Val_32S := CONST_Val_32S;
-    if SupportInt64() then begin
-      a.Val_64U := CONST_Val_64U;
-        a.Val_64S := CONST_Val_64S;
-    end else begin
+    if SupportInt64() then
+      a.Val_64S := CONST_Val_64S
+    else
+      a.Val_64S := CONST_Val_32S;
+    if SupportUInt64() then
+      a.Val_64U := CONST_Val_64U
+    else
       a.Val_64U := CONST_Val_32U;
-        a.Val_64S := CONST_Val_32S;
-    end;
 
     f := CreateFormatter(TypeInfo(TClass_Int));
 
@@ -2223,13 +2232,14 @@ begin
       CheckEquals(CONST_Val_16S,a.Val_16S);
     CheckEquals(CONST_Val_32U,a.Val_32U);
       CheckEquals(CONST_Val_32S,a.Val_32S);
-    if SupportInt64() then begin
-      CheckEquals(QWord(CONST_Val_64U),a.Val_64U);
-        CheckEquals(CONST_Val_64S,a.Val_64S);
-    end else begin
+    if SupportInt64() then
+      CheckEquals(CONST_Val_64S,a.Val_64S)
+    else
+      CheckEquals(CONST_Val_32S,a.Val_64S);
+    if SupportUInt64() then
+      CheckEquals(QWord(CONST_Val_64U),a.Val_64U)
+    else
       CheckEquals(QWord(CONST_Val_32U),a.Val_64U);
-        CheckEquals(CONST_Val_32S,a.Val_64S);
-    end;
   Finally
     a.Free();
     s.Free();

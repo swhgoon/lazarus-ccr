@@ -11,6 +11,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 }
 {$INCLUDE wst_global.inc}
+{$INCLUDE wst_tests_defines.inc}
 unit test_json;
 
 interface
@@ -39,6 +40,7 @@ type
     function Support_ComplextType_with_SimpleContent():Boolean;override;
     function Support_nil():Boolean;override;
     class function SupportInt64() : Boolean;override;
+    class function SupportUInt64() : Boolean;override;
   published
     //procedure test_WriteBuffer();
   end;
@@ -82,6 +84,15 @@ begin
 end;
 
 class function TTestJsonRpcFormatter.SupportInt64(): Boolean;
+begin
+{$IFDEF WST_HAS_JSON_INT64}
+  Result := True;
+{$ELSE WST_HAS_JSON_INT64}
+  Result := False;
+{$ENDIF WST_HAS_JSON_INT64}
+end;
+
+class function TTestJsonRpcFormatter.SupportUInt64(): Boolean;
 begin
   Result := False;
 end;
