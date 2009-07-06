@@ -1,18 +1,18 @@
 object RxDBGridMainForm: TRxDBGridMainForm
   Left = 263
-  Height = 582
+  Height = 609
   Top = 219
   Width = 969
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo (ver 3)  ...'
-  ClientHeight = 582
+  ClientHeight = 609
   ClientWidth = 969
   OnCreate = FormCreate
   LCLVersion = '0.9.27'
   object RxDBGrid1: TRxDBGrid
     Left = 0
-    Height = 533
-    Top = 49
+    Height = 542
+    Top = 67
     Width = 969
     TitleButtons = True
     AutoSort = True
@@ -80,7 +80,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Filter.DropDownRows = 0
         Filter.ItemIndex = -1
       end>
-    OptionsRx = [rdgFooterRows]
+    OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgFooterRows, rdgAllowQuickSearch]
     FooterColor = clYellow
     FooterRowCount = 1
     OnFiltred = RxDBGrid1Filtred
@@ -97,14 +97,26 @@ object RxDBGridMainForm: TRxDBGridMainForm
   end
   object Panel1: TPanel
     Left = 0
-    Height = 49
+    Height = 67
     Top = 0
     Width = 969
     Align = alTop
     AutoSize = True
-    ClientHeight = 49
+    ClientHeight = 67
     ClientWidth = 969
     TabOrder = 1
+    object Label1: TLabel
+      AnchorSideLeft.Control = CheckBox1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 361
+      Height = 18
+      Top = 6
+      Width = 36
+      BorderSpacing.Around = 6
+      Caption = 'Mode'
+      ParentColor = False
+    end
     object Button1: TButton
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
@@ -145,6 +157,26 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Caption = 'Use filter'
       OnChange = CheckBox1Change
       TabOrder = 2
+    end
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      Left = 367
+      Height = 31
+      Top = 30
+      Width = 217
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'Edit mode'
+        'Quick search mode'
+      )
+      OnChange = ComboBox1Change
+      Style = csDropDownList
+      TabOrder = 3
+      Text = 'Edit mode'
     end
   end
   object RxMemoryData1: TRxMemoryData
@@ -283,6 +315,17 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Action = actOptimizeColumnsWidthAll
       OnClick = actOptimizeColumnsWidthAllExecute
     end
+    object MenuItem5: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem7: TMenuItem
+      Action = showColumnsDialog
+      OnClick = showColumnsDialogExecute
+    end
+    object MenuItem6: TMenuItem
+      Action = showFindDialog
+      OnClick = showFindDialogExecute
+    end
   end
   object ActionList1: TActionList
     left = 206
@@ -298,6 +341,14 @@ object RxDBGridMainForm: TRxDBGridMainForm
     object actOptimizeWidthCol1: TAction
       Caption = 'Optimize width...'
       OnExecute = actOptimizeWidthCol1Execute
+    end
+    object showFindDialog: TAction
+      Caption = 'Show find dialog...'
+      OnExecute = showFindDialogExecute
+    end
+    object showColumnsDialog: TAction
+      Caption = 'Show columns dialog...'
+      OnExecute = showColumnsDialogExecute
     end
   end
   object Datasource2: TDatasource

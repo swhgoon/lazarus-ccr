@@ -14,14 +14,21 @@ type
 
   TRxDBGridMainForm = class(TForm)
     actCalcTotal: TAction;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    showColumnsDialog: TAction;
+    showFindDialog: TAction;
     actOptimizeWidthCol1: TAction;
     actOptimizeColumnsWidthAll: TAction;
     ActionList1: TActionList;
     Button1: TButton;
     Button2: TButton;
     CheckBox1: TCheckBox;
+    ComboBox1: TComboBox;
     Datasource1: TDatasource;
     Datasource2: TDatasource;
+    Label1: TLabel;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -43,10 +50,13 @@ type
     procedure actOptimizeColumnsWidthAllExecute(Sender: TObject);
     procedure actOptimizeWidthCol1Execute(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
     procedure RxMemoryData1FilterRecordEx(DataSet: TDataSet; var Accept: Boolean
       );
+    procedure showColumnsDialogExecute(Sender: TObject);
+    procedure showFindDialogExecute(Sender: TObject);
   private
     procedure DoFillFilters;
   public
@@ -107,6 +117,16 @@ begin
   end;
 end;
 
+procedure TRxDBGridMainForm.showColumnsDialogExecute(Sender: TObject);
+begin
+  RxDBGrid1.ShowColumnsDialog;
+end;
+
+procedure TRxDBGridMainForm.showFindDialogExecute(Sender: TObject);
+begin
+  RxDBGrid1.ShowFindDialog;
+end;
+
 procedure TRxDBGridMainForm.DoFillFilters;
 var
   C:TRxColumn;
@@ -154,6 +174,11 @@ begin
   else
     RxDBGrid1.OptionsRx:=RxDBGrid1.OptionsRx - [rdgFilter];
   RxMemoryData1.Filtered:=CheckBox1.Checked;
+end;
+
+procedure TRxDBGridMainForm.ComboBox1Change(Sender: TObject);
+begin
+  RxDBGrid1.ReadOnly:=ComboBox1.ItemIndex <> 0;
 end;
 
 

@@ -6,10 +6,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, LCLType, LCLIntf, Forms, Controls,
-  Graphics, Dialogs, Grids, DBGrids, DB, PropertyStorage, vclutils, LMessages,
-  types, StdCtrls;
+  Graphics, Dialogs, Grids, dbutils, DBGrids, DB, PropertyStorage, vclutils,
+  LMessages, types, StdCtrls;
+
+const
+  CBadQuickSearchSymbols = [VK_UNKNOWN..VK_HELP]+[VK_LWIN..VK_SLEEP]+[VK_NUMLOCK..VK_SCROLL]+[VK_LSHIFT..VK_OEM_102]+[VK_PROCESSKEY]+[VK_ATTN..VK_UNDEFINED];
+  CCancelQuickSearchKeys = [VK_ESCAPE,VK_CANCEL,VK_DELETE,VK_INSERT,VK_DOWN,VK_UP,VK_NEXT,VK_PRIOR,VK_TAB,VK_RETURN,VK_HOME,VK_END,VK_SPACE,VK_MULTIPLY];
 
 type
+  TRxQuickSearchNotifyEvent = procedure(Sender: TObject; Field : TField; var AValue : string) of object;
+
   TSortMarker = (smNone, smDown, smUp);
 
   TGetBtnParamsEvent = procedure (Sender: TObject; Field: TField;
@@ -34,7 +40,8 @@ type
                rdgXORColSizing,
                rdgFilter,
                rdgMultiTitleLines,
-               rdgMrOkOnDblClik
+               rdgMrOkOnDblClik,
+               rdgAllowQuickSearch
                );
   
   TOptionsRx = set of TOptionRx;
@@ -241,6 +248,10 @@ type
     FRxDbGridLookupComboEditor:TCustomControl;
     FRxDbGridDateEditor:TWinControl;
 
+    FAfterQuickSearch : TRxQuickSearchNotifyEvent;
+    FBeforeQuickSearch : TRxQuickSearchNotifyEvent;
+    FQuickUTF8Search : String;
+
     function GetColumns: TRxDbGridColumns;
     function GetPropertyStorage: TCustomPropertyStorage;
     function GetTitleButtons: boolean;
@@ -282,6 +293,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     function  CreateColumns: TGridColumns; override;
     procedure DrawCellBitmap(RxColumn:TRxColumn; aRect: TRect; aState: TGridDrawState; AImageIndex:integer); virtual;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
@@ -297,6 +309,7 @@ type
     procedure InternalOptimizeColumnsWidth(AColList:TList);
     function IsDefaultRowHeightStored:boolean;
     procedure VisualChange; override;
+    procedure SetQuickUTF8Search(AValue : String);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -317,7 +330,10 @@ type
     procedure OptimizeColumnsWidth(AColList:String);
     procedure OptimizeColumnsWidthAll;
     procedure UpdateTitleHight;
+    property QuickUTF8Search:String read FQuickUTF8Search write SetQuickUTF8Search;
   published
+    property AfterQuickSearch: TRxQuickSearchNotifyEvent read FAfterQuickSearch write FAfterQuickSearch;
+    property BeforeQuickSearch: TRxQuickSearchNotifyEvent read FBeforeQuickSearch write FBeforeQuickSearch;
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
     property TitleButtons: boolean read GetTitleButtons write SetTitleButtons;
     property AutoSort:boolean read FAutoSort write SetAutoSort;
@@ -1698,14 +1714,73 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
+procedure TRxDBGrid.SetQuickUTF8Search(AValue : String);
+var
+  ClearSearchValue : Boolean;
+  OldSearchString : String;
+begin
+  if ( rdgAllowQuickSearch in OptionsRx ) then
+  begin
+    OldSearchString := Self.FQuickUTF8Search;
+    if (OldSearchString <> AValue ) and Assigned(Self.FBeforeQuickSearch) then
+       Self.FBeforeQuickSearch(Self, SelectedField, AValue);
+    if OldSearchString <> AValue then
+    begin
+      ClearSearchValue := True;
+      if ( Length(AValue) > 0 ) and ( Self.DatalinkActive ) then
+      begin
+        if (DataSource.DataSet.State = dsBrowse) and (not (DataSource.DataSet.EOF and DataSource.DataSet.BOF)) then
+        begin
+          //1.Вызываем процедурку поиска...
+          if DataSetLocateThrough(Self.DataSource.DataSet, Self.SelectedField.FieldName,AValue,[loPartialKey,loCaseInsensitive]) then
+             Self.FQuickUTF8Search := AValue;
+           ClearSearchValue := False;
+        end;
+      end;
+      if ClearSearchValue then
+      begin
+        Self.FQuickUTF8Search := '';
+      end;
+      if (OldSearchString <> Self.FQuickUTF8Search ) and Assigned(Self.FAfterQuickSearch) then
+        Self.FAfterQuickSearch(Self, SelectedField, OldSearchString);
+     end
+  end;
+ //TODO: сделать отображение ищущейся буквы/строки.
+end;
+
+procedure TRxDBGrid.UTF8KeyPress(var UTF8Key: TUTF8Char);
+var
+  CheckUp : Boolean;
+begin
+  inherited UTF8KeyPress(UTF8Key);
+  if ReadOnly then
+  begin
+    //0. Проверяем что это кнопка значащая, увеличиваем "строку поиска"
+    if Length(UTF8Key) = 1 then
+    begin
+        //DebugLn('Ord Of Key:',IntToStr(Ord(UTF8Key[1])));
+        CheckUp := not ( Ord(UTF8Key[1]) in CBadQuickSearchSymbols )
+    end
+    else
+      CheckUp := True;
+  //  DebugLn('RxDBGrid.UTF8KeyPress check',IfThen(CheckUp,'True','False'),'INIT UTF8Key= ',UTF8Key,' Selected Field: ', Self.SelectedField.FieldName);
+    if CheckUp then
+      QuickUTF8Search := QuickUTF8Search + Trim(UTF8Key);
+  end;
+end;
+
 procedure TRxDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   FTmpReadOnly:boolean;
 begin
+  //DebugLn('RxDBGrid.KeyDown ',Name,' INIT Key= ',IntToStr(Key));
+  if (Key in CCancelQuickSearchKeys) then
+    if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
   case Key of
     ord('F'):begin
                if (ssCtrl in Shift) and (rdgAllowDialogFind in OptionsRx) then
                begin
+                 if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
                  ShowFindDialog;
                  exit;
                end;
@@ -1713,6 +1788,7 @@ begin
     ord('W'):begin
                if (ssCtrl in Shift) and (rdgAllowColumnsForm in OptionsRx) then
                begin
+                 if Length(QuickUTF8Search) > 0 then QuickUTF8Search := '';
                  ShowColumnsDialog;
                  exit;
                end;
