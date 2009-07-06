@@ -22,7 +22,7 @@ uses
   TestFrameWork,
 {$ENDIF}
   TypInfo,
-  wst_types, base_service_intf, imp_utils, test_suite_utils;
+  wst_types, base_service_intf, imp_utils, test_suite_utils, date_utils;
 
 type
 
@@ -338,9 +338,23 @@ type
   { TTest_TTimeRemotable }
 
   TTest_TTimeRemotable = class(TTestCase)
+  protected
+{$IFDEF FPC}
+    class procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;
+{$ENDIF FPC}
+{$IFDEF WST_DELPHI}
+    procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;
+{$ENDIF WST_DELPHI}
   published
-    procedure FormatDate();
-    procedure ParseDate();
+    procedure ToString();
+    procedure Parse();
+    procedure Parse_millisecond();
+    procedure Parse_offset_1();
+    procedure Parse_offset_2();
+    procedure Data;
+    procedure Equal();
+    procedure Assign();
+    procedure Clear();
   end;
   
   { TTest_TStringBufferRemotable }
@@ -453,7 +467,7 @@ type
   end;
   
 implementation
-uses Math, basex_encode, DateUtils, date_utils;
+uses Math, basex_encode, DateUtils;
 
 function RandomValue(const AMaxlen: Integer): TBinaryString;
 var
@@ -2958,15 +2972,235 @@ begin
 end;
 
 { TTest_TTimeRemotable }
-
-procedure TTest_TTimeRemotable.FormatDate();
+{$IFDEF WST_DELPHI}
+procedure TTest_TTimeRemotable.CheckEquals(expected, actual: TTimeRec;msg: string);
 begin
-  Fail('Write me!');
+  CheckEquals(expected.Hour,actual.Hour,msg + ', Hour');
+  CheckEquals(expected.Minute,actual.Minute,msg + ', Minute');
+  CheckEquals(expected.Second,actual.Second,msg + ', Second');
+  CheckEquals(expected.MilliSecond,actual.MilliSecond,msg + ', MilliSecond');
+  CheckEquals(expected.HourOffset,actual.HourOffset,msg + ', HourOffset');
+  CheckEquals(expected.MinuteOffset,actual.MinuteOffset,msg + ', MinuteOffset');
+end;
+{$ENDIF WST_DELPHI}
+
+{$IFDEF FPC}
+class procedure TTest_TTimeRemotable.CheckEquals(expected, actual: TTimeRec;msg: string);
+begin
+  CheckEquals(expected.Hour,actual.Hour,msg + ', Hour');
+  CheckEquals(expected.Minute,actual.Minute,msg + ', Minute');
+  CheckEquals(expected.Second,actual.Second,msg + ', Second');
+  CheckEquals(expected.MilliSecond,actual.MilliSecond,msg + ', MilliSecond');
+  CheckEquals(expected.HourOffset,actual.HourOffset,msg + ', HourOffset');
+  CheckEquals(expected.MinuteOffset,actual.MinuteOffset,msg + ', MinuteOffset');
+end;
+{$ENDIF FPC}
+
+procedure TTest_TTimeRemotable.ToString();
+const
+  sVALUE_1 = '01:23:45.678';
+  sVALUE_2 = '12:34:56';
+  sVALUE_3 = '20:34:56';
+var
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  d := xsd_EncodeTime(01,23,45,678);
+  CheckEquals(sVALUE_1, Copy(TTimeRemotable.ToString(d),1,Length(sVALUE_1)));
+
+  d := xsd_EncodeTime(12,34,56,0);
+  CheckEquals(sVALUE_2, Copy(TTimeRemotable.ToString(d),1,Length(sVALUE_2)));
+
+  d := xsd_EncodeTime(20,34,56,0);
+  CheckEquals(sVALUE_3, Copy(TTimeRemotable.ToString(d),1,Length(sVALUE_3)));
 end;
 
-procedure TTest_TTimeRemotable.ParseDate();
+procedure TTest_TTimeRemotable.Parse();
+var
+  s : string;
+  objd : TTimeRemotable;
+  d : TTimeRec;
 begin
-  Fail('Write me!');
+  s := '23:34:56';
+  d := TTimeRemotable.Parse(s);
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,0,'MilliSecond');
+    CheckEquals(d.HourOffset,0,'HourOffset');
+    CheckEquals(d.MinuteOffset,0,'MinuteOffset');
+
+  objd := TTimeRemotable.Create();
+  try
+    objd.Data := d;
+    CheckEquals(objd.Hour,23,'Hour');
+    CheckEquals(objd.Minute,34,'Minute');
+    CheckEquals(objd.Second,56,'Second');
+    CheckEquals(objd.MilliSecond,0,'MilliSecond');
+    CheckEquals(objd.HourOffset,0,'HourOffset');
+    CheckEquals(objd.MinuteOffset,0,'MinuteOffset');
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Parse_millisecond();
+var
+  s : string;
+  objd : TTimeRemotable;
+  d : TTimeRec;
+begin
+  s := '23:34:56.780';
+  d := TTimeRemotable.Parse(s);
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,780,'MilliSecond');
+    CheckEquals(d.HourOffset,0,'HourOffset');
+    CheckEquals(d.MinuteOffset,0,'MinuteOffset');
+
+  objd := TTimeRemotable.Create();
+  try
+    objd.Data := d;
+    CheckEquals(objd.Hour,23,'Hour');
+    CheckEquals(objd.Minute,34,'Minute');
+    CheckEquals(objd.Second,56,'Second');
+    CheckEquals(objd.MilliSecond,780,'MilliSecond');
+    CheckEquals(objd.HourOffset,0,'HourOffset');
+    CheckEquals(objd.MinuteOffset,0,'MinuteOffset');
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Parse_offset_1();
+var
+  s : string;
+  objd : TTimeRemotable;
+  d : TTimeRec;
+begin
+  s := '23:34:56+01:27';
+  d := TTimeRemotable.Parse(s);
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,0,'MilliSecond');
+    CheckEquals(d.HourOffset,1,'HourOffset');
+    CheckEquals(d.MinuteOffset,27,'MinuteOffset');
+
+  objd := TTimeRemotable.Create();
+  try
+    objd.Data := d;
+    CheckEquals(objd.Hour,23,'Hour');
+    CheckEquals(objd.Minute,34,'Minute');
+    CheckEquals(objd.Second,56,'Second');
+    CheckEquals(objd.MilliSecond,0,'MilliSecond');
+    CheckEquals(objd.HourOffset,1,'HourOffset');
+    CheckEquals(objd.MinuteOffset,27,'MinuteOffset');
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Parse_offset_2();
+var
+  s : string;
+  objd : TTimeRemotable;
+  d : TTimeRec;
+begin
+  s := '23:34:56.800-01:27';
+  d := TTimeRemotable.Parse(s);
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,800,'MilliSecond');
+    CheckEquals(d.HourOffset,-1,'HourOffset');
+    CheckEquals(d.MinuteOffset,-27,'MinuteOffset');
+
+  objd := TTimeRemotable.Create();
+  try
+    objd.Data := d;
+    CheckEquals(objd.Hour,23,'Hour');
+    CheckEquals(objd.Minute,34,'Minute');
+    CheckEquals(objd.Second,56,'Second');
+    CheckEquals(objd.MilliSecond,800,'MilliSecond');
+    CheckEquals(objd.HourOffset,-1,'HourOffset');
+    CheckEquals(objd.MinuteOffset,-27,'MinuteOffset');
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Data;
+var
+  objd : TTimeRemotable;
+  d : TTimeRec;
+begin
+  d := xsd_EncodeTime(1,2,3,4,5,6);
+  objd := TTimeRemotable.Create();
+  try
+    objd.Data := d;
+    CheckEquals(objd.Data,d);
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Equal();
+var
+  a, b : TTimeRemotable;
+begin
+  b := nil;
+  a := TTimeRemotable.Create();
+  try
+    b := TTimeRemotable.Create();
+      Check(a.Equal(b));
+
+    a.Data := xsd_EncodeTime(1,2,3,4,5,6);
+      Check(not a.Equal(b));
+      b.Data := xsd_EncodeTime(1,2,3,4,5,6);
+        Check(a.Equal(b));
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Assign();
+var
+  a, b : TTimeRemotable;
+begin
+  b := nil;
+  a := TTimeRemotable.Create();
+  try
+    b := TTimeRemotable.Create();
+    b.Assign(a);
+      CheckEquals(a.Data,b.Data);
+
+    a.Data := xsd_EncodeTime(1,2,3,4,5,6);
+    b.Assign(a);
+      CheckEquals(a.Data,b.Data);
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TTimeRemotable.Clear();
+var
+  a : TTimeRemotable;
+begin
+  a := TTimeRemotable.Create();
+  try
+    a.Clear();
+      CheckEquals(a.Data,ZERO_TIME);
+
+    a.Data := xsd_EncodeTime(1,2,3,4,5,6);
+    a.Clear();
+      CheckEquals(a.Data,ZERO_TIME);
+  finally
+    a.Free();
+  end;
 end;
 
 { TTest_TStringBufferRemotable }

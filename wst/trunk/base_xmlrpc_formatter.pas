@@ -1257,13 +1257,19 @@ procedure TXmlRpcBaseFormatter.BeginObject(
 );
 var
   locScopeType : TScopeType;
+  locClass : TClass;
 begin
-  if ( ATypeInfo^.Kind = tkClass ) and
-     ( GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TDateRemotable) )
-  then
-    locScopeType := stXmlRpcDate
-  else
-    locScopeType := stObject;
+  locScopeType := stObject;
+  if ( ATypeInfo^.Kind = tkClass ) then begin
+    locClass := GetTypeData(ATypeInfo)^.ClassType;
+    if locClass.InheritsFrom(TAbstractSimpleRemotable) then begin
+      if locClass.InheritsFrom(TDateRemotable) then
+        locScopeType := stXmlRpcDate
+      else
+        locScopeType := stSimpleContent;
+    end;
+  end;
+
   BeginScope(AName,'','',locScopeType,asNone);
 end;
 

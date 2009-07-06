@@ -449,10 +449,50 @@ type
     property FractionalSecond : PtrUInt read FFractionalSecond write FFractionalSecond;
   end;
 
-  TTimeRemotable = class(TBaseDateRemotable)
-  protected
-    //class function FormatDate(const ADate : TDateTime):string;override;
-    //class function ParseDate(const ABuffer : string):TDateTime;override;
+  { TTimeRemotable }
+
+  TTimeRemotable = class(TAbstractSimpleRemotable)
+  private
+    FData : TTimeRec;
+  private
+    function GetOffset(AIndex: integer): Shortint;
+    function GetPart(AIndex: integer): Byte;
+    procedure SetMilliSecond(const AValue: Word);
+    procedure SetOffset(AIndex: integer; const AValue: Shortint);
+    procedure SetPart(AIndex: integer; const AValue: Byte);
+    function GetAsString: string;
+    function GetMilliSecond: Word;
+    procedure SetAsString(const AValue: string);
+  public
+    class procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+    class procedure Load(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );override;
+
+    procedure Assign(Source: TPersistent); override;
+    function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
+    procedure Clear();
+
+    class function Parse(const ABuffer : string) : TTimeRec;
+    class function ToString(const AValue : TTimeRec) : string;
+
+    property Hour : Byte index 0 read GetPart write SetPart;
+    property Minute : Byte index 1 read GetPart write SetPart;
+    property Second : Byte index 2 read GetPart write SetPart;
+    property MilliSecond : Word read GetMilliSecond write SetMilliSecond;
+    property HourOffset : Shortint index 0 read GetOffset write SetOffset;
+    property MinuteOffset : Shortint index 1 read GetOffset write SetOffset;
+
+    property Data : TTimeRec read FData write FData;
+    property AsString : string read GetAsString write SetAsString;
   end;
   
   TAbstractComplexRemotableClass = class of TAbstractComplexRemotable;
@@ -6840,6 +6880,150 @@ end;
 procedure TBase16StringRemotable.SetEncodedString(const AValue: string);
 begin
   BinaryData := Base16Decode(AValue,[xoDecodeIgnoreIllegalChar]);
+end;
+
+
+
+{ TTimeRemotable }
+
+function TTimeRemotable.GetAsString : string;
+begin
+  Result := ToString(Data);
+end;
+
+function TTimeRemotable.GetMilliSecond: Word;
+begin
+  Result := Data.MilliSecond;
+end;
+
+function TTimeRemotable.GetOffset(AIndex: integer): Shortint;
+begin
+  case AIndex of
+    0 : Result := Data.HourOffset;
+    1 : Result := Data.MinuteOffset;
+    else
+        Result := 0;
+  end;
+end;
+
+function TTimeRemotable.GetPart(AIndex: integer): Byte;
+begin
+  case AIndex of
+    0 : Result := Data.Hour;
+    1 : Result := Data.Minute;
+    2 : Result := Data.Second;
+    else
+        Result := 0;
+  end;
+end;
+
+procedure TTimeRemotable.SetAsString(const AValue: string);
+begin
+  Data := Parse(AValue);
+end;
+
+procedure TTimeRemotable.SetMilliSecond(const AValue: Word);
+begin
+  FData.MilliSecond := AValue;
+end;
+
+procedure TTimeRemotable.SetOffset(AIndex: integer; const AValue: Shortint);
+begin
+  case AIndex of
+    0 : FData.HourOffset := AValue;
+    1 : FData.MinuteOffset := AValue;
+  end;
+end;
+
+procedure TTimeRemotable.SetPart(AIndex: integer; const AValue: Byte);
+begin
+  case AIndex of
+    0 : FData.Hour := AValue;
+    1 : FData.Minute := AValue;
+    2 : FData.Second := AValue;
+  end;
+end;
+
+class procedure TTimeRemotable.Save(
+        AObject   : TBaseRemotable;
+        AStore    : IFormatterBase;
+  const AName     : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  buffer : string;
+begin
+  buffer := TTimeRemotable(AObject).AsString;
+  AStore.BeginObject(AName,ATypeInfo);
+  try
+    AStore.PutScopeInnerValue(TypeInfo(string),buffer);
+  finally
+    AStore.EndScope();
+  end;
+end;
+
+class procedure TTimeRemotable.Load(
+  var AObject     : TObject;
+      AStore      : IFormatterBase;
+  var AName       : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  strBuffer : string;
+begin
+  if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+    try
+      strBuffer := '';
+      AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
+      if IsStrEmpty(strBuffer) then
+        (AObject as TTimeRemotable).Clear()
+      else
+        (AObject as TTimeRemotable).AsString := strBuffer;
+    finally
+      AStore.EndScopeRead();
+    end;
+  end;
+end;
+
+procedure TTimeRemotable.Assign(Source: TPersistent);
+begin
+  if ( Source = nil ) then begin
+    Clear();
+  end else begin
+    if Source.InheritsFrom(TTimeRemotable) then
+      Self.Data := TTimeRemotable(Source).Data
+    else if Source.InheritsFrom(TDateRemotable) then
+      Self.Data := DateTimeToTimeRec(TDateRemotable(Source).AsUTCDate)
+    else
+      inherited Assign(Source);
+  end;
+end;
+
+function TTimeRemotable.Equal(const ACompareTo: TBaseRemotable): Boolean;
+begin
+  if ( ACompareTo = nil ) then begin
+    Result := date_utils.Equals(Data,ZERO_TIME );
+  end else begin
+    if ACompareTo.InheritsFrom(TTimeRemotable) then
+      Result := date_utils.Equals(Self.Data,TTimeRemotable(ACompareTo).Data)
+    else
+      Result := inherited Equal(ACompareTo);
+  end;
+end;
+
+procedure TTimeRemotable.Clear();
+begin
+  Data := ZERO_TIME;
+end;
+
+class function TTimeRemotable.Parse(const ABuffer: string): TTimeRec;
+begin
+  Result := xsd_StrToTime(ABuffer);
+end;
+
+class function TTimeRemotable.ToString(const AValue: TTimeRec): string;
+begin
+  Result := xsd_TimeToStr(AValue);
 end;
 
 initialization

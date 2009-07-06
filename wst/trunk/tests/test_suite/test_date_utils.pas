@@ -24,7 +24,16 @@ uses
 
 type
 
+  { TTest_DateUtils }
+
   TTest_DateUtils = class(TTestCase)
+  protected
+{$IFDEF FPC}
+    class procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;
+{$ENDIF FPC}
+{$IFDEF WST_DELPHI}
+    procedure CheckEquals(expected, actual: TTimeRec; msg: string = ''); overload;
+{$ENDIF WST_DELPHI}
   published
     procedure xsd_TryStrToDate_date_only();
     procedure xsd_TryStrToDate_date_time();
@@ -41,6 +50,18 @@ type
     procedure xsd_DateTimeToStr_fractional_second_1();
     procedure xsd_DateTimeToStr_fractional_second_2();
     procedure xsd_DateTimeToStr_timezone_1();
+
+    procedure xsd_TimeToStr_1();
+    procedure xsd_TimeToStr_zero();
+    procedure xsd_TimeToStr_fractional_second_1();
+    procedure xsd_TryStrToTime_hour_only();
+    procedure xsd_TryStrToTime_hour_minute_only();
+    procedure xsd_TryStrToTime_hour_minute_second_only();
+    procedure xsd_TryStrToTime_all_fields();
+    procedure xsd_TryStrToTime_time_timezone_1();
+    procedure xsd_TryStrToTime_time_timezone_2();
+    procedure xsd_TryStrToTime_time_timezone_3();
+    procedure xsd_TryStrToTime_time_timezone_4();
   end;
 
 implementation
@@ -132,6 +153,241 @@ begin
   CheckEquals('2002-10-10T07:00:00Z', xsd_DateTimeToStr(d));
 end;
 
+procedure TTest_DateUtils.xsd_TimeToStr_1();
+const
+  sVALUE_1 = '01:23:45Z';
+  sVALUE_2 = '12:34:56Z';
+  sVALUE_3 = '20:34:56Z';
+var
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  d.Hour := 1;
+  d.Minute := 23;
+  d.Second := 45;
+  d.MilliSecond := 0;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_1, xsd_TimeToStr(d));
+
+  d.Hour := 12;
+  d.Minute := 34;
+  d.Second := 56;
+  d.MilliSecond := 0;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_2, xsd_TimeToStr(d));
+
+  d.Hour := 20;
+  d.Minute := 34;
+  d.Second := 56;
+  d.MilliSecond := 0;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_3, xsd_TimeToStr(d));
+end;
+
+procedure TTest_DateUtils.xsd_TimeToStr_zero();
+const
+  sVALUE_1 = '00:00:00Z';
+var
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  d.Hour := 0;
+  d.Minute := 0;
+  d.Second := 0;
+  d.MilliSecond := 0;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_1, xsd_TimeToStr(d));
+end;
+
+procedure TTest_DateUtils.xsd_TimeToStr_fractional_second_1();
+const
+  sVALUE_1 = '23:34:56.007Z';
+  sVALUE_2 = '23:34:56.078Z';
+  sVALUE_3 = '23:34:56.789Z';
+var
+  d : TTimeRec;
+begin
+  d.Hour := 23;
+  d.Minute := 34;
+  d.Second := 56;
+  d.MilliSecond := 7;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_1, xsd_TimeToStr(d));
+
+  d.Hour := 23;
+  d.Minute := 34;
+  d.Second := 56;
+  d.MilliSecond := 78;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_2, xsd_TimeToStr(d));
+
+  d.Hour := 23;
+  d.Minute := 34;
+  d.Second := 56;
+  d.MilliSecond := 789;
+  d.HourOffset := 0;
+  d.MinuteOffset := 0;
+  CheckEquals(sVALUE_3, xsd_TimeToStr(d));
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_hour_only();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '01';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(1,0,0,0),d);
+  s := '05';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(5,0,0,0),d);
+  s := '12';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(12,0,0,0),d);
+  s := '13';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(13,0,0,0),d);
+  s := '20';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(20,0,0,0),d);
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_hour_minute_only();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '01:00';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(1,0,0,0),d);
+  s := '05:12';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(5,12,0,0),d);
+  s := '12:55';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(12,55,0,0),d);
+  s := '13:45';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(13,45,0,0),d);
+  s := '20:34';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(20,34,0,0),d);
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_hour_minute_second_only();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '01:00:00';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(1,0,0,0),d);
+  s := '05:12:34';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(5,12,34,0),d);
+  s := '12:55:56';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(12,55,56,0),d);
+  s := '13:45:41';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(13,45,41,0),d);
+  s := '20:34:12';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(20,34,12,0),d);
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_all_fields();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '01:00:00.00';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(1,0,0,0),d);
+  s := '05:12:34.001';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(5,12,34,1),d);
+  s := '12:55:56.012';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(12,55,56,12),d);
+  s := '13:45:41.123';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(13,45,41,123),d);
+  s := '20:34:12.998';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(xsd_EncodeTime(20,34,12,998),d);
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_time_timezone_1();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  s := '23:34:56+12:34';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,0,'MilliSecond');
+  CheckEquals(12,d.HourOffset,'HourOffset');
+  CheckEquals(34,d.MinuteOffset,'MinuteOffset');
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_time_timezone_2();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  s := '23:34:56-01:23';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,0,'MilliSecond');
+  CheckEquals(-1,d.HourOffset,'HourOffset');
+  CheckEquals(-23,d.MinuteOffset,'MinuteOffset');
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_time_timezone_3();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  s := '23:34:56.78+12:34';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,78,'MilliSecond');
+  CheckEquals(12,d.HourOffset,'HourOffset');
+  CheckEquals(34,d.MinuteOffset,'MinuteOffset');
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToTime_time_timezone_4();
+var
+  s : string;
+  d : TTimeRec;
+begin
+  s := '23:34:56.789-01:23';
+  Check(xsd_TryStrToTime(s,d));
+    CheckEquals(d.Hour,23,'Hour');
+    CheckEquals(d.Minute,34,'Minute');
+    CheckEquals(d.Second,56,'Second');
+    CheckEquals(d.MilliSecond,789,'MilliSecond');
+  CheckEquals(-1,d.HourOffset,'HourOffset');
+  CheckEquals(-23,d.MinuteOffset,'MinuteOffset');
+end;
+
 procedure TTest_DateUtils.xsd_TryStrToDate_date_bad_separator();
 const
   DATE_STR = '1976;10;12';
@@ -140,6 +396,30 @@ var
 begin
   CheckEquals(False,xsd_TryStrToDate(DATE_STR,d),Format('"%s" is not a valid date.',[DATE_STR]));
 end;
+
+{$IFDEF FPC}
+class procedure TTest_DateUtils.CheckEquals(expected, actual: TTimeRec; msg: string);
+begin
+  CheckEquals(expected.Hour,actual.Hour,msg + ', Hour');
+  CheckEquals(expected.Minute,actual.Minute,msg + ', Minute');
+  CheckEquals(expected.Second,actual.Second,msg + ', Second');
+  CheckEquals(expected.MilliSecond,actual.MilliSecond,msg + ', MilliSecond');
+  CheckEquals(expected.HourOffset,actual.HourOffset,msg + ', HourOffset');
+  CheckEquals(expected.MinuteOffset,actual.MinuteOffset,msg + ', MinuteOffset');
+end;
+{$ENDIF FPC}
+
+{$IFDEF WST_DELPHI}
+procedure TTest_DateUtils.CheckEquals(expected, actual: TTimeRec; msg: string);
+begin
+  CheckEquals(expected.Hour,actual.Hour,msg + ', Hour');
+  CheckEquals(expected.Minute,actual.Minute,msg + ', Minute');
+  CheckEquals(expected.Second,actual.Second,msg + ', Second');
+  CheckEquals(expected.MilliSecond,actual.MilliSecond,msg + ', MilliSecond');
+  CheckEquals(expected.HourOffset,actual.HourOffset,msg + ', HourOffset');
+  CheckEquals(expected.MinuteOffset,actual.MinuteOffset,msg + ', MinuteOffset');
+end;
+{$ENDIF WST_DELPHI}
 
 procedure TTest_DateUtils.xsd_TryStrToDate_date_only();
 var

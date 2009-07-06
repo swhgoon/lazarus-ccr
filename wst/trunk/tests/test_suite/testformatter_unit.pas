@@ -45,6 +45,7 @@ type
     FVal_Date: TDateRemotable;
     FVal_Enum: TTestEnum;
     FVal_String: string;
+    FVal_Time : TTimeRemotable;
 {$IFDEF WST_UNICODESTRING}
     FVal_UnicodeString: UnicodeString;
 {$ENDIF WST_UNICODESTRING}
@@ -62,6 +63,7 @@ type
     property Val_UnicodeString : UnicodeString Read FVal_UnicodeString Write FVal_UnicodeString;
 {$ENDIF WST_UNICODESTRING}
     property Val_Date : TDateRemotable read FVal_Date write FVal_Date;
+    property Val_Time : TTimeRemotable read FVal_Time write FVal_Time;
   End;
 
   TClass_A_Array = class(TBaseObjectArrayRemotable)
@@ -2943,6 +2945,7 @@ end;
 procedure TTestFormatter.Test_Object();
 const
   DATE_VALUE = 39000;
+  TIME_VALUE = '01:23:45.789Z';
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -2962,6 +2965,7 @@ begin
     a.ObjProp.Val_String := '456';
     a.ObjProp.Val_WideString := 'wide456';
     a.ObjProp.Val_Date.AsDate := DATE_VALUE;
+    a.ObjProp.Val_Time.AsString := TIME_VALUE;
 {$IFDEF WST_UNICODESTRING}
     a.ObjProp.Val_UnicodeString := 'unicode456';
 {$ENDIF WST_UNICODESTRING}
@@ -3003,6 +3007,7 @@ begin
     CheckEquals('456',a.ObjProp.Val_String);
     CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
     CheckEquals(TDateRemotable.FormatDate(DATE_VALUE),TDateRemotable.FormatDate(a.ObjProp.Val_Date.AsDate));
+    CheckEquals(TIME_VALUE,a.ObjProp.Val_Time.AsString);
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
 {$ENDIF WST_UNICODESTRING}
@@ -4652,7 +4657,7 @@ begin
       Check( ls.IndexOf('intv') >= 0 );
       x := 'a';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(6{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
+        CheckEquals(7{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(a)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -4661,7 +4666,7 @@ begin
 
       x := 'b';
       f.BeginObjectRead(x,TypeInfo(TClass_A));
-        CheckEquals(6{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
+        CheckEquals(7{$IFDEF WST_UNICODESTRING}+1{$ENDIF}, f.GetScopeItemNames(ls), 'GetScopeItemNames.Count(b)');
         Check( ls.IndexOf('Val_Bool') >= 0 );
         Check( ls.IndexOf('Val_Enum') >= 0 );
         Check( ls.IndexOf('Val_String') >= 0 );
@@ -4750,6 +4755,7 @@ end;
 procedure TTestSOAPFormatter.do_test_Object(const AProps, AFilename: string);
 const
   DATE_VALUE = 39000;
+  TIME_VALUE = '01:23:45.789Z';
 Var
   f : IFormatterBase;
   s : TMemoryStream;
@@ -4769,6 +4775,7 @@ begin
     a.ObjProp.Val_String := '456';
     a.ObjProp.Val_WideString := 'wide456';
     a.ObjProp.Val_Date.AsDate := DATE_VALUE;
+    a.ObjProp.Val_Time.AsString := TIME_VALUE;
 {$IFDEF WST_UNICODESTRING}
     a.ObjProp.Val_UnicodeString := 'unicode456';
 {$ENDIF WST_UNICODESTRING}
@@ -6291,10 +6298,12 @@ constructor TClass_A.Create();
 begin
   inherited Create();
   FVal_Date := TDateRemotable.Create();
+  FVal_Time := TTimeRemotable.Create();
 end;
 
 destructor TClass_A.Destroy();
 begin
+  FreeAndNil(FVal_Time);
   FreeAndNil(FVal_Date);
   inherited Destroy();
 end;
