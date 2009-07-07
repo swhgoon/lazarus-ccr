@@ -14,7 +14,7 @@ unit date_utils;
 
 interface
 uses
-  SysUtils;
+  SysUtils, wst_types;
   
 type
 
@@ -33,6 +33,17 @@ type
     MinuteOffset : Shortint;
   end;
 
+  TDurationRec = packed record
+    Year : PtrUInt;
+    Month : PtrUInt;
+    Day : PtrUInt;
+    Hour : PtrUInt;
+    Minute : PtrUInt;
+    Second : PtrUInt;
+    FractionalSecond : PtrUInt;
+    Negative : Boolean;
+  end;
+
 const
   ZERO_DATE : TDateTimeRec = ( Date : 0; HourOffset : 0; MinuteOffset : 0; );
   ZERO_TIME : TTimeRec = (
@@ -42,6 +53,16 @@ const
                 MilliSecond  : 0;
                 HourOffset   : 0;
                 MinuteOffset : 0;
+              );
+  ZERO_DURATION : TDurationRec = (
+                Year               : 0;
+                Month              : 0;
+                Day                : 0;
+                Hour               : 0;
+                Minute             : 0;
+                Second             : 0;
+                FractionalSecond   : 0;
+                Negative           : False;
               );
 
   function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
@@ -70,18 +91,26 @@ const
   function DateTimeToTimeRec(const ADateTime : TDateTime) : TTimeRec; {$IFDEF USE_INLINE}inline;{$ENDIF}
   function TimeRecToDateTime(const ATime : TTimeRec) : TDateTime; {$IFDEF USE_INLINE}inline;{$ENDIF}
 
+  function xsd_TryStrToDuration(
+    const ABuffer : string;
+    out   AResult : TDurationRec
+  ) : Boolean;
+  function xsd_StrToDuration(const ABuffer : string) : TDurationRec;
+  function xsd_DurationToStr(const AValue : TDurationRec) : string;
 
   function IncHour(const AValue: TDateTime; const ANumberOfHours: Int64): TDateTime;{$IFDEF USE_INLINE}inline;{$ENDIF}
   function IncMinute(const AValue: TDateTime; const ANumberOfMinutes: Int64): TDateTime;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
   function NormalizeToUTC(const ADate : TDateTimeRec) : TDateTime; overload;
   function NormalizeToUTC(const ATime : TTimeRec) : TTimeRec; overload;
-  function Equals(const AA,AB: TDateTimeRec) : Boolean; overload;
-  function Equals(const AA,AB: TTimeRec) : Boolean; overload;
+  function ValueEquals(const AA,AB: TDateTimeRec) : Boolean; overload;
+  function ValueEquals(const AA,AB: TTimeRec) : Boolean; overload;
+  function ValueEquals(const AA,AB: TDurationRec) : Boolean; overload;
 
 resourcestring
   SERR_InvalidDate = '"%s" is not a valid date.';
   SERR_InvalidTime = '"%s" is not a valid time.';
+  SERR_InvalidDuration = '"%s" is not a valid duration.';
 
 implementation
 
@@ -126,7 +155,7 @@ begin
 end;
 
 {$HINTS OFF}
-function Equals(const AA,AB: TDateTimeRec) : Boolean;
+function ValueEquals(const AA,AB: TDateTimeRec) : Boolean;
 var
   e, a : TDateTime;
   e_y, e_m, e_d, e_h, e_mn, e_ss, e_ms : Word;
@@ -141,7 +170,7 @@ begin
 end;
 {$HINTS ON}
 
-function Equals(const AA,AB: TTimeRec) : Boolean;
+function ValueEquals(const AA,AB: TTimeRec) : Boolean;
 var
   a, b : TTimeRec;
 begin
@@ -521,6 +550,149 @@ end;
 function TimeRecToDateTime(const ATime : TTimeRec) : TDateTime;
 begin
   Result := EncodeTime(ATime.Hour,ATime.Minute,ATime.Second,ATime.MilliSecond);
+end;
+
+type TDatePart = ( dpNone, dpYear, dpMonth, dpDay, dpHour, dpMinute, dpSecond, dpFractionalSecond );
+function xsd_TryStrToDuration(
+  const ABuffer : string;
+  out   AResult : TDurationRec
+) : Boolean;
+var
+  pc : PChar;
+  locIntBuffer : array[dpYear..dpFractionalSecond] of PtrUInt;
+  i, bufferLength, lastPos : PtrInt;
+  localBuffer : string;
+  part, oldPart : TDatePart;
+  inTimePart : Boolean;
+  isNeg : Boolean;
+begin
+  Result := False;
+  bufferLength := Length(ABuffer);
+  if ( bufferLength < 3 ) then
+    Exit;
+  pc := PChar(ABuffer);
+  i := 1;
+  isNeg := False;
+  if ( pc^ = '-' ) then begin
+    Inc(pc); Inc(i);
+    isNeg := True;
+  end;
+  if ( pc^ <> 'P' ) then
+    Exit;
+  Inc(pc); Inc(i); //eat 'P'
+  FillChar(locIntBuffer,SizeOf(locIntBuffer),#0);
+  part := dpNone;
+  inTimePart := False;
+
+  if ( pc^ = 'T' ) then begin
+    inTimePart := True;
+    Inc(pc); Inc(i);
+  end;
+  repeat
+    lastPos := i;
+    while ( i < bufferLength ) and ( pc^ in ['0'..'9'] ) do begin
+      Inc(pc); Inc(i);
+    end;
+    if ( ( lastPos = i ) and ( pc^ <> 'T' ) ) then
+      Exit;
+    localBuffer := Copy(ABuffer,lastPos,( i - lastPos ));
+    oldPart := part;
+    case pc^ of
+      'Y' : part := dpYear;
+      'M' :
+        begin
+          if inTimePart then
+            part := dpMinute
+          else
+            part := dpMonth;
+        end;
+      'D' : part := dpDay;
+      'H' : part := dpHour;
+      'S', '.' :
+        begin
+          if ( part < dpSecond ) then
+            part := dpSecond
+          else
+            part := dpFractionalSecond;
+        end;
+      'T' :
+        begin
+          inTimePart := True;
+          oldPart := dpNone;
+          part := dpNone;
+        end;
+      else
+        Exit;
+    end;
+    if inTimePart and ( part in [dpYear..dpDay] ) then
+      Exit;
+    if ( part > dpNone ) then begin
+      if ( part < oldPart ) then
+        Exit;
+      locIntBuffer[part] := StrToInt(localBuffer);
+    end;
+    Inc(pc); Inc(i);
+  until ( i >= bufferLength );
+  if ( i = bufferLength ) then
+    Exit;
+  AResult.Negative := isNeg;
+  AResult.Year := locIntBuffer[dpYear];
+  AResult.Month := locIntBuffer[dpMonth];
+  AResult.Day := locIntBuffer[dpDay];
+  AResult.Hour := locIntBuffer[dpHour];
+  AResult.Minute := locIntBuffer[dpMinute];
+  AResult.Second := locIntBuffer[dpSecond];
+  AResult.FractionalSecond := locIntBuffer[dpFractionalSecond];
+
+  Result := True;
+end;
+
+function xsd_StrToDuration(const ABuffer : string) : TDurationRec;
+begin
+  if not xsd_TryStrToDuration(ABuffer,Result) then
+    raise EConvertError.CreateFmt(SERR_InvalidDuration,[ABuffer]);
+end;
+
+function xsd_DurationToStr(const AValue : TDurationRec) : string;
+var
+  strTime, strDate : string;
+begin
+  if ( AValue.FractionalSecond > 0 ) then begin
+    strTime := IntToStr(AValue.Second) + '.' + IntToStr(AValue.FractionalSecond) + 'S';
+  end else begin
+    if ( AValue.Second > 0 ) then
+      strTime := IntToStr(AValue.Second) + 'S';
+  end;
+  if ( AValue.Minute > 0 ) then
+    strTime := IntToStr(AValue.Minute) + 'M' + strTime;
+  if ( AValue.Hour > 0 ) then
+    strTime := IntToStr(AValue.Hour) + 'H' + strTime;
+  if ( AValue.Day > 0 ) then
+    strDate := IntToStr(AValue.Day) + 'D';
+  if ( AValue.Month > 0 ) then
+    strDate := IntToStr(AValue.Month) + 'M' + strDate;
+  if ( AValue.Year > 0 ) then
+    strDate := IntToStr(AValue.Year) + 'Y' + strDate;
+  if ( strTime <> '' ) then
+    Result := 'T' + strTime;
+  Result := strDate + Result;
+  if ( Result = '' ) then
+    Result := '0Y';
+  Result := 'P' + Result;
+  if AValue.Negative and ( ( strDate <> '' ) or ( strTime <> '' ) ) then
+    Result := '-' + Result;
+end;
+
+function ValueEquals(const AA,AB: TDurationRec) : Boolean;
+begin
+  Result := ( AA.Negative = AB.Negative ) and
+            ( AA.Year = AB.Year ) and
+            ( AA.Month = AB.Month ) and
+            ( AA.Day = AB.Day ) and
+            ( AA.Hour = AB.Hour ) and
+            ( AA.Minute = AB.Minute ) and
+            ( AA.Second = AB.Second ) and
+            ( AA.FractionalSecond = AB.FractionalSecond );
 end;
 
 end.

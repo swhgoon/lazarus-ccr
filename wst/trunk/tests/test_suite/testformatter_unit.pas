@@ -3006,7 +3006,7 @@ begin
     CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
     CheckEquals('456',a.ObjProp.Val_String);
     CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
-    CheckEquals(TDateRemotable.FormatDate(DATE_VALUE),TDateRemotable.FormatDate(a.ObjProp.Val_Date.AsDate));
+    CheckEquals(TDateRemotable.ToStr(DATE_VALUE),TDateRemotable.ToStr(a.ObjProp.Val_Date.AsDate));
     CheckEquals(TIME_VALUE,a.ObjProp.Val_Time.AsString);
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
@@ -4820,7 +4820,7 @@ begin
     CheckEquals(Ord(teFour),Ord(a.ObjProp.Val_Enum));
     CheckEquals('456',a.ObjProp.Val_String);
     CheckEquals(WideString('wide456'),a.ObjProp.Val_WideString);
-    CheckEquals(TDateRemotable.FormatDate(DATE_VALUE),TDateRemotable.FormatDate(a.ObjProp.Val_Date.AsDate));
+    CheckEquals(TDateRemotable.ToStr(DATE_VALUE),TDateRemotable.ToStr(a.ObjProp.Val_Date.AsDate));
 {$IFDEF WST_UNICODESTRING}
     CheckEquals('unicode456',a.ObjProp.Val_UnicodeString);
 {$ENDIF WST_UNICODESTRING}
