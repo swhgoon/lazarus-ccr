@@ -114,7 +114,7 @@ resourcestring
 
 implementation
 
-uses Math, DateUtils;
+uses DateUtils;
 
 function IncHour(const AValue: TDateTime; const ANumberOfHours: Int64): TDateTime;
 begin
@@ -214,7 +214,7 @@ var
       Result := TryStrToInt(Copy(buffer,locStartPos,(bufferPos-locStartPos)),AValue);
   end;
 
-  function ReadMiliSeconds(out AValue : Integer; const ASeparatorAtEnd : Char) : Boolean;
+  function ReadMiliSeconds(out AValue : Integer) : Boolean;
   var
     locDigitCount, locRes, itemp, locErcode : Integer;
   begin
@@ -281,7 +281,7 @@ begin
                 ok := ReadInt(ss,#0);
                 if ok and ( bufferPos < bufferLen ) and ( buffer[bufferPos] = '.' ) then begin
                   Inc(bufferPos);
-                  ok := ReadMiliSeconds(ssss,#0);
+                  ok := ReadMiliSeconds(ssss);
                 end else begin
                   ssss := 0;
                 end;
@@ -325,6 +325,7 @@ begin
     raise EConvertError.CreateFmt(SERR_InvalidDate,[AStr]);
 end;
 
+{$HINTS OFF}
 function xsd_DateTimeToStr(const ADate : TDateTimeRec) : string;
 var
   locDate : TDateTime;
@@ -343,6 +344,7 @@ begin
   else
     Result := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2d.%.3dZ',[y,m,d, hh,mn,ss,ssss]);
 end;
+{$HINTS ON}
 
 function xsd_DateTimeToStr(const ADate : TDateTime) : string;
 var

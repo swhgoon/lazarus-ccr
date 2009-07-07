@@ -1878,7 +1878,7 @@ begin
   Result := nil;
 end;
 
-{$WARNINGS OFF}
+{$WARNINGS OFF} {$HINTS OFF}
 function TNullStackItem.CreateStringBuffer(const AName : string; const AValue : TJSONStringType) : TJSONData;
 begin
   RaiseNotApplicable();
@@ -1913,7 +1913,7 @@ function TNullStackItem.NilItem(AItem : TJSONData) : TJSONData;
 begin
   RaiseNotApplicable();
 end;
-{$WARNINGS ON}
+{$WARNINGS ON} {$HINTS ON}
 
 function TNullStackItem.GetScopeItemNames(const AReturnList : TStrings) : Integer;
 begin

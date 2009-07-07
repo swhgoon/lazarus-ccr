@@ -2088,7 +2088,7 @@ end;
 
 { TSimpleTypeStackItem }
 
-{$WARNINGS OFF}
+{$WARNINGS OFF} {$HINTS OFF}
 function TSimpleTypeStackItem.FindNode(var ANodeName: string): TDOMNode;
 begin
   raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['FindNode']);
@@ -2106,7 +2106,7 @@ function TSimpleTypeStackItem.GetScopeItemNames(const AReturnList: TStrings): In
 begin
   raise EXmlRpcException.CreateFmt(SERR_InsupportedOperation,['GetScopeItemNames']);
 end;
-{$WARNINGS ON}
+{$WARNINGS ON} {$HINTS ON}
 
 
 end.
