@@ -1263,7 +1263,9 @@ begin
   if ( ATypeInfo^.Kind = tkClass ) then begin
     locClass := GetTypeData(ATypeInfo)^.ClassType;
     if locClass.InheritsFrom(TAbstractSimpleRemotable) then begin
-      if locClass.InheritsFrom(TDateRemotable) then
+      if locClass.InheritsFrom(TDateTimeRemotable) or
+         locClass.InheritsFrom(TDateRemotable)  
+      then
         locScopeType := stXmlRpcDate
       else
         locScopeType := stSimpleContent;

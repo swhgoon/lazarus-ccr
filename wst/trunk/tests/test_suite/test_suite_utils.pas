@@ -24,7 +24,8 @@ uses
 
 const
   TestFilesPath = {$IFDEF WST_DELPHI}'.' +{$ENDIF WST_DELPHI}'.' + PathDelim + 'files' + PathDelim;
-
+  EPSILON_DATE = 0.00004;
+  
 type
 
   { TWstBaseTest }

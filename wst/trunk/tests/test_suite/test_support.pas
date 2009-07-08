@@ -296,9 +296,9 @@ type
     procedure Equal();
   end;
   
-  { TTest_TDateRemotable }
+  { TTest_TDateTimeRemotable }
 
-  TTest_TDateRemotable = class(TTestCase)
+  TTest_TDateTimeRemotable = class(TTestCase)
   published
     procedure FormatDate();
     procedure FormatDate_ZERO();
@@ -314,6 +314,24 @@ type
     procedure Year();
   end;
 
+  { TTest_TDateTimeRemotable }
+
+  TTest_TDateRemotable = class(TTestCase)
+  published
+    procedure FormatDate();
+    procedure FormatDate_ZERO();
+    procedure ParseDate();
+    procedure Assign();
+    procedure Equal();
+    procedure AsDate();
+    procedure AsUTCDate();
+    procedure HourOffset();
+    procedure HourOffset_invalid_values();
+    procedure MinuteOffset();
+    procedure MinuteOffset_invalid_values();
+    procedure Year();
+  end; 
+    
   { TTest_TDurationRemotable }
 
   TTest_TDurationRemotable = class(TTestCase)
@@ -2240,9 +2258,9 @@ begin
   end;
 end;
 
-{ TTest_TDateRemotable }
+{ TTest_TDateTimeRemotable }
 
-procedure TTest_TDateRemotable.FormatDate();
+procedure TTest_TDateTimeRemotable.FormatDate();
 const
   sDATE_1 = '1976-10-12T23:34:56';
   sDATE_2 = '0987-06-12T20:34:56';
@@ -2251,9 +2269,288 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
-  CheckEquals(sDATE_1, Copy(TDateRemotable.ToStr(d),1,Length(sDATE_1)));
+  CheckEquals(sDATE_1, Copy(TDateTimeRemotable.ToStr(d),1,Length(sDATE_1)));
 
   d := EncodeDate(987,06,12) - EncodeTime(20,34,56,0);
+  CheckEquals(sDATE_2, Copy(TDateTimeRemotable.ToStr(d),1,Length(sDATE_2)));
+end;
+
+procedure TTest_TDateTimeRemotable.ParseDate();
+var
+  s : string;
+  objd : TDateTimeRemotable;
+  d : TDateTimeRec;
+  y,m,dy : Word;
+  hh,mn,ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '1976-10-12T23:34:56';
+  d := TDateTimeRemotable.Parse(s);
+  DecodeDateTime(d.Date,y,m,dy, hh,mn,ss,ssss);
+    CheckEquals(1976,y,'Year');
+    CheckEquals(10,m,'Month');
+    CheckEquals(12,dy,'Day');
+    CheckEquals(23,hh,'Hour');
+    CheckEquals(34,mn,'Minute');
+    CheckEquals(56,ss,'Second');
+
+  objd := TDateTimeRemotable.Create();
+  try
+    objd.AsDate := d.Date;
+    CheckEquals(1976,objd.Year,'Year');
+    CheckEquals(10,objd.Month,'Month');
+    CheckEquals(12,objd.Day,'Day');
+    CheckEquals(23,objd.Hour,'Hour');
+    CheckEquals(34,objd.Minute,'Minute');
+    CheckEquals(56,objd.Second,'Second');
+  finally
+    FreeAndNil(objd);
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.Assign();
+var
+  a, b : TDateTimeRemotable;
+begin
+  b := nil;
+  a := TDateTimeRemotable.Create();
+  try
+    b := TDateTimeRemotable.Create();
+    Check(IsZero(a.AsDate - b.AsDate));
+
+    a.AsDate := Now();
+    b.Assign(a);
+    Check(IsZero(a.AsDate - b.AsDate));
+
+    a.AsDate := Now() + 1;
+    a.Assign(b);
+    Check(IsZero(a.AsDate - b.AsDate));
+  finally
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.Equal();
+var
+  a, b : TDateTimeRemotable;
+  c : TClass_A;
+begin
+  c := nil;
+  b := nil;
+  a := TDateTimeRemotable.Create();
+  try
+    b := TDateTimeRemotable.Create();
+    c := TClass_A.Create();
+    
+    CheckEquals(False,a.Equal(nil));
+    CheckEquals(False,a.Equal(c));
+    
+    a.AsDate := Now();
+    b.AsDate := a.AsDate;
+    CheckEquals(True,a.Equal(b));
+    CheckEquals(True,b.Equal(a));
+
+    a.AsDate := a.AsDate + 1;
+    CheckEquals(False,a.Equal(b));
+    CheckEquals(False,b.Equal(a));
+  finally
+    c.Free();
+    b.Free();
+    a.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.FormatDate_ZERO();
+const sDATE = '1899-12-30T00:00:00';
+var
+  d : TDateTime;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  d := 0;
+  CheckEquals(sDATE, Copy(TDateTimeRemotable.ToStr(d),1,Length(sDATE)));
+end;
+
+procedure TTest_TDateTimeRemotable.AsDate();
+var
+  d : TDateTime;
+  locObj : TDateTimeRemotable;
+begin
+  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  locObj := TDateTimeRemotable.Create();
+  try
+    locObj.AsDate := d;
+    CheckEquals(d, locObj.AsDate);
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    CheckEquals(d, locObj.AsDate);
+
+    // test while (Hour|Minute)Offset is not null
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    locObj.AsDate := d;
+    CheckEquals(d, locObj.AsDate);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.AsUTCDate();
+var
+  d, dd : TDateTime;
+  locObj : TDateTimeRemotable;
+begin
+  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  locObj := TDateTimeRemotable.Create();
+  try
+    locObj.AsUTCDate := d;
+    CheckEquals(d, locObj.AsUTCDate);
+    locObj.HourOffset := 4;
+    locObj.MinuteOffset := 5;
+    dd := date_utils.IncHour(d,-locObj.HourOffset);
+    dd := date_utils.IncMinute(dd,-locObj.MinuteOffset);
+    CheckEquals(dd, locObj.AsUTCDate);
+
+    // test while (Hour|Minute)Offset is not null
+    locObj.AsUTCDate := dd;
+    CheckEquals(dd, locObj.AsUTCDate);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.HourOffset();
+var
+  locObj : TDateTimeRemotable;
+begin
+  locObj := TDateTimeRemotable.Create();
+  try
+    locObj.HourOffset := -5;
+      CheckEquals(-5, locObj.HourOffset);
+    locObj.HourOffset := 0;
+      CheckEquals(0, locObj.HourOffset);
+    locObj.HourOffset := 1;
+      CheckEquals(1, locObj.HourOffset);
+    locObj.HourOffset := 2;
+      CheckEquals(2, locObj.HourOffset);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.MinuteOffset();
+var
+  locObj : TDateTimeRemotable;
+begin
+  locObj := TDateTimeRemotable.Create();
+  try
+    locObj.MinuteOffset := -54;
+      CheckEquals(-54, locObj.MinuteOffset);
+    locObj.MinuteOffset := 0;
+      CheckEquals(0, locObj.MinuteOffset);
+    locObj.MinuteOffset := 20;
+      CheckEquals(20, locObj.MinuteOffset);
+    locObj.MinuteOffset := 56;
+      CheckEquals(56, locObj.MinuteOffset);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.HourOffset_invalid_values();
+var
+  locObj : TDateTimeRemotable;
+
+  procedure check_invalid_value(const AValue : ShortInt);
+  var
+    ok : Boolean;
+  begin
+    try
+      locObj.HourOffset := AValue;
+      ok := False;
+    except
+      ok := True;
+    end;
+    Check(ok, Format('"%d" is not a valid hour offset',[AValue]));
+  end;
+
+begin
+  locObj := TDateTimeRemotable.Create();
+  try
+    check_invalid_value(-50);
+    check_invalid_value(-24);
+    check_invalid_value(-15);
+    check_invalid_value(15);
+    check_invalid_value(24);
+    check_invalid_value(50);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.MinuteOffset_invalid_values();
+var
+  locObj : TDateTimeRemotable;
+
+  procedure check_invalid_value(const AValue : ShortInt);
+  var
+    ok : Boolean;
+  begin
+    try
+      locObj.MinuteOffset := AValue;
+      ok := False;
+    except
+      ok := True;
+    end;
+    Check(ok, Format('"%d" is not a valid minute offset',[AValue]));
+  end;
+
+begin
+  locObj := TDateTimeRemotable.Create();
+  try
+    check_invalid_value(-60);
+    check_invalid_value(-74);
+    check_invalid_value(-85);
+    check_invalid_value(65);
+    check_invalid_value(74);
+    check_invalid_value(80);
+  finally
+    locObj.Free();
+  end;
+end;
+
+procedure TTest_TDateTimeRemotable.Year();
+var
+  locObj : TDateTimeRemotable;
+begin
+  locObj := TDateTimeRemotable.Create();
+  try
+    locObj.AsDate := EncodeDate(1976,10,12);
+      CheckEquals(1976, locObj.Year);
+    locObj.AsDate := EncodeDate(2000,10,12);
+      CheckEquals(2000, locObj.Year);
+    locObj.AsDate := EncodeDate(2,10,12);
+      CheckEquals(2, locObj.Year);
+    {locObj.AsDate := EncodeDate(-1976,10,12);
+      CheckEquals(-1976, locObj.Year);}
+  finally
+    locObj.Free();
+  end;
+end;
+
+{ TTest_TDateRemotable }
+
+procedure TTest_TDateRemotable.FormatDate();
+const
+  sDATE_1 = '1976-10-12';
+  sDATE_2 = '0987-06-12';
+var
+  d : TDateTime;
+begin
+  d := EncodeDate(1976,10,12);
+  CheckEquals(sDATE_1, Copy(TDateRemotable.ToStr(d),1,Length(sDATE_1)));
+
+  d := EncodeDate(987,06,12);
   CheckEquals(sDATE_2, Copy(TDateRemotable.ToStr(d),1,Length(sDATE_2)));
 end;
 
@@ -2265,26 +2562,19 @@ var
   y,m,dy : Word;
   hh,mn,ss, ssss : Word;
 begin
-  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-  s := '1976-10-12T23:34:56';
+  s := '1976-10-12';
   d := TDateRemotable.Parse(s);
   DecodeDateTime(d.Date,y,m,dy, hh,mn,ss,ssss);
-    CheckEquals(y,1976,'Year');
-    CheckEquals(m,10,'Month');
-    CheckEquals(dy,12,'Day');
-    CheckEquals(hh,23,'Hour');
-    CheckEquals(mn,34,'Minute');
-    CheckEquals(ss,56,'Second');
+    CheckEquals(1976,y,'Year');
+    CheckEquals(10,m,'Month');
+    CheckEquals(12,dy,'Day');
 
   objd := TDateRemotable.Create();
   try
     objd.AsDate := d.Date;
-    CheckEquals(objd.Year,1976,'Year');
-    CheckEquals(objd.Month,10,'Month');
-    CheckEquals(objd.Day,12,'Day');
-    CheckEquals(objd.Hour,23,'Hour');
-    CheckEquals(objd.Minute,34,'Minute');
-    CheckEquals(objd.Second,56,'Second');
+    CheckEquals(1976,objd.Year,'Year');
+    CheckEquals(10,objd.Month,'Month');
+    CheckEquals(12,objd.Day,'Day');
   finally
     FreeAndNil(objd);
   end;
@@ -2300,11 +2590,11 @@ begin
     b := TDateRemotable.Create();
     Check(IsZero(a.AsDate - b.AsDate));
 
-    a.AsDate := Now();
+    a.AsDate := Date();
     b.Assign(a);
     Check(IsZero(a.AsDate - b.AsDate));
 
-    a.AsDate := Now() + 1;
+    a.AsDate := Date() + 1;
     a.Assign(b);
     Check(IsZero(a.AsDate - b.AsDate));
   finally
@@ -2328,7 +2618,7 @@ begin
     CheckEquals(False,a.Equal(nil));
     CheckEquals(False,a.Equal(c));
     
-    a.AsDate := Now();
+    a.AsDate := Date();
     b.AsDate := a.AsDate;
     CheckEquals(True,a.Equal(b));
     CheckEquals(True,b.Equal(a));
@@ -2344,11 +2634,10 @@ begin
 end;
 
 procedure TTest_TDateRemotable.FormatDate_ZERO();
-const sDATE = '1899-12-30T00:00:00';
+const sDATE = '1899-12-30';
 var
   d : TDateTime;
 begin
-  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   d := 0;
   CheckEquals(sDATE, Copy(TDateRemotable.ToStr(d),1,Length(sDATE)));
 end;
@@ -2358,7 +2647,7 @@ var
   d : TDateTime;
   locObj : TDateRemotable;
 begin
-  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  d := EncodeDate(1976,10,12);
   locObj := TDateRemotable.Create();
   try
     locObj.AsDate := d;
@@ -2382,7 +2671,7 @@ var
   d, dd : TDateTime;
   locObj : TDateRemotable;
 begin
-  d := EncodeDateTime(1976,10,12,13,14,15,0);
+  d := EncodeDate(1976,10,12);
   locObj := TDateRemotable.Create();
   try
     locObj.AsUTCDate := d;
@@ -2395,7 +2684,7 @@ begin
 
     // test while (Hour|Minute)Offset is not null
     locObj.AsUTCDate := dd;
-    CheckEquals(dd, locObj.AsUTCDate);
+    CheckEquals(dd, locObj.AsUTCDate,EPSILON_DATE);
   finally
     locObj.Free();
   end;
@@ -4013,6 +4302,7 @@ initialization
   RegisterTest('Support',TTest_TObjectCollectionRemotable.Suite);
   RegisterTest('Support',TTest_TBaseComplexRemotable.Suite);
   RegisterTest('Support',TTest_TStringBufferRemotable.Suite);
+  RegisterTest('Support-Date',TTest_TDateTimeRemotable.Suite);
   RegisterTest('Support-Date',TTest_TDateRemotable.Suite);
   RegisterTest('Support-Date',TTest_TDurationRemotable.Suite);
   RegisterTest('Support-Date',TTest_TTimeRemotable.Suite);

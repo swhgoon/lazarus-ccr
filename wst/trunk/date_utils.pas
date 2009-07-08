@@ -65,11 +65,27 @@ const
                 Negative           : False;
               );
 
-  function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
-  function xsd_StrToDate(const AStr : string) : TDateTimeRec; {$IFDEF USE_INLINE}inline;{$ENDIF}
+type
+  TXsdDateKind = ( xdkDateTime, xdkDate );
 
-  function xsd_DateTimeToStr(const ADate : TDateTimeRec) : string;overload;
-  function xsd_DateTimeToStr(const ADate : TDateTime) : string;overload;
+  function xsd_TryStrToDate(
+    const AStr      : string;
+    out   ADate     : TDateTimeRec;
+    const ADateKind : TXsdDateKind
+  ) : Boolean;
+  function xsd_StrToDate(
+    const AStr : string;
+    const ADateKind : TXsdDateKind
+  ) : TDateTimeRec; {$IFDEF USE_INLINE}inline;{$ENDIF}
+
+  function xsd_DateTimeToStr(
+    const ADate : TDateTimeRec;
+    const ADateKind : TXsdDateKind
+  ) : string; overload;
+  function xsd_DateTimeToStr(
+    const ADate : TDateTime;
+    const ADateKind : TXsdDateKind
+  ) : string;overload;
 
   function xsd_TimeToStr(const ATime : TTimeRec) : string;
   function xsd_TryStrToTime(const AStr : string; out ADate : TTimeRec) : Boolean;
@@ -184,7 +200,11 @@ begin
             ( a.MinuteOffset = b.MinuteOffset );
 end;
 
-function xsd_TryStrToDate(const AStr : string; out ADate : TDateTimeRec) : Boolean;
+function xsd_TryStrToDate(
+  const AStr      : string;
+  out   ADate     : TDateTimeRec;
+  const ADateKind : TXsdDateKind
+) : Boolean;
 const
   DATE_SEP_CHAR = '-'; TIME_MARKER_CHAR = 'T'; TIME_SEP_CHAR = ':';
 var
@@ -262,30 +282,38 @@ begin
       if ReadInt(m,DATE_SEP_CHAR) then begin
         Inc(bufferPos);
         if ReadInt(d,#0) then begin
-          Inc(bufferPos);
           tz_hh := 0;
           tz_mn := 0;
-          if ( bufferPos > bufferLen ) then begin
-            hh := 0;
-            mn := 0;
-            ss := 0;
-            ssss := 0;
+          hh := 0;
+          mn := 0;
+          ss := 0;
+          ssss := 0;
+          if ( bufferPos >= bufferLen ) then begin
             ok := True;
           end else begin
-            ok := ( buffer[bufferPos -1] = TIME_MARKER_CHAR ) and ReadInt(hh,TIME_SEP_CHAR);
+            ok := ( buffer[bufferPos] in [TIME_MARKER_CHAR,'-','+'] );
             if ok then begin
-              Inc(bufferPos);
-              ok := ReadInt(mn,TIME_SEP_CHAR);
-              if ok then begin
+              if ( buffer[bufferPos] = TIME_MARKER_CHAR ) then begin
                 Inc(bufferPos);
-                ok := ReadInt(ss,#0);
-                if ok and ( bufferPos < bufferLen ) and ( buffer[bufferPos] = '.' ) then begin
+                ok := ( ADateKind = xdkDateTime ) and ReadInt(hh,TIME_SEP_CHAR);
+                if ok then begin
                   Inc(bufferPos);
-                  ok := ReadMiliSeconds(ssss);
-                end else begin
-                  ssss := 0;
+                  ok := ReadInt(mn,TIME_SEP_CHAR);
+                  if ok then begin
+                    Inc(bufferPos);
+                    ok := ReadInt(ss,#0);
+                    if ok and ( bufferPos < bufferLen ) and ( buffer[bufferPos] = '.' ) then begin
+                      Inc(bufferPos);
+                      ok := ReadMiliSeconds(ssss);
+                    end else begin
+                      ssss := 0;
+                    end;
+                  end;
                 end;
-                if ok and ( bufferPos < bufferLen ) then begin
+              end;
+              if ok and ( bufferPos < bufferLen ) then begin
+                ok := ( buffer[bufferPos] in ['-','+'] );
+                if ok then begin
                   tz_negative := ( buffer[bufferPos] = '-' );
                   Inc(bufferPos);
                   ok := ReadInt(tz_hh,TIME_SEP_CHAR);
@@ -319,18 +347,25 @@ begin
   end;
 end;
 
-function xsd_StrToDate(const AStr : string) : TDateTimeRec;
+function xsd_StrToDate(
+  const AStr : string;
+  const ADateKind : TXsdDateKind
+) : TDateTimeRec;
 begin
-  if not xsd_TryStrToDate(AStr,Result) then
+  if not xsd_TryStrToDate(AStr,Result,ADateKind) then
     raise EConvertError.CreateFmt(SERR_InvalidDate,[AStr]);
 end;
 
 {$HINTS OFF}
-function xsd_DateTimeToStr(const ADate : TDateTimeRec) : string;
+function xsd_DateTimeToStr(
+  const ADate : TDateTimeRec;
+  const ADateKind : TXsdDateKind
+) : string;
 var
   locDate : TDateTime;
   d, m, y : Word;
   hh, mn, ss, ssss : Word;
+  locRes : string;
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   locDate := ADate.Date;
@@ -338,21 +373,30 @@ begin
     locDate := IncHour(locDate,-ADate.HourOffset);
   if ( ADate.MinuteOffset <> 0 ) then
     locDate := IncMinute(locDate,-ADate.MinuteOffset);
-  DecodeDateTime(locDate,y,m,d,hh,mn,ss,ssss);
-  if ( ssss = 0 ) then
-    Result := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ',[y,m,d, hh,mn,ss])
-  else
-    Result := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2d.%.3dZ',[y,m,d, hh,mn,ss,ssss]);
+  if ( ADateKind = xdkDate ) then begin
+    DecodeDate(locDate,y,m,d);
+    locRes := Format('%.4d-%.2d-%.2d',[y,m,d]);
+  end else begin
+    DecodeDateTime(locDate,y,m,d,hh,mn,ss,ssss);
+    if ( ssss = 0 ) then
+      locRes := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ',[y,m,d, hh,mn,ss])
+    else
+      locRes := Format('%.4d-%.2d-%.2dT%.2d:%.2d:%.2d.%.3dZ',[y,m,d, hh,mn,ss,ssss]);
+  end;
+  Result := locRes;
 end;
 {$HINTS ON}
 
-function xsd_DateTimeToStr(const ADate : TDateTime) : string;
+function xsd_DateTimeToStr(
+    const ADate : TDateTime;
+    const ADateKind : TXsdDateKind
+) : string;
 var
   tmpDate : TDateTimeRec;
 begin
   FillChar(tmpDate,SizeOf(TDateTimeRec),#0);
   tmpDate.Date := ADate;
-  Result := xsd_DateTimeToStr(tmpDate);
+  Result := xsd_DateTimeToStr(tmpDate,ADateKind);
 end;
 
 function xsd_TimeToStr(const ATime : TTimeRec) : string;

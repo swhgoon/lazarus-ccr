@@ -36,6 +36,8 @@ type
 {$ENDIF WST_DELPHI}
   published
     procedure xsd_TryStrToDate_date_only();
+    procedure xsd_TryStrToDate_date_timezone_1();
+    procedure xsd_TryStrToDate_date_timezone_2();
     procedure xsd_TryStrToDate_date_time();
     procedure xsd_TryStrToDate_date_time_fractional_second();
     procedure xsd_TryStrToDate_date_bad_separator();
@@ -78,11 +80,11 @@ begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
-  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d,xdkDateTime));
 
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(987,06,12) - EncodeTime(20,34,56,0);
-  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d,xdkDateTime));
 end;
 
 procedure TTest_DateUtils.xsd_DateTimeToStr_2();
@@ -93,10 +95,10 @@ var
   d : TDateTime;
 begin
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,0);
-  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d,xdkDateTime));
 
   d := EncodeDate(987,06,12) - EncodeTime(20,34,56,0);
-  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d,xdkDateTime));
 end;
 
 procedure TTest_DateUtils.xsd_DateTimeToStr_fractional_second_1();
@@ -109,15 +111,15 @@ var
 begin
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,7);
-  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d,xdkDateTime));
 
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,78);
-  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d,xdkDateTime));
 
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(1976,10,12) + EncodeTime(23,34,56,789);
-  CheckEquals(sDATE_3, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_3, xsd_DateTimeToStr(d,xdkDateTime));
 end;
 
 procedure TTest_DateUtils.xsd_DateTimeToStr_fractional_second_2();
@@ -130,15 +132,15 @@ var
 begin
   FillChar(d,SizeOf(d),#0);
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,7);
-  CheckEquals(sDATE_1, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_1, xsd_DateTimeToStr(d,xdkDateTime));
 
   FillChar(d,SizeOf(d),#0);
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,78);
-  CheckEquals(sDATE_2, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_2, xsd_DateTimeToStr(d,xdkDateTime));
 
   FillChar(d,SizeOf(d),#0);
   d := EncodeDate(1976,10,12) + EncodeTime(23,34,56,789);
-  CheckEquals(sDATE_3, xsd_DateTimeToStr(d));
+  CheckEquals(sDATE_3, xsd_DateTimeToStr(d,xdkDateTime));
 end;
 
 procedure TTest_DateUtils.xsd_DateTimeToStr_timezone_1();
@@ -150,7 +152,7 @@ begin
   FillChar(d,SizeOf(d),#0);
   d.Date := EncodeDate(2002,10,10) + EncodeTime(12,0,0,0);
   d.HourOffset := 5;
-  CheckEquals('2002-10-10T07:00:00Z', xsd_DateTimeToStr(d));
+  CheckEquals('2002-10-10T07:00:00Z', xsd_DateTimeToStr(d,xdkDateTime));
 end;
 
 procedure TTest_DateUtils.xsd_TimeToStr_1();
@@ -335,10 +337,10 @@ var
 begin
   s := '23:34:56+12:34';
   Check(xsd_TryStrToTime(s,d));
-    CheckEquals(d.Hour,23,'Hour');
-    CheckEquals(d.Minute,34,'Minute');
-    CheckEquals(d.Second,56,'Second');
-    CheckEquals(d.MilliSecond,0,'MilliSecond');
+    CheckEquals(23,d.Hour,'Hour');
+    CheckEquals(34,d.Minute,'Minute');
+    CheckEquals(56,d.Second,'Second');
+    CheckEquals(0,d.MilliSecond,'MilliSecond');
   CheckEquals(12,d.HourOffset,'HourOffset');
   CheckEquals(34,d.MinuteOffset,'MinuteOffset');
 end;
@@ -350,10 +352,10 @@ var
 begin
   s := '23:34:56-01:23';
   Check(xsd_TryStrToTime(s,d));
-    CheckEquals(d.Hour,23,'Hour');
-    CheckEquals(d.Minute,34,'Minute');
-    CheckEquals(d.Second,56,'Second');
-    CheckEquals(d.MilliSecond,0,'MilliSecond');
+    CheckEquals(23,d.Hour,'Hour');
+    CheckEquals(34,d.Minute,'Minute');
+    CheckEquals(56,d.Second,'Second');
+    CheckEquals(0,d.MilliSecond,'MilliSecond');
   CheckEquals(-1,d.HourOffset,'HourOffset');
   CheckEquals(-23,d.MinuteOffset,'MinuteOffset');
 end;
@@ -365,10 +367,10 @@ var
 begin
   s := '23:34:56.78+12:34';
   Check(xsd_TryStrToTime(s,d));
-    CheckEquals(d.Hour,23,'Hour');
-    CheckEquals(d.Minute,34,'Minute');
-    CheckEquals(d.Second,56,'Second');
-    CheckEquals(d.MilliSecond,78,'MilliSecond');
+    CheckEquals(23,d.Hour,'Hour');
+    CheckEquals(34,d.Minute,'Minute');
+    CheckEquals(56,d.Second,'Second');
+    CheckEquals(78,d.MilliSecond,'MilliSecond');
   CheckEquals(12,d.HourOffset,'HourOffset');
   CheckEquals(34,d.MinuteOffset,'MinuteOffset');
 end;
@@ -380,10 +382,10 @@ var
 begin
   s := '23:34:56.789-01:23';
   Check(xsd_TryStrToTime(s,d));
-    CheckEquals(d.Hour,23,'Hour');
-    CheckEquals(d.Minute,34,'Minute');
-    CheckEquals(d.Second,56,'Second');
-    CheckEquals(d.MilliSecond,789,'MilliSecond');
+    CheckEquals(23,d.Hour,'Hour');
+    CheckEquals(34,d.Minute,'Minute');
+    CheckEquals(56,d.Second,'Second');
+    CheckEquals(789,d.MilliSecond,'MilliSecond');
   CheckEquals(-1,d.HourOffset,'HourOffset');
   CheckEquals(-23,d.MinuteOffset,'MinuteOffset');
 end;
@@ -394,7 +396,7 @@ const
 var
   d : TDateTimeRec;
 begin
-  CheckEquals(False,xsd_TryStrToDate(DATE_STR,d),Format('"%s" is not a valid date.',[DATE_STR]));
+  CheckEquals(False,xsd_TryStrToDate(DATE_STR,d,xdkDateTime),Format('"%s" is not a valid date.',[DATE_STR]));
 end;
 
 {$IFDEF FPC}
@@ -430,17 +432,73 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
-      CheckEquals(y,1976,'Year');
-      CheckEquals(m,10,'Month');
-      CheckEquals(dy,12,'Day');
+      CheckEquals(1976,y,'Year');
+      CheckEquals(10,m,'Month');
+      CheckEquals(12,dy,'Day');
     DecodeTime(d.Date,hh,mn,ss,ssss);
-      CheckEquals(hh,0,'Hour');
-      CheckEquals(mn,0,'Minute');
-      CheckEquals(ss,0,'Second');
+      CheckEquals(0,hh,'Hour');
+      CheckEquals(0,mn,'Minute');
+      CheckEquals(0,ss,'Second');
     CheckEquals(0,d.HourOffset,'HourOffset');
     CheckEquals(0,d.MinuteOffset,'MinuteOffset');
+
+  d := xsd_StrToDate(s,xdkDate);
+    DecodeDate(d.Date,y,m,dy);
+      CheckEquals(1976,y,'Year');
+      CheckEquals(10,m,'Month');
+      CheckEquals(12,dy,'Day');
+    DecodeTime(d.Date,hh,mn,ss,ssss);
+      CheckEquals(0,hh,'Hour');
+      CheckEquals(0,mn,'Minute');
+      CheckEquals(0,ss,'Second');
+    CheckEquals(0,d.HourOffset,'HourOffset');
+    CheckEquals(0,d.MinuteOffset,'MinuteOffset');
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToDate_date_timezone_1();
+var
+  s : string;
+  d : TDateTimeRec;
+  y,m,dy : Word;
+  hh,mn,ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '1976-10-12+11:34';
+  d := xsd_StrToDate(s,xdkDate);
+    DecodeDate(d.Date,y,m,dy);
+      CheckEquals(1976,y,'Year');
+      CheckEquals(10,m,'Month');
+      CheckEquals(12,dy,'Day');
+    DecodeTime(d.Date,hh,mn,ss,ssss);
+      CheckEquals(0,hh,'Hour');
+      CheckEquals(0,mn,'Minute');
+      CheckEquals(0,ss,'Second');
+    CheckEquals(11,d.HourOffset,'HourOffset');
+    CheckEquals(34,d.MinuteOffset,'MinuteOffset');
+end;
+
+procedure TTest_DateUtils.xsd_TryStrToDate_date_timezone_2();
+var
+  s : string;
+  d : TDateTimeRec;
+  y,m,dy : Word;
+  hh,mn,ss, ssss : Word;
+begin
+  //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
+  s := '1976-10-12-11:34';
+  d := xsd_StrToDate(s,xdkDate);
+    DecodeDate(d.Date,y,m,dy);
+      CheckEquals(1976,y,'Year');
+      CheckEquals(10,m,'Month');
+      CheckEquals(12,dy,'Day');
+    DecodeTime(d.Date,hh,mn,ss,ssss);
+      CheckEquals(0,hh,'Hour');
+      CheckEquals(0,mn,'Minute');
+      CheckEquals(0,ss,'Second');
+    CheckEquals(-11,d.HourOffset,'HourOffset');
+    CheckEquals(-34,d.MinuteOffset,'MinuteOffset');
 end;
 
 procedure TTest_DateUtils.xsd_TryStrToDate_date_time();
@@ -452,15 +510,15 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12T23:34:56';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
-      CheckEquals(y,1976,'Year');
-      CheckEquals(m,10,'Month');
-      CheckEquals(dy,12,'Day');
+      CheckEquals(1976,y,'Year');
+      CheckEquals(10,m,'Month');
+      CheckEquals(12,dy,'Day');
     DecodeTime(d.Date,hh,mn,ss,ssss);
-      CheckEquals(hh,23,'Hour');
-      CheckEquals(mn,34,'Minute');
-      CheckEquals(ss,56,'Second');
+      CheckEquals(23,hh,'Hour');
+      CheckEquals(34,mn,'Minute');
+      CheckEquals(56,ss,'Second');
     CheckEquals(0,d.HourOffset,'HourOffset');
     CheckEquals(0,d.MinuteOffset,'MinuteOffset');
 end;
@@ -471,7 +529,7 @@ const
 var
   d : TDateTimeRec;
 begin
-  CheckEquals(False,xsd_TryStrToDate(DATE_STR,d),Format('"%s" is not a valid date.',[DATE_STR]));
+  CheckEquals(False,xsd_TryStrToDate(DATE_STR,d,xdkDateTime),Format('"%s" is not a valid date.',[DATE_STR]));
 end;
 
 procedure TTest_DateUtils.xsd_TryStrToDate_date_time_fractional_second();
@@ -486,7 +544,7 @@ procedure TTest_DateUtils.xsd_TryStrToDate_date_time_fractional_second();
     y,m,dy : Word;
     hh,mn,ss, ssss : Word;
   begin
-    d := xsd_StrToDate(AString);
+    d := xsd_StrToDate(AString,xdkDateTime);
       DecodeDate(d.Date,y,m,dy);
         CheckEquals(AY,y,'Year');
         CheckEquals(AM,m,'Month');
@@ -519,7 +577,7 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12T23:34:56+12:34';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
       CheckEquals(y,1976,'Year');
       CheckEquals(m,10,'Month');
@@ -541,7 +599,7 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12T23:34:56-01:23';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
       CheckEquals(y,1976,'Year');
       CheckEquals(m,10,'Month');
@@ -563,7 +621,7 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12T23:34:56Z';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
       CheckEquals(y,1976,'Year');
       CheckEquals(m,10,'Month');
@@ -585,7 +643,7 @@ var
 begin
   //'-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
   s := '1976-10-12T23:34:56+00:00';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
       CheckEquals(y,1976,'Year');
       CheckEquals(m,10,'Month');
@@ -598,7 +656,7 @@ begin
     CheckEquals(0,d.MinuteOffset,'MinuteOffset');
 
   s := '1976-10-12T23:34:56-00:00';
-  d := xsd_StrToDate(s);
+  d := xsd_StrToDate(s,xdkDateTime);
     DecodeDate(d.Date,y,m,dy);
       CheckEquals(y,1976,'Year');
       CheckEquals(m,10,'Month');

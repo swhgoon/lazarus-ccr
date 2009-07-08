@@ -400,6 +400,14 @@ type
   { TDateRemotable }
 
   TDateRemotable = class(TBaseDateRemotable)
+  public
+    class function ToStr(const ADate : TDateTimeRec):string;override;
+    class function Parse(const ABuffer : string):TDateTimeRec;override;
+  end; 
+  
+  { TDateTimeRemotable }
+
+  TDateTimeRemotable = class(TBaseDateRemotable)
   protected
     function GetDatepart(const AIndex : Integer) : Integer;override;
   public
@@ -1734,7 +1742,8 @@ begin
   r.Register(sXSD_NS,TypeInfo(Double),'double').AddPascalSynonym('Double');
   r.Register(sXSD_NS,TypeInfo(Extended),'decimal').AddPascalSynonym('Extended');
 
-  r.Register(sXSD_NS,TypeInfo(TDateRemotable),'dateTime').AddPascalSynonym('TDateRemotable');
+  r.Register(sXSD_NS,TypeInfo(TDateTimeRemotable),'dateTime').AddPascalSynonym('TDateTimeRemotable');
+  r.Register(sXSD_NS,TypeInfo(TDateRemotable),'date').AddPascalSynonym('TDateRemotable');
 {$IFDEF WST_HAS_TDURATIONREMOTABLE}
   r.Register(sXSD_NS,TypeInfo(TDurationRemotable),'duration').AddPascalSynonym('TDurationRemotable');
 {$ELSE WST_HAS_TDURATIONREMOTABLE}
@@ -5632,17 +5641,29 @@ end;
 
 { TDateRemotable }
 
-class function TDateRemotable.ToStr(const ADate: TDateTimeRec): string;
+class function TDateRemotable.ToStr(const ADate : TDateTimeRec) : string;  
 begin
-  Result := xsd_DateTimeToStr(ADate);
+  Result := xsd_DateTimeToStr(ADate,xdkDate);
 end;
 
-class function TDateRemotable.Parse(const ABuffer: string): TDateTimeRec;
+class function TDateRemotable.Parse(const ABuffer : string) : TDateTimeRec;  
 begin
-  Result := xsd_StrToDate(ABuffer);
+  Result := xsd_StrToDate(ABuffer,xdkDate);
 end;
 
-function TDateRemotable.GetDatepart(const AIndex: Integer): Integer;
+{ TDateTimeRemotable }
+
+class function TDateTimeRemotable.ToStr(const ADate: TDateTimeRec): string;
+begin
+  Result := xsd_DateTimeToStr(ADate,xdkDateTime);
+end;
+
+class function TDateTimeRemotable.Parse(const ABuffer: string): TDateTimeRec;
+begin
+  Result := xsd_StrToDate(ABuffer,xdkDateTime);
+end;
+
+function TDateTimeRemotable.GetDatepart(const AIndex: Integer): Integer;
 begin
   case AIndex of
     3 : Result := HourOf(AsDate);
@@ -5675,7 +5696,7 @@ class procedure TBaseDateRemotable.Save(
 var
   buffer : string;
 begin
-  buffer := TDateRemotable(AObject).AsString;
+  buffer := TBaseDateRemotable(AObject).AsString;
   AStore.BeginObject(AName,ATypeInfo);
   try
     AStore.PutScopeInnerValue(TypeInfo(string),buffer);
@@ -5697,7 +5718,7 @@ begin
     try
       strBuffer := '';
       AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
-      (AObject as TDateRemotable).AsString := strBuffer
+      (AObject as TBaseDateRemotable).AsString := strBuffer
     finally
       AStore.EndScopeRead();
     end;
@@ -5706,8 +5727,8 @@ end;
 
 procedure TBaseDateRemotable.Assign(Source: TPersistent);
 begin
-  if Source.InheritsFrom(TDateRemotable) then begin
-    FDate := TDateRemotable(Source).FDate;
+  if Source.InheritsFrom(TBaseDateRemotable) then begin
+    FDate := TBaseDateRemotable(Source).FDate;
   end else begin
     inherited Assign(Source);
   end;
@@ -6847,8 +6868,8 @@ begin
   end else begin
     if Source.InheritsFrom(TTimeRemotable) then
       Self.Data := TTimeRemotable(Source).Data
-    else if Source.InheritsFrom(TDateRemotable) then
-      Self.Data := DateTimeToTimeRec(TDateRemotable(Source).AsUTCDate)
+    else if Source.InheritsFrom(TDateTimeRemotable) then
+      Self.Data := DateTimeToTimeRec(TDateTimeRemotable(Source).AsUTCDate)
     else
       inherited Assign(Source);
   end;
