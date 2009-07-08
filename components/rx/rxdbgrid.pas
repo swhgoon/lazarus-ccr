@@ -357,7 +357,7 @@ type
     property AutoAdvance default aaRightDown;
     property AutoFillColumns;
     property AutoEdit;
-    //property BiDiMode;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property Color;
@@ -373,11 +373,12 @@ type
     property DataSource;
     property DefaultDrawing;
     property DefaultRowHeight stored IsDefaultRowHeightStored default 18 ;
-    //property DragCursor;
-    //property DragKind;
-    //property DragMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property Enabled;
     property FixedColor;
+    property FixedCols;
     property Flat;
     property Font;
     property HeaderHotZones;
@@ -386,11 +387,11 @@ type
     //property ImeName;
     property Options;
     property OptionsExtra;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor;
     //property ParentCtl3D;
     property ParentFont;
-    //property ParentShowHint;
+    property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
     property Scrollbars default ssBoth;
@@ -410,7 +411,7 @@ type
     property OnDrawColumnCell;
     property OnDblClick;
     property OnEditButtonClick;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -423,7 +424,7 @@ type
     property OnMouseUp;
     property OnPrepareCanvas;
     property OnSelectEditor;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;

@@ -469,7 +469,10 @@ begin
   end;
   //Set options
   if not (pfgIndicator in FPopUpFormOptions.FOptions) then
+  begin
     FGrid.Options:=FGrid.Options - [dgIndicator];
+    FGrid.FixedCols:=0;
+  end;
 
   if not (pfgColLines in FPopUpFormOptions.FOptions) then
     FGrid.Options:=FGrid.Options - [dgColLines];
