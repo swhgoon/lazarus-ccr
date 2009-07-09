@@ -216,6 +216,9 @@ type
   procedure finalize_server_services_intf();
   
 implementation
+uses
+  wst_consts;
+  
 Var
   FormatterRegistryInst : IFormatterRegistry = Nil;
   ServerServiceRegistryInst : IServerServiceRegistry = Nil;
@@ -240,7 +243,7 @@ Begin
   svcName := ARequestBuffer.GetTargetService();
   s := sr.Find(svcName);
   If Not Assigned(s) Then
-    Raise EServiceException.CreateFmt('Service not found : "%s"',[svcName]);
+    Raise EServiceException.CreateFmt(SERR_ServiceNotFound,[svcName]);
   s.HandleRequest(ARequestBuffer);
 End;
 
@@ -479,7 +482,7 @@ begin
   msgFormat := Copy(s,1,j);
   f := GetFormatterRegistry().Find(msgFormat) as IFormatterResponse;
   if not Assigned(f) then
-    Error('No formatter for that content type : "%s"',[s]);
+    Error(SERR_NoSerializerFoThisType,[s]);
   try
     cllCtx := CreateCallContext();
     cllCtx.GetPropertyManager().Copy(ARequestBuffer.GetPropertyManager(),False);
@@ -491,7 +494,7 @@ begin
     s := f.GetCallProcedureName();
     m := FindVerbHandler(s);
     if not Assigned(m) then
-      Error('No handler for that verb : "%s"',[s]);
+      Error(SERR_NoHandlerForThatVerb,[s]);
     m(f,cllCtx);
     for i := 0 to Pred(cllCtx.GetHeaderCount(AllHeaderDirection)) do begin
       hdr := cllCtx.GetHeader(i);
@@ -501,7 +504,7 @@ begin
           s := typRegItm.DeclaredName
         else
           s := hdr.ClassName;
-        Error('Header "%s" not Understood.',[s]);
+        Error(SERR_HeaderNotUnderstood,[s]);
       end;
     end;
   except

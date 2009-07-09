@@ -41,12 +41,10 @@ type
   ) : Integer;overload;
   function Base16Decode(const AInBuffer : string; const AOptions : TBaseXOptions) : TByteDynArray;overload;
 
-resourcestring
-  s_InvalidEncodedData = 'Invalid encoded data.';
-  s_IllegalChar = 'Illegal character for that encoding : %s.';
-  s_UnexpectedEndOfData = 'Unexpected end of data.';
 
 implementation
+uses
+  wst_consts;
 
 const
   Base64_CHAR_TABLE : array[0..63] of char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -177,11 +175,11 @@ begin
             Break;
           end else begin
             if locFailOnIllegalChar then
-              raise EBase64Exception.Create(s_InvalidEncodedData);
+              raise EBase64Exception.Create(SERR_InvalidEncodedData);
           end;
         end;
         if ( not ok ) and locFailOnIllegalChar then
-          raise EBase64Exception.CreateFmt(s_IllegalChar,[Char(locBuffer^)]);
+          raise EBase64Exception.CreateFmt(SERR_IllegalChar,[Char(locBuffer^)]);
       end;
       if ( locReadedValidChars > 0 ) then begin
         locOutQuantom[0] := ( locInQuantom[0] shl 2 ) or ( locInQuantom[1] shr 4 );
@@ -287,13 +285,13 @@ begin
           else
             begin
               if locFailOnIllegalChar then
-                raise EBase16Exception.Create(s_IllegalChar);
+                raise EBase16Exception.Create(SERR_UnexpectedEndOfData);
             end;
         end;
         Inc(hp);
       end;
       if ( hp^ = #0 ) then
-        raise EBase16Exception.Create(s_UnexpectedEndOfData);
+        raise EBase16Exception.Create(SERR_UnexpectedEndOfData);
       Inc(hp);
       while ( hp^ <> #0 ) do begin
         case hp^ of
@@ -315,13 +313,13 @@ begin
           else
             begin
               if locFailOnIllegalChar then
-                raise EBase16Exception.Create(s_IllegalChar);
+                raise EBase16Exception.CreateFmt(SERR_IllegalChar,[hp^]);
             end;
         end;
         Inc(hp);
       end;
       if ( hp^ = #0 ) then
-        raise EBase16Exception.Create(s_UnexpectedEndOfData);
+        raise EBase16Exception.Create(SERR_UnexpectedEndOfData);
       Inc(hp);
       Inc(bp);
     end;

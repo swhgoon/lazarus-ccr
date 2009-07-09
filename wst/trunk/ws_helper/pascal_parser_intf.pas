@@ -208,7 +208,8 @@ type
   function CreateWstInterfaceSymbolTable(AContainer : TwstPasTreeContainer) : TPasModule;
   
 implementation
-uses parserutils, wst_types;
+uses 
+  parserutils, wst_types, wst_consts;
 
 const
     SIMPLE_TYPES_COUNT = 14;
@@ -559,7 +560,7 @@ function MakeInternalSymbolNameFrom(const AName : string) : string ;
 begin
   Result := ExtractIdentifier(AName);
   if IsStrEmpty(AName) then begin
-    raise ESymbolException.CreateFmt('Unable to make an internal symbol Name from "%s".',[AName]);
+    raise ESymbolException.CreateFmt(SERR_CannotMakeInternalSymbolName,[AName]);
   end;
   if IsReservedKeyWord(Result) then begin
     Result := '_' + Result;
@@ -830,7 +831,7 @@ function TwstPasTreeContainer.AddBinding(const AName : string; AIntf : TPasClass
 begin
   Result := FindBinding(AName);
   if Assigned(Result) then begin
-    raise Exception.CreateFmt('Duplicated binding : "%s"',[AName]);
+    raise Exception.CreateFmt(SERR_DuplicateBindingName,[AName]);
   end;
   Result := TwstBinding.Create(AName, AIntf, AIntf.Parent);
   FBindingList.Add(Result);

@@ -429,7 +429,8 @@ type
   
   
 implementation
-uses jsonparser, imp_utils;
+uses 
+  jsonparser, imp_utils, wst_consts;
 
 
 { TJsonRpcBaseFormatter }
@@ -442,7 +443,7 @@ end;
 procedure TJsonRpcBaseFormatter.CheckScope();
 begin
   if not HasScope() then
-    Error('There is no scope.');
+    Error(SERR_NoScope);
 end;
 
 procedure TJsonRpcBaseFormatter.ClearStack();
@@ -865,12 +866,12 @@ var
   locObj : TJSONData;
 begin
   if ( Length(ABounds) < 2 ) then
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   i := ABounds[0];
   j := ABounds[1];
   k := ( j - i + 1 );
   if ( k < 0 ) then
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   if HasScope() then
     locObj := StackTop().CreateArrayBuffer(AName)
   else
@@ -883,7 +884,7 @@ var
   stkItem : TStackItem;
 begin
   if not FStack.AtLeast(2) then
-    Error('The root object cannot be NIL.');
+    Error(SERR_RootObjectCannotBeNIL);
   stkItem := PopStack();
   try
     PushStack(StackTop().NilItem(stkItem.ScopeObject),stNilScope);
@@ -918,7 +919,7 @@ begin
   stk := StackTop();
   locNode := stk.FindNode(AScopeName);
   if not Assigned(locNode) then begin
-    Error('Scope not found : "%s"',[AScopeName]);
+    Error(SERR_ScopeNotFound,[AScopeName]);
   end;
   case locNode.JSONType() of
     jtObject : PushStack(locNode,stObject);

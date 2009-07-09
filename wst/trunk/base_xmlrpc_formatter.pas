@@ -839,7 +839,7 @@ end;
 procedure TXmlRpcBaseFormatter.CheckScope();
 begin
   If Not HasScope() Then
-    Error('There is no scope.');
+    Error(SERR_NoScope);
 end;
 
 function TXmlRpcBaseFormatter.InternalPutData(
@@ -1286,13 +1286,13 @@ var
   i,j, k : Integer;
 begin
   if ( Length(ABounds) < 2 ) then begin
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   end;
   i := ABounds[0];
   j := ABounds[1];
   k := j - i + 1;
   if ( k < 0 ) then begin
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   end;
 
   BeginScope(AName,'','',stArray,AStyle);
@@ -1579,7 +1579,7 @@ begin
 {$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
-        raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
+        raise EXmlRpcException.Create(SERR_InnerScopeMustBeSimpleType);
       end;
     {$IFDEF FPC}
     tkBool :
@@ -1847,7 +1847,7 @@ begin
 {$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
-        raise EXmlRpcException.Create('Inner Scope value must be a "simple type" value.');
+        raise EXmlRpcException.Create(SERR_InnerScopeMustBeSimpleType);
       end;
     {$IFDEF FPC}
     tkBool :

@@ -170,11 +170,10 @@ type
     function Parse():TPasType;override;
   end;
 
-resourcestring
-  SResolveError = 'Unable to resolve this namespace : "%s".';
 
 implementation
-uses dom_cursors, parserutils, StrUtils, xsd_consts;
+uses 
+  dom_cursors, parserutils, StrUtils, xsd_consts, wst_consts;
 
 { TAbstractTypeParser }
 
@@ -310,7 +309,7 @@ begin
     locNS := ANameSpace
   end else begin
     if not FContext.FindNameSpace(ANameSpace,locNS) then
-      raise EXsdParserAssertException.CreateFmt(SResolveError,[ANameSpace]);
+      raise EXsdParserAssertException.CreateFmt(SERR_CannotResolveNamespace,[ANameSpace]);
   end;
   Result := FSymbols.FindElementNS(ALocalName,locNS);
 end;
@@ -1454,7 +1453,7 @@ begin
     if Assigned(tmpNode) then begin
       ExplodeQName(tmpNode.NodeValue,FBaseName,spaceShort);
       if not FContext.FindNameSpace(spaceShort,FBaseNameSpace) then
-        raise EXsdParserAssertException.CreateFmt(SResolveError,[spaceShort]);
+        raise EXsdParserAssertException.CreateFmt(SERR_CannotResolveNamespace,[spaceShort]);
     end;
     locCrs := CreateChildrenCursor(FRestrictionNode,cetRttiNode) as IObjectCursor;
     if Assigned(locCrs) then begin

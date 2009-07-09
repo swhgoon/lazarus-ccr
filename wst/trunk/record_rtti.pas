@@ -66,7 +66,8 @@ type
   procedure finalize_record_rtti();
   
 implementation
-uses Classes, imp_utils;
+uses 
+  Classes, imp_utils, wst_consts;
 
 {$IFDEF WST_RECORD_RTTI}
 
@@ -336,7 +337,7 @@ function TRecordRttiDataObject.GetField(const AFieldName : shortstring) : PRecor
 begin
   Result := FindField(AFieldName);
   if ( Result = nil ) then
-    raise Exception.CreateFmt('"%s" is not a field of "%s".',[AFieldName,GetRecordTypeData()^.Name]);
+    raise Exception.CreateFmt(SERR_IsNotAFieldOf,[AFieldName,GetRecordTypeData()^.Name]);
 end;
 
 procedure initialize_record_rtti();

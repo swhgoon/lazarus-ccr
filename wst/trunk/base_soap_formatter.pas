@@ -459,13 +459,16 @@ type
 
   function BoolToSoapBool(const AValue : Boolean) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
-resourcestring
-  SERR_NodeNotFoundByID = 'Node not found with this ID in the document : %s.';
-  SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found %s.';
-
+  
 implementation
-Uses {$IFDEF WST_DELPHI}XMLDoc,XMLIntf,{$ELSE}XMLWrite, XMLRead,wst_fpc_xml,{$ENDIF}
-     StrUtils, imp_utils;
+uses 
+{$IFDEF WST_DELPHI}
+  XMLDoc,XMLIntf,
+{$ENDIF WST_DELPHI}
+{$IFDEF FPC}
+  XMLWrite, XMLRead,wst_fpc_xml,
+{$ENDIF FPC}
+  StrUtils, imp_utils, wst_consts;
 
 
 function BoolToSoapBool(const AValue : Boolean) : string;
@@ -538,7 +541,7 @@ end;
 function TStackItem.EndEmbeddedScope(): Integer;
 begin
   if ( FEmbeddedScopeCount < 1 ) then begin
-    raise Exception.Create('Invalid opération on scope, their are no embedded scope.');
+    raise Exception.Create(SERR_InvalidEmbeddedScopeOperation);
   end;
   Dec(FEmbeddedScopeCount);
   Result := FEmbeddedScopeCount;
@@ -811,7 +814,7 @@ end;
 procedure TSOAPBaseFormatter.CheckScope();
 begin
   If Not HasScope() Then
-    Error('There is no scope.');
+    Error(SERR_NoScope);
 end;
 
 function ExtractNameSpaceShortName(const ANameSpaceDeclaration : string):string;
@@ -1316,7 +1319,7 @@ Var
 begin
   typData := GetTypeRegistry().Find(ATypeInfo,False);
   If Not Assigned(typData) Then
-    Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
+    Error(SERR_TypeNotRegistered,[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
   mustAddAtt := False;
   if ( ATypeInfo^.Kind = tkClass ) and
      GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TAbstractSimpleRemotable) and
@@ -1374,17 +1377,17 @@ Var
   xsiNmspcSH : string;
 begin
   if ( Length(ABounds) < 2 ) then begin
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   end;
   i := ABounds[0];
   j := ABounds[1];
   k := j - i + 1;
   if ( k < 0 ) then begin
-    Error('Invalid array bounds.');
+    Error(SERR_InvalidArrayBounds);
   end;
   typData := GetTypeRegistry().Find(ATypeInfo,False);
   if not Assigned(typData) then begin
-    Error('Array type not registered.');
+    Error(SERR_TypeNotRegistered,[ATypeInfo^.Name]);
   end;
   nmspc := typData.NameSpace;
   if IsStrEmpty(nmspc) then begin
@@ -1526,7 +1529,7 @@ begin
   if ( Style = Document ) then begin
     typData := GetTypeRegistry().Find(ATypeInfo,False);
     if not Assigned(typData) then begin
-      Error('Object type not registered : %s',[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
+      Error(SERR_TypeNotRegistered,[IfThen(Assigned(ATypeInfo),ATypeInfo^.Name,'')]);
     end;
     if ( ATypeInfo^.Kind = tkClass ) and
        GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TAbstractSimpleRemotable) and
@@ -1948,7 +1951,7 @@ begin
 {$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
-        raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
+        raise ESOAPException.Create(SERR_InnerScopeMustBeSimpleType);
       end;
     {$IFDEF FPC}
     tkBool :
@@ -2209,7 +2212,7 @@ begin
 {$ENDIF WST_UNICODESTRING}
     tkClass :
       begin
-        raise ESOAPException.Create('Inner Scope value must be a "simple type" value.');
+        raise ESOAPException.Create(SERR_InnerScopeMustBeSimpleType);
       end;
     {$IFDEF FPC}
     tkBool :

@@ -477,7 +477,7 @@ type
 
 implementation
 uses
-  imp_utils;
+  imp_utils, wst_consts;
   
 {$INCLUDE wst_rtl_imp.inc}
 
@@ -578,9 +578,9 @@ Begin
     If ( AIndex >= 0 ) And ( AIndex < AOwner^.ArrayData^.Count ) Then
       AOwner^.ArrayData^.Items^[AIndex] := AChildData
     Else
-      Raise EBinaryFormatterException.CreateFmt('Invalid array acces : %d',[AIndex])
+      Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[AIndex])
   End Else Begin
-    Raise EBinaryFormatterException.CreateFmt('Invalid data type in this context : %d',[Ord(AOwner^.DataType)])
+    Raise EBinaryFormatterException.CreateFmt(SERR_InvalidDataTypeInContext,[GetEnumName(TypeInfo(TDataType), Ord(AOwner^.DataType))])
   End;
 End;
 
@@ -912,7 +912,7 @@ begin
       p := p^.Next;
     Result := p^.Data;
   End Else
-    Raise EBinaryFormatterException.CreateFmt('Invalid index access : %d',[AIndex]);
+    Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[AIndex]);
 end;
 
 function TObjectStackItem.CreateBuffer(
@@ -1038,7 +1038,7 @@ end;
 procedure TBaseBinaryFormatter.CheckScope();
 begin
   If Not HasScope() Then
-    Error('There is no scope.');
+    Error(SERR_NoScope);
 end;
 
 function TBaseBinaryFormatter.GetCurrentScope: String;
@@ -1381,12 +1381,12 @@ var
   i, j, k : Integer;
 begin
   If ( Length(ABounds) < 2 ) Then
-    Raise EBinaryFormatterException.Create('Invalid array bounds.');
+    Raise EBinaryFormatterException.Create(SERR_InvalidArrayBounds);
   i := ABounds[0];
   j := ABounds[1];
   k := ( j - i + 1 );
   If ( k < 0 ) Then
-    Raise EBinaryFormatterException.Create('Invalid array bounds.');
+    Raise EBinaryFormatterException.Create(SERR_InvalidArrayBounds);
   PushStack(CreateArrayBuffer(k,AName,StackTop().ScopeObject),stArray);
 end;
 
@@ -1429,7 +1429,7 @@ begin
   stk := StackTop();
   locNode := stk.Find(AScopeName);
   if not Assigned(locNode) then begin
-    Error('Scope not found : "%s"',[AScopeName]);
+    Error(SERR_ScopeNotFound,[AScopeName]);
   end;
   PushStack(locNode,stObject);
   Result := StackTop().GetItemCount();
@@ -1675,7 +1675,7 @@ begin
 {$ENDIF HAS_QWORD}
     tkClass, tkRecord :
       begin
-        raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+        raise EBinaryFormatterException.Create(SERR_InnerScopeMustBeSimpleType);
       end;
     {$IFDEF FPC}
     tkBool :
@@ -1966,7 +1966,7 @@ begin
     tkUString      : UnicodeString(AData) := dataBuffer^.UnicodeStrData^.Data;
 {$ENDIF WST_UNICODESTRING}
 
-    tkClass, tkRecord : raise EBinaryFormatterException.Create('Inner Scope value must be a "simple type" value.');
+    tkClass, tkRecord : raise EBinaryFormatterException.Create(SERR_InnerScopeMustBeSimpleType);
     {$IFDEF FPC}
     tkBool         : Boolean(AData) := dataBuffer^.BoolData;
     {$ENDIF}
@@ -2136,7 +2136,7 @@ begin
   If ( FIndex >= 0 ) And ( FIndex < ScopeObject^.ArrayData^.Count ) Then
     Result := ScopeObject^.ArrayData^.Items^[FIndex]
   Else
-    Raise EBinaryFormatterException.CreateFmt('Invalid array index : %d',[FIndex]);
+    Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[FIndex]);
   Inc(FIndex);
 end;
 
@@ -2145,7 +2145,7 @@ begin
   If ( AIndex >= 0 ) And ( AIndex < ScopeObject^.ArrayData^.Count ) Then
     Result := ScopeObject^.ArrayData^.Items^[AIndex]
   Else
-    Raise EBinaryFormatterException.CreateFmt('Invalid array index : %d',[AIndex]);
+    Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[AIndex]);
 end;
 
 function TArrayStackItem.CreateBuffer(
@@ -2156,7 +2156,7 @@ begin
   If ( FIndex >= 0 ) And ( FIndex < ScopeObject^.ArrayData^.Count ) Then
     Result := CreateObjBuffer(ADataType,AName,Nil)
   Else
-    Raise EBinaryFormatterException.CreateFmt('Invalid array index : %d',[FIndex]);
+    Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[FIndex]);
   ScopeObject^.ArrayData^.Items^[FIndex] := Result;
   Inc(FIndex);
 end;
@@ -2164,12 +2164,12 @@ end;
 {$WARNINGS OFF}
 function TArrayStackItem.CreateInnerBuffer(const ADataType: TDataType): PDataBuffer;
 begin
-  raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
+  raise EBinaryFormatterException.CreateFmt(SERR_InsupportedOperation,['TArrayStackItem.CreateInnerBuffer']);
 end;
 
 function TArrayStackItem.GetInnerBuffer(): PDataBuffer;
 begin
-  raise EBinaryFormatterException.Create('Array do not support "inner value" feature.');
+  raise EBinaryFormatterException.CreateFmt(SERR_InsupportedOperation,['TArrayStackItem.GetInnerBuffer']);
 end;
 {$WARNINGS ON}
 

@@ -1853,10 +1853,10 @@ begin
     if Assigned(recordData) then begin
       recordData.GetField(AField)^.Visible := AVisibility;
     end else begin
-      raise EServiceConfigException.CreateFmt('Record extended RTTI informations not found in type registry : "%s".',[ATypeInfo^.Name]);
+      raise EServiceConfigException.CreateFmt(SERR_RecordExtendedRttiNotFound,[ATypeInfo^.Name]);
     end;
   end else begin
-    raise EServiceConfigException.Create('Invalid parameters.');
+    raise EServiceConfigException.Create(SERR_InvalidParameters);
   end;
 end;
 
@@ -1891,7 +1891,7 @@ begin
     end;
   end;
   if not ok then
-    raise EServiceConfigException.Create('Invalid parameters.');
+    raise EServiceConfigException.Create(SERR_InvalidParameters);
 end;
 
 {$IFDEF FPC}
@@ -2786,7 +2786,7 @@ end;
 constructor TSimpleItemFactory.Create(AItemClass: TSimpleFactoryItemClass);
 begin
   if not Assigned(AItemClass) then
-    raise EServiceConfigException.CreateFmt('Invalid parameter : %s; Procedure = %s',['AItemClass','TSimpleItemFactory.Create()']);
+    raise EServiceConfigException.CreateFmt(SERR_InvalidParameterProc,['AItemClass','TSimpleItemFactory.Create()']);
   FItemClass := AItemClass;
 end;
 
@@ -2806,7 +2806,7 @@ begin
   FreeAndNil(FPool);
   if AValue then begin
     if ( PoolMin < 0 ) or ( PoolMin > PoolMax ) or ( PoolMax < 1 ) then
-      raise EServiceException.Create('Invalid pool parametters.');
+      raise EServiceException.CreateFmt(SERR_InvalidPoolParametersArgs,[PoolMin,PoolMax]);
     PreparePool();
   end;
   FPooled := AValue;
@@ -2817,7 +2817,7 @@ begin
   if ( FPoolMax = AValue ) then
     Exit;
   if Pooled then
-    raise EServiceException.Create('Operation not allowed on an active pool.');
+    raise EServiceException.Create(SERR_OperationNotAllowedOnActivePool);
   FPoolMax := AValue;
 end;
 
@@ -2826,7 +2826,7 @@ begin
   if ( FPoolMin = AValue ) then
     Exit;
   if Pooled then
-    raise EServiceException.Create('Operation not allowed on an active pool.');
+    raise EServiceException.Create(SERR_OperationNotAllowedOnActivePool);
   FPoolMin := AValue;
 end;
 
@@ -3241,7 +3241,7 @@ begin
   If ( i > -1 ) Then
     Result := FList[i] as TTypeRegistryItem
   Else
-    Raise ETypeRegistryException.CreateFmt('Type not registered : %s',[Index^.Name])
+    Raise ETypeRegistryException.CreateFmt(SERR_TypeNotRegistered,[Index^.Name])
 end;
 
 constructor TTypeRegistry.Create();
@@ -3281,7 +3281,7 @@ begin
   If ( Result = -1 ) Then
     Result := FList.Add(AItem)
   Else
-    Raise ETypeRegistryException.CreateFmt('Type already registered : "%s"',[AItem.DataType^.Name]);
+    Raise ETypeRegistryException.CreateFmt(SERR_TypeNotRegistered,[AItem.DataType^.Name]);
 end;
 
 function TTypeRegistry.Register(
@@ -3506,7 +3506,7 @@ end;
 procedure TArrayOfStringRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -3840,7 +3840,7 @@ end;
 procedure TBaseArrayRemotable.CheckIndex(const AIndex : Integer);
 begin
   if ( AIndex < 0 ) or ( AIndex >= Length ) then
-    raise EServiceException.CreateFmt('Index out of bound : %d',[AIndex]);
+    raise EServiceException.CreateFmt(SERR_IndexOutOfBound,[AIndex]);
 end;
 
 destructor TBaseArrayRemotable.Destroy();
@@ -3890,7 +3890,7 @@ end;
 procedure TArrayOfBooleanRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -3954,7 +3954,7 @@ end;
 procedure TArrayOfInt8URemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4018,7 +4018,7 @@ end;
 procedure TArrayOfInt8SRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4082,7 +4082,7 @@ end;
 procedure TArrayOfInt16SRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4146,7 +4146,7 @@ end;
 procedure TArrayOfInt16URemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4210,7 +4210,7 @@ end;
 procedure TArrayOfInt32URemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4274,7 +4274,7 @@ end;
 procedure TArrayOfInt32SRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4338,7 +4338,7 @@ end;
 procedure TArrayOfInt64SRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4402,7 +4402,7 @@ end;
 procedure TArrayOfInt64URemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4466,7 +4466,7 @@ end;
 procedure TArrayOfFloatSingleRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4530,7 +4530,7 @@ end;
 procedure TArrayOfFloatDoubleRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4594,7 +4594,7 @@ end;
 procedure TArrayOfFloatExtendedRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -4658,7 +4658,7 @@ end;
 procedure TArrayOfFloatCurrencyRemotable.SetLength(const ANewSize: Integer);
 begin
   if ( ANewSize < 0 ) then
-    raise EBaseRemoteException.CreateFmt('Invalid array length : %d',[ANewSize]);
+    raise EBaseRemoteException.CreateFmt(SERR_InvalidArrayLength,[ANewSize]);
   System.SetLength(FData,ANewSize);
 end;
 
@@ -5991,7 +5991,7 @@ var
   i : PtrInt;
 begin
   if not ( ( AMin >= 0 ) and ( AMax >= AMin ) and ( AFactory <> nil ) ) then
-    raise Exception.CreateFmt('Invalid pool arguments Min = %d; Max = %d .',[AMin,AMax]);
+    raise Exception.CreateFmt(SERR_InvalidPoolParametersArgs,[AMin,AMax]);
   FMax := AMax;
   FMin := AMin;
   FFactory := AFactory;
@@ -6028,7 +6028,7 @@ begin
       Result := CreateNew(True).Intf;
     end;
   end else begin
-    raise EServiceException.Create('Unable to create the object : Timeout expired.');
+    raise EServiceException.Create(SERRE_ObjectCreationTimeOut);
   end;
 end;
 
@@ -6159,7 +6159,7 @@ begin
     end;
     typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
     typDataObj := typRegItem.GetObject(FIELDS_STRING);
-    Assert(Assigned(typDataObj),Format('Incomplete type registration for the type of this parameter : %s',[AName]));
+    Assert(Assigned(typDataObj),Format(SERR_IncompleteParamTypeRegistration,[AName]));
     typData := PRecordTypeData((typDataObj as TDataObject).Data);
     Assert(Assigned(typData));
     if ( typData^.FieldCount > 0 ) then begin
@@ -6261,7 +6261,7 @@ begin
         Exit;
       typRegItem := GetTypeRegistry().ItemByTypeInfo[ATypeInfo];
       typDataObj := typRegItem.GetObject(FIELDS_STRING);
-      Assert(Assigned(typDataObj),Format('Incomplete type registration for the type of this parameter : %s',[AName]));
+      Assert(Assigned(typDataObj),Format(SERR_IncompleteParamTypeRegistration,[AName]));
       typData := PRecordTypeData((typDataObj as TDataObject).Data);
       Assert(Assigned(typData));
       if ( not Assigned(ARecord) ) then begin
