@@ -1,8 +1,11 @@
 
 resourcestring
-  sUSAGE = 'ws_helper [-uMODE] [-p] [-b] [-i] [-w] [-x] [-y] [-d] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
+  sUSAGE = 'ws_helper [-uMODE] [-gOPTION] [-p] [-b] [-i] [-w] [-x] [-y] [-d] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
            '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
-           '       MODE value may be U for used types or A for all types' + sNEW_LINE +
+           '        MODE value may be U for used types or A for all types' + sNEW_LINE +
+           '  -g  Code generation option, with the following options : ' + sNEW_LINE +
+           '        A : object arrays are generated as "array" derived from TBaseObjectArrayRemotable' + sNEW_LINE +
+           '        C : object arrays are generated as "collection" derived from TObjectCollectionRemotable' + sNEW_LINE +
            '  -p  Generate service proxy' + sNEW_LINE +
            '  -b  Generate service binder' + sNEW_LINE +
            '  -i  Generate service minimal implementation. This will erase any existing implementation file!' + sNEW_LINE +
@@ -64,7 +67,9 @@ var
     if AnsiSameText('A',Trim(GetOptionArg(cloInterface))) then begin
       parserMode := pmAllTypes;
     end;
-
+    if AnsiSameText('C',Trim(GetOptionArg(cloGenerateObjectCollection))) then begin
+      Include(AppOptions,cloGenerateObjectCollection);
+    end;    
     if ( sourceType = sftXsd ) then begin
       AppOptions := AppOptions - [ cloProxy, cloImp, cloBinder, cloWsdl ];
     end;
@@ -185,6 +190,8 @@ var
           g := TInftGenerator.Create(symtable,srcMngr);
           if wrappedParams then
             g.Options := g.Options + [goDocumentWrappedParameter];
+          if ( cloGenerateObjectCollection in AppOptions ) then
+            g.Options := g.Options + [goGenerateObjectCollection];    
           g.Execute();
           FreeAndNil(g);
         end;

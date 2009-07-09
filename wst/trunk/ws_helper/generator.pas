@@ -34,7 +34,8 @@ type
 
   TGeneratorOption = (
     goDocumentWrappedParameter { .Net style wrapped parameters },
-    goGenerateDocAsComments    { Documentation include in the XSD/WSDL schema will be generated as comments }
+    goGenerateDocAsComments    { Documentation include in the XSD/WSDL schema will be generated as comments },
+    goGenerateObjectCollection { Generate object "collection" instead of "array" }
   );
   TGeneratorOptions = set of TGeneratorOption;
   
@@ -2560,7 +2561,9 @@ begin
   classItemArray := SymbolTable.IsOfType(eltType,TPasClassType) or SymbolTable.IsOfType(eltType,TPasArrayType);
 
   if classItemArray then begin
-    if FSymbolTable.IsCollection(ASymbol) then
+    if ( goGenerateObjectCollection in Options ) or
+       FSymbolTable.IsCollection(ASymbol) 
+    then
       WriteObjectCollection(ASymbol)
     else
       WriteObjectArray(ASymbol);

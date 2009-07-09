@@ -29,7 +29,7 @@ Type
   TComandLineOption = (
     cloInterface, cloProxy, cloImp, cloBinder, cloWsdl, cloXsd,
     cloOutPutDirRelative, cloOutPutDirAbsolute, cloHandleWrappedParameters,
-    cloGenerateDocAsComments
+    cloGenerateDocAsComments, cloGenerateObjectCollection
   );
   TComandLineOptions = set of TComandLineOption;
 
@@ -54,7 +54,7 @@ begin
   AAppOptions := [];
   c := #0;
   repeat
-    c := GetOpt('u:pibo:a:wxyd');
+    c := GetOpt('u:pibo:a:wxydg:');
     case c of
       'u' :
         begin
@@ -78,6 +78,11 @@ begin
       'x' : Include(AAppOptions,cloXsd);
       'y' : Include(AAppOptions,cloHandleWrappedParameters);
       'd' : Include(AAppOptions,cloGenerateDocAsComments);
+      'g' :
+        begin
+          Include(AAppOptions,cloGenerateObjectCollection);
+          OptionsArgsMAP[cloGenerateObjectCollection] := OptArg;
+        end;       
     end;
   until ( c = EndOfOptions );
   Result := OptInd;
