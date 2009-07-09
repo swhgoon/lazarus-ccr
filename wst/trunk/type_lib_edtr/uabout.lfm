@@ -3,8 +3,6 @@ object fAbout: TfAbout
   Height = 182
   Top = 277
   Width = 299
-  HorzScrollBar.Page = 298
-  VertScrollBar.Page = 181
   ActiveControl = Button1
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -12,7 +10,7 @@ object fAbout: TfAbout
   ClientHeight = 182
   ClientWidth = 299
   Position = poDesktopCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 21
     Height = 14
@@ -21,6 +19,7 @@ object fAbout: TfAbout
     Caption = 'Web Services Toolkit for FPC/Lazarus && Delphi'
     Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
   end
   object Label2: TLabel
     Left = 93
@@ -30,13 +29,14 @@ object fAbout: TfAbout
     Caption = 'Type Library Editor'
     Font.Style = [fsBold, fsItalic]
     ParentColor = False
+    ParentFont = False
   end
   object Label3: TLabel
-    Left = 32
+    Left = 16
     Height = 14
     Top = 112
-    Width = 235
-    Caption = 'Copyright (c) 2007, 2008 Inoussa OUEDRAOGO.'
+    Width = 266
+    Caption = 'Copyright (c) 2007, 2008, 2009 Inoussa OUEDRAOGO.'
     ParentColor = False
   end
   object Button1: TButton

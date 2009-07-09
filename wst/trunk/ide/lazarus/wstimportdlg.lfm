@@ -3,16 +3,16 @@ object formImport: TformImport
   Height = 553
   Top = 133
   Width = 526
-  HorzScrollBar.Page = 525
-  VertScrollBar.Page = 552
   ActiveControl = Button1
   BorderStyle = bsSizeToolWin
   Caption = 'WSDL Importer'
   ClientHeight = 553
   ClientWidth = 526
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.27'
   object Panel2: TPanel
+    Left = 0
     Height = 505
+    Top = 0
     Width = 526
     Align = alClient
     ClientHeight = 505
@@ -81,9 +81,9 @@ object formImport: TformImport
       end
       object edtAddToProject: TCheckBox
         Left = 9
-        Height = 19
+        Height = 17
         Top = 128
-        Width = 182
+        Width = 181
         Caption = 'Add the generated files to project'
         TabOrder = 4
       end
@@ -99,7 +99,9 @@ object formImport: TformImport
       ClientWidth = 502
       TabOrder = 2
       object mmoLog: TMemo
+        Left = 0
         Height = 111
+        Top = 0
         Width = 502
         Align = alClient
         ReadOnly = True
@@ -119,9 +121,9 @@ object formImport: TformImport
       TabOrder = 1
       object edtOptionIntf: TCheckBox
         Left = 9
-        Height = 19
+        Height = 17
         Top = 8
-        Width = 84
+        Width = 80
         Caption = 'Interface file'
         Checked = True
         OnClick = edtOptionIntfClick
@@ -130,9 +132,9 @@ object formImport: TformImport
       end
       object edtOptionProxy: TCheckBox
         Left = 9
-        Height = 19
+        Height = 17
         Top = 56
-        Width = 68
+        Width = 63
         Caption = 'Proxy file'
         Checked = True
         State = cbChecked
@@ -140,33 +142,33 @@ object formImport: TformImport
       end
       object edtOptionBinder: TCheckBox
         Left = 294
-        Height = 19
+        Height = 17
         Top = 8
-        Width = 111
+        Width = 103
         Caption = 'Service Binder file'
         TabOrder = 3
       end
       object edtOptionImp: TCheckBox
         Left = 294
-        Height = 19
+        Height = 17
         Top = 56
-        Width = 158
+        Width = 153
         Caption = 'Implementation Skeleton file'
         TabOrder = 4
       end
       object edtOptionIntfALL: TCheckBox
         Left = 30
-        Height = 19
+        Height = 17
         Top = 32
-        Width = 94
+        Width = 88
         Caption = 'Parse all types'
         OnClick = edtOptionIntfALLClick
         TabOrder = 1
       end
       object edtOptionWrappedParams: TCheckBox
         Left = 9
-        Height = 19
-        Top = 88
+        Height = 17
+        Top = 90
         Width = 290
         Anchors = [akLeft, akBottom]
         Caption = 'Generate easy access interface for wrapped parameters'
@@ -174,16 +176,25 @@ object formImport: TformImport
       end
       object edtDocAsComments: TCheckBox
         Left = 9
-        Height = 19
-        Top = 119
-        Width = 208
+        Height = 17
+        Top = 121
+        Width = 202
         Anchors = [akLeft, akBottom]
         Caption = 'Generate documentation as comments'
         TabOrder = 6
       end
+      object edtGenCollection: TCheckBox
+        Left = 294
+        Height = 17
+        Top = 121
+        Width = 188
+        Caption = 'Generate object array as Collection'
+        TabOrder = 7
+      end
     end
   end
   object Panel1: TPanel
+    Left = 0
     Height = 48
     Top = 505
     Width = 526
@@ -217,21 +228,18 @@ object formImport: TformImport
   end
   object AL: TActionList
     left = 104
-    top = 328
+    top = 392
     object actOK: TAction
       Caption = 'OK'
-      DisableIfNoHandler = True
       OnExecute = actOKExecute
       OnUpdate = actOKUpdate
     end
     object actOpenFile: TAction
       Caption = '...'
-      DisableIfNoHandler = True
       OnExecute = actOpenFileExecute
     end
     object actOpenDir: TAction
       Caption = '...'
-      DisableIfNoHandler = True
       OnExecute = actOpenDirExecute
     end
   end

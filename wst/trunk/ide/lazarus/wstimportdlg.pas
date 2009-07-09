@@ -12,9 +12,9 @@ uses
 type
 
   TGenOption = (
-    goInterface, goInterfaceALL,
-    goProxy, goImp, goBinder,
-    goWrappedParameter, goDocAsComments
+    xgoInterface, xgoInterfaceALL,
+    xgoProxy, xgoImp, xgoBinder,
+    xgoWrappedParameter, xgoDocAsComments, xgoGenerateObjectCollection
   );
   TGenOptions = set of TGenOption;
   
@@ -31,6 +31,7 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    edtGenCollection : TCheckBox;
     edtDocAsComments : TCheckBox;
     edtAddToProject : TCheckBox;
     edtOptionIntfALL: TCheckBox;
@@ -73,7 +74,7 @@ uses DOM, XMLRead, pastree, pascal_parser_intf, wsdl_parser, source_utils,
      {$IFDEF WST_IDE},LazIDEIntf{$ENDIF};
 
 type
-  TSourceType = goInterface .. goBinder;
+  TSourceType = xgoInterface .. xgoBinder;
   TSourceTypes = set of TSourceType;
 
 function ParseWsdlFile(
@@ -114,8 +115,7 @@ function GenerateSource(
   const AOutputType  : TOutputType;
   const AOutPath     : string;
   const ANotifier    : TOnParserMessage;
-  const AWrappedPrm,
-        ADocAsComment: Boolean
+  const AGenOptions  : TGenOptions
 ) : ISourceManager;
 
   procedure Notify(const AMsg : string);
@@ -132,7 +132,7 @@ var
   rsrcStrm : TMemoryStream;
   wrappedParams : Boolean;
 begin
-  wrappedParams := AWrappedPrm;
+  wrappedParams := ( xgoWrappedParameter in AGenOptions );
   Result := CreateSourceManager();
   rsrcStrm := nil;
   mtdaFS := nil;
@@ -140,18 +140,20 @@ begin
   g := Nil;
   try
 
-    if ( ( [goInterface,goInterfaceALL] * AOptions ) <> [] ) then begin
+    if ( ( [xgoInterface,xgoInterfaceALL] * AOptions ) <> [] ) then begin
       Notify('Interface file generation...');
       g := TInftGenerator.Create(ASymbolTable,Result);
       if wrappedParams then
         g.Options := g.Options + [goDocumentWrappedParameter];
-      if ADocAsComment then
+      if ( xgoDocAsComments in AGenOptions ) then
         g.Options := g.Options + [goGenerateDocAsComments];
+      if ( xgoGenerateObjectCollection in AGenOptions ) then
+        g.Options := g.Options + [goGenerateObjectCollection];
       g.Execute();
       FreeAndNil(g);
     end;
 
-    if ( goProxy in AOptions ) then begin
+    if ( xgoProxy in AOptions ) then begin
       Notify('Proxy file generation...');
       g := TProxyGenerator.Create(ASymbolTable,Result);
       if wrappedParams then
@@ -160,7 +162,7 @@ begin
       FreeAndNil(g);
     end;
 
-    if ( goBinder in AOptions ) then begin
+    if ( xgoBinder in AOptions ) then begin
       Notify('Binder file generation...');
       g := TBinderGenerator.Create(ASymbolTable,Result);
       if wrappedParams then
@@ -169,14 +171,14 @@ begin
       FreeAndNil(g);
     end;
 
-    if ( goImp in AOptions ) then begin
+    if ( xgoImp in AOptions ) then begin
       Notify('Implementation file generation...');
       g := TImplementationGenerator.Create(ASymbolTable,Result);
       g.Execute();
       FreeAndNil(g);
     end;
 
-    if ( AOutputType = otFileSystem ) and ( [goBinder,goProxy]*AOptions  <> [] ) then begin
+    if ( AOutputType = otFileSystem ) and ( [xgoBinder,xgoProxy]*AOptions  <> [] ) then begin
       Notify('Metadata file generation...');
       mtdaFS := TMemoryStream.Create();
       mg := TMetadataGenerator.Create(ASymbolTable,CreateBinaryWriter(mtdaFS));
@@ -233,21 +235,23 @@ function TformImport.GetOptions(): TGenOptions;
 begin
   Result := [];
   if edtOptionIntf.Checked then begin
-    Result := Result + [goInterface];
+    Result := Result + [xgoInterface];
     if edtOptionIntfALL.Checked then begin
-      Result := Result + [goInterfaceALL];
+      Result := Result + [xgoInterfaceALL];
     end;
   end;
   if edtOptionProxy.Checked then
-    Include(Result,goProxy);
+    Include(Result,xgoProxy);
   if edtOptionBinder.Checked then
-    Include(Result,goBinder);
+    Include(Result,xgoBinder);
   if edtOptionImp.Checked then
-    Include(Result,goImp);
+    Include(Result,xgoImp);
   if edtOptionWrappedParams.Checked then
-    Include(Result,goWrappedParameter);
+    Include(Result,xgoWrappedParameter);
   if edtDocAsComments.Checked then
-    Include(Result,goDocAsComments);
+    Include(Result,xgoDocAsComments);
+  if edtGenCollection.Checked then
+    Include(Result,xgoGenerateObjectCollection);     
 end;
 
 procedure TformImport.actOpenDirExecute(Sender: TObject);
@@ -263,7 +267,7 @@ procedure TformImport.actOKUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := FileExists(edtInputFile.Text) and
                              DirectoryExists(edtOutputDir.Text) and
-                             ( ( GetOptions() - [goWrappedParameter,goDocAsComments] ) <> [] );
+                             ( ( GetOptions() - [xgoWrappedParameter,xgoDocAsComments] ) <> [] );
 end;
 
 procedure TformImport.actOKExecute(Sender: TObject);
@@ -287,12 +291,11 @@ begin
     tree := ParseWsdlFile(edtInputFile.Text,@ShowStatusMessage);
     try
       genOptions := GetOptions();
-      fileSet := genOptions - [goWrappedParameter,goDocAsComments];
+      fileSet := genOptions - [xgoWrappedParameter,xgoDocAsComments];
       srcMgnr := GenerateSource(
                    tree,fileSet,otFileSystem,IncludeTrailingPathDelimiter(edtOutputDir.Text),
                    @ShowStatusMessage,
-                   (goWrappedParameter in genOptions),
-                   (goDocAsComments in genOptions)
+                   genOptions
                  );
       ShowStatusMessage(mtInfo,'');
       {$IFDEF WST_IDE}
