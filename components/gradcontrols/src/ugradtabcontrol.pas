@@ -54,6 +54,7 @@ type
     procedure GetContentRect(var TheRect: TRect); override;
     procedure SetBaseColor(const Value: TColor); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure CloseButtonLeave(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -534,6 +535,7 @@ begin
   FCloseButton.Left:=1;
   FCloseButton.Top:=1;
   FCloseButton.Caption:='';
+  FCloseButton.OnMouseLeave:=@CloseButtonLeave;
 
   FShowCloseButton:=false;
   FShowCloseButtonOnMouseOver:=false;
@@ -546,6 +548,15 @@ begin
   FCloseButton.Free;
 
   inherited Destroy;
+end;
+
+procedure TGradTabPageButton.CloseButtonLeave(Sender: TObject);
+begin
+  if not FShowCloseButton then Exit;
+  if not FShowCloseButtonOnMouseOver then Exit;
+
+  // Hide Close Button Fix
+  FCloseButton.Visible:=false;
 end;
 
 {-------------------------------------------------------------------------------
@@ -750,6 +761,7 @@ begin
   CloseBtnRect.Right:=FCloseButton.Left+FCloseButton.Width;
   CloseBtnRect.Bottom:=FCloseButton.Top+FCloseButton.Height;
 
+  // Shows the Close Button
   FCloseButton.Visible:=PtInRect(CloseBtnRect, Point(X,Y));
 end;
 
