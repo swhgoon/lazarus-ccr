@@ -409,7 +409,8 @@ begin
     AddSystemSymbol(Result,AContainer);
     AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
       AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
-        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'dateTime');
+        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'date');
+        AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateTimeRemotable','TAbstractSimpleRemotable'),'dateTime');
 {$IFDEF WST_HAS_TDURATIONREMOTABLE}
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDurationRemotable','TAbstractSimpleRemotable'),'duration');
 {$ENDIF WST_HAS_TDURATIONREMOTABLE}
