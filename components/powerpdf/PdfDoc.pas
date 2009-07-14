@@ -746,7 +746,7 @@ destructor TPdfXref.Destroy;
 var
   i: integer;
 begin
-  for i := 1 to FXrefEntries.Count - 1 do
+  for i := 0 to FXrefEntries.Count - 1 do
     GetItem(i).Free;
   FXrefEntries.Free;
   inherited;
