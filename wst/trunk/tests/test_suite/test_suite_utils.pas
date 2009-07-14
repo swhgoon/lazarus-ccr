@@ -33,6 +33,7 @@ type
   TWstBaseTest = class(TTestCase)
   protected
     procedure CheckEquals(expected, actual: TByteDynArray; msg: string = ''; const AStrict : Boolean = True); overload;
+    procedure CheckEquals(expected, actual: Currency; msg: string = ''); overload;
 {$IFDEF FPC}
     procedure CheckEquals(expected, actual: Int64; msg: string = ''; const AStrict : Boolean = True); overload;
     procedure CheckEquals(expected, actual: QWord; msg: string = ''; const AStrict : Boolean = True); overload;
@@ -171,6 +172,12 @@ begin
     if ( Length(expected) > 0 ) then
       Check(CompareMem(Pointer(expected), Pointer(actual),Length(expected)),msg);
   end;
+end;
+
+procedure TWstBaseTest.CheckEquals(expected, actual : Currency; msg : string); 
+begin
+  if (expected <> actual) then
+    FailNotEquals(CurrToStr(expected), CurrToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
 end;
 
 end.

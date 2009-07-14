@@ -969,7 +969,7 @@ type
     FList : TObjectList;
   protected
     function GetItem(AIndex : PtrInt) : TBaseRemotable;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    function GetLength : PtrInt; override;
+    function GetLength() : Integer; override;
   public
     class procedure Save(
             AObject   : TBaseRemotable;
@@ -3560,7 +3560,7 @@ begin
   Result := TBaseRemotable(FList[AIndex]);
 end;
 
-function TObjectCollectionRemotable.GetLength : PtrInt;
+function TObjectCollectionRemotable.GetLength() : Integer;
 begin
   Result := FList.Count;
 end;
