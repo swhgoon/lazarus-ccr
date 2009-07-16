@@ -115,7 +115,7 @@ type
     FProp_String : string;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
     class function GetNameSpace() : string;virtual;
   published
     property Prop_String : string Read FProp_String Write FProp_String;
@@ -472,11 +472,11 @@ begin
   FProp_B := TNameSpaceB_Class.Create();
 end;
 
-destructor TNameSpaceC_Class.Destroy();
+procedure TNameSpaceC_Class.FreeObjectProperties();
 begin
   FreeAndNil(FProp_B);
   FreeAndNil(FProp_A);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 class function TNameSpaceC_Class.GetNameSpace() : string;

@@ -33,10 +33,10 @@ type
   TWstBaseTest = class(TTestCase)
   protected
     procedure CheckEquals(expected, actual: TByteDynArray; msg: string = ''; const AStrict : Boolean = True); overload;
-    procedure CheckEquals(expected, actual: Currency; msg: string = ''); overload;
 {$IFDEF FPC}
     procedure CheckEquals(expected, actual: Int64; msg: string = ''; const AStrict : Boolean = True); overload;
     procedure CheckEquals(expected, actual: QWord; msg: string = ''; const AStrict : Boolean = True); overload;
+    procedure CheckEquals(expected, actual: Currency; msg: string = ''); overload;
 {$ENDIF FPC}
   end;
 
@@ -159,6 +159,12 @@ begin
   if (expected <> actual) then
     FailNotEquals(IntToStr(expected), IntToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
 end;
+
+procedure TWstBaseTest.CheckEquals(expected, actual : Currency; msg : string); 
+begin
+  if (expected <> actual) then
+    FailNotEquals(CurrToStr(expected), CurrToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
+end;
 {$ENDIF FPC}
 
 procedure TWstBaseTest.CheckEquals(expected, actual: TByteDynArray;
@@ -174,10 +180,5 @@ begin
   end;
 end;
 
-procedure TWstBaseTest.CheckEquals(expected, actual : Currency; msg : string); 
-begin
-  if (expected <> actual) then
-    FailNotEquals(CurrToStr(expected), CurrToStr(actual), msg{$IFDEF WST_DELPHI}, CallerAddr{$ENDIF WST_DELPHI});
-end;
 
 end.

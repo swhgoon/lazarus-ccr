@@ -77,7 +77,7 @@ type
     FVal_StringArray: TArrayOfStringRemotable;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   Published
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
     property Val_Bool : Boolean Read FVal_Bool Write FVal_Bool;
@@ -888,11 +888,11 @@ begin
   FVal_StringArray := TArrayOfStringRemotable.Create();
 end;
 
-destructor TClass_A.Destroy();
+procedure TClass_A.FreeObjectProperties();
 begin
   FreeAndNil(FVal_StringArray);
   FreeAndNil(FVal_Obj);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 { TTest_TBaseObjectArrayRemotable }

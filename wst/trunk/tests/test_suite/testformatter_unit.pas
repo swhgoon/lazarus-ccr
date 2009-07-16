@@ -53,7 +53,7 @@ type
     FVal_WideString: WideString;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   Published
     property Val_32S : LongInt Read FVal_32S Write FVal_32S;
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
@@ -104,7 +104,7 @@ type
     procedure SetObjProp(const AValue: TClass_A);
   Public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   Published
     property Val_32S : LongInt Read FVal_32S Write FVal_32S;
     property Val_Enum : TTestEnum Read FVal_Enum Write FVal_Enum;
@@ -310,7 +310,7 @@ type
     FVal_CplxWideString: T_ComplexWideStringContent;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   published
     property Val_CplxInt64S : T_ComplexInt64SContent read FVal_CplxInt64S write FVal_CplxInt64S;
     property Val_CplxInt64U : T_ComplexInt64UContent read FVal_CplxInt64U write FVal_CplxInt64U;
@@ -5037,10 +5037,10 @@ begin
   FObjProp := TClass_A.Create();
 end;
 
-destructor TClass_B.Destroy();
+procedure TClass_B.FreeObjectProperties();
 begin
   FreeAndNil(FObjProp);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 { TTestArray }
@@ -5546,7 +5546,7 @@ begin
     FVal_CplxInt8U := T_ComplexInt8UContent.Create();
 end;
 
-destructor TClass_CplxSimpleContent.Destroy();
+procedure TClass_CplxSimpleContent.FreeObjectProperties();
 begin
   FreeAndNil(FVal_CplxInt64S);
     FreeAndNil(FVal_CplxInt64U);
@@ -5556,7 +5556,7 @@ begin
     FreeAndNil(FVal_CplxInt16S);
   FreeAndNil(FVal_CplxInt8U);
     FreeAndNil(FVal_CplxInt8S);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 { TTestXmlRpcFormatterAttributes }
@@ -6310,12 +6310,12 @@ begin
   FVal_Time := TTimeRemotable.Create();
 end;
 
-destructor TClass_A.Destroy();
+procedure TClass_A.FreeObjectProperties();
 begin
   FreeAndNil(FVal_Time);
   FreeAndNil(FVal_Date);
   FreeAndNil(FVal_DateTime);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 initialization
