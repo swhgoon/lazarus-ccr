@@ -265,11 +265,11 @@ procedure AddSystemSymbol(
       typlst[i] := splTyp;
       s := SPECIAL_SIMPLE_TYPES[i][1];
       if not IsStrEmpty(s) then begin
-        syb := AContainer.FindElementInModule(SPECIAL_SIMPLE_TYPES[i][1],ADest) as TPasNativeSpecialSimpleContentClassType;
+        syb := AContainer.FindElementInModule(s,ADest) as TPasNativeSpecialSimpleContentClassType;
         if not Assigned(syb) then begin
           syb := TPasNativeSpecialSimpleContentClassType(AContainer.CreateElement(TPasNativeSpecialSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
           ADest.InterfaceSection.Declarations.Add(syb);
-          ADest.InterfaceSection.Types.Add(splTyp);
+          ADest.InterfaceSection.Types.Add(syb);
         end;
         splTyp.SetExtendableType(syb);
       end;
@@ -304,7 +304,7 @@ procedure AddSystemSymbol(
         if not Assigned(syb) then begin
           syb := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
           ADest.InterfaceSection.Declarations.Add(syb);
-          ADest.InterfaceSection.Types.Add(splTyp);
+          ADest.InterfaceSection.Types.Add(syb);
         end;
         splTyp.SetExtendableType(syb);
       end;

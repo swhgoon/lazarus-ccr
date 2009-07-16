@@ -460,6 +460,7 @@ type
   TDBGPinterProc = procedure(const AMsg:string);
   
   procedure ClearObj(const AOwner: PDataBuffer);
+  procedure FreeObjectBuffer(var ABuffer : PDataBuffer); overload;
   function LoadObjectFromStream(const AStoreRdr : IDataStoreReader):PDataBuffer;
   procedure SaveObjectToStream(const ARoot: PDataBuffer; const ADest : IDataStore);
   function CreateArrayBuffer(
@@ -797,13 +798,13 @@ Begin
   End;
 End;
 
-procedure ClearObjectBuffer(var ABuffer : PObjectBuffer);
+procedure FreeObjectBuffer(var ABuffer : PObjectBuffer);overload;
 var
   p,q : PObjectBufferItem;
 begin
   if Assigned(ABuffer) then begin
     if Assigned(ABuffer^.Attributes) then
-      ClearObjectBuffer(ABuffer^.Attributes);
+      FreeObjectBuffer(ABuffer^.Attributes);
     p := ABuffer^.Head;
     while Assigned(p) do begin
       q := p;
@@ -815,12 +816,25 @@ begin
     end;
     if Assigned(ABuffer^.InnerData) then begin
       ClearObj(ABuffer^.InnerData);
+      Freemem(ABuffer^.InnerData);
       ABuffer^.InnerData := nil;
     end;
     //ABuffer^.Head := nil;
     //ABuffer^.Last := nil;
     Freemem(ABuffer);
     ABuffer := nil;
+  end;
+end;
+
+procedure FreeObjectBuffer(var ABuffer : PDataBuffer);
+var
+  tmpBuffer : PDataBuffer;
+begin
+  if ( ABuffer <> nil ) then begin
+    tmpBuffer := ABuffer;
+    ABuffer := nil;
+    ClearObj(tmpBuffer);
+    FreeMem(tmpBuffer)
   end;
 end;
 
@@ -853,7 +867,7 @@ Begin
 {$ENDIF WST_UNICODESTRING}
     dtObject :
       Begin
-        ClearObjectBuffer(AOwner^.ObjectData);
+        FreeObjectBuffer(AOwner^.ObjectData);
       End;
     dtArray :
       Begin
@@ -866,7 +880,7 @@ Begin
         i := AOwner^.ArrayData^.Count * SizeOf(PDataBuffer);
         Freemem(AOwner^.ArrayData^.Items,i);
         AOwner^.ArrayData^.Items := Nil;
-        ClearObjectBuffer(AOwner^.ArrayData^.Attributes);
+        FreeObjectBuffer(AOwner^.ArrayData^.Attributes);
         i := SizeOf(TArrayBuffer);
         Freemem(AOwner^.ArrayData,i);
         AOwner^.ArrayData := Nil;
