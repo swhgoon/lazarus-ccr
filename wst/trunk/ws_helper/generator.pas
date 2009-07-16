@@ -2349,14 +2349,10 @@ var
       if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) then begin
         IncIndent();
           Indent(); WriteLn('constructor Create();override;');
+          Indent(); WriteLn('procedure FreeObjectProperties();override;');
         DecIndent();
       end;
 
-      if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) then begin
-        IncIndent();
-          Indent(); WriteLn('destructor Destroy();override;');
-        DecIndent();
-      end;
       //
       Indent();
       WriteLn('published');
@@ -2384,30 +2380,26 @@ var
         WriteLn('constructor %s.Create();',[ASymbol.Name]);
         WriteLn('begin');
         IncIndent();
-          Indent();
-          WriteLn('inherited Create();');
+          Indent(); WriteLn('inherited Create();');
           for k := 0 to Pred(locPropCount) do begin
             p := TPasProperty(locPropList[k]);
             if SymbolTable.IsOfType(p.VarType,TPasClassType) or
                SymbolTable.IsOfType(p.VarType,TPasArrayType)
-            then begin
-              Indent();
+            then begin              
               if AnsiSameText(p.Name,p.VarType.Name) or
                  ( SymbolTable.IsOfType(p.VarType,TPasClassType) and Assigned(FindMember(TPasClassType(ASymbol),p.VarType.Name)) )
               then
                 ss := Format('%s.%s',[SymbolTable.CurrentModule.Name,p.VarType.Name])
               else
                 ss := p.VarType.Name;
-              WriteLn('F%s := %s.Create();',[p.Name,ss{p.VarType.Name}]);
+              Indent(); WriteLn('F%s := %s.Create();',[p.Name,ss{p.VarType.Name}]);
             end;
           end;
         DecIndent();
         WriteLn('end;');
-      end;
 
-      if ( locArrayPropsNbr > 0 ) or ( locClassPropNbr > 0 ) then begin
         NewLine();
-        WriteLn('destructor %s.Destroy();',[ASymbol.Name]);
+        WriteLn('procedure %s.FreeObjectProperties();',[ASymbol.Name]);
         WriteLn('begin');
         IncIndent();
           for k := 0 to Pred(locPropCount) do begin
@@ -2415,17 +2407,14 @@ var
             if SymbolTable.IsOfType(p.VarType,TPasClassType) or
                SymbolTable.IsOfType(p.VarType,TPasArrayType)
             then begin
-              Indent();
-              WriteLn('if Assigned(F%s) then',[p.Name]);
+              Indent(); WriteLn('if Assigned(F%s) then',[p.Name]);
                 IncIndent();
-                  Indent();
-                  WriteLn('FreeAndNil(F%s);',[p.Name]) ;
+                  Indent(); WriteLn('FreeAndNil(F%s);',[p.Name]) ;
                 DecIndent();
             end;
           end;
-          Indent();
-          WriteLn('inherited Destroy();');
-        DecIndent();
+          Indent(); WriteLn('inherited FreeObjectProperties();');
+        DecIndent(); 
         WriteLn('end;');
       end;
     end;

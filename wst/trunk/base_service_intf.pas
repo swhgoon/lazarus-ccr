@@ -528,6 +528,7 @@ type
 
   TBaseComplexRemotable = class(TAbstractComplexRemotable)
   public
+    destructor Destroy();override;
     class procedure Save(
             AObject   : TBaseRemotable;
             AStore    : IFormatterBase;
@@ -540,6 +541,8 @@ type
       var   AName     : string;
       const ATypeInfo : PTypeInfo
     );override;
+    // This will free objects and arrays properties and set them to nil.
+    procedure FreeObjectProperties();virtual;
   end;
 
   TRemotableRecordEncoderClass = class of TRemotableRecordEncoder;
@@ -883,7 +886,7 @@ type
     function GetName : string; override;
     procedure SetName(const AValue: string); override;
   public
-    destructor Destroy(); override;
+    procedure FreeObjectProperties();override;
     class procedure Save(
             AObject   : TBaseRemotable;
             AStore    : IFormatterBase;
@@ -2129,6 +2132,12 @@ begin
   Result := ( FAttributeFieldList.IndexOf(AField) >= 0 );
 end;
 
+destructor TBaseComplexRemotable.Destroy();  
+begin
+  FreeObjectProperties();
+  inherited Destroy();  
+end;
+
 class procedure TBaseComplexRemotable.Save(
         AObject    : TBaseRemotable;
         AStore     : IFormatterBase;
@@ -2501,6 +2510,11 @@ begin
   end;
 end;
 {$ENDIF USE_SERIALIZE}
+
+procedure TBaseComplexRemotable.FreeObjectProperties(); 
+begin
+  //Derived classes should override this method to free their object(s) and array(s).
+end; 
 
 { TBaseObjectArrayRemotable }
 
@@ -4802,11 +4816,11 @@ begin
   FNameSet := not IsStrEmpty(AValue);
 end;
 
-destructor THeaderBlockProxy.Destroy();
+procedure THeaderBlockProxy.FreeObjectProperties();
 begin
   if OwnObject then
-    ActualObject.Free();
-  inherited Destroy();
+    FreeAndNil(FActualObject);
+  inherited FreeObjectProperties();
 end;
 
 class procedure THeaderBlockProxy.Save(
