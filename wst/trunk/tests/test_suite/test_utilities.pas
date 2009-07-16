@@ -134,6 +134,19 @@ type
 
 implementation
 
+var
+  ListToRelease : IInterfaceList;
+procedure Finalize_ListToRelease();
+var
+  i : Integer;
+begin
+  if ( ListToRelease <> nil ) and ( ListToRelease.Count > 0 ) then begin
+    for i := 0 to Pred(ListToRelease.Count) do
+      ListToRelease[i]._Release();
+    ListToRelease := nil;
+  end;
+end;
+
 { TTestClass }
 
 procedure TTestClass.SayHello();
@@ -156,6 +169,7 @@ begin
   inherited Create();
   FPooled := True;
   _AddRef(); // not to allow the rtl to reuse the same memory for another instance of the same class!!
+  ListToRelease.Add(Self as IInterface);
 end;
 
 { TTest_TIntfPool }
@@ -183,6 +197,7 @@ begin
   CheckEquals(MIN_A,obj.Min);
   CheckEquals(MAX_A,obj.Max);
   CheckEquals(MIN_A,obj.GetInstancesCount());
+  obj.Free();
 end;
 
 procedure TTest_TIntfPool.Release();
@@ -214,6 +229,7 @@ begin
     elt.SayHello();
     obj.Release(elt);
   end;
+  FreeAndNil(obj);
 end;
 
 {$IFDEF WST_SEMAPHORE_TIMEOUT}
@@ -253,6 +269,7 @@ begin
     il.Add(elt);
     obj.Release(elt);
   end;
+  FreeAndNil(obj);
 end;
 {$ENDIF WST_SEMAPHORE_TIMEOUT}
 
@@ -304,6 +321,7 @@ begin
   obj.Discard(elt);
   elt := obj.Get(10) as ITest;
   Check(oldElt <> elt );
+  FreeAndNil(obj);
 end;
 
 { TTest_TSimpleItemFactoryEx }
@@ -786,6 +804,8 @@ begin
 end;
 
 initialization
+  ListToRelease := TInterfaceList.Create();
+
   RegisterTest('Utilities',TTest_TIntfPool.Suite);
   RegisterTest('Utilities',TTest_TSimpleItemFactoryEx.Suite);
   RegisterTest('Utilities',TTest_TImplementationFactory.Suite);
@@ -793,5 +813,8 @@ initialization
   RegisterTest('Utilities',TTest_TImplementationFactory.Suite);
   RegisterTest('Utilities',TTest_TwstModuleManager.Suite);
   RegisterTest('Utilities',TTest_Procs.Suite);
+
+finalization
+  Finalize_ListToRelease();
 
 end.

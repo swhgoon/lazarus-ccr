@@ -543,6 +543,7 @@ begin
     CheckNull(x.Root,'Root <> nil');
     Check(( x.TargetClass = TClass_A ), 'TargetClass');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -691,6 +692,7 @@ begin
     x.AddCondition('IntProp',nfoEqual,VAL_4,fcAnd);
     PrintTree(x.Root,@Display,2);
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -775,7 +777,7 @@ begin
     x.EndGroup();
     x.AddCondition('IntProp',nfoEqual,VAL_4,fcOr);
     PrintTree(x.Root,@Display,2);
-    
+
     Display(#10#13);
     Display(#10#13);
     x.Clear(clrFreeObjects);
@@ -790,6 +792,7 @@ begin
     x.AddCondition('IntProp',nfoGreater,VAL_4,fcAnd);
     PrintTree(x.Root,@Display,2);
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1051,6 +1054,7 @@ begin
     CheckEquals('EnumProp',xN.PropInfo^.Name);
     CheckEquals(Ord(VAL_1),xN.ComparedValue);
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1070,6 +1074,7 @@ begin
     CheckEquals('EnumProp',xN.PropInfo^.Name);
     CheckEquals(Ord(VAL_1),xN.ComparedValue);
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1090,6 +1095,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(sfoEqualCaseInsensitive),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1110,6 +1116,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(sfoNotEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1130,6 +1137,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(nfoEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1150,6 +1158,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(nfoNotEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1170,6 +1179,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(nfoGreaterOrEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1190,6 +1200,7 @@ begin
     CheckEquals(VAL_1,sN.ComparedValue);
     CheckEquals(Ord(nfoLesserOrEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1210,6 +1221,7 @@ begin
     CheckEquals(Ord(VAL_1),Ord(sN.ComparedValue));
     CheckEquals(Ord(nfoEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1230,6 +1242,7 @@ begin
     CheckEquals(Ord(VAL_1),Ord(sN.ComparedValue));
     CheckEquals(Ord(nfoNotEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1250,6 +1263,7 @@ begin
     CheckEquals(Ord(VAL_1),Ord(sN.ComparedValue));
     CheckEquals(Ord(nfoGreaterOrEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1270,6 +1284,7 @@ begin
     CheckEquals(Ord(VAL_1),Ord(sN.ComparedValue));
     CheckEquals(Ord(nfoLesserOrEqual),Ord(sN.Operation),'Operation');
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
   end;
 end;
@@ -1298,7 +1313,12 @@ begin
 
     CompareTree(x.Root,y.Root);
   finally
+    x.Clear(clrFreeObjects);
     x.Free();
+    if ( y <> nil ) then begin
+      y.Clear(clrFreeObjects);
+      y.Free();
+    end;
   end;
 end;
 

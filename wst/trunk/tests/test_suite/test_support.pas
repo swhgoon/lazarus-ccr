@@ -3601,7 +3601,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3629,7 +3629,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3658,7 +3658,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3690,7 +3690,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3824,7 +3824,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3852,7 +3852,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3881,7 +3881,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -3913,7 +3913,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -4197,7 +4197,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;
@@ -4221,7 +4221,7 @@ var
 begin
   SetLength(locBuffer,255);
   pBytePtr := PByte(@(locBuffer[0]));
-  for i := 0 to 255 do begin
+  for i := Low(locBuffer) to High(locBuffer) do begin
     pBytePtr^ := i;
     Inc(pBytePtr);
   end;

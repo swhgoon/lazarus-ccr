@@ -442,6 +442,9 @@ begin
   finally
     ReleaseDomNode(locExistDoc);
     ReleaseDomNode(locDoc);
+    c_readed.Free();
+    b_readed.Free();
+    a_readed.Free();
     c.Free();
     b.Free();
     a.Free();
@@ -892,6 +895,7 @@ var
   locReturn : THRefTestSession;
   locStrPrmName : string;
 begin
+  locReturn := nil;
   f := soap_formatter.TSOAPFormatter.Create() as IFormatterClient;
   strm := TMemoryStream.Create();
   try
@@ -909,6 +913,7 @@ begin
       CheckEquals(12,locReturn.PartnerID,'PartnerID');
     f.EndScopeRead();
   finally
+    FreeAndNil(locReturn);
     FreeAndNil(strm);
   end;
 end;
