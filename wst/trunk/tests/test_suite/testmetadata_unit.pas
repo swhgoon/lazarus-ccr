@@ -76,10 +76,11 @@ function TTestMetadata.CreateSymbolTable(): TwstPasTreeContainer;
           AContainer : TwstPasTreeContainer
   ) : TPasArgument ;
   begin
-    Result := TPasArgument(AContainer.CreateElement(TPasArgument,AName,AProc,visDefault,'',0));
+    Result := TPasArgument(AContainer.CreateElement(TPasArgument,AName,AProc.ProcType,visDefault,'',0));
     Result.ArgType := AContainer.FindElement(ATypeName) as TPasType;
     Result.ArgType.AddRef();
     Result.Access := AAccess;
+    AProc.ProcType.Args.Add(Result);
   end;
   
 var
@@ -89,7 +90,7 @@ var
 begin
   Result := TwstPasTreeContainer.Create();
   CreateWstInterfaceSymbolTable(Result);
-  Result.CreateElement(TPasModule,'test_unit_name',Result.Package,visDefault,'',0);
+  Result.Package.Modules.Add(Result.CreateElement(TPasModule,'test_unit_name',Result.Package,visDefault,'',0));
   sct := TPasSection(Result.CreateElement(TPasSection,'',Result.CurrentModule,visDefault,'',0));
   Result.CurrentModule.InterfaceSection := sct;
 

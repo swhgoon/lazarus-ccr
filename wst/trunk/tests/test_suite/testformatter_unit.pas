@@ -899,7 +899,7 @@ begin
       f.BeginObject('Root',TypeInfo(TClass_Int));
         f.PutScopeInnerValue(TypeInfo(AnsiChar),xVal_1);
       f.EndScope();
-      s := TMemoryStream.Create();
+      s.Clear();
       f.SaveToStream(s);
       xVal_1 := #0;
 
@@ -991,7 +991,7 @@ begin
       f.BeginObject('Root',TypeInfo(TClass_Int));
         f.PutScopeInnerValue(TypeInfo(WideChar),xVal_1);
       f.EndScope();
-      s := TMemoryStream.Create();
+      s.Clear();
       f.SaveToStream(s);
       xVal_1 := #0;
 
@@ -1179,7 +1179,7 @@ begin
       f.PutScopeInnerValue(TypeInfo(ShortInt),intVal_S);
     f.EndScope();
 
-    s := TMemoryStream.Create();
+    s.Clear();
     f.SaveToStream(s);
     intVal_S := 0;
 
@@ -1273,7 +1273,7 @@ begin
       f.PutScopeInnerValue(TypeInfo(SmallInt),intVal_S);
     f.EndScope();
 
-    s := TMemoryStream.Create();
+    s.Clear();
     f.SaveToStream(s);
     intVal_S := 0;
 
@@ -1367,7 +1367,7 @@ begin
       f.PutScopeInnerValue(TypeInfo(LongInt),intVal_S);
     f.EndScope();
 
-    s := TMemoryStream.Create();
+    s.Clear();
     f.SaveToStream(s);
     intVal_S := 0;
 
@@ -1486,7 +1486,7 @@ begin
       f.PutScopeInnerValue(TypeInfo(Int64),intVal_S);
     f.EndScope();
 
-    s := TMemoryStream.Create();
+    s.Clear();
     f.SaveToStream(s);
     intVal_S := 0;
 
@@ -2072,7 +2072,7 @@ begin
         f.PutScopeInnerValue(TypeInfo(Boolean),locVal_1);
       f.EndScope();
 
-      s := TMemoryStream.Create();
+      s.Clear();
       f.SaveToStream(s);
       locVal_1 := not locVal_1;
 
@@ -4744,8 +4744,8 @@ begin
     Check(CompareNodes(a,b^.ObjectData^.Head^.Data));
   finally
     strm.Free();
-    ClearObj(a);
-    ClearObj(b);
+    FreeObjectBuffer(a);
+    FreeObjectBuffer(b);
   end;
 end;
 
@@ -5555,7 +5555,14 @@ begin
   FreeAndNil(FVal_CplxInt16U);
     FreeAndNil(FVal_CplxInt16S);
   FreeAndNil(FVal_CplxInt8U);
-    FreeAndNil(FVal_CplxInt8S);
+    FreeAndNil(FVal_CplxInt8S); 
+  FreeAndNil(FVal_CplxDouble);
+  FreeAndNil(FVal_CplxExtended);
+  FreeAndNil(FVal_CplxString);
+  FreeAndNil(FVal_CplxWideString);
+{$IFDEF WST_UNICODESTRING}
+  FreeAndNil(FVal_CplxUnicodeString);
+{$ENDIF WST_UNICODESTRING}
   inherited FreeObjectProperties();
 end;
 
@@ -6212,7 +6219,7 @@ begin
         CheckEquals(VAL_MSG,excpt_msg,'faultString');
   finally
     FreeAndNil(strm);
-    ClearObj(root);
+    FreeObjectBuffer(root);
   end;
 end;
 
@@ -6257,7 +6264,7 @@ begin
       FreeAndNil(strm);
     end;
   finally
-    ClearObj(root);
+    FreeObjectBuffer(root);
   end;
 end;
 
