@@ -351,7 +351,7 @@ end;
 procedure finalize_record_rtti();
 begin
 {$IFDEF WST_RECORD_RTTI}
-  if ( RawTypeInfoList = nil ) then begin
+  if ( RawTypeInfoList <> nil ) then begin
     while ( RawTypeInfoList.Count > 0 ) do begin
       FreeRawTypeInfo(PTypeInfo(RawTypeInfoList.Items[0]));
       RawTypeInfoList.Delete(0);
