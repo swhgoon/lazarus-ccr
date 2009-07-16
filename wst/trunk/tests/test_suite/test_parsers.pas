@@ -66,7 +66,7 @@ type
     procedure SimpleType_Enum();
     procedure SimpleType_Enum_Embedded();
     procedure SimpleType_AliasToNativeType();
-    
+
     procedure ComplexType_Class();
     procedure ComplexType_Class_default_values();
     procedure ComplexType_Class_properties_extended_metadata();
@@ -79,18 +79,18 @@ type
     procedure ComplexType_Class_sequence_open_type_anyAttribute();
     procedure ComplexType_Class_all_open_type_anyAttribute();
     procedure ComplexType_Class_FalseArray();
-    
+
     procedure ComplexType_Record();
     procedure ComplexType_Record_Embedded();
-    
+
     procedure ComplexType_ArraySequence();
     procedure ComplexType_ArraySequence_ItemName_Schema();
     procedure ComplexType_ArraySequence_Embedded();
     procedure ComplexType_Array_soaparray();
-    
+
     procedure ComplexType_CollectionSequence();
     procedure pascal_class_default_parent();
-    
+
     procedure class_headerblock_derived();
     procedure class_headerblock_simplecontent_derived();
     procedure class_widestring_property();
@@ -272,6 +272,7 @@ begin
   CheckEquals(x_empty,mdl.Name);
   CheckEquals(x_targetNamespace,tr.GetExternalName(mdl));
   CheckEquals(0,mdl.InterfaceSection.Declarations.Count);
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.SimpleType_Enum();
@@ -310,7 +311,7 @@ begin
       end;
       CheckEquals(x_enumSampleLIST[i],tr.GetExternalName(enumVal));
     end;
-    
+
   elt := tr.FindElement(x_enumSample);
     CheckNotNull(elt,x_enumSample);
     CheckEquals(x_enumSample,elt.Name);
@@ -319,6 +320,8 @@ begin
     aliasType := elt as TPasAliasType;
     CheckNotNull(aliasType.DestType);
     CheckEquals(x_enumSampleType, tr.GetExternalName(aliasType.DestType));
+
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.SimpleType_Enum_Embedded();
@@ -356,6 +359,8 @@ begin
       end;
       CheckEquals(x_enumSampleLIST[i],tr.GetExternalName(enumVal));
     end;
+
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.SimpleType_AliasToNativeType();
@@ -401,6 +406,8 @@ begin
     CheckNotNull(aliasType.DestType);
     CheckIs(aliasType.DestType,TPasNativeSimpleType);
     CheckEquals('WideString',aliasType.DestType.Name);
+
+  FreeAndNil(tr);
 end;
 
 type
@@ -433,6 +440,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Class_Schema();
@@ -515,6 +523,7 @@ begin
         CheckProperty(x_intAtt + 'Ex','int',ptAttribute);
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -605,6 +614,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Class_Embedded_Schema();
@@ -618,7 +628,7 @@ begin
 
     CheckEmbeddedClassType();
     CheckEmbeddedEnum();
-    
+
     elt := tr.FindElement(x_complexType_SampleClassType);
       CheckNotNull(elt,x_complexType_SampleClassType);
       CheckEquals(x_complexType_SampleClassType,elt.Name);
@@ -644,6 +654,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -751,6 +762,7 @@ begin
   finally
     ls.Free();
   end;
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_Class_open_extension_type_any();
@@ -780,6 +792,7 @@ begin
   finally
     ls.Free();
   end;
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_Class_open_extension_type_anyAttribute();
@@ -808,6 +821,7 @@ begin
   finally
     ls.Free();
   end;
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_Class_sequence_open_type_anyAttribute();
@@ -836,6 +850,7 @@ begin
   finally
     ls.Free();
   end;
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_Class_all_open_type_anyAttribute();
@@ -864,6 +879,7 @@ begin
   finally
     ls.Free();
   end;
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_Class_FalseArray();
@@ -892,6 +908,7 @@ var
   prpLs : TList;
   prp : TPasProperty;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Class_FalseArray();
@@ -936,6 +953,7 @@ begin
         CheckEquals(x_intField + 'Ex', tr.GetArrayItemExternalName(TPasArrayType(prp.VarType)));
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -965,6 +983,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Record_Schema();
@@ -1029,6 +1048,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1057,6 +1077,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Record_Embedded_Schema();
@@ -1112,6 +1133,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1142,6 +1164,7 @@ var
   prpLs : TList;
   nestedClassName : string;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_ArraySequence_Schema();
@@ -1199,6 +1222,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1228,6 +1252,8 @@ begin
     CheckEquals('EmailAddress',tr.GetExternalName(arrayType.ElType));
     CheckEquals('EmailAddress',tr.GetArrayItemName(arrayType));
     CheckEquals('EmailAddress',tr.GetArrayItemExternalName(arrayType));
+
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.ComplexType_ArraySequence_Embedded();
@@ -1257,6 +1283,7 @@ var
   prpLs : TList;
   nestedClassName : string;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_ArraySequence_Schema();
@@ -1314,6 +1341,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1377,6 +1405,7 @@ var
   prpLs : TList;
   nestedClassName : string;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_CollectionSequence_Schema();
@@ -1436,6 +1465,7 @@ begin
 
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1594,6 +1624,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Class_default_values();
@@ -1626,6 +1657,7 @@ begin
         CheckProperty(x_intAtt,'int',ptAttribute,'789');
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1667,6 +1699,7 @@ var
   i : Integer;
   prpLs : TList;
 begin
+  tr := nil;
   prpLs := TList.Create();
   try
     tr := LoadComplexType_Class_properties_extended_metadata();
@@ -1696,6 +1729,7 @@ begin
         CheckProperty(x_intAtt,'int',ptAttribute,'', '', '', '');
   finally
     FreeAndNil(prpLs);
+    FreeAndNil(tr);
   end;
 end;
 
@@ -1740,6 +1774,7 @@ begin
       CheckNotNull(p,'Property non found : "ProjectLeaderArray"');
       CheckEquals('uri:sample#Person', tr.Properties.GetValue(p,'commonj.sdo#propertyType'), 'extended metadata');
 
+  FreeAndNil(tr);
 end;
 
 procedure TTest_CustomXsdParser.class_ansichar_property();
@@ -2202,7 +2237,7 @@ begin
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
         CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
-        
+
     mth := FindProc('test_proc2',intf);
       CheckNotNull(mth,'test_proc2 not found');
       CheckEquals('test_proc2',mth.Name);
@@ -2220,7 +2255,7 @@ begin
         CheckNotNull(arg);
         CheckEquals(LowerCase('AOutParam'), LowerCase(arg.Name));
         CheckEquals(LowerCase('integer'), LowerCase(arg.ArgType.Name));
-        
+
     mth := FindProc('test_proc3',intf);
       CheckNotNull(mth,'test_proc3 not found');
       CheckEquals('test_proc3',mth.Name);
