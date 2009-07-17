@@ -21,6 +21,7 @@ resourcestring
   SERR_CannotResolveNamespace        = 'Unable to resolve this namespace : "%s".';
   SERR_DuplicateBindingName          = 'Duplicated binding : "%s".';
   SERR_ExpectingRemotableObjectClass = 'Expecting remotable object class but found "%s".';
+  SERR_FailedTransportRequest        = '%s Request to %s failed.';
   SERR_HeaderNotUnderstood         = 'Header "%s" not Understood.';
   SERR_IllegalChar                 = 'Illegal character for that encoding : "%s".';
   SERR_IndexOutOfBound             = 'Index out of bound : %d.';
@@ -36,6 +37,7 @@ resourcestring
   SERR_InvalidMinuteOffetValue     = '"%d" is not a valid minute offset value.';
   SERR_InvalidEmbeddedScopeOperation    = 'Invalid opération on scope, their are no embedded scope.';
   SERR_InvalidParameter            = 'Invalid parameter : "%s".';
+  SERR_InvalidPropertyValue        = 'Invalid property ("%s") value : "%s".';
   SERR_InvalidParameterProc        = 'Invalid parameter : "%s"; Procedure = "%s".';
   SERR_InvalidParameters           = 'Invalid parameters.';
   SERR_InvalidPoolParametersArgs   = 'Invalid pool arguments Min = %d; Max = %d .';
@@ -55,6 +57,7 @@ resourcestring
   SERR_ScopeNotFound                     = 'Scope not found : "%s".';
   SERR_TypeNotRegistered                 = 'Type not registered : "%s".';
   SERR_UnexpectedEndOfData               = 'Unexpected end of data.';
+  SERR_UnknownProperty                   = 'Unknown property : "%s".';
   
 implementation
 

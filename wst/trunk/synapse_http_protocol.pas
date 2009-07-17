@@ -69,6 +69,8 @@ Type
   procedure SYNAPSE_RegisterHTTP_Transport();
 
 implementation
+uses
+  wst_consts;
 
 { THTTPTransport }
 
@@ -169,7 +171,8 @@ begin
   FConnection.Document.Size := 0;
   FConnection.Headers.Add('soapAction:' + SoapAction);
   FConnection.Document.CopyFrom(ARequest,0);
-  FConnection.HTTPMethod('POST',FAddress);
+  if not FConnection.HTTPMethod('POST',FAddress) then
+    raise ETransportExecption.CreateFmt(SERR_FailedTransportRequest,[sTRANSPORT_NAME,FAddress]);
   AResponse.CopyFrom(FConnection.Document,0);
   FConnection.Clear();
 {$IFDEF WST_DBG}
