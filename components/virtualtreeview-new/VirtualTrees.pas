@@ -27023,10 +27023,11 @@ begin
     if X > Max(FRangeX, ClientWidth) then
       Include(HitInfo.HitPositions, hiToRight);
 
+  //lclheader
   if Y < 0 then
     Include(HitInfo.HitPositions, hiAbove)
   else
-    if Y > Max(FRangeY, ClientHeight) then
+    if Y > Max(FRangeY, inherited GetClientRect.Bottom) then
       Include(HitInfo.HitPositions, hiBelow);
 
   // Convert position into absolute coordinate if necessary.
