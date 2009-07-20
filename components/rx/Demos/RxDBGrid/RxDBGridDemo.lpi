@@ -11,7 +11,7 @@
       <Title Value="RxDBGrid demo"/>
       <Icon Value="0"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
@@ -54,7 +54,7 @@
         <UnitName Value="RxDBGridDemo"/>
         <CursorPos X="3" Y="11"/>
         <TopLine Value="1"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="28"/>
       </Unit0>
       <Unit1>
         <Filename Value="rxdbgridmainunit.pas"/>
@@ -65,7 +65,7 @@
         <CursorPos X="26" Y="19"/>
         <TopLine Value="17"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -94,7 +94,7 @@
         <CursorPos X="1" Y="1740"/>
         <TopLine Value="1721"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="13"/>
         <Bookmarks Count="1">
           <Item0 X="3" Y="1462" ID="1"/>
         </Bookmarks>
@@ -158,9 +158,7 @@
         <Filename Value="../../../../../../../../home/alexs/install/2/rxdbgrid.diff"/>
         <CursorPos X="1" Y="21"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <SyntaxHighlighter Value="None"/>
       </Unit14>
     </Units>

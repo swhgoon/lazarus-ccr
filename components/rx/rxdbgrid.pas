@@ -920,7 +920,7 @@ begin
             end;
             }
 
-            W:=Max(rxCol.Width-2, 1);
+            W:=Max(rxCol.Width-6, 1);
             if rxTit.CaptionLinesCount > 0 then
             begin
               H2:=0;

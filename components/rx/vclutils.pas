@@ -33,6 +33,10 @@ function ValidParentForm(Control: TControl): TCustomForm;
 function CreateArrowBitmap:TBitmap;
 function  LoadLazResBitmapImage(const ResName: string): TBitmap;
 
+{functions from DBGrid}
+function  GetWorkingCanvas(const Canvas: TCanvas): TCanvas;
+procedure FreeWorkingCanvas(canvas: TCanvas);
+
 {
 function AllocMemo(Size: Longint): Pointer;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
@@ -586,6 +590,27 @@ begin
   end
   else
     Result:=nil;
+end;
+
+function GetWorkingCanvas(const Canvas: TCanvas): TCanvas;
+var
+  DC: HDC;
+begin
+  if (Canvas=nil) or (not Canvas.HandleAllocated) then
+  begin
+    DC := GetDC(0);
+    Result := TCanvas.Create;
+    Result.Handle := DC;
+  end
+  else
+    Result := Canvas;
+end;
+
+
+procedure FreeWorkingCanvas(canvas: TCanvas);
+begin
+  ReleaseDC(0, Canvas.Handle);
+  Canvas.Free;
 end;
 
 initialization

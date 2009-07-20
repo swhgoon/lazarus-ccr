@@ -237,8 +237,8 @@ procedure TCustomDBComboBox.Change;
 begin
   FDataLink.Edit;
   inherited Change;
-  FDataLink.UpdateRecord;
   FDataLink.Modified;
+  FDataLink.UpdateRecord;
 end;
 
 procedure TCustomDBComboBox.Click;
