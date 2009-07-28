@@ -46,21 +46,38 @@ uses
   ogutil,
   {$IFDEF MSWINDOWS} ShellAPI, {$ENDIF}                            {AH.01}
   ComponentEditors,
-  PropEdits,
-  LazarusPackageIntf,
-  LResources;
+  PropEdits;
+//  LazarusPackageIntf;
+
+
 
 
 type
+
+  { TOgAboutForm }
+
   TOgAboutForm = class(TForm)
+    l8: TLabel;
     Panel1: TPanel;
     Image1: TImage;
     lblVersion: TLabel;
+    b0 : TBevel;
+    l1 : TLabel;
+    l2 : TLabel;
+    l3 : TLabel;
+    l4 : TLabel;
+    l5 : TLabel;
+    l6 : TLabel;
+    l7 : TLabel;
     btnOK: TButton;
     WebLbl: TLabel;
     NewsLbl: TLabel;
+    WebLbl1: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure WebLbl1Click(Sender: TObject);
+    procedure WebLbl1MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
     procedure WebLblMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure NewsLblMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -86,6 +103,8 @@ type
   end;
 
 implementation
+uses
+ LResources;
 
 
 
@@ -123,6 +142,24 @@ begin
   lblVersion.Caption := 'Version ' + OgVersionStr;
 end;
 
+procedure TOgAboutForm.WebLbl1Click(Sender: TObject);
+begin
+  {$IFDEF MSWINDOWS}
+  if ShellExecute(0, 'open', PChar('http://wiki.lazarus.freepascal.org/OnGuard'),
+                  '', '', SW_SHOWNORMAL) <= 32 then
+    ShowMessage('Unable to start web browser');
+{$ELSE}
+  ShowMessage('Unable to start web browser');
+{$ENDIF}
+  WebLbl.Font.Color := clNavy;
+end;
+
+procedure TOgAboutForm.WebLbl1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+    WebLbl1.Font.Color := clRed;
+end;
+
 procedure TOgAboutForm.WebLblMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 begin
@@ -146,6 +183,7 @@ procedure TOgAboutForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
 begin
   WebLbl.Font.Color := clNavy;
   NewsLbl.Font.Color := clNavy;
+  WebLbl1.Font.Color := clNavy;
 end;
 
 procedure TOgAboutForm.WebLblClick(Sender: TObject);

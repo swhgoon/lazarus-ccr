@@ -70,6 +70,9 @@ const
 *)
 
 type
+
+  { TCodeGenerateFrm }
+
   TCodeGenerateFrm = class(TForm)
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
@@ -142,6 +145,7 @@ type
     procedure RegRandomBtnClick(Sender: TObject);
     procedure CodesNbkChanging(Sender: TObject;
       var AllowChange: Boolean);
+    procedure SerRandomBtnClick(Sender: TObject);
   private
     { Private declarations }
     FCode        : TCode;
@@ -563,6 +567,18 @@ begin
   RegCodeEd.Text := '';
   NoModifierCb.Checked := True;
   ModifierEd.Text := '';
+end;
+
+procedure TCodeGenerateFrm.SerRandomBtnClick(Sender: TObject);
+var
+  I     : Integer;
+  L     : LongInt;
+  Bytes : array[0..3] of Byte absolute L;
+begin
+  Randomize;
+  for I := 0 to 3 do
+    Bytes[I] := Random(256);
+  SerialNumberEd.Text := IntToHex(L, 8);
 end;
 
 procedure TCodeGenerateFrm.GetKey(var Value : TKey);

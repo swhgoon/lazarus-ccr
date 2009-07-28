@@ -8,7 +8,6 @@ object FirstInstFrm: TFirstInstFrm
   Font.Name = 'MS Sans Serif'
   Font.Pitch = fpVariable
   PixelsPerInch = 96
-  TextHeight = 18
   HorzScrollBar.Page = 319
   HorzScrollBar.Range = 307
   VertScrollBar.Page = 139

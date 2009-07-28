@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -27,11 +28,11 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="registration.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="60" Y="19"/>
+        <CursorPos X="48" Y="19"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
@@ -39,41 +40,56 @@
       </Unit0>
       <Unit1>
         <Filename Value="reg_main.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="regMain"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="reg_main.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="reg_main"/>
-        <CursorPos X="20" Y="9"/>
-        <TopLine Value="58"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="26" Y="77"/>
+        <TopLine Value="51"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="uni_regcommon.pas"/>
         <UnitName Value="uni_RegCommon"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
+        <CursorPos X="11" Y="17"/>
+        <TopLine Value="17"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="frm_readme.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmReadme"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frm_Readme"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="12" Y="6"/>
         <TopLine Value="3"/>
-        <EditorIndex Value="1"/>
+        <UsageCount Value="20"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="reg_main.lfm"/>
+        <CursorPos X="21" Y="10"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-      </Unit3>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit4>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="reg_main.pas"/>
+        <Caret Line="77" Column="26" TopLine="63"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -86,7 +102,6 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>

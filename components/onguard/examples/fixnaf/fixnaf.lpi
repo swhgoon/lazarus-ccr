@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -27,33 +28,33 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="fixnaf.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="3" Y="7"/>
+        <CursorPos X="59" Y="15"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="fixnaf1.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="MainFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="fixnaf1.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="FIXNAF1"/>
-        <CursorPos X="37" Y="97"/>
+        <CursorPos X="72" Y="7"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="../../source/qonguard4.pas"/>
         <ComponentName Value="EditProductFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="../../source/qonguard4.lrs"/>
         <UnitName Value="qonguard4"/>
         <CursorPos X="33" Y="36"/>
         <TopLine Value="30"/>
@@ -63,7 +64,6 @@
         <Filename Value="../../source/qonguard3.pas"/>
         <ComponentName Value="KeyMaintFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="../../source/qonguard3.lrs"/>
         <UnitName Value="qonguard3"/>
         <CursorPos X="44" Y="37"/>
         <TopLine Value="30"/>
@@ -80,7 +80,6 @@
         <Filename Value="../../source/qonguard2.pas"/>
         <ComponentName Value="CodeGenerateFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="../../source/qonguard2.lrs"/>
         <UnitName Value="qonguard2"/>
         <CursorPos X="20" Y="339"/>
         <TopLine Value="337"/>
@@ -99,14 +98,27 @@
         <TopLine Value="161"/>
         <UsageCount Value="10"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="../../source/ogutil.pas"/>
+        <UnitName Value="ogutil"/>
+        <CursorPos X="32" Y="15"/>
+        <TopLine Value="7"/>
+        <UsageCount Value="10"/>
+      </Unit8>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="fixnaf.lpr"/>
+        <Caret Line="8" Column="37" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="fixnaf1.pas"/>
+        <Caret Line="7" Column="72" TopLine="1"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="../../source/"/>
-    </SearchPaths>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -119,12 +131,16 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

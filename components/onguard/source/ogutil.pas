@@ -48,9 +48,12 @@ unit ogutil;
 interface
 
 uses
-  LCLIntf
+  LCLIntf,lclproc
 {$IFDEF LINUX}                                                      {AH.01}
   ,BaseUnix
+{$ENDIF}
+{$IFDEF WIN32}
+
 {$ENDIF}                                                            {AH.01}
   ,SysUtils
   {$IFNDEF IBO_CONSOLE},Dialogs{$ENDIF}        {AH.02}
@@ -65,7 +68,7 @@ const
   DefStoreRegString = False;
 
 const
-  OgVersionStr      = '1.13';
+  OgVersionStr      = '1.20';
 
 
 
@@ -1186,6 +1189,8 @@ var
   Context : TTMDContext;
   UserInfoFound : Boolean;                                           {!!.11}
   Buf     : array [0..1023] of Byte;
+  iController, iDrive, maxController : Integer;
+  BufStr : AnsiString;
 begin
   InitTMD(Context);
 
@@ -1261,18 +1266,18 @@ begin
 
   if midDrives in MachineInfo then begin
     {include drive specific information}
-    for Drive := 'C' to 'Z' do begin
-
-      if (GetDriveType(PAnsiChar(Drive + ':\')) = DRIVE_FIXED) then begin
-        FillChar(Buf, Sizeof(Buf), 0);
-        Buf[0] := Byte(Drive);
-        {!!.16} {removed cluster information}
-        GetVolumeInformation(PAnsiChar(Drive + ':\'), nil, 0,
-          PDWord(@Buf[1]){serial number}, I{not used}, I{not used}, nil, 0);
-        UpdateTMD(Context, Buf, 5);
-      end;
+  maxController := 15;
+  if Win32Platform<>VER_PLATFORM_WIN32_NT then maxController := 0;
+  for iController := 0 to maxController do
+  begin
+    for iDrive := 0 to 4 do
+    begin
+        BufStr := '';
+        if GetIdeDiskSerialNumber(iController,iDrive,BufStr) then
+             if BufStr<>'' then UpdateTMD(Context, BufStr[1], 5);
     end;
   end;
+end;
 
   FinalizeTMD(Context, Result, SizeOf(Result));
 end;

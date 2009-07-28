@@ -2,10 +2,11 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <AlwaysBuild Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=".exe"/>
@@ -45,7 +46,6 @@
         <ComponentName Value="frmStamp"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="stampex1.lrs"/>
         <UnitName Value="STAMPEX1"/>
         <CursorPos X="7" Y="8"/>
         <TopLine Value="1"/>
@@ -115,6 +115,11 @@
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

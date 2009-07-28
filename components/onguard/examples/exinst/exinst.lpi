@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <AlwaysBuild Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -30,11 +29,11 @@
         <MinVersion Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="26">
+    <Units Count="27">
       <Unit0>
         <Filename Value="exinst.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="10" Y="8"/>
+        <CursorPos X="12" Y="18"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="24"/>
@@ -42,14 +41,15 @@
       </Unit0>
       <Unit1>
         <Filename Value="exinstu.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="FirstInstFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exinstu.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="EXINSTU"/>
-        <CursorPos X="45" Y="22"/>
+        <CursorPos X="22" Y="7"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -87,9 +87,11 @@
       <Unit7>
         <Filename Value="../../source/ogfirst.pas"/>
         <UnitName Value="ogfirst"/>
-        <CursorPos X="1" Y="186"/>
-        <TopLine Value="168"/>
+        <CursorPos X="3" Y="71"/>
+        <TopLine Value="161"/>
+        <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="../../../../lazarus0915/fpcsrc/rtl/win32/wininc/ascdef.inc"/>
@@ -108,7 +110,6 @@
         <Filename Value="../../source/qonguard6.pas"/>
         <ComponentName Value="ModifierFrm"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="../../source/qonguard6.lrs"/>
         <UnitName Value="qonguard6"/>
         <CursorPos X="27" Y="2"/>
         <TopLine Value="1"/>
@@ -195,15 +196,15 @@
       <Unit22>
         <Filename Value="../../source/ogutil.pas"/>
         <UnitName Value="ogutil"/>
-        <CursorPos X="30" Y="781"/>
-        <TopLine Value="748"/>
+        <CursorPos X="34" Y="1514"/>
+        <TopLine Value="1499"/>
         <UsageCount Value="10"/>
       </Unit22>
       <Unit23>
         <Filename Value="../../source/onguard.pas"/>
         <UnitName Value="onguard"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
+        <CursorPos X="40" Y="941"/>
+        <TopLine Value="926"/>
         <UsageCount Value="10"/>
       </Unit23>
       <Unit24>
@@ -220,11 +221,27 @@
         <TopLine Value="185"/>
         <UsageCount Value="10"/>
       </Unit25>
+      <Unit26>
+        <Filename Value="exinstu.lfm"/>
+        <CursorPos X="21" Y="10"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit26>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="exinst.lpr"/>
+        <Caret Line="18" Column="12" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../source/ogfirst.pas"/>
+        <Caret Line="87" Column="21" TopLine="83"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <SearchPaths>
       <OtherUnitFiles Value="../../source/"/>
     </SearchPaths>
@@ -240,7 +257,6 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>

@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -27,7 +28,7 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="exslcode.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -39,21 +40,29 @@
       </Unit0>
       <Unit1>
         <Filename Value="exslcod1.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exslcod1.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exslcod1"/>
         <CursorPos X="34" Y="68"/>
-        <TopLine Value="1"/>
+        <TopLine Value="27"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="exslcod1.lfm"/>
+        <CursorPos X="11" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit2>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -66,12 +75,16 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

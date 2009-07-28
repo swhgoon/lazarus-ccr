@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="3"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -27,54 +28,90 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="7">
       <Unit0>
         <Filename Value="helloworld.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="63" Y="11"/>
+        <CursorPos X="46" Y="20"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="frm_main.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmMain"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="frm_main.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frm_Main"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="23" Y="44"/>
+        <TopLine Value="23"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="uni_regcommon.pas"/>
         <UnitName Value="uni_RegCommon"/>
-        <CursorPos X="1" Y="4"/>
-        <TopLine Value="1"/>
+        <CursorPos X="16" Y="37"/>
+        <TopLine Value="19"/>
         <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="frm_readme.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmReadme"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="frm_readme.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="frm_Readme"/>
-        <CursorPos X="20" Y="3"/>
+        <CursorPos X="4" Y="3"/>
         <TopLine Value="1"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="frm_readme.lfm"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frm_main.lfm"/>
+        <CursorPos X="21" Y="9"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../source/onguard.pas"/>
+        <UnitName Value="onguard"/>
+        <CursorPos X="3" Y="1993"/>
+        <TopLine Value="1991"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit6>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="frm_main.pas"/>
+        <Caret Line="44" Column="23" TopLine="26"/>
+      </Position1>
+      <Position2>
+        <Filename Value="uni_regcommon.pas"/>
+        <Caret Line="37" Column="16" TopLine="19"/>
+      </Position2>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -87,7 +124,6 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>

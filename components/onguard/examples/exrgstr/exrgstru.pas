@@ -86,8 +86,8 @@ var
   C1 : string;
   TC : TCode;
 begin
-  {forced cutoff date of 1999 Dec. 31}
-  ED := EncodeDate(2006, 12, 31);
+  {forced cutoff date }
+  ED := EncodeDate(2009, 12, 31);
 
   case Status of
     ogValidCode   : begin

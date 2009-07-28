@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="2"/>
     </General>
@@ -41,10 +42,10 @@
         <Filename Value="exsrnmu1.pas"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exsrnmu1.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exsrnmu1"/>
-        <CursorPos X="1" Y="86"/>
-        <TopLine Value="158"/>
+        <CursorPos X="27" Y="6"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="2"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
@@ -53,10 +54,10 @@
         <Filename Value="exsrnmu2.pas"/>
         <ComponentName Value="SNEntryDlg"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exsrnmu2.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exsrnmu2"/>
         <CursorPos X="3" Y="35"/>
-        <TopLine Value="7"/>
+        <TopLine Value="1"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
@@ -186,7 +187,7 @@
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -199,12 +200,16 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

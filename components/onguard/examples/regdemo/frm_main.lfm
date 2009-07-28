@@ -7,7 +7,6 @@ object frmMain: TfrmMain
   Font.Name = 'Arial'
   OnCreate = FormCreate
   PixelsPerInch = 96
-  TextHeight = 16
   HorzScrollBar.Page = 366
   VertScrollBar.Page = 142
   Left = 383

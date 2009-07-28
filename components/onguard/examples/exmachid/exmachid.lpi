@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <AlwaysBuild Value="False"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="exmachid"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -31,26 +30,27 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="14">
       <Unit0>
         <Filename Value="exmachid.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="6" Y="11"/>
+        <CursorPos X="38" Y="15"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="umachid.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmExMachineID"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="umachid.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMachID"/>
-        <CursorPos X="26" Y="56"/>
-        <TopLine Value="33"/>
+        <CursorPos X="31" Y="31"/>
+        <TopLine Value="26"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -63,11 +63,9 @@
       <Unit3>
         <Filename Value="../../source/onguard.pas"/>
         <UnitName Value="onguard"/>
-        <CursorPos X="1" Y="1383"/>
-        <TopLine Value="1366"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+        <CursorPos X="1" Y="604"/>
+        <TopLine Value="589"/>
+        <UsageCount Value="11"/>
       </Unit3>
       <Unit4>
         <Filename Value="../../../../lazarus0915/lcl/include/control.inc"/>
@@ -100,132 +98,44 @@
         <TopLine Value="1032"/>
         <UsageCount Value="10"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="umachid.lfm"/>
+        <CursorPos X="28" Y="12"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../source/ogutil.pas"/>
+        <UnitName Value="ogutil"/>
+        <CursorPos X="50" Y="1284"/>
+        <TopLine Value="1261"/>
+        <UsageCount Value="11"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../source/IdeSN.pas"/>
+        <UnitName Value="idesn"/>
+        <CursorPos X="53" Y="158"/>
+        <TopLine Value="142"/>
+        <UsageCount Value="11"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../../../temp/fpc/rtl/i386/strings.inc"/>
+        <CursorPos X="1" Y="64"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../../../temp/fpc/rtl/objpas/sysutils/sysutils.inc"/>
+        <CursorPos X="1" Y="361"/>
+        <TopLine Value="346"/>
+        <UsageCount Value="10"/>
+      </Unit13>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1314" Column="1" TopLine="1297"/>
-      </Position1>
-      <Position2>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1315" Column="1" TopLine="1298"/>
-      </Position2>
-      <Position3>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1316" Column="1" TopLine="1299"/>
-      </Position3>
-      <Position4>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1321" Column="1" TopLine="1304"/>
-      </Position4>
-      <Position5>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1323" Column="1" TopLine="1306"/>
-      </Position5>
-      <Position6>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1324" Column="1" TopLine="1307"/>
-      </Position6>
-      <Position7>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1325" Column="1" TopLine="1308"/>
-      </Position7>
-      <Position8>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1326" Column="1" TopLine="1309"/>
-      </Position8>
-      <Position9>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1328" Column="1" TopLine="1311"/>
-      </Position9>
-      <Position10>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1329" Column="1" TopLine="1312"/>
-      </Position10>
-      <Position11>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1331" Column="1" TopLine="1314"/>
-      </Position11>
-      <Position12>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1333" Column="1" TopLine="1316"/>
-      </Position12>
-      <Position13>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1334" Column="1" TopLine="1317"/>
-      </Position13>
-      <Position14>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1335" Column="1" TopLine="1318"/>
-      </Position14>
-      <Position15>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1336" Column="1" TopLine="1319"/>
-      </Position15>
-      <Position16>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1338" Column="1" TopLine="1321"/>
-      </Position16>
-      <Position17>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1339" Column="1" TopLine="1322"/>
-      </Position17>
-      <Position18>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1341" Column="1" TopLine="1324"/>
-      </Position18>
-      <Position19>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1343" Column="1" TopLine="1326"/>
-      </Position19>
-      <Position20>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1344" Column="1" TopLine="1327"/>
-      </Position20>
-      <Position21>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1345" Column="1" TopLine="1328"/>
-      </Position21>
-      <Position22>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1346" Column="1" TopLine="1329"/>
-      </Position22>
-      <Position23>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1348" Column="1" TopLine="1331"/>
-      </Position23>
-      <Position24>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1349" Column="1" TopLine="1332"/>
-      </Position24>
-      <Position25>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1351" Column="1" TopLine="1334"/>
-      </Position25>
-      <Position26>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1354" Column="1" TopLine="1337"/>
-      </Position26>
-      <Position27>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1357" Column="1" TopLine="1340"/>
-      </Position27>
-      <Position28>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1358" Column="1" TopLine="1341"/>
-      </Position28>
-      <Position29>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1360" Column="1" TopLine="1343"/>
-      </Position29>
-      <Position30>
-        <Filename Value="../../source/onguard.pas"/>
-        <Caret Line="1369" Column="1" TopLine="1352"/>
-      </Position30>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -238,28 +148,19 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
-      <Debugging>
-        <UseHeaptrc Value="True"/>
-      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="2">
-      <Item1>
-        <Source Value="../../../source/ogfirst.pas"/>
-        <Line Value="234"/>
-      </Item1>
-      <Item2>
-        <Source Value="../../source/onguard.pas"/>
-        <Line Value="1302"/>
-      </Item2>
-    </BreakPoints>
     <Exceptions Count="2">
       <Item1>
         <Name Value="ECodetoolError"/>

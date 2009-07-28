@@ -2,10 +2,12 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -22,133 +24,106 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="tponguard"/>
+        <PackageName Value="LCL"/>
         <MinVersion Major="1" Valid="True"/>
       </Item1>
+      <Item2>
+        <PackageName Value="tponguard"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="3">
       <Unit0>
         <Filename Value="exdtp21.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="9" Y="7"/>
+        <CursorPos X="44" Y="9"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="837"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="exdtp21u.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exdtp21u.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exdtp21u"/>
-        <CursorPos X="1" Y="75"/>
-        <TopLine Value="67"/>
+        <CursorPos X="63" Y="113"/>
+        <TopLine Value="72"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="836"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\source\qogabout0.pas"/>
-        <ComponentName Value="OgAboutForm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qogabout0.lrs"/>
-        <UnitName Value="qogabout0"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\source\qonguard1.pas"/>
-        <ComponentName Value="KeyGenerateFrm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qonguard1.lrs"/>
-        <UnitName Value="qonguard1"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\..\source\qonguard2.pas"/>
-        <ComponentName Value="CodeGenerateFrm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qonguard2.lrs"/>
-        <UnitName Value="qonguard2"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="..\..\source\qonguard3.pas"/>
-        <ComponentName Value="KeyMaintFrm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qonguard3.lrs"/>
-        <UnitName Value="qonguard3"/>
-        <CursorPos X="4" Y="112"/>
-        <TopLine Value="108"/>
-        <UsageCount Value="10"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\source\qonguard4.pas"/>
-        <ComponentName Value="EditProductFrm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qonguard4.lrs"/>
-        <UnitName Value="qonguard4"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\source\qonguard5.pas"/>
-        <UnitName Value="qonguard5"/>
-        <CursorPos X="73" Y="79"/>
-        <TopLine Value="64"/>
-        <UsageCount Value="10"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\source\qonguard6.pas"/>
-        <ComponentName Value="ModifierFrm"/>
-        <HasResources Value="True"/>
-        <ResourceFilename Value="..\..\source\qonguard6.lrs"/>
-        <UnitName Value="qonguard6"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\..\source\qonguard7.pas"/>
-        <UnitName Value="qonguard7"/>
-        <CursorPos X="16" Y="35"/>
-        <TopLine Value="67"/>
-        <UsageCount Value="10"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\..\source\ogconst.pas"/>
-        <UnitName Value="ogconst"/>
-        <CursorPos X="16" Y="35"/>
-        <TopLine Value="18"/>
-        <UsageCount Value="10"/>
-      </Unit10>
-      <Unit11>
         <Filename Value="..\..\source\onguard.pas"/>
         <UnitName Value="onguard"/>
-        <CursorPos X="26" Y="1396"/>
-        <TopLine Value="1377"/>
-        <UsageCount Value="10"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\..\fpcfix\fpc\rtl\objpas\sysutils\sysinth.inc"/>
-        <CursorPos X="4" Y="48"/>
-        <TopLine Value="31"/>
-        <UsageCount Value="10"/>
-      </Unit12>
+        <CursorPos X="41" Y="1207"/>
+        <TopLine Value="1199"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="418"/>
+        <Loaded Value="True"/>
+      </Unit2>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="13" HistoryIndex="12">
+      <Position1>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="83" Column="17" TopLine="69"/>
+      </Position1>
+      <Position2>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="55" Column="22" TopLine="35"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\..\source\onguard.pas"/>
+        <Caret Line="1447" Column="18" TopLine="1429"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\..\source\onguard.pas"/>
+        <Caret Line="366" Column="3" TopLine="355"/>
+      </Position4>
+      <Position5>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="30" Column="46" TopLine="28"/>
+      </Position5>
+      <Position6>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="81" Column="48" TopLine="43"/>
+      </Position6>
+      <Position7>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="29" Column="30" TopLine="29"/>
+      </Position7>
+      <Position8>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="28" Column="20" TopLine="28"/>
+      </Position8>
+      <Position9>
+        <Filename Value="exdtp21.lpr"/>
+        <Caret Line="13" Column="40" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="exdtp21.lpr"/>
+        <Caret Line="9" Column="44" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="75" Column="1" TopLine="75"/>
+      </Position11>
+      <Position12>
+        <Filename Value="exdtp21u.pas"/>
+        <Caret Line="106" Column="1" TopLine="91"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\..\source\onguard.pas"/>
+        <Caret Line="1344" Column="8" TopLine="1323"/>
+      </Position13>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Parsing>
       <SyntaxOptions>
@@ -162,12 +137,8 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
-      <Debugging>
-        <UseHeaptrc Value="True"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
@@ -179,7 +150,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="8">
+    <BreakPoints Count="9">
       <Item1>
         <Source Value="..\..\source\qonguard3.pas"/>
         <Line Value="135"/>
@@ -212,6 +183,10 @@
         <Source Value="exdtp21u.pas"/>
         <Line Value="75"/>
       </Item8>
+      <Item9>
+        <Source Value="exdtp21u.pas"/>
+        <Line Value="106"/>
+      </Item9>
     </BreakPoints>
     <Exceptions Count="2">
       <Item1>

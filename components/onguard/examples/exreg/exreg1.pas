@@ -71,6 +71,7 @@ var
   Key : TKey;
   Code : TCode;
   Modifier : Longint;
+  d : TDateTime;
 begin
   Key := EncryptionKey;
   Modifier := StringHashELF(edtUserName2.Text);

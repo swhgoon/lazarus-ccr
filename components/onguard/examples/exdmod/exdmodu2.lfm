@@ -1,4 +1,8 @@
 object SNEntryDlg: TSNEntryDlg
+  Left = 406
+  Height = 195
+  Top = 376
+  Width = 247
   ActiveControl = SNText
   Caption = 'Serial Number w/Modifer'
   ClientHeight = 195
@@ -7,91 +11,81 @@ object SNEntryDlg: TSNEntryDlg
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  PixelsPerInch = 83
   Position = poScreenCenter
-  TextHeight = 13
-  HorzScrollBar.Page = 246
-  VertScrollBar.Page = 194
-  Left = 406
-  Height = 195
-  Top = 376
-  Width = 247
+  LCLVersion = '0.9.27'
   object Label1: TLabel
-    Caption = 'SN'
-    Color = clNone
-    ParentColor = False
     Left = 8
-    Height = 13
+    Height = 14
     Top = 64
-    Width = 18
+    Width = 16
+    Caption = 'SN'
+    ParentColor = False
   end
   object Label2: TLabel
-    Caption = 'Code'
-    Color = clNone
-    ParentColor = False
     Left = 8
-    Height = 13
+    Height = 14
     Top = 90
-    Width = 31
+    Width = 26
+    Caption = 'Code'
+    ParentColor = False
   end
   object Label3: TLabel
-    Caption = 'Call your Vendor NOW to register!'
-    Color = clNone
-    ParentColor = False
     Left = 40
-    Height = 13
+    Height = 14
     Top = 7
-    Width = 193
+    Width = 160
+    Caption = 'Call your Vendor NOW to register!'
+    ParentColor = False
   end
   object Label4: TLabel
-    Caption = 'Modifier'
-    Color = clNone
-    ParentColor = False
     Left = 8
-    Height = 13
+    Height = 14
     Top = 37
-    Width = 46
+    Width = 38
+    Caption = 'Modifier'
+    ParentColor = False
   end
   object SNText: TEdit
-    TabOrder = 1
     Left = 52
-    Height = 20
+    Height = 23
     Top = 60
     Width = 121
+    TabOrder = 1
   end
   object CodeText: TEdit
-    TabOrder = 2
     Left = 52
-    Height = 20
+    Height = 23
     Top = 86
     Width = 175
+    TabOrder = 2
   end
   object OKBtn: TBitBtn
-    Kind = bkOK
-    NumGlyphs = 0
-    TabOrder = 3
     Left = 23
     Height = 33
     Top = 118
     Width = 89
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 3
   end
   object CancelBtn: TBitBtn
-    Kind = bkCancel
-    NumGlyphs = 0
-    OnClick = CancelBtnClick
-    TabOrder = 4
     Left = 127
     Height = 33
     Top = 118
     Width = 89
+    Kind = bkCancel
+    NumGlyphs = 0
+    OnClick = CancelBtnClick
+    TabOrder = 4
   end
   object ModString: TEdit
+    Left = 52
+    Height = 23
+    Top = 33
+    Width = 121
     ReadOnly = True
     TabStop = False
     TabOrder = 0
-    Left = 52
-    Height = 20
-    Top = 33
-    Width = 121
   end
 end

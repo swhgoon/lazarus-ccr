@@ -68,7 +68,7 @@ const
   DemoCaption      : string = 'ExSelApi: Demo runs left = ';
   RegisteredCap    : string = 'ExSelApi: Registered';
   NotRegisteredCap : string = 'ExSelApi: Not Registered';
-  ModifyStr        : string = 'Modify Registration to enable this feature';
+//  ModifyStr        : string = 'Modify Registration to enable this feature';
 
     { Feature masks }
   RequiredMask = $00000001;

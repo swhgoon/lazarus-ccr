@@ -1,4 +1,8 @@
 object ModifierFrm: TModifierFrm
+  Left = 295
+  Height = 145
+  Top = 224
+  Width = 433
   ActiveControl = NoModifierCb
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Generate Modifier'
@@ -9,103 +13,94 @@ object ModifierFrm: TModifierFrm
   Font.Name = 'MS Sans Serif'
   Font.Pitch = fpVariable
   OnCreate = FormCreate
-  PixelsPerInch = 83
   Position = poScreenCenter
-  TextHeight = 18
-  HorzScrollBar.Page = 432
-  HorzScrollBar.Range = 333
-  VertScrollBar.Page = 144
-  VertScrollBar.Range = 75
-  Left = 295
-  Height = 145
-  Top = 224
-  Width = 433
+  LCLVersion = '0.9.27'
   object OKBtn: TBitBtn
+    Left = 285
+    Height = 26
+    Top = 104
+    Width = 57
     Caption = 'OK'
     Default = True
     ModalResult = 1
     NumGlyphs = 0
     TabOrder = 1
-    Left = 285
-    Height = 26
-    Top = 104
-    Width = 57
   end
   object CancelBtn: TBitBtn
-    Caption = 'Cancel'
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 2
     Left = 344
     Height = 24
     Top = 104
     Width = 62
+    Caption = 'Cancel'
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 2
   end
   object GroupBox1: TGroupBox
-    Caption = '&Modifiers'
-    ClientHeight = 73
-    ClientWidth = 402
-    TabOrder = 0
     Left = 3
     Height = 90
     Top = 6
     Width = 406
+    Caption = '&Modifiers'
+    ClientHeight = 72
+    ClientWidth = 402
+    TabOrder = 0
     object UniqueModifierCb: TCheckBox
+      Left = 133
+      Height = 17
+      Top = 37
+      Width = 91
       Caption = 'Unique modifier'
       OnClick = ModifierClick
       TabOrder = 3
-      Left = 133
-      Height = 20
-      Top = 37
-      Width = 119
     end
     object MachineModifierCb: TCheckBox
+      Left = 133
+      Height = 17
+      Top = 20
+      Width = 98
       Caption = 'Machine modifier'
       OnClick = ModifierClick
       TabOrder = 1
-      Left = 133
-      Height = 20
-      Top = 20
-      Width = 129
     end
     object DateModifierCb: TCheckBox
+      Left = 267
+      Height = 17
+      Top = 18
+      Width = 80
       Caption = 'Date modifier'
       OnClick = ModifierClick
       TabOrder = 2
-      Left = 267
-      Height = 20
-      Top = 20
-      Width = 106
     end
     object NoModifierCb: TCheckBox
+      Left = 11
+      Height = 17
+      Top = 18
+      Width = 71
       Caption = 'No modifier'
       OnClick = ModifierClick
       TabOrder = 0
-      Left = 11
-      Height = 12
-      Top = 20
-      Width = 101
     end
     object ModifierEd: TEdit
+      Left = 12
+      Height = 23
+      Top = 34
+      Width = 104
       OnChange = InfoChanged
       OnKeyPress = ModifierEdKeyPress
       TabOrder = 4
-      Left = 12
-      Height = 26
-      Top = 34
-      Width = 104
     end
     object ModDateEd: TEdit
+      Left = 267
+      Height = 23
+      Hint = 'Code is invalid after this date'
+      Top = 35
+      Width = 120
       Enabled = False
       MaxLength = 10
       OnChange = ModifierClick
       OnKeyPress = DateEdKeyPress
       TabOrder = 5
-      Left = 267
-      Height = 22
-      Hint = 'Code is invalid after this date'
-      Top = 35
-      Width = 120
     end
   end
 end

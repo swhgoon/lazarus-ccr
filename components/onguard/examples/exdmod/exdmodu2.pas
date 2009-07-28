@@ -7,6 +7,9 @@ uses
   Forms, Dialogs, StdCtrls, Buttons,LResources;
 
 type
+
+  { TSNEntryDlg }
+
   TSNEntryDlg = class(TForm)
     Label1: TLabel;
     Label2: TLabel;

@@ -47,8 +47,7 @@ uses
   ogutil, onguard,                                        {AH.01}
   ComponentEditors,
   PropEdits,
-  LazarusPackageIntf,
-  LResources;
+  LazarusPackageIntf;
 
 
 
@@ -88,6 +87,8 @@ type
 
 
 implementation
+uses
+ LResources;
 
 
 

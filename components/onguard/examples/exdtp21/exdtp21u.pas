@@ -27,7 +27,7 @@ type
     OgDateCode1: TOgDateCode;
     Label1: TLabel;
     procedure FormActivate(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+    procedure Memo1DblClick(Sender: TObject);
     procedure OgDateCode1GetKey(Sender: TObject; var Key: TKey);
     procedure OgDateCode1GetCode(Sender: TObject; var Code: TCode);
     procedure OgDateCode1Checked(Sender: TObject; Status: TCodeStatus);
@@ -56,9 +56,9 @@ begin
   if FExpired then Application.Terminate;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.Memo1DblClick(Sender: TObject);
 begin
-
+      ShowMessage(Inttostr(OgDateCode1.GetInvalidCount));
 end;
 
 {==========================================================================}
@@ -84,7 +84,7 @@ begin
     if (S = '') then begin
       SD := Date;
       ED := SD + 21.0;
-      InitDateCode(CKey, SD, ED, Code);
+      InitDateCode(CKey, SD, ED, Code,1);
 
       {save string representation of release code to Ini File}
       S := BufferToHex(Code, SizeOf(Code));

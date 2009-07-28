@@ -1,5 +1,5 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ This file was automatically created by Lazarus. do not edit!
+  This source is only used to compile and install the package.
  }
 
 unit tponguard; 
@@ -7,9 +7,9 @@ unit tponguard;
 interface
 
 uses
-  ogfile, ognetwrk, ogproexe, ogreg, ogutil, qogabout0, qonguard1, qonguard2, 
-    qonguard3, qonguard4, qonguard5, qonguard6, qonguard7, ogconst, onguard, 
-    LazarusPackageIntf; 
+    ogfile, ognetwrk, ogproexe, ogreg, ogutil, qogabout0, qonguard1, 
+  qonguard2, qonguard3, qonguard4, qonguard5, qonguard6, qonguard7, ogconst, 
+  onguard, ogfirst, LazarusPackageIntf;
 
 implementation
 

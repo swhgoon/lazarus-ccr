@@ -5,7 +5,7 @@ uses
   Interfaces,
   Forms,
   ogfirst,
-  FIXNAF1 in 'FIXNAF1.pas' {MainFrm}, tponguard;
+  FIXNAF1 in 'FIXNAF1.pas' {MainFrm};
 
 
 

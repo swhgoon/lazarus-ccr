@@ -2,7 +2,7 @@
   This example uses the TOgUsageCode component. This is the most basic
   example in that on first run, the INI file entries and component
   properties are set to allow 5 runs of the program with a "drop dead"
-  date of 1999 December 31.
+  date
 *)
 
 unit Exusg1u;
@@ -102,8 +102,8 @@ begin
                          IniFile := TIniFile.Create(TheDir + 'Usage1.ini');
                          try
                            {hard coded release code for 5 users}
-                           {and drop dead date of 2006 Dec. 31}
-                           S := '602224E18B152CF2';//'AC5D76E4B10D642B';
+                           {and drop dead date of 2009 Dec. 31}
+                           S := 'AECCA5B793AD56155D13';
                            HexToBuffer(S, Code, SizeOf(Code));
                            IniFile.WriteString('Codes', 'Uses', S);
                          finally

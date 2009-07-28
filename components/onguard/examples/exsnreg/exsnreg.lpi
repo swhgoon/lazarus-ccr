@@ -2,12 +2,14 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -42,10 +44,10 @@
         <Filename Value="exsnregu.pas"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exsnregu.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exsnregu"/>
-        <CursorPos X="31" Y="26"/>
-        <TopLine Value="1"/>
+        <CursorPos X="74" Y="19"/>
+        <TopLine Value="88"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
@@ -54,7 +56,7 @@
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Parsing>
       <SyntaxOptions>
@@ -68,12 +70,16 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

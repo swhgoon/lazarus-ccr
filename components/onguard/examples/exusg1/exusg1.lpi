@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="1"/>
     </General>
@@ -41,16 +42,16 @@
         <Filename Value="exusg1u.pas"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <ResourceFilename Value="exusg1u.lrs"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Exusg1u"/>
-        <CursorPos X="54" Y="106"/>
-        <TopLine Value="89"/>
+        <CursorPos X="56" Y="106"/>
+        <TopLine Value="106"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit1>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="3" HistoryIndex="2">
       <Position1>
         <Filename Value="exusg1u.pas"/>
         <Caret Line="105" Column="55" TopLine="96"/>
@@ -59,10 +60,14 @@
         <Filename Value="exusg1u.pas"/>
         <Caret Line="106" Column="70" TopLine="89"/>
       </Position2>
+      <Position3>
+        <Filename Value="exusg1u.pas"/>
+        <Caret Line="95" Column="22" TopLine="89"/>
+      </Position3>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <Parsing>
       <SyntaxOptions>
         <IncludeAssertionCode Value="True"/>
@@ -75,12 +80,16 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Generate Value="Faster"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
         <UseHeaptrc Value="True"/>
       </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
     </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

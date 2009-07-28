@@ -3,21 +3,21 @@ object Form1: TForm1
   Height = 192
   Top = 218
   Width = 262
-  HorzScrollBar.Page = 261
-  VertScrollBar.Page = 191
   Caption = 'Form1'
+  ClientHeight = 192
+  ClientWidth = 262
   Font.Color = clBlack
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 69
-    Height = 13
+    Height = 14
     Top = 98
-    Width = 77
+    Width = 67
     Alignment = taCenter
     Caption = 'Registered to:'
-    Color = clNone
     ParentColor = False
   end
   object Memo1: TMemo

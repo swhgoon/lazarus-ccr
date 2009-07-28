@@ -1,5 +1,5 @@
 program Exdys30;
-{$objfpc}{$H+}
+{$mode objfpc}{$H+}
 
 uses
   Interfaces,

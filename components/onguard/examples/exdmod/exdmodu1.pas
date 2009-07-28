@@ -26,7 +26,7 @@ interface
 
 uses
   SysUtils,Classes,Controls,
-  Forms, Dialogs,  StdCtrls, Buttons,LResources,
+  Forms, Dialogs,  StdCtrls, Buttons,
   OgUtil,OnGuard,IniFiles;
 
 const
@@ -35,9 +35,9 @@ const
 
 type
 
-  { TForm1 }
+  { TfrmMain }
 
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
     Memo1: TMemo;
     CloseBtn: TBitBtn;
     Label1: TLabel;
@@ -62,24 +62,24 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
 
 
 uses
-  Exdmodu2;
+  LResources,Exdmodu2;
 
 {=======================================================================}
 
 
-procedure TForm1.OgSerialNumberCode1GetKey(Sender: TObject; var Key: TKey);
+procedure TfrmMain.OgSerialNumberCode1GetKey(Sender: TObject; var Key: TKey);
 begin
   Key := CKey;
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
+procedure TfrmMain.FormActivate(Sender: TObject);
 begin
   if FExpired then Application.Terminate;
 end;
@@ -88,7 +88,7 @@ end;
 {=======================================================================}
 
 
-procedure TForm1.OgSerialNumberCode1GetModifier(Sender: TObject;
+procedure TfrmMain.OgSerialNumberCode1GetModifier(Sender: TObject;
   var Value: Longint);
 begin
   {Generate the value unique to this machine}
@@ -98,7 +98,7 @@ end;
 
 {=======================================================================}
 
-procedure TForm1.OgSerialNumberCode1GetCode(Sender: TObject; var Code: TCode);
+procedure TfrmMain.OgSerialNumberCode1GetCode(Sender: TObject; var Code: TCode);
 var
   S1  : string;
   L   : integer;
@@ -149,7 +149,7 @@ end;
 
 {=======================================================================}
 
-function TForm1.GetSNData(var S : string) : integer;
+function TfrmMain.GetSNData(var S : string) : integer;
 {method used to ask for user input of serial number and release code}
 var
   TC  : TCode;
@@ -203,7 +203,7 @@ end;
 
 {=======================================================================}
 
-procedure TForm1.OgSerialNumberCode1Checked(Sender: TObject;
+procedure TfrmMain.OgSerialNumberCode1Checked(Sender: TObject;
                                             Status: TCodeStatus);
 var
   LI  : longint;
@@ -244,7 +244,7 @@ begin
 end;
 
 initialization
-{$i exdmodu2.lrs}
+{$i exdmodu1.lrs}
 
 end.
 

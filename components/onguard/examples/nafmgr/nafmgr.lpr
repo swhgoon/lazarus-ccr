@@ -5,7 +5,7 @@ uses
   Interfaces,
   Forms,
   ogfirst,
-  NAFMGR1 in 'NAFMGR1.pas' {NafFrm}, tponguard;
+  NAFMGR1 in 'NAFMGR1.pas' {NafFrm};
 
 
 

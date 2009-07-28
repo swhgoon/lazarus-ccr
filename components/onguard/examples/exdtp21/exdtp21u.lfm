@@ -3,23 +3,22 @@ object Form1: TForm1
   Height = 155
   Top = 279
   Width = 228
-  HorzScrollBar.Page = 227
-  VertScrollBar.Page = 154
   ActiveControl = Memo1
   Caption = 'Form1'
+  ClientHeight = 155
+  ClientWidth = 228
   Font.Color = clBlack
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnActivate = FormActivate
-  OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.27'
   object Label1: TLabel
     Left = 50
-    Height = 13
+    Height = 14
     Top = 70
-    Width = 113
+    Width = 99
     Caption = 'Expires: 00/00/0000'
-    Color = clNone
     ParentColor = False
   end
   object Memo1: TMemo
@@ -32,6 +31,7 @@ object Form1: TForm1
       'was '
       'allowed to run'
     )
+    OnDblClick = Memo1DblClick
     ScrollBars = ssVertical
     TabOrder = 0
   end
@@ -48,6 +48,7 @@ object Form1: TForm1
     OnChecked = OgDateCode1Checked
     OnGetKey = OgDateCode1GetKey
     OnGetCode = OgDateCode1GetCode
+    StoreCode = True
     left = 158
     top = 87
   end

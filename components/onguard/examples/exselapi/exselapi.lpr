@@ -6,7 +6,7 @@ program Exselapi;
 uses
   Interfaces,
   Forms,
-  Exselap1 in 'EXSELAP1.PAS' {Form1}, tponguard;
+  Exselap1 in 'EXSELAP1.PAS' {Form1};
 
 
 begin

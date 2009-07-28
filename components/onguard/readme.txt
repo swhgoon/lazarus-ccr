@@ -41,6 +41,11 @@ To install TurboPower OnGuard into your IDE, take the following steps:
 4. Version history
 
 
+4.3 July 28 2009
+    - initial support for InvalidCount value allowing 'breaking the rules' limited , for example run program a few times if trial period expired
+   - IDE serial number used for machine id instead of volume serials
+   - fixed TextHeight obsolete properties in lfm resources
+
 4.2 October 31, 2008
 
     Import into lazarus-ccr  SVN repository.
