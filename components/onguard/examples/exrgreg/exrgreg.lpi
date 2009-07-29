@@ -45,7 +45,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="exrgregu"/>
         <CursorPos X="59" Y="108"/>
-        <TopLine Value="67"/>
+        <TopLine Value="80"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>

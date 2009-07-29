@@ -7,7 +7,8 @@ Table of contents
 2.  Package names
 3.  Installation
 4.  Version history
-4.1   Release 1.13
+4.1 Release 1.13
+ 
 
 ==============================================
 
@@ -40,6 +41,12 @@ To install TurboPower OnGuard into your IDE, take the following steps:
 
 4. Version history
 
+4.3 July 27, 2009
+    Initial addition of features:
+     - InvalidCount which allow limited count of valid code even if trial period is expired
+       (useful due to user mistakes causing incorect system date sometimes)
+     - instead of logical volume serial number , hardware hdd ide disk serial number is no used if available
+     - compilation with newest Lazarus SVN problems fixed 
 
 4.3 July 28 2009
     - initial support for InvalidCount value allowing 'breaking the rules' limited , for example run program a few times if trial period expired

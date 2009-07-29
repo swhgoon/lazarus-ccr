@@ -1989,20 +1989,26 @@ begin
   MixBlock(T128bit(Key), Work, False);
   Result := (Work.CheckValue = DaysCheckCode) and
             (ExpandDate(Work.LastAccess) <= Date);
+  if (not Result) and (Work.InvalidCount >0) then Result := true;
 end;
 
 procedure DecDaysCode(const Key : TKey; var Code : TCode);
 var
   X : LongInt;
+  Valid : Boolean;
 begin
-  if not IsDaysCodeValid(Key,Code) then DecInvalidCountCode(Key,Code);
   MixBlock(T128bit(Key), Code, False);
+  Valid := (Code.CheckValue = DaysCheckCode) and
+            (ExpandDate(Code.LastAccess) <= Date);
+
   X := ShrinkDate(Date);
   if (Code.LastAccess <> X) then begin
     if Code.Days > 0 then                                              {!!.02}
       Code.Days := Max(0, Code.Days - 1);                              {!!.02}
     Code.LastAccess := X;
   end;
+  if (not Valid) and (Code.InvalidCount>0) then
+   Code.InvalidCount := Code.InvalidCount-1;
   MixBlock(T128bit(Key), Code, True);
 end;
 
@@ -2016,7 +2022,10 @@ begin
      (ExpandDate(Work.LastAccess) <= Date) then
     Result := Work.Days
   else
+  begin
     Result := 0;
+    if Work.InvalidCount>0 then Result := Work.Days;
+  end;
 end;
 
 
