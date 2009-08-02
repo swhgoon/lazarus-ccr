@@ -304,6 +304,11 @@ implementation
 const
   ActionStrings : array[TCommitAction] of char =
     (' ','M','A','D');
+    
+function DomToSvn(const ds: DOMString): String;
+begin
+  Result := UTF8Encode(ds);
+end;
 
 function GetChildTextContent(ANode: TDomNode; const AName: string) : string;
 var
@@ -312,7 +317,7 @@ begin
   Result := '';
   ChildNode :=  ANode.FindNode(AName);
   if assigned(ChildNode) then
-    Result := ChildNode.TextContent;
+    Result := DomToSvn(ChildNode.TextContent);
 end;
 
 { TSvnBase }
@@ -400,8 +405,8 @@ begin
   if ANode.NodeType = ELEMENT_NODE then begin
     EntryNode := TDomElement(ANode);
     FRevision := StrToIntDef(EntryNode.GetAttribute('revision'),0);
-    FPath := EntryNode.GetAttribute('path');
-    KindString := EntryNode.GetAttribute('kind');
+    FPath := DomToSvn(EntryNode.GetAttribute('path'));
+    KindString := DomToSvn(EntryNode.GetAttribute('kind'));
     if KindString = 'file' then
       FKind := ekFile
     else if KindString = 'dir' then
@@ -410,7 +415,7 @@ begin
       FKind := ekUnknown;
     UrlNode :=  EntryNode.FindNode('url');
     if assigned(UrlNode) then
-      FUrl := UrlNode.TextContent;
+      FUrl := DomToSvn(UrlNode.TextContent);
       
     FRepository.LoadFromNode(EntryNode.FindNode('repository'));
     FCommit.LoadFromNode(EntryNode.FindNode('commit'));
@@ -635,9 +640,9 @@ var
   ActionStr: string;
   i: TCommitAction;
 begin
-  FPath := ANode.TextContent;
+  FPath := DomToSvn(ANode.TextContent);
   FCopyFromRevision := StrToIntDef(ANode.GetAttribute('copyfrom-rev'),0);
-  FCopyFromPath := ANode.GetAttribute('copyfrom-path');
+  FCopyFromPath := DomToSvn(ANode.GetAttribute('copyfrom-path'));
   ActionStr := ANode.GetAttribute('action');
   FAction := caUnknown;
   for i := low(TCommitAction) to high(TCommitAction) do
@@ -815,9 +820,9 @@ begin
   EntryNode := ANode as TDOMNode;
 
   if EntryNode.NodeName = 'target' then
-    FTargetPath := (EntryNode as TDOMElement).GetAttribute('path')
+    FTargetPath := DomToSvn((EntryNode as TDOMElement).GetAttribute('path'))
   else if EntryNode.NodeName = 'changelist' then
-    FChangeListName := (EntryNode as TDOMElement).GetAttribute('name');
+    FChangeListName := DomToSvn((EntryNode as TDOMElement).GetAttribute('name'));
 
   EntryNode := ANode.FirstChild;
   while assigned(EntryNode) do begin
@@ -862,12 +867,12 @@ var
 begin
   if not Assigned(ANode) then Exit;
 
-  FPath := ANode.GetAttribute('path');
+  FPath := DomToSvn(ANode.GetAttribute('path'));
 
   StatusNode := ANode.FindNode('wc-status');
   if Assigned(StatusNode) and (StatusNode is TDOMElement) then begin
-    FWorkProps := TDomElement(StatusNode).GetAttribute('props');
-    FWorkStatus := TDomElement(StatusNode).GetAttribute('item');
+    FWorkProps := DomToSvn(TDomElement(StatusNode).GetAttribute('props'));
+    FWorkStatus := DomToSvn(TDomElement(StatusNode).GetAttribute('item'));
     FWorkRevision := StrToIntDef(TDomElement(StatusNode).GetAttribute('revision'),0);
 
     SubNode := StatusNode.FindNode('commit');
@@ -882,8 +887,8 @@ begin
 
   StatusNode := ANode.FindNode('repos-status');
   if Assigned(StatusNode) and (StatusNode is TDOMElement) then begin
-    FRepoProps := TDomElement(StatusNode).GetAttribute('props');
-    FRepoStatus := TDomElement(StatusNode).GetAttribute('item');
+    FRepoProps := DomToSvn(TDomElement(StatusNode).GetAttribute('props'));
+    FRepoStatus := DomToSvn(TDomElement(StatusNode).GetAttribute('item'));
 
     SubNode := StatusNode.FindNode('lock');
     if Assigned(SubNode) then begin
