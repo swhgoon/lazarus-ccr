@@ -144,6 +144,12 @@ type
     FDisplayAll: boolean;
     FUnfindedValue: TRxDBValueVariant;
     FSuccesfullyFind : boolean;
+
+    FOnSelect : TNotifyEvent;
+    procedure SetValue(const Value: string);
+    function GetKeyValue: Variant;
+    procedure SetKeyValue(const Value: Variant);
+
     function GetDataSource: TDataSource;
     function GetDisplayAll: Boolean;
     function GetDropDownCount: Integer;
@@ -242,6 +248,11 @@ type
     property LookupSource: TDataSource read GetLookupSource write SetLookupSource;
     property OnGetGridCellProps: TGetCellPropsEvent read GetOnGetGridCellProps
       write SetOnGetGridCellProps;
+
+    property Value: string read FValue write SetValue stored False;
+    property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
+    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
+
     property UnfindedValue : TRxDBValueVariant read FUnfindedValue write FUnfindedValue default rxufNone;
   public
     constructor Create(AOwner: TComponent); override;
@@ -253,6 +264,9 @@ type
   TRxDBLookupCombo = class(TRxCustomDBLookupCombo)
   protected
     procedure OnClosePopup(AResult:boolean);override;
+  public
+    property Value;
+    property KeyValue;
   published
     property AutoSize;
     property Align;
@@ -292,6 +306,8 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnGetGridCellProps;
+    property OnSelect;
+
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -914,6 +930,25 @@ var
   F:TField;
 begin
   FValuesList.Clear;
+  if not Assigned(FDataField) then
+  begin
+    if FLookupDataLink.Active then
+      if (Self.FSuccesfullyFind) or (Self.UnfindedValue = rxufLastSuccessful) then
+      begin
+        for i:=0 to FFieldList.Count-1 do
+        begin
+          F:=FLookupDataLink.DataSet.FieldByName(FFieldList[i]);
+          k:=FValuesList.Add(F.DisplayText);
+          FValuesList.Objects[k]:=TObject(PtrInt(F.DisplayWidth));
+        end;
+      end
+      else
+      case Self.UnfindedValue of
+        rxufNone : {Do nothing};
+        rxufOriginal : FValuesList.Add(FValue);//Show original field value...
+      end;
+  end
+  else
   if Assigned(FDataField) then
   begin
     if FDataField.IsNull then
@@ -938,24 +973,43 @@ begin
 end;
 
 procedure TRxCustomDBLookupCombo.ShowList;
+{$IFDEF LINUX}
+var
+  TempF:TPopUpForm;
+{$ENDIF}
 begin
   if Assigned(FLookupDataLink.DataSet) and (FLookupDataLink.DataSet.Active) then
     if not PopupVisible then
     begin
+      if FDataField<>nil then
+        if FDataField <> nil then
+          FValue := FDataField.AsString
+        else
+          FValue := FEmptyValue;
 
-      if FDataField <> nil then FValue := FDataField.AsString
-      else FValue := FEmptyValue;
+      if not Assigned(FDataField) then
+      begin
+        if not FLocateObject.Locate(FLookupField, FValue, true, false) then
+  	FLookupDataLink.DataSet.First;
+      end
+      else
       if Assigned(FDataField) and not FDataField.IsNull then
-        Begin
-          if not FLocateObject.Locate(FLookupField, FValue, true, false) then
-            FLookupDataLink.DataSet.First;//In case we cannot find curvalue...
-        End
+      begin
+       if not FLocateObject.Locate(FLookupField, FValue, true, false) then
+         FLookupDataLink.DataSet.First;//In case we cannot find curvalue...
+      end
       else
       if FLookupDataLink.Active then
         FLookupDataLink.DataSet.First;
 
       FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
         FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
+{$IFDEF LINUX}
+  TempF:=FRxPopUpForm;
+  if FRxPopUpForm.ShowModal = mrOk then
+      OnClosePopup(true);
+  TempF.Free;
+{$ENDIF}
     end
 end;
 
@@ -975,10 +1029,23 @@ end;
 
 procedure TRxCustomDBLookupCombo.UpdateKeyValue;
 begin
-  if FDataField <> nil then
-    FValue := FDataField.AsString
+  if Assigned(FDataField) then
+    if FDataField <> nil then
+      FValue := FDataField.AsString
+    else
+      FValue := FEmptyValue;
+
+  if not Assigned(FDataField) then
+  begin
+    if FValue=FEmptyValue then
+      FSuccesfullyFind := false
+    else
+      FSuccesfullyFind := FLocateObject.Locate(FLookupField, FValue, true, false);
+  end
   else
-    FValue := FEmptyValue;
+  if FDataField.IsNull then
+     FSuccesfullyFind := false
+  else
   if not FDataField.IsNull then
      FSuccesfullyFind := FLocateObject.Locate(FLookupField, FValue, true, false);
   KeyValueChanged;
@@ -1010,12 +1077,32 @@ begin
   if Assigned(FRxPopUpForm) and AResult and (pfgColumnResize in FPopUpFormOptions.Options) then
     FillPopupWidth(FPopUpFormOptions, FRxPopUpForm);
     
+  if FRxPopUpForm=nil then
+  begin
+    SetFocus;
+    Exit;
+  end;
   FRxPopUpForm:=nil;
+  if not AResult then
+    UpdateKeyValue
+  else
+  if AResult and not Assigned(FDataLink.DataSource) and (FLookupDataLink.Active) then
+  begin
+    if FKeyField.IsNull then
+      SetValueKey(FEmptyValue)
+    else
+      SetValueKey(FKeyField.AsString);
+  end
+  else
+
   if AResult and Assigned(FDataLink.DataSource) then
   begin
     FDataLink.Edit;
     NeedUpdateData;//We need to update DataField;
   end;
+
+  if (AResult) and (Assigned(FOnSelect)) then
+    FOnSelect(Self);
 end;
 
 procedure TRxCustomDBLookupCombo.DoAutoSize;
@@ -1049,10 +1136,20 @@ begin
       Key := 0;
     end
     else
-    if (Key = VK_ESCAPE) and (not FDataField.IsNull) then
+    if (Key = VK_ESCAPE) and not (Assigned(FDataField)) then
+    begin
+      SetValueKey(FEmptyValue);
+      if Assigned(FOnSelect) then
+        FOnSelect(Self);
+      Key:=0;
+    end
+    else
+    if (Key = VK_ESCAPE) and (not FDataField.IsNull) and (FDataLink.Edit) then
     begin
       FDataField.Clear;
       UpdateKeyValue;
+      if Assigned(FOnSelect) then
+        FOnSelect(Self);
       Key:=0;
     end;
   end;
@@ -1075,7 +1172,26 @@ begin
       end;
       //FDataLink.UpdateRecord; -- no need more...
       Self.NeedUpdateData;
+      if Assigned(FOnSelect) then
+        FOnSelect(Self);
       KeyValueChanged;
+      Key:=0;
+    end
+  end
+  else
+  if FLookupDataLink.Active and not (PopupVisible or ReadOnly) then
+  begin
+    if (Key in [VK_UP, VK_DOWN]) and (Shift = []) then
+    begin
+      case Key of
+        VK_UP: if not FLookupDataLink.DataSet.BOF then
+                   FLookupDataLink.DataSet.Prior;
+        VK_DOWN: if not FLookupDataLink.DataSet.EOF then
+                   FLookupDataLink.DataSet.Next;
+      end;
+      SetValueKey(FKeyField.AsString);
+    	if Assigned(FOnSelect) then
+	  		FOnSelect(Self);
       Key:=0;
     end
   end;
@@ -1084,6 +1200,8 @@ end;
 
 procedure TRxCustomDBLookupCombo.KeyPress(var Key: char);
 begin
+  if not (PopupVisible) and ((Key in [#32..#255]) or (Key=#8)) then
+    ShowList;
   inherited KeyPress(Key);
   if PopupVisible then
     FRxPopUpForm.KeyPress(Key);
@@ -1174,12 +1292,14 @@ begin
 {   If not Self.PopupVisible then
      DoButtonClick(Self);}
 end;
+
 procedure TRxCustomDBLookupCombo.Click;
 begin
  inherited Click;
  If not Self.PopupVisible then
    DoButtonClick(Self);
 end;
+
 procedure TRxCustomDBLookupCombo.Paint;
 var
   Selected:boolean;
@@ -1217,6 +1337,12 @@ begin
     SetRect(R1, 3, 3, ClientWidth - 3, ClientHeight - 3);
     Canvas.FillRect(R1);
     R.Right:=R.Right - GetButtonWidth;
+    if PopupVisible and (Caption<>'') then
+    begin
+      AText:=Caption;
+      Canvas.TextRect(R, TextMargin, Max(0, (HeightOf(R) - Canvas.TextHeight('Wg')) div 2), AText);
+    end
+    else
     if FDisplayAll then
       PaintDisplayValues(Canvas, R, TextMargin)
     else
@@ -1241,6 +1367,7 @@ procedure TRxCustomDBLookupCombo.LookupDataSetChanged(Sender: TObject);
 begin
   if PopupVisible then
   begin
+    FSuccesfullyFind := true;
     UpdateFieldValues;
     Invalidate;
   end;
@@ -1260,12 +1387,39 @@ begin
     DataSet := FLookupDataLink.DataSet;
     FKeyField := DataSet.FieldByName(FLookupField);
     FListActive := True;
+    FDisplayField := FLookupDataLink.DataSet.FieldByName(FFieldList[FLookupDisplayIndex]);
   end;
   FLocateObject.DataSet := DataSet;
 
 
   if FListActive and Assigned(FDataField) then UpdateKeyValue
   else KeyValueChanged;
+end;
+
+procedure TRxCustomDBLookupCombo.SetValue(const Value: string);
+begin
+  if (Value <> FValue) then
+  begin
+    if FListActive and not ReadOnly and (FDataLink.DataSource <> nil) and FDataLink.Edit then
+      FDataField.AsString := Value
+    else
+    SetValueKey(Value);
+    if Assigned(FOnSelect) then
+      FOnSelect(Self);
+  end;
+end;
+
+function TRxCustomDBLookupCombo.GetKeyValue: Variant;
+begin
+  if Value = FEmptyValue then
+    Result := null
+  else
+    Result := Value;
+end;
+
+procedure TRxCustomDBLookupCombo.SetKeyValue(const Value: Variant);
+begin
+  Self.Value := Value;
 end;
 
 constructor TRxCustomDBLookupCombo.Create(AOwner: TComponent);
@@ -1389,7 +1543,7 @@ end;
 procedure TRxDBLookupCombo.OnClosePopup(AResult: boolean);
 begin
   inherited OnClosePopup(AResult);
-  SetFocus;
+//  SetFocus;
 {  if (Owner is TWinControl) then
     TWinControl(Owner).Repaint
   else

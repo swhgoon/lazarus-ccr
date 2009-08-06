@@ -5,13 +5,7 @@ unit exsortzeos;
 interface
 
 uses
-  Classes, SysUtils, DB,
-  {$IFDEF FPC}
-  RxDBGrid
-  {$ELSE}
-  exDBGrid
-  {$ENDIF}
-  ,ZConnection, ZDataset, ZAbstractRODataset;
+  Classes, SysUtils, DB, RxDBGrid, ZConnection, ZDataset, ZAbstractRODataset;
 
 type
   TFBDataSetSortEngine = class(TExDBGridSortEngine)
@@ -20,14 +14,16 @@ type
   end;
 
 implementation
-//uses FBCustomDataSet;
 
 procedure TFBDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);
 begin
-  if Assigned(ADataSet) then begin
-    (ADataSet as TZQuery).SortedFields:=Field.FieldName;
-    if Asc then (ADataSet as TZQuery).SortType:=stAscending
-    else (ADataSet as TZQuery).SortType:=stDescending;
+  if Assigned(ADataSet) then
+  begin
+    (ADataSet as TZQuery).SortedFields:='"' + Field.FieldName + '"';
+    if Asc then
+      (ADataSet as TZQuery).SortType:=stAscending
+    else
+      (ADataSet as TZQuery).SortType:=stDescending;
   end
 end;
 

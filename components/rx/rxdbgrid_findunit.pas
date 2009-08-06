@@ -24,7 +24,7 @@ type
     RadioGroup1: TRadioGroup;
     procedure BtnFindClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     FGrid:TRxDBGrid;
@@ -37,7 +37,7 @@ type
 procedure ShowRxDBGridFindForm(Grid:TRxDBGrid);
 
 implementation
-uses dbutils, DBGrids;
+uses dbutils, DBGrids, rxdconst;
 
 procedure ShowRxDBGridFindForm(Grid: TRxDBGrid);
 var
@@ -56,11 +56,18 @@ begin
   Close;
 end;
 
-procedure TrxDBGridFindForm.FormActivate(Sender: TObject);
+procedure TrxDBGridFindForm.FormCreate(Sender: TObject);
 begin
-{  BtnFind.Height:=Canvas.TextHeight('W') + 6;
-  Button2.Height:=BtnFind.Height;}
-  ComboBox1.Height:=Edit1.Height;
+  Caption:=sRxDbGridFindCaption;
+  Label1.Caption:=sRxDbGridFindText;
+  Label2.Caption:=sRxDbGridFindOnField;
+  CheckBox1.Caption:=sRxDbGridFindCaseSens;
+  CheckBox2.Caption:=sRxDbGridFindPartial;
+  RadioGroup1.Caption:=sRxDbGridFindDirecion;
+  RadioGroup1.Items.Clear;
+  RadioGroup1.Items.Add(sRxDbGridFindRangeAll);
+  RadioGroup1.Items.Add(sRxDbGridFindRangeForw);
+  RadioGroup1.Items.Add(sRxDbGridFindRangeBack);
 end;
 
 procedure TrxDBGridFindForm.FormShow(Sender: TObject);

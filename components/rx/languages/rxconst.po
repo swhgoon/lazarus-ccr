@@ -1,0 +1,55 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: rxconst.sbrowse
+msgid "Browse"
+msgstr ""
+
+#: rxconst.sdatedlgtitle
+msgid "Select a Date"
+msgstr ""
+
+#: rxconst.sdefaultfilter
+msgid "All files (*.*)|*.*"
+msgstr ""
+
+#: rxconst.sdetails
+msgid "Details"
+msgstr ""
+
+#: rxconst.sfilenotexec
+msgid "File specified is not an executable file, dynamic-link library, or icon file"
+msgstr ""
+
+#: rxconst.sloadliberror
+msgid "Could not load '%s' library"
+msgstr ""
+
+#: rxconst.snextmonth
+msgid "Next Month|"
+msgstr ""
+
+#: rxconst.snextyear
+msgid "Next Year|"
+msgstr ""
+
+#: rxconst.snotimplemented
+msgid "Function not yet implemented"
+msgstr ""
+
+#: rxconst.sprevmonth
+msgid "Previous Month|"
+msgstr ""
+
+#: rxconst.sprevyear
+msgid "Previous Year|"
+msgstr ""
+
+#: rxconst.stocurdate
+msgid "Set current date"
+msgstr ""
+
+#: rxconst.swindowsicofiles
+msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"
+msgstr ""
+

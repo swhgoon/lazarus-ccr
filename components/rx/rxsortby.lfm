@@ -1,0 +1,241 @@
+object rxSortByForm: TrxSortByForm
+  Left = 450
+  Height = 337
+  Top = 270
+  Width = 583
+  ActiveControl = AddBtn
+  Caption = 'Sort by fields'
+  ClientHeight = 337
+  ClientWidth = 583
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.27'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 131
+    BorderSpacing.Around = 6
+    Caption = '&Fields for sorting:'
+    FocusControl = ListBox1
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 352
+    Height = 18
+    Top = 6
+    Width = 75
+    BorderSpacing.Around = 6
+    Caption = '&All fields:'
+    FocusControl = ListBox2
+    ParentColor = False
+  end
+  object Label4: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = ComboBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 265
+    Width = 116
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    Caption = 'Select sort order'
+    FocusControl = ComboBox1
+    ParentColor = False
+  end
+  object ListBox2: TListBox
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ComboBox1
+    Left = 352
+    Height = 216
+    Top = 30
+    Width = 225
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnDblClick = ListBox2DblClick
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object RemoveBtn: TBitBtn
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideTop.Control = AddBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = AddBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 197
+    Height = 35
+    Top = 71
+    Width = 149
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = '&Remove'
+    Glyph.Data = {
+      8A010000424D8A01000000000000760000002800000018000000170000000100
+      0400000000001401000000000000000000001000000010000000000000000000
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+      7777777777777777777777877777777777777777777777007777777777777777
+      7777770907777777777777777777770990777777777777777777770999077777
+      7777777777777709999077777777777800000009999907777777777099999999
+      9999907777777770999999999999990777777770999999999999999077777770
+      9999999999999999F7777770999999999999999F7777777099999999999999F7
+      777777709999999999999F7777777778FFFFFF899999F7777777777777777789
+      999F7777777777777777778999F7777777777777777777899F77777777777777
+      77777789F7777777777777777777778F7777777777777777777777F777777777
+      7777777777777777777777777777
+    }
+    Layout = blGlyphRight
+    NumGlyphs = 0
+    OnClick = RemoveBtnClick
+    TabOrder = 2
+  end
+  object UpBtn: TBitBtn
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideTop.Control = RemoveBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = AddBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 197
+    Height = 36
+    Top = 112
+    Width = 149
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'M&ove up'
+    Glyph.Data = {
+      96010000424D9601000000000000760000002800000017000000180000000100
+      0400000000002001000000000000000000001000000010000000000000000000
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+      7777777777707777777777777777777777707777777777777777777777707777
+      77780000000877777770777777709999999F77777770777777709999999F7777
+      7770777777709999999F77777770777777709999999F77777770777777709999
+      999F77777770777777709999999F77777770780000009999999888888F707709
+      9999999999999999F7707770999999999999999F7770777709999999999999F7
+      777077777099999999999F7777707777770999999999F7777770777777709999
+      999F7777777077777777099999F7777777707777777770999F77777777707777
+      77777709F7777777777077777777777F77777777777077777777777777777777
+      7770777777777777777777777770777777777777777777777770
+    }
+    NumGlyphs = 0
+    OnClick = UpBtnClick
+    TabOrder = 3
+  end
+  object DownBtn: TBitBtn
+    AnchorSideLeft.Control = AddBtn
+    AnchorSideTop.Control = UpBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = AddBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 197
+    Height = 36
+    Top = 154
+    Width = 149
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = '&Move down'
+    Glyph.Data = {
+      96010000424D9601000000000000760000002800000017000000180000000100
+      0400000000002001000000000000000000001000000010000000000000000000
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+      7777777777707777777777777777777777707777777777777777777777707777
+      7777777F777777777770777777777709F777777777707777777770999F777777
+      777077777777099999F777777770777777709999999F77777770777777099999
+      9999F777777077777099999999999F777770777709999999999999F777707770
+      999999999999999F777077099999999999999999F77078000000999999988888
+      8F70777777709999999F77777770777777709999999F77777770777777709999
+      999F77777770777777709999999F77777770777777709999999F777777707777
+      77709999999F7777777077777778000000087777777077777777777777777777
+      7770777777777777777777777770777777777777777777777770
+    }
+    NumGlyphs = 0
+    OnClick = DownBtnClick
+    TabOrder = 4
+  end
+  object ComboBox1: TComboBox
+    AnchorSideLeft.Control = Label4
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 128
+    Height = 31
+    Top = 252
+    Width = 449
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 5
+  end
+  object ListBox1: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ComboBox1
+    Left = 6
+    Height = 216
+    Top = 30
+    Width = 185
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnDblClick = ListBox1DblClick
+    TabOrder = 6
+    TopIndex = -1
+  end
+  object AddBtn: TBitBtn
+    AnchorSideLeft.Control = ListBox1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ListBox1
+    Left = 197
+    Height = 35
+    Top = 30
+    Width = 149
+    AutoSize = True
+    Caption = '&Add field to sort'
+    Glyph.Data = {
+      8A010000424D8A01000000000000760000002800000018000000170000000100
+      0400000000001401000000000000000000001000000010000000000000000000
+      80000080000000808000800000008000800080800000C0C0C000808080000000
+      C80000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+      7777777777777777777777777877777777777777777777770077777777777777
+      7777777090777777777777777777770990777777777777777777709990777777
+      7777777777770999907777777777777777709999900000008777777777099999
+      999999990777777770999999999999990777777709999999999999990777777F
+      999999999999999907777777F999999999999999077777777F99999999999999
+      0777777777F999999999999907777777777F999998FFFFFF877777777777F999
+      987777777777777777777F999877777777777777777777F99877777777777777
+      7777777F987777777777777777777777F877777777777777777777777F777777
+      7777777777777777777777777777
+    }
+    NumGlyphs = 0
+    OnClick = AddBtnClick
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 289
+    Width = 571
+    TabOrder = 7
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

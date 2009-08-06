@@ -207,10 +207,6 @@ implementation
 
 uses Forms, rxdconst, dbconst, Variants;
 
-resourcestring
-  SMemNoRecords = 'No data found';
-  SInvalidFields = 'No fields defined';
-
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
     ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob];

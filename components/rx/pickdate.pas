@@ -419,8 +419,10 @@ begin
 
   if ARow>0 then
   begin
-    if not ((gdSelected in aState) and (gdFocused in aState)) then begin
-      if (FDaysArray[ACol, ARow].DayDate = Date) and (FDaysArray[ACol, ARow].DayColor <> FNotInThisMonthColor) then begin
+    if not ((gdSelected in aState) and (gdFocused in aState)) then
+    begin
+      if (FDaysArray[ACol, ARow].DayDate = Date) and (FDaysArray[ACol, ARow].DayColor <> FNotInThisMonthColor) then
+      begin
         R := ARect;
         // Variant 1
         //Dec(R.Bottom, 1);
@@ -441,7 +443,7 @@ begin
   end
   else
   begin
-    Canvas.Font.Color:=clText;
+    Canvas.Font.Color:=clWindowText;
     //DrawCellText(ACol, ARow, ARect, AState, ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]);
     if FShortDaysOfWeek <> nil then begin
       if ACol <= FShortDaysOfWeek.Count - 1 then
@@ -622,7 +624,7 @@ begin
         if IsWeekend(x, y) then
           FDaysArray[x,y].DayColor:=WeekendColor
         else
-          FDaysArray[x,y].DayColor:=clText;
+          FDaysArray[x,y].DayColor:=clWindowText;
         FDaysArray[x,y].DayNum:=DayNum;
       end;
       FirstDate:=FirstDate+1;
@@ -890,6 +892,7 @@ function CreatePopupCalendar(AOwner: TComponent
   {$IFDEF USED_BiDi}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TPopupCalendar;
 begin
   Result := TPopupCalendar.Create(AOwner);
+
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
     (Screen.PixelsPerInch <> 96) then
   begin { scale to screen res }
@@ -952,7 +955,7 @@ begin
   if AOwner is TControl then ShowHint := TControl(AOwner).ShowHint
   else ShowHint := True;
   
-  if (csDesigning in ComponentState) then Exit;
+//  if (csDesigning in ComponentState) then Exit;
 
   FMonthNames := TStringList.Create;
   if FMonthNames.Count = 0 then begin

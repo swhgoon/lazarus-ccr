@@ -6,18 +6,18 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  StdCtrls, Buttons, rxdbgrid;
+  StdCtrls, Buttons, ButtonPanel, rxdbgrid;
 
 type
 
   { TrxDBGridColumsForm }
 
   TrxDBGridColumsForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
+    ButtonPanel1: TButtonPanel;
     CheckListBox1: TCheckListBox;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    procedure FormCreate(Sender: TObject);
   private
     FGrid:TRxDBGrid;
     procedure SetGrid(AGrid:TRxDBGrid);
@@ -29,6 +29,7 @@ type
 
 procedure ShowRxDBGridColumsForm(Grid:TRxDBGrid);
 implementation
+uses rxdconst;
 
 procedure ShowRxDBGridColumsForm(Grid: TRxDBGrid);
 var
@@ -42,6 +43,17 @@ begin
 end;
 
 { TrxDBGridColumsForm }
+
+procedure TrxDBGridColumsForm.FormCreate(Sender: TObject);
+begin
+  SpeedButton1.AnchorSideLeft.Control:=ButtonPanel1.HelpButton;
+  SpeedButton1.AnchorSideTop.Control:=ButtonPanel1.HelpButton;
+  SpeedButton1.AnchorSideBottom.Control:=ButtonPanel1.HelpButton;
+
+  Caption:=sRxDbGridSelColCaption;
+  SpeedButton1.Hint:=sRxDbGridSelColHint1;
+  SpeedButton2.Hint:=sRxDbGridSelColHint2;
+end;
 
 procedure TrxDBGridColumsForm.SetGrid(AGrid: TRxDBGrid);
 var

@@ -1,0 +1,395 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: rxdconst.sapptitlelabel
+msgid "Application \"%s\""
+msgstr ""
+
+#: rxdconst.sbrowsedata
+msgid "browse"
+msgstr ""
+
+#: rxdconst.scalcfieldsdata
+msgid "calc"
+msgstr ""
+
+#: rxdconst.scapturefilter
+msgid "Элементы уп#209�авления захвачены фильт#209�ом"
+msgstr ""
+
+#: rxdconst.schangepassword
+msgid "Change password"
+msgstr ""
+
+#: rxdconst.scirculardatalink
+msgid "SCircularDataLink"
+msgstr ""
+
+#: rxdconst.sconfirmpasswordlabel
+msgid "&Confirm:"
+msgstr ""
+
+#: rxdconst.sconfirmsave
+msgid "Data changed. Save?"
+msgstr ""
+
+#: rxdconst.sdatabasename
+msgid "Database loocked: %s"
+msgstr ""
+
+#: rxdconst.sdatasourcefixed
+msgid "SDataSourceFixed"
+msgstr ""
+
+#: rxdconst.sdbexceptcaption
+msgid "Error in DB engine"
+msgstr ""
+
+#: rxdconst.sdeletemultiplerecords
+msgid "Delete all selected records?"
+msgstr ""
+
+#: rxdconst.sdeleterecordquestion
+msgid "Delete record?"
+msgstr ""
+
+#: rxdconst.seditdata
+msgid "editing"
+msgstr ""
+
+#: rxdconst.serrormsglabel
+msgid "Error message"
+msgstr ""
+
+#: rxdconst.sexprbadcompare
+msgid "Опе#209�ации с#209�авнения т#209�ебуют наличия поля и константы"
+msgstr ""
+
+#: rxdconst.sexprbadfield
+msgid "Field '%s' not used in filter expression"
+msgstr ""
+
+#: rxdconst.sexprbadnulltest
+msgid "NULL-values enabled in '=' и '<>'"
+msgstr ""
+
+#: rxdconst.sexprexpected
+msgid "Ожидалось вы#209�ажение, а вст#209�ечено %s"
+msgstr ""
+
+#: rxdconst.sexprincorrect
+msgid "Error in filter expression"
+msgstr ""
+
+#: rxdconst.sexprinvalidchar
+msgid "Error symbol in expression: '%s'"
+msgstr ""
+
+#: rxdconst.sexprnameerror
+msgid "Error in filed name"
+msgstr ""
+
+#: rxdconst.sexprnorparen
+msgid "Ожидалось ')', а вст#209�ечено: %s"
+msgstr ""
+
+#: rxdconst.sexprnotboolean
+msgid "Field '%s' is not boolean"
+msgstr ""
+
+#: rxdconst.sexprstringerror
+msgid "Error in string const"
+msgstr ""
+
+#: rxdconst.sexprtermination
+msgid "Error in filter end"
+msgstr ""
+
+#: rxdconst.sfieldreadonly
+msgid "SFieldReadOnly %s"
+msgstr ""
+
+#: rxdconst.sfieldrequired
+msgid "Field '%s' must have a value"
+msgstr ""
+
+#: rxdconst.sfieldtypemismatch
+msgid "Type mismatch for field '%s', expecting: %s actual: %s"
+msgstr ""
+
+#: rxdconst.shintlabel
+msgid "Enter you user name and password"
+msgstr ""
+
+#: rxdconst.sinactivedata
+msgid "inactive"
+msgstr ""
+
+#: rxdconst.sinsertdata
+msgid "append"
+msgstr ""
+
+#: rxdconst.sinvaliddate
+msgid "Invalid Date"
+msgstr ""
+
+#: rxdconst.sinvalidfields
+msgid "No fields defined"
+msgstr ""
+
+#: rxdconst.sinvalidusername
+msgid "User name or password not valid"
+msgstr ""
+
+#: rxdconst.slocaldatabase
+msgid "Невозможно п#209�оизвести эту опе#209�ацию с локальной базой данных"
+msgstr ""
+
+#: rxdconst.smemnorecords
+msgid "No data found"
+msgstr ""
+
+#: rxdconst.smore1
+msgid "&More >>"
+msgstr ""
+
+#: rxdconst.smore2
+msgid "&Less <<"
+msgstr ""
+
+#: rxdconst.snewpasswordlabel
+msgid "&New password:"
+msgstr ""
+
+#: rxdconst.snextbutton
+msgid "&Next"
+msgstr ""
+
+#: rxdconst.snotcapturefilter
+msgid "Элементы уп#209�авления должны быть захвачены фильт#209�ом"
+msgstr ""
+
+#: rxdconst.snotediting
+msgid "Dataset not in edit or insert mode"
+msgstr ""
+
+#: rxdconst.soldpasswordlabel
+msgid "&Old password:"
+msgstr ""
+
+#: rxdconst.spasswordchanged
+msgid "Password changed"
+msgstr ""
+
+#: rxdconst.spasswordlabel
+msgid "&Password:"
+msgstr ""
+
+#: rxdconst.spasswordnotchanged
+msgid "Password not changed"
+msgstr ""
+
+#: rxdconst.spasswordsmismatch
+msgid "New password and confirmation not equal"
+msgstr ""
+
+#: rxdconst.sprevbutton
+msgid "&Prior"
+msgstr ""
+
+#: rxdconst.spropdefbylookup
+msgid "PropDefByLookup"
+msgstr ""
+
+#: rxdconst.sregistration
+msgid "Register"
+msgstr ""
+
+#: rxdconst.sretrylogin
+msgid "Вы хотите повто#209�ить попытку соединения с базой данных?"
+msgstr ""
+
+#: rxdconst.srxascendign
+msgid "Ascendente"
+msgstr ""
+
+#: rxdconst.srxdbgridemptifilter
+msgid "(Empty)"
+msgstr ""
+
+#: rxdconst.srxdbgridfilter
+msgid "Filter data"
+msgstr ""
+
+#: rxdconst.srxdbgridfilterclear
+msgctxt "rxdconst.srxdbgridfilterclear"
+msgid "Clear filter"
+msgstr ""
+
+#: rxdconst.srxdbgridfiltersimple
+msgid "Filter in table"
+msgstr ""
+
+#: rxdconst.srxdbgridfind
+msgctxt "rxdconst.srxdbgridfind"
+msgid "Find data"
+msgstr ""
+
+#: rxdconst.srxdbgridfindcaption
+msgctxt "rxdconst.srxdbgridfindcaption"
+msgid "Find data"
+msgstr ""
+
+#: rxdconst.srxdbgridfindcasesens
+msgid "Case sensetive"
+msgstr ""
+
+#: rxdconst.srxdbgridfinddirecion
+msgid "Direction"
+msgstr ""
+
+#: rxdconst.srxdbgridfindonfield
+msgid "Find on field"
+msgstr ""
+
+#: rxdconst.srxdbgridfindpartial
+msgid "Partial key"
+msgstr ""
+
+#: rxdconst.srxdbgridfindrangeall
+msgid "All"
+msgstr ""
+
+#: rxdconst.srxdbgridfindrangeback
+msgid "Backward"
+msgstr ""
+
+#: rxdconst.srxdbgridfindrangeforw
+msgid "Forward"
+msgstr ""
+
+#: rxdconst.srxdbgridfindtext
+msgid "Text to find"
+msgstr ""
+
+#: rxdconst.srxdbgridselcolcaption
+msgid "Grid columns"
+msgstr ""
+
+#: rxdconst.srxdbgridselcolhint1
+msgid "Move selected column up"
+msgstr ""
+
+#: rxdconst.srxdbgridselcolhint2
+msgid "Move selected column down"
+msgstr ""
+
+#: rxdconst.srxdbgridselectcolumns
+msgid "Select visible collumns"
+msgstr ""
+
+#: rxdconst.srxdbgridsortbycolumns
+msgid "Sort data for collumns"
+msgstr ""
+
+#: rxdconst.srxdescending
+msgid "Descendente"
+msgstr ""
+
+#: rxdconst.srxfilterformapply
+msgid "Apply"
+msgstr ""
+
+#: rxdconst.srxfilterformcancel
+msgid "Cancel"
+msgstr ""
+
+#: rxdconst.srxfilterformcaption
+msgid "Filter conditions"
+msgstr ""
+
+#: rxdconst.srxfilterformclear
+msgctxt "rxdconst.srxfilterformclear"
+msgid "Clear filter"
+msgstr ""
+
+#: rxdconst.srxfilterformcondition
+msgid "Condition :"
+msgstr ""
+
+#: rxdconst.srxfilterformend
+msgid "end."
+msgstr ""
+
+#: rxdconst.srxfilterformonfield
+msgid "On field :"
+msgstr ""
+
+#: rxdconst.srxfilterformoperaion
+msgid "Operation :"
+msgstr ""
+
+#: rxdconst.srxfilterformoperand
+msgid "Operand :"
+msgstr ""
+
+#: rxdconst.srxfilterformselectexp
+msgid "Enter filter expression for data in table:"
+msgstr ""
+
+#: rxdconst.srxsortbyformaddfield
+msgid "&Add field"
+msgstr ""
+
+#: rxdconst.srxsortbyformallfields
+msgid "&Fields in dataset:"
+msgstr ""
+
+#: rxdconst.srxsortbyformcaption
+msgid "Sort on field"
+msgstr ""
+
+#: rxdconst.srxsortbyformmovednfield
+msgid "&Down"
+msgstr ""
+
+#: rxdconst.srxsortbyformmoveupfield
+msgid "&Up"
+msgstr ""
+
+#: rxdconst.srxsortbyformremovefield
+msgid "&Remove"
+msgstr ""
+
+#: rxdconst.srxsortbyformsortfields
+msgid "&Selected fields:"
+msgstr ""
+
+#: rxdconst.srxsortbyformsortorder
+msgid "Select field for sort data:"
+msgstr ""
+
+#: rxdconst.sservererrorlabel
+msgid "Server error"
+msgstr ""
+
+#: rxdconst.ssetkeydata
+msgid "find"
+msgstr ""
+
+#: rxdconst.sunknownfieldtype
+msgid "SUnknownFieldType %s"
+msgstr ""
+
+#: rxdconst.sunlockcaption
+msgid "Unloock"
+msgstr ""
+
+#: rxdconst.sunlockhint
+msgid "Enter you password"
+msgstr ""
+
+#: rxdconst.susernamelabel
+msgid "&User name:"
+msgstr ""
+

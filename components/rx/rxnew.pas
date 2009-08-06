@@ -16,7 +16,7 @@ uses
   rxdbgrid_findunit, rxdbgrid_columsunit, rxpopupunit, rxcustomchartpanel, 
   rxsortmemds, AutoPanel, pickdate, rxiconv, rxceEditLookupFields, rxclock, 
   rxspin, RxDBSpinEdit, RegisterRxDB, RxTimeEdit, RxDBTimeEdit, RxDBCtrls, 
-  LazarusPackageIntf;
+  rxfilterby, LazarusPackageIntf;
 
 implementation
 

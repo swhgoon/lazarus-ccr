@@ -167,6 +167,7 @@ type
     FOnPopUpCloseEvent:TPopUpCloseEvent;
     FPopUpFormOptions:TPopUpFormOptions;
     FRowCount:word;
+    WControl:TWinControl;
     function GetDataSet: TDataSet;
     function GetLookupDisplayIndex: integer;
     procedure SetDataSet(const AValue: TDataSet);
@@ -210,6 +211,9 @@ begin
   Result.DataSet:=ADataSet;
   Result.LookupDisplayIndex:=ALookupDisplayIndex;
 
+  AControl.Caption:='';
+  Result.WControl:=AControl;
+
   if Assigned(Font) then
   begin
     Result.FGrid.Font.Assign(Font);
@@ -217,11 +221,11 @@ begin
   end;
 
 {$IFDEF LINUX}
-  if Result.ShowModal = mrOk then
+{  if Result.ShowModal = mrOk then
     if Assigned(AOnPopUpCloseEvent) then
       AOnPopUpCloseEvent(true);
   Result.Free;
-  Result:=nil;
+  Result:=nil;}
 {$ELSE  LINUX}
   Result.Show;
   Result.FGrid.UpdateActive;
@@ -293,7 +297,7 @@ begin
     inherited KeyDown(Key, Shift);
   end;
   FGrid.KeyDown(Key, Shift);
-  Key:=0;
+//  Key:=0;
   Invalidate;
 end;
 
@@ -759,27 +763,67 @@ end;
 
 procedure TPopUpGrid.ClearFind;
 begin
+  TPopUpForm(Owner).WControl.Caption:=' ';
+  TPopUpForm(Owner).WControl.Repaint;
   FFindLine:='';
   if DatalinkActive then
     DataSource.DataSet.First;
 end;
 
 procedure TPopUpGrid.FindNextChar(AChar: Char);
+var
+  F:string;
 begin
   FFindLine:=FFindLine + AChar;
   if DatalinkActive then
-    DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]);
+{    if true then
+    begin}
+      if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
+      begin
+        TPopUpForm(Owner).WControl.Caption:=FFindLine;
+        TPopUpForm(Owner).WControl.Repaint;
+      end
+      else
+        FFindLine:=F;
+{    end
+    else
+      DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]);}
 end;
 
 procedure TPopUpGrid.FindPriorChar;
+var
+  F:string;
 begin
   if FFindLine = '' then exit;
+  F:=FFindLine;
   Delete(FFindLine, Length(FFindLine), 1);
   if DatalinkActive then
     if (FFindLine<>'') then
+    begin
+      if true then
+      begin
+        if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
+        begin
+    	  TPopUpForm(Owner).WControl.Caption:=FFindLine;
+          TPopUpForm(Owner).WControl.Repaint;
+        end
+        else
+          FFindLine:=F;
+      end
+      else
+      DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey])
+    end
+    else
+    begin
+      TPopUpForm(Owner).WControl.Caption:=' ';
+      TPopUpForm(Owner).WControl.Repaint;
+      DataSource.DataSet.First;
+    end;
+{  if DatalinkActive then
+    if (FFindLine<>'') then
       DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey])
     else
-      DataSource.DataSet.First;
+      DataSource.DataSet.First;}
 end;
 
 procedure TPopUpGrid.SetLookupDisplayIndex(const AValue: integer);
@@ -791,6 +835,12 @@ end;
 procedure TPopUpGrid.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
+  if (Columns[FLookupDisplayIndex].Field.DataType<>ftString) and not (Key in ['0'..'9'])  then
+    Exit
+  else
+  if Key=#32 then
+    FindNextChar(Key)
+  else
   if Key>#32 then
     FindNextChar(Key)
   else
@@ -800,6 +850,32 @@ end;
 
 procedure TPopUpGrid.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+  if true then
+  begin
+    if Key = VK_DELETE then
+    begin
+      ClearFind;
+      Key:=0;
+    end
+    else
+    if Key = VK_BACK then
+    begin
+      FindPriorChar;
+      Key:=0;
+    end
+    else
+    begin
+      if Key in [VK_UP,VK_DOWN,VK_PRIOR,VK_NEXT] then
+      begin
+        FFindLine:='';
+    	TPopUpForm(Owner).WControl.Caption:='';
+    	TPopUpForm(Owner).WControl.Repaint;
+      end;
+      inherited KeyDown(Key, Shift);
+      exit;
+    end;
+  end
+{  else
   if (Key>=Ord('0')) and (Key<=Ord('9')) then
     FindNextChar(Char(Key))
   else
@@ -816,7 +892,7 @@ begin
     inherited KeyDown(Key, Shift);
     exit;
   end;
-  Key:=0;
+  Key:=0;}
 end;
 
 end.

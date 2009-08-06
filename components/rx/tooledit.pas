@@ -180,7 +180,7 @@ function PaintComboEdit(Editor: TCustomMaskEdit; const AText: string;
 function EditorTextMargins(Editor: TCustomMaskEdit): TPoint;
 
 implementation
-uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms;
+uses lclintf, LCLStrConsts, rxconst, rxstrutils, LResources, Forms, LCLProc;
 
 type
   TPopupCalendarAccess = class(TPopupCalendar)
@@ -398,7 +398,9 @@ begin
       csPopup:
         begin
           if FPopup = nil then
+          begin
             FPopup := CreatePopupCalendar(Self{$IFDEF USED_BiDi}, BiDiMode {$ENDIF});
+          end;
           FPopup.OnCloseUp := @PopupCloseUp;
           FPopup.Color := FPopupColor;
           TRxCalendarGrid(FPopup.Calendar).NotInThisMonthColor:=FNotInThisMonthColor;
@@ -461,6 +463,7 @@ procedure TCustomRxDateEdit.SetYearDigits(const AValue: TYearDigits);
 begin
   if FYearDigits=AValue then exit;
   FYearDigits:=AValue;
+  UpdateFormat;
 end;
 
 procedure TCustomRxDateEdit.CalendarHintsChanged(Sender: TObject);
@@ -507,7 +510,11 @@ end;}
 
 procedure TCustomRxDateEdit.UpdateFormat;
 begin
-  FDateFormat := DefDateFormat(FourDigitYear);
+  case YearDigits of
+    dyDefault:FDateFormat :=DefDateFormat(FourDigitYear);
+    dyFour:FDateFormat := DefDateFormat(true);
+    dyTwo:FDateFormat := DefDateFormat(false);//DefDateMask(FBlanksChar, false);
+  end;
 end;
 
 procedure TCustomRxDateEdit.UpdatePopup;
@@ -807,7 +814,11 @@ end;
 
 function TCustomRxDateEdit.GetDateMask: string;
 begin
-  Result := DefDateMask(FBlanksChar, FourDigitYear);
+  case YearDigits of
+    dyDefault:Result :=DefDateMask(FBlanksChar, FourDigitYear);
+    dyFour:Result := DefDateMask(FBlanksChar, true);
+    dyTwo:Result := DefDateMask(FBlanksChar, false);
+  end;
 end;
 
 procedure TCustomRxDateEdit.UpdateMask;
@@ -818,12 +829,12 @@ begin
   DateValue := GetDate;
   OldFormat := FDateFormat;
   UpdateFormat;
-{  if (GetDateMask <> EditMask) or (OldFormat <> FDateFormat) then
+  if (GetDateMask <> EditMask) or (OldFormat <> FDateFormat) then
   begin
     { force update }
     EditMask := '';
     EditMask := GetDateMask;
-  end;}
+  end;
   UpdatePopup;
   SetDate(DateValue);
 end;

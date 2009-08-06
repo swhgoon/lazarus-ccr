@@ -9,160 +9,125 @@
 
 unit rxdconst;
 
-{ RX Data aware controls constants }
-{
-  Reserved range
-  from MaxExtStrID - 86
-  to   MaxExtStrID - 134
-}
-
 interface
 
-const
-{ The minimal VCL's used string ID is 61440. The custom IDs must be
-  less that above. }
-  MaxExtStrID = 61300;
 
 resourcestring
-(*
-{ DBLists }
-
-  SLocalDatabase          = MaxExtStrID - 86;
-
-{ DBUtils }
-
-  SRetryLogin             = MaxExtStrID - 87;
-
-{ DBFilter }
-
-  SExprNotBoolean         = MaxExtStrID - 88;
-  SExprBadNullTest        = MaxExtStrID - 89;
-  SExprBadField           = MaxExtStrID - 90;
-  SCaptureFilter          = MaxExtStrID - 91;
-  SNotCaptureFilter       = MaxExtStrID - 92;
 
 { RxDBCtrl }
 
-  SInactiveData           = MaxExtStrID - 93;
-  SBrowseData             = MaxExtStrID - 94;
-  SEditData               = MaxExtStrID - 95;
-  SInsertData             = MaxExtStrID - 96;
-  SSetKeyData             = MaxExtStrID - 97;
-  SCalcFieldsData         = MaxExtStrID - 98;
+  SLocalDatabase         = 'Невозможно произвести эту операцию с локальной базой данных';
+  SRetryLogin            = 'Вы хотите повторить попытку соединения с базой данных?';
+  SExprNotBoolean        = 'Field ''%s'' is not boolean';
+  SExprBadNullTest       = 'NULL-values enabled in ''='' и ''<>''';
+  SExprBadField          = 'Field ''%s'' not used in filter expression';
+  SCaptureFilter         = 'Элементы управления захвачены фильтром';
+  SNotCaptureFilter      = 'Элементы управления должны быть захвачены фильтром';
+  SInactiveData          = 'inactive';
+  SBrowseData            = 'browse';
+  SEditData              = 'editing';
+  SInsertData            = 'append';
+  SSetKeyData            = 'find';
+  SCalcFieldsData        = 'calc';
+  SRegistration          = 'Register';
+  SAppTitleLabel         = 'Application "%s"';
+  SHintLabel             = 'Enter you user name and password';
+  SUserNameLabel         = '&User name:';
+  SPasswordLabel         = '&Password:';
+  SMore1                 = '&More >>';
+  SMore2                 = '&Less <<';
+  SInvalidUserName       = 'User name or password not valid';
+  SChangePassword        = 'Change password';
+  SOldPasswordLabel      = '&Old password:';
+  SNewPasswordLabel      = '&New password:';
+  SConfirmPasswordLabel  = '&Confirm:';
+  SPasswordChanged       = 'Password changed';
+  SPasswordNotChanged    = 'Password not changed';
+  SPasswordsMismatch     = 'New password and confirmation not equal';
+  SDBExceptCaption       = 'Error in DB engine';
+  SServerErrorLabel        = 'Server error';
+  SErrorMsgLabel           = 'Error message';
+  SNextButton              = '&Next';
+  SPrevButton              = '&Prior';
+  SExprIncorrect           = 'Error in filter expression';
+  SExprTermination         = 'Error in filter end';
+  SExprNameError           = 'Error in filed name';
+  SExprStringError         = 'Error in string const';
+  SExprInvalidChar         = 'Error symbol in expression: ''%s''';
+  SExprNoRParen            = 'Ожидалось '')'', а встречено: %s';
+  SExprExpected            = 'Ожидалось выражение, а встречено %s';
+  SExprBadCompare          = 'Операции сравнения требуют наличия поля и константы';
+  SConfirmSave             = 'Data changed. Save?';
+  SDatabaseName            = 'Database loocked: %s';
+  SUnlockCaption           = 'Unloock';
+  SUnlockHint              = 'Enter you password';
+  SDeleteMultipleRecords   = 'Delete all selected records?';
 
-{ LoginDlg }
-
-  SRegistration           = MaxExtStrID - 99;
-  SAppTitleLabel          = MaxExtStrID - 100;
-  SHintLabel              = MaxExtStrID - 101;
-  SUserNameLabel          = MaxExtStrID - 102;
-  SPasswordLabel          = MaxExtStrID - 103;
-  SInvalidUserName        = MaxExtStrID - 104;
-
-{ ChPswDlg }
-
-  SChangePassword         = MaxExtStrID - 105;
-  SOldPasswordLabel       = MaxExtStrID - 106;
-  SNewPasswordLabel       = MaxExtStrID - 107;
-  SConfirmPasswordLabel   = MaxExtStrID - 108;
-  SPasswordChanged        = MaxExtStrID - 109;
-  SPasswordNotChanged     = MaxExtStrID - 110;
-  SPasswordsMismatch      = MaxExtStrID - 111;
-
-{ DBExcpt }
-
-  SDBExceptCaption        = MaxExtStrID - 112;
-  SBDEErrorLabel          = MaxExtStrID - 113;
-  SServerErrorLabel       = MaxExtStrID - 114;
-  SErrorMsgLabel          = MaxExtStrID - 115;
-  SNextButton             = MaxExtStrID - 116;
-  SPrevButton             = MaxExtStrID - 117;
-
-{ DBFilter expression parser }
-
-  SExprIncorrect          = MaxExtStrID - 118;
-  SExprTermination        = MaxExtStrID - 119;
-  SExprNameError          = MaxExtStrID - 120;
-  SExprStringError        = MaxExtStrID - 121;
-  SExprInvalidChar        = MaxExtStrID - 122;
-  SExprNoRParen           = MaxExtStrID - 123;
-  SExprExpected           = MaxExtStrID - 124;
-  SExprBadCompare         = MaxExtStrID - 125;
-
-{ DBUtils }
-
-  SConfirmSave            = MaxExtStrID - 126;
-  SDatabaseName           = MaxExtStrID - 127;  
-
-{ LoginDlg }
-  
-  SUnlockCaption          = MaxExtStrID - 128;
-  SUnlockHint             = MaxExtStrID - 129;
-
-{ RxDBCtrl }
-
-  SDeleteMultipleRecords  = MaxExtStrID - 130;*)
-
-  SLocalDatabase = 'Невозможно произвести эту операцию с локальной базой данных';
-  SRetryLogin = 'Вы хотите повторить попытку соединения с базой данных?';
-  SExprNotBoolean = 'Поле ''%s'' не является полем логического типа';
-  SExprBadNullTest = 'NULL-значения допустимы только в операциях ''='' и ''<>''';
-  SExprBadField = 'Поле ''%s'' не может быть использовано в выражении фильтра';
-  SCaptureFilter = 'Элементы управления захвачены фильтром';
-  SNotCaptureFilter = 'Элементы управления должны быть захвачены фильтром';
-  SInactiveData = 'неактивно';
-  SBrowseData = 'просмотр';
-  SEditData = 'редактирование';
-  SInsertData = 'добавление';
-  SSetKeyData = 'поиск';
-  SCalcFieldsData = 'подсчет';
-  SRegistration = 'Регистрация';
-  SAppTitleLabel = 'Программа "%s"';
-  SHintLabel = 'Введите Ваше пользовательское имя и пароль';
-  SUserNameLabel = '&Имя пользователя:';
-  SPasswordLabel = '&Пароль:';
-  SMore1         = '&Больше >>';
-  SMore2         = '&Меньше <<';
-  SInvalidUserName = 'Неверное имя пользователя или пароль';
-  SChangePassword = 'Смена пароля';
-  SOldPasswordLabel = '&Старый пароль:';
-  SNewPasswordLabel = '&Новый пароль:';
-  SConfirmPasswordLabel = '&Подтверждение:';
-  SPasswordChanged = 'Пароль сменен';
-  SPasswordNotChanged = 'Пароль не сменен';
-  SPasswordsMismatch = 'Новый пароль и подтверждение не совпадают';
-  SDBExceptCaption = 'Ошибка процессора БД';
-  SBDEErrorLabel = 'Ошибка BDE';
-  SServerErrorLabel = 'Ошибка сервера';
-  SErrorMsgLabel = 'Сообщение об ошибке';
-  SNextButton = '&Дальше';
-  SPrevButton = '&Назад';
-  SExprIncorrect = 'Некорректно сформулировано выражение фильтра';
-  SExprTermination = 'Неверное завершение выражения фильтра';
-  SExprNameError = 'Невозможно определить завершение имени поля';
-  SExprStringError = 'Невозможно определить завершение строковой константы';
-  SExprInvalidChar = 'Неверный символ в выражении фильтра: ''%s''';
-  SExprNoRParen = 'Ожидалось '')'', а встречено: %s';
-  SExprExpected = 'Ожидалось выражение, а встречено %s';
-  SExprBadCompare = 'Операции сравнения требуют наличия поля и константы';
-  SConfirmSave = 'Данные были изменены. Сохранять?';
-  SDatabaseName = 'База данных: %s';
-  SUnlockCaption = 'Разблокирование';
-  SUnlockHint = 'Введите ваш пароль';
-  SDeleteMultipleRecords = 'Удалить все выбранные записи?';
-
-  SPropDefByLookup = 'PropDefByLookup';
-  SDataSourceFixed = 'SDataSourceFixed';
-  SCircularDataLink = 'SCircularDataLink';
+  SPropDefByLookup         = 'PropDefByLookup';
+  SDataSourceFixed         = 'SDataSourceFixed';
+  SCircularDataLink        = 'SCircularDataLink';
+  sRxAscendign             = 'Ascendente';//'Ascendente');
+  sRxDescending            = 'Descendente';//'Descendente');
 
 
-  SDeleteRecordQuestion = 'Delete record?';
-  SFieldTypeMismatch = 'Type mismatch for field ''%s'', expecting: %s actual: %s';
-  SInvalidDate       = 'Invalid Date';
-  SFieldRequired = 'Field ''%s'' must have a value';
-  SNotEditing = 'Dataset not in edit or insert mode';
-  SUnknownFieldType = 'SUnknownFieldType %s';
-  SFieldReadOnly = 'SFieldReadOnly %s';
+  SDeleteRecordQuestion    = 'Delete record?';
+  SFieldTypeMismatch       = 'Type mismatch for field ''%s'', expecting: %s actual: %s';
+  SInvalidDate             = 'Invalid Date';
+  SFieldRequired           = 'Field ''%s'' must have a value';
+  SNotEditing              = 'Dataset not in edit or insert mode';
+  SUnknownFieldType        = 'SUnknownFieldType %s';
+  SFieldReadOnly           = 'SFieldReadOnly %s';
+
+  //RXDBgrid
+  sRxDBGridFind            = 'Find data';  ////  'Buscar                              Ctrl+F';
+  sRxDBGridFilter          = 'Filter data';//'Filtrar                               Ctrl+T';
+  sRxDBGridFilterSimple    = 'Filter in table';//      Ctrl+E';  'Filtrar en Encabezado      Ctrl+E';
+  sRxDBGridFilterClear     = 'Clear filter';//                      Ctrl+Q';'Quitar Filtro                      Ctrl+Q';
+  sRxDBGridSortByColumns   = 'Sort data for collumns';//     Ctrl+C';'Ordenar por Columnas     Ctrl+C';
+  sRxDBGridSelectColumns   = 'Select visible collumns';//      Ctrl+W';'Seleccionar Columnas      Ctrl+W';
+  sRxDBGridEmptiFilter     = '(Empty)';
+
+  //RxDBGrid filter form
+  sRxFilterFormSelectExp   = 'Enter filter expression for data in table:';
+  sRxFilterFormOnField     = 'On field :';
+  sRxFilterFormOperaion    = 'Operation :';
+  sRxFilterFormCondition   = 'Condition :';
+  sRxFilterFormOperand     = 'Operand :';
+  sRxFilterFormEnd         = 'end.';
+  sRxFilterFormClear       = 'Clear filter';
+  sRxFilterFormCancel      = 'Cancel';
+  sRxFilterFormApply       = 'Apply';
+  sRxFilterFormCaption     = 'Filter conditions';
+
+  //TrxSortByForm
+  sRxSortByFormCaption     = 'Sort on field';
+  sRxSortByFormAllFields   = '&Fields in dataset:';
+  sRxSortByFormSortFields  = '&Selected fields:';
+  sRxSortByFormSortOrder   = 'Select field for sort data:';
+  sRxSortByFormAddField    = '&Add field';
+  sRxSortByFormRemoveField = '&Remove';
+  sRxSortByFormMoveUpField = '&Up';
+  sRxSortByFormMoveDnField = '&Down';
+
+  //TRxMemoryData
+  SMemNoRecords            = 'No data found';
+  SInvalidFields           = 'No fields defined';
+
+  //TrxDBGridFindForm
+  sRxDbGridFindCaption     = 'Find data';
+  sRxDbGridFindText        = 'Text to find';
+  sRxDbGridFindOnField     = 'Find on field';
+  sRxDbGridFindCaseSens    = 'Case sensetive';
+  sRxDbGridFindPartial     = 'Partial key';
+  sRxDbGridFindDirecion    = 'Direction';
+  sRxDbGridFindRangeAll    = 'All';
+  sRxDbGridFindRangeForw   = 'Forward';
+  sRxDbGridFindRangeBack   = 'Backward';
+
+  //TrxDBGridColumsForm
+  sRxDbGridSelColCaption   = 'Grid columns';
+  sRxDbGridSelColHint1     = 'Move selected column up';
+  sRxDbGridSelColHint2     = 'Move selected column down';
 
 const
   { The following strings should not be localized }

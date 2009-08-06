@@ -563,7 +563,7 @@ begin
     end
     else
     begin
-      Canvas.Font.Color := clBtnText;
+      Canvas.Font.Color := clWindowText;
       if ((FLastDrawFlagsA and DFCS_FLAT) <> 0) and ((FLastDrawFlagsA and DFCS_PUSHED) = 0) and (TToolPanel(Parent).FToolBarStyle <> tbsWindowsXP)
          and (tpCaptionPopup in TToolbarItems(FOwnerItem.Collection).FToolPanel.Options) then
         OffsetRect(PaintRect, -2, -2);
