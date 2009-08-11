@@ -311,12 +311,12 @@ var
   ok: Boolean;
   E: Exception;
 begin
-  Group:=Item.Group;
-  aPool:=Group.Pool;
+  aPool:=Item.Group.Pool;
   ok:=false;
   try
     repeat
       // work
+      Group:=Item.Group;
       Group.Run(Item.Index,Group.TaskData,Item);
 
       aPool.EnterPoolCriticalSection;
@@ -352,7 +352,7 @@ begin
       // wait for new work
       if Item.FState=mtptsInactive then
         RTLeventWaitFor(Item.fWaitForPool);
-    until Group=nil;
+    until Item.Group=nil;
     ok:=true;
   except
     // stop the exception and store it
