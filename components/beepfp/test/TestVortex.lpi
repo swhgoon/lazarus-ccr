@@ -1,0 +1,579 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="78">
+      <Unit0>
+        <Filename Value="TestVortex.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestVortex"/>
+        <CursorPos X="1" Y="80"/>
+        <TopLine Value="33"/>
+        <UsageCount Value="35"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="../vortex.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Vortex"/>
+        <CursorPos X="4" Y="5"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="35"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../lazaxl/axl.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="axl"/>
+        <CursorPos X="17" Y="63"/>
+        <TopLine Value="48"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="35"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../vortex_types.inc"/>
+        <CursorPos X="37" Y="389"/>
+        <TopLine Value="365"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../vortex_support.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../vortex_handlers.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../vortex_ctx.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../vortex_thread.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../vortex_thread_pool.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../vortex_queue.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../vortex_hash.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../vortex_connection.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../vortex_listener.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../vortex_frame_factory.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../vortex_greetings.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../vortex_profiles.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../vortex_channel.inc"/>
+        <CursorPos X="22" Y="413"/>
+        <TopLine Value="389"/>
+        <UsageCount Value="9"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../vortex_channel_pool.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../vortex_io.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../vortex_reader.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../vortex_dtds.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../vortex_sequencer.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../vortex_errno.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../lazaxl/axl_dtd.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../lazaxl/axl_error.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../../lazaxl/axl_log.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../../lazaxl/axl_factory.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../lazaxl/axl_decl_imp.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="9"/>
+        <UsageCount Value="9"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../lazaxl/axl_doc_imp.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="6"/>
+        <UsageCount Value="9"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../lazaxl/axl_node_imp.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="34"/>
+        <UsageCount Value="9"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../lazaxl/axl_decl.inc"/>
+        <CursorPos X="28" Y="911"/>
+        <TopLine Value="864"/>
+        <UsageCount Value="9"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../lazaxl/axl_list.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../lazaxl/axl_stack.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../../lazaxl/axl_hash.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../../lazaxl/axl_stream.inc"/>
+        <CursorPos X="9" Y="544"/>
+        <TopLine Value="499"/>
+        <UsageCount Value="9"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="../../lazaxl/axl_doc.inc"/>
+        <CursorPos X="1" Y="183"/>
+        <TopLine Value="159"/>
+        <UsageCount Value="9"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="../../lazaxl/axl_node.inc"/>
+        <CursorPos X="5" Y="254"/>
+        <TopLine Value="229"/>
+        <UsageCount Value="9"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="../../lazaxl/axl_stream_imp.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="9"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="../../lazaxl/axl_config.h"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="../../../laz_conv/libvortex/vortex_http.tmp.h"/>
+        <CursorPos X="1" Y="55"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="../../vortex_http.tmp.h"/>
+        <CursorPos X="1" Y="55"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="../../vortex_pull.tmp.h"/>
+        <CursorPos X="1" Y="61"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="../../vortex_sasl.tmp.h"/>
+        <CursorPos X="1" Y="56"/>
+        <TopLine Value="31"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="../../vortex_tls.tmp.h"/>
+        <CursorPos X="1" Y="53"/>
+        <TopLine Value="28"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="../../vortex_tunnel.tmp.h"/>
+        <CursorPos X="1" Y="61"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="../../vortex_xml_rpc.tmp.h"/>
+        <CursorPos X="1" Y="48"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="../../vortex_xml_rpc_types.tmp.h"/>
+        <CursorPos X="1" Y="797"/>
+        <TopLine Value="772"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="../../vortex_http.apas"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="../../vortex_http.a.pas"/>
+        <CursorPos X="1" Y="135"/>
+        <TopLine Value="90"/>
+        <UsageCount Value="9"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="../../vortex_http.pas"/>
+        <UnitName Value="vortex_http"/>
+        <CursorPos X="1" Y="7"/>
+        <TopLine Value="22"/>
+        <UsageCount Value="9"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/aliasctp.inc"/>
+        <CursorPos X="79" Y="21"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/ctypes.pp"/>
+        <UnitName Value="ctypes"/>
+        <CursorPos X="6" Y="23"/>
+        <TopLine Value="20"/>
+        <UsageCount Value="9"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="../vortex_http.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_http"/>
+        <CursorPos X="1" Y="57"/>
+        <TopLine Value="41"/>
+        <UsageCount Value="34"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="../../vortex_pull.apas"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="../../vortex_pull.a.pas"/>
+        <UnitName Value="vortex_pull"/>
+        <CursorPos X="5" Y="306"/>
+        <TopLine Value="168"/>
+        <UsageCount Value="9"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="../../vortex_pull.pas"/>
+        <UnitName Value="vortex_pull"/>
+        <CursorPos X="1" Y="71"/>
+        <TopLine Value="21"/>
+        <UsageCount Value="9"/>
+        <Bookmarks Count="1">
+          <Item0 X="63" Y="277" ID="1"/>
+        </Bookmarks>
+      </Unit55>
+      <Unit56>
+        <Filename Value="../vortex_pull.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_pull"/>
+        <CursorPos X="1" Y="57"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="33"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="../../vortex_sasl.a.pas"/>
+        <UnitName Value="vortex_sasl"/>
+        <CursorPos X="5" Y="638"/>
+        <TopLine Value="589"/>
+        <UsageCount Value="9"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="../../vortex_sasl.pas"/>
+        <UnitName Value="vortex_sasl"/>
+        <CursorPos X="55" Y="212"/>
+        <TopLine Value="216"/>
+        <UsageCount Value="9"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="../vortex_sasl.pas"/>
+        <UnitName Value="vortex_sasl"/>
+        <CursorPos X="22" Y="598"/>
+        <TopLine Value="574"/>
+        <UsageCount Value="21"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="../../vortex_tls.pas"/>
+        <UnitName Value="vortex_tls"/>
+        <CursorPos X="1" Y="195"/>
+        <TopLine Value="52"/>
+        <UsageCount Value="9"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="../../vortex_tls.apas"/>
+        <CursorPos X="17" Y="2"/>
+        <TopLine Value="74"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="../../vortex_tls.a.pas"/>
+        <CursorPos X="5" Y="105"/>
+        <TopLine Value="88"/>
+        <UsageCount Value="9"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="../vortex_tls.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_tls"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="31"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="../../vortex_tunnel.h"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="../../vortex_tunnel.pas"/>
+        <UnitName Value="vortex_tunnel"/>
+        <CursorPos X="37" Y="162"/>
+        <TopLine Value="154"/>
+        <UsageCount Value="9"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="../../vortex_tunnel.a.pas"/>
+        <CursorPos X="1" Y="208"/>
+        <TopLine Value="190"/>
+        <UsageCount Value="9"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="../vortex_tunnel.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_tunnel"/>
+        <CursorPos X="9" Y="56"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="29"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="../../vortex_xml_rpc.pas"/>
+        <UnitName Value="vortex_xml_rpc"/>
+        <CursorPos X="1" Y="319"/>
+        <TopLine Value="291"/>
+        <UsageCount Value="10"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="../../vortex_xml_rpc.a.pas"/>
+        <CursorPos X="1" Y="386"/>
+        <TopLine Value="348"/>
+        <UsageCount Value="10"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="../vortex_xml_rpc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_xml_rpc"/>
+        <CursorPos X="1" Y="523"/>
+        <TopLine Value="486"/>
+        <UsageCount Value="28"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="../../vortex_xml_rpc_types.apas"/>
+        <CursorPos X="5" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="../../vortex_xml_rpc_types.pas"/>
+        <UnitName Value="vortex_xml_rpc_types"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="../../vortex_xml_rpc_types.inc"/>
+        <CursorPos X="48" Y="1207"/>
+        <TopLine Value="1164"/>
+        <UsageCount Value="9"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="../../vortex_xml_rpc_types_imp.inc"/>
+        <CursorPos X="1" Y="44"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="../../vortex_xml_rpc_types.a.pas"/>
+        <UnitName Value="vortex_xml_rpc_types"/>
+        <CursorPos X="110" Y="1048"/>
+        <TopLine Value="1015"/>
+        <UsageCount Value="11"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="../vortex_xml_rpc_types.inc"/>
+        <CursorPos X="20" Y="227"/>
+        <TopLine Value="188"/>
+        <UsageCount Value="12"/>
+        <Bookmarks Count="2">
+          <Item0 X="1" Y="885" ID="1"/>
+          <Item1 X="1" Y="592" ID="2"/>
+        </Bookmarks>
+      </Unit76>
+      <Unit77>
+        <Filename Value="../vortex_xml_rpc_types_imp.inc"/>
+        <CursorPos X="1" Y="45"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="12"/>
+      </Unit77>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <Target>
+      <Filename Value="testvortex"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <OtherUnitFiles Value="/home/wimpie/development/lib/lazvortex/;/home/wimpie/development/lib/lazaxl/"/>
+      <UnitOutputDirectory Value="lib"/>
+    </SearchPaths>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -1,0 +1,97 @@
+object Form1: TForm1
+  Left = 376
+  Height = 300
+  Top = 232
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.27'
+  object ButtonStart: TButton
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Listen'
+    OnClick = ButtonStartClick
+    TabOrder = 0
+  end
+  object ButtonStop: TButton
+    Left = 96
+    Height = 25
+    Top = 8
+    Width = 96
+    Caption = 'Stop'
+    OnClick = ButtonStopClick
+    TabOrder = 1
+  end
+  object CheckBoxListen: TCheckBox
+    Left = 208
+    Height = 24
+    Top = 8
+    Width = 88
+    Caption = 'Listening'
+    TabOrder = 2
+  end
+  object ButtonPoolNew: TButton
+    Left = 8
+    Height = 25
+    Top = 80
+    Width = 96
+    Caption = 'Create Pool'
+    OnClick = ButtonPoolNewClick
+    TabOrder = 3
+  end
+  object ButtonPoolClose: TButton
+    Left = 112
+    Height = 25
+    Top = 80
+    Width = 96
+    Caption = 'Close pool'
+    TabOrder = 4
+  end
+  object EditPoolSize: TEdit
+    Left = 232
+    Height = 26
+    Top = 80
+    Width = 80
+    TabOrder = 5
+  end
+  object ButtonChanNew: TButton
+    Left = 8
+    Height = 25
+    Top = 128
+    Width = 120
+    Caption = 'Open Channel'
+    OnClick = ButtonChanNewClick
+    TabOrder = 6
+  end
+  object ButtonChanClose: TButton
+    Left = 136
+    Height = 25
+    Top = 128
+    Width = 120
+    Caption = 'Close Channel'
+    OnClick = ButtonChanCloseClick
+    TabOrder = 7
+  end
+  object ButtonSendMsg: TButton
+    Left = 8
+    Height = 25
+    Top = 160
+    Width = 120
+    Caption = 'Send MSG'
+    OnClick = ButtonSendMsgClick
+    TabOrder = 8
+  end
+  object Edit1: TEdit
+    Left = 136
+    Height = 26
+    Top = 160
+    Width = 240
+    TabOrder = 9
+    Text = 'MSG Hallo'
+  end
+end

@@ -1,0 +1,9 @@
+#! /bin/bash
+
+FN="cache"
+[ ! -d $FN ] && mkdir $FN
+
+naturaldocs -i axl -i vortex -i beepfp \
+            -o HTML doc \
+            -p cache \
+            -t 2 

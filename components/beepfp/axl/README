@@ -1,0 +1,47 @@
+LibAxl library for Free Pascal
+Version 0.5.7
+
+Copyright (C) 2009, Wimpie Nortje <wimpienortje@gmail.com>
+
+Introduction
+------------
+This package is a Free Pascal translation of the libaxl header files.
+
+AXL (another XML library) is an XML library implemented in C. The reason for this translation is because it is used by LibVortex (a BEEP implementation).
+
+Installing
+----------
+The Pascal axl units do not need to be installed, only included in the uses statement.
+
+LibAxl shared library must be installed. See the library for instructions.
+
+Obtaining libaxl
+----------------
+LibAxl can be downloaded from www.aspl.es/axl
+
+Main differences with C headers
+-------------------------------
+The pascal units were kept as close as possible to the original source. The biggest changes are macros that are implemented as functions or skipped altogether.
+
+Most of the C source are still in the files for future reference as well as all the doxygen documentation.
+
+Work completed
+--------------
+This translation of the libaxl headers is for libaxl v0.5.7
+
+Only the base library was translated. This is the part required by LibVortex to operate.
+
+To do
+-----
+1. There remain some untranslated #define's in the base library
+2. The following axl parts are not yet translated:
+  - babel
+  - knife
+  - namespace
+  - tests
+
+Credits and license
+-------------------
+Thanks to Advanced Software Production Line (ASPL) for making this library available.
+
+This translation uses the same LGPL license as the libaxl library.

@@ -1,0 +1,411 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Title Value="test_client"/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="1"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="36">
+      <Unit0>
+        <Filename Value="test_client.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="test_client"/>
+        <CursorPos X="115" Y="7"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="107"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="newclientmain.pas"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewClientMain"/>
+        <CursorPos X="31" Y="133"/>
+        <TopLine Value="123"/>
+        <UsageCount Value="101"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../beepcontext.pas"/>
+        <UnitName Value="BeepContext"/>
+        <CursorPos X="1" Y="93"/>
+        <TopLine Value="56"/>
+        <UsageCount Value="15"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../beepconnection.pas"/>
+        <UnitName Value="BeepConnection"/>
+        <CursorPos X="1" Y="365"/>
+        <TopLine Value="328"/>
+        <UsageCount Value="101"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../beepclient.pas"/>
+        <UnitName Value="BeepClient"/>
+        <CursorPos X="17" Y="201"/>
+        <TopLine Value="176"/>
+        <UsageCount Value="26"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../beeppeer.pas"/>
+        <UnitName Value="BeepPeer"/>
+        <CursorPos X="32" Y="175"/>
+        <TopLine Value="168"/>
+        <UsageCount Value="23"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../beepchannelpool.pas"/>
+        <UnitName Value="BeepChannelPool"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="101"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../lazvortex/vortex.pas"/>
+        <UnitName Value="Vortex"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="50"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../lazvortex/vortex_channel_pool.inc"/>
+        <CursorPos X="100" Y="61"/>
+        <TopLine Value="20"/>
+        <UsageCount Value="2"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../beepprofile.pas"/>
+        <UnitName Value="BeepProfile"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="50"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../beepprofilebase.pas"/>
+        <UnitName Value="BeepProfileBase"/>
+        <CursorPos X="69" Y="18"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="50"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../lazvortex/vortex_handlers.inc"/>
+        <CursorPos X="58" Y="340"/>
+        <TopLine Value="315"/>
+        <UsageCount Value="2"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../beeputils.pas"/>
+        <UnitName Value="BeepUtils"/>
+        <CursorPos X="69" Y="18"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="50"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../lazvortex/vortex_profiles.inc"/>
+        <CursorPos X="120" Y="190"/>
+        <TopLine Value="142"/>
+        <UsageCount Value="2"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../beepchannel.pas"/>
+        <UnitName Value="BeepChannel"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="101"/>
+        <Bookmarks Count="2">
+          <Item0 X="102" Y="58" ID="1"/>
+          <Item1 X="30" Y="288" ID="2"/>
+        </Bookmarks>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../lazvortex/vortex_channel.inc"/>
+        <CursorPos X="98" Y="76"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="4"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../beepframe.pas"/>
+        <UnitName Value="BeepFrame"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="60"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../lazvortex/vortex_frame_factory.inc"/>
+        <CursorPos X="1" Y="468"/>
+        <TopLine Value="423"/>
+        <UsageCount Value="9"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="TestClient.lpi"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="XML"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="TestClient.lpr"/>
+        <UnitName Value="TestClient"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="clientmain.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="clientmain"/>
+        <CursorPos X="84" Y="18"/>
+        <TopLine Value="129"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="testclientmain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="TestClientMain"/>
+        <CursorPos X="39" Y="39"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../../lazarus_sw/lcl/include/control.inc"/>
+        <CursorPos X="77" Y="2218"/>
+        <TopLine Value="2204"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../lazbeep/beepchannel.pas"/>
+        <UnitName Value="BeepChannel"/>
+        <CursorPos X="41" Y="526"/>
+        <TopLine Value="507"/>
+        <UsageCount Value="25"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../lazbeep/beepconnection.pas"/>
+        <UnitName Value="beepconnection"/>
+        <UsageCount Value="25"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../lazbeep/beepcontext.pas"/>
+        <UnitName Value="beepcontext"/>
+        <UsageCount Value="25"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../lazbeep/beepframe.pas"/>
+        <UnitName Value="beepframe"/>
+        <UsageCount Value="25"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../lazbeep/beepprofile.pas"/>
+        <UnitName Value="BeepProfile"/>
+        <CursorPos X="3" Y="43"/>
+        <TopLine Value="36"/>
+        <UsageCount Value="25"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../axl/axl.pas"/>
+        <UnitName Value="axl"/>
+        <UsageCount Value="20"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../lazbeep/beepchannelpool.pas"/>
+        <UnitName Value="BeepChannelPool"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="25"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../lazbeep/beeputils.pas"/>
+        <UnitName Value="BeepUtils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../lazbeep/beepprofilebase.pas"/>
+        <UnitName Value="BeepProfileBase"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="13"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../lazbeep/beepobject.pas"/>
+        <UnitName Value="BeepObject"/>
+        <CursorPos X="1" Y="50"/>
+        <TopLine Value="23"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../lazbeep/beeppeer.pas"/>
+        <UnitName Value="BeepPeer"/>
+        <CursorPos X="46" Y="360"/>
+        <TopLine Value="346"/>
+        <UsageCount Value="10"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BeepChannelPool"/>
+        <CursorPos X="24" Y="145"/>
+        <TopLine Value="142"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="../beepfp/beepchannel.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BeepChannel"/>
+        <CursorPos X="81" Y="524"/>
+        <TopLine Value="521"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit35>
+    </Units>
+    <JumpHistory Count="20" HistoryIndex="19">
+      <Position1>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="146" Column="50" TopLine="33"/>
+      </Position1>
+      <Position2>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="55" Column="51" TopLine="33"/>
+      </Position2>
+      <Position3>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="114" Column="19" TopLine="112"/>
+      </Position3>
+      <Position4>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="57" Column="53" TopLine="41"/>
+      </Position4>
+      <Position5>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="121" Column="43" TopLine="119"/>
+      </Position5>
+      <Position6>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="49" Column="22" TopLine="49"/>
+      </Position6>
+      <Position7>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="62" Column="55" TopLine="62"/>
+      </Position7>
+      <Position8>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="69" Column="44" TopLine="69"/>
+      </Position8>
+      <Position9>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="76" Column="44" TopLine="68"/>
+      </Position9>
+      <Position10>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="58" Column="49" TopLine="41"/>
+      </Position10>
+      <Position11>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="124" Column="48" TopLine="114"/>
+      </Position11>
+      <Position12>
+        <Filename Value="test_client.lpr"/>
+        <Caret Line="31" Column="11" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="158" Column="46" TopLine="147"/>
+      </Position13>
+      <Position14>
+        <Filename Value="testclientmain.pas"/>
+        <Caret Line="39" Column="39" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="343" Column="40" TopLine="327"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="121" Column="35" TopLine="98"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="356" Column="29" TopLine="328"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="36" Column="59" TopLine="1"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="227" Column="5" TopLine="179"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../beepfp/beepchannelpool.pas"/>
+        <Caret Line="344" Column="5" TopLine="296"/>
+      </Position20>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <OtherUnitFiles Value="../axl/;../vortex/;../beepfp/"/>
+      <UnitOutputDirectory Value="lib"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -1,0 +1,9 @@
+This is the file COPYING, it gives an overview of the licenses used in the BeepFp sources.
+
+The Pascal translations of the C header files of both libaxl and libvortex are under LGPL v2.1, the same as the libraries. This includes all the files in the axl and vortex directories, as well as some of the programs in directory test as indicated at the beginning of the program files.
+
+The BeepFp package is under LGPL v3 with the same exception as the Lazarus LCL. This includes all the files in beepfp and example directories, as well as some programs in the test directory as indicated at the beginning of the program files.
+
+
+
+ 

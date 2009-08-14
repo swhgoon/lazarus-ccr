@@ -1,0 +1,140 @@
+object Form1: TForm1
+  Left = 342
+  Height = 300
+  Top = 276
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.27'
+  object Label1: TLabel
+    Left = 8
+    Height = 17
+    Top = 8
+    Width = 83
+    Caption = 'Connection'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 17
+    Top = 72
+    Width = 69
+    Caption = 'Channels'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 17
+    Top = 192
+    Width = 106
+    Caption = 'Channel Pools'
+    ParentColor = False
+  end
+  object Button1Connect: TButton
+    Left = 8
+    Height = 25
+    Top = 24
+    Width = 75
+    Caption = 'Connect'
+    OnClick = Button1ConnectClick
+    TabOrder = 0
+  end
+  object ButtonDisconnect: TButton
+    Left = 88
+    Height = 25
+    Top = 24
+    Width = 95
+    Caption = 'Disconnect'
+    OnClick = ButtonDisconnectClick
+    TabOrder = 1
+  end
+  object CheckBoxCon: TCheckBox
+    Left = 192
+    Height = 24
+    Top = 24
+    Width = 103
+    Caption = 'Connected'
+    TabOrder = 2
+  end
+  object ButtonSend: TButton
+    Left = 8
+    Height = 25
+    Top = 152
+    Width = 75
+    Caption = 'Send'
+    OnClick = ButtonSendClick
+    TabOrder = 3
+  end
+  object EditChannel: TEdit
+    Left = 8
+    Height = 26
+    Top = 120
+    Width = 255
+    TabOrder = 4
+    Text = 'Channel message'
+  end
+  object ButtonOpen: TButton
+    Left = 8
+    Height = 25
+    Top = 88
+    Width = 75
+    Caption = 'Open'
+    OnClick = ButtonOpenClick
+    TabOrder = 5
+  end
+  object ButtonClose: TButton
+    Left = 88
+    Height = 25
+    Top = 88
+    Width = 95
+    Caption = 'Close'
+    OnClick = ButtonCloseClick
+    TabOrder = 6
+  end
+  object SpinEditCh: TSpinEdit
+    Left = 192
+    Height = 26
+    Top = 88
+    Width = 50
+    MinValue = 1
+    TabOrder = 7
+    Value = 1
+  end
+  object ButtonAddPool: TButton
+    Left = 8
+    Height = 25
+    Top = 208
+    Width = 75
+    Caption = 'Add'
+    OnClick = ButtonAddPoolClick
+    TabOrder = 8
+  end
+  object CheckBoxPool: TCheckBox
+    Left = 96
+    Height = 24
+    Top = 208
+    Width = 108
+    Caption = 'Pool Ready'
+    TabOrder = 9
+  end
+  object ButtonSendPool: TButton
+    Left = 8
+    Height = 25
+    Top = 272
+    Width = 75
+    Caption = 'Send'
+    OnClick = ButtonSendPoolClick
+    TabOrder = 10
+  end
+  object EditPool: TEdit
+    Left = 8
+    Height = 26
+    Top = 240
+    Width = 255
+    TabOrder = 11
+    Text = 'Pool Message'
+  end
+end

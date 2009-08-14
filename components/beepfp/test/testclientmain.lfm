@@ -1,0 +1,133 @@
+object Form1: TForm1
+  Left = 446
+  Height = 300
+  Top = 171
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '0.9.27'
+  object ButtonCon: TButton
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Connect'
+    OnClick = ButtonConClick
+    TabOrder = 0
+  end
+  object ButtonDiscon: TButton
+    Left = 96
+    Height = 25
+    Top = 8
+    Width = 96
+    Caption = 'Disconnect'
+    OnClick = ButtonDisconClick
+    TabOrder = 1
+  end
+  object CheckBoxCon: TCheckBox
+    Left = 208
+    Height = 24
+    Top = 8
+    Width = 103
+    Caption = 'Connected'
+    TabOrder = 2
+  end
+  object ButtonPoolNew: TButton
+    Left = 8
+    Height = 25
+    Top = 80
+    Width = 96
+    Caption = 'Create Pool'
+    OnClick = ButtonPoolNewClick
+    TabOrder = 3
+  end
+  object EditPoolSize: TEdit
+    Left = 312
+    Height = 26
+    Top = 80
+    Width = 80
+    TabOrder = 4
+  end
+  object ButtonChanNew: TButton
+    Left = 8
+    Height = 25
+    Top = 216
+    Width = 120
+    Caption = 'Open Channel'
+    OnClick = ButtonChanNewClick
+    TabOrder = 5
+  end
+  object ButtonChanClose: TButton
+    Left = 136
+    Height = 25
+    Top = 216
+    Width = 120
+    Caption = 'Close Channel'
+    OnClick = ButtonChanCloseClick
+    TabOrder = 6
+  end
+  object ButtonSendMsg: TButton
+    Left = 8
+    Height = 25
+    Top = 248
+    Width = 120
+    Caption = 'Send MSG'
+    OnClick = ButtonSendMsgClick
+    TabOrder = 7
+  end
+  object Edit1: TEdit
+    Left = 136
+    Height = 26
+    Top = 248
+    Width = 240
+    TabOrder = 8
+    Text = 'MSG Hallo'
+  end
+  object ButtonPoolAdd: TButton
+    Left = 117
+    Height = 25
+    Top = 56
+    Width = 75
+    Caption = 'Add 2 Ch'
+    OnClick = ButtonPoolAddClick
+    TabOrder = 9
+  end
+  object ButtonPoolCount: TButton
+    Left = 200
+    Height = 25
+    Top = 81
+    Width = 75
+    Caption = 'Count'
+    OnClick = ButtonPoolCountClick
+    TabOrder = 10
+  end
+  object ButtonSendMsgPool: TButton
+    Left = 8
+    Height = 25
+    Top = 112
+    Width = 120
+    Caption = 'Send MSG'
+    OnClick = ButtonSendMsgPoolClick
+    TabOrder = 11
+  end
+  object Edit2: TEdit
+    Left = 136
+    Height = 26
+    Top = 112
+    Width = 240
+    TabOrder = 12
+    Text = 'MSG Hallo'
+  end
+  object ButtonDelCh: TButton
+    Left = 117
+    Height = 25
+    Top = 81
+    Width = 75
+    Caption = 'Del 1 Ch'
+    OnClick = ButtonDelChClick
+    TabOrder = 13
+  end
+end

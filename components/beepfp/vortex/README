@@ -1,0 +1,54 @@
+LibVortex library for Free Pascal
+Version 1.1.1 svn r4012
+
+Copyright (C) 2009, Wimpie Nortje <wimpienortje@gmail.com>
+
+Introduction
+------------
+This package is a Free Pascal translation of the libvortex header files.
+
+LibVortex is a BEEP (RFC3080/RFC3081) implementation in C. To learn more about LibVortex see www.aspl.es/vortex
+
+BEEP is a network application framework protocol. To understand exactly what that means, see www.beepcore.org and RFC3080.
+
+Installing
+----------
+LibVortex uses LibAxl. Both the libraries must be installed following the included installation instructions.
+
+Vortex (the pascal unit) does not need to be installed. It must only be included in the application's uses statement.
+
+Vortex uses Axl, which must also be in the uses statement.
+
+Obtaining the libraries
+-----------------------
+LibVortex can be downloaded from www.aspl.es/vortex.
+LibAxl can be downloaded from www.aspl.es/axl.
+
+Main differences with C headers
+-------------------------------
+The pascal units were kept as close as possible to the original source. The biggest changes are macros that are implemented as functions or skipped altogether.
+
+Most of the C source are still in the files for future reference as well as all the doxygen documentation.
+
+Work completed
+--------------
+This translation of the libvortex headers is for libvortex v1.1.1 svn r4012
+
+The complete library was translated. A server (vortex-simple-listener) and a client application (vortex-simple-client) were translated to test the basic functionality.
+
+To do
+-----
+1. There remain some untranslated #define's
+2. Most of the test applications included with the library are not yet translated
+
+Portability
+-----------
+Both libvortex and libaxl run on windows.
+
+This tranlation has only been tested on linux. There remain some work in the Vortex unit for it to work under windows.
+
+Credits and license
+-------------------
+Thanks to Advanced Software Production Line (ASPL) for making this library available.
+
+This translation uses the same LGPL license as the libvortex library.

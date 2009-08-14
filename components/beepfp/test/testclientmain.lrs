@@ -1,0 +1,36 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#190#1#6'Height'#3','#1#3'Top'#3#171#0#5'W'
+  +'idth'#3#144#1#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'ClientWidth'
+  +#3#144#1#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#10'LCLV'
+  +'ersion'#6#6'0.9.27'#0#7'TButton'#9'ButtonCon'#4'Left'#2#8#6'Height'#2#25#3
+  +'Top'#2#8#5'Width'#2'K'#7'Caption'#6#7'Connect'#7'OnClick'#7#14'ButtonConCli'
+  +'ck'#8'TabOrder'#2#0#0#0#7'TButton'#12'ButtonDiscon'#4'Left'#2'`'#6'Height'#2
+  +#25#3'Top'#2#8#5'Width'#2'`'#7'Caption'#6#10'Disconnect'#7'OnClick'#7#17'But'
+  +'tonDisconClick'#8'TabOrder'#2#1#0#0#9'TCheckBox'#11'CheckBoxCon'#4'Left'#3
+  +#208#0#6'Height'#2#24#3'Top'#2#8#5'Width'#2'g'#7'Caption'#6#9'Connected'#8'T'
+  +'abOrder'#2#2#0#0#7'TButton'#13'ButtonPoolNew'#4'Left'#2#8#6'Height'#2#25#3
+  +'Top'#2'P'#5'Width'#2'`'#7'Caption'#6#11'Create Pool'#7'OnClick'#7#18'Button'
+  +'PoolNewClick'#8'TabOrder'#2#3#0#0#5'TEdit'#12'EditPoolSize'#4'Left'#3'8'#1#6
+  +'Height'#2#26#3'Top'#2'P'#5'Width'#2'P'#8'TabOrder'#2#4#0#0#7'TButton'#13'Bu'
+  +'ttonChanNew'#4'Left'#2#8#6'Height'#2#25#3'Top'#3#216#0#5'Width'#2'x'#7'Capt'
+  +'ion'#6#12'Open Channel'#7'OnClick'#7#18'ButtonChanNewClick'#8'TabOrder'#2#5
+  +#0#0#7'TButton'#15'ButtonChanClose'#4'Left'#3#136#0#6'Height'#2#25#3'Top'#3
+  +#216#0#5'Width'#2'x'#7'Caption'#6#13'Close Channel'#7'OnClick'#7#20'ButtonCh'
+  +'anCloseClick'#8'TabOrder'#2#6#0#0#7'TButton'#13'ButtonSendMsg'#4'Left'#2#8#6
+  +'Height'#2#25#3'Top'#3#248#0#5'Width'#2'x'#7'Caption'#6#8'Send MSG'#7'OnClic'
+  +'k'#7#18'ButtonSendMsgClick'#8'TabOrder'#2#7#0#0#5'TEdit'#5'Edit1'#4'Left'#3
+  +#136#0#6'Height'#2#26#3'Top'#3#248#0#5'Width'#3#240#0#8'TabOrder'#2#8#4'Text'
+  +#6#9'MSG Hallo'#0#0#7'TButton'#13'ButtonPoolAdd'#4'Left'#2'u'#6'Height'#2#25
+  +#3'Top'#2'8'#5'Width'#2'K'#7'Caption'#6#8'Add 2 Ch'#7'OnClick'#7#18'ButtonPo'
+  +'olAddClick'#8'TabOrder'#2#9#0#0#7'TButton'#15'ButtonPoolCount'#4'Left'#3#200
+  +#0#6'Height'#2#25#3'Top'#2'Q'#5'Width'#2'K'#7'Caption'#6#5'Count'#7'OnClick'
+  +#7#20'ButtonPoolCountClick'#8'TabOrder'#2#10#0#0#7'TButton'#17'ButtonSendMsg'
+  +'Pool'#4'Left'#2#8#6'Height'#2#25#3'Top'#2'p'#5'Width'#2'x'#7'Caption'#6#8'S'
+  +'end MSG'#7'OnClick'#7#22'ButtonSendMsgPoolClick'#8'TabOrder'#2#11#0#0#5'TEd'
+  +'it'#5'Edit2'#4'Left'#3#136#0#6'Height'#2#26#3'Top'#2'p'#5'Width'#3#240#0#8
+  +'TabOrder'#2#12#4'Text'#6#9'MSG Hallo'#0#0#7'TButton'#11'ButtonDelCh'#4'Left'
+  +#2'u'#6'Height'#2#25#3'Top'#2'Q'#5'Width'#2'K'#7'Caption'#6#8'Del 1 Ch'#7'On'
+  +'Click'#7#16'ButtonDelChClick'#8'TabOrder'#2#13#0#0#0
+]);

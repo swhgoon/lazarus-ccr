@@ -1,0 +1,51 @@
+BEEP To do:
+-----------
+- commit
+- update beepfp page
+- update ccr page
+- forum notice
+
+- Find way to update GUI from events
+- BEEP inline documentation
+
+_listener_
+- Add TLS
+- Add SASL
+- fix: client het 2 ch oop, dan stop, -> exception. Shutdown listener while busy closing channels
+
+_client_
+- Add TLS
+- Add SASL
+- file transfer --> vortex_channel_set_serialize
+
+_Peer_
+
+_ALL_
+- Add debug logs to file
+
+_BeepChannelPool_
+- dropped connection must free channels
+- remove channels from pool must free the TBeepChannels in list
+
+_BeepChannel_
+- Fut: Add 2nd layer profile functions
+- Fut: Blocking mode channel creation
+
+_BeepListener_
+- Channel accepted event
+
+_BeepProfile_
+
+_Profilebase_
+- transform into 2nd layer stuff
+
+Design
+- nog nie deel van struktuur: profilebase
+
+Vrae:
+- kan nie GUI update in beep events nie agv threading. Hoe doen dit?
+
+Docs:
+- wiki: Networking
+
+

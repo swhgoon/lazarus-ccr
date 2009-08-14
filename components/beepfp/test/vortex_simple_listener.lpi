@@ -1,0 +1,643 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="72">
+      <Unit0>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vortex_simple_listener"/>
+        <CursorPos X="10" Y="51"/>
+        <TopLine Value="38"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="109"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="../vortex.pas"/>
+        <UnitName Value="Vortex"/>
+        <CursorPos X="72" Y="203"/>
+        <TopLine Value="186"/>
+        <UsageCount Value="103"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="91" ID="1"/>
+        </Bookmarks>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../lazaxl/axl.pas"/>
+        <UnitName Value="axl"/>
+        <UsageCount Value="103"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/baseunix.pp"/>
+        <UnitName Value="BaseUnix"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/packages/fcl-process/src/process.pp"/>
+        <UnitName Value="process"/>
+        <CursorPos X="34" Y="37"/>
+        <TopLine Value="54"/>
+        <UsageCount Value="2"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="6" Y="239"/>
+        <TopLine Value="212"/>
+        <UsageCount Value="2"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/objpas/sysutils/sysutilh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/packages/fcl-process/src/pipes.pp"/>
+        <UnitName Value="Pipes"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/ipc.pp"/>
+        <UnitName Value="ipc"/>
+        <CursorPos X="11" Y="334"/>
+        <TopLine Value="292"/>
+        <UsageCount Value="2"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/packages/fv/src/app.pas"/>
+        <UnitName Value="App"/>
+        <CursorPos X="61" Y="20"/>
+        <TopLine Value="10"/>
+        <UsageCount Value="2"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/packages/httpd20/src/aprutil/aprutil.pas"/>
+        <UnitName Value="aprutil"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/systemh.inc"/>
+        <CursorPos X="3" Y="356"/>
+        <TopLine Value="332"/>
+        <UsageCount Value="2"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/bunxh.inc"/>
+        <CursorPos X="108" Y="84"/>
+        <TopLine Value="55"/>
+        <UsageCount Value="2"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/system.pp"/>
+        <UnitName Value="System"/>
+        <CursorPos X="10" Y="38"/>
+        <TopLine Value="30"/>
+        <UsageCount Value="2"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/osdefs.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/sysunixh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/sockets.pp"/>
+        <UnitName Value="Sockets"/>
+        <CursorPos X="9" Y="28"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/socketsh.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="190"/>
+        <UsageCount Value="2"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/sockovl.inc"/>
+        <CursorPos X="1" Y="194"/>
+        <TopLine Value="153"/>
+        <UsageCount Value="2"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/unxsockh.inc"/>
+        <CursorPos X="18" Y="97"/>
+        <TopLine Value="73"/>
+        <UsageCount Value="2"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/errno.inc"/>
+        <CursorPos X="3" Y="159"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/errors.pp"/>
+        <UnitName Value="errors"/>
+        <CursorPos X="11" Y="18"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/errnostr.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/unix/unixtype.pp"/>
+        <UnitName Value="unixtype"/>
+        <CursorPos X="9" Y="21"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/linux/ptypes.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../vortex_thread_pool.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../vortex_win32.inc"/>
+        <CursorPos X="1" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="../../../Pudu/ATM_sw/tripwire/src/server/asoundlib/asoundlib.pas"/>
+        <UnitName Value="asoundlib"/>
+        <CursorPos X="1" Y="42"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../Pudu/ATM_sw/tripwire/src/server/asoundlib/asoundefh.inc"/>
+        <CursorPos X="1" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/system.inc"/>
+        <CursorPos X="10" Y="903"/>
+        <TopLine Value="901"/>
+        <UsageCount Value="2"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../vortex_handlers.inc"/>
+        <CursorPos X="103" Y="582"/>
+        <TopLine Value="558"/>
+        <UsageCount Value="45"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../vortex_types.inc"/>
+        <CursorPos X="60" Y="894"/>
+        <TopLine Value="870"/>
+        <UsageCount Value="46"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../vortex_support.inc"/>
+        <CursorPos X="1" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../vortex_ctx.inc"/>
+        <CursorPos X="13" Y="48"/>
+        <TopLine Value="24"/>
+        <UsageCount Value="46"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../vortex_thread.inc"/>
+        <CursorPos X="1" Y="68"/>
+        <TopLine Value="45"/>
+        <UsageCount Value="11"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="../vortex_queue.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="../vortex_hash.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="../vortex_connection.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="45"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="../vortex_listener.inc"/>
+        <CursorPos X="75" Y="150"/>
+        <TopLine Value="110"/>
+        <UsageCount Value="45"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="../vortex_frame_factory.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="../vortex_greetings.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="../vortex_profiles.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="../vortex_channel.inc"/>
+        <CursorPos X="2" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="../vortex_channel_pool.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="../vortex_io.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="../vortex_reader.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="../vortex_dtds.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="../vortex_sequencer.inc"/>
+        <CursorPos X="4" Y="43"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="../vortex_errno.inc"/>
+        <CursorPos X="1" Y="2"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="2"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="../../../lazarus_sw/components/codetools/identcompletiontool.pas"/>
+        <UnitName Value="IdentCompletionTool"/>
+        <CursorPos X="37" Y="1908"/>
+        <TopLine Value="1898"/>
+        <UsageCount Value="3"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="../../lazaxl/axl_decl.inc"/>
+        <CursorPos X="3" Y="679"/>
+        <TopLine Value="655"/>
+        <UsageCount Value="42"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="lib/vortex_simple_client.compiled"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="4"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="lib/vortex_simple_listener.s"/>
+        <CursorPos X="49" Y="435"/>
+        <TopLine Value="406"/>
+        <UsageCount Value="4"/>
+        <SyntaxHighlighter Value="None"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/inc/threadh.inc"/>
+        <CursorPos X="11" Y="136"/>
+        <TopLine Value="112"/>
+        <UsageCount Value="11"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="unit1.pas"/>
+        <UnitName Value="Unit1"/>
+        <CursorPos X="41" Y="20"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="15"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/packages/fcl-base/src/syncobjs.pp"/>
+        <UnitName Value="syncobjs"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="127"/>
+        <UsageCount Value="5"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="../../../Pudu/ATM_sw/tripwire_beep/src/server/audiothread.pas"/>
+        <UnitName Value="AudioThread"/>
+        <CursorPos X="1" Y="68"/>
+        <TopLine Value="62"/>
+        <UsageCount Value="36"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/unix/sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/unix/cthreads.pp"/>
+        <UnitName Value="cthreads"/>
+        <CursorPos X="13" Y="238"/>
+        <TopLine Value="187"/>
+        <UsageCount Value="13"/>
+        <Bookmarks Count="1">
+          <Item0 X="19" Y="237" ID="1"/>
+        </Bookmarks>
+      </Unit58>
+      <Unit59>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/linux/ptypes.inc"/>
+        <CursorPos X="3" Y="205"/>
+        <TopLine Value="172"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="15"/>
+        <Loaded Value="True"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/inc/thread.inc"/>
+        <CursorPos X="3" Y="142"/>
+        <TopLine Value="139"/>
+        <UsageCount Value="11"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="../../../../../../usr/share/fpcsrc/2.2.4/rtl/linux/sysosh.inc"/>
+        <CursorPos X="3" Y="24"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="12"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="../axl/axl.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="axl"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="26"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="../vortex/vortex.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Vortex"/>
+        <CursorPos X="70" Y="427"/>
+        <TopLine Value="396"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="../vortex/vortex_handlers.inc"/>
+        <CursorPos X="1" Y="1289"/>
+        <TopLine Value="1261"/>
+        <UsageCount Value="12"/>
+        <Bookmarks Count="1">
+          <Item0 X="29" Y="1291" ID="3"/>
+        </Bookmarks>
+      </Unit64>
+      <Unit65>
+        <Filename Value="../vortex/vortex_thread.inc"/>
+        <CursorPos X="76" Y="57"/>
+        <TopLine Value="165"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="../../libvortex-1.1/dev/src/vortex_reader.c"/>
+        <CursorPos X="1" Y="893"/>
+        <TopLine Value="869"/>
+        <UsageCount Value="11"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="../../libvortex-1.1/dev/src/vortex.c"/>
+        <CursorPos X="1" Y="931"/>
+        <TopLine Value="907"/>
+        <UsageCount Value="11"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="../../libvortex-1.1/dev/src/vortex_thread.c"/>
+        <CursorPos X="1" Y="317"/>
+        <TopLine Value="293"/>
+        <UsageCount Value="11"/>
+        <SyntaxHighlighter Value="C++"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="../vortex/vortex_types.inc"/>
+        <CursorPos X="3" Y="842"/>
+        <TopLine Value="818"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="../vortex/vortex_xml_rpc_types_imp.inc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="../vortex/vortex_thread_imp.inc"/>
+        <CursorPos X="31" Y="49"/>
+        <TopLine Value="84"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit71>
+    </Units>
+    <JumpHistory Count="18" HistoryIndex="17">
+      <Position1>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="172" Column="1" TopLine="148"/>
+      </Position1>
+      <Position2>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="173" Column="1" TopLine="149"/>
+      </Position2>
+      <Position3>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="175" Column="1" TopLine="151"/>
+      </Position3>
+      <Position4>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="173" Column="11" TopLine="151"/>
+      </Position4>
+      <Position5>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="174" Column="15" TopLine="151"/>
+      </Position5>
+      <Position6>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="158" Column="56" TopLine="142"/>
+      </Position6>
+      <Position7>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="156" Column="20" TopLine="146"/>
+      </Position7>
+      <Position8>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="167" Column="13" TopLine="154"/>
+      </Position8>
+      <Position9>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="171" Column="61" TopLine="156"/>
+      </Position9>
+      <Position10>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="160" Column="52" TopLine="150"/>
+      </Position10>
+      <Position11>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="237" Column="53" TopLine="200"/>
+      </Position11>
+      <Position12>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="170" Column="60" TopLine="152"/>
+      </Position12>
+      <Position13>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="175" Column="45" TopLine="136"/>
+      </Position13>
+      <Position14>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="215" Column="16" TopLine="181"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../vortex/vortex.pas"/>
+        <Caret Line="164" Column="1" TopLine="152"/>
+      </Position15>
+      <Position16>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="135" Column="9" TopLine="124"/>
+      </Position16>
+      <Position17>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="28" Column="104" TopLine="8"/>
+      </Position17>
+      <Position18>
+        <Filename Value="vortex_simple_listener.lpr"/>
+        <Caret Line="50" Column="14" TopLine="28"/>
+      </Position18>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <OtherUnitFiles Value="/home/wimpie/development/lib/lazvortex/;/home/wimpie/development/lib/lazaxl/;/home/wimpie/development/lib/lazbeep/axl/;/home/wimpie/development/lib/lazbeep/vortex/"/>
+      <UnitOutputDirectory Value="lib"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Checks>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+      </Checks>
+      <VerifyObjMethodCallValidity Value="True"/>
+      <Optimizations>
+        <OptimizationLevel Value="0"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+      </Debugging>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="3">
+      <Item1>
+        <Source Value="../../libvortex-1.1/dev/src/vortex_reader.c"/>
+        <Line Value="889"/>
+      </Item1>
+      <Item2>
+        <Source Value="../../libvortex-1.1/dev/src/vortex.c"/>
+        <Line Value="931"/>
+      </Item2>
+      <Item3>
+        <Source Value="../../libvortex-1.1/dev/src/vortex_reader.c"/>
+        <Line Value="1438"/>
+      </Item3>
+    </BreakPoints>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
