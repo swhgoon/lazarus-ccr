@@ -38,9 +38,44 @@ const
   PaletteMask = $02000000;
 
 resourcestring
-//const
-  {$I rxstrconsts.inc}
-  
+  sBrowse          = 'Browse';
+  sDefaultFilter   = 'All files (*.*)|*.*';
+  sDateDlgTitle    = 'Select a Date';
+  sNextYear        = 'Next Year|';
+  sNextMonth       = 'Next Month|';
+  sPrevYear        = 'Previous Year|';
+  sPrevMonth       = 'Previous Month|';
+  sNotImplemented  = 'Function not yet implemented';
+  sFileNotExec     = 'File specified is not an executable file, dynamic-link library, or icon file';
+  sLoadLibError    = 'Could not load ''%s'' library';
+  sDetails         = 'Details';
+  sWindowsIcoFiles = 'Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*';
+  sToCurDate       = 'Set current date';
+
+  //TDualListDialog
+  SDualListSrcCaption   = 'Source';
+  SDualListDestCaption  = 'Destination';
+  SDualListCaption      = 'Dual list dialog';
+
+  //TToolPanelSetupForm
+  sToolPanelSetup       = 'Tool panel setup';
+  sVisibleButtons       = 'Visible buttons';
+  sOptions              = 'Options';
+  sAvaliableButtons     = 'Avaliable buttons';
+  sShowCaption          = 'Show caption';
+  sToolBarStyle         = 'Tool bar style';
+  sToolBarStyle1        = 'Standart';
+  sToolBarStyle2        = 'Windows XP';
+  sToolBarStyle3        = 'Native';
+  sFlatButtons          = 'Flat buttons';
+  sTransparent          = 'Transparent';
+  sShowHint             = 'Show hint';
+  sButtonAlign          = 'Button align';
+  sButtonAlign1         = 'None';
+  sButtonAlign2         = 'Left';
+  sButtonAlign3         = 'Rignt';
+
+
 implementation
 
 uses Forms;

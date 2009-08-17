@@ -3,129 +3,129 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: rxconst.savaliablebuttons
 msgid "Avaliable buttons"
-msgstr ""
+msgstr "Доступные кнопки"
 
 #: rxconst.sbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Обзор"
 
 #: rxconst.sbuttonalign
 msgid "Button align"
-msgstr ""
+msgstr "Выравнивание кнопок"
 
 #: rxconst.sbuttonalign1
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 #: rxconst.sbuttonalign2
 msgid "Left"
-msgstr ""
+msgstr "Влево"
 
 #: rxconst.sbuttonalign3
 msgid "Rignt"
-msgstr ""
+msgstr "Вправо"
 
 #: rxconst.sdatedlgtitle
 msgid "Select a Date"
-msgstr ""
+msgstr "Выберите дату"
 
 #: rxconst.sdefaultfilter
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Все файлы (*.*)|*.*"
 
 #: rxconst.sdetails
 msgid "Details"
-msgstr ""
+msgstr "Подробно"
 
 #: rxconst.sduallistcaption
 msgid "Dual list dialog"
-msgstr ""
+msgstr "Управление списками"
 
 #: rxconst.sduallistdestcaption
 msgid "Destination"
-msgstr ""
+msgstr "Выбор"
 
 #: rxconst.sduallistsrccaption
 msgid "Source"
-msgstr ""
+msgstr "Источник"
 
 #: rxconst.sfilenotexec
 msgid "File specified is not an executable file, dynamic-link library, or icon file"
-msgstr ""
+msgstr "Указанный файл не исполняемый, не библиотека и не иконка"
 
 #: rxconst.sflatbuttons
 msgid "Flat buttons"
-msgstr ""
+msgstr "Плавающие кнопки"
 
 #: rxconst.sloadliberror
 msgid "Could not load '%s' library"
-msgstr ""
+msgstr "Невозможно загрузить библиотеку '%s'"
 
 #: rxconst.snextmonth
 msgid "Next Month|"
-msgstr ""
+msgstr "Следующий месяц|"
 
 #: rxconst.snextyear
 msgid "Next Year|"
-msgstr ""
+msgstr "Следующий год|"
 
 #: rxconst.snotimplemented
 msgid "Function not yet implemented"
-msgstr ""
+msgstr "Функция не реализована"
 
 #: rxconst.soptions
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: rxconst.sprevmonth
 msgid "Previous Month|"
-msgstr ""
+msgstr "Превыдущий месяц|"
 
 #: rxconst.sprevyear
 msgid "Previous Year|"
-msgstr ""
+msgstr "Превыдущий год|"
 
 #: rxconst.sshowcaption
 msgid "Show caption"
-msgstr ""
+msgstr "Отображать заголовок"
 
 #: rxconst.sshowhint
 msgid "Show hint"
-msgstr ""
+msgstr "Отображать подсказки"
 
 #: rxconst.stocurdate
 msgid "Set current date"
-msgstr ""
+msgstr "Установть текущую дату"
 
 #: rxconst.stoolbarstyle
 msgid "Tool bar style"
-msgstr ""
+msgstr "Стиль панели инструментов"
 
 #: rxconst.stoolbarstyle1
 msgid "Standart"
-msgstr ""
+msgstr "Стандартный"
 
 #: rxconst.stoolbarstyle2
 msgid "Windows XP"
-msgstr ""
+msgstr "Windows XP"
 
 #: rxconst.stoolbarstyle3
 msgid "Native"
-msgstr ""
+msgstr "Из текущей темы"
 
 #: rxconst.stoolpanelsetup
 msgid "Tool panel setup"
-msgstr ""
+msgstr "Настройка панели инструментов"
 
 #: rxconst.stransparent
 msgid "Transparent"
-msgstr ""
+msgstr "Прозрачно"
 
 #: rxconst.svisiblebuttons
 msgid "Visible buttons"
-msgstr ""
+msgstr "Отображаемые конпки"
 
 #: rxconst.swindowsicofiles
 msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"
-msgstr ""
+msgstr "Файлы иконок Windows (*.ico)|*.ico|Все файлы (*.*)|*.*"
 

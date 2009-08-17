@@ -28,6 +28,7 @@ type
     ListBtnVisible: TListBox;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     RadioGroup1: TRadioGroup;
     RadioGroup2: TRadioGroup;
     TabSheet1: TTabSheet;
@@ -38,6 +39,7 @@ type
     procedure BitBtn6Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ListBox1DrawItem(Control: TWinControl; Index: Integer;
@@ -56,7 +58,7 @@ var
   ToolPanelSetupForm: TToolPanelSetupForm;
 
 implementation
-uses vclutils, ActnList, boxprocs;
+uses vclutils, ActnList, boxprocs, rxconst;
 
 type
   THackToolPanel = class(TToolPanel);
@@ -174,6 +176,30 @@ procedure TToolPanelSetupForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   CloseAction:=caFree;
+end;
+
+procedure TToolPanelSetupForm.FormCreate(Sender: TObject);
+begin
+  Caption:=sToolPanelSetup;
+  TabSheet1.Caption:=sVisibleButtons;
+  TabSheet2.Caption:=sOptions;
+  Label2.Caption:=sVisibleButtons;
+  Label2.Caption:=sVisibleButtons;
+  Label1.Caption:=sAvaliableButtons;
+  cbShowCaption.Caption:=sShowCaption;
+  RadioGroup2.Caption:=sToolBarStyle;
+  RadioGroup2.Items.Clear;
+  RadioGroup2.Items.Add(sToolBarStyle1);
+  RadioGroup2.Items.Add(sToolBarStyle2);
+  RadioGroup2.Items.Add(sToolBarStyle3);
+  cbFlatBtn.Caption:=sFlatButtons;
+  cbTransp.Caption:=sTransparent;
+  cbShowHint.Caption:=sShowHint;
+  RadioGroup1.Caption:=sButtonAlign;
+  RadioGroup1.Items.Clear;
+  RadioGroup1.Items.Add(sButtonAlign1);
+  RadioGroup1.Items.Add(sButtonAlign2);
+  RadioGroup1.Items.Add(sButtonAlign3);
 end;
 
 

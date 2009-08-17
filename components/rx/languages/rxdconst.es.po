@@ -14,7 +14,7 @@ msgid "calc"
 msgstr ""
 
 #: rxdconst.scapturefilter
-msgid "Элементы уп#209�авления захвачены фильт#209�ом"
+msgid "Control locked by filter"
 msgstr ""
 
 #: rxdconst.schangepassword
@@ -62,7 +62,7 @@ msgid "Error message"
 msgstr ""
 
 #: rxdconst.sexprbadcompare
-msgid "Опе#209�ации с#209�авнения т#209�ебуют наличия поля и константы"
+msgid "Compare opertion need fielad and const"
 msgstr ""
 
 #: rxdconst.sexprbadfield
@@ -74,7 +74,7 @@ msgid "NULL-values enabled in '=' и '<>'"
 msgstr ""
 
 #: rxdconst.sexprexpected
-msgid "Ожидалось вы#209�ажение, а вст#209�ечено %s"
+msgid "Error %s"
 msgstr ""
 
 #: rxdconst.sexprincorrect
@@ -90,7 +90,7 @@ msgid "Error in filed name"
 msgstr ""
 
 #: rxdconst.sexprnorparen
-msgid "Ожидалось ')', а вст#209�ечено: %s"
+msgid "Error ')', error: %s"
 msgstr ""
 
 #: rxdconst.sexprnotboolean
@@ -142,7 +142,7 @@ msgid "User name or password not valid"
 msgstr ""
 
 #: rxdconst.slocaldatabase
-msgid "Невозможно п#209�оизвести эту опе#209�ацию с локальной базой данных"
+msgid "Unable complete this operation on local dataset"
 msgstr ""
 
 #: rxdconst.smemnorecords
@@ -166,7 +166,7 @@ msgid "&Next"
 msgstr ""
 
 #: rxdconst.snotcapturefilter
-msgid "Элементы уп#209�авления должны быть захвачены фильт#209�ом"
+msgid "Control need locked by filter"
 msgstr ""
 
 #: rxdconst.snotediting
@@ -206,11 +206,19 @@ msgid "Register"
 msgstr ""
 
 #: rxdconst.sretrylogin
-msgid "Вы хотите повто#209�ить попытку соединения с базой данных?"
+msgid "Retry to connect with database?"
 msgstr ""
 
 #: rxdconst.srxascendign
-msgid "Ascendente"
+msgid "Ascendign"
+msgstr ""
+
+#: rxdconst.srxborrowstructure
+msgid "Borrow structure..."
+msgstr ""
+
+#: rxdconst.srxcopyonlymetadata
+msgid "Copy only metadata"
 msgstr ""
 
 #: rxdconst.srxdbgridemptifilter
@@ -293,7 +301,7 @@ msgid "Sort data for collumns"
 msgstr "Ordenar por Columna"
 
 #: rxdconst.srxdescending
-msgid "Descendente"
+msgid "Descending"
 msgstr ""
 
 #: rxdconst.srxfilterformapply
@@ -337,6 +345,10 @@ msgstr "Operando :"
 msgid "Enter filter expression for data in table:"
 msgstr "Seleccionar todos los registros que cumplan las siguientes condiciónes :"
 
+#: rxdconst.srxselectdatasetstruct
+msgid "Select dataset to copy to"
+msgstr ""
+
 #: rxdconst.srxsortbyformaddfield
 msgid "&Add field"
 msgstr "&Adicionar"
@@ -368,6 +380,10 @@ msgstr "&Campos Disponibles :"
 #: rxdconst.srxsortbyformsortorder
 msgid "Select field for sort data:"
 msgstr "Seleccionar Dirección de Ordenamiento :"
+
+#: rxdconst.srxsoursedataset
+msgid "Sourse dataset"
+msgstr ""
 
 #: rxdconst.sservererrorlabel
 msgid "Server error"

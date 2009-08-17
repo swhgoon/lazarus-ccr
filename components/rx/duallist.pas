@@ -65,7 +65,7 @@ type
 
 implementation
 
-uses SysUtils, Forms, FDualLst, VCLUtils, LCLStrConsts;
+uses SysUtils, Forms, FDualLst, VCLUtils, LCLStrConsts, rxconst;
 
 { TDualListDialog }
 
@@ -76,11 +76,12 @@ begin
   FShowHelp := True;
   FList1 := TStringList.Create;
   FList2 := TStringList.Create;
-{  FLabel1Caption := LoadStr(SDualListSrcCaption);
-  FLabel2Caption := LoadStr(SDualListDestCaption);}
+  FLabel1Caption := SDualListSrcCaption;
+  FLabel2Caption := SDualListDestCaption;
   OkBtnCaption := rsmbOK;
   CancelBtnCaption := rsmbCancel;
   HelpBtnCaption := rsmbHelp;
+  Title:=SDualListCaption;
 end;
 
 destructor TDualListDialog.Destroy;
@@ -102,12 +103,12 @@ end;
 
 function TDualListDialog.IsLabel1Custom: Boolean;
 begin
-  Result := true;//CompareStr(Label1Caption, LoadStr(SDualListSrcCaption)) <> 0;
+  Result := CompareStr(Label1Caption, SDualListSrcCaption) <> 0;
 end;
 
 function TDualListDialog.IsLabel2Custom: Boolean;
 begin
-  Result := true;//CompareStr(Label2Caption, LoadStr(SDualListDestCaption)) <> 0;
+  Result := CompareStr(Label2Caption, SDualListDestCaption) <> 0;
 end;
 
 function TDualListDialog.IsOkBtnCustom: Boolean;
@@ -143,14 +144,16 @@ begin
       if Self.Title <> '' then Form.Caption := Self.Title;
       if Label1Caption <> '' then SrcLabel.Caption := Label1Caption;
       if Label2Caption <> '' then DstLabel.Caption := Label2Caption;
-      OkBtn.Caption := OkBtnCaption;
-      CancelBtn.Caption := CancelBtnCaption;
-      HelpBtn.Caption := HelpBtnCaption;
+      ButtonPanel1.OKButton.Caption := OkBtnCaption;
+      ButtonPanel1.CancelButton.Caption := CancelBtnCaption;
+      ButtonPanel1.HelpButton.Caption := HelpBtnCaption;
+
       HelpContext := Self.HelpContext;
-      HelpBtn.HelpContext := HelpContext;
+      ButtonPanel1.HelpButton.HelpContext := HelpContext;
     end;
     Result := (Form.ShowModal = mrOk);
-    if Result then begin
+    if Result then
+    begin
       List1 := Form.SrcList.Items;
       List2 := Form.DstList.Items;
     end;

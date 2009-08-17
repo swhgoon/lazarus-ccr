@@ -14,10 +14,14 @@ unit fduallst;
 interface
 
 uses SysUtils, LCLIntf, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, LResources, LCLType;
+  StdCtrls, ExtCtrls, Buttons, LResources, LCLType, ButtonPanel;
 
 type
+
+  { TDualListForm }
+
   TDualListForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     SrcList: TListBox;
     DstList: TListBox;
     SrcLabel: TLabel;
@@ -26,10 +30,6 @@ type
     IncAllBtn: TButton;
     ExclBtn: TButton;
     ExclAllBtn: TButton;
-    OkBtn: TButton;
-    CancelBtn: TButton;
-    HelpBtn: TButton;
-    Bevel1: TBevel;
     procedure IncBtnClick(Sender: TObject);
     procedure IncAllBtnClick(Sender: TObject);
     procedure ExclBtnClick(Sender: TObject);
@@ -45,14 +45,11 @@ type
     procedure DstListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure HelpBtnClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure ListClick(Sender: TObject);
   private
     { Private declarations }
     function GetShowHelp: Boolean;
-    procedure SetShowHelp(Value: Boolean);
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetShowHelp(AValue: Boolean);
   public
     { Public declarations }
     procedure SetButtons;
@@ -66,11 +63,6 @@ uses VCLUtils, BOXPROCS;
 
 
 { TDualListForm }
-
-procedure TDualListForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-end;
 
 procedure TDualListForm.SetButtons;
 var
@@ -86,28 +78,15 @@ end;
 
 function TDualListForm.GetShowHelp: Boolean;
 begin
-  Result := (HelpBtn.Enabled) and (HelpBtn.Visible);
+  Result := pbHelp in ButtonPanel1.ShowButtons;
 end;
 
-procedure TDualListForm.SetShowHelp(Value: Boolean);
-const
-  x_FrmBtn = 16;
-  x_GrpBtn = 15;
-  x_BtnBtn = 8;
+procedure TDualListForm.SetShowHelp(AValue: Boolean);
 begin
-  with HelpBtn do begin
-    Enabled := Value;
-    Visible := Value;
-  end;
-  if Value then begin
-    HelpBtn.Left := Width - HelpBtn.Width - x_FrmBtn;
-    CancelBtn.Left := HelpBtn.Left - CancelBtn.Width - x_GrpBtn;
-    OkBtn.Left := CancelBtn.Left - OkBtn.Width - x_BtnBtn;;
-  end
-  else begin
-    CancelBtn.Left := Width - CancelBtn.Width - x_FrmBtn;
-    OkBtn.Left := CancelBtn.Left - OkBtn.Width - x_BtnBtn;;
-  end;
+  if AValue then
+    ButtonPanel1.ShowButtons:=ButtonPanel1.ShowButtons + [pbHelp]
+  else
+    ButtonPanel1.ShowButtons:=ButtonPanel1.ShowButtons - [pbHelp];
 end;
 
 procedure TDualListForm.IncBtnClick(Sender: TObject);
@@ -205,14 +184,6 @@ end;
 procedure TDualListForm.HelpBtnClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
-end;
-
-procedure TDualListForm.FormCreate(Sender: TObject);
-begin
-{  OkBtn.Caption := SOKButton;
-  CancelBtn.Caption := SCancelButton;
-  HelpBtn.Caption := SHelpButton;}
-  if NewStyleControls then Font.Style := [];
 end;
 
 procedure TDualListForm.ListClick(Sender: TObject);

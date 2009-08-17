@@ -16,13 +16,13 @@ resourcestring
 
 { RxDBCtrl }
 
-  SLocalDatabase         = 'Невозможно произвести эту операцию с локальной базой данных';
-  SRetryLogin            = 'Вы хотите повторить попытку соединения с базой данных?';
+  SLocalDatabase         = 'Unable complete this operation on local dataset';
+  SRetryLogin            = 'Retry to connect with database?';
   SExprNotBoolean        = 'Field ''%s'' is not boolean';
   SExprBadNullTest       = 'NULL-values enabled in ''='' и ''<>''';
   SExprBadField          = 'Field ''%s'' not used in filter expression';
-  SCaptureFilter         = 'Элементы управления захвачены фильтром';
-  SNotCaptureFilter      = 'Элементы управления должны быть захвачены фильтром';
+  SCaptureFilter         = 'Control locked by filter';
+  SNotCaptureFilter      = 'Control need locked by filter';
   SInactiveData          = 'inactive';
   SBrowseData            = 'browse';
   SEditData              = 'editing';
@@ -54,9 +54,9 @@ resourcestring
   SExprNameError           = 'Error in filed name';
   SExprStringError         = 'Error in string const';
   SExprInvalidChar         = 'Error symbol in expression: ''%s''';
-  SExprNoRParen            = 'Ожидалось '')'', а встречено: %s';
-  SExprExpected            = 'Ожидалось выражение, а встречено %s';
-  SExprBadCompare          = 'Операции сравнения требуют наличия поля и константы';
+  SExprNoRParen            = 'Error '')'', error: %s';
+  SExprExpected            = 'Error %s';
+  SExprBadCompare          = 'Compare opertion need fielad and const';
   SConfirmSave             = 'Data changed. Save?';
   SDatabaseName            = 'Database loocked: %s';
   SUnlockCaption           = 'Unloock';
@@ -66,8 +66,8 @@ resourcestring
   SPropDefByLookup         = 'PropDefByLookup';
   SDataSourceFixed         = 'SDataSourceFixed';
   SCircularDataLink        = 'SCircularDataLink';
-  sRxAscendign             = 'Ascendente';//'Ascendente');
-  sRxDescending            = 'Descendente';//'Descendente');
+  sRxAscendign             = 'Ascendign';
+  sRxDescending            = 'Descending';
 
 
   SDeleteRecordQuestion    = 'Delete record?';
@@ -128,6 +128,12 @@ resourcestring
   sRxDbGridSelColCaption   = 'Grid columns';
   sRxDbGridSelColHint1     = 'Move selected column up';
   sRxDbGridSelColHint2     = 'Move selected column down';
+
+  //seldsfrm
+  sRxBorrowStructure       = 'Borrow structure...';
+  sRxSelectDatasetStruct   = 'Select dataset to copy to';
+  sRxCopyOnlyMetadata      = 'Copy only metadata';
+  sRxSourseDataset         = 'Sourse dataset';
 
 const
   { The following strings should not be localized }

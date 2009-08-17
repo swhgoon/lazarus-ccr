@@ -14,7 +14,7 @@ msgid "calc"
 msgstr "вычисление"
 
 #: rxdconst.scapturefilter
-msgid "Элементы уп#209�авления захвачены фильт#209�ом"
+msgid "Control locked by filter"
 msgstr "Элементы управления захвачены фильтром"
 
 #: rxdconst.schangepassword
@@ -62,7 +62,7 @@ msgid "Error message"
 msgstr "Сообщение об ошибке"
 
 #: rxdconst.sexprbadcompare
-msgid "Опе#209�ации с#209�авнения т#209�ебуют наличия поля и константы"
+msgid "Compare opertion need fielad and const"
 msgstr "Операции сравнения требуют наличия поля и константы"
 
 #: rxdconst.sexprbadfield
@@ -74,7 +74,7 @@ msgid "NULL-values enabled in '=' и '<>'"
 msgstr "NULL-значения разрешены только в выражениях '=' и '<>'"
 
 #: rxdconst.sexprexpected
-msgid "Ожидалось вы#209�ажение, а вст#209�ечено %s"
+msgid "Error %s"
 msgstr "Ожидалось выражение, а встречено %s"
 
 #: rxdconst.sexprincorrect
@@ -87,10 +87,10 @@ msgstr "Ошибочный символ в выражении: '%s'"
 
 #: rxdconst.sexprnameerror
 msgid "Error in filed name"
-msgstr ""
+msgstr "Ошибка в имени поля"
 
 #: rxdconst.sexprnorparen
-msgid "Ожидалось ')', а вст#209�ечено: %s"
+msgid "Error ')', error: %s"
 msgstr "Ожидалось ')', а встречено: %s"
 
 #: rxdconst.sexprnotboolean
@@ -142,7 +142,7 @@ msgid "User name or password not valid"
 msgstr "Ошибка в имени пользователя или пароле"
 
 #: rxdconst.slocaldatabase
-msgid "Невозможно п#209�оизвести эту опе#209�ацию с локальной базой данных"
+msgid "Unable complete this operation on local dataset"
 msgstr "Невозможно произвести эту операцию с локальной базой данных"
 
 #: rxdconst.smemnorecords
@@ -166,7 +166,7 @@ msgid "&Next"
 msgstr "&Дальше"
 
 #: rxdconst.snotcapturefilter
-msgid "Элементы уп#209�авления должны быть захвачены фильт#209�ом"
+msgid "Control need locked by filter"
 msgstr "Элементы управления должны быть захвачены фильтром"
 
 #: rxdconst.snotediting
@@ -206,12 +206,20 @@ msgid "Register"
 msgstr "Регистрация"
 
 #: rxdconst.sretrylogin
-msgid "Вы хотите повто#209�ить попытку соединения с базой данных?"
+msgid "Retry to connect with database?"
 msgstr "Вы хотите повторить попытку соединения с базой данных?"
 
 #: rxdconst.srxascendign
-msgid "Ascendente"
-msgstr ""
+msgid "Ascendign"
+msgstr "По возрастанию"
+
+#: rxdconst.srxborrowstructure
+msgid "Borrow structure..."
+msgstr "Обзор структуры..."
+
+#: rxdconst.srxcopyonlymetadata
+msgid "Copy only metadata"
+msgstr "Копировать только метаданные..."
 
 #: rxdconst.srxdbgridemptifilter
 msgid "(Empty)"
@@ -242,7 +250,7 @@ msgstr "Поиск данных"
 
 #: rxdconst.srxdbgridfindcasesens
 msgid "Case sensetive"
-msgstr ""
+msgstr "Регистро-зависимо"
 
 #: rxdconst.srxdbgridfinddirecion
 msgid "Direction"
@@ -293,8 +301,8 @@ msgid "Sort data for collumns"
 msgstr "Сортировать данные по колонкам"
 
 #: rxdconst.srxdescending
-msgid "Descendente"
-msgstr ""
+msgid "Descending"
+msgstr "По убыванию"
 
 #: rxdconst.srxfilterformapply
 msgid "Apply"
@@ -337,6 +345,10 @@ msgstr "Операнд :"
 msgid "Enter filter expression for data in table:"
 msgstr "Введите выражение фильтрации данных в таблице:"
 
+#: rxdconst.srxselectdatasetstruct
+msgid "Select dataset to copy to"
+msgstr "Выберите таблицу для копирования"
+
 #: rxdconst.srxsortbyformaddfield
 msgid "&Add field"
 msgstr "&Добавить поле"
@@ -368,6 +380,10 @@ msgstr "&Выбранные поля"
 #: rxdconst.srxsortbyformsortorder
 msgid "Select field for sort data:"
 msgstr "Укажите поля для сортировки данных :"
+
+#: rxdconst.srxsoursedataset
+msgid "Sourse dataset"
+msgstr "Исходная таблица"
 
 #: rxdconst.sservererrorlabel
 msgid "Server error"

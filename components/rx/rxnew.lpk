@@ -189,61 +189,61 @@ translate to Lazarus by alexs in 2005 - 2009
         <Type Value="LRS"/>
       </Item40>
       <Item41>
-        <Filename Value="rxstrconsts.inc"/>
-        <Type Value="Include"/>
-      </Item41>
-      <Item42>
         <Filename Value="rxiconv.pas"/>
         <UnitName Value="rxiconv"/>
-      </Item42>
-      <Item43>
+      </Item41>
+      <Item42>
         <Filename Value="rxdbgrid.lrs"/>
         <Type Value="LRS"/>
-      </Item43>
-      <Item44>
+      </Item42>
+      <Item43>
         <Filename Value="rxceeditlookupfields.pas"/>
         <UnitName Value="rxceEditLookupFields"/>
-      </Item44>
-      <Item45>
+      </Item43>
+      <Item44>
         <Filename Value="rxclock.pas"/>
         <UnitName Value="rxclock"/>
-      </Item45>
-      <Item46>
+      </Item44>
+      <Item45>
         <Filename Value="rxspin.pas"/>
         <UnitName Value="rxspin"/>
-      </Item46>
-      <Item47>
+      </Item45>
+      <Item46>
         <Filename Value="rxdbspinedit.pas"/>
         <UnitName Value="RxDBSpinEdit"/>
-      </Item47>
-      <Item48>
+      </Item46>
+      <Item47>
         <Filename Value="registerrxdb.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterRxDB"/>
-      </Item48>
-      <Item49>
+      </Item47>
+      <Item48>
         <Filename Value="rxtimeedit.pas"/>
         <UnitName Value="RxTimeEdit"/>
-      </Item49>
-      <Item50>
+      </Item48>
+      <Item49>
         <Filename Value="rxdbtimeedit.pas"/>
         <UnitName Value="RxDBTimeEdit"/>
-      </Item50>
-      <Item51>
+      </Item49>
+      <Item50>
         <Filename Value="rxdbctrls.pas"/>
         <UnitName Value="RxDBCtrls"/>
-      </Item51>
-      <Item52>
+      </Item50>
+      <Item51>
         <Filename Value="rxfilterby.lfm"/>
         <Type Value="LFM"/>
-      </Item52>
-      <Item53>
+      </Item51>
+      <Item52>
         <Filename Value="rxfilterby.lrs"/>
         <Type Value="LRS"/>
-      </Item53>
-      <Item54>
+      </Item52>
+      <Item53>
         <Filename Value="rxfilterby.pas"/>
         <UnitName Value="rxfilterby"/>
+      </Item53>
+      <Item54>
+        <Filename Value="rxconst.pas"/>
+        <UnitName Value="rxconst"/>
       </Item54>
     </Files>
     <i18n>

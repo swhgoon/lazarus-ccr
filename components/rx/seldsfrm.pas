@@ -18,6 +18,7 @@ type
     Label1: TLabel;
     DataSetList: TListBox;
     procedure CheckBox1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure ListBox1DblClick(Sender: TObject);
     procedure ListBox1KeyPress(Sender: TObject; var Key: char);
   private
@@ -53,7 +54,7 @@ var
   SelectDataSetForm: TSelectDataSetForm;
 
 implementation
-uses rxmemds;
+uses rxmemds, rxdconst;
 
 function SelectDataSet(ADesigner: TComponentEditorDesigner; const ACaption: string;
   ExcludeDataSet: TDataSet): TDataSet;
@@ -81,6 +82,13 @@ procedure TSelectDataSetForm.CheckBox1Change(Sender: TObject);
 begin
   Label1.Enabled:=not CheckBox1.Checked;
   DataSetList.Enabled:=not CheckBox1.Checked;
+end;
+
+procedure TSelectDataSetForm.FormCreate(Sender: TObject);
+begin
+  Caption:=sRxSelectDatasetStruct;
+  CheckBox1.Caption:=sRxCopyOnlyMetadata;
+  Label1.Caption:=sRxSourseDataset;
 end;
 
 procedure TSelectDataSetForm.ListBox1DblClick(Sender: TObject);
@@ -237,7 +245,7 @@ begin
   else
   begin
     case Index - DefaultEditor.GetVerbCount of
-      0:Result:='Borrow structure...';
+      0:Result:=sRxBorrowStructure;
     end;
   end;
 end;

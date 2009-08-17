@@ -43,7 +43,8 @@ type
                rdgMrOkOnDblClik,
                rdgAllowQuickSearch,
                rdgAllowFilterForm,
-               rdgAllowSortForm
+               rdgAllowSortForm,
+               rdgAllowToolMenu
                );
   
   TOptionsRx = set of TOptionRx;
@@ -249,10 +250,10 @@ type
     FSwapButtons: Boolean;
     FTracking: Boolean;
 
-    F_TopRect            : TRect;
     F_Clicked            : Boolean;
     F_PopupMenu          : TPopupMenu;
     F_MenuBMP            : TBitmap;
+
     F_EventOnFilterRec   : TFilterRecordEvent;
     F_EventOnBeforeDelete: TDataSetNotifyEvent;
     F_EventOnBeforePost  : TDataSetNotifyEvent;
@@ -260,7 +261,7 @@ type
     F_EventOnPostError   : TDataSetErrorEvent;
     F_LastFilter         : TStringList;
     F_SortListField      : TStringList;
-    F_CreateLookup      : TCreateLookup;
+    F_CreateLookup       : TCreateLookup;
     F_DisplayLookup      : TDisplayLookup;
 
     //storage
@@ -279,6 +280,7 @@ type
     FBeforeQuickSearch : TRxQuickSearchNotifyEvent;
     FQuickUTF8Search : String;
 
+    procedure DoCreateJMenu;
     function GetColumns: TRxDbGridColumns;
     function GetPropertyStorage: TCustomPropertyStorage;
     function GetTitleButtons: boolean;
@@ -306,7 +308,6 @@ type
     procedure OnIniSave(Sender: TObject);
     procedure OnIniLoad(Sender: TObject);
   protected
-//    procedure CreateWnd; override;
     function DatalinkActive:boolean;
     procedure DefaultDrawCellA(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DefaultDrawTitle(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
@@ -868,6 +869,32 @@ begin
   result := TRxDbGridColumns(TCustomDrawGrid(Self).Columns);
 end;
 
+procedure TRxDBGrid.DoCreateJMenu;
+
+procedure CreateMenuItem(ShortCut:Char; const ACaption:string; MenuAction:TNotifyEvent);
+var
+  R:TMenuItem;
+begin
+  R:=TMenuItem.Create(F_PopupMenu);
+  F_PopupMenu.Items.Add(R);
+  R.Caption  := ACaption;
+  if ShortCut<>#0 then
+    R.ShortCut:=KeyToShortCut(ord(ShortCut), [ssCtrl]);
+  R.OnClick  :=MenuAction;
+end;
+
+begin
+  F_PopupMenu       := TPopupMenu.Create(Self);
+  F_PopupMenu.Name  := 'OptionsMenu';
+  CreateMenuItem('F', sRxDBGridFind, @OnFind);
+  CreateMenuItem('T', sRxDBGridFilter, @OnFilterBy);
+  CreateMenuItem('E', sRxDBGridFilterSimple, @OnFilter);
+  CreateMenuItem('Q', sRxDBGridFilterClear, @OnFilterClose);
+  CreateMenuItem(#0, '-', nil);
+  CreateMenuItem('C', sRxDBGridSortByColumns, @OnSortBy);
+  CreateMenuItem('W', sRxDBGridSelectColumns, @OnChooseVisibleFields);
+end;
+
 function TRxDBGrid.GetPropertyStorage: TCustomPropertyStorage;
 begin
   Result:=FPropertyStorageLink.Storage;
@@ -1232,17 +1259,6 @@ begin
   end;
 end;
 
-{procedure TRxDBGrid.CreateWnd;
-begin
-  BeginUpdate;
-  try
-    inherited CreateWnd;
-    CalcTitle;
-  finally
-    EndUpdate;
-  end;
-end;     }
-
 procedure TRxDBGrid.DefaultDrawCellA(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -1274,7 +1290,11 @@ begin
   if (dgIndicator in Options) and (aCol=0) then
   begin
      Canvas.FillRect(aRect);
+     if F_Clicked then
+      aState:= aState + [gdPushed];
      DrawCellGrid(aCol,aRow, aRect, aState);
+     if DatalinkActive and (rdgAllowToolMenu in FOptionsRx) then
+       Canvas.Draw((ARect.Left+ARect.Right-F_MenuBMP.Width) div 2,(ARect.Top + ARect.Bottom - F_MenuBMP.Height) div 2, F_MenuBMP);
      exit;
   end;
 
@@ -1503,13 +1523,13 @@ begin
   if (gdFixed in aState) and (aRow=0) then
   begin
     DefaultDrawCellA(aCol, aRow, aRect, aState);
-    if (ARect.Top<=0) and (aCol=0) and (aRow=0) and (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) then
+{    if (ARect.Top<=0) and (aCol=0) and (aRow=0) and (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) then
     begin
-      F_TopRect := ARect;
+//      F_TopRect := ARect;
       Canvas.Lock;
       Canvas.Draw((ARect.Left+ARect.Right-F_MenuBMP.Width) div 2,(ARect.Top + ARect.Bottom - F_MenuBMP.Height) div 2, F_MenuBMP);
       Canvas.UnLock;
-    end;
+    end;}
   end
   else
   if  not ((gdFixed in aState) or (aCol=0) or (aRow=0)) then
@@ -1599,17 +1619,20 @@ begin
     end
     else
     begin
-      DataSource.DataSet.OnFilterRecord:=F_EventOnFilterRec;
-      F_EventOnFilterRec:=nil;
-      DataSource.DataSet.BeforeDelete:=F_EventOnBeforeDelete;
-      F_EventOnBeforeDelete:=nil;
-      DataSource.DataSet.BeforePost:=F_EventOnBeforePost;
-      F_EventOnBeforePost:=nil;
-      DataSource.DataSet.OnDeleteError:=F_EventOnDeleteError;
-      F_EventOnDeleteError:=nil;
-      DataSource.DataSet.OnPostError:=F_EventOnPostError;
-      F_EventOnPostError:=nil;
-      OptionsRx:=OptionsRx - [rdgFilter];
+      if Assigned(DataSource) and Assigned(DataSource.DataSet) then
+      begin
+        DataSource.DataSet.OnFilterRecord:=F_EventOnFilterRec;
+        F_EventOnFilterRec:=nil;
+        DataSource.DataSet.BeforeDelete:=F_EventOnBeforeDelete;
+        F_EventOnBeforeDelete:=nil;
+        DataSource.DataSet.BeforePost:=F_EventOnBeforePost;
+        F_EventOnBeforePost:=nil;
+        DataSource.DataSet.OnDeleteError:=F_EventOnDeleteError;
+        F_EventOnDeleteError:=nil;
+        DataSource.DataSet.OnPostError:=F_EventOnPostError;
+        F_EventOnPostError:=nil;
+        OptionsRx:=OptionsRx - [rdgFilter];
+      end;
       F_LastFilter.Clear;
     end;
   end;
@@ -1722,28 +1745,16 @@ procedure TRxDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   Cell: TGridCoord;
   Rect : TRect;
-//  X1,X2,Y1,Y2 : integer;
-//  msg: TGridMessage;
-//  pow : TForm;
-//  curCol,curRow : integer;
-//  dump : integer;
 begin
   Cell := MouseCoord(X, Y);
-  if (DatalinkActive) And (DataSource.DataSet.State = dsBrowse) And (Button = mbLeft) And (Cell.X =0 ) And (Cell.Y = 0) And (dgIndicator in Options) then
+  if (DatalinkActive) and (DataSource.DataSet.State = dsBrowse)
+     and (Button = mbLeft) and (Cell.X =0 ) and (Cell.Y = 0) and
+       (dgIndicator in Options) and (rdgAllowToolMenu in FOptionsRx) then
   begin
     F_Clicked := True;
-    Rect := F_TopRect;
-    Canvas.Brush.Color := FixedColor;
-    Canvas.FillRect(Rect);
-    if (dgColLines in Options) Then
-    begin
-      InflateRect(Rect, 1, 1);
-      DrawEdge(Canvas.Handle, Rect, BDR_RAISEDINNER, BF_FLAT);
-      DrawEdge(Canvas.Handle, Rect, BDR_RAISEDINNER, BF_FLAT);
-    end;
-    Canvas.Draw(((Rect.Left+Rect.Right-F_MenuBMP.Width) div 2)+1,((Rect.Top + Rect.Bottom - F_MenuBMP.Height) div 2)+1, F_MenuBMP);
-  end;
-
+    InvalidateCell(0, 0);
+  end
+  else
   if (Cell.Y=0) and (Cell.X >= ord(dgIndicator in Options))  then
   begin
     if (rdgFilter in OptionsRx) and DatalinkActive then
@@ -1762,7 +1773,7 @@ begin
           Height := Rect.Bottom - Rect.Top;
           BoundsRect := Rect;
           Style := csDropDownList;
-//          DropDownCount := TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.DropDownRows;
+          DropDownCount := TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.DropDownRows;
           Text:=TRxColumn(Columns[Columns.RealIndex(Cell.x-1)]).Filter.Value;
           Show(Self,Cell.x-1);
         end;
@@ -1841,7 +1852,7 @@ var
   MPT       : TPoint;
   Rct       : TRect;
 begin
-  ShowMenu  := False;
+  ShowMenu  := false;
 
   FColumnResizing := false;
 
@@ -1868,38 +1879,39 @@ begin
     end;
   end
   else
-  if FSwapButtons then begin
+  if FSwapButtons then
+  begin
     FSwapButtons := False;
     MouseCapture := False;
-    if Button = mbRight then Button := mbLeft;
+    if Button = mbRight then
+      Button := mbLeft;
   end;
 
-  if (DatalinkActive) And (DataSource.DataSet.State = dsBrowse) then
+  if (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) and
+    (rdgAllowToolMenu in FOptionsRx) then
   begin
     Cell := MouseCoord(X,Y);
-    if ((Button = mbLeft) and (Cell.X =0 ) and (Cell.Y = 0) And (dgIndicator in Options)) Or (F_Clicked) then
+    if ((Button = mbLeft) and (Cell.X =0 ) and (Cell.Y = 0) and (dgIndicator in Options)) or (F_Clicked) then
     begin
-      Rct := F_TopRect;
-      Canvas.Brush.Color := FixedColor;
-      Canvas.FillRect(Rct);
-      if (dgColLines in Options) Then
-      begin
-        DrawEdge(Canvas.Handle, Rct, BDR_RAISEDINNER, BF_BOTTOMRIGHT);
-        DrawEdge(Canvas.Handle, Rct, BDR_RAISEDINNER, BF_TOPLEFT);
-      end;
       F_Clicked := False;
+      InvalidateCell(0, 0);
       ShowMenu  := True;
       Button:=mbRight;
     end;
   end;
+
   inherited MouseUp(Button, Shift, X, Y);
 
   if (DatalinkActive) and (DataSource.DataSet.State = dsBrowse) and (ShowMenu) then
   begin
-    MPT.X := F_TopRect.Left;
-    MPT.Y := F_TopRect.Bottom;
+    Rct:=CellRect(0, 0);
+    MPT.X := Rct.Left;
+    if rdgFilter in FOptionsRx then
+      MPT.Y := Rct.Bottom - DefaultRowHeight
+    else
+      MPT.Y := Rct.Bottom;
     MPT := ClientToScreen(MPT);
-    DrawCell(0,0,F_TopRect,[gdFixed]);
+//    DrawCell(0,0,F_TopRect,[gdFixed]);
     UpdateJMenuStates;
     F_PopupMenu.Popup(MPT.X,MPT.Y);
   end;
@@ -2523,7 +2535,6 @@ begin
       FSortEngine.SortList(s, DataSource.DataSet, o);
     end;
     FreeAndNil(rxSortByForm);
-//    Paint;
     Invalidate;
   end;
 end;
@@ -2565,41 +2576,7 @@ begin
   F_MenuBMP           := TBitmap.Create;
   F_MenuBMP := LoadLazResBitmapImage('menu_grid');
 
-  F_PopupMenu       := TPopupMenu.Create(Self);
-  F_PopupMenu.Name  := 'OptionsMenu';
-
-  F_PopupMenu.Items.Insert(0,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[0].Caption  :=sRxDBGridFind;
-  F_PopupMenu.Items[0].ShortCut:=KeyToShortCut(ord('F'), [ssCtrl]);
-  F_PopupMenu.Items[0].OnClick  :=@OnFind;
-
-  F_PopupMenu.Items.Insert(1,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[1].Caption  :=sRxDBGridFilter;
-  F_PopupMenu.Items[1].ShortCut:=KeyToShortCut(ord('T'), [ssCtrl]);
-  F_PopupMenu.Items[1].OnClick  := @OnFilterBy;
-
-  F_PopupMenu.Items.Insert(2,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[2].Caption  :=sRxDBGridFilterSimple;
-  F_PopupMenu.Items[2].ShortCut:=KeyToShortCut(ord('E'), [ssCtrl]);
-  F_PopupMenu.Items[2].OnClick  := @OnFilter;
-
-  F_PopupMenu.Items.Insert(3,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[3].Caption  :=sRxDBGridFilterClear;
-  F_PopupMenu.Items[3].ShortCut:=KeyToShortCut(ord('Q'), [ssCtrl]);
-  F_PopupMenu.Items[3].OnClick  := @OnFilterClose;
-
-  F_PopupMenu.Items.Insert(4,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[4].Caption  :='-';
-
-  F_PopupMenu.Items.Insert(5,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[5].Caption  :=sRxDBGridSortByColumns;
-  F_PopupMenu.Items[5].ShortCut:=KeyToShortCut(ord('C'), [ssCtrl]);
-  F_PopupMenu.Items[5].OnClick  := @OnSortBy;
-
-  F_PopupMenu.Items.Insert(6,TMenuItem.Create(F_PopupMenu));
-  F_PopupMenu.Items[6].Caption  :=sRxDBGridSelectColumns;
-  F_PopupMenu.Items[6].ShortCut:=KeyToShortCut(ord('W'), [ssCtrl]);
-  F_PopupMenu.Items[6].OnClick  := @OnChooseVisibleFields;
+  DoCreateJMenu;
 
   F_LastFilter        := TStringList.Create;
   F_SortListField     := TStringList.Create;

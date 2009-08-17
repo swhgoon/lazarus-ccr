@@ -1,51 +1,53 @@
 object DualListForm: TDualListForm
-  Left = 311
-  Height = 269
-  Top = 225
-  Width = 392
-  HorzScrollBar.Page = 391
-  VertScrollBar.Page = 268
-  ActiveControl = SrcList
+  Left = 428
+  Height = 344
+  Top = 233
+  Width = 552
+  ActiveControl = IncBtn
   BorderIcons = []
-  BorderStyle = bsDialog
   Caption = 'DualListForm'
-  ClientHeight = 269
-  ClientWidth = 392
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  ClientHeight = 344
+  ClientWidth = 552
   OnActivate = ListClick
-  OnCreate = FormCreate
   OnShow = ListClick
   Position = poScreenCenter
-  object Bevel1: TBevel
-    Left = 4
-    Height = 224
-    Top = 7
-    Width = 384
-  end
+  LCLVersion = '0.9.27'
   object SrcLabel: TLabel
-    Left = 12
-    Height = 14
-    Top = 12
-    Width = 34
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 50
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Source'
     ParentColor = False
   end
   object DstLabel: TLabel
-    Left = 216
-    Height = 14
-    Top = 12
-    Width = 23
+    AnchorSideLeft.Control = DstList
+    AnchorSideTop.Control = Owner
+    Left = 304
+    Height = 18
+    Top = 6
+    Width = 34
+    BorderSpacing.Top = 6
     Caption = 'Dest'
     ParentColor = False
   end
   object SrcList: TListBox
-    Left = 12
-    Height = 194
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SrcLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 260
     Top = 30
-    Width = 164
-    ItemHeight = 13
+    Width = 242
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
     MultiSelect = True
     OnClick = ListClick
     OnDblClick = IncBtnClick
@@ -54,13 +56,23 @@ object DualListForm: TDualListForm
     ShowHint = True
     Sorted = True
     TabOrder = 0
+    TopIndex = -1
   end
   object DstList: TListBox
-    Left = 216
-    Height = 194
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DstLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 304
+    Height = 260
     Top = 30
-    Width = 164
-    ItemHeight = 13
+    Width = 242
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
     MultiSelect = True
     OnClick = ListClick
     OnDblClick = ExclBtnClick
@@ -69,93 +81,95 @@ object DualListForm: TDualListForm
     ShowHint = True
     Sorted = True
     TabOrder = 5
+    TopIndex = -1
   end
   object IncBtn: TButton
-    Left = 183
-    Height = 26
-    Top = 32
-    Width = 26
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = SrcList
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 36
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
     BorderSpacing.InnerBorder = 4
     Caption = '>'
     Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     OnClick = IncBtnClick
+    ParentFont = False
     TabOrder = 1
   end
   object IncAllBtn: TButton
-    Left = 183
-    Height = 26
-    Top = 64
-    Width = 26
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = IncBtn
+    AnchorSideTop.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 79
+    Width = 44
+    AutoSize = True
+    BorderSpacing.Top = 6
     BorderSpacing.InnerBorder = 4
     Caption = '>>'
     Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     OnClick = IncAllBtnClick
+    ParentFont = False
     TabOrder = 2
   end
   object ExclBtn: TButton
-    Left = 183
-    Height = 26
-    Top = 97
-    Width = 26
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = IncAllBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 122
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
     BorderSpacing.InnerBorder = 4
     Caption = '<'
     Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     OnClick = ExclBtnClick
+    ParentFont = False
     TabOrder = 3
   end
   object ExclAllBtn: TButton
-    Left = 183
-    Height = 26
-    Top = 129
-    Width = 26
+    AnchorSideLeft.Control = IncAllBtn
+    AnchorSideTop.Control = ExclBtn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = IncAllBtn
+    AnchorSideRight.Side = asrBottom
+    Left = 254
+    Height = 37
+    Top = 165
+    Width = 44
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
     BorderSpacing.InnerBorder = 4
     Caption = '<<'
     Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     OnClick = ExclAllBtnClick
+    ParentFont = False
     TabOrder = 4
   end
-  object OkBtn: TButton
-    Left = 138
-    Height = 25
-    Top = 239
-    Width = 77
-    BorderSpacing.InnerBorder = 4
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 296
+    Width = 540
     TabOrder = 6
-  end
-  object CancelBtn: TButton
-    Left = 221
-    Height = 25
-    Top = 239
-    Width = 77
-    BorderSpacing.InnerBorder = 4
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 7
-  end
-  object HelpBtn: TButton
-    Left = 310
-    Height = 25
-    Top = 239
-    Width = 77
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Help'
-    OnClick = HelpBtnClick
-    TabOrder = 8
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

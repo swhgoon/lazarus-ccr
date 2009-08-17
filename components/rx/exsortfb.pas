@@ -44,9 +44,13 @@ uses
   ;
 
 type
+
+  { TFBDataSetSortEngine }
+
   TFBDataSetSortEngine = class(TExDBGridSortEngine)
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);override;
+    procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);override;
   end;
 
 implementation
@@ -56,6 +60,13 @@ procedure TFBDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean
 begin
   if Assigned(ADataSet) then
     (ADataSet as TFBDataSet).SortOnField(Field.FieldName, Asc);
+end;
+
+procedure TFBDataSetSortEngine.SortList(ListField: string; ADataSet: TDataSet;
+  Asc: boolean);
+begin
+  if Assigned(ADataSet) then
+    (ADataSet as TFBDataSet).SortOnFields(ListField, Asc);
 end;
 
 initialization

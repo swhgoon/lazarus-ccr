@@ -38,9 +38,13 @@ uses
   Classes, SysUtils, DB, RxDBGrid;
 
 type
+
+  { TRxMemoryDataSortEngine }
+
   TRxMemoryDataSortEngine = class(TExDBGridSortEngine)
   public
     procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);override;
+    procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);override;
   end;
 
 implementation
@@ -49,7 +53,14 @@ uses rxmemds;
 procedure TRxMemoryDataSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);
 begin
   if Assigned(ADataSet) then
-    (ADataSet as TRxMemoryData).SortOnFields(Field.FieldName, true, Asc);
+    (ADataSet as TRxMemoryData).SortOnFields(Field.FieldName, true, not Asc);
+end;
+
+procedure TRxMemoryDataSortEngine.SortList(ListField: string;
+  ADataSet: TDataSet; Asc: boolean);
+begin
+  if Assigned(ADataSet) then
+    (ADataSet as TRxMemoryData).SortOnFields(ListField, true, not Asc);
 end;
 
 initialization
