@@ -14,7 +14,8 @@
  **********************************************************************}
 {
   Abstract:
-
+    Utility functions using mtprocs.
+    For example a parallel sort.
 }
 unit MTPUtils;
 

@@ -58,6 +58,8 @@ type
     destructor Destroy; override;
     function WaitForIndexRange(StartIndex, EndIndex: PtrInt): boolean;
     function WaitForIndex(Index: PtrInt): boolean; inline;
+    procedure CalcBlock(Index, BlockSize, LoopLength: PtrInt;
+                        out BlockStart, BlockEnd: PtrInt); inline;
     property Index: PtrInt read FIndex;
     property Group: TProcThreadGroup read FGroup;
     property WaitingForIndexStart: PtrInt read FWaitingForIndexStart;
@@ -171,10 +173,12 @@ type
       StartIndex, EndIndex: PtrInt;
       Data: Pointer = nil; MaxThreads: PtrInt = 0);
   public
-    constructor Create;
-    destructor Destroy; override;
+    // for debugging only: the critical section is public:
     procedure EnterPoolCriticalSection; inline;
     procedure LeavePoolCriticalSection; inline;
+  public
+    constructor Create;
+    destructor Destroy; override;
 
     procedure DoParallel(const AMethod: TMTMethod;
       StartIndex, EndIndex: PtrInt;
@@ -187,6 +191,10 @@ type
     procedure DoParallelLocalProc(const LocalProc: Pointer;
       StartIndex, EndIndex: PtrInt;
       Data: Pointer = nil; MaxThreads: PtrInt = 0); // do not make this inline!
+
+    // utility functions for loops:
+    procedure CalcBlockSize(LoopLength: PtrInt;
+      out BlockCount, BlockSize: PtrInt; MinBlockSize: PtrInt = 0); inline;
   public
     property MaxThreadCount: PtrInt read FMaxThreadCount write SetMaxThreadCount;
     property ThreadCount: PtrInt read FThreadCount;
@@ -194,6 +202,7 @@ type
 
 var
   ProcThreadPool: TProcThreadPool = nil;
+
 
 implementation
 
@@ -249,6 +258,15 @@ end;
 function TMultiThreadProcItem.WaitForIndex(Index: PtrInt): boolean; inline;
 begin
   Result:=WaitForIndexRange(Index,Index);
+end;
+
+procedure TMultiThreadProcItem.CalcBlock(Index, BlockSize, LoopLength: PtrInt;
+  out BlockStart, BlockEnd: PtrInt);
+begin
+  BlockStart:=BlockSize*Index;
+  BlockEnd:=BlockStart+BlockSize;
+  if LoopLength<BlockEnd then BlockEnd:=LoopLength;
+  dec(BlockEnd);
 end;
 
 { TProcThread }
@@ -670,6 +688,21 @@ begin
   Frame:=get_caller_frame(get_frame);
   DoParallelIntern(nil,TMTProcedure(LocalProc),Frame,StartIndex,EndIndex,
                    Data,MaxThreads);
+end;
+
+procedure TProcThreadPool.CalcBlockSize(LoopLength: PtrInt; out BlockCount,
+  BlockSize: PtrInt; MinBlockSize: PtrInt);
+begin
+  if LoopLength<=0 then begin
+    BlockCount:=0;
+    BlockSize:=1;
+    exit;
+  end;
+  // split work into equally sized blocks
+  BlockCount:=ProcThreadPool.MaxThreadCount;
+  BlockSize:=(LoopLength div BlockCount);
+  if (BlockSize<MinBlockSize) then BlockSize:=MinBlockSize;
+  BlockCount:=((LoopLength-1) div BlockSize)+1;
 end;
 
 procedure TProcThreadPool.DoParallelIntern(const AMethod: TMTMethod;
