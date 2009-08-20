@@ -246,6 +246,7 @@ translate to Lazarus by alexs in 2005 - 2009
         <UnitName Value="rxconst"/>
       </Item54>
     </Files>
+    <LazDoc Paths="docs\"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>

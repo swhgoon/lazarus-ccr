@@ -32,6 +32,8 @@
   + Свойство TCustomRxDateEdit.YearDigits теперь работает 
   + Большой патч от Rene Herranz Daniel (rhdaniel74.(at).gmail.com) - доработки по сортировке данных,
     меню правого верхнего угла, фильтрация данных
+  + Начато написание документации в формета LazDoc
+  - Исправлено изменение цвета конца недели в RxDateEdit
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных

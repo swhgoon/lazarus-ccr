@@ -57,7 +57,13 @@
       <element name="TRxColumnFilter.ItemIndex"/>
       <element name="TRxDBGrid">
         <short>Наследник от стандартного TDBGrid с дополнительными возможностями</short>
-        <descr>Наследник от стандартного TDBGrid</descr>
+        <descr>Компонента TRxDBGrid предназначена, как и стандартная компонента TDBGrid, для отображения данных таблиц БД или результатов запросов в табличной форме. Являясь наследником TDBGrid, компонента TRxDBGrid имеет все те же свойства и методы, и, кроме того, некоторые свойства, находящиеся у TDBGrid в секции protected, вынесены в секцию public. Это такие свойства, как Col, Row, LeftCol, Canvas. 
+Другие отличия от TDBGrid: 
+- BLOB-поля базы данных, такие как графические изображения, текстовые мемо-поля, другие BLOB'ы могут отображаться в таблице в виде пиктограмм при установленном в True значении свойства ShowGlyphs; 
+- вы можете изменить цвет шрифта и фона любой ячейки таблицы (либо любой ее строки или столбца) в зависимости от значения поля или имени поля набора данных, определив обработчик события OnGetCellParams; 
+- имеются методы SaveLayout и RestoreLayout для сохранения и восстановления порядка и ширин столбцов компоненты TRxDBGrid в INI-файле (или в Registry для Delphi 2.0). Вы можете также автоматически сохранять и восстанавливать эти параметры, присвоив значение свойству IniStorage. 
+- заголовки колонок Grid-а могут быть с помощью свойства TitleButtons использованы как кнопки, например, для изменения порядка сортировки отображаемых данных. 
+- вы можете зафиксировать несколько первых колонок в Grid-е с помощью свойства FixedCols.</descr>
       </element>
       <element name="TRxDBGrid.FilterRec"/>
       <element name="TRxDBGrid.Create"/>
@@ -85,11 +91,20 @@
       <element name="TRxDBGrid.AfterQuickSearch"/>
       <element name="TRxDBGrid.BeforeQuickSearch"/>
       <element name="TRxDBGrid.OnGetBtnParams"/>
-      <element name="TRxDBGrid.TitleButtons"/>
+      <element name="TRxDBGrid.TitleButtons">
+        <short>property TitleButtons: Boolean;</short>
+        <descr>Свойство определяет, могут ли заголовки колонок в Grid-е быть использованы как кнопки. По умолчанию - False. 
+При установке свойства в значение True Вы можете обработать события OnTitleBtnClick для обработки нажатия на такую кнопку и OnCheckButton, OnGetBtnParams для установки свойств кнопок в заголовке.</descr>
+      </element>
       <element name="TRxDBGrid.AutoSort"/>
       <element name="TRxDBGrid.OnGetCellProps"/>
       <element name="TRxDBGrid.Columns"/>
-      <element name="TRxDBGrid.PropertyStorage"/>
+      <element name="TRxDBGrid.PropertyStorage">
+        <short>property IniStorage: TFormPlacement;</short>
+        <descr>Свойство позволяет автоматически сохранять специфические установки компоненты в INI-файле или (для 32-разрядной версии) в системном регистре при помощи компонент TFormPlacement или TFormStorage. 
+При задании значения свойству IniStorage (и непустом имени компоненты), некоторые ее настройки, которые не являются published-свойствами и не могут быть заданы для TFormStorage напрямую, будут сохраняться и восстанавливаться одновременни с другими значениями, заданными для соответствующей компоненты TFormPlacement (TFormStorage). 
+Для TSpeedbar - это расположение кнопок на панели и положение самой панели, для TMRUManager - список строк, для TRxDBGrid - ширины и положение полей в таблице и т.д. Все компоненты, имеющие свойство IniStorage, имеют также методы для сохранения и восстановления их настроек вручную, такие как Save/RestoreLayout и т.д.</descr>
+      </element>
       <element name="TRxDBGrid.Version"/>
       <element name="TRxDBGrid.AllowedOperations"/>
       <element name="TRxDBGrid.OptionsRx"/>
@@ -166,7 +181,9 @@
       <element name="TRxDBGrid.OnSelectEditor"/>
       <element name="TRxDBGrid.OnStartDock"/>
       <element name="TRxDBGrid.OnStartDrag"/>
-      <element name="TRxDBGrid.OnTitleClick"/>
+      <element name="TRxDBGrid.OnTitleClick">
+        <descr>Событие происходит при нажатии пользователем на кнопку в заголовке колонки компоненты TRxDBGrid при установленном в True значении свойства TitleButtons. В обработчик события в качестве параметров передаются номер колонки ACol и поле Field, соответствующее данной колонке.</descr>
+      </element>
       <element name="TRxDBGrid.OnUserCheckboxBitmap"/>
       <element name="TRxDBGrid.OnUTF8KeyPress"/>
       <element name="TRxDBGrid.OnCreateLookup"/>
@@ -363,7 +380,16 @@ Description
       <element name="TCurrencyEdit.OnStartDock"/>
     </module>
     <module name="rxlookup">
-      <element name="TRxLookupEdit"/>
+      <element name="TRxLookupEdit">
+        <short>TRxLookupEdit Component</short>
+        <descr>Unit
+RxLookup
+Description
+Компонента TRxLookupEdit представляет собой редактор с возможностью как прямого ввода текста пользователем в строке редактирования, так и выбора текста из выпадающего списка, заполняемого значениями из базы данных. При открытом списке набор пользователем символов с клавиатуры приводит к позиционированию списка на ближайшую запись, совпадающую с введенным текстом. 
+Для заполнения выпадающего списка используются свойства LookupSource, LookupField, LookupDisplay и LookupDisplayIndex, аналогично списку компоненты TRxDBLookupCombo. 
+Введенное пользователем или выбранное из списка значение доступно через свойство Text. 
+Свойство LookupValue (read-only) позволяет получить значение ключевого поля из lookup-набора данных (заданного свойством LookupField), если пользвателем был сделан выбор из списка.</descr>
+      </element>
       <element name="TRxLookupEdit.Create"/>
       <element name="TRxLookupEdit.Destroy"/>
       <element name="TRxLookupEdit.DropDownCount"/>
@@ -373,7 +399,27 @@ Description
       <element name="TRxLookupEdit.LookupField"/>
       <element name="TRxLookupEdit.LookupSource"/>
       <element name="TRxLookupEdit.PopUpFormOptions"/>
-      <element name="TRxDBLookupCombo"/>
+      <element name="TRxDBLookupCombo">
+        <short>TRxDBLookupCombo Component</short>
+        <descr>Unit
+RxLookup
+Description
+Компонента TRxDBLookupCombo почти полностью аналогична стандартной компоненте из VCL TDBLookupCombo и имеет те же самые свойства, методы и события. Однако по сравнению с TDBLookupCombo у этой компоненты есть некоторые дополнительные возможности и свойства. 
+TRxDBLookupCombo позволяет использовать в качестве LookupSource любой источник данных - как TTable, так и TQuery, при этом свойство LookupField не обязательно должно быть индексированным полем. 
+Компонента TRxDBLookupCombo также позволяет производить поиск нужного термина при наборе первых букв этого термина. 
+Например, у вас имеется таблица или результат запроса, седержащий поля CustNo и CustName. Тогда вы можете указать поле CustName как значение свойства LookupDisplay. Если пользователь вашего приложения наберет первые буквы нужной ему фамилии (находящейся в поле CustName), то если компонента TRxDBLookupCombo имеет фокус ввода, автоматически выпадет список доступных значений и выделенный элемент в списке установится в значение, первые буквы которого совпадают с введенными пользователем. 
+Если свойство IgnoreCase установлено в True, то при наборе пользователем первых букв термина регистр символов не учитывается. Надо иметь в виду, что при работе с русскоязычными значениями в полях БД не все драйвера поддерживают преобразование регистра символов. 
+Свойство IndexSwitch определяет, будет ли при необходимости производиться переключение индексов таблицы (если источником данных служит таблица, а не результат запроса). В случае использования больших SQL-таблиц переключение индексов может занять длительное время, поэтому в таких случаях свойство желательно устанавливать в значение False. 
+Свойтсво DisplayEmpty позволяет задать текстовую строку для отображения в строке TRxDBLookupCombo, когда не сделано никакого выбора. Вызов метода ResetField приводит к очистке содержимого компоненты, устоновке значения Value в пустую строку, и отображению значения DisplayEmpty. 
+В дополнение к событию OnDropDown, имеющемуся у TDBLookupCombo, компонента имеет событие OnCloseUp, вызываемое при закрытии выпадающего списка. Метод IsDropDown позволяет определить текущее состояние выпадающего списка выбора. Событие OnChange происходит при смене значения cвойства Value. 
+Компонента также позволяет задать изображения для рисования в левой части каждой строки списка, в зависимости от содержимого полей БД, с помощью события OnGetImage. 
+В остальном компонента TRxDBLookupCombo полностью аналогична компоненте TDBLookupCombo. 
+
+ВНИМАНИЕ 
+При присвоении значений свойству Value или DisplayValue компонент TRxDBLookupCombo или TRxDBLookupList безошибочное позиционирование на соответствующую запись в списке произойдет только в том случае, если соответствующее поле в подмножестве записей, заданном источником данных DataSource, имеет только уникальные неповторяющиеся значения. В противном случае Вы получите несколько "выбранных" элементов в списке (причем реально будет выбран только один самый первый), значения полей в которых равны заданному. Избегайте таких ситуаций! 
+
+При работе с некоторыми SQL-серверами БД установка свойств IndexSwitch или IgnoreCase в значение True может приводить к неожиданному поведению компоненты. В этом случае постарайтесь добиться "правильного" поведения за счет комбинирования разных значений свойств IgnoreCase и IndexSwitch.</descr>
+      </element>
       <element name="TRxDBLookupCombo.PopupVisible"/>
       <element name="TRxDBLookupCombo.Value"/>
       <element name="TRxDBLookupCombo.KeyValue"/>
@@ -394,8 +440,14 @@ Description
       <element name="TRxDBLookupCombo.Flat"/>
       <element name="TRxDBLookupCombo.Font"/>
       <element name="TRxDBLookupCombo.Glyph"/>
-      <element name="TRxDBLookupCombo.EmptyValue"/>
-      <element name="TRxDBLookupCombo.EmptyItemColor"/>
+      <element name="TRxDBLookupCombo.EmptyValue">
+        <short>property EmptyValue: string;</short>
+        <descr>Свойство задает значение, присвоение которого свойству Value будет восприниматься как присвоение "пустого" значения и приведет к очистке DataField. По умолчанию значение свойства есть пустая строка.</descr>
+      </element>
+      <element name="TRxDBLookupCombo.EmptyItemColor">
+        <short>property EmptyItemColor: TColor;</short>
+        <descr>Свойство задает значение цвета, которым будет рисоваться дополнительный нескролируемый элемент списка для "пустого" значения (т.е. которое совпадает с DisplayEmpty).</descr>
+      </element>
       <element name="TRxDBLookupCombo.NumGlyphs"/>
       <element name="TRxDBLookupCombo.OnButtonClick"/>
       <element name="TRxDBLookupCombo.OnChange"/>
@@ -441,7 +493,11 @@ Description
       <element name="TDBDateEdit.DataSource"/>
       <element name="TDBDateEdit.ReadOnly"/>
       <element name="TDBDateEdit.DefaultToday"/>
-      <element name="TRxDBCalcEdit"/>
+      <element name="TRxDBCalcEdit">
+        <descr>Компонента TRxDBCalcEdit - ориентированная на работу с базами данных компонента для редактирования чисел с возможностью импользования выпадающего калькулятора. Установленное значение свойства Value становится новым значением поля в БД, если значение свойства ReadOnly - False. 
+TRxDBCalcEdit является наследником TDBCalcEdit и имеет все те же свойства и методы, и дополнительно имеет свойства, необходимые для работы с полями базы данных. 
+Компонента TRxDBCalcEdit может быть применена к тем полям данных, которые позволяют чтение и присвоение значений через свойства AsFloat, AsInteger.</descr>
+      </element>
       <element name="TRxDBCalcEdit.Create"/>
       <element name="TRxDBCalcEdit.Destroy"/>
       <element name="TRxDBCalcEdit.DataField"/>
@@ -466,6 +522,7 @@ Description
           <p>Свойство - массив, содержит в себе список всех файлов и каталогов, которые были обнаружены в указанной папке.</p>
 Кол-во элементов данного массива находится в свойстве 
           
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -486,6 +543,7 @@ Description
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
           
           <b>Execute</b> и по содержимому которого будет произведено заполнение массива Files</descr>
         <seealso>
@@ -639,10 +697,21 @@ Description
       <element name="TRxDateEdit.OnResize"/>
     </module>
     <module name="duallist">
-      <element name="TDualListDialog"/>
+      <element name="TDualListDialog">
+        <short>TDualListDialog Component</short>
+        <descr>Unit
+DualList
+Description
+Компонента делает доступным вашему приложению диалог с двумя списками, где элементы можно перемещать из одного списка в другой, а также менять порядок следования элементов внутри списка. 
+По сравнению с одноименной формой из Delphi Gallery, кроме оформления в виде компоненты, добавлены возможность Drag Drop, задания порядка внутри списка, интерфейсные улучшения. 
+Задайте исходное состояние списков в свойствах List1 и List2, вызовите диалог функцией Execute и считайте новый состав списков.</descr>
+      </element>
       <element name="TDualListDialog.Create"/>
       <element name="TDualListDialog.Destroy"/>
-      <element name="TDualListDialog.Execute"/>
+      <element name="TDualListDialog.Execute">
+        <short>function Execute: Boolean;</short>
+        <descr>Вызов диалога с двумя списками, где можно поменять элементы местами внутри списка или перенести элементы из одного списка в другой.</descr>
+      </element>
       <element name="TDualListDialog.Ctl3D"/>
       <element name="TDualListDialog.Sorted"/>
       <element name="TDualListDialog.Title"/>
@@ -652,8 +721,14 @@ Description
       <element name="TDualListDialog.CancelBtnCaption"/>
       <element name="TDualListDialog.HelpBtnCaption"/>
       <element name="TDualListDialog.HelpContext"/>
-      <element name="TDualListDialog.List1"/>
-      <element name="TDualListDialog.List2"/>
+      <element name="TDualListDialog.List1">
+        <short>property List1: TStrings;</short>
+        <descr>Список слева.</descr>
+      </element>
+      <element name="TDualListDialog.List2">
+        <short>property List2: TStrings;</short>
+        <descr>Список справа.</descr>
+      </element>
       <element name="TDualListDialog.ShowHelp"/>
     </module>
     <module name="rxswitch">
@@ -708,23 +783,42 @@ Description
       <element name="TRxSwitch.OnOff"/>
     </module>
     <module name="rxdice">
-      <element name="TRxDice"/>
+      <element name="TRxDice">
+        <descr>Unit
+RxDice
+Description
+Компонента из числа "безделушек", позволяющая вам использовать в формах изображения игральных костей в различных положениях. Текущее состояние компоненты (положение игральной кости) задается свойством Value, которое может изменяться от 1 до 6. Вы можете установить свойство Value в случайное значение, вызвав метод RandomValue. Если вы установите свойство Rotate в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение Value, с частотой, задаваемой свойством Interval. Остановить вращение можно, присвоив значение False свойству Rotate. Если свойство AutoStopInterval отлично от 0, то по прошествии этого времени вращение будет остановлено автоматически. При изменении значения Value происходит событие OnChange.</descr>
+      </element>
       <element name="TRxDice.Create"/>
       <element name="TRxDice.Destroy"/>
-      <element name="TRxDice.RandomValue"/>
+      <element name="TRxDice.RandomValue">
+        <short>procedure RandomValue;</short>
+        <descr>Вызов метода RandomValue позволяет установить значение свойства Value компоненты TrxDice случайным образом (в диапазоне целых чисел от 1 до 6).</descr>
+      </element>
       <element name="TRxDice.Align"/>
       <element name="TRxDice.AutoSize"/>
-      <element name="TRxDice.AutoStopInterval"/>
+      <element name="TRxDice.AutoStopInterval">
+        <short>property AutoStopInterval: Cardinal;</short>
+        <descr>Свойство задает интервал (в мсек), по прошествии которого после установки свойства Rotate в значение True вращение игральной кости будет остановлено. 
+Если значение AutoStopInterval = 0, то вращение автоматически не останавливается и может быть прекращено присваиванием Rotate = False.</descr>
+      </element>
       <element name="TRxDice.Color"/>
       <element name="TRxDice.Cursor"/>
       <element name="TRxDice.DragMode"/>
       <element name="TRxDice.DragCursor"/>
       <element name="TRxDice.Enabled"/>
-      <element name="TRxDice.Interval"/>
+      <element name="TRxDice.Interval">
+        <short>property Interval: Word;</short>
+        <descr>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. 
+при Rotate = True это частота смены битовых изображений.</descr>
+      </element>
       <element name="TRxDice.ParentColor"/>
       <element name="TRxDice.ParentShowHint"/>
       <element name="TRxDice.PopupMenu"/>
-      <element name="TRxDice.Rotate"/>
+      <element name="TRxDice.Rotate">
+        <short>property Rotate: Boolean;</short>
+        <descr>Если вы установите свойство Rotate в значение True, изображение игральной кости начнет случайным образом "вращаться", изменяя значение Value, с частотой, задаваемой свойством Interval. Остановить вращение можно, присвоив свойству Rotate значение False.</descr>
+      </element>
       <element name="TRxDice.ShowFocus"/>
       <element name="TRxDice.ShowHint"/>
       <element name="TRxDice.Anchors"/>
@@ -732,7 +826,10 @@ Description
       <element name="TRxDice.DragKind"/>
       <element name="TRxDice.TabOrder"/>
       <element name="TRxDice.TabStop"/>
-      <element name="TRxDice.Value"/>
+      <element name="TRxDice.Value">
+        <short>property Value: TrxDiceValue;</short>
+        <descr>Свойство задает текущее состояние (положение игральной кости) для компоненты TRxDice.</descr>
+      </element>
       <element name="TRxDice.Visible"/>
       <element name="TRxDice.OnClick"/>
       <element name="TRxDice.OnDblClick"/>
@@ -960,23 +1057,53 @@ Description
       <element name="TRxCalendarGrid.OnPrepareCanvas"/>
     </module>
     <module name="rxclock">
-      <element name="TRxClock"/>
+      <element name="TRxClock">
+        <descr>Компонента позволяет отображать время суток в цифровом или аналоговом виде (вид отображения задается с помощью свойства ShowMode). 
+При цифровом отображении формат времени задается комбинацией значений свойств LeadingZero, TwelveHour и ShowSeconds. 
+Дополнительно имеется функция будильника. При установке значения AlarmEnabled в True, при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, происходит событие OnAlarm, в обработчике которого вы можете произвести необходимые действия.</descr>
+      </element>
       <element name="TRxClock.Create"/>
       <element name="TRxClock.Destroy"/>
       <element name="TRxClock.SetAlarmTime"/>
       <element name="TRxClock.UpdateClock"/>
-      <element name="TRxClock.AlarmEnabled"/>
-      <element name="TRxClock.AlarmHour"/>
-      <element name="TRxClock.AlarmMinute"/>
-      <element name="TRxClock.AlarmSecond"/>
+      <element name="TRxClock.AlarmEnabled">
+        <short>property AlarmEnabled: Boolean;</short>
+        <descr>При установке значения AlarmEnabled в True, при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, происходит событие OnAlarm, в обработчике которого вы можете произвести необходимые действия.</descr>
+      </element>
+      <element name="TRxClock.AlarmHour">
+        <short>property AlarmHour: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmMinute и AlarmSecond) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
+      <element name="TRxClock.AlarmMinute">
+        <short>property AlarmMinute: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmHour и AlarmSecond) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
+      <element name="TRxClock.AlarmSecond">
+        <short>property AlarmSecond: Byte;</short>
+        <descr>Свойство задает (совместно со значениями AlarmHour и AlarmMinute) время срабатывания "будильника", т.е. время, в которое произойдет событие OnAlarm при установке в True свойства AlarmEnabled.</descr>
+      </element>
       <element name="TRxClock.AutoSize"/>
       <element name="TRxClock.BevelInner"/>
       <element name="TRxClock.BevelOuter"/>
       <element name="TRxClock.DotsColor"/>
-      <element name="TRxClock.ShowMode"/>
-      <element name="TRxClock.ShowSeconds"/>
-      <element name="TRxClock.TwelveHour"/>
-      <element name="TRxClock.LeadingZero"/>
+      <element name="TRxClock.ShowMode">
+        <short>property ShowMode: TShowClock;</short>
+        <descr>Свойство управляет режимом отображения времени в компоненте TRxClock. Значение scDigital задает цифровое отображение времени шрифтом, заданным свойством Font, значение scAnalog задает аналоговый вид часов. 
+При цифровом отображении времени формат времени задается комбинацией значений свойств LeadingZero, TwelveHour и ShowSeconds. 
+При аналоговом отображении свойство ShowSeconds определяет, будет ли показываться секундная стрелка, свойство DotsColor - цвет для точек, обозначающих часы.</descr>
+      </element>
+      <element name="TRxClock.ShowSeconds">
+        <short>property ShowSeconds: Boolean;</short>
+        <descr>Свойство задает, будут ли отображаться секунды при цифровом изображении часов (при значении свойства ShowMode = scDigital) или секундная стрелка - при аналоговом.</descr>
+      </element>
+      <element name="TRxClock.TwelveHour">
+        <short>property TwelveHour: Boolean;</short>
+        <descr>Свойство определяет, как будет форматироваться время, если задано цифровое отображение часов (свойство ShowMode = scDigital). При значении TwelveHour = False (по умолчанию) диапазон значений часов 0..23; при значении True часы принимают значения 1..12 и при форматировании времени используются значения глобальных переменных модуля SysUtils TimeAMString и TimePMString.</descr>
+      </element>
+      <element name="TRxClock.LeadingZero">
+        <short>property LeadingZero: Boolean;</short>
+        <descr>Свойство определяет, будут ли добавляться лидирующие нули при форматировании времени (только для значения часов), если задано цифровое отображение часов (свойство ShowMode = scDigital).</descr>
+      </element>
       <element name="TRxClock.Align"/>
       <element name="TRxClock.BevelWidth"/>
       <element name="TRxClock.BorderWidth"/>
@@ -999,7 +1126,10 @@ Description
       <element name="TRxClock.PopupMenu"/>
       <element name="TRxClock.ShowHint"/>
       <element name="TRxClock.Visible"/>
-      <element name="TRxClock.OnAlarm"/>
+      <element name="TRxClock.OnAlarm">
+        <short>property OnAlarm: TNotifyEvent;</short>
+        <descr>Событие OnAlarm происходит при наступлении времени суток, заданного свойствами AlarmHour, AlarmMinute и AlarmSecond, если свойство AlarmEnabled установлено в значение True.</descr>
+      </element>
       <element name="TRxClock.OnGetTime"/>
       <element name="TRxClock.OnClick"/>
       <element name="TRxClock.OnDblClick"/>

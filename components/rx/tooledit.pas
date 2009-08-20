@@ -404,7 +404,6 @@ begin
           FPopup.OnCloseUp := @PopupCloseUp;
           FPopup.Color := FPopupColor;
           TRxCalendarGrid(FPopup.Calendar).NotInThisMonthColor:=FNotInThisMonthColor;
-//          UpdatePopup;
         end;
       csDialog:
         begin
@@ -419,11 +418,6 @@ procedure TCustomRxDateEdit.SetDate(const AValue: TDateTime);
 var
   D: TDateTime;
 begin
-{  if not ValidDate(AValue) or (AValue = NullDate) then
-  begin
-    if DefaultToday then AValue := SysUtils.Date
-    else Value := NullDate;
-  end;}
   D := Date;
   if AValue = NullDate then
     Text := ''
@@ -438,6 +432,7 @@ begin
   begin
     if FPopup <> nil then FPopup.Color := AValue;
     FPopupColor := AValue;
+    UpdatePopup;
   end;
 end;
 
@@ -445,18 +440,21 @@ procedure TCustomRxDateEdit.SetStartOfWeek(const AValue: TDayOfWeekName);
 begin
   if FStartOfWeek=AValue then exit;
   FStartOfWeek:=AValue;
+  UpdatePopup;
 end;
 
 procedure TCustomRxDateEdit.SetWeekendColor(const AValue: TColor);
 begin
   if FWeekendColor=AValue then exit;
   FWeekendColor:=AValue;
+  UpdatePopup;
 end;
 
 procedure TCustomRxDateEdit.SetWeekends(const AValue: TDaysOfWeek);
 begin
   if FWeekends=AValue then exit;
   FWeekends:=AValue;
+  UpdatePopup;
 end;
 
 procedure TCustomRxDateEdit.SetYearDigits(const AValue: TYearDigits);
@@ -500,7 +498,8 @@ procedure TCustomRxDateEdit.AcceptValue(const AValue: TDateTime);
 begin
   SetDate(AValue);
 //  UpdatePopupVisible;
-  if Modified then inherited Change;
+  if Modified then
+    inherited Change;
 end;
 
 {procedure TCustomRxDateEdit.SetPopupValue(const Value: Variant);
