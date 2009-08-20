@@ -29,6 +29,9 @@ uses ctypes;
 
 function GetSystemThreadCount: integer;
 
+procedure CallLocalProc(Func: pointer; Frame: Pointer; Param1: PtrInt;
+  Param2, Param3: Pointer);inline;
+
 implementation
 
 {$IFDEF Linux}
@@ -80,11 +83,21 @@ end;
   begin
     Result:=sysconf(_SC_NPROCESSORS_ONLN);
   end;
+
 {$ELSE}
   begin
     Result:=1;
   end;
 {$ENDIF}
+
+procedure CallLocalProc(Func: pointer; Frame: Pointer; Param1: PtrInt;
+  Param2, Param3: Pointer); inline;
+type
+  PointerLocal = procedure(_EBP: Pointer; Param1: PtrInt;
+                           Param2, Param3: Pointer);
+begin
+  PointerLocal(Func)(Frame, Param1, Param2, Param3);
+end;
 
 end.
 

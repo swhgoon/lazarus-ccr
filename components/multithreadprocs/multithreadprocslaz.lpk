@@ -11,18 +11,19 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Version Major="1" Release="1"/>
     <Files Count="3">
       <Item1>
         <Filename Value="mtprocs.pas"/>
-        <UnitName Value="mtprocs"/>
+        <UnitName Value="MTProcs"/>
       </Item1>
       <Item2>
         <Filename Value="mtputils.pas"/>
-        <UnitName Value="mtputils"/>
+        <UnitName Value="MTPUtils"/>
       </Item2>
       <Item3>
         <Filename Value="mtpcpu.pas"/>
-        <UnitName Value="mtpcpu"/>
+        <UnitName Value="MTPCPU"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
@@ -33,7 +34,8 @@
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)"/>
+      <CustomOptions Value="-dUseCThreads"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
