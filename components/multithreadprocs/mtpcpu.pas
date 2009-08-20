@@ -15,6 +15,7 @@
 unit MTPCPU;
 
 {$mode objfpc}{$H+}
+{$inline on}
 
 interface
 
@@ -29,8 +30,8 @@ uses ctypes;
 
 function GetSystemThreadCount: integer;
 
-procedure CallLocalProc(Func: pointer; Frame: Pointer; Param1: PtrInt;
-  Param2, Param3: Pointer);inline;
+procedure CallLocalProc(AProc, Frame: Pointer; Param1: PtrInt;
+  Param2, Param3: Pointer); inline;
 
 implementation
 
@@ -90,13 +91,13 @@ end;
   end;
 {$ENDIF}
 
-procedure CallLocalProc(Func: pointer; Frame: Pointer; Param1: PtrInt;
+procedure CallLocalProc(AProc, Frame: Pointer; Param1: PtrInt;
   Param2, Param3: Pointer); inline;
 type
   PointerLocal = procedure(_EBP: Pointer; Param1: PtrInt;
                            Param2, Param3: Pointer);
 begin
-  PointerLocal(Func)(Frame, Param1, Param2, Param3);
+  PointerLocal(AProc)(Frame, Param1, Param2, Param3);
 end;
 
 end.

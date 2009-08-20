@@ -90,10 +90,6 @@ type
                         Item: TMultiThreadProcItem) of object;
   TMTProcedure = procedure(Index: PtrInt; Data: Pointer;
                            Item: TMultiThreadProcItem);
-  TMTLocalProc = record
-    Proc: Pointer; // must be a local procedure of a procedure (not a method)
-    Frame: Pointer;
-  end;
 
   { TProcThreadGroup
     Each task creates a new group of threads.
@@ -122,7 +118,7 @@ type
     FStartIndex: PtrInt;
     FState: TMTPGroupState;
     FTaskData: Pointer;
-    FTaskLocalProc: TMTLocalProc;
+    FTaskFrame: Pointer;
     FTaskMethod: TMTMethod;
     FTaskProcedure: TMTProcedure;
     FThreadCount: PtrInt;
@@ -147,7 +143,7 @@ type
     property TaskData: Pointer read FTaskData;
     property TaskMethod: TMTMethod read FTaskMethod;
     property TaskProcedure: TMTProcedure read FTaskProcedure;
-    property TaskLocalProcedure: TMTLocalProc read FTaskLocalProc;
+    property TaskFrame: Pointer read FTaskFrame;
     property MaxThreads: PtrInt read FMaxThreads;
     property StarterItem: TMultiThreadProcItem read FStarterItem;
   end;
@@ -171,7 +167,7 @@ type
     procedure SetMaxThreadCount(const AValue: PtrInt);
     procedure CleanTerminatedThreads;
     procedure DoParallelIntern(const AMethod: TMTMethod;
-      const AProc: TMTProcedure; const ALocalProc: TMTLocalProc;
+      const AProc: TMTProcedure; const AFrame: Pointer;
       StartIndex, EndIndex: PtrInt;
       Data: Pointer = nil; MaxThreads: PtrInt = 0);
   public
@@ -188,7 +184,7 @@ type
       Data: Pointer = nil; MaxThreads: PtrInt = 0); inline;
 
     // experimental
-    procedure DoParallelLocalProc(const AProc: Pointer;
+    procedure DoParallelLocalProc(const LocalProc: Pointer;
       StartIndex, EndIndex: PtrInt;
       Data: Pointer = nil; MaxThreads: PtrInt = 0); // do not make this inline!
   public
@@ -198,9 +194,6 @@ type
 
 var
   ProcThreadPool: TProcThreadPool = nil;
-
-const
-  MTLocalProcNil: TMTLocalProc = (Proc: nil; Frame: nil);
 
 implementation
 
@@ -433,12 +426,14 @@ end;
 procedure TProcThreadGroup.Run(Index: PtrInt; Data: Pointer;
   Item: TMultiThreadProcItem); inline;
 begin
-  if Assigned(FTaskProcedure) then
-    FTaskProcedure(Index,Data,Item)
-  else if Assigned(FTaskMethod) then
-    FTaskMethod(Index,Data,Item)
-  else
-    CallLocalProc(FTaskLocalProc.Proc,FTaskLocalProc.Frame,Index,Data,Item);
+  if Assigned(FTaskFrame) then begin
+    CallLocalProc(FTaskProcedure,FTaskFrame,Index,Data,Item)
+  end else begin
+    if Assigned(FTaskProcedure) then
+      FTaskProcedure(Index,Data,Item)
+    else
+      FTaskMethod(Index,Data,Item)
+  end;
 end;
 
 procedure TProcThreadGroup.IndexComplete(Index: PtrInt);
@@ -656,29 +651,29 @@ procedure TProcThreadPool.DoParallel(const AMethod: TMTMethod;
   StartIndex, EndIndex: PtrInt; Data: Pointer; MaxThreads: PtrInt);
 begin
   if not Assigned(AMethod) then exit;
-  DoParallelIntern(AMethod,nil,MTLocalProcNil,StartIndex,EndIndex,Data,MaxThreads);
+  DoParallelIntern(AMethod,nil,nil,StartIndex,EndIndex,Data,MaxThreads);
 end;
 
 procedure TProcThreadPool.DoParallel(const AProc: TMTProcedure;
   StartIndex, EndIndex: PtrInt; Data: Pointer; MaxThreads: PtrInt);
 begin
   if not Assigned(AProc) then exit;
-  DoParallelIntern(nil,AProc,MTLocalProcNil,StartIndex,EndIndex,Data,MaxThreads);
+  DoParallelIntern(nil,AProc,nil,StartIndex,EndIndex,Data,MaxThreads);
 end;
 
-procedure TProcThreadPool.DoParallelLocalProc(const AProc: Pointer; StartIndex,
-  EndIndex: PtrInt; Data: Pointer; MaxThreads: PtrInt);
+procedure TProcThreadPool.DoParallelLocalProc(const LocalProc: Pointer;
+  StartIndex, EndIndex: PtrInt; Data: Pointer; MaxThreads: PtrInt);
 var
-  LocalProc: TMTLocalProc;
+  Frame: Pointer;
 begin
-  if not Assigned(AProc) then exit;
-  LocalProc.Proc:=AProc;
-  LocalProc.Frame:=get_caller_frame(get_frame);
-  DoParallelIntern(nil,nil,LocalProc,StartIndex,EndIndex,Data,MaxThreads);
+  if not Assigned(LocalProc) then exit;
+  Frame:=get_caller_frame(get_frame);
+  DoParallelIntern(nil,TMTProcedure(LocalProc),Frame,StartIndex,EndIndex,
+                   Data,MaxThreads);
 end;
 
 procedure TProcThreadPool.DoParallelIntern(const AMethod: TMTMethod;
-  const AProc: TMTProcedure; const ALocalProc: TMTLocalProc;
+  const AProc: TMTProcedure; const AFrame: Pointer;
   StartIndex, EndIndex: PtrInt; Data: Pointer; MaxThreads: PtrInt);
 var
   Group: TProcThreadGroup;
@@ -699,12 +694,14 @@ begin
     try
       for Index:=StartIndex to EndIndex do begin
         Item.FIndex:=Index;
-        if Assigned(AProc) then
-          AProc(Index,Data,Item)
-        else if Assigned(AMethod) then
-          AMethod(Index,Data,Item)
-        else
-          CallLocalProc(ALocalProc.Proc,ALocalProc.Frame,Index,Data,Item);
+        if Assigned(AFrame) then begin
+          CallLocalProc(AProc,AFrame,Index,Data,Item)
+        end else begin
+          if Assigned(AProc) then
+            AProc(Index,Data,Item)
+          else
+            AMethod(Index,Data,Item)
+        end;
       end;
     finally
       Item.Free;
@@ -718,7 +715,7 @@ begin
   Group.FTaskData:=Data;
   Group.FTaskMethod:=AMethod;
   Group.FTaskProcedure:=AProc;
-  Group.FTaskLocalProc:=ALocalProc;
+  Group.FTaskFrame:=AFrame;
   Group.FStartIndex:=StartIndex;
   Group.FEndIndex:=EndIndex;
   Group.FFirstRunningIndex:=StartIndex;
