@@ -15,6 +15,7 @@ type
 
 implementation
 uses memds;
+
 type
   THackMDS = class(TMemDataSet)
   end;
@@ -52,7 +53,7 @@ begin
       ftLargeint:
         begin
           Result:=I1 > Field.AsInteger;
-          writeln('I1=', I1, '    I2=',Field.AsInteger,'  Result=', Result, '   i=',i, '   j=',j);
+//          writeln('I1=', I1, '    I2=',Field.AsInteger,'  Result=', Result, '   i=',i, '   j=',j);
         end;
 
       ftFloat,

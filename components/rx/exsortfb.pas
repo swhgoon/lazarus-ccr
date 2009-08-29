@@ -35,13 +35,7 @@ unit exsortfb;
 interface
 
 uses
-  Classes, SysUtils, DB,
-  {$IFDEF FPC}
-  RxDBGrid
-  {$ELSE}
-  exDBGrid
-  {$ENDIF}
-  ;
+  Classes, SysUtils, DB, RxDBGrid;
 
 type
 
