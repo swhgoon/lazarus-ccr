@@ -1,225 +1,225 @@
-msgid ""
+﻿msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: rxdconst.sapptitlelabel
 msgid "Application \"%s\""
-msgstr ""
+msgstr "Aplicación \"%s\""
 
 #: rxdconst.sbrowsedata
 msgid "browse"
-msgstr ""
+msgstr "vista"
 
 #: rxdconst.scalcfieldsdata
 msgid "calc"
-msgstr ""
+msgstr "calc"
 
 #: rxdconst.scapturefilter
 msgid "Control locked by filter"
-msgstr ""
+msgstr "Control bloqueado por filtro"
 
 #: rxdconst.schangepassword
 msgid "Change password"
-msgstr ""
+msgstr "Cambiar clave"
 
 #: rxdconst.scirculardatalink
 msgid "SCircularDataLink"
-msgstr ""
+msgstr "SCircularEnlaceDato"
 
 #: rxdconst.sconfirmpasswordlabel
 msgid "&Confirm:"
-msgstr ""
+msgstr "&Confirmar:"
 
 #: rxdconst.sconfirmsave
 msgid "Data changed. Save?"
-msgstr ""
+msgstr "Dato cambiado. Salvar?"
 
 #: rxdconst.sdatabasename
 msgid "Database loocked: %s"
-msgstr ""
+msgstr "Base de Dato bloqueada: %s"
 
 #: rxdconst.sdatasourcefixed
 msgid "SDataSourceFixed"
-msgstr ""
+msgstr "SFuenteDatosFija"
 
 #: rxdconst.sdbexceptcaption
 msgid "Error in DB engine"
-msgstr ""
+msgstr "Error in DB Motor"
 
 #: rxdconst.sdeletemultiplerecords
 msgid "Delete all selected records?"
-msgstr ""
+msgstr "Eliminar todos los registros seleccionados"
 
 #: rxdconst.sdeleterecordquestion
 msgid "Delete record?"
-msgstr ""
+msgstr "Eliminar registro"
 
 #: rxdconst.seditdata
 msgid "editing"
-msgstr ""
+msgstr "editando"
 
 #: rxdconst.serrormsglabel
 msgid "Error message"
-msgstr ""
+msgstr "Mensaje de error"
 
 #: rxdconst.sexprbadcompare
 msgid "Compare opertion need fielad and const"
-msgstr ""
+msgstr "Comparación operacion necesita fielad y const"
 
 #: rxdconst.sexprbadfield
 msgid "Field '%s' not used in filter expression"
-msgstr ""
+msgstr "Campo '%s' no usado en expresión de filtro"
 
 #: rxdconst.sexprbadnulltest
 msgid "NULL-values enabled in '=' и '<>'"
-msgstr ""
+msgstr "Valor nulo habilitado en '=' y '<>'"
 
 #: rxdconst.sexprexpected
 msgid "Error %s"
-msgstr ""
+msgstr "Error %s"
 
 #: rxdconst.sexprincorrect
 msgid "Error in filter expression"
-msgstr ""
+msgstr "Error en expresión de filtro"
 
 #: rxdconst.sexprinvalidchar
 msgid "Error symbol in expression: '%s'"
-msgstr ""
+msgstr "Error simbolo en expresión: '%s'"
 
 #: rxdconst.sexprnameerror
 msgid "Error in filed name"
-msgstr ""
+msgstr "Error en nombre del fichero"
 
 #: rxdconst.sexprnorparen
 msgid "Error ')', error: %s"
-msgstr ""
+msgstr "Error ')', error: %s"
 
 #: rxdconst.sexprnotboolean
 msgid "Field '%s' is not boolean"
-msgstr ""
+msgstr "Campo '%s' no es boolean"
 
 #: rxdconst.sexprstringerror
 msgid "Error in string const"
-msgstr ""
+msgstr "Error en cadena const"
 
 #: rxdconst.sexprtermination
 msgid "Error in filter end"
-msgstr ""
+msgstr "Error en terminación del filtro"
 
 #: rxdconst.sfieldreadonly
 msgid "SFieldReadOnly %s"
-msgstr ""
+msgstr "SCampoSoloLectura %s"
 
 #: rxdconst.sfieldrequired
 msgid "Field '%s' must have a value"
-msgstr ""
+msgstr "Campo '%s' debe tener un valor"
 
 #: rxdconst.sfieldtypemismatch
 msgid "Type mismatch for field '%s', expecting: %s actual: %s"
-msgstr ""
+msgstr "Tipo no corresponde para el campo '%s', se esperaba: %s actual: %s"
 
 #: rxdconst.shintlabel
 msgid "Enter you user name and password"
-msgstr ""
+msgstr "Entre su nombre de usuario y clave"
 
 #: rxdconst.sinactivedata
 msgid "inactive"
-msgstr ""
+msgstr "inactivo"
 
 #: rxdconst.sinsertdata
 msgid "append"
-msgstr ""
+msgstr "adicionar"
 
 #: rxdconst.sinvaliddate
 msgid "Invalid Date"
-msgstr ""
+msgstr "fecha invalida"
 
 #: rxdconst.sinvalidfields
 msgid "No fields defined"
-msgstr ""
+msgstr "No hay campos definido"
 
 #: rxdconst.sinvalidusername
 msgid "User name or password not valid"
-msgstr ""
+msgstr "Nombre de usuario o clave no es valido"
 
 #: rxdconst.slocaldatabase
 msgid "Unable complete this operation on local dataset"
-msgstr ""
+msgstr "No se puede completar esta operación en el conjunto de datos local"
 
 #: rxdconst.smemnorecords
 msgid "No data found"
-msgstr ""
+msgstr "No hay datos"
 
 #: rxdconst.smore1
 msgid "&More >>"
-msgstr ""
+msgstr "&Mas >>"
 
 #: rxdconst.smore2
 msgid "&Less <<"
-msgstr ""
+msgstr "&Menos <<"
 
 #: rxdconst.snewpasswordlabel
 msgid "&New password:"
-msgstr ""
+msgstr "&Nueva clave:"
 
 #: rxdconst.snextbutton
 msgid "&Next"
-msgstr ""
+msgstr "&Proximo"
 
 #: rxdconst.snotcapturefilter
 msgid "Control need locked by filter"
-msgstr ""
+msgstr "Control necesita bloquearlo por filtro"
 
 #: rxdconst.snotediting
 msgid "Dataset not in edit or insert mode"
-msgstr ""
+msgstr "Conjunto de Datos no esta en modo de edición o inserción"
 
 #: rxdconst.soldpasswordlabel
 msgid "&Old password:"
-msgstr ""
+msgstr "&Anterior clave:"
 
 #: rxdconst.spasswordchanged
 msgid "Password changed"
-msgstr ""
+msgstr "Clave cambiada"
 
 #: rxdconst.spasswordlabel
 msgid "&Password:"
-msgstr ""
+msgstr "&Clave:"
 
 #: rxdconst.spasswordnotchanged
 msgid "Password not changed"
-msgstr ""
+msgstr "Clave no cambio"
 
 #: rxdconst.spasswordsmismatch
 msgid "New password and confirmation not equal"
-msgstr ""
+msgstr "Nueva clave y confirmacion no son iguales"
 
 #: rxdconst.sprevbutton
 msgid "&Prior"
-msgstr ""
+msgstr "&Anterior"
 
 #: rxdconst.spropdefbylookup
 msgid "PropDefByLookup"
-msgstr ""
+msgstr "PropDefByLookup"
 
 #: rxdconst.sregistration
 msgid "Register"
-msgstr ""
+msgstr "Registro"
 
 #: rxdconst.sretrylogin
 msgid "Retry to connect with database?"
-msgstr ""
+msgstr "Reintentar conectar con la base de dato?"
 
 #: rxdconst.srxascendign
 msgid "Ascendign"
-msgstr ""
+msgstr "Ascendente"
 
 #: rxdconst.srxborrowstructure
 msgid "Borrow structure..."
-msgstr ""
+msgstr "Tomar estructura..."
 
 #: rxdconst.srxcopyonlymetadata
 msgid "Copy only metadata"
-msgstr ""
+msgstr "Copiar solo metadata"
 
 #: rxdconst.srxdbgridemptifilter
 msgid "(Empty)"
@@ -236,7 +236,7 @@ msgstr "Quitar Filtro"
 
 #: rxdconst.srxdbgridfiltersimple
 msgid "Filter in table"
-msgstr "Filtrar en Encabezado"
+msgstr "Filtrar en Tabla"
 
 #: rxdconst.srxdbgridfind
 msgctxt "rxdconst.srxdbgridfind"
@@ -250,59 +250,59 @@ msgstr "Buscar"
 
 #: rxdconst.srxdbgridfindcasesens
 msgid "Case sensetive"
-msgstr ""
+msgstr "Caso sensitivo"
 
 #: rxdconst.srxdbgridfinddirecion
 msgid "Direction"
-msgstr ""
+msgstr "Dirección"
 
 #: rxdconst.srxdbgridfindonfield
 msgid "Find on field"
-msgstr ""
+msgstr "Buscar en campo"
 
 #: rxdconst.srxdbgridfindpartial
 msgid "Partial key"
-msgstr ""
+msgstr "Llave Parcial"
 
 #: rxdconst.srxdbgridfindrangeall
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 #: rxdconst.srxdbgridfindrangeback
 msgid "Backward"
-msgstr ""
+msgstr "Hacia Atras"
 
 #: rxdconst.srxdbgridfindrangeforw
 msgid "Forward"
-msgstr ""
+msgstr "Hacia Delante"
 
 #: rxdconst.srxdbgridfindtext
 msgid "Text to find"
-msgstr ""
+msgstr "Texto a Buscar"
 
 #: rxdconst.srxdbgridselcolcaption
 msgid "Grid columns"
-msgstr ""
+msgstr "Columnas de la Tabla"
 
 #: rxdconst.srxdbgridselcolhint1
 msgid "Move selected column up"
-msgstr ""
+msgstr "Mover columna seleccionada para arriba"
 
 #: rxdconst.srxdbgridselcolhint2
 msgid "Move selected column down"
-msgstr ""
+msgstr "Mover columna seleccionada para abajo"
 
 #: rxdconst.srxdbgridselectcolumns
 msgid "Select visible collumns"
-msgstr "Seleccionar Columnas"
+msgstr "Seleccionar Columnas Visibles"
 
 #: rxdconst.srxdbgridsortbycolumns
 msgid "Sort data for collumns"
-msgstr "Ordenar por Columna"
+msgstr "Ordenar por Columnas"
 
 #: rxdconst.srxdescending
 msgid "Descending"
-msgstr ""
+msgstr "Descendente"
 
 #: rxdconst.srxfilterformapply
 msgid "Apply"
@@ -347,7 +347,7 @@ msgstr "Seleccionar todos los registros que cumplan las siguientes condiciónes 
 
 #: rxdconst.srxselectdatasetstruct
 msgid "Select dataset to copy to"
-msgstr ""
+msgstr "Seleccionar conjunto de datos para copiar"
 
 #: rxdconst.srxsortbyformaddfield
 msgid "&Add field"
@@ -359,7 +359,7 @@ msgstr "&Orden de Ordenamiento :"
 
 #: rxdconst.srxsortbyformcaption
 msgid "Sort on field"
-msgstr ""
+msgstr "Ordenar por Columnas"
 
 #: rxdconst.srxsortbyformmovednfield
 msgid "&Down"
@@ -383,29 +383,31 @@ msgstr "Seleccionar Dirección de Ordenamiento :"
 
 #: rxdconst.srxsoursedataset
 msgid "Sourse dataset"
-msgstr ""
+msgstr "Fuente del Conjunto de Datos"
 
 #: rxdconst.sservererrorlabel
 msgid "Server error"
-msgstr ""
+msgstr "Error del Servidor"
 
 #: rxdconst.ssetkeydata
 msgid "find"
-msgstr ""
+msgstr "buscar"
 
 #: rxdconst.sunknownfieldtype
 msgid "SUnknownFieldType %s"
-msgstr ""
+msgstr "STipoCampoDesconocido %s"
 
 #: rxdconst.sunlockcaption
 msgid "Unloock"
-msgstr ""
+msgstr "Desbloquear"
 
 #: rxdconst.sunlockhint
 msgid "Enter you password"
-msgstr ""
+msgstr "Entre su clave"
 
 #: rxdconst.susernamelabel
 msgid "&User name:"
-msgstr ""
+msgstr "&Nombre usuario:"
+
+
 

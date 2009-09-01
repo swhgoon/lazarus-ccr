@@ -1,0 +1,133 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: rxconst.savaliablebuttons
+msgid "Avaliable buttons"
+msgstr "Botones disponibles"
+
+#: rxconst.sbrowse
+msgid "Browse"
+msgstr "Vista"
+
+#: rxconst.sbuttonalign
+msgid "Button align"
+msgstr "Alineación de Botones"
+
+#: rxconst.sbuttonalign1
+msgid "None"
+msgstr "Ninguno"
+
+#: rxconst.sbuttonalign2
+msgid "Left"
+msgstr "Izquierdo"
+
+#: rxconst.sbuttonalign3
+msgid "Rignt"
+msgstr "Derecho"
+
+#: rxconst.sdatedlgtitle
+msgid "Select a Date"
+msgstr "Seleccionar Fecha"
+
+#: rxconst.sdefaultfilter
+msgid "All files (*.*)|*.*"
+msgstr "Todos los Ficheros (*.*)|*.*"
+
+#: rxconst.sdetails
+msgid "Details"
+msgstr "Detalles"
+
+#: rxconst.sduallistcaption
+msgid "Dual list dialog"
+msgstr "Lista dialogo doble"
+
+#: rxconst.sduallistdestcaption
+msgid "Destination"
+msgstr "Destino"
+
+#: rxconst.sduallistsrccaption
+msgid "Source"
+msgstr "Fuente"
+
+#: rxconst.sfilenotexec
+msgid "File specified is not an executable file, dynamic-link library, or icon file"
+msgstr "Fichero especificado no es un fichero ejecutable, vinculo dinamico, o fichero de icono"
+
+#: rxconst.sflatbuttons
+msgid "Flat buttons"
+msgstr "Botones planos"
+
+#: rxconst.sloadliberror
+msgid "Could not load '%s' library"
+msgstr "No se puede cargar la libreria '%s'"
+
+#: rxconst.snextmonth
+msgid "Next Month|"
+msgstr "Proximo Mes|"
+
+#: rxconst.snextyear
+msgid "Next Year|"
+msgstr "Proximo Año|"
+
+#: rxconst.snotimplemented
+msgid "Function not yet implemented"
+msgstr "Funcion no esta aun implementada"
+
+#: rxconst.soptions
+msgid "Options"
+msgstr "Opciones"
+
+#: rxconst.sprevmonth
+msgid "Previous Month|"
+msgstr "Anterior Mes|"
+
+#: rxconst.sprevyear
+msgid "Previous Year|"
+msgstr "Anterior Año|"
+
+#: rxconst.sshowcaption
+msgid "Show caption"
+msgstr "Mostrar titulo"
+
+#: rxconst.sshowhint
+msgid "Show hint"
+msgstr "Mostrar consejo"
+
+#: rxconst.stocurdate
+msgid "Set current date"
+msgstr "Poner fecha actual"
+
+#: rxconst.stoolbarstyle
+msgid "Tool bar style"
+msgstr "Estilo Barra de Tarea"
+
+#: rxconst.stoolbarstyle1
+msgid "Standart"
+msgstr "Estandart"
+
+#: rxconst.stoolbarstyle2
+msgid "Windows XP"
+msgstr "Windows XP"
+
+#: rxconst.stoolbarstyle3
+msgid "Native"
+msgstr "Nativo"
+
+#: rxconst.stoolpanelsetup
+msgid "Tool panel setup"
+msgstr "Menu panel herramienta"
+
+#: rxconst.stransparent
+msgid "Transparent"
+msgstr "Transparente"
+
+#: rxconst.svisiblebuttons
+msgid "Visible buttons"
+msgstr "Botones visibles"
+
+#: rxconst.swindowsicofiles
+msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"
+msgstr "Windows Iconos Ficheros (*.ico)|*.ico)|Todos los ficheros (*.*)|*.*"
+
+
+
