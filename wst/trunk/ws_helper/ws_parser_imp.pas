@@ -51,6 +51,8 @@ type
     ) : TPasElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function FindElementWithHint(const AName, AHint : string; const ASpace : TSearchSpace) : TPasElement;
     function ExtractTypeHint(AElement : TDOMNode) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure SetAsEmbeddedType(AType : TPasType);
+    function IsEmbeddedType(AType : TPasType) : Boolean;
 {$IFDEF WST_HANDLE_DOC}
     procedure ParseDocumentation(AType : TPasType);
 {$ENDIF WST_HANDLE_DOC}
@@ -351,6 +353,16 @@ function TAbstractTypeParser.ExtractTypeHint(AElement: TDOMNode): string;
 begin
   if not wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_typeHint,Result) then
     Result := '';
+end;
+
+procedure TAbstractTypeParser.SetAsEmbeddedType(AType : TPasType); 
+begin
+  FSymbols.Properties.SetValue(AType,sEMBEDDED_TYPE,'1');
+end;
+
+function TAbstractTypeParser.IsEmbeddedType(AType : TPasType) : Boolean; 
+begin
+  Result := ( FSymbols.Properties.GetValue(AType,sEMBEDDED_TYPE) = '1' );
 end;
 
 {$IFDEF WST_HANDLE_DOC}
@@ -1049,10 +1061,10 @@ begin
   internalName := ExtractIdentifier(ATypeName);
   hasInternalName := IsReservedKeyWord(internalName) or
                      ( not IsValidIdent(internalName) ) or
-                     //( FSymbols.IndexOf(internalName) <> -1 ) or
+                     ( FSymbols.FindElementInModule(internalName,Self.Module,[elkName]) <> nil ) or
                      ( not AnsiSameText(internalName,ATypeName) );
   if hasInternalName then begin
-    internalName := Format('_%s',[internalName]);
+    internalName := Format('%s_Type',[internalName]);
   end;
 
   if ( pthDeriveFromSoapArray in FHints ) or
@@ -1379,7 +1391,8 @@ begin
   if Assigned(locSym) then begin
     if not locSym.InheritsFrom(TPasType) then
       raise EXsdParserException.CreateFmt('Symbol found in the symbol table but is not a type definition : %s.',[FTypeName]);
-    locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef);
+    locContinue := locSym.InheritsFrom(TPasUnresolvedTypeRef) or
+                   ( IsEmbeddedType(TPasType(locSym)) <> FEmbededDef );
     if not locContinue then;
       Result := locSym as TPasType;
   end;

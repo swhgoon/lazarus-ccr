@@ -310,10 +310,10 @@ begin
       RegisterExternalPropertyName('__FIELDS__','fieldSmallint;fieldWord;fieldString');
     end;
 {$IFNDEF WST_RECORD_RTTI}
-    typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(TypeInfo(TTestSmallRecord)),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
+    typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(TypeInfo(TTestSmallRecord)),typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
 {$ENDIF WST_RECORD_RTTI}
 {$IFDEF WST_RECORD_RTTI}
-    typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(__TTestSmallRecord_TYPEINFO_FUNC__()),GetTypeRegistry().ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
+    typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].RegisterObject(FIELDS_STRING,TRecordRttiDataObject.Create(MakeRecordTypeInfo(__TTestSmallRecord_TYPEINFO_FUNC__()),typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetExternalPropertyName('__FIELDS__')));
 {$ENDIF WST_RECORD_RTTI}
     (typeReg.ItemByTypeInfo[TypeInfo(TTestSmallRecord)].GetObject(FIELDS_STRING) as TRecordRttiDataObject).GetField('fieldWord')^.IsAttribute := True;
     handlerReg := CreateWsdlTypeHandlerRegistry(typeReg);

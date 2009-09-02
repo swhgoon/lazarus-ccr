@@ -4,7 +4,7 @@
 
     This file is provide under modified LGPL licence
     ( the files COPYING.modifiedLGPL and COPYING.LGPL).
-    
+
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,7 +24,7 @@ uses
 
 Const
   sTRANSPORT_NAME = 'HTTP';
-  
+
 Type
 
 {$M+}
@@ -36,12 +36,15 @@ Type
     FConnection : TidHttp;
     FSoapAction: string;
     FContentType: string;
+  private
     function GetAddress: string;
+    function GetProtocolVersion : string;
     function GetProxyPassword: string;
     function GetProxyPort: Integer;
     function GetProxyServer: string;
     function GetProxyUsername: string;
     procedure SetAddress(const AValue: string);
+    procedure SetProtocolVersion(const AValue : string);
     procedure SetProxyPassword(const AValue: string);
     procedure SetProxyPort(const AValue: Integer);
     procedure SetProxyServer(const AValue: string);
@@ -60,18 +63,47 @@ Type
     property ProxyPassword : string read GetProxyPassword write SetProxyPassword;
     property SoapAction : string read FSoapAction write FSoapAction;
     property Format : string read FFormat write FFormat;
+    property ProtocolVersion : string read GetProtocolVersion write SetProtocolVersion;
   End;
 {$M+}
 
   procedure INDY_RegisterHTTP_Transport();
-  
+
 implementation
-  
+uses
+  wst_consts;
+
+const
+  ProtocolVersionMAP : array[TIdHTTPProtocolVersion] of string = ('1.0', '1.1');
+
+function TryStrToProtocolVersion(
+  const AStr : string;
+  out   ARes : TIdHTTPProtocolVersion
+) : Boolean;
+var
+  i : TIdHTTPProtocolVersion;
+begin
+  for i := Low(TIdHTTPProtocolVersion) to High(TIdHTTPProtocolVersion) do begin
+    if ( AStr = ProtocolVersionMAP[i] ) then begin
+      ARes := i;
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
+
 { THTTPTransport }
 
 function THTTPTransport.GetAddress: string;
 begin
   Result := FConnection.Request.URL;
+end;
+
+function THTTPTransport.GetProtocolVersion : string;
+begin
+  Result := ProtocolVersionMAP[FConnection.ProtocolVersion];
 end;
 
 function THTTPTransport.GetProxyPassword: string;
@@ -97,6 +129,17 @@ end;
 procedure THTTPTransport.SetAddress(const AValue: string);
 begin
   FConnection.Request.URL := AValue;
+end;
+
+procedure THTTPTransport.SetProtocolVersion(const AValue : string);
+var
+  locValue : TIdHTTPProtocolVersion;
+begin
+  if not TryStrToProtocolVersion(AValue,locValue) then
+    raise ETransportExecption.CreateFmt(SERR_InvalidPropertyValue,['ProtocolVersion',AValue]);
+  FConnection.ProtocolVersion := locValue;
+  if not ( hoKeepOrigProtocol in FConnection.HTTPOptions ) then
+    FConnection.HTTPOptions := FConnection.HTTPOptions + [hoKeepOrigProtocol];
 end;
 
 procedure THTTPTransport.SetProxyPassword(const AValue: string);
@@ -151,8 +194,11 @@ begin
     FConnection.ProxyParams.BasicAuthentication := True;
   end;
   FConnection.Request.CustomHeaders.Clear();
-  FConnection.Request.CustomHeaders.Values['soapAction'] := SoapAction;
+  FConnection.Request.CustomHeaders.Values['SOAPAction'] := SoapAction;
   FConnection.Request.ContentType := ContentType;
+{$IFDEF WST_DBG}
+  TMemoryStream(ARequest).SaveToFile('request.log');
+{$ENDIF WST_DBG}
   FConnection.Post(Address,ARequest, AResponse);
   {$IFDEF WST_DBG}
   i := AResponse.Size;

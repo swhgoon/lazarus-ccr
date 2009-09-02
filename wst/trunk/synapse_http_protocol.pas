@@ -163,7 +163,7 @@ procedure THTTPTransport.SendAndReceive(ARequest, AResponse: TStream);
     {else
       ShowMessage(AStr)};
   end;
-  
+
 var
   s : TBinaryString;
 {$ENDIF}

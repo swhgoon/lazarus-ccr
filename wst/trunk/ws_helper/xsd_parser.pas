@@ -55,7 +55,14 @@ type
 
   IXsdPaser = interface
     ['{F0CEC726-A068-4CCC-B1E7-D31F018415B2}']
-    function ParseType(const AName : string) : TPasType;
+    function ParseType(
+      const AName,
+            ATypeKind : string { ATypeKind "ComplexType", "SimpleType", "Element" }
+    ) : TPasType; overload;
+    function ParseType(
+      const AName     : string;
+      const ATypeNode : TDOMNode
+    ) : TPasType; overload;
     procedure ParseTypes();
     procedure SetNotifier(ANotifier : TOnParserMessage);
   end;
@@ -90,6 +97,10 @@ type
     function FindShortNamesForNameSpaceLocal(const ANameSpace : string) : TStrings;
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
     procedure SetNotifier(ANotifier : TOnParserMessage);
+    function InternalParseType(
+      const AName : string;
+      const ATypeNode : TDOMNode
+    ) : TPasType;
   public
     constructor Create(
       ADoc           : TXMLDocument;
@@ -98,7 +109,15 @@ type
       AParentContext : IParserContext
     );
     destructor Destroy();override;
-    function ParseType(const AName : string) : TPasType;
+    function ParseType(
+      const AName,
+            ATypeKind : string { ATypeKind "ComplexType", "SimpleType", "Element" }
+    ) : TPasType; overload;
+    function ParseType(
+      const AName     : string;
+      const ATypeNode : TDOMNode
+    ) : TPasType; overload;
+
     procedure ParseTypes();
 
     function GetTargetNameSpace() : string;
@@ -296,7 +315,23 @@ begin
   Result := FXSShortNames;
 end;
 
-function TCustomXsdSchemaParser.ParseType(const AName: string): TPasType;
+function TCustomXsdSchemaParser.ParseType(const AName, ATypeKind : string): TPasType;
+begin
+  Result := InternalParseType(AName,nil);
+end;
+
+function TCustomXsdSchemaParser.ParseType(
+  const AName : string;  
+  const ATypeNode : TDOMNode
+) : TPasType; 
+begin
+  Result := InternalParseType(AName,ATypeNode);
+end;
+
+function TCustomXsdSchemaParser.InternalParseType(
+  const AName : string;
+  const ATypeNode : TDOMNode
+): TPasType;
 var
   crsSchemaChild : IObjectCursor;
   typNd : TDOMNode;
@@ -324,7 +359,10 @@ var
   begin
     ASimpleTypeAlias := nil;
     Result := True;
-    typNd := FindNamedNode(crsSchemaChild,localTypeName);
+    if ( ATypeNode <> nil ) then
+      typNd := ATypeNode
+    else
+      typNd := FindNamedNode(crsSchemaChild,localTypeName);
     if not Assigned(typNd) then
       raise EXsdTypeNotFoundException.CreateFmt('Type definition not found 1 : "%s"',[AName]);
     if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_element) then begin
@@ -432,6 +470,7 @@ var
   sct : TPasSection;
   shortNameSpace, longNameSpace : string;
   typeModule : TPasModule;
+  locTypeNodeFound : Boolean;
 begin
   sct := nil;
   DoOnMessage(mtInfo, Format('Parsing "%s" ...',[AName]));
@@ -449,6 +488,14 @@ begin
     if ( typeModule = nil ) then
       raise EXsdTypeNotFoundException.Create(AName);
     Result := SymbolTable.FindElementInModule(localTypeName,typeModule) as TPasType;
+    Init();
+    locTypeNodeFound := FindTypeNode(aliasType);
+    if ( Result <> nil ) and ( typeModule = FModule ) and
+       ( not Result.InheritsFrom(TPasUnresolvedTypeRef) )
+    then begin                              
+      if locTypeNodeFound and ( embededType <> ( SymbolTable.Properties.GetValue(Result,sEMBEDDED_TYPE) = '1' ) ) then
+        Result := nil;
+    end;
     if ( ( Result = nil ) or Result.InheritsFrom(TPasUnresolvedTypeRef) ) and
        ( typeModule = FModule )
     then begin
@@ -456,7 +503,7 @@ begin
       frwType := Result;
       Result := nil;
       Init();
-      if FindTypeNode(aliasType) then begin
+      if locTypeNodeFound {FindTypeNode(aliasType)} then begin
         if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_complexType) then begin
           Result := ParseComplexType();
         end else if AnsiSameText(ExtractNameFromQName(typNd.NodeName),s_simpleType) then begin
@@ -520,8 +567,9 @@ begin
         typTmpCrs := CreateCursorOn(typTmpCrs,ParseFilter(Format('%s=%s',[s_NODE_NAME,QuotedStr(s_name)]),TDOMNodeRttiExposer));
         typTmpCrs.Reset();
         if typTmpCrs.MoveNext() then begin
-          ParseType(
-            (typTmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue
+          InternalParseType(
+            (typTmpCrs.GetCurrent() as TDOMNodeRttiExposer).NodeValue,
+            typNode
           );
         end;
       end;

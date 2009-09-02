@@ -8,7 +8,7 @@
       <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\..\"/>
+        <OtherUnitFiles Value="..\..\;$(LazarusDir)\others_package\indy-10.2.0.3\fpc\"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>

@@ -20,6 +20,7 @@ uses
   pparser, pastree;
 
 const
+  sEMBEDDED_TYPE = '_E_T_';
   sEXTERNAL_NAME = '_E_N_';
   sATTRIBUTE = '_ATTRIBUTE_';
   sARRAY_ITEM_NAME = 'ARRAY_ITEM_NAME';
@@ -409,6 +410,7 @@ begin
     AddSystemSymbol(Result,AContainer);
     AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
       AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
+        AContainer.RegisterExternalAlias(AddClassDef(Result,'schema_Type','TAbstractSimpleRemotable'),'schema');
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'date');
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateTimeRemotable','TAbstractSimpleRemotable'),'dateTime');
 {$IFDEF WST_HAS_TDURATIONREMOTABLE}

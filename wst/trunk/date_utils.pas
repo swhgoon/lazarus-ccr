@@ -67,6 +67,10 @@ const
 
 type
   TXsdDateKind = ( xdkDateTime, xdkDate );
+  TValueCompareKind = (
+    vckEqual, vckLessThan, vckGreaterThan, vckNotEqual,
+    vckEqualOrLessThan, vckEqualOrGreaterThan
+  );
 
   function xsd_TryStrToDate(
     const AStr      : string;
@@ -122,6 +126,11 @@ type
   function ValueEquals(const AA,AB: TDateTimeRec) : Boolean; overload;
   function ValueEquals(const AA,AB: TTimeRec) : Boolean; overload;
   function ValueEquals(const AA,AB: TDurationRec) : Boolean; overload;
+
+  function CompareValue(
+    const AA,AB        : TDateTimeRec;
+    const ACompareKind : TValueCompareKind
+  ) : Boolean;
 
 resourcestring
   SERR_InvalidDate = '"%s" is not a valid date.';
@@ -198,6 +207,27 @@ begin
             ( a.MilliSecond = b.MilliSecond ) and
             ( a.HourOffset = b.HourOffset ) and
             ( a.MinuteOffset = b.MinuteOffset );
+end;
+
+function CompareValue(
+  const AA,AB        : TDateTimeRec;
+  const ACompareKind : TValueCompareKind
+) : Boolean;
+var
+  locA, locB : TDateTime;
+begin
+  case ACompareKind of
+    vckEqual              : Result := ValueEquals(AA,AB);
+    vckLessThan           : Result := ( NormalizeToUTC(AA) < NormalizeToUTC(AB) );
+    vckGreaterThan        : Result := ( NormalizeToUTC(AA) > NormalizeToUTC(AB) );
+    vckNotEqual           : Result := not ValueEquals(AA,AB);
+    vckEqualOrLessThan    : Result := ValueEquals(AA,AB) or ( NormalizeToUTC(AA) < NormalizeToUTC(AB) );
+    vckEqualOrGreaterThan : Result := ValueEquals(AA,AB) or ( NormalizeToUTC(AA) > NormalizeToUTC(AB) );
+    else begin
+      Assert(False);  // To suppress the warning
+      Result := False;
+    end;
+  end;
 end;
 
 function xsd_TryStrToDate(

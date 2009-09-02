@@ -50,7 +50,7 @@ type
 {$IFNDEF WST_HAS_TTIMEREMOTABLE}
   time = type string;
 {$ENDIF WST_HAS_TTIMEREMOTABLE}
-  
+
   TScopeType = Integer;
   TArrayStyle = ( asScoped, asEmbeded, asNone );
   TInstanceOption = ( ioAlwaysSerialize );
@@ -76,7 +76,7 @@ type
 
   EServiceConfigException = class(EServiceException)
   end;
-  
+
   ETypeRegistryException = class(EServiceConfigException)
   end;
 
@@ -144,7 +144,7 @@ type
   End;
 
   TSerializationStyle = ( ssNodeSerialization, ssAttibuteSerialization );
-  
+
   IFormatterBase = Interface
     ['{2AB3BF54-B7D6-4C46-8245-133C8775E9C1}']
     function GetPropertyManager():IPropertyManager;
@@ -219,7 +219,7 @@ type
     function ReadBuffer(const AName : string; out AResBuffer : string) : Boolean;
     //Please use this method if and _only_ if you do not have another way achieve your aim!
     procedure WriteBuffer(const AValue : string);
-    
+
     procedure SaveToStream(AStream : TStream);
     procedure LoadFromStream(AStream : TStream);
 
@@ -383,6 +383,7 @@ type
     class function ToStr(const ADate : TDateTime):string;overload;
     class function ToStr(const ADate : TDateTimeRec):string;overload;virtual;abstract;
     class function Parse(const ABuffer : string):TDateTimeRec;virtual;abstract;
+    class function ParseToUTC(const ABuffer : string):TDateTime;
 
     procedure Assign(Source: TPersistent); override;
     function Equal(const ACompareTo : TBaseRemotable) : Boolean;override;
@@ -403,8 +404,8 @@ type
   public
     class function ToStr(const ADate : TDateTimeRec):string;override;
     class function Parse(const ABuffer : string):TDateTimeRec;override;
-  end; 
-  
+  end;
+
   { TDateTimeRemotable }
 
   TDateTimeRemotable = class(TBaseDateRemotable)
@@ -417,7 +418,7 @@ type
     property Minute : Integer index 4 read GetDatepart;
     property Second : Integer index 5 read GetDatepart;
   end;
-  
+
   { TDurationRemotable }
 
   TDurationRemotable = class(TAbstractSimpleRemotable)
@@ -507,7 +508,7 @@ type
     property Data : TTimeRec read FData write FData;
     property AsString : string read GetAsString write SetAsString;
   end;
-  
+
   TAbstractComplexRemotableClass = class of TAbstractComplexRemotable;
 
   { TAbstractComplexRemotable }
@@ -546,7 +547,7 @@ type
   end;
 
   TRemotableRecordEncoderClass = class of TRemotableRecordEncoder;
-  
+
   { TRemotableRecordEncoder }
 
   TRemotableRecordEncoder = class(TPersistent)
@@ -564,7 +565,7 @@ type
       const ATypeInfo : PTypeInfo
     );virtual;
   end;
-  
+
   { TBaseComplexSimpleContentRemotable }
 
   TBaseComplexSimpleContentRemotable = class(TAbstractComplexRemotable)
@@ -599,7 +600,7 @@ type
   end;
 
   { TComplexInt8SContentRemotable }
-  
+
   TComplexInt8SContentRemotable = class(TBaseComplexSimpleContentRemotable)
   private
     FValue: ShortInt;
@@ -631,7 +632,7 @@ type
   public
     property Value : Word read FValue write FValue;
   end;
-  
+
   { TComplexInt32SContentRemotable }
 
   TComplexInt32SContentRemotable = class(TBaseComplexSimpleContentRemotable)
@@ -655,7 +656,7 @@ type
   public
     property Value : LongWord read FValue write FValue;
   end;
-  
+
   { TComplexInt64SContentRemotable }
 
   TComplexInt64SContentRemotable = class(TBaseComplexSimpleContentRemotable)
@@ -823,7 +824,7 @@ type
   public
     property Value : Boolean read FValue write FValue;
   end;
-  
+
   THeaderBlockClass = class of THeaderBlock;
 
   { THeaderBlock }
@@ -1453,7 +1454,7 @@ type
     property Intf : IInterface read FIntf;
     property Used : Boolean read FUsed write FUsed;
   end;
-  
+
   TIntfPool = class
   private
     FList : TObjectList;
@@ -1478,7 +1479,7 @@ type
     property Min : PtrInt read FMin;
     property Max : PtrInt read FMax;
   end;
-  
+
   { TSimpleItemFactoryEx }
 
   TSimpleItemFactoryEx = class(TSimpleItemFactory,IInterface,IItemFactory,IItemFactoryEx)
@@ -1522,7 +1523,7 @@ type
   TTypeRegistry = class;
   TTypeRegistryItem = class;
   TTypeRegistryItemClass = class of TTypeRegistryItem;
-  
+
   TRemotableTypeInitializerClass = class of TRemotableTypeInitializer;
 
   { TRemotableTypeInitializer }
@@ -1538,7 +1539,7 @@ type
     ) : Boolean;virtual;abstract;
 {$ENDIF TRemotableTypeInitializer_Initialize}
   end;
-  
+
   { TTypeRegistryItem }
 
   TTypeRegistryItem = class
@@ -1568,11 +1569,11 @@ type
     function AddExternalSynonym(const ASynonym : string):TTypeRegistryItem;
     function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function IsExternalSynonym(const AExternalName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    
+
     procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); virtual;
     function GetExternalPropertyName(const APropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetInternalPropertyName(const AExtPropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    
+
     procedure RegisterObject(const APropName : string; const AObject : TObject);
     function GetObject(const APropName : string) : TObject;
 
@@ -1624,7 +1625,7 @@ type
   end;
 
   TPropStoreType = ( pstNever, pstOptional, pstAlways );
-  
+
   EPropertyException = class(Exception)
   end;
 
@@ -1680,7 +1681,7 @@ const
 
   procedure initialize_base_service_intf();
   procedure finalize_base_service_intf();
-  
+
 {$IFDEF HAS_FORMAT_SETTINGS}
 var
   wst_FormatSettings : TFormatSettings;
@@ -1693,7 +1694,7 @@ uses
 
 type
   PObject = ^TObject;
-  
+
 var
   TypeRegistryInstance : TTypeRegistry = Nil;
 
@@ -1789,13 +1790,13 @@ begin
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatDoubleRemotable),'TArrayOfFloatDoubleRemotable').AddPascalSynonym('TArrayOfFloatDoubleRemotable');
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatExtendedRemotable),'TArrayOfFloatExtendedRemotable').AddPascalSynonym('TArrayOfFloatExtendedRemotable');
   r.Register(sWST_BASE_NS,TypeInfo(TArrayOfFloatCurrencyRemotable),'TArrayOfFloatCurrencyRemotable').AddPascalSynonym('TArrayOfFloatCurrencyRemotable');
-  
+
   r.Register(sXSD_NS,TypeInfo(TComplexInt64SContentRemotable),'long').AddPascalSynonym('TComplexInt64SContentRemotable');
     r.Register(sXSD_NS,TypeInfo(TComplexInt64UContentRemotable),'unsignedLong').AddPascalSynonym('TComplexInt64UContentRemotable');
-  
+
   r.Register(sXSD_NS,TypeInfo(TComplexInt32SContentRemotable),'int').AddPascalSynonym('TComplexInt32SContentRemotable');
     r.Register(sXSD_NS,TypeInfo(TComplexInt32UContentRemotable),'unsignedInt').AddPascalSynonym('TComplexInt32UContentRemotable');
-    
+
   r.Register(sXSD_NS,TypeInfo(TComplexInt16SContentRemotable),'short').AddPascalSynonym('TComplexInt16SContentRemotable');
     r.Register(sXSD_NS,TypeInfo(TComplexInt16UContentRemotable),'unsignedShort').AddPascalSynonym('TComplexInt16UContentRemotable');
 
@@ -1805,7 +1806,7 @@ begin
   r.Register(sXSD_NS,TypeInfo(TComplexFloatExtendedContentRemotable),'decimal').AddPascalSynonym('TComplexFloatExtendedContentRemotable');
   r.Register(sXSD_NS,TypeInfo(TComplexFloatDoubleContentRemotable),'double').AddPascalSynonym('TComplexFloatDoubleContentRemotable');
   r.Register(sXSD_NS,TypeInfo(TComplexFloatSingleContentRemotable),'Single').AddPascalSynonym('TComplexFloatSingleContentRemotable');
-  
+
   r.Register(sXSD_NS,TypeInfo(TComplexStringContentRemotable),'string').AddPascalSynonym('TComplexStringContentRemotable');
   r.Register(sXSD_NS,TypeInfo(TComplexWideStringContentRemotable),'widestring').AddPascalSynonym('TComplexWideStringContentRemotable');
 {$IFDEF WST_UNICODESTRING}
@@ -2018,14 +2019,14 @@ Type
 
 var
   SerializeOptionsRegistryInstance : TSerializeOptionsRegistry = nil;
-  
+
 function GetSerializeOptionsRegistry():TSerializeOptionsRegistry;
 begin
   if not Assigned(SerializeOptionsRegistryInstance) then
     SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();
   Result := SerializeOptionsRegistryInstance;
 end;
-  
+
 { TSerializeOptionsRegistry }
 
 function TSerializeOptionsRegistry.GetCount: Integer;
@@ -2094,7 +2095,7 @@ begin
   else
     Result := nil;
 end;
-  
+
 { TSerializeOptions }
 
 procedure TSerializeOptions.AddAttributeField(const AAttributeField: string);
@@ -2132,10 +2133,10 @@ begin
   Result := ( FAttributeFieldList.IndexOf(AField) >= 0 );
 end;
 
-destructor TBaseComplexRemotable.Destroy();  
+destructor TBaseComplexRemotable.Destroy();
 begin
   FreeObjectProperties();
-  inherited Destroy();  
+  inherited Destroy();
 end;
 
 class procedure TBaseComplexRemotable.Save(
@@ -2511,10 +2512,10 @@ begin
 end;
 {$ENDIF USE_SERIALIZE}
 
-procedure TBaseComplexRemotable.FreeObjectProperties(); 
+procedure TBaseComplexRemotable.FreeObjectProperties();
 begin
   //Derived classes should override this method to free their object(s) and array(s).
-end; 
+end;
 
 { TBaseObjectArrayRemotable }
 
@@ -3095,7 +3096,7 @@ destructor TTypeRegistryItem.Destroy();
         obj.Free();
     end;
   end;
-  
+
 begin
   if ( FExternalNames <> nil ) and ( FExternalNames.Count > 0 ) then
     FreeObjects();
@@ -3279,13 +3280,19 @@ begin
 end;
 
 function TTypeRegistry.IndexOf(Const ATypeInfo: PTypeInfo): Integer;
+var
+  i : Integer;
 begin
-  For Result := 0 To Pred(Count) Do Begin
-    If ( ATypeInfo^.Kind = Item[Result].DataType^.Kind ) And
+  for i := 0 to Pred(Count) do begin
+    if ( ATypeInfo = Item[i].DataType ) then begin
+      Result := i;
+      Exit;
+    end;
+    {If ( ATypeInfo^.Kind = Item[Result].DataType^.Kind ) And
        AnsiSameText(ATypeInfo^.Name,Item[Result].DataType^.Name)
     Then
-      Exit;
-  End;
+      Exit;}
+  end;
   Result := -1;
 end;
 
@@ -4733,10 +4740,12 @@ class procedure TSimpleContentHeaderBlock.Save(
 );
 var
   locSerializer : TObjectSerializer;
+  locOptionChanged : Boolean;
 begin
   locSerializer := TBaseComplexTypeRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
   if ( locSerializer <> nil ) then begin
-    if not ( osoDontDoBeginWrite in locSerializer.Options ) then
+    locOptionChanged := not ( osoDontDoBeginWrite in locSerializer.Options );
+    if locOptionChanged then
       locSerializer.Options := locSerializer.Options + [osoDontDoBeginWrite];
     AStore.BeginObject(AName,ATypeInfo);
     try
@@ -4745,6 +4754,8 @@ begin
       locSerializer.Save(AObject,AStore,AName,ATypeInfo);
     finally
       AStore.EndScope();
+      if locOptionChanged then
+        locSerializer.Options := locSerializer.Options - [osoDontDoBeginWrite];
     end;
   end else begin
     raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
@@ -5655,12 +5666,12 @@ end;
 
 { TDateRemotable }
 
-class function TDateRemotable.ToStr(const ADate : TDateTimeRec) : string;  
+class function TDateRemotable.ToStr(const ADate : TDateTimeRec) : string;
 begin
   Result := xsd_DateTimeToStr(ADate,xdkDate);
 end;
 
-class function TDateRemotable.Parse(const ABuffer : string) : TDateTimeRec;  
+class function TDateRemotable.Parse(const ABuffer : string) : TDateTimeRec;
 begin
   Result := xsd_StrToDate(ABuffer,xdkDate);
 end;
@@ -5820,6 +5831,11 @@ begin
   locTemp.HourOffset := 0;
   locTemp.MinuteOffset := 0;
   Result := ToStr(locTemp);
+end;
+
+class function TBaseDateRemotable.ParseToUTC(const ABuffer : string) : TDateTime;
+begin
+  Result := NormalizeToUTC(Parse(ABuffer));
 end;
 
 { TComplexInt8SContentRemotable }
@@ -6590,7 +6606,7 @@ begin
 end;
 
 class procedure TComplexWideCharContentRemotable.SaveValue(
-  AObject: TBaseRemotable; 
+  AObject: TBaseRemotable;
   AStore: IFormatterBase
 );
 begin

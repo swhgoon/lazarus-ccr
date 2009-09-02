@@ -75,7 +75,11 @@ type
       const ASoapBindingStyle : string
     ) : TPasProcedure;
     function GetParser(const ANamespace : string) : IXsdPaser;
-    function ParseType(const AName : string; const AHint : string = '') : TPasType;
+    function ParseType(
+      const AName : string; 
+      const AHint : string = '';
+      const ATypeOrElement : string = ''
+    ) : TPasType;
     procedure ParseTypes();
   protected
     function GetXsShortNames() : TStrings;
@@ -300,6 +304,7 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
     schmNode, tmpNode : TDOMNode;
     s : string;
     typeList : TList;
+    locXsdParser : IXsdPaser;
   begin
     if Assigned(FSchemaCursor) then begin
       FSchemaCursor.Reset();
@@ -323,7 +328,8 @@ procedure TWsdlParser.Execute(const AMode: TParserMode; const AModuleName: strin
                 tmpNode := FindNamedNode(typeCursor,FSymbols.GetExternalName(sym));
                 if Assigned(tmpNode) then begin
                   //symNew := ParseType(FSymbols.GetExternalName(sym));
-                  symNew := GetParser(schmNode.Attributes.GetNamedItem(s_targetNamespace).NodeValue).ParseType(FSymbols.GetExternalName(sym));
+                  locXsdParser := GetParser(schmNode.Attributes.GetNamedItem(s_targetNamespace).NodeValue);
+                  symNew := locXsdParser.ParseType(FSymbols.GetExternalName(sym),tmpNode);
                   //symNew := ParseType(tmpNode.Attributes.GetNamedItem(s_name).NodeValue);
                   if ( sym <> symNew ) then begin
                     FModule.InterfaceSection.Declarations.Extract(sym);
@@ -460,7 +466,7 @@ function TWsdlParser.ParseOperation(
   function GetDataType(const AName, ATypeOrElement : string; const ATypeHint : string = ''):TPasType;
   begin
     try
-      Result := ParseType(AName,ATypeHint);
+      Result := ParseType(AName,ATypeHint,ATypeOrElement);
     except
       on e : Exception do begin
         DoOnMessage(mtError, e.Message + ' ' + AName + ' ' + ATypeOrElement);
@@ -578,7 +584,9 @@ function TWsdlParser.ParseOperation(
                   prmName := ExtractNameFromQName(prmTypeName);
                 end;
                 prmInternameName := Trim(prmName);
-                if AnsiSameText(prmInternameName,tmpMthd.Name) then begin
+                if AnsiSameText(prmInternameName,tmpMthd.Name) or 
+                   AnsiSameText(prmInternameName,ExtractNameFromQName(prmTypeName)) 
+                then begin
                   prmInternameName := prmInternameName + 'Param';
                 end;
                 prmHasInternameName := IsReservedKeyWord(prmInternameName) or
@@ -1176,11 +1184,16 @@ begin
   end;
 end;
 
-function TWsdlParser.ParseType(const AName : string; const AHint : string) : TPasType;
+function TWsdlParser.ParseType(
+  const AName : string; 
+  const AHint : string;
+  const ATypeOrElement : string
+) : TPasType;
 var
   localName, spaceShort, spaceLong : string;
   locPrs : IXsdPaser;
   xsdModule : TPasModule;
+  locTypeKind : string;
 begin
   ExplodeQName(AName,localName,spaceShort);
   if ( FXSShortNames.IndexOf(spaceShort) >= 0 ) then begin
@@ -1196,7 +1209,11 @@ begin
     if not FindNameSpace(spaceShort,spaceLong) then
       raise EXsdParserAssertException.CreateFmt('Unable to resolve the namespace : "%s".',[spaceShort]);
     locPrs := GetParser(spaceLong);
-    Result := locPrs.ParseType(AName);
+    if ( ATypeOrElement = s_element ) then
+      locTypeKind := s_element
+    else
+      locTypeKind := '';
+    Result := locPrs.ParseType(AName,locTypeKind);
   end;
 end;
 
