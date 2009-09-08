@@ -2003,10 +2003,14 @@ procedure TPdfCanvas.ShowText(s: string);
 var
   FString: string;
 begin
+  {$IFDEF LAZ_POWERPDF}
+  FString := '<' + _UTF8StrToUnicodeHex(s) + '>';
+  {$ELSE}
   if _HasMultiByteString(s) then
     FString := '<' + _StrToHex(s) + '>'
   else
     FString := '(' + _EscapeText(s) + ')';
+  {$ENDIF}
   WriteString(FString + ' Tj'#10);
 end;
 

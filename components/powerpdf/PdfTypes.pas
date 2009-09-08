@@ -299,6 +299,7 @@ type
   function _GetCharCount(Text: string): integer;
 
 {$IFDEF LAZ_POWERPDF}
+  function _UTF8StrToUnicodeHex(const Value:string): string;
   procedure PdfLazRegisterClassAlias(aClass: TPersistentClass; Alias: string);
   function  PdfLazFindClass(aClassName: string):TPersistentClass;
 {$ENDIF}
@@ -1143,6 +1144,19 @@ begin
 end;
 
 {$IFDEF LAZ_POWERPDF}
+
+function _UTF8StrToUnicodeHex(const Value: string): string;
+var
+  W: Widestring;
+  i: Integer;
+begin
+  result := '';
+  W := UTF8Decode(Value);
+  for i:=1 to Length(W) do begin
+    Result := Result + IntTohex(Word(W[i]), 4);
+  end;
+end;
+
 procedure PdfLazRegisterClassAlias(aClass: TPersistentClass; Alias: string);
 begin
   Classes.RegisterClass(aClass);
