@@ -1049,6 +1049,54 @@ begin
     end;
 end;
 
+//type
+//  TConvFunc=function(const W:Word): char;
+
+function CP1252(const W: Word): Char;
+begin
+  case W of
+    $00..$7F,$A0..$FF: result := char(W);
+    $20AC: result := #$80;
+    $201A: result := #$82;
+    $0192: result := #$83;
+    $201E: result := #$84;
+    $2026: result := #$85;
+    $2020: result := #$86;
+    $2021: result := #$87;
+    $02C6: result := #$88;
+    $2030: result := #$89;
+    $0160: result := #$8A;
+    $2039: result := #$8B;
+    $0152: result := #$8C;
+    $017D: result := #$8E;
+    $2018: result := #$91;
+    $2019: result := #$92;
+    $201C: result := #$93;
+    $201D: result := #$94;
+    $2022: result := #$95;
+    $2013: result := #$96;
+    $2014: result := #$97;
+    $02DC: result := #$98;
+    $2122: result := #$99;
+    $0161: result := #$9A;
+    $203A: result := #$9B;
+    $0153: result := #$9C;
+    $017E: result := #$9E;
+    $0178: result := #$9F;
+  else
+    result:='?';
+  end;
+end;
+
+function UnicodeToWinAnsi(W: widestring): string;
+var
+  i: Integer;
+begin
+  result := '';
+  for i:=1 to length(w) do
+    result := result + CP1252(word(w[i]));
+end;
+
 // _EscapeText
 function _EscapeText(const Value: string): string;
 const
@@ -1058,12 +1106,14 @@ var
   i, j: integer;
   flg: boolean;
   S: string;
+  W: widestring;
 begin
   //  If text contains chars to need escape, replace text using "\".
   //
   // TODO: implement UNICODE support in powerpdf. Currently we can't do
   // any better than converting utf-8 strings to unicode.
-  S := UTF8ToAnsi(Value);
+  W := UTF8Decode(Value);
+  S := UnicodeToWinAnsi(W);
   result := '';
   for i := 1 to Length(S) do
   begin
