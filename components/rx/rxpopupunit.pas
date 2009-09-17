@@ -776,18 +776,13 @@ var
 begin
   FFindLine:=FFindLine + AChar;
   if DatalinkActive then
-{    if true then
-    begin}
-      if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
-      begin
-        TPopUpForm(Owner).WControl.Caption:=FFindLine;
-        TPopUpForm(Owner).WControl.Repaint;
-      end
-      else
-        FFindLine:=F;
-{    end
+    if DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]) then
+    begin
+      TPopUpForm(Owner).WControl.Caption:=FFindLine;
+      TPopUpForm(Owner).WControl.Repaint;
+    end
     else
-      DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey]);}
+      FFindLine:=F;
 end;
 
 procedure TPopUpGrid.FindPriorChar;
@@ -819,11 +814,6 @@ begin
       TPopUpForm(Owner).WControl.Repaint;
       DataSource.DataSet.First;
     end;
-{  if DatalinkActive then
-    if (FFindLine<>'') then
-      DataSetLocateThrough(DataSource.DataSet, FLookupDisplayField, FFindLine, [loCaseInsensitive, loPartialKey])
-    else
-      DataSource.DataSet.First;}
 end;
 
 procedure TPopUpGrid.SetLookupDisplayIndex(const AValue: integer);
@@ -850,49 +840,27 @@ end;
 
 procedure TPopUpGrid.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if true then
-  begin
-    if Key = VK_DELETE then
-    begin
-      ClearFind;
-      Key:=0;
-    end
-    else
-    if Key = VK_BACK then
-    begin
-      FindPriorChar;
-      Key:=0;
-    end
-    else
-    begin
-      if Key in [VK_UP,VK_DOWN,VK_PRIOR,VK_NEXT] then
-      begin
-        FFindLine:='';
-    	TPopUpForm(Owner).WControl.Caption:='';
-    	TPopUpForm(Owner).WControl.Repaint;
-      end;
-      inherited KeyDown(Key, Shift);
-      exit;
-    end;
-  end
-{  else
-  if (Key>=Ord('0')) and (Key<=Ord('9')) then
-    FindNextChar(Char(Key))
-  else
-  if (Key>=VK_NUMPAD0) and (Key<=VK_NUMPAD9) then
-    FindNextChar(Char(Key - VK_NUMPAD0 + Ord('0')))
-  else
   if Key = VK_DELETE then
-    ClearFind
+  begin
+    ClearFind;
+    Key:=0;
+  end
   else
   if Key = VK_BACK then
-    FindPriorChar
+  begin
+    FindPriorChar;
+    Key:=0;
+  end
   else
   begin
+    if Key in [VK_UP,VK_DOWN,VK_PRIOR,VK_NEXT] then
+    begin
+      FFindLine:='';
+      TPopUpForm(Owner).WControl.Caption:='';
+      TPopUpForm(Owner).WControl.Repaint;
+    end;
     inherited KeyDown(Key, Shift);
-    exit;
   end;
-  Key:=0;}
 end;
 
 end.

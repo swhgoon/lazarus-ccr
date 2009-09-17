@@ -1,0 +1,116 @@
+object Form1: TForm1
+  Left = 608
+  Height = 300
+  Top = 495
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 18
+    Top = 6
+    Width = 46
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DBDateEdit1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 63
+    Width = 93
+    BorderSpacing.Around = 6
+    Caption = 'Currency edit'
+    ParentColor = False
+  end
+  object DBDateEdit1: TDBDateEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 27
+    Top = 30
+    Width = 148
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ButtonWidth = 23
+    Enabled = False
+    Glyph.Data = {
+      36010000424D360100000000000076000000280000001C0000000C0000000100
+      040000000000C000000000000000000000000000000000000000000000000000
+      8000008000000080800080000000800080008080000080808000C0C0C0000000
+      FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00DDD777777777
+      77DDFFFFFFFFFFFF0000DD004044040047D777777777777F0000DDFFFFFFFFFF
+      47D7FDFFFDFFFD7F0000DDF000F0008F47D7F777D777DF7F0000DDFF0FF8F80F
+      47D7FD7FDDDD7F7F0000DDFF0FFFFF0F47D7FD7FDDFF7D7F0000DDFF0FF0008F
+      47D7FD7FD777DD7F0000DDF00FF0FFFF47D7F77FD7FFFF7F0000DDFF0FF0000F
+      47D7FD7DD7777D7F0000DDFFFFFFFFFF47D7FDDDDDDDDD7F0000DDF88888888F
+      47D7FFFFFFFFFF7F0000DD0000000000DDD777777777777D0000
+    }
+    NumGlyphs = 2
+    PopupColor = clWindow
+    TabOrder = 0
+    DataField = 'DOC_DATE'
+    DataSource = dsData
+  end
+  object CurrencyEdit1: TCurrencyEdit
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 27
+    Top = 87
+    Width = 148
+    Alignment = taCenter
+    BorderSpacing.Around = 6
+    MaxValue = 0
+    MinValue = 0
+    TabOrder = 1
+    Value = 0
+  end
+  object Button1: TButton
+    Left = 248
+    Height = 29
+    Top = 80
+    Width = 76
+    AutoSize = True
+    Caption = 'Invalidate'
+    OnClick = Button1Click
+    TabOrder = 2
+  end
+  object dsData: TDatasource
+    DataSet = rxData
+    left = 264
+    top = 21
+  end
+  object rxData: TRxMemoryData
+    FieldDefs = <    
+      item
+        Name = 'DOC_DATE'
+        DataType = ftDate
+        Precision = 0
+        Size = 0
+      end>
+    left = 304
+    top = 21
+    object rxDataDOC_DATE: TDateField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'DOC_DATE'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+end

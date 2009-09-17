@@ -129,5 +129,3 @@ msgstr "Botones visibles"
 msgid "Windows Ico files (*.ico)|*.ico|All files (*.*)|*.*"
 msgstr "Windows Iconos Ficheros (*.ico)|*.ico)|Todos los ficheros (*.*)|*.*"
 
-
-

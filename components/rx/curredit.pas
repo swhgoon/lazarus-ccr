@@ -57,6 +57,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
 //    procedure AcceptValue(const Value: Variant); override;
+
     procedure Change; override;
     procedure ReformatEditText; dynamic;
     procedure DataChanged; virtual;

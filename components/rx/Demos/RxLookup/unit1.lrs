@@ -1,0 +1,64 @@
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3#22#2#6'Height'#3'p'#1#3'Top'#3#234#0#5'Wi'
+  +'dth'#3#242#1#13'ActiveControl'#7#16'RxDBLookupCombo1'#7'Caption'#6#20'RxDBL'
+  +'ookupCombo test'#12'ClientHeight'#3'p'#1#11'ClientWidth'#3#242#1#8'OnCreate'
+  +#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#6'Label1'#22'Anchor'
+  +'SideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Control'#7#5'Owner'#4'Left'#2
+  +#6#6'Height'#2#18#3'Top'#2#6#5'Width'#2'Z'#20'BorderSpacing.Around'#2#6#7'Ca'
+  +'ption'#6#14'Select item...'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#22'An'
+  +'chorSideLeft.Control'#7#7'Button1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21
+  +'AnchorSideTop.Control'#7#7'Button1'#18'AnchorSideTop.Side'#7#9'asrCenter'#4
+  +'Left'#2'l'#6'Height'#2#18#3'Top'#2'F'#5'Width'#2'.'#20'BorderSpacing.Around'
+  +#2#6#7'Caption'#6#6'Label2'#11'ParentColor'#8#0#0#16'TRxDBLookupCombo'#16'Rx'
+  +'DBLookupCombo1'#22'AnchorSideLeft.Control'#7#6'Label1'#21'AnchorSideTop.Con'
+  +'trol'#7#6'Label1'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.'
+  +'Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#2#12#6
+  +'Height'#2#29#3'Top'#2#30#5'Width'#3#224#1#8'AutoSize'#9#7'Anchors'#11#5'akT'
+  +'op'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#21'ButtonOnlyWhenFo'
+  +'cused'#8#11'ButtonWidth'#2#15#9'DataField'#6#2'ID'#10'DataSource'#7#7'dsDat'
+  +'a1'#24'PopUpFormOptions.Columns'#14#0#4'Flat'#8#10'Glyph.Data'#10'v'#0#0#0
+  +'r'#0#0#0'BMr'#0#0#0#0#0#0#0'6'#0#0#0'('#0#0#0#5#0#0#0#3#0#0#0#1#0' '#0#0#0#0
+  +#0'<'#0#0#0'd'#0#0#0'd'#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#0#255#0#0#0
+  +#0#0#0#0#0#0#0#0#0#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#9'NumGlyphs'#2#1#11'ParentColor'#8#8'ReadOnly'
+  +#8#8'TabOrder'#2#0#7'TabStop'#9#16'DisplayAllFields'#9#13'LookupDisplay'#6#16
+  +'ID;Price;Caption'#18'LookupDisplayIndex'#2#2#11'LookupField'#6#2'ID'#12'Loo'
+  +'kupSource'#7#12'dsLookUpData'#0#0#7'TButton'#7'Button1'#22'AnchorSideLeft.C'
+  +'ontrol'#7#5'Owner'#21'AnchorSideTop.Control'#7#16'RxDBLookupCombo1'#18'Anch'
+  +'orSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6'Height'#2#29#3'Top'#2'A'#5'Wid'
+  +'th'#2'`'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#12'Test ca'
+  +'ption'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#7'TButton'#7'Butto'
+  +'n2'#21'AnchorSideTop.Control'#7#7'Button1'#18'AnchorSideTop.Side'#7#9'asrBo'
+  +'ttom'#23'AnchorSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'a'
+  +'srBottom'#4'Left'#3#171#1#6'Height'#2#29#3'Top'#2'd'#5'Width'#2'A'#7'Anchor'
+  +'s'#11#5'akTop'#7'akRight'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Ca'
+  +'ption'#6#8'Set text'#7'OnClick'#7#12'Button2Click'#8'TabOrder'#2#2#0#0#5'TE'
+  +'dit'#5'Edit1'#22'AnchorSideLeft.Control'#7#5'Owner'#21'AnchorSideTop.Contro'
+  +'l'#7#7'Button1'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Co'
+  +'ntrol'#7#7'Button2'#4'Left'#2#6#6'Height'#2#27#3'Top'#2'd'#5'Width'#3#159#1
+  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#20'BorderSpacing.Around'#2#6#8
+  +'TabOrder'#2#3#4'Text'#6#5'Edit1'#0#0#7'TDBGrid'#7'DBGrid1'#4'Left'#2#0#6'He'
+  +'ight'#3#208#0#3'Top'#3#160#0#5'Width'#3#242#1#5'Align'#7#8'alBottom'#10'Dat'
+  +'aSource'#7#12'dsLookUpData'#8'TabOrder'#2#4#0#0#13'TRxMemoryData'#7'rxData1'
+  +#9'FieldDefs'#14#1#4'Name'#6#2'ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2
+  +#0#4'Size'#2#0#0#0#4'left'#3'@'#1#3'top'#2#8#0#13'TLongintField'#9'rxData1ID'
+  +#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#2'ID'#5'Index'
+  +#2#0#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8
+  +'ReadOnly'#8#8'Required'#8#0#0#0#13'TRxMemoryData'#12'rxLookUpData'#9'FieldD'
+  +'efs'#14#1#4'Name'#6#2'ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2#0#4'Siz'
+  +'e'#2#0#0#1#4'Name'#6#7'Caption'#8'DataType'#7#8'ftString'#9'Precision'#2#0#4
+  +'Size'#2'd'#0#1#4'Name'#6#5'Price'#8'DataType'#7#10'ftCurrency'#9'Precision'
+  +#2#0#4'Size'#2#0#0#0#4'left'#3#208#0#3'top'#2'8'#0#13'TLongintField'#14'rxLo'
+  +'okUpDataID'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#2
+  +'ID'#5'Index'#2#0#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pf'
+  +'InWhere'#0#8'ReadOnly'#8#8'Required'#8#0#0#12'TStringField'#19'rxLookUpData'
+  +'Caption'#12'DisplayWidth'#2'd'#9'FieldKind'#7#6'fkData'#9'FieldName'#6#7'Ca'
+  +'ption'#5'Index'#2#1#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9
+  +'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#4'Size'#2'd'#0#0#14'TCurrencyField'
+  +#17'rxLookUpDataPrice'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'Fiel'
+  +'dName'#6#5'Price'#5'Index'#2#2#11'LookupCache'#8#13'ProviderFlags'#11#10'pf'
+  +'InUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#8'MaxValue'#2#0#8'MinV'
+  +'alue'#2#0#9'Precision'#2#2#0#0#0#11'TDatasource'#7'dsData1'#7'DataSet'#7#7
+  +'rxData1'#4'left'#3' '#1#3'top'#2#8#0#0#11'TDatasource'#12'dsLookUpData'#7'D'
+  +'ataSet'#7#12'rxLookUpData'#4'left'#3#176#0#3'top'#2'8'#0#0#0
+]);

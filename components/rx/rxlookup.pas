@@ -216,6 +216,8 @@ type
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure Click; override;
+    function RealGetText: TCaption; override;
+    procedure RealSetText(const Value: TCaption); override;
 
     procedure Paint; override;
 
@@ -267,6 +269,7 @@ type
   public
     property Value;
     property KeyValue;
+    property Text;
   published
     property AutoSize;
     property Align;
@@ -920,8 +923,6 @@ begin
     else
       SetValueKey(FEmptyValue);
   end
-  {else
-    SetValueKey(Field.AsString);}
 end;
 
 procedure TRxCustomDBLookupCombo.UpdateFieldValues;
@@ -1121,11 +1122,6 @@ begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN, VK_RETURN, VK_HOME, VK_END]) and PopupVisible then
   begin
     TPopUpFormAccess(FRxPopUpForm).KeyDown(Key, Shift);
-{    if Key=VK_RETURN then
-      HideList
-    else
-      Flist.KeyDown(Key, Shift);
-    Key := 0;}
   end
   else
   if not PopupVisible then
@@ -1300,11 +1296,42 @@ begin
    DoButtonClick(Self);
 end;
 
+function TRxCustomDBLookupCombo.RealGetText: TCaption;
+begin
+  if PopupVisible then
+    Result:=inherited RealGetText
+  else
+  if (FLookupDisplayIndex>=0) and (FLookupDisplayIndex < FValuesList.Count) then
+    Result:=FValuesList[FLookupDisplayIndex]
+  else
+    Result:='';
+end;
+
+procedure TRxCustomDBLookupCombo.RealSetText(const Value: TCaption);
+var
+  LookFieldName:string;
+begin
+  inherited RealSetText(Value);
+  if not PopupVisible then
+  begin
+    if Assigned(FLookupDataLink.DataSet) and (FLookupDataLink.DataSet.Active) then
+    begin
+      if (FLookupDisplayIndex>=0) and (FLookupDisplayIndex<FFieldList.Count) then
+      begin
+        LookFieldName:=FFieldList[FLookupDisplayIndex];
+        FSuccesfullyFind := FLocateObject.Locate(LookFieldName, Value, true, false);
+        if FSuccesfullyFind and Assigned(FKeyField) then
+          SetValue(FKeyField.AsString);
+        KeyValueChanged;
+      end;
+    end;
+  end;
+end;
+
 procedure TRxCustomDBLookupCombo.Paint;
 var
   Selected:boolean;
   R, R1: TRect;
-//  X: Integer;
   AText: string;
 begin
   Canvas.Font := Font;

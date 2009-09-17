@@ -297,32 +297,16 @@ begin
       with ACanvas do
       begin
         R := ClientRect;
-{
-        if not (NewStyleControls ) and (BorderStyle = bsSingle) then
-        begin
-          Brush.Color := clWindowFrame;
-          FrameRect(R);
-          InflateRect(R, -1, -1);
-        end;
-}
         Brush.Color := Color;
         S := AText;
         AWidth := TextWidth(S);
         Margins := EditorTextMargins(Editor);
-{        if PopupVisible then
-          ALeft := Margins.X
+        case AAlignment of
+          taLeftJustify: ALeft := Margins.X;
+          taRightJustify: ALeft := ClientWidth - AWidth - Margins.X - 2;
         else
-        begin}
-//          if ButtonWidth > 0 then Inc(AWidth);
-          case AAlignment of
-            taLeftJustify:
-              ALeft := Margins.X;
-            taRightJustify:
-              ALeft := ClientWidth {- ButtonWidth} - AWidth - Margins.X - 2;
-            else
-              ALeft := (ClientWidth {- ButtonWidth} - AWidth) div 2;
-          end;
-{        end;}
+          ALeft := (ClientWidth - AWidth) div 2;
+        end;
 {$IFDEF USED_BiDi}
         if SysLocale.MiddleEast then UpdateTextFlags;
 {$ENDIF}

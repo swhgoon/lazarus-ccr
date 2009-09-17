@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="rxnew"/>
+        <MinVersion Major="2" Minor="1" Release="1" Build="103" Valid="True"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="9">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="project1"/>
+        <UsageCount Value="22"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <CursorPos X="3" Y="54"/>
+        <TopLine Value="25"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <UnitName Value="rxlookup"/>
+        <CursorPos X="19" Y="646"/>
+        <TopLine Value="645"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="11"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="1315" ID="1"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/lcl/controls.pp"/>
+        <UnitName Value="Controls"/>
+        <CursorPos X="1" Y="1152"/>
+        <TopLine Value="1135"/>
+        <EditorIndex Value="5"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/lcl/include/control.inc"/>
+        <CursorPos X="1" Y="4129"/>
+        <TopLine Value="4113"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxpopupunit.pas"/>
+        <UnitName Value="rxpopupunit"/>
+        <CursorPos X="1" Y="785"/>
+        <TopLine Value="770"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxdconst.pas"/>
+        <UnitName Value="rxdconst"/>
+        <CursorPos X="3" Y="68"/>
+        <TopLine Value="77"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/lcl/include/wincontrol.inc"/>
+        <CursorPos X="1" Y="7579"/>
+        <TopLine Value="7563"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <UnitName Value="dbutils"/>
+        <CursorPos X="1" Y="326"/>
+        <TopLine Value="310"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit8>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="225" Column="1" TopLine="209"/>
+      </Position1>
+      <Position2>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="227" Column="1" TopLine="211"/>
+      </Position2>
+      <Position3>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="340" Column="1" TopLine="324"/>
+      </Position3>
+      <Position4>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="341" Column="1" TopLine="325"/>
+      </Position4>
+      <Position5>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="342" Column="1" TopLine="326"/>
+      </Position5>
+      <Position6>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="344" Column="1" TopLine="328"/>
+      </Position6>
+      <Position7>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="345" Column="1" TopLine="329"/>
+      </Position7>
+      <Position8>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="346" Column="1" TopLine="330"/>
+      </Position8>
+      <Position9>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="232" Column="1" TopLine="216"/>
+      </Position9>
+      <Position10>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="227" Column="1" TopLine="211"/>
+      </Position10>
+      <Position11>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="229" Column="1" TopLine="213"/>
+      </Position11>
+      <Position12>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="230" Column="1" TopLine="214"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="235" Column="1" TopLine="219"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="315" Column="1" TopLine="299"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="318" Column="1" TopLine="302"/>
+      </Position15>
+      <Position16>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="321" Column="1" TopLine="305"/>
+      </Position16>
+      <Position17>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="322" Column="1" TopLine="306"/>
+      </Position17>
+      <Position18>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="323" Column="1" TopLine="307"/>
+      </Position18>
+      <Position19>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="324" Column="1" TopLine="308"/>
+      </Position19>
+      <Position20>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/dbutils.pas"/>
+        <Caret Line="326" Column="1" TopLine="310"/>
+      </Position20>
+      <Position21>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1331" Column="1" TopLine="1315"/>
+      </Position21>
+      <Position22>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1332" Column="1" TopLine="1316"/>
+      </Position22>
+      <Position23>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1445" Column="1" TopLine="1429"/>
+      </Position23>
+      <Position24>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1447" Column="1" TopLine="1431"/>
+      </Position24>
+      <Position25>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1448" Column="1" TopLine="1432"/>
+      </Position25>
+      <Position26>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1451" Column="1" TopLine="1435"/>
+      </Position26>
+      <Position27>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1454" Column="1" TopLine="1438"/>
+      </Position27>
+      <Position28>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1333" Column="1" TopLine="1317"/>
+      </Position28>
+      <Position29>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1059" Column="1" TopLine="1043"/>
+      </Position29>
+      <Position30>
+        <Filename Value="../../../../../../../../usr/local/share/lazarus/components/rxnew/rxlookup.pas"/>
+        <Caret Line="1060" Column="1" TopLine="1044"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+    </SearchPaths>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
