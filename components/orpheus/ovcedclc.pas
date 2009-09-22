@@ -162,7 +162,9 @@ type
 {$ENDIF}
     property LabelInfo;
     property ParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupAnchor;
@@ -499,7 +501,9 @@ begin
   end;
 
   {set 3d to be the same as our own}
+{$IFNDEF LCL}
   FCalculator.ParentCtl3D := False;
+{$ENDIF}
   FCalculator.Ctl3D := False;
 
   {determine the proper position}

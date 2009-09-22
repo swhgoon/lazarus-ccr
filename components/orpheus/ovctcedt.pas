@@ -68,6 +68,9 @@ type
       FMaxLength   : word;
       FAutoAdvanceChar      : boolean;
       FAutoAdvanceLeftRight : boolean;
+{$IFDEF LCL}
+      FCtl3D : Boolean;
+{$ENDIF}
 
     protected
       function GetCellEditor : TControl; override;
@@ -82,6 +85,9 @@ type
       property MaxLength : word
          read FMaxLength write FMaxLength;
 
+{$IFDEF LCL}
+      property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
     public
       function CreateEditControl(AOwner : TComponent) : TOvcTCStringEdit; virtual;
 
@@ -165,6 +171,9 @@ type
       FMaxLength   : word;
       FWantReturns : boolean;
       FWantTabs    : boolean;
+{$IFDEF LCL}
+      FCtl3D       : Boolean;
+{$ENDIF}
 
     protected
       function GetCellEditor : TControl; override;
@@ -179,6 +188,9 @@ type
       property WantTabs : boolean
          read FWantTabs write FWantTabs;
 
+{$IFDEF LCL}
+      property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
     public
       constructor Create(AOwner : TComponent); override;
       function CreateEditControl(AOwner : TComponent) : TOvcTCMemoEdit; virtual;

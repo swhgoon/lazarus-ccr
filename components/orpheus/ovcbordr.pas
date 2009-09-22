@@ -152,6 +152,9 @@ type
     FBorders       : TOvcBorders;
     FEdit          : TOvcCustomEdit;
     FLabelInfo     : TOvcLabelInfo;
+{$IFDEF LCL}
+    FCtl3D         : Boolean;
+{$ENDIF}
 
     FOrgHeight     : integer;
 
@@ -220,6 +223,11 @@ type
     property LabelInfo : TOvcLabelInfo
       read FLabelInfo
       write FLabelInfo;
+
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
+
   end;
 
 implementation

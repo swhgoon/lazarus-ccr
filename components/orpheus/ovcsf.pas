@@ -144,7 +144,9 @@ type
     property Options;
     property PadChar;
     property ParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}    
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;

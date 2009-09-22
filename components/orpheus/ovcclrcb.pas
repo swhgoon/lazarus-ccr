@@ -50,6 +50,9 @@ type
   protected {private}
     {property Variables}
     FShowColorNames : Boolean;
+{$IFDEF LCL}
+    FCtl3D          : Boolean;
+{$ENDIF}
 
     {internal variables}
     BoxWidth : Integer;
@@ -73,6 +76,9 @@ type
       read GetSelectedColor write SetSelectedColor;
     property ShowColorNames : Boolean
       read FShowColorNames write SetShowColorNames default True;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
 
   public
     constructor Create(AOwner : TComponent); override;
@@ -104,7 +110,9 @@ type
     property ItemHeight;
     property LabelInfo;
     property ParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

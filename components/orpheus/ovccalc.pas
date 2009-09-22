@@ -317,6 +317,9 @@ type
     FLastOperand       : Extended;
     FOptions           : TOvcCalculatorOptions;
     FTapeSeparatorChar : Char;
+{$IFDEF LCL}
+    FCtl3D             : Boolean;
+{$ENDIF}
 
     {event variables}
     FOnButtonPressed   : TOvcCalcButtonPressedEvent;
@@ -379,8 +382,10 @@ type
     procedure SetVisible(const Value : Boolean);
 
     {VCL control methods}
+{$IFNDEF LCL}
     procedure CMCtl3DChanged(var Msg : TMessage);
       message CM_CTL3DCHANGED;
+{$ENDIF}
     procedure CMDesignHitTest(var Msg : TCMDesignHitTest);
       message CM_DESIGNHITTEST;
     procedure CMEnter(var Msg : TMessage);
@@ -450,6 +455,9 @@ type
       read FTapeSeparatorChar write FTapeSeparatorChar;
     property Visible : Boolean
       read GetVisible write SetVisible;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
 
     {protected events}
     property OnButtonPressed : TOvcCalcButtonPressedEvent
@@ -513,7 +521,9 @@ type
     property MaxPaperCount default 9999;
     property TapeHeight ; {Must be Prior to Options}
     property Options default [coShowMemoryButtons, coShowItemCount];
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -650,7 +660,9 @@ begin
       Style           := lbOwnerDrawFixed;
       Parent          := taOwner as TWinControl;
       ParentFont      := False;
+{$IFNDEF LCL}
       ParentCtl3D     := True;
+{$ENDIF}      
       BorderStyle     := bsSingle;
       Color           := taTapeColor;
       Visible         := FVisible;
@@ -1930,6 +1942,7 @@ begin
   cEngine.PushOperand(Value);
 end;
 
+{$IFNDEF LCL}
 procedure TOvcCustomCalculator.CMCtl3DChanged(var Msg : TMessage);
 begin
   inherited;
@@ -1944,6 +1957,7 @@ begin
 
   Invalidate;
 end;
+{$ENDIF}
 
 procedure TOvcCustomCalculator.CMDesignHitTest(var Msg : TCMDesignHitTest);
 begin
@@ -2174,7 +2188,9 @@ begin
   cPanel.Font.Name         := 'Courier New';
   cPanel.Font.Size         := 10;
   cPanel.Font.Style        := [];
+{$IFNDEF LCL}
   cPanel.ParentCtl3D       := True;
+{$ENDIF}
   cPanel.Alignment         := taLeftJustify;
   cPanel.BevelOuter        := bvLowered;
   cPanel.BorderStyle       := bsNone;

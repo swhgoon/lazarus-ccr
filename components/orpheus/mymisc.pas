@@ -472,7 +472,11 @@ begin
   else
     begin
     if nIndex = SM_CYBORDER then
-      nIndex := SM_CYEDGE;  //Substitute for now so returned value is valid.
+//      nIndex := SM_CYEDGE;  //Substitute for now so returned value is valid.
+      begin  //Neither implemented, so catch here to eliminate TODO messages.
+      Result := 0;  //0 was being returned before.
+      Exit;
+      end;
     Result := LclIntf.GetSystemMetrics(nIndex);
     end;
 end;

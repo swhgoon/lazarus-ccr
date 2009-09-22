@@ -85,6 +85,9 @@ type
       FOptions     : TOvcTblOptionSet;       {set of table options}
       FScrollBars  : TScrollStyle;           {scroll bar presence}
       Filler       : byte;
+{$IFDEF LCL}
+      FCtl3D       : Boolean;
+{$ENDIF}
 
       {property event fields}
       FActiveCellChanged  : TCellNotifyEvent;       {active cell changed event}
@@ -368,7 +371,9 @@ type
 
       {Delphi component messages}
       procedure CMColorChanged(var Msg : TMessage); message CM_COLORCHANGED;
+{$IFNDEF LCL}
       procedure CMCtl3DChanged(var Msg : TMessage); message CM_CTL3DCHANGED;
+{$ENDIF}
       procedure CMDesignHitTest(var Msg : TCMDesignHitTest); message CM_DESIGNHITTEST;
       procedure CMFontChanged(var Msg : TMessage); message CM_FONTCHANGED;
 
@@ -490,6 +495,10 @@ type
       property TopRow : TRowNum
          read FTopRow write SetTopRow;
 
+{$IFDEF LCL}
+      property Ctl3D : Boolean read FCtl3D write FCtl3D default True;
+{$ENDIF}
+      
       {New events}
       property OnActiveCellChanged : TCellNotifyEvent
          read FActiveCellChanged write FActiveCellChanged;
@@ -680,7 +689,9 @@ type
       property LockedRowsCell;
       property Options default [];
       property ParentColor default False;
+{$IFNDEF LCL}
       property ParentCtl3D;
+{$ENDIF}      
       property ParentFont;
       property ParentShowHint;
       property PopupMenu;
@@ -806,6 +817,10 @@ constructor TOvcCustomTable.Create(AOwner : TComponent);
     FLockedRows := tbDefLockedRows;
     FTopRow := tbDefLockedRows;
     FSelAnchorRow := tbDefLockedRows;
+
+{$IFDEF LCL}
+    FCtl3D := True;
+{$ENDIF}
 
 {$IFNDEF LCL}
     tbColMoveCursor := LoadBaseCursor('ORCOLUMNMOVECURSOR');
@@ -5328,6 +5343,7 @@ procedure TOvcCustomTable.CMColorChanged(var Msg : TMessage);
     AllowRedraw := true;
   end;
 {--------}
+{$IFNDEF LCL}
 procedure TOvcCustomTable.CMCtl3DChanged(var Msg : TMessage);
   begin
     if (csLoading in ComponentState) or not HandleAllocated then
@@ -5342,6 +5358,7 @@ procedure TOvcCustomTable.CMCtl3DChanged(var Msg : TMessage);
 
     inherited;
   end;
+{$ENDIF}  
 {--------}
 procedure TOvcCustomTable.CMDesignHitTest(var Msg : TCMDesignHitTest);
   var

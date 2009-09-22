@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="Orpheus"/>
+    <AddToProjectUsesSection Value="False"/>
     <Author Value="Delphi version by TurboPower; ported to Lazarus by Phil Hess"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
-          <D2Extensions Value="False"/>
+          <SyntaxMode Value="Delphi"/>
           <CStyleOperator Value="False"/>
           <IncludeAssertionCode Value="True"/>
           <AllowLabel Value="False"/>
           <CPPInline Value="False"/>
-          <DelphiCompat Value="True"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
@@ -31,7 +31,7 @@
 "/>
     <License Value="MPL 1.1
 "/>
-    <Version Minor="2" Release="1"/>
+    <Version Minor="2" Release="2"/>
     <Files Count="1">
       <Item1>
         <Filename Value="myovcreg.pas"/>

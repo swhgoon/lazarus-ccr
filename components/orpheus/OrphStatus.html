@@ -33,6 +33,18 @@
 <A name="Whats_New"></A><H3>What's New</H3>
 
 <UL>
+<LI>20090921 release (0.2.2):
+  <UL>
+  <LI>Lazarus 0.9.27 eliminated the Ctl3D property, breaking Orpheus, which uses
+      Ctl3D in several controls. This release restores the Ctl3D property so
+      Orpheus can again be compiled with Lazarus.
+  <LI>The status table below has been updated for all widgetsets. In some cases
+      Orpheus controls have improved with general improvements and bug fixes
+      in the LCL and underlying widgetset code; in a few cases, however, Orpheus
+      controls perform worse than they did previously, probably due to
+      side-effects from LCL changes.<P>
+  </UL>
+
 <LI>20081229 release (0.2.1):
   <UL>
   <LI>Adds TOvcCalendar.
@@ -219,15 +231,23 @@ access to the Lazarus install folder. After rebuilding, be sure to start
 <TD>XP SP2</TD>
 <TD>&nbsp;</TD>
 <TD>win32</TD>
-<TD>Stable 0.9.26 with FPC 2.2.2</TD>
+<TD>0.9.28 RC with FPC 2.2.4</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>OS X</TD>
 <TD>10.4.11 (Tiger) on PowerPC</TD>
-<TD>gtk: 1.2.0.9.1<BR>gtk2: 2.12.9</TD>
-<TD>gtk, gtk2, carbon</TD>
-<TD>Stable 0.9.26 with FPC 2.2.2</TD>
+<TD>gtk: 1.2.0.9.1<BR>gtk2: 2.14.7<BR>qt: 4.5.2</TD>
+<TD>gtk, gtk2, carbon, qt</TD>
+<TD>0.9.28 RC with FPC 2.2.4</TD>
+</TR>
+
+<TR VALIGN=TOP>
+<TD>OS X</TD>
+<TD>10.5.8 (Leopard) on Intel</TD>
+<TD>&nbsp;</TD>
+<TD>carbon</TD>
+<TD>0.9.28 RC with FPC 2.2.4</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -318,13 +338,15 @@ tell the added comments by their context (near IFDEF's, for example).
 <LI>When you first add an Orpheus control to a form, Lazarus will add
 the Orpheus unit to the uses section of your main source file (.lpr). 
 This pulls in a great deal of code that you don't need. Delete the Orpheus unit
-from the uses section to reduce the size of your executable file.<P>
-<LI>The TOvcSimpleField and TOvcTCSimpleField controls do not work on non-Windows
-widgetsets (see table below). For now, don't use these controls in cross-platform 
-applications. Just opening a form that has a TOvcSimpleField or TOvcTCSimpleField 
-control on it may crash non-Windows versions of Lazarus. Use the 
-TO32FlexEdit and TO32TCFlexEdit controls in place of TOvcSimpleField and 
-TOvcTCSimpleField controls in cross-platform applications.<P>
+from the uses section to reduce the size of your executable file.
+&lt;==<I>Fixed in 0.2.2 release.</I><P>
+<LI>The TOvcSimpleField and TOvcTCSimpleField controls originally did not work
+at all on non-Windows widgetsets, although they now have some functionality. 
+For now, don't use these controls in cross-platform applications. Just opening 
+a form that has a TOvcSimpleField or TOvcTCSimpleField control on it may crash 
+non-Windows versions of Lazarus. Use the TO32FlexEdit and TO32TCFlexEdit 
+controls in place of TOvcSimpleField and TOvcTCSimpleField controls in 
+cross-platform applications.<P>
 <LI>To display the TOvcLabel's Style Manager property editor in the Lazarus 
 IDE, right-click on the TOvcLabel control (Apple key+click on Mac). You can
 also change Style Manager properties via the CustomSettings in the
@@ -342,14 +364,16 @@ in the Delphi VCL.
 <OL>
 <LI>The TO32FlexEdit and TO32TCFlexEdit controls include code for displaying
 an optional button within the text editing area. However, this TBitBtn-within- 
-a-TEdit is not supported by the LCL, so the code has been IFDEF'd out for now. 
-If this is ever supported by the LCL, defining ButtonOkay in o32flxed.pas 
-is all that's needed to enable the button code.<P>
+a-TEdit has not been supported by the LCL, so the code has been IFDEF'd out for 
+now. Beginning with Lazarus 0.9.27, this code appears to work okay with the win32
+and carbon widgetsets. To enable the button code, see the comments above the
+ButtonOkay define in o32flxed.pas.<P>
 <LI>Widgetsets generally implement LCL controls by creating native controls
 that correspond to the LCL controls (text edit, check box, etc.). However,
 Orpheus builds its TOvcSimpleField control from TCustomControl, rather than
-descending from an existing edit control such as TCustomEdit. Currently
-TOvcSimpleField and TOvcTCSimpleField do not work on non-Windows widgetsets.<P>
+descending from an existing edit control such as TCustomEdit. In general,
+TOvcSimpleField and TOvcTCSimpleField have not worked very well on non-Windows
+widgetsets.<P>
 <LI>The GTK widgetset does not support TOvcRotatedLabel, apparently
 because the GetTextMetrics function is not fully implemented on that
 widgetset.<P>
@@ -366,7 +390,7 @@ LCL. In a couple places, the ported code uses LM_SETFOCUS and LM_KILLFOCUS
 messages to obtain some functionality. Similarly, the lack of LCL support for the
 CM_CTL3DCHANGED message means that changing the Ctl3D property in Lazarus for
 controls such as TOvcCalendar may not update the control's design (reloading the 
-form will show the correct design). Finally, some properties like Ctl3D are True
+form will show the correct design). Finally, some properties are True
 by default in Delphi but False in Lazarus, meaning forms converted from Delphi
 may not look quite the same for properties with default values until you
 explicitly set the properties in Lazarus or in your code.
@@ -410,7 +434,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Crashes</TD>
+<TD>Working</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -432,7 +456,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Partial</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Crashes</TD>
 </TR>
@@ -444,7 +468,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>&nbsp;</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Partial</TD>
+<TD>Working</TD>
 <TD>Working</TD>
 <TD>Partial</TD>
 </TR>
@@ -458,7 +482,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>?</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -470,31 +494,31 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Partial</TD>
 <TD>Partial</TD>
 <TD>Partial</TD>
-<TD>Crashes</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>TO32FlexEdit<BR><IMG SRC="TO32FLEXEDIT.bmp"></TD>
 <TD>TCustomEdit</TD>
 <TD>Edit control with validation</TD>
-<TD>&nbsp;</TD>
+<TD>gtk and qt used to work better</TD>
+<TD>Working</TD>
+<TD>Partial</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Working</TD>
-<TD>Working</TD>
-<TD>Working</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
 <TD>TOvcTable<BR><IMG SRC="TOVCTABLE.bmp"></TD>
 <TD>TCustomControl</TD>
 <TD>Full-featured grid control</TD>
-<TD>See "To Do" list</TD>
+<TD>See "To Do" list;<BR>0.9.26 didn't crash</TD>
 <TD>Working</TD>
-<TD>Working</TD>
-<TD>Working</TD>
+<TD>Crashes</TD>
+<TD>Crashes</TD>
 <TD>Partial</TD>
-<TD>Partial</TD>
+<TD>Freezes</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -530,7 +554,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Working</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -541,8 +565,8 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Partial</TD>
 <TD>Partial</TD>
-<TD>Crashes</TD>
-<TD>Crashes</TD>
+<TD>Partial</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -554,7 +578,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Working</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -575,8 +599,8 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Table cell for combo box</TD>
 <TD>Dropdown problem w/o XP manifest</TD>
 <TD>Working</TD>
-<TD>Working</TD>
-<TD>Working</TD>
+<TD>Not working</TD>
+<TD>Not working</TD>
 <TD>Working</TD>
 <TD>Partial</TD>
 </TR>
@@ -626,7 +650,7 @@ explicitly set the properties in Lazarus or in your code.
 <TD>Working</TD>
 <TD>Working</TD>
 <TD>Working</TD>
-<TD>Working</TD>
+<TD>Partial</TD>
 </TR>
 
 <TR VALIGN=TOP>
@@ -739,7 +763,7 @@ OS X tips for Lazarus:<P>
 
 <P>
 <HR>
-Last updated: December 29, 2008
+Last updated: Sept. 21, 2009
 <P>
 
 </BODY>

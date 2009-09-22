@@ -108,6 +108,9 @@ type
     FUserData          : TOvcUserData; {field mask and data object}
     FZeroDisplay       : TZeroDisplay; {true to display an empty field}
     FZeroDisplayValue  : Double;       {value used by ZeroDisplay logic}
+{$IFDEF LCL}
+    FCtl3D             : Boolean;
+{$ENDIF}
 
     {event variables}
     FOnChange          : TNotifyEvent;
@@ -220,8 +223,10 @@ type
 
 
     {VCL control methods}
+{$IFNDEF LCL}
     procedure CMCtl3DChanged(var Msg : TMessage);
       message CM_CTL3DCHANGED;
+{$ENDIF}      
     procedure CMDialogChar(var Msg : TCMDialogChar);
       message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg : TMessage);
@@ -613,6 +618,9 @@ type
       read FZeroDisplay write SetZeroDisplay default zdShow;
     property ZeroDisplayValue : Double
       read FZeroDisplayValue write SetZeroDisplayValue;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D default True;
+{$ENDIF}    
 
     {events}
     property OnChange : TNotifyEvent
@@ -692,6 +700,7 @@ begin
     Perform(WM_CLEAR, 0, 0);
 end;
 
+{$IFNDEF LCL}
 procedure TOvcBaseEntryField.CMCtl3DChanged(var Msg : TMessage);
 begin
   if not HandleAllocated then
@@ -711,6 +720,7 @@ begin
 
   inherited;
 end;
+{$ENDIF}
 
 procedure TOvcBaseEntryField.CMDialogChar(var Msg : TCMDialogChar);
 begin
@@ -797,6 +807,9 @@ begin
   FUninitialized     := False;
   FZeroDisplay       := zdShow;
   FZeroDisplayValue  := 0;
+{$IFDEF LCL}
+  FCtl3D             := True;
+{$ENDIF}
 
   efRangeLo          := BlankRange;
   efRangeHi          := BlankRange;

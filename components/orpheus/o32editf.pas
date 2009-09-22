@@ -53,6 +53,9 @@ type
   protected {private}
     {property variables}
     FLabelInfo   : TOvcLabelInfo;
+{$IFDEF LCL}
+    FCtl3D : Boolean;
+{$ENDIF}
     {property methods}
     function GetAbout : string;
     function GetAttachedLabel : TOvcAttachedLabel;
@@ -79,6 +82,9 @@ type
       override;
     property About : string read GetAbout write SetAbout stored False;
     property LabelInfo : TOvcLabelInfo read FLabelInfo write FLabelInfo;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -123,7 +129,9 @@ type
     property OEMConvert;
 {$ENDIF}
     property ParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}    
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;

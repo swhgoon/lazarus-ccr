@@ -156,6 +156,9 @@ type
     FWantDblClicks   : Boolean;      {true to include cs_dblclks style}
     FWeekStarts      : TOvcDayType; {the day that begins the week}
     FYear            : Integer;     {calendar year}
+{$IFDEF LCL}
+    FCtl3D           : Boolean;
+{$ENDIF}
 
     {event variables}
     FOnChange        : TDateChangeEvent;
@@ -218,8 +221,10 @@ type
       {-calcualte new sizes for rows and columns}
 
     {VCL control methods}
+{$IFNDEF LCL}
     procedure CMCtl3DChanged(var Msg : TMessage);
       message CM_CTL3DCHANGED;
+{$ENDIF}
     procedure CMEnter(var Msg : TMessage);
       message {$IFNDEF LCL} CM_ENTER; {$ELSE} LM_SETFOCUS; {$ENDIF}
        //CM_ messages not supported in LCL, so use something similar
@@ -300,6 +305,9 @@ type
       read GetMonth;
     property Year : Integer
       read GetYear;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D default True;
+{$ENDIF}
 
     {properties}
     property BorderStyle : TBorderStyle
@@ -364,7 +372,9 @@ type
     property Font;
     property LabelInfo;
     property Options;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -754,6 +764,7 @@ begin
   clBtnRevert.Left := clBtnToday.Left - clBtnRevert.Width - calMargin;
 end;
 
+{$IFNDEF LCL}
 procedure TOvcCustomCalendar.CMCtl3DChanged(var Msg : TMessage);
 begin
   inherited;
@@ -772,6 +783,7 @@ begin
 
   Invalidate;
 end;
+{$ENDIF}
 
 procedure TOvcCustomCalendar.CMEnter(var Msg : TMessage);
 var
@@ -825,6 +837,9 @@ begin
   Font.Height   := -11;
 {$ENDIF}
 
+{$IFDEF LCL}
+  FCtl3D        := True;
+{$ENDIF}
   FBorderStyle  := bsNone;
   FDayNameWidth := 3;
   FDateFormat   := dfLong;

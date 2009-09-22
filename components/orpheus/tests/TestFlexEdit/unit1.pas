@@ -64,7 +64,11 @@ begin
 {$IFNDEF MSWINDOWS}  
    {TO32FlexEdit OnUserValidation doesn't work, so validate here
      so user is notified if error, even though focus will change.}
-  SendMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0);
+//  SendMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0);
+// This workaround no longer works with LCL 0.9.28 -- error message dialog
+//  just repeats. SendMessage/OM_VALIDATE cancels exit event?
+//  PostMessage appears to work okay, though.
+  PostMessage(TO32FlexEdit(Sender).Handle, OM_VALIDATE, 0, 0);
 {$ENDIF}
 end;
 

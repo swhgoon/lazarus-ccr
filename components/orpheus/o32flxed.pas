@@ -391,11 +391,18 @@ type
 
 implementation
 
-// The optional button inside a TO32FlexEdit doesn't work with LCL,
-//  so exclude all button-related code for now.
-//  For more information, see Lazarus bug 7097.
+// The optional button inside a TO32FlexEdit originally did not work with LCL,
+//  so excluded all button-related code. 
+// Note now seems to work with win32 and carbon as of 0.9.28. To enable,
+//  delete the dot in the two DEFINE's.
+// For more information, see Lazarus bug 7097.
 {$IFNDEF LCL}
  {$DEFINE ButtonOkay}
+{$ELSE}
+ {.$DEFINE ButtonOkay}
+ {$IFNDEF MSWINDOWS}
+  {.$DEFINE ButtonNotChild}  //Manually reposition relative to edit control
+ {$ENDIF}
 {$ENDIF}
 
 {===== TO32FEButton ==================================================}
@@ -1345,8 +1352,13 @@ begin
   end else begin
     FButton.Height := CHgt - 2;
     FButton.Width := GetButtonWidth;
+{$IFNDEF ButtonNotChild}
     FButton.Left := Width - FButton.Width - 1;
     FButton.Top := 1;
+{$ELSE}
+    FButton.Left := Left + Width - FButton.Width - 1;
+    FButton.Top := Top + 1;
+{$ENDIF}
   end;
 {$ENDIF}
 end;
@@ -1578,7 +1590,7 @@ end;
     
 {$IFDEF LCL}
 // Eliminates LCL "[Type1] can not have [Type2] as child" runtime message,
-//  but button still doesn't work. See Lazarus bug 7097.
+//  but button still doesn't work with all widgetsets. See Lazarus bug 7097.
 function TO32CustomFlexEdit.ChildClassAllowed(ChildClass: TClass): Boolean;
 begin
   Result := True;

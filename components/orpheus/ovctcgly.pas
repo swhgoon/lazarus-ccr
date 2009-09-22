@@ -55,6 +55,9 @@ type
       FCol    : TColNum;
       FCellAttr : TOvcCellAttributes;
       {.Z-}
+{$IFDEF LCL}
+      FCtl3D : Boolean;
+{$ENDIF}
 
     protected
       {.Z+}
@@ -75,6 +78,9 @@ type
          read FCell write FCell;
       property Value : integer
          read FValue write SetValue;
+{$IFDEF LCL}
+      property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}
   end;
 
   TOvcTCCustomGlyph = class(TOvcTCBaseBitMap)

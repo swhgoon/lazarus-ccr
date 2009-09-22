@@ -151,6 +151,9 @@ type
     FTopIndex          : LongInt;     {item at top of window}
     FUseTabStops       : Boolean;     {true to use tab stops}
     FWheelDelta        : Integer;
+{$IFDEF LCL}
+    FCtl3D             : Boolean;
+{$ENDIF}
 
     {event variables}
     FOnCharToItem      : TCharToItemEvent;
@@ -260,8 +263,10 @@ type
       {-scroll vertically}
 
     {VCL control messages}
+{$IFNDEF LCL}
     procedure CMCtl3DChanged(var Message: TMessage);
       message CM_CTL3DCHANGED;
+{$ENDIF}
     procedure CMFontChanged(var Message: TMessage);
       message CM_FONTCHANGED;
 
@@ -419,6 +424,9 @@ type
       read FUseTabStops write FUseTabStops default vlDefUseTabStops;
     property WheelDelta: Integer
       read FWheelDelta write FWheelDelta default 3;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D default vlDefCtl3D;
+{$ENDIF}
     {protected events}
     property OnCharToItem : TCharToItemEvent
       read FOnCharToItem write FOnCharToItem;
@@ -536,7 +544,9 @@ type
     property Enabled;
     property Font;
     property ParentColor default vlDefParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D default vlDefParentCtl3D;
+{$ENDIF}
     property ParentFont default vlDefParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -607,6 +617,7 @@ begin
   end;
 end;
 
+{$IFNDEF LCL}
 procedure TOvcCustomVirtualListBox.CMCtl3DChanged(var Message: TMessage);
 begin
   if (csLoading in ComponentState) or not HandleAllocated then
@@ -621,6 +632,7 @@ begin
 
   inherited;
 end;
+{$ENDIF}
 
 procedure TOvcCustomVirtualListBox.CMFontChanged(var Message: TMessage);
 begin
@@ -660,7 +672,9 @@ begin
   Ctl3D        := vlDefCtl3D;
   Height       := vlDefHeight;
   ParentColor  := vlDefParentColor;
+{$IFNDEF LCL}
   ParentCtl3D  := vlDefParentCtl3D;
+{$ENDIF}
   ParentFont   := vlDefParentFont;
   TabStop      := vlDefTabStop;
   Width        := vlDefWidth;

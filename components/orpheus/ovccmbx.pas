@@ -117,6 +117,9 @@ type
     FMRUListColor : TColor;
     FMRUListCount : Integer;
     FStyle        : TOvcComboStyle;
+{$IFDEF LCL}
+    FCtl3D        : Boolean;
+{$ENDIF}    
 
     {event variables}
     FAfterEnter   : TNotifyEvent;
@@ -284,6 +287,9 @@ type
       default 3;
     property Style : TOvcComboStyle
       read FStyle write SetOcbStyle;
+{$IFDEF LCL}
+    property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}    
 
     {events}
     property AfterEnter : TNotifyEvent
@@ -397,7 +403,9 @@ type
     property MRUListColor;
     property MRUListCount;
     property ParentColor;
+{$IFNDEF LCL}
     property ParentCtl3D;
+{$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

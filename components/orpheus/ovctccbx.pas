@@ -64,6 +64,9 @@ type
       PrevEditWndProc : pointer;
       NewEditWndProc  : pointer;
       {.Z-}
+{$IFDEF LCL}
+      FCtl3D : Boolean;
+{$ENDIF}
 
     protected
       {.Z+}
@@ -86,6 +89,9 @@ type
 
       property CellOwner : TOvcBaseTableCell
          read FCell write FCell;
+{$IFDEF LCL}
+      property Ctl3D : Boolean read FCtl3D write FCtl3D;
+{$ENDIF}      
   end;
 
   TOvcTCCustomComboBox = class(TOvcTCBaseString)
