@@ -16157,8 +16157,6 @@ begin
       begin
         Result := 0;
         ShowOwnHint := False;
-        // Assign a dummy string otherwise the VCL will not show the hint window.
-        HintStr := ' ';
 
         // First check whether there is a header hint to show.
         if FHeader.UseColumns and (hoShowHint in FHeader.FOptions) and FHeader.InHeader(CursorPos) then
@@ -16290,29 +16288,29 @@ begin
             begin
               // No node so fall back to control's hint (if indicated) or show nothing.
               if FHintMode = hmHintAndDefault then
-              begin
-                FHintData.DefaultHint := GetShortHint(Hint);
-                if Length(FHintData.DefaultHint) = 0 then
-                  Result := 1
-                else
-                  ShowOwnHint := True;
-              end
+                HintStr := GetShortHint(Hint)
               else
                 Result := 1;
             end;
           end;
         end;
 
-        // Set our own hint window class and prepare structure to be passed to the hint window.
+        Logger.Send([lcHint], 'ShowOwnHint: %s Result: %d', [BoolToStr(ShowOwnHint, True), Result]);
+        Logger.Send([lcHint], 'CursorRect', CursorRect);
+        Logger.Send([lcHint], 'CursorPos', CursorPos);
+        Logger.Send([lcHint], 'HintMaxWidth', HintMaxWidth);
+        // If hint must be show and is not the control's hint then get the hint
+        // from the node or from the DefaultHint
         if ShowOwnHint and (Result = 0) then
         begin
-          HintWindowClass := GetHintWindowClass;
-
-          FHintData.Tree := Self;
-          FHintData.Column := HitInfo.HitColumn;
-          FHintData.Node := HitInfo.HitNode;
           FLastHintRect := CursorRect;
-          HintData := @FHintData;
+          if Length(FHintData.DefaultHint) > 0 then
+            HintStr := FHintData.DefaultHint
+          else
+            if FHintMode = hmToolTip then
+              HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle)
+            else
+              HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle);
         end
         else
           FLastHintRect := Rect(0, 0, 0, 0);
@@ -17616,7 +17614,7 @@ begin
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
   if HitInfo.HitNode <> nil then
-    Logger.Send([lcPaintHeader],'HitNode',HitInfo.HitNode^.Index);
+    Logger.Send([lcPaintHeader, lcMouseEvent],'WMLButtonDown - HitNode.Index', HitInfo.HitNode^.Index);
   HandleMouseDown(Message, HitInfo);
   Logger.ExitMethod([lcMessages],'WMLButtonDown');
 end;

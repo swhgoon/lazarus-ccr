@@ -37,6 +37,8 @@ const
   lcHeaderOffset = 22;
   lcSelection = 23;
   lcAlphaBlend = 24;
+  lcHint = 25;
+  lcMouseEvent = 26;
   
 var
   Logger: TLCLLogger;
