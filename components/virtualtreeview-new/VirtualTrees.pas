@@ -16303,6 +16303,7 @@ begin
         // from the node or from the DefaultHint
         if ShowOwnHint and (Result = 0) then
         begin
+          FHintData.LineBreakStyle := hlbDefault;
           FLastHintRect := CursorRect;
           if Length(FHintData.DefaultHint) > 0 then
             HintStr := FHintData.DefaultHint
@@ -16311,6 +16312,16 @@ begin
               HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle)
             else
               HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle);
+          // Determine actual line break style depending on what was returned by the methods and what's in the node.
+          if (FHintData.LineBreakStyle = hlbDefault) and (vsMultiline in HitInfo.HitNode.States) then
+            FHintData.LineBreakStyle := hlbForceMultiLine;
+          if FHintData.LineBreakStyle = hlbForceMultiLine then
+          begin
+            // NodeRect is already calculated for ToolTip
+            if FHintMode <> hmTooltip then
+              NodeRect := GetDisplayRect(HitInfo.HitNode, HitInfo.HitColumn, True, False);
+            HintMaxWidth := NodeRect.Right - NodeRect.Left;
+          end;
         end
         else
           FLastHintRect := Rect(0, 0, 0, 0);
