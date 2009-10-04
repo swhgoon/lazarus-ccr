@@ -1084,7 +1084,7 @@ type
     LineBreakStyle: TVTToolTipLineBreakStyle;
   end;
 
-  // The trees need an own hint window class because of adjusted font.
+  // The trees need an own hint window class because of Unicode output and adjusted font.
 
   { TVirtualTreeHintWindow }
 
@@ -15911,7 +15911,8 @@ begin
             else
               HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle);
           // Determine actual line break style depending on what was returned by the methods and what's in the node.
-          if (FHintData.LineBreakStyle = hlbDefault) and (vsMultiline in HitInfo.HitNode.States) then
+          if (FHintData.LineBreakStyle = hlbDefault) and Assigned(HitInfo.HitNode)
+            and (vsMultiline in HitInfo.HitNode.States) then
             FHintData.LineBreakStyle := hlbForceMultiLine;
           if FHintData.LineBreakStyle = hlbForceMultiLine then
           begin
