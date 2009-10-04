@@ -1084,28 +1084,19 @@ type
     LineBreakStyle: TVTToolTipLineBreakStyle;
   end;
 
-  // The trees need an own hint window class because of Unicode output and adjusted font.
+  // The trees need an own hint window class because of adjusted font.
+
+  { TVirtualTreeHintWindow }
+
   TVirtualTreeHintWindow = class(THintWindow)
   private
     FHintData: TVTHintData;
-    FBackground,
-    FDrawBuffer,
-    FTarget: TBitmap;
     FTextHeight: Integer;
-    procedure InternalPaint(Step, StepSize: Integer);
-    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
-    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
-    procedure WMNCPaint(var Message: TLMessage); message LM_NCPAINT;
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
-
     procedure Paint; override;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
-    function IsHintMsg(var Msg: TMsg): Boolean; {override;}
   end;
 
   // Drag image support for the tree.
@@ -2509,7 +2500,6 @@ type
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
-    procedure CMHintShowPause(var Message: TCMHintShowPause); message CM_HINTSHOWPAUSE;
     procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
     procedure CMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure CMSysColorChange(var Message: TLMessage); message CM_SYSCOLORCHANGE;
@@ -6216,210 +6206,6 @@ end;
 
 //----------------- TVirtualTreeHintWindow -----------------------------------------------------------------------------
 
-var
-  // This variable is necessary to coordinate the complex interaction between different hints in the application
-  // and animated hints in our own class. Under certain conditions it can happen that our hint window is destroyed
-  // while it is still in the animation loop.
-  HintWindowDestroyed: Boolean = True;
-
-constructor TVirtualTreeHintWindow.Create(AOwner: TComponent);
-
-begin
-  inherited;
-
-  FBackground := TBitmap.Create;
-  FBackground.PixelFormat := pf32Bit;
-  FDrawBuffer := TBitmap.Create;
-  FDrawBuffer.PixelFormat := pf32Bit;
-  FTarget := TBitmap.Create;
-  FTarget.PixelFormat := pf32Bit;
-
-  DoubleBuffered := False; // we do our own buffering
-  HintWindowDestroyed := False;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-destructor TVirtualTreeHintWindow.Destroy;
-
-begin
-  HintWindowDestroyed := True;
-
-  FTarget.Free;
-  FDrawBuffer.Free;
-  FBackground.Free;
-  inherited;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.InternalPaint(Step, StepSize: Integer);
-
-  //--------------- local functions -------------------------------------------
-
-  procedure DoShadowBlend(DC: HDC; const R: TRect; Alpha: Integer);
-
-  // Helper routine for shadow blending to shorten the parameter list in frequent calls.
-
-  begin
-    AlphaBlend(0, DC, R, Point(0, 0), bmConstantAlphaAndColor,  Alpha, clBlack);
-  end;
-
-  //---------------------------------------------------------------------------
-
-  procedure DrawHintShadow(Canvas: TCanvas; ShadowSize: Integer);
-
-  var
-    R: TRect;
-
-  begin
-    // Bottom shadow.
-    R := Rect(ShadowSize, Height - ShadowSize, Width, Height);
-    DoShadowBlend(Canvas.Handle, R, 5);
-    Inc(R.Left);
-    Dec(R.Right);
-    Dec(R.Bottom);
-    DoShadowBlend(Canvas.Handle, R, 10);
-    Inc(R.Left);
-    Dec(R.Right);
-    Dec(R.Bottom);
-    DoShadowBlend(Canvas.Handle, R, 20);
-    Inc(R.Left);
-    Dec(R.Right);
-    Dec(R.Bottom);
-    DoShadowBlend(Canvas.Handle, R, 35);
-    Inc(R.Left);
-    Dec(R.Right);
-    Dec(R.Bottom);
-    DoShadowBlend(Canvas.Handle, R, 50);
-    // Right shadow.
-    R := Rect(Width - ShadowSize, ShadowSize, Width, Height - ShadowSize);
-    DoShadowBlend(Canvas.Handle, R, 5);
-    Inc(R.Top);
-    Dec(R.Right);
-    DoShadowBlend(Canvas.Handle, R, 10);
-    Inc(R.Top);
-    Dec(R.Right);
-    DoShadowBlend(Canvas.Handle, R, 20);
-    Inc(R.Top);
-    Dec(R.Right);
-    DoShadowBlend(Canvas.Handle, R, 35);
-    Inc(R.Top);
-    Dec(R.Right);
-    DoShadowBlend(Canvas.Handle, R, 50);
-  end;
-
-  //--------------- end local functions ---------------------------------------
-
-var
-  R: TRect;
-  Y: Integer;
-  S: UTF8String;
-  DrawFormat: Cardinal;
-  Shadow: Integer;
-
-begin
-  //todo: see the meaning of this code
-  {$ifndef COMPILER_7_UP}
-    if MMXAvailable then
-      Shadow := ShadowSize
-    else
-  {$endif COMPILER_7_UP}
-    Shadow := 0;
-
-  with FHintData, FDrawBuffer do
-  begin
-    // Do actual painting only in the very first run.
-    if Step = 0 then
-    begin
-      // If the given node is nil then we have to display a header hint.
-      if (Node = nil) or (Tree.FHintMode <> hmToolTip) then
-      begin
-        Canvas.Font := Screen.HintFont;
-        Y := 2;
-      end
-      else
-      begin
-        Tree.GetTextInfo(Node, Column, Canvas.Font, R, S);
-        if LineBreakStyle = hlbForceMultiLine then
-          Y := 1
-        else
-          Y := (R.Top - R.Bottom - Shadow + Self.Height) div 2;
-      end;
-
-      with ClientRect do
-        R := Rect(0, 0, Width - Shadow, Height - Shadow);
-
-      if (Tree is TCustomVirtualDrawTree) and Assigned(Node) then
-      begin
-        // The draw tree has by default no hint text so let it draw the hint itself.
-        (Tree as TCustomVirtualDrawTree).DoDrawHint(Canvas, Node, R, Column);
-      end
-      else
-        with Canvas do
-        begin
-          // Still force tooltip back and text color.
-          Font.Color := clInfoText;
-          Pen.Color := clBlack;
-          Brush.Color := clInfoBk;
-          Rectangle(R);
-
-          // Determine text position and don't forget the border.
-          InflateRect(R, -1, -1);
-
-          DrawFormat := DT_TOP or DT_NOPREFIX;
-          if BidiMode <> bdLeftToRight then
-          begin
-            DrawFormat := DrawFormat or DT_RIGHT or DT_RTLREADING;
-            Dec(R.Right, Tree.FTextMargin);
-            Inc(R.Right);
-          end
-          else
-          begin
-            DrawFormat := DrawFormat or DT_LEFT;
-            Inc(R.Left, Tree.FTextMargin);
-          end;
-          SetBkMode(Handle, LCLType.TRANSPARENT);
-          R.Top := Y;
-          if Assigned(Node) and (LineBreakStyle = hlbForceMultiLine) then
-            DrawFormat := DrawFormat or DT_WORDBREAK;
-
-          DrawText(Handle, PChar(HintText), Length(HintText), R, DrawFormat)
-        end;
-    end;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.CMTextChanged(var Message: TLMessage);
-
-begin
-  // swallow this message to prevent the ancestor from resizing the window (we don't use the caption anyway)
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.WMEraseBkgnd(var Message: TLMEraseBkgnd);
-
-// The control is fully painted by own code so don't erase its background as this causes flickering.
-
-begin
-  Message.Result := 1;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.WMNCPaint(var Message: TLMessage);
-
-// The control is fully painted by own code so don't paint any borders.
-
-begin
-  Message.Result := 0;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVirtualTreeHintWindow.WMShowWindow(var Message: TLMShowWindow);
 
 // Clear hint data when the window becomes hidden.
@@ -6430,25 +6216,6 @@ begin
     // Don't touch the last hint rectangle stored in the associated tree to avoid flickering in certain situations.
     Finalize(FHintData);
     FillChar(FHintData, SizeOf(FHintData), 0);
-
-    // If the hint window destruction flag to stop any hint window animation was set by a tree
-    // during its destruction then reset it here to allow other tree instances to still use
-    // this hint window.
-    HintWindowDestroyed := False;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.CreateParams(var Params: TCreateParams);
-
-begin
-  inherited CreateParams(Params);
-
-  with Params do
-  begin
-    Style := WS_POPUP;
-    ExStyle := ExStyle and not WS_EX_CLIENTEDGE;
   end;
 end;
 
@@ -6457,7 +6224,18 @@ end;
 procedure TVirtualTreeHintWindow.Paint;
 
 begin
-  InternalPaint(0, 0);
+  with FHintData do
+  begin
+    if Tree is TCustomVirtualDrawTree and Assigned(Node) then
+    begin
+      // The draw tree has by default no hint text so let it draw the hint itself.
+      // HintBorderWidth is a private constant in hint code and is set to two
+      TCustomVirtualDrawTree(Tree).DoDrawHint(Canvas, Node,
+        Rect(0, 0, Width - 2, Height - 2), Column);
+    end
+    else
+      inherited;
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6505,17 +6283,25 @@ begin
         if BidiMode <> bdLeftToRight then
           ChangeBidiModeAlignment(Alignment);
 
+        //select font according to the type of hint
         if (Node = nil) or (Tree.FHintMode <> hmToolTip) then
-        begin
-          Canvas.Font := Screen.HintFont;
-        end
+          Canvas.Font := Screen.HintFont
         else
         begin
           Canvas.Font := Tree.Font;
+          //necessary to set customized fonts
           if Tree is TCustomVirtualStringTree then
             with TCustomVirtualStringTree(Tree) do
               DoPaintText(Node, Self.Canvas, Column, ttNormal);
+          //force the default hint font color
+          Canvas.Font.Color := Screen.HintFont.Color;
         end;
+
+        //let THintWindow do the job
+        Result := inherited CalcHintRect(MaxWidth, AHint, AData);
+
+        //todo: cleanup after finishing Bidi support
+        Exit;
 
         GetTextMetrics(Canvas.Handle, TM);
         FTextHeight := TM.tmHeight;
@@ -6613,28 +6399,6 @@ begin
       end;
     end;
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function TVirtualTreeHintWindow.IsHintMsg(var Msg: TMsg): Boolean;
-
-// The VCL is a bit too generous when telling that an existing hint can be cancelled. Need to specify further here.
-
-begin
-  Result:=False;
-  //todo_lcl: implement this in LCL
-  {
-  Result := inherited IsHintMsg(Msg) and HandleAllocated and IsWindowVisible(Handle);
-  // Avoid that mouse moves over the non-client area or key presses cancel the current hint.
-  if Result and ((Msg.Message = WM_NCMOUSEMOVE) or ((Msg.Message >= WM_KEYFIRST) and (Msg.Message <= WM_KEYLAST))) then
-    Result := False
-  else
-    // Work around problems with keypresses while doing hint animation.
-    if HandleAllocated and IsWindowVisible(Handle) and (Msg.Message >= WM_KEYFIRST) and (Msg.Message <= WM_KEYLAST) and
-      (tsInAnimation in FHintData.Tree.FStates) and TranslateMessage(Msg) then
-      DispatchMessage(Msg);
-  }
 end;
 
 //----------------- TVTDragImage ---------------------------------------------------------------------------------------
@@ -16156,6 +15920,12 @@ begin
               NodeRect := GetDisplayRect(HitInfo.HitNode, HitInfo.HitColumn, True, False);
             HintMaxWidth := NodeRect.Right - NodeRect.Left;
           end;
+
+          HintWindowClass := GetHintWindowClass;
+          FHintData.Tree := Self;
+          FHintData.Column := HitInfo.HitColumn;
+          FHintData.Node := HitInfo.HitNode;
+          HintData := @FHintData;
         end
         else
           FLastHintRect := Rect(0, 0, 0, 0);
@@ -16168,37 +15938,6 @@ begin
         DoStateChange([], [tsHint]);
     end;
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.CMHintShowPause(var Message: TCMHintShowPause);
-
-// Tells the application that the tree (and only the tree) does not want a delayed tool tip.
-// Normal hints / header hints use the default delay (except for the first time).
-
-var
-  P: TPoint;
-
-begin
-  // A little workaround is needed here to make the application class using the correct hint window class.
-  // Once the application gets ShowHint set to true (which is the case when we want to show hints in the tree) then
-  // an internal hint window will be created which is not our own class (because we don't set an application wide
-  // hint window class but only one for the tree). Unfortunately, this default hint window class will prevent
-  // hints for the non-client area to show up (e.g. for the header) by calling CancelHint whenever certain messages
-  // arrive. By setting the hint show pause to 0 if our hint class was not used recently we make sure
-  // that the hint timer (in Forms.pas) is not used and our class is created immediately.
-  if HintWindowDestroyed then
-  begin
-    GetCursorPos(P);
-    // Check if the mouse is in the header or tool tips are enabled, which must be shown without delay anyway.
-    if FHeader.UseColumns and (hoShowHint in FHeader.FOptions) and FHeader.InHeader(ScreenToClient(P)) or
-      (FHintMode = hmToolTip) then
-      Message.Pause^ := 0
-  end
-  else
-    if FHintMode = hmToolTip then
-      Message.Pause^ := 0;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18734,8 +18473,6 @@ begin
   // Clean up other stuff.
   DeleteObject(FDottedBrush);
   FDottedBrush := 0;
-  if tsInAnimation in FStates then
-    HintWindowDestroyed := True; // Stop any pending animation.
 
   inherited;
   Logger.ExitMethod([lcMessages],'DestroyHandle');
