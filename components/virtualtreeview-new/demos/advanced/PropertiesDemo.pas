@@ -146,7 +146,7 @@ procedure TPropertiesForm.VST3GetHint(Sender: TBaseVirtualTree; Node: PVirtualNo
 begin
   // Add a dummy hint to the normal hint to demonstrate multiline hints.
   if (Column = 0) and (Node.Parent <> Sender.RootNode) then
-    HintText := PropertyTexts[Node.Parent.Index, Node.Index, ptkHint] + #13 + '(Multiline hints are supported too).';
+    HintText := PropertyTexts[Node.Parent.Index, Node.Index, ptkHint] + LineEnding + '(Multiline hints are supported too).';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

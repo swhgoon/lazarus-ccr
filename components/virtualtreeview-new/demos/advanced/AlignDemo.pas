@@ -334,9 +334,9 @@ begin
   // allow to enter multiline strings (it does not allow to edit wide strings correctly at all).
   with AlignTree.Header do
   begin
-    Columns[0].Hint := DefaultHintColumn0 + #13 + CommonHeaderHint;
-    Columns[1].Hint := DefaultHintColumn1 + #13 + CommonHeaderHint;
-    Columns[2].Hint := DefaultHintColumn2 + #13 + CommonHeaderHint;
+    Columns[0].Hint := DefaultHintColumn0 + LineEnding + CommonHeaderHint;
+    Columns[1].Hint := DefaultHintColumn1 + LineEnding + CommonHeaderHint;
+    Columns[2].Hint := DefaultHintColumn2 + LineEnding + CommonHeaderHint;
   end;
 
   // Set up the initial values of the alignment and bidi-mode pickers as well as layout and options.
@@ -588,7 +588,7 @@ end;
 procedure TAlignForm.AlignTreeFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
 
 const
-  FocusedText = #13'Text of focused node is: ';
+  FocusedText = LineEnding + 'Text of focused node is: ';
 
 var
   Data: PAlignData;
@@ -599,9 +599,9 @@ begin
     Data := Sender.GetNodeData(Node);
     with AlignTree.Header do
     begin
-      Columns[0].Hint := DefaultHintColumn0 + #13 + CommonHeaderHint + FocusedText + Data.MainColumnText;
-      Columns[1].Hint := DefaultHintColumn1 + #13 + CommonHeaderHint + FocusedText + Data.GreekText;
-      Columns[2].Hint := DefaultHintColumn2 + #13 + CommonHeaderHint + FocusedText + Data.RTLText;
+      Columns[0].Hint := DefaultHintColumn0 + LineEnding + CommonHeaderHint + FocusedText + Data.MainColumnText;
+      Columns[1].Hint := DefaultHintColumn1 + LineEnding + CommonHeaderHint + FocusedText + Data.GreekText;
+      Columns[2].Hint := DefaultHintColumn2 + LineEnding + CommonHeaderHint + FocusedText + Data.RTLText;
     end;
   end;
 end;

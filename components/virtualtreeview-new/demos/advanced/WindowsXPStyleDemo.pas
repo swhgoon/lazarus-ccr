@@ -255,8 +255,8 @@ procedure TWindowsXPForm.XPTreeGetHint(Sender: TBaseVirtualTree; Node: PVirtualN
 
 begin
   // Show only a dummy hint. It is just to demonstrate how to do it.
-  HintText := 'Size larger than 536 MB' + #13 +
-    'Folders: addins, AppPatch, Config, Connection Wizard, ...' + #13 +
+  HintText := 'Size larger than 536 MB' + LineEnding +
+    'Folders: addins, AppPatch, Config, Connection Wizard, ...' + LineEnding +
     'Files: 1280.bmp, 1280x1024.bmp, 2001 94 mars.bmp, ac3api.ini, ...';
 end;
 
