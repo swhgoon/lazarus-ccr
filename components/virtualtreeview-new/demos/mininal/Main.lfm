@@ -34,7 +34,6 @@ object MainForm: TMainForm
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
-    HintAnimation = hatNone
     IncrementalSearch = isAll
     RootNodeCount = 100
     TabOrder = 0

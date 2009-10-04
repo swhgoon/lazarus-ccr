@@ -1551,7 +1551,6 @@ object SpeedForm: TSpeedForm
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag, hoHotTrack]
-    HintAnimation = hatNone
     IncrementalSearch = isAll
     ParentShowHint = False
     ScrollBarOptions.VerticalIncrement = 18

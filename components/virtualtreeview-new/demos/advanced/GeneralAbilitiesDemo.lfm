@@ -103,7 +103,6 @@ object GeneralForm: TGeneralForm
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoShowHint, hoVisible]
     Header.ParentFont = True
     Header.Style = hsFlatButtons
-    HintAnimation = hatFade
     HintMode = hmTooltip
     HotCursor = crHandPoint
     Images = TreeImages

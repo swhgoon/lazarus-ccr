@@ -76,7 +76,6 @@ object DrawTreeForm: TDrawTreeForm
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoRestrictDrag, hoShowSortGlyphs, hoVisible]
     Header.ParentFont = True
     Header.Style = hsPlates
-    HintAnimation = hatNone
     HintMode = hmHint
     Images = SystemImages
     IncrementalSearch = isAll

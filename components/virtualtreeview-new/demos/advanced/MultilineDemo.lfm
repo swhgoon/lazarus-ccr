@@ -62,7 +62,6 @@ object NodeForm: TNodeForm
       Header.Font.Height = -11
       Header.Font.Name = 'MS Sans Serif'
       Header.Options = [hoAutoResize, hoColumnResize, hoDrag]
-      HintAnimation = hatNone
       HintMode = hmTooltip
       LineMode = lmBands
       NodeAlignment = naFromTop

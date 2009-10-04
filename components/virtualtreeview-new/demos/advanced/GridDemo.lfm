@@ -92,7 +92,6 @@ object GridForm: TGridForm
     Header.Font.Name = 'Microsoft Sans Serif'
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowImages, hoVisible]
     Header.Style = hsFlatButtons
-    HintAnimation = hatFade
     HintMode = hmTooltip
     ParentFont = False
     ParentShowHint = False

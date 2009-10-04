@@ -1084,14 +1084,6 @@ type
     LineBreakStyle: TVTToolTipLineBreakStyle;
   end;
 
-  // Determines the kind of animation when a hint is activated.
-  THintAnimationType = (
-    hatNone,                 // no animation at all, just display hint/tooltip
-    hatFade,                 // fade in the hint/tooltip, like in Windows 2000
-    hatSlide,                // slide in the hint/tooltip, like in Windows 98
-    hatSystemDefault         // use what the system is using (slide for Win9x, slide/fade for Win2K+, depends on settings)
-  );
-
   // The trees need an own hint window class because of Unicode output and adjusted font.
   TVirtualTreeHintWindow = class(THintWindow)
   private
@@ -1100,7 +1092,6 @@ type
     FDrawBuffer,
     FTarget: TBitmap;
     FTextHeight: Integer;
-    function AnimationCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
     procedure InternalPaint(Step, StepSize: Integer);
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -1113,8 +1104,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure ActivateHint(Rect: TRect; const AHint: string); override;
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
     function IsHintMsg(var Msg: TMsg): Boolean; {override;}
   end;
@@ -2140,8 +2129,6 @@ type
     FLastSelRect,
     FNewSelRect: TRect;                          // used while doing draw selection
     FHotCursor: TCursor;                         // can be set to additionally indicate the current hot node
-    FAnimationType: THintAnimationType;          // none, fade in, slide in animation (just like those animations used
-                                                 // in Win98 (slide) and Windows 2000 (fade))
     FHintMode: TVTHintMode;                      // determines the kind of the hint window
     FHintData: TVTHintData;                      // used while preparing the hint window
     FChangeDelay: Cardinal;                      // used to delay OnChange event
@@ -2651,7 +2638,6 @@ type
     function DoFocusChanging(OldNode, NewNode: PVirtualNode; OldColumn, NewColumn: TColumnIndex): Boolean; virtual;
     procedure DoFocusNode(Node: PVirtualNode; Ask: Boolean); virtual;
     procedure DoFreeNode(Node: PVirtualNode); virtual;
-    function DoGetAnimationType: THintAnimationType; virtual;
     function DoGetCellContentMargin(Node: PVirtualNode; Column: TColumnIndex;
       CellContentMarginType: TVTCellContentMarginType = ccmtAllSides; Canvas: TCanvas = nil): TPoint; virtual;
     procedure DoGetCursor(var Cursor: TCursor); virtual;
@@ -2839,7 +2825,6 @@ type
     property EditDelay: Cardinal read FEditDelay write FEditDelay default 1000;
     property Header: TVTHeader read FHeader write SetHeader;
     property HeaderRect: TRect read FHeaderRect;
-    property HintAnimation: THintAnimationType read FAnimationType write FAnimationType default hatSystemDefault;
     property HintMode: TVTHintMode read FHintMode write FHintMode default hmDefault;
     property HotCursor: TCursor read FHotCursor write FHotCursor default crDefault;
     property Images: TCustomImageList read FImages write SetImages;
@@ -3465,7 +3450,6 @@ type
     property Enabled;
     property Font;
     property Header;
-    property HintAnimation;
     property HintMode;
     property HotCursor;
     property Images;
@@ -3712,7 +3696,6 @@ type
     property Enabled;
     property Font;
     property Header;
-    property HintAnimation;
     property HintMode;
     property HotCursor;
     property Images;
@@ -6270,24 +6253,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVirtualTreeHintWindow.AnimationCallback(Step, StepSize: Integer; Data: Pointer): Boolean;
-
-begin
-  Result := not HintWindowDestroyed and HandleAllocated and IsWindowVisible(Handle) and
-    not (tsCancelHintAnimation in FHintData.Tree.FStates);
-  if Result then
-  begin
-    InternalPaint(Step, StepSize);
-    // We have to allow certain messages to be processed normally for various reasons.
-    // This introduces another problem however if this hint window is destroyed
-    // while it is still in the animation loop. A global variable keeps track of
-    // that case. This is reliable because we can only have one (internal) hint window.
-    Application.ProcessMessages;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVirtualTreeHintWindow.InternalPaint(Step, StepSize: Integer);
 
   //--------------- local functions -------------------------------------------
@@ -6423,51 +6388,6 @@ begin
         end;
     end;
   end;
-
-  if StepSize > 0 then
-  begin
-    if FHintData.Tree.DoGetAnimationType = hatFade then
-    begin
-      with FTarget do
-        BitBlt(Canvas.Handle, 0, 0, Width, Height, FBackground.Canvas.Handle, 0, 0, SRCCOPY);
-      // Main image.
-      AlphaBlend(FDrawBuffer.Canvas.Handle, FTarget.Canvas.Handle, Rect(0, 0, Width - Shadow, Height - Shadow),
-        Point(0, 0), bmConstantAlpha,  MulDiv(Step, 256, FadeAnimationStepCount), 0);
-
-      if Shadow > 0 then
-        DrawHintShadow(FTarget.Canvas, Shadow);
-      BitBlt(Canvas.Handle, 0, 0, Width, Height, FTarget.Canvas.Handle, 0, 0, SRCCOPY);
-    end
-    else
-    begin
-      // Slide is done by blitting "step" lines of the lower part of the hint window
-      // and fill the rest with the screen background.
-
-      // 1) blit hint bitmap to the hint canvas
-      BitBlt(Canvas.Handle, 0, 0, Width - Shadow, Step, FDrawBuffer.Canvas.Handle, 0, Height - Step, SRCCOPY);
-      // 2) blit background rest to hint canvas
-      if Step <= Shadow then
-        Step := 0
-      else
-        Dec(Step, Shadow);
-      BitBlt(Canvas.Handle, 0, Step, Width, Height - Step, FBackground.Canvas.Handle, 0, Step, SRCCOPY);
-    end;
-  end
-  else
-    // Last step during slide or the only step without animation.
-    if FHintData.Tree.DoGetAnimationType <> hatFade then
-    begin
-      if Shadow > 0 then
-      begin
-        with FBackground do
-          BitBlt(Canvas.Handle, 0, 0, Width - Shadow, Height - Shadow, FDrawBuffer.Canvas.Handle, 0, 0, SRCCOPY);
-
-        DrawHintShadow(FBackground.Canvas, Shadow);
-        BitBlt(Canvas.Handle, 0, 0, Width, Height, FBackground.Canvas.Handle, 0, 0, SRCCOPY);
-      end
-      else
-        BitBlt(Canvas.Handle, 0, 0, Width, Height, FDrawBuffer.Canvas.Handle, 0, 0, SRCCOPY);
-    end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6538,91 +6458,6 @@ procedure TVirtualTreeHintWindow.Paint;
 
 begin
   InternalPaint(0, 0);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TVirtualTreeHintWindow.ActivateHint(Rect: TRect; const AHint: string);
-
-var
-  DC: HDC;
-  StopLastAnimation: Boolean;
-
-begin
-  if IsRectEmpty(Rect) then
-    Application.CancelHint
-  else
-  begin
-    // There is already an animation. Start a new one but do not continue the old one once we are finished here.
-    StopLastAnimation := (tsInAnimation in FHintData.Tree.FStates);
-    if StopLastAnimation then
-      FHintData.Tree.DoStateChange([], [tsInAnimation]);
-
-    SetWindowPos(Handle, 0, Rect.Left, Rect.Top, Width, Height, SWP_HIDEWINDOW or SWP_NOACTIVATE or SWP_NOZORDER);
-    //todo_lcl_check
-    BoundsRect:=Rect;
-
-
-    // Make sure the whole hint is visible on the monitor. Don't forget multi-monitor systems with the
-    // primary monitor not being at the top-left corner.
-    //todo_lcl
-    {
-    if Rect.Top - Screen.DesktopTop + Height > Screen.DesktopHeight then
-      Rect.Top := Screen.DesktopHeight - Height + Screen.DesktopTop;
-    if Rect.Left - Screen.DesktopLeft + Width > Screen.DesktopWidth then
-      Rect.Left := Screen.DesktopWidth - Width + Screen.DesktopLeft;
-    if Rect.Bottom - Screen.DesktopTop < Screen.DesktopTop then
-      Rect.Bottom := Screen.DesktopTop + Screen.DesktopTop;
-    if Rect.Left - Screen.DesktopLeft < Screen.DesktopLeft then
-      Rect.Left := Screen.DesktopLeft + Screen.DesktopLeft;
-    }
-    // adjust sizes of bitmaps
-    FDrawBuffer.Width := Width;
-    FDrawBuffer.Height := Height;
-    FBackground.Width := Width;
-    FBackground.Height := Height;
-    FTarget.Width := Width;
-    FTarget.Height := Height;
-
-    FHintData.Tree.Update;
-
-    {$ifdef Windows}
-    //todo: implement this under gtk
-    // capture screen
-    DC := GetDC(0);
-    try
-      with Rect do
-        BitBlt(FBackground.Canvas.Handle, 0, 0, Width, Height, DC, Left, Top, SRCCOPY);
-    finally
-      ReleaseDC(0, DC);
-    end;
-    {$endif}
-
-    SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height, SWP_SHOWWINDOW or SWP_NOACTIVATE);
-    with FHintData.Tree do
-      case DoGetAnimationType of
-        hatNone:
-          InvalidateRect(Self.Handle, nil, False);
-        hatFade:
-          begin
-            // Make sure the window is not drawn unanimated.
-            //lcl_todo: see the meaning of ValidateRect
-            //ValidateRect(Self.Handle, nil);
-            // Empirically determined animation duration shows that fading needs about twice as much time as
-            // sliding to show a comparable visual effect.
-            Animate(FadeAnimationStepCount, 2 * FAnimationDuration, AnimationCallback, nil);
-          end;
-        hatSlide:
-          begin
-            // Make sure the window is not drawn unanimated.
-            //lcl_todo: see the meaning of ValidateRect
-            //ValidateRect(Self.Handle, nil);
-            Animate(Self.Height, FAnimationDuration, AnimationCallback, nil);
-          end;
-      end;
-    if not HintWindowDestroyed and StopLastAnimation and Assigned(FHintData.Tree) then
-      FHintData.Tree.DoStateChange([tsCancelHintAnimation]);
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -12489,7 +12324,6 @@ begin
   FFocusedColumn := NoColumn;
   FDragImageKind := diComplete;
   FLastSelectionLevel := -1;
-  FAnimationType := hatSystemDefault;
   FSelectionBlendFactor := 128;
 
   FIndent := 18;
@@ -20016,48 +19850,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-// These constants are defined in the platform SDK for W2K/XP, but not yet in Delphi.
-const
-  SPI_GETTOOLTIPANIMATION = $1016;
-  SPI_GETTOOLTIPFADE = $1018;
-
-function TBaseVirtualTree.DoGetAnimationType: THintAnimationType;
-
-// Determines (depending on the properties settings and the system) which hint
-// animation type is to be used.
-
-var
-  Animation: BOOL;
-
-begin
-  Result := FAnimationType;
-  if Result = hatSystemDefault then
-  begin
-    if not IsWinNT then
-      Result := hatSlide
-    else
-    begin
-      SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, @Animation, 0);
-      if not Animation then
-        Result := hatNone
-      else
-      begin
-        SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, @Animation, 0);
-        if Animation then
-          Result := hatFade
-        else
-          Result := hatSlide;
-      end;
-    end;
-  end;
-
-  // Check availability of MMX if fading is requested.
-  if not MMXAvailable and (Result = hatFade) then
-    Result := hatSlide;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 function TBaseVirtualTree.DoGetCellContentMargin(Node: PVirtualNode; Column: TColumnIndex;
   CellContentMarginType: TVTCellContentMarginType = ccmtAllSides; Canvas: TCanvas = nil): TPoint;
 
@@ -25456,7 +25248,6 @@ begin
       Self.Enabled := Enabled;
       Self.Font := Font;
       Self.Header := Header;
-      Self.HintAnimation := HintAnimation;
       Self.HintMode := HintMode;
       Self.HotCursor := HotCursor;
       Self.Images := Images;

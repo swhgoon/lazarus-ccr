@@ -53,7 +53,6 @@ object frmVTPropEdit: TfrmVTPropEdit
       Header.Height = 18
       Header.Options = [hoAutoResize, hoColumnResize, hoVisible]
       Header.Style = hsPlates
-      HintAnimation = hatFade
       HintMode = hmHint
       IncrementalSearch = isAll
       IncrementalSearchTimeout = 500

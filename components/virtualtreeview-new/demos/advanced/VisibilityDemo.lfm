@@ -4141,7 +4141,6 @@ object VisibilityForm: TVisibilityForm
       Header.Height = 24
       Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoVisible]
       Header.Style = hsFlatButtons
-      HintAnimation = hatNone
       HintMode = hmTooltip
       IncrementalSearch = isAll
       Indent = 28
@@ -8187,7 +8186,6 @@ object VisibilityForm: TVisibilityForm
       Header.MainColumn = -1
       Header.Options = [hoColumnResize, hoDrag, hoVisible]
       Header.Style = hsFlatButtons
-      HintAnimation = hatNone
       HintMode = hmTooltip
       IncrementalSearch = isAll
       Indent = 28
@@ -8226,7 +8224,6 @@ object VisibilityForm: TVisibilityForm
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
     Header.Options = [hoColumnResize, hoDrag]
-    HintAnimation = hatNone
     HintMode = hmTooltip
     IncrementalSearch = isAll
     Indent = 28

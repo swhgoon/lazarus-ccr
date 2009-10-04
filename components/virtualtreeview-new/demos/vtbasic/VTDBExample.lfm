@@ -69,7 +69,6 @@ object frmVTDBExample: TfrmVTDBExample
       Header.Images = imgMaster
       Header.Options = [hoColumnResize, hoDrag, hoVisible]
       Header.Style = hsFlatButtons
-      HintAnimation = hatNone
       Images = imgMaster
       IncrementalSearch = isAll
       LineMode = lmBands

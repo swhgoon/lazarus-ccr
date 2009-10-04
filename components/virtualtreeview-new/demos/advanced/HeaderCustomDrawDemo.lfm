@@ -93,7 +93,6 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoOwnerDraw, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
     Header.SortColumn = 0
     Header.Style = hsFlatButtons
-    HintAnimation = hatNone
     HintMode = hmTooltip
     HotCursor = crHandPoint
     LineMode = lmBands

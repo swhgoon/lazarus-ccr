@@ -51,7 +51,6 @@ object frmMain: TfrmMain
       Header.Font.Name = 'MS Shell Dlg 2'
       Header.MainColumn = -1
       Header.Options = [hoColumnResize, hoDrag]
-      HintAnimation = hatNone
       Images = imgMaster
       RootNodeCount = 5
       TabOrder = 0

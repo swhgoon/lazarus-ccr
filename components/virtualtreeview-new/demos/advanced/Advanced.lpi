@@ -45,25 +45,25 @@
       </Unit0>
       <Unit1>
         <Filename Value="WindowsXPStyleDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="WindowsXPForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="WindowsXPStyleDemo"/>
       </Unit1>
       <Unit2>
         <Filename Value="AlignDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="AlignForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="AlignDemo"/>
       </Unit2>
       <Unit3>
         <Filename Value="DrawTreeDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="DrawTreeForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DrawTreeDemo"/>
       </Unit3>
@@ -74,72 +74,72 @@
       </Unit4>
       <Unit5>
         <Filename Value="GeneralAbilitiesDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="GeneralForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="GeneralAbilitiesDemo"/>
       </Unit5>
       <Unit6>
         <Filename Value="GridDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="GridForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="GridDemo"/>
       </Unit6>
       <Unit7>
         <Filename Value="HeaderCustomDrawDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="HeaderOwnerDrawForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="HeaderCustomDrawDemo"/>
       </Unit7>
       <Unit8>
         <Filename Value="Main.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit8>
       <Unit9>
         <Filename Value="MultilineDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="NodeForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MultilineDemo"/>
       </Unit9>
       <Unit10>
         <Filename Value="PropertiesDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="PropertiesForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PropertiesDemo"/>
       </Unit10>
       <Unit11>
         <Filename Value="SpeedDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="SpeedForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="SpeedDemo"/>
       </Unit11>
       <Unit12>
         <Filename Value="States.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="StateForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <UnitName Value="States"/>
       </Unit12>
       <Unit13>
         <Filename Value="VisibilityDemo.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="VisibilityForm"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="VisibilityDemo"/>
       </Unit13>

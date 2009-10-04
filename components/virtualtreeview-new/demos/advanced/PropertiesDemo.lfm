@@ -61,7 +61,6 @@ object PropertiesForm: TPropertiesForm
     Header.Font.Name = 'MS Sans Serif'
     Header.Height = 18
     Header.Options = [hoAutoResize, hoColumnResize, hoVisible, hoAutoSpring]
-    HintAnimation = hatFade
     HintMode = hmHint
     Images = TreeImages
     IncrementalSearch = isAll

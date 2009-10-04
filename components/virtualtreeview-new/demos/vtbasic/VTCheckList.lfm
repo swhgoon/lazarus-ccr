@@ -33,7 +33,6 @@ object frmVTCheckList: TfrmVTCheckList
       Header.Font.Name = 'MS Shell Dlg 2'
       Header.MainColumn = -1
       Header.Options = [hoColumnResize, hoDrag]
-      HintAnimation = hatNone
       RootNodeCount = 7
       TabOrder = 0
       TreeOptions.PaintOptions = [toThemeAware, toUseBlendedImages]

@@ -100,7 +100,6 @@ object WindowsXPForm: TWindowsXPForm
     Header.Height = 24
     Header.Options = [hoColumnResize, hoDrag, hoHotTrack, hoShowSortGlyphs, hoVisible]
     Header.Style = hsXPStyle
-    HintAnimation = hatFade
     HintMode = hmHint
     Images = LargeImages
     ParentShowHint = False
