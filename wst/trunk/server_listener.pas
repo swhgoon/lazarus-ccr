@@ -38,18 +38,24 @@ type
     property OnNotifyMessage : TListnerNotifyMessage read FOnNotifyMessage write FOnNotifyMessage;
   end;
 
-  function GenerateWSDLHtmlTable(): string;
+  function GenerateWSDLHtmlTable(const AServicesModulePath : string=''): string;
   
 implementation
 uses base_service_intf, metadata_repository,
      metadata_service, metadata_service_binder, metadata_service_imp ;
 
 
-function GenerateWSDLHtmlTable(): string;
+function GenerateWSDLHtmlTable(const AServicesModulePath : string): string;
 var
   r : IModuleMetadataMngr;
   i : Integer;
+  locModulePath : string;
 begin
+  locModulePath := Trim(AServicesModulePath);
+  if ( Length(locModulePath) = 0 ) then
+    locModulePath := sSEPARATOR+sSERVICES_PREFIXE
+  else
+    locModulePath := sSEPARATOR + AServicesModulePath + sSERVICES_PREFIXE;
   r := GetModuleMetadataMngr();
   Result := '<html>' +
               '<head>'+
@@ -64,7 +70,7 @@ begin
     Result := Result +
                 '<tr>' +
                       '<td align="left">' +
-                          Format('<a href="%s">',[sSEPARATOR+sSERVICES_PREFIXE+sSEPARATOR+sWSDL+sSEPARATOR+r.GetRepositoryName(i)])+
+                          Format('<a href="%s">',[AServicesModulePath+sSEPARATOR+sWSDL+sSEPARATOR+r.GetRepositoryName(i)])+
                           r.GetRepositoryName(i) +
                           '</a>'+
                       '</td>' +
