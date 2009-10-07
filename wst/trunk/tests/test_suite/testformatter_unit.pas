@@ -538,6 +538,10 @@ type
 
     procedure Test_Record_simple();
     procedure Test_Record_nested();
+    
+    procedure test_Date_ReadNil();
+    procedure test_Duration_ReadNil();
+    procedure test_Time_ReadNil();    
 
     procedure test_GetScopeItemNames();
     procedure test_GetFormaterName();
@@ -4607,6 +4611,135 @@ begin
     CheckEquals(VAL_RECORD.fieldWord,a.fieldWord,'fieldWord');
   finally
     s.Free();
+  end;
+end;
+
+procedure TTestFormatter.test_Date_ReadNil(); 
+const DATE_VALUE = 39000.123;
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a : TDateTimeRemotable;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  a := nil;
+  try
+    a := TDateTimeRemotable.Create();
+    a.AsDate := DATE_VALUE;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TDateTimeRemotable),a);
+    f.EndScope();
+    FreeAndNil(a);
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+
+    a := nil;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'a';
+      f.Get(TypeInfo(TDateTimeRemotable),x,a);
+    f.EndScopeRead();
+
+    CheckNotNull(a);
+    CheckEquals(TDateTimeRemotable.ToStr(DATE_VALUE),TDateTimeRemotable.ToStr(a.AsDate));
+  finally
+    s.Free();
+    FreeAndNil(a);
+  end;  
+end;
+
+procedure TTestFormatter.test_Duration_ReadNil(); 
+const TEST_VALUE = 'P1Y2M3DT4H5M6S';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a : TDurationRemotable;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  a := nil;
+  try
+    a := TDurationRemotable.Create();
+    a.AsString := TEST_VALUE;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TDurationRemotable),a);
+    f.EndScope();
+    FreeAndNil(a);
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+
+    a := nil;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'a';
+      f.Get(TypeInfo(TDurationRemotable),x,a);
+    f.EndScopeRead();
+
+    CheckNotNull(a);
+    CheckEquals(TEST_VALUE,a.AsString);
+  finally
+    s.Free();
+    FreeAndNil(a);
+  end;
+end;
+
+procedure TTestFormatter.test_Time_ReadNil(); 
+const TEST_VALUE = '23:34:56Z';
+var
+  f : IFormatterBase;
+  s : TMemoryStream;
+  x : string;
+  a : TTimeRemotable;
+begin
+  if not Support_ComplextType_with_SimpleContent() then
+    Exit;
+
+  s := nil;
+  a := nil;
+  try
+    a := TTimeRemotable.Create();
+    a.AsString := TEST_VALUE;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+
+    f.BeginObject('Root',TypeInfo(TClass_Int));
+      f.Put('a',TypeInfo(TTimeRemotable),a);
+    f.EndScope();
+    FreeAndNil(a);
+    s := TMemoryStream.Create();
+    f.SaveToStream(s);
+
+    a := nil;
+    f := CreateFormatter(TypeInfo(TClass_Int));
+    s.Position := 0;
+    f.LoadFromStream(s);
+    x := 'Root';
+    f.BeginObjectRead(x,TypeInfo(TClass_Int));
+      x := 'a';
+      f.Get(TypeInfo(TTimeRemotable),x,a);
+    f.EndScopeRead();
+
+    CheckNotNull(a);
+    CheckEquals(TEST_VALUE,a.AsString);
+  finally
+    s.Free();
+    FreeAndNil(a);
   end;
 end;
 
