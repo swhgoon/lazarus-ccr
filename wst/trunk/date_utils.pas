@@ -213,8 +213,6 @@ function CompareValue(
   const AA,AB        : TDateTimeRec;
   const ACompareKind : TValueCompareKind
 ) : Boolean;
-var
-  locA, locB : TDateTime;
 begin
   case ACompareKind of
     vckEqual              : Result := ValueEquals(AA,AB);
