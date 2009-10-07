@@ -5743,6 +5743,8 @@ begin
     try
       strBuffer := '';
       AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
+      if ( AObject = nil ) then    
+        AObject := Create();
       (AObject as TBaseDateRemotable).AsString := strBuffer
     finally
       AStore.EndScopeRead();
@@ -6513,7 +6515,9 @@ begin
     try
       strBuffer := '';
       AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
-      TDurationRemotable(AObject).Parse(strBuffer);
+      if ( AObject = nil ) then
+        AObject := Create();
+      TDurationRemotable(AObject).AsString := strBuffer;
     finally
       AStore.EndScopeRead();
     end;
@@ -6881,6 +6885,8 @@ begin
     try
       strBuffer := '';
       AStore.GetScopeInnerValue(TypeInfo(string),strBuffer);
+      if ( AObject = nil ) then
+        AObject := Create();
       if IsStrEmpty(strBuffer) then
         (AObject as TTimeRemotable).Clear()
       else
