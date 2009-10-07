@@ -720,6 +720,18 @@ type
     property Value : Single read FValue write FValue;
   end;
 
+  { TComplexCurrencyContentRemotable }
+
+  TComplexCurrencyContentRemotable = class(TBaseComplexSimpleContentRemotable)
+  private
+    FValue: Currency;
+  protected
+    class procedure SaveValue(AObject : TBaseRemotable; AStore : IFormatterBase);override;
+    class procedure LoadValue(var AObject : TObject; AStore : IFormatterBase);override;
+  public
+    property Value : Currency read FValue write FValue;
+  end;  
+    
   TComplexAnsiCharContentRemotable = class(TBaseComplexSimpleContentRemotable)
   private
     FValue: AnsiChar;
@@ -5911,6 +5923,28 @@ begin
   (AObject as TComplexFloatSingleContentRemotable).Value := i;
 end;
 
+{ TComplexCurrencyContentRemotable }
+
+class procedure TComplexCurrencyContentRemotable.SaveValue(
+  AObject : TBaseRemotable;
+  AStore  : IFormatterBase
+);
+begin
+  AStore.PutScopeInnerValue(TypeInfo(Currency),(AObject as TComplexCurrencyContentRemotable).Value);   
+end;
+
+class procedure TComplexCurrencyContentRemotable.LoadValue(
+  var AObject : TObject;
+      AStore  : IFormatterBase
+);
+var
+  i : Currency;
+begin
+  i := 0;
+  AStore.GetScopeInnerValue(TypeInfo(Currency),i);
+  (AObject as TComplexCurrencyContentRemotable).Value := i;
+end;
+
 { TComplexInt64SContentRemotable }
 
 class procedure TComplexInt64SContentRemotable.SaveValue(
@@ -6942,6 +6976,7 @@ class function TTimeRemotable.ToStr(const AValue: TTimeRec): string;
 begin
   Result := xsd_TimeToStr(AValue);
 end;
+
 
 initialization
   initialize_base_service_intf();

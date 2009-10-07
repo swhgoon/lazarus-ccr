@@ -235,8 +235,9 @@ const
         ('TBase64StringRemotable', 'TBase64StringExtRemotable', 'base64Binary'),
         ('TBase16StringRemotable', 'TBase16StringExtRemotable', 'hexBinary')
      );
-   SPECIAL_SIMPLE_TYPES_COUNT = 4 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+   SPECIAL_SIMPLE_TYPES_COUNT = 5 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
      SPECIAL_SIMPLE_TYPES : Array[0..Pred(SPECIAL_SIMPLE_TYPES_COUNT)] Of array[0..2] of string = (
+          ('Currency', 'TComplexCurrencyContentRemotable', 'decimal'),
           ('string', 'TComplexStringContentRemotable', 'string'),
           ('WideString', 'TComplexWideStringContentRemotable', 'string'),
           ('AnsiChar', 'TComplexAnsiCharContentRemotable', 'string'),

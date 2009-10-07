@@ -201,6 +201,14 @@ type
       ASchemaNode  : TDOMElement
     );override;
   end;
+  
+  TCurrencyHelper = class(TAbstractSpecialTypeHelper,IXsdSpecialTypeHelper)
+  protected
+    procedure HandleTypeUsage(
+      ATargetNode,
+      ASchemaNode  : TDOMElement
+    );override;
+  end;   
 
 {$IFDEF WST_UNICODESTRING}
   { TUnicodeStringHelper }
@@ -439,6 +447,17 @@ begin
   ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'WideChar');
 end;
 
+{ TCurrencyHelper }
+
+procedure TCurrencyHelper.HandleTypeUsage(ATargetNode, ASchemaNode: TDOMElement);
+var
+  strBuffer : string;
+begin
+  if not FindAttributeByValueInNode(s_WST_base_namespace,ASchemaNode,strBuffer) then
+    ASchemaNode.SetAttribute(Format('%s:%s',[s_xmlns,s_WST]),s_WST_base_namespace);
+  ATargetNode.SetAttribute(Format('%s:%s',[s_WST,s_WST_typeHint]),'Currency');
+end;  
+
 {$IFDEF WST_UNICODESTRING}
 { TUnicodeStringHelper }
 
@@ -519,9 +538,10 @@ function TXsdTypeHandlerRegistry.FindHelper(
   out AHelper: IXsdSpecialTypeHelper
 ) : Boolean;
 const
-   HELPER_COUNT = 3 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
+   HELPER_COUNT = 4 {$IFDEF WST_UNICODESTRING} + 1 {$ENDIF WST_UNICODESTRING};
    HELPER_MAP : array[0..Pred(HELPER_COUNT)] of TSpecialTypeHelperRecord = (
-     ( Name : 'widestring'; HelperClass : TWideStringHelper;),
+     ( Name : 'currency'; HelperClass : TCurrencyHelper;),
+     ( Name : 'widestring'; HelperClass : TWideStringHelper;),    
      ( Name : 'ansichar'; HelperClass : TAnsiCharHelper;),
      ( Name : 'widechar'; HelperClass : TWideCharHelper;)
 {$IFDEF WST_UNICODESTRING}

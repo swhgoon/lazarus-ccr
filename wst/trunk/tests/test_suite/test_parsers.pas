@@ -60,6 +60,7 @@ type
     function load_class_widestring_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_ansichar_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_widechar_property() : TwstPasTreeContainer;virtual;abstract;
+    function load_class_currency_property() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -96,6 +97,7 @@ type
     procedure class_widestring_property();
     procedure class_ansichar_property();
     procedure class_widechar_property();
+    procedure class_currency_property();
   end;
 
   { TTest_XsdParser }
@@ -136,6 +138,7 @@ type
     function load_class_widestring_property() : TwstPasTreeContainer;override;
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
+    function load_class_currency_property() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -176,6 +179,7 @@ type
     function load_class_widestring_property() : TwstPasTreeContainer;override;
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
+    function load_class_currency_property() : TwstPasTreeContainer;override; 
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -1859,6 +1863,47 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.class_currency_property(); 
+const s_class_name = 'TSampleClass';
+var
+  clsType : TPasClassType;
+  tr : TwstPasTreeContainer;
+
+  procedure CheckProperty(const AName,ATypeName,ADeclaredTypeName : string; const AFieldType : TPropertyType);
+  var
+    prp : TPasProperty;
+  begin
+    prp := FindMember(clsType,AName) as TPasProperty;
+      CheckNotNull(prp);
+      CheckEquals(AName,prp.Name);
+      CheckEquals(AName,tr.GetExternalName(prp));
+      CheckNotNull(prp.VarType);
+      CheckEquals(ATypeName,prp.VarType.Name,'TypeName');
+      CheckEquals(ADeclaredTypeName,tr.GetExternalName(prp.VarType),'DeclaredTypeName');
+      CheckEquals(PropertyType_Att[AFieldType],tr.IsAttributeProperty(prp));
+  end;
+
+var
+  mdl : TPasModule;
+  elt : TPasElement;
+begin
+  tr := load_class_currency_property();
+  try
+    mdl := tr.FindModule('class_currency_property');
+    CheckNotNull(mdl,'class_currency_property');
+    elt := tr.FindElement(s_class_name);
+      CheckNotNull(elt,s_class_name);
+      CheckEquals(s_class_name,elt.Name);
+      CheckEquals(s_class_name,tr.GetExternalName(elt));
+      CheckIs(elt,TPasClassType);
+      clsType := elt as TPasClassType;
+      CheckProperty('elementProp','Currency','decimal',ptField);
+      CheckProperty('elementAtt','Currency','decimal',ptAttribute);
+  finally
+    tr.Free();
+  end;
+end;
+
 { TTest_XsdParser }
 
 function TTest_XsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
@@ -1989,7 +2034,12 @@ begin
   Result := ParseDoc('class_ansichar_property');
 end;
 
-function TTest_XsdParser.load_class_widechar_property: TwstPasTreeContainer;
+function TTest_XsdParser.load_class_currency_property() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('class_currency_property');    
+end;
+
+function TTest_XsdParser.load_class_widechar_property() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('class_widechar_property');
 end;
@@ -2576,6 +2626,11 @@ end;
 function TTest_WsdlParser.load_class_widechar_property() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('class_widechar_property');
+end;
+
+function TTest_WsdlParser.load_class_currency_property() : TwstPasTreeContainer;  
+begin
+  Result := ParseDoc('class_currency_property');
 end;
 
 initialization
