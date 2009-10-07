@@ -305,6 +305,9 @@ type
     property Data : string read FData write FData;
   end;
 
+  schema_Type = class(TStringBufferRemotable) end;
+  anyType_Type = class(TStringBufferRemotable) end;
+  
   { TAbstractEncodedStringRemotable }
 
   TAbstractEncodedStringRemotable = class(TAbstractSimpleRemotable)
@@ -1729,6 +1732,8 @@ begin
   r.Register(sXSD_NS,TypeInfo(UnicodeString),'UnicodeString').AddPascalSynonym('unicodestring');
 {$ENDIF WST_UNICODESTRING}
   r.Register(sXSD_NS,TypeInfo(anyURI),'anyURI').AddPascalSynonym('anyURI');
+  r.Register(sXSD_NS,TypeInfo(anyType_Type),'anyType').AddPascalSynonym('anyType_Type');
+  r.Register(sXSD_NS,TypeInfo(schema_Type),'schema').AddPascalSynonym('schema_Type');
   r.Register(sXSD_NS,TypeInfo(token),'token').AddPascalSynonym('token');
 
   r.Register(sXSD_NS,TypeInfo(boolean),'boolean').AddPascalSynonym('boolean');

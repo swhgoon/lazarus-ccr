@@ -324,21 +324,21 @@ procedure AddSystemSymbol(
   procedure RegisterBoxedTypes();
   var
     i : Integer;
-    nativeType : TPasNativeSimpleContentClassType;
+    nativeType : TPasNativeSpecialSimpleContentClassType;
     syb : TPasNativeSimpleContentClassType;
     s : string;
-    typlst : array[0..Pred(BOXED_TYPES_COUNT)] of TPasNativeSimpleContentClassType;
+    typlst : array[0..Pred(BOXED_TYPES_COUNT)] of TPasNativeSpecialSimpleContentClassType;
   begin
     for i := Low(BOXED_TYPES) to High(BOXED_TYPES) do begin
-      nativeType := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,BOXED_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
+      nativeType := TPasNativeSpecialSimpleContentClassType(AContainer.CreateElement(TPasNativeSpecialSimpleContentClassType,BOXED_TYPES[i][0],ADest.InterfaceSection,visPublic,'',0));
       ADest.InterfaceSection.Declarations.Add(nativeType);
       ADest.InterfaceSection.Types.Add(nativeType);
       typlst[i] := nativeType;
       s := BOXED_TYPES[i][1];
       if not IsStrEmpty(s) then begin
-        syb := AContainer.FindElementInModule(BOXED_TYPES[i][1],ADest) as TPasNativeSimpleContentClassType;
+        syb := AContainer.FindElementInModule(BOXED_TYPES[i][1],ADest) as TPasNativeSpecialSimpleContentClassType;
         if not Assigned(syb) then begin
-          syb := TPasNativeSimpleContentClassType(AContainer.CreateElement(TPasNativeSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
+          syb := TPasNativeSpecialSimpleContentClassType(AContainer.CreateElement(TPasNativeSpecialSimpleContentClassType,s,ADest.InterfaceSection,visDefault,'',0));
           ADest.InterfaceSection.Declarations.Add(syb);
           ADest.InterfaceSection.Types.Add(syb);
         end;
@@ -409,6 +409,7 @@ begin
     Result.InterfaceSection := TPasSection(AContainer.CreateElement(TPasSection,'',Result,visDefault,'',0));
     AddSystemSymbol(Result,AContainer);
     AddClassDef(Result,'TBaseRemotable','',TPasNativeClassType);
+      AContainer.RegisterExternalAlias(AddClassDef(Result,'anyType_Type','TBaseRemotable',TPasNativeClassType),'anyType');
       AddClassDef(Result,'TAbstractSimpleRemotable','TBaseRemotable',TPasNativeClassType);
         AContainer.RegisterExternalAlias(AddClassDef(Result,'schema_Type','TAbstractSimpleRemotable'),'schema');
         AContainer.RegisterExternalAlias(AddClassDef(Result,'TDateRemotable','TAbstractSimpleRemotable'),'date');
