@@ -40,24 +40,24 @@
       </Unit0>
       <Unit1>
         <Filename Value="uwsttypelibraryedit.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="fWstTypeLibraryEdit"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uwsttypelibraryedit"/>
       </Unit1>
       <Unit2>
         <Filename Value="uabout.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="fAbout"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <UnitName Value="uabout"/>
       </Unit2>
       <Unit3>
         <Filename Value="ufenumedit.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="fEnumEdit"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufEnumedit"/>
       </Unit3>
@@ -78,30 +78,30 @@
       </Unit6>
       <Unit7>
         <Filename Value="ufclassedit.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="fClassEdit"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufclassedit"/>
       </Unit7>
       <Unit8>
         <Filename Value="ufpropedit.pas"/>
-        <ComponentName Value="fPropEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fPropEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufpropedit"/>
       </Unit8>
       <Unit9>
         <Filename Value="uinterfaceedit.pas"/>
-        <ComponentName Value="fInterfaceEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fInterfaceEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uinterfaceedit"/>
       </Unit9>
       <Unit10>
         <Filename Value="udm.pas"/>
-        <ComponentName Value="DM"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="DM"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="udm"/>
       </Unit10>
@@ -117,8 +117,8 @@
       </Unit12>
       <Unit13>
         <Filename Value="uprocedit.pas"/>
-        <ComponentName Value="fProcEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fProcEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uprocedit"/>
       </Unit13>
@@ -129,50 +129,50 @@
       </Unit14>
       <Unit15>
         <Filename Value="uargedit.pas"/>
-        <ComponentName Value="fArgEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fArgEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uargedit"/>
       </Unit15>
       <Unit16>
         <Filename Value="umoduleedit.pas"/>
-        <ComponentName Value="fModuleEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fModuleEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="umoduleedit"/>
       </Unit16>
       <Unit17>
         <Filename Value="ubindingedit.pas"/>
-        <ComponentName Value="fBindingEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fBindingEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ubindingedit"/>
       </Unit17>
       <Unit18>
         <Filename Value="ufrmsaveoption.pas"/>
-        <ComponentName Value="frmSaveOptions"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmSaveOptions"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufrmsaveoption"/>
       </Unit18>
       <Unit19>
         <Filename Value="ufarrayedit.pas"/>
-        <ComponentName Value="fArrayEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fArrayEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufarrayedit"/>
       </Unit19>
       <Unit20>
         <Filename Value="uftypealiasedit.pas"/>
-        <ComponentName Value="fTypeAliasEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fTypeAliasEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uftypealiasedit"/>
       </Unit20>
       <Unit21>
         <Filename Value="ufrecordedit.pas"/>
-        <ComponentName Value="fRecordEdit"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="fRecordEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ufrecordedit"/>
       </Unit21>

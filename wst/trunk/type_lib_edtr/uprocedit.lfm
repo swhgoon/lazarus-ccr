@@ -9,9 +9,11 @@ object fProcEdit: TfProcEdit
   ClientHeight = 543
   ClientWidth = 522
   Position = poMainFormCenter
-  LCLVersion = '0.9.26.2'
+  LCLVersion = '0.9.29'
   object PageControl1: TPageControl
+    Left = 0
     Height = 493
+    Top = 0
     Width = 522
     ActivePage = TabSheet1
     Align = alClient
@@ -31,7 +33,7 @@ object fProcEdit: TfProcEdit
       end
       object edtName: TEdit
         Left = 112
-        Height = 23
+        Height = 21
         Top = 26
         Width = 388
         Anchors = [akTop, akLeft, akRight]
@@ -49,7 +51,9 @@ object fProcEdit: TfProcEdit
         ClientWidth = 485
         TabOrder = 3
         object edtParams: TListView
+          Left = 0
           Height = 286
+          Top = 0
           Width = 485
           Align = alClient
           Columns = <          
@@ -76,7 +80,7 @@ object fProcEdit: TfProcEdit
         Left = 12
         Height = 17
         Top = 74
-        Width = 94
+        Width = 97
         Caption = 'Function returns'
         OnClick = edtFunctionClick
         OnEditingDone = edtFunctionEditingDone
@@ -125,6 +129,7 @@ object fProcEdit: TfProcEdit
     end
   end
   object Panel1: TPanel
+    Left = 0
     Height = 50
     Top = 493
     Width = 522
@@ -161,24 +166,20 @@ object fProcEdit: TfProcEdit
     top = 241
     object actOk: TAction
       Caption = 'OK'
-      DisableIfNoHandler = True
       OnExecute = actOkExecute
       OnUpdate = actOkUpdate
     end
     object actNewArg: TAction
       Caption = 'New Argument'
-      DisableIfNoHandler = True
       OnExecute = actNewArgExecute
     end
     object actUpdateArgument: TAction
       Caption = 'Edit Argument'
-      DisableIfNoHandler = True
       OnExecute = actUpdateArgumentExecute
       OnUpdate = actUpdateArgumentUpdate
     end
     object actDeleteArgument: TAction
       Caption = 'Delete Argument'
-      DisableIfNoHandler = True
       OnExecute = actDeleteArgumentExecute
       OnUpdate = actUpdateArgumentUpdate
     end

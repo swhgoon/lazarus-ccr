@@ -151,7 +151,7 @@ begin
   itm := edtParams.ItemFocused;
   if Assigned(itm) then begin
     prp := TPasArgument(itm.Data);
-    if edit_helper.UpdateObject(prp,FSymbolTable) then begin
+    if edit_helper.UpdateObject(TPasElement(prp),FSymbolTable) then begin
       itm.Free();
       LoadArgument(prp);
     end;

@@ -733,6 +733,7 @@ var
   sym : TPasElement;
   moduleList, decList : TList;
   mdl : TPasModule;
+  locExtName : string;
 begin
   moduleList := AContainer.Package.Modules;
   for i := 0 to Pred(moduleList.Count) do begin
@@ -740,14 +741,24 @@ begin
     decList := mdl.InterfaceSection.Declarations;
     for j := 0 to Pred(decList.Count) do begin
       sym := TPasElement(decList[j]);
-      if sym.InheritsFrom(TPasType) and ( not sym.InheritsFrom(TPasNativeSimpleContentClassType) ) then begin
+      if sym.InheritsFrom(TPasType) {and ( not sym.InheritsFrom(TPasNativeSimpleContentClassType) )} then begin
         if ( ALs.IndexOfObject(sym) = -1 ) then begin
           if sym.InheritsFrom(TPasNativeSpecialSimpleType) or
              sym.InheritsFrom(TPasNativeSpecialSimpleContentClassType)
           then begin
-            ALs.AddObject(sym.Name,sym);
+            //ALs.AddObject(sym.Name,sym);
+            locExtName := AContainer.GetExternalName(sym);
+            if ( sym.Name = locExtName ) then
+              ALs.AddObject(sym.Name,sym)
+            else
+              ALs.AddObject(Format('%s - ( %s )',[sym.Name,AContainer.GetExternalName(sym)]),sym);
           end else begin
-            ALs.AddObject(AContainer.GetExternalName(sym),sym);
+            //ALs.AddObject(AContainer.GetExternalName(sym),sym);
+            locExtName := AContainer.GetExternalName(sym);   
+            if ( sym.Name = locExtName ) then
+              ALs.AddObject(AContainer.GetExternalName(sym),sym)
+            else
+              ALs.AddObject(Format('%s - ( %s )',[AContainer.GetExternalName(sym),sym.Name]),sym);  
           end;
         end;
       end;

@@ -99,7 +99,7 @@ var
 begin
   node := trvMethods.Selected;
   locObj := TPasProcedure(node.Data);
-  edit_helper.UpdateObject(locObj,FSymbolTable);
+  edit_helper.UpdateObject(TPasElement(locObj),FSymbolTable);
   trvMethods.BeginUpdate();
   try
     newNode := FindPainter(locObj).Paint(FSymbolTable,locObj,node.Parent);
@@ -171,7 +171,7 @@ var
 begin
   node := trvMethods.Selected;
   locObj := TwstBinding(node.Data);
-  edit_helper.UpdateObject(locObj,FSymbolTable);
+  edit_helper.UpdateObject(TPasElement(locObj),FSymbolTable);
   trvMethods.BeginUpdate();
   try
     newNode := FindPainter(locObj).Paint(FSymbolTable,locObj,node.Parent);
