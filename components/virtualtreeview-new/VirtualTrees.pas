@@ -2964,7 +2964,6 @@ type
     function CancelEditNode: Boolean;
     procedure CancelOperation;
     function CanEdit(Node: PVirtualNode; Column: TColumnIndex): Boolean; virtual;
-    function CanFocus: Boolean; {$ifdef COMPILER_5_UP} override;{$endif}
     procedure Clear; virtual;
     procedure ClearChecked;
     procedure ClearSelection;
@@ -25138,23 +25137,6 @@ function TBaseVirtualTree.CanEdit(Node: PVirtualNode; Column: TColumnIndex): Boo
 begin
   Result := (toEditable in FOptions.FMiscOptions) and Enabled and not (toReadOnly in FOptions.FMiscOptions);
   DoCanEdit(Node, Column, Result);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function TBaseVirtualTree.CanFocus: Boolean;
-
-var
-  Form: TCustomForm;
-
-begin
-  Result := inherited CanFocus;
-
-  if Result and not (csDesigning in ComponentState) then
-  begin
-    Form := GetParentForm(Self);
-    Result := (Form = nil) or (Form.Enabled and Form.Visible);
-  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
