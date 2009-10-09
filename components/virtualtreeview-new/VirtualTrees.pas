@@ -323,6 +323,7 @@ uses
   DelphiCompat,
   LclExt,
   virtualpanningwindow,
+  LCLVersion,
   vtlogger,  LCLType, LResources, LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs  // Thread support
@@ -1079,9 +1080,6 @@ type
     DefaultHint: UTF8String;    // used only if there is no node specific hint string available
                                 // or a header hint is about to appear
     HintText: UTF8String;       // set when size of the hint window is calculated
-    BidiMode: TBidiMode;
-    Alignment: TAlignment;
-    LineBreakStyle: TVTToolTipLineBreakStyle;
   end;
 
   // The trees need an own hint window class because of Unicode output and adjusted font.
@@ -6252,15 +6250,7 @@ begin
     Result := Rect(0, 0, 0, 0)
   else
   begin
-    // The hint window does not need any bidi mode setting but the caller of this method (TApplication.ActivateHint)
-    // does some unneccessary actions if the hint window is not left-to-right.
-    // The text alignment is based on the bidi mode passed in the hint data, hence we can
-    // simply set the window's mode to left-to-right (it might have been modified by the caller, if the
-    // tree window is right-to-left aligned).
-    BidiMode := bdLeftToRight;
-
     FHintData := PVTHintData(AData)^;
-
     with FHintData do
     begin
       // The draw tree gets its hint size by the application (but only if not a header hint is about to show).
@@ -6269,6 +6259,8 @@ begin
         Result := HintRect
       else
       begin
+        //todo remove this define as soon as 0.9.30 is released to avoid future problems
+        {$if lcl_release >= 29}
         if Column <= NoColumn then
         begin
           BidiMode := Tree.BidiMode;
@@ -6279,10 +6271,7 @@ begin
           BidiMode := Tree.Header.Columns[Column].BidiMode;
           Alignment := Tree.Header.Columns[Column].Alignment;
         end;
-
-        if BidiMode <> bdLeftToRight then
-          ChangeBidiModeAlignment(Alignment);
-
+        {$endif}
         //select font according to the type of hint
         if (Node = nil) or (Tree.FHintMode <> hmToolTip) then
           Canvas.Font := Screen.HintFont
@@ -6300,9 +6289,8 @@ begin
         //let THintWindow do the job
         Result := inherited CalcHintRect(MaxWidth, AHint, AData);
 
-        //todo: cleanup after finishing Bidi support
-        Exit;
-
+        //todo: cleanup after finishing Bidi support (correctly set hint window position)
+        {
         GetTextMetrics(Canvas.Handle, TM);
         FTextHeight := TM.tmHeight;
         LineBreakStyle := hlbDefault;
@@ -6387,15 +6375,8 @@ begin
             Inc(Result.Right, 2 * Tree.FTextMargin + 2);
           end;
 
-          {$ifndef COMPILER_7_UP}
-            // Add some pixels for the shadow if MMX is available for blending.
-            if MMXAvailable then
-            begin
-              Inc(Result.Right, ShadowSize);
-              Inc(Result.Bottom, ShadowSize);
-            end;
-          {$endif COMPILER_7_UP}
         end;
+        }
       end;
     end;
   end;
@@ -15723,7 +15704,7 @@ var
   IsFocusedOrEditing: Boolean;
   ParentForm: TCustomForm;
   BottomRightCellContentMargin: TPoint;
-
+  LineBreakStyle: TVTTooltipLineBreakStyle;
 begin
   with Message do
   begin
@@ -15901,20 +15882,20 @@ begin
         // from the node or from the DefaultHint
         if ShowOwnHint and (Result = 0) then
         begin
-          FHintData.LineBreakStyle := hlbDefault;
+          LineBreakStyle := hlbDefault;
           FLastHintRect := CursorRect;
           if Length(FHintData.DefaultHint) > 0 then
             HintStr := FHintData.DefaultHint
           else
             if FHintMode = hmToolTip then
-              HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle)
+              HintStr := DoGetNodeToolTip(HitInfo.HitNode, HitInfo.HitColumn, LineBreakStyle)
             else
-              HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, FHintData.LineBreakStyle);
+              HintStr := DoGetNodeHint(HitInfo.HitNode, HitInfo.HitColumn, LineBreakStyle);
           // Determine actual line break style depending on what was returned by the methods and what's in the node.
-          if (FHintData.LineBreakStyle = hlbDefault) and Assigned(HitInfo.HitNode)
+          if (LineBreakStyle = hlbDefault) and Assigned(HitInfo.HitNode)
             and (vsMultiline in HitInfo.HitNode.States) then
-            FHintData.LineBreakStyle := hlbForceMultiLine;
-          if FHintData.LineBreakStyle = hlbForceMultiLine then
+            LineBreakStyle := hlbForceMultiLine;
+          if LineBreakStyle = hlbForceMultiLine then
           begin
             // NodeRect is already calculated for ToolTip
             if FHintMode <> hmTooltip then
