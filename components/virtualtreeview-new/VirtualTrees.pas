@@ -28496,7 +28496,7 @@ var
   R: TRect;
 
 begin
-  if (FUpdateCount = 0) and FHeader.FColumns.IsValidColumn(Column) then
+  if (FUpdateCount = 0) and HandleAllocated and FHeader.FColumns.IsValidColumn(Column) then
   begin
     R := ClientRect;
     //lclheader
