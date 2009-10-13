@@ -90,6 +90,11 @@ begin
   RxMemoryData1.AppendRecord([9, 'Microsoft Windows 2000', 150, 'Microsoft', EncodeDate(1999, 11, 13), 3]);
   RxMemoryData1.AppendRecord([10, 'Microsoft Windows XP', 130, 'Microsoft', EncodeDate(2003, 10, 1), 3]);
   RxMemoryData1.AppendRecord([11, 'Microsoft Windows Vista', 180, 'Microsoft', EncodeDate(2007, 2, 1), 3]);
+  RxMemoryData1.AppendRecord([12, 'Поисковая системя Яндекс', 0, 'Yandex', EncodeDate(2007, 2, 1), 3]);
+  RxMemoryData1.AppendRecord([13, 'Бухгалтерия 1С', 280, '1С', EncodeDate(1994, 2, 1), 3]);
+  RxMemoryData1.AppendRecord([14, 'Бух. комплекс "45-я Параллель"', 180, 'ООО "Boot"', EncodeDate(2007, 2, 1), 3]);
+  RxMemoryData1.AppendRecord([15, 'Консультант+', 380, 'Консультант+', EncodeDate(2007, 2, 1), 3]);
+  RxMemoryData1.AppendRecord([16, 'Гарант', 480, 'Гарант', EncodeDate(2007, 2, 1), 3]);
   DoFillFilters;
   RxMemoryData1.First;
   RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark

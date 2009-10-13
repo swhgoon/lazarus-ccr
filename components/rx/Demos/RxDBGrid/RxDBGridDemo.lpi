@@ -62,8 +62,8 @@
         <ComponentName Value="RxDBGridMainForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RxDBGridMainUnit"/>
-        <CursorPos X="26" Y="19"/>
-        <TopLine Value="17"/>
+        <CursorPos X="1" Y="98"/>
+        <TopLine Value="66"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
@@ -155,7 +155,7 @@
         <UsageCount Value="10"/>
       </Unit13>
       <Unit14>
-        <Filename Value="../../../../../../../../home/alexs/install/2/rxdbgrid.diff"/>
+        <Filename Value="../../../../../../install/2/rxdbgrid.diff"/>
         <CursorPos X="1" Y="21"/>
         <TopLine Value="1"/>
         <UsageCount Value="10"/>
@@ -307,5 +307,10 @@
         <Expression Value="W"/>
       </Item1>
     </Watches>
+    <Exceptions Count="1">
+      <Item1>
+        <Name Value="EInvalidOp"/>
+      </Item1>
+    </Exceptions>
   </Debugging>
 </CONFIG>

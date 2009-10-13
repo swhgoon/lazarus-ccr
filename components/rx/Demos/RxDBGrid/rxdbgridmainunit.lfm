@@ -1,18 +1,18 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 240
+  Left = 318
   Height = 609
-  Top = 242
+  Top = 245
   Width = 969
   ActiveControl = Panel1
   Caption = 'RxDBGrid Demo (ver 3)  ...'
   ClientHeight = 609
   ClientWidth = 969
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object RxDBGrid1: TRxDBGrid
     Left = 0
-    Height = 544
-    Top = 65
+    Height = 542
+    Top = 67
     Width = 969
     TitleButtons = True
     AutoSort = True
@@ -21,64 +21,82 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Title.Alignment = taCenter
         Title.Caption = 'Code'
         Title.Orientation = toHorizontal
-        Width = 155
+        Width = 158
         FieldName = 'ID'
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = 'Count: %d'
         Footer.ValueType = fvtCount
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Orientation = toHorizontal
-        Width = 155
+        Width = 158
         FieldName = 'Developer'
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Software|Name'
         Title.Orientation = toHorizontal
-        Width = 155
+        Width = 158
         FieldName = 'NAME'
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Software|Cost'
         Title.Orientation = toHorizontal
-        Width = 155
+        Width = 158
         FieldName = 'PRICE'
         DisplayFormat = '#,##0.00'
         Footer.Alignment = taRightJustify
         Footer.DisplayFormat = '#,##0.00'
         Footer.FieldName = 'PRICE'
         Footer.ValueType = fvtSum
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
         Filter.Color = clLime
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Caption = 'Software|Date Present'
         Title.Orientation = toHorizontal
-        Width = 155
+        Width = 158
         FieldName = 'Date_Present'
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end    
       item
         Title.Alignment = taCenter
         Title.Orientation = toHorizontal
-        Width = 160
+        Width = 163
         FieldName = 'DEVELOPER_ID'
+        Filter.Font.Style = [fsItalic]
         Filter.DropDownRows = 0
+        Filter.EmptyValue = '(Нет)'
+        Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end>
     OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgFooterRows, rdgAllowQuickSearch]
@@ -99,22 +117,22 @@ object RxDBGridMainForm: TRxDBGridMainForm
   end
   object Panel1: TPanel
     Left = 0
-    Height = 65
+    Height = 67
     Top = 0
     Width = 969
     Align = alTop
     AutoSize = True
-    ClientHeight = 65
+    ClientHeight = 67
     ClientWidth = 969
     TabOrder = 1
     object Label1: TLabel
       AnchorSideLeft.Control = CheckBox1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 359
+      Left = 378
       Height = 18
       Top = 6
-      Width = 36
+      Width = 40
       BorderSpacing.Around = 6
       Caption = 'Mode'
       ParentColor = False
@@ -123,9 +141,9 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 6
-      Height = 35
+      Height = 37
       Top = 6
-      Width = 90
+      Width = 95
       Action = actCalcTotal
       AutoSize = True
       BorderSpacing.Around = 6
@@ -136,10 +154,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Button1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 102
-      Height = 35
+      Left = 107
+      Height = 37
       Top = 6
-      Width = 163
+      Width = 174
       Action = actOptimizeColumnsWidthAll
       AutoSize = True
       BorderSpacing.Around = 6
@@ -151,10 +169,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Button1
       AnchorSideTop.Side = asrCenter
-      Left = 271
-      Height = 22
-      Top = 12
-      Width = 82
+      Left = 287
+      Height = 21
+      Top = 14
+      Width = 85
       BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
@@ -164,8 +182,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 365
-      Height = 29
+      Left = 384
+      Height = 31
       Top = 30
       Width = 217
       BorderSpacing.Around = 6
