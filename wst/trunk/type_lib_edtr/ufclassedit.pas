@@ -267,6 +267,7 @@ var
   modulList, decList : TList;
   mdl : TPasModule;
   ok : Boolean;
+  locExtName : string;   
 begin
   modulList := AContainer.Package.Modules;
   for i := 0 to Pred(modulList.Count) do begin
@@ -291,12 +292,15 @@ begin
                 ( TPasNativeClassType(sym).ExtendableType = nil )
               );
         if ok and ( ALs.IndexOfObject(sym) = -1 ) then begin
+          locExtName := AContainer.GetExternalName(sym);
+          if ( locExtName <> sym.Name ) then
+            locExtName := Format('%s - ( %s )',[AContainer.GetExternalName(sym), sym.Name]);
           if sym.InheritsFrom(TPasNativeSpecialSimpleType) or
              sym.InheritsFrom(TPasNativeSpecialSimpleContentClassType)
           then begin
-            ALs.AddObject(sym.Name,sym);
+            ALs.AddObject(locExtName,sym);
           end else begin
-            ALs.AddObject(AContainer.GetExternalName(sym),sym);
+            ALs.AddObject(locExtName,sym);
           end;
         end;
       end;
