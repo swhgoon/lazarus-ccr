@@ -43,7 +43,7 @@ uses
 {$ENDIF}
 {$IFNDEF NOZLIB}
   ,ZStream
-  ,Zlib;
+  ,PasZlib;
 {$ELSE}
   ;
 {$ENDIF}
