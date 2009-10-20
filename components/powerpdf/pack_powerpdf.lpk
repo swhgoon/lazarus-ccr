@@ -21,7 +21,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Minor="9" Release="1"/>
+    <Version Minor="9" Release="2"/>
     <Files Count="12">
       <Item1>
         <Filename Value="PdfTypes.pas"/>
@@ -88,7 +88,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
