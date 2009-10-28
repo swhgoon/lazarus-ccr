@@ -931,12 +931,24 @@ begin
 end;
 
 procedure TRxDBGrid.SetOptionsRx(const AValue: TOptionsRx);
+var
+  OldOpt:TOptionsRx;
 begin
   if FOptionsRx=AValue then exit;
+  OldOpt:=FOptionsRx;
   FOptionsRx:=AValue;
-  UseXORFeatures:=rdgXORColSizing in FOptionsRx;
-  if rdgFilter in FOptionsRx then
+  UseXORFeatures:=rdgXORColSizing in AValue;
+  if (rdgFilter in AValue) and not  (rdgFilter in OldOpt) then
   begin
+    LayoutChanged;
+    BeginUpdate;
+    CalcTitle;
+    EndUpdate;
+  end
+  else
+  if rdgFilter in OldOpt then
+  begin
+     FFilterListEditor.Hide;
      LayoutChanged;
      BeginUpdate;
      CalcTitle;
@@ -1083,7 +1095,10 @@ begin
 
     if rdgFilter in OptionsRx then
     begin
-      RowHeights[0] := RowHeights[0] + DefaultRowHeight;
+      if Assigned(FFilterListEditor) then
+        RowHeights[0] := RowHeights[0] + FFilterListEditor.Height
+      else
+        RowHeights[0] := RowHeights[0] + DefaultRowHeight;
     end;
 
   finally
@@ -1119,13 +1134,19 @@ end;
 function TRxDBGrid.getFilterRect(bRect: TRect): TRect;
 begin
   Result := bRect;
-  Result.Top := bRect.Bottom - DefaultRowHeight;
+  if Assigned(FFilterListEditor) then
+    Result.Top := bRect.Bottom - FFilterListEditor.Height
+  else
+    Result.Top := bRect.Bottom - DefaultRowHeight;
 end;
 
 function TRxDBGrid.getTitleRect(bRect: TRect): TRect;
 begin
   Result := bRect;
-  Result.Bottom := bRect.Bottom - DefaultRowHeight;
+  if Assigned(FFilterListEditor) then
+    Result.Bottom := bRect.Bottom - FFilterListEditor.Height
+  else
+    Result.Bottom := bRect.Bottom - DefaultRowHeight;
 end;
 
 procedure TRxDBGrid.OutCaptionCellText(aCol, aRow: Integer;const aRect: TRect;
