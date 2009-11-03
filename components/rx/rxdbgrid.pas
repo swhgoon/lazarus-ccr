@@ -2223,8 +2223,9 @@ end;
 procedure TRxDBGrid.InternalOptimizeColumnsWidth(AColList: TList);
 var
   P:TBookmark;
-  i, W:integer;
+  i, W, n:integer;
   WA:PIntegerArray;
+  S:String;
 begin
   GetMem(WA, SizeOf(Integer) * AColList.Count);
 
@@ -2241,7 +2242,16 @@ begin
       begin
         for I := 0 to AColList.Count-1 do
         begin
-          W:=Canvas.TextWidth(TRxColumn(AColList[i]).Field.DisplayText) + 6;
+//          W:=Canvas.TextWidth(TRxColumn(AColList[i]).Field.DisplayText) + 6;
+          S:=TRxColumn(AColList[i]).Field.DisplayText;
+          with TRxColumn(AColList[i]) do
+            if (KeyList.Count > 0) and (PickList.Count > 0) then
+            begin
+              n:=KeyList.IndexOf(S);
+              if (n<>-1) and (n < PickList.Count) then
+                S:=PickList.Strings[n];
+            end;
+          W:=Canvas.TextWidth(S) + 6;
           if WA^[i]<W then
             WA^[i]:=W;
         end;
