@@ -2157,9 +2157,11 @@ begin
   begin
     FInProcessCalc:=0;
     CalcStatTotals;
-  end;
-{  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) then
-    CalcStatTotals;}
+  end
+  else
+  if (rdgFooterRows in OptionsRx) and (FooterRowCount > 0) and DatalinkActive and
+    (DataSource.DataSet.State = dsBrowse) then
+    CalcStatTotals;
 end;
 
 procedure TRxDBGrid.UpdateData;
