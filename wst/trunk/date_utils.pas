@@ -110,6 +110,7 @@ type
   ) : TTimeRec; overload; {$IFDEF USE_INLINE}inline;{$ENDIF}
   function DateTimeToTimeRec(const ADateTime : TDateTime) : TTimeRec; {$IFDEF USE_INLINE}inline;{$ENDIF}
   function TimeRecToDateTime(const ATime : TTimeRec) : TDateTime; {$IFDEF USE_INLINE}inline;{$ENDIF}
+  function DateTimeToDateTimeRec(const ADateTime : TDateTime) : TDateTimeRec;
 
   function xsd_TryStrToDuration(
     const ABuffer : string;
@@ -624,6 +625,13 @@ end;
 function TimeRecToDateTime(const ATime : TTimeRec) : TDateTime;
 begin
   Result := EncodeTime(ATime.Hour,ATime.Minute,ATime.Second,ATime.MilliSecond);
+end;
+
+function DateTimeToDateTimeRec(const ADateTime : TDateTime) : TDateTimeRec;
+begin
+  Result.Date := ADateTime;
+  Result.HourOffset := 0;
+  Result.MinuteOffset := 0;
 end;
 
 type TDatePart = ( dpNone, dpYear, dpMonth, dpDay, dpHour, dpMinute, dpSecond, dpFractionalSecond );
