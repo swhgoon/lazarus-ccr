@@ -943,23 +943,25 @@ begin
   if ExtractBindingQName(bindingName) then begin
     i := Pos(':',bindingName);
     bindingName := Copy(bindingName,( i + 1 ), MaxInt);
-    bindingNode := FindBindingNode(bindingName);
-    if Assigned(bindingNode) then begin
-      if ExtractTypeQName(bindingNode,typeName) then begin
-        i := Pos(':',typeName);
-        typeName := Copy(typeName,( i + 1 ), MaxInt);
-        typeNode := FindTypeNode(typeName);
-        if Assigned(typeNode) then begin
-          ExtractSoapBindingStyle(bindingNode,locWStrBuffer);
-          locSoapBindingStyle := locWStrBuffer;
-          if IsStrEmpty(locSoapBindingStyle) then
-            locSoapBindingStyle := s_document;
-          intfDef := ParsePortType(typeNode,bindingNode,locSoapBindingStyle);
-          bdng := SymbolTable.AddBinding(bindingName,intfDef);
-          bdng.Address := ExtractAddress();
-          bdng.BindingStyle := StrToBindingStyle(locSoapBindingStyle);
+    if ( SymbolTable.FindBinding(bindingName) = nil ) then begin
+      bindingNode := FindBindingNode(bindingName);
+      if Assigned(bindingNode) then begin
+        if ExtractTypeQName(bindingNode,typeName) then begin
+          i := Pos(':',typeName);
+          typeName := Copy(typeName,( i + 1 ), MaxInt);
+          typeNode := FindTypeNode(typeName);
+          if Assigned(typeNode) then begin
+            ExtractSoapBindingStyle(bindingNode,locWStrBuffer);
+            locSoapBindingStyle := locWStrBuffer;
+            if IsStrEmpty(locSoapBindingStyle) then
+              locSoapBindingStyle := s_document;
+            intfDef := ParsePortType(typeNode,bindingNode,locSoapBindingStyle);
+            bdng := SymbolTable.AddBinding(bindingName,intfDef);
+            bdng.Address := ExtractAddress();
+            bdng.BindingStyle := StrToBindingStyle(locSoapBindingStyle);
+          end;
         end;
-      end;
+      end;    
     end;
   end;
 end;
