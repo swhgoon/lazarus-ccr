@@ -891,7 +891,7 @@ var
     p : TPasProperty;
     s : string;
     propNode : TDOMElement;
-    propTypItm, propItmUltimeType : TPasType;
+    propTypItm, propItmUltimeType, arrayItemType : TPasType;
     prop_ns_shortName : string;
     isEmbeddedArray : Boolean;
     typeHelper : IXsdSpecialTypeHelper;
@@ -919,16 +919,27 @@ var
                            ( AContainer.GetArrayStyle(TPasArrayType(propItmUltimeType)) = asEmbeded );
         if isEmbeddedArray then begin
           s := AContainer.GetExternalName(TPasArrayType(propItmUltimeType).ElType);
-          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,TPasArrayType(propItmUltimeType).ElType),ADocument,GetOwner().GetPreferedShortNames());
+          arrayItemType := TPasArrayType(propItmUltimeType).ElType;
+          prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,arrayItemType),ADocument,GetOwner().GetPreferedShortNames());
+          propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
+          if arrayItemType.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+            if GetRegistry().FindHelper(arrayItemType,typeHelper) then
+              typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+          end;
         end else begin
           s := AContainer.GetExternalName(propTypItm);
           prop_ns_shortName := GetNameSpaceShortName(GetTypeNameSpace(AContainer,propTypItm),ADocument,GetOwner().GetPreferedShortNames());
+          propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
+          if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
+            if GetRegistry().FindHelper(propTypItm,typeHelper) then
+              typeHelper.HandleTypeUsage(propNode,defSchemaNode);
+          end;
         end;
-        propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
+        {propNode.SetAttribute(s_type,Format('%s:%s',[prop_ns_shortName,s]));
         if propTypItm.InheritsFrom(TPasNativeSpecialSimpleType) then begin
           if GetRegistry().FindHelper(propTypItm,typeHelper) then
             typeHelper.HandleTypeUsage(propNode,defSchemaNode);
-        end;
+        end; }
         if ( Length(p.DefaultValue) > 0 ) then
           propNode.SetAttribute(s_default,p.DefaultValue);
         if AContainer.IsAttributeProperty(p) then begin

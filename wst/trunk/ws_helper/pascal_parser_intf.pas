@@ -226,7 +226,7 @@ const
           ('Longint', 'TComplexInt32SContentRemotable', 'int'),
           ('Int64', 'TComplexInt64SContentRemotable', 'long'),
           ('Qword', 'TComplexInt64UContentRemotable', 'unsignedLong'),
-          ('Single', 'TComplexFloatSingleContentRemotable', 'single'),
+          ('Single', 'TComplexFloatSingleContentRemotable', 'float'),
           ('Double', 'TComplexFloatDoubleContentRemotable', 'double'),
           ('Extended', 'TComplexFloatExtendedContentRemotable', 'decimal')
         );
@@ -451,7 +451,7 @@ begin
     AddAlias('token','string',Result);
     AddAlias('anyURI','string',Result);
     AddAlias('ID','string',Result);
-    AddAlias('float','Single',Result);
+    //AddAlias('float','Single',Result);
     AddAlias('nonNegativeInteger','LongWord',Result);
     AddAlias('positiveInteger','nonNegativeInteger',Result);
 {$IFNDEF WST_HAS_TDURATIONREMOTABLE}
