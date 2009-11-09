@@ -1,6 +1,6 @@
 
 resourcestring
-  sUSAGE = 'ws_helper [-uMODE] [-gOPTION] [-p] [-b] [-i] [-w] [-x] [-y] [-d] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
+  sUSAGE = 'ws_helper [-uMODE] [-gOPTION] [-p] [-b] [-i] [-w] [-x] [-y] [-d] -[fSPECIFACTIONS] [-oPATH] [-aPATH] inputFilename' + sNEW_LINE +
            '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
            '        MODE value may be U for used types or A for all types' + sNEW_LINE +
            '  -g  Code generation option, with the following options : ' + sNEW_LINE +
@@ -14,7 +14,8 @@ resourcestring
            '  -w  Generate WSDL file; Can be used to get wsdl from pascal' + sNEW_LINE +
            '  -x  Generate XSD file; Can be used to get xsd from pascal' + sNEW_LINE +
            '  -y  Generate easy access interface for wrapped parameters' + sNEW_LINE +
-           '  -d  Generate documentation as comment in the interface file.';
+           '  -d  Generate documentation as comment in the interface file' + sNEW_LINE +      
+           '  -f  Specify unit(s) renaming option : oldName= NewName(;oldName= NewName)* ';
   sCOPYRIGHT = 'ws_helper, Web Service Toolkit 0.6 Copyright (c) 2006, 2007, 2008 by Inoussa OUEDRAOGO';
 
 type
@@ -167,6 +168,41 @@ var
     end;
   end;
   
+  procedure HandleUnitRenaming();
+  var
+    namesSpecif, strBuffer, oldName, newName : string;
+    k : Integer;
+    mdlList : TList; 
+    mdl : TPasModule;
+    found : Boolean;
+  begin
+    namesSpecif := Trim(GetOptionArg(cloFileRenaming));             
+    Write('Handling unit renaming ... ');
+    WriteLn(namesSpecif);
+    mdlList := symtable.Package.Modules;   
+    strBuffer := namesSpecif;
+    while True do begin
+      oldName := GetToken(strBuffer,'=');
+      if IsStrEmpty(oldName) then
+        Break;
+      newName := GetToken(strBuffer,';');
+      if IsStrEmpty(newName) then
+        raise Exception.CreateFmt('Invalid option unit renaming specification : "%s".',[namesSpecif]);
+      found := False;
+      for k := 0 to Pred(mdlList.Count) do begin
+        mdl := TPasModule(mdlList[k]);
+        if SameText(oldName,mdl.Name) then begin
+          mdl.Name := newName;
+          WriteLn(Format('Unit renamed, old name = "%s", new name = "%s".',[oldName,newName]));
+          found := True;
+          Break;
+        end;  
+      end;
+      if not found then
+        WriteLn(Format('Unit not found : "%s".',[oldName]));
+    end;
+  end;
+  
   function ProcessFile():Boolean;
   Var
     mtdaFS: TMemoryStream;
@@ -177,6 +213,7 @@ var
     wrappedParams : Boolean;
   begin
     Result := False;
+    HandleUnitRenaming();    
     wrappedParams := ( cloHandleWrappedParameters in AppOptions );
     strStream := nil;
     rsrcStrm := nil;
@@ -232,7 +269,7 @@ var
           rsrcStrm := TMemoryStream.Create();
           mtdaFS.Position := 0;
           BinToWstRessource(UpperCase(symtable.CurrentModule.Name),mtdaFS,rsrcStrm);
-          rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(inFileName),'.' + sWST_EXTENSION));
+          rsrcStrm.SaveToFile(outPath + ChangeFileExt(ExtractFileName(symtable.CurrentModule.Name),'.' + sWST_EXTENSION));
         end;
         
         if ( cloWsdl in AppOptions ) then begin
