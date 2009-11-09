@@ -42,11 +42,12 @@ type
   { TBaseGenerator }
 
   TBaseGenerator = class
-    FOptions : TGeneratorOptions;
   Private
+    FOptions : TGeneratorOptions;
     FSrcMngr  : ISourceManager;
     FCurrentStream : ISourceStream;
     FSymbolTable: TwstPasTreeContainer;
+    FMainModule : TPasModule;
   Protected
     procedure SetCurrentStream(AStream : ISourceStream);
     procedure Indent();
@@ -61,6 +62,7 @@ type
     procedure NewLine();
     
     function ExtractserviceName(AIntf : TPasElement):String;
+    function GenerateExtraUses() : string;   
   Public
     constructor Create(
       ASymTable : TwstPasTreeContainer;
@@ -70,6 +72,7 @@ type
     property SymbolTable : TwstPasTreeContainer Read FSymbolTable;
     property SrcMngr : ISourceManager Read FSrcMngr;
     property Options : TGeneratorOptions read FOptions write FOptions;
+    property MainModule : TPasModule read FMainModule;
   End;
 
   { TProxyGenerator }
@@ -331,6 +334,8 @@ begin
 end;
 
 procedure TProxyGenerator.GenerateUnitHeader();
+var
+  s : string;
 begin
   SetCurrentStream(FDecStream);
   WriteLn('{');
@@ -344,7 +349,14 @@ begin
   WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('Interface');
   WriteLn('');
-  WriteLn('Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, %s;',[SymbolTable.CurrentModule.Name]);
+  
+  s := GenerateExtraUses();
+  if IsStrEmpty(s) then begin
+    WriteLn('Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, %s;',[SymbolTable.CurrentModule.Name]);
+  end else begin
+    WriteLn('Uses SysUtils, Classes, TypInfo, base_service_intf, service_intf, %s,',[SymbolTable.CurrentModule.Name]);  
+    WriteLn('     ' + s + ';'); 
+  end;
   WriteLn('');
   WriteLn('Type');
   WriteLn('');
@@ -1031,6 +1043,27 @@ begin
     Delete(Result,1,1);
 end;
 
+function TBaseGenerator.GenerateExtraUses() : string; 
+var
+  m : TPasModule;
+  k, currentModuleIndex : Integer;
+  mdlList : TList; 
+  mdl : TPasModule;    
+begin
+  Result := '';
+  mdlList := SymbolTable.Package.Modules;  
+  currentModuleIndex := mdlList.IndexOf(MainModule);
+  for k := 0 to Pred(mdlList.Count) do begin
+    if ( k <> currentModuleIndex ) then begin
+      mdl := TPasModule(mdlList[k]);
+      if ( mdl <> SymbolTable.CurrentModule ) and ( not mdl.InheritsFrom(TPasNativeModule) ) then
+        Result := Result + ', ' +  mdl.Name;
+    end;
+  end;
+  if ( Length(Result) > 0 ) then
+    Delete(Result,1,2); 
+end;
+
 constructor TBaseGenerator.Create(ASymTable: TwstPasTreeContainer; ASrcMngr: ISourceManager);
 begin
   Assert(Assigned(ASymTable));
@@ -1038,6 +1071,7 @@ begin
   FSrcMngr :=ASrcMngr;
   FCurrentStream := Nil;
   FSymbolTable := ASymTable;
+  FMainModule := FSymbolTable.CurrentModule;
 end;
 
 { TBinderGenerator }
@@ -1049,6 +1083,8 @@ begin
 end;
 
 procedure TBinderGenerator.GenerateUnitHeader();
+var
+  s : string;
 begin
   SetCurrentStream(FDecStream);
   WriteLn('{');
@@ -1062,9 +1098,14 @@ begin
   WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('interface');
   WriteLn('');
-  WriteLn('uses SysUtils, Classes, base_service_intf, server_service_intf, %s;',[SymbolTable.CurrentModule.Name]);
-  WriteLn('');
-  WriteLn('type');
+  
+  s := GenerateExtraUses();
+  if IsStrEmpty(s) then begin
+    WriteLn('uses SysUtils, Classes, base_service_intf, server_service_intf, %s;',[SymbolTable.CurrentModule.Name]);
+  end else begin
+    WriteLn('uses SysUtils, Classes, base_service_intf, server_service_intf, %s,',[SymbolTable.CurrentModule.Name]);
+    WriteLn('     ' + s + ';');
+  end;
   WriteLn('');
 end;
 
@@ -1096,6 +1137,7 @@ end;
 procedure TBinderGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure WriteDec();
   begin
+    WriteLn('type');     
     Indent();
     WriteLn('%s = class(%s)',[GenerateClassName(AIntf),sBINDER_BASE_CLASS]);
   end;
@@ -1138,7 +1180,8 @@ procedure TBinderGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure GenerateFactoryClass();
   Begin
     NewLine();
-    IncIndent();BeginAutoIndent();
+    WriteLn('type');
+    IncIndent();BeginAutoIndent();      
       WriteLn('T%s_ServiceBinderFactory = class(TInterfacedObject,IItemFactory)',[ExtractserviceName(AIntf)]);
       WriteLn('private');
       IncIndent();
@@ -1516,6 +1559,8 @@ begin
 end;
 
 procedure TImplementationGenerator.GenerateUnitHeader();
+var
+  s : string;
 begin
   SetCurrentStream(FDecStream);
   WriteLn('{');
@@ -1529,10 +1574,15 @@ begin
   WriteLn('{$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}');
   WriteLn('Interface');
   WriteLn('');
+  
+  s := GenerateExtraUses();
   WriteLn('Uses SysUtils, Classes, ');
-  WriteLn('     base_service_intf, server_service_intf, server_service_imputils, %s;',[SymbolTable.CurrentModule.Name]);
-  WriteLn('');
-  WriteLn('Type');
+  if IsStrEmpty(s) then begin
+    WriteLn('     base_service_intf, server_service_intf, server_service_imputils, %s;',[SymbolTable.CurrentModule.Name]);
+  end else begin  
+    WriteLn('     base_service_intf, server_service_intf, server_service_imputils, %s,',[SymbolTable.CurrentModule.Name]);
+    WriteLn('     ' + s + ';');
+  end;
   WriteLn('');
 end;
 
@@ -1553,7 +1603,7 @@ end;
 procedure TImplementationGenerator.GenerateIntf(AIntf: TPasClassType);
   procedure WriteDec();
   begin
-    Indent();
+    Indent();        
     WriteLn('%s=class(%s,%s)',[GenerateClassName(AIntf),sIMP_BASE_CLASS,AIntf.Name]);
   end;
 
@@ -1628,6 +1678,7 @@ procedure TImplementationGenerator.GenerateIntf(AIntf: TPasClassType);
 begin
   SetCurrentStream(FDecStream);
   NewLine();
+  WriteLn('type'); 
   IncIndent();
     WriteDec();
     WriteMethods();
@@ -2050,6 +2101,8 @@ begin
 end;
 
 procedure TInftGenerator.GenerateUnitHeader();
+var
+  s : string;  
 begin
   SetCurrentStream(FDecStream);
   WriteLn('{');
@@ -2068,11 +2121,16 @@ begin
   WriteLn('{$ENDIF}');
   WriteLn('interface');
   WriteLn('');
-  WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;');
-  WriteLn('');
-  WriteLn('const');
-
+  s := GenerateExtraUses();
+  if IsStrEmpty(s) then begin
+    WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf;');
+  end else begin
+    WriteLn('uses SysUtils, Classes, TypInfo, base_service_intf, service_intf,');
+    WriteLn('     ' + s + ';');
+  end;
   IncIndent();
+  WriteLn('');   
+  WriteLn('const');
   Indent();WriteLn('sNAME_SPACE = %s;',[QuotedStr(SymbolTable.GetExternalName(FSymbolTable.CurrentModule))]);
   Indent();WriteLn('sUNIT_NAME = %s;',[QuotedStr(FSymbolTable.CurrentModule.Name)]);
   DecIndent();
