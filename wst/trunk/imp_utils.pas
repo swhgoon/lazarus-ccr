@@ -147,6 +147,8 @@ begin
         prcsn := 7;
 {$IFEND}
       end;
+    else
+      prcsn := 7;
   end;
   frmt := '#.' + StringOfChar('#',prcsn) + 'E-0';
 {$IFDEF HAS_FORMAT_SETTINGS}

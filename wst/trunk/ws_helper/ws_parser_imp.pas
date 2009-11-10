@@ -1384,6 +1384,7 @@ var
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_complexType) then
     raise EXsdParserAssertException.CreateFmt('%s expected but %s found.',[s_complexType,ExtractNameFromQName(FTypeNode.NodeName)]);
+  Result := nil;
   CreateNodeCursors();
   ExtractTypeName();
   locContinue := True;
@@ -1604,6 +1605,7 @@ var
 begin
   if not AnsiSameText(ExtractNameFromQName(FTypeNode.NodeName),s_simpleType) then
     raise EXsdParserAssertException.CreateFmt('%s expected but %s found.',[s_simpleType,ExtractNameFromQName(FTypeNode.NodeName)]);
+  Result := nil;
   CreateNodeCursors();
   ExtractTypeName();
   locContinue := True;

@@ -433,10 +433,10 @@ var
   buffer : string;
 begin
   //hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
-  if ( ( ATime.Hour < 0 ) or ( ATime.Hour > 23 ) ) or
-     ( ( ATime.Minute < 0 ) or ( ATime.Minute > 59 ) ) or
-     ( ( ATime.Second < 0 ) or ( ATime.Second > 59 ) ) or
-     ( ATime.MilliSecond < 0 )
+  if ( {( ATime.Hour < 0 ) or} ( ATime.Hour > 23 ) ) or
+     ( {( ATime.Minute < 0 ) or} ( ATime.Minute > 59 ) ) or
+     ( {( ATime.Second < 0 ) or} ( ATime.Second > 59 ) ) {or
+     ( ATime.MilliSecond < 0 )}
   then begin
     buffer := Format('{ Hour : %d; Minute : %d; Second : %d; SecondFractional : %d}',[ATime.Hour,ATime.Minute,ATime.Second,ATime.MilliSecond]);
     raise EConvertError.CreateFmt(SERR_InvalidTime,[buffer]);
