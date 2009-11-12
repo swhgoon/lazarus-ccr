@@ -116,7 +116,9 @@ type
     property Values: TStrings read FValues write SetValues;
     property Visible;
     property OnChange;
+    property OnChangeBounds;
     property OnClick;
+    property OnCloseUp;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -129,7 +131,12 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnSelect;
     property OnStartDrag;
+    property OnUTF8KeyPress;
     property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
@@ -236,9 +243,9 @@ end;
 procedure TCustomDBComboBox.Change;
 begin
   FDataLink.Edit;
-  inherited Change;
   FDataLink.Modified;
   FDataLink.UpdateRecord;
+  inherited Change;
 end;
 
 procedure TCustomDBComboBox.Click;

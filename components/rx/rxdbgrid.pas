@@ -360,6 +360,7 @@ type
     procedure ShowFindDialog;
     procedure ShowColumnsDialog;
     function ColumnByFieldName(AFieldName:string):TRxColumn;
+    function ColumnByCaption(ACaption:string):TRxColumn;
     property Canvas;
     property DefaultTextStyle;
     property EditorBorderStyle;
@@ -1236,24 +1237,11 @@ begin
     C:=TRxColumn(Columns[i]);
     FPropertyStorageLink.Storage.WriteString(S1+sCaption, StrToHexText(C.Title.Caption));
     FPropertyStorageLink.Storage.WriteInteger(S1+sWidth, C.Width);
+    FPropertyStorageLink.Storage.WriteInteger(S1+sIndex, C.Index);
   end;
 end;
 
 procedure TRxDBGrid.OnIniLoad(Sender: TObject);
-
-function GetColByCaption(Cap:string):TRxColumn;
-var
-  i:integer;
-begin
-  Result:=nil;
-  for i:=0 to Columns.Count - 1 do
-    if Cap = Columns[i].Title.Caption then
-    begin
-      Result:=TRxColumn(Columns[i]);
-      exit;
-    end;
-end;
-
 var
   i, ACount:integer;
   S, S1, ColumName:string;
@@ -1272,9 +1260,13 @@ begin
       ColumName:=HexTextToStr(FPropertyStorageLink.Storage.ReadString(S1+sCaption, ''));
       if ColumName<>'' then
       begin
-        C:=GetColByCaption(ColumName);
+        C:=ColumnByCaption(ColumName);
         if Assigned(C) then
+        begin
           C.Width:=FPropertyStorageLink.Storage.ReadInteger(S1+sWidth, C.Width);
+          C.Visible:=FPropertyStorageLink.Storage.ReadInteger(S1+sVisible, Ord(C.Visible)) = 1;
+          C.Index:=FPropertyStorageLink.Storage.ReadInteger(S1+sIndex, C.Index);
+        end;
       end;
     end;
   end;
@@ -2398,7 +2390,7 @@ begin
   for i:=0 to Columns.Count-1 do
   begin
     with TRxColumn(Columns[i]) do
-      if (Filter.Value<>'') and (Filter.Value<>Field.AsString) then
+      if (Filter.Value<>'') and (Filter.Value<>Field.DisplayText) then
       begin
         Accept:=false;
         break;
@@ -2524,8 +2516,8 @@ begin
     for i:=0 to Columns.Count-1 do
     begin
       C:=TRxColumn(Columns[i]);
-      if (C.Field<>nil) and (C.Filter.ValueList.IndexOf(C.Field.AsString)<0) then
-	      C.Filter.ValueList.Add(C.Field.AsString);
+      if (C.Field<>nil) and (C.Filter.ValueList.IndexOf(C.Field.DisplayText)<0) then
+	      C.Filter.ValueList.Add(C.Field.DisplayText);
     end;
     DataSource.DataSet.Next;
   end;
@@ -2694,6 +2686,19 @@ begin
       exit;
     end;
   end;
+end;
+
+function TRxDBGrid.ColumnByCaption(ACaption: string): TRxColumn;
+var
+  i:integer;
+begin
+  Result:=nil;
+  for i:=0 to Columns.Count - 1 do
+    if ACaption = Columns[i].Title.Caption then
+    begin
+      Result:=TRxColumn(Columns[i]);
+      exit;
+    end;
 end;
 
 { TRxDbGridColumns }
@@ -3286,6 +3291,7 @@ begin
   FFont := TFont.Create;
   FEmptyFont := TFont.Create;
   FValueList := TStringList.Create;
+  FValueList.Sorted:=true;
   FColor := clWhite;
 
 //  FColor := clSkyBlue;

@@ -151,7 +151,8 @@ const
   sButtonAllign = '.ButtonAllign';
   sOptions      = '.Options';
   sCaption      = '.Caption';
-  
+  sIndex        = '.Index';
+
 implementation
 
 

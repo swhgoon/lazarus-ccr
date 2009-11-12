@@ -7,7 +7,7 @@ interface
 uses
   LCLType, LCLProc, LCLIntf, Classes, SysUtils, LResources, Forms,
   Controls, Graphics, Dialogs, DB, EditBtn, DBGrids, StdCtrls, Buttons,
-  LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit;
+  LMessages, DbCtrls, GraphType, dbutils, RxDbGrid, rxpopupunit, Themes;
 
 const
   TextMargin = 5;
@@ -1358,7 +1358,7 @@ begin
     RxFrame3D(Canvas, R, clWindowFrame, clBtnHighlight, 1);
     RxFrame3D(Canvas, R, clBtnShadow, clBtnFace, 1);
   end;
-  
+
   if ClientWidth > 6 then
   begin
     SetRect(R1, 3, 3, ClientWidth - 3, ClientHeight - 3);
