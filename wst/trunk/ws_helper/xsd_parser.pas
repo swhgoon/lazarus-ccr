@@ -247,6 +247,7 @@ function TCustomXsdSchemaParser.FindNameSpace(
 var
   i : PtrInt;
   ls : TStrings;
+  pc : IParserContext;
 begin
   AResult := '';
   Result := False;
@@ -258,8 +259,11 @@ begin
       Break;
     end;
   end;
-  if not Result then
-    Result := GetParentContext().FindNameSpace(AShortName,AResult);
+  if not Result then begin
+    pc := GetParentContext();
+    if ( pc <> nil ) then
+      Result := GetParentContext().FindNameSpace(AShortName,AResult);
+  end;
 end;
 
 function TCustomXsdSchemaParser.FindShortNamesForNameSpace(const ANameSpace: string): TStrings;
