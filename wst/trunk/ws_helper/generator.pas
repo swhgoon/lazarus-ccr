@@ -3018,7 +3018,7 @@ begin
         clssTyp := TPasClassType(elt);
         if ( gnrClssLst.IndexOf(clssTyp) = -1 ) then begin
           objLst.Clear();
-          while Assigned(clssTyp) do begin
+          while Assigned(clssTyp) and ( objLst.IndexOf(clssTyp) = -1 ) do begin
             objLst.Add(clssTyp);
             classAncestor := clssTyp.AncestorType;
             if Assigned(classAncestor) and classAncestor.InheritsFrom(TPasUnresolvedTypeRef) then begin
