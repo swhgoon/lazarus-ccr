@@ -878,7 +878,7 @@ var
         FSymbols.RegisterExternalAlias(locType,locTypeName);
       end;
     end else begin
-      locTypeInternalName := locTypeName;
+      locTypeInternalName := ExtractIdentifier(locTypeName);
       if locIsRefElement or AnsiSameText(locTypeInternalName,locInternalEltName) then begin
         locTypeInternalName := locTypeInternalName + '_Type';
       end;
@@ -1585,10 +1585,26 @@ begin
 end;
 
 function TSimpleTypeParser.ParseOtherContent(): TPasType;
+var
+  intrName : string;
+  hasIntrnName : Boolean;
+  tmpElement : TPasElement;
 begin  // todo : implement TSimpleTypeParser.ParseOtherContent
   if IsStrEmpty(FBaseName) then
     raise EXsdInvalidTypeDefinitionException.CreateFmt('Invalid simple type definition : base type not provided, "%s".',[FTypeName]);
-  Result := TPasTypeAliasType(FSymbols.CreateElement(TPasTypeAliasType,FTypeName,Self.Module.InterfaceSection,visDefault,'',0));
+  intrName := ExtractIdentifier(FTypeName);
+  hasIntrnName := ( intrName <> FTypeName ) or
+                  IsReservedKeyWord(intrName);
+  if not hasIntrnName then begin
+    tmpElement := FindElement(intrName);
+    if ( tmpElement <> nil ) and ( not tmpElement.InheritsFrom(TPasUnresolvedTypeRef) ) then
+      hasIntrnName := True;
+  end;
+  if hasIntrnName then
+    intrName := '_' + intrName;
+  Result := TPasTypeAliasType(FSymbols.CreateElement(TPasTypeAliasType,intrName,Self.Module.InterfaceSection,visDefault,'',0));
+  if ( intrName <> FTypeName ) then
+    FSymbols.RegisterExternalAlias(Result,FTypeName);
   TPasTypeAliasType(Result).DestType := FindElementNS(FBaseNameSpace,FBaseName,nvtExpandValue) as TPasType;
   TPasTypeAliasType(Result).DestType.AddRef();
 end;
