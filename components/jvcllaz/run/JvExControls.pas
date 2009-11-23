@@ -132,8 +132,8 @@ type
 procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
 procedure HandleDotNetHighlighting(Control: TWinControl; const Msg: TLMessage;
   MouseOver: Boolean; Color: TColor);
-function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: Longint): TLMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
-function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: TControl): TLMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
+function CreateWMMessage(Msg: Integer; WParam: PtrInt; LParam: PtrInt): TLMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
+function CreateWMMessage(Msg: Integer; WParam: PtrInt; LParam: TControl): TLMessage; overload; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
 function SmallPointToLong(const Pt: TSmallPoint): Longint; {$IFDEF SUPPORTS_INLINE} inline {$ENDIF}
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
@@ -162,8 +162,8 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    function BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer; overload;
-    function BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: PtrInt = 0; LParam: Longint = 0): Integer; overload;
+    function BaseWndProc(Msg: Integer; WParam: Ptrint; LParam: TControl): Integer; overload;
     function BaseWndProcEx(Msg: Integer; WParam: Integer; var LParam): Integer;
   protected
     procedure WndProc(var Msg: TLMessage); override;
@@ -347,7 +347,7 @@ end;
 begin
 end;
 
-function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: Longint): TLMessage;
+function CreateWMMessage(Msg: Integer; WParam: PtrInt; LParam: PtrInt): TLMessage;
 begin
   Result.Msg := Msg;
   Result.WParam := WParam;
@@ -355,9 +355,9 @@ begin
   Result.Result := 0;
 end;
 
-function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: TControl): TLMessage;
+function CreateWMMessage(Msg: Integer; WParam: PtrInt; LParam: TControl): TLMessage;
 begin
-  Result := CreateWMMessage(Msg, WParam, Integer(LParam));
+  Result := CreateWMMessage(Msg, WParam, Ptrint(LParam));
 end;
 
 { TStructPtrMessage }
@@ -366,7 +366,7 @@ begin
   inherited Create;
   Self.Msg.Msg := AMsg;
   Self.Msg.WParam := WParam;
-  Self.Msg.LParam := Longint(@LParam);
+  Self.Msg.LParam := PtrInt(@LParam);
   Self.Msg.Result := 0;
 end;
 
@@ -452,7 +452,7 @@ begin
         if Assigned(AControl) and Assigned(AControl.Parent) then
         begin
           AHintInfo := HintInfo;
-          AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
+          AControl.Parent.Perform(CM_HINTSHOW, 0, PtrInt(@AHintInfo));
           HintInfo.HintColor := AHintInfo.HintColor;
         end;
       end;
@@ -760,7 +760,7 @@ begin
   FHintColor := clDefault;
 end;
 
-function TJvExCustomControl.BaseWndProc(Msg: Integer; WParam: Integer = 0; LParam: Longint = 0): Integer;
+function TJvExCustomControl.BaseWndProc(Msg: Integer; WParam: PtrInt = 0; LParam: Longint = 0): Integer;
 var
   Mesg: TLMessage;
 begin
@@ -769,7 +769,7 @@ begin
   Result := Mesg.Result;
 end;
 
-function TJvExCustomControl.BaseWndProc(Msg: Integer; WParam: Integer; LParam: TControl): Integer;
+function TJvExCustomControl.BaseWndProc(Msg: Integer; WParam: PtrInt; LParam: TControl): Integer;
 var
   Mesg: TLMessage;
 begin
@@ -914,17 +914,17 @@ end;
 procedure TJvExCustomControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, PtrInt(Control), Integer(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, PtrInt(Control), Integer(Inserting));
 end;
 
 procedure TJvExCustomControl.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, PtrInt(Control), Integer(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, PtrInt(Control), Integer(Inserting));
 end;
 
 procedure TJvExCustomControl.GetDlgCode(var Code: TDlgCodes);
