@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLIntf, Buttons, Controls, ExtCtrls, ActnList,
-  PropertyStorage, Menus, Forms, types, Graphics, ImgList;
+  PropertyStorage, Menus, Forms, types, Graphics;
 
 const
   DefButtonWidth = 24;
@@ -30,7 +30,7 @@ type
 
   TToolbarButtonActionLink = class(TSpeedButtonActionLink)
   protected
-    procedure SetImageIndex(Value: TImageIndex); override;
+    procedure SetImageIndex(Value: Integer); override;
     function IsImageIndexLinked: Boolean; override;
     procedure SetEnabled(Value: Boolean); override;
     procedure SetCaption(const Value: string); override;
@@ -1350,7 +1350,7 @@ end;
 
 { TToolbarButtonActionLink }
 
-procedure TToolbarButtonActionLink.SetImageIndex(Value: TImageIndex);
+procedure TToolbarButtonActionLink.SetImageIndex(Value: Integer);
 begin
   FClient.Invalidate;
 end;
