@@ -844,7 +844,7 @@ begin
       if Boolean(RecBuf[0]) then Move(Buffer^, RecBuf[1], DataSize);
     end;
     if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
-      DataEvent(deFieldChange, Longint(Field));
+      DataEvent(deFieldChange, ptrint(Field));
   end;
 end;
 
@@ -1506,7 +1506,7 @@ begin
   if FOpened and FModified then FField.Modified := True;
   if FModified then
   try
-    FDataSet.DataEvent(deFieldChange, Longint(FField));
+    FDataSet.DataEvent(deFieldChange, ptrint(FField));
   except
     Application.HandleException(Self);
   end;
