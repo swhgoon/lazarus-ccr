@@ -36,11 +36,14 @@ type
     procedure Execute(const AMode : TParserMode; const AModuleName : string);
   end;
 
+  { TWsdlParser }
+
   TWsdlParser = class(TInterfacedObject, IInterface, IParserContext, IParser)
   private
     FDoc : TXMLDocument;
     FSymbols : TwstPasTreeContainer;
     FModule : TPasModule;
+    FDocumentLocator : IDocumentLocator;
   private
     FTargetNameSpace : string;
     FNameSpaceList : TStringList;
@@ -88,6 +91,8 @@ type
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
     function GetTargetNameSpace() : string;
     function GetTargetModule() : TPasModule;
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
   public
     constructor Create(
             ADoc : TXMLDocument;
@@ -282,6 +287,16 @@ end;
 function TWsdlParser.GetTargetModule() : TPasModule;
 begin
   Result := FModule;
+end;
+
+function TWsdlParser.GetDocumentLocator(): IDocumentLocator;
+begin
+  Result := FDocumentLocator;
+end;
+
+procedure TWsdlParser.SetDocumentLocator(const ALocator: IDocumentLocator);
+begin
+  FDocumentLocator := ALocator;
 end;
 
 function TWsdlParser.GetTargetNameSpace() : string;
@@ -1248,14 +1263,19 @@ procedure TWsdlParser.Prepare(const AModuleName: string);
   var
     locDomObj : TDOMNode;
     locPrs : IXsdPaser;
+    locPrsCtx : IParserContext;
     ns : string;
+    locDocLocator : IDocumentLocator;
   begin
     if Assigned(FSchemaCursor) then begin
+      locDocLocator := GetDocumentLocator();
       FSchemaCursor.Reset();
       while FSchemaCursor.MoveNext() do begin
         locDomObj := (FSchemaCursor.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
         locPrs := TWsdlSchemaParser.Create(FDoc,locDomObj,FSymbols,Self);
         locPrs.SetNotifier(FOnMessage);
+        locPrsCtx := locPrs as IParserContext;
+        locPrsCtx.SetDocumentLocator(locDocLocator);
         ns := (locPrs as IParserContext).GetTargetNameSpace();
         FXsdParsers.AddObject(ns,TIntfObjectRef.Create(locPrs));
       end;

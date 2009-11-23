@@ -43,7 +43,8 @@ uses
   xsd_parser,
   ws_parser_imp,
   wsdl_parser,
-  xsd_generator, wsdl_generator;
+  xsd_generator, wsdl_generator,
+  locators;
 
   
 {$INCLUDE ws_helper_prog.inc}

@@ -42,6 +42,13 @@ type
 
   TOnParserMessage = procedure (const AMsgType : TMessageType; const AMsg : string) of object;
 
+  IDocumentLocator = interface
+    ['{F063700B-C0ED-4C54-9A54-C97030E80BD4}']
+    function Find(
+      const ADocLocation : string;
+      out   ADoc : TXMLDocument
+    ) : Boolean;
+  end;
 
   IParserContext = interface
     ['{F400BA9E-41AC-456C-ABF9-CEAA75313685}']
@@ -51,6 +58,8 @@ type
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
     function GetTargetNameSpace() : string;
     function GetTargetModule() : TPasModule;
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
   end;
 
   IXsdPaser = interface
@@ -83,6 +92,8 @@ type
     FXSShortNames : TStrings;
     FChildCursor : IObjectCursor;
     FOnMessage: TOnParserMessage;
+    FDocumentLocator : IDocumentLocator;
+    FImportParsed : Boolean;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
   private
@@ -96,18 +107,22 @@ type
     function FindNameSpace(const AShortName : string; out AResult : string) : Boolean;
     function FindShortNamesForNameSpaceLocal(const ANameSpace : string) : TStrings;
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
+    function GetDocumentLocator() : IDocumentLocator;
+    procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+
     procedure SetNotifier(ANotifier : TOnParserMessage);
     function InternalParseType(
       const AName : string;
       const ATypeNode : TDOMNode
     ) : TPasType;
+    procedure ParseImportDocuments(); virtual;
   public
     constructor Create(
       ADoc           : TXMLDocument;
       ASchemaNode    : TDOMNode;
       ASymbols       : TwstPasTreeContainer;
       AParentContext : IParserContext
-    );
+    ); virtual;
     destructor Destroy();override;
     function ParseType(
       const AName,
@@ -127,6 +142,7 @@ type
     property Module : TPasModule read FModule;
     property OnMessage : TOnParserMessage read FOnMessage write FOnMessage;
   end;
+  TCustomXsdSchemaParserClass = class of TCustomXsdSchemaParser;
 
   TXsdParser = class(TCustomXsdSchemaParser)
   public
@@ -144,6 +160,14 @@ uses ws_parser_imp, dom_cursors, parserutils, xsd_consts
      ,wst_fpc_xml
 {$ENDIF}
      ;
+
+function NodeValue(const ANode : TDOMNode) : DOMString;{$IFDEF USE_INLINE}inline;{$ENDIF}
+begin
+  if ( ANode = nil ) then
+    Result := ''
+  else
+    Result := ANode.NodeValue;
+end;
 
 { TCustomXsdSchemaParser }
 
@@ -204,6 +228,57 @@ begin
   Result := SymbolTable.FindElementInModule(AName,FModule);
   if ( Result = nil ) then
     Result := SymbolTable.FindElement(AName);
+end;
+
+procedure TCustomXsdSchemaParser.ParseImportDocuments();
+var
+  crsSchemaChild, typTmpCrs : IObjectCursor;
+  strFilter, locFileName, locNameSpace : string;
+  importNode : TDOMElement;
+  importDoc : TXMLDocument;
+  locParser : IXsdPaser;
+  locOldCurrentModule : TPasModule;
+  locContinue : Boolean;
+begin
+  if FImportParsed then
+    Exit;
+  if ( FDocumentLocator = nil ) then
+    Exit;
+
+  FImportParsed := True;
+  if Assigned(FChildCursor) then begin
+    locOldCurrentModule := SymbolTable.CurrentModule;
+    try
+      crsSchemaChild := FChildCursor.Clone() as IObjectCursor;
+      strFilter := CreateQualifiedNameFilterStr(s_import,FXSShortNames);
+      crsSchemaChild := CreateCursorOn(crsSchemaChild,ParseFilter(strFilter,TDOMNodeRttiExposer));
+      crsSchemaChild.Reset();
+      while crsSchemaChild.MoveNext() do begin
+        importNode := (crsSchemaChild.GetCurrent() as TDOMNodeRttiExposer).InnerObject as TDOMElement;
+        if ( importNode.Attributes <> nil ) and ( importNode.Attributes.Length > 0 ) then begin
+          locFileName := NodeValue(importNode.Attributes.GetNamedItem(s_schemaLocation));
+          if ( not IsStrEmpty(locFileName) ) and
+             FDocumentLocator.Find(locFileName,importDoc)
+          then begin
+            locNameSpace := NodeValue(importNode.Attributes.GetNamedItem(s_namespace));
+            locContinue := IsStrEmpty(locNameSpace) or ( SymbolTable.FindModule(locNameSpace) = nil );
+            if locContinue then begin
+              locParser := TCustomXsdSchemaParserClass(Self.ClassType).Create(
+                             importDoc,
+                             importDoc.DocumentElement,
+                             SymbolTable,
+                             Self as IParserContext
+                           );
+              locParser.SetNotifier(FOnMessage);
+              locParser.ParseTypes();
+            end;
+          end;
+        end;
+      end;
+    finally
+      SymbolTable.SetCurrentModule(locOldCurrentModule);
+    end;
+  end;
 end;
 
 function TCustomXsdSchemaParser.FindNamedNode(
@@ -276,6 +351,16 @@ begin
     if Assigned(prtCtx) then
       Result := prtCtx.FindShortNamesForNameSpace(ANameSpace);
   end;
+end;
+
+function TCustomXsdSchemaParser.GetDocumentLocator(): IDocumentLocator;
+begin
+  Result := FDocumentLocator;
+end;
+
+procedure TCustomXsdSchemaParser.SetDocumentLocator(const ALocator: IDocumentLocator);
+begin
+  FDocumentLocator := ALocator;
 end;
 
 procedure TCustomXsdSchemaParser.SetNotifier(ANotifier: TOnParserMessage);
@@ -476,6 +561,8 @@ var
   typeModule : TPasModule;
   locTypeNodeFound : Boolean;
 begin
+  if not FImportParsed then
+    ParseImportDocuments();
   sct := nil;
   DoOnMessage(mtInfo, Format('Parsing "%s" ...',[AName]));
   try

@@ -46,6 +46,7 @@ const
   s_enumeration                : WideString = 'enumeration';
   s_extension                  : WideString = 'extension';
   s_guid                       : WideString = 'GUID';
+  s_import                                  = 'import';
   s_input                      : WideString = 'input';
   s_item                       : WideString = 'item';
   s_literal                                 = 'literal';
@@ -71,6 +72,7 @@ const
   //s_return                     : WideString = 'return';
   s_rpc                                     = 'rpc';
   s_schema                     : WideString = 'schema';
+  s_schemaLocation                          = 'schemaLocation';
   s_xs                         : WideString = 'http://www.w3.org/2001/XMLSchema';
   s_xs_short                                = 'xsd';
   s_sequence                   : WideString = 'sequence';

@@ -21,7 +21,7 @@ uses
 {$ELSE}
   TestFrameWork, xmldom, wst_delphi_xml,
 {$ENDIF}
-  pastree, pascal_parser_intf, xsd_parser, wsdl_parser, test_suite_utils;
+  pastree, pascal_parser_intf, xsd_parser, wsdl_parser, test_suite_utils, wst_types;
 
 type
 
@@ -61,6 +61,8 @@ type
     function load_class_ansichar_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_widechar_property() : TwstPasTreeContainer;virtual;abstract;
     function load_class_currency_property() : TwstPasTreeContainer;virtual;abstract;
+
+    function load_schema_import() : TwstPasTreeContainer;virtual;abstract;
   published
     procedure EmptySchema();
 
@@ -98,6 +100,8 @@ type
     procedure class_ansichar_property();
     procedure class_widechar_property();
     procedure class_currency_property();
+
+    procedure schema_import();
   end;
 
   { TTest_XsdParser }
@@ -139,6 +143,8 @@ type
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
     function load_class_currency_property() : TwstPasTreeContainer;override;
+
+    function load_schema_import() : TwstPasTreeContainer;override;
   end;
 
   { TTest_WsdlParser }
@@ -179,7 +185,9 @@ type
     function load_class_widestring_property() : TwstPasTreeContainer;override;
     function load_class_ansichar_property() : TwstPasTreeContainer;override;
     function load_class_widechar_property() : TwstPasTreeContainer;override;
-    function load_class_currency_property() : TwstPasTreeContainer;override; 
+    function load_class_currency_property() : TwstPasTreeContainer;override;
+
+    function load_schema_import() : TwstPasTreeContainer;override;
   published
     procedure no_binding_style();
     procedure signature_last();
@@ -193,7 +201,7 @@ type
   end;
   
 implementation
-uses parserutils, xsd_consts, typinfo;
+uses parserutils, xsd_consts, typinfo, locators;
 
 const
   x_complexType_SampleArrayIntFieldType     = 'TArrayIntFieldType';
@@ -1904,12 +1912,56 @@ begin
   end;
 end;
 
+procedure TTest_CustomXsdParser.schema_import();
+const
+  s_base_namespace = 'urn:base-library';
+  s_base_type = 'SampleBase_Type';
+  s_second_namespace = 'urn:second-library';
+  s_second_type = 'Second_Type';
+var
+  tr : TwstPasTreeContainer;
+  mdl : TPasModule;
+  ls : TList;
+  elt, prpElt : TPasElement;
+  prp : TPasProperty;
+  baseType, scdClass : TPasClassType;
+begin
+  tr := load_schema_import();
+
+  mdl := tr.FindModule(s_base_namespace);
+  CheckNotNull(mdl,s_base_namespace);
+  ls := mdl.InterfaceSection.Declarations;
+  CheckEquals(1,ls.Count);
+  elt := tr.FindElement(s_base_type);
+    CheckNotNull(elt,s_base_type);
+    CheckIs(elt,TPasClassType);
+    baseType := TPasClassType(elt);
+
+  mdl := tr.FindModule(s_second_namespace);
+  CheckNotNull(mdl,s_second_namespace);
+  ls := mdl.InterfaceSection.Declarations;
+  CheckEquals(1,ls.Count);
+  elt := tr.FindElement(s_second_type);
+    CheckNotNull(elt,s_second_type);
+    CheckIs(elt,TPasClassType);
+    scdClass := TPasClassType(elt);
+    prpElt := FindMember(scdClass,'SampleProperty');
+    CheckNotNull(prpElt);
+    CheckIs(prpElt,TPasProperty);
+    prp := TPasProperty(prpElt);
+    CheckNotNull(prp.VarType);
+    CheckEquals(PtrUInt(prp.VarType),PtrUInt(prp.VarType));
+
+  FreeAndNil(tr);
+end;
+
 { TTest_XsdParser }
 
 function TTest_XsdParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
 var
   locDoc : TXMLDocument;
   prs : IXsdPaser;
+  prsCtx : IParserContext;
   fileName : string;
 begin
   fileName := wstExpandLocalFileName(TestFilesPath + ADoc + '.xsd');
@@ -1918,6 +1970,8 @@ begin
     Result := TwstPasTreeContainer.Create();
     CreateWstInterfaceSymbolTable(Result);
     prs := TXsdParser.Create(locDoc,Result,ADoc);
+    prsCtx := prs as IParserContext;
+    prsCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(fileName)));
     prs.ParseTypes();
   finally
     ReleaseDomNode(locDoc);
@@ -2039,6 +2093,11 @@ begin
   Result := ParseDoc('class_currency_property');    
 end;
 
+function TTest_XsdParser.load_schema_import(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('import_second_library');
+end;
+
 function TTest_XsdParser.load_class_widechar_property() : TwstPasTreeContainer;
 begin
   Result := ParseDoc('class_widechar_property');
@@ -2060,6 +2119,7 @@ function TTest_WsdlParser.ParseDoc(const ADoc: string): TwstPasTreeContainer;
 var
   locDoc : TXMLDocument;
   prs : IParser;
+  prsCtx : IParserContext;
   fileName : string;
 begin
   fileName := wstExpandLocalFileName(TestFilesPath + ADoc + '.wsdl');
@@ -2068,6 +2128,8 @@ begin
     Result := TwstPasTreeContainer.Create();
     CreateWstInterfaceSymbolTable(Result);
     prs := TWsdlParser.Create(locDoc,Result);
+    prsCtx := prs as IParserContext;
+    prsCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(fileName)));
     prs.Execute(pmAllTypes,ADoc);
   finally
     ReleaseDomNode(locDoc);
@@ -2631,6 +2693,11 @@ end;
 function TTest_WsdlParser.load_class_currency_property() : TwstPasTreeContainer;  
 begin
   Result := ParseDoc('class_currency_property');
+end;
+
+function TTest_WsdlParser.load_schema_import(): TwstPasTreeContainer;
+begin
+  Result := ParseDoc('import_second_library');
 end;
 
 initialization

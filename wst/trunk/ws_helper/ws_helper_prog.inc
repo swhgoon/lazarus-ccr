@@ -106,14 +106,17 @@ var
     var
       locDoc : TXMLDocument;
       prsr : IXsdPaser;
+      prsrCtx : IParserContext;
     begin
       prsr := nil;
       ReadXMLFile(locDoc,inFileName);
 {$IFNDEF WST_INTF_DOM}
       try
 {$ENDIF}
-      prsr := TXsdParser.Create(locDoc,symtable,ChangeFileExt(ExtractFileName(inFileName),'')) as IXsdPaser;
-      prsr.ParseTypes();
+        prsr := TXsdParser.Create(locDoc,symtable,ChangeFileExt(ExtractFileName(inFileName),'')) as IXsdPaser;
+        prsrCtx := prsr as IParserContext;
+        prsrCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(ExpandFileName(inFileName))));
+        prsr.ParseTypes();
 {$IFNDEF WST_INTF_DOM}
       finally
         ReleaseDomNode(locDoc);
