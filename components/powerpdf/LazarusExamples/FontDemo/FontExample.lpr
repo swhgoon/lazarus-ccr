@@ -7,7 +7,7 @@ uses
   Forms,
   UFontExample in 'UFontExample.pas' {Form1};
 
-{$R *.RES}
+{$R *.res}
 
 begin
   Application.Initialize;

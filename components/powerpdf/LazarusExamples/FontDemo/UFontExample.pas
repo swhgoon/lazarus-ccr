@@ -88,9 +88,7 @@ type
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
   private
-    { Private éŒ¾ }
   public
-    { Public éŒ¾ }
   end;
 
 var
