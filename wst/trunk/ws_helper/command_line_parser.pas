@@ -30,7 +30,7 @@ Type
     cloInterface, cloProxy, cloImp, cloBinder, cloWsdl, cloXsd,
     cloOutPutDirRelative, cloOutPutDirAbsolute, cloHandleWrappedParameters,
     cloGenerateDocAsComments, cloGenerateObjectCollection,
-    cloFileRenaming
+    cloFileRenaming, cloPrefixEnum
   );
   TComandLineOptions = set of TComandLineOption;
 
@@ -81,9 +81,14 @@ begin
       'd' : Include(AAppOptions,cloGenerateDocAsComments);
       'g' :
         begin
-          Include(AAppOptions,cloGenerateObjectCollection);
-          OptionsArgsMAP[cloGenerateObjectCollection] := OptArg;
-        end;       
+          if ( Pos('A',OptArg) = 1 ) or ( Pos('C',OptArg) = 1 ) then begin
+            Include(AAppOptions,cloGenerateObjectCollection);
+            OptionsArgsMAP[cloGenerateObjectCollection] := OptArg;
+          end else if ( Pos('E',OptArg) = 1 ) then begin
+            Include(AAppOptions,cloPrefixEnum);
+            OptionsArgsMAP[cloPrefixEnum] := OptArg;
+          end;
+        end;
       'f' :
         begin
           Include(AAppOptions,cloFileRenaming);

@@ -50,6 +50,10 @@ type
     ) : Boolean;
   end;
 
+  TParserOption = (
+    poEnumAlwaysPrefix // Always prefix enum item with the enum name
+  );
+  TParserOptions = set of TParserOption;
   IParserContext = interface
     ['{F400BA9E-41AC-456C-ABF9-CEAA75313685}']
     function GetXsShortNames() : TStrings;
@@ -60,6 +64,8 @@ type
     function GetTargetModule() : TPasModule;
     function GetDocumentLocator() : IDocumentLocator;
     procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    function GetSimpleOptions() : TParserOptions;
+    procedure SetSimpleOptions(const AValue : TParserOptions);
   end;
 
   IXsdPaser = interface
@@ -93,6 +99,7 @@ type
     FChildCursor : IObjectCursor;
     FOnMessage: TOnParserMessage;
     FDocumentLocator : IDocumentLocator;
+    FSimpleOptions : TParserOptions;
     FImportParsed : Boolean;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
@@ -109,6 +116,8 @@ type
     function FindShortNamesForNameSpace(const ANameSpace : string) : TStrings;
     function GetDocumentLocator() : IDocumentLocator;
     procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    function GetSimpleOptions() : TParserOptions;
+    procedure SetSimpleOptions(const AValue : TParserOptions);
 
     procedure SetNotifier(ANotifier : TOnParserMessage);
     function InternalParseType(
@@ -361,6 +370,17 @@ end;
 procedure TCustomXsdSchemaParser.SetDocumentLocator(const ALocator: IDocumentLocator);
 begin
   FDocumentLocator := ALocator;
+end;
+
+function TCustomXsdSchemaParser.GetSimpleOptions(): TParserOptions;
+begin
+  Result := FSimpleOptions;
+end;
+
+procedure TCustomXsdSchemaParser.SetSimpleOptions(const AValue: TParserOptions);
+begin
+  if ( AValue <> FSimpleOptions ) then
+    FSimpleOptions := AValue;
 end;
 
 procedure TCustomXsdSchemaParser.SetNotifier(ANotifier: TOnParserMessage);

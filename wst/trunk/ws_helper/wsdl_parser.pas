@@ -59,6 +59,7 @@ type
     FTypesCursor : IObjectCursor;
     FSchemaCursor : IObjectCursor;
     FOnMessage: TOnParserMessage;
+    FSimpleOptions : TParserOptions;
   private
     procedure DoOnMessage(const AMsgType : TMessageType; const AMsg : string);
     function AddNameSpace(const AValue : string) : TStrings;
@@ -93,6 +94,8 @@ type
     function GetTargetModule() : TPasModule;
     function GetDocumentLocator() : IDocumentLocator;
     procedure SetDocumentLocator(const ALocator : IDocumentLocator);
+    function GetSimpleOptions() : TParserOptions;
+    procedure SetSimpleOptions(const AValue : TParserOptions);
   public
     constructor Create(
             ADoc : TXMLDocument;
@@ -297,6 +300,17 @@ end;
 procedure TWsdlParser.SetDocumentLocator(const ALocator: IDocumentLocator);
 begin
   FDocumentLocator := ALocator;
+end;
+
+function TWsdlParser.GetSimpleOptions(): TParserOptions;
+begin
+  Result := FSimpleOptions;
+end;
+
+procedure TWsdlParser.SetSimpleOptions(const AValue: TParserOptions);
+begin
+  if ( AValue <> FSimpleOptions ) then
+    FSimpleOptions := AValue;
 end;
 
 function TWsdlParser.GetTargetNameSpace() : string;
@@ -819,6 +833,7 @@ begin
   locMthd := nil;
   if not ExtractOperationName(mthdName) then
     raise EXsdParserAssertException.CreateFmt('Operation Attribute not found : "%s"',[s_name]);
+  DoOnMessage(mtInfo,Format('Parsing operation "%s"',[mthdName]));
   if SameText(s_document,ASoapBindingStyle) then begin
     ExtractMethod(mthdName,locMthd);
     if ( locMthd <> nil ) then begin
@@ -1151,6 +1166,7 @@ begin
   ansiStrBuffer := locObj.NodeValue;
   elt := SymbolTable.FindElementInModule(ansiStrBuffer,SymbolTable.CurrentModule);
   if ( elt = nil ) then begin
+    DoOnMessage(mtInfo,Format('Parsing the port type "%s"',[ansiStrBuffer]));
     locIntf := TPasClassType(SymbolTable.CreateElement(TPasClassType,ansiStrBuffer,SymbolTable.CurrentModule.InterfaceSection,visDefault,'',0));
     FModule.InterfaceSection.Declarations.Add(locIntf);
     FModule.InterfaceSection.Types.Add(locIntf);
@@ -1276,6 +1292,7 @@ procedure TWsdlParser.Prepare(const AModuleName: string);
         locPrs.SetNotifier(FOnMessage);
         locPrsCtx := locPrs as IParserContext;
         locPrsCtx.SetDocumentLocator(locDocLocator);
+        locPrsCtx.SetSimpleOptions(Self.GetSimpleOptions());
         ns := (locPrs as IParserContext).GetTargetNameSpace();
         FXsdParsers.AddObject(ns,TIntfObjectRef.Create(locPrs));
       end;

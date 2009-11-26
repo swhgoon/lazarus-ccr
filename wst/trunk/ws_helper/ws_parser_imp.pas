@@ -51,7 +51,7 @@ type
     ) : TPasElement;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function FindElementWithHint(const AName, AHint : string; const ASpace : TSearchSpace) : TPasElement;
     function ExtractTypeHint(AElement : TDOMNode) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
-    procedure SetAsEmbeddedType(AType : TPasType);
+    procedure SetAsEmbeddedType(AType : TPasType; const AValue : Boolean);
     function IsEmbeddedType(AType : TPasType) : Boolean;
 {$IFDEF WST_HANDLE_DOC}
     procedure ParseDocumentation(AType : TPasType);
@@ -75,6 +75,7 @@ type
     class function GetRegisteredParser(const AIndex : Integer):TAbstractTypeParserClass;
     function Parse():TPasType;virtual;abstract;
     property Module : TPasModule read GetModule;
+    property Context : IParserContext read FContext;
   end;
 
   TDerivationMode = ( dmNone, dmExtension, dmRestriction );
@@ -310,7 +311,7 @@ begin
   if ( ASpaceType = nvtExpandValue ) then begin
     locNS := ANameSpace
   end else begin
-    if not FContext.FindNameSpace(ANameSpace,locNS) then
+    if not Context.FindNameSpace(ANameSpace,locNS) then
       raise EXsdParserAssertException.CreateFmt(SERR_CannotResolveNamespace,[ANameSpace]);
   end;
   Result := FSymbols.FindElementNS(ALocalName,locNS);
@@ -318,7 +319,7 @@ end;
 
 function TAbstractTypeParser.GetModule : TPasModule;
 begin
-  Result := FContext.GetTargetModule();
+  Result := Context.GetTargetModule();
 end;
 
 function TAbstractTypeParser.FindElement(
@@ -351,13 +352,19 @@ end;
 
 function TAbstractTypeParser.ExtractTypeHint(AElement: TDOMNode): string;
 begin
-  if not wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_typeHint,Result) then
+  if not wst_findCustomAttributeXsd(Context.GetXsShortNames(),AElement,s_WST_typeHint,Result) then
     Result := '';
 end;
 
-procedure TAbstractTypeParser.SetAsEmbeddedType(AType : TPasType); 
+procedure TAbstractTypeParser.SetAsEmbeddedType(AType : TPasType; const AValue : Boolean);
+var
+  s : string;
 begin
-  FSymbols.Properties.SetValue(AType,sEMBEDDED_TYPE,'1');
+  if AValue then
+    s := '1'
+  else
+    s := '';
+  FSymbols.Properties.SetValue(AType,sEMBEDDED_TYPE,s);
 end;
 
 function TAbstractTypeParser.IsEmbeddedType(AType : TPasType) : Boolean; 
@@ -377,14 +384,14 @@ begin
   if FTypeNode.HasChildNodes() then begin
     tmpCursor := CreateCursorOn(
                    CreateChildrenCursor(FTypeNode,cetRttiNode),
-                   ParseFilter(CreateQualifiedNameFilterStr(s_annotation,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                   ParseFilter(CreateQualifiedNameFilterStr(s_annotation,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                  );
     if ( tmpCursor <> nil ) then begin
       tmpCursor.Reset();
       if tmpCursor.MoveNext() then begin
         tmpCursor := CreateCursorOn(
                        CreateChildrenCursor(TDOMNodeRttiExposer(tmpCursor.GetCurrent()).InnerObject,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_documentation,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                       ParseFilter(CreateQualifiedNameFilterStr(s_documentation,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                      );
         if ( tmpCursor <> nil ) then begin
           tmpCursor.Reset();
@@ -430,7 +437,7 @@ var
   begin
     locTmpCrs := CreateCursorOn(
                    frstCrsr.Clone() as IObjectCursor,
-                   ParseFilter(CreateQualifiedNameFilterStr(s_all,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                   ParseFilter(CreateQualifiedNameFilterStr(s_all,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                  );
     locTmpCrs.Reset();
     if locTmpCrs.MoveNext() then begin
@@ -439,7 +446,7 @@ var
       if  locTmpNode.HasChildNodes() then begin
         locTmpCrs := CreateCursorOn(
                        CreateChildrenCursor(locTmpNode,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                       ParseFilter(CreateQualifiedNameFilterStr(s_element,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                      );
         Result := locTmpCrs;
       end;
@@ -454,7 +461,7 @@ var
     ARes := nil;
     tmpCursor := CreateCursorOn(
                    frstCrsr.Clone() as IObjectCursor,
-                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                   ParseFilter(CreateQualifiedNameFilterStr(s_sequence,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                  );
     tmpCursor.Reset();
     Result := tmpCursor.MoveNext();
@@ -464,12 +471,12 @@ var
       if  tmpNode.HasChildNodes() then begin
         tmpCursor := CreateCursorOn(
                        CreateChildrenCursor(tmpNode,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_element,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                       ParseFilter(CreateQualifiedNameFilterStr(s_element,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                      );
         ARes := tmpCursor;
         tmpCursor := CreateCursorOn(
                        CreateChildrenCursor(tmpNode,cetRttiNode),
-                       ParseFilter(CreateQualifiedNameFilterStr(s_any,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                       ParseFilter(CreateQualifiedNameFilterStr(s_any,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                      );
         tmpCursor.Reset();
         if tmpCursor.MoveNext() then
@@ -494,13 +501,13 @@ begin
   if parentNode.HasChildNodes() then begin;
     AAttCursor := CreateCursorOn(
                    CreateChildrenCursor(parentNode,cetRttiNode),
-                   ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                   ParseFilter(CreateQualifiedNameFilterStr(s_attribute,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                  );
     crs := CreateChildrenCursor(parentNode,cetRttiNode);
     if ( crs <> nil ) then begin
       crs := CreateCursorOn(
                crs,
-               ParseFilter(CreateQualifiedNameFilterStr(s_anyAttribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+               ParseFilter(CreateQualifiedNameFilterStr(s_anyAttribute,Context.GetXsShortNames()),TDOMNodeRttiExposer)
              );
       if ( crs <> nil ) then begin
         crs.Reset();
@@ -531,12 +538,12 @@ begin
       e := ls.Item[k];
       if ( Pos(':', e.NodeName) > 1 ) then begin
         ExplodeQName(e.NodeName,localName,ns_short);
-        if FContext.FindNameSpace(ns_short, ns_long) then begin
+        if Context.FindNameSpace(ns_short, ns_long) then begin
           locBuffer := e.NodeValue;
           ExplodeQName(locBuffer,locBufferLocalName,locBufferNS);
           if IsStrEmpty(locBufferNS) then
             locBuffer := locBufferLocalName
-          else if FContext.FindNameSpace(locBufferNS, locBufferNS_long) then
+          else if Context.FindNameSpace(locBufferNS, locBufferNS_long) then
             locBuffer := Format('%s#%s',[locBufferNS_long,locBufferLocalName]);
           FSymbols.Properties.SetValue(AItem,Format('%s#%s',[ns_long,localName]),locBuffer);
         end;
@@ -596,7 +603,7 @@ begin
   end;
   crs := CreateCursorOn(
            CreateChildrenCursor(FDerivationNode,cetRttiNode),
-           ParseFilter(CreateQualifiedNameFilterStr(s_attribute,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+           ParseFilter(CreateQualifiedNameFilterStr(s_attribute,Context.GetXsShortNames()),TDOMNodeRttiExposer)
          );
   ls := TStringList.Create();
   try
@@ -650,14 +657,14 @@ function TComplexTypeParser.IsHeaderBlock() : Boolean;
 var
   strBuffer : string;
 begin
-  Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+  Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),FTypeNode,s_WST_headerBlock,strBuffer) and AnsiSameText('true',Trim(strBuffer));
 end;
 
 function TComplexTypeParser.IsSimpleContentHeaderBlock() : Boolean;
 var
   strBuffer : string;
 begin
-  Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_headerBlockSimpleContent,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+  Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),FTypeNode,s_WST_headerBlockSimpleContent,strBuffer) and AnsiSameText('true',Trim(strBuffer));
 end;
 
 procedure TComplexTypeParser.CreateNodeCursors();
@@ -692,7 +699,7 @@ begin
   if Assigned(FChildCursor) then begin
     locCrs := CreateCursorOn(
                 FChildCursor.Clone() as IObjectCursor,
-                ParseFilter(CreateQualifiedNameFilterStr(s_complexContent,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                ParseFilter(CreateQualifiedNameFilterStr(s_complexContent,Context.GetXsShortNames()),TDOMNodeRttiExposer)
               );
     if Assigned(locCrs) then begin
       locCrs.Reset();
@@ -702,7 +709,7 @@ begin
       end else begin
         locCrs := CreateCursorOn(
                     FChildCursor.Clone() as IObjectCursor,
-                    ParseFilter(CreateQualifiedNameFilterStr(s_simpleContent,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                    ParseFilter(CreateQualifiedNameFilterStr(s_simpleContent,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                   );
         locCrs.Reset();
         if locCrs.MoveNext() then begin
@@ -725,7 +732,7 @@ var
   locBaseTypeLocalSpace, locBaseTypeLocalName, locBaseTypeInternalName, locFilterStr : string;
   locBaseTypeLocalSpaceExpanded : string;
 begin
-  locFilterStr := CreateQualifiedNameFilterStr(s_extension,FContext.GetXsShortNames());
+  locFilterStr := CreateQualifiedNameFilterStr(s_extension,Context.GetXsShortNames());
   locContentChildCrs := CreateChildrenCursor(FContentNode,cetRttiNode);
   locCrs := CreateCursorOn(
               locContentChildCrs.Clone() as IObjectCursor,
@@ -736,7 +743,7 @@ begin
     FDerivationMode := dmExtension;
     FDerivationNode := (locCrs.GetCurrent() as TDOMNodeRttiExposer).InnerObject;
   end else begin
-    locFilterStr := CreateQualifiedNameFilterStr(s_restriction,FContext.GetXsShortNames());
+    locFilterStr := CreateQualifiedNameFilterStr(s_restriction,Context.GetXsShortNames());
     locCrs := CreateCursorOn(
                 locContentChildCrs.Clone() as IObjectCursor,
                 ParseFilter(locFilterStr,TDOMNodeRttiExposer)
@@ -779,7 +786,7 @@ begin
     end else begin
       if ( FDerivationMode = dmRestriction ) and
          ( locBaseTypeLocalName = 'Array' ) and
-         ( FContext.FindNameSpace(locBaseTypeLocalSpace,locBaseTypeLocalSpaceExpanded) and
+         ( Context.FindNameSpace(locBaseTypeLocalSpace,locBaseTypeLocalSpaceExpanded) and
            ( locBaseTypeLocalSpaceExpanded = s_soapEncodingNameSpace )
          )
       then begin
@@ -808,7 +815,7 @@ var
   var
     strBuffer : string;
   begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),AElement,s_WST_collection,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+    Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),AElement,s_WST_collection,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
 
   procedure ParseElement(AElement : TDOMNode);
@@ -856,7 +863,7 @@ var
         locTypeHint := ExtractTypeHint(AElement);
       end else begin
         locTypeName := Format('%s_%s_Type',[FTypeName,locName]);
-        locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(FContext,AElement,FSymbols,locTypeName);
+        locType := TAbstractTypeParser.ExtractEmbeddedTypeFromElement(Context,AElement,FSymbols,locTypeName);
         if ( locType = nil ) then begin
           raise EXsdInvalidElementDefinitionException.CreateFmt('Invalid <element> definition : unable to determine the type.'#13'Type name : "%s"; Element name :"%s".',[FTypeName,locName]);
         end;
@@ -979,7 +986,7 @@ var
   var
     strBuffer : string;
   begin
-    Result := wst_findCustomAttributeXsd(FContext.GetXsShortNames(),FTypeNode,s_WST_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
+    Result := wst_findCustomAttributeXsd(Context.GetXsShortNames(),FTypeNode,s_WST_record,strBuffer) and AnsiSameText('true',Trim(strBuffer));
   end;
   
   procedure ParseElementsAndAttributes(AEltCrs, AEltAttCrs : IObjectCursor);
@@ -1213,7 +1220,7 @@ function TComplexTypeParser.ParseSimpleContent(const ATypeName : string) : TPasT
     Result := nil;
     parentNode := FContentNode;
     if parentNode.HasChildNodes() then begin;
-      xsShortNameList := FContext.GetXsShortNames();
+      xsShortNameList := Context.GetXsShortNames();
       frstCrsr := CreateChildrenCursor(parentNode,cetRttiNode);
       locFilterStr := CreateQualifiedNameFilterStr(s_extension,xsShortNameList) + ' or ' +
                       CreateQualifiedNameFilterStr(s_restriction,xsShortNameList) ;
@@ -1407,6 +1414,10 @@ begin
       else
         Result := ParseSimpleContent(FTypeName);
     end;
+    if ( Result <> nil ) then begin
+      if ( IsEmbeddedType(Result) <> FEmbededDef ) then
+        SetAsEmbeddedType(Result,FEmbededDef);
+    end;
 {$IFDEF WST_HANDLE_DOC}
     if ( Result <> nil ) then
       ParseDocumentation(Result);
@@ -1448,7 +1459,7 @@ var
 begin
   locCrs := CreateCursorOn(
               FChildCursor.Clone() as IObjectCursor,
-              ParseFilter(CreateQualifiedNameFilterStr(s_restriction,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+              ParseFilter(CreateQualifiedNameFilterStr(s_restriction,Context.GetXsShortNames()),TDOMNodeRttiExposer)
             );
   locCrs.Reset();
   if locCrs.MoveNext() then begin
@@ -1466,14 +1477,14 @@ begin
     FBaseNameSpace := '';
     if Assigned(tmpNode) then begin
       ExplodeQName(tmpNode.NodeValue,FBaseName,spaceShort);
-      if not FContext.FindNameSpace(spaceShort,FBaseNameSpace) then
+      if not Context.FindNameSpace(spaceShort,FBaseNameSpace) then
         raise EXsdParserAssertException.CreateFmt(SERR_CannotResolveNamespace,[spaceShort]);
     end;
     locCrs := CreateChildrenCursor(FRestrictionNode,cetRttiNode) as IObjectCursor;
     if Assigned(locCrs) then begin
       locCrs := CreateCursorOn(
                   locCrs,
-                  ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                  ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,Context.GetXsShortNames()),TDOMNodeRttiExposer)
                 );
       locCrs.Reset();
       if locCrs.MoveNext() then begin
@@ -1501,13 +1512,14 @@ function TSimpleTypeParser.ParseEnumContent(): TPasType;
   begin
     Result := CreateCursorOn(
                 CreateChildrenCursor(FRestrictionNode,cetRttiNode),
-                ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,FContext.GetXsShortNames()),TDOMNodeRttiExposer)
+                ParseFilter(CreateQualifiedNameFilterStr(s_enumeration,Context.GetXsShortNames()),TDOMNodeRttiExposer)
               );
   end;
   
 var
   locRes : TPasEnumType;
   locOrder : Integer;
+  prefixItems : Boolean;
   
   procedure ParseEnumItem(AItemNode : TDOMNode);
   var
@@ -1533,7 +1545,8 @@ var
     locInternalItemName := ExtractIdentifier(locItemName);
     if IsStrEmpty(locInternalItemName) then
       locInternalItemName := 'EmptyItem';
-    locHasInternalName := IsReservedKeyWord(locInternalItemName) or
+    locHasInternalName := prefixItems or
+                          IsReservedKeyWord(locInternalItemName) or
                           ( not IsValidIdent(locInternalItemName) ) or
                           ( FSymbols.FindElementInModule(locInternalItemName,Self.Module) <> nil ) or
                           FSymbols.IsEnumItemNameUsed(locInternalItemName,Self.Module) or
@@ -1559,6 +1572,7 @@ var
   intrName : string;
   hasIntrnName : Boolean;
 begin
+  prefixItems := ( poEnumAlwaysPrefix in Context.GetSimpleOptions() );
   locEnumCrs := ExtractEnumCursor();
 
   intrName := FTypeName;

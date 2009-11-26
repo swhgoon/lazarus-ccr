@@ -4,8 +4,10 @@ resourcestring
            '  -u MODE Generate the pascal translation of the WSDL input file ' + sNEW_LINE +
            '        MODE value may be U for used types or A for all types' + sNEW_LINE +
            '  -g  Code generation option, with the following options : ' + sNEW_LINE +
-           '        A : object arrays are generated as "array" derived from TBaseObjectArrayRemotable' + sNEW_LINE +
-           '        C : object arrays are generated as "collection" derived from TObjectCollectionRemotable' + sNEW_LINE +
+           '        A  : object arrays are generated as "array" derived from TBaseObjectArrayRemotable' + sNEW_LINE +
+           '        C  : object arrays are generated as "collection" derived from TObjectCollectionRemotable' + sNEW_LINE +
+           '        EP : enum type''s items are prefixed with the enum name' + sNEW_LINE +
+           '        EN : enum type''s items are not prefixed with the enum name, the default' + sNEW_LINE +
            '  -p  Generate service proxy' + sNEW_LINE +
            '  -b  Generate service binder' + sNEW_LINE +
            '  -i  Generate service minimal implementation. This will erase any existing implementation file!' + sNEW_LINE +
@@ -82,17 +84,29 @@ var
     begin
       ParseSource(symtable,inFileName,osParam,targetParam);
     end;
-    
+
+    function GetParserSimpleOptions( ) : TParserOptions;
+    begin
+      Result := [];
+      if ( cloPrefixEnum in AppOptions ) then begin
+        if ( Pos('P',GetOptionArg(cloPrefixEnum)) = 2 ) then
+          Result := Result + [poEnumAlwaysPrefix];
+      end;
+    end;
+
     procedure ParseWsdlFile();
     var
       locDoc : TXMLDocument;
       prsrW : IParser;
+      prsrCtx : IParserContext;
     begin
       ReadXMLFile(locDoc,inFileName);
 {$IFNDEF WST_INTF_DOM}
       try
 {$ENDIF}
         prsrW := TWsdlParser.Create(locDoc,symtable);// as IParser;
+        prsrCtx := prsrW as IParserContext;
+        prsrCtx.SetSimpleOptions(GetParserSimpleOptions());
         prsrW.Execute(parserMode,ChangeFileExt(ExtractFileName(inFileName),''));
 {$IFNDEF WST_INTF_DOM}
       finally
@@ -116,6 +130,7 @@ var
         prsr := TXsdParser.Create(locDoc,symtable,ChangeFileExt(ExtractFileName(inFileName),'')) as IXsdPaser;
         prsrCtx := prsr as IParserContext;
         prsrCtx.SetDocumentLocator(TFileDocumentLocator.Create(ExtractFilePath(ExpandFileName(inFileName))));
+        prsrCtx.SetSimpleOptions(GetParserSimpleOptions());
         prsr.ParseTypes();
 {$IFNDEF WST_INTF_DOM}
       finally
