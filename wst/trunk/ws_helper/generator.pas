@@ -196,7 +196,7 @@ type
 implementation
 uses parserutils, Contnrs, logger_intf;
 
-const sLOCAL_TYPE_REGISTER_REFERENCE = 'typeRegistryIntance';
+const sLOCAL_TYPE_REGISTER_REFERENCE = 'typeRegistryInstance';
       sPROXY_BASE_CLASS = 'TBaseProxy';
       sBINDER_BASE_CLASS = 'TBaseServiceBinder';
       sIMP_BASE_CLASS = 'TBaseServiceImplementation';
