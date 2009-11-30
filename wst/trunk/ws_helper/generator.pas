@@ -223,7 +223,17 @@ function DeduceEasyInterfaceForDocStyle(
   const AContainer : TwstPasTreeContainer
 ): TPasClassType;
 
-  procedure HandleProc(const AIntf : TPasClassType; const AMethod : TPasProcedure);
+  function IsFinallyAClassType(const AElt : TPasElement) : Boolean;
+  begin
+    Result := ( AElt <> nil ) and
+              ( AElt.InheritsFrom(TPasClassType) or
+                ( AElt.InheritsFrom(TPasType) and
+                  GetUltimeType(TPasType(AElt)).InheritsFrom(TPasClassType)
+                )
+              );
+  end;
+
+  function HandleProc(const AIntf : TPasClassType; const AMethod : TPasProcedure) : Boolean;
   var
     locMethod : TPasProcedure;
     locProcType : TPasProcedureType;
@@ -234,23 +244,24 @@ function DeduceEasyInterfaceForDocStyle(
     locArg : TPasArgument;
     locIsFunction : Boolean;
   begin
+    Result := False;
     if ( AMethod.ProcType.Args.Count < 1 ) then
-      raise Exception.CreateFmt('Invalid "Document style" method, one parameter expected : %s.%s.',[AIntf.Name,AMethod.Name]);
+      Exit;
     locElt := TPasArgument(AMethod.ProcType.Args[0]).ArgType;
     if locElt.InheritsFrom(TPasUnresolvedTypeRef) then
       locElt := AContainer.FindElement(locElt.Name);
     if ( locElt = nil ) then
-      raise Exception.CreateFmt('Invalid "Document style" method, class type parameter expected, nil founded : %s.%s.',[AIntf.Name,AMethod.Name]);
-    if ( not locElt.InheritsFrom(TPasClassType) ) then
-      raise Exception.CreateFmt('Invalid "Document style" method, class type parameter expected : %s.%s => %s',[AIntf.Name,AMethod.Name,locElt.ElementTypeName]);
+      Exit;
+    if not IsFinallyAClassType(locElt) then
+      Exit;
     locRawInParam := TPasClassType(locElt);
     locIsFunction := False;
     if AMethod.InheritsFrom(TPasFunction) then begin
       locElt := TPasFunctionType(AMethod.ProcType).ResultEl.ResultType;
       if locElt.InheritsFrom(TPasUnresolvedTypeRef) then
         locElt := AContainer.FindElement(locElt.Name);
-      if ( locElt = nil ) or ( not locElt.InheritsFrom(TPasClassType) ) then
-        raise Exception.CreateFmt('Invalid "Document style" method, class type result expected : %s.%s.',[AIntf.Name,AMethod.Name]);
+      if not IsFinallyAClassType(locElt) then
+        Exit;
       locRawOutParam := TPasClassType(locElt);
       q := locRawOutParam.Members.Count;
       if ( q > 0 ) then begin
@@ -295,16 +306,19 @@ function DeduceEasyInterfaceForDocStyle(
       TPasFunctionType(locProcType).ResultEl := TPasResultElement(AContainer.CreateElement(TPasResultElement,'Result',locProcType,'',0));
       TPasFunctionType(locProcType).ResultEl.ResultType := locResProp.VarType; locResProp.VarType.AddRef();
     end;
+    Result := True;
   end;
-  
+
 var
   locRes : TPasClassType;
   i, c : PtrInt;
   g : TGuid;
   e : TPasElement;
+  procCount : Integer;
 begin
   if ( ARawInt.ObjKind <> okInterface ) then
     raise Exception.CreateFmt('Interface expected : "%s".',[ARawInt.Name]);
+  procCount := 0;
   locRes := TPasClassType(AContainer.CreateElement(TPasClassType,Format('%s%s',[ARawInt.Name,sEASY_ACCESS_INTERFACE_PREFIX]),nil,'',0));
   try
     locRes.ObjKind := okInterface;
@@ -314,10 +328,14 @@ begin
     if ( c > 0 ) then begin
       for i := 0 to ( c - 1 ) do begin
         e := TPasElement(ARawInt.Members[i]);
-        if e.InheritsFrom(TPasProcedure) then
-          HandleProc(locRes,TPasProcedure(e));
+        if e.InheritsFrom(TPasProcedure) and
+           HandleProc(locRes,TPasProcedure(e))
+        then
+          Inc(procCount);
       end;
     end;
+    if ( procCount = 0 ) then
+      FreeAndNil(locRes);
   except
     FreeAndNil(locRes);
     raise;
@@ -419,9 +437,8 @@ begin
         intf := elt as TPasClassType;
         binding := SymbolTable.FindBinding(intf);
         intfEasy := nil;
-        if ( binding.BindingStyle = bsDocument ) then begin
+        if ( binding.BindingStyle = bsDocument ) then
           intfEasy := DeduceEasyInterfaceForDocStyle(intf,SymbolTable);
-        end;
         GenerateProxyIntf(intf,intfEasy,binding);
         GenerateProxyImp(intf,intfEasy,binding);
       end;
@@ -667,7 +684,10 @@ Var
         elt := prm.ArgType;
         if elt.InheritsFrom(TPasUnresolvedTypeRef) then
           elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
-        if elt.InheritsFrom(TPasUnresolvedTypeRef) or SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+        if elt.InheritsFrom(TPasUnresolvedTypeRef) or
+           SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+           SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+        then begin
           Result := True;
           Break;
         end;
@@ -694,8 +714,11 @@ Var
             DecIndent();
             Indent(); WriteLn('end;');
         end else begin
-          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+             SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+          then begin
             Indent(); WriteLn('%s := %s.%s;',[sTEMP_OBJ,sINPUT_PARAM,prm.Name]);
+            Indent(); WriteLn('%s.%s := nil;',[sINPUT_PARAM,prm.Name]);
             Indent(); WriteLn('%s.Free();',[sTEMP_OBJ]);
           end;
         end;
@@ -720,7 +743,9 @@ Var
               Indent(); WriteLn('TObject(%s.%s) := nil;',[sINPUT_PARAM,prm.Name]);
             DecIndent();
         end else begin
-          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+             SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+          then begin
             Indent(); WriteLn('%s.%s := nil;',[sINPUT_PARAM,prm.Name]);
           end;
         end;
@@ -738,7 +763,9 @@ Var
               DecIndent();
             DecIndent();
         end else begin
-          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) then begin
+          if SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+             SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+          then begin
             Indent(); WriteLn('if ( %s <> nil ) then',[sOUTPUT_PARAM]);
             IncIndent();
               Indent(); WriteLn('%s.%s := nil;',[sOUTPUT_PARAM,origineResProp.Name]);
@@ -800,7 +827,27 @@ Var
             if origineIsFunc then begin
               Indent(); WriteLn('%s := %s(%s);',[sOUTPUT_PARAM,origineMthd.Name,sINPUT_PARAM]);
               if localIsFunc then begin
-                Indent(); WriteLn('Result := %s.%s;',[sOUTPUT_PARAM,origineResProp.Name]);
+                Indent(); WriteLn('if ( %s <> nil ) then',[sOUTPUT_PARAM]);
+                IncIndent();
+                  Indent(); WriteLn('Result := %s.%s',[sOUTPUT_PARAM,origineResProp.Name]);
+                DecIndent();
+                elt := origineResProp.VarType;
+                if elt.InheritsFrom(TPasUnresolvedTypeRef) then
+                  elt := SymbolTable.FindElement(SymbolTable.GetExternalName(elt));
+                Indent(); WriteLn('else');
+                IncIndent();
+                if elt.InheritsFrom(TPasUnresolvedTypeRef) then begin
+                  Indent(); WriteLn('FillChar(Result,SizeOf(Result),#0);');
+                end else begin
+                  if SymbolTable.IsOfType(TPasType(elt),TPasClassType) or
+                     SymbolTable.IsOfType(TPasType(elt),TPasArrayType)
+                  then begin
+                    Indent(); WriteLn('Result := nil;');
+                  end else begin
+                    Indent(); WriteLn('FillChar(Result,SizeOf(Result),#0);');
+                  end;
+                end;
+                DecIndent();
               end;
             end else begin
               Indent(); WriteLn('%s(%s);',[origineMthd.Name,sINPUT_PARAM]);
@@ -3067,10 +3114,12 @@ begin
           locBinding := FSymbolTable.Binding[i];
           if ( locBinding.BindingStyle = bsDocument ) then begin
             clssTyp := DeduceEasyInterfaceForDocStyle(locBinding.Intf,FSymbolTable);
-            try
-              GenerateIntf(clssTyp);
-            finally
-              clssTyp.Release();
+            if ( clssTyp <> nil ) then begin
+              try
+                GenerateIntf(clssTyp);
+              finally
+                clssTyp.Release();
+              end;
             end;
           end;
         end;
