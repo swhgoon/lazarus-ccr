@@ -19,7 +19,6 @@ uses
   Classes, SysUtils, TypInfo;
 
 const
-  sWST_SIGNATURE = 'WST_METADATA_0.2.2.0';
   sWST_META      = 'wst_meta';
   sFORMAT = 'FORMAT';
   sTRANSPORT = 'TRANSPORT';
@@ -56,7 +55,7 @@ type
   PService = ^TService;
   TService = record
     Name             : ShortString;
-    OperationsCount  : Byte;
+    OperationsCount  : Word;
     Operations       : PServiceOperation;
     Properties       : PPropertyData;
   end;
@@ -66,7 +65,7 @@ type
     NameSpace        : ShortString;
     Name             : ShortString;
     RootAddress      : ShortString;
-    ServicesCount    : Byte;
+    ServicesCount    : Word;
     Services         : PService;
   end;
 
@@ -114,7 +113,8 @@ type
   function GetServiceDefaultFormatProperties(AServiceTyp : PTypeInfo):string;
 
 implementation
-uses wst_resources_imp, binary_streamer, imp_utils, wst_types;
+uses
+  wst_resources_imp, binary_streamer, imp_utils, wst_types, wst_consts;
 
 {$INCLUDE wst_rtl_imp.inc}
 
@@ -353,7 +353,7 @@ var
   begin
     AService^.Name := rdr.ReadAnsiStr();
     AService^.Properties := nil;
-    k := rdr.ReadInt8U();
+    k := rdr.ReadInt16U();
     if ( k > 0 ) then begin
       AService^.Operations := wst_GetMem( k * SizeOf(TServiceOperation) );
       AService^.OperationsCount := k;
@@ -382,7 +382,7 @@ begin
   try
     FillChar(ARepository^,c,#0);
     ARepository^.Name := rdr.ReadAnsiStr();
-    c := rdr.ReadInt8U();
+    c := rdr.ReadInt16U();
     if ( c > 0 ) then begin
       ARepository^.Services := wst_GetMem( c * SizeOf(TService) );
       ARepository^.ServicesCount := c;

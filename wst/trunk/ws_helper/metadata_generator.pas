@@ -25,9 +25,6 @@ uses
   Classes, SysUtils,
   pastree, pascal_parser_intf, binary_streamer;
 
-const
-  sWST_META = 'WST_METADATA_0.2.2.0';
-
 type
 
   { TMetadataGenerator }
@@ -49,6 +46,8 @@ type
 
 
 implementation
+uses
+  wst_consts;
 
 { TMetadataGenerator }
 
@@ -58,7 +57,7 @@ var
   typeList : TList;
   elt : TPasElement;
 begin
-  FStream.WriteAnsiStr(sWST_META);
+  FStream.WriteAnsiStr(sWST_SIGNATURE);
   FStream.WriteAnsiStr(FSymbolTable.CurrentModule.Name);
   k := 0;
   typeList := FSymbolTable.CurrentModule.InterfaceSection.Declarations;
@@ -68,7 +67,7 @@ begin
     if elt.InheritsFrom(TPasClassType) and ( TPasClassType(elt).ObjKind = okInterface ) then
       inc(k);
   end;
-  FStream.WriteInt8U(k);
+  FStream.WriteInt16U(k);
 end;
 
 procedure TMetadataGenerator.GenerateIntfMetadata(AIntf: TPasClassType);
@@ -116,7 +115,7 @@ var
 begin
   FStream.WriteAnsiStr(AIntf.Name);
   c := GetElementCount(AIntf.Members,TPasProcedure);
-  FStream.WriteInt8U(c);
+  FStream.WriteInt16U(c);
   mbrs := AIntf.Members;
   for i := 0 to pred(mbrs.Count) do begin
     elt := TPasElement(mbrs[i]);

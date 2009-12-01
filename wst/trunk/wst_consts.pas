@@ -16,6 +16,9 @@ unit wst_consts;
 
 interface
 
+const
+  sWST_SIGNATURE = 'WST_METADATA_0.6';
+
 resourcestring  
   SERR_CannotMakeInternalSymbolName  ='Unable to make an internal symbol Name from "%s".';             
   SERR_CannotResolveNamespace        = 'Unable to resolve this namespace : "%s".';
