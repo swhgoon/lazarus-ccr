@@ -1660,6 +1660,10 @@ begin
       FBaseNameSpace := s_xs;
       Result := ParseOtherContent();
     end;
+    if ( Result <> nil ) then begin
+      if ( IsEmbeddedType(Result) <> FEmbededDef ) then
+        SetAsEmbeddedType(Result,FEmbededDef);
+    end;
 {$IFDEF WST_HANDLE_DOC}
     if ( Result <> nil ) then
       ParseDocumentation(Result);
