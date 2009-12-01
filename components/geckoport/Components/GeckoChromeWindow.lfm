@@ -1,13 +1,13 @@
 object GeckoChromeForm: TGeckoChromeForm
   Left = 192
   Top = 107
-  Width = 257
-  Height = 129
+  Width = 800
+  Height = 600
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = Tahoma
+  Font.Name = 'Tahoma'
   Font.Style = []
   OnClose = FormClose
   OnCreate = FormCreate

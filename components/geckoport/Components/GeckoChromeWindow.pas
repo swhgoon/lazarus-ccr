@@ -34,12 +34,18 @@
  * ***** END LICENSE BLOCK ***** *)
 unit GeckoChromeWindow;
 
+{$IFDEF LCLCocoa}
+  {$MODESWITCH ObjectiveC1}
+{$ENDIF}
+
 interface
 
 uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LResources, {$ENDIF}
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, nsXPCOM_STD19;
+  Dialogs, CallbackInterfaces, nsXPCOM, nsTypes, nsXPCOM_std19
+  {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
+  {$IFDEF LCLCocoa}, CocoaAll, CocoaUtils, CocoaPrivate {$ENDIF};
 
 type
   TGeckoChromeForm = class(TForm,
@@ -92,6 +98,7 @@ type
     // for nsISupportsWeakReference
     function GetWeakReference(): nsIWeakReference; safecall;
 
+    function GetNativeWindow : Pointer;  //FPC port: added this.
     procedure InitWebBrowser;
     procedure UpdateChrome;
     procedure ContentFinishedLoading;
@@ -104,6 +111,7 @@ type
     // IGeckoCreateWindowTarget
     function DoCreateChromeWindow(chromeFlags: Longword): nsIWebBrowserChrome;
     function GetWebBrowserChrome: nsIWebBrowserChrome;
+    property WebBrowser : nsIWebBrowser read FWebBrowser; //FPC port: added this.
   end;
 
 var
@@ -131,16 +139,52 @@ begin
   Action := caFree;
 end;
 
+function TGeckoChromeForm.GetNativeWindow : Pointer;
+{$IFDEF LCLCocoa}
+var
+  ARect : NSRect;
+  AView : NSView;
+{$ENDIF}
+begin
+   {$IFDEF MSWINDOWS}Result := Pointer(Handle);{$ENDIF}
+
+   {$IFDEF LCLCarbon}Result := Pointer(TCarbonWindow(Handle).Window);{$ENDIF}
+    //Carbon doesn't work but leave in so package compiles in Carbon IDE.
+
+//   {$IFDEF LCLCocoa}Result := Pointer(TCocoaForm(Handle).MainWindowView.superview);{$ENDIF}
+      //Old PasCocoa-based widgetset.
+
+    //Does adding a view work better than using window's view (below)? No, it doesn't.
+   {$IFDEF LCLCocoa}
+    ARect := NSView(TCocoaWindow(Handle).contentView).visibleRect;
+    ARect.size.width := ARect.size.width - 30;
+    ARect.size.height := ARect.size. height - 30;
+    ARect.origin.x := 15;
+    ARect.origin.y := 15;
+    AView := NSView.alloc.initWithFrame(ARect);
+    NSView(TCocoaWindow(Handle).contentView).addSubView(AView);
+    Result := Pointer(AView);
+   {$ENDIF}
+
+//NSLog(NSStringUtf8(FloatToStr(NSView(TCocoaWindow(Handle).contentView).frame.size.width)));
+//   {$IFDEF LCLCocoa}Result := Pointer(TCocoaWindow(Handle).contentView);{$ENDIF}
+    //New ObjC-based Cocoa widgetset.
+
+   {$IFDEF LCLGtk}Result := Pointer(Handle);{$ENDIF}  //Is Handle same as GTK Window?
+
+   {$IFDEF LCLGtk2}Result := Pointer(Handle);{$ENDIF}  //Is Handle same as GTK Window?
+end;
+
 procedure TGeckoChromeForm.InitWebBrowser;
 var
   base: nsIBaseWindow;
 begin
   NS_CreateInstance(NS_WEBBROWSER_CID, nsIWebBrowser, FWebBrowser);
 
-  FWebBrowser.SetContainerWindow(Self);
+  FWebBrowser.ContainerWindow := Self;
 
   base := FWebBrowser as nsIBaseWindow;
-  base.InitWindow(Pointer(Handle), nil, 0, 0, ClientWidth, ClientHeight);
+  base.InitWindow(GetNativeWindow, nil, 0, 0, ClientWidth, ClientHeight);
   base.Create;
   FWebBrowser.AddWebBrowserListener(Self, nsIWebProgressListener);
   base.SetVisibility(True);
@@ -330,7 +374,7 @@ end;
 
 function TGeckoChromeForm.GetSiteWindow: Pointer;
 begin
-  Result := Pointer(Handle);
+  Result := GetNativeWindow;
 end;
 
 procedure TGeckoChromeForm.OnStateChange(aWebProgress: nsIWebProgress; aRequest: nsIRequest; aStateFlags: PRUint32; aStatus: nsresult);
@@ -373,7 +417,9 @@ begin
       Result := NS_ERROR_NOT_INITIALIZED;
   end else
   begin
-    Result := QueryInterface(uuid, Intf);
+// FPC port: Result is PRUInt32, but QueryInterface returns Longint,
+//  so cast to nsresult to prevent range check error.
+    Result := nsresult(QueryInterface(uuid, Intf));
   end;
 end;
 

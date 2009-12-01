@@ -33,7 +33,7 @@
     </CompilerOptions>
     <Description Value="Gecko Components for Lazarus"/>
     <License Value="MPL 1.1"/>
-    <Version Release="2"/>
+    <Version Release="3"/>
     <Files Count="20">
       <Item1>
         <Filename Value="GeckoBrowser.pas"/>
@@ -113,7 +113,7 @@
         <UnitName Value="nsXRE"/>
       </Item19>
       <Item20>
-        <Filename Value="../each-version/nsXPCOM_STD19.pas"/>
+        <Filename Value="../each-version/nsXPCOM_std19.pas"/>
         <UnitName Value="nsXPCOM_std19"/>
       </Item20>
     </Files>

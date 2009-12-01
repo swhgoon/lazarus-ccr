@@ -61,7 +61,7 @@ implementation
 
 uses
   nsTypes, nsInit, nsError, nsGeckoStrings, nsXPCOMGlue, nsCID, GeckoInit,
-  nsXPCOM_STD19, nsEnumerators, Windows;
+  nsXPCOM_std19, nsEnumerators, Windows;
 
 type
   TDirectoryServiceProviderProxy = class(TInterfacedObject,

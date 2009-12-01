@@ -34,13 +34,17 @@
  * ***** END LICENSE BLOCK ***** *)
 unit GeckoBrowser;
 
+{$IFDEF LCLCocoa}
+  {$MODESWITCH ObjectiveC1}
+{$ENDIF}
+
 interface
 
 uses
   {$IFNDEF LCL} Windows, Messages, {$ELSE} LclIntf, LMessages, LclType, LResources, {$ENDIF}
   SysUtils, Classes, Controls, nsConsts, nsXPCOM,
   nsGeckoStrings, CallbackInterfaces, nsTypes, nsXPCOMGlue, BrowserSupports,
-  nsXPCOM_STD19
+  nsXPCOM_std19
   {$IFDEF LCLCarbon}, CarbonPrivate {$ENDIF}
   {$IFDEF LCLCocoa}, CocoaPrivate {$ENDIF};
 
@@ -1054,7 +1058,8 @@ begin
     rc := ClientRect;
     baseWin.InitWindow({$IFDEF MSWINDOWS}Pointer(Handle),{$ENDIF}
                        {$IFDEF LCLCarbon}Pointer(TCarbonWindow(Handle).Window),{$ENDIF}
-                       {$IFDEF LCLCocoa}Pointer(TCocoaForm(Handle).MainWindowView.superview),{$ENDIF}
+//                       {$IFDEF LCLCocoa}Pointer(TCocoaForm(Handle).MainWindowView.superview),{$ENDIF}
+                       {$IFDEF LCLCocoa}Pointer(TCocoaWindow(Handle).contentView),{$ENDIF}
                        {$IFDEF LCLGtk}Pointer(Handle),{$ENDIF}  //Is Handle same as GTK Window?
                        {$IFDEF LCLGtk2}Pointer(Handle),{$ENDIF}  //Is Handle same as GTK Window?
                        nil,

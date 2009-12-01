@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Compiler Value="/usr/local/bin/ppcppc" Date="1238925281"/>
-  <Params Value=" -MDelphi -Sa -Cirot -O1 -gl  -k-framework -kCocoa -WG -vewnhi -l -Fu../ -Fu../each-version/ -Fu../../../lazarus/lcl/units/powerpc-darwin/ -Fu../../../lazarus/lcl/units/powerpc-darwin/cocoa/ -Fu../../../lazarus/packager/units/powerpc-darwin/ -Fu. -oBrowseWin -dLCL -dLCLcocoa BrowseWin.dpr"/>
-</CONFIG>

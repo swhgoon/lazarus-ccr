@@ -27,14 +27,17 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
         <PackageName Value="LCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="GeckoComponents"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="1">
       <Unit0>
-        <Filename Value="BrowseWin.dpr"/>
+        <Filename Value="ChromeWin.dpr"/>
         <IsPartOfProject Value="True"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
@@ -43,27 +46,11 @@
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="brow10.pas"/>
-        <ComponentName Value="Form1"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Brow10"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <SyntaxHighlighter Value="Delphi"/>
-      </Unit1>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="../;../each-version/"/>
-    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>

@@ -10,7 +10,7 @@ uses
   GeckoBrowser, GeckoChromeWindow, GeckoInit, nsCID, 
   nsConsts, nsEnumerators, nsError, nsErrorUtils, nsGeckoStrings, nsInit, 
   nsMemory, nsNetUtil, nsStream, nsTypes, nsXPCOM, nsXPCOMGlue, nsXRE, 
-  nsXPCOM_STD19, LazarusPackageIntf;
+  nsXPCOM_std19, LazarusPackageIntf;
 
 implementation
 
