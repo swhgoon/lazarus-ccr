@@ -11,7 +11,7 @@ function NewSimpleEnumeratorFromTInterfaceList(AList: TInterfaceList;
 implementation
 
 uses
-  nsXPCOM_STD19, nsError;
+  nsXPCOM_std19, nsError;
 
 type
   TSimpleEnumeratorWithInterfaceList = class(TInterfacedObject,
