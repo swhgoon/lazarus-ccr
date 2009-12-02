@@ -10,7 +10,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object CheckListBox1: TCheckListBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,7 +18,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 315
+    Height = 317
     Top = 6
     Width = 436
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -29,8 +29,8 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 327
+    Height = 40
+    Top = 329
     Width = 436
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
@@ -41,7 +41,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
       AnchorSideBottom.Control = SpeedButton1
       AnchorSideBottom.Side = asrBottom
       Left = 143
-      Height = 34
+      Height = 32
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
@@ -84,13 +84,14 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 0
+      OnClick = SpeedButton2Click
     end
     object SpeedButton1: TSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ButtonPanel1
       AnchorSideBottom.Side = asrBottom
       Left = 114
-      Height = 34
+      Height = 32
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
@@ -133,6 +134,7 @@ object rxDBGridColumsForm: TrxDBGridColumsForm
         0000000000000000000000000000000000000000000000000000
       }
       NumGlyphs = 0
+      OnClick = SpeedButton1Click
     end
   end
 end

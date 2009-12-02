@@ -99,7 +99,8 @@ object RxDBGridMainForm: TRxDBGridMainForm
         Filter.EmptyFont.Style = [fsItalic]
         Filter.ItemIndex = -1
       end>
-    OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgFooterRows, rdgAllowQuickSearch]
+    PropertyStorage = XMLPropStorage1
+    OptionsRx = [rdgAllowColumnsForm, rdgAllowDialogFind, rdgFooterRows, rdgAllowQuickSearch, rdgAllowToolMenu]
     FooterColor = clYellow
     FooterRowCount = 1
     OnFiltred = RxDBGrid1Filtred
@@ -126,10 +127,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
     ClientWidth = 969
     TabOrder = 1
     object Label1: TLabel
-      AnchorSideLeft.Control = CheckBox1
+      AnchorSideLeft.Control = Button2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 378
+      Left = 287
       Height = 18
       Top = 6
       Width = 40
@@ -165,14 +166,14 @@ object RxDBGridMainForm: TRxDBGridMainForm
       TabOrder = 1
     end
     object CheckBox1: TCheckBox
-      AnchorSideLeft.Control = Button2
+      AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Button1
-      AnchorSideTop.Side = asrCenter
-      Left = 287
-      Height = 21
-      Top = 14
-      Width = 85
+      AnchorSideTop.Control = CheckBox2
+      AnchorSideTop.Side = asrBottom
+      Left = 516
+      Height = 19
+      Top = 31
+      Width = 82
       BorderSpacing.Left = 6
       Caption = 'Use filter'
       OnChange = CheckBox1Change
@@ -182,7 +183,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 384
+      Left = 293
       Height = 31
       Top = 30
       Width = 217
@@ -197,6 +198,21 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Style = csDropDownList
       TabOrder = 3
       Text = 'Edit mode'
+    end
+    object CheckBox2: TCheckBox
+      AnchorSideLeft.Control = ComboBox1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 516
+      Height = 19
+      Top = 6
+      Width = 134
+      BorderSpacing.Around = 6
+      Caption = 'Auto fill columns'
+      Checked = True
+      OnChange = CheckBox2Change
+      State = cbChecked
+      TabOrder = 4
     end
   end
   object RxMemoryData1: TRxMemoryData
@@ -414,5 +430,10 @@ object RxDBGridMainForm: TRxDBGridMainForm
       Required = False
       Size = 130
     end
+  end
+  object XMLPropStorage1: TXMLPropStorage
+    StoredValues = <>
+    left = 241
+    top = 128
   end
 end

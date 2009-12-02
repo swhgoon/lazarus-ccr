@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, rxmemds,
-  DB, rxdbgrid, ExtCtrls, Buttons, Menus, ActnList, StdCtrls, DBGrids;
+  DB, rxdbgrid, ExtCtrls, Buttons, Menus, ActnList, StdCtrls, DBGrids,
+  XMLPropStorage, IDEWindowIntf;
 
 type
 
@@ -14,6 +15,7 @@ type
 
   TRxDBGridMainForm = class(TForm)
     actCalcTotal: TAction;
+    CheckBox2: TCheckBox;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
@@ -46,10 +48,12 @@ type
     RxMemoryData2: TRxMemoryData;
     RxMemoryData2DEVELOPER_ID1: TLongintField;
     RxMemoryData2DEVELOPER_NAME1: TStringField;
+    XMLPropStorage1: TXMLPropStorage;
     procedure actCalcTotalExecute(Sender: TObject);
     procedure actOptimizeColumnsWidthAllExecute(Sender: TObject);
     procedure actOptimizeWidthCol1Execute(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
+    procedure CheckBox2Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
@@ -95,7 +99,7 @@ begin
   RxMemoryData1.AppendRecord([14, 'Бух. комплекс "45-я Параллель"', 180, 'ООО "Boot"', EncodeDate(2007, 2, 1), 3]);
   RxMemoryData1.AppendRecord([15, 'Консультант+', 380, 'Консультант+', EncodeDate(2007, 2, 1), 3]);
   RxMemoryData1.AppendRecord([16, 'Гарант', 480, 'Гарант', EncodeDate(2007, 2, 1), 3]);
-  DoFillFilters;
+//  DoFillFilters;
   RxMemoryData1.First;
   RxDBGrid1.CalcStatTotals; //fix error in GotoBookmark
 end;
@@ -179,6 +183,11 @@ begin
   else
     RxDBGrid1.OptionsRx:=RxDBGrid1.OptionsRx - [rdgFilter];
   RxMemoryData1.Filtered:=CheckBox1.Checked;
+end;
+
+procedure TRxDBGridMainForm.CheckBox2Change(Sender: TObject);
+begin
+  RxDBGrid1.AutoFillColumns:=CheckBox2.Checked;
 end;
 
 procedure TRxDBGridMainForm.ComboBox1Change(Sender: TObject);

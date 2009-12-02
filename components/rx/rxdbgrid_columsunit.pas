@@ -18,10 +18,12 @@ type
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     procedure FormCreate(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
   private
     FGrid:TRxDBGrid;
     procedure SetGrid(AGrid:TRxDBGrid);
-    procedure SetGridColumnsVisible;
+    procedure SetGridColumnsParams;
   public
     { public declarations }
   end; 
@@ -38,7 +40,10 @@ begin
   rxDBGridColumsForm:=TrxDBGridColumsForm.Create(Application);
   rxDBGridColumsForm.SetGrid(Grid);
   if rxDBGridColumsForm.ShowModal = mrOk then
-    rxDBGridColumsForm.SetGridColumnsVisible;
+  begin
+    if Assigned(Grid) then
+      rxDBGridColumsForm.SetGridColumnsParams;
+  end;
   rxDBGridColumsForm.Free;
 end;
 
@@ -53,6 +58,42 @@ begin
   Caption:=sRxDbGridSelColCaption;
   SpeedButton1.Hint:=sRxDbGridSelColHint1;
   SpeedButton2.Hint:=sRxDbGridSelColHint2;
+end;
+
+procedure TrxDBGridColumsForm.SpeedButton1Click(Sender: TObject);
+var
+  S:string;
+  i:integer;
+begin
+  if CheckListBox1.Items.Count > 1 then
+  begin
+    if CheckListBox1.ItemIndex>0 then
+    begin
+      i:=CheckListBox1.ItemIndex-1;
+      S:=CheckListBox1.Items[CheckListBox1.ItemIndex];
+      CheckListBox1.Items[CheckListBox1.ItemIndex]:=CheckListBox1.Items[i];
+      CheckListBox1.Items[i]:=S;
+      CheckListBox1.ItemIndex:=i;
+    end;
+  end;
+end;
+
+procedure TrxDBGridColumsForm.SpeedButton2Click(Sender: TObject);
+var
+  S:string;
+  i:integer;
+begin
+  if CheckListBox1.Items.Count > 1 then
+  begin
+    if CheckListBox1.ItemIndex<CheckListBox1.Items.Count-1 then
+    begin
+      i:=CheckListBox1.ItemIndex+1;
+      S:=CheckListBox1.Items[CheckListBox1.ItemIndex];
+      CheckListBox1.Items[CheckListBox1.ItemIndex]:=CheckListBox1.Items[i];
+      CheckListBox1.Items[i]:=S;
+      CheckListBox1.ItemIndex:=i;
+    end;
+  end;
 end;
 
 procedure TrxDBGridColumsForm.SetGrid(AGrid: TRxDBGrid);
@@ -72,14 +113,19 @@ begin
   end;
 end;
 
-procedure TrxDBGridColumsForm.SetGridColumnsVisible;
+procedure TrxDBGridColumsForm.SetGridColumnsParams;
 var
   i:integer;
+  Col:TRxColumn;
 begin
-  if Assigned(FGrid) then
+  for i:=0 to CheckListBox1.Items.Count-1 do
   begin
-    for i:=0 to CheckListBox1.Items.Count-1 do
-      FGrid.Columns[i].Visible:=CheckListBox1.Checked[i];
+    Col:=FGrid.ColumnByCaption(CheckListBox1.Items[i]);
+    if Assigned(Col) then
+    begin
+      Col.Visible:=CheckListBox1.Checked[i];
+      Col.Index:=i;
+    end
   end;
 end;
 
