@@ -1238,7 +1238,16 @@ begin
     FPropertyStorageLink.Storage.WriteString(S1+sCaption, StrToHexText(C.Title.Caption));
     FPropertyStorageLink.Storage.WriteInteger(S1+sWidth, C.Width);
     FPropertyStorageLink.Storage.WriteInteger(S1+sIndex, C.Index);
+    FPropertyStorageLink.Storage.WriteInteger(S1+sVisible, Ord(C.Visible));
   end;
+
+  if Assigned(FSortField) then
+  begin
+    FPropertyStorageLink.Storage.WriteInteger(S1+sSortMarker, Ord(FSortOrder));
+    FPropertyStorageLink.Storage.WriteString(S1+sSortField, FSortField.FieldName);
+  end
+  else
+    FPropertyStorageLink.Storage.WriteInteger(S1+sSortMarker, Ord(smNone));
 end;
 
 procedure TRxDBGrid.OnIniLoad(Sender: TObject);
@@ -1269,6 +1278,18 @@ begin
         end;
       end;
     end;
+
+    FSortOrder:=TSortMarker(FPropertyStorageLink.Storage.ReadInteger(S1+sSortMarker, Ord(smNone)));
+    if Assigned(FSortEngine) and (FSortOrder<>smNone) and DatalinkActive then
+    begin
+      ColumName:=FPropertyStorageLink.Storage.ReadString(S1+sSortField, '');
+      if ColumName<>'' then
+      begin
+        FSortField:=DataSource.DataSet.FindField(ColumName);
+        if Assigned(FSortField) then
+          FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp);
+      end;
+    end
   end;
 end;
 
@@ -2693,8 +2714,9 @@ var
   i:integer;
 begin
   Result:=nil;
+  ACaption:=UpperCase(ACaption);
   for i:=0 to Columns.Count - 1 do
-    if ACaption = Columns[i].Title.Caption then
+    if ACaption = UpperCase(Columns[i].Title.Caption) then
     begin
       Result:=TRxColumn(Columns[i]);
       exit;

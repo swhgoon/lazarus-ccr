@@ -1,5 +1,5 @@
 1 VERSIONINFO
-FILEVERSION 3,1,2,0
+FILEVERSION 3,2,2,0
 PRODUCTVERSION 3,1,1,0
 {
  BLOCK "StringFileInfo"
@@ -9,7 +9,7 @@ PRODUCTVERSION 3,1,1,0
    VALUE "Comments", "\000"
    VALUE "CompanyName", "\000"
    VALUE "FileDescription", "Demo application from RXFPC library\000"
-   VALUE "FileVersion", "3.1.2.0\000"
+   VALUE "FileVersion", "3.2.2.0\000"
    VALUE "InternalName", "\000"
    VALUE "LegalCopyright", "Lagunov Aleksey, GPL 2\000"
    VALUE "LegalTrademarks", "\000"

@@ -152,6 +152,8 @@ const
   sOptions      = '.Options';
   sCaption      = '.Caption';
   sIndex        = '.Index';
+  sSortMarker   = '.SortMarker';
+  sSortField    = '.SortField';
 
 implementation
 
