@@ -275,7 +275,11 @@ if (I <= 2) or (J > 0) then
     ShellExecute(Handle, nil, StrPCopy(PC, S), StrPCopy(PC2, Params), 
                  nil, SW_SHOWNORMAL); 
  {$ELSE}
-    Shell('Open ' + S);
+  {$IFDEF LCLCarbon}
+    Shell('Open "' + S + '.app"');
+  {$ELSE}
+    Shell('"' + S + '" "' + Params + '"');
+  {$ENDIF}
  {$ENDIF}
 {$ENDIF}
     end
@@ -304,7 +308,11 @@ if (I > 0) or (J > 0) then
 {$IFDEF MSWINDOWS}
   ShellExecute(Handle, nil, StrPCopy(PC, URL), nil, nil, SW_SHOWNORMAL);
 {$ELSE}
-  Shell('Open ' + URL);
+ {$IFDEF LCLCarbon}
+  Shell('Open "' + URL + '.app"');
+ {$ELSE}
+  Shell('"' + URL + '"');
+ {$ENDIF}
 {$ENDIF}
   Handled := True;
   Exit;
@@ -355,7 +363,7 @@ var
   S: string;
   I: integer;
 begin
-{$IFNDEF DARWIN}  //Launched file name not passed via command line with OS X.
+{$IFNDEF LCLCarbon}  //Launched file name not passed via command line with app bundle.
 if (ParamCount >= 1) then
   begin            {Parameter is file to load}
 {$IFNDEF LCL}
@@ -605,7 +613,11 @@ if FileExists(S) then
   ShellExecute(Handle, nil, StrPCopy(PC, ParamStr(0)), 
                StrPCopy(PC2, S+Dest), nil, SW_SHOWNORMAL); 
  {$ELSE}
-  Shell('Open ' + ParamStr(0));
+  {$IFDEF LCLCarbon}
+  Shell('Open "' + ParamStr(0) + '.app"');
+  {$ELSE}
+  Shell('"' + ParamStr(0) + '" "' + S+Dest + '"');
+  {$ENDIF}
  {$ENDIF}
 {$ENDIF}
 end;
@@ -838,7 +850,11 @@ begin
   ShellExecute(Handle, nil, StrPCopy(PC, ParamStr(0)), 
                StrPCopy(PC2, NewWindowFile), nil, SW_SHOWNORMAL); 
  {$ELSE}
-  Shell('Open ' + ParamStr(0));
+  {$IFDEF LCLCarbon}
+  Shell('Open "' + ParamStr(0) + '.app"');
+  {$ELSE}
+  Shell('"' + ParamStr(0) + '" "' + NewWindowFile + '"');
+  {$ENDIF}
  {$ENDIF}
 {$ENDIF}
 end;

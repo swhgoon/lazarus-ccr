@@ -1650,6 +1650,11 @@ Done := False;
 S1 := NextFontName;
 while (S1 <> '') and not Done do
   begin
+{$IFDEF LCL}  //Generic2 fonts won't be in Screen.Fonts with GTK2, so make
+              // sure first font for family is selected.
+  if Result = '' then
+    Result := S1;
+{$ENDIF}
   Done := Screen.Fonts.IndexOf(S1) >= 0;
   if Done then
     Result := S1
@@ -1725,6 +1730,11 @@ S := Props[FontFamily];
 S1 := NextFontName;
 while (S1 <> '') and not Done do
   begin
+{$IFDEF LCL}  //Generic2 fonts won't be in Screen.Fonts with GTK2, so make
+              // sure first font for family is selected.
+  if Font.iName = '' then
+    Font.iName := S1;
+{$ENDIF}
   Done := Screen.Fonts.IndexOf(S1) >= 0;
   if Done then
     begin

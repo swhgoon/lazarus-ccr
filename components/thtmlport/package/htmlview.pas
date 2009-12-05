@@ -4333,7 +4333,7 @@ end;
 procedure ThtmlViewer.PaintWindow(DC: HDC);
 begin
 PaintPanel.RePaint;
-BorderPanel.RePaint;   
+BorderPanel.RePaint;
 VScrollbar.RePaint;   
 HScrollbar.RePaint;  
 end;
@@ -5049,7 +5049,9 @@ var
 begin
 if FViewer.DontDraw or (Canvas2 <> Nil) then    
   Exit;
-FViewer.DrawBorder;
+{$IFNDEF LCL}
+FViewer.DrawBorder;  //Causes endless loop for some reason on win32 and gtk2.
+{$ENDIF}
 OldPal := 0;
 Canvas.Font := Font;
 Canvas.Brush.Color := Color;

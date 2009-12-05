@@ -26,7 +26,7 @@
     </CompilerOptions>
     <Description Value="HTML Components for Lazarus"/>
     <License Value="MPL 1.1"/>
-    <Version Release="2"/>
+    <Version Release="3"/>
     <Files Count="1">
       <Item1>
         <Filename Value="htmlcompreg.pas"/>

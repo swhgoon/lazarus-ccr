@@ -101,6 +101,13 @@ end;
 
 function TFontForm.GetFontName: TFontName;
 begin
+{$IFNDEF MSWINDOWS}
+  if Screen.Fonts.Count = 0 then  //GTK2 without HasX defined (empty list)?
+    begin
+    Result := FontViewer.DefFontName;
+    Exit;
+    end;
+{$ENDIF}
 try
   Result := FontListBox.Items[FontListBox.ItemIndex];
 except
@@ -118,6 +125,7 @@ if I < 0 then
 {$IFNDEF MSWINDOWS}  //System font only makes sense on Windows, so just select first font
 if I < 0 then
   I := 0;
+if Screen.Fonts.Count > 0 then  //Check in case GTK2 without HasX defined
 {$ENDIF}
 FontListBox.ItemIndex := I;
 FontViewer.DefFontName := Value;
@@ -212,6 +220,9 @@ end;
 procedure TFontForm.ListBoxClicks(Sender: TObject);
 begin
 if Sender = FontListBox then
+{$IFNDEF MSWINDOWS}
+  if Screen.Fonts.Count = 0 then else  //Check in case GTK2 without HasX defined
+{$ENDIF}
   FontName := FontListBox.Items[FontListBox.ItemIndex]
 else if Sender = BackListBox then
   Background := StringToColor(BackListBox.Items[BackListBox.ItemIndex])
