@@ -1006,10 +1006,11 @@ begin
       FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
         FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
 {$IFDEF LINUX}
-  TempF:=FRxPopUpForm;
-  if FRxPopUpForm.ShowModal = mrOk then
-      OnClosePopup(true);
-  TempF.Free;
+      TempF:=FRxPopUpForm;
+      if FRxPopUpForm.ShowModal = mrOk then
+        OnClosePopup(true);
+      TempF.Free;
+      FRxPopUpForm:=nil
 {$ENDIF}
     end
 end;
