@@ -1080,6 +1080,7 @@ type
     DefaultHint: String;    // used only if there is no node specific hint string available
                                 // or a header hint is about to appear
     HintText: String;       // set when size of the hint window is calculated
+    HintInfo: PHintInfo;
   end;
 
   // The trees need an own hint window class because of Unicode output and adjusted font.
@@ -6238,11 +6239,8 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 function TVirtualTreeHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
-
 var
-  TM: TTextMetric;
-  R: TRect;
-
+  P: TPoint;
 begin
   if AData = nil then
     // Defensive approach, it *can* happen that AData is nil. Maybe when several user defined hint classes are used.
@@ -6287,95 +6285,26 @@ begin
 
         //let THintWindow do the job
         Result := inherited CalcHintRect(MaxWidth, AHint, AData);
-
-        //todo: cleanup after finishing Bidi support (correctly set hint window position)
-        {
-        GetTextMetrics(Canvas.Handle, TM);
-        FTextHeight := TM.tmHeight;
-        LineBreakStyle := hlbDefault;
-
-        if Length(DefaultHint) > 0 then
-          HintText := DefaultHint
-        else
-          if Tree.HintMode = hmToolTip then
-            HintText := Tree.DoGetNodeToolTip(Node, Column, LineBreakStyle)
-          else
-            HintText := Tree.DoGetNodeHint(Node, Column, LineBreakStyle);
-
-        if Length(HintText) = 0 then
-          Result := Rect(0, 0, 0, 0)
-        else
+        //fix position taking into account bidimode and control bounds
+        if (Tree.HintMode <> hmTooltip) or ((Result.Right - Result.Left) < Tree.Width) then
         begin
-          if Assigned(Node) and (Tree.FHintMode = hmToolTip) then
+          if BiDiMode = bdLeftToRight then
           begin
-            // Determine actual line break style depending on what was returned by the methods and what's in the node.
-            if LineBreakStyle = hlbDefault then
-              if vsMultiline in Node.States then
-                LineBreakStyle := hlbForceMultiLine
-              else
-                LineBreakStyle := hlbForceSingleLine;
-
-            // Hint for a node.
-            if LineBreakStyle = hlbForceMultiLine then
-            begin
-              // Multiline tooltips use the columns width but extend the bottom border to fit the whole caption.
-              Result := Tree.GetDisplayRect(Node, Column, True, False);
-              R := Result;
-
-              // On Windows NT/2K/XP the behavior of the tooltip is slightly different to that on Windows 9x/Me.
-              // We don't have Unicode word wrap on the latter so the tooltip gets as wide as the largest line
-              // in the caption (limited by carriage return), which results in unoptimal overlay of the tooltip.
-              // On Windows NT the tooltip exactly overlays the node text.
-              DrawText(Canvas.Handle, PChar(HintText), Length(HintText), R, DT_CALCRECT or DT_WORDBREAK);
-              if BidiMode = bdLeftToRight then
-                Result.Right := R.Right + Tree.FTextMargin
-              else
-                Result.Left := R.Left - Tree.FTextMargin + 1;
-              Result.Bottom := R.Bottom;
-
-              Inc(Result.Right);
-
-              // If the node height and the column width are both already large enough to cover the entire text,
-              // then we don't need the hint, though.
-              // However if the text is partially scrolled out of the client area then a hint is useful as well.
-              if ((Integer(Tree.NodeHeight[Node]) + 2) >= (Result.Bottom - Result.Top)) and
-                 ((Tree.Header.Columns[Column].Width + 2) >= (Result.Right - Result.Left)) and not
-                 ((Result.Left < 0) or (Result.Right > Tree.ClientWidth + 3) or
-                  (Result.Top < 0) or (Result.Bottom > Tree.ClientHeight + 3)) then
-              begin
-                Result := Rect(0, 0, 0, 0);
-                Exit;
-              end;
-            end
-            else
-            begin
-              Result := Tree.FLastHintRect; // = Tree.GetDisplayRect(Node, Column, True, True, True); see TBaseVirtualTree.CMHintShow
-              if toShowHorzGridLines in Tree.TreeOptions.PaintOptions then
-                Dec(Result.Bottom);
-            end;
-
-            // Include a one pixel border.
-            InflateRect(Result, 1, 1);
-
-            // Make the coordinates relative. They will again be offset by the caller code.
-            OffsetRect(Result, -Result.Left - 1, -Result.Top - 1);
+            P := Tree.ClientToScreen(Point(0, 0));
+            HintInfo^.HintPos.X := Max(P.X, HintInfo^.HintPos.X);
           end
           else
           begin
-            // Hint for a header or non-tooltip hint.
-
-            // Start with the base size of the hint in client coordinates.
-            Result := Rect(0, 0, MaxWidth, FTextHeight);
-            // Calculate the true size of the text rectangle.
-            DrawText(Canvas.Handle, PChar(HintText), Length(HintText), Result, DT_CALCRECT);
-            // The height of the text plus 2 pixels vertical margin plus the border determine the hint window height.
-            Inc(Result.Bottom, 6);
-            // The text is centered horizontally with usual text margin for left and right borders (plus border).
-            Inc(Result.Right, 2 * Tree.FTextMargin + 2);
+            if Tree.HintMode = hmTooltip then
+            begin
+              P := Tree.ClientToScreen(Point(Min(Tree.ClientWidth, HintInfo^.CursorRect.Right), 0));
+              Dec(P.X, Result.Right);
+              HintInfo^.HintPos.X := Max(P.X, HintInfo^.HintPos.X);
+            end
+            else
+              Dec(HintInfo^.HintPos.X, Result.Right - 20);
           end;
-
         end;
-        }
       end;
     end;
   end;
@@ -15906,6 +15835,7 @@ begin
           FHintData.Tree := Self;
           FHintData.Column := HitInfo.HitColumn;
           FHintData.Node := HitInfo.HitNode;
+          FHintData.HintInfo := HintInfo;
           HintData := @FHintData;
         end
         else
