@@ -1,6 +1,7 @@
 unit VirtualTrees;
 
 {$mode delphi}{$H+}
+{$packset 1}
 
 // Version 4.8.6
 //
@@ -861,7 +862,7 @@ type
     Tree: TBaseVirtualTree;
   end;
 
-  TVirtualNode = packed record
+  TVirtualNode = record
     Index,                   // index of node with regard to its parent
     ChildCount: Cardinal;    // number of child nodes
     NodeHeight: Word;        // height in pixels
@@ -873,7 +874,6 @@ type
     TotalCount,              // sum of this node, all of its child nodes and their child nodes etc.
     TotalHeight: Cardinal;   // height in pixels this node covers on screen including the height of all of its
                              // children
-    Dummy2: Word;            // FPC: Sets need 4 bytes / in Delphi only 2 bytes
     // Note: Some copy routines require that all pointers (as well as the data area) in a node are
     //       located at the end of the node! Hence if you want to add new member fields (except pointers to internal
     //       data) then put them before field Parent.
@@ -5674,7 +5674,7 @@ procedure TWorkerThread.ChangeTreeStates(EnterStates, LeaveStates: TChangeStates
 
 begin
   if Assigned(FCurrentTree) and (FCurrentTree.HandleAllocated) then
-    SendMessage(FCurrentTree.Handle, WM_CHANGESTATE, Integer(EnterStates), Integer(LeaveStates));
+    SendMessage(FCurrentTree.Handle, WM_CHANGESTATE, Byte(EnterStates), Byte(LeaveStates));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7839,17 +7839,17 @@ procedure TVirtualTreeColumn.LoadFromStream(const Stream: TStream; Version: Inte
   //todo_lcl_check
   begin
     if Version >= 3 then
-      Result := TVTColumnOptions(LongWord(Value and $FFFF))
+      Result := TVTColumnOptions(Word(Value and $FFFF))
     else
       if Version = 2 then
-        Result := TVTColumnOptions(LongWord(Value and $FF))
+        Result := TVTColumnOptions(Word(Value and $FF))
       else
       begin
         // In version 2 coParentColor has been added. This needs an option shift for older stream formats.
         // The first (lower) 4 options remain as they are.
-        Result := TVTColumnOptions(LongWord(Word(Value) and $F));
+        Result := TVTColumnOptions(Word(Value) and $F);
         Value := (Value and not $F) shl 1;
-        Result := Result + TVTColumnOptions(LongWord(Value and $FF));
+        Result := Result + TVTColumnOptions(Word(Value and $FF));
       end;
   end;
 
@@ -7992,7 +7992,7 @@ begin
     WriteBuffer(FSpacing, SizeOf(FSpacing));
     Dummy := Ord(FBiDiMode);
     WriteBuffer(Dummy, SizeOf(Dummy));
-    Dummy := LongWord(FOptions);
+    Dummy := Word(FOptions);
     WriteBuffer(Dummy, SizeOf(Dummy));
 
     // parts introduced with stream version 1
@@ -11426,7 +11426,7 @@ begin
     Height := Dummy;
     ReadBuffer(Dummy, SizeOf(Dummy));
     FOptions := OldOptions;
-    Options := TVTHeaderOptions(LongWord(Dummy));
+    Options := TVTHeaderOptions(Word(Dummy));
     // PopupMenu is neither saved nor restored
     ReadBuffer(Dummy, SizeOf(Dummy));
     Style := TVTHeaderStyle(Dummy);
@@ -11706,7 +11706,7 @@ begin
     WriteBuffer(Dummy, SizeOf(Dummy));
     Dummy := FHeight;
     WriteBuffer(Dummy, SizeOf(Dummy));
-    Dummy := LongWord(FOptions);
+    Dummy := Word(FOptions);
     WriteBuffer(Dummy, SizeOf(Dummy));
     // PopupMenu is neither saved nor restored
     Dummy := Ord(FStyle);
@@ -16164,23 +16164,23 @@ var
 begin
   Logger.EnterMethod([lcMessages],'WMChangeState');
   EnterStates := [];
-  if csStopValidation in TChangeStates(LongWord(Message.WParam)) then
+  if csStopValidation in TChangeStates(Byte(Message.WParam)) then
     Include(EnterStates, tsStopValidation);
-  if csUseCache in TChangeStates(LongWord(Message.WParam)) then
+  if csUseCache in TChangeStates(Byte(Message.WParam)) then
     Include(EnterStates, tsUseCache);
-  if csValidating in TChangeStates(LongWord(Message.WParam)) then
+  if csValidating in TChangeStates(Byte(Message.WParam)) then
     Include(EnterStates, tsValidating);
-  if csValidationNeeded in TChangeStates(LongWord(Message.WParam)) then
+  if csValidationNeeded in TChangeStates(Byte(Message.WParam)) then
     Include(EnterStates, tsValidationNeeded);
 
   LeaveStates := [];
-  if csStopValidation in TChangeStates(LongWord(Message.LParam)) then
+  if csStopValidation in TChangeStates(Byte(Message.LParam)) then
     Include(LeaveStates, tsStopValidation);
-  if csUseCache in TChangeStates(LongWord(Message.LParam)) then
+  if csUseCache in TChangeStates(Byte(Message.LParam)) then
     Include(LeaveStates, tsUseCache);
-  if csValidating in TChangeStates(LongWord(Message.LParam)) then
+  if csValidating in TChangeStates(Byte(Message.LParam)) then
     Include(LeaveStates, tsValidating);
-  if csValidationNeeded in TChangeStates(LongWord(Message.LParam)) then
+  if csValidationNeeded in TChangeStates(Byte(Message.LParam)) then
     Include(LeaveStates, tsValidationNeeded);
 
   DoStateChange(EnterStates, LeaveStates);
