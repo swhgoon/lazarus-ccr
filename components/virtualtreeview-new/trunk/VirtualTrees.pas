@@ -20471,7 +20471,7 @@ procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
   DataObject: IDataObject; DragEffect: Integer);
 
 begin
-  ActiveX.DoDragDrop(DataObject, DragManager as IDropSource, AllowedEffects, @DragEffect);
+  ActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
