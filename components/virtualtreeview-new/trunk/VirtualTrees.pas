@@ -3365,10 +3365,8 @@ type
     procedure ContentToCustom(Source: TVSTTextSourceType);
     function ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): AnsiString;
     function ContentToRTF(Source: TVSTTextSourceType): AnsiString;
-    function ContentToText(Source: TVSTTextSourceType; Separator: AnsiChar): AnsiString; overload;
-    function ContentToText(Source: TVSTTextSourceType; const Separator: AnsiString): AnsiString; overload;
-    function ContentToUnicode(Source: TVSTTextSourceType; Separator: Char): String; overload;
-    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): String; overload;
+    function ContentToText(Source: TVSTTextSourceType; const Separator: AnsiString): AnsiString;
+    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): String;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
       var Text: String); override;
     function InvalidateNode(Node: PVirtualNode): TRect; override;
@@ -33385,14 +33383,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToText(Source: TVSTTextSourceType; Separator: AnsiChar): AnsiString;
-
-begin
-  Result := ContentToText(Source, AnsiString(Separator));
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 function TCustomVirtualStringTree.ContentToText(Source: TVSTTextSourceType; const Separator: AnsiString): AnsiString;
 
 // Renders the current tree content (depending on Source) as plain ANSI text.
@@ -33533,14 +33523,6 @@ begin
   finally
     Buffer.Free;
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function TCustomVirtualStringTree.ContentToUnicode(Source: TVSTTextSourceType; Separator: Char): String;
-
-begin
-  Result := ContentToUnicode(Source, Separator);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
