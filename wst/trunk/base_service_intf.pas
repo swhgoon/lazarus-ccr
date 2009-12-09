@@ -5173,6 +5173,7 @@ Var
   p : PPropInfo;
   oldSS : TSerializationStyle;
   tr : TTypeRegistry;
+  regItem : TTypeRegistryItem;
   propName : string;
 begin
   oldSS := AStore.GetSerializationStyle();
@@ -5188,11 +5189,12 @@ begin
       propListLen := GetPropList(ATypeInfo,propList);
       try
         tr := GetTypeRegistry();
+        regItem := tr.ItemByTypeInfo[ATypeInfo];
         AStore.SetSerializationStyle(ssAttibuteSerialization);
         for i := 0 to Pred(propCount) do begin
           p := propList^[i];
           pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
-          propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
+          propName := regItem.GetExternalPropertyName(p^.Name);
           if IsStoredProp(AObject,p) then begin
             case pt^.Kind of
               tkInt64{$IFDEF HAS_QWORD},tkQWord{$ENDIF} :
@@ -5336,6 +5338,7 @@ Var
   objTypeData : PTypeData;
   oldSS : TSerializationStyle;
   tr : TTypeRegistry;
+  regItem : TTypeRegistryItem;
 begin
   oldSS := AStore.GetSerializationStyle();
   if ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
@@ -5351,13 +5354,14 @@ begin
         propListLen := GetPropList(ATypeInfo,propList);
         Try
           tr := GetTypeRegistry();
+          regItem := tr.ItemByTypeInfo[ATypeInfo];
           AStore.SetSerializationStyle(ssAttibuteSerialization);
           For i := 0 To Pred(propCount) Do Begin
             p := propList^[i];
             persistType := IsStoredPropClass(objTypeData^.ClassType,p);
             If ( persistType in [pstOptional,pstAlways] ) Then Begin
               pt := p^.PropType{$IFDEF WST_DELPHI}^{$ENDIF};
-              propName := tr.ItemByTypeInfo[pt].GetExternalPropertyName(p^.Name);
+              propName := regItem.GetExternalPropertyName(p^.Name);
               try
                 Case pt^.Kind Of
                   tkInt64{$IFDEF HAS_QWORD},tkQWord{$ENDIF} :
