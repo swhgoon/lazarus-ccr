@@ -2277,11 +2277,16 @@ function TSOAPBaseFormatter.ReadBuffer(const AName : string; out AResBuffer : st
 Var
   locElt : TDOMNode;
   namespaceShortName, strNodeName : string;
+  i : Integer;
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
     namespaceShortName := FindAttributeByValueInScope(StackTop().NameSpace);
-    namespaceShortName := Copy(namespaceShortName,AnsiPos(':',namespaceShortName) + 1,MaxInt);
+    i := Pos(':',namespaceShortName);
+    if ( i > 0 ) then
+      namespaceShortName := Copy(namespaceShortName,i + 1,MaxInt)
+    else
+      namespaceShortName := '';
     if not IsStrEmpty(namespaceShortName) then
       strNodeName := namespaceShortName + ':' + strNodeName;
   end;
