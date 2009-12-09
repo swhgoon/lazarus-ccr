@@ -101,7 +101,7 @@ type
     Collapsing: Boolean) of object;
 
   TJvXPBarOnDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem; Bitmap: TBitmap) of object;
+    Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem) of object;
   TJvXPBarOwnerDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; var ARect: TRect) of object;
 
   TJvXPBarOnItemClickEvent = procedure(Sender: TObject; Item: TJvXPBarItem) of object;
@@ -183,7 +183,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
 
     procedure DrawItem(AWinXPBar: TJvXPCustomWinXPBar; ACanvas: TCanvas;
-      Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean; Bitmap: TBitmap); virtual;
+      Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean); virtual;
     property ActionLink: TJvXPBarItemActionLink read FActionLink write FActionLink;
   public
     constructor Create(ACollection: TCollection); override;
@@ -502,6 +502,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
+    property BorderSpacing;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -719,18 +720,14 @@ begin
 end;
 
 function TJvXPBarItem.GetDisplayName: string;
-var
-  _DisplayName, ItemName: string;
 begin
-  _DisplayName := FCaption;
-  if _DisplayName = '' then
-    _DisplayName := RsUntitled;
-  ItemName := FName;
-  if ItemName <> '' then
-    DisplayName := DisplayName + ' [' + ItemName + ']';
+  Result := FCaption;
+  if Result = '' then
+    Result := RsUntitled;  
+  if FName <> '' then
+    Result := Result + ' [' + FName + ']';
   if not FVisible then
-    _DisplayName := _DisplayName + '*';
-  Result := _DisplayName;
+    Result := Result + '*';
 end;
 
 function TJvXPBarItem.GetImages: TCustomImageList;
@@ -773,14 +770,13 @@ begin
 end;
 
 procedure TJvXPBarItem.DrawItem(AWinXPBar: TJvXPCustomWinXPBar; ACanvas: TCanvas;
-  Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean; Bitmap: TBitmap);
+  Rect: TRect; State: TJvXPDrawState; ShowItemFrame: Boolean);
 var
   ItemCaption: TCaption;
-  HasImages: Boolean;
+  WorkImages: TCustomImageList;
   LBar: TJvXPCustomWinXPBar;
 begin
   LBar := (AWinXPBar as TJvXPCustomWinXPBar);
-  HasImages := Self.Images <> nil;
   with ACanvas do
   begin
     Font.Assign(LBar.Font);
@@ -829,13 +825,12 @@ begin
       else
         FillRect(Rect);
     end;
-    if HasImages then
+    WorkImages := Self.Images;
+    if WorkImages <> nil then
     begin
       if (Self.ImageIndex <> -1) then
-         Self.Images.Draw(ACanvas, Rect.Left + 1,
-           Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Self.ImageIndex);
-      //Original:
-      //Draw(Rect.Left + 1, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
+         WorkImages.Draw(ACanvas, Rect.Left + 1,
+           Rect.Top + (LBar.FItemHeight - WorkImages.Height) div 2, Self.ImageIndex);
       Inc(Rect.Left, Self.Images.Width + 4);
     end
     else
@@ -1909,30 +1904,18 @@ end;
 
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
-  Bitmap: TBitmap;
   ItemRect: TRect;
-  HasImages: Boolean;
 begin
-  Bitmap := TBitmap.Create;
   with Canvas do
-  try
-    Bitmap.Assign(nil);
+  begin
     ItemRect := GetItemRect(Index);
-    HasImages := FVisibleItems[Index].Images <> nil;
-    if HasImages then
-    begin
-      FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
-    end;
-    Bitmap.Transparent := True;
     if OwnerDraw then
     begin
       if Assigned(FOnDrawItem) then
-        FOnDrawItem(Self, Canvas, ItemRect, State, FVisibleItems[Index], Bitmap);
+        FOnDrawItem(Self, Canvas, ItemRect, State, FVisibleItems[Index]);
     end
     else
-      FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
-  finally
-    Bitmap.Free;
+      FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame);
   end;
 end;
 
