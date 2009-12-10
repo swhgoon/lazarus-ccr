@@ -103,11 +103,12 @@ resourcestring
   sRxSortByFormCaption     = 'Sort on field';
   sRxSortByFormAllFields   = '&Fields in dataset:';
   sRxSortByFormSortFields  = '&Selected fields:';
-  sRxSortByFormSortOrder   = 'Select field for sort data:';
+  sRxSortByFormSortOrder   = 'Select f&ield for sort data:';
   sRxSortByFormAddField    = '&Add field';
   sRxSortByFormRemoveField = '&Remove';
   sRxSortByFormMoveUpField = '&Up';
   sRxSortByFormMoveDnField = '&Down';
+  sRxSortByFormCaseInsens  = '&Case insensitive sort';
 
   //TRxMemoryData
   SMemNoRecords            = 'No data found';

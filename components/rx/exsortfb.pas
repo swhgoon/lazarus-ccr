@@ -35,22 +35,29 @@ unit exsortfb;
 interface
 
 uses
-  Classes, SysUtils, DB, RxDBGrid;
+  Classes, SysUtils, DB,
+  {$IFDEF FPC}
+  RxDBGrid
+  {$ELSE}
+  exDBGrid
+  {$ENDIF}
+  ;
 
 type
 
   { TFBDataSetSortEngine }
 
-  TFBDataSetSortEngine = class(TExDBGridSortEngine)
+  TFBDataSetSortEngine = class(TRxDBGridSortEngine)
   public
-    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);override;
+    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);override;
     procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);override;
   end;
 
 implementation
 uses FBCustomDataSet;
 
-procedure TFBDataSetSortEngine.Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);
+procedure TFBDataSetSortEngine.Sort(Field: TField; ADataSet: TDataSet;
+  Asc: boolean; SortOptions: TRxSortEngineOptions);
 begin
   if Assigned(ADataSet) then
     (ADataSet as TFBDataSet).SortOnField(Field.FieldName, Asc);
@@ -64,6 +71,6 @@ begin
 end;
 
 initialization
-  RegisterExDBGridSortEngine(TFBDataSetSortEngine, TFBDataSet);
+  RegisterRxDBGridSortEngine(TFBDataSetSortEngine, TFBDataSet);
 end.
 

@@ -361,6 +361,10 @@ msgstr ""
 msgid "Sort on field"
 msgstr ""
 
+#: rxdconst.srxsortbyformcaseinsens
+msgid "&Case insensitive sort"
+msgstr ""
+
 #: rxdconst.srxsortbyformmovednfield
 msgid "&Down"
 msgstr ""
@@ -378,7 +382,7 @@ msgid "&Selected fields:"
 msgstr ""
 
 #: rxdconst.srxsortbyformsortorder
-msgid "Select field for sort data:"
+msgid "Select f&ield for sort data:"
 msgstr ""
 
 #: rxdconst.srxsoursedataset

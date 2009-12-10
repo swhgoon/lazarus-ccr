@@ -44,7 +44,8 @@ type
                rdgAllowQuickSearch,
                rdgAllowFilterForm,
                rdgAllowSortForm,
-               rdgAllowToolMenu
+               rdgAllowToolMenu,
+               rdgCaseInsensitiveSort
                );
   
   TOptionsRx = set of TOptionRx;
@@ -55,17 +56,20 @@ type
 
   TRxColumn = class;
 
-  { TExDBGridSortEngine }
+  { TRxDBGridSortEngine }
+  TRxSortEngineOption =
+       (seoCaseInsensitiveSort);
+  TRxSortEngineOptions = set of TRxSortEngineOption;
 
-  TExDBGridSortEngine = class
+  TRxDBGridSortEngine = class
   private
     FDataSetClass:TDataSetClass;
   public
-    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean);virtual;abstract;
+    procedure Sort(Field:TField; ADataSet:TDataSet; Asc:boolean; SortOptions:TRxSortEngineOptions);virtual;abstract;
     procedure SortList(ListField:string; ADataSet:TDataSet; Asc:boolean);virtual;
   end;
 
-  TExDBGridSortEngineClass = class of TExDBGridSortEngine;
+  TRxDBGridSortEngineClass = class of TRxDBGridSortEngine;
 
   TMLCaptionItem = class
     Caption:string;
@@ -244,7 +248,7 @@ type
     //auto sort support
     FSortField:TField;
     FSortOrder:TSortMarker;
-    FSortEngine:TExDBGridSortEngine;
+    FSortEngine:TRxDBGridSortEngine;
     FPressedCol: TColumn;
     FPressed: Boolean;
     FSwapButtons: Boolean;
@@ -303,6 +307,8 @@ type
     procedure OutCaptionSortMarker(const  aRect: TRect; ASortMarker: TSortMarker);
     procedure OutCaptionMLCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; MLI:TMLCaptionItem);
     procedure UpdateJMenuStates;
+    function  SortEngineOptions:TRxSortEngineOptions;
+
 
     //storage
     procedure OnIniSave(Sender: TObject);
@@ -480,25 +486,25 @@ type
     property OnDisplayLookup: TDisplayLookup read F_DisplayLookup write F_DisplayLookup;
   end;
 
-procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
+procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass:TRxDBGridSortEngineClass; DataSetClass:TDataSetClass);
 
 implementation
 uses Math, rxdconst, rxstrutils, rxdbgrid_findunit, rxdbgrid_columsunit,
   rxlookup, tooledit, LCLProc, rxfilterby, rxsortby;
 
 var
-  ExDBGridSortEngineList:TStringList;
+  RxDBGridSortEngineList:TStringList;
 
-procedure RegisterExDBGridSortEngine(ExDBGridSortEngineClass:TExDBGridSortEngineClass; DataSetClass:TDataSetClass);
+procedure RegisterRxDBGridSortEngine(RxDBGridSortEngineClass:TRxDBGridSortEngineClass; DataSetClass:TDataSetClass);
 var
   Pos:integer;
-  ExDBGridSortEngine:TExDBGridSortEngine;
+  RxDBGridSortEngine:TRxDBGridSortEngine;
 begin
-  if not ExDBGridSortEngineList.Find(DataSetClass.ClassName, Pos) then
+  if not RxDBGridSortEngineList.Find(DataSetClass.ClassName, Pos) then
   begin
-    ExDBGridSortEngine:=ExDBGridSortEngineClass.Create;
-    ExDBGridSortEngine.FDataSetClass:=DataSetClass;
-    ExDBGridSortEngineList.AddObject(DataSetClass.ClassName, ExDBGridSortEngine);
+    RxDBGridSortEngine:=RxDBGridSortEngineClass.Create;
+    RxDBGridSortEngine.FDataSetClass:=DataSetClass;
+    RxDBGridSortEngineList.AddObject(DataSetClass.ClassName, RxDBGridSortEngine);
   end
 end;
 
@@ -856,8 +862,8 @@ begin
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active then
   begin
     S:=DataSource.DataSet.ClassName;
-    if ExDBGridSortEngineList.Find(S, Pos) then
-      FSortEngine:=ExDBGridSortEngineList.Objects[Pos] as TExDBGridSortEngine
+    if RxDBGridSortEngineList.Find(S, Pos) then
+      FSortEngine:=RxDBGridSortEngineList.Objects[Pos] as TRxDBGridSortEngine
     else
       FSortEngine:=nil;
     FSortField:=nil;
@@ -1221,6 +1227,13 @@ begin
   F_PopupMenu.Items[6].Enabled:=rdgAllowColumnsForm in FOptionsRx;
 end;
 
+function TRxDBGrid.SortEngineOptions: TRxSortEngineOptions;
+begin
+  Result:=[];
+  if rdgCaseInsensitiveSort in FOptionsRx then
+    Include(Result, seoCaseInsensitiveSort);
+end;
+
 procedure TRxDBGrid.OnIniSave(Sender: TObject);
 var
   i:integer;
@@ -1287,7 +1300,7 @@ begin
       begin
         FSortField:=DataSource.DataSet.FindField(ColumName);
         if Assigned(FSortField) then
-          FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp);
+          FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp, SortEngineOptions);
       end;
     end
   end;
@@ -1605,8 +1618,8 @@ begin
   if Value then
   begin
     S:=DataSource.DataSet.ClassName;
-    if ExDBGridSortEngineList.Find(S, Pos) then
-      FSortEngine:=ExDBGridSortEngineList.Objects[Pos] as TExDBGridSortEngine
+    if RxDBGridSortEngineList.Find(S, Pos) then
+      FSortEngine:=RxDBGridSortEngineList.Objects[Pos] as TRxDBGridSortEngine
     else
       FSortEngine:=nil;
   end
@@ -1743,7 +1756,7 @@ begin
       FSortField:=AField;
       FSortOrder:=smUp;
     end;
-    FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp);
+    FSortEngine.Sort(FSortField, DataSource.DataSet, FSortOrder=smUp, SortEngineOptions);
   end;
 //  if Assigned(FOnTitleBtnClick) then FOnTitleBtnClick(Self, ACol, AField);
 end;
@@ -2566,6 +2579,7 @@ begin
   begin
     FSortField:=nil;
     rxSortByForm:=TrxSortByForm.Create(Application);
+    rxSortByForm.CheckBox1.Checked:=rdgCaseInsensitiveSort in FOptionsRx;
     o:=not (FSortOrder=smDown);
     if rxSortByForm.Execute(DataSource.DataSet,F_SortListField,o) then
     begin
@@ -2578,6 +2592,12 @@ begin
          FSortOrder:=smUp
       else
          FSortOrder:=smDown;
+
+      if rxSortByForm.CheckBox1.Checked then
+        Include(FOptionsRx, rdgCaseInsensitiveSort)
+      else
+        Exclude(FOptionsRx, rdgCaseInsensitiveSort);
+
       FSortEngine.SortList(s, DataSource.DataSet, o);
     end;
     FreeAndNil(rxSortByForm);
@@ -3332,7 +3352,7 @@ end;
 
 { TExDBGridSortEngine }
 
-procedure TExDBGridSortEngine.SortList(ListField: string; ADataSet: TDataSet;
+procedure TRxDBGridSortEngine.SortList(ListField: string; ADataSet: TDataSet;
   Asc: boolean);
 begin
 
@@ -3342,14 +3362,14 @@ initialization
   {$I rxdbgrid.lrs}
 //  {$I rx_markerdown.lrs}
 
-  ExDBGridSortEngineList:=TStringList.Create;
-  ExDBGridSortEngineList.Sorted:=true;
+  RxDBGridSortEngineList:=TStringList.Create;
+  RxDBGridSortEngineList.Sorted:=true;
 finalization
-  while (ExDBGridSortEngineList.Count>0) do
+  while (RxDBGridSortEngineList.Count>0) do
   begin
-    ExDBGridSortEngineList.Objects[0].Free;
-    ExDBGridSortEngineList.Delete(0);
+    RxDBGridSortEngineList.Objects[0].Free;
+    RxDBGridSortEngineList.Delete(0);
   end;
-  ExDBGridSortEngineList.Free;
+  RxDBGridSortEngineList.Free;
 end.
 

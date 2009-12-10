@@ -1,16 +1,16 @@
 object rxSortByForm: TrxSortByForm
   Left = 450
-  Height = 337
-  Top = 270
-  Width = 583
+  Height = 411
+  Top = 243
+  Width = 684
   ActiveControl = AddBtn
   Caption = 'Sort by fields'
-  ClientHeight = 337
-  ClientWidth = 583
+  ClientHeight = 411
+  ClientWidth = 684
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -27,7 +27,7 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Control = AddBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 352
+    Left = 423
     Height = 18
     Top = 6
     Width = 75
@@ -42,7 +42,7 @@ object rxSortByForm: TrxSortByForm
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 18
-    Top = 265
+    Top = 316
     Width = 116
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
@@ -58,10 +58,10 @@ object rxSortByForm: TrxSortByForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ComboBox1
-    Left = 352
-    Height = 216
+    Left = 423
+    Height = 267
     Top = 30
-    Width = 225
+    Width = 255
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -75,7 +75,7 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 197
+    Left = 268
     Height = 35
     Top = 71
     Width = 149
@@ -109,7 +109,7 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 197
+    Left = 268
     Height = 36
     Top = 112
     Width = 149
@@ -142,7 +142,7 @@ object rxSortByForm: TrxSortByForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = AddBtn
     AnchorSideRight.Side = asrBottom
-    Left = 197
+    Left = 268
     Height = 36
     Top = 154
     Width = 149
@@ -174,11 +174,11 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonPanel1
+    AnchorSideBottom.Control = CheckBox1
     Left = 128
     Height = 31
-    Top = 252
-    Width = 449
+    Top = 303
+    Width = 550
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -189,12 +189,13 @@ object rxSortByForm: TrxSortByForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = AddBtn
     AnchorSideBottom.Control = ComboBox1
     Left = 6
-    Height = 216
+    Height = 267
     Top = 30
-    Width = 185
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 256
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = ListBox1DblClick
@@ -202,10 +203,10 @@ object rxSortByForm: TrxSortByForm
     TopIndex = -1
   end
   object AddBtn: TBitBtn
-    AnchorSideLeft.Control = ListBox1
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = ListBox1
-    Left = 197
+    Left = 268
     Height = 35
     Top = 30
     Width = 149
@@ -232,10 +233,24 @@ object rxSortByForm: TrxSortByForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 289
-    Width = 571
+    Height = 40
+    Top = 365
+    Width = 672
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object CheckBox1: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label4
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 19
+    Top = 340
+    Width = 163
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Case insensitive sort'
+    TabOrder = 8
   end
 end

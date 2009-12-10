@@ -15,6 +15,7 @@ type
   TrxSortByForm = class(TForm)
     AddBtn: TBitBtn;
     ButtonPanel1: TButtonPanel;
+    CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     DownBtn: TBitBtn;
     Label1: TLabel;
@@ -90,6 +91,7 @@ begin
   RemoveBtn.Caption:=sRxSortByFormRemoveField;
   UpBtn.Caption:=sRxSortByFormMoveUpField;
   DownBtn.Caption:=sRxSortByFormMoveDnField;
+  CheckBox1.Caption:=sRxSortByFormCaseInsens;
 end;
 
 procedure TrxSortByForm.ListBox1DblClick(Sender: TObject);

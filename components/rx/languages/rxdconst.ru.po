@@ -361,6 +361,10 @@ msgstr "&Поля в таблице"
 msgid "Sort on field"
 msgstr "Сортировать по полям"
 
+#: rxdconst.srxsortbyformcaseinsens
+msgid "&Case insensitive sort"
+msgstr "&Сортировка без учёта регистра"
+
 #: rxdconst.srxsortbyformmovednfield
 msgid "&Down"
 msgstr "&Вниз"
@@ -378,7 +382,9 @@ msgid "&Selected fields:"
 msgstr "&Выбранные поля"
 
 #: rxdconst.srxsortbyformsortorder
-msgid "Select field for sort data:"
+#, fuzzy
+#| msgid "Select field for sort data:"
+msgid "Select f&ield for sort data:"
 msgstr "Укажите поля для сортировки данных :"
 
 #: rxdconst.srxsoursedataset
