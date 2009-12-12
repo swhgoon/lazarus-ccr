@@ -319,6 +319,7 @@ uses
   Windows,
   {$endif}
   ActiveX,
+  Clipbrd,
   OleUtils,
   LCLIntf,
   DelphiCompat,
@@ -3350,6 +3351,10 @@ type
     function CanExportNode(Node: PVirtualNode): Boolean;
     function CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: String): Integer; virtual;
     function ColumnIsEmpty(Node: PVirtualNode; Column: TColumnIndex): Boolean; override;
+    {$ifndef LCLWin32}
+    procedure CopyToClipBoard; override;
+    procedure CutToClipBoard; override;
+    {$endif}
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): String; override;
     function DoGetNodeTooltip(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): String; override;
@@ -31987,6 +31992,23 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+{$ifndef LCLWin32}
+procedure TCustomVirtualStringTree.CopyToClipBoard;
+begin
+  MarkCutCopyNodes;
+  DoStateChange([tsCopyPending]);
+  Clipboard.AsText := ContentToUTF8(tstCutCopySet, #9);
+  DoStateChange([], [tsCopyPending]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TCustomVirtualStringTree.CutToClipBoard;
+begin
+  //todo: currently there's no way in LCL to know when the clipboard was used
+  CopyToClipBoard;
+end;
+{$endif}
 
 //----------------------------------------------------------------------------------------------------------------------
 
