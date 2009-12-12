@@ -473,9 +473,10 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
                          // and to allow for check of system dependent hint animation.
   IsWinVistaOrAbove: Boolean;
 
-  {$MinEnumSize 1, make enumerations as small as possible}
-
 type
+  {$ifdef VER2_2}
+  UnicodeString = WideString;
+  {$endif}
 
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
@@ -4741,7 +4742,7 @@ begin
   end;
 
   Len := Length(Result) - Length(LineEnding);
-  if StrLComp(PChar(@Result[Len + 1]), PChar(@LineEnding[1]), Length(LineEnding)) = 0 then
+  if CompareByte(Result[Len + 1], LineEnding, Length(LineEnding)) = 0 then
     SetLength(Result, Len);
 end;
 
