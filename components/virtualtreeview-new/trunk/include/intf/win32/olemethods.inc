@@ -358,19 +358,19 @@ begin
   case Format of
     CF_TEXT:
       begin
-        S := ContentToText(Source, #9) + #0;
+        S := ContentToAnsi(Source, #9) + #0;
         Data := PChar(S);
         DataSize := Length(S);
       end;
     CF_UNICODETEXT:
       begin
-        WS := ContentToUnicode(Source, #9) + #0;
+        WS := ContentToUTF16(Source, #9) + #0;
         Data := PWideChar(WS);
         DataSize := 2 * Length(WS);
       end;
   else
     if Format = CF_CSV then
-      S := ContentToText(Source, ListSeparator) + #0
+      S := ContentToAnsi(Source, ListSeparator) + #0
     else
       if (Format = CF_VRTF) or (Format = CF_VRTFNOOBJS) then
         S := ContentToRTF(Source) + #0

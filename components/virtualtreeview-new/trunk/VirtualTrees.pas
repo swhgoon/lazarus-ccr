@@ -3289,6 +3289,31 @@ type
   TVTDrawTextEvent = procedure(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
     Column: TColumnIndex; const Text: String; const CellRect: TRect; var DefaultDraw: Boolean) of object;
 
+  // Helper class to speed up rendering text formats for clipboard and drag'n drop transfers.
+
+  { TBufferedUTF8String }
+
+  TBufferedUTF8String = class
+  private
+    FStart,
+    FPosition,
+    FEnd: PChar;
+    function GetAsAnsiString: AnsiString;
+    function GetAsUTF16String: UnicodeString;
+    function GetAsUTF8String: String;
+  public
+    destructor Destroy; override;
+
+    procedure Add(const S: String);
+    procedure AddNewLine;
+
+    property AsAnsiString: AnsiString read GetAsAnsiString;
+    property AsUTF8String: String read GetAsUTF8String;
+    property AsUTF16String: UnicodeString read GetAsUTF16String;
+  end;
+
+  { TCustomVirtualStringTree }
+
   TCustomVirtualStringTree = class(TBaseVirtualTree)
   private
     FDefaultText: String;                      // text to show if there's no OnGetText event handler (e.g. at design time)
@@ -3305,6 +3330,7 @@ type
     FOnMeasureTextWidth: TVTMeasureTextWidthEvent; // used to adjust the width of the cells
     FOnDrawText: TVTDrawTextEvent;                 // used to custom draw the node text 
 
+    procedure AddContentToBuffer(Buffer: TBufferedUTF8String; Source: TVSTTextSourceType; const Separator: String);
     function GetImageText(Node: PVirtualNode; Kind: TVTImageKind;
       Column: TColumnIndex): String;
     procedure GetRenderStartValues(Source: TVSTTextSourceType; var Node: PVirtualNode;
@@ -3363,10 +3389,11 @@ type
     function ComputeNodeHeight(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; S: String = ''): Integer; virtual;
     function ContentToClipboard(Format: Word; Source: TVSTTextSourceType): HGLOBAL;
     procedure ContentToCustom(Source: TVSTTextSourceType);
-    function ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): AnsiString;
+    function ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): String;
     function ContentToRTF(Source: TVSTTextSourceType): AnsiString;
-    function ContentToText(Source: TVSTTextSourceType; const Separator: AnsiString): AnsiString;
-    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): String;
+    function ContentToAnsi(Source: TVSTTextSourceType; const Separator: String): AnsiString;
+    function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): WideString;
+    function ContentToUTF8(Source: TVSTTextSourceType; const Separator: String): String;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
       var Text: String); override;
     function InvalidateNode(Node: PVirtualNode): TRect; override;
@@ -3881,7 +3908,8 @@ uses
   TypInfo,                 // for migration stuff
   ActnList,
   StdActns,                // for standard action support
-  GraphType
+  GraphType,
+  LCLProc
   {$ifdef EnableAccessible}
   ,VTAccessibilityFactory
   {$endif};  // accessibility helper class
@@ -4038,37 +4066,6 @@ type
     procedure RemoveTree(Tree: TBaseVirtualTree);
 
     property CurrentTree: TBaseVirtualTree read FCurrentTree;
-  end;
-
-  // Helper classes to speed up rendering text formats for clipboard and drag'n drop transfers.
- TBufferedAnsiString = class
-  private
-    FStart,
-    FPosition,
-    FEnd: PAnsiChar;
-    function GetAsString: AnsiString;
-  public
-    destructor Destroy; override;
-
-    procedure Add(const S: AnsiString);
-    procedure AddNewLine;
-
-    property AsString: AnsiString read GetAsString;
-  end;
-
-  TUTF8BufferedString = class
-  private
-    FStart,
-    FPosition,
-    FEnd: PChar;
-    function GetAsString: String;
-  public
-    destructor Destroy; override;
-
-    procedure Add(const S: String);
-    procedure AddNewLine;
-
-    property AsString: String read GetAsString;
   end;
 
 var
@@ -4681,7 +4678,7 @@ begin
         end;
       end;
 
-      Result := Result + Line + WideLF;
+      Result := Result + Line + LineEnding;
     end;
   end
   else
@@ -4737,12 +4734,13 @@ begin
         end;
       end;
 
-      Result := Result + Line + WideLF;
+      Result := Result + Line + LineEnding;
     end;
   end;
 
   Len := Length(Result);
-  if Result[Len] = WideLF then
+  //todo: test
+  if Result[Len - Length(LineEnding) + 1] = LineEnding[1] then
     SetLength(Result, Len - 1);
 end;
 
@@ -5762,12 +5760,11 @@ begin
   end;
 end;
 
-//----------------- TBufferedAnsiString ------------------------------------------------------------------------------------
-
+//----------------- TBufferedUTF8String --------------------------------------------------------------------------------
 const
   AllocIncrement = 2 shl 11;  // Must be a power of 2.
 
-destructor TBufferedAnsiString.Destroy;
+destructor TBufferedUTF8String.Destroy;
 
 begin
   FreeMem(FStart);
@@ -5776,84 +5773,30 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBufferedAnsiString.GetAsString: AnsiString;
+function TBufferedUTF8String.GetAsAnsiString: AnsiString;
+begin
+  //an implicit conversion is done
+  Result := AsUTF16String;
+end;
 
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBufferedUTF8String.GetAsUTF16String: UnicodeString;
+begin
+  //todo: optimize
+  Result := UTF8Decode(AsUTF8String);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBufferedUTF8String.GetAsUTF8String: String;
 begin
   SetString(Result, FStart, FPosition - FStart);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBufferedAnsiString.Add(const S: AnsiString);
-
-var
-  NewLen,
-  LastOffset,
-  Len: Integer;
-
-begin
-  Len := Length(S);
-  // Make room for the new string.
-  if FEnd - FPosition <= Len then
-  begin
-    // Round up NewLen so it is always a multiple of AllocIncrement.
-    NewLen := FEnd - FStart + (Len + AllocIncrement - 1) and not (AllocIncrement - 1);
-    // Keep last offset to restore it correctly in the case that FStart gets a new memory block assigned.
-    LastOffset := FPosition - FStart;
-    ReallocMem(FStart, NewLen);
-    FPosition := FStart + LastOffset;
-    FEnd := FStart + NewLen;
-  end;
-  Move(PAnsiChar(S)^, FPosition^, Len);
-  Inc(FPosition, Len);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBufferedAnsiString.AddNewLine;
-
-var
-  NewLen,
-  LastOffset: Integer;
-
-begin
-  // Make room for the CR/LF characters.
-  if FEnd - FPosition <= 2 then
-  begin
-    // Round up NewLen so it is always a multiple of AllocIncrement.
-    NewLen := FEnd - FStart + (2 + AllocIncrement - 1) and not (AllocIncrement - 1);
-    // Keep last offset to restore it correctly in the case that FStart gets a new memory block assigned.
-    LastOffset := FPosition - FStart;
-    ReallocMem(FStart, NewLen);
-    FPosition := FStart + LastOffset;
-    FEnd := FStart + NewLen;
-  end;
-  FPosition^ := #13;
-  Inc(FPosition);
-  FPosition^ := #10;
-  Inc(FPosition);
-end;
-
-//----------------- TUTF8BufferedString --------------------------------------------------------------------------------
-
-destructor TUTF8BufferedString.Destroy;
-
-begin
-  FreeMem(FStart);
-  inherited;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function TUTF8BufferedString.GetAsString: String;
-
-begin
-  SetString(Result, FStart, FPosition - FStart);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TUTF8BufferedString.Add(const S: String);
+procedure TBufferedUTF8String.Add(const S: String);
 
 var
   NewLen,
@@ -5879,7 +5822,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TUTF8BufferedString.AddNewLine;
+procedure TBufferedUTF8String.AddNewLine;
 
 var
   NewLen,
@@ -32467,7 +32410,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): AnsiString;
+function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): String;
 
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
@@ -32482,96 +32425,7 @@ const
   ReplacementCharacter: UCS4 = $0000FFFD;
 
 var
-  Buffer: TBufferedAnsiString;
-
-  //--------------- local functions -------------------------------------------
-
-  function ConvertSurrogate(S1, S2: UCS2): UCS4;
-
-  // Converts a pair of high and low surrogate into the corresponding UCS4 character.
-
-  const
-    SurrogateOffset = ($D800 shl 10) + $DC00 - $10000;
-
-  begin
-    Result := Word(S1) shl 10 + Word(S2) - SurrogateOffset;
-  end;
-
-  //---------------------------------------------------------------------------
-
-  function UTF16ToUTF8(const S: String): AnsiString;
-
-  // Converts the given Unicode text (which may contain surrogates) into
-  // the UTF-8 encoding used for the HTML clipboard format.
-
-  const
-    FirstByteMark: array[0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
-
-  var
-    Ch: UCS4;
-    I, J, T: Integer;
-    BytesToWrite: Cardinal;
-
-  begin
-    if Length(S) = 0 then
-      Result := ''
-    else
-    begin
-      // Make room for the result. Assume worst case, there are only short texts to convert.
-      SetLength(Result, 6 * Length(S));
-      T := 1;
-      I := 1;
-      while I <= Length(S) do
-      begin
-        Ch := UCS4(S[I]);
-
-        // Is the character a surrogate?
-        if (Ch and $FFFFF800) = $D800 then
-        begin
-          Inc(I);
-          // Check the following char whether it forms a valid surrogate pair with the first character.
-          if (I <= Length(S)) and ((UCS4(S[I]) and $FFFFFC00) = $DC00) then
-            Ch := ConvertSurrogate(UCS2(Ch), UCS2(S[I]))
-          else // Skip invalid surrogate value.
-            Continue;
-        end;
-
-        if Ch < $80 then
-          BytesToWrite := 1
-        else
-          if Ch < $800 then
-            BytesToWrite := 2
-          else
-            if Ch < $10000 then
-              BytesToWrite := 3
-            else
-              if Ch < $200000 then
-                BytesToWrite := 4
-              else
-                if Ch < $4000000 then
-                  BytesToWrite := 5
-                else
-                  if Ch <= MaximumUCS4 then
-                    BytesToWrite := 6
-                  else
-                  begin
-                    BytesToWrite := 2;
-                    Ch := ReplacementCharacter;
-                  end;
-
-        for J := BytesToWrite downto 2 do
-        begin
-          Result[T + J - 1] := AnsiChar((Ch or $80) and $BF);
-          Ch := Ch shr 6;
-        end;
-        Result[T] := AnsiChar(Ch or FirstByteMark[BytesToWrite]);
-        Inc(T, BytesToWrite);
-
-        Inc(I);
-      end;
-      SetLength(Result, T - 1); // set to actual length
-    end;
-  end;
+  Buffer: TBufferedUTF8String;
 
   //---------------------------------------------------------------------------
 
@@ -32645,24 +32499,24 @@ var
 var
   I, J : Integer;
   Level, MaxLevel: Cardinal;
-  AddHeader: AnsiString;
+  AddHeader: String;
   Save, Run: PVirtualNode;
   GetNextNode: TGetNextNodeProc;
   Text: String;
 
   RenderColumns: Boolean;
   Columns: TColumnsArray;
-  ColumnColors: array of AnsiString;
+  ColumnColors: array of String;
   Index: Integer;
   IndentWidth,
-  LineStyleText: AnsiString;
+  LineStyleText: String;
   Alignment: TAlignment;
   BidiMode: TBidiMode;
 
-  CellPadding: AnsiString;
+  CellPadding: String;
 
 begin
-  Buffer := TBufferedAnsiString.Create;
+  Buffer := TBufferedUTF8String.Create;
   try
     // For customization by the application or descendants we use again the redirected font change event.
     RedirectFontChangeEvent(Canvas);
@@ -32673,7 +32527,7 @@ begin
     AddHeader := ' ';
     // Add title if adviced so by giving a caption.
     if Length(Caption) > 0 then
-      AddHeader := AddHeader + 'caption="' + UTF16ToUTF8(Caption) + '"';
+      AddHeader := AddHeader + 'caption="' + Caption + '"';
     if Borderstyle <> bsNone then
       AddHeader := AddHeader + Format(' border="%d" frame=box', [BorderWidth + 1]);
 
@@ -32810,7 +32664,7 @@ begin
         Buffer.Add('px">');
 
         if Length(Columns[I].Text) > 0 then
-          Buffer.Add(UTF16ToUTF8(Columns[I].Text));
+          Buffer.Add(Columns[I].Text);
         Buffer.Add('</th>');
         if Assigned(FOnAfterColumnExport) then
             FOnAfterColumnExport(Self, etHTML, Columns[I]);
@@ -32939,10 +32793,7 @@ begin
           Buffer.Add('>');
           Text := Self.Text[Run, Index];
           if Length(Text) > 0 then
-          begin
-            Text := UTF16ToUTF8(Text);
             Buffer.Add(Text);
-          end;
           Buffer.Add('</td>');
         end;
 
@@ -32960,7 +32811,7 @@ begin
 
     RestoreFontChangeEvent(Canvas);
 
-    Result := Buffer.AsString;
+    Result := Buffer.AsUTF8String;
   finally
     Buffer.Free;
   end;
@@ -32993,7 +32844,7 @@ var
   CurrentFontIndex,
   CurrentFontColor,
   CurrentFontSize: Integer;
-  Buffer: TBufferedAnsiString;
+  Buffer: TBufferedUTF8String;
 
   //--------------- local functions -------------------------------------------
 
@@ -33053,17 +32904,18 @@ var
 
   //---------------------------------------------------------------------------
 
-  procedure TextPlusFont(Text: String; Font: TFont);
+  procedure TextPlusFont(const Text: String; Font: TFont);
 
   var
     UseUnderline,
     UseItalic,
     UseBold: Boolean;
     I: Integer;
-
+    WText: UnicodeString;
   begin
     if Length(Text) > 0 then
     begin
+      WText := UTF8Decode(Text);
       UseUnderline := fsUnderline in Font.Style;
       if UseUnderline then
         Buffer.Add('\ul');
@@ -33086,13 +32938,13 @@ var
       Buffer.Add(' ');
       // Note: Unicode values > 32767 must be expressed as negative numbers. This is implicitly done
       //       by interpreting the wide chars (word values) as small integers.
-      for I := 1 to Length(Text) do
+      for I := 1 to Length(WText) do
       begin
         if (Text[I] = WideLF) then
           Buffer.Add( '{\par}' )
         else if (Text[i] <> WideCR) then
         begin
-          Buffer.Add(Format('\u%d\''3f', [SmallInt(Text[I])]));
+          Buffer.Add(Format('\u%d\''3f', [SmallInt(WText[I])]));
           Continue;
         end;
       end;
@@ -33112,7 +32964,7 @@ var
   I, J: Integer;
   Save, Run: PVirtualNode;
   GetNextNode: TGetNextNodeProc;
-  S, Tabs : AnsiString;
+  S, Tabs : String;
   Text: String;
   Twips: Integer;
 
@@ -33123,7 +32975,7 @@ var
   BidiMode: TBidiMode;
 
 begin
-  Buffer := TBufferedAnsiString.Create;
+  Buffer := TBufferedUTF8String.Create;
   try
     // For customization by the application or descendants we use again the redirected font change event.
     RedirectFontChangeEvent(Canvas);
@@ -33302,7 +33154,7 @@ begin
     end;
     S := S + '}';
 
-    Result := S + Buffer.AsString + '}';
+    Result := S + Buffer.AsAnsiString + '}';
     Fonts.Free;
     Colors.Free;
 
@@ -33383,283 +33235,181 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToText(Source: TVSTTextSourceType; const Separator: AnsiString): AnsiString;
-
-// Renders the current tree content (depending on Source) as plain ANSI text.
-// If an entry contains the separator char or double quotes then it is wrapped with double quotes
-// and existing double quotes are duplicated.
-// Note: Unicode strings are implicitely converted to ANSI strings based on the currently active user locale.
-
+function TCustomVirtualStringTree.ContentToAnsi(Source: TVSTTextSourceType; const Separator: String): AnsiString;
 var
-  RenderColumns: Boolean;
-  Tabs: AnsiString;
-  GetNextNode: TGetNextNodeProc;
-  Run, Save: PVirtualNode;
-  Level, MaxLevel: Cardinal;
-  Columns: TColumnsArray;
-  LastColumn: TVirtualTreeColumn;
-  Index,
-  I: Integer;
-  Text: AnsiString;
-  Buffer: TBufferedAnsiString;
-
+  Buffer: TBufferedUTF8String;
 begin
-  Columns := nil;
-  Buffer := TBufferedAnsiString.Create;
+  Buffer := TBufferedUTF8String.Create;
   try
-    RenderColumns := FHeader.UseColumns;
-    if RenderColumns then
-      Columns := FHeader.FColumns.GetVisibleColumns;
-
-    GetRenderStartValues(Source, Run, GetNextNode);
-    Save := Run;
-
-    // The text consists of visible groups representing the columns, which are separated by one or more separator
-    // characters. There are always MaxLevel separator chars in a line (main column only). Either before the caption
-    // to ident it or after the caption to make the following column aligned.
-    MaxLevel := 0;
-    while Assigned(Run) do
-    begin
-      Level := GetNodeLevel(Run);
-      If Level > MaxLevel then
-        MaxLevel := Level;
-      Run := GetNextNode(Run);
-    end;
-
-    Tabs := DupeString(Separator, MaxLevel);
-
-    // First line is always the header if used.
-    if RenderColumns then
-    begin
-      LastColumn := Columns[High(Columns)];
-      for I := 0 to High(Columns) do
-      begin
-        Buffer.Add(Columns[I].Text);
-        if Columns[I] <> LastColumn then
-        begin
-          if Columns[I].Index = Header.MainColumn then
-          begin
-            Buffer.Add(Tabs);
-            Buffer.Add(Separator);
-          end
-          else
-            Buffer.Add(Separator);
-        end;
-      end;
-      Buffer.AddNewLine;
-    end
-    else
-      LastColumn := nil;
-
-    Run := Save;
-    if RenderColumns then
-    begin
-      while Assigned(Run) do
-      begin
-        if (not CanExportNode(Run) or
-           (Assigned(FOnBeforeNodeExport) and (not FOnBeforeNodeExport(Self, etText, Run)))) then
-        begin
-          Run := GetNextNode(Run);
-          Continue;
-        end;
-        for I := 0 to High(Columns) do
-        begin
-          if coVisible in Columns[I].Options then
-          begin
-            Index := Columns[I].Index;
-            // This line implicitly converts the Unicode text to ANSI.
-            Text := Self.Text[Run, Index];
-            if Index = Header.MainColumn then
-            begin
-              Level := GetNodeLevel(Run);
-              Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
-              // Wrap the text with quotation marks if it contains the separator character.
-              if (Pos(Separator, Text) > 0) or (Pos('"', Text) > 0) then
-                Buffer.Add(AnsiQuotedStr(Text, '"'))
-              else
-                Buffer.Add(Text);
-              Buffer.Add(Copy(Tabs, 1, Integer(MaxLevel - Level) * Length(Separator)));
-            end
-            else
-              if (Pos(Separator, Text) > 0) or (Pos('"', Text) > 0) then
-                Buffer.Add(AnsiQuotedStr(Text, '"'))
-              else
-                Buffer.Add(Text);
-
-            if Columns[I] <> LastColumn then
-              Buffer.Add(Separator);
-          end;
-        end;
-        if Assigned(FOnAfterNodeExport) then
-          FOnAfterNodeExport(Self, etText, Run);
-        Run := GetNextNode(Run);
-        Buffer.AddNewLine;
-      end;
-    end
-    else
-    begin
-      while Assigned(Run) do
-      begin
-        if ((not CanExportNode(Run)) or
-           (Assigned(FOnBeforeNodeExport) and (not FOnBeforeNodeExport(Self, etText, Run)))) then
-        begin
-          Run := GetNextNode(Run);
-          Continue;
-        end;
-        // This line implicitly converts the Unicode text to ANSI.
-        Text := Self.Text[Run, NoColumn];
-        Level := GetNodeLevel(Run);
-        Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
-        Buffer.Add(Text);
-        Buffer.AddNewLine;
-
-        if Assigned(FOnAfterNodeExport) then
-          FonAfterNodeExport(Self, etText, Run);
-        Run := GetNextNode(Run);
-      end;
-    end;
-
-    Result := Buffer.AsString;
+    AddContentToBuffer(Buffer, Source, Separator);
   finally
-    Buffer.Free;
+    Result := Buffer.AsAnsiString;
+    Buffer.Destroy;
   end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): String;
+procedure TCustomVirtualStringTree.AddContentToBuffer(Buffer: TBufferedUTF8String; Source: TVSTTextSourceType; const Separator: String);
 
-// Renders the current tree content (depending on Source) as Unicode text.
-// If an entry contains the separator char then it is wrapped with double quotation marks.
-// Note: There is no QuotedStr function for Unicode in the VCL (like AnsiQuotedStr) so we have the limitation here
-//       that an entry must not contain double quotation marks, otherwise import into other programs might fail!
-
-const
-  WideCRLF: String = #13#10;
+// Renders the current tree content (depending on Source) as UTF8 text.
+// If an entry contains the separator char or double quotes then it is wrapped with double quotes
+// and existing double quotes are duplicated.
 
 var
   RenderColumns: Boolean;
   Tabs: String;
   GetNextNode: TGetNextNodeProc;
   Run, Save: PVirtualNode;
-
+  Level, MaxLevel: Cardinal;
   Columns: TColumnsArray;
   LastColumn: TVirtualTreeColumn;
-  Level, MaxLevel: Cardinal;
   Index,
   I: Integer;
   Text: String;
-  Buffer: TUTF8BufferedString;
-
 begin
   Columns := nil;
+  RenderColumns := FHeader.UseColumns;
+  if RenderColumns then
+    Columns := FHeader.FColumns.GetVisibleColumns;
 
-  Buffer := TUTF8BufferedString.Create;
-  try
-    RenderColumns := FHeader.UseColumns;
-    if RenderColumns then
-      Columns := FHeader.FColumns.GetVisibleColumns;
+  GetRenderStartValues(Source, Run, GetNextNode);
+  Save := Run;
 
-    GetRenderStartValues(Source, Run, GetNextNode);
-    Save := Run;
+  // The text consists of visible groups representing the columns, which are separated by one or more separator
+  // characters. There are always MaxLevel separator chars in a line (main column only). Either before the caption
+  // to ident it or after the caption to make the following column aligned.
+  MaxLevel := 0;
+  while Assigned(Run) do
+  begin
+    Level := GetNodeLevel(Run);
+    If Level > MaxLevel then
+      MaxLevel := Level;
+    Run := GetNextNode(Run);
+  end;
 
-    // The text consists of visible groups representing the columns, which are separated by one or more separator
-    // characters. There are always MaxLevel separator chars in a line (main column only). Either before the caption
-    // to ident it or after the caption to make the following column aligned.
-    MaxLevel := 0;
+  Tabs := DupeString(Separator, MaxLevel);
+
+  // First line is always the header if used.
+  if RenderColumns then
+  begin
+    LastColumn := Columns[High(Columns)];
+    for I := 0 to High(Columns) do
+    begin
+      Buffer.Add(Columns[I].Text);
+      if Columns[I] <> LastColumn then
+      begin
+        if Columns[I].Index = Header.MainColumn then
+        begin
+          Buffer.Add(Tabs);
+          Buffer.Add(Separator);
+        end
+        else
+          Buffer.Add(Separator);
+      end;
+    end;
+    Buffer.AddNewLine;
+  end
+  else
+    LastColumn := nil;
+
+  Run := Save;
+  if RenderColumns then
+  begin
     while Assigned(Run) do
     begin
-      Level := GetNodeLevel(Run);
-      If Level > MaxLevel then
-        MaxLevel := Level;
-      Run := GetNextNode(Run);
-    end;
-
-    Tabs := DupeString(Separator, MaxLevel);
-
-    // First line is always the header if used.
-    if RenderColumns then
-    begin
-      LastColumn := Columns[High(Columns)];
+      if (not CanExportNode(Run) or
+         (Assigned(FOnBeforeNodeExport) and (not FOnBeforeNodeExport(Self, etText, Run)))) then
+      begin
+        Run := GetNextNode(Run);
+        Continue;
+      end;
       for I := 0 to High(Columns) do
       begin
-        Buffer.Add(Columns[I].Text);
-        if Columns[I] <> LastColumn then
+        if coVisible in Columns[I].Options then
         begin
-          if Columns[I].Index = Header.MainColumn then
+          Index := Columns[I].Index;
+          // This line implicitly converts the Unicode text to ANSI.
+          Text := Self.Text[Run, Index];
+          if Index = Header.MainColumn then
           begin
-            Buffer.Add(Tabs);
-            Buffer.Add(Separator);
+            Level := GetNodeLevel(Run);
+            Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
+            // Wrap the text with quotation marks if it contains the separator character.
+            if (Pos(Separator, Text) > 0) or (Pos('"', Text) > 0) then
+              Buffer.Add(AnsiQuotedStr(Text, '"'))
+            else
+              Buffer.Add(Text);
+            Buffer.Add(Copy(Tabs, 1, Integer(MaxLevel - Level) * Length(Separator)));
           end
           else
+            if (Pos(Separator, Text) > 0) or (Pos('"', Text) > 0) then
+              Buffer.Add(AnsiQuotedStr(Text, '"'))
+            else
+              Buffer.Add(Text);
+
+          if Columns[I] <> LastColumn then
             Buffer.Add(Separator);
         end;
       end;
+      if Assigned(FOnAfterNodeExport) then
+        FOnAfterNodeExport(Self, etText, Run);
+      Run := GetNextNode(Run);
       Buffer.AddNewLine;
-    end
-    else
-      LastColumn := nil;
-
-    Run := Save;
-    if RenderColumns then
-    begin
-      while Assigned(Run) do
-      begin
-        for I := 0 to High(Columns) do
-        begin
-          if coVisible in Columns[I].Options then
-          begin
-            Index := Columns[I].Index;
-            Text := Self.Text[Run, Index];
-            if Index = Header.MainColumn then
-            begin
-              Level := GetNodeLevel(Run);
-              Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
-              // Wrap the text with quotation marks if it contains the separator character.
-              if Pos(Separator, Text) > 0 then
-              begin
-                Buffer.Add('"');
-                Buffer.Add(Text);
-                Buffer.Add('"');
-              end
-              else
-                Buffer.Add(Text);
-              Buffer.Add(Copy(Tabs, 1, Integer(MaxLevel - Level) * Length(Separator)));
-            end
-            else
-              if Pos(Separator, Text) > 0 then
-              begin
-                Buffer.Add('"');
-                Buffer.Add(Text);
-                Buffer.Add('"');
-              end
-              else
-                Buffer.Add(Text);
-
-            if Columns[I] <> LastColumn then
-              Buffer.Add(Separator);
-          end;
-        end;
-        Run := GetNextNode(Run);
-        Buffer.AddNewLine;
-      end;
-    end
-    else
-    begin
-      while Assigned(Run) do
-      begin
-        Text := Self.Text[Run, NoColumn];
-        Level := GetNodeLevel(Run);
-        Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
-        Buffer.Add(Text);
-        Buffer.AddNewLine;
-
-        Run := GetNextNode(Run);
-      end;
     end;
-    Result := Buffer.AsString;
+  end
+  else
+  begin
+    while Assigned(Run) do
+    begin
+      if ((not CanExportNode(Run)) or
+         (Assigned(FOnBeforeNodeExport) and (not FOnBeforeNodeExport(Self, etText, Run)))) then
+      begin
+        Run := GetNextNode(Run);
+        Continue;
+      end;
+      // This line implicitly converts the Unicode text to ANSI.
+      Text := Self.Text[Run, NoColumn];
+      Level := GetNodeLevel(Run);
+      Buffer.Add(Copy(Tabs, 1, Integer(Level) * Length(Separator)));
+      Buffer.Add(Text);
+      Buffer.AddNewLine;
+
+      if Assigned(FOnAfterNodeExport) then
+        FonAfterNodeExport(Self, etText, Run);
+      Run := GetNextNode(Run);
+    end;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TCustomVirtualStringTree.ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): WideString;
+var
+  Buffer: TBufferedUTF8String;
+begin
+  Buffer := TBufferedUTF8String.Create;
+  try
+    AddContentToBuffer(Buffer, Source, Separator);
   finally
-    Buffer.Free;
+    Result := Buffer.AsUTF16String;
+    Buffer.Destroy;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TCustomVirtualStringTree.ContentToUTF8(Source: TVSTTextSourceType;
+  const Separator: String): String;
+var
+  Buffer: TBufferedUTF8String;
+begin
+  Buffer := TBufferedUTF8String.Create;
+  try
+    AddContentToBuffer(Buffer, Source, Separator);
+  finally
+    Result := Buffer.AsUTF8String;
+    Buffer.Destroy;
   end;
 end;
 
