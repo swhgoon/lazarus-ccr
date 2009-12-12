@@ -3392,6 +3392,8 @@ type
     function ContentToHTML(Source: TVSTTextSourceType; const Caption: String = ''): String;
     function ContentToRTF(Source: TVSTTextSourceType): AnsiString;
     function ContentToAnsi(Source: TVSTTextSourceType; const Separator: String): AnsiString;
+    function ContentToText(Source: TVSTTextSourceType; const Separator: String): AnsiString; inline;
+    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): WideString; inline;
     function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): WideString;
     function ContentToUTF8(Source: TVSTTextSourceType; const Separator: String): String;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
@@ -33246,6 +33248,18 @@ begin
     Result := Buffer.AsAnsiString;
     Buffer.Destroy;
   end;
+end;
+
+function TCustomVirtualStringTree.ContentToText(Source: TVSTTextSourceType;
+  const Separator: String): AnsiString;
+begin
+  Result := ContentToAnsi(Source, Separator);
+end;
+
+function TCustomVirtualStringTree.ContentToUnicode(Source: TVSTTextSourceType;
+  const Separator: String): WideString;
+begin
+  Result := ContentToUTF16(Source, Separator);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

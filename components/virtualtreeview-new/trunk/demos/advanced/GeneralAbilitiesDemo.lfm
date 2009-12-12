@@ -12,7 +12,7 @@ object GeneralForm: TGeneralForm
   KeyPreview = True
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label18: TLabel
     Left = 502
     Height = 14
@@ -85,6 +85,7 @@ object GeneralForm: TGeneralForm
         Hint = 'Image only column.'
         MaxWidth = 22
         Options = [coEnabled, coParentBidiMode, coVisible]
+        Position = 0
         Spacing = 0
         Width = 22
       end    
@@ -97,8 +98,7 @@ object GeneralForm: TGeneralForm
         Text = 'Language column'
         Width = 300
       end>
-    Header.Font.Height = -11
-    Header.Font.Name = 'Lucida Sans Unicode'
+    Header.DefaultHeight = 17
     Header.Height = 20
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoShowHint, hoVisible]
     Header.ParentFont = True
@@ -158,6 +158,7 @@ object GeneralForm: TGeneralForm
     Top = 455
     Width = 37
     Anchors = [akRight, akBottom]
+    Min = 0
     Max = 2
     Increment = 2
     Orientation = udHorizontal
@@ -867,6 +868,8 @@ object GeneralForm: TGeneralForm
   object FontDialog1: TFontDialog
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
+    MinFontSize = 0
+    MaxFontSize = 0
     left = 84
     top = 148
   end
@@ -884,8 +887,7 @@ object GeneralForm: TGeneralForm
     end
   end
   object SaveDialog: TSaveDialog
-    Filter = 'HTML file in UTF-8 (*.htm; *.html)|*.htm;*.html|Unicode UTF-16 text file (*.uni)|*.uni|Rich text UTF-16 file (*.rtf)|*.rtf|Comma separated values ANSI text file (*.csv)|*.csv|Plain ANSI text file (*.txt)|*.txt'
-    FilterIndex = 0
+    Filter = 'HTML file in UTF-8 (*.htm; *.html)|*.htm;*.html|Unicode UTF-16 text file (*.uni)|*.uni|Rich text UTF-16 file (*.rtf)|*.rtf|Comma separated values ANSI text file (*.csv)|*.csv|Unicode UTF-8 text file (*.txt)|*.txt|Plain ANSI text file (*.txt)|*.txt'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofExtensionDifferent, ofEnableSizing]
     left = 148
     top = 148

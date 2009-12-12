@@ -489,7 +489,7 @@ const
 
 var
   S: string;
-  WS: UTF8String;
+  WS: WideString;
   Data: Pointer;
   DataSize: Cardinal;
   TargetName: string;
@@ -500,6 +500,7 @@ begin
     if Execute then
     begin
       TargetName := FileName;
+      writeln('Filter Index: ', FilterIndex);
       case FilterIndex of
         1: // HTML
           begin
@@ -527,6 +528,13 @@ begin
           begin
             TargetName := ChangeFileExt(TargetName, '.csv');
             S := VST2.ContentToText(tstVisible, ListSeparator);
+            Data := PChar(S);
+            DataSize := Length(S);
+          end;
+         5: // Unicode UTF-8 text file
+           begin
+            TargetName := ChangeFileExt(TargetName, '.txt');
+            S := VST2.ContentToUTF8(tstVisible, #9);
             Data := PChar(S);
             DataSize := Length(S);
           end;
