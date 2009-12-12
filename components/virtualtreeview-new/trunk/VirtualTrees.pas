@@ -25654,17 +25654,23 @@ procedure TBaseVirtualTree.FinishCutOrCopy;
 // Deletes nodes which are marked as being cutted.
 
 var
-  Run: PVirtualNode;
+  Run, ToDelete: PVirtualNode;
 
 begin
+
   if tsCutPending in FStates then
   begin
     Run := FRoot.FirstChild;
     while Assigned(Run) do
     begin
       if vsCutOrCopy in Run.States then
-        DeleteNode(Run);
-      Run := GetNextNoInit(Run);
+      begin
+        ToDelete := Run;
+        Run := GetNextNoInit(Run);
+        DeleteNode(ToDelete);
+      end
+      else
+        Run := GetNextNoInit(Run);
     end;
     DoStateChange([], [tsCutPending]);
   end;
