@@ -303,7 +303,7 @@ function TCustomVirtualStringTree.ContentToClipboard(Format: Word; Source: TVSTT
 // the Result is 0.
 
   //--------------- local function --------------------------------------------
-
+{
   procedure MakeFragment(var HTML: string);
 
   // Helper routine to build a properly-formatted HTML fragment.
@@ -349,7 +349,7 @@ function TCustomVirtualStringTree.ContentToClipboard(Format: Word; Source: TVSTT
       SysUtils.Format('%s%.8d', [EndFragment, EndFragmentIndex]) + #13#10;
     HTML := Description + DocType + HTMLIntro + HTML + HTMLExtro;
   end;
-
+ }
   //--------------- end local function ----------------------------------------
 
 var
