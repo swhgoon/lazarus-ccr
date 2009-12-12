@@ -4740,10 +4740,9 @@ begin
     end;
   end;
 
-  Len := Length(Result);
-  //todo: test
-  if Result[Len - Length(LineEnding) + 1] = LineEnding[1] then
-    SetLength(Result, Len - 1);
+  Len := Length(Result) - Length(LineEnding);
+  if StrLComp(PChar(@Result[Len + 1]), PChar(@LineEnding[1]), Length(LineEnding)) = 0 then
+    SetLength(Result, Len);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
