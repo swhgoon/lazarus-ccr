@@ -5331,14 +5331,14 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure CreateSystemImageSet(BM: TBitmap; Flat: Boolean);
+procedure CreateSystemImageSet(BM: TBitmap; Flat: Boolean; TreeColor: TColor);
 
 // Creates a system check image set.
 // Note: some images are copied from DarkCheckImages and FlatImages
 
 const
-  MaskColor: TColor = clFuchsia;
   FlatToCheckKind: array[Boolean] of TCheckImageKind = (ckDarkCheck,ckFlat);
+
 
   //--------------- local functions -------------------------------------------
 
@@ -5378,29 +5378,48 @@ const
 
 var
   I, Width, Height: Integer;
-
+  MaskColor: TColor;
+  {$ifndef LCLWin32}
+  TmpBitmap: TBitmap;
+  R: TRect;
+  {$endif}
 begin
+  {$ifdef LCLWin32}
   //todo implement under gtk
-  {$ifdef Windows}
   Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
   Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
-  {$else}
-  Width := 16;
-  Height := 16;
-  {$endif}
+  MaskColor := clFuchsia;
   // Use the 4 node images from the dark check set.
   BM.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
-  //DrawFrameControl is not properly implemented in gtk
-  {$ifdef Windows}
   BM.Canvas.Brush.Color := MaskColor;
-  //clear the first 21 images
+  // Clear the first 21 images
   BM.Canvas.FillRect(Rect(0, 0, Width * 21, BM.Height));
+  {$else}
+  // Workaround to avoid glitches in Gtk/Qt due to antialias
+  Width := 16;
+  Height := 16;
+  MaskColor := TreeColor;
+  // Use the 4 node images from the dark check set.
+  TmpBitmap := TBitmap.Create;
+  TmpBitmap.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
+  TmpBitmap.TransparentColor := clFuchsia;
+  TmpBitmap.Transparent := True;
+  // Prepare the bitmap
+  BM.SetSize(TmpBitmap.Width, TmpBitmap.Height);
+  BM.Canvas.Brush.Color := MaskColor;
+  BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
+  // Copy the last 04 images
+  R := Rect(Width * 21 + 1, 0, BM.Width, BM.Height);
+  StretchMaskBlt(BM.Canvas.Handle, R.Left, R.Top, R.Right - R.Left , R.Bottom,
+    TmpBitmap.Canvas.Handle, R.Left, R.Top, R.Right - R.Left , R.Bottom,
+    TmpBitmap.MaskHandle, R.Left, R.Top, cmSrcCopy);
+  TmpBitmap.Destroy;
+  {$endif}
   // Add the 20 system checkbox and radiobutton images.
   for I := 0 to 19 do
     AddSystemImage(I);
   BM.TransparentColor := MaskColor;
   BM.Transparent := True;
-  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21001,9 +21020,9 @@ begin
     FCheckImages := TBitmap.Create;
     case FCheckImageKind of
       ckSystemDefault:
-        CreateSystemImageSet(FCheckImages, False);
+        CreateSystemImageSet(FCheckImages, False, Color);
       ckSystemFlat:
-        CreateSystemImageSet(FCheckImages, True);
+        CreateSystemImageSet(FCheckImages, True, Color);
       else
         FCheckImages.TransparentColor := clDefault;
         FCheckImages.LoadFromLazarusResource(CheckImagesStrings[FCheckImageKind]);
