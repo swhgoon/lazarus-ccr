@@ -5193,31 +5193,6 @@ begin
   end;
 end;
 
-{$ifdef Windows}
-procedure ClearAlphaChannel(Bitmap: HBitmap; PixelCount: Integer);
-var
-  i: Integer;
-  DIB: TDIBSection;
-  P: PCardinal;
-begin
-  P := nil;
-  if Bitmap <> 0 then
-  begin
-    if GetObject(Bitmap, SizeOf(DIB), @DIB) = SizeOf(DIB) then
-    begin
-      if DIB.dsBm.bmPlanes * DIB.dsBm.bmBitsPixel = 32 then
-        P := DIB.dsBm.bmBits;
-    end;
-  end;
-
-  if P = nil then
-    Exit;
-  for i:= 0 to PixelCount - 1 do
-    (P + i)^ := (P + i)^ and $00FFFFFF;
-end;
-{$endif}
-
-
 function CalculateScanline(Bits: Pointer; Width, Height, Row: Integer): Pointer;
 
 // Helper function to calculate the start address for the given row.
@@ -5424,10 +5399,8 @@ begin
   // Add the 20 system checkbox and radiobutton images.
   for I := 0 to 19 do
     AddSystemImage(I);
-  //todo: there's a bug in LCL that prevents mask creation of loaded bitmaps in windows
-  //is necessary to remove the alpha opacity
-  ClearAlphaChannel(BM.Handle, BM.Height*BM.Width);
-  BM.MaskHandle := CreateBitmapMask(BM.Canvas.Handle, BM.Width, BM.Height, MaskColor);
+  BM.TransparentColor := MaskColor;
+  BM.Transparent := True;
   {$endif}
 end;
 
