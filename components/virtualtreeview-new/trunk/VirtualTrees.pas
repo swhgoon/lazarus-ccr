@@ -6243,7 +6243,7 @@ begin
           end
           else
           begin
-            if Tree.HintMode = hmTooltip then
+            if (Tree.HintMode = hmTooltip) and (Node <> nil) then
             begin
               P := Tree.ClientToScreen(Point(Min(Tree.ClientWidth, HintInfo^.CursorRect.Right), 0));
               Dec(P.X, Result.Right);
