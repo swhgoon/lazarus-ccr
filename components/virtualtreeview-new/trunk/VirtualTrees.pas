@@ -3397,8 +3397,8 @@ type
     function ContentToRTF(Source: TVSTTextSourceType): AnsiString;
     function ContentToAnsi(Source: TVSTTextSourceType; const Separator: String): AnsiString;
     function ContentToText(Source: TVSTTextSourceType; const Separator: String): AnsiString; inline;
-    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): WideString; inline;
-    function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): WideString;
+    function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): UnicodeString; inline;
+    function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): UnicodeString;
     function ContentToUTF8(Source: TVSTTextSourceType; const Separator: String): String;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
       var Text: String); override;
@@ -4518,9 +4518,9 @@ begin
     J := R;
     P := TheArray[(L + R) shr 1];
     repeat
-      while PtrUInt(TheArray[I]) < PtrUInt(P) do
+      while TheArray[I] < P do
         Inc(I);
-      while PtrUInt(TheArray[J]) > PtrUInt(P) do
+      while TheArray[J] > P do
         Dec(J);
       if I <= J then
       begin
@@ -4550,11 +4550,11 @@ var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
-  WideStr: WideString;
+  WideStr: UnicodeString;
 begin
   //todo: this need to be adjusted to work with UTF8 strings since the current algorithm
   //  when direct ported to use UTF8 functions leads to invalid UTF8 strings.
-  //  for now use a WideString as a bridge
+  //  for now use a UnicodeString as a bridge
   WideStr := UTF8Decode(S);
   Len := Length(WideStr);
   if (Len = 0) or (Width <= 0) then
@@ -33203,7 +33203,7 @@ begin
 end;
 
 function TCustomVirtualStringTree.ContentToUnicode(Source: TVSTTextSourceType;
-  const Separator: String): WideString;
+  const Separator: String): UnicodeString;
 begin
   Result := ContentToUTF16(Source, Separator);
 end;
@@ -33344,7 +33344,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TCustomVirtualStringTree.ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): WideString;
+function TCustomVirtualStringTree.ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): UnicodeString;
 var
   Buffer: TBufferedUTF8String;
 begin

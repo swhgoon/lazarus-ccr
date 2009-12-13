@@ -350,7 +350,7 @@ var
   Data: Pointer;
   DataSize: Cardinal;
   S: string;
-  WS: WideString;
+  WS: UnicodeString;
   P: Pointer;
 
 begin
