@@ -3442,7 +3442,7 @@ type
     //property BevelKind;
     //property BevelWidth;
     property BorderSpacing;
-    property BorderStyle;
+    property BorderStyle default bsSingle;
     property BottomSpace;
     property ButtonFillMode;
     property ButtonStyle;
@@ -3690,7 +3690,7 @@ type
     //property BevelKind;
    // property BevelWidth;
     property BorderSpacing;
-    property BorderStyle;
+    property BorderStyle default bsSingle;
     property BottomSpace;
     property ButtonFillMode;
     property ButtonStyle;
@@ -11953,7 +11953,7 @@ begin
   FHotPlusBM := TBitmap.Create;
   FMinusBM := TBitmap.Create;
   FHotMinusBM := TBitmap.Create;
-  //FBorderStyle := bsSingle;
+  BorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
   FButtonFillMode := fmTreeColor;
 
