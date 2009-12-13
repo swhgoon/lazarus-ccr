@@ -1092,7 +1092,6 @@ type
   TVirtualTreeHintWindow = class(THintWindow)
   private
     FHintData: TVTHintData;
-    FTextHeight: Integer;
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
   protected
     procedure Paint; override;
@@ -4017,8 +4016,6 @@ type // streaming support
     MissedSteps: Double;
   end;
 
-  TCanvasEx = class(TCanvas);
-
 const
   CheckImagesStrings: array [TCheckImageKind] of String =
     ('VT_CHECK_LIGHT',
@@ -4051,10 +4048,8 @@ const
   RTLFlag: array[Boolean] of Integer = (0, ETO_RTLREADING);
   AlignmentToDrawFlag: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
-  WideNull = WideChar(#0);
   WideCR = WideChar(#13);
   WideLF = WideChar(#10);
-  WideLineSeparator = WideChar(#2028);
 
 type
   // internal worker thread
@@ -5566,9 +5561,6 @@ end;
 
 procedure FinalizeGlobalStructures;
 
-var
-  HintWasEnabled: Boolean;
-
 begin
   timeEndPeriod(MinimumTimerInterval);
 
@@ -5576,20 +5568,6 @@ begin
 
   if NeedToUnitialize then
     OleUninitialize;
-
-  // If VT is used in a package and its special hint window was used then the last instance of this
-  // window is not freed correctly (bug in the VCL). We explicitely tell the application to free it
-  // otherwise an AV is raised due to access to an invalid memory area.
-  //todo_lcl_remove
-  {
-  if ModuleIsPackage then
-  begin
-    HintWasEnabled := Application.ShowHint;
-    Application.ShowHint := False;
-    if HintWasEnabled then
-      Application.ShowHint := True;
-  end;
-  }
 end;
 
 //----------------- TWorkerThread --------------------------------------------------------------------------------------
@@ -11285,7 +11263,7 @@ procedure TVTHeader.Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boole
 // a column is given.
 
 var
-  R, RW: TRect;
+  R: TRect;
 
 begin
   if (hoVisible in FOptions) and Treeview.HandleAllocated then
@@ -16967,12 +16945,6 @@ end;
 
 procedure TBaseVirtualTree.WMKillFocus(var Msg: TLMKillFocus);
 
-var
-  Form: TCustomForm;
-  Control: TWinControl;
-  Pos: TSmallPoint;
-  Unknown: IUnknown;
-
 begin
   Logger.EnterMethod([lcMessages],'WMKillFocus');
   inherited WMKillFocus(Msg);
@@ -17001,24 +16973,6 @@ begin
   else
     if Assigned(FFocusedNode) then
       InvalidateNode(FFocusedNode);
-
-  // Workaround for wrapped non-VCL controls (like TWebBrowser), which do not use VCL mechanisms and
-  // leave the ActiveControl property in the wrong state, which causes trouble when the control is refocused.
-  Form := GetParentForm(Self);
-  if Assigned(Form) and (Form.ActiveControl = Self) then
-  begin
-    //todo_lcl_check Probably this code is not necessary. LCL does not has TOLEControl AFAIK
-    {
-    Cardinal(Pos) := GetMessagePos;
-    Control := FindVCLWindow(SmallPointToPoint(Pos));
-    // Every control derived from TOleControl has potentially the focus problem. In order to avoid including
-    // the OleCtrls unit (which will, among others, include Variants), which would allow to test for the TOleControl
-    // class, the IOleClientSite interface is used for the test, which is supported by TOleControl and a good indicator.
-    if Assigned(Control) and Control.GetInterface(IOleClientSite, Unknown) then
-      Form.ActiveControl := nil;
-    }
-    // For other classes the active control should not be modified. Otherwise you need two clicks to select it.
-  end;
   Logger.ExitMethod([lcMessages],'WMKillFocus');
 end;
 
@@ -32445,14 +32399,6 @@ function TCustomVirtualStringTree.ContentToHTML(Source: TVSTTextSourceType; cons
 // Renders the current tree content (depending on Source) as HTML text encoded in UTF-8.
 // If Caption is not empty then it is used to create and fill the header for the table built here.
 // Based on ideas and code from Frank van den Bergh and Andreas Hörstemeier.
-
-type
-  UCS2 = Word;
-  UCS4 = Cardinal;
-
-const
-  MaximumUCS4: UCS4 = $7FFFFFFF;
-  ReplacementCharacter: UCS4 = $0000FFFD;
 
 var
   Buffer: TBufferedUTF8String;
