@@ -31927,10 +31927,13 @@ end;
 {$ifndef LCLWin32}
 procedure TCustomVirtualStringTree.CopyToClipBoard;
 begin
-  MarkCutCopyNodes;
-  DoStateChange([tsCopyPending]);
-  Clipboard.AsText := ContentToUTF8(tstCutCopySet, #9);
-  DoStateChange([], [tsCopyPending]);
+  if FSelectionCount > 0 then
+  begin
+    MarkCutCopyNodes;
+    DoStateChange([tsCopyPending]);
+    Clipboard.AsText := ContentToUTF8(tstCutCopySet, #9);
+    DoStateChange([], [tsCopyPending]);
+  end;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
