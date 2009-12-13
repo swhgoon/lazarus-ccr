@@ -1093,10 +1093,9 @@ type
   private
     FHintData: TVTHintData;
     procedure WMShowWindow(var Message: TLMShowWindow); message LM_SHOWWINDOW;
-  protected
-    procedure Paint; override;
   public
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
+    procedure Paint; override;
   end;
 
   // Drag image support for the tree.
