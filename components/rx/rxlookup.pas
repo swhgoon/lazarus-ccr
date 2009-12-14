@@ -1451,6 +1451,8 @@ begin
 end;
 
 constructor TRxCustomDBLookupCombo.Create(AOwner: TComponent);
+var
+  ArrowBmp:TBitmap;
 begin
   inherited Create(AOwner);
   Height := 23;
@@ -1490,10 +1492,13 @@ begin
   //
   Color:=clWindow;
   FEmptyItemColor:=clWindow;
-  Glyph:=CreateArrowBitmap;
+//  Glyph:=CreateArrowBitmap;
+  ArrowBmp:=CreateArrowBitmap;
+  Glyph:=ArrowBmp;
+  FreeAndNil(ArrowBmp); //free bitmap as TSpeedButton setter takes a copy of bitmap
+
   ButtonWidth:=15;
   TabStop:=true;
-  
 end;
 
 destructor TRxCustomDBLookupCombo.Destroy;

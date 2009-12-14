@@ -2639,7 +2639,7 @@ begin
 //  FTitleButtons:=True;
 
   F_Clicked           := False;
-  F_MenuBMP           := TBitmap.Create;
+//  F_MenuBMP           := TBitmap.Create;
   F_MenuBMP := LoadLazResBitmapImage('menu_grid');
 
   DoCreateJMenu;

@@ -940,6 +940,7 @@ var
   BackPanel: TWinControl;
   MI:TMenuItem;
   i:integer;
+  TmpBitmap:TBitmap;
 begin
   inherited Create(AOwner);
 
@@ -1016,7 +1017,12 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(-1, -1, BtnSide, BtnSide);
-    Glyph := LoadBitmapFromLazarusResource('prev2');
+//    Glyph := LoadBitmapFromLazarusResource('prev2');
+    //loaded bitmap should be freed as Glyph just takes a copy of it
+    TmpBitmap:=LoadBitmapFromLazarusResource('prev2');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @PrevYearBtnClick;
     Hint := sPrevYear;
     Align:=alLeft;
@@ -1027,7 +1033,12 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(BtnSide - 2, -1, BtnSide, BtnSide);
-    Glyph:=LoadBitmapFromLazarusResource('prev1');
+//    Glyph:=LoadBitmapFromLazarusResource('prev1');
+
+    TmpBitmap:=LoadBitmapFromLazarusResource('prev1');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
+
     OnClick := @PrevMonthBtnClick;
     Hint := sPrevMonth;
     Align:=alLeft;
@@ -1038,7 +1049,10 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(FControlPanel.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
-    Glyph:=LoadBitmapFromLazarusResource('next1');
+//    Glyph:=LoadBitmapFromLazarusResource('next1');
+    TmpBitmap:=LoadBitmapFromLazarusResource('next1');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
     OnClick := @NextMonthBtnClick;
     Hint := sNextMonth;
     Align:=alRight;
@@ -1049,7 +1063,10 @@ begin
   begin
     Parent := FControlPanel;
     SetBounds(FControlPanel.Width - BtnSide + 1, -1, BtnSide, BtnSide);
-    Glyph:=LoadBitmapFromLazarusResource('next2');
+//    Glyph:=LoadBitmapFromLazarusResource('next2');
+    TmpBitmap:=LoadBitmapFromLazarusResource('next2');
+    Glyph := TmpBitmap;
+    FreeAndNil(TmpBitmap);
     OnClick := @NextYearBtnClick;
     Hint := sNextYear;
     Align:=alRight;
