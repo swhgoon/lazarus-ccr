@@ -7652,31 +7652,6 @@ end;
 
 procedure TVirtualTreeColumn.LoadFromStream(const Stream: TStream; Version: Integer);
 
-  //--------------- local function --------------------------------------------
-
-  function ConvertOptions(Value: Cardinal): TVTColumnOptions;
-
-  // Converts the given raw value which represents column options for possibly older
-  // formats to the current format.
-  //todo_lcl_check
-  begin
-    if Version >= 3 then
-      Result := TVTColumnOptions(Word(Value and $FFFF))
-    else
-      if Version = 2 then
-        Result := TVTColumnOptions(Word(Value and $FF))
-      else
-      begin
-        // In version 2 coParentColor has been added. This needs an option shift for older stream formats.
-        // The first (lower) 4 options remain as they are.
-        Result := TVTColumnOptions(Word(Value) and $F);
-        Value := (Value and not $F) shl 1;
-        Result := Result + TVTColumnOptions(Word(Value and $FF));
-      end;
-  end;
-
-  //--------------- end local function ----------------------------------------
-
 var
   Dummy: Integer;
   S: String;
@@ -7711,30 +7686,22 @@ begin
     BiDiMode := TBiDiMode(Dummy);
 
     ReadBuffer(Dummy, SizeOf(Dummy));
-    Options := ConvertOptions(Dummy);
+    Options := TVTColumnOptions(Word(Dummy and $FFFF));
 
-    if Version > 0 then
+    // Parts which have been introduced/changed with header stream version 1+.
+    // LCL port started with header stream version 6 so no need to do the check here
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    Tag := Dummy;
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    Alignment := TAlignment(Dummy);
+
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    Color := TColor(Dummy);
+
+    if coUseCaptionAlignment in FOptions then
     begin
-      // Parts which have been introduced/changed with header stream version 1+.
       ReadBuffer(Dummy, SizeOf(Dummy));
-      Tag := Dummy;
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      Alignment := TAlignment(Dummy);
-
-      if Version > 1 then
-      begin
-        ReadBuffer(Dummy, SizeOf(Dummy));
-        Color := TColor(Dummy);
-      end;
-
-      if Version > 5 then
-      begin
-        if coUseCaptionAlignment in FOptions then
-        begin
-          ReadBuffer(Dummy, SizeOf(Dummy));
-          CaptionAlignment := TAlignment(Dummy);
-        end;
-      end;
+      CaptionAlignment := TAlignment(Dummy);
     end;
   end;
 end;
@@ -9058,8 +9025,8 @@ begin
   end;
 
   // Data introduced with header stream version 5
-  if Version > 4 then
-    Stream.ReadBuffer(FDefaultWidth, SizeOf(FDefaultWidth));
+  // LCL port started with header stream version 6 so no need to do the check here
+  Stream.ReadBuffer(FDefaultWidth, SizeOf(FDefaultWidth));
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11268,7 +11235,7 @@ begin
       ReadBuffer(Dummy, SizeOf(Dummy));
       Style := TFontStyles(LongWord(Dummy));
     end;
-    // LCL port started with stream version 6 so no need to do the check here
+    // LCL port started with header stream version 6 so no need to do the check here
     // Read data introduced by stream version 1+.
     ReadBuffer(Dummy, SizeOf(Dummy));
     MainColumn := Dummy;
@@ -28557,10 +28524,8 @@ begin
       begin
         BeginUpdate;
         try
-          if Version < 2 then
-            Count := MaxInt
-          else
-            Stream.ReadBuffer(Count, SizeOf(Count));
+          // LCL port started with tree stream version 2 so no need to do the check here
+          Stream.ReadBuffer(Count, SizeOf(Count));
 
           while (Stream.Position < Stream.Size) and (Count > 0) do
           begin
