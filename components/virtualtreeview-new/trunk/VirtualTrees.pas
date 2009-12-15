@@ -11262,50 +11262,41 @@ begin
       ReadBuffer(Dummy, SizeOf(Dummy));
       SetLength(S, Dummy);
       ReadBuffer(PAnsiChar(S)^, Dummy);
-      if VTHeaderStreamVersion >= 4 then
-        Name := UTF8Decode(S)
-      else
-        Name := S;
+      Name := S;
       ReadBuffer(Dummy, SizeOf(Dummy));
       Pitch := TFontPitch(Dummy);
       ReadBuffer(Dummy, SizeOf(Dummy));
       Style := TFontStyles(LongWord(Dummy));
     end;
-
+    // LCL port started with stream version 6 so no need to do the check here
     // Read data introduced by stream version 1+.
-    if Version > 0 then
-    begin
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      MainColumn := Dummy;
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      SortColumn := Dummy;
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      SortDirection := TSortDirection(Byte(Dummy));
-    end;
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    MainColumn := Dummy;
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    SortColumn := Dummy;
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    SortDirection := TSortDirection(Byte(Dummy));
 
     // Read data introduced by stream version 5+.
-    if Version > 4 then
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    ParentFont := Boolean(Dummy);
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    FMaxHeight := Integer(Dummy);
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    FMinHeight := Integer(Dummy);
+    ReadBuffer(Dummy, SizeOf(Dummy));
+    FDefaultHeight := Integer(Dummy);
+    with FFixedAreaConstraints do
     begin
       ReadBuffer(Dummy, SizeOf(Dummy));
-      ParentFont := Boolean(Dummy);
+      FMaxHeightPercent := TVTConstraintPercent(Dummy);
+      ReadBuffer(Dummy, Sizeof(Dummy));
+      FMaxWidthPercent := TVTConstraintPercent(Dummy);
       ReadBuffer(Dummy, SizeOf(Dummy));
-      FMaxHeight := Integer(Dummy);
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      FMinHeight := Integer(Dummy);
-      ReadBuffer(Dummy, SizeOf(Dummy));
-      FDefaultHeight := Integer(Dummy);
-      with FFixedAreaConstraints do
-      begin
-        ReadBuffer(Dummy, SizeOf(Dummy));
-        FMaxHeightPercent := TVTConstraintPercent(Dummy);
-        ReadBuffer(Dummy, Sizeof(Dummy));
-        FMaxWidthPercent := TVTConstraintPercent(Dummy);
-        ReadBuffer(Dummy, SizeOf(Dummy));
-        FMinHeightPercent := TVTConstraintPercent(Dummy);
-        ReadBuffer(Dummy, Sizeof(Dummy));
-        FMinWidthPercent := TVTConstraintPercent(Dummy);
-      end
-    end;
+      FMinHeightPercent := TVTConstraintPercent(Dummy);
+      ReadBuffer(Dummy, Sizeof(Dummy));
+      FMinWidthPercent := TVTConstraintPercent(Dummy);
+    end
   finally
     Exclude(FStates, hsLoading);
     Treeview.DoColumnResize(NoColumn);
@@ -11542,7 +11533,7 @@ begin
       // Need only to write one: size or height, I decided to write height.
       Dummy := Height;
       WriteBuffer(Dummy, SizeOf(Dummy));
-      Tmp := UTF8Encode(Name);
+      Tmp := Name;
       Dummy := Length(Tmp);
       WriteBuffer(Dummy, SizeOf(Dummy));
       WriteBuffer(PAnsiChar(Tmp)^, Dummy);
