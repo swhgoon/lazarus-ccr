@@ -4020,8 +4020,10 @@ const
     'VT_FLAT',
     'VT_XP',
     '',//ckCustom,
-    '',//ckSystemFlat
-    '' //ckSystemDefault
+    // Only the button images are used for ckSystem *
+    // The check buttons are draw at fly as requested
+    'VT_FLAT',//ckSystemFlat
+    'VT_CHECK_DARK' //ckSystemDefault
      );
   MagicID: TMagicID = (#$45, 'V', 'T', Char(VTTreeStreamVersion), ' ', #$46);
 
@@ -5323,99 +5325,6 @@ begin
     clDefault:
       Result := CLR_DEFAULT;
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure CreateSystemImageSet(BM: TBitmap; Flat: Boolean; TreeColor: TColor);
-
-// Creates a system check image set.
-// Note: some images are copied from DarkCheckImages and FlatImages
-
-const
-  FlatToCheckKind: array[Boolean] of TCheckImageKind = (ckDarkCheck,ckFlat);
-
-
-  //--------------- local functions -------------------------------------------
-
-  procedure AddSystemImage(Index: Integer);
-
-  var
-    ButtonState: Cardinal;
-    ButtonType: Cardinal;
-
-  begin
-    if Index < 8 then
-      ButtonType := DFCS_BUTTONRADIO
-    else
-      ButtonType := DFCS_BUTTONCHECK;
-    if Index >= 16 then
-      ButtonType := ButtonType or DFCS_BUTTON3STATE;
-
-    case Index mod 4 of
-      0:
-        ButtonState := 0;
-      1:
-        ButtonState := DFCS_HOT;
-      2:
-        ButtonState := DFCS_PUSHED;
-      else
-        ButtonState := DFCS_INACTIVE;
-    end;
-    if Index in [4..7, 12..19] then
-      ButtonState := ButtonState or DFCS_CHECKED;
-    if Flat then
-      ButtonState := ButtonState or DFCS_FLAT;
-    //lcl DrawFrameControl is different from windows
-    DelphiCompat.DrawFrameControl(BM.Canvas.Handle, Rect((Index + 1)*BM.Height + 1, 2, ((Index + 2)*BM.Height) - 2, BM.Height - 1), DFC_BUTTON, ButtonType or ButtonState);
-  end;
-
-  //--------------- end local functions ---------------------------------------
-
-var
-  I, Width, Height: Integer;
-  MaskColor: TColor;
-  {$ifndef LCLWin32}
-  TmpBitmap: TBitmap;
-  R: TRect;
-  {$endif}
-begin
-  {$ifdef LCLWin32}
-  //todo implement under gtk
-  Width := GetSystemMetrics(SM_CXMENUCHECK) + 3;
-  Height := GetSystemMetrics(SM_CYMENUCHECK) + 3;
-  MaskColor := clFuchsia;
-  // Use the 4 node images from the dark check set.
-  BM.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
-  BM.Canvas.Brush.Color := MaskColor;
-  // Clear the first 21 images
-  BM.Canvas.FillRect(Rect(0, 0, Width * 21, BM.Height));
-  {$else}
-  // Workaround to avoid glitches in Gtk/Qt due to antialias
-  Width := 16;
-  Height := 16;
-  MaskColor := TreeColor;
-  // Use the 4 node images from the dark check set.
-  TmpBitmap := TBitmap.Create;
-  TmpBitmap.LoadFromLazarusResource(CheckImagesStrings[FlatToCheckKind[Flat]]);
-  TmpBitmap.TransparentColor := clFuchsia;
-  TmpBitmap.Transparent := True;
-  // Prepare the bitmap
-  BM.SetSize(TmpBitmap.Width, TmpBitmap.Height);
-  BM.Canvas.Brush.Color := MaskColor;
-  BM.Canvas.FillRect(Rect(0, 0, BM.Width, BM.Height));
-  // Copy the last 04 images
-  R := Rect(Width * 21 + 1, 0, BM.Width, BM.Height);
-  StretchMaskBlt(BM.Canvas.Handle, R.Left, R.Top, R.Right - R.Left , R.Bottom,
-    TmpBitmap.Canvas.Handle, R.Left, R.Top, R.Right - R.Left , R.Bottom,
-    TmpBitmap.MaskHandle, R.Left, R.Top, cmSrcCopy);
-  TmpBitmap.Destroy;
-  {$endif}
-  // Add the 20 system checkbox and radiobutton images.
-  for I := 0 to 19 do
-    AddSystemImage(I);
-  BM.TransparentColor := MaskColor;
-  BM.Transparent := True;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21014,15 +20923,8 @@ begin
   else
   begin
     FCheckImages := TBitmap.Create;
-    case FCheckImageKind of
-      ckSystemDefault:
-        CreateSystemImageSet(FCheckImages, False, Color);
-      ckSystemFlat:
-        CreateSystemImageSet(FCheckImages, True, Color);
-      else
-        FCheckImages.TransparentColor := clDefault;
-        FCheckImages.LoadFromLazarusResource(CheckImagesStrings[FCheckImageKind]);
-    end;
+    FCheckImages.TransparentColor := clDefault;
+    FCheckImages.LoadFromLazarusResource(CheckImagesStrings[FCheckImageKind]);
   end;
 end;
 
@@ -23015,18 +22917,53 @@ end;
 
 procedure TBaseVirtualTree.PaintCheckImage(const PaintInfo: TVTPaintInfo);
 
-{$ifdef ThemeSupport}
+
+  procedure DrawCheckButton(Canvas: TCanvas; Index: Integer; const R: TRect; Flat: Boolean);
+
+  var
+    ButtonState: Cardinal;
+    ButtonType: Cardinal;
+
+  begin
+    if Index < 8 then
+      ButtonType := DFCS_BUTTONRADIO
+    else
+      ButtonType := DFCS_BUTTONCHECK;
+    if Index >= 16 then
+      ButtonType := ButtonType or DFCS_BUTTON3STATE;
+
+    case Index mod 4 of
+      0:
+        ButtonState := 0;
+      1:
+        ButtonState := DFCS_HOT;
+      2:
+        ButtonState := DFCS_PUSHED;
+      else
+        ButtonState := DFCS_INACTIVE;
+    end;
+    if Index in [4..7, 12..19] then
+      ButtonState := ButtonState or DFCS_CHECKED;
+    if Flat then
+      ButtonState := ButtonState or DFCS_FLAT;
+    //lcl DrawFrameControl is different from windows
+    DelphiCompat.DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
+  end;
+
+
 var
   R: TRect;
   Details: TThemedElementDetails;
-{$endif ThemeSupport}
+  UseThemes: Boolean;
 
 begin
   Logger.EnterMethod([lcCheck],'PaintCheckImage');
   with PaintInfo, ImageInfo[iiCheck] do
   begin
-    {$ifdef ThemeSupport}
-      if (tsUseThemes in FStates) and (FCheckImageKind = ckSystemDefault) then
+    UseThemes := (tsUseThemes in FStates) and (FCheckImageKind = ckSystemDefault);
+    if UseThemes or ((FCheckImageKind in [ckSystemFlat, ckSystemDefault]) and not (Index in [21..24])) then
+    begin
+      if UseThemes then
       begin
         R := Rect(XPos - 1, YPos, XPos + 16, YPos + 16);
         Details.Element := teButton;
@@ -23051,16 +22988,23 @@ begin
           Details.State := 0;
         end;
         ThemeServices.DrawElement(Canvas.Handle, Details, R);
-        //if Index in [21..24] then
-        //  UtilityImages.Draw(Canvas, XPos - 1, YPos, 4);
+        if Index in [21..24] then
+          with UtilityImages do
+            DirectMaskBlt(PaintInfo.Canvas.Handle, XPos - 1, YPos, Height, Height,
+              Canvas.Handle, 4 * Height, 0, MaskHandle);
       end
       else
-    {$endif ThemeSupport}
-      with FCheckImages do
       begin
-        DirectMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
-          Index * Height, 0, MaskHandle);
+        R := Rect(XPos + 1, YPos + 1, XPos + 14, YPos + 14);
+        DrawCheckButton(Canvas, Index, R, FCheckImageKind = ckSystemFlat);
       end;
+    end
+    else
+    with FCheckImages do
+    begin
+      DirectMaskBlt(PaintInfo.Canvas.Handle, XPos, YPos, Height, Height, Canvas.Handle,
+        Index * Height, 0, MaskHandle);
+    end;
   end;
   Logger.ExitMethod([lcCheck],'PaintCheckImage');
 end;
