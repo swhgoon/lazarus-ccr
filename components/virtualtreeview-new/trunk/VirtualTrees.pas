@@ -331,11 +331,7 @@ uses
   SyncObjs  // Thread support
   //Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
-    {$ifndef COMPILER_7_UP}
-      , ThemeSrv, TMSchema, UxTheme  // Windows XP themes support. Get these units from www.soft-gems.net
-    {$else}
-      , Themes, UxTheme
-    {$endif COMPILE_7_UP}
+  , Themes , UxTheme
   {$endif ThemeSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
@@ -23055,8 +23051,8 @@ begin
           Details.State := 0;
         end;
         ThemeServices.DrawElement(Canvas.Handle, Details, R);
-        if Index in [21..24] then
-          UtilityImages.Draw(Canvas, XPos - 1, YPos, 4);
+        //if Index in [21..24] then
+        //  UtilityImages.Draw(Canvas, XPos - 1, YPos, 4);
       end
       else
     {$endif ThemeSupport}

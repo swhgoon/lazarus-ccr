@@ -4,15 +4,12 @@
     <Name Value="virtualtreeview_package"/>
     <Author Value="Mike Lischke (LCL Port: Luiz Americo)"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <IncludeFiles Value="include/intf/$(LCLWidgetType)/;units/;include/intf/"/>
         <OtherUnitFiles Value="units/$(LCLWidgetType)/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)-$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -22,7 +19,7 @@
     <License Value=" Moziall Public License 1.1 (MPL 1.1) or GNU Lesser General Public License
 "/>
     <Version Major="4" Minor="5" Release="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="virtualtrees.lrs"/>
         <Type Value="LRS"/>
@@ -44,6 +41,10 @@
         <Filename Value="ideicons.lrs"/>
         <Type Value="LRS"/>
       </Item5>
+      <Item6>
+        <Filename Value="VTConfig.inc"/>
+        <Type Value="Include"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
