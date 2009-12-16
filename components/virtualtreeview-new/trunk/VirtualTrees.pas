@@ -883,33 +883,6 @@ type
     Data: record end;        // this is a placeholder, each node gets extra data determined by NodeDataSize
   end;
 
-  // TVTNodeMemoryManager is a high-performance local memory manager for allocating TVirtualNode structures.
-  // It is not thread-safe in itself, because it assumes that the virtual tree is being used within a single
-  // thread. The local memory manager supports only fixed-length allocation requests - all requests must be of
-  // the same size. The performance improvements are a result of TVTNodeMemoryManager getting 16K blocks
-  // of memory from the Delphi memory manager and then managing them in a highly efficient manner.
-  // A consequence is that node memory allocations/deallocations are not visible to memory debugging tools.
-  //
-  // The local memory manager is disabled by default - to enable it {$define UseLocalMemoryManager}. For smaller trees,
-  // say less than 10,000 nodes, there is really no major performance benefit in using the local memory manager.
-  {$ifdef UseLocalMemoryManager}
-    TVTNodeMemoryManager = class
-    private
-      FAllocSize: Cardinal;       // The memory allocated for each node
-      FBlockList: TList;          // List of allocated blocks
-      FBytesAvailable: Cardinal;  // Bytes available in current block
-      FNext: PVirtualNode;        // Pointer to next available node in current block
-      FFreeSpace: PVirtualNode;   // Pointer to free space chain
-    public
-      constructor Create;
-      destructor Destroy; override;
-
-      function AllocNode(const Size: Cardinal): PVirtualNode;
-      procedure FreeNode(const Node: PVirtualNode);
-      procedure Clear;
-    end;
-  {$endif UseLocalMemoryManager}
-
   // Structure used when info about a certain position in the header is needed.
   TVTHeaderHitInfo = record
     X,
@@ -2093,9 +2066,6 @@ type
                                                  // to happen immediately, regardless of the normal update state
     FNodeDataSize: Integer;                      // number of bytes to allocate with each node (in addition to its base
                                                  // structure and the internal data), if -1 then do callback
-    {$ifdef UseLocalMemoryManager}
-      FNodeMemoryManager: TVTNodeMemoryManager;  // High-performance local memory manager.
-    {$endif UseLocalMemoryManager}
     FStates: TVirtualTreeStates;                 // various active/pending states the tree needs to consider
     FLastSelected,
     FFocusedNode: PVirtualNode;
@@ -5924,103 +5894,6 @@ begin
   else
     inherited;
 end;
-
-//----------------- TVTNodeMemoryManager -------------------------------------------------------------------------------
-
-{$ifdef UseLocalMemoryManager}
-
-  const
-    NodeMemoryGuard: PVirtualNode = PVirtualNode($FEEFEFFE);
-
-  constructor TVTNodeMemoryManager.Create;
-
-  begin
-    FBlockList := TList.Create;
-  end;
-
-  //----------------------------------------------------------------------------------------------------------------------
-
-  destructor TVTNodeMemoryManager.Destroy;
-
-  begin
-    Clear;
-    FBlockList.Free;
-  end;
-
-  //----------------------------------------------------------------------------------------------------------------------
-
-  function TVTNodeMemoryManager.AllocNode(const Size: Cardinal): PVirtualNode;
-
-  // Allocates memory for a node using the local memory manager.
-
-  const
-    BlockSize = (16 * 1024);   // Blocks larger than 16K offer no significant performance improvement.
-
-  begin
-    if FAllocSize = 0 then
-      // Recalculate allocation size first time after a clear.
-      FAllocSize := (Size + 3) and not 3   // Force alignment on 32-bit boundaries.
-    else
-      // Allocation size cannot be increased unless Memory Manager is explicitly cleared.
-      Assert(Size <= FAllocSize, 'Node memory manager allocation size cannot be increased.');
-
-    if Assigned(FFreeSpace) then
-    begin
-      // Assign node from free-space chain.
-      Assert(FFreeSpace.NextSibling = NodeMemoryGuard, 'Memory overwrite in node memory manager free space chain.');
-      Result := FFreeSpace;                // Assign node
-      FFreeSpace := Result.PrevSibling;    // Point to prev node in free-space chain
-    end
-    else
-    begin
-      if FBytesAvailable < FAllocSize then
-      begin
-        // Get another block from the Delphi memory manager.
-        GetMem(FNext, BlockSize);
-        FBytesAvailable := BlockSize;
-        FBlockList.Add(FNext);
-      end;
-      // Assign node from current block.
-      Result := FNext;
-     Inc(PByte(FNext), FAllocSize);
-      Dec(FBytesAvailable, FAllocSize);
-    end;
-
-    // Clear the memory.
-    FillChar(Result^, FAllocSize, 0);
-  end;
-
-  //----------------------------------------------------------------------------------------------------------------------
-
-  procedure TVTNodeMemoryManager.Clear;
-
-  // Releases all memory held by the local memory manager.
-
-  var
-    I: Integer;
-
-  begin
-    for I := 0 to FBlockList.Count - 1 do
-      FreeMem(FBlockList[I]);
-    FBlockList.Clear;
-    FFreeSpace := nil;
-    FBytesAvailable := 0;
-    FAllocSize := 0;
-  end;
-
-  //----------------------------------------------------------------------------------------------------------------------
-
-  procedure TVTNodeMemoryManager.FreeNode(const Node: PVirtualNode);
-
-  // Frees node memory that was allocated using the local memory manager.
-
-  begin
-    Node.PrevSibling := FFreeSpace;         // Point to previous free node.
-    Node.NextSibling := NodeMemoryGuard;    // Memory guard to detect overwrites.
-    FFreeSpace := Node;                     // Point Free chain pointer to me.
-  end;
-
-{$endif UseLocalMemoryManager}
 
 {$i vtvdragmanager.inc}
 
@@ -11815,9 +11688,6 @@ begin
   FClipboardFormats := TClipboardFormats.Create(Self);
   FOptions := GetOptionsClass.Create(Self);
 
-  {$ifdef UseLocalMemoryManager}
-    FNodeMemoryManager := TVTNodeMemoryManager.Create;
-  {$endif UseLocalMemoryManager}
   {$ifdef EnableThreadSupport}
   AddThreadReference;
   {$endif}
@@ -11866,9 +11736,6 @@ begin
 
   FreeMem(FRoot);
 
-  {$ifdef UseLocalMemoryManager}
-    FNodeMemoryManager.Free;
-  {$endif UseLocalMemoryManager}
   FPlusBM.Free;
   FHotPlusBM.Free;
   FMinusBM.Free;
@@ -13684,11 +13551,7 @@ begin
     Inc(Size, FNodeDataSize);
   end;
 
-  {$ifdef UseLocalMemoryManager}
-    Result := FNodeMemoryManager.AllocNode(Size + FTotalInternalDataSize);
-  {$else}
-    Result := AllocMem(Size + FTotalInternalDataSize);
-  {$endif UseLocalMemoryManager}
+  Result := AllocMem(Size + FTotalInternalDataSize);
 
   // Fill in some default values.
   with Result^ do
@@ -19225,11 +19088,7 @@ begin
     FDropTargetNode := nil;
   if Assigned(FOnFreeNode) and ([vsInitialized, vsInitialUserData] * Node.States <> []) then
     FOnFreeNode(Self, Node);
-  {$ifdef UseLocalMemoryManager}
-    FNodeMemoryManager.FreeNode(Node);
-  {$else}
-    FreeMem(Node);
-  {$endif UseLocalMemoryManager}
+  FreeMem(Node);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24850,10 +24709,6 @@ begin
       DeleteChildren(FRoot, True);
       FOffsetX := 0;
       FOffsetY := 0;
-
-      {$ifdef UseLocalMemoryManager}
-        FNodeMemoryManager.Clear;
-      {$endif UseLocalMemoryManager}
     finally
       EndUpdate;
     end;
