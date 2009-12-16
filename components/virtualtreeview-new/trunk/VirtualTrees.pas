@@ -923,7 +923,7 @@ type
   private
     FTree: TBaseVirtualTree;
     FFormatEtcArray: TFormatEtcArray;
-    FCurrentIndex: LongWord;
+    FCurrentIndex: Integer;
   public
     constructor Create(Tree: TBaseVirtualTree; AFormatEtcArray: TFormatEtcArray);
 
@@ -21853,7 +21853,7 @@ begin
       if ([vsSelected, vsDisabled] * NewItems[I].States <> []) or
          (Constrained and (Cardinal(FLastSelectionLevel) <> GetNodeLevel(NewItems[I]))) or
          (SiblingConstrained and (FRangeAnchor.Parent <> NewItems[I].Parent)) then
-        Inc(NewItems[I])
+        Inc(PtrUInt(NewItems[I]))
       else
         Include(NewItems[I].States, vsSelected);
   end;
@@ -22239,7 +22239,7 @@ begin
   if FindNodeInSelection(Node, Index, -1, -1) then
   begin
     Exclude(Node.States, vsSelected);
-    Inc(FSelection[Index]);
+    Inc(PtrUInt(FSelection[Index]));
   end;
 end;
 
