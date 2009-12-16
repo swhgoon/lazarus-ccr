@@ -32667,7 +32667,7 @@ function TCustomVirtualStringTree.ContentToRTF(Source: TVSTTextSourceType): Ansi
 
 var
   Fonts: TStringList;
-  Colors: TList;
+  Colors: TFpList;
   CurrentFontIndex,
   CurrentFontColor,
   CurrentFontSize: Integer;
@@ -32808,7 +32808,7 @@ begin
     RedirectFontChangeEvent(Canvas);
 
     Fonts := TStringList.Create;
-    Colors := TList.Create;
+    Colors := TFpList.Create;
     CurrentFontIndex := -1;
     CurrentFontColor := -1;
     CurrentFontSize := -1;
