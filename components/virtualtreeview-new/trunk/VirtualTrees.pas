@@ -23426,30 +23426,7 @@ begin
     BaseChunk:
       begin
         // Load base chunk's body (chunk header has already been consumed).
-        if Version > 1 then
-          Stream.Read(ChunkBody, SizeOf(ChunkBody))
-        else
-        begin
-          with ChunkBody do
-          begin
-            // In version prior to 2 there was a smaller chunk body. Hence we have to read it entry by entry now.
-            Stream.Read(ChildCount, SizeOf(ChildCount));
-            Stream.Read(NodeHeight, SizeOf(NodeHeight));
-            // TVirtualNodeStates was a byte sized type in version 1.
-            States := [];
-            Stream.Read(States, SizeOf(Byte));
-            // vsVisible is now in the place where vsSelected was before, but every node was visible in the old version
-            // so we need to fix this too.
-            if vsVisible in States then
-              Include(States, vsSelected)
-            else
-              Include(States, vsVisible);
-            Stream.Read(Align, SizeOf(Align));
-            Stream.Read(CheckState, SizeOf(CheckState));
-            Stream.Read(CheckType, SizeOf(CheckType));
-          end;
-        end;
-
+        Stream.Read(ChunkBody, SizeOf(ChunkBody));
         with Node^ do
         begin
           // Set states first, in case the node is invisible.
