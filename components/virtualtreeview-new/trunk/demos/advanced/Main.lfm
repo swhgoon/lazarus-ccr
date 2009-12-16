@@ -13,9 +13,11 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.29'
   object PageScroller1: TPanel
+    Left = 0
     Height = 77
+    Top = 0
     Width = 980
     Align = alTop
     ClientHeight = 77
@@ -26,7 +28,9 @@ object MainForm: TMainForm
     ShowHint = True
     TabOrder = 0
     object MainPanel: TPanel
+      Left = 0
       Height = 70
+      Top = 0
       Width = 976
       AutoSize = True
       BevelOuter = bvNone
@@ -39,6 +43,7 @@ object MainForm: TMainForm
         Left = 216
         Height = 70
         Hint = 'The speed breakthrough'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -158,6 +163,7 @@ object MainForm: TMainForm
         Left = 285
         Height = 70
         Hint = 'General abilities and features'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -277,6 +283,7 @@ object MainForm: TMainForm
         Left = 354
         Height = 70
         Hint = 'Property tree simulation'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -452,6 +459,7 @@ object MainForm: TMainForm
         Left = 423
         Height = 70
         Hint = 'Hide and show nodes, sync two trees'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -571,6 +579,7 @@ object MainForm: TMainForm
         Left = 492
         Height = 70
         Hint = 'Tree in grid simulation'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -690,6 +699,7 @@ object MainForm: TMainForm
         Left = 561
         Height = 70
         Hint = 'A paint tree as directory tree'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -809,6 +819,7 @@ object MainForm: TMainForm
         Left = 630
         Height = 70
         Hint = 'Alignment, directionality and internationalization'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -980,19 +991,22 @@ object MainForm: TMainForm
         OnClick = DemoButtonClick
       end
       object Label1: TLabel
-        Height = 17
+        Left = 0
+        Height = 14
         Top = 26
-        Width = 92
+        Width = 73
         Caption = 'Demo picker'
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
         ParentColor = False
+        ParentFont = False
       end
       object Label2: TLabel
+        Left = 0
         Height = 17
         Top = 42
-        Width = 244
+        Width = 197
         Caption = 'Which demo do you want to see?'
         ParentColor = False
       end
@@ -1001,6 +1015,7 @@ object MainForm: TMainForm
         Left = 699
         Height = 70
         Hint = 'Painting like in Windows XP'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1232,6 +1247,7 @@ object MainForm: TMainForm
         Left = 768
         Height = 70
         Hint = 'Multiline nodes'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1562,6 +1578,7 @@ object MainForm: TMainForm
         Left = 837
         Height = 70
         Hint = 'Custom header drawing in advanced mode'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1825,6 +1842,7 @@ object MainForm: TMainForm
         Left = 906
         Height = 70
         Hint = 'Exit'
+        Top = 0
         Width = 70
         Color = clBtnFace
         Glyph.Data = {
@@ -1942,13 +1960,15 @@ object MainForm: TMainForm
     end
   end
   object StatusBar: TStatusBar
-    Height = 24
-    Top = 542
+    Left = 0
+    Height = 20
+    Top = 546
     Width = 980
     Panels = <>
   end
   object ContainerPanel: TPanel
-    Height = 465
+    Left = 0
+    Height = 469
     Top = 77
     Width = 980
     Align = alClient

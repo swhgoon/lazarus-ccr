@@ -1,7 +1,6 @@
 unit PropertiesDemo;
 
 {$MODE Delphi}
-{$H+}
 
 // Virtual Treeview sample form demonstrating following features:
 //   - Property page like string tree with individual node editors.
@@ -11,15 +10,13 @@ unit PropertiesDemo;
 interface
 
 uses
-  {$ifdef Windows} Messages, {$endif}
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, VirtualTrees, ExtCtrls, LResources;
+  StdCtrls, VirtualTrees, ExtCtrls, LResources, LMessages;
 
-{$ifdef Windows}
 const
   // Helper message to decouple node change handling from edit handling.
-  WM_STARTEDITING = WM_USER + 778;
-{$endif}
+  WM_STARTEDITING = LM_USER + 778;
+
 type
   TPropertiesForm = class(TForm)
     VST3: TVirtualStringTree;
@@ -47,9 +44,7 @@ type
     procedure RadioGroup1Click(Sender: TObject);
     procedure VST3StateChange(Sender: TBaseVirtualTree; Enter, Leave: TVirtualTreeStates);
   private
-    {$ifdef Windows}
-    procedure WMStartEditing(var Message: TMessage); message WM_STARTEDITING;
-    {$endif}
+    procedure WMStartEditing(var Message: TLMessage); message WM_STARTEDITING;
   end;
 
 var
@@ -203,9 +198,7 @@ begin
       // to start a new edit operation if the last one is still in progress. So we post us a special message and
       // in the message handler we then can start editing the new node. This works because the posted message
       // is first executed *after* this event and the message, which triggered it is finished.
-      {$ifdef Windows}
       PostMessage(Self.Handle, WM_STARTEDITING, Integer(Node), 0);
-      {$endif}
     end;
   end;
 end;
@@ -256,9 +249,6 @@ var
   PropText: string;
 
 begin
-  // Note: This code requires a proper Unicode/WideString comparation routine which I did not want to link here for
-  // size and clarity reasons. For now strings are (implicitely) converted to ANSI to make the comparation work.
-  // Search is not case sensitive.
   S := Text;
   SetStatusbarText('Searching for: ' + S);
 
@@ -298,7 +288,6 @@ procedure TPropertiesForm.VST3StateChange(Sender: TBaseVirtualTree; Enter, Leave
 
 begin
   if tsIncrementalSearching in Enter then
-    // Note: Unicode will be converted to ANSI here, but for demonstration purposes we accept that for now.
     SetStatusbarText('Searching for: ' + Sender.SearchBuffer);
   if tsIncrementalSearching in Leave then
     SetStatusbarText('');
@@ -309,8 +298,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-{$ifdef Windows}
-procedure TPropertiesForm.WMStartEditing(var Message: TMessage);
+procedure TPropertiesForm.WMStartEditing(var Message: TLMessage);
 
 // This message was posted by ourselves from the node change handler above to decouple that change event and our
 // intention to start editing a node. This is necessary to avoid interferences between nodes editors potentially created
@@ -324,7 +312,6 @@ begin
   // Note: the test whether a node can really be edited is done in the OnEditing event.
   VST3.EditNode(Node, 1);
 end;
-{$endif}
 //----------------------------------------------------------------------------------------------------------------------
 
 initialization

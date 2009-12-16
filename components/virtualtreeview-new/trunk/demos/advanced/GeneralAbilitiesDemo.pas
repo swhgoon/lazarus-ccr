@@ -2,7 +2,6 @@ unit GeneralAbilitiesDemo;
 
 {$MODE Delphi}
 
-
 // Virtual Treeview sample form demonstrating following features:
 //   - General use and feel of TVirtualStringTree.
 //   - Themed/non-themed painting.
@@ -18,14 +17,6 @@ unit GeneralAbilitiesDemo;
 // Written by Mike Lischke.
 
 interface
-
-
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-{$endif COMPILER_7_UP}
 
 uses
   LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -95,9 +86,7 @@ var
 implementation
 
 uses
-  {$ifdef Windows}
-  ShellAPI,
-  {$endif} Main, States;
+  Main, States;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -124,7 +113,7 @@ var
 
 begin
   // Determine if we are running on Windows XP.
-  {$ifdef Windows}
+  {$ifdef LCLWin32}
   ThemeRadioGroup.Enabled := (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
   {$else}
   ThemeRadioGroup.Enabled := False;

@@ -9,7 +9,7 @@ object SpeedForm: TSpeedForm
   ClientWidth = 566
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   Visible = True
   object Label1: TLabel
     Left = 7
@@ -39,21 +39,23 @@ object SpeedForm: TSpeedForm
   end
   object Label4: TLabel
     Left = 264
-    Height = 85
+    Height = 81
     Top = 24
     Width = 285
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'Test how fast the Virtual Treeview is. You can add and delete nodes as much as you like (provided your system has enough memory). An upper limit of one million nodes for a 128MB system is a good start.'
     ParentColor = False
     WordWrap = True
   end
   object Label2: TLabel
+    AnchorSideTop.Control = Label4
+    AnchorSideTop.Side = asrBottom
     Left = 262
     Height = 17
-    Top = 114
+    Top = 115
     Width = 122
     Anchors = [akTop, akRight]
+    BorderSpacing.Top = 10
     Caption = 'As an orientation:'
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
@@ -62,23 +64,27 @@ object SpeedForm: TSpeedForm
     ParentFont = False
   end
   object Label5: TLabel
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
     Left = 276
-    Height = 41
-    Top = 136
+    Height = 33
+    Top = 134
     Width = 273
     Anchors = [akTop, akRight]
-    AutoSize = False
+    BorderSpacing.Top = 2
     Caption = '1.000.000 nodes on Windows XP Pro, 650Mhz Athlon, 256 MB RAM, take ~ 850ms to add.'
     ParentColor = False
     WordWrap = True
   end
   object Label7: TLabel
+    AnchorSideTop.Control = Label5
+    AnchorSideTop.Side = asrBottom
     Left = 276
-    Height = 41
-    Top = 176
-    Width = 269
+    Height = 33
+    Top = 169
+    Width = 273
     Anchors = [akTop, akRight]
-    AutoSize = False
+    BorderSpacing.Top = 2
     Caption = '5.000.000 nodes on Windows XP Pro, 1.8Ghz Pentium M , 1 GB RAM, are added in ~1.6s.'
     ParentColor = False
     WordWrap = True
@@ -1541,12 +1547,12 @@ object SpeedForm: TSpeedForm
       1410041410071410041410071410041410071400000000000404040004070004
       10141014040C04140C070700040C040C0404141007040004071014040000
     }
-    BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultText = 'Node'
     Header.AutoSizeIndex = -1
     Header.Columns = <>
+    Header.DefaultHeight = 17
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1
@@ -1565,22 +1571,24 @@ object SpeedForm: TSpeedForm
     OnStructureChange = VST1StructureChange
   end
   object GroupBox2: TGroupBox
+    AnchorSideBottom.Control = VST1
+    AnchorSideBottom.Side = asrBottom
     Left = 268
     Height = 57
     Top = 454
-    Width = 272
+    Width = 281
     Anchors = [akRight, akBottom]
     Caption = ' Background '
     ClientHeight = 39
-    ClientWidth = 268
+    ClientWidth = 277
     DragMode = dmAutomatic
     TabOrder = 1
     object SBCheckBox: TCheckBox
       Left = 24
       Height = 20
       Top = 10
-      Width = 126
-      Caption = 'show background'
+      Width = 129
+      Caption = 'Show Background'
       OnClick = SBCheckBoxClick
       TabOrder = 0
     end
@@ -1596,11 +1604,14 @@ object SpeedForm: TSpeedForm
     end
   end
   object GroupBox1: TGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = GroupBox2
     Left = 268
     Height = 122
-    Top = 316
+    Top = 322
     Width = 281
     Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 10
     Caption = ' Add and remove nodes '
     ClientHeight = 104
     ClientWidth = 277

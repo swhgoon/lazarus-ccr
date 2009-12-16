@@ -1,7 +1,6 @@
 unit Main;
 
 {$MODE Delphi}
-{$H+}
 
 // Advanced demo for Virtual Treeview showing various effects and features in several forms.
 // This is the main form which serves as container window for the demo forms.
@@ -9,12 +8,6 @@ unit Main;
 
 interface
 
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-{$endif COMPILER_7_UP}
 
 uses
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -48,7 +41,7 @@ type
 var
   MainForm: TMainForm;
 
-procedure LoadUnicodeStrings(Name: string; var Strings: array of UTF8String);
+procedure LoadUnicodeStrings(const Name: string; var Strings: array of UTF8String);
 procedure SetStatusbarText(const S: string);
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -63,7 +56,7 @@ uses
 //----------------------------------------------------------------------------------------------------------------------
 
 
-procedure LoadUnicodeStrings(Name: string; var Strings: array of UTF8String);
+procedure LoadUnicodeStrings(const Name: string; var Strings: array of UTF8String);
 
 // Loads the Unicode strings from the resource.
 
@@ -158,22 +151,12 @@ begin
 
     if Assigned(NewDemoClass) then
     begin
-      //original code:
-      {
       NewDemo := NewDemoClass.Create(Self);
       NewDemo.Hide;
       NewDemo.BorderStyle := bsNone;
       NewDemo.Parent := ContainerPanel;
       NewDemo.Align := alClient;
       NewDemo.Show;
-      }
-      //workaround
-      NewDemo := NewDemoClass.Create(Self);
-      NewDemo.Hide;
-      //NewDemo.BorderStyle := bsNone;
-      NewDemo.Align := alClient;
-      NewDemo.Show;
-      NewDemo.Parent := ContainerPanel;
     end;
   end;
 end;
