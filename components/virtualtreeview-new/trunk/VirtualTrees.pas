@@ -331,7 +331,7 @@ uses
   SyncObjs  // Thread support
   //Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
-  , Themes , Win32UxTheme
+  , Themes , Win32UxTheme, UxTheme
   {$endif ThemeSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
