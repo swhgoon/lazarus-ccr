@@ -950,7 +950,7 @@ type
   private
     FTree: TBaseVirtualTree;
     FFormatEtcArray: TFormatEtcArray;
-    FCurrentIndex: Integer;
+    FCurrentIndex: LongWord;
   public
     constructor Create(Tree: TBaseVirtualTree; AFormatEtcArray: TFormatEtcArray);
 
@@ -1334,7 +1334,7 @@ type
     function ColumnFromPosition(const P: TPoint; Relative: Boolean = True): TColumnIndex; overload; virtual;
     function ColumnFromPosition(PositionIndex: TColumnPosition): TColumnIndex; overload; virtual;
     function Equals(OtherColumnsObj: TObject): Boolean;
-    procedure GetColumnBounds(Column: TColumnIndex; var Left, Right: Integer);
+    procedure GetColumnBounds(Column: TColumnIndex; out Left, Right: Integer);
     function GetFirstVisibleColumn(ConsiderAllowFocus: Boolean = False): TColumnIndex;
     function GetLastVisibleColumn(ConsiderAllowFocus: Boolean = False): TColumnIndex;
     function GetNextColumn(Column: TColumnIndex): TColumnIndex;
@@ -2378,7 +2378,7 @@ type
     procedure AdjustTotalCount(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
     procedure AdjustTotalHeight(Node: PVirtualNode; Value: Integer; Relative: Boolean = False);
     function CalculateCacheEntryCount: Integer;
-    procedure CalculateVerticalAlignments(ShowImages, ShowStateImages: Boolean; Node: PVirtualNode; var VAlign,
+    procedure CalculateVerticalAlignments(ShowImages, ShowStateImages: Boolean; Node: PVirtualNode; out VAlign,
       VButtonAlign: Integer);
     function ChangeCheckState(Node: PVirtualNode; Value: TCheckState): Boolean;
     function CollectSelectedNodesLTR(MainColumn, NodeLeft, NodeRight: Integer; Alignment: TAlignment; OldRect: TRect;
@@ -2387,7 +2387,7 @@ type
       const NewRect: TRect): Boolean;
     procedure ClearNodeBackground(const PaintInfo: TVTPaintInfo; UseBackground, Floating: Boolean; R: TRect);
     function CompareNodePositions(Node1, Node2: PVirtualNode; ConsiderChildrenAbove: Boolean = False): Integer;
-    function DetermineLineImageAndSelectLevel(Node: PVirtualNode; var LineImage: TLineImage): Integer;
+    function DetermineLineImageAndSelectLevel(Node: PVirtualNode; out LineImage: TLineImage): Integer;
     procedure DrawLineImage(const PaintInfo: TVTPaintInfo; X, Y, H, VAlign: Integer; Style: TVTLineType; Reverse: Boolean);
     function FindInPositionCache(Node: PVirtualNode; var CurrentPos: Cardinal): PVirtualNode; overload;
     function FindInPositionCache(Position: Cardinal; var CurrentPos: Cardinal): PVirtualNode; overload;
@@ -2549,7 +2549,7 @@ type
   protected
     procedure AddToSelection(Node: PVirtualNode); overload; virtual;
     procedure AddToSelection(const NewItems: TNodeArray; NewLength: Integer; ForceInsert: Boolean = False); overload; virtual;
-    procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; var NextNonEmpty: TColumnIndex); virtual;
+    procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex); virtual;
     procedure AdjustPanningCursor(X, Y: Integer); virtual;
     procedure AdviseChangeEvent(StructureChange: Boolean; Node: PVirtualNode; Reason: TChangeReason); virtual;
     function AllocateInternalDataArea(Size: Cardinal): Cardinal; virtual;
@@ -2693,7 +2693,7 @@ type
     procedure DrawDottedHLine(const PaintInfo: TVTPaintInfo; Left, Right, Top: Integer); virtual;
     procedure DrawDottedVLine(const PaintInfo: TVTPaintInfo; Top, Bottom, Left: Integer); virtual;
     procedure EndOperation;
-    function FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
+    function FindNodeInSelection(P: PVirtualNode; out Index: Integer; LowBound, HighBound: Integer): Boolean; virtual;
     procedure FinishChunkHeader(Stream: TStream; StartPos, EndPos: Integer); virtual;
     procedure FontChanged(AFont: TObject); virtual;
     function GetBorderDimensions: TSize; virtual;
@@ -3004,7 +3004,7 @@ type
     function GetFirstVisibleChildNoInit(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
     function GetFirstVisibleNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = True;
       IncludeHidden: Boolean = False): PVirtualNode;
-    procedure GetHitTestInfoAt(X, Y: Integer; Relative: Boolean; var HitInfo: THitInfo); virtual;
+    procedure GetHitTestInfoAt(X, Y: Integer; Relative: Boolean; out HitInfo: THitInfo); virtual;
     function GetLast(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetLastInitialized(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
     function GetLastNoInit(Node: PVirtualNode = nil; ConsiderChildrenAbove: Boolean = False): PVirtualNode;
@@ -3052,7 +3052,7 @@ type
     function GetSortedCutCopySet(Resolve: Boolean): TNodeArray;
     function GetSortedSelection(Resolve: Boolean): TNodeArray;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
-      var Text: String); virtual;
+      out Text: String); virtual;
     function GetTreeRect: TRect;
     function GetVisibleParent(Node: PVirtualNode; IncludeHidden: Boolean = False): PVirtualNode;
     function HasAsParent(Node, PotentialParent: PVirtualNode): Boolean;
@@ -3329,8 +3329,8 @@ type
     procedure AddContentToBuffer(Buffer: TBufferedUTF8String; Source: TVSTTextSourceType; const Separator: String);
     function GetImageText(Node: PVirtualNode; Kind: TVTImageKind;
       Column: TColumnIndex): String;
-    procedure GetRenderStartValues(Source: TVSTTextSourceType; var Node: PVirtualNode;
-      var NextNodeProc: TGetNextNodeProc);
+    procedure GetRenderStartValues(Source: TVSTTextSourceType; out Node: PVirtualNode;
+      out NextNodeProc: TGetNextNodeProc);
     function GetOptions: TCustomStringTreeOptions;
     function GetText(Node: PVirtualNode; Column: TColumnIndex): String;
     procedure InitializeTextProperties(var PaintInfo: TVTPaintInfo);
@@ -3341,7 +3341,7 @@ type
     procedure SetText(Node: PVirtualNode; Column: TColumnIndex; const Value: String);
     procedure WMSetFont(var Msg: TLMNoParams{TWMSetFont}); message LM_SETFONT;
   protected
-    procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; var NextNonEmpty: TColumnIndex); override;
+    procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex); override;
     function CanExportNode(Node: PVirtualNode): Boolean;
     function CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: String): Integer; virtual;
     function ColumnIsEmpty(Node: PVirtualNode; Column: TColumnIndex): Boolean; override;
@@ -3397,7 +3397,7 @@ type
     function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): UnicodeString;
     function ContentToUTF8(Source: TVSTTextSourceType; const Separator: String): String;
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
-      var Text: String); override;
+      out Text: String); override;
     function InvalidateNode(Node: PVirtualNode): TRect; override;
     function Path(Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; Delimiter: Char): String;
     procedure ReinitNode(Node: PVirtualNode; Recursive: Boolean); override;
@@ -4757,7 +4757,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure FillDragRectangles(DragWidth, DragHeight, DeltaX, DeltaY: Integer; var RClip, RScroll, RSamp1, RSamp2, RDraw1,
+procedure FillDragRectangles(DragWidth, DragHeight, DeltaX, DeltaY: Integer; out RClip, RScroll, RSamp1, RSamp2, RDraw1,
   RDraw2: TRect);
 
 // Fills the given rectangles with values which can be used while dragging around an image
@@ -5201,7 +5201,7 @@ begin
     Row := Height - Row - 1;
   }
   // Return DWORD aligned address of the requested scanline.
-  PtrInt(Result) := PtrInt(Bits) + Row * ((Width * 32 + 31) and not 31) div 8;
+  Result := Bits + Row * ((Width * 32 + 31) and not 31) div 8;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7511,8 +7511,6 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------------------------------
-
 procedure TVirtualTreeColumn.GetAbsoluteBounds(var Left, Right: Integer);
 
 // Returns the column's left and right bounds in header coordinates, that is, independant of the scrolling position.
@@ -7526,24 +7524,11 @@ end;
 
 function TVirtualTreeColumn.GetDisplayName: string;
 
-// Returns the column text if it only contains ANSI characters, otherwise the column id is returned because the IDE
-// still cannot handle Unicode strings.
-
-var
-  I: Integer;
+// Returns the column text otherwise the column id is returned
 
 begin
-  // Check if the text of the column contains characters > 255
-  I := 1;
-  while I <= Length(FText) do
-  begin
-    if Ord(FText[I]) > 255 then
-      Break;
-    Inc(I);
-  end;
-
-  if I > Length(FText) then
-    Result := FText // implicit conversion
+  if Length(FText) > 0 then
+    Result := FText
   else
     Result := Format('Column %d', [Index]);
 end;
@@ -7555,14 +7540,6 @@ function TVirtualTreeColumn.GetOwner: TVirtualTreeColumns;
 begin
   Result := Collection as TVirtualTreeColumns;
 end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -8764,7 +8741,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualTreeColumns.GetColumnBounds(Column: TColumnIndex; var Left, Right: Integer);
+procedure TVirtualTreeColumns.GetColumnBounds(Column: TColumnIndex; out Left, Right: Integer);
 
 // Returns the left and right bound of the given column. If Column is NoColumn then the entire client width is returned.
 
@@ -12028,7 +12005,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.CalculateVerticalAlignments(ShowImages, ShowStateImages: Boolean; Node: PVirtualNode;
-  var VAlign, VButtonAlign: Integer);
+  out VAlign, VButtonAlign: Integer);
 
 // Calculates the vertical alignment of the given node and its associated expand/collapse button during
 // a node paint cycle depending on the required node alignment style.
@@ -12740,7 +12717,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.DetermineLineImageAndSelectLevel(Node: PVirtualNode; var LineImage: TLineImage): Integer;
+function TBaseVirtualTree.DetermineLineImageAndSelectLevel(Node: PVirtualNode; out LineImage: TLineImage): Integer;
 
 // This method is used during paint cycles and initializes an array of line type IDs. These IDs are used to paint
 // the tree lines in front of the given node.
@@ -13574,8 +13551,8 @@ procedure TBaseVirtualTree.InterruptValidation;
 
 // Waits until the worker thread has stopped validating the caches of this tree.
 
-var
-  Msg: TMsg;
+//var
+//  Msg: TMsg;
 
 begin
   DoStateChange([tsStopValidation], [tsUseCache]);
@@ -15640,7 +15617,7 @@ var
 
 begin
   Logger.EnterMethod([lcMessages],'CMMouseLeave');
-  Logger.Send([lcMessages],'FCurrentHotNode',Integer(Pointer(FCurrentHotNode)));
+  Logger.Send([lcMessages],'FCurrentHotNode',hexStr(FCurrentHotNode));
   // Reset the last used hint rectangle in case the mouse enters the window within the bounds
   if Assigned(FHintData.Tree) then
     FHintData.Tree.FLastHintRect := Rect(0, 0, 0, 0);
@@ -17487,7 +17464,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; var NextNonEmpty: TColumnIndex);
+procedure TBaseVirtualTree.AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex);
 
 // Used in descendants to modify the paint rectangle of the current column while painting a certain node.
 
@@ -18644,10 +18621,13 @@ end;
 procedure TBaseVirtualTree.DoBeforeCellPaint(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
 
+{$ifdef LCLWin32}
 var
   UpdateRect: TRect;
+{$endif}
 
 begin
+  //todo: implement under non win32
   if Assigned(FOnBeforeCellPaint) then
   begin
     {$ifdef LCLWin32}
@@ -20633,7 +20613,7 @@ begin
     if not Accept then
       Effect := DROPEFFECT_NONE;
     if WindowScrolled then
-      Effect := Effect or Integer(DROPEFFECT_SCROLL);
+      Effect := Effect or LongWord(DROPEFFECT_SCROLL);
     Result :=  NOERROR;
   except
     Result := E_UNEXPECTED;
@@ -20690,7 +20670,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; var Index: Integer; LowBound,
+function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; out Index: Integer; LowBound,
   HighBound: Integer): Boolean;
 
 // Search routine to find a specific node in the selection array.
@@ -20699,7 +20679,7 @@ function TBaseVirtualTree.FindNodeInSelection(P: PVirtualNode; var Index: Intege
 
 var
   L, H,
-  I, C: Integer;
+  I, C: PtrInt;
 
 begin
   Result := False;
@@ -20712,7 +20692,7 @@ begin
   while L <= H do
   begin
     I := (L + H) shr 1;
-    C := Integer(FSelection[I]) - Integer(P);
+    C := PtrInt(FSelection[I]) - PtrInt(P);
     if C < 0 then
       L := I + 1
     else
@@ -22014,7 +21994,7 @@ begin
       if ([vsSelected, vsDisabled] * NewItems[I].States <> []) or
          (Constrained and (Cardinal(FLastSelectionLevel) <> GetNodeLevel(NewItems[I]))) or
          (SiblingConstrained and (FRangeAnchor.Parent <> NewItems[I].Parent)) then
-        Inc(Cardinal(NewItems[I]))
+        Inc(NewItems[I])
       else
         Include(NewItems[I].States, vsSelected);
   end;
@@ -22044,7 +22024,7 @@ begin
       // array and only the remaining new items must be inserted.
       if CurrentEnd >= 0 then
       begin
-        while (J >= 0) and (Cardinal(NewItems[J]) > Cardinal(FSelection[CurrentEnd])) do
+        while (J >= 0) and (NewItems[J] > FSelection[CurrentEnd]) do
         begin
           FSelection[CurrentEnd + J + 1] := NewItems[J];
           Dec(J);
@@ -22400,7 +22380,7 @@ begin
   if FindNodeInSelection(Node, Index, -1, -1) then
   begin
     Exclude(Node.States, vsSelected);
-    Inc(Cardinal(FSelection[Index]));
+    Inc(FSelection[Index]);
   end;
 end;
 
@@ -24115,7 +24095,7 @@ procedure TBaseVirtualTree.UpdateHeaderRect;
 var
   OffsetX,
   OffsetY: Integer;
-  EdgeSize: Integer;
+  //EdgeSize: Integer;
   Size: TSize;
 
 begin
@@ -24213,9 +24193,11 @@ const
   ScrollMasks: array[Boolean] of Cardinal = (0, SIF_DISABLENOSCROLL);
 
 const // Region identifiers for GetRandomRgn
+  {
   CLIPRGN = 1;
   METARGN = 2;
   APIRGN = 3;
+  }
   SYSRGN = 4;
 
 procedure TBaseVirtualTree.UpdateWindowAndDragImage(const Tree: TBaseVirtualTree; TreeRect: TRect; UpdateNCArea,
@@ -26223,7 +26205,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.GetHitTestInfoAt(X, Y: Integer; Relative: Boolean; var HitInfo: THitInfo);
+procedure TBaseVirtualTree.GetHitTestInfoAt(X, Y: Integer; Relative: Boolean; out HitInfo: THitInfo);
 
 // Determines the node that occupies the specified point or nil if there's none. The parameter Relative determines
 // whether to consider X and Y as being client coordinates (if True) or as being absolute tree coordinates.
@@ -28042,7 +28024,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
-  var Text: String);
+  out Text: String);
 
 // Generic base method for editors, hint windows etc. to get some info about a node.
 
@@ -28908,7 +28890,7 @@ begin
             SelectLevel := DetermineLineImageAndSelectLevel(PaintInfo.Node, LineImage);
             IndentSize := Length(LineImage);
             if not (toFixedIndent in FOptions.FPaintOptions) then
-              ButtonX := (IndentSize - 1) * Integer(FIndent) + Round((Integer(FIndent) - FPlusBM.Width) / 2); 
+              ButtonX := (IndentSize - 1) * FIndent + Round((FIndent - FPlusBM.Width) / 2);
 
             // Initialize node if not already done.
             if not (vsInitialized in PaintInfo.Node.States) then
@@ -30297,7 +30279,7 @@ var
       Window := Handle;
       DC := GetDC(Handle);
       Self.Brush.Color := Color;
-      Brush := Self.Brush.Handle;
+      Brush := Self.Brush.Reference.Handle;
 
       if (Mode1 <> tamNoScroll) and (Mode2 <> tamNoScroll) then
       begin
@@ -31184,7 +31166,7 @@ begin
   if not (vsMultiline in FLink.FNode.States) then
   begin
     DC := GetDC(Handle);
-    LastFont := SelectObject(DC, Font.Handle);
+    LastFont := SelectObject(DC, Font.Reference.Handle);
     try
       // Read needed space for the current text.
       GetTextExtentPoint32(DC, PChar(Text), Length(Text), Size);
@@ -31423,7 +31405,7 @@ begin
       if not (vsMultiline in FNode.States) then
         OffsetRect(R, 0, FTextBounds.Top - FEdit.Top);
 
-      SendMessage(FEdit.Handle, EM_SETRECTNP, 0, Integer(@R));
+      SendMessage(FEdit.Handle, EM_SETRECTNP, 0, PtrUInt(@R));
     end;
   end;
 end;
@@ -31441,8 +31423,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomVirtualStringTree.GetRenderStartValues(Source: TVSTTextSourceType; var Node: PVirtualNode;
-  var NextNodeProc: TGetNextNodeProc);
+procedure TCustomVirtualStringTree.GetRenderStartValues(Source: TVSTTextSourceType; out Node: PVirtualNode;
+  out NextNodeProc: TGetNextNodeProc);
 
 begin
   case Source of
@@ -31742,12 +31724,14 @@ procedure TCustomVirtualStringTree.WMSetFont(var Msg: TLMNoParams);
 // Whenever a new font is applied to the tree some default values are determined to avoid frequent
 // determination of the same value.
 
+{
 var
   MemDC: HDC;
   Run: PVirtualNode;
   TM: TTextMetric;
   Size: TSize;
   Data: PInteger;
+}
 
 begin
   inherited;
@@ -31779,7 +31763,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomVirtualStringTree.AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; var NextNonEmpty: TColumnIndex);
+procedure TCustomVirtualStringTree.AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex);
 
 // In the case a node spans several columns (if enabled) we need to determine how many columns.
 // Note: the autospan feature can only be used with left-to-right layout.
@@ -33294,7 +33278,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TCustomVirtualStringTree.GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
-  var Text: String);
+  out Text: String);
 
 // Returns the font, the text and its bounding rectangle to the caller. R is returned as the closest
 // bounding rectangle around Text.
@@ -33305,7 +33289,7 @@ var
 
 begin
   // Get default font and initialize the other parameters.
-  inherited GetTextInfo(Node, Column, AFont, R, Text);
+  //inherited GetTextInfo(Node, Column, AFont, R, Text);
 
   Canvas.Font := AFont;
 
