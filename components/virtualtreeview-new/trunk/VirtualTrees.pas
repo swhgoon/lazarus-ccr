@@ -331,7 +331,7 @@ uses
   SyncObjs  // Thread support
   //Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
-  , Themes , UxTheme
+  , Themes , Win32UxTheme
   {$endif ThemeSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
@@ -22750,16 +22750,23 @@ procedure TBaseVirtualTree.PaintCheckImage(const PaintInfo: TVTPaintInfo);
 
 var
   R: TRect;
+  {$ifdef ThemeSupport}
   Details: TThemedElementDetails;
+  {$endif}
   UseThemes: Boolean;
 
 begin
   Logger.EnterMethod([lcCheck],'PaintCheckImage');
   with PaintInfo, ImageInfo[iiCheck] do
   begin
+    {$ifdef ThemeSupport}
     UseThemes := (tsUseThemes in FStates) and (FCheckImageKind = ckSystemDefault);
+    {$else}
+    UseThemes := False;
+    {$endif}
     if UseThemes or ((FCheckImageKind in [ckSystemFlat, ckSystemDefault]) and not (Index in [21..24])) then
     begin
+      {$ifdef ThemeSupport}
       if UseThemes then
       begin
         R := Rect(XPos - 1, YPos, XPos + 16, YPos + 16);
@@ -22791,6 +22798,7 @@ begin
               Canvas.Handle, 4 * Height, 0, MaskHandle);
       end
       else
+      {$endif}
       begin
         R := Rect(XPos + 1, YPos + 1, XPos + 14, YPos + 14);
         DrawCheckButton(Canvas, Index, R, FCheckImageKind = ckSystemFlat);

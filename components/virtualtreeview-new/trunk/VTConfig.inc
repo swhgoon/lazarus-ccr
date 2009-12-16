@@ -29,7 +29,9 @@
 {$define EnableAdvancedGraphics}
 {$define EnableAlphaBlend}
 {.$define EnableAccessible}
-{$define ThemeSupport}
+{$ifdef LCLWin32}
+  {$define ThemeSupport}
+{$endif}
 
 //under linux the performance is poor with threading enabled
 {$ifdef Windows}
