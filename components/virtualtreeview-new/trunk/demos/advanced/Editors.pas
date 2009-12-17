@@ -10,7 +10,7 @@ interface
 uses
   LCLIntf, delphicompat, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, VirtualTrees, ExtDlgs,  Buttons, ExtCtrls, ComCtrls,
-  MaskEdit, LCLType;
+  MaskEdit, LCLType, EditBtn;
 
 type
   // Describes the type of value a property tree node stores in its data property.
@@ -25,9 +25,6 @@ type
   );
 
 //----------------------------------------------------------------------------------------------------------------------
-
-//todo
-  TDateTimePicker = TComboBox;
 
 type
   // Node data record for the the document properties treeview.
@@ -179,6 +176,9 @@ type
   end;
 
   // Our own edit link to implement several different node editors.
+
+  { TGridEditLink }
+
   TGridEditLink = class(TPropertyEditLink, IVTEditLink)
   public
     function EndEdit: Boolean; stdcall;
@@ -236,8 +236,9 @@ begin
         CanAdvance := Shift = [];
         if FEdit is TComboBox then
           CanAdvance := CanAdvance and not TComboBox(FEdit).DroppedDown;
-        if FEdit is TDateTimePicker then
-          CanAdvance :=  CanAdvance and not TDateTimePicker(FEdit).DroppedDown;
+        //todo: there's no way to know if date is being edited in LCL
+        //if FEdit is TDateEdit then
+        //  CanAdvance := CanAdvance and not TDateEdit(FEdit).DroppedDown;
 
         if CanAdvance then
         begin
@@ -392,21 +393,13 @@ begin
       end;
     vtDate:
       begin
-        FEdit := TDateTimePicker.Create(nil);
-        with FEdit as TDateTimePicker do
+        FEdit := TDateEdit.Create(nil);
+        with FEdit as TDateEdit do
         begin
           Visible := False;
           Parent := Tree;
-          //todo
-          {
-          CalColors.MonthBackColor := clWindow;
-          CalColors.TextColor := clBlack;
-          CalColors.TitleBackColor := clBtnShadow;
-          CalColors.TitleTextColor := clBlack;
-          CalColors.TrailingTextColor := clBtnFace;
           Date := StrToDate(Data.Value);
           OnKeyDown := EditKeyDown;
-          }
         end;
       end;
   else
@@ -433,6 +426,8 @@ begin
   // Since we don't want to activate grid extensions in the tree (this would influence how the selection is drawn)
   // we have to set the edit's width explicitly to the width of the column.
   FTree.Header.Columns.GetColumnBounds(FColumn, Dummy, R.Right);
+  if FEdit is TDateEdit then
+    R.Right := R.Right - TDateEdit(FEdit).ButtonWidth;
   FEdit.BoundsRect := R;
 end;
 
@@ -589,21 +584,13 @@ begin
       end;
     vtDate:
       begin
-        FEdit := TDateTimePicker.Create(nil);
-        with FEdit as TDateTimePicker do
+        FEdit := TDateEdit.Create(nil);
+        with FEdit as TDateEdit do
         begin
           Visible := False;
           Parent := Tree;
-          //todo
-          {
-          CalColors.MonthBackColor := clWindow;
-          CalColors.TextColor := clBlack;
-          CalColors.TitleBackColor := clBtnShadow;
-          CalColors.TitleTextColor := clBlack;
-          CalColors.TrailingTextColor := clBtnFace;
           Date := StrToDate(Data.Value[FColumn - 1]);
           OnKeyDown := EditKeyDown;
-          }
         end;
       end;
   else
