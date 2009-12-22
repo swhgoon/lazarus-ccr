@@ -56,12 +56,12 @@ type
 
   TMargin           = 0..MaxInt;
 
-  TNetGradient = class;
+  TCustomNetGradient = class;
 
   TSubCaption = class(TPersistent)
   private
     { Private-Deklarationen }
-    Parent:           TNetGradient;
+    Parent:           TCustomNetGradient;
     FCaption:         TCaption;
     FFont:            TFont;
     FHotTrack:        Boolean;
@@ -78,7 +78,7 @@ type
     procedure         SetVisible(Value: Boolean); virtual;
   public
     { Public declarations }
-    constructor       Create(AOwner: TNetGradient); overload;
+    constructor       Create(AOwner: TCustomNetGradient); overload;
     destructor        Destroy; override;
   published
     { Published-Deklarationen }
@@ -92,7 +92,7 @@ type
 
   { TNetGradient }
 
-  TNetGradient = class(TCustomControl)
+  TCustomNetGradient = class(TCustomControl)
   private
     //*** Enzo *** Bordi
     FBevelInner:      TLabelBevel;
@@ -159,28 +159,21 @@ type
     procedure SetBevelInner(Value: TLabelBevel);
     procedure SetBevelOuter(Value: TLabelBevel);
 
-   // procedure         DataChange(Sender:TObject);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-  published
+    // procedure DataChange(Sender:TObject);
     property CaptionAlignment: TAlignment read FAlignment write SetAlignment;
     property CaptionLayout: TTextLayout read FLayout write SetLayout default tlCenter;
 
     property BevelInner: TLabelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TLabelBevel read FBevelOuter write SetBevelOuter default bvRaised;
 
-   { Starting color of fill }
-    property BeginColor: TColor read FBeginColor write SetBeginColor
-        default clBlue;
+    { Starting color of fill }
+    property BeginColor: TColor read FBeginColor write SetBeginColor default clBlue;
     { Ending color of fill }
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
     { Direction of fill }
     property FillDirection: TFillDirection read FDirection write SetFillDirection default fdLeftToRight;
     { Number of colors to use in the fill (1 - 256) - default is 255.  If 1 }
-    { then it uses the Begin Color.                                        }
+    { then it uses the Begin Color.                                         }
     property NumberOfColors: TNumberOfColors read FNumberOfColors write SetNumberOfColors default 255;
     { Enable standard properties }
     property Font: TFont read FFont write SetFont;
@@ -188,6 +181,38 @@ type
     property Caption: String read FCaption write SetCaption;
     property TextTop: Integer read FTextTop write SetTextTop;
     property TextLeft: Integer read FTextLeft write SetTextLeft;
+    property SubCapField: Boolean read FSubCapField write SetSubCapField default false;
+
+    property DataField: String Read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+
+    property SubCaption: TSubCaption read FSubCaption;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  end;
+
+  TNetGradient = class (TCustomNetGradient)
+  published
+    property CaptionAlignment;
+    property CaptionLayout;
+    property BevelInner;
+    property BevelOuter;
+    property BeginColor;
+    property EndColor;
+    property FillDirection;
+    property NumberOfColors;
+    property Font;
+    property Caption;
+    property TextTop;
+    property TextLeft;
+    property SubCapField;
+    property DataField;
+    property DataSource;
+    property SubCaption;
+    //default properties
     property Align;
     property BorderSpacing;
     property DragCursor;
@@ -205,22 +230,14 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-
-    //*** Enzo ***
-    property SubCapField: Boolean read FSubCapField write SetSubCapField default false;
-
-    property DataField: String Read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-
-    property SubCaption: TSubCaption read FSubCaption;
   end;
  
 implementation
  
-{ TNetGradient }
+{ TCustomNetGradient }
 
 { Override the constructor to initialize variables }
-constructor TNetGradient.Create(AOwner: TComponent);
+constructor TCustomNetGradient.Create(AOwner: TComponent);
 begin
   { Inherit original constructor }
   inherited Create(AOwner);
@@ -258,7 +275,7 @@ begin
   *)
 end;
 
-destructor TNetGradient.Destroy;
+destructor TCustomNetGradient.Destroy;
 begin
   FSubCaption.Destroy;
   FFont.Destroy;
@@ -267,7 +284,7 @@ begin
 end;
 
 { Set begin color when property is changed }
-procedure TNetGradient.SetBeginColor(Value: TColor);
+procedure TCustomNetGradient.SetBeginColor(Value: TColor);
 begin
   if Value <> FBeginColor then
   begin
@@ -277,7 +294,7 @@ begin
 end;
  
 { Set end color when property is changed }
-procedure TNetGradient.SetEndColor(Value: TColor);
+procedure TCustomNetGradient.SetEndColor(Value: TColor);
 begin
   if Value <> FEndColor then
   begin
@@ -287,7 +304,7 @@ begin
 end;
 
 { Set the number of colors to be used in the fill }
-procedure TNetGradient.SetNumberOfColors(Value: TNumberOfColors);
+procedure TCustomNetGradient.SetNumberOfColors(Value: TNumberOfColors);
 begin
   if Value <> FNumberOfColors then
   begin
@@ -297,7 +314,7 @@ begin
 end;
  
 // Set the Font
-procedure TNetGradient.SetFont(AFont: TFont);
+procedure TCustomNetGradient.SetFont(AFont: TFont);
 begin
   if AFont <> FFont then
   begin
@@ -307,7 +324,7 @@ begin
 end;
  
 // Set the Caption on NG
-procedure TNetGradient.SetCaption(const Value: String);
+procedure TCustomNetGradient.SetCaption(const Value: String);
 begin
   if Value <> FCaption then
   begin
@@ -317,7 +334,7 @@ begin
 end;
  
 // Set the Position of the Caption  (Top)
-procedure TNetGradient.SetTextTop(Value: Integer);
+procedure TCustomNetGradient.SetTextTop(Value: Integer);
 begin
   if Value <> FTextTop then
   begin
@@ -327,7 +344,7 @@ begin
 end;
  
 // Set the Position of the Caption (Left)
-procedure TNetGradient.SetTextLeft(Value: Integer);
+procedure TCustomNetGradient.SetTextLeft(Value: Integer);
 begin
   if Value <> FTextLeft then
   begin
@@ -337,13 +354,13 @@ begin
 end;
  
 { Perform the fill when paint is called }
-procedure TNetGradient.Paint;
+procedure TCustomNetGradient.Paint;
 begin
   GradientFill;
 end;
  
 { Gradient fill procedure - the actual routine }
-procedure TNetGradient.GradientFill;
+procedure TCustomNetGradient.GradientFill;
 var
   { Set up working variables }
   BeginRGBValue  : array[0..2] of Byte;    { Begin RGB values }
@@ -587,7 +604,7 @@ begin
 end;
  
 { Set the fill direction }
-procedure TNetGradient.SetFillDirection(Value: TFillDirection);
+procedure TCustomNetGradient.SetFillDirection(Value: TFillDirection);
 begin
   if Value <> FDirection then
   begin
@@ -598,7 +615,7 @@ end;
 
 //*** Enzo ***
 
-procedure TNetGradient.SetAlignment(Value: TAlignment);
+procedure TCustomNetGradient.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
@@ -607,7 +624,7 @@ begin
   end;
 end;
 
-procedure TNetGradient.SetLayout(Value: TTextLayout);
+procedure TCustomNetGradient.SetLayout(Value: TTextLayout);
 begin
   if Value <> FLayout then
   begin
@@ -616,7 +633,7 @@ begin
   end;
 end;
 
-procedure TNetGradient.SetBevelInner(Value: TLabelBevel);
+procedure TCustomNetGradient.SetBevelInner(Value: TLabelBevel);
 begin
   if Value <> FBevelInner then  begin
     FBevelInner := Value;
@@ -624,7 +641,7 @@ begin
   end;
 end;
 
-procedure TNetGradient.SetBevelOuter(Value: TLabelBevel);
+procedure TCustomNetGradient.SetBevelOuter(Value: TLabelBevel);
 begin
   if Value <> FBevelOuter then
   begin
@@ -635,32 +652,32 @@ end;
 
 //*** Enzo ***
 
-function TNetGradient.GetSubCapField: Boolean;
+function TCustomNetGradient.GetSubCapField: Boolean;
 begin
   Result := FSubCapField;
 end;
 
-procedure TNetGradient.SetSubCapField(Value: Boolean);
+procedure TCustomNetGradient.SetSubCapField(Value: Boolean);
 begin
   FSubCapField := Value;
 end;
 
-function TNetGradient.GetDataField: STring;
+function TCustomNetGradient.GetDataField: STring;
 begin
   Result := FDataLink.FieldName;
 end;
 
-procedure TNetGradient.SetDataField (const Value: string);
+procedure TCustomNetGradient.SetDataField (const Value: string);
 begin
   FDataLink.FieldName := Value;
 end;
 
-function TNetGradient.GetDataSource: TDataSource;
+function TCustomNetGradient.GetDataSource: TDataSource;
 begin
   Result := FDataLink.DataSource;
 end;
 
-procedure TNetGradient.SetDataSource (Value: TDataSource);
+procedure TCustomNetGradient.SetDataSource (Value: TDataSource);
 
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
   NewDataSource: TDataSource);
@@ -682,13 +699,13 @@ begin
     Value.FreeNotification (Value);}
 end;
 
-function TNetGradient.GetField: TField;
+function TCustomNetGradient.GetField: TField;
 begin
   Result := FDataLink.Field;
 end;
 
 // data link event handler
-procedure TNetGradient.DataChange (Sender: TObject);
+procedure TCustomNetGradient.DataChange (Sender: TObject);
 begin
   if FDataLink.DataSet.Active = true then begin
      //enzo
@@ -701,17 +718,17 @@ begin
   end;
 end;
 
-procedure TNetGradient.OnFontChanged(Sender: TObject);
+procedure TCustomNetGradient.OnFontChanged(Sender: TObject);
 begin
   Changed;
 end;
 
-procedure TNetGradient.BeginUpdate;
+procedure TCustomNetGradient.BeginUpdate;
 begin
   Inc(FUpdateCount);
 end;
 
-procedure TNetGradient.Changed;
+procedure TCustomNetGradient.Changed;
 begin
   if (FUpdateCount = 0) and not (csLoading in ComponentState) then
   begin
@@ -719,7 +736,7 @@ begin
   end;
 end;
 
-procedure TNetGradient.EndUpdate;
+procedure TCustomNetGradient.EndUpdate;
 begin
   if FUpdateCount > 0 then
     Dec(FUpdateCount);
@@ -728,7 +745,7 @@ end;
 
 //**********
 
-constructor TSubCaption.Create(AOwner: TNetGradient);
+constructor TSubCaption.Create(AOwner: TCustomNetGradient);
 begin
   inherited Create;
   Parent         := AOwner;
