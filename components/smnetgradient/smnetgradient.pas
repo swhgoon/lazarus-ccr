@@ -434,99 +434,92 @@ begin
   WorkBmp.Width := Width;
   WorkBmp.Height := Height;
 
-{ Use working bitmap to draw the gradient }
-with WorkBmp do
-begin
-  Rp := GetClientRect;
-  { Extract the begin RGB values }
-  case FDirection of
- 
-     fdLeftToRight,ftTopToBottom:   begin
-        { Set the Red, Green and Blue colors }
-        BeginRGBValue[0] := GetRValue (ColorToRGB (FBeginColor));
-        BeginRGBValue[1] := GetGValue (ColorToRGB (FBeginColor));
-        BeginRGBValue[2] := GetBValue (ColorToRGB (FBeginColor));
-        { Calculate the difference between begin and end RGB values }
-        RGBDifference[0] := GetRValue (ColorToRGB (FEndColor)) -
-                            BeginRGBValue[0];
-        RGBDifference[1] := GetGValue (ColorToRGB (FEndColor)) -
-                            BeginRGBValue[1];
-        RGBDifference[2] := GetBValue (ColorToRGB (FEndColor)) -
-                            BeginRGBValue[2];
-      end;
- 
-      fdRightToLeft,ftBottomToTop:    begin
-        { Set the Red, Green and Blue colors }
-        BeginRGBValue[0] := GetRValue (ColorToRGB (FEndColor));
-        BeginRGBValue[1] := GetGValue (ColorToRGB (FEndColor));
-        BeginRGBValue[2] := GetBValue (ColorToRGB (FEndColor));
-        { Calculate the difference between begin and end RGB values }
-        RGBDifference[0] := GetRValue (ColorToRGB (FBeginColor)) -
-                            BeginRGBValue[0];
-        RGBDifference[1] := GetGValue (ColorToRGB (FBeginColor)) -
-                            BeginRGBValue[1];
-        RGBDifference[2] := GetBValue (ColorToRGB (FBeginColor)) -
-                            BeginRGBValue[2];
-      end;
-  end;
- 
-  { Set the pen style and mode }
-  Canvas.Pen.Style := psSolid;
-  Canvas.Pen.Mode := pmCopy;
- 
-  case FDirection of
- 
-   { Calculate the color band's left and right coordinates }
-   { for LeftToRight and RightToLeft fills }
-    fdLeftToRight, fdRightToLeft:
-      begin
-        ColorBand.Top := 0;
-        ColorBand.Bottom := Height;
-      end;
-    ftTopToBottom, ftBottomToTop:
-      begin
-        ColorBand.Left := 0;
-        ColorBand.Right := Width;
-      end;
-
-  end;
- 
-  { Perform the fill }
-  for I := 0 to FNumberOfColors do
-    begin
+  { Use working bitmap to draw the gradient }
+  with WorkBmp do
+  begin
+    Rp := GetClientRect;
+    { Extract the begin RGB values }
     case FDirection of
- 
+       fdLeftToRight, ftTopToBottom:   begin
+          { Set the Red, Green and Blue colors }
+          BeginRGBValue[0] := GetRValue (ColorToRGB (FBeginColor));
+          BeginRGBValue[1] := GetGValue (ColorToRGB (FBeginColor));
+          BeginRGBValue[2] := GetBValue (ColorToRGB (FBeginColor));
+          { Calculate the difference between begin and end RGB values }
+          RGBDifference[0] := GetRValue (ColorToRGB (FEndColor)) -
+                              BeginRGBValue[0];
+          RGBDifference[1] := GetGValue (ColorToRGB (FEndColor)) -
+                              BeginRGBValue[1];
+          RGBDifference[2] := GetBValue (ColorToRGB (FEndColor)) -
+                              BeginRGBValue[2];
+        end;
+
+        fdRightToLeft,ftBottomToTop:    begin
+          { Set the Red, Green and Blue colors }
+          BeginRGBValue[0] := GetRValue (ColorToRGB (FEndColor));
+          BeginRGBValue[1] := GetGValue (ColorToRGB (FEndColor));
+          BeginRGBValue[2] := GetBValue (ColorToRGB (FEndColor));
+          { Calculate the difference between begin and end RGB values }
+          RGBDifference[0] := GetRValue (ColorToRGB (FBeginColor)) -
+                              BeginRGBValue[0];
+          RGBDifference[1] := GetGValue (ColorToRGB (FBeginColor)) -
+                              BeginRGBValue[1];
+          RGBDifference[2] := GetBValue (ColorToRGB (FBeginColor)) -
+                              BeginRGBValue[2];
+        end;
+    end;
+
+    { Set the pen style and mode }
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Mode := pmCopy;
+
+    case FDirection of
+
      { Calculate the color band's left and right coordinates }
+     { for LeftToRight and RightToLeft fills }
       fdLeftToRight, fdRightToLeft:
         begin
-          ColorBand.Left    := MulDiv (I    , Width, FNumberOfColors);
-          ColorBand.Right := MulDiv (I + 1, Width, FNumberOfColors);
+          ColorBand.Top := 0;
+          ColorBand.Bottom := Height;
         end;
-        ftTopToBottom, ftBottomToTop:
-      begin
-        ColorBand.Top := MulDiv (I    , Height, FNumberOfColors);
-        ColorBand.Bottom :=  MulDiv (I + 1, Height, FNumberOfColors);
-      end;
+      ftTopToBottom, ftBottomToTop:
+        begin
+          ColorBand.Left := 0;
+          ColorBand.Right := Width;
+        end;
     end;
- 
-    { Calculate the color band's color }
-    if FNumberOfColors > 1 then
+
+    { Perform the fill }
+    if FNumberOfColors = 1 then
     begin
-      R := BeginRGBValue[0] + MulDiv (I, RGBDifference[0], FNumberOfColors - 1);
-      G := BeginRGBValue[1] + MulDiv (I, RGBDifference[1], FNumberOfColors - 1);
-      B := BeginRGBValue[2] + MulDiv (I, RGBDifference[2], FNumberOfColors - 1);
+      Canvas.Brush.Color := FBeginColor;
+      Canvas.FillRect(rp);
     end
     else
-    { Set to the Begin Color if set to only one color }
     begin
-      R := BeginRGBValue[0];
-      G := BeginRGBValue[1];
-      B := BeginRGBValue[2];
-    end;
- 
-    { Select the brush and paint the color band }
-    Canvas.Brush.Color := RGB (R, G, B);
-    Canvas.FillRect (ColorBand);
+      for I := 0 to FNumberOfColors do
+      begin
+        case FDirection of
+          { Calculate the color band's left and right coordinates }
+          fdLeftToRight, fdRightToLeft:
+            begin
+              ColorBand.Left := MulDiv (I, Width, FNumberOfColors);
+              ColorBand.Right := MulDiv (I + 1, Width, FNumberOfColors);
+            end;
+          ftTopToBottom, ftBottomToTop:
+            begin
+              ColorBand.Top := MulDiv (I, Height, FNumberOfColors);
+              ColorBand.Bottom := MulDiv (I + 1, Height, FNumberOfColors);
+            end;
+        end;
+        { Calculate the color band's color }
+        R := BeginRGBValue[0] + MulDiv (I, RGBDifference[0], FNumberOfColors - 1);
+        G := BeginRGBValue[1] + MulDiv (I, RGBDifference[1], FNumberOfColors - 1);
+        B := BeginRGBValue[2] + MulDiv (I, RGBDifference[2], FNumberOfColors - 1);
+        { Select the brush and paint the color band }
+        Canvas.Brush.Color := RGB (R, G, B);
+        Canvas.FillRect (ColorBand);
+       end;
     end;
   end;
  
