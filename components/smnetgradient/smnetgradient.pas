@@ -503,13 +503,13 @@ begin
           { Calculate the color band's left and right coordinates }
           fdLeftToRight, fdRightToLeft:
             begin
-              ColorBand.Left := MulDiv (I, Width, FNumberOfColors);
-              ColorBand.Right := MulDiv (I + 1, Width, FNumberOfColors);
+              ColorBand.Left := MulDiv (I, Self.Width, FNumberOfColors);
+              ColorBand.Right := MulDiv (I + 1, Self.Width, FNumberOfColors);
             end;
           ftTopToBottom, ftBottomToTop:
             begin
-              ColorBand.Top := MulDiv (I, Height, FNumberOfColors);
-              ColorBand.Bottom := MulDiv (I + 1, Height, FNumberOfColors);
+              ColorBand.Top := MulDiv (I, Self.Height, FNumberOfColors);
+              ColorBand.Bottom := MulDiv (I + 1, Self.Height, FNumberOfColors);
             end;
         end;
         { Calculate the color band's color }
