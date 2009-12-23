@@ -56,6 +56,8 @@ type
 
   TMargin           = 0..MaxInt;
 
+  TPointArray = array of TPoint;
+
   TCustomNetGradient = class;
 
   TSubCaption = class(TPersistent)
@@ -92,6 +94,8 @@ type
 
   { TNetGradient }
 
+  { TCustomNetGradient }
+
   TCustomNetGradient = class(TCustomControl)
   private
     //*** Enzo *** Bordi
@@ -100,13 +104,11 @@ type
 
     //*** Emzp *** Allineamento Caption
     FAlignment  : TAlignment;
+    FBorderColor: TColor;
+    FFlatBorder: Boolean;
     FLayout     : TTextLayout;
 
-    //*** Enzo *** Data Source - Field
-    FDataLink : TFieldDataLink;
-
     //FMargin:          TMargin;
-
     { Variables for properties }
     FDirection: TFillDirection;
     FBeginColor: TColor;
@@ -117,16 +119,17 @@ type
     FCaption : TCaption;
     FTextTop : Integer;
     FTextLeft: Integer;
-
-    FSubCapField: Boolean;
     FSubCaption: TSubCaption;
     FUpdateCount: Integer;
     procedure OnFontChanged(Sender: TObject);
     procedure Changed;
+    function GetBorderPoints(const R: TRect): TPointArray;
+    procedure SetBorderColor(const Value: TColor);
     { Procedures for setting property values }
     procedure SetFillDirection(Value: TFillDirection);
     procedure SetBeginColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
+    procedure SetFlatBorder(const Value: Boolean);
     procedure SetNumberOfColors(Value: TNumberOfColors);
     procedure SetFont(AFont: TFont);
     procedure SetCaption(const Value: String);
@@ -134,42 +137,22 @@ type
     procedure SetTextLeft(Value: Integer);
     { Fill procedure }
     procedure GradientFill;
-
-    //*** Enzo *** Data Source
-
-    function GetSubCapField: Boolean;
-    Procedure SetSubCapField(Value:Boolean);
-
-    procedure SetDataField (const Value : String);
-    function GetDataField: String;
-
-    function GetDataSource: TDataSource;
-    procedure SetDataSource (Value: TDataSource);
-
-    function GetField: TField;
-
-    procedure DataChange(Sender: TObject);
-
   protected
     procedure Paint; override;
-
     procedure SetAlignment(Value: TAlignment);
     procedure SetLayout(Value: TTextLayout); virtual;
-
     procedure SetBevelInner(Value: TLabelBevel);
     procedure SetBevelOuter(Value: TLabelBevel);
-
-    // procedure DataChange(Sender:TObject);
     property CaptionAlignment: TAlignment read FAlignment write SetAlignment;
     property CaptionLayout: TTextLayout read FLayout write SetLayout default tlCenter;
-
     property BevelInner: TLabelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TLabelBevel read FBevelOuter write SetBevelOuter default bvRaised;
-
     { Starting color of fill }
     property BeginColor: TColor read FBeginColor write SetBeginColor default clBlue;
+    property BorderColor: TColor read FBorderColor write SetBorderColor default clWhite;
     { Ending color of fill }
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
+    property FlatBorder: Boolean read FFlatBorder write SetFlatBorder;
     { Direction of fill }
     property FillDirection: TFillDirection read FDirection write SetFillDirection default fdLeftToRight;
     { Number of colors to use in the fill (1 - 256) - default is 255.  If 1 }
@@ -177,15 +160,9 @@ type
     property NumberOfColors: TNumberOfColors read FNumberOfColors write SetNumberOfColors default 255;
     { Enable standard properties }
     property Font: TFont read FFont write SetFont;
-
     property Caption: String read FCaption write SetCaption;
     property TextTop: Integer read FTextTop write SetTextTop;
     property TextLeft: Integer read FTextLeft write SetTextLeft;
-    property SubCapField: Boolean read FSubCapField write SetSubCapField default false;
-
-    property DataField: String Read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-
     property SubCaption: TSubCaption read FSubCaption;
   public
     constructor Create(AOwner: TComponent); override;
@@ -201,20 +178,75 @@ type
     property BevelInner;
     property BevelOuter;
     property BeginColor;
+    property BorderColor;
     property EndColor;
+    property FlatBorder;
     property FillDirection;
     property NumberOfColors;
     property Font;
     property Caption;
     property TextTop;
     property TextLeft;
-    property SubCapField;
-    property DataField;
-    property DataSource;
     property SubCaption;
     //default properties
     property Align;
     property BorderSpacing;
+    property BorderWidth;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
+
+  { TDBNetGradient }
+
+  TDBNetGradient = class (TCustomNetGradient)
+  private
+    FDataLink : TFieldDataLink;
+    FSubCapField: Boolean;
+    procedure DataChange(Sender: TObject);
+    function GetDataField: String;
+    function GetDataSource: TDataSource;
+    procedure SetDataField(const Value: String);
+    procedure SetDataSource(Value: TDataSource);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DataField: String read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property SubCapField: Boolean read FSubCapField write FSubCapField default false;
+
+    property CaptionAlignment;
+    property CaptionLayout;
+    property BevelInner;
+    property BevelOuter;
+    property BeginColor;
+    property BorderColor;
+    property EndColor;
+    property FlatBorder;
+    property FillDirection;
+    property NumberOfColors;
+    property Font;
+    property Caption;
+    property TextTop;
+    property TextLeft;
+    property SubCaption;
+    //default properties
+    property Align;
+    property BorderSpacing;
+    property BorderWidth;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -250,6 +282,7 @@ begin
   Width := 400;
   FBeginColor := clSilver;
   FEndColor := $00A56D39;
+  FBorderColor := clWhite;
   FDirection := fdLeftToRight;
   FNumberOfColors:= 255;
   //FTextLeft:= 0;
@@ -263,23 +296,12 @@ begin
   //FCaption := AOwner.Name;
   //ShowMessage((AOwner as TComponent).);
   //FCaption:= 'test';
-
-  //*** Enzo ***
-  FDataLink := TFieldDataLink.Create;
-  FDataLink.Control := Self;
-  FDataLink.OnDataChange := DataChange;
-  (*
-  FDataLink.OnUpdateData := @UpdateData;
-  FDataLink.OnActiveChange := @ActiveChange;
-  FDataLink.OnLayoutChange := @LayoutChange;
-  *)
 end;
 
 destructor TCustomNetGradient.Destroy;
 begin
   FSubCaption.Destroy;
   FFont.Destroy;
-  FDataLink.Destroy;
   inherited Destroy;
 end;
 
@@ -299,6 +321,15 @@ begin
   if Value <> FEndColor then
   begin
     FEndColor := Value;
+    Changed;
+  end;
+end;
+
+procedure TCustomNetGradient.SetFlatBorder(const Value: Boolean);
+begin
+  if FFlatBorder <> Value then
+  begin
+    FFlatBorder := Value;
     Changed;
   end;
 end;
@@ -503,13 +534,24 @@ begin
   Canvas.Draw(0, 0, WorkBmp);
  
   // <TextOut>
-   Canvas.Brush.Style:= bsClear;
+   //Canvas.Brush.Style:= bsClear;
    Canvas.Font.Assign(FFont);
 
    //Canvas.Textout(FTextLeft, FTextTop, FCaption);   *** Enzo *** Implemetation
-
-   Canvas.Frame3D(Rp, 1,FBevelOuter);
-   Canvas.Frame3d(rp, 1, FBevelInner);
+   if FFlatBorder then
+   begin
+     Canvas.Pen.Width := BorderWidth;
+     Canvas.Pen.EndCap := pecSquare;
+     Canvas.Pen.Color := FBorderColor;
+     //see if there's a better way of drawing a rectangle since
+     // in BorderWidth >= 3 glitches occurs
+     Canvas.Polyline(GetBorderPoints(rp));
+   end
+   else
+   begin
+     Canvas.Frame3D(rp, 1, FBevelOuter);
+     Canvas.Frame3D(rp, 1, FBevelInner);
+   end;
 
     if Caption <> '' then  begin
             Font.Assign(Self.Font);
@@ -650,74 +692,6 @@ begin
   end;
 end;
 
-//*** Enzo ***
-
-function TCustomNetGradient.GetSubCapField: Boolean;
-begin
-  Result := FSubCapField;
-end;
-
-procedure TCustomNetGradient.SetSubCapField(Value: Boolean);
-begin
-  FSubCapField := Value;
-end;
-
-function TCustomNetGradient.GetDataField: STring;
-begin
-  Result := FDataLink.FieldName;
-end;
-
-procedure TCustomNetGradient.SetDataField (const Value: string);
-begin
-  FDataLink.FieldName := Value;
-end;
-
-function TCustomNetGradient.GetDataSource: TDataSource;
-begin
-  Result := FDataLink.DataSource;
-end;
-
-procedure TCustomNetGradient.SetDataSource (Value: TDataSource);
-
-procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
-  NewDataSource: TDataSource);
-begin
-  if Link.DataSource=NewDataSource then exit;
-  if Link.DataSource<>nil then
-    Link.DataSource.RemoveFreeNotification(AControl);
-  Link.DataSource:=NewDataSource;
-  if Link.DataSource<>nil then
-    Link.DataSource.FreeNotification(AControl);
-end;
-
-begin
-//*     enzo
-  //FDataLink.DataSource := Value;
-  ChangeDataSource(Self, FDataLink, Value);
-  // useless                           e
-  {if Value <> nil then
-    Value.FreeNotification (Value);}
-end;
-
-function TCustomNetGradient.GetField: TField;
-begin
-  Result := FDataLink.Field;
-end;
-
-// data link event handler
-procedure TCustomNetGradient.DataChange (Sender: TObject);
-begin
-  if FDataLink.DataSet.Active = true then begin
-     //enzo
-     if FSubCapField = False Then begin
-        Caption := FDataLink.Field.AsString;
-     end else begin
-       fSubCaption.SetCaption( FDataLink.Field.DisplayText);
-       //fSubCaption.SetCaption( FDataLink.Field.AsString);
-     end;
-  end;
-end;
-
 procedure TCustomNetGradient.OnFontChanged(Sender: TObject);
 begin
   Changed;
@@ -733,6 +707,38 @@ begin
   if (FUpdateCount = 0) and not (csLoading in ComponentState) then
   begin
     Invalidate;
+  end;
+end;
+
+function TCustomNetGradient.GetBorderPoints(const R: TRect): TPointArray;
+var
+  Offset, Fix: Integer;
+begin
+  Offset := BorderWidth div 2;
+  Fix := BorderWidth mod 2;
+  SetLength(Result, 5);
+  Result[0].x := R.Left + BorderWidth - Offset - Fix;
+  Result[0].y := R.Top + BorderWidth - Offset - Fix;
+
+  Result[1].x := R.Right - BorderWidth + Offset;
+  Result[1].y := R.Top + BorderWidth - Offset - Fix;
+
+  Result[2].x := R.Right - BorderWidth + Offset;
+  Result[2].y := R.Bottom - BorderWidth + Offset;
+
+  Result[3].x := R.Left + BorderWidth - Offset - Fix;
+  Result[3].y := R.Bottom - BorderWidth + Offset;
+
+  Result[4].x := R.Left + BorderWidth - Offset - Fix;
+  Result[4].y := R.Top + BorderWidth  - Offset - Fix;
+end;
+
+procedure TCustomNetGradient.SetBorderColor(const Value: TColor);
+begin
+  if FBorderColor <> Value then
+  begin
+    FBorderColor := Value;
+    Changed;
   end;
 end;
 
@@ -809,5 +815,78 @@ begin
     Parent.Changed;
   end;
 end;
+
+procedure TDBNetGradient.DataChange(Sender: TObject);
+begin
+  if FDataLink.DataSet.Active then
+  begin
+    if not FSubCapField then
+    begin
+      Caption := FDataLink.Field.DisplayText;
+    end else
+    begin
+     fSubCaption.SetCaption( FDataLink.Field.DisplayText);
+     //fSubCaption.SetCaption( FDataLink.Field.AsString);
+    end;
+  end;
+end;
+
+function TDBNetGradient.GetDataField: String;
+begin
+  Result := FDataLink.FieldName;
+end;
+
+procedure TDBNetGradient.SetDataField (const Value: string);
+begin
+  FDataLink.FieldName := Value;
+end;
+
+function TDBNetGradient.GetDataSource: TDataSource;
+begin
+  Result := FDataLink.DataSource;
+end;
+
+procedure TDBNetGradient.SetDataSource (Value: TDataSource);
+
+  procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
+    NewDataSource: TDataSource);
+  begin
+    if Link.DataSource=NewDataSource then exit;
+    if Link.DataSource<>nil then
+      Link.DataSource.RemoveFreeNotification(AControl);
+    Link.DataSource:=NewDataSource;
+    if Link.DataSource<>nil then
+      Link.DataSource.FreeNotification(AControl);
+  end;
+
+begin
+//*     enzo
+  //FDataLink.DataSource := Value;
+  ChangeDataSource(Self, FDataLink, Value);
+  // useless                           e
+  {if Value <> nil then
+    Value.FreeNotification (Value);}
+end;
+
+constructor TDBNetGradient.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  //*** Enzo ***
+  FDataLink := TFieldDataLink.Create;
+  FDataLink.Control := Self;
+  FDataLink.OnDataChange := DataChange;
+  (*
+  FDataLink.OnUpdateData := @UpdateData;
+  FDataLink.OnActiveChange := @ActiveChange;
+  FDataLink.OnLayoutChange := @LayoutChange;
+  *)
+end;
+
+destructor TDBNetGradient.Destroy;
+begin
+  FDataLink.Destroy;
+  inherited Destroy;
+end;
+
 
 end.
