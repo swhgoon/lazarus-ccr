@@ -315,10 +315,8 @@ interface
 {$endif}
 
 uses
-  {$ifdef LCLWin32}
-  Windows,
-  {$endif}
   {$ifdef Windows}
+  Windows,
   ActiveX,
   {$else}
   FakeActiveX,

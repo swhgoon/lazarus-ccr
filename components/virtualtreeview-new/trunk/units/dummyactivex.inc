@@ -7,7 +7,7 @@
 interface
 
 uses
-  Classes, SysUtils, Types;
+  {$ifdef Windows} Windows, {$endif} Classes, SysUtils, Types;
 
 const
   TYMED_HGLOBAL = 1;
