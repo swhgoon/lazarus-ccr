@@ -3316,10 +3316,6 @@ type
     function CanExportNode(Node: PVirtualNode): Boolean;
     function CalculateTextWidth(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; const Text: String): Integer; virtual;
     function ColumnIsEmpty(Node: PVirtualNode; Column: TColumnIndex): Boolean; override;
-    {$ifndef LCLWin32}
-    procedure CopyToClipBoard; override;
-    procedure CutToClipBoard; override;
-    {$endif}
     function DoCreateEditor(Node: PVirtualNode; Column: TColumnIndex): IVTEditLink; override;
     function DoGetNodeHint(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): String; override;
     function DoGetNodeTooltip(Node: PVirtualNode; Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle): String; override;
@@ -3356,7 +3352,6 @@ type
     property OnDrawText: TVTDrawTextEvent read FOnDrawText write FOnDrawText;
   public
     constructor Create(AOwner: TComponent); override;
-
     function ComputeNodeHeight(Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex; S: String = ''): Integer; virtual;
     function ContentToClipboard(Format: Word; Source: TVSTTextSourceType): HGLOBAL;
     procedure ContentToCustom(Source: TVSTTextSourceType);
@@ -3367,6 +3362,10 @@ type
     function ContentToUnicode(Source: TVSTTextSourceType; const Separator: String): UnicodeString; inline;
     function ContentToUTF16(Source: TVSTTextSourceType; const Separator: String): UnicodeString;
     function ContentToUTF8(Source: TVSTTextSourceType; const Separator: String): String;
+    {$ifndef LCLWin32}
+    procedure CopyToClipBoard; override;
+    procedure CutToClipBoard; override;
+    {$endif}
     procedure GetTextInfo(Node: PVirtualNode; Column: TColumnIndex; const AFont: TFont; var R: TRect;
       out Text: String); override;
     function InvalidateNode(Node: PVirtualNode): TRect; override;
