@@ -20075,8 +20075,6 @@ procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
 begin
   {$ifdef Windows}
   ActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
-  {$else}
-  FakeActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
   {$endif}
 end;
 
