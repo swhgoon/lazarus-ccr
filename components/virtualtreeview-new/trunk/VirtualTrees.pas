@@ -318,8 +318,11 @@ uses
   {$ifdef LCLWin32}
   Windows,
   {$endif}
+  {$ifdef Windows}
   ActiveX,
-  Clipbrd,
+  {$else}
+  FakeActiveX,
+  {$endif}
   OleUtils,
   LCLIntf,
   DelphiCompat,
@@ -328,8 +331,8 @@ uses
   LCLVersion,
   vtlogger,  LCLType, LResources, LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
-  SyncObjs  // Thread support
-  //Clipbrd // Clipboard support
+  SyncObjs,  // Thread support
+  Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
   , Themes , Win32UxTheme, UxTheme
   {$endif ThemeSupport}
@@ -3876,7 +3879,11 @@ uses
   {$ifdef UseFlatScrollbars}
     FlatSB,                // wrapper for systems without flat SB support
   {$endif UseFlatScrollbars}
+  {$ifdef Windows}
   MMSystem,                // for animation timer (does not include further resources)
+  {$else}
+  FakeMMSystem,
+  {$endif}
   TypInfo,                 // for migration stuff
   ActnList,
   StdActns,                // for standard action support
@@ -20066,7 +20073,11 @@ procedure TBaseVirtualTree.DragAndDrop(AllowedEffects: Integer;
   DataObject: IDataObject; DragEffect: Integer);
 
 begin
+  {$ifdef Windows}
   ActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
+  {$else}
+  FakeActiveX.DoDragDrop(DataObject, VTVDragManager as IDropSource, AllowedEffects, @DragEffect);
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
