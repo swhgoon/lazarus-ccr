@@ -15223,11 +15223,7 @@ begin
   inherited;
 
   if not (csLoading in ComponentState) then
-  begin
     PrepareBitmaps(True, False);
-    if HandleAllocated then
-      Invalidate;
-  end;
 
   HeaderMessage.Msg := CM_PARENTFONTCHANGED;
   HeaderMessage.WParam := 0;
