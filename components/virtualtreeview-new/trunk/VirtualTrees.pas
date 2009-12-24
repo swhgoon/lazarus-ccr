@@ -3310,7 +3310,7 @@ type
     procedure SetDefaultText(const Value: String);
     procedure SetOptions(const Value: TCustomStringTreeOptions);
     procedure SetText(Node: PVirtualNode; Column: TColumnIndex; const Value: String);
-    procedure WMSetFont(var Msg: TLMNoParams{TWMSetFont}); message LM_SETFONT;
+    procedure CMFontChanged(var Msg: TLMessage); message CM_FONTCHANGED;
   protected
     procedure AdjustPaintCellRect(var PaintInfo: TVTPaintInfo; out NextNonEmpty: TColumnIndex); override;
     function CanExportNode(Node: PVirtualNode): Boolean;
@@ -15228,7 +15228,7 @@ begin
     if HandleAllocated then
       Invalidate;
   end;
-  //todo_lcl Replace this message with a THeader method
+
   HeaderMessage.Msg := CM_PARENTFONTCHANGED;
   HeaderMessage.WParam := 0;
   HeaderMessage.LParam := 0;
@@ -31565,27 +31565,23 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TCustomVirtualStringTree.WMSetFont(var Msg: TLMNoParams);
+procedure TCustomVirtualStringTree.CMFontChanged(var Msg: TLMessage);
 
 // Whenever a new font is applied to the tree some default values are determined to avoid frequent
 // determination of the same value.
 
-{
 var
   MemDC: HDC;
   Run: PVirtualNode;
   TM: TTextMetric;
   Size: TSize;
   Data: PInteger;
-}
 
 begin
   inherited;
-  //todo_lcl
-  {
   MemDC := CreateCompatibleDC(0);
   try
-    SelectObject(MemDC, Msg.Font);
+    SelectObject(MemDC, Font.Reference.Handle);
     GetTextMetrics(MemDC, TM);
     FTextHeight := TM.tmHeight;
 
@@ -31604,7 +31600,6 @@ begin
       Data^ := 0;
     Run := GetNextNoInit(Run);
   end;
-  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
