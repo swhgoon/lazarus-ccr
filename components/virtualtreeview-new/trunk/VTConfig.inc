@@ -30,7 +30,7 @@
 {$define EnableAlphaBlend}
 {.$define EnableAccessible}
 {$ifdef LCLWin32}
-  {$define ThemeSupport}
+  {.$define ThemeSupport}
 {$endif}
 
 //under linux the performance is poor with threading enabled
