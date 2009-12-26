@@ -8,17 +8,7 @@ unit WindowsXPStyleDemo;
 
 interface
 
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-{$endif COMPILER_7_UP}
-
 uses
-  {$ifdef VER140}
-    Variants,
-  {$endif}
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, VirtualTrees, ComCtrls, Menus, StdCtrls,
   LResources, Printers, PrintersDlgs, ExtCtrls;
@@ -71,9 +61,6 @@ var
 implementation
 
 uses
-  {$ifdef Windows}
-  ShellAPI,
-  {$endif}
   Main, States;
 
 
@@ -265,8 +252,7 @@ end;
 procedure TWindowsXPForm.Label4Click(Sender: TObject);
 
 begin
-  //todo
-  //ShellExecute(0, 'open', 'http://groups.yahoo.com/group/VirtualExplorerTree', nil, nil, SW_SHOW);
+  OpenURL('http://groups.yahoo.com/group/VirtualExplorerTree');
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -274,8 +260,8 @@ end;
 procedure TWindowsXPForm.ToolButton9Click(Sender: TObject);
 
 begin
-  //todo
-  //if PrintDialog.Execute then
+  //todo: implement Print support in VTV
+  //if PrintDialog.Execute then ;
   //  XPTree.Print(Printer, False);
 end;
 

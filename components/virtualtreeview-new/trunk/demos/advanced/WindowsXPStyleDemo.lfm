@@ -11,7 +11,7 @@ object WindowsXPForm: TWindowsXPForm
   Font.Height = -13
   Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 575
     Height = 80
@@ -54,11 +54,11 @@ object WindowsXPForm: TWindowsXPForm
   end
   object XPTree: TVirtualStringTree
     Cursor = 63
+    Left = 0
     Height = 408
     Top = 40
     Width = 554
     AutoScrollDelay = 500
-    BorderStyle = bsSingle
     ButtonFillMode = fmShaded
     CheckImageKind = ckXP
     ClipboardFormats.Strings = (
@@ -80,6 +80,7 @@ object WindowsXPForm: TWindowsXPForm
       item
         Color = 16250871
         Options = [coAllowClick, coEnabled, coParentBidiMode, coResizable, coShowDropMark, coVisible]
+        Position = 0
         Text = 'Name'
         Width = 200
       end    
@@ -94,6 +95,7 @@ object WindowsXPForm: TWindowsXPForm
         Text = 'Type'
         Width = 100
       end>
+    Header.DefaultHeight = 17
     Header.Font.CharSet = ANSI_CHARSET
     Header.Font.Height = -12
     Header.Font.Name = 'Microsoft Sans Serif'
@@ -122,12 +124,15 @@ object WindowsXPForm: TWindowsXPForm
     OnStateChange = XPTreeStateChange
   end
   object ToolBar2: TToolBar
+    Left = 0
     Height = 34
+    Top = 0
     Width = 839
     ButtonHeight = 32
     ButtonWidth = 32
     Caption = 'ToolBar2'
     Images = SmallImages
+    List = True
     ShowCaptions = True
     TabOrder = 1
     object ToolButton7: TToolButton
@@ -137,44 +142,45 @@ object WindowsXPForm: TWindowsXPForm
       Style = tbsDropDown
     end
     object ToolButton10: TToolButton
-      Left = 41
+      Left = 47
       Top = 2
       ImageIndex = 10
       Style = tbsDropDown
     end
     object ToolButton11: TToolButton
-      Left = 81
+      Left = 93
       Top = 2
       ImageIndex = 18
     end
     object ToolButton12: TToolButton
-      Left = 113
+      Left = 127
       Top = 2
       ImageIndex = 14
     end
     object ToolButton13: TToolButton
-      Left = 145
+      Left = 161
       Top = 2
       ImageIndex = 21
     end
     object ToolButton14: TToolButton
-      Left = 177
+      Left = 195
       Top = 2
       ImageIndex = 8
       Style = tbsDropDown
     end
     object ToolButton15: TToolButton
-      Left = 217
+      Left = 241
       Top = 2
       Width = 8
       Caption = 'ToolButton15'
       Style = tbsSeparator
     end
     object ToolButton16: TToolButton
-      Left = 225
+      Left = 249
       Top = 2
       Caption = 'Click here to print the treeview.'
       ImageIndex = 24
+      OnClick = ToolButton9Click
     end
   end
   object LargeImages: TImageList
