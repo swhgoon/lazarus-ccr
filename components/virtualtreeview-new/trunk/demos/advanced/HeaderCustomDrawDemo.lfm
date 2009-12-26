@@ -11,7 +11,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label8: TLabel
     Left = 12
     Height = 83
@@ -33,7 +33,6 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Top = 10
     Width = 749
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderStyle = bsSingle
     CheckImageKind = ckDarkTick
     ClipboardFormats.Strings = (
       'CSV'
@@ -52,12 +51,14 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     DefaultNodeHeight = 24
     DefaultText = 'Node'
     EditDelay = 100
+    Header.AutoSizeIndex = 0
     Header.Background = clBtnShadow
     Header.Columns = <    
       item
         Hint = 'This column is drawn entirely by the tree.'
         ImageIndex = 1
         Options = [coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
+        Position = 0
         Spacing = -1
         Text = 'Default drawing'
         Width = 200
@@ -76,7 +77,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
       end    
       item
         Alignment = taCenter
-        Color = clInfoBk
+        Color = 14811135
         Hint = 'Background and text in this column are customized.'
         ImageIndex = 0
         Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
@@ -85,6 +86,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
         Style = vsOwnerDraw
         Width = 350
       end>
+    Header.DefaultHeight = 17
     Header.Font.Height = -12
     Header.Font.Name = 'Arial'
     Header.Font.Style = [fsBold]

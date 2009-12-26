@@ -132,7 +132,7 @@ begin
                 Width := PaintRectangle.Right - PaintRectangle.Left;
                 Height := PaintRectangle.Bottom - PaintRectangle.Top;
                 TargetRect := Rect(0, 0, Width, Height);
-                Canvas.Brush.Color := clInfoBk;
+                Canvas.Brush.Color := $E1FFFF;
                 Canvas.FillRect(TargetRect);
                 InflateRect(TargetRect, - 10, -10);
                 SourceRect := TargetRect;
@@ -148,7 +148,7 @@ begin
               TargetCanvas.Font.Size := 60;
               if IsHoverIndex then
                 TargetCanvas.Font.Color := $80FF;
-              S := 'û';
+              S := 'Ã»';
               Size := TargetCanvas.TextExtent(S);
               SetBkMode(TargetCanvas.Handle, TRANSPARENT);
               TargetCanvas.TextOut(PaintRectangle.Left + 10, Paintrectangle.Bottom - Size.cy, S);
