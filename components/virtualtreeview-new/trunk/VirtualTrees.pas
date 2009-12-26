@@ -22803,7 +22803,7 @@ begin
       {$endif}
       begin
         R := Rect(XPos + 1, YPos + 1, XPos + 14, YPos + 14);
-        DrawCheckButton(Canvas, Index, R, FCheckImageKind = ckSystemFlat);
+        DrawCheckButton(Canvas, Index - 1, R, FCheckImageKind = ckSystemFlat);
       end;
     end
     else
