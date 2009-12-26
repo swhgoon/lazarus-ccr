@@ -45,7 +45,7 @@ object AlignForm: TAlignForm
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 338
+    Left = 360
     Height = 17
     Top = 346
     Width = 108
@@ -177,7 +177,7 @@ object AlignForm: TAlignForm
   end
   object AlignCombo1: TComboBox
     Tag = 1
-    Left = 327
+    Left = 360
     Height = 24
     Top = 368
     Width = 130
@@ -236,7 +236,7 @@ object AlignForm: TAlignForm
   end
   object BidiGroup1: TRadioGroup
     Tag = 1
-    Left = 327
+    Left = 360
     Height = 61
     Top = 400
     Width = 130
@@ -300,7 +300,7 @@ object AlignForm: TAlignForm
       Left = 12
       Height = 20
       Top = 4
-      Width = 94
+      Width = 92
       Caption = 'Show glyphs'
       OnClick = OptionBoxClick
       TabOrder = 0
@@ -310,7 +310,7 @@ object AlignForm: TAlignForm
       Left = 12
       Height = 20
       Top = 25
-      Width = 73
+      Width = 71
       Caption = 'Hot track'
       OnClick = OptionBoxClick
       TabOrder = 1
@@ -320,7 +320,7 @@ object AlignForm: TAlignForm
       Left = 12
       Height = 20
       Top = 46
-      Width = 78
+      Width = 76
       Caption = 'Show text'
       OnClick = OptionBoxClick
       TabOrder = 2
@@ -330,7 +330,7 @@ object AlignForm: TAlignForm
       Left = 12
       Height = 20
       Top = 67
-      Width = 59
+      Width = 57
       Caption = 'Visible'
       OnClick = OptionBoxClick
       TabOrder = 3
@@ -340,7 +340,7 @@ object AlignForm: TAlignForm
       Left = 12
       Height = 20
       Top = 88
-      Width = 67
+      Width = 65
       Caption = 'Enabled'
       OnClick = OptionBoxClick
       TabOrder = 4

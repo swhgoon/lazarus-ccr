@@ -9,14 +9,6 @@ unit AlignDemo;
 
 interface
 
-
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-{$endif COMPILER_7_UP}
-
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, VirtualTrees, ComCtrls, ExtCtrls, Menus, LResources;
@@ -83,9 +75,7 @@ var
 implementation
 
 uses
-  Main, States, vtlogger, ipcchannel;
-  
-{.$R *.DFM}
+  Main, States;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -277,8 +267,6 @@ var
  NewItem: TMenuItem;
 
 begin
-  Logger.Channels.Add(TIPCChannel.Create);
-  Logger.ActiveClasses := [lcWarning];
   // To display the various texts in a nice manner we use some specialized fonts of the system.
   // We could directly assign the font names used here in the OnPaintText event, but since this
   // would then be the only reference for the font it would cause the font to be recreated every
