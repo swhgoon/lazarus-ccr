@@ -2468,7 +2468,6 @@ type
     procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
     procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
     procedure CMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
-    procedure CMSysColorChange(var Message: TLMessage); message CM_SYSCOLORCHANGE;
     {$ifdef EnableNativeTVM}
     procedure TVMGetItem(var Message: TLMessage); message TVM_GETITEM;
     procedure TVMGetItemRect(var Message: TLMessage); message TVM_GETITEMRECT;
@@ -15566,31 +15565,6 @@ begin
     end;
   end;
   Logger.ExitMethod([lcScroll],'CMMouseWheel');
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.CMSysColorChange(var Message: TLMessage);
-
-begin
-  //todo: see the meaning of this message and if is useful in LCL
-  inherited;
-
-  {
-  ConvertImageList(LightCheckImages, 'VT_CHECK_LIGHT');
-  ConvertImageList(DarkCheckImages, 'VT_CHECK_DARK');
-  ConvertImageList(LightTickImages, 'VT_TICK_LIGHT');
-  ConvertImageList(DarkTickImages, 'VT_TICK_DARK');
-  ConvertImageList(FlatImages, 'VT_FLAT');
-  ConvertImageList(UtilityImages, 'VT_UTILITIES');
-  }
-  // XP images do not need to be converted.
-  // System check images do not need to be converted.
-  //todo_lcl  WM_SYSCOLORCHANGE is not used in lcl
-  {
-  Message.Msg := WM_SYSCOLORCHANGE;
-  DefaultHandler(Message);
-  }
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
