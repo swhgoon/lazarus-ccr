@@ -295,16 +295,7 @@ unit VirtualTrees;
 
 interface
 
-{$booleval off} // Use fastest possible boolean evaluation.
-
 {$I VTConfig.inc}
-
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-{$endif COMPILER_7_UP}
 
 {$if defined(LCLGtk) or defined(LCLGtk2)}
 {$define Gtk}
@@ -937,8 +928,6 @@ type
 
   // ----- OLE drag'n drop handling
 
-  { 01.05.2006  Jim - Problem with BDS2006 C++ compiler and ambiguous defines}
-  {$EXTERNALSYM IDropTargetHelper}
   IDropTargetHelper = interface(IUnknown)
     [SID_IDropTargetHelper]
     function DragEnter(hwndTarget: HWND; pDataObject: IDataObject; var ppt: TPoint; dwEffect: Integer): HRESULT; stdcall;
@@ -16653,10 +16642,7 @@ end;
 
   begin
     inherited;
-
-    {$ifndef COMPILER_7_UP}
-      ThemeServices.UpdateThemes;
-    {$endif COMPILER_7_UP}
+    ThemeServices.UpdateThemes;
     if ThemeServices.ThemesEnabled and (toThemeAware in TreeOptions.PaintOptions) then
       DoStateChange([tsUseThemes])
     else
@@ -22573,11 +22559,6 @@ var
   {$ifdef ThemeSupport}
     RowRect: TRect;
     //Theme: HTHEME;
-
-    {$ifndef COMPILER_11_UP}
-      const
-        TREIS_HOTSELECTED = 6;
-    {$endif COMPILER_11_UP}
   {$endif ThemeSupport}
 
   //--------------- local functions -------------------------------------------
