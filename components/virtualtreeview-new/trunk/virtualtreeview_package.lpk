@@ -19,7 +19,7 @@
     <License Value=" Moziall Public License 1.1 (MPL 1.1) or GNU Lesser General Public License
 "/>
     <Version Major="4" Minor="5" Release="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="virtualtrees.lrs"/>
         <Type Value="LRS"/>
@@ -45,6 +45,10 @@
         <Filename Value="VTConfig.inc"/>
         <Type Value="Include"/>
       </Item6>
+      <Item7>
+        <Filename Value="VTGraphics.pas"/>
+        <UnitName Value="VTGraphics"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
