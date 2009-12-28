@@ -333,7 +333,7 @@ uses
   SyncObjs,  // Thread support
   Clipbrd // Clipboard support
   {$ifdef ThemeSupport}
-  , Themes , Win32UxTheme, UxTheme
+  , Themes , TmSchema
   {$endif ThemeSupport}
   {$ifdef EnableAccessible}
   , oleacc // for MSAA IAccessible support
@@ -5336,9 +5336,9 @@ begin
               DoStateChange([tsUseThemes])
             else if (toThemeAware in ToBeCleared) then
               DoStateChange([], [tsUseThemes]);
-
-            if (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
-              SetWindowTheme(Handle, 'explorer', nil);
+            //todo
+            //if (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
+            //  SetWindowTheme(Handle, 'explorer', nil);
 
             PrepareBitmaps(True, False);
             RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
@@ -13188,7 +13188,7 @@ var
   Bits: Pointer;
   Size: TSize;
   {$ifdef ThemeSupport}
-    Theme: HTHEME;
+    //Theme: HTHEME;
     R: TRect;
  
 const
@@ -13235,6 +13235,8 @@ begin
   Size.cy := 9;
 
   {$ifdef ThemeSupport}
+  //todo
+  {
     if tsUseThemes in FStates then
     begin
       Theme := OpenThemeData(Handle, 'TREEVIEW');
@@ -13246,6 +13248,7 @@ begin
     end
     else
       Theme := 0;
+   }
   {$endif ThemeSupport}
 
   if NeedButtons then
@@ -13327,7 +13330,9 @@ begin
     end;
 
     {$ifdef ThemeSupport}
+    //todo
       // Overwrite glyph images if theme is active.
+      {
       if (tsUseThemes in FStates) and (Theme <> 0) then
       begin
         R := Rect(0, 0, Size.cx, Size.cy);
@@ -13344,6 +13349,7 @@ begin
           FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
         end;
       end;
+      }
     {$endif ThemeSupport}
   end;
 
@@ -17423,8 +17429,9 @@ begin
     if ThemeServices.ThemesEnabled and (toThemeAware in TreeOptions.PaintOptions) then
     begin
       DoStateChange([tsUseThemes]);
-      if (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
-        SetWindowTheme(Handle, 'explorer', nil);
+      //todo
+      //if (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove then
+      //  SetWindowTheme(Handle, 'explorer', nil);
     end
     else
   {$endif ThemeSupport}
@@ -22565,7 +22572,7 @@ var
   InnerRect: TRect;
   {$ifdef ThemeSupport}
     RowRect: TRect;
-    Theme: HTHEME;
+    //Theme: HTHEME;
 
     {$ifndef COMPILER_11_UP}
       const
@@ -22598,6 +22605,8 @@ var
   //---------------------------------------------------------------------------
 
   {$ifdef ThemeSupport}
+  //todo
+  {
     procedure DrawBackground(State: Integer);
     begin
       with PaintInfo do
@@ -22606,12 +22615,15 @@ var
         else
           DrawThemeBackground(Theme, Canvas.Handle, TVP_TREEITEM, State, InnerRect, nil);
     end;
+    }
   {$endif ThemeSupport}
 
   //--------------- end local functions ---------------------------------------
 
 begin
   {$ifdef ThemeSupport}
+    //todo
+    {
     if IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) then
     begin
       RowRect := Rect(0, PaintInfo.CellRect.Top, FRangeX, PaintInfo.CellRect.Bottom);
@@ -22621,6 +22633,7 @@ begin
     end
     else
       Theme := 0;
+    }
   {$endif ThemeSupport}
 
   with PaintInfo, Canvas do
@@ -22706,6 +22719,8 @@ begin
               InnerRect := CellRect;
             if not IsRectEmpty(InnerRect) then
               {$ifdef ThemeSupport}
+                //todo
+                {
                 if Theme <> 0 then
                 begin
                   // If the node is also hot, its background will be drawn later.
@@ -22714,6 +22729,7 @@ begin
                     DrawBackground(IfThen(Self.Focused, TREIS_SELECTED, TREIS_SELECTEDNOTFOCUS));
                 end
                 else
+                }
               {$endif ThemeSupport}
               if MMXAvailable and (toUseBlendedSelection in FOptions.PaintOptions) then
                 AlphaBlendSelection(Brush.Color)
@@ -22725,10 +22741,13 @@ begin
     end;
 
     {$ifdef ThemeSupport}
+    //todo
+    {
       if (Theme <> 0) and (toHotTrack in FOptions.FPaintOptions) and (Node = FCurrentHotNode) and
          ((Column = FCurrentHotColumn) or (toFullRowSelect in FOptions.FSelectionOptions)) then
         DrawBackground(IfThen((vsSelected in Node.States) and not (toAlwaysHideSelection in FOptions.FPaintOptions),
                               TREIS_HOTSELECTED, TREIS_HOT));
+    }
     {$endif ThemeSupport}
 
     if (Column = FFocusedColumn) or (toFullRowSelect in FOptions.FSelectionOptions) then
@@ -22737,10 +22756,13 @@ begin
       if (poDrawFocusRect in PaintOptions) and
          (Focused or (toPopupMode in FOptions.FPaintOptions)) and (FFocusedNode = Node) and
          ( (Column = FFocusedColumn)
-           {$ifdef ThemeSupport} or
+           {$ifdef ThemeSupport}
+             //todo
+             { or
              (not (toExtendedFocus in FOptions.FSelectionOptions) and
              (toFullRowSelect in FOptions.FSelectionOptions) and
              (Theme <> 0) )
+             }
           {$endif ThemeSupport}
          ) then
       begin
@@ -22750,10 +22772,13 @@ begin
         SetBkColor(Handle, 0);
 
         {$ifdef ThemeSupport}
+        //todo
+        {
           if not (toExtendedFocus in FOptions.FSelectionOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
             (Theme <> 0) then
             FocusRect := RowRect
           else
+        }
         {$endif ThemeSupport}
         if toGridExtensions in FOptions.FMiscOptions then
           FocusRect := CellRect
@@ -22761,8 +22786,11 @@ begin
           FocusRect := InnerRect;
 
         {$ifdef ThemeSupport}
+        //todo
+        {
           if Theme <> 0 then
             InflateRect(FocusRect, -1, -1);
+         }
         {$endif ThemeSupport}
 
         LCLIntf.DrawFocusRect(Handle, FocusRect);
@@ -22772,8 +22800,11 @@ begin
     end;
   end;
   {$ifdef ThemeSupport}
+  //todo
+  {
   if Theme <> 0 then
     CloseThemeData(Theme);
+  }
   {$endif ThemeSupport}
 end;
 
