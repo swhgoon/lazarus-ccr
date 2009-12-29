@@ -2503,7 +2503,9 @@ type
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMTimer(var Message: TLMTimer); message LM_TIMER;
     {$ifdef ThemeSupport}
+    {$ifdef Windows}
       procedure WMThemeChanged(var Message: TLMessage); message WM_THEMECHANGED;
+    {$endif}
     {$endif ThemeSupport}
     procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
   protected
@@ -16637,7 +16639,8 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 {$ifdef ThemeSupport}
-
+{$ifdef Windows}
+//todo
   procedure TBaseVirtualTree.WMThemeChanged(var Message: TLMessage);
 
   begin
@@ -16649,7 +16652,7 @@ end;
       DoStateChange([], [tsUseThemes]);
     RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_VALIDATE or RDW_FRAME);
   end;
-
+{$endif}
 {$endif ThemeSupport}
 
 //----------------------------------------------------------------------------------------------------------------------
