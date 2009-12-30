@@ -9629,6 +9629,8 @@ begin
             if ((Abs(FDragStart.X - P.X) > DragManager.DragThreshold) or
                (Abs(FDragStart.Y - P.Y) > DragManager.DragThreshold)) then
             begin
+              Logger.Send([lcDrag], 'HandleHeaderMouseMove - DragIndex: %d - DownIndex: %d',
+                [FColumns.FDragIndex, FColumns.FDownIndex]);
               KillTimer(Treeview.Handle, HeaderTimer);
               I := FColumns.FDownIndex;
               FColumns.FDownIndex := NoColumn;
@@ -9881,7 +9883,8 @@ begin
               FColumns.FHoverIndex := NoColumn;
               Treeview.DoStateChange([], [tsScrollPending, tsScrolling]);
               Menu.PopupComponent := Treeview;
-              Menu.Popup(XPos, YPos);
+              P := Treeview.ClientToScreen(Point(XPos, YPos));
+              Menu.Popup(P.X, P.Y);
               HandleMessage := True;
             end;
           end;
