@@ -19190,9 +19190,14 @@ begin
               Inc(R.Top,FHeader.Height);
               Inc(R.Bottom,FHeader.Height);
             end;
+            //scrollwindow implementation under gtk is broken
+            {$ifdef Gtk}
+            InvalidateRect(Handle, nil, True);
+            {$else}
             DelphiCompat.ScrollWindow(Handle, DeltaX, 0, @R, @R);
             if DeltaY <> 0 then
               DelphiCompat.ScrollWindow(Handle, 0, DeltaY, @R, @R);
+            {$endif}
           end
           else
           begin
@@ -19215,10 +19220,11 @@ begin
             {$ifdef LCLQt}
             DelphiCompat.ScrollWindow(Handle, DeltaX, DeltaY, @R, @R);
             {$else}
-            ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
-            {$endif}
             {$ifdef Gtk}
             InvalidateRect(Handle, nil, True);
+            {$else}
+            ScrollWindowEx(Handle, DeltaX, DeltaY, @R, @R,0, nil, SW_INVALIDATE or SW_SCROLLCHILDREN);
+            {$endif}
             {$endif}
           end;
         end;
@@ -22208,7 +22214,7 @@ begin
       //lclheader
       if hoVisible in FHeader.FOptions then
         Inc(Target.Y, FHeader.Height);
-
+      Logger.Send([lcDrag],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       PaintTree(Canvas, Window, Target, Options);
     end;
