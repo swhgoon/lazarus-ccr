@@ -9988,10 +9988,9 @@ begin
 
         P := Point(XPos,YPos);
         //P := Treeview.ScreenToClient(Point(XPos, YPos));
-        //todo: see if OnHeaderMouseMove is fired even if not inside header
-        Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y + Integer(FHeight));
         if not InHeader(P) then
           Exit;
+        Treeview.DoHeaderMouseMove(GetShiftState, P.X, P.Y);
         if ((AdjustHoverColumn(P)) or ((FDownIndex >= 0) and (FHoverIndex <> FDownIndex))) then
         begin
           // We need a mouse leave detection from here for the non client area. The best solution available would be the
@@ -10000,12 +9999,14 @@ begin
           // (although, I don't like it...).
           KillTimer(Treeview.Handle, HeaderTimer);
           SetTimer(Treeview.Handle, HeaderTimer, 50, nil);
+          // todo: under lcl, the hint is show even if HintMouseMessage is not implemented
+          // Is it necessary here?
           // use Delphi's internal hint handling for header hints too
           if hoShowHint in FOptions then
           begin
             // client coordinates!
             XPos := P.x;
-            YPos := P.y + Integer(FHeight);
+            YPos := P.y;
             Application.HintMouseMessage(Treeview, Message);
           end;
         end;
