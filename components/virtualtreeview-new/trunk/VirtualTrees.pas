@@ -9638,9 +9638,7 @@ begin
               if I > NoColumn then
                 Invalidate(FColumns[I]);
               //todo: implement drag image under gtk
-              {$ifdef Windows}
               PrepareDrag(P, FDragStart);
-              {$endif}
               FStates := FStates - [hsDragPending] + [hsDragging];
               HandleHeaderMouseMove := True;
               Result := 0;
@@ -9909,11 +9907,16 @@ begin
             with TLMLButtonUp(Message) do
               P := Treeview.ClientToScreen(Point(XPos, YPos));
             GetWindowRect(Treeview.Handle, R);
+            Logger.Send([lcDrag],'Header - EndDrag / R',R);
             with FColumns do
             begin
+              Logger.Send([lcDrag],'Header - EndDrag / FDropTarget: %d FDragIndex: %d FDragIndexPosition: %d',
+                [FDropTarget, FDragIndex, FColumns[FDragIndex].Position]);
+              Logger.Send([lcDrag],'Header - EndDrag / FDropBefore', FColumns.FDropBefore);
               FDragImage.EndDrag;
               if (FDropTarget > -1) and (FDropTarget <> FDragIndex) and PtInRect(R, P) then
               begin
+                Logger.Send([lcDrag],'Header - EndDrag / FDropTargetPosition', FColumns[FDropTarget].Position);
                 OldPosition := FColumns[FDragIndex].Position;
                 if FColumns.FDropBefore then
                 begin
@@ -10132,7 +10135,6 @@ begin
   // Determine initial position of drag image (screen coordinates).
   FColumns.FDropTarget := NoColumn;
   Start := Treeview.ScreenToClient(Start);
-  Inc(Start.Y, FHeight);
   FColumns.FDragIndex := FColumns.ColumnFromPosition(Start);
   DragColumn := FColumns[FColumns.FDragIndex];
 
