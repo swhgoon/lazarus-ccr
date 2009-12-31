@@ -28293,7 +28293,9 @@ begin
                   Logger.Send([lcPaintDetails],'Setting the Node Height');
                   Height := PaintInfo.Node.NodeHeight;
                   // Make sure the buffer bitmap and target bitmap use the same transformation mode.
+                  {$ifndef Gtk}
                   SetMapMode(Canvas.Handle, GetMapMode(TargetCanvas.Handle));
+                  {$endif}
                   //Workaround to LCL bug 8626
                   SetWindowOrgEx(Canvas.Handle, {$ifdef Gtk}-{$endif}Window.Left, 0, nil);
                   R.Bottom := PaintInfo.Node.NodeHeight;
@@ -28601,7 +28603,9 @@ begin
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
           NodeBitmap.Height := TargetRect.Bottom - TargetRect.Top;
           // Make sure the buffer bitmap and target bitmap use the same transformation mode.
+          {$ifndef Gtk}
           SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
+          {$endif}
           Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);
           Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
           Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
