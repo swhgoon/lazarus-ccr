@@ -41,7 +41,7 @@ type
     procedure AlignTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var Index: Integer);
     procedure AlignTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure AlignTreePaintText(Sender: TBaseVirtualTree; const Canvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType);
     procedure AlignTreeGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
@@ -90,7 +90,7 @@ type
   TAlignData = record
     MainColumnText,
     GreekText,
-    RTLText: UTF8String;
+    RTLText: String;
     ImageIndex: Integer;
   end;
 
@@ -99,9 +99,9 @@ type
 // Additionally, some greek text for another column is stored here too just because I like how it looks (the text,
 // not the storage ;-)).
 var
-  GreekStrings: array[0..8] of UTF8String;
-  ArabicStrings: array[0..3] of UTF8String;
-  HebrewStrings: array[0..2] of UTF8String;
+  GreekStrings: array[0..8] of String;
+  ArabicStrings: array[0..3] of String;
+  HebrewStrings: array[0..2] of String;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TAlignForm.AlignTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: UTF8String);
+  TextType: TVSTTextType; var CellText: String);
 
 var
   Data: PAlignData;

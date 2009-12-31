@@ -36,7 +36,7 @@ interface
          
          procedure VTGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-         Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+         Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
          procedure btnOkClick(Sender: TObject);
     
@@ -127,7 +127,7 @@ implementation
    end;
 
    procedure TfrmVTCheckList.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-     Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+     Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
    begin     
       Celltext := FCaptions[Node.Index];                                           {top-level} 
    end;

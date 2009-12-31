@@ -55,7 +55,7 @@ interface
          procedure AddButtonClick(Sender: TObject);
          procedure FormCreate(Sender: TObject);
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-         var Text: UTF8String);
+         var Text: String);
          procedure VTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
          var InitialStates: TVirtualNodeInitStates);
@@ -72,7 +72,7 @@ interface
          procedure VTCompareNodes(Sender: TBaseVirtualTree; Node1,
          Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
          procedure VTGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
-         procedure VTNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: UTF8String);
+         procedure VTNewText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; NewText: String);
          procedure VTInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
          procedure btnHasChildrenClick(Sender: TObject);
          procedure btnToggleVisibilityClick(Sender: TObject);
@@ -80,7 +80,7 @@ interface
          procedure VTFocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; 
                    OldColumn, NewColumn: TColumnIndex; var Allowed: Boolean);
          procedure chkDynHtClick(Sender: TObject);
-         procedure VTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const SearchText: UTF8String;
+         procedure VTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const SearchText: String;
          var Result: Integer);
             
          private
@@ -214,7 +214,8 @@ implementation
       Finalize( Data^ );
    end;
    
-   procedure TfrmVTDBExample.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var Text: UTF8String);
+   procedure TfrmVTDBExample.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+        Column: TColumnIndex; TextType: TVSTTextType; var Text: String);
    var
       Data     : PBasicNodeRec;
       bnd      : TBasicNodeAddData;
@@ -369,7 +370,7 @@ implementation
    end;
 
    procedure TfrmVTDBExample.VTNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-     Column: TColumnIndex; NewText: UTF8String);
+     Column: TColumnIndex; NewText: String);
    var
       Data  : PBasicNodeRec;
    begin
@@ -483,7 +484,7 @@ implementation
    end;
 
    procedure TfrmVTDBExample.VTIncrementalSearch(Sender: TBaseVirtualTree;
-      Node: PVirtualNode; const SearchText: UTF8String; var Result: Integer);
+      Node: PVirtualNode; const SearchText: String; var Result: Integer);
 
       function Min(const A, B: Integer): Integer;  {save us linking in math.pas}
       begin
@@ -495,14 +496,11 @@ implementation
       
    var
       sCompare1, sCompare2 : string;
-      DisplayText : UTF8String;
+      DisplayText : String;
      
    begin
       VT.IncrementalSearchDirection := sdForward;   // note can be backward
    
-     // Note: This code requires a proper Unicode/UTF8String comparation routine which I did not want to link here for
-     // size and clarity reasons. For now strings are (implicitely) converted to ANSI to make the comparation work.
-     // Search is not case sensitive.
       VTGetText( Sender, Node, 0 {Column}, ttNormal, DisplayText );
       sCompare1 := SearchText;
       sCompare2 := DisplayText;

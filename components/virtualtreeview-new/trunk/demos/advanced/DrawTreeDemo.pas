@@ -56,7 +56,7 @@ type
     FDriveStrings: string;
     function CanDisplay(const Name: String): Boolean;
     function GetDriveString(Index: Integer): string;
-    function ReadAttributes(const Name: UTF8String): Cardinal;
+    function ReadAttributes(const Name: String): Cardinal;
     procedure RescaleImage(Source, Target: TBitmap);
   end;
 
@@ -78,12 +78,12 @@ type
   PShellObjectData = ^TShellObjectData;
   TShellObjectData = record
     FullPath,
-    Display: UTF8String;
+    Display: String;
     Attributes: Cardinal;
     OpenIndex,
     CloseIndex: Integer;      // image indices into the system image list
     Image: TBitmap;
-    Properties: UTF8String;   // some image properties, preformatted
+    Properties: String;   // some image properties, preformatted
   end;
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -252,7 +252,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TDrawTreeForm.ReadAttributes(const Name: UTF8String): Cardinal;
+function TDrawTreeForm.ReadAttributes(const Name: String): Cardinal;
 
 // Determines the attributes of the given shell object (file, folder).
 
@@ -422,7 +422,7 @@ procedure TDrawTreeForm.VDT1DrawNode(Sender: TBaseVirtualTree; const PaintInfo: 
 var
   Data: PShellObjectData;
   X: Integer;
-  S: UTF8String;
+  S: String;
   R: TRect;
 
 begin   

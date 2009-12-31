@@ -34,7 +34,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
     procedure VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure VST3Scroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Integer);
     procedure VST2InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
     procedure VST2Scroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Integer);
@@ -44,7 +44,7 @@ type
       var Accept: Boolean);
     procedure Splitter2Paint(Sender: TObject);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
   private
@@ -65,7 +65,7 @@ uses States;
 type
   PLinkData = ^TLinkData;
   TLinkData = record
-    Caption: UTF8String;
+    Caption: String;
     OtherNode: PVirtualNode;
   end;
 
@@ -167,7 +167,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVisibilityForm.VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: UTF8String);
+  TextType: TVSTTextType; var CellText: String);
 
 var
   Data: PLinkData;
@@ -314,7 +314,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVisibilityForm.VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: UTF8String);
+  TextType: TVSTTextType; var CellText: String);
 
 begin
   CellText := Format('Node Level %d, Index %d', [Sender.GetNodeLevel(Node), Node.Index]);

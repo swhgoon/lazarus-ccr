@@ -39,12 +39,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LCLTextTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure LCLTextTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
     procedure LCLTextTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; const NewText: UTF8String);
+      Column: TColumnIndex; const NewText: String);
     procedure WelcomeTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure WelcomeTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
   private
     procedure AddLCLText(const AText: String);
     { private declarations }
@@ -106,7 +106,7 @@ end;
 
 procedure TMainForm.LCLTextTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: UTF8String);
+  var CellText: String);
 var
   Data: PLCLTextData;
 begin
@@ -115,7 +115,7 @@ begin
 end;
 
 procedure TMainForm.LCLTextTreeNewText(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; Column: TColumnIndex; const NewText: UTF8String);
+  Node: PVirtualNode; Column: TColumnIndex; const NewText: String);
 var
   Data: PLCLTextData;
 begin
@@ -170,7 +170,7 @@ end;
 
 procedure TMainForm.WelcomeTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: UTF8String);
+  var CellText: String);
 var
   Data: PWelcomeData;
 begin

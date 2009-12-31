@@ -30,7 +30,7 @@ interface
       TPropertyData = 
       record
          ValueType: TValueType;
-         Value    : UTF8String;      // This value can actually be a date or a number too.
+         Value    : String;      // This value can actually be a date or a number too.
          Changed  : Boolean;
       end;
       PPropertyData = ^TPropertyData;
@@ -324,7 +324,7 @@ implementation
    var
      Data: PPropertyData;
      Buffer: array[0..1024] of Char;
-     S: UTF8String;
+     S: String;
      P: TPoint;
      Dummy: Integer;
    begin
@@ -431,7 +431,7 @@ implementation
    var
      Data: PGridData;
      Buffer: array[0..1024] of Char;
-     S: UTF8String;
+     S: String;
      I: Integer;
   
    begin

@@ -79,7 +79,7 @@ type
 
     NodePointer: PVirtualNode;
     Active: Boolean;
-    MyText: UTF8String;
+    MyText: String;
     RNDNumber: integer;
   end;
 
@@ -111,7 +111,7 @@ type
       CellPaintMode: TVTCellPaintMode; CellRect: TRect; var ContentRect: TRect);
     procedure MyTreeGetText(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure Button1Click(Sender: TObject);
     procedure MyTreeCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
@@ -146,7 +146,7 @@ uses
 
 procedure TForm1.MyTreeGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var CellText: UTF8String);
+  var CellText: String);
 var
   Data: ^rTreeData;
 

@@ -28,7 +28,7 @@ type
     procedure ClearButtonClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var Text: UTF8String);
+      var Text: String);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VSTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
@@ -50,7 +50,7 @@ type
   // Extend it to whatever your application needs.
   PMyRec = ^TMyRec;
   TMyRec = record
-    Caption: UTF8String;
+    Caption: String;
   end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -126,14 +126,13 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TMainForm.VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-  var Text: UTF8String);
+  var Text: String);
 
 var
   Data: PMyRec;
 
 begin
   // A handler for the OnGetText event is always needed as it provides the tree with the string data to display.
-  // Note that we are always using UTF8String.
   Data := Sender.GetNodeData(Node);
   if Assigned(Data) then
     Text := Data.Caption;

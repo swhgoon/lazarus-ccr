@@ -45,7 +45,7 @@ type
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure VST1GetImageIndex(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var ImageIndex: Integer);
@@ -63,7 +63,7 @@ type
 
   PMyRec = ^TMyRec;
   TMyRec = record
-    Main: UTF8String;
+    Main: String;
     One, Two: integer;
     Percent : integer;
     Index: Integer;
@@ -198,7 +198,7 @@ begin
 end;
 
 procedure TForm1.VST1GetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-  Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
 var
   Data: PMyRec;
 begin

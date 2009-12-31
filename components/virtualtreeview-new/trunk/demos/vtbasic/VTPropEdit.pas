@@ -82,7 +82,7 @@ interface
          procedure VTCreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
          procedure VTEditing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-         var Text: UTF8String);
+         var Text: String);
          procedure VTInitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
          var InitialStates: TVirtualNodeInitStates);
@@ -241,7 +241,7 @@ implementation
    end;
    
    procedure TfrmVTPropEdit.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-     TextType: TVSTTextType; var Text: UTF8String);
+     TextType: TVSTTextType; var Text: String);
    var
       Data: PPropertyData;
       ped : TVTPropEditData;

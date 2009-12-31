@@ -41,7 +41,7 @@ type
 var
   MainForm: TMainForm;
 
-procedure LoadUnicodeStrings(const Name: string; var Strings: array of UTF8String);
+procedure LoadUnicodeStrings(const Name: string; var Strings: array of String);
 procedure SetStatusbarText(const S: string);
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ uses
 //----------------------------------------------------------------------------------------------------------------------
 
 
-procedure LoadUnicodeStrings(const Name: string; var Strings: array of UTF8String);
+procedure LoadUnicodeStrings(const Name: string; var Strings: array of String);
 
 // Loads the Unicode strings from the resource.
 

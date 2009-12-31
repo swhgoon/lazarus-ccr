@@ -41,7 +41,7 @@ TfrmMain =
          procedure VTGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-         var CellText: UTF8String);
+         var CellText: String);
          procedure VTGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
          Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer);
          procedure VTDblClick(Sender: TObject);
@@ -105,7 +105,7 @@ implementation
    end;
    
    procedure TfrmMain.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-     Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+     Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
    begin
       Celltext := FCaptions[Node.Index];           {this is where we say what the text to display}
    end;

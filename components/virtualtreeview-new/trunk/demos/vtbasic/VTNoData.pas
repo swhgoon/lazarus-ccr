@@ -40,7 +40,7 @@ interface
          
          procedure VTGetNodeDataSize(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
          procedure VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-         Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+         Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
          procedure VTGetImageIndex(Sender: TBaseVirtualTree;
          Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer);
          procedure VTInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
@@ -128,7 +128,7 @@ implementation
    end;
 
    procedure TfrmVTNoData.VTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-     Column: TColumnIndex; TextType: TVSTTextType; var CellText: UTF8String);
+     Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
    const     
       aAnimOpts : array[0..Ord(High(TVTAnimationOption ))] of string[25] = 
       (  'Animated Toggle',

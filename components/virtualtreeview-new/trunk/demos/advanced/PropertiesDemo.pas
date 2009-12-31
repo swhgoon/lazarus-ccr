@@ -29,17 +29,17 @@ type
     procedure VST3CreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure VST3Editing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure VST3GetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-      var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: UTF8String);
+      var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
     procedure VST3GetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var Index: Integer);
     procedure VST3GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
-      var CellText: UTF8String);
+      var CellText: String);
     procedure VST3InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
     procedure VST3InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure VST3PaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
-    procedure VST3IncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const Text: UTF8String;
+    procedure VST3IncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const Text: String;
       var Result: Integer);
     procedure RadioGroup1Click(Sender: TObject);
     procedure VST3StateChange(Sender: TBaseVirtualTree; Enter, Leave: TVirtualTreeStates);
@@ -106,7 +106,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TPropertiesForm.VST3GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  TextType: TVSTTextType; var CellText: UTF8String);
+  TextType: TVSTTextType; var CellText: String);
 
 var
   Data: PPropertyData;
@@ -136,7 +136,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TPropertiesForm.VST3GetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
-  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: UTF8String);
+  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
 
 begin
   // Add a dummy hint to the normal hint to demonstrate multiline hints.
@@ -241,7 +241,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TPropertiesForm.VST3IncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const Text: UTF8String;
+procedure TPropertiesForm.VST3IncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode; const Text: String;
   var Result: Integer);
 
 var
