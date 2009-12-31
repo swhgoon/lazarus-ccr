@@ -415,6 +415,7 @@ type
     property PageCount : Integer read GetCount;
   published
     property Align;
+    property BorderSpacing;
     property ActivePage : TGradTabPage read GetCurrentPage write SetCurrentPage;
     property OnTabButtonClick : TGradTabPageButtonClickEvent read FOnTabButtonClick write FOnTabButtonClick;
     property OnTabButtonMouseDown : TGradTabPageButtonMouseDownUpEvent read FOnTabButtonMouseDown write FOnTabButtonMouseDown;

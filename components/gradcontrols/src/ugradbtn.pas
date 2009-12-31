@@ -124,6 +124,7 @@ type
     property Action;
     property Anchors;
     property Align;
+    property BorderSpacing;
     property Caption;
     property Enabled;
     property PopupMenu;
