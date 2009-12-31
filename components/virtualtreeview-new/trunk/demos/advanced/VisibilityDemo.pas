@@ -136,7 +136,7 @@ end;
 procedure TVisibilityForm.HideNodes(Sender: TBaseVirtualTree; Node: PVirtualNode; Data: Pointer; var Abort: Boolean);
 
 begin
-  case Integer(Data) of
+  case PtrUInt(Data) of
     0: // show all nodes
       Sender.IsVisible[Node] := True;
     1: // hide every second

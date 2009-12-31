@@ -26,7 +26,7 @@ object VisibilityForm: TVisibilityForm
   end
   object Label1: TLabel
     Left = 504
-    Height = 102
+    Height = 81
     Top = 212
     Width = 296
     Anchors = [akTop, akRight]
@@ -38,8 +38,8 @@ object VisibilityForm: TVisibilityForm
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
     Left = 504
-    Height = 102
-    Top = 322
+    Height = 81
+    Top = 301
     Width = 296
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 8
@@ -62,8 +62,8 @@ object VisibilityForm: TVisibilityForm
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
     Left = 504
-    Height = 39
-    Top = 432
+    Height = 33
+    Top = 390
     Width = 296
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 8
@@ -87,7 +87,7 @@ object VisibilityForm: TVisibilityForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 90
+    ClientHeight = 91
     ClientWidth = 365
     ItemIndex = 0
     Items.Strings = (
@@ -4137,7 +4137,7 @@ object VisibilityForm: TVisibilityForm
         item
           Position = 0
           Text = 'Main column'
-          Width = 202
+          Width = 200
         end>
       Header.DefaultHeight = 17
       Header.Font.Color = clNavy

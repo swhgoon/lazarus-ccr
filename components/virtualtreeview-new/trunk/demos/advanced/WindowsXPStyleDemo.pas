@@ -61,8 +61,7 @@ var
 implementation
 
 uses
-  Main, States;
-
+  States;
 
 type
   PEntry = ^TEntry;

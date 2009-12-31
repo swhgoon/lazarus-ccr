@@ -13,10 +13,10 @@ object WindowsXPForm: TWindowsXPForm
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object Label1: TLabel
-    Left = 565
-    Height = 123
+    Left = 564
+    Height = 81
     Top = 40
-    Width = 272
+    Width = 273
     Anchors = [akTop, akRight]
     Caption = 'This demo shows a tree with properties which make it look as in the new Windows XP style. Under Windows XP native theme APIs are used to paint the tree. On other system legacy code is used which simulates the look.'
     ParentColor = False
@@ -24,7 +24,7 @@ object WindowsXPForm: TWindowsXPForm
   end
   object Label2: TLabel
     Left = 565
-    Height = 123
+    Height = 81
     Top = 168
     Width = 272
     Anchors = [akTop, akRight]
@@ -35,7 +35,7 @@ object WindowsXPForm: TWindowsXPForm
   object Label4: TLabel
     Cursor = crHandPoint
     Left = 565
-    Height = 144
+    Height = 97
     Top = 290
     Width = 272
     Anchors = [akTop, akRight]

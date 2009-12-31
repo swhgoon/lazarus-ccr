@@ -68,7 +68,7 @@ var
 implementation
 
 uses
-  FileCtrl, MaskEdit, States;
+  States;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -112,6 +112,7 @@ var
   SFI: TSHFileInfo;
 }
 begin
+  Result := -1;
   //todo
   {
   if SHGetFileInfo(PChar(Name), 0, SFI, SizeOf(TSHFileInfo), Flags) = 0 then
