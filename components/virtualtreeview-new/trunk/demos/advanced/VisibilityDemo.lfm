@@ -1,23 +1,23 @@
 object VisibilityForm: TVisibilityForm
-  Left = 518
-  Height = 529
-  Top = 362
-  Width = 752
+  Left = 386
+  Height = 536
+  Top = 210
+  Width = 809
   ActiveControl = VST1
   Caption = 'VisibilityForm'
-  ClientHeight = 529
-  ClientWidth = 752
+  ClientHeight = 536
+  ClientWidth = 809
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnHide = FormHide
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label17: TLabel
-    Left = 369
+    Left = 368
     Height = 77
     Top = 4
-    Width = 196
+    Width = 240
     Anchors = [akTop, akRight]
     AutoSize = False
     Caption = 'This tree shows the effects of hiding and showing treenodes without actually deleting and recreating them or rebuild of the entire tree.'
@@ -26,31 +26,32 @@ object VisibilityForm: TVisibilityForm
   end
   object Label1: TLabel
     Left = 504
-    Height = 97
+    Height = 102
     Top = 212
-    Width = 226
+    Width = 296
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'This sample shows how two treeviews can be synchronized. They can even be adjusted so that it looks as if they share the same background. The splitter between the trees is drawn so that is appears nearly invisible.'
     ParentColor = False
     WordWrap = True
   end
   object Label2: TLabel
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
     Left = 504
-    Height = 93
-    Top = 324
-    Width = 226
+    Height = 102
+    Top = 322
+    Width = 296
     Anchors = [akTop, akRight]
-    AutoSize = False
+    BorderSpacing.Top = 8
     Caption = 'The best effect is maybe when doing wheel panning. If you have a wheel mouse then try clicking the middle button (the wheel) in one of the trees and  when the special cursor appears move the mouse around.'
     ParentColor = False
     WordWrap = True
   end
   object Label3: TLabel
-    Left = 577
+    Left = 616
     Height = 77
     Top = 4
-    Width = 161
+    Width = 184
     Anchors = [akTop, akRight]
     AutoSize = False
     Caption = 'Hint: you can hide some nodes, select some remaining and reshow the others to see the effect better.'
@@ -58,18 +59,20 @@ object VisibilityForm: TVisibilityForm
     WordWrap = True
   end
   object Label4: TLabel
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
     Left = 504
-    Height = 35
-    Top = 438
-    Width = 217
+    Height = 39
+    Top = 432
+    Width = 296
     Anchors = [akTop, akRight]
-    AutoSize = False
+    BorderSpacing.Top = 8
     Caption = ' Expand the trees first (Ctrl Shift +, for full expand) see the full effect.'
     ParentColor = False
     WordWrap = True
   end
   object RadioGroup1: TRadioGroup
-    Left = 369
+    Left = 368
     Height = 109
     Top = 88
     Width = 369
@@ -84,7 +87,7 @@ object VisibilityForm: TVisibilityForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 91
+    ClientHeight = 90
     ClientWidth = 365
     ItemIndex = 0
     Items.Strings = (
@@ -98,17 +101,17 @@ object VisibilityForm: TVisibilityForm
   end
   object Panel2: TPanel
     Left = 4
-    Height = 266
+    Height = 322
     Top = 212
-    Width = 489
+    Width = 492
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 266
-    ClientWidth = 489
+    ClientHeight = 322
+    ClientWidth = 492
     FullRepaint = False
     TabOrder = 1
     object Splitter2: TSplitter
       Left = 205
-      Height = 264
+      Height = 320
       Top = 1
       Width = 2
       AutoSnap = False
@@ -116,7 +119,7 @@ object VisibilityForm: TVisibilityForm
     end
     object VST2: TVirtualStringTree
       Left = 1
-      Height = 264
+      Height = 320
       Top = 1
       Width = 204
       Align = alLeft
@@ -4129,11 +4132,14 @@ object VisibilityForm: TVisibilityForm
       Font.Color = clNavy
       Font.Height = -11
       Font.Name = 'Verdana'
+      Header.AutoSizeIndex = 0
       Header.Columns = <      
         item
+          Position = 0
           Text = 'Main column'
-          Width = 204
+          Width = 202
         end>
+      Header.DefaultHeight = 17
       Header.Font.Color = clNavy
       Header.Font.Height = -13
       Header.Font.Name = 'Verdana'
@@ -4165,9 +4171,9 @@ object VisibilityForm: TVisibilityForm
     end
     object VST3: TVirtualStringTree
       Left = 207
-      Height = 264
+      Height = 320
       Top = 1
-      Width = 281
+      Width = 284
       Align = alClient
       Background.Data = {
         07544269746D617066F30100424D66F30100000000003600000028000000D900
@@ -8177,7 +8183,9 @@ object VisibilityForm: TVisibilityForm
       Font.Color = clNavy
       Font.Height = -11
       Font.Name = 'Verdana'
+      Header.AutoSizeIndex = 0
       Header.Columns = <>
+      Header.DefaultHeight = 17
       Header.Font.Color = clNavy
       Header.Font.Height = -13
       Header.Font.Name = 'Verdana'
@@ -8212,14 +8220,15 @@ object VisibilityForm: TVisibilityForm
     Left = 4
     Height = 193
     Top = 4
-    Width = 354
+    Width = 356
     Anchors = [akTop, akLeft, akRight]
-    BorderStyle = bsSingle
     Colors.BorderColor = clWindowText
     Colors.HotColor = clBlack
     DefaultNodeHeight = 24
     DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
     Header.Columns = <>
+    Header.DefaultHeight = 17
     Header.Font.Height = -11
     Header.Font.Name = 'MS Sans Serif'
     Header.MainColumn = -1

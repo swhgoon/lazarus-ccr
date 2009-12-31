@@ -3,21 +3,20 @@ object NodeForm: TNodeForm
   Height = 542
   Top = 332
   Width = 773
-  ActiveControl = MLTree
+  ActiveControl = Panel1
   Caption = 'NodeForm'
   ClientHeight = 542
   ClientWidth = 773
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label8: TLabel
     Left = 12
-    Height = 72
-    Top = 429
+    Height = 102
+    Top = 424
     Width = 732
     Anchors = [akLeft, akRight, akBottom]
-    AutoSize = False
     Caption = 'Since Virtual Treeview uses Unicode for text display it is not easy to provide multiline support on Windows 9x/Me systems. Under Windows NT (4.0, 2000, XP) there is support by the operation system and so full word breaking is possible there. Otherwise you have to insert line breaks manually to have multiline captions. Of course there is no difference in handling between multiline and single line nodes (except for the vertical alignment of the latter).'
     ParentColor = False
     ShowAccelChar = False
@@ -52,13 +51,16 @@ object NodeForm: TNodeForm
       Colors.SelectionRectangleBlendColor = 10539203
       DefaultNodeHeight = 130
       DefaultText = 'Node'
+      Header.AutoSizeIndex = 0
       Header.Columns = <      
         item
           Position = 1
-          Width = 483
+          Width = 495
         end      
         item
+          Position = 0
         end>
+      Header.DefaultHeight = 17
       Header.Font.Height = -11
       Header.Font.Name = 'MS Sans Serif'
       Header.Options = [hoAutoResize, hoColumnResize, hoDrag]
@@ -86,9 +88,9 @@ object NodeForm: TNodeForm
   end
   object AutoAdjustCheckBox: TCheckBox
     Left = 12
-    Height = 20
-    Top = 401
-    Width = 286
+    Height = 22
+    Top = 399
+    Width = 327
     Anchors = [akLeft, akBottom]
     Caption = 'Automatically adjust node height to node text.'
     OnClick = AutoAdjustCheckBoxClick

@@ -14,11 +14,10 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   LCLVersion = '0.9.29'
   object Label8: TLabel
     Left = 12
-    Height = 83
-    Top = 318
+    Height = 102
+    Top = 320
     Width = 745
     Anchors = [akLeft, akRight, akBottom]
-    AutoSize = False
     Caption = 'This page demonstrates the advance custom draw mode for a tree''s header. The left column is drawn as usual while with the other columns more and more details are customized by the applicaiton. Note: Virtual Treeview allows to customize the header fully or only parts of it and draws all standard elements as normal if they are not handled by the application. This allows very flexible designs but avoids full custom draw if only a small details must be drawn differently.'
     Font.Height = -13
     Font.Name = 'MS Sans Serif'

@@ -1,7 +1,6 @@
 unit DrawTreeDemo;
 
 {$MODE Delphi}
-{$H+}
 
 // Virtual Treeview sample form demonstrating following features:
 //   - General use of TVirtualDrawTree.
@@ -14,16 +13,6 @@ unit DrawTreeDemo;
 // more image formats into the application.
 // Otherwise disable the conditional symbol to compile this demo.
 
-
-{$ifdef COMPILER_7_UP}
-  // For some things to work we need code, which is classified as being unsafe for .NET.
-  // Additionally, there are a few platform warnings, which also have no meaning at all for this project.
-  {$warn UNSAFE_TYPE off}
-  {$warn UNSAFE_CAST off}
-  {$warn UNSAFE_CODE off}
-  {$warn SYMBOL_PLATFORM off}
-  {$warn UNIT_PLATFORM off}
-{$endif COMPILER_7_UP}
 
 interface
 

@@ -1,11 +1,11 @@
 object PropertiesForm: TPropertiesForm
   Left = 397
-  Height = 419
+  Height = 389
   Top = 294
   Width = 637
   ActiveControl = VST3
   Caption = 'PropertiesForm'
-  ClientHeight = 419
+  ClientHeight = 389
   ClientWidth = 637
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
@@ -13,7 +13,7 @@ object PropertiesForm: TPropertiesForm
   LCLVersion = '0.9.29'
   object Label9: TLabel
     Left = 420
-    Height = 65
+    Height = 81
     Top = 6
     Width = 212
     Anchors = [akTop, akRight]
@@ -25,8 +25,8 @@ object PropertiesForm: TPropertiesForm
     AnchorSideTop.Control = Label9
     AnchorSideTop.Side = asrBottom
     Left = 420
-    Height = 49
-    Top = 81
+    Height = 81
+    Top = 97
     Width = 212
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 10
@@ -36,7 +36,7 @@ object PropertiesForm: TPropertiesForm
   end
   object VST3: TVirtualStringTree
     Left = 10
-    Height = 369
+    Height = 380
     Top = 6
     Width = 399
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -56,7 +56,7 @@ object PropertiesForm: TPropertiesForm
         Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
         Position = 1
         Text = 'Values'
-        Width = 192
+        Width = 194
       end>
     Header.DefaultHeight = 17
     Header.Font.Height = -11
@@ -92,7 +92,7 @@ object PropertiesForm: TPropertiesForm
   object RadioGroup1: TRadioGroup
     Left = 416
     Height = 69
-    Top = 306
+    Top = 317
     Width = 216
     Anchors = [akRight, akBottom]
     AutoFill = True
@@ -105,7 +105,7 @@ object PropertiesForm: TPropertiesForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 51
+    ClientHeight = 50
     ClientWidth = 212
     ItemIndex = 0
     Items.Strings = (

@@ -2,46 +2,43 @@ object WindowsXPForm: TWindowsXPForm
   Left = 376
   Height = 449
   Top = 327
-  Width = 839
+  Width = 844
   ActiveControl = XPTree
   Caption = 'WindowsXPForm'
   ClientHeight = 449
-  ClientWidth = 839
+  ClientWidth = 844
   Font.CharSet = ANSI_CHARSET
   Font.Height = -13
   Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object Label1: TLabel
-    Left = 575
-    Height = 80
-    Top = 56
-    Width = 244
+    Left = 565
+    Height = 123
+    Top = 40
+    Width = 272
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'This demo shows a tree with properties which make it look as in the new Windows XP style. Under Windows XP native theme APIs are used to paint the tree. On other system legacy code is used which simulates the look.'
     ParentColor = False
     WordWrap = True
   end
   object Label2: TLabel
-    Left = 576
-    Height = 97
-    Top = 144
-    Width = 243
+    Left = 565
+    Height = 123
+    Top = 168
+    Width = 272
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'Note that the scrollbars are not drawn in the new style on non-XP systems.  It would be far off the goal of the tree to reimplement a full blown scrollbar handling, which would be required otherwise.'
     ParentColor = False
     WordWrap = True
   end
   object Label4: TLabel
     Cursor = crHandPoint
-    Left = 576
-    Height = 136
-    Top = 256
-    Width = 243
+    Left = 565
+    Height = 144
+    Top = 290
+    Width = 272
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'If you want to have an explorer treeview with real content then I recommend that you give Jim Kuenemann''s shell tools a try. His shell treeview (based on Virtual Treeview) is the most advanced you will find worldwide. Click here to open Yahoo Group.'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlue
@@ -57,7 +54,8 @@ object WindowsXPForm: TWindowsXPForm
     Left = 0
     Height = 408
     Top = 40
-    Width = 554
+    Width = 559
+    Anchors = [akTop, akLeft, akRight]
     AutoScrollDelay = 500
     ButtonFillMode = fmShaded
     CheckImageKind = ckXP
@@ -112,7 +110,7 @@ object WindowsXPForm: TWindowsXPForm
     TreeOptions.AnimationOptions = [toAnimatedToggle]
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
     TreeOptions.MiscOptions = [toCheckSupport, toInitOnSave, toReportMode, toToggleOnDblClick, toWheelPanning]
-    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowRoot, toThemeAware]
+    TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowRoot]
     TreeOptions.SelectionOptions = [toMultiSelect]
     OnCompareNodes = XPTreeCompareNodes
     OnGetText = XPTreeGetText
@@ -127,7 +125,7 @@ object WindowsXPForm: TWindowsXPForm
     Left = 0
     Height = 34
     Top = 0
-    Width = 839
+    Width = 844
     ButtonHeight = 32
     ButtonWidth = 32
     Caption = 'ToolBar2'

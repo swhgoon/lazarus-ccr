@@ -1,12 +1,12 @@
 object AlignForm: TAlignForm
   Left = 370
-  Height = 497
+  Height = 486
   Top = 299
-  Width = 785
+  Width = 783
   ActiveControl = AlignTree
   Caption = 'AlignForm'
-  ClientHeight = 497
-  ClientWidth = 785
+  ClientHeight = 486
+  ClientWidth = 783
   Constraints.MinWidth = 590
   Font.Height = -13
   Font.Name = 'Arial'
@@ -26,10 +26,9 @@ object AlignForm: TAlignForm
   end
   object Label1: TLabel
     Left = 8
-    Height = 123
+    Height = 144
     Top = 110
-    Width = 201
-    AutoSize = False
+    Width = 202
     Caption = 'Note that hints are aligned properly and draw selection takes the alignment into account too. Sort arrows are shown but the tree is not sorted. All I want to demonstrate is how well the layout in the header works.'
     ParentColor = False
     ShowAccelChar = False
@@ -37,45 +36,45 @@ object AlignForm: TAlignForm
   end
   object Label2: TLabel
     Left = 220
-    Height = 17
-    Top = 346
+    Height = 18
+    Top = 353
     Width = 116
     Anchors = [akLeft, akBottom]
     Caption = 'English text column'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 360
-    Height = 17
-    Top = 346
+    Left = 393
+    Height = 18
+    Top = 353
     Width = 108
     Anchors = [akBottom]
     Caption = 'Greek text column'
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 619
-    Height = 17
-    Top = 346
-    Width = 155
+    Left = 566
+    Height = 18
+    Top = 352
+    Width = 157
     Anchors = [akRight, akBottom]
     Caption = 'Hebrew/arabic text column'
     ParentColor = False
   end
   object Label5: TLabel
     Left = 8
-    Height = 17
-    Top = 278
-    Width = 121
+    Height = 18
+    Top = 288
+    Width = 122
     Anchors = [akLeft, akBottom]
     Caption = 'Header button layout'
     ParentColor = False
   end
   object AlignTree: TVirtualStringTree
-    Left = 220
-    Height = 335
+    Left = 215
+    Height = 336
     Top = 2
-    Width = 554
+    Width = 565
     Anchors = [akTop, akLeft, akRight, akBottom]
     CheckImageKind = ckDarkTick
     ClipboardFormats.Strings = (
@@ -106,7 +105,7 @@ object AlignForm: TAlignForm
         Position = 0
         Spacing = 10
         Text = 'English text column'
-        Width = 185
+        Width = 190
       end    
       item
         Hint = 'Text is initially left aligned and has a left-to-right directionality.'
@@ -115,7 +114,7 @@ object AlignForm: TAlignForm
         Position = 1
         Spacing = 10
         Text = 'Greek text column'
-        Width = 155
+        Width = 160
       end    
       item
         BiDiMode = bdRightToLeft
@@ -125,7 +124,7 @@ object AlignForm: TAlignForm
         Position = 2
         Spacing = 10
         Text = 'Hebrew/arabic text column'
-        Width = 209
+        Width = 214
       end>
     Header.DefaultHeight = 17
     Header.Font.Height = -12
@@ -146,7 +145,7 @@ object AlignForm: TAlignForm
     TabOrder = 0
     TreeOptions.AnimationOptions = [toAnimatedToggle]
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking, toAutoDeleteMovedNodes]
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.MiscOptions = [toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware]
     TreeOptions.SelectionOptions = [toExtendedFocus, toMultiSelect]
     OnFocusChanged = AlignTreeFocusChanged
@@ -161,11 +160,11 @@ object AlignForm: TAlignForm
   end
   object AlignCombo0: TComboBox
     Left = 220
-    Height = 24
-    Top = 368
+    Height = 31
+    Top = 369
     Width = 130
     Anchors = [akLeft, akBottom]
-    ItemHeight = 16
+    ItemHeight = 0
     Items.Strings = (
       'Left'
       'Right'
@@ -177,12 +176,12 @@ object AlignForm: TAlignForm
   end
   object AlignCombo1: TComboBox
     Tag = 1
-    Left = 360
-    Height = 24
-    Top = 368
+    Left = 393
+    Height = 31
+    Top = 369
     Width = 130
     Anchors = [akBottom]
-    ItemHeight = 16
+    ItemHeight = 0
     Items.Strings = (
       'Left'
       'Right'
@@ -194,12 +193,12 @@ object AlignForm: TAlignForm
   end
   object AlignCombo2: TComboBox
     Tag = 2
-    Left = 640
-    Height = 24
+    Left = 566
+    Height = 31
     Top = 368
     Width = 130
     Anchors = [akRight, akBottom]
-    ItemHeight = 16
+    ItemHeight = 0
     Items.Strings = (
       'Left'
       'Right'
@@ -212,7 +211,7 @@ object AlignForm: TAlignForm
   object BidiGroup0: TRadioGroup
     Left = 220
     Height = 61
-    Top = 400
+    Top = 408
     Width = 130
     Anchors = [akLeft, akBottom]
     AutoFill = True
@@ -225,7 +224,7 @@ object AlignForm: TAlignForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 43
+    ClientHeight = 42
     ClientWidth = 126
     Items.Strings = (
       'left-to-right'
@@ -236,9 +235,9 @@ object AlignForm: TAlignForm
   end
   object BidiGroup1: TRadioGroup
     Tag = 1
-    Left = 360
+    Left = 393
     Height = 61
-    Top = 400
+    Top = 407
     Width = 130
     Anchors = [akBottom]
     AutoFill = True
@@ -251,7 +250,7 @@ object AlignForm: TAlignForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 43
+    ClientHeight = 42
     ClientWidth = 126
     Items.Strings = (
       'left-to-right'
@@ -262,9 +261,9 @@ object AlignForm: TAlignForm
   end
   object BidiGroup2: TRadioGroup
     Tag = 2
-    Left = 640
+    Left = 566
     Height = 61
-    Top = 400
+    Top = 408
     Width = 130
     Anchors = [akRight, akBottom]
     AutoFill = True
@@ -277,7 +276,7 @@ object AlignForm: TAlignForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 43
+    ClientHeight = 42
     ClientWidth = 126
     Items.Strings = (
       'left-to-right'
@@ -289,18 +288,18 @@ object AlignForm: TAlignForm
   object GroupBox1: TGroupBox
     Left = 8
     Height = 129
-    Top = 332
+    Top = 340
     Width = 157
     Anchors = [akLeft, akBottom]
     Caption = ' Header options: '
-    ClientHeight = 111
+    ClientHeight = 110
     ClientWidth = 153
     TabOrder = 7
     object ShowGlyphsOptionBox: TCheckBox
       Left = 12
-      Height = 20
+      Height = 22
       Top = 4
-      Width = 92
+      Width = 99
       Caption = 'Show glyphs'
       OnClick = OptionBoxClick
       TabOrder = 0
@@ -308,9 +307,9 @@ object AlignForm: TAlignForm
     object HotTrackOptionBox: TCheckBox
       Tag = 1
       Left = 12
-      Height = 20
+      Height = 22
       Top = 25
-      Width = 71
+      Width = 78
       Caption = 'Hot track'
       OnClick = OptionBoxClick
       TabOrder = 1
@@ -318,9 +317,9 @@ object AlignForm: TAlignForm
     object ShowTextOptionBox: TCheckBox
       Tag = 2
       Left = 12
-      Height = 20
+      Height = 22
       Top = 46
-      Width = 76
+      Width = 83
       Caption = 'Show text'
       OnClick = OptionBoxClick
       TabOrder = 2
@@ -328,9 +327,9 @@ object AlignForm: TAlignForm
     object VisibleOptionBox: TCheckBox
       Tag = 3
       Left = 12
-      Height = 20
+      Height = 22
       Top = 67
-      Width = 57
+      Width = 63
       Caption = 'Visible'
       OnClick = OptionBoxClick
       TabOrder = 3
@@ -338,9 +337,9 @@ object AlignForm: TAlignForm
     object EnabledOptionBox: TCheckBox
       Tag = 4
       Left = 12
-      Height = 20
+      Height = 22
       Top = 88
-      Width = 65
+      Width = 71
       Caption = 'Enabled'
       OnClick = OptionBoxClick
       TabOrder = 4
@@ -348,11 +347,11 @@ object AlignForm: TAlignForm
   end
   object LayoutCombo: TComboBox
     Left = 8
-    Height = 24
-    Top = 300
-    Width = 130
+    Height = 31
+    Top = 304
+    Width = 157
     Anchors = [akLeft, akBottom]
-    ItemHeight = 16
+    ItemHeight = 0
     Items.Strings = (
       'Glyph left'
       'Glyph right'

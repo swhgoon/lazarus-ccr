@@ -123,6 +123,11 @@ procedure TWindowsXPForm.FormCreate(Sender: TObject);
 
 begin
   XPTree.NodeDataSize := SizeOf(TEntry);
+  {$ifdef LCLWin32}
+  //enable native look under win32
+  //todo: enable only in winxp
+  XPTree.TreeOptions.PaintOptions := XPTree.TreeOptions.PaintOptions + [toThemeAware];
+  {$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

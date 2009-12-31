@@ -1,34 +1,35 @@
 object GridForm: TGridForm
   Left = 341
-  Height = 432
+  Height = 393
   Top = 353
   Width = 736
   ActiveControl = VST5
   Caption = 'GridForm'
-  ClientHeight = 432
+  ClientHeight = 393
   ClientWidth = 736
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label15: TLabel
-    Left = 524
-    Height = 153
+    Left = 519
+    Height = 186
     Top = 8
-    Width = 195
+    Width = 208
     Anchors = [akTop, akRight]
-    AutoSize = False
     Caption = 'This sample demonstrates the grid extensions introduced in Virtual Treeview. The main difference to normal mode is the  way cell content is handled (editing, selection etc.). In Grid mode always the entire cell is used. Another point is the key handling .'
     ParentColor = False
     WordWrap = True
   end
   object Label1: TLabel
-    Left = 526
-    Height = 109
-    Top = 168
-    Width = 195
+    AnchorSideTop.Control = Label15
+    AnchorSideTop.Side = asrBottom
+    Left = 519
+    Height = 81
+    Top = 202
+    Width = 205
     Anchors = [akTop, akRight]
-    AutoSize = False
+    BorderSpacing.Top = 8
     Caption = 'The main column in this sample is reduced to an indicator and is set as a fixed column.'
     ParentColor = False
     WordWrap = True
@@ -36,7 +37,7 @@ object GridForm: TGridForm
   object VST5: TVirtualStringTree
     Cursor = 63
     Left = 8
-    Height = 384
+    Height = 385
     Top = 6
     Width = 499
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -62,6 +63,7 @@ object GridForm: TGridForm
     Header.Columns = <    
       item
         Options = [coParentBidiMode, coVisible, coFixed]
+        Position = 0
         Width = 20
       end    
       item
@@ -88,6 +90,7 @@ object GridForm: TGridForm
         Text = 'Order date'
         Width = 100
       end>
+    Header.DefaultHeight = 17
     Header.Font.Height = -12
     Header.Font.Name = 'Microsoft Sans Serif'
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowImages, hoVisible]
@@ -115,10 +118,10 @@ object GridForm: TGridForm
     OnStateChange = VST5StateChange
   end
   object GridLineCheckBox: TCheckBox
-    Left = 562
-    Height = 20
-    Top = 366
-    Width = 121
+    Left = 520
+    Height = 22
+    Top = 361
+    Width = 130
     Anchors = [akRight, akBottom]
     Caption = 'Toggle grid lines'
     Checked = True

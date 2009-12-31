@@ -1,13 +1,14 @@
 object MainForm: TMainForm
-  Left = 17
-  Height = 566
-  Top = 86
-  Width = 980
+  Left = 209
+  Height = 583
+  Top = 179
+  Width = 981
   HorzScrollBar.Page = 979
   VertScrollBar.Page = 565
+  ActiveControl = PageScroller1
   Caption = 'Virtual Treeview features demo'
-  ClientHeight = 566
-  ClientWidth = 980
+  ClientHeight = 583
+  ClientWidth = 981
   Font.Height = -13
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
@@ -18,10 +19,10 @@ object MainForm: TMainForm
     Left = 0
     Height = 77
     Top = 0
-    Width = 980
+    Width = 981
     Align = alTop
     ClientHeight = 77
-    ClientWidth = 980
+    ClientWidth = 981
     Color = clWhite
     ParentColor = False
     ParentShowHint = False
@@ -29,12 +30,12 @@ object MainForm: TMainForm
     TabOrder = 0
     object MainPanel: TPanel
       Left = 0
-      Height = 70
+      Height = 72
       Top = 0
       Width = 976
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 70
+      ClientHeight = 72
       ClientWidth = 976
       Color = clWhite
       ParentColor = False
@@ -43,8 +44,9 @@ object MainForm: TMainForm
         Left = 216
         Height = 70
         Hint = 'The speed breakthrough'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -163,8 +165,9 @@ object MainForm: TMainForm
         Left = 285
         Height = 70
         Hint = 'General abilities and features'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -283,8 +286,9 @@ object MainForm: TMainForm
         Left = 354
         Height = 70
         Hint = 'Property tree simulation'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           36140000424D3614000000000000360400002800000040000000400000000100
@@ -459,8 +463,9 @@ object MainForm: TMainForm
         Left = 423
         Height = 70
         Hint = 'Hide and show nodes, sync two trees'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -579,8 +584,9 @@ object MainForm: TMainForm
         Left = 492
         Height = 70
         Hint = 'Tree in grid simulation'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -699,8 +705,9 @@ object MainForm: TMainForm
         Left = 561
         Height = 70
         Hint = 'A paint tree as directory tree'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -819,8 +826,9 @@ object MainForm: TMainForm
         Left = 630
         Height = 70
         Hint = 'Alignment, directionality and internationalization'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           36140000424D3614000000000000360400002800000040000000400000000100
@@ -993,8 +1001,8 @@ object MainForm: TMainForm
       object Label1: TLabel
         Left = 0
         Height = 14
-        Top = 26
-        Width = 73
+        Top = 14
+        Width = 76
         Caption = 'Demo picker'
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
@@ -1004,9 +1012,9 @@ object MainForm: TMainForm
       end
       object Label2: TLabel
         Left = 0
-        Height = 17
-        Top = 42
-        Width = 197
+        Height = 18
+        Top = 30
+        Width = 217
         Caption = 'Which demo do you want to see?'
         ParentColor = False
       end
@@ -1015,8 +1023,9 @@ object MainForm: TMainForm
         Left = 699
         Height = 70
         Hint = 'Painting like in Windows XP'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           361B0000424D361B000000000000360000002800000030000000300000000100
@@ -1247,8 +1256,9 @@ object MainForm: TMainForm
         Left = 768
         Height = 70
         Hint = 'Multiline nodes'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           96270000424D962700000000000036000000280000003C000000380000000100
@@ -1578,8 +1588,9 @@ object MainForm: TMainForm
         Left = 837
         Height = 70
         Hint = 'Custom header drawing in advanced mode'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           361F0000424D361F000000000000360000002800000029000000400000000100
@@ -1842,8 +1853,9 @@ object MainForm: TMainForm
         Left = 906
         Height = 70
         Hint = 'Exit'
-        Top = 0
+        Top = 2
         Width = 70
+        BorderSpacing.Top = 2
         Color = clBtnFace
         Glyph.Data = {
           360D0000424D360D000000000000360400002800000030000000300000000100
@@ -1961,16 +1973,16 @@ object MainForm: TMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 20
-    Top = 546
-    Width = 980
+    Height = 21
+    Top = 562
+    Width = 981
     Panels = <>
   end
   object ContainerPanel: TPanel
     Left = 0
-    Height = 469
+    Height = 485
     Top = 77
-    Width = 980
+    Width = 981
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
