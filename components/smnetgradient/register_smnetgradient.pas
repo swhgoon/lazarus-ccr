@@ -13,7 +13,7 @@ implementation
 
 procedure RegisterUnitSMNetGradient;
 begin
-  RegisterComponents('SMACE', [TNetGradient]);
+  RegisterComponents('SMACE', [TNetGradient, TDBNetGradient]);
 end;
 
 procedure Register;
