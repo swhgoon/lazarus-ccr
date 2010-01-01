@@ -152,7 +152,7 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor default clWhite;
     { Ending color of fill }
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
-    property FlatBorder: Boolean read FFlatBorder write SetFlatBorder;
+    property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     { Direction of fill }
     property FillDirection: TFillDirection read FDirection write SetFillDirection default fdLeftToRight;
     { Number of colors to use in the fill (1 - 256) - default is 255.  If 1 }
@@ -533,17 +533,22 @@ begin
    //Canvas.Textout(FTextLeft, FTextTop, FCaption);   *** Enzo *** Implemetation
    if FFlatBorder then
    begin
-     Canvas.Pen.Width := BorderWidth;
-     Canvas.Pen.EndCap := pecSquare;
-     Canvas.Pen.Color := FBorderColor;
-     //see if there's a better way of drawing a rectangle since
-     // in BorderWidth >= 3 glitches occurs
-     Canvas.Polyline(GetBorderPoints(rp));
+     if BorderWidth > 0 then
+     begin
+       Canvas.Pen.Width := BorderWidth;
+       Canvas.Pen.EndCap := pecSquare;
+       Canvas.Pen.Color := FBorderColor;
+       //see if there's a better way of drawing a rectangle since
+       // in BorderWidth >= 3 glitches occurs
+       Canvas.Polyline(GetBorderPoints(rp));
+     end;
    end
    else
    begin
-     Canvas.Frame3D(rp, 1, FBevelOuter);
-     Canvas.Frame3D(rp, 1, FBevelInner);
+     if FBevelOuter <> bvNone then
+       Canvas.Frame3D(rp, 1, FBevelOuter);
+     if FBevelInner <> bvNone then
+       Canvas.Frame3D(rp, 1, FBevelInner);
    end;
 
     if Caption <> '' then  begin
