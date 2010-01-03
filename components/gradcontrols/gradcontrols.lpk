@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <PathDelim Value="\"/>
+    <Name Value="gradcontrols"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="src\;..\"/>
+        <OtherUnitFiles Value="src\;..\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="src\ugradtabcontrol.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ugradtabcontrol"/>
+      </Item1>
+      <Item2>
+        <Filename Value="src\ugradbtn.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ugradbtn"/>
+      </Item2>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCl"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <IncludePath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
+      <LibraryPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
+      <ObjectPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
+      <UnitPath Value="$(PkgOutDir)\;$(PkgOutDir)\..\"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
