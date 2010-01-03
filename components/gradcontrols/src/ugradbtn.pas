@@ -1136,16 +1136,10 @@ end;
 procedure TGradButton.MouseDown(Button: TMouseButton;
                  Shift: TShiftState; X, Y: Integer);
 begin
-    inherited;
-
     if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
     begin
-
-
-       //WriteLn('X: ',X,' Y: ',Y);
        FState:=bsDown;
-       //FFocused:=true;
-       //LCLIntf.SetFocus(Handle);
+
        InvPaint;
     end else begin
        FState:=bsUp;
@@ -1156,33 +1150,27 @@ begin
        
        InvPaint;
     end;
+
+    inherited;
 end;
 
 procedure TGradButton.MouseUp(Button: TMouseButton;
                  Shift: TShiftState; X, Y: Integer);
 begin
-    if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
-    begin
-
-    //WriteLn('MouseUp');
-
+  if PtInRect(Rect(0,0,Width,Height),Point(X,Y)) then
+  begin
     FState:=bsHot;
-    //FFocused:=true;
     InvPaint(true);
 
     if Button = mbLeft then
-       inherited Click; //Faster, than the Overrided Click procedure
+      inherited Click; //Faster, than the Overrided Click procedure
+  end else begin
+    FState := bsUp;
+    FFocused:=false;
+    InvPaint(true);
+  end;
 
-   { if (Button = mbRight) AND Assigned(PopupMenu) then
-       PopupMenu.PopUp(X,Y);
-   }
-    end else begin
-        FState := bsUp;
-        FFocused:=false;
-        InvPaint(true);
-    end;
-
-    inherited;
+  inherited;
 end;
 
 //Thx to: http://www.delphipraxis.net/topic67805_farbverlauf+berechnen.html

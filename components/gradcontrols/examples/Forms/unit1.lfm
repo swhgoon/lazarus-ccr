@@ -1,14 +1,14 @@
 object Form1: TForm1
-  Left = 275
+  Left = 229
   Height = 493
-  Top = 161
+  Top = 150
   Width = 884
   Caption = 'TGradTabControl-Testsuite'
   ClientHeight = 493
   ClientWidth = 884
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
     Height = 493
@@ -94,7 +94,7 @@ object Form1: TForm1
       end
       object GradTabPage2: TGradTabPage
         Left = 2
-        Height = 488
+        Height = 489
         Top = 22
         Width = 642
         PageIndex = 2
@@ -247,8 +247,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 95
-      ClientWidth = 96
+      ClientHeight = 113
+      ClientWidth = 100
       ItemIndex = 0
       Items.Strings = (
         'tpTop'
@@ -321,7 +321,7 @@ object Form1: TForm1
     end
     object SpinEdit2: TSpinEdit
       Left = 16
-      Height = 25
+      Height = 23
       Top = 176
       Width = 100
       OnEditingDone = SpinEdit2EditingDone
@@ -329,7 +329,7 @@ object Form1: TForm1
     end
     object Edit1: TEdit
       Left = 16
-      Height = 25
+      Height = 23
       Top = 136
       Width = 72
       TabOrder = 6
@@ -337,7 +337,7 @@ object Form1: TForm1
     end
     object GradButton1: TGradButton
       Left = 90
-      Height = 19
+      Height = 22
       Top = 136
       Width = 26
       Caption = 'set'
@@ -402,8 +402,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 87
-      ClientWidth = 96
+      ClientHeight = 105
+      ClientWidth = 100
       ItemIndex = 0
       Items.Strings = (
         'blGlyphLeft'
@@ -413,6 +413,41 @@ object Form1: TForm1
       )
       OnClick = RadioGroup2Click
       TabOrder = 9
+    end
+    object Label2: TLabel
+      Left = 18
+      Height = 16
+      Top = 208
+      Width = 26
+      Caption = 'Style'
+      ParentColor = False
+    end
+    object ComboBox2: TComboBox
+      Left = 16
+      Height = 23
+      Top = 225
+      Width = 100
+      AutoDropDown = True
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Standard'
+        'Vista'
+        'VistaBlue'
+      )
+      OnChange = ComboBox2Change
+      Style = csDropDownList
+      TabOrder = 10
+      Text = 'Standard'
+    end
+    object CheckBox2: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 256
+      Width = 112
+      Caption = 'Rounded Corners'
+      OnChange = CheckBox2Change
+      TabOrder = 11
     end
   end
   object PopupMenu1: TPopupMenu

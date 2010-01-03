@@ -2,6 +2,8 @@ unit gradtabstyle;
 
 {$mode objfpc}{$H+}
 
+{.$DEFINE DEBUGTAB}
+
 {-------------------------------------
 Style-Class for TGradTabControl
 --------------------------------------}
@@ -9,7 +11,12 @@ Style-Class for TGradTabControl
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, Buttons, ExtCtrls, ugradbtn;
+  Classes, SysUtils, Controls, Graphics, Buttons, ExtCtrls, ugradbtn
+  {$IFDEF DEBUGTAB}
+  , sharedloggerlcl
+  {$ELSE}
+  , DummyLogger
+  {$ENDIF};
 
 type
   TStylePaintEvent = procedure(Sender: TCustomControl; AIndex: Integer;
@@ -22,6 +29,7 @@ type
 
   TGradTabStyleBase = class
   private
+    FRoundedCorners: Boolean;
     function GetHasCloseButtonPaint: Boolean;
     function GetHasTabButtonPaint: Boolean;
     function GetHasLeftRightButtonPaint: Boolean;
@@ -47,6 +55,7 @@ type
     property HasLeftRightButtonPaint : Boolean read GetHasLeftRightButtonPaint;
     property HasBorderButtonPaint : Boolean read GetHasBorderButtonPaint;
     property HasCloseButtonPaint : Boolean read GetHasCloseButtonPaint;
+    property RoundedCorners : Boolean read FRoundedCorners write FRoundedCorners;
   end;
 
   { TGradTabStandardStyle }
@@ -69,7 +78,7 @@ type
   end;
 
   TGradTabVistaStyle = class(TGradTabStyleBase)
-  private
+  protected
     Normal : TButtonVistaStyle;
     Hover : TButtonVistaStyle;
     ActiveButton : TButtonVistaStyle;
@@ -90,10 +99,38 @@ type
     procedure PrepareButton(Button: TGradButton); override;
   end;
 
+  { TGradTabVistaBlueStyle }
+
+  TGradTabVistaBlueStyle = class(TGradTabVistaStyle)
+  public
+    constructor Create; override;
+  end;
+
+  procedure LoggerButtonVistaStyle(Self: TButtonVistaStyle; Name: String);
+
 implementation
 
 uses
   ugradtabcontrol, LCLProc;
+
+procedure LoggerButtonVistaStyle(Self: TButtonVistaStyle; Name: String);
+  procedure C(aName: String; aColor: TColor);
+  begin
+    Logger.Send(aName, ColorToString(aColor));
+  end;
+
+begin
+  Logger.EnterMethod('Style: '+ Name);
+
+  C('BorderColor', Self.BorderColor);
+  C('InnerBorderColor', Self.InnerBorderColor);
+  C('TopStartColor', Self.TopStartColor);
+  C('TopStopColor', Self.TopStopColor);
+  C('BottomStartColor', Self.BottomStartColor);
+  C('BottomStopColor', Self.BottomStopColor);
+
+  Logger.ExitMethod('Style');
+end;
 
 { TGradTabStyleBase }
 
@@ -120,6 +157,8 @@ end;
 constructor TGradTabStyleBase.Create;
 begin
   FOptions:= [];
+
+  FRoundedCorners := true;
 end;
 
 procedure TGradTabStyleBase.PrepareButton(Button: TGradButton);
@@ -250,7 +289,18 @@ end;
 procedure TGradTabVistaStyle.TabCloseButton(Sender: TCustomControl;
   AIndex: Integer; Button: TGradButton; TargetCanvas: TCanvas; R: TRect;
   BState: TButtonState);
+var
+  FGradTabControl : TGradTabControl;
 begin
+  FGradTabControl := nil;
+
+  if Sender <> nil then
+    FGradTabControl := Sender as TGradTabControl;
+
+  if (FGradTabControl <> nil)
+  and (AIndex <> FGradTabControl.PageIndex) then
+    BState := bsUp;
+
   TabButton(Sender, AIndex, Button, TargetCanvas, R, BState);
 end;
 
@@ -258,6 +308,7 @@ procedure TGradTabVistaStyle.TabButtonBorder(Sender: TCustomControl; AIndex: Int
     Button: TGradButton; TargetCanvas: TCanvas; R: TRect; BState : TButtonState);
 var
   ColorSet: TButtonVistaStyle;
+  Temp : Integer;
 begin
   //DebugLn('Border R: ',DbgS(R));
 
@@ -265,6 +316,25 @@ begin
     bsDown: ColorSet := ActiveButton;
     bsHot: ColorSet := Hover;
     else ColorSet := Normal;
+  end;
+
+  Temp := 0;
+
+  if not RoundedCorners then
+  begin
+    if R.Left > 0 then
+      R.Left := R.Left -1;
+
+    if R.Right < Button.Width then
+      R.Right := R.Right + 1;
+
+    if R.Top > 0 then
+      R.Top := R.Top - 1;
+
+    if R.Bottom < Button.Height then
+      R.Bottom := R.Bottom + 1;
+
+    Temp := 1;
   end;
 
   with Button do
@@ -307,19 +377,19 @@ begin
 
     //TopLeft
     if (bsTopLine in BorderSides) AND (bsLeftLine in BorderSides) then
-      TargetCanvas.Pixels[1,1]:=ColorSet.BorderColor;
+      TargetCanvas.Pixels[1-Temp,1-Temp]:=ColorSet.BorderColor;
 
     //TopRight
     if (bsTopLine in BorderSides) AND (bsRightLine in BorderSides) then
-      TargetCanvas.Pixels[Width-2,1] := ColorSet.BorderColor;
+      TargetCanvas.Pixels[Width-2+Temp,1-Temp] := ColorSet.BorderColor;
 
     //BottomLeft
     if (bsBottomLine in BorderSides) AND (bsLeftLine in BorderSides) then
-      TargetCanvas.Pixels[1, Height-2]:=ColorSet.BorderColor;
+      TargetCanvas.Pixels[1-Temp, Height-2+Temp]:=ColorSet.BorderColor;
 
     //BottomRight
     if (bsBottomLine in BorderSides) AND (bsRightLine in BorderSides) then
-      TargetCanvas.Pixels[Width-2,Height-2]:=ColorSet.BorderColor;
+      TargetCanvas.Pixels[Width-2+Temp,Height-2+Temp]:=ColorSet.BorderColor;
   end;
 end;
 
@@ -327,7 +397,10 @@ procedure TGradTabVistaStyle.TabLeftRightButton(Sender: TGradButton;
   TargetCanvas: TCanvas; R: TRect; BState: TButtonState);
 begin
   if BState = bsDown then
-     BState := bsHot;
+    BState := bsHot;
+
+  if Sender.Font.Color = clWhite then
+    Sender.Font.Color := clBlack;
 
   TabButton(Sender.Owner as TCustomControl, 0, Sender, TargetCanvas, R, BState);
 end;
@@ -344,6 +417,45 @@ end;
 procedure TGradTabVistaStyle.PrepareButton(Button: TGradButton);
 begin
   Button.Font.Color:=clBlack;
+end;
+
+{ TGradTabVistaBlueStyle }
+
+constructor TGradTabVistaBlueStyle.Create;
+begin
+  inherited Create;
+
+  with Normal do
+  begin
+    BorderColor:=RGBToColor(145, 150, 162);       //#9196A2
+    InnerBorderColor:= RGBToColor(224, 255, 255);
+    TopStartColor := RGBToColor(252, 253, 254);
+    TopStopColor := RGBToColor(231, 235, 255);
+    BottomStartColor := RGBToColor(207, 215, 235);
+    BottomStopColor := RGBToColor(221, 227, 243);
+  end;
+
+  with Hover do
+  begin
+    BorderColor:=RGBToColor(145, 150, 162);       //#9196A2
+    InnerBorderColor:= RGBToColor(224, 255, 255);
+    TopStartColor := RGBToColor(232, 240, 251);
+    TopStopColor := RGBToColor(184, 212, 244);
+    BottomStartColor := RGBToColor(115, 176, 232);
+    BottomStopColor := RGBToColor(173, 208, 241);
+  end;
+
+  with ActiveButton do
+  begin
+    BorderColor:=RGBToColor(145, 150, 162);       //#9196A2
+    InnerBorderColor:= TColor($FFFFFF);
+    TopStartColor := RGBToColor(255, 245, 224);   //#FFF5E0
+    TopStopColor := RGBToColor(255, 222, 147);    //#FFDE93
+    BottomStartColor := RGBToColor(255, 184, 17); //#FFB811
+    BottomStopColor := RGBToColor(255, 213, 114);
+  end;
+
+  LoggerButtonVistaStyle(ActiveButton, 'ActiveButton');
 end;
 
 end.

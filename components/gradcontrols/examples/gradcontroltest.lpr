@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, multiloglaz
-  { you can add units after this }, unit1, gradtabcontrol_with_multilog;
+  { you can add units after this }, unit1, gradcontrols;
 
 {$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
 

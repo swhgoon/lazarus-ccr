@@ -1,15 +1,15 @@
 { Das ist eine automatisch erzeugte Lazarus-Ressourcendatei }
 
 LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#4'Left'#2'Y'#6'Height'#3#183#1#3'Top'#3#159#0#5'Wid'
-  +'th'#3'@'#2#13'ActiveControl'#7#9'TrackBar1'#11'BorderIcons'#11#12'biSystemM'
-  +'enu'#10'biMinimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#16'TGradBu'
-  +'tton-Demo'#12'ClientHeight'#3#183#1#11'ClientWidth'#3'@'#2#8'OnCreate'#7#10
-  +'FormCreate'#10'LCLVersion'#6#6'0.9.27'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6
-  +'Height'#2#16#3'Top'#2'K'#5'Width'#2'G'#7'Caption'#6#11'NormalBlend'#11'Pare'
-  +'ntColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#16#3'Top'#3#131#0
-  +#5'Width'#2'8'#7'Caption'#6#9'OverBlend'#11'ParentColor'#8#0#0#6'TLabel'#6'L'
-  +'abel3'#4'Left'#2'X'#6'Height'#2#16#3'Top'#2'K'#5'Width'#2#1#11'ParentColor'
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'p'#1#6'Height'#3#183#1#3'Top'#3#215#0#5'W'
+  +'idth'#3'@'#2#13'ActiveControl'#7#9'TrackBar1'#11'BorderIcons'#11#12'biSyste'
+  +'mMenu'#10'biMinimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#16'TGrad'
+  +'Button-Demo'#12'ClientHeight'#3#183#1#11'ClientWidth'#3'@'#2#8'OnCreate'#7
+  +#10'FormCreate'#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#6'Label1'#4'Left'#2#8
+  +#6'Height'#2#16#3'Top'#2'K'#5'Width'#2'G'#7'Caption'#6#11'NormalBlend'#11'Pa'
+  +'rentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#16#3'Top'#3#131
+  +#0#5'Width'#2'8'#7'Caption'#6#9'OverBlend'#11'ParentColor'#8#0#0#6'TLabel'#6
+  +'Label3'#4'Left'#2'X'#6'Height'#2#16#3'Top'#2'K'#5'Width'#2#1#11'ParentColor'
   +#8#0#0#6'TLabel'#6'Label4'#4'Left'#2'X'#6'Height'#2#16#3'Top'#3#131#0#5'Widt'
   +'h'#2#1#11'ParentColor'#8#0#0#6'TLabel'#6'Label5'#4'Left'#2'%'#6'Height'#2#16
   +#3'Top'#2#16#5'Width'#2'9'#7'Caption'#6#10'Base Color'#11'ParentColor'#8#0#0
@@ -90,7 +90,7 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'eight'#2'X'#11'ClientWidth'#2'}'#9'ItemIndex'#2#0#13'Items.Strings'#1#6#8't'
   +'aCenter'#6#13'taLeftJustify'#6#14'taRightJustify'#0#7'OnClick'#7#16'RadioGr'
   +'oup4Click'#8'TabOrder'#2#5#0#0#12'TLabeledEdit'#12'LabeledEdit1'#4'Left'#3
-  +'H'#1#6'Height'#2#25#3'Top'#3#216#0#5'Width'#2'P EditLabel.AnchorSideLeft.Co'
+  +'H'#1#6'Height'#2#23#3'Top'#3#216#0#5'Width'#2'P EditLabel.AnchorSideLeft.Co'
   +'ntrol'#7#12'LabeledEdit1"EditLabel.AnchorSideBottom.Control'#7#12'LabeledEd'
   +'it1'#14'EditLabel.Left'#3'H'#1#16'EditLabel.Height'#2#16#13'EditLabel.Top'#3
   +#197#0#15'EditLabel.Width'#2'R'#17'EditLabel.Caption'#6#14'Button Caption'#21

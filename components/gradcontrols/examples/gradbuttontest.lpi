@@ -30,11 +30,10 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="ImagesForLazarus"/>
+        <PackageName Value="gradcontrols"/>
       </Item1>
       <Item2>
-        <PackageName Value="gradbutton"/>
-        <MinVersion Valid="True"/>
+        <PackageName Value="ImagesForLazarus"/>
       </Item2>
       <Item3>
         <PackageName Value="LCL"/>
@@ -48,8 +47,8 @@
       </Unit0>
       <Unit1>
         <Filename Value="Forms\main.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
       </Unit1>
@@ -60,6 +59,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <OtherUnitFiles Value="Forms\"/>
+      <UnitOutputDirectory Value="Output\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

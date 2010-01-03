@@ -19,8 +19,10 @@ type
 
   TForm1 = class(TForm)
     CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
     CheckGroup1: TCheckGroup;
     ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
     Edit1: TEdit;
     GradButton1: TGradButton;
     GradTabPage1: TGradTabPage;
@@ -28,6 +30,7 @@ type
     GradTabPage3: TGradTabPage;
     ImageList1: TImageList;
     Label1: TLabel;
+    Label2: TLabel;
     Memo1: TMemo;
     NewPageBtn: TGradButton;
     DeleteBtn: TGradButton;
@@ -41,9 +44,11 @@ type
     RadioGroup2: TRadioGroup;
     SpinEdit2: TSpinEdit;
     procedure CheckBox1Click(Sender: TObject);
+    procedure CheckBox2Change(Sender: TObject);
     procedure CheckGroup1Click(Sender: TObject);
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure ComboBox1Change(Sender: TObject);
+    procedure ComboBox2Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
@@ -91,7 +96,8 @@ uses
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  GradTabControl1.Style :=TGradTabVistaStyle.Create;
+  GradTabControl1.Style :=TGradTabVistaBlueStyle.Create;
+  GradTabControl1.Style.RoundedCorners:=false;
   GradTabControl1.Align:=alClient;
   GradTabControl1.TabPosition:=tpTop;
   SpinEdit2.Value:=GradTabControl1.TabHeight;
@@ -112,6 +118,12 @@ begin
   GradButton1.Enabled:=CheckBox1.Checked;
 
   Edit1.Text:=IntToStr(GradTabControl1.LongWidth);
+end;
+
+procedure TForm1.CheckBox2Change(Sender: TObject);
+begin
+  GradTabControl1.Style.RoundedCorners:= CheckBox2.Checked;
+  Invalidate;
 end;
 
 procedure TForm1.CheckGroup1Click(Sender: TObject);
@@ -137,6 +149,17 @@ end;
 procedure TForm1.ComboBox1Change(Sender: TObject);
 begin
    GradTabControl1.PageIndex:=GradTabControl1.Tabs.IndexOf(ComboBox1.Text);
+end;
+
+procedure TForm1.ComboBox2Change(Sender: TObject);
+begin
+  case ComboBox2.ItemIndex of
+    0: GradTabControl1.Style := TGradTabStandardStyle.Create;
+    1: GradTabControl1.Style := TGradTabVistaStyle.Create;
+    2: GradTabControl1.Style := TGradTabVistaBlueStyle.Create;
+  end;
+
+  GradTabControl1.Style.RoundedCorners:= CheckBox2.Checked;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);

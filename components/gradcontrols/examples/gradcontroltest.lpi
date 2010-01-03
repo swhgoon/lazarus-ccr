@@ -16,7 +16,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <CurrentBuildNr Value="1166"/>
+      <CurrentBuildNr Value="1190"/>
       <ProjectVersion Value="0.0.0.0"/>
     </VersionInfo>
     <PublishOptions>
@@ -31,9 +31,9 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="gradtabcontrol_with_multilog"/>
+        <PackageName Value="gradcontrols"/>
       </Item1>
       <Item2>
         <PackageName Value="multiloglaz"/>
@@ -43,12 +43,8 @@
         <MinVersion Major="1" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="gradbutton"/>
-        <MinVersion Major="1" Minor="2" Valid="True"/>
-      </Item4>
-      <Item5>
         <PackageName Value="LCL"/>
-      </Item5>
+      </Item4>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
@@ -58,9 +54,9 @@
       </Unit0>
       <Unit1>
         <Filename Value="Forms\unit1.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
-        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
       </Unit1>
@@ -75,6 +71,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <OtherUnitFiles Value="Forms\"/>
+      <UnitOutputDirectory Value="Output"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
