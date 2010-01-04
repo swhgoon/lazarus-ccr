@@ -160,7 +160,6 @@ type
 
     FOnNewWindow: TGeckoBrowserNewWindow;
 
-    procedure InitWebBrowser;
     procedure ShutdownWebBrowser;
     procedure InnerLoadURI(uri: WideString; Flags: PRUint32;
       referer: nsIURI; postData, headers: TStream);
@@ -187,6 +186,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitWebBrowser;  //FPC port: moved from private to public 
     procedure LoadURI(const uri: WideString); overload;
     procedure LoadURI(const uri: WideString; const referer: UTF8String);
       overload;
