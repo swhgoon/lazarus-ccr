@@ -1,0 +1,130 @@
+inherited iPhoneSpecificOptions: TiPhoneSpecificOptions
+  Height = 439
+  Width = 485
+  ClientHeight = 439
+  ClientWidth = 485
+  DesignLeft = 631
+  DesignTop = 144
+  object lblRTLUtils: TLabel[0]
+    Left = 11
+    Height = 18
+    Top = 128
+    Width = 92
+    Caption = 'RTL units path'
+    ParentColor = False
+  end
+  object lblCompilerPath: TLabel[1]
+    Left = 11
+    Height = 18
+    Top = 96
+    Width = 55
+    Caption = 'Compiler'
+    ParentColor = False
+  end
+  object edtCompilerPath: TEdit[2]
+    Left = 125
+    Height = 22
+    Top = 96
+    Width = 347
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    Text = 'edtCompilerPath'
+  end
+  object lblXCodeProject: TLabel[3]
+    Left = 11
+    Height = 18
+    Top = 72
+    Width = 395
+    Caption = 'Specific ARM compiler settings (for generated XCode projects)'
+    ParentColor = False
+    ParentFont = False
+  end
+  object edtRTLPath: TEdit[4]
+    Left = 125
+    Height = 22
+    Top = 128
+    Width = 347
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    Text = 'edtRTLPath'
+  end
+  object edtCompilerOptions: TEdit[5]
+    Left = 125
+    Height = 22
+    Top = 160
+    Width = 347
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+    Text = 'edtCompilerOptions'
+  end
+  object lblCmpOptions: TLabel[6]
+    Left = 11
+    Height = 18
+    Top = 160
+    Width = 106
+    Caption = 'Compiler options'
+    ParentColor = False
+    ParentFont = False
+    OnClick = lblCmpOptionsClick
+  end
+  object Label5: TLabel[7]
+    Left = 11
+    Height = 18
+    Top = 16
+    Width = 97
+    Caption = 'Platforms path:'
+    ParentColor = False
+    ParentFont = False
+  end
+  object edtPlatformsPath: TEdit[8]
+    Left = 125
+    Height = 22
+    Top = 16
+    Width = 347
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = 'edtPlatformsPath'
+  end
+  object lblSimSettings: TLabel[9]
+    Left = 11
+    Height = 18
+    Top = 232
+    Width = 161
+    Caption = 'iPhone Simulator settings'
+    ParentColor = False
+  end
+  object edtSimBundle: TEdit[10]
+    Left = 160
+    Height = 22
+    Top = 262
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+    Text = 'edtSimBundle'
+  end
+  object edtSimApps: TEdit[11]
+    Left = 160
+    Height = 22
+    Top = 294
+    Width = 312
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 5
+    Text = 'edtSimApps'
+  end
+  object lblSimBundle: TLabel[12]
+    Left = 11
+    Height = 18
+    Top = 263
+    Width = 111
+    Caption = 'iPhoneSim bundle'
+    ParentColor = False
+  end
+  object lblSimAppPath: TLabel[13]
+    Left = 11
+    Height = 18
+    Top = 294
+    Width = 141
+    Caption = 'Sim Applications path:'
+    ParentColor = False
+  end
+end

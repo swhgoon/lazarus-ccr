@@ -1,0 +1,90 @@
+inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
+  Height = 374
+  Width = 618
+  ClientHeight = 374
+  ClientWidth = 618
+  OnClick = FrameClick
+  DesignLeft = 355
+  DesignTop = 224
+  object chkisPhone: TCheckBox[0]
+    Left = 16
+    Height = 18
+    Top = 16
+    Width = 199
+    Caption = 'is iPhone application project'
+    TabOrder = 0
+  end
+  object lblAppID: TLabel[1]
+    Left = 16
+    Height = 18
+    Top = 88
+    Width = 87
+    Caption = 'Application ID'
+    ParentColor = False
+  end
+  object edtAppID: TEdit[2]
+    Left = 112
+    Height = 22
+    Top = 85
+    Width = 488
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    Text = 'com.mycompany.myapp'
+  end
+  object lblAppIDHint: TLabel[3]
+    Left = 16
+    Height = 14
+    Top = 117
+    Width = 493
+    Caption = 'It''s recommended by Apple to use domain-structured name, i.e. com.mycompany.myApplication as ID'
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblSDKVer: TLabel[4]
+    Left = 16
+    Height = 18
+    Top = 51
+    Width = 80
+    Caption = 'SDK version:'
+    ParentColor = False
+  end
+  object cmbSDKs: TComboBox[5]
+    Left = 112
+    Height = 20
+    Top = 48
+    Width = 184
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      'iPhone 2.0'
+      'iPhone 2.1'
+      'iPhone 2.2'
+      'iPhone 2.2.1'
+      'iPhone 3.0'
+      'iPhone 3.1'
+      'iPhone 3.1.2'
+    )
+    OnChange = cmbSDKsChange
+    Style = csDropDownList
+    TabOrder = 2
+    Text = 'iPhone 2.0'
+  end
+  object btnCheckSDK: TButton[6]
+    Left = 312
+    Height = 20
+    Top = 48
+    Width = 158
+    AutoSize = True
+    Caption = 'Check available SDKs'
+    TabOrder = 3
+  end
+  object lblXibFiles: TLabel[7]
+    Left = 16
+    Height = 18
+    Top = 168
+    Width = 219
+    Caption = '.XIB files might appear here soon...'
+    ParentColor = False
+  end
+end

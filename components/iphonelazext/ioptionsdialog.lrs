@@ -1,0 +1,29 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TForm1','FORMDATA',[
+  'TPF0'#6'TForm1'#5'Form1'#4'Left'#3'-'#1#6'Height'#3#175#1#3'Top'#3#12#1#5'Wi'
+  +'dth'#3'u'#2#7'Caption'#6#14'iPhone options'#12'ClientHeight'#3#175#1#11'Cli'
+  +'entWidth'#3'u'#2#10'LCLVersion'#6#6'0.9.29'#0#12'TPageControl'#12'PageContr'
+  +'ol1'#4'Left'#2#16#6'Height'#3'['#1#3'Top'#2#16#5'Width'#3'U'#2#10'ActivePag'
+  +'e'#7#9'TabSheet2'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0
+  +#8'TabIndex'#2#1#8'TabOrder'#2#0#0#9'TTabSheet'#9'TabSheet1'#7'Caption'#6#22
+  +'iPhone Project Options'#0#0#9'TTabSheet'#9'TabSheet2'#7'Caption'#6#14'Globa'
+  +'l Options'#12'ClientHeight'#3'4'#1#11'ClientWidth'#3'O'#2#0#6'TLabel'#6'Lab'
+  +'el1'#4'Left'#2#20#6'Height'#2#18#3'Top'#2'@'#5'Width'#2'w'#9'Alignment'#7#14
+  +'taRightJustify'#7'Caption'#6#18'iPhone Sim Bundle:'#11'ParentColor'#8#0#0#5
+  +'TEdit'#5'Edit1'#4'Left'#3#149#0#6'Height'#2#22#3'Top'#2'<'#5'Width'#3#160#1
+  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#0#4'Text'#6#5'E'
+  +'dit1'#0#0#6'TLabel'#6'Label2'#4'Left'#2'%'#6'Height'#2#18#3'Top'#2't'#5'Wid'
+  +'th'#2'f'#7'Caption'#6#15'FPC arm-darwin:'#11'ParentColor'#8#0#0#5'TEdit'#5
+  +'Edit2'#4'Left'#3#149#0#6'Height'#2#22#3'Top'#2't'#5'Width'#3#160#1#7'Anchor'
+  +'s'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#1#4'Text'#6#5'Edit2'#0#0
+  +#5'TEdit'#5'Edit3'#4'Left'#3#149#0#6'Height'#2#22#3'Top'#2#28#5'Width'#3#160
+  +#1#8'TabOrder'#2#2#4'Text'#6#5'Edit3'#0#0#6'TLabel'#6'Label3'#4'Left'#2#9#6
+  +'Height'#2#18#3'Top'#2#28#5'Width'#3#130#0#9'Alignment'#7#14'taRightJustify'
+  +#7'Caption'#6#20'iPhone Sim SDKs dir:'#11'ParentColor'#8#0#0#0#0#7'TButton'#7
+  +'Button1'#4'Left'#3'H'#1#6'Height'#2#20#3'Top'#3#128#1#5'Width'#2'K'#7'Ancho'
+  +'rs'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#4'Save'#8'TabOrder'#2#1#0#0#7'T'
+  +'Button'#7'Button2'#4'Left'#3#232#0#6'Height'#2#20#3'Top'#3#128#1#5'Width'#2
+  +'K'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#6'Cancel'#8'TabOrder'
+  +#2#2#0#0#0
+]);

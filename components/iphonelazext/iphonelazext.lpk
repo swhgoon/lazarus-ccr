@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="iphonelazext"/>
+    <Author Value="Dmitry 'skalogryz' Boyarintsev"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx4055="True" idx4079="True" idx4080="True" idx4081="True" idx5024="True" idx5057="True" idx5060="True"/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="iPhone Development Lazarus extension
+"/>
+    <License Value="LGPL"/>
+    <Version Minor="5"/>
+    <Files Count="11">
+      <Item1>
+        <Filename Value="ideext.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ideext"/>
+      </Item1>
+      <Item2>
+        <Filename Value="iphoneextstr.pas"/>
+        <UnitName Value="iPhoneExtStr"/>
+      </Item2>
+      <Item3>
+        <Filename Value="iphonebundle.pas"/>
+        <UnitName Value="iPhoneBundle"/>
+      </Item3>
+      <Item4>
+        <Filename Value="xcodeproject.pas"/>
+        <UnitName Value="XCodeProject"/>
+      </Item4>
+      <Item5>
+        <Filename Value="environment_iphone_options.pas"/>
+        <UnitName Value="environment_iphone_options"/>
+      </Item5>
+      <Item6>
+        <Filename Value="project_iphone_options.pas"/>
+        <UnitName Value="project_iphone_options"/>
+      </Item6>
+      <Item7>
+        <Filename Value="iphoneextoptions.pas"/>
+        <UnitName Value="iPhoneExtOptions"/>
+      </Item7>
+      <Item8>
+        <Filename Value="xcodetemplate.pas"/>
+        <UnitName Value="xcodetemplate"/>
+      </Item8>
+      <Item9>
+        <Filename Value="environment_iphone_options.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="project_iphone_options.lfm"/>
+        <Type Value="LFM"/>
+      </Item10>
+      <Item11>
+        <Filename Value="lazfilesutils.pas"/>
+        <UnitName Value="lazfilesutils"/>
+      </Item11>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
