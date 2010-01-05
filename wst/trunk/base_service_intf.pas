@@ -589,6 +589,7 @@ type
       const ATypeInfo : PTypeInfo
     );override;
   end;
+  TBaseComplexSimpleContentRemotableClass = class of TBaseComplexSimpleContentRemotable;
 
   { TComplexInt8UContentRemotable }
 
@@ -1533,7 +1534,7 @@ type
     property TimeOut : PtrUInt read FTimeOut write FTimeOut;
   end;
 
-  TTypeRegistryItemOption = ( trioNonVisibleToMetadataService );
+  TTypeRegistryItemOption = ( trioNonVisibleToMetadataService, trioNonQualifiedName );
   TTypeRegistryItemOptions = set of TTypeRegistryItemOption;
   TTypeRegistry = class;
   TTypeRegistryItem = class;
@@ -1555,10 +1556,28 @@ type
 {$ENDIF TRemotableTypeInitializer_Initialize}
   end;
 
+  TPropertyNameType = ( pntInternalName, pntExternalName );
+
+  { TPropertyItem }
+
+  TPropertyItem = class
+  private
+    FExternalName: string;
+    FExtObject: TObject;
+    FInternalName: string;
+    FOptions: TTypeRegistryItemOptions;
+  public
+    property InternalName : string read FInternalName {write FInternalName};
+    property ExternalName : string read FExternalName {write FExternalName};
+    property ExtObject : TObject read FExtObject {write FExtObject};
+    property Options : TTypeRegistryItemOptions read FOptions {write FOptions};
+  end;
+
   { TTypeRegistryItem }
 
   TTypeRegistryItem = class
   private
+    //FDefaultPropertyOptions: TTypeRegistryItemOptions;
     FOwner : TTypeRegistry;
     FDataType: PTypeInfo;
     FNameSpace: string;
@@ -1566,12 +1585,14 @@ type
     FOptions: TTypeRegistryItemOptions;
     FPascalSynonyms : TStrings;
     FExternalSynonyms : TStrings;
-    FExternalNames : TStrings;
-    FInternalNames : TStrings;
-  private
-    procedure CreateInternalObjects();{$IFDEF USE_INLINE}inline;{$ENDIF}
+    FProperties : TObjectList;
   protected
     procedure Init(); virtual;
+  protected
+    function IndexOfProp(
+      const AName : string;
+      const ANameType : TPropertyNameType
+    ) : Integer;
   public
     constructor Create(
             AOwner        : TTypeRegistry;
@@ -1585,9 +1606,17 @@ type
     function IsSynonym(const APascalTypeName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function IsExternalSynonym(const AExternalName : string):Boolean;{$IFDEF USE_INLINE}inline;{$ENDIF}
 
+    function FindProperty(
+      const AName : string;
+      const ANameType : TPropertyNameType
+    ) : TPropertyItem;
     procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); virtual;
     function GetExternalPropertyName(const APropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
     function GetInternalPropertyName(const AExtPropName : string) : string;{$IFDEF USE_INLINE}inline;{$ENDIF}
+    procedure SetPropertyOptions(
+      const APropName : string;
+      const AOptions : TTypeRegistryItemOptions
+    ); virtual;
 
     procedure RegisterObject(const APropName : string; const AObject : TObject);
     function GetObject(const APropName : string) : TObject;
@@ -1597,6 +1626,8 @@ type
     property NameSpace : string read FNameSpace;
     property DeclaredName : string read FDeclaredName;
     property Options : TTypeRegistryItemOptions read FOptions write FOptions;
+    //property DefaultPropertyOptions : TTypeRegistryItemOptions
+      //read FDefaultPropertyOptions write FDefaultPropertyOptions;
   end;
 
   TTypeRegistrySearchOption = ( trsoIncludeExternalSynonyms );
@@ -1782,6 +1813,7 @@ begin
   THeaderBlock.RegisterAttributeProperty('mustUnderstand');
   ri := r.Register(sSOAP_ENV,TypeInfo(THeaderBlock),'THeaderBlock');
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
+  ri.SetPropertyOptions('mustUnderstand',[]);
   ri := r.Register(sSOAP_ENV,TypeInfo(TSimpleContentHeaderBlock));
   ri.Options := ri.Options + [trioNonVisibleToMetadataService];
   ri := r.Register(sSOAP_ENV,TypeInfo(THeaderBlockProxy));
@@ -3071,17 +3103,52 @@ end;
 
 { TTypeRegistryItem }
 
-procedure TTypeRegistryItem.CreateInternalObjects();
-begin
-  if not Assigned(FExternalNames) then begin
-    FExternalNames := TStringList.Create();
-    FInternalNames := TStringList.Create();
-  end;
-end;
-
 procedure TTypeRegistryItem.Init();
 begin
 
+end;
+
+function TTypeRegistryItem.IndexOfProp(
+  const AName: string;
+  const ANameType : TPropertyNameType
+) : Integer;
+var
+  i : Integer;
+  locName : string;
+begin
+  Result := -1;
+  if ( FProperties <> nil ) and ( FProperties.Count > 0 ) then begin
+    locName := LowerCase(AName);
+    if ( ANameType = pntInternalName ) then begin
+      for i := 0 to Pred(FProperties.Count) do begin
+        if ( locName = LowerCase(TPropertyItem(FProperties[i]).InternalName) ) then begin
+          Result := i;
+          Break;
+        end;
+      end;
+    end else begin
+      for i := 0 to Pred(FProperties.Count) do begin
+        if ( locName = LowerCase(TPropertyItem(FProperties[i]).ExternalName) ) then begin
+          Result := i;
+          Break;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TTypeRegistryItem.FindProperty(
+  const AName: string;
+  const ANameType : TPropertyNameType
+) : TPropertyItem;
+var
+  i : Integer;
+begin
+  i := IndexOfProp(AName,ANameType);
+  if ( i = -1 ) then
+    Result := nil
+  else
+    Result := TPropertyItem(FProperties[i]);
 end;
 
 constructor TTypeRegistryItem.Create(
@@ -3100,25 +3167,8 @@ begin
 end;
 
 destructor TTypeRegistryItem.Destroy();
-
-  procedure FreeObjects();
-  var
-    j, k : PtrInt;
-    obj : TObject;
-  begin
-    j := FExternalNames.Count;
-    for k := 0 to Pred(j) do begin
-      obj := FExternalNames.Objects[k];
-      if ( obj <> nil ) then
-        obj.Free();
-    end;
-  end;
-
 begin
-  if ( FExternalNames <> nil ) and ( FExternalNames.Count > 0 ) then
-    FreeObjects();
-  FInternalNames.Free();
-  FExternalNames.Free();
+  FreeAndNil(FProperties);
   FPascalSynonyms.Free();
   FExternalSynonyms.Free();
   inherited Destroy();
@@ -3165,56 +3215,82 @@ begin
 end;
 
 procedure TTypeRegistryItem.RegisterExternalPropertyName(const APropName,AExtPropName: string);
+var
+  i : Integer;
+  po : TPropertyItem;
 begin
-  if not Assigned(FExternalNames) then begin
-    CreateInternalObjects();
+  i := IndexOfProp(APropName,pntInternalName);
+  if ( i = -1 ) then begin
+    if ( FProperties = nil ) then
+      FProperties := TObjectList.Create(True);
+    po := TPropertyItem.Create();
+    FProperties.Add(po);
+    po.FInternalName := APropName;
+    //po.FOptions := Self.DefaultPropertyOptions;
+  end else begin
+    po := TPropertyItem(FProperties[i]);
   end;
-  FExternalNames.Values[APropName] := AExtPropName;
-  FInternalNames.Values[AExtPropName] := APropName;
+  po.FExternalName := AExtPropName;
 end;
 
 procedure TTypeRegistryItem.RegisterObject(const APropName : string; const AObject : TObject);
 var
   i : PtrInt;
 begin
-  if not Assigned(FExternalNames) then begin
-    CreateInternalObjects();
+  i := IndexOfProp(APropName,pntInternalName);
+  if ( i = -1 ) then begin
+    RegisterExternalPropertyName(APropName,APropName);
+    i := IndexOfProp(APropName,pntInternalName);
   end;
-  i := FExternalNames.IndexOfName(APropName);
-  if ( i < 0 ) then begin
-    FExternalNames.Values[APropName] := APropName;
-    i := FExternalNames.IndexOfName(APropName);
-  end;
-  FExternalNames.Objects[i] := AObject;
+  TPropertyItem(FProperties[i]).FExtObject := AObject;
 end;
 
 function TTypeRegistryItem.GetObject(const APropName : string) : TObject;
 var
-  i : PtrInt;
+  p : TPropertyItem;
 begin
-  Result := nil;
-  if Assigned(FExternalNames) then begin
-    i := FExternalNames.IndexOfName(APropName);
-    if ( i >= 0 ) then
-      Result := FExternalNames.Objects[i];
-  end;
+  p := FindProperty(APropName,pntInternalName);
+  if ( p = nil ) then
+    Result := nil
+  else
+    Result := p.ExtObject;
 end;
 
 function TTypeRegistryItem.GetExternalPropertyName(const APropName: string): string;
+var
+  p : TPropertyItem;
 begin
-  if Assigned(FExternalNames) and ( FExternalNames.IndexOfName(APropName) <> -1 ) then begin
-    Result := FExternalNames.Values[APropName];
-  end else begin
-    Result := APropName;
-  end;
+  p := FindProperty(APropName,pntInternalName);
+  if ( p = nil ) then
+    Result := APropName
+  else
+    Result := p.ExternalName;
 end;
 
 function TTypeRegistryItem.GetInternalPropertyName(const AExtPropName: string): string;
+var
+  p : TPropertyItem;
 begin
-  if Assigned(FInternalNames) and ( FInternalNames.IndexOfName(AExtPropName) <> -1 ) then
-    Result := FInternalNames.Values[AExtPropName]
+  p := FindProperty(AExtPropName,pntExternalName);
+  if ( p = nil ) then
+    Result := AExtPropName
   else
-    Result := AExtPropName;
+    Result := p.InternalName;
+end;
+
+procedure TTypeRegistryItem.SetPropertyOptions(
+  const APropName: string;
+  const AOptions: TTypeRegistryItemOptions
+);
+var
+  po : TPropertyItem;
+begin
+  po := FindProperty(APropName,pntInternalName);
+  if ( po = nil ) then begin
+    RegisterExternalPropertyName(APropName,APropName);
+    po := FindProperty(APropName,pntInternalName);
+  end;
+  po.FOptions := AOptions;
 end;
 
 { TTypeRegistry }
@@ -5160,6 +5236,17 @@ class procedure TBaseComplexSimpleContentRemotable.Save(
   const AName: string;
   const ATypeInfo: PTypeInfo
 );
+{$IFDEF USE_SERIALIZE}
+var
+  locSerializer : TSimpleContentObjectSerializer;
+begin
+  locSerializer := TSimpleContentObjectRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then
+    locSerializer.Save(AObject,AStore,AName,ATypeInfo)
+  else
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+end;
+{$ELSE USE_SERIALIZE}
 Var
   propList : PPropList;
   i, propCount, propListLen : Integer;
@@ -5313,6 +5400,7 @@ begin
     AStore.SetSerializationStyle(oldSS);
   end;
 end;
+{$ENDIF USE_SERIALIZE}
 
 class procedure TBaseComplexSimpleContentRemotable.Load(
   var AObject: TObject;
@@ -5320,6 +5408,17 @@ class procedure TBaseComplexSimpleContentRemotable.Load(
   var AName: string;
   const ATypeInfo: PTypeInfo
 );
+{$IFDEF USE_SERIALIZE}
+var
+  locSerializer : TSimpleContentObjectSerializer;
+begin
+  locSerializer := TSimpleContentObjectRegistryItem(GetTypeRegistry().ItemByTypeInfo[ATypeInfo]).GetSerializer();
+  if ( locSerializer <> nil ) then
+    locSerializer.Read(AObject,AStore,AName,ATypeInfo)
+  else
+    raise ETypeRegistryException.CreateFmt(SERR_NoSerializerFoThisType,[ATypeInfo^.Name])
+end;
+{$ELSE USE_SERIALIZE}
 Var
   propList : PPropList;
   i, propCount, propListLen : Integer;
@@ -5484,6 +5583,7 @@ begin
     end;
   end;
 end;
+{$ENDIF USE_SERIALIZE}
 
 { TComplexInt32SContentRemotable }
 
@@ -6464,6 +6564,7 @@ begin
   if ( TypeRegistryInstance = nil ) then begin
     TypeRegistryInstance := TTypeRegistry.Create();
     TypeRegistryInstance.RegisterInitializer(TBaseComplexRemotableInitializer);
+    TypeRegistryInstance.RegisterInitializer(TSimpleContentObjectRemotableInitializer);
   end;
   if ( SerializeOptionsRegistryInstance = nil ) then
     SerializeOptionsRegistryInstance := TSerializeOptionsRegistry.Create();

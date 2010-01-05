@@ -6,7 +6,7 @@
   xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
   <SOAP-ENV:Header xmlns:ns1="urn:simple-content-header.sample">
     <ns1:TSampleSimpleContentHeaderBlock_A>sample header simple content value</ns1:TSampleSimpleContentHeaderBlock_A>
-    <ns1:TSampleSimpleContentHeaderBlock_B ns1:intAtt="1210">another content</ns1:TSampleSimpleContentHeaderBlock_B>
+    <ns1:TSampleSimpleContentHeaderBlock_B intAtt="1210">another content</ns1:TSampleSimpleContentHeaderBlock_B>
   </SOAP-ENV:Header>
   <SOAP-ENV:Body>
     <ns2:test_proc xmlns:ns2="TestService"/>

@@ -590,7 +590,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    //locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
+    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_2.xml'));
@@ -657,7 +657,7 @@ const
          '  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">'  + sLineBreak +
          '  <SOAP-ENV:Header xmlns:ns1="urn:simple-content-header.sample">'  + sLineBreak +
          '    <ns1:TSampleSimpleContentHeaderBlock_A SOAP-ENV:mustUnderstand="1">sample header simple content value</ns1:TSampleSimpleContentHeaderBlock_A>'  + sLineBreak +
-         '    <ns1:TSampleSimpleContentHeaderBlock_B ns1:intAtt="1210" SOAP-ENV:mustUnderstand="0">another content</ns1:TSampleSimpleContentHeaderBlock_B>'  + sLineBreak +
+         '    <ns1:TSampleSimpleContentHeaderBlock_B intAtt="1210" SOAP-ENV:mustUnderstand="1">another content</ns1:TSampleSimpleContentHeaderBlock_B>'  + sLineBreak +
          '  </SOAP-ENV:Header>'  + sLineBreak +
          '  <SOAP-ENV:Body>'  + sLineBreak +
          '    <ns2:test_proc xmlns:ns2="TestService"/>'  + sLineBreak +
@@ -688,8 +688,9 @@ begin
         CheckEquals('sample header simple content value',hdrA.Value,'Value');
       CheckIs(cctx.GetHeader(1),TSampleSimpleContentHeaderBlock_B);
         hdrB := TSampleSimpleContentHeaderBlock_B(cctx.GetHeader(1));
-        CheckEquals(0,hdrB.mustUnderstand,'mustUnderstand');
+        CheckEquals(1,hdrB.mustUnderstand,'mustUnderstand');
         CheckEquals('another content',hdrB.Value,'Value');
+        CheckEquals(1210,hdrB.intAtt,'intAtt');
     f.EndScopeRead();
   finally
     FreeAndNil(strm);

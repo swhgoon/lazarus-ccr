@@ -168,6 +168,9 @@ var
   s : TBinaryString;
 {$ENDIF}
 begin
+{$IFDEF WST_DBG}
+  TMemoryStream(ARequest).SaveToFile('request-1.log');
+{$ENDIF}
   FConnection.Document.Size := 0;
   FConnection.Headers.Add('soapAction:' + SoapAction);
   FConnection.Document.CopyFrom(ARequest,0);

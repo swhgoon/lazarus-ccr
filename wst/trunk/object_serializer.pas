@@ -99,7 +99,39 @@ type
     property Target : TBaseComplexRemotableClass read FTarget;
     property Options : TObjectSerializerOptions read FOptions write FOptions;
   end;
-  
+
+  TSimpleContentObjectSerializer = class
+  private
+    FSerializationInfos : TObjectList;
+    FTarget : TBaseComplexSimpleContentRemotableClass;
+    FRawPropList : PPropList;
+    FOptions : TObjectSerializerOptions;
+  private
+    procedure Prepare(ATypeRegistry : TTypeRegistry);
+    function FindInfo(const APropName : string) : TPropSerializationInfo;
+    procedure UpdateExternalName(const APropName, AExtPropName : string);
+  public
+    constructor Create(
+      ATargetClass : TBaseComplexSimpleContentRemotableClass;
+      ATypeRegistry : TTypeRegistry
+    );
+    destructor Destroy();override;
+    procedure Read(
+      var   AObject   : TObject;
+            AStore    : IFormatterBase;
+      var   AName     : string;
+      const ATypeInfo : PTypeInfo
+    );
+    procedure Save(
+            AObject   : TBaseRemotable;
+            AStore    : IFormatterBase;
+      const AName     : string;
+      const ATypeInfo : PTypeInfo
+    );
+    property Target : TBaseComplexSimpleContentRemotableClass read FTarget;
+    property Options : TObjectSerializerOptions read FOptions write FOptions;
+  end;
+
   TGetSerializerFunction = function() : TObjectSerializer of object;
   
   { TBaseComplexTypeRegistryItem }
@@ -114,7 +146,24 @@ type
     procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); override;
     function GetSerializer() : TObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   end;
-  
+
+  { TSimpleContentObjectRegistryItem }
+
+  TSimpleContentObjectRegistryItem = class(TTypeRegistryItem)
+  private
+    FSerializer : TSimpleContentObjectSerializer;
+  protected
+    procedure Init(); override;
+  public
+    destructor Destroy();override;
+    procedure RegisterExternalPropertyName(const APropName, AExtPropName : string); override;
+    procedure SetPropertyOptions(
+      const APropName : string;
+      const AOptions : TTypeRegistryItemOptions
+    ); virtual;
+    function GetSerializer() : TSimpleContentObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
+  end;
+
   { TBaseComplexRemotableInitializer }
 
   TBaseComplexRemotableInitializer = class(TRemotableTypeInitializer)
@@ -128,7 +177,22 @@ type
     ) : Boolean;override;
 {$ENDIF TRemotableTypeInitializer_Initialize}
   end;
-  
+
+  { TBaseComplexRemotableInitializer }
+
+  TSimpleContentObjectRemotableInitializer = class(TRemotableTypeInitializer)
+  public
+    class function CanHandle(ATypeInfo : PTypeInfo) : Boolean;override;
+    class function GetItemClass(const ATypeInfo : PTypeInfo) : TTypeRegistryItemClass;override;
+{$IFDEF TRemotableTypeInitializer_Initialize}
+    class function Initialize(
+      ATypeInfo : PTypeInfo;
+      ARegistryItem : TTypeRegistryItem
+    ) : Boolean;override;
+{$ENDIF TRemotableTypeInitializer_Initialize}
+  end;
+
+
 implementation
 uses
   wst_consts;
@@ -1208,6 +1272,7 @@ var
   serArray : array of TPropSerializationInfo;
   serInfo : TPropSerializationInfo;
   regItem, thisRegItem : TTypeRegistryItem;
+  regPropItem : TPropertyItem;
   st : TPropStoreType;
   clPL : PPropList;
 begin
@@ -1229,18 +1294,40 @@ begin
           ppi := FRawPropList^[i];
           st := IsStoredPropClass(cl,ppi);
           if ( st in [pstAlways,pstOptional] ) then begin
+            regPropItem := regItem.FindProperty(ppi^.Name,pntInternalName);
             serInfo := TPropSerializationInfo.Create();
             serArray[ppi^.NameIndex] := serInfo;
-            serInfo.FExternalName := regItem.GetExternalPropertyName(ppi^.Name);
             serInfo.FName := ppi^.Name;
             serInfo.FPersisteType := st;
             serInfo.FPropInfo := ppi;
-            serInfo.FReaderProc := ReaderInfoMap[ppi^.PropType^.Kind].Simple;
-            serInfo.FWriterProc := WriterInfoMap[ppi^.PropType^.Kind].Simple;
-            if Target.IsAttributeProperty(ppi^.Name) then
-              serInfo.FStyle := ssAttibuteSerialization
-            else
+            serInfo.FNameSpace := regItem.NameSpace;
+            if Target.IsAttributeProperty(ppi^.Name) then begin
+              serInfo.FStyle := ssAttibuteSerialization;
+              serInfo.FQualifiedName := True;
+              serInfo.FNameSpace := '';
+            end else begin
               serInfo.FStyle := ssNodeSerialization;
+            end;
+            if ( regPropItem <> nil ) then begin
+              serInfo.FExternalName := regPropItem.ExternalName;
+              if ( trioNonQualifiedName in regPropItem.Options ) then begin
+                serInfo.FNameSpace := '';
+                serInfo.FQualifiedName := True;
+              end;
+            end else begin
+              serInfo.FExternalName := serInfo.FName;
+              if ( trioNonQualifiedName in regItem.Options ) then begin
+                serInfo.FQualifiedName := True;
+                serInfo.FNameSpace := '';
+              end;
+            end;
+            if serInfo.QualifiedName then begin
+              serInfo.FReaderProc := ReaderInfoMap[ppi^.PropType^.Kind].Qualified;
+              serInfo.FWriterProc := WriterInfoMap[ppi^.PropType^.Kind].Qualified;
+            end else begin
+              serInfo.FReaderProc := ReaderInfoMap[ppi^.PropType^.Kind].Simple;
+              serInfo.FWriterProc := WriterInfoMap[ppi^.PropType^.Kind].Simple;
+            end;
           end;
         end;
         //Check for inherited properties declared in other namespace
@@ -1409,6 +1496,259 @@ begin
   end;
 end;
 
+{ TSimpleContentObjectSerializer }
+
+procedure TSimpleContentObjectSerializer.Prepare(ATypeRegistry : TTypeRegistry);
+var
+  thisRegItem, regItem : TTypeRegistryItem;
+  serArray : array of TPropSerializationInfo;
+  cl : TClass;
+
+  procedure InitPropItem(const APropInfo : PPropInfo);
+  var
+    regPropItem : TPropertyItem;
+    serInfo : TPropSerializationInfo;
+    st : TPropStoreType;
+  begin
+    st := IsStoredPropClass(cl,APropInfo);
+    if ( st in [pstAlways,pstOptional] ) then begin
+      regPropItem := regItem.FindProperty(APropInfo^.Name,pntInternalName);
+      serInfo := TPropSerializationInfo.Create();
+      serArray[APropInfo^.NameIndex] := serInfo;
+      serInfo.FName := APropInfo^.Name;
+      serInfo.FExternalName := serInfo.FName;
+      serInfo.FPersisteType := st;
+      serInfo.FPropInfo := APropInfo;
+      serInfo.FNameSpace := regItem.NameSpace;
+      serInfo.FStyle := ssAttibuteSerialization;
+      serInfo.FQualifiedName := True;
+      serInfo.FNameSpace := '';
+      if ( regPropItem <> nil ) then begin
+        serInfo.FExternalName := regPropItem.ExternalName;
+        if not ( trioNonQualifiedName in regPropItem.Options ) then begin
+          serInfo.FNameSpace := regItem.NameSpace;
+          serInfo.FQualifiedName := True;
+        end;
+      end;
+      if serInfo.QualifiedName then begin
+        serInfo.FReaderProc := ReaderInfoMap[APropInfo^.PropType^.Kind].Qualified;
+        serInfo.FWriterProc := WriterInfoMap[APropInfo^.PropType^.Kind].Qualified;
+      end else begin
+        serInfo.FReaderProc := ReaderInfoMap[APropInfo^.PropType^.Kind].Simple;
+        serInfo.FWriterProc := WriterInfoMap[APropInfo^.PropType^.Kind].Simple;
+      end;
+    end;
+  end;
+
+  procedure InheritedInitPropItem(const APropInfo : PPropInfo);
+  var
+    regPropItem : TPropertyItem;
+    serInfo : TPropSerializationInfo;
+  begin
+    serInfo := serArray[APropInfo^.NameIndex];
+    if ( serInfo <> nil ) then begin
+      regPropItem := regItem.FindProperty(APropInfo^.Name,pntInternalName);
+      if ( regPropItem <> nil ) then begin
+        if not ( trioNonQualifiedName in regPropItem.Options ) then begin
+          serInfo.FNameSpace := regItem.NameSpace;
+          serInfo.FQualifiedName := True;
+        end;
+      end else begin
+        if ( thisRegItem.NameSpace <> regItem.NameSpace ) then begin
+          if ( serInfo.FNameSpace <> '' ) then begin
+            serInfo.FNameSpace := regItem.NameSpace;
+            serInfo.FQualifiedName := True;
+            serInfo.FReaderProc := ReaderInfoMap[APropInfo^.PropType^.Kind].Qualified;
+            serInfo.FWriterProc := WriterInfoMap[APropInfo^.PropType^.Kind].Qualified;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+var
+  locObjTypeData : PTypeData;
+  locTypeInfo : PTypeInfo;
+  c, i : PtrInt;
+  clPL : PPropList;
+begin
+  FSerializationInfos.Clear();
+  locTypeInfo := PTypeInfo(Target.ClassInfo);
+  locObjTypeData := GetTypeData(locTypeInfo);
+  c := locObjTypeData^.PropCount;
+  if ( c > 0 ) then begin
+    clPL := nil;
+    SetLength(serArray,c);
+    try
+      FillChar(Pointer(serArray)^,SizeOf(TPropSerializationInfo)*c,#0);
+      cl := Target;
+      thisRegItem := ATypeRegistry.ItemByTypeInfo[locTypeInfo];
+      regItem := thisRegItem;
+      GetPropList(locTypeInfo,FRawPropList);
+      try
+        for i := 0 to Pred(c) do begin
+          InitPropItem(FRawPropList^[i]);
+        end;
+        //Check for inherited properties declared in other namespace
+        GetMem(clPL,c*SizeOf(Pointer));
+        cl := cl.ClassParent;
+        while ( cl <> nil ) and ( cl <> TBaseComplexSimpleContentRemotable ) do begin
+          c := GetTypeData(PTypeInfo(cl.ClassInfo))^.PropCount;
+          if ( c > 0 ) then begin
+            GetPropInfos(PTypeInfo(cl.ClassInfo),clPL);
+            regItem := ATypeRegistry.Find(PTypeInfo(cl.ClassInfo),True);
+            if ( regItem <> nil ) then begin
+              for i := 0 to Pred(c) do begin
+                InheritedInitPropItem(clPL^[i]);
+              end;
+            end;
+          end;
+          cl := cl.ClassParent;
+        end;
+        // Fill the list now
+        for i := 0 to Pred(Length(serArray)) do begin
+          if ( serArray[i] <> nil ) then begin
+            FSerializationInfos.Add(serArray[i]);
+            serArray[i] := nil;
+          end;
+        end;
+      except
+        for i := 0 to Pred(locObjTypeData^.PropCount) do
+          serArray[i].Free();
+        raise;
+      end;
+    finally
+      if ( clPL <> nil ) then
+        FreeMem(clPL,locObjTypeData^.PropCount*SizeOf(Pointer));
+      SetLength(serArray,0);
+    end;
+  end;
+end;
+
+function TSimpleContentObjectSerializer.FindInfo(const APropName: string): TPropSerializationInfo;
+var
+  i : Integer;
+begin
+  Result := nil;
+  if ( FSerializationInfos.Count > 0 ) then begin
+    for i := 0 to Pred(FSerializationInfos.Count) do begin
+      if SameText(APropName,TPropSerializationInfo(FSerializationInfos[i]).ExternalName) then begin
+        Result := TPropSerializationInfo(FSerializationInfos[i]);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+procedure TSimpleContentObjectSerializer.UpdateExternalName(
+  const APropName,
+        AExtPropName : string
+);
+var
+  itm : TPropSerializationInfo;
+begin
+  itm := FindInfo(APropName);
+  if ( itm <> nil ) then
+    itm.FExternalName := AExtPropName;
+end;
+
+constructor TSimpleContentObjectSerializer.Create(
+  ATargetClass : TBaseComplexSimpleContentRemotableClass;
+  ATypeRegistry : TTypeRegistry
+);
+begin
+  Assert(ATargetClass <> nil);
+  Assert(ATypeRegistry <> nil);
+  FTarget := ATargetClass;
+  FSerializationInfos := TObjectList.Create(True);
+  Prepare(ATypeRegistry);
+end;
+
+destructor TSimpleContentObjectSerializer.Destroy();
+begin
+  if ( FRawPropList <> nil ) then
+    FreeMem(FRawPropList,GetTypeData(PTypeInfo(Target.ClassInfo))^.PropCount*SizeOf(Pointer));
+  FSerializationInfos.Free();
+  inherited Destroy();
+end;
+
+type
+  TBaseComplexSimpleContentRemotableCrack = class(TBaseComplexSimpleContentRemotable) end;
+
+procedure TSimpleContentObjectSerializer.Read(
+  var AObject : TObject;
+      AStore : IFormatterBase;
+  var AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  oldSS : TSerializationStyle;
+  i, c : PtrInt;
+  locSerInfo : TPropSerializationInfo;
+begin
+  oldSS := AStore.GetSerializationStyle();
+  if ( osoDontDoBeginRead in Options ) or ( AStore.BeginObjectRead(AName,ATypeInfo) >= 0 ) then begin
+    try
+      if AStore.IsCurrentScopeNil() then
+        Exit; // ???? FreeAndNil(AObject);
+      if not Assigned(AObject) then
+        AObject := Target.Create();
+      TBaseComplexSimpleContentRemotableCrack(AObject).LoadValue(AObject,AStore);
+      c := FSerializationInfos.Count;
+      if ( c > 0 ) then begin
+        AStore.SetSerializationStyle(ssAttibuteSerialization);
+        for i := 0 to Pred(c) do begin
+          locSerInfo := TPropSerializationInfo(FSerializationInfos[i]);
+          if ( not locSerInfo.ReaderProc(AObject,locSerInfo,AStore) ) and
+             ( locSerInfo.PersisteType = pstAlways )
+          then begin
+            AStore.Error(SERR_ParamaterNotFound,[locSerInfo.ExternalName]);
+          end;
+        end;
+      end;
+    finally
+      if not ( osoDontDoBeginRead in Options ) then
+        AStore.EndScopeRead();
+      AStore.SetSerializationStyle(oldSS);
+    end;
+  end;
+end;
+
+procedure TSimpleContentObjectSerializer.Save(
+        AObject : TBaseRemotable;
+        AStore : IFormatterBase;
+  const AName : string;
+  const ATypeInfo : PTypeInfo
+);
+var
+  oldSS : TSerializationStyle;
+  i, c : PtrInt;
+  locSerInfo : TPropSerializationInfo;
+begin
+  oldSS := AStore.GetSerializationStyle();
+  if not ( osoDontDoBeginWrite in Options ) then
+    AStore.BeginObject(AName,ATypeInfo);
+  try
+    if not Assigned(AObject) then begin
+      AStore.NilCurrentScope();
+      Exit;
+    end;
+    TBaseComplexSimpleContentRemotableCrack(AObject).SaveValue(AObject,AStore);
+    c := FSerializationInfos.Count;
+    if ( c > 0 ) then begin
+      AStore.SetSerializationStyle(ssAttibuteSerialization);
+      for i := 0 to Pred(c) do begin
+        locSerInfo := TPropSerializationInfo(FSerializationInfos[i]);
+        locSerInfo.WriterProc(AObject,locSerInfo,AStore);
+      end;
+    end;
+  finally
+    if not ( osoDontDoBeginWrite in Options ) then
+      AStore.EndScope();
+    AStore.SetSerializationStyle(oldSS);
+  end;
+end;
+
 { TBaseComplexRemotableInitializer }
 
 class function TBaseComplexRemotableInitializer.CanHandle(ATypeInfo : PTypeInfo) : Boolean;
@@ -1427,6 +1767,31 @@ end;
 
 {$IFDEF TRemotableTypeInitializer_Initialize}
 class function TBaseComplexRemotableInitializer.Initialize(
+  ATypeInfo : PTypeInfo;
+  ARegistryItem : TTypeRegistryItem
+) : Boolean;
+begin
+end;
+{$ENDIF TRemotableTypeInitializer_Initialize}
+
+{ TSimpleContentObjectRemotableInitializer }
+
+class function TSimpleContentObjectRemotableInitializer.CanHandle(ATypeInfo : PTypeInfo) : Boolean;
+begin
+  Result := ( ATypeInfo <> nil ) and
+            ( ATypeInfo^.Kind = tkClass ) and
+            GetTypeData(ATypeInfo)^.ClassType.InheritsFrom(TBaseComplexSimpleContentRemotable);
+end;
+
+class function TSimpleContentObjectRemotableInitializer.GetItemClass(
+  const ATypeInfo : PTypeInfo
+) : TTypeRegistryItemClass;
+begin
+  Result := TSimpleContentObjectRegistryItem;
+end;
+
+{$IFDEF TRemotableTypeInitializer_Initialize}
+class function TSimpleContentObjectRemotableInitializer.Initialize(
   ATypeInfo : PTypeInfo;
   ARegistryItem : TTypeRegistryItem
 ) : Boolean;
@@ -1458,6 +1823,45 @@ begin
 end;
 
 function TBaseComplexTypeRegistryItem.GetSerializer() : TObjectSerializer;
+begin
+  Result := FSerializer;
+end;
+
+{ TSimpleContentObjectRegistryItem }
+
+procedure TSimpleContentObjectRegistryItem.Init();
+begin
+  inherited Init();
+  if ( FSerializer <> nil ) then
+    FreeAndNil(FSerializer);
+  FSerializer := TSimpleContentObjectSerializer.Create(TBaseComplexSimpleContentRemotableClass(GetTypeData(DataType)^.ClassType),Owner);
+end;
+
+destructor TSimpleContentObjectRegistryItem.Destroy();
+begin
+  FSerializer.Free();
+  inherited Destroy();
+end;
+
+procedure TSimpleContentObjectRegistryItem.RegisterExternalPropertyName(
+  const APropName,
+        AExtPropName : string
+);
+begin
+  inherited RegisterExternalPropertyName(APropName, AExtPropName);
+  GetSerializer().UpdateExternalName(APropName,AExtPropName);
+end;
+
+procedure TSimpleContentObjectRegistryItem.SetPropertyOptions(
+  const APropName: string;
+  const AOptions: TTypeRegistryItemOptions
+);
+begin
+  inherited SetPropertyOptions(APropName,AOptions);
+  Init();
+end;
+
+function TSimpleContentObjectRegistryItem.GetSerializer() : TSimpleContentObjectSerializer;
 begin
   Result := FSerializer;
 end;

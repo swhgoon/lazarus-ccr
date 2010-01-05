@@ -6474,14 +6474,26 @@ initialization
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_B),'TClass_B');
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_Float),'TClass_Float');
 
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt64SContent),'T_ComplexInt64SContent');
+    GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt64UContent),'T_ComplexInt64UContent');
+
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt32SContent),'T_ComplexInt32SContent');
     GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt32UContent),'T_ComplexInt32UContent');
 
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt16SContent),'T_ComplexInt16SContent');
     GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt16UContent),'T_ComplexInt16UContent');
 
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt8SContent),'T_ComplexInt8SContent');
+    GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexInt8UContent),'T_ComplexInt8UContent');
+
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatExtendedContent),'T_ComplexFloatExtendedContent');
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexFloatDoubleContent),'T_ComplexFloatDoubleContent');
+
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexStringContent));
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexWideStringContent));
+{$IFDEF WST_UNICODESTRING}
+  GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(T_ComplexUnicodeStringContent));
+{$ENDIF WST_UNICODESTRING}
 
   TClass_CplxSimpleContent.RegisterAttributeProperty('Elt_Exemple');
   GetTypeRegistry().Register(TEST_NAME_SPACE,TypeInfo(TClass_CplxSimpleContent),'TClass_CplxSimpleContent').RegisterExternalPropertyName('Elt_Exemple', 'published');

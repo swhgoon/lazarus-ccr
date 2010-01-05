@@ -841,19 +841,18 @@ Var
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
-    if ( ANameSpace = '' ) then
-      namespaceLongName := StackTop().NameSpace
-    else
-      namespaceLongName := ANameSpace;
-    s := FindAttributeByValueInScope(namespaceLongName);
-    if IsStrEmpty(s) then begin
-      namespaceShortName := 'ns' + IntToStr(NextNameSpaceCounter());
-      AddScopeAttribute('xmlns:'+namespaceShortName, namespaceLongName);
-      strNodeName := s + ':' + strNodeName;
-    end else begin
-      s := ExtractNameSpaceShortName(s);
-      if not IsStrEmpty(s) then
+    namespaceLongName := ANameSpace;
+    if ( namespaceLongName <> '' ) then begin
+      s := FindAttributeByValueInScope(namespaceLongName);
+      if IsStrEmpty(s) then begin
+        namespaceShortName := 'ns' + IntToStr(NextNameSpaceCounter());
+        AddScopeAttribute('xmlns:'+namespaceShortName, namespaceLongName);
         strNodeName := s + ':' + strNodeName;
+      end else begin
+        s := ExtractNameSpaceShortName(s);
+        if not IsStrEmpty(s) then
+          strNodeName := s + ':' + strNodeName;
+      end;
     end;
   end;
 
@@ -1024,15 +1023,18 @@ var
 begin
   strNodeName := AName;
   if ( Style = Document ) then begin
-    if ( ANameSpace = '' ) then
-      s := StackTop().NameSpace
-    else
+    if ( ANameSpace <> '' ) then begin
+      {if ( ANameSpace = '' ) then
+        s := StackTop().NameSpace
+      else
+        s := ANameSpace;}
       s := ANameSpace;
-    namespaceShortName := FindAttributeByValueInScope(s);
-    if not IsStrEmpty(namespaceShortName) then begin
-      s := ExtractNameSpaceShortName(namespaceShortName);
-      if not IsStrEmpty(s) then
-        strNodeName := s + ':' + strNodeName;
+      namespaceShortName := FindAttributeByValueInScope(s);
+      if not IsStrEmpty(namespaceShortName) then begin
+        s := ExtractNameSpaceShortName(namespaceShortName);
+        if not IsStrEmpty(s) then
+          strNodeName := s + ':' + strNodeName;
+      end;
     end;
   end;
 
@@ -1884,7 +1886,7 @@ procedure TSOAPBaseFormatter.Put(
   const AData
 );
 begin
-  Put('',AName,ATypeInfo,AData);
+  Put(StackTop().NameSpace,AName,ATypeInfo,AData);
 end;
 
 procedure TSOAPBaseFormatter.PutScopeInnerValue(
@@ -2167,7 +2169,7 @@ function TSOAPBaseFormatter.Get(
   var AData
 ) : Boolean;
 begin
-  Result := Get(ATypeInfo,'',AName,AData);
+  Result := Get(ATypeInfo,StackTop().NameSpace,AName,AData);
 end;
 
 procedure TSOAPBaseFormatter.GetScopeInnerValue(
