@@ -278,6 +278,12 @@ var
       Inc(bufferPos);
       Inc(locDigitCount);
     end;
+    if ( locDigitCount >= 3 ) then begin
+      //Skip the remaining fractional part
+      while ( bufferPos <= bufferLen ) and ( buffer[bufferPos] in ['0'..'9'] ) do begin
+        Inc(bufferPos);
+      end;
+    end;
     Result := ( locDigitCount > 0 );
     if Result then begin
       if ( locDigitCount < 3 ) and ( locRes > 0 ) then begin
