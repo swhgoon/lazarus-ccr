@@ -590,7 +590,7 @@ begin
   locStream := TMemoryStream.Create();
   try
     ser.SaveToStream(locStream);
-    locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
+    //locStream.SaveToFile(wstExpandLocalFileName('write_header_simple_content_2.xml'));
     locStream.Position := 0;
     ReadXMLFile(locDoc,locStream);
     ReadXMLFile(locExistDoc,wstExpandLocalFileName(TestFilesPath + 'write_header_simple_content_2.xml'));
