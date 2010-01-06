@@ -30,6 +30,7 @@
 {$define EnableAlphaBlend}
 {.$define EnableAccessible}
 {$define ThemeSupport}
+{.$define DEBUG_VTV}
 
 //under linux the performance is poor with threading enabled
 {$ifdef Windows}

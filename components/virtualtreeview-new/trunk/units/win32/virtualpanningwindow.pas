@@ -27,9 +27,11 @@ type
 
 implementation
 
+{$ifdef DEBUG_VTV}
 uses
   vtlogger;
-  
+{$endif}
+
 function PanningWindowProc(Window: HWnd; Msg: UInt;WPara: WParam; LPara: LParam): LResult; stdcall;
 var
   PanningObject: TVirtualPanningWindow;
@@ -101,7 +103,7 @@ end;
 
 procedure TVirtualPanningWindow.Show(ClipRegion: HRGN);
 begin
-  Logger.SendBitmap([lcPanning],'Panning Image',FImage);
+  {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPanning],'Panning Image',FImage);{$endif}
   //todo: move SetWindowRgn to DelphiCompat
   SetWindowRgn(FHandle, ClipRegion, False);
   ShowWindow(FHandle, SW_SHOWNOACTIVATE);

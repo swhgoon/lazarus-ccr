@@ -27,8 +27,10 @@ type
 
 implementation
 
+{$ifdef DEBUG_VTV}
 uses
-  vtlogger;  
+  vtlogger;
+{$endif}
 
 { TVirtualPanningWindow }
 
@@ -49,7 +51,7 @@ end;
 
 procedure TVirtualPanningWindow.Show(ClipRegion: HRGN);
 begin
-  Logger.SendBitmap([lcPanning],'Panning Image',FImage);
+  {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPanning],'Panning Image',FImage);{$endif}
 end;
 
 end.

@@ -319,7 +319,10 @@ uses
   virtualpanningwindow,
   LCLVersion,
   VTGraphics, //alpha blend functions
-  vtlogger,  LCLType, LResources, LMessages, Types,
+  {$ifdef DEBUG_VTV}
+  vtlogger,
+  {$endif}
+  LCLType, LResources, LMessages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs,  // Thread support
   Clipbrd // Clipboard support
@@ -9629,8 +9632,8 @@ begin
             if ((Abs(FDragStart.X - P.X) > DragManager.DragThreshold) or
                (Abs(FDragStart.Y - P.Y) > DragManager.DragThreshold)) then
             begin
-              Logger.Send([lcDrag], 'HandleHeaderMouseMove - DragIndex: %d - DownIndex: %d',
-                [FColumns.FDragIndex, FColumns.FDownIndex]);
+              {$ifdef DEBUG_VTV}Logger.Send([lcDrag], 'HandleHeaderMouseMove - DragIndex: %d - DownIndex: %d',
+                [FColumns.FDragIndex, FColumns.FDownIndex]);{$endif}
               KillTimer(Treeview.Handle, HeaderTimer);
               I := FColumns.FDownIndex;
               FColumns.FDownIndex := NoColumn;
@@ -9907,16 +9910,16 @@ begin
             with TLMLButtonUp(Message) do
               P := Treeview.ClientToScreen(Point(XPos, YPos));
             GetWindowRect(Treeview.Handle, R);
-            Logger.Send([lcDrag],'Header - EndDrag / R',R);
+            {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'Header - EndDrag / R',R);{$endif}
             with FColumns do
             begin
-              Logger.Send([lcDrag],'Header - EndDrag / FDropTarget: %d FDragIndex: %d FDragIndexPosition: %d',
-                [FDropTarget, FDragIndex, FColumns[FDragIndex].Position]);
-              Logger.Send([lcDrag],'Header - EndDrag / FDropBefore', FColumns.FDropBefore);
+              {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'Header - EndDrag / FDropTarget: %d FDragIndex: %d FDragIndexPosition: %d',
+                [FDropTarget, FDragIndex, FColumns[FDragIndex].Position]);{$endif}
+              {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'Header - EndDrag / FDropBefore', FColumns.FDropBefore);{$endif}
               FDragImage.EndDrag;
               if (FDropTarget > -1) and (FDropTarget <> FDragIndex) and PtInRect(R, P) then
               begin
-                Logger.Send([lcDrag],'Header - EndDrag / FDropTargetPosition', FColumns[FDropTarget].Position);
+                {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'Header - EndDrag / FDropTargetPosition', FColumns[FDropTarget].Position);{$endif}
                 OldPosition := FColumns[FDragIndex].Position;
                 if FColumns.FDropBefore then
                 begin
@@ -11976,7 +11979,7 @@ var
   Offset: TPoint;
 
 begin
-  Logger.EnterMethod([lcPaintDetails],'ClearNodeBackground');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'ClearNodeBackground');{$endif}
   with PaintInfo do
   begin
     EraseAction := eaDefault;
@@ -12017,14 +12020,14 @@ begin
           //so, here the node is always cleared even if is selected
           Brush.Color := Self.Color;
           FillRect(R);
-          Logger.SendColor([lcPaintDetails],'Clearing a node background - Brush.Color', Brush.Color);
-          Logger.Send([lcPaintDetails],'Clearing Rectangle (R)', R);
+          {$ifdef DEBUG_VTV}Logger.SendColor([lcPaintDetails],'Clearing a node background - Brush.Color', Brush.Color);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Clearing Rectangle (R)', R);{$endif}
 
           if (poDrawSelection in PaintOptions) and (toFullRowSelect in FOptions.FSelectionOptions) and
              (vsSelected in Node.States) and not (toUseBlendedSelection in FOptions.PaintOptions) and not
              ((tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) and IsWinVistaOrAbove) then
           begin
-            Logger.Send([lcPaintDetails, lcDrag], 'Draw the background of a selected node');
+            {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails, lcDrag], 'Draw the background of a selected node');{$endif}
             if toShowHorzGridLines in FOptions.PaintOptions then
               Dec(R.Bottom);
             if Focused or (toPopupMode in FOptions.FPaintOptions) then
@@ -12046,7 +12049,7 @@ begin
       DoAfterItemErase(Canvas, Node, R);
     end;
   end;
-  Logger.ExitMethod([lcPaintDetails],'ClearNodeBackground');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'ClearNodeBackground');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14596,14 +14599,14 @@ end;
 procedure TBaseVirtualTree.CMColorChange(var Message: TLMessage);
 
 begin
-  Logger.EnterMethod([lcMessages],'CMColorChange');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'CMColorChange');{$endif}
   if not (csLoading in ComponentState) then
   begin
     PrepareBitmaps(True, False);
     if HandleAllocated then
       Invalidate;
   end;
-  Logger.ExitMethod([lcMessages],'CMColorChange');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'CMColorChange');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14623,7 +14626,7 @@ begin
   if toAutoBidiColumnOrdering in FOptions.FAutoOptions then
     FHeader.FColumns.ReorderColumns(UseRightToLeftAlignment);
   FHeader.Invalidate(nil);
-  Logger.Send([lcPaintDetails],'FEffectiveOffsetX after CMBidiModeChanged',FEffectiveOffsetX);
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FEffectiveOffsetX after CMBidiModeChanged',FEffectiveOffsetX);{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14649,7 +14652,7 @@ var
   Formats: TFormatArray;
 
 begin
-  Logger.EnterMethod([lcDrag],'DoDragMsg');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DoDragMsg');{$endif}
   S := ADragObject;
   Formats := nil;
 
@@ -14727,7 +14730,7 @@ begin
         end;
     end;
   end;
-  Logger.ExitMethod([lcDrag],'DoDragMsg');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DoDragMsg');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14952,10 +14955,10 @@ begin
           end;
         end;
 
-        Logger.Send([lcHint], 'ShowOwnHint: %s Result: %d', [BoolToStr(ShowOwnHint, True), Result]);
-        Logger.Send([lcHint], 'CursorRect', CursorRect);
-        Logger.Send([lcHint], 'CursorPos', CursorPos);
-        Logger.Send([lcHint], 'HintMaxWidth', HintMaxWidth);
+        {$ifdef DEBUG_VTV}Logger.Send([lcHint], 'ShowOwnHint: %s Result: %d', [BoolToStr(ShowOwnHint, True), Result]);{$endif}
+        {$ifdef DEBUG_VTV}Logger.Send([lcHint], 'CursorRect', CursorRect);{$endif}
+        {$ifdef DEBUG_VTV}Logger.Send([lcHint], 'CursorPos', CursorPos);{$endif}
+        {$ifdef DEBUG_VTV}Logger.Send([lcHint], 'HintMaxWidth', HintMaxWidth);{$endif}
         // If hint must be show and is not the control's hint then get the hint
         // from the node or from the DefaultHint
         if ShowOwnHint and (Result = 0) then
@@ -15009,8 +15012,8 @@ var
   LeaveStates: TVirtualTreeStates;
 
 begin
-  Logger.EnterMethod([lcMessages],'CMMouseLeave');
-  Logger.Send([lcMessages],'FCurrentHotNode',hexStr(FCurrentHotNode));
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'CMMouseLeave');{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcMessages],'FCurrentHotNode',hexStr(FCurrentHotNode));{$endif}
   // Reset the last used hint rectangle in case the mouse enters the window within the bounds
   if Assigned(FHintData.Tree) then
     FHintData.Tree.FLastHintRect := Rect(0, 0, 0, 0);
@@ -15034,7 +15037,7 @@ begin
   Header.FColumns.FHoverIndex := NoColumn;
 
   inherited CMMouseLeave(Message);
-  Logger.ExitMethod([lcMessages],'CMMouseLeave');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'CMMouseLeave');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15049,7 +15052,7 @@ var
 
 begin
   //todo: rename to WM*
-  Logger.EnterMethod([lcScroll],'CMMouseWheel');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcScroll],'CMMouseWheel');{$endif}
   StopWheelPanning;
 
   inherited WMMouseWheel(Message);
@@ -15062,7 +15065,7 @@ begin
       WheelFactor := WheelDelta / WHEEL_DELTA;
       if (FRangeY > Cardinal(ClientHeight)) and (not (ssShift in State)) then
       begin
-        Logger.Send([lcScroll],'Scroll Vertical - WheelDelta', WheelDelta);
+        {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'Scroll Vertical - WheelDelta', WheelDelta);{$endif}
         // Scroll vertically if there's something to scroll...
         if ssCtrl in State then
           ScrollAmount := Trunc(WheelFactor * ClientHeight)
@@ -15095,7 +15098,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod([lcScroll],'CMMouseWheel');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcScroll],'CMMouseWheel');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15261,7 +15264,7 @@ end;
 procedure TBaseVirtualTree.WMCancelMode(var Message: TLMNoParams);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMCancelMode');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMCancelMode');{$endif}
   // Clear any transient state.
   KillTimer(Handle, ExpandTimer);
   KillTimer(Handle, EditTimer);
@@ -15275,7 +15278,7 @@ begin
     tsDrawSelPending, tsIncrementalSearching]);
   //lcl does not has a inherited procedure
   //inherited WMCancelMode(Message);
-  Logger.ExitMethod([lcMessages],'WMCancelMode');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMCancelMode');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15287,7 +15290,7 @@ var
   LeaveStates: TVirtualTreeStates;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMChangeState');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMChangeState');{$endif}
   EnterStates := [];
   if csStopValidation in TChangeStates(Byte(Message.WParam)) then
     Include(EnterStates, tsStopValidation);
@@ -15309,7 +15312,7 @@ begin
     Include(LeaveStates, tsValidationNeeded);
 
   DoStateChange(EnterStates, LeaveStates);
-  Logger.ExitMethod([lcMessages],'WMChangeState');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMChangeState');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15317,7 +15320,7 @@ end;
 procedure TBaseVirtualTree.WMChar(var Message: TLMChar);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMChar');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMChar');{$endif}
   if tsIncrementalSearchPending in FStates then
   begin
     HandleIncrementalSearch(Message.CharCode);
@@ -15325,7 +15328,7 @@ begin
   end;
 
   inherited WMChar(Message);
-  Logger.ExitMethod([lcMessages],'WMChar');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMChar');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15336,12 +15339,12 @@ procedure TBaseVirtualTree.WMContextMenu(var Message: TLMContextMenu);
 // We have to cancel some pending states here to avoid interferences.
 
 begin
-  Logger.EnterMethod([lcMessages],'WMContextMenu');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMContextMenu');{$endif}
   DoStateChange([], [tsClearPending, tsEditPending, tsOLEDragPending, tsVCLDragPending]);
 
   if not (tsPopupMenuShown in FStates) then
     inherited WMContextMenu(Message);
-  Logger.ExitMethod([lcMessages],'WMContextMenu');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMContextMenu');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15349,9 +15352,9 @@ end;
 procedure TBaseVirtualTree.WMCopy(var Message: TLMNoParams);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMCopy');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMCopy');{$endif}
   CopyToClipboard;
-  Logger.ExitMethod([lcMessages],'WMCopy');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMCopy');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15359,9 +15362,9 @@ end;
 procedure TBaseVirtualTree.WMCut(var Message: TLMNoParams);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMCut');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMCut');{$endif}
   CutToClipboard;
-  Logger.ExitMethod([lcMessages],'WMCut');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMCut');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15369,20 +15372,20 @@ end;
 procedure TBaseVirtualTree.WMEnable(var Message: TLMNoParams);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMEnable');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMEnable');{$endif}
   //LCL does not has inherited WMEnable
   //inherited WMEnable(Message);
   RedrawWindow(Handle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_NOERASE or RDW_NOCHILDREN);
-  Logger.EnterMethod([lcMessages],'WMEnable');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMEnable');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TBaseVirtualTree.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
-  Logger.EnterMethod([lcEraseBkgnd],'WMEraseBkgnd');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcEraseBkgnd],'WMEraseBkgnd');{$endif}
   Message.Result := 1;
-  Logger.ExitMethod([lcEraseBkgnd],'WMEraseBkgnd');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcEraseBkgnd],'WMEraseBkgnd');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15390,7 +15393,7 @@ end;
 procedure TBaseVirtualTree.WMGetDlgCode(var Message: TLMNoParams);
 
 begin
-  Logger.Send([lcMessages],'WMGetDlgCode');
+  {$ifdef DEBUG_VTV}Logger.Send([lcMessages],'WMGetDlgCode');{$endif}
   Message.Result := DLGC_WANTCHARS or DLGC_WANTARROWS;
   if FWantTabs then
     Message.Result := Message.Result or DLGC_WANTTAB;
@@ -15402,7 +15405,7 @@ end;
 procedure TBaseVirtualTree.WMGetObject(var Message: TLMessage);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMGetObject');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMGetObject');{$endif}
   if GetAccessibilityFactory <> nil then
   begin
     // Create the IAccessibles for the tree view and tree view items, if necessary.
@@ -15416,7 +15419,7 @@ begin
     else
       Message.Result := 0;
 
-  Logger.ExitMethod([lcMessages],'WMGetObject');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMGetObject');{$endif}
 end;
 {$endif}
 //----------------------------------------------------------------------------------------------------------------------
@@ -15449,7 +15452,7 @@ var
   RTLFactor: Integer;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMHScroll');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMHScroll');{$endif}
   if UseRightToLeftAlignment then
     RTLFactor := -1
   else
@@ -15494,7 +15497,7 @@ begin
   end;
 
   Message.Result := 0;
-  Logger.ExitMethod([lcMessages],'WMHScroll');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMHScroll');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -15534,7 +15537,7 @@ var
   Buffer: array[0..1] of Char;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMKeyDown');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMKeyDown');{$endif}
   // Make form key preview work and let application modify the key if it wants this.
   inherited WMKeyDown(Message);
 
@@ -16115,7 +16118,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod([lcMessages],'WMKeyDown');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMKeyDown');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16123,7 +16126,7 @@ end;
 procedure TBaseVirtualTree.WMKeyUp(var Message: TLMKeyUp);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMKeyUp');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMKeyUp');{$endif}
   inherited WMKeyUp(Message);
 
   case Message.CharCode of
@@ -16137,7 +16140,7 @@ begin
         FCheckNode := nil;
       end;
   end;
-  Logger.ExitMethod([lcMessages],'WMKeyUp');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMKeyUp');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16145,7 +16148,7 @@ end;
 procedure TBaseVirtualTree.WMKillFocus(var Msg: TLMKillFocus);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMKillFocus');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMKillFocus');{$endif}
   inherited WMKillFocus(Msg);
 
   // Remove hint if shown currently.
@@ -16172,7 +16175,7 @@ begin
   else
     if Assigned(FFocusedNode) then
       InvalidateNode(FFocusedNode);
-  Logger.ExitMethod([lcMessages],'WMKillFocus');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMKillFocus');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16183,7 +16186,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMLButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMLButtonDblClk');{$endif}
   DoStateChange([tsLeftDblClick]);
 
   inherited WMLButtonDblClk(Message);
@@ -16192,7 +16195,7 @@ begin
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
   HandleMouseDblClick(Message, HitInfo);
   DoStateChange([], [tsLeftDblClick]);
-  Logger.ExitMethod([lcMessages],'WMLButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMLButtonDblClk');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16203,16 +16206,16 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMLButtonDown');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMLButtonDown');{$endif}
   DoStateChange([tsLeftButtonDown]);
   inherited WMLButtonDown(Message);
 
   // get information about the hit
   GetHitTestInfoAt(Message.XPos, Message.YPos, True, HitInfo);
   if HitInfo.HitNode <> nil then
-    Logger.Send([lcPaintHeader, lcMouseEvent],'WMLButtonDown - HitNode.Index', HitInfo.HitNode^.Index);
+    {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader, lcMouseEvent],'WMLButtonDown - HitNode.Index', HitInfo.HitNode^.Index);{$endif}
   HandleMouseDown(Message, HitInfo);
-  Logger.ExitMethod([lcMessages],'WMLButtonDown');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMLButtonDown');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16230,7 +16233,7 @@ begin
   HandleMouseUp(Message, HitInfo);
 
   inherited WMLButtonUp(Message);
-  Logger.ExitMethod([lcMessages],'WMLButtonUp');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMLButtonUp');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16241,7 +16244,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMMButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMMButtonDblClk');{$endif}
   DoStateChange([tsMiddleDblClick]);
   inherited WMMButtonDblClk(Message);
 
@@ -16252,7 +16255,7 @@ begin
     HandleMouseDblClick(Message, HitInfo);
   end;
   DoStateChange([], [tsMiddleDblClick]);
-  Logger.ExitMethod([lcMessages],'WMMButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMMButtonDblClk');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16263,7 +16266,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMMButtonDown');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMMButtonDown');{$endif}
   DoStateChange([tsMiddleButtonDown]);
 
   if FHeader.FStates = [] then
@@ -16289,7 +16292,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod([lcMessages],'WMMButtonDown');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMMButtonDown');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16300,7 +16303,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMMButtonUp');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMMButtonUp');{$endif}
   DoStateChange([], [tsMiddleButtonDown]);
 
   // If wheel panning/scrolling is active and the mouse has not yet been moved then the user starts wheel auto scrolling.
@@ -16324,7 +16327,7 @@ begin
         HandleMouseUp(Message, HitInfo);
       end;
     end;
-  Logger.ExitMethod('WMMButtonUp');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod('WMMButtonUp');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16334,14 +16337,14 @@ end;
 procedure TBaseVirtualTree.WMNCCalcSize(var Message: TLMNCCalcSize);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMNCCalcSize');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMNCCalcSize');{$endif}
   inherited WMNCCalcSize(Message);
 
   with FHeader do
     if hoVisible in FHeader.FOptions then
       with Message.CalcSize_Params^ do
         Inc(rgrc[0].Top, FHeight);
-  Logger.ExitMethod([lcMessages],'WMNCCalcSize');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMNCCalcSize');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16349,12 +16352,12 @@ end;
 procedure TBaseVirtualTree.WMNCHitTest(var Message: TWMNCHitTest);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMNCHitTest');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMNCHitTest');{$endif}
   inherited WMNCHitTest(Message);
   if not (csDesigning in ComponentState) and (hoVisible in FHeader.FOptions) and
     FHeader.InHeader(ScreenToClient(SmallPointToPoint(Message.Pos))) then
     Message.Result := HTBORDER;
-  Logger.ExitMethod([lcMessages],'WMNCHitTest');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMNCHitTest');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16373,7 +16376,7 @@ var
   {$endif ThemeSupport}
 
 begin
-  Logger.EnterMethod([lcMessages],'WMNCPaint');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMNCPaint');{$endif}
   {$ifdef ThemeSupport}
     if tsUseThemes in FStates then
     begin
@@ -16423,7 +16426,7 @@ begin
     if tsUseThemes in FStates then
       ThemeServices.PaintBorder(Self, False);
   {$endif ThemeSupport}
-  Logger.ExitMethod([lcMessages],'WMNCPaint');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMNCPaint');{$endif}
 end;
 
 {$endif}
@@ -16433,7 +16436,7 @@ end;
 procedure TBaseVirtualTree.WMPaint(var Message: TLMPaint);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMPaint');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMPaint');{$endif}
   //todo:
   //Windows.GetUpdateRect is always empty because BeginPaint was called
   //see if PaintStruct has the same rect
@@ -16444,13 +16447,13 @@ begin
   else
     FUpdateRect:=Message.PaintStruct^.rcPaint;
 
-  Logger.Send([lcPaint],'FUpdateRect', FUpdateRect);
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaint],'FUpdateRect', FUpdateRect);{$endif}
 
   inherited WMPaint(Message);
 
   if tsVCLDragging in FStates then
     ImageList_DragShowNolock(True);
-  Logger.ExitMethod([lcMessages],'WMPaint');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMPaint');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16458,9 +16461,9 @@ end;
 procedure TBaseVirtualTree.WMPaste(var Message: TLMNoParams);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMPaste');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMPaste');{$endif}
   PasteFromClipboard;
-  Logger.ExitMethod([lcMessages],'WMPaste');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMPaste');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16473,13 +16476,13 @@ procedure TBaseVirtualTree.WMPrint(var Message: TWMPrint);
 // the client area but also the non-client area (header!).
 
 begin
-  Logger.EnterMethod([lcMessages],'WMPrint');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMPrint');{$endif}
   // Draw only if the window is visible or visibility is not required.
   if ((Message.Flags and PRF_CHECKVISIBLE) = 0) or IsWindowVisible(Handle) then
     Header.Columns.PaintHeader(Message.DC, FHeaderRect, -FEffectiveOffsetX);
 
   inherited WMPrint(Message);
-  Logger.ExitMethod([lcMessages],'WMPrint');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMPrint');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16492,7 +16495,7 @@ var
   Canvas: TCanvas;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMPrintClient');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMPrintClient');{$endif}
   // Draw only if the window is visible or visibility is not required.
   if ((Message.Flags and PRF_CHECKVISIBLE) = 0) or IsWindowVisible(Handle) then
   begin
@@ -16513,7 +16516,7 @@ begin
       Canvas.Free;
     end;
   end;
-  Logger.ExitMethod([lcMessages],'WMPrintClient');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMPrintClient');{$endif}
 end;
 
 {$endif}
@@ -16525,7 +16528,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMRButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMRButtonDblClk');{$endif}
   DoStateChange([tsRightDblClick]);
   inherited WMRButtonDblClk(Message);
 
@@ -16536,7 +16539,7 @@ begin
     HandleMouseDblClick(Message, HitInfo);
   end;
   DoStateChange([], [tsRightDblClick]);
-  Logger.ExitMethod([lcMessages],'WMRButtonDblClk');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMRButtonDblClk');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16547,7 +16550,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMRButtonDown');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMRButtonDown');{$endif}
   DoStateChange([tsRightButtonDown]);
 
   if FHeader.FStates = [] then
@@ -16561,7 +16564,7 @@ begin
       HandleMouseDown(Message, HitInfo);
     end;
   end;
-  Logger.ExitMethod([lcMessages],'WMRButtonDown');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMRButtonDown');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16574,7 +16577,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcMessages],'WMRButtonUp');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMRButtonUp');{$endif}
   DoStateChange([], [tsPopupMenuShown, tsRightButtonDown]);
 
   if FHeader.FStates = [] then
@@ -16599,7 +16602,7 @@ begin
     if not Assigned(PopupMenu) then
       DoPopupMenu(HitInfo.HitNode, HitInfo.HitColumn, Point(Message.XPos, Message.YPos));
   end;
-  Logger.ExitMethod([lcMessages],'WMRButtonUp');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMRButtonUp');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16607,11 +16610,11 @@ end;
 procedure TBaseVirtualTree.WMSetFocus(var Msg: TLMSetFocus);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMSetFocus') ;
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMSetFocus') ;{$endif}
   inherited WMSetFocus(Msg);
   if (FSelectionCount > 0) or not (toGhostedIfUnfocused in FOptions.FPaintOptions) then
     Invalidate;
-  Logger.ExitMethod([lcMessages],'WMSetFocus');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMSetFocus');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16619,7 +16622,7 @@ end;
 procedure TBaseVirtualTree.WMSize(var Message: TLMSize);
 
 begin
-  Logger.EnterMethod([lcMessages],'WMSize');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'WMSize');{$endif}
   inherited WMSize(Message);
 
   // Need to update scroll bars here. This will cause a recursion because of the change of the client area
@@ -16639,7 +16642,7 @@ begin
   finally
     DoStateChange([], [tsSizing]);
   end;
-  Logger.ExitMethod([lcMessages],'WMSize');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'WMSize');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16668,10 +16671,10 @@ procedure TBaseVirtualTree.WMTimer(var Message: TLMTimer);
 // centralized timer handling happens here
 
 begin
-  Logger.EnterMethod([lcMessages,lcTimer],'WMTimer');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages,lcTimer],'WMTimer');{$endif}
   with Message do
   begin
-    Logger.Send([lcTimer],'TimerId',TimerId);
+    {$ifdef DEBUG_VTV}Logger.Send([lcTimer],'TimerId',TimerId);{$endif}
     case TimerID of
       ExpandTimer:
         DoDragExpand;
@@ -16703,7 +16706,7 @@ begin
         end;
     end;
   end;
-  Logger.ExitMethod([lcMessages,lcTimer],'WMTimer');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages,lcTimer],'WMTimer');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16728,14 +16731,14 @@ procedure TBaseVirtualTree.WMVScroll(var Message: TLMVScroll);
       GetScrollInfo(Handle, Code, SI);
     {$endif UseFlatScrollbars}
     Result := SI.nTrackPos;
-    Logger.Send([lcScroll],'GetRealScrollPosition',Result);
+    {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'GetRealScrollPosition',Result);{$endif}
   end;
 
   //--------------- end local functions ---------------------------------------
 
 begin
-  Logger.EnterMethod([lcScroll],'WMVScroll');
-  //Logger.SendCallStack([lcScroll],'CallStack');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcScroll],'WMVScroll');{$endif}
+  //{$ifdef DEBUG_VTV}Logger.SendCallStack([lcScroll],'CallStack');{$endif}
   case Message.ScrollCode of
     SB_BOTTOM:
       SetOffsetY(-Integer(FRoot.TotalHeight));
@@ -16773,7 +16776,7 @@ begin
       SetOffsetY(0);
   end;
   Message.Result := 0;
-  Logger.ExitMethod([lcScroll],'WMVScroll');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcScroll],'WMVScroll');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -16980,13 +16983,13 @@ function TBaseVirtualTree.AllocateInternalDataArea(Size: Cardinal): Cardinal;
 
 begin
   Assert((FRoot = nil) or (FRoot.ChildCount = 0), 'Internal data allocation must be done before any node is created.');
-  Logger.Send('FTotalInternalDataSize BEFORE',FTotalInternalDataSize);
-  Logger.Send('Size',Size);
-  Logger.Send('TreeNodeSize',TreeNodeSize);
+  {$ifdef DEBUG_VTV}Logger.Send('FTotalInternalDataSize BEFORE',FTotalInternalDataSize);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send('Size',Size);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send('TreeNodeSize',TreeNodeSize);{$endif}
   Result := TreeNodeSize + FTotalInternalDataSize;
-  Logger.Send('Result',Result);
+  {$ifdef DEBUG_VTV}Logger.Send('Result',Result);{$endif}
   Inc(FTotalInternalDataSize, (Size + 3) and not 3);
-  Logger.Send('FTotalInternalDataSize AFTER', FTotalInternalDataSize);
+  {$ifdef DEBUG_VTV}Logger.Send('FTotalInternalDataSize AFTER', FTotalInternalDataSize);{$endif}
   InitRootNode(Result);
 end;
 
@@ -17417,7 +17420,7 @@ procedure TBaseVirtualTree.CreateWnd;
 begin
   DoStateChange([tsWindowCreating]);
   inherited;
-  Logger.Send([lcInfo],'Handle (CreateWnd)',Handle);
+  {$ifdef DEBUG_VTV}Logger.Send([lcInfo],'Handle (CreateWnd)',Handle);{$endif}
   DoStateChange([], [tsWindowCreating]);
 
   {$ifdef ThemeSupport}
@@ -17468,7 +17471,7 @@ end;
 
 procedure TBaseVirtualTree.DestroyHandle;
 begin
-  Logger.EnterMethod([lcMessages],'DestroyHandle');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcMessages],'DestroyHandle');{$endif}
   //lcl: this code was  originally called is response to WM_NCDESTROY
   //  see if there will be issues calling here
   InterruptValidation;
@@ -17486,7 +17489,7 @@ begin
   FDottedBrush := 0;
 
   inherited;
-  Logger.ExitMethod([lcMessages],'DestroyHandle');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcMessages],'DestroyHandle');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -18302,8 +18305,8 @@ var
   DataObject: IDataObject;
 
 begin
-  Logger.EnterMethod([lcDrag],'DoDragging');
-  Logger.SendCallStack([lcDrag],'Stack');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DoDragging');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcDrag],'Stack');{$endif}
   DataObject := nil;
   // Dragging is dragging, nothing else.
   DoCancelEdit;
@@ -18371,7 +18374,7 @@ begin
   finally
     FDragSelection := nil;
   end;
-  Logger.ExitMethod([lcDrag],'DoDragging');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DoDragging');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19003,17 +19006,17 @@ var
   SavePenStyle: TPenStyle;
 
 begin
-  Logger.EnterMethod([lcDrag],'DoPaintDropMark');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DoPaintDropMark');{$endif}
   if FLastDropMode in [dmAbove, dmBelow] then
     with Canvas do
     begin
-      Logger.Send([lcDrag],'DropMode in [dmAbove,dmBelow]');
+      {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'DropMode in [dmAbove,dmBelow]');{$endif}
       SavePenStyle := Pen.Style;
       Pen.Style := psClear;
       SaveBrushColor := Brush.Color;
       Brush.Color := FColors.DropMarkColor;
-      Logger.SendColor([lcDrag],'Brush.Color',Brush.Color);
-      Logger.Send([lcDrag],'R',R);
+      {$ifdef DEBUG_VTV}Logger.SendColor([lcDrag],'Brush.Color',Brush.Color);{$endif}
+      {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'R',R);{$endif}
       if FLastDropMode = dmAbove then
       begin
         Polygon([Point(R.Left + 2, R.Top),
@@ -19035,7 +19038,7 @@ begin
       Brush.Color := SaveBrushColor;
       Pen.Style := SavePenStyle;
     end;
-  Logger.ExitMethod([lcDrag],'DoPaintDropMark');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DoPaintDropMark');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19124,9 +19127,9 @@ var
   R: TRect;
 
 begin
-  Logger.EnterMethod([lcScroll],'DoSetOffsetXY');
-  Logger.Send([lcScroll],'Value',Value);
-  //Logger.SendCallStack([lcScroll],'CallStack');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcScroll],'DoSetOffsetXY');{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'Value',Value);{$endif}
+  //{$ifdef DEBUG_VTV}Logger.SendCallStack([lcScroll],'CallStack');{$endif}
   // Range check, order is important here.
   if Value.X < (ClientWidth - Integer(FRangeX)) then
     Value.X := ClientWidth - Integer(FRangeX);
@@ -19140,8 +19143,8 @@ begin
   if Value.Y > 0 then
     Value.Y := 0;
   DeltaY := Value.Y - FOffsetY;
-  Logger.Send([lcScroll],'FOffsetX: %d FOffsetY: %d',[FOffsetX,FOffsetY]);
-  Logger.Send([lcScroll],'DeltaX: %d DeltaY: %d',[DeltaX,DeltaY]);
+  {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'FOffsetX: %d FOffsetY: %d',[FOffsetX,FOffsetY]);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcScroll],'DeltaX: %d DeltaY: %d',[DeltaX,DeltaY]);{$endif}
   Result := (DeltaX <> 0) or (DeltaY <> 0);
   if Result then
   begin
@@ -19204,7 +19207,7 @@ begin
             //lclheader
             if ClipRect <> nil then
             begin
-              Logger.SendWarning([lcWarning], 'DoSetOffsetXY called with a non nil ClipRect');
+              {$ifdef DEBUG_VTV}Logger.SendWarning([lcWarning], 'DoSetOffsetXY called with a non nil ClipRect');{$endif}
               R := ClipRect^;
             end
             else
@@ -19214,7 +19217,7 @@ begin
               Inc(R.Top, FHeader.Height);
               Inc(R.Bottom, FHeader.Height);
             end;
-            Logger.Send([lcScroll], 'Rect to Scroll', R);
+            {$ifdef DEBUG_VTV}Logger.Send([lcScroll], 'Rect to Scroll', R);{$endif}
             //todo: temporary hack to avoid some drawing problems.
             //Will be removed when scrollwindowex is properly implemented in all widgets
             {$ifdef LCLQt}
@@ -19261,7 +19264,7 @@ begin
 
     DoScroll(DeltaX, DeltaY);
   end;
-  Logger.ExitMethod([lcScroll],'DoSetOffsetXY');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcScroll],'DoSetOffsetXY');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19284,8 +19287,8 @@ end;
 procedure TBaseVirtualTree.DoStartDrag(var DragObject: TDragObject);
 
 begin
-  Logger.EnterMethod([lcDrag],'DoStartDrag');
-  Logger.SendCallStack([lcDrag],'Stack');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DoStartDrag');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcDrag],'Stack');{$endif}
 
   inherited;
 
@@ -19293,7 +19296,7 @@ begin
   // OnDragOver and OnDragDrop.
   if Assigned(DragObject) then
     DoStateChange([tsUserDragObject]);
-  Logger.ExitMethod([lcDrag],'DoStartDrag');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DoStartDrag');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19606,7 +19609,7 @@ var
   Formats: TFormatArray;
 
 begin
-  Logger.EnterMethod([lcDrag],'DragDrop');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragDrop');{$endif}
   KillTimer(Handle, ExpandTimer);
   KillTimer(Handle, ScrollTimer);
   DoStateChange([], [tsScrollPending, tsScrolling]);
@@ -19657,7 +19660,7 @@ begin
       FDropTargetNode := nil;
     end;
   end;
-  Logger.ExitMethod([lcDrag],'DragDrop');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DragDrop');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19673,7 +19676,7 @@ var
   HitInfo: THitInfo;
 
 begin
-  Logger.EnterMethod([lcDrag],'DragEnter');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragEnter');{$endif}
   try
     // Determine acceptance of drag operation and reset scroll start time.
     FDragScrollStart := 0;
@@ -19719,7 +19722,7 @@ begin
   except
     Result := E_UNEXPECTED;
   end;
-  Logger.ExitMethod([lcDrag],'DragEnter');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DragEnter');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19733,7 +19736,7 @@ var
   P: TPoint;
 
 begin
-  Logger.EnterMethod([lcDrag],'DragFinished');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragFinished');{$endif}
   DoStateChange([], [tsVCLDragPending, tsVCLDragging, tsUserDragObject]);
 
   GetCursorPos(P);
@@ -19745,7 +19748,7 @@ begin
       Perform(LM_MBUTTONUP, 0, Longint(PointToSmallPoint(P)))
     else
       Perform(LM_LBUTTONUP, 0, Longint(PointToSmallPoint(P)));
-  Logger.ExitMethod([lcDrag],'DragFinished');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DragFinished');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -19798,7 +19801,7 @@ var
   ScrollOptions: TScrollUpdateOptions;
 
 begin
-  //Logger.EnterMethod([lcDrag],'DragOver');
+  //{$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'DragOver');{$endif}
   if not VTVDragManager.DropTargetHelperSupported and (Source is TBaseVirtualTree) then
   begin
     Tree := Source as TBaseVirtualTree;
@@ -19813,7 +19816,7 @@ begin
   try
     DragPos := Pt;
     Pt := ScreenToClient(Pt);
-    //Logger.Send([lcDrag],'Pt',Pt);
+    //{$ifdef DEBUG_VTV}Logger.Send([lcDrag],'Pt',Pt);{$endif}
     // Check if we have to scroll the client area.
     FScrollDirections := DetermineScrollDirections(Pt.X, Pt.Y);
     DeltaX := 0;
@@ -19989,7 +19992,7 @@ begin
   except
     Result := E_UNEXPECTED;
   end;
-  //Logger.ExitMethod([lcDrag],'DragOver');
+  //{$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'DragOver');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21021,7 +21024,7 @@ begin
       //lclheader
       if hoVisible in FHeader.Options then
         OffsetRect(FNewSelRect, 0, -FHeader.Height);
-      Logger.Send([lcSelection],'FNewSelRect', FNewSelRect);
+      {$ifdef DEBUG_VTV}Logger.Send([lcSelection],'FNewSelRect', FNewSelRect);{$endif}
 
       FLastSelRect := Rect(0, 0, 0, 0);
       if not IsCellHit then
@@ -22124,7 +22127,7 @@ var
   RTLOffset: Integer;
 
 begin
-  Logger.EnterMethod([lcPaint],'Paint');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaint],'Paint');{$endif}
   Options := [poBackground, poColumnColor, poDrawFocusRect, poDrawDropMark, poDrawSelection, poGridLines];
   if UseRightToLeftAlignment and FHeader.UseColumns then
     RTLOffset := ComputeRTLOffset(True)
@@ -22141,7 +22144,7 @@ begin
     if Temp = 0 then
     begin
       Window := FUpdateRect;
-      Logger.Send([lcHeaderOffset], 'FUpdateRect', FUpdateRect);
+      {$ifdef DEBUG_VTV}Logger.Send([lcHeaderOffset], 'FUpdateRect', FUpdateRect);{$endif}
       Target := Window.TopLeft;
       //lclheader
       if hoVisible in FHeader.FOptions then
@@ -22159,7 +22162,7 @@ begin
 
         if RectVisible(Canvas.Handle, FHeaderRect) then
         begin
-          Logger.Send([lcPaintHeader],'RectVisible = True');
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'RectVisible = True');{$endif}
           FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
         end;
         with FHeaderRect do
@@ -22167,16 +22170,16 @@ begin
       end;
       // The clipping rectangle is given in client coordinates of the window. We have to convert it into
       // a sliding window of the tree image.
-      Logger.Send([lcPaintDetails],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
+      {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);{$endif}
 
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
-      //Logger.Active:=Logger.CalledBy('DoDragging');
+      //{$ifdef DEBUG_VTV}Logger.Active:=Logger.CalledBy('DoDragging');{$endif}
       PaintTree(Canvas, Window, Target, Options);
-      //Logger.Active:=True;
+      //{$ifdef DEBUG_VTV}Logger.Active:=True;{$endif}
     end
     else
     begin
-      Logger.Send([lcPaint],'VisibleFixedWidth > 0');
+      {$ifdef DEBUG_VTV}Logger.Send([lcPaint],'VisibleFixedWidth > 0');{$endif}
       // First part, fixed columns
       Window := ClientRect;
       Window.Right := Temp;
@@ -22189,7 +22192,7 @@ begin
         Inc(Target.Y, FHeader.Height);
         if  RectVisible(Canvas.Handle, FHeaderRect) then
         begin
-          Logger.Send([lcPaintHeader], 'RectVisible = True');
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader], 'RectVisible = True');{$endif}
           FHeader.FColumns.PaintHeader(Canvas.Handle, FHeaderRect, -FEffectiveOffsetX);
         end;
         with FHeaderRect do
@@ -22204,7 +22207,7 @@ begin
 
       if Temp > Window.Right then
       begin
-        Logger.ExitMethod([lcPaint],'Paint');
+        {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaint],'Paint');{$endif}
         Exit;
       end;
 
@@ -22214,12 +22217,12 @@ begin
       //lclheader
       if hoVisible in FHeader.FOptions then
         Inc(Target.Y, FHeader.Height);
-      Logger.Send([lcDrag],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);
+      {$ifdef DEBUG_VTV}Logger.Send([lcDrag],'FEffectiveOffsetX: %d, RTLOffset: %d, OffsetY: %d',[FEffectiveOffsetX,RTLOffset,FOffsetY]);{$endif}
       OffsetRect(Window, FEffectiveOffsetX - RTLOffset, -FOffsetY);
       PaintTree(Canvas, Window, Target, Options);
     end;
   end;
-  Logger.ExitMethod([lcPaint],'Paint');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaint],'Paint');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22268,7 +22271,7 @@ var
   UseThemes: Boolean;
 
 begin
-  Logger.EnterMethod([lcCheck],'PaintCheckImage');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcCheck],'PaintCheckImage');{$endif}
   with PaintInfo, ImageInfo[iiCheck] do
   begin
     {$ifdef ThemeSupport}
@@ -22323,7 +22326,7 @@ begin
         Index * Height, 0, MaskHandle);
     end;
   end;
-  Logger.ExitMethod([lcCheck],'PaintCheckImage');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcCheck],'PaintCheckImage');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22443,7 +22446,7 @@ var
   NewStyles: TLineImage;
 
 begin
-  Logger.EnterMethod([lcPaintDetails],'PaintTreeLines');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'PaintTreeLines');{$endif}
   NewStyles := nil;
 
   with PaintInfo do
@@ -22467,7 +22470,7 @@ begin
           SetLength(NewStyles, Length(LineImage));
           for I := IndentSize - 1 downto 0 do
           begin
-            Logger.Send([lcPaintDetails],'FLineMode = lmBands');
+            {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FLineMode = lmBands');{$endif}
             if (vsExpanded in Node.States) and not (vsAllChildrenHidden in Node.States) then
               NewStyles[I] := ltLeft
             else
@@ -22503,10 +22506,10 @@ begin
           end;
         end;
     else // lmNormal
-      Logger.Send([lcPaintDetails],'FLineMode = lmNormal');
-      Logger.Send([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+      {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FLineMode = lmNormal');{$endif}
+      {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
       PaintInfo.Canvas.Font.Color := FColors.TreeLineColor;
-      Logger.Send([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Font.Color);
+      {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Font.Color);{$endif}
       for I := 0 to IndentSize - 1 do
       begin
         DrawLineImage(PaintInfo, XPos, CellRect.Top, NodeHeight[Node], VAlignment, LineImage[I],
@@ -22515,7 +22518,7 @@ begin
       end;
     end;
   end;
-  Logger.ExitMethod([lcPaintDetails],'PaintTreeLines');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintTreeLines');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22531,7 +22534,7 @@ var
   BackColorBackup: COLORREF;   // used to restore forground and background colors when drawing a selection rectangle
 
 begin
-  Logger.Send([lcSelection], 'SelectionRect at PaintSelection', SelectionRect);
+  {$ifdef DEBUG_VTV}Logger.Send([lcSelection], 'SelectionRect at PaintSelection', SelectionRect);{$endif}
   if ((FDrawSelectionMode = smDottedRectangle) and not (tsUseThemes in FStates)) or
     not MMXAvailable then
   begin
@@ -23474,7 +23477,7 @@ var
   Size: TSize;
 
 begin
-  Logger.EnterMethod([lcPaintHeader],'UpdateHeaderRect');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintHeader],'UpdateHeaderRect');{$endif}
   FHeaderRect := Rect(0, 0, Width, Height);
 
   // Consider borders...
@@ -23512,8 +23515,8 @@ begin
   end
   else
     FHeaderRect.Bottom := FHeaderRect.Top;
-  Logger.Send([lcPaintHeader],'FHeaderRect',FHeaderRect);
-  Logger.ExitMethod([lcPaintHeader],'UpdateHeaderRect');
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'FHeaderRect',FHeaderRect);{$endif}
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintHeader],'UpdateHeaderRect');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24080,7 +24083,7 @@ procedure TBaseVirtualTree.BeginDrag(Immediate: Boolean; Threshold: Integer);
 // Reintroduced method to allow to start OLE drag'n drop as well as VCL drag'n drop.
 
 begin
-  Logger.EnterMethod([lcDrag],'BeginDrag');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcDrag],'BeginDrag');{$endif}
   if FDragType = dtVCL then
   begin
     DoStateChange([tsVCLDragPending]);
@@ -24099,7 +24102,7 @@ begin
       else
         DoStateChange([tsOLEDragPending]);
     end;
-  Logger.ExitMethod([lcDrag],'BeginDrag');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcDrag],'BeginDrag');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -25027,7 +25030,7 @@ var
   ExtraVerticalMargin: Integer;
 
 begin
-  //Logger.EnterMethod([lcPaintHeader],'GetDisplayRect');
+  //{$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintHeader],'GetDisplayRect');{$endif}
   Assert(Assigned(Node), 'Node must not be nil.');
   Assert(Node <> FRoot, 'Node must not be the hidden root node.');
 
@@ -25193,8 +25196,8 @@ begin
   //a tree offset or a control offset
   if hoVisible in FHeader.FOptions then
     OffsetRect(Result, 0, FHeader.Height);
-  //Logger.Send([lcPaintHeader],'DisplayRect for Node '+IntToStr(Node^.Index),Result);
-  //Logger.ExitMethod([lcPaintHeader],'GetDisplayRect');
+  //{$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'DisplayRect for Node '+IntToStr(Node^.Index),Result);{$endif}
+  //{$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintHeader],'GetDisplayRect');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26652,7 +26655,7 @@ begin
     NodeTop := CurrentPos;
     if Relative then
       Inc(NodeTop, FOffsetY);
-    //Logger.Send([lcPaintHeader],'GetNodeAt Result: ',Result^.Index);
+    //{$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'GetNodeAt Result: ',Result^.Index);{$endif}
   end;
 end;
 
@@ -28156,12 +28159,12 @@ var
   FirstColumn: TColumnIndex;   // index of first column which is at least partially visible in the given window
 
 begin
-  Logger.EnterMethod([lcPaint],'PaintTree');
-  Logger.Send([lcPaint, lcHeaderOffset],'Window',Window);
-  Logger.Send([lcPaint, lcHeaderOffset],'Target',Target);
-  Logger.Send([lcPaintHeader],'ClientRect',ClientRect);
-  Logger.Send([lcPaintHeader],'TreeRect',GetTreeRect);
-  Logger.Send([lcPaintHeader],'OffsetX: %d  OffsetY: %d',[OffsetX,OffsetY]);
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaint],'PaintTree');{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'Window',Window);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'Target',Target);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'ClientRect',ClientRect);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'TreeRect',GetTreeRect);{$endif}
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader],'OffsetX: %d  OffsetY: %d',[OffsetX,OffsetY]);{$endif}
   //lcl changes to 24bit color depth when screen depth is 32 bit
   //todo: remove when this limitation is removed
   {$ifdef Windows}
@@ -28191,12 +28194,12 @@ begin
       PaintInfo.Canvas := NodeBitmap.Canvas;
       NodeBitmap.Canvas.Lock;
       try
-        Logger.Send([lcPaintDetails],'FNewSelRect', FNewSelRect);
+        {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FNewSelRect', FNewSelRect);{$endif}
         // Prepare the current selection rectangle once. The corner points are absolute tree coordinates.
         SelectionRect := OrderRect(FNewSelRect);
-        Logger.Send([lcPaintDetails, lcSelection],'SelectionRect', SelectionRect);
+        {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails, lcSelection],'SelectionRect', SelectionRect);{$endif}
         DrawSelectionRect := IsMouseSelecting and not IsRectEmpty(SelectionRect);
-        Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);
+        {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);{$endif}
         // R represents an entire node (all columns), but is a bit unprecise when it comes to
         // trees without any column defined, because FRangeX only represents the maximum width of all
         // nodes in the client area (not all defined nodes). There might be, however, wider nodes somewhere. Without full
@@ -28211,7 +28214,7 @@ begin
         ShowImages := Assigned(FImages);
         ShowStateImages := Assigned(FStateImages);
         ShowCheckImages := Assigned(FCheckImages) and (toCheckSupport in FOptions.FMiscOptions);
-        Logger.Send([lcCheck],'ShowCheckImages',ShowCheckImages);
+        {$ifdef DEBUG_VTV}Logger.Send([lcCheck],'ShowCheckImages',ShowCheckImages);{$endif}
         UseColumns := FHeader.UseColumns;
 
         // Adjust paint options to tree settings. Hide selection if told so or the tree is unfocused.
@@ -28226,19 +28229,19 @@ begin
         PaintInfo.Node := GetNodeAt(0, Window.Top, False, BaseOffset);
         if PaintInfo.Node = nil then
           BaseOffset := Window.Top;
-        Logger.Send([lcPaint, lcHeaderOffset],'BaseOffset',BaseOffset);
+        {$ifdef DEBUG_VTV}Logger.Send([lcPaint, lcHeaderOffset],'BaseOffset',BaseOffset);{$endif}
 
         // Transform selection rectangle into node bitmap coordinates.
         if DrawSelectionRect then
           OffsetRect(SelectionRect, 0, -BaseOffset);
 
-        Logger.Send([lcSelection], 'SelectionRect fixed by BaseOffset', SelectionRect);
+        {$ifdef DEBUG_VTV}Logger.Send([lcSelection], 'SelectionRect fixed by BaseOffset', SelectionRect);{$endif}
         // The target rectangle holds the coordinates of the exact area to blit in target canvas coordinates.
         // It is usually smaller than an entire node and wanders while the paint loop advances.
         MaximumRight := Target.X + (Window.Right - Window.Left);
         MaximumBottom := Target.Y + (Window.Bottom - Window.Top);
 
-        Logger.Send([lcPaintHeader, lcHeaderOffset],'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);
+        {$ifdef DEBUG_VTV}Logger.Send([lcPaintHeader, lcHeaderOffset],'MaximumRight: %d MaximumBottom: %d',[MaximumRight,MaximumBottom]);{$endif}
         TargetRect := Rect(Target.X, Target.Y - (Window.Top - BaseOffset), MaximumRight, 0);
         TargetRect.Bottom := TargetRect.Top;
 
@@ -28253,10 +28256,10 @@ begin
           // ----- main node paint loop
           while Assigned(PaintInfo.Node) do
           begin
-            Logger.EnterMethod([lcPaintDetails],'PaintNode');
-            Logger.Send([lcPaintDetails],'NodeIndex',PaintInfo.Node^.Index);
-            Logger.Watch([lcPaintDetails],'BaseOffset',BaseOffset);
-            Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+            {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'PaintNode');{$endif}
+            {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeIndex',PaintInfo.Node^.Index);{$endif}
+            {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'BaseOffset',BaseOffset);{$endif}
+            {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
             // Determine LineImage, SelectionLevel and IndentSize
             SelectLevel := DetermineLineImageAndSelectLevel(PaintInfo.Node, LineImage);
             IndentSize := Length(LineImage);
@@ -28279,7 +28282,7 @@ begin
 
             TargetRect.Bottom := TargetRect.Top + PaintInfo.Node.NodeHeight;
 
-            Logger.Send([lcHeaderOffset], 'TargetRect for Node ' + IntToStr(PaintInfo.Node.Index), TargetRect);
+            {$ifdef DEBUG_VTV}Logger.Send([lcHeaderOffset], 'TargetRect for Node ' + IntToStr(PaintInfo.Node.Index), TargetRect);{$endif}
 
             // If poSelectedOnly is active then do the following stuff only for selected nodes or nodes
             // which are children of selected nodes.
@@ -28290,7 +28293,7 @@ begin
               begin
                 if Height <> PaintInfo.Node.NodeHeight then
                 begin
-                  Logger.Send([lcPaintDetails],'Setting the Node Height');
+                  {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Setting the Node Height');{$endif}
                   Height := PaintInfo.Node.NodeHeight;
                   // Make sure the buffer bitmap and target bitmap use the same transformation mode.
                   {$ifndef Gtk}
@@ -28311,15 +28314,15 @@ begin
               begin
                 // Init paint options for the background painting.
                 PaintInfo.PaintOptions := PaintOptions;
-                Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                 // The node background can contain a single color, a bitmap or can be drawn by the application.
                 ClearNodeBackground(PaintInfo, UseBackground, True, Rect(Window.Left, TargetRect.Top, Window.Right,
                   TargetRect.Bottom));
-                Logger.SendBitmap([lcPaintBitmap],'After Clear BackGround',NodeBitmap);
-                Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPaintBitmap],'After Clear BackGround',NodeBitmap);{$endif}
+                {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                 // Prepare column, position and node clipping rectangle.
                 PaintInfo.CellRect := R;
-                Logger.Send([lcPaintDetails],'PaintInfo.CellRect',PaintInfo.CellRect);
+                {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'PaintInfo.CellRect',PaintInfo.CellRect);{$endif}
                 if UseColumns then
                   InitializeFirstColumnValues(PaintInfo);
 
@@ -28343,8 +28346,8 @@ begin
                       PaintInfo.BidiMode := BidiMode;
                       PaintInfo.Alignment := FAlignment;
                     end;
-                    Logger.Send([lcPaintDetails],
-                      'Column Paint - PaintInfo.Position: %d PaintInfo.Column: %d',[PaintInfo.Position,PaintInfo.Column]);
+                    {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],
+                      'Column Paint - PaintInfo.Position: %d PaintInfo.Column: %d',[PaintInfo.Position,PaintInfo.Column]);{$endif}
                     PaintInfo.PaintOptions := PaintOptions;
                     with PaintInfo do
                     begin
@@ -28462,7 +28465,7 @@ begin
 
                           // Prepare background and focus rect for the current cell.
                           PrepareCell(PaintInfo, Window.Left, NodeBitmap.Width);
-                          Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                           // Some parts are only drawn for the main column.
                           if IsMainColumn then
                           begin
@@ -28481,18 +28484,18 @@ begin
                             if ImageInfo[iiCheck].Index > -1 then
                               PaintCheckImage(PaintInfo);
                           end;
-                          Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                           if ImageInfo[iiState].Index > -1 then
                             PaintImage(PaintInfo, iiState, False);
                           if ImageInfo[iiNormal].Index > -1 then
                             PaintImage(PaintInfo, iiNormal, True);
-                          Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                           // Now let descendants or applications draw whatever they want,
                           // but don't draw the node if it is currently being edited.
                           if not ((tsEditing in FStates) and (Node = FFocusedNode) and
                             ((Column = FEditColumn) or not UseColumns)) then
                             DoPaintNode(PaintInfo);
-                          Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);
+                          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'Brush.Color',PaintInfo.Canvas.Brush.Color);{$endif}
                           DoAfterCellPaint(Canvas, Node, Column, CellRect);
                         end;
                       end;
@@ -28543,9 +28546,9 @@ begin
                   PaintSelectionRectangle(PaintInfo.Canvas, Window.Left, SelectionRect, Rect(0, 0, NodeBitmap.Width,
                     NodeBitmap.Height));
                 end;
-                Logger.SendBitmap([lcPaintBitmap],'NodeBitmap ' + IntToStr(PaintInfo.Node^.Index), NodeBitmap);
-                Logger.SendIf([lcPaintDetails, lcHeaderOffset],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
-                  +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);
+                {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPaintBitmap],'NodeBitmap ' + IntToStr(PaintInfo.Node^.Index), NodeBitmap);{$endif}
+                {$ifdef DEBUG_VTV}Logger.SendIf([lcPaintDetails, lcHeaderOffset],'TargetRect.Top < Target.Y '+ Logger.RectToStr(TargetRect)
+                  +'  '+Logger.PointToStr(Target),TargetRect.Top < Target.Y);{$endif}
                 {$ifdef Gtk}
                 //lclheader
                 // This is a brute force fix AKA hack to prevent the header being cleared
@@ -28558,7 +28561,7 @@ begin
                   if TargetRect.Top < FHeader.Height then
                     YCorrect := FHeader.Height - TargetRect.Top;
                 end;
-                Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);
+                {$ifdef DEBUG_VTV}Logger.SendIf([lcPaintDetails],'YCorrect ' + IntToStr(YCorrect), YCorrect > 0);{$endif}
                 {$endif}
                 // Put the constructed node image onto the target canvas.
                 with TargetRect, NodeBitmap do
@@ -28569,11 +28572,11 @@ begin
             end;
 
             Inc(TargetRect.Top, PaintInfo.Node.NodeHeight);
-            Logger.SendIf([lcPaintHeader,lcDrag],'Last Node to be painted: '+ IntToStr(PaintInfo.Node^.Index)
-              +' (TargetRect.Top >= MaximumBottom)',TargetRect.Top >= MaximumBottom);
+            {$ifdef DEBUG_VTV}Logger.SendIf([lcPaintHeader,lcDrag],'Last Node to be painted: '+ IntToStr(PaintInfo.Node^.Index)
+              +' (TargetRect.Top >= MaximumBottom)',TargetRect.Top >= MaximumBottom);{$endif}
             if TargetRect.Top >= MaximumBottom then
             begin
-              Logger.ExitMethod([lcPaintDetails],'PaintNode');
+              {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintNode');{$endif}
               Break;
             end;
 
@@ -28583,21 +28586,21 @@ begin
 
             // Advance to next visible node.
             PaintInfo.Node := GetNextVisible(PaintInfo.Node, True);
-            Logger.ExitMethod([lcPaintDetails],'PaintNode');
+            {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintNode');{$endif}
           end;
         end;
 
         // Erase rest of window not covered by a node.
         if TargetRect.Top < MaximumBottom then
         begin
-          Logger.Watch([lcPaintDetails],'UseBackground',UseBackground);
-          Logger.Watch([lcPaintDetails],'UseColumns',UseColumns);
+          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'UseBackground',UseBackground);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'UseColumns',UseColumns);{$endif}
           // Keep the horizontal target position to determine the selection rectangle offset later (if necessary).
           BaseOffset := Target.X;
           Target := TargetRect.TopLeft;
           R := Rect(TargetRect.Left, 0, TargetRect.Left, MaximumBottom - Target.Y);
           TargetRect := Rect(0, 0, MaximumRight - Target.X, MaximumBottom - Target.Y);
-          Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Handle',NodeBitmap.Handle);{$endif}
 
           NodeBitmap.PixelFormat := pf32Bit;
           NodeBitmap.Width := TargetRect.Right - TargetRect.Left;
@@ -28606,9 +28609,9 @@ begin
           {$ifndef Gtk}
           SetMapMode(NodeBitmap.Canvas.Handle, GetMapMode(TargetCanvas.Handle));
           {$endif}
-          Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);
-          Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
-          Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap Width: %d Height: %d',[NodeBitmap.Width,NodeBitmap.Height]);{$endif}
           // Call back application/descendants whether they want to erase this area.
           SetWindowOrgEx(NodeBitmap.Canvas.Handle,{$ifndef Windows}-{$endif}Target.X, 0, nil);
           if not DoPaintBackground(NodeBitmap.Canvas, TargetRect) then
@@ -28693,8 +28696,8 @@ begin
               end
               else
               begin
-                Logger.Send([lcPaintDetails],'ErasingBackGround');
-                Logger.Send([lcPaintDetails],'TargetRect',TargetRect);
+                {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'ErasingBackGround');{$endif}
+                {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'TargetRect',TargetRect);{$endif}
                 // No columns nor bitmap background. Simply erase it with the tree color.
                 SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
                 NodeBitmap.Canvas.Brush.Color := Color;
@@ -28703,7 +28706,7 @@ begin
             end;
           end;
           SetWindowOrgEx(NodeBitmap.Canvas.Handle, 0, 0, nil);
-          Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);
+          {$ifdef DEBUG_VTV}Logger.Watch([lcPaintDetails],'DrawSelectionRect',DrawSelectionRect);{$endif}
           if DrawSelectionRect then
           begin
             R := OrderRect(FNewSelRect);
@@ -28713,10 +28716,10 @@ begin
             SetBrushOrgEx(NodeBitmap.Canvas.Handle, 0, Target.X and 1, nil);
             PaintSelectionRectangle(NodeBitmap.Canvas, 0, R, TargetRect);
           end;
-          Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);
-          Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.ClipRect',NodeBitmap.Canvas.ClipRect);
-          Logger.Send([lcPaintDetails],'Target',Target);
-          Logger.SendBitmap([lcPaintBitmap],'BackGroundBitmap',NodeBitmap);
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.Height',NodeBitmap.Canvas.Height);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Canvas.ClipRect',NodeBitmap.Canvas.ClipRect);{$endif}
+          {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Target',Target);{$endif}
+          {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPaintBitmap],'BackGroundBitmap',NodeBitmap);{$endif}
           with Target, NodeBitmap do
             BitBlt(TargetCanvas.Handle, X, Y, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
         end;
@@ -28729,7 +28732,7 @@ begin
       DoStateChange([], [tsPainting]);
     end;
   end;
-  Logger.ExitMethod([lcPaint],'PaintTree');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaint],'PaintTree');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30165,7 +30168,7 @@ begin
     // Reset the current horizontal offset to account for window resize etc.
     SetOffsetX(FOffsetX);
   end;
-  Logger.Send([lcPaintDetails],'FEffectiveOffsetX after UpdateHScrollbar',FEffectiveOffsetX);
+  {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'FEffectiveOffsetX after UpdateHScrollbar',FEffectiveOffsetX);{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -30927,7 +30930,7 @@ var
   Size: TSize;
 
 begin
-  Logger.EnterMethod([lcPaintDetails],'PaintNormalText') ;
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'PaintNormalText') ;{$endif}
   InitializeTextProperties(PaintInfo);
   with PaintInfo do
   begin
@@ -30993,10 +30996,10 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT)
     else
       SetBkMode(Canvas.Handle, OPAQUE);
-    Logger.Send([lcPaintDetails],'Canvas.Brush.Color',Canvas.Brush.Color);
+    {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'Canvas.Brush.Color',Canvas.Brush.Color);{$endif}
     DoTextDrawing(PaintInfo, Text, R, DrawFormat);
   end;
-  Logger.ExitMethod([lcPaintDetails],'PaintNormalText');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintNormalText');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -31011,7 +31014,7 @@ var
   DrawFormat: Cardinal;
 
 begin
-  Logger.EnterMethod([lcPaintDetails],'PaintStaticText');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'PaintStaticText');{$endif}
   with PaintInfo do
   begin
     Canvas.Font := Font;
@@ -31055,7 +31058,7 @@ begin
       SetBkMode(Canvas.Handle, OPAQUE);
     DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DrawFormat)
   end;
-  Logger.ExitMethod([lcPaintDetails],'PaintStaticText');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintStaticText');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -31340,7 +31343,7 @@ var
   TextOutFlags: Integer;
 
 begin
-  Logger.EnterMethod([lcPaintDetails],'TCustomVirtualStringTree.DoPaintNode');
+  {$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintDetails],'TCustomVirtualStringTree.DoPaintNode');{$endif}
   // Set a new OnChange event for the canvas' font so we know if the application changes it in the callbacks.
   // This long winded procedure is necessary because font changes (as well as brush and pen changes) are
   // unfortunately not announced via the Canvas.OnChange event.
@@ -31364,7 +31367,7 @@ begin
       PaintStaticText(PaintInfo, TextOutFlags, S);
   end;
   RestoreFontChangeEvent(PaintInfo.Canvas);
-  Logger.ExitMethod([lcPaintDetails],'TCustomVirtualStringTree.DoPaintNode');
+  {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'TCustomVirtualStringTree.DoPaintNode');{$endif}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

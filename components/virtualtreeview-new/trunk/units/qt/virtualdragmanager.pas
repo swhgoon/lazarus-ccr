@@ -486,7 +486,7 @@ type
 implementation
 
 uses
-  VirtualTrees, Controls, vtlogger;
+  VirtualTrees, Controls {$ifdef DEBUG_VTV}, vtlogger {$endif};
   
 type
   TVirtualTreeAccess = class (TBaseVirtualTree)
@@ -504,77 +504,77 @@ function Failed(Status : HRESULT) : BOOLEAN;
 
 function RegisterDragDrop(hwnd: HWND; pDropTarget: IDropTarget): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function RevokeDragDrop(hwnd: HWND): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function DoDragDrop(pDataObj: IDataObject; pDropSource: IDropSource;
   dwOKEffects: DWORD; pdwEffect: LPDWORD): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function OleInitialize(pvReserved: LPVOID): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 procedure OleUninitialize;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 procedure ReleaseStgMedium(_para1: LPSTGMEDIUM);
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function OleSetClipboard(pDataObj: IDataObject): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function OleGetClipboard(out ppDataObj: IDataObject): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function OleFlushClipboard: WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function OleIsCurrentClipboard(pDataObj: IDataObject): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function CreateStreamOnHGlobal(hGlobal: HGLOBAL; fDeleteOnRelease: BOOL; out
   stm: IStream): WINOLEAPI;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 function CoCreateInstance(const _para1: TCLSID; _para2: IUnknown;
   _para3: DWORD; const _para4: TIID; out _para5): HRESULT;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 end;
 
 
@@ -611,8 +611,8 @@ var
   VCLStream: TStream;
   
 begin
- Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+ {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   VCLStream := nil;
   try
@@ -678,8 +678,8 @@ type
 function TOLEMemoryStream.Write(const Buffer; Count: Integer): Integer;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
    // raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
 end;
 
@@ -690,8 +690,8 @@ var
   Data: Pointer;
   I: Integer;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 {
   Result := nil;
   if Medium.tymed = TYMED_ISTREAM then
@@ -713,8 +713,8 @@ end;
 
 procedure UnlockMediumData(Medium: TStgMedium);
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
 {
   if Medium.tymed = TYMED_HGLOBAL then
     GlobalUnlock(Medium.hGlobal);
@@ -729,8 +729,8 @@ var
   Data: PVTReference;
   
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := nil;
   if Assigned(DataObject) then
@@ -755,8 +755,8 @@ function AllocateGlobal(Data: Pointer; DataSize: Cardinal): HGLOBAL;
 var
   P:Pointer;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := GlobalAlloc(GHND or GMEM_SHARE, DataSize);
   P := GlobalLock(Result);
@@ -779,8 +779,8 @@ var
   I: Integer;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   inherited Create;
 
@@ -800,8 +800,8 @@ var
   AClone: TEnumFormatEtc;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
    Result := S_OK;
   try
@@ -822,8 +822,8 @@ var
   CopyCount: LongWord;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
    Result := S_FALSE;
   CopyCount := Length(FFormatEtcArray) - FCurrentIndex;
@@ -848,8 +848,8 @@ end;
 function TEnumFormatEtc.Reset: HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   FCurrentIndex := 0;
   Result := S_OK;
@@ -861,8 +861,8 @@ end;
 function TEnumFormatEtc.Skip(celt: LongWord): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if FCurrentIndex + celt < High(FFormatEtcArray) then
   begin
@@ -880,8 +880,8 @@ end;
 constructor TVTDataObject.Create(AOwner: TObject; ForClipboard: Boolean);
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   inherited Create;
 
@@ -900,8 +900,8 @@ var
   StgMedium: PStgMedium;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   // Cancel a pending clipboard operation if this data object was created for the clipboard and
   // is freed because something else is placed there.
@@ -929,8 +929,8 @@ function TVTDataObject.CanonicalIUnknown(TestUnknown: IUnknown): IUnknown;
 // interface, will always return the same pointer.
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if Assigned(TestUnknown) then
   begin
@@ -949,8 +949,8 @@ end;
 function TVTDataObject.EqualFormatEtc(FormatEtc1, FormatEtc2: TFormatEtc): Boolean;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := (FormatEtc1.cfFormat = FormatEtc2.cfFormat) and (FormatEtc1.ptd = FormatEtc2.ptd) and
     (FormatEtc1.dwAspect = FormatEtc2.dwAspect) and (FormatEtc1.lindex = FormatEtc2.lindex) and
@@ -967,8 +967,8 @@ var
   I: integer;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := -1;
   for I := 0 to High(FormatEtcArray) do
@@ -989,8 +989,8 @@ function TVTDataObject.FindInternalStgMedium(Format: TClipFormat): PStgMedium;
 var
   I: integer;
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := nil;
   for I := 0 to High(InternalStgMediumArray) do
@@ -1016,8 +1016,8 @@ var
   NewData: PChar;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Size := GlobalSize(HGlobal);
   Result := GlobalAlloc(GPTR, Size);
@@ -1047,8 +1047,8 @@ var
   InternalMedium: PStgMedium;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   
   Result := True;
@@ -1079,8 +1079,8 @@ var
   Len: Integer;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := S_OK;
 
@@ -1150,8 +1150,8 @@ function TVTDataObject.DAdvise(const FormatEtc: TFormatEtc; advf: DWord; const a
 // We use this interface and forward all concerning calls to it.
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := S_OK;
   if FAdviseHolder = nil then
@@ -1166,8 +1166,8 @@ end;
 function TVTDataObject.DUnadvise(dwConnection: DWord): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if FAdviseHolder = nil then
     Result := E_NOTIMPL
@@ -1181,8 +1181,8 @@ end;
 function TVTDataObject.EnumDAvise(Out enumAdvise : IEnumStatData):HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if FAdviseHolder = nil then
     Result := OLE_E_ADVISENOTSUPPORTED
@@ -1199,8 +1199,8 @@ var
   NewList: TEnumFormatEtc;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := E_FAIL;
   if Direction = DATADIR_GET then
@@ -1221,8 +1221,8 @@ end;
 Function TVTDataObject.GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := DATA_S_SAMEFORMATETC;
 end;
 
@@ -1238,8 +1238,8 @@ var
   Data: PVTReference;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   // The tree reference format is always supported and returned from here.
   {
   if FormatEtcIn.cfFormat = CF_VTREFERENCE then
@@ -1290,8 +1290,8 @@ end;
 function TVTDataObject.GetDataHere(const FormatEtc: TFormatEtc; out Medium: TStgMedium): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := E_NOTIMPL;
 end;
 
@@ -1303,8 +1303,8 @@ var
   I: Integer;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   Result := DV_E_CLIPFORMAT;
   for I := 0 to High(FFormatEtcArray) do
@@ -1345,8 +1345,8 @@ var
   LocalStgMedium: PStgMedium;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   // See if we already have a format of that type available.
   Index := FindFormatEtc(FormatEtc, FormatEtcArray);
@@ -1407,8 +1407,8 @@ end;
 constructor TVTDragManager.Create(AOwner: TObject);
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   inherited Create;
   FOwner := AOwner;
@@ -1424,8 +1424,8 @@ end;
 destructor TVTDragManager.Destroy;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   // Set the owner's reference to us to nil otherwise it will access an invalid pointer
   // after our desctruction is complete.
@@ -1439,8 +1439,8 @@ end;
 function TVTDragManager.GetDataObject: IDataObject;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   // When the owner tree starts a drag operation then it gets a data object here to pass it to the OLE subsystem.
   // In this case there is no local reference to a data object and one is created (but not stored).
@@ -1462,8 +1462,8 @@ end;
 function TVTDragManager.GetDragSource: TObject;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := FDragSource;
 end;
 
@@ -1472,8 +1472,8 @@ end;
 function TVTDragManager.GetDropTargetHelperSupported: Boolean;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := Assigned(FDropTargetHelper);
 end;
 
@@ -1482,8 +1482,8 @@ end;
 function TVTDragManager.GetIsDropTarget: Boolean;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := FIsDropTarget;
 end;
 
@@ -1493,8 +1493,8 @@ function TVTDragManager.DragEnter(const DataObject: IDataObject; KeyState: LongW
   var Effect: LongWord): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   FDataObject := DataObject;
   FIsDropTarget := True;
@@ -1517,8 +1517,8 @@ end;
 function TVTDragManager.DragLeave: HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if Assigned(FDropTargetHelper) and FFullDragging then
     FDropTargetHelper.DragLeave;
@@ -1536,8 +1536,8 @@ end;
 function TVTDragManager.DragOver(KeyState: LongWord; Pt: TPoint; var Effect: LongWord): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if Assigned(FDropTargetHelper) and FFullDragging then
     FDropTargetHelper.DragOver(Pt, Effect);
@@ -1552,8 +1552,8 @@ function TVTDragManager.Drop(const DataObject: IDataObject; KeyState: LongWord; 
   var Effect: LongWord): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if Assigned(FDropTargetHelper) and FFullDragging then
     FDropTargetHelper.Drop(DataObject, Pt, Effect);
@@ -1573,8 +1573,8 @@ procedure TVTDragManager.ForceDragLeave;
 // screen. Unfortunately, sometimes not even this does help (e.g. when dragging text from VT to a text field in IE).
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   if Assigned(FDropTargetHelper) and FFullDragging then
     FDropTargetHelper.DragLeave;
@@ -1586,8 +1586,8 @@ end;
 function TVTDragManager.GiveFeedback(Effect: Integer): HResult;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   //Result := DRAGDROP_S_USEDEFAULTCURSORS;
 end;
 
@@ -1600,8 +1600,8 @@ var
   LButton: Boolean;
 
 begin
-  Logger.SendError([lcOle],'Ole function called in Linux');
-  Logger.SendCallStack([lcOle],'Stack');
+  {$ifdef DEBUG_VTV}Logger.SendError([lcOle],'Ole function called in Linux');{$endif}
+  {$ifdef DEBUG_VTV}Logger.SendCallStack([lcOle],'Stack');{$endif}
   {
   LButton := (KeyState and MK_LBUTTON) <> 0;
   RButton := (KeyState and MK_RBUTTON) <> 0;

@@ -58,9 +58,6 @@ begin
     Inc(FCurrentIndex, CopyCount);
     Result := S_OK;
   end;
-  //todo_lcl_check Delphi treats pceltFetched an PInteger. Implemented like in fpc.activex. What heappens with
-  // a C Program call with a NULL in pCeltFetcjed??
-  //Answer: Yes. Is necessary a check here
   if pceltFetched <> nil then
     pceltFetched^ := CopyCount;
 end;
