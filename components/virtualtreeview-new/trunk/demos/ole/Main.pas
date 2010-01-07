@@ -11,7 +11,7 @@ interface
 uses 
   Windows, LCLIntf,  ActiveX, SysUtils, Forms, Dialogs, Graphics,
   VirtualTrees, ActnList, ComCtrls, ExtCtrls, StdCtrls, Controls, Classes, Buttons,
-  LResources, vtLogger,ipcchannel;
+  LResources;
 
 type
 
@@ -223,10 +223,6 @@ var
 }
 
 begin
-  Logger.Channels.Add(TIPCChannel.Create);
-  Logger.Clear;
-  Logger.ActiveClasses:=[lcDrag];//,lcPaintDetails,lcPaintBitmap];
-  //Logger.Enabled:=False;
   Tree1.NodeDataSize := SizeOf(TNodeData);
   Tree1.RootNodeCount := 30;
   Tree2.NodeDataSize := SizeOf(TNodeData);

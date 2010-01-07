@@ -1,7 +1,7 @@
 unit Main;
 
 {$MODE Delphi}
-{.$define DEBUG}
+{.$define DEBUG_VTV}
 
 // Demonstration project for TVirtualStringTree to generally show how to get started.
 // Written by Mike Lischke.
@@ -9,7 +9,7 @@ unit Main;
 interface
 
 uses
-  {$ifdef DEBUG}
+  {$ifdef DEBUG_VTV}
   vtlogger, ipcchannel,
   {$endif}
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -58,7 +58,7 @@ type
 procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
-  {$ifdef DEBUG}
+  {$ifdef DEBUG_VTV}
   Logger.ActiveClasses:=[];//[lcScroll,lcPaint];
   Logger.Channels.Add(TIPCChannel.Create);
   Logger.Clear;

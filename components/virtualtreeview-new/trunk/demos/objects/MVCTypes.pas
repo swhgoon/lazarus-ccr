@@ -58,7 +58,7 @@ interface
 
 uses
   LCLIntf, Types, SysUtils, Graphics, VirtualTrees, Classes, StdCtrls,
-  Controls, Forms, ImgList, LCLType, DelphiCompat, vtlogger, LMessages;
+  Controls, Forms, ImgList, LCLType, DelphiCompat, LMessages;
 
 type { TMVCNode is the encapsulation of a single Node in the structure.
        This implementation is a bit bloated because in my project
@@ -259,7 +259,6 @@ type { TMVCNode is the encapsulation of a single Node in the structure.
   TMVCEdit=class(TCustomEdit)
   private
     FLink:TMVCEditLink;
-    procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMChar(var Message: TWMChar); message WM_CHAR;
     procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
     //gtk1 has problems freeing a control inside keydow
@@ -269,7 +268,6 @@ type { TMVCNode is the encapsulation of a single Node in the structure.
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
   protected
     procedure AutoAdjustSize;
-    procedure CreateParams(var Params:TCreateParams); override;
   public
     constructor Create(Link:TMVCEditLink); reintroduce;
   end;
@@ -826,7 +824,6 @@ begin
   with FEdit do
   begin
     Visible := False;
-    Ctl3D := False;
     BorderStyle := bsSingle;
     AutoSize := False;
   end;
@@ -840,7 +837,6 @@ end;
 
 function TMVCEditLink.BeginEdit: Boolean;
 begin
-  Logger.Send([lcEditLink],'FEdit.Handle',FEdit.Handle);
   Result := True;
   FEdit.Show;
   FEdit.SetFocus;
@@ -929,32 +925,20 @@ begin
   FLink:=Link;
 end;
 
-procedure TMVCEdit.WMMove(var Message: TLMMove);
-begin
-  Logger.EnterMethod([lcEditLink],'TMVCEdit.WMMove');
-  Logger.Send([lcEditLink],'XPos: %d YPos: %d',[Message.XPos, Message.YPos]);
-  Logger.SendCallStack([lcEditLink],'Stack');
-  inherited WMMove(Message);
-  Logger.ExitMethod([lcEditLink],'TMVCEdit.WMMove');
-end;
-
 procedure TMVCEdit.WMChar(var Message: TWMChar);
 // handle character keys
 begin
-  Logger.EnterMethod([lcEditLink],'WMChar');
   // avoid beep
   if Message.CharCode <> VK_ESCAPE then
   begin
     inherited WMChar(Message);
     if Message.CharCode > $20 then AutoAdjustSize;
   end;
-  Logger.ExitMethod([lcEditLink],'WMChar');
 end;
 
 procedure TMVCEdit.WMKeyDown(var Message: TWMKeyDown);
 // handles some control keys (either redirection to tree, edit window size or clipboard handling)
 begin
-  Logger.EnterMethod([lcEditLink],'TMVCEdit.WMKeyDown');
   case Message.CharCode of
     // pretend these keycodes were send to the tree
     VK_ESCAPE,
@@ -990,7 +974,6 @@ begin
         AutoAdjustSize;
     end;
   end;
-  Logger.ExitMethod([lcEditLink],'TMVCEdit.WMKeyDown');
 end;
 
 {$ifdef LCLGtk}
@@ -1003,12 +986,10 @@ end;
 
 procedure TMVCEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
-  Logger.EnterMethod([lcEditLink],'TMVCEdit.WMKillFocus');
   inherited WMKillFocus(Msg);
   // FLink.FTree is set to nil if the link doesn't need to notify the tree (e.g. hiding the edit causes
   // a kill focus message)
   if Assigned(FLink.FTree) then FLink.FTree.DoCancelEdit;
-  Logger.ExitMethod([lcEditLink],'TMVCEdit.WMKillFocus');
 end;
 
 procedure TMVCEdit.AutoAdjustSize;
@@ -1029,13 +1010,6 @@ begin
   if (EditRect.Left + Size.cx) > TreeRect.Right then Size.cx := TreeRect.Right - EditRect.Left;
   SetWindowPos(Handle, 0, 0, 0, Size.cx, Height, SWP_NOMOVE or SWP_NOOWNERZORDER or SWP_NOZORDER);
   ReleaseDC(Handle, DC);
-end;
-
-procedure TMVCEdit.CreateParams(var Params:TCreateParams);
-begin
-  //todo: probably remove this since CTL3D does nothing in LCL
-  Ctl3D := False;
-  inherited;
 end;
 
 procedure TMVCEditLink.ProcessMessage(var Message: TMessage);
