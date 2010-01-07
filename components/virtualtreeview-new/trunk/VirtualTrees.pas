@@ -4697,7 +4697,7 @@ begin
   end;
 
   Len := Length(Result) - Length(LineEnding);
-  if CompareByte(Result[Len + 1], LineEnding, Length(LineEnding)) = 0 then
+  if CompareByte(Result[Len + 1], String(LineEnding)[1], Length(LineEnding)) = 0 then
     SetLength(Result, Len);
 end;
 
