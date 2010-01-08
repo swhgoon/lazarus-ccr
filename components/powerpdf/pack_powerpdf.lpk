@@ -21,7 +21,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Minor="9" Release="2"/>
+    <Version Minor="9" Release="3"/>
     <Files Count="12">
       <Item1>
         <Filename Value="PdfTypes.pas"/>
