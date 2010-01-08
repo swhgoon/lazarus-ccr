@@ -103,6 +103,10 @@ type
   TPRCompressionMethod = TPdfCompressionMethod;
   TPRViewerPreference = TPdfViewerPreference;
   TPRViewerPreferences = TPdfViewerPreferences;
+  TPRPoint = record
+    x,y: single;
+  end;
+  TPRPointArray = array of TPRPoint;
 
   { TPReport }
   TPReport = class(TAbstractPReport)
@@ -430,6 +434,7 @@ type
     property LineStyle: TPenStyle read FLineStyle write SetLineStyle;
     property FillColor: TColor read FFillColor write SetFillColor default clNone;
   end;
+  TPRShapeClass = class of TPRShape;
 
   { TPRRect }
   TPRRect = class(TPRShape)
@@ -443,6 +448,14 @@ type
   protected
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+  end;
+
+  { TPRPolygon }
+  TPRPolygon = class(TPRShape)
+  protected
+    procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+  public
+    Points: TPRPointArray;
   end;
 
   { TPRImage }
@@ -520,6 +533,8 @@ type
     constructor CreateRoot(ADoc: TPdfDoc);
   end;
 
+
+  function PRPoint(x,y:single): TPRPoint;
 
 const
   LINE_PITCH: integer = 378;
@@ -695,6 +710,12 @@ begin
       LinePos := trunc(LineCount * LINE_PITCH / 20) - OffsetY;
     end;
   end;
+end;
+
+function PRPoint(x, y: single): TPRPoint;
+begin
+  result.x := x;
+  result.y := y;
 end;
 
 { TPReport }
@@ -2421,6 +2442,67 @@ begin
   inherited Create;
   FData := ADoc.OutlineRoot;
   ADoc.OutlineRoot.Reference := Self;
+end;
+
+{ TPRPolygon }
+
+procedure TPRPolygon.Print(ACanvas: TPRCanvas; ARect: TRect);
+var
+  Canvas: TPDFCanvas;
+  i,h: Integer;
+  Pts: TPRPointArray;
+begin
+  if Length(Points)<2 then
+    exit;
+
+  h := GetPage.Height;
+
+  SetLength(Pts, Length(Points));
+  for i:=0 to Length(Points)-1 do
+  begin
+    Pts[i].x := Points[i].x;
+    Pts[i].y := h - Points[i].y;
+  end;
+
+  Canvas := ACanvas.PDFCanvas;
+
+  SetDash(Canvas, FLineStyle);
+
+  Canvas.MoveTo(Pts[0].x, Pts[0].y);
+  for i:=1 to Length(Pts)-1 do
+    Canvas.LineTo(Pts[i].x, Pts[i].y);
+
+  if (FillColor <> clNone) and (Length(Points)>2) then
+    canvas.SetRGBFillColor(FFillColor);
+
+  if LineColor <> clNone then
+  begin
+    Canvas.SetRGBStrokeColor(FLineColor);
+    Canvas.SetLineWidth(FLineWidth);
+  end;
+
+  if FillColor <> clNone then
+    if Length(Points)>2 then
+      if (LineColor <> clNone) and (LineStyle <> psClear) then
+        Canvas.ClosepathFillStroke
+      else
+      begin
+        Canvas.Closepath;
+        Canvas.Fill;
+      end
+    else
+    begin
+      Canvas.Stroke;
+      Canvas.Newpath;
+    end
+  else
+    if Length(Points)>2 then
+      Canvas.ClosePathStroke
+    else
+    begin
+      Canvas.Stroke;
+      Canvas.Newpath;
+    end;
 end;
 
 end.
