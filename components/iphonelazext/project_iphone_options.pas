@@ -40,6 +40,8 @@ type
     procedure FrameClick(Sender: TObject);
   private
     { private declarations }
+    fOnChanged : TNotifyEvent;
+    procedure DoChanged;
   public
     { public declarations }
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -47,17 +49,10 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    property OnChanged: TNotifyEvent read fOnChanged write fOnChanged;
   end;
 
-
-procedure EnableiPhoneAppProject(project: TLazProject);
-
 implementation
-
-procedure EnableiPhoneAppProject(project: TLazProject);
-begin
-
-end;
 
 { TiPhoneProjectOptionsEditor }
 
@@ -69,6 +64,11 @@ end;
 procedure TiPhoneProjectOptionsEditor.FrameClick(Sender: TObject);
 begin
 
+end;
+
+procedure TiPhoneProjectOptionsEditor.DoChanged;
+begin
+  if Assigned(fOnChanged) then fOnChanged(Self);
 end;
 
 function TiPhoneProjectOptionsEditor.GetTitle: String;
@@ -111,7 +111,7 @@ begin
     isIPhoneApp:=chkisPhone.Checked;
     SDK:=cmbSDKs.Caption;
     AppID:=edtAppID.Text;
-    Save;
+    DoChanged;
   end;
 end;
 
@@ -126,6 +126,8 @@ const
 initialization
   {$I project_iphone_options.lrs}
   RegisterIDEOptionsEditor(iPhonePrjGroup, TiPhoneProjectOptionsEditor, iPhoneOptions);
+
+finalization
 
 end.
 

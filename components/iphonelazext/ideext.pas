@@ -23,7 +23,7 @@ uses
   Classes, SysUtils,
   Graphics, Controls, Forms, Dialogs, FileUtil,
   {Lazarus Interface}
-  LazIDEIntf, MenuIntf, ProjectIntf, IDEOptionsIntf, PackageIntf, IDEMsgIntf,
+  LazIDEIntf, MenuIntf, ProjectIntf, IDEOptionsIntf, IDEMsgIntf,
 
   project_iphone_options, xcodetemplate,
 
@@ -44,6 +44,7 @@ type
     function ProjectBuilding(Sender: TObject): TModalResult;
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     function WriteIconTo(const FullName: String): Boolean;
+    procedure OnProjOptionsChanged(Sender: TObject);
   public
     isiPhoneMenu    :TIDEMenuCommand;
     constructor Create;
@@ -205,6 +206,7 @@ begin
   inherited Create;
   LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
   LazarusIDE.AddHandlerOnProjectBuilding(@ProjectBuilding);
+  ProjOptions.OnAfterWrite:=@OnProjOptionsChanged;
 
   RegisterIDEMenuCommand(itmProjectWindowSection, 'mnuiPhoneSeparator', '-', nil, nil);
 
@@ -292,6 +294,11 @@ begin
     Result:=true;
   except
   end;
+end;
+
+procedure TiPhoneExtension.OnProjOptionsChanged(Sender: TObject);
+begin
+  isiPhoneMenu.Checked:=ProjOptions.isIPhoneApp;
 end;
 
 procedure TiPhoneExtension.UpdateXCode(Sender: TObject);
@@ -422,8 +429,8 @@ procedure TiPhoneExtension.isProjectClicked(Sender: TObject);
 begin
   if not Assigned(Sender) or not Assigned(LazarusIDE.ActiveProject) then Exit;
   TIDEMenuCommand(Sender).Checked:=not TIDEMenuCommand(Sender).Checked;
-  ProjOptions.isIPhoneApp:=TIDEMenuCommand(Sender).Checked;
-  //SwitchProject(TIDEMenuCommand(Sender).Checked);
+  ProjOptions.isiPhoneApp:=TIDEMenuCommand(Sender).Checked;
+  ProjOptions.Save;
 end;
 
 procedure Register;
