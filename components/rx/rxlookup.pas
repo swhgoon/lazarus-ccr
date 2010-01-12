@@ -444,6 +444,9 @@ procedure TRxCustomDBLookupEdit.ShowPopUp;
 var
   R:TPoint;
   FValue:string;
+  {$IFDEF LINUX}
+  TempF:TPopUpForm;
+  {$ENDIF}
 begin
 
   if FLookupDataLink.Active then
@@ -456,8 +459,18 @@ begin
 
       FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
         FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
-    end
 
+      FRxPopUpForm:=ShowRxDBPopUpForm(Self, FLookupDataLink.DataSet, @OnClosePopup,
+        FPopUpFormOptions, FLookupDisplay, LookupDisplayIndex, 0 {ButtonWidth}, Font);
+  {$IFDEF LINUX}
+      TempF:=FRxPopUpForm;
+      if FRxPopUpForm.ShowModal = mrOk then
+        OnClosePopup(true);
+      TempF.Free;
+      FRxPopUpForm:=nil
+  {$ENDIF}
+
+    end
 end;
 
 

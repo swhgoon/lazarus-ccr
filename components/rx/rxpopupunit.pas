@@ -211,7 +211,7 @@ begin
   Result.DataSet:=ADataSet;
   Result.LookupDisplayIndex:=ALookupDisplayIndex;
 
-  AControl.Caption:='';
+//  AControl.Caption:='';
   Result.WControl:=AControl;
 
   if Assigned(Font) then
