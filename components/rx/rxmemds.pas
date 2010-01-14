@@ -558,7 +558,7 @@ begin
 {.$ELSE}
     (FieldDefs[Index].DataType in ftSupported - ftBlobTypes) then
 {.$ENDIF}
-    Result := Pointer(Integer(PChar(Buffer)) + FOffsets^[Index])
+    Result := Pointer(PtrInt(PChar(Buffer)) + FOffsets^[Index])
   else Result := nil;
 end;
 

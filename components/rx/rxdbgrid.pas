@@ -1168,16 +1168,22 @@ end;
 procedure TRxDBGrid.OutCaptionCellText90(aCol,aRow: Integer;const  aRect: TRect;
   aState: TGridDrawState;const ACaption:string; const TextOrient:TTextOrientation);
 var
-  dW:integer;
+  dW, dY:integer;
 begin
   Canvas.FillRect(aRect);
   DrawCellGrid(aCol,aRow,aRect,aState);
 
   if TextOrient in [toVertical90, toVertical270] then
-    dW:=((aRect.Bottom - aRect.Top) - Canvas.TextWidth(ACaption)) div 2
+  begin
+    dW:=((aRect.Bottom - aRect.Top) - Canvas.TextWidth(ACaption)) div 2;
+    dY:=((aRect.Right - aRect.Left) - Canvas.TextHeight(ACaption)) div 2;
+  end
   else
+  begin
     dW:=0;
-  OutTextXY90(Canvas, aRect.Left, aRect.Top+dw, ACaption, TextOrient);
+    dY:=0;
+  end;
+  OutTextXY90(Canvas, aRect.Left + dY, aRect.Top+dw, ACaption, TextOrient);
 end;
 
 procedure TRxDBGrid.OutCaptionSortMarker(const aRect: TRect;

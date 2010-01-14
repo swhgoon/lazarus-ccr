@@ -107,7 +107,7 @@ var
   S:string;
 begin
   {$IFDEF WINDOWS}
-  GetFileNameOwner(SearchDomain, FileName, Result, S);
+  GetFileNameOwner(UTF8ToSys(SearchDomain), UTF8ToSys(FileName), Result, S);
   Result:=UTF8Encode(Result);
   {$ELSE}
   Result:='';
@@ -118,7 +118,7 @@ procedure GetFileOwnerData(const SearchDomain, FileName: String; out UserName,
   DomainName: string);
 begin
   {$IFDEF WINDOWS}
-  GetFileNameOwner(SearchDomain, FileName, UserName, DomainName);
+  GetFileNameOwner(UTF8ToSys(SearchDomain), UTF8ToSys(FileName), UserName, DomainName);
   UserName:=UTF8Encode(UserName);
   DomainName:=UTF8Encode(DomainName);
   {$ELSE}

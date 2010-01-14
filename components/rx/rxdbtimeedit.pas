@@ -240,8 +240,11 @@ end;
 
 procedure TCustomRxDBTimeEdit.Change;
 begin
-  FDatalink.Edit;
-  FDataLink.Modified;
+  if Assigned(FDatalink) then
+  begin
+    FDatalink.Edit;
+    FDataLink.Modified;
+  end;
   inherited Change;
 end;
 
