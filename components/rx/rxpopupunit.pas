@@ -189,6 +189,7 @@ type
     procedure KeyPress(var Key: char); override;
     constructor CreatePopUp(AOwner: TComponent;
       APopUpFormOptions:TPopUpFormOptions; AFieldList:string; BtnWidtn:integer);
+    destructor Destroy; override;
     property DataSet:TDataSet read GetDataSet write SetDataSet;
     property LookupDisplayIndex:integer read GetLookupDisplayIndex write SetLookupDisplayIndex;
   end;
@@ -505,6 +506,12 @@ begin
     FRowCount:=10 + ord(dgTitles in FGrid.Options)
   else
     FRowCount:=FPopUpFormOptions.DropDownCount + 2 + ord(dgTitles in FGrid.Options);
+end;
+
+destructor TPopUpForm.Destroy;
+begin
+  FGrid.DataSource:=nil;
+  inherited Destroy;
 end;
 
 { TPopUpFormOptions }
