@@ -424,8 +424,10 @@ type
     procedure SetFillColor(Value: TColor);
     procedure SetLineWidth(Value: Single);
     procedure SetLineStyle(Value: TPenStyle);
+    procedure StdFillOrStroke(Canvas: TPdfCanvas);
   protected
     procedure SetDash(ACanvas: TPdfCAnvas; APattern: TPenStyle);
+    function  IsFillable: boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -438,9 +440,15 @@ type
 
   { TPRRect }
   TPRRect = class(TPRShape)
+  private
+    FRadius: Single;
+    function GetRadius: single;
+    procedure SetRadius(const AValue: single);
   protected
     procedure Paint; override;
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+  published
+    property Radius: single read GetRadius write SetRadius;
   end;
 
   { TPREllipse }
@@ -454,6 +462,7 @@ type
   TPRPolygon = class(TPRShape)
   protected
     procedure Print(ACanvas: TPRCanvas; ARect: TRect); override;
+    function  IsFillable: boolean; override;
   public
     Points: TPRPointArray;
   end;
@@ -1962,6 +1971,44 @@ begin
   end;
 end;
 
+procedure TPRShape.StdFillOrStroke(Canvas: TPdfCanvas);
+begin
+  with Canvas do
+  begin
+    if (FillColor <> clNone) and IsFillable then
+      SetRGBFillColor(FFillColor);
+
+    if LineColor <> clNone then
+    begin
+      SetRGBStrokeColor(FLineColor);
+      SetLineWidth(FLineWidth);
+    end;
+
+    if FillColor <> clNone then
+      if IsFillable then
+        if (LineColor <> clNone) and (LineStyle <> psClear) then
+          ClosepathFillStroke
+        else
+        begin
+          Closepath;
+          Fill;
+        end
+      else
+      begin
+        Stroke;
+        Newpath;
+      end
+    else
+      if IsFillable then
+        ClosePathStroke
+      else
+      begin
+        Stroke;
+        Newpath;
+      end;
+  end;
+end;
+
 // SetFillColor
 procedure TPRShape.SetFillColor(Value: TColor);
 begin
@@ -1996,27 +2043,62 @@ begin
     end;
 end;
 
+function TPRShape.IsFillable: boolean;
+begin
+  result := (self.Width > 1) and (self.Height > 1);
+end;
+
 
 { TPRRect }
+
+function TPRRect.GetRadius: single;
+begin
+  if ClientHeight<ClientWidth then
+    Result := ClientHeight
+  else
+    Result := ClientWidth;
+
+  if FRadius<0.0 then
+    Result := Result/4
+  else
+  if FRadius>Result/2 then
+    Result := Result/2
+  else
+    Result := FRadius;
+end;
+
+procedure TPRRect.SetRadius(const AValue: single);
+begin
+  if AValue<>FRadius then begin
+    FRadius := AValue;
+    if FRadius<0.0 then
+      FRadius := -1.0;
+    Invalidate;
+  end;
+end;
 
 // Paint
 procedure TPRRect.Paint;
 var
   ARect: TRect;
+  ARadius: Integer;
 begin
   ARect := ClientRect;
-  with ARect, Canvas do
+  with Canvas, ARect do
   begin
     if self.Height > 1 then
       Bottom := Bottom - 1;
     if self.Width > 1 then
       Right := Right - 1;
 
+    ARadius := round(Radius);
+
     if FillColor <> clNone then
     begin
       Brush.Color := FFillColor;
       Brush.Style := bsSolid;
-      FillRect(ARect);
+      if ARadius=0 then
+        FillRect(ARect);
     end
     else
       Brush.Style := bsClear;
@@ -2026,9 +2108,13 @@ begin
       Pen.Style := FLineStyle;
       Pen.Width := Round(FLineWidth);
       Pen.Color := FLineColor;
-      Polygon([Point(Left,Top), Point(Right,Top),
-        Point(Right,Bottom), Point(Left,Bottom)]);
+      if ARadius=0 then
+        Polygon([Point(Left,Top), Point(Right,Top),
+          Point(Right,Bottom), Point(Left,Bottom)]);
     end;
+
+    if ARadius<>0 then
+      RoundRect(Left,Top,Right,Bottom,ARadius,ARadius);
   end;
 end;
 
@@ -2036,6 +2122,7 @@ end;
 procedure TPRRect.Print(ACanvas: TPRCanvas; ARect: TRect);
 var
   PageHeight: integer;
+  ARadius: single;
 begin
   PageHeight := GetPage.Height;
   with ARect do
@@ -2055,51 +2142,28 @@ begin
 
     SetDash(ACanvas.PdfCanvas, FLineStyle);
 
+    ARadius := Radius;
+
     with ACanvas.PdfCanvas do
     begin
-      MoveTo(Left, Top);
-
-      if self.Width > 1 then
-      begin
-        LineTo(Right, Top);
-        if self.Height > 1 then
-          LineTo(Right, Bottom);
-      end;
-      if self.Height > 1 then
-        LineTo(Left, Bottom);
-
-      if (FillColor <> clNone) and (self.Width > 1) and (self.Height > 1) then
-        SetRGBFillColor(FFillColor);
-
-      if LineColor <> clNone then
-      begin
-        SetRGBStrokeColor(FLineColor);
-        SetLineWidth(FLineWidth);
-      end;
-
-      if FillColor <> clNone then
-        if (self.Width > 1) and (self.Height > 1) then
-          if (LineColor <> clNone) and (LineStyle <> psClear) then
-            ClosepathFillStroke
-          else
-          begin
-            Closepath;
-            Fill;
-          end
-        else
-        begin
-          Stroke;
-          Newpath;
-        end
+      if ARadius<>0.0 then
+        RoundRect(Left, Bottom, Right-Left, Top-Bottom, ARadius, ARadius)
       else
-        if (self.Width > 1) and (self.Height > 1) then
-          ClosePathStroke
-        else
+      begin
+        MoveTo(Left, Top);
+
+        if self.Width > 1 then
         begin
-          Stroke;
-          Newpath;
+          LineTo(Right, Top);
+          if self.Height > 1 then
+            LineTo(Right, Bottom);
         end;
+        if self.Height > 1 then
+          LineTo(Left, Bottom);
+      end;
     end;
+
+    StdFillOrStroke(ACanvas.PDFCanvas);
   end;
 end;
 
@@ -2167,37 +2231,7 @@ begin
       with ARect do
         Ellipse(Left, Top, Right - Left, Bottom - Top);
 
-      if (FillColor <> clNone) and (Width > 1) and (Height > 1) then
-        SetRGBFillColor(FFillColor);
-
-      if LineColor <> clNone then
-      begin
-        SetRGBStrokeColor(FLineColor);
-        SetLineWidth(FLineWidth);
-      end;
-
-      if FillColor <> clNone then
-        if (Width > 1) and (Height > 1) then
-          if (LineColor <> clNone) and (LineStyle <> psClear) then
-            ClosepathFillStroke
-          else
-          begin
-            Closepath;
-            Fill;
-          end
-        else
-        begin
-          Stroke;
-          Newpath;
-        end
-      else
-        if (Width > 1) and (Height > 1) then
-          ClosePathStroke
-        else
-        begin
-          Stroke;
-          Newpath;
-        end;
+      StdFillOrStroke(ACanvas.PdfCanvas);
     end;
   end;
 end;
@@ -2472,37 +2506,12 @@ begin
   for i:=1 to Length(Pts)-1 do
     Canvas.LineTo(Pts[i].x, Pts[i].y);
 
-  if (FillColor <> clNone) and (Length(Points)>2) then
-    canvas.SetRGBFillColor(FFillColor);
+  StdFillOrStroke(Canvas);
+end;
 
-  if LineColor <> clNone then
-  begin
-    Canvas.SetRGBStrokeColor(FLineColor);
-    Canvas.SetLineWidth(FLineWidth);
-  end;
-
-  if FillColor <> clNone then
-    if Length(Points)>2 then
-      if (LineColor <> clNone) and (LineStyle <> psClear) then
-        Canvas.ClosepathFillStroke
-      else
-      begin
-        Canvas.Closepath;
-        Canvas.Fill;
-      end
-    else
-    begin
-      Canvas.Stroke;
-      Canvas.Newpath;
-    end
-  else
-    if Length(Points)>2 then
-      Canvas.ClosePathStroke
-    else
-    begin
-      Canvas.Stroke;
-      Canvas.Newpath;
-    end;
+function TPRPolygon.IsFillable: boolean;
+begin
+  result := (Length(Points)>2);
 end;
 
 end.

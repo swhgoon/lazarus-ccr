@@ -374,6 +374,8 @@ type
     property Font: TPdfFont read FFont write FFont;
   end;
 
+  { TPdfCanvas }
+
   TPdfCanvas = class(TObject)
   private
     FContents: TPdfStream;
@@ -463,6 +465,7 @@ type
     procedure DrawXObjectEx(X, Y, AWidth, AHeight: Single;
         ClipX, ClipY, ClipWidth, ClipHeight: Single; AXObjectName: string);
     procedure Ellipse(x, y, width, height: Single);
+    procedure RoundRect(x, y, width, height, rx, ry: Single);
     function TextWidth(Text: string): Single;
     function MeasureText(Text: string; AWidth: Single): integer;
     function GetNextWord(const S: string; var Index: integer): string;
@@ -2095,6 +2098,23 @@ begin
              y+height/2+height/2*11/20,
              x,
              y+height/2);
+end;
+
+procedure TPdfCanvas.RoundRect(x, y, width, height, rx, ry: Single);
+var
+  hm,wm,h1,w1:single;
+begin
+  h1 := ry*11/20;
+  w1 := rx*11/20;
+  MoveTo(x, y+ry);
+  CurveToC(x, y+ry-h1, x+rx-w1, y, x+rx, y);
+  LineTo(x+width-rx, y);
+  CurveToC(x+width-rx+w1, y, x+width, y+ry-h1, x+width, y+ry);
+  LineTo(x+width, y+height-ry);
+  CurveToC(x+width, y+height-ry+h1, x+width-rx+w1, y+height, x+width-rx, y+height);
+  LineTo(x+rx, y+height);
+  CurveToC(x+rx-w1, y+height, x, y+height-ry+h1, x, y+height-ry);
+  LineTo(x, y+ry);
 end;
 
 // GetNextWord
