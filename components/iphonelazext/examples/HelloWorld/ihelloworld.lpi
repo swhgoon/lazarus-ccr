@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <UseDefaultCompilerOptions Value="True"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Title Value="ihelloworld"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <CustomData Count="4">
+      <Item0 Name="iPhone/AppID" Value="com.mycompany.myapplication"/>
+      <Item1 Name="iPhone/SDK" Value="iPhone 2.0"/>
+      <Item2 Name="iPhone/SimSpaceName" Value="AE7A4C5E-559A-1694-53EF-3683CFE2F32D"/>
+      <Item3 Name="iPhone/isiPhoneApp" Value="true"/>
+    </CustomData>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="ihelloworld.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ihelloworld"/>
+        <CursorPos X="34" Y="12"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <Libraries Value="$Env(WNLIB)/../Music/oggvorbis/macosx/"/>
+      <OtherUnitFiles Value="MacLauncher/;$Env(WNLIB)/;$Env(WNLIB)/MacOS/;$Env(WNLIB)/Application2/;$Env(WNLIB)/Composite/;$Env(WNLIB)/Graphics/;$Env(WNLIB)/VectorGraphics/;$Env(WNLIB)/TextOut/;$Env(PTELIB)/;$Env(PTELIB)/3DBasics/;$Env(PTELIB)/3DEngine/;$Env(PTELIB)/DeviceMenu/;$Env(PTELIB)/DrawController/;$Env(PTELIB)/GdiEngine/;$Env(PTELIB)/NavPanel/;$Env(PTELIB)/PteClasses/;$Env(PTELIB)/PteViewer/;$Env(PTELIB)/Shaders/;$Env(PTELIB)/ShadowSpreads/;$Env(PTELIB)/VirtualList/;$Env(PTELIB)/OpenGL/;$Env(PTELIB)/MacOS/;$Env(WNLIB)/../Music/;$Env(WNLIB)/../Music/oggvorbis/"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <SyntaxMode Value="Delphi"/>
+        <CStyleOperator Value="False"/>
+        <IncludeAssertionCode Value="True"/>
+        <CPPInline Value="False"/>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <IgnoredMessages idx3018="True" idx3031="True" idx3189="True" idx4035="True" idx4036="True" idx4055="True" idx4079="True" idx4080="True" idx4081="True" idx5024="True" idx5057="True" idx5058="True" idx5060="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-XR/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
