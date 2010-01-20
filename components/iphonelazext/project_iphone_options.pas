@@ -28,7 +28,6 @@ type
   { TiPhoneProjectOptionsEditor }
 
   TiPhoneProjectOptionsEditor = class(TAbstractIDEOptionsEditor)
-    btnCheckSDK: TButton;
     chkisPhone: TCheckBox;
     cmbSDKs: TComboBox;
     edtAppID: TEdit;
@@ -80,7 +79,6 @@ procedure TiPhoneProjectOptionsEditor.Setup(ADialog: TAbstractOptionsEditorDialo
 begin
   chkisPhone.Caption := strPrjOptIsiPhone;
   lblSDKVer.Caption := strPrjOptSDKver;
-  btnCheckSDK.Caption := strPrjOptCheckSDK;
   lblAppID.Caption := strPtrOptAppID;
   lblAppIDHint.Caption := strPtrOptAppIDHint;
 end;
@@ -95,10 +93,11 @@ begin
     Load;
     chkisPhone.Checked:=isIPhoneApp;
 
+    EnvOptions.GetSDKVersions(cmbSDKs.Items);
     i:=cmbSDKs.Items.IndexOf(SDK);
-    if (i<0) and (cmbSDKs.Items.Count>0) then i:=0;
+    if (i<0) and (cmbSDKs.Items.Count>0) then
+      i:=cmbSDKs.Items.IndexOf(EnvOptions.DefaultSDK);
     cmbSDKs.ItemIndex:=i;
-
     edtAppID.Text:=AppID;
   end;
 

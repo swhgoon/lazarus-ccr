@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <UseDefaultCompilerOptions Value="True"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Title Value="iArkanoid"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <CustomData Count="4">
+      <Item0 Name="iPhone/AppID" Value="com.mycompany.myapplication"/>
+      <Item1 Name="iPhone/SDK" Value="iPhone 2.0"/>
+      <Item2 Name="iPhone/SimSpaceName" Value="66F9A1EA-95F4-2F39-1C03-2ED8D5218316"/>
+      <Item3 Name="iPhone/isiPhoneApp" Value="true"/>
+    </CustomData>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="iArk.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="iArk"/>
+        <CursorPos X="17" Y="96"/>
+        <TopLine Value="94"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="gameengine.pas"/>
+        <UnitName Value="gameengine"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../../../../Fpc_Laz/lazarus-ccr/iphonelazext/project_iphone_options.pas"/>
+        <ComponentName Value="iPhoneProjectOptionsEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="project_iphone_options"/>
+        <CursorPos X="17" Y="82"/>
+        <TopLine Value="67"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <LCLWidgetType Value="nogui"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <SyntaxMode Value="Delphi"/>
+        <CStyleOperator Value="False"/>
+        <IncludeAssertionCode Value="True"/>
+        <CPPInline Value="False"/>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <IgnoredMessages idx3018="True" idx3031="True" idx3189="True" idx4035="True" idx4036="True" idx4055="True" idx4079="True" idx4080="True" idx4081="True" idx5024="True" idx5057="True" idx5058="True" idx5060="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-XR/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk"/>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="4">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+      <Item4>
+        <Name Value="EXMLReadError"/>
+      </Item4>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

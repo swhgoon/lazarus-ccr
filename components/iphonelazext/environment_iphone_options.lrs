@@ -1,39 +1,45 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TiPhoneSpecificOptions','FORMDATA',[
-  'TPF0'#241#22'TiPhoneSpecificOptions'#21'iPhoneSpecificOptions'#6'Height'#3
-  +#183#1#5'Width'#3#229#1#12'ClientHeight'#3#183#1#11'ClientWidth'#3#229#1#10
-  +'DesignLeft'#3'w'#2#9'DesignTop'#3#144#0#0#242#2#0#6'TLabel'#11'lblRTLUtils'
-  +#4'Left'#2#11#6'Height'#2#18#3'Top'#3#128#0#5'Width'#2'\'#7'Caption'#6#14'RT'
-  +'L units path'#11'ParentColor'#8#0#0#242#2#1#6'TLabel'#15'lblCompilerPath'#4
-  +'Left'#2#11#6'Height'#2#18#3'Top'#2'`'#5'Width'#2'7'#7'Caption'#6#8'Compiler'
-  +#11'ParentColor'#8#0#0#242#2#2#5'TEdit'#15'edtCompilerPath'#4'Left'#2'}'#6'H'
-  +'eight'#2#22#3'Top'#2'`'#5'Width'#3'['#1#7'Anchors'#11#5'akTop'#6'akLeft'#7
-  +'akRight'#0#8'TabOrder'#2#0#4'Text'#6#15'edtCompilerPath'#0#0#242#2#3#6'TLab'
-  +'el'#15'lblXCodeProject'#4'Left'#2#11#6'Height'#2#18#3'Top'#2'H'#5'Width'#3
-  +#139#1#7'Caption'#6'=Specific ARM compiler settings (for generated XCode pro'
-  +'jects)'#11'ParentColor'#8#10'ParentFont'#8#0#0#242#2#4#5'TEdit'#10'edtRTLPa'
-  +'th'#4'Left'#2'}'#6'Height'#2#22#3'Top'#3#128#0#5'Width'#3'['#1#7'Anchors'#11
-  +#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#1#4'Text'#6#10'edtRTLPath'#0#0
-  +#242#2#5#5'TEdit'#18'edtCompilerOptions'#4'Left'#2'}'#6'Height'#2#22#3'Top'#3
-  +#160#0#5'Width'#3'['#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOr'
-  +'der'#2#2#4'Text'#6#18'edtCompilerOptions'#0#0#242#2#6#6'TLabel'#13'lblCmpOp'
-  +'tions'#4'Left'#2#11#6'Height'#2#18#3'Top'#3#160#0#5'Width'#2'j'#7'Caption'#6
-  +#16'Compiler options'#11'ParentColor'#8#10'ParentFont'#8#7'OnClick'#7#18'lbl'
-  +'CmpOptionsClick'#0#0#242#2#7#6'TLabel'#6'Label5'#4'Left'#2#11#6'Height'#2#18
-  +#3'Top'#2#16#5'Width'#2'a'#7'Caption'#6#15'Platforms path:'#11'ParentColor'#8
-  +#10'ParentFont'#8#0#0#242#2#8#5'TEdit'#16'edtPlatformsPath'#4'Left'#2'}'#6'H'
-  +'eight'#2#22#3'Top'#2#16#5'Width'#3'['#1#7'Anchors'#11#5'akTop'#6'akLeft'#7
-  +'akRight'#0#8'TabOrder'#2#3#4'Text'#6#16'edtPlatformsPath'#0#0#242#2#9#6'TLa'
-  +'bel'#14'lblSimSettings'#4'Left'#2#11#6'Height'#2#18#3'Top'#3#232#0#5'Width'
-  +#3#161#0#7'Caption'#6#25'iPhone Simulator settings'#11'ParentColor'#8#0#0#242
-  +#2#10#5'TEdit'#12'edtSimBundle'#4'Left'#3#160#0#6'Height'#2#22#3'Top'#3#6#1#5
-  +'Width'#3'8'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#4
-  +#4'Text'#6#12'edtSimBundle'#0#0#242#2#11#5'TEdit'#10'edtSimApps'#4'Left'#3
-  +#160#0#6'Height'#2#22#3'Top'#3'&'#1#5'Width'#3'8'#1#7'Anchors'#11#5'akTop'#6
-  +'akLeft'#7'akRight'#0#8'TabOrder'#2#5#4'Text'#6#10'edtSimApps'#0#0#242#2#12#6
-  +'TLabel'#12'lblSimBundle'#4'Left'#2#11#6'Height'#2#18#3'Top'#3#7#1#5'Width'#2
-  +'o'#7'Caption'#6#16'iPhoneSim bundle'#11'ParentColor'#8#0#0#242#2#13#6'TLabe'
-  +'l'#13'lblSimAppPath'#4'Left'#2#11#6'Height'#2#18#3'Top'#3'&'#1#5'Width'#3
-  +#141#0#7'Caption'#6#22'Sim Applications path:'#11'ParentColor'#8#0#0#0
+  'TPF0'#22'TiPhoneSpecificOptions'#21'iPhoneSpecificOptions'#4'Left'#2#0#6'Hei'
+  +'ght'#3#217#1#3'Top'#2#0#5'Width'#3#231#1#12'ClientHeight'#3#217#1#11'Client'
+  +'Width'#3#231#1#10'LCLVersion'#6#6'0.9.29'#0#6'TLabel'#11'lblRTLUtils'#4'Lef'
+  +'t'#2#16#6'Height'#2#18#3'Top'#3#184#0#5'Width'#2'\'#7'Caption'#6#14'RTL uni'
+  +'ts path'#11'ParentColor'#8#0#0#6'TLabel'#15'lblCompilerPath'#4'Left'#2#16#6
+  +'Height'#2#18#3'Top'#3#152#0#5'Width'#2'7'#7'Caption'#6#8'Compiler'#11'Paren'
+  +'tColor'#8#0#0#5'TEdit'#15'edtCompilerPath'#4'Left'#3#136#0#6'Height'#2#22#3
+  +'Top'#3#152#0#5'Width'#3'J'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8
+  +'TabOrder'#2#0#4'Text'#6#15'edtCompilerPath'#0#0#6'TLabel'#15'lblXCodeProjec'
+  +'t'#4'Left'#2#16#6'Height'#2#18#3'Top'#3#128#0#5'Width'#3#139#1#7'Caption'#6
+  +'=Specific ARM compiler settings (for generated XCode projects)'#11'ParentCo'
+  +'lor'#8#10'ParentFont'#8#0#0#5'TEdit'#10'edtRTLPath'#4'Left'#3#136#0#6'Heigh'
+  +'t'#2#22#3'Top'#3#184#0#5'Width'#3'J'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'a'
+  +'kRight'#0#8'TabOrder'#2#1#4'Text'#6#10'edtRTLPath'#0#0#5'TEdit'#18'edtCompi'
+  +'lerOptions'#4'Left'#3#136#0#6'Height'#2#22#3'Top'#3#216#0#5'Width'#3'J'#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'OnChange'#7#24'edtCompilerOpt'
+  +'ionsChange'#8'TabOrder'#2#2#4'Text'#6#18'edtCompilerOptions'#0#0#6'TLabel'
+  +#13'lblCmpOptions'#4'Left'#2#16#6'Height'#2#18#3'Top'#3#216#0#5'Width'#2'j'#7
+  +'Caption'#6#16'Compiler options'#11'ParentColor'#8#10'ParentFont'#8#7'OnClic'
+  +'k'#7#18'lblCmpOptionsClick'#0#0#6'TLabel'#6'Label5'#4'Left'#2#16#6'Height'#2
+  +#18#3'Top'#2#16#5'Width'#2'a'#7'Caption'#6#15'Platforms path:'#11'ParentColo'
+  +'r'#8#10'ParentFont'#8#0#0#5'TEdit'#16'edtPlatformsPath'#4'Left'#2'}'#6'Heig'
+  +'ht'#2#22#3'Top'#2#16#5'Width'#3'U'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akR'
+  +'ight'#0#8'TabOrder'#2#3#4'Text'#6#16'edtPlatformsPath'#0#0#6'TLabel'#14'lbl'
+  +'SimSettings'#4'Left'#2#16#6'Height'#2#18#3'Top'#3#0#1#5'Width'#3#161#0#7'Ca'
+  +'ption'#6#25'iPhone Simulator settings'#11'ParentColor'#8#0#0#5'TEdit'#12'ed'
+  +'tSimBundle'#4'Left'#3#160#0#6'Height'#2#22#3'Top'#3#30#1#5'Width'#3'2'#1#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#4#4'Text'#6#12'ed'
+  +'tSimBundle'#0#0#5'TEdit'#10'edtSimApps'#4'Left'#3#160#0#6'Height'#2#22#3'To'
+  +'p'#3'>'#1#5'Width'#3'2'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'T'
+  +'abOrder'#2#5#4'Text'#6#10'edtSimApps'#0#0#6'TLabel'#12'lblSimBundle'#4'Left'
+  +#2#16#6'Height'#2#18#3'Top'#3#31#1#5'Width'#2'o'#7'Caption'#6#16'iPhoneSim b'
+  +'undle'#11'ParentColor'#8#0#0#6'TLabel'#13'lblSimAppPath'#4'Left'#2#16#6'Hei'
+  +'ght'#2#18#3'Top'#3'>'#1#5'Width'#3#141#0#7'Caption'#6#22'Sim Applications p'
+  +'ath:'#11'ParentColor'#8#0#0#7'TButton'#7'Button1'#4'Left'#2#16#6'Height'#2
+  +#20#3'Top'#2'8'#5'Width'#2'p'#8'AutoSize'#9#7'Caption'#6#13'Scan for SDKs'#7
+  +'OnClick'#7#12'Button1Click'#8'TabOrder'#2#6#0#0#6'TLabel'#6'Label1'#4'Left'
+  +#2#16#6'Height'#2#18#3'Top'#2'X'#5'Width'#3#129#0#7'Caption'#6#20'Default SD'
+  +'K version:'#11'ParentColor'#8#0#0#9'TComboBox'#13'cmbDefaultSDK'#4'Left'#3
+  +#152#0#6'Height'#2#20#3'Top'#2'X'#5'Width'#3#194#0#10'ItemHeight'#2#0#5'Styl'
+  +'e'#7#14'csDropDownList'#8'TabOrder'#2#7#0#0#0
 ]);

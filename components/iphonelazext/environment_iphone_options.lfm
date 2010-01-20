@@ -1,74 +1,76 @@
-inherited iPhoneSpecificOptions: TiPhoneSpecificOptions
-  Height = 439
-  Width = 485
-  ClientHeight = 439
-  ClientWidth = 485
-  DesignLeft = 631
-  DesignTop = 144
-  object lblRTLUtils: TLabel[0]
-    Left = 11
+object iPhoneSpecificOptions: TiPhoneSpecificOptions
+  Left = 0
+  Height = 473
+  Top = 0
+  Width = 487
+  ClientHeight = 473
+  ClientWidth = 487
+  LCLVersion = '0.9.29'
+  object lblRTLUtils: TLabel
+    Left = 16
     Height = 18
-    Top = 128
+    Top = 184
     Width = 92
     Caption = 'RTL units path'
     ParentColor = False
   end
-  object lblCompilerPath: TLabel[1]
-    Left = 11
+  object lblCompilerPath: TLabel
+    Left = 16
     Height = 18
-    Top = 96
+    Top = 152
     Width = 55
     Caption = 'Compiler'
     ParentColor = False
   end
-  object edtCompilerPath: TEdit[2]
-    Left = 125
+  object edtCompilerPath: TEdit
+    Left = 136
     Height = 22
-    Top = 96
-    Width = 347
+    Top = 152
+    Width = 330
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
     Text = 'edtCompilerPath'
   end
-  object lblXCodeProject: TLabel[3]
-    Left = 11
+  object lblXCodeProject: TLabel
+    Left = 16
     Height = 18
-    Top = 72
+    Top = 128
     Width = 395
     Caption = 'Specific ARM compiler settings (for generated XCode projects)'
     ParentColor = False
     ParentFont = False
   end
-  object edtRTLPath: TEdit[4]
-    Left = 125
+  object edtRTLPath: TEdit
+    Left = 136
     Height = 22
-    Top = 128
-    Width = 347
+    Top = 184
+    Width = 330
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 1
     Text = 'edtRTLPath'
   end
-  object edtCompilerOptions: TEdit[5]
-    Left = 125
+  object edtCompilerOptions: TEdit
+    Left = 136
     Height = 22
-    Top = 160
-    Width = 347
+    Top = 216
+    Width = 330
     Anchors = [akTop, akLeft, akRight]
+    OnChange = edtCompilerOptionsChange
     TabOrder = 2
     Text = 'edtCompilerOptions'
   end
-  object lblCmpOptions: TLabel[6]
-    Left = 11
+  object lblCmpOptions: TLabel
+    Left = 16
     Height = 18
-    Top = 160
+    Top = 216
     Width = 106
     Caption = 'Compiler options'
     ParentColor = False
     ParentFont = False
     OnClick = lblCmpOptionsClick
   end
-  object Label5: TLabel[7]
-    Left = 11
+  object Label5: TLabel
+    Left = 16
     Height = 18
     Top = 16
     Width = 97
@@ -76,55 +78,82 @@ inherited iPhoneSpecificOptions: TiPhoneSpecificOptions
     ParentColor = False
     ParentFont = False
   end
-  object edtPlatformsPath: TEdit[8]
+  object edtPlatformsPath: TEdit
     Left = 125
     Height = 22
     Top = 16
-    Width = 347
+    Width = 341
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 3
     Text = 'edtPlatformsPath'
   end
-  object lblSimSettings: TLabel[9]
-    Left = 11
+  object lblSimSettings: TLabel
+    Left = 16
     Height = 18
-    Top = 232
+    Top = 256
     Width = 161
     Caption = 'iPhone Simulator settings'
     ParentColor = False
   end
-  object edtSimBundle: TEdit[10]
+  object edtSimBundle: TEdit
     Left = 160
     Height = 22
-    Top = 262
-    Width = 312
+    Top = 286
+    Width = 306
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 4
     Text = 'edtSimBundle'
   end
-  object edtSimApps: TEdit[11]
+  object edtSimApps: TEdit
     Left = 160
     Height = 22
-    Top = 294
-    Width = 312
+    Top = 318
+    Width = 306
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 5
     Text = 'edtSimApps'
   end
-  object lblSimBundle: TLabel[12]
-    Left = 11
+  object lblSimBundle: TLabel
+    Left = 16
     Height = 18
-    Top = 263
+    Top = 287
     Width = 111
     Caption = 'iPhoneSim bundle'
     ParentColor = False
   end
-  object lblSimAppPath: TLabel[13]
-    Left = 11
+  object lblSimAppPath: TLabel
+    Left = 16
     Height = 18
-    Top = 294
+    Top = 318
     Width = 141
     Caption = 'Sim Applications path:'
     ParentColor = False
+  end
+  object Button1: TButton
+    Left = 16
+    Height = 20
+    Top = 56
+    Width = 112
+    AutoSize = True
+    Caption = 'Scan for SDKs'
+    OnClick = Button1Click
+    TabOrder = 6
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 18
+    Top = 88
+    Width = 129
+    Caption = 'Default SDK version:'
+    ParentColor = False
+  end
+  object cmbDefaultSDK: TComboBox
+    Left = 152
+    Height = 20
+    Top = 88
+    Width = 194
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 7
   end
 end

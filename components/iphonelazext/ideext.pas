@@ -170,13 +170,8 @@ var
   idx     : Integer;
   needfix : Boolean;
   sdkuse  : String;
-  sdkname : string;
 begin
-
-  if isRealDevice
-    then EnvOptions.GetDeviceSDK(ProjOptions.SDK, sdkname, sdkuse)
-    else EnvOptions.GetSimSDK(ProjOptions.SDK, sdkname, sdkuse);
-  sdkuse:=sdkuse;
+  sdkuse:=EnvOptions.GetSDKFullPath(ProjOptions.SDK, not isRealDevice);
 
   Result:=Options;
   if FindParam(Result, '-XR', idx, rawprm) then begin

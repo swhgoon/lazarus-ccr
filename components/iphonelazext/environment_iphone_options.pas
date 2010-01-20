@@ -28,12 +28,15 @@ type
   { TiPhoneSpecificOptions }
 
   TiPhoneSpecificOptions = class(TAbstractIDEOptionsEditor)
+    Button1: TButton;
+    cmbDefaultSDK: TComboBox;
     edtCompilerPath: TEdit;
     edtRTLPath: TEdit;
     edtCompilerOptions: TEdit;
     edtPlatformsPath: TEdit;
     edtSimBundle: TEdit;
     edtSimApps: TEdit;
+    Label1: TLabel;
     lblRTLUtils: TLabel;
     lblSimAppPath: TLabel;
     lblCompilerPath: TLabel;
@@ -42,6 +45,8 @@ type
     Label5: TLabel;
     lblSimSettings: TLabel;
     lblSimBundle: TLabel;
+    procedure Button1Click(Sender: TObject);
+    procedure edtCompilerOptionsChange(Sender: TObject);
     procedure lblCmpOptionsClick(Sender: TObject);
   private
     { private declarations }
@@ -59,6 +64,26 @@ implementation
 { TiPhoneSpecificOptions }
 
 procedure TiPhoneSpecificOptions.lblCmpOptionsClick(Sender: TObject);
+begin
+
+end;
+
+procedure TiPhoneSpecificOptions.Button1Click(Sender: TObject);
+var
+  dir  : String;
+begin
+  dir:=EnvOptions.PlatformsBaseDir;
+  EnvOptions.PlatformsBaseDir:=edtPlatformsPath.Text;
+  EnvOptions.RefreshVersions;
+
+  cmbDefaultSDK.Clear;
+  EnvOptions.GetSDKVersions(cmbDefaultSDK.Items);
+
+  EnvOptions.PlatformsBaseDir:=dir;
+  EnvOptions.RefreshVersions;
+end;
+
+procedure TiPhoneSpecificOptions.edtCompilerOptionsChange(Sender: TObject);
 begin
 
 end;
@@ -87,6 +112,10 @@ begin
   edtCompilerOptions.Text := opt.CommonOpt;
   edtSimBundle.Text := opt.SimBundle;
   edtSimApps.Text:= opt.SimAppsPath;
+
+  cmbDefaultSDK.Items.Clear;
+  opt.GetSDKVersions(cmbDefaultSDK.Items);
+  cmbDefaultSDK.ItemIndex:=cmbDefaultSDK.Items.IndexOf(opt.DefaultSDK);
 end;
 
 procedure TiPhoneSpecificOptions.WriteSettings(AOptions: TAbstractIDEOptions);

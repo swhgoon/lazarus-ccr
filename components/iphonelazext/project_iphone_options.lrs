@@ -3,27 +3,22 @@
 LazarusResources.Add('TiPhoneProjectOptionsEditor','FORMDATA',[
   'TPF0'#241#27'TiPhoneProjectOptionsEditor'#26'iPhoneProjectOptionsEditor'#6'H'
   +'eight'#3'v'#1#5'Width'#3'j'#2#12'ClientHeight'#3'v'#1#11'ClientWidth'#3'j'#2
-  +#7'OnClick'#7#10'FrameClick'#10'DesignLeft'#3'c'#1#9'DesignTop'#3#224#0#0#242
-  +#2#0#9'TCheckBox'#10'chkisPhone'#4'Left'#2#16#6'Height'#2#18#3'Top'#2#16#5'W'
-  +'idth'#3#199#0#7'Caption'#6#29'is iPhone application project'#8'TabOrder'#2#0
-  +#0#0#242#2#1#6'TLabel'#8'lblAppID'#4'Left'#2#16#6'Height'#2#18#3'Top'#2'X'#5
-  +'Width'#2'W'#7'Caption'#6#14'Application ID'#11'ParentColor'#8#0#0#242#2#2#5
-  +'TEdit'#8'edtAppID'#4'Left'#2'p'#6'Height'#2#22#3'Top'#2'U'#5'Width'#3#232#1
-  +#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2#1#4'Text'#6#19
-  +'com.mycompany.myapp'#0#0#242#2#3#6'TLabel'#12'lblAppIDHint'#4'Left'#2#16#6
-  +'Height'#2#14#3'Top'#2'u'#5'Width'#3#237#1#7'Caption'#6'_It''s recommended b'
-  +'y Apple to use domain-structured name, i.e. com.mycompany.myApplication as '
-  +'ID'#11'Font.Height'#2#246#11'ParentColor'#8#10'ParentFont'#8#0#0#242#2#4#6
-  +'TLabel'#9'lblSDKVer'#4'Left'#2#16#6'Height'#2#18#3'Top'#2'3'#5'Width'#2'P'#7
-  +'Caption'#6#12'SDK version:'#11'ParentColor'#8#0#0#242#2#5#9'TComboBox'#7'cm'
-  +'bSDKs'#4'Left'#2'p'#6'Height'#2#20#3'Top'#2'0'#5'Width'#3#184#0#10'ItemHeig'
-  +'ht'#2#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#10'iPhone 2.0'#6#10'iPhone 2'
-  +'.1'#6#10'iPhone 2.2'#6#12'iPhone 2.2.1'#6#10'iPhone 3.0'#6#10'iPhone 3.1'#6
-  +#12'iPhone 3.1.2'#0#8'OnChange'#7#13'cmbSDKsChange'#5'Style'#7#14'csDropDown'
-  +'List'#8'TabOrder'#2#2#4'Text'#6#10'iPhone 2.0'#0#0#242#2#6#7'TButton'#11'bt'
-  +'nCheckSDK'#4'Left'#3'8'#1#6'Height'#2#20#3'Top'#2'0'#5'Width'#3#158#0#8'Aut'
-  +'oSize'#9#7'Caption'#6#20'Check available SDKs'#8'TabOrder'#2#3#0#0#242#2#7#6
-  +'TLabel'#11'lblXibFiles'#4'Left'#2#16#6'Height'#2#18#3'Top'#3#168#0#5'Width'
-  +#3#219#0#7'Caption'#6'$.XIB files might appear here soon...'#11'ParentColor'
-  +#8#0#0#0
+  +#7'OnClick'#7#10'FrameClick'#8'TabOrder'#2#0#10'DesignLeft'#3'c'#1#9'DesignT'
+  +'op'#3#224#0#0#242#2#0#9'TCheckBox'#10'chkisPhone'#4'Left'#2#16#6'Height'#2
+  +#18#3'Top'#2#16#5'Width'#3#199#0#7'Caption'#6#29'is iPhone application proje'
+  +'ct'#8'TabOrder'#2#0#0#0#242#2#1#6'TLabel'#8'lblAppID'#4'Left'#2#16#6'Height'
+  +#2#18#3'Top'#2'X'#5'Width'#2'W'#7'Caption'#6#14'Application ID'#11'ParentCol'
+  +'or'#8#0#0#242#2#2#5'TEdit'#8'edtAppID'#4'Left'#2'p'#6'Height'#2#22#3'Top'#2
+  +'U'#5'Width'#3#232#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrde'
+  +'r'#2#1#4'Text'#6#19'com.mycompany.myapp'#0#0#242#2#3#6'TLabel'#12'lblAppIDH'
+  +'int'#4'Left'#2#16#6'Height'#2#14#3'Top'#2'u'#5'Width'#3#237#1#7'Caption'#6
+  +'_It''s recommended by Apple to use domain-structured name, i.e. com.mycompa'
+  +'ny.myApplication as ID'#11'Font.Height'#2#246#11'ParentColor'#8#10'ParentFo'
+  +'nt'#8#0#0#242#2#4#6'TLabel'#9'lblSDKVer'#4'Left'#2#16#6'Height'#2#18#3'Top'
+  +#2'3'#5'Width'#2'P'#7'Caption'#6#12'SDK version:'#11'ParentColor'#8#0#0#242#2
+  +#5#9'TComboBox'#7'cmbSDKs'#4'Left'#2'p'#6'Height'#2#20#3'Top'#2'0'#5'Width'#3
+  +#184#0#10'ItemHeight'#2#0#8'OnChange'#7#13'cmbSDKsChange'#5'Style'#7#14'csDr'
+  +'opDownList'#8'TabOrder'#2#2#0#0#242#2#6#6'TLabel'#11'lblXibFiles'#4'Left'#2
+  +#16#6'Height'#2#18#3'Top'#3#168#0#5'Width'#3#219#0#7'Caption'#6'$.XIB files '
+  +'might appear here soon...'#11'ParentColor'#8#0#0#0
 ]);

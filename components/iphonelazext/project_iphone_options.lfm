@@ -4,6 +4,7 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
   ClientHeight = 374
   ClientWidth = 618
   OnClick = FrameClick
+  TabOrder = 0
   DesignLeft = 355
   DesignTop = 224
   object chkisPhone: TCheckBox[0]
@@ -55,31 +56,11 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Top = 48
     Width = 184
     ItemHeight = 0
-    ItemIndex = 0
-    Items.Strings = (
-      'iPhone 2.0'
-      'iPhone 2.1'
-      'iPhone 2.2'
-      'iPhone 2.2.1'
-      'iPhone 3.0'
-      'iPhone 3.1'
-      'iPhone 3.1.2'
-    )
     OnChange = cmbSDKsChange
     Style = csDropDownList
     TabOrder = 2
-    Text = 'iPhone 2.0'
   end
-  object btnCheckSDK: TButton[6]
-    Left = 312
-    Height = 20
-    Top = 48
-    Width = 158
-    AutoSize = True
-    Caption = 'Check available SDKs'
-    TabOrder = 3
-  end
-  object lblXibFiles: TLabel[7]
+  object lblXibFiles: TLabel[6]
     Left = 16
     Height = 18
     Top = 168
