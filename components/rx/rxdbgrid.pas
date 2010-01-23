@@ -451,7 +451,9 @@ type
     property TabOrder;
     property TabStop;
     property TitleFont;
+    property TitleImageList;
     property TitleStyle;
+    property UseXORFeatures;
     property Visible;
     property OnCellClick;
     property OnColEnter;
@@ -2264,7 +2266,12 @@ begin
   GetMem(WA, SizeOf(Integer) * AColList.Count);
 
   for I := 0 to AColList.Count-1 do
-    WA^[i]:=20;
+  begin
+    if TRxColumnTitle(TRxColumn(AColList[i]).Title).CaptionLinesCount>1 then
+      WA^[i]:=Max(Canvas.TextWidth(TRxColumnTitle(TRxColumn(AColList[i]).Title).CaptionLine(TRxColumnTitle(TRxColumn(AColList[i]).Title).CaptionLinesCount - 1).Caption ) + 8, 20)
+    else
+      WA^[i]:=Max(Canvas.TextWidth(TRxColumn(AColList[i]).Title.Caption) + 8, 20);
+  end;
 
   with DataSource.DataSet do
   begin
@@ -2276,7 +2283,6 @@ begin
       begin
         for I := 0 to AColList.Count-1 do
         begin
-//          W:=Canvas.TextWidth(TRxColumn(AColList[i]).Field.DisplayText) + 6;
           S:=TRxColumn(AColList[i]).Field.DisplayText;
           with TRxColumn(AColList[i]) do
             if (KeyList.Count > 0) and (PickList.Count > 0) then
