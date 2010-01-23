@@ -5059,8 +5059,10 @@ begin
   begin
     if Tree.HandleAllocated and PeekMessage(Msg, Tree.Handle, WM_CHANGESTATE, WM_CHANGESTATE, PM_REMOVE) then
     begin
-      TranslateMessage(Msg);
-      DispatchMessage(Msg);
+      //todo: see if is correct / will work
+      Application.ProcessMessages;
+      //TranslateMessage(Msg);
+      //DispatchMessage(Msg);
     end;
   end;
 end;
