@@ -4992,10 +4992,6 @@ begin
     // Make sure there is no reference remaining to the releasing tree.
     Tree.InterruptValidation;
 
-    // Borland change (used to debug shutdown issue with dangling FCurrentTree reference)
-    Assert(WorkerThread.FCurrentTree <> Tree, 'WorkerThread.FCurrentTree dangling reference!');
-
-
     if WorkerThread.FRefCount = 0 then
     begin
       with WorkerThread do
@@ -5143,7 +5139,6 @@ begin
   finally
     FWaiterList.UnlockList;
   end;
-  CancelValidation(Tree);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5159,6 +5154,7 @@ begin
   finally
     FWaiterList.UnlockList;
   end;
+  CancelValidation(Tree);
 end;
 
 //----------------- TBufferedUTF8String --------------------------------------------------------------------------------
