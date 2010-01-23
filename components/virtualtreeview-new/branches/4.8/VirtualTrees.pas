@@ -27,6 +27,12 @@ unit VirtualTrees;
 // (C) 1999-2001 digital publishing AG. All Rights Reserved.
 //----------------------------------------------------------------------------------------------------------------------
 //
+//  January 2010
+//   - Bug fix: TBaseVirtualTree.AdjustTotalHeight now longer calculates wrong total heights if nodes have been
+//              made invisible
+//   - Bug fix: TCustomVirtualStringTree.OnMeasureTextWidth now works as intended
+//   - Bug fix: Added missing $IFDEFs concerning theming support
+//   - Bug fix: Removed default from properties TVirtualTreeColumn.Color and TVirtualTreeColumn.BiDiMode
 //  July 2009
 //   - Bug fix: TWorkerThread will no longer reference the tree after it has been destroyed (Mantis issue #384)
 //   - Bug fix: TBaseVirtualTree.InternalConnectNode checked the expanded state of the wrong node if Mode was
@@ -1212,14 +1218,14 @@ type
     property Owner: TVirtualTreeColumns read GetOwner;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
+    property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored;
     property CaptionAlignment: TAlignment read GetCaptionAlignment write SetCaptionAlignment
       stored IsCaptionAlignmentStored default taLeftJustify;
     property CaptionText: String read FCaptionText stored False;
     property CheckType: TCheckType read FCheckType write SetCheckType default ctCheckBox;
     property CheckState: TCheckState read FCheckState write SetCheckState default csUncheckedNormal;
     property CheckBox: Boolean read FCheckBox write SetCheckBox default False;
-    property Color: TColor read FColor write SetColor stored IsColorStored default clWindow;
+    property Color: TColor read FColor write SetColor stored IsColorStored;
     property Hint: String read FHint write FHint;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Layout: TVTHeaderColumnLayout read FLayout write SetLayout default blGlyphLeft;
@@ -11364,8 +11370,7 @@ begin
   begin
     Run := Node;
     repeat
-      if vsVisible in Run.States then
-        Inc(Integer(Run.TotalHeight), Difference);
+      Inc(Integer(Run.TotalHeight), Difference);
       // If the node is not visible or the parent node is not expanded or we are already at the top
       // then nothing more remains to do.
       if not (vsVisible in Run.States) or (Run = FRoot) or
@@ -31315,9 +31320,9 @@ begin
     DrawText(Canvas.Handle, PChar(Text), Length(Text), R, DrawFormat);
     Size.cx := R.Right - R.Left;
   end;
+  Result := Size.cx;
   if Assigned(FOnMeasureTextWidth) then
     FOnMeasureTextWidth(Self, Canvas, Node, Column, Text, Result);
-  Result := Size.cx;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
