@@ -2,7 +2,7 @@ program images;
 
 {$mode objfpc}{$H+}
 
-{$define DEBUG_VTV}
+{.$define DEBUG_VTV}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}

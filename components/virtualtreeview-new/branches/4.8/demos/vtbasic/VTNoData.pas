@@ -167,7 +167,9 @@ implementation
          'VariableNodeHeight',
          'FullRowDrag',
          'NodeHeightResize',
-         'NodeHeightDblClickResize'
+         'NodeHeightDblClickResize',
+         'EditOnClick',
+         'EditOnDblClick'
       );
 
       aPaintOpts : array[0..Ord(High(TVTPaintOption ))] of string[25] = 
@@ -191,7 +193,8 @@ implementation
          'UseBlendedSelection',     // Enable alpha blending for node selections.
          'StaticBackground',
          'ChildrenAbove',
-         'FixedIndent'
+         'FixedIndent',
+         'UseExplorerTheme'
       );
 
       aSelOpts : array[0..Ord(High(TVTSelectionOption))] of string[25] = 
