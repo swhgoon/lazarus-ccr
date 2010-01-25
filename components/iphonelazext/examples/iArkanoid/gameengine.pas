@@ -15,7 +15,7 @@ unit gameengine;
 interface
 
 uses
-  Types, Classes, SysUtils;
+  Classes, SysUtils;
 
 const
   ballVelocity = 18;
@@ -43,7 +43,6 @@ type
   protected
     procedure BoundsBack(const HitRect: TRect; var dx, dy: single);
     procedure BallMove(var move: TGameItem; atime: single);
-    procedure SetPaddleX(AValue: Integer);
     procedure ResetPaddle;
   public
     bricks      : array [0..99] of TBrick;
@@ -64,6 +63,21 @@ type
     property PaddleX: single read fPaddleX write SetPaddleX;
   end;
 
+type
+  TMoveRecord = packed record
+    sx, sy  : single;
+    dx, dy  : single;
+    k    : single;   // y = kx + b
+    divk : single;
+    b    : single;
+  end;
+
+  THitSide = (hs_LeftRight, hs_TopBottom);
+  THitSides = set of THitSide;
+
+procedure InitMoveRecord(sx, sy, dx, dy: single; var r: TMoveRecord);
+function HitRect(const r: TRect; const mr: TMoveRecord; var hitpoint: TPoint; var HitSides: THitSides): Boolean;
+
 implementation
 
 { TArkanoid }
@@ -81,7 +95,6 @@ begin
   fPaddleX := AValue;
 end;
 
-// hacky test
 procedure TArkanoid.BoundsBack(const HitRect: TRect; var dx, dy: single);
 var
   my  : Integer;
@@ -91,6 +104,92 @@ begin
   else dx := -dx;
 end;
 
+procedure InitMoveRecord(sx, sy, dx, dy: single; var r: TMoveRecord);
+var
+  diff : single;
+begin
+  r.sx:=sx; 
+  r.sy:=sy;
+  r.dx:=dx; 
+  r.dy:=dy;
+  diff:=dx-sx;
+  
+  //todo:
+  if diff<>0 then begin
+    r.k:=(dy-sy) / diff;
+    if r.k<>0 then r.divk:=1/r.k
+    else r.divk:=0;
+  end else begin
+    r.k:=0;
+    r.divk:=0;
+  end;
+  r.b:=sy-sx*r.k;
+end;
+
+function InRange(p, r1,r2: Integer): Boolean; overload; inline;
+begin
+  if r1<r2 then Result:=(p>=r1) and (p<r2)
+  else Result:=(p>=r2) and (p<r1)
+end;
+
+function InRange(p: Integer; r1,r2: single): Boolean; overload; inline;
+begin
+  if r1<r2 then Result:=(p>=r1) and (p<r2)
+  else Result:=(p>=r2) and (p<r1)
+end;
+
+function HitRect(const r: TRect; const mr: TMoveRecord; var hitpoint: TPoint; var HitSides: THitSides): Boolean;
+var
+  c, ch     : Integer;
+  hitside : Boolean;
+  hittop  : Boolean;
+begin
+  HitSides:=[];
+
+  with r, mr do begin
+    if sx<=dx then begin
+      c:=Left;
+    end else begin
+      c:=Right;
+    end;
+
+    ch:=Round(k*c+b);
+    hitside:=inRange(c, sx, dx) and (ch >= Top) and (ch < Bottom);
+    if hitside then begin
+      hitpoint:=Point(c, ch);
+      Include(HitSides, hs_LeftRight)
+    end;
+
+    if sy<=dy then begin
+      c:=Top 
+    end else begin
+      c:=Bottom;
+    end;
+    
+    if k <> 0 then 
+      ch:=Round((c-b)/k) 
+    else 
+      ch:=Round(sx);
+
+    hittop:=inRange(c, sy, dy) and (ch>=Left) and (ch<Right);
+    if hittop then begin
+      hitpoint:=Point(ch, c);
+      Include(HitSides, hs_TopBottom)
+    end;
+  end;
+  
+  Result:=hittop or hitside;
+end;
+
+function SqrLen(const p1, p2: TPoint): single;
+var
+  x,y:single;
+begin
+  x:=p1.x-p2.x;
+  y:=p1.y-p2.y;
+  Result:=x*x+y*y;
+end;
+
 procedure TArkanoid.BallMove(var move: TGameItem; atime: single);
 var
   cx, cy  : single;
@@ -98,6 +197,14 @@ var
   i       : Integer;
 
   t       : single;
+  hitidx  : Integer;
+  hsides    : THitSides;
+  hitsides  : THitSides;
+  hlen    : single ;
+  hitlen  : single;
+  hpnt    : TPoint;
+  hitpnt  : TPoint;
+  mr      : TMoveRecord;
 begin
   with move do begin
     if sticked then Exit;
@@ -108,6 +215,8 @@ begin
       cy := 0;
       dy := -dy;
     end;
+    InitMoveRecord(x, y, cx, cy, mr);
+    
 
     if cx < 0 then begin
       cx := 0;
@@ -117,15 +226,30 @@ begin
       dx := -dx;
     end;
 
-    p.x := Round(cx);
-    p.y := Round(cy);
+    p.x := Round(x);
+    p.y := Round(y);
 
-    for i := 0 to brickCount - 1 do begin
-      if (bricks[i].health > 0) and PtInRect(bricks[i].hitRect, p) then begin
-        BoundsBack(bricks[i].bounds, dx, dy);
-        bricks[i].flash:=2;
-        dec(bricks[i].health);
+    hitidx:=-1;
+    hitlen:=0;
+    for i := 0 to brickCount - 1 do  begin
+      if (bricks[i].health > 0) and HitRect(bricks[i].bounds, mr, hpnt, hsides) then begin
+        hlen:=SqrLen(hpnt, p);
+        if (hitidx<0) or (hlen<hitlen) then begin
+          hitidx:=i;
+          hitlen:=hlen;
+          hitsides:=hsides;
+          hitpnt:=hpnt;
+        end;
       end;
+    end;
+    
+    if hitidx>=0 then begin
+      if hs_TopBottom in hitsides then move.dy:=-move.dy;
+      if hs_LeftRight in hitsides then move.dx:=-move.dx;
+      bricks[hitidx].flash:=2;
+      cx:=hitpnt.x;
+      cy:=hitpnt.y;
+      dec(bricks[hitidx].health);
     end;
 
     if (cy >= PaddleY-5) and (cx >= PaddleX) and (cx <= PaddleX + PaddleW) and (dy>0) then begin
@@ -152,10 +276,6 @@ begin
   end;
 end;
 
-procedure TArkanoid.SetPaddleX(AValue: Integer);
-begin
-
-end;
 
 procedure TArkanoid.ResetPaddle;
 var
@@ -168,12 +288,12 @@ begin
   ballcount := 1;
   for i := 0 to ballcount - 1 do
     with Balls[i] do begin
-      {x := random(height-40)+20;
-      y := random(width-40)+20;}
       x := PaddleX+PaddleW/2;
       y := PaddleY-5;
-      a := random*pi/4 + (pi/2 - pi/8);
-      if cos(a)*5 < 0.1 then a := a + pi/5;
+      //a := random*pi/4 + (pi/2 - pi/8);
+      //if cos(a)*5 < 0.1 then a := a + pi/5;
+      //a:=5*pi/4;
+      a:=3*pi/2;
       dx := ballVelocity*cos(a);
       dy := ballVelocity*sin(a);
       sticked:=true;
