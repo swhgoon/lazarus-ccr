@@ -91,12 +91,8 @@ begin
   CGContextFillRect(ctx, r);
 
   for i := 0 to game.brickCount - 1 do begin
-    if game.bricks[i].flash > 0 then begin
-      MakeCGRect(game.bricks[i].bounds, r);
-      CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
-      CGContextFillRect(ctx, r);
-      dec(game.bricks[i].flash);
-    end else if game.bricks[i].health > 0 then begin
+    MakeCGRect(game.bricks[i].bounds, r);
+    if game.bricks[i].health > 0 then begin
       MakeCGRect(game.bricks[i].bounds, r);
       CGContextSetRGBFillColor(ctx, 1, 0, 0, 1);
       CGContextFillRect(ctx, r);
@@ -106,6 +102,11 @@ begin
       r.size.Height := r.size.height-2;
       CGContextSetRGBFillColor(ctx, 0.8, 0, 0, 1);
       CGContextFillRect(ctx, r);
+    end;
+    if game.bricks[i].flash > 0 then begin
+      CGContextSetRGBFillColor(ctx, 1, 1, 1, 1/(game.bricks[i].flash+1));
+      CGContextFillRect(ctx, r);
+      dec(game.bricks[i].flash);
     end;
   end;
 end;
@@ -124,7 +125,7 @@ procedure MyMainWindow.initObjects;
 begin
   { create timer }
   timer := NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-    double(0.1), Self, objcselector(timerEvent_), nil, true);
+    double(0.075), Self, objcselector(timerEvent_), nil, true);
   game := TArkanoid.Create(300, 400);
   game.Init;
 end;

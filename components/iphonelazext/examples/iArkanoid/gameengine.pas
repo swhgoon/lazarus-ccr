@@ -253,16 +253,8 @@ begin
     end;
 
     if (cy >= PaddleY-5) and (cx >= PaddleX) and (cx <= PaddleX + PaddleW) and (dy>0) then begin
-      t := (cx - PaddleX - PaddleW/2) / (PaddleW/2);
-
-      if t > 1 then t := 1
-      else if t < -1 then t:=-1;
-
-
-      if t < 0 then
-        t := pi/2 + pi/16 - t / 2
-      else
-        t := pi/2 - pi/16 - t / 2;
+      t := (cx - PaddleX) / PaddleW;
+      t:=pi*(1-(t*0.8+0.1));
       dx := cos(t)*ballVelocity;
       dy := -sin(t)*ballVelocity;
       cy := PaddleY-5;
@@ -290,10 +282,8 @@ begin
     with Balls[i] do begin
       x := PaddleX+PaddleW/2;
       y := PaddleY-5;
-      //a := random*pi/4 + (pi/2 - pi/8);
-      //if cos(a)*5 < 0.1 then a := a + pi/5;
-      //a:=5*pi/4;
-      a:=3*pi/2;
+      a := random*pi/4 + (pi/2 - pi/8);
+      if cos(a)*5 < 0.1 then a := a + pi/5;
       dx := ballVelocity*cos(a);
       dy := ballVelocity*sin(a);
       sticked:=true;
