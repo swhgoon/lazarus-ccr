@@ -110,6 +110,7 @@ begin
     isIPhoneApp:=chkisPhone.Checked;
     SDK:=cmbSDKs.Caption;
     AppID:=edtAppID.Text;
+    Save;
     DoChanged;
   end;
 end;

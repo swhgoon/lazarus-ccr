@@ -170,8 +170,25 @@ var
   idx     : Integer;
   needfix : Boolean;
   sdkuse  : String;
+  sdkver  : String;
+  st : TStringList;
 begin
-  sdkuse:=EnvOptions.GetSDKFullPath(ProjOptions.SDK, not isRealDevice);
+  sdkver:=ProjOptions.SDK;
+  if sdkver='' then begin
+    st := TStringList.Create;
+    try
+      EnvOptions.GetSDKVersions(st);
+      if st.Count=0 then
+        IDEMessagesWindow.AddMsg(strWNoSDK, '', 0)
+      else begin
+        sdkver:=st[0];
+        ProjOptions.SDK:=sdkver;
+      end;
+    finally
+      st.Free;
+    end;
+  end;
+  sdkuse:=EnvOptions.GetSDKFullPath(sdkver, not isRealDevice);
 
   Result:=Options;
   if FindParam(Result, '-XR', idx, rawprm) then begin
@@ -213,7 +230,6 @@ end;
 
 function TiPhoneExtension.ProjectBuilding(Sender: TObject): TModalResult;
 begin
-  //writeln('project building: ', Sender.ClassName);
   Result:=mrOk;
   if not Assigned(LazarusIDE.ActiveProject) or not ProjOptions.isIPhoneApp then Exit;
 
@@ -433,6 +449,7 @@ begin
   // IDE integration is done in constructor
   Extension := TiPhoneExtension.Create;
   EnvOptions.Load;
+  EnvOptions.RefreshVersions;
 end;
 
 initialization

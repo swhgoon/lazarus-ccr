@@ -32,6 +32,9 @@ resourcestring
 
   strXcodeUpdated   = 'Xcode project updated';
 
+  strWNoSDKSelected = 'Warning: SDK is not selected using %s';
+  strWNoSDK         = 'Warning: No SDK available. Linking might fail.';
+
 implementation
 
 end.
