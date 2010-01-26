@@ -29,7 +29,6 @@ type
 
   TBrick = record
     bounds  : TRect;
-    hitRect : TRect;
     health  : Integer;
     flash   : Integer;
   end;
@@ -39,20 +38,19 @@ type
   TArkanoid = class(TObject)
   private
     fPaddleX  : single;
-    procedure SetPaddleX(const AValue: single);
   protected
-    procedure BoundsBack(const HitRect: TRect; var dx, dy: single);
     procedure BallMove(var move: TGameItem; atime: single);
     procedure ResetPaddle;
+    procedure SetPaddleX(const AValue: single);
   public
     bricks      : array [0..99] of TBrick;
     brickCount  : Integer;
-    balls     : array [0..9] of TGameItem;
-    ballcount : Integer;
-    width     : Integer;
-    height    : Integer;
-    PaddleY   : single;
-    PaddleW   : single;
+    balls       : array [0..9] of TGameItem;
+    ballcount   : Integer;
+    width       : Integer;
+    height      : Integer;
+    PaddleY     : single;
+    PaddleW     : single;
 
     constructor Create(awidth, aheight: Integer);
     procedure InitBricks;
@@ -95,15 +93,6 @@ begin
   fPaddleX := AValue;
 end;
 
-procedure TArkanoid.BoundsBack(const HitRect: TRect; var dx, dy: single);
-var
-  my  : Integer;
-begin
-  my := HitRect.Top + (HitRect.Bottom - HitRect.Top) div 2;
-  if abs(my - dy)>5 then dy := -dy
-  else dx := -dx;
-end;
-
 procedure InitMoveRecord(sx, sy, dx, dy: single; var r: TMoveRecord);
 var
   diff : single;
@@ -114,7 +103,6 @@ begin
   r.dy:=dy;
   diff:=dx-sx;
   
-  //todo:
   if diff<>0 then begin
     r.k:=(dy-sy) / diff;
     if r.k<>0 then r.divk:=1/r.k
@@ -200,11 +188,12 @@ var
   hitidx  : Integer;
   hsides    : THitSides;
   hitsides  : THitSides;
-  hlen    : single ;
+  hlen    : single;
   hitlen  : single;
   hpnt    : TPoint;
   hitpnt  : TPoint;
   mr      : TMoveRecord;
+  br      : TRect;
 begin
   with move do begin
     if sticked then Exit;
@@ -252,22 +241,22 @@ begin
       dec(bricks[hitidx].health);
     end;
 
-    if (cy >= PaddleY-5) and (cx >= PaddleX) and (cx <= PaddleX + PaddleW) and (dy>0) then begin
-      t := (cx - PaddleX) / PaddleW;
+    br:=Bounds( Round(PaddleX), Round(PaddleY), Round(PaddleW), 2);
+    if HitRect(br, mr, hpnt, hsides) then begin
+      t := (hpnt.x - PaddleX) / PaddleW;
       t:=pi*(1-(t*0.8+0.1));
       dx := cos(t)*ballVelocity;
       dy := -sin(t)*ballVelocity;
-      cy := PaddleY-5;
+      cy := hpnt.y;
+      cx := hpnt.x;
     end else if cy > height then begin
       ResetPaddle;
       Exit;
     end;
-
     x:=cx;
     y:=cy;
   end;
 end;
-
 
 procedure TArkanoid.ResetPaddle;
 var
@@ -297,14 +286,6 @@ begin
   height := aheight;
 end;
 
-procedure MakeHitRect(const boundsRect: TRect; var hitRect: TRect);
-begin
-  hitRect.left := boundsRect.left - 3;
-  hitRect.Top  := boundsRect.top - 3;
-  hitRect.right := boundsRect.right + 3;
-  hitRect.bottom:= boundsRect.bottom+ 3;
-end;
-
 procedure TArkanoid.InitBricks;
 var
   i    : Integer;
@@ -319,7 +300,6 @@ begin
 
   for i:=0 to brickCount - 1 do begin
     bricks[i].health := random(4)+1;
-    MakeHitRect(bricks[i].bounds, bricks[i].hitRect);
     bricks[i].flash:=0;
   end;
 end;

@@ -160,13 +160,18 @@ end;
 
 function isCoordNearPabble(game: TArkanoid; x, y: single; Border: Integer): Boolean;
 var
-  p : TPoint;
-  r : TRect;
+  p     : TPoint;
+  r     : TRect;
+  px,py : Integer;
+  pw    : Integer;
 begin
   p.x := Round(x);
   p.y := Round(y);
-  r := Bounds(Round(game.PaddleX) - Border, Round(game.PaddleY) - Border, Round(game.PaddleW)+Border*2, PaddleHeight + Border*2);
-  Result := PtInRect(r, p);
+  px:=Round(game.PaddleX)-Border;
+  pw:=Round(game.PaddleW)+Border*2;
+  py:=Round(game.PaddleY)-Border;
+  r:=Rect(px, py, px+pw, Round(UIScreen.mainScreen.bounds.size.height));
+  Result:=PtInRect(r, p);
 end;
 
 procedure MyMainWindow.touchesBegan_withEvent(touches: NSSetPointer; event: UIEvent);
@@ -270,8 +275,6 @@ end;
 var
   pool    : NSAutoreleasePool;
   retVal  : Integer;
-
-{$R iArk.res}
 
 begin
   randomize;

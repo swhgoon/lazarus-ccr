@@ -11,9 +11,10 @@
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="iArkanoid"/>
+      <UseAppBundle Value="False"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -35,27 +36,35 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication Use="True" PathPlusParams="'/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone Simulator.app/Contents/MacOS/iPhone Simulator'"/>
       </local>
     </RunParams>
-    <Units Count="3">
+    <Units Count="5">
       <Unit0>
         <Filename Value="iArk.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="iArk"/>
-        <CursorPos X="17" Y="96"/>
-        <TopLine Value="94"/>
+        <CursorPos X="29" Y="279"/>
+        <TopLine Value="262"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="30"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="79" ID="2"/>
+        </Bookmarks>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="gameengine.pas"/>
         <UnitName Value="gameengine"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="1" Y="50"/>
+        <TopLine Value="35"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="16"/>
+        <Bookmarks Count="1">
+          <Item0 X="1" Y="197" ID="3"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
@@ -66,10 +75,143 @@
         <UnitName Value="project_iphone_options"/>
         <CursorPos X="17" Y="82"/>
         <TopLine Value="67"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="../../../../fpc/rtl/objpas/sysutils/sysstrh.inc"/>
+        <CursorPos X="40" Y="33"/>
+        <TopLine Value="18"/>
+        <UsageCount Value="14"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../fpc/packages/cocoaint/src/uikit/UIScreen.inc"/>
+        <CursorPos X="14" Y="51"/>
+        <TopLine Value="37"/>
+        <UsageCount Value="10"/>
+      </Unit4>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="256" Column="19" TopLine="248"/>
+      </Position1>
+      <Position2>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="63" Column="14" TopLine="48"/>
+      </Position2>
+      <Position3>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="294" Column="1" TopLine="264"/>
+      </Position3>
+      <Position4>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="41" Column="13" TopLine="26"/>
+      </Position5>
+      <Position6>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="42" Column="25" TopLine="26"/>
+      </Position6>
+      <Position7>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="63" Column="60" TopLine="48"/>
+      </Position7>
+      <Position8>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="85" Column="31" TopLine="70"/>
+      </Position8>
+      <Position9>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="90" Column="17" TopLine="70"/>
+      </Position9>
+      <Position10>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="95" Column="11" TopLine="70"/>
+      </Position10>
+      <Position11>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="263" Column="19" TopLine="241"/>
+      </Position11>
+      <Position12>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="177" Column="24" TopLine="172"/>
+      </Position12>
+      <Position13>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="170" Column="27" TopLine="146"/>
+      </Position13>
+      <Position14>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="173" Column="67" TopLine="158"/>
+      </Position14>
+      <Position15>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="256" Column="55" TopLine="242"/>
+      </Position15>
+      <Position16>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position16>
+      <Position17>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="44" Column="1" TopLine="29"/>
+      </Position17>
+      <Position18>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="293" Column="22" TopLine="273"/>
+      </Position18>
+      <Position19>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="293" Column="22" TopLine="278"/>
+      </Position20>
+      <Position21>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="315" Column="1" TopLine="300"/>
+      </Position21>
+      <Position22>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position22>
+      <Position23>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="293" Column="1" TopLine="278"/>
+      </Position23>
+      <Position24>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="171" Column="34" TopLine="265"/>
+      </Position24>
+      <Position25>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position25>
+      <Position26>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="129" Column="1" TopLine="110"/>
+      </Position26>
+      <Position27>
+        <Filename Value="iArk.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position27>
+      <Position28>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position28>
+      <Position29>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="46" Column="1" TopLine="34"/>
+      </Position29>
+      <Position30>
+        <Filename Value="gameengine.pas"/>
+        <Caret Line="51" Column="13" TopLine="31"/>
+      </Position30>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
