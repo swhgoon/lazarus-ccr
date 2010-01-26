@@ -14,7 +14,7 @@
       <UseAppBundle Value="False"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -23,7 +23,7 @@
     </VersionInfo>
     <CustomData Count="4">
       <Item0 Name="iPhone/AppID" Value="com.mycompany.myapplication"/>
-      <Item1 Name="iPhone/SDK" Value="iPhone 2.0"/>
+      <Item1 Name="iPhone/SDK" Value="2.0"/>
       <Item2 Name="iPhone/SimSpaceName" Value="66F9A1EA-95F4-2F39-1C03-2ED8D5218316"/>
       <Item3 Name="iPhone/isiPhoneApp" Value="true"/>
     </CustomData>
@@ -44,8 +44,8 @@
         <Filename Value="iArk.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="iArk"/>
-        <CursorPos X="29" Y="279"/>
-        <TopLine Value="262"/>
+        <CursorPos X="44" Y="95"/>
+        <TopLine Value="76"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="30"/>
         <Bookmarks Count="1">
@@ -57,7 +57,7 @@
       <Unit1>
         <Filename Value="gameengine.pas"/>
         <UnitName Value="gameengine"/>
-        <CursorPos X="1" Y="50"/>
+        <CursorPos X="1" Y="40"/>
         <TopLine Value="35"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="16"/>
@@ -90,7 +90,7 @@
         <UsageCount Value="10"/>
       </Unit4>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="gameengine.pas"/>
         <Caret Line="256" Column="19" TopLine="248"/>
@@ -185,32 +185,28 @@
       </Position23>
       <Position24>
         <Filename Value="iArk.pas"/>
-        <Caret Line="171" Column="34" TopLine="265"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position24>
       <Position25>
         <Filename Value="iArk.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="129" Column="1" TopLine="110"/>
       </Position25>
       <Position26>
         <Filename Value="iArk.pas"/>
-        <Caret Line="129" Column="1" TopLine="110"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position26>
       <Position27>
-        <Filename Value="iArk.pas"/>
+        <Filename Value="gameengine.pas"/>
         <Caret Line="1" Column="1" TopLine="1"/>
       </Position27>
       <Position28>
         <Filename Value="gameengine.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Caret Line="46" Column="1" TopLine="34"/>
       </Position28>
       <Position29>
         <Filename Value="gameengine.pas"/>
-        <Caret Line="46" Column="1" TopLine="34"/>
-      </Position29>
-      <Position30>
-        <Filename Value="gameengine.pas"/>
         <Caret Line="51" Column="13" TopLine="31"/>
-      </Position30>
+      </Position29>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -238,7 +234,7 @@
       <CompilerMessages>
         <IgnoredMessages idx3018="True" idx3031="True" idx3189="True" idx4035="True" idx4036="True" idx4055="True" idx4079="True" idx4080="True" idx4081="True" idx5024="True" idx5057="True" idx5058="True" idx5060="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-XR/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk"/>
+      <CustomOptions Value="-XR"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
