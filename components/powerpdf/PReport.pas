@@ -1342,15 +1342,28 @@ end;
 procedure TPRGridPanel.SetColCount(Value: integer);
 var
   Rect: TRect;
+
+  procedure raiseex;
+  begin
+    raise Exception.Create('invalid colcount');
+  end;
+
 begin
   if Value <> FColCount then
   begin
-    if (Value < 1) or ((Width div Value) < MIN_PANEL_SIZE) then
-      raise Exception.Create('invalid colcount');
+    if (Value < 1) then
+      raiseex;
+
     FColCount := Value;
-    Rect := GetClientRect;
-    AlignControls(nil, Rect);
-    Invalidate;
+
+    if HandleAllocated then begin
+      if ((Width div Value) < MIN_PANEL_SIZE) then
+        raiseex;
+
+      Rect := GetClientRect;
+      AlignControls(nil, Rect);
+      Invalidate;
+    end;
   end;
 end;
 
@@ -1358,15 +1371,29 @@ end;
 procedure TPRGridPanel.SetRowCount(Value: integer);
 var
   Rect: TRect;
+
+  procedure raiseex;
+  begin
+    raise Exception.CreateFmt('invalid rowcount=%d',[Value]);
+  end;
+
 begin
   if Value <> FRowCount then
   begin
-    if (Value < 1) or ((Height div Value) < MIN_PANEL_SIZE) then
-      raise Exception.Create('invalid rowcount');
+    if (Value < 1) then
+      raiseex;
+
     FRowCount := Value;
-    Rect := GetClientRect;
-    AlignControls(nil, Rect);
-    Invalidate;
+
+    if handleallocated then begin
+      if ((Height div Value) < MIN_PANEL_SIZE) then
+        raiseex;
+
+      Rect := GetClientRect;
+      AlignControls(nil, Rect);
+      Invalidate;
+    end;
+
   end;
 end;
 
