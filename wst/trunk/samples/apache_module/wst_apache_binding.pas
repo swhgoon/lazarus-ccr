@@ -1,4 +1,5 @@
-{$UNDEF WST_DBG}
+//{$UNDEF WST_DBG}
+//{$DEFINE WST_DBG}
 
 (*WST_BROKER enable the service brokering :
   if enabled, this module just forwards the request to the
@@ -21,7 +22,7 @@
      UserService  : the target service
      wst/services : constant.
 *)
-{$DEFINE WST_BROKER}
+//{$DEFINE WST_BROKER}
 
 unit wst_apache_binding;
 
@@ -42,7 +43,7 @@ const
   sCONTENT_TYPE = 'Content-Type';
   
   sWstRootPath = 'WstRootPath'; // The WST local file system path configure in apache
-  sWST_LIBRARY_EXTENSION = '.wml';
+  sWST_LIBRARY_EXTENSION = '.dll';
   
 type
   PWstConfigData = ^TWstConfigData;
@@ -370,12 +371,8 @@ begin
     outStream.Free();
     inStream.Free();
     {$IFDEF WST_DBG}
-      SaveStringToFile('RequestInfo.ContentType=' + ARequestInfo.Arguments + LineEnding,'c:\log.log',False);
-      {SaveStringToFile('RequestInfo.Buffer=' + ARequestInfo.Buffer + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
-      SaveStringToFile('RequestInfo.URI=' + ARequestInfo.URI + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
-      SaveStringToFile('ResponseInfo.ContentType=' + AResponseInfo.ContentType + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
-      SaveStringToFile('ResponseInfo.ContentText=' + AResponseInfo.ContentText + LineEnding,'E:\Inoussa\Sources\lazarus\wst\v0.3\tests\apache_module\log.log',True);
-      }
+      SaveStringToFile('RequestInfo.Arguments=' + ARequestInfo.Arguments + LineEnding,'c:\log.log',False);
+      SaveStringToFile('ResponseInfo.ContentText=' + AResponseInfo.ContentText + LineEnding,'c:\log.log',False);
     {$ENDIF}
   end;
 end;
@@ -402,7 +399,7 @@ begin
     FillChar(AResponseInfo,SizeOf(TResponseInfo),#0);
     loc_path := ARequestInfo.URI;
     targetModuleName := ExtractNextPathElement(loc_path);
-    Result := False;
+    Result := False; SaveStringToFile(GetWstPath() + targetModuleName + sWST_LIBRARY_EXTENSION,'C:\log.txt',True);
     targetModule := LibraryManager.Get(GetWstPath() + targetModuleName + sWST_LIBRARY_EXTENSION);
     handlerProc := TwstLibraryHandlerFunction(targetModule.GetProc(WST_LIB_HANDLER));
     if not Assigned(handlerProc) then
@@ -419,10 +416,10 @@ begin
     try
       wrtr := CreateBinaryWriter(buffStream);
       wrtr.WriteInt32S(0);
-      wrtr.WriteStr(targetService);
-      wrtr.WriteStr(ARequestInfo.ContentType);
-      wrtr.WriteStr(targetFormat);
-      wrtr.WriteStr(ARequestInfo.Buffer);
+      wrtr.WriteAnsiStr(targetService);
+      wrtr.WriteAnsiStr(ARequestInfo.ContentType);
+      wrtr.WriteAnsiStr(targetFormat);
+      wrtr.WriteAnsiStr(ARequestInfo.Buffer);
       buffStream.Position := 0;
       wrtr.WriteInt32S(buffStream.Size-4);
 
@@ -472,8 +469,6 @@ function wst_RequestHandler(r: Prequest_rec): Integer;
   end;
 
 var
-  sInputBuffer : string;
-  iRet, iLen : Integer;
   loc_RequestInfo    : TRequestInfo;
   loc_ResponseInfo   : TResponseInfo;
 begin
@@ -498,13 +493,14 @@ begin
     end;
 
     ap_set_content_type(r, PCHAR(loc_ResponseInfo.ContentType));
-    if AnsiSameText(sHTTP_BINARY_CONTENT_TYPE,loc_ResponseInfo.ContentType) then begin
+//    if AnsiSameText(sHTTP_BINARY_CONTENT_TYPE,loc_ResponseInfo.ContentType) then begin
       ap_set_content_length(r,Length(loc_ResponseInfo.ContentText));
       ap_rwrite(@(loc_ResponseInfo.ContentText[1]),Length(loc_ResponseInfo.ContentText),r);
       ap_rflush(r);
-    end else begin
+  {  end else begin
       ap_rputs(PCHAR(loc_ResponseInfo.ContentText), r);
-    end;
+      ap_rflush(r);
+    end;}
     Result := OK;
   except
     on e : Exception do begin
@@ -512,6 +508,7 @@ begin
       ap_rputs('<HTML><HEAD> <TITLE>Error</TITLE></HEAD>' + LineEnding, r);
       ap_rputs('<BODY></BODY></HTML>',r);
       ap_rprintf(r, '<BODY><H1>"%s"</H1></BODY></HTML>' + LineEnding, [PCHAR(e.Message)]);
+      ap_rflush(r);
       Exit;
     end;
   end;

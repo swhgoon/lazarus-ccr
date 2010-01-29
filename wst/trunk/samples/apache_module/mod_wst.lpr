@@ -8,7 +8,8 @@ library mod_wst;
 
 uses
   SysUtils,
-  httpd, apr, apriconv, aprutil, wst_apache_binding;
+  httpd, apr, apriconv, aprutil, wst_apache_binding,
+  user_service_intf, user_service_intf_binder, user_service_intf_imp;
 
 var
  wst_module: module; {$ifdef Unix} public name 'wst_module'; {$endif}
@@ -54,4 +55,7 @@ begin
   end;
   WstCommandStructArray[0].cmd_data := @WstConfigData^.BasePath;
   FillChar(WstCommandStructArray[1],SizeOf(command_rec),#0);
+  
+  RegisterUserServiceImplementationFactory();
+  Server_service_RegisterUserServiceService();  
 end.

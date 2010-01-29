@@ -2,12 +2,14 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="7"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="3"/>
+      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -24,24 +26,25 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <Units Count="56">
+    <Units Count="57">
       <Unit0>
         <Filename Value="mod_wst.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="mod_wst"/>
-        <CursorPos X="38" Y="11"/>
-        <TopLine Value="1"/>
+        <CursorPos X="44" Y="60"/>
+        <TopLine Value="43"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="wst_apache_binding.pas"/>
+        <IsPartOfProject Value="True"/>
         <UnitName Value="wst_apache_binding"/>
-        <CursorPos X="19" Y="74"/>
+        <CursorPos X="3" Y="25"/>
         <TopLine Value="70"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -59,450 +62,477 @@
         <UsageCount Value="21"/>
       </Unit3>
       <Unit4>
-        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-1.3\httpd.pas"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-1.3\httpd.pas"/>
         <UnitName Value="httpd"/>
         <CursorPos X="5" Y="26"/>
         <TopLine Value="25"/>
         <UsageCount Value="6"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-1.3\httpd.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-1.3\httpd.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="75"/>
         <UsageCount Value="6"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\httpd.pas"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\httpd.pas"/>
         <UnitName Value="httpd"/>
         <CursorPos X="35" Y="44"/>
         <TopLine Value="61"/>
         <UsageCount Value="6"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\http_protocol.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\http_protocol.inc"/>
         <CursorPos X="47" Y="799"/>
         <TopLine Value="777"/>
         <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\httpd.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\httpd.inc"/>
         <CursorPos X="5" Y="794"/>
         <TopLine Value="777"/>
         <UsageCount Value="8"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.0\apr\apr_tables.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.0\apr\apr_tables.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="16"/>
         <UsageCount Value="8"/>
       </Unit9>
       <Unit10>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\http_config.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\http_config.inc"/>
         <CursorPos X="71" Y="66"/>
         <TopLine Value="32"/>
         <UsageCount Value="8"/>
       </Unit10>
       <Unit11>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\httpd.pas"/>
-        <UnitName Value="httpd"/>
-        <CursorPos X="41" Y="134"/>
-        <TopLine Value="117"/>
-        <UsageCount Value="8"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\ap_mmn.inc"/>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.2\ap_mmn.inc"/>
         <CursorPos X="3" Y="111"/>
         <TopLine Value="96"/>
         <UsageCount Value="8"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.0\apr\apr_pools.inc"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\lazarus23_213\fpc\2.1.3\source\packages\base\httpd\httpd-2.0\apr\apr_pools.inc"/>
         <CursorPos X="3" Y="48"/>
         <TopLine Value="678"/>
         <UsageCount Value="7"/>
-      </Unit13>
-      <Unit14>
+      </Unit12>
+      <Unit13>
         <Filename Value="..\..\wst_rtti_filter\cursor_intf.pas"/>
         <UnitName Value="cursor_intf"/>
         <CursorPos X="16" Y="18"/>
         <TopLine Value="1"/>
         <UsageCount Value="9"/>
-      </Unit14>
-      <Unit15>
+      </Unit13>
+      <Unit14>
         <Filename Value="..\user_service_intf_binder.pas"/>
         <UnitName Value="user_service_intf_binder"/>
         <CursorPos X="3" Y="252"/>
         <TopLine Value="250"/>
         <UsageCount Value="13"/>
-      </Unit15>
-      <Unit16>
+      </Unit14>
+      <Unit15>
         <Filename Value="..\imp_helper.pas"/>
         <UnitName Value="imp_helper"/>
         <CursorPos X="1" Y="76"/>
         <TopLine Value="33"/>
         <UsageCount Value="20"/>
-      </Unit16>
-      <Unit17>
+      </Unit15>
+      <Unit16>
         <Filename Value="..\..\metadata_service_binder.pas"/>
         <UnitName Value="metadata_service_binder"/>
         <CursorPos X="29" Y="43"/>
         <TopLine Value="1"/>
         <UsageCount Value="25"/>
-      </Unit17>
-      <Unit18>
+      </Unit16>
+      <Unit17>
         <Filename Value="..\..\metadata_service.pas"/>
         <UnitName Value="metadata_service"/>
         <CursorPos X="71" Y="76"/>
         <TopLine Value="1"/>
         <UsageCount Value="25"/>
-      </Unit18>
-      <Unit19>
+      </Unit17>
+      <Unit18>
         <Filename Value="..\..\metadata_service_imp.pas"/>
         <UnitName Value="metadata_service_imp"/>
         <CursorPos X="61" Y="21"/>
         <TopLine Value="13"/>
         <UsageCount Value="24"/>
-      </Unit19>
-      <Unit20>
+      </Unit18>
+      <Unit19>
         <Filename Value="..\..\library_imp_utils.pas"/>
         <UnitName Value="library_imp_utils"/>
         <CursorPos X="42" Y="35"/>
         <TopLine Value="73"/>
-        <EditorIndex Value="7"/>
         <UsageCount Value="24"/>
-        <Loaded Value="True"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr.pas"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr.pas"/>
         <UnitName Value="apr"/>
         <CursorPos X="18" Y="182"/>
         <TopLine Value="173"/>
         <UsageCount Value="10"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_file_info.inc"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_file_info.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="151"/>
         <UsageCount Value="7"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_file_io.inc"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_file_io.inc"/>
         <CursorPos X="124" Y="665"/>
         <TopLine Value="778"/>
         <UsageCount Value="7"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_dso.inc"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_dso.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="66"/>
         <UsageCount Value="7"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_lib.inc"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_lib.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="192"/>
         <UsageCount Value="7"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_general.inc"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_general.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="199"/>
         <UsageCount Value="7"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_strings.inc"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_strings.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="329"/>
         <UsageCount Value="7"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\httpd.inc"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\httpd.inc"/>
         <CursorPos X="21" Y="23"/>
         <TopLine Value="10"/>
         <UsageCount Value="12"/>
-      </Unit28>
-      <Unit29>
+      </Unit27>
+      <Unit28>
         <Filename Value="..\..\library_base_intf.pas"/>
         <UnitName Value="library_base_intf"/>
         <CursorPos X="29" Y="17"/>
         <TopLine Value="73"/>
-        <EditorIndex Value="5"/>
         <UsageCount Value="23"/>
-        <Loaded Value="True"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\ap_alloc.inc"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\ap_alloc.inc"/>
         <CursorPos X="3" Y="45"/>
         <TopLine Value="30"/>
         <UsageCount Value="11"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_pools.inc"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\apr\apr_pools.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="678"/>
         <UsageCount Value="7"/>
-      </Unit31>
-      <Unit32>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\httpd.pas"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\httpd.pas"/>
         <UnitName Value="httpd"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="82"/>
         <UsageCount Value="10"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\http_log.inc"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\http_log.inc"/>
         <CursorPos X="11" Y="75"/>
         <TopLine Value="60"/>
         <UsageCount Value="10"/>
-      </Unit33>
-      <Unit34>
+      </Unit32>
+      <Unit33>
         <Filename Value="..\..\server_service_xmlrpc.pas"/>
         <UnitName Value="server_service_xmlrpc"/>
         <CursorPos X="17" Y="57"/>
         <TopLine Value="42"/>
         <UsageCount Value="13"/>
-      </Unit34>
-      <Unit35>
+      </Unit33>
+      <Unit34>
         <Filename Value="..\..\base_xmlrpc_formatter.pas"/>
         <UnitName Value="base_xmlrpc_formatter"/>
         <CursorPos X="3" Y="29"/>
         <TopLine Value="14"/>
         <UsageCount Value="13"/>
-      </Unit35>
-      <Unit36>
+      </Unit34>
+      <Unit35>
         <Filename Value="..\..\server_service_intf.pas"/>
         <UnitName Value="server_service_intf"/>
         <CursorPos X="5" Y="18"/>
         <TopLine Value="3"/>
         <UsageCount Value="21"/>
-      </Unit36>
-      <Unit37>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\win32\classes.pp"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\win32\classes.pp"/>
         <UnitName Value="Classes"/>
         <CursorPos X="8" Y="46"/>
         <TopLine Value="21"/>
         <UsageCount Value="8"/>
-      </Unit37>
-      <Unit38>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\objpas\classes\classes.inc"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\rtl\objpas\classes\classes.inc"/>
         <CursorPos X="11" Y="1674"/>
         <TopLine Value="1665"/>
         <UsageCount Value="8"/>
-      </Unit38>
-      <Unit39>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\http_config.inc"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-1.3\http_config.inc"/>
         <CursorPos X="24" Y="165"/>
         <TopLine Value="150"/>
         <UsageCount Value="8"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\apr\apr_pools.inc"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\apr\apr_pools.inc"/>
         <CursorPos X="3" Y="48"/>
         <TopLine Value="33"/>
         <UsageCount Value="8"/>
-      </Unit40>
-      <Unit41>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\http_config.inc"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\http_config.inc"/>
         <CursorPos X="25" Y="154"/>
         <TopLine Value="117"/>
         <UsageCount Value="17"/>
-      </Unit41>
-      <Unit42>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\httpd.pas"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\httpd.pas"/>
         <UnitName Value="httpd"/>
         <CursorPos X="3" Y="70"/>
         <TopLine Value="55"/>
         <UsageCount Value="15"/>
-      </Unit42>
-      <Unit43>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\httpd.inc"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\httpd.inc"/>
         <CursorPos X="5" Y="1029"/>
         <TopLine Value="1014"/>
         <UsageCount Value="11"/>
-      </Unit43>
-      <Unit44>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\http_log.inc"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.2\http_log.inc"/>
         <CursorPos X="15" Y="34"/>
         <TopLine Value="17"/>
         <UsageCount Value="11"/>
-      </Unit44>
-      <Unit45>
-        <Filename Value="..\..\..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\http_config.inc"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="..\..\..\..\lazarus_23_2.2.1\fpc\2.2.1\source\packages\base\httpd\httpd-2.0\http_config.inc"/>
         <CursorPos X="1" Y="136"/>
         <TopLine Value="113"/>
         <UsageCount Value="13"/>
-      </Unit45>
-      <Unit46>
+      </Unit44>
+      <Unit45>
         <Filename Value="..\..\wst.inc"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
         <UsageCount Value="9"/>
-      </Unit46>
-      <Unit47>
+      </Unit45>
+      <Unit46>
         <Filename Value="..\..\base_service_intf.pas"/>
         <UnitName Value="base_service_intf"/>
-        <CursorPos X="25" Y="1252"/>
-        <TopLine Value="1237"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="13"/>
-        <Loaded Value="True"/>
-      </Unit47>
-      <Unit48>
+        <CursorPos X="3" Y="1880"/>
+        <TopLine Value="1862"/>
+        <UsageCount Value="14"/>
+      </Unit46>
+      <Unit47>
         <Filename Value="..\..\imp_utils.pas"/>
         <UnitName Value="imp_utils"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="38"/>
         <UsageCount Value="10"/>
-      </Unit48>
-      <Unit49>
+      </Unit47>
+      <Unit48>
         <Filename Value="..\..\wst_resources_imp.pas"/>
         <UnitName Value="wst_resources_imp"/>
         <CursorPos X="1" Y="1"/>
         <TopLine Value="13"/>
         <UsageCount Value="10"/>
-      </Unit49>
-      <Unit50>
+      </Unit48>
+      <Unit49>
         <Filename Value="..\..\record_rtti.pas"/>
         <UnitName Value="record_rtti"/>
         <CursorPos X="5" Y="66"/>
         <TopLine Value="51"/>
         <UsageCount Value="10"/>
-      </Unit50>
-      <Unit51>
+      </Unit49>
+      <Unit50>
         <Filename Value="..\..\server_service_imputils.pas"/>
         <UnitName Value="server_service_imputils"/>
         <CursorPos X="5" Y="18"/>
         <TopLine Value="3"/>
         <UsageCount Value="10"/>
-      </Unit51>
-      <Unit52>
+      </Unit50>
+      <Unit51>
         <Filename Value="..\..\server_service_soap.pas"/>
         <UnitName Value="server_service_soap"/>
         <CursorPos X="15" Y="22"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="2"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit52>
-      <Unit53>
+      </Unit51>
+      <Unit52>
         <Filename Value="..\..\base_soap_formatter.pas"/>
         <UnitName Value="base_soap_formatter"/>
         <CursorPos X="5" Y="356"/>
         <TopLine Value="342"/>
-        <EditorIndex Value="3"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit53>
-      <Unit54>
+      </Unit52>
+      <Unit53>
         <Filename Value="..\..\server_binary_formatter.pas"/>
         <UnitName Value="server_binary_formatter"/>
         <CursorPos X="5" Y="18"/>
         <TopLine Value="3"/>
         <UsageCount Value="10"/>
-      </Unit54>
-      <Unit55>
+      </Unit53>
+      <Unit54>
         <Filename Value="..\..\metadata_repository.pas"/>
         <UnitName Value="metadata_repository"/>
         <CursorPos X="5" Y="117"/>
         <TopLine Value="102"/>
-        <EditorIndex Value="4"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="E:\fpc_dev\packages\httpd13\src\http_protocol.inc"/>
+        <CursorPos X="31" Y="75"/>
+        <TopLine Value="60"/>
+        <UsageCount Value="10"/>
       </Unit55>
+      <Unit56>
+        <Filename Value="E:\fpc_dev\packages\httpd13\src\http_config.inc"/>
+        <CursorPos X="16" Y="181"/>
+        <TopLine Value="164"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit56>
     </Units>
-    <JumpHistory Count="22" HistoryIndex="21">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="72" Column="16" TopLine="70"/>
+        <Caret Line="448" Column="34" TopLine="424"/>
       </Position1>
       <Position2>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="504" Column="66" TopLine="480"/>
       </Position2>
       <Position3>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="20" Column="5" TopLine="5"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="493" Column="62" TopLine="481"/>
       </Position3>
       <Position4>
-        <Filename Value="..\..\base_service_intf.pas"/>
-        <Caret Line="1252" Column="25" TopLine="1237"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="500" Column="25" TopLine="493"/>
       </Position4>
       <Position5>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="73" Column="19" TopLine="70"/>
+        <Caret Line="499" Column="23" TopLine="490"/>
       </Position5>
       <Position6>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="73" Column="34" TopLine="70"/>
+        <Caret Line="491" Column="42" TopLine="478"/>
       </Position6>
       <Position7>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="74" Column="22" TopLine="70"/>
+        <Caret Line="177" Column="71" TopLine="170"/>
       </Position7>
       <Position8>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="489" Column="5" TopLine="460"/>
       </Position8>
       <Position9>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="22" Column="18" TopLine="3"/>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="56" Column="20" TopLine="32"/>
       </Position9>
       <Position10>
-        <Filename Value="..\..\base_soap_formatter.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="58" Column="45" TopLine="43"/>
       </Position10>
       <Position11>
-        <Filename Value="..\..\base_soap_formatter.pas"/>
-        <Caret Line="18" Column="5" TopLine="3"/>
+        <Filename Value="E:\fpc_dev\packages\httpd13\src\http_config.inc"/>
+        <Caret Line="64" Column="25" TopLine="49"/>
       </Position11>
       <Position12>
-        <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="74" Column="41" TopLine="70"/>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="56" Column="16" TopLine="32"/>
       </Position12>
       <Position13>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="74" Column="56" TopLine="70"/>
+        <Caret Line="58" Column="50" TopLine="43"/>
       </Position13>
       <Position14>
-        <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="75" Column="22" TopLine="70"/>
+        <Filename Value="E:\fpc_dev\packages\httpd13\src\http_config.inc"/>
+        <Caret Line="64" Column="28" TopLine="49"/>
       </Position14>
       <Position15>
-        <Filename Value="..\..\metadata_repository.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="54" Column="8" TopLine="32"/>
       </Position15>
       <Position16>
-        <Filename Value="..\..\metadata_repository.pas"/>
-        <Caret Line="18" Column="5" TopLine="3"/>
+        <Filename Value="E:\fpc_dev\packages\httpd13\src\http_config.inc"/>
+        <Caret Line="215" Column="16" TopLine="200"/>
       </Position16>
       <Position17>
-        <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="75" Column="36" TopLine="70"/>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="54" Column="32" TopLine="32"/>
       </Position17>
       <Position18>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="76" Column="12" TopLine="70"/>
+        <Caret Line="58" Column="3" TopLine="43"/>
       </Position18>
       <Position19>
         <Filename Value="wst_apache_binding.pas"/>
-        <Caret Line="74" Column="19" TopLine="70"/>
+        <Caret Line="23" Column="33" TopLine="10"/>
       </Position19>
       <Position20>
-        <Filename Value="..\..\server_service_soap.pas"/>
-        <Caret Line="22" Column="15" TopLine="1"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="90" Column="18" TopLine="82"/>
       </Position20>
       <Position21>
-        <Filename Value="..\..\base_soap_formatter.pas"/>
-        <Caret Line="1" Column="1" TopLine="7"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="502" Column="5" TopLine="373"/>
       </Position21>
       <Position22>
-        <Filename Value="..\..\base_soap_formatter.pas"/>
-        <Caret Line="18" Column="58" TopLine="3"/>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="133" Column="41" TopLine="115"/>
       </Position22>
+      <Position23>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="485" Column="35" TopLine="472"/>
+      </Position23>
+      <Position24>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="381" Column="10" TopLine="387"/>
+      </Position24>
+      <Position25>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="6" Column="13" TopLine="1"/>
+      </Position25>
+      <Position26>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="485" Column="21" TopLine="472"/>
+      </Position26>
+      <Position27>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="403" Column="86" TopLine="390"/>
+      </Position27>
+      <Position28>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="46" Column="25" TopLine="31"/>
+      </Position28>
+      <Position29>
+        <Filename Value="mod_wst.lpr"/>
+        <Caret Line="54" Column="32" TopLine="32"/>
+      </Position29>
+      <Position30>
+        <Filename Value="wst_apache_binding.pas"/>
+        <Caret Line="402" Column="1" TopLine="394"/>
+      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="8"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="mod_wst.so"/>
@@ -513,9 +543,6 @@
       <UnitOutputDirectory Value="obj"/>
       <SrcPath Value="$(FPCSrcDir)\packages\base\httpd\httpd-2.0\;$(FPCSrcDir)\packages\base\httpd\httpd-2.0\apr\;$(FPCSrcDir)\packages\base\httpd\httpd-2.0\apriconv\;$(FPCSrcDir)\packages\base\httpd\httpd-2.0\aprutil\"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Debugging>
         <UseLineInfoUnit Value="False"/>

@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf_binder".
-  Date            : "29/12/2007 00:43:35".
+  Date            : "29/01/2010 14:54:30".
 }
 unit user_service_intf_binder;
 {$IFDEF FPC} {$mode objfpc}{$H+} {$ENDIF}
@@ -10,9 +10,8 @@ interface
 
 uses SysUtils, Classes, base_service_intf, server_service_intf, user_service_intf;
 
+
 type
-
-
   TUserService_ServiceBinder = class(TBaseServiceBinder)
   protected
     procedure GetListHandler(AFormatter : IFormatterResponse; AContext : ICallContext);
@@ -24,6 +23,7 @@ type
     constructor Create();
   end;
 
+type
   TUserService_ServiceBinderFactory = class(TInterfacedObject,IItemFactory)
   private
     FInstance : IInterface;
@@ -47,7 +47,7 @@ var
   hasObjCntrl : Boolean;
   tmpObj : UserService;
   callCtx : ICallContext;
-  strPrmName : string;
+  locStrPrmName : string;
   procName,trgName : string;
   returnVal : TUserArray;
 begin
@@ -88,14 +88,14 @@ var
   hasObjCntrl : Boolean;
   tmpObj : UserService;
   callCtx : ICallContext;
-  strPrmName : string;
+  locStrPrmName : string;
   procName,trgName : string;
   AUser : TUser;
 begin
   callCtx := AContext;
   Fillchar(AUser,SizeOf(TUser),#0);
   
-  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),strPrmName,AUser);
+  locStrPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),locStrPrmName,AUser);
   if Assigned(Pointer(AUser)) then
     callCtx.AddObjectToFree(TObject(AUser));
   
@@ -129,14 +129,14 @@ var
   hasObjCntrl : Boolean;
   tmpObj : UserService;
   callCtx : ICallContext;
-  strPrmName : string;
+  locStrPrmName : string;
   procName,trgName : string;
   AUser : TUser;
 begin
   callCtx := AContext;
   Fillchar(AUser,SizeOf(TUser),#0);
   
-  strPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),strPrmName,AUser);
+  locStrPrmName := 'AUser';  AFormatter.Get(TypeInfo(TUser),locStrPrmName,AUser);
   if Assigned(Pointer(AUser)) then
     callCtx.AddObjectToFree(TObject(AUser));
   
@@ -170,7 +170,7 @@ var
   hasObjCntrl : Boolean;
   tmpObj : UserService;
   callCtx : ICallContext;
-  strPrmName : string;
+  locStrPrmName : string;
   procName,trgName : string;
   AName : string;
   returnVal : TUser;
@@ -178,7 +178,7 @@ begin
   callCtx := AContext;
   Fillchar(returnVal,SizeOf(TUser),#0);
   
-  strPrmName := 'AName';  AFormatter.Get(TypeInfo(string),strPrmName,AName);
+  locStrPrmName := 'AName';  AFormatter.Get(TypeInfo(string),locStrPrmName,AName);
   
   tmpObj := Self.GetFactory().CreateInstance() as UserService;
   if Supports(tmpObj,ICallControl,cllCntrl) then
@@ -213,14 +213,14 @@ var
   hasObjCntrl : Boolean;
   tmpObj : UserService;
   callCtx : ICallContext;
-  strPrmName : string;
+  locStrPrmName : string;
   procName,trgName : string;
   AName : string;
   returnVal : boolean;
 begin
   callCtx := AContext;
   
-  strPrmName := 'AName';  AFormatter.Get(TypeInfo(string),strPrmName,AName);
+  locStrPrmName := 'AName';  AFormatter.Get(TypeInfo(string),locStrPrmName,AName);
   
   tmpObj := Self.GetFactory().CreateInstance() as UserService;
   if Supports(tmpObj,ICallControl,cllCntrl) then

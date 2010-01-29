@@ -2,7 +2,7 @@
 This unit has been produced by ws_helper.
   Input unit name : "user_service_intf".
   This unit name  : "user_service_intf".
-  Date            : "25/05/2009 01:53:09".
+  Date            : "29/01/2010 14:54:18".
 }
 unit user_service_intf;
 {$IFDEF FPC}
@@ -39,7 +39,7 @@ type
     FNote : TNote;
   public
     constructor Create();override;
-    destructor Destroy();override;
+    procedure FreeObjectProperties();override;
   published
     property Category : TUserCategory read FCategory write FCategory;
     property UserName : string read FUserName write FUserName;
@@ -68,7 +68,7 @@ type
   end;
 
   UserService = interface(IInvokable)
-    ['{F49D8FA4-9BBC-4321-9869-5BA745070ABC}']
+    ['{2F9B181F-BA33-4148-A2A3-42CB450C43CE}']
     function GetList():TUserArray;
     procedure Add(
       const  AUser : TUser
@@ -97,11 +97,11 @@ begin
   FNote := TNote.Create();
 end;
 
-destructor TUser.Destroy();
+procedure TUser.FreeObjectProperties();
 begin
   if Assigned(FNote) then
     FreeAndNil(FNote);
-  inherited Destroy();
+  inherited FreeObjectProperties();
 end;
 
 { TUserArray }
@@ -279,15 +279,14 @@ end;
 
 
 var
-  typeRegistryIntance : TTypeRegistry = nil;
+  typeRegistryInstance : TTypeRegistry = nil;
 initialization
-  typeRegistryIntance := GetTypeRegistry();
+  typeRegistryInstance := GetTypeRegistry();
 
-  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
-  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
-  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TNote),'TNote');
-  typeRegistryIntance.Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
-  typeRegistryIntance.ItemByTypeInfo[TypeInfo(TUserArray)].RegisterExternalPropertyName(sARRAY_ITEM,'item');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TUserCategory),'TUserCategory');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TUser),'TUser');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TNote),'TNote');
+  typeRegistryInstance.Register(sNAME_SPACE,TypeInfo(TUserArray),'TUserArray');
 
 
 
