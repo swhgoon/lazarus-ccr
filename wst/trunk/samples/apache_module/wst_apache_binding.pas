@@ -42,6 +42,7 @@ const
   sHTTP_BINARY_CONTENT_TYPE = 'application/octet-stream';
   sCONTENT_TYPE = 'Content-Type';
   
+{$IFDEF WST_BROKER}  
   sWstRootPath = 'WstRootPath'; // The WST local file system path configure in apache
   sWST_LIBRARY_EXTENSION = '.dll';
   
@@ -51,9 +52,11 @@ type
     Dir : PChar;
     BasePath : PChar;
   end;
+{$ENDIF WST_BROKER}
   
 var
   wst_module_ptr : Pmodule = nil;
+{$IFDEF WST_BROKER}  
   WstConfigData : PWstConfigData = nil;
   WstCommandStructArray : array[0..1] of command_rec = (
     ( name    : sWstRootPath;
@@ -65,10 +68,14 @@ var
     ),
     ()
   );
+{$ENDIF WST_BROKER}
 
   function wst_RequestHandler(r: Prequest_rec): Integer;
-  function wst_create_dir_config(p: Papr_pool_t; dir: PChar) : Pointer;cdecl;
 
+{$IFDEF WST_BROKER}    
+  function wst_create_dir_config(p: Papr_pool_t; dir: PChar) : Pointer;cdecl;
+{$ENDIF WST_BROKER}
+  
 implementation
 uses base_service_intf,
      server_service_intf, server_service_imputils,
@@ -89,6 +96,7 @@ begin
   Server_service_RegisterWSTMetadataServiceService();
 end;
 
+{$IFDEF WST_BROKER}  
 function wst_create_dir_config(p: Papr_pool_t; dir: PChar) : Pointer; cdecl;
 begin
   WstConfigData := PWstConfigData(apr_palloc(p,SizeOf(TWstConfigData)));
@@ -101,6 +109,7 @@ function GetWstPath(): PChar;inline;
 begin
   Result := WstConfigData^.BasePath;
 end;
+{$ENDIF WST_BROKER}  
 
 type
   PRequestArgument = ^TRequestArgument;
@@ -171,6 +180,7 @@ begin
   end;
 end;
 
+{$IFDEF WST_DBG}
 procedure SaveStringToFile(const AStr,AFile:string;const AKeepExisting : Boolean);
 begin
   with TMemoryStream.Create() do try
@@ -185,6 +195,7 @@ begin
     Free();
   end;
 end;
+{$ENDIF WST_DBG}
 
 function ReadBuffer(r : Prequest_rec; out rbuf : string ) : Integer;
 var
@@ -377,6 +388,7 @@ begin
   end;
 end;
 
+{$IFDEF WST_BROKER}  
 const MAX_ERR_LEN = 500;
 function ProcessServiceRequestLibrary(
   const ARequestInfo    : TRequestInfo;
@@ -399,7 +411,7 @@ begin
     FillChar(AResponseInfo,SizeOf(TResponseInfo),#0);
     loc_path := ARequestInfo.URI;
     targetModuleName := ExtractNextPathElement(loc_path);
-    Result := False; SaveStringToFile(GetWstPath() + targetModuleName + sWST_LIBRARY_EXTENSION,'C:\log.txt',True);
+    Result := False; 
     targetModule := LibraryManager.Get(GetWstPath() + targetModuleName + sWST_LIBRARY_EXTENSION);
     handlerProc := TwstLibraryHandlerFunction(targetModule.GetProc(WST_LIB_HANDLER));
     if not Assigned(handlerProc) then
@@ -454,6 +466,7 @@ begin
     end;
   end;
 end;
+{$ENDIF WST_BROKER}  
 
 function wst_RequestHandler(r: Prequest_rec): Integer;
 

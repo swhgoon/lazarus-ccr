@@ -50,12 +50,18 @@ begin
     name := MODULE_NAME;
     magic := MODULE_MAGIC_COOKIE;
     register_hooks := @RegisterHooks;
+{$IF DECLARED(wst_create_dir_config)}    
     create_dir_config := @wst_create_dir_config;
+{$IFEND}
+{$IF DECLARED(WstCommandStructArray)}    
     cmds := WstCommandStructArray;
+{$IFEND}
   end;
+{$IF DECLARED(WstCommandStructArray)}  
   WstCommandStructArray[0].cmd_data := @WstConfigData^.BasePath;
   FillChar(WstCommandStructArray[1],SizeOf(command_rec),#0);
-  
+{$IFEND}   
+
   RegisterUserServiceImplementationFactory();
   Server_service_RegisterUserServiceService();  
 end.
