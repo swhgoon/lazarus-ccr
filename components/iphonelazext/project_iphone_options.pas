@@ -30,12 +30,17 @@ type
   TiPhoneProjectOptionsEditor = class(TAbstractIDEOptionsEditor)
     chkisPhone: TCheckBox;
     cmbSDKs: TComboBox;
+    edtResDir: TEdit;
+    edtExclude: TEdit;
     edtAppID: TEdit;
-    lblXibFiles: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     lblAppID: TLabel;
     lblAppIDHint: TLabel;
     lblSDKVer: TLabel;
     procedure cmbSDKsChange(Sender: TObject);
+    procedure edtExcludeChange(Sender: TObject);
     procedure FrameClick(Sender: TObject);
   private
     { private declarations }
@@ -56,6 +61,11 @@ implementation
 { TiPhoneProjectOptionsEditor }
 
 procedure TiPhoneProjectOptionsEditor.cmbSDKsChange(Sender: TObject);
+begin
+
+end;
+
+procedure TiPhoneProjectOptionsEditor.edtExcludeChange(Sender: TObject);
 begin
 
 end;
@@ -99,6 +109,8 @@ begin
       i:=cmbSDKs.Items.IndexOf(EnvOptions.DefaultSDK);
     cmbSDKs.ItemIndex:=i;
     edtAppID.Text:=AppID;
+    edtResDir.Text:=ResourceDir;
+    edtExclude.Text:=ExcludeMask;
   end;
 
 end;
@@ -110,6 +122,8 @@ begin
     isIPhoneApp:=chkisPhone.Checked;
     SDK:=cmbSDKs.Caption;
     AppID:=edtAppID.Text;
+    ResourceDir:=edtResDir.Text;
+    ExcludeMask:=edtExclude.Text;
     Save;
     DoChanged;
   end;

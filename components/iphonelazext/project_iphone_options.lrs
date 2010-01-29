@@ -18,7 +18,17 @@ LazarusResources.Add('TiPhoneProjectOptionsEditor','FORMDATA',[
   +#2'3'#5'Width'#2'P'#7'Caption'#6#12'SDK version:'#11'ParentColor'#8#0#0#242#2
   +#5#9'TComboBox'#7'cmbSDKs'#4'Left'#2'p'#6'Height'#2#20#3'Top'#2'0'#5'Width'#3
   +#184#0#10'ItemHeight'#2#0#8'OnChange'#7#13'cmbSDKsChange'#5'Style'#7#14'csDr'
-  +'opDownList'#8'TabOrder'#2#2#0#0#242#2#6#6'TLabel'#11'lblXibFiles'#4'Left'#2
-  +#16#6'Height'#2#18#3'Top'#3#168#0#5'Width'#3#219#0#7'Caption'#6'$.XIB files '
-  +'might appear here soon...'#11'ParentColor'#8#0#0#0
+  +'opDownList'#8'TabOrder'#2#2#0#0#242#2#6#5'TEdit'#9'edtResDir'#4'Left'#2'x'#6
+  +'Height'#2#22#3'Top'#3#176#0#5'Width'#3#224#1#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#0#8'TabOrder'#2#3#4'Text'#6#9'Resources'#0#0#242#2#7#6'TLabel'
+  +#6'Label1'#4'Left'#2#16#6'Height'#2#18#3'Top'#3#176#0#5'Width'#2'Y'#7'Captio'
+  +'n'#6#14'Resources dir:'#11'ParentColor'#8#0#0#242#2#8#5'TEdit'#10'edtExclud'
+  +'e'#4'Left'#2'x'#6'Height'#2#22#3'Top'#3#224#0#5'Width'#3#224#1#7'Anchors'#11
+  +#5'akTop'#6'akLeft'#7'akRight'#0#8'OnChange'#7#16'edtExcludeChange'#8'TabOrd'
+  +'er'#2#4#4'Text'#6#4'.svn'#0#0#242#2#9#6'TLabel'#6'Label2'#4'Left'#2#16#6'He'
+  +'ight'#2#18#3'Top'#3#224#0#5'Width'#2'Q'#7'Caption'#6#12'Ignore mask:'#11'Pa'
+  +'rentColor'#8#0#0#242#2#10#6'TLabel'#6'Label3'#4'Left'#2#16#6'Height'#2#14#3
+  +'Top'#3#200#0#5'Width'#3'l'#1#7'Caption'#6'NIt''s recommended to set resourc'
+  +'e dir as a relative (to project .lpr file) path'#11'Font.Height'#2#246#11'P'
+  +'arentColor'#8#10'ParentFont'#8#0#0#0
 ]);

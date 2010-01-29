@@ -60,12 +60,49 @@ inherited iPhoneProjectOptionsEditor: TiPhoneProjectOptionsEditor
     Style = csDropDownList
     TabOrder = 2
   end
-  object lblXibFiles: TLabel[6]
+  object edtResDir: TEdit[6]
+    Left = 120
+    Height = 22
+    Top = 176
+    Width = 480
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = 'Resources'
+  end
+  object Label1: TLabel[7]
     Left = 16
     Height = 18
-    Top = 168
-    Width = 219
-    Caption = '.XIB files might appear here soon...'
+    Top = 176
+    Width = 89
+    Caption = 'Resources dir:'
     ParentColor = False
+  end
+  object edtExclude: TEdit[8]
+    Left = 120
+    Height = 22
+    Top = 224
+    Width = 480
+    Anchors = [akTop, akLeft, akRight]
+    OnChange = edtExcludeChange
+    TabOrder = 4
+    Text = '.svn'
+  end
+  object Label2: TLabel[9]
+    Left = 16
+    Height = 18
+    Top = 224
+    Width = 81
+    Caption = 'Ignore mask:'
+    ParentColor = False
+  end
+  object Label3: TLabel[10]
+    Left = 16
+    Height = 14
+    Top = 200
+    Width = 364
+    Caption = 'It''s recommended to set resource dir as a relative (to project .lpr file) path'
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
   end
 end

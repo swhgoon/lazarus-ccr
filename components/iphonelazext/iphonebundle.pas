@@ -52,6 +52,8 @@ function WriteDefInfoList(const InfoFileName, BundleName, ExeName: WideString; c
 
 procedure CreateBundle(const BundleName, ExeName: WideString; const Info: TiPhoneBundleInfo; var FullBundlePath, FullExeName: WideString);
 procedure CreateBundle(const BundleName, SpaceName, ExeName: WideString; const Info: TiPhoneBundleInfo; var RealSpace, FullBundlePath, FullExeName: WideString);
+function GetBundleFullDir(const BundleName, SpaceName: WideString): WideString;
+function GetSandBoxDir(const SpaceName: WideString): WideString;
 
 function AddPathDelim(const w: WideString): WideString;
 
@@ -86,6 +88,32 @@ begin
   FullExeName:=appdir+ExeName;
   WritePkgFile(appdir+'PkgInfo');
   WriteDefInfoList(appdir+'Info.plist', BundleName, ExeName, Info);
+end;
+
+function GetBundleFullDir(const BundleName, SpaceName: WideString): WideString;
+var
+  path8   : String;
+  space8  : String;
+  p : string;
+begin
+  path8:=UTF8Encode(GetiPhoneSimUserPath);
+  space8:=UTF8Encode(SpaceName);
+
+  p:=IncludeTrailingPathDelimiter(IncludeTrailingPathDelimiter(path8)+space8);
+  Result:=UTF8Decode(p+UTF8Encode(BundleName)+'.app');
+end;
+
+function GetSandBoxDir(const SpaceName: WideString): WideString;
+var
+  path8   : String;
+  space8  : String;
+  p : string;
+begin
+  path8:=UTF8Encode(GetiPhoneSimUserPath);
+  space8:=UTF8Encode(SpaceName);
+
+  p:=IncludeTrailingPathDelimiter(IncludeTrailingPathDelimiter(path8)+space8);
+  Result:=UTF8Decode(p);
 end;
 
 procedure CreateBundle(const BundleName, ExeName: WideString; const Info: TiPhoneBundleInfo; var FullBundlePath, FullExeName: WideString);

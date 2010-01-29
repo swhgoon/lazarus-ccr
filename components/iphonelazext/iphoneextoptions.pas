@@ -33,6 +33,8 @@ type
     fSDK        : string;
     DataWritten : Boolean;
     fSpaceName  : string;
+    fResourceDir  : string;
+    fExcludeMask  : string;
   public
     constructor Create;
     class function GetGroupCaption: string; override;
@@ -44,6 +46,8 @@ type
     property SDK: string read fSDK write fSDK;
     property AppID: string read fAppID write fAppID;
     property SpaceName: string read fSpaceName write fSpaceName;
+    property ResourceDir: string read fResourceDir write fResourceDir;
+    property ExcludeMask: string read fExcludeMask write fExcludeMask;
   end;
 
   { TiPhoneEnvironmentOptions }
@@ -122,11 +126,12 @@ var
 const
   DefaultXMLName = 'iphoneextconfig.xml';
 
-  optisIphone   = 'iPhone/isiPhoneApp';
-  optSDK        = 'iPhone/SDK';
-  optAppID      = 'iPhone/AppID';
-  optSpaceName  = 'iPhone/SimSpaceName';
-
+  optisIphone    = 'iPhone/isiPhoneApp';
+  optSDK         = 'iPhone/SDK';
+  optAppID       = 'iPhone/AppID';
+  optSpaceName   = 'iPhone/SimSpaceName';
+  optResourceDir = 'iPhone/ResourceDir';
+  optExcludeMask = 'iPhone/ExcludeMask';
 
 function EnvOptions: TiPhoneEnvironmentOptions;
 begin
@@ -373,6 +378,8 @@ begin
     if CustomData.Contains(optAppID) then fAppID:=CustomData.Values[optAppID];
     fSpaceName:=CustomData.Values[optSpaceName];
     if fSpaceName='' then fSpaceName:=RandomSpaceName;
+    if CustomData.Contains(optResourceDir) then fResourceDir:=CustomData.Values[optResourceDir];
+    if CustomData.Contains(optExcludeMask) then fExcludeMask:=CustomData.Values[optExcludeMask];
   end;
 end;
 
@@ -388,6 +395,8 @@ begin
       CustomData.Values[optSDK]:=fSDK;
       CustomData.Values[optAppID]:=fAppID;
       CustomData.Values[optSpaceName]:=fSpaceName;
+      CustomData.Values[optResourceDir]:=fResourceDir;
+      CustomData.Values[optExcludeMask]:=fExcludeMask;
     end;
 end;
 
@@ -452,7 +461,6 @@ var
   end;
 
 begin
-  writeln('scan for SDK');
   Result:=Assigned(FoundProc);
   if not Result then Exit;
 

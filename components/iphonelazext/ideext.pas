@@ -41,9 +41,11 @@ type
     procedure FillBunldeInfo(forSimulator: Boolean; var info: TiPhoneBundleInfo);
     procedure InstallAppToSim;
     function FixCustomOptions(const Options: String; isRealDevice: Boolean): String;
+
+    function WriteIconTo(const FullName: String): Boolean;
+
     function ProjectBuilding(Sender: TObject): TModalResult;
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
-    function WriteIconTo(const FullName: String): Boolean;
     procedure OnProjOptionsChanged(Sender: TObject);
   public
     isiPhoneMenu    :TIDEMenuCommand;
@@ -118,6 +120,12 @@ begin
   CreateBundle(bundleName, Space, ExtractFileName(nm), Info, RealSpace, bundlepath, exepath);
 
   WriteIconTo( IncludeTrailingPathDelimiter(bundlepath)+'Icon.png');
+
+  CopySymLinks(
+    ResolveProjectPath(ProjOptions.ResourceDir),
+    bundlepath,
+    ProjOptions.ExcludeMask
+  );
 
   if nm<>'' then begin
     symlink:=UTF8Encode(exepath);
@@ -426,8 +434,10 @@ var
 begin
   t :=TProcess.Create(nil);
   try
+    //ProjectBuilding(nil);
     path:=IncludeTrailingPathDelimiter(EnvOptions.SimBundle)+'Contents/MacOS/iPhone Simulator';
     t.CommandLine:='"'+path+'"';
+    t.CurrentDirectory:=UTF8Encode(GetSandBoxDir(ProjOptions.SpaceName));
     t.Execute;
   except
     on E: Exception do

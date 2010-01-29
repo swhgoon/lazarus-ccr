@@ -19,7 +19,8 @@ unit lazfilesutils;
 interface
 
 uses
-  Classes, SysUtils, FileUtil,
+  {$ifdef Unix}BaseUnix,{$endif}
+  Classes, SysUtils, FileUtil, Masks,
   LazIDEIntf,ProjectIntf;
 
 
@@ -30,7 +31,52 @@ function BreakPathsStringToOption(const Paths, Switch: String; const Quotes: str
 function RelativeToFullPath(const BasePath, Relative: string): String;
 function NeedQuotes(const path: string): Boolean;
 
+function CopySymLinks(const SrcDir, DstDir, FilterMask: string): Boolean;
+
 implementation
+
+{$ifdef Unix}
+function CopySymLinks(const SrcDir, DstDir, FilterMask: string): Boolean;
+var
+  allfiles  : TStringList;
+  i         : Integer;
+  pth       : string;
+  MaskList  : TMaskList;
+  curdir    : string;
+  linkdir   : string;
+  linkname  : string;
+begin
+  Result:=DirectoryExistsUTF8(SrcDir) and ForceDirectoriesUTF8(DstDir);
+  if not Result then Exit;
+
+  //todo: don't use FindAllFiles(), use sub dir search
+
+  allfiles:=FindAllFiles(SrcDir, AllFilesMask, False);
+  Result:=Assigned(allfiles);
+  if not Result then Exit;
+
+  MaskList := TMaskList.Create(FilterMask);
+
+  curdir:=IncludeTrailingPathDelimiter(SrcDir);
+  linkdir:=IncludeTrailingPathDelimiter(DstDir);
+  for i:=0 to allfiles.Count-1 do begin
+    pth:=allfiles[i];
+    if (FilterMask='') or (not MaskList.Matches(pth)) then begin
+      linkname:=linkdir+Copy(pth, length(curdir), length(pth));
+      writeln('link from: ', pth);
+      writeln('       to: ', linkname);
+      fpSymlink(PAnsiChar(pth), PAnsiChar(linkname));
+    end;
+  end;
+  allfiles.Free;
+end;
+{$else}
+function CopySymLinks(const SrcDir, DstDir, FilterMask: string): Boolean;
+begin
+  Result:=false;
+end;
+{$endif}
+
 
 function GetNextDir(const Path: string; var index: integer; var Name: string): Boolean;
 var
