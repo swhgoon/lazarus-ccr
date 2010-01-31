@@ -9,6 +9,7 @@ uses
 
 function GetFileOwnerUser(const SearchDomain, FileName:String):String;
 procedure GetFileOwnerData(const SearchDomain, FileName:String;out UserName, DomainName:string);
+function NormalizeDirectoryName(const DirName:string):string;
 implementation
 uses
 {$IFDEF WINDOWS}
@@ -125,6 +126,17 @@ begin
   UserName:='';
   DomainName:='';
   {$ENDIF}
+end;
+
+{replase any dir separators '\' or '/' to system directory separator }
+function NormalizeDirectoryName(const DirName: string): string;
+var
+  i:integer;
+begin
+  Result:=DirName;
+  for i:=1 to Length(Result) do
+    if Result[i] in ['/', '\'] then
+      Result[i]:=DirectorySeparator;
 end;
 
 end.
