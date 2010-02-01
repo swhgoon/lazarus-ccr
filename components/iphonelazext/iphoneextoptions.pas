@@ -310,8 +310,8 @@ begin
   info:=GetSDKInfo(SDKVer);
   if not Assigned(info) then Result:=''
   else begin
-    if simulator then Result:=info.devName
-    else Result:=info.simName;
+    if simulator then Result:=info.simName
+    else Result:=info.devName;
   end;
 end;
 
@@ -322,8 +322,8 @@ begin
   info:=GetSDKInfo(SDKVer);
   if not Assigned(info) then Result:=''
   else begin
-    if simulator then Result:=info.devPath
-    else Result:=info.simPath;
+    if simulator then Result:=info.simPath
+    else Result:=info.devPath;
   end;
 end;
 
@@ -406,7 +406,7 @@ type
     Name      : String;
     Alternate : String; {alternate SDK -> iphonesimulator for iphoneos}
     Version   : String;
-    isDevice  : Boolean; {true for real iPhoneOS, false for iPhoneSimulator}
+    isSim     : Boolean; {true for real iPhoneOS, false for iPhoneSimulator}
   end;
 
 // todo: implement reading .plist via OSX functions! (in case a .plist format changes)
@@ -440,7 +440,7 @@ const
   PlatformName: array [Boolean] of string = ('iPhoneOS.platform','iPhoneSimulator.platform');
   SDKSubDir = PathDelim+'Developer'+PathDelim+'SDKs'+PathDelim;
 var
-  isdev : Boolean;
+  isSim : Boolean;
   dir   : string;
   sr    : TSearchRec;
   sdks  : array of TSDKDescription;
@@ -466,13 +466,13 @@ begin
 
   cnt:=0;
 
-  for isdev:=false to true do begin
-    dir := IncludeTrailingPathDelimiter(PlatformDir) + PlatformName[isdev] + SDKSubDir;
+  for isSim:=false to true do begin
+    dir := IncludeTrailingPathDelimiter(PlatformDir) + PlatformName[isSim] + SDKSubDir;
     if FindFirst(dir+'*', faAnyFile, sr)=0 then begin
       repeat
         if (sr.Attr and faDirectory>0) and (ExtractFileExt(sr.Name) = '.sdk') then
           if isSDKDir( dir + sr.Name, descr) then begin
-            descr.isDevice:=isdev;
+            descr.isSim:=isSim;
             AddDescription(descr);
           end;
       until FindNext(sr)<>0;
@@ -481,11 +481,11 @@ begin
   end;
 
   for i:=0 to cnt-1 do
-    if sdks[i].isDevice then begin
+    if not sdks[i].isSim then begin
       simname:='';
       simpath:='';
       for j:=0 to cnt-1 do
-        if (not sdks[j].isDevice) and (sdks[i].Alternate=sdks[j].Name) then begin
+        if (sdks[j].isSim) and (sdks[i].Alternate=sdks[j].Name) then begin
           simname:=sdks[j].Name;
           simpath:=sdks[j].FullPath;
         end;

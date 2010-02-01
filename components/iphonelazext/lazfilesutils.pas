@@ -63,8 +63,6 @@ begin
     pth:=allfiles[i];
     if (FilterMask='') or (not MaskList.Matches(pth)) then begin
       linkname:=linkdir+Copy(pth, length(curdir), length(pth));
-      writeln('link from: ', pth);
-      writeln('       to: ', linkname);
       fpSymlink(PAnsiChar(pth), PAnsiChar(linkname));
     end;
   end;

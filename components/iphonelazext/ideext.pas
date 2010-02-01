@@ -63,9 +63,9 @@ var
   ext : String;
 begin
   if Project.LazCompilerOptions.TargetFilename<>'' then
-    Result:=Project.LazCompilerOptions.TargetFilename
+    Result:=ExtractFileName(Project.LazCompilerOptions.TargetFilename)
   else begin
-    Result:=Project.MainFile.Filename;
+    Result:=ExtractFileName(Project.MainFile.Filename);
     ext:=ExtractFileExt(Result);
     Result:=Copy(Result, 1, length(Result)-length( ext ) );
   end;
@@ -345,7 +345,8 @@ begin
 
   build := TStringList.Create;
 
-  tname:=ExtractFileName( ChangeFileExt(LazarusIDE.ActiveProject.MainFile.Filename, ''));
+  tname:=ExtractFileName( LazarusIDE.ActiveProject.MainFile.Filename);
+  tname:=ChangeFileExt(tname, '');
   plistname:=tname+'.plist';
 
   build.Values['INFOPLIST_FILE'] := '"'+plistname+'"';

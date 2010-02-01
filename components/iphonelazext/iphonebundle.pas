@@ -244,8 +244,11 @@ begin
       ]);
   if FileExists(InfoFileName) then DeleteFile(InfoFileName);
   fs:=TFileStream.Create(InfoFileName, fmCreate or fmOpenWrite);
-  if s<>'' then fs.Write(s[1], length(s));
-  fs.Free;
+  try
+    if s<>'' then fs.Write(s[1], length(s));
+  finally
+    fs.Free;
+  end;
 end;
 
 end.
