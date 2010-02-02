@@ -523,6 +523,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
 Кол-во элементов данного массива находится в свойстве 
           
           
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -543,6 +544,7 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
           
           
           <b>Execute</b> и по содержимому которого будет произведено заполнение массива Files</descr>
@@ -811,6 +813,9 @@ Description
         <short>property Interval: Word;</short>
         <descr>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. 
 при Rotate = True это частота смены битовых изображений.</descr>
+        <seealso>
+          <link id="TRxDice.Rotate"/>
+        </seealso>
       </element>
       <element name="TRxDice.ParentColor"/>
       <element name="TRxDice.ParentShowHint"/>
@@ -1573,6 +1578,55 @@ Description
       </element>
       <element name="DefDateFormat">
         <short>Возвращает формат даты по умолчанию</short>
+      </element>
+    </module>
+    <module name="rxFileUtils">
+      <topic name="GetFileOwnerUser"/>
+      <element name="GetFileOwnerUser">
+        <short>Возвращает имя владельца файла</short>
+        <descr>
+          <p>function <b>GetFileOwnerUser</b>(const SearchDomain, FileName:<b>String</b>):<b>String</b>;
+</p>
+          <p>Функция возвращает имя пользователя операционной системы владельца указанного файла. </p>
+          <p>Входные параметры:
+SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).
+FileName - Полное имя файла.
+</p>
+          <remark>В данный момент функция реализована только для windows.</remark>
+        </descr>
+        <seealso>
+          <link id="GetFileOwnerData"/>
+        </seealso>
+      </element>
+      <element name="GetFileOwnerData">
+        <short>Возвращает данные владельца файла</short>
+        <descr>
+          <p>procedure GetFileOwnerData(const SearchDomain, FileName:<b>String</b>;out UserName, DomainName:<b>String</b>);
+</p>
+          <p>Процедура  возвращает имя и домен пользователя операционной системы владельца указанного файла. </p>
+          <p>Входные параметры:
+  SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).
+  FileName - Полное имя файла.
+Выходные параметры:
+  UserName - Имя пльзователя.
+  DomainName - Домен, в котором найден данный пользователь.
+</p>
+          <remark>В данный момент функция реализована только для windows.</remark>
+        </descr>
+        <seealso>
+          <link id="GetFileOwnerData"/>
+        </seealso>
+      </element>
+      <element name="NormalizeDirectoryName">
+        <short>Функция приводит к принятому в данной ОС виду все разделители каталогов.</short>
+        <descr>
+          <p>
+            <b>function</b> NormalizeDirectoryName(
+            <b>const</b> DirName:
+            <b>string</b>):
+            <b>string</b>;</p>
+Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы 
+          <b>DirectorySeparator</b>.</descr>
       </element>
     </module>
   </package>
