@@ -38,17 +38,18 @@ type
   
   TDataName = String;
   TDataType = (
-    dtInt8U,    dtInt8S,
-    dtInt16U,   dtInt16S,
-    dtInt32U,   dtInt32S,
-    dtInt64U,   dtInt64S,
-    dtBool, dtAnsiChar, dtWideChar, dtEnum,
-    dtSingle, dtDouble, dtExtended, dtCurrency,
-    dtAnsiString, dtWideString,
+    dtInt8U  = 1,    dtInt8S = 2,
+    dtInt16U = 3,   dtInt16S = 4,
+    dtInt32U = 5,   dtInt32S = 6,
+    dtInt64U = 7,   dtInt64S = 8,
+    dtBool   = 9,
+    dtAnsiChar   = 10, dtWideChar   = 11, dtEnum     = 12,
+    dtSingle     = 13, dtDouble     = 14, dtExtended = 15, dtCurrency = 16,
+    dtAnsiString = 17, dtWideString = 18,
 {$IFDEF WST_UNICODESTRING}
-    dtUnicodeString,
+    dtUnicodeString = 19,
 {$ENDIF WST_UNICODESTRING}
-    dtObject, dtArray
+    dtObject = 30, dtArray = 31
   );
 const
   dtDefaultString =
@@ -581,7 +582,7 @@ Begin
     Else
       Raise EBinaryFormatterException.CreateFmt(SERR_IndexOutOfBound,[AIndex])
   End Else Begin
-    Raise EBinaryFormatterException.CreateFmt(SERR_InvalidDataTypeInContext,[GetEnumName(TypeInfo(TDataType), Ord(AOwner^.DataType))])
+    Raise EBinaryFormatterException.CreateFmt(SERR_InvalidDataTypeInContext,[IntToStr(Ord(AOwner^.DataType))])
   End;
 End;
 
