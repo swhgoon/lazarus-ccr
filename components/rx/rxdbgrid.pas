@@ -134,6 +134,7 @@ type
   public
     constructor Create(Owner:TRxColumn);
     property Owner:TRxColumn read FOwner;
+    property NumericValue:Double read FTestValue;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Layout:TTextLayout read FLayout write SetLayout default tlCenter;
