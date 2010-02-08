@@ -139,7 +139,8 @@ type
   
   { TBaseServiceBinder }
 
-  TBaseServiceBinder = Class(TInterfacedPersistent,IServerService)
+{$M+}
+  TBaseServiceBinder = Class(TInterfacedObject,IServerService)
   Private
     FVerbList : TObjectList;
     FImplementationFactory : IServiceImplementationFactory;
@@ -163,7 +164,8 @@ type
     procedure Error(Const AMsg : string);overload;
     procedure Error(Const AMsg : string;Const AArgs : Array of Const);overload;
   End;
-
+{$M-}
+ 
   { TBaseServiceImplementation }
 
   TBaseServiceImplementation = class(TSimpleFactoryItem,ICallControl)
