@@ -407,8 +407,8 @@ begin
       if Value.BlobFieldCount > 0 then
       begin
         GetMem(FBlobs, Value.BlobFieldCount * SizeOf(TMemBlobData));
+        FillChar(FBlobs^, Value.BlobFieldCount * SizeOf(Pointer), 0);
         FinalizeBlobFields(FBlobs, Value.BlobFieldCount);
-//        FillChar(FBlobs^, Value.BlobFieldCount * SizeOf(Pointer), 0);
 //        Initialize(PMemBlobArray(FBlobs)^[0]);//, Value.BlobFieldCount);
       end;
       DataSize := 0;
@@ -604,14 +604,15 @@ end;
 function TRxMemoryData.AllocRecordBuffer: PChar;
 begin
   Result := StrAlloc(FRecBufSize);
-  FillChar(Result^, FRecBufSize, 0);
+  InternalInitRecord(Result);
+{  FillChar(Result^, FRecBufSize, 0);
   if BlobFieldCount > 0 then
   begin
 //    Initialize(PMemBlobArray(Result + FBlobOfs)^[0]);//, BlobFieldCount);
 //    FillChar(PMemBlobArray(Result + FBlobOfs)^, BlobFieldCount * SizeOf(Pointer),0);//, BlobFieldCount);
     FinalizeBlobFields(PMemBlobArray(Result + FBlobOfs), BlobFieldCount);
 
-  end;
+  end;}
 end;
 
 procedure TRxMemoryData.FreeRecordBuffer(var Buffer: PChar);
@@ -633,8 +634,11 @@ var
   I: Integer;
 begin
   FillChar(Buffer^, FBlobOfs, 0);
+  FillChar(PByteArray(Buffer + FBlobOfs)^, BlobFieldCount * SizeOf(Pointer), 0);
   for I := 0 to BlobFieldCount - 1 do
+  begin
     PMemBlobArray(Buffer + FBlobOfs)^[I] := '';
+  end;
 end;
 
 procedure TRxMemoryData.InitRecord(Buffer: PChar);
