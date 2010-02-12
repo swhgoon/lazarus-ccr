@@ -160,7 +160,7 @@ type
     procedure SetPropertyOptions(
       const APropName : string;
       const AOptions : TTypeRegistryItemOptions
-    ); virtual;
+    ); override;
     function GetSerializer() : TSimpleContentObjectSerializer;{$IFDEF USE_INLINE}inline;{$ENDIF}
   end;
 
