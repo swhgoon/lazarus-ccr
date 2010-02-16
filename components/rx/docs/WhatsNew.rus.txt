@@ -53,6 +53,7 @@
        NormalizeDirectoryName - приводит все разделитили каталогов в имени файла к тому виду, как принятов данной ОС.  
   + У TRxColumnFooter доступно свойство NumericValue - содержит числовое представление значения 
     итогов по столбцу. Имеет смысл только для ValueType = fvtSum, fvtAvg, fvtMax, fvtMin
+  + Новая компонента TRxVersionInfo - обёртка над вызовами функция чтения ресурсов файла
 22.05.2008 - версия 2.0.0.136 (svn revision 100)
   + У объекта TRxCustomDBLookupCombo введён контроль на CircularDataLink
   + У объекта TRxCustomDBLookupCombo ускорена отрисовка данных

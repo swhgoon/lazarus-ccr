@@ -26,7 +26,7 @@ translate to Lazarus by alexs in 2005 - 2009
     <License Value="free ware
 "/>
     <Version Major="2" Minor="1" Release="2" Build="105"/>
-    <Files Count="55">
+    <Files Count="56">
       <Item1>
         <Filename Value="rxlookup.pas"/>
         <UnitName Value="rxlookup"/>
@@ -249,8 +249,12 @@ translate to Lazarus by alexs in 2005 - 2009
         <Filename Value="rxfileutils.pas"/>
         <UnitName Value="rxFileUtils"/>
       </Item55>
+      <Item56>
+        <Filename Value="rxversinfo.pas"/>
+        <UnitName Value="RxVersInfo"/>
+      </Item56>
     </Files>
-    <LazDoc Paths="docs\"/>
+    <LazDoc Paths="docs\;\usr\local\share\lazarus\components\rxnew\docs\"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
