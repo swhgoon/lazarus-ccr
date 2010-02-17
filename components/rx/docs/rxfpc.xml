@@ -322,36 +322,74 @@ Description
       <element name="TRxSpeedButton.RepeatInterval"/>
     </module>
     <module name="curredit">
-      <element name="TCurrencyEdit"/>
+      <element name="TCurrencyEdit">
+        <short>TCurrencyEdit Component</short>
+        <descr>
+          <p>Компонента служит для ввода и редактирования чисел и денежных сумм. TCurrencyEdit имеет те же свойства, что и ее предок TEdit, но позволяет дополнительно указать формат отображения числа и символы для обозначения вида валюты с помощью свойства <link id="TCurrencyEdit.DisplayFormat">DisplayFormat</link>, а также максимальное число символов после десятичной точки (при вводе данных) с помощью свойства <link id="TCurrencyEdit.DecimalPlaces">DecimalPlaces</link>. Свойство Value позволяет получить или установить численную величину отображаемого в компоненте значения.</p>
+          <p>Если свойство BeepOnError установлено в True, то при вводе в строку недопустимых символов раздается звуковой сигнал.</p>
+        </descr>
+      </element>
       <element name="TCurrencyEdit.Create"/>
       <element name="TCurrencyEdit.Destroy"/>
       <element name="TCurrencyEdit.Clear"/>
-      <element name="TCurrencyEdit.AsInteger"/>
-      <element name="TCurrencyEdit.DisplayText"/>
-      <element name="TCurrencyEdit.Value"/>
+      <element name="TCurrencyEdit.AsInteger">
+        <descr>
+          <p>Свойство позволяет обратиться к значению <link id="TCurrencyEdit.Value">Value</link>, сохраненному в компоненте - редакторе для ввода чисел, как к целому числу. </p>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.DisplayText">
+        <descr>Свойство служит для доступа на чтение к форматированному в соответствии со значением <link id="TCurrencyEdit.DisplayFormat">DisplayFormat</link> представлению значения <link id="TCurrencyEdit.Value">Value</link>Value (совпадает с отображаемой строкой в компоненте, когда элемент редактирования не имеет фокуса ввода). В отличие от этого свойства, свойство Text всегда возвращает неформатированную строку.</descr>
+      </element>
+      <element name="TCurrencyEdit.Value">
+        <descr>Свойство позволяет установить (или получить) численную величину значения, отображаемого в строке ввода. В случае пустой строки возвращается значение 0.</descr>
+      </element>
       <element name="TCurrencyEdit.Alignment"/>
-      <element name="TCurrencyEdit.AutoSelect"/>
-      <element name="TCurrencyEdit.AutoSize"/>
-      <element name="TCurrencyEdit.BeepOnError"/>
+      <element name="TCurrencyEdit.AutoSelect">
+        <descr>Определяет факт автоматического выделения всего текста при попадании фокуса клавиатурного ввода в компонент</descr>
+      </element>
+      <element name="TCurrencyEdit.AutoSize">
+        <descr>Свойство определяет, будет ли размер автоматически изменяться размер шрифта</descr>
+      </element>
+      <element name="TCurrencyEdit.BeepOnError">
+        <descr>Если значение этого свойства установлено в True (по умолчанию False), то при ошибках ввода с клавиатуры (недопустимых символов и т.д.) раздается звуковой сигнал.</descr>
+      </element>
       <element name="TCurrencyEdit.BorderStyle"/>
       <element name="TCurrencyEdit.BorderSpacing"/>
-      <element name="TCurrencyEdit.CheckOnExit"/>
+      <element name="TCurrencyEdit.CheckOnExit">
+        <descr>
+          <p>Свойство определяет, будет ли проверяться  допустимый диапазон числа в компонентах TCurrencyEdit при потере фокуса строкой редактирования. </p>
+          <p>Если CheckOnExit = True, то в случае ввода недопустимого значения происходит исключение (exception). </p>
+        </descr>
+      </element>
       <element name="TCurrencyEdit.Color"/>
-      <element name="TCurrencyEdit.DecimalPlaces"/>
-      <element name="TCurrencyEdit.DisplayFormat"/>
+      <element name="TCurrencyEdit.DecimalPlaces">
+        <descr>Свойство определяет максимально допустимое число десятичных знаков при вводе и изменении данных в строке редактирования компоненты TCurrencyEdit. Используется, когда строка имеет фокус ввода. При отображении значения в несфокусированной строке редактирования свойство не используется - применяется маска, заданная свойством <link id="TCurrencyEdit.DisplayFormat">DisplayFormat.</link>
+        </descr>
+      </element>
+      <element name="TCurrencyEdit.DisplayFormat">
+        <descr>Свойство задает формат отображения данных в компоненте TCurrencyEdit. При получении компонентой фокуса ввода форматирование данных отменяется и ввод происходит как в обычную строку ввода TEdit. При потере фокуса ввода данные форматируются согласно заданному формату.</descr>
+      </element>
       <element name="TCurrencyEdit.DragCursor"/>
       <element name="TCurrencyEdit.DragMode"/>
       <element name="TCurrencyEdit.Enabled"/>
       <element name="TCurrencyEdit.Font"/>
-      <element name="TCurrencyEdit.FormatOnEditing"/>
+      <element name="TCurrencyEdit.FormatOnEditing">
+        <descr>Свойство определяет, будет ли автоматически форматироваться значение в строке редактора непосредственно при редактировании. 
+Формат ввода определяется переменными DecimalSeparator и ThousandSeparator из модуля SysUtils.pas и свойством <link id="TCurrencyEdit.DecimalPlaces">DecimalPlaces</link>
+        </descr>
+      </element>
       <element name="TCurrencyEdit.HideSelection"/>
       <element name="TCurrencyEdit.Anchors"/>
       <element name="TCurrencyEdit.BiDiMode"/>
       <element name="TCurrencyEdit.Constraints"/>
       <element name="TCurrencyEdit.DragKind"/>
       <element name="TCurrencyEdit.MaxLength"/>
-      <element name="TCurrencyEdit.MaxValue"/>
-      <element name="TCurrencyEdit.MinValue"/>
+      <element name="TCurrencyEdit.MaxValue">
+        <descr>Максимально допустимое значение свойства <link id="TCurrencyEdit.Value">Value</link>. Значение MaxValue ограничивает максимальную величину числа, которое можно ввести в строку ввода.</descr>
+      </element>
+      <element name="TCurrencyEdit.MinValue">
+        <descr>Минимально допустимое значение свойства <link id="TCurrencyEdit.Value">Value</link>. Значение MinValue ограничивает минимальную величину числа, которое можно ввести в строку ввода.</descr>
+      </element>
       <element name="TCurrencyEdit.ParentColor"/>
       <element name="TCurrencyEdit.ParentFont"/>
       <element name="TCurrencyEdit.ParentShowHint"/>
@@ -363,7 +401,9 @@ Description
       <element name="TCurrencyEdit.Text"/>
       <element name="TCurrencyEdit.Value"/>
       <element name="TCurrencyEdit.Visible"/>
-      <element name="TCurrencyEdit.ZeroEmpty"/>
+      <element name="TCurrencyEdit.ZeroEmpty">
+        <descr>Если значение этого свойства равно True, то когда редактор имеет фокус ввода и значение <link id="TCurrencyEdit.Value">Value</link>Value = 0, в нем с качестве текста отображается пустая строка. Если ZeroEmpty = False, то в этом случае текст '0'.</descr>
+      </element>
       <element name="TCurrencyEdit.OnChange"/>
       <element name="TCurrencyEdit.OnClick"/>
       <element name="TCurrencyEdit.OnDblClick"/>
@@ -382,24 +422,38 @@ Description
       <element name="TCurrencyEdit.OnStartDrag"/>
       <element name="TCurrencyEdit.OnEndDock"/>
       <element name="TCurrencyEdit.OnStartDock"/>
+      <short>CurrEdit Unit</short>
+      <descr>
+        <p>The <b>CurrEdit unit</b> contains the declarations for the certain components on the <b>RX Controls</b> page of the Component palette and their associated objects, types, and constants.
+When you add a component declared in this unit to a form, the unit is automatically added to the uses clause of that form's unit.</p>
+        <p>The following items are declared in the CurrEdit unit:</p>
+        <p>
+          <b>Components and objects</b>
+        </p>
+        <p>
+          <link id="TCurrencyEdit">TCurrencyEdit</link>
+        </p>
+        <p>To see a listing of items declared in this unit including their declarations, use the ObjectBrower.</p>
+      </descr>
     </module>
     <module name="rxlookup">
       <element name="TRxLookupEdit">
         <short>TRxLookupEdit Component</short>
-        <descr>Unit
-RxLookup
-Description
-Компонента TRxLookupEdit представляет собой редактор с возможностью как прямого ввода текста пользователем в строке редактирования, так и выбора текста из выпадающего списка, заполняемого значениями из базы данных. При открытом списке набор пользователем символов с клавиатуры приводит к позиционированию списка на ближайшую запись, совпадающую с введенным текстом. 
-Для заполнения выпадающего списка используются свойства LookupSource, LookupField, LookupDisplay и LookupDisplayIndex, аналогично списку компоненты TRxDBLookupCombo. 
-Введенное пользователем или выбранное из списка значение доступно через свойство Text. 
-Свойство LookupValue (read-only) позволяет получить значение ключевого поля из lookup-набора данных (заданного свойством LookupField), если пользвателем был сделан выбор из списка.</descr>
+        <descr>
+          <p>Компонента TRxLookupEdit представляет собой редактор с возможностью как прямого ввода текста пользователем в строке редактирования, так и выбора текста из выпадающего списка, заполняемого значениями из базы данных. При открытом списке набор пользователем символов с клавиатуры приводит к позиционированию списка на ближайшую запись, совпадающую с введенным текстом. </p>
+          <p>Для заполнения выпадающего списка используются свойства LookupSource, LookupField, LookupDisplay и LookupDisplayIndex, аналогично списку компоненты TRxDBLookupCombo. </p>
+          <p>Введенное пользователем или выбранное из списка значение доступно через свойство Text. 
+Свойство LookupValue (read-only) позволяет получить значение ключевого поля из lookup-набора данных (заданного свойством LookupField), если пользвателем был сделан выбор из списка.</p>
+        </descr>
       </element>
       <element name="TRxLookupEdit.Create"/>
       <element name="TRxLookupEdit.Destroy"/>
       <element name="TRxLookupEdit.DropDownCount"/>
       <element name="TRxLookupEdit.DropDownWidth"/>
       <element name="TRxLookupEdit.LookupDisplay"/>
-      <element name="TRxLookupEdit.LookupDisplayIndex"/>
+      <element name="TRxLookupEdit.LookupDisplayIndex">
+        <descr>В случае, если свойство <link id="TRxLookupEdit.LookupDisplay">LookupDisplay</link> задает более одного поля для отображения в списке, значение свойства LookupDisplayIndex определяет номер поля, значение которого возвращается свойством DisplayValue.</descr>
+      </element>
       <element name="TRxLookupEdit.LookupField"/>
       <element name="TRxLookupEdit.LookupSource"/>
       <element name="TRxLookupEdit.PopUpFormOptions"/>
@@ -488,6 +542,10 @@ TRxDBLookupCombo позволяет использовать в качестве
       <element name="TRxDBLookupCombo.LookupField"/>
       <element name="TRxDBLookupCombo.LookupSource"/>
       <element name="TRxDBLookupCombo.UnfindedValue"/>
+      <descr>
+        <p>The RxLookup unit contains the declarations for the certain components on the RX DBAware page of the Component palette and their associated objects, types, and constants.
+When you add a component declared in this unit to a form, the unit is automatically added to the uses clause of that form's unit.</p>
+      </descr>
     </module>
     <module name="dbdateedit">
       <element name="TDBDateEdit"/>
@@ -534,6 +592,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
+          
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -554,6 +615,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
+          
+          
           
           
           
@@ -1606,17 +1670,17 @@ Description
       </element>
     </module>
     <module name="rxFileUtils">
-      <topic name="GetFileOwnerUser"/>
       <element name="GetFileOwnerUser">
         <short>Возвращает имя владельца файла</short>
         <descr>
           <p>function <b>GetFileOwnerUser</b>(const SearchDomain, FileName:<b>String</b>):<b>String</b>;
 </p>
           <p>Функция возвращает имя пользователя операционной системы владельца указанного файла. </p>
-          <p>Входные параметры:
-SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).
-FileName - Полное имя файла.
-</p>
+          <p>
+            <b>Входные параметры:</b>
+          </p>
+          <p>SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).</p>
+          <p>FileName - Полное имя файла.</p>
           <remark>В данный момент функция реализована только для windows.</remark>
         </descr>
         <seealso>
@@ -1626,16 +1690,32 @@ FileName - Полное имя файла.
       <element name="GetFileOwnerData">
         <short>Возвращает данные владельца файла</short>
         <descr>
-          <p>procedure GetFileOwnerData(const SearchDomain, FileName:<b>String</b>;out UserName, DomainName:<b>String</b>);
+          <p>
+            <b>procedure</b> GetFileOwnerData(
+            
+            
+            <b>const</b> SearchDomain, FileName:
+            
+            
+            <b>String</b>;
+            
+            
+            <b>out</b> UserName, DomainName:
+            
+            
+            <b>String</b>);
 </p>
           <p>Процедура  возвращает имя и домен пользователя операционной системы владельца указанного файла. </p>
-          <p>Входные параметры:
-  SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).
-  FileName - Полное имя файла.
-Выходные параметры:
-  UserName - Имя пльзователя.
-  DomainName - Домен, в котором найден данный пользователь.
-</p>
+          <p>
+            <b>Входные параметры:</b>
+          </p>
+          <p>- SearchDomain - Домен, в котором будет производится поиск оператора (пустой для текущего домена оператора).</p>
+          <p>- FileName - Полное имя файла.</p>
+          <p>
+            <b>Выходные параметры:</b>
+          </p>
+          <p>- UserName - Имя пльзователя.</p>
+          <p>- DomainName - Домен, в котором найден данный пользователь.</p>
           <remark>В данный момент функция реализована только для windows.</remark>
         </descr>
         <seealso>
@@ -1647,35 +1727,22 @@ FileName - Полное имя файла.
         <descr>
           <p>
             <b>function</b> NormalizeDirectoryName(
-            
-            
-            
-            
-            
-            
             <b>const</b> DirName:
-            
-            
-            
-            
-            
-            
             <b>string</b>):
-            
-            
-            
-            
-            
+            <b>string</b>;</p>
+          <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
+        </descr>
+      </element>
+      <short>Содержит дополнительные утилиты работы с файлами и ОС</short>
+      <element name="GetUserName">
+        <short>Функция <b>GetUserName</b> возвращает имя оператора, залогиненго в системе</short>
+        <descr>
+          <p>
+            <b>function</b> GetUserName: 
             
             <b>string</b>;</p>
-Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы 
-          
-          
-          
-          
-          
-          
-          <b>DirectorySeparator</b>.</descr>
+          <p>Функция <b>GetUserName</b> возвращает имя оператора, залогиненго в системе</p>
+        </descr>
       </element>
     </module>
     <module name="RxVersInfo">

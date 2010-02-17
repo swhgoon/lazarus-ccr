@@ -40,6 +40,7 @@ uses
 function GetFileOwnerUser(const SearchDomain, FileName:String):String;
 procedure GetFileOwnerData(const SearchDomain, FileName:String;out UserName, DomainName:string);
 function NormalizeDirectoryName(const DirName:string):string;
+function GetUserName:string;
 implementation
 uses
 {$IFDEF WINDOWS}
@@ -167,6 +168,27 @@ begin
   for i:=1 to Length(Result) do
     if Result[i] in ['/', '\'] then
       Result[i]:=DirectorySeparator;
+end;
+
+function GetUserName: string;
+{$IFDEF WINDOWS}
+var
+  A:array [0..256] of Char;
+  L:DWORD;
+{$ENDIF}
+begin
+  {$IFDEF WINDOWS}
+  FillChar(A, SizeOf(A), 0);
+  L:=SizeOf(A)-1;
+  if Windows.GetUserNameA(@A, L) then
+  begin
+    Result:=SysToUTF8(StrPas(@A));
+  end
+  else
+    Result:=GetEnvironmentVariableUTF8('USERNAME');
+  {$ELSE}
+  Result:=GetEnvironmentVariable('USER');
+  {$ENDIF}
 end;
 
 end.
