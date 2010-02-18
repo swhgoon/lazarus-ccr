@@ -210,11 +210,10 @@
     </module>
     <module name="rxctrls">
       <element name="TRxLabel">
-        <descr>Unit
-RxCtrls
-Description
-Компонента TRxLabel аналогична стандартной компоненте VCL TLabel, однако дополнительно позволяет придать тексту статического элемента управления (Label) 3-мерный вид, либо отобразить "тень" текста. 
-С помощью свойст ShadowPos, ShadowColor и ShadowSize вы можете задать расположение, цвет и толщину "тени" букв текста. Значения, заданные для этих свойств по умолчанию, создают "трехмерный" эффект изображения текс</descr>
+        <descr>
+          <p>Компонента TRxLabel аналогична стандартной компоненте VCL TLabel, однако дополнительно позволяет придать тексту статического элемента управления (Label) 3-мерный вид, либо отобразить "тень" текста. </p>
+          <p>С помощью свойст ShadowPos, ShadowColor и ShadowSize вы можете задать расположение, цвет и толщину "тени" букв текста. Значения, заданные для этих свойств по умолчанию, создают "трехмерный" эффект изображения текста. </p>
+        </descr>
       </element>
       <element name="TRxLabel.Align"/>
       <element name="TRxLabel.Alignment"/>
@@ -234,9 +233,15 @@ Description
       <element name="TRxLabel.ParentFont"/>
       <element name="TRxLabel.ParentShowHint"/>
       <element name="TRxLabel.PopupMenu"/>
-      <element name="TRxLabel.ShadowColor"/>
-      <element name="TRxLabel.ShadowSize"/>
-      <element name="TRxLabel.ShadowPos"/>
+      <element name="TRxLabel.ShadowColor">
+        <descr>Свойство задает цвет "тени" букв текста статического элемента управления TRxLabel.</descr>
+      </element>
+      <element name="TRxLabel.ShadowSize">
+        <descr>Свойство задает толщину "тени" букв текста статического элемента управления TrxLabel.</descr>
+      </element>
+      <element name="TRxLabel.ShadowPos">
+        <descr>Свойство задает расположение "тени" букв текста статического элемента управления TrxLabel.</descr>
+      </element>
       <element name="TRxLabel.ShowAccelChar"/>
       <element name="TRxLabel.ShowFocus"/>
       <element name="TRxLabel.ShowHint"/>
@@ -251,28 +256,66 @@ Description
       <element name="TRxLabel.OnMouseDown"/>
       <element name="TRxLabel.OnMouseMove"/>
       <element name="TRxLabel.OnMouseUp"/>
-      <element name="TRxLabel.OnMouseEnter"/>
-      <element name="TRxLabel.OnMouseLeave"/>
+      <element name="TRxLabel.OnMouseEnter">
+        <descr>Событие происходит, когда пользователь перемещает курсор мыши в область, находящуюся над элементом управления.</descr>
+      </element>
+      <element name="TRxLabel.OnMouseLeave">
+        <descr>Событие происходит, когда пользователь уводит курсор мыши из области, находящейся над элементом управления.</descr>
+      </element>
       <element name="TRxLabel.OnStartDrag"/>
       <element name="TRxLabel.OnContextPopup"/>
       <element name="TRxLabel.OnEndDock"/>
       <element name="TRxLabel.OnStartDock"/>
-      <element name="TSecretPanel"/>
+      <element name="TSecretPanel">
+        <short>Компонента TSecretPanel предназначена, как и компонента TPanel, для помещения в форму "панелей", на которых могут быть размещены другие элементы управления.</short>
+        <descr>
+          <p>Компонента TSecretPanel предназначена, как и компонента TPanel, для помещения в форму "панелей", на которых могут быть размещены другие элементы управления. </p>
+          <p>В дополнение к свойствам и методам компоненты TPanel, TSecretPanel имеет возможность размещения "скрытого" текста и изображения, доступных для отображения при установленном в True значении свойства <link id="TSecretPanel.Active">Active</link>. Свойство Lines<link id="TSecretPanel.Lines">Lines</link> задает список строк текста, который будет "прокручиваться" в направлении снизу вверх или справа налево (в зависимости от значения свойства <link id="TSecretPanel.ScrollDirection">ScrollDirection</link>) в клиентской области компоненты TSecretPanel при установке <link id="TSecretPanel.Active">Active</link> = True. Если свойство <link id="TSecretPanel.Glyph">Glyph</link> ассоциировано с графическим изображением, то одновременно это изображение будет показано в области TSecretPanel, заданной свойством <link id="TSecretPanel.GlyphLayout">GlyphLayout</link>. По окончании прокрутки текста, если свойство <link id="TSecretPanel.Cycled">Cycled</link> = False, свойство <link id="TSecretPanel.Active">Active</link> автоматически установится в значение False, если же <link id="TSecretPanel.Cycled">Cycled</link> = True, прокрутка текста возобновится сначала. Вы можете также прервать прокрутку, вручную установив свойство <link id="TSecretPanel.Active">Active</link> в значение False. </p>
+          <p>Событие <link id="TSecretPanel.OnPaintClient">OnPaintClient</link> позволяет вам достигать всевозможных эффектов при отрисовке клиентской области панели как в активном состоянии (при прокрутке текста), так и в неактивном. </p>
+        </descr>
+      </element>
       <element name="TSecretPanel.Create"/>
       <element name="TSecretPanel.Destroy"/>
       <element name="TSecretPanel.Play"/>
       <element name="TSecretPanel.Stop"/>
       <element name="TSecretPanel.Canvas"/>
-      <element name="TSecretPanel.AsyncDrawing"/>
-      <element name="TSecretPanel.Active"/>
+      <element name="TSecretPanel.AsyncDrawing">
+        <descr>
+          <p>Свойство определяет, как будет осуществляться перерисовка компоненты при "прокрутке" текста, т.е. когда свойство Active = True. </p>
+          <p>Если AsyncDrawing = False, то перерисовка синхронизируется с основным потоком приложения. Если AsyncDrawing = True (по умолчанию), то прокрутка текста и перерисовка осуществляется асинхронно, в отдельном потоке. </p>
+        </descr>
+      </element>
+      <element name="TSecretPanel.Active">
+        <descr>
+          <p>Свойство определяет состояние компоненты TSecretPanel. При установке значения этого свойства в True, все компоненты, размещенные на TSecretPanel (у которых свойство Parent указывает на этот объект), скрываются, отображается изображение, заданное свойством Glyph, и начинается автоматическая прокрутка текста, определенного свойством Lines. 
+</p>
+          <p>Если свойство Cycled = False, то при прокрутке всего текста свойство Active автоматически устанавливается в значение False. Вы можете также прервать прокрутку ранее, присвоив свойству Active значение False. </p>
+        </descr>
+      </element>
       <element name="TSecretPanel.Alignment"/>
-      <element name="TSecretPanel.Cycled"/>
+      <element name="TSecretPanel.Cycled">
+        <descr>
+          <p>Свойство Cycled определяет поведение компоненты после прокрутки всего текста, заданного свойством Lines. Если Cycled = True, то прокрутка текста будет продолжена с начала, если же Cycled = False (по умолчанию), то после прокрутки всего текста свойство Active будет установлено в значение False. </p>
+        </descr>
+      </element>
       <element name="TSecretPanel.Glyph"/>
       <element name="TSecretPanel.GlyphLayout"/>
-      <element name="TSecretPanel.Interval"/>
-      <element name="TSecretPanel.Lines"/>
-      <element name="TSecretPanel.ScrollDirection"/>
-      <element name="TSecretPanel.TextStyle"/>
+      <element name="TSecretPanel.Interval">
+        <descr>Свойство определяет временной интервал (в милисекундах), с которым происходит смена изображений в компоненте. 
+Для TSecretPanel свойство определяет скорость "прокрутки" текста при значении свойства Active = True.</descr>
+      </element>
+      <element name="TSecretPanel.Lines">
+        <descr>Свойство задает набор текстовых строк, которые не отображаются компонентой TSecretPanel в нормальном ее состоянии, но могут быть "прокручены" (одновременно с отображением битового изображения, заданного свойством Glyph) при установке в True значения свойства Active.</descr>
+      </element>
+      <element name="TSecretPanel.ScrollDirection">
+        <descr>Свойство определяет направление прокрутки срок текста при значении Active=True. 
+Возможные значения свойства ScrollDirection: 
+• sdVertical - текст прокручивается снизу вверх. 
+• sdHorizontal - прокрутка текста осуществляется в направлении справа налево.</descr>
+      </element>
+      <element name="TSecretPanel.TextStyle">
+        <descr>Свойство задает стиль отображения текста при его прокрутке в компоненте TSecretPanel. При значении этого свойства, отличном от bvNone, текст выглядит либо "продавленным" (bvLowered), либо "выпуклым" (bvRaised).</descr>
+      </element>
       <element name="TSecretPanel.Anchors"/>
       <element name="TSecretPanel.Constraints"/>
       <element name="TSecretPanel.DragKind"/>
@@ -296,7 +339,13 @@ Description
       <element name="TSecretPanel.TabOrder"/>
       <element name="TSecretPanel.TabStop"/>
       <element name="TSecretPanel.Visible"/>
-      <element name="TSecretPanel.OnPaintClient"/>
+      <element name="TSecretPanel.OnPaintClient">
+        <descr>
+          <p>Событие возникает при перерисовке панели как в активном состоянии (Active=True) при прокрутке текста, так и в неактивном. 
+Вы можете использовать это событие для создания всевозможных эффектов при отрисовке панели. </p>
+          <remark>Имейте в виду, что при наличии обработчика события OnPaintClient компонента TSecretPanel не отрисовывает область, заданную параметром Rect, следовательно, при написании обработчика этого события вы должны как минимум заполнить указанную область, например вызовом метода FillRect. </remark>
+        </descr>
+      </element>
       <element name="TSecretPanel.OnStartPlay"/>
       <element name="TSecretPanel.OnStopPlay"/>
       <element name="TSecretPanel.OnClick"/>
@@ -314,12 +363,39 @@ Description
       <element name="TSecretPanel.OnEndDock"/>
       <element name="TSecretPanel.OnStartDock"/>
       <element name="TSecretPanel.OnResize"/>
-      <element name="TRxSpeedButton"/>
+      <element name="TRxSpeedButton">
+        <descr>Компонента аналогична стандартной компоненте TSpeedButton, но имеет некоторые дополнительные возможности. 
+Она может быть прозрачной (свойство Transparent) и "всплывающей" (свойство Flat), что позволяет создавать кнопки, аналогичные используемым в панели инструментов Microsoft Internet Explorer 3.x. При установленном значении свойств GrayedInactive и Flat битовое изображение "неактивной" кнопки будет изменяться по сравнению с обычным вариантом. 
+
+При установке свойства AllowTimer в значение True, кнопка будет генерировать повторяющиеся события OnClick при нажатии на кнопку до тех пор, пока кнопка находится в нажатом состоянии. Вы можете регулировать интервал между событиями OnClick с помощью свойств InitPause и RepeatInterval. 
+Кроме того, Вы можете задать выпадающее меню (с помощью свойства DropDownMenu), которое будет появляться при нажатии на кнопку. 
+
+Остальные свойства и методы компоненты TRxSpeedButton те же, что и у TSpeedButton.</descr>
+      </element>
       <element name="TRxSpeedButton.Create"/>
       <element name="TRxSpeedButton.Destroy"/>
-      <element name="TRxSpeedButton.AllowTimer"/>
-      <element name="TRxSpeedButton.InitPause"/>
-      <element name="TRxSpeedButton.RepeatInterval"/>
+      <element name="TRxSpeedButton.AllowTimer">
+        <descr>Когда свойство AllowTimer установлено в значение True, кнопка будет генерировать повторяющиеся события OnClick при нажатии на кнопку до тех пор, пока кнопка находится в нажатом состоянии. Вы можете регулировать интервал между событиями OnClick с помощью свойств InitRepeatPause и RepeatPause.</descr>
+      </element>
+      <element name="TRxSpeedButton.InitPause">
+        <descr>Свойство позволяет задать интервал (в миллисекундах) перед первым событием OnClick, вызывающемся при нажатии кнопки, если свойство AllowTimer установлено в значение True.</descr>
+      </element>
+      <element name="TRxSpeedButton.RepeatInterval">
+        <descr>Свойство позволяет задать интервал (в миллисекундах) между повторяющимися вызовами события OnClick, если кнопка нажата и свойство AllowTimer = True.</descr>
+      </element>
+      <element name="TScrollDirection">
+        <descr>Тип определяет возможные значения свойства ScrollDirection компоненты <link id="TSecretPanel">TSecretPanel</link>
+        </descr>
+      </element>
+      <element name="TPanelDrawEvent">
+        <descr>Тип определяет метод - обработчик события OnPaintClient компоненты TSecretPanel.</descr>
+      </element>
+      <element name="TGlyphLayout">
+        <descr>Тип TGlyphLayout задает возможные значения свойства GlyphLayout компоненты <link id="TSecretPanel">TSecretPanel</link>.</descr>
+      </element>
+      <element name="TShadowPosition">
+        <descr>Тип TShadowPosition задает возможные допустимые значения для свойства ShadowPos компоненты <link id="TRxLabel">TRxLabel</link>, задающего положение "тени" статического элемента управления.</descr>
+      </element>
     </module>
     <module name="curredit">
       <element name="TCurrencyEdit">
@@ -548,13 +624,20 @@ When you add a component declared in this unit to a form, the unit is automatica
       </descr>
     </module>
     <module name="dbdateedit">
-      <element name="TDBDateEdit"/>
+      <element name="TDBDateEdit">
+        <descr>Компонента TDBDateEdit - ориентированная на работу с базами данных компонента для редактирования даты. Установленное значение свойства Date становится новым значением поля в БД, если значение свойства ReadOnly компоненты TDBDateEdit - False. 
+TDBDateEdit является наследником TDateEdit и имеет все те же свойства и методы, и дополнительно имеет свойства, необходимые для работы с полями базы данных. 
+
+Компонента TDBDateEdit может быть применена к тем полям наборов данных, которые позволяют чтение и присвоение значений через свойство AsDateTime.</descr>
+      </element>
       <element name="TDBDateEdit.Create"/>
       <element name="TDBDateEdit.Destroy"/>
       <element name="TDBDateEdit.DataField"/>
       <element name="TDBDateEdit.DataSource"/>
       <element name="TDBDateEdit.ReadOnly"/>
-      <element name="TDBDateEdit.DefaultToday"/>
+      <element name="TDBDateEdit.DefaultToday">
+        <descr>Свойство DialogTitle задает заголовок диалогового окна, появляющегося при нажатии на кнопку компоненты TFilenameEdit (TOpenDialog) или TDateEdit, TDBDateEdit (диалог выбора даты).</descr>
+      </element>
       <element name="TRxDBCalcEdit">
         <descr>Компонента TRxDBCalcEdit - ориентированная на работу с базами данных компонента для редактирования чисел с возможностью импользования выпадающего калькулятора. Установленное значение свойства Value становится новым значением поля в БД, если значение свойства ReadOnly - False. 
 TRxDBCalcEdit является наследником TDBCalcEdit и имеет все те же свойства и методы, и дополнительно имеет свойства, необходимые для работы с полями базы данных. 
@@ -595,6 +678,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
           
           
           
+          
+          
+          
           <b>Count</b>
         </descr>
         <seealso>
@@ -615,6 +701,9 @@ TRxDBCalcEdit является наследником TDBCalcEdit и имеет 
         <descr>
           <b>property FileFolder:string</b>
 Свойство FileFolder определяет каталог с файлами, который будет сканироваться при вызове метода 
+          
+          
+          
           
           
           
@@ -1694,13 +1783,25 @@ Description
             <b>procedure</b> GetFileOwnerData(
             
             
+            
+            
+            
             <b>const</b> SearchDomain, FileName:
+            
+            
+            
             
             
             <b>String</b>;
             
             
+            
+            
+            
             <b>out</b> UserName, DomainName:
+            
+            
+            
             
             
             <b>String</b>);
@@ -1727,8 +1828,17 @@ Description
         <descr>
           <p>
             <b>function</b> NormalizeDirectoryName(
+            
+            
+            
             <b>const</b> DirName:
+            
+            
+            
             <b>string</b>):
+            
+            
+            
             <b>string</b>;</p>
           <p>Функция проверяет все разделители каталогов в указанном имени файла/каталога и, если нужно, меняет их на значение константы<b>DirectorySeparator</b>.</p>
         </descr>
@@ -1739,6 +1849,9 @@ Description
         <descr>
           <p>
             <b>function</b> GetUserName: 
+            
+            
+            
             
             <b>string</b>;</p>
           <p>Функция <b>GetUserName</b> возвращает имя оператора, залогиненго в системе</p>

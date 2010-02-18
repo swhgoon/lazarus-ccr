@@ -9,7 +9,7 @@
 
 unit rxctrls;
 
-{$I RX.INC}
+{$I rx.inc}
 
 interface
 
