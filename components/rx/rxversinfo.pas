@@ -269,6 +269,7 @@ begin
   Reader:=TElfResourceReader.Create;
   {$ENDIF}
   Res:=TResources.Create;
+  V:=nil;
   try
     Res.LoadFromFile(ParamStr(0), Reader);
     for i:=0 to Res.Count-1 do
