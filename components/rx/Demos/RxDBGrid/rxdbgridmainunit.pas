@@ -16,6 +16,9 @@ type
   TRxDBGridMainForm = class(TForm)
     actCalcTotal: TAction;
     CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    ImageList1: TImageList;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
@@ -54,6 +57,8 @@ type
     procedure actOptimizeWidthCol1Execute(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure CheckBox2Change(Sender: TObject);
+    procedure CheckBox3Change(Sender: TObject);
+    procedure CheckBox4Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure RxDBGrid1Filtred(Sender: TObject);
@@ -188,6 +193,22 @@ end;
 procedure TRxDBGridMainForm.CheckBox2Change(Sender: TObject);
 begin
   RxDBGrid1.AutoFillColumns:=CheckBox2.Checked;
+end;
+
+procedure TRxDBGridMainForm.CheckBox3Change(Sender: TObject);
+begin
+  if CheckBox3.Checked then
+    RxDBGrid1.Options:=RxDBGrid1.Options + [dgIndicator]
+  else
+    RxDBGrid1.Options:=RxDBGrid1.Options - [dgIndicator];
+end;
+
+procedure TRxDBGridMainForm.CheckBox4Change(Sender: TObject);
+begin
+  if CheckBox4.Checked then
+    RxDBGrid1.Options:=RxDBGrid1.Options + [dgTitles]
+  else
+    RxDBGrid1.Options:=RxDBGrid1.Options - [dgTitles];
 end;
 
 procedure TRxDBGridMainForm.ComboBox1Change(Sender: TObject);

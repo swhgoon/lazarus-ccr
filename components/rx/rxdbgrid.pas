@@ -1588,7 +1588,7 @@ begin
     end;}
   end
   else
-  if  not ((gdFixed in aState) or (aCol=0) or (aRow=0)) then
+  if  not ((gdFixed in aState) or ((aCol=0) and (dgIndicator in Options)) or ((aRow=0) and (dgTitles in Options))) then
   begin
 
     PrepareCanvas(aCol, aRow, aState);
