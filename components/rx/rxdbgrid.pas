@@ -77,6 +77,7 @@ type
     Hegth:integer;
     Next:TMLCaptionItem;
     Prior:TMLCaptionItem;
+    Col:TGridColumn;
   end;
 
   { TRxColumnTitle }
@@ -1016,6 +1017,9 @@ var
   MLRec2:TMLCaptionItem;
   tmpCanvas: TCanvas;
 begin
+  { TODO -oalexs : need rewrite code - split to 2 step:
+1. make links between column
+2. calc title width for all linked column series }
   if RowCount = 0 then exit;
   tmpCanvas := GetWorkingCanvas(Canvas);
   try
@@ -1058,8 +1062,10 @@ begin
               for j:=0 to rxTit.CaptionLinesCount-1 do
               begin
                 MLRec1:=rxTit.CaptionLine(j);
+
                 if Assigned(rxTitleNext) and (rxTitleNext.CaptionLinesCount>j) then
                 begin
+                  //make links to next column (and in the next column set linc to prior-current)
                   MLRec2:=rxTitleNext.CaptionLine(j);
                   if MLRec1.Caption = MLRec2.Caption then
                   begin
@@ -1216,14 +1222,21 @@ procedure TRxDBGrid.OutCaptionMLCellText(aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState; MLI: TMLCaptionItem);
 var
   MLINext: TMLCaptionItem;
+  Rgn: HRGN;
 begin
   MLINext:=MLI.Next;
   while Assigned(MLINext) do
   begin
-    aRect.Right:=aRect.Right + MLINext.Width;
+    aRect.Right:=aRect.Right + MLINext.Col.Width;
     MLINext:=MLINext.Next;
   end;
+
+//   OutCaptionCellText(aCol, aRow, aRect, aState, MLI.Caption);
+  Rgn := CreateRectRgn(aRect.Left, aRect.Top, aRect.Right, aRect.Bottom);
+  SelectClipRgn(Canvas.Handle, Rgn);
   OutCaptionCellText(aCol, aRow, aRect, aState, MLI.Caption);
+  SelectClipRgn(Canvas.Handle, 0);
+  DeleteObject(Rgn);
 end;
 
 procedure TRxDBGrid.UpdateJMenuStates;
@@ -2893,6 +2906,7 @@ var
 begin
   R:=TMLCaptionItem.Create;
   R.Caption:=AStr;
+  R.Col:=Column;
   FCaptionLines.Add(R);
 end;
 

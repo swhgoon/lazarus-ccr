@@ -1,10 +1,10 @@
 object RxDBGridMainForm: TRxDBGridMainForm
-  Left = 262
+  Left = 286
   Height = 609
-  Top = 157
+  Top = 158
   Width = 969
   ActiveControl = Panel1
-  Caption = 'RxDBGrid Demo (ver 3)  ...'
+  Caption = 'RxDBGrid Demo'
   ClientHeight = 609
   ClientWidth = 969
   OnCreate = FormCreate
@@ -65,7 +65,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Software|Name'
+        Title.Caption = 'Software (all info)|Name'
         Title.Orientation = toHorizontal
         Width = 136
         FieldName = 'NAME'
@@ -78,7 +78,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Software|Cost'
+        Title.Caption = 'Software (all info)|Cost'
         Title.Orientation = toHorizontal
         Width = 136
         FieldName = 'PRICE'
@@ -96,7 +96,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       end    
       item
         Title.Alignment = taCenter
-        Title.Caption = 'Software|Date Present'
+        Title.Caption = 'Software (all info)|Date Present'
         Title.Orientation = toHorizontal
         Width = 136
         FieldName = 'Date_Present'
@@ -148,7 +148,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Button2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 280
+      Left = 264
       Height = 18
       Top = 6
       Width = 38
@@ -160,27 +160,25 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 6
-      Height = 35
+      Height = 27
       Top = 6
-      Width = 90
+      Width = 82
       Action = actCalcTotal
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       TabOrder = 0
     end
     object Button2: TButton
       AnchorSideLeft.Control = Button1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 102
-      Height = 35
+      Left = 94
+      Height = 27
       Top = 6
-      Width = 172
+      Width = 164
       Action = actOptimizeColumnsWidthAll
       AutoSize = True
       BorderSpacing.Around = 6
-      BorderSpacing.InnerBorder = 4
       TabOrder = 1
     end
     object CheckBox1: TCheckBox
@@ -188,7 +186,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox2
       AnchorSideTop.Side = asrBottom
-      Left = 509
+      Left = 493
       Height = 19
       Top = 31
       Width = 81
@@ -201,7 +199,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 286
+      Left = 270
       Height = 29
       Top = 30
       Width = 217
@@ -221,7 +219,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 509
+      Left = 493
       Height = 19
       Top = 6
       Width = 134
@@ -234,7 +232,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Control = CheckBox2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 649
+      Left = 633
       Height = 19
       Top = 6
       Width = 122
@@ -250,7 +248,7 @@ object RxDBGridMainForm: TRxDBGridMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CheckBox3
       AnchorSideTop.Side = asrBottom
-      Left = 649
+      Left = 633
       Height = 19
       Top = 31
       Width = 116

@@ -1,16 +1,16 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
-  'TPF0'#17'TRxDBGridMainForm'#16'RxDBGridMainForm'#4'Left'#3#6#1#6'Height'#3'a'
-  +#2#3'Top'#3#157#0#5'Width'#3#201#3#13'ActiveControl'#7#6'Panel1'#7'Caption'#6
-  +#26'RxDBGrid Demo (ver 3)  ...'#12'ClientHeight'#3'a'#2#11'ClientWidth'#3#201
-  +#3#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.29'#0#9'TRxDBGrid'#9
-  +'RxDBGrid1'#4'Left'#2#0#6'Height'#3' '#2#3'Top'#2'A'#5'Width'#3#201#3#12'Tit'
-  +'leButtons'#9#8'AutoSort'#9#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'
-  +#13'Title.Caption'#6#3'...'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'
-  +#2'2'#9'FieldName'#6#12'DEVELOPER_ID'#9'ImageList'#7#10'ImageList1'#15'KeyLi'
-  +'st.Strings'#1#6#3'1=0'#6#3'2=1'#6#3'3=2'#0#17'Filter.Font.Style'#11#8'fsIta'
-  +'lic'#0#19'Filter.DropDownRows'#2#0#17'Filter.EmptyValue'#6#8'('#208#157#208
+  'TPF0'#17'TRxDBGridMainForm'#16'RxDBGridMainForm'#4'Left'#3#30#1#6'Height'#3
+  +'a'#2#3'Top'#3#158#0#5'Width'#3#201#3#13'ActiveControl'#7#6'Panel1'#7'Captio'
+  +'n'#6#13'RxDBGrid Demo'#12'ClientHeight'#3'a'#2#11'ClientWidth'#3#201#3#8'On'
+  +'Create'#7#10'FormCreate'#10'LCLVersion'#6#6'0.9.29'#0#9'TRxDBGrid'#9'RxDBGr'
+  +'id1'#4'Left'#2#0#6'Height'#3' '#2#3'Top'#2'A'#5'Width'#3#201#3#12'TitleButt'
+  +'ons'#9#8'AutoSort'#9#7'Columns'#14#1#15'Title.Alignment'#7#8'taCenter'#13'T'
+  +'itle.Caption'#6#3'...'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#2
+  +'2'#9'FieldName'#6#12'DEVELOPER_ID'#9'ImageList'#7#10'ImageList1'#15'KeyList'
+  +'.Strings'#1#6#3'1=0'#6#3'2=1'#6#3'3=2'#0#17'Filter.Font.Style'#11#8'fsItali'
+  +'c'#0#19'Filter.DropDownRows'#2#0#17'Filter.EmptyValue'#6#8'('#208#157#208
   +#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filter.ItemIn'
   +'dex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'Title.Caption'#6#4'Code'
   +#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#3#136#0#9'FieldName'#6#2
@@ -23,197 +23,169 @@ LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
   +'e'#6#9'Developer'#17'Filter.Font.Style'#11#8'fsItalic'#0#19'Filter.DropDown'
   +'Rows'#2#0#12'Filter.Color'#7#6'clLime'#17'Filter.EmptyValue'#6#8'('#208#157
   +#208#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filter.It'
-  +'emIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'Title.Caption'#6#13
-  +'Software|Name'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#3#136#0#9
-  +'FieldName'#6#4'NAME'#17'Filter.Font.Style'#11#8'fsItalic'#0#19'Filter.DropD'
-  +'ownRows'#2#0#12'Filter.Color'#7#6'clLime'#17'Filter.EmptyValue'#6#8'('#208
-  +#157#208#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filte'
-  +'r.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'Title.Caption'#6
-  +#13'Software|Cost'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#3#136#0
-  +#9'FieldName'#6#5'PRICE'#13'DisplayFormat'#6#8'#,##0.00'#16'Footer.Alignment'
-  +#7#14'taRightJustify'#20'Footer.DisplayFormat'#6#8'#,##0.00'#16'Footer.Field'
-  +'Name'#6#5'PRICE'#16'Footer.ValueType'#7#6'fvtSum'#17'Filter.Font.Style'#11#8
-  +'fsItalic'#0#19'Filter.DropDownRows'#2#0#12'Filter.Color'#7#6'clLime'#17'Fil'
-  +'ter.EmptyValue'#6#8'('#208#157#208#181#209#130')'#22'Filter.EmptyFont.Style'
-  +#11#8'fsItalic'#0#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taC'
-  +'enter'#13'Title.Caption'#6#21'Software|Date Present'#17'Title.Orientation'#7
-  +#12'toHorizontal'#5'Width'#3#136#0#9'FieldName'#6#12'Date_Present'#17'Filter'
-  +'.Font.Style'#11#8'fsItalic'#0#19'Filter.DropDownRows'#2#0#17'Filter.EmptyVa'
-  +'lue'#6#8'('#208#157#208#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsIt'
-  +'alic'#0#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#17
-  +'Title.Orientation'#7#12'toHorizontal'#5'Width'#3#141#0#9'FieldName'#6#12'DE'
-  +'VELOPER_ID'#17'Filter.Font.Style'#11#8'fsItalic'#0#19'Filter.DropDownRows'#2
-  +#0#17'Filter.EmptyValue'#6#8'('#208#157#208#181#209#130')'#22'Filter.EmptyFo'
-  +'nt.Style'#11#8'fsItalic'#0#16'Filter.ItemIndex'#2#255#0#0#15'PropertyStorag'
-  +'e'#7#15'XMLPropStorage1'#7'Version'#2#1#9'OptionsRx'#11#19'rdgAllowColumnsF'
-  +'orm'#18'rdgAllowDialogFind'#13'rdgFooterRows'#19'rdgAllowQuickSearch'#16'rd'
-  +'gAllowToolMenu'#0#11'FooterColor'#7#8'clYellow'#14'FooterRowCount'#2#1#9'On'
-  +'Filtred'#7#16'RxDBGrid1Filtred'#5'Align'#7#8'alClient'#10'FocusColor'#7#5'c'
-  +'lRed'#13'SelectedColor'#7#11'clHighlight'#13'GridLineStyle'#7#7'psSolid'#10
-  +'DataSource'#7#11'Datasource1'#7'Options'#11#9'dgEditing'#8'dgTitles'#11'dgI'
-  +'ndicator'#14'dgColumnResize'#12'dgColumnMove'#10'dgColLines'#10'dgRowLines'
-  +#6'dgTabs'#21'dgAlwaysShowSelection'#15'dgConfirmDelete'#14'dgCancelOnExit'
-  +#13'dgMultiselect'#18'dgHeaderPushedLook'#0#11'ParentColor'#8#9'PopupMenu'#7
-  +#10'PopupMenu1'#8'TabOrder'#2#0#10'TitleStyle'#7#8'tsNative'#0#0#6'TPanel'#6
-  +'Panel1'#4'Left'#2#0#6'Height'#2'A'#3'Top'#2#0#5'Width'#3#201#3#5'Align'#7#5
-  +'alTop'#8'AutoSize'#9#12'ClientHeight'#2'A'#11'ClientWidth'#3#201#3#8'TabOrd'
-  +'er'#2#1#0#6'TLabel'#6'Label1'#22'AnchorSideLeft.Control'#7#7'Button2'#19'An'
-  +'chorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#6'Panel1'#4'L'
-  +'eft'#3#24#1#6'Height'#2#18#3'Top'#2#6#5'Width'#2'&'#20'BorderSpacing.Around'
-  +#2#6#7'Caption'#6#4'Mode'#11'ParentColor'#8#0#0#7'TButton'#7'Button1'#22'Anc'
-  +'horSideLeft.Control'#7#6'Panel1'#21'AnchorSideTop.Control'#7#6'Panel1'#4'Le'
-  +'ft'#2#6#6'Height'#2'#'#3'Top'#2#6#5'Width'#2'Z'#6'Action'#7#12'actCalcTotal'
-  +#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#25'BorderSpacing.InnerBorder'#2#4
+  +'emIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'Title.Caption'#6#24
+  +'Software (all info)|Name'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'
+  +#3#136#0#9'FieldName'#6#4'NAME'#17'Filter.Font.Style'#11#8'fsItalic'#0#19'Fi'
+  +'lter.DropDownRows'#2#0#12'Filter.Color'#7#6'clLime'#17'Filter.EmptyValue'#6
+  +#8'('#208#157#208#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsItalic'#0
+  +#16'Filter.ItemIndex'#2#255#0#1#15'Title.Alignment'#7#8'taCenter'#13'Title.C'
+  +'aption'#6#24'Software (all info)|Cost'#17'Title.Orientation'#7#12'toHorizon'
+  +'tal'#5'Width'#3#136#0#9'FieldName'#6#5'PRICE'#13'DisplayFormat'#6#8'#,##0.0'
+  +'0'#16'Footer.Alignment'#7#14'taRightJustify'#20'Footer.DisplayFormat'#6#8'#'
+  +',##0.00'#16'Footer.FieldName'#6#5'PRICE'#16'Footer.ValueType'#7#6'fvtSum'#17
+  +'Filter.Font.Style'#11#8'fsItalic'#0#19'Filter.DropDownRows'#2#0#12'Filter.C'
+  +'olor'#7#6'clLime'#17'Filter.EmptyValue'#6#8'('#208#157#208#181#209#130')'#22
+  +'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filter.ItemIndex'#2#255#0#1#15
+  +'Title.Alignment'#7#8'taCenter'#13'Title.Caption'#6' Software (all info)|Dat'
+  +'e Present'#17'Title.Orientation'#7#12'toHorizontal'#5'Width'#3#136#0#9'Fiel'
+  +'dName'#6#12'Date_Present'#17'Filter.Font.Style'#11#8'fsItalic'#0#19'Filter.'
+  +'DropDownRows'#2#0#17'Filter.EmptyValue'#6#8'('#208#157#208#181#209#130')'#22
+  +'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filter.ItemIndex'#2#255#0#1#15
+  +'Title.Alignment'#7#8'taCenter'#17'Title.Orientation'#7#12'toHorizontal'#5'W'
+  +'idth'#3#141#0#9'FieldName'#6#12'DEVELOPER_ID'#17'Filter.Font.Style'#11#8'fs'
+  +'Italic'#0#19'Filter.DropDownRows'#2#0#17'Filter.EmptyValue'#6#8'('#208#157
+  +#208#181#209#130')'#22'Filter.EmptyFont.Style'#11#8'fsItalic'#0#16'Filter.It'
+  +'emIndex'#2#255#0#0#15'PropertyStorage'#7#15'XMLPropStorage1'#7'Version'#2#1
+  +#9'OptionsRx'#11#19'rdgAllowColumnsForm'#18'rdgAllowDialogFind'#13'rdgFooter'
+  +'Rows'#19'rdgAllowQuickSearch'#16'rdgAllowToolMenu'#0#11'FooterColor'#7#8'cl'
+  +'Yellow'#14'FooterRowCount'#2#1#9'OnFiltred'#7#16'RxDBGrid1Filtred'#5'Align'
+  +#7#8'alClient'#10'FocusColor'#7#5'clRed'#13'SelectedColor'#7#11'clHighlight'
+  +#13'GridLineStyle'#7#7'psSolid'#10'DataSource'#7#11'Datasource1'#7'Options'
+  +#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#12'dgColumnM'
+  +'ove'#10'dgColLines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'#15'd'
+  +'gConfirmDelete'#14'dgCancelOnExit'#13'dgMultiselect'#18'dgHeaderPushedLook'
+  +#0#11'ParentColor'#8#9'PopupMenu'#7#10'PopupMenu1'#8'TabOrder'#2#0#10'TitleS'
+  +'tyle'#7#8'tsNative'#0#0#6'TPanel'#6'Panel1'#4'Left'#2#0#6'Height'#2'A'#3'To'
+  +'p'#2#0#5'Width'#3#201#3#5'Align'#7#5'alTop'#8'AutoSize'#9#12'ClientHeight'#2
+  +'A'#11'ClientWidth'#3#201#3#8'TabOrder'#2#1#0#6'TLabel'#6'Label1'#22'AnchorS'
+  +'ideLeft.Control'#7#7'Button2'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'Anc'
+  +'horSideTop.Control'#7#6'Panel1'#4'Left'#3#8#1#6'Height'#2#18#3'Top'#2#6#5'W'
+  +'idth'#2'&'#20'BorderSpacing.Around'#2#6#7'Caption'#6#4'Mode'#11'ParentColor'
+  +#8#0#0#7'TButton'#7'Button1'#22'AnchorSideLeft.Control'#7#6'Panel1'#21'Ancho'
+  +'rSideTop.Control'#7#6'Panel1'#4'Left'#2#6#6'Height'#2#27#3'Top'#2#6#5'Width'
+  +#2'R'#6'Action'#7#12'actCalcTotal'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6
   +#8'TabOrder'#2#0#0#0#7'TButton'#7'Button2'#22'AnchorSideLeft.Control'#7#7'Bu'
   ,'tton1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#6
-  +'Panel1'#4'Left'#2'f'#6'Height'#2'#'#3'Top'#2#6#5'Width'#3#172#0#6'Action'#7
-  +#26'actOptimizeColumnsWidthAll'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#25
-  +'BorderSpacing.InnerBorder'#2#4#8'TabOrder'#2#1#0#0#9'TCheckBox'#9'CheckBox1'
+  +'Panel1'#4'Left'#2'^'#6'Height'#2#27#3'Top'#2#6#5'Width'#3#164#0#6'Action'#7
+  +#26'actOptimizeColumnsWidthAll'#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#8
+  +'TabOrder'#2#1#0#0#9'TCheckBox'#9'CheckBox1'#22'AnchorSideLeft.Control'#7#9
+  +'ComboBox1'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'
+  +#7#9'CheckBox2'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3#237#1#6'Heig'
+  +'ht'#2#19#3'Top'#2#31#5'Width'#2'Q'#18'BorderSpacing.Left'#2#6#7'Caption'#6
+  +#10'Use filter'#8'OnChange'#7#15'CheckBox1Change'#8'TabOrder'#2#2#0#0#9'TCom'
+  +'boBox'#9'ComboBox1'#22'AnchorSideLeft.Control'#7#6'Label1'#21'AnchorSideTop'
+  +'.Control'#7#6'Label1'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3#14#1#6
+  +'Height'#2#29#3'Top'#2#30#5'Width'#3#217#0#20'BorderSpacing.Around'#2#6#10'I'
+  +'temHeight'#2#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6#9'Edit mode'#6#17'Qui'
+  +'ck search mode'#0#8'OnChange'#7#15'ComboBox1Change'#5'Style'#7#14'csDropDow'
+  +'nList'#8'TabOrder'#2#3#4'Text'#6#9'Edit mode'#0#0#9'TCheckBox'#9'CheckBox2'
   +#22'AnchorSideLeft.Control'#7#9'ComboBox1'#19'AnchorSideLeft.Side'#7#9'asrBo'
-  +'ttom'#21'AnchorSideTop.Control'#7#9'CheckBox2'#18'AnchorSideTop.Side'#7#9'a'
-  +'srBottom'#4'Left'#3#253#1#6'Height'#2#19#3'Top'#2#31#5'Width'#2'Q'#18'Borde'
-  +'rSpacing.Left'#2#6#7'Caption'#6#10'Use filter'#8'OnChange'#7#15'CheckBox1Ch'
-  +'ange'#8'TabOrder'#2#2#0#0#9'TComboBox'#9'ComboBox1'#22'AnchorSideLeft.Contr'
-  +'ol'#7#6'Label1'#21'AnchorSideTop.Control'#7#6'Label1'#18'AnchorSideTop.Side'
-  +#7#9'asrBottom'#4'Left'#3#30#1#6'Height'#2#29#3'Top'#2#30#5'Width'#3#217#0#20
-  +'BorderSpacing.Around'#2#6#10'ItemHeight'#2#0#9'ItemIndex'#2#0#13'Items.Stri'
-  +'ngs'#1#6#9'Edit mode'#6#17'Quick search mode'#0#8'OnChange'#7#15'ComboBox1C'
-  +'hange'#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#3#4'Text'#6#9'Edit mode'
-  +#0#0#9'TCheckBox'#9'CheckBox2'#22'AnchorSideLeft.Control'#7#9'ComboBox1'#19
-  +'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#6'Panel1'#4
-  +'Left'#3#253#1#6'Height'#2#19#3'Top'#2#6#5'Width'#3#134#0#20'BorderSpacing.A'
-  +'round'#2#6#7'Caption'#6#17'Auto fill columns'#8'OnChange'#7#15'CheckBox2Cha'
-  +'nge'#8'TabOrder'#2#4#0#0#9'TCheckBox'#9'CheckBox3'#22'AnchorSideLeft.Contro'
-  +'l'#7#9'CheckBox2'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.C'
-  +'ontrol'#7#6'Panel1'#4'Left'#3#137#2#6'Height'#2#19#3'Top'#2#6#5'Width'#2'z'
-  +#20'BorderSpacing.Around'#2#6#7'Caption'#6#14'Show indicator'#7'Checked'#9#8
-  +'OnChange'#7#15'CheckBox3Change'#5'State'#7#9'cbChecked'#8'TabOrder'#2#5#0#0
-  +#9'TCheckBox'#9'CheckBox4'#22'AnchorSideLeft.Control'#7#9'CheckBox2'#19'Anch'
-  +'orSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#9'CheckBox3'#18
-  +'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#3#137#2#6'Height'#2#19#3'Top'#2
-  +#31#5'Width'#2't'#20'BorderSpacing.Around'#2#6#7'Caption'#6#12'Show headers'
-  +#7'Checked'#9#8'OnChange'#7#15'CheckBox4Change'#5'State'#7#9'cbChecked'#8'Ta'
-  +'bOrder'#2#6#0#0#0#13'TRxMemoryData'#13'RxMemoryData1'#14'AutoCalcFields'#8#9
-  +'FieldDefs'#14#1#4'Name'#6#2'ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2
-  +#255#4'Size'#2#7#0#1#4'Name'#6#4'NAME'#8'DataType'#7#8'ftString'#9'Precision'
-  +#2#255#4'Size'#3#150#0#0#1#4'Name'#6#5'PRICE'#8'DataType'#7#7'ftFloat'#9'Pre'
-  +'cision'#2#2#4'Size'#2#12#0#1#4'Name'#6#9'Developer'#8'DataType'#7#8'ftStrin'
-  +'g'#9'Precision'#2#255#4'Size'#3#150#0#0#1#4'Name'#6#12'Date_Present'#8'Data'
-  +'Type'#7#6'ftDate'#9'Precision'#2#0#4'Size'#2#0#0#1#4'Name'#6#12'DEVELOPER_I'
-  +'D'#8'DataType'#7#9'ftInteger'#9'Precision'#2#0#4'Size'#2#0#0#0#14'OnFilterR'
-  +'ecord'#7#27'RxMemoryData1FilterRecordEx'#16'OnFilterRecordEx'#7#27'RxMemory'
-  +'Data1FilterRecordEx'#4'left'#3#152#0#3'top'#3#8#1#0#13'TLongintField'#16'Rx'
-  +'MemoryData1ID1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'
-  +#6#2'ID'#5'Index'#2#0#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9
-  +'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#0#0#12'TStringField'#18'RxMemoryDa'
-  +'ta1NAME1'#12'DisplayWidth'#3#150#0#9'FieldKind'#7#6'fkData'#9'FieldName'#6#4
-  +'NAME'#5'Index'#2#1#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9
-  +'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#4'Size'#3#150#0#0#0#11'TFloatField'
-  +#19'RxMemoryData1PRICE1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'Fi'
-  +'eldName'#6#5'PRICE'#5'Index'#2#2#11'LookupCache'#8#13'ProviderFlags'#11#10
-  +'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#13'DisplayFormat'#6#8
-  +'#,##0.00'#8'MaxValue'#5#0#0#0#0#0#0#0#0#0#0#8'MinValue'#5#0#0#0#0#0#0#0#0#0
-  +#0#9'Precision'#2#2#0#0#12'TStringField'#23'RxMemoryData1Developer1'#12'Disp'
-  +'layWidth'#3#150#0#9'FieldKind'#7#6'fkData'#9'FieldName'#6#9'Developer'#5'In'
-  +'dex'#2#3#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'
-  +#0#8'ReadOnly'#8#8'Required'#8#4'Size'#3#150#0#0#0#10'TDateField'#26'RxMemor'
-  +'yData1Date_Present1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'Field'
-  +'Name'#6#12'Date_Present'#5'Index'#2#4#11'LookupCache'#8#13'ProviderFlags'#11
-  +#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#0#0#13'TLongintFi'
-  +'eld'#26'RxMemoryData1DEVELOPER_ID1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6
-  +'fkData'#9'FieldName'#6#12'DEVELOPER_ID'#5'Index'#2#5#9'KeyFields'#6#12'DEVE'
-  +'LOPER_ID'#11'LookupCache'#8#13'LookupDataSet'#7#13'RxMemoryData2'#15'Lookup'
-  +'KeyFields'#6#12'DEVELOPER_ID'#17'LookupResultField'#6#14'DEVELOPER_NAME'#13
-  +'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8
-  +#0#0#0#11'TDatasource'#11'Datasource1'#7'DataSet'#7#13'RxMemoryData1'#4'left'
-  +#2'x'#3'top'#3#8#1#0#0#10'TPopupMenu'#10'PopupMenu1'#4'left'#3#152#0#3'top'#3
-  +#197#0#0#9'TMenuItem'#9'MenuItem1'#6'Action'#7#20'actOptimizeWidthCol1'#7'On'
-  +'Click'#7#27'actOptimizeWidthCol1Execute'#0#0#9'TMenuItem'#9'MenuItem2'#7'Ca'
-  ,'ption'#6#1'-'#0#0#9'TMenuItem'#9'MenuItem4'#6'Action'#7#12'actCalcTotal'#7
-  +'OnClick'#7#19'actCalcTotalExecute'#0#0#9'TMenuItem'#9'MenuItem3'#6'Action'#7
-  +#26'actOptimizeColumnsWidthAll'#7'OnClick'#7'!actOptimizeColumnsWidthAllExec'
-  +'ute'#0#0#9'TMenuItem'#9'MenuItem5'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#9'Men'
-  +'uItem7'#6'Action'#7#17'showColumnsDialog'#7'OnClick'#7#24'showColumnsDialog'
-  +'Execute'#0#0#9'TMenuItem'#9'MenuItem6'#6'Action'#7#14'showFindDialog'#7'OnC'
-  +'lick'#7#21'showFindDialogExecute'#0#0#0#11'TActionList'#11'ActionList1'#4'l'
-  +'eft'#3#206#0#3'top'#3#197#0#0#7'TAction'#12'actCalcTotal'#7'Caption'#6#13'C'
-  +'alc total...'#9'OnExecute'#7#19'actCalcTotalExecute'#0#0#7'TAction'#26'actO'
-  +'ptimizeColumnsWidthAll'#7'Caption'#6#25'Optimize width for all...'#9'OnExec'
-  +'ute'#7'!actOptimizeColumnsWidthAllExecute'#0#0#7'TAction'#20'actOptimizeWid'
-  +'thCol1'#7'Caption'#6#17'Optimize width...'#9'OnExecute'#7#27'actOptimizeWid'
-  +'thCol1Execute'#0#0#7'TAction'#14'showFindDialog'#7'Caption'#6#19'Show find '
-  +'dialog...'#9'OnExecute'#7#21'showFindDialogExecute'#0#0#7'TAction'#17'showC'
-  +'olumnsDialog'#7'Caption'#6#22'Show columns dialog...'#9'OnExecute'#7#24'sho'
-  +'wColumnsDialogExecute'#0#0#0#11'TDatasource'#11'Datasource2'#7'DataSet'#7#13
-  +'RxMemoryData2'#4'left'#3#207#0#3'top'#3#8#1#0#0#13'TRxMemoryData'#13'RxMemo'
-  +'ryData2'#14'AutoCalcFields'#8#9'FieldDefs'#14#1#4'Name'#6#12'DEVELOPER_ID'#8
-  +'DataType'#7#9'ftInteger'#9'Precision'#2#0#4'Size'#2#0#0#1#4'Name'#6#14'DEVE'
-  +'LOPER_NAME'#8'DataType'#7#8'ftString'#9'Precision'#2#0#4'Size'#3#130#0#0#0#4
-  +'left'#3#240#0#3'top'#3#8#1#0#13'TLongintField'#26'RxMemoryData2DEVELOPER_ID'
-  +'1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#12'DEVELOP'
-  +'ER_ID'#5'Index'#2#0#11'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9
-  +'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#0#0#12'TStringField'#28'RxMemoryDa'
-  +'ta2DEVELOPER_NAME1'#12'DisplayWidth'#3#130#0#9'FieldKind'#7#6'fkData'#9'Fie'
-  +'ldName'#6#14'DEVELOPER_NAME'#5'Index'#2#1#11'LookupCache'#8#13'ProviderFlag'
-  +'s'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#4'Size'#3
-  +#130#0#0#0#0#15'TXMLPropStorage'#15'XMLPropStorage1'#12'StoredValues'#14#0#4
-  +'left'#3#241#0#3'top'#3#128#0#0#0#10'TImageList'#10'ImageList1'#4'left'#3#152
-  +#0#3'top'#3'\'#1#6'Bitmap'#10#14#12#0#0'Li'#3#0#0#0#16#0#0#0#16#0#0#0#0#255#0
-  +#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#0#255#0#0#0#255#0#0#128#255#0#0#255
-  +#255#0#0#0#255#0#0#0#255#0#0#128#255#0#0#255#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#128
-  +#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255#255
-  +#0#0#255#255#0#0#128#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#0#0#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#128
-  +#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#128#255#0#0#128
-  +#255#0#0#255#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#0#255#0#255#0#0#0
+  +'ttom'#21'AnchorSideTop.Control'#7#6'Panel1'#4'Left'#3#237#1#6'Height'#2#19#3
+  +'Top'#2#6#5'Width'#3#134#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#17'Auto'
+  +' fill columns'#8'OnChange'#7#15'CheckBox2Change'#8'TabOrder'#2#4#0#0#9'TChe'
+  +'ckBox'#9'CheckBox3'#22'AnchorSideLeft.Control'#7#9'CheckBox2'#19'AnchorSide'
+  +'Left.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#6'Panel1'#4'Left'#3'y'
+  +#2#6'Height'#2#19#3'Top'#2#6#5'Width'#2'z'#20'BorderSpacing.Around'#2#6#7'Ca'
+  +'ption'#6#14'Show indicator'#7'Checked'#9#8'OnChange'#7#15'CheckBox3Change'#5
+  +'State'#7#9'cbChecked'#8'TabOrder'#2#5#0#0#9'TCheckBox'#9'CheckBox4'#22'Anch'
+  +'orSideLeft.Control'#7#9'CheckBox2'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21
+  +'AnchorSideTop.Control'#7#9'CheckBox3'#18'AnchorSideTop.Side'#7#9'asrBottom'
+  +#4'Left'#3'y'#2#6'Height'#2#19#3'Top'#2#31#5'Width'#2't'#20'BorderSpacing.Ar'
+  +'ound'#2#6#7'Caption'#6#12'Show headers'#7'Checked'#9#8'OnChange'#7#15'Check'
+  +'Box4Change'#5'State'#7#9'cbChecked'#8'TabOrder'#2#6#0#0#0#13'TRxMemoryData'
+  +#13'RxMemoryData1'#14'AutoCalcFields'#8#9'FieldDefs'#14#1#4'Name'#6#2'ID'#8
+  +'DataType'#7#9'ftInteger'#9'Precision'#2#255#4'Size'#2#7#0#1#4'Name'#6#4'NAM'
+  +'E'#8'DataType'#7#8'ftString'#9'Precision'#2#255#4'Size'#3#150#0#0#1#4'Name'
+  +#6#5'PRICE'#8'DataType'#7#7'ftFloat'#9'Precision'#2#2#4'Size'#2#12#0#1#4'Nam'
+  +'e'#6#9'Developer'#8'DataType'#7#8'ftString'#9'Precision'#2#255#4'Size'#3#150
+  +#0#0#1#4'Name'#6#12'Date_Present'#8'DataType'#7#6'ftDate'#9'Precision'#2#0#4
+  +'Size'#2#0#0#1#4'Name'#6#12'DEVELOPER_ID'#8'DataType'#7#9'ftInteger'#9'Preci'
+  +'sion'#2#0#4'Size'#2#0#0#0#14'OnFilterRecord'#7#27'RxMemoryData1FilterRecord'
+  +'Ex'#16'OnFilterRecordEx'#7#27'RxMemoryData1FilterRecordEx'#4'left'#3#152#0#3
+  +'top'#3#8#1#0#13'TLongintField'#16'RxMemoryData1ID1'#12'DisplayWidth'#2#10#9
+  +'FieldKind'#7#6'fkData'#9'FieldName'#6#2'ID'#5'Index'#2#0#11'LookupCache'#8
+  +#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'
+  +#8#0#0#12'TStringField'#18'RxMemoryData1NAME1'#12'DisplayWidth'#3#150#0#9'Fi'
+  +'eldKind'#7#6'fkData'#9'FieldName'#6#4'NAME'#5'Index'#2#1#11'LookupCache'#8
+  +#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'
+  +#8#4'Size'#3#150#0#0#0#11'TFloatField'#19'RxMemoryData1PRICE1'#12'DisplayWid'
+  +'th'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#5'PRICE'#5'Index'#2#2#11'L'
+  +'ookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'
+  +#8#8'Required'#8#13'DisplayFormat'#6#8'#,##0.00'#8'MaxValue'#5#0#0#0#0#0#0#0
+  +#0#0#0#8'MinValue'#5#0#0#0#0#0#0#0#0#0#0#9'Precision'#2#2#0#0#12'TStringFiel'
+  +'d'#23'RxMemoryData1Developer1'#12'DisplayWidth'#3#150#0#9'FieldKind'#7#6'fk'
+  +'Data'#9'FieldName'#6#9'Developer'#5'Index'#2#3#11'LookupCache'#8#13'Provide'
+  +'rFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#4'Size'
+  +#3#150#0#0#0#10'TDateField'#26'RxMemoryData1Date_Present1'#12'DisplayWidth'#2
+  +#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#12'Date_Present'#5'Index'#2#4#11
+  +'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnl'
+  +'y'#8#8'Required'#8#0#0#13'TLongintField'#26'RxMemoryData1DEVELOPER_ID1'#12
+  +'DisplayWidth'#2#10#9'FieldKind'#7#6'fkData'#9'FieldName'#6#12'DEVELOPER_ID'
+  +#5'Index'#2#5#9'KeyFields'#6#12'DEVELOPER_ID'#11'LookupCache'#8#13'LookupDat'
+  +'aSet'#7#13'RxMemoryData2'#15'LookupKeyFields'#6#12'DEVELOPER_ID'#17'LookupR'
+  +'esultField'#6#14'DEVELOPER_NAME'#13'ProviderFlags'#11#10'pfInUpdate'#9'pfIn'
+  +'Where'#0#8'ReadOnly'#8#8'Required'#8#0#0#0#11'TDatasource'#11'Datasource1'#7
+  +'DataSet'#7#13'RxMemoryData1'#4'left'#2'x'#3'top'#3#8#1#0#0#10'TPopupMenu'#10
+  +'PopupMenu1'#4'left'#3#152#0#3'top'#3#197#0#0#9'TMenuItem'#9'MenuItem1'#6'Ac'
+  +'tion'#7#20'actOptimizeWidthCol1'#7'OnClick'#7#27'actOptimizeWidthCol1Execut'
+  +'e'#0#0#9'TMenuItem'#9'MenuItem2'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#9'MenuI'
+  ,'tem4'#6'Action'#7#12'actCalcTotal'#7'OnClick'#7#19'actCalcTotalExecute'#0#0
+  +#9'TMenuItem'#9'MenuItem3'#6'Action'#7#26'actOptimizeColumnsWidthAll'#7'OnCl'
+  +'ick'#7'!actOptimizeColumnsWidthAllExecute'#0#0#9'TMenuItem'#9'MenuItem5'#7
+  +'Caption'#6#1'-'#0#0#9'TMenuItem'#9'MenuItem7'#6'Action'#7#17'showColumnsDia'
+  +'log'#7'OnClick'#7#24'showColumnsDialogExecute'#0#0#9'TMenuItem'#9'MenuItem6'
+  +#6'Action'#7#14'showFindDialog'#7'OnClick'#7#21'showFindDialogExecute'#0#0#0
+  +#11'TActionList'#11'ActionList1'#4'left'#3#206#0#3'top'#3#197#0#0#7'TAction'
+  +#12'actCalcTotal'#7'Caption'#6#13'Calc total...'#9'OnExecute'#7#19'actCalcTo'
+  +'talExecute'#0#0#7'TAction'#26'actOptimizeColumnsWidthAll'#7'Caption'#6#25'O'
+  +'ptimize width for all...'#9'OnExecute'#7'!actOptimizeColumnsWidthAllExecute'
+  +#0#0#7'TAction'#20'actOptimizeWidthCol1'#7'Caption'#6#17'Optimize width...'#9
+  +'OnExecute'#7#27'actOptimizeWidthCol1Execute'#0#0#7'TAction'#14'showFindDial'
+  +'og'#7'Caption'#6#19'Show find dialog...'#9'OnExecute'#7#21'showFindDialogEx'
+  +'ecute'#0#0#7'TAction'#17'showColumnsDialog'#7'Caption'#6#22'Show columns di'
+  +'alog...'#9'OnExecute'#7#24'showColumnsDialogExecute'#0#0#0#11'TDatasource'
+  +#11'Datasource2'#7'DataSet'#7#13'RxMemoryData2'#4'left'#3#207#0#3'top'#3#8#1
+  +#0#0#13'TRxMemoryData'#13'RxMemoryData2'#14'AutoCalcFields'#8#9'FieldDefs'#14
+  +#1#4'Name'#6#12'DEVELOPER_ID'#8'DataType'#7#9'ftInteger'#9'Precision'#2#0#4
+  +'Size'#2#0#0#1#4'Name'#6#14'DEVELOPER_NAME'#8'DataType'#7#8'ftString'#9'Prec'
+  +'ision'#2#0#4'Size'#3#130#0#0#0#4'left'#3#240#0#3'top'#3#8#1#0#13'TLongintFi'
+  +'eld'#26'RxMemoryData2DEVELOPER_ID1'#12'DisplayWidth'#2#10#9'FieldKind'#7#6
+  +'fkData'#9'FieldName'#6#12'DEVELOPER_ID'#5'Index'#2#0#11'LookupCache'#8#13'P'
+  +'roviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnly'#8#8'Required'#8#0
+  +#0#12'TStringField'#28'RxMemoryData2DEVELOPER_NAME1'#12'DisplayWidth'#3#130#0
+  +#9'FieldKind'#7#6'fkData'#9'FieldName'#6#14'DEVELOPER_NAME'#5'Index'#2#1#11
+  +'LookupCache'#8#13'ProviderFlags'#11#10'pfInUpdate'#9'pfInWhere'#0#8'ReadOnl'
+  +'y'#8#8'Required'#8#4'Size'#3#130#0#0#0#0#15'TXMLPropStorage'#15'XMLPropStor'
+  +'age1'#12'StoredValues'#14#0#4'left'#3#241#0#3'top'#3#128#0#0#0#10'TImageLis'
+  +'t'#10'ImageList1'#4'left'#3#152#0#3'top'#3'\'#1#6'Bitmap'#10#14#12#0#0'Li'#3
+  +#0#0#0#16#0#0#0#16#0#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0
+  +#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#0#255#0
+  +#0#0#255#0#0#128#255#0#0#255#255#0#0#0#255#0#0#0#255#0#0#128#255#0#0#255#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0
+  +#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#128#255
+  +#0#0#128#255#0#0#255#255#0#0#255#255#0#0#128#255#0#0#0#255#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255
+  +#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#0#255#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255
-  +#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#0#255#0#0#0#255#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#128#255#0#0#0#255#0#0#0#255#0#255#0#0
+  +#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0#0#128#255#0#0#128#255
+  +#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#0#0#255#0#0#255#255#0#0#128#255#0#0#128#255#0#0#255#255#0#0#255#255#0
+  +#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#128#255#0#0#0#255
+  +#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#0#255
   +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#255#255#0#0#0#255#0#255#0#0#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
   +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0
   +#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0
   +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
   +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
-  ,#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#0#0#255#0#255#255#255#0#0#0#255#0#0#0#255#0#128#128#255#0#255
-  +#255#255#0#0#0#255#0#0#0#255#0#128#128#255#0#255#255#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0
-  +#128#128#255#0#128#128#255#0#255#255#255#0#255#255#255#0#128#128#255#0#128
-  +#128#255#0#255#255#255#0#255#255#255#0#128#128#255#0#0#0#255#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#128#128#255#0#128#128#255
-  +#0#255#255#255#0#255#255#255#0#128#128#255#0#128#128#255#0#255#255#255#0#255
-  +#255#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#0#0#255#0#255#255#255#0#128#128#255#0#128#128#255#0#255#255#255#0#255
-  +#255#255#0#128#128#255#0#128#128#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#128#128
-  +#255#0#128#128#255#0#255#255#255#0#255#255#255#0#0#0#255#0#0#0#255#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#0#0#255#0#255#255#255#0#128#128#255#0#0#0#255#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#0#0#255#0#255#0#0#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
   +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
@@ -221,48 +193,76 @@ LazarusResources.Add('TRxDBGridMainForm','FORMDATA',[
   +#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0
   +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
   +#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#0#0#255#255#0#0#255#0#0#0#255#0#0#0#255#128#0#0#255#255#0#0
-  +#255#0#0#0#255#0#0#0#255#128#0#0#255#255#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#128#0#0
-  +#255#128#0#0#255#255#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0#255
-  +#255#0#0#255#128#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#128#0#0
-  +#255#128#0#0#255#255#0#0#255#255#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#128#0#0#255#128#0#0
-  +#255#255#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0
-  +#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#0#0#0#255#0#0#0#255#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#0#0#255#255#0#0#255#128#0#0#255#0#0#0#255#0#0#0#255#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0
-  +#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0
-  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
-  +#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  ,#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
-  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
-  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
+  ,#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0
+  +#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#0#0#255#0#0#0#255#0
+  +#128#128#255#0#255#255#255#0#0#0#255#0#0#0#255#0#128#128#255#0#255#255#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0
+  +#255#0#255#255#255#0#128#128#255#0#128#128#255#0#255#255#255#0#255#255#255#0
+  +#128#128#255#0#128#128#255#0#255#255#255#0#255#255#255#0#128#128#255#0#0#0
+  +#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#128
+  +#128#255#0#128#128#255#0#255#255#255#0#255#255#255#0#128#128#255#0#128#128
+  +#255#0#255#255#255#0#255#255#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#128#128#255#0#128#128
+  +#255#0#255#255#255#0#255#255#255#0#128#128#255#0#128#128#255#0#0#0#255#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
+  +#255#255#255#0#128#128#255#0#128#128#255#0#255#255#255#0#255#255#255#0#0#0
+  +#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#128#128#255#0#0#0#255
+  +#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#255#255#0#0#0
+  +#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
   +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0
+  +#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0
+  +#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0
+  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#0#0#0#255#0#0
+  +#0#255#128#0#0#255#255#0#0#255#0#0#0#255#0#0#0#255#128#0#0#255#255#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0
+  +#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#128#0#0#255
+  +#128#0#0#255#255#0#0#255#255#0#0#255#128#0#0#255#0#0#0#255#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0
+  +#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#0#0#0#255#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0
+  +#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255
+  +#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#0#0#255#255#0#0#255#128#0#0#255#128#0#0#255#255#0#0#255#255#0#0#255#0
+  +#0#0#255#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#128#0#0#255#0#0#0#255
+  +#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#255#0#0#255#0#0#0#255
+  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0
+  +#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0
+  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0
+  ,#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0#0#255#0#255#0#0#0
+  +#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0
+  +#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#0
+  +#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0
+  +#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255
+  +#0#0#0#0#0#255#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0#255#0#0#0
+  +#255#0#0#0#0#0
 ]);
