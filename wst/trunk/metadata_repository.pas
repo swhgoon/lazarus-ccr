@@ -124,16 +124,22 @@ var
   typData : PTypeData;
   servcMdt : PService;
   propData : PPropertyData;
+  mmm : IModuleMetadataMngr;
 begin
   Result := '';
   if Assigned(AServiceTyp) and (AServiceTyp^.Kind = tkInterface) then begin
     typData := GetTypeData(AServiceTyp);
     if Assigned(typData) then begin
-      servcMdt := GetModuleMetadataMngr().GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
-      if Assigned(AServiceTyp) then begin
-        propData := Find(servcMdt^.Properties,sTRANSPORT + '_' + sADDRESS);
-        if Assigned(propData) then
-          Result := propData^.Data;
+      mmm := GetModuleMetadataMngr();
+      servcMdt := mmm.GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
+      if Assigned(servcMdt) then begin
+        try
+          propData := Find(servcMdt^.Properties,sTRANSPORT + '_' + sADDRESS);
+          if Assigned(propData) then
+            Result := propData^.Data;
+        finally
+          mmm.ClearServiceMetadata(servcMdt);
+        end;
       end;
     end;
   end;
@@ -145,25 +151,31 @@ var
   servcMdt : PService;
   propData : PPropertyData;
   strName : string;
+  mmm : IModuleMetadataMngr;
 begin
   Result := '';
   if Assigned(AServiceTyp) and (AServiceTyp^.Kind = tkInterface) then begin
     typData := GetTypeData(AServiceTyp);
     if Assigned(typData) then begin
-      servcMdt := GetModuleMetadataMngr().GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
-      if Assigned(AServiceTyp) then begin
-        propData := servcMdt^.Properties;
-        while Assigned(propData) do begin
-          if ( AnsiPos(sFORMAT + '_',propData^.Name) = 1 ) then begin
-            strName := ExtractOptionName(propData^.Name);
-            if ( Length(strName) > 0 ) then begin
-              Result := Format('%s%s=%s;',[Result,strName,propData^.Data]);
+      mmm := GetModuleMetadataMngr();
+      servcMdt := mmm.GetServiceMetadata(typData^.IntfUnit,AServiceTyp^.Name);
+      if Assigned(servcMdt) then begin
+        try
+          propData := servcMdt^.Properties;
+          while Assigned(propData) do begin
+            if ( AnsiPos(sFORMAT + '_',propData^.Name) = 1 ) then begin
+              strName := ExtractOptionName(propData^.Name);
+              if ( Length(strName) > 0 ) then begin
+                Result := Format('%s%s=%s;',[Result,strName,propData^.Data]);
+              end;
             end;
+            propData := propData^.Next;
           end;
-          propData := propData^.Next;
-        end;
-        if not IsStrEmpty(Result) then begin
-          Delete(Result,Length(Result),1);
+          if not IsStrEmpty(Result) then begin
+            Delete(Result,Length(Result),1);
+          end;
+        finally
+          mmm.ClearServiceMetadata(servcMdt);
         end;
       end;
     end;
